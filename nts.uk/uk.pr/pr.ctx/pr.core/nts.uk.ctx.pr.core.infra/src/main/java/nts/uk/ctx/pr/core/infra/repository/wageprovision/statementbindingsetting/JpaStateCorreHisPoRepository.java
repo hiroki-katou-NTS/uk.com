@@ -4,7 +4,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisPo;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisPosition;
 import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisPoRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateLinkSetDate;
 import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateLinkSetMaster;

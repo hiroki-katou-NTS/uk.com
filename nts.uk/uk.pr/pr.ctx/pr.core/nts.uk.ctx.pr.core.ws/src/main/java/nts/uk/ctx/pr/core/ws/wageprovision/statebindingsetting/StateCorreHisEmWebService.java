@@ -7,7 +7,6 @@ import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.Stat
 import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateCorreHisEmpDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateCorreHisEmpFinder;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateCorreHisEmpSetDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.*;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.inject.Inject;
