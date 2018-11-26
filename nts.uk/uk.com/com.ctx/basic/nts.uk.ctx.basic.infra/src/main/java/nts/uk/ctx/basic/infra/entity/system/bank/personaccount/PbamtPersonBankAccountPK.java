@@ -1,6 +1,7 @@
 package nts.uk.ctx.basic.infra.entity.system.bank.personaccount;
 
 import java.io.Serializable;
+//import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

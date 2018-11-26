@@ -94,6 +94,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	private UpdateAllDomainMonthService monthService;
 	
 	/** 社員の月別実績を集計する */
+	@SuppressWarnings("rawtypes")
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public ProcessState aggregate(AsyncCommandHandlerContext asyncContext, String companyId, String employeeId,
@@ -122,6 +123,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	}
 	
 	/** 社員の月別実績を集計する */
+	@SuppressWarnings("rawtypes")
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public MonthlyAggrEmpServiceValue aggregate(AsyncCommandHandlerContext asyncContext, String companyId, String employeeId,

@@ -567,15 +567,15 @@ public class ApprovalStatusFinder {
 		lstFrame.sort(sortList);
 		int countItem = 0;
 		int countRest = 0;
-		int time = 0;
+		//int time = 0;
 		String frameName = "";
 		for (OverTimeFrame overFrame : lstFrame) {
 			if (overFrame.getApplicationTime() != 0) {
 				if (countItem > 2) {
-					time += overFrame.getApplicationTime();
+					//time += overFrame.getApplicationTime();
 				} else {
 					frameName += "　" + overFrame.getName() + clockShorHm(overFrame.getApplicationTime());
-					time += overFrame.getApplicationTime();
+					//time += overFrame.getApplicationTime();
 					countItem++;
 				}
 				countRest++;

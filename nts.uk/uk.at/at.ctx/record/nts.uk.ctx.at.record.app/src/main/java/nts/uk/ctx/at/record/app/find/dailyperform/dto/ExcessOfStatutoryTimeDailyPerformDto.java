@@ -11,8 +11,8 @@ import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.shr.com.time.TimeWithDayAttr;
+//import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+//import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /** 日別実績の所定外時間 */
 @Data

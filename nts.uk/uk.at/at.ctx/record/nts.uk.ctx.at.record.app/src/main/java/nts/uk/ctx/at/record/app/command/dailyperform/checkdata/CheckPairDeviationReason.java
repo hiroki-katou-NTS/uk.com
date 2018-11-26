@@ -17,7 +17,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.command.divergence.time.algorithm.DetermineLeakage;
-import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
+//import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
@@ -34,8 +34,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class CheckPairDeviationReason {
 
-	@Inject
-	private DailyRecordWorkFinder fullFinder;
+//	@Inject
+//	private DailyRecordWorkFinder fullFinder;
 
 	@Inject
 	private DivergenceTimeRepository divergenceTimeRepository;

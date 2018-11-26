@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment;
 
+
+/*import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;*/
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,8 +31,6 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
@@ -64,9 +65,6 @@ import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesett
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborCondition;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EarchInterimRemainCheck;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInputParam;
@@ -102,10 +100,10 @@ public class SaveHolidayShipmentCommandHandler
 	private ApplicationSettingRepository appSetRepo;
 	@Inject
 	private WithDrawalReqSetRepository withDrawRepo;
-	@Inject
-	private RecordWorkInfoAdapter recordWorkInfoAdapter;
-	@Inject
-	private PersonalLaborConditionRepository personalLaborConditionRepository;
+//	@Inject
+//	private RecordWorkInfoAdapter recordWorkInfoAdapter;
+//	@Inject
+//	private PersonalLaborConditionRepository personalLaborConditionRepository;
 	@Inject
 	private ApplicationRepository_New appRepo;
 	@Inject
@@ -579,11 +577,11 @@ public class SaveHolidayShipmentCommandHandler
 		Optional<WithDrawalReqSet> withDrawReqSet = withDrawRepo.getWithDrawalReqSet();
 		// アルゴリズム「申請前勤務種類の取得」を実行する takingout
 		if (isSaveAbs(comType)) {
-			getWorkTypeOfApp(sID, absDate);
+			//getWorkTypeOfApp(sID, absDate);
 		}
 		// アルゴリズム「申請前勤務種類の取得」を実行する holiday
 		if (isSaveRec(comType)) {
-			getWorkTypeOfApp(sID, recDate);
+			//getWorkTypeOfApp(sID, recDate);
 		}
 		// アルゴリズム「申請日関連チェック」を実行する
 		ApplicationDateRelatedCheck(command, withDrawReqSet.get(), sID, recDate, absDate, comType);
@@ -805,37 +803,37 @@ public class SaveHolidayShipmentCommandHandler
 
 	}
 
-	private void getWorkTypeOfApp(String sID, GeneralDate appDate) {
-		// アルゴリズム待ち
-		// アルゴリズム「勤務実績を取得する」を実行する
-		String workTypeCode = "";
-		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(sID, appDate);
-		if (recordWorkInfoImport.getWorkTypeCode().equals("")) {
-			// アルゴリズム「予定管理利用チェック」を実行する
-			UseAtr useAtr = ScheMngUseCheck(sID, appDate);
-			if (useAtr != null && useAtr.equals(UseAtr.USE)) {
-				// アルゴリズム「勤務予定を取得する」を実行する
+//	private void getWorkTypeOfApp(String sID, GeneralDate appDate) {
+//		// アルゴリズム待ち
+//		// アルゴリズム「勤務実績を取得する」を実行する
+//		String workTypeCode = "";
+//		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(sID, appDate);
+//		if (recordWorkInfoImport.getWorkTypeCode().equals("")) {
+//			// アルゴリズム「予定管理利用チェック」を実行する
+//			UseAtr useAtr = ScheMngUseCheck(sID, appDate);
+//			if (useAtr != null && useAtr.equals(UseAtr.USE)) {
+//				// アルゴリズム「勤務予定を取得する」を実行する
+//
+//			} else {
+//
+//			}
+//		} else {
+//			workTypeCode = recordWorkInfoImport.getWorkTypeCode();
+//
+//		}
+//
+//	}
 
-			} else {
-
-			}
-		} else {
-			workTypeCode = recordWorkInfoImport.getWorkTypeCode();
-
-		}
-
-	}
-
-	private UseAtr ScheMngUseCheck(String sID, GeneralDate appDate) {
-		// ドメインモデル「個人労働条件」を取得する
-		Optional<PersonalLaborCondition> perCond = personalLaborConditionRepository.findById(sID, appDate);
-		if (perCond.isPresent()) {
-
-			return perCond.get().getScheduleManagementAtr();
-		}
-		return null;
-
-	}
+//	private UseAtr ScheMngUseCheck(String sID, GeneralDate appDate) {
+//		// ドメインモデル「個人労働条件」を取得する
+//		Optional<PersonalLaborCondition> perCond = personalLaborConditionRepository.findById(sID, appDate);
+//		if (perCond.isPresent()) {
+//
+//			return perCond.get().getScheduleManagementAtr();
+//		}
+//		return null;
+//
+//	}
 
 	public String preconditionCheck(SaveHolidayShipmentCommand command, String companyID, ApplicationType appType,
 			int comType) {

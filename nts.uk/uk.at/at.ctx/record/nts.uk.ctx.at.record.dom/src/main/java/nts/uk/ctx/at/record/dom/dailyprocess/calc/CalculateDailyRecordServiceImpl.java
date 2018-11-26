@@ -14,7 +14,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
+//import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -28,13 +28,13 @@ import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
+//import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.record.dom.calculationattribute.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.HolidayTimesheetCalculationSetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.OvertimeTimesheetCalculationSetting;
 import nts.uk.ctx.at.record.dom.calculationattribute.WorkingTimesheetCalculationSetting;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
+//import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.record.dom.daily.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
@@ -66,7 +66,7 @@ import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
-import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
+//import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
 import nts.uk.ctx.at.record.dom.workrule.specific.UpperLimitTotalWorkingHour;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -86,7 +86,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkingTimesheetCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimesheetRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.SpecBPTimesheetRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.WPBonusPaySettingRepository;
+//import nts.uk.ctx.at.shared.dom.bonuspay.repository.WPBonusPaySettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.WTBonusPaySettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BPUnitUseSetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
@@ -101,17 +101,17 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
+//import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
+//import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
+//import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
+//import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
+//import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
+//import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
+//import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
+//import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.overtime.StatutoryPrioritySet;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
@@ -125,7 +125,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
+//import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
@@ -138,11 +138,11 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
+//import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
+//import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
+//import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
+//import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezone;
+//import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -189,8 +189,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	private FlexWorkSettingRepository flexWorkSettingRepository;
 	
 	/*労働規則*/
-	@Inject
-	private SpecificWorkRuleRepository specificWorkRuleRepository;
+//	@Inject
+//	private SpecificWorkRuleRepository specificWorkRuleRepository;
 	
 	/*勤怠項目と勤怠項目の実際の値のマッピング*/
 	@Inject
@@ -208,9 +208,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	@Inject
 	private ReflectBreakTimeOfDailyDomainService reflectBreakTimeOfDailyDomainService;
 	
-	@Inject
+//	@Inject
 	//職場の加給時間設定
-	private WPBonusPaySettingRepository wPBonusPaySettingRepository;
+//	private WPBonusPaySettingRepository wPBonusPaySettingRepository;
 	
 	@Inject
 	//就業時間帯加給時間設定
@@ -524,14 +524,14 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		
 		//流動勤務の休憩時間帯
-		FlowWorkRestTimezone fluRestTime = new FlowWorkRestTimezone(
-												  true,
-												  new TimezoneOfFixedRestTimeSet(Collections.emptyList()),
-												  new FlowRestTimezone(Collections.emptyList(),false,new FlowRestSetting(new AttendanceTime(0), new AttendanceTime(0)))
-												  );
-		
-		//流動固定休憩設定
-		FlowFixedRestSet fluidPrefixBreakTimeSet = new FlowFixedRestSet(false,false,false,FlowFixedRestCalcMethod.REFER_MASTER);
+//		FlowWorkRestTimezone fluRestTime = new FlowWorkRestTimezone(
+//												  true,
+//												  new TimezoneOfFixedRestTimeSet(Collections.emptyList()),
+//												  new FlowRestTimezone(Collections.emptyList(),false,new FlowRestSetting(new AttendanceTime(0), new AttendanceTime(0)))
+//												  );
+//		
+//		//流動固定休憩設定
+//		FlowFixedRestSet fluidPrefixBreakTimeSet = new FlowFixedRestSet(false,false,false,FlowFixedRestCalcMethod.REFER_MASTER);
 		
 		//0時跨ぎ計算設定
 		Optional<ZeroTime> overDayEndCalcSet = companyCommonSetting.getZeroTime();
@@ -832,12 +832,14 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				break;
 			case FLOW_WORK:
 				/* 流動勤務 */
-				val flowWorkSetOpt = shareContainer.getShared("FLOW_WORK" + companyId + workInfo.getRecordInfo().getWorkTimeCode().v(), 
+				//val flowWorkSetOpt = 
+				shareContainer.getShared("FLOW_WORK" + companyId + workInfo.getRecordInfo().getWorkTimeCode().v(), 
 															  () -> flowWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v()));
 				return ManageReGetClass.cantCalc2(workType,integrationOfDaily,personalInfo,holidayCalcMethodSet,regularAddSetting,flexAddSetting,hourlyPaymentAddSetting,illegularAddSetting,Optional.empty());
 			case DIFFTIME_WORK:
 				/* 時差勤務 */
-				val diffWorkSetOpt = shareContainer.getShared("FLOW_WORK" + companyId + workInfo.getRecordInfo().getWorkTimeCode().v(), 
+				//val diffWorkSetOpt = 
+				shareContainer.getShared("FLOW_WORK" + companyId + workInfo.getRecordInfo().getWorkTimeCode().v(), 
 						  									  () -> diffTimeWorkSettingRepository.find(companyId,workInfo.getRecordInfo().getWorkTimeCode().v()));
 				return ManageReGetClass.cantCalc2(workType,integrationOfDaily,personalInfo,holidayCalcMethodSet,regularAddSetting,flexAddSetting,hourlyPaymentAddSetting,illegularAddSetting,Optional.empty());
 			default:

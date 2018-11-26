@@ -5,7 +5,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
+//import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
