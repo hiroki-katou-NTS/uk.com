@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.i18n.I18NText;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.SelectionItemReportData;
 import nts.uk.shr.com.context.AppContexts;
@@ -67,7 +68,7 @@ public class SelectionItemExportImp implements MasterListData {
 			selectionItemReportDats.stream().forEach(x -> {
 				Map<String, Object> data = new HashMap<>();
 				data.put(CPS016_27, x.getSelectionItemName());
-				data.put(CPS016_28, x.getCharacterType() == 0 ? "数値型" : "英数型");
+				data.put(CPS016_28, x.getCharacterType() == 0 ? I18NText.getText("Enum_SelectionCodeCharacter_NUMBER_TYPE") : I18NText.getText("Enum_SelectionCodeCharacter_CHARATERS_TYPE"));
 				data.put(CPS016_29, x.getCodeLength()); 
 				data.put(CPS016_30, x.getNameLength());
 				data.put(CPS016_31, x.getExternalCodeLength());
