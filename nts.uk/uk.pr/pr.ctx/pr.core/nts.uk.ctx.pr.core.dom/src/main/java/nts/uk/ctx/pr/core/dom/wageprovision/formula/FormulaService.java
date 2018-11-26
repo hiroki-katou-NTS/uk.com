@@ -64,19 +64,14 @@ public class FormulaService {
         basicFormulaSettingRepository.removeByFormulaCode(formulaCode);
     }
 
-    public void addFormulaSetting (Formula formula, BasicFormulaSetting basicFormulaSetting, DetailFormulaSetting detailFormulaSetting, List<BasicCalculationFormula> basicCalculationFormula) {
-        detailFormulaSettingRepository.add(detailFormulaSetting);
-        basicCalculationFormulaRepository.addAll(basicCalculationFormula);
-        basicFormulaSettingRepository.add(basicFormulaSetting);
-    }
-
     public void updateFormulaSetting (Formula formula, BasicFormulaSetting basicFormulaSetting, DetailFormulaSetting detailFormulaSetting, List<BasicCalculationFormula> basicCalculationFormula) {
-        detailFormulaSettingRepository.update(detailFormulaSetting);
-        basicCalculationFormulaRepository.updateAll(basicCalculationFormula);
-        basicFormulaSettingRepository.update(basicFormulaSetting);
+        basicCalculationFormulaRepository.upsertAll(basicFormulaSetting.getHistoryID(), basicCalculationFormula);
+        if (formula.getSettingMethod() == FormulaSettingMethod.DETAIL_SETTING) detailFormulaSettingRepository.upsert(detailFormulaSetting);
+        else basicFormulaSettingRepository.upsert(basicFormulaSetting);
     }
     public void addFormulaHistory (Formula formula, BasicFormulaSetting basicFormulaSetting, DetailFormulaSetting detailFormulaSetting, List<BasicCalculationFormula> basicCalculationFormula, YearMonthHistoryItem yearMonthHistoryItem) {
         String formulaCode = formula.getFormulaCode().v();
+        formulaRepository.insertFormulaHistory(formulaCode, yearMonthHistoryItem);
         formulaRepository.getFormulaHistoryByCode(formulaCode).ifPresent(formulaHistory -> {
             if (formulaHistory.getHistory().size() > 0) {
                 YearMonthHistoryItem lastHistory = formulaHistory.getHistory().get(0);
@@ -84,7 +79,7 @@ public class FormulaService {
                 formulaRepository.updateFormulaHistory(formulaCode, lastHistory);
             }
         });
-        this.addFormulaSetting(formula, basicFormulaSetting, detailFormulaSetting, basicCalculationFormula);
+        this.updateFormulaSetting(formula, basicFormulaSetting, detailFormulaSetting, basicCalculationFormula);
     }
     public void updateFormulaHistory (String formulaCode, YearMonthHistoryItem yearMonthUpdate) {
         formulaRepository.getFormulaHistoryByCode(formulaCode).ifPresent(formulaHistory -> {
@@ -170,12 +165,11 @@ public class FormulaService {
             }
             case SALARY_FORM: {
                 final String FIXED_PREFIX = "000000000", FIRST_LINE = "月給", SECOND_LINE = "日給月給", THIRD_LINE = "日給", FOURTH_LINE = "時給";
-
                 ArrayList<MasterUseDto> masterUseList = new ArrayList<>();
-                masterUseList.add(new MasterUseDto(FIXED_PREFIX + 0, FIRST_LINE));
-                masterUseList.add(new MasterUseDto(FIXED_PREFIX + 1, SECOND_LINE));
-                masterUseList.add(new MasterUseDto(FIXED_PREFIX + 2, THIRD_LINE));
-                masterUseList.add(new MasterUseDto(FIXED_PREFIX + 3, FOURTH_LINE));
+                masterUseList.add(new MasterUseDto(FIXED_PREFIX + 1, FIRST_LINE));
+                masterUseList.add(new MasterUseDto(FIXED_PREFIX + 2, SECOND_LINE));
+                masterUseList.add(new MasterUseDto(FIXED_PREFIX + 3, THIRD_LINE));
+                masterUseList.add(new MasterUseDto(FIXED_PREFIX + 4, FOURTH_LINE));
                 return masterUseList;
             }
         }

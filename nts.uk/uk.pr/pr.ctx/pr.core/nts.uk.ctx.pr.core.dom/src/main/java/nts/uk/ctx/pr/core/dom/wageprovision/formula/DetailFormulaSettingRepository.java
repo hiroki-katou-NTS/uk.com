@@ -19,6 +19,8 @@ public interface DetailFormulaSettingRepository
 
     void update(DetailFormulaSetting domain);
 
+    void upsert(DetailFormulaSetting domain);
+
     void remove(DetailFormulaSetting domain);
 
     void removeByHistory(String historyID);

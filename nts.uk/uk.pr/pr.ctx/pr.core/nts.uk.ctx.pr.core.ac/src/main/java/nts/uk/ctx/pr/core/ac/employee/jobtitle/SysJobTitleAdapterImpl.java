@@ -13,20 +13,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Stateless
-public class SyJobTitleAdapterImpl implements SyJobTitleAdapter {
+public class SysJobTitleAdapterImpl implements SyJobTitleAdapter {
 
     @Inject
     SyJobTitlePub syJobTitlePub;
-
-    @Inject
-    SyClassificationPub syClassificationPub;
-
 
     @Override
     public List<JobTitleImport> getListJobTitleByCompanyID(String companyID, GeneralDate baseDate) {
         return syJobTitlePub.findAll(AppContexts.user().companyId(), baseDate).stream().map(jobTitle -> {
             return new JobTitleImport(jobTitle.getCompanyId(), jobTitle.getJobTitleId(), jobTitle.getJobTitleCode(), jobTitle.getJobTitleName(), jobTitle.getSequenceCode(), jobTitle.getStartDate(), jobTitle.getEndDate(), jobTitle.isManager());
         }).collect(Collectors.toList());
-
     }
 }

@@ -46,13 +46,13 @@ module nts.uk.pr.view.qmm017.share.model {
     }
 
     export enum FORMULA_SETTING_METHOD {
-        SIMPLE_SETTING = 0,
+        BASIC_SETTING = 0,
         DETAIL_SETTING = 1
     }
 
     export function getFormulaSettingMethodEnumModel () {
         return [
-            new EnumModel(FORMULA_SETTING_METHOD.SIMPLE_SETTING, 'かんたん設定'),
+            new EnumModel(FORMULA_SETTING_METHOD.BASIC_SETTING, 'かんたん設定'),
             new EnumModel(FORMULA_SETTING_METHOD.DETAIL_SETTING, '詳細設定')
         ];
     }
@@ -529,13 +529,13 @@ module nts.uk.pr.view.qmm017.share.model {
 
         constructor(params: IBasicFormulaSetting) {
             this.masterUse(params ? params.masterUse : MASTER_USE.EMPLOYMENT);
-            this.masterBranchUse(params ? params.masterBranchUse : MASTER_BRANCH_USE.USE);
+            this.masterBranchUse(params ? params.masterBranchUse : MASTER_BRANCH_USE.NOT_USE);
             this.historyID(params ? params.historyID : null);
             this.displayMasterUse = ko.computed(function() {
                 return this.masterUse() != null ? this.masterUseItem()[this.masterUse()].name : null;
             }, this);
             this.displayMasterBranchUse = ko.computed(function() {
-                return this.masterBranchUseItem()[this.masterBranchUse()].name;
+                return this.masterBranchUse() != null ? this.masterBranchUseItem()[this.masterBranchUse()].name : null;
             }, this);
 
         }
@@ -565,17 +565,17 @@ module nts.uk.pr.view.qmm017.share.model {
         constructor(params: IFormula) {
             this.formulaCode(params ? params.formulaCode : null);
             this.formulaName(params ? params.formulaName : null);
-            this.settingMethod(params ? params.settingMethod : FORMULA_SETTING_METHOD.SIMPLE_SETTING);
+            this.settingMethod(params ? params.settingMethod : FORMULA_SETTING_METHOD.BASIC_SETTING);
             this.nestedAtr(params ? params.nestedAtr : NESTED_USE_CLS.NOT_USE);
             this.history(params? params.history : []);
             this.displayNestedAtr = ko.computed(function() {
-                return this.nestedAtrItem() != null ? this.nestedAtrItem()[this.nestedAtr()].name : null;
+                return this.nestedAtr() != null ? this.nestedAtrItem()[this.nestedAtr()].name : null;
             }, this);
             this.isNotUseNestedAtr = ko.computed(function() {
-                return this.nestedAtr() == model.NESTED_USE_CLS.NOT_USE;
+                return this.nestedAtr() == model.NESTED_USE_CLS.NOT_USE ;
             }, this);
             this.displaySettingMethod = ko.computed(function() {
-                return this.formulaSettingMethodItem()[this.settingMethod()].name;
+                return this.settingMethod() != null ? this.formulaSettingMethodItem()[this.settingMethod()].name : null;
             }, this);
         }
     }
@@ -639,6 +639,7 @@ module nts.uk.pr.view.qmm017.share.model {
         baseItemFixedValue: number;
         premiumRate: number;
         roundingMethod: number;
+        masterUseName: string;
 
     }
     export class BasicCalculationFormula {
@@ -672,6 +673,7 @@ module nts.uk.pr.view.qmm017.share.model {
         roundingResultItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getRoundingResultEnumModel());
         adjustmentClassificationItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getAdjustmentClsEnumModel());
         // display item
+        masterUseName: KnockoutObservable<string> = ko.observable(null);
         displayFormulaType: KnockoutObservable<string> = ko.observable(null);
         displayFormulaImagePath: KnockoutObservable<string> = ko.observable(null);
         constructor(params: IBasicCalculationFormula) {
@@ -692,6 +694,7 @@ module nts.uk.pr.view.qmm017.share.model {
             this.coefficientFixedValue(params ? params.coefficientFixedValue : null);
             this.historyID(params ? params.historyID : null);
             this.targetItemCodeList(params ? params.targetItemCodeList : []);
+            this.masterUseName(params ? params.masterUseName : null);
             this.displayFormulaType = ko.computed(function() {
                 return this.formulaType() != null ? this.formulaTypeItem()[this.formulaType()].name : null
             }, this);

@@ -28,16 +28,19 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         selectedHistory: KnockoutObservable<model.GenericHistoryYearMonthPeriod> = ko.observable(new model.GenericHistoryYearMonthPeriod(null));
         basicFormulaSetting: KnockoutObservable<model.BasicFormulaSetting> = ko.observable(new model.BasicFormulaSetting(null));
         detailFormulaSetting: KnockoutObservable<model.DetailFormulaSetting> = ko.observable(new model.DetailFormulaSetting(null));
+        // tab 2, screen C, D
         // for case screen C
         basicCalculationFormulaList: KnockoutObservableArray<model.BasicCalculationFormula> = ko.observableArray([]);
-        // fixed formula
-        fixedBasicCalculationFormula: KnockoutObservable<model.BasicCalculationFormula> = ko.observable(new model.BasicCalculationFormula(null));
+
+        // screen B, master formula
+        masterBasicCalculationFormula: KnockoutObservable<model.BasicCalculationFormula> = ko.observable(new model.BasicCalculationFormula(null));
 
         // tab 2, screen D
         screenDViewModel = new nts.uk.pr.view.qmm017.d.viewmodel.ScreenModel();
         // tabs variables
         screenDTabs: KnockoutObservableArray<any>;
         screenDSelectedTab: KnockoutObservable<string>;
+
         constructor() {
             var self = this;
             self.initFixedElement();
@@ -51,6 +54,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 self.isAddHistoryMode(newValue == model.SCREEN_MODE.ADD_HISTORY);
             })
             self.selectedFormulaIdentifier.subscribe(newValue => {
+                if (self.screenMode() == model.SCREEN_MODE.ADD_HISTORY) self.getListFormula();
                 if (newValue) {
                     self.showFormulaInfoByValue(newValue);
                 } else {
@@ -62,7 +66,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         initFixedElement () {
             var self = this;
             // fixed formula, master use code: 0000000000
-            self.fixedBasicCalculationFormula().masterUseCode("0000000000");
+            self.masterBasicCalculationFormula().masterUseCode("0000000000");
         }
 
         initComponents () {
@@ -96,19 +100,10 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 let itemToBeFocus = "";
                 if (newTab == 'tab-2') {
                     if (self.selectedFormula().settingMethod() == 0) {
-                        if (self.basicFormulaSetting().masterBranchUse() == model.MASTER_BRANCH_USE.USE){
-                            itemToBeFocus = '#B1_4';
-                        } else {
-                            itemToBeFocus = '#C2_7';
-                        }
-                    }
-                    if (self.selectedFormula().settingMethod() == 1) {
-                        itemToBeFocus = '#D1_4';
-                    }
-                } else {
-                    if (self.screenMode() != model.SCREEN_MODE.NEW){ itemToBeFocus = '#A3_4'};
-                }
-
+                        if (self.basicFormulaSetting().masterBranchUse() == model.MASTER_BRANCH_USE.USE) itemToBeFocus = '#B1_4';
+                        else itemToBeFocus = '#C2_7';
+                    } else itemToBeFocus = '#D1_4';
+                } else if (self.screenMode() != model.SCREEN_MODE.NEW){ itemToBeFocus = '#A3_4'};
                 setTimeout(function(){
                     $(itemToBeFocus).focus();
                 }, 100)
@@ -121,8 +116,21 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             let formulaSettingCommand = {
                 basicFormulaSettingCommand: ko.toJS(self.basicFormulaSetting),
                 detailFormulaSettingCommand: ko.toJS(self.detailFormulaSetting),
-                basicCalculationFormulaCommand: ko.toJS(self.basicCalculationFormulaList),
+                basicCalculationFormulaCommand: null,
                 yearMonth: ko.toJS(self.selectedHistory)
+            }
+            let basicCalculationFormula = [];
+            if (command.settingMethod == model.FORMULA_SETTING_METHOD.BASIC_SETTING) {
+                let fixedMasterUseCode = "0000000000";
+                basicCalculationFormula.push(ko.toJS(self.masterBasicCalculationFormula));
+                basicCalculationFormula[0].masterUseCode = fixedMasterUseCode;
+                if (command.nestedAtr == model.NESTED_USE_CLS.NOT_USE) {
+                    basicCalculationFormula.push.apply(basicCalculationFormula, ko.toJS(self.basicCalculationFormulaList));
+                }
+            }
+            formulaSettingCommand.basicCalculationFormulaCommand = basicCalculationFormula;
+            if (self.screenMode() == model.SCREEN_MODE.ADD_HISTORY) {
+                formulaSettingCommand.yearMonth.historyID = nts.uk.util.randomId();
             }
             command.formulaSettingCommand = formulaSettingCommand;
             if (self.screenMode() == model.SCREEN_MODE.NEW) {
@@ -134,22 +142,11 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             }
         }
 
-        // for case add formula
-        updateHistoryID (formulaSettingCommand) {
-            let historyID = nts.uk.util.randomId();
-            formulaSettingCommand.yearMonth.historyID = historyID;
-            formulaSettingCommand.basicFormulaSettingCommand.historyID = historyID;
-            formulaSettingCommand.detailFormulaSettingCommand.historyID = historyID;
-            formulaSettingCommand.basicCalculationFormulaCommand.historyID = historyID;
-            return formulaSettingCommand;
-        }
-
         addFormula (command) {
             let self = this;
             block.invisible();
             let lastYmValue = 999912;
             command.formulaSettingCommand.yearMonth.endMonth = lastYmValue;
-            command.formulaSettingCommand = self.updateHistoryID(command.formulaSettingCommand);
             service.addFormula(command).done(function(data) {
                 block.clear();
                 self.getListFormula();
@@ -231,93 +228,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 // selected first formula and history
                 var identifier = formulaData[0].history.length > 0 ? formulaData[0].history[0].identifier : formulaData[0].identifier;
                 self.selectedFormulaIdentifier(identifier);
-                self.selectedFormulaIdentifier.valueHasMutated();
             }
-        }
-
-        initBasicCalculationFormula (){
-            let self = this;
-            let fixedData: any = {masterUseCode: '0000000000'}, fixedElement:any = new model.BasicCalculationFormula(fixedData);
-            self.basicCalculationFormulaList.push(fixedElement);
-            let data = [
-                {
-                    calculationFormulaClassification: 1,
-                    masterUseCode: '0000000001',
-                    historyID: nts.uk.util.randomId(),
-                    basicCalculationFormula: 500,
-                    standardAmountClassification: 0,
-                    standardFixedValue: 600,
-                    targetItemCodeList: ['0001', '0002'],
-                    attendanceItem: '0001',
-                    coefficientClassification: 0,
-                    coefficientFixedValue: 700,
-                    formulaType: 0,
-                    roundingResult: 800,
-                    adjustmentClassification: 0,
-                    baseItemClassification: 9,
-                    baseItemFixedValue: 900,
-                    premiumRate: 910,
-                    roundingMethod: 3
-                },
-                {
-                    calculationFormulaClassification: 2,
-                    masterUseCode: '0000000002',
-                    historyID: nts.uk.util.randomId(),
-                    basicCalculationFormula: 1500,
-                    standardAmountClassification: 1,
-                    standardFixedValue: 1600,
-                    targetItemCodeList: ['0003', '0004'],
-                    attendanceItem: '0002',
-                    coefficientClassification: 1,
-                    coefficientFixedValue: 1700,
-                    formulaType: 1,
-                    roundingResult: 1800,
-                    adjustmentClassification: 1,
-                    baseItemClassification: 8,
-                    baseItemFixedValue: 1900,
-                    premiumRate: 1910,
-                    roundingMethod: 2
-                },
-                {
-                    calculationFormulaClassification: 0,
-                    masterUseCode: '0000000003',
-                    historyID: nts.uk.util.randomId(),
-                    basicCalculationFormula: 2500,
-                    standardAmountClassification: 1,
-                    standardFixedValue: 2600,
-                    targetItemCodeList: ['0005', '0006'],
-                    attendanceItem: '0003',
-                    coefficientClassification: 2,
-                    coefficientFixedValue: 2700,
-                    formulaType: 2,
-                    roundingResult: 2800,
-                    adjustmentClassification: 1,
-                    baseItemClassification: 7,
-                    baseItemFixedValue: 2900,
-                    premiumRate: 2910,
-                    roundingMethod: 1
-                },
-                {
-                    calculationFormulaClassification: 0,
-                    masterUseCode: '0000000004',
-                    historyID: nts.uk.util.randomId(),
-                    basicCalculationFormula: 3500,
-                    standardAmountClassification: 1,
-                    standardFixedValue: 3600,
-                    targetItemCodeList: ['0007', '0008'],
-                    attendanceItem: '0004',
-                    coefficientClassification: 2,
-                    coefficientFixedValue: 3700,
-                    formulaType: 2,
-                    roundingResult: 3800,
-                    adjustmentClassification: 1,
-                    baseItemClassification: 6,
-                    baseItemFixedValue: 3900,
-                    premiumRate: 3910,
-                    roundingMethod: 0
-                }
-            ]
-            self.basicCalculationFormulaList.push.apply(self.basicCalculationFormulaList, data.map(item => new model.BasicCalculationFormula(item)));
         }
 
         changeToNewMode() {
@@ -334,7 +245,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         changeToUpdateMode() {
             var self = this;
             self.screenMode(model.SCREEN_MODE.UPDATE);
-            self.selectedTab('tab-2');
+            // self.selectedTab('tab-2');
             nts.uk.ui.errors.clearAll();
         }
 
@@ -359,22 +270,45 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 selectedHistory = _.find(selectedFormula.history, {historyID: selectedHistoryID});
                 self.selectedHistory(new model.GenericHistoryYearMonthPeriod(selectedHistory));
                 self.isSelectedHistory(true);
-                self.showFormulaSettingByHistory(selectedHistoryID)
+                if (self.screenMode() != model.SCREEN_MODE.ADD_HISTORY) self.showFormulaSettingByHistory(selectedHistoryID, true, null)
             }
             else {
                 self.selectedHistory(new model.GenericHistoryYearMonthPeriod(null));
             }
             self.changeToUpdateMode();
         };
-        showFormulaSettingByHistory(historyID: string) {
+        showFormulaSettingByHistory(historyID: string, withSetting: boolean, masterUse: number) {
             let self = this;
             block.invisible();
-            service.getFormulaSettingByHistory(historyID).done(function (data) {
+            let setting = {historyID: historyID, withSetting: withSetting, masterUse: masterUse};
+            service.getFormulaSettingByHistory(setting).done(function (data) {
+                if (self.screenMode() != model.SCREEN_MODE.ADD_HISTORY) self.basicFormulaSetting(new model.BasicFormulaSetting(data.basicFormulaSettingDto));
+                self.detailFormulaSetting(new model.DetailFormulaSetting(data.detailFormulaSettingDto));
+                self.mapListCalculationToMasterUseItem(data.masterUseDto, data.basicCalculationFormulaDto);
                 block.clear();
-            }).fail(function(err){
+            }).fail(function (err) {
                 block.clear();
                 dialog.alertError(err.message);
             })
+        }
+
+        mapListCalculationToMasterUseItem(masterUseItem, basicCalculationFormula) {
+            let self = this;
+            let fixedMasterUseCode = "0000000000";
+            self.masterBasicCalculationFormula(new model.BasicCalculationFormula(_.find(basicCalculationFormula, {masterUseCode: fixedMasterUseCode})));
+            let formulas = masterUseItem.map(item => {
+                let currentFormula = _.find(basicCalculationFormula, {masterUseCode: item.code});
+                if (currentFormula){
+                    currentFormula.masterUseName = item.name;
+                    return new model.BasicCalculationFormula(currentFormula);
+                }
+                let newFormula = new model.BasicCalculationFormula(null);
+                newFormula.masterUseCode(item.code);
+                newFormula.masterUseName(item.name);
+                return newFormula;
+            });
+
+            self.basicCalculationFormulaList(formulas);
         }
 
         getListFormula(): JQueryPromise<any> {
@@ -391,10 +325,14 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             return self.getListFormula();
         }
 
+        getHistoryOfFormula () {
+
+        }
+
         createNewHistory () {
             let self = this;
-            let selectedFormula = ko.toJS(self.selectedFormula);
-            let history = selectedFormula.history;
+            let selectedFormula = ko.toJS(self.selectedFormula), formulaList = ko.toJS(self.formulaList);
+            let history = _.find(formulaList, {formulaCode: selectedFormula.formulaCode}).history;
             setShared("QMM017_H_PARAMS", { selectedFormula: selectedFormula, history: history });
             modal("/view/qmm/017/h/index.xhtml").onClosed(function () {
                 var params = getShared("QMM017_H_RES_PARAMS");
@@ -414,22 +352,30 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                             formula = new model.Formula(formula);
                         }
                     });
+                    self.screenMode(model.SCREEN_MODE.ADD_HISTORY);
+                    // to prevent call service for new history
                     // update formula and tree grid
                     self.convertToTreeList(formulaList);
-                    self.selectedFormula(selectedFormula.formulaCode + historyID);
+                    self.selectedFormulaIdentifier(selectedFormula.formulaCode + historyID);
+                    self.screenMode(model.SCREEN_MODE.ADD_HISTORY);
                     // clone data
                     if (params.takeoverMethod == model.TAKEOVER_METHOD.FROM_LAST_HISTORY && history.length > 1) {
+                        self.showFormulaSettingByHistory(history[1].historyID, true, null);
+                    } else {
+                        self.showFormulaSettingByHistory(history[1].historyID, false, params.masterUse);
                     }
-                    else {
-                    }
-                    self.screenMode(model.SCREEN_MODE.ADD_HISTORY);
+                    self.basicFormulaSetting(new model.BasicFormulaSetting({
+                        masterUse: params.masterUse,
+                        masterBranchUse: params.masterBranchUse,
+                        historyID: historyID
+                    }));
                 }
             });
         };
         editHistory () {
             var self = this;
-            var selectedFormula = ko.toJS(self.selectedFormula), selectedHistory = ko.toJS(self.selectedHistory);
-            var history = selectedFormula.history;
+            var selectedFormula = ko.toJS(self.selectedFormula), selectedHistory = ko.toJS(self.selectedHistory), formulaList = ko.toJS(self.formulaList);
+            let history = _.find(formulaList, {formulaCode: selectedFormula.formulaCode}).history;
             setShared("QMM017_I_PARAMS", { selectedFormula: selectedFormula, history: history, selectedHistory: selectedHistory });
             modal("/view/qmm/017/i/index.xhtml").onClosed(function () {
                 var params = getShared("QMM017_I_RES_PARAMS");
@@ -455,22 +401,22 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         doMasterConfiguration () {
             let self = this;
             // unknown which item to be affect. temporary not link b to e
-            setShared("QMM017_E_PARAMS", {basicCalculationFormula: ko.toJS(self.fixedBasicCalculationFormula), originalScreen: 'B'});
+            setShared("QMM017_E_PARAMS", {basicCalculationFormula: ko.toJS(self.masterBasicCalculationFormula), originalScreen: 'B'});
             modal("/view/qmm/017/e/index.xhtml").onClosed(function () {
                 let params = getShared("QMM017_E_RES_PARAMS");
-                if (params) self.fixedBasicCalculationFormula(new model.BasicCalculationFormula(params.basicCalculationFormula));
+                if (params) self.masterBasicCalculationFormula(new model.BasicCalculationFormula(params.basicCalculationFormula));
             });
 
         };
         doConfiguration (index) {
             let self = this;
-            let self = this;
             // unknown which item to be affect. temporary not link b to e
-            setShared("QMM017_E_PARAMS", {fixedBasicCalculationFormula: ko.toJS(self.fixedBasicCalculationFormula), basicCalculationFormula: ko.toJS(self.basicCalculationFormulaList[index]), originalScreen: 'C', basicCalculationFormula: this});
+            setShared("QMM017_E_PARAMS", {masterBasicCalculationFormula: ko.toJS(self.masterBasicCalculationFormula), basicCalculationFormula: ko.toJS(self.basicCalculationFormulaList)[index], originalScreen: 'C'});
             modal("/view/qmm/017/e/index.xhtml").onClosed(function () {
                 let params = getShared("QMM017_E_RES_PARAMS");
                 if (params){
-                    self.basicCalculationFormulaList.replace(self.basicCalculationFormulaList[index], new model.BasicCalculationFormula(params.basicCalculationFormula));
+                    let newModel: any = new model.BasicCalculationFormula(params.basicCalculationFormula);
+                    self.basicCalculationFormulaList()[index] = newModel;
                 }
             });
 

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.*;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.formula.QpbmtBasicCalculationFormula;
@@ -52,11 +53,15 @@ public class JpaBasicCalculationFormulaRepository extends JpaRepository implemen
 
 
     public BasicCalculationFormula toBasicCalculationFormula (QpbmtBasicCalculationFormula basicCalculationForm, List<QpbmtBasicCalculationStandardAmount> basicCalculationStandardAmount) {
-        return new BasicCalculationFormula(basicCalculationForm.basicCalFormPk.historyID, basicCalculationForm.basicCalFormPk.masterUseCode, basicCalculationForm.calculationFormulaCls, basicCalculationForm.basicCalculationFormula, this.toBasicCalculationForm(basicCalculationForm, basicCalculationStandardAmount));
+        BasicCalculationForm domain = null;
+        if (basicCalculationForm.calculationFormulaCls == CalculationFormulaClassification.FORMULA.value) domain = this.toBasicCalculationForm(basicCalculationForm, basicCalculationStandardAmount);
+        return new BasicCalculationFormula(basicCalculationForm.basicCalFormPk.historyID, basicCalculationForm.basicCalFormPk.masterUseCode, basicCalculationForm.calculationFormulaCls, basicCalculationForm.basicCalculationFormula, domain);
     }
 
     public BasicCalculationForm toBasicCalculationForm (QpbmtBasicCalculationFormula basicCalculationForm, List<QpbmtBasicCalculationStandardAmount> basicCalculationStandardAmount) {
-        return new BasicCalculationForm(this.toBasicCalculationStandardAmount(basicCalculationForm, basicCalculationStandardAmount), this.toBasicCalculationFactorClassification(basicCalculationForm), basicCalculationForm.formulaType, basicCalculationForm.roundingResult, basicCalculationForm.adjustmentCls, this.toBasicCalculationItemCategory(basicCalculationForm), basicCalculationForm.premiumRate, basicCalculationForm.roundingMethod);
+        Optional<BasicCalculationItemCategory> basicCalculationItemCategory = Optional.empty();
+        if (basicCalculationForm.formulaType == FormulaType.CALCULATION_FORMULA_TYPE3.value) basicCalculationItemCategory = this.toBasicCalculationItemCategory(basicCalculationForm);
+        return new BasicCalculationForm(this.toBasicCalculationStandardAmount(basicCalculationForm, basicCalculationStandardAmount), this.toBasicCalculationFactorClassification(basicCalculationForm), basicCalculationForm.formulaType, basicCalculationForm.roundingResult, basicCalculationForm.adjustmentCls, basicCalculationItemCategory, basicCalculationForm.premiumRate, basicCalculationForm.roundingMethod);
     }
 
     public BasicCalculationStandardAmount toBasicCalculationStandardAmount (QpbmtBasicCalculationFormula basicCalculationForm, List<QpbmtBasicCalculationStandardAmount> basicCalculationStandardAmount) {
@@ -76,6 +81,15 @@ public class JpaBasicCalculationFormulaRepository extends JpaRepository implemen
 
     @Override
     public void addAll(List<BasicCalculationFormula> domains){
+        domains.forEach(domain -> {
+            this.commandProxy().insert(QpbmtBasicCalculationFormula.toEntity(domain));
+            this.commandProxy().insertAll(QpbmtBasicCalculationStandardAmount.toEntity(domain));
+        });
+    }
+
+    @Override
+    public void upsertAll(String historyID, List<BasicCalculationFormula> domains){
+        this.removeByHistory(historyID);
         domains.forEach(domain -> {
             this.commandProxy().insert(QpbmtBasicCalculationFormula.toEntity(domain));
             this.commandProxy().insertAll(QpbmtBasicCalculationStandardAmount.toEntity(domain));
