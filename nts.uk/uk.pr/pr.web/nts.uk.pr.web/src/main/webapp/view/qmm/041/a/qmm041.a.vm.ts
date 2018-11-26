@@ -386,7 +386,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                 historyId: self.historyList()[index].historyId,
                 startYearMonth: self.historyList()[index].startYearMonth,
                 endYearMonth: self.historyList()[index].endYearMonth,
-                lastHistoryId: index == self.historyList().length - 1 ? null : self.historyList()[index + 1].historyID,
+                lastHistoryId: index == self.historyList().length - 1 ? null : self.historyList()[index + 1].historyId,
                 lastStartYearMonth: index == self.historyList().length - 1 ? null : self.historyList()[index + 1].startYearMonth,
                 lastEndYearMonth: index == self.historyList().length - 1 ? null : self.historyList()[index + 1].endYearMonth
             };

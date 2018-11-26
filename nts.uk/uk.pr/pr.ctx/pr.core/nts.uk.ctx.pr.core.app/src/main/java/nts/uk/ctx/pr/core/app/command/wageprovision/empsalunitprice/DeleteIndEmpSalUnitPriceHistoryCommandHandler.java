@@ -10,13 +10,15 @@ import javax.transaction.Transactional;
 
 @Stateless
 @Transactional
-public class DeleteIndEmpSalUnitPriceHistoryCommandHandler extends CommandHandler<String> {
+public class DeleteIndEmpSalUnitPriceHistoryCommandHandler extends CommandHandler<DeleteIndEmpSalUnitPriceHistoryCommand> {
     @Inject
     EmployeeSalaryUnitPriceHistoryRepository employeeSalaryUnitPriceHistoryRepository;
 
+
     @Override
-    protected void handle(CommandHandlerContext<String> commandHandlerContext) {
-        String historyId = commandHandlerContext.getCommand();
-        employeeSalaryUnitPriceHistoryRepository.deleteHistory(historyId);
+    protected void handle(CommandHandlerContext<DeleteIndEmpSalUnitPriceHistoryCommand> commandHandlerContext) {
+        DeleteIndEmpSalUnitPriceHistoryCommand command = commandHandlerContext.getCommand();
+        employeeSalaryUnitPriceHistoryRepository.deleteHistory(command.getHistoryId());
+        employeeSalaryUnitPriceHistoryRepository.updateOldHistory(command.getLastHistoryId(), 999912);
     }
 }

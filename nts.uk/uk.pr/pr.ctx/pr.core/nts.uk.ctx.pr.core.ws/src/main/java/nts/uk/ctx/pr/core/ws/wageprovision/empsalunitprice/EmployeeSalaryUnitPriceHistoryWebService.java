@@ -66,8 +66,8 @@ public class EmployeeSalaryUnitPriceHistoryWebService extends WebService {
 
     @POST
     @Path("deleteHistory")
-    public void deleteHistory(String historyId) {
-        deleteIndEmpSalUnitPriceHistoryCommandHandler.handle(historyId);
+    public void deleteHistory(DeleteIndEmpSalUnitPriceHistoryCommand command) {
+        deleteIndEmpSalUnitPriceHistoryCommandHandler.handle(command);
     }
 
     @POST

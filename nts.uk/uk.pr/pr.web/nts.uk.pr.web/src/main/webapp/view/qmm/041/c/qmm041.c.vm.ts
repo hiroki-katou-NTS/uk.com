@@ -21,7 +21,7 @@ module nts.uk.pr.view.qmm041.c.viewmodel {
                 self.startYearMonth(params.startYearMonth);
                 self.endYearMonth = params.endYearMonth;
                 self.endYearMonth = nts.uk.time.parseYearMonth(params.endYearMonth).format();
-                if (self.endYearMonth == 999912) {
+                if (params.endYearMonth == 999912) {
                     self.isDeletable(true);
                 }
             }
@@ -72,8 +72,11 @@ module nts.uk.pr.view.qmm041.c.viewmodel {
         deleteHistory() {
             let self = this;
             let params = getShared("QMM041_C_PARAMS");
-            let historyId = params.historyId;
-            service.deleteHistory(historyId).done(() => {
+            let command = {
+                historyId: params.historyId,
+                lastHistoryId: params.lastHistoryId
+            };
+            service.deleteHistory(command).done(() => {
                 nts.uk.ui.dialog.info({messageId: "Msg_16"}).then(() => {
                     setShared('QMM041_C_RES_PARAMS', {modifyMethod: self.modifyMethod()});
                     nts.uk.ui.windows.close();
