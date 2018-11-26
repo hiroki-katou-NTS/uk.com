@@ -5,9 +5,9 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
-import nts.arc.task.data.TaskDataSetter;
+//import nts.arc.task.data.TaskDataSetter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationServiceImpl.StateHolder;
+//import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationServiceImpl.StateHolder;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -32,6 +32,7 @@ public interface DailyCalculationEmployeeService {
 	 * @param companyCommonSetting 
 	 * @return 
 	 */
+	@SuppressWarnings("rawtypes")
 	void calculate(AsyncCommandHandlerContext asyncContext, List<String> employeeId,DatePeriod datePeriod, Consumer<ProcessState> counter, ExecutionType reCalcAtr, String empCalAndSumExecLogID);
 	
 	/**
@@ -45,6 +46,7 @@ public interface DailyCalculationEmployeeService {
 	 * @param executionType 実行種別　（通常、再実行）
 	 * @param companyCommonSetting 
 	 */
+	@SuppressWarnings("rawtypes")
 	ProcessState calculateForOnePerson(AsyncCommandHandlerContext asyncContext, String employeeId,DatePeriod datePeriod, Optional<Consumer<ProcessState>> counter);
 
 	

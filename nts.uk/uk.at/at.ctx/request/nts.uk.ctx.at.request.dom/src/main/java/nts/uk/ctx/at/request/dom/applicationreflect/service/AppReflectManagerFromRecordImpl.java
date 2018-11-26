@@ -56,6 +56,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 	@Inject
 	private ManagedParallelWithContext managedParallelWithContext;
 
+	@SuppressWarnings("rawtypes")
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public ProcessStateReflect applicationRellect(String workId, DatePeriod workDate, AsyncCommandHandlerContext asyncContext) {
@@ -159,7 +160,8 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		}
 		
 		for (Application_New appData : lstApp) {			
-			ReflectResult reflectResult = appRefMng.reflectEmployeeOfApp(appData, reflectSetting);
+			//ReflectResult reflectResult = 
+					appRefMng.reflectEmployeeOfApp(appData, reflectSetting);
 			
 			/*if(reflectResult.isRecordResult() || reflectResult.isScheResult()) {
 				
@@ -237,7 +239,8 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		//再実行かどうか判断する 
 		Optional<SetInforReflAprResultImport> optRefAppResult = execuLog.optReflectResult(workId, 2);//2: 承認結果反映 
 		//対象社員を取得
-		List<TargetPersonImport> lstPerson = targetPerson.getTargetPerson(workId)
+		//List<TargetPersonImport> lstPerson = 
+				targetPerson.getTargetPerson(workId)
 				.stream()
 				.sorted(Comparator.comparing(TargetPersonImport::getEmployeeId))
 				.collect(Collectors.toList());

@@ -57,8 +57,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutTest {
 
 	/** 月別集計が必要とするリポジトリ */
-	@Inject
-	private RepositoriesRequiredByMonthlyAggr repositories;
+//	@Inject
+//	private RepositoriesRequiredByMonthlyAggr repositories;
 	
 	/** 管理期間の36協定時間リポジトリ */
 	@Inject

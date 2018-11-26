@@ -156,7 +156,7 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 			return Optional.empty();
 		}
 		// 次回年休付与を計算
-		List<NextAnnualLeaveGrantExport> result = calculateNextHolidayGrant(companyId, employeeId, Optional.empty(), annualLeaveEmpBasicInfo);
+//		List<NextAnnualLeaveGrantExport> result = calculateNextHolidayGrant(companyId, employeeId, Optional.empty(), annualLeaveEmpBasicInfo);
 		return Optional.empty();
 	}
 	

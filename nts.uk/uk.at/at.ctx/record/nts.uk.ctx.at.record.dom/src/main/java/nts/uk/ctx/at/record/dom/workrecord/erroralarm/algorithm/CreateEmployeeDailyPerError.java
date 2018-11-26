@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+//import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -10,7 +10,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.gul.text.IdentifierUtil;
+//import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
@@ -91,15 +91,15 @@ public class CreateEmployeeDailyPerError {
 		this.employeeDailyPerErrorRepository.removeByCidSidDateAndCode(companyID, employeeID, date, errorCode);
 	}
 
-	private List<GeneralDate> getDaysBetween(GeneralDate startDate, GeneralDate endDate) {
-		List<GeneralDate> daysBetween = new ArrayList<>();
-
-		while (startDate.beforeOrEquals(endDate)) {
-			daysBetween.add(startDate);
-			GeneralDate temp = startDate.addDays(1);
-			startDate = temp;
-		}
-
-		return daysBetween;
-	}
+//	private List<GeneralDate> getDaysBetween(GeneralDate startDate, GeneralDate endDate) {
+//		List<GeneralDate> daysBetween = new ArrayList<>();
+//
+//		while (startDate.beforeOrEquals(endDate)) {
+//			daysBetween.add(startDate);
+//			GeneralDate temp = startDate.addDays(1);
+//			startDate = temp;
+//		}
+//
+//		return daysBetween;
+//	}
 }

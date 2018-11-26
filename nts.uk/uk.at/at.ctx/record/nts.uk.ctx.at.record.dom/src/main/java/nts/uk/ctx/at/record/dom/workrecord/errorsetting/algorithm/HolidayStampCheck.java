@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+//import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

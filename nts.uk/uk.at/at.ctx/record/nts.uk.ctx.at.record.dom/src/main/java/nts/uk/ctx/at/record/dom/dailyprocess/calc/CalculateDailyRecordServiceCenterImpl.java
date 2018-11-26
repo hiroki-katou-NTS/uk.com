@@ -145,6 +145,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	}
 	
 	
+	@SuppressWarnings("rawtypes")
 	@Override
 	//就業計算と集計から呼び出す時の窓口
 	public ManageProcessAndCalcStateResult calculateForManageState(
@@ -196,6 +197,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	 * @param closureList 
 	 * @return 計算後実績データ
 	 */
+	@SuppressWarnings("rawtypes")
 	private ManageProcessAndCalcStateResult commonPerCompany(CalculateOption calcOption, List<IntegrationOfDaily> integrationOfDaily,boolean isManageState,
 													  Optional<AsyncCommandHandlerContext> asyncContext
 													 ,Optional<Consumer<ProcessState>> counter, 
@@ -270,6 +272,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	 * @param closureByEmpId 
 	 * @return　実績データ
 	 */
+	@SuppressWarnings("rawtypes")
 	private List<ManageCalcStateAndResult> calcOnePerson(CalculateOption calcOption, String comanyId, List<IntegrationOfDaily> recordList, ManagePerCompanySet companyCommonSetting,
 									Optional<AsyncCommandHandlerContext> asyncContext, List<ClosureStatusManagement> closureByEmpId){
 		

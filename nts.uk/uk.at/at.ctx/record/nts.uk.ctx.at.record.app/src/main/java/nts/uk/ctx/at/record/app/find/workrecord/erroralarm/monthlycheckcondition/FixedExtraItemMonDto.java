@@ -2,11 +2,11 @@ package nts.uk.ctx.at.record.app.find.workrecord.erroralarm.monthlycheckconditio
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.FixedConditionDataDto;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixConWorkRecordName;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecordName;
+//import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.FixedConditionDataDto;
+//import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixConWorkRecordName;
+//import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecordName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.FixedExtraItemMon;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.SysFixedMonPerEral;
+//import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.SysFixedMonPerEral;
 @Data
 @NoArgsConstructor
 public class FixedExtraItemMonDto {

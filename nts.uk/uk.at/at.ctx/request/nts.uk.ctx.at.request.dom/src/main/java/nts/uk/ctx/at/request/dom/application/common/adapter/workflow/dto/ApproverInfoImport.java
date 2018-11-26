@@ -1,11 +1,11 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto;
 
 import java.util.ArrayList;
-import java.util.Collections;
+//import java.util.Collections;
 import java.util.List;
 
 import lombok.Data;
-import lombok.Getter;
+//import lombok.Getter;
 
 /**
  * 承認者IDリスト

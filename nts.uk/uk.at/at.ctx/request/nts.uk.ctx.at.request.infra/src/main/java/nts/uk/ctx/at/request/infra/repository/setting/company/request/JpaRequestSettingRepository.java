@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.infra.repository.setting.company.request;
 
 import java.util.ArrayList;
-import java.util.Comparator;
+//import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,12 +24,12 @@ import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.disp
 import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.AppReflectionSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.AppReflectAfterConfirm;
 import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
-import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstAppDeadline;
-import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstAppDeadlinePK;
+//import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstAppDeadline;
+//import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstAppDeadlinePK;
 import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstAppTypeDiscrete;
 import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstAppTypeDiscretePK;
 import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstApplicationSetting;
-import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstApplicationSettingPK;
+//import nts.uk.ctx.at.request.infra.entity.setting.request.application.KrqstApplicationSettingPK;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * 
@@ -127,19 +127,19 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 	 * @return
 	 * @author yennth
 	 */
-	private static List<KrqstAppDeadline> toEntityAppTypeDead(List<AppDeadlineSetting> list){
-		List<KrqstAppDeadline> listAppDead = new ArrayList<>();
-		String companyId = AppContexts.user().companyId();
-		for(AppDeadlineSetting item : list){
-			val entity = new KrqstAppDeadline();
-			entity.krqstAppDeadlinePK = new KrqstAppDeadlinePK(companyId, item.getClosureId());
-			entity.useAtr = item.getUserAtr().value; 
-			entity.deadline = item.getDeadline().v(); 
-			entity.deadlineCriteria = item.getDeadlineCriteria().value;
-			listAppDead.add(entity);
-		}
-		return listAppDead;
-	}
+//	private static List<KrqstAppDeadline> toEntityAppTypeDead(List<AppDeadlineSetting> list){
+//		List<KrqstAppDeadline> listAppDead = new ArrayList<>();
+//		String companyId = AppContexts.user().companyId();
+//		for(AppDeadlineSetting item : list){
+//			val entity = new KrqstAppDeadline();
+//			entity.krqstAppDeadlinePK = new KrqstAppDeadlinePK(companyId, item.getClosureId());
+//			entity.useAtr = item.getUserAtr().value; 
+//			entity.deadline = item.getDeadline().v(); 
+//			entity.deadlineCriteria = item.getDeadlineCriteria().value;
+//			listAppDead.add(entity);
+//		}
+//		return listAppDead;
+//	}
 	/**
 	 * convert from domain to entity (objiect)
 	 * @param recep
@@ -172,32 +172,32 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 	 * @return
 	 * @author yennth
 	 */
-	private static List<KrqstAppTypeDiscrete> toEntityAppTypeDiscrete(List<ReceptionRestrictionSetting> list, List<AppTypeSetting> listApp){
-		List<KrqstAppTypeDiscrete> listAppDisc = new ArrayList<>();
-		String companyId = AppContexts.user().companyId();
-		list.sort(Comparator.comparing(ReceptionRestrictionSetting::getAppType));
-		listApp.sort(Comparator.comparing(AppTypeSetting::getAppType));
-		for(int i = 0; i< list.size(); i++ ){
-			ReceptionRestrictionSetting item1 = list.get(i);
-			AppTypeSetting item2 = listApp.get(i);
-			val entity = new KrqstAppTypeDiscrete();
-			entity.krqstAppTypeDiscretePK = new KrqstAppTypeDiscretePK(companyId, item1.getAppType().value);
-			entity.retrictPreMethodFlg = item1.getBeforehandRestriction().getMethodCheck().value; 
-			entity.retrictPreUseFlg  = item1.getBeforehandRestriction().getToUse() == true ? 1 : 0; 
-			entity.retrictPreDay = item1.getBeforehandRestriction().getDateBeforehandRestriction().value; 
-			entity.retrictPreTimeDay = item1.getBeforehandRestriction().getTimeBeforehandRestriction().v();
-			entity.krqstAppTypeDiscretePK = new KrqstAppTypeDiscretePK(companyId, item2.getAppType().value);
-			entity.prePostInitAtr = item2.getDisplayInitialSegment().value; 
-			entity.prePostCanChangeFlg = item2.getCanClassificationChange() == true ? 1 : 0; 
-			entity.typicalReasonDisplayFlg = item2.getDisplayFixedReason().value; 
-			entity.sendMailWhenApprovalFlg = item2.getSendMailWhenApproval() == true ? 1 : 0; 
-			entity.sendMailWhenRegisterFlg = item2.getSendMailWhenRegister() == true ? 1 : 0; 
-			entity.displayReasonFlg = item2.getDisplayAppReason().value; 
-			entity.retrictPostAllowFutureFlg = item1.getAfterhandRestriction().getAllowFutureDay() == true ? 1 : 0;
-			listAppDisc.add(entity);
-		}
-		return listAppDisc;
-	}
+//	private static List<KrqstAppTypeDiscrete> toEntityAppTypeDiscrete(List<ReceptionRestrictionSetting> list, List<AppTypeSetting> listApp){
+//		List<KrqstAppTypeDiscrete> listAppDisc = new ArrayList<>();
+//		String companyId = AppContexts.user().companyId();
+//		list.sort(Comparator.comparing(ReceptionRestrictionSetting::getAppType));
+//		listApp.sort(Comparator.comparing(AppTypeSetting::getAppType));
+//		for(int i = 0; i< list.size(); i++ ){
+//			ReceptionRestrictionSetting item1 = list.get(i);
+//			AppTypeSetting item2 = listApp.get(i);
+//			val entity = new KrqstAppTypeDiscrete();
+//			entity.krqstAppTypeDiscretePK = new KrqstAppTypeDiscretePK(companyId, item1.getAppType().value);
+//			entity.retrictPreMethodFlg = item1.getBeforehandRestriction().getMethodCheck().value; 
+//			entity.retrictPreUseFlg  = item1.getBeforehandRestriction().getToUse() == true ? 1 : 0; 
+//			entity.retrictPreDay = item1.getBeforehandRestriction().getDateBeforehandRestriction().value; 
+//			entity.retrictPreTimeDay = item1.getBeforehandRestriction().getTimeBeforehandRestriction().v();
+//			entity.krqstAppTypeDiscretePK = new KrqstAppTypeDiscretePK(companyId, item2.getAppType().value);
+//			entity.prePostInitAtr = item2.getDisplayInitialSegment().value; 
+//			entity.prePostCanChangeFlg = item2.getCanClassificationChange() == true ? 1 : 0; 
+//			entity.typicalReasonDisplayFlg = item2.getDisplayFixedReason().value; 
+//			entity.sendMailWhenApprovalFlg = item2.getSendMailWhenApproval() == true ? 1 : 0; 
+//			entity.sendMailWhenRegisterFlg = item2.getSendMailWhenRegister() == true ? 1 : 0; 
+//			entity.displayReasonFlg = item2.getDisplayAppReason().value; 
+//			entity.retrictPostAllowFutureFlg = item1.getAfterhandRestriction().getAllowFutureDay() == true ? 1 : 0;
+//			listAppDisc.add(entity);
+//		}
+//		return listAppDisc;
+//	}
 	
 	/**
 	 * convert from Request Setting domain to entity
@@ -205,38 +205,38 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 	 * @return
 	 * @author yennth
 	 */
-	private static KrqstApplicationSetting toEntity(RequestSetting domain){
-		val entity = new KrqstApplicationSetting();
-		entity.krqstApplicationSettingPK = new KrqstApplicationSettingPK(domain.getCompanyID());
-		entity.baseDateFlg = domain.getApplicationSetting().getRecordDate().value;
-		entity.displayPrePostFlg = domain.getApplicationSetting().getAppDisplaySetting().getPrePostAtr().value; 
-		entity.displaySearchTimeFlg = domain.getApplicationSetting().getAppDisplaySetting().getSearchWorkingHours().value;
-		entity.manualSendMailAtr = domain.getApplicationSetting().getAppDisplaySetting().getManualSendMailAtr().value;
-		entity.scheReflectFlg = domain.getAppReflectionSetting().getScheReflectFlg() == true ? 1 : 0; 
-		entity.priorityTimeReflectFlg = domain.getAppReflectionSetting().getPriorityTimeReflectFlag().value; 
-		entity.attendentTimeReflectFlg = domain.getAppReflectionSetting().getAttendentTimeReflectFlg() == true ? 1 : 0;
-		entity.advanceExcessMessDispAtr = domain.getApprovalListDisplaySetting().getAdvanceExcessMessDisAtr().value; 
-		entity.hwAdvanceDispAtr = domain.getApprovalListDisplaySetting().getHwAdvanceDisAtr().value;
-		entity.hwActualDispAtr = domain.getApprovalListDisplaySetting().getHwActualDisAtr().value; 
-		entity.actualExcessMessDispAtr = domain.getApprovalListDisplaySetting().getActualExcessMessDisAtr().value; 
-		entity.otAdvanceDispAtr = domain.getApprovalListDisplaySetting().getOtAdvanceDisAtr().value; 
-		entity.otActualDispAtr = domain.getApprovalListDisplaySetting().getOtActualDisAtr().value; 
-		entity.warningDateDispAtr = domain.getApprovalListDisplaySetting().getWarningDateDisAtr().v(); 
-		entity.appReasonDispAtr = domain.getApprovalListDisplaySetting().getAppReasonDisAtr().value;
-		entity.appContentChangeFlg = domain.getAuthorizationSetting().getAppContentChangeFlg() == true ? 1:0;
-		entity.scheduleConfirmedAtr = domain.getAppReflectAfterConfirm().getScheduleConfirmedAtr().value;
-		entity.achievementConfirmedAtr = domain.getAppReflectAfterConfirm().getAchievementConfirmedAtr().value;
-		entity.krqstAppTypeDiscretes = toEntityAppTypeDiscrete(domain.getApplicationSetting().getListReceptionRestrictionSetting(), 
-																domain.getApplicationSetting().getListAppTypeSetting());
-		entity.appActLockFlg = domain.getApplicationSetting().getAppLimitSetting().getCanAppAchievementLock() == true ? 1 : 0; 
-		entity.appEndWorkFlg = domain.getApplicationSetting().getAppLimitSetting().getCanAppFinishWork() == true ? 1 : 0; 
-		entity.appActConfirmFlg = domain.getApplicationSetting().getAppLimitSetting().getCanAppAchievementConfirm() == true ? 1 : 0; 
-		entity.appOvertimeNightFlg = domain.getApplicationSetting().getAppLimitSetting().getCanAppOTNight() == true ? 1 : 0; 
-		entity.appActMonthConfirmFlg = domain.getApplicationSetting().getAppLimitSetting().getCanAppAchievementMonthConfirm() == true ? 1 : 0;
-		entity.requireAppReasonFlg = domain.getApplicationSetting().getAppLimitSetting().getRequiredAppReason() == true ? 1 : 0;
-		entity.krqstAppDeadlines = toEntityAppTypeDead(domain.getApplicationSetting().getListAppDeadlineSetting());
-		return entity;
-	}
+//	private static KrqstApplicationSetting toEntity(RequestSetting domain){
+//		val entity = new KrqstApplicationSetting();
+//		entity.krqstApplicationSettingPK = new KrqstApplicationSettingPK(domain.getCompanyID());
+//		entity.baseDateFlg = domain.getApplicationSetting().getRecordDate().value;
+//		entity.displayPrePostFlg = domain.getApplicationSetting().getAppDisplaySetting().getPrePostAtr().value; 
+//		entity.displaySearchTimeFlg = domain.getApplicationSetting().getAppDisplaySetting().getSearchWorkingHours().value;
+//		entity.manualSendMailAtr = domain.getApplicationSetting().getAppDisplaySetting().getManualSendMailAtr().value;
+//		entity.scheReflectFlg = domain.getAppReflectionSetting().getScheReflectFlg() == true ? 1 : 0; 
+//		entity.priorityTimeReflectFlg = domain.getAppReflectionSetting().getPriorityTimeReflectFlag().value; 
+//		entity.attendentTimeReflectFlg = domain.getAppReflectionSetting().getAttendentTimeReflectFlg() == true ? 1 : 0;
+//		entity.advanceExcessMessDispAtr = domain.getApprovalListDisplaySetting().getAdvanceExcessMessDisAtr().value; 
+//		entity.hwAdvanceDispAtr = domain.getApprovalListDisplaySetting().getHwAdvanceDisAtr().value;
+//		entity.hwActualDispAtr = domain.getApprovalListDisplaySetting().getHwActualDisAtr().value; 
+//		entity.actualExcessMessDispAtr = domain.getApprovalListDisplaySetting().getActualExcessMessDisAtr().value; 
+//		entity.otAdvanceDispAtr = domain.getApprovalListDisplaySetting().getOtAdvanceDisAtr().value; 
+//		entity.otActualDispAtr = domain.getApprovalListDisplaySetting().getOtActualDisAtr().value; 
+//		entity.warningDateDispAtr = domain.getApprovalListDisplaySetting().getWarningDateDisAtr().v(); 
+//		entity.appReasonDispAtr = domain.getApprovalListDisplaySetting().getAppReasonDisAtr().value;
+//		entity.appContentChangeFlg = domain.getAuthorizationSetting().getAppContentChangeFlg() == true ? 1:0;
+//		entity.scheduleConfirmedAtr = domain.getAppReflectAfterConfirm().getScheduleConfirmedAtr().value;
+//		entity.achievementConfirmedAtr = domain.getAppReflectAfterConfirm().getAchievementConfirmedAtr().value;
+//		entity.krqstAppTypeDiscretes = toEntityAppTypeDiscrete(domain.getApplicationSetting().getListReceptionRestrictionSetting(), 
+//																domain.getApplicationSetting().getListAppTypeSetting());
+//		entity.appActLockFlg = domain.getApplicationSetting().getAppLimitSetting().getCanAppAchievementLock() == true ? 1 : 0; 
+//		entity.appEndWorkFlg = domain.getApplicationSetting().getAppLimitSetting().getCanAppFinishWork() == true ? 1 : 0; 
+//		entity.appActConfirmFlg = domain.getApplicationSetting().getAppLimitSetting().getCanAppAchievementConfirm() == true ? 1 : 0; 
+//		entity.appOvertimeNightFlg = domain.getApplicationSetting().getAppLimitSetting().getCanAppOTNight() == true ? 1 : 0; 
+//		entity.appActMonthConfirmFlg = domain.getApplicationSetting().getAppLimitSetting().getCanAppAchievementMonthConfirm() == true ? 1 : 0;
+//		entity.requireAppReasonFlg = domain.getApplicationSetting().getAppLimitSetting().getRequiredAppReason() == true ? 1 : 0;
+//		entity.krqstAppDeadlines = toEntityAppTypeDead(domain.getApplicationSetting().getListAppDeadlineSetting());
+//		return entity;
+//	}
 	
 	/**
 	 * update after and Before hand Restriction

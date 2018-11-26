@@ -21,7 +21,7 @@ public class JpaIdentityProcessRepository extends JpaRepository implements Ident
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KrcmtIdentityProcess f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.identityProcessPk.cid =:cid ";
+//    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.identityProcessPk.cid =:cid ";
 
     @Override
     public List<IdentityProcess> getAllIdentityProcess(){
