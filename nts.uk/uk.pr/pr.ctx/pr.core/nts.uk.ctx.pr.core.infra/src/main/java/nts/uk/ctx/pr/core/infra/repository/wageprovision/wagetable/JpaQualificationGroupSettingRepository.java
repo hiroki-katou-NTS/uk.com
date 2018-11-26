@@ -20,9 +20,9 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaQualificationGroupSettingRepository extends JpaRepository
 		implements QualificationGroupSettingRepository {
 
-	private static final String FIND_BY_COMPANY = "SELECT a FROM QpbmtQualificationGroupSetting a WHERE a.qualificationGroupSettingPk.cid =:cid ORDER BY a.qualificationGroupSettingPk.qualificationGroupCode";
-	private static final String FIND_BY_COMPANY_AND_CODE = "SELECT a FROM QpbmtQualificationGroupSetting a WHERE a.qualificationGroupSettingPk.cid =:cid AND a.qualificationGroupSettingPk.qualificationGroupCode =:qualificationGroupCode";
-	private static final String DELETE_BY_COMPANY_AND_CODE = "DELETE FROM QpbmtQualificationGroupSetting a WHERE a.qualificationGroupSettingPk.cid =:cid AND a.qualificationGroupSettingPk.qualificationGroupCode =:qualificationGroupCode";
+	private static final String FIND_BY_COMPANY = "SELECT a FROM QpbmtQualificationGroupSetting a WHERE a.pk.cid =:cid ORDER BY a.pk.qualificationGroupCode";
+	private static final String FIND_BY_COMPANY_AND_CODE = "SELECT a FROM QpbmtQualificationGroupSetting a WHERE a.pk.cid =:cid AND a.pk.qualificationGroupCode =:qualificationGroupCode";
+	private static final String DELETE_BY_COMPANY_AND_CODE = "DELETE FROM QpbmtQualificationGroupSetting a WHERE a.pk.cid =:cid AND a.pk.qualificationGroupCode =:qualificationGroupCode";
 
 	@Override
 	public List<QualificationGroupSetting> getQualificationGroupSettingByCompanyID() {

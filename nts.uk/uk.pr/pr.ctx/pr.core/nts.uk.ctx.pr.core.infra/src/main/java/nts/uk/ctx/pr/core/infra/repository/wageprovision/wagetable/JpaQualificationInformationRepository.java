@@ -15,7 +15,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaQualificationInformationRepository extends JpaRepository implements QualificationInformationRepository {
 
-	private static final String FIND_BY_COMPANY = "SELECT a FROM QpbmtQualificationInformation a WHERE a.qualificationInformationPk.cid =:cid";
+	private static final String FIND_BY_COMPANY = "SELECT a FROM QpbmtQualificationInformation a WHERE a.pk.cid =:cid";
 
 	@Override
 	public List<QualificationInformation> getQualificationGroupSettingByCompanyID() {

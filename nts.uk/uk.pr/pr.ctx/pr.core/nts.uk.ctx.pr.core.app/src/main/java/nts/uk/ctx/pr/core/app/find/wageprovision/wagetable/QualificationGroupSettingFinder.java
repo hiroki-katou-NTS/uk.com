@@ -1,26 +1,27 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.wagetable;
 
-import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.QualificationGroupSetting;
-import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.QualificationGroupSettingRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+
+import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.QualificationGroupSettingRepository;
 
 @Stateless
 public class QualificationGroupSettingFinder {
 
-    @Inject
-    private QualificationGroupSettingRepository qualificationGroupSettingRepository;
+	@Inject
+	private QualificationGroupSettingRepository qualificationGroupSettingRepository;
 
-    public List<QualificationGroupSettingDto> findByCompany () {
-        return qualificationGroupSettingRepository.getQualificationGroupSettingByCompanyID().stream().map(QualificationGroupSettingDto::fromDomainToDto).collect(Collectors.toList());
-    }
+	public List<QualificationGroupSettingDto> findByCompany() {
+		return qualificationGroupSettingRepository.getQualificationGroupSettingByCompanyID().stream()
+				.map(QualificationGroupSettingDto::fromDomainToDto).collect(Collectors.toList());
+	}
 
-    public QualificationGroupSettingDto findByQualificationGroupCode (String qualificationGroupCode) {
-        return qualificationGroupSettingRepository.getQualificationGroupSettingById(qualificationGroupCode).map(QualificationGroupSettingDto::fromDomainToDto).orElse(null);
-    }
+	public QualificationGroupSettingDto findByQualificationGroupCode(String qualificationGroupCode) {
+		return qualificationGroupSettingRepository.getQualificationGroupSettingById(qualificationGroupCode)
+				.map(QualificationGroupSettingDto::fromDomainToDto).orElse(null);
+	}
 
 }

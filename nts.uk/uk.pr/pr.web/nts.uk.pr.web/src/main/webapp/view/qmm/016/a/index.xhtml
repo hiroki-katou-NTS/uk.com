@@ -31,22 +31,22 @@
             <div>
                 <!--A1_1 新規-->
                 <button id="A1_1" tabindex="1"
-                        data-bind="click: createNewWageTable, enable: isUpdateMode">#{i18n.getText('QMM016_1')}</button>
+                        data-bind="click: createNewWageTable">#{i18n.getText('QMM016_1')}</button>
                 <!--A1_2 登録-->
                 <button id="A1_2" class="proceed" tabindex="2"
                         data-bind="click: registerWageTable, enable: $root.errors.isEmpty">#{i18n.getText('QMM016_2')}</button>
                 <!--A1_3 コピー-->
-                <button style="margin-left: 70px;" id="A1_3" tabindex="3"
-                        data-bind="click: copy, enable: false">#{i18n.getText('QMM016_3')}</button>
+                <button id="A1_3" tabindex="3"
+                        data-bind="enable: false">#{i18n.getText('QMM016_3')}</button>
                 <!--A1_4 Excel出力-->
                 <button id="A1_4" tabindex="4"
-                        data-bind="click: outputExcel, enable: false">#{i18n.getText('QMM016_4')}</button>
+                        data-bind="enable: false">#{i18n.getText('QMM016_4')}</button>
                 <!--A1_5 資格グループの設定-->
                 <button id="A1_5" tabindex="5"
-                        data-bind="click: settingQualificationGroup, enable: true">#{i18n.getText('QMM016_5')}</button>
+                        data-bind="click: settingQualificationGroup">#{i18n.getText('QMM016_5')}</button>
                 <!--A1_6 マスタ修正ログ-->
                 <button id="A1_6" tabindex="6"
-                        data-bind="click: correctMasterDialog, , enable: false">#{i18n.getText('QMM016_6')}</button>
+                        data-bind="enable: false">#{i18n.getText('QMM016_6')}</button>
             </div>
 
 
@@ -58,7 +58,7 @@
                      style="margin-left: 10px; margin-bottom: 20px;">
                     <!--A2_2 検索コード/名称-->
                     <!--A2_3 検索-->
-                    <div style="width: 335px" data-bind="ntsSearchBox: {
+                    <div style="width: 335px" tabindex="7" data-bind="ntsSearchBox: {
                                 label: '#{i18n.getText('QMM016_8')}',
                                 targetKey: 'identifier',
                                 mode:'igTree',
@@ -66,27 +66,27 @@
                                 items: wageTableTreeList,
                                 selected: selectedWageTableIdentifier,
                                 selectedKey: 'identifier',
-                                childField: 'history',
+                                childField: 'histories',
                                 fields: ['wageTableCode', 'wageTableName']}">
                     </div>
                     <div>
                         <!--A2_4 履歴追加ボタン-->
-                        <button id="A2_4" tabindex="1"
-                                data-bind="click: createNewHistory, enable: isUpdateMode">#{i18n.getText('QMM008_8')}</button>
+                        <button id="A2_4" tabindex="8"
+                                data-bind="click: createNewHistory, enable: updateMode()">#{i18n.getText('QMM008_8')}</button>
                         <!--A2_5 履歴編集ボタン-->
-                        <button style="float: right" id="A2_5" tabindex="1"
-                                data-bind="click: editHistory, enable: isUpdateMode() ? isSelectedHistory() : false">#{i18n.getText('QMM008_9')}</button>
+                        <button style="float: right" id="A2_5" tabindex="9"
+                                data-bind="click: editHistory, enable: updateMode()">#{i18n.getText('QMM008_9')}</button>
                     </div>
                     <div style="margin-top: 15px;">
                         <!--A2_6 賃金テーブル一覧	-->
-                        <table id="A2_6" data-bind="ntsTreeGridView:{
+                        <table id="A2_6" tabindex="10" data-bind="ntsTreeGridView:{
                                width: 335,
                                rows: 15,
                                dataSource: wageTableTreeList,
                                value: selectedWageTableIdentifier,
                                initialExpandDepth: 0,
                                primaryKey: 'identifier',
-                               childDataKey: 'history',
+                               childDataKey: 'histories',
                                primaryText: 'nodeText',
                                multiple: false,
                                enable: true,
@@ -95,25 +95,25 @@
                     </div>
                 </div>
             </div>
-            <div id="fixed-flex-layout-right" tabindex="9">
+            <div id="fixed-flex-layout-right">
                 <!--A3_1 タブ-->
                 <div id="A3_1" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}"
                      style="width: 800px; margin-bottom: 20px;">
                     <!--A3_2 タブ（基本情報）-->
                     <div class="tab-content-1" data-bind="with: selectedWageTable">
                         <!--A4_1 注意メッセージ-->
-                        <div data-bind="if: $vm.screenMode() == 1"><span id="A4_1"
-                                                                         class="label warning tab-row">#{i18n.getText('QMM016_7')}</span>
+                        <div data-bind="if: !$vm.updateMode()">
+                        	<span id="A4_1" class="label warning tab-row">#{i18n.getText('QMM016_7')}</span>
                         </div>
                         <div class="flex valign-center tab-row">
                             <!--A5_1 賃金テーブルコード/名称-->
                             <div id="A5_1" class="column-1"
                                  data-bind="ntsFormLabel: {required: true, constraint: ['WageTableCode', 'WageTableName']}">#{i18n.getText('QMM016_8')}</div>
                             <!--A5_2 コード-->
-                            <input id="A5_2" tabindex="10"
-                                   data-bind="ntsTextEditor: {constraint: 'WageTableCode', value: wageTableCode, name: '#[QMM016_14]', required: true , enable: $vm.screenMode() == 0}"/>
+                            <input id="A5_2" tabindex="11"
+                                   data-bind="ntsTextEditor: {constraint: 'WageTableCode', value: wageTableCode, name: '#[QMM016_14]', required: true , enable: $vm.updateMode() == false}"/>
                             <!--A5_3 名称-->
-                            <input style="margin-left: 15px;" id="A4_3" tabindex="11" width="230px"
+                            <input style="margin-left: 15px;" id="A4_3" tabindex="12" width="230px"
                                    data-bind="ntsTextEditor: {constraint: 'WageTableName',value: wageTableName, name: '#[QMM016_15]', required: true}"/>
                         </div>
                         <div class="flex valign-center tab-row" data-bind="with: $vm.selectedHistory">
@@ -121,15 +121,14 @@
                             <div id="A6_1" class="column-1"
                                  data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_16')}</div>
                             <!--A6_2 開始年月（西暦）-->
-                            <div id="A6_2"
+                            <div id="A6_2" tabindex="13"
                                  data-bind="ntsDatePicker: {
                                     name: '#[QMM016_16]',
                                     value: startMonth,
                                     dateFormat: 'yearmonth',
                                     valueFormat: 'YYYYMM',
                                     required: true,
-                                    enable: !$vm.isUpdateMode()}"
-                                 tabindex="1"/>
+                                    enable: !$vm.updateMode()}"/>
                             <!--A6_3 開始年月（和暦）-->
                             <div style="margin-left: 10px;" id="A6_3"
                                  data-bind="text: displayJapanStartYearMonth"/>
@@ -145,14 +144,14 @@
                                 <hr></hr>
                                 <!--A7_4 利用次元区分-->
                                 <div class="flex valign-center tab-row">
-                                    <div class="cf" data-bind="ntsSwitchButton: {
+                                    <div id="A7_4_1" class="cf" tabindex="14" data-bind="ntsSwitchButton: {
                                         name: '#[QMM016_19]',
                                         options: elementSettingItem1,
                                         optionsValue: 'value',
                                         optionsText: 'name',
                                         value: elementSetting,
                                         required: true,
-                                        enable: !$vm.isUpdateMode() }">
+                                        enable: !$vm.updateMode() }">
                                     </div>
                                 </div>
                                 <div class="flex valign-center tab-row">
@@ -162,14 +161,14 @@
                                 <hr></hr>
                                 <!--A7_4 利用次元区分-->
                                 <div class="flex valign-center tab-row">
-                                    <div class="cf" data-bind="ntsSwitchButton: {
+                                    <div id="A7_4_2" class="cf" tabindex="14" data-bind="ntsSwitchButton: {
                                         name: '#[QMM016_19]',
                                         options: elementSettingItem2,
                                         optionsValue: 'value',
                                         optionsText: 'name',
                                         value: elementSetting,
                                         required: true,
-                                        enable: !$vm.isUpdateMode() }">
+                                        enable: !$vm.updateMode() }">
                                     </div>
                                 </div>
                             </div>
@@ -205,12 +204,11 @@
                                         <td>
                                             <!--A8_5 参照ボタン1-->
                                             <div data-bind="if: elementSetting() == 0 || elementSetting() == 1 || elementSetting() == 2">
-                                                <button data-bind="click: function(){$vm.selectElement(1)}, enable: !$vm.isUpdateMode()">#{i18n.getText('QMM016_23')}</button>
+                                                <button tabindex="15" data-bind="click: function(){$vm.selectElement(1)}, enable: !$vm.updateMode()">#{i18n.getText('QMM016_23')}</button>
                                             </div>
                                             <!--A8_6 選択要素1-->
                                             <div data-bind="with: elementInformation().oneDimensionElement">
-                                                <div data-bind="text: fixedElement"></div>
-                                                <div data-bind="text: optionalAdditionalElement"></div>
+                                                <div data-bind="text: elementName"></div>
                                             </div>
                                         </td>
                                     </tr>
@@ -221,27 +219,24 @@
                                         <td data-bind="if: elementSetting() == 1 || elementSetting() == 2">
                                             <!--A8_8 参照ボタン2-->
                                             <div>
-                                                <button data-bind="click: function(){$vm.selectElement(2)}, enable: !$vm.isUpdateMode()">#{i18n.getText('QMM016_23')}</button>
+                                                <button tabindex="16" data-bind="click: function(){$vm.selectElement(2)}, enable: !$vm.updateMode()">#{i18n.getText('QMM016_23')}</button>
                                             </div>
                                             <!--A8_9 選択要素2-->
                                             <div data-bind="with: elementInformation().twoDimensionElement">
-                                                <div data-bind="text: fixedElement"></div>
-                                                <div data-bind="text: optionalAdditionalElement"></div>
+                                                <div data-bind="text: elementName"></div>
                                             </div>
                                         </td>
                                     </tr>
                                     <tr>
                                         <!--A8_10  要素番号3-->
-
                                         <td data-bind="if: elementSetting() == 2 || elementSetting() == 4"
                                             class="ui-widget-header">#{i18n.getText('QMM016_44')}</td>
                                         <td data-bind="if: elementSetting() == 2 || elementSetting() == 4">
                                             <!--A8_11 参照ボタン3-->
-                                            <button data-bind="click: function(){$vm.selectElement(3)}, enable: !$vm.isUpdateMode()">#{i18n.getText('QMM016_23')}</button>
+                                            <button tabindex="17" data-bind="click: function(){$vm.selectElement(3)}, enable: !$vm.updateMode()">#{i18n.getText('QMM016_23')}</button>
                                             <!--A8_12 選択要素3-->
                                             <div data-bind="with: elementInformation().threeDimensionElement">
-                                                <div data-bind="text: fixedElement"></div>
-                                                <div data-bind="text: optionalAdditionalElement"></div>
+                                                <div data-bind="text: elementName"></div>
                                             </div>
                                         </td>
                                     </tr>
@@ -254,105 +249,105 @@
                             <div id="A9_1" style="vertical-align: top" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: 'Memo', required: false }">#{i18n.getText('QMM016_24')}</div>
                             <!--A9_2 メモ欄-->
-                            <textarea id="A9_2" style="height: 80px; width: 400px;"
+                            <textarea id="A9_2" tabindex="18" style="height: 80px; width: 400px;"
                                       data-bind="ntsMultilineEditor: { constraint: 'Memo', value: remarkInformation, name: '#[QMM016_25]'}"/>
                         </div>
 
                     </div>
                     <div class="tab-content-2">
-                        <div data-bind = "if: $vm.selectedWageTable().elementSetting()==0"><ui:include src="b.xhtml" /></div>
-                        <div data-bind = "if: $vm.selectedWageTable().elementSetting()==1"><ui:include src="c.xhtml" /></div>
-                        <div data-bind = "if: $vm.selectedWageTable().elementSetting()==2"><ui:include src="d.xhtml" /></div>
-                        <div data-bind = "visible: $vm.selectedWageTable().elementSetting()==3"><div>
-                            <div class="flex valign-center tab-row">
-                                <div style="width: 110px;"
-                                     data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_8')}</div>
-                                <div style="width: 200px;" data-bind="with: selectedWageTable">
-                                    <div style="display: inline-block" data-bind="text: wageTableCode"></div>
-                                    <div style="display: inline-block; margin-left: 10px;"
-                                         data-bind="text: wageTableName"></div>
-                                </div>
-                                <div style="width: 110px;"
-                                     data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_26')}</div>
-                                <div data-bind="with: selectedHistory">
-                                    <div style="display: inline-block" data-bind="text: startMonth"></div>
-                                    <div style="display: inline-block; margin-left: 5px;">#{i18n.getText('QMM016_31')}</div>
-                                    <div style="display: inline-block; margin-left: 5px;" data-bind="text: endMonth"></div>
-                                </div>
-                            </div>
-                            <hr></hr>
-                            <div class="tab-row">
-                                <div style="width: 70px; vertical-align: top"
-                                     data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_22')}</div>
-                                <div class="fixed-table-container">
-                                    <table class="custom-fixed-table normal-fixed-table" data-bind = "with: selectedWageTable().elementInformation().oneDimensionElement">
-                                        <colgroup>
-                                            <col width="30px"/>
-                                            <col width="220px"/>
-                                        </colgroup>
-                                        <thead>
-                                        <tr>
-                                            <th class="ui-widget-header"></th>
-                                            <th class="ui-widget-header">#{i18n.getText('QMM016_22')}</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td class="ui-widget-header">#{i18n.getText('QMM016_29')}</td>
-                                            <td><div>#{i18n.getText('QMM016_50')}</div></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="tab-row" style = "margin-left: 75px; width: 500px; text-align: center;">
-                                <button data-bind = "click: $vm.createWageTable" style = "width: 400px;" class = "caret-bottom large-caret">#{i18n.getText('QMM016_35')}</button>
-                            </div>
-                            <div class="tab-row" style = "margin-top: 40px;">
-                                <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_36')}</div>
-                                <button style = "margin-left: 30px;">#{i18n.getText('QMM016_37')}</button>
-                            </div>
-                            <hr></hr>
-                            <div class="tab-row" style = "margin-top: 40px;" data-bind="if: $vm.wageTableContent().payment().length >0">
-                                <table id = "E5_1">
-                                    <colgroup>
-                                        <col width="100px"/>
-                                        <col width="130px"/>
-                                        <col width="70px"/>
-                                        <col width="400px"/>
-                                    </colgroup>
-                                    <thead>
-                                    <tr>
-                                        <th class = "ui-widget-header">#{i18n.getText('QMM016_49')}</th>
-                                        <th class = "ui-widget-header">#{i18n.getText('QMM016_50')}</th>
-                                        <th class = "ui-widget-header">#{i18n.getText('QMM016_38')}</th>
-                                        <th class = "ui-widget-header">#{i18n.getText('QMM016_51')}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody data-bind = "foreach: $vm.wageTableContent().qualificationGroupSetting()">
-                                    <com:ko bind="eligibleQualification()" tag="foreach">
-                                        <tr >
-                                            <td class = "ui-widget-header" data-bind = "visible: $index() ==0, attr: {rowspan: $parent.eligibleQualification().length}, text: $parent.qualificationGroupName">
-                                            </td>
-                                            <!--<td></td>-->
-                                            <td class = "ui-widget-header">
-                                                <div data-bind = "text: qualificationName"></div>
-                                            </td>
-                                            <td>
-                                                10000
-                                            </td>
-                                            <td data-bind = "visible: $index() ==0, attr: {rowspan: $parent.eligibleQualification().length}, text: $parent.displayPaymentMethod">
+<!--                         <div data-bind = "if: $vm.selectedWageTable().elementSetting()==0"><ui:include src="b.xhtml" /></div> -->
+<!--                         <div data-bind = "if: $vm.selectedWageTable().elementSetting()==1"><ui:include src="c.xhtml" /></div> -->
+<!--                         <div data-bind = "if: $vm.selectedWageTable().elementSetting()==2"><ui:include src="d.xhtml" /></div> -->
+<!--                         <div data-bind = "visible: $vm.selectedWageTable().elementSetting()==3"><div> -->
+<!--                             <div class="flex valign-center tab-row"> -->
+<!--                                 <div style="width: 110px;" -->
+<!--                                      data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_8')}</div> -->
+<!--                                 <div style="width: 200px;" data-bind="with: selectedWageTable"> -->
+<!--                                     <div style="display: inline-block" data-bind="text: wageTableCode"></div> -->
+<!--                                     <div style="display: inline-block; margin-left: 10px;" -->
+<!--                                          data-bind="text: wageTableName"></div> -->
+<!--                                 </div> -->
+<!--                                 <div style="width: 110px;" -->
+<!--                                      data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_26')}</div> -->
+<!--                                 <div data-bind="with: selectedHistory"> -->
+<!--                                     <div style="display: inline-block" data-bind="text: startMonth"></div> -->
+<!--                                     <div style="display: inline-block; margin-left: 5px;">#{i18n.getText('QMM016_31')}</div> -->
+<!--                                     <div style="display: inline-block; margin-left: 5px;" data-bind="text: endMonth"></div> -->
+<!--                                 </div> -->
+<!--                             </div> -->
+<!--                             <hr></hr> -->
+<!--                             <div class="tab-row"> -->
+<!--                                 <div style="width: 70px; vertical-align: top" -->
+<!--                                      data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_22')}</div> -->
+<!--                                 <div class="fixed-table-container"> -->
+<!--                                     <table class="custom-fixed-table normal-fixed-table" data-bind = "with: selectedWageTable().elementInformation().oneDimensionElement"> -->
+<!--                                         <colgroup> -->
+<!--                                             <col width="30px"/> -->
+<!--                                             <col width="220px"/> -->
+<!--                                         </colgroup> -->
+<!--                                         <thead> -->
+<!--                                         <tr> -->
+<!--                                             <th class="ui-widget-header"></th> -->
+<!--                                             <th class="ui-widget-header">#{i18n.getText('QMM016_22')}</th> -->
+<!--                                         </tr> -->
+<!--                                         </thead> -->
+<!--                                         <tbody> -->
+<!--                                         <tr> -->
+<!--                                             <td class="ui-widget-header">#{i18n.getText('QMM016_29')}</td> -->
+<!--                                             <td><div>#{i18n.getText('QMM016_50')}</div></td> -->
+<!--                                         </tr> -->
+<!--                                         </tbody> -->
+<!--                                     </table> -->
+<!--                                 </div> -->
+<!--                             </div> -->
+<!--                             <div class="tab-row" style = "margin-left: 75px; width: 500px; text-align: center;"> -->
+<!--                                 <button data-bind = "click: $vm.createWageTable" style = "width: 400px;" class = "caret-bottom large-caret">#{i18n.getText('QMM016_35')}</button> -->
+<!--                             </div> -->
+<!--                             <div class="tab-row" style = "margin-top: 40px;"> -->
+<!--                                 <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_36')}</div> -->
+<!--                                 <button style = "margin-left: 30px;">#{i18n.getText('QMM016_37')}</button> -->
+<!--                             </div> -->
+<!--                             <hr></hr> -->
+<!--                             <div class="tab-row" style = "margin-top: 40px;" data-bind="if: $vm.wageTableContent().payment().length >0"> -->
+<!--                                 <table id = "E5_1"> -->
+<!--                                     <colgroup> -->
+<!--                                         <col width="100px"/> -->
+<!--                                         <col width="130px"/> -->
+<!--                                         <col width="70px"/> -->
+<!--                                         <col width="400px"/> -->
+<!--                                     </colgroup> -->
+<!--                                     <thead> -->
+<!--                                     <tr> -->
+<!--                                         <th class = "ui-widget-header">#{i18n.getText('QMM016_49')}</th> -->
+<!--                                         <th class = "ui-widget-header">#{i18n.getText('QMM016_50')}</th> -->
+<!--                                         <th class = "ui-widget-header">#{i18n.getText('QMM016_38')}</th> -->
+<!--                                         <th class = "ui-widget-header">#{i18n.getText('QMM016_51')}</th> -->
+<!--                                     </tr> -->
+<!--                                     </thead> -->
+<!--                                     <tbody data-bind = "foreach: $vm.wageTableContent().qualificationGroupSetting()"> -->
+<!--                                     <com:ko bind="eligibleQualification()" tag="foreach"> -->
+<!--                                         <tr > -->
+<!--                                             <td class = "ui-widget-header" data-bind = "visible: $index() ==0, attr: {rowspan: $parent.eligibleQualification().length}, text: $parent.qualificationGroupName"> -->
+<!--                                             </td> -->
+<!--                                             <td></td> -->
+<!--                                             <td class = "ui-widget-header"> -->
+<!--                                                 <div data-bind = "text: qualificationName"></div> -->
+<!--                                             </td> -->
+<!--                                             <td> -->
+<!--                                                 10000 -->
+<!--                                             </td> -->
+<!--                                             <td data-bind = "visible: $index() ==0, attr: {rowspan: $parent.eligibleQualification().length}, text: $parent.displayPaymentMethod"> -->
 
-                                            </td>
+<!--                                             </td> -->
 
-                                            <!--<td></td>-->
-                                        </tr>
-                                    </com:ko>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div></div>
-                        <div data-bind = "if: $vm.selectedWageTable().elementSetting()==4"><ui:include src="f.xhtml" /></div>
+<!--                                             <td></td> -->
+<!--                                         </tr> -->
+<!--                                     </com:ko> -->
+<!--                                     </tbody> -->
+<!--                                 </table> -->
+<!--                             </div> -->
+<!--                         </div></div> -->
+<!--                         <div data-bind = "if: $vm.selectedWageTable().elementSetting()==4"><ui:include src="f.xhtml" /></div> -->
 
                     </div>
                 </div>
