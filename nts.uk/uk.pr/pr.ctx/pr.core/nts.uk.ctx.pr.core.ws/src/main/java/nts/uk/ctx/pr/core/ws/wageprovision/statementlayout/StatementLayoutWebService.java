@@ -113,6 +113,18 @@ public class StatementLayoutWebService {
     }
 
     @POST
+    @Path("getCurrentProcessingDate")
+    public Integer getCurrentProcessingDate() {
+        return statementLayoutFinder.getCurrentProcessingDate();
+    }
+
+    @POST
+    @Path("getStatementLayoutByProcessingDate/{processingDate}")
+    public List<StatementLayoutDto> getStatementLayoutByProcessingDate(@PathParam("processingDate") int processingDate) {
+        return statementLayoutFinder.getStatementLayoutByProcessingDate(processingDate);
+    }
+
+    @POST
     @Path("getAllStatementLayoutAndHist")
     public List<StatementLayoutAndHistDto> getAllStatementLayoutAndHist() {
         return this.statementLayoutFinder.getAllStatementLayoutAndHist();
