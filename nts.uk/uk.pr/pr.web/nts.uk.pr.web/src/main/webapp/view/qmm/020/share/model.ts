@@ -40,7 +40,7 @@ module nts.uk.pr.view.qmm020.share.model {
         if(code != null)
             display = display + code.toString();
         if(name != null) {
-            display = display + "      " + name;
+            display = display + "    " + name;
         }
         return display;
     }

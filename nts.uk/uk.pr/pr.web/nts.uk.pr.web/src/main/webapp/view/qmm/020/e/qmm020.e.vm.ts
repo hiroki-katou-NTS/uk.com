@@ -66,12 +66,12 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                 virtualizationMode: 'continuous',
                 columns: [
                     { headerText: getText('QMM020_26'), key: 'id', dataType: 'number', width: '100' , hidden: true},
-                    { headerText: getText('QMM020_26'), key: 'masterCode', dataType: 'string', width: '100' },
-                    { headerText: getText('QMM020_27'), key: 'categoryName',dataType: 'string', width: '200' },
-                    { headerText: getText('QMM020_20'), key: 'salary', dataType: 'string', width: '80px', unbound: true, ntsControl: '' },
-                    { headerText: '', key: 'displayE3_4', dataType: 'string', width: '170'},
-                    { headerText: getText('QMM020_22'), key: 'bonus', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Bonus' },
-                    { headerText: '', key: 'displayE3_5', dataType: 'string',width: '170' },
+                    { headerText: getText('QMM020_26'), key: 'masterCode', dataType: 'string', width: '90' },
+                    { headerText: getText('QMM020_27'), key: 'categoryName',dataType: 'string', width: '180' },
+                    { headerText: getText('QMM020_20'), key: 'salary', dataType: 'string', width: '75', unbound: true, ntsControl: '' },
+                    { headerText: '', key: 'displayE3_4', dataType: 'string', width: '200'},
+                    { headerText: getText('QMM020_22'), key: 'bonus', dataType: 'string', width: '75', unbound: true, ntsControl: 'Bonus' },
+                    { headerText: '', key: 'displayE3_5', dataType: 'string',width: '200' },
 
                 ],
                 features: [
