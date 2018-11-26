@@ -67,7 +67,9 @@ public class DailyCorrectionLogParameter implements Serializable {
 			if (valueType == DataValueAttribute.TIME.value || valueType == DataValueAttribute.CLOCK.value) {
 				// them try catch tam, cho hoshina sua
 				try {
-					return Integer.parseInt(value);
+				//	return Integer.parseInt(value);
+					double d = Double.parseDouble(value);
+					return (int) d;
 				} catch (Exception e) {
 					return null;
 				}
