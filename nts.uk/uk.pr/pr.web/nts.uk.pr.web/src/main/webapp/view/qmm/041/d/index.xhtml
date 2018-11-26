@@ -14,8 +14,8 @@
         <com:scriptfile path="../share/model.js"/>
         <com:stylefile path="qmm041.d.style.css"/>
         <com:scriptfile path="qmm041.d.start.js"/>
-        <com:scriptfile path="qmm041.d.service.js"/>
         <com:scriptfile path="qmm041.d.vm.js"/>
+        <com:scriptfile path="qmm041.d.service.js"/>
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
@@ -33,7 +33,7 @@
                     </div>
                     <div class="cell">
                         <!--D2_2 社員コード-->
-                        <div class="label" data-bind="text: "/>
+                        <div class="label" data-bind="text: employeeCode"/>
                     </div>
                 </div>
                 <div class="row">
@@ -43,7 +43,7 @@
                     </div>
                     <div class="cell">
                         <!--D2_4 社員名-->
-                        <span class="label" data-bind="text: "/>
+                        <span class="label" data-bind="text: employeeName"/>
                     </div>
                 </div>
                 <div class="row">
@@ -55,7 +55,7 @@
                         <!--D2_6 基準年月-->
                         <div data-bind="ntsDatePicker: {
                                 name: '#[QMM041_38]',
-                                value: referenceYear,
+                                value: baseYearMonth,
                                 dateFormat: 'yearmonth',
                                 required: true}"
                              id="D2_6"
@@ -63,24 +63,23 @@
                         />
                         <!--D2_7 抽出-->
                         <button tabindex="3" id="D2_7" class="caret-bottom" data-bind="click: extract,  enable: $root.errors.isEmpty">
-                            #{i18n.getText('QMM041_4339')}
+                            #{i18n.getText('QMM041_39')}
                         </button>
                     </div>
                 </div>
             </div>
-            <div style="margin: 0px 6px">
+            <div style="margin: 0 6px">
                 <!--D3_1 金額一覧-->
                 <table data-bind="ntsGridList: {
                         name: '#[QMM041_40]',
                         height: 150,
                         dataSource: items,
-                        rows: 10,
+                        rows: 8,
                         primaryKey: 'code',
                         columns: columns,
                         optionsValue: 'code',
                         optionsText: 'name',
-                        multiple: false,
-                        value: currentCode}"
+                        multiple: false }"
                        tabindex="4"
                        id="gridlist"
                 />

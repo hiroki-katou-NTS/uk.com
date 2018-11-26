@@ -14,12 +14,11 @@ import javax.persistence.Table;
 
 import lombok.val;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.EmployeeSalaryUnitPriceHistory;
+import nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.*;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.IndEmpSalUnitPriceHistory;
-import nts.uk.ctx.pr.core.dom.wageprovision.empsalunitprice.PayrollInformation;
+import nts.uk.ctx.pr.core.dom.wageprovision.unitpricename.PerUnitPriceName;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -82,6 +81,7 @@ public class QpbmtEmpSalPriHis extends UkJpaEntity implements Serializable {
                 entity.endYearMonth,
                 entity.indvidualUnitPrice);
     }
+
 
     public static List<EmployeeSalaryUnitPriceHistory> toDomains(List<QpbmtEmpSalPriHis> entites) {
         List<EmployeeSalaryUnitPriceHistory> domains = new ArrayList<>();

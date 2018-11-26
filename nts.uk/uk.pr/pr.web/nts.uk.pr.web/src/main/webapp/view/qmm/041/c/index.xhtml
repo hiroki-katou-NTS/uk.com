@@ -8,7 +8,7 @@
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
         <script>
-            var dialogSize = {width: 535, height: 350};
+            var dialogSize = {width: 535, height: 360};
         </script>
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="../share/model.js"/>
@@ -54,6 +54,7 @@
                         <!--C1_8 期間開始-->
                         <!--C1_9 期間終了-->
                         <div tabindex="2"
+                             id="C1_8"
                              data-bind="ntsDatePicker: {
                                  value: startYearMonth,
                                  dateFormat: 'yearmonth',
@@ -61,14 +62,14 @@
                                  name : '#[QMM041_16]'}"
                         />
                         <span style="padding:0 5px;">～</span>
-                        <span data-bind="text: endYearMonth()"/>
+                        <span data-bind="text: endYearMonth"/>
                     </div>
                 </div>
             </div>
         </div>
         <div id="functions-area-bottom">
             <!--C2_1 実行-->
-            <button tabindex="3" class="x-large proceed" data-bind="click: updateHistory, enable: $root.errors.isEmpty">
+            <button tabindex="3" class="x-large proceed" data-bind="click: editHistory, enable: $root.errors.isEmpty">
                 #{i18n.getText('QMM041_32')}
             </button>
             <!--C2_2 キャンセル-->

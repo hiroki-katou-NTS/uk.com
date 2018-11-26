@@ -39,11 +39,11 @@
                 <!--A2_1 対象者-->
                 <div tabindex="2" id="emp-component"/>
                 <!--A2_2 単価の一覧を表示する-->
-                <button id="A2_2" class="small" tabindex="3" data-bind="click: toScreenD,
-                    enable: $root.errors.isEmpty ">#{i18n.getText('QMM041_7')}</button>
+                <button id="A2_2" class="small" tabindex="3" data-bind="click: toScreenD">
+                    #{i18n.getText('QMM041_7')}
+                </button>
             </div>
             <!--A2_3 社員検索-->
-
             <div class="fixed-flex-layout">
                 <div class="fixed-flex-layout-left left-content fixed-flex-layout">
                     <div id="panels-group" class="fixed-flex-layout-left">
@@ -137,7 +137,8 @@
                             enable: currencyEnable,
                             option: {
                                 grouplength: 3,
-                                decimallength: 2
+                                decimallength: 2,
+                                currencyformat: 'JPY'
                                 }
                             }"
                         />

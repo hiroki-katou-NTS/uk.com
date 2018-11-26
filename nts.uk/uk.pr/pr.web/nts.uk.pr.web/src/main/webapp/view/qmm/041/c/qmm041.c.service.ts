@@ -6,11 +6,11 @@ module nts.uk.pr.view.qmm041.c.service {
         deleteHistory: "ctx/pr/core/wageprovision/empsalunitprice/deleteHistory"
     }
 
-    export function editEmpSalUnitPriceHis(command): JQueryPromise<any> {
-        return ajax(paths.updateHistory, command);
+    export function updateHistory(command): JQueryPromise<any> {
+        return ajax("pr", paths.updateHistory, command);
     }
 
-    export function deleteEmpSalUnitPriceHis(command): JQueryPromise<any> {
-        return ajax(paths.deleteHistory, command);
+    export function deleteHistory(command): JQueryPromise<any> {
+        return ajax("pr", paths.deleteHistory, command);
     }
 }

@@ -4,19 +4,23 @@ module nts.uk.pr.view.qmm041.d.viewmodel {
     import format = nts.uk.text.format;
 
     export class ScreenModel {
-        empCode: KnockoutObservable<string> = ko.observable('');
-        empName: KnockoutObservable<string> = ko.observable('');
-        params: any;
-        referenceYear: KnockoutObservable<number>;
-        items: KnockoutObservableArray<ItemModel>;
-        currentCode: KnockoutObservable<any>;
+        employeeCode: string = null;
+        employeeName: string = null;
+        employeeId: string = null;
+        employmentCode: string = null;
+        baseYearMonth: KnockoutObservable<number> = ko.observable(parseInt(moment().format("YYYY/MM")));
+        items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+        columns: any;
 
         constructor() {
-            var self = this;
-            self.referenceYear = ko.observable(parseInt(moment().format("YYYY/MM")));
-            self.items = ko.observableArray();
-            this.currentCode = ko.observable();
-
+            let self = this;
+            self.columns = [
+                {key:'empId', length: 0, hidden: true},
+                {headerText: getText('QMM041_8'), key: 'code', width: 70, formatter: _.escape },
+                {headerText: getText('QMM041_9'), key: 'name', width: 180, formatter: _.escape},
+                {headerText: getText('QMM041_16'), key: 'period', width: 150, formatter: _.escape},
+                {headerText: getText('QMM041_18'), key: 'amount', width: 120, formatter: _.escape, template: "<div style='text-align: right'>${amount}</div>"}
+            ];
         }
 
         cancel() {
@@ -25,61 +29,53 @@ module nts.uk.pr.view.qmm041.d.viewmodel {
         }
 
         extract() {
-            var self = this;
+            let self = this;
             let dto = {
-                empId: self.params.empId,
-                cateIndicator: self.params.cateIndicator,
-                salBonusCate: self.params.salBonusCate,
-                currentProcessYearMonth: self.referenceYear(),
-
+                employeeId: self.employeeId,
+                baseYearMonth: self.baseYearMonth()
             }
-            self.getSalIndAmountHis(dto);
+            self.individualUnitPriceDisplay(dto);
         }
 
         startPage(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            // self.params = getShared('QMM041_D_PARAMS');
-            // self.empCode(self.params.empCode);
-            // self.empName(self.params.empName);
-            dfd.resolve();
+            let self = this;
+            let dfd = $.Deferred();
+            let params = getShared("QMM041_D_PARAMS");
+            self.employeeCode = params.employeeCode;
+            self.employeeName = params.employeeName;
+            self.employeeId = params.employeeId;
+            self.employmentCode = params.employmentCode;
+            service.processYearFromEmp(self.employmentCode).done((yearMonth) => {
+                if (yearMonth != 0) self.baseYearMonth(yearMonth);
+                let dto = {
+                    employeeId: self.employeeId,
+                    baseYearMonth: self.baseYearMonth()
+                }
+                self.individualUnitPriceDisplay(dto).done(() => {
+                    dfd.resolve();
+                });
+            });
             return dfd.promise();
         }
 
-        startupScreen() {
-            var self = this;
-
-            service.processYearFromEmp(self.params.personalValCode).done(function (data) {
-                if (data != 0) {
-                    self.referenceYear(data);
-                }
-                let dto = {
-                    empId: self.params.empId,
-                    cateIndicator: self.params.cateIndicator,
-                    salBonusCate: self.params.salBonusCate,
-                    currentProcessYearMonth: self.referenceYear()
-                }
-                self.getSalIndAmountHis(dto);
-            })
-        }
-
-        getSalIndAmountHis(dto) {
+        individualUnitPriceDisplay(dto): JQueryPromise<any> {
             let self = this;
-            service.salIndAmountHisDisplay(dto).done(function (data) {
+            let dfd = $.Deferred();
+            service.individualUnitPriceDisplay(dto).done((data) => {
                     let array = [];
-                    if (data != null) {
+                    if (data.length > 0) {
                         for (let i = 0; i < data.length; i++) {
-                            for (let j = 0; j < data[i].period.length; j++) {
-                                array.push(new ItemModel(data[i].empId, data[i].perValCode, data[i].perValName,
-                                    format(getText("QMM041_18"), self.formatYM(data[i].period[j].periodStartYm), self.formatYM(data[i].period[j].periodEndYm)), data[i].salIndAmountList[j].amountOfMoney + "¥"
-                                ))
-                            }
+                            array.push(new ItemModel(data[i].employeeId, data[i].perUnitPriceCode, data[i].perUnitPriceName,
+                                format(getText("QMM039_18"), self.formatYM(data[i].startYearMonth), self.formatYM(data[i].endYearMonth)),
+                                data[i].amountOfMoney
+                            ));
                         }
                     }
                     self.items(array);
-                    $('#D2_8').focus();
+                dfd.resolve();
                 }
-            )
+            );
+            return dfd.promise();
         }
 
         formatYM(intYM) {

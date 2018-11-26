@@ -30,4 +30,6 @@ public interface EmployeeSalaryUnitPriceHistoryRepository
     void deleteHistory(String historyId);
 
     void updateOldHistory(String historyId, int newEndYearMonth);
+
+    List<IndEmpSalUnitPriceHistory> getIndividualUnitPriceList(String perUnitPriceCode, String employeeId, int baseYearMonth);
 }

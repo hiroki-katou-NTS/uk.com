@@ -9,9 +9,8 @@ module nts.uk.pr.view.qmm041.c.viewmodel {
     export class ScreenModel {
         modifyMethod: KnockoutObservable<number> = ko.observable(model.MODIFY_METHOD.UPDATE);
         modifyItem: KnockoutObservableArray<> = ko.observableArray([]);
-        baseYearMonth: KnockoutObservable<number> = ko.observable(null);
         startYearMonth: KnockoutObservable<number> = ko.observable(null);
-        endYearMonth: KnockoutObservable<number> = ko.observable(null);
+        endYearMonth: string = null;
         isDeletable: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
@@ -19,22 +18,15 @@ module nts.uk.pr.view.qmm041.c.viewmodel {
             block.invisible();
             let params = getShared("QMM041_C_PARAMS");
             if (params) {
-                self.selectedHistory = params.period;
-                self.selectedEmployee = params.employeeInfo;
-                if (period && Object.keys(period).length > 0) {
-                    let startYM = period.periodStartYm;
-                    let endYM = period.periodEndYm;
-                    self.startDateString(startYM);
-                    self.endDateString(endYM);
-                    self.yearMonthStart(startYM);
-                    self.yearMonthEnd(nts.uk.time.parseYearMonth(endYM).format());
-                    if (endYM == 999912) {
-                        self.isDeletable(true);
-                    }
+                self.startYearMonth(params.startYearMonth);
+                self.endYearMonth = params.endYearMonth;
+                self.endYearMonth = nts.uk.time.parseYearMonth(params.endYearMonth).format();
+                if (self.endYearMonth == 999912) {
+                    self.isDeletable(true);
                 }
-                self.modifyItem.push(new model.EnumModel(model.MODIFY_METHOD.DELETE, getText('QMM041_30')));
-                self.modifyItem.push(new model.EnumModel(model.MODIFY_METHOD.UPDATE, getText('QMM041_31')));
             }
+            self.modifyItem.push(new model.EnumModel(model.MODIFY_METHOD.DELETE, getText('QMM041_30')));
+            self.modifyItem.push(new model.EnumModel(model.MODIFY_METHOD.UPDATE, getText('QMM041_31')));
             block.clear();
         }
 
@@ -52,30 +44,22 @@ module nts.uk.pr.view.qmm041.c.viewmodel {
         updateHistory() {
             let self = this;
             let params = getShared("QMM041_C_PARAMS");
-            let newHistory = self.selectedHistory;
-            newHistory.startMonth = self.yearMonthStart();
-            newHistory.endMonth = params.period.periodEndYm;
-
-            let newEmployee = self.selectedEmployee;
-
-
-            if (self.yearMonthStart() <= params.lastPeriodStartYm || self.yearMonthStart() > params.period.periodEndYm) {
-                nts.uk.ui.dialog.info({messageId: "Msg_107"});
+            if (self.startYearMonth() <= params.lastStartYearMonth || self.startYearMonth() > params.endYearMonth) {
+                nts.uk.ui.dialog.info({messageId: "Msg_127"});
                 return;
             }
-
             let command = {
-                //emp history
-                yearMonthHistoryItem: [newHistory],
-                //emp info data
-                cateIndicator: newEmployee.cateIndicator,
-                salBonusCate: newEmployee.salBonusCate,
-                empId: newEmployee.empId,
-                perValCode: newEmployee.personalValcode,
+                personalUnitPriceCode: params.personalUnitPriceCode,
+                employeeId: params.employeeId,
+                historyId: params.historyId,
+                startYearMonth: self.startYearMonth(),
+                endYearMonth: params.endYearMonth,
                 lastHistoryId: params.lastHistoryId,
+                lastStartYearMonth: params.lastStartYearMonth,
+                lastEndYearMonth: (self.startYearMonth() - 1) % 100 == 0 ? params.startYearMonth - 101 + 12 : self.startYearMonth() - 1,
             };
 
-            service.editEmpSalUnitPriceHis(command).done(() => {
+            service.updateHistory(command).done(() => {
                 nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
                     setShared('QMM041_C_RES_PARAMS', {modifyMethod: self.modifyMethod()});
                     nts.uk.ui.windows.close();
@@ -88,24 +72,8 @@ module nts.uk.pr.view.qmm041.c.viewmodel {
         deleteHistory() {
             let self = this;
             let params = getShared("QMM041_C_PARAMS");
-            let newHistory = self.selectedHistory;
-            newHistory.startMonth = self.dateValue().startDate;
-            newHistory.endMonth = self.dateValue().endDate;
-
-            let newEmployee = self.selectedEmployee;
-
-            let command = {
-                //emp history
-                yearMonthHistoryItem: [newHistory],
-                //emp info data
-                cateIndicator: newEmployee.cateIndicator,
-                salBonusCate: newEmployee.salBonusCate,
-                empId: newEmployee.empId,
-                perValCode: newEmployee.personalValcode,
-                lastHistoryId: params.lastHistoryId,
-            };
-
-            service.deleteEmpSalUnitPriceHis(command).done(() => {
+            let historyId = params.historyId;
+            service.deleteHistory(historyId).done(() => {
                 nts.uk.ui.dialog.info({messageId: "Msg_16"}).then(() => {
                     setShared('QMM041_C_RES_PARAMS', {modifyMethod: self.modifyMethod()});
                     nts.uk.ui.windows.close();
@@ -124,6 +92,7 @@ module nts.uk.pr.view.qmm041.c.viewmodel {
             let dfd = $.Deferred();
             dfd.resolve();
             return dfd.promise();
+
         }
     }
 }

@@ -6,6 +6,7 @@ import nts.uk.ctx.pr.core.app.command.wageprovision.empsalunitprice.*;
 import nts.uk.ctx.pr.core.app.find.wageprovision.empsalunitprice.EmployeeSalaryUnitPriceDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.empsalunitprice.IndEmpSalUnitPriceHistoryDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.empsalunitprice.EmployeeSalaryUnitPriceHistoryFinder;
+import nts.uk.ctx.pr.core.app.find.wageprovision.empsalunitprice.IndividualUnitPriceDto;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -69,4 +70,9 @@ public class EmployeeSalaryUnitPriceHistoryWebService extends WebService {
         deleteIndEmpSalUnitPriceHistoryCommandHandler.handle(historyId);
     }
 
+    @POST
+    @Path("individualUnitPriceDisplay")
+    public List<IndividualUnitPriceDto> individualUnitPriceDisplay(IndividualUnitPriceDto dto) {
+        return finder.getIndividualUnitPriceList(dto.getEmployeeId(), dto.getBaseYearMonth());
+    }
 }
