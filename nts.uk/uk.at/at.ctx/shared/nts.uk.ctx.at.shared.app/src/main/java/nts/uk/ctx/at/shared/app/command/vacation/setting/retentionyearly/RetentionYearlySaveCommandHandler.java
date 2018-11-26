@@ -12,9 +12,9 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.app.command.vacation.setting.retentionyearly.dto.RetentionYearlyDto;
+//import nts.uk.ctx.at.shared.app.command.vacation.setting.retentionyearly.dto.RetentionYearlyDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
+//import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingDomainEvent;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
@@ -31,8 +31,8 @@ public class RetentionYearlySaveCommandHandler extends CommandHandler<RetentionY
     @Inject
     private RetentionYearlySettingRepository repository;
     
-    @Inject
-    private AnnualPaidLeaveSettingRepository isManagedRepo;
+//    @Inject
+//    private AnnualPaidLeaveSettingRepository isManagedRepo;
 
     /*
      * (non-Javadoc)
@@ -53,7 +53,7 @@ public class RetentionYearlySaveCommandHandler extends CommandHandler<RetentionY
         
         Optional<RetentionYearlySetting> yearlyRetentionOpt = this.repository.findByCompanyId(companyId);
         // Find "isManaged"
-        int isManaged = this.isManagedRepo.findByCompanyId(companyId).getYearManageType().value;
+//        int isManaged = this.isManagedRepo.findByCompanyId(companyId).getYearManageType().value;
         
         // Check is managed, keep old values when is not managed
 //        if (yearlyRetentionOpt.isPresent() && isManaged == ManageDistinct.NO.value) {

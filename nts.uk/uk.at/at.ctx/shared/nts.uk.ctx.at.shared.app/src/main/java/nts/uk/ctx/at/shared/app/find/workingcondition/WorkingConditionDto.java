@@ -5,7 +5,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeek;
+//import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeek;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
@@ -525,7 +525,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 			setHolidayAttendanceTime(dto, at);
 		});
 
-		PersonalDayOfWeek workDayOfWeek = workingConditionItem.getWorkDayOfWeek();
+//		PersonalDayOfWeek workDayOfWeek = workingConditionItem.getWorkDayOfWeek();
 
 		dto.setAutoIntervalSetAtr(workingConditionItem.getAutoIntervalSetAtr().value);
 		dto.setVacationAddedTimeAtr(workingConditionItem.getVacationAddedTimeAtr().value);
