@@ -444,7 +444,7 @@ module nts.uk.com.view.cmm018.a {
                     block.clear();
                     let data = getShared('outputCDL008');
                     if(data == null || data === undefined){
-                        return;
+                        return; 
                     }
                     self.workplaceId(data);
                     if(self.selectedModeCode() == 0){
