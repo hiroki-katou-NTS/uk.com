@@ -253,7 +253,7 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                 startLastYearMonth: laststartYearMonth,
                 canDelete: canDelete,
                 isPerson: false,
-                modeScreen: model.MODE_SCREEN.CLASSIFICATION
+                modeScreen: model.MODE_SCREEN.SALARY
             });
             modal("/view/qmm/020/k/index.xhtml").onClosed(function() {
                 let params = getShared(model.PARAMETERS_SCREEN_K.OUTPUT);
