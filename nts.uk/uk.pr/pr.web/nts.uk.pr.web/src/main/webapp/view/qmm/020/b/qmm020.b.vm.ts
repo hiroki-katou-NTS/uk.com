@@ -47,7 +47,30 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
                     });
                     self.listStateCorrelationHis(listStateCorrelationHis);
                     firstHistory = _.head(self.listStateCorrelationHis());
-                    self.currentSelectedHis(firstHistory.hisId);
+                    if(firstHistory.hisId === self.currentSelectedHis()){
+                        let rs = _.find(self.listStateCorrelationHis(),{hisId: self.currentSelectedHis()});
+                        let startYearMonth = rs ? rs.startYearMonth : 0;
+                        service.getStateLinkSettingCompanyById(firstHistory.hisId,startYearMonth).done((data)=>{
+                            if(data){
+                                self.salaryCode(data.salaryCode);
+                                self.salaryLayoutName(data.salaryLayoutName);
+                                self.bonusCode(data.bonusCode);
+                                self.bonusLayoutName(data.bonusLayoutName);
+                            }else{
+                                self.salaryCode(null);
+                                self.salaryLayoutName(null);
+                                self.bonusCode(null);
+                                self.bonusLayoutName(null);
+                            }
+                        }).fail((err) =>{
+                            if(err)
+                                dialog.alertError(err);
+                        }).always(()=>{
+                            block.clear();
+                        });
+                    }else{
+                        self.currentSelectedHis(firstHistory.hisId);
+                    }
                 }else{
                     self.listStateCorrelationHis([]);
                     self.salaryCode('');

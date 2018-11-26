@@ -42,8 +42,25 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
                     });
                     self.listStateCorrelationHis(listStateCorrelationHis);
                     firstHistory = _.head(self.listStateCorrelationHis());
-                    self.currentSelectedHis(firstHistory.hisId);
-                    self.loadGrid();
+                    if(firstHistory.hisId === self.currentSelectedHis()){
+                        let rs = _.find(self.listStateCorrelationHis(),{hisId: self.currentSelectedHis()});
+                        let startYearMonth = rs ? rs.startYearMonth : 999912;
+                        service.getStateLinkSettingMasterByHisId(firstHistory.hisId,startYearMonth).done((data)=>{
+                            if(data.length > 0){
+                                self.items(self.convertToGridItem(data));
+                                self.loadGrid();
+                            }else{
+                                self.loadGrid();
+                            }
+                        }).fail((err) =>{
+                            if(err) dialog.alertError(err);
+                        }).always(()=>{
+                            block.clear();
+                        });
+                    }else{
+                        self.currentSelectedHis(firstHistory.hisId);
+                    }
+
                 }else{
                     self.listStateCorrelationHis([]);
                     self.items([]);
