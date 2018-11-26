@@ -216,19 +216,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             });
         }
         
-        private exportExcel(): void {
-            var self = this;
-            nts.uk.ui.block.grayout();
-            let langId = self.langId();
-            service.saveAsExcel(langId).done(function() {
-            }).fail(function(error) {
-                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-            }).always(function() {
-                nts.uk.ui.block.clear();
-            });
-        }
 
-        
         openCModal() {
 
             let self = this,
@@ -376,6 +364,20 @@ module nts.uk.com.view.cas001.a.viewmodel {
             let self = this;
             return self.allowPersonRef() === 0 && self.allowOtherRef() === 0;
         }
+        
+        
+        private exportExcel(): void {
+            var self = this;
+            nts.uk.ui.block.grayout();
+            let langId = self.langId();
+            service.saveAsExcel(langId).done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+        }
+        
     }
     export interface IPersonRole {
         roleId: string;
