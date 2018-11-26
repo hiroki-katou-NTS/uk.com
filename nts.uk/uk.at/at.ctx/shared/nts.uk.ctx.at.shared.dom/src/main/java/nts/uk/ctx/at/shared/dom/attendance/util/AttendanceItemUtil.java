@@ -25,8 +25,8 @@ import org.apache.commons.lang3.StringUtils;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.reflection.ReflectionUtil;
 import nts.gul.reflection.ReflectionUtil.Condition;
-import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus;
-import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
+//import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus;
+//import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -1002,11 +1002,11 @@ public class AttendanceItemUtil implements ItemConst {
 	}
 	
 	private static class AttendanceItemUtilCacheHolder {
-		private final MasterShareContainer<String> cache;
-		
-		private AttendanceItemUtilCacheHolder(){
-			this.cache = MasterShareBus.open();
-		}
+//		private final MasterShareContainer<String> cache;
+//		
+//		private AttendanceItemUtilCacheHolder(){
+//			this.cache = MasterShareBus.open();
+//		}
 		
 		public static AttendanceItemUtilCacheHolder cacheNow(){
 			return new AttendanceItemUtilCacheHolder();

@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
+//import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
