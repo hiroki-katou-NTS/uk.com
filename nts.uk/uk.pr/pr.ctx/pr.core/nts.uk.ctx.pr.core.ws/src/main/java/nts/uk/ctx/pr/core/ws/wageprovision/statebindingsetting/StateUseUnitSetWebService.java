@@ -3,8 +3,8 @@ package nts.uk.ctx.pr.core.ws.wageprovision.statebindingsetting;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.StateUseUnitSettingCommand;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.UpdateStateUseUnitSettingCommandHandler;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateUseUnitSetDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateUseUnitSetFinder;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateUseUnitSetDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateUseUnitSetFinder;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.inject.Inject;

@@ -3,7 +3,8 @@ package nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.*;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.RegisterMode;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisComService;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -26,7 +27,7 @@ public class AddOrUpdateStateCorrelationHisCompanyCommandHandler extends Command
         StateCorrelationHisCompanyCommand stateCorrelationHisCompanyCommand = commandHandlerContext.getCommand().getStateCorrelationHisCompanyCommand();
 
         int mode = commandHandlerContext.getCommand().getMode();
-        if(mode == RegisterMode.NEW.value){
+        if(mode == nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.RegisterMode.NEW.value){
             stateCorreHisComService.addStateCorrelationHisCompany(cid,stateCorrelationHisCompanyCommand.getHistoryID(),
                     new YearMonth(stateCorrelationHisCompanyCommand.getStartYearMonth()),new YearMonth(stateCorrelationHisCompanyCommand.getEndYearMonth()),
                     stateLinkSettingCompanyCommand.getSalaryCode(),

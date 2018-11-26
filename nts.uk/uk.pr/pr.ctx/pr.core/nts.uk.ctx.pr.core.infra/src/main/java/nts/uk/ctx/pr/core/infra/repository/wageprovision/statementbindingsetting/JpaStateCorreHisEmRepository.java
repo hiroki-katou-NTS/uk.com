@@ -4,9 +4,9 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorreHisEm;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorreHisEmRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSetMaster;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisEm;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisEmRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateLinkSetMaster;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.QpbmtStateCorHisEmp;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;

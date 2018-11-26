@@ -2,8 +2,8 @@ package nts.uk.ctx.pr.core.infra.repository.wageprovision.statementbindingsettin
 
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateUseUnitSet;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateUseUnitSetRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateUseUnitSet;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateUseUnitSetRepository;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.QpbmtStateUseUnitSet;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.QpbmtStateUseUnitSetPk;
 

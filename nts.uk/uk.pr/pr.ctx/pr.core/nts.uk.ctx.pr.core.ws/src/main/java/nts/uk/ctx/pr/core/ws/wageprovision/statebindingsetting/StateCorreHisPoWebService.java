@@ -5,10 +5,10 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.RegisterStateCorrelationHisPositionCommandHandler;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.StateCorrelationHisPositionCommand;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.StateLinkMasterParam;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateCorreHisPosDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateCorreHisPosFinder;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateLinkSetDateDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateLinkSetMasterDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateCorreHisPosDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateCorreHisPosFinder;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateLinkSetDateDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateLinkSetMasterDto;
 
 
 import javax.inject.Inject;

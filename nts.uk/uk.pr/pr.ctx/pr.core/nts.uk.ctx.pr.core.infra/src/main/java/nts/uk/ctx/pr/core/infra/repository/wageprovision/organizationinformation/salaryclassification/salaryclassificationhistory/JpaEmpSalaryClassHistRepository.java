@@ -1,8 +1,8 @@
 package nts.uk.ctx.pr.core.infra.repository.wageprovision.organizationinformation.salaryclassification.salaryclassificationhistory;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.organizationinformation.salaryclassification.salaryclasshistory.EmploySalaryClassHistory;
-import nts.uk.ctx.pr.core.dom.wageprovision.organizationinformation.salaryclassification.salaryclasshistory.EmploySalaryClassHistoryRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.organizationinfor.salarycls.salaryclshis.EmploySalaryClassHistory;
+import nts.uk.ctx.pr.core.dom.wageprovision.organizationinfor.salarycls.salaryclshis.EmploySalaryClassHistoryRepository;
 
 import javax.ejb.Stateless;
 import java.util.List;

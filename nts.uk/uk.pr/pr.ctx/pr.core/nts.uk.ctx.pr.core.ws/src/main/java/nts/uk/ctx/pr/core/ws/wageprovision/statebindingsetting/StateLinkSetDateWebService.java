@@ -1,8 +1,8 @@
 package nts.uk.ctx.pr.core.ws.wageprovision.statebindingsetting;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateLinkSetDateDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateLinkSetDateFinder;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateLinkSetDateDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateLinkSetDateFinder;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

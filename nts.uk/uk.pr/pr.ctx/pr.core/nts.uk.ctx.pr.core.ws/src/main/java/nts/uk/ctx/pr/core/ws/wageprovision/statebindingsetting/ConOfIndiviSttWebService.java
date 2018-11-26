@@ -1,9 +1,9 @@
 package nts.uk.ctx.pr.core.ws.wageprovision.statebindingsetting;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.ConOfIndiviSetSttDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.ConOfIndiviSetSttFinder;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.ConfirmOfIndividualSetSttParams;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.ConOfIndiviSetSttDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.ConOfIndiviSetSttFinder;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.ConfirmOfIndividualSetSttParams;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.inject.Inject;

@@ -9,9 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import nts.arc.primitive.PrimitiveValueBase;
-import nts.uk.ctx.pr.core.dom.wageprovision.organizationinformation.salaryclassification.salaryclassificationmaster.SalaryClassificationInformation;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.pr.core.dom.wageprovision.organizationinfor.salarycls.salaryclsmaster.SalaryClassificationInformation;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

@@ -12,7 +12,10 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.*;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.MasterCode;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisDeparService;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateLinkSetDate;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateLinkSetMaster;
 import nts.uk.shr.com.context.AppContexts;
 
 
@@ -32,8 +35,8 @@ public class AddOrUpdateStateCorrelationHisDeparmentCommandHandler extends Comma
         List<StateLinkSetMaster> stateLinkSetMaster = new ArrayList<StateLinkSetMaster>();
         if(listStateLinkSettingMasterCommand.size() > 0){
             stateLinkSetMaster = listStateLinkSettingMasterCommand.stream().map(item -> new StateLinkSetMaster(item.getHisId(),new MasterCode(item.getMasterCode()),
-                    item.getSalaryCode() == null ? null : new StatementCode(item.getSalaryCode()),
-                    item.getBonusCode() == null ? null : new StatementCode(item.getBonusCode()))).collect(Collectors.toList());
+                    item.getSalaryCode() == null ? null : new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(item.getSalaryCode()),
+                    item.getBonusCode() == null ? null : new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(item.getBonusCode()))).collect(Collectors.toList());
         }
 
         StateLinkSettingDateCommand stateLinkSettingDateCommand = context.getCommand().getStateLinkSettingDateCommand();

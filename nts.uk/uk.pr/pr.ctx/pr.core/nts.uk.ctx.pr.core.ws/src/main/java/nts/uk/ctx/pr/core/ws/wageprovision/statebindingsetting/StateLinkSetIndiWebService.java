@@ -4,10 +4,10 @@ package nts.uk.ctx.pr.core.ws.wageprovision.statebindingsetting;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.RegisterHisIndividualCommandHandler;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.StateLinkSettingIndividualCommand;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateCorreHisIndiviDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateCorreHisIndiviFinder;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateLinkSetIndiviDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateLinkSetIndiviFinder;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateCorreHisIndiviDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateCorreHisIndiviFinder;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateLinkSetIndiviDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateLinkSetIndiviFinder;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

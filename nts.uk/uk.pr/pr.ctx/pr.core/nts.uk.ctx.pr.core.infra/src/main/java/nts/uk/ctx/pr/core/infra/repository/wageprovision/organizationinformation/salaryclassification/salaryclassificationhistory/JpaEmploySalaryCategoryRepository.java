@@ -1,9 +1,9 @@
 package nts.uk.ctx.pr.core.infra.repository.wageprovision.organizationinformation.salaryclassification.salaryclassificationhistory;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.organizationinformation.salaryclassification.salaryclasshistory.EmploySalaryCategory;
-import nts.uk.ctx.pr.core.dom.wageprovision.organizationinformation.salaryclassification.salaryclasshistory.EmploySalaryCategoryRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.organizationinformation.salaryclassification.salaryclasshistory.EmploySalaryClassHistory;
+import nts.uk.ctx.pr.core.dom.wageprovision.organizationinfor.salarycls.salaryclshis.EmploySalaryCategory;
+import nts.uk.ctx.pr.core.dom.wageprovision.organizationinfor.salarycls.salaryclshis.EmploySalaryCategoryRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.organizationinfor.salarycls.salaryclshis.EmploySalaryClassHistory;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.organizationinformation.salaryclassification.salaryclasshistory.QpbmtEmpSalaCategory;
 
 import nts.uk.shr.com.history.YearMonthHistoryItem;

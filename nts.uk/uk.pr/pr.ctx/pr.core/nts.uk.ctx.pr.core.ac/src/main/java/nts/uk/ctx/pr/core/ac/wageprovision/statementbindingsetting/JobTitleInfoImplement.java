@@ -3,8 +3,8 @@ package nts.uk.ctx.pr.core.ac.wageprovision.statementbindingsetting;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
 import nts.uk.ctx.pr.core.dom.adapter.employee.jobtitle.JobTitle;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.EmployeeJobHistExport;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.JobTitleInfoAdapter;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.EmployeeJobHistExport;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.JobTitleInfoAdapter;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

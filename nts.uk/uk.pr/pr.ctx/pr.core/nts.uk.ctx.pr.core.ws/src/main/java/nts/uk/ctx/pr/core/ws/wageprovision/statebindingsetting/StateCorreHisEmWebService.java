@@ -4,6 +4,9 @@ package nts.uk.ctx.pr.core.ws.wageprovision.statebindingsetting;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.AddOrUpdateStateCorrelationHisEmployeeCommandHandler;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.StateCorrelationHisEmployeeContainerCommand;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateCorreHisEmpDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateCorreHisEmpFinder;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateCorreHisEmpSetDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.*;
 import nts.uk.shr.com.context.AppContexts;
 

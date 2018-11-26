@@ -3,11 +3,11 @@ package nts.uk.ctx.pr.core.infra.repository.wageprovision.statementbindingsettin
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorreHisPo;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisPo;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisPosition;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorreHisPoRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSetDate;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSetMaster;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisPoRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateLinkSetDate;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateLinkSetMaster;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.QpbmtStateCorHisPos;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;

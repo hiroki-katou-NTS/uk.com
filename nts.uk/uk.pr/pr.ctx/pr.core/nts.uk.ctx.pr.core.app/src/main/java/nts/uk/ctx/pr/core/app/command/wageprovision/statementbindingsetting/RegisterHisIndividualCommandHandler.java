@@ -4,7 +4,9 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.*;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.RegisterMode;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisIndiviService;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateLinkSetIndivi;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
@@ -29,8 +31,8 @@ public class RegisterHisIndividualCommandHandler extends CommandHandler<StateLin
             String hisId = IdentifierUtil.randomUniqueId();
             stateLinkSetIndivi = new StateLinkSetIndivi(
                     hisId,
-                    command.getSalary() != null ? new StatementCode(command.getSalary()) : null,
-                    command.getBonus() != null ? new StatementCode(command.getBonus()) : null
+                    command.getSalary() != null ? new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(command.getSalary()) : null,
+                    command.getBonus() != null ? new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(command.getBonus()) : null
             );
             stateCorreHisIndiviService.addHistoryIndividual(hisId, start, end, stateLinkSetIndivi, command.getEmpId());
         } else {
@@ -38,8 +40,8 @@ public class RegisterHisIndividualCommandHandler extends CommandHandler<StateLin
             YearMonthHistoryItem history = new YearMonthHistoryItem(hisId,new YearMonthPeriod(start,end));
             stateLinkSetIndivi = new StateLinkSetIndivi(
                     hisId,
-                    command.getSalary() != null ? new StatementCode(command.getSalary()) : null,
-                    command.getBonus() != null ? new StatementCode(command.getBonus()) : null
+                    command.getSalary() != null ? new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(command.getSalary()) : null,
+                    command.getBonus() != null ? new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(command.getBonus()) : null
             );
             stateCorreHisIndiviService.updateHistoryIndividual(history, stateLinkSetIndivi, command.getEmpId());
         }

@@ -5,8 +5,8 @@ import nts.uk.ctx.pr.core.app.command.wageprovision.organizationinformation.sala
 import nts.uk.ctx.pr.core.app.command.wageprovision.organizationinformation.salaryclassification.salaryclassificationmaster.RemoveSalaryClassificationInformationCommandHandler;
 import nts.uk.ctx.pr.core.app.command.wageprovision.organizationinformation.salaryclassification.salaryclassificationmaster.SalaryClassificationInformationCommand;
 import nts.uk.ctx.pr.core.app.command.wageprovision.organizationinformation.salaryclassification.salaryclassificationmaster.UpdateSalaryClassificationInformationCommandHandler;
-import nts.uk.ctx.pr.core.app.find.wageprovision.organizationinformation.salaryclassification.salaryclassificationmaster.SalaryClsInforDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.organizationinformation.salaryclassification.salaryclassificationmaster.SalaryClsInforFinder;
+import nts.uk.ctx.pr.core.app.find.wageprovision.organizationinfor.salarycls.salaryclsmaster.SalaryClsInforDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.organizationinfor.salarycls.salaryclsmaster.SalaryClsInforFinder;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -14,7 +14,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import java.util.List;
 
-@Path("core/wageprovision/organizationinformation/salaryclassification/salaryclassificationmaster")
+@Path("core/wageprovision/organizationinfor/salarycls/salaryclsmaster")
 @Produces("application/json")
 public class SalaryClsInfoWebService extends WebService {
 

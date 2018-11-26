@@ -3,8 +3,8 @@ package nts.uk.ctx.pr.core.ws.wageprovision.statebindingsetting;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.AddOrUpdateStateCorrelationHisDeparmentCommandHandler;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.ListStateLinkSettingMasterCommand;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateCorreHisDeparDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateCorreHisDeparFinder;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateCorreHisDeparDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateCorreHisDeparFinder;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.inject.Inject;

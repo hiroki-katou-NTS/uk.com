@@ -4,8 +4,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.employment.IEmploymentHistoryPub;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employment.EmploymentHisExport;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employment.IEmploymentHistoryAdapter;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.EmploymentCodeAndPeriod;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.EmploymentHisOfEmployee;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.EmploymentCodeAndPeriod;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.EmploymentHisOfEmployee;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

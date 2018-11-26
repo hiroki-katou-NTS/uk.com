@@ -8,7 +8,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateUseUnitSet;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateUseUnitSet;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

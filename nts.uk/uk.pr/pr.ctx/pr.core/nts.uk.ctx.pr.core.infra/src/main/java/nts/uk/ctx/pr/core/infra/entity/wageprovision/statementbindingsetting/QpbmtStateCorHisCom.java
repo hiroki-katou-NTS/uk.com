@@ -2,9 +2,9 @@ package nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorreHisCom;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSetCom;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StatementCode;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisCom;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateLinkSetCom;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 

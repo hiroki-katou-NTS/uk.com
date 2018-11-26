@@ -8,7 +8,9 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.*;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.RegisterMode;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisClsService;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateLinkSetMaster;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -33,9 +35,9 @@ public class RegisterStateCorrelationHisClassificationCommandHandler extends Com
                 listStateLinkSetMaster = command.getStateLinkSettingMaster().stream().map(i -> {
                     return new StateLinkSetMaster(
                             hisId,
-                            new MasterCode(i.getMasterCode()),
-                            i.getSalaryCode() != null ? new StatementCode(i.getSalaryCode()) : null,
-                            i.getBonusCode() != null ? new StatementCode(i.getBonusCode()) : null);
+                            new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.MasterCode(i.getMasterCode()),
+                            i.getSalaryCode() != null ? new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(i.getSalaryCode()) : null,
+                            i.getBonusCode() != null ? new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(i.getBonusCode()) : null);
                             }).collect(Collectors.toList());
             }
             stateCorreHisClsService.addHistoryClassification(hisId, start, end, listStateLinkSetMaster);
@@ -45,9 +47,9 @@ public class RegisterStateCorrelationHisClassificationCommandHandler extends Com
                 listStateLinkSetMaster = command.getStateLinkSettingMaster().stream().map(i -> {
                     return new StateLinkSetMaster(
                             hisId,
-                            new MasterCode(i.getMasterCode()),
-                            i.getSalaryCode() != null ? new StatementCode(i.getSalaryCode()) : null,
-                            i.getBonusCode() != null ? new StatementCode(i.getBonusCode()) : null);
+                            new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.MasterCode(i.getMasterCode()),
+                            i.getSalaryCode() != null ? new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(i.getSalaryCode()) : null,
+                            i.getBonusCode() != null ? new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(i.getBonusCode()) : null);
                             }).collect(Collectors.toList());
             }
             stateCorreHisClsService.updateHistoryClassification(hisId, listStateLinkSetMaster,start,end);

@@ -6,8 +6,8 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateUseUnitSet;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateUseUnitSetRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateUseUnitSet;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateUseUnitSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 import java.util.Optional;

@@ -4,9 +4,9 @@ package nts.uk.ctx.pr.core.infra.repository.wageprovision.statementbindingsettin
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorreHisCom;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorreHisComRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSetCom;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisCom;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisComRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateLinkSetCom;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.QpbmtStateCorHisCom;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.QpbmtStateCorHisComPk;
 import nts.uk.shr.com.history.YearMonthHistoryItem;

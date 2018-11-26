@@ -14,6 +14,7 @@ import javax.persistence.Table;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.*;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.*;
 
 import lombok.AllArgsConstructor;

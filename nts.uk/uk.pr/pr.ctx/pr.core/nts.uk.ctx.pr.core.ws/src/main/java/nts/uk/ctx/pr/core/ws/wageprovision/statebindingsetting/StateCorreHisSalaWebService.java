@@ -4,9 +4,9 @@ package nts.uk.ctx.pr.core.ws.wageprovision.statebindingsetting;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.RegisterStateCorrelationHisSalaryCommandHandler;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.StateCorrelationHisSalaryCommand;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateCorreHisSalaDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateCorreHisSalaFinder;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting.StateLinkSetMasterDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateCorreHisSalaDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateCorreHisSalaFinder;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateLinkSetMasterDto;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.core.dom.adapter.employee.employment;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.EmploymentHisOfEmployee;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.EmploymentHisOfEmployee;
 
 import java.util.List;
 import java.util.Optional;
