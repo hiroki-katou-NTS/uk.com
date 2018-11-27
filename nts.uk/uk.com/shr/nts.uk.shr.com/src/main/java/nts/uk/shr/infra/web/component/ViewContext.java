@@ -90,11 +90,14 @@ public class ViewContext extends UIComponentBase {
 
 	private void writeOperationSetting(StringBuilder builder) {
 		SystemOperationSetting operationSetting = CDI.current().select(SystemOperationSettingAdapter.class).get().getSetting();
-		builder.append(", operationSetting: { ");
+		if(builder.length() > 0){
+			builder.append(", ");
+		}
+		builder.append("operationSetting: { ");
 		builder.append("mode: " + operationSetting.getMode().value);
 		builder.append(", type: " + operationSetting.getType().value);
-		builder.append(", message: " + operationSetting.getMessage());
-		builder.append(", state: " + operationSetting.getState().value);
+		builder.append(", message: '" + operationSetting.getMessage());
+		builder.append("' , state: " + operationSetting.getState().value);
 		builder.append("} ");
 	}
 	
