@@ -35,7 +35,7 @@ public class DateConstraint extends DataConstraint {
 		case DATE:
 			return Optional.empty();
 		case NUMBER:
-			String stringValue = value.getValue().toString();
+			String stringValue = value.getDecimal().toString();
 			return this.validateString(stringValue);
 		default:
 			return Optional.of(ErrorIdFactory.DateErrorId);

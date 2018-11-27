@@ -1,5 +1,7 @@
 package nts.uk.shr.com.validate.validator;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.junit.Assert;
@@ -16,6 +18,27 @@ public class DateValidatorTest {
 		DateConstraint constraint = new DateConstraint(1, DateType.DATE);
 		Optional<String> result = constraint.validate(new ValueWithType("2000/01/01"));
 		Assert.assertEquals(result.isPresent(), false);
+	}
+	
+	@Test
+	public void testDateTrue1() {
+		DateConstraint constraint = new DateConstraint(1, DateType.DATE);
+		Optional<String> result = constraint.validate(new ValueWithType(LocalDate.of(2000, 1, 1)));
+		Assert.assertEquals(result.isPresent(), false);
+	}
+	
+	@Test
+	public void testDateTrue2() {
+		DateConstraint constraint = new DateConstraint(1, DateType.YEAR);
+		Optional<String> result = constraint.validate(new ValueWithType( new BigDecimal("2000")));
+		Assert.assertEquals(result.isPresent(), false);
+	}
+	
+	@Test
+	public void testDateFalseWithType() {
+		DateConstraint constraint = new DateConstraint(1, DateType.DATE);
+		Optional<String> result = constraint.validate(new ValueWithType(true));
+		Assert.assertEquals(ErrorIdFactory.DateErrorId, result.get());
 	}
 
 	// --------------------- False with order.

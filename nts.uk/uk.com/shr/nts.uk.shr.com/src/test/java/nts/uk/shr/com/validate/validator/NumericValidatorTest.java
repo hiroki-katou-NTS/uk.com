@@ -175,56 +175,56 @@ public class NumericValidatorTest {
 	@Test
 	public void testMinusFalseFloat() {
 		NumericConstraint constraint = new NumericConstraint(1, false, new BigDecimal("0"), new BigDecimal("10"), 2, 2);
-		Optional<String> result = constraint.validate(new ValueWithType((float)-1));
+		Optional<String> result = constraint.validate(new ValueWithType(new BigDecimal("-1")));
 		Assert.assertEquals(result.get(), ErrorIdFactory.MinusErrorId);
 	}
 
 	@Test
 	public void testMinMax00Float() {
 		NumericConstraint constraint = new NumericConstraint(1, true, new BigDecimal("-5"), new BigDecimal("10"), 2, 2);
-		Optional<String> result = constraint.validate(new ValueWithType((float)-6));
+		Optional<String> result = constraint.validate(new ValueWithType(new BigDecimal("-6")));
 		Assert.assertEquals(result.get(), ErrorIdFactory.NumericMinErrorId);
 	}
 
 	@Test
 	public void testMinMax01Float() {
 		NumericConstraint constraint = new NumericConstraint(1, true, new BigDecimal("-5"), new BigDecimal("10"), 2, 2);
-		Optional<String> result = constraint.validate(new ValueWithType((float)-5));
+		Optional<String> result = constraint.validate(new ValueWithType(new BigDecimal("-5")));
 		Assert.assertEquals(result.isPresent(), false);
 	}
 
 	@Test
 	public void testMinMax02Float() {
 		NumericConstraint constraint = new NumericConstraint(1, true, new BigDecimal("-5"), new BigDecimal("10"), 2, 2);
-		Optional<String> result = constraint.validate(new ValueWithType((float)-4));
+		Optional<String> result = constraint.validate(new ValueWithType(new BigDecimal("-4")));
 		Assert.assertEquals(result.isPresent(), false);
 	}
 
 	@Test
 	public void testMinMax03Float() {
 		NumericConstraint constraint = new NumericConstraint(1, true, new BigDecimal("-5"), new BigDecimal("10"), 2, 2);
-		Optional<String> result = constraint.validate(new ValueWithType((float)0));
+		Optional<String> result = constraint.validate(new ValueWithType(new BigDecimal("0")));
 		Assert.assertEquals(result.isPresent(), false);
 	}
 
 	@Test
 	public void testMinMax04Float() {
 		NumericConstraint constraint = new NumericConstraint(1, true, new BigDecimal("-5"), new BigDecimal("10"), 2, 2);
-		Optional<String> result = constraint.validate(new ValueWithType((float)9));
+		Optional<String> result = constraint.validate(new ValueWithType(new BigDecimal("9")));
 		Assert.assertEquals(result.isPresent(), false);
 	}
 
 	@Test
 	public void testMinMax05Float() {
 		NumericConstraint constraint = new NumericConstraint(1, true, new BigDecimal("-5"), new BigDecimal("10"), 2, 2);
-		Optional<String> result = constraint.validate(new ValueWithType((float)10));
+		Optional<String> result = constraint.validate(new ValueWithType(new BigDecimal("10")));
 		Assert.assertEquals(result.isPresent(), false);
 	}
 
 	@Test
 	public void testMinMax06Float() {
 		NumericConstraint constraint = new NumericConstraint(1, true, new BigDecimal("-5"), new BigDecimal("10"), 2, 2);
-		Optional<String> result = constraint.validate(new ValueWithType((float)11));
+		Optional<String> result = constraint.validate(new ValueWithType(new BigDecimal("11")));
 		Assert.assertEquals(result.get(), ErrorIdFactory.NumericMaxErrorId);
 	}
 
@@ -232,7 +232,7 @@ public class NumericValidatorTest {
 	public void testIntegerPart00Float() {
 		NumericConstraint constraint = new NumericConstraint(1, true, new BigDecimal("0"), new BigDecimal("1000"), 2,
 				2);
-		Optional<String> result = constraint.validate(new ValueWithType((float)1.3));
+		Optional<String> result = constraint.validate(new ValueWithType(new BigDecimal("1.3")));
 		Assert.assertEquals(result.isPresent(), false);
 	}
 
@@ -240,7 +240,7 @@ public class NumericValidatorTest {
 	public void testIntegerPart01Float() {
 		NumericConstraint constraint = new NumericConstraint(1, true, new BigDecimal("0"), new BigDecimal("1000"), 2,
 				2);
-		Optional<String> result = constraint.validate(new ValueWithType((float)11.3));
+		Optional<String> result = constraint.validate(new ValueWithType(new BigDecimal("11.3")));
 		Assert.assertEquals(result.isPresent(), false);
 	}
 
@@ -248,7 +248,7 @@ public class NumericValidatorTest {
 	public void testIntegerPart02Float() {
 		NumericConstraint constraint = new NumericConstraint(1, true, new BigDecimal("0"), new BigDecimal("1000"), 2,
 				2);
-		Optional<String> result = constraint.validate(new ValueWithType((float)111.3));
+		Optional<String> result = constraint.validate(new ValueWithType(new BigDecimal("111.3")));
 		Assert.assertEquals(result.get(), ErrorIdFactory.IntegerPartErrorId);
 	}
 
@@ -256,7 +256,7 @@ public class NumericValidatorTest {
 	public void testDecimalPart00Float() {
 		NumericConstraint constraint = new NumericConstraint(1, true, new BigDecimal("-5"), new BigDecimal("1000"), 2,
 				2);
-		Optional<String> result = constraint.validate(new ValueWithType((float)10.3));
+		Optional<String> result = constraint.validate(new ValueWithType(new BigDecimal("10.3")));
 		Assert.assertEquals(result.isPresent(), false);
 	}
 
@@ -264,7 +264,7 @@ public class NumericValidatorTest {
 	public void testDecimalPart01Float() {
 		NumericConstraint constraint = new NumericConstraint(1, true, new BigDecimal("-5"), new BigDecimal("1000"), 2,
 				2);
-		Optional<String> result = constraint.validate(new ValueWithType((float)10.33));
+		Optional<String> result = constraint.validate(new ValueWithType(new BigDecimal("10.33")));
 		Assert.assertEquals(result.isPresent(), false);
 	}
 
@@ -272,7 +272,7 @@ public class NumericValidatorTest {
 	public void testDecimalPart02Float() {
 		NumericConstraint constraint = new NumericConstraint(1, true, new BigDecimal("-5"), new BigDecimal("1000"), 2,
 				2);
-		Optional<String> result = constraint.validate(new ValueWithType((float)10.333));
+		Optional<String> result = constraint.validate(new ValueWithType(new BigDecimal("10.333")));
 		Assert.assertEquals(result.get(), ErrorIdFactory.DecimalPartErrorId);
 	}
 

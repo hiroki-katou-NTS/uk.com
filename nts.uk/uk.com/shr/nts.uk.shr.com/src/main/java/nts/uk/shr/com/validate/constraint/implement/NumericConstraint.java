@@ -48,7 +48,7 @@ public class NumericConstraint extends DataConstraint {
 	public Optional<String> validate(ValueWithType value) {
 		switch (value.getType()) {
 		case NUMBER:
-			return validateNumber(new BigDecimal(value.getValue().toString()));
+			return validateNumber(value.getDecimal());
 		case TEXT:
 			return validateString(value.getText());
 		default:
