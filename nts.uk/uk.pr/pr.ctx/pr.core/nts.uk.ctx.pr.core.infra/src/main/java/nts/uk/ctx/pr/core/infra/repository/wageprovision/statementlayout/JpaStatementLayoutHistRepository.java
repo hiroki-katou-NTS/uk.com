@@ -12,8 +12,10 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -22,6 +24,9 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
 
     private static final String SELECT_BY_CID_AND_CODE = SELECT_ALL_QUERY_STRING +
             " WHERE f.statementLayoutHistPk.cid = :cid AND f.statementLayoutHistPk.statementCd = :statementCd ";
+    private static final String SELECT_BY_CID_AND_CODES_AND_YM = SELECT_ALL_QUERY_STRING +
+            " WHERE f.statementLayoutHistPk.cid = :cid AND f.statementLayoutHistPk.statementCd IN :statementCds " +
+            " AND f.startYearMonth <= :yearMonth AND f.endYearMonth >= :yearMonth";
     private static final String SELECT_BY_ID = SELECT_ALL_QUERY_STRING +
             " WHERE f.statementLayoutHistPk.histId = :histId ";
     private static final String SELECT_BY_CID_AND_CODE_AND_AFTER_DATE = SELECT_BY_CID_AND_CODE +
@@ -71,6 +76,17 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
         return toDomain(this.queryProxy().query(SELECT_BY_CID_AND_CODE + ORDER_BY_START_DATE, QpbmtStatementLayoutHist.class)
                 .setParameter("cid", cid).setParameter("statementCd", code)
                 .getList());
+    }
+
+    @Override
+    public List<StatementLayoutHist> getLayoutHistByCidAndCodesAndYM(String cid, List<String> codes, int yearMonth) {
+        if (codes == null || codes.isEmpty()) return Collections.emptyList();
+        List<StatementLayoutHist> statementLayoutHist = toDomains(this.queryProxy().query(SELECT_BY_CID_AND_CODES_AND_YM, QpbmtStatementLayoutHist.class)
+                .setParameter("cid", cid)
+                .setParameter("statementCds", codes)
+                .setParameter("yearMonth", yearMonth)
+                .getList());
+        return statementLayoutHist;
     }
 
     @Override

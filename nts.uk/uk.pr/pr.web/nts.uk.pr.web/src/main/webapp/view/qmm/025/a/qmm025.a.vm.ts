@@ -154,8 +154,8 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                         constraint: {
                             // primitiveValue: "ResidentTax",
                             cDisplayType: "Currency",
-                            min: 0, max: 10,
-                            required: false
+                            min: 0, max: 9999999999,
+                            required: true
                         }
                     },
                     {
@@ -163,8 +163,8 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                         columnCssClass: 'currency-symbol',
                         constraint: {
                             cDisplayType: "Currency",
-                            min: 0, max: 10,
-                            required: false
+                            min: 0, max: 9999999999,
+                            required: true
                         }
                     },
                     {
