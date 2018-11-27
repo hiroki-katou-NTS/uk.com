@@ -228,8 +228,6 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                                 employeeId: emp.sid
                             };
                             self.getAllIndEmpSalUnitPriceHistory(dto).done(() => {
-                                $('#com-ccg001').ntsGroupComponent(self.ccgComponent);
-                                $('#emp-component').ntsLoadListComponent(self.listComponentOption);
                                 dfd.resolve();
                             });
                         }).fail((res) => {
@@ -244,7 +242,6 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                     nts.uk.ui.dialog.alertError(res.message);
                     dfd.reject();
                 });
-                $('#emp-component').focus();
             }).fail((res) => {
                 nts.uk.ui.dialog.alertError(res.message);
                 dfd.reject();
@@ -367,7 +364,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                     let array = self.historyList();
                     array.unshift(history);
                     if (array.length > 1) {
-                        array[1].endYearMonth = (params.startYearMonth - 1) % 100 == 0 ? params.startYearMonth - 101 + 12 : params.startYearMonth - 1;
+                        array[1].endYearMonth = (params.startYearMonth - 1) % 100 == 0 ? params.startYearMonth - 89 : params.startYearMonth - 1;
                         array[1].period = format(getText("QMM039_18"), self.formatYM(array[1].startYearMonth), self.formatYM(array[1].endYearMonth));
                     }
                     self.historyList(array);
@@ -394,9 +391,15 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
             modal('/view/qmm/041/c/index.xhtml').onClosed(() => {
                 let params = getShared('QMM041_C_RES_PARAMS');
                 if (params) {
-                    self.selectedCode.valueHasMutated();
                     if (params.modifyMethod == model.MODIFY_METHOD.UPDATE) {
-                        self.selectedHistoryCode(self.historyList()[index].historyId);
+                        let array = self.historyList();
+                        array[index].startYearMonth = params.startYearMonth;
+                        array[index].period = format(getText("QMM039_18"), self.formatYM(array[index].startYearMonth), self.formatYM(array[index].endYearMonth));
+                        array[index + 1].endYearMonth = params.lastEndYearMonth;
+                        array[index + 1].period = format(getText("QMM039_18"), self.formatYM(array[index + 1].startYearMonth), self.formatYM(array[index + 1].endYearMonth));
+                        self.historyList([]);
+                        self.historyList(array);
+                        self.selectedHistoryCode.valueHasMutated();
                     }
                 }
             });
@@ -415,7 +418,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                     }
                 });
             });
-            service.getEmploymentCode(self.selectedItem()).done((code) =>{
+            service.getEmploymentCode(self.selectedItem()).done((code) => {
                 params = {
                     employeeId: self.selectedItem(),
                     employeeCode: employeeCode,
@@ -439,9 +442,11 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                     amountOfMoney: self.currencyValue()
                 };
                 service.updateAmount(command).done(() => {
-                    let historyId = self.selectedHistoryCode();
-                    self.selectedCode.valueHasMutated();
-                    self.selectedHistoryCode(historyId);
+                    let index = self.findHistoryIndex(self.selectedHistoryCode());
+                    let array = self.historyList();
+                    array[index].amountOfMoney = Number(self.currencyValue());
+                    self.historyList([]);
+                    self.historyList(array);
                     nts.uk.ui.dialog.info({messageId: "Msg_15"});
                 });
             } else if (self.mode() == model.MODE.ADD_HISTORY) {
@@ -462,9 +467,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                 }
 
                 service.addHistory(command).done(() => {
-                    let historyId = self.selectedHistoryCode();
                     self.selectedCode.valueHasMutated();
-                    self.selectedHistoryCode(historyId);
                     nts.uk.ui.dialog.info({messageId: "Msg_15"});
                 })
             }

@@ -56,12 +56,18 @@ module nts.uk.pr.view.qmm041.c.viewmodel {
                 endYearMonth: params.endYearMonth,
                 lastHistoryId: params.lastHistoryId,
                 lastStartYearMonth: params.lastStartYearMonth,
-                lastEndYearMonth: (self.startYearMonth() - 1) % 100 == 0 ? params.startYearMonth - 101 + 12 : self.startYearMonth() - 1,
+                lastEndYearMonth: (self.startYearMonth() - 1) % 100 == 0 ? self.startYearMonth - 89 : self.startYearMonth() - 1,
             };
 
             service.updateHistory(command).done(() => {
                 nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
-                    setShared('QMM041_C_RES_PARAMS', {modifyMethod: self.modifyMethod()});
+                    let dto = {
+                        modifyMethod: self.modifyMethod(),
+                        startYearMonth: self.startYearMonth(),
+                        lastEndYearMonth: command.lastStartYearMonth
+                    };
+                    setShared('QMM041_C_RES_PARAMS', dto);
+
                     nts.uk.ui.windows.close();
                 });
             }).fail(function (err) {
