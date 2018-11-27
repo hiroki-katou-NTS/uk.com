@@ -13,15 +13,19 @@ body {
     margin-right: 30px;
 }
 
-/* #contents-area {
-	min-height: 800px;
-} */
+#A4_2 button{
+    width: 62px;
+}
+
+#A4_12 button{
+    width: 62px;
+}
 
 .pull-left {
     float: left;
 }
 .form-lable{
-    margin-bottom: 15px;
+    margin-bottom: 5px;
 }
 
 /* ---------------------------------------- content-left -----------------------------------------------------------*/
