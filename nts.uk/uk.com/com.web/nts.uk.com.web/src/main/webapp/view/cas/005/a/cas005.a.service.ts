@@ -52,6 +52,9 @@ module nts.uk.com.view.cas005.a {
         export function getEmploymentRoleById(roleId : string) : JQueryPromise<any>{
             return nts.uk.request.ajax("at",paths.getEmploymentRoleById+"/"+roleId);    
         }
+        export function exportExcel(): JQueryPromise<any> {
+            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "RoleEmployment", domainType: "代行承認", languageId: 'ja', reportType: 0});
+        }
         
         
         

@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.auth.app.export.wkpmanager;
 
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.sys.auth.dom.adapter.role.employment.EmploymentAdapter;
+import nts.uk.ctx.sys.auth.dom.adapter.role.employment.RoleEmploymentAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.role.employment.EmploymentRolePubDto;
 import nts.uk.ctx.sys.auth.dom.adapter.webmenu.WebMenuAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.webmenu.WebMenuExport;
@@ -35,7 +35,7 @@ public class RoleEmploymentExportImpl implements MasterListData {
     private RoleRepository mRoleRepository;
 
     @Inject
-    private EmploymentAdapter employmentAdapter;
+    private RoleEmploymentAdapter employmentAdapter;
 
     @Inject
     private WorkPlaceFunctionRepository workPlaceFunctionRepository;

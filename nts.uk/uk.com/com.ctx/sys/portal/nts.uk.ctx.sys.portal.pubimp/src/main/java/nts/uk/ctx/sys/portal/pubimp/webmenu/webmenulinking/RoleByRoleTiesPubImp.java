@@ -5,6 +5,7 @@ import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleByRoleTiesExport;
 import nts.uk.ctx.sys.portal.pub.webmenu.webmenulinking.RoleByRoleTiesPub;
 import nts.uk.shr.com.context.AppContexts;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Optional;
 
@@ -12,6 +13,7 @@ import java.util.Optional;
  * The Class RoleByRoleTiesPubImp.
  * @author PhucTC
  */
+@Stateless
 public class RoleByRoleTiesPubImp implements RoleByRoleTiesPub {
     @Inject
     private RoleByRoleTiesRepository mRoleByRoleTiesRepository;

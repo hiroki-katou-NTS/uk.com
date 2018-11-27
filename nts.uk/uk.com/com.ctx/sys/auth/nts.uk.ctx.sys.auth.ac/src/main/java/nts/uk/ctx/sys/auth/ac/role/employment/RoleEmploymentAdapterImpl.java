@@ -1,14 +1,16 @@
 package nts.uk.ctx.sys.auth.ac.role.employment;
 
 import nts.uk.ctx.at.auth.pub.employmentrole.EmploymentRolePub;
-import nts.uk.ctx.sys.auth.dom.adapter.role.employment.EmploymentAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.role.employment.EmploymentRolePubDto;
+import nts.uk.ctx.sys.auth.dom.adapter.role.employment.RoleEmploymentAdapter;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class EmploymentAdapterImpl implements EmploymentAdapter {
+@Stateless
+public class RoleEmploymentAdapterImpl implements RoleEmploymentAdapter {
     @Inject
     private EmploymentRolePub mEmploymentRolePub;
     @Override
@@ -22,3 +24,4 @@ public class EmploymentAdapterImpl implements EmploymentAdapter {
                 x.getFutureDateRefPermit())).collect(Collectors.toList());
     }
 }
+
