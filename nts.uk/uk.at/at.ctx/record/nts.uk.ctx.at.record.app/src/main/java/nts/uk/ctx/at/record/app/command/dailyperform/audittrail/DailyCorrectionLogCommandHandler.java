@@ -23,8 +23,11 @@ import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
 import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
@@ -35,11 +38,23 @@ public class DailyCorrectionLogCommandHandler extends CommandHandler<DailyCorrec
 	
 	@Inject
 	private DailyAttendanceItemNameAdapter dailyAttendanceItemNameAdapter;
+	
+	@Inject
+	private DailyAttendanceItemRepository dailyAttendanceItemRepository;
 
     private final static List<Integer> ITEM_ID_ALL = AttendanceItemIdContainer.getIds(AttendanceItemType.DAILY_ITEM).stream().map(x -> x.getItemId()).collect(Collectors.toList());
 	
     @Override
 	protected void handle(CommandHandlerContext<DailyCorrectionLogCommand> context) {
+    	List<DailyAttendanceItem> dailyItems = dailyAttendanceItemRepository.getListById(AppContexts.user().companyId(), ITEM_ID_ALL);
+		List<DPAttendanceItemRC> itemTemp = dailyItems.stream()
+				.map(x -> new DPAttendanceItemRC(x.getAttendanceItemId(), x.getAttendanceName().v(),
+						x.getDisplayNumber(), true, x.getNameLineFeedPosition(), x.getDailyAttendanceAtr().value,
+						x.getMasterType().isPresent() ? x.getMasterType().get().value : null,
+						x.getPrimitiveValue().isPresent() ? x.getPrimitiveValue().get().value : null))
+				.collect(Collectors.toList());
+		
+		Map<Integer, DPAttendanceItemRC> lstAttendanceItem = itemTemp.stream().collect(Collectors.toMap(x -> x.getId(), x -> x));
 		DataCorrectionContext.transactional(CorrectionProcessorId.DAILY, () -> {
 	        
 			Map<Integer, String> itemNameMap = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(ITEM_ID_ALL)
@@ -48,7 +63,7 @@ public class DailyCorrectionLogCommandHandler extends CommandHandler<DailyCorrec
 			
 			val correctionLogParameter = new DailyCorrectionLogParameter(
 					mapToDailyCorrection(convertToItemValueFtomItems(context.getCommand().getDailyNew()),
-							convertToItemValueFtomItems(context.getCommand().getDailyOld()), itemEditMap(context.getCommand().getCommandNew()), itemNameMap), context.getCommand().getLstAttendanceItem());
+							convertToItemValueFtomItems(context.getCommand().getDailyOld()), itemEditMap(context.getCommand().getCommandNew()), itemNameMap), lstAttendanceItem);
 			DataCorrectionContext.setParameter(correctionLogParameter);
 			AttendanceItemIdContainer.getIds(AttendanceItemType.DAILY_ITEM);
 		});
@@ -93,11 +108,7 @@ public class DailyCorrectionLogCommandHandler extends CommandHandler<DailyCorrec
 			value.forEach((valueItemKey, valueItemNew) -> {
 				val itemOld = itemOldValueMap.get(valueItemKey);
 				List<Integer> itemEdits = itemEditMap.get(key);
-				if (valueItemNew.getValue() != null && itemOld.getValue() != null
-						&& !valueItemNew.getValue().equals(itemOld.getValue())
-						|| (valueItemNew.getValue() == null && itemOld.getValue() != null)
-						|| (valueItemNew.getValue() != null && itemOld.getValue() == null)
-								&& itemNameMap.containsKey(valueItemKey)) {
+				if (compareValue(valueItemNew, itemOld)) {
 					DailyCorrectedItem item = new DailyCorrectedItem(itemNameMap.get(valueItemKey),
 							valueItemNew.getItemId(), itemOld.getValue(), valueItemNew.getValue(),
 							convertType(valueItemNew.getValueType()), itemEdits.contains(valueItemNew.getItemId())
@@ -128,5 +139,28 @@ public class DailyCorrectionLogCommandHandler extends CommandHandler<DailyCorrec
 		default:
 			return DataValueAttribute.STRING.value;
 		}
+	}
+	
+	private boolean compareValue(ItemValue itemNew, ItemValue itemOld) {
+			// TimeWithDay
+			ValueType type = itemOld.getValueType();
+			if(!type.isCompare()) return !itemNew.equals(itemOld);
+			if(!itemNew.getValueType().equals(itemOld.getValueType())) return false;
+			if (((itemNew.getValue() == null && itemOld.getValue() != null && Double.parseDouble(itemOld.getValue()) == 0)
+					   || (itemOld.getValue() == null && itemNew.getValue() != null && Double.parseDouble(itemNew.getValue()) == 0) 
+					   || (itemNew.getValue() != null && itemOld.getValue() != null && Double.parseDouble(itemOld.getValue()) == 0 && Double.parseDouble(itemNew.getValue()) == 0))) {
+				itemNew.value(0);
+				itemOld.value(0);
+			}else if(itemOld.getValue() != null && itemNew.getValue() != null){
+				itemNew.value(Double.parseDouble(itemNew.getValue()));
+				itemOld.value(Double.parseDouble(itemOld.getValue()));
+			}
+			
+            if(itemOld.getValue() != null && itemNew.getValue() != null && !itemOld.getValue().equals(itemNew.getValue())) {
+            	return true;
+            }else if (!itemOld.equals(itemNew)) {
+				return true;
+			}
+		return false;
 	}
 }

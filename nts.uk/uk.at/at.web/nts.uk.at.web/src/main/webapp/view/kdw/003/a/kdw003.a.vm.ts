@@ -159,6 +159,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         listCheck28: KnockoutObservableArray<any> = ko.observableArray([]);
         listCheckDeviation: any = [];
         listErrorMonth: any = [];
+        hasErrorCalc: booelan = false;
+        
         employIdLogin: any;
         dialogShow: any;
         //contain data share
@@ -911,6 +913,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (self.dialogShow != undefined && self.dialogShow.$dialog != null) {
                 self.dialogShow.close();
             }
+            // check error calc 
+            if (self.flagCalculation && self.hasErrorCalc) {
+                self.showErrorDialog()
+                dfd.resolve();
+                return
+            }
+            
             if (self.workTypeNotFound.length > 0) {
                 self.showErrorDialog();
                 dfd.resolve();
@@ -1274,6 +1283,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.removeErrorRefer();
             let dfd = $.Deferred();
             service.calculation(dataParent).done((data) => {
+                self.flagCalculation = true;
                 if (data.resultError != null && !_.isEmpty(data.resultError.flexShortage)) {
                     if (data.resultError.flexShortage.error && data.resultError.flexShortage.messageError.length != 0) {
                         $("#next-month").ntsError("clear");
@@ -1284,7 +1294,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         $("#next-month").ntsError("clear");
                     }
                 }
-                if (data.resultError == null || !_.isEmpty(data.resultError.errorMap[5])) {
+                if (_.isEmpty(data.resultError)) {
+                    self.hasErrorCalc = false;
                     //self.lstDomainEdit = data.calculatedRows;
                     let lstValue = data.resultValues;
                     _.forEach(self.dpData, row => {
@@ -1325,20 +1336,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         console.log("column key:" + valt.columnKey);
                         $("#dpGrid").mGrid("setState", valt.rowId, valt.columnKey, valt.state);
                     });
-                    self.flagCalculation = true;
                     nts.uk.ui.block.clear();
-                    if (data.resultError != null && data.resultError.errorMap[5] != null) {
-                        self.listErrorMonth = data.resultError.errorMap[5];
-                    }
                 } else {
                     nts.uk.ui.block.clear();
+                    let hasError: boolean = false;
                     if (data.resultError.errorMap[0] != undefined) {
                         self.listCareError(data.resultError.errorMap[0])
                         // nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
+                        hasError = true;
                     }
                     if (data.resultError.errorMap[1] != undefined) {
                         self.listCareInputError(data.resultError.errorMap[1])
                         // nts.uk.ui.dialog.alertError({ messageId: "Msg_1108" })
+                         hasError = true;
                     }
                     if (data.resultError.errorMap[2] != undefined) {
                         self.listCheckHolidays(data.resultError.errorMap[2]);
@@ -1347,11 +1357,20 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
                     if (data.resultError.errorMap[3] != undefined) {
                         self.listCheck28(data.resultError.errorMap[3]);
+                        hasError = true;
                     }
 
                     if (data.resultError.errorMap[4] != undefined) {
                         self.listCheckDeviation = data.resultError.errorMap[4];
+                        hasError = true;
                     }
+                    
+                    if (data.resultError != null && data.resultError.errorMap[5] != null) {
+                        self.listErrorMonth = data.resultError.errorMap[5];
+                        hasError = true;
+                    }
+                    
+                    self.hasErrorCalc = hasError;
                     self.showErrorDialog();
                 }
                 dfd.resolve();
