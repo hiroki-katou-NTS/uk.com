@@ -7,7 +7,7 @@ module kcp010.viewmodel {
     export class ScreenModel {
         wkpList: KnockoutObservableArray<WorkplaceModel>;
         targetBtnText: string;
-
+        flag: boolean = true;
         selectedItem: KnockoutObservable<string>;
         workplaceId: KnockoutObservable<string>;
         workplaceCode: KnockoutObservable<string>;
@@ -33,6 +33,11 @@ module kcp010.viewmodel {
             self.isDisplay = ko.observable(true);
             
             self.systemDate = ko.observable(null);
+            // SelectedItem Subscribe
+            self.selectedItem.subscribe(function(value: string) {
+                self.bindWorkplace(value);
+            });
+                    
         }
 
         // Initialize Component
@@ -47,6 +52,12 @@ module kcp010.viewmodel {
             service.findWorkplaceTree(self.systemDate()).done(function(dataList: Array<service.model.WorkplaceSearchData>) {
                 if (dataList && dataList.length > 0) {
                     self.wkpList(self.convertTreeToArray(dataList));
+                    
+                    if(self.flag){
+                        self.flag = false;
+                        self.getWorkplaceBySid();
+                    }
+                    
                     self.tabIndex = data.tabIndex;
                     if (self.wkpList().length > 1) {
                         self.wkpList().sort(function(left, right) {
@@ -54,21 +65,6 @@ module kcp010.viewmodel {
                                 0 : (left.code < right.code ? -1 : 1)
                         });
                     }
-                    
-                    // SelectedItem Subscribe
-                    self.selectedItem.subscribe(function(value: string) {
-                        self.bindWorkplace(value);
-                    });
-                    
-                    service.getWorkplaceBySid().done(function(workplace: service.model.WorkplaceSearchData) {
-                        if  (workplace && workplace != null) {
-                            self.selectedItem(workplace.workplaceId);
-                        } else {
-                            self.selectedItem(self.wkpList()[0].workplaceId);
-                        }
-                    }).fail(function(res) {
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_7" });
-                    });
                     
                     self.targetBtnText = data.targetBtnText;
                     
@@ -134,6 +130,20 @@ module kcp010.viewmodel {
             
             return dfd.promise();
         }
+        
+        public getWorkplaceBySid(): void {
+            let self = this;
+            service.getWorkplaceBySid().done(function(workplace: service.model.WorkplaceSearchData) {
+                if (workplace && workplace != null) {
+                    self.selectedItem(workplace.workplaceId);
+                } else {
+                    self.selectedItem(self.wkpList()[0].workplaceId);
+                }
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert({ messageId: "Msg_7" });
+            });
+        }
+       
         
         /**
          * open dialog CDL008
