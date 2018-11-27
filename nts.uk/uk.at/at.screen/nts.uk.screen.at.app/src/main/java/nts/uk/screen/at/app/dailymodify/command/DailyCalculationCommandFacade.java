@@ -103,6 +103,7 @@ public class DailyCalculationCommandFacade {
 		// chuan bi data
 		String companyId = AppContexts.user().companyId();
 		List<DailyRecordDto> editedDtos = dataParent.getDailyEdits();
+		List<DailyRecordDto> editedKeep = editedDtos.stream().map(x -> x.clone()).collect(Collectors.toList());
 		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDateEdit = dataParent.getItemValues().stream()
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 
@@ -177,7 +178,7 @@ public class DailyCalculationCommandFacade {
 				return returnData;
 			}
 		}
-		return new DailyPerformanceCalculationDto(null, new ArrayList<>(), new DataResultAfterIU(resultError, flexShortage, false), Collections.emptyList());
+		return new DailyPerformanceCalculationDto(editedKeep, new ArrayList<>(), new DataResultAfterIU(resultError, flexShortage, false), Collections.emptyList());
 	}
 
 	/**
