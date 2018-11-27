@@ -4,13 +4,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutPattern;
 
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class StatementLayoutExportData {
+public class StatementLayoutSetExportData {
     /**
      * 明細書コード
      */
@@ -23,6 +24,10 @@ public class StatementLayoutExportData {
      * 基準年月
      */
     private YearMonth processingDate;
+    /**
+     * レイアウトパターン
+     */
+    private StatementLayoutPattern layoutPattern;
     /**
      * カテゴリ別設定
      */

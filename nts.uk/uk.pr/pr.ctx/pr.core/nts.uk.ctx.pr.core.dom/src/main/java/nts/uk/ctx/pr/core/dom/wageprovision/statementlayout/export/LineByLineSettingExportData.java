@@ -1,13 +1,15 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.export;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementPrintAtr;
 
 import java.util.List;
 
-@AllArgsConstructor
+@NoArgsConstructor
 @Getter
+@Setter
 public class LineByLineSettingExportData {
     /**
      * 印字設定
@@ -23,4 +25,5 @@ public class LineByLineSettingExportData {
      * 項目別設定
      */
     private List<SettingByItemExportData> listSetByItem;
+
 }

@@ -5,17 +5,19 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.salaryindividualamountname.SalIndAmountNameRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.deductionitemset.DeductionItemSetRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.PaymentItemSetRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.*;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.export.StatementLayoutExportData;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.export.StatementLayoutFileGenerator;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.export.*;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -32,6 +34,9 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 
     @Inject
     private FormulaRepository formulaRepo;
+
+    @Inject
+    private StatementItemRepository statementItemRepo;
 
     @Inject
     private StatementLayoutRepository statementLayoutRepo;
@@ -54,16 +59,24 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
         StatementLayoutExportQuery cmd = exportServiceContext.getQuery();
         List<String> sttCodes = exportServiceContext.getQuery().getStatementCodes();
         int processingDate = cmd.getProcessingDate();
+        List<StatementLayoutSetExportData> exportData = new ArrayList();
+
         // ドメインモデル「賃金テーブル」を取得する
-        wageTableRepo.getAllWageTable(cid);
+        Map<String, String> wageTableMap = wageTableRepo.getAllWageTable(cid)
+                .stream().collect(Collectors.toMap(x -> x.getWageTableCode().v(), x -> x.getWageTableName().v()));
         // ドメインモデル「給与個人別金額名称」を取得する
-        salIndAmountNameRepo.getSalIndAmountName(cid);
+        Map<String, String> salIndAmountNameMap = salIndAmountNameRepo.getSalIndAmountName(cid)
+                .stream().collect(Collectors.toMap(x -> x.getIndividualPriceCode().v(), x -> x.getIndividualPriceName().v()));
         // ドメインモデル「計算式」を取得する
-        formulaRepo.getAllFormula();
+        Map<String, String> formulaMap = formulaRepo.getAllFormula()
+                .stream().collect(Collectors.toMap(x -> x.getFormulaCode().v(), x -> x.getFormulaName().v()));
+        Map<String, String> statementItemMap = statementItemRepo.getItemCustomByDeprecated(cid, false)
+                .stream().collect(Collectors.toMap(x -> x.getItemNameCd(), x -> x.getName()));
 
         // ドメインモデル「明細書レイアウト」を取得する
         Map<String, StatementLayout> statementLayoutMap = statementLayoutRepo.getAllStatementLayoutByCidAndCodes(cid, sttCodes)
                 .stream().collect(Collectors.toMap(x -> x.getStatementCode().v(), x -> x));
+
 
         // ドメインモデル「明細書レイアウト履歴」を取得する
         // 取得した明細書レイアウト履歴から基準年月に準ずる履歴IDを取得する
@@ -72,13 +85,16 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 
         // 選択された明細書ごとに処理を行う
         for (String sttCode : sttCodes) {
-            StatementLayout sttLayout = null;
-            StatementLayoutHist sttLayoutHist = null;
+            StatementLayout sttLayout;
+            StatementLayoutHist sttLayoutHist;
             String histId = null;
+            List<SettingByCtgExportData> listSettingByCtgEx = new ArrayList();
+
             // ドメインモデル「明細書レイアウト」を取得する
-            if (statementLayoutMap.containsKey(sttCode)) {
-                sttLayout = statementLayoutMap.get(sttCode);
+            if (!statementLayoutMap.containsKey(sttCode)) {
+                continue;
             }
+            sttLayout = statementLayoutMap.get(sttCode);
             // ドメインモデル「明細書レイアウト履歴」を取得する
             if (statementLayoutHistMap.containsKey(sttCode)) {
                 sttLayoutHist = statementLayoutHistMap.get(sttCode);
@@ -92,7 +108,9 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
             Optional<StatementLayoutSet> sttLayoutSetOtp = statementLayoutSetRepo.getStatementLayoutSetById(histId);
             // 取得した給与項目IDごとに処理を実施する
             if (!sttLayoutSetOtp.isPresent()) continue;
-            for (SettingByCtg set : sttLayoutSetOtp.get().getListSettingByCtg()) {
+            StatementLayoutSet sttLayoutSet = sttLayoutSetOtp.get();
+            for (SettingByCtg set : sttLayoutSet.getListSettingByCtg()) {
+                SettingByCtgExportData setEx = new SettingByCtgExportData();
                 // ドメインモデル「明細書項目名称」を取得する
                 // ドメインモデル「明細書項目」を取得する
                 switch (set.getCtgAtr()) {
@@ -107,15 +125,182 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
                 }
                 // ドメインモデル「明細書項目範囲設定」を取得する
 
+                List<LineByLineSettingExportData> listLineByLineSetEx = this.mapLineSetting(set,
+                        wageTableMap, salIndAmountNameMap, formulaMap, statementItemMap);
+                setEx.setCtgAtr(set.getCtgAtr());
+                setEx.setListLineByLineSet(listLineByLineSetEx);
+                listSettingByCtgEx.add(setEx);
             }
 
-            StatementLayoutExportData data = new StatementLayoutExportData();
+            StatementLayoutSetExportData data = new StatementLayoutSetExportData();
             data.setStatementCode(sttLayout.getStatementCode().v());
             data.setStatementName(sttLayout.getStatementName().v());
             data.setProcessingDate(new YearMonth(processingDate));
-            data.setListSettingByCtg(sttLayoutSetOtp.get().getListSettingByCtg());
+            data.setLayoutPattern(sttLayoutSet.getLayoutPattern());
+            data.setListSettingByCtg(listSettingByCtgEx);
+            exportData.add(data);
         }
-        dtatementLayoutFileGenerator.generate();
+        dtatementLayoutFileGenerator.generate(exportData);
+    }
+
+    private List<LineByLineSettingExportData> mapLineSetting(SettingByCtg set,
+                                                             Map<String, String> wageTableMap,
+                                                             Map<String, String> salIndAmountNameMap,
+                                                             Map<String, String> formulaMap,
+                                                             Map<String, String> statementItemMap) {
+        List<LineByLineSettingExportData> listLineByLineSetEx = new ArrayList();
+        for (LineByLineSetting line : set.getListLineByLineSet()) {
+            LineByLineSettingExportData lineEx = new LineByLineSettingExportData();
+            List<SettingByItemExportData> listSetByItemEx = this.mapItemSetting(line, set.getCtgAtr(),
+                    wageTableMap, salIndAmountNameMap, formulaMap, statementItemMap);
+            lineEx.setPrintSet(line.getPrintSet());
+            lineEx.setLineNumber(line.getLineNumber());
+            lineEx.setListSetByItem(listSetByItemEx);
+            listLineByLineSetEx.add(lineEx);
+        }
+
+        return listLineByLineSetEx;
+    }
+
+    private List<SettingByItemExportData> mapItemSetting(LineByLineSetting line, CategoryAtr ctgAtr,
+                                                         Map<String, String> wageTableMap,
+                                                         Map<String, String> salIndAmountNameMap,
+                                                         Map<String, String> formulaMap,
+                                                         Map<String, String> statementItemMap) {
+        List<SettingByItemExportData> listSetByItemEx = new ArrayList();
+        for (SettingByItem item : line.getListSetByItem()) {
+            SettingByItemExportData itemEx = new SettingByItemExportData();
+            itemEx.setItemPosition(itemEx.getItemPosition());
+            itemEx.setItemId(itemEx.getItemId());
+            if (item instanceof SettingByItemCustom) {
+                SettingByItemCustom itemCustom = (SettingByItemCustom) item;
+                itemEx.setItemName(itemCustom.getShortName());
+                switch (ctgAtr) {
+                    case PAYMENT_ITEM:
+                        this.mapPayment(itemEx, itemCustom, wageTableMap, salIndAmountNameMap, formulaMap);
+                        break;
+                    case DEDUCTION_ITEM:
+                        this.mapDeduction(itemEx, itemCustom, wageTableMap, salIndAmountNameMap, formulaMap, statementItemMap);
+                        break;
+                    case ATTEND_ITEM:
+                        this.mapAttend(itemEx, itemCustom);
+                        break;
+                }
+            }
+            listSetByItemEx.add(itemEx);
+        }
+        return listSetByItemEx;
+    }
+
+    private void mapPayment(SettingByItemExportData itemEx, SettingByItemCustom itemCustom,
+                            Map<String, String> wageTableMap,
+                            Map<String, String> salIndAmountNameMap,
+                            Map<String, String> formulaMap) {
+        PaymentExportData paymentEx = new PaymentExportData();
+        Optional<PaymentItemDetailSet> paymentItemDetailOtp = itemCustom.getPaymentItemDetailSet();
+        if (paymentItemDetailOtp.isPresent()) {
+            PaymentItemDetailSet paymentItemDetail = paymentItemDetailOtp.get();
+            paymentEx.setTotalObj(paymentItemDetail.getTotalObj());
+            paymentEx.setCalcMethod(paymentItemDetail.getCalcMethod());
+            paymentEx.setProportionalAtr(paymentItemDetail.getProportionalAtr());
+            ItemRangeSetExportData itemRangeSet = new ItemRangeSetExportData();
+            paymentEx.setItemRangeSet(itemRangeSet);
+
+            switch (paymentItemDetail.getCalcMethod()) {
+                case CACL_FOMULA:
+                    if (paymentItemDetail.getCalcFomulaCd().isPresent()) {
+                        String formulaCd = paymentItemDetail.getCalcFomulaCd().get().v();
+                        paymentEx.setCalcFomulaCd(formulaCd);
+                        if (formulaMap.containsKey(formulaCd)) {
+                            paymentEx.setCalcFomulaName(formulaMap.get(formulaCd));
+                        }
+                    }
+                    break;
+                case PERSON_INFO_REF:
+                    if (paymentItemDetail.getPersonAmountCd().isPresent()) {
+                        String personAmountCd = paymentItemDetail.getPersonAmountCd().get().v();
+                        paymentEx.setPersonAmountCd(personAmountCd);
+                        if (salIndAmountNameMap.containsKey(personAmountCd)) {
+                            paymentEx.setPersonAmountName(salIndAmountNameMap.get(personAmountCd));
+                        }
+                    }
+                    break;
+                case WAGE_TABLE:
+                    if (paymentItemDetail.getWageTblCode().isPresent()) {
+                        String wageTblCode = paymentItemDetail.getWageTblCode().get().v();
+                        paymentEx.setWageTblCode(wageTblCode);
+                        if (wageTableMap.containsKey(wageTblCode)) {
+                            paymentEx.setWageTblName(wageTableMap.get(wageTblCode));
+                        }
+                    }
+                    break;
+            }
+            itemEx.setPayment(paymentEx);
+        }
+    }
+
+    private void mapDeduction(SettingByItemExportData itemEx, SettingByItemCustom itemCustom,
+                              Map<String, String> wageTableMap,
+                              Map<String, String> salIndAmountNameMap,
+                              Map<String, String> formulaMap,
+                              Map<String, String> statementItemMap) {
+        DeductionExportData deductionEx = new DeductionExportData();
+        Optional<DeductionItemDetailSet> deductionitemDetailOtp = itemCustom.getDeductionItemDetailSet();
+        if (deductionitemDetailOtp.isPresent()) {
+            DeductionItemDetailSet deductionItemDetail = deductionitemDetailOtp.get();
+            deductionEx.setTotalObj(deductionItemDetail.getTotalObj());
+            deductionEx.setCalcMethod(deductionItemDetail.getCalcMethod());
+            deductionEx.setProportionalAtr(deductionItemDetail.getProportionalAtr());
+            ItemRangeSetExportData itemRangeSet = new ItemRangeSetExportData();
+            deductionEx.setItemRangeSet(itemRangeSet);
+
+            switch (deductionItemDetail.getCalcMethod()) {
+                case CACL_FOMULA:
+                    if (deductionItemDetail.getCalcFormulaCd().isPresent()) {
+                        String formulaCd = deductionItemDetail.getCalcFormulaCd().get().v();
+                        deductionEx.setCalcFomulaCd(formulaCd);
+                        if (formulaMap.containsKey(formulaCd)) {
+                            deductionEx.setCalcFomulaName(formulaMap.get(formulaCd));
+                        }
+                    }
+                    break;
+                case PERSON_INFO_REF:
+                    if (deductionItemDetail.getPersonAmountCd().isPresent()) {
+                        String personAmountCd = deductionItemDetail.getPersonAmountCd().get().v();
+                        deductionEx.setPersonAmountCd(personAmountCd);
+                        if (salIndAmountNameMap.containsKey(personAmountCd)) {
+                            deductionEx.setPersonAmountName(salIndAmountNameMap.get(personAmountCd));
+                        }
+                    }
+                    break;
+                case WAGE_TABLE:
+                    if (deductionItemDetail.getWageTblCd().isPresent()) {
+                        String wageTblCode = deductionItemDetail.getWageTblCd().get().v();
+                        deductionEx.setWageTblCode(wageTblCode);
+                        if (wageTableMap.containsKey(wageTblCode)) {
+                            deductionEx.setWageTblName(wageTableMap.get(wageTblCode));
+                        }
+                    }
+                    break;
+                case SUPPLY_OFFSET:
+                    if (deductionItemDetail.getSupplyOffset().isPresent()) {
+                        String sttCode = deductionItemDetail.getSupplyOffset().get();
+                        deductionEx.setSupplyOffset(sttCode);
+                        if (statementItemMap.containsKey(sttCode)) {
+                            deductionEx.setSupplyOffsetName(statementItemMap.get(sttCode));
+                        }
+                    }
+                    break;
+            }
+            itemEx.setDeduction(deductionEx);
+        }
+    }
+
+    private void mapAttend(SettingByItemExportData itemEx, SettingByItemCustom itemCustom) {
+        AttendExportData attendEx = new AttendExportData();
+        ItemRangeSetExportData itemRangeSet = new ItemRangeSetExportData();
+        attendEx.setItemRangeSet(itemRangeSet);
+        itemEx.setAttend(attendEx);
     }
 
     List<String> getItemIds(SettingByCtg settingByCtg) {

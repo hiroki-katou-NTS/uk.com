@@ -2,12 +2,15 @@ package nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.export;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
 
 import java.util.List;
 
-@AllArgsConstructor
+@NoArgsConstructor
 @Getter
+@Setter
 public class SettingByCtgExportData {
     /**
      * カテゴリ区分
