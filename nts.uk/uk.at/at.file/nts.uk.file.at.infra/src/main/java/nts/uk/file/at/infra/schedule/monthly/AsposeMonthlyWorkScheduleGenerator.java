@@ -386,11 +386,17 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		condition.setLstDisplayedAttendance(lstItem.stream().filter(x -> lstAttendanceId.contains(x.getAttendanceDisplay())).collect(Collectors.toList()));
 		
 		lstAttendanceId.stream().forEach(x -> {
-			AttItemName attendanceItem = lstAttendanceDto.stream().filter(item -> item.getAttendanceItemId() == x).findFirst().get();
+			Optional<AttItemName> opAttendanceItem = lstAttendanceDto.stream()
+					.filter(item -> item.getAttendanceItemId() == x).findFirst();
 			OutputItemSetting setting = new OutputItemSetting();
-			//setting.setItemCode(attendanceItem.getAttendanceItemDisplayNumber());
-			setting.setItemCode(attendanceItem.getAttendanceItemId());
-			setting.setItemName(attendanceItem.getAttendanceItemName());
+			// setting.setItemCode(attendanceItem.getAttendanceItemDisplayNumber());
+			if (opAttendanceItem.isPresent()) {
+				setting.setItemCode(opAttendanceItem.get().getAttendanceItemId());
+				setting.setItemName(opAttendanceItem.get().getAttendanceItemName());
+			} else {
+				setting.setItemCode(null);
+				setting.setItemName("");
+			}
 			headerData.lstOutputItemSettingCode.add(setting);
 		});
 	}
