@@ -711,7 +711,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		
 	}
 	@Override
-	public void updateTransferTimeFrame(String employeeId, GeneralDate dateData,
+	public AttendanceTimeOfDailyPerformance updateTransferTimeFrame(String employeeId, GeneralDate dateData,
 			Map<Integer, Integer> transferTimeFrame, AttendanceTimeOfDailyPerformance attendanceTimeData) {
 		ActualWorkingTimeOfDaily actualWorkingTime = attendanceTimeData.getActualWorkingTimeOfDaily();
 		TotalWorkingTime totalWorkingTime =  actualWorkingTime.getTotalWorkingTime();		
@@ -719,12 +719,12 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		//日別実績の休出時間
 		Optional<HolidayWorkTimeOfDaily> optWorkHolidayTime = excessOfStatutory.getWorkHolidayTime();
 		if(!optWorkHolidayTime.isPresent()) {
-			return;
+			return attendanceTimeData;
 		}
 		HolidayWorkTimeOfDaily workHolidayTime = optWorkHolidayTime.get();
 		List<HolidayWorkFrameTime> lstHolidayWorkFrameTime = workHolidayTime.getHolidayWorkFrameTime();
 		if(lstHolidayWorkFrameTime.isEmpty()) {
-			return;
+			return attendanceTimeData;
 		}
 		lstHolidayWorkFrameTime.stream().forEach(x -> {
 			if(transferTimeFrame.containsKey(x.getHolidayFrameNo().v())) {
@@ -744,18 +744,19 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			}
 		}
 		this.updateEditStateOfDailyPerformance(employeeId, dateData, lstWorktimeFrameTemp);
+		return attendanceTimeData;
 	}
 	@Override
-	public void updateRecordStartEndTimeReflectRecruitment(TimeReflectPara data,
+	public TimeLeavingOfDailyPerformance updateRecordStartEndTimeReflectRecruitment(TimeReflectPara data,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyData) {
 		if(!data.isStart()
 				&& !data.isEnd()) {
-			return;
+			return timeLeavingOfDailyData;
 		}
 		List<TimeLeavingWork> lstTimeLeavingWorks = timeLeavingOfDailyData.getTimeLeavingWorks().stream()
 				.filter(x -> x.getWorkNo().v() == data.getFrameNo()).collect(Collectors.toList());
 		if(lstTimeLeavingWorks.isEmpty()) {
-			return;
+			return timeLeavingOfDailyData;
 		}
 		TimeLeavingWork timeLeavingWork = lstTimeLeavingWorks.get(0);
 		Optional<TimeActualStamp> optTimeAttendanceStart = timeLeavingWork.getAttendanceStamp();
@@ -814,7 +815,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			}
 		}
 		this.updateEditStateOfDailyPerformance(data.getEmployeeId(), data.getDateData(), lstItem);
-		
+		return timeLeavingOfDailyData;
 	}
 
 	@Override
