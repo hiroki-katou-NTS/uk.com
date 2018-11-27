@@ -105,7 +105,7 @@ module nts.uk.com.view.ccg022.a.screenModel {
             if (setting != null) {
                 status = data.company.systemStatus;
             } else {
-                status = data.system.systemStatus;
+                status = data.system ? data.system.systemStatus : null;
             }
             if (status == 1) {
                 return text("CCG022_32");
