@@ -344,6 +344,20 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//実際の計算処理
 		val calcResult = calcRecord(record,schedule, companyCommonSetting,personCommonSetting, converter);
 		calcResult.setCalAttr(copyCalcAtr);
+		org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(this.getClass());
+		log.info("使った労働制は↓です。");
+		if(personCommonSetting.getPersonInfo().isPresent()) {
+			String wS = personCommonSetting.getPersonInfo().get().getLaborSystem().toString();
+			log.info("社員ID:"+integrationOfDaily.getAffiliationInfor().getEmployeeId());
+			log.info("targetDay:"+integrationOfDaily.getAffiliationInfor().getYmd().toString());
+			log.info("労働制:" + wS);
+		}
+		else {
+			log.info("社員ID:"+integrationOfDaily.getAffiliationInfor().getEmployeeId());
+			log.info("targetDay:"+integrationOfDaily.getAffiliationInfor().getYmd().toString());
+			log.info("計算内部ですが、労働制がOptional.emptyだそうです。");
+		}
+		log.info("使った労働制は↑でした。");
 		return ManageCalcStateAndResult.successCalc(calcResult);
 	}
 
