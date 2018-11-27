@@ -64,7 +64,7 @@ module nts.uk.pr.view.qmm041.c.viewmodel {
                     let dto = {
                         modifyMethod: self.modifyMethod(),
                         startYearMonth: self.startYearMonth(),
-                        lastEndYearMonth: command.lastStartYearMonth
+                        lastEndYearMonth: command.lastEndYearMonth
                     };
                     setShared('QMM041_C_RES_PARAMS', dto);
 
