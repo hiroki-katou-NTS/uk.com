@@ -22,7 +22,7 @@ public class StopSettingFinder {
 
 	public StopSettingDto find(int isSystem) {
 		StopSettingDto result = new StopSettingDto();
-		result.setAdmin(true);//AppContexts.user().roles().have().systemAdmin());
+		result.setAdmin(AppContexts.user().roles().have().systemAdmin());
 
 		boolean isAdmin = result.isAdmin();
 		if (isAdmin) {

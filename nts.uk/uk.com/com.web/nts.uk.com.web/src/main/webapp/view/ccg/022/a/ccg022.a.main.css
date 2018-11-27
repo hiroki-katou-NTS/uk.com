@@ -5,8 +5,9 @@
 }
 
 #group-mode {
-	width: calc(100% - 90px);
+	width: 630px;
 	margin-left: 25px;
+	height: 680px;
 }
 
 #group-mode .ntsRadioBox {
