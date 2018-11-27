@@ -524,15 +524,19 @@ module nts.uk.pr.view.qmm017.share.model {
         masterUseItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getMasterUseEnumModel());
         masterBranchUseItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getMasterBranchUseEnumModel());
         // display item
+        // C3_2 分岐条件 displayMasterUse + のマスタに該当する場合
         displayMasterUse: KnockoutObservable<string> = ko.observable(null);
+        branchCondition: KnockoutObservable<string> = ko.observable(null);
         displayMasterBranchUse: KnockoutObservable<string> = ko.observable(null);
-
         constructor(params: IBasicFormulaSetting) {
             this.masterUse(params ? params.masterUse : MASTER_USE.EMPLOYMENT);
             this.masterBranchUse(params ? params.masterBranchUse : MASTER_BRANCH_USE.NOT_USE);
             this.historyID(params ? params.historyID : null);
             this.displayMasterUse = ko.computed(function() {
                 return this.masterUse() != null ? this.masterUseItem()[this.masterUse()].name : null;
+            }, this);
+            this.branchCondition = ko.computed(function() {
+                return this.displayMasterUse() + "のマスタに該当する場合";
             }, this);
             this.displayMasterBranchUse = ko.computed(function() {
                 return this.masterBranchUse() != null ? this.masterBranchUseItem()[this.masterBranchUse()].name : null;

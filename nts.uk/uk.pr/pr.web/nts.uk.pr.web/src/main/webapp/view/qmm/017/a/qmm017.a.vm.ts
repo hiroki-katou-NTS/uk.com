@@ -10,12 +10,12 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
 
     export class ScreenModel {
         // screen state
-        isOnStartUp = true;
         isNewMode: KnockoutObservable<boolean> = ko.observable(false);
         isUpdateMode: KnockoutObservable<boolean> = ko.observable(false);
         isAddHistoryMode: KnockoutObservable<boolean> = ko.observable(false);
         screenMode: KnockoutObservable<number> = ko.observable(model.SCREEN_MODE.NEW);
         isSelectedHistory: KnockoutObservable<boolean> = ko.observable(false);
+        isCompleteChangeToAddHistoryMode: boolean = false;
         // tabs variables
         tabs: any;
         selectedTab: KnockoutObservable<string>;
@@ -54,7 +54,10 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 self.isAddHistoryMode(newValue == model.SCREEN_MODE.ADD_HISTORY);
             })
             self.selectedFormulaIdentifier.subscribe(newValue => {
-                if (self.screenMode() == model.SCREEN_MODE.ADD_HISTORY) self.getListFormula();
+                if (self.screenMode() == model.SCREEN_MODE.ADD_HISTORY && self.isCompleteChangeToAddHistoryMode){
+                    self.getListFormula();
+                    self.isCompleteChangeToAddHistoryMode = false;
+                }
                 if (newValue) {
                     self.showFormulaInfoByValue(newValue);
                 } else {
@@ -99,7 +102,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             self.selectedTab.subscribe(newTab => {
                 let itemToBeFocus = "";
                 if (newTab == 'tab-2') {
-                    if (self.selectedFormula().settingMethod() == 0) {
+                    if (self.selectedFormula().settingMethod() == model.FORMULA_SETTING_METHOD.BASIC_SETTING) {
                         if (self.basicFormulaSetting().masterBranchUse() == model.MASTER_BRANCH_USE.USE) itemToBeFocus = '#B1_4';
                         else itemToBeFocus = '#C2_7';
                     } else itemToBeFocus = '#D1_4';
@@ -113,6 +116,11 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         register () {
             let self = this;
             let command = ko.toJS(self.selectedFormula);
+            nts.uk.ui.errors.clearAll();
+            $('.nts-input').trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
             let formulaSettingCommand = {
                 basicFormulaSettingCommand: ko.toJS(self.basicFormulaSetting),
                 detailFormulaSettingCommand: ko.toJS(self.detailFormulaSetting),
@@ -352,11 +360,13 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                             formula = new model.Formula(formula);
                         }
                     });
+                    self.isCompleteChangeToAddHistoryMode = false;
                     self.screenMode(model.SCREEN_MODE.ADD_HISTORY);
                     // to prevent call service for new history
                     // update formula and tree grid
                     self.convertToTreeList(formulaList);
                     self.selectedFormulaIdentifier(selectedFormula.formulaCode + historyID);
+                    self.isCompleteChangeToAddHistoryMode = true;
                     self.screenMode(model.SCREEN_MODE.ADD_HISTORY);
                     // clone data
                     if (params.takeoverMethod == model.TAKEOVER_METHOD.FROM_LAST_HISTORY && history.length > 1) {

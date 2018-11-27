@@ -305,7 +305,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             let self = this;
             block.invisible();
             // 廃止区分＝廃止しない (false)
-            service.getAllUnitPriceItem(unitPriceItemCategory, false).done(function(data) {
+            service.getAllUnitPriceItem(unitPriceItemCategory, false, __viewContext.screenModel.selectedHistory().startMonth()).done(function(data) {
                 self.unitPriceItemList(data);
                 block.clear();
             }).fail(function(err) {
@@ -316,13 +316,15 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
 
         showUnitPriceItemData (unitPriceItemCategory, code) {
             let self = this, dfd = $.Deferred();
-            block.invisible();
-            service.getUnitPriceItemByCode(unitPriceItemCategory, code).done(function(data) {
+            // block.invisible();
+            service.getUnitPriceItemByCode(unitPriceItemCategory, code,__viewContext.screenModel.selectedHistory().startMonth()).done(function(data) {
                 self.selectedUnitPriceItem(ko.mapping.fromJS(data));
                 // TODO
                 if (unitPriceItemCategory == model.UNIT_PRICE_ITEM_CATEGORY.INDIVIDUAL_UNIT_PRICE_ITEM)
-                self.displayUnitPriceItemNote(data.salaryPerUnitPriceName ? data.salaryPerUnitPriceName.note : null);
-                else self.displayUnitPriceItemNote("Temporary can't decide");
+                    self.displayUnitPriceItemNote(data ? data.salaryPerUnitPriceName ? data.salaryPerUnitPriceName.note : null : null);
+                else {
+                    self.displayUnitPriceItemNote(data ? data.notes : null);
+                }
                 block.clear();
                 dfd.resolve();
             }).fail(function(err) {

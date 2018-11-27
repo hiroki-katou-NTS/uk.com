@@ -27,7 +27,8 @@
                         enable: true,
                         rows: 8,
                         columns: [
-                            { key: 'name', length: 13 }
+                            { key: 'name', length: 8 },
+                            { key: 'fixed_size', length: 4 }
                         ]}">
                         </div>
                         <div class="large-right-caret-container" style="display: inline-block">
@@ -36,14 +37,14 @@
                         <div class="tab-panel-col-2">
                             <div style="display: inline-block; ">
                                 <i class="search-icon"></i>
-                                <div style="width: 140px; margin-left: 40px;" data-bind="ntsSearchBox: {
-                            searchMode: 'highlight',
-                            targetKey: 'itemNameCd',
-                            comId: 'D2_5',
-                            items: statementItemList,
-                            selectedKey: 'code',
-                            fields: ['itemNameCd', 'name'],
-                            mode: 'listbox'}"></div>
+                                <div class = "search-box-sm" data-bind="ntsSearchBox: {
+                                    searchMode: 'highlight',
+                                    targetKey: 'itemNameCd',
+                                    comId: 'D2_5',
+                                    items: statementItemList,
+                                    selectedKey: 'code',
+                                    fields: ['itemNameCd', 'name'],
+                                    mode: 'listbox'}"></div>
                             </div>
                             <div id="D2_5" data-bind="ntsListBox: {
                             options: statementItemList,
@@ -90,7 +91,7 @@
                         <div class="tab-panel-col-2">
                             <div style="display: inline-block; ">
                                 <i class="search-icon"></i>
-                                <div style="width: 140px; margin-left: 40px;" data-bind="ntsSearchBox: {
+                                <div class = "search-box-sm" data-bind="ntsSearchBox: {
                             searchMode: 'highlight',
                             targetKey: 'code',
                             comId: 'D5_5',
@@ -144,7 +145,7 @@
                         <div class="tab-panel-col-2">
                             <div style="display: inline-block; ">
                                 <i class="search-icon"></i>
-                                <div style="width: 140px; margin-left: 40px;" data-bind="ntsSearchBox: {
+                                <div class = "search-box-sm"  data-bind="ntsSearchBox: {
                             searchMode: 'highlight',
                             targetKey: 'value',
                             comId: 'D6_5',
@@ -198,7 +199,7 @@
                         <div class="tab-panel-col-2">
                             <div style="display: inline-block; ">
                                 <i class="search-icon"></i>
-                                <div style="width: 140px; margin-left: 40px;" data-bind="ntsSearchBox: {
+                                <div class = "search-box-sm"  data-bind="ntsSearchBox: {
                             searchMode: 'highlight',
                             targetKey: 'value',
                             comId: 'D7_5',
@@ -255,7 +256,7 @@
                         <div class="tab-panel-col-2">
                             <div style="display: inline-block; ">
                                 <i class="search-icon"></i>
-                                <div style="width: 140px; margin-left: 40px;" data-bind="ntsSearchBox: {
+                                <div class = "search-box-sm"  data-bind="ntsSearchBox: {
                             searchMode: 'highlight',
                             targetKey: 'formulaCode',
                             comId: 'D9_5',
@@ -307,7 +308,7 @@
                         <div class="tab-panel-col-2">
                             <div style="display: inline-block; ">
                                 <i class="search-icon"></i>
-                                <div style="width: 140px; margin-left: 40px;" data-bind="ntsSearchBox: {
+                                <div class = "search-box-sm"  data-bind="ntsSearchBox: {
                                     searchMode: 'highlight',
                                     targetKey: 'wageTableCode',
                                     comId: 'D10_5',
