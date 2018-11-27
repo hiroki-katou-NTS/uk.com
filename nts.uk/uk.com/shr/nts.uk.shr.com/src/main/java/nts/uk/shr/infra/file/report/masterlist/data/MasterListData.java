@@ -14,9 +14,17 @@ public interface MasterListData {
 	
 	default public Map<String, List<MasterData>> getExtraMasterData(MasterListExportQuery query){
 		return Collections.emptyMap();
-	};
+	}
 	
 	default public Map<String, List<MasterHeaderColumn>> getExtraHeaderColumn(MasterListExportQuery query){
 		return Collections.emptyMap();
-	};
+	}
+	
+	default public String mainSheetName(){
+		return null;
+	}
+	
+	default public List<SheetData> extraSheets(MasterListExportQuery query){
+		return Collections.emptyList();
+	}
 }
