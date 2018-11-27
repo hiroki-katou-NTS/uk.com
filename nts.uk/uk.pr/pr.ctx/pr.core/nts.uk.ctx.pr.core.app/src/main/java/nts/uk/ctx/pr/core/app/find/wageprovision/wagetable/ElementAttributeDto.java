@@ -12,23 +12,26 @@ public class ElementAttributeDto {
 	/**
 	 * マスタ数値区分
 	 */
-	private Integer masterNumericAtr;
+	private Integer masterNumericClassification;
 
 	/**
 	 * 固定の要素
 	 */
-	private Integer fixedElement;
+	private String fixedElement;
 
 	/**
 	 * 任意追加の要素
 	 */
 	private String optionalAdditionalElement;
+	
+	private String displayName;
 
 	public static ElementAttributeDto fromDomainToDto(ElementAttribute domain) {
 		ElementAttributeDto dto = new ElementAttributeDto();
-		dto.masterNumericAtr = domain.getMasterNumericAtr().map(i -> i.value).orElse(null);
+		dto.masterNumericClassification = domain.getMasterNumericAtr().map(i -> i.value).orElse(null);
 		dto.fixedElement = domain.getFixedElement().map(i -> i.value).orElse(null);
 		dto.optionalAdditionalElement = domain.getOptionalAdditionalElement().map(PrimitiveValueBase::v).orElse(null);
+		dto.displayName = null;
 		return dto;
 	}
 

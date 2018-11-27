@@ -1,7 +1,5 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statementbindingsetting;
 
-import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementLayoutHistDto;
-
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout.StatementNameLayoutHistDto;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employment.SysEmploymentAdapter;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.EmpCdNameImport;

@@ -10,7 +10,7 @@ module nts.uk.pr.view.qmm016.i.viewmodel {
         wageTableName: KnockoutObservable<string> = ko.observable('');
         startMonth: KnockoutObservable<string> = ko.observable('');
         takeoverMethod: KnockoutObservable<number> = ko.observable(1);
-        takeoverItem: KnockoutObservableArray<> = ko.observableArray([]);
+        takeoverItem: KnockoutObservableArray<any> = ko.observableArray([]);
         lastHistory: number = 190000;
         constructor() {
             let self = this;

@@ -29,18 +29,18 @@ module nts.uk.pr.view.qmm016.share.model {
         NUMERIC_ITEM = 1
     }
     // 要素種類
-    export enum ELEMENT_TYPE {
-        M001 = '雇用',
-        M002 = '部門',
-        M003 = '分類',
-        M004 = '職位',
-        M005 = '給与分類',
-        M006 = '資格',
-        M007 = '精皆勤レベル',
-        N001 = '年齢',
-        N002 = '勤続年数',
-        N003 = '家族人数',
-    }
+//    export enum ELEMENT_TYPE {
+//        M001 = '雇用',
+//        M002 = '部門',
+//        M003 = '分類',
+//        M004 = '職位',
+//        M005 = '給与分類',
+//        M006 = '資格',
+//        M007 = '精皆勤レベル',
+//        N001 = '年齢',
+//        N002 = '勤続年数',
+//        N003 = '家族人数'
+//    }
 
     export enum QualificationPaymentMethod {
         PAY_ONLY_ONE_HIGHEST_BENEFIT = 0,
@@ -93,7 +93,7 @@ module nts.uk.pr.view.qmm016.share.model {
         elementInformation: IElementInformation,
         elementSetting: number,
         remarkInformation: string,
-        history: Array<IGenericHistoryYearMonthPeriod>
+        histories: Array<IGenericHistoryYearMonthPeriod>
     }
     // 賃金テーブル
     export class WageTable {
@@ -103,7 +103,7 @@ module nts.uk.pr.view.qmm016.share.model {
         elementInformation: KnockoutObservable<ElementInformation> = ko.observable(null);
         elementSetting: KnockoutObservable<number> = ko.observable(null);
         remarkInformation: KnockoutObservable<string> = ko.observable(null);
-        history: KnockoutObservableArray<GenericHistoryYearMonthPeriod> = ko.observableArray([]);
+        histories: KnockoutObservableArray<GenericHistoryYearMonthPeriod> = ko.observableArray([]);
         // Item
         elementSettingItem1: KnockoutObservableArray<EnumModel> = ko.observableArray(getElementItemModel().splice(0, 3));
         elementSettingItem2: KnockoutObservableArray<EnumModel> = ko.observableArray(getElementItemModel().splice(3, 5));
@@ -118,7 +118,7 @@ module nts.uk.pr.view.qmm016.share.model {
             this.elementInformation(new ElementInformation(params ? params.elementInformation : null));
             this.elementSetting(params ? params.elementSetting : 0);
             this.remarkInformation(params ? params.remarkInformation : null);
-            this.history(params ? params.history.map(item => new GenericHistoryYearMonthPeriod(item)) : []);
+            this.histories(params ? params.histories.map(item => new GenericHistoryYearMonthPeriod(item)) : []);
             this.elementSetting.subscribe(newValue => {
                 self.changeImagePath(newValue);
             });
@@ -166,9 +166,9 @@ module nts.uk.pr.view.qmm016.share.model {
 
     // 要素情報
     export interface IElementInformation{
-        oneDimensionElement: IElementAttribute,
-        twoDimensionElement: IElementAttribute,
-        threeDimensionElement: IElementAttribute,
+        oneDimensionalElement: IElementAttribute,
+        twoDimensionalElement: IElementAttribute,
+        threeDimensionalElement: IElementAttribute,
     }
     // 要素情報
     export class ElementInformation{
@@ -176,9 +176,9 @@ module nts.uk.pr.view.qmm016.share.model {
         twoDimensionElement: KnockoutObservable<ElementAttribute> = ko.observable(null);
         threeDimensionElement: KnockoutObservable<ElementAttribute> = ko.observable(null);
         constructor (params: IElementInformation) {
-            this.oneDimensionElement(new ElementAttribute(params ? params.oneDimensionElement: null));
-            this.twoDimensionElement(new ElementAttribute(params ? params.twoDimensionElement: null));
-            this.threeDimensionElement(new ElementAttribute(params ? params.threeDimensionElement: null));
+            this.oneDimensionElement(new ElementAttribute(params ? params.oneDimensionalElement: null));
+            this.twoDimensionElement(new ElementAttribute(params ? params.twoDimensionalElement: null));
+            this.threeDimensionElement(new ElementAttribute(params ? params.threeDimensionalElement: null));
         }
     }
 
@@ -188,6 +188,7 @@ module nts.uk.pr.view.qmm016.share.model {
         masterNumericClassification: number,
         fixedElement: string,
         optionalAdditionalElement: string,
+        displayName: string
     }
     // 要素の属性
     export class ElementAttribute {
@@ -200,8 +201,7 @@ module nts.uk.pr.view.qmm016.share.model {
             this.masterNumericClassification(params ? params.masterNumericClassification : null);
             this.fixedElement(params ? params.fixedElement : null);
             this.optionalAdditionalElement(params ? params.optionalAdditionalElement : null);
-            let fixedElementValue = this.fixedElement();
-            this.elementName(ELEMENT_TYPE[fixedElementValue]);
+            this.elementName(params ? params.displayName : null);
         }
     }
 
