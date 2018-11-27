@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.infra.repository.jobtitle.affiliate;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +14,7 @@ import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
@@ -216,14 +218,41 @@ public class JpaAffJobTitleHistoryItemRepository extends JpaRepository
 	
 	// request list 515
 	@Override
-	public List<AffJobTitleHistoryItem> findHistJob(String historyId, List<String> jobIds) {
+	public List<AffJobTitleHistoryItem> findHistJob(String companyId, GeneralDate baseDate, List<String> jobIds) {
 		List<AffJobTitleHistoryItem> resultList = new ArrayList<>();
 		CollectionUtil.split(jobIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(GET_BY_LIST_JOB, BsymtAffJobTitleHistItem.class)
-				.setParameter("histId", historyId)
-				.setParameter("jobTitleIds", subList)
-				.getList().stream().map(x -> toDomain(x)).collect(Collectors.toList()));
+			
+			String sql = "select i.HIST_ID, i.SID, i.JOB_TITLE_ID, i.NOTE"
+					+ " from BSYMT_AFF_JOB_HIST_ITEM i"
+					+ " inner join BSYMT_AFF_JOB_HIST h"
+					+ " on i.HIST_ID = h.HIST_ID"
+					+ " where h.CID = ?"
+					+ " and h.START_DATE <= ?"
+					+ " and h.END_DATE >= ?"
+					+ " and i.JOB_TITLE_ID in (" + NtsStatement.In.createParamsString(subList) + ")";
+			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				
+				stmt.setString(1, companyId);
+				stmt.setDate(2, Date.valueOf(baseDate.toLocalDate()));
+				stmt.setDate(3, Date.valueOf(baseDate.toLocalDate()));
+				for (int i = 0; i < subList.size(); i++) {
+					stmt.setString(4 + i, subList.get(i));
+				}
+				
+				resultList.addAll(new NtsResultSet(stmt.executeQuery()).getList(r -> {
+					return AffJobTitleHistoryItem.createFromJavaType(
+							r.getString("HIST_ID"),
+							r.getString("SID"),
+							r.getString("JOB_TITLE_ID"),
+							r.getString("NOTE"));
+				}));
+				
+				
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
 		});
+		
 		return resultList;
 	}
 
