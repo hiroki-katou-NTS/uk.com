@@ -722,7 +722,6 @@ module nts.uk.pr.view.qmm017.share.model {
         elementInformation: IElementInformation,
         elementSetting: number,
         remarkInformation: string,
-        history: Array<IGenericHistoryYearMonthPeriod>
     }
     // 賃金テーブル
     export class WageTable {
@@ -732,10 +731,6 @@ module nts.uk.pr.view.qmm017.share.model {
         elementInformation: KnockoutObservable<ElementInformation> = ko.observable(null);
         elementSetting: KnockoutObservable<number> = ko.observable(null);
         remarkInformation: KnockoutObservable<string> = ko.observable(null);
-        history: KnockoutObservableArray<GenericHistoryYearMonthPeriod> = ko.observableArray([]);
-        // display item
-        imagePath: KnockoutObservable<string> = ko.observable(null);
-        elementSettingDisplayText: KnockoutObservable<string> = ko.observable(null);
         constructor(params: IWageTable) {
             let self = this;
             this.cid(params ? params.cid : null);
@@ -744,49 +739,6 @@ module nts.uk.pr.view.qmm017.share.model {
             this.elementInformation(new ElementInformation(params ? params.elementInformation : null));
             this.elementSetting(params ? params.elementSetting : 0);
             this.remarkInformation(params ? params.remarkInformation : null);
-            this.history(params ? params.history.map(item => new GenericHistoryYearMonthPeriod(item)) : []);
-            this.elementSetting.subscribe(newValue => {
-                self.changeImagePath(newValue);
-            });
-            self.changeImagePath(self.elementSetting());
-        }
-        changeImagePath (elementSetting: number) {
-            let self = this;
-            let imgName = "", elementSettingDisplayText = "";
-            switch (elementSetting) {
-                case ELEMENT_SETTING.ONE_DIMENSION: {
-                    imgName = "QMM016_1.png";
-                    elementSettingDisplayText = getText('QMM016_69');
-                    break;
-                }
-                case ELEMENT_SETTING.TWO_DIMENSION: {
-                    imgName = "QMM016_2.png";
-                    elementSettingDisplayText = getText('QMM016_70');
-                    break;
-                }
-                case ELEMENT_SETTING.THREE_DIMENSION: {
-                    imgName = "QMM016_3.png";
-                    elementSettingDisplayText = getText('QMM016_71');
-                    break;
-                }
-                case ELEMENT_SETTING.QUALIFICATION: {
-                    imgName = "QMM016_4.png";
-                    elementSettingDisplayText = getText('QMM016_72');
-                    break;
-                }
-                case ELEMENT_SETTING.FINE_WORK: {
-                    imgName = "QMM016_5.png";
-                    elementSettingDisplayText = getText('QMM016_73');
-                    break;
-                }
-            }
-            if (imgName){
-                self.imagePath("../resource/" + imgName);
-            }
-            else{
-                self.imagePath("");
-            }
-            self.elementSettingDisplayText(elementSettingDisplayText);
         }
     }
 

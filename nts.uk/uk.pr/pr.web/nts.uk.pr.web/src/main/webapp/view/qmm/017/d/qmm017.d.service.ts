@@ -6,11 +6,13 @@ module nts.uk.pr.view.qmm017.d.service {
         // tab 1
         getStatementItemData: "ctx/pr/core/wageprovision/statementitem/getStatementItemData/{0}/{1}",
         getAllStatementItemData: "ctx/pr/core/wageprovision/statementitem/getAllStatementItemData/{0}/{1}",
-        //
+        // tab 2
         getAllPayrollUnitPriceByYearMonth: "core/wageprovision/companyuniformamount/getAllPayrollUnitPriceByYearMonth/{0}",
         getPayrollUnitPriceSettingByYearMonth: "core/wageprovision/companyuniformamount/getPayrollUnitPriceHistoryByYearMonth/{0}/{1}",
         getUnitPriceDataByCode: "ctx/pr/core/wageprovision/unitpricename/getUnitPriceDataByCode/{0}",
-        getAllUnitPriceName: "ctx/pr/core/wageprovision/unitpricename/getAllUnitPriceName/{0}"
+        getAllUnitPriceName: "ctx/pr/core/wageprovision/unitpricename/getAllUnitPriceName/{0}",
+        // tab 7
+        getAllWageTable: "ctx/pr/core/wageprovision/wagetable/get-all-wagetable"
     }
 
     export function getStatementItemData(categoryAtr: number, itemNameCd: string): JQueryPromise<any> {
@@ -49,5 +51,9 @@ module nts.uk.pr.view.qmm017.d.service {
     export function getUnitPriceItemByCode(itemCategory: number, code: string, yearMonth: number): JQueryPromise<any> {
         if (itemCategory == nts.uk.pr.view.qmm017.share.model.UNIT_PRICE_ITEM_CATEGORY.COMPANY_UNIT_PRICE_ITEM) return this.getPayrollUnitPriceById(code, yearMonth);
         return this.getUnitPriceDataByCode(code);
+    }
+
+    export function getAllWageTable() : JQueryPromise<any> {
+        return ajax(paths.getAllWageTable);
     }
 }

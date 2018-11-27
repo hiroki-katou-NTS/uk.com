@@ -48,6 +48,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             self.initComponents();
             self.doFirstFocus();
             self.doScreenDFocus();
+            self.initScreenDData();
             self.screenMode.subscribe(newValue => {
                 self.isNewMode(newValue == model.SCREEN_MODE.NEW);
                 self.isUpdateMode(newValue == model.SCREEN_MODE.UPDATE);
@@ -117,7 +118,11 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             let self = this;
             let command = ko.toJS(self.selectedFormula);
             nts.uk.ui.errors.clearAll();
-            $('.nts-input').trigger("validate");
+            if (self.screenMode() == model.SCREEN_MODE.NEW){
+                $('.tab-content-1 .nts-input').trigger("validate");
+            } else {
+                $('.nts-input').trigger("validate");
+            }
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
@@ -137,7 +142,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 }
             }
             formulaSettingCommand.basicCalculationFormulaCommand = basicCalculationFormula;
-            if (self.screenMode() == model.SCREEN_MODE.ADD_HISTORY) {
+            if (self.screenMode() == model.SCREEN_MODE.NEW) {
                 formulaSettingCommand.yearMonth.historyID = nts.uk.util.randomId();
             }
             command.formulaSettingCommand = formulaSettingCommand;
@@ -193,6 +198,13 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 block.clear();
                 dialog.alertError(err.message);
             });
+        }
+
+        initScreenDData () {
+            let self = this;
+            self.screenDViewModel.formulaList = ko.computed(function(){
+                return self.formulaList();
+            },this)
         }
 
         doScreenDFocus () {

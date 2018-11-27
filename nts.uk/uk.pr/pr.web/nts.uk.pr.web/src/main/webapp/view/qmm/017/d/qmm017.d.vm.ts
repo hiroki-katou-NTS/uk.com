@@ -29,17 +29,17 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         functionListItem: KnockoutObservableArray<model.EnumModel> = model.getFunctionListItem();
         selectedFunctionListValue: KnockoutObservable<number> = ko.observable(model.FUNCTION_LIST.CONDITIONAL_EXPRESSION);
         // TODO
-        displayFunctionNote: KnockoutObservable<string> = ko.observable("Function note is undefined"); // D6_10
+        displayFunctionNote: KnockoutObservable<string> = ko.observable(null); // D6_10
         // tab 4
         systemVariableClassificationItem: KnockoutObservableArray<model.EnumModel> = model.getSystemVariableClassificationItem();
         selectedSystemVariableClassificationValue: KnockoutObservable<number> = ko.observable(model.SYSTEM_VARIABLE_CLASSIFICATION.ALL);
         systemVariableListItem: KnockoutObservableArray<model.EnumModel> = model.getSystemVariableListItem();
         selectedSystemVariableListValue: KnockoutObservable<number> = ko.observable(model.SYSTEM_VARIABLE_LIST.SYSTEM_YMD_DATE);
         // TODO
-        displayVariableNote: KnockoutObservable<string> = ko.observable("Variable note is undefined");
+        displayVariableNote: KnockoutObservable<string> = ko.observable(null);
         // tab 5 - pending
         // tab 6
-        formulaList: KnockoutObservableArray<model.IFormula> = ko.observableArray([]);
+        formulaList: KnockoutObservableArray<model.IFormula>;
         selectedFormulaCode: KnockoutObservable<string> = ko.observable(null);
         selectedFormula: KnockoutObservable<model.Formula> = ko.observable(new model.Formula(null));
         // tab 7
@@ -53,7 +53,6 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             self.initTabPanel();
             self.changeDataByLineItemCategory();
             self.changeDataByUnitPriceItem();
-            self.initFormulaData();
             self.changeDataByFormula();
             self.initWageTableData();
             self.changeDataByWageTable();
@@ -79,32 +78,6 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             })
         }
 
-        initFormulaData () {
-            let self = this;
-            let formulaData: Array<any> = [{
-                formulaCode: '001',
-                formulaName: 'Formula 1',
-                settingMethod: 1,
-                nestedAtr: 0,
-                history: []
-            },
-                {
-                    formulaCode: '002',
-                    formulaName: 'Formula 2',
-                    settingMethod: 1,
-                    nestedAtr: 1,
-                    history: []
-                },
-                {
-                    formulaCode: '003',
-                    formulaName: 'Formula 3',
-                    settingMethod: 0,
-                    nestedAtr: 1,
-                    history: []
-                }
-            ];
-            self.formulaList(formulaData);
-        }
         changeDataByFormula () {
             let self = this;
             self.selectedFormulaCode.subscribe(newValue => {
@@ -116,145 +89,9 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
 
         initWageTableData () {
             let self = this;
-            let wageTableData: Array<any> = [
-                {
-                    wageTableCode: '001',
-                    wageTableName: 'Wage Table 1',
-                    elementInformation: {
-                        oneDimensionElement: {
-                            masterNumericClassification: 1,
-                            fixedElement: "BBB",
-                            optionalAdditionalElement: null
-                        },
-                        twoDimensionElement: {
-                            masterNumericClassification: 1,
-                            fixedElement: "BBB",
-                            optionalAdditionalElement: null
-                        },
-                        threeDimensionElement: {
-                            masterNumericClassification: 1,
-                            fixedElement: "BBB",
-                            optionalAdditionalElement: null
-                        }
-                    },
-                    elementSetting: 0,
-                    remarkInformation: 'Nothing to write here 1',
-                    history: [
-                        {startMonth: '201811', endMonth: '999912', historyID: nts.uk.util.randomId()},
-                        {startMonth: '201805', endMonth: '201810', historyID: nts.uk.util.randomId()},
-                        {startMonth: '201801', endMonth: '201804', historyID: nts.uk.util.randomId()}
-                    ]
-                },
-                {
-                    wageTableCode: '002',
-                    wageTableName: 'Wage Table 2',
-                    elementInformation: {
-                        oneDimensionElement: {
-                            masterNumericClassification: 0,
-                            fixedElement: "FIXED",
-                            optionalAdditionalElement: null
-                        },
-                        twoDimensionElement: {
-                            masterNumericClassification: 1,
-                            fixedElement: null,
-                            optionalAdditionalElement: "OPT"
-                        },
-                        threeDimensionElement: null
-                    },
-                    elementSetting: 1,
-                    remarkInformation: 'Nothing to write here 2',
-                    history: [
-                        {startMonth: '201911', endMonth: '999912', historyID: nts.uk.util.randomId()},
-                        {startMonth: '201905', endMonth: '201910', historyID: nts.uk.util.randomId()},
-                        {startMonth: '201901', endMonth: '201904', historyID: nts.uk.util.randomId()}
-                    ]
-                },
-                {
-                    wageTableCode: '003',
-                    wageTableName: 'Wage Table 3',
-                    elementInformation: {
-                        oneDimensionElement: {
-                            masterNumericClassification: 1,
-                            fixedElement: null,
-                            optionalAdditionalElement: 'DDD'
-                        },
-                        twoDimensionElement: {
-                            masterNumericClassification: 0,
-                            fixedElement: 'DDD',
-                            optionalAdditionalElement: null
-                        },
-                        threeDimensionElement: {
-                            masterNumericClassification: 1,
-                            fixedElement: null,
-                            optionalAdditionalElement: 'DDD123'
-                        }
-                    },
-                    elementSetting: 2,
-                    remarkInformation: 'Nothing to write here 3',
-                    history: [
-                        {startMonth: '202011', endMonth: '999912', historyID: nts.uk.util.randomId()},
-                        {startMonth: '202005', endMonth: '202010', historyID: nts.uk.util.randomId()},
-                        {startMonth: '202001', endMonth: '202004', historyID: nts.uk.util.randomId()}
-                    ]
-                },
-                {
-                    wageTableCode: '004',
-                    wageTableName: 'Wage Table 4',
-                    elementInformation: {
-                        oneDimensionElement: {
-                            masterNumericClassification: 1,
-                            fixedElement: null,
-                            optionalAdditionalElement: 'EEE'
-                        },
-                        twoDimensionElement: {
-                            masterNumericClassification: 1,
-                            fixedElement: null,
-                            optionalAdditionalElement: 'EEE1'
-                        },
-                        threeDimensionElement: {
-                            masterNumericClassification: 0,
-                            fixedElement: 'EEE2',
-                            optionalAdditionalElement: null
-                        }
-                    },
-                    elementSetting: 3,
-                    remarkInformation: 'Nothing to write here 4',
-                    history: [
-                        {startMonth: '202011', endMonth: '999912', historyID: nts.uk.util.randomId()},
-                        {startMonth: '202005', endMonth: '202010', historyID: nts.uk.util.randomId()},
-                        {startMonth: '202001', endMonth: '202004', historyID: nts.uk.util.randomId()}
-                    ]
-                },
-                {
-                    wageTableCode: '005',
-                    wageTableName: 'Wage Table 5',
-                    elementInformation: {
-                        oneDimensionElement: {
-                            masterNumericClassification: 0,
-                            fixedElement: 'FFF',
-                            optionalAdditionalElement: null
-                        },
-                        twoDimensionElement: {
-                            masterNumericClassification: 0,
-                            fixedElement: 'FFF1',
-                            optionalAdditionalElement: null
-                        },
-                        threeDimensionElement: {
-                            masterNumericClassification: 1,
-                            fixedElement: null,
-                            optionalAdditionalElement: 'FFF2'
-                        }
-                    },
-                    elementSetting: 4,
-                    remarkInformation: 'Nothing to write here 5',
-                    history: [
-                        {startMonth: '202011', endMonth: '999912', historyID: nts.uk.util.randomId()},
-                        {startMonth: '202005', endMonth: '202010', historyID: nts.uk.util.randomId()},
-                        {startMonth: '202001', endMonth: '202004', historyID: nts.uk.util.randomId()}
-                    ]
-                }
-            ]
-            self.wageTableList(wageTableData);
+            service.getAllWageTable().done(function(data){
+                if (data && data.length) self.wageTableList(data);
+            })
         }
 
         changeDataByWageTable() {
