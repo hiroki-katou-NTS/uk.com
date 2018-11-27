@@ -23,34 +23,52 @@ public class StopSettingFinder {
 	public StopSettingDto find(int isSystem) {
 		StopSettingDto result = new StopSettingDto();
 		result.setAdmin(AppContexts.user().roles().have().systemAdmin());
-		String contractCd = AppContexts.user().contractCode();
-		// 選択された停止対象を判別
-		if (isSystem == 1) {
-			// ドメインモデル「システム全体の利用停止の設定」を取得する
-			this.systemRepo.findByKey(contractCd).ifPresent(x -> {
-				result.setSystem(StopBySystemDto.fromDomain(x));
-			});
 
-			// ドメインモデル「会社単位の利用停止の設定」を取得し会社の「停止状況」を取得する
-			List<StopByCompany> stopCompanys = this.companyRepo.findByContractCodeAndState(contractCd,
-					SystemStatusType.STOP.value);
-			result.setStopCompanys(stopCompanys);
-			// ドメインモデル「会社単位の利用停止の設定」を取得し会社の「前段階状況」を取得する
-			List<StopByCompany> inProgressCompanys = this.companyRepo.findByContractCodeAndState(contractCd,
-					SystemStatusType.IN_PROGRESS.value);
-			result.setInProgressCompanys(inProgressCompanys);
+		boolean isAdmin = result.isAdmin();
+		if (isAdmin) {
+			// 選択された停止対象を判別
+			if (isSystem == 1) {
+				getSystem(result);
+
+			} else {
+				getCompany(result);
+			}
 		} else {
-			String companyCd = AppContexts.user().companyCode();
-			// ドメインモデル「会社単位の利用停止の設定」を取得する
-			this.companyRepo.findByKey(contractCd, companyCd).ifPresent(company -> {
-				result.setCompany(StopByCompanyDto.fromDomain(company));
-				// ドメインモデル「システム全体の利用停止の設定」を取得しシステム全体の「システム利用状態」を取得する
-				this.systemRepo.findByKey(contractCd).ifPresent(system -> {
-					result.setSystem(StopBySystemDto.fromDomain(system));
-				});
-			});
+			getCompany(result);
+
 		}
 		return result;
+	}
+
+	private void getSystem(StopSettingDto result) {
+		String contractCd = AppContexts.user().contractCode();
+		// ドメインモデル「システム全体の利用停止の設定」を取得する
+		this.systemRepo.findByKey(contractCd).ifPresent(x -> {
+			result.setSystem(StopBySystemDto.fromDomain(x));
+		});
+
+		// ドメインモデル「会社単位の利用停止の設定」を取得し会社の「停止状況」を取得する
+		List<StopByCompany> stopCompanys = this.companyRepo.findByContractCodeAndState(contractCd,
+				SystemStatusType.STOP.value);
+		result.setStopCompanys(stopCompanys);
+		// ドメインモデル「会社単位の利用停止の設定」を取得し会社の「前段階状況」を取得する
+		List<StopByCompany> inProgressCompanys = this.companyRepo.findByContractCodeAndState(contractCd,
+				SystemStatusType.IN_PROGRESS.value);
+		result.setInProgressCompanys(inProgressCompanys);
+	}
+
+	private void getCompany(StopSettingDto result) {
+
+		String contractCd = AppContexts.user().contractCode();
+		String companyCd = AppContexts.user().companyCode();
+		// ドメインモデル「会社単位の利用停止の設定」を取得する
+		this.companyRepo.findByKey(contractCd, companyCd).ifPresent(company -> {
+			result.setCompany(StopByCompanyDto.fromDomain(company));
+			// ドメインモデル「システム全体の利用停止の設定」を取得しシステム全体の「システム利用状態」を取得する
+			this.systemRepo.findByKey(contractCd).ifPresent(system -> {
+				result.setSystem(StopBySystemDto.fromDomain(system));
+			});
+		});
 	}
 
 }
