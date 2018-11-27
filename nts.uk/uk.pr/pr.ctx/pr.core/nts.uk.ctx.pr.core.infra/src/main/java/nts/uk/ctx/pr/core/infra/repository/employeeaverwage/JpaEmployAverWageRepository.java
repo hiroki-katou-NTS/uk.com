@@ -18,10 +18,20 @@ public class JpaEmployAverWageRepository extends JpaRepository implements Employ
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtEmployAverWage f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.employAverWagePk.employeeId =:employeeId AND  f.employAverWagePk.targetDate =:targetDate ";
+    private static final String SELECT_BY_IN_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.employAverWagePk.employeeId IN :employeeIds AND  f.employAverWagePk.targetDate =:targetDate ";
+
 
     @Override
     public List<EmployAverWage> getAllEmployAverWage(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtEmployAverWage.class)
+                .getList(item -> item.toDomain());
+    }
+
+    @Override
+    public List<EmployAverWage> getEmployByIds(List<String> employeeIds, int targetDate){
+        return this.queryProxy().query(SELECT_BY_IN_ID, QpbmtEmployAverWage.class)
+                .setParameter("employeeIds",employeeIds)
+                .setParameter("targetDate",targetDate)
                 .getList(item -> item.toDomain());
     }
 

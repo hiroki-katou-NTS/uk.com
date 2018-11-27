@@ -9,7 +9,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-@Path("ctx.pr.core.ws.wageprovision.individualwagecontract")
+@Path("ctx/pr/core/ws/wageprovision/individualwagecontract")
 @Produces("application/json")
 public class SalIndAmountUpdateWebService extends WebService {
 
