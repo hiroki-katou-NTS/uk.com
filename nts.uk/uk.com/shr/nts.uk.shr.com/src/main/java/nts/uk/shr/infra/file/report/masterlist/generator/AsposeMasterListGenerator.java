@@ -66,12 +66,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		
 		List<SheetData> subSheets = dataSource.getDatas().extraSheets(dataSource.getQuery());
 
-		SheetData mainSheet = SheetData.builder()
-				.sheetName(getSheetName(dataSource.getDatas().mainSheetName(), 0))
-				.mainData(dataSource.getDatas().getMasterDatas(dataSource.getQuery()))
-				.mainDataColumns(dataSource.getDatas().getHeaderColumns(dataSource.getQuery()))
-				.subDataColumns(dataSource.getDatas().getExtraHeaderColumn(dataSource.getQuery()))
-				.subDatas(dataSource.getDatas().getExtraMasterData(dataSource.getQuery())).build();
+		SheetData mainSheet = dataSource.getDatas().mainSheet(dataSource.getQuery());
 
 		String reportName = processSheet(mainSheet, 0, workbook, dataSource, subSheets == null ? 0 : subSheets.size());
 
