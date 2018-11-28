@@ -9,7 +9,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
     export class ScreenModel {
         // tab 1
         lineItemCategoryItem: KnockoutObservableArray<model.EnumModel> = model.getLineItemCategoryItem();
-        selectedCategoryValue: KnockoutObservable<number> = ko.observable(null);
+        selectedCategoryValue: KnockoutObservable<number> = ko.observable(model.LINE_ITEM_CATEGORY.PAYMENT_ITEM);
         selectedCategory: KnockoutObservableArray<string> = ko.observable(null);
         statementItemList: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedStatementItemCode: KnockoutObservable<string> = ko.observable(null);
@@ -17,7 +17,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         displayItemNote: KnockoutObservable<string> = ko.observable(null); // D2_10
         // tab 2
         unitPriceItemCategoryItem: KnockoutObservableArray<model.EnumModel> = model.getUnitPriceItemCategoryItem();
-        selectedPriceItemCategoryValue: KnockoutObservable<number> = ko.observable(null);
+        selectedPriceItemCategoryValue: KnockoutObservable<number> = ko.observable(model.UNIT_PRICE_ITEM_CATEGORY.COMPANY_UNIT_PRICE_ITEM);
         selectedPriceItemCategory: KnockoutObservable<any> = ko.observable(null);
         unitPriceItemList: KnockoutObservableArray<any> = ko.observableArray([]); // mix of 給与会社単価, 給与個人単価名称
         selectedUnitPriceItemCode: KnockoutObservable<string> = ko.observable(null);
@@ -46,7 +46,8 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         wageTableList: KnockoutObservableArray<model.IWageTable> = ko.observableArray([]);
         selectedWageTableCode: KnockoutObservable<string> = ko.observable(null);
         selectedWageTable: KnockoutObservable<model.WageTable> = ko.observable(new model.WageTable(null));
-        // parent model - screen A
+        // D3_5
+        formulaDictionary: Array<any>
 
         constructor() {
             var self = this;
@@ -61,20 +62,20 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         changeDataByLineItemCategory () {
             let self = this;
             self.selectedCategoryValue.subscribe(newValue => {
-                self.showListStatementItemData(newValue);
-            })
+                if (newValue != null) self.showListStatementItemData(newValue);
+            });
             self.selectedStatementItemCode.subscribe(newValue => {
-                self.showStatementItemData(self.selectedCategoryValue(), newValue);
-            })
+                if (newValue != null) self.showStatementItemData(self.selectedCategoryValue(), newValue);
+            });
         }
         // tab 2
         changeDataByUnitPriceItem () {
             let self = this;
             self.selectedPriceItemCategoryValue.subscribe(newValue => {
-                self.showListUnitPriceItem(newValue);
+                if (newValue != null) self.showListUnitPriceItem(newValue);
             })
             self.selectedUnitPriceItemCode.subscribe(newValue => {
-                self.showUnitPriceItemData(self.selectedPriceItemCategoryValue(), newValue);
+                if (newValue != null) self.showUnitPriceItemData(self.selectedPriceItemCategoryValue(), newValue);
             })
         }
 
@@ -90,7 +91,13 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         initWageTableData () {
             let self = this;
             service.getAllWageTable().done(function(data){
-                if (data && data.length) self.wageTableList(data);
+                if (data){
+                    self.wageTableList(data);
+                    if (data.length > 0) self.selectedWageTableCode(data[0].wageTableCode);
+                } else {
+                    self.wageTableList([]);
+                    self.selectedWageTableCode(null);
+                }
             })
         }
 
@@ -112,7 +119,13 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             block.invisible();
             // 廃止区分＝廃止しない (false)
             service.getAllStatementItemData(categoryAtr, false).done(function(data) {
-                self.statementItemList(data);
+                if (data){
+                    self.statementItemList(data);
+                    if (data.length > 0) self.selectedStatementItemCode(data[0].code)
+                } else {
+                    self.statementItemList([]);
+                    self.selectedStatementItemCode(null);
+                }
                 block.clear();
             }).fail(function(err) {
                 block.clear();
@@ -143,7 +156,14 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             block.invisible();
             // 廃止区分＝廃止しない (false)
             service.getAllUnitPriceItem(unitPriceItemCategory, false, __viewContext.screenModel.selectedHistory().startMonth()).done(function(data) {
-                self.unitPriceItemList(data);
+                if (data) {
+                    self.unitPriceItemList(data);
+                    if (data.length > 0) self.selectedUnitPriceItemCode(data[0].code);
+                } else {
+                    self.unitPriceItemList([]);
+                    self.selectedUnitPriceItemCode(null);
+                }
+
                 block.clear();
             }).fail(function(err) {
                 block.clear();
@@ -177,6 +197,24 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             dfd.resolve();
             return dfd.promise();
         }
+        addStatementItem () {
+
+        }
+        addUnitPriceItem () {
+
+        }
+        addFunctionItem () {
+
+        }
+        addVariableItem () {
+
+        }
+        addFormulaItem () {
+
+        }
+        addWageTableItem () {
+
+        }
         startTrialCalculation () {
             let self = this;
             setShared("QMM017_G_PARAMS", {});
@@ -184,6 +222,10 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
 
             });
         }
+        add () {
+
+        }
+
     }
     
 }

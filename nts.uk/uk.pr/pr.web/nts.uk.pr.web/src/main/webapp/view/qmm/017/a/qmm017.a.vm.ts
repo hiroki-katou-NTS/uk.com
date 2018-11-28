@@ -47,7 +47,6 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             self.initTabPanel();
             self.initComponents();
             self.doFirstFocus();
-            self.doScreenDFocus();
             self.initScreenDData();
             self.screenMode.subscribe(newValue => {
                 self.isNewMode(newValue == model.SCREEN_MODE.NEW);
@@ -108,6 +107,21 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                         else itemToBeFocus = '#C2_7';
                     } else itemToBeFocus = '#D1_4';
                 } else if (self.screenMode() != model.SCREEN_MODE.NEW){ itemToBeFocus = '#A3_4'};
+                setTimeout(function(){
+                    $(itemToBeFocus).focus();
+                }, 100)
+            });
+            self.screenDSelectedTab.subscribe(newTab => {
+                let itemToBeFocus = "";
+                switch (newTab) {
+                    case 'tab-1': {itemToBeFocus = '#D2_5'; break}
+                    case 'tab-2': {itemToBeFocus = '#D5_5'; break}
+                    case 'tab-3': {itemToBeFocus = '#D6_5'; break}
+                    case 'tab-4': {itemToBeFocus = '#D7_5'; break}
+                    case 'tab-5': {itemToBeFocus = '#D8_5'; break}
+                    case 'tab-6': {itemToBeFocus = '#D9_5'; break}
+                    case 'tab-7': {itemToBeFocus = '#D10_5'; break}
+                }
                 setTimeout(function(){
                     $(itemToBeFocus).focus();
                 }, 100)
@@ -198,32 +212,6 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 block.clear();
                 dialog.alertError(err.message);
             });
-        }
-
-        initScreenDData () {
-            let self = this;
-            self.screenDViewModel.formulaList = ko.computed(function(){
-                return self.formulaList();
-            },this)
-        }
-
-        doScreenDFocus () {
-            let self = this;
-            self.screenDSelectedTab.subscribe(newTab => {
-                let itemToBeFocus = "";
-                switch (newTab) {
-                    case 'tab-1': {itemToBeFocus = '#D2_5'; break}
-                    case 'tab-2': {itemToBeFocus = '#D5_5'; break}
-                    case 'tab-3': {itemToBeFocus = '#D6_5'; break}
-                    case 'tab-4': {itemToBeFocus = '#D7_5'; break}
-                    case 'tab-5': {itemToBeFocus = '#D8_5'; break}
-                    case 'tab-6': {itemToBeFocus = '#D9_5'; break}
-                    case 'tab-7': {itemToBeFocus = '#D10_5'; break}
-                }
-                setTimeout(function(){
-                    $(itemToBeFocus).focus();
-                }, 100)
-            })
         }
 
         convertToTreeList(formulaData) {
@@ -420,6 +408,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 }
             });
         };
+        // screen B
         doMasterConfiguration () {
             let self = this;
             // unknown which item to be affect. temporary not link b to e
@@ -430,6 +419,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             });
 
         };
+        // screen C
         doConfiguration (index) {
             let self = this;
             // unknown which item to be affect. temporary not link b to e
@@ -441,7 +431,6 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                     self.basicCalculationFormulaList()[index] = newModel;
                 }
             });
-
         };
         setAllCalculationFormula () {
             let self = this;
@@ -456,6 +445,21 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             basicCalculationFormulaList = basicCalculationFormulaList.map(item => item['calculationFormulaClassification'](model.CALCULATION_FORMULA_CLS.FIXED_VALUE));
             self.basicCalculationFormulaList(basicCalculationFormulaList);
 
+        }
+
+        // screen D
+        initScreenDData () {
+            let self = this;
+            self.screenDViewModel.formulaList = ko.computed(function(){
+                return self.formulaList();
+            },this);
+        }
+
+        initScreenDTabData () {
+            let self = this;
+            this.screenDViewModel.selectedCategoryValue.valueHasMutated();
+            this.screenDViewModel.selectedPriceItemCategoryValue.valueHasMutated();
+            if (this.screenDViewModel.selectedFormulaCode() == null && this.screenDViewModel.formulaList().length > 0) this.screenDViewModel.selectedFormulaCode(this.screenDViewModel.formulaList()[0]['formulaCode']);
         }
     }
 
