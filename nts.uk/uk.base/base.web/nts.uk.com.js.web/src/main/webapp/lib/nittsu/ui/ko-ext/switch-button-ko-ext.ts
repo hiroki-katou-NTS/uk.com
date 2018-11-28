@@ -129,7 +129,7 @@ module nts.uk.ui.koExtentions {
                     var btn = $('<button>').text(text)
                         .addClass('nts-switch-button unselectable')
                         .data('swbtn', value)
-//                        .attr('tabindex', "-1")
+                        .attr('tabindex', "-1")
                         .attr('unselectable', "on")
                         .on('click', function() {
                             var selectedValue = $(this).data('swbtn');

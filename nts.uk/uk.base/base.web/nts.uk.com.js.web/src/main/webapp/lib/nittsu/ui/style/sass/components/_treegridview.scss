@@ -26,3 +26,15 @@
 	}
 	
 }
+
+.no-selector {
+	table {
+		th:first-child.ui-iggrid-rowselector-class {
+			visibility: hidden;
+		}
+		
+		th:first-child.ui-iggrid-rowselector-header {
+			visibility: hidden;
+		}
+	}
+}
