@@ -4,7 +4,7 @@ module nts.uk.pr.view.qmm020.k {
          * define path to service
          */
         var path: any = {
-            editHistoryProcess: "core/wageprovision/statementbindingsetting/editHistoryProcess",
+            editHistoryProcess: "core/wageprovision/statementbindingsetting/editHistoryProcess"
 
         };
         export function editHistoryProcess(data: any): JQueryPromise<any> {

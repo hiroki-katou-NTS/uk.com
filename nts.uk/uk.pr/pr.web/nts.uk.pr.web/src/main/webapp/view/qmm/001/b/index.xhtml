@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 505, height: 380 };</script>
+			<script>var dialogSize = { width: 600, height: 380 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="qmm001.b.vm.js" />
@@ -65,9 +65,9 @@
 					</div>
 					<div class ="cell valign-top" style="">
 						<com:ko-if bind="!isFisrtHistory()">
-							<div id="B1_10" class="cell valign-top" tabIndex="3"
-								 style="display: inline-block;text-align: left;margin-left: 5px;width: 250px;">
-								<div class="cell" tabindex="1"
+							<div id="B1_10" class="cell valign-top" tabIndex="-1"
+								 style="display: inline-block;text-align: left;margin-left: 5px;width: 300px;">
+								<div class="cell" tabindex="3"
 									 data-bind="ntsRadioBoxGroup:  {
 										value: takeOver,
 										options: listTakeOver(),

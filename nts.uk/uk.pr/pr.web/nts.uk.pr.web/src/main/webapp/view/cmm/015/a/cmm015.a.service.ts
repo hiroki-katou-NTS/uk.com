@@ -2,10 +2,10 @@ module nts.uk.pr.view.cmm015.a.service {
     import ajax = nts.uk.request.ajax;
 
     let paths: any = {
-        getAllSalaryClassificationInfo: "core/wageprovision/organizationinformation/salaryclassification/salaryclassificationmaster/getAll",
-        addSalaryClassificationInfo: "core/wageprovision/organizationinformation/salaryclassification/salaryclassificationmaster/add",
-        removeSalaryClassificationInfo: "core/wageprovision/organizationinformation/salaryclassification/salaryclassificationmaster/remove",
-        updateSalaryClassificationInfo: "core/wageprovision/organizationinformation/salaryclassification/salaryclassificationmaster/update",
+        getAllSalaryClassificationInfo: "core/wageprovision/organizationinfor/salarycls/salaryclsmaster/getAll",
+        addSalaryClassificationInfo: "core/wageprovision/organizationinfor/salarycls/salaryclsmaster/add",
+        removeSalaryClassificationInfo: "core/wageprovision/organizationinfor/salarycls/salaryclsmaster/remove",
+        updateSalaryClassificationInfo: "core/wageprovision/organizationinfor/salarycls/salaryclsmaster/update",
     };
 
     export function getAllSalaryClassificationInformation(): JQueryPromise<Array<viewmodel.model.SalaryClassificationInformation>> {

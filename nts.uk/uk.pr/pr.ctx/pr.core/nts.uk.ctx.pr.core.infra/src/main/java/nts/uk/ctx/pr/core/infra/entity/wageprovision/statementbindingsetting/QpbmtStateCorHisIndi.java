@@ -1,19 +1,16 @@
 package nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting;
 
-import java.io.Serializable;
-import java.util.List;
-
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisIndividual;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisIndivi;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateLinkSetIndivi;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
 
 /**
 * 明細書紐付け履歴（個人）
@@ -22,8 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "QPBMT_STATE_COR_HIS_INDI")
-public class QpbmtStateCorHisIndi extends UkJpaEntity implements Serializable
-{
+public class QpbmtStateCorHisIndi extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     
     /**
@@ -45,6 +41,20 @@ public class QpbmtStateCorHisIndi extends UkJpaEntity implements Serializable
     @Basic(optional = false)
     @Column(name = "END_YEAR_MONTH")
     public int endYearMonth;
+
+    /**
+     * 給与明細書
+     */
+    @Basic(optional = true)
+    @Column(name = "SALARY")
+    public String salaryCode;
+
+    /**
+     * 賞与明細書
+     */
+    @Basic(optional = true)
+    @Column(name = "BONUS")
+    public String bonusCode;
     
     @Override
     protected Object getKey()
@@ -52,11 +62,15 @@ public class QpbmtStateCorHisIndi extends UkJpaEntity implements Serializable
         return stateCorHisIndiPk;
     }
 
-    public StateCorrelationHisIndividual toDomain(List<YearMonthHistoryItem> history) {
-        return new StateCorrelationHisIndividual(this.stateCorHisIndiPk.empId, history);
+    public StateCorreHisIndivi toDomain(List<YearMonthHistoryItem> history ) {
+        return new StateCorreHisIndivi(this.stateCorHisIndiPk.empId ,history);
     }
-    public static QpbmtStateCorHisIndi toEntity(String empID,  YearMonthHistoryItem history) {
-        return new QpbmtStateCorHisIndi(new QpbmtStateCorHisIndiPk(empID, history.identifier()),history.start().v(), history.end().v());
+
+    public StateLinkSetIndivi toDomain() {
+        return new StateLinkSetIndivi(this.stateCorHisIndiPk.hisId, new StatementCode(this.salaryCode), new StatementCode(this.bonusCode));
+    }
+    public static QpbmtStateCorHisIndi toEntity(String empID,  YearMonthHistoryItem history, String salaryLayoutCode, String bonusLayoutCode) {
+        return new QpbmtStateCorHisIndi(new QpbmtStateCorHisIndiPk(empID, history.identifier()), history.start().v(), history.end().v(),salaryLayoutCode,bonusLayoutCode);
     }
 
 }
