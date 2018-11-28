@@ -65,13 +65,13 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
         Map<String, String> wageTableMap = wageTableRepo.getAllWageTable(cid)
                 .stream().collect(Collectors.toMap(x -> x.getWageTableCode().v(), x -> x.getWageTableName().v()));
         // ドメインモデル「給与個人別金額名称」を取得する
-        Map<String, String> salIndAmountNameMap = salIndAmountNameRepo.getSalIndAmountName(cid)
-                .stream().collect(Collectors.toMap(x -> x.getIndividualPriceCode().v(), x -> x.getIndividualPriceName().v()));
+        Map<MapKey, String> salIndAmountNameMap = salIndAmountNameRepo.getSalIndAmountName(cid)
+                .stream().collect(Collectors.toMap(x -> new MapKey(x.getIndividualPriceCode().v(), x.getCateIndicator().value), x -> x.getIndividualPriceName().v()));
         // ドメインモデル「計算式」を取得する
         Map<String, String> formulaMap = formulaRepo.getAllFormula()
                 .stream().collect(Collectors.toMap(x -> x.getFormulaCode().v(), x -> x.getFormulaName().v()));
-        Map<String, String> statementItemMap = statementItemRepo.getItemCustomByDeprecated(cid, false)
-                .stream().collect(Collectors.toMap(x -> x.getItemNameCd(), x -> x.getName()));
+        Map<MapKey, String> statementItemMap = statementItemRepo.getItemCustomByDeprecated(cid, false)
+                .stream().collect(Collectors.toMap(x -> new MapKey(x.getItemNameCd(), x.getCategoryAtr()), x -> x.getName()));
 
         // ドメインモデル「明細書レイアウト」を取得する
         Map<String, StatementLayout> statementLayoutMap = statementLayoutRepo.getAllStatementLayoutByCidAndCodes(cid, sttCodes)
@@ -145,9 +145,9 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 
     private List<LineByLineSettingExportData> mapLineSetting(SettingByCtg set,
                                                              Map<String, String> wageTableMap,
-                                                             Map<String, String> salIndAmountNameMap,
+                                                             Map<MapKey, String> salIndAmountNameMap,
                                                              Map<String, String> formulaMap,
-                                                             Map<String, String> statementItemMap) {
+                                                             Map<MapKey, String> statementItemMap) {
         List<LineByLineSettingExportData> listLineByLineSetEx = new ArrayList();
         for (LineByLineSetting line : set.getListLineByLineSet()) {
             LineByLineSettingExportData lineEx = new LineByLineSettingExportData();
@@ -164,9 +164,9 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 
     private List<SettingByItemExportData> mapItemSetting(LineByLineSetting line, CategoryAtr ctgAtr,
                                                          Map<String, String> wageTableMap,
-                                                         Map<String, String> salIndAmountNameMap,
+                                                         Map<MapKey, String> salIndAmountNameMap,
                                                          Map<String, String> formulaMap,
-                                                         Map<String, String> statementItemMap) {
+                                                         Map<MapKey, String> statementItemMap) {
         List<SettingByItemExportData> listSetByItemEx = new ArrayList();
         for (SettingByItem item : line.getListSetByItem()) {
             SettingByItemExportData itemEx = new SettingByItemExportData();
@@ -194,7 +194,7 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 
     private void mapPayment(SettingByItemExportData itemEx, SettingByItemCustom itemCustom,
                             Map<String, String> wageTableMap,
-                            Map<String, String> salIndAmountNameMap,
+                            Map<MapKey, String> salIndAmountNameMap,
                             Map<String, String> formulaMap) {
         PaymentExportData paymentEx = new PaymentExportData();
         Optional<PaymentItemDetailSet> paymentItemDetailOtp = itemCustom.getPaymentItemDetailSet();
@@ -241,9 +241,9 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 
     private void mapDeduction(SettingByItemExportData itemEx, SettingByItemCustom itemCustom,
                               Map<String, String> wageTableMap,
-                              Map<String, String> salIndAmountNameMap,
+                              Map<MapKey, String> salIndAmountNameMap,
                               Map<String, String> formulaMap,
-                              Map<String, String> statementItemMap) {
+                              Map<MapKey, String> statementItemMap) {
         DeductionExportData deductionEx = new DeductionExportData();
         Optional<DeductionItemDetailSet> deductionitemDetailOtp = itemCustom.getDeductionItemDetailSet();
         if (deductionitemDetailOtp.isPresent()) {

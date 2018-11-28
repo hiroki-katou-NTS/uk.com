@@ -1,8 +1,8 @@
 module nts.uk.pr.view.qmm019.p.viewmodel {
     import block = nts.uk.ui.block;
     import windows = nts.uk.ui.windows;
-    import getText = nts.uk.resource.getText;
     import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
+    import alertError = nts.uk.ui.dialog.alertError;
 
     export class ScreenModel {
         processingDate: KnockoutObservable<number> = ko.observable(null);
@@ -17,10 +17,10 @@ module nts.uk.pr.view.qmm019.p.viewmodel {
                 dfd = $.Deferred();
             block.invisible();
             service.getCurrentProcessingDate().done(processingDate => {
-                if(isNullOrUndefined(processingDate)){
+                if (isNullOrUndefined(processingDate)) {
                     self.processingDate(null);
                     block.clear();
-                }else{
+                } else {
                     self.processingDate(processingDate);
                     service.getStatementLayoutByProcessingDate(processingDate).done((data: Array<IStatementLayoutDto>) => {
                         self.statementLayouts(data);
@@ -47,7 +47,22 @@ module nts.uk.pr.view.qmm019.p.viewmodel {
         }
 
         output() {
-
+            let self = this;
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+            block.invisible();
+            let processingDate = moment(self.processingDate()).format("YYYYMM");
+            let dto = {
+                processingDate: processingDate,
+                statementCodes: self.statementLayoutsSelected()
+            };
+            service.exportExcel(dto).done((data: Array<IStatementLayoutDto>) => {
+                block.clear();
+            }).fail(err => {
+                alertError(err);
+                block.clear();
+            })
         }
 
         cancel() {
