@@ -15,21 +15,20 @@ public class StringValidator {
 	private static final Pattern hiraganaPattern = Pattern.compile("^[\\u3040-\\u309Fー　]+$");
 	private static final Pattern katakanaPattern = Pattern.compile("^[\\u30A0-\\u30FFー　]+$");
 	private static final Pattern kanaPattern = Pattern.compile("^[\\u3040-\\u309F\\u30A0-\\u30FFー　\\uFF61-\\uFF9F]+$");
-	private static final Pattern anyPattern = Pattern.compile("");
 	private static final Pattern anyHalfWidthPattern = Pattern.compile("[\\u0020-\\u007F\\uff61-\\uFF9F]+$");
 
 	public static Optional<String> validate(StringConstraint constraint, String value) {
 		
+		if (!validateRegEx(constraint.getRegExpression(), value)) {
+			return Optional.of(ErrorIdFactory.RegExpErrorId);
+		}
+		
 		if (!validateCharType(constraint.getCharType(), value)) {
-			return Optional.of(ErrorIdFactory.getCharTypeErrorId());
+			return Optional.of(ErrorIdFactory.CharTypeErrorId);
 		}
 		
 		if(!validateMaxLength(constraint.getMaxLenght(), value)) {
-			return Optional.of(ErrorIdFactory.getMaxLengthErrorId());
-		}
-		
-		if (!validateRegEx(constraint.getRegExpression(), value)) {
-			return Optional.of(ErrorIdFactory.getRegExpErrorId());
+			return Optional.of(ErrorIdFactory.MaxLengthErrorId);
 		}
 		
 		return Optional.empty();
@@ -65,9 +64,9 @@ public class StringValidator {
 		case ANY_HALF_WIDTH:
 			pattern = anyHalfWidthPattern;
 			break;
+		case ANY:
 		default:
-			pattern = anyPattern;
-			break;
+			return true;
 		}
 
 		return pattern.matcher(value).matches();
