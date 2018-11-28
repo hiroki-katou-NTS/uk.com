@@ -28,20 +28,23 @@ public class StopUseFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		val httpRequest = (HttpServletRequest) request;
-		System.out.println(httpRequest.getServletPath());
+
+		// if it don't required session => next
 		if (isNotSessionRequired(httpRequest)) {
 			chain.doFilter(request, response);
 			return;
 		}
+		
+		// check stop-use state
 		Optional<String> error = CDI.current().select(SystemOperationSettingAdapter.class).get().stopUseConfirm();
 		if (error.isPresent()) {
+			
+			// if true, move to stop-use screen
 			val httpResponse = (HttpServletResponse) response;
 			try {
 				if (isWebApi(httpRequest)) {
-					System.out.println("create response 403!!");
 					buildResponseError(httpResponse);
 				} else {
-					System.out.println("redirect to the page stopuse!!");
 					httpResponse.sendRedirect(ScreenPath.basedOn(request).error().stopUse());
 				}
 			} catch (IOException e) {
