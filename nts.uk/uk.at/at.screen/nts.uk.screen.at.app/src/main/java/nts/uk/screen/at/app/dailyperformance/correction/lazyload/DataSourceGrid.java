@@ -1,7 +1,6 @@
 package nts.uk.screen.at.app.dailyperformance.correction.lazyload;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import lombok.Data;

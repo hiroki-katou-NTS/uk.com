@@ -81,7 +81,6 @@ public class CheckBeforeCalcFlexChange {
 	// 社員のフレックス繰越上限時間を求める
 	public ConditionCalcResult getConditionCalcFlex(String companyId, CalcFlexChangeDto calc, Optional<ClosureEmployment> closureEmployment,
 			Optional<PresentClosingPeriodExport> periodExportOpt) {
-		//String timeCheck = "15:00";
 		
 		if(!closureEmployment.isPresent()){
 			closureEmployment = this.closureEmploymentRepository

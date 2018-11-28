@@ -2,7 +2,6 @@ package nts.uk.screen.at.app.monthlyperformance.correction.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.attendance.AttendanceName;
 
 @Data
 @AllArgsConstructor

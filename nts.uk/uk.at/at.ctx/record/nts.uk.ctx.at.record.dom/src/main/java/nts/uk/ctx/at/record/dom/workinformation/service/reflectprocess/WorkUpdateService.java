@@ -36,7 +36,7 @@ public interface WorkUpdateService {
 	 */
 	public void updateRecordStartEndTimeReflect(TimeReflectPara data);
 	
-	public void updateRecordStartEndTimeReflectRecruitment(TimeReflectPara data, TimeLeavingOfDailyPerformance timeLeavingOfDailyData);
+	public TimeLeavingOfDailyPerformance updateRecordStartEndTimeReflectRecruitment(TimeReflectPara data, TimeLeavingOfDailyPerformance timeLeavingOfDailyData);
 	/**
 	 * 残業時間の反映
 	 * @param employeeId
@@ -102,7 +102,8 @@ public interface WorkUpdateService {
 	 * @param dateData
 	 * @param transferTimeFrame
 	 */
-	public void updateTransferTimeFrame(String employeeId, GeneralDate dateData, Map<Integer, Integer> transferTimeFrame, AttendanceTimeOfDailyPerformance attendanceTimeData);
+	public AttendanceTimeOfDailyPerformance updateTransferTimeFrame(String employeeId, GeneralDate dateData, Map<Integer, Integer> transferTimeFrame, 
+			AttendanceTimeOfDailyPerformance attendanceTimeData);
 	/**
 	 * 申請理由の反映
 	 * @param sid

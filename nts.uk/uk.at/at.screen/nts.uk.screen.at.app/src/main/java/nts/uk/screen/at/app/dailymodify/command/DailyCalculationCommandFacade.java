@@ -294,11 +294,11 @@ public class DailyCalculationCommandFacade {
 		return new DataResultAfterIU(resultError, flexError, false);
 	}
 
-	private Map<String, List<GeneralDate>> dtoToMapParam(List<DailyRecordDto> dtos) {
-		return dtos.stream()
-				.collect(Collectors.groupingBy(c -> c.getEmployeeId(), Collectors.collectingAndThen(Collectors.toList(),
-						c -> c.stream().map(q -> q.getDate()).collect(Collectors.toList()))));
-	}
+//	private Map<String, List<GeneralDate>> dtoToMapParam(List<DailyRecordDto> dtos) {
+//		return dtos.stream()
+//				.collect(Collectors.groupingBy(c -> c.getEmployeeId(), Collectors.collectingAndThen(Collectors.toList(),
+//						c -> c.stream().map(q -> q.getDate()).collect(Collectors.toList()))));
+//	}
 
 	private List<DailyModifyQuery> createQuerys(Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate) {
 		List<DailyModifyQuery> querys = new ArrayList<>();

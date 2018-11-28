@@ -745,14 +745,17 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 			//就業時間内
 			case WithinWorkTime:
 				returnValue = goOutingRounding(dedAtr,goOutSet.getDiffTimezoneSetting().getWorkTimezone(),rounding);
+				break;
 			//残業
 			case EarlyWork:
 			case OverTimeWork:
 			case StatutoryOverTimeWork:
 				returnValue = goOutingRounding(dedAtr,goOutSet.getDiffTimezoneSetting().getOttimezone(),rounding);
+				break;
 			//休出
 			case HolidayWork:
 				returnValue = goOutingRounding(dedAtr,goOutSet.getDiffTimezoneSetting().getPubHolWorkTimezone(),rounding);
+				break;
 			default:
 				throw new RuntimeException("Unknown ActualAtr:"+actualAtr);
 			}
