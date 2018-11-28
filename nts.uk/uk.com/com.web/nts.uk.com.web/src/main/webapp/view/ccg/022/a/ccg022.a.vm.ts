@@ -38,15 +38,21 @@ module nts.uk.com.view.ccg022.a.screenModel {
             self.isSystemSelected.subscribe((state) => {
                 self.title(state ? text("CCG022_10") : text("CCG022_11"));
                 if (self.isAdmin()) {
-                    block.invisible();
-                    service.find(state).done((data) => {
-                        self.setData(data);
-                    }).fail((error) => { alError({ messageId: error.messageId, messageParams: error.parameterIds }); })
-                        .always(() => {
-                            block.clear();
-                        });
+                    self.loadData(state);
+
                 }
             });
+        }
+
+        loadData(state) {
+            let self = this;
+            block.invisible();
+            service.find(state).done((data) => {
+                self.setData(data);
+            }).fail((error) => { alError({ messageId: error.messageId, messageParams: error.parameterIds }); })
+                .always(() => {
+                    block.clear();
+                });
         }
 
         setData(data: IStopSetting) {
@@ -86,6 +92,7 @@ module nts.uk.com.view.ccg022.a.screenModel {
                 };
             block.invisible();
             service.save(command).done(() => {
+                self.loadData(command.isSystem);
                 dialog({ messageId: 'Msg_15' }).then(function() { });
             }).always(() => {
                 block.clear();
