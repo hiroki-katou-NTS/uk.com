@@ -18807,6 +18807,7 @@ var nts;
                         var features = [];
                         features.push({ name: 'Selection', multipleSelection: isMultiSelect });
                         var maxWidthCharacter = 15;
+                        var SCROLL_WIDTH = 20;
                         var gridFeatures = ko.unwrap(data.features);
                         var width = 0;
                         var iggridColumns = [];
@@ -18818,12 +18819,16 @@ var nts;
                         }
                         else {
                             var isHaveKey_1 = false;
-                            iggridColumns = _.map(columns, function (c) {
+                            iggridColumns = _.map(columns, function (c, index, columns) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
-                                c["width"] = c["length"] * maxWidthCharacter + 20;
+                                var columnWidth = c["length"] * maxWidthCharacter + 20;
+                                if (index = columns.length - 1) {
+                                    columnWidth += SCROLL_WIDTH;
+                                }
+                                c["width"] = columnWidth;
                                 c["headerText"] = '';
                                 c["columnCssClass"] = 'nts-column';
-                                width += c["length"] * maxWidthCharacter + 20;
+                                width += columnWidth;
                                 if (optionValue === c["key"]) {
                                     isHaveKey_1 = true;
                                 }
@@ -24186,8 +24191,10 @@ var nts;
                             };
                             self.$ownerDoc.addXEventListener(ssk.MOUSE_MOVE, self.unshiftRight ? self.cursorMove.bind(self) : self.cursorMoveShift.bind(self));
                             self.$ownerDoc.addXEventListener(ssk.MOUSE_UP, self.unshiftRight ? self.cursorUp.bind(self) : self.cursorUpShift.bind(self));
-                            if (!trg)
+                            if (!trg) {
                                 event.preventDefault();
+                                event.stopPropagation();
+                            }
                         };
                         /**
                          * Cursor move shift.
@@ -26194,7 +26201,7 @@ var nts;
                             return;
                         }
                         if (su.afterCollertar)
-                            su.afterCollertar.focus({ preventScroll: true });
+                            setTimeout(function () { return su.afterCollertar.focus({ preventScroll: true }); }, 1);
                         var formatted, disFormat, coord = ti.getCellCoord(target), col = _columnsMap[coord.columnKey];
                         var inputRidd = function ($t, rowIdx, columnKey, dFormat) {
                             if ($t.classList.contains(khl.ERROR_CLS))
@@ -28976,6 +28983,32 @@ var nts;
 /// <reference path="ui/ko-ext/charset-setting-ko-ext.ts"/>
 /// <reference path="ui/function-wrap/contextmenu.ts"/>
 /// <reference path="ui/mgrid.ts"/> 
+/// <reference path="../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var action;
+            (function (action) {
+                var content;
+                (function (content) {
+                    ui.documentReady.add(function () {
+                        $('#functions-area').addClass("disappear");
+                        $('#functions-area-bottom').addClass("disappear");
+                        $('#contents-area').addClass("disappear");
+                    });
+                    ui.viewModelApplied.add(function () {
+                        $('#functions-area').removeClass("disappear");
+                        $('#functions-area-bottom').removeClass("disappear");
+                        $('#contents-area').removeClass("disappear");
+                    });
+                })(content || (content = {}));
+            })(action = ui.action || (ui.action = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
 /// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
@@ -32942,11 +32975,11 @@ var nts;
                                     var rId = rowObj[$grid.igGrid("option", "primaryKey")];
                                     var $gridCell = internal.getCellById($grid, rId, column.key);
                                     if ($gridCell && $($gridCell.children()[0]).children().length === 0) {
-                                        var action = void 0;
+                                        var action_1;
                                         if (column.click && _.isFunction(column.click)) {
-                                            action = function () { return column.click(rowId, column.key); };
+                                            action_1 = function () { return column.click(rowId, column.key); };
                                         }
-                                        $("." + controlCls).append(new Label(action).draw({ text: value }));
+                                        $("." + controlCls).append(new Label(action_1).draw({ text: value }));
                                         var cellElement = {
                                             id: rId,
                                             columnKey: column.key,
