@@ -106,9 +106,12 @@ public class PlanActualWorkType extends WorkTypeCondition {
 
 	@Override
 	public WorkCheckResult checkWorkType(WorkInfoOfDailyPerformance workInfo) {
+		WorkCheckResult compareTypeError = WorkCheckResult.NOT_CHECK;
 		if(this.getComparePlanAndActual() == FilterByCompare.EXTRACT_DIFFERENT){
 			if(workInfo.getRecordInfo().getWorkTypeCode().equals(workInfo.getScheduleInfo().getWorkTypeCode())){
-				return WorkCheckResult.ERROR;
+				compareTypeError = WorkCheckResult.NOT_ERROR;
+			} else {
+				compareTypeError = WorkCheckResult.ERROR;
 			}
 		}
 		
@@ -127,7 +130,8 @@ public class PlanActualWorkType extends WorkTypeCondition {
 			}
 		}
 		
-		return comparePlanAndActual(planCheck, actualCheck, this.operatorBetweenPlanActual == LogicalOperator.AND);
+		return comparePlanAndActual(compareTypeError, 
+									comparePlanAndActual(planCheck, actualCheck, this.operatorBetweenPlanActual == LogicalOperator.AND), true);
 	}
 	
 	private WorkCheckResult comparePlanAndActual(WorkCheckResult plan, WorkCheckResult actual, boolean same){

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.vacation.history.service;
 
+/*import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;*/
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -7,7 +8,6 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.vacation.history.PlanVacationHistory;
 import nts.uk.ctx.at.request.dom.vacation.history.VacationHistoryRepository;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class PlanVacationRuleQueryImpl implements PlanVacationRuleQuery{

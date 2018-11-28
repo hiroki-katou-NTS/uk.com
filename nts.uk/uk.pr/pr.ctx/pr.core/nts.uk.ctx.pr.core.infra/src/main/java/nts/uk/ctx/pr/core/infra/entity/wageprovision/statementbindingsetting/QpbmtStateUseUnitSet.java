@@ -8,7 +8,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateUseUnitSetting;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateUseUnitSet;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -21,8 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "QPBMT_STATE_USE_UNIT_SET")
-public class QpbmtStateUseUnitSet extends UkJpaEntity implements Serializable
-{
+public class QpbmtStateUseUnitSet extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     
     /**
@@ -58,10 +57,10 @@ public class QpbmtStateUseUnitSet extends UkJpaEntity implements Serializable
         return stateUseUnitSetPk;
     }
 
-    public StateUseUnitSetting toDomain() {
-        return new StateUseUnitSetting(this.stateUseUnitSetPk.cid, this.masterUseClass, this.individualUseClass, this.useMaster);
+    public StateUseUnitSet toDomain() {
+        return new StateUseUnitSet(this.stateUseUnitSetPk.cid, this.masterUseClass, this.individualUseClass, this.useMaster);
     }
-    public static QpbmtStateUseUnitSet toEntity(StateUseUnitSetting domain) {
+    public static QpbmtStateUseUnitSet toEntity(StateUseUnitSet domain) {
         return new QpbmtStateUseUnitSet(new QpbmtStateUseUnitSetPk(domain.getCompanyID()),domain.getMasterUse().value, domain.getIndividualUse().value, domain.getUsageMaster().map(i->i.value).orElse(null));
     }
 

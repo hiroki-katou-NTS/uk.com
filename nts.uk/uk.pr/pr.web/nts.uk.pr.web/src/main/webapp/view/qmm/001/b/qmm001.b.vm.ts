@@ -28,6 +28,7 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
             if(params) {
                 self.code(params.code);
                 self.name(params.name);
+                self.setWidth();
                 self.historyAtr(params.historyAtr);
                 if ( params.historyAtr == 1) {
                     self.end(getText('QMM001_31', ['9999/12']));
@@ -52,6 +53,14 @@ module nts.uk.pr.view.qmm001.b.viewmodel {
                 self.takeOver(1);
             }
             block.clear();
+        }
+
+        setWidth(){
+            let self = this;
+            if(self.name().length < 25) {
+                let windowSize = nts.uk.ui.windows.getSelf();
+                windowSize.setSize(380,505);
+            }
         }
 
         setFocus(){

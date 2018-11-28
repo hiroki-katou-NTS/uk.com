@@ -10,7 +10,7 @@ import lombok.Data;
 public class OutputItemSetting {
 	
 	/** The item code. */
-	private int itemCode;
+	private Integer itemCode;
 	
 	/** The item name. */
 	private String itemName;

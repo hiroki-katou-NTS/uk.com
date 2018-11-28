@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.request.dom.setting.company.mailsetting.remandsetting;
 
-import lombok.AllArgsConstructor;
+/*import lombok.AllArgsConstructor;*/
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 

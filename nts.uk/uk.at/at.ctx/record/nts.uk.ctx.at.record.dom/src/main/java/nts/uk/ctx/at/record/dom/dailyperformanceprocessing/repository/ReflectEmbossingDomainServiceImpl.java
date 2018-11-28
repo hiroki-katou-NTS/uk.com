@@ -55,7 +55,6 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerforma
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.employmentrules.temporarywork.TemporaryWorkUseManage;
 import nts.uk.ctx.at.shared.dom.employmentrules.temporarywork.repository.TempWorkUseManageRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -72,9 +71,6 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
-//import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
@@ -85,8 +81,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 	private StampReflectionManagementRepository stampRepo;
 	@Inject
 	private WorkInformationRepository workInforRepo;
-	@Inject
-	private WorkTypeRepository WorkRepo;
+//	@Inject
+//	private WorkTypeRepository WorkRepo;
 	@Inject
 	private BasicScheduleService basicScheduleService;
 	@Inject

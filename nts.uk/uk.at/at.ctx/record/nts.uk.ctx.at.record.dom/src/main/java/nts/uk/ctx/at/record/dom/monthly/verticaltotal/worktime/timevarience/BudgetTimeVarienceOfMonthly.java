@@ -3,24 +3,24 @@ package nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.timevarience;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 
 /**
  * 月別実績の予実差異時間
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class BudgetTimeVarienceOfMonthly {
 
 	/** 時間 */
-	private AttendanceTimeMonth time;
+	private AttendanceTimeMonthWithMinus time;
 	
 	/**
 	 * コンストラクタ
 	 */
 	public BudgetTimeVarienceOfMonthly(){
 		
-		this.time = new AttendanceTimeMonth(0);
+		this.time = new AttendanceTimeMonthWithMinus(0);
 	}
 	
 	/**
@@ -28,7 +28,7 @@ public class BudgetTimeVarienceOfMonthly {
 	 * @param time 時間
 	 * @return 月別実績の予実差異時間
 	 */
-	public static BudgetTimeVarienceOfMonthly of(AttendanceTimeMonth time){
+	public static BudgetTimeVarienceOfMonthly of(AttendanceTimeMonthWithMinus time){
 		
 		val domain = new BudgetTimeVarienceOfMonthly();
 		domain.time = time;

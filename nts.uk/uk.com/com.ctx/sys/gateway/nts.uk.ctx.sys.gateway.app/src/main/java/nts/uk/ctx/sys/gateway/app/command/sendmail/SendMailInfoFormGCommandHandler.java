@@ -90,12 +90,12 @@ public class SendMailInfoFormGCommandHandler
 					} else {
 						// Send Mail アルゴリズム「メール送信実行」を実行する
 						return this.sendMail(Arrays.asList(user.get().getMailAddress().get()), user.get().getLoginId(),
-								command, employee);
+								command, employee,companyId);
 					}
 					// return new SendMailReturnDto(null);
 				} else {
 					return this.sendMail(mailDestinationImport.getOutGoingMails(), user.get().getLoginId(), command,
-							employee);
+							employee,companyId);
 				}
 			} else {
 				return Arrays.asList(new SendMailReturnDto(null));
@@ -118,7 +118,7 @@ public class SendMailInfoFormGCommandHandler
 	 */
 	// Send Mail アルゴリズム「メール送信実行」を実行する
 	private List<SendMailReturnDto> sendMail(List<String> toMails, String loginId, SendMailInfoFormGCommand command,
-			EmployeeInfoDtoImport employee) {
+			EmployeeInfoDtoImport employee,String companyId) {
 		// get URL from CCG033
 		String url = this.registerEmbededURL.embeddedUrlInfoRegis("CCG007", "H", 3, 24, employee.getEmployeeId(),
 				command.getContractCode(), loginId, employee.getEmployeeCode(), 1, new ArrayList<>());
@@ -127,7 +127,7 @@ public class SendMailInfoFormGCommandHandler
 		List<SendMailReturnDto> dtos = new ArrayList<>();
 		try {
 			toMails.stream().forEach(item -> {
-				mailSender.sendFromAdmin(item, contents);
+				mailSender.sendFromAdmin(item, contents,companyId);
 				SendMailReturnDto dto = new SendMailReturnDto(url);
 				dtos.add(dto);
 			});

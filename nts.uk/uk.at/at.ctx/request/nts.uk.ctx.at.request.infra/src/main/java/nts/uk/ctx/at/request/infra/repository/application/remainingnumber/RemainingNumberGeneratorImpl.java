@@ -115,12 +115,12 @@ public class RemainingNumberGeneratorImpl extends AsposeCellsReportGenerator imp
 			Optional<PlannedVacationListCommand> opPlanVa = dataSource.get(0).getPlannedVacationListCommand().stream()
 					.filter(x -> x.getWorkTypeCode().equals(wtCode)).findFirst();
 			if (opPlanVa.isPresent()) {
-				cells.get(0, 7 + index).setValue(opPlanVa.get().getWorkTypeName());
-				setBackgroundHeader(cells.get(0, 7 + index));
-				setBorderStyle(cells.get(0, 7 + index));
-				cells.get(0, 8 + index).setValue(opPlanVa.get().getWorkTypeName() + TextResource.localize("KDM002_34"));
+				cells.get(0, 8 + index).setValue(opPlanVa.get().getWorkTypeName());
 				setBackgroundHeader(cells.get(0, 8 + index));
 				setBorderStyle(cells.get(0, 8 + index));
+				cells.get(0, 9 + index).setValue(opPlanVa.get().getWorkTypeName() + TextResource.localize("KDM002_34"));
+				setBackgroundHeader(cells.get(0, 9 + index));
+				setBorderStyle(cells.get(0, 9 + index));
 				index += 2;
 			}
 		}
@@ -155,22 +155,23 @@ public class RemainingNumberGeneratorImpl extends AsposeCellsReportGenerator imp
 		setBorderStyle(cells.get(firstRow, 6));
 		cells.get(firstRow, 7).setValue(excelInforCommand.getDateAnnualRest() + TextResource.localize("KDM002_33"));
 		setBorderStyle(cells.get(firstRow, 7));
+		// số 8 là bắt đầu cột được auto gen sau khi tạo 7 cột trên, vậy nên khi thêm cột cần phải thay đổi những cho liên quan đến số 8 và số 9
 		int i = 0;
 		for (String wtCode : htbPlanneds) {
 			Optional<NumberOfWorkTypeUsedImport> opNumber = excelInforCommand.getNumberOfWorkTypeUsedImport().stream()
 					.filter(x -> x.getWorkTypeCode().equals(wtCode)).findFirst();
 			if (opNumber.isPresent()) {
-				cells.get(firstRow, 7 + i)
+				cells.get(firstRow, 8 + i)
 						.setValue(opNumber.get().getAttendanceDaysMonth() + TextResource.localize("KDM002_33"));
-				setBorderStyle(cells.get(firstRow, 7 + i));
+				setBorderStyle(cells.get(firstRow, 8 + i));
 				i++;
 			}
 			Optional<PlannedVacationListCommand> opPlanVa = excelInforCommand.getPlannedVacationListCommand().stream()
 					.filter(x -> x.getWorkTypeCode().equals(wtCode)).findFirst();
 			if (opPlanVa.isPresent()) {
-				cells.get(firstRow, 7 + i)
+				cells.get(firstRow, 8 + i)
 						.setValue(opPlanVa.get().getMaxNumberDays() + TextResource.localize("KDM002_33"));
-				setBorderStyle(cells.get(firstRow, 7 + i));
+				setBorderStyle(cells.get(firstRow, 8 + i));
 				i++;
 			}
 		}

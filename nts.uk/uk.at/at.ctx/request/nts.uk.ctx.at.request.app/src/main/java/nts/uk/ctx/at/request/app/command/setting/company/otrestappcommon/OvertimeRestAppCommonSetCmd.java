@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.app.command.setting.company.otrestappcommon;
 
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
+/*import javax.ejb.Stateless;
+import javax.transaction.Transactional;*/
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

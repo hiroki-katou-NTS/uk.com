@@ -12,11 +12,10 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.MasterCode;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisDeparmentService;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingDate;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateLinkSettingMaster;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StatementCode;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.MasterCode;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisDeparService;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateLinkSetDate;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateLinkSetMaster;
 import nts.uk.shr.com.context.AppContexts;
 
 
@@ -25,7 +24,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class AddOrUpdateStateCorrelationHisDeparmentCommandHandler extends CommandHandler<ListStateLinkSettingMasterCommand> {
     
     @Inject
-    private StateCorrelationHisDeparmentService stateCorrelationHisDeparmentService;
+    private StateCorreHisDeparService stateCorreHisDeparService;
     
     @Override
     protected void handle(CommandHandlerContext<ListStateLinkSettingMasterCommand> context) {
@@ -33,25 +32,25 @@ public class AddOrUpdateStateCorrelationHisDeparmentCommandHandler extends Comma
 
         List<StateLinkSettingMasterCommand> listStateLinkSettingMasterCommand = context.getCommand().getListStateLinkSettingMasterCommand();
         //convert to domain
-        List<StateLinkSettingMaster> stateLinkSettingMaster = new ArrayList<StateLinkSettingMaster>();
+        List<StateLinkSetMaster> stateLinkSetMaster = new ArrayList<StateLinkSetMaster>();
         if(listStateLinkSettingMasterCommand.size() > 0){
-            stateLinkSettingMaster = listStateLinkSettingMasterCommand.stream().map(item -> new StateLinkSettingMaster(item.getHisId(),new MasterCode(item.getMasterCode()),
-                    item.getSalaryCode() == null ? null : new StatementCode(item.getSalaryCode()),
-                    item.getBonusCode() == null ? null : new StatementCode(item.getBonusCode()))).collect(Collectors.toList());
+            stateLinkSetMaster = listStateLinkSettingMasterCommand.stream().map(item -> new StateLinkSetMaster(item.getHisId(),new MasterCode(item.getMasterCode()),
+                    item.getSalaryCode() == null ? null : new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(item.getSalaryCode()),
+                    item.getBonusCode() == null ? null : new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(item.getBonusCode()))).collect(Collectors.toList());
         }
 
         StateLinkSettingDateCommand stateLinkSettingDateCommand = context.getCommand().getStateLinkSettingDateCommand();
 
         GeneralDate date =  GeneralDate.fromString(stateLinkSettingDateCommand.getDate(),"yyyy/MM/dd");
 
-        StateLinkSettingDate stateLinkSettingDate = new StateLinkSettingDate(stateLinkSettingDateCommand.getHistoryID(), date);
+        StateLinkSetDate stateLinkSetDate = new StateLinkSetDate(stateLinkSettingDateCommand.getHistoryID(), date);
         StateCorrelationHisDeparmentCommand stateCorrelationHisDeparmentCommand = context.getCommand().getStateCorrelationHisDeparmentCommand();
         int mode = context.getCommand().getMode();
         String hisID = stateCorrelationHisDeparmentCommand.getHistoryID();
         YearMonth start = new YearMonth(stateCorrelationHisDeparmentCommand.getStartYearMonth());
         YearMonth end = new YearMonth(stateCorrelationHisDeparmentCommand.getEndYearMonth());
 
-        stateCorrelationHisDeparmentService.addOrUpdate(cid,hisID,start,end,mode,stateLinkSettingDate,stateLinkSettingMaster);
+        stateCorreHisDeparService.addOrUpdate(cid,hisID,start,end,mode, stateLinkSetDate, stateLinkSetMaster);
     }
 
 }

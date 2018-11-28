@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnum
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.time.GeneralDate;
+/*import nts.arc.time.GeneralDate;*/
 @Getter
 @AllArgsConstructor
 public class TmpRsvLeaveMngImport {

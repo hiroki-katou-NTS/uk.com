@@ -3025,6 +3025,13 @@ button.nts-switch-button[disabled].selected {
   margin-top: -10px !important;
 }
 
+/* line 30, ../sass/components/_treegridview.scss */
+.no-selector table th:first-child.ui-iggrid-rowselector-class{
+	visibility: hidden;
+}
+.no-selector table th:first-child.ui-iggrid-rowselector-header{
+	visibility: hidden;
+}
 /* line 2, ../sass/components/_combobox.scss */
 #contents-area input.ui-igcombo-field {
   font-family: "DroidSansMono", "Meiryo";
