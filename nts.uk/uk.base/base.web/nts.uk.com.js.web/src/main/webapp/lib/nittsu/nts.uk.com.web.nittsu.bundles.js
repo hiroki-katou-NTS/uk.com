@@ -20880,6 +20880,7 @@ var nts;
                                 var btn = $('<button>').text(text)
                                     .addClass('nts-switch-button unselectable')
                                     .data('swbtn', value)
+                                    .attr('tabindex', "-1")
                                     .attr('unselectable', "on")
                                     .on('click', function () {
                                     var selectedValue = $(this).data('swbtn');
@@ -21296,6 +21297,9 @@ var nts;
                             }
                         });
                         $treegrid.setupSearchScroll("igTreeGrid");
+                        if (showCheckBox != true) {
+                            $treegrid.closest(".nts-treegridview").addClass("no-selector");
+                        }
                     };
                     /**
                      * Update
@@ -27621,9 +27625,9 @@ var nts;
                         var isSelecting;
                         $grid.addXEventListener(ssk.MOUSE_DOWN, function (evt) {
                             var $target = evt.target;
-                            isSelecting = true;
                             if (!selector.is($target, ".mcell"))
                                 return;
+                            isSelecting = true;
                             window.addXEventListener(ssk.MOUSE_UP + ".block", function (evt) {
                                 isSelecting = false;
                                 $grid.onselectstart = null;
@@ -37307,6 +37311,9 @@ var nts;
                             //                }
                         });
                         $treegrid.setupSearchScroll("igTreeGrid");
+                        if (showCheckBox != true) {
+                            $treegrid.closest(".nts-treegridview").addClass("no-selector");
+                        }
                     };
                     function selectRows($treegrid, selectedValue) {
                         var dataSource = $treegrid.igTreeGrid('option', 'dataSource');
