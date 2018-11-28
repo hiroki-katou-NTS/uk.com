@@ -138,6 +138,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
             });
 
             self.selectedHistoryCode.subscribe((historyCode) => {
+                nts.uk.ui.errors.clearAll();
                 if (historyCode) {
                     let index = _.findIndex(self.dataSource(), (obj) => {
                         return obj.code === self.selectedCode();

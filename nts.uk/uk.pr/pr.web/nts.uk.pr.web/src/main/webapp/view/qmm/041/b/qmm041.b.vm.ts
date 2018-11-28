@@ -23,7 +23,7 @@ module nts.uk.pr.view.qmm041.b.viewmodel {
                 self.startYearMonth(params.startYearMonth);
                 self.historyStatus = params.historyStatus;
                 if (params.historyStatus == model.HISTORY_STATUS.WITH_HISTORY) {
-                    self.takeOverItem.push(new model.EnumModel(model.INHERITANCE.YES, getText('QMM041_23', self.formatYM(self.startYearMonth()))));
+                    self.takeOverItem.push(new model.EnumModel(model.INHERITANCE.YES, getText('QMM041_23', [self.formatYM(self.startYearMonth())])));
                     self.takeOverMethod(model.INHERITANCE.YES);
                 }
                 self.takeOverItem.push(new model.EnumModel(model.INHERITANCE.NO, getText('QMM041_24')));
