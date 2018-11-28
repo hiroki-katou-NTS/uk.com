@@ -217,7 +217,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 			// update command
 			command.setCompanyId(companyId);
-			command.setIsDeleteBeforInsert(false);
+//			command.setIsDeleteBeforInsert(false);
 
 			// find execution log by id
 			scheduleExecutionLog = this.scheduleExecutionLogRepository.findById(companyId, command.getExecutionId())

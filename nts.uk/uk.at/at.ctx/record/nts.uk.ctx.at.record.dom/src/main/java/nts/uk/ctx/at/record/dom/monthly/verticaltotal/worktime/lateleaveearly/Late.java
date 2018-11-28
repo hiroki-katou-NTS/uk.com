@@ -8,7 +8,7 @@ import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 
 /**
  * 遅刻
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class Late {
@@ -80,6 +80,6 @@ public class Late {
 	 * @param calcMinutes 計算分
 	 */
 	public void addMinutesToTime(int mitutes, int calcMinutes){
-		this.time.addMinutes(mitutes, calcMinutes);
+		this.time = this.time.addMinutes(mitutes, calcMinutes);
 	}
 }

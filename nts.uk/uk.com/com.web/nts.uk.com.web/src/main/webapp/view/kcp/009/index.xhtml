@@ -28,6 +28,15 @@
 						<hr></hr>
 						<div style="margin-left: 10px; padding-top: 10px">
 							<p>
+								<b>Base Date:</b>
+							</p>
+							<br></br>
+							<div data-bind="ntsCheckBox:{checked: setBaseDate}"></div>
+							<div data-bind="ntsDatePicker: {value: baseDate, dateFormat: 'YYYY/MM/DD', enable: setBaseDate}"></div>
+						</div>
+						<br></br>
+						<div style="margin-left: 10px; padding-top: 10px">
+							<p>
 								<b>Display Organization Name:</b>
 							</p>
 							<br></br>
@@ -124,7 +133,7 @@ Example:
         systemReference: KnockoutObservable<number>;
         isDisplayOrganizationName: KnockoutObservable<boolean>;
         targetBtnText: string;
-        
+        baseDate: KnockoutObservable<Date>;
         listComponentOption: ComponentOption;
         selectedItem: KnockoutObservable<string>;
         tabindex: number;
@@ -166,6 +175,7 @@ Example:
         targetBtnText: string;
         selectedItem: KnockoutObservable<string>;
         tabIndex: number;
+        baseDate?: KnockoutObservable<Date>;
     }
     export interface EmployeeModel {
         id: string;

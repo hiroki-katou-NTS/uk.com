@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.common;
 
 import lombok.Value;
-import nts.arc.time.GeneralDate;
+/*import nts.arc.time.GeneralDate;*/
 
 @Value
 public class ObjApprovalRootInput {

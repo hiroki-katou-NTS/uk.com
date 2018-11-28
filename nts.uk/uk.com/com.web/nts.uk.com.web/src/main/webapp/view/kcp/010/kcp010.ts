@@ -7,7 +7,7 @@ module kcp010.viewmodel {
     export class ScreenModel {
         wkpList: KnockoutObservableArray<WorkplaceModel>;
         targetBtnText: string;
-
+        flag: boolean = true;
         selectedItem: KnockoutObservable<string>;
         workplaceId: KnockoutObservable<string>;
         workplaceCode: KnockoutObservable<string>;
@@ -19,9 +19,10 @@ module kcp010.viewmodel {
         keySearch: KnockoutObservable<string>;
         isDisplay: KnockoutObservable<boolean>;
         tabIndex: number;
-
+        systemDate : KnockoutObservable<any>;
         constructor() {
             var self = this;
+            self.systemDate = ko.observable(null);
             self.wkpList = ko.observableArray([]);
             self.targetBtnText = nts.uk.resource.getText("KCP010_3");
             self.workplaceId = ko.observable(null);
@@ -30,6 +31,13 @@ module kcp010.viewmodel {
             self.selectedItem = ko.observable("");
             self.keySearch = ko.observable("");
             self.isDisplay = ko.observable(true);
+            
+            self.systemDate = ko.observable(null);
+            // SelectedItem Subscribe
+            self.selectedItem.subscribe(function(value: string) {
+                self.bindWorkplace(value);
+            });
+                    
         }
 
         // Initialize Component
@@ -38,9 +46,18 @@ module kcp010.viewmodel {
             $(document).undelegate('#list-box_grid', 'iggriddatarendered');
             ko.cleanNode($input[0]);
             var self = this;
-            service.findWorkplaceTree(moment(new Date()).toDate()).done(function(dataList: Array<service.model.WorkplaceSearchData>) {
+            if(self.systemDate() == null){
+                self.systemDate(moment(new Date()).toDate());   
+            }
+            service.findWorkplaceTree(self.systemDate()).done(function(dataList: Array<service.model.WorkplaceSearchData>) {
                 if (dataList && dataList.length > 0) {
                     self.wkpList(self.convertTreeToArray(dataList));
+                    
+                    if(self.flag){
+                        self.flag = false;
+                        self.getWorkplaceBySid();
+                    }
+                    
                     self.tabIndex = data.tabIndex;
                     if (self.wkpList().length > 1) {
                         self.wkpList().sort(function(left, right) {
@@ -49,25 +66,11 @@ module kcp010.viewmodel {
                         });
                     }
                     
-                    // SelectedItem Subscribe
-                    self.selectedItem.subscribe(function(value: string) {
-                        self.bindWorkplace(value);
-                    });
-                    
-                    service.getWorkplaceBySid().done(function(workplace: service.model.WorkplaceSearchData) {
-                        if  (workplace && workplace != null) {
-                            self.selectedItem(workplace.workplaceId);
-                        } else {
-                            self.selectedItem(self.wkpList()[0].workplaceId);
-                        }
-                    }).fail(function(res) {
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_7" });
-                    });
-                    
                     self.targetBtnText = data.targetBtnText;
                     
                     // Selected OrdinalNumber
                     self.selectedOrdinalNumber = ko.computed(function() {
+                        self.wkpList(_.sortBy(self.wkpList(), [function(o) { return o.hierarchyCode; }]));
                         var currentItem = self.wkpList().filter((item) => {
                             return item.workplaceId == self.selectedItem();
                         })[0];
@@ -128,6 +131,20 @@ module kcp010.viewmodel {
             return dfd.promise();
         }
         
+        public getWorkplaceBySid(): void {
+            let self = this;
+            service.getWorkplaceBySid().done(function(workplace: service.model.WorkplaceSearchData) {
+                if (workplace && workplace != null) {
+                    self.selectedItem(workplace.workplaceId);
+                } else {
+                    self.selectedItem(self.wkpList()[0].workplaceId);
+                }
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert({ messageId: "Msg_7" });
+            });
+        }
+       
+        
         /**
          * open dialog CDL008
          * chose work place
@@ -137,8 +154,11 @@ module kcp010.viewmodel {
         openDialogCDL008(){
             let self = this;
             block.grayout();
+            if(self.systemDate()==null){
+                self.systemDate(moment(new Date()).toDate());
+            }
             setShared('inputCDL008', { selectedCodes: self.workplaceId(), 
-                                       baseDate: moment(new Date()).toDate(), 
+                                       baseDate: self.systemDate(), 
                                        isMultiple: false, 
                                        selectedSystemType:2 , 
                                        isrestrictionOfReferenceRange:true , 
@@ -147,11 +167,25 @@ module kcp010.viewmodel {
             modal("/view/cdl/008/a/index.xhtml").onClosed(function(){
                 block.clear();
                 let data = getShared('outputCDL008');
+                let baseDate = getShared('baseDateCDL008');  
                 if(data == null || data === undefined){
                     return;
+                } 
+                if(baseDate != null && baseDate != undefined){
+                    self.systemDate(moment(new Date(baseDate)).toDate());    
                 }
-                self.workplaceId(data);
-                self.selectedItem(data);
+                
+                
+                let param = {
+                    targetBtnText: nts.uk.resource.getText("KCP010_3"),
+                    tabIndex: 1
+                };
+                self.init($("#wkp-component"), param).done(function(){
+                    //$('#wkp-component').ntsLoadListComponent(param);
+                    self.workplaceId(data);
+                    self.selectedItem(data);     
+                });
+                
             });
         }
 
@@ -178,8 +212,12 @@ module kcp010.viewmodel {
         // Search workplace
         private searchWkp(): void {
             let self = this;
+            let param = {
+                    baseDate : self.systemDate(),
+                    workplaceCode : self.keySearch()
+            }
             // Search
-            service.searchWorkplace(self.keySearch()).done(function(workplace: service.model.WorkplaceSearchData) {
+            service.searchWorkplace(param).done(function(workplace: service.model.WorkplaceSearchData) {
                 // find Exist workplace in List
                 let existItem = self.wkpList().filter((item) => {
                     return item.code == workplace.code;
@@ -283,8 +321,8 @@ module kcp010.viewmodel {
             return nts.uk.request.ajax('com', paths.findWorkplaceTree, { baseDate: baseDate });
         }
         
-        export function searchWorkplace(workplaceCode: string): JQueryPromise<model.WorkplaceSearchData> {
-            return nts.uk.request.ajax('com', paths.searchWorkplace + workplaceCode);
+        export function searchWorkplace(input :any): JQueryPromise<model.WorkplaceSearchData> {
+            return nts.uk.request.ajax('com', paths.searchWorkplace,input);
         }
         
         export function getWorkplaceBySid(): JQueryPromise<model.WorkplaceSearchData> {

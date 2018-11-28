@@ -1,155 +1,149 @@
-/// <reference path="../../reference.ts"/>
-
 module nts.uk.ui.koExtentions {
+    let _: any = window['_'],
+        ko: any = window['ko'],
+        nts: any = window['nts'],
+        moment: any = window['moment'];
 
     /**
      * Dialog binding handler
      */
-    class NtsMonthDaysBindingHandler implements KnockoutBindingHandler {
+    class NtsMonthDaysBindingHandler {
 
         /**
          * Init. 
          */
-        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            let data = valueAccessor();
-            let $container = $(element),
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: any): any {
+            let data = valueAccessor(),
+                childBindingContext = bindingContext.createChildContext(),
                 getComboBinding = (originalBinding, value, source) => {
                     return _.extend(_.clone(originalBinding), {
                         options: ko.observableArray(source),
                         optionsValue: 'value',
                         value: value,
                         optionsText: 'text',
-                        width: '60px'
+                        width: '60px',
+                        enable: data.enable,
+                        name: _.size(source) == 13 ? (ko.toJS(data.name) + "の月") : (ko.toJS(data.name) + "の日"),
+                        required: _.size(source) == 13 ? data.required : ko.computed(() => !!ko.toJS(data.required) || !!ko.toJS(monthValueAccessor.value))
                     });
                 },
-                getMonths = () => _.range(0, 13).map(m => ({ text: m === 0 ? "" : m, value: m })),
-                getDaysInMonth = (month: number) => _.range(0, moment(month, "MM").daysInMonth() + 1).map(m => ({ text: m === 0 ? "" : m, value: m }));
+                getMonths = () => _.range(0, 13).map(m => ({ text: m === 0 ? "" : m, value: m === 0 ? "" : m })),
+                getDaysInMonth = (month: number) => _.range(0, moment(month, "MM").daysInMonth() + 1).map(m => ({ text: m === 0 ? "" : m, value: m === 0 ? "" : m })),
+                monthValueAccessor = getComboBinding(data, ko.observable(""), getMonths()),
+                dayOfMonthValueAccessor = getComboBinding(data, ko.observable(""), [{ text: "", value: "" }]);
 
-            let value = ko.unwrap(data.value);
-            let dataName = ko.unwrap(data.name);
-            let enable = data.enable === undefined ? true : ko.unwrap(data.enable);
-            let required = _.isNil(data.required) ? false : ko.unwrap(data.required);
+            // init binding element
+            element.innerHTML = `
+                <div tabindex='${element.getAttribute('tabindex') || 0}' class='ntsMonthPicker ntsComboBox ntsMonthDays_Component' id='${nts.uk.util.randomId()}' data-bind='ntsComboBox: $month'></div>
+                <div class='ntsMonthLabel ntsLabel ntsMonthDays_Component' id='${nts.uk.util.randomId()}'><label data-bind="text: '月'"></label></div>
+                <div tabindex='${element.getAttribute('tabindex') || 0}' class='ntsDayPicker ntsComboBox ntsMonthDays_Component' id='${nts.uk.util.randomId()}' data-bind='ntsComboBox: $dayOfMonth'></div>
+                <div class='ntsDayPicker ntsLabel ntsMonthDays_Component' id='${nts.uk.util.randomId()}'><label data-bind="text: '日'"></label></div>
+                `;
 
-            if (dataName) {
-                dataName = nts.uk.resource.getControlName(dataName);
+            // set default attr to element
+            element.removeAttribute('tabindex');
+            if (!element.className) {
+                element.className = 'ntsControl';
+            } else {
+                element.classList.add('ntsControl');
             }
-            $container.data("tabindex", $container.attr("tabindex") || 0).removeAttr("tabindex");
-
-            $container.addClass("ntsControl ntsMonthDays_Container");
-
-            let $control = $('<div>', { class: 'ntsMonthDays' }),
-                $monthPicker = $("<div>", { "class": "ntsMonthPicker ntsComboBox ntsMonthDays_Component", id: nts.uk.util.randomId() }),
-                $dayPicker = $("<div>", { "class": "ntsDayPicker ntsComboBox ntsMonthDays_Component", id: nts.uk.util.randomId() }),
-                $monthLabel = $("<div>", {
-                    "class": "ntsMonthLabel ntsLabel ntsMonthDays_Component",
-                    id: nts.uk.util.randomId(),
-                    html: '<label>月</label>'
-                }),
-                $dayLabel = $("<div>", {
-                    "class": "ntsDayLabel ntsLabel ntsMonthDays_Component",
-                    id: nts.uk.util.randomId(),
-                    html: '<label>日</label>'
-                });
-
-
-            $control.append($monthPicker).append($monthLabel).append($dayPicker).append($dayLabel).appendTo($container);
-            // trong custom control nay hinh nhu ngoai init va update, no hok nhan method khac dua a ok
-            let monthValueAccessor = getComboBinding(data, ko.observable(1), getMonths()),
-                dayValueAccessor = getComboBinding(data, ko.observable(1), getDaysInMonth(1));
+            element.classList.add('ntsMonthDays_Container');
 
             // month change
-            monthValueAccessor.value.subscribe(v => {
-                if (v === 0) {
-                    dayValueAccessor.value(0);
-                    dayValueAccessor.options([{ text: "", value: 0}]);
+            monthValueAccessor.value.subscribe(month => {
+                if (!month) {
+                    dayOfMonthValueAccessor.options([{ text: "", value: "" }]);
+
+                    if (dayOfMonthValueAccessor.value()) {
+                        dayOfMonthValueAccessor.value("");
+                    } else {
+                        dayOfMonthValueAccessor.value.valueHasMutated();
+                    }
                 } else {
                     // change options of combobox days
-                    let days = getDaysInMonth(v),
-                        curentDay = ko.toJS(dayValueAccessor.value);
-    
-                    dayValueAccessor.value(_.min([curentDay, days.length]));
-                    dayValueAccessor.options(days);
-                }
-            });
+                    let days = getDaysInMonth(month),
+                        curentDay = ko.toJS(dayOfMonthValueAccessor.value),
+                        day = _.min([curentDay, days.length - 1]);
 
-            // bind data out
-            ko.computed({
-                read: () => {
-                    let currentMonth = ko.toJS(monthValueAccessor.value),
-                        curentDay = ko.toJS(dayValueAccessor.value);
+                    dayOfMonthValueAccessor.options(days);
 
-                    data.value(currentMonth * 100 + curentDay);
-                    $container.trigger("validate");
-                }
-            })
-
-            ko.computed({
-                read: () => {
-                    let value = Number(ko.toJS(data.value));
-
-                    if (_.isNumber(value)) {
-                        let month = Math.floor(value / 100),
-                            day = value % 100;
-
-                        monthValueAccessor.value(month);
-                        dayValueAccessor.value(day);
+                    if (dayOfMonthValueAccessor.value() != day) {
+                        dayOfMonthValueAccessor.value(day);
+                    } else {
+                        dayOfMonthValueAccessor.value.valueHasMutated();
                     }
                 }
-            })
-            
-            $container.on("validate", evt => {
-                if (!$container.is(evt.target)) return;
-                let required = $container.data("required");
-                if (required && (monthValueAccessor.value() === 0 || _.isNil(monthValueAccessor.value()))) {
-                    $monthPicker.addClass("error").ntsError("set", 
-                        resource.getMessage("FND_E_REQ_SELECT", [ dataName + "の月" ]), "FND_E_REQ_SELECT");
-                } else {
-                    $monthPicker.removeClass("error").ntsError("clear");
-                }
-                
-                if (required && (dayValueAccessor.value() === 0 || _.isNil(dayValueAccessor.value()))) {
-                    $dayPicker.addClass("error").ntsError("set", 
-                        resource.getMessage("FND_E_REQ_SELECT", [ dataName + "の日" ]), "FND_E_REQ_SELECT");
-                } else {
-                    $dayPicker.removeClass("error").ntsError("clear");
+            });
+
+            // data out
+            // day change (bind new value to data.value)
+            dayOfMonthValueAccessor.value.subscribe(day => {
+                let month = ko.toJS(monthValueAccessor.value);
+
+                if (day && month) {
+                    data.value(month * 100 + day);
                 }
             });
 
-            // day accessor cuar 2 cbox vao data
-            $container.data("cusVal", { month: monthValueAccessor, day: dayValueAccessor });
+            // data in
+            ko.computed({
+                read: () => {
+                    let raw = ko.toJS(data.value),
+                        month = Math.floor(Number(raw) / 100),
+                        dayOfMonth = Math.floor(Number(raw) % 100),
+                        mno = monthValueAccessor.value.notifySubscribers,
+                        dno = dayOfMonthValueAccessor.value.notifySubscribers;
 
-            ko.bindingHandlers["ntsComboBox"].init($monthPicker[0], () => monthValueAccessor, allBindingsAccessor, viewModel, bindingContext);
+                    // prevent notifiSubscribers when change values
+                    monthValueAccessor.value.notifySubscribers = () => { };
+                    monthValueAccessor.value(month || "");
+                    monthValueAccessor.value.notifySubscribers = mno;
 
-            ko.bindingHandlers["ntsComboBox"].init($dayPicker[0], () => dayValueAccessor, allBindingsAccessor, viewModel, bindingContext);
-        }
+                    dayOfMonthValueAccessor.value.notifySubscribers = () => { };
+                    dayOfMonthValueAccessor.value(dayOfMonth || "");
+                    dayOfMonthValueAccessor.value.notifySubscribers = dno;
 
-        /**
-         * Update
-         */
-        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            let data = valueAccessor(),
-                $container = $(element),
-                value = ko.unwrap(data.value),
-                enable = data.enable === undefined ? true : ko.unwrap(data.enable),
-                required = _.isNil(data.required) ? false : ko.unwrap(data.required),
-                $monthPicker = $container.find(".ntsMonthPicker"),
-                $dayPicker = $container.find(".ntsDayPicker"),
-                bindedVal = $container.data("cusVal");
+                    // notifySubscribers
+                    monthValueAccessor.value.valueHasMutated();
+                },
+                disposeWhenNodeIsRemoved: element
+            });
 
-            //            if(enable !== false){
-            //                $monthPicker.igCombo('option', 'disabled', false);
-            //                $dayPicker.igCombo('option', 'disabled', false);    
-            //                $container.find("input").attr("tabindex", $container.data("tabindex"));            
-            //            } else {
-            //                $monthPicker.igCombo('option', 'disabled', true);
-            //                $dayPicker.igCombo('option', 'disabled', true); 
+            // clear data
+            ko.computed({
+                read: () => {
+                    let required = ko.toJS(data.required),
+                        month = ko.toJS(monthValueAccessor.value),
+                        dayOfMonth = ko.toJS(dayOfMonthValueAccessor.value);
 
-            $container.find("input").attr("tabindex", "-1");
-            $container.data("required", required);
+                    if (!month && !required) {
+                        data.value(0);
+                    }
+                },
+                disposeWhenNodeIsRemoved: element
+            });
 
-            ko.bindingHandlers["ntsComboBox"].update($monthPicker[0], () => bindedVal.month, allBindingsAccessor, viewModel, bindingContext);
+            // attach two accessor to new context
+            ko.utils.extend(childBindingContext, {
+                $month: monthValueAccessor,
+                $dayOfMonth: dayOfMonthValueAccessor
+            });
 
-            ko.bindingHandlers["ntsComboBox"].update($dayPicker[0], () => bindedVal.day, allBindingsAccessor, viewModel, bindingContext);
+            // binding data
+            ko.applyBindingsToDescendants(childBindingContext, element);
+
+            // validate event
+            ko.utils.registerEventHandler(element, 'validate', (evt) => {
+                if (element == evt.target) {
+                    let mpick = element.querySelector('.ntsMonthPicker.ntsComboBox'),
+                        dpick = element.querySelector('.ntsDayPicker.ntsComboBox');
+
+                    ko.utils.triggerEvent(mpick, 'validate');
+                    ko.utils.triggerEvent(dpick, 'validate');
+                }
+            });
+
+            return { controlsDescendantBindings: true };
         }
     }
 

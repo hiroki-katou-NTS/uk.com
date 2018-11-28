@@ -18,6 +18,7 @@ module nts.uk.pr.view.qmm020.share.model {
     }
 
     export class StateLinkSettingMaster {
+        id: string;
         hisId: string;
         masterCode: string;
         categoryName: string;
@@ -35,9 +36,11 @@ module nts.uk.pr.view.qmm020.share.model {
 
     export function displayCodeAndName(code: string, name: string){
         let display : string;
-        display = code == null ? " " : code.toString();
+        display = "";
+        if(code != null)
+            display = display + code.toString();
         if(name != null) {
-            display = display + "      " + name;
+            display = display + "    " + name;
         }
         return display;
     }
@@ -92,12 +95,12 @@ module nts.uk.pr.view.qmm020.share.model {
     }
 
     export enum MODE_SCREEN {
-        COMPANY = 0,
-        EMPLOYEE = 1,
-        DEPARMENT = 2,
-        CLASSIFICATION = 3,
-        POSITION = 4,
-        SALARY = 5,
+        EMPLOYEE = 0,
+        DEPARMENT = 1,
+        CLASSIFICATION = 2,
+        POSITION = 3,
+        SALARY = 4,
+        COMPANY = 5,
         INDIVIDUAL = 6
 }
     export enum PARAMETERS_SCREEN_M {
@@ -112,5 +115,11 @@ module nts.uk.pr.view.qmm020.share.model {
         INPUT = "PARAM_INPUT_SCREEN_L",
 
         OUTPUT = "PARAM_OUTPUT_SCREEN_L"
+    }
+    export enum PARAMETERS_SCREEN_I {
+
+        INPUT = "PARAM_INPUT_SCREEN_I",
+
+        OUTPUT = "PARAM_OUTPUT_SCREEN_I"
     }
 }

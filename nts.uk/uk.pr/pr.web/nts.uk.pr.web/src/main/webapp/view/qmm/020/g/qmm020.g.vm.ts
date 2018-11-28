@@ -57,12 +57,12 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                 virtualizationMode: 'continuous',
                 columns: [
                     { headerText: getText('QMM020_26'), key: 'id', dataType: 'number', width: '100' , hidden: true},
-                    { headerText: getText('QMM020_26'), key: 'masterCode', dataType: 'string', width: '100' },
-                    { headerText: getText('QMM020_27'), key: 'categoryName',dataType: 'string', width: '200' },
-                    { headerText: getText('QMM020_20'), key: 'salary', dataType: 'string', width: '80px', unbound: true, ntsControl: '' },
-                    { headerText: '', key: 'displayE3_4', dataType: 'string', width: '170'},
-                    { headerText: getText('QMM020_22'), key: 'bonus', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Bonus' },
-                    { headerText: '', key: 'displayE3_5', dataType: 'string',width: '170' },
+                    { headerText: getText('QMM020_26'), key: 'masterCode', dataType: 'string', width: '90' },
+                    { headerText: getText('QMM020_27'), key: 'categoryName',dataType: 'string', width: '180' },
+                    { headerText: getText('QMM020_20'), key: 'salary', dataType: 'string', width: '75px', unbound: true, ntsControl: '' },
+                    { headerText: '', key: 'displayE3_4', dataType: 'string', width: '200'},
+                    { headerText: getText('QMM020_22'), key: 'bonus', dataType: 'string', width: '75px', unbound: true, ntsControl: 'Bonus' },
+                    { headerText: '', key: 'displayE3_5', dataType: 'string',width: '200' },
 
                 ],
                 features: [
@@ -137,7 +137,7 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                 if (stateLinkSettingMaster && stateLinkSettingMaster.length > 0) {
                     self.listStateLinkSettingMaster(model.convertToDisplay(stateLinkSettingMaster));
                     self.mode(model.MODE.UPDATE);
-                    if(hisId == HIS_ID_TEMP) {
+                    if(self.hisIdSelected() == HIS_ID_TEMP ) {
                         self.mode(model.MODE.NEW);
                     }
                 } else {
@@ -253,9 +253,9 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                 startLastYearMonth: laststartYearMonth,
                 canDelete: canDelete,
                 isPerson: false,
-                modeScreen: model.MODE_SCREEN.CLASSIFICATION
+                modeScreen: model.MODE_SCREEN.SALARY
             });
-            modal("/view/qmm/011/k/index.xhtml").onClosed(function() {
+            modal("/view/qmm/020/k/index.xhtml").onClosed(function() {
                 let params = getShared(model.PARAMETERS_SCREEN_K.OUTPUT);
                 if(params && params.modeEditHistory == 1) {
                     self.initScreen(self.hisIdSelected());

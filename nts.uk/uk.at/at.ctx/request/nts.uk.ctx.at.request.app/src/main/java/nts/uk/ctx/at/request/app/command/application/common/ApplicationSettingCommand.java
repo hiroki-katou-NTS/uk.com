@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.request.app.command.application.common;
-
+/*import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;*/
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
+
 
 /**
  * 

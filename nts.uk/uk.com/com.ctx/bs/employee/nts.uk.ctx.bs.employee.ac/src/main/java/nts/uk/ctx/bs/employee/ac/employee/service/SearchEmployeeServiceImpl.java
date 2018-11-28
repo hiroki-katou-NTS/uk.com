@@ -101,7 +101,7 @@ public class SearchEmployeeServiceImpl implements SearchEmployeeService {
 	@Override
 	public EmployeeSearchData searchByCode(EmployeeSearchDto dto) {
 		String cid = AppContexts.user().companyId();
-		GeneralDate baseDate = GeneralDate.today();
+		GeneralDate baseDate = dto.getBaseDate() != null ? dto.getBaseDate() : GeneralDate.today();
 		return this.getEmployeeFromEmployeeCode(cid, baseDate, dto);
 	}
 
@@ -126,11 +126,11 @@ public class SearchEmployeeServiceImpl implements SearchEmployeeService {
 					PersonalBasicInfo perInfo = this.getPersonalInfo(optEmBaseInfo.get().getEmployeeId());
 					if (perInfo.getEntryDate().beforeOrEquals(GeneralDate.today())
 							&& perInfo.getRetiredDate().afterOrEquals(GeneralDate.today())) {
-						WorkplaceInfo wkpInfo = this.getWplBelongEmployee(perInfo.getEmployeeId(), baseDate);
+						Optional<WorkplaceInfo> wkpInfo = this.getWplBelongEmployee(perInfo.getEmployeeId(), baseDate);
 						return EmployeeSearchData.builder().companyId(cid).employeeId(perInfo.getEmployeeId())
 								.employeeCode(dto.getEmployeeCode()).personalId(perInfo.getPid())
 								.businessName(perInfo.getBusinessName()).deptDisplayName("")
-								.wkpDisplayName(wkpInfo.getWkpDisplayName().v()).build();
+								.wkpDisplayName(wkpInfo.isPresent() ? wkpInfo.get().getWkpDisplayName().v() : "").build();
 					} else {
 						throw new BusinessException("Msg_7");
 					}
@@ -241,7 +241,13 @@ public class SearchEmployeeServiceImpl implements SearchEmployeeService {
 			return employeeId.equals(loginEmployeeId) ? true : false;
 		}
 		List<String> lstWkp = this.getCanReferenceWorkplaceLst(employeeId, baseDate, emReference, null);
-		String wkpId = this.getWplBelongEmployee(employeeId, baseDate).getWorkplaceId();
+		Optional<WorkplaceInfo> optWorkplaceInfo = this.getWplBelongEmployee(employeeId, baseDate);
+		
+		if(!optWorkplaceInfo.isPresent()) {
+			return false;
+		}
+		
+		String wkpId = optWorkplaceInfo.get().getWorkplaceId();
 		return lstWkp.stream().anyMatch(item -> item.equals(wkpId));
 	}
 
@@ -272,13 +278,19 @@ public class SearchEmployeeServiceImpl implements SearchEmployeeService {
 			if (Objects.isNull(includeWkpManage) || includeWkpManage) {
 				List<String> listWorkplaceMng = workPlaceManagerPub.getWkpManagerByEmpIdAndBaseDate(employeeId,
 						baseDate);
-				String wkpIdAffHist = this.getWplBelongEmployee(employeeId, baseDate).getWorkplaceId();
+				listWorkPlaceId.addAll(listWorkplaceMng);
+				
+				Optional<WorkplaceInfo> optWorkplaceInfo = this.getWplBelongEmployee(employeeId, baseDate);
+				if(!optWorkplaceInfo.isPresent()) {
+					return listWorkPlaceId;
+				}
+					
+				String wkpIdAffHist = optWorkplaceInfo.get().getWorkplaceId();
+				listWorkPlaceId.add(wkpIdAffHist);
 				if (emReference.equals(EmployeeReferenceRangePub.DEPARTMENT_AND_CHILD)) {
 					List<String> childWkpId = this.getChildWkpIds(cid, wkpIdAffHist, baseDate);
 					listWorkPlaceId.addAll(childWkpId);
 				}
-				listWorkPlaceId.addAll(listWorkplaceMng);
-				listWorkPlaceId.add(wkpIdAffHist);
 			}
 		}
 		return listWorkPlaceId;
@@ -319,17 +331,17 @@ public class SearchEmployeeServiceImpl implements SearchEmployeeService {
 	 */
 	// No.30
 	//アルゴリズム「社員所属職場履歴を取得」を実行する
-	private WorkplaceInfo getWplBelongEmployee(String sid, GeneralDate baseDate) {
+	private Optional<WorkplaceInfo> getWplBelongEmployee(String sid, GeneralDate baseDate) {
 		// get AffWorkplaceHistory
 		Optional<AffWorkplaceHistory> affWrkPlc = affWorkplaceHistoryRepository.getByEmpIdAndStandDate(sid, baseDate);
 		if (!affWrkPlc.isPresent())
-			return null;
+			return Optional.empty();
 
 		// get AffWorkplaceHistoryItem
 		String historyId = affWrkPlc.get().getHistoryItems().get(0).identifier();
 		Optional<AffWorkplaceHistoryItem> affWrkPlcItem = affWorkplaceHistoryItemRepository.getByHistId(historyId);
 		if (!affWrkPlcItem.isPresent())
-			return null;
+			return Optional.empty();
 
 		// Get workplace info.
 		Optional<WorkplaceInfo> optWorkplaceInfo = workplaceInfoRepo.findByWkpId(affWrkPlcItem.get().getWorkplaceId(),
@@ -337,12 +349,11 @@ public class SearchEmployeeServiceImpl implements SearchEmployeeService {
 
 		// Check exist
 		if (!optWorkplaceInfo.isPresent()) {
-			return null;
+			return Optional.empty();
 		}
 
 		// Return workplace id
-		WorkplaceInfo wkpInfo = optWorkplaceInfo.get();
-		return wkpInfo;
+		return optWorkplaceInfo;
 	}
 
 	/**

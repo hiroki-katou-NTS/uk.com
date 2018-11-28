@@ -17,7 +17,7 @@ import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
+/*import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;*/
 
 /**
  * @author sonnlb

@@ -1,16 +1,17 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
-
+/*import java.util.stream.Collectors;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompany;
+import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplace;*/
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
@@ -23,9 +24,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesett
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompany;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepository;
-import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplace;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
 
 @Stateless

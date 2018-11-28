@@ -111,7 +111,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
         backToE(): void {
             let self = this;
             let params = {
-                closureId: self.closureId,
+                closureID: self.closureID,
                 processingYm: self.processingYm,
                 startDate: self.startDate,
                 endDate: self.endDate,

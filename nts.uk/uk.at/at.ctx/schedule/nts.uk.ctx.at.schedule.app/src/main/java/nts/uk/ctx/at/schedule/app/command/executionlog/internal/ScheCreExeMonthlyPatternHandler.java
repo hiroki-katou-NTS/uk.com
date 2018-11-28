@@ -113,7 +113,7 @@ public class ScheCreExeMonthlyPatternHandler {
 			}
 			// 登録前削除区分をTrue（削除する）とする(chuyển 登録前削除区分 = true)
 			// checked2018
-			command.setIsDeleteBeforInsert(true);
+//			command.setIsDeleteBeforInsert(true);
 		} else {
 			// EA修正履歴 No1840
 			// 入力パラメータ「実施区分」を判断
@@ -127,7 +127,7 @@ public class ScheCreExeMonthlyPatternHandler {
 			// need set false if not wrong
 			// 「勤務予定基本情報」 データなし
 			// checked2018
-			command.setIsDeleteBeforInsert(false);
+//			command.setIsDeleteBeforInsert(false);
 		}
 
 		// 月間勤務就業設定

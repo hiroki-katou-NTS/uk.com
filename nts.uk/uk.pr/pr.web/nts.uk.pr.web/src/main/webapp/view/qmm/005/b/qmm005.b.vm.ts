@@ -118,13 +118,17 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             // get domain 処理区分基本情報 (ProcessInfomation), 給与支払日設定 (SetDaySupport)
             var self = this;
             self.processCateNo = getShared("QMM005_output_B");
+            block.invisible();
             service.getProcessInfomation(self.processCateNo).done(function (data) {
                 if (data) {
                     self.processInfomationDto = data;
                     // B3_2
                     self.processingDivisionName(nts.uk.text.format(nts.uk.resource.getText("QMM005_97"), self.processCateNo, data.processCls));
                 }
+            }).always(() => {
+                block.clear();
             });
+
             service.getSetDaySupport(self.processCateNo).done(function (data) {
                 // B2_2
                 // 詳細設定対象_処理年 processingYearList
@@ -152,6 +156,8 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                     }
                 }
                 self.isNewMode(false);
+            }).always(() => {
+                block.clear();
             });
         }
 
@@ -160,6 +166,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             // B3_4				処理年
             var self = this;
             if (year == null) return;
+            block.invisible();
             service.getSelectProcessingYear(self.processCateNo, year).done(function (data) {
                 if (data.setDaySupportDtoList.length > 0) {
                     var firstArray = [];
@@ -203,6 +210,8 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                 } else {
                     self.blankData();
                 }
+            }).always(() => {
+                block.clear();
             });
         }
 
@@ -480,18 +489,23 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                     }
                 });
             });
-            let commandData = {paymentDateSettingCommands: arrayItem}
+            let commandData = {paymentDateSettingCommands: arrayItem};
+            block.invisible();
             if (self.isNewMode()) {
                 service.addDomainModel(commandData).done(function (data) {
                     self.transactionSuccess(self.processingYearInput());
                 }).fail(function (error) {
                     nts.uk.ui.dialog.alertError({messageId: error.messageId});
+                }).always(() => {
+                    block.clear();
                 })
             } else {
                 service.updateDomainModel(commandData).done(function (data) {
                     self.transactionSuccess(self.processingYear());
                 }).fail(function (error) {
                     nts.uk.ui.dialog.alertError({messageId: error.messageId});
+                }).always(() => {
+                    block.clear();
                 })
             }
         }
@@ -502,12 +516,13 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
 
         transactionSuccess(year) {
             let self = this;
-            if (self.isNewMode()) {
-                self.startupScreen(year);
-            } else {
-                self.selectProcessingYear(year);
-            }
-            nts.uk.ui.dialog.info({messageId: "Msg_15"});
+            nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function () {
+                if (self.isNewMode()) {
+                    self.startupScreen(year);
+                } else {
+                    self.selectProcessingYear(year);
+                }
+            });
         }
     }
 }

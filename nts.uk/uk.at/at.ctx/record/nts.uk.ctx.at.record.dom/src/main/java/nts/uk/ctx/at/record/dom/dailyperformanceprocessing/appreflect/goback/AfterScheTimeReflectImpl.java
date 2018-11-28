@@ -6,9 +6,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectParameter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
 
 @Stateless
@@ -19,8 +17,6 @@ public class AfterScheTimeReflectImpl implements AfterScheTimeReflect{
 	private ScheTimeReflect scheTimeReflect;
 	@Inject
 	private WorkUpdateService scheUpdateService;
-	@Inject
-	private WorkInformationRepository workRepository;
 	@Override
 	public WorkInfoOfDailyPerformance reflectScheTime(GobackReflectParameter para, boolean timeTypeScheReflect,
 			WorkInfoOfDailyPerformance dailyInfor) {

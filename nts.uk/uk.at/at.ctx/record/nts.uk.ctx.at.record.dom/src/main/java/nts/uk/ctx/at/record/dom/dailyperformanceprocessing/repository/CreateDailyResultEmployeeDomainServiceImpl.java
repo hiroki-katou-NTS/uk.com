@@ -18,7 +18,6 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
-import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
@@ -92,9 +91,6 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 
 	@Inject
 	private ClosureStatusManagementRepository closureStatusManagementRepository;
-	
-	@Inject
-	private ManagedParallelWithContext managedParallelWithContext;
 	
 	@Inject
 	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;

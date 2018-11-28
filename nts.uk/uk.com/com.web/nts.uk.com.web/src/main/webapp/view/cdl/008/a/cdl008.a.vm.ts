@@ -99,6 +99,7 @@ module nts.uk.com.view.cdl008.a {
                     selectedCode = self.selectedSelWorkplace();
                 }
                 nts.uk.ui.windows.setShared('outputCDL008', selectedCode);
+                nts.uk.ui.windows.setShared('baseDateCDL008', self.baseDate());
                 nts.uk.ui.windows.close();
             }
             /**

@@ -80,19 +80,30 @@ module nts.uk.pr.view.qmm039.d.viewmodel {
 
         startupScreen() {
             var self = this;
-
-            service.processYearFromEmp(self.params.personalValCode).done(function (data) {
-                if(data != 0){
-                    self.referenceYear(data);
+            service.getEmploymentCode(self.params.empId).done((dto) => {
+                if (dto) {
+                    service.processYearFromEmp(dto.employmentCode).done((data) => {
+                        if (data != 0) {
+                            self.referenceYear(data);
+                        }
+                        let dto = {
+                            empId: self.params.empId,
+                            cateIndicator: self.params.cateIndicator,
+                            salBonusCate: self.params.salBonusCate,
+                            currentProcessYearMonth: self.referenceYear()
+                        };
+                        self.getSalIndAmountHis(dto);
+                    });
+                } else {
+                    let dto = {
+                        empId: self.params.empId,
+                        cateIndicator: self.params.cateIndicator,
+                        salBonusCate: self.params.salBonusCate,
+                        currentProcessYearMonth: self.referenceYear()
+                    };
+                    self.getSalIndAmountHis(dto);
                 }
-                let dto = {
-                    empId: self.params.empId,
-                    cateIndicator: self.params.cateIndicator,
-                    salBonusCate: self.params.salBonusCate,
-                    currentProcessYearMonth: self.referenceYear()
-                }
-                self.getSalIndAmountHis(dto);
-            })
+            });
         }
 
         getSalIndAmountHis(dto) {

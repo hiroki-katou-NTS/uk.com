@@ -40,12 +40,12 @@
 					data-bind="click: register, enable:  $root.errors.isEmpty">#{i18n.getText('CMM001_2')}</button>
 				<!-- A1_3 -->
 				<button id="setting" tabindex="3" class="group-button-1"
-					data-bind="click: openEDialog, enable: true">#{i18n.getText('CMM001_3')}</button>
+					data-bind="click: openEDialog, enable: !checkInsert()">#{i18n.getText('CMM001_3')}</button>
 				<!-- A1_4 -->
 				<button id="masterLog" tabindex="4" class="group-button-1"
 				    data-bind="visible: false">#{i18n.getText('CMM001_4')}</button>
 			</div>
-			<div id="contents-area" class="fixed-flex-layout">
+			<div id="contents-area" class="fixed-flex-layout" style="display: none" data-bind="visible: true">
 				<div class="fixed-flex-layout-left">
 					<div id="ntsleft" class="bg-green caret-right caret-background">
 						<!-- A2_2 -->

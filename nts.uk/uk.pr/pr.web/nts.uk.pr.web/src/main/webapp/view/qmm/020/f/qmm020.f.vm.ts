@@ -57,12 +57,12 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 virtualizationMode: 'continuous',
                 columns: [
                     {headerText: '', key: 'id', dataType: 'number', width: '100', hidden: true},
-                    {headerText: getText('QMM020_26'), key: 'masterCode', dataType: 'string', width: '100'},
-                    {headerText: getText('QMM020_27'), key: 'categoryName', dataType: 'string', width: '200'},
-                    {headerText: getText('QMM020_20'), key: 'salary', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Salary'},
-                    {headerText: '', key: 'displayE3_4', dataType: 'string', width: '170'},
-                    {headerText: getText('QMM020_22'), key: 'bonus', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Bonus'},
-                    {headerText: '', key: 'displayE3_5', dataType: 'string', width: '170'},
+                    {headerText: getText('QMM020_26'), key: 'masterCode', dataType: 'string', width: '90'},
+                    {headerText: getText('QMM020_27'), key: 'categoryName', dataType: 'string', width: '180'},
+                    {headerText: getText('QMM020_20'), key: 'salary', dataType: 'string', width: '75px', unbound: true, ntsControl: 'Salary'},
+                    {headerText: '', key: 'displayE3_4', dataType: 'string', width: '200'},
+                    {headerText: getText('QMM020_22'), key: 'bonus', dataType: 'string', width: '75px', unbound: true, ntsControl: 'Bonus'},
+                    {headerText: '', key: 'displayE3_5', dataType: 'string', width: '200'},
 
                 ],
                 features: [
@@ -148,14 +148,14 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
             let self = this;
             let data = {
                 hisId: hisId,
-                startYeaMonth: startYeaMonth,
+                startYearMonth: startYeaMonth,
                 date: moment.utc(date, 'YYYY/MM/DD').toISOString()
             };
-            service.getStateLinkSettingMasterPosition(data).done((stateLinkSettingMaster: Array<StateLinkSettingMaster>) => {
+            service.getStateLinkSettingMasterPosition(data).done((stateLinkSettingMaster: Array<model.StateLinkSettingMaster>) => {
                 if (stateLinkSettingMaster && stateLinkSettingMaster.length > 0) {
                     self.listStateLinkSettingMaster(model.convertToDisplay(stateLinkSettingMaster));
                     self.mode(model.MODE.UPDATE);
-                    if (hisId == HIS_ID_TEMP) {
+                    if(self.hisIdSelected() == HIS_ID_TEMP ) {
                         self.mode(model.MODE.NEW);
                     }
                 } else {
@@ -237,6 +237,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
             }
             setShared(model.PARAMETERS_SCREEN_J.INPUT, {
                 startYearMonth: start,
+                baseDate: self.baseDateValue(),
                 isPerson: false,
                 modeScreen: model.MODE_SCREEN.POSITION
             });

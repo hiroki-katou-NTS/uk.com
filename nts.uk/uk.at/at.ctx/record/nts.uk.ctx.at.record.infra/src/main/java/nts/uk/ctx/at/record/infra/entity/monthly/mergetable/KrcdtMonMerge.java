@@ -6097,7 +6097,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 						new AttendanceTimeMonth(this.attendanceLeaveGateAfterLeaveWorkTime),
 						new AttendanceTimeMonth(this.attendanceLeaveGateStayingTime),
 						new AttendanceTimeMonth(this.attendanceLeaveGateUnemployedTime)),
-				BudgetTimeVarienceOfMonthly.of(new AttendanceTimeMonth(this.budgetVarienceTime)),
+				BudgetTimeVarienceOfMonthly.of(new AttendanceTimeMonthWithMinus(this.budgetVarienceTime)),
 				DivergenceTimeOfMonthly.of(krcdtMonAggrDivgTime), krcdtMonMedicalTime);
 		
 		

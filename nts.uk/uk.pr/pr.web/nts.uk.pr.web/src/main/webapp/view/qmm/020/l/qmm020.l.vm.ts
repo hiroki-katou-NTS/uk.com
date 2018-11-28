@@ -55,7 +55,7 @@ module nts.uk.pr.view.qmm020.l.viewmodel {
             //L1_10, L1_11, L1_12, L1_13, L1_14
             self.usageMaster = ko.observableArray([
                 new BoxModel(0, getText('QMM020_6')),
-                new BoxModel(1, getText('QMM020_78')),
+                new BoxModel(1, getText('QMM020_7')),
                 new BoxModel(2, getText('QMM020_8')),
                 new BoxModel(3, getText('QMM020_9')),
                 new BoxModel(4, getText('QMM020_10')),

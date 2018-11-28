@@ -75,6 +75,7 @@ subprojects {
 		':query:nts.uk.query.pub:upver',
 		':wk.ctx:nts.uk.ctx.workflow.app:upver',
 		':wk.ctx:nts.uk.ctx.workflow.pub:upver',
+		':pereg.ctx:nts.uk.ctx.pereg.pub:upver',
 		':com.ctx:bs:company:nts.uk.ctx.bs.company.dom:upver',
 		':com.ctx:bs:company:nts.uk.ctx.bs.company.infra:upver',
 		':com.ctx:bs:company:nts.uk.ctx.bs.company.pub:upver',
@@ -85,19 +86,7 @@ subprojects {
 		':com.ctx:bs:person:nts.uk.ctx.bs.person.dom:upver',
 		':com.ctx:bs:person:nts.uk.ctx.bs.person.infra:upver',
 		':com.ctx:bs:person:nts.uk.ctx.bs.person.pub:upver',
-		':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub:upver',
-		':com.ctx:sys:portal:nts.uk.ctx.sys.portal.pub:upver'
-	]) { }
-
-	task uppub (dependsOn: [
-		':shr:nts.uk.shr.com:upver',
-		':shr:nts.uk.shr.find:upver',
-		':query:nts.uk.query.pub:upver',
-		':wk.ctx:nts.uk.ctx.workflow.pub:upver',
-		':pereg.ctx:nts.uk.ctx.pereg.pub:upver',
-		':com.ctx:bs:company:nts.uk.ctx.bs.company.pub:upver',
-		':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub:upver',
-		':com.ctx:bs:person:nts.uk.ctx.bs.person.pub:upver',
+		':com.ctx:sys:share:nts.uk.ctx.sys.shared.pub:upver',
 		':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub:upver',
 		':com.ctx:sys:portal:nts.uk.ctx.sys.portal.pub:upver',
 		':com.ctx:sys:assist:nts.uk.ctx.sys.assist.pub:upver',

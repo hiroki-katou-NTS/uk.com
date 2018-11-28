@@ -78,14 +78,16 @@ module nts.uk.pr.view.qmm038.a {
                         };
                         nts.uk.pr.view.qmm038.a.service.findByEmployee(command).done(function (response) {
                             self.statementItems = [];
-                            self.statementItems = _.sortBy(response, ["employeeCode"]);
-                            $("#gridStatement").ntsGrid("destroy");
-                            if (self.statementItems.length == 1) {
-                                self.loadGridLimit();
-                            } else {
-                                self.loadGrid();
-                            }
-                            $('#gridStatement .nts-editor').addClass('ntsEditorCus');
+                            //if(response.length > 0) {
+                                self.statementItems = _.sortBy(response, ["employeeCode"]);
+                                $("#gridStatement").ntsGrid("destroy");
+                                if (self.statementItems.length == 1) {
+                                    self.loadGridLimit();
+                                } else {
+                                    self.loadGrid();
+                                }
+                                $('#gridStatement .nts-editor').addClass('ntsEditorCus');
+                            //}
                             block.clear();
                         });
 
@@ -222,8 +224,8 @@ module nts.uk.pr.view.qmm038.a {
                 }
                 block.invisible();
                 // update
+                self.dataUpdate = [];
                 _.forEach(statementItems, (item: IDataScreen) => {
-                    self.dataUpdate = [];
                     self.dataUpdate.push(new UpdateEmployee(item.employeeId, item.averageWage));
                 })
                 let command = {
