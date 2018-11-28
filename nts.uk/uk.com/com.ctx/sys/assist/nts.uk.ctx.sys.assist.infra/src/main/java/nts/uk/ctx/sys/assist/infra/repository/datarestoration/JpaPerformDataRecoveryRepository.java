@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.assist.infra.repository.datarestoration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -280,6 +281,20 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		listItems.stream().forEach(x -> {
 			tableList.add(fromDomain(x));
 		});
+		
+		// fix bug #102589 start
+		List<TableList> lstTableListDuplicate = new ArrayList<>();
+		Map<String, List<TableList>> map = tableList.stream().collect(Collectors.groupingBy(TableList::getCategoryId));
+		map.forEach((k, v) -> {
+			if (v.size() > 1) {
+				lstTableListDuplicate.addAll(v.stream().filter(x -> x.getStorageRangeSaved() == StorageRangeSaved.EARCH_EMP).collect(Collectors.toList()));
+			}
+		});
+		
+		if(!lstTableListDuplicate.isEmpty()){
+			tableList.removeAll(lstTableListDuplicate);
+		}// end
+		
 		return tableList;
 	}
 

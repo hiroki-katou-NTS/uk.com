@@ -20,7 +20,6 @@ import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformance
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.stamp.StampRepository;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.updateworkinfo.DeleteWorkInfoOfDailyPerforService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;

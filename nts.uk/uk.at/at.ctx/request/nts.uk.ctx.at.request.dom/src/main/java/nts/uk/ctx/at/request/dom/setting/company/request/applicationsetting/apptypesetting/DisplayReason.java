@@ -1,10 +1,10 @@
 package nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting;
 
+/*import nts.arc.layer.dom.DomainObject;*/
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 
 /**

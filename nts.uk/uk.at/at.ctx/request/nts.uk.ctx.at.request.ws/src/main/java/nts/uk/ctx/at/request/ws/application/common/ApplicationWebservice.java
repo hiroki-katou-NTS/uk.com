@@ -40,6 +40,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.R
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.shr.com.context.ScreenIdentifier;
+import nts.uk.shr.infra.web.util.StartPageLogService;
 
 @Path("at/request/application")
 @Produces("application/json")
@@ -82,6 +84,8 @@ public class ApplicationWebservice extends WebService {
 
 	@Inject
 	private ReflectAplicationCommmandHandler relect;
+	@Inject
+	private StartPageLogService writeLogSv;
 	
 	/**
 	 * approve application
@@ -260,6 +264,10 @@ public class ApplicationWebservice extends WebService {
 	public void reflectApp(List<String> command){
 		relect.handle(command);
 	}
-
+	@POST
+	@Path("write-log")
+	public void writeLog(ParamWriteLog paramLog){
+		writeLogSv.writeLog(new ScreenIdentifier(paramLog.getProgramId(), paramLog.getScreenId(), paramLog.getQueryString()));
+	}
 }
 

@@ -92,7 +92,7 @@ public class DPDisplayLockProcessor {
 				if(lstErrorSetting.isEmpty()) {
 					lstError = new ArrayList<>();
 				}
-				result.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
+				result.addErrorToResponseData(lstError, lstErrorSetting, mapDP, false);
 			}
 		}
 

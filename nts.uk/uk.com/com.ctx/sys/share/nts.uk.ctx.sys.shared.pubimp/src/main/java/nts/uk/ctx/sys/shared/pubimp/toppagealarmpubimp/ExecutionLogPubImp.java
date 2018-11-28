@@ -1,13 +1,11 @@
 package nts.uk.ctx.sys.shared.pubimp.toppagealarmpubimp;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.sys.shared.dom.toppagealarm.TopPageAlarm;
 import nts.uk.ctx.sys.shared.dom.toppagealarm.TopPageAlarmDetail;
 import nts.uk.ctx.sys.shared.dom.toppagealarm.TopPageAlarmRepository;
 import nts.uk.ctx.sys.shared.dom.toppagealarmset.TopPageAlarmSet;
@@ -45,8 +43,8 @@ public class ExecutionLogPubImp implements ExecutionLogPub{
 				for(ExecutionLogErrorDetail obj: param.getTargerEmployee()){
 					TopPageAlarmDetail domainInsert = TopPageAlarmDetail.createFromJavaType(executionLogId, countUp, obj.getErrorMessage(), obj.getTargerEmployee());
 					topPageAlarmRepository.insertDetail(domainInsert);
+					countUp = countUp + 1;
 				}
-				countUp = countUp + 1;
 			}
 		}
 	}

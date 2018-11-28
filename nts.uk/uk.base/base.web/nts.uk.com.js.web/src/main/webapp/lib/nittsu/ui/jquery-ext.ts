@@ -147,9 +147,10 @@ module nts.uk.ui.jqueryExtentions {
         let $label = $(this); 
         if ($label[0].nodeName === "INPUT" 
             && (window.navigator.userAgent.indexOf("MSIE") > -1
-            || !!window.navigator.userAgent.match(/trident/i))) {
+            || !!window.navigator.userAgent.match(/trident/i)
+            || window.navigator.userAgent.indexOf("Edge") > -1)) {
             let $div = $("<div/>").appendTo($(document.body));
-            let style = $label[0].currentStyle;
+            let style = $label[0].currentStyle || $label[0].style;
             if (style) {
                 for (let p in style) {
                     $div[0].style[p] = style[p];

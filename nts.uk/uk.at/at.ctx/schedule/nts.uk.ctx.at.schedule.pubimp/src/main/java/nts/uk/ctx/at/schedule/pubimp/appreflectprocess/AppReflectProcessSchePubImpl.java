@@ -17,9 +17,11 @@ import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.gobacksche.GobackRef
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.holidaywork.HolidayWorkReflectSche;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.recruitment.RecruitmentAppReflectSche;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.workchange.WorkChangeReflectServiceSche;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.workchange.WorkChangecommonReflectParamSche;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.CommonReflectSchePubParam;
+import nts.uk.ctx.at.schedule.pub.appreflectprocess.WorkChangeCommonReflectSchePubParam;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.AppReflectProcessSchePub;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.ApplicationReflectParamScheDto;
 
@@ -63,8 +65,9 @@ public class AppReflectProcessSchePubImpl implements AppReflectProcessSchePub{
 	}
 
 	@Override
-	public boolean appWorkChangeReflect(CommonReflectSchePubParam workChangeParam) {
-		return workchangeReflect.reflectWorkChange(this.toParamSche(workChangeParam));
+	public boolean appWorkChangeReflect(WorkChangeCommonReflectSchePubParam workChangeParam) {
+		return workchangeReflect.reflectWorkChange(new WorkChangecommonReflectParamSche(this.toParamSche(workChangeParam.getCommon()),
+				workChangeParam.getExcludeHolidayAtr()));
 	}
 	
 	private CommonReflectParamSche toParamSche(CommonReflectSchePubParam schePubParam) {

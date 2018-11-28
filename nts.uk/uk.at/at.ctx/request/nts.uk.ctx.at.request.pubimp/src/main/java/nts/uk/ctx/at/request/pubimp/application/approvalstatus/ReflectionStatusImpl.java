@@ -1,14 +1,13 @@
 package nts.uk.ctx.at.request.pubimp.application.approvalstatus;
-
+/*import java.util.Optional;
+import nts.arc.time.GeneralDateTime;*/
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;

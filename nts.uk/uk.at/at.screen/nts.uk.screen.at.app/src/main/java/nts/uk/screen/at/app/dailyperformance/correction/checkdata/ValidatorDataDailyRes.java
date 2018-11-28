@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -16,6 +17,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
+import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckService;
 import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.result.ContinuousHolidayCheckResult;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
@@ -27,6 +29,9 @@ import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.Reserv
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMnt;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMntRepository;
@@ -60,6 +65,9 @@ public class ValidatorDataDailyRes {
 	
 	@Inject
 	private EmployeeDailyPerErrorRepository employeeErrorRepo;
+	
+	@Inject
+	private ErrorAlarmWorkRecordRepository errorAlarmWRRepo;
 
 	private static final Integer[] CHILD_CARE = { 759, 760, 761, 762 };
 	private static final Integer[] CARE = { 763, 764, 765, 766 };
@@ -575,5 +583,67 @@ public class ValidatorDataDailyRes {
 		}
 
 	}
+	
+	// 備考で日次エラー解除
+	public List<IntegrationOfDaily> removeErrorRemarkAll(String companyId, List<IntegrationOfDaily> domainDailyNews, List<DailyRecordDto> dtoNews) {
+		Set<String> errors = domainDailyNews.stream().flatMap(x -> x.getEmployeeError().stream())
+				.map(x -> x.getErrorAlarmWorkRecordCode().v()).collect(Collectors.toSet());
+		if (errors.isEmpty())
+			return new ArrayList<>();
+		List<ErrorAlarmWorkRecord> errorAlarms = errorAlarmWRRepo.getListErAlByListCodeRemark(companyId, errors);
+		for (IntegrationOfDaily domain : domainDailyNews) {
+			val dtoCorrespon = dtoNews.stream().filter(x -> x.getEmployeeId().equals(domain.getWorkInformation().getEmployeeId()) && x.getDate().equals(domain.getWorkInformation().getYmd())).findFirst().orElse(null);
+			val error = domain.getEmployeeError().stream().filter(x -> {
+				val errorSelect = errorAlarms.stream()
+						.filter(y -> x.getErrorAlarmWorkRecordCode().v().equals(y.getCode().v())).findFirst()
+						.orElse(null);
+				if (errorSelect != null && dtoCorrespon != null) {
+					ItemValue itemValue = AttendanceItemUtil.toItemValues(dtoCorrespon, Arrays.asList(errorSelect.getRemarkColumnNo())).stream().findFirst().orElse(null);
+					val item = x.getAttendanceItemList().stream().filter(z -> !(z.intValue() == errorSelect.getErrorDisplayItem() && itemValue != null && itemValue.getValue() != null && !itemValue.getValue().equals("")))
+							.collect(Collectors.toList());
+					if(item.isEmpty()) {
+						return false;
+					}else {
+						x.setAttendanceItemList(item);
+						return true;
+					}
+				}else {
+					return true;
+				}
+			}).collect(Collectors.toList());
+			domain.setEmployeeError(error);
+		}
+		return domainDailyNews;
+	}
 
+	// 備考で日次エラー解除
+	public List<EmployeeDailyPerError> removeErrorRemark(String companyId, List<EmployeeDailyPerError> lstError, List<DailyRecordDto> dtoNews) {
+		Set<String> errors = lstError.stream().map(x -> x.getErrorAlarmWorkRecordCode().v())
+				.collect(Collectors.toSet());
+		if (errors.isEmpty())
+			return new ArrayList<>();
+		List<ErrorAlarmWorkRecord> errorAlarms = errorAlarmWRRepo.getListErAlByListCodeRemark(companyId, errors);
+		lstError = lstError.stream().filter(x -> {
+			val errorSelect = errorAlarms.stream()
+					.filter(y -> x.getErrorAlarmWorkRecordCode().v().equals(y.getCode().v())).findFirst()
+					.orElse(null);
+			if (errorSelect != null) {
+				val dtoCorrespon = dtoNews.stream().filter(k -> k.getEmployeeId().equals(x.getEmployeeID()) && k.getDate().equals(x.getDate())).findFirst().orElse(null);
+				if(dtoCorrespon == null) return true;
+				ItemValue itemValue = AttendanceItemUtil.toItemValues(dtoCorrespon, Arrays.asList(errorSelect.getRemarkColumnNo())).stream().findFirst().orElse(null);
+				val item = x.getAttendanceItemList().stream().filter(z -> !(z.intValue() == errorSelect.getErrorDisplayItem() && itemValue != null && itemValue.getValue() != null && !itemValue.getValue().equals("")))
+						.collect(Collectors.toList());
+				if(item.isEmpty()) {
+					return false;
+				}else {
+					x.setAttendanceItemList(item);
+					return true;
+				}
+			}else {
+				return true;
+			}
+		}).collect(Collectors.toList());
+		return lstError;
+	}
+    
 }

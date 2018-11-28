@@ -6,7 +6,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 400, height: 600 };</script>
+        <script>var dialogSize = { width: 400, height: 620 };</script>
         <com:scriptfile set="IGNITE" />
         <com:scriptfile path="../share/model.js" />
         <com:scriptfile path="qmm020.l.vm.js" />
@@ -23,10 +23,10 @@
 
             <div class="control-group" style="margin-left:10px">
                 <div id="L1_3" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_73')}</div>
-                <span id="L1_4" class="label">#{i18n.getText('QMM020_74')}</span>
+                <span style="margin-left: 20px" id="L1_4" class="label">#{i18n.getText('QMM020_74')}</span>
             </div>
             <div class="control-group" style="margin-left:10px">
-                <div id="L1_5" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_75')}</div>
+                <div id="L1_5" style="width: 55px" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_75')}</div>
                 <div id="L1_6" tabindex="1" class="cf" data-bind="ntsSwitchButton: {
                                         name: '#{i18n.getText('QMM020_76')}',
                                         options: masterUse,
@@ -49,7 +49,7 @@
             </div>
 
             <div class="control-group" style="margin-left:10px">
-                <div id="L1_15" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_75')}</div>
+                <div id="L1_15" style="width: 55px" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_11')}</div>
                 <div id="L1_16" tabindex="3" class="cf" data-bind="ntsSwitchButton: {
                                         name: 'Sample Switch',
                                         options: individualUse,

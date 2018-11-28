@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.service;
 
+/*import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.PriorStampRequestAtr;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.ScheAndRecordSameChangeFlg;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.ScheTimeReflectRequesAtr;*/
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,10 +47,7 @@ import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.HolidayWo
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.HolidayWorktimeAppRequestPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.OvertimeAppParameter;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.OvertimeReflectPara;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.PriorStampRequestAtr;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.ReflectRecordInfor;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.ScheAndRecordSameChangeFlg;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.ScheTimeReflectRequesAtr;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ApplyTimeRequestAtr;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ExecutionType;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ReflectScheDto;
@@ -85,7 +85,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		ReflectResult outData = new ReflectResult(true, true);
 		GobackReflectPara appGobackTmp = null;
 		OvertimeReflectPara overTimeTmp = null;
-		CommonReflectPara workchangeData = null;
+		WorkChangeCommonReflectPara workchangeData = null;
 		HolidayWorkReflectPara holidayworkInfor = null;
 		CommonReflectPara absenceData = null;
 		CommonReflectPara absenceLeaveAppInfor = null;
@@ -224,7 +224,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		return outData;
 	}
 	
-	private CommonReflectPara getWorkChange(Application_New appInfor, AppWorkChange workChange,
+	private WorkChangeCommonReflectPara getWorkChange(Application_New appInfor, AppWorkChange workChange,
 			InformationSettingOfEachApp reflectSetting) {
 		CommonReflectPara workchangeInfor = null;
 		workchangeInfor = new CommonReflectPara(appInfor.getEmployeeID(), 
@@ -239,7 +239,7 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				null);
 		
 		 
-		return workchangeInfor;		
+		return new WorkChangeCommonReflectPara(workchangeInfor, workChange.getExcludeHolidayAtr());		
 	}
 	
 	private CommonReflectPara getAbsenceLeaveAppInfor(Application_New appInfor, AbsenceLeaveApp absenceLeaveApp,

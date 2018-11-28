@@ -684,7 +684,7 @@ public class KrcdtAnpAttendanceTime extends UkJpaEntity implements Serializable 
 						new AttendanceTimeMonth(this.vtAttendanceLeaveGateAfterLeaveWorkTime),
 						new AttendanceTimeMonth(this.vtAttendanceLeaveGateStayingTime),
 						new AttendanceTimeMonth(this.vtAttendanceLeaveGateUnemployedTime)),
-				BudgetTimeVarienceOfMonthly.of(new AttendanceTimeMonth(this.vtBudgetVarienceTime)),
+				BudgetTimeVarienceOfMonthly.of(new AttendanceTimeMonthWithMinus(this.vtBudgetVarienceTime)),
 				DivergenceTimeOfMonthly.of(
 						this.krcdtAnpAggrDivgTime.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
 				this.krcdtAnpMedicalTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));

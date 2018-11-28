@@ -6,8 +6,8 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateUseUnitSetting;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateUseUnitSettingRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateUseUnitSet;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateUseUnitSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 import java.util.Optional;
@@ -17,7 +17,7 @@ import java.util.Optional;
 public class UpdateStateUseUnitSettingCommandHandler extends CommandHandler<StateUseUnitSettingCommand>{
     
     @Inject
-    private StateUseUnitSettingRepository repository;
+    private StateUseUnitSetRepository repository;
 
     
     @Override
@@ -25,11 +25,11 @@ public class UpdateStateUseUnitSettingCommandHandler extends CommandHandler<Stat
         StateUseUnitSettingCommand command = context.getCommand();
         String cid = AppContexts.user().companyId();
 
-        Optional<StateUseUnitSetting> stateUseUnitSetting =  repository.getStateUseUnitSettingById(cid);
+        Optional<StateUseUnitSet> stateUseUnitSetting =  repository.getStateUseUnitSettingById(cid);
         if(stateUseUnitSetting.isPresent()){
-            repository.update(new StateUseUnitSetting(cid, command.getMasterUse(), command.getIndividualUse(), command.getUsageMaster()));
+            repository.update(new StateUseUnitSet(cid, command.getMasterUse(), command.getIndividualUse(), command.getUsageMaster()));
         }else{
-            repository.add(new StateUseUnitSetting(cid, command.getMasterUse(), command.getIndividualUse(), command.getUsageMaster()));
+            repository.add(new StateUseUnitSet(cid, command.getMasterUse(), command.getIndividualUse(), command.getUsageMaster()));
         }
     }
 }

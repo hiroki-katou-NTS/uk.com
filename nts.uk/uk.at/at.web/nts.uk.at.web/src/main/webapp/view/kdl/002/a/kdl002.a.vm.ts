@@ -42,12 +42,10 @@ module kdl002.a.viewmodel {
                 self.items();
                 return;
             }
-            
             if (self.posibleItems.length > 0) {
                 service.getItemSelected(self.posibleItems).done(function(lstItem: Array<model.WorkTypeInfor>) {
-                    let lstItemOrder = self.sortbyList(lstItem);
                     $("input").focus();
-                    let lstItemMapping =  _.map(lstItemOrder , item => {
+                    let lstItemMapping =  _.map(lstItem , item => {
                         return new model.WorkTypeInfor(item.workTypeCode, item.name, item.memo, item.dispOrder);
                     });
                     self.initNotSelectItem(!self.isMulti, lstItemMapping);
@@ -57,7 +55,6 @@ module kdl002.a.viewmodel {
                     nts.uk.ui.dialog.alert(res.message);
                 });
             }
-            
         }
 
         initNotSelectItem(isSingle: boolean, data: any) {
@@ -73,16 +70,6 @@ module kdl002.a.viewmodel {
             if (self.isShowNoSelectRow) {
                 data.unshift(noSelectItem);
             }
-        }
-        /**
-         * sort list by: Code
-         */
-        sortbyList(lstItem: Array<any>): Array<any>{
-            let lwt : Array<any> = [];
-            if (lstItem && !!lstItem.length) {
-                lwt = _.orderBy(lstItem, ['workTypeCode'], ['asc']);
-            }
-            return lwt;
         }
         //event When click to 決定 ボタン
         register() {

@@ -1,10 +1,10 @@
 package nts.uk.ctx.at.request.dom.vacation.history.service;
 
+/*import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;*/
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.vacation.history.PlanVacationHistory;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.申請承認.設定.会社別.計画休暇のルール.Export
@@ -22,7 +22,7 @@ public interface PlanVacationRuleExport {
 	 * @return 	true：上限エラーあり
 	 * 			false：上限エラーなし
 	 */
-	boolean checkMaximumOfPlan(String cid, String employeeId, String workTypeCode, DatePeriod dateData);
+	List<PlanVacationRuleError> checkMaximumOfPlan(String cid, String employeeId, String workTypeCode, DatePeriod dateData);
 	/**
 	 * 申請期間が利用可能な期間外かチェックする
 	 * @param lstVactionPeriod ・ドメインモデル「計画休暇のルールの履歴」一覧

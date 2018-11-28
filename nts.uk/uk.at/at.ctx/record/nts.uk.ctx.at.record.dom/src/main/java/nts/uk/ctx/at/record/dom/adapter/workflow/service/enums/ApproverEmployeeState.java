@@ -4,6 +4,7 @@
 package nts.uk.ctx.at.record.dom.adapter.workflow.service.enums;
 
 /**
+ * 基準社員のルート状況
  * @author hungnm
  *
  */

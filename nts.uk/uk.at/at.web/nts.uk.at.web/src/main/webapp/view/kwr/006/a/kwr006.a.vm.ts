@@ -391,7 +391,8 @@ module nts.uk.at.view.kwr006.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 service.findAllOutputItemMonthlyWorkSchedule().done(data => {
-                    self.itemListCodeTemplate(_.map(data, item => new ItemModel(item.itemCode, item.itemName)));
+                    let datas = _.sortBy(data, item=> item.itemCode);
+                    self.itemListCodeTemplate(_.map(datas, item => new ItemModel(item.itemCode, item.itemName)));
                     dfd.resolve();
                 });
                 return dfd.promise();

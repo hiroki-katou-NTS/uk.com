@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.request.app.command.application.appabsence;
 
+/*import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
+import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
+import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppDispNameRepository;*/
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,16 +35,13 @@ import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServicePr
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
-import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.GetHdDayInPeriodService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
@@ -55,7 +56,6 @@ import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolida
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.CheckWkTypeSpecHdEventOutput;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.MaxDaySpecHdOutput;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.SpecialHolidayEventAlgorithm;
-import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -83,8 +83,8 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 	@Inject
 	private InterimRemainDataMngCheckRegister interimRemainCheckReg;
-	@Inject
-	private HdAppDispNameRepository repoHdAppDispName;
+	/*@Inject
+	private HdAppDispNameRepository repoHdAppDispName;*/
 	@Inject
 	private DisplayReasonRepository displayRep;
 	@Inject
@@ -92,11 +92,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 	@Inject
 	private HdAppSetRepository repoHdAppSet;
 	@Inject
-	private OtherCommonAlgorithm otherCommonAlg;
-	@Inject
-	private CollectAchievement collectAch;
-	@Inject
-	private WorkTypeIsClosedService workTypeRepo;
+	private OtherCommonAlgorithm otherCommonAlg;	
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<CreatAppAbsenceCommand> context) {
 		CreatAppAbsenceCommand command = context.getCommand();
@@ -182,7 +178,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		GeneralDate cmdStartDate = GeneralDate.fromString(command.getStartDate(), DATE_FORMAT);
 		GeneralDate cmdEndDate = GeneralDate.fromString(command.getEndDate(), DATE_FORMAT);
 		List<GeneralDate> listDate = new ArrayList<>();
-		List<GeneralDate> lstHoliday = this.lstDateNotHoliday(companyID, command.getEmployeeID(), new DatePeriod(cmdStartDate, cmdEndDate));
+		List<GeneralDate> lstHoliday = otherCommonAlg.lstDateNotHoliday(companyID, command.getEmployeeID(), new DatePeriod(cmdStartDate, cmdEndDate));
 		for(GeneralDate loopDate = cmdStartDate; loopDate.beforeOrEquals(cmdEndDate); loopDate = loopDate.addDays(1)){
 			if(!lstHoliday.contains(loopDate)) {
 				listDate.add(loopDate);	
@@ -321,7 +317,7 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 //		・公休チェック区分＝（休暇申請設定．公休残数不足登録できる＝false）
 //		・超休チェック区分＝true
 		List<AppRemainCreateInfor> appData = new ArrayList<>();
-		List<GeneralDate> lstDateNotHoliday = this.lstDateNotHoliday(companyID, command.getEmployeeID(), new DatePeriod(startDate, endDate));
+		List<GeneralDate> lstDateNotHoliday = otherCommonAlg.lstDateNotHoliday(companyID, command.getEmployeeID(), new DatePeriod(startDate, endDate));
 		appData.add(new AppRemainCreateInfor(command.getEmployeeID(), command.getAppID(), GeneralDateTime.now(), startDate, 
 				EnumAdaptor.valueOf(command.getPrePostAtr(), PrePostAtr.class), 
 				nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType.ABSENCE_APPLICATION, 
@@ -382,21 +378,5 @@ public class CreatAppAbsenceCommandHandler extends CommandHandlerWithResult<Crea
 		absenceServiceProcess.checkDigestPriorityHd(EnumAdaptor.valueOf(setNo65.getPridigCheck(), AppliedDate.class),
 				setNo65.isSubVacaManage(), setNo65.isSubVacaTypeUseFlg(), setNo65.isSubHdManage(), setNo65.isSubHdTypeUseFlg(),
 				param.getNumberSubHd(), param.getNumberSubVaca());
-	}
-
-	public List<GeneralDate> lstDateNotHoliday(String cid, String sid, DatePeriod dates){
-		List<GeneralDate> lstOutput = new ArrayList<>();
-		for(int i = 0; dates.start().daysTo(dates.end()) - i >= 0; i++){
-			GeneralDate loopDate = dates.start().addDays(i);
-			//実績の取得
-			AchievementOutput achInfor = collectAch.getAchievement(cid, sid, loopDate);
-			if(achInfor != null 
-					&& achInfor.getWorkType() != null
-					&& workTypeRepo.checkHoliday(achInfor.getWorkType().getWorkTypeCode()) //1日休日の判定
-					) {
-				lstOutput.add(loopDate);
-			}
-		}
-		return lstOutput;
 	}
 }
