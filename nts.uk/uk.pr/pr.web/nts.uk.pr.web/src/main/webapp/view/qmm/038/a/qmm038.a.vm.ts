@@ -224,8 +224,8 @@ module nts.uk.pr.view.qmm038.a {
                 }
                 block.invisible();
                 // update
+                self.dataUpdate = [];
                 _.forEach(statementItems, (item: IDataScreen) => {
-                    self.dataUpdate = [];
                     self.dataUpdate.push(new UpdateEmployee(item.employeeId, item.averageWage));
                 })
                 let command = {
