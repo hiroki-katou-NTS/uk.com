@@ -171,7 +171,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	private final String FONT_FAMILY = "ＭＳ ゴシック";
 
 	/** The font size. */
-	private final int FONT_SIZE = 9;
+	private final double FONT_SIZE = 6.5;
 	
 	/** The Constant DATA_PREFIX. */
 	private static final String DATA_PREFIX = "DATA_";
@@ -2441,7 +2441,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	 */
 	private void setFontStyle(Style style) {
 		Font font = style.getFont();
-		font.setSize(FONT_SIZE);
+		font.setDoubleSize(FONT_SIZE);
 		font.setName(FONT_FAMILY);
 	}
 
