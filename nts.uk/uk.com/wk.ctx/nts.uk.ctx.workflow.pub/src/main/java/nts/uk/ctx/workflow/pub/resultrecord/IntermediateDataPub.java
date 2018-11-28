@@ -1,7 +1,6 @@
 package nts.uk.ctx.workflow.pub.resultrecord;
 
 import java.util.List;
-import java.util.Optional;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
