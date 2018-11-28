@@ -111,7 +111,7 @@ public class GetDataAppCfDetailFinder {
 		if(approvalFunctionSetting.getAppUseSetting().getMemo().v().isEmpty()
 				&& appDeadline.getUserAtr() == UseAtr.NOTUSE
 				&& appTypeDiscreteSetting.getRetrictPreUseFlg() == UseAtr.NOTUSE
-				&& appTypeDiscreteSetting.getRetrictPostAllowFutureFlg() != AllowAtr.NOTALLOW) {
+				&& appTypeDiscreteSetting.getRetrictPostAllowFutureFlg() == AllowAtr.NOTALLOW) {
 			return new OutputMessageDeadline("", "", false);
 		}
 		//「申請利用設定」．備考に内容あり  ||  「申請締切設定」．利用区分が利用  ||  「事前の受付制限」．利用区分が利用  ||  「事後の受付制限」．未来日許可しないがtrue
@@ -213,7 +213,7 @@ public class GetDataAppCfDetailFinder {
 		//注意：ドメインモデル「事前の受付制限」．利用区分が利用しない && ドメインモデル「事後の受付制限」．未来日許可しないがfalse && ドメインモデル「申請締切設定」．利用区分が利用しない
 		//          ⇒締め切りエリア全体に非表示
 		if(appTypeDiscreteSetting.getRetrictPreUseFlg() == UseAtr.NOTUSE
-				&& appTypeDiscreteSetting.getRetrictPostAllowFutureFlg() != AllowAtr.NOTALLOW
+				&& appTypeDiscreteSetting.getRetrictPostAllowFutureFlg() == AllowAtr.NOTALLOW
 				&& appDeadline.getUserAtr() == UseAtr.NOTUSE) {
 			deadline = "";
 		}

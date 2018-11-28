@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.vacation.history.service;
 
+/*import java.util.Collections;*/
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +36,8 @@ public class PlanVacationRuleExportImpl implements PlanVacationRuleExport{
 	@Inject
 	private ClosureService closureService;
 	@Override
-	public boolean checkMaximumOfPlan(String cid, String employeeId, String workTypeCode, DatePeriod dateData) {
+	public List<PlanVacationRuleError> checkMaximumOfPlan(String cid, String employeeId, String workTypeCode, DatePeriod dateData) {
+		List<PlanVacationRuleError> lstOutput = new ArrayList<>();
 		//指定する期間内の計画休暇のルールの履歴を取得する
 		//ドメインモデル「計画休暇のルールの履歴」を取得する
 		List<PlanVacationHistory> lstVactionPeriod = vacationHisRepos.findByWorkTypeAndPeriod(cid, workTypeCode, dateData);
@@ -42,15 +45,19 @@ public class PlanVacationRuleExportImpl implements PlanVacationRuleExport{
 			//ドメインモデル「計画休暇のルールの履歴」を全て取得する
 			List<PlanVacationHistory> lstVacation = vacationHisRepos.findByWorkTypeCode(cid, workTypeCode);
 			if(lstVacation.isEmpty()) {
-				return false;
+				return lstOutput;
 			} else {
-				return true;
+				//「期間外の利用」を「計画年休の上限チェックの結果」．エラー情報に追加する
+				lstOutput.add(PlanVacationRuleError.OUTSIDEPERIOD);
+				return lstOutput;
 			}
 		} else {
 			//申請期間が利用可能な期間外かチェックする
 			boolean isOutThePeriod = this.checkOutThePeriod(lstVactionPeriod, dateData);
 			if(isOutThePeriod) {
-				return true;
+				//「期間外の利用」を「計画年休の上限チェックの結果」．エラー情報に追加する
+				lstOutput.add(PlanVacationRuleError.OUTSIDEPERIOD);
+				return lstOutput;
 			}
 			//取得したドメインモデル「計画休暇のルールの履歴」を先頭から最後までループする
 			for (PlanVacationHistory data : lstVactionPeriod) {
@@ -58,11 +65,13 @@ public class PlanVacationRuleExportImpl implements PlanVacationRuleExport{
 				DatePeriod dateCheck = new DatePeriod(data.start(), data.end());
 				CheckMaximumOfPlanParam planParam = new CheckMaximumOfPlanParam(cid, employeeId, workTypeCode, dateCheck, data.getMaxDay().v(), dateData);
 				if(this.checkMaxPlanSpecification(planParam)) {
-					return true;
+					//「上限日数超過」を「計画年休の上限チェックの結果」．エラー情報に追加する
+					lstOutput.add(PlanVacationRuleError.OVERLIMIT);
+					return lstOutput;
 				}
 			}
 			
-			return false;
+			return lstOutput;
 		}
 		
 	}

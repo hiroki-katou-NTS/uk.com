@@ -93,6 +93,11 @@ module nts.uk.at.view.kmk004.c {
                         WorktimeSettingVM.getStartMonth().done((month) => {
                             self.startMonth = ko.observable(month);
                             
+                            nts.uk.characteristics.restore('KMK004RefFlexPred').done(vl => {
+                                if (!_.isNil(vl)) {
+                                    self.worktimeVM.worktimeSetting.setReferenceFlexPred(vl);
+                                }
+                            });
                             dfd.resolve();
                         }).fail(() => {
                             nts.uk.ui.block.clear();

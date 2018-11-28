@@ -287,10 +287,12 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     if (self.itemList.length > 0) {
                         self.individualPriceNameLabel(data[0].individualPriceName);
                         self.individualPriceCodeLabel(data[0].individualPriceCode);
+                        self.A7_8('～');
                     }
                     self.historyProcess(data[0].individualPriceCode, 0);
                 } else {
                     nts.uk.ui.dialog.alertError({messageId: "MsgQ_169"});
+                    self.A7_8(null);
                     self.itemList([]);
                     self.dataSource([]);
                     self.singleSelectedCode(null);

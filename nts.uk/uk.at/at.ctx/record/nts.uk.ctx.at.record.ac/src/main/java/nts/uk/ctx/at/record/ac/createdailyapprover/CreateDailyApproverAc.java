@@ -25,8 +25,8 @@ public class CreateDailyApproverAc implements CreateDailyApproverAdapter {
 	
 	
 	@Override
-	public AppRootInsContentFnImport createDailyApprover(String employeeID, Integer rootType, GeneralDate recordDate) {
-		AppRootInsContentExport data = intermediateDataPub.createDailyApprover(employeeID, rootType, recordDate);
+	public AppRootInsContentFnImport createDailyApprover(String employeeID, Integer rootType, GeneralDate recordDate,GeneralDate closureStartDate) {
+		AppRootInsContentExport data = intermediateDataPub.createDailyApprover(employeeID, rootType, recordDate,closureStartDate);
 		return convertToAppRootInsContentExport(data);
 	}
 

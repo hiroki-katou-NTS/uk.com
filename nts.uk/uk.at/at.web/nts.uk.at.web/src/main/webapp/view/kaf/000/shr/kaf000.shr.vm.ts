@@ -420,6 +420,5 @@ module nts.uk.at.view.kaf000.shr{
             autoFailMail: Array<string>,
             appID: string    
         }
-        
     }
 }

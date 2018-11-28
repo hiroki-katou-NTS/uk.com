@@ -1,12 +1,13 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord;
 
+/*import nts.arc.time.GeneralDate;*/
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.ReflectInformationResult;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.WorkChangeCommonReflectPara;
 
 @Stateless
 public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
@@ -40,7 +41,7 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 				return reflectRecord.holidayWorkReflectRecord(holidayworkData, true)
 						? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
 			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.WORK_CHANGE_APPLICATION) {
-				CommonReflectPara workChangeData = appRecordInfor.getWorkchangeInfor();
+				WorkChangeCommonReflectPara workChangeData = appRecordInfor.getWorkchangeInfor();
 				return reflectRecord.workChangeReflectRecord(workChangeData, true)
 						? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
 			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION) {
@@ -68,7 +69,7 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 				return reflectRecord.absenceReflectRecor(absenceInfor, false)
 						? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
 			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.WORK_CHANGE_APPLICATION) {
-				CommonReflectPara workChangeData = appRecordInfor.getWorkchangeInfor();
+				WorkChangeCommonReflectPara workChangeData = appRecordInfor.getWorkchangeInfor();
 				return reflectRecord.workChangeReflectRecord(workChangeData, false)
 						? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
 			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION) {

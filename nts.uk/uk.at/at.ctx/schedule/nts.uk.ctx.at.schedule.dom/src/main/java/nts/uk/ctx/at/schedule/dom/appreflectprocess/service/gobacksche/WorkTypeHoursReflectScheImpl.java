@@ -10,18 +10,12 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.ScheduleEditState;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleState;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedulestate.WorkScheduleStateRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class WorkTypeHoursReflectScheImpl implements WorkTypeHoursReflectSche{
 	@Inject
 	private BasicScheduleRepository basicSche;
-	@Inject
-	private WorkTypeRepository workTypeRepo;
 	@Inject
 	private WorkScheduleStateRepository workScheReposi;
 	@Inject

@@ -37,6 +37,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRep
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.HierarchyCode;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
@@ -50,6 +51,7 @@ import nts.uk.ctx.bs.employee.pub.workplace.WkpByEmpExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpCdNameExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpConfigAtTimeExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpHistWithPeriodExport;
+import nts.uk.ctx.bs.employee.pub.workplace.WkpIdNameHierarchyCdExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpInfoExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpInfoHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceHistExport;
@@ -682,11 +684,21 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	 * String, nts.arc.time.GeneralDate, java.util.List)
 	 */
 	@Override
-	public List<WkpCdNameExport> getWkpCdName(String companyId, GeneralDate baseDate, List<String> wkpIds) {
-		List<WorkplaceInfo> optWorkplaceInfos = workplaceInfoRepo.findByBaseDateWkpIds(companyId, baseDate, wkpIds);
+	public List<WkpIdNameHierarchyCdExport> getWkpIdNameHierarchyCd(String companyId,
+			GeneralDate baseDate, List<String> wkpIds) {
+		List<WorkplaceInfo> optWorkplaceInfos = workplaceInfoRepo.findByBaseDateWkpIds(companyId,
+				baseDate, wkpIds);
+		List<WorkplaceConfigInfo> workplaceConfigInfos = workplaceConfigInfoRepo
+				.findByWkpIdsAtTime(companyId, baseDate, wkpIds);
+		List<WorkplaceHierarchy> lstWkpHierarchy = workplaceConfigInfos.stream()
+				.flatMap(item -> item.getLstWkpHierarchy().stream()).collect(Collectors.toList());
+		Map<String, String> mapHierarchyCd = lstWkpHierarchy.stream().collect(Collectors
+				.toMap(WorkplaceHierarchy::getWorkplaceId, item -> item.getHierarchyCode().v()));
 
-		return optWorkplaceInfos.stream().map(wkpInfo -> WkpCdNameExport.builder()
-				.wkpCode(wkpInfo.getWorkplaceCode().v()).wkpName(wkpInfo.getWorkplaceName().v()).build())
+		return optWorkplaceInfos.stream()
+				.map(wkpInfo -> WkpIdNameHierarchyCdExport.builder().wkpId(wkpInfo.getWorkplaceId())
+						.wkpName(wkpInfo.getWorkplaceName().v())
+						.hierarchyCd(mapHierarchyCd.get(wkpInfo.getWorkplaceId())).build())
 				.collect(Collectors.toList());
 	}
 
