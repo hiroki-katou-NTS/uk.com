@@ -1,5 +1,7 @@
 package nts.uk.ctx.pereg.infra.repository.roles.auth.category;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,16 +9,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryDetail;
+import nts.uk.ctx.pereg.dom.roles.auth.category.RoleCateExportDetail;
 import nts.uk.ctx.pereg.infra.entity.roles.auth.category.PpemtPersonCategoryAuth;
 import nts.uk.ctx.pereg.infra.entity.roles.auth.category.PpemtPersonCategoryAuthPk;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implements PersonInfoCategoryAuthRepository {
@@ -71,7 +75,36 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 
 	private static final String DEL_BY_ROLE_ID = " DELETE  FROM PpemtPersonCategoryAuth c"
 			+ " WHERE c.ppemtPersonCategoryAuthPk.roleId =:roleId";
-
+	
+	
+	private static final String GET_EXPORT_EXCEL = "SELECT x.ROLE_CD,x.ROLE_NAME,c.CATEGORY_NAME, "
+			+ " CASE WHEN xx.PER_INFO_CTG_ID IS NOT NULL  THEN 'True' ELSE 'False' END AS IsConfig,"
+			+ " ctgau.OTHER_PERSON_AUTH_TYPE, xx.ALLOW_PER_REF_ATR, xx.ALLOW_OTHER_REF_ATR,"
+			+ " xx.SELF_PAST_HIS_AUTH_TYPE,xx.SELF_FUTURE_HIS_AUTH_TYPE,xx.SELF_ALLOW_ADD_HIS_ATR,"
+			+ " xx.SELF_ALLOW_DEL_HIS_ATR,xx.OTHER_PAST_HIS_AUTH_TYPE,xx.OTHER_FUTURE_HIS_AUTH_TYPE,"
+			+ " xx.OTHER_ALLOW_ADD_HIS_ATR,xx.OTHER_ALLOW_DEL_HIS_ATR,xx.SELF_ALLOW_ADD_MULTI_ATR,"
+			+ " xx.SELF_ALLOW_DEL_MULTI_ATR,xx.OTHER_ALLOW_ADD_MULTI_ATR,xx.OTHER_ALLOW_DEL_MULTI_ATR,"
+			+ " CASE WHEN ctgau.PER_INFO_ITEM_DEF_ID IS NOT NULL  THEN 'True' ELSE 'False' END AS IsItemConfig,"
+			+ " cm.CATEGORY_TYPE,"
+			+ " item.ITEM_NAME,"
+			+ " ctgau.SELF_AUTH_TYPE,"
+			+ " ctgau.OTHER_PERSON_AUTH_TYPE"
+			+ " FROM PPEMT_PER_INFO_CTG c "
+			+ " INNER JOIN PPEMT_PER_INFO_CTG_CM cm"
+			+ " ON c.CATEGORY_CD = cm.CATEGORY_CD AND c.CID = '000000000000-0104' AND c.ABOLITION_ATR = 0"
+			+ " AND cm.CONTRACT_CD = '000000000000' "
+			+ " INNER JOIN PPEMT_PER_INFO_CTG_ORDER co"
+			+ " ON c.PER_INFO_CTG_ID = co.PER_INFO_CTG_ID"
+			+ " Cross JOIN (SELECT DISTINCT pp.ROLE_ID,r.ROLE_CD, r.ROLE_NAME FROM PPEMT_PERSON_CTG_AUTH pp JOIN PPEMT_PER_INFO_CTG c on pp.PER_INFO_CTG_ID = c.PER_INFO_CTG_ID JOIN SACMT_ROLE r on pp.ROLE_ID = r.ROLE_ID  WHERE c.CID = '000000000000-0104' AND r.ROLE_TYPE = 8) x"
+			+ " LEFT JOIN PPEMT_PERSON_CTG_AUTH xx On c.PER_INFO_CTG_ID = xx.PER_INFO_CTG_ID AND xx.ROLE_ID = x.ROLE_ID"
+			+ " INNER JOIN PPEMT_PER_INFO_ITEM item ON c.PER_INFO_CTG_ID = item.PER_INFO_CTG_ID"
+			+ " INNER JOIN PPEMT_PER_INFO_ITEM_CM itemCM ON item.ITEM_CD = itemCM.ITEM_CD AND itemCM.CONTRACT_CD = '000000000000' AND c.CATEGORY_CD = itemCM.CATEGORY_CD AND itemCM.ITEM_PARENT_CD IS NULL"
+			+ " LEFT JOIN PPEMT_PERSON_ITEM_AUTH ctgau ON item.PER_INFO_CTG_ID = ctgau.PER_INFO_CTG_ID AND x.ROLE_ID = ctgau.ROLE_ID AND ctgau.PER_INFO_ITEM_DEF_ID = item.PER_INFO_ITEM_DEFINITION_ID"
+			+ " WHERE"
+			+ " ((cm.SALARY_USE_ATR = 1 AND 0 = 1) OR (cm.PERSONNEL_USE_ATR = 1 AND 0 = 1) OR (cm.EMPLOYMENT_USE_ATR = 1 AND 1 = 1)) OR (0 =  0 AND  0 = 0 AND 1 = 0) "
+			+ " AND item.ABOLITION_ATR = 0 ORDER BY ROLE_CD";
+			
+	
 	private static PersonInfoCategoryAuth toDomain(PpemtPersonCategoryAuth entity) {
 		val domain = PersonInfoCategoryAuth.createFromJavaType(entity.ppemtPersonCategoryAuthPk.roleId,
 				entity.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId, entity.allowPersonRef, entity.allowOtherRef,
@@ -81,7 +114,9 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 				entity.otherAllowDelMulti);
 		return domain;
 	}
-
+	
+	
+	
 
 	private static PersonInfoCategoryDetail toDomain(Object[] entity) {
 		val domain = new PersonInfoCategoryDetail();
@@ -235,6 +270,47 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 				.setParameter("companyId", companyId).setParameter("perInfoCtgIdlst", perInfoCtgIdlst)
 				.getList(c -> toDomainLess(c));
 
+	}
+
+
+
+
+	@Override
+	public List<RoleCateExportDetail> getDataExport() {
+		EntityManager em = this.getEntityManager();
+		List<RoleCateExportDetail> response = new ArrayList<>();
+		Query query = em.createNativeQuery(GET_EXPORT_EXCEL.toString());
+		@SuppressWarnings("unchecked")
+		List<Object[]> data = query.getResultList();
+		for (Object[] objects : data) {
+			response.add(toExport(objects));
+		}
+		return response;
+	}
+	
+	private RoleCateExportDetail toExport(Object[] object) {
+		return new RoleCateExportDetail((String) object[0], (String) object[1], (String) object[2],
+				object[3].equals("True") ? true : false,
+				object[4] != null ? ((BigDecimal) object[4]).intValue() : null,
+				object[5] != null ? ((BigDecimal) object[5]).intValue() : null,
+				object[6] != null ? ((BigDecimal) object[6]).intValue() : null,
+				object[7] != null ? ((BigDecimal) object[7]).intValue() : null,
+				object[8] != null ? ((BigDecimal) object[8]).intValue() : null,
+				object[9] != null ? ((BigDecimal) object[9]).intValue() : null,
+				object[10] != null ? ((BigDecimal) object[10]).intValue() : null,
+				object[11] != null ? ((BigDecimal) object[11]).intValue() : null,
+				object[12] != null ? ((BigDecimal) object[12]).intValue() : null,
+				object[13] != null ? ((BigDecimal) object[13]).intValue() : null,
+				object[14] != null ? ((BigDecimal) object[14]).intValue() : null,
+				object[15] != null ? ((BigDecimal) object[15]).intValue() : null,
+				object[16] != null ? ((BigDecimal) object[16]).intValue() : null,
+				object[17] != null ? ((BigDecimal) object[17]).intValue() : null,
+				object[18] != null ? ((BigDecimal) object[18]).intValue() : null,
+				object[19].equals("True") ? true : false,
+				object[20] != null ? ((BigDecimal) object[20]).intValue() : null,
+				object[21] != null ? (String) object[21] : null,
+				object[22] != null ? ((BigDecimal) object[22]).intValue() : null,
+				object[23] != null ? ((BigDecimal) object[23]).intValue() : null);
 	}
 
 }
