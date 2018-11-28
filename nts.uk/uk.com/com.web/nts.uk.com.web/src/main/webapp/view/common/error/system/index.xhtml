@@ -25,7 +25,9 @@
 				</div>
 				<button class="large" data-bind="click: gotoLogin">ログイン画面へ</button>
 
-				<pre data-bind="text:details" style="text-align: left"></pre>
+				<com:ko-if bind="isDebugMode">
+					<pre data-bind="text:details" style="text-align: left"></pre>
+				</com:ko-if>
 			</div>
 		</ui:define>
 	</ui:composition>
