@@ -33,7 +33,6 @@ public class StackTraceInTime {
 				StackTraceSegment segment = stack.pop();
 				segment.write(bw);
 			}
-			bw.newLine();
 		} catch (IOException e) {
 			throw new RuntimeException("Failed to print stack trace.");
 		}
