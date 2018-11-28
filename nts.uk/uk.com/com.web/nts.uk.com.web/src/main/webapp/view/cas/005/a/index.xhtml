@@ -43,6 +43,9 @@
 					<!-- A1_002 -->
 					<button tabindex="2" class="proceed"
 						data-bind="click : registerButton ,enable : isRegister">#{i18n.getText('CAS005_11')}</button>
+					<!--Export Excel-->
+					<button tabindex="3" class="danger"
+							data-bind="click : exportExcel , enable : isDelete">#{i18n.getText('CAS005_12')}</button>
 					<!-- A1_003 -->
 					<button tabindex="3" class="danger"
 						data-bind="click : deleteButton , enable : isDelete">#{i18n.getText('CAS005_12')}</button>
