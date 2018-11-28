@@ -3,7 +3,6 @@ package nts.uk.shr.sample.settaskdata;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.task.AsyncTask;

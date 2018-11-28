@@ -1,8 +1,6 @@
 package nts.uk.screen.at.app.monthlyperformance.correction;
 
 import java.math.BigDecimal;
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,7 +19,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
-import nts.arc.task.parallel.ParallelExceptions.Item;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
@@ -67,7 +64,6 @@ import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -75,7 +71,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ClosureInfoOuput;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ColumnSetting;
@@ -113,8 +108,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 	private IdentityProcessFinder identityProcessFinder;
 	@Inject
 	private EmploymentAdapter employmentAdapter;
-	@Inject
-	private ClosureEmploymentRepository closureEmploymentRepository;
+//	@Inject
+//	private ClosureEmploymentRepository closureEmploymentRepository;
 	@Inject
 	private ShClosurePub shClosurePub;
 
@@ -146,8 +141,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 	@Inject
 	private ApprovalProcessingUseSettingRepository approvalProcessingUseSettingRepo;
 	
-	@Inject
-	private FormatPerformanceRepository formatPerformanceRepo;
+//	@Inject
+//	private FormatPerformanceRepository formatPerformanceRepo;
 	
 	@Inject
 	private ApprovalStatusAdapter approvalStatusAdapter;
@@ -176,7 +171,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 	private static final String STATE_ALARM = "mgrid-alarm";
 	private static final String STATE_SPECIAL = "mgrid-special";
 	private static final String ADD_CHARACTER = "A";
-	private static final String DATE_FORMAT = "yyyy-MM-dd";
+//	private static final String DATE_FORMAT = "yyyy-MM-dd";
 	
 	private final static List<Integer> ITEM_ID_ALL = AttendanceItemIdContainer.getIds(AttendanceItemType.MONTHLY_ITEM)
 			.stream().map(x -> x.getItemId()).collect(Collectors.toList());
@@ -570,20 +565,20 @@ public class MonthlyPerformanceCorrectionProcessor {
 	}
 	*/
 
-	/** アルゴリズム「対象者を抽出する」を実行する */
-	private List<MonthlyPerformanceEmployeeDto> getListEmployee(String sId, DateRange dateRange) {
-		// アルゴリズム「自職場を取得する」を実行する
-		// List<String> lstJobTitle = this.repo.getListJobTitle(dateRange);
-		// List<String> lstEmployment = this.repo.getListEmployment();
-		/// 対応するドメインモデル「所属職場」を取得する + 対応するドメインモデル「職場」を取得する
-		Map<String, String> lstWorkplace = this.repo.getListWorkplace(sId, dateRange);
-		// List<String> lstClassification = this.repo.getListClassification();
-		// 取得したドメインモデル「所属職場．社員ID」に対応するImported「（就業）社員」を取得する
-		if (lstWorkplace.isEmpty()) {
-			return new ArrayList<>();
-		}
-		return this.repo.getListEmployee(null, null, lstWorkplace, null);
-	}
+//	/** アルゴリズム「対象者を抽出する」を実行する */
+//	private List<MonthlyPerformanceEmployeeDto> getListEmployee(String sId, DateRange dateRange) {
+//		// アルゴリズム「自職場を取得する」を実行する
+//		// List<String> lstJobTitle = this.repo.getListJobTitle(dateRange);
+//		// List<String> lstEmployment = this.repo.getListEmployment();
+//		/// 対応するドメインモデル「所属職場」を取得する + 対応するドメインモデル「職場」を取得する
+//		Map<String, String> lstWorkplace = this.repo.getListWorkplace(sId, dateRange);
+//		// List<String> lstClassification = this.repo.getListClassification();
+//		// 取得したドメインモデル「所属職場．社員ID」に対応するImported「（就業）社員」を取得する
+//		if (lstWorkplace.isEmpty()) {
+//			return new ArrayList<>();
+//		}
+//		return this.repo.getListEmployee(null, null, lstWorkplace, null);
+//	}
 
 	/**
 	 * 締め情報の表示
@@ -1006,38 +1001,38 @@ public class MonthlyPerformanceCorrectionProcessor {
 	 * Get List Data include:<br/>
 	 * Employee and Date
 	 **/
-	private List<MPDataDto> getListData(List<MonthlyPerformanceEmployeeDto> listEmployee, DateRange dateRange,
-			Integer displayFormat) {
-		List<MPDataDto> result = new ArrayList<>();
-		if (listEmployee.size() > 0) {
-			List<GeneralDate> lstDate = dateRange.toListDate();
-			int dataId = 0;
-			for (int j = 0; j < listEmployee.size(); j++) {
-				MonthlyPerformanceEmployeeDto employee = listEmployee.get(j);
-				boolean stateLock = false;
-				// set tam dailyConfirm  = "〇"
-				String dailyConfirm = "〇";
-				for (int i = 0; i < lstDate.size(); i++) {
-					String key = displayFormat + "_" + convertFormatString(employee.getId()) + "_"
-							+ convertFormatString(converDateToString(lstDate.get(i))) + "_"
-							+ convertFormatString(converDateToString(lstDate.get(lstDate.size() - 1))) + "_" + dataId;
-					result.add(new MPDataDto(key, "stateLock", "", employee.getCode(), employee.getBusinessName(),
-							employee.getId(), "", stateLock, stateLock, dailyConfirm, ""));
-					dataId++;
-				}
-			}
-		}
-		return result;
-	}
+//	private List<MPDataDto> getListData(List<MonthlyPerformanceEmployeeDto> listEmployee, DateRange dateRange,
+//			Integer displayFormat) {
+//		List<MPDataDto> result = new ArrayList<>();
+//		if (listEmployee.size() > 0) {
+//			List<GeneralDate> lstDate = dateRange.toListDate();
+//			int dataId = 0;
+//			for (int j = 0; j < listEmployee.size(); j++) {
+//				MonthlyPerformanceEmployeeDto employee = listEmployee.get(j);
+//				boolean stateLock = false;
+//				// set tam dailyConfirm  = "〇"
+//				String dailyConfirm = "〇";
+//				for (int i = 0; i < lstDate.size(); i++) {
+//					String key = displayFormat + "_" + convertFormatString(employee.getId()) + "_"
+//							+ convertFormatString(converDateToString(lstDate.get(i))) + "_"
+//							+ convertFormatString(converDateToString(lstDate.get(lstDate.size() - 1))) + "_" + dataId;
+//					result.add(new MPDataDto(key, "stateLock", "", employee.getCode(), employee.getBusinessName(),
+//							employee.getId(), "", stateLock, stateLock, dailyConfirm, ""));
+//					dataId++;
+//				}
+//			}
+//		}
+//		return result;
+//	}
 
-	private String convertFormatString(String data) {
-		return data.replace("-", "_");
-	}
-
-	private String converDateToString(GeneralDate genDate) {
-		Format formatter = new SimpleDateFormat(DATE_FORMAT);
-		return formatter.format(genDate.date());
-	}
+//	private String convertFormatString(String data) {
+//		return data.replace("-", "_");
+//	}
+//
+//	private String converDateToString(GeneralDate genDate) {
+//		Format formatter = new SimpleDateFormat(DATE_FORMAT);
+//		return formatter.format(genDate.date());
+//	}
 
 	private String mergeString(String... x) {
 		return StringUtils.join(x);
@@ -1049,7 +1044,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 		 */
 
 		MPControlDisplayItem displayItem = screenDto.getLstControlDisplayItem();
-		MonthlyPerformanceParam param = screenDto.getParam();
+//		MonthlyPerformanceParam param = screenDto.getParam();
 		// アルゴリズム「対象年月に対応する月別実績を取得する」を実行する Lấy monthly result ứng với năm tháng
 //		if (param.getLstAtdItemUnique() == null || param.getLstAtdItemUnique().isEmpty()) {
 //			throw new BusinessException("Msg_1261");

@@ -13,12 +13,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.app.command.monthly.MonthlyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.find.monthly.finder.MonthlyRecordWorkFinder;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
@@ -38,7 +35,6 @@ import nts.uk.screen.at.app.monthlyperformance.correction.dto.EditStateOfMonthly
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPItemCheckBox;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPItemDetail;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPItemParent;
-import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceEmployeeDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
