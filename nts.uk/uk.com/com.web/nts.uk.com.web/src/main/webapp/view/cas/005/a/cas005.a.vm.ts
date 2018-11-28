@@ -322,6 +322,19 @@ module nts.uk.com.view.cas005.a {
             }//end start page
 
             /**
+             * export excel
+             */
+            exportExcel(){
+                service.exportExcel().done(function(data) {
+
+                }).fail(function(res: any) {
+                    nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
+                }).always(()=>{
+                    block.clear();
+                });
+            }
+
+            /**
              * get data
              */
 
