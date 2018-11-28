@@ -105,7 +105,7 @@ public interface IntermediateDataPub {
 	 * @param recordDate
 	 * @return
 	 */
-	public AppRootInsContentExport createDailyApprover(String employeeID, Integer rootType, GeneralDate recordDate);
+	public AppRootInsContentExport createDailyApprover(String employeeID, Integer rootType, GeneralDate recordDate, GeneralDate closureStartDate);
 	
 	/**
 	 * [No.190-191](中間データ版)承認すべきデータ有無を取得する

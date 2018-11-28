@@ -99,7 +99,9 @@ public class HdRemainManageFinder {
 		if (!currentMonthOpt.isPresent()) {
 			return null;
 		}
-		GeneralDate endDate = GeneralDate.ymd(currentMonthOpt.get().year(), currentMonthOpt.get().month() + 1, 1);
+		
+		// fix hộ bug team G #102630
+		GeneralDate endDate = GeneralDate.ymd(currentMonthOpt.get().year(), currentMonthOpt.get().month(), 1).addMonths(1);
 		GeneralDate startDate = endDate.addYears(-1);
 
 		return new DateHolidayRemainingDto(startDate.toString(), endDate.toString());

@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -76,9 +79,16 @@ public class VacationUseTimeOfMonthly implements Cloneable {
 	 * 休暇使用時間を確認する
 	 * @param datePeriod 期間
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
+	 * @param workInfoOfDailyMap 日別実績の勤務情報リスト
+	 * @param companySets 月別集計で必要な会社別設定
+	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void confirm(DatePeriod datePeriod,
-			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap){
+	public void confirm(
+			DatePeriod datePeriod,
+			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
+			Map<GeneralDate, WorkInfoOfDailyPerformance> workInfoOfDailyMap,
+			MonAggrCompanySettings companySets,
+			RepositoriesRequiredByMonthlyAggr repositories){
 		
 		// 年休使用時間を確認する
 		this.annualLeave.confirm(datePeriod, attendanceTimeOfDailyMap);
@@ -90,7 +100,8 @@ public class VacationUseTimeOfMonthly implements Cloneable {
 		this.specialHoliday.confirm(datePeriod, attendanceTimeOfDailyMap);
 
 		// 代休使用時間を確認する
-		this.compensatoryLeave.confirm(datePeriod, attendanceTimeOfDailyMap);
+		this.compensatoryLeave.confirm(datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap,
+				companySets, repositories);
 	}
 	
 	/**

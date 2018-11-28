@@ -34,6 +34,7 @@ import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHis
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem_;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist_;
 import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -67,8 +68,9 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 			+ " WHERE ehi.empCode IN :employmentCodes AND eh.strDate <= :endDate AND :startDate <= eh.endDate";
 	
 	private static final String GET_LST_SID_BY_EMPTCODE_DATEPERIOD = "SELECT ehi.sid FROM BsymtEmploymentHistItem ehi" 
-			+ " INNER JOIN  BsymtEmploymentHist eh on eh.hisId = ehi.hisId" 
-			+ " WHERE ehi.empCode IN :employmentCodes AND eh.strDate <= :endDate AND :startDate <= eh.endDate";
+			+ " INNER JOIN  BsymtEmploymentHist eh on eh.hisId = ehi.hisId " 
+			+ " WHERE ehi.empCode IN :employmentCodes AND eh.strDate <= :endDate AND :startDate <= eh.endDate"
+			+ " AND eh.companyId = :companyId";
 	
 	@Override
 	public Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String companyId, String sid, GeneralDate date) {
@@ -500,11 +502,13 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	@Override
 	public List<String> getLstSidByListCodeAndDatePeriod(DatePeriod dateperiod, List<String> employmentCodes) {
 		List<String> listSid = new ArrayList<>();
+		String companyId = AppContexts.user().companyId();
 		CollectionUtil.split(employmentCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			listSid.addAll(this.queryProxy().query(GET_LST_SID_BY_EMPTCODE_DATEPERIOD, String.class)
 					.setParameter("employmentCodes", subList)
 					.setParameter("startDate", dateperiod.start())
 					.setParameter("endDate", dateperiod.end())
+					.setParameter("companyId", companyId)
 					.getList());
 		});
 		if(listSid.isEmpty()){

@@ -54,8 +54,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 	@Inject
 	private SpecialLeaveGrantRepository specialLeaveGrantRepository;
 
-	private static final String TEMPLATE_FILE = "report/休暇残数管理票_テンプレート.xlsx";
-	private static final String REPORT_FILE_NAME = "休暇残数管理票.xlsx";
+	private static final String TEMPLATE_FILE = "report/休暇残数管理表_テンプレート.xlsx";
+	private static final String REPORT_FILE_NAME = "休暇残数管理表.xlsx";
 	private static final int NUMBER_ROW_OF_PAGE = 37;
 	private static final int NUMBER_ROW_OF_HEADER = 5;
 	private static final int NUMBER_COLUMN = 23;

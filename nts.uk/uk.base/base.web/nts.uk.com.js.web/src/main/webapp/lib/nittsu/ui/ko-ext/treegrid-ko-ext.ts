@@ -178,6 +178,10 @@ module nts.uk.ui.koExtentions {
             });
             
             $treegrid.setupSearchScroll("igTreeGrid");
+            
+            if(showCheckBox != true){
+                $treegrid.closest(".nts-treegridview").addClass("no-selector");
+            }
         }
 
         /**

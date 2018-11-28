@@ -574,8 +574,10 @@ public class MonthlyCalculation {
 		ConcurrentStopwatches.start("12221:共有項目：");
 		
 		// 共有項目を集計する
-		this.aggregateTime.aggregateSharedItem(
-				aggrPeriod, this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap());
+		this.aggregateTime.aggregateSharedItem(aggrPeriod,
+				this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap(),
+				this.monthlyCalculatingDailys.getWorkInfoOfDailyMap(),
+				this.companySets, repositories);
 
 		ConcurrentStopwatches.stop("12221:共有項目：");
 		

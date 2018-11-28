@@ -8,7 +8,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
+/*import org.apache.logging.log4j.util.Strings;*/
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;

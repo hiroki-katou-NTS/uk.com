@@ -24,13 +24,13 @@ public class CreateperApprovalMonthlyDefault implements CreateperApprovalMonthly
 	
 	@Override
 	public boolean createperApprovalMonthly(String companyId, String executionId, List<String> employeeIDs,
-			int processExecType, GeneralDate startDateClosure) {
+			int processExecType, GeneralDate endDateClosure) {
 		
 			/**パラメータ.社員ID（List）の数だけループする*/
 			for(String employeeID : employeeIDs) {
 				
 				/**アルゴリズム「指定社員の中間データを作成する」を実行する*/
-				AppRootInsContentFnImport appRootInsContentFnImport =  createDailyApproverAdapter.createDailyApprover(employeeID, 2, startDateClosure);
+				AppRootInsContentFnImport appRootInsContentFnImport =  createDailyApproverAdapter.createDailyApprover(employeeID, 2, endDateClosure,endDateClosure);
 				
 				boolean flagError = appRootInsContentFnImport.getErrorFlag().intValue()==1?true:false;
 				String errorMessage = appRootInsContentFnImport.getErrorMsgID();

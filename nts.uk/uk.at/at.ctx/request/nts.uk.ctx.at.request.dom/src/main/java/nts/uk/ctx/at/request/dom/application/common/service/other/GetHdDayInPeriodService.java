@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.other;
 
-
+/*import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;*/
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -8,7 +8,6 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
-import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.algorithm.JudgeHdSystemOneDayService;
 import nts.uk.ctx.at.shared.dom.worktype.algorithm.SpecHdFrameForWkTypeSetService;
 import nts.uk.shr.com.context.AppContexts;

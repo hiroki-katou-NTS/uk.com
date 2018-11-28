@@ -170,7 +170,7 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 			}
 		});
 		
-		ConcurrentStopwatches.printAll();
+		//ConcurrentStopwatches.printAll();
 		ConcurrentStopwatches.STOPWATCHES.clear();
 		
 		if (stateHolder.isInterrupt()){

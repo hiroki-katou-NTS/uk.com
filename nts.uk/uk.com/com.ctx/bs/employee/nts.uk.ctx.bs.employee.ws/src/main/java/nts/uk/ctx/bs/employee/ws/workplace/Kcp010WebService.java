@@ -13,6 +13,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.Kcp010WorkplaceSearchData;
+import nts.uk.ctx.bs.employee.app.find.workplace.dto.InputSerarchKcp010;
 import nts.uk.ctx.bs.employee.app.find.workplace.info.Kcp010Finder;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -28,9 +29,10 @@ public class Kcp010WebService extends WebService {
 	private Kcp010Finder finder;
 	
 	@POST
-	@Path("search/{workplaceCode}")
-	public Kcp010WorkplaceSearchData searchWorkplace(@PathParam("workplaceCode") String workplaceCode) {
-		return this.finder.searchByWorkplaceCode(workplaceCode, GeneralDate.today()).get();
+	@Path("search")
+	public Kcp010WorkplaceSearchData searchWorkplace(InputSerarchKcp010 inputSerarchKcp010 ) {
+		
+		return this.finder.searchByWorkplaceCode(inputSerarchKcp010.getWorkplaceCode(), inputSerarchKcp010.getBaseDate()).get();
 	}
 	
 	@POST
