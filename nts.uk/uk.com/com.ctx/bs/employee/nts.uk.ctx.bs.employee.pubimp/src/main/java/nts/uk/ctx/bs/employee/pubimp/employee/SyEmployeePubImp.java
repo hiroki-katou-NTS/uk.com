@@ -43,6 +43,7 @@ import nts.uk.ctx.bs.employee.pub.employee.ConcurrentEmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmpInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmpInfoRegistered;
 import nts.uk.ctx.bs.employee.pub.employee.EmpOfLoginCompanyExport;
+import nts.uk.ctx.bs.employee.pub.employee.EmployeIdCdPnameExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeDataMngInfoExport;
@@ -786,5 +787,44 @@ public class SyEmployeePubImp implements SyEmployeePub {
 				pid);
 		
 		return Optional.of(result);
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub#getSidCdPnameBySIds(java.util.List)
+	 */
+	@Override
+	public List<EmployeIdCdPnameExport> getSidCdPnameBySIds(List<String> sIdsInput) {
+
+		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.findByListEmployeeId(sIdsInput);
+
+		if (CollectionUtil.isEmpty(emps)) {
+			return Collections.emptyList();
+		}
+
+		List<String> pIds = emps.stream().map(EmployeeDataMngInfo::getPersonId)
+				.collect(Collectors.toList());
+
+		List<Person> persons = this.personRepository.getPersonByPersonIds(pIds);
+
+		Map<String, Person> mapPersons = persons.stream()
+				.collect(Collectors.toMap(Person::getPersonId, Function.identity()));
+
+		return emps.stream().map(employee -> {
+			// Get Person
+			Person person = mapPersons.get(employee.getPersonId());
+
+			EmployeIdCdPnameExport result = EmployeIdCdPnameExport.builder().build();
+
+			if (person != null) {
+				result.setPName(person.getPersonNameGroup().getBusinessName() == null ? null
+						: person.getPersonNameGroup().getBusinessName().v());
+			}
+
+			result.setEmployeeCode(
+					employee.getEmployeeCode() == null ? null : employee.getEmployeeCode().v());
+			result.setEmployeeId(employee.getEmployeeId());
+
+			return result;
+		}).collect(Collectors.toList());
 	}
 }

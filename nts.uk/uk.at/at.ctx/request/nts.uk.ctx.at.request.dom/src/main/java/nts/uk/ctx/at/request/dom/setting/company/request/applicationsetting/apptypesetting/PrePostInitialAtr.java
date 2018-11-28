@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting;
 
-import lombok.AllArgsConstructor;
+/*import lombok.AllArgsConstructor;*/
 
 /**
  * 

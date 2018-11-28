@@ -2182,7 +2182,10 @@ module nts.uk.ui.mgrid {
                 
                 self.$ownerDoc.addXEventListener(ssk.MOUSE_MOVE, self.unshiftRight ? self.cursorMove.bind(self) : self.cursorMoveShift.bind(self));
                 self.$ownerDoc.addXEventListener(ssk.MOUSE_UP, self.unshiftRight ? self.cursorUp.bind(self) : self.cursorUpShift.bind(self));
-                if (!trg) event.preventDefault();
+                if (!trg) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
             }
             
             /**
@@ -4121,7 +4124,7 @@ module nts.uk.ui.mgrid {
                 return;
             }
             
-            if (afterCollertar) afterCollertar.focus({ preventScroll: true });
+            if (afterCollertar) setTimeout(() => afterCollertar.focus({ preventScroll: true }), 1);
             let formatted, disFormat, coord = ti.getCellCoord(target), col = _columnsMap[coord.columnKey];
             
             let inputRidd = function($t, rowIdx, columnKey, dFormat) {
@@ -5479,8 +5482,8 @@ module nts.uk.ui.mgrid {
             
             $grid.addXEventListener(ssk.MOUSE_DOWN, function(evt: any) {
                 let $target = evt.target;
-                isSelecting = true;
                 if (!selector.is($target, ".mcell")) return;
+                isSelecting = true;
                 
                 window.addXEventListener(ssk.MOUSE_UP + ".block", function(evt: any) {
                     isSelecting = false;

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.application;
 
 
+/*import nts.arc.time.GeneralDate;*/
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,7 +12,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.i18n.I18NText;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;

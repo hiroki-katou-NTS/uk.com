@@ -17,6 +17,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.ConfirmLeavePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
@@ -28,6 +29,8 @@ import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.Reserv
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.RsvLeaAggrPeriodWork;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffMonthProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
@@ -54,6 +57,9 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPeriod {
 
+	/** 社員 */
+	@Inject
+	private EmpEmployeeAdapter empEmployee;
 	/** 年休設定 */
 	@Inject
 	private AnnualPaidLeaveSettingRepository annualPaidLeaveSet;
@@ -119,6 +125,13 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 		}
 		if (annualLeaveSet != null) isManageAnnualLeave = annualLeaveSet.isManaged();
 		if (!isManageAnnualLeave) return Optional.empty();
+		
+		// 「休暇の集計期間から入社前、退職後を除く」を実行する
+		EmployeeImport employee = this.empEmployee.findByEmpId(employeeId);
+		if (employee == null) return Optional.empty();
+		DatePeriod aggrPeriod = ConfirmLeavePeriod.sumPeriod(param.getAggrPeriod(), employee);
+		if (aggrPeriod == null) return Optional.empty();
+		param.setAggrPeriod(aggrPeriod);
 		
 		AggrResultOfReserveLeave aggrResult = new AggrResultOfReserveLeave();
 

@@ -9,7 +9,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.comfirmdata.AnnualHolidayPlanManRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.comfirmdata.AnnualHolidayPlanMana;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDays;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.service.Period;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtAnnualPlanMana;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 

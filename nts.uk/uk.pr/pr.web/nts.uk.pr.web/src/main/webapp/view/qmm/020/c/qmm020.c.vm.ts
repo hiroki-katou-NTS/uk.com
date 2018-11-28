@@ -21,6 +21,7 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
         enableRegisterButton:KnockoutObservable<boolean> = ko.observable(true);
         isModeAddHistory: KnockoutObservable<boolean> = ko.observable();
         newHistoryId: KnockoutObservable<string> = ko.observable();
+
         constructor() {
             block.invisible();
             let self = this;
@@ -41,7 +42,25 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
                     });
                     self.listStateCorrelationHis(listStateCorrelationHis);
                     firstHistory = _.head(self.listStateCorrelationHis());
-                    self.currentSelectedHis(firstHistory.hisId);
+                    if(firstHistory.hisId === self.currentSelectedHis()){
+                        let rs = _.find(self.listStateCorrelationHis(),{hisId: self.currentSelectedHis()});
+                        let startYearMonth = rs ? rs.startYearMonth : 999912;
+                        service.getStateLinkSettingMasterByHisId(firstHistory.hisId,startYearMonth).done((data)=>{
+                            if(data.length > 0){
+                                self.items(self.convertToGridItem(data));
+                                self.loadGrid();
+                            }else{
+                                self.loadGrid();
+                            }
+                        }).fail((err) =>{
+                            if(err) dialog.alertError(err);
+                        }).always(()=>{
+                            block.clear();
+                        });
+                    }else{
+                        self.currentSelectedHis(firstHistory.hisId);
+                    }
+
                 }else{
                     self.listStateCorrelationHis([]);
                     self.items([]);
@@ -49,6 +68,7 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
                     self.mode(model.MODE.NO_REGIS);
                 }
                 dfd.resolve();
+
             }).fail((err) =>{
                 dfd.reject();
                 if(err) dialog.alertError(err);
@@ -116,40 +136,48 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
             }else if(self.mode() === model.MODE.UPDATE){
                 historyID = self.currentSelectedHis();
             }
-            let listStateLinkSettingMaster: Array<IStateLinkSettingMaster> = [];
-            self.convertToCommand(historyID,self.items(),listStateLinkSettingMaster);
-            let data = {
-                listStateLinkSettingMasterCommand: listStateLinkSettingMaster,
-                stateCorrelationHisEmployeeCommand:{
-                    cid: '',
-                    hisId: historyID,
-                    startYearMonth: self.startYearMonth(),
-                    endYearMonth: 999912
-                },
-                mode: self.mode(),
-            }
+            service.getStateCorrelationHisEmployeeById().done((result)=>{
+                let listStateCorrelationHis = self.convertToList(result);
+                let rs = _.find(listStateCorrelationHis,{hisId: self.currentSelectedHis()});
+                let listStateLinkSettingMaster: Array<IStateLinkSettingMaster> = [];
+                self.convertToCommand(historyID,self.items(),listStateLinkSettingMaster);
+                let data = {
+                    listStateLinkSettingMasterCommand: listStateLinkSettingMaster,
+                    stateCorrelationHisEmployeeCommand:{
+                        cid: '',
+                        hisId: historyID,
+                        startYearMonth : self.mode() === model.MODE.NEW ? self.startYearMonth() :  rs.startYearMonth,
+                        endYearMonth:  self.mode() === model.MODE.NEW ? 999912 : rs.endYearMonth ,
+                    },
+                    mode: self.mode(),
+                }
+                service.registerStateCorrelationHisEmployee(data).done(()=>{
+                    dialog.info({ messageId: "Msg_15" }).then(() => {
+                        service.getStateCorrelationHisEmployeeById().done((data)=>{
+                            self.listStateCorrelationHis(self.convertToList(data));
+                            if(self.mode() === model.MODE.NEW){
+                                self.currentSelectedHis(historyID);
+                            }else{
+                                self.currentSelectedHis(self.currentSelectedHis());
+                            }
+                        }).fail((err)=>{
+                            if(err)
+                                dialog.alertError(err);
+                        }).always(()=>{
+                            block.clear();
+                        });
 
-            service.registerStateCorrelationHisEmployee(data).done(()=>{
-                dialog.info({ messageId: "Msg_15" }).then(() => {
-                    service.getStateCorrelationHisEmployeeById().done((data)=>{
-                        self.listStateCorrelationHis(self.convertToList(data));
-                        if(self.mode() === model.MODE.NEW){
-                            self.currentSelectedHis(historyID);
-                        }else{
-                            self.currentSelectedHis(self.currentSelectedHis());
-                        }
-                    }).fail((err)=>{
-                        if(err)
-                            dialog.alertError(err);
-                    }).always(()=>{
-                        block.clear();
+                        self.mode(model.MODE.UPDATE);
+                        self.newHistoryId(null);
+                        self.enableEditHisButton(true);
+                        self.enableAddHisButton(true);
                     });
-
-                    self.mode(model.MODE.UPDATE);
-                    self.newHistoryId(null);
-                    self.enableEditHisButton(true);
-                    self.enableAddHisButton(true);
+                }).fail((err)=>{
+                    if(err) dialog.alertError(err);
+                }).always(()=>{
+                    block.clear();
                 });
+
             }).fail((err)=>{
                 if(err) dialog.alertError(err);
             }).always(()=>{

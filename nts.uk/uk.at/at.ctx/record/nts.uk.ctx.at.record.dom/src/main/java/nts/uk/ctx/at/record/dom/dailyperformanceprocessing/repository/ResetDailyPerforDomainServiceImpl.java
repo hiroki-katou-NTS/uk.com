@@ -48,9 +48,7 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Exe
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
@@ -162,7 +160,7 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 			if (executionLog.isPresent()) {
 				if (executionLog.get().getDailyCreationSetInfo().isPresent()) {
 					if (executionLog.get().getDailyCreationSetInfo().get().getPartResetClassification().isPresent()) {
-						// 計算区分を日別実績に反映する(Reflect 計算区分 in 日別実績)
+						// 計算区分を再設定する
 						if (executionLog.get().getDailyCreationSetInfo().get().getPartResetClassification().get()
 								.getCalculationClassificationResetting() == true) {
 							
@@ -176,7 +174,7 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 									periodInMasterList);
 
 						}
-						// 所属情報を反映する(Reflect info 所属情報)
+						// 所属情報を再設定する
 						if (executionLog.get().getDailyCreationSetInfo().get().getPartResetClassification().get()
 								.getMasterReconfiguration() == true) {
 							

@@ -217,6 +217,8 @@ public interface DailyPerformanceScreenRepo {
 	
 	Map<String, List<AffComHistItemAtScreen>>getAffCompanyHistoryOfEmployee(String cid, List<String> employeeIds);
 	
+	List<String>getAffCompanyHistorySidDate(String cid, List<String> employeeIds, DateRange range);
+	
 	String findWorkConditionLastest(List<String> hists, String employeeId);
 	
 	List<DateRange> getWorkConditionFlexDatePeriod(String employeeId, DatePeriod date); 

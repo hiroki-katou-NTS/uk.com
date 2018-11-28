@@ -69,7 +69,7 @@ module nts.uk.pr.view.qmm020.k.viewmodel {
             self.startDateMaster(self.params().baseDate);
             self.endYearMonthPeriod(self.params().endYearMonth);
             self.startYearMonthBefore(self.params().startYearMonthBefore);
-            self.isFirst(self.params().isFirst);
+            self.isFirst(self.params().isFirst && self.params().canDelete);
             self.startYearMonthFirst(self.params().startYearMonthFirst);
         }
         cancel(){

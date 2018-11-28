@@ -24,9 +24,9 @@ import javax.persistence.criteria.Root;
 import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
@@ -92,58 +92,38 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	@Override
 	@SneakyThrows
 	public List<OptionalItem> findAll(String companyId) {
-		
-		List<KrcstOptionalItem> items;
 		try (val stmt = this.connection().prepareStatement(
-					"select * from KRCST_OPTIONAL_ITEM"
-					+ " where CID = ? ORDER BY OPTIONAL_ITEM_NO ASC")) {
+					"select * from KRCST_OPTIONAL_ITEM KOI LEFT JOIN KRCST_CALC_RESULT_RANGE KCRR "
+					+ "on KOI.CID = KCRR.CID and KOI.OPTIONAL_ITEM_NO = KCRR.OPTIONAL_ITEM_NO "
+					+ "where KOI.CID = ? ORDER BY KOI.OPTIONAL_ITEM_NO ASC")) {
 			stmt.setString(1, companyId);
 			
-			items = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-				KrcstOptionalItem e = new KrcstOptionalItem();
-				e.setKrcstOptionalItemPK(new KrcstOptionalItemPK(
+			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+				KrcstOptionalItem item = new KrcstOptionalItem();
+				item.setKrcstOptionalItemPK(new KrcstOptionalItemPK(
 						companyId, rec.getInt("OPTIONAL_ITEM_NO")));
-				e.setOptionalItemName(rec.getString("OPTIONAL_ITEM_NAME"));
-				e.setOptionalItemAtr(rec.getInt("OPTIONAL_ITEM_ATR"));
-				e.setUsageAtr(rec.getInt("USAGE_ATR"));
-				e.setPerformanceAtr(rec.getInt("PERFORMANCE_ATR"));
-				e.setEmpConditionAtr(rec.getInt("EMP_CONDITION_ATR"));
-				e.setUnitOfOptionalItem(rec.getString("UNIT_OF_OPTIONAL_ITEM"));
-				return e;
+				item.setOptionalItemName(rec.getString("OPTIONAL_ITEM_NAME"));
+				item.setOptionalItemAtr(rec.getInt("OPTIONAL_ITEM_ATR"));
+				item.setUsageAtr(rec.getInt("USAGE_ATR"));
+				item.setPerformanceAtr(rec.getInt("PERFORMANCE_ATR"));
+				item.setEmpConditionAtr(rec.getInt("EMP_CONDITION_ATR"));
+				item.setUnitOfOptionalItem(rec.getString("UNIT_OF_OPTIONAL_ITEM"));
+				
+				KrcstCalcResultRange range = new KrcstCalcResultRange();
+				range.setKrcstCalcResultRangePK(new KrcstCalcResultRangePK(
+						companyId, rec.getInt("OPTIONAL_ITEM_NO")));
+				range.setUpperLimitAtr(rec.getInt("UPPER_LIMIT_ATR"));
+				range.setLowerLimitAtr(rec.getInt("LOWER_LIMIT_ATR"));
+				range.setUpperTimeRange(rec.getInt("UPPER_TIME_RANGE"));
+				range.setLowerTimeRange(rec.getInt("LOWER_TIME_RANGE"));
+				range.setUpperNumberRange(rec.getDouble("UPPER_NUMBER_RANGE"));
+				range.setLowerNumberRange(rec.getDouble("LOWER_NUMBER_RANGE"));
+				range.setUpperAmountRange(rec.getInt("UPPER_AMOUNT_RANGE"));
+				range.setLowerAmountRange(rec.getInt("LOWER_AMOUNT_RANGE"));
+				
+				return new OptionalItem(new JpaOptionalItemGetMemento(item, range));
 			});
 		}
-		
-		Map<Integer, KrcstCalcResultRange> rangesMap;
-		{
-			val stmt = this.connection().prepareCall(
-					"select * from KRCST_CALC_RESULT_RANGE"
-					+ " where CID = ?");
-			stmt.setString(1, companyId);
-
-			List<KrcstCalcResultRange> ranges = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-				KrcstCalcResultRange e = new KrcstCalcResultRange();
-				e.setKrcstCalcResultRangePK(new KrcstCalcResultRangePK(
-						companyId, rec.getInt("OPTIONAL_ITEM_NO")));
-				e.setUpperLimitAtr(rec.getInt("UPPER_LIMIT_ATR"));
-				e.setLowerLimitAtr(rec.getInt("LOWER_LIMIT_ATR"));
-				e.setUpperTimeRange(rec.getInt("UPPER_TIME_RANGE"));
-				e.setLowerTimeRange(rec.getInt("LOWER_TIME_RANGE"));
-				e.setUpperNumberRange(rec.getDouble("UPPER_NUMBER_RANGE"));
-				e.setLowerNumberRange(rec.getDouble("LOWER_NUMBER_RANGE"));
-				e.setUpperAmountRange(rec.getInt("UPPER_AMOUNT_RANGE"));
-				e.setLowerAmountRange(rec.getInt("LOWER_AMOUNT_RANGE"));
-				return e;
-			});
-			
-			rangesMap = ranges.stream().collect(Collectors.toMap(
-					e -> e.getKrcstCalcResultRangePK().getOptionalItemNo(),
-					e -> e));
-		}
-		
-		return items.stream().map(item -> {
-			KrcstCalcResultRange range = rangesMap.get(item.getKrcstOptionalItemPK().getOptionalItemNo());
-			return new OptionalItem(new JpaOptionalItemGetMemento(item, range));
-		}).collect(Collectors.toList());
 	}
 
 	@Override
@@ -194,53 +174,51 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	 * nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository#findByListNos(
 	 * java.lang.String, java.util.List)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
+	@SneakyThrows
 	public List<OptionalItem> findByListNos(String companyId, List<Integer> optionalitemNos) {
-
 		// Check empty
 		if (CollectionUtil.isEmpty(optionalitemNos)) {
 			return Collections.emptyList();
 		}
-		
-		// Get entity manager
-		EntityManager em = this.getEntityManager();
 
-		// Create builder
-		CriteriaBuilder builder = em.getCriteriaBuilder();
+		try (val stmt = this.connection().prepareStatement(
+				"select * from KRCST_OPTIONAL_ITEM KOI LEFT JOIN KRCST_CALC_RESULT_RANGE KCRR "
+						+ "on KOI.CID = KCRR.CID and KOI.OPTIONAL_ITEM_NO = KCRR.OPTIONAL_ITEM_NO "
+						+ "where KOI.CID = ? and KOI.OPTIONAL_ITEM_NO in ("
+						+ NtsStatement.In.createParamsString(optionalitemNos)
+						+ ") ORDER BY KOI.OPTIONAL_ITEM_NO ASC")) {
+			stmt.setString(1, companyId);
+			for (int i = 0; i < optionalitemNos.size(); i++) {
+				stmt.setInt(i + 2, optionalitemNos.get(i));
+			}
 
-		// Create query
-		CriteriaQuery<?> cq = builder.createQuery();
+			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+				KrcstOptionalItem item = new KrcstOptionalItem();
+				item.setKrcstOptionalItemPK(
+						new KrcstOptionalItemPK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
+				item.setOptionalItemName(rec.getString("OPTIONAL_ITEM_NAME"));
+				item.setOptionalItemAtr(rec.getInt("OPTIONAL_ITEM_ATR"));
+				item.setUsageAtr(rec.getInt("USAGE_ATR"));
+				item.setPerformanceAtr(rec.getInt("PERFORMANCE_ATR"));
+				item.setEmpConditionAtr(rec.getInt("EMP_CONDITION_ATR"));
+				item.setUnitOfOptionalItem(rec.getString("UNIT_OF_OPTIONAL_ITEM"));
 
-		// From table
-		Root<KrcstOptionalItem> root = cq.from(KrcstOptionalItem.class);
-		Join<KrcstOptionalItem, KrcstCalcResultRange> joinRoot = root
-				.join(KrcstOptionalItem_.krcstCalcResultRange, JoinType.LEFT);
+				KrcstCalcResultRange range = new KrcstCalcResultRange();
+				range.setKrcstCalcResultRangePK(
+						new KrcstCalcResultRangePK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
+				range.setUpperLimitAtr(rec.getInt("UPPER_LIMIT_ATR"));
+				range.setLowerLimitAtr(rec.getInt("LOWER_LIMIT_ATR"));
+				range.setUpperTimeRange(rec.getInt("UPPER_TIME_RANGE"));
+				range.setLowerTimeRange(rec.getInt("LOWER_TIME_RANGE"));
+				range.setUpperNumberRange(rec.getDouble("UPPER_NUMBER_RANGE"));
+				range.setLowerNumberRange(rec.getDouble("LOWER_NUMBER_RANGE"));
+				range.setUpperAmountRange(rec.getInt("UPPER_AMOUNT_RANGE"));
+				range.setLowerAmountRange(rec.getInt("LOWER_AMOUNT_RANGE"));
 
-		List<Object[]> results = new ArrayList<>();
-
-		// Split conditions
-		CollectionUtil.split(optionalitemNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			List<Predicate> predicateList = new ArrayList<Predicate>();
-
-			// Add where condition
-			predicateList.add(builder.equal(
-					root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
-					companyId));
-			predicateList.add(root.get(KrcstOptionalItem_.krcstOptionalItemPK)
-					.get(KrcstOptionalItemPK_.optionalItemNo).in(splitData));
-			cq.multiselect(root, joinRoot);
-			cq.where(predicateList.toArray(new Predicate[] {}));
-
-			// Get results
-			results.addAll((List<Object[]>) em.createQuery(cq).getResultList());
-		});
-
-		// Return
-		return results.stream()
-				.map(item -> new OptionalItem(new JpaOptionalItemGetMemento(
-						(KrcstOptionalItem) item[0], (KrcstCalcResultRange) item[1])))
-				.collect(Collectors.toList());
+				return new OptionalItem(new JpaOptionalItemGetMemento(item, range));
+			});
+		}
 	}
 
 	/* (non-Javadoc)

@@ -610,7 +610,10 @@ module ccg013.a.viewmodel {
                 let data = getShared("CCG013J_ToMain_TitleBar");
                 if (data) {
                     let menuBars: Array<MenuBar> = self.currentWebMenu().menuBars(),
-                        menuBar = _.forEach(menuBars, x => x.titleMenu()[0].titleMenuId() == activeid);
+                    
+                        menuBar = _.forEach(menuBars, function (x) { 
+                            return (menuBars[0].titleMenu().length > 0 && x.titleMenu()[0].titleMenuId() == id); 
+                        });
                     _.forEach(menuBar, function(menuBarItem: any) {
                         _.forEach(menuBarItem.titleMenu(), function(item: TitleMenu) {
                         if (item.titleMenuId() == id) {

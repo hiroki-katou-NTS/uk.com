@@ -18,7 +18,6 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
         columns: KnockoutObservableArray<string>;
         hisIdSelected: KnockoutObservable<string> = ko.observable();
         listStateCorrelationHis: KnockoutObservableArray<StateCorrelationHisInvidual> = ko.observableArray([]);
-        stateLinkIndividual: KnockoutObservable<StateCorrelationHisInvidual> = ko.observable();
         mode: KnockoutObservable<number> = ko.observable();
         transferMethod: KnockoutObservable<number> = ko.observable();
         selectedEmployeeObject: any;
@@ -38,7 +37,6 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
         //-- CCG001 ---->
         periodEndDate: KnockoutObservable<any> =  ko.observable();
         ccg001ComponentOption: GroupOption;
-        selectedEmployee: KnockoutObservableArray<EmployeeSearchDto> = ko.observableArray([]);
 
         constructor() {
             let self = this;
@@ -48,9 +46,9 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                 self.index(self.getIndex(data));
                 if (data != '') {
                     if(self.transferMethod() == model.TRANSFER_MOTHOD.TRANSFER && self.hisIdSelected() == HIS_ID_TEMP) {
-                       self.getStateLinkSettingMasterIndividual(self.listStateCorrelationHis()[FIRST + 1].hisId, self.listStateCorrelationHis()[FIRST + 1].startYearMonth);
+                       self.getStateLinkSettingMasterIndividual(self.selectedItem(), self.listStateCorrelationHis()[FIRST + 1].hisId, self.listStateCorrelationHis()[FIRST + 1].startYearMonth);
                     } else {
-                        self.getStateLinkSettingMasterIndividual(data, self.listStateCorrelationHis()[self.index()].startYearMonth);
+                        self.getStateLinkSettingMasterIndividual(self.selectedItem(), data, self.listStateCorrelationHis()[self.index()].startYearMonth);
                     }
                 }
             });
@@ -229,9 +227,9 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
             });
         }
 
-        getStateLinkSettingMasterIndividual(hisId: string, start: number){
+        getStateLinkSettingMasterIndividual(empId: string,hisId: string, start: number){
             let self = this;
-            service.getStateLinkSettingMasterIndividual(hisId, start).done((item: StateLinkSettingMasterIndividual) => {
+            service.getStateLinkSettingMasterIndividual(empId, hisId, start).done((item: StateLinkSettingMasterIndividual) => {
                 self.clearStateLinkSettingMasterIndividual();
                 if(item) {
                     self.salaryCode(item.salaryCode);
@@ -239,7 +237,8 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                     self.bonusCode(item.bonusCode);
                     self.bonusName(item.bonusName);
                 }
-                if(hisId == HIS_ID_TEMP) {
+                self.mode(model.MODE.UPDATE);
+                if(self.hisIdSelected() == HIS_ID_TEMP ) {
                     self.mode(model.MODE.NEW);
                 }
 
@@ -265,7 +264,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
             return 0;
         }
 
-        initScreen(hisId: string): JQueryPromise<any> {
+        initScreen(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
             block.invisible();
@@ -273,9 +272,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
             service.getEmployee().done(function(emp) {
                 service.getWpName().done(function(wp) {
                     if (wp == null || wp.workplaceId == null || wp.workplaceId == "") {
-                        dialog.alertError({ messageId: "Msg_504" }).then(() => {
                             nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
-                        });
                     } else {
                         self.selectedEmployeeObject = {
                             employeeId: emp.sid, employeeCode: emp.employeeCode, employeeName: emp.employeeName,

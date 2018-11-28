@@ -1,10 +1,9 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.bs.jobtitle.dto;
 
-import java.util.List;
-
+/*import java.util.List;
+import nts.uk.shr.com.history.DateHistoryItem;*/
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.shr.com.history.DateHistoryItem;
 
 @AllArgsConstructor
 @Getter

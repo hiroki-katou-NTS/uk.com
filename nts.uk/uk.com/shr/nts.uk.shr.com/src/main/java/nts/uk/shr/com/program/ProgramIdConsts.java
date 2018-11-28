@@ -985,19 +985,19 @@ public class ProgramIdConsts {
 
 	public static final String KDL020A = "KDL020A";
 
-	/* QMM005 */ 
+	/** QMM005 */
 	public static final String QMM005A = "QMM005A";
 	public static final String QMM005B = "QMM005B";
 	public static final String QMM005D = "QMM005D";
 	public static final String QMM005E = "QMM005E";
 	public static final String QMM005F = "QMM005F";
 
-	/*QMM007*/
+	/** QMM007 */
 	public static final String QMM007A = "QMM007A";
 	public static final String QMM007B = "QMM007B";
 	public static final String QMM007C = "QMM007C";
 
-	/*QMM001*/
+	/** QMM001 */
 	public static final String QMM001A = "QMM001A";
 	public static final String QMM001B = "QMM001B";
 	public static final String QMM001C = "QMM001C";
@@ -1015,24 +1015,95 @@ public class ProgramIdConsts {
 	public static final String QMM008I = "QMM008I";
 	public static final String QMM008J = "QMM008J";
 	
-	/* QMM010 */ 
+	/** QMM010 */
 	public static final String QMM010A = "QMM010A";
 	public static final String QMM010B = "QMM010B";
 
-	/* QMM018 */
+	/** QMM018 */
 	public static final String QMM018A = "QMM018A";
 	public static final String QMM018B = "QMM018B";
 
-	/* QMM023 */
+	/** QMM023 */
 	public static final String QMM023A = "QMM023A";
 
-	/* QMM039 */
+	/** QMM039 */
 	public static final String QMM039A = "QMM039A";
 	public static final String QMM039B = "QMM039B";
 	public static final String QMM039C = "QMM039C";
 	public static final String QMM039D = "QMM039D";
 
-	/* CMM015 */
+	/** CMM015 */
 	public static final String CMM015A = "CMM015A";
+	
+	/** QMM038 */
+	public static final String QMM038A = "QMM038A";
+
+	/** QMM002 */
+	public static final String QMM002A = "QMM002A";
+	public static final String QMM002B = "QMM002B";
+	public static final String QMM002C = "QMM002C";
+	public static final String QMM002D = "QMM002D";
+
+	/** QMM003 */
+	public static final String QMM003A = "QMM003A";
+	public static final String QMM003B = "QMM003B";
+	public static final String QMM003C = "QMM003C";
+	public static final String QMM003D = "QMM003D";
+	public static final String QMM003E = "QMM003E";
+
+	/** QMM006 */
+	public static final String QMM006A = "QMM006A";
+	public static final String QMM006B = "QMM006B";
+	public static final String QMM006C = "QMM006C";
+
+	/** QMM017 */
+	public static final String QMM017A = "QMM017A";
+	public static final String QMM017E = "QMM017E";
+	public static final String QMM017F = "QMM017F";
+	public static final String QMM017G = "QMM017G";
+	public static final String QMM017H = "QMM017H";
+	public static final String QMM017I = "QMM017I";
+	public static final String QMM017J = "QMM017J";
+	public static final String QMM017K = "QMM017K";
+	public static final String QMM017L = "QMM017L";
+	public static final String QMM017M = "QMM017M";
+
+	/** QMM019 */
+	public static final String QMM019A = "QMM019A";
+	public static final String QMM019B = "QMM019B";
+	public static final String QMM019C = "QMM019C";
+	public static final String QMM019D = "QMM019D";
+	public static final String QMM019E = "QMM019E";
+	public static final String QMM019F = "QMM019F";
+	public static final String QMM019G = "QMM019G";
+	public static final String QMM019H = "QMM019H";
+	public static final String QMM019I = "QMM019I";
+	public static final String QMM019J = "QMM019J";
+	public static final String QMM019K = "QMM019K";
+	public static final String QMM019L = "QMM019L";
+	public static final String QMM019M = "QMM019M";
+	public static final String QMM019N = "QMM019N";
+	public static final String QMM019O = "QMM019O";
+	public static final String QMM019P = "QMM019P";
+
+	/** QMM035 */
+	public static final String QMM035A = "QMM035A";
+
+	/** QMM036 */
+	public static final String QMM036A = "QMM036A";
+	public static final String QMM036B = "QMM036B";
+	public static final String QMM036C = "QMM036C";
+
+	/** QMM040 */
+	public static final String QMM040A = "QMM040A";
+
+	/** QMM041 */
+	public static final String QMM041A = "QMM041A";
+	public static final String QMM041B = "QMM041B";
+	public static final String QMM041C = "QMM041C";
+	public static final String QMM041D = "QMM041D";
+
+	/** QMM042 */
+	public static final String QMM042A = "QMM042A";
 
 }

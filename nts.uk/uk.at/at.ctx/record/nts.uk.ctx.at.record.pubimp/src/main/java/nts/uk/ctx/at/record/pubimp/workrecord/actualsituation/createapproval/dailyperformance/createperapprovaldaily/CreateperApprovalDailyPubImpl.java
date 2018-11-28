@@ -16,8 +16,8 @@ public class CreateperApprovalDailyPubImpl implements CreateperApprovalDailyPub 
 	private CreateperApprovalDailyService createperApprovalDailyService;
 	@Override
 	public boolean createperApprovalDaily(String companyId, String executionId, List<String> employeeIDs,
-			int processExecType, Integer createNewEmp, GeneralDate startDateClosure) {
-		return createperApprovalDailyService.createperApprovalDaily(companyId, executionId, employeeIDs, processExecType, createNewEmp, startDateClosure);
+			int processExecType, Integer createNewEmp, GeneralDate startDateClosure,GeneralDate endDateClosure) {
+		return createperApprovalDailyService.createperApprovalDaily(companyId, executionId, employeeIDs, processExecType, createNewEmp, startDateClosure,endDateClosure);
 	}
 
 }

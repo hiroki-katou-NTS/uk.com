@@ -119,6 +119,9 @@ module nts.uk.at.view.kmk004.a {
                     resultData.referenceFlexPred = saveCommand.referenceFlexPred;
                     self.worktimeVM.worktimeSetting.updateFullData(resultData);
                     
+                    // Used for all tabs
+                    nts.uk.characteristics.save('KMK004RefFlexPred', resultData.referenceFlexPred);
+
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail(error => {
                     nts.uk.ui.dialog.alertError(error);
@@ -140,6 +143,8 @@ module nts.uk.at.view.kmk004.a {
                     nts.uk.ui.block.invisible();
                     // Find CompanySetting
                     service.findCompanySetting(self.worktimeVM.worktimeSetting.normalSetting().year()).done(function(data: WorktimeSettingDto) {
+                        // Used for all tabs
+                        nts.uk.characteristics.save('KMK004RefFlexPred', data.referenceFlexPred);
                         // Clear Errors
                         self.clearError();
                         let resultData: WorktimeSettingDto = data;

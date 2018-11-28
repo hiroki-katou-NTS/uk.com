@@ -14,6 +14,7 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         currentSelectedHis: KnockoutObservable<any> = ko.observable();
         date: KnockoutObservable<string> = ko.observable();
+        textBaseDate: KnockoutObservable<string> = ko.observable();
         index: number;
         currentSelectedDep:  any;
         columns: any;
@@ -21,6 +22,7 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
         list: any;
         startYearMonth: KnockoutObservable<string> = ko.observable();
         mode: KnockoutObservable<number> = ko.observable(0);
+
         shared: KnockoutObservable<any> = ko.observable();
         setShared: KnockoutObservable<any> = ko.observable();
         getShared: KnockoutObservable<any> = ko.observable();

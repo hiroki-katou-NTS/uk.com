@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.portal.app.find.standardmenu;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -107,5 +108,14 @@ public class StandardMenuFinder {
 			return null;
 		}
 		return programId + screenId + " " + standardMenuLst.get(0).getDisplayName().v();
+	}
+	//get pg-name by programId, screenId, queryString
+	public String getPgNameByQry(String programId, String screenId, String queryString) {
+		String companyId = AppContexts.user().companyId();
+		Optional<StandardMenu> standardMenu = standardMenuRepository.getPgName(companyId, programId, screenId, queryString);
+		if(!standardMenu.isPresent()){
+			return null;
+		}
+		return programId + screenId + " " + standardMenu.get().getDisplayName().v();
 	}
 }

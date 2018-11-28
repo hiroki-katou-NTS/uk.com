@@ -135,15 +135,14 @@ public class KTG027QueryProcessor {
 		if (listClosureEmployment == null || listClosureEmployment.isEmpty()) {
 			throw new BusinessException("Msg_1136");
 		}
-		
-		List<String> listEmploymentCD = listClosureEmployment.stream().map(c -> c.getEmploymentCD()).collect(Collectors.toList());
-		// (Lấy target) Lấy request list 335
-		
 		List<AgreementTimeList36> data = new ArrayList<>();
-		// for (DatePeriod datePeriod : listDatePeriod) {
 		
+		// (Lấy target) Lấy request list 335
+		List<String> listEmploymentCD = listClosureEmployment.stream().map(c -> c.getEmploymentCD()).collect(Collectors.toList());
+		//Dòng code bị comment là code gốc của RQ 335
 		//List<String> listEmpID = empEmployeeAdapter.getListEmpByWkpAndEmpt(listWorkPlaceID, listEmploymentCD, datePeriod.get());
 		List<String> listEmpID = getListEmpByWkpAndEmpt(listWorkPlaceID, listEmploymentCD, datePeriod.get());
+		
 		if (listEmpID == null || listEmpID.isEmpty() ) {
 			throw new BusinessException("Msg_1137");
 		}
