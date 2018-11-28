@@ -1,6 +1,5 @@
 package nts.uk.screen.at.app.dailyperformance.correction.flex.change;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -97,17 +96,17 @@ public class FlexInfoDisplayChange {
 //			Optional<WorkingConditionItem> wCItem = workConditions.stream().filter(x -> x.getHistoryId().equals(hist))
 //					.findFirst();
 		calcFlex.createWCItem(workConditions);
-		String condition = checkBeforeCalcFlex.getConditionCalcFlex(companyId, calcFlex, closureEmployment, closingPeriod);
-		dataMonth.createRedConditionMessage(condition);
+		ConditionCalcResult conditionResult = checkBeforeCalcFlex.getConditionCalcFlex(companyId, calcFlex, closureEmployment, closingPeriod);
+		dataMonth.createRedConditionMessage(conditionResult.getValueResult());
 		dataMonth.createNotForward("");
 
 		// TODO フレックス不足の相殺が実施できるかチェックする
 		CheckShortage checkShortage = checkShortageFlex.checkShortageFlex(employeeId, baseDate);
 		boolean checkFlex = checkShortage.isCheckShortage() && employeeId.equals(AppContexts.user().employeeId());
 		//checkShortage.createRetiredFlag(checkShortage.isRetiredFlag());
-		if (condition.equals("0:00") && !checkFlex) {
-			dataMonth.createNotForward(TextResource.localize("KDW003_114"));
-		}
+		//if (condition.equals("0:00") && !checkFlex) {
+		dataMonth.createNotForward(messageE22(conditionResult.getMessage()));
+		//}
 		return dataMonth.createCanFlex(checkFlex).createShowFlex(showFlex()).createCalcFlex(calcFlex);
 	}
 
@@ -144,6 +143,19 @@ public class FlexInfoDisplayChange {
 			break;
 		default:
 			break;
+		}
+	}
+	
+	private String messageE22(MessageFlex messageFlex) {
+		switch (messageFlex.value) {
+		case 0:
+			return "";
+		case 1:
+			return TextResource.localize("KDW003_114");
+		case 2:
+			return TextResource.localize("KDW003_127");
+		default:
+			return "";
 		}
 	}
 }
