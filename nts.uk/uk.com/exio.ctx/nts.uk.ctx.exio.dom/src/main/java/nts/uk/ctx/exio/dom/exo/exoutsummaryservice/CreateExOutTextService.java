@@ -1379,11 +1379,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 				}
 			}
 		}
-
 		if (setting.getSpaceEditting() == EditSpace.DELETE_SPACE_AFTER) {
-			targetValue.replaceAll("\\s+$", "");
+			targetValue =  targetValue.replaceAll("\\s+$", "");
 		} else if (setting.getSpaceEditting() == EditSpace.DELETE_SPACE_BEFORE) {
-			targetValue.replaceAll("^\\s+", "");
+			targetValue = targetValue.replaceAll("^\\s+", "");
 		}
 
 		if ((setting.getCdEditting() == NotUseAtr.USE)
