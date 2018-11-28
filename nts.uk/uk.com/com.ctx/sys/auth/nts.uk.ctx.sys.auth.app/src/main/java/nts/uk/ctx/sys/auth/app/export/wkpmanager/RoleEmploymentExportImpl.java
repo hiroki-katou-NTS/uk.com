@@ -91,12 +91,8 @@ public class RoleEmploymentExportImpl implements MasterListData {
 
     @Override
     public List<MasterData> getMasterDatas(MasterListExportQuery query) {
-        String languageId = query.getLanguageId();
         String companyId = AppContexts.user().companyId();
-        String workplaceId = query.getData().toString();
-
         List<MasterData> datas = new ArrayList<>();
-        List<RoleEmploymentExportData> employmentExportDataList = new ArrayList<RoleEmploymentExportData>();
         List<Role> mRoles = mRoleRepository.findByType(companyId,ROLE_TYPE_CAS005);
         List<EmploymentRolePubDto> mEmploymentRolePubDtos = employmentAdapter.getAllByCompanyId(companyId);
         List<WebMenuExport> menuExports = menuRepository.findByCompanyId(companyId);

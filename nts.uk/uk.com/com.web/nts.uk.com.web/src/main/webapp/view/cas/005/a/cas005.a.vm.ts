@@ -326,10 +326,8 @@ module nts.uk.com.view.cas005.a {
              */
             exportExcel(){
                 service.exportExcel().done(function(data) {
-                    self.listWorkPlaceFunction(data);
-                    dfd.resolve(data);
+
                 }).fail(function(res: any) {
-                    dfd.reject();
                     nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
                 }).always(()=>{
                     block.clear();

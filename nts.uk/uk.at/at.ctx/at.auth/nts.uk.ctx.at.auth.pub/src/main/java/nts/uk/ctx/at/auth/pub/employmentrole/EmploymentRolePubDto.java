@@ -1,8 +1,12 @@
 package nts.uk.ctx.at.auth.pub.employmentrole;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Value;
 
+@Data
 @Value
+@AllArgsConstructor
 public class EmploymentRolePubDto {
 
 	/**
