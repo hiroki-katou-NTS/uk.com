@@ -1,7 +1,5 @@
 package nts.uk.shr.com.primitive;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 import lombok.val;

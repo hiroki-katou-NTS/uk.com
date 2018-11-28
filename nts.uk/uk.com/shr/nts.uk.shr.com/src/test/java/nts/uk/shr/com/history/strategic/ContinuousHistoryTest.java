@@ -1,8 +1,8 @@
 package nts.uk.shr.com.history.strategic;
 
-import static mockit.Deencapsulation.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static nts.arc.time.GeneralDate.ymd;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +15,6 @@ import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
-
-import static nts.arc.time.GeneralDate.*;
 
 public class ContinuousHistoryTest {
 

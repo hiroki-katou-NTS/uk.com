@@ -4,10 +4,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.management.RuntimeErrorException;
 
 import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.adapter.dailyperformance.DailyPerformanceAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;

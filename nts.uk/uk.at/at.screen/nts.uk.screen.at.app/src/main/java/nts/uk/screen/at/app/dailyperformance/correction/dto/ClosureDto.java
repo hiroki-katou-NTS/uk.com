@@ -5,7 +5,6 @@ package nts.uk.screen.at.app.dailyperformance.correction.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
