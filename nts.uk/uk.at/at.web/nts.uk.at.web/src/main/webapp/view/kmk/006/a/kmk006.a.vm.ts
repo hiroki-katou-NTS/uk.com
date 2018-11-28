@@ -34,7 +34,7 @@ module nts.uk.at.view.kmk006.a {
             itemWkpAutoCalModel: WkpAutoCalSettingModel;
             itemJobAutoCalModel: JobAutoCalSettingModel;
             itemWkpJobAutoCalModel: WkpJobAutoCalSettingModel;
-
+            langId: KnockoutObservable<string> = ko.observable('ja');
             // define value Enum
             valueEnumNorEarLi: KnockoutObservable<number>;
             valueEnumNorEarAtr: KnockoutObservable<number>;
@@ -1190,6 +1190,11 @@ module nts.uk.at.view.kmk006.a {
                 nts.uk.ui.windows.sub.modal("/view/kmk/006/e/index.xhtml").onClosed(function() {
                     self.loadUseUnitAutoCalSettingModel().done(function(){});
                 });
+            }
+
+            private exportExcel(){
+                var self = this;
+                service.exportExcel(self.langId());
             }
 
             private clearAllError() {
