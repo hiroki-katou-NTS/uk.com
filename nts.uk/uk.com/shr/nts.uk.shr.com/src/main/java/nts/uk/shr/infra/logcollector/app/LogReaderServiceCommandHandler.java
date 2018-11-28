@@ -42,7 +42,7 @@ public class LogReaderServiceCommandHandler extends AsyncCommandHandler<LogReadR
 
 	private static final String DATETIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
 	private static final String DEFAULT_FILE_NAME = "SERVER_LOG_";
-	private static final String DEFAULT_ZIP_FILE_NAME = "SERVER_LOG";
+	private static final String DEFAULT_ZIP_FILE_NAME = "SERVER_LOG.ZIP";
 	private static final String DEFAULT_FILE_TYPE = "text/plain";
 	private static final String DEFAULT_ZIP_FILE_TYPE = "application/zip";
 	public static final String DEFAULT_ENCODE = "Shift_JIS";
@@ -96,7 +96,7 @@ public class LogReaderServiceCommandHandler extends AsyncCommandHandler<LogReadR
 			return trace;
 		}).forEach(s -> {
 			ApplicationTemporaryFile auditFile = tempFileFactory.createTempFile();
-			WorkingFile workingFile = new WorkingFile(DEFAULT_FILE_NAME + s.getNode(), auditFile, DEFAULT_FILE_TYPE);
+			WorkingFile workingFile = new WorkingFile(DEFAULT_FILE_NAME + s.getNode() + ".TXT", auditFile, DEFAULT_FILE_TYPE);
 			try (OutputStream os = auditFile.createOutputStream()) {
 				try (BufferedWriter bw = new BufferedWriter(
 						new OutputStreamWriter(os, Charset.forName(DEFAULT_ENCODE)))) {
