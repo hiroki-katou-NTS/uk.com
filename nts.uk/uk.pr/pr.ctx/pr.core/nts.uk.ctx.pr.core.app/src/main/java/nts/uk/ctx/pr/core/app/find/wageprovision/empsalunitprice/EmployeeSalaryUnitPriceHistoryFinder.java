@@ -24,8 +24,8 @@ public class EmployeeSalaryUnitPriceHistoryFinder {
     @Inject
     private SalaryPerUnitPriceRepository salaryPerUnitPriceRepository;
 
-    public EmployeeSalaryUnitPriceDto getEmployeeSalaryUnitPriceDto(String personalUnitPriceCode, List<String> employeeIds) {
-        return new EmployeeSalaryUnitPriceDto(this.employeeSalaryUnitPriceHistoryRepository.getEmployeeSalaryUnitPriceHistory(personalUnitPriceCode, employeeIds), this.employeeInfoAdapter.getByListSid(employeeIds));
+    public EmployeeSalaryUnitPriceDto getEmployeeSalaryUnitPriceDto(String personalUnitPriceCode, List<String> employeeIds, int yearMonthFilter) {
+        return new EmployeeSalaryUnitPriceDto(this.employeeSalaryUnitPriceHistoryRepository.getEmployeeSalaryUnitPriceHistory(personalUnitPriceCode, employeeIds, yearMonthFilter), this.employeeInfoAdapter.getByListSid(employeeIds));
     }
 
     public List<IndEmpSalUnitPriceHistoryDto> getAllIndividualEmpSalUnitPriceHistoryDto(IndEmpSalUnitPriceHistoryDto dto) {

@@ -37,7 +37,7 @@ public class EmployeeSalaryUnitPriceHistoryWebService extends WebService {
     @POST
     @Path("/getEmployeeSalaryUnitPriceHistory")
     public EmployeeSalaryUnitPriceDto getEmployeeSalaryUnitPriceHistory(EmployeeSalaryUnitPriceHistoryCommand command) {
-        return finder.getEmployeeSalaryUnitPriceDto(command.getPersonalUnitPriceCode(), command.getEmployeeIds());
+        return finder.getEmployeeSalaryUnitPriceDto(command.getPersonalUnitPriceCode(), command.getEmployeeIds(), command.getYearMonthFilter());
     }
 
     @POST

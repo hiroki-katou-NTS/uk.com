@@ -18,13 +18,13 @@ public class JpaEmployeeSalaryUnitPriceHistoryRepository extends JpaRepository i
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtEmpSalPriHis f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE f.empSalPriHisPk.personalUnitPriceCode =:personalUnitPriceCode AND f.empSalPriHisPk.employeeId IN :employeeId";
-    private static final String SELECT_BY_CODE_STRING = SELECT_ALL_QUERY_STRING + " WHERE f.empSalPriHisPk.personalUnitPriceCode =:personalUnitPriceCode AND f.empSalPriHisPk.employeeId =:employeeId ORDER BY f.startYearMonth desc";
-    private static final String SELECT_BY_EMPID_STRING = SELECT_ALL_QUERY_STRING + " WHERE f.empSalPriHisPk.personalUnitPriceCode =:personalUnitPriceCode AND f.empSalPriHisPk.employeeId =:employeeId AND f.startYearMonth <=:baseYearMonth AND f.endYearMonth >=:baseYearMonth ORDER BY f.empSalPriHisPk.personalUnitPriceCode";
-    private static final String UPDATE_AMOUNT_BY_HISTORY_ID = "UPDATE QpbmtEmpSalPriHis f SET f.indvidualUnitPrice =:indvidualUnitPrice WHERE f.empSalPriHisPk.historyId =:historyId";
-    private static final String UPDATE_HISTORY_BY_HISTORY_ID = "UPDATE QpbmtEmpSalPriHis f SET f.startYearMonth =:startYearMonth, f.endYearMonth =:endYearMonth WHERE f.empSalPriHisPk.historyId =:historyId";
-    private static final String DELETE_HISTORY_BY_HISTORY_ID = "DELETE FROM QpbmtEmpSalPriHis f WHERE f.empSalPriHisPk.historyId =:historyId";
-    private static final String UPDATE_OLD_HISTORY_BY_HISTORY_ID = "UPDATE QpbmtEmpSalPriHis f SET f.endYearMonth =:endYearMonth WHERE f.empSalPriHisPk.historyId =:historyId";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE f.empSalPriHisPk.personalUnitPriceCode = :personalUnitPriceCode AND f.empSalPriHisPk.employeeId IN :employeeId AND f.startYearMonth <= :yearMonthFilter AND f.endYearMonth >= :yearMonthFilter";
+    private static final String SELECT_BY_CODE_STRING = SELECT_ALL_QUERY_STRING + " WHERE f.empSalPriHisPk.personalUnitPriceCode = :personalUnitPriceCode AND f.empSalPriHisPk.employeeId = :employeeId ORDER BY f.startYearMonth desc";
+    private static final String SELECT_BY_EMPID_STRING = SELECT_ALL_QUERY_STRING + " WHERE f.empSalPriHisPk.personalUnitPriceCode = :personalUnitPriceCode AND f.empSalPriHisPk.employeeId = :employeeId AND f.startYearMonth <= :baseYearMonth AND f.endYearMonth >= :baseYearMonth ORDER BY f.empSalPriHisPk.personalUnitPriceCode";
+    private static final String UPDATE_AMOUNT_BY_HISTORY_ID = "UPDATE QpbmtEmpSalPriHis f SET f.indvidualUnitPrice = :indvidualUnitPrice WHERE f.empSalPriHisPk.historyId = :historyId";
+    private static final String UPDATE_HISTORY_BY_HISTORY_ID = "UPDATE QpbmtEmpSalPriHis f SET f.startYearMonth = :startYearMonth, f.endYearMonth = :endYearMonth WHERE f.empSalPriHisPk.historyId = :historyId";
+    private static final String DELETE_HISTORY_BY_HISTORY_ID = "DELETE FROM QpbmtEmpSalPriHis f WHERE f.empSalPriHisPk.historyId = :historyId";
+    private static final String UPDATE_OLD_HISTORY_BY_HISTORY_ID = "UPDATE QpbmtEmpSalPriHis f SET f.endYearMonth = :endYearMonth WHERE f.empSalPriHisPk.historyId = :historyId";
 
     @Override
     public void updateAllHistory(String historyId, BigDecimal UnitPrice) {
@@ -35,14 +35,14 @@ public class JpaEmployeeSalaryUnitPriceHistoryRepository extends JpaRepository i
     }
 
     @Override
-    public List<WorkIndividualPrice> getEmployeeSalaryUnitPriceHistory(String personalUnitPriceCode, List<String> employeeId) {
+    public List<WorkIndividualPrice> getEmployeeSalaryUnitPriceHistory(String personalUnitPriceCode, List<String> employeeId, int yearMonthFilter) {
         if(employeeId==null || !(employeeId.size()>0))
             return Collections.emptyList();
         List<QpbmtEmpSalPriHis> qpbmtEmpSalPriHis = this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtEmpSalPriHis.class)
                 .setParameter("personalUnitPriceCode", personalUnitPriceCode)
-                .setParameter("employeeId", employeeId).getList();
+                .setParameter("employeeId", employeeId)
+                .setParameter("yearMonthFilter", yearMonthFilter).getList();
         if(qpbmtEmpSalPriHis.size()>0){
-
             return qpbmtEmpSalPriHis.stream().map(v-> new WorkIndividualPrice(v.empSalPriHisPk.employeeId,v.empSalPriHisPk.historyId,"","",v.startYearMonth,v.endYearMonth,v.indvidualUnitPrice)).collect(Collectors.toList());
         }
         return Collections.emptyList();

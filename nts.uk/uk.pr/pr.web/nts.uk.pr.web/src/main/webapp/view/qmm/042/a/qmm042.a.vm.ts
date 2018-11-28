@@ -75,15 +75,16 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
             if (!self.listEmployee) return;
             let command = {
                 personalUnitPriceCode: self.salaryPerUnitPriceNamesSelectedCode(),
-                employeeIds: self.listEmployee.map(v => v.employeeId)
-            }
+                employeeIds: self.listEmployee.map(v => v.employeeId),
+                yearMonthFilter: self.yearMonthFilter()
+            };
             service.employeeSalaryUnitPriceHistory(command).done(function (dataNameAndAmount) {
                 self.employeeInfoImports = dataNameAndAmount.employeeInfoImports;
                 let personalAmountData: Array<any> = new Array();
                 personalAmountData = dataNameAndAmount.workIndividualPrices.map(x => new WorkIndividualPrice(x));
                 personalAmountData = _.sortBy(personalAmountData, function (o) {
                     return o.startYaerMonth;
-                })
+                });
                 console.log(dataNameAndAmount);
                 self.workIndividualPrices(personalAmountData);
                 for (let i = 0; i < self.workIndividualPrices().length; i++) {
@@ -97,7 +98,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 }
                 personalAmountData= personalAmountData.sort(function(a, b){
                     return a.employeeCode() > b.employeeCode();
-                })
+                });
                 self.workIndividualPricesDisplay(personalAmountData);
             })
             if (self.workIndividualPricesDisplay().length > 10) {
@@ -128,8 +129,8 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             service.employeeReferenceDate().done(function (data) {
-                self.yearMonthFilter(data.processDate);
-                self.reloadCcg001(data.paymentDate);
+                self.yearMonthFilter(data.salCurrProcessDate);
+                self.reloadCcg001(data.empExtraRefeDate);
             });
 
             service.salaryPerUnitPriceName().done(function (individualPriceName) {

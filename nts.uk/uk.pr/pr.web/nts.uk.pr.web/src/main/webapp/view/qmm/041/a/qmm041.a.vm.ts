@@ -264,7 +264,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                             historyId: data[i].historyId,
                             startYearMonth: data[i].startYearMonth,
                             endYearMonth: data[i].endYearMonth,
-                            period: format(getText("QMM039_18"), self.formatYM(data[i].startYearMonth), self.formatYM(data[i].endYearMonth)),
+                            period: format(getText("QMM041_13"), self.formatYM(data[i].startYearMonth), self.formatYM(data[i].endYearMonth)),
                             amountOfMoney: data[i].amountOfMoney
                         }));
                     }
@@ -304,7 +304,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
             })
         }
 
-        public toScreenB(): void {
+        public displayScreenB(): void {
             let self = this;
             let params = {};
             if (self.mode() === model.MODE.NORMAL) {
@@ -352,20 +352,21 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                     } else {
                         self.currencyValue(self.historyList()[0].amountOfMoney);
                     }
+                    
                     let history: any = new HistoryModel({
                         personalUnitPriceCode: self.selectedCode(),
                         employeeId: self.selectedItem(),
                         historyId: params.historyId,
                         startYearMonth: params.startYearMonth,
                         endYearMonth: 999912,
-                        period: format(getText("QMM039_18"), nts.uk.time.parseYearMonth(params.startYearMonth).format(), "9999/12"),
+                        period: format(getText("QMM041_13"), nts.uk.time.parseYearMonth(params.startYearMonth).format(), "9999/12"),
                         amountOfMoney: self.currencyValue()
                     });
                     let array = self.historyList();
                     array.unshift(history);
                     if (array.length > 1) {
                         array[1].endYearMonth = (params.startYearMonth - 1) % 100 == 0 ? params.startYearMonth - 89 : params.startYearMonth - 1;
-                        array[1].period = format(getText("QMM039_18"), self.formatYM(array[1].startYearMonth), self.formatYM(array[1].endYearMonth));
+                        array[1].period = format(getText("QMM041_13"), self.formatYM(array[1].startYearMonth), self.formatYM(array[1].endYearMonth));
                     }
                     self.historyList(array);
                     self.selectedHistoryCode(history.historyId);
@@ -374,7 +375,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
             });
         }
 
-        public toScreenC(): void {
+        public displayScreenC(): void {
             let self = this;
             let index = self.findHistoryIndex(self.selectedHistoryCode());
             let params = {
@@ -394,18 +395,24 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                     if (params.modifyMethod == model.MODIFY_METHOD.UPDATE) {
                         let array = self.historyList();
                         array[index].startYearMonth = params.startYearMonth;
-                        array[index].period = format(getText("QMM039_18"), self.formatYM(array[index].startYearMonth), self.formatYM(array[index].endYearMonth));
-                        array[index + 1].endYearMonth = params.lastEndYearMonth;
-                        array[index + 1].period = format(getText("QMM039_18"), self.formatYM(array[index + 1].startYearMonth), self.formatYM(array[index + 1].endYearMonth));
+                        array[index].period = format(getText("QMM041_13"), self.formatYM(array[index].startYearMonth), self.formatYM(array[index].endYearMonth));
+
+                        if(index < self.historyList().length - 1){
+                            array[index + 1].endYearMonth = params.lastEndYearMonth;
+                            array[index + 1].period = format(getText("QMM041_13"), self.formatYM(array[index + 1].startYearMonth), self.formatYM(array[index + 1].endYearMonth));
+                        }
+
                         self.historyList([]);
                         self.historyList(array);
                         self.selectedHistoryCode.valueHasMutated();
+                    } else {
+                        self.selectedCode.valueHasMutated();
                     }
                 }
             });
         }
 
-        public toScreenD(): void {
+        public displayScreenD(): void {
             let self = this;
             let employeeCode = null;
             let employeeName = null;

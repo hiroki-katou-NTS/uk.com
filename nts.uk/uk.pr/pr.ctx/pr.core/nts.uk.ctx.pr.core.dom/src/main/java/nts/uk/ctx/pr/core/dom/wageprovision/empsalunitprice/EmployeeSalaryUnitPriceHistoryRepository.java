@@ -6,12 +6,11 @@ import java.util.List;
 /**
 * 社員給与単価履歴
 */
-public interface EmployeeSalaryUnitPriceHistoryRepository
-{
+public interface EmployeeSalaryUnitPriceHistoryRepository {
 
     void updateAllHistory(String historyId, BigDecimal UnitPrice);
 
-    List<WorkIndividualPrice> getEmployeeSalaryUnitPriceHistory(String personalUnitPriceCode,List<String> employeeId);
+    List<WorkIndividualPrice> getEmployeeSalaryUnitPriceHistory(String personalUnitPriceCode, List<String> employeeId, int yearMonthFilter);
 
     void add(EmployeeSalaryUnitPriceHistory domain);
 

@@ -39,7 +39,7 @@
                 <!--A2_1 対象者-->
                 <div tabindex="2" id="emp-component"/>
                 <!--A2_2 単価の一覧を表示する-->
-                <button id="A2_2" class="small" tabindex="3" data-bind="click: toScreenD">
+                <button id="A2_2" class="small" tabindex="3" data-bind="click: displayScreenD">
                     #{i18n.getText('QMM041_7')}
                 </button>
             </div>
@@ -79,12 +79,12 @@
                              data-bind="ntsPanel:{width: '275px', direction: 'none'}">
                             <!--A4_2 履歴追加-->
                             <button id="A4_2" tabindex="7" class="pull-left"
-                                    data-bind="click: toScreenB, enable: isAddableHis">
+                                    data-bind="click: displayScreenB, enable: isAddableHis">
                                 #{i18n.getText('QMM041_10')}
                             </button>
                             <!--A4_3 履歴編集-->
                             <button id="A4_3" tabindex="8" class="pull-right"
-                                    data-bind="click: toScreenC, enable: isEditableHis">
+                                    data-bind="click: displayScreenC, enable: isEditableHis">
                                 #{i18n.getText('QMM041_11')}
                             </button>
                             <!--A4_4 履歴リスト-->

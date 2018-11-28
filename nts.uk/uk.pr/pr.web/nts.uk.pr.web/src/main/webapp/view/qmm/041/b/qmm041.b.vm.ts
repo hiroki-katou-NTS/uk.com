@@ -26,7 +26,7 @@ module nts.uk.pr.view.qmm041.b.viewmodel {
                     self.takeOverItem.push(new model.EnumModel(model.INHERITANCE.YES, getText('QMM041_23', self.formatYM(self.startYearMonth()))));
                     self.takeOverMethod(model.INHERITANCE.YES);
                 }
-                self.takeOverItem.push(new model.EnumModel(model.INHERITANCE.NO, getText('QMM041_23')));
+                self.takeOverItem.push(new model.EnumModel(model.INHERITANCE.NO, getText('QMM041_24')));
             }
             block.clear();
         }
