@@ -436,18 +436,24 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 	@SneakyThrows
 	public List<CalFormulasItemTableExportData> findAllCalFormulasTableItem(String companyId, String languageId) {
 		try (val stmt = this.connection().prepareStatement(
-				"SELECT oi.OPTIONAL_ITEM_NO, oi.OPTIONAL_ITEM_NAME, oi.EMP_CONDITION_ATR, oi.PERFORMANCE_ATR, "
-				+ "oif.FORMULA_ID, fd.DISPORDER, oif.SYMBOL, oif.FORMULA_ATR, oif.FORMULA_NAME, oif.CALC_ATR, "
-				+ "fr.NUMBER_ROUNDING, fr.TIME_ROUNDING, fr.AMOUNT_ROUNDING, fr.NUMBER_ROUNDING_UNIT, fr.TIME_ROUNDING_UNIT, fr.AMOUNT_ROUNDING_UNIT, " 
-				+"cis.MINUS_SEGMENT, cis.OPERATOR, fs.LEFT_FORMULA_ITEM_ID, fs.LEFT_SET_METHOD, fs.LEFT_INPUT_VAL, fs.RIGHT_FORMULA_ITEM_ID, fs.RIGHT_SET_METHOD, fs.RIGHT_INPUT_VAL "
-				+" FROM"
+				"SELECT "
+				+"oi.OPTIONAL_ITEM_NO, oi.OPTIONAL_ITEM_NAME, oif.SYMBOL, fd.DISPORDER "
+				+", fr.ROUNDING_ATR "
+				+", oi.PERFORMANCE_ATR "
+				+", oi.EMP_CONDITION_ATR, oi.PERFORMANCE_ATR, oif.FORMULA_ID, fd.DISPORDER "
+				+", oif.FORMULA_ATR, oif.FORMULA_NAME, oif.CALC_ATR "
+				+", fr.NUMBER_ROUNDING, fr.TIME_ROUNDING, fr.AMOUNT_ROUNDING, fr.NUMBER_ROUNDING_UNIT, fr.TIME_ROUNDING_UNIT, fr.AMOUNT_ROUNDING_UNIT "
+				+", cis.MINUS_SEGMENT, cis.OPERATOR "
+				+", fs.LEFT_FORMULA_ITEM_ID, fs.LEFT_SET_METHOD, fs.LEFT_INPUT_VAL, fs.RIGHT_FORMULA_ITEM_ID, fs.RIGHT_SET_METHOD, fs.RIGHT_INPUT_VAL "
+				+"FROM "
 				+"KRCST_OPTIONAL_ITEM oi "
-				+"LEFT JOIN KRCMT_OPT_ITEM_FORMULA oif ON oi.CID = oif.CID AND oi.OPTIONAL_ITEM_NO = oif.OPTIONAL_ITEM_NO "
-				+"LEFT JOIN KRCST_FORMULA_DISPORDER fd ON oif.OPTIONAL_ITEM_NO = fd.OPTIONAL_ITEM_NO AND oif.CID = fd.CID "
-				+"LEFT JOIN KRCMT_FORMULA_SETTING fs ON fd.OPTIONAL_ITEM_NO = fs.OPTIONAL_ITEM_NO and fd.FORMULA_ID = fs.FORMULA_ID AND fd.CID = fs.CID "
-				+"LEFT JOIN KRCMT_FORMULA_ROUNDING fr ON fs.FORMULA_ID = fr.FORMULA_ID and fs.OPTIONAL_ITEM_NO = fr.OPTIONAL_ITEM_NO "
-				+"LEFT JOIN KRCMT_CALC_ITEM_SELECTION cis ON fs.CID = cis.CID and (fr.OPTIONAL_ITEM_NO = cis.OPTIONAL_ITEM_NO OR fs.RIGHT_FORMULA_ITEM_ID = cis.FORMULA_ID) "
-				+"WHERE oi.CID = ? and oif.FORMULA_ID IS NOT NULL ")) {
+				+"INNER JOIN KRCMT_OPT_ITEM_FORMULA oif ON oi.CID = oif.CID AND oi.OPTIONAL_ITEM_NO = oif.OPTIONAL_ITEM_NO "
+				+"INNER JOIN KRCST_FORMULA_DISPORDER fd ON oif.OPTIONAL_ITEM_NO = fd.OPTIONAL_ITEM_NO AND oif.CID = fd.CID AND oif.FORMULA_ID = fd.FORMULA_ID " 
+				+"INNER JOIN KRCMT_FORMULA_ROUNDING fr ON fd.FORMULA_ID = fr.FORMULA_ID and fd.OPTIONAL_ITEM_NO = fr.OPTIONAL_ITEM_NO "
+				+"INNER JOIN KRCMT_CALC_ITEM_SELECTION cis ON fd.FORMULA_ID = cis.FORMULA_ID AND fd.OPTIONAL_ITEM_NO = cis.OPTIONAL_ITEM_NO "
+				+"LEFT JOIN KRCMT_FORMULA_SETTING fs ON (fr.FORMULA_ID = fs.LEFT_FORMULA_ITEM_ID  OR fr.FORMULA_ID = fs.RIGHT_FORMULA_ITEM_ID) "
+				+"WHERE oi.CID = ? "
+				)) {
 			stmt.setString(1, companyId);
 			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
 				CalFormulasItemTableExportData item = new CalFormulasItemTableExportData();
@@ -459,7 +465,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 
 	private CalFormulasItemTableExportData toReportDataTable(NtsResultRecord rec) {
 		CalFormulasItemTableExportData item = new CalFormulasItemTableExportData(
-
+				//
 		);
 		return null;
 	}
