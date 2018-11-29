@@ -130,7 +130,6 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 				"ON c.kshmtWorkTypePK.companyId = o.kshmtWorkTypeDispOrderPk.companyId AND c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode ");
 		stringBuilder.append("WHERE c.kshmtWorkTypePK.companyId = :companyId ");
 		stringBuilder.append("AND c.kshmtWorkTypePK.workTypeCode IN :lstPossible ");
-		stringBuilder.append("ORDER BY CASE WHEN o.dispOrder IS NULL THEN 1 ELSE 0 END, o.dispOrder ASC ");
 		SELECT_WORKTYPE_AND_ORDER = stringBuilder.toString();
 	}
 	
@@ -329,11 +328,14 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 								.setParameter("lstPossible", subList)
 								.getList());
 		});
-		resultList.sort((info1, info2) -> {
-			if (info1.getDispOrder() == null || info2.getDispOrder() == null) return -1; 
-			return info1.getDispOrder().compareTo(info2.getDispOrder());
-		});
-		return resultList;
+		List<WorkTypeInfor> lstOrder = resultList.stream().filter(c -> c.getDispOrder() != null).collect(Collectors.toList());
+		List<WorkTypeInfor> lstNotOrder = resultList.stream().filter(c -> c.getDispOrder() == null).collect(Collectors.toList());
+		Collections.sort(lstOrder, Comparator.comparing(WorkTypeInfor:: getDispOrder));
+		Collections.sort(lstNotOrder, Comparator.comparing(WorkTypeInfor:: getWorkTypeCode));
+		List<WorkTypeInfor> lstSort = new ArrayList<>();
+		lstSort.addAll(lstOrder);
+		lstSort.addAll(lstNotOrder);
+		return lstSort;
 	}
 	
 	@Override

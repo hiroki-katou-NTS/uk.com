@@ -72,10 +72,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Override
 	public SpecialLeaveInfor getSpecialLeaveInfor(String workTypeCode) {
 		SpecialLeaveInfor specialLeaveInfor = new SpecialLeaveInfor();
-		boolean relationFlg = false;
-		boolean mournerDisplayFlg = false;
-		boolean displayRelationReasonFlg = false;
-		int maxDayRelate = 0;
+//		boolean relationFlg = false;
+//		boolean mournerDisplayFlg = false;
+//		boolean displayRelationReasonFlg = false;
+//		int maxDayRelate = 0;
 		//指定した勤務種類に特別休暇に当てはまるかチェックする
 		
 		return specialLeaveInfor;

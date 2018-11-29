@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.predset;
 
 import lombok.Builder;
 import lombok.Getter;
-import nts.arc.error.BusinessException;
+//import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 

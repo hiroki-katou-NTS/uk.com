@@ -13,7 +13,6 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccount;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccountRepository;
-import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccount;
 
 /**
  * The Class OtherSysAccFinder.

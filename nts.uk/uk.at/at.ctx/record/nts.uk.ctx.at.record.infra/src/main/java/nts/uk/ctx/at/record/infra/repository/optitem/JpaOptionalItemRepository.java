@@ -30,6 +30,7 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.export.optitem.CalFormulasItemExportData;
+import nts.uk.ctx.at.record.dom.export.optitem.CalFormulasItemTableExportData;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
@@ -424,17 +425,44 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 
 	private CalFormulasItemExportData toReportData(NtsResultRecord rec) {
 		Map<String, String> empConditions = new HashMap<>();
-		empConditions.put(
-				rec.getString("EMP_CD"), 
-				rec.getString("EMP_APPL_ATR"));
-		CalFormulasItemExportData item = new CalFormulasItemExportData(
-				rec.getString("OPTIONAL_ITEM_NO"),
-				rec.getString("OPTIONAL_ITEM_NAME"), 
-				rec.getString("EMP_CONDITION_ATR"), 
-				empConditions);
+		empConditions.put(rec.getString("EMP_CD"), rec.getString("EMP_APPL_ATR"));
+		CalFormulasItemExportData item = new CalFormulasItemExportData(rec.getString("OPTIONAL_ITEM_NO"),
+				rec.getString("OPTIONAL_ITEM_NAME"), rec.getString("EMP_CONDITION_ATR"), empConditions);
 		return item;
 	}
 
+	// Export Data table
+	@Override
+	@SneakyThrows
+	public List<CalFormulasItemTableExportData> findAllCalFormulasTableItem(String companyId, String languageId) {
+		try (val stmt = this.connection().prepareStatement(
+				"SELECT oi.OPTIONAL_ITEM_NO, oi.OPTIONAL_ITEM_NAME, oi.EMP_CONDITION_ATR, oi.PERFORMANCE_ATR, "
+				+ "oif.FORMULA_ID, fd.DISPORDER, oif.SYMBOL, oif.FORMULA_ATR, oif.FORMULA_NAME, oif.CALC_ATR, "
+				+ "fr.NUMBER_ROUNDING, fr.TIME_ROUNDING, fr.AMOUNT_ROUNDING, fr.NUMBER_ROUNDING_UNIT, fr.TIME_ROUNDING_UNIT, fr.AMOUNT_ROUNDING_UNIT, " 
+				+"cis.MINUS_SEGMENT, cis.OPERATOR, fs.LEFT_FORMULA_ITEM_ID, fs.LEFT_SET_METHOD, fs.LEFT_INPUT_VAL, fs.RIGHT_FORMULA_ITEM_ID, fs.RIGHT_SET_METHOD, fs.RIGHT_INPUT_VAL "
+				+" FROM"
+				+"KRCST_OPTIONAL_ITEM oi "
+				+"LEFT JOIN KRCMT_OPT_ITEM_FORMULA oif ON oi.CID = oif.CID AND oi.OPTIONAL_ITEM_NO = oif.OPTIONAL_ITEM_NO "
+				+"LEFT JOIN KRCST_FORMULA_DISPORDER fd ON oif.OPTIONAL_ITEM_NO = fd.OPTIONAL_ITEM_NO AND oif.CID = fd.CID "
+				+"LEFT JOIN KRCMT_FORMULA_SETTING fs ON fd.OPTIONAL_ITEM_NO = fs.OPTIONAL_ITEM_NO and fd.FORMULA_ID = fs.FORMULA_ID AND fd.CID = fs.CID "
+				+"LEFT JOIN KRCMT_FORMULA_ROUNDING fr ON fs.FORMULA_ID = fr.FORMULA_ID and fs.OPTIONAL_ITEM_NO = fr.OPTIONAL_ITEM_NO "
+				+"LEFT JOIN KRCMT_CALC_ITEM_SELECTION cis ON fs.CID = cis.CID and (fr.OPTIONAL_ITEM_NO = cis.OPTIONAL_ITEM_NO OR fs.RIGHT_FORMULA_ITEM_ID = cis.FORMULA_ID) "
+				+"WHERE oi.CID = ? and oif.FORMULA_ID IS NOT NULL ")) {
+			stmt.setString(1, companyId);
+			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+				CalFormulasItemTableExportData item = new CalFormulasItemTableExportData();
+				return toReportDataTable(rec);
+			});
+		}
+
+	}
+
+	private CalFormulasItemTableExportData toReportDataTable(NtsResultRecord rec) {
+		CalFormulasItemTableExportData item = new CalFormulasItemTableExportData(
+
+		);
+		return null;
+	}
 	/*
 	 * private CalFormulasItemExportData toReportData(Object[] entity, String
 	 * langId) { // TODO Auto-generated method stub return new

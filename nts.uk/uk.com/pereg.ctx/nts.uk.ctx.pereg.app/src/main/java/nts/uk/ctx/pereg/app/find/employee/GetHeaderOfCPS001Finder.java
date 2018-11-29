@@ -87,13 +87,13 @@ public class GetHeaderOfCPS001Finder {
 			return new EmployeeInfo();
 
 		EmployeeInfo _emp = empInfo.get();
-		Optional<TempAbsenceHistory> tempHist = this.tempHistRepo.getByEmployeeId(cid, sid);
+		Optional<TempAbsenceHistory> tempHist = this.tempHistRepo.getBySidAndLeave(cid, sid);
 
 		if (tempHist.isPresent()) {
 			_emp.setNumberOfTempHist(tempHist.get().items().stream()
 					.filter(f -> f.start().localDate().compareTo(LocalDate.now()) < 0)
 					.map(m -> ChronoUnit.DAYS.between(m.start().localDate(),
-							m.end().localDate().compareTo(LocalDate.now()) < 0 ? m.end().localDate() : LocalDate.now()))
+							m.end().localDate().compareTo(LocalDate.now()) < 0 ? m.end().addDays(1).localDate(): GeneralDate.today().addDays(1).localDate()))
 					.mapToInt(m -> Math.abs(m.intValue())).sum());
 		}
 
@@ -145,8 +145,8 @@ public class GetHeaderOfCPS001Finder {
 					_emp.setNumberOfWork(emp.getLstAffCompanyHistoryItem().stream()
 							.filter(f -> f.start().localDate().compareTo(LocalDate.now()) < 0)
 							.map(m -> ChronoUnit.DAYS.between(m.start().localDate(),
-									m.end().localDate().compareTo(LocalDate.now()) <= 0 ? m.end().localDate()
-											: LocalDate.now()))
+									m.end().localDate().compareTo(LocalDate.now()) <= 0 ? m.end().addDays(1).localDate()
+											: GeneralDate.today().addDays(1).localDate()))
 							.mapToInt(m -> Math.abs(m.intValue())).sum());
 				}
 			}

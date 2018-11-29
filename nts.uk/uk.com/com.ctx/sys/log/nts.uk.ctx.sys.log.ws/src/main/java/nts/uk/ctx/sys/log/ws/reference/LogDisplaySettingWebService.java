@@ -17,7 +17,6 @@ import nts.uk.ctx.sys.log.app.command.reference.UpdateLogDisplaySetComdHandler;
 import nts.uk.ctx.sys.log.app.find.reference.LogDisplaySettingDto;
 import nts.uk.ctx.sys.log.app.find.reference.LogDisplaySettingFinder;
 import nts.uk.ctx.sys.log.app.find.reference.record.ParamInputLog;
-import nts.uk.ctx.sys.log.app.find.reference.record.ParamOutputItem;
 
 /*
  * author: thuong.tv

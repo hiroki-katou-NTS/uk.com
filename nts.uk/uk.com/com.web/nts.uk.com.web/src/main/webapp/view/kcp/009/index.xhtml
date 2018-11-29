@@ -133,7 +133,7 @@ Example:
         systemReference: KnockoutObservable<number>;
         isDisplayOrganizationName: KnockoutObservable<boolean>;
         targetBtnText: string;
-        
+        baseDate: KnockoutObservable<Date>;
         listComponentOption: ComponentOption;
         selectedItem: KnockoutObservable<string>;
         tabindex: number;
@@ -175,6 +175,7 @@ Example:
         targetBtnText: string;
         selectedItem: KnockoutObservable<string>;
         tabIndex: number;
+        baseDate?: KnockoutObservable<Date>;
     }
     export interface EmployeeModel {
         id: string;

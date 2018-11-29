@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.record.pubimp.workrecord.erroralarm.condition.monthlycheckcondition;
 
-import java.util.Collection;
+//import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+//import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;

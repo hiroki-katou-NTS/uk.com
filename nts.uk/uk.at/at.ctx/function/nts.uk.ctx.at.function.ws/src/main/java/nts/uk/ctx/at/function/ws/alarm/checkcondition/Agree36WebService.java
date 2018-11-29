@@ -12,10 +12,10 @@ import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.UpdateAgr
 import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.UpdateAgreeCondOtCommandHandler;
 import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.UpdateAgreeConditionErrorCommand;
 import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.UpdateAgreeConditionErrorCommandHandler;
-import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeCondOtDto;
-import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeCondOtFinder;
-import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeConditionErrorDto;
-import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeConditionErrorFinder;
+//import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeCondOtDto;
+//import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeCondOtFinder;
+//import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeConditionErrorDto;
+//import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeConditionErrorFinder;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeNameErrorDto;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeNameErrorFinder;
 
@@ -24,8 +24,8 @@ import nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36.AgreeNameErr
 public class Agree36WebService extends WebService{
 	@Inject
 	private AgreeNameErrorFinder nameFinder;
-	@Inject
-	private AgreeConditionErrorFinder condErrorFinder;
+//	@Inject
+//	private AgreeConditionErrorFinder condErrorFinder;
 	@Inject
 	private UpdateAgreeConditionErrorCommandHandler updateConditionError;
 	@Inject

@@ -6,9 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.auth.dom.adapter.employee.JobTitleAdapter;
 import nts.uk.ctx.sys.auth.dom.employee.dto.EmJobTitleHisImport;
-import nts.uk.ctx.sys.auth.dom.employee.dto.JobTitleValueImport;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleRepository;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPerson;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPersonRepository;
@@ -23,8 +21,8 @@ public class CanApprovalOnBaseDateServiceImpl implements CanApprovalOnBaseDateSe
 	@Inject
 	private RoleSetGrantedPersonRepository roleSetPersonRepo;
 
-	@Inject
-	private JobTitleAdapter jobTitleAdapter;
+//	@Inject
+//	private JobTitleAdapter jobTitleAdapter;
 	
 	@Inject 
 	private EmpInfoAdapter empInfoAdapter;

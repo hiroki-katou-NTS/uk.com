@@ -2,7 +2,6 @@ package nts.uk.ctx.workflow.app.find.approvermanagement.workroot;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Value;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 @Data
 @AllArgsConstructor

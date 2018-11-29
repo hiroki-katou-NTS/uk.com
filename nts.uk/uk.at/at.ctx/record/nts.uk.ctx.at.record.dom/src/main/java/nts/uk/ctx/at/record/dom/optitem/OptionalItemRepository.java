@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import nts.uk.ctx.at.record.dom.export.optitem.CalFormulasItemExportData;
+import nts.uk.ctx.at.record.dom.export.optitem.CalFormulasItemTableExportData;
 
 /**
  * The Interface OptionalItemRepository.
@@ -114,5 +115,7 @@ public interface OptionalItemRepository {
 	/* Export Excel */
 
 	List<CalFormulasItemExportData> findAllCalFormulasItem(String companyId, String languageId);
+	
+	List<CalFormulasItemTableExportData> findAllCalFormulasTableItem(String companyId, String languageId);
 
 }

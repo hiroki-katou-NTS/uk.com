@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+//import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

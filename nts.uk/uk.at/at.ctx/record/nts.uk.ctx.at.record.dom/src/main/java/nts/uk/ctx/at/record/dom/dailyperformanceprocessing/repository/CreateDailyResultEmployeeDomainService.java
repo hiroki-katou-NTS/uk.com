@@ -24,6 +24,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 public interface CreateDailyResultEmployeeDomainService {
 
+	@SuppressWarnings("rawtypes")
 	ProcessState createDailyResultEmployee(AsyncCommandHandlerContext asyncContext, String employeeId,
 			DatePeriod periodTimes, String companyId, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog,
 			boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime,
@@ -32,6 +33,7 @@ public interface CreateDailyResultEmployeeDomainService {
 			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
 			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList);
 
+	@SuppressWarnings("rawtypes")
 	ProcessState createDailyResultEmployeeNew(AsyncCommandHandlerContext asyncContext, String employeeId,
 			GeneralDate executedDate, String companyId, String empCalAndSumExecLogID,
 			Optional<ExecutionLog> executionLog, boolean reCreateWorkType, boolean reCreateWorkPlace,
@@ -54,10 +56,12 @@ public interface CreateDailyResultEmployeeDomainService {
 	 * @param reCreateWorkType
 	 * @return
 	 */
+	@SuppressWarnings("rawtypes")
 	ProcessState createDailyResultEmployeeWithNoInfoImport(AsyncCommandHandlerContext asyncContext, String employeeId,
 			DatePeriod periodTimes, String companyId, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog,
 			boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime, Optional<StampReflectionManagement> stampReflectionManagement);
 
+	@SuppressWarnings("rawtypes")
 	ProcessState createDailyResultEmployeeWithNoInfoImportNew(AsyncCommandHandlerContext asyncContext,
 			String employeeId, List<GeneralDate> executeDate, String companyId, String empCalAndSumExecLogID,
 			Optional<ExecutionLog> executionLog, boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime,

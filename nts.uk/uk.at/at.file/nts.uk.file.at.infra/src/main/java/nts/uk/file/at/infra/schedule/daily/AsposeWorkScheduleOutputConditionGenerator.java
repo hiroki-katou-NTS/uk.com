@@ -1792,12 +1792,18 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		//condition.setLstDisplayedAttendance(lstItem.stream().filter(x -> lstAttendanceId.contains(x.getAttendanceDisplay())).collect(Collectors.toList()));
 		
 		lstAttendanceId.stream().forEach(x -> {
-			lstDailyAttendanceItem.stream().filter(item -> item.getAttendanceItemId() == x).findFirst().ifPresent(attendanceItem -> {
-				OutputItemSetting setting = new OutputItemSetting();
-				setting.setItemCode(attendanceItem.getAttendanceItemDisplayNumber());
-				setting.setItemName(attendanceItem.getAttendanceItemName());
-				headerData.lstOutputItemSettingCode.add(setting);
-			});
+			Optional<AttItemName> opAttendanceItem = lstDailyAttendanceItem.stream()
+					.filter(item -> item.getAttendanceItemId() == x).findFirst();
+			OutputItemSetting setting = new OutputItemSetting();
+			if (opAttendanceItem.isPresent()) {
+				setting.setItemCode(opAttendanceItem.get().getAttendanceItemDisplayNumber());
+				setting.setItemName(opAttendanceItem.get().getAttendanceItemName());
+
+			} else {
+				setting.setItemCode(null);
+				setting.setItemName("");
+			}
+			headerData.lstOutputItemSettingCode.add(setting);
 		});
 	}
 	

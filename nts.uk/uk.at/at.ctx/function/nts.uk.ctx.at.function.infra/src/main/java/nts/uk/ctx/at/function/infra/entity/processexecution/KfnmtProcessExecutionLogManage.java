@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.function.infra.entity.processexecution;
 
-import java.io.Serializable;
-import java.util.List;
+//import java.io.Serializable;
+//import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+//import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -16,12 +16,12 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
-import nts.uk.ctx.at.function.dom.processexecution.executionlog.EachProcessPeriod;
+//import nts.uk.ctx.at.function.dom.processexecution.executionlog.EachProcessPeriod;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.OverallErrorDetail;
-import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
+//import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+//import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name="KFNMT_PRO_EXE_LOG_MANAGE")

@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaFixRest;
 public class JpaFlexTimezoneOfFixedRestTimeSetSetMemento implements TimezoneOfFixedRestTimeSetSetMemento {
 
 	/** The entities. */
-	private List<KshmtFlexHaFixRest> entities;
+	 List<KshmtFlexHaFixRest> entities;
 
 	/**
 	 * Instantiates a new jpa flex timezone of fixed rest time set set memento.

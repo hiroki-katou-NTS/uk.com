@@ -41,7 +41,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatDailyRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+//import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -59,8 +59,8 @@ public class OutputItemDailyWorkScheduleFinder {
 	@Inject
 	private AttendanceTypeRepository attendanceTypeRepository;
 	
-	@Inject
-	private OptionalItemRepository optionalItemRepository;
+//	@Inject
+//	private OptionalItemRepository optionalItemRepository;
 	
 	@Inject
 	private BusinessTypesRepository businessTypesRepository;

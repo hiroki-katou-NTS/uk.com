@@ -136,7 +136,7 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 		// query data
 		List<KfnstAttndRec> entityList = em.createQuery(cq).getResultList();
 
-		Map<Long, MutablePair<KfnstAttndRec,KfnstAttndRec>> map = new HashMap<>();
+//		Map<Long, MutablePair<KfnstAttndRec,KfnstAttndRec>> map = new HashMap<>();
 
 		List<AttendanceRecordExport> domainList = domainsFrom(entityList);
 

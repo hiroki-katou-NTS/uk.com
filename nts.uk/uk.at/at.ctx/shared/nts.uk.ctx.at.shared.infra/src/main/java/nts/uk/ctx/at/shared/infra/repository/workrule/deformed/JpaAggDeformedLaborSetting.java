@@ -21,15 +21,15 @@ import nts.uk.ctx.at.shared.infra.entity.workrule.deformed.KshstAggLaborSetPK;
 @Stateless
 public class JpaAggDeformedLaborSetting extends JpaRepository implements AggDeformedLaborSettingRepository {
 	
-	private static final String FIND;
+//	private static final String FIND;
 	
-	static {
-		StringBuilder builderString = new StringBuilder();
-		builderString.append("SELECT a ");
-		builderString.append("FROM KshstAggLaborSet a ");
-		builderString.append("WHERE a.KshstAggLaborSetPK.companyId = :companyId ");
-		FIND = builderString.toString();
-	}
+//	static {
+//		StringBuilder builderString = new StringBuilder();
+//		builderString.append("SELECT a ");
+//		builderString.append("FROM KshstAggLaborSet a ");
+//		builderString.append("WHERE a.KshstAggLaborSetPK.companyId = :companyId ");
+//		FIND = builderString.toString();
+//	}
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.workrule.deformed.AggDeformedLaborSettingRepository#findByCid(java.lang.String)

@@ -3,7 +3,6 @@ package nts.uk.file.at.app.export.monthlyschedule;
 import java.util.List;
 
 import lombok.Data;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.file.at.app.export.dailyschedule.ActualValue;
 

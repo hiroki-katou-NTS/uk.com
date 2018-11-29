@@ -54,7 +54,7 @@ public class CalFormulasItemTableExportData {
 	
 	// 任意項目計算式設定
 	// 計算区分
-	private Integer calculationAtr;
+	private Integer calcAtr;
 	
 	/** The unit. */
 	// 単位
