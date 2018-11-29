@@ -322,7 +322,6 @@ module nts.uk.com.view.cmf002.c.viewmodel {
 
             service.getOutItems(self.conditionCode()).done((outputItems: Array<any>) => {
                 if (outputItems && outputItems.length) {
-                    outputItems = _.sortBy(outputItems, ['outItemCd']);
                     let rsOutputItems: Array<model.StandardOutputItem> = _.map(outputItems, x => {
                         let listCategoryItem: Array<model.CategoryItem> = _.map(x.categoryItems, (y : model.ICategoryItem) => {
                             return new model.CategoryItem(self.categoryId(), y.categoryItemNo,
