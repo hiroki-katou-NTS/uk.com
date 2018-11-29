@@ -15,6 +15,26 @@
     padding-right: 10px;
 }
 
+#A2_1 .table{
+    width: 420px;
+}
+
+#A2_1 .table .cell:nth-child(1){
+    width: 80px;
+}
+#A2_1 .table .cell:nth-child(2){
+    width: 85px;
+}
+#A2_1 .table .cell:nth-child(3){
+    width: 75px;
+}
+#A2_1 .table .cell:nth-child(4){
+    width: 30px;
+}
+#A2_1 .table .cell:nth-child(5){
+    width: 100px;
+}
+
 #A2_8 {
     margin-top: 5px;
     margin-bottom: 10px;
@@ -22,8 +42,4 @@
 
 #grid .delete {
     background-color: #ff0000;
-}
-
-.nts-grid-sheet-buttons {
-    display: none;
 }
