@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.setting.company.request.AuthorizationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
@@ -245,14 +246,14 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 	@Override
 	public void update(List<ReceptionRestrictionSetting> receiption, List<AppTypeSetting> appType) {
 		String companyId = AppContexts.user().companyId();
-		List<Integer> listInsert = new ArrayList<>();
+		List<ApplicationType> listInsert = new ArrayList<>();
 		List<AppTypeSetting> listFilter = new ArrayList<>();
 		// update before and after 
 		for(ReceptionRestrictionSetting item: receiption){ 
 			Optional<KrqstAppTypeDiscrete> oldEntity1 = this.queryProxy().find(new KrqstAppTypeDiscretePK(companyId, item.getAppType().value), KrqstAppTypeDiscrete.class);
 			// if don't exist => insert 
 			if(!oldEntity1.isPresent()){
-				listInsert.add(item.getAppType().value);
+				listInsert.add(item.getAppType());
 				Optional<AppTypeSetting> temp = appType.stream().filter(c -> c.getAppType().equals(item.getAppType())).findFirst();
 				KrqstAppTypeDiscrete entity = toEntityDiscrete(item, temp.get());
 				this.commandProxy().insert(entity);
@@ -293,7 +294,7 @@ public class JpaRequestSettingRepository extends JpaRepository implements Reques
 		if(listInsert.isEmpty()){
 			listFilter = appType;
 		}else{
-			for(Integer i : listInsert){
+			for(ApplicationType i : listInsert){
 				listFilter = appType.stream().filter(c -> !c.getAppType().equals(i))
 																	.collect(Collectors.toList());
 			}

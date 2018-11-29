@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleIndividualGrantDto;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleIndividualGrantMetaDto;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleTypeDto;

@@ -19,7 +19,6 @@ import nts.uk.ctx.bs.employee.pub.employment.EmploymentCodeAndPeriod;
 import nts.uk.ctx.bs.employee.pub.employment.EmploymentHisExport;
 import nts.uk.ctx.bs.employee.pub.employment.EmploymentHisOfEmployee;
 import nts.uk.ctx.bs.employee.pub.employment.IEmploymentHistoryPub;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless

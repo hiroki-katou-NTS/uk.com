@@ -143,11 +143,11 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		Optional<ApprovalFunctionSetting> appFuncSet = null;
 		appFuncSet = repoRequestWkp.getFunctionSetting(companyId, wkpID, appType);
 		//対象が存在しない場合 - TH doi tuong k ton tai
-		if(!appFuncSet.isPresent() || appFuncSet.get().getInstructionUseSetting().getInstructionAtr().equals(UseAtr.NOTUSE)){
+		if(!appFuncSet.isPresent() || appFuncSet.get().getInstructionUseSetting().getInstructionUseDivision().equals(UseAtr.NOTUSE)){
 			//ドメイン「会社別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by company)
 			appFuncSet = repoRequestCompany.getFunctionSetting(companyId, appType);
 		}
-		if(!appFuncSet.isPresent()|| appFuncSet.get().getInstructionUseSetting().getInstructionAtr().equals(UseAtr.NOTUSE)){
+		if(!appFuncSet.isPresent()|| appFuncSet.get().getInstructionUseSetting().getInstructionUseDivision().equals(UseAtr.NOTUSE)){
 			return false;
 		}
 		//申請承認機能設定.残業申請の事前必須設定
@@ -975,7 +975,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//打刻申請.打刻申請モード-(Check 打刻申請モード)
 		//get domain 打刻申請
 		AppStamp stamp = repoAppStamp.findByAppID(companyID, application.getAppID());
-		if(!stamp.equals(StampRequestMode.STAMP_CANCEL)){
+		if(!stamp.getStampRequestMode().equals(StampRequestMode.STAMP_CANCEL)){
 			return null;
 		}
 		//アルゴリズム「実績の取得」を実行する - 13/KAF

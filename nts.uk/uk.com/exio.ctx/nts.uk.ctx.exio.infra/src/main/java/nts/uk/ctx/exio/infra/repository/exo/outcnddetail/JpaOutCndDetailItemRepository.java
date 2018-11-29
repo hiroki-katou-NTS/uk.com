@@ -10,11 +10,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItemRepository;
-import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
 import nts.uk.ctx.exio.infra.entity.exo.outcnddetail.OiomtOutCndDetailItem;
 import nts.uk.ctx.exio.infra.entity.exo.outcnddetail.OiomtOutCndDetailItemPk;
-import nts.uk.ctx.exio.infra.entity.exo.outputitem.OiomtStdOutItem;
-import nts.uk.ctx.exio.infra.entity.exo.outputitem.OiomtStdOutItemPk;
 
 @Stateless
 public class JpaOutCndDetailItemRepository extends JpaRepository implements OutCndDetailItemRepository {

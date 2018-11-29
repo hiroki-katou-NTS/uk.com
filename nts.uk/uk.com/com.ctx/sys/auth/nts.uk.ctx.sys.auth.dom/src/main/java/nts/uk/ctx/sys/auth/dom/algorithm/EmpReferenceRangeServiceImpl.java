@@ -1,6 +1,5 @@
 package nts.uk.ctx.sys.auth.dom.algorithm;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -10,7 +9,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.grant.service.RoleIndividualService;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
-import nts.uk.ctx.sys.auth.dom.role.RoleType;
 
 @Stateless
 public class EmpReferenceRangeServiceImpl implements EmpReferenceRangeService {

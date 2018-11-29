@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.employee.infra.entity.familyrelatedinformation.socialinsurance;
 
+import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -14,7 +16,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class BsymtFamilySocialInsurancePK {
+public class BsymtFamilySocialInsurancePK implements Serializable{
 	/**
 	 * 
 	 */
