@@ -1,12 +1,14 @@
-package nts.uk.ctx.at.shared.dom.ot.autocalsetting.com;
+package nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class ComAutoCalSettingExport {
+public class WorkPlaceAutoCalSettingExport {
+    private String workPlaceCode;
+    private String workPlaceName;
+    private String registered;
     private int earlyOtTimeLimit;
     private int earlyMidOtTimeLimit;
     private int normalOtTimeLimit;
@@ -31,7 +33,10 @@ public class ComAutoCalSettingExport {
     private int leaveLate;
     private int divergence;
 
-    public ComAutoCalSettingExport(int earlyOtTimeLimit, int earlyMidOtTimeLimit, int normalOtTimeLimit, int normalMidOtTimeLimit, int legarOtTimeLimit, int legarMidOtTimeLimit, int flexOtTimeLimit, int restTimeLimit, int lateNightTimeLimit, int lateOtTimeAtr, int earlyOtTimeAtr, int earlyMidOtTimeAtr, int normalOtTimeAtr, int normalMidOtTimeAtr, int legarMidOtTimeAtr, int flexOtTimeAtr, int restTimeAtr, int lateNightTimeAtr, int raiSingCalcAtr, int specificRaisingCalcAtr, int leaveEarly, int leaveLate, int divergence) {
+    public WorkPlaceAutoCalSettingExport(String workPlaceCode, String workPlaceName, String registered, int earlyOtTimeLimit, int earlyMidOtTimeLimit, int normalOtTimeLimit, int normalMidOtTimeLimit, int legarOtTimeLimit, int legarMidOtTimeLimit, int flexOtTimeLimit, int restTimeLimit, int lateNightTimeLimit, int earlyOtTimeAtr, int earlyMidOtTimeAtr, int normalOtTimeAtr, int normalMidOtTimeAtr, int legarOttimeAtr, int legarMidOtTimeAtr, int flexOtTimeAtr, int restTimeAtr, int lateNightTimeAtr, int raiSingCalcAtr, int specificRaisingCalcAtr, int leaveEarly, int leaveLate, int divergence) {
+        this.workPlaceCode = workPlaceCode;
+        this.workPlaceName = workPlaceName;
+        this.registered = registered;
         this.earlyOtTimeLimit = earlyOtTimeLimit;
         this.earlyMidOtTimeLimit = earlyMidOtTimeLimit;
         this.normalOtTimeLimit = normalOtTimeLimit;
