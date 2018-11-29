@@ -3,18 +3,27 @@ package nts.uk.ctx.at.function.ac.holidaysremaining;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveOfThisMonthImported;
+import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveUsageStatusOfThisMonthImported;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnualLeaveUsageImported;
+import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.HdRemainDetailMerEx;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.HolidayRemainMerEx;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.HolidayRemainMergeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.StatusOfHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialHolidayImported;
+import nts.uk.ctx.at.function.dom.adapter.reserveleave.ReserveHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.reserveleave.ReservedYearHolidayImported;
+import nts.uk.ctx.at.function.dom.adapter.reserveleave.RsvLeaUsedCurrentMonImported;
+import nts.uk.ctx.at.function.dom.adapter.vacation.CurrentHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.vacation.StatusHolidayImported;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
@@ -28,7 +37,15 @@ import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.AnnualLeaveUsageExp
 import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.GetConfirmedAnnualLeave;
 import nts.uk.ctx.at.record.pub.monthly.vacation.reserveleave.GetConfirmedReserveLeave;
 import nts.uk.ctx.at.record.pub.monthly.vacation.reserveleave.ReserveLeaveUsageExport;
+import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AggrResultOfAnnualLeaveEachMonth;
+import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AnnLeaveOfThisMonth;
+import nts.uk.ctx.at.record.pub.remainnumber.holiday.HdRemainDetailMer;
+import nts.uk.ctx.at.record.pub.remainnumber.holiday.HdRemainDetailMerPub;
+import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.ReserveLeaveNowExport;
+import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.RsvLeaUsedCurrentMonExport;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.InterimRemainAggregateOutputData;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 @Stateless
 public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
@@ -45,6 +62,9 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
 	private MonthlyAbsenceleaveRemainExport d;
 	@Inject
 	private SpecialHolidayRemainDataSevice e;
+	
+	@Inject 
+	private HdRemainDetailMerPub hdMerPub;
 	
 	@Override
 	public HolidayRemainMerEx getRemainMer(String employeeId, YearMonthPeriod period) {
@@ -97,6 +117,58 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
 		}
 		
 		return new HolidayRemainMerEx(result255, result258, result259, result260, result263);
+	}
+
+	@Override
+	public HdRemainDetailMerEx getRemainDetailMer(String employeeId, YearMonth currentMonth, GeneralDate baseDate,
+			DatePeriod period) {
+		HdRemainDetailMer data = hdMerPub.getHdRemainDetailMer(employeeId, currentMonth, baseDate, period);
+		//265
+		AnnLeaveOfThisMonth annLeave = data.getResult265();
+		AnnLeaveOfThisMonthImported result265 = new AnnLeaveOfThisMonthImported(annLeave.getGrantDate(), annLeave.getGrantDays(),
+				annLeave.getFirstMonthRemNumDays(), annLeave.getFirstMonthRemNumMinutes(), annLeave.getUsedDays().v(),
+				annLeave.getUsedMinutes(), annLeave.getRemainDays().v(), annLeave.getRemainMinutes());
+		//268
+		ReserveLeaveNowExport reserveLeave = data.getResult268();
+		ReserveHolidayImported result268 = new ReserveHolidayImported(reserveLeave.getStartMonthRemain().v(), 
+				reserveLeave.getGrantNumber().v(), reserveLeave.getUsedNumber().v(), reserveLeave.getRemainNumber().v(),
+				reserveLeave.getUndigestNumber().v());
+		//269
+		List<InterimRemainAggregateOutputData> lst269 = data.getResult269();
+		List<CurrentHolidayImported> result269 = lst269.stream()
+				.map(c -> new CurrentHolidayImported(c.getYm(), c.getMonthStartRemain(), c.getMonthOccurrence(),
+						c.getMonthUse(), c.getMonthExtinction(), c.getMonthEndRemain()))
+				.collect(Collectors.toList());
+		//363
+		List<AggrResultOfAnnualLeaveEachMonth> lst363 = data.getResult363();
+		List<AnnLeaveUsageStatusOfThisMonthImported> result363 = lst363.stream().map(c ->
+			new AnnLeaveUsageStatusOfThisMonthImported(c.getYearMonth(),
+					c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
+							.getUsedNumber().getUsedDays().getUsedDays().v(),
+					c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
+							.getUsedNumber().getUsedTime().isPresent()
+									? Optional.of(c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
+											.getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber()
+											.getUsedTime().get().getUsedTime().v())
+									: Optional.empty(),
+					c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
+							.getRemainingNumber().getTotalRemainingDays().v(),
+					c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
+							.getRemainingNumber().getTotalRemainingTime().isPresent()
+									? Optional.of(c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
+											.getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber()
+											.getTotalRemainingTime().get().v())
+									: Optional.empty())
+		).collect(Collectors.toList());
+		//364
+		List<RsvLeaUsedCurrentMonExport> lst364 = data.getResult364();
+		List<RsvLeaUsedCurrentMonImported> result364 = lst364.stream().map(c -> new RsvLeaUsedCurrentMonImported(
+				c.getYearMonth(), c.getUsedNumber().v(), c.getRemainNumber().v())).collect(Collectors.toList());
+		//369
+		Optional<GeneralDate> result369 = data.getResult369() == null ? Optional.empty() : 
+					Optional.of(data.getResult369().getGrantDate());
+		
+		return new HdRemainDetailMerEx(result265, result268, result269, result363, result364, result369);
 	}
 
 }

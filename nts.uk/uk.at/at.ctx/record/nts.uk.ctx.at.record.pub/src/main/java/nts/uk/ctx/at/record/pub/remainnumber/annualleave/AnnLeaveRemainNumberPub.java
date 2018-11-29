@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.pub.remainnumber.annualleave;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 //import nts.uk.ctx.at.record.pub.remainnumber.annualleave.export.CalYearOffWorkAttendRateExport;
@@ -40,5 +41,13 @@ public interface AnnLeaveRemainNumberPub {
 	 */
 	ReNumAnnLeaReferenceDateExport getReferDateAnnualLeaveRemainNumber(String employeeID,GeneralDate date);
 	
-
+	/**
+	 * @author hoatt
+	 * KDR001
+	 * RequestList #No.369 - ver2
+	 * @param employeeId
+	 * @param closureDate
+	 * @return
+	 */
+	public NextHolidayGrantDate getNextHdGrantDateVer2(String companyId, String employeeId, Optional<GeneralDate> closureDate);	
 }

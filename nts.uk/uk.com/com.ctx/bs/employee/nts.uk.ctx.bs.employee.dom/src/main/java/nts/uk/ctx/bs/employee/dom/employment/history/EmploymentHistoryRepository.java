@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.dom.employment.history;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -70,4 +71,13 @@ public interface EmploymentHistoryRepository {
 	 * @return
 	 */
 	Optional<EmploymentHistory> getEmploymentHistory(String historyId, String employmentCode);
+	/**
+	 * @author hoatt
+	 * get with employeeId
+	 * startDate <= standardDate <= endDate 
+	 * @param employeeId
+	 * @param standardDate
+	 * @return
+	 */
+	Map<String, DateHistItem> getBySIdAndate(List<String> lstSID, GeneralDate standardDate);
 }
