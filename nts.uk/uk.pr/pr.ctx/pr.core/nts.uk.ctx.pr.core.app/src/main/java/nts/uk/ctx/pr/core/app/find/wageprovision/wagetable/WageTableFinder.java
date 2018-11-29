@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.wagetable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -139,6 +140,23 @@ public class WageTableFinder {
 				.collect(Collectors.toList());
 		return lstStatementItem.stream().map(i -> new ElementItemNameDto(i.getItemNameCd(), i.getName()))
 				.collect(Collectors.toList());
+	}
+
+	public List<NumericElementItemDto> createOneDimensionWageTable(ElementRangeParam params) {
+		List<NumericElementItemDto> result = new ArrayList<>();
+		if (params == null) {
+			// master item
+			return result;
+		} else {
+			// numeric item
+			while (params.getRangeLowerLimit() + params.getStepIncrement() < params.getRangeUpperLimit()) {
+				result.add(new NumericElementItemDto(null, params.getRangeLowerLimit(),
+						params.getRangeLowerLimit() + params.getStepIncrement() - 1));
+				params.setRangeLowerLimit(params.getRangeLowerLimit() + params.getStepIncrement());
+			}
+			result.add(new NumericElementItemDto(null, params.getRangeLowerLimit(), params.getRangeUpperLimit()));
+			return result;
+		}
 	}
 
 }

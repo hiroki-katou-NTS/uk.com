@@ -26,25 +26,15 @@ public class UpdateWageTableCommand {
 	private String wageTableName;
 
 	/**
-	 * 要素設定
-	 */
-	private int elementSetting;
-
-	/**
 	 * 備考情報
 	 */
 	private String remarkInformation;
 
-	/**
-	 * 要素情報
-	 */
-	private ElementInformationCommand elementInformation;
-
 	private YearMonthHistoryItemCommand history;
 
 	public WageTable toWageTableDomain() {
-		return new WageTable(AppContexts.user().companyId(), wageTableCode, wageTableName, elementSetting,
-				remarkInformation, elementInformation.fromCommandToDomain());
+		return new WageTable(AppContexts.user().companyId(), wageTableCode, wageTableName, 0,
+				remarkInformation, null);
 	}
 
 	public WageTableHistory toWageTableHistoryDomain() {

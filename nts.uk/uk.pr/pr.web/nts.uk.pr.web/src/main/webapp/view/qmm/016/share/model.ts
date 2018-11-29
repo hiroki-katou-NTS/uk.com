@@ -454,8 +454,8 @@ module nts.uk.pr.view.qmm016.share.model {
 
     // 年月期間の汎用履歴項目
     export interface IGenericHistoryYearMonthPeriod {
-        startMonth: string;
-        endMonth: string;
+        startMonth: number;
+        endMonth: number;
         historyID: string;
     }
 
@@ -463,8 +463,8 @@ module nts.uk.pr.view.qmm016.share.model {
     export class GenericHistoryYearMonthPeriod {
 
         // Item
-        startMonth: KnockoutObservable<string> = ko.observable(null);
-        endMonth: KnockoutObservable<string> = ko.observable(null);
+        startMonth: KnockoutObservable<number> = ko.observable(null);
+        endMonth: KnockoutObservable<number> = ko.observable(null);
         historyID: KnockoutObservable<string> = ko.observable(null);
         // display item
         displayStartMonth: any;
@@ -472,8 +472,8 @@ module nts.uk.pr.view.qmm016.share.model {
         displayJapanStartYearMonth: any;
 
         constructor(params: IGenericHistoryYearMonthPeriod) {
-            this.startMonth(params ? params.startMonth : "");
-            this.endMonth(params ? params.endMonth : "");
+            this.startMonth(params ? params.startMonth : null);
+            this.endMonth(params ? params.endMonth : null);
             this.historyID(params ? params.historyID : "");
             this.displayStartMonth = ko.computed(function() {
                 return this.startMonth() ? nts.uk.time.parseYearMonth(this.startMonth()).format() : "";

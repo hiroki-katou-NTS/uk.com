@@ -38,8 +38,7 @@
                     <th class="ui-widget-header">
                         <div style="display: inline-block">#{i18n.getText('QMM016_27')}</div>
                         <button style="display: inline-block"
-                                data-bind="ntsHelpButton: {image: '../resource/QMM016_1.png', position: 'bottom left'}">?
-                        </button>
+                                data-bind="ntsHelpButton: {image: '../resource/QMM016_1.png', position: 'bottom left'}">?</button>
                     </th>
                     <th class="ui-widget-header">#{i18n.getText('QMM016_28')}</th>
                 </tr>
@@ -47,9 +46,8 @@
                 <tbody>
                 <tr>
                     <td class="ui-widget-header">#{i18n.getText('QMM016_29')}</td>
-                    <td data-bind="if: masterNumericClassification() == 1">
-                        <div data-bind="text: fixedElement, visible: fixedElement()"></div>
-                        <div data-bind="text: optionalAdditionalElement, visible: optionalAdditionalElement()"></div>
+                    <td>
+                        <div data-bind="text: elementName"></div>
                     </td>
                     <td style="text-align: center;" data-bind="if: masterNumericClassification() == 1">
                         <div data-bind="with: $vm.elementRangeSetting().firstElementRange">
@@ -91,8 +89,7 @@
             <tr>
                 <th class="ui-widget-header">
                     <div data-bind="with: selectedWageTable().elementInformation().oneDimensionElement">
-                        <div style="display: inline-block" data-bind="text: fixedElement"></div>
-                        <div style="display: inline-block" data-bind="text: optionalAdditionalElement"></div>
+                        <div style="display: inline-block" data-bind="text: elementName"></div>
                     </div>
                 </th>
                 <th class="ui-widget-header">#{i18n.getText('QMM016_38')}</th>

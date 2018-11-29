@@ -63,13 +63,16 @@ public class JpaWageTableHistoryRepository extends JpaRepository implements Wage
 
 	@Override
 	public void addOrUpdate(WageTableHistory domain) {
+		this.remove(domain.getCid(), domain.getWageTableCode().v());
 		List<QpbmtWageTableHistory> listEntities = QpbmtWageTableHistory.fromDomain(domain);
-		for (QpbmtWageTableHistory entity : listEntities) {
-			if (this.queryProxy().find(entity.historyId, QpbmtWageTableHistory.class).isPresent())
-				this.commandProxy().update(entity);
-			else
-				this.commandProxy().insert(entity);
-		}
+		this.commandProxy().insertAll(listEntities);
+	}
+
+	@Override
+	public void remove(String companyId, String code) {
+		String query = "DELETE FROM QpbmtWageTableHistory a WHERE a.companyId = :companyId AND a.code = :wageTableCode";
+		this.getEntityManager().createQuery(query).setParameter("companyId", companyId)
+				.setParameter("wageTableCode", code).executeUpdate();
 	}
 
 }
