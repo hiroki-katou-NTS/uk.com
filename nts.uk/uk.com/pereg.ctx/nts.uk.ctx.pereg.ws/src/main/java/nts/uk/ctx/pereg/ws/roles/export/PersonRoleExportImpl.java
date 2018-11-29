@@ -131,10 +131,9 @@ public class PersonRoleExportImpl implements MasterListData {
 	
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
-        String companyId = AppContexts.user().companyId();
         List <MasterData> datas = new ArrayList<>();
         
-        /*// ドメインモデル「ロール」を取得する
+       /* // ドメインモデル「ロール」を取得する
         List<Role> roles = roleRepo.findByType(companyId, RoleType.PERSONAL_INFO.value);
         //
         for (Role role : roles) {
@@ -151,7 +150,26 @@ public class PersonRoleExportImpl implements MasterListData {
         		
         	});
         }*/
-        personCategoryAuthRepository.getDataExport().stream().forEach(x -> {
+        int payroll = NotUseAtr.NOT_USE.value;
+		int personnel = NotUseAtr.NOT_USE.value;
+		int atttendance = NotUseAtr.NOT_USE.value;
+		List<InstalledProduct> installProduct = AppContexts.system().getInstalledProducts();
+		for (InstalledProduct productType : installProduct) {
+			switch (productType.getProductType()) {
+			case ATTENDANCE:
+				atttendance = NotUseAtr.USE.value;
+				break;
+			case PAYROLL:
+				payroll = NotUseAtr.USE.value;
+				break;
+			case PERSONNEL:
+				personnel = NotUseAtr.USE.value;
+				break;
+			default:
+				break;
+			}
+		}
+        personCategoryAuthRepository.getDataExport(payroll, personnel, atttendance).stream().forEach(x -> {
         	datas.add(new MasterData(dataContent(x), null, ""));
         });
         return datas;
@@ -170,33 +188,33 @@ public class PersonRoleExportImpl implements MasterListData {
         // A6_5
         data.put(CAS001_81, getTypeName(dataRow.getCategoryType()));
         // A6_6
-        data.put(CAS001_82, dataRow.getAllowOtherRef() != null ? dataRow.getAllowOtherRef() == 1 ? "○" : "ー" : "ー");
+        data.put(CAS001_82, dataRow.getAllowOtherRef() != null ? dataRow.getAllowOtherRef() == 1 ? "○" : "ー" : "");
         // A6_7
-        data.put(CAS001_83, dataRow.getCategoryType() != 2 ? "ー" : dataRow.getSelfAllowAddMulti() == null ? "ー" : dataRow.getSelfAllowAddMulti() == 1 ? "○" : "ー");
+        data.put(CAS001_83, dataRow.getCategoryType() != 2 ? "ー" : dataRow.getSelfAllowAddMulti() == null ? "" : dataRow.getSelfAllowAddMulti() == 1 ? "○" : "ー");
         // A6_8
-        data.put(CAS001_84, dataRow.getCategoryType() != 2 ? "ー" : dataRow.getSelfAllowDelMulti() == null ? "ー" : dataRow.getSelfAllowDelMulti() == 1 ? "○" : "ー");
+        data.put(CAS001_84, dataRow.getCategoryType() != 2 ? "ー" : dataRow.getSelfAllowDelMulti() == null ? "" : dataRow.getSelfAllowDelMulti() == 1 ? "○" : "ー");
         // A6_9
-        data.put(CAS001_85, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getSelfAllowAddHis() == null ? "ー" : dataRow.getSelfAllowAddHis() == 1 ? "○" : "ー");
+        data.put(CAS001_85, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getSelfAllowAddHis() == null ? "" : dataRow.getSelfAllowAddHis() == 1 ? "○" : "ー");
         // A6_10
-        data.put(CAS001_86, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getSelfAllowDelHis() == null ? "ー" : dataRow.getSelfAllowDelHis() == 1 ? "○" : "ー");
+        data.put(CAS001_86, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getSelfAllowDelHis() == null ? "" : dataRow.getSelfAllowDelHis() == 1 ? "○" : "ー");
         // A6_11
-        data.put(CAS001_87, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getOtherFutureHisAuth() == null ? "ー" :checkValue3(dataRow.getOtherFutureHisAuth(),1,0));
+        data.put(CAS001_87, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getOtherFutureHisAuth() == null ? "" :checkValue3(dataRow.getOtherFutureHisAuth(),1,0));
         // A6_12
-        data.put(CAS001_88, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getOtherPastHisAuth() == null ? "ー" : checkValue3(dataRow.getOtherPastHisAuth(),1,0));
+        data.put(CAS001_88, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getOtherPastHisAuth() == null ? "" : checkValue3(dataRow.getOtherPastHisAuth(),1,0));
         // A6_13
         data.put(CAS001_89, dataRow.getAllowPersonRef() != null ? dataRow.getAllowPersonRef() == 1 ? "○": "ー" : "ー");
         // A6_14
-        data.put(CAS001_90, checkValue1(dataRow.getCategoryType()) != null ? checkValue1(dataRow.getCategoryType()) : dataRow.getSelfAllowAddMulti() == null ? "ー" : dataRow.getSelfAllowAddMulti() == 1 ? "○" : "ー");
+        data.put(CAS001_90, checkValue1(dataRow.getCategoryType()) != null ? checkValue1(dataRow.getCategoryType()) : dataRow.getSelfAllowAddMulti() == null ? "" : dataRow.getSelfAllowAddMulti() == 1 ? "○" : "ー");
         // A6_15
-        data.put(CAS001_91, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getSelfAllowDelMulti() == null ? "ー" : dataRow.getSelfAllowDelMulti() == 1 ? "○" : "ー");
+        data.put(CAS001_91, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getSelfAllowDelMulti() == null ? "" : dataRow.getSelfAllowDelMulti() == 1 ? "○" : "ー");
         // A6_16
-        data.put(CAS001_92, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getSelfAllowAddHis() == null ? "ー" : dataRow.getSelfAllowAddHis() == 1 ? "ー" : dataRow.getSelfAllowAddHis() == 1 ? "○" : "ー");
+        data.put(CAS001_92, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getSelfAllowAddHis() == null ? "" : dataRow.getSelfAllowAddHis() == 1 ? "ー" : dataRow.getSelfAllowAddHis() == 1 ? "○" : "ー");
         // A6_17
-        data.put(CAS001_93, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getSelfAllowDelHis() == null ? "ー" : dataRow.getSelfAllowDelHis() == 1 ? "○" : "ー");
+        data.put(CAS001_93, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getSelfAllowDelHis() == null ? "" : dataRow.getSelfAllowDelHis() == 1 ? "○" : "ー");
         // A6_18
-        data.put(CAS001_94, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getSelfFutureHisAuth() ==  null ? "ー" :checkValue3(dataRow.getSelfFutureHisAuth(),1,0));
+        data.put(CAS001_94, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getSelfFutureHisAuth() ==  null ? "" :checkValue3(dataRow.getSelfFutureHisAuth(),1,0));
         // A6_19
-        data.put(CAS001_95, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getSelfPastHisAuth() == null ? "ー" :checkValue3(dataRow.getSelfPastHisAuth(),1,0));
+        data.put(CAS001_95, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getSelfPastHisAuth() == null ? "" :checkValue3(dataRow.getSelfPastHisAuth(),1,0));
         // A6_20
         data.put(CAS001_96, dataRow.getIsItemConfig() ? "●" : "");
         // A6_21
@@ -211,7 +229,7 @@ public class PersonRoleExportImpl implements MasterListData {
 	private String checkValue1(Integer categoryType) {
 		String value = null;
 		if(categoryType == null)
-        	value = "ー";
+        	value = "";
         CategoryType type = EnumAdaptor.valueOf(categoryType , CategoryType.class);
         if(type.value != 2)
         	value = "ー";
@@ -221,7 +239,7 @@ public class PersonRoleExportImpl implements MasterListData {
 	private String checkValue2(Integer categoryType) {
 		String value = null;
 		if(categoryType == null)
-        	value = "ー";
+        	value = "";
         CategoryType type = EnumAdaptor.valueOf(categoryType , CategoryType.class);
         if(type.value == 3 || type.value == 4) {
         	value = "ー";
