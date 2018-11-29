@@ -1,0 +1,76 @@
+package nts.uk.ctx.pr.core.app.command.wageprovision.breakdownitemamount;
+
+import nts.arc.layer.app.command.CommandHandler;
+import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.pr.core.dom.wageprovision.breakdownitemamount.*;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+@Stateless
+@Transactional
+public class AddBreakdownAmountHisCommandHandler extends CommandHandler<BreakdownAmountHisCommand>
+{
+    
+    @Inject
+    private BreakdownAmountHisRepository repository;
+
+    @Inject
+    private BreakdownAmountRepository breakdownAmountRepository;
+
+    @Override
+    protected void handle(CommandHandlerContext<BreakdownAmountHisCommand> context) {
+        BreakdownAmountHisCommand command = context.getCommand();
+        String cid = AppContexts.user().companyId();
+        int categoryAtr = command.getCategoryAtr();
+        String itemNameCd = command.getItemNameCd();
+        String employeeId = command.getEmployeeId();
+        int salaryBonusAtr = command.getSalaryBonusAtr();
+        String historyId = command.getPeriod().get(0).getHistoryId();
+        if(historyId == null){
+            String historyIdRd = UUID.randomUUID().toString();
+            YearMonthHistoryItem period = new YearMonthHistoryItem(
+                    historyIdRd,
+                    new YearMonthPeriod(
+                            new YearMonth(command.getPeriod().get(0).getStartMonth()),
+                            new YearMonth(command.getPeriod().get(0).getEndMonth())));
+            List lstData = new ArrayList();
+            lstData.add(period);
+            BreakdownAmountHis breakdownAmountHis = new BreakdownAmountHis(cid, categoryAtr, itemNameCd, employeeId, lstData, salaryBonusAtr);
+            repository.add(breakdownAmountHis);
+            List<YearMonthHistoryItemCommand> lstHistCommand = command.getPeriod().stream().filter(i -> i.getHistoryId() != null).collect(Collectors.toList());
+            List<YearMonthHistoryItem> lstDataHistory = lstHistCommand.stream().map(i -> new YearMonthHistoryItem(i.getHistoryId(), new YearMonthPeriod(new YearMonth(i.getStartMonth()), new YearMonth(i.getEndMonth())))).collect(Collectors.toList());
+            BreakdownAmountHis breakdownAmountHisUpdate = new BreakdownAmountHis(cid, categoryAtr, itemNameCd, employeeId, lstDataHistory, salaryBonusAtr);
+            repository.update(breakdownAmountHisUpdate);
+
+            List<BreakdownAmountListCommand> lstBreakdownAmountListCommands = command.getBreakdownAmountList();
+            List<BreakdownAmountListCommand> dataAmout = lstBreakdownAmountListCommands.stream().filter(i -> i.getAmount() != null).collect(Collectors.toList());
+            if(dataAmout.size() == 0){
+                return;
+            }
+            List<BreakdownAmountList> lstBreakdownAmountList = dataAmout.stream().map(i -> new BreakdownAmountList(i.getBreakdownItemCode(), i.getAmount())).collect(Collectors.toList());
+            BreakdownAmount data = new BreakdownAmount(historyIdRd, lstBreakdownAmountList);
+            breakdownAmountRepository.add(data);
+        }
+        else{
+            List<BreakdownAmountListCommand> lstBreakdownAmountListCommands = command.getBreakdownAmountList();
+            List<BreakdownAmountListCommand> dataAmout = lstBreakdownAmountListCommands.stream().filter(i -> i.getAmount() != null).collect(Collectors.toList());
+            if(dataAmout.size() == 0){
+                return;
+            }
+            List<BreakdownAmountList> lstBreakdownAmountList = dataAmout.stream().map(i -> new BreakdownAmountList(i.getBreakdownItemCode(), i.getAmount())).collect(Collectors.toList());
+            BreakdownAmount data = new BreakdownAmount(historyId, lstBreakdownAmountList);
+            breakdownAmountRepository.update(data);
+        }
+
+    }
+}

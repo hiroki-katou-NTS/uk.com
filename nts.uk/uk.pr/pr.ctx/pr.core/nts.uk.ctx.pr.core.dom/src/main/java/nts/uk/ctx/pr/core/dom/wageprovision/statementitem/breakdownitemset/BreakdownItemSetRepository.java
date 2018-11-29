@@ -16,6 +16,8 @@ public interface BreakdownItemSetRepository {
 
 	Optional<BreakdownItemSet> getBreakdownItemStById(String cid, int categoryAtr, String itemNameCd, String breakdownItemCode);
 
+	List<BreakdownItemSetCustom> getBreakdownItemByHistory(List<String> lstBreakdownItemCode);
+
 	void add(BreakdownItemSet domain);
 
 	void update(BreakdownItemSet domain);
