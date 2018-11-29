@@ -30,8 +30,7 @@ public class UpdateStatLayoutHistDataCommandHandler extends CommandHandler<State
     protected void handle(CommandHandlerContext<StatementLayoutHistDataCommand> context) {
         StatementLayoutHistDataCommand command = context.getCommand();
         String cid = AppContexts.user().companyId();
-
-        StatementLayout statementLayout = new StatementLayout(cid, command.getStatementCode(), command.getStatementName());
+       StatementLayout statementLayout = new StatementLayout(cid, command.getStatementCode(), command.getStatementName());
         YearMonthHistoryItem yearMonthHist = new YearMonthHistoryItem(command.getHistoryId(),
                 new YearMonthPeriod(new YearMonth(command.getStartMonth()), new YearMonth(command.getEndMonth())));
         StatementLayoutSet statementLayoutSet = command.getStatementLayoutSet().toDomain();

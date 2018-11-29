@@ -115,7 +115,7 @@ module nts.uk.pr.view.qmm019.h.viewmodel {
                     self.layoutPatternClone(), self.statementCode(), self.statementName(), startDate, self.layoutPatternSelected());
 
                 service.addStatementLayout(command).done(() => {
-                    setShared("QMM019_H_TO_A_PARAMS", { isRegistered: false, histID: histIdNew});
+                    setShared("QMM019_H_TO_A_PARAMS", { isRegistered: true, code: self.statementCode(), histID: histIdNew});
                     nts.uk.ui.windows.close();
                 }).fail(err => {
                     //TODO

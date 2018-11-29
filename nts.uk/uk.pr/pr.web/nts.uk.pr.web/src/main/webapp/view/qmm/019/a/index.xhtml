@@ -139,14 +139,19 @@
                                     <div class="line-sort" data-bind="ntsSortable: {
                                                                     data: listLineByLineSet,
                                                                     isEnabled: true }">
-                                        <div class="form-group item-classification">
+                                        <div class="form-group item-classification" data-bind="style: { background: printSet() == 0 ? '#E0F59E' : '#DDD'}">
                                             <span class="caret-right"></span>
-                                            <button id="A4_4" tabindex="18" class=""
-                                                    data-bind="enable: true, click: editLine"></button>
+                                            <button id="A4_4" class=""
+                                                    data-bind="enable: !hasFixed(), click: editLine"></button>
                                             <div class="item-sort" data-bind="ntsSortable: {
                                                                         data: listSetByItem,
                                                                         isEnabled: true }">
-                                                <div class="item" data-bind="text: itemPosition, click: openSetting"> </div>
+                                                <div class="item" data-bind="
+                                                                    text: shortName,
+                                                                    click: openSetting,
+                                                                    css: id,
+                                                                    style: { background: isFixed() ? '#404040' : deleted() ? '#EF7F7F' : '#FFFFFF',
+                                                                    color: isFixed() ? '#FFF' : '#404040'}"> </div>
                                             </div>
                                         </div>
                                     </div>
@@ -158,42 +163,118 @@
                                 </div>
                             </div>
                             <!-- 控除設定パネル -->
-                            <div id="A5_1" class="panel panel-frame">
+                            <div id="A5_1" class="panel panel-frame" data-bind="with: listSettingByCtg()[1]">
                                 <!-- 控除 -->
                                 <label id="A5_2" class="category-text">#{i18n.getText('QMM019_25')}</label>
                                 <hr/>
+                                <div id="deduction-table" class="drag-panel">
+                                    <div class="line-sort" data-bind="ntsSortable: {
+                                                                    data: listLineByLineSet,
+                                                                    isEnabled: true }">
+                                        <div class="form-group item-classification" data-bind="style: { background: printSet() == 0 ? '#E0F59E' : '#DDD'}">
+                                            <span class="caret-right"></span>
+                                            <button id="A5_4" class=""
+                                                    data-bind="enable: !hasFixed(), click: editLine"></button>
+                                            <div class="item-sort" data-bind="ntsSortable: {
+                                                                        data: listSetByItem,
+                                                                        isEnabled: true }">
+                                                <div class="item" data-bind="
+                                                                    text: shortName,
+                                                                    click: openSetting,
+                                                                    css: id,
+                                                                    style: { background: isFixed() ? '#404040' : deleted() ? '#EF7F7F' : '#FFFFFF',
+                                                                    color: isFixed() ? '#FFF' : '#404040'}"> </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="valign-center control-group">
                                     <!-- 控除行追加 -->
                                     <button id="A5_8" tabindex="17" class="add-line-btn"
-                                            data-bind="enable: true">#{i18n.getText('QMM019_24')}</button>
+                                            data-bind="enable: true, click: addLine">#{i18n.getText('QMM019_24')}</button>
                                 </div>
                             </div>
                             <!-- 勤怠設定パネル -->
-                            <div id="A7_1" class="panel panel-frame">
-                                <!-- 勤怠設定 -->
-                                <button id="A7_2" tabindex="18" class=""
-                                        data-bind="enable: true"></button>
-                                <!-- 勤怠 -->
-                                <label id="A7_3" class="category-text">#{i18n.getText('QMM019_29')}</label>
-                                <hr/>
-                                <div class="valign-center control-group">
-                                    <!-- 勤怠行追加 -->
-                                    <button id="A7_9" tabindex="22" class="add-line-btn"
-                                            data-bind="enable: true">#{i18n.getText('QMM019_30')}</button>
+                            <div id="A7_1" data-bind="with: listSettingByCtg()[2]">
+                                <div data-bind="visible: isShowCtg()" class="panel panel-frame">
+                                    <!-- 勤怠設定 -->
+                                    <button id="A7_2" tabindex="18" class=""
+                                            data-bind="enable: true, visible: $parent.layoutPattern() != 6"></button>
+                                    <!-- 勤怠 -->
+                                    <label id="A7_3" class="category-text">#{i18n.getText('QMM019_29')}</label>
+                                    <hr/>
+                                    <div id="attend-table" class="drag-panel">
+                                        <div class="line-sort" data-bind="ntsSortable: {
+                                                                        data: listLineByLineSet,
+                                                                        isEnabled: true }">
+                                            <div class="form-group item-classification" data-bind="style: { background: printSet() == 0 ? '#E0F59E' : '#DDD'}">
+                                                <span class="caret-right"></span>
+                                                <button id="A7_4" class=""
+                                                        data-bind="enable: true, click: editLine"></button>
+                                                <div class="item-sort" data-bind="ntsSortable: {
+                                                                            data: listSetByItem,
+                                                                            isEnabled: true }">
+                                                    <div class="item" data-bind="
+                                                                        text: shortName,
+                                                                        click: openSetting,
+                                                                        css: id,
+                                                                        style: { background: deleted() ? '#EF7F7F' : '#FFFFFF'}"> </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="valign-center control-group">
+                                        <!-- 勤怠行追加 -->
+                                        <button id="A7_9" tabindex="22" class="add-line-btn"
+                                                data-bind="enable: true, click: addLine">#{i18n.getText('QMM019_30')}</button>
+                                    </div>
+                                </div>
+                                <div class="valign-center control-group" data-bind="visible: !isShowCtg()">
+                                    <!-- 勤怠エリア追加 -->
+                                    <button id="A6_1" tabindex="28" class="add-attend-btn"
+                                            data-bind="click: showCtg">#{i18n.getText('QMM019_27')}</button>
                                 </div>
                             </div>
                             <!-- 記事設定パネル -->
-                            <div id="A8_1" class="panel panel-frame">
-                                <!-- 記事設定 -->
-                                <button id="A8_2" tabindex="23" class=""
-                                        data-bind="enable: true"></button>
-                                <!-- 記事 -->
-                                <label id="A8_3" class="category-text">#{i18n.getText('QMM019_31')}</label>
-                                <hr/>
-                                <div class="valign-center control-group">
-                                    <!-- 記事行追加 -->
-                                    <button id="A8_9" tabindex="27" class="add-line-btn"
-                                            data-bind="enable: true">#{i18n.getText('QMM019_32')}</button>
+                            <div id="A8_1" data-bind="with: listSettingByCtg()[3]">
+                                <div data-bind="visible: isShowCtg()" class="panel panel-frame">
+                                    <!-- 記事設定 -->
+                                    <button id="A8_2" tabindex="23" class=""
+                                            data-bind="enable: true, visible: $parent.layoutPattern() != 6"></button>
+                                    <!-- 記事 -->
+                                    <label id="A8_3" class="category-text">#{i18n.getText('QMM019_31')}</label>
+                                    <hr/>
+                                    <div id="other-table" class="drag-panel">
+                                        <div class="line-sort" data-bind="ntsSortable: {
+                                                                        data: listLineByLineSet,
+                                                                        isEnabled: true }">
+                                            <div class="form-group item-classification" data-bind="style: { background: printSet() == 0 ? '#E0F59E' : '#DDD'}">
+                                                <span class="caret-right"></span>
+                                                <button id="A8_4" class=""
+                                                        data-bind="enable: true, click: editLine"></button>
+                                                <div class="item-sort" data-bind="ntsSortable: {
+                                                                            data: listSetByItem,
+                                                                            isEnabled: true }">
+                                                    <div class="item" data-bind="
+                                                                        text: shortName,
+                                                                        click: openSetting,
+                                                                        css: id,
+                                                                        style: { background: deleted() ? '#EF7F7F' : '#FFFFFF'}"> </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="valign-center control-group">
+                                        <!-- 記事行追加 -->
+                                        <button id="A8_9" tabindex="27" class="add-line-btn"
+                                                data-bind="enable: true, click: addLine">#{i18n.getText('QMM019_32')}</button>
+                                    </div>
+                                </div>
+                                <div class="valign-center control-group" data-bind="visible: !isShowCtg()">
+                                    <!-- 記事エリア追加 -->
+                                    <button id="A6_2" tabindex="29" class="add-report-btn"
+                                            data-bind="click: showCtg">#{i18n.getText('QMM019_28')}</button>
                                 </div>
                             </div>
                         </div>

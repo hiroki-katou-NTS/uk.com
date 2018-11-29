@@ -32,7 +32,7 @@
     margin-top: 20px;
 }
 
-#A7_2, #A8_2, #A4_4 {
+#A7_2, #A8_2, #A4_4, #A5_4, #A7_4, #A8_4 {
     background: url("../resource/QMM019_1.png") no-repeat;
     border: 0;
     width: 27px;
@@ -79,7 +79,7 @@
     height: 26px;
     margin-left: 3px;
     margin-right: 3px;
-    display: inline-block;
+    float: left;
     background-color: #FFFFFF;
     border: 1px solid #CCC;
     border-radius: 3px;
@@ -100,7 +100,7 @@
 
 #contents-area .drag-panel .item-classification:hover,
 #contents-area .drag-panel .item-classification.selected {
-    background-color: #eee;
+    /*background-color: ;*/
     border: 1px dashed #aaa;
 }
 
@@ -160,6 +160,6 @@
     margin-top: 5px;
 }
 
-#statementLayoutSet .category-text, #statementLayoutSet .add-line-btn, #A7_2, #A8_2 {
+#statementLayoutSet .category-text, #statementLayoutSet .add-line-btn, #A7_2, #A8_2, #A7_9, #A8_9 {
     margin-left: 5px;
 }

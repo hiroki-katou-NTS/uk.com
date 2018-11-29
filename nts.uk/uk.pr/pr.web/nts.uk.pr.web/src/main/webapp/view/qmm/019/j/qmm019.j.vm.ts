@@ -11,14 +11,14 @@ module nts.uk.pr.view.qmm019.j.viewmodel {
 
         constructor() {
             let self = this;
-            let params = getShared("QMM019_A_TO_C_PARAMS");
+            let params = getShared("QMM019_A_TO_J_PARAMS");
 
             self.itemList = ko.observableArray([
-                new shareModel.BoxModel(1, getText("QMM019_188")),
-                new shareModel.BoxModel(2, getText("QMM019_189")),
+                new shareModel.BoxModel(0, getText("QMM019_188")),
+                new shareModel.BoxModel(1, getText("QMM019_189")),
             ]);
 
-            self.selectedId = ko.observable(1);
+            self.selectedId = ko.observable(0);
         }
 
         startPage(): JQueryPromise<any> {

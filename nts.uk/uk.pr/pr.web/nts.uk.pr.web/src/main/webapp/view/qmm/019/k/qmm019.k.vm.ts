@@ -14,11 +14,16 @@ module nts.uk.pr.view.qmm019.k.viewmodel {
             let params = getShared("QMM019_A_TO_K_PARAMS");
 
             self.itemList = ko.observableArray([
-                new shareModel.BoxModel(1, getText("QMM019_188")),
-                new shareModel.BoxModel(2, getText("QMM019_189")),
-                new shareModel.BoxModel(3, getText("QMM019_191"))
+                new shareModel.BoxModel(0, getText("QMM019_188")),
+                new shareModel.BoxModel(1, getText("QMM019_189")),
+                new shareModel.BoxModel(2, getText("QMM019_191"))
             ]);
-            self.selectedId = ko.observable(1);
+
+            if(params) {
+                self.selectedId = ko.observable(params.printSet);
+            } else {
+                self.selectedId = ko.observable(1);
+            }
         }
 
         startPage(): JQueryPromise<any> {
