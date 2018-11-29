@@ -1134,8 +1134,15 @@ module nts.uk.com.view.ccg.share.ccg {
                             if (hasPermission) {
                                 self.queryParam.baseDate = self.acquiredBaseDate();
                             } else {
-                                self.inputBaseDate(moment.utc().toISOString());
-                                self.queryParam.baseDate = moment().format(CcgDateFormat.DEFAULT_FORMAT); // set basedate = current system date
+                                const systemDate = moment.utc().toISOString();
+                                const systemDateFormated = moment.utc().format(CcgDateFormat.DEFAULT_FORMAT);
+                                self.inputBaseDate(systemDate);
+                                self.queryParam.baseDate = systemDateFormated;
+                                if (!self.showPeriod) {
+                                    self.inputPeriod(new DateRangePickerModel(systemDate, systemDate));
+                                    self.queryParam.periodStart = systemDateFormated;
+                                    self.queryParam.periodEnd = systemDateFormated;
+                                }
                             }
                             self.loadAdvancedSearchTab().done(() => {
                                 self.isApplySearchDone = true;
@@ -1702,7 +1709,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 // Data not found
                 if (nts.uk.util.isNullOrEmpty(data)) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_317" });
-                    return;
                 }
 
                 // sort by code
@@ -1716,6 +1722,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 // set data to kcp005
                 self.employeeListTab3(self.toUnitModelList(sortedList));
+                return;
             }
             
             /**

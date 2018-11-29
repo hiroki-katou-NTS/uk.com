@@ -4,6 +4,7 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
     import model = qmm020.share.model;
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
+    import errors = nts.uk.ui.errors;
     export class ScreenModel {
         itemList:               KnockoutObservableArray<model.ItemModel> = ko.observableArray(getHistoryEditMethod(false));
         isFirst:              KnockoutObservable<boolean> = ko.observable(true);
@@ -25,6 +26,10 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
         }
         submit(){
             let self = this;
+            self. validate();
+            if(errors.hasError()){
+                return;
+            }
             if(self.params().isPerson){
                 if (self.startYearMonthPeriod() > self.params().endYearMonth && self.startYearMonthPeriod() <= self.endYearMonthPeriod()) {
                     let data :any = {
@@ -95,6 +100,10 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
                 }
                 default : return MODE_SCREEN.MODE_ONE;
             }
+        }
+        validate() {
+            $("#J1_3").trigger("validate");
+            $("#J1_12").trigger("validate");
         }
 
         convertMonthYearToString(yearMonth: any) {

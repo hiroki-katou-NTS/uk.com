@@ -27,8 +27,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectOn
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectRangeOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.StampReflectTimezoneOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeZoneOutput;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
-import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.stamp.StampItem;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
@@ -139,8 +137,8 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 	@Inject
 	private ReflectShortWorkingTimeDomainService reflectShortWorkingTimeDomainService;
 
-	@Inject
-	private CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
+//	@Inject
+//	private CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
 
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
@@ -190,7 +188,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		// result data
 		StampReflectRangeOutput stampReflectRangeOutput = new StampReflectRangeOutput();
 
-		// 打刻反映時間帯を取得する
+		// 打刻反映時間帯を取得する - start
 		// 打刻反映時の出勤休日扱いチェック
 		CheckAttendanceHolidayOutPut attendanceHolidayOutPut = this.checkAttendanceHoliday(employeeID,
 				empCalAndSumExecLogID, companyID, workTypeCode.v(), processingDate);
@@ -218,6 +216,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		stampReflectRangeOutput.setGoOut(stampReflectRangeOutput.getStampRange());
 		// 臨時の打刻反映範囲を作成する
 		stampReflectRangeOutput.setTemporary(stampReflectRangeOutput.getStampRange());
+		// - end
 
 		// 打刻を反映する - Dung code
 		List<StampItem> lstStampItem = this.stampDomainService.handleData(stampReflectRangeOutput, reCreateAttr,
@@ -237,6 +236,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 				reflectStamp.setTimeLeavingOfDailyPerformance(timeLeavingOfDailyPerformance);
 			}
 
+			// 就業時間帯の休憩時間帯を日別実績に写す
 			// 就業時間帯の休憩時間帯を日別実績に反映する
 			BreakTimeOfDailyPerformance breakTimeOfDailyPerformance = this.reflectBreakTimeOfDailyDomainService
 					.reflectBreakTimeZone(companyID, employeeID, processingDate, empCalAndSumExecLogID,

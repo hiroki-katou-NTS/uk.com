@@ -2,6 +2,10 @@
 	padding-left : 30px !important;
 	min-width: 1200px;
 } */
+
+#functions-area{
+    overflow: visible;
+}
 .tr360 {
 	width: 360px !important;
 }

@@ -17,8 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QpbmtStateCorHisSalPk implements Serializable
-{
+public class QpbmtStateCorHisSalPk implements Serializable {
     private static final long serialVersionUID = 1L;
     
     /**
@@ -34,5 +33,12 @@ public class QpbmtStateCorHisSalPk implements Serializable
     @Basic(optional = false)
     @Column(name = "HIS_ID")
     public String hisId;
+
+    /**
+     * マスタコード
+     */
+    @Basic(optional = false)
+    @Column(name = "MASTER_CODE")
+    public String masterCode;
     
 }

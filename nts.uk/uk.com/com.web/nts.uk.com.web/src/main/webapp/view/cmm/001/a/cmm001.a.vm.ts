@@ -144,7 +144,8 @@ module cmm001.a {
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.reject();
-                alert(error.message);
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId })
+                    .then(() => nts.uk.request.jump("/view/ccg/008/a/index.xhtml"));
             }).always(() => {
                 nts.uk.ui.block.clear();
             });

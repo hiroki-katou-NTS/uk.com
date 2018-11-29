@@ -216,7 +216,7 @@ public class WorkDaysOfMonthly {
 		this.workDays.sum(target.workDays);
 		this.holidayDays.sum(target.holidayDays);
 		this.specificDays.sum(target.specificDays);
-		this.holidayDays.sum(target.holidayDays);
+		this.holidayWorkDays.sum(target.holidayWorkDays);
 		this.payDays.sum(target.payDays);
 		this.workTimes.sum(target.workTimes);
 		this.twoTimesWorkTimes.sum(target.twoTimesWorkTimes);

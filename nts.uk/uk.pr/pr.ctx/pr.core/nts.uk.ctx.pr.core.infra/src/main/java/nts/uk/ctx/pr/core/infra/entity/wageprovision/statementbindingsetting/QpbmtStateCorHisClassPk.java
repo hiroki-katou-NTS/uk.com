@@ -34,5 +34,12 @@ public class QpbmtStateCorHisClassPk implements Serializable
     @Basic(optional = false)
     @Column(name = "HIS_ID")
     public String hisId;
+
+    /**
+     * マスタコード
+     */
+    @Basic(optional = false)
+    @Column(name = "MASTER_CODE")
+    public String masterCode;
     
 }

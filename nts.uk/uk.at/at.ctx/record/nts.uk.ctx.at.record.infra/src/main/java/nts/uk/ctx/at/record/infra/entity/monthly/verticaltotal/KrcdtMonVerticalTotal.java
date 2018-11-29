@@ -64,6 +64,7 @@ import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMon
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrPremTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonMedicalTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -397,7 +398,7 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 						new AttendanceTimeMonth(this.attendanceLeaveGateAfterLeaveWorkTime),
 						new AttendanceTimeMonth(this.attendanceLeaveGateStayingTime),
 						new AttendanceTimeMonth(this.attendanceLeaveGateUnemployedTime)),
-				BudgetTimeVarienceOfMonthly.of(new AttendanceTimeMonth(this.budgetVarienceTime)),
+				BudgetTimeVarienceOfMonthly.of(new AttendanceTimeMonthWithMinus(this.budgetVarienceTime)),
 				DivergenceTimeOfMonthly.of(
 						krcdtMonAggrDivgTime.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
 				krcdtMonMedicalTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));

@@ -2,8 +2,8 @@ package nts.uk.ctx.at.request.app.find.application.common.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.JobtitleSearchSetImport;
+/*import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.JobtitleSearchSetImport;*/
 
 @Value
 @AllArgsConstructor

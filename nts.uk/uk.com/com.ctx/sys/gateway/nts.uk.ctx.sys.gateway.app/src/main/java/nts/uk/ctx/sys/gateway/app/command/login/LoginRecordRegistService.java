@@ -95,7 +95,7 @@ public class LoginRecordRegistService {
 	 * @param companyId
 	 *            the company id
 	 */
-	protected void loginRecord(LoginRecordInput infor, String companyId) {
+	public void loginRecord(LoginRecordInput infor, String companyId) {
 		// 基盤(KIBAN)よりログイン者の基本情報を取得する (Acquire the basic information of
 		// the login from the from KIBAN)
 		LoginInformation loginInformation = new LoginInformation(

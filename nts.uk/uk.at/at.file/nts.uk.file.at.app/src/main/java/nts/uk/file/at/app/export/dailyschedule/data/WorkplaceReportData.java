@@ -47,6 +47,9 @@ public class WorkplaceReportData {
 	
 	// Period for optimizing performance
 	public DatePeriod period;
+
+	// Employee data & child workplaces' employee data presentation
+	boolean hasData = false;
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)

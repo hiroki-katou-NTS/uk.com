@@ -4,7 +4,11 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.*;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.RegisterMode;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisIndiviService;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateLinkSetIndivi;
+import nts.uk.shr.com.history.YearMonthHistoryItem;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -15,30 +19,31 @@ import javax.transaction.Transactional;
 public class RegisterHisIndividualCommandHandler extends CommandHandler<StateLinkSettingIndividualCommand> {
     
     @Inject
-    private StateCorrelationHisIndividualService stateCorrelationHisIndividualService;
+    private StateCorreHisIndiviService stateCorreHisIndiviService;
     
     @Override
     protected void handle(CommandHandlerContext<StateLinkSettingIndividualCommand> context) {
         StateLinkSettingIndividualCommand command = context.getCommand();
         YearMonth start = new YearMonth(command.getStart());
         YearMonth end = new YearMonth(command.getEnd());
-        StateLinkSettingIndividual stateLinkSettingIndividual;
+        StateLinkSetIndivi stateLinkSetIndivi;
         if(command.getMode() == RegisterMode.NEW.value) {
             String hisId = IdentifierUtil.randomUniqueId();
-            stateLinkSettingIndividual = new StateLinkSettingIndividual(
+            stateLinkSetIndivi = new StateLinkSetIndivi(
                     hisId,
-                    command.getSalary() != null ? new StatementCode(command.getSalary()) : null,
-                    command.getBonus() != null ? new StatementCode(command.getBonus()) : null
+                    command.getSalary() != null ? new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(command.getSalary()) : null,
+                    command.getBonus() != null ? new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(command.getBonus()) : null
             );
-            stateCorrelationHisIndividualService.addHistoryIndividual(hisId, start, end, stateLinkSettingIndividual, command.getEmpId());
+            stateCorreHisIndiviService.addHistoryIndividual(hisId, start, end, stateLinkSetIndivi, command.getEmpId());
         } else {
             String hisId = command.getHisId();
-            stateLinkSettingIndividual = new StateLinkSettingIndividual(
+            YearMonthHistoryItem history = new YearMonthHistoryItem(hisId,new YearMonthPeriod(start,end));
+            stateLinkSetIndivi = new StateLinkSetIndivi(
                     hisId,
-                    command.getSalary() != null ? new StatementCode(command.getSalary()) : null,
-                    command.getBonus() != null ? new StatementCode(command.getBonus()) : null
+                    command.getSalary() != null ? new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(command.getSalary()) : null,
+                    command.getBonus() != null ? new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(command.getBonus()) : null
             );
-            stateCorrelationHisIndividualService.updateHistoryIndividual(stateLinkSettingIndividual);
+            stateCorreHisIndiviService.updateHistoryIndividual(history, stateLinkSetIndivi, command.getEmpId());
         }
     }
 }

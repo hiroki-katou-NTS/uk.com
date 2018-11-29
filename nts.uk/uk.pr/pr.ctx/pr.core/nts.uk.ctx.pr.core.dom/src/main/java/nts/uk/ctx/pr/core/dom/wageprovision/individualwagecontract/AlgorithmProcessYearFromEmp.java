@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.CurrProcessDate;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.CurrProcessDateRepository;
@@ -28,8 +29,8 @@ public class AlgorithmProcessYearFromEmp {
         Optional<EmpTiedProYear> empTiedProYear = empTiedProYearRepository.getEmpTiedProYearByEmployment(cid, employmentCode);
         if (empTiedProYear.isPresent()){
             return currProcessDateRepository.getCurrProcessDateById(cid, empTiedProYear.get().getProcessCateNo()).get(0).getGiveCurrTreatYear();
-        }else {
-            return new YearMonth(0);
+        } else {
+            return GeneralDate.today().yearMonth();
         }
     }
 }

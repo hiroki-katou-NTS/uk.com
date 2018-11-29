@@ -271,7 +271,7 @@ public class SaveHolidayShipmentCommandHandler
 
 	private void updateDigestionTarget(SaveHolidayShipmentCommand command) {
 		// アルゴリズム「勤務種類別振休消化数の取得」を実行する
-		BigDecimal day = getByWorkType(command.getAbsCmd().getWkTypeCD(), WorkTypeClassification.Pause);
+		//BigDecimal day = getByWorkType(command.getAbsCmd().getWkTypeCD(), WorkTypeClassification.Pause);
 		// TODO アルゴリズム「暫定振休管理データの登録と自動相殺」を実行する chưa làm được do không có thông
 		// tin của 暫定振休管理データ
 		// 暫定振出振休紐付け管理の件数分ループ
@@ -296,11 +296,11 @@ public class SaveHolidayShipmentCommandHandler
 
 	private void updateOccurrenceData(String companyID, String sID, String wkTypeCD, GeneralDate recDate) {
 		// アルゴリズム「勤務種類別振休発生数の取得」を実行する
-		BigDecimal holidayBrkDownDay = getByWorkType(wkTypeCD, WorkTypeClassification.Shooting);
+		//BigDecimal holidayBrkDownDay = getByWorkType(wkTypeCD, WorkTypeClassification.Shooting);
 		// アルゴリズム「勤務種類別法定内外区分の取得」を実行する
-		HolidayAtr holidayType = getHolidayTypeByWkType(wkTypeCD, companyID);
+		//HolidayAtr holidayType = getHolidayTypeByWkType(wkTypeCD, companyID);
 		// アルゴリズム「振休有効期限の決定」を実行する
-		GeneralDate expDate = DemOfexpDate(recDate, companyID, sID);
+		//GeneralDate expDate = DemOfexpDate(recDate, companyID, sID);
 		// アルゴリズム「暫定振出管理データの登録と自動相殺」を実行する
 		registerMngData(recDate);
 
@@ -530,7 +530,7 @@ public class SaveHolidayShipmentCommandHandler
 
 	private void updateOfSubstitution(SaveHolidayShipmentCommand command, String wkTypeCD) {
 		// アルゴリズム「勤務種類別代休消化数の取得」を実行する
-		BigDecimal substitutionDay = getByWorkType(wkTypeCD, WorkTypeClassification.SubstituteHoliday);
+		//BigDecimal substitutionDay = getByWorkType(wkTypeCD, WorkTypeClassification.SubstituteHoliday);
 
 		// TODO liên quan đến domain 暫定休出管理データ
 

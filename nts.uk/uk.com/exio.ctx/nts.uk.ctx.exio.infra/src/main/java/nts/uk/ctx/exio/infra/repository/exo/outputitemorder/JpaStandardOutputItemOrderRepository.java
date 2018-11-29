@@ -73,4 +73,15 @@ public class JpaStandardOutputItemOrderRepository extends JpaRepository implemen
 	public void remove(String cid, String condSetCd) {
 	    this.getEntityManager().createQuery(DELETE_OUT_ITEM_ORDER, OiomtStdOutItemOrder.class).setParameter("cid", cid).setParameter("condSetCd", condSetCd).executeUpdate();
 	}
+
+	private static final String SELECT_MAX_ORDER = "SELECT MAX(f.displayOrder) FROM OiomtStdOutItemOrder f"
+			+ " WHERE  f.stdOutItemOrderPk.cid =:cid AND  f.stdOutItemOrderPk.condSetCd =:condSetCd ";
+	
+	@Override
+	public int getMaxOrder(String cid, String condSetCd) {
+		return this.queryProxy().query(SELECT_MAX_ORDER, int.class)
+				.setParameter("cid", cid)
+				.setParameter("condSetCd", condSetCd)
+				.getSingle().orElse(0);
+	}
 }

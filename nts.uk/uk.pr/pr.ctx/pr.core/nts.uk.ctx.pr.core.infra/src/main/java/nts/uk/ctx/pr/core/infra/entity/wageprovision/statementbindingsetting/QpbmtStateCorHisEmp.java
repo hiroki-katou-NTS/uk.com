@@ -1,62 +1,108 @@
 package nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting;
 
-import java.io.Serializable;
-import java.util.List;
-
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementbindingsetting.StateCorrelationHisEmployee;
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.MasterCode;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisEm;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateLinkSetMaster;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
-* 明細書紐付け履歴（雇用）
-*/
+ * 明細書紐付け履歴（雇用）
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "QPBMT_STATE_COR_HIS_EMP")
-public class QpbmtStateCorHisEmp extends UkJpaEntity implements Serializable
-{
+public class QpbmtStateCorHisEmp extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
-    
+
     /**
-    * ID
-    */
+     * ID
+     */
     @EmbeddedId
     public QpbmtStateCorHisEmpPk stateCorHisEmpPk;
-    
+
     /**
-    * 開始年月
-    */
+     * 開始年月
+     */
     @Basic(optional = false)
     @Column(name = "START_YEAR_MONTH")
     public int startYearMonth;
-    
+
     /**
-    * 終了年月
-    */
+     * 終了年月
+     */
     @Basic(optional = false)
     @Column(name = "END_YEAR_MONTH")
     public int endYearMonth;
-    
+
+    /**
+     * 給与明細書
+     */
+    @Basic(optional = true)
+    @Column(name = "SALARY")
+    public String salaryCode;
+
+    /**
+     * 賞与明細書
+     */
+    @Basic(optional = true)
+    @Column(name = "BONUS")
+    public String bonusCode;
+
     @Override
-    protected Object getKey()
-    {
+    protected Object getKey() {
         return stateCorHisEmpPk;
     }
 
-    public StateCorrelationHisEmployee toDomain(List<YearMonthHistoryItem> history) {
-        return new StateCorrelationHisEmployee(this.stateCorHisEmpPk.cid, history);
+    public StateCorreHisEm toDomain(List<YearMonthHistoryItem> history) {
+        return new StateCorreHisEm(this.stateCorHisEmpPk.cid, history);
     }
-    public static QpbmtStateCorHisEmp toEntity(String cid, YearMonthHistoryItem history) {
-        return new QpbmtStateCorHisEmp(new QpbmtStateCorHisEmpPk(cid, history.identifier()),history.start().v(), history.end().v());
+
+    public StateLinkSetMaster toDomain() {
+        return new StateLinkSetMaster(this.stateCorHisEmpPk.hisId,
+                new MasterCode(this.stateCorHisEmpPk.masterCode),
+                this.salaryCode == null ? null : new StatementCode(this.salaryCode),
+                this.bonusCode == null ? null : new StatementCode(this.bonusCode));
+    }
+
+    public static List<YearMonthHistoryItem> toDomainYearMonth(List<QpbmtStateCorHisEmp> entity){
+
+        List<YearMonthHistoryItem> history = new ArrayList<>();
+        if(entity == null || entity.isEmpty())
+            return history;
+
+        return entity.stream().map(item ->{
+            return new YearMonthHistoryItem(
+                    item.stateCorHisEmpPk.hisId,
+                    new YearMonthPeriod(new YearMonth(item.startYearMonth),new YearMonth(item.endYearMonth)));
+        }).collect(Collectors.toList()).stream().distinct().collect(Collectors.toList());
+    }
+
+
+
+    public static List<QpbmtStateCorHisEmp> toEntity(String cid, List<StateLinkSetMaster> stateLinkSetMasters, int startYearMonth, int endYearMonth) {
+        List<QpbmtStateCorHisEmp> listStateCorHisEmp = new ArrayList<>();
+        if (stateLinkSetMasters == null || stateLinkSetMasters.isEmpty()) {
+            return listStateCorHisEmp;
+        }
+        listStateCorHisEmp = stateLinkSetMasters.stream().map(item -> new QpbmtStateCorHisEmp(new QpbmtStateCorHisEmpPk(cid, item.getHistoryID(), item.getMasterCode().v()),
+                startYearMonth, endYearMonth,
+                item.getSalaryCode().isPresent() ? item.getSalaryCode().get().v() : null,
+                item.getBonusCode().isPresent() ? item.getBonusCode().get().v() : null))
+                .collect(Collectors.toList());
+        return listStateCorHisEmp;
     }
 
 }

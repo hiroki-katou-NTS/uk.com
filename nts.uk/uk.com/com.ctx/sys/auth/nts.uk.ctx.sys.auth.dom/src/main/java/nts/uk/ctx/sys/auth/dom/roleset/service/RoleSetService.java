@@ -5,6 +5,7 @@
 package nts.uk.ctx.sys.auth.dom.roleset.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
@@ -46,6 +47,6 @@ public interface RoleSetService {
      * 
      * @return RoleSet domain
      */
-    RoleSet getRoleSetFromUserId(String userId, GeneralDate baseDate);
+    Optional<RoleSet> getRoleSetFromUserId(String userId, GeneralDate baseDate);
     
 }

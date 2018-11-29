@@ -2,13 +2,18 @@ package nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.CompensatoryLeaveUseTimeOfTimeSeries;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -63,9 +68,15 @@ public class CompensatoryLeaveUseTimeOfMonthly implements Cloneable {
 	 * 代休使用時間を確認する
 	 * @param datePeriod 期間
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
+	 * @param workInfoOfDailyMap 日別実績の勤務情報リスト
+	 * @param companySets 月別集計で必要な会社別設定
+	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void confirm(DatePeriod datePeriod,
-			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap){
+			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
+			Map<GeneralDate, WorkInfoOfDailyPerformance> workInfoOfDailyMap,
+			MonAggrCompanySettings companySets,
+			RepositoriesRequiredByMonthlyAggr repositories){
 
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.values()) {
 			val ymd = attendanceTimeOfDaily.getYmd();
@@ -81,8 +92,27 @@ public class CompensatoryLeaveUseTimeOfMonthly implements Cloneable {
 			if (holidayOfDaily.getSubstitute() == null) return;
 			val substitute = holidayOfDaily.getSubstitute();
 			
+			// 期間中の勤務種類を取得する
+			String workTypeCode = null;
+			if (workInfoOfDailyMap.containsKey(ymd)) {
+				val workInfo = workInfoOfDailyMap.get(ymd);
+				if (workInfo.getRecordInfo() != null) {
+					if (workInfo.getRecordInfo().getWorkTypeCode() != null) {
+						workTypeCode = workInfo.getRecordInfo().getWorkTypeCode().v();
+					}
+				}
+			}
+			
 			// 取得した使用時間を「月別実績の代休使用時間」に入れる
-			val compensatoryLeaveUseTime = CompensatoryLeaveUseTimeOfTimeSeries.of(ymd, substitute);
+			HolidayAtr holidayAtr = HolidayAtr.STATUTORY_HOLIDAYS;
+			if (workTypeCode != null) {
+				val workType = companySets.getWorkTypeMap(workTypeCode, repositories);
+				if (workType != null) {
+					Optional<HolidayAtr> holidayAtrOpt = workType.getHolidayAtr();
+					if (holidayAtrOpt.isPresent()) holidayAtr = holidayAtrOpt.get();
+				}
+			}
+			val compensatoryLeaveUseTime = CompensatoryLeaveUseTimeOfTimeSeries.of(ymd, substitute, holidayAtr);
 			this.timeSeriesWorks.putIfAbsent(ymd, compensatoryLeaveUseTime);
 		}
 	}
@@ -115,6 +145,25 @@ public class CompensatoryLeaveUseTimeOfMonthly implements Cloneable {
 			returnTime = returnTime.addMinutes(timeSeriesWork.getSubstituteHolidayUseTime().getUseTime().v());
 		}
 		return returnTime;
+	}
+	
+	/**
+	 * 法定内代休時間の計算
+	 * @param datePeriod 期間
+	 * @return 法定内代休時間
+	 */
+	public AttendanceTimeMonth calcLegalTime(DatePeriod datePeriod){
+		
+		int legalMinutes = 0;
+		for (val timeSeriesWork : this.timeSeriesWorks.values()){
+			if (!datePeriod.contains(timeSeriesWork.getYmd())) continue;
+			
+			// 休日区分の判断
+			if (timeSeriesWork.getHolidayAtr() == HolidayAtr.STATUTORY_HOLIDAYS){
+				legalMinutes += timeSeriesWork.getSubstituteHolidayUseTime().getUseTime().v();
+			}
+		}
+		return new AttendanceTimeMonth(legalMinutes);
 	}
 	
 	/**

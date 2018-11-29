@@ -18,7 +18,7 @@ public interface AppReflectProcessSchePub {
 	 * 勤務変更申請
 	 * @param workChangeParam
 	 */
-	public boolean appWorkChangeReflect(CommonReflectSchePubParam workChangeParam);
+	public boolean appWorkChangeReflect(WorkChangeCommonReflectSchePubParam workChangeParam);
 	/**
 	 * 休日出勤申請
 	 * @param holidayWorkParam

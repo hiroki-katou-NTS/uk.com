@@ -6,8 +6,10 @@ package nts.uk.ctx.bs.employee.app.find.workplace.config.info;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -27,6 +29,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.HierarchyCode;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
@@ -65,6 +68,7 @@ public class WorkplaceConfigInfoFinder {
 
 	@Inject
 	private SyRoleAdapter syRoleWorkplaceAdapter;
+	
 
 	/**
 	 * Find all by base date.
@@ -265,7 +269,12 @@ public class WorkplaceConfigInfoFinder {
 					searchCode, highestHierarchy);
 		}
 	}
+	
+	@Inject
+	private WorkplaceInfoRepository workplaceInfoRepo;
 
+//	@Inject
+//	private WorkplaceConfigInfoRepository workplaceConfigInfoRepo;
 	/**
 	 * Find all by base date.
 	 *
@@ -273,16 +282,17 @@ public class WorkplaceConfigInfoFinder {
 	 *            the object
 	 * @return the list
 	 */
+	
 	public List<WorkplaceHierarchyDto> findAllByBaseDateForKcp010(WkpConfigInfoFindObject object) {
-
+		
 		// get base date
 		GeneralDate baseD = object.getBaseDate();
-
+		object.setSystemType(2);
 		// get all WorkplaceConfigInfo with StartDate
 		String companyId = AppContexts.user().companyId();
 		Optional<WorkplaceConfig> optionalWkpConfig = wkpConfigRepository.findByBaseDate(companyId, baseD);
 		if (!optionalWkpConfig.isPresent()) {
-			return null;
+			return Collections.emptyList();
 		}
 		WorkplaceConfig wkpConfig = optionalWkpConfig.get();
 		String historyId = wkpConfig.getWkpConfigHistoryLatest().identifier();
@@ -290,11 +300,10 @@ public class WorkplaceConfigInfoFinder {
 		if (!opWkpConfigInfo.isPresent()) {
 			return Collections.emptyList();
 		}
-
 		// get list hierarchy
 		List<WorkplaceHierarchy> lstHierarchy = opWkpConfigInfo.get().getLstWkpHierarchy();
 
-		WorkplaceIDImport workplaceIDImport = syRoleWorkplaceAdapter.findListWkpId(object.getSystemType());
+		WorkplaceIDImport workplaceIDImport = syRoleWorkplaceAdapter.findListWkpIdByRoleId(object.getSystemType(),baseD);
 
 		List<WorkplaceHierarchy> result = new ArrayList<>();
 
@@ -302,7 +311,32 @@ public class WorkplaceConfigInfoFinder {
 		if (workplaceIDImport.getListWorkplaceIds().isEmpty()) {
 			return this.initTree(baseD, result);
 		}
+//		
+//		List<String> listWpId = workplaceIDImport.getListWorkplaceIds();
+//		//RQ 164
+//		List<WorkplaceInfo> optWorkplaceInfos = workplaceInfoRepo.findByBaseDateWkpIds(companyId,
+//				baseD, listWpId);
+//		List<WorkplaceConfigInfo> workplaceConfigInfos = workplaceConfigInfoRepo
+//				.findByWkpIdsAtTime(companyId, baseD, listWpId);
+//		List<WorkplaceHierarchy> lstWkpHierarchy = workplaceConfigInfos.stream()
+//				.flatMap(item -> item.getLstWkpHierarchy().stream()).collect(Collectors.toList());
+//		Map<String, String> mapHierarchyCd = lstWkpHierarchy.stream().collect(Collectors
+//				.toMap(WorkplaceHierarchy::getWorkplaceId, item -> item.getHierarchyCode().v()));
 
+//		List<WkpIdNameHierarchyCd> listWkpIdNameHierarchyCd = optWorkplaceInfos.stream()
+//				.map(wkpInfo -> WkpIdNameHierarchyCd.builder().wkpId(wkpInfo.getWorkplaceId())
+//						.wkpName(wkpInfo.getWorkplaceName().v())
+//						.hierarchyCd(mapHierarchyCd.get(wkpInfo.getWorkplaceId())).build())
+//				.collect(Collectors.toList());
+//		
+//		listWkpIdNameHierarchyCd.sort(Comparator.comparing(WkpIdNameHierarchyCd::getHierarchyCd));
+//		
+//		List<WorkplaceHierarchy> result2 = new ArrayList<>();
+//		if(!listWkpIdNameHierarchyCd.isEmpty()) {
+//			result2 = listWkpIdNameHierarchyCd.stream().map(c->convertToWorkplaceHierarchy(c)).collect(Collectors.toList());
+//		}else {
+//			return Collections.emptyList();
+//		}
 		// if listWorkplaceIds is not empty
 		for (WorkplaceHierarchy item : lstHierarchy) {
 			if (workplaceIDImport.getListWorkplaceIds().contains(item.getWorkplaceId())) {
@@ -334,6 +368,14 @@ public class WorkplaceConfigInfoFinder {
 		}
 		return this.initTree(baseD, result);
 	}
+//	
+//	private WorkplaceHierarchy convertToWorkplaceHierarchy(WkpIdNameHierarchyCd wkpIdNameHierarchyCd) {
+//		return new WorkplaceHierarchy(
+//				wkpIdNameHierarchyCd.getWkpId(),
+//				new HierarchyCode(wkpIdNameHierarchyCd.getHierarchyCd())
+//				);
+//		
+//	}
 
 	/**
 	 * Find flat list. 会社の基準日時点の職場を取得する
