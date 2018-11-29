@@ -10,12 +10,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExport;
 import nts.uk.ctx.sys.auth.pub.role.RoleExport;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.dto.RoleImport;
-import nts.uk.ctx.sys.gateway.dom.login.dto.RoleIndividualGrantImport;
 
 @Stateless
 public class RoleAdapterImpl implements RoleAdapter {

@@ -11,8 +11,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
+//import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
+//import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.IErrorCheckBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeCheckResult;
@@ -22,8 +22,8 @@ public class OvertimeFourProcessImpl implements OvertimeFourProcess{
 	private IErrorCheckBeforeRegister IErrorCheckBeforeRegister;
 	@Inject
 	private OvertimeSixProcess overtimeSixProcess;
-	@Inject
-	private RecordWorkInfoAdapter recordWorkInfoAdapter;
+//	@Inject
+//	private RecordWorkInfoAdapter recordWorkInfoAdapter;
 	
 	@Override
 	public List<CaculationTime> checkDisplayColor(List<CaculationTime> overTimeInputs,
@@ -62,7 +62,7 @@ public class OvertimeFourProcessImpl implements OvertimeFourProcess{
 		boolean condition = overtimeSixProcess.checkCondition(prePostAtr,appType,companyID);
 		if(condition){
 			//Imported(申請承認)「勤務実績」を取得する
-			RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,appDate);
+			//RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,appDate);
 			// Imported(申請承認)「計算残業時間」を取得する 
 			caculation = printColor(overTimeInputs,overtimeInputCaculations);
 			

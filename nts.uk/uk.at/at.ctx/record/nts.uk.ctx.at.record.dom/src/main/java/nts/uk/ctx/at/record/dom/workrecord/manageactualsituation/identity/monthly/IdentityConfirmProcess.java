@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.identity.month
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
+//import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcess;
+//import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcess;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcessRepository;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 

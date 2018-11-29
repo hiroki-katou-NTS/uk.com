@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import lombok.SneakyThrows;
+//import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;

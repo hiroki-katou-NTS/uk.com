@@ -48,7 +48,7 @@ public class WorkPlaceSelectionExportImpl implements MasterListData {
 
 
 	@Override
-	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery arg0) {
+	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 		List<WorkPlaceFunction> workPlaceFunction = workPlaceFunctionRepository.getAllWorkPlaceFunction();
 		columns.add(

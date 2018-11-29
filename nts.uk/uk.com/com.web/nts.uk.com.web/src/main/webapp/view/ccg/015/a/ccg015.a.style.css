@@ -2,6 +2,10 @@
 	padding-left : 30px !important;
 	min-width: 1200px;
 } */
+
+#functions-area{
+    overflow: visible;
+}
 .tr360 {
 	width: 360px !important;
 }
@@ -141,6 +145,11 @@ button.nts-switch-button {
 .drop_links {
 	max-height: 50px;
 	margin-left: 270px;
+    color: #0D86D1;
+}
+
+.drop_links .function-header{
+	background-color: #E0F59E;
 }
 
 .float_left {

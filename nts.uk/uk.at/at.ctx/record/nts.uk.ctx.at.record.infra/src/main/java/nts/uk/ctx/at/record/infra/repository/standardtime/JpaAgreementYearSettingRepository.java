@@ -8,13 +8,13 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
+//import nts.arc.time.YearMonth;
+//import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementYearSetting;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepository;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementYearSetting;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementYearSettingPK;
-import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgreementMonthSet;
+//import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgreementMonthSet;
 
 @Stateless
 public class JpaAgreementYearSettingRepository extends JpaRepository implements AgreementYearSettingRepository {

@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.function.dom.adapter.toppagealarmpub;
 
-import lombok.Data;
+//import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Getter;

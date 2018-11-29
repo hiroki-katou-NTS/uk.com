@@ -57,8 +57,9 @@
 
 .tableb th.tbl-thb {
 	border: 1px solid #999999;
-	background-color: #E0F59E;
+	background-color: #CFF1A5;
 	height: 25px;
+    font-weight: bold;
 }
 
 .tableb td.tbl-tdb {

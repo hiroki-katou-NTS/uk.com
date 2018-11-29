@@ -146,6 +146,8 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 		case DATE:
 			dateValue = domain.getDataState().getDateValue();
 			break;
+		default:
+			break;
 		}
 		return new PpemtEmpInfoItemData(key, domain.getDataState().getDataStateType().value, stringValue, intValue,
 				dateValue);
@@ -167,8 +169,9 @@ public class JpaEmpInfoItemDataRepository extends JpaRepository implements EmpIn
 		case DATE:
 			entity.dateValue = domain.getDataState().getDateValue();
 			break;
+		default:
+			break;
 		}
-
 	}
 
 	@Override

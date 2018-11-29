@@ -536,7 +536,7 @@ public class AppOvertimeFinder {
 			}
 		}
 		
-		List<OvertimeWorkFrame> otFrames = iOvertimePreProcess.getOvertimeHours(appOverTime.getOverTimeAtr().value,companyID);
+//		List<OvertimeWorkFrame> otFrames = iOvertimePreProcess.getOvertimeHours(appOverTime.getOverTimeAtr().value,companyID);
 		// dùng cho xử lí tính toán
 		List<CaculationTime> overTimeHours = new ArrayList<>(); 
 		for(OvertimeWorkFrame overtimeFrame :overtimeFrames){

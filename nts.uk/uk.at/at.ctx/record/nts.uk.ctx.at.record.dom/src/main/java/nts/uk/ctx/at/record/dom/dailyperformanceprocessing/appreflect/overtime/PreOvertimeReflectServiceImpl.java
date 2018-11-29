@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +32,9 @@ import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateOption;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
@@ -97,6 +101,10 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 	private AdTimeAndAnyItemAdUpService timeAndAnyItemUpService;
 	@Inject
 	private WorkUpdateService updateService;
+	@Inject
+	private CalculateDailyRecordServiceCenter calService;
+	@Inject
+	private CommonCompanySettingForCalc commonComSetting;
 	@Override
 	public boolean overtimeReflect(OvertimeParameter param) {
 		try {
@@ -139,9 +147,11 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 					param.getOvertimePara().getAppReason(),param.getOvertimePara().getOvertimeAtr());
 			//日別実績の修正からの計算
 			//○日別実績を置き換える Replace daily performance		
-			IntegrationOfDaily calculateData = calculate.calculate(this.calculateForAppReflect(param.getEmployeeId(), param.getDateInfo()),null,null,Optional.empty(),Optional.empty()).getIntegrationOfDaily();
-			timeAndAnyItemUpService.addAndUpdate(calculateData);
-			
+			List<IntegrationOfDaily> lstCal = calService.calculateForSchedule(CalculateOption.asDefault(),
+					Arrays.asList(this.calculateForAppReflect(param.getEmployeeId(), param.getDateInfo())) , Optional.of(commonComSetting.getCompanySetting()));
+			lstCal.stream().forEach(x -> {
+				timeAndAnyItemUpService.addAndUpdate(x);	
+			});
 			return true;
 	
 		} catch (Exception ex) {

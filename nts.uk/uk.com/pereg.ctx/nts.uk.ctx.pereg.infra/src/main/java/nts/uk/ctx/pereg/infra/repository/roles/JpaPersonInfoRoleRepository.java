@@ -5,13 +5,11 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pereg.dom.roles.PersonInforRole;
 import nts.uk.ctx.pereg.dom.roles.PersonInforRoleRepository;
 import nts.uk.ctx.pereg.infra.entity.roles.PpemtPersonRole;
 import nts.uk.ctx.pereg.infra.entity.roles.PpemtPersonRolePk;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaPersonInfoRoleRepository extends JpaRepository implements PersonInforRoleRepository {
@@ -23,11 +21,11 @@ public class JpaPersonInfoRoleRepository extends JpaRepository implements Person
 	private final String SEL_2 = SELECT_NO_WHERE 
 			+ " WHERE c.companyId =:companyId AND c.ppemtPersonRolePk.roleId =:roleId ";*/
 
-	private static PersonInforRole toDomain(PpemtPersonRole entity) {
-		val domain = PersonInforRole.createFromJavaType(entity.companyId, entity.ppemtPersonRolePk.roleId,
-				entity.roleCode, entity.roleName);
-		return domain;
-	}
+//	private static PersonInforRole toDomain(PpemtPersonRole entity) {
+//		val domain = PersonInforRole.createFromJavaType(entity.companyId, entity.ppemtPersonRolePk.roleId,
+//				entity.roleCode, entity.roleName);
+//		return domain;
+//	}
 
 	private static PpemtPersonRole toEntity(PersonInforRole domain) {
 		PpemtPersonRole entity = new PpemtPersonRole();
@@ -41,7 +39,7 @@ public class JpaPersonInfoRoleRepository extends JpaRepository implements Person
 
 	@Override
 	public List<PersonInforRole> getAllPersonRole() {
-		String companyId = AppContexts.user().companyId();
+//		String companyId = AppContexts.user().companyId();
 		return null;/* this.queryProxy().query(SELECT_ROLE_BY_COMPANY_ID, PpemtPersonRole.class)
 				.setParameter("companyId", companyId).getList(c -> toDomain(c));*/
 	}

@@ -3,9 +3,7 @@ package nts.uk.ctx.workflow.app.command.approvermanagement.workroot;
 import java.util.List;
 
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 @Data
 @NoArgsConstructor
 public class AddHistoryDto {

@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 
 @Data
 @NoArgsConstructor
@@ -112,12 +112,12 @@ public class WorkTimeOfMonthlyDto implements ItemConst {
 				midNightTime == null ? new MidnightTimeOfMonthly() : midNightTime.toDomain(),
 				lateLeaveEarly == null ? new LateLeaveEarlyOfMonthly() : lateLeaveEarly.toDomain(),
 				attendanceLeave == null ? new AttendanceLeaveGateTimeOfMonthly() : attendanceLeave.toDomain(),
-				BudgetTimeVarienceOfMonthly.of(toAttendanceTimeMonth(budgetTimeVarience)),
+				BudgetTimeVarienceOfMonthly.of(toAttendanceTimeMonthWithMinus(budgetTimeVarience)),
 				DivergenceTimeOfMonthly.of(ConvertHelper.mapTo(divergenceTimes, c -> c.toDomain())),
 				ConvertHelper.mapTo(medical, c -> c.toDomain()));
 	}
 
-	private AttendanceTimeMonth toAttendanceTimeMonth(Integer time) {
-		return new AttendanceTimeMonth(time);
+	private AttendanceTimeMonthWithMinus toAttendanceTimeMonthWithMinus(Integer time) {
+		return new AttendanceTimeMonthWithMinus(time);
 	}
 }

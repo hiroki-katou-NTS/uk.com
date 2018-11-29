@@ -1,5 +1,7 @@
 package nts.uk.shr.driver.control;
 
+import static org.hamcrest.CoreMatchers.is;
+
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -10,11 +12,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 
 import nts.uk.shr.driver.DriverInitializer;
-
-import static org.hamcrest.CoreMatchers.is;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TextEditor {

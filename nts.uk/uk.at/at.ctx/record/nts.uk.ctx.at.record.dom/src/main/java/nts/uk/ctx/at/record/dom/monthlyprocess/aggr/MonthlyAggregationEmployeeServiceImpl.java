@@ -94,6 +94,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	private UpdateAllDomainMonthService monthService;
 	
 	/** 社員の月別実績を集計する */
+	@SuppressWarnings("rawtypes")
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public ProcessState aggregate(AsyncCommandHandlerContext asyncContext, String companyId, String employeeId,
@@ -122,6 +123,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	}
 	
 	/** 社員の月別実績を集計する */
+	@SuppressWarnings("rawtypes")
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public MonthlyAggrEmpServiceValue aggregate(AsyncCommandHandlerContext asyncContext, String companyId, String employeeId,
@@ -290,10 +292,10 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	 * @param period2 期間2
 	 * @return true：重複あり、false：重複なし
 	 */
-	private boolean periodCompareEx(DatePeriod period1, DatePeriod period2){
-		
-		if (period1.start().after(period2.end())) return false;
-		if (period1.end().before(period2.start())) return false;
-		return true;
-	}
+//	private boolean periodCompareEx(DatePeriod period1, DatePeriod period2){
+//		
+//		if (period1.start().after(period2.end())) return false;
+//		if (period1.end().before(period2.start())) return false;
+//		return true;
+//	}
 }

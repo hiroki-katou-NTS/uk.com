@@ -30,7 +30,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 @Transactional
 public class UpdateAppWorkChangeCommandHandler extends CommandHandlerWithResult<AddAppWorkChangeCommand, ProcessResult> {
-	private static final String COLON_STRING = ":";
+	//private static final String COLON_STRING = ":";
 	@Inject
 	private IWorkChangeUpdateService updateService;
 

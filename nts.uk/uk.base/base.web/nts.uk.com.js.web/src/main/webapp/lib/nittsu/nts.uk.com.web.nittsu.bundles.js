@@ -30041,6 +30041,8 @@ var nts;
                                         dfd.resolve(data);
                                     }
                                 }).fail(function (jqXHR, textStatus, errorThrown) {
+                                    // 413はnginxが返す
+                                    // ただ、Wildflyにも最大値が設定されているので注意（こちらはオーバーすると500が返る）
                                     if (jqXHR.status === 413) {
                                         dfd.reject({ message: "ファイルサイズが大きすぎます。", messageId: "0" });
                                     }

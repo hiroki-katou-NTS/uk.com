@@ -21,7 +21,7 @@ public class JpaApprovalProcessRepository extends JpaRepository implements Appro
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KrcmtApprovalProcess f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.approvalProcessPk.cid =:cid ";
+//    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.approvalProcessPk.cid =:cid ";
 
     @Override
     public List<ApprovalProcess> getAllApprovalProcess(){

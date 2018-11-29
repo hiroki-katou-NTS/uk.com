@@ -17,8 +17,8 @@ public class JpaDefaultSettingGetMemento {
 	private KshstDeforLarSet kshstDeforLarSet;
 	private KshstNormalSet kshstNormalSet;
 	private KshstFlexSet kshstFlexSet;
-	private KshstRegLaborTime kshstRegLaborTime; 
-	private KshstTransLabTime kshstTransLabTime;
+	 KshstRegLaborTime kshstRegLaborTime; 
+	 KshstTransLabTime kshstTransLabTime;
 	
 	public JpaDefaultSettingGetMemento() {
 	}

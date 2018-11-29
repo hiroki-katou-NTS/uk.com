@@ -19,6 +19,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 public interface CreateDailyResultDomainService {
 
+	@SuppressWarnings("rawtypes")
 	ProcessState createDailyResult(AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds, DatePeriod periodTime, ExecutionAttr executionAttr, String companyId, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog);
 	
 }

@@ -30,7 +30,7 @@ import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceReposit
 @Stateless
 public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommonSet {
 	
-	private static final String BASE_DATE_CACHE_KEY = "baseDate";
+	//private static final String BASE_DATE_CACHE_KEY = "baseDate";
 	
 	@Inject
 	private ApplicationSettingRepository appSettingRepository;

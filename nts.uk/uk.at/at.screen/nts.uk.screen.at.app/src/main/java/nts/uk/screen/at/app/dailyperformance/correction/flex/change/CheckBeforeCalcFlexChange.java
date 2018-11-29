@@ -31,7 +31,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
@@ -70,8 +69,8 @@ public class CheckBeforeCalcFlexChange {
 	@Inject
 	private DailyPerformanceScreenRepo dailyPerformanceScreenRepo;
 
-	@Inject
-	private AffWorkplaceHistoryItemRepository affWorkplaceHis;
+//	@Inject
+//	private AffWorkplaceHistoryItemRepository affWorkplaceHis;
 
 	@Inject
 	private AttendanceTimeRepository attendanceTime;
@@ -86,7 +85,7 @@ public class CheckBeforeCalcFlexChange {
 	// 社員のフレックス繰越上限時間を求める
 	public String getConditionCalcFlex(String companyId, CalcFlexChangeDto calc, Optional<ClosureEmployment> closureEmployment,
 			Optional<PresentClosingPeriodExport> periodExportOpt) {
-		String timeCheck = "15:00";
+//		String timeCheck = "15:00";
 		
 		if(!closureEmployment.isPresent()){
 			closureEmployment = this.closureEmploymentRepository

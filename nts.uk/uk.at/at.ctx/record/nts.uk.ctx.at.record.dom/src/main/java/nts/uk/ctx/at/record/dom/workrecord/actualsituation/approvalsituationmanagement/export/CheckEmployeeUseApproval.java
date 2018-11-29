@@ -8,8 +8,8 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
-import nts.uk.ctx.at.record.dom.jobtitle.affiliate.AffJobTitleAdapter;
-import nts.uk.ctx.at.record.dom.jobtitle.affiliate.AffJobTitleSidImport;
+//import nts.uk.ctx.at.record.dom.jobtitle.affiliate.AffJobTitleAdapter;
+//import nts.uk.ctx.at.record.dom.jobtitle.affiliate.AffJobTitleSidImport;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -20,14 +20,14 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class CheckEmployeeUseApproval {
 	
-	@Inject
-	private AffJobTitleAdapter affJobTitleAdapter;
+//	@Inject
+//	private AffJobTitleAdapter affJobTitleAdapter;
 	
 	@Inject
 	private ApprovalProcessingUseSettingRepository approvalProcessingUseSettingRepository;
 	
-	@Inject
-	private CheckPosstionApproval checkPosstionApproval;
+//	@Inject
+//	private CheckPosstionApproval checkPosstionApproval;
 	
    public boolean checkEmployeeUseApproval(String employeeId, GeneralDate date){
 	   String companyId = AppContexts.user().companyId();

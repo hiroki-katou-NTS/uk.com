@@ -21,9 +21,9 @@ public class JpaWorkPlaceAuthotityRepository  extends JpaRepository implements W
 			+ " AND c.kacmtWorkPlaceAuthorityPK.roleId  = :roleId ";
 	private static final String  GET_WRK_AUTHORITY_BY_ID = GET_ALL_WRK_AUTHORITY_BY_ROLE_ID
 			+ " AND c.kacmtWorkPlaceAuthorityPK.functionNo = :functionNo ";
-	private static final String DELETE_FROM_AUTHORITY = "DELETE FROM KacmtWorkPlaceAuthority c "
-			+ " WHERE c.kacmtWorkPlaceAuthorityPK.roleId  = :roleId"
-			+ " AND c.kacmtWorkPlaceAuthorityPK.companyId  = :companyId  ";
+//	private static final String DELETE_FROM_AUTHORITY = "DELETE FROM KacmtWorkPlaceAuthority c "
+//			+ " WHERE c.kacmtWorkPlaceAuthorityPK.roleId  = :roleId"
+//			+ " AND c.kacmtWorkPlaceAuthorityPK.companyId  = :companyId  ";
 	
 	private static final String  FIND_BY_FUNC_AVAIL = GET_ALL_WRK_AUTHORITY
 			+ " AND c.kacmtWorkPlaceAuthorityPK.functionNo  = :functionNo "

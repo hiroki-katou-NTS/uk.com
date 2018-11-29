@@ -1,12 +1,16 @@
 package nts.uk.ctx.at.shared.dom.specialholiday.grantinformation;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+//import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class YearMonth {
 	private int year;
 	private int month;

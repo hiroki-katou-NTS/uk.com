@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+//import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
@@ -14,7 +16,8 @@ import nts.arc.time.GeneralDate;
  * @author yennth
  *
  */
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 public class LengthServiceTbl extends AggregateRoot{
 	/* 会社ID */
