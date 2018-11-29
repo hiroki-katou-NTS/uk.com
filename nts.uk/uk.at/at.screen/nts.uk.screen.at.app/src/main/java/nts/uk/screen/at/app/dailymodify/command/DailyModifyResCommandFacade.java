@@ -179,7 +179,7 @@ public class DailyModifyResCommandFacade {
 			dailyEdits.addAll(queryNotChanges.isEmpty() ? temp : toDto(queryNotChanges, temp));
 		} else {
 			dailyOlds.addAll(dataParent.getDailyOlds());
-			dailyEdits.addAll(queryNotChanges.isEmpty() ? dataParent.getDailyEdits() : toDto(queryNotChanges, dataParent.getDailyEdits()));
+			dailyEdits.addAll(dataParent.getDailyEdits());
 		}
 		Map<Integer, OptionalItemAtr> optionalMaster = optionalMasterRepo.findAll(AppContexts.user().companyId())
 				.stream().collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c.getOptionalItemAtr()));
@@ -197,7 +197,7 @@ public class DailyModifyResCommandFacade {
 		});
 	}
 
-	private List<DailyRecordDto> toDto(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoEdits) {
+	public List<DailyRecordDto> toDto(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoEdits) {
 		List<DailyRecordDto> dtoNews = new ArrayList<>();
 
 		dtoNews = dtoEdits.stream().map(o -> {

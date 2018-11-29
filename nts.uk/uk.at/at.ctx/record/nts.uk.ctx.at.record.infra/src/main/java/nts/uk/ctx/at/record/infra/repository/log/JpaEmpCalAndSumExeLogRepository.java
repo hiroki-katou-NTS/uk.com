@@ -5,9 +5,9 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import lombok.val;
+//import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
+//import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
@@ -29,10 +29,10 @@ public class JpaEmpCalAndSumExeLogRepository extends JpaRepository implements Em
 	private static final String SELECT_BY_EXECUTION_LOG = "SELECT el FROM KrcdtExecutionLog el "
 			+ " WHERE el.krcdtExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID AND el.krcdtExecutionLogPK.executionContent = :executionContent";
 
-	private static final String UPDATE_LOG_INFO = "UPDATE KrcdtExecutionLog a" 
-			+ " SET a.processStatus = :processStatus"
-			+ " WHERE a.krcdtExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID"
-			+ " AND a.krcdtExecutionLogPK.executionContent = :executionContent ";
+//	private static final String UPDATE_LOG_INFO = "UPDATE KrcdtExecutionLog a" 
+//			+ " SET a.processStatus = :processStatus"
+//			+ " WHERE a.krcdtExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID"
+//			+ " AND a.krcdtExecutionLogPK.executionContent = :executionContent ";
 
 	private static final String SELECT_BY_LOG_ID = "SELECT c FROM KrcdtEmpExecutionLog c "
 			+ " WHERE c.krcdtEmpExecutionLogPK.empCalAndSumExecLogID = :empCalAndSumExecLogID ";

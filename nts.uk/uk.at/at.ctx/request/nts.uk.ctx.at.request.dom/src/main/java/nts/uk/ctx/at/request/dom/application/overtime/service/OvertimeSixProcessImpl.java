@@ -300,15 +300,15 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	/**
 	 * @return
 	 */
-	private List<OvertimeInputCaculation> initOvertimeInputCaculation(){
-		List<OvertimeInputCaculation> overtimeInputCaculations = new ArrayList<>();
-		for(int i = 0; i < 13 ;i++){
-			OvertimeInputCaculation overtimeInputCaculation = new  OvertimeInputCaculation(1,i, 0);
-			overtimeInputCaculations.add(overtimeInputCaculation);
-		}
-		
-		return overtimeInputCaculations;
-	}
+//	private List<OvertimeInputCaculation> initOvertimeInputCaculation(){
+//		List<OvertimeInputCaculation> overtimeInputCaculations = new ArrayList<>();
+//		for(int i = 0; i < 13 ;i++){
+//			OvertimeInputCaculation overtimeInputCaculation = new  OvertimeInputCaculation(1,i, 0);
+//			overtimeInputCaculations.add(overtimeInputCaculation);
+//		}
+//		
+//		return overtimeInputCaculations;
+//	}
 	private List<CaculationTime> printColor(List<CaculationTime> overtimeHours,List<OvertimeInputCaculation> overtimeInputCaculations){
 		
 		for(CaculationTime caculationTime : overtimeHours){

@@ -5,11 +5,7 @@ import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.info.BloodType;
 import nts.uk.ctx.bs.person.dom.person.info.GenderPerson;
-import nts.uk.ctx.bs.person.dom.person.info.Hobby;
-import nts.uk.ctx.bs.person.dom.person.info.Nationality;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
-import nts.uk.ctx.bs.person.dom.person.info.PersonMailAddress;
-import nts.uk.ctx.bs.person.dom.person.info.PersonMobile;
 
 @Getter
 @AllArgsConstructor

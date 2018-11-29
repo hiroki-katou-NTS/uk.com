@@ -33,7 +33,7 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 	
 	private static final String FIND_BY_LIST_PREMIUM_NO_IS_USE = FIND_ALL +  " AND a.kmnmpPremiumItemPK.displayNumber NOT IN :displayNumbers AND a.useAtr = :useAtr";
 	
-	private static final String FIND_ALL_IS_USE = FIND_ALL + " AND a.useAtr = :useAtr";
+//	private static final String FIND_ALL_IS_USE = FIND_ALL + " AND a.useAtr = :useAtr";
 	
 	@Override
 	public void update(PremiumItem premiumItem) {

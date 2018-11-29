@@ -12,5 +12,6 @@ public interface AppReflectManagerFromRecordImport {
 	 * @param asyncContext
 	 * @return
 	 */
+	@SuppressWarnings("rawtypes")
 	ProcessState applicationRellect(String workId, DatePeriod workDate, AsyncCommandHandlerContext asyncContext);
 }

@@ -15,7 +15,7 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.export.Absenceleav
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.export.MonthlyAbsenceleaveRemainExport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentManaQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.InterimRemainAggregateOutputData;
-import nts.uk.shr.com.context.AppContexts;
+//import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AbsenceReruitmentManaFinder implements AbsenceReruitmentManaAdapter {

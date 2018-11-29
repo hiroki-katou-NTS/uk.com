@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class BpsmtPersonFileManagementPK {
 
-	private static final long serialVersionUID = 1L;
+//	private static final long serialVersionUID = 1L;
 
 	/** ファイルID */
 	@Basic(optional = false)

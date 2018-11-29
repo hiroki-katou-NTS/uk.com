@@ -9,9 +9,9 @@ import nts.arc.layer.dom.AggregateRoot;
  *
  */
 public class HolidayWorkFrame extends AggregateRoot{
-	private HolidayWorkFrameNo number;
-	private HolidayWorkFrameName holidayWorkFrameName;
-	private HolidayWorkFrameName substitubeFrameName;
-	private StaturoryAtrOfHolidayWork staturoryAtr;
+//	private HolidayWorkFrameNo number;
+//	private HolidayWorkFrameName holidayWorkFrameName;
+//	private HolidayWorkFrameName substitubeFrameName;
+//	private StaturoryAtrOfHolidayWork staturoryAtr;
 	
 }

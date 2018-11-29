@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
+//import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 /**
@@ -19,8 +19,8 @@ public class AppStampDetailDefaultImpl implements AppStampDetailDomainService {
 	@Inject
 	private AppStampRepository appStampRepository; 
 	
-	@Inject
-	private BeforePreBootMode beforePreBootMode;
+//	@Inject
+//	private BeforePreBootMode beforePreBootMode;
 	
 	@Inject
 	private AppStampCommonDomainService appStampCommonDomainService;

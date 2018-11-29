@@ -87,6 +87,12 @@ public interface TempAbsHistRepository {
 	 */
 	void delete(String histId);
 	
-	
+	/**
+	 * Get TemporaryAbsenceHist by employeeId
+	 * @param employeeId
+	 * @param histId
+	 * @return
+	 */
+	Optional<TempAbsenceHistory> getBySidAndLeave(String cid, String employeeId);
 	
 }

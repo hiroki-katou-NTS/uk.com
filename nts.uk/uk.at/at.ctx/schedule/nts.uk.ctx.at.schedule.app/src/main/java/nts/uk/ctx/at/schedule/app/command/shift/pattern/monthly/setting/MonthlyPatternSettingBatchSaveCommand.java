@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.shift.pattern.monthly.setting;
 
-import java.math.BigDecimal;
+//import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;

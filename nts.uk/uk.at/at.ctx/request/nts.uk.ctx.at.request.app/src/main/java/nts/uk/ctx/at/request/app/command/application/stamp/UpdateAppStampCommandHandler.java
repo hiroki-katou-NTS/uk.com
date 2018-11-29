@@ -39,7 +39,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class UpdateAppStampCommandHandler extends CommandHandlerWithResult<AppStampCmd, ProcessResult>{
 	
-	private static final String DATE_FORMAT = "yyyy/MM/dd";
+	//private static final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	@Inject
 	private AppStampDetailDomainService applicationStampDetailDomainService;

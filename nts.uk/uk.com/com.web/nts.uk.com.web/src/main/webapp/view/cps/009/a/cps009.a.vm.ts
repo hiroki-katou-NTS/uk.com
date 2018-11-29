@@ -160,8 +160,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             stringItemLength: obj.stringItemLength,
                             stringItemDataType: obj.stringItemDataType,
                             disableCombox: obj.disableCombox,
-                            enableControl: obj.enableControl,
-                            initValue: obj.initValue
+                            enableControl: obj.enableControl
                         });
 
                     });
@@ -724,8 +723,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         // enable A23 xu li cho ctg CS00020
         enableControl: boolean;
-        
-        initValue: string;
 
 
     }
@@ -842,11 +839,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.refMethodType = ko.observable(params.refMethodType || 0);
 
             self.saveDataType = ko.observable(params.saveDataType || 0);
-            self.stringValue = ko.observable(params.stringValue || params.initValue);
+            self.stringValue = ko.observable(params.stringValue || null);
 
-            self.intValue = ko.observable(params.intValue || params.initValue);
-            self.dateWithDay = ko.observable(params.dateWithDay || params.initValue);
-            self.timePoint = ko.observable(params.timePoint || params.initValue);
+            self.intValue = ko.observable(params.intValue);
+            self.dateWithDay = ko.observable(params.dateWithDay);
+            self.timePoint = ko.observable(params.timePoint || "");
 
             self.timeItemMin = params.timeItemMin || undefined;
             self.timeItemMax = params.timeItemMax || undefined;
@@ -882,7 +879,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
                     if (params.numberDecimalPart === 0 && (params.numberIntegerPart === 0 || params.numberIntegerPart === null)) {
                         self.numbereditor = {
-                            value: ko.observable(params.intValue || params.initValue),
+                            value: ko.observable(params.intValue || null),
                             constraint: params.itemCode,
                             option: new nts.uk.ui.option.NumberEditorOption({
                                 grouplength: params.numberItemMinus && 3,
@@ -896,7 +893,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     } else {
 
                         self.numbereditor = {
-                            value: ko.observable(params.intValue || params.initValue),
+                            value: ko.observable(params.intValue || null),
                             constraint: params.itemCode,
                             option: new nts.uk.ui.option.NumberEditorOption({
                                 grouplength: params.numberItemMinus && 3,
@@ -916,7 +913,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             self.dateValue = ko.observable(params.dateValue || undefined); break;
                         case DATE_TYPE.YEAR_MONTH:
                             if (params.dateValue === null) {
-                                self.dateValue = ko.observable(params.initValue== null? undefined: params.initValue);
+                                self.dateValue = ko.observable(undefined);
                                 break;
                             } else {
                                 self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy/MM"));
@@ -925,7 +922,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
                         case DATE_TYPE.YEAR:
                             if (params.dateValue === null) {
-                                self.dateValue = ko.observable(params.initValue== null? undefined: params.initValue);
+                                self.dateValue = ko.observable(undefined);
                                 break;
                             } else {
                                 self.dateValue = ko.observable(formatDate(new Date(params.dateValue), "yyyy") || undefined);
@@ -941,21 +938,21 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     self.selectionItemId = params.selectionItemId || undefined;
                     self.selectionItemRefType = params.selectionItemRefType || undefined;
                     self.selection = ko.observableArray(params.selection || []);
-                    self.selectedCode = ko.observable(params.stringValue == null ? (params.initValue== null? undefined: params.initValue) : params.stringValue);
+                    self.selectedCode = ko.observable(params.stringValue == null ? undefined : params.stringValue);
                     break;
                 case ITEM_SINGLE_TYPE.SEL_RADIO:
                 
                     self.radioId = params.selectionItemId || undefined;
                     self.selectionItemRefType = params.selectionItemRefType || undefined;
                     self.selection = ko.observableArray(params.selection || []);
-                    self.selectedCode = ko.observable(params.stringValue || (params.initValue== null? "1": params.initValue));
+                    self.selectedCode = ko.observable(params.stringValue || "1");
                     break;
                 case ITEM_SINGLE_TYPE.SEL_BUTTON:
                 
                     self.selectionItemId = params.selectionItemId || undefined;
                     self.selectionItemRefType = params.selectionItemRefType || undefined;
                     self.selection = ko.observableArray(params.selection || []);
-                    self.selectedCode = ko.observable(params.stringValue == null ? (params.initValue== null? undefined : params.initValue) : params.stringValue);
+                    self.selectedCode = ko.observable(params.stringValue == null ? undefined : params.stringValue);
                     let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == self.selectedCode()) { return c } });
                     self.selectionName = ko.observable(params.stringValue == null? "": (objSel == undefined ? ((self.ctgCode() === "CS00016" || self.ctgCode() === "CS00017") ? text("CPS001_107"): (self.selectedCode() + " "+text("CPS001_107"))) : objSel.optionText));
                     break;

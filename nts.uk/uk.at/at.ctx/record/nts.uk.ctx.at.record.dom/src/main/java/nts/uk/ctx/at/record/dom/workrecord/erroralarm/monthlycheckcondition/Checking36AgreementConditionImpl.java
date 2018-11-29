@@ -10,10 +10,10 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
+//import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
+//import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementUnitSetting;
@@ -52,15 +52,15 @@ public class Checking36AgreementConditionImpl implements Checking36AgreementCond
 	@Inject 
 	private AgreementMonthSettingRepository agreementMonthSettingRepo;
 	
-	@Inject
-	private AgreementTimeOfManagePeriodRepository agreementTimeOfManagePeriodRepo;
+//	@Inject
+//	private AgreementTimeOfManagePeriodRepository agreementTimeOfManagePeriodRepo;
 	
 	//
-	@Inject
-	private AttendanceTimeOfMonthlyRepository attdTimeOfMonthlyRepo;
+//	@Inject
+//	private AttendanceTimeOfMonthlyRepository attdTimeOfMonthlyRepo;
 	
-	@Inject
-	private AttendanceItemConvertFactory attendanceItemConvertFactory;
+//	@Inject
+//	private AttendanceItemConvertFactory attendanceItemConvertFactory;
 	
 	@Inject
 	private AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthlyRepo;

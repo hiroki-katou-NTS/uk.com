@@ -10,7 +10,6 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Getter

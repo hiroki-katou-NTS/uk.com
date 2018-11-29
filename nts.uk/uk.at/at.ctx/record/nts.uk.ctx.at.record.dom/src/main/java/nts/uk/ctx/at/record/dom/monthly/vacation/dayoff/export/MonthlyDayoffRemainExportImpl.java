@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
+//import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainDataRepository;
 @Stateless

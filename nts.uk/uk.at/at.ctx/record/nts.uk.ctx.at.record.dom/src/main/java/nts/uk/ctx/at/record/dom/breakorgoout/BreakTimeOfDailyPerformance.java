@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
+//import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
