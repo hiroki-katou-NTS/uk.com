@@ -71,9 +71,10 @@ module nts.uk.pr.view.qmm038.a {
                         block.invisible();
                         nts.uk.ui.errors.clearAll();
                         self.employeeIds = data.listEmployee.map(item => item.employeeId);
+                        self.baseDate = moment(data.baseDate,"YYYY/MM/DD").format("YYYY/MM/DD");
                         let command = {
                             employeeIds: self.employeeIds,
-                            baseDate: self.baseDate(),
+                            baseDate: self.baseDate,
                             giveCurrTreatYear: moment(self.giveCurrTreatYear(),"YYYY/MM").format("YYYY/MM")
                         };
                         nts.uk.pr.view.qmm038.a.service.findByEmployee(command).done(function (response) {
@@ -196,7 +197,7 @@ module nts.uk.pr.view.qmm038.a {
                 block.invisible();
                 let command = {
                     employeeIds: self.employeeIds,
-                    baseDate: self.baseDate(),
+                    baseDate: self.baseDate,
                     giveCurrTreatYear: moment(self.giveCurrTreatYear(),"YYYY/MM").format("YYYY/MM")
                 };
                 nts.uk.pr.view.qmm038.a.service.findByEmployee(command).done(function (response) {
