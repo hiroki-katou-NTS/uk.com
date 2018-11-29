@@ -103,6 +103,7 @@ import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrder;
 import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrderRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.japanese.JapaneseEraName;
 import nts.uk.shr.com.time.japanese.JapaneseEras;
 import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
@@ -1369,7 +1370,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	
 				if (!inConvertCode && (codeConvert.map(i->i.getAcceptWithoutSetting()).orElse(null) == NotUseAtr.NOT_USE)) {
 					state = RESULT_NG;
-					errorMess = "mes-678";
+					errorMess = TextResource.localize("Msg_678");
 	
 					result.put(RESULT_STATE, state);
 					result.put(ERROR_MESS, errorMess);
