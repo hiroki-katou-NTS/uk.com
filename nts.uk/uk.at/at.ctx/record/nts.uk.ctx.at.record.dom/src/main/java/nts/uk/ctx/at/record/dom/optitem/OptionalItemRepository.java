@@ -7,23 +7,31 @@ package nts.uk.ctx.at.record.dom.optitem;
 import java.util.List;
 import java.util.Map;
 
+import nts.uk.ctx.at.record.dom.export.optitem.CalFormulasItemExportData;
+
 /**
  * The Interface OptionalItemRepository.
  */
 public interface OptionalItemRepository {
 
+	// Repo export excel
+	List<CalFormulasItemExportData> findAllData(String companyId);
+
 	/**
 	 * Update.
 	 *
-	 * @param dom the dom
+	 * @param dom
+	 *            the dom
 	 */
 	void update(OptionalItem dom);
 
 	/**
 	 * Find.
 	 *
-	 * @param companyId the company id
-	 * @param optionalItemNo the optional item no
+	 * @param companyId
+	 *            the company id
+	 * @param optionalItemNo
+	 *            the optional item no
 	 * @return the optional item
 	 */
 	OptionalItem find(String companyId, Integer optionalItemNo);
@@ -31,7 +39,8 @@ public interface OptionalItemRepository {
 	/**
 	 * Find all.
 	 *
-	 * @param companyId the company id
+	 * @param companyId
+	 *            the company id
 	 * @return the list
 	 */
 	List<OptionalItem> findAll(String companyId);
@@ -39,8 +48,10 @@ public interface OptionalItemRepository {
 	/**
 	 * Find by list nos.
 	 *
-	 * @param companyId the company id
-	 * @param optionalitemNos the optionalitem nos
+	 * @param companyId
+	 *            the company id
+	 * @param optionalitemNos
+	 *            the optionalitem nos
 	 * @return the list
 	 */
 	List<OptionalItem> findByListNos(String companyId, List<Integer> optionalitemNos);
@@ -48,45 +59,60 @@ public interface OptionalItemRepository {
 	/**
 	 * Find by atr.
 	 *
-	 * @param companyId the company id
-	 * @param atr the atr
+	 * @param companyId
+	 *            the company id
+	 * @param atr
+	 *            the atr
 	 * @return the list
 	 */
 	List<OptionalItem> findByAtr(String companyId, int atr);
-	
+
 	/**
 	 * Find by atr.
 	 *
-	 * @param companyId the company id
-	 * @param atr the atr
+	 * @param companyId
+	 *            the company id
+	 * @param atr
+	 *            the atr
 	 * @return the list
 	 */
 	List<OptionalItem> findByAtr(String companyId, OptionalItemAtr atr);
-	
+
 	/**
 	 * Find by performance atr.
 	 *
-	 * @param companyId the company id
-	 * @param atr the atr
+	 * @param companyId
+	 *            the company id
+	 * @param atr
+	 *            the atr
 	 * @return the list
 	 */
 	List<OptionalItem> findByPerformanceAtr(String companyId, PerformanceAtr atr);
-	
+
 	/**
 	 * Find by performance atr.
 	 *
-	 * @param companyId the company id
-	 * @param atr the atr
+	 * @param companyId
+	 *            the company id
+	 * @param atr
+	 *            the atr
 	 * @return the list
 	 */
 	List<OptionalItem> findUsedByPerformanceAtr(String companyId, PerformanceAtr atr);
-	
+
 	/**
 	 * Find by performance atr.
 	 *
-	 * @param companyId the company id
-	 * @param atr the atr
+	 * @param companyId
+	 *            the company id
+	 * @param atr
+	 *            the atr
 	 * @return the list
 	 */
 	Map<Integer, OptionalItemAtr> findOptionalTypeBy(String companyId, PerformanceAtr atr);
+
+	/* Export Excel */
+
+	List<CalFormulasItemExportData> findAllCalFormulasItem(String companyId, String languageId);
+
 }
