@@ -48,7 +48,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
             self.columns = [
                 {key: 'historyId', length: 0, hidden: true},
                 {key: 'period', length: 8},
-                {key: 'amountOfMoney', length: 6, template: "<div style='text-align: right'>${amountOfMoney}</div>"}
+                {key: 'amountOfMoney', length: 3, template: "<div style='text-align: right'>${amountOfMoney}</div>"}
             ];
 
             //CCG001
@@ -98,7 +98,6 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                     self.selectedEmployee(data.listEmployee);
                     self.convertEmployeeCcg01ToKcp009(data.listEmployee);
                 }
-
             };
 
             //KCP009

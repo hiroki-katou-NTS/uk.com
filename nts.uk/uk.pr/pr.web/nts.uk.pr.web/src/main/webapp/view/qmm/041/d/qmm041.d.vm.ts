@@ -9,8 +9,9 @@ module nts.uk.pr.view.qmm041.d.viewmodel {
         employeeId: string = null;
         employmentCode: string = null;
         baseYearMonth: KnockoutObservable<number> = ko.observable(parseInt(moment().format("YYYY/MM")));
-        items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+        individualUnitPriceList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         columns: any;
+        currentCode: KnockoutObservable<any> = ko.observable(null);
 
         constructor() {
             let self = this;
@@ -66,12 +67,12 @@ module nts.uk.pr.view.qmm041.d.viewmodel {
                     if (data.length > 0) {
                         for (let i = 0; i < data.length; i++) {
                             array.push(new ItemModel(data[i].employeeId, data[i].perUnitPriceCode, data[i].perUnitPriceName,
-                                format(getText("QMM039_18"), self.formatYM(data[i].startYearMonth), self.formatYM(data[i].endYearMonth)),
+                                format(getText("QMM041_13"), self.formatYM(data[i].startYearMonth), self.formatYM(data[i].endYearMonth)),
                                 data[i].amountOfMoney
                             ));
                         }
                     }
-                    self.items(array);
+                    self.individualUnitPriceList(array);
                 dfd.resolve();
                 }
             );

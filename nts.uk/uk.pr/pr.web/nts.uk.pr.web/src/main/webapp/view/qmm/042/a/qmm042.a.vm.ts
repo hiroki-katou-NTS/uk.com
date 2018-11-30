@@ -183,11 +183,13 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 showJobTitle: false,
                 showWorktype: false,
                 isMutipleCheck: true,
+                showOnStart: true,
+                tabindex: 4,
 
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
                     self.listEmployee = data.listEmployee
                 }
-            }
+            };
 
             $('#com-ccg001').ntsGroupComponent(self.ccgcomponent);
 
@@ -232,6 +234,9 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
         showWorktype?: boolean; // 勤種条件
         isMutipleCheck?: boolean; // 選択モード
         isTab2Lazy?: boolean;
+        showOnStart?: boolean;
+        tabindex?: number;
+
 
         /** Data returned */
         returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
