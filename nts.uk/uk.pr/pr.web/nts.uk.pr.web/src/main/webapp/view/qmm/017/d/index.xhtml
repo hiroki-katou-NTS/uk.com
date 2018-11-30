@@ -168,7 +168,7 @@
                             ]}">
                             </div>
                             <div>
-                                <button style="width: 220px;" data-bind = "click: addFunctionItem, enable: selectedFunctionListValue()"
+                                <button style="width: 220px;" data-bind = "click: addFunctionItem, enable: selectedFunctionListValue() != null"
                                         class="caret-bottom large-caret">#{i18n.getText('QMM016_50')}</button>
                             </div>
                         </div>
@@ -222,7 +222,7 @@
                             ]}">
                             </div>
                             <div>
-                                <button style="width: 220px;" data-bind = "click: addVariableItem, enable: selectedSystemVariableListValue()"
+                                <button style="width: 220px;" data-bind = "click: addVariableItem, enable: selectedSystemVariableListValue() != null"
                                         class="caret-bottom large-caret">#{i18n.getText('QMM016_50')}</button>
                             </div>
                         </div>
@@ -346,8 +346,8 @@
             </div>
         </div>
         <div class="tab-row">
-            <div style="width: 550px; display: inline-block; vertical-align: top">
-                <div data-bind = "with: $vm.screenDViewModel">
+            <div data-bind = "with: $vm.screenDViewModel" style="width: 550px; display: inline-block; vertical-align: top">
+                <div>
                     <div style="width: 100px; display: inline-block;"
                          data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM017_45')}</div>
                     <button style="margin-left: 10px;">#{i18n.getText('QMM017_52')}</button>
@@ -357,37 +357,36 @@
                 <div>
                     <div class = "cal-container">
                         <div>
-                            <button>#{i18n.getText('QMM017_63')}</button>
-                            <button>#{i18n.getText('QMM017_64')}</button>
+                            <button data-action = "ADD" data-bind = "click: addSymbol">#{i18n.getText('QMM017_63')}</button>
+                            <button data-action = "SUBTRACT" data-bind = "click: addSymbol">#{i18n.getText('QMM017_64')}</button>
                         </div>
                         <div>
-                            <button>#{i18n.getText('QMM017_65')}</button>
-                            <button>#{i18n.getText('QMM017_66')}</button>
+                            <button data-action = "MULTIPLICATION" data-bind = "click: addSymbol">#{i18n.getText('QMM017_65')}</button>
+                            <button data-action = "DIVIDE" data-bind = "click: addSymbol">#{i18n.getText('QMM017_66')}</button>
                         </div>
                         <div>
-                            <button>#{i18n.getText('QMM017_67')}</button>
+                            <button data-action = "POW" data-bind = "click: addSymbol">#{i18n.getText('QMM017_67')}</button>
                         </div>
                         <div>
-                            <button>#{i18n.getText('QMM017_68')}</button>
-                            <button>#{i18n.getText('QMM017_69')}</button>
+                            <button data-action = "OPEN_PARENTHESES" data-bind = "click: addSymbol">#{i18n.getText('QMM017_68')}</button>
+                            <button data-action = "CLOSE_PARENTHESES" data-bind = "click: addSymbol">#{i18n.getText('QMM017_69')}</button>
                         </div>
                         <div>
-                            <button>#{i18n.getText('QMM017_70')}</button>
-                            <button>#{i18n.getText('QMM017_71')}</button>
+                            <button data-action = "LESS" data-bind = "click: addSymbol">#{i18n.getText('QMM017_70')}</button>
+                            <button data-action = "GREATER" data-bind = "click: addSymbol">#{i18n.getText('QMM017_71')}</button>
                         </div>
                         <div>
-                            <button>#{i18n.getText('QMM017_72')}</button>
-                            <button>#{i18n.getText('QMM017_73')}</button>
+                            <button data-action = "LESS_OR_EQUAL" data-bind = "click: addSymbol">#{i18n.getText('QMM017_72')}</button>
+                            <button data-action = "GREATER_OR_EQUAL" data-bind = "click: addSymbol">#{i18n.getText('QMM017_73')}</button>
                         </div>
                         <div>
-                            <button>#{i18n.getText('QMM017_74')}</button>
-                            <button>#{i18n.getText('QMM017_75')}</button>
+                            <button data-action = "EQUAL" data-bind = "click: addSymbol">#{i18n.getText('QMM017_74')}</button>
+                            <button data-action = "NOT_EQUAL" data-bind = "click: addSymbol">#{i18n.getText('QMM017_75')}</button>
                         </div>
                     </div>
                     <div style="display: inline-block">
-                        <div style = "height: 205px;width: 445px;" class="panel panel-frame">
-
-                        </div>
+                        <textarea id = "D3_5" style = "height: 215px; width: 458px;" data-bind="ntsMultilineEditor: {
+                                value: displayDetailCalculationFormula}" />
                     </div>
                 </div>
             </div>

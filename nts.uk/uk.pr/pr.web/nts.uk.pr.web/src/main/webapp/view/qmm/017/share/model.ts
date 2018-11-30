@@ -465,7 +465,7 @@ module nts.uk.pr.view.qmm017.share.model {
         SYSTEM_YMD_DATE = 0,
         SYSTEM_YM_DATE = 1,
         SYSTEM_Y_DATE = 2,
-        PROCESSING_DATE = 3,
+        PROCESSING_YEAR_MONTH = 3,
         PROCESSING_YEAR = 4,
         REFERENCE_TIME = 5,
         STANDARD_DAY = 6,
@@ -477,7 +477,7 @@ module nts.uk.pr.view.qmm017.share.model {
             new EnumModel(SYSTEM_VARIABLE_LIST.SYSTEM_YMD_DATE, 'システム日付（年月日）'),
             new EnumModel(SYSTEM_VARIABLE_LIST.SYSTEM_YM_DATE, 'システム日付（年月）'),
             new EnumModel(SYSTEM_VARIABLE_LIST.SYSTEM_Y_DATE, 'システム日付（年）'),
-            new EnumModel(SYSTEM_VARIABLE_LIST.PROCESSING_DATE, '処理年月'),
+            new EnumModel(SYSTEM_VARIABLE_LIST.PROCESSING_YEAR_MONTH, '処理年月'),
             new EnumModel(SYSTEM_VARIABLE_LIST.PROCESSING_YEAR, '処理年'),
             new EnumModel(SYSTEM_VARIABLE_LIST.REFERENCE_TIME, '基準時間'),
             new EnumModel(SYSTEM_VARIABLE_LIST.STANDARD_DAY, '基準日数'),
@@ -792,7 +792,6 @@ module nts.uk.pr.view.qmm017.share.model {
 
     // 年月期間の汎用履歴項目
     export class GenericHistoryYearMonthPeriod {
-
         // Item
         startMonth: KnockoutObservable<string> = ko.observable(null);
         endMonth: KnockoutObservable<string> = ko.observable(null);
@@ -815,7 +814,73 @@ module nts.uk.pr.view.qmm017.share.model {
             this.displayJapanStartYearMonth = ko.computed(function() {
                 return this.startMonth() ? nts.uk.time.yearmonthInJapanEmpire(this.startMonth()).toString().split(' ').join(''): "";
             }, this);
-
         }
+    }
+
+    export class DetailCalculationElement {
+        PAYMENT_ITEM;
+        DEDUCTION_ITEM;
+        ATTENDANCE_ITEM;
+        COMPANY_UNIT_PRICE;
+        INDIVIDUAL_UNIT_PRICE;
+        CONDITION_EXPRESSION;
+        AND;
+        OR;
+        ROUND_OFF;
+        TRUNCATION;
+        ROUND_UP;
+        MAX_VALUE;
+        MIN_VALUE;
+        NUMBER_OF_FAMILY_MEMBER;
+        ADDITIONAL_YEAR_MONTH;
+        YEAR_EXTRACTION;
+        MONTH_EXTRACTION;
+        SYSTEM_YMD_DATE;
+        SYSTEM_YM_DATE;
+        SYSTEM_Y_DATE;
+        PROCESSING_YEAR_MONTH;
+        PROCESSING_YEAR;
+        REFERENCE_TIME;
+        STANDARD_DAY;
+        WORKDAY;
+        FORMULA;
+        WAGE_TABLE;
+        constructor(){}
+    }
+
+    export enum DetailCalculationElement {
+        PAYMENT_ITEM = 0,
+        DEDUCTION_ITEM = 1,
+        ATTENDANCE_ITEM = 2,
+        COMPANY_UNIT_PRICE = 3,
+        INDIVIDUAL_UNIT_PRICE = 4,
+        ALL_FUNCTION = 5,
+        TIME_FUNCTION = 6,
+        PAYROLL_FUNCTION = 7,
+        LOGIC = 8,
+        STRING_OPERATION = 9,
+        DATE_TIME = 10,
+        MATHEMATICS = 11,
+        ALL_SYSTEM_VARIABLE = 12,
+        CONDITION_EXPRESSION = 13,
+        AND = 14,
+        OR = 15,
+        ROUND_OFF = 16,
+        TRUNCATION = 17,
+        ROUND_UP = 18,
+        MAX_VALUE = 19,
+        MIN_VALUE = 20,
+        NUMBER_OF_FAMILY_MEMBER = 21,
+        ADDITIONAL_YEAR_MONTH = 22,
+        YEAR_EXTRACTION = 23,
+        MONTH_EXTRACTION = 24,
+        SYSTEM_YMD_DATE = 25,
+        SYSTEM_YM_DATE = 26,
+        SYSTEM_Y_DATE = 27,
+        PROCESSING_YEAR_MONTH = 28,
+        PROCESSING_YEAR = 29,
+        REFERENCE_TIME = 30,
+        STANDARD_DAY = 31,
+        WORKDAY = 32
     }
 }
