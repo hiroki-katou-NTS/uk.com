@@ -123,14 +123,15 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                     self.itemNameCd(itemModel.itemNameCd);
                     self.name(itemModel.name);
                     self.isScreenB(true);
-                    self.getHist().done(function () {
-                        if(self.lstHistory().length == 0){
-                            self.isRegistrationable(false);
-                        }
-                        else{
-                            self.isRegistrationable(true);
-                        }
-                    });
+                    self.getHist();
+                    if(self.lstStatementItem().length == 0){
+                        self.isRegistrationable(false);
+                        self.isScreenB(false);
+                    }
+                    else{
+                        self.isRegistrationable(true);
+                        self.isScreenB(true);
+                    }
                     self.selectedHisCode(null);
                     self.lstBreakdownItem = [];
                     $("#gridBreakdownItem").ntsGrid("destroy");
@@ -314,6 +315,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                 else {
                     nts.uk.ui.errors.clearAll();
                     self.lstStatementItem([]);
+                    self.isScreenB(false);
                 }
                 block.clear();
                 dfd.resolve(self);
@@ -322,6 +324,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                 block.clear();
                 dfd.reject();
             });
+            return dfd.promise();
         }
 
         startPage(): JQueryPromise<any> {
@@ -436,7 +439,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                 categoryAtr: self.categoryAtr(),
                 itemNameCd: self.itemNameCd(),
                 employeeId: self.selectedItem(),
-                salaryBonusAtr: self.bonusAtr()
+                salaryBonusAtr: self.bonusAtr(),
                 period: lstPeriod,
                 breakdownAmountList: self.lstBreakdownItem,
                 lastHistoryId: null
@@ -508,9 +511,6 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                     self.lstHistory(array);
                     let historyID = null;
                     self.getBreakdown(historyID);
-                    /*self.selectedHisCode(null);
-                    self.selectedHisCode(0)*/
-                    ;
                     if (self.selectedHisCode() == 0) {
                         self.selectedHisCode.valueHasMutated();
                     } else {
