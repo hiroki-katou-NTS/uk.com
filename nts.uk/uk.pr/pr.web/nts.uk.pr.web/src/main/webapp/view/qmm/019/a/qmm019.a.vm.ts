@@ -1,10 +1,5 @@
 module nts.uk.pr.view.qmm019.a.viewmodel {
     import block = nts.uk.ui.block;
-    import getText = nts.uk.resource.getText;
-    import confirm = nts.uk.ui.dialog.confirm;
-    import alertError = nts.uk.ui.dialog.alertError;
-    import info = nts.uk.ui.dialog.info;
-    import shareModel = nts.uk.pr.view.qmm019.share.model;
     import modal = nts.uk.ui.windows.sub.modal
     import StatementLayout = nts.uk.pr.view.qmm019.share.model.StatementLayout;
     import IStatementLayout = nts.uk.pr.view.qmm019.share.model.IStatementLayout;
@@ -18,7 +13,6 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
     import YearMonthHistory = nts.uk.pr.view.qmm019.share.model.YearMonthHistory;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import _viewModel = nts.uk.ui._viewModel;
     import StatementPrintAtr = nts.uk.pr.view.qmm019.share.model.StatementPrintAtr;
     import CategoryAtr = nts.uk.pr.view.qmm019.share.model.CategoryAtr;
 
@@ -115,17 +109,103 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
 
             nts.uk.ui.windows.sub.modal('../h/index.xhtml').onClosed(() => {
                 let params = getShared("QMM019_H_TO_A_PARAMS");
+                let histID = params.histID;
 
                 if(params && params.isRegistered) {
-                    //TODO init create mode
+                    self.loadListData().done(function() {
+                        let matchKey: boolean = _.filter(self.statementLayoutList(), function (o: StatementLayout) {
+                            return _.filter(o.history, function (h: YearMonthHistory) {
+                                return h.historyId == histID;
+                            }).length > 0;
+                        }).length > 0;
+
+                        if (matchKey) {
+                            self.currentHistoryId(histID);
+                            //self.currentHistoryId.valueHasMutated();
+                        } else if (self.statementLayoutList().length > 0) {
+                            let histLength = self.statementLayoutList()[0].history.length;
+                            if (histLength > 0) {
+                                self.currentHistoryId(self.statementLayoutList()[0].history[histLength - 1].historyId);
+                            }
+                        }
+                    });
                 }
 
-                //TODO $("#C3_8").focus();
+                $("#A3_4").focus();
             });
         }
 
         public registered(): void {
+            let self = this;
+            let oldHist = self.statementLayoutHistData().historyId;
 
+            if(!nts.uk.ui.errors.hasError()) {
+                // clear menu to use ko.toJS
+                for(let settingByCtg: SettingByCtg of self.statementLayoutHistData().statementLayoutSet().listSettingByCtg()) {
+                    for(let lineByLineSetting: LineByLineSetting of settingByCtg.listLineByLineSet()) {
+                        for(let settingByItem: SettingByItem of lineByLineSetting.listSetByItem()) {
+                            settingByItem.menu = null;
+                        }
+                    }
+                }
+                let data = ko.toJS(self.statementLayoutHistData);
+
+                // modify data
+                for(let settingByCtg of data.statementLayoutSet.listSettingByCtg) {
+                    delete settingByCtg.parent;
+                    delete settingByCtg.addLine;
+                    delete settingByCtg.showCtg;
+
+                    for(let lineByLineSetting of settingByCtg.listLineByLineSet) {
+                        delete lineByLineSetting.parent;
+                        delete lineByLineSetting.editLine;
+
+                        lineByLineSetting.lineNumber = settingByCtg.listLineByLineSet.indexOf(lineByLineSetting) + 1;
+
+                        for(let settingByItem of lineByLineSetting.listSetByItem) {
+                            delete settingByItem.parent;
+                            delete settingByItem.delete;
+                            delete settingByItem.openSetting;
+
+                            settingByItem.itemPosition = lineByLineSetting.listSetByItem.indexOf(settingByItem) + 1;
+                        }
+
+                        _.remove(lineByLineSetting.listSetByItem, function (item: SettingByItem) {
+                            return item.deleted || _.isEmpty(item.itemId);
+                        });
+                    }
+                }
+
+                block.invisible();
+                service.updateStatementLayoutHistData(data).done(() => {
+                    block.clear();
+
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                        self.loadListData().done(function() {
+                            let matchKey: boolean = _.filter(self.statementLayoutList(), function(o: StatementLayout) {
+                                return _.filter(o.history, function(h: YearMonthHistory) {
+                                    return h.historyId == oldHist;
+                                }).length > 0;
+                            }).length > 0;
+
+                            if(matchKey) {
+                                self.currentHistoryId(oldHist);
+                                //self.currentHistoryId.valueHasMutated();
+                            } else if(self.statementLayoutList().length > 0) {
+                                let histLength = self.statementLayoutList()[0].history.length;
+                                if(histLength > 0) {
+                                    self.currentHistoryId(self.statementLayoutList()[0].history[histLength - 1].historyId);
+                                }
+                            }
+
+                            $("#A3_4").focus();
+                        });
+                    });
+                }).fail(err => {
+                    block.clear();
+                    console.log(err);
+                });
+            }
         }
 
         public outputExcel(): void {
@@ -140,28 +220,70 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 let params = getShared("QMM019_B_TO_A_PARAMS");
 
                 if(params && params.isRegistered) {
-                    let histID = params.histID;
-                    self.loadListData();
-                    self.currentHistoryId(histID);
-                    //TODO init create mode
+                    self.initCreateData(params);
                 }
 
-                //TODO $("#C3_8").focus();
+                $("#A3_4").focus();
             });
+        }
+
+        public initCreateData(params: any): void {
+            let histID = params.histID;
+            let startMonth =  params.startMonth;
+            let itemHistoryDivision =  params.itemHistoryDivision;
+            let layoutPattern = params.layoutPatternIdSelected;
+
+
         }
 
         public editHistory(): void {
             let self = this;
+            let oldCode = self.currentStatementLayoutCode();
+            let oldHist = self.currentHistoryId();
 
             setShared("QMM019_A_TO_C_PARAMS", {code: self.currentStatementLayoutCode(), histId: self.currentHistoryId()});
             nts.uk.ui.windows.sub.modal('../c/index.xhtml').onClosed(() => {
                 let params = getShared("QMM019_C_TO_A_PARAMS");
 
                 if(params && params.isRegistered) {
-                    //TODO init create mode
+                    self.loadListData().done(function() {
+                        if(params.isEdit) {
+                            let matchKey: boolean = _.filter(self.statementLayoutList(), function(o: StatementLayout) {
+                                return _.filter(o.history, function(h: YearMonthHistory) {
+                                    return h.historyId == oldHist;
+                                }).length > 0;
+                            }).length > 0;
+
+                            if(matchKey) {
+                                self.currentHistoryId(oldHist);
+                                //self.currentHistoryId.valueHasMutated();
+                            } else if(self.statementLayoutList().length > 0) {
+                                let histLength = self.statementLayoutList()[0].history.length;
+                                if(histLength > 0) {
+                                    self.currentHistoryId(self.statementLayoutList()[0].history[histLength - 1].historyId);
+                                }
+                            }
+                        } else {
+                            let matchCode: Array<StatementLayout> = _.filter(self.statementLayoutList(), function(o: StatementLayout) {
+                                return o.statementCode == oldCode;
+                            });
+
+                            if(matchCode.length > 0) {
+                                let histLength = matchCode[0].history.length;
+                                if(histLength > 0) {
+                                    self.currentHistoryId(matchCode[0].history[histLength - 1].historyId);
+                                }
+                            } else if(self.statementLayoutList().length > 0){
+                                let histLength = self.statementLayoutList()[0].history.length;
+                                if(histLength > 0) {
+                                    self.currentHistoryId(self.statementLayoutList()[0].history[histLength - 1].historyId);
+                                }
+                            }
+                        }
+                    });
                 }
 
-                //TODO $("#C3_8").focus();
+                $("#A3_4").focus();
             });
         }
 
@@ -227,6 +349,10 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
             if(data) {
                 self.histId = data.histId;
                 self.layoutPattern = ko.observable(data.layoutPattern);
+
+                data.listSettingByCtg.sort((ctg1: ISettingByCtg, ctg2: ISettingByCtg) => {
+                    return ctg1.ctgAtr - ctg2.ctgAtr;
+                });
                 self.listSettingByCtg = ko.observableArray(data.listSettingByCtg.map(i => new SettingByCtg(i, self)));
             } else {
                 self.histId = null;
@@ -239,13 +365,19 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
     class SettingByCtg {
         ctgAtr: number;
         listLineByLineSet: KnockoutObservableArray<LineByLineSetting>;
+
         parent: StatementLayoutSet;
+        isShowCtg: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor(data: ISettingByCtg, parent: StatementLayoutSet) {
             let self = this;
 
             if(data) {
                 self.ctgAtr = data.ctgAtr;
+                _.orderBy(data.listLineByLineSet, "lineNumber");
+                data.listLineByLineSet.sort((line1: ILineByLineSetting, line2: ILineByLineSetting) => {
+                    return line1.lineNumber - line2.lineNumber;
+                });
                 self.listLineByLineSet = ko.observableArray(data.listLineByLineSet.map(i => new LineByLineSetting(i, null, self)));
             } else {
                 self.ctgAtr = null;
@@ -253,6 +385,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
             }
 
             self.parent = parent;
+            self.isShowCtg(self.listLineByLineSet().length > 0);
         }
 
         public addLine(): void {
@@ -291,17 +424,26 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 //TODO $("#C3_8").focus();
             });
         }
+
+        public showCtg(): void {
+            let self = this;
+
+            self.isShowCtg(true);
+        }
     }
 
     class LineByLineSetting {
         printSet: KnockoutObservable<number>;
         lineNumber: KnockoutObservable<number>;
         listSetByItem: KnockoutObservableArray<SettingByItem>;
+
         parent: SettingByCtg;
+        hasFixed: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor(data: ILineByLineSetting, newPrintSet: number, parent: SettingByCtg) {
             let self = this;
             let listFullItem: Array<ISettingByItem>;
+            self.parent = parent;
 
             if(data) {
                 self.printSet = ko.observable(data.printSet);
@@ -309,16 +451,18 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 listFullItem = data.listSetByItem;
             } else {
                 self.printSet = ko.observable(newPrintSet);
-                self.lineNumber = ko.observable(null);
+                self.lineNumber = ko.observable(self.parent.listLineByLineSet().length);
                 listFullItem = [];
             }
-
-            self.parent = parent;
 
             self.listSetByItem = ko.observableArray([]);
             for(let i = 1; i <= 9; i++) {
                 let itemInPosition:Array<ISettingByItem> = listFullItem.filter(item => item.itemPosition == i);
                 self.listSetByItem.push(itemInPosition.length > 0 ? new SettingByItem(itemInPosition[0], self) : new SettingByItem(null, self));
+            }
+
+            for(let settingByItem: SettingByItem of self.listSetByItem()) {
+                if(settingByItem.isFixed()) self.hasFixed(true);
             }
         }
 
@@ -371,7 +515,12 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         shortName: KnockoutObservable<string>;
         paymentItemDetailSet: IPaymentItemDetail;
         deductionItemDetailSet: IDeductionItemDetail;
+
         parent: LineByLineSetting;
+        deleted: KnockoutObservable<boolean>;
+        id: KnockoutObservable<string>;
+        menu: nts.uk.ui.contextmenu.ContextMenu;
+        isFixed: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor(data: ISettingByItem, parent: LineByLineSetting) {
             let self = this;
@@ -382,15 +531,90 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 self.shortName = ko.observable(data.shortName);
                 self.paymentItemDetailSet = data.paymentItemDetailSet;
                 self.deductionItemDetailSet = data.deductionItemDetailSet;
+
+                if((self.paymentItemDetailSet != null) && ((self.paymentItemDetailSet.salaryItemId == "F001") ||
+                        (self.paymentItemDetailSet.salaryItemId == "F002") || (self.paymentItemDetailSet.salaryItemId == "F003"))) {
+                    self.isFixed(true);
+                }
+
+                if((self.deductionItemDetailSet != null) && (self.deductionItemDetailSet.salaryItemId == "F114")) {
+                    self.isFixed(true);
+                }
             } else {
-                self.itemPosition = ko.observable("+");
+                self.itemPosition = ko.observable(null);
                 self.itemId = ko.observable(null);
-                self.shortName = ko.observable(null);
+                self.shortName = ko.observable("+");
                 self.paymentItemDetailSet = null;
                 self.deductionItemDetailSet = null;
             }
 
             self.parent = parent;
+            self.deleted = ko.observable(false);
+            self.id = ko.observable("item_" + self.parent.parent.ctgAtr + "_" + self.parent.lineNumber() + "_" + self.itemPosition());
+
+            if(!self.isFixed() && self.itemId() != null) {
+                self.menu = new nts.uk.ui.contextmenu.ContextMenu("." + self.id(), [
+                    new nts.uk.ui.contextmenu.ContextMenuItem(
+                        "Delete",
+                        "Xóa",
+                        () => { self.delete() },
+                        "ui-icon ui-icon-trash",
+                        true,
+                        true
+                    ),
+                    new nts.uk.ui.contextmenu.ContextMenuItem(
+                        "Resume",
+                        "Bỏ xóa",
+                        () => { self.delete() },
+                        "ui-icon ui-icon-clipboard",
+                        false,
+                        true
+                    )
+                ]);
+            }
+
+            self.deleted.subscribe(deleted => {
+                if(deleted == true) {
+                    self.menu.setVisibleItem(false, 0);
+                    self.menu.setVisibleItem(true, 1);
+                } else {
+                    self.menu.setVisibleItem(false, 1);
+                    self.menu.setVisibleItem(true, 0);
+                }
+            });
+
+            self.itemId.subscribe(id => {
+                if(_.isEmpty(id) && (self.menu == null)) {
+                    self.menu = new nts.uk.ui.contextmenu.ContextMenu("." + self.id(), [
+                        new nts.uk.ui.contextmenu.ContextMenuItem(
+                            "Delete",
+                            "Xóa",
+                            () => { self.delete() },
+                            "ui-icon ui-icon-trash",
+                            true,
+                            true
+                        ),
+                        new nts.uk.ui.contextmenu.ContextMenuItem(
+                            "Resume",
+                            "Bỏ xóa",
+                            () => { self.delete() },
+                            "ui-icon ui-icon-clipboard",
+                            false,
+                            true
+                        )
+                    ]);
+                }
+            })
+        }
+
+        public delete(): void {
+            let self = this;
+
+            if(self.deleted()) {
+                self.deleted(false);
+            } else {
+                self.deleted(true);
+            }
         }
 
         public openSetting(): void {
@@ -405,49 +629,51 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 }
             }
 
-            switch (self.parent.parent.ctgAtr) {
-                case CategoryAtr.PAYMENT_ITEM: {
-                    setShared("QMM019_A_TO_D_PARAMS", {
-                        listItemSetting: listItemSetting,
-                        itemId: self.itemId(),
-                        detail: self.paymentItemDetailSet
-                    });
+            if(!self.isFixed()) {
+                switch (self.parent.parent.ctgAtr) {
+                    case CategoryAtr.PAYMENT_ITEM: {
+                        setShared("QMM019_A_TO_D_PARAMS", {
+                            listItemSetting: listItemSetting,
+                            itemId: self.itemId(),
+                            detail: self.paymentItemDetailSet
+                        });
 
-                    nts.uk.ui.windows.sub.modal('../d/index.xhtml').onClosed(() => {
+                        nts.uk.ui.windows.sub.modal('../d/index.xhtml').onClosed(() => {
 
-                    });
-                    break;
-                }
-                case CategoryAtr.DEDUCTION_ITEM: {
-                    setShared("QMM019_E_TO_D_PARAMS", {
-                        listItemSetting: listItemSetting,
-                        itemId: self.itemId(),
-                        detail: self.deductionItemDetailSet
-                    });
+                        });
+                        break;
+                    }
+                    case CategoryAtr.DEDUCTION_ITEM: {
+                        setShared("QMM019_E_TO_D_PARAMS", {
+                            listItemSetting: listItemSetting,
+                            itemId: self.itemId(),
+                            detail: self.deductionItemDetailSet
+                        });
 
-                    nts.uk.ui.windows.sub.modal('../e/index.xhtml').onClosed(() => {
+                        nts.uk.ui.windows.sub.modal('../e/index.xhtml').onClosed(() => {
 
-                    });
-                    break;
-                }
-                case CategoryAtr.ATTEND_ITEM: {
-                    nts.uk.ui.windows.sub.modal('../f/index.xhtml').onClosed(() => {
+                        });
+                        break;
+                    }
+                    case CategoryAtr.ATTEND_ITEM: {
+                        nts.uk.ui.windows.sub.modal('../f/index.xhtml').onClosed(() => {
 
-                    });
-                    break;
-                }
-                case CategoryAtr.REPORT_ITEM: {
-                    setShared("QMM019_E_TO_G_PARAMS", {
-                        listItemSetting: listItemSetting,
-                        itemId: self.itemId()
-                    });
-                    nts.uk.ui.windows.sub.modal('../g/index.xhtml').onClosed(() => {
+                        });
+                        break;
+                    }
+                    case CategoryAtr.REPORT_ITEM: {
+                        setShared("QMM019_E_TO_G_PARAMS", {
+                            listItemSetting: listItemSetting,
+                            itemId: self.itemId()
+                        });
+                        nts.uk.ui.windows.sub.modal('../g/index.xhtml').onClosed(() => {
 
-                    });
-                    break;
-                }
-                default: {
-                    break;
+                        });
+                        break;
+                    }
+                    default: {
+                        break;
+                    }
                 }
             }
         }

@@ -122,16 +122,16 @@ public class StatementLayoutService {
         SettingByCtg deducationCtgSetting = new SettingByCtg(CategoryAtr.DEDUCTION_ITEM.value, deducationLineList);
         listSettingByCtg.add(deducationCtgSetting);
 
+        //勤怠項目
+        List<LineByLineSetting> timeLineList = new ArrayList<>();
+        SettingByCtg timeCtgSetting = new SettingByCtg(CategoryAtr.ATTEND_ITEM.value, timeLineList);
+        listSettingByCtg.add(timeCtgSetting);
+
         if(StatementLayoutPattern.DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON.value == layoutPattern) {
             deducationLineList.add(new LineByLineSetting(StatementPrintAtr.PRINT.value, 3, new ArrayList<>()));
 
-            //勤怠項目
-            List<LineByLineSetting> timeLineList = new ArrayList<>();
             timeLineList.add(new LineByLineSetting(StatementPrintAtr.PRINT.value, 1, new ArrayList<>()));
             timeLineList.add(new LineByLineSetting(StatementPrintAtr.PRINT.value, 2, new ArrayList<>()));
-
-            SettingByCtg timeCtgSetting = new SettingByCtg(CategoryAtr.ATTEND_ITEM.value, timeLineList);
-            listSettingByCtg.add(timeCtgSetting);
         }
 
         //記事項目

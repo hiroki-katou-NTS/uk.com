@@ -4,10 +4,9 @@ import java.util.Optional;
 import java.util.List;
 
 /**
-* 明細書レイアウト設定
-*/
-public interface StatementLayoutSetRepository
-{
+ * 明細書レイアウト設定
+ */
+public interface StatementLayoutSetRepository {
 
     List<StatementLayoutSet> getAllStatementLayoutSet();
 
