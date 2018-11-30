@@ -6,7 +6,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+//import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.CollectionAtr;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.JoggingWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicateStateAtr;
@@ -15,9 +15,9 @@ import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDay
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
+//import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDayWorkTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeOTTimezoneSet;
+//import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeOTTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -54,21 +54,21 @@ public class DiffTimeCorrectionServiceImpl implements DiffTimeCorrectionService 
 	}
 
 	// 時差勤務時間が変動可能な時間かチェックする
-	private boolean checkCanUpdateDiffTime(JoggingWorkTime difftime, DiffTimeWorkSetting difftimeSetting) {
-
-		AttendanceTime changeTime = null;
-		if (difftime.getAtr().equals(CollectionAtr.BEFORE)) {
-			changeTime = difftimeSetting.getChangeExtent().getAheadChange();
-		} else {
-			changeTime = difftimeSetting.getChangeExtent().getBehindChange();
-		}
-
-		// 変動可能時間を超えているかチェックする
-		if (changeTime.lessThan(difftime.getTime())) {
-			return false;
-		}
-		return true;
-	}
+//	private boolean checkCanUpdateDiffTime(JoggingWorkTime difftime, DiffTimeWorkSetting difftimeSetting) {
+//
+//		AttendanceTime changeTime = null;
+//		if (difftime.getAtr().equals(CollectionAtr.BEFORE)) {
+//			changeTime = difftimeSetting.getChangeExtent().getAheadChange();
+//		} else {
+//			changeTime = difftimeSetting.getChangeExtent().getBehindChange();
+//		}
+//
+//		// 変動可能時間を超えているかチェックする
+//		if (changeTime.lessThan(difftime.getTime())) {
+//			return false;
+//		}
+//		return true;
+//	}
 
 	// 打刻反映範囲を補正
 	private List<StampReflectTimezone> updateStamp(JoggingWorkTime difftime, DiffTimeWorkSetting difftimeSetting,
@@ -335,8 +335,8 @@ public class DiffTimeCorrectionServiceImpl implements DiffTimeCorrectionService 
 			});
 
 			// TODO ダミー時間帯の場合
-			List<TimeZone> lstDummy = this.generateListDummy(halfDay.getWorkTimezone().getEmploymentTimezones(),
-					halfDay.getWorkTimezone().getOTTimezones(), predTime);
+//			List<TimeZone> lstDummy = this.generateListDummy(halfDay.getWorkTimezone().getEmploymentTimezones(),
+//					halfDay.getWorkTimezone().getOTTimezones(), predTime);
 
 			// 1日の範囲の最終チェック
 			if (difftime.getAtr().equals(CollectionAtr.BEFORE)) {
@@ -385,34 +385,34 @@ public class DiffTimeCorrectionServiceImpl implements DiffTimeCorrectionService 
 	}
 
 	// 就業時間帯を時系列順に1つのリストにまとめる
-	private List<TimeZone> generateListDummy(List<EmTimeZoneSet> employmentTimezones,
-			List<DiffTimeOTTimezoneSet> otTime, PredetemineTimeSetting predTime) {
-		List<TimeZone> lstDummy = new ArrayList<>();
-		List<TimeZone> listMerge = new ArrayList<>();
-
-		employmentTimezones.stream().forEach(item -> {
-			listMerge.add(new TimeZone(item.getTimezone().getStart(), item.getTimezone().getEnd()));
-		});
-		otTime.stream().forEach(item -> {
-			listMerge.add(new TimeZone(item.getTimezone().getStart(), item.getTimezone().getEnd()));
-		});
-
-		listMerge.stream().sorted((a, b) -> a.getStart().compareTo(b.getStart()));
-		if (!listMerge.isEmpty()) {
-			for (int i = 0; i < listMerge.size(); i++) {
-				if (i == 0) {
-					if (listMerge.get(0).getStart().greaterThan(predTime.getStartDateClock())) {
-						lstDummy.add(new TimeZone(predTime.getStartDateClock(), listMerge.get(0).getStart()));
-					}
-				} else {
-					if (listMerge.get(i - 1).getEnd().lessThan(listMerge.get(i).getStart())) {
-						lstDummy.add(new TimeZone(listMerge.get(i - 1).getEnd(), listMerge.get(i).getStart()));
-					}
-				}
-			}
-		}
-		return lstDummy;
-	}
+//	private List<TimeZone> generateListDummy(List<EmTimeZoneSet> employmentTimezones,
+//			List<DiffTimeOTTimezoneSet> otTime, PredetemineTimeSetting predTime) {
+//		List<TimeZone> lstDummy = new ArrayList<>();
+//		List<TimeZone> listMerge = new ArrayList<>();
+//
+//		employmentTimezones.stream().forEach(item -> {
+//			listMerge.add(new TimeZone(item.getTimezone().getStart(), item.getTimezone().getEnd()));
+//		});
+//		otTime.stream().forEach(item -> {
+//			listMerge.add(new TimeZone(item.getTimezone().getStart(), item.getTimezone().getEnd()));
+//		});
+//
+//		listMerge.stream().sorted((a, b) -> a.getStart().compareTo(b.getStart()));
+//		if (!listMerge.isEmpty()) {
+//			for (int i = 0; i < listMerge.size(); i++) {
+//				if (i == 0) {
+//					if (listMerge.get(0).getStart().greaterThan(predTime.getStartDateClock())) {
+//						lstDummy.add(new TimeZone(predTime.getStartDateClock(), listMerge.get(0).getStart()));
+//					}
+//				} else {
+//					if (listMerge.get(i - 1).getEnd().lessThan(listMerge.get(i).getStart())) {
+//						lstDummy.add(new TimeZone(listMerge.get(i - 1).getEnd(), listMerge.get(i).getStart()));
+//					}
+//				}
+//			}
+//		}
+//		return lstDummy;
+//	}
 
 	// 休憩時間帯を補正
 	private void restTimeUpdate(JoggingWorkTime difftime, DiffTimeWorkSetting difftimeSetting) {

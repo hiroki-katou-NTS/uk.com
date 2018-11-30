@@ -135,7 +135,8 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 		List<AppOverTime> appOverTimeList = this.queryProxy().query(FIND_BY_ATR, KrqdtAppOvertime.class)
 				.setParameter("overtimeAtr", overTimeAtr.value)
 				.getList(e -> convertToDomain(e));
-		List<AppOverTime> fullList = appOverTimeList.stream()
+		//List<AppOverTime> fullList = 
+				appOverTimeList.stream()
 				.map(x -> this.getFullAppOvertime(x.getCompanyID(), x.getAppID()).orElse(null)).collect(Collectors.toList());
 		List<AppOverTime> resultList = appOverTimeList.stream()
 			.filter(x -> {

@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.function.infra.repository.processexecution;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+//import java.sql.Connection;
+//import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -10,10 +10,10 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+//import javax.persistence.TypedQuery;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.task.tran.TransactionService;
+//import nts.arc.task.tran.TransactionService;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogManage;
@@ -66,6 +66,7 @@ implements ProcessExecutionLogManageRepository{
 				//setParameter.setLockMode(LockModeType.PESSIMISTIC_WRITE);
 		//EntityManager merge = entityManager.merge(entityManager);
 		//entityManager.lock(merge, LockModeType.OPTIMISTIC_FORCE_INCREMENT);
+		@SuppressWarnings("unchecked")
 		List<KfnmtProcessExecutionLogManage> resultList =  setParameter2.getResultList();
 		List<ProcessExecutionLogManage> lstProcessExecutionLogManage = new ArrayList<ProcessExecutionLogManage>();
 		resultList.forEach(x->{
@@ -89,8 +90,8 @@ implements ProcessExecutionLogManageRepository{
 		//this.commandProxy().insert(KfnmtProcessExecutionLogManage.toEntity(domain));
 			this.getEntityManager().persist(KfnmtProcessExecutionLogManage.toEntity(domain));
 		//this.getEntityManager().lock(this.getEntityManager(), LockModeType.NONE);
-			KfnmtProcessExecutionLogManagePK kfnmtProcExecPK = new KfnmtProcessExecutionLogManagePK(domain.getCompanyId(), domain.getExecItemCd().v());
-			KfnmtProcessExecutionLogManage find = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class, kfnmtProcExecPK);
+			//KfnmtProcessExecutionLogManagePK kfnmtProcExecPK = new KfnmtProcessExecutionLogManagePK(domain.getCompanyId(), domain.getExecItemCd().v());
+			//KfnmtProcessExecutionLogManage find = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class, kfnmtProcExecPK);
 		//	LockModeType lockMode = this.getEntityManager().getLockMode(find);
 	//	this.getEntityManager().lock(find, LockModeType.PESSIMISTIC_WRITE);
 			this.getEntityManager().flush();
@@ -108,7 +109,7 @@ implements ProcessExecutionLogManageRepository{
 			oldData.prevExecDateTimeEx = updateData.prevExecDateTimeEx;
 			//this.commandProxy().update(oldData);
 			this.getEntityManager().merge(oldData);
-			KfnmtProcessExecutionLogManagePK kfnmtProcExecPK = new KfnmtProcessExecutionLogManagePK(domain.getCompanyId(), domain.getExecItemCd().v());
+			//KfnmtProcessExecutionLogManagePK kfnmtProcExecPK = new KfnmtProcessExecutionLogManagePK(domain.getCompanyId(), domain.getExecItemCd().v());
 			//KfnmtProcessExecutionLogManage find = this.getEntityManager().find(KfnmtProcessExecutionLogManage.class, kfnmtProcExecPK);
 			//LockModeType lockMode = this.getEntityManager().getLockMode(find);
 		//	this.getEntityManager().lock(find, LockModeType.PESSIMISTIC_WRITE);

@@ -1,6 +1,5 @@
 package nts.uk.ctx.sys.auth.app.command.role;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

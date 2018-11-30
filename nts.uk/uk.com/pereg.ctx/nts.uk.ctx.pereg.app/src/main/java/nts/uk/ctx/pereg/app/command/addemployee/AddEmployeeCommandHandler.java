@@ -332,7 +332,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			List<PersonCorrectionItemInfo> lstItemInfo = new ArrayList<>();
 			
 			List<ItemValue> items = input.getItems().stream()
-					.map(c -> {return c.setContentForCPS002(c);})
+//					.map(c -> {return c.setContentForCPS002(c);})
 					.filter(c -> c != null ).collect(Collectors.toList());
 			for (ItemValue item : items) {
 				if (item.itemCode().equals(itemCode)) {

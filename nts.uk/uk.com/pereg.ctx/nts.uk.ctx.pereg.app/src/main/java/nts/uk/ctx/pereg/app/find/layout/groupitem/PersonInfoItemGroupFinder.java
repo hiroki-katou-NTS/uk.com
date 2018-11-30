@@ -18,7 +18,6 @@ import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
 import nts.uk.ctx.pereg.app.find.person.info.item.SetItemDto;
 import nts.uk.ctx.pereg.dom.person.groupitem.IPersonInfoItemGroupRepository;
 import nts.uk.ctx.pereg.dom.person.groupitem.PersonInfoItemGroup;
-import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 
 @Stateless
 public class PersonInfoItemGroupFinder {

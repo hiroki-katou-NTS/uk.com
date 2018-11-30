@@ -16,6 +16,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class AppReflectManagerFromRecordPubImpl implements AppReflectManagerFromRecordPub{
 	@Inject
 	private AppReflectManagerFromRecord appReflectService;
+	@SuppressWarnings("rawtypes")
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public ProcessStateReflectExport applicationRellect(String workId, DatePeriod workDate,

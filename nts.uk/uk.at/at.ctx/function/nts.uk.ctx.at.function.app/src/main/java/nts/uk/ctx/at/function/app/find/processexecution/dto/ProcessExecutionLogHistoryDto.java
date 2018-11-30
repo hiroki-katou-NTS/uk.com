@@ -109,13 +109,13 @@ public class ProcessExecutionLogHistoryDto {
 			dailyCalcStart = domain.getEachProcPeriod().getDailyCalcPeriod().get().start();
 			dailyCalcEnd = domain.getEachProcPeriod().getDailyCalcPeriod().get().end();
 		}
-		GeneralDate reflectApprovalResultStart = null;
-		GeneralDate reflectApprovalResultEnd = null;
+//		GeneralDate reflectApprovalResultStart = null;
+//		GeneralDate reflectApprovalResultEnd = null;
 		if (domain.getEachProcPeriod() != null
 				&& domain.getEachProcPeriod().getReflectApprovalResult() != null
 				&& domain.getEachProcPeriod().getReflectApprovalResult().isPresent()) {
-			reflectApprovalResultStart = domain.getEachProcPeriod().getReflectApprovalResult().get().start();
-			reflectApprovalResultEnd = domain.getEachProcPeriod().getReflectApprovalResult().get().end();
+//			reflectApprovalResultStart = domain.getEachProcPeriod().getReflectApprovalResult().get().start();
+//			reflectApprovalResultEnd = domain.getEachProcPeriod().getReflectApprovalResult().get().end();
 		}
 		
 		return new ProcessExecutionLogHistoryDto(

@@ -123,7 +123,7 @@ public class JpaCompensLeaveEmSetRepository extends JpaRepository implements Com
         
         query.where(predicateList.toArray(new Predicate[]{}));
         
-        List<KclmtCompensLeaveEmp> result = em.createQuery(query).getResultList();
+//        List<KclmtCompensLeaveEmp> result = em.createQuery(query).getResultList();
         
         return em.createQuery(query).getResultList().stream()
                 .map(entity -> new CompensatoryLeaveEmSetting(new JpaCompensLeaveEmSettingGetMemento(entity)))

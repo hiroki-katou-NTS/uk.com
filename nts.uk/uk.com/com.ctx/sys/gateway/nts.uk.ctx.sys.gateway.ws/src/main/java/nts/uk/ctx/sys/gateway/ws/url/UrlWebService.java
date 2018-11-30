@@ -19,7 +19,6 @@ import nts.uk.ctx.sys.gateway.app.command.login.LoginRecordRegistService;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormOneCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormTwoCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.LoginRecordInput;
-import nts.uk.ctx.sys.gateway.app.command.login.dto.ParamLoginRecord;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoAdapter;

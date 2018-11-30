@@ -9,8 +9,8 @@ import nts.uk.ctx.at.function.dom.processexecution.LastExecDateTime;
 import nts.uk.ctx.at.function.dom.processexecution.repository.LastExecDateTimeRepository;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtLastExecDateTime;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtLastExecDateTimePK;
-import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecution;
-import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionPK;
+//import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecution;
+//import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionPK;
 
 @Stateless
 public class JpaLastExecDateTimeRepository extends JpaRepository

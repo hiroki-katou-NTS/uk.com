@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.monthlycheckcond
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Optional;
+//import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -72,6 +72,7 @@ public class KrcmtCheckRemainNumberMon extends UkJpaEntity implements Serializab
 		this.listItemID = listItemID;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static KrcmtCheckRemainNumberMon toEntity(CheckRemainNumberMon domain) {
 		return new KrcmtCheckRemainNumberMon(domain.getErrorAlarmCheckID(), domain.getCheckVacation().value,
 				domain.getCheckOperatorType().value,

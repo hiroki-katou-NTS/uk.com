@@ -28,10 +28,10 @@ public enum DeadlCheckMonth {
 	public int value;
 	
 	/** The name id. */
-	private String nameId;
+	 String nameId;
 	
 	/** The description. */
-	private String description;
+	 String description;
 	
 	 /** The Constant values. */
     private final static DeadlCheckMonth[] values = DeadlCheckMonth.values();

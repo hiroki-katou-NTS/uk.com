@@ -14,21 +14,12 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.exio.app.command.exo.executionlog.ExOutOpMngCommand;
-import nts.uk.ctx.exio.app.command.exo.executionlog.ExterOutExecLogCommand;
-import nts.uk.ctx.exio.app.command.exo.executionlog.RemoveExOutOpMngCommandHandler;
-import nts.uk.ctx.exio.app.command.exo.executionlog.UpdateExterOutExecLogCommandHandler;
 import nts.uk.ctx.exio.app.find.exi.execlog.ErrorContentDto;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExacErrorLogDto;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExacErrorLogFinder;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExacExeResultLogDto;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExacExeResultLogFinder;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExiExecLogExportService;
-import nts.uk.ctx.exio.app.find.exo.executionlog.ExOutOpMngDto;
-import nts.uk.ctx.exio.app.find.exo.executionlog.ExOutOpMngFinder;
-import nts.uk.ctx.exio.app.find.exo.executionlog.ExterOutExecLogDto;
-import nts.uk.ctx.exio.app.find.exo.executionlog.ExterOutExecLogFinder;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class ExiExecLogWebService

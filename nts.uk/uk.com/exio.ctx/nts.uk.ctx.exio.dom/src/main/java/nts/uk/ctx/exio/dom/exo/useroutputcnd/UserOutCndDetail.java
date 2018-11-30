@@ -2,7 +2,6 @@ package nts.uk.ctx.exio.dom.exo.useroutputcnd;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.ConditionSettingCd;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.ExterOutCdnSql;

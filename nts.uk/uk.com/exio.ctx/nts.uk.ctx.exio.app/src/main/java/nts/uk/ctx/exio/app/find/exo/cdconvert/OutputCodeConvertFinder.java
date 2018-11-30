@@ -1,6 +1,5 @@
 package nts.uk.ctx.exio.app.find.exo.cdconvert;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,8 +8,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.exio.dom.exo.cdconvert.CdConvertDetail;
-import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvert;
 import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvertRepository;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionOutputConvertCode;
 import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.CharacterDataFmSetting;

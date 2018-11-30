@@ -7,10 +7,10 @@ package nts.uk.ctx.at.shared.dom.common.timerounding;
 import java.math.BigDecimal;
 
 import lombok.Getter;
-import lombok.val;
+//import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.common.timerounding.Unit.Direction;
+//import nts.uk.ctx.at.shared.dom.common.timerounding.Unit.Direction;
 
 /**
  * The Class TimeRoundingSetting.

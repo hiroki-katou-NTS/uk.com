@@ -1,7 +1,5 @@
 package nts.uk.screen.com.app.command.sys.auth.role;
 
-import java.io.Console;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
