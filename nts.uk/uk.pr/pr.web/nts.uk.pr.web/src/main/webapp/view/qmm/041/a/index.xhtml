@@ -49,7 +49,7 @@
                     <div id="panels-group" class="fixed-flex-layout-left">
                         <!--A3_1 項目選択パネル-->
                         <div id="A3_1" class="cf"
-                             data-bind="ntsPanel:{width: 220, direction: 'bottom', showIcon: true}">
+                             data-bind="ntsPanel:{width: 230, direction: 'bottom', showIcon: true}">
                             <!--A3_3 検索-->
                             <div tabindex="5" data-bind="ntsSearchBox: {
                                 searchMode: 'highlight',
@@ -63,20 +63,20 @@
                             <!--A3_4 項目リスト-->
                             <table tabindex="6" id="single-list" data-bind="ntsGridList: {
                                 rows: 8,
-                                width: 220,
+                                width: 230,
                                 options: dataSource,
                                 optionsValue: 'code',
                                 multiple: false,
                                 value: selectedCode,
                                 name: '#[QMM041_8]',
                                 columns: [
-                                    {headerText: '#{i18n.getText('QMM041_8')}', key: 'code', width: 50},
+                                    {headerText: '#{i18n.getText('QMM041_8')}', key: 'code', width: 55},
                                     {headerText: '#{i18n.getText('QMM041_9')}', key: 'name', formatter: _.escape}
                                 ]}"/>
                         </div>
                         <!--A4_1 履歴選択パネル-->
                         <div id="A4_1" class="cf"
-                             data-bind="ntsPanel:{width: '275px', direction: 'none'}">
+                             data-bind="ntsPanel:{width: '287px', direction: 'none'}">
                             <!--A4_2 履歴追加-->
                             <button id="A4_2" tabindex="7" class="pull-left"
                                     data-bind="click: displayScreenB, enable: isAddableHis">

@@ -8,7 +8,7 @@
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
         <script>
-            var dialogSize = {width: 570, height: 500};
+            var dialogSize = {width: 570, height: 490};
         </script>
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="../share/model.js"/>
@@ -69,20 +69,18 @@
                 </div>
             </div>
             <div style="margin: 0 6px">
-                <!--D3_1 金額一覧-->
-                <table data-bind="ntsGridList: {
-                        name: '#[QMM041_40]',
-                        height: 150,
-                        dataSource: items,
-                        rows: 8,
-                        primaryKey: 'code',
-                        columns: columns,
-                        optionsValue: 'code',
-                        optionsText: 'name',
-                        multiple: false }"
-                       tabindex="4"
-                       id="gridlist"
-                />
+                <table tabindex="4" id="gridlist" data-bind="ntsGridList: {
+                    name: '#[QMM039_44]',
+                    height: 150,
+                    dataSource: individualUnitPriceList,
+                    primaryKey: 'code',
+                    columns: columns,
+                    optionsValue: 'code',
+                    optionsText: 'name',
+                    multiple: false,
+                    value: currentCode,
+                    rows: 8
+                }"/>
             </div>
         </div>
     </ui:define>
