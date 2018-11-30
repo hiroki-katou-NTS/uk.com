@@ -98,13 +98,12 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
         loadMGrid() {
             let self = this;
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
-                width: "1170px",
-                height: '200px',
+                width: "1070px",
+                height: "200px",
+                subWidth: "130px",
+                subHeight: "270px",
                 headerHeight: '30px',
                 dataSource: self.empAmountItems,
-                dataSourceAdapter: function (ds) {
-                    return ds;
-                },
                 primaryKey: 'sid',
                 primaryKeyDataType: 'string',
                 rowVirtualization: true,
@@ -112,13 +111,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                 virtualizationMode: 'continuous',
                 enter: 'right',
                 autoFitWindow: false,
-                hideZero: false,
-                preventEditInError: false,
                 hidePrimaryKey: true,
-                userId: self.employIdLogin,
-                getUserId: function (k) {
-                    return String(k);
-                },
                 errorsOnPage: false,
                 columns: [
                     {headerText: "ID", key: 'sid', dataType: 'string', hidden: true},
@@ -176,7 +169,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                             cDisplayType: "Currency",
                             min: self.residentTaxValidator.constraint.min,
                             max: self.residentTaxValidator.constraint.max,
-                            required: true
+                            required: false
                         }
                     },
                     {
@@ -295,11 +288,6 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                         pageSize: 20,
                         currentPageIndex: 0
                     },
-                    {name: 'Copy'},
-                    /*{
-                        name: 'CellStyles',
-                        states: cellStates
-                    },*/
                     {
                         name: "ColumnFixing",
                         showFixButtons: false,
