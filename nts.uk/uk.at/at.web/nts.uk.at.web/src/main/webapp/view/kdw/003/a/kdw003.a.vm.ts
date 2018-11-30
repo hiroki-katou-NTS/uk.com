@@ -943,7 +943,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.listCheck28([]);
             self.listCheckDeviation = [];
             self.listErrorMonth = [];
-            let dataChange: any = $("#dpGrid").mGrid("updatedCells");
+            let dataChange: any = _.uniqWith($("#dpGrid").mGrid("updatedCells", true),  _.isEqual);
+
             var dataSource = $("#dpGrid").mGrid("dataSource");
             let dataChangeProcess: any = [];
             let dataCheckSign: any = [];
@@ -1192,7 +1193,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.listCheck28([]);
             self.listCheckDeviation = [];
             self.listErrorMonth = [];
-            let dataChange: any = $("#dpGrid").mGrid("updatedCells");
+            let dataChange: any = _.uniqWith($("#dpGrid").mGrid("updatedCells", true),  _.isEqual);
             var dataSource = $("#dpGrid").mGrid("dataSource");
             if (_.isEmpty(dataSource)) {
                 nts.uk.ui.block.clear();
@@ -1419,7 +1420,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
             let dataSource = $("#dpGrid").mGrid("dataSource");
 
-            let dataChange: any = $("#dpGrid").mGrid("updatedCells");
+            let dataChange: any = _.uniqWith($("#dpGrid").mGrid("updatedCells", true),  _.isEqual);
             let rowIdsTemp = _.uniqBy(dataChange, function(e) {
                 return e.rowId;
             });
@@ -3713,7 +3714,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let dataMap = new InfoCellEdit(rowId, Number(keyId), valuePrimitive, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), item.typeGroup, columnKey);
 
                     // get item change in row
-                    dataChange = $("#dpGrid").mGrid("updatedCells");
+                    dataChange = _.uniqWith($("#dpGrid").mGrid("updatedCells", true),  _.isEqual);
                     dataChageRow = _.map(_.filter(dataChange, row => {
                         return row.columnKey != "sign" && row.columnKey != "approval" && row.columnKey.indexOf("Name") == -1 && row.rowId == rowId && row.columnKey != columnKey;
                     }), allValue => {
