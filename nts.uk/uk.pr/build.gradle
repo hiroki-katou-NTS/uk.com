@@ -583,6 +583,7 @@ project (':pr.file:nts.uk.file.pr.infra') {
 		compile project(':pr.ctx:pr.transfer:nts.uk.ctx.pr.transfer.infra')
 		compile project(':pr.ctx:pr.retire:nts.uk.ctx.pr.retire.infra')
 		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
+		compile group: 'aspose', name: 'cells', version: '9.0.0'
 	}
 }
 
