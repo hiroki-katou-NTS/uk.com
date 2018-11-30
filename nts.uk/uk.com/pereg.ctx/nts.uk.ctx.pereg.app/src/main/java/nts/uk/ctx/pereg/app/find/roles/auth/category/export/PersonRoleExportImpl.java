@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.ws.roles.export;
+package nts.uk.ctx.pereg.app.find.roles.auth.category.export;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,20 +11,14 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
-import nts.uk.ctx.pereg.app.find.roles.auth.category.PersonInfoCategoryAuthDto;
 import nts.uk.ctx.pereg.app.find.roles.auth.category.PersonInfoCategoryAuthFinder;
 import nts.uk.ctx.pereg.app.find.roles.auth.category.PersonInfoCategoryDetailDto;
-import nts.uk.ctx.pereg.app.find.roles.auth.item.ItemAuth;
 import nts.uk.ctx.pereg.app.find.roles.auth.item.PersonInfoItemAuthFinder;
-import nts.uk.ctx.pereg.app.find.roles.auth.item.PersonInfoItemDetailDto;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryDetail;
 import nts.uk.ctx.pereg.dom.roles.auth.category.RoleCateExportDetail;
-import nts.uk.ctx.sys.auth.dom.role.Role;
-import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
-import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
