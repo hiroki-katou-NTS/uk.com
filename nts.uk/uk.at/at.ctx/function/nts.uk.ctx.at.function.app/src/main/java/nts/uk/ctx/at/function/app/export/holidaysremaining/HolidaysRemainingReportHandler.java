@@ -25,7 +25,6 @@ import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.app.find.holidaysremaining.HdRemainManageFinder;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
-import nts.uk.ctx.at.function.dom.adapter.annualleave.GetNextAnnLeaGrantDateAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationQueryDtoImport;
@@ -35,6 +34,7 @@ import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveOfThisMonthI
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveRemainingAdapter;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveUsageStatusOfThisMonthImported;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnualLeaveUsageImported;
+import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.CheckCallRequest;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.ChildNursingLeaveCurrentSituationImported;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.ChildNursingLeaveRemainingAdapter;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.CurrentHolidayRemainImported;
@@ -47,12 +47,10 @@ import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.StatusOfHolidayImpor
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.ComplileInPeriodOfSpecialLeaveAdapter;
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialVacationImported;
-import nts.uk.ctx.at.function.dom.adapter.reserveleave.GetReserveLeaveNumbersAdpter;
 import nts.uk.ctx.at.function.dom.adapter.reserveleave.ReserveHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.reserveleave.ReservedYearHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.reserveleave.RsvLeaUsedCurrentMonImported;
 import nts.uk.ctx.at.function.dom.adapter.vacation.CurrentHolidayImported;
-import nts.uk.ctx.at.function.dom.adapter.vacation.MonthlyDayoffRemainAdapter;
 import nts.uk.ctx.at.function.dom.adapter.vacation.StatusHolidayImported;
 import nts.uk.ctx.at.function.dom.holidaysremaining.VariousVacationControl;
 import nts.uk.ctx.at.function.dom.holidaysremaining.VariousVacationControlService;
@@ -89,14 +87,14 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	private ClosureRepository closureRepository;
 	@Inject
 	private ClosureService closureService;
-	@Inject
-	private GetNextAnnLeaGrantDateAdapter getNextAnnLeaGrantDateAdapter;
+//	@Inject
+//	private GetNextAnnLeaGrantDateAdapter getNextAnnLeaGrantDateAdapter;
 	@Inject
 	private AnnLeaveRemainingAdapter annLeaveAdapter;
-	@Inject
-	private GetReserveLeaveNumbersAdpter reserveLeaveAdpter;
-	@Inject
-	private MonthlyDayoffRemainAdapter monthlyDayoffAdapter;
+//	@Inject
+//	private GetReserveLeaveNumbersAdpter reserveLeaveAdpter;
+//	@Inject
+//	private MonthlyDayoffRemainAdapter monthlyDayoffAdapter;
 	@Inject
 	private AbsenceReruitmentManaAdapter absenceReruitmentAdapter;
 	@Inject
@@ -175,20 +173,21 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		boolean isFirstEmployee = true;
 		Optional<YearMonth> currentMonthOfFirstEmp = Optional.empty();
 		//hoatt
-		List<String> lstSID = listEmployeeInformationImport.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
-		Map<String, YearMonth> mapCurMon = hdRemainManageFinder.getCurrentMonthVer2(cId, lstSID, baseDate);
+//		List<String> lstSID = listEmployeeInformationImport.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+//		Map<String, YearMonth> mapCurMon = hdRemainManageFinder.getCurrentMonthVer2(cId, lstSID, baseDate);
 		for (EmployeeInformationImport emp : listEmployeeInformationImport) {
 			String wpCode = emp.getWorkplace() != null ? emp.getWorkplace().getWorkplaceCode() : "";
 			String wpName = emp.getWorkplace() != null ? emp.getWorkplace().getWorkplaceName()
 					: TextResource.localize("KDR001_55");
 			String empmentName = emp.getEmployment() != null ? emp.getEmployment().getEmploymentName() : "";
 			String positionName = emp.getPosition() != null ? emp.getPosition().getPositionName() : "";
+            Optional<YearMonth> currentMonth = hdRemainManageFinder.getCurrentMonth(cId, emp.getEmployeeId(), baseDate);
 
 			// List内の締め情報．当月をチェックする
-			Optional<YearMonth> currentMonth = Optional.empty();
-			if(mapCurMon.containsKey(emp.getEmployeeId())){
-				currentMonth = Optional.of(mapCurMon.get(emp.getEmployeeId()));
-			}
+//			Optional<YearMonth> currentMonth = Optional.empty();
+//			if(mapCurMon.containsKey(emp.getEmployeeId())){
+//				currentMonth = Optional.of(mapCurMon.get(emp.getEmployeeId()));
+//			}
 			if (isFirstEmployee) {
 				isFirstEmployee = false;
 				currentMonthOfFirstEmp = currentMonth;
@@ -260,7 +259,14 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		//Mer RQ255,258,259,260,263
 		HolidayRemainMerEx hdRemainMer = hdRemainAdapter.getRemainMer(employeeId, period);
 		//Mer RQ265,268,269,363,364,369
-		HdRemainDetailMerEx remainDel = hdRemainAdapter.getRemainDetailMer(employeeId, currentMonth, baseDate, new DatePeriod(startDate, endDate));
+		boolean call265 = variousVacationControl.isAnnualHolidaySetting();
+		boolean call268 = variousVacationControl.isYearlyReservedSetting();
+		boolean call269 = variousVacationControl.isSubstituteHolidaySetting();
+		boolean call363 = variousVacationControl.isAnnualHolidaySetting();
+		boolean call364 = variousVacationControl.isYearlyReservedSetting();
+		boolean call369 = variousVacationControl.isAnnualHolidaySetting();
+		CheckCallRequest check = new CheckCallRequest(call265, call268, call269, call363, call364, call369);
+		HdRemainDetailMerEx remainDel = hdRemainAdapter.getRemainDetailMer(employeeId, currentMonth, baseDate, new DatePeriod(startDate, endDate), check);
 		if (variousVacationControl.isAnnualHolidaySetting()) {
 			// Call RequestList369
 			grantDate = remainDel.getResult369();

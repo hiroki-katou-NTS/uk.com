@@ -14,5 +14,5 @@ public interface HdRemainDetailMerPub {
 	 * @return
 	 */
 	public HdRemainDetailMer getHdRemainDetailMer(String employeeId, YearMonth currentMonth, GeneralDate baseDate,
-			DatePeriod period);
+			DatePeriod period, CheckCallRQ checkCall);
 }

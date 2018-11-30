@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.pubimp.remainnumber.holiday;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AggrResultOfAnnualLeave
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AnnLeaveOfThisMonth;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AnnLeaveRemainNumberPub;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.NextHolidayGrantDate;
+import nts.uk.ctx.at.record.pub.remainnumber.holiday.CheckCallRQ;
 import nts.uk.ctx.at.record.pub.remainnumber.holiday.HdRemainDetailMer;
 import nts.uk.ctx.at.record.pub.remainnumber.holiday.HdRemainDetailMerPub;
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.GetReserveLeaveNumbers;
@@ -49,22 +51,43 @@ public class HdRemainDetailMerPubImpl implements HdRemainDetailMerPub{
 	 */
 	@Override
 	public HdRemainDetailMer getHdRemainDetailMer(String employeeId, YearMonth currentMonth, GeneralDate baseDate,
-			DatePeriod period) {
+			DatePeriod period, CheckCallRQ checkCall) {
 		
-		Optional<GeneralDate> closureDate = closure.algorithm(employeeId);
+		Optional<GeneralDate> closureDate = Optional.empty();
+		if(checkCall.isCall268() || checkCall.isCall369()){
+			closureDate = closure.algorithm(employeeId);
+		}
 		String companyId = AppContexts.user().companyId();
 		//265
-		AnnLeaveOfThisMonth result265 = rq265.getAnnLeaveOfThisMonth(employeeId);
+		AnnLeaveOfThisMonth result265 = null;
+		if(checkCall.isCall265()){
+			result265 = rq265.getAnnLeaveOfThisMonth(employeeId);
+		}
 		//268
-		ReserveLeaveNowExport result268 = rq268.getRsvRemainVer2(employeeId, closureDate);
+		ReserveLeaveNowExport result268 = null;
+		if(checkCall.isCall268()){
+			result268 = rq268.getRsvRemainVer2(employeeId, closureDate);
+		}
 		//269
-		List<InterimRemainAggregateOutputData> result269 = rq269.getInterimRemainAggregate(employeeId, baseDate, period.start().yearMonth(), period.end().yearMonth());
+		List<InterimRemainAggregateOutputData> result269 = new ArrayList<>();
+		if(checkCall.isCall269()){
+			result269 = rq269.getInterimRemainAggregate(employeeId, baseDate, period.start().yearMonth(), period.end().yearMonth());
+		}
 		//363
-		List<AggrResultOfAnnualLeaveEachMonth> result363 = rq265.getAnnLeaveRemainAfterThisMonth(employeeId, new DatePeriod(GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1), period.end()));
+		List<AggrResultOfAnnualLeaveEachMonth> result363 = new ArrayList<>();
+		if(checkCall.isCall363()){
+			result363 = rq265.getAnnLeaveRemainAfterThisMonth(employeeId, new DatePeriod(GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1), period.end()));
+		}
 		//364
-		List<RsvLeaUsedCurrentMonExport> result364 = rq364.getRemainRsvAnnAfCurMonV2(employeeId, new YearMonthPeriod(currentMonth, period.end().yearMonth()));
+		List<RsvLeaUsedCurrentMonExport> result364 = new ArrayList<>();
+		if(checkCall.isCall364()){
+			result364 = rq364.getRemainRsvAnnAfCurMonV2(employeeId, new YearMonthPeriod(currentMonth, period.end().yearMonth()));
+		}
 		//369
-		NextHolidayGrantDate result369 = rq265.getNextHdGrantDateVer2(companyId, employeeId, closureDate);
+		NextHolidayGrantDate result369 = null;
+		if(checkCall.isCall369()){
+			result369 = rq265.getNextHdGrantDateVer2(companyId, employeeId, closureDate);
+		}
 		
 		return new HdRemainDetailMer(result265, result268, result269, result363, result364, result369);
 	}

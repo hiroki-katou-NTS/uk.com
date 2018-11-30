@@ -15,6 +15,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveOfThisMonthImported;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveUsageStatusOfThisMonthImported;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnualLeaveUsageImported;
+import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.CheckCallRequest;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.HdRemainDetailMerEx;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.HolidayRemainMerEx;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.HolidayRemainMergeAdapter;
@@ -39,6 +40,7 @@ import nts.uk.ctx.at.record.pub.monthly.vacation.reserveleave.GetConfirmedReserv
 import nts.uk.ctx.at.record.pub.monthly.vacation.reserveleave.ReserveLeaveUsageExport;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AggrResultOfAnnualLeaveEachMonth;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AnnLeaveOfThisMonth;
+import nts.uk.ctx.at.record.pub.remainnumber.holiday.CheckCallRQ;
 import nts.uk.ctx.at.record.pub.remainnumber.holiday.HdRemainDetailMer;
 import nts.uk.ctx.at.record.pub.remainnumber.holiday.HdRemainDetailMerPub;
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.ReserveLeaveNowExport;
@@ -121,16 +123,17 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
 
 	@Override
 	public HdRemainDetailMerEx getRemainDetailMer(String employeeId, YearMonth currentMonth, GeneralDate baseDate,
-			DatePeriod period) {
-		HdRemainDetailMer data = hdMerPub.getHdRemainDetailMer(employeeId, currentMonth, baseDate, period);
+			DatePeriod period, CheckCallRequest checkCall) {
+		CheckCallRQ check = new CheckCallRQ(checkCall.isCall265(), checkCall.isCall268(), checkCall.isCall269(), checkCall.isCall363(), checkCall.isCall364(), checkCall.isCall369());
+		HdRemainDetailMer data = hdMerPub.getHdRemainDetailMer(employeeId, currentMonth, baseDate, period, check);
 		//265
 		AnnLeaveOfThisMonth annLeave = data.getResult265();
-		AnnLeaveOfThisMonthImported result265 = new AnnLeaveOfThisMonthImported(annLeave.getGrantDate(), annLeave.getGrantDays(),
+		AnnLeaveOfThisMonthImported result265 = annLeave == null ? null : new AnnLeaveOfThisMonthImported(annLeave.getGrantDate(), annLeave.getGrantDays(),
 				annLeave.getFirstMonthRemNumDays(), annLeave.getFirstMonthRemNumMinutes(), annLeave.getUsedDays().v(),
 				annLeave.getUsedMinutes(), annLeave.getRemainDays().v(), annLeave.getRemainMinutes());
 		//268
 		ReserveLeaveNowExport reserveLeave = data.getResult268();
-		ReserveHolidayImported result268 = new ReserveHolidayImported(reserveLeave.getStartMonthRemain().v(), 
+		ReserveHolidayImported result268 = reserveLeave == null ? null : new ReserveHolidayImported(reserveLeave.getStartMonthRemain().v(), 
 				reserveLeave.getGrantNumber().v(), reserveLeave.getUsedNumber().v(), reserveLeave.getRemainNumber().v(),
 				reserveLeave.getUndigestNumber().v());
 		//269

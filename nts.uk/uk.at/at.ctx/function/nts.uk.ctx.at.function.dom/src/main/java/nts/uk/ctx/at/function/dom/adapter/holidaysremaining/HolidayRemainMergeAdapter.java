@@ -23,5 +23,5 @@ public interface HolidayRemainMergeAdapter {
 	 * @return
 	 */
 	public HdRemainDetailMerEx getRemainDetailMer(String employeeId, YearMonth currentMonth, 
-			GeneralDate baseDate, DatePeriod period);
+			GeneralDate baseDate, DatePeriod period, CheckCallRequest checkCall);
 }
