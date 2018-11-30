@@ -35,7 +35,7 @@
 						</div>
 						<!-- L2_1 時分/分選択 -->
 						<div class="div-table-col-standard">
-							<div id="L2_1"
+							<div tabindex="1" id="L2_1"
 								data-bind="ntsSwitchButton: {
 								name: 'Sample Switch',
 								options: $vm.timeSelectedList,
@@ -54,7 +54,7 @@
 
 						<!-- L3_1 小数桁数 -->
 						<div class="div-table-col-small div-inline" style="width: 75px;">
-							<input id="L3_1"
+							<input tabindex="2" id="L3_1"
 								data-bind="ntsNumberEditor: {
 								value: minuteFractionDigit,
 								name:'#{i18n.getText('CMF002_197')}',
@@ -70,7 +70,7 @@
 						</div>
 						<div class="div-table-col-standard">
 							<!-- L3_3 端数処理 -->
-							<div id="L3_3" class="combo-box-holiday"
+							<div tabindex="3" id="L3_3" class="combo-box-holiday"
 								data-bind="ntsComboBox: {
 								name: '#{i18n.getText('CMF002_199')}',
 								options: $vm.itemListRounding,
@@ -96,7 +96,7 @@
 						</div>
 						<!-- L4_1 時分/分選択 -->
 						<div id="L4_1" class="div-table-col-standard">
-							<div
+							<div tabindex="4"
 								data-bind="ntsSwitchButton: {
 								name: 'Sample Switch',
 								options: $vm.decimalSelectList,
@@ -115,7 +115,7 @@
 						</div>
 						<!-- L5_1 マイナス値チェック -->
 						<div class="div-table-col-standard">
-							<div id="L5_1"
+							<div tabindex="5" id="L5_1"
 								data-bind="ntsCheckBox: { checked: outputMinusAsZero, 
 								enable: $vm.enableFormatSelectionCls(), 
 								text: '#{i18n.getText('CMF002_147')}' }"></div>
@@ -129,7 +129,7 @@
 						</div>
 						<!-- L6_1 区切り文字選択 -->
 						<div class="div-table-col-standard">
-							<div id="L6_1" class="combo-box-holiday"
+							<div tabindex="6" id="L6_1" class="combo-box-holiday"
 								data-bind="ntsComboBox: {
 								name: '#{i18n.getText('CMF002_199')}',
 								options: $vm.separatorSelectList,
@@ -156,7 +156,7 @@
 						<!-- L7_1 マイナス値チェック -->
 						<div id="L7_1" class="div-table-col-standard"
 							style="width: 110px;">
-							<div id="L7_1_1"
+							<div tabindex="7" id="L7_1_1"
 								data-bind="ntsRadioBoxGroup: {
 									value: fixedValueOperation, 
 									options: $vm.fixedValueOperationItem, 
@@ -167,8 +167,7 @@
 						</div>
 						<!-- L7_2  固定値演算符号 -->
 						<div class="div-table-col-small">
-							<div id="L7_2"
-								style="display: inline-block; width: 70px;"
+							<div tabindex="8" id="L7_2" style="display: inline-block; width: 70px;"
 								data-bind="ntsComboBox: {
 									name: '#{i18n.getText('CMF002_151')}',
 									options: $vm.fixedValueOperationSymbolItem,
@@ -182,7 +181,7 @@
 						</div>
 						<!-- L7_3 固定値演算値 -->
 						<div class="div-table-col-standard">
-							<input id="L7_3"
+							<input tabindex="9" id="L7_3"
 								data-bind="ntsNumberEditor: {
 								value: fixedCalculationValue,
 								name:'#{i18n.getText('CMF002_152')}',
@@ -202,7 +201,7 @@
 						<!-- L8_1 マイナス値チェック -->
 						<div id="L8_1" class="div-table-col-standard"
 							style="width: 110px;">
-							<div id="L8_1_1"
+							<div tabindex="10" id="L8_1_1"
 								data-bind="ntsRadioBoxGroup: {
 									value: fixedLengthOutput, 
 									options: $vm.fixedLengthOutputItem, 
@@ -213,7 +212,7 @@
 						</div>
 						<div class="div-table-col-standard">
 							<div id="L8_2_1" style="display: inline" class="label">#{i18n.getText('CMF002_155')}</div>
-							<input id="L8_2_2"
+							<input tabindex="11" id="L8_2_2"
 								data-bind="ntsNumberEditor: {
 								value: fixedLongIntegerDigit,
 								name:'#{i18n.getText('CMF002_154')}',
@@ -227,8 +226,7 @@
 						<div class="div-table-col-big-big">
 							<div id="L8_3_1" style="display: inline"
 								class="label label-vertical-align-center">#{i18n.getText('CMF002_156')}</div>
-							<div id="L8_3_2"
-								style="display: inline-block; width: 100px;"
+							<div tabindex="12" id="L8_3_2" style="display: inline-block; width: 100px;"
 								data-bind="ntsComboBox: {
 									name: '#{i18n.getText('CMF002_156')}',
 									options: $vm.fixedLengthEditingMethodItem,
@@ -248,7 +246,7 @@
 						</div>
 						<!-- L9_1 NULL値置き換え -->
 						<div class="div-table-col-standard" style="width: 110px;">
-							<div id="L9_1_1"
+							<div tabindex="13" id="L9_1_1"
 								data-bind="ntsRadioBoxGroup: {
 									value: nullValueSubs, 
 									options: $vm.nullValueReplaceItem, 
@@ -282,7 +280,7 @@
 							<!-- 							</div> -->
 						</div>
 						<div class="div-table-col-standard">
-							<input id="L9_2"
+							<input tabindex="14" id="L9_2"
 								data-bind="ntsTextEditor: {
 								value: valueOfNullValueSubs,
 								name:'#{i18n.getText('CMF002_158')}',
@@ -300,7 +298,7 @@
 						</div>
 						<div id="L10_1" class="div-table-col-standard"
 							style="width: 110px;">
-							<div id="L10_1_1"
+							<div tabindex="15" id="L10_1_1"
 								data-bind="ntsRadioBoxGroup: {
 									value: fixedValue, 
 									options: $vm.fixedValueItem, 
@@ -310,7 +308,7 @@
 							</div>
 						</div>
 						<div class="div-table-col-standard">
-							<input id="L10_2"
+							<input tabindex="16" id="L10_2"
 								data-bind="ntsTextEditor: {
 								value: valueOfFixedValue,
 								name:'#{i18n.getText('CMF002_160')}',
@@ -326,9 +324,9 @@
 
 			<!--  M20  -->
 			<div id="functions-area-bottom">
-				<button id="L20_1" class="x-large proceed "
+				<button tabindex="17" id="L20_1" class="x-large proceed "
 					data-bind="click: sendData, enable: !enableRegister()">#{i18n.getText('CMF002_161')}</button>
-				<button id="L20_2" class="large"
+				<button tabindex="18" id="L20_2" class="large"
 					data-bind="click: cancelCharacterSetting">#{i18n.getText('CMF002_162')}</button>
 			</div>
 		</ui:define>
