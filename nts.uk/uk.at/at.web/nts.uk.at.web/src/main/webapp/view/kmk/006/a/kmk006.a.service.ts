@@ -39,8 +39,8 @@ module nts.uk.at.view.kmk006.a {
 
         }
 
-        export function exportExcel(languageId: string): JQueryPromise<any> {
-            return exportFile('/masterlist/report/print', { domainId: "AutomaticCalculationSetting", domainType: "職場管理者の登録", languageId: languageId, reportType: 0, data: null });
+        export function exportExcel(languageId: string, domainId, domainType: string): JQueryPromise<any> {
+            return exportFile('/masterlist/report/print', { domainId: domainId, domainType: domainType, languageId: languageId, reportType: 0, data: null });
         }
         
         export function getDetailWkpl(obj: any): JQueryPromise<any> {
