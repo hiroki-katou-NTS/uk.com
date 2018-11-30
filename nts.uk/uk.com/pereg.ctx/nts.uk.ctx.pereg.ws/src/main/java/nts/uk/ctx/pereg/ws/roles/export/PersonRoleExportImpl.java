@@ -59,7 +59,7 @@ public class PersonRoleExportImpl implements MasterListData {
     private static final String CAS001_93 = "本人.履歴削除";
     private static final String CAS001_94 = "本人.未来履歴";
     private static final String CAS001_95 = "本人.過去履歴";
-    private static final String CAS001_96 = "設定済";
+    private static final String CAS001_96 = "項目設定済";
     private static final String CAS001_97 = "項目";
     private static final String CAS001_98 = "他人情報権限設定";
     private static final String CAS001_99 = "本人情報権限設定";
@@ -174,7 +174,6 @@ public class PersonRoleExportImpl implements MasterListData {
         });
         return datas;
 	}
-	
 	private Map<String, Object> dataContent(RoleCateExportDetail dataRow) {
 		Map<String, Object> data = new HashMap<>();
 		// A6_1
@@ -270,7 +269,7 @@ public class PersonRoleExportImpl implements MasterListData {
 			nameType = I18NText.getText("Enum_CategoryType_SINGLE_INFO");
 			break;
 		case MULTIINFO:
-			nameType = I18NText.getText(" Enum_CategoryType_MULTI_INFO");
+			nameType = I18NText.getText("Enum_CategoryType_MULTI_INFO");
 			break;
 		case CONTINUOUSHISTORY:
 			nameType = I18NText.getText("Enum_CategoryType_CONTINUOUS_HISTORY");
