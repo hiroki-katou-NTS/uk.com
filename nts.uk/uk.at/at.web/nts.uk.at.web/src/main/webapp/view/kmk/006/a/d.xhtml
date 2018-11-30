@@ -12,6 +12,7 @@
 		<ui:define name="extended-action-bar">
 			<button tabindex="1" class="proceed"
 				data-bind="click: saveJobAutoCal">#{i18n.getText('KMK006_9')}</button>
+			<button tabindex="-1" data-bind="click: function(){exportExcel('PositionAutoCalSetting', '自動計算の登録-職位')}">#{i18n.getText('KMK006_47')}</button>
 			<button tabindex="1" class="danger"
 				data-bind="enable: createModeScreenC, click: deleteJobAutoCal">#{i18n.getText('KMK006_26')}</button>
 		</ui:define>

@@ -62,8 +62,9 @@ public class JpaWkpAutoCalSettingRepository extends JpaRepository implements Wkp
 			"k.LEAVE_EARLY, " +
 			"k.LEAVE_LATE, " +
 			"k.DIVERGENCE " +
-			"FROM BSYMT_WORKPLACE_INFO w LEFT JOIN KSHMT_AUTO_WKP_CAL_SET k on w.WKPID = k.WKPID " +
-			"WHERE w.CID = ?cid";
+			"FROM BSYMT_WORKPLACE_INFO w LEFT JOIN KSHMT_AUTO_WKP_CAL_SET k on w.WKPID = k.WKPID  AND w.CID = k.CID " +
+			"WHERE w.CID = ?cid " +
+			"ORDER BY w.WKPCD";
 	/** The select no where. */
 	public static final String SELECT_NO_WHERE = "SELECT c FROM KshmtAutoWkpCalSet c";
 	

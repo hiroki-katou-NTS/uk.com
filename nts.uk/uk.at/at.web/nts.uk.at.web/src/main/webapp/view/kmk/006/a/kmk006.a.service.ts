@@ -35,8 +35,6 @@ module nts.uk.at.view.kmk006.a {
             //get detail wkpl
             detailWkpl: "bs/employee/workplace/info/findDetail",
 
-            //export excel
-
         }
 
         export function exportExcel(languageId: string, domainId, domainType: string): JQueryPromise<any> {

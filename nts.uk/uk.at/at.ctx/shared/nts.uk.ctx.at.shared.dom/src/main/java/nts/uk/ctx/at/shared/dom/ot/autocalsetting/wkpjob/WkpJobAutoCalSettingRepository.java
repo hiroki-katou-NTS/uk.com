@@ -11,7 +11,9 @@ import java.util.Optional;
  * The Interface WkpJobAutoCalSettingRepository.
  */
 public interface WkpJobAutoCalSettingRepository {
-	
+
+
+	List<WkpJobAutoCalSettingExport> getWkpJobSettingToExport(String cid);
 	/**
 	 * Update.
 	 *
