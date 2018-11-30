@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.export.wageprovision.statementlayout;
+package nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout;
 
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
@@ -8,7 +8,6 @@ import nts.uk.ctx.pr.core.dom.wageprovision.salaryindividualamountname.SalIndAmo
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.*;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.export.*;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -140,7 +139,7 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
             data.setListSettingByCtg(listSettingByCtgEx);
             exportData.add(data);
         }
-        dtatementLayoutFileGenerator.generate(exportData);
+        dtatementLayoutFileGenerator.generate(exportServiceContext.getGeneratorContext(), exportData);
     }
 
     private List<LineByLineSettingExportData> mapLineSetting(SettingByCtg set,

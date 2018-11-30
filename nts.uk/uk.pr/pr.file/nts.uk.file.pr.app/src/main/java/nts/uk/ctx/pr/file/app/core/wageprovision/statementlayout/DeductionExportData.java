@@ -1,13 +1,11 @@
-package nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.export;
+package nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaCode;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.*;
-import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableCode;
-
-import java.util.Optional;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.DeductionCaclMethodAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.DeductionProportionalAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.DeductionTotalObjAtr;
 
 @NoArgsConstructor
 @Getter

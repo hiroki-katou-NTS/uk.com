@@ -1,11 +1,11 @@
-package nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.export;
+package nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.*;
-
-import java.util.Optional;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.PaymentCaclMethodAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.PaymentProportionalAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.PaymentTotalObjAtr;
 
 @NoArgsConstructor
 @Getter

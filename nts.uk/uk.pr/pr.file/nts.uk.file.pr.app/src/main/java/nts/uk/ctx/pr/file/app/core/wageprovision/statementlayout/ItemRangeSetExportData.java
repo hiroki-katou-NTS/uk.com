@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.export;
+package nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
