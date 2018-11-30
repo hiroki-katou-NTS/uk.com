@@ -54,13 +54,8 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 if (temp) {
                     self.perUnitPriceCode(temp.code);
                     self.perUnitPriceName(temp.name);
-
                 }
-
-
-            })
-
-            $('A4_5').focus();
+            });
         }
 
         filterData(): void {
@@ -184,7 +179,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 showWorktype: false,
                 isMutipleCheck: true,
                 showOnStart: true,
-                tabindex: 4,
+                tabindex: 2,
 
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
                     self.listEmployee = data.listEmployee
