@@ -104,7 +104,7 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 			+ " LEFT JOIN PPEMT_PERSON_ITEM_AUTH ctgau ON item.PER_INFO_CTG_ID = ctgau.PER_INFO_CTG_ID AND x.ROLE_ID = ctgau.ROLE_ID AND ctgau.PER_INFO_ITEM_DEF_ID = item.PER_INFO_ITEM_DEFINITION_ID"
 			+ " WHERE"
 			+ " ((cm.SALARY_USE_ATR = 1 AND ?6 = 1) OR (cm.PERSONNEL_USE_ATR = 1 AND ?7 = 1) OR (cm.EMPLOYMENT_USE_ATR = 1 AND ?8 = 1)) OR (?9 =  0 AND  ?10 = 0 AND ?11 = 0) "
-			+ " AND item.ABOLITION_ATR = 0 ORDER BY ROLE_CD";
+			+ " AND item.ABOLITION_ATR = 0 ORDER BY ROLE_CD,co.DISPORDER";
 			
 	
 	private static PersonInfoCategoryAuth toDomain(PpemtPersonCategoryAuth entity) {
@@ -305,10 +305,6 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	
 	private RoleCateExportDetail toExport(Object[] object) {
 		boolean isHigher = Integer.valueOf(object[24].toString()) > Integer.valueOf(object[25].toString());
-		if(Integer.valueOf(object[24].toString()) == 7 && Integer.valueOf(object[25].toString()) == 5) {
-			boolean isCateConfig1 = !isHigher ? Boolean.valueOf(object[3].toString()) : false;
-			System.out.println(isCateConfig1);
-		}
 		boolean isCateConfig = !isHigher ? Boolean.valueOf(object[3].toString()) : false;
 		return new RoleCateExportDetail((String) object[0], (String) object[1], (String) object[2],
 				isCateConfig,

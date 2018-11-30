@@ -133,7 +133,7 @@ public class PersonRoleExportImpl implements MasterListData {
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
         List <MasterData> datas = new ArrayList<>();
         
-       /* // ドメインモデル「ロール」を取得する
+        /*// ドメインモデル「ロール」を取得する
         List<Role> roles = roleRepo.findByType(companyId, RoleType.PERSONAL_INFO.value);
         //
         for (Role role : roles) {
@@ -201,13 +201,13 @@ public class PersonRoleExportImpl implements MasterListData {
         // A6_12
         data.put(CAS001_88, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getOtherPastHisAuth() == null ? "" : checkValue3(dataRow.getOtherPastHisAuth(),1,0));
         // A6_13
-        data.put(CAS001_89, dataRow.getAllowPersonRef() != null ? dataRow.getAllowPersonRef() == 1 ? "○": "ー" : "ー");
+        data.put(CAS001_89, dataRow.getAllowPersonRef() != null ? dataRow.getAllowPersonRef() == 1 ? "○": "ー" : "");
         // A6_14
         data.put(CAS001_90, checkValue1(dataRow.getCategoryType()) != null ? checkValue1(dataRow.getCategoryType()) : dataRow.getSelfAllowAddMulti() == null ? "" : dataRow.getSelfAllowAddMulti() == 1 ? "○" : "ー");
         // A6_15
-        data.put(CAS001_91, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getSelfAllowDelMulti() == null ? "" : dataRow.getSelfAllowDelMulti() == 1 ? "○" : "ー");
+        data.put(CAS001_91, checkValue2(dataRow.getCategoryType()) != null ? checkValue1(dataRow.getCategoryType()) : dataRow.getSelfAllowDelMulti() == null ? "" : dataRow.getSelfAllowDelMulti() == 1 ? "○" : "ー");
         // A6_16
-        data.put(CAS001_92, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getSelfAllowAddHis() == null ? "" : dataRow.getSelfAllowAddHis() == 1 ? "ー" : dataRow.getSelfAllowAddHis() == 1 ? "○" : "ー");
+        data.put(CAS001_92, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getSelfAllowAddHis() == null ? "" : dataRow.getSelfAllowAddHis() == 1 ? "○" : "ー");
         // A6_17
         data.put(CAS001_93, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getSelfAllowDelHis() == null ? "" : dataRow.getSelfAllowDelHis() == 1 ? "○" : "ー");
         // A6_18
@@ -240,7 +240,7 @@ public class PersonRoleExportImpl implements MasterListData {
 		if(categoryType == null)
         	value = "";
         CategoryType type = EnumAdaptor.valueOf(categoryType , CategoryType.class);
-        if(type.value == 3 || type.value == 4) {
+        if(type.value != 3 && type.value != 4) {
         	value = "ー";
         }
      return value;
