@@ -116,11 +116,11 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
                 switch (set.getCtgAtr()) {
                     case PAYMENT_ITEM:
                         // ドメインモデル「支給項目明細設定」を取得する
-                        paymentItemDetailSetRepo.getPaymentItemDetailSetById(histId);
+                        // paymentItemDetailSetRepo.getPaymentItemDetailSetById(histId);
                         break;
                     case DEDUCTION_ITEM:
                         // ドメインモデル「控除項目明細設定」を取得する
-                        deductionItemDetailSetRepo.getDeductionItemDetailSetById(histId);
+                        // deductionItemDetailSetRepo.getDeductionItemDetailSetById(histId);
                         break;
                 }
                 // ドメインモデル「明細書項目範囲設定」を取得する
@@ -170,8 +170,8 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
         List<SettingByItemExportData> listSetByItemEx = new ArrayList();
         for (SettingByItem item : line.getListSetByItem()) {
             SettingByItemExportData itemEx = new SettingByItemExportData();
-            itemEx.setItemPosition(itemEx.getItemPosition());
-            itemEx.setItemId(itemEx.getItemId());
+            itemEx.setItemPosition(item.getItemPosition());
+            itemEx.setItemId(item.getItemId());
             if (item instanceof SettingByItemCustom) {
                 SettingByItemCustom itemCustom = (SettingByItemCustom) item;
                 itemEx.setItemName(itemCustom.getShortName());
@@ -220,8 +220,9 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
                     if (paymentItemDetail.getPersonAmountCd().isPresent()) {
                         String personAmountCd = paymentItemDetail.getPersonAmountCd().get().v();
                         paymentEx.setPersonAmountCd(personAmountCd);
-                        if (salIndAmountNameMap.containsKey(personAmountCd)) {
-                            paymentEx.setPersonAmountName(salIndAmountNameMap.get(personAmountCd));
+                        MapKey key = new MapKey(personAmountCd, CategoryAtr.PAYMENT_ITEM.value);
+                        if (salIndAmountNameMap.containsKey(key)) {
+                            paymentEx.setPersonAmountName(salIndAmountNameMap.get(key));
                         }
                     }
                     break;
@@ -268,8 +269,9 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
                     if (deductionItemDetail.getPersonAmountCd().isPresent()) {
                         String personAmountCd = deductionItemDetail.getPersonAmountCd().get().v();
                         deductionEx.setPersonAmountCd(personAmountCd);
-                        if (salIndAmountNameMap.containsKey(personAmountCd)) {
-                            deductionEx.setPersonAmountName(salIndAmountNameMap.get(personAmountCd));
+                        MapKey key = new MapKey(personAmountCd, CategoryAtr.DEDUCTION_ITEM.value);
+                        if (salIndAmountNameMap.containsKey(key)) {
+                            deductionEx.setPersonAmountName(salIndAmountNameMap.get(key));
                         }
                     }
                     break;
@@ -286,8 +288,9 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
                     if (deductionItemDetail.getSupplyOffset().isPresent()) {
                         String sttCode = deductionItemDetail.getSupplyOffset().get();
                         deductionEx.setSupplyOffset(sttCode);
-                        if (statementItemMap.containsKey(sttCode)) {
-                            deductionEx.setSupplyOffsetName(statementItemMap.get(sttCode));
+                        MapKey key = new MapKey(sttCode, CategoryAtr.DEDUCTION_ITEM.value);
+                        if (statementItemMap.containsKey(key)) {
+                            deductionEx.setSupplyOffsetName(statementItemMap.get(key));
                         }
                     }
                     break;
