@@ -31,6 +31,10 @@ public class UpdateWageTableCommand {
 	private String remarkInformation;
 
 	private YearMonthHistoryItemCommand history;
+	
+	private ElementRangeSettingCommand elementRange;
+	
+	private WageTableContentCommand wageTableContent;
 
 	public WageTable toWageTableDomain() {
 		return new WageTable(AppContexts.user().companyId(), wageTableCode, wageTableName, 0,

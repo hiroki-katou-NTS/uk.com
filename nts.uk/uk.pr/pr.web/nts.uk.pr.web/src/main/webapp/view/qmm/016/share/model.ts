@@ -208,8 +208,8 @@ module nts.uk.pr.view.qmm016.share.model {
     // 賃金テーブル内容
     export interface IWageTableContent {
         historyID: string,
-        payment: Array<IElementsCombinationPaymentAmount>,
-        qualificationGroupSetting: Array<IQualificationGroupSettingContent>
+        payments: Array<IElementsCombinationPaymentAmount>,
+        qualificationGroupSettings: Array<IQualificationGroupSettingContent>
     }
 
     // 賃金テーブル内容
@@ -221,8 +221,8 @@ module nts.uk.pr.view.qmm016.share.model {
         paymentMethodItem: KnockoutObservableArray<model.EnumModel> = ko.observableArray(getQualificationPaymentMethodItem());
         constructor(params: IWageTableContent) {
             this.historyID(params ? params.historyID : null);
-            this.payment(params ? params.payment.map(item => new ElementsCombinationPaymentAmount(item)) : []);
-            this.qualificationGroupSetting(params ? params.qualificationGroupSetting.map(item => new QualificationGroupSettingContent(item)) : []);
+            this.payment(params ? params.payments.map(item => new ElementsCombinationPaymentAmount(item)) : []);
+            this.qualificationGroupSetting(params && !_.isEmpty(params.qualificationGroupSettings) ? params.qualificationGroupSettings.map(item => new QualificationGroupSettingContent(item)) : []);
         }
     }
 

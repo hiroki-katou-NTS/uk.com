@@ -44,6 +44,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     self.elementRangeSetting(new model.ElementRangeSetting(null));
                     self.selectedTab('tab-1');
                     self.updateMode(false);
+                    self.isSelectedHistory(false);
                 } else {
                     self.showWageTableInfoByValue(newValue);
                     self.showSettingDataByValue(newValue)
@@ -91,7 +92,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             let self = this;
             self.tabs = ko.observableArray([
                 { id: 'tab-1', title: getText("QMM016_11"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-2', title: getText("QMM016_12"), content: '.tab-content-2', enable: self.updateMode, visible: ko.observable(true) }
+                { id: 'tab-2', title: getText("QMM016_12"), content: '.tab-content-2', enable: ko.computed(() => { return self.updateMode() && self.isSelectedHistory(); }), visible: ko.observable(true) }
             ]);
             self.selectedTab = ko.observable('tab-1');
         }
@@ -120,7 +121,6 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             block.invisible();
             service.getWageTableByCode(selectedWageTableCode).done((selectedWageTable: model.IWageTable) => {
                 self.selectedWageTable(new model.WageTable(selectedWageTable));
-                self.isSelectedHistory(false);
                 // if select history
                 if (identifier.length > 36) {
                     let selectedHistoryID = identifier.substring(3, identifier.length);
@@ -129,6 +129,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     self.isSelectedHistory(true);
                 } else {
                     self.selectedHistory(new model.GenericHistoryYearMonthPeriod(null));
+                    self.selectedTab('tab-1');
+                    self.isSelectedHistory(false);
                 }
             }).fail(error => {
                 dialog.alertError(error);
@@ -139,8 +141,21 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
 
         showSettingDataByValue(identifier: string) {
             let self = this;
-            self.wageTableContent(new model.WageTableContent(null));
-            self.elementRangeSetting(new model.ElementRangeSetting(null));
+            if (identifier.length > 36) {
+                block.invisible();
+                let selectedHistoryID = identifier.substring(3, identifier.length);
+                $.when(service.getWageTableContent(selectedHistoryID), service.getElemRangeSet(selectedHistoryID)).done((contentData, settingData) => {
+                    self.wageTableContent(new model.WageTableContent(contentData));
+                    self.elementRangeSetting(new model.ElementRangeSetting(settingData));
+                }).fail(error => {
+                    dialog.alertError(error);
+                }).always(() => {
+                    block.clear();
+                });
+            } else {
+                self.elementRangeSetting(new model.ElementRangeSetting(null));
+                self.wageTableContent(new model.WageTableContent(null));
+            }
         }
 
         createNewWageTable() {
@@ -153,7 +168,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
 
         registerWageTable() {
             let self = this;
-            $(".nts-input").trigger("validate");
+            $(".nts-input").filter(":enabled").trigger("validate");
 //            $("#A7_4_1").trigger("validate");
 //            $("#A7_4_2").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
@@ -196,12 +211,15 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 wageTableCode: self.selectedWageTable().wageTableCode(),
                 wageTableName: self.selectedWageTable().wageTableName(),
                 remarkInformation: self.selectedWageTable().remarkInformation(),
-                history: ko.toJS(self.selectedHistory)
+                history: ko.toJS(self.selectedHistory),
+                elementRange: ko.toJS(self.elementRangeSetting),
+                wageTableContent: ko.toJS(self.wageTableContent)
             }
             service.updateWageTable(command).done((historyId: string) => {
                 dialog.info({messageId: "Msg_15"}).then(() => {
                     self.startPage().done(() => {
-                        self.selectedWageTableIdentifier(self.selectedWageTable().wageTableCode() + historyId);
+                        let identifier = command.wageTableCode + historyId;
+                        self.selectedWageTableIdentifier(identifier);
                     });
                 });
             }).fail(error => {
@@ -312,15 +330,19 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     return;
                 }
                 params = {
-                    rangeLowerLimit: firstElementRange.rangeLowerLimit, 
-                    rangeUpperLimit: firstElementRange.rangeUpperLimit,
-                    stepIncrement: firstElementRange.stepIncrement
+                    historyID: self.selectedHistory().historyID(),
+                    firstElementRange: firstElementRange,
+                    secondElementRange: null,
+                    thirdElementRange: null
                 };
             }
             block.invisible();
-            service.createOneDimentionWageTable(params).done((data: Array<any>) => {
+            service.createOneDimentionWageTable(params).done(data => {
                 if (!_.isEmpty(data)) {
-                    
+                    self.elementRangeSetting().historyID(params.historyID);
+                    self.elementRangeSetting().secondElementRange(null);
+                    self.elementRangeSetting().thirdElementRange(null);
+                    self.wageTableContent(new model.WageTableContent(data));
                 }
             }).fail(error => {
                 dialog.alertError(error);

@@ -16,8 +16,12 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemRepositor
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeCountAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeItemSet;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeItemSetRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementRangeSetting;
+import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementRangeSettingRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementType;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTable;
+import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableContent;
+import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableContentRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableHistory;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableHistoryRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableRepository;
@@ -47,6 +51,12 @@ public class WageTableFinder {
 
 	@Inject
 	private TimeItemSetRepository timeItemRepo;
+	
+	@Inject
+	private WageTableContentRepository wageTableContentRepo;
+	
+	@Inject
+	private ElementRangeSettingRepository elemRangeSetRepo;
 
 	public List<WageTableDto> getAll() {
 		String companyId = AppContexts.user().companyId();
@@ -126,6 +136,24 @@ public class WageTableFinder {
 		} else
 			return null;
 	}
+	
+	public WageTableContentDto getWageTableContent(String historyId) {
+		Optional<WageTableContent> optContent = wageTableContentRepo.getWageTableContentById(historyId);
+		if (optContent.isPresent()) {
+			return WageTableContentDto.fromDomainToDto(optContent.get());
+		} else {
+			return null;
+		}
+	}
+	
+	public ElementRangeSettingDto getElemRangeSet(String historyId) {
+		Optional<ElementRangeSetting> optSetting = elemRangeSetRepo.getElementRangeSettingById(historyId);
+		if (optSetting.isPresent()) {
+			return ElementRangeSettingDto.fromDomainToDto(optSetting.get());
+		} else {
+			return null;
+		}
+	}
 
 	public List<ElementItemNameDto> getElements() {
 		String companyId = AppContexts.user().companyId();
@@ -142,20 +170,34 @@ public class WageTableFinder {
 				.collect(Collectors.toList());
 	}
 
-	public List<NumericElementItemDto> createOneDimensionWageTable(ElementRangeParam params) {
-		List<NumericElementItemDto> result = new ArrayList<>();
+	public WageTableContentDto createOneDimensionWageTable(ElementRangeSettingDto params) {
 		if (params == null) {
 			// master item
-			return result;
+			return null;
 		} else {
 			// numeric item
-			while (params.getRangeLowerLimit() + params.getStepIncrement() < params.getRangeUpperLimit()) {
-				result.add(new NumericElementItemDto(null, params.getRangeLowerLimit(),
-						params.getRangeLowerLimit() + params.getStepIncrement() - 1));
-				params.setRangeLowerLimit(params.getRangeLowerLimit() + params.getStepIncrement());
+			WageTableContentDto dto = new WageTableContentDto();
+			dto.setHistoryID(params.getHistoryID());
+			List<ElementsCombinationPaymentAmountDto> payments = new ArrayList<>();
+			ElementRangeDto rangeDto = params.getFirstElementRange();
+			int frameNum = 1;
+			while (rangeDto.getRangeLowerLimit() + rangeDto.getStepIncrement() < rangeDto.getRangeUpperLimit()) {
+				ElementsCombinationPaymentAmountDto elemPay = new ElementsCombinationPaymentAmountDto();
+				elemPay.setElementAttribute(new ContentElementAttributeDto());
+				elemPay.getElementAttribute()
+						.setFirstElementItem(new ElementItemDto(null, frameNum, rangeDto.getRangeLowerLimit(),
+								rangeDto.getRangeLowerLimit() + rangeDto.getStepIncrement() - 1));
+				payments.add(elemPay);
+				rangeDto.setRangeLowerLimit(rangeDto.getRangeLowerLimit() + rangeDto.getStepIncrement());
+				frameNum++;
 			}
-			result.add(new NumericElementItemDto(null, params.getRangeLowerLimit(), params.getRangeUpperLimit()));
-			return result;
+			ElementsCombinationPaymentAmountDto lastElemPay = new ElementsCombinationPaymentAmountDto();
+			lastElemPay.setElementAttribute(new ContentElementAttributeDto());
+			lastElemPay.getElementAttribute().setFirstElementItem(
+					new ElementItemDto(null, frameNum + 1, rangeDto.getRangeLowerLimit(), rangeDto.getRangeUpperLimit()));
+			payments.add(lastElemPay);
+			dto.setPayments(payments);
+			return dto;
 		}
 	}
 

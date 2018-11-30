@@ -2,7 +2,6 @@ package nts.uk.ctx.pr.core.app.command.wageprovision.wagetable;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.ElementItemDto;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ContentElementAttribute;
 
 /**
@@ -12,24 +11,24 @@ import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ContentElementAttribute;
 @NoArgsConstructor
 public class ContentElementAttributeCommand {
 
-    /**
-     * 第一要素項目
-     */
-    private ElementItemCommand firstElementItem;
+	/**
+	 * 第一要素項目
+	 */
+	private ElementItemCommand firstElementItem;
 
-    /**
-     * 第二要素項目
-     */
-    private ElementItemCommand secondElementItem;
+	/**
+	 * 第二要素項目
+	 */
+	private ElementItemCommand secondElementItem;
 
-    /**
-     * 第三要素項目
-     */
-    private ElementItemCommand thirdElementItem;
+	/**
+	 * 第三要素項目
+	 */
+	private ElementItemCommand thirdElementItem;
 
-    public ContentElementAttribute fromCommandToDomain(){
-        return new ContentElementAttribute(firstElementItem.fromCommandToDomain(), secondElementItem.fromCommandToDomain(), thirdElementItem.fromCommandToDomain());
-    }
-
+	public ContentElementAttribute fromCommandToDomain() {
+		return new ContentElementAttribute(firstElementItem.fromCommandToDomain(),
+				secondElementItem.fromCommandToDomain(), thirdElementItem.fromCommandToDomain());
+	}
 
 }

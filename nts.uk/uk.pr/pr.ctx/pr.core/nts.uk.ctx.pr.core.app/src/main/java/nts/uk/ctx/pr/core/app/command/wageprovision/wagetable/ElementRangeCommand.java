@@ -28,9 +28,10 @@ public class ElementRangeCommand {
      */
     private Integer rangeUpperLimit;
 
-    public ElementRange fromCommandToDomain() {
-        return new ElementRange(stepIncrement, rangeLowerLimit, rangeUpperLimit);
-    }
+	public ElementRange fromCommandToDomain() {
+		return stepIncrement != null && rangeLowerLimit != null && rangeUpperLimit != null
+				? new ElementRange(stepIncrement, rangeLowerLimit, rangeUpperLimit) : null;
+	}
 
     public static ElementRangeCommand fromNumericElementToDto(NumericElementRange domain) {
         ElementRangeCommand dto = new ElementRangeCommand();

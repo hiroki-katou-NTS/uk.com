@@ -12,9 +12,7 @@ public interface WageTableContentRepository {
 
 	Optional<WageTableContent> getWageTableContentById(String historyId);
 
-	void add(WageTableContent domain);
-
-	void update(WageTableContent domain);
+	void addOrUpdate(WageTableContent domain);
 
 	void remove(String historyId);
 

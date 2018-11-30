@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementRangeSetting;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementRangeSettingRepository;
+import nts.uk.ctx.pr.core.infra.entity.wageprovision.wagetable.QpbmtElementRangeSetting;
 
 /**
  * 
@@ -26,26 +27,25 @@ public class JpaElementRangeSettingRepository extends JpaRepository implements E
 
 	@Override
 	public Optional<ElementRangeSetting> getElementRangeSettingById(String historyId) {
-		// TODO Auto-generated method stub
-		return null;
+		Optional<QpbmtElementRangeSetting> optEntity = this.queryProxy().find(historyId,
+				QpbmtElementRangeSetting.class);
+		return optEntity.isPresent() ? Optional.of(optEntity.get().toDomain()) : Optional.empty();
 	}
 
 	@Override
 	public void add(ElementRangeSetting domain) {
-		// TODO Auto-generated method stub
-		
+		this.commandProxy().insert(QpbmtElementRangeSetting.fromDomain(domain));
 	}
 
 	@Override
 	public void update(ElementRangeSetting domain) {
-		// TODO Auto-generated method stub
-		
+		this.commandProxy().update(QpbmtElementRangeSetting.fromDomain(domain));
 	}
 
 	@Override
 	public void remove(String historyId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

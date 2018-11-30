@@ -11,8 +11,8 @@ import nts.uk.ctx.pr.core.app.command.wageprovision.wagetable.UpdateWageTableHis
 import nts.uk.ctx.pr.core.app.command.wageprovision.wagetable.UpdateWageTableHistoryCommandHandler;
 import nts.uk.ctx.pr.core.app.command.wageprovision.wagetable.WageTableHistoryCommand;
 import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.ElementItemNameDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.ElementRangeParam;
-import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.NumericElementItemDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.ElementRangeSettingDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.WageTableContentDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.WageTableDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.WageTableFinder;
 
@@ -54,6 +54,18 @@ public class WageTableWebService {
 	public WageTableDto getWageTable(@PathParam("code") String wageTableCode) {
 		return finder.getWageTableById(wageTableCode);
 	}
+	
+	@POST
+	@Path("/get-wagetable-content/{histId}")
+	public WageTableContentDto getWageTableContent(@PathParam("histId") String historyId) {
+		return finder.getWageTableContent(historyId);
+	}
+	
+	@POST
+	@Path("/get-element-range-setting/{histId}")
+	public ElementRangeSettingDto getElemRangeSet(@PathParam("histId") String historyId) {
+		return finder.getElemRangeSet(historyId);
+	}
 
 	@POST
 	@Path("/addWageTable")
@@ -74,12 +86,6 @@ public class WageTableWebService {
 	}
 
 	@POST
-	@Path("/addWageTableHistory")
-	public void addWageTableHistory(WageTableHistoryCommand command) {
-
-	}
-
-	@POST
 	@Path("/editHistory")
 	public void editWageTableHistory(UpdateWageTableHistoryCommand command) {
 		updateHistHandler.handle(command);
@@ -93,7 +99,7 @@ public class WageTableWebService {
 
 	@POST
 	@Path("/create-1d-wage-table")
-	public List<NumericElementItemDto> createOneDimensionWageTable(ElementRangeParam params) {
+	public WageTableContentDto createOneDimensionWageTable(ElementRangeSettingDto params) {
 		return finder.createOneDimensionWageTable(params);
 	}
 
