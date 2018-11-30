@@ -15,6 +15,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentImport;
 import nts.uk.ctx.at.record.dom.export.optitem.CalFormulasItemExportData;
+import nts.uk.ctx.at.record.dom.export.optitem.CalFormulasItemTableExportData;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -274,7 +275,7 @@ public class CalFormulasItemExportImpl implements MasterListData {
 		String languageId = query.getLanguageId();
 		String companyId = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
-		List<CalFormulasItemExportData> listOptionalItem = optItemRepo.findAllCalFormulasItem(companyId, languageId);
+		List<CalFormulasItemTableExportData> listOptionalItem = optItemRepo.findAllCalFormulasTableItem(companyId, languageId);
 		if (CollectionUtil.isEmpty(listOptionalItem)) {
 			throw new BusinessException("Msg_7");
 		} else {

@@ -100,11 +100,11 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 			+ " Cross JOIN (SELECT DISTINCT pp.ROLE_ID,r.ROLE_CD, r.ROLE_NAME FROM PPEMT_PERSON_CTG_AUTH pp JOIN PPEMT_PER_INFO_CTG c on pp.PER_INFO_CTG_ID = c.PER_INFO_CTG_ID JOIN SACMT_ROLE r on pp.ROLE_ID = r.ROLE_ID  WHERE c.CID = ?3 AND r.ROLE_TYPE = ?4) x"
 			+ " LEFT JOIN PPEMT_PERSON_CTG_AUTH xx On c.PER_INFO_CTG_ID = xx.PER_INFO_CTG_ID AND xx.ROLE_ID = x.ROLE_ID"
 			+ " INNER JOIN PPEMT_PER_INFO_ITEM item ON c.PER_INFO_CTG_ID = item.PER_INFO_CTG_ID AND item.ABOLITION_ATR = 0"
-			+ " INNER JOIN PPEMT_PER_INFO_ITEM_CM itemCM ON item.ITEM_CD = itemCM.ITEM_CD AND itemCM.CONTRACT_CD = :contractCd AND c.CATEGORY_CD = itemCM.CATEGORY_CD AND itemCM.ITEM_PARENT_CD IS NULL"
+			+ " INNER JOIN PPEMT_PER_INFO_ITEM_CM itemCM ON item.ITEM_CD = itemCM.ITEM_CD AND itemCM.CONTRACT_CD = ?5 AND c.CATEGORY_CD = itemCM.CATEGORY_CD AND itemCM.ITEM_PARENT_CD IS NULL"
 			+ " LEFT JOIN PPEMT_PERSON_ITEM_AUTH ctgau ON item.PER_INFO_CTG_ID = ctgau.PER_INFO_CTG_ID AND x.ROLE_ID = ctgau.ROLE_ID AND ctgau.PER_INFO_ITEM_DEF_ID = item.PER_INFO_ITEM_DEFINITION_ID"
 			+ " WHERE"
-			+ " ((cm.SALARY_USE_ATR = 1 AND ?5 = 1) OR (cm.PERSONNEL_USE_ATR = 1 AND ?6 = 1) OR (cm.EMPLOYMENT_USE_ATR = 1 AND ?7 = 1)) OR (?8 =  0 AND  ?9 = 0 AND ?10 = 0) "
-			+ " AND item.ABOLITION_ATR = 0 ORDER BY ROLE_CD";
+			+ " ((cm.SALARY_USE_ATR = 1 AND ?6 = 1) OR (cm.PERSONNEL_USE_ATR = 1 AND ?7 = 1) OR (cm.EMPLOYMENT_USE_ATR = 1 AND ?8 = 1)) OR (?9 =  0 AND  ?10 = 0 AND ?11 = 0) "
+			+ " AND item.ABOLITION_ATR = 0 ORDER BY ROLE_CD,co.DISPORDER";
 			
 	
 	private static PersonInfoCategoryAuth toDomain(PpemtPersonCategoryAuth entity) {
@@ -288,12 +288,13 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 				.setParameter(2, contractCd)
 				.setParameter(3, cid)
 				.setParameter(4, 8)
-				.setParameter(5, salaryUseAtr)
-				.setParameter(6, personnelUseAtr)
-				.setParameter(7, employmentUseAtr)
-				.setParameter(8, salaryUseAtr)
-				.setParameter(9, personnelUseAtr)
-				.setParameter(10, employmentUseAtr);
+				.setParameter(5, contractCd)
+				.setParameter(6, salaryUseAtr)
+				.setParameter(7, personnelUseAtr)
+				.setParameter(8, employmentUseAtr)
+				.setParameter(9, salaryUseAtr)
+				.setParameter(10, personnelUseAtr)
+				.setParameter(11, employmentUseAtr);
 		@SuppressWarnings("unchecked")
 		List<Object[]> data = query.getResultList();
 		for (Object[] objects : data) {

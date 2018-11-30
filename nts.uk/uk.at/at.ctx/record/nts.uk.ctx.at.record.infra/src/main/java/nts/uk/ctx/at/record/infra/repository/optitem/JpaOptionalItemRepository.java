@@ -412,22 +412,24 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 						+ "KRCST_OPTIONAL_ITEM oi " + "LEFT JOIN KRCST_CALC_RESULT_RANGE rr ON oi.CID = rr.CID "
 						+ "AND oi.OPTIONAL_ITEM_NO = rr.OPTIONAL_ITEM_NO "
 						+ "LEFT JOIN KRCST_APPL_EMP_CON ec ON rr.OPTIONAL_ITEM_NO = ec.OPTIONAL_ITEM_NO AND rr.CID = ec.CID"
-						+ "where ec.CID = ? AND ec.EMP_CD IS NOT NULL ORDER BY oi.OPTIONAL_ITEM_NO ASC")) {
+						+ "where oi.CID = ? AND ec.EMP_CD IS NOT NULL ORDER BY oi.OPTIONAL_ITEM_NO ASC")) {
 			stmt.setString(1, companyId);
-
 			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
 				CalFormulasItemExportData item = new CalFormulasItemExportData();
 				return toReportData(rec);
 			});
-		}
+		} 
 
 	}
 
 	private CalFormulasItemExportData toReportData(NtsResultRecord rec) {
 		Map<String, String> empConditions = new HashMap<>();
 		empConditions.put(rec.getString("EMP_CD"), rec.getString("EMP_APPL_ATR"));
-		CalFormulasItemExportData item = new CalFormulasItemExportData(rec.getString("OPTIONAL_ITEM_NO"),
-				rec.getString("OPTIONAL_ITEM_NAME"), rec.getString("EMP_CONDITION_ATR"), empConditions);
+		CalFormulasItemExportData item = new CalFormulasItemExportData(
+				rec.getString("OPTIONAL_ITEM_NO"),
+				rec.getString("OPTIONAL_ITEM_NAME"), 
+				rec.getString("EMP_CONDITION_ATR"), 
+				empConditions);
 		return item;
 	}
 

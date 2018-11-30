@@ -60,13 +60,12 @@ public class PersonSelectionItemExportImpl implements MasterListData {
 
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
-		String langId = query.getLanguageId();
 		String contractCd = AppContexts.user().contractCode();
 		List<MasterData> datas = new ArrayList<>();
 		List<PersonSelectionItemExportData> listPersonSelectionItemExportData = perInfoSelectionItemRepo
-				.findAllSelection(contractCd, langId);
+				.findAllSelection(contractCd);
 		if (CollectionUtil.isEmpty(listPersonSelectionItemExportData)) {
-			throw new BusinessException("Msg_393");
+			throw new BusinessException("Msg_1480");
 		} else {
 			listPersonSelectionItemExportData.stream().forEach(c -> {
 				Map<String, Object> data = new HashMap<>();

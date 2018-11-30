@@ -1,4 +1,4 @@
-package nts.uk.ctx.pereg.ws.roles.export;
+package nts.uk.ctx.pereg.app.find.roles.auth.category.export;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,20 +11,14 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
-import nts.uk.ctx.pereg.app.find.roles.auth.category.PersonInfoCategoryAuthDto;
 import nts.uk.ctx.pereg.app.find.roles.auth.category.PersonInfoCategoryAuthFinder;
 import nts.uk.ctx.pereg.app.find.roles.auth.category.PersonInfoCategoryDetailDto;
-import nts.uk.ctx.pereg.app.find.roles.auth.item.ItemAuth;
 import nts.uk.ctx.pereg.app.find.roles.auth.item.PersonInfoItemAuthFinder;
-import nts.uk.ctx.pereg.app.find.roles.auth.item.PersonInfoItemDetailDto;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryDetail;
 import nts.uk.ctx.pereg.dom.roles.auth.category.RoleCateExportDetail;
-import nts.uk.ctx.sys.auth.dom.role.Role;
-import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
-import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
@@ -59,7 +53,7 @@ public class PersonRoleExportImpl implements MasterListData {
     private static final String CAS001_93 = "本人.履歴削除";
     private static final String CAS001_94 = "本人.未来履歴";
     private static final String CAS001_95 = "本人.過去履歴";
-    private static final String CAS001_96 = "設定済";
+    private static final String CAS001_96 = "項目設定済";
     private static final String CAS001_97 = "項目";
     private static final String CAS001_98 = "他人情報権限設定";
     private static final String CAS001_99 = "本人情報権限設定";
@@ -132,24 +126,6 @@ public class PersonRoleExportImpl implements MasterListData {
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
         List <MasterData> datas = new ArrayList<>();
-        
-       /* // ドメインモデル「ロール」を取得する
-        List<Role> roles = roleRepo.findByType(companyId, RoleType.PERSONAL_INFO.value);
-        //
-        for (Role role : roles) {
-        	List<PersonInfoCategoryDetailDto> personInfoCategoryExportDetailDto = this.getAllCategory(role.getRoleId());
-        	personInfoCategoryExportDetailDto.stream().forEach(x -> {
-        		PersonInfoCategoryAuthDto personInfoCategoryAuthDto = personInfoCategoryAuthFinder.getDetailPersonCategoryAuthByPId(role.getRoleId(), x.getCategoryId());
-        		if(personInfoCategoryAuthDto != null) {
-        			ItemAuth itemAuth = personInfoItemAuthFinder.getAllItemDetail(role.getRoleId(), personInfoCategoryAuthDto.getPersonInfoCategoryAuthId());
-            		itemAuth.getItemLst().stream().forEach(y -> {
-                        datas.add(new MasterData(dataContent(role,x,personInfoCategoryAuthDto,y), null, ""));
-            		});
-            		
-        		}
-        		
-        	});
-        }*/
         int payroll = NotUseAtr.NOT_USE.value;
 		int personnel = NotUseAtr.NOT_USE.value;
 		int atttendance = NotUseAtr.NOT_USE.value;
@@ -174,7 +150,6 @@ public class PersonRoleExportImpl implements MasterListData {
         });
         return datas;
 	}
-	
 	private Map<String, Object> dataContent(RoleCateExportDetail dataRow) {
 		Map<String, Object> data = new HashMap<>();
 		// A6_1
@@ -202,13 +177,13 @@ public class PersonRoleExportImpl implements MasterListData {
         // A6_12
         data.put(CAS001_88, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getOtherPastHisAuth() == null ? "" : checkValue3(dataRow.getOtherPastHisAuth(),1,0));
         // A6_13
-        data.put(CAS001_89, dataRow.getAllowPersonRef() != null ? dataRow.getAllowPersonRef() == 1 ? "○": "ー" : "ー");
+        data.put(CAS001_89, dataRow.getAllowPersonRef() != null ? dataRow.getAllowPersonRef() == 1 ? "○": "ー" : "");
         // A6_14
         data.put(CAS001_90, checkValue1(dataRow.getCategoryType()) != null ? checkValue1(dataRow.getCategoryType()) : dataRow.getSelfAllowAddMulti() == null ? "" : dataRow.getSelfAllowAddMulti() == 1 ? "○" : "ー");
         // A6_15
-        data.put(CAS001_91, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getSelfAllowDelMulti() == null ? "" : dataRow.getSelfAllowDelMulti() == 1 ? "○" : "ー");
+        data.put(CAS001_91, checkValue2(dataRow.getCategoryType()) != null ? checkValue1(dataRow.getCategoryType()) : dataRow.getSelfAllowDelMulti() == null ? "" : dataRow.getSelfAllowDelMulti() == 1 ? "○" : "ー");
         // A6_16
-        data.put(CAS001_92, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getSelfAllowAddHis() == null ? "" : dataRow.getSelfAllowAddHis() == 1 ? "ー" : dataRow.getSelfAllowAddHis() == 1 ? "○" : "ー");
+        data.put(CAS001_92, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getSelfAllowAddHis() == null ? "" : dataRow.getSelfAllowAddHis() == 1 ? "○" : "ー");
         // A6_17
         data.put(CAS001_93, checkValue2(dataRow.getCategoryType()) != null ? checkValue2(dataRow.getCategoryType()) : dataRow.getSelfAllowDelHis() == null ? "" : dataRow.getSelfAllowDelHis() == 1 ? "○" : "ー");
         // A6_18
@@ -241,7 +216,7 @@ public class PersonRoleExportImpl implements MasterListData {
 		if(categoryType == null)
         	value = "";
         CategoryType type = EnumAdaptor.valueOf(categoryType , CategoryType.class);
-        if(type.value == 3 || type.value == 4) {
+        if(type.value != 3 && type.value != 4) {
         	value = "ー";
         }
      return value;
@@ -270,7 +245,7 @@ public class PersonRoleExportImpl implements MasterListData {
 			nameType = I18NText.getText("Enum_CategoryType_SINGLE_INFO");
 			break;
 		case MULTIINFO:
-			nameType = I18NText.getText(" Enum_CategoryType_MULTI_INFO");
+			nameType = I18NText.getText("Enum_CategoryType_MULTI_INFO");
 			break;
 		case CONTINUOUSHISTORY:
 			nameType = I18NText.getText("Enum_CategoryType_CONTINUOUS_HISTORY");
@@ -289,47 +264,4 @@ public class PersonRoleExportImpl implements MasterListData {
 		}
 		return nameType;
 	}
-	
-	private List<PersonInfoCategoryDetailDto> getAllCategory(String roleId) {
-		String contractCd = AppContexts.user().contractCode();
-		int payroll = NotUseAtr.NOT_USE.value;
-		int personnel = NotUseAtr.NOT_USE.value;
-		int atttendance = NotUseAtr.NOT_USE.value;
-		List<InstalledProduct> installProduct = AppContexts.system().getInstalledProducts();
-		for (InstalledProduct productType : installProduct) {
-			switch (productType.getProductType()) {
-			case ATTENDANCE:
-				atttendance = NotUseAtr.USE.value;
-				break;
-			case PAYROLL:
-				payroll = NotUseAtr.USE.value;
-				break;
-			case PERSONNEL:
-				personnel = NotUseAtr.USE.value;
-				break;
-			default:
-				break;
-			}
-		}
-		List<PersonInfoCategoryDetail> ctgSourceLst = this.personCategoryAuthRepository.getAllCategory(roleId,
-				AppContexts.user().contractCode(), AppContexts.user().companyId(), payroll, personnel, atttendance);
-		List<String> ctgLstId = ctgSourceLst.stream().map(c -> {
-			return c.getCategoryId();
-		}).collect(Collectors.toList());
-
-		Map<String, List<Object[]>> itemByCtgId = this.itemInfoRepo.getAllPerInfoItemDefByListCategoryId(ctgLstId,
-				contractCd);
-
-		List<PersonInfoCategoryDetailDto> ctgResultLst = new ArrayList<>();
-		for (PersonInfoCategoryDetail i : ctgSourceLst) {
-			List<Object[]> item = itemByCtgId.get(i.getCategoryId());
-			if (item == null)
-				continue;
-			if (item.size() > 0)
-				ctgResultLst.add(PersonInfoCategoryDetailDto.fromDomain(i));
-		}
-		return ctgResultLst;
-	}
-	
-
 }
