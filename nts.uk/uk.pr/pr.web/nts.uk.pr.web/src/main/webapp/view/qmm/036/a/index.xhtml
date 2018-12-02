@@ -65,7 +65,7 @@
                                      items: lstStatementItem,
                                      selected: selectStatementItem,
                                      selectedKey: 'statementItemCode',
-                                     fields: ['itemNameCd', 'categoryAtr'],
+                                     fields: ['itemNameCd', 'name'],
                                      mode: 'igGrid'}"/>
                             <table id="A4_4" tabindex="5"
                                    data-bind="ntsGridList: { name: '#[QMM031_11]',
@@ -93,7 +93,7 @@
                             </div>
                             <!--A5_5-->
                             <div id="list-box" tabindex="8" data-bind="ntsListBox: {
-                                    name: '#[QMM036_13]',
+                                    name: '#[QMM036_12]',
                                     options: lstHistory,
                                     optionsValue: 'index',
                                     optionsText: 'period',
@@ -159,19 +159,7 @@
                                 <span class="label" data-bind="text: totalAmount"></span>
                             </div>
                         </div>
-                        <!--<div class="row" style="margin-left: 70px;width: 450px; min-width: 300px;">
-                            <table id="A7_13" tabindex="10"
-                                   data-bind="ntsGridList: {
-                                        name: '#[QMM036_26]',
-                                        options: lstBreakdownItem,
-                                        primaryKey: 'breakdownItemCode',
-                                        columns: columnsBreakdown,
-                                        multiple: false,
-                                        rows: 10,
-                                        value: currentCodeBreakdown
-							}"></table>
-							</div>-->
-                        <div><table id="gridBreakdownItem"></table> </div>
+                        <div><table tabindex="10" id="gridBreakdownItem"></table> </div>
                     </div>
                 </div>
             </div>

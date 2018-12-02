@@ -104,7 +104,8 @@ module nts.uk.pr.view.qmm036.c.viewmodel {
                 employeeId: params.period.employeeID,
                 salaryBonusAtr: params.period.salaryBonusAtr,
                 period: lstPeriod,
-                breakdownAmountList: lstBreakdownAmount
+                breakdownAmountList: lstBreakdownAmount,
+                histCheck: null
             };
             service.updateBreakdownAmountHis(ko.toJS(command)).done(() => {
                 dialog.info({messageId: "Msg_15"}).then(() => {
@@ -140,7 +141,8 @@ module nts.uk.pr.view.qmm036.c.viewmodel {
                 employeeId: params.period.employeeID,
                 salaryBonusAtr: params.period.salaryBonusAtr,
                 period: lstPeriod,
-                breakdownAmountList: lstBreakdownAmount
+                breakdownAmountList: lstBreakdownAmount,
+                histCheck: null
             };
 
             service.removeBreakdownItemSet(command).done(function () {

@@ -34,10 +34,10 @@ module nts.uk.pr.view.qmm036.b.viewmodel {
                     self.yearMonthStart(startYM);
                 }
                 if (params.historyID) {
-                    self.takeoverItem.push(new EnumModel(INHERITANCE_CLS.WITH_HISTORY, getText('QMM039_29', [displayLastestStartHistory])));
+                    self.takeoverItem.push(new EnumModel(INHERITANCE_CLS.WITH_HISTORY, getText('QMM036_34', [displayLastestStartHistory])));
                     self.takeoverMethod(0);
                 }
-                self.takeoverItem.push(new EnumModel(INHERITANCE_CLS.NO_HISTORY, getText('QMM039_30')));
+                self.takeoverItem.push(new EnumModel(INHERITANCE_CLS.NO_HISTORY, getText('QMM036_35')));
 
             }
 

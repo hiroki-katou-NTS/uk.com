@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -62,13 +63,28 @@ public class AddBreakdownAmountHisCommandHandler extends CommandHandler<Breakdow
             breakdownAmountRepository.add(data);
         }
         else{
+            String historyUpdate = command.getHistoryUpdate();
             List<BreakdownAmountListCommand> lstBreakdownAmountListCommands = command.getBreakdownAmountList();
             List<BreakdownAmountListCommand> dataAmout = lstBreakdownAmountListCommands.stream().filter(i -> i.getAmount() != null).collect(Collectors.toList());
+            List<BreakdownAmountListCommand> dataAmoutNull = lstBreakdownAmountListCommands.stream().filter(a -> a.getAmount() == null).collect(Collectors.toList());
+            if(dataAmoutNull.size() != 0){
+                Optional<BreakdownAmount> breakdownAmountOp = breakdownAmountRepository.getAllBreakdownAmountCode(historyUpdate);
+                if(breakdownAmountOp.isPresent()){
+                    BreakdownAmount breakdownAmount = breakdownAmountOp.get();
+                    List<String> lstBreakCode = breakdownAmount.getBreakdownAmountList().stream().map(i -> i.getBreakdownItemCode().v()).collect(Collectors.toList());
+                    List<String> lstCode = dataAmoutNull.stream().map(i -> i.getBreakdownItemCode()).collect(Collectors.toList());
+                    List<String> lstCodeUpdate = lstBreakCode.stream().filter(i -> lstCode.contains(i)).collect(Collectors.toList());
+                    if(lstCodeUpdate.size() > 0){
+                        breakdownAmountRepository.remove(historyUpdate, lstCodeUpdate);
+                    }
+                }
+            }
+
             if(dataAmout.size() == 0){
                 return;
             }
             List<BreakdownAmountList> lstBreakdownAmountList = dataAmout.stream().map(i -> new BreakdownAmountList(i.getBreakdownItemCode(), i.getAmount())).collect(Collectors.toList());
-            BreakdownAmount data = new BreakdownAmount(historyId, lstBreakdownAmountList);
+            BreakdownAmount data = new BreakdownAmount(historyUpdate, lstBreakdownAmountList);
             breakdownAmountRepository.update(data);
         }
 

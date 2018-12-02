@@ -19,6 +19,7 @@ public class JpaBreakAmountRepository extends JpaRepository implements Breakdown
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.breakAmountPk.historyId =:historyId AND  f.breakAmountPk.breakdownItemCode =:breakdownItemCode";
     private static final String SELECT_LIST_BY_HISTORYID = SELECT_ALL_QUERY_STRING + " WHERE f.breakAmountPk.historyId =:historyId";
     private static final String REMOVE_LIST_BY_HISTORYID = "DELETE FROM QpbmtBreakAmount f WHERE f.breakAmountPk.historyId =:historyId";
+    private static final String REMOVE_LIST_BY_LISTBREAKCODE = "DELETE FROM QpbmtBreakAmount f WHERE f.breakAmountPk.historyId =:historyId AND  f.breakAmountPk.breakdownItemCode IN :lstBreakdownItemCode";
 
 
     private Optional<BreakdownAmount> toDomain(List<QpbmtBreakAmount> entity) {
@@ -54,8 +55,10 @@ public class JpaBreakAmountRepository extends JpaRepository implements Breakdown
     }
 
     @Override
-    public void remove(String historyId, String breakdownItemCode) {
-        this.commandProxy().remove(QpbmtBreakAmount.class, new QpbmtBreakAmountPk(historyId, breakdownItemCode));
+    public void remove(String historyId, List<String> lstBreakdownItemCode) {
+        this.getEntityManager().createQuery(REMOVE_LIST_BY_LISTBREAKCODE)
+                .setParameter("historyId", historyId)
+                .setParameter("lstBreakdownItemCode", lstBreakdownItemCode).executeUpdate();
     }
 
     @Override

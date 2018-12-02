@@ -18,7 +18,7 @@ public interface BreakdownAmountRepository
 
     void update(BreakdownAmount domain);
 
-    void remove(String historyId, String breakdownItemCode);
+    void remove(String historyId, List<String> lstBreakdownItemCode);
 
     void removeByHistoryId(String historyId);
 

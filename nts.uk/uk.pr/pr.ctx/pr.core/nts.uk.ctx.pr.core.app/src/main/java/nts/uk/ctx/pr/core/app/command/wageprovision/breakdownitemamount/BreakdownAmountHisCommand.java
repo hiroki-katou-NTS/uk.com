@@ -37,4 +37,6 @@ public class BreakdownAmountHisCommand {
 
     private String lastHistoryId;
 
+    private String historyUpdate;
+
 }

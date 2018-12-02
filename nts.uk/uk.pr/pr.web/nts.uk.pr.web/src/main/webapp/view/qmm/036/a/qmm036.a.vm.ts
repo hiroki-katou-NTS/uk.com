@@ -163,6 +163,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                 else {
                     nts.uk.ui.errors.clearAll();
                     self.lstBreakdownItem = [];
+                    nts.uk.ui.dialog.info({ messageId: "MsgQ_110" });
                 }
                 $("#gridBreakdownItem").ntsGrid("destroy");
                 self.loadGrid();
@@ -199,6 +200,46 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                     self.isScreenC(true);
                     self.isScreenB(true);
                     self.selectedHisCode(0);
+                }
+                else {
+                    nts.uk.ui.errors.clearAll();
+                    self.lstHistory([]);
+                    self.isScreenC(false);
+
+                }
+                block.clear();
+                dfd.resolve();
+            }).fail(function (res) {
+                alertError({messageId: res.messageId});
+                block.clear();
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+
+        reloadGetHist() {
+            let self = this,
+                dfd = $.Deferred();
+            block.invisible();
+            service.getBreakdownHis(self.categoryAtr(), self.itemNameCd(), self.bonusAtr(), self.selectedItem()).done(function (data) {
+                if (data) {
+                    let array = [];
+                    for (let i = 0; i < data.yearMonthHistory.length; i++) {
+                        array.push(
+                            new ItemModel(
+                                i,
+                                data.yearMonthHistory[i].historyID,
+                                data.yearMonthHistory[i].periodStartYm,
+                                data.yearMonthHistory[i].periodEndYm,
+                                format(getText("QMM039_18"), self.formatYM(data.yearMonthHistory[i].periodStartYm), self.formatYM(data.yearMonthHistory[i].periodEndYm))))
+                    }
+                    let dataSort = _.orderBy(array, ["periodStartYm"], 'desc');
+                    for (let i = 0; i < dataSort.length; i++) {
+                        dataSort[i].index = i;
+                    }
+                    self.lstHistory(dataSort);
+                    self.isScreenC(true);
+                    self.isScreenB(true);
                 }
                 else {
                     nts.uk.ui.errors.clearAll();
@@ -259,12 +300,6 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                     }
                 ],
                 features: [
-                    /*{
-                        name: 'Resizing',
-                        columnSettings: [{
-                            columnKey: 'breakdownItemCode', allowResizing: false, minimumWidth: 0
-                        }]
-                    },*/
                     {
                         name: "Selection",
                         mode: "cell",
@@ -442,18 +477,15 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                 salaryBonusAtr: self.bonusAtr(),
                 period: lstPeriod,
                 breakdownAmountList: self.lstBreakdownItem,
-                lastHistoryId: null
+                lastHistoryId: null,
+                historyUpdate: self.lstHistory()[self.selectedHisCode()].historyID
             };
             service.addBreakdownAmountHis(ko.toJS(command)).done(() => {
                 dialog.info({messageId: "Msg_15"}).then(() => {
-                    self.getHist();
+                    self.reloadGetHist();
+                    self.selectedHisCode.valueHasMutated();
                     self.isScreenB(true);
                     self.isScreenC(true);
-                    /*if (self.selectedHisCode() == 0) {
-                        self.selectedHisCode.valueHasMutated();
-                    } else {
-                        self.selectedHisCode(0);
-                    }*/
                 });
             }).fail(function (error) {
                 alertError(error);
@@ -546,8 +578,9 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
 
             setShared("QMM036_C_PARAMS", params);
             modal('/view/qmm/036/c/index.xhtml', {title: '',}).onClosed(function (): any {
-                self.getHist().done(() => {
-                        self.initSelectedHisCode();
+                self.reloadGetHist().done(() => {
+                        //self.initSelectedHisCode();
+                        self.selectedHisCode.valueHasMutated();
                         self.lstBreakdownItem = [];
                         $("#gridBreakdownItem").ntsGrid("destroy");
                         self.loadGrid();
