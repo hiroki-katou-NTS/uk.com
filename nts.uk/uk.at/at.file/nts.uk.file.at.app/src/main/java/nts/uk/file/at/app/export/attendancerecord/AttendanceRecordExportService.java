@@ -8,11 +8,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -231,10 +234,43 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		List<CalculateAttendanceRecord> calculateLowerMonthly = this.calculateAttendanceRepo
 				.getIdCalculateAttendanceRecordMonthlyByPosition(companyId, request.getLayout(), LOWER_POSITION);
 
-		List<ScreenUseAtr> screenUseAtrList = Arrays.asList(ScreenUseAtr.ATTENDANCE_TYPE_OF_DERVICETYPE, ScreenUseAtr.EMPLOYEE_BOOKING_HOURS);
+		List<ScreenUseAtr> screenUseAtrList = Arrays.asList(ScreenUseAtr.ATTENDANCE_TYPE_OF_DERVICETYPE,
+				ScreenUseAtr.EMPLOYEE_BOOKING_HOURS);
 
 		List<AttendanceType> attendanceTypeList = new ArrayList<>();
 		
+		Set<Integer> singleId = new HashSet<>();
+		Set<Integer> monthlyId = new HashSet<>();
+
+		// Get all Daily attendance item
+		singleId.addAll(singleIdUpper);
+		singleId.addAll(singleIdLower);
+		Stream.concat(calculateUpperDaily.stream(), calculateLowerDaily.stream()).forEach(item -> {
+			if (item.getAddedItem() != null)
+				singleId.addAll(item.getAddedItem());
+			if (item.getSubtractedItem() != null)
+				singleId.addAll(item.getSubtractedItem());
+		});
+		
+		// Get all Monthly Attendanceitem
+		Stream.concat(calculateUpperMonthly.stream(), calculateLowerMonthly.stream()).forEach(item -> {
+			if (item.getAddedItem() != null)
+				monthlyId.addAll(item.getAddedItem());
+			if (item.getSubtractedItem() != null)
+				singleId.addAll(item.getSubtractedItem());
+		});
+		
+		List<String> empIDs = distinctEmployeeListAfterSort.stream().map(e -> e.getEmployeeId()).collect(Collectors.toList());
+		YearMonthPeriod periodMonthly = new YearMonthPeriod(request.getStartDate().yearMonth(), request.getEndDate().yearMonth());
+		List<MonthlyAttendanceItemValueResult> monthlyValues = attendanceService.getMonthlyValueOf(empIDs, periodMonthly, monthlyId);
+		
+		GeneralDate endByClosure = GeneralDate.ymd(request.getEndDate().year(), request.getEndDate().month(), request.getEndDate().lastDateInMonth());
+		GeneralDate startTime = request.getStartDate().addMonths(-1);
+		GeneralDate startByClosure = GeneralDate.ymd(startTime.year(), startTime.month(), 1);
+		
+		DatePeriod period = new DatePeriod(startByClosure, endByClosure);
+		List<AttendanceItemValueResult> dailyValues = attendanceService.getValueOf(empIDs, period, singleId);
+
 		for (Employee employee : distinctEmployeeListAfterSort) {
 
 			// Number of real data
@@ -269,72 +305,12 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 					YearMonth endYearMonth = closureDate.getLastDayOfMonth() ? request.getEndDate().yearMonth()
 							: request.getEndDate().yearMonth().previousMonth();
 					YearMonth yearMonth = startYearMonth;
-					List<Integer> singleId = new ArrayList<>();
-					List<Integer> monthlyId = new ArrayList<>();
 
-					// Get all Daily attendance item
-					singleId.addAll(singleIdUpper);
-					singleId.addAll(singleIdLower);
-					calculateUpperDaily.forEach(item -> {
-						if (item.getAddedItem() != null)
-							singleId.addAll(item.getAddedItem());
-						if (item.getSubtractedItem() != null)
-							singleId.addAll(item.getSubtractedItem());
-					});
-					calculateLowerDaily.forEach(item -> {
-						if (item.getAddedItem() != null)
-							singleId.addAll(item.getAddedItem());
-						if (item.getSubtractedItem() != null)
-							singleId.addAll(item.getSubtractedItem());
-					});
-
-					// Get all Monthly Attendanceitem
-					calculateUpperMonthly.forEach(item -> {
-						if (item.getAddedItem() != null)
-							monthlyId.addAll(item.getAddedItem());
-						if (item.getSubtractedItem() != null)
-							monthlyId.addAll(item.getSubtractedItem());
-					});
-					calculateLowerMonthly.forEach(item -> {
-						if (item.getAddedItem() != null)
-							monthlyId.addAll(item.getAddedItem());
-						if (item.getSubtractedItem() != null)
-							monthlyId.addAll(item.getSubtractedItem());
-					});
-
-					List<AttendanceItemValueResult> itemValueResultList = new ArrayList<AttendanceItemValueResult>();
-					List<MonthlyAttendanceItemValueResult> itemValueResultMonthlyList = new ArrayList<>();
-					List<String> employeeTempIdList = new ArrayList<>();
-					employeeTempIdList.add(employee.getEmployeeId());
-					GeneralDate startByClosure;
-					GeneralDate endByClosure;
-					if (closureDate.getLastDayOfMonth()) {
-						startByClosure = GeneralDate.ymd(request.getStartDate().year(), request.getStartDate().month(),
-								1);
-						endByClosure = GeneralDate.ymd(request.getEndDate().year(), request.getEndDate().month(),
-								request.getEndDate().lastDateInMonth());
-					} else {
-						GeneralDate startTime = GeneralDate
-								.localDate(request.getStartDate().localDate().minusMonths(1));
-						GeneralDate endTime = request.getEndDate();
-
-						startByClosure = GeneralDate.ymd(startTime.year(), startTime.month(),
-								closureDate.getClosureDay().v() + 1);
-						endByClosure = GeneralDate.ymd(endTime.year(), endTime.month(),
-								closureDate.getClosureDay().v());
+					if (attendanceTypeList.isEmpty()) {
+						attendanceTypeList.addAll(attendanceRepo.getItemByAtrandType(AppContexts.user().companyId(),
+								screenUseAtrList, 1));
 					}
-					DatePeriod period = new DatePeriod(startByClosure, endByClosure);
-					itemValueResultList = attendanceService.getValueOf(employeeTempIdList, period,
-							singleId.stream().distinct().collect(Collectors.toList()));
-					YearMonthPeriod periodMonthly = new YearMonthPeriod(request.getStartDate().yearMonth(),
-							request.getEndDate().yearMonth());
-					itemValueResultMonthlyList = attendanceService.getMonthlyValueOf(employeeTempIdList, periodMonthly,
-							monthlyId.stream().distinct().collect(Collectors.toList()));
-					
-					if(attendanceTypeList.isEmpty()){
-						attendanceTypeList.addAll(attendanceRepo.getItemByAtrandType(AppContexts.user().companyId(), screenUseAtrList, 1));
-					}
-					
+
 					while (yearMonth.lessThanOrEqualTo(endYearMonth)) {
 
 						Integer realData = 0;
@@ -377,7 +353,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 									.build();
 							// Get all daily result in Date
 							if (!singleIdUpper.isEmpty() || !singleIdLower.isEmpty()) {
-								for (AttendanceItemValueResult item : itemValueResultList) {
+								for (AttendanceItemValueResult item : dailyValues) {
 									if (item.getWorkingDate().equals(startDateByClosure)) {
 										itemValueResult = item;
 										break;
@@ -421,12 +397,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 								valueSingleUpper.getAttendanceItems().forEach(item -> {
 									if (item != null)
-										upperDailyRespond
-												.add(new AttendanceRecordResponse(employee.getEmployeeId(),
-														employee.getEmployeeName(), closureDateTemp, "",
-														this.convertString(item, workTypeList, workTimeList,
-																attendanceTypeList, optionalAttendanceRecExpSet.get()
-																		.getNameUseAtr())));
+										upperDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
+												employee.getEmployeeName(), closureDateTemp, "",
+												this.convertString(item, workTypeList, workTimeList, attendanceTypeList,
+														optionalAttendanceRecExpSet.get().getNameUseAtr())));
 
 								});
 							}
@@ -525,12 +499,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							if (valueSingleLower != null)
 								valueSingleLower.getAttendanceItems().forEach(item -> {
 									if (item != null)
-										lowerDailyRespond
-												.add(new AttendanceRecordResponse(employee.getEmployeeId(),
-														employee.getEmployeeName(), closureDateTemp, "",
-														this.convertString(item, workTypeList, workTimeList,
-																attendanceTypeList, optionalAttendanceRecExpSet.get()
-																		.getNameUseAtr())));
+										lowerDailyRespond.add(new AttendanceRecordResponse(employee.getEmployeeId(),
+												employee.getEmployeeName(), closureDateTemp, "",
+												this.convertString(item, workTypeList, workTimeList, attendanceTypeList,
+														optionalAttendanceRecExpSet.get().getNameUseAtr())));
 
 								});
 
@@ -656,7 +628,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 						if (!calculateUpperMonthly.isEmpty() || !calculateLowerMonthly.isEmpty()) {
 
 							// Get montnly result
-							for (MonthlyAttendanceItemValueResult item : itemValueResultMonthlyList) {
+							for (MonthlyAttendanceItemValueResult item : monthlyValues) {
 								if (item.getYearMonth()
 										.equals(closureDate.getLastDayOfMonth() ? yearMonth : yearMonth.addMonths(1))
 										&& item.getClouseDate() == closureDate.getClosureDay().v()) {
