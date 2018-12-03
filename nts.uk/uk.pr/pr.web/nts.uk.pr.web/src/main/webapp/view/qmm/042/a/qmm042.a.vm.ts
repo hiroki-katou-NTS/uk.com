@@ -92,7 +92,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                     }
                 }
                 personalAmountData= personalAmountData.sort(function(a, b){
-                    return a.employeeCode() > b.employeeCode();
+                    return a.employeeCode().compareTo(b.employeeCode());
                 });
                 self.workIndividualPricesDisplay(personalAmountData);
             })
@@ -316,7 +316,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 this.startYaerMonth = param.startYaerMonth;
                 this.endYearMonth = param.endYearMonth;
                 this.amountOfMoney(param.amountOfMoney);
-                this.period=nts.uk.time.formatYearMonth(param.startYaerMonth) + ' ~ ' + nts.uk.time.formatYearMonth(param.endYearMonth);
+                this.period=nts.uk.time.formatYearMonth(param.startYaerMonth) + ' ～ ' + nts.uk.time.formatYearMonth(param.endYearMonth);
             }
 
         }

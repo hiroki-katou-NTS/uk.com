@@ -138,31 +138,16 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
 
             self.selectedHistoryCode.subscribe((historyCode) => {
                 nts.uk.ui.errors.clearAll();
-                if (historyCode) {
-                    let index = _.findIndex(self.dataSource(), (obj) => {
-                        return obj.code === self.selectedCode();
-                    });
-                    let historyIndex = self.findHistoryIndex(historyCode);
-                    self.personalUnitPriceCode(self.dataSource()[index].code);
-                    self.personalUnitPriceName(self.dataSource()[index].name);
-                    self.A5_6(' ～ ');
-                    self.endYearMonth(self.formatYM(self.historyList()[historyIndex].endYearMonth));
-                    self.startYearMonth(self.formatYM(self.historyList()[historyIndex].startYearMonth));
-                    self.currencyValue(self.historyList()[historyIndex].amountOfMoney);
-                    self.currencyEnable(true);
-                    self.isEditableHis(true);
-                } else {
-                    self.personalUnitPriceCode(null);
-                    self.personalUnitPriceName(null);
-                    self.A5_6(null);
-                    self.endYearMonth(null);
-                    self.startYearMonth(null);
-                    self.currencyValue(null);
-                    self.currencyEnable(false);
-                    self.isEditableHis(false);
-                }
                 if (self.mode() === model.MODE.ADD_HISTORY) {
-                    self.selectedCode.valueHasMutated();
+                    let dto = {
+                        personalUnitPriceCode: self.selectedCode(),
+                        employeeId: self.selectedItem()
+                    };
+                    self.getAllIndEmpSalUnitPriceHistory(dto).done(() => {
+                        self.handleHistorySelection(historyCode);
+                    });
+                } else {
+                    self.handleHistorySelection(historyCode);
                 }
             });
 
@@ -188,6 +173,33 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                 }
             });
 
+        }
+
+        handleHistorySelection(historyCode) {
+            let self = this;
+            if (historyCode) {
+                let index = _.findIndex(self.dataSource(), (obj) => {
+                    return obj.code === self.selectedCode();
+                });
+                let historyIndex = self.findHistoryIndex(historyCode);
+                self.personalUnitPriceCode(self.dataSource()[index].code);
+                self.personalUnitPriceName(self.dataSource()[index].name);
+                self.A5_6(' ～ ');
+                self.endYearMonth(self.formatYM(self.historyList()[historyIndex].endYearMonth));
+                self.startYearMonth(self.formatYM(self.historyList()[historyIndex].startYearMonth));
+                self.currencyValue(self.historyList()[historyIndex].amountOfMoney);
+                self.currencyEnable(true);
+                self.isEditableHis(true);
+            } else {
+                self.personalUnitPriceCode(null);
+                self.personalUnitPriceName(null);
+                self.A5_6(null);
+                self.endYearMonth(null);
+                self.startYearMonth(null);
+                self.currencyValue(null);
+                self.currencyEnable(false);
+                self.isEditableHis(false);
+            }
         }
 
         formatYM(intYM) {
@@ -253,7 +265,6 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             service.getAllIndEmpSalUnitPriceHistory(dto).done((data) => {
-                block.invisible();
                 self.historyList([]);
                 if (data.length > 0) {
                     let array = [];
@@ -274,7 +285,6 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                 } else {
                     self.mode(model.MODE.HISTORY_UNREGISTERED);
                 }
-                block.clear();
                 dfd.resolve();
             }).fail((res) => {
                 nts.uk.ui.dialog.alertError(res.message);
@@ -352,7 +362,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                     } else {
                         self.currencyValue(self.historyList()[0].amountOfMoney);
                     }
-                    
+
                     let history: any = new HistoryModel({
                         personalUnitPriceCode: self.selectedCode(),
                         employeeId: self.selectedItem(),
