@@ -269,6 +269,10 @@ public class HolidayShipmentScreenAFinder {
 		builder.append("");
 
 		wkingItem.ifPresent(item -> {
+			if (item == null) {return;}
+			if (item.getWorkCategory() == null) {return;}
+			if (item.getWorkCategory().getWeekdayTime() == null) {return;}
+			if (item.getWorkCategory().getWeekdayTime().getWorkTimeCode() == null) {return;}
 			item.getWorkCategory().getWeekdayTime().getWorkTimeCode().ifPresent(wkIimeCd -> {
 				builder.append(wkIimeCd);
 			});
