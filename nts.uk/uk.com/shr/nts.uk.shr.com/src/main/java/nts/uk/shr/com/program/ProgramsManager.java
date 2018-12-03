@@ -2265,16 +2265,6 @@ public class ProgramsManager {
 			"/view/qmm/031/e/index.xhtml");
 
 	/**
-	 * QMM036
-	 */
-	public static final Program QMM036A = new Program(WebAppId.PR, ProgramIdConsts.QMM036A, "QMM036_1",
-			"/view/qmm/036/a/index.xhtml");
-	public static final Program QMM036B = new Program(WebAppId.PR, ProgramIdConsts.QMM036B, "QMM036_2",
-			"/view/qmm/036/b/index.xhtml");
-	public static final Program QMM036C = new Program(WebAppId.PR, ProgramIdConsts.QMM036C, "QMM036_3",
-			"/view/qmm/036/c/index.xhtml");
-
-	/**
 	 * QMM008
 	 */
 	public static final Program QMM008A = new Program(WebAppId.PR, ProgramIdConsts.QMM008A, "QMM008_186",
