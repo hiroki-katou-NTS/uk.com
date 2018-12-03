@@ -43,6 +43,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             self.selectedEmployee = ko.observableArray([]);
             self.showinfoSelectedEmployee = ko.observable(false);
             self.ccgcomponent = {
+                
                 /** Common properties */
                 systemType: 2,
                 showEmployeeSelection: true,
@@ -59,9 +60,12 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                 periodStartDate: moment().toISOString(),
                 periodEndDate: moment().toISOString(),
                 inService: true,
-                leaveOfAbsence: true,
-                closed: true,
-                retirement: true,
+                //休職区分
+                leaveOfAbsence: false,
+                //休業区分
+                closed: false,
+                //退職区分
+                retirement: false,
 
                 /** Quick search tab options */
                 showAllReferableEmployee: true,
