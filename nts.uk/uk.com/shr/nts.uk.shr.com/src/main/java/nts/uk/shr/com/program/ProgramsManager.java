@@ -273,6 +273,48 @@ public class ProgramsManager {
 			"/view/cps/001/i/index.xhtml");
 
 	/**
+	 * CPS003A
+	 */
+	public static final Program CPS003A = new Program(WebAppId.COM, ProgramIdConsts.CPS003A, "CPS003_1",
+			"/view/cps/003/a/index.xhtml");
+
+	/**
+	 * CPS003B
+	 */
+	public static final Program CPS003B = new Program(WebAppId.COM, ProgramIdConsts.CPS003B, "CPS003_2",
+			"/view/cps/003/b/index.xhtml");
+
+	/**
+	 * CPS003C
+	 */
+	public static final Program CPS003C = new Program(WebAppId.COM, ProgramIdConsts.CPS003C, "CPS003_3",
+			"/view/cps/003/c/index.xhtml");
+
+	/**
+	 * CPS003D
+	 */
+	public static final Program CPS003D = new Program(WebAppId.COM, ProgramIdConsts.CPS003D, "CPS003_4",
+			"/view/cps/003/d/index.xhtml");
+
+	/**
+	 * CPS003E
+	 */
+	public static final Program CPS003E = new Program(WebAppId.COM, ProgramIdConsts.CPS003E, "CPS003_5",
+			"/view/cps/003/e/index.xhtml");
+
+	/**
+	 * CPS003F
+	 */
+	public static final Program CPS003F = new Program(WebAppId.COM, ProgramIdConsts.CPS003F, "CPS003_6",
+			"/view/cps/003/f/index.xhtml");
+
+	/**
+	 * CPS003G
+	 */
+	public static final Program CPS003G = new Program(WebAppId.COM, ProgramIdConsts.CPS003G, "CPS003_107",
+			"/view/cps/003/g/index.xhtml");
+
+	/**
 	 * KMK011A
 	 */
 	public static final Program KMK011A = new Program(WebAppId.AT, ProgramIdConsts.KMK011A, "KMK011_1",

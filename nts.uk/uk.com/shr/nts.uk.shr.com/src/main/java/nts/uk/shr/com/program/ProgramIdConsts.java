@@ -633,6 +633,20 @@ public class ProgramIdConsts {
 
 	public static final String CPS001I = "CPS001I";
 
+	public static final String CPS003A = "CPS003A";
+	
+	public static final String CPS003B = "CPS003B";
+	
+	public static final String CPS003C = "CPS003C";
+	
+	public static final String CPS003D = "CPS003D";
+	
+	public static final String CPS003E = "CPS003E";
+	
+	public static final String CPS003F = "CPS003F";
+	
+	public static final String CPS003G = "CPS003G";
+
 	public static final String CMM007A = "CMM007A";
 	public static final String CMM007B = "CMM007B";
 	public static final String CMM007C = "CMM007C";
