@@ -31,15 +31,15 @@ import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 @Stateless
 public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOnInfoOfDailyRepo {
 
-	private static final String REMOVE_BY_KEY;
+//	private static final String REMOVE_BY_KEY;
 
 	static {
-		StringBuilder builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDayPcLogonInfo a ");
-		builderString.append("WHERE a.id.sid = :employeeId ");
-		builderString.append("AND a.id.ymd = :ymd ");
-		REMOVE_BY_KEY = builderString.toString();
+//		StringBuilder builderString = new StringBuilder();
+//		builderString.append("DELETE ");
+//		builderString.append("FROM KrcdtDayPcLogonInfo a ");
+//		builderString.append("WHERE a.id.sid = :employeeId ");
+//		builderString.append("AND a.id.ymd = :ymd ");
+//		REMOVE_BY_KEY = builderString.toString();
 	}
 
 	@Override

@@ -23,6 +23,7 @@ public class AlarmExtraValueWRExportImpl implements MasterListData {
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		List<MasterData> datas = new ArrayList<>();
+		@SuppressWarnings("unchecked")
 		List<LinkedHashMap<String, String>> alarmList = (List<LinkedHashMap<String, String>>) query.getData();
 		alarmList.forEach(alarmExtraValueWRPrint -> {
 			Map<String, Object> data = new HashMap<>();

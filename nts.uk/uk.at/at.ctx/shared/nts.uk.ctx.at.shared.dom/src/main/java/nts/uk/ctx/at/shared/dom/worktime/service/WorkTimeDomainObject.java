@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.Setter;
+//import lombok.Setter;
 import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.validate.Validatable;

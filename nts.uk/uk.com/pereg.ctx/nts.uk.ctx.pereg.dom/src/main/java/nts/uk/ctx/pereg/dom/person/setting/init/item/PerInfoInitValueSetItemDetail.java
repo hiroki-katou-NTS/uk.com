@@ -76,6 +76,7 @@ public class PerInfoInitValueSetItemDetail {
 		
 		private String selectionItemRefCd;
 		
+		
 		private Map<Integer, Map<Integer, String>> selectionLst;
 
 		// trường này để xác định xem là trường date thuộc
@@ -101,8 +102,5 @@ public class PerInfoInitValueSetItemDetail {
 		private Integer stringItemDataType;
 		
 		private boolean isFixedItem;
-		
-		// giá trị khởi tạo
-		private String initValue;
 
 }

@@ -1,10 +1,10 @@
 package nts.uk.ctx.at.record.dom.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
+//import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+//import java.util.Optional;
+//import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -12,15 +12,15 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
-import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
+//import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
+//import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
+//import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
+//import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfor;
-import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInfor;
+//import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
+//import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByRecordData;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless

@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.gul.text.StringUtil;
+//import nts.gul.text.StringUtil;
 /**
  * 出張申請設定
  * @author yennth

@@ -84,6 +84,8 @@
 						<div style="font-weight: bold">Returned Data:</div>
 						<div>Selected Work place id:</div>
 						<div style="word-break: break-all;" data-bind="text: selectWorkplaceIds"></div>
+						<div>Selected Base date:</div>
+						<div style="word-break: break-all;" data-bind="text: selectedBaseDate"></div>
 						<h2 style="margin-top: 50px;">Guide</h2>
 						<pre>
 						<![CDATA[
@@ -109,6 +111,8 @@
 				               //view all code of selected item 
 				               var output = nts.uk.ui.windows.getShared('outputCDL008');
 				               self.selectWorkplaceIds(output);
+				               var baseDateOutput = nts.uk.ui.windows.getShared('outputCDL008_baseDate');
+				               self.selectedBaseDate(baseDateOutput);
 				           })
 				       }
 						]]>

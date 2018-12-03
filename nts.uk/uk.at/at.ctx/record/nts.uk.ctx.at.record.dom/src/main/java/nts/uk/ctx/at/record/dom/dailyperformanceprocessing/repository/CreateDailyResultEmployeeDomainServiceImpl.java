@@ -18,7 +18,6 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
-import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
@@ -94,9 +93,6 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 	private ClosureStatusManagementRepository closureStatusManagementRepository;
 	
 	@Inject
-	private ManagedParallelWithContext managedParallelWithContext;
-	
-	@Inject
 	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
 	
 	@Inject
@@ -118,6 +114,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		this.self = scContext.getBusinessObject(CreateDailyResultEmployeeDomainService.class);
 	}
 
+	@SuppressWarnings("rawtypes")
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public ProcessState createDailyResultEmployee(AsyncCommandHandlerContext asyncContext, String employeeId,
@@ -205,6 +202,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public ProcessState createDailyResultEmployeeNew(AsyncCommandHandlerContext asyncContext, String employeeId,
@@ -290,6 +288,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		return ProcessState.SUCCESS;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public ProcessState createDailyResultEmployeeWithNoInfoImport(AsyncCommandHandlerContext asyncContext,
@@ -363,6 +362,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 
 	}
 
+	@SuppressWarnings("rawtypes")
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public ProcessState createDailyResultEmployeeWithNoInfoImportNew(AsyncCommandHandlerContext asyncContext,

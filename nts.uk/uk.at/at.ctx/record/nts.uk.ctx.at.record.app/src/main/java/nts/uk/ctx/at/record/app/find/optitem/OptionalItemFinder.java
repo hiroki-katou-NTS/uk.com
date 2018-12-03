@@ -26,7 +26,7 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrder;
 import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrderRepository;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
-import nts.uk.ctx.at.shared.dom.scherec.attendanceitemname.AttendanceItemName;
+//import nts.uk.ctx.at.shared.dom.scherec.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
@@ -34,7 +34,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceit
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.TypeOfItemImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyAttendanceItemNameAdapter;
+//import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyAttendanceItemNameAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -68,8 +68,8 @@ public class OptionalItemFinder {
 	private DailyAttendanceItemNameAdapter dailyAttdItemNameAdapter;
 	
 	/** The monthly attd item name adapter. */
-	@Inject
-	private MonthlyAttendanceItemNameAdapter monthlyAttdItemNameAdapter;
+//	@Inject
+//	private MonthlyAttendanceItemNameAdapter monthlyAttdItemNameAdapter;
 
 	@Inject
 	private AtItemNameAdapter attdItemNameAdapter;

@@ -22,6 +22,7 @@ public interface MonthlyAggregationEmployeeService {
 	 * @param executionType 実行種別　（通常、再実行）
 	 * @return 終了状態
 	 */
+	@SuppressWarnings("rawtypes")
 	ProcessState aggregate(AsyncCommandHandlerContext asyncContext,
 			String companyId, String employeeId, GeneralDate criteriaDate,
 			String empCalAndSumExecLogID, ExecutionType executionType);
@@ -37,6 +38,7 @@ public interface MonthlyAggregationEmployeeService {
 	 * @param companySets 月別集計で必要な会社別設定
 	 * @return 終了状態
 	 */
+	@SuppressWarnings("rawtypes")
 	MonthlyAggrEmpServiceValue aggregate(AsyncCommandHandlerContext asyncContext,
 			String companyId, String employeeId, GeneralDate criteriaDate,
 			String empCalAndSumExecLogID, ExecutionType executionType,

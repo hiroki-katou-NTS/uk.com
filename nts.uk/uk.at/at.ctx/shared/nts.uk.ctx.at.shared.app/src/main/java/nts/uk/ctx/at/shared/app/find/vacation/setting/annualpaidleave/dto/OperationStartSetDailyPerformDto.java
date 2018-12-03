@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.app.find.vacation.setting.annualpaidleave.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
+//import nts.arc.time.GeneralDate;
 
 /**
  * The Class OperationStartSetDailyPerformDto.

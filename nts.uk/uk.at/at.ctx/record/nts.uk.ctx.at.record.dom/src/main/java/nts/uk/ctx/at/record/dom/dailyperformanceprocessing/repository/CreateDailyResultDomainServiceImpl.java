@@ -6,9 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -21,7 +18,6 @@ import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
-import nts.arc.task.AsyncTask;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.task.parallel.ManagedParallelWithContext.ControlOption;
@@ -41,7 +37,6 @@ import nts.uk.ctx.at.record.dom.calculationsetting.repository.StampReflectionMan
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.MasterList;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.PeriodInMasterList;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
@@ -66,7 +61,6 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.CompanyBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.BaseAutoCalSetting;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegister;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -146,6 +140,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 	
 	public static int MAX_DELAY_PARALLEL = 0;
 
+	@SuppressWarnings("rawtypes")
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public ProcessState createDailyResult(AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
@@ -452,6 +447,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 		// 加給利用単位．職場使用区分
 		if (bPUnitUseSetting.isPresent() && bPUnitUseSetting.get().getWorkplaceUseAtr() == UseAtr.USE) {
 			Optional<WorkplaceBonusPaySetting> workplaceBonusPaySetting = Optional.empty();
+			// 職場の加給設定を取得する
 			for (String wPId : workPlaceIdList) {
 				workplaceBonusPaySetting = this.wPBonusPaySettingRepository.getWPBPSetting(companyId,
 						new WorkplaceId(wPId));
@@ -553,6 +549,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 	}
 
 	// @Transactional(value = TxType.SUPPORTS)
+	@SuppressWarnings("rawtypes")
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	private ProcessState createData(AsyncCommandHandlerContext asyncContext, DatePeriod periodTime,
 			ExecutionAttr executionAttr, String companyId, String empCalAndSumExecLogID,

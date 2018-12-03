@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.daily
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
+//import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 
 /**
  * 日別実績の承認ルート中間データの作成

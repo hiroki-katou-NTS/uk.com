@@ -57,7 +57,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkPlaceH
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+//import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
@@ -76,9 +76,9 @@ import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
+//import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
+//import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -979,7 +979,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			return null;
 		}
 		//アルゴリズム「実績の取得」を実行する - 13/KAF
-		AchievementOutput achievement = collectAchievement.getAchievement(companyID, applicantID, application.getAppDate());
+		//AchievementOutput achievement = 
+				collectAchievement.getAchievement(companyID, applicantID, application.getAppDate());
 		//アルゴリズム「勤務実績の取得」を実行する
 		// TODO Auto-generated method stub
 		return false;
@@ -996,7 +997,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			
 		}
 		//休暇申請の場合
-		String relationshipCd = "";
+		//String relationshipCd = "";
 		// TODO Auto-generated method stub
 		//imported(就業.Shared)「続柄」を取得する
 //		Optional<Relationship> relShip = repoRelationship.findByCode(companyID, relationshipCd);
@@ -1253,33 +1254,33 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * @param lstClosureHist
 	 * @return
 	 */
-	private Closure findHistMin(List<Closure> lstClosure){
-		lstClosure.sort((hist1, hist2)
-				-> hist1.getClosureHistories().get(0).getClosureDate().getClosureDay().compareTo(hist2.getClosureHistories().get(0).getClosureDate().getClosureDay()));
-		Closure histMin = null;
-		for (Closure closure : lstClosure) {
-			if(closure.getClosureHistories().get(0).getClosureDate().getLastDayOfMonth() != true){
-				histMin = closure;
-				break;
-			}
-		}
-		return histMin == null? lstClosure.get(0) : histMin;
-	}
+//	private Closure findHistMin(List<Closure> lstClosure){
+//		lstClosure.sort((hist1, hist2)
+//				-> hist1.getClosureHistories().get(0).getClosureDate().getClosureDay().compareTo(hist2.getClosureHistories().get(0).getClosureDate().getClosureDay()));
+//		Closure histMin = null;
+//		for (Closure closure : lstClosure) {
+//			if(closure.getClosureHistories().get(0).getClosureDate().getLastDayOfMonth() != true){
+//				histMin = closure;
+//				break;
+//			}
+//		}
+//		return histMin == null? lstClosure.get(0) : histMin;
+//	}
 	/**
 	 * find closure history by period
 	 * @param closureHistories
 	 * @param closureMonth
 	 * @return
 	 */
-	private ClosureHistory findHistClosure(List<ClosureHistory> closureHistories, CurrentMonth closureMonth){
-		for (ClosureHistory closureHist : closureHistories) {
-			if(closureHist.getStartYearMonth().lessThanOrEqualTo(closureMonth.getProcessingYm()) &&
-					closureHist.getEndYearMonth().greaterThanOrEqualTo(closureMonth.getProcessingYm())){
-				return closureHist;
-			}
-		}
-		return null;
-	}
+//	private ClosureHistory findHistClosure(List<ClosureHistory> closureHistories, CurrentMonth closureMonth){
+//		for (ClosureHistory closureHist : closureHistories) {
+//			if(closureHist.getStartYearMonth().lessThanOrEqualTo(closureMonth.getProcessingYm()) &&
+//					closureHist.getEndYearMonth().greaterThanOrEqualTo(closureMonth.getProcessingYm())){
+//				return closureHist;
+//			}
+//		}
+//		return null;
+//	}
 	/**
 	 * merge App And Phase
 	 * @param lstApp
@@ -1783,23 +1784,23 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		return null;
 	}
-	private List<AppCompltLeaveFull> getListCompltDetail(List<Application_New> lstComplt, String companyId){
-		List<AppCompltLeaveFull> lstCompltFull = new ArrayList<>();
-		for (Application_New app : lstComplt) {
-			AppCompltLeaveFull complt = null;
-			//アルゴリズム「申請一覧リスト取得振休振出」を実行する-(get List App Complement Leave): 6 - 申請一覧リスト取得振休振出
-			AppCompltLeaveSyncOutput sync = this.getListAppComplementLeave(app, companyId);
-			if(!sync.isSync()){//TH k co don lien ket
-				//lay thong tin chi tiet
-				complt = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType());
-			}else{//TH co don lien ket
-				//lay thong tin chi tiet
-				complt = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType());
-			}
-			lstCompltFull.add(complt);
-		}
-		return null;
-	}
+//	private List<AppCompltLeaveFull> getListCompltDetail(List<Application_New> lstComplt, String companyId){
+//		List<AppCompltLeaveFull> lstCompltFull = new ArrayList<>();
+//		for (Application_New app : lstComplt) {
+//			AppCompltLeaveFull complt = null;
+//			//アルゴリズム「申請一覧リスト取得振休振出」を実行する-(get List App Complement Leave): 6 - 申請一覧リスト取得振休振出
+//			AppCompltLeaveSyncOutput sync = this.getListAppComplementLeave(app, companyId);
+//			if(!sync.isSync()){//TH k co don lien ket
+//				//lay thong tin chi tiet
+//				complt = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType());
+//			}else{//TH co don lien ket
+//				//lay thong tin chi tiet
+//				complt = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType());
+//			}
+//			lstCompltFull.add(complt);
+//		}
+//		return null;
+//	}
 	private CheckExitSync checkExitSync(List<Application_New> lstCompltLeave, String appId){
 		for (Application_New app : lstCompltLeave) {
 			if(app.getAppID().equals(appId)){

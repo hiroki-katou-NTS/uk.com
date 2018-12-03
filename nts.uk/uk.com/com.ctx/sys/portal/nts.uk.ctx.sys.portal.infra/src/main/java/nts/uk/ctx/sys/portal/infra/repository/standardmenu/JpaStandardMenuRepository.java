@@ -319,4 +319,18 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 				.setParameter("queryString", queryString)
 				.getSingle(c -> toDomain(c));
 	}
+
+	private static final String GET_MAX_ORDER = "SELECT MAX(t.displayOrder) FROM CcgstStandardMenu t "
+			+ "WHERE t.ccgmtStandardMenuPK.companyId = :companyId "
+			+ "AND t.ccgmtStandardMenuPK.system = :system "
+			+ "AND t.ccgmtStandardMenuPK.classification = :classification ";
+	
+	@Override
+	public int maxOrderStandardMenu(String companyId, int system, int classification) {
+		return this.queryProxy().query(GET_MAX_ORDER, int.class)
+		.setParameter("companyId", companyId)
+		.setParameter("system",  system)
+		.setParameter("classification",  classification)
+		.getSingle().orElse(0);
+	}
 }

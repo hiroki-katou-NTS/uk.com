@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.portal.dom.standardmenu;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.portal.dom.enums.MenuAtr;
@@ -24,9 +25,11 @@ public class StandardMenu extends AggregateRoot {
 	private MenuCode code;
 
 	/** The Target Items. */
+	@Setter
 	private String targetItems;
 	
 	/** The Display Name. */
+	@Setter
 	private MenuDisplayName displayName;
 	
 	/** The Display Order. */
