@@ -5,7 +5,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.exio.app.find.exo.charoutputsetting.SettingItemScreenDTO;
 import nts.uk.ctx.exio.dom.exo.cdconvert.OutputCodeConvertRepository;
 import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.CharacterDataFmSetting;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItemRepository;

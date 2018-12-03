@@ -8,7 +8,6 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 
 @AllArgsConstructor
 @NoArgsConstructor

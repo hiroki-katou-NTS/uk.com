@@ -9,6 +9,11 @@ import nts.uk.shr.com.primitive.CodePrimitiveValue;
 @StringCharType(CharType.NUMERIC)
 public class ItemOutTblBookCode extends CodePrimitiveValue<ItemOutTblBookCode>{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public ItemOutTblBookCode(String rawValue) {
 		super(rawValue);
 	}

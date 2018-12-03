@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,7 +48,6 @@ import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmmonth.Wwf
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmmonth.WwfdpApprovalPhaseMonthPK;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmmonth.WwfdpApprovalRootMonthPK;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmmonth.WwfdpApproverMonthPK;
-import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmmonth.WwfdtAppRootMonthSimple;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmmonth.WwfdtApprovalFrameMonth;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmmonth.WwfdtApprovalPhaseMonth;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmmonth.WwfdtApprovalRootMonth;
@@ -71,19 +69,19 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	private static final String SELECT_CF_DAY_BY_ID;
 	private static final String SELECT_CF_MONTH_BY_ID;
 	
-	private static final String SELECT_APP_BY_IDS;
-	private static final String SELECT_CF_DAY_BY_IDS;
-	private static final String SELECT_CF_MONTH_BY_IDS;
-	
-	private static final String SELECT_APPS_BY_ID;
+//	private static final String SELECT_APP_BY_IDS;
+//	private static final String SELECT_CF_DAY_BY_IDS;
+//	private static final String SELECT_CF_MONTH_BY_IDS;
+//	
+//	private static final String SELECT_APPS_BY_ID;
 	
 	private static final String SELECT_APP_BY_DATE;
 	private static final String SELECT_CF_DAY_BY_DATE;
 	private static final String SELECT_CF_MONTH_BY_DATE;
 	
 	private static final String SELECT_SIMPLE_APP_BY_DATE;
-	private static final String SELECT_SIMPLE_CF_DAY_BY_DATE;
-	private static final String SELECT_SIMPLE_CF_MONTH_BY_DATE;
+//	private static final String SELECT_SIMPLE_CF_DAY_BY_DATE;
+//	private static final String SELECT_SIMPLE_CF_MONTH_BY_DATE;
 	
 	private static final String SELECT_APP_BY_EMP_DATE;
 	private static final String SELECT_CF_DAY_BY_EMP_DATE;
@@ -138,37 +136,37 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString.append(" WHERE e.wwfdpApprovalRootMonthPK.rootStateID = :rootStateID");
 		SELECT_CF_MONTH_BY_ID = builderString.toString();
 		
-		builderString = new StringBuilder();
-		builderString.append("SELECT e");
-		builderString.append(" FROM WwfdtApprovalRootState e");
-		builderString.append(" WHERE e.wwfdpApprovalRootStatePK.rootStateID IN :rootStateIDs");
-		SELECT_APP_BY_IDS = builderString.toString();
-		
-		builderString = new StringBuilder();
-		builderString.append("SELECT e");
-		builderString.append(" FROM WwfdtApprovalRootDay e");
-		builderString.append(" WHERE e.wwfdpApprovalRootDayPK.rootStateID IN :rootStateIDs");
-		SELECT_CF_DAY_BY_IDS = builderString.toString();
-		
-		builderString = new StringBuilder();
-		builderString.append("SELECT e");
-		builderString.append(" FROM WwfdtApprovalRootMonth e");
-		builderString.append(" WHERE e.wwfdpApprovalRootMonthPK.rootStateID IN :rootStateIDs");
-		SELECT_CF_MONTH_BY_IDS = builderString.toString();
-		
-		builderString = new StringBuilder();
-		builderString.append("SELECT c");
-		builderString.append(" FROM WwfdtApprovalRootState c");
-		builderString.append(" WHERE c.wwfdpApprovalRootStatePK.rootStateID IN ");
-		builderString.append("(SELECT DISTINCT a.wwfdpApprovalRootStatePK.rootStateID");
-		builderString.append(" FROM WwfdtAppRootStateSimple a");
-		builderString.append(" JOIN WwfdtAppStateSimple b ");
-		builderString.append(" ON a.wwfdpApprovalRootStatePK.rootStateID = b.wwfdpApproverStatePK.rootStateID");
-		builderString.append(" WHERE (b.wwfdpApproverStatePK.approverID = :approverID");
-		builderString.append(" OR b.wwfdpApproverStatePK.approverID IN");
-		builderString.append(" (SELECT d.cmmmtAgentPK.employeeId FROM CmmmtAgent d WHERE d.agentSid1 = :approverID))");
-		builderString.append(" AND a.wwfdpApprovalRootStatePK.rootStateID IN :rootStateIDs)");
-		SELECT_APPS_BY_ID = builderString.toString();
+//		builderString = new StringBuilder();
+//		builderString.append("SELECT e");
+//		builderString.append(" FROM WwfdtApprovalRootState e");
+//		builderString.append(" WHERE e.wwfdpApprovalRootStatePK.rootStateID IN :rootStateIDs");
+//		SELECT_APP_BY_IDS = builderString.toString();
+//		
+//		builderString = new StringBuilder();
+//		builderString.append("SELECT e");
+//		builderString.append(" FROM WwfdtApprovalRootDay e");
+//		builderString.append(" WHERE e.wwfdpApprovalRootDayPK.rootStateID IN :rootStateIDs");
+//		SELECT_CF_DAY_BY_IDS = builderString.toString();
+//		
+//		builderString = new StringBuilder();
+//		builderString.append("SELECT e");
+//		builderString.append(" FROM WwfdtApprovalRootMonth e");
+//		builderString.append(" WHERE e.wwfdpApprovalRootMonthPK.rootStateID IN :rootStateIDs");
+//		SELECT_CF_MONTH_BY_IDS = builderString.toString();
+//		
+//		builderString = new StringBuilder();
+//		builderString.append("SELECT c");
+//		builderString.append(" FROM WwfdtApprovalRootState c");
+//		builderString.append(" WHERE c.wwfdpApprovalRootStatePK.rootStateID IN ");
+//		builderString.append("(SELECT DISTINCT a.wwfdpApprovalRootStatePK.rootStateID");
+//		builderString.append(" FROM WwfdtAppRootStateSimple a");
+//		builderString.append(" JOIN WwfdtAppStateSimple b ");
+//		builderString.append(" ON a.wwfdpApprovalRootStatePK.rootStateID = b.wwfdpApproverStatePK.rootStateID");
+//		builderString.append(" WHERE (b.wwfdpApproverStatePK.approverID = :approverID");
+//		builderString.append(" OR b.wwfdpApproverStatePK.approverID IN");
+//		builderString.append(" (SELECT d.cmmmtAgentPK.employeeId FROM CmmmtAgent d WHERE d.agentSid1 = :approverID))");
+//		builderString.append(" AND a.wwfdpApprovalRootStatePK.rootStateID IN :rootStateIDs)");
+//		SELECT_APPS_BY_ID = builderString.toString();
 		
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
@@ -198,19 +196,19 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		builderString.append(" AND e.recordDate <= :endDate");
 		SELECT_SIMPLE_APP_BY_DATE = builderString.toString();
 		
-		builderString = new StringBuilder();
-		builderString.append("SELECT e");
-		builderString.append(" FROM WwfdtAppRootDaySimple e");
-		builderString.append(" WHERE e.recordDate >= :startDate");
-		builderString.append(" AND e.recordDate <= :endDate");
-		SELECT_SIMPLE_CF_DAY_BY_DATE = builderString.toString();
-		
-		builderString = new StringBuilder();
-		builderString.append("SELECT e");
-		builderString.append(" FROM WwfdtAppRootMonthSimple e");
-		builderString.append(" WHERE e.recordDate >= :startDate");
-		builderString.append(" AND e.recordDate <= :endDate");
-		SELECT_SIMPLE_CF_MONTH_BY_DATE = builderString.toString();
+//		builderString = new StringBuilder();
+//		builderString.append("SELECT e");
+//		builderString.append(" FROM WwfdtAppRootDaySimple e");
+//		builderString.append(" WHERE e.recordDate >= :startDate");
+//		builderString.append(" AND e.recordDate <= :endDate");
+//		SELECT_SIMPLE_CF_DAY_BY_DATE = builderString.toString();
+//		
+//		builderString = new StringBuilder();
+//		builderString.append("SELECT e");
+//		builderString.append(" FROM WwfdtAppRootMonthSimple e");
+//		builderString.append(" WHERE e.recordDate >= :startDate");
+//		builderString.append(" AND e.recordDate <= :endDate");
+//		SELECT_SIMPLE_CF_MONTH_BY_DATE = builderString.toString();
 		
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");

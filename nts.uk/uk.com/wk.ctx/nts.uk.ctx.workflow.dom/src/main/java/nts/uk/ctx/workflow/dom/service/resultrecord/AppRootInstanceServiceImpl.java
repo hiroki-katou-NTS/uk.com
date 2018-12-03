@@ -494,6 +494,8 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 				approvedPhase = approvalPhaseState.getPhaseOrder();
 				// フェーズ承認区分＝ループ中のフェーズ．承認区分
 				approvalPhaseEnum = approvalPhaseState.getApprovalAtr();
+			} else {
+				approvalPhaseEnum = ApprovalBehaviorAtr.APPROVED;
 			}
 			// アルゴリズム「承認状況の判断」を実行する
 			ApprovalStatusOutput approvalStatusOutput = judgmentApprovalStatusService.judmentApprovalStatusNodataDatabaseAcess(companyID, approvalPhaseState, employeeID, agentLst);
@@ -533,7 +535,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 			routeSituation.setApproverEmpState(ApproverEmpState.PHASE_DURING);
 		} else if(approvedPhase==0){
 			routeSituation.setApproverEmpState(ApproverEmpState.COMPLETE);
-		} else if((approvedPhase==employeePhase)&&approvalPhaseEnum==ApprovalBehaviorAtr.UNAPPROVED){
+		} else if((approvedPhase==employeePhase)&&approvalPhaseEnum==ApprovalBehaviorAtr.APPROVED){
 			routeSituation.setApproverEmpState(ApproverEmpState.COMPLETE);
 		} else if(approvedPhase < employeePhase){
 			routeSituation.setApproverEmpState(ApproverEmpState.PHASE_LESS);

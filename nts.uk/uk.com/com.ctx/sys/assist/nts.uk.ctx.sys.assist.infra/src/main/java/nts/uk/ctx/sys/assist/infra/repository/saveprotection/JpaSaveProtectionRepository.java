@@ -15,8 +15,8 @@ import nts.uk.ctx.sys.assist.infra.entity.saveprotection.SspmtSaveProtectionPk;
 public class JpaSaveProtectionRepository extends JpaRepository implements SaveProtetionRepository
 {
 
-    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspmtSaveProtection f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE ";
+//    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspmtSaveProtection f";
+//    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE ";
 
     @Override
     public List<SaveProtetion> getAllSaveProtection(){

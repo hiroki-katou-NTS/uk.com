@@ -1,6 +1,6 @@
 package nts.uk.ctx.bs.company.app.find.company;
 
-import java.math.BigDecimal;
+//import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

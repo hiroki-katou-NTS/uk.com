@@ -19,7 +19,6 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
-import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -30,7 +29,6 @@ import nts.uk.ctx.at.shared.pub.worktime.predset.PredetemineTimeSettingPub;
 import nts.uk.ctx.at.shared.pub.worktime.predset.PredeterminedTimeExport;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.FlexShortage;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthParent;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQueryProcessor;
@@ -44,8 +42,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class FlexInfoDisplay {
 	
-	@Inject
-	private WorkingConditionService workingConditionService;
+//	@Inject
+//	private WorkingConditionService workingConditionService;
 	
 	@Inject
 	private CheckShortageFlex checkShortageFlex;

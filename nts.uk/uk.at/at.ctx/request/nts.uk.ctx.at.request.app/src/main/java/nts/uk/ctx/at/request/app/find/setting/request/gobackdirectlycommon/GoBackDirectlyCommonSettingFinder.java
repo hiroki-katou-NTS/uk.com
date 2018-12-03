@@ -7,7 +7,7 @@ import javax.transaction.Transactional;
 
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.service.GoBackDirectCommonService;
+//import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.service.GoBackDirectCommonService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -18,8 +18,8 @@ public class GoBackDirectlyCommonSettingFinder {
 	private GoBackDirectlyCommonSettingRepository goBackRepo;
 	
 	
-	@Inject 
-	private GoBackDirectCommonService dataSetting;
+//	@Inject 
+//	private GoBackDirectCommonService dataSetting;
 	
 	
 	/**

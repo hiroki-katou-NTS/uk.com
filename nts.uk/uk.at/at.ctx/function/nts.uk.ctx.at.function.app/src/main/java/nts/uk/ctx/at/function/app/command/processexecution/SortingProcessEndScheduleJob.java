@@ -1,17 +1,17 @@
 package nts.uk.ctx.at.function.app.command.processexecution;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
+//import javax.inject.Inject;
 
-import nts.arc.layer.app.command.AsyncCommandHandlerContext;
+//import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.uk.shr.com.task.schedule.ExecutionContext;
 import nts.uk.shr.com.task.schedule.UkScheduledJob;
 
 @Stateless
 public class SortingProcessEndScheduleJob extends UkScheduledJob{
 
-	@Inject
-	private TerminateProcessExecutionAutoCommandHandler terminateProcessExecutionCommandHandler;
+//	@Inject
+//	private TerminateProcessExecutionAutoCommandHandler terminateProcessExecutionCommandHandler;
 	
 	@Override
 	protected void execute(ExecutionContext context) {

@@ -114,6 +114,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		this.self = scContext.getBusinessObject(CreateDailyResultEmployeeDomainService.class);
 	}
 
+	@SuppressWarnings("rawtypes")
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public ProcessState createDailyResultEmployee(AsyncCommandHandlerContext asyncContext, String employeeId,
@@ -201,6 +202,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public ProcessState createDailyResultEmployeeNew(AsyncCommandHandlerContext asyncContext, String employeeId,
@@ -286,6 +288,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		return ProcessState.SUCCESS;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public ProcessState createDailyResultEmployeeWithNoInfoImport(AsyncCommandHandlerContext asyncContext,
@@ -359,6 +362,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 
 	}
 
+	@SuppressWarnings("rawtypes")
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public ProcessState createDailyResultEmployeeWithNoInfoImportNew(AsyncCommandHandlerContext asyncContext,

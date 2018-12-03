@@ -3,14 +3,17 @@ package nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.grantdayperr
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+//import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 /* 続柄毎の上限日数 */
 public class GrantDayPerRelationship extends AggregateRoot {
 

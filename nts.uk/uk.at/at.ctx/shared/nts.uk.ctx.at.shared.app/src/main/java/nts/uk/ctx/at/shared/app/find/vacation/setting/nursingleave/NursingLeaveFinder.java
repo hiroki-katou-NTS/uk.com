@@ -6,15 +6,15 @@ package nts.uk.ctx.at.shared.app.find.vacation.setting.nursingleave;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+//import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.nursingleave.dto.NursingLeaveSettingDto;
-import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
-import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeFinder;
+//import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
+//import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeFinder;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -36,8 +36,8 @@ public class NursingLeaveFinder {
     private NursingLeaveSettingRepository nursingRepo;
     
     /** The work type finder. */
-    @Inject
-    private WorkTypeFinder workTypeFinder;
+//    @Inject
+//    private WorkTypeFinder workTypeFinder;
     
     /**
      * Find nursing leave by company id.
@@ -72,12 +72,12 @@ public class NursingLeaveFinder {
      * @param listWorkTypeCode the list work type code
      * @return the string
      */
-    private String findWorkType(List<WorkTypeDto> listWorkType, List<String> listWorkTypeCode) {
-        return listWorkType.stream()
-                .filter(item -> listWorkTypeCode.contains(item.getWorkTypeCode()))
-                .map(item -> item.getWorkTypeCode() + "." + item.getName())
-                .collect(Collectors.joining("、"));
-    }
+//    private String findWorkType(List<WorkTypeDto> listWorkType, List<String> listWorkTypeCode) {
+//        return listWorkType.stream()
+//                .filter(item -> listWorkTypeCode.contains(item.getWorkTypeCode()))
+//                .map(item -> item.getWorkTypeCode() + "." + item.getName())
+//                .collect(Collectors.joining("、"));
+//    }
     
     /**
      * Find list work type code by company id.

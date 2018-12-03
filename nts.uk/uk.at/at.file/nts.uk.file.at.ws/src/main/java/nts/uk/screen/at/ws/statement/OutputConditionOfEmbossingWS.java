@@ -11,7 +11,6 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
-import nts.arc.time.GeneralDate;
 import nts.uk.file.at.app.export.statement.OutputConditionOfEmbossingExportService;
 import nts.uk.file.at.app.export.statement.OutputConditionOfEmbossingQuery;
 

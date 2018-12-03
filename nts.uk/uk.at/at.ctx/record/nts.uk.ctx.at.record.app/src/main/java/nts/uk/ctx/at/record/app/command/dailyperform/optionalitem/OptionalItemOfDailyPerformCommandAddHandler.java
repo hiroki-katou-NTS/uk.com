@@ -4,16 +4,16 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
+//import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+//import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 
 @Stateless
 public class OptionalItemOfDailyPerformCommandAddHandler extends CommandFacade<OptionalItemOfDailyPerformCommand> {
 
-	@Inject
-	private OptionalItemRepository optionalMasterRepo;
+//	@Inject
+//	private OptionalItemRepository optionalMasterRepo;
 	
 	@Inject
 	private AnyItemValueOfDailyRepo repo;

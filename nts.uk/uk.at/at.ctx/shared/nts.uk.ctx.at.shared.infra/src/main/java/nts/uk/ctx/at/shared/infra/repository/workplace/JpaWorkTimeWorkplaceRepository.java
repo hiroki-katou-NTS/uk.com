@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.infra.repository.workplace;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+//import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -10,7 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplace;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
 import nts.uk.ctx.at.shared.infra.entity.workplace.KshmtWorkTimeWorkplace;
-import nts.uk.ctx.at.shared.infra.entity.workplace.KshmtWorkTimeWorkplacePK;
+//import nts.uk.ctx.at.shared.infra.entity.workplace.KshmtWorkTimeWorkplacePK;
 
 @Stateless
 public class JpaWorkTimeWorkplaceRepository extends JpaRepository implements WorkTimeWorkplaceRepository {
@@ -26,13 +26,13 @@ public class JpaWorkTimeWorkplaceRepository extends JpaRepository implements Wor
 				entity.kshmtWorkTimeWorkplacePK.workTimeID);
 	}
 	
-	private KshmtWorkTimeWorkplace toEntity(WorkTimeWorkplace domain) {
-		return new  KshmtWorkTimeWorkplace(new KshmtWorkTimeWorkplacePK(
-				domain.getCompanyID(),
-				domain.getWorkplaceID(),
-				domain.getWorkTimeID()
-				));
-	}
+//	private KshmtWorkTimeWorkplace toEntity(WorkTimeWorkplace domain) {
+//		return new  KshmtWorkTimeWorkplace(new KshmtWorkTimeWorkplacePK(
+//				domain.getCompanyID(),
+//				domain.getWorkplaceID(),
+//				domain.getWorkTimeID()
+//				));
+//	}
 	
 	@Override
 	public List<String> getWorkTimeWorkplaceById(String companyID, String workplaceID) {

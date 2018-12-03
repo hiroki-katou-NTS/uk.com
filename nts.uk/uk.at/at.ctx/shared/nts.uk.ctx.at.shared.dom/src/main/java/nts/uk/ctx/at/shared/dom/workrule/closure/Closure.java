@@ -377,6 +377,7 @@ public class Closure extends AggregateRoot {
 	 * @param currentMonth the current month
 	 * @return true, if successful
 	 */
+	@SuppressWarnings("unused")
 	private boolean isIntoClosureMonth(ClosureHistory closureHistory, YearMonth currentMonth) {
 		YearMonth startYearMonth = closureHistory.getStartYearMonth();
 		YearMonth endYearMonth = closureHistory.getEndYearMonth();

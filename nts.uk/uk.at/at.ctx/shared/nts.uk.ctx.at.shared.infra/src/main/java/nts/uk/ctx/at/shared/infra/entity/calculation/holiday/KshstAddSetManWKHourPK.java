@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Embeddable
 public class KshstAddSetManWKHourPK {
-	private static final long serialVersionUID = 1L;
 	/**会社ID*/
 	@Column(name = "CID")
 	public String companyId;

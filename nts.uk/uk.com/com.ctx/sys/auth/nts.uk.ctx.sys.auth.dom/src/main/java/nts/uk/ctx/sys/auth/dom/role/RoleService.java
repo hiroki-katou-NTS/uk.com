@@ -2,8 +2,6 @@ package nts.uk.ctx.sys.auth.dom.role;
 
 import java.util.List;
 
-import nts.arc.error.BusinessException;
-
 public interface RoleService {
 	List<Role> getAllByType(RoleType roleType);
 	void insertRole(Role role);

@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.request.infra.repository.setting.request.application.apptypediscretesetting;
 
-import java.math.BigDecimal;
+//import java.math.BigDecimal;
 import java.util.Optional;
 
 import javax.ejb.Stateless;

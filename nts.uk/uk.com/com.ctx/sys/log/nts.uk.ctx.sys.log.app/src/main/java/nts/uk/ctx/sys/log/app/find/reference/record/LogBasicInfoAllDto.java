@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.log.app.find.reference.record;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

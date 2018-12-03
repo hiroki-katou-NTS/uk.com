@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.Basic;
+//import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;

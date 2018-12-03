@@ -12,19 +12,14 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceResultImport;
-import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
-import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.at.shared.dom.adapter.dailyperformance.DailyPerformanceAdapter;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.DayType;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.NumberOfItem;
 import nts.uk.file.at.app.export.dailyschedule.totalsum.TotalCountDay;
-import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInfoOfDailyPerformanceDetailDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -40,9 +35,6 @@ public class TotalDayCountWs {
 	
 	@Inject
 	private WorkTypeRepository workTypeRepository;
-	
-	@Inject
-	private DailyPerformanceScreenRepo dailyPerformanceRepo;
 	
 	@Inject
 	private WorkInformationRepository workInformationRepo;

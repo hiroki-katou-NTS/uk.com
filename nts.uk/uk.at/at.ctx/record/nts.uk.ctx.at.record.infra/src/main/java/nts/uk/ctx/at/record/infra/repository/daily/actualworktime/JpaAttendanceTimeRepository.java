@@ -42,11 +42,11 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaAttendanceTimeRepository extends JpaRepository implements AttendanceTimeRepository {
 
-	private static final String REMOVE_BY_EMPLOYEEID_AND_DATE;
+//	private static final String REMOVE_BY_EMPLOYEEID_AND_DATE;
 	
 	private static final String FIND_BY_LABOR_TIME;
 	
-	private static final String FIND_BY_EMPLOYEEID_AND_DATES;
+//	private static final String FIND_BY_EMPLOYEEID_AND_DATES;
 
 //	static {
 //		StringBuilder builderString = new StringBuilder();
@@ -58,11 +58,11 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 //	}
 	static {
 		StringBuilder builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDayTime a ");
-		builderString.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
-		builderString.append("AND a.krcdtDayTimePK.generalDate = :ymd ");
-		REMOVE_BY_EMPLOYEEID_AND_DATE = builderString.toString();
+//		builderString.append("DELETE ");
+//		builderString.append("FROM KrcdtDayTime a ");
+//		builderString.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
+//		builderString.append("AND a.krcdtDayTimePK.generalDate = :ymd ");
+//		REMOVE_BY_EMPLOYEEID_AND_DATE = builderString.toString();
 		
 		builderString = new StringBuilder("SELECT a.schedulePreLaborTime FROM KrcdtDayTime a ");
 //		builderString.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
@@ -73,9 +73,9 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		
 //		builderString.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
 //		builderString.append("AND a.krcdtDayAttendanceTimePK.generalDate IN :date");
-		builderString.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
-		builderString.append("AND a.krcdtDayTimePK.generalDate IN :date");
-		FIND_BY_EMPLOYEEID_AND_DATES = builderString.toString();
+//		builderString.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
+//		builderString.append("AND a.krcdtDayTimePK.generalDate IN :date");
+//		FIND_BY_EMPLOYEEID_AND_DATES = builderString.toString();
 	}
 
 	@Override
