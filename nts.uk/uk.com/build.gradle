@@ -210,6 +210,7 @@ project (':com.file:nts.uk.file.com.app') {
 		compile project(':com.ctx:basic:nts.uk.ctx.basic.dom')
 		compile project (':wk.ctx:nts.uk.ctx.workflow.dom')
 		compile project(':query:nts.uk.query.pub')
+		compile project(':pereg.ctx:nts.uk.ctx.pereg.dom')
 	}
 }
 
@@ -227,6 +228,7 @@ project (':com.file:nts.uk.file.com.infra') {
 		compile project(':com.ctx:basic:nts.uk.ctx.basic.infra')
 		compile project(':query:nts.uk.query.pub')
 		runtime project (':wk.ctx:nts.uk.ctx.workflow.infra')		
+		compile project(':pereg.ctx:nts.uk.ctx.pereg.dom')
 	}
 }
 
