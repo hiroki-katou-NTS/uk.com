@@ -1,18 +1,12 @@
-package nts.uk.ctx.sys.auth.app.export.wkpmanager;
+package nts.uk.file.com.app.workplaceselection;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.export.wkpmanager.WorkPlaceSelectionExportData;
-import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManagerRepository;
-import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceAuthorityRepository;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceFunction;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceFunctionRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -28,10 +22,7 @@ import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
 @DomainID(value = "WorkPlaceSelection")
 public class WorkPlaceSelectionExportImpl implements MasterListData {
 	@Inject
-	private WorkplaceManagerRepository workplaceManagerRepository;
-
-	@Inject
-	private WorkPlaceAuthorityRepository workPlaceAuthorityRepository;
+	private WorkPlaceSelectionRepository workplaceManagerRepository;
 	
 	@Inject
 	private WorkPlaceFunctionRepository workPlaceFunctionRepository;
@@ -62,7 +53,7 @@ public class WorkPlaceSelectionExportImpl implements MasterListData {
 		columns.add(new MasterHeaderColumn(CMM051_37, TextResource.localize("CMM051_37"), ColumnTextAlign.CENTER, "",
 				true));
 		for (WorkPlaceFunction item : workPlaceFunction) {
-			columns.add(new MasterHeaderColumn(FUNCTION_NO_ + item.getFunctionNo().v(), item.getDisplayName().v(),
+			columns.add(new MasterHeaderColumn(item.getFunctionNo().v().toString(), item.getDisplayName().v(),
 					ColumnTextAlign.CENTER, "", true));
 		}
 		return columns;
@@ -75,7 +66,7 @@ public class WorkPlaceSelectionExportImpl implements MasterListData {
 		List<WorkPlaceFunction> workPlaceFunction = workPlaceFunctionRepository.getAllWorkPlaceFunction();
 		List<WorkPlaceSelectionExportData> listWorkPlaceSelectionExportData = workplaceManagerRepository
 				.findAllWorkPlaceSelection(companyId, workPlaceFunction);
-		if (CollectionUtil.isEmpty(listWorkPlaceSelectionExportData)) {
+		/*if (CollectionUtil.isEmpty(listWorkPlaceSelectionExportData)) {
 			throw new BusinessException("Msg_7");
 		} else {
 			listWorkPlaceSelectionExportData.stream().forEach(c -> {
@@ -89,15 +80,12 @@ public class WorkPlaceSelectionExportImpl implements MasterListData {
 				c.getFunctionNo().entrySet().forEach(x -> {
 					data.put(FUNCTION_NO_ + x.getKey(), "1".equals(x.getValue()) ? "○" : "ー");
 				});
-
-				
-				
 //				List<WorkPlaceAuthority> workPlaceAuthority = workPlaceAuthorityRepository
 //						.getAllWorkPlaceAuthorityByRoleId(companyId, c.getWorkplaceManagerId());
 				//if (!workPlaceAuthority.isEmpty()) {
 					//List<WorkPlaceFunction> workPlaceFunction = workPlaceFunctionRepository.getAllWorkPlaceFunction();
 					//if (!workPlaceFunction.isEmpty()) {
-						/*for (WorkPlaceFunction item : workPlaceFunction) {
+						for (WorkPlaceFunction item : workPlaceFunction) {
 							Boolean availability = workPlaceAuthority.stream()
 									.filter(x -> x.getFunctionNo().v().equals(item.getFunctionNo().v())).findFirst()
 									.map(x1 -> x1.isAvailability()).orElse(null);
@@ -106,13 +94,15 @@ public class WorkPlaceSelectionExportImpl implements MasterListData {
 							} else {
 								data.put(FUNCTION_NO_ + item.getFunctionNo().v(), "○");
 							}
-						}*/
+						}
 					//}
 				//}
-				
 				datas.add(new MasterData(data, null, ""));
 			});
 		}
+		return datas;*/
+		
+		datas = workplaceManagerRepository.getDataExport(companyId, workPlaceFunction);
 		return datas;
 	}
 }
