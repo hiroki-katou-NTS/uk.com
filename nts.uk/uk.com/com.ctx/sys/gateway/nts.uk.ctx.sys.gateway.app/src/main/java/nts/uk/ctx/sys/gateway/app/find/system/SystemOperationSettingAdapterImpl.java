@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.gateway.app.find.system;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 
 import nts.uk.shr.com.operation.SystemOperationSetting;
@@ -23,6 +25,12 @@ public class SystemOperationSettingAdapterImpl implements SystemOperationSetting
 		/** IF STOP COMPANY */
 		/** IF STOP COMPANY */
 		return SystemOperationSetting.setting(SystemStopType.COMPANY, SystemOperationMode.STOP, SystemStopMode.ADMIN_MODE, "test 1", "test 1");
+	}
+
+	@Override
+	public Optional<String> stopUseConfirm() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
