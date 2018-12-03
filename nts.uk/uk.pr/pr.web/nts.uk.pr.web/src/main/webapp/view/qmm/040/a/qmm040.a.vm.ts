@@ -465,7 +465,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             self.startYearMonth=param.startYearMonth;
             self.endYearMonth=param.endYearMonth;
 
-            self.period=nts.uk.time.formatYearMonth(param.startYearMonth) + ' ~ ' + nts.uk.time.formatYearMonth(param.endYearMonth);
+            self.period=nts.uk.time.formatYearMonth(param.startYearMonth) + ' ～ ' + nts.uk.time.formatYearMonth(param.endYearMonth);
             self.amount(param.amount);
         }
 
