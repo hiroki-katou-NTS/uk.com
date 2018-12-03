@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.app.export;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.agent.Agent;
@@ -14,6 +15,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import sun.management.resources.agent;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -22,8 +24,8 @@ import java.util.stream.Collectors;
 
 
 @Stateless
-@DomainID(value ="SubscribeRegis")
-public class SubscribeRegisExportImpl  implements MasterListData {
+@DomainID(value = "SubscribeRegis")
+public class SubscribeRegisExportImpl implements MasterListData {
 
     @Inject
     private AgentRepository agentRepository;
@@ -46,7 +48,7 @@ public class SubscribeRegisExportImpl  implements MasterListData {
 
     @Override
     public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
-        List <MasterHeaderColumn> columns = new ArrayList<>();
+        List<MasterHeaderColumn> columns = new ArrayList<>();
         columns.add(new MasterHeaderColumn(CMM044_42, TextResource.localize("CMM044_42"),
                 ColumnTextAlign.LEFT, "", true));
         columns.add(new MasterHeaderColumn(CMM044_43, TextResource.localize("CMM044_43"),
@@ -78,44 +80,34 @@ public class SubscribeRegisExportImpl  implements MasterListData {
     @Override
     public List<MasterData> getMasterDatas(MasterListExportQuery query) {
         String companyId = AppContexts.user().companyId();
-        List <MasterData> datas = new ArrayList<>();
+        List<MasterData> datas = new ArrayList<>();
 
         List<LinkedHashMap<String, String>> listEmployee = (List<LinkedHashMap<String, String>>) query.getData();
-        List<String> employeeIds = new ArrayList<String>();
-        listEmployee.forEach(x->{
-            employeeIds.add(x.get("employeeId"));
-        });
+        if(CollectionUtil.isEmpty(listEmployee)){
+            return new ArrayList<>();
+        }else{
+            List<String> employeeIds = new ArrayList<String>();
 
-        List<AgentExportData> listAgentExportData = agentRepository.getAgentByEmployeeID(companyId,employeeIds);
-        if(!CollectionUtil.isEmpty(listEmployee)){
-            List<Agent> listAgent = agentRepository.findByCid(companyId);
+            listEmployee.forEach(x -> {
+                employeeIds.add(x.get("employeeId"));
+            });
 
-            if(CollectionUtil.isEmpty(listAgent)){
-                listEmployee.forEach(c ->{
-                    this.createData(c.get("employeeCode"),c.get("employeeName"),null,datas);
-                });
-            }else{
-                listEmployee.forEach(c->{
-                    List<Agent> agent = listAgent.stream().filter(o->o.getEmployeeId().equals(c.get("employeeId"))).collect(Collectors.toList());
-                    if(CollectionUtil.isEmpty(agent)){
-                        this.createData(c.get("employeeCode"),c.get("employeeName"),null,datas);
-                    }else{
-                        agent = agent.stream().sorted(Comparator.comparing(Agent::getEndDate).reversed()).collect(Collectors.toList());
-                        agent.forEach(a->{
-                            this.createData(c.get("employeeCode"),c.get("employeeName"),a,datas);
-                        });
-                    }
+            List<AgentExportData> listAgentExportData = agentRepository.getAgentByEmployeeID(companyId, employeeIds);
+            if (!CollectionUtil.isEmpty(listAgentExportData)) {
+                listAgentExportData.forEach(x -> {
+                    this.createData(x,datas);
                 });
             }
         }
+
         return datas;
     }
 
-    private void createData(String employeeCode, String employeeName,Agent agent, List <MasterData> datas){
+    private void createData(AgentExportData agent, List<MasterData> datas) {
         Map<String, Object> data = new HashMap<>();
-        if(agent == null){
-            data.put(CMM044_42, employeeCode);
-            data.put(CMM044_43, employeeName);
+        if (agent == null) {
+            data.put(CMM044_42, agent.getEmployeeCode());
+            data.put(CMM044_43, agent.getEmployeeName());
             data.put(CMM044_44, "");
             data.put(CMM044_45, "");
             data.put(CMM044_46, "");
@@ -126,33 +118,30 @@ public class SubscribeRegisExportImpl  implements MasterListData {
             data.put(CMM044_51, "");
             data.put(CMM044_52, "");
             data.put(CMM044_53, "");
-        }else{
-            data.put(CMM044_42, employeeCode);
-            data.put(CMM044_43, employeeName);
+        } else {
+            data.put(CMM044_42, agent.getEmployeeCode());
+            data.put(CMM044_43, agent.getEmployeeName());
             data.put(CMM044_44, agent.getStartDate());
             data.put(CMM044_45, agent.getEndDate());
             data.put(CMM044_46, TextResource.localize("CMM044_16"));
-            data.put(CMM044_47, this.getEmpNameAgentAppType(agent.getAgentAppType1(),agent.getAgentSid1()));
-            data.put(CMM044_48, this.getAgentAppType(agent.getAgentAppType2(),agent.getAgentSid2()));
-            data.put(CMM044_49, this.getEmpNameAgentAppType(agent.getAgentAppType2(),agent.getAgentSid2()));
-            data.put(CMM044_50, this.getAgentAppType(agent.getAgentAppType3(),agent.getAgentSid3()));
-            data.put(CMM044_51, this.getEmpNameAgentAppType(agent.getAgentAppType2(),agent.getAgentSid3()));
-            data.put(CMM044_52, this.getAgentAppType(agent.getAgentAppType4(), agent.getAgentSid4()));
-            data.put(CMM044_53, this.getEmpNameAgentAppType(agent.getAgentAppType2(),agent.getAgentSid4()));
+            data.put(CMM044_47, agent.getPersonName());
+            data.put(CMM044_48, this.getAgentAppType(EnumAdaptor.valueOf(agent.getAgentAppType2(),AgentAppType.class)));
+            data.put(CMM044_49, this.getEmpNameAgentAppType(EnumAdaptor.valueOf(agent.getAgentAppType2(),AgentAppType.class)));
+            data.put(CMM044_50, this.getAgentAppType(EnumAdaptor.valueOf(agent.getAgentAppType3(),AgentAppType.class)));
+            data.put(CMM044_51, this.getEmpNameAgentAppType(EnumAdaptor.valueOf(agent.getAgentAppType3(),AgentAppType.class)));
+            data.put(CMM044_52, this.getAgentAppType(EnumAdaptor.valueOf(agent.getAgentAppType4(),AgentAppType.class)));
+            data.put(CMM044_53, this.getEmpNameAgentAppType(EnumAdaptor.valueOf(agent.getAgentAppType4(),AgentAppType.class)));
         }
         datas.add(new MasterData(data, null, ""));
     }
 
-    private String getAgentAppType(AgentAppType agentAppType, String agentSID){
+    private String getAgentAppType(AgentAppType agentAppType) {
         String result = "";
-        switch (agentAppType){
-            case SUBSTITUTE_DESIGNATION:
-                result = employeeAdapter.getEmployeeName(agentSID);
-                break;
+        switch (agentAppType) {
             case PATH:
                 result = TextResource.localize("CMM044_17");
                 break;
-            case NO_SETTINGS :
+            case NO_SETTINGS:
                 result = TextResource.localize("CMM044_18");
                 break;
         }
@@ -160,16 +149,13 @@ public class SubscribeRegisExportImpl  implements MasterListData {
         return result;
     }
 
-    private String getEmpNameAgentAppType(AgentAppType agentAppType, String agentSID){
+    private String getEmpNameAgentAppType(AgentAppType agentAppType) {
         String result = "";
-        switch (agentAppType){
-            case SUBSTITUTE_DESIGNATION:
-                result = employeeAdapter.getEmployeeName(agentSID);
-                break;
+        switch (agentAppType) {
             case PATH:
                 result = "ー";
                 break;
-            case NO_SETTINGS :
+            case NO_SETTINGS:
                 result = "ー";
                 break;
         }
