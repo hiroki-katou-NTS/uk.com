@@ -3537,15 +3537,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             headerText = header.headerText + " " + header.key.substring(1, header.key.length);
                             $("#dpGrid").mGrid("headerText", header.key, headerText, false);
                         } else {
-                            headerText = header.headerText.split(" ")[0];
-                            $("#dpGrid").mGrid("headerText", header.key, headerText, false);
+                           // headerText = header.headerText.split(" ")[0];
+                            $("#dpGrid").mGrid("headerText", header.key, header.headerText, false);
                         }
                     } else {
                         if (self.showHeaderNumber()) {
                             headerText = header.headerText + " " + header.group[1].key.substring(4, header.group[1].key.length);
                             $("#dpGrid").mGrid("headerText", header.headerText, headerText, true);
                         } else {
-                            headerText = header.headerText.split(" ")[0];
+                          //  headerText = header.headerText.split(" ")[0];
+                            headerText = header.headerText;
                             $("#dpGrid").mGrid("headerText", headerText + " " + header.group[1].key.substring(4, header.group[1].key.length), headerText, true);
                         }
                     }
