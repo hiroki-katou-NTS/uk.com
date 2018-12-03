@@ -82,6 +82,9 @@ public class ShareEmploymentAdapterImpl implements ShareEmploymentAdapter{
 				continue;
 			}
 			SEmpHistExport empHist = lar.get(sid);
+			if(empHist == null){
+				continue;
+			}
 			mapResult.put(sid, new BsEmploymentHistoryImport(empHist.getEmployeeId(), empHist.getEmploymentCode(),
 					empHist.getEmploymentName(), empHist.getPeriod()));
 		}		

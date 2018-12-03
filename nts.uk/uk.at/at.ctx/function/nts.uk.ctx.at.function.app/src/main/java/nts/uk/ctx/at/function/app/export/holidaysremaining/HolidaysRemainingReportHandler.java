@@ -262,8 +262,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		boolean call265 = variousVacationControl.isAnnualHolidaySetting();
 		boolean call268 = variousVacationControl.isYearlyReservedSetting();
 		boolean call269 = variousVacationControl.isSubstituteHolidaySetting();
-		boolean call363 = variousVacationControl.isAnnualHolidaySetting();
-		boolean call364 = variousVacationControl.isYearlyReservedSetting();
+		boolean call363 = variousVacationControl.isAnnualHolidaySetting() && currentMonth.compareTo(endDate.yearMonth()) <= 0;
+		boolean call364 = variousVacationControl.isYearlyReservedSetting() && currentMonth.compareTo(endDate.yearMonth()) <= 0;
 		boolean call369 = variousVacationControl.isAnnualHolidaySetting();
 		CheckCallRequest check = new CheckCallRequest(call265, call268, call269, call363, call364, call369);
 		HdRemainDetailMerEx remainDel = hdRemainAdapter.getRemainDetailMer(employeeId, currentMonth, baseDate, new DatePeriod(startDate, endDate), check);
