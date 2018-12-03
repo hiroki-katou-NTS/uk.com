@@ -5,6 +5,7 @@ import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.agent.Agent;
 import nts.uk.ctx.workflow.dom.agent.AgentAppType;
 import nts.uk.ctx.workflow.dom.agent.AgentRepository;
+import nts.uk.ctx.workflow.dom.export.agent.AgentExportData;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
@@ -80,6 +81,12 @@ public class SubscribeRegisExportImpl  implements MasterListData {
         List <MasterData> datas = new ArrayList<>();
 
         List<LinkedHashMap<String, String>> listEmployee = (List<LinkedHashMap<String, String>>) query.getData();
+        List<String> employeeIds = new ArrayList<String>();
+        listEmployee.forEach(x->{
+            employeeIds.add(x.get("employeeId"));
+        });
+
+        List<AgentExportData> listAgentExportData = agentRepository.getAgentByEmployeeID(companyId,employeeIds);
         if(!CollectionUtil.isEmpty(listEmployee)){
             List<Agent> listAgent = agentRepository.findByCid(companyId);
 
@@ -89,16 +96,14 @@ public class SubscribeRegisExportImpl  implements MasterListData {
                 });
             }else{
                 listEmployee.forEach(c->{
-                    if(!CollectionUtil.isEmpty(listAgent)){
-                        List<Agent> agent = listAgent.stream().filter(o->o.getEmployeeId().equals(c.get("employeeId"))).collect(Collectors.toList());
-                        if(!CollectionUtil.isEmpty(agent)){
-                            agent = agent.stream().sorted(Comparator.comparing(Agent::getEndDate).reversed()).collect(Collectors.toList());
-                            agent.forEach(a->{
-                                this.createData(c.get("employeeCode"),c.get("employeeName"),a,datas);
-                            });
-                        }else{
-                            this.createData(c.get("employeeCode"),c.get("employeeName"),null,datas);
-                        }
+                    List<Agent> agent = listAgent.stream().filter(o->o.getEmployeeId().equals(c.get("employeeId"))).collect(Collectors.toList());
+                    if(CollectionUtil.isEmpty(agent)){
+                        this.createData(c.get("employeeCode"),c.get("employeeName"),null,datas);
+                    }else{
+                        agent = agent.stream().sorted(Comparator.comparing(Agent::getEndDate).reversed()).collect(Collectors.toList());
+                        agent.forEach(a->{
+                            this.createData(c.get("employeeCode"),c.get("employeeName"),a,datas);
+                        });
                     }
                 });
             }
@@ -137,6 +142,7 @@ public class SubscribeRegisExportImpl  implements MasterListData {
         }
         datas.add(new MasterData(data, null, ""));
     }
+
     private String getAgentAppType(AgentAppType agentAppType, String agentSID){
         String result = "";
         switch (agentAppType){

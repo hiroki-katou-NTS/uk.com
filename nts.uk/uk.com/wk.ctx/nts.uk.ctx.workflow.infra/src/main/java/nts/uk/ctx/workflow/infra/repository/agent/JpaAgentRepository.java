@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.infra.repository.agent;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,8 +14,10 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.agent.Agent;
 import nts.uk.ctx.workflow.dom.agent.AgentRepository;
 import nts.uk.ctx.workflow.dom.agent.output.AgentInfoOutput;
+import nts.uk.ctx.workflow.dom.export.agent.AgentExportData;
 import nts.uk.ctx.workflow.infra.entity.agent.CmmmtAgent;
 import nts.uk.ctx.workflow.infra.entity.agent.CmmmtAgentPK;
+import sun.management.resources.agent;
 
 @Stateless
 public class JpaAgentRepository extends JpaRepository implements AgentRepository {
@@ -38,6 +41,8 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	private static final String SELECT_AGENT_BY_TYPE4;
 	
 	private static final String SELECT_AGENT_BY_SID_DATE;
+
+	private static final String SELECT_AGENT_BY_EMPLOYEE_ID;
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
@@ -143,6 +148,36 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString.append(" AND e.startDate <= :startDate");
 		builderString.append(" AND e.endDate >= :endDate");
 		SELECT_AGENT_BY_SID_DATE = builderString.toString();
+
+		builderString = new StringBuilder();
+		//builderString.append("SELECT tb1.sId, tb1.pId, tb1.employeeCode , ag FROM  CmmmtAgent ag, (SELECT e.bsymtEmployeeDataMngInfoPk.sId, e.bsymtEmployeeDataMngInfoPk.pId,e.employeeCode FROM BsymtEmployeeDataMngInfo e WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :employeeIds AND e.companyId = :companyId) tb1 WHERE 1 = 1");
+		//builderString.append("SELECT emp.employeeCode, p.businessName, ag.startDate, ag.endDate, ag.agentSid1, ag.agentAppType1, ag.businessName FROM BsymtEmployeeDataMngInfo emp JOIN BpsmtPerson p ON emp.bsymtEmployeeDataMngInfoPk.pId = p.bpsmtPersonPk.pId LEFT JOIN (SELECT cag.cmmmtAgentPK.employeeId, cag.agentSid1, cag.agentAppType1, cag.startDate, cag.endDate,emp1.employeeCode, p1.businessName FROM CmmmtAgent cag JOIN BsymtEmployeeDataMngInfo emp1 ON cag.agentSid1 = emp1.bsymtEmployeeDataMngInfoPk.sId JOIN BpsmtPerson p1 ON emp1.bsymtEmployeeDataMngInfoPk.pId = p1.bpsmtPersonPk.pId) ag ON emp.bsymtEmployeeDataMngInfoPk.sId = ag.employeeId WHERE emp.bsymtEmployeeDataMngInfoPk.sId IN :employeeIds AND emp.companyId = :companyId");
+       // builderString.append("SELECT emp.SCD, p.BUSINESS_NAME, ag.START_DATE, ag.END_DATE, ag.AGENT_APP_TYPE1, ag.AGENT_SID1, ag.SCD as EMPCD, ag.BUSINESS_NAME as PersonName FROM BSYMT_EMP_DTA_MNG_INFO emp JOIN BPSMT_PERSON p ON emp.PID = p.PID LEFT JOIN (Select cag.SID, cag.AGENT_APP_TYPE1, cag.START_DATE, cag.END_DATE, cag.AGENT_SID1, empp.SCD, pp.BUSINESS_NAME FROM CMMMT_AGENT cag  JOIN BSYMT_EMP_DTA_MNG_INFO empp ON cag.AGENT_SID1 = empp.SID JOIN BPSMT_PERSON pp  ON empp.PID = pp.PID) ag ON emp.SID = ag.SID WHERE emp.SID IN ? AND emp.CID = ?");
+
+		/*builderString.append(" SELECT e.companyId, e.bsymtEmployeeDataMngInfoPk.sId, e.employeeCode, p.bpsmtPersonPk.pId, p.businessName ");
+        builderString.append(" FROM BsymtEmployeeDataMngInfo e INNER JOIN BpsmtPerson p ON e.bsymtEmployeeDataMngInfoPk.pId = p.bpsmtPersonPk.pId ");
+		builderString.append(" WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :employeeIds AND e.companyId = :companyId");*/
+
+		/*builderString.append("SELECT tb1.sId, tb2.employeeId ");
+		builderString.append(" FROM ");
+
+		builderString.append(" (SELECT g.cmmmtAgentPK.sId, g.agentSid1, g.agentAppType1, p.businessName ");
+		builderString.append(" FROM CmmmtAgent g INNER JOIN BsymtEmployeeDataMngInfo e ON g.agentSid1 = e.bsymtEmployeeDataMngInfoPk.sId INNER JOIN BpsmtPerson p ON e.bsymtEmployeeDataMngInfoPk.pId = p.bpsmtPersonPk.pId ");
+		builderString.append(" WHERE g.cmmmtAgentPK.sId IN :employeeIds AND g.cmmmtAgentPK.companyId = :companyId ) tb1");
+
+		builderString.append(" LEFT JOIN ");
+
+		builderString.append(" (SELECT g.cmmmtAgentPK.employeeId, g.agentSid1, g.agentAppType1 ");
+		builderString.append(" FROM CmmmtAgent g INNER JOIN BsymtEmployeeDataMngInfo e1 ON g.agentSid1 = e1.bsymtEmployeeDataMngInfoPk.sId INNER JOIN BpsmtPerson p1 ON e1.bsymtEmployeeDataMngInfoPk.pId = p1.bpsmtPersonPk.pId ");
+		builderString.append(" WHERE g.cmmmtAgentPK.employeeId IN :employeeIds1 AND g.cmmmtAgentPK.companyId = :companyId1 ) tb2");
+
+		builderString.append(" ON tb1.sId = tb2.employeeId");*/
+
+		builderString.append("SELECT tb1.CID, tb1.SID, tb1.SCD, tb1.PID, tb1.BUSINESS_NAME AS EMP_NAME, tb2.AGENT_SID1, tb2.AGENT_APP_TYPE1,tb2.BUSINESS_NAME AS PERSON_NAME FROM (SELECT e.SID, e.CID, e.SCD, p.PID, p.BUSINESS_NAME FROM BSYMT_EMP_DTA_MNG_INFO e INNER JOIN BPSMT_PERSON p ON e.PID  = p.PID  WHERE e.SID IN ? AND e.CID = ? ) tb1 LEFT JOIN (SELECT g.SID, g.AGENT_SID1, g.AGENT_APP_TYPE1, p1.BUSINESS_NAME FROM CMMMT_AGENT g INNER JOIN BSYMT_EMP_DTA_MNG_INFO e1 ON g.AGENT_SID1 = e1.SID INNER JOIN BPSMT_PERSON p1 ON e1.PID  = p1.PID WHERE g.SID IN ? AND g.CID = ?) tb2 ON tb1.SID = tb2.SID");
+		SELECT_AGENT_BY_EMPLOYEE_ID = builderString.toString();
+
+
+
 		}
 	
 		
@@ -384,6 +419,57 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 				.setParameter("startDate", startDate)
 				.setParameter("endDate", endDate)
 				.getList(c -> convertToDomain(c));
+	}
+
+	@Override
+	public List<AgentExportData> getAgentByEmployeeID(String companyId, List<String> employeeIds) {
+		if (CollectionUtil.isEmpty(employeeIds)) {
+			return new ArrayList<>();
+		}
+
+		List<AgentExportData> listAgentExportData = new ArrayList<AgentExportData>();
+		/*CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT,(sublist)->{
+			listAgentExportData.addAll(this.queryProxy().query(SELECT_AGENT_BY_EMPLOYEE_ID,Object[].class)
+					.setParameter("employeeIds",sublist)
+					.setParameter("companyId",companyId)
+					.setParameter("employeeIds1",sublist)
+					.setParameter("companyId1",companyId)
+					.getList(x->toReportData(x)));
+		});*/
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT,(sublist)->{
+			//String temp  = "ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570, 4420a05e-2aef-4b93-889d-f98f4bb53517";
+            String temp  = "\"ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570\", \"4420a05e-2aef-4b93-889d-f98f4bb53517\"";
+			//temp = "ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570";
+			//String sql = "SELECT tb1.CID, tb1.SID, tb1.SCD, tb1.PID, tb1.BUSINESS_NAME AS EMP_NAME, tb2.AGENT_SID1, tb2.AGENT_APP_TYPE1,tb2.BUSINESS_NAME AS PERSON_NAME FROM (SELECT e.SID, e.CID, e.SCD, p.PID, p.BUSINESS_NAME FROM BSYMT_EMP_DTA_MNG_INFO e INNER JOIN BPSMT_PERSON p ON e.PID  = p.PID  WHERE e.SID IN (?empIds) AND e.CID = ?companyId ) tb1 LEFT JOIN (SELECT g.SID, g.AGENT_SID1, g.AGENT_APP_TYPE1, p1.BUSINESS_NAME FROM CMMMT_AGENT g INNER JOIN BSYMT_EMP_DTA_MNG_INFO e1 ON g.AGENT_SID1 = e1.SID INNER JOIN BPSMT_PERSON p1 ON e1.PID  = p1.PID WHERE g.SID IN (?empIds1) AND g.CID = ?companyId1 ) tb2 ON tb1.SID = tb2.SID";
+			String sql = "SELECT g.SID, g.AGENT_SID1, g.AGENT_APP_TYPE1, p1.BUSINESS_NAME FROM CMMMT_AGENT g INNER JOIN BSYMT_EMP_DTA_MNG_INFO e1 ON g.AGENT_SID1 = e1.SID INNER JOIN BPSMT_PERSON p1 ON e1.PID  = p1.PID WHERE g.SID IN (?) AND g.CID = ?";
+			listAgentExportData.addAll(this.getEntityManager().createNativeQuery(sql)
+                    .setParameter(1,temp)
+                    .setParameter(2,companyId)
+					//.setParameter("empIds1",temp)
+					//.setParameter("companyId1",companyId)
+					.getResultList());
+
+		});
+		return listAgentExportData;
+	}
+
+	public AgentExportData toReportData(Object[] entity){
+
+		/*return new AgentExportData(entity[0].toString(),
+				(GeneralDate) entity[2],
+				(GeneralDate) entity[3],
+				entity[4].toString(),
+				Integer.valueOf(entity[5].toString()),
+				entity[6].toString(),
+				Integer.valueOf(entity[7].toString()),
+				entity[8].toString(),
+				Integer.valueOf(entity[9].toString()),
+				entity[10].toString(),
+				Integer.valueOf(entity[11].toString()),
+				entity[12].toString(),
+				entity[13].toString()
+				);*/
+		return new AgentExportData(null,null,null,null,null,null,null,null,null,null,null,null,null);
 	}
 
 }

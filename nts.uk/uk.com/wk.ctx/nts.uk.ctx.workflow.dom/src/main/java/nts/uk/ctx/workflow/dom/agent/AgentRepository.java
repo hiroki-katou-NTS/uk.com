@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.agent.output.AgentInfoOutput;
+import nts.uk.ctx.workflow.dom.export.agent.AgentExportData;
 
 public interface AgentRepository {
 	/**
@@ -117,4 +118,8 @@ public interface AgentRepository {
 	 * @return
 	 */
 	List<Agent> getAgentBySidDate(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate);
+
+	List<AgentExportData> getAgentByEmployeeID(String companyId, List<String> employeeId);
+
+
 }
