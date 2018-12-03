@@ -196,6 +196,7 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 	private WorkPlaceSelectionExportData toReportDataTable(NtsResultRecord rec,
 			List<WorkPlaceFunction> workPlaceFunction) {
 		Map<String, String> values =new HashMap<String, String>();
+	
 		for (int i = 0 ; i < workPlaceFunction.size(); i++) {
 			values.put(workPlaceFunction.get(i).getFunctionNo().v().toString(), rec.getString((i + 1) + ""));
 		}
