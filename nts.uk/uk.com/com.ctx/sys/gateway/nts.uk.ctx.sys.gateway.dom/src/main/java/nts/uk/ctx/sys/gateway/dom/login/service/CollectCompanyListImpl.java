@@ -21,6 +21,12 @@ import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleType;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.dto.RoleImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.RoleIndividualGrantImport;
+import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompany;
+import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompanyRepository;
+import nts.uk.ctx.sys.gateway.dom.stopbycompany.SystemStatusType;
+import nts.uk.ctx.sys.gateway.dom.stopbysystem.StopBySystem;
+import nts.uk.ctx.sys.gateway.dom.stopbysystem.StopBySystemRepository;
+import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author Doan Duy Hung
@@ -46,6 +52,11 @@ public class CollectCompanyListImpl implements CollectCompanyList {
 	
 	@Inject
 	private CompanyBsAdapter companyBsAdapter;
+	
+	@Inject
+	private StopBySystemRepository repoStopSys;
+	@Inject
+	private StopByCompanyRepository repoStopCom;
 	
 	@Override
 	public List<String> getCompanyList(String userID) {
@@ -116,8 +127,59 @@ public class CollectCompanyListImpl implements CollectCompanyList {
 		// the acquired company (List))
 		List<String> lstCompanyFinal = lstCompanyId.stream().filter(com -> companyIdAll.contains(com))
 				.collect(Collectors.toList());
-
-		return lstCompanyFinal;
+		List<String> lstResult = this.checkStopUse(AppContexts.user().contractCode(), lstCompanyFinal);
+		return lstResult;
+	}
+	/**
+	 * @author hoatt
+	 * 利用停止のチェック
+	 * @param 契約コード - contractCd
+	 * @param ・会社ID（List） Before filter - lstCID
+	 * @return 会社ID（List） After filter
+	 */
+	@Override
+	public List<String> checkStopUse(String contractCd, List<String> lstCID) {
+		//ドメインモデル「システム全体の利用停止」を取得する (get domain [StopBySystem])
+		Optional<StopBySystem> stopSys = repoStopSys.findByKey(contractCd);
+		//取得できる
+		//ドメインモデル「システム全体の利用停止.システム利用状態」をチェックする (StopBySystem.systemStatus)
+		if(stopSys.isPresent() && stopSys.get().getSystemStatus().equals(SystemStatusType.STOP)){//「利用停止中」の場合
+			return new ArrayList<>();
+		}
+		//ドメインモデル「会社単位の利用停止」を取得する
+		List<StopByCompany> lstCom = repoStopCom.getListComByContractCD(contractCd);
+		if(lstCom.isEmpty()){
+			return lstCID;
+		}
+		List<String> lstComStop = this.getLstComStopUse(lstCom);
+		List<String> result = new ArrayList<>();
+		for(String cID : lstCID){
+			if(!lstComStop.contains(cID)){
+				result.add(cID);
+			}
+		}
+		return result;
+	}
+	/**
+	 * @author hoatt
+	 * 利用停止会社リストを取得する
+	 * @param ドメインモデル「会社単位の利用停止」 - lstComStop
+	 * @return 利用停止会社ID（List）
+	 */
+	@Override
+	public List<String> getLstComStopUse(List<StopByCompany> lstComStop) {
+		List<String> result = new ArrayList<>();
+		//Input.ドメインモデル「会社単位の利用停止」をLoopする
+		for(StopByCompany stopCom : lstComStop){
+			//ドメインモデル「会社単位の利用停止.システム利用状態」をチェックする(check StopByCompany.systemStatus)
+			if(stopCom.getSystemStatus().equals(SystemStatusType.STOP)){
+				//会社IDを生成する 会社ID＝[会社単位の利用停止.契約コード]+"-"+[会社単位の利用停止.会社コード]
+				//		ex) 000000000001-0001
+				//Output：利用停止会社ID（List）に「会社ID」を追加する
+				result.add(stopCom.getCompanyCd() + "-" + stopCom.getContractCd());
+			}
+		}
+		return result;
 	}
 
 }

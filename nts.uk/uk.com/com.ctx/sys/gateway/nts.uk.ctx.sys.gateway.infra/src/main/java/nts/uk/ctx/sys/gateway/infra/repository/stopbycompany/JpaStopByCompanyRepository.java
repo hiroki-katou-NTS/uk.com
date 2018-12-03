@@ -18,6 +18,9 @@ public class JpaStopByCompanyRepository extends JpaRepository implements StopByC
 
 	private static final String FIND_BY_CONTRACTCD_AND_STATE = "SELECT s FROM SgwdtStopByCompany s WHERE s.pk.contractCd=:contractCd AND s.systemStatus=:systemStatus";
 
+	private static final String GET_LST_BY_CONTRACTCD = "SELECT c FROM SgwdtStopByCompany c"
+			+ " WHERE c.pk.contractCd = :contractCd";
+	
 	@Override
 	public void insert(StopByCompany domain) {
 		this.commandProxy().insert(toEntity(domain));
@@ -49,6 +52,18 @@ public class JpaStopByCompanyRepository extends JpaRepository implements StopByC
 	public List<StopByCompany> findByContractCodeAndState(String contractCd, int systemStatus) {
 		return this.queryProxy().query(FIND_BY_CONTRACTCD_AND_STATE, SgwdtStopByCompany.class)
 				.setParameter("contractCd", contractCd).setParameter("systemStatus", systemStatus)
+				.getList(x -> toDomain(x));
+	}
+	/**
+	 * @author hoatt
+	 * get 会社単位の利用停止
+	 * @param 契約コード - contractCd
+	 * @return
+	 */
+	@Override
+	public List<StopByCompany> getListComByContractCD(String contractCd) {
+		return this.queryProxy().query(GET_LST_BY_CONTRACTCD, SgwdtStopByCompany.class)
+				.setParameter("contractCd", contractCd)
 				.getList(x -> toDomain(x));
 	}
 

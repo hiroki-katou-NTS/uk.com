@@ -54,6 +54,7 @@ import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.RoleImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.RoleIndividualGrantImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.SDelAtr;
+import nts.uk.ctx.sys.gateway.dom.login.service.CollectCompanyList;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicyRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.LockInterval;
@@ -166,6 +167,8 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	
 	@Inject
 	private StatusEmploymentAdapter statusEmploymentAdapter;
+	@Inject
+	private CollectCompanyList collectComList;
 	
 	private static final boolean IS_EMPLOYMENT = true;
 	private static final boolean IS_CLASSIFICATION = false;
@@ -851,8 +854,8 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		// the acquired company (List))
 		List<String> lstCompanyFinal = lstCompanyId.stream().filter(com -> companyIdAll.contains(com))
 				.collect(Collectors.toList());
-
-		return lstCompanyFinal;
+		List<String> lstResult = collectComList.checkStopUse(AppContexts.user().contractCode(), lstCompanyFinal);
+		return lstResult;
 	}
 
 	/**
