@@ -1,13 +1,11 @@
 package nts.uk.ctx.at.shared.dom.ot.autocalsetting.com;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
 public class ComAutoCalSettingExport {
-    private String cId;
     private int earlyOtTimeLimit;
     private int earlyMidOtTimeLimit;
     private int normalOtTimeLimit;
@@ -21,7 +19,7 @@ public class ComAutoCalSettingExport {
     private int earlyMidOtTimeAtr;
     private int normalOtTimeAtr;
     private int normalMidOtTimeAtr;
-    private int legarOttimeAtr;
+    private int legarOtTimeAtr;
     private int legarMidOtTimeAtr;
     private int flexOtTimeAtr;
     private int restTimeAtr;
@@ -32,8 +30,7 @@ public class ComAutoCalSettingExport {
     private int leaveLate;
     private int divergence;
 
-    public ComAutoCalSettingExport(String cId, int earlyOtTimeLimit, int earlyMidOtTimeLimit, int normalOtTimeLimit, int normalMidOtTimeLimit, int legarOtTimeLimit, int legarMidOtTimeLimit, int flexOtTimeLimit, int restTimeLimit, int lateNightTimeLimit, int lateOtTimeAtr, int earlyOtTimeAtr, int earlyMidOtTimeAtr, int normalOtTimeAtr, int normalMidOtTimeAtr, int legarMidOtTimeAtr, int flexOtTimeAtr, int restTimeAtr, int lateNightTimeAtr, int raiSingCalcAtr, int specificRaisingCalcAtr, int leaveEarly, int leaveLate, int divergence) {
-        this.cId = cId;
+    public ComAutoCalSettingExport(int earlyOtTimeLimit, int earlyMidOtTimeLimit, int normalOtTimeLimit, int normalMidOtTimeLimit, int legarOtTimeLimit, int legarMidOtTimeLimit, int flexOtTimeLimit, int restTimeLimit, int lateNightTimeLimit, int legarOtTimeAtr, int earlyOtTimeAtr, int earlyMidOtTimeAtr, int normalOtTimeAtr, int normalMidOtTimeAtr, int legarMidOtTimeAtr, int flexOtTimeAtr, int restTimeAtr, int lateNightTimeAtr, int raiSingCalcAtr, int specificRaisingCalcAtr, int leaveEarly, int leaveLate, int divergence) {
         this.earlyOtTimeLimit = earlyOtTimeLimit;
         this.earlyMidOtTimeLimit = earlyMidOtTimeLimit;
         this.normalOtTimeLimit = normalOtTimeLimit;
@@ -47,7 +44,7 @@ public class ComAutoCalSettingExport {
         this.earlyMidOtTimeAtr = earlyMidOtTimeAtr;
         this.normalOtTimeAtr = normalOtTimeAtr;
         this.normalMidOtTimeAtr = normalMidOtTimeAtr;
-        this.legarOttimeAtr = legarOttimeAtr;
+        this.legarOtTimeAtr = legarOtTimeAtr;
         this.legarMidOtTimeAtr = legarMidOtTimeAtr;
         this.flexOtTimeAtr = flexOtTimeAtr;
         this.restTimeAtr = restTimeAtr;

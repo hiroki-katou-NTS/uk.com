@@ -14,6 +14,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.ComAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.ComAutoCalSettingExport;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.ComAutoCalSettingRepository;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp.WorkPlaceAutoCalSettingExport;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.com.KshmtAutoComCalSet;
 
 /**
@@ -23,7 +24,6 @@ import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.com.KshmtAutoComCalSe
 public class JpaComAutoCalSettingRepository extends JpaRepository implements ComAutoCalSettingRepository {
 
 	private static final String SELECT_BY_CID = "SELECT " +
-			"c.CID, " +
 			"c.EARLY_OT_TIME_LIMIT, " +
 			"c.EARLY_MID_OT_TIME_LIMIT, " +
 			"c.NORMAL_OT_TIME_LIMIT, " +
@@ -94,7 +94,7 @@ public class JpaComAutoCalSettingRepository extends JpaRepository implements Com
 
 	private Optional<ComAutoCalSettingExport> convertToExport(Object[] obj){
 		return Optional.of(new ComAutoCalSettingExport(
-				obj[0].toString(),
+				((BigDecimal) obj[0]).intValue(),
 				((BigDecimal) obj[1]).intValue(),
 				((BigDecimal) obj[2]).intValue(),
 				((BigDecimal) obj[3]).intValue(),
@@ -116,8 +116,7 @@ public class JpaComAutoCalSettingRepository extends JpaRepository implements Com
 				((BigDecimal) obj[19]).intValue(),
 				((BigDecimal) obj[20]).intValue(),
 				((BigDecimal) obj[21]).intValue(),
-				((BigDecimal) obj[22]).intValue(),
-				((BigDecimal) obj[23]).intValue()));
+				((BigDecimal) obj[22]).intValue()));
 	}
 
 }

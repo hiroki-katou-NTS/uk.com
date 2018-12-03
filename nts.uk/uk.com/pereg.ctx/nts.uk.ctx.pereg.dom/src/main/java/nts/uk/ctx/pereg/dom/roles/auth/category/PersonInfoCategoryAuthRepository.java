@@ -30,5 +30,7 @@ public interface PersonInfoCategoryAuthRepository {
 	List<PersonInfoCategoryDetail> getAllCategoryByRoleId(String roleId);
 
 	List<PersonInfoCategoryDetail> getAllCategoryByCtgIdList(String companyId, List<String> perInfoCtgIdlst);
+	
+	List<RoleCateExportDetail> getDataExport(int salaryUseAtr, int personnelUseAtr, int employmentUseAtr);
 
 }

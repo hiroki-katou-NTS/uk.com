@@ -1,6 +1,6 @@
 module nts.uk.at.view.kmk002.a {
     export module service {
-
+        import exportFile = nts.uk.request.exportFile;
         /**
          *  Service paths
          */
@@ -8,8 +8,15 @@ module nts.uk.at.view.kmk002.a {
             findOptionalItemDetail: 'ctx/at/record/optionalitem/find',
             findOptionalItemHeaders: 'ctx/at/record/optionalitem/findall',
             saveOptionalItem: 'ctx/at/record/optionalitem/save',
-            getOptItemEnum: 'ctx/at/record/optionalitem/getenum'
+            getOptItemEnum: 'ctx/at/record/optionalitem/getenum',
+            saveAsExcel: "file/at/worktypereport/saveAsExcel"
         };
+
+
+
+        export function saveAsExcel(languageId: string): JQueryPromise<any> {
+            return exportFile('/masterlist/report/print', { domainId: "CalFormulasItem", domainType: "計算式の登録", languageId: languageId, reportType: 0 });
+        }
 
         /**
          * Call service to get optional item enum
@@ -193,7 +200,11 @@ module nts.uk.at.view.kmk002.a {
                     return result;
                 }
             }
-        }
 
+
+
+        }
     }
+
+
 }

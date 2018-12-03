@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,7 +12,6 @@ import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.export.wkpmanager.WorkPlaceSelectionExportData;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManagerRepository;
-import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceAuthority;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceAuthorityRepository;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceFunction;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceFunctionRepository;
@@ -48,7 +46,7 @@ public class WorkPlaceSelectionExportImpl implements MasterListData {
 
 
 	@Override
-	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery arg0) {
+	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 		List<WorkPlaceFunction> workPlaceFunction = workPlaceFunctionRepository.getAllWorkPlaceFunction();
 		columns.add(
@@ -72,13 +70,11 @@ public class WorkPlaceSelectionExportImpl implements MasterListData {
 
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
-		String languageId = query.getLanguageId();
 		String companyId = AppContexts.user().companyId();
-		String workplaceId = query.getData().toString();
 		List<MasterData> datas = new ArrayList<>();
-
+		List<WorkPlaceFunction> workPlaceFunction = workPlaceFunctionRepository.getAllWorkPlaceFunction();
 		List<WorkPlaceSelectionExportData> listWorkPlaceSelectionExportData = workplaceManagerRepository
-				.findAllWorkPlaceSelection(companyId, workplaceId, languageId);
+				.findAllWorkPlaceSelection(companyId, workPlaceFunction);
 		if (CollectionUtil.isEmpty(listWorkPlaceSelectionExportData)) {
 			throw new BusinessException("Msg_7");
 		} else {
@@ -90,13 +86,18 @@ public class WorkPlaceSelectionExportImpl implements MasterListData {
 				data.put(CMM051_35, c.getBusinessName());
 				data.put(CMM051_36, c.getStartDate());
 				data.put(CMM051_37, c.getEndDate());
+				c.getFunctionNo().entrySet().forEach(x -> {
+					data.put(FUNCTION_NO_ + x.getKey(), "1".equals(x.getValue()) ? "○" : "ー");
+				});
+
 				
-				List<WorkPlaceAuthority> workPlaceAuthority = workPlaceAuthorityRepository
-						.getAllWorkPlaceAuthorityByRoleId(companyId, c.getWorkplaceManagerId());
-				if (!workPlaceAuthority.isEmpty()) {
-					List<WorkPlaceFunction> workPlaceFunction = workPlaceFunctionRepository.getAllWorkPlaceFunction();
-					if (!workPlaceFunction.isEmpty()) {
-						for (WorkPlaceFunction item : workPlaceFunction) {
+				
+//				List<WorkPlaceAuthority> workPlaceAuthority = workPlaceAuthorityRepository
+//						.getAllWorkPlaceAuthorityByRoleId(companyId, c.getWorkplaceManagerId());
+				//if (!workPlaceAuthority.isEmpty()) {
+					//List<WorkPlaceFunction> workPlaceFunction = workPlaceFunctionRepository.getAllWorkPlaceFunction();
+					//if (!workPlaceFunction.isEmpty()) {
+						/*for (WorkPlaceFunction item : workPlaceFunction) {
 							Boolean availability = workPlaceAuthority.stream()
 									.filter(x -> x.getFunctionNo().v().equals(item.getFunctionNo().v())).findFirst()
 									.map(x1 -> x1.isAvailability()).orElse(null);
@@ -105,9 +106,9 @@ public class WorkPlaceSelectionExportImpl implements MasterListData {
 							} else {
 								data.put(FUNCTION_NO_ + item.getFunctionNo().v(), "○");
 							}
-						}
-					}
-				}
+						}*/
+					//}
+				//}
 				
 				datas.add(new MasterData(data, null, ""));
 			});

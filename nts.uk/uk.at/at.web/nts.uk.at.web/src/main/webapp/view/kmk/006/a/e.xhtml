@@ -12,6 +12,7 @@
 		<ui:define name="extended-action-bar">
 			<button tabindex="1" class="proceed"
 				data-bind="click: saveWkpJobAutoCal">#{i18n.getText('KMK006_9')}</button>
+			<button tabindex="-1" data-bind="click: function(){exportExcel('WkpJobAutoCalSettingImpl', '自動計算の登録-複合')}">#{i18n.getText('KMK006_47')}</button>
 			<button tabindex="1" class="danger"
 				data-bind="enable: createModeScreenD, click: deleteWkpJobAutoCal">#{i18n.getText('KMK006_26')}</button>
 		</ui:define>

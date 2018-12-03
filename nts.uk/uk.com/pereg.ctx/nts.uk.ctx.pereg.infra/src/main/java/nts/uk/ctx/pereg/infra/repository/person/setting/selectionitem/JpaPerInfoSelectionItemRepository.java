@@ -158,10 +158,10 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 	}
 
 	@Override
-	public List<PersonSelectionItemExportData> findAllSelection(String contractCd, String langId) {
+	public List<PersonSelectionItemExportData> findAllSelection(String contractCd) {
 		String companyId = AppContexts.user().companyId();
 		return this.queryProxy().query(PERSON_SELECT_ALL, Object[].class).setParameter("contractCd", contractCd).setParameter("companyId", companyId)
-				.getList(x -> toReportData(x, langId));
+				.getList(x -> toReportData(x));
 	}
 	
 	@Override
@@ -175,7 +175,7 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 		return new SelectionItemReportData(entity.getSelectionItemName(), entity.getCharacterTypeAtr(), entity.getCodeLength(), entity.getNameLength(), entity.getExtCodeLength(), entity.getIntegrationCd(), entity.getMemo());
 	}
 
-	private PersonSelectionItemExportData toReportData(Object[] entity, String langId) {
+	private PersonSelectionItemExportData toReportData(Object[] entity) {
 		// TODO Auto-generated method stub
 		return new PersonSelectionItemExportData(
 					entity[0] == null ? null :entity[0].toString(), 

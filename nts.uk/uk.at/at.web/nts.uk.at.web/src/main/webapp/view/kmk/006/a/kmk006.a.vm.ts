@@ -1192,9 +1192,9 @@ module nts.uk.at.view.kmk006.a {
                 });
             }
 
-            private exportExcel(){
+            private exportExcel(domainId: string, domainType :string){
                 var self = this;
-                service.exportExcel(self.langId());
+                service.exportExcel(self.langId(), domainId, domainType);
             }
 
             private clearAllError() {

@@ -16,7 +16,7 @@ module nts.uk.at.view.kmk002.a {
 
         export class ScreenModel {
             optionalItemHeader: OptionalItemHeader;
-
+            langId: KnockoutObservable<string> = ko.observable('ja');
             constructor() {
                 let self = this;
                 self.optionalItemHeader = new OptionalItemHeader();
@@ -45,6 +45,22 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
+               * Print file excel
+               */
+            exportExcel(): void {
+                var self = this;
+                nts.uk.ui.block.grayout();
+                let langId = self.langId();
+                service.saveAsExcel(langId).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
+
+
+            /**
              * Load enum constant
              */
             private loadEnum(): JQueryPromise<void> {
@@ -57,6 +73,8 @@ module nts.uk.at.view.kmk002.a {
                 });
                 return dfd.promise();
             }
+
+
 
         }
 
@@ -287,7 +305,7 @@ module nts.uk.at.view.kmk002.a {
 
                 // Event on optionalItemAtr value changed
                 self.optionalItemAtr.subscribe(value => {
-                    
+
                     self.unit(value == 0 ? '' : self.optionalItemDtoStash.unit);
                     // if value change because of select new optional item
                     // or new value == value in stash
@@ -361,7 +379,7 @@ module nts.uk.at.view.kmk002.a {
              */
             public isDailyRoundingEnabled(): boolean {
                 let self = this;
-                return self.isUsed() && self.performanceAtr() == 1; 
+                return self.isUsed() && self.performanceAtr() == 1;
             }
 
             /**

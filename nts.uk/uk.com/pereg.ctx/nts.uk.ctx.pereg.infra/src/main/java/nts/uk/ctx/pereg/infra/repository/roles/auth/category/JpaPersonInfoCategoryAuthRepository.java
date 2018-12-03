@@ -88,21 +88,23 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 			+ " cm.CATEGORY_TYPE,"
 			+ " item.ITEM_NAME,"
 			+ " ctgau.SELF_AUTH_TYPE,"
-			+ " ctgau.OTHER_PERSON_AUTH_TYPE"
+			+ " ctgau.OTHER_PERSON_AUTH_TYPE,"
+			+ " (select count(*) from PPEMT_PER_INFO_ITEM ii where ii.PER_INFO_CTG_ID = c.PER_INFO_CTG_ID and  ii.ABOLITION_ATR =0) as count_i,"
+			+ "	(select count(*) from PPEMT_PERSON_ITEM_AUTH ia where ia.PER_INFO_CTG_ID=c.PER_INFO_CTG_ID and ia.ROLE_ID=xx.ROLE_ID) as count_ia"
 			+ " FROM PPEMT_PER_INFO_CTG c "
 			+ " INNER JOIN PPEMT_PER_INFO_CTG_CM cm"
-			+ " ON c.CATEGORY_CD = cm.CATEGORY_CD AND c.CID = '000000000000-0104' AND c.ABOLITION_ATR = 0"
-			+ " AND cm.CONTRACT_CD = '000000000000' "
+			+ " ON c.CATEGORY_CD = cm.CATEGORY_CD AND c.CID = ?1 AND c.ABOLITION_ATR = 0"
+			+ " AND cm.CONTRACT_CD = ?2 "
 			+ " INNER JOIN PPEMT_PER_INFO_CTG_ORDER co"
 			+ " ON c.PER_INFO_CTG_ID = co.PER_INFO_CTG_ID"
-			+ " Cross JOIN (SELECT DISTINCT pp.ROLE_ID,r.ROLE_CD, r.ROLE_NAME FROM PPEMT_PERSON_CTG_AUTH pp JOIN PPEMT_PER_INFO_CTG c on pp.PER_INFO_CTG_ID = c.PER_INFO_CTG_ID JOIN SACMT_ROLE r on pp.ROLE_ID = r.ROLE_ID  WHERE c.CID = '000000000000-0104' AND r.ROLE_TYPE = 8) x"
+			+ " Cross JOIN (SELECT DISTINCT pp.ROLE_ID,r.ROLE_CD, r.ROLE_NAME FROM PPEMT_PERSON_CTG_AUTH pp JOIN PPEMT_PER_INFO_CTG c on pp.PER_INFO_CTG_ID = c.PER_INFO_CTG_ID JOIN SACMT_ROLE r on pp.ROLE_ID = r.ROLE_ID  WHERE c.CID = ?3 AND r.ROLE_TYPE = ?4) x"
 			+ " LEFT JOIN PPEMT_PERSON_CTG_AUTH xx On c.PER_INFO_CTG_ID = xx.PER_INFO_CTG_ID AND xx.ROLE_ID = x.ROLE_ID"
-			+ " INNER JOIN PPEMT_PER_INFO_ITEM item ON c.PER_INFO_CTG_ID = item.PER_INFO_CTG_ID"
-			+ " INNER JOIN PPEMT_PER_INFO_ITEM_CM itemCM ON item.ITEM_CD = itemCM.ITEM_CD AND itemCM.CONTRACT_CD = '000000000000' AND c.CATEGORY_CD = itemCM.CATEGORY_CD AND itemCM.ITEM_PARENT_CD IS NULL"
+			+ " INNER JOIN PPEMT_PER_INFO_ITEM item ON c.PER_INFO_CTG_ID = item.PER_INFO_CTG_ID AND item.ABOLITION_ATR = 0"
+			+ " INNER JOIN PPEMT_PER_INFO_ITEM_CM itemCM ON item.ITEM_CD = itemCM.ITEM_CD AND itemCM.CONTRACT_CD = ?5 AND c.CATEGORY_CD = itemCM.CATEGORY_CD AND itemCM.ITEM_PARENT_CD IS NULL"
 			+ " LEFT JOIN PPEMT_PERSON_ITEM_AUTH ctgau ON item.PER_INFO_CTG_ID = ctgau.PER_INFO_CTG_ID AND x.ROLE_ID = ctgau.ROLE_ID AND ctgau.PER_INFO_ITEM_DEF_ID = item.PER_INFO_ITEM_DEFINITION_ID"
 			+ " WHERE"
-			+ " ((cm.SALARY_USE_ATR = 1 AND 0 = 1) OR (cm.PERSONNEL_USE_ATR = 1 AND 0 = 1) OR (cm.EMPLOYMENT_USE_ATR = 1 AND 1 = 1)) OR (0 =  0 AND  0 = 0 AND 1 = 0) "
-			+ " AND item.ABOLITION_ATR = 0 ORDER BY ROLE_CD";
+			+ " ((cm.SALARY_USE_ATR = 1 AND ?6 = 1) OR (cm.PERSONNEL_USE_ATR = 1 AND ?7 = 1) OR (cm.EMPLOYMENT_USE_ATR = 1 AND ?8 = 1)) OR (?9 =  0 AND  ?10 = 0 AND ?11 = 0) "
+			+ " AND item.ABOLITION_ATR = 0 ORDER BY ROLE_CD,co.DISPORDER";
 			
 	
 	private static PersonInfoCategoryAuth toDomain(PpemtPersonCategoryAuth entity) {
@@ -276,10 +278,23 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 
 
 	@Override
-	public List<RoleCateExportDetail> getDataExport() {
+	public List<RoleCateExportDetail> getDataExport(int salaryUseAtr, int personnelUseAtr, int employmentUseAtr) {
 		EntityManager em = this.getEntityManager();
+		String cid = AppContexts.user().companyId();
+		String contractCd = AppContexts.user().contractCode();
 		List<RoleCateExportDetail> response = new ArrayList<>();
-		Query query = em.createNativeQuery(GET_EXPORT_EXCEL.toString());
+		Query query = em.createNativeQuery(GET_EXPORT_EXCEL.toString())
+				.setParameter(1, cid)
+				.setParameter(2, contractCd)
+				.setParameter(3, cid)
+				.setParameter(4, 8)
+				.setParameter(5, contractCd)
+				.setParameter(6, salaryUseAtr)
+				.setParameter(7, personnelUseAtr)
+				.setParameter(8, employmentUseAtr)
+				.setParameter(9, salaryUseAtr)
+				.setParameter(10, personnelUseAtr)
+				.setParameter(11, employmentUseAtr);
 		@SuppressWarnings("unchecked")
 		List<Object[]> data = query.getResultList();
 		for (Object[] objects : data) {
@@ -289,8 +304,10 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	}
 	
 	private RoleCateExportDetail toExport(Object[] object) {
+		boolean isHigher = Integer.valueOf(object[24].toString()) > Integer.valueOf(object[25].toString());
+		boolean isCateConfig = !isHigher ? Boolean.valueOf(object[3].toString()) : false;
 		return new RoleCateExportDetail((String) object[0], (String) object[1], (String) object[2],
-				object[3].equals("True") ? true : false,
+				isCateConfig,
 				object[4] != null ? ((BigDecimal) object[4]).intValue() : null,
 				object[5] != null ? ((BigDecimal) object[5]).intValue() : null,
 				object[6] != null ? ((BigDecimal) object[6]).intValue() : null,

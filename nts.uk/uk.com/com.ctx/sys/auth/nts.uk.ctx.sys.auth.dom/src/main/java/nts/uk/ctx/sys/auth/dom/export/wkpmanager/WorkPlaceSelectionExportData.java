@@ -1,5 +1,9 @@
 package nts.uk.ctx.sys.auth.dom.export.wkpmanager;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +25,7 @@ public class WorkPlaceSelectionExportData {
 	private GeneralDate startDate;
 	private GeneralDate endDate;
 	// 利用できる
-	//private Integer availability;
+	// private Integer availability;
 
-	private String workplaceManagerId;
+	private Map<String, String> functionNo;
 }
