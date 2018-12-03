@@ -12,8 +12,7 @@
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js"
-				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 
 			<com:scriptfile path="/view/cps/shr/layout-list-control-validation.js" />
@@ -27,9 +26,10 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button type="button" class="proceed" data-bind="" tabindex="1">#{i18n.getText('CPS001_4')}</button>
-				<button type="button" data-bind="" tabindex="2">#{i18n.getText('CPS001_5')}</button>
-				<button type="button" class="danger" data-bind="" tabindex="3">#{i18n.getText('CPS001_6')}</button>
+				<button type="button" class="proceed" data-bind="" tabindex="1">#{i18n.getText('A1_001')}</button>
+				<button type="button" data-bind="" tabindex="2">#{i18n.getText('A1_002')}</button>
+				<button type="button" class="danger" data-bind="" tabindex="3">#{i18n.getText('A1_003')}</button>
+				<button type="button" data-bind="" tabindex="3">#{i18n.getText('A1_004')}</button>
 			</div>
 			<div id="contents-area" class="cf"
 				data-bind="let: { 
@@ -39,38 +39,49 @@
 				<div class="data-layout">
 					<div class="form-groups">
 						<div class="form-group">
-							<div class="fixed-width" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_14')}</div>
-							<label>9999/12/31</label>
+							<div class="fixed-width" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('A2_002')}</div>
+							<div data-bind="ntsDatePicker: { value: ko.observable('2018/01/01'), dateFormat: 'YYYY/MM/DD'}"></div>
 						</div>
 						<div class="form-group">
-							<div class="fixed-width" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_15')}</div>
-							<div data-bind="ntsRadioBoxGroup: {
-								options: ko.observableArray([{	
-									id: 1,
-									name: text('CPS003_17'),
-									enable:true
-								},{
-									id: 2,
-									name: text('CPS003_18'),
-									enable:true
-								}]),
-								optionsValue: 'id',
+							<div class="fixed-width" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('A2_003')}</div>
+							<div id="combo-box" data-bind="ntsComboBox: {
+								name: 'A2_003',
+								options: [],
+								optionsValue: 'code',
+								visibleItemsCount: 5,
+								value: ko.observable(),
 								optionsText: 'name',
-								value: ko.observable(1),
-								enable: true
-							}"></div>
-						</div>
-						<div class="form-group">
-							<div class="fixed-width" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_23')}</div>
-							<label>個人基本情報</label>
-							<label>（履歴なし）</label>
+								editable: true,
+								enable: true,
+								required: false,
+								selectFirstIfNull: true,
+								columns: [
+									{ prop: 'code', length: 4 },
+									{ prop: 'name', length: 10 },
+								]}"></div>
+								<button data-bind="text: '#{i18n.getText('A2_005')}'"></button>
+								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('A2_006')}</div>
+								<label>#{i18n.getText('A2_007')}</label>
+								<button data-bind="ntsHelpButton: {textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'right center' }">？</button>
 						</div>
 						<div class="form-group margin-left">
 							<div class="fixed-width" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_24')}</div>
 							<button>?</button>
+							<div class="cf" data-bind="ntsSwitchButton: {
+								name: 'A2_012',
+								options: [{id: 1, name: 'A2_013'}, {id: 2, name: 'A2_014'}],
+								optionsValue: 'id',
+								optionsText: 'name',
+								value: ko.observable(1),
+								required: true,
+								enable: true }"></div>
+						</div>
+						<div class="form-group margin-left">
+							<button data-bind="text: '#{i18n.getText('A2_015')}'"></button>
+							<button>?</button>
+							<button data-bind="text: '#{i18n.getText('A2_017')}'"></button>
 						</div>
 					</div>
-					<div data-bind="ntsGridMultiple: gridList"></div>
 				</div>
 			</div>
 		</ui:define>

@@ -12,6 +12,16 @@
 	z-index: 9999;
 }
 
+.data-layout .form-group>div,
+.data-layout .form-group>label,
+.data-layout .form-group>button{
+	vertical-align: top;
+	display: inline-block;
+}
+.data-layout .form-group>label {
+	line-height: 37px;
+}
+
 .data-layout .form-group.margin-left {
 	margin-left: 35px;
 }
