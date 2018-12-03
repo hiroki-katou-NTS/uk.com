@@ -63,8 +63,8 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 	private static final List<String> LST_NAME_ID_HEADER_TABLE_CSV2 = Arrays.asList("SID", "SCD", "BUSINESS_NAME");
 
-	private static final List<String> LST_NAME_ID_HEADER_TABLE_CSV3 = Arrays.asList("H_CID", "H_SID", "H_DATE",
-			"H_DATE_START", "H_DATE_END");
+	private static final List<String> LST_NAME_ID_HEADER_TABLE_CSV3 = Arrays.asList("CMF003_620", "CMF003_621", "CMF003_622",
+			"CMF003_623", "CMF003_624");
 
 	private static final String CSV_EXTENSION = ".csv";
 	private static final String ZIP_EXTENSION = ".zip";
@@ -643,7 +643,10 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 	private List<String> getTextHeaderCsv3(String tableName) {
 		List<String> columnNames = repoTableList.getAllColumnName(tableName);
-		List<String> columnFix = new ArrayList<>(LST_NAME_ID_HEADER_TABLE_CSV3);
+		List<String> columnFix   = new ArrayList<>();
+		for (String nameId : LST_NAME_ID_HEADER_TABLE_CSV3) {
+			columnFix.add(TextResource.localize(nameId));
+		}
 		columnFix.addAll(columnNames);
 		return columnFix;
 	}
