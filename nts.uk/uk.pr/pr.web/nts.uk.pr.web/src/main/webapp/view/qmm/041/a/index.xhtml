@@ -110,10 +110,9 @@
                         <!--A5_1 コード・名称-->
                         <div id="A5_1" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM041_15')}</div>
                         <!--A5_2 コード-->
-                        <span class="label" data-bind="text: personalUnitPriceCode"/>
+                        <span id="A5_2" onclick="$('#A4_2').focus()" class="label" data-bind="text: personalUnitPriceCode"/>
                         <!--A5_3 名称-->
-                        <span class="label" data-bind="text: personalUnitPriceName"/>
-
+                        <span id="A5_3" onclick="$('#A4_3').focus()" class="label" data-bind="text: personalUnitPriceName"/>
                     </div>
                     <div class="control-group valign-center row">
                         <!--A5_4 期間-->
