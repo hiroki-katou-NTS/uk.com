@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -14,6 +15,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
@@ -69,6 +72,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class AttendanceRecordExportService extends ExportService<AttendanceRecordRequest> {
 
 	final static long UPPER_POSITION = 1;
@@ -227,6 +231,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		List<CalculateAttendanceRecord> calculateLowerMonthly = this.calculateAttendanceRepo
 				.getIdCalculateAttendanceRecordMonthlyByPosition(companyId, request.getLayout(), LOWER_POSITION);
 
+		List<ScreenUseAtr> screenUseAtrList = Arrays.asList(ScreenUseAtr.ATTENDANCE_TYPE_OF_DERVICETYPE, ScreenUseAtr.EMPLOYEE_BOOKING_HOURS);
+
+		List<AttendanceType> attendanceTypeList = new ArrayList<>();
+		
 		for (Employee employee : distinctEmployeeListAfterSort) {
 
 			// Number of real data
@@ -254,10 +262,6 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				// check if closure is found
 
 				if (closureDate.getClosureDay().v() != 0 || closureDate.getLastDayOfMonth()) {
-
-					List<ScreenUseAtr> screenUseAtrList = new ArrayList<ScreenUseAtr>();
-					screenUseAtrList.add(ScreenUseAtr.valueOf(13));
-					screenUseAtrList.add(ScreenUseAtr.valueOf(14));
 
 					// Get start time - end time
 					YearMonth startYearMonth = closureDate.getLastDayOfMonth() ? request.getStartDate().yearMonth()
@@ -326,6 +330,11 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							request.getEndDate().yearMonth());
 					itemValueResultMonthlyList = attendanceService.getMonthlyValueOf(employeeTempIdList, periodMonthly,
 							monthlyId.stream().distinct().collect(Collectors.toList()));
+					
+					if(attendanceTypeList.isEmpty()){
+						attendanceTypeList.addAll(attendanceRepo.getItemByAtrandType(AppContexts.user().companyId(), screenUseAtrList, 1));
+					}
+					
 					while (yearMonth.lessThanOrEqualTo(endYearMonth)) {
 
 						Integer realData = 0;
@@ -416,7 +425,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 												.add(new AttendanceRecordResponse(employee.getEmployeeId(),
 														employee.getEmployeeName(), closureDateTemp, "",
 														this.convertString(item, workTypeList, workTimeList,
-																screenUseAtrList, optionalAttendanceRecExpSet.get()
+																attendanceTypeList, optionalAttendanceRecExpSet.get()
 																		.getNameUseAtr())));
 
 								});
@@ -520,7 +529,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 												.add(new AttendanceRecordResponse(employee.getEmployeeId(),
 														employee.getEmployeeName(), closureDateTemp, "",
 														this.convertString(item, workTypeList, workTimeList,
-																screenUseAtrList, optionalAttendanceRecExpSet.get()
+																attendanceTypeList, optionalAttendanceRecExpSet.get()
 																		.getNameUseAtr())));
 
 								});
@@ -1257,7 +1266,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	 * @return the string
 	 */
 	private String convertString(ItemValue item, List<WorkType> workTypeList, List<WorkTimeSetting> workTimeSettingList,
-			List<ScreenUseAtr> screenUseAtrList, NameUseAtr nameUseAtr) {
+			List<AttendanceType> attendanceTypeList, NameUseAtr nameUseAtr) {
 		final String value = item.getValue();
 		if (item.getValueType() == null || item.getValue() == null)
 			return "";
@@ -1282,11 +1291,6 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			return format.format(Integer.parseInt(value));
 
 		case CODE:
-			List<AttendanceType> attendanceTypeList = new ArrayList<>();
-			screenUseAtrList.forEach(screenUseAtr -> {
-				attendanceTypeList.addAll(
-						attendanceRepo.getItemByAtrandType(AppContexts.user().companyId(), screenUseAtr.value, 1));
-			});
 
 			if (!attendanceTypeList.isEmpty()) {
 				AttendanceType attendance = attendanceTypeList.stream()
