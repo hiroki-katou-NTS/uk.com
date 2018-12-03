@@ -14,11 +14,16 @@ public class AgentExportData {
 
     private String employeeId;
 
+    /** 社員コード*/
+    private String employeeCode;
+    /** 社員名*/
+    private String employeeName;
+
     /**開始日*/
-    private GeneralDate startDate;
+    private String startDate;
 
     /**終了日*/
-    private GeneralDate endDate;
+    private String endDate;
 
     /**就業承認: 社員ID*/
     private String agentSid1;
@@ -44,10 +49,9 @@ public class AgentExportData {
     /**経理承認: 代行承認種類4*/
     private Integer agentAppType4;
 
-    /** 社員コード*/
-    private String employeeCode;
-    /** 社員名*/
-    private String employeeName;
+    private String personName;
+
+
 
 
 }
