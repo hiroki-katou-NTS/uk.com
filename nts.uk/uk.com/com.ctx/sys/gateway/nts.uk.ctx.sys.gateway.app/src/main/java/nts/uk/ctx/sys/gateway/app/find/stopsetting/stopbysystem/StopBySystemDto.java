@@ -21,7 +21,7 @@ public class StopBySystemDto {
 	private String stopMessage;
 
 	/** 利用停止モード */
-	private Integer usageStopMode;
+	private Integer stopMode;
 
 	/** 利用停止のメッセージ */
 	private String usageStopMessage;
