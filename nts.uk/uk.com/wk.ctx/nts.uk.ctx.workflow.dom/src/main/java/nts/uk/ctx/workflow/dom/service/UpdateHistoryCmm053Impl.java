@@ -40,6 +40,7 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 	private CreateDailyApprover createDailyApprover;
 	
 	@Override
+	//03.履歴更新を登録する
 	public void updateHistoryByManagerSetting(String companyId, String historyId, String employeeId, GeneralDate startDate,
 			String departmentApproverId, String dailyApproverId) {
 		String endDate    = "9999-12-31";

@@ -6,7 +6,6 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * The Class EraName.
  */
-//å≥çÜ
 @StringMaxLength(4)
 public class EraName extends StringPrimitiveValue<EraName> {
 	
