@@ -105,20 +105,30 @@ module nts.uk.pr.view.qmm019.h.viewmodel {
 
         decide() {
             let self = this;
-            block.invisible();
 
-            //TODO $("#B1_6").trigger("validate");
+            $(".check-validate").trigger("validate");
             if(!nts.uk.ui.errors.hasError()) {
                 let histIdNew = nts.uk.util.randomId();
                 let startDate = nts.uk.time.formatDate(new Date( self.startDate()), "yyyyMM");
                 let command: StatementLayoutCommand = new StatementLayoutCommand(self.isClone(), histIdNew, self.histIdClone(),
                     self.layoutPatternClone(), self.statementCode(), self.statementName(), startDate, self.layoutPatternSelected());
 
+                block.invisible();
                 service.addStatementLayout(command).done(() => {
+                    block.clear();
+
                     setShared("QMM019_H_TO_A_PARAMS", { isRegistered: true, code: self.statementCode(), histID: histIdNew});
                     nts.uk.ui.windows.close();
                 }).fail(err => {
-                    //TODO
+                    block.clear();
+
+                    if(err.messageId == "Msg_3") {
+                        $("#H1_10").ntsError('set', { messageId: "Msg_3" });
+                        $("#H1_10").focus();
+                    } else if(err.messageId == "MsgQ_33") {
+                        $("#grid").ntsError('set', { messageId: "MsgQ_33" });
+                        $("#grid").focus();
+                    }
                 });
             }
         }

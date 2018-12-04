@@ -98,6 +98,7 @@ module nts.uk.pr.view.qmm019.b.viewmodel {
                     } else {
                         setShared("QMM019_B_TO_A_PARAMS", {
                                                               isRegistered: true,
+                                                              code: self.statementCode(),
                                                               startMonth: self.startMonth(),
                                                               itemHistoryDivision: self.itemHistoryDivision(),
                                                               layoutPattern: self.layoutPatternIdSelected()

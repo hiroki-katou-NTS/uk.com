@@ -14,6 +14,7 @@ module nts.uk.pr.view.qmm019.c.viewmodel {
         startMonth: KnockoutObservable<string>;
         endMonth: KnockoutObservable<string>;
         newStartMonth: KnockoutObservable<number>;
+        endMonthNumber: number;
 
         // ItemHistoryDivision  switch button
         itemHistoryEditList: KnockoutObservableArray<shareModel.BoxModel>;
@@ -29,6 +30,7 @@ module nts.uk.pr.view.qmm019.c.viewmodel {
             self.startMonth = ko.observable(null);
             self.endMonth = ko.observable(null);
             self.newStartMonth = ko.observable(null);
+            self.endMonthNumber = null;
 
             if(params) {
                 self.statementCode(params.code);
@@ -55,6 +57,7 @@ module nts.uk.pr.view.qmm019.c.viewmodel {
                         self.startMonth(nts.uk.time.parseYearMonth(data.history[0].startMonth).format());
                         self.endMonth(nts.uk.time.parseYearMonth(data.history[0].endMonth).format());
                         self.newStartMonth(data.history[0].startMonth);
+                        self.endMonthNumber = data.history[0].endMonth;
                     }
                 }
 
@@ -87,14 +90,21 @@ module nts.uk.pr.view.qmm019.c.viewmodel {
                 })
             } else {
                 let newStartDate = nts.uk.time.parseYearMonth(self.newStartMonth()).toValue();
-                let command = new StatementLayoutHistCommand(self.statementCode(), self.histId(), newStartDate, 999912);
+                let command = new StatementLayoutHistCommand(self.statementCode(), self.histId(), newStartDate, self.endMonthNumber);
 
                 if(!nts.uk.ui.errors.hasError()) {
+                    block.invisible();
+
                     service.updateStatementLayoutHist(command).done(function() {
+                        block.clear();
+
                         setShared("QMM019_C_TO_A_PARAMS", { isRegistered: true, isEdit: true});
                         nts.uk.ui.windows.close();
-                    }).fail(() => {
-                        //TODO get message err and execute
+                    }).fail(err => {
+                        block.clear();
+
+                        $('#C1_12').ntsError('set', { messageId: err.messageId });
+                        $("#C1_12").focus();
                     })
                 }
             }

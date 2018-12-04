@@ -30,11 +30,11 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
     private static final String SELECT_BY_ID = SELECT_ALL_QUERY_STRING +
             " WHERE f.statementLayoutHistPk.histId = :histId ";
     private static final String SELECT_BY_CID_AND_CODE_AND_AFTER_DATE = SELECT_BY_CID_AND_CODE +
-            " AND f.startYearMonth > :startYearMonth ";
+            " AND f.startYearMonth >= :startYearMonth ";
     private static final String SELECT_LATEST_BY_CID_AND_CODE = SELECT_BY_CID_AND_CODE +
             " AND f.startYearMonth = (SELECT MAX(o.startYearMonth) FROM QpbmtStatementLayoutHist o " +
             " WHERE o.statementLayoutHistPk.cid = :cid AND o.statementLayoutHistPk.statementCd = :statementCd) ";
-    private static final String ORDER_BY_START_DATE = " ORDER BY f.startYearMonth DESC";
+    private static final String ORDER_BY_START_DATE = " ORDER BY f.startYearMonth ASC";
 
     private static final String SELECT_BY_CID_KEY_STRING = "SELECT f FROM QpbmtStatementLayoutHist f Where f.startYearMonth <= :startYearMonth AND f.endYearMonth >= :startYearMonth AND f.statementLayoutHistPk.cid = :cid";
 
