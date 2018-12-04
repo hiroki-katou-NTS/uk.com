@@ -10,7 +10,7 @@
 			<script type='text/javascript'>
 				var dialogSize = {
 					width : 580,
-					height : 540
+					height : 650
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -21,14 +21,54 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="contents-area"
-				data-bind="let: { 
-						text: nts.uk.resource.getText
-					}>
+			<div id="contents-area">
+			<div id="display" data-bind="with: currentMode">
+				<div class="valign-center distance">
+					<div id="B1_001" data-bind="ntsFormLabel: { required: true }" class="margin-right-FormLabel">
+						<span data-bind="text: '#{i18n.getText('CPS003_36')}' "></span>
+					</div>
+					<span id="B1_002" data-bind="text: systemDate">2016/04/20</span>
+				</div>
+				
+				<div class="valign-center distance">
+					<div id="B1_003" data-bind="ntsFormLabel: { required: true }" class="margin-right-FormLabel">
+						<span data-bind="text: '#{i18n.getText('CPS003_37')}' "></span>
+					</div>
+					<span id="B1_004" data-bind="text: categoryName">2016/04/20</span>
+				</div>	
+
+				<div class="valign-center distance">
+					<div id="B1_005" data-bind="ntsFormLabel: { required: true }" class="margin-right-FormLabel">
+						<span data-bind="text: '#{i18n.getText('CPS003_38')}' "></span>
+					</div>
+					<div class="cf" data-bind="ntsSwitchButton: {
+						options: roundingRules,
+						optionsValue: 'value',
+						optionsText: 'name',
+						value: selectedRuleCode,
+						required: true,
+						enable: true }"></div>
+				</div>
+											
+			</div>
+			
+			<div id="reference-area">
+			
+			<span id="B1_011">#{i18n.getText('CPS003_39')}</span>
+			
+			<div id="reference">
+				<input type="file" id="custom-upload" accept=".xls,.xlsx" />
+				<button id="B1_12" data-bind="">#{i18n.getText('CPS005_4')}</button>
+			</div>
+			</div>
+			
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="">#{i18n.getText('CPS007_16')}</button>
-				<button data-bind="click: close">#{i18n.getText('CPS007_17')}</button>
+				<span id="B2_001">#{i18n.getText('CPS003_43')}</span>
+				<div>
+					<button id="B2_002" class="proceed x-large" data-bind="">#{i18n.getText('CPS003_44')}</button>
+					<button id="B2_003" data-bind="click: close">#{i18n.getText('CPS003_45')}</button>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

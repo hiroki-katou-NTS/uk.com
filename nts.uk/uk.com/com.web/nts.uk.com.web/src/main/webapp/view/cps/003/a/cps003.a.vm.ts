@@ -112,6 +112,22 @@ module cps003.a.vm {
                 alert(mes.message);
             });
         }
+        
+        openBDialog(){
+            
+            let self = this,
+                params = {
+                    systemDate: "2018/12/21",
+                    categoryId: "111",
+                    categoryName:"AAAA",
+                    mode: 1
+                };
+            
+        block();
+        setShared('CPS003B_VALUE', params);
+        modal("/view/cps/003/b/index.xhtml").onClosed(() => {
+        });   
+        }
     }
 
     interface IEmployee {
