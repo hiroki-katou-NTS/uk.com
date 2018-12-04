@@ -1,7 +1,10 @@
 package nts.uk.file.com.infra.role.personalinfo;
 
+import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.file.com.app.role.personalinfo.RolePersonalInforRepository;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
+
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -10,9 +13,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JpaRolePersonalInfor implements RolePersonalInforRepository {
-    @PersistenceContext
-    private EntityManager entityManager;
+@Stateless
+public class JpaRolePersonalInfor extends JpaRepository implements RolePersonalInforRepository {
+
 
     private static final String CAS009_23 = "コードカラム";
     private static final String CAS009_24 = "名称カラム";
@@ -55,7 +58,7 @@ public class JpaRolePersonalInfor implements RolePersonalInforRepository {
                 functionNo +
                 ") AS pvt ";
 
-        Query query = entityManager.createNativeQuery(GET_EXPORT_EXCEL)
+        Query query =  this.getEntityManager().createNativeQuery(GET_EXPORT_EXCEL)
                 .setParameter(1, cId)
                 .setParameter(2, roleType);
         @SuppressWarnings("unchecked")
@@ -80,7 +83,7 @@ public class JpaRolePersonalInfor implements RolePersonalInforRepository {
 
     public List<Integer> GenFunctionNo() {
         List<Integer> resulf = new ArrayList<Integer>();
-        Query query = entityManager.createNativeQuery(GET_FUNCTION_ON.toString());
+        Query query =  this.getEntityManager().createNativeQuery(GET_FUNCTION_ON.toString());
         @SuppressWarnings("unchecked")
         List<Object[]> data = query.getResultList();
         for (Object[] objects : data) {
