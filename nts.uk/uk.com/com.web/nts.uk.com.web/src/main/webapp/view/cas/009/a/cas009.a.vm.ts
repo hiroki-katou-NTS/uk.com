@@ -136,6 +136,18 @@ module cas009.a.viewmodel {
                 block.clear();
                 errors.clearAll();
             });
+        };
+        /**
+         * export excel
+         */
+        exportExcel(){
+            service.exportExcel().done(function(data) {
+
+            }).fail(function(res: any) {
+                nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
+            }).always(()=>{
+                block.clear();
+            });
         }
 
         // Kinh dị:
