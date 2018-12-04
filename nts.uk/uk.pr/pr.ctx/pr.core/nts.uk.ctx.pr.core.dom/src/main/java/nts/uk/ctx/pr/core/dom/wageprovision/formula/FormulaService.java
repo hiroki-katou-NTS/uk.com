@@ -3,6 +3,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.pr.core.dom.adapter.employee.classification.SysClassificationAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.department.SysDepartmentAdapter;
 import nts.uk.ctx.pr.core.dom.adapter.employee.employment.SysEmploymentAdapter;
 import nts.uk.ctx.pr.core.dom.adapter.employee.jobtitle.SyJobTitleAdapter;
 import nts.uk.ctx.pr.core.dom.wageprovision.organizationinfor.salarycls.salaryclsmaster.SalaryClassificationInformationRepository;
@@ -40,6 +42,12 @@ public class FormulaService {
 
     @Inject
     private SyJobTitleAdapter syJobTitleAdapter;
+
+    @Inject
+    private SysDepartmentAdapter sysDepartmentAdapter;
+
+    @Inject
+    private SysClassificationAdapter sysClassificationAdapter;
 
     @Inject
     private SalaryClassificationInformationRepository salaryClassificationInformationRepository;
@@ -141,27 +149,25 @@ public class FormulaService {
         GeneralDate baseDate = this.getBaseDate();
         switch (masterUse) {
             case EMPLOYMENT: {
-                return sysEmploymentAdapter.findAll(AppContexts.user().companyId()).stream().map(item -> {
-                    return new MasterUseDto(item.getCode(), item.getName());
-                }).collect(Collectors.toList());
+                return sysEmploymentAdapter.findAll(AppContexts.user().companyId()).stream().map(
+                        item -> new MasterUseDto(item.getCode(), item.getName())
+                ).collect(Collectors.toList());
             }
             case DEPARTMENT: {
-                // TODO
-                return Collections.emptyList();
+                return sysDepartmentAdapter.getDepartmentByCompanyIdAndBaseDate(AppContexts.user().companyId(), baseDate).stream().map(item -> new MasterUseDto(item.getDepartmentCode(), item.getDepartmentName())).collect(Collectors.toList());
             }
             case CLASSIFICATION: {
-                // TODO
-                return Collections.emptyList();
+                return sysClassificationAdapter.getClassificationByCompanyId(AppContexts.user().companyId()).stream().map(item -> new MasterUseDto(item.getClassificationCode(), item.getClassificationName())).collect(Collectors.toList());
             }
             case JOB_TITLE: {
-                return syJobTitleAdapter.findAll(AppContexts.user().companyId(), baseDate).stream().map(item -> {
-                    return new MasterUseDto(item.getJobTitleCode(), item.getJobTitleName());
-                }).collect(Collectors.toList());
+                return syJobTitleAdapter.findAll(AppContexts.user().companyId(), baseDate).stream().map(item ->
+                     new MasterUseDto(item.getJobTitleCode(), item.getJobTitleName())
+                ).collect(Collectors.toList());
             }
             case SALARY_CLASSIFICATION: {
-                return salaryClassificationInformationRepository.getAllSalaryClassificationInformation(AppContexts.user().companyId()).stream().map(item -> {
-                    return new MasterUseDto(item.getSalaryClassificationCode().v(), item.getSalaryClassificationName().v());
-                }).collect(Collectors.toList());
+                return salaryClassificationInformationRepository.getAllSalaryClassificationInformation(AppContexts.user().companyId()).stream().map(item ->
+                     new MasterUseDto(item.getSalaryClassificationCode().v(), item.getSalaryClassificationName().v())
+                ).collect(Collectors.toList());
             }
             case SALARY_FORM: {
                 final String FIXED_PREFIX = "000000000", FIRST_LINE = "月給", SECOND_LINE = "日給月給", THIRD_LINE = "日給", FOURTH_LINE = "時給";

@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QPBMT_WAGE_TABLE_copy")
+@Table(name = "QPBMT_WAGE_TABLE")
 public class QpbmtWageTable extends UkJpaEntity {
 
 	@EmbeddedId

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.entity.department;
 
+import lombok.Getter;
+
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -14,6 +16,7 @@ import javax.persistence.Embeddable;
  * The Class BsymtDepartmentInfoPK.
  */
 @Embeddable
+@Getter
 public class BsymtDepartmentInfoPK implements Serializable {
 	
 	/** The Constant serialVersionUID. */
