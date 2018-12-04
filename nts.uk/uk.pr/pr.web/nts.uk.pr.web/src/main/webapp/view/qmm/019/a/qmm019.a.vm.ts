@@ -47,10 +47,10 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                         self.currentStatementLayoutCode(data.code);
                         self.loadLayoutHistData(data.code, data.historyId);
                     } else {
-                        self.statementLayoutHistData(new StatementLayoutHistData(null));
+                        self.statementLayoutHistData(new StatementLayoutHistData(null, false));
                     }
                 } else {
-                    self.statementLayoutHistData(new StatementLayoutHistData(null));
+                    self.statementLayoutHistData(new StatementLayoutHistData(null, false));
                 }
 
                 nts.uk.ui.errors.clearAll();
@@ -63,14 +63,14 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
 
             service.getStatementLayoutHistData(code, histId).done(function(data: IStatementLayoutHistData) {
                 if(data) {
-                    self.statementLayoutHistData(new StatementLayoutHistData(data));
+                    self.statementLayoutHistData(new StatementLayoutHistData(data, false));
                 } else {
-                    self.statementLayoutHistData(new StatementLayoutHistData(null));
+                    self.statementLayoutHistData(new StatementLayoutHistData(null, false));
                 }
 
                 block.clear();
             }).fail(() => {
-                self.statementLayoutHistData(new StatementLayoutHistData(null));
+                self.statementLayoutHistData(new StatementLayoutHistData(null, false));
 
                 block.clear();
             });
@@ -85,13 +85,13 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 let statementLayoutList = data.map(x => new StatementLayout(x));
                 self.statementLayoutList(statementLayoutList);
 
-                // ????????????????????
+                // TODO ????????????????????
                 if(statementLayoutList.length <= 0) {
                     self.currentHistoryId(null);
-                    self.statementLayoutHistData(new StatementLayoutHistData(null));
+                    self.statementLayoutHistData(new StatementLayoutHistData(null, false));
                 } else {
                     self.currentHistoryId(null);
-                    self.statementLayoutHistData(new StatementLayoutHistData(null));
+                    self.statementLayoutHistData(new StatementLayoutHistData(null, false));
                 }
 
                 block.clear();
@@ -220,20 +220,22 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 let params = getShared("QMM019_B_TO_A_PARAMS");
 
                 if(params && params.isRegistered) {
-                    self.initCreateData(params);
+                    let statementCode = params.code;
+                    let startMonth =  params.startMonth;
+                    let itemHistoryDivision =  params.itemHistoryDivision;
+                    let layoutPattern = params.layoutPattern;
+                    let histId = nts.uk.util.randomId();
+
+                    service.getInitStatementLayoutHistData(statementCode, histId, startMonth, itemHistoryDivision, layoutPattern).done(function (data: IStatementLayoutHistData) {
+                        if(data) {
+                            self.currentHistoryId("");
+                            self.statementLayoutHistData(new StatementLayoutHistData(data, true));
+                        }
+                    });
                 }
 
                 $("#A3_4").focus();
             });
-        }
-
-        public initCreateData(params: any): void {
-            let histID = params.histID;
-            let startMonth =  params.startMonth;
-            let itemHistoryDivision =  params.itemHistoryDivision;
-            let layoutPattern = params.layoutPatternIdSelected;
-
-
         }
 
         public editHistory(): void {
@@ -307,7 +309,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         startMonthText: KnockoutObservable<string>;
         endMonthText: KnockoutObservable<string>;
 
-        constructor(data: IStatementLayoutHistData) {
+        constructor(data: IStatementLayoutHistData, isCreate: boolean) {
             let self = this;
 
             if(data) {
@@ -318,7 +320,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 self.endMonth = ko.observable(data.endMonth);
                 self.statementLayoutSet = ko.observable(new StatementLayoutSet(data.statementLayoutSet));
 
-                self.checkCreate = ko.observable(false);
+                self.checkCreate = ko.observable(isCreate);
                 self.startMonthText = ko.observable(nts.uk.time.parseYearMonth(data.startMonth).format());
                 self.endMonthText = ko.observable(nts.uk.time.parseYearMonth(data.endMonth).format());
             } else {

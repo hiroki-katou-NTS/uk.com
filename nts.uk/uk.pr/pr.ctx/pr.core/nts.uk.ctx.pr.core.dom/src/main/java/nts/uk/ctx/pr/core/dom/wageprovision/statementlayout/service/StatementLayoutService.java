@@ -80,15 +80,39 @@ public class StatementLayoutService {
         statementLayoutRepo.add(statementLayout);
         statementLayoutHistRepo.add(cid, statementCode, statementLayoutHist, layoutPattern);
 
+        Optional<StatementLayoutSet> statementLayoutSet;
         if (isClone == 0) {
-            addNewStatementLayoutSet(histIdNew, layoutPattern);
+            statementLayoutSet = getNewStatementLayoutSet(histIdNew, layoutPattern);
         } else {
-            cloneStatementLayoutSet(histIdNew, histIdClone);
+            statementLayoutSet = cloneStatementLayoutSet(histIdNew, histIdClone, layoutPattern);
         }
+
+        if(statementLayoutSet.isPresent()) {
+            statementLayoutSetRepo.add(statementLayoutSet.get());
+        } else {
+            throw new BusinessException("Some err");
+        }
+
+    }
+
+    public Optional<StatementLayoutSet> initStatementLayoutData(String statementCode, String histIdNew, int isClone, int layoutPattern) {
+        String cid = AppContexts.user().companyId();
+        Optional<YearMonthHistoryItem> lastHistOptional = statementLayoutHistRepo.getLatestHistByCidAndCode(cid, statementCode);
+        Optional<StatementLayoutSet> statementLayoutSet;
+
+        if (isClone == 1) {
+            statementLayoutSet = getNewStatementLayoutSet(histIdNew, layoutPattern);
+        } else if(lastHistOptional.isPresent()){
+            statementLayoutSet = cloneStatementLayoutSet(histIdNew, lastHistOptional.get().identifier(), layoutPattern);
+        } else {
+            return Optional.empty();
+        }
+
+        return statementLayoutSet;
     }
 
     //新規に作成の場合
-    private void addNewStatementLayoutSet(String histIdNew, int layoutPattern) {
+    private Optional<StatementLayoutSet> getNewStatementLayoutSet(String histIdNew, int layoutPattern) {
         List<SettingByCtg> listSettingByCtg = new ArrayList<>();
 
         //支給項目
@@ -146,21 +170,38 @@ public class StatementLayoutService {
         SettingByCtg reportCtgSetting = new SettingByCtg(CategoryAtr.REPORT_ITEM.value, reportLineList);
         listSettingByCtg.add(reportCtgSetting);
 
-        StatementLayoutSet statementLayoutSet = new StatementLayoutSet(histIdNew, layoutPattern, listSettingByCtg);
-        statementLayoutSetRepo.add(statementLayoutSet);
+        return Optional.of(new StatementLayoutSet(histIdNew, layoutPattern, listSettingByCtg));
     }
 
     //既存のレイアウトをコピーする場合
-    private void cloneStatementLayoutSet(String histIdNew, String histIdClone) {
+    private Optional<StatementLayoutSet> cloneStatementLayoutSet(String histIdNew, String histIdClone, int layoutPattern) {
         Optional<StatementLayoutSet> cloneStatementLayoutSetOptional = statementLayoutSetRepo.getStatementLayoutSetById(histIdClone);
 
         if(cloneStatementLayoutSetOptional.isPresent()) {
             StatementLayoutSet cloneStatementLayoutSet = cloneStatementLayoutSetOptional.get();
             cloneStatementLayoutSet.setHistId(histIdNew);
+            cloneStatementLayoutSet.setLayoutPattern(EnumAdaptor.valueOf(layoutPattern, StatementLayoutPattern.class));
 
-            statementLayoutSetRepo.add(cloneStatementLayoutSet);
+            for (SettingByCtg settingByCtg : cloneStatementLayoutSet.getListSettingByCtg()) {
+                for (LineByLineSetting lineByLineSetting : settingByCtg.getListLineByLineSet()) {
+                    for (SettingByItem settingByItem : lineByLineSetting.getListSetByItem()) {
+                        if(settingByItem instanceof SettingByItemCustom) {
+                            SettingByItemCustom settingByItemCustom = (SettingByItemCustom) settingByItem;
+                            if(settingByItemCustom.getPaymentItemDetailSet().isPresent()) {
+                                settingByItemCustom.getPaymentItemDetailSet().get().setHistId(histIdNew);
+                            }
+
+                            if(settingByItemCustom.getDeductionItemDetailSet().isPresent()) {
+                                settingByItemCustom.getDeductionItemDetailSet().get().setHistId(histIdNew);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return Optional.of(cloneStatementLayoutSet);
         } else {
-            throw new BusinessException("sai me roi");
+            return Optional.empty();
         }
     }
 
@@ -177,9 +218,7 @@ public class StatementLayoutService {
     private SettingByItem getNewItemTypeDeduction(String histId, int position, String statementCode, int totalObj) {
         DeductionItemDetailSet detail = new DeductionItemDetailSet(histId, statementCode, totalObj, PaymentProportionalAtr.NOT_PROPORTIONAL.value,
                 null, PaymentCaclMethodAtr.MANUAL_INPUT.value, null, null, null, null, null);
-        SettingByItem item = new SettingByItemCustom(position, statementCode, null, detail, null);
-
-        return item;
+        return new SettingByItemCustom(position, statementCode, null, detail, null);
     }
 
     //新規作成時チェック処理

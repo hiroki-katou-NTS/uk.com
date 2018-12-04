@@ -161,6 +161,13 @@ public class StatementLayoutWebService {
     }
 
     @POST
+    @Path("getInitStatementLayoutHistData/{statementCode}/{histId}/{startMonth}/{itemHistoryDivision}/{layoutPattern}")
+    public StatementLayoutHistDataDto getInitStatementLayoutHistData(@PathParam("statementCode") String statementCode, @PathParam("histId") String histId, @PathParam("startMonth") Integer startMonth,
+                                                                     @PathParam("itemHistoryDivision") Integer itemHistoryDivision, @PathParam("layoutPattern") Integer layoutPattern) {
+        return this.statementLayoutHistFinder.getInitStatementLayoutHistData(statementCode, histId, startMonth, itemHistoryDivision, layoutPattern).orElse(null);
+    }
+
+    @POST
     @Path("getLastStatementLayoutHistData/{code}")
     public StatementLayoutHistDataDto getLastStatementLayoutHistData(@PathParam("code") String code) {
         return this.statementLayoutHistFinder.getLastStatementLayoutHistData(code).orElse(null);
