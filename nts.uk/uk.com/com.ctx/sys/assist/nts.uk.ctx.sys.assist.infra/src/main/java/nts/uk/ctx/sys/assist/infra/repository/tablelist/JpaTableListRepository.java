@@ -10,12 +10,15 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.Query;
 
 import com.google.common.base.Strings;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
+import nts.uk.ctx.sys.assist.dom.saveprotetion.SaveProtetion;
+import nts.uk.ctx.sys.assist.dom.saveprotetion.SaveProtetionRepository;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableListRepository;
 import nts.uk.ctx.sys.assist.infra.entity.tablelist.SspmtTableList;
@@ -33,6 +36,9 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 	private static final String YEAR = "6";
 	private static final String YEAR_MONTH = "7";
 	private static final String YEAR_MONTH_DAY = "8";
+	
+	@Inject
+	private SaveProtetionRepository saveProtetionRepo;
 
 	@Override
 	public void add(TableList domain) {
@@ -95,6 +101,30 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 			}
 		}
 
+		//アルゴリズム「個人情報の保護」を実行する 
+		List<SaveProtetion> listSaveProtetion = saveProtetionRepo.getSaveProtection(Integer.valueOf(tableList.getCategoryId()), tableList.getTableNo());
+		if(tableList.getSurveyPreservation() == NotUseAtr.USE && !listSaveProtetion.isEmpty()) {
+			for (SaveProtetion saveProtetion : listSaveProtetion) {
+				String rePlaceCol = saveProtetion.getReplaceColumn().trim();
+				String newValue = "";
+				// Vì domain không tạo Enum nên phải fix code ngu
+				if(saveProtetion.getCorrectClasscification() == 0) {
+					newValue = "'' AS " + rePlaceCol;
+				}else if(saveProtetion.getCorrectClasscification() == 1){
+					if(columns.contains("EMPLOYEE_CODE")) {
+						newValue = "t.EMPLOYEE_CODE AS " + rePlaceCol;
+					}else {
+						newValue = "'' AS " + rePlaceCol;
+					}
+				}else if(saveProtetion.getCorrectClasscification() == 2) {
+					newValue = "0 AS " + rePlaceCol;
+				}else if(saveProtetion.getCorrectClasscification() == 3) {
+					newValue = "'0' AS " + rePlaceCol;
+				}
+				query = new StringBuffer(query.toString().replaceAll("t." + rePlaceCol, newValue));
+			}
+		}
+		
 		// From
 		query.append(" FROM ").append(tableList.getTableEnglishName()).append(" t");
 		if (tableList.getHasParentTblFlg() == NotUseAtr.USE && tableList.getParentTblName().isPresent()) {
