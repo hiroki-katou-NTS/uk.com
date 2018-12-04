@@ -7,6 +7,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -35,6 +37,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	private AgreementOperationSettingAdapter agreementOperationSettingAdapter;
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	protected void handle(ExportServiceContext<AnnualWorkScheduleExportQuery> context) {
 		String companyId = AppContexts.user().companyId();
 		AnnualWorkScheduleExportQuery query = context.getQuery();

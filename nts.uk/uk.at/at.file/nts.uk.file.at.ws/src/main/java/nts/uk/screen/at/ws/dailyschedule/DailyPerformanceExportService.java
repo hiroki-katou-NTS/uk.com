@@ -3,7 +3,6 @@ package nts.uk.screen.at.ws.dailyschedule;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.task.data.TaskDataSetter;

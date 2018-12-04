@@ -5,7 +5,6 @@
 package nts.uk.file.at.app.export.monthlyschedule;
 
 import lombok.Data;
-import nts.uk.file.at.app.export.dailyschedule.PageBreakIndicator;
 import nts.uk.file.at.app.export.dailyschedule.WorkScheduleSettingTotalOutput;
 
 /**
