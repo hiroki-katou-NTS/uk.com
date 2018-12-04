@@ -13,4 +13,5 @@ public class EmployeeSalaryUnitPriceHistoryCommand {
 
     List<String> employeeIds;
 
+    int yearMonthFilter;
 }
