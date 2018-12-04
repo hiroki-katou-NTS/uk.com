@@ -112,16 +112,16 @@ module nts.uk.com.view.cmm008.a {
                     return;
                 }
                 let command: any = {};
-                    command.employmentCode = self.employmentModel().employmentCode();
-                    command.employmentName = self.employmentModel().employmentName();
-                    command.empExternalCode = self.employmentModel().empExternalCode();
-                    command.memo = self.employmentModel().memo();
-                    command.isUpdateMode = self.isUpdateMode();
-                
+                command.employmentCode = self.employmentModel().employmentCode();
+                command.employmentName = self.employmentModel().employmentName();
+                command.empExternalCode = self.employmentModel().empExternalCode();
+                command.memo = self.employmentModel().memo();
+                command.isUpdateMode = self.isUpdateMode();
+
                 blockUI.invisible();
                 service.saveEmployment(command).done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        
+
                         // ReLoad Component
                         $('#emp-component').ntsListComponent(self.listComponentOption).done(function() {
                             // Get Employment List after Load Component
@@ -230,6 +230,18 @@ module nts.uk.com.view.cmm008.a {
                 $('#memo').ntsError('clear');
                 // Clear error inputs
                 $('.nts-input').ntsError('clear');
+            }
+
+            private exportExcel(): void {
+                var self = this;
+                nts.uk.ui.block.grayout();
+                let langId = "ja";
+                service.saveAsExcel(langId).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
             }
 
         }
