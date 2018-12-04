@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -17,6 +18,8 @@ import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.ParamLoginRecord;
+import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendOutput;
+import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendService;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
 import nts.uk.ctx.sys.gateway.dom.login.EmployCodeEditType;
@@ -27,6 +30,7 @@ import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeCodeSettingImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccount;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
 /**
@@ -50,6 +54,9 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 	/** The service. */
 	@Inject
 	private LoginRecordRegistService service;
+	
+	@Inject
+	private SystemSuspendService systemSuspendService;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -127,6 +134,23 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		
 		//set role Id for LoginUserContextManager
 		this.setRoleId(user.getUserId());
+		
+		// アルゴリズム「システム利用停止の確認」を実行する
+		String programID = AppContexts.programId().substring(0, 6);
+		String screenID = AppContexts.programId().substring(6);
+		SystemSuspendOutput systemSuspendOutput = systemSuspendService.confirmSystemSuspend(
+				contractCode, 
+				companyCode,
+				command.isSignOn() ? 1 : 0,
+				programID,
+				screenID);
+		if(systemSuspendOutput.isError()){
+			if(Strings.isNotBlank(systemSuspendOutput.getMsgID())){
+				throw new BusinessException(systemSuspendOutput.getMsgID());
+			} else {
+				throw new BusinessException(systemSuspendOutput.getMsgContent());
+			}
+		}
 		
 		//アルゴリズム「ログイン記録」を実行する
 		if (!this.checkAfterLogin(user, oldPassword)){

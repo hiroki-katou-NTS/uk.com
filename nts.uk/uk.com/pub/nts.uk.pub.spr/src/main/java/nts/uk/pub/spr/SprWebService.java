@@ -14,6 +14,11 @@ import javax.ws.rs.Produces;
 import com.google.common.base.Strings;
 
 import lombok.val;
+import nts.arc.error.BusinessException;
+import nts.uk.ctx.sys.gateway.app.command.login.LoginRecordRegistService;
+import nts.uk.ctx.sys.gateway.app.command.login.dto.LoginRecordInput;
+import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendOutput;
+import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendService;
 import nts.uk.pub.spr.SprStubHelper.ApplicationTargetResult;
 import nts.uk.pub.spr.SprStubHelper.RecordApplicationStatusResult;
 import nts.uk.pub.spr.SprStubHelper.RequestApplicationStatusResult;
@@ -24,6 +29,7 @@ import nts.uk.pub.spr.login.SprLoginFormService;
 import nts.uk.pub.spr.login.output.LoginUserContextSpr;
 import nts.uk.pub.spr.login.output.RoleInfoSpr;
 import nts.uk.pub.spr.login.paramcheck.LoginParamCheck;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
 @Path("public/spr")
@@ -46,6 +52,12 @@ public class SprWebService {
 	
 	@Inject
 	private LoginParamCheck loginParamCheck;
+	
+	@Inject
+	private LoginRecordRegistService loginService;
+	
+	@Inject
+	private SystemSuspendService systemSuspendService;
 
 	@POST
 	@Path("01/loginfromspr")
@@ -150,6 +162,35 @@ public class SprWebService {
 				break;
 			}
 		}
+		
+		// アルゴリズム「システム利用停止の確認」を実行する
+		SystemSuspendOutput systemSuspendOutput = systemSuspendService.confirmSystemSuspend(
+				AppContexts.user().contractCode(), 
+				AppContexts.user().companyCode(),
+				2,
+				"SPR001",
+				"A");
+		if(systemSuspendOutput.isError()){
+			if(!Strings.isNullOrEmpty(systemSuspendOutput.getMsgID())){
+				throw new BusinessException(systemSuspendOutput.getMsgID());
+			} else {
+				throw new BusinessException(systemSuspendOutput.getMsgContent());
+			}
+		}
+		
+		// アルゴリズム「ログイン記録」を実行する１
+		loginService.loginRecord(
+				new LoginRecordInput(
+						"SPR001", 
+						"A", 
+						"", 
+						0, 
+						2, 
+						"", 
+						"", 
+						null), 
+				AppContexts.user().companyId());
+		
 		val paramsMap = new LinkedHashMap<String, String>();
 		paramsMap.put("menu", SprStubHelper.formatParam(menuCDReal));
 		paramsMap.put("loginemployeeCode", SprStubHelper.formatParam(loginEmployeeCDReal));

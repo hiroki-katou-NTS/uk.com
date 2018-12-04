@@ -19,7 +19,8 @@ import nts.uk.ctx.sys.gateway.app.command.login.LoginRecordRegistService;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormOneCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormTwoCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.LoginRecordInput;
-import nts.uk.ctx.sys.gateway.app.command.login.dto.ParamLoginRecord;
+import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendOutput;
+import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendService;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoAdapter;
@@ -33,6 +34,7 @@ import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeDataMngInfoImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.SDelAtr;
 import nts.uk.ctx.sys.gateway.dom.mail.UrlExecInfoRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.url.UrlExecInfo;
 
@@ -66,6 +68,9 @@ public class UrlWebService {
 	@Inject
 	private LoginRecordRegistService loginRecordRegistService;
 	
+	@Inject
+	private SystemSuspendService systemSuspendService;
+	
 	/**
 	 * 埋込URL実行
 	 * @param screeenPath
@@ -94,9 +99,6 @@ public class UrlWebService {
 		UrlExecInfo urlExecInfoExport = opUrlExecInfo.get();
 		if(urlExecInfoExport.getExpiredDate().before(systemDateTime)){
 			// record login
-			String remark = TextResource.localize("Msg_1474")
-					+ " "
-					+ TextResource.localize("Msg_1095");
 			loginRecordRegistService.loginRecord(
 					new LoginRecordInput(
 							urlExecInfoExport.getProgramId(), 
@@ -105,7 +107,7 @@ public class UrlWebService {
 							1, 
 							2, 
 							"", 
-							remark, 
+							"#Msg_1474 "+TextResource.localize("Msg_1474"), 
 							null), 
 					"");
 			throw new BusinessException("Msg_1095");
@@ -120,7 +122,7 @@ public class UrlWebService {
 		Contract contract = this.executionContractSet(contractCD);
 		
 		// アルゴリズム「埋込URL実行ログイン」を実行する
-		this.executionURLLogin(urlExecInfoExport.getScd(), urlExecInfoExport.getLoginId(), urlExecInfoExport.getCid(), contract);
+		this.executionURLLogin(urlExecInfoExport.getScd(), urlExecInfoExport.getLoginId(), urlExecInfoExport.getCid(), contract, urlExecInfoExport);
 		
 		// アルゴリズム「ログイン記録」を実行する１ Thực thi thuật toán "Login record"
 		loginRecordRegistService.loginRecord(
@@ -169,18 +171,19 @@ public class UrlWebService {
 		return opContract.get();
 	}
 	
-	private void executionURLLogin(String employeeCD, String loginID, String companyID, Contract contract){
+	private void executionURLLogin(String employeeCD, String loginID, String companyID, Contract contract, UrlExecInfo urlExecInfoExport){
 		// アルゴリズム「埋込URL実行ログインアカウント承認」を実行する
-		URLAccApprovalOutput urlAccApprovalOutput = this.executionURLAccApproval(employeeCD, companyID, loginID, contract);
+		URLAccApprovalOutput urlAccApprovalOutput = this.executionURLAccApproval(employeeCD, companyID, loginID, contract, urlExecInfoExport);
 		
 		// アルゴリズム「埋込URL実行ログインチェック」を実行する
-		executionURLLoginCheck(companyID, loginID, employeeCD, contract, urlAccApprovalOutput.getEmployeeInfoDtoImport());
+		executionURLLoginCheck(companyID, loginID, employeeCD, contract, urlAccApprovalOutput.getEmployeeInfoDtoImport(), urlExecInfoExport);
 		
+		String companyCD = AppContexts.user().companyCode();
 		// 社員コードの存在チェック
 		if(Strings.isBlank(employeeCD)){
 			submitLoginFormOneCommandHandler.initSession(urlAccApprovalOutput.getUserImport(), false);
 		} else {
-			String companyCD = companyBsAdapter.getCompanyByCid(companyID).getCompanyCode();
+			companyCD = companyBsAdapter.getCompanyByCid(companyID).getCompanyCode();
 			submitLoginFormTwoCommandHandler.setLoggedInfo(
 					urlAccApprovalOutput.getUserImport(), 
 					new EmployeeImport(
@@ -191,50 +194,90 @@ public class UrlWebService {
 					companyCD);
 			submitLoginFormTwoCommandHandler.setRoleId(urlAccApprovalOutput.getUserImport().getUserId());
 		}
+		
+		// アルゴリズム「システム利用停止の確認」を実行する
+		SystemSuspendOutput systemSuspendOutput = systemSuspendService.confirmSystemSuspend(
+				contract.getContractCode().v(), 
+				companyCD,
+				2,
+				AppContexts.programId(),
+				"A");
+		if(systemSuspendOutput.isError()){
+			if(Strings.isNotBlank(systemSuspendOutput.getMsgID())){
+				throw new BusinessException(systemSuspendOutput.getMsgID());
+			} else {
+				throw new BusinessException(systemSuspendOutput.getMsgContent());
+			}
+		}
 	}
 	
-	private URLAccApprovalOutput executionURLAccApproval(String employeeCD, String companyID, String loginID, Contract contract){
+	private URLAccApprovalOutput executionURLAccApproval(String employeeCD, String companyID, String loginID, Contract contract, UrlExecInfo urlExecInfoExport){
 		 
 		// 社員コードの存在チェック
 		if(Strings.isBlank(employeeCD)){
 			// imported（ゲートウェイ）「ユーザ」を取得する requestList222
 			Optional<UserImportNew> opUserImportNew = userAdapter.findUserByContractAndLoginIdNew(contract.getContractCode().toString(), loginID);
-			this.executeUserExport(opUserImportNew);
+			this.executeUserExport(opUserImportNew, urlExecInfoExport);
 			return new URLAccApprovalOutput(null, opUserImportNew.get());
 		}
 		
 		// Imported（GateWay）「社員」を取得する
 		EmployeeInfoDtoImport employeeInfoDtoImport = employeeInfoAdapter.getEmployeeInfo(companyID, employeeCD);
 		if(employeeInfoDtoImport==null){
-			this.failUserExport();
+			this.failUserExport(urlExecInfoExport);
 		}
 		
 		// アルゴリズム「社員が削除されたかを取得」を実行する
 		Optional<EmployeeDataMngInfoImport> opEmployeeDataMngInfoImport = sysEmployeeAdapter.getSdataMngInfo(employeeInfoDtoImport.getEmployeeId());
 		if(!opEmployeeDataMngInfoImport.isPresent() || 
 				opEmployeeDataMngInfoImport.get().getDeletedStatus()==SDelAtr.DELETED){
-			this.failUserExport();
+			this.failUserExport(urlExecInfoExport);
 		}
 		
 		// imported（ゲートウェイ）「ユーザ」を取得する requestList220
 		Optional<UserImportNew> opUserImportNew = userAdapter.findUserByAssociateId(employeeInfoDtoImport.getPersonId());
-		this.executeUserExport(opUserImportNew);
+		this.executeUserExport(opUserImportNew, urlExecInfoExport);
 		return new URLAccApprovalOutput(employeeInfoDtoImport, opUserImportNew.get());
 	}
 	
-	private void executionURLLoginCheck(String companyID, String loginID, String employeeCD, Contract contract, EmployeeInfoDtoImport employeeInfoDtoImport){
+	private void executionURLLoginCheck(String companyID, String loginID, String employeeCD, Contract contract, 
+			EmployeeInfoDtoImport employeeInfoDtoImport, UrlExecInfo urlExecInfoExport){
 		GeneralDate systemDate = GeneralDate.today();
 		// ドメインモデル「契約」の契約期間をチェックする
 		if(systemDate.before(contract.getContractPeriod().start()) || systemDate.after(contract.getContractPeriod().end())){
-			throw new BusinessException("Msg_1096");
 			// アルゴリズム「ログイン記録」を実行する１
+			loginRecordRegistService.loginRecord(
+					new LoginRecordInput(
+							urlExecInfoExport.getProgramId(), 
+							urlExecInfoExport.getScreenId(), 
+							"", 
+							0, 
+							2, 
+							"", 
+							"Msg_1474", 
+							null), 
+					"");
+			
+			throw new BusinessException("Msg_1096");
 		}
 		
 		// ドメインモデル「会社情報」の使用区分をチェックする
 		CompanyBsImport companyBsImport = companyBsAdapter.getCompanyByCid(companyID);
 		if(companyBsImport.getIsAbolition()==1){
-			throw new BusinessException("Msg_1096");
 			// アルゴリズム「ログイン記録」を実行する１
+			loginRecordRegistService.loginRecord(
+					new LoginRecordInput(
+							urlExecInfoExport.getProgramId(), 
+							urlExecInfoExport.getScreenId(), 
+							"", 
+							0, 
+							2, 
+							"", 
+							"Msg_1474", 
+							null), 
+					"");
+			
+			throw new BusinessException("Msg_1096");
 		}
 		
 		// 社員コードの存在を確認
@@ -246,28 +289,50 @@ public class UrlWebService {
 		// to do
 	}
 	
-	private void executeUserExport(Optional<UserImportNew> opUserImportNew){
+	private void executeUserExport(Optional<UserImportNew> opUserImportNew, UrlExecInfo urlExecInfoExport){
 		GeneralDate systemDate = GeneralDate.today();
 		if(opUserImportNew.isPresent()){
 			// ユーザーの有効期限チェック
 			if(systemDate.after(opUserImportNew.get().getExpirationDate())){
-				throw new BusinessException("Msg_316");
 				// アルゴリズム「ログイン記録」を実行する２
-				// to do
+				loginRecordRegistService.loginRecord(
+					new LoginRecordInput(
+							urlExecInfoExport.getProgramId(), 
+							urlExecInfoExport.getScreenId(), 
+							"", 
+							1, 
+							2, 
+							"", 
+							"#Msg_1474 "+TextResource.localize("Msg_1474"), 
+							null), 
+					"");
+				
+				throw new BusinessException("Msg_316");
 			}
 			return;
 		} else {
-			this.failUserExport();
+			this.failUserExport(urlExecInfoExport);
 		}
 	}
 	
-	private void failUserExport(){
-		throw new BusinessException("Msg_301");
+	private void failUserExport(UrlExecInfo urlExecInfoExport){
 		// アルゴリズム「ログイン記録」を実行する１
-		// to do
+		loginRecordRegistService.loginRecord(
+			new LoginRecordInput(
+					urlExecInfoExport.getProgramId(), 
+					urlExecInfoExport.getScreenId(), 
+					"", 
+					1, 
+					2, 
+					"", 
+					"#Msg_1474 "+TextResource.localize("Msg_1474"), 
+					null), 
+			"");
 		
 		// アルゴリズム「ロックアウト」を実行する　※２次対応
-		// to do
+		// submitLoginFormOneCommandHandler.lockOutExecuted(user);
+		
+		throw new BusinessException("Msg_301");
 	}
 }
 
