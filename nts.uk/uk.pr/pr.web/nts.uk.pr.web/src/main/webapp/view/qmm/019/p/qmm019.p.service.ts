@@ -7,7 +7,7 @@ module nts.uk.pr.view.qmm019.p {
         var paths = {
             getCurrentProcessingDate: "core/wageprovision/statementlayout/getCurrentProcessingDate",
             getStatementLayoutByProcessingDate: "core/wageprovision/statementlayout/getStatementLayoutByProcessingDate/{0}",
-            exportExcel: "core/wageprovision/statementlayout/export",
+            exportExcel: "file/core/wageprovision/statementlayout/export",
         }
 
         export function getCurrentProcessingDate(): JQueryPromise<any> {

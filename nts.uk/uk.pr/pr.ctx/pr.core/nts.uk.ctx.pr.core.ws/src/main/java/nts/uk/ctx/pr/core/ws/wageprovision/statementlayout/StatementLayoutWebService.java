@@ -1,9 +1,6 @@
 package nts.uk.ctx.pr.core.ws.wageprovision.statementlayout;
 
-import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementlayout.*;
-import nts.uk.ctx.pr.core.app.export.wageprovision.statementlayout.StatementLayoutExportQuery;
-import nts.uk.ctx.pr.core.app.export.wageprovision.statementlayout.StatementLayoutExportService;
 import nts.uk.ctx.pr.core.app.find.socialinsurance.welfarepensioninsurance.dto.YearMonthHistoryItemDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.formula.FormulaDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.formula.FormulaFinder;
@@ -50,9 +47,6 @@ public class StatementLayoutWebService {
 
     @Inject
     private DeleteStatementLayoutHistCommandHandler deleteStatementLayoutHistCommandHandler;
-
-    @Inject
-    private StatementLayoutExportService statementLayoutExportService;
 
     @POST
     @Path("getSalIndAmountName/{cateIndicator}")
@@ -128,12 +122,6 @@ public class StatementLayoutWebService {
     @Path("getStatementLayoutByProcessingDate/{processingDate}")
     public List<StatementLayoutDto> getStatementLayoutByProcessingDate(@PathParam("processingDate") int processingDate) {
         return statementLayoutFinder.getStatementLayoutByProcessingDate(processingDate);
-    }
-
-    @POST
-    @Path("export")
-    public ExportServiceResult generate(StatementLayoutExportQuery query) {
-        return this.statementLayoutExportService.start(query);
     }
 
     @POST

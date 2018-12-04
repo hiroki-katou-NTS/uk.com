@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.export.wageprovision.statementlayout;
+package nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout;
 
 import lombok.Data;
 
