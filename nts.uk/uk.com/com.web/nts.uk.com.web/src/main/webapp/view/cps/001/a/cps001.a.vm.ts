@@ -85,7 +85,6 @@ module cps001.a.vm {
             employees: ko.observableArray([]),
             hireDate: ko.observable('')
         };
-
         
         saveAble: KnockoutObservable<boolean> = ko.observable(false);
 
@@ -527,6 +526,7 @@ module cps001.a.vm {
     export interface IParam {
         showAll?: boolean;
         employeeId: string;
+        categoryId?: string;
     }
 
     export interface IEventData {
