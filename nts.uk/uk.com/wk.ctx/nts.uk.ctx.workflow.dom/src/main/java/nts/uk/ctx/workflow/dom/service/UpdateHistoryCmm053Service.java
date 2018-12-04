@@ -10,7 +10,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 public interface UpdateHistoryCmm053Service {
 	/**
 	 * Update History By Manager Setting
-	 * 
+	 * 03.履歴更新を登録する
 	 * @param companyId
 	 * @param historyId
 	 * @param employeeId

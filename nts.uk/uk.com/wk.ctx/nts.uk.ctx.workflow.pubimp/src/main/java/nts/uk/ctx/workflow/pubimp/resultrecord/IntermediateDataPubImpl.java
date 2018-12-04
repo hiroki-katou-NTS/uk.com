@@ -377,13 +377,17 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 			ClosureDate closureDate) {
 		String companyID = AppContexts.user().companyId();
 		
-		String rootID = IdentifierUtil.randomUniqueId();
-		
-		AppRootConfirm newDomain = new AppRootConfirm(rootID, companyID, employeeID, date,
-				RecordRootType.CONFIRM_WORK_BY_MONTH, Collections.emptyList(),
-				Optional.of(yearMonth), Optional.of(closureID), Optional.of(closureDate));
-		
-		this.appRootConfirmRepository.insert(newDomain);
+		Optional<AppRootConfirm> opAppRootConfirm =
+				appRootConfirmRepository.findByEmpMonth(companyID, employeeID, yearMonth, closureID, closureDate, RecordRootType.CONFIRM_WORK_BY_MONTH);
+		if(!opAppRootConfirm.isPresent()){
+			String rootID = IdentifierUtil.randomUniqueId();
+			
+			AppRootConfirm newDomain = new AppRootConfirm(rootID, companyID, employeeID, date,
+					RecordRootType.CONFIRM_WORK_BY_MONTH, Collections.emptyList(),
+					Optional.of(yearMonth), Optional.of(closureID), Optional.of(closureDate));
+			
+			this.appRootConfirmRepository.insert(newDomain);
+		}
 	}
 
 	@Override
