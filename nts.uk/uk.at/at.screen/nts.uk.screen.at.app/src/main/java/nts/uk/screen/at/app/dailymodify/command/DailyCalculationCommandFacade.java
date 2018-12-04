@@ -115,7 +115,7 @@ public class DailyCalculationCommandFacade {
 				.map(d -> d.toDomain(d.getEmployeeId(), d.getDate())).collect(Collectors.toList());
 
 		// check error truoc khi tinh toan
-		Map<Integer, List<DPItemValue>> resultError = errorCheckBeforeCalculation(dataParent.getItemValues(), querys, mapSidDateEdit);
+		Map<Integer, List<DPItemValue>> resultError = errorCheckBeforeCalculation(dataParent.getItemValues(), querys, mapSidDateEdit, editedDtos);
 		FlexShortageRCDto flexShortage = null;
 		if (resultError.values().stream().filter(z -> z.size() > 0).collect(Collectors.toList()).isEmpty()) {
 			// tinh toan daily result
@@ -184,16 +184,22 @@ public class DailyCalculationCommandFacade {
 	/**
 	 * 計算前エラーチェック
 	 */
-	private Map<Integer, List<DPItemValue>> errorCheckBeforeCalculation(List<DPItemValue> editedItems, List<DailyModifyQuery> querys, Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDateEdit) {
+	private Map<Integer, List<DPItemValue>> errorCheckBeforeCalculation(List<DPItemValue> editedItems, List<DailyModifyQuery> querys, Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDateEdit, List<DailyRecordDto> editedDtos) {
 		Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
-		Pair<List<DailyRecordDto>, List<DailyRecordDto>> mergeDto = toDto(querys);
-		List<DailyRecordDto> dtoOlds = mergeDto.getLeft();
+//		Pair<List<DailyRecordDto>, List<DailyRecordDto>> mergeDto = toDto(querys);
+//		List<DailyRecordDto> dtoOlds = mergeDto.getLeft();
 		// map to list result -> check error;
-		List<DailyModifyResult> resultOlds = dtoOlds.stream()
+//		List<DailyModifyResult> resultOlds = dtoOlds.stream()
+//				.map(c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c))
+//						.workingDate(c.workingDate()).employeeId(c.employeeId()).completed())
+//				.collect(Collectors.toList());
+		
+		List<DailyModifyResult> resultNews = editedDtos.stream()
 				.map(c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c))
 						.workingDate(c.workingDate()).employeeId(c.employeeId()).completed())
 				.collect(Collectors.toList());
-		Map<Pair<String, GeneralDate>, List<DailyModifyResult>> mapSidDateOrigin = resultOlds.stream()
+		
+		Map<Pair<String, GeneralDate>, List<DailyModifyResult>> mapSidDateOrigin = resultNews.stream()
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 		List<DPItemValue> itemErrors = new ArrayList<>();
 		List<DPItemValue> itemInputErors = new ArrayList<>();
