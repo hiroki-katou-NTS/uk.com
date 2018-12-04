@@ -15,23 +15,27 @@
     padding-right: 10px;
 }
 
-#A2_1 .table{
+#A2_1 .table {
     width: 420px;
 }
 
-#A2_1 .table .cell:nth-child(1){
+#A2_1 .table .cell:nth-child(1) {
     width: 80px;
 }
-#A2_1 .table .cell:nth-child(2){
+
+#A2_1 .table .cell:nth-child(2) {
     width: 85px;
 }
-#A2_1 .table .cell:nth-child(3){
+
+#A2_1 .table .cell:nth-child(3) {
     width: 75px;
 }
-#A2_1 .table .cell:nth-child(4){
+
+#A2_1 .table .cell:nth-child(4) {
     width: 30px;
 }
-#A2_1 .table .cell:nth-child(5){
+
+#A2_1 .table .cell:nth-child(5) {
     width: 100px;
 }
 
@@ -43,3 +47,22 @@
 #grid .delete {
     background-color: #ff0000;
 }
+
+#grid .mgrid-disable {
+    border-color: #AAB7B8;
+}
+
+#grid .mgrid-header td.left-align {
+    text-align: left;
+}
+
+/*
+#grid .mgrid-free td.currency-symbol {
+    text-align: right;
+}
+
+#grid .mgrid-free td.currency-symbol:before {
+    float: left;
+    padding-right: 0px;
+    padding-left: 4px;
+}*/

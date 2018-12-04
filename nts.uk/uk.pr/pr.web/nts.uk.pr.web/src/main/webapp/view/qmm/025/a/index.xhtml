@@ -27,17 +27,16 @@
     <ui:define name="content">
         <div id="functions-area">
             <!--A1_1-->
-            <button tabindex="1" class="proceed" data-bind="click: registerAmount">#{i18n.getText('QMM025_1')}</button>
+            <button tabindex="1" class="proceed" data-bind="click: registerAmount, enable: $root.errors.isEmpty">#{i18n.getText('QMM025_1')}</button>
             <!--A1_2-->
-            <button tabindex="2" data-bind="click: test, enable: true">#{i18n.getText('QMM025_2')}</button>
-            <button tabindex="2" data-bind="click: test2, enable: true">#{i18n.getText('QMM025_2')}</button>
+            <button tabindex="2" data-bind="enable: false">#{i18n.getText('QMM025_2')}</button>
             <!--A1_3-->
             <a class="goout" tabindex="3"
                data-bind="ntsLinkButton: { action: jumpToCps001 }">#{i18n.getText('QMM025_3')}</a>
         </div>
         <div id="contents-area">
             <!--A2_7-->
-            <div id="com-ccg001" tabindex="6"></div>
+            <div id="com-ccg001" tabindex="6"/>
             <div id="content-qmm">
                 <!--A2_1-->
                 <div id="A2_1" class="panel panel-frame">
@@ -48,11 +47,11 @@
                         </div>
                         <div class="cell valign-center">
                             <!--A2_3-->
-                            <div id="A2_3" tabindex="4" data-bind="ntsDatePicker: {value: year, dateFormat: 'YYYY'}"></div>
+                            <div id="A2_3" tabindex="4" data-bind="ntsDatePicker: {value: year, dateFormat: 'YYYY'}"/>
                         </div>
                         <div class="cell valign-center">
                             <!--A2_4-->
-                            <div class="label" data-bind="text: japanYear()"></div>
+                            <div class="label" data-bind="text: japanYear()"/>
                         </div>
                         <div class="cell valign-center">
                             <!--A2_5-->
@@ -69,7 +68,7 @@
                 <button id="A2_8" tabindex="7" class="danger"
                         data-bind="click: deleteAmount">#{i18n.getText('QMM025_7')}</button>
                 <!--A3_1-->
-                <table id="grid" tabindex="8"></table>
+                <table id="grid" tabindex="8"/>
             </div>
         </div>
     </ui:define>
