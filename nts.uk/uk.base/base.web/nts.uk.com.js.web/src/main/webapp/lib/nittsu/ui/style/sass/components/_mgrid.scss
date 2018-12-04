@@ -79,6 +79,10 @@
 	color: #333;
 }
 
+.mgrid table tr td.mgrid-lock {
+	background-color: #CCC;
+}
+
 .mgrid table tr td.mgrid-reflect {
 	background-color: #BFEA60;
 }
@@ -251,6 +255,37 @@
 	border: 1px double #ff6666;
 }
 
+.mgrid table tr td span.hidden-button {
+	background-image: url(images/icons/s_sum_user_hidden.png);
+	display: inline-block;
+	width: 19px;
+	height: 17px;
+	vertical-align: middle;
+	background-repeat: no-repeat;
+}
+
+.mgrid table tr td span.mg-icon {
+	display: inline-block;
+	width: 19px;
+	height: 20px;
+	vertical-align: middle;
+	background-repeat: no-repeat;
+	background-size: cover;
+    background-position: center center;
+}
+
+.mgrid table tr td span.view-facon-asc {
+	background-image: url(images/icons/sort_down.png);
+}
+
+.mgrid table tr td span.facon-asc {
+	background-image: url(images/icons/sort_down_green.png);
+}
+
+.mgrid table tr td span.facon-desc {
+	background-image: url(images/icons/sort_up_green.png);
+}
+
 .mgrid .mgrid-fixed-summaries tr td,
 .mgrid .mgrid-free-summaries tr td {
 	border-width: 0px 0px 0px 1px;
@@ -400,4 +435,38 @@
 
 .mgrid-sheet-scrollbar.disable li {
 	color: #aaa;
+}
+
+.mgrid-facon-button {
+	display: none;
+	position: absolute;
+	top: 2px;
+	cursor: pointer;
+}
+
+.mgrid-freinholder {
+	position: absolute;
+	opacity: 0.5;
+	text-align: center;
+	cursor: move;
+	box-shadow: 1em 1em 3em -1em inset;
+	font-weight: bold;
+	border: 1px solid #CCC; 
+}
+
+.mgrid-placeholder {
+	position: absolute;
+	-moz-box-shadow: 4px 5px 4px #C6C6C6 inset;
+    -webkit-box-shadow: 4px 5px 4px #C6C6C6 inset;
+    box-shadow: 4px 5px 4px #C6C6C6 inset;
+    border: 1px solid #CCC;
+    background: #EFEFEF;
+}
+
+.mgrid-error-message {
+	position: absolute;
+	border: 1px solid #F00;
+	background-color: #FCC;
+	max-width: 300px;
+	padding: 3px;
 }
