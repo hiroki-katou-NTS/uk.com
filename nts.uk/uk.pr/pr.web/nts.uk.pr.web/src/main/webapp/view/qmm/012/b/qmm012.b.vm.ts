@@ -317,16 +317,16 @@ module nts.uk.pr.view.qmm012.b {
                     $(".check-validate").trigger("validate");
 
                     // clear rangeSet validate if disable
-                    if(!itemRangeSet.errorUpperLimitSettingAtrCus()) {
+                    if((itemRangeSet != null) && !itemRangeSet.errorUpperLimitSettingAtrCus()) {
                         $('#E1_20').ntsError('clear');
                     }
-                    if(!itemRangeSet.errorLowerLimitSettingAtrCus()) {
+                    if((itemRangeSet != null) && !itemRangeSet.errorLowerLimitSettingAtrCus()) {
                         $('#E1_23').ntsError('clear');
                     }
-                    if(!itemRangeSet.alarmUpperLimitSettingAtrCus()) {
+                    if((itemRangeSet != null) && !itemRangeSet.alarmUpperLimitSettingAtrCus()) {
                         $('#E1_27').ntsError('clear');
                     }
-                    if(!itemRangeSet.alarmLowerLimitSettingAtrCus()) {
+                    if((itemRangeSet != null) && !itemRangeSet.alarmLowerLimitSettingAtrCus()) {
                         $('#E1_30').ntsError('clear');
                     }
                 }
