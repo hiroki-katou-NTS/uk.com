@@ -5487,6 +5487,12 @@ div .ex-area-line.x-stay {
   padding: 3px;
 }
 
+/* line 474, ../sass/components/_mgrid.scss */
+.mgrid-refer-text {
+  display: inline-block;
+  margin-left: 10px;
+}
+
 /* line 1, ../sass/frame/_header.scss */
 #header {
   background-color: #ccc;

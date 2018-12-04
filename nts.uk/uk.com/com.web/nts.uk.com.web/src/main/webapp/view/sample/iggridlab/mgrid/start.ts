@@ -30,6 +30,7 @@ module nts.uk.ui.gridlist {
             comboCode1: number;
             combo: string;
             header0: string;
+            workplace: string;
             comboCode2: number;
             header01: string;
             header1: string;
@@ -56,6 +57,7 @@ module nts.uk.ui.gridlist {
                 this.comboCode1 = String(index % 3 + 1);
                 this.combo = String(index % 3 + 1);
                 this.header0 = "Out";
+                this.workplace = "Not select";
                 this.comboCode2 = String(index % 3 + 4);
                 this.header01 = String(index % 3 + 4);
                 this.header02 = String(index % 3 + 1);
@@ -319,6 +321,7 @@ module nts.uk.ui.gridlist {
                                             { headerText: 'Header01', key: 'header01', dataType: 'string', width: '500px', ntsControl: 'Combobox2' },
                                 ]},
                                 { headerText: 'Header02', key: 'header02', dataType: 'string', width: '500px', ntsControl: 'Combobox3' },
+                                { headerText: 'Workplace', key: "workplace", dataType: 'string', width: '190px', ntsControl: 'WpButton' },
                                 { headerText: '住所',
                                     group: [
                                             { headerText: 'Address<br/>Code2', key: 'addressCode2', dataType: 'string', width: '150px', inputProcess: inputProcess },
@@ -396,7 +399,7 @@ module nts.uk.ui.gridlist {
                                         { name: "Sheet", 
                                           initialDisplay: "sheet1",
                                           sheets: [ 
-                                                    { name: "sheet1", text: "Sheet 1", columns: ["select", "time", "addressCode1", "address1", "fullDate", "yearMonth", "year", "comboCode1", "combo", "addressCode2", "address2", "header0", "comboCode2", "header01", "header02"] }, 
+                                                    { name: "sheet1", text: "Sheet 1", columns: ["select", "time", "addressCode1", "address1", "fullDate", "yearMonth", "year", "comboCode1", "combo", "addressCode2", "address2", "header0", "comboCode2", "header01", "workplace", "header02"] }, 
                                                     { name: "sheet2", text: "Sheet 2", columns: ["addressCode1", "address1", "time", "header1", "header2", "header3", "header4", "header5", "header6", "alert"] }
                                                   ]
                                         },
@@ -454,9 +457,9 @@ module nts.uk.ui.gridlist {
                                                 pageRecordsPath: "/sample/lazyload/data",
                                             }
                                          ],
-                            ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true, onChange: function(a, b, c, d) {
-                                            console.log(d); }  },
+                            ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true, onChange: function() {} },
                                             { name: 'Checkbox1', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true, onChange: function() {} },
+                                            { name: 'WpButton', text: 'Select', enable: true, click: function() {}, controlType: "ReferButton" },
                                             { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small' },
                                             { name: 'DeleteButton', text: 'Delete', controlType: 'DeleteButton', enable: true },
                                             { name: 'Button', controlType: 'Button', text: 'Warn me', enable: true, click: function() { alert("Oops!!"); } },

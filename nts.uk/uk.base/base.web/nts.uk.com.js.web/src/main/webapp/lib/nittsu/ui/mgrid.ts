@@ -4296,7 +4296,7 @@ module nts.uk.ui.mgrid {
                     if (!ds) ds = [];
                     _.forEach(_.keys(_mafollicle), k => {
                         if (k === SheetDef || Number(k) === _currentPage) return;
-                        _.forEach(_mafollicle.dataSource, s => {
+                        _.forEach(_mafollicle[k].dataSource, s => {
                             ds.push(_.cloneDeep(s));
                         });
                     });
@@ -4777,6 +4777,13 @@ module nts.uk.ui.mgrid {
                         if ($image) ti.remove($image);
                     }
                     su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
+                } else if (dkn.controlType[key] === dkn.REFER_BUTTON) {
+                    let txt = $cell.querySelector(".mgrid-refer-text");
+                    if (txt) {
+                        txt.innerHTML = val;
+                        su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
+                        $.data($cell, v.DATA, val);
+                    }
                 } else if (dkn.controlType[key] === dkn.LABEL) {
                     $cell.innerHTML = val;
                     su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
@@ -7110,6 +7117,7 @@ module nts.uk.ui.mgrid {
         export let COMBOBOX: string = 'ComboBox'; 
         export let BUTTON: string = 'Button';
         export let DELETE_BUTTON = 'DeleteButton';
+        export let REFER_BUTTON = 'ReferButton';
         export let DATE_PICKER = 'DatePicker';
         export let TEXTBOX = 'TextBox';
         export let TEXT_EDITOR = 'TextEditor';
@@ -7149,6 +7157,8 @@ module nts.uk.ui.mgrid {
                     return button;
                 case DELETE_BUTTON:
                     return deleteButton;
+                case REFER_BUTTON:
+                    return referButton;
                 case DATE_PICKER:
                     return ramass;
 //                case TEXT_EDITOR:
@@ -7817,7 +7827,7 @@ module nts.uk.ui.mgrid {
             $button.innerHTML = data.controlDef.text || data.initValue;
             $button.setAttribute("tabindex", -1)
             $.data($button, "enable", data.enable);
-            let clickHandle = data.controlDef.click.bind(null, data.rowObj);
+            let clickHandle = data.controlDef.click.bind(null, data.rowObj, data.rowId, data.columnKey);
             $.data($button, ssk.CLICK_EVT, clickHandle);
             if (data.enable) $button.addXEventListener("click", clickHandle);
             $button.disabled = !data.enable;
@@ -7836,6 +7846,19 @@ module nts.uk.ui.mgrid {
             let btn = btnContainer.querySelector("button");
             btn.removeXEventListener("click", data.controlDef.click);
             btn.addXEventListener("click", data.deleteRow);
+            return btnContainer;
+        }
+        
+        /**
+         * Refer button.
+         */
+        function referButton(data: any) {
+            let btnContainer = button(data);
+            controlType[data.columnKey] = REFER_BUTTON;
+            let selected = _prtDiv.cloneNode(true);
+            selected.classList.add("mgrid-refer-text");
+            selected.innerHTML = data.initValue || "";
+            btnContainer.appendChild(selected);
             return btnContainer;
         }
             
