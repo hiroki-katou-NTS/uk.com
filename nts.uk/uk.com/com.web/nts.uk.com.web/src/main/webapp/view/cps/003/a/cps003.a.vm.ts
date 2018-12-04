@@ -86,6 +86,7 @@ module cps003.a.vm {
         constructor() {
             let self = this;
 
+            //fetch all category by login 
             service.fetch.category(__viewContext.user.employeeId)
                 .done(data => self.category.items(data));
 
