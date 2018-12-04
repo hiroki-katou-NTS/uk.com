@@ -7,6 +7,6 @@ module cps003.a.service {
 
     export const fetch = {
         person: (id: string) => ajax(`/ctx/person/${id}`),
-
+        category: (id: string) => ajax(`ctx/pereg/employee/category/getall/${id}`)
     }
 }

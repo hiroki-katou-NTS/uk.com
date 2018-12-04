@@ -38,6 +38,10 @@
 	z-index: 9;
 }
 
+.data-layout .form-group.configs-bar {
+	padding-left: 125px;
+}
+
 .data-layout .layout-multi-control {
 	z-index: 0;
 	margin-top: -60px;

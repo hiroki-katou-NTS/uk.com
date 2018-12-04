@@ -20,40 +20,45 @@ module cps003.a.vm {
 
     export class ViewModel {
         ccgcomponent: any = {
-            baseDate: ko.observable(new Date()),
-            //Show/hide options
-            isQuickSearchTab: ko.observable(true),
-            isAdvancedSearchTab: ko.observable(true),
-            isAllReferableEmployee: ko.observable(true),
-            isOnlyMe: ko.observable(true),
-            isEmployeeOfWorkplace: ko.observable(true),
-            isEmployeeWorkplaceFollow: ko.observable(true),
-            isMutipleCheck: ko.observable(true),
-            isSelectAllEmployee: ko.observable(true),
-            onSearchAllClicked: (dataList: Array<IEmployee>) => {
-                let self = this,
-                    data = self.gridList.inData;
-                data.employees(dataList);
-            },
-            onSearchOnlyClicked: (data: IEmployee) => {
-                let self = this,
-                    _data = self.gridList.inData;
-                _data.employees([data]);
-            },
-            onSearchOfWorkplaceClicked: (dataList: Array<IEmployee>) => {
-                let self = this,
-                    data = self.gridList.inData;
-                data.employees(dataList);
-            },
-            onSearchWorkplaceChildClicked: (dataList: Array<IEmployee>) => {
-                let self = this,
-                    data = self.gridList.inData;
-                data.employees(dataList);
-            },
-            onApplyEmployee: (dataList: Array<IEmployee>) => {
-                let self = this,
-                    data = self.gridList.inData;
-                data.employees(dataList);
+            /** Common properties */
+            systemType: 1, // シスッ�区�
+            showEmployeeSelection: true, // 検索タイ�
+            showQuickSearchTab: true, // クイヂ�検索
+            showAdvancedSearchTab: true, // 詳細検索
+            showBaseDate: false, // 基準日利用
+            showClosure: false, // 就業�め日利用
+            showAllClosure: true, // 全�め表示
+            showPeriod: false, // 対象期間利用
+            periodFormatYM: true, // 対象期間精度
+
+            /** Required parame*/
+            baseDate: moment.utc().toISOString(), // 基準日
+            periodStartDate: moment.utc("1900/01/01", "YYYY/MM/DD").toISOString(), // 対象期間開始日
+            periodEndDate: moment.utc("9999/12/31", "YYYY/MM/DD").toISOString(), // 対象期間終亗�
+            inService: true, // 在職区�
+            leaveOfAbsence: true, // 休�区�
+            closed: true, // 休業区�
+            retirement: false, // 退職区�
+
+            /** Quick search tab options */
+            showAllReferableEmployee: true, // 参�可能な社員すべて
+            showOnlyMe: true, // 自刁��
+            showSameWorkplace: true, // 同じ職場の社員
+            showSameWorkplaceAndChild: true, // 同じ職場とそ�配下�社員
+
+            /** Advanced search properties */
+            showEmployment: true, // 雔�条件
+            showWorkplace: true, // 職場条件
+            showClassification: true, // 刡�条件
+            showJobTitle: true, // 職位条件
+            showWorktype: false, // 勤種条件
+            isMutipleCheck: true, // 選択モー�
+
+            /** Return data */
+            returnDataFromCcg001: (data: any) => {
+                let self = this;
+
+                self.employees(data.listEmployee);
             }
         };
 
@@ -64,27 +69,36 @@ module cps003.a.vm {
             },
             outData: ko.observableArray([])
         }
+        
+        baseDate: KnockoutObservable<Date> = ko.observable();
+
+        category: {
+            catId: KnockoutObservable<string>;
+            items: KnockoutObservableArray<any>;
+        } = {
+            catId: ko.observable(''),
+            items: ko.observableArray([])
+        };
 
         // for employee info.
         employees: KnockoutObservableArray<IEmployee> = ko.observableArray([]);
-        employee: KnockoutObservable<Employee> = ko.observable(new Employee());
 
         constructor() {
-            let self = this,
-                employee = self.employee();
+            let self = this;
+
+            service.fetch.category(__viewContext.user.employeeId)
+                .done(data => self.category.items(data));
 
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
             });
         }
 
         start() {
-            let self = this,
-                employee = self.employee();
+            let self = this;
         }
 
         saveData() {
             let self = this,
-                emp = self.employee(),
                 command: {
                 };
 
@@ -112,21 +126,21 @@ module cps003.a.vm {
                 alert(mes.message);
             });
         }
-        
-        openBDialog(){
-            
+
+        openBDialog() {
             let self = this,
                 params = {
                     systemDate: "2018/12/21",
                     categoryId: "111",
-                    categoryName:"AAAA",
+                    categoryName: "AAAA",
                     mode: 1
                 };
+
+            block();
+            setShared('CPS003B_VALUE', params);
             
-        block();
-        setShared('CPS003B_VALUE', params);
-        modal("/view/cps/003/b/index.xhtml").onClosed(() => {
-        });   
+            modal("/view/cps/003/b/index.xhtml").onClosed(() => {
+            });
         }
     }
 

@@ -32,7 +32,7 @@
 				<button type="button" data-bind="click: openBDialog" tabindex="3">#{i18n.getText('A1_004')}</button>
 			</div>
 			<div id="contents-area" class="cf"
-				data-bind="let: { 
+				data-bind="let: {
 						text: nts.uk.resource.getText
 					}">
 				<div id="ccgcomponent" tabindex="6"></div>
@@ -40,25 +40,22 @@
 					<div class="form-groups">
 						<div class="form-group">
 							<div class="fixed-width" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('A2_002')}</div>
-							<div data-bind="ntsDatePicker: { value: ko.observable('2018/01/01'), dateFormat: 'YYYY/MM/DD'}"></div>
+							<div data-bind="ntsDatePicker: { value: $vm.baseDate, dateFormat: 'YYYY/MM/DD'}"></div>
 						</div>
 						<div class="form-group">
 							<div class="fixed-width" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('A2_003')}</div>
 							<div id="combo-box" data-bind="ntsComboBox: {
 								name: 'A2_003',
-								options: [],
-								optionsValue: 'code',
-								visibleItemsCount: 5,
-								value: ko.observable(),
-								optionsText: 'name',
-								editable: true,
-								enable: true,
-								required: false,
-								selectFirstIfNull: true,
-								columns: [
-									{ prop: 'code', length: 4 },
-									{ prop: 'name', length: 10 },
-								]}"></div>
+								value: $vm.category.catId,
+								options: $vm.category.items,
+                                optionsText: 'categoryName',
+                                optionsValue: 'id',
+                                visibleItemsCount: 10,
+                                dropDownAttachedToBody: true,
+                                columns: [
+                                    /*{ prop: 'categoryCode', toggle: 'hidden', length: 20 },*/
+                                    { prop: 'categoryName', length: 14}
+                                ]}"></div>
 								<button data-bind="text: '#{i18n.getText('A2_005')}'"></button>
 								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('A2_006')}</div>
 								<label>#{i18n.getText('A2_007')}</label>
@@ -76,13 +73,14 @@
 								required: true,
 								enable: true }"></div>
 						</div>
-						<div class="form-group margin-left">
+						<div class="form-group configs-bar">
 							<button data-bind="text: '#{i18n.getText('A2_015')}'"></button>
 							<button>?</button>
 							<button data-bind="text: '#{i18n.getText('A2_017')}'"></button>
 						</div>
 					</div>
 				</div>
+				<div class="table"></div>
 			</div>
 		</ui:define>
 	</ui:composition>
