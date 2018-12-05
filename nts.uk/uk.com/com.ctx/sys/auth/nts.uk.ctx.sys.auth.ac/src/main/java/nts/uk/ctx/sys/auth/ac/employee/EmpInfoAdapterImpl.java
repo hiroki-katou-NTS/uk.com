@@ -6,6 +6,7 @@ package nts.uk.ctx.sys.auth.ac.employee;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -106,7 +107,7 @@ public class EmpInfoAdapterImpl implements EmpInfoAdapter {
 	}
 
 	@Override
-	public List<String> getListEmployee(List<String> jobTitleIds, GeneralDate baseDate) {
+	public Set<String> getListEmployee(List<String> jobTitleIds, GeneralDate baseDate) {
 		return syEmployeePub.getListEmployee(jobTitleIds, baseDate);
 	}
 

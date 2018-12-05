@@ -6,6 +6,7 @@ package nts.uk.ctx.bs.employee.pub.employee;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -162,7 +163,7 @@ public interface SyEmployeePub {
 	 * 職位ID（List）と基準日から該当する社員一覧を取得する
 	 * RequestList515, RequestList466 trỏ đến RequestList515
 	 */
-	List<String> getListEmployee(List<String> jobTitleIds, GeneralDate baseDate);
+	Set<String> getListEmployee(List<String> jobTitleIds, GeneralDate baseDate);
 	
 	/**
 	 * RequestList101
