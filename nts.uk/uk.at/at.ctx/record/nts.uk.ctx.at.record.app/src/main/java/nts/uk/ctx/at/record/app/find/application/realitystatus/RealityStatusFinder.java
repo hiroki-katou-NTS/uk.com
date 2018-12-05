@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.application.realitystatus.output.DailyConfirmOut
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.EmpPerformanceOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.ErrorStatusOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.StatusWkpActivityOutput;
+import nts.uk.ctx.at.record.dom.application.realitystatus.output.SttWkpActivityOutputFull;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.UseSetingOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.WkpIdMailCheckOutput;
 import nts.uk.shr.com.context.AppContexts;
@@ -28,7 +29,7 @@ public class RealityStatusFinder {
 	@Inject
 	RealityStatusService realityStatusService;
 
-	public List<StatusWkpActivityOutput> getStatusWkpActivity(RealityStatusActivityParam wkpInfoDto) {
+	public SttWkpActivityOutputFull getStatusWkpActivity(RealityStatusActivityParam wkpInfoDto) {
 		// アルゴリズム「承認状況職場実績起動」を実行する
 		return realityStatusService.getStatusWkpActivity(wkpInfoDto.getListWorkplaceId(), wkpInfoDto.getStartDate(),
 				wkpInfoDto.getEndDate(), wkpInfoDto.getListEmpCd(), wkpInfoDto.isConfirmData(), wkpInfoDto.getClosureID());
