@@ -26,10 +26,10 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button type="button" class="proceed" data-bind="" tabindex="1">#{i18n.getText('A1_001')}</button>
-				<button type="button" data-bind="" tabindex="2">#{i18n.getText('A1_002')}</button>
-				<button type="button" class="danger" data-bind="" tabindex="3">#{i18n.getText('A1_003')}</button>
-				<button type="button" data-bind="click: openBDialog" tabindex="3">#{i18n.getText('A1_004')}</button>
+				<button type="button" class="proceed" data-bind="" tabindex="1">#{i18n.getText('CPS003_7')}</button>
+				<button type="button" data-bind="" tabindex="2">#{i18n.getText('CPS003_8')}</button>
+				<button type="button" class="danger" data-bind="" tabindex="3">#{i18n.getText('CPS003_9')}</button>
+				<button type="button" data-bind="click: openBDialog" tabindex="3">#{i18n.getText('CPS003_10')}</button>
 			</div>
 			<div id="contents-area" class="cf"
 				data-bind="let: {
@@ -39,11 +39,11 @@
 				<div class="data-layout">
 					<div class="form-groups">
 						<div class="form-group">
-							<div class="fixed-width" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('A2_002')}</div>
+							<div class="fixed-width" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_12')}</div>
 							<div data-bind="ntsDatePicker: { value: $vm.baseDate, dateFormat: 'YYYY/MM/DD'}"></div>
 						</div>
 						<div class="form-group">
-							<div class="fixed-width" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('A2_003')}</div>
+							<div class="fixed-width" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_13')}</div>
 							<div id="combo-box" data-bind="ntsComboBox: {
 								name: 'A2_003',
 								value: $vm.category.catId,
@@ -56,17 +56,17 @@
                                     /*{ prop: 'categoryCode', toggle: 'hidden', length: 20 },*/
                                     { prop: 'categoryName', length: 14}
                                 ]}"></div>
-								<button data-bind="text: '#{i18n.getText('A2_005')}'"></button>
-								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('A2_006')}</div>
-								<label>#{i18n.getText('A2_007')}</label>
+								<button id="column-display" data-bind="text: '#{i18n.getText('CPS003_14')}'"></button>
+								<div class="fixed-width margin-left" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_15')}</div>
+								<label id="history-type">#{i18n.getText('A2_007')}</label>
 								<button data-bind="ntsHelpButton: {textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'right center' }">？</button>
 						</div>
 						<div class="form-group margin-left">
-							<div class="fixed-width" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_24')}</div>
+							<div class="fixed-width" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_17')}</div>
 							<button>?</button>
 							<div class="cf" data-bind="ntsSwitchButton: {
 								name: 'A2_012',
-								options: [{id: 1, name: 'A2_013'}, {id: 2, name: 'A2_014'}],
+								options: [{id: 1, name: '#{i18n.getText('CPS003_19')}'}, {id: 2, name: '#{i18n.getText('CPS003_20')}'}],
 								optionsValue: 'id',
 								optionsText: 'name',
 								value: ko.observable(1),
@@ -74,9 +74,11 @@
 								enable: true }"></div>
 						</div>
 						<div class="form-group configs-bar">
-							<button data-bind="text: '#{i18n.getText('A2_015')}'"></button>
+							<button id="emp-redisplay" data-bind="text: '#{i18n.getText('CPS003_21')}'"></button>
 							<button>?</button>
-							<button data-bind="text: '#{i18n.getText('A2_017')}'"></button>
+							<button id="batch-change" data-bind="text: '#{i18n.getText('CPS003_23')}'"></button>
+							<button id="settings"></button>
+							<button id="width-save" data-bind="text: '#{i18n.getText('CPS003_24')}'"></button>
 						</div>
 					</div>
 				</div>

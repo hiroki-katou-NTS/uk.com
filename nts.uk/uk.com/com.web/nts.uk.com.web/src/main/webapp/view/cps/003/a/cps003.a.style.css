@@ -30,8 +30,42 @@
 	width: 125px;
 }
 
+.data-layout .form-group .margin-left {
+	margin-left: 60px;
+}
+
 .data-layout .form-group .ntsRadioBox {
 	margin-right: 20px;
+}
+
+.data-layout .form-group #column-display {
+	margin-left: 30px;
+}
+
+.data-layout .form-group #history-type {
+	margin-right: 40px;
+}
+
+.data-layout .form-group #emp-redisplay {
+	margin-right: 10px;
+}
+
+.data-layout .form-group #batch-change {
+	margin-left: 80px;
+}
+
+.data-layout .form-group #width-save {
+	float: right;
+	margin-right: 30px;
+}
+
+.data-layout .form-group #settings {
+	float: right;
+	margin-right: 100px;
+	width: 30px;
+	background-image: url(icons/setting.png);
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .data-layout .form-groups {
