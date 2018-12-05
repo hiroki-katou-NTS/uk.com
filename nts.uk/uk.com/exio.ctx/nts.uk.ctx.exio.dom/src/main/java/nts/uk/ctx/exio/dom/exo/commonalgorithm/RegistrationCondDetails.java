@@ -37,8 +37,8 @@ public class RegistrationCondDetails {
 			if (RegisterMode.NEW.equals(registerMode)) {
 				stdOutCndDetailRepo.add(outCndDetail);
 			} else {
-				stdOutCndDetailRepo.remove(cid, outCndDetail.getConditionSettingCd().v());
-				stdOutCndDetailRepo.add(outCndDetail);
+//				stdOutCndDetailRepo.remove(cid, outCndDetail.getConditionSettingCd().v());
+				stdOutCndDetailRepo.update(outCndDetail);
 			}
 		}
 	}
