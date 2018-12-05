@@ -1,7 +1,6 @@
 package nts.uk.file.com.app.subscriberegis;
 
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.workflow.dom.export.agent.AgentExportData;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
@@ -22,7 +21,7 @@ import java.util.List;
 public class SubscribeRegisExportImpl implements MasterListData {
 
     @Inject
-    SubscribeRegisRepository subscribeRegisRepository;
+    private SubscribeRegisRepository subscribeRegisRepository;
 
     @Override
     public List<MasterData> getMasterDatas(MasterListExportQuery query) {

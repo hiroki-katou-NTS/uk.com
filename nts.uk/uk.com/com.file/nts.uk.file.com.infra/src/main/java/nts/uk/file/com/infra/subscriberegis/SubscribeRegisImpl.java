@@ -60,7 +60,7 @@ public class SubscribeRegisImpl implements SubscribeRegisRepository {
         //endDate
         data.put(SubscribeRegisColumn.CMM044_45, object[3] == null ? null : object[3].toString().substring(0,10));
         //type
-        data.put(SubscribeRegisColumn.CMM044_46, TextResource.localize("CMM044_16"));
+        data.put(SubscribeRegisColumn.CMM044_46, object[4] == null ? null : TextResource.localize("CMM044_16"));
         //personame
         data.put(SubscribeRegisColumn.CMM044_47, object[4] == null ? null : object[4].toString());
         //getAgentAppType2
