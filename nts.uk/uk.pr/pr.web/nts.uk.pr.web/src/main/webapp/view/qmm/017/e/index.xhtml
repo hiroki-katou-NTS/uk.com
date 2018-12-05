@@ -79,8 +79,9 @@
                                 <div data-bind = "if: standardAmountClassification() != 0">
                                     <button data-bind = "click: function(){$vm.selectTargetItem()}" tabindex = "4">#{i18n.getText('QMM017_107')}</button>
                                     <input data-bind="ntsNumberEditor: {
-                                value: $vm.baseAmountTargetItem,
-                                enable: false}" />
+                                        value: $vm.baseAmountTargetItem,
+                                        required: true,
+                                        enable: false}" />
                                 </div>
                                 <!--E2_6-->
                                 <div  data-bind = "if: standardAmountClassification() == 0">

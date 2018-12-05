@@ -4,10 +4,11 @@ module nts.uk.pr.view.qmm017.a.service {
     var parentPath = "ctx/pr/core/wageprovision/formula";
     var paths = {
         getAllFormula: parentPath + "/getAllFormula",
-        getFormulaSettingByHistoryID: parentPath + "/getFormulaSettingByHistoryID/{0}",
+        getFormulaSettingByHistoryID: parentPath + "/getFormulaSettingByHistoryID",
         addFormula: parentPath + "/addFormula",
         addFormulaHistory: parentPath + "/addFormulaHistory",
-        updateFormulaSetting: parentPath + "/updateFormula",
+        updateFormulaSetting: parentPath + "/updateFormulaSetting",
+        getMasterUseInfo: parentPath + "/getMasterUseInfo/{0}",
     }
     /**
      * get all
@@ -16,8 +17,14 @@ module nts.uk.pr.view.qmm017.a.service {
         return ajax(paths.getAllFormula);
     }
 
-    export function getFormulaSettingByHistory (historyID: string): JQueryPromise<any> {
-        return ajax(format(paths.getFormulaSettingByHistoryID, historyID));
+    export function getFormulaSettingByHistory (setting: settingParams): JQueryPromise<any> {
+        return ajax(paths.getFormulaSettingByHistoryID, setting);
+    }
+
+    export interface settingParams {
+        historyID: string,
+        withSetting: boolean,
+        masterUse: number
     }
 
     export function addFormula(command): JQueryPromise<any> {
@@ -30,5 +37,8 @@ module nts.uk.pr.view.qmm017.a.service {
 
     export function updateFormulaSetting(command): JQueryPromise<any> {
         return ajax(paths.updateFormulaSetting, command);
+    }
+    export function getMasterUseInfo(masterUseClassification: number): JQueryPromise<any> {
+        return ajax(format(paths.getMasterUseInfo, masterUseClassification));
     }
 }

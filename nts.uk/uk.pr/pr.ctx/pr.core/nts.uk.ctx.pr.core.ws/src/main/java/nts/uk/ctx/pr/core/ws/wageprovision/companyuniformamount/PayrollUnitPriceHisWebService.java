@@ -11,10 +11,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.wageprovision.companyuniformamount.*;
 import nts.uk.ctx.pr.core.app.command.wageprovision.companyuniformamount.PayrollUnitPriceHistoryCommand;
 import nts.uk.ctx.pr.core.app.command.wageprovision.companyuniformamount.UpdatePayrollUnitPriceHistoryCommandHandler;
-import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceHisKey;
-import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceHistoryDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceHistoryFinder;
-import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceHistorySettingDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.*;
 import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
@@ -104,4 +101,10 @@ public class PayrollUnitPriceHisWebService extends WebService {
         String cid  = AppContexts.user().companyId();
         return payrollUnitPriceHistoryFinder.getAllHistoryById(cid);
     }
+    @POST
+    @Path("getPayrollUnitPriceHistoryByYearMonth/{code}/{yearMonth}")
+    public CompanySalaryUnitPriceSettingDto getPayrollUnitPriceHistoryByYearMonth(@PathParam("code") String code, @PathParam("yearMonth") int yearMonth) {
+        return payrollUnitPriceHistoryFinder.getPayrollUnitPriceByCodeAndYearMonth(code, yearMonth);
+    }
+
 }
