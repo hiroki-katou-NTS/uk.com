@@ -54,13 +54,13 @@ public class DefaultBatchServer implements BatchServer, InitializeWhenDeploy {
 	}
 
 	@Override
-	public <Q, S> void request(TypedWebAPI<Q, S> api, Q requestEntity, Consumer<TypedCommunication<Q, S>> communicationBuilder) {
+	public <Q, S> void request(TypedWebAPI<Q, S> api, Consumer<TypedCommunication<Q, S>> communicationBuilder) {
 		
 		// LoginUserContextは、呼び出し元の状態を引き継ぎたいので、RequestHeaderとして送る
 		api.getRequestDefine().customHeader(
 				BatchServer.CUSTOM_HEADER_USER_CONTEXT,
 				this.userContext.toBase64());
-
+		
 		val client = DefaultNtsHttpClient.createDefault();
 		client.request(api, communicationBuilder);
 	}
