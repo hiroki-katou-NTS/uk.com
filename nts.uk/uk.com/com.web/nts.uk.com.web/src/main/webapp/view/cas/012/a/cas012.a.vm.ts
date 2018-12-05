@@ -80,6 +80,21 @@ module nts.uk.com.view.cas012.a.viewmodel {
             });
         }
 
+        exportExcel(){
+            let self = this;
+            nts.uk.ui.block.invisible();
+            let roleType = _.find(self.listRoleType(),(o)=> { return o.value === self.selectedRoleType()});
+            let company = _.find(self.listCompany(),(o)=>{return o.companyId === self.selectedCompany()});
+            service.exportExcel(self.selectedRoleType().toString(),roleType.localizedName,self.selectedCompany(),company.companyName).done(function() {
+
+            }).fail(function(error) {
+                if(error)
+                    nts.uk.ui.dialog.alertError(error.message);
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+        }
+
         openCAS012_B() {
             let self = this
             nts.uk.ui.windows.sub.modal("/view/cas/012/b/index.xhtml").onClosed(() => {

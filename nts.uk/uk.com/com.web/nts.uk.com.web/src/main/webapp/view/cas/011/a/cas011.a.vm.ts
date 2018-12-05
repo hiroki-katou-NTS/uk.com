@@ -7,6 +7,7 @@ module nts.uk.com.view.cas011.a.viewmodel {
     import NtsGridListColumn = nts.uk.ui.NtsGridListColumn;
 
     export class ScreenModel {
+        langId: KnockoutObservable<string> = ko.observable('ja');
         //list of Role Set
         listRoleSets: KnockoutObservableArray<IRoleSet> = ko.observableArray([]);
         listWebMenus: KnockoutObservableArray<IWebMenu> = ko.observableArray([]);
@@ -649,6 +650,21 @@ module nts.uk.com.view.cas011.a.viewmodel {
                     break;
             }
         }
+        
+        
+         private exportExcel(): void { 
+            var self = this;
+            nts.uk.ui.block.grayout();
+            let langId = self.langId();
+            service.saveAsExcel(langId).done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+        }
+
+        
     }
 
     /**

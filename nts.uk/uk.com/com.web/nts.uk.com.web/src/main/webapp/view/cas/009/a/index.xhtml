@@ -36,6 +36,9 @@
 					<button id="delete"
 						data-bind="click: $vm.remove, enable: !!ko.toJS($vm.selectedRole.roleId)"
 						class="danger" tabindex="3">#{i18n.getText('CAS009_5')}</button>
+					<button id="export"
+							data-bind="click: $vm.exportExcel"
+							class="danger" tabindex="3">#{i18n.getText('CAS009_5')}</button>
 					<button id="reference"
 						data-bind="enable: $vm.enableDetail, click: $vm.openDialog"
 						tabindex="4">#{i18n.getText('CAS009_6')}</button>

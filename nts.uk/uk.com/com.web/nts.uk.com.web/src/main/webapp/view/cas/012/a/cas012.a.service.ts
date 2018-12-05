@@ -31,4 +31,14 @@ module nts.uk.com.view.cas012.a.service {
         return nts.uk.request.ajax("com", paths.deleteRoleIndividual, roleIndividual);
     }
 
+    export function exportExcel(roleType: string, roleTypeName: string, companyId: string, companyName: string): JQueryPromise<any> {
+        let data = {
+            roleType: roleType,
+            roleTypeName: roleTypeName,
+            companyId: companyId,
+            companyName: companyName
+        };
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "GrantAdminRole", domainType: "代行承認", languageId: 'ja', reportType: 0,data: data});
+    }
+
 }

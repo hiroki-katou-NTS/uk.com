@@ -11,7 +11,8 @@ module nts.uk.com.view.cas011.a.service {
             removeRoleSet:              "screen/sys/auth/cas011/deleteroleset",
             getAllWebMenu:              "sys/portal/webmenu/findallwithnomenubar",
             getRoleById:                "ctx/sys/auth/role/getrolebyroleid/{0}",
-            getRoleNameByListId:        "ctx/sys/auth/role/get/rolename/by/roleids"
+            getRoleNameByListId:        "ctx/sys/auth/role/get/rolename/by/roleids",
+            saveAsExcel: "file/at/worktypereport/saveAsExcel"
     }
 
     //get all role set
@@ -58,5 +59,9 @@ module nts.uk.com.view.cas011.a.service {
     export function getRoleNameByListId(command): JQueryPromise<any>{
         return ajax(paths.getRoleNameByListId, command);
     }
+    
+    export function saveAsExcel(languageId: string): JQueryPromise<any> {
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "RoleSetMenu", domainType: "ロールセットの登録", languageId: languageId, reportType: 0});
 
+    
 }
