@@ -30,10 +30,10 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
+//import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
+//import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
@@ -103,8 +103,8 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Inject
 	private TempAbsHistRepository tempAbsHistRepository;
 
-	@Inject
-	private AffJobTitleHistoryRepository affJobRep;
+//	@Inject
+//	private AffJobTitleHistoryRepository affJobRep;
 
 	/*
 	 * (non-Javadoc)

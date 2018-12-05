@@ -22,6 +22,7 @@ public class OvertimeHoursExportImpl implements MasterListData{
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		List<MasterData> datas = new ArrayList<>();
+		@SuppressWarnings("unchecked")
 		List<LinkedHashMap<String, String>> listOverTime = (List<LinkedHashMap<String, String>>) query.getData();
 		listOverTime.forEach(overTime -> {
 			Map<String, Object> data = new HashMap<>();

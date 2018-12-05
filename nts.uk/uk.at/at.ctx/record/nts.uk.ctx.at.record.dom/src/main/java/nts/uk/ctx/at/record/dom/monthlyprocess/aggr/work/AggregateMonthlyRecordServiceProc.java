@@ -14,7 +14,7 @@ import javax.enterprise.concurrent.ManagedExecutorService;
 
 import lombok.Getter;
 import lombok.val;
-import lombok.extern.slf4j.Slf4j;
+//import lombok.extern.slf4j.Slf4j;
 import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
@@ -107,7 +107,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichi_ishida
  */
 @Getter
-@Slf4j
+/*@Slf4j*/
 public class AggregateMonthlyRecordServiceProc {
 	
 	/** 月別集計が必要とするリポジトリ */

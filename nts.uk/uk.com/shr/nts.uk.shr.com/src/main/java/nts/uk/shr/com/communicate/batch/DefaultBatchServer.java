@@ -3,7 +3,7 @@ package nts.uk.shr.com.communicate.batch;
 import java.net.URI;
 import java.util.Optional;
 
-import javax.ejb.Stateless;
+//import javax.ejb.Stateless;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
