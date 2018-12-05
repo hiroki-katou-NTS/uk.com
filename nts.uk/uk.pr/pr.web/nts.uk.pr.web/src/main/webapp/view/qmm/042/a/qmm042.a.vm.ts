@@ -1,6 +1,7 @@
 module nts.uk.pr.view.qmm042.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import dialog = nts.uk.ui.dialog;
+    import block = nts.uk.ui.block;
 
     export class ScreenModel {
 
@@ -44,6 +45,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                     self.perUnitPriceCode(temp.code);
                     self.perUnitPriceName(temp.name);
                 }
+                self.filterData();
             });
         }
 
@@ -109,33 +111,37 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
 
         registerAmount(): void {
             let self = this;
-
-
-
             service.empSalUnitUpdateAll({
                 payrollInformationCommands: ko.toJS(self.workIndividualPricesDisplay)}).done(function () {
                 dialog.info({messageId: "Msg_15"});
-            })
+            });
         }
 
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+            block.invisible();
             service.employeeReferenceDate().done(function (data) {
                 self.yearMonthFilter(data.salCurrProcessDate);
                 self.reloadCcg001(data.empExtraRefeDate);
+                service.salaryPerUnitPriceName().done(function (individualPriceName) {
+                    if (!individualPriceName) {
+                        nts.uk.ui.dialog.alertError({messageId: "MsgQ_170"});
+                        return;
+                    }
+                    self.salaryPerUnitPriceNames(individualPriceName);
+                    self.salaryPerUnitPriceNamesSelectedCode(self.salaryPerUnitPriceNames()[0].code);
+                    self.filterData();
+                    block.clear();
+                    dfd.resolve(self);
+                }).fail((err) => {
+                    block.clear();
+                    dfd.reject();
+                });
+            }).fail((err) => {
+                block.clear();
+                dfd.reject();
             });
-
-            service.salaryPerUnitPriceName().done(function (individualPriceName) {
-                if (!individualPriceName) {
-                    nts.uk.ui.dialog.alertError({messageId: "MsgQ_170"});
-                    return;
-                }
-                self.salaryPerUnitPriceNames(individualPriceName);
-                self.salaryPerUnitPriceNamesSelectedCode(self.salaryPerUnitPriceNames()[0].code);
-            });
-
-            dfd.resolve(self);
             return dfd.promise();
         }
 

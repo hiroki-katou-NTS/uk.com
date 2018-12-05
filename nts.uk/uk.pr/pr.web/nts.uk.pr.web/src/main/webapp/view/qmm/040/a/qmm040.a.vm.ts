@@ -82,8 +82,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 if (temp) {
                     self.individualPriceCode(temp.individualPriceCode);
                     self.individualPriceName(temp.individualPriceName);
-
                 }
+                self.filterData();
             });
 
 
@@ -95,6 +95,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+            block.invisible();
             service.employeeReferenceDate().done(function (data) {
                 if(data)
                     self.reloadCcg001(data.empExtraRefeDate);
@@ -102,9 +103,13 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.reloadCcg001(moment(Date.now()).format("YYYY/MM/DD"));
 
                 $('#A5_7').focus();
+                self.filterData();
+                block.clear();
+                dfd.resolve(self);
+            }).fail((err) => {
+                block.clear();
+                dfd.reject();
             });
-
-            dfd.resolve(self);
             return dfd.promise();
         }
 
@@ -182,8 +187,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
         public loadSalIndAmountName(cateIndicator: number): void {
             let self = this;
+            block.invisible();
             service.salIndAmountNameByCateIndicator(cateIndicator).done((data) => {
-                block.invisible();
                 if (data) {
                     self.salIndAmountNames(_.sortBy(data,function (o) {
                         return o.individualPriceCode;
@@ -201,10 +206,12 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     }
                 }
                 block.clear();
+            }).fail((err) => {
+                block.clear();
             });
         }
 
-        filterData(): void {
+        filterData() {
             let self = this;
             self.yearMonthFilter();
             $('#A5_7').ntsError('check');
@@ -258,7 +265,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 }, 0);
                 block.clear();
             }).fail((err) => {
-                nts.uk.ui.dialog.alertError(err.getMessage());
+                nts.uk.ui.dialog.alertError(err.message);
                 block.clear();
             });
         }
