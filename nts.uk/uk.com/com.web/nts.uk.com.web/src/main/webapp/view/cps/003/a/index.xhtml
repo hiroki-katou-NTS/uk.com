@@ -14,10 +14,8 @@
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
-
-			<com:scriptfile path="/view/cps/shr/layout-list-control-validation.js" />
-			<com:scriptfile path="/view/cps/shr/layout-list-control-ko-ext.js" />
-
+			
+			<com:scriptfile path="cm/setting.js" />
 			<com:stylefile path="cps003.a.style.css" />
 			<com:scriptfile path="cps003.a.service.js" />
 			<com:scriptfile path="cps003.a.vm.js" />
@@ -77,7 +75,7 @@
 							<button id="emp-redisplay" data-bind="text: '#{i18n.getText('CPS003_21')}'"></button>
 							<button>?</button>
 							<button id="batch-change" data-bind="text: '#{i18n.getText('CPS003_23')}'"></button>
-							<button id="settings"></button>
+							<button id="settings" data-bind="cps003Setting: { typeOfEnter: ko.observable(0), fixedColumns: ko.observableArray([2,3,4]) }"></button>
 							<button id="width-save" data-bind="text: '#{i18n.getText('CPS003_24')}'"></button>
 						</div>
 					</div>

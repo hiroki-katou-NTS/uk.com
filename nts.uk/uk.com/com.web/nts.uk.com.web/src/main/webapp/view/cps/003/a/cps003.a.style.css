@@ -15,7 +15,7 @@
 .data-layout .form-group>div,
 .data-layout .form-group>label,
 .data-layout .form-group>button{
-	vertical-align: top;
+	vertical-align: middle;
 	display: inline-block;
 }
 .data-layout .form-group>label {
