@@ -142,15 +142,13 @@ public class GetRsvLeaNumAfterCurrentMonImpl implements GetRsvLeaNumAfterCurrent
 		if (closure == null) return new ArrayList<>();
 		
 		// 指定した年月の期間をすべて取得する
-		val endYMPeriods = closure.getPeriodByYearMonth(period.end());
-		List<ClosurePeriod> aggrTmp = Collections.synchronizedList(new ArrayList<>());
-		parallel.forEach(endYMPeriods, endYMPeriod -> {
-			// 集計期間を取得する
-			aggrTmp.addAll(this.getClosurePeriod.get(closure.getCompanyId().v(), employeeId,
-					endYMPeriod.end(), Optional.empty(), Optional.empty(), Optional.empty()));
-		});
+		List<DatePeriod> endYMPeriods = closure.getPeriodByYearMonth(period.end());
 		List<ClosurePeriod> aggrPeriods = new ArrayList<>();
-		aggrPeriods.addAll(aggrTmp);
+		for(DatePeriod endYMPeriod : endYMPeriods){
+			// 集計期間を取得する
+			aggrPeriods.addAll(this.getClosurePeriod.get(closure.getCompanyId().v(), employeeId,
+					endYMPeriod.end(), Optional.empty(), Optional.empty(), Optional.empty()));
+		}
 		// 締め処理期間のうち、同じ年月の期間をまとめる
 		Map<YearMonth, DatePeriod> closurePeriods = new HashMap<>();
 		for (val aggrPeriod : aggrPeriods){
@@ -172,10 +170,10 @@ public class GetRsvLeaNumAfterCurrentMonImpl implements GetRsvLeaNumAfterCurrent
 		keys.sort((a, b) -> a.compareTo(b));
 		MutableValue<AggrResultOfAnnualLeave> prevAnnLea = new MutableValue<>();
 		MutableValue<AggrResultOfReserveLeave> prevRsvLeave = new MutableValue<>();
-		List<RsvLeaUsedCurrentMonExport> tmp = Collections.synchronizedList(new ArrayList<>());
 		Optional<ClosureStatusManagement> sttMng = clsSttMngRepo.getLatestByEmpId(employeeId);
 		Optional<GeneralDate> closureStartOpt = clsStrForEmp.algorithm(employeeId);
-		parallel.forEach (keys, key -> {
+		List<RsvLeaUsedCurrentMonExport> results = new ArrayList<>();
+		for(YearMonth key : keys) {
 			DatePeriod clsPeriod = closurePeriods.get(key);
 			// 期間中の年休積休残数を取得
 			AggrResultOfAnnAndRsvLeave aggrResult = annRsvRemNum.getRemainAnnRscByPeriod(
@@ -194,14 +192,12 @@ public class GetRsvLeaNumAfterCurrentMonImpl implements GetRsvLeaNumAfterCurrent
 				val withMinus =
 						aggrResultOfReserve.getAsOfPeriodEnd().getRemainingNumber().getReserveLeaveWithMinus();
 				
-				tmp.add(new RsvLeaUsedCurrentMonExport(
+				results.add(new RsvLeaUsedCurrentMonExport(
 						key,
 						withMinus.getUsedNumber().getUsedDays(),
 						withMinus.getRemainingNumber().getTotalRemainingDays()));
 			}
-		});
-		List<RsvLeaUsedCurrentMonExport> results = new ArrayList<>();
-		results.addAll(tmp);
+		}
 		// 年月毎積立年休の集計結果を返す
 		return results;
 	}

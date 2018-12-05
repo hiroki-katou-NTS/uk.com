@@ -23,6 +23,7 @@ import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
+import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.function.app.find.holidaysremaining.HdRemainManageFinder;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
@@ -58,6 +59,7 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingDataS
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingInfor;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingEmployee;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingReportGenerator;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -155,8 +157,6 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		Map<String, EmployeeQuery> empMap = query.getLstEmpIds().stream()
 				.collect(Collectors.toMap(EmployeeQuery::getEmployeeId, Function.identity()));
 
-		Map<String, HolidaysRemainingEmployee> employees = new HashMap<>();
-
 		// <<Public>> 社員の情報を取得する
 		List<EmployeeInformationImport> listEmployeeInformationImport = employeeInformationAdapter
 				.getEmployeeInfo(new EmployeeInformationQueryDtoImport(employeeIds, criteriaDate, true, false, true,
@@ -169,13 +169,19 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		val varVacaCtr = varVacaCtrSv.getVariousVacationControl();
 		val closureInforOpt = this.getClosureInfor(closureId);
 
-		boolean isSameCurrentMonth = true;
-		boolean isFirstEmployee = true;
-		Optional<YearMonth> currentMonthOfFirstEmp = Optional.empty();
+//		boolean isSameCurrentMonth = true;
+//		boolean isFirstEmployee = true;
+        MutableValue<Boolean> isSameCurrentMonth = new MutableValue<>();
+        MutableValue<Boolean> isFirstEmployee = new MutableValue<>();
+        isSameCurrentMonth.set(true);
+        isFirstEmployee.set(true);
+//		Optional<YearMonth> currentMonthOfFirstEmp = Optional.empty();
+		MutableValue<YearMonth> currentMonthOfFirstEmp = new MutableValue<>();
 		//hoatt
 //		List<String> lstSID = listEmployeeInformationImport.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 //		Map<String, YearMonth> mapCurMon = hdRemainManageFinder.getCurrentMonthVer2(cId, lstSID, baseDate);
-		for (EmployeeInformationImport emp : listEmployeeInformationImport) {
+		Map<String, HolidaysRemainingEmployee> mapTmp = Collections.synchronizedMap(new HashMap<String, HolidaysRemainingEmployee>());
+		parallel.forEach(listEmployeeInformationImport, emp -> {
 			String wpCode = emp.getWorkplace() != null ? emp.getWorkplace().getWorkplaceCode() : "";
 			String wpName = emp.getWorkplace() != null ? emp.getWorkplace().getWorkplaceName()
 					: TextResource.localize("KDR001_55");
@@ -188,26 +194,27 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 //			if(mapCurMon.containsKey(emp.getEmployeeId())){
 //				currentMonth = Optional.of(mapCurMon.get(emp.getEmployeeId()));
 //			}
-			if (isFirstEmployee) {
-				isFirstEmployee = false;
-				currentMonthOfFirstEmp = currentMonth;
+			if (isFirstEmployee.get()) {
+				isFirstEmployee.set(false);
+				currentMonthOfFirstEmp.set(currentMonth.isPresent() ? currentMonth.get() : null);;
 			} else {
-				if (isSameCurrentMonth && !currentMonth.equals(currentMonthOfFirstEmp)) {
-					isSameCurrentMonth = false;
+				if (isSameCurrentMonth.get() && !currentMonth.equals(currentMonthOfFirstEmp)) {
+					isSameCurrentMonth.set(false);
 				}
 			}
 			HolidayRemainingInfor holidayRemainingInfor = this.getHolidayRemainingInfor(varVacaCtr, closureInforOpt,
 					emp.getEmployeeId(), baseDate, startDate, endDate,currentMonth);
 
-			employees.put(emp.getEmployeeId(), new HolidaysRemainingEmployee(emp.getEmployeeId(), emp.getEmployeeCode(),
+			mapTmp.put(emp.getEmployeeId(), new HolidaysRemainingEmployee(emp.getEmployeeId(), emp.getEmployeeCode(),
 					empMap.get(emp.getEmployeeId()).getEmployeeName(), empMap.get(emp.getEmployeeId()).getWorkplaceId(),
 					wpCode, wpName, empmentName, positionName, currentMonth, holidayRemainingInfor));
-		}
-		
+		});
+		Map<String, HolidaysRemainingEmployee> mapEmp = new HashMap<>();
+		mapEmp.putAll(mapTmp);
 		Optional<CompanyInfor> companyCurrent = this.companyRepo.getCurrentCompany();
 		HolidayRemainingDataSource dataSource = new HolidayRemainingDataSource(hdRemainCond.getStartMonth(),
 				hdRemainCond.getEndMonth(), varVacaCtr, hdRemainCond.getPageBreak(),
-				hdRemainCond.getBaseDate(), hdManagement.get(), isSameCurrentMonth, employeeIds, employees, companyCurrent.isPresent() == true? companyCurrent.get().getCompanyName():"");
+				hdRemainCond.getBaseDate(), hdManagement.get(), isSameCurrentMonth.get(), employeeIds, mapEmp, companyCurrent.isPresent() == true? companyCurrent.get().getCompanyName():"");
 
 		this.reportGenerator.generate(context.getGeneratorContext(), dataSource);
 
@@ -321,7 +328,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		Map<Integer, SpecialVacationImported> tmpCurrMon = Collections.synchronizedMap(new HashMap<Integer, SpecialVacationImported>());
 		Map<Integer, SpecialVacationImported> tmpSpeVaca = Collections.synchronizedMap(new HashMap<Integer, SpecialVacationImported>());
 		Map<Integer, List<SpecialHolidayImported>> tmpSpeHd = Collections.synchronizedMap(new HashMap<Integer, List<SpecialHolidayImported>>());
-		parallel.forEach(variousVacationControl.getListSpecialHoliday(), specialHolidayDto ->{
+		for(SpecialHoliday specialHolidayDto : variousVacationControl.getListSpecialHoliday()){
 			int sphdCode = specialHolidayDto.getSpecialHolidayCode().v();
 			// Call RequestList273
 			SpecialVacationImported specialVacationImported = specialLeaveAdapter.complileInPeriodOfSpecialLeave(cId,
@@ -342,7 +349,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	                    employeeId, closureInforOpt.get().getPeriod(), false, baseDate, sphdCode, false);
 	            tmpCurrMon.put(sphdCode, spVaImported);
 			}
-		});
+		}
 		//convert
 		// RequestList273
 		Map<Integer, SpecialVacationImported> mapSpecVaca = new HashMap<>();

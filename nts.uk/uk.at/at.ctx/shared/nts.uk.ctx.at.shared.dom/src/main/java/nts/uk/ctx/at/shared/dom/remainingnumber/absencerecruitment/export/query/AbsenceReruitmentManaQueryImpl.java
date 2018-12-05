@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,7 +8,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
@@ -49,8 +47,6 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 	private SubstitutionOfHDManaDataRepository comfirmAbsMngRepo;
 	@Inject
 	private PayoutSubofHDManaRepository confirmRecAbsRepo;
-	@Inject
-	private ManagedParallelWithContext parallel;
 	
 	@Override
 	public List<InterimRemainAggregateOutputData> getAbsRecRemainAggregate(String employeeId, GeneralDate baseDate,
@@ -65,8 +61,8 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		for(YearMonth ym = closureData.getStartMonth(); closureData.getEndMonth().greaterThanOrEqualTo(ym); ym = ym.addMonths(1)){
 			lstYM.add(ym);
 		}
-		List<InterimRemainAggregateOutputData> lstTmp = Collections.synchronizedList(new ArrayList<>());
-		parallel.forEach(lstYM, ym -> {
+		List<InterimRemainAggregateOutputData> lstOutData = new ArrayList<>();
+		for(YearMonth ym : lstYM){
 			InterimRemainAggregateOutputData outPutData = new InterimRemainAggregateOutputData(ym, 0, 0, 0, 0, 0);
 			//アルゴリズム「指定年月の締め期間を取得する」を実行する
 			DatePeriod dateData = remainManaExport.getClosureOfMonthDesignation(closureData.getClosure(), ym);
@@ -85,10 +81,8 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 				//月末振休残数：月初振休残数＋振休発生数合計－振休使用数合計－振休消滅数合計
 				outPutData.setMonthEndRemain(outPutData.getMonthStartRemain() + occurrentDays - useDays - outPutData.getMonthExtinction() );
 			}
-			lstTmp.add(outPutData);
-		});
-		List<InterimRemainAggregateOutputData> lstOutData = new ArrayList<>();
-		lstOutData.addAll(lstTmp);
+			lstOutData.add(outPutData);
+		}
 		return lstOutData;
 	}
 	@Override

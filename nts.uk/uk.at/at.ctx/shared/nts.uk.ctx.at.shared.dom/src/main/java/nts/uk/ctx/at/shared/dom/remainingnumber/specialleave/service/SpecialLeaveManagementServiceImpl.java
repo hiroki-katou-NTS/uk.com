@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
@@ -52,8 +51,6 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 	private SpecialHolidayRepository holidayRepo;
 	@Inject
 	private SpecialLeaveBasicInfoRepository leaveBasicInfoRepo;
-	@Inject
-	private ManagedParallelWithContext parallel;
 
 	@Override
 	public InPeriodOfSpecialLeave complileInPeriodOfSpecialLeave(ComplileInPeriodOfSpecialLeaveParam param) {
@@ -557,8 +554,8 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		useInfor.setUnDisgesteDays(undigested);
 		//特別休暇付与残数データ一覧を特別休暇パラメータに追加する
 		Map<GeneralDate, Double> limitDays = adjustCarryForward.getMapGrantDays();
-		List<SpecialLeaveGrantDetails> lstTmp = Collections.synchronizedList(new ArrayList<>());
-		parallel.forEach( expiredData.getLstGrantData(), x -> {
+		List<SpecialLeaveGrantDetails> lstSpeLeaGrant = new ArrayList<>();
+		for(SpecialLeaveGrantRemainingData x : expiredData.getLstGrantData()){
 			SpecialLeaveGrantDetails grantDetail = new SpecialLeaveGrantDetails();
 			grantDetail.setCode(x.getSpecialLeaveCode().v());
 			Optional<SpecialLeaveGrantRemainingData> grantDataById = speLeaveRepo.getBySpecialId(x.getSpecialId());
@@ -597,10 +594,8 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 					&& grantNumberData.getTimeOfGrant().get() != null
 					? Optional.of(grantNumberData.getTimeOfGrant().get().v()) : Optional.empty());
 			grantDetail.setDetails(inforSevice);
-			lstTmp.add(grantDetail);
-		});
-		List<SpecialLeaveGrantDetails> lstSpeLeaGrant = new ArrayList<>();
-		lstSpeLeaGrant.addAll(lstTmp);
+			lstSpeLeaGrant.add(grantDetail);
+		}
 		return new InPeriodOfSpecialLeave(lstSpeLeaGrant, useInfor, subtractUseDays.getSpeLeaveResult().getUseOutPeriod(), Collections.emptyList());
 	}
 
