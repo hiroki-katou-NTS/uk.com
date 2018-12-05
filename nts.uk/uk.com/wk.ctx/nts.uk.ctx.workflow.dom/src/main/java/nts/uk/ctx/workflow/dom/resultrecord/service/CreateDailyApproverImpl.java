@@ -104,13 +104,19 @@ public class CreateDailyApproverImpl implements CreateDailyApprover {
 				return new AppRootInstanceContent(appRootInstanceConflict, errorFlag, errorMsgID);
 			} else {
 				// 履歴の開始日を取得する
-				// GeneralDate startHistDate = this.getHistoryStartDate(companyID, employeeID, rootType, recordDate, closureStartDate, appRootInstanceConflict);
-				GeneralDate startHistDate = recordDate;
+				GeneralDate startHistDate = this.getHistoryStartDate(companyID, employeeID, rootType, recordDate, closureStartDate, appRootInstanceConflict);
+				// ドメインモデル「承認ルート中間データ」を削除する
+				List<AppRootInstance> opAppRootIns = appRootInstanceRepository.findByEmpFromDate(companyID, employeeID, startHistDate, rootType);
+				for(AppRootInstance appRootInstanceOver : opAppRootIns){
+					appRootInstanceRepository.delete(appRootInstanceOver);
+				}
 				appRootInstance.setDatePeriod(new DatePeriod(startHistDate, GeneralDate.fromString("9999/12/31", "yyyy/MM/dd")));
+				// 履歴期間．開始日が一番新しいドメインモデル「承認ルート中間データ」を取得する
+				AppRootInstance appRootInstNewest = appRootInstanceRepository.findByEmpDateNewestBelow(companyID, employeeID, startHistDate, rootType).get();
 				// 履歴期間．開始日が一番新しいドメインモデル「承認ルート中間データ」をUPDATEする
-				DatePeriod oldPeriod = appRootInstanceConflict.getDatePeriod();
-				appRootInstanceConflict.setDatePeriod(new DatePeriod(oldPeriod.start(), startHistDate.addDays(-1)));
-				appRootInstanceRepository.update(appRootInstanceConflict);
+				DatePeriod oldPeriod = appRootInstNewest.getDatePeriod();
+				appRootInstNewest.setDatePeriod(new DatePeriod(oldPeriod.start(), startHistDate.addDays(-1)));
+				appRootInstanceRepository.update(appRootInstNewest);
 				//承認状態をクリアする
 				appRootConfirmRepository.clearStatusFromDate(companyID, employeeID, recordDate, rootType);
 			}

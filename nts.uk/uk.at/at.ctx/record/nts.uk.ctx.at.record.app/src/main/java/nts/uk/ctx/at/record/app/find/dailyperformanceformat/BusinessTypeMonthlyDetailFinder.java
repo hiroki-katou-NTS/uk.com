@@ -1,21 +1,21 @@
 package nts.uk.ctx.at.record.app.find.dailyperformanceformat;
 
-import java.util.ArrayList;
-import java.util.Collections;
+//import java.util.ArrayList;
+//import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+//import java.util.Map;
+//import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttendanceItemDto;
+//import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttendanceItemDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeFormatDetailDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeMonthlyDetailDto;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatMonthly;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatMonthlyRepository;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
+//import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -30,8 +30,8 @@ public class BusinessTypeMonthlyDetailFinder {
 	@Inject
 	private BusinessTypeFormatMonthlyRepository workTypeFormatMonthlyRepository;
 
-	@Inject
-	private CompanyMonthlyItemService companyMonthlyItemService;
+//	@Inject
+//	private CompanyMonthlyItemService companyMonthlyItemService;
 
 	public BusinessTypeMonthlyDetailDto findDetail(String businessTypeCode) {
 		LoginUserContext login = AppContexts.user();

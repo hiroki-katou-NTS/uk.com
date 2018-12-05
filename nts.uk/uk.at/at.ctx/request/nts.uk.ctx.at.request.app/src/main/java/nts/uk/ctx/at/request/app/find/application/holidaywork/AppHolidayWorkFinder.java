@@ -38,19 +38,19 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
+//import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
+//import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
+//import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
+//import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.output.ApprovalRootPattern;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.AgreementTimeService;
-import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
+//import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+//import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayPreProcess;
@@ -103,8 +103,8 @@ public class AppHolidayWorkFinder {
 	private CollectApprovalRootPatternService collectApprovalRootPatternService;
 	@Inject
 	private StartupErrorCheckService startupErrorCheckService;
-	@Inject
-	private CollectAchievement collectAchievement;
+//	@Inject
+//	private CollectAchievement collectAchievement;
 	@Inject
 	private HolidayPreProcess holidayPreProcess;
 	@Inject
@@ -121,10 +121,10 @@ public class AppHolidayWorkFinder {
 	private HolidaySixProcess holidaySixProcess; 
 	@Inject
 	private AppHolidayWorkRepository appHolidayWorkRepository;
-	@Inject
-	private BeforePreBootMode beforePreBootMode;
-	@Inject
-	private InitMode initMode;
+//	@Inject
+//	private BeforePreBootMode beforePreBootMode;
+//	@Inject
+//	private InitMode initMode;
 	@Inject
 	private WorkTimeSettingRepository workTimeRepository;
 	@Inject
@@ -180,7 +180,7 @@ public class AppHolidayWorkFinder {
 		 // 申請対象日のパラメータがあるかチェックする
 		 if(appDateInput != null){
 			 //13.実績の取得
-			 AchievementOutput achievementOutput = collectAchievement.getAchievement(companyID, employeeID,  GeneralDate.fromString(appDateInput, DATE_FORMAT));
+			 //AchievementOutput achievementOutput = collectAchievement.getAchievement(companyID, employeeID,  GeneralDate.fromString(appDateInput, DATE_FORMAT));
 			
 		 }
 		 // アルゴリズム「初期データの取得」を実行する
@@ -362,8 +362,8 @@ public class AppHolidayWorkFinder {
 				appHolidayWork.getApplication().getEmployeeID(),
 				1, EnumAdaptor.valueOf(ApplicationType.BREAK_TIME_APPLICATION.value, ApplicationType.class), appHolidayWork.getApplication().getAppDate());
 		// 14-2.詳細画面起動前モードの判断
-		DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput = this.beforePreBootMode.judgmentDetailScreenMode(companyID, appHolidayWork.getApplication().getEmployeeID(), appID, appCommonSettingOutput.generalDate);
-		DetailScreenInitModeOutput detailScreenInitModeOutput = this.initMode.getDetailScreenInitMode(detailedScreenPreBootModeOutput.getUser(), detailedScreenPreBootModeOutput.getReflectPlanState().value);
+		//DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput = this.beforePreBootMode.judgmentDetailScreenMode(companyID, appHolidayWork.getApplication().getEmployeeID(), appID, appCommonSettingOutput.generalDate);
+		//DetailScreenInitModeOutput detailScreenInitModeOutput = this.initMode.getDetailScreenInitMode(detailedScreenPreBootModeOutput.getUser(), detailedScreenPreBootModeOutput.getReflectPlanState().value);
 		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
 		appHolidayWorkDto.setDisplayCaculationTime(false);
 		String workTypeCD = "";

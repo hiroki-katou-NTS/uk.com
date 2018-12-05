@@ -1,5 +1,6 @@
 package nts.uk.shr.com.time.calendar.period;
 
+import static nts.arc.time.GeneralDate.ymd;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -7,12 +8,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static nts.arc.time.GeneralDate.*;
-
 import org.junit.Test;
 
 import lombok.val;
-import nts.arc.time.GeneralDate;
 
 public class DatePeriodTest {
 

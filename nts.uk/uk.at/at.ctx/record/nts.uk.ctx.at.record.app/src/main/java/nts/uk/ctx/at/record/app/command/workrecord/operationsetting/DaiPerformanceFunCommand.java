@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.record.app.command.workrecord.operationsetting;
 
 import lombok.Value;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
+//import nts.arc.time.GeneralDate;
+//import nts.arc.time.GeneralDateTime;
 
 @Value
 public class DaiPerformanceFunCommand {

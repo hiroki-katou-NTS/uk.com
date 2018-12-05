@@ -64,8 +64,12 @@ module nts.uk.at.view.kwr001.d {
                     dataReturnScrC.lstAtdChoose = data;
                     dataReturnScrC.codeCopy = self.D1_6_value();
                     dataReturnScrC.nameCopy = self.D1_7_value();
+                    if(_.size(dataReturnScrC.lstAtdChoose.msgErr)){
+                         nts.uk.ui.dialog.error({ messageId: "Msg_1476" });
+                    }
                     nts.uk.ui.windows.setShared('KWR001_D', dataReturnScrC);
                     nts.uk.ui.windows.close();
+                    
                 }).fail(function(err) {
                     if (err.messageId == "Msg_3") {
                         $(".D1_6").ntsError('set', { messageId: "Msg_3"});

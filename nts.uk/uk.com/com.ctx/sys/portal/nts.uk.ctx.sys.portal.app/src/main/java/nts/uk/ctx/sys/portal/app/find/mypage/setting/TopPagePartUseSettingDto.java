@@ -5,7 +5,6 @@
 package nts.uk.ctx.sys.portal.app.find.mypage.setting;
 
 import lombok.Data;
-import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.TopPagePartUseSetting;
 
 /**

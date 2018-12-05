@@ -7,7 +7,6 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentCode;
-import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 
 
 /**

@@ -1,7 +1,6 @@
 package nts.uk.file.at.infra.schedule.monthly;
 
 import lombok.Data;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 
 /**

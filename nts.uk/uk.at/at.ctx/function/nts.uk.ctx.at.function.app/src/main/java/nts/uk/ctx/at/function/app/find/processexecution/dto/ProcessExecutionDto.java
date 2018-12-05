@@ -3,13 +3,13 @@ package nts.uk.ctx.at.function.app.find.processexecution.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.Column;
+//import javax.persistence.Column;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
-import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.TargetGroupClassification;
+//import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.TargetGroupClassification;
 
 @Data
 @AllArgsConstructor

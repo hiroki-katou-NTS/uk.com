@@ -18,7 +18,7 @@ import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerErrorReposi
 import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMergeKey;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
-import nts.uk.ctx.at.record.dom.monthly.remarks.RemarksMonthlyRecordRepository;
+//import nts.uk.ctx.at.record.dom.monthly.remarks.RemarksMonthlyRecordRepository;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeeklyRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -35,9 +35,9 @@ public class UpdateAllDomainMonthServiceImpl implements UpdateAllDomainMonthServ
 	
 	@Inject 
 	private RemainMergeRepository remainRepo;
-	
-	@Inject
-	private RemarksMonthlyRecordRepository remarksRepo;
+//	
+//	@Inject
+//	private RemarksMonthlyRecordRepository remarksRepo;
 	
 	@Inject
 	private AttendanceTimeOfWeeklyRepository timeWeekRepo;

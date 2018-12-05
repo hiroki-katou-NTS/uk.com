@@ -6,9 +6,9 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import javax.transaction.Transactional;
+//import javax.transaction.Transactional;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcessRepository;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcess;
+//import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcess;
 
 @Stateless
 @Transactional

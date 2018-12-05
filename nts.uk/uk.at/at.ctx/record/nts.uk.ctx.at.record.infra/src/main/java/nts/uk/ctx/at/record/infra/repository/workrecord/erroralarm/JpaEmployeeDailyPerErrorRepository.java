@@ -42,9 +42,9 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 
 	private static final String FIND_BY_PERIOD_ORDER_BY_YMD;
 
-	private static final String REMOVE_DATA;
+//	private static final String REMOVE_DATA;
 
-	private static final String REMOVE_DATA_ATTENDANCE_ITEM;
+//	private static final String REMOVE_DATA_ATTENDANCE_ITEM;
 
 	private static final String CHECK_EXIST_CODE_BY_LIST_DATE;
 
@@ -79,18 +79,18 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		builderString.append("ORDER BY a.processingDate ");
 		FIND_BY_PERIOD_ORDER_BY_YMD = builderString.toString();
 
-		builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtSyainDpErList a ");
-		builderString.append("WHERE a.employeeId = :employeeId ");
-		builderString.append("AND a.processingDate = :start ");
-		REMOVE_DATA = builderString.toString();
-
-		builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtErAttendanceItem a ");
-		builderString.append("WHERE a.krcdtErAttendanceItemPK.iD = :iD ");
-		REMOVE_DATA_ATTENDANCE_ITEM = builderString.toString();
+//		builderString = new StringBuilder();
+//		builderString.append("DELETE ");
+//		builderString.append("FROM KrcdtSyainDpErList a ");
+//		builderString.append("WHERE a.employeeId = :employeeId ");
+//		builderString.append("AND a.processingDate = :start ");
+//		REMOVE_DATA = builderString.toString();
+//
+//		builderString = new StringBuilder();
+//		builderString.append("DELETE ");
+//		builderString.append("FROM KrcdtErAttendanceItem a ");
+//		builderString.append("WHERE a.krcdtErAttendanceItemPK.iD = :iD ");
+//		REMOVE_DATA_ATTENDANCE_ITEM = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT COUNT(a) ");

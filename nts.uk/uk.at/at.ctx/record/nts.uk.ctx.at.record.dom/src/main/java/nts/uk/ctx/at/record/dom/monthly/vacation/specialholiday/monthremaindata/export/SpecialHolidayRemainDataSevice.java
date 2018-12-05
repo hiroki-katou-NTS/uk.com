@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata
 import java.util.List;
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
+//import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
 
 public interface SpecialHolidayRemainDataSevice {
 	/**

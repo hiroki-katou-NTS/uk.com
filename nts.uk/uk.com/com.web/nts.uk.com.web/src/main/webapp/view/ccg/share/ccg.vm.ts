@@ -770,6 +770,7 @@ module nts.uk.com.view.ccg.share.ccg {
                                     this.saveEmployeeRangeSelection();
                                     // apply data search
                                     self.applyDataSearch();
+                                    self.employeeListTab3([]);
                                 });
                             });
 

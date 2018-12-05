@@ -56,7 +56,7 @@ public class EmpInfoByCidSidPubImp implements EmpInfoByCidSidPub {
 			AffCompanyHistByEmployee affComHistByEmp = affComHist
 					.getAffCompanyHistByEmployee(empDataMng.getEmployeeId());
 
-			AffCompanyHistItem affComHistItem = new AffCompanyHistItem();
+//			AffCompanyHistItem affComHistItem = new AffCompanyHistItem();
 			Person person = new Person();
 			
 			if (affComHistByEmp.items() != null) {
@@ -66,7 +66,7 @@ public class EmpInfoByCidSidPubImp implements EmpInfoByCidSidPub {
 				}).collect(Collectors.toList());
 
 				if (!filter.isEmpty()) {
-					affComHistItem = filter.get(0);
+//					affComHistItem = filter.get(0);
 
 					person = getPersonInfo(affComHist.getPId());
 					if (person != null) {

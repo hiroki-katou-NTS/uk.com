@@ -206,7 +206,7 @@ public class AnnualBreakManagePubImp implements AnnualBreakManagePub {
 			if(annualLeaveTimeRemainingHistory.isEmpty()) {
 				List<AnnualLeaveGrantRemainingData> listAnnualLeaveGrantRemainingData = annLeaGrantRemDataRepo.findByPeriod(employeeId, calcStartDate, pastDataEndDate);
 				for (AnnualLeaveGrantRemainingData items : listAnnualLeaveGrantRemainingData) {
-					yearlyHolidaysTimeRemainingExport.add(new YearlyHolidaysTimeRemainingExport(items.getGrantDate(), items.getDetails().getGrantNumber().getDays().v(), 0.0));
+					yearlyHolidaysTimeRemainingExport.add(new YearlyHolidaysTimeRemainingExport(items.getGrantDate(), 0.0, items.getDetails().getGrantNumber().getDays().v()));
 				}
 				for (YearlyHolidaysTimeRemainingExport timeRemainingExport : yearlyHolidaysTimeRemainingExport) {
 					List<AnnualLeaveGrantRemainingData> listAnnualLeaveGrantRemainingData1 = annLeaGrantRemDataRepo.findByGrantDateAndDeadline(employeeId, timeRemainingExport.getAnnualHolidayGrantDay(), timeRemainingExport.getAnnualHolidayGrantDay());

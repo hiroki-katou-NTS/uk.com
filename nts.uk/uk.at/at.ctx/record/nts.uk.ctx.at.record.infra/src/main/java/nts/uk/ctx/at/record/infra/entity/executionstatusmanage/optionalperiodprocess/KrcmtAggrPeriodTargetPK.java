@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.executionstatusmanage.optionalperiodprocess;
 
 import java.io.Serializable;
-import java.util.List;
+//import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
