@@ -162,6 +162,10 @@ module nts.uk.ui.jqueryExtentions {
             });
             
             $treegrid.setupSearchScroll("igTreeGrid");
+            
+            if(showCheckBox != true){
+                $treegrid.closest(".nts-treegridview").addClass("no-selector");
+            }
         };
         
         function selectRows($treegrid: JQuery, selectedValue: any) {

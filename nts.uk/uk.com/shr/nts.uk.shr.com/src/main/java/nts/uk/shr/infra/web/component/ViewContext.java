@@ -82,11 +82,13 @@ public class ViewContext extends UIComponentBase {
 			}
 		});
 		
-		if(builder.length() > 0){
+		if(queryString.length() > 0){
 			builder.append(", ");
 		}
 		
-		builder.append("isDebugMode: " + ServerSystemProperties.isDebugMode());
+		//khi merge thì lấy code của kiban 
+		//builder.append("isDebugMode: " + ServerSystemProperties.isDebugMode());
+		
 		
 		rw.write("program: {" + builder.toString() + "}");
 	}
