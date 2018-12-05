@@ -33,6 +33,7 @@ public class CheckRemainNumberMonPubImpl implements CheckRemainNumberMonPub {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	private CheckRemainNumberMonPubEx fromDomain(CheckRemainNumberMon domain) {
 		CheckRemainNumberMonPubEx checkRemainNumberMonPubEx = new CheckRemainNumberMonPubEx();
 		if(domain.getCheckOperatorType() == CheckOperatorType.SINGLE_VALUE) {	

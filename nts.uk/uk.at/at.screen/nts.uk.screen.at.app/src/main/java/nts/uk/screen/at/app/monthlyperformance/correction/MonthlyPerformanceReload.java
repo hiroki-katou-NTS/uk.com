@@ -459,7 +459,7 @@ public class MonthlyPerformanceReload {
 							mpdata.addCellData(new MPCellDataDto(attendanceKey,
 									item.getValue() != null ? item.getValue() : "", attendanceAtrAsString, ""));
 						if (param.getInitMenuMode() == 2) { // set state mode approve, bat cu lock nao ngoai lock monthly approve thi disable
-							if (!StringUtil.isNullOrEmpty(lockStatus, true) && !lockStatus.equals(MonthlyPerformaceLockStatus.LOCK_MONTHLY_APPROVAL))
+							if (!StringUtil.isNullOrEmpty(lockStatus, true))
 								cellStatus.add(STATE_DISABLE);
 						} else { // set state cac mode khac, cu co lock la disable
 							if (!StringUtil.isNullOrEmpty(lockStatus, true))

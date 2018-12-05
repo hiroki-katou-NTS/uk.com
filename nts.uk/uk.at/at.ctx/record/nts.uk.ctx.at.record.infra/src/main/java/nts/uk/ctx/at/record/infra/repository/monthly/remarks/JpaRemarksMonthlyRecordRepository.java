@@ -51,12 +51,12 @@ public class JpaRemarksMonthlyRecordRepository extends JpaRepository implements 
 			+ "AND a.recordPK.yearMonth IN :yearMonths "
 			+ "ORDER BY a.recordPK.employeeId";
 	
-	private static final String DELETE_BY_PK = "DELETE FROM KrcdtRemarksMonthlyRecord a "
-			+ "WHERE a.recordPK.employeeId = :employeeId "
-			+ "AND a.recordPK.yearMonth = :yearMonth "
-			+ "AND a.recordPK.closureId = :closureId "
-			+ "AND a.recordPK.closureDay = :closureDay "
-			+ "AND a.recordPK.isLastDay = :isLastDay ";
+//	private static final String DELETE_BY_PK = "DELETE FROM KrcdtRemarksMonthlyRecord a "
+//			+ "WHERE a.recordPK.employeeId = :employeeId "
+//			+ "AND a.recordPK.yearMonth = :yearMonth "
+//			+ "AND a.recordPK.closureId = :closureId "
+//			+ "AND a.recordPK.closureDay = :closureDay "
+//			+ "AND a.recordPK.isLastDay = :isLastDay ";
 	
 	private static final String DELETE_BY_YEAR_MONTH = "DELETE FROM KrcdtRemarksMonthlyRecord a "
 			+ "WHERE a.recordPK.employeeId = :employeeId "

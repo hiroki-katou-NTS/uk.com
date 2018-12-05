@@ -50,8 +50,9 @@
 
 .table1 th.tbl-th {
 	border: 1px solid #999999;
-	background-color: #E0F59E;
+	background-color: #CFF1A5;
 	height: 25px;
+    font-weight: bold;
 }
 
 .table1 td.tbl-td {

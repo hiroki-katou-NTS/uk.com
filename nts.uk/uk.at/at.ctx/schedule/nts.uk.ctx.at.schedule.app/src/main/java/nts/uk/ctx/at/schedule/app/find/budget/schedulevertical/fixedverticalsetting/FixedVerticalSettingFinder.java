@@ -58,12 +58,12 @@ public class FixedVerticalSettingFinder {
 		return result;
 	}
 
-	private FixedVerticalSettingDto convertToDbType(FixedVertical fixedVertical) {
-		FixedVerticalSettingDto verticalSettingDto = new FixedVerticalSettingDto();
-		verticalSettingDto.setCompanyId(fixedVertical.getCompanyId());
-		verticalSettingDto.setFixedItemAtr(fixedVertical.getFixedItemAtr().value);
-		verticalSettingDto.setUseAtr(fixedVertical.getUseAtr().value);
-
-		return verticalSettingDto;
-	}
+//	private FixedVerticalSettingDto convertToDbType(FixedVertical fixedVertical) {
+//		FixedVerticalSettingDto verticalSettingDto = new FixedVerticalSettingDto();
+//		verticalSettingDto.setCompanyId(fixedVertical.getCompanyId());
+//		verticalSettingDto.setFixedItemAtr(fixedVertical.getFixedItemAtr().value);
+//		verticalSettingDto.setUseAtr(fixedVertical.getUseAtr().value);
+//
+//		return verticalSettingDto;
+//	}
 }

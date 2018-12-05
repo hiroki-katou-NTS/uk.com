@@ -4,13 +4,13 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
+//import javax.transaction.Transactional;
 
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
+//import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ProcessFlowOfDailyCreationDomainService;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -26,7 +26,7 @@ public class CheckProcessCommandHandler extends AsyncCommandHandler<CheckProcess
 	@Override
 	protected void handle(CommandHandlerContext<CheckProcessCommand> context) {
 		val asyncContext = context.asAsync();
-		val dataSetter = asyncContext.getDataSetter();
+//		val dataSetter = asyncContext.getDataSetter();
 		val command = context.getCommand();
 
 		DatePeriod periodTime = new DatePeriod(

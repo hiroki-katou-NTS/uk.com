@@ -19,6 +19,7 @@ public interface AppReflectManagerFromRecord {
 	 * @param workDate ・対象期間開始日 ・対象期間終了日
 	 * @return True: 完了処理、False：　中断
 	 */
+	@SuppressWarnings("rawtypes")
 	ProcessStateReflect applicationRellect(String workId, DatePeriod workDate, AsyncCommandHandlerContext asyncContext);	
 	/**
 	 * 社員の申請を反映

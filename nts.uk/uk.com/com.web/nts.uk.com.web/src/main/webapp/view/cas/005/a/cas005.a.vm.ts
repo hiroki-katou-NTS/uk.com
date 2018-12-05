@@ -110,7 +110,15 @@ module nts.uk.com.view.cas005.a {
                     self.specifyingAgent(0);
 
                 });
+                
                 self.employeeReferenceRange = ko.observable(0);
+                self.employeeReferenceRange.subscribe(function(value) {
+                    if(value == 3){
+                        self.componentCcg026.enable(false);
+                    }else{
+                        self.componentCcg026.enable(true);    
+                    }
+                });
 
                 //switch
                 self.categoryAssign = ko.observableArray([
@@ -515,8 +523,7 @@ module nts.uk.com.view.cas005.a {
                 $("#roleNameFocus").trigger("validate");
                 self.listWorkPlaceAuthorityCommand([]);
                 for (let i = 0; i < self.componentCcg026.listPermissions().length; i++) { //sucribe
-                    let tempCommand = new model.WorkPlaceAuthorityCommand(
-                        self.componentCcg026.listPermissions()[i].functionNo, self.componentCcg026.listPermissions()[i].availability());
+                    let tempCommand = new model.WorkPlaceAuthorityCommand(self.componentCcg026.listPermissions()[i].functionNo, self.employeeReferenceRange() == 3 ? false : self.componentCcg026.listPermissions()[i].availability());
                     self.listWorkPlaceAuthorityCommand().push(tempCommand);
                 }
                 
@@ -813,9 +820,7 @@ Role screen Cas005
             companyId: string;
             functionNo: number;
             availability: boolean;
-            constructor(
-                functionNo: number,
-                availability: boolean) {
+            constructor(functionNo: number, availability: boolean) {
                 this.functionNo = functionNo;
                 this.availability = availability;
             }

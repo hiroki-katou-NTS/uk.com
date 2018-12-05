@@ -10,8 +10,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class EmployeeFinder.
@@ -34,10 +32,10 @@ public class EmployeeFinder {
 	public Optional<EmployeeDto> getPersonIdByEmployeeCode(String employeeCode, GeneralDate entryDate) {
 
 		// get login user
-		LoginUserContext loginUserContext = AppContexts.user();
+//		LoginUserContext loginUserContext = AppContexts.user();
 
 		// get company id
-		String companyId = loginUserContext.companyId();
+//		String companyId = loginUserContext.companyId();
 
 		return null;// this.employeeRepository.findByEmployeeCode(companyId, employeeCode,
 					// entryDate).map(item -> EmployeeDto.fromDomain(item));
@@ -53,10 +51,10 @@ public class EmployeeFinder {
 	public List<EmployeeDto> getListPersonIdByEmployeeCode(List<String> listEmployeeCode) {
 
 		// get login user
-		LoginUserContext loginUserContext = AppContexts.user();
+//		LoginUserContext loginUserContext = AppContexts.user();
 
 		// get company id
-		String companyId = loginUserContext.companyId();
+//		String companyId = loginUserContext.companyId();
 		return null;// this.employeeRepository.findByListEmployeeCode(companyId,
 					// listEmployeeCode).stream().map(item ->
 					// EmployeeDto.fromDomain(item)).collect(Collectors.toList());
@@ -70,10 +68,10 @@ public class EmployeeFinder {
 	public List<EmployeeDto> getAllEmployee() {
 
 		// get login user
-		LoginUserContext loginUserContext = AppContexts.user();
+//		LoginUserContext loginUserContext = AppContexts.user();
 
 		// get company id
-		String companyId = loginUserContext.companyId();
+//		String companyId = loginUserContext.companyId();
 		return null;// this.employeeRepository.findAll(companyId).stream().map(item ->
 					// EmployeeDto.fromDomain(item)).collect(Collectors.toList());
 	}

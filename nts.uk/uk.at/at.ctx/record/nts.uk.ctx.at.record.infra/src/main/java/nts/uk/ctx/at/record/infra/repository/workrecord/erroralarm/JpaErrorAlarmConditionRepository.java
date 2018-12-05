@@ -78,8 +78,8 @@ public class JpaErrorAlarmConditionRepository extends JpaRepository implements E
 		this.commandProxy().update(targetEntity);
 	}
 	
-	private static final String DELETE_BY_ERROR_ALARM_CHECK_IDS = "DELETE FROM KrcmtErAlCondition a "
-			+ " WHERE a.eralCheckId IN :erAlCheckIds ";
+//	private static final String DELETE_BY_ERROR_ALARM_CHECK_IDS = "DELETE FROM KrcmtErAlCondition a "
+//			+ " WHERE a.eralCheckId IN :erAlCheckIds ";
 	@Override
 	public void removeErrorAlarmCondition(List<String> listErAlCheckID) {
 		List<KrcmtErAlCondition> listEralCon = new ArrayList<>();

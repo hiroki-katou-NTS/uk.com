@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.workrule.addsettingofworktime.NotUseAtr;
  */
 public class AddSettingOfIrregularWork extends AggregateRoot implements AddSetting {
 	
-	private CompanyId companyId;
+	 CompanyId companyId;
 	@Getter
 	private HolidayCalcMethodSet holidayCalcMethodSet;
 	

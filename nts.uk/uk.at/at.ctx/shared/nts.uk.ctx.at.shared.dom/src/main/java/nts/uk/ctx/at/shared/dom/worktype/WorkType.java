@@ -361,7 +361,7 @@ public class WorkType extends AggregateRoot {
 	
 
 	public boolean getDecisionAttendanceHolidayAttr() {
-		return this.dailyWork.getDecidionAttendanceHolidayAttr();
+		return this.dailyWork.decisionNeedPredTime().isHoliday();
 	}
 	
 	public Optional<HolidayAtr> getHolidayAtr() {

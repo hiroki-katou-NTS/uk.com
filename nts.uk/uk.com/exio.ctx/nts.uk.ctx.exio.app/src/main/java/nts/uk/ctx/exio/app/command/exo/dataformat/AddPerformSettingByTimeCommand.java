@@ -1,7 +1,5 @@
 package nts.uk.ctx.exio.app.command.exo.dataformat;
 
-import java.math.BigDecimal;
-
 import lombok.Value;
 
 @Value

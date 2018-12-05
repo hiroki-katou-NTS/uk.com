@@ -49,18 +49,18 @@ public class JpaStampRequestSettingRepository extends JpaRepository implements S
 		entity.topCommentFontWeight = domain.getTopComment().getFontWeight() == true ? 1 : 0;
 		return entity;
 	}
-	private StampRequestSetting toDomain(KrqstStampRequestSetting entity){
-		StampRequestSetting stamp = StampRequestSetting.createFromJavaType(entity.companyID, entity.topComment, entity.topCommentFontColor, 
-																entity.topCommentFontWeight == 1 ? true : false, entity.bottomComment, 
-																entity.bottomCommentFontColor, 
-																entity.bottomCommentFontWeight == 1 ? true : false, 
-																entity.resultDisp, entity.supFrameDispNO, entity.stampPlaceDisp, 
-																entity.stampAtr_Work_Disp, entity.stampAtr_GoOut_Disp, 
-																entity.stampAtr_Care_Disp, entity.stampAtr_Sup_Disp, entity.stampAtr_Child_Care_Disp, 
-																entity.stampGoOutAtr_Private_Disp, entity.stampGoOutAtr_Public_Disp, 
-																entity.stampGoOutAtr_Compensation_Disp, entity.stampGoOutAtr_Union_Disp);
-		return stamp;
-	}
+//	private StampRequestSetting toDomain(KrqstStampRequestSetting entity){
+//		StampRequestSetting stamp = StampRequestSetting.createFromJavaType(entity.companyID, entity.topComment, entity.topCommentFontColor, 
+//																entity.topCommentFontWeight == 1 ? true : false, entity.bottomComment, 
+//																entity.bottomCommentFontColor, 
+//																entity.bottomCommentFontWeight == 1 ? true : false, 
+//																entity.resultDisp, entity.supFrameDispNO, entity.stampPlaceDisp, 
+//																entity.stampAtr_Work_Disp, entity.stampAtr_GoOut_Disp, 
+//																entity.stampAtr_Care_Disp, entity.stampAtr_Sup_Disp, entity.stampAtr_Child_Care_Disp, 
+//																entity.stampGoOutAtr_Private_Disp, entity.stampGoOutAtr_Public_Disp, 
+//																entity.stampGoOutAtr_Compensation_Disp, entity.stampGoOutAtr_Union_Disp);
+//		return stamp;
+//	}
 	/**
 	 * update stamp request setting
 	 * @author yennth

@@ -255,29 +255,29 @@ public class OptionalItem extends AggregateRoot {
      * @param decimalCount
      * @return
      */
-    private BigDecimal controlCountValue(BigDecimal rawCountValue, int decimalCount) {
-
-        //countを2倍する
-    	BigDecimal multipleValue = rawCountValue.multiply(BigDecimal.valueOf(2));
-        //countで四捨五入する
-    	// -1 の意味　→ setScaleは小数点第１→０、第２→１を渡す必要があるため、小数点以下の桁数からマイナス１してる
-    	multipleValue = multipleValue.setScale(decimalCount - 1, BigDecimal.ROUND_HALF_UP);
-        //countを2で割る(元の数値に戻す)
-    	return multipleValue.divide(BigDecimal.valueOf(2));
-    }
+//    private BigDecimal controlCountValue(BigDecimal rawCountValue, int decimalCount) {
+//
+//        //countを2倍する
+//    	BigDecimal multipleValue = rawCountValue.multiply(BigDecimal.valueOf(2));
+//        //countで四捨五入する
+//    	// -1 の意味　→ setScaleは小数点第１→０、第２→１を渡す必要があるため、小数点以下の桁数からマイナス１してる
+//    	multipleValue = multipleValue.setScale(decimalCount - 1, BigDecimal.ROUND_HALF_UP);
+//        //countを2で割る(元の数値に戻す)
+//    	return multipleValue.divide(BigDecimal.valueOf(2));
+//    }
     
     /**
      * 小数点以下の桁数チェック
      * @param value 値
      * @return 桁数
      */
-    private int getPrecision(BigDecimal value){
-      String str = String.valueOf(value.stripTrailingZeros());
-      // 文末が ".0"とか".00000"で終わってるやつは全部桁０とする
-      if(str.matches("^.*\\.0+$")){
-        return 0;
-      }
-      int index = str.indexOf(".");
-      return str.substring(index + 1).length();
-   	}
+//    private int getPrecision(BigDecimal value){
+//      String str = String.valueOf(value.stripTrailingZeros());
+//      // 文末が ".0"とか".00000"で終わってるやつは全部桁０とする
+//      if(str.matches("^.*\\.0+$")){
+//        return 0;
+//      }
+//      int index = str.indexOf(".");
+//      return str.substring(index + 1).length();
+//   	}
 }

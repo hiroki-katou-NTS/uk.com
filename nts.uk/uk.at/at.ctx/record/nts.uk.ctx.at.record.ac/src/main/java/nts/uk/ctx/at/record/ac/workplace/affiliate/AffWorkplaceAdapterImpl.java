@@ -16,7 +16,7 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkPlaceSidImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceDto;
-import nts.uk.ctx.bs.employee.pub.workplace.AffAtWorkplaceExport;
+//import nts.uk.ctx.bs.employee.pub.workplace.AffAtWorkplaceExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
