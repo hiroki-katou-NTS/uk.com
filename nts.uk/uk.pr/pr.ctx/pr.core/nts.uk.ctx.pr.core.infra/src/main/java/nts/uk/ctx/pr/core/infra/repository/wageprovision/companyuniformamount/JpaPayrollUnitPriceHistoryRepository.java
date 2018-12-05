@@ -12,6 +12,7 @@ import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class JpaPayrollUnitPriceHistoryRepository extends JpaRepository implemen
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtPayUnitPriceHis f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.payUnitPriceHisPk.cid =:cid AND  f.payUnitPriceHisPk.code =:code AND  f.payUnitPriceHisPk.hisId =:hisId ";
     private static final String SELECT_BY_CID_CODE_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.payUnitPriceHisPk.cid =:cid AND  f.payUnitPriceHisPk.code =:code ORDER BY f.endYearMonth DESC";
+    private static final String SELECT_BY_CODE_AND_YEAR_MONTH = SELECT_ALL_QUERY_STRING + " WHERE  f.payUnitPriceHisPk.cid =:cid AND  f.payUnitPriceHisPk.code =:code AND f.startYearMonth <=:yearMonth AND f.endYearMonth >=:yearMonth ";
 
     @Override
     public Optional<PayrollUnitPriceHistory> getPayrollUnitPriceHistoryById(String cid, String code, String hisId){
@@ -37,6 +39,20 @@ public class JpaPayrollUnitPriceHistoryRepository extends JpaRepository implemen
              return Optional.of(new PayrollUnitPriceHistory(new CompanyUnitPriceCode(code),cid,toDomain(temp)));
          }
          return Optional.empty();
+    }
+
+    @Override
+    public Optional<PayrollUnitPriceSetting> getPayrollUnitPriceCodeAndYearMonth(String cid, String code, int yearMonth) {
+        return this.queryProxy().query(SELECT_BY_CODE_AND_YEAR_MONTH, QpbmtPayUnitPriceHis.class)
+                .setParameter("cid", cid)
+                .setParameter("code", code)
+                .setParameter("yearMonth", yearMonth)
+                .getSingle(this::fromEntityToDomain);
+    }
+
+    private PayrollUnitPriceSetting fromEntityToDomain (QpbmtPayUnitPriceHis entity) {
+        return new PayrollUnitPriceSetting(entity.payUnitPriceHisPk.hisId, entity.amountOfMoney, entity.targetClass, entity.monthSalaryPerDay, entity.aDayPayee, entity.hourlyPay, entity.monthSalary, entity.setClassification, entity.notes);
+
     }
 
     @Override

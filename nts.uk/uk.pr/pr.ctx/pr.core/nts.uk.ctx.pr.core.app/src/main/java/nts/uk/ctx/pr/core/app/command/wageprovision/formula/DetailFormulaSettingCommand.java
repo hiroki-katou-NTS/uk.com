@@ -18,27 +18,27 @@ public class DetailFormulaSettingCommand
     /**
      * 履歴ID
      */
-    private String historyID;
+    public String historyID;
     
     /**
     * 参照月
     */
-    private int referenceMonth;
+    public int referenceMonth;
     
     /**
     * 端数処理(詳細計算式)
     */
-    private int roundingMethod;
+    public int roundingMethod;
     
     /**
     * 端数処理位置
     */
-    private int roundingPosition;
+    public int roundingPosition;
     
     /**
     * 計算式要素
     */
-    private List<DetailCalculationFormulaCommand> detailCalculationFormula;
+    public List<DetailCalculationFormulaCommand> detailCalculationFormula;
 
 
     public DetailFormulaSetting fromCommandToDomain (){

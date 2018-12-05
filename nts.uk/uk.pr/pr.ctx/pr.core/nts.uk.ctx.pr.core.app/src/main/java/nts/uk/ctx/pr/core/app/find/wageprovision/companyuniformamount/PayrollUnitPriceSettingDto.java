@@ -71,5 +71,5 @@ public class PayrollUnitPriceSettingDto
                 domain.getFixedWage().getSetClassification().value,
                 domain.getNotes().map(i->i.v()).orElse(null));
     }
-    
+
 }

@@ -127,8 +127,8 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
                 alertError(error);
             }).always(() => {
                 block.clear();
+                $("#A2_3").focus();
             });
-            $("#A2_3").focus();
             return dfd.promise();
         }
 
@@ -162,7 +162,6 @@ module nts.uk.pr.view.qmm018.a.viewmodel {
                     alertError(error);
                 }).always(function () {
                     block.clear();
-                    $("#A2_3").focus();
                 });
             }
         };
