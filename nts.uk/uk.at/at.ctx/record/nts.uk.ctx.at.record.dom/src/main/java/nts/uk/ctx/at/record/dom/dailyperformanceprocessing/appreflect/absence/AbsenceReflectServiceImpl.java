@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.absence;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,6 +10,8 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -24,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktype.algorithm.JudgmentWorkTypeService;
 import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
+import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 	
@@ -41,6 +45,8 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 	private WorkInformationRepository workRepository;
 	@Inject
 	private WorkTypeIsClosedService workTypeRepo;
+	@Inject 
+	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDaily;
 	@Override
 	public boolean absenceReflect(CommonReflectParameter absencePara, boolean isPre) {
 		try {
@@ -62,9 +68,17 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 				dailyInfor = this.reflectScheStartEndTime(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTypeCode(), isRecordWorkType, dailyInfor);			
 				//勤種の反映
 				dailyInfor = workTimeUpdate.updateRecordWorkType(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTypeCode(), false, dailyInfor);
-				//開始終了時刻の反映
-				this.reflectRecordStartEndTime(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTypeCode());
 				workRepository.updateByKeyFlush(dailyInfor);
+				
+				Optional<TimeLeavingOfDailyPerformance> optTimeLeaving = timeLeavingOfDaily.findByKey(absencePara.getEmployeeId(),
+						loopDate);
+				if(optTimeLeaving.isPresent()) {
+					//開始終了時刻の反映
+					this.reflectRecordStartEndTime(absencePara.getEmployeeId(), loopDate,
+							absencePara.getWorkTypeCode(), optTimeLeaving.get());					
+				}
+				
+				commonService.calculateOfAppReflect(null, absencePara.getEmployeeId(), loopDate);
 			}
 			return true;
 		} catch (Exception e) {
@@ -90,12 +104,13 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 		return dailyInfor;
 	}
 	@Override
-	public void reflectRecordStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode) {
+	public TimeLeavingOfDailyPerformance reflectRecordStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode,
+			TimeLeavingOfDailyPerformance timeDaily) {
 		boolean isCheckClean =  this.checkTimeClean(employeeId, baseDate, workTypeCode);
 		//開始終了時刻をクリアするかチェックする 値：０になる。		
 		TimeReflectPara timeData = new TimeReflectPara(employeeId, baseDate, null, null, 1, isCheckClean, isCheckClean);
-		workTimeUpdate.updateRecordStartEndTimeReflect(timeData);
-		
+		timeDaily = workTimeUpdate.updateRecordStartEndTimeReflect(timeData, timeDaily);
+		return timeDaily;
 	}
 	@Override
 	public boolean checkTimeClean(String employeeId, GeneralDate baseDate, String workTypeCode) {

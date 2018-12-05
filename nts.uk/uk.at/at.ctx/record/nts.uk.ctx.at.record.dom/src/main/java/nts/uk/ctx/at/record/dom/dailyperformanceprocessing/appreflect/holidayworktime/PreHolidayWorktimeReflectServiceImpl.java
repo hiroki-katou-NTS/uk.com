@@ -10,12 +10,10 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateOption;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
@@ -56,9 +54,7 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 	@Inject
 	private AttendanceTimeRepository attendanceTime;
 	@Inject
-	private CalculateDailyRecordServiceCenter calService;
-	@Inject
-	private CommonCompanySettingForCalc commonComSetting;
+	private CommonProcessCheckService commonService;
 	@Override
 	public boolean preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara, boolean isPre) {		
 		try {
@@ -108,11 +104,8 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 			
 			List<EditStateOfDailyPerformance> lstEditState = dailyReposiroty.findByKey(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate());
 			daily.setEditState(lstEditState);
-			List<IntegrationOfDaily> lstCal = calService.calculateForSchedule(CalculateOption.asDefault(),
-					Arrays.asList(daily) , Optional.of(commonComSetting.getCompanySetting()));
-			lstCal.stream().forEach(x -> {
-				timeAndAnyItemUpService.addAndUpdate(x);	
-			});
+			
+			commonService.calculateOfAppReflect(daily, holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate());
 			return true;
 		} catch (Exception e) {
 			return false;

@@ -496,21 +496,17 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 	}
 	
 	@Override
-	public void updateRecordStartEndTimeReflect(TimeReflectPara data) {
+	public TimeLeavingOfDailyPerformance updateRecordStartEndTimeReflect(TimeReflectPara data, TimeLeavingOfDailyPerformance timeDaily) {		
 		if(!data.isStart()
 				&& !data.isEnd()) {
-			return;
+			return timeDaily;
 		}
 		//開始時刻を反映する
-		Optional<TimeLeavingOfDailyPerformance> optTimeLeavingOfDaily = timeLeavingOfDaily.findByKey(data.getEmployeeId(), data.getDateData());
-		if(!optTimeLeavingOfDaily.isPresent()) {
-			return;
-		}
-		TimeLeavingOfDailyPerformance timeLeavingOfDailyData = optTimeLeavingOfDaily.get();
-		List<TimeLeavingWork> lstTimeLeavingWorks = timeLeavingOfDailyData.getTimeLeavingWorks().stream()
+		
+		List<TimeLeavingWork> lstTimeLeavingWorks = timeDaily.getTimeLeavingWorks().stream()
 				.filter(x -> x.getWorkNo().v() == data.getFrameNo()).collect(Collectors.toList());
 		if(lstTimeLeavingWorks.isEmpty()) {
-			return;
+			return timeDaily;
 		}
 		TimeLeavingWork timeLeavingWork = lstTimeLeavingWorks.get(0);
 		Optional<TimeActualStamp> optTimeAttendanceStart = timeLeavingWork.getAttendanceStamp();
@@ -564,9 +560,9 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		TimeLeavingWork timeLeavingWorkTmp = new TimeLeavingWork(timeLeavingWork.getWorkNo(),
 				optTimeAttendanceStart.get(),
 				optTimeAttendanceEnd.get());
-		timeLeavingOfDailyData.getTimeLeavingWorks().remove(timeLeavingWork);
-		timeLeavingOfDailyData.getTimeLeavingWorks().add(timeLeavingWorkTmp);	
-		timeLeavingOfDaily.updateFlush(timeLeavingOfDailyData);
+		timeDaily.getTimeLeavingWorks().remove(timeLeavingWork);
+		timeDaily.getTimeLeavingWorks().add(timeLeavingWorkTmp);	
+		timeLeavingOfDaily.updateFlush(timeDaily);
 		//開始時刻の編集状態を更新する
 		//予定項目ID=出勤の項目ID	
 		List<Integer> lstItem = new ArrayList<Integer>();
@@ -585,6 +581,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			}
 		}
 		this.updateEditStateOfDailyPerformance(data.getEmployeeId(), data.getDateData(), lstItem);
+		return timeDaily;
 	}
 	@Override
 	public IntegrationOfDaily updateWorkTimeTypeHoliwork(ReflectParameter para, boolean scheUpdate,

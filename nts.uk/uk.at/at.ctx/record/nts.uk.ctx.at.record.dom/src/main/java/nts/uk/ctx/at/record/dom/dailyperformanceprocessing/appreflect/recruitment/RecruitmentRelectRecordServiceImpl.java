@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.recruitment;
 
-//import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -13,17 +12,13 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.HolidayWorkReflectProcess;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.PreHolidayWorktimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.ScheStartEndTimeReflectOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.StartEndTimeOffReflect;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.StartEndTimeOutput;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
-//import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateOption;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
@@ -55,14 +50,8 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyRepos;
 	@Inject
 	private WorkInformationRepository workRepository;
-	/*@Inject
-	private CalculateDailyRecordService calculate;*/
 	@Inject
-	private AdTimeAndAnyItemAdUpService timeAndAnyItemUpService;
-	@Inject
-	private CalculateDailyRecordServiceCenter calService;
-	@Inject
-	private CommonCompanySettingForCalc commonComSetting;
+	private CommonProcessCheckService commonService;
 	@Override
 	public boolean recruitmentReflect(CommonReflectParameter param, boolean isPre) {
 		try {
@@ -81,12 +70,7 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 			daily.setWorkInformation(dailyInfor);
 			//開始終了時刻の反映
 			daily = this.reflectRecordStartEndTime(param, daily);			
-			List<IntegrationOfDaily> lstCal = calService.calculateForSchedule(CalculateOption.asDefault(),
-					Arrays.asList(daily) , Optional.of(commonComSetting.getCompanySetting()));
-			lstCal.stream().forEach(x -> {
-				timeAndAnyItemUpService.addAndUpdate(x);	
-			});
-			
+			commonService.calculateOfAppReflect(daily, param.getEmployeeId(), param.getBaseDate());
 			return true;
 		} catch (Exception e) {
 			return false;
@@ -121,18 +105,21 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 		
 		boolean isEndTime = this.checkReflectRecordStartEndTime(param.getWorkTypeCode(), 1, false, param.getEmployeeId(), param.getBaseDate());
 
-		
+		TimeLeavingOfDailyPerformance dailyPerformance = null;
 		if(isStartTime || isEndTime) {			
 			//開始時刻の反映
 			////終了時刻の反映
 			TimeReflectPara startTimeData = new TimeReflectPara(param.getEmployeeId(), param.getBaseDate(), justLateEarly.getStart1(), 
 					justLateEarly.getEnd1(), 1, isStartTime, isEndTime);
-			TimeLeavingOfDailyPerformance dailyPerformance =  workUpdate.updateRecordStartEndTimeReflectRecruitment(startTimeData, 
+			dailyPerformance =  workUpdate.updateRecordStartEndTimeReflectRecruitment(startTimeData, 
 					daily.getAttendanceLeave().get());
 			daily.setAttendanceLeave(Optional.of(dailyPerformance));
+			
 		}		
 		//休出時間振替時間をクリアする
-		return this.clearRecruitmenFrameTime(param.getEmployeeId(), param.getBaseDate(), daily);
+		daily = this.clearRecruitmenFrameTime(param.getEmployeeId(), param.getBaseDate(), daily); 
+		
+		return daily;
 	}
 
 	@Override

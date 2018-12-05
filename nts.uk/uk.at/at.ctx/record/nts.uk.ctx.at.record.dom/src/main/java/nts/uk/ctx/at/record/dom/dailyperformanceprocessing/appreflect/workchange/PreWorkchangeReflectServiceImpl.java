@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.workchange;
 
+import java.util.ArrayList;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
@@ -38,16 +40,17 @@ public class PreWorkchangeReflectServiceImpl implements PreWorkchangeReflectServ
 				
 				//予定勤種就時の反映
 				dailyInfor = commonService.reflectScheWorkTimeWorkType(workchangePara, isPre, dailyInfor);
-				//勤種・就時の反映
+				
 				ReflectParameter reflectPara = new ReflectParameter(workchangePara.getEmployeeId(),
 						loopDate,
 						workchangePara.getWorkTimeCode(),
 						workchangePara.getWorkTypeCode(),
 						true);
-				
+				//勤種・就時の反映
 				dailyInfor = workTimeUpdate.updateWorkTimeType(reflectPara, false, dailyInfor);
 				//日別実績の勤務情報  変更
 				workRepository.updateByKeyFlush(dailyInfor);
+				commonService.calculateOfAppReflect(null, workchangePara.getEmployeeId(), loopDate);
 			}			
 			return true;	
 		}catch (Exception e) {
