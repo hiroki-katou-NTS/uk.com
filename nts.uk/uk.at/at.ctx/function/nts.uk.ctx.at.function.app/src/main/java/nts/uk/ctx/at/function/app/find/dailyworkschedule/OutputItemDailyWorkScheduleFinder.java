@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleCopyCommand;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
@@ -43,6 +44,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFo
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
 //import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject.BundledBusinessExceptionBuffer;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -105,7 +107,6 @@ public class OutputItemDailyWorkScheduleFinder {
 	
 	private static final String AUTHORITY_DEFINE = "権限";
 	private static final String BUSINESS_TYPE_DEFINE = "勤務種別";
-	
 	/**
 	 * Find by cid.
 	 *
@@ -223,7 +224,7 @@ public class OutputItemDailyWorkScheduleFinder {
 	}
 	
 	// algorithm for screen D: copy
-	public List<DataInforReturnDto> executeCopy(String codeCopy, String codeSourceSerivce) {
+	public DataReturnDto executeCopy(String codeCopy, String codeSourceSerivce) {
 		String companyId = AppContexts.user().companyId();
 		
 		// get domain 日別勤務表の出力項目
@@ -232,19 +233,21 @@ public class OutputItemDailyWorkScheduleFinder {
 		if (optOutputItemDailyWorkSchedule.isPresent()) {
 			throw new BusinessException("Msg_3");
 		} else {
-			List<DataInforReturnDto> lstData = getDomConvertDailyWork(companyId, codeSourceSerivce);
-			if (lstData.isEmpty()) {
+			DataReturnDto dataReturnDto = getDomConvertDailyWork(companyId, codeSourceSerivce);
+			//List<DataInforReturnDto> lstData = getDomConvertDailyWork(companyId, codeSourceSerivce);
+			if (dataReturnDto.getDataInforReturnDtos().isEmpty()) {
 				throw new BusinessException("Msg_1411");
 			} 
-			return lstData;
+			return dataReturnDto;
 		}
 	}
 	
 	// アルゴリズム「日別勤務表用フォーマットをコンバートする」を実行する(Execute algorithm "Convert daily work table format")
-	private List<DataInforReturnDto> getDomConvertDailyWork(String companyId, String codeSourceSerivce) {
+	private DataReturnDto getDomConvertDailyWork(String companyId, String codeSourceSerivce) {
 		// Get domain 実績修正画面で利用するフォーマット from request list 402
 		Optional<FormatPerformanceImport> optFormatPerformanceImport = formatPerformanceAdapter.getFormatPerformance(companyId);
 		
+		DataReturnDto dataReturnDto = new DataReturnDto();
 		List<DataInforReturnDto> lstDataReturn = new ArrayList<>();
 		
 		if (optFormatPerformanceImport.isPresent()) {
@@ -281,6 +284,7 @@ public class OutputItemDailyWorkScheduleFinder {
 			}
 		}
 		
+		// get list data was showed in kwr001
 		List<AttendanceType> lstAttendanceType = attendanceTypeRepository.getItemByScreenUseAtr(companyId, DAILY_WORK_SCHEDULE);
 		List<Integer> lstAttendanceID = lstAttendanceType.stream().map(domain -> domain.getAttendanceItemId()).collect(Collectors.toList());
 		
@@ -297,6 +301,9 @@ public class OutputItemDailyWorkScheduleFinder {
 		Map<Integer, String> mapIdName =  lstCommandCopy.stream()
 				.collect(Collectors.toMap(OutputItemDailyWorkScheduleCopyCommand::getId, 
 										  OutputItemDailyWorkScheduleCopyCommand::getName));
+		// compare data return from kdw008 to kwr001
+		// if item of kwr008 exist in kwr001, it will be save
+		int sizeData = lstDataReturn.size();
 		lstDataReturn = lstDataReturn.stream()
 				.filter(domain -> mapIdName.containsKey(domain.getId()))
 				.map(domain -> {
@@ -304,12 +311,21 @@ public class OutputItemDailyWorkScheduleFinder {
 					return domain;
 				}).collect(Collectors.toList());
 		
+		if(sizeData !=lstDataReturn.size()){
+			List<String> lstMsgErr = new ArrayList<String>();
+			lstMsgErr.add("Msg_1476");
+			dataReturnDto.setMsgErr(lstMsgErr);
+		}
 		// 1Sheet目の表示項目を返り値とする (Coi hạng mục hiển thj của sheet đầu tiên là giá trị trả về)
+		
+		dataReturnDto.setDataInforReturnDtos(lstDataReturn);
+		
+		
 		if (lstDataReturn.size() <= 48) {
-			return lstDataReturn;
+			return dataReturnDto;
 		}
 		else { // 1Sheet目の表示項目の先頭48項目までを返り値とする(Lấy 48 hạng mục đầu trong sheet đầu tiên làm giá trị trả về)
-			return lstDataReturn.stream().limit(48).collect(Collectors.toList());
+			return (DataReturnDto) dataReturnDto.getDataInforReturnDtos().stream().limit(48).collect(Collectors.toList());
 		}
 	}
 	

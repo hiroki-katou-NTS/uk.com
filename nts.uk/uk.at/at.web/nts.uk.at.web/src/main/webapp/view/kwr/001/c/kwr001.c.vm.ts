@@ -314,10 +314,10 @@ module nts.uk.at.view.kwr001.c {
                             _.forEach(self.outputItemPossibleLst(), function(value) {
                                 arrTemp.push(value);
                             })
-                            _.forEach(dataScrD.lstAtdChoose, (value) => {
-                                value.code = self.mapIdCodeAtd[value.id];    
+                            _.forEach(dataScrD.lstAtdChoose.dataInforReturnDtos, (value) => {
+                                    value.code = self.mapIdCodeAtd[value.id];   
                             })
-                            self.currentCodeListSwap(dataScrD.lstAtdChoose);
+                            self.currentCodeListSwap(dataScrD.lstAtdChoose.dataInforReturnDtos);
                             self.items(arrTemp);
                             self.C3_2_value(dataScrD.codeCopy);
                             self.C3_3_value(dataScrD.nameCopy);
