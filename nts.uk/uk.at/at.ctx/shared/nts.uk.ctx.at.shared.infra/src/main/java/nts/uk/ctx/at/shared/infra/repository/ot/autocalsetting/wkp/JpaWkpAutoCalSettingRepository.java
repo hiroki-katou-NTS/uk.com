@@ -5,10 +5,10 @@
 package nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.wkp;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -20,10 +20,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.ComAutoCalSettingExport;
+
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp.WkpAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp.WkpAutoCalSettingRepository;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp.WorkPlaceAutoCalSettingExport;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSet;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSetPK;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSetPK_;
@@ -36,34 +35,36 @@ import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSe
 public class JpaWkpAutoCalSettingRepository extends JpaRepository implements WkpAutoCalSettingRepository {
 
 	private static final String SELECT_ALL_WORKPLACE_BY_CID = " SELECT " +
+			"k.LEGAL_OT_TIME_ATR, "+
+			"k.LEGAL_OT_TIME_LIMIT, "+
+			"k.LEGAL_MID_OT_TIME_ATR, "+
+			"k.LEGAL_MID_OT_TIME_LIMIT, "+
+			"k.NORMAL_OT_TIME_ATR, "+
+			"k.NORMAL_OT_TIME_LIMIT, "+
+			"k.NORMAL_MID_OT_TIME_ATR, "+
+			"k.NORMAL_MID_OT_TIME_LIMIT, "+
+			"k.EARLY_OT_TIME_ATR, "+
+			"k.EARLY_OT_TIME_LIMIT, "+
+			"k.EARLY_MID_OT_TIME_ATR, "+
+			"k.EARLY_MID_OT_TIME_LIMIT, "+
+			"k.FLEX_OT_TIME_ATR, "+
+			"k.FLEX_OT_TIME_LIMIT, "+
+			"k.REST_TIME_ATR, "+
+			"k.REST_TIME_LIMIT, "+
+			"k.LATE_NIGHT_TIME_ATR, "+
+			"k.LATE_NIGHT_TIME_LIMIT, "+
+			"k.LEAVE_LATE, "+
+			"k.LEAVE_EARLY, "+
+			"k.RAISING_CALC_ATR, "+
+			"k.SPECIFIC_RAISING_CALC_ATR, "+
+			"k.DIVERGENCE,  "+
 			"w.WKPCD, " +
-			"w.WKP_NAME, " +
-			"CASE  WHEN EARLY_OT_TIME_LIMIT IS NULL then 'NO' ELSE 'YES'  END as REGISTERED, " +
-			"k.EARLY_OT_TIME_LIMIT, " +
-			"k.EARLY_MID_OT_TIME_LIMIT, " +
-			"k.NORMAL_OT_TIME_LIMIT, " +
-			"k.NORMAL_MID_OT_TIME_LIMIT, " +
-			"k.LEGAL_OT_TIME_LIMIT, " +
-			"k.LEGAL_MID_OT_TIME_LIMIT, " +
-			"k.FLEX_OT_TIME_LIMIT, " +
-			"k.REST_TIME_LIMIT, " +
-			"k.LATE_NIGHT_TIME_LIMIT, " +
-			"k.EARLY_OT_TIME_ATR, " +
-			"k.EARLY_MID_OT_TIME_ATR, " +
-			"k.NORMAL_OT_TIME_ATR, " +
-			"k.NORMAL_MID_OT_TIME_ATR, " +
-			"k.LEGAL_OT_TIME_ATR, " +
-			"k.LEGAL_MID_OT_TIME_ATR, " +
-			"k.FLEX_OT_TIME_ATR, " +
-			"k.REST_TIME_ATR, " +
-			"k.LATE_NIGHT_TIME_ATR, " +
-			"k.RAISING_CALC_ATR, " +
-			"k.SPECIFIC_RAISING_CALC_ATR, " +
-			"k.LEAVE_EARLY, " +
-			"k.LEAVE_LATE, " +
-			"k.DIVERGENCE " +
-			"FROM BSYMT_WORKPLACE_INFO w LEFT JOIN KSHMT_AUTO_WKP_CAL_SET k on w.WKPID = k.WKPID  AND w.CID = k.CID " +
-			"WHERE w.CID = ?cid " +
+			"w.WKP_NAME " +
+            "FROM BSYMT_WORKPLACE_INFO w INNER JOIN BSYMT_WKP_CONFIG c ON c.CID = w.CID " +
+            "INNER JOIN BSYMT_WORKPLACE_HIST h ON w.HIST_ID = h.HIST_ID AND w.WKPID = h.WKPID "+
+            "INNER JOIN KSHMT_AUTO_WKP_CAL_SET k on w.WKPID = k.WKPID " +
+            "WHERE w.CID = ?cid AND h.START_DATE <= ?baseDate AND h.END_DATE >= ?baseDate "+
+            "AND c.START_DATE <= ?baseDate AND c.END_DATE >= ?baseDate "+
 			"ORDER BY w.WKPCD";
 	/** The select no where. */
 	public static final String SELECT_NO_WHERE = "SELECT c FROM KshmtAutoWkpCalSet c";
@@ -85,47 +86,28 @@ public class JpaWkpAutoCalSettingRepository extends JpaRepository implements Wkp
 	}
 
 	@Override
-	public List<WorkPlaceAutoCalSettingExport> getWorkPlaceSettingToExport(String cid) {
+	public List<Object[]> getWorkPlaceSettingToExport(String cid, String baseDate) {
 		List<Object[]> resultQuery = null;
 		try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			java.util.Date date = null;
+			java.sql.Date sqlDate = null;
+            try {
+                date = format.parse(baseDate);
+				sqlDate = new java.sql.Date(date.getTime());
+            } catch (ParseException e) {
+                return Collections.emptyList();
+            }
 			resultQuery = (List<Object[]>) this.getEntityManager().createNativeQuery(SELECT_ALL_WORKPLACE_BY_CID)
 					.setParameter("cid", cid)
+                    .setParameter("baseDate", sqlDate)
 					.getResultList();
 		} catch (NoResultException e) {
 			return Collections.emptyList();
 		}
-		return resultQuery.stream().map(item -> convertToExport(item)).collect(Collectors.toList());
+		return resultQuery;
 	}
 
-	private WorkPlaceAutoCalSettingExport convertToExport(Object[] obj){
-		return new WorkPlaceAutoCalSettingExport(
-				obj[0].toString(),
-				obj[1].toString(),
-				obj[2].toString(),
-				obj[3] == null ? 0 : ((BigDecimal) obj[3]).intValue(),
-				obj[4] == null ? 0 : ((BigDecimal) obj[4]).intValue(),
-				obj[5] == null ? 0 : ((BigDecimal) obj[5]).intValue(),
-				obj[6] == null ? 0 : ((BigDecimal) obj[6]).intValue(),
-				obj[7] == null ? 0 : ((BigDecimal) obj[7]).intValue(),
-				obj[8] == null ? 0 : ((BigDecimal) obj[8]).intValue(),
-				obj[9] == null ? 0 : ((BigDecimal) obj[9]).intValue(),
-				obj[10] == null ? 0 : ((BigDecimal) obj[10]).intValue(),
-				obj[11] == null ? 0 : ((BigDecimal) obj[11]).intValue(),
-				obj[12] == null ? 0 : ((BigDecimal) obj[12]).intValue(),
-				obj[13] == null ? 0 : ((BigDecimal) obj[13]).intValue(),
-				obj[14] == null ? 0 : ((BigDecimal) obj[14]).intValue(),
-				obj[15] == null ? 0 : ((BigDecimal) obj[15]).intValue(),
-				obj[16] == null ? 0 : ((BigDecimal) obj[16]).intValue(),
-				obj[17] == null ? 0 : ((BigDecimal) obj[17]).intValue(),
-				obj[18] == null ? 0 : ((BigDecimal) obj[18]).intValue(),
-				obj[19] == null ? 0 : ((BigDecimal) obj[19]).intValue(),
-				obj[20] == null ? 0 : ((BigDecimal) obj[20]).intValue(),
-				obj[21] == null ? 0 : ((BigDecimal) obj[21]).intValue(),
-				obj[22] == null ? 0 : ((BigDecimal) obj[22]).intValue(),
-				obj[23] == null ? 0 : ((BigDecimal) obj[23]).intValue(),
-				obj[24] == null ? 0 : ((BigDecimal) obj[24]).intValue(),
-				obj[25] == null ? 0 : ((BigDecimal) obj[25]).intValue());
-	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp.WkpAutoCalSettingRepository#add(nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp.WkpAutoCalSetting)

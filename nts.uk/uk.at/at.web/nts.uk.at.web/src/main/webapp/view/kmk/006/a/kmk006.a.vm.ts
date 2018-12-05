@@ -1194,7 +1194,8 @@ module nts.uk.at.view.kmk006.a {
 
             private exportExcel(domainId: string, domainType :string){
                 var self = this;
-                service.exportExcel(self.langId(), domainId, domainType);
+                let baseDate: any = moment.utc(self.baseDateTreeList(), 'YYYY/MM/DD').toISOString();
+                service.exportExcel(self.langId(), domainId, domainType, baseDate);
             }
 
             private clearAllError() {
