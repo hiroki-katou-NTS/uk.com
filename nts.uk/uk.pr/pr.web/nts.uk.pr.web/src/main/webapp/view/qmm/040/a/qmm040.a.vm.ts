@@ -1,7 +1,7 @@
 module nts.uk.pr.view.qmm040.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import dialog = nts.uk.ui.dialog;
-
+    import block  = nts.uk.ui.block;
     export class ScreenModel {
 
         //SalIndAmountName
@@ -73,13 +73,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 self.personalAmount.removeAll();
                 self.personalDisplay.removeAll();
                 nts.uk.ui.errors.clearAll();
-                if(self.personalDisplay().length<=10){
-                    if (/Edge/.test(navigator.userAgent)) {
-                        $('.scroll-header').removeClass('edge_scroll_header');
-                    } else {
-                        $('.scroll-header').removeClass('ci_scroll_header');
-                    }
-                }
 
                 if (!data)
                     return;
@@ -190,7 +183,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
         public loadSalIndAmountName(cateIndicator: number): void {
             let self = this;
             service.salIndAmountNameByCateIndicator(cateIndicator).done((data) => {
-
+                block.invisible();
                 if (data) {
                     self.salIndAmountNames(_.sortBy(data,function (o) {
                         return o.individualPriceCode;
@@ -207,27 +200,19 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                         self.individualPriceName('');
                     }
                 }
-
+                block.clear();
             });
         }
-
 
         filterData(): void {
             let self = this;
             self.yearMonthFilter();
-            if (/Edge/.test(navigator.userAgent)) {
-                $('.scroll-header').removeClass('edge_scroll_header');
-                $('.nts-fixed-body-container').removeClass('edge_scroll_body');
-            } else {
-                $('.scroll-header').removeClass('ci_scroll_header');
-                $('.nts-fixed-body-container').removeClass('ci_scroll_body');
-            }
             $('#A5_7').ntsError('check');
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
             if (!self.employeeList) return;
-
+            block.invisible();
             service.salIndAmountHisByPeValCode({
                 perValCode: self.individualPriceCode(),
                 cateIndicator: self.cateIndicator(),
@@ -261,10 +246,21 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                             $('.scroll-header').addClass('ci_scroll_header');
                             $('.nts-fixed-body-container').addClass('ci_scroll_body');
                         }
-
+                    } else {
+                        if (/Edge/.test(navigator.userAgent)) {
+                            $('.scroll-header').removeClass('edge_scroll_header');
+                            $('.nts-fixed-body-container').removeClass('edge_scroll_body');
+                        } else {
+                            $('.scroll-header').removeClass('ci_scroll_header');
+                            $('.nts-fixed-body-container').removeClass('ci_scroll_body');
+                        }
                     }
-                }, 20);
-            })
+                }, 0);
+                block.clear();
+            }).fail((err) => {
+                nts.uk.ui.dialog.alertError(err.getMessage());
+                block.clear();
+            });
         }
 
         registerAmount(): void {

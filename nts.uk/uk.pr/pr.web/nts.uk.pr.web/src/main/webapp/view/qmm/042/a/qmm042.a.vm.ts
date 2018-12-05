@@ -32,20 +32,9 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
             }
 
             self.salaryPerUnitPriceNamesSelectedCode.subscribe(function (selectcode) {
-
-
                 self.workIndividualPrices.removeAll();
                 self.workIndividualPricesDisplay.removeAll();
                 nts.uk.ui.errors.clearAll();
-
-                if(self.workIndividualPrices().length<=10){
-                    if (/Edge/.test(navigator.userAgent)) {
-                        $('.scroll-header').removeClass('edge_scroll_header');
-                    } else {
-                        $('.scroll-header').removeClass('ci_scroll_header');
-                    }
-                }
-
                 if (!selectcode)
                     return;
                 let temp = _.find(self.salaryPerUnitPriceNames(), function (o) {
@@ -96,16 +85,25 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 });
                 self.workIndividualPricesDisplay(personalAmountData);
             })
-            if (self.workIndividualPricesDisplay().length > 10) {
-                if (/Edge/.test(navigator.userAgent)) {
-                    $('.scroll-header').addClass('edge_scroll_header');
-                    $('.nts-fixed-body-container').addClass('edge_scroll_body');
+            setTimeout(function () {
+                if (self.workIndividualPricesDisplay().length > 10) {
+                    if (/Edge/.test(navigator.userAgent)) {
+                        $('.scroll-header').addClass('edge_scroll_header');
+                        $('.nts-fixed-body-container').addClass('edge_scroll_body');
+                    } else {
+                        $('.scroll-header').addClass('ci_scroll_header');
+                        $('.nts-fixed-body-container').addClass('ci_scroll_body');
+                    }
                 } else {
-                    $('.scroll-header').addClass('ci_scroll_header');
-                    $('.nts-fixed-body-container').addClass('ci_scroll_body');
+                    if (/Edge/.test(navigator.userAgent)) {
+                        $('.scroll-header').removeClass('edge_scroll_header');
+                        $('.nts-fixed-body-container').removeClass('edge_scroll_body');
+                    } else {
+                        $('.scroll-header').removeClass('ci_scroll_header');
+                        $('.nts-fixed-body-container').removeClass('ci_scroll_body');
+                    }
                 }
-
-            }
+            }, 0);
         }
 
 

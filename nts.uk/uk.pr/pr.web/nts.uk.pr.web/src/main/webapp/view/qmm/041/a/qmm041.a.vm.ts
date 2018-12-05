@@ -219,6 +219,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+            block.invisible();
             service.getInfoEmpLogin().done((emp) => {
                 service.getWpName().done((wp) => {
                     service.getBaseDate().done((baseDate) => {
@@ -242,20 +243,25 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                             self.getAllIndEmpSalUnitPriceHistory(dto).done(() => {
                                 dfd.resolve();
                             });
+                            block.clear();
                         }).fail((res) => {
                             nts.uk.ui.dialog.alertError(res.message);
+                            block.clear();
                             dfd.reject();
                         });
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError(res.message);
+                        block.clear();
                         dfd.reject();
                     });
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError(res.message);
+                    block.clear();
                     dfd.reject();
                 });
             }).fail((res) => {
                 nts.uk.ui.dialog.alertError(res.message);
+                block.clear();
                 dfd.reject();
             });
             return dfd.promise();
@@ -453,6 +459,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
             let self = this;
             $('.nts-input').trigger("validate");
             if (hasError()) return;
+            block.invisible()
             if (self.mode() == model.MODE.NORMAL) {
                 let command = {
                     historyId: self.selectedHistoryCode(),
@@ -465,6 +472,9 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                     self.historyList([]);
                     self.historyList(array);
                     nts.uk.ui.dialog.info({messageId: "Msg_15"});
+                    block.clear();
+                }).fail((err) => {
+                    block.clear();
                 });
             } else if (self.mode() == model.MODE.ADD_HISTORY) {
                 let command = {
@@ -486,7 +496,10 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                 service.addHistory(command).done(() => {
                     self.selectedCode.valueHasMutated();
                     nts.uk.ui.dialog.info({messageId: "Msg_15"});
-                })
+                    block.clear();
+                }).fail((err) => {
+                    block.clear();
+                });
             }
         }
     }
