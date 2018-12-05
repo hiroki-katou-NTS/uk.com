@@ -321,7 +321,7 @@ module nts.uk.at.view.kwr001.c {
                             self.items(arrTemp);
                             self.C3_2_value(dataScrD.codeCopy);
                             self.C3_3_value(dataScrD.nameCopy);
-                            self.saveData();    
+                            self.saveData(dataScrD);    
                         }
                     } else {
                         self.currentCodeList(self.storeCurrentCodeBeforeCopy());
@@ -332,7 +332,7 @@ module nts.uk.at.view.kwr001.c {
             /*
              *  save data to server
             */
-            private saveData(): JQueryPromise<any> {
+            private saveData(dataScrD: any): JQueryPromise<any> {
                 let self = this;
                 $('.save-error').ntsError('check');
                 if (nts.uk.ui.errors.hasError()) {
@@ -375,9 +375,18 @@ module nts.uk.at.view.kwr001.c {
                 service.save(command).done(function() {
                     self.getDataService().done(function(){
                         self.currentCodeList(self.C3_2_value());
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function () {
-                           $('#C3_3').focus(); 
-                        });
+                        if (_.size(dataScrD.lstAtdChoose.msgErr)) {
+                            nts.uk.ui.dialog.error({ messageId: "Msg_1476" }).then(function() {
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                                    $('#C3_3').focus();
+                                });
+                            });
+                        }
+                        else {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                                $('#C3_3').focus();
+                            });
+                        }
                         blockUI.clear();
                         dfd.resolve();
                     })
