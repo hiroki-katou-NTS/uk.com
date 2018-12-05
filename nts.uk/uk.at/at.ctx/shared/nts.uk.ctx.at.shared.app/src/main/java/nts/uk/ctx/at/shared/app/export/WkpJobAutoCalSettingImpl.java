@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkpjob.WkpJobAutoCalSettingExport;
+
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkpjob.WkpJobAutoCalSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -51,14 +51,15 @@ public class WkpJobAutoCalSettingImpl implements MasterListData{
     @Override
     public List<MasterData> getMasterDatas(MasterListExportQuery query){
         String companyId = AppContexts.user().companyId();
-        List<WkpJobAutoCalSettingExport> wkpJobAutoCalSetting = wkpJobAutoCalSettingRepository.getWkpJobSettingToExport(companyId);
+        String baseDate = query.getData().toString();
+        List<Object[]> wkpJobAutoCalSetting = wkpJobAutoCalSettingRepository.getWkpJobSettingToExport(companyId, baseDate);
         List <MasterData> datas = new ArrayList<>();
         wkpJobAutoCalSetting.forEach(item -> {
             Map<String, Object> data = new HashMap<>();
-            data.put(KMK006_76, item.getWorkPlaceCode());
-            data.put(KMK006_77, item.getWorkPlaceName());
-            data.put(KMK006_79, item.getPositionCode());
-            data.put(KMK006_80, item.getPositionName());
+            data.put(KMK006_76, item[23]);
+            data.put(KMK006_77, item[24]);
+            data.put(KMK006_79, item[25]);
+            data.put(KMK006_80, item[26]);
             autoCalSettingExport.putDatas(item, data);
             datas.add(new MasterData(data, null, ""));
         });
