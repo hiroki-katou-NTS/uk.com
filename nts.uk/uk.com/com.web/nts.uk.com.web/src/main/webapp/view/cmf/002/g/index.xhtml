@@ -127,9 +127,9 @@
                             <td class="order-column"><span
                                     data-bind="text: lineNumber"></span></td>
                             <td><input tabindex="9"
-                                       data-bind="ntsTextEditor: {value: outputItem, constraint: 'CdConvertValue',  name:'#{i18n.getText('CMF002_127')}', option: {width: '98px'}}" /></td>
+                                       data-bind="attr: { 'data-focus-input': lineNumber }, ntsTextEditor: {value: outputItem, constraint: 'CdConvertValue',  name:'#{i18n.getText('CMF002_127')}', option: {width: '98px'}}" /></td>
                             <td><input tabindex="10"
-                                       data-bind="ntsTextEditor: {value: systemCode, constraint: 'CdConvertValue', required: true, name:'#{i18n.getText('CMF002_128')}', option: {width: '98px'}}" /></td>
+                                       data-bind="attr: { 'data-focus-system': lineNumber }, ntsTextEditor: {value: systemCode, constraint: 'CdConvertValue', required: true, name:'#{i18n.getText('CMF002_128')}', option: {width: '98px'}}" /></td>
                         </tr>
                         </tbody>
                     </table>
