@@ -215,14 +215,25 @@ module nts.uk.pr.view.qmm016.share.model {
     // 賃金テーブル内容
     export class WageTableContent {
         historyID: KnockoutObservable<string> = ko.observable(null);
-        payment: KnockoutObservableArray<ElementsCombinationPaymentAmount> = ko.observableArray([]);
+        payment: KnockoutObservableArray<any> = ko.observableArray([]);
         qualificationGroupSetting: KnockoutObservableArray<QualificationGroupSettingContent> = ko.observableArray([]);
         // control item
         paymentMethodItem: KnockoutObservableArray<model.EnumModel> = ko.observableArray(getQualificationPaymentMethodItem());
-        constructor(params: IWageTableContent) {
-            this.historyID(params ? params.historyID : null);
-            this.payment(params ? params.payments.map(item => new ElementsCombinationPaymentAmount(item)) : []);
-            this.qualificationGroupSetting(params && !_.isEmpty(params.qualificationGroupSettings) ? params.qualificationGroupSettings.map(item => new QualificationGroupSettingContent(item)) : []);
+        constructor(params: any) {
+            if (params) {
+                this.historyID(params.historyID);
+                if (!_.isEmpty(params.list1dElements)) {
+                    this.payment(params.list1dElements.map(item => new ElementItem(item)));
+                }
+                if (!_.isEmpty(params.list2dElements)) {
+                    this.payment(params.list2dElements.map(item => new TwoDmsElementItem(item)));
+                }
+                if (!_.isEmpty(params.list3dElements)) {
+                    
+                }
+                this.qualificationGroupSetting(params && !_.isEmpty(params.qualificationGroupSettings) ? params.qualificationGroupSettings.map(item => new QualificationGroupSettingContent(item)) : []);
+            }
+            
         }
     }
 
@@ -308,14 +319,35 @@ module nts.uk.pr.view.qmm016.share.model {
     // 要素項目（数値）
     export class ElementItem {
         masterCode: KnockoutObservable<string> = ko.observable(null);
+        masterName: KnockoutObservable<string> = ko.observable(null);
         frameNumber: KnockoutObservable<number> = ko.observable(null);
         frameLowerLimit: KnockoutObservable<number> = ko.observable(null);
         frameUpperLimit: KnockoutObservable<number> = ko.observable(null);
-        constructor (params: IElementItem) {
+        paymentAmount: KnockoutObservable<number> = ko.observable(null);
+        constructor (params: any) {
             this.masterCode(params ? params.masterCode : null);
+            this.masterName(params ? params.masterName : null);
             this.frameNumber(params ? params.frameNumber : null);
             this.frameLowerLimit(params ? params.frameLowerLimit : null);
             this.frameUpperLimit(params ? params.frameUpperLimit : null);
+            this.paymentAmount(params ? params.paymentAmount : null);
+        }
+    }
+    
+    export class TwoDmsElementItem {
+        masterCode: KnockoutObservable<string> = ko.observable(null);
+        masterName: KnockoutObservable<string> = ko.observable(null);
+        frameNumber: KnockoutObservable<number> = ko.observable(null);
+        frameLowerLimit: KnockoutObservable<number> = ko.observable(null);
+        frameUpperLimit: KnockoutObservable<number> = ko.observable(null);
+        listSecondDms: KnockoutObservableArray<ElementItem> = ko.observableArray([]);
+        constructor (params: any) {
+            this.masterCode(params ? params.masterCode : null);
+            this.masterName(params ? params.masterName : null);
+            this.frameNumber(params ? params.frameNumber : null);
+            this.frameLowerLimit(params ? params.frameLowerLimit : null);
+            this.frameUpperLimit(params ? params.frameUpperLimit : null);
+            this.listSecondDms(params && !_.isEmpty(params.listSecondDms) ? params.listSecondDms.map(item => new ElementItem(item)) : []);
         }
     }
 
