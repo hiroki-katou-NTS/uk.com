@@ -386,18 +386,6 @@ module nts.uk.at.view.kwr001.c {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function () {
                            $('#C3_3').focus(); 
                         });
-//                        if (_.isNil(dataScrD.lstAtdChoose.msgErr) && _.isUndefined(dataScrD.lstAtdChoose.msgErr)) {
-//                            nts.uk.ui.dialog.error({ messageId: "Msg_1476" }).then(function() {
-//                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-//                                    $('#C3_3').focus();
-//                                });
-//                            });
-//                        }
-//                        else {
-//                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-//                                $('#C3_3').focus();
-//                            });
-//                        }
                         blockUI.clear();
                         dfd.resolve();
                     })
