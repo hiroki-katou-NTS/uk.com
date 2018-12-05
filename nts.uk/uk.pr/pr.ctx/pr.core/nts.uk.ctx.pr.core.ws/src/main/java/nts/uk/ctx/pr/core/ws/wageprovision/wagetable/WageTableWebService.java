@@ -19,6 +19,7 @@ import nts.uk.ctx.pr.core.app.command.wageprovision.wagetable.UpdateWageTableHis
 import nts.uk.ctx.pr.core.app.command.wageprovision.wagetable.UpdateWageTableHistoryCommandHandler;
 import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.ElementItemNameDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.ElementRangeSettingDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.WageTableContentCreater;
 import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.WageTableContentDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.WageTableDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.WageTableFinder;
@@ -41,6 +42,9 @@ public class WageTableWebService {
 
 	@Inject
 	private DeleteWageTableHistoryCommandHandler deleteHistHandler;
+	
+	@Inject
+	private WageTableContentCreater contentCreater;
 
 	@POST
 	@Path("/get-all-wagetable")
@@ -99,7 +103,19 @@ public class WageTableWebService {
 	@POST
 	@Path("/create-1d-wage-table")
 	public WageTableContentDto createOneDimensionWageTable(ElementRangeSettingDto params) {
-		return finder.createOneDimensionWageTable(params);
+		return contentCreater.createOneDimensionWageTable(params);
+	}
+	
+	@POST
+	@Path("/create-2d-wage-table")
+	public WageTableContentDto createTwoDimensionWageTable(ElementRangeSettingDto params) {
+		return contentCreater.createTwoDimensionWageTable(params);
 	}
 
+	@POST
+	@Path("/create-3d-wage-table")
+	public WageTableContentDto createThreeDimensionWageTable(ElementRangeSettingDto params) {
+		return contentCreater.createThreeDimensionWageTable(params);
+	}
+	
 }

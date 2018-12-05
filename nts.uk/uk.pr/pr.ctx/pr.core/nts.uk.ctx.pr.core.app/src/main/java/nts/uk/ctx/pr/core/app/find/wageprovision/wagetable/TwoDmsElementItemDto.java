@@ -1,5 +1,8 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.wagetable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +15,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementItem;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ElementItemDto {
+public class TwoDmsElementItemDto {
 	// Merge domain 要素項目, 要素項目（マスタ）, 要素項目（数値）
 	/**
 	 * 要素項目（マスタ）.マスタコード
@@ -36,10 +39,10 @@ public class ElementItemDto {
 	 */
 	private Integer frameUpperLimit;
 	
-	private Long paymentAmount;
+	private List<ElementItemDto> listSecondDms;
 
-	public static ElementItemDto fromDomainToDto(ElementItem domain) {
-		ElementItemDto dto = new ElementItemDto();
+	public static TwoDmsElementItemDto fromDomainToDto(ElementItem domain) {
+		TwoDmsElementItemDto dto = new TwoDmsElementItemDto();
 		dto.masterCode = domain.getMasterElementItem().map(i -> i.getMasterCode().v()).orElse(null);
 		domain.getNumericElementItem().ifPresent(numericElementItem -> {
 			dto.frameNumber = numericElementItem.getFrameNumber().v();
@@ -47,6 +50,15 @@ public class ElementItemDto {
 			dto.frameUpperLimit = numericElementItem.getFrameUpperLimit().v();
 		});
 		return dto;
+	}
+	
+	public TwoDmsElementItemDto(ElementItemDto dto) {
+		this.masterCode = dto.getMasterCode();
+		this.masterName = dto.getMasterName();
+		this.frameNumber = dto.getFrameNumber();
+		this.frameLowerLimit = dto.getFrameLowerLimit();
+		this.frameUpperLimit = dto.getFrameUpperLimit();
+		this.listSecondDms = new ArrayList<>();
 	}
 
 }

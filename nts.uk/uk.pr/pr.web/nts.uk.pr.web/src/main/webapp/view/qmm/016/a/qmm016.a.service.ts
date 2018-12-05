@@ -8,7 +8,9 @@ module nts.uk.pr.view.qmm016.a.service {
         getElemRangeSet: "ctx/pr/core/wageprovision/wagetable/get-element-range-setting/{0}",
         addWageTable: "ctx/pr/core/wageprovision/wagetable/addWageTable",
         updateWageTable: "ctx/pr/core/wageprovision/wagetable/updateWageTable",
-        createOneDimentionWageTable: "ctx/pr/core/wageprovision/wagetable/create-1d-wage-table"
+        createOneDimentionWageTable: "ctx/pr/core/wageprovision/wagetable/create-1d-wage-table",
+        createTwoDimentionWageTable: "ctx/pr/core/wageprovision/wagetable/create-2d-wage-table",
+        createThreeDimentionWageTable: "ctx/pr/core/wageprovision/wagetable/create-3d-wage-table"
     }
     
     export function getAllWageTable(): JQueryPromise<any> {
@@ -37,6 +39,14 @@ module nts.uk.pr.view.qmm016.a.service {
     
     export function getElemRangeSet(histId: string): JQueryPromise<any> {
         return ajax('pr', format(paths.getElemRangeSet, histId));
+    }
+    
+    export function createTwoDimentionWageTable(data): JQueryPromise<any> {
+        return ajax('pr', paths.createTwoDimentionWageTable, data);
+    }
+    
+    export function createThreeDimentionWageTable(data): JQueryPromise<any> {
+        return ajax('pr', paths.createThreeDimentionWageTable, data);
     }
     
 }

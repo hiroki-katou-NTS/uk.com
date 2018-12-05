@@ -1,3 +1,7 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <div>
     <div class="flex valign-center tab-row">
         <div style="width: 110px;"
@@ -44,23 +48,22 @@
                 <tr data-bind="with: selectedWageTable().elementInformation().oneDimensionElement">
                     <td class="ui-widget-header">#{i18n.getText('QMM016_29')}</td>
                     <td data-bind="if: masterNumericClassification() == 1">
-                        <div data-bind="text: fixedElement, visible: fixedElement()"></div>
-                        <div data-bind="text: optionalAdditionalElement, visible: optionalAdditionalElement()"></div>
+                        <div data-bind="text: elementName"></div>
                     </td>
                     <td style="text-align: center;"
                         data-bind="if: masterNumericClassification() == 1">
                         <div data-bind="with: $vm.elementRangeSetting().firstElementRange">
-                            <input style="width: 20px;"
+                            <input style="width: 20px;" id="C2_8"
                                    data-bind="ntsNumberEditor: {constraint: 'RangeLowerLimit', value: rangeLowerLimit, name: '#[QMM016_30]'}"/>
                             <div style="margin-left: 10px; margin-right: 10px;">#{i18n.getText('QMM016_31')}</div>
-                            <input style="width: 20px;"
+                            <input style="width: 20px;" id="C2_10"
                                    data-bind="ntsNumberEditor: {constraint: 'RangeUpperLimit', value: rangeUpperLimit, name: '#[QMM016_32]'}"/>
                         </div>
                     </td>
                     <td style="text-align: center;"
                         data-bind="if: masterNumericClassification() == 1">
                         <div data-bind="with: $vm.elementRangeSetting().firstElementRange">
-                            <input style="width: 20px;"
+                            <input style="width: 20px;" id="C2_11"
                                    data-bind="ntsNumberEditor: {constraint: 'StepIncrement', value: stepIncrement, name: '#[QMM016_33]'}"/>
                         </div>
                     </td>
@@ -68,23 +71,22 @@
                 <tr data-bind="with: selectedWageTable().elementInformation().twoDimensionElement">
                     <td class="ui-widget-header">#{i18n.getText('QMM016_40')}</td>
                     <td data-bind="if: masterNumericClassification() == 1">
-                        <div data-bind="text: fixedElement, visible: fixedElement()"></div>
-                        <div data-bind="text: optionalAdditionalElement, visible: optionalAdditionalElement()"></div>
+                        <div data-bind="text: elementName"></div>
                     </td>
                     <td style="text-align: center;"
                         data-bind="if: masterNumericClassification() == 1">
                         <div data-bind="with: $vm.elementRangeSetting().secondElementRange">
-                            <input style="width: 20px;"
+                            <input style="width: 20px;" id="C2_15"
                                    data-bind="ntsNumberEditor: {constraint: 'RangeLowerLimit', value: rangeLowerLimit, name: '#[QMM016_30]'}"/>
                             <div style="margin-left: 10px; margin-right: 10px;">#{i18n.getText('QMM016_31')}</div>
-                            <input style="width: 20px;"
+                            <input style="width: 20px;" id="C2_17"
                                    data-bind="ntsNumberEditor: {constraint: 'RangeUpperLimit', value: rangeUpperLimit, name: '#[QMM016_32]'}"/>
                         </div>
                     </td>
                     <td style="text-align: center;"
                         data-bind="if: masterNumericClassification() == 1">
                         <div data-bind="with: $vm.elementRangeSetting().secondElementRange">
-                            <input style="width: 20px;"
+                            <input style="width: 20px;" id="C2_18"
                                    data-bind="ntsNumberEditor: {constraint: 'StepIncrement', value: stepIncrement, name: '#[QMM016_33]'}"/>
                         </div>
                     </td>
@@ -106,106 +108,59 @@
         <img style="position: relative; top: 26px;" src="../resource/QMM016_6.png"></img>
         <img style="position: relative;top: 50px; left: 520px;" src="../resource/QMM016_7.png"></img>
         <div>
-            <table class = "fixed-table-body">
+            <table id="fixed-table-2d">
                 <colgroup>
                     <col width="100px"/>
-                    <col width="100px"/>
-                    <col width="100px"/>
-                    <col width="100px"/>
-                    <col width="100px"/>
-                    <col width="100px"/>
+                    <com:ko bind="$vm.listSecondDimension" tag="foreach">
+                    	<col width="150px"/>
+                    </com:ko>
                 </colgroup>
                 <thead>
                 <tr>
                     <th style="border: none"></th>
                     <th colspan="5" class="ui-widget-header">
                         <div data-bind="with: selectedWageTable().elementInformation().twoDimensionElement">
-                            <div style = "display: inline-block" data-bind="text: fixedElement"></div>
-                            <div style = "display: inline-block" data-bind="text: optionalAdditionalElement"></div>
+                            <div data-bind="text: elementName"></div>
                         </div>
                     </th>
                 </tr>
                 <tr>
                     <th class="ui-widget-header">
                         <div data-bind="with: selectedWageTable().elementInformation().oneDimensionElement">
-                            <div style = "display: inline-block" data-bind="text: fixedElement"></div>
-                            <div style = "display: inline-block" data-bind="text: optionalAdditionalElement"></div>
+                            <div data-bind="text: elementName"></div>
                         </div>
                     </th>
-                    <th class="ui-widget-header">次郎</th>
-                    <th class="ui-widget-header">次郎</th>
-                    <th class="ui-widget-header">次郎</th>
-                    <th class="ui-widget-header">次郎</th>
-                    <th class="ui-widget-header">次郎</th>
+                    <com:ko bind="$vm.listSecondDimension" tag="foreach">
+                    	<th class="ui-widget-header" data-bind="text: name"></th>
+                    </com:ko>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
-                <tr>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                </tr>
+                <tbody data-bind="foreach: $vm.wageTableContent().payment">
+	                <tr>
+	                    <td class="ui-widget-header">
+		                    <div data-bind="if: $vm.selectedWageTable().elementInformation().oneDimensionElement().masterNumericClassification() == 0">
+		                		<span data-bind="text: masterName"></span>
+		                	</div>
+		                	<div data-bind="if: $vm.selectedWageTable().elementInformation().oneDimensionElement().masterNumericClassification() == 1">
+			                    <span data-bind="text: frameLowerLimit"></span>
+			                    <span>#{i18n.getText('QMM016_31')}</span>
+			                    <span data-bind="text: frameUpperLimit"></span>
+		                    </div>
+	                    </td>
+	                    <com:ko bind="listSecondDms" tag="foreach">
+			            <td>
+ 				            <input data-bind="ntsNumberEditor: {
+ 								option: { grouplength: 3, width: '120px' }, 
+  								name: '#[QMM016_39]', 
+  								value: paymentAmount, 
+  								constraint: 'WageTablePaymentAmount', 
+  								required: true}" /> 
+			            </td>
+				        </com:ko>
+	                </tr>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+</ui:composition>

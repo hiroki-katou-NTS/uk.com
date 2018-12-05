@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.app.command.wageprovision.wagetable;
 
+import java.util.List;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementItem;
@@ -10,7 +12,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementItem;
 
 @Data
 @NoArgsConstructor
-public class ElementItemCommand {
+public class TwoDmsElementItemCommand {
     // Merge domain 要素項目, 要素項目（マスタ）, 要素項目（数値）
     /**
      * 要素項目（マスタ）.マスタコード
@@ -32,7 +34,7 @@ public class ElementItemCommand {
      */
     private Integer frameUpperLimit;
     
-    private Long paymentAmount;
+    private List<ElementItemCommand> listSecondDms;
 
     public ElementItem fromCommandToDomain() {
         return new ElementItem(masterCode, frameNumber, frameLowerLimit, frameUpperLimit);

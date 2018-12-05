@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.core.dom.wageprovision.wagetable;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
@@ -11,6 +12,7 @@ import nts.arc.layer.dom.DomainObject;
  */
 @AllArgsConstructor
 @Getter
+@EqualsAndHashCode(callSuper=false)
 public class ElementItem extends DomainObject {
 
 	/**

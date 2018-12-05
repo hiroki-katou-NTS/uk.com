@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.wagetable;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -168,37 +167,6 @@ public class WageTableFinder {
 				.collect(Collectors.toList());
 		return lstStatementItem.stream().map(i -> new ElementItemNameDto(i.getItemNameCd(), i.getName()))
 				.collect(Collectors.toList());
-	}
-
-	public WageTableContentDto createOneDimensionWageTable(ElementRangeSettingDto params) {
-		if (params == null) {
-			// master item
-			return null;
-		} else {
-			// numeric item
-			WageTableContentDto dto = new WageTableContentDto();
-			dto.setHistoryID(params.getHistoryID());
-			List<ElementsCombinationPaymentAmountDto> payments = new ArrayList<>();
-			ElementRangeDto rangeDto = params.getFirstElementRange();
-			int frameNum = 1;
-			while (rangeDto.getRangeLowerLimit() + rangeDto.getStepIncrement() < rangeDto.getRangeUpperLimit()) {
-				ElementsCombinationPaymentAmountDto elemPay = new ElementsCombinationPaymentAmountDto();
-				elemPay.setElementAttribute(new ContentElementAttributeDto());
-				elemPay.getElementAttribute()
-						.setFirstElementItem(new ElementItemDto(null, frameNum, rangeDto.getRangeLowerLimit(),
-								rangeDto.getRangeLowerLimit() + rangeDto.getStepIncrement() - 1));
-				payments.add(elemPay);
-				rangeDto.setRangeLowerLimit(rangeDto.getRangeLowerLimit() + rangeDto.getStepIncrement());
-				frameNum++;
-			}
-			ElementsCombinationPaymentAmountDto lastElemPay = new ElementsCombinationPaymentAmountDto();
-			lastElemPay.setElementAttribute(new ContentElementAttributeDto());
-			lastElemPay.getElementAttribute().setFirstElementItem(
-					new ElementItemDto(null, frameNum + 1, rangeDto.getRangeLowerLimit(), rangeDto.getRangeUpperLimit()));
-			payments.add(lastElemPay);
-			dto.setPayments(payments);
-			return dto;
-		}
 	}
 
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.wagetable;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
@@ -9,6 +10,7 @@ import nts.arc.layer.dom.DomainObject;
  */
 @AllArgsConstructor
 @Getter
+@EqualsAndHashCode(callSuper=false)
 public class NumericElementItem extends DomainObject {
 
 	/**
