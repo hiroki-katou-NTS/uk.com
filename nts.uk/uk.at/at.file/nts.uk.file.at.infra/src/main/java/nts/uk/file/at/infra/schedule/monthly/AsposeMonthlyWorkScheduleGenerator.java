@@ -129,15 +129,15 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 	@Inject
 	private WorkplaceInfoRepository workplaceInfoRepository;
 
-//	/**  The employment adapter. */
+	/**  The employment adapter. */
 //	@Inject
 //	private ScEmploymentAdapter employmentAdapter;
-//
-//	/** The job title adapter. */
+
+	/** The job title adapter. */
 //	@Inject
 //	private JobTitleImportAdapter jobTitleAdapter;
-//
-//	/** The finder. */
+
+	/** The finder. */
 //	@Inject
 //	private EmploymentRepository employmentRepository;
 	
@@ -274,7 +274,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			currentRow+=nSize*2;
 			
 			// Back up start row
-			//int startRow = currentRow;
+//			int startRow = currentRow;
 			
 			// Create row page tracker
 			RowPageTracker rowPageTracker = new RowPageTracker();
@@ -735,13 +735,12 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			reportData.setWorkplaceReportData(data);
 			
 			analyzeInfoExportByEmployee(lstWorkplace, data);
+		
+//			List<EmployeeDto> lstEmloyeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeWithData);
 			
-			//List<EmployeeDto> lstEmloyeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeWithData);
-			
-			//for (EmployeeDto dto: lstEmloyeeDto) {
-				//EmployeeReportData employeeData = collectEmployeePerformanceDataByEmployee(reportData, queryData, dto);
-				
-			//}
+//			for (EmployeeDto dto: lstEmloyeeDto) {
+//				EmployeeReportData employeeData = collectEmployeePerformanceDataByEmployee(reportData, queryData, dto);
+//			}
 			
 			calculateTotalExportByEmployee(data, lstAttendanceItemsDisplay);
 		
@@ -1744,7 +1743,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				WorkplaceReportData parentWorkplace = workplaceReportData.getParent();
 				
 				List<Integer> lstBetweenLevel = findEnabledLevelBetweenWorkplaces(workplaceReportData, totalHierarchyOption);
-				Iterator levelIterator = null;
+				Iterator<Integer> levelIterator = null;
 				if (!lstBetweenLevel.isEmpty()) {
 					levelIterator = lstBetweenLevel.iterator();
 				}
@@ -2196,7 +2195,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		int level = rootWorkplace.getLevel();
 		TotalWorkplaceHierachy settingTotalHierarchy = condition.getTotalOutputSetting().getWorkplaceHierarchyTotal();
 		List<Integer> lstBetweenLevel = findEnabledLevelBetweenWorkplaces(rootWorkplace, settingTotalHierarchy);
-		Iterator levelIterator = null;
+		Iterator<Integer> levelIterator = null;
 		if (!lstBetweenLevel.isEmpty()) {
 			levelIterator = lstBetweenLevel.iterator();
 		}

@@ -1,8 +1,6 @@
 package nts.uk.ctx.sys.shared.dom.toppagealarm;
 
 import lombok.Getter;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 
 /**
  * トップページアラーム詳細

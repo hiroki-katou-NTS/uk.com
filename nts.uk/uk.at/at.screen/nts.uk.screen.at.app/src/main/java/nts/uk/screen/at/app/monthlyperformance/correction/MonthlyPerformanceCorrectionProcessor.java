@@ -1,6 +1,8 @@
 package nts.uk.screen.at.app.monthlyperformance.correction;
 
 import java.math.BigDecimal;
+//import java.text.Format;
+//import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
+//import nts.arc.task.parallel.ParallelExceptions.Item;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
@@ -64,6 +67,7 @@ import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+//import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -71,6 +75,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
+//import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ClosureInfoOuput;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ColumnSetting;
@@ -565,7 +570,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 	}
 	*/
 
-//	/** アルゴリズム「対象者を抽出する」を実行する */
+	/** アルゴリズム「対象者を抽出する」を実行する */
 //	private List<MonthlyPerformanceEmployeeDto> getListEmployee(String sId, DateRange dateRange) {
 //		// アルゴリズム「自職場を取得する」を実行する
 //		// List<String> lstJobTitle = this.repo.getListJobTitle(dateRange);
@@ -893,8 +898,10 @@ public class MonthlyPerformanceCorrectionProcessor {
 						} else
 							mpdata.addCellData(new MPCellDataDto(attendanceKey,
 									item.getValue() != null ? item.getValue() : "", attendanceAtrAsString, ""));
+						// *3 and *6
 						if (param.getInitMenuMode() == 2) { // mode approve disable neu co bat ki lock nao khac month approve lock
-							if (!StringUtil.isNullOrEmpty(lockStatus, true) && !lockStatus.equals(MonthlyPerformaceLockStatus.LOCK_MONTHLY_APPROVAL))
+							//if (!StringUtil.isNullOrEmpty(lockStatus, true) && !lockStatus.equals(MonthlyPerformaceLockStatus.LOCK_MONTHLY_APPROVAL))
+							if (!StringUtil.isNullOrEmpty(lockStatus, true))
 								cellStatus.add(STATE_DISABLE);
 						} else { // mode khac cu co lock la approve
 							if (!StringUtil.isNullOrEmpty(lockStatus, true))
