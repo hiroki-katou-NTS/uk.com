@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.recruitment;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +20,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.S
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.StartEndTimeOffReflect;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.StartEndTimeOutput;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
+//import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CommonCompanySettingForCalc;
@@ -55,8 +55,8 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyRepos;
 	@Inject
 	private WorkInformationRepository workRepository;
-	@Inject
-	private CalculateDailyRecordService calculate;
+	/*@Inject
+	private CalculateDailyRecordService calculate;*/
 	@Inject
 	private AdTimeAndAnyItemAdUpService timeAndAnyItemUpService;
 	@Inject

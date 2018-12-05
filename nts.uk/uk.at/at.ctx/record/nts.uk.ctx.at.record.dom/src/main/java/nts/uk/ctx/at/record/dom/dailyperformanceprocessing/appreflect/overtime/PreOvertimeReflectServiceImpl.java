@@ -31,7 +31,7 @@ import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
+//import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CommonCompanySettingForCalc;
@@ -95,8 +95,8 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 	private RemarksOfDailyPerformRepo remarks;
 	@Inject
 	private TemporaryTimeOfDailyPerformanceRepository temporary;
-	@Inject
-	private CalculateDailyRecordService calculate;
+//	@Inject
+//	private CalculateDailyRecordService calculate;
 	@Inject
 	private AdTimeAndAnyItemAdUpService timeAndAnyItemUpService;
 	@Inject
