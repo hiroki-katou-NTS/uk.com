@@ -1,7 +1,5 @@
 package nts.uk.shr.com.operation;
 
-import java.util.Optional;
-
 public interface SystemOperationSettingAdapter {
 
 	public SystemOperationSetting getSetting();
@@ -12,6 +10,6 @@ public interface SystemOperationSettingAdapter {
 	 * if stopping - return Optional with value
 	 * else return empty optional
 	 */
-	public Optional<String> stopUseConfirm();
+	public SystemSuspendOut stopUseConfirm(String contractCD, String companyCD, int loginMethod, String programID, String screenID);
 	
 }

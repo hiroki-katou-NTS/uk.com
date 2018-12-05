@@ -1,18 +1,22 @@
 package nts.uk.ctx.sys.gateway.app.find.system;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
+import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendOutput;
+import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendService;
 import nts.uk.shr.com.operation.SystemOperationSetting;
 import nts.uk.shr.com.operation.SystemOperationSetting.SystemOperationMode;
 import nts.uk.shr.com.operation.SystemOperationSetting.SystemStopMode;
 import nts.uk.shr.com.operation.SystemOperationSetting.SystemStopType;
 import nts.uk.shr.com.operation.SystemOperationSettingAdapter;
+import nts.uk.shr.com.operation.SystemSuspendOut;
 
 @Stateless
 public class SystemOperationSettingAdapterImpl implements SystemOperationSettingAdapter {
 
+	@Inject
+	private SystemSuspendService sysSuspendSv;
 	@Override
 	public SystemOperationSetting getSetting() {
 		
@@ -28,9 +32,9 @@ public class SystemOperationSettingAdapterImpl implements SystemOperationSetting
 	}
 
 	@Override
-	public Optional<String> stopUseConfirm() {
-		// TODO Auto-generated method stub
-		return null;
+	public SystemSuspendOut stopUseConfirm(String contractCD, String companyCD, int loginMethod, String programID, String screenID) {
+		SystemSuspendOutput sys = sysSuspendSv.confirmSystemSuspend(contractCD, companyCD, loginMethod, programID, screenID);
+		return new SystemSuspendOut(sys.isError(), sys.getMsgID(), sys.getMsgContent());
 	}
 
 }
