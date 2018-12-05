@@ -25,12 +25,12 @@ public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerat
             Workbook wb = reportContext.getWorkbook();
             WorksheetCollection wsc = wb.getWorksheets();
             Worksheet ws = wsc.get(0);
-            Range printRange = wsc.getRangeByName("Print_Area");
+            Range printRange = wsc.getRangeByName("statement_layout");
             RangeCustom newRange;
             int offset = 0;
             for (StatementLayoutSetExportData stt : exportData) {
-                //newRange = copyRangeDown(printRange, offset);
-                //this.print(wsc, newRange, stt);
+                newRange = copyRangeDown(printRange, offset);
+                this.print(wsc, newRange, stt);
             }
 
             reportContext.saveAsExcel(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
