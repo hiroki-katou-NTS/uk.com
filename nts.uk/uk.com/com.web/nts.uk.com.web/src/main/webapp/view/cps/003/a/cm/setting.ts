@@ -30,12 +30,8 @@ module nts.custombinding {
                     top: 2px;
                     left: 210px;
                 }
-                .cps003.setting-dialog .two-line {
-                    position: absolute;
-                    top: 8px;
-                    left: 210px;
-                }
                 .cps003.setting-dialog .form-group .multicheckbox-wrapper {
+                    margin-top: -30px;
                     padding-left: 175px;
                 }
                 .cps003.setting-dialog .form-group .multicheckbox-wrapper .ntsCheckBox {
@@ -71,20 +67,15 @@ module nts.custombinding {
                 </div>
                 <div class="form-group">
                     <div data-bind="ntsFormLabel: { text: i18n('CPS003_27') }"></div>
-                    <div class="two-line">
-                        <label data-bind="text: i18n('CPS003_28')"></label>
-                        <br />
-                        <label data-bind="text: i18n('CPS003_29')"></label>
-                    </div>
-                </div>
-                <div class="form-group">
                     <div data-bind="ntsMultiCheckBox: {
                             options: ko.observableArray([
-                                { id: 1, name: i18n('CPS003_30') },
-                                { id: 2, name: i18n('CPS003_31') },
-                                { id: 3, name: i18n('CPS003_32') },
-                                { id: 4, name: i18n('CPS003_33') },
-                                { id: 5, name: i18n('CPS003_34') }
+                                { id: 1, name: i18n('CPS003_28'), enable: false },
+                                { id: 2, name: i18n('CPS003_29'), enable: false },
+                                { id: 3, name: i18n('CPS003_30'), enable: true },
+                                { id: 4, name: i18n('CPS003_31'), enable: true },
+                                { id: 5, name: i18n('CPS003_32'), enable: true },
+                                { id: 6, name: i18n('CPS003_33'), enable: true },
+                                { id: 7, name: i18n('CPS003_34'), enable: true }
                             ]),
                             optionsValue: 'id',
                             optionsText: 'name',
@@ -123,8 +114,20 @@ module nts.custombinding {
                         typeEnt = ko.toJS(access.typeOfEnter),
                         fixCols = ko.toJS(access.fixedColumns);
 
+                    if (!fixCols) {
+                        fixCols = [1, 2];
+                    }
+
+                    if (fixCols.indexOf(1) == -1) {
+                        fixCols.push(1);
+                    }
+
+                    if (fixCols.indexOf(2) == -1) {
+                        fixCols.push(2);
+                    }
+
                     dialogVm.typeEnt(typeEnt || 0);
-                    dialogVm.fixCols(fixCols || []);
+                    dialogVm.fixCols(fixCols || [1, 2]);
                 }
             });
 
