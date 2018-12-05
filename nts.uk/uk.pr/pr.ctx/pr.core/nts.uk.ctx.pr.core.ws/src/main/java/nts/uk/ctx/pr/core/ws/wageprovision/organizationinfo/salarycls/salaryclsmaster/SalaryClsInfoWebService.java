@@ -1,10 +1,10 @@
 package nts.uk.ctx.pr.core.ws.wageprovision.organizationinfo.salarycls.salaryclsmaster;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.command.wageprovision.organizationinformation.salaryclassification.salaryclassificationmaster.AddSalaryClassificationInformationCommandHandler;
-import nts.uk.ctx.pr.core.app.command.wageprovision.organizationinformation.salaryclassification.salaryclassificationmaster.RemoveSalaryClassificationInformationCommandHandler;
-import nts.uk.ctx.pr.core.app.command.wageprovision.organizationinformation.salaryclassification.salaryclassificationmaster.SalaryClassificationInformationCommand;
-import nts.uk.ctx.pr.core.app.command.wageprovision.organizationinformation.salaryclassification.salaryclassificationmaster.UpdateSalaryClassificationInformationCommandHandler;
+import nts.uk.ctx.pr.core.app.command.wageprovision.organizationinfo.salarycls.salaryclsmaster.AddSalaryClsInfoCommandHandler;
+import nts.uk.ctx.pr.core.app.command.wageprovision.organizationinfo.salarycls.salaryclsmaster.RemoveSalaryClsInfoCommandHandler;
+import nts.uk.ctx.pr.core.app.command.wageprovision.organizationinfo.salarycls.salaryclsmaster.SalaryClsInfoCommand;
+import nts.uk.ctx.pr.core.app.command.wageprovision.organizationinfo.salarycls.salaryclsmaster.UpdateSalaryClsInfoCommandHandler;
 import nts.uk.ctx.pr.core.app.find.wageprovision.organizationinfor.salarycls.salaryclsmaster.SalaryClsInforDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.organizationinfor.salarycls.salaryclsmaster.SalaryClsInforFinder;
 
@@ -22,13 +22,13 @@ public class SalaryClsInfoWebService extends WebService {
     private SalaryClsInforFinder finder;
 
     @Inject
-    private AddSalaryClassificationInformationCommandHandler addCommandHandler;
+    private AddSalaryClsInfoCommandHandler addCommandHandler;
 
     @Inject
-    private UpdateSalaryClassificationInformationCommandHandler updateCommandHandler;
+    private UpdateSalaryClsInfoCommandHandler updateCommandHandler;
 
     @Inject
-    private RemoveSalaryClassificationInformationCommandHandler removeCommandHandler;
+    private RemoveSalaryClsInfoCommandHandler removeCommandHandler;
 
     @POST
     @Path("getAll")
@@ -44,7 +44,7 @@ public class SalaryClsInfoWebService extends WebService {
 
     @POST
     @Path("add")
-    public void add(SalaryClassificationInformationCommand command) {
+    public void add(SalaryClsInfoCommand command) {
         addCommandHandler.handle(command);
     }
 
@@ -56,7 +56,7 @@ public class SalaryClsInfoWebService extends WebService {
 
     @POST
     @Path("update")
-    public void update(SalaryClassificationInformationCommand command) {
+    public void update(SalaryClsInfoCommand command) {
         updateCommandHandler.handle(command);
     }
 }

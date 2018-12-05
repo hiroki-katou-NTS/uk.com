@@ -43,14 +43,14 @@ module nts.uk.pr.view.qmm016.share.model {
 //    }
 
     export enum QualificationPaymentMethod {
-        PAY_ONLY_ONE_HIGHEST_BENEFIT = 0,
-        ADD_MULTIPLE_APPLICABLE_AMOUNT = 1
+        ADD_MULTIPLE_APPLICABLE_AMOUNT = 0,
+        PAY_ONLY_ONE_HIGHEST_BENEFIT   = 1
     }
 
     export function getQualificationPaymentMethodItem() {
         return [
-            new EnumModel(QualificationPaymentMethod.PAY_ONLY_ONE_HIGHEST_BENEFIT, '一番高い手当を1つだけ支給する'),
-            new EnumModel(QualificationPaymentMethod.ADD_MULTIPLE_APPLICABLE_AMOUNT, '複数該当した金額を加算する')
+            new EnumModel(QualificationPaymentMethod.ADD_MULTIPLE_APPLICABLE_AMOUNT, '複数該当した金額を加算する'),
+            new EnumModel(QualificationPaymentMethod.PAY_ONLY_ONE_HIGHEST_BENEFIT, '一番高い手当を1つだけ支給する')
         ];
     }
 

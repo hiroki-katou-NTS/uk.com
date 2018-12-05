@@ -1,11 +1,11 @@
-package nts.uk.ctx.pr.core.app.command.wageprovision.organizationinformation.salaryclassification.salaryclassificationmaster;
+package nts.uk.ctx.pr.core.app.command.wageprovision.organizationinfo.salarycls.salaryclsmaster;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 
 @Value
-public class SalaryClassificationInformationCommand
+public class SalaryClsInfoCommand
 {
     
     /**

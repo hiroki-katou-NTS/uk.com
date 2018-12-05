@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.ws.wageprovision.individualwagecontract;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract.EmployeeInformationAcquisitionProcessingFinder;
+import nts.uk.ctx.pr.core.app.find.wageprovision.individualwagecontract.ReferenceDateDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.processdatecls.SetDaySupportDto;
 
 import javax.inject.Inject;
@@ -18,7 +19,7 @@ public class EmployeeInformationAcquisitionProcessingWebService extends WebServi
 
     @POST
     @Path("employeeReferenceDate")
-    public SetDaySupportDto getEmpExtRefDate() {
+    public ReferenceDateDto getEmpExtRefDate() {
         return employeeInformationAcquisitionProcessingFinder.getEmpExtRefDate();
     }
 }

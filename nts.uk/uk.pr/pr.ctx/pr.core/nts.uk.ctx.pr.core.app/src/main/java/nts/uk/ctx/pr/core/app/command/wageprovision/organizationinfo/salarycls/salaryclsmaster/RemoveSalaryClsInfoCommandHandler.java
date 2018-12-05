@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.command.wageprovision.organizationinformation.salaryclassification.salaryclassificationmaster;
+package nts.uk.ctx.pr.core.app.command.wageprovision.organizationinfo.salarycls.salaryclsmaster;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -11,7 +11,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class RemoveSalaryClassificationInformationCommandHandler extends CommandHandler<String>
+public class RemoveSalaryClsInfoCommandHandler extends CommandHandler<String>
 {
     
     @Inject

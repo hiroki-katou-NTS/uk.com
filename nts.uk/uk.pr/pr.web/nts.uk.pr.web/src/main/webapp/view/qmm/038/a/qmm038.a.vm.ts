@@ -18,7 +18,9 @@ module nts.uk.pr.view.qmm038.a {
                 nts.uk.pr.view.qmm038.a.service.defaultData().done(function (response) {
                     if (response[0] != null) {
                         self.giveCurrTreatYear(response[0].substr(0, 4) + "/" + response[0].substr(4));
-                        self.baseDate(response[1]);
+                        if(response[1] != null) {
+                            self.baseDate(response[1]);
+                        }
                         self.ccg001ComponentOption.baseDate = self.baseDate();
                     }
                     $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);

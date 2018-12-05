@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.command.wageprovision.organizationinformation.salaryclassification.salaryclassificationmaster;
+package nts.uk.ctx.pr.core.app.command.wageprovision.organizationinfo.salarycls.salaryclsmaster;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -12,15 +12,15 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class AddSalaryClassificationInformationCommandHandler extends CommandHandler<SalaryClassificationInformationCommand>
+public class AddSalaryClsInfoCommandHandler extends CommandHandler<SalaryClsInfoCommand>
 {
     
     @Inject
     private SalaryClassificationInformationRepository repository;
     
     @Override
-    protected void handle(CommandHandlerContext<SalaryClassificationInformationCommand> context) {
-        SalaryClassificationInformationCommand command = context.getCommand();
+    protected void handle(CommandHandlerContext<SalaryClsInfoCommand> context) {
+        SalaryClsInfoCommand command = context.getCommand();
         repository.add(new SalaryClassificationInformation(AppContexts.user().companyId(), command.getSalaryClassificationCode(), command.getSalaryClassificationName(), command.getMemo()));
     
     }
