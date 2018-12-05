@@ -27,7 +27,6 @@ public interface JobAutoCalSettingRepository {
 	 */
     void add(JobAutoCalSetting jobAutoCalSetting);
 
-	List<Object[]> getPositionSettingToExport(String cid, String baseDate);
 
 	/**
 	 * Gets the job auto cal setting.

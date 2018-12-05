@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.wkp;
 
-import java.math.BigDecimal;
-import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -34,38 +32,6 @@ import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSe
 @Stateless
 public class JpaWkpAutoCalSettingRepository extends JpaRepository implements WkpAutoCalSettingRepository {
 
-	private static final String SELECT_ALL_WORKPLACE_BY_CID = " SELECT " +
-			"k.LEGAL_OT_TIME_ATR, "+
-			"k.LEGAL_OT_TIME_LIMIT, "+
-			"k.LEGAL_MID_OT_TIME_ATR, "+
-			"k.LEGAL_MID_OT_TIME_LIMIT, "+
-			"k.NORMAL_OT_TIME_ATR, "+
-			"k.NORMAL_OT_TIME_LIMIT, "+
-			"k.NORMAL_MID_OT_TIME_ATR, "+
-			"k.NORMAL_MID_OT_TIME_LIMIT, "+
-			"k.EARLY_OT_TIME_ATR, "+
-			"k.EARLY_OT_TIME_LIMIT, "+
-			"k.EARLY_MID_OT_TIME_ATR, "+
-			"k.EARLY_MID_OT_TIME_LIMIT, "+
-			"k.FLEX_OT_TIME_ATR, "+
-			"k.FLEX_OT_TIME_LIMIT, "+
-			"k.REST_TIME_ATR, "+
-			"k.REST_TIME_LIMIT, "+
-			"k.LATE_NIGHT_TIME_ATR, "+
-			"k.LATE_NIGHT_TIME_LIMIT, "+
-			"k.LEAVE_LATE, "+
-			"k.LEAVE_EARLY, "+
-			"k.RAISING_CALC_ATR, "+
-			"k.SPECIFIC_RAISING_CALC_ATR, "+
-			"k.DIVERGENCE,  "+
-			"w.WKPCD, " +
-			"w.WKP_NAME " +
-            "FROM BSYMT_WORKPLACE_INFO w INNER JOIN BSYMT_WKP_CONFIG c ON c.CID = w.CID " +
-            "INNER JOIN BSYMT_WORKPLACE_HIST h ON w.HIST_ID = h.HIST_ID AND w.WKPID = h.WKPID "+
-            "INNER JOIN KSHMT_AUTO_WKP_CAL_SET k on w.WKPID = k.WKPID " +
-            "WHERE w.CID = ?cid AND h.START_DATE <= ?baseDate AND h.END_DATE >= ?baseDate "+
-            "AND c.START_DATE <= ?baseDate AND c.END_DATE >= ?baseDate "+
-			"ORDER BY w.WKPCD";
 	/** The select no where. */
 	public static final String SELECT_NO_WHERE = "SELECT c FROM KshmtAutoWkpCalSet c";
 	
@@ -83,29 +49,6 @@ public class JpaWkpAutoCalSettingRepository extends JpaRepository implements Wkp
 		this.commandProxy().update(this.toEntity(wkpAutoCalSetting));
 		this.getEntityManager().flush();
 
-	}
-
-	@Override
-	public List<Object[]> getWorkPlaceSettingToExport(String cid, String baseDate) {
-		List<Object[]> resultQuery = null;
-		try {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-			java.util.Date date = null;
-			java.sql.Date sqlDate = null;
-            try {
-                date = format.parse(baseDate);
-				sqlDate = new java.sql.Date(date.getTime());
-            } catch (ParseException e) {
-                return Collections.emptyList();
-            }
-			resultQuery = (List<Object[]>) this.getEntityManager().createNativeQuery(SELECT_ALL_WORKPLACE_BY_CID)
-					.setParameter("cid", cid)
-                    .setParameter("baseDate", sqlDate)
-					.getResultList();
-		} catch (NoResultException e) {
-			return Collections.emptyList();
-		}
-		return resultQuery;
 	}
 
 

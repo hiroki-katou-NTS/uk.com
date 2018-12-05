@@ -13,7 +13,6 @@ import java.util.Optional;
  */
 public interface WkpAutoCalSettingRepository {
 
-	List<Object[]> getWorkPlaceSettingToExport(String cid, String baseDate);
 	/**
 	 * Update.
 	 *
