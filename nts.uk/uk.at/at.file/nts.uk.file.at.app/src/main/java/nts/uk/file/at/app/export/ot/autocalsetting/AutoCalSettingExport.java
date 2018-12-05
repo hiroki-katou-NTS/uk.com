@@ -16,28 +16,28 @@ import java.util.Map;
 @Stateless
 public class AutoCalSettingExport {
 
-    private static final String KMK006_53 = "運用方法";
-    private static final String KMK006_54 = "詳細設定";
-    private static final String KMK006_55 = "運用方法";
-    private static final String KMK006_56 = "詳細設定";
-    private static final String KMK006_57 = "運用方法";
-    private static final String KMK006_58 = "詳細設定";
-    private static final String KMK006_59 = "運用方法";
-    private static final String KMK006_60 = "詳細設定";
-    private static final String KMK006_61 = "運用方法";
-    private static final String KMK006_62 = "詳細設定";
-    private static final String KMK006_63 = "運用方法";
-    private static final String KMK006_64 = "詳細設定";
-    private static final String KMK006_65 = "運用方法";
-    private static final String KMK006_66 = "詳細設定";
-    private static final String KMK006_67 = "運用方法";
-    private static final String KMK006_68 = "詳細設定";
-    private static final String KMK006_69 = "運用方法";
-    private static final String KMK006_70 = "詳細設定";
-    private static final String KMK006_71 = "遅刻";
-    private static final String KMK006_72 = "早退";
-    private static final String KMK006_73 = "加給";
-    private static final String KMK006_74 = "特定加給";
+    private static final String KMK006_53 = "法定内残業時間.残業時間.運用方法";
+    private static final String KMK006_54 = "法定内残業時間.残業時間.詳細設定";
+    private static final String KMK006_55 = "法定内残業時間.深夜時間.運用方法";
+    private static final String KMK006_56 = "法定内残業時間.深夜時間.詳細設定";
+    private static final String KMK006_57 = "普通残業時間.残業時間.運用方法";
+    private static final String KMK006_58 = "普通残業時間.残業時間.詳細設定";
+    private static final String KMK006_59 = "普通残業時間.深夜時間.運用方法";
+    private static final String KMK006_60 = "普通残業時間.深夜時間.詳細設定";
+    private static final String KMK006_61 = "早出残業時間.残業時間.運用方法";
+    private static final String KMK006_62 = "早出残業時間.残業時間.詳細設定";
+    private static final String KMK006_63 = "早出残業時間.深夜時間.運用方法";
+    private static final String KMK006_64 = "早出残業時間.深夜時間.詳細設定";
+    private static final String KMK006_65 = "フレックス超過時間.運用方法";
+    private static final String KMK006_66 = "フレックス超過時間.詳細設定";
+    private static final String KMK006_67 = "休日出勤.休日出勤時間.運用方法";
+    private static final String KMK006_68 = "休日出勤.休日出勤時間.詳細設定";
+    private static final String KMK006_69 = "休日出勤.深夜時間.運用方法";
+    private static final String KMK006_70 = "休日出勤.深夜時間.詳細設定";
+    private static final String KMK006_71 = "遅刻早退.遅刻";
+    private static final String KMK006_72 = "遅刻早退.早退";
+    private static final String KMK006_73 = "加給時間.加給";
+    private static final String KMK006_74 = "加給時間.特定加給";
     private static final String KMK006_75 = "乖離時間";
 
     public List<MasterHeaderColumn> getHeaderColumns() {
