@@ -44,6 +44,7 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
@@ -64,12 +65,12 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			if(dailyInfo.getScheduleInfo().getWorkTimeCode() == null 
 					|| !para.isWorkChange() 
 					|| (para.isWorkChange() && dailyInfo.getScheduleInfo().getWorkTimeCode() != null && !dailyInfo.getScheduleInfo().getWorkTimeCode().v().equals(para.getWorkTimeCode()))){
-				lstItem.add(1);	
+				lstItem.add(2);	
 			}
 			if(dailyInfo.getScheduleInfo().getWorkTypeCode() == null
 					|| !para.isWorkChange() 
 					|| (para.isWorkChange() && dailyInfo.getScheduleInfo().getWorkTypeCode() != null && !dailyInfo.getScheduleInfo().getWorkTypeCode().v().equals(para.getWorkTypeCode()))) {
-				lstItem.add(2);	
+				lstItem.add(1);	
 			}			
 			dailyInfo.setScheduleInfo(workInfor);
 			//workRepository.updateByKeyFlush(dailyPerfor);
@@ -77,12 +78,12 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			if(dailyInfo.getRecordInfo().getWorkTimeCode() == null 
 					|| !para.isWorkChange() 
 					|| (para.isWorkChange() && dailyInfo.getRecordInfo().getWorkTimeCode() != null && !dailyInfo.getRecordInfo().getWorkTimeCode().v().equals(para.getWorkTimeCode()))){
-				lstItem.add(28);	
+				lstItem.add(29);	
 			}
 			if(dailyInfo.getRecordInfo().getWorkTypeCode() == null 
 					|| !para.isWorkChange() 
 					|| (para.isWorkChange() && dailyInfo.getRecordInfo().getWorkTypeCode() != null && !dailyInfo.getRecordInfo().getWorkTypeCode().v().equals(para.getWorkTypeCode()))) {
-				lstItem.add(29);
+				lstItem.add(28);
 			}
 			dailyInfo.setRecordInfo(workInfor);
 			//workRepository.updateByKeyFlush(dailyPerfor);
@@ -409,9 +410,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		}
 		HolidayWorkTimeOfDaily workHolidayTime = optWorkHolidayTime.get();
 		List<HolidayWorkFrameTime> lstHolidayWorkFrameTime = workHolidayTime.getHolidayWorkFrameTime();
-		if(lstHolidayWorkFrameTime.isEmpty()) {
-			return dailyData;
-		}
+		List<HolidayWorkFrameTime> lstHolidayWorkFrameTimeTmp = new ArrayList<>();		
 		List<Integer> lstWorktimeFrameTemp = new ArrayList<>();
 		if(isPre) {			
 			lstHolidayWorkFrameTime.stream().forEach(x -> {
@@ -423,8 +422,19 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			lstWorktimeFrameTemp = this.lstPreWorktimeFrameItem();
 			for(int i = 1; i <= 10; i++) {
 				if(!worktimeFrame.containsKey(i)) {
+					
 					Integer item = this.lstPreWorktimeFrameItem().get(i - 1); 
 					lstWorktimeFrameTemp.remove(item);
+				} else {
+					if(lstHolidayWorkFrameTime.isEmpty()) {
+						AttendanceTime worktimeTmp = new AttendanceTime(worktimeFrame.get(i));
+						TimeDivergenceWithCalculation timeCalculation = TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0), new AttendanceTime(0));
+						HolidayWorkFrameTime tmpHolidayWorkFrameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(i),
+								Finally.of(timeCalculation),
+								Finally.of(timeCalculation),
+								Finally.of(worktimeTmp));
+						lstHolidayWorkFrameTimeTmp.add(tmpHolidayWorkFrameTime);
+					}
 				}
 			}	
 		} else {
@@ -439,11 +449,27 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			});
 			lstWorktimeFrameTemp = this.lstAfterWorktimeFrameItem();
 			for(int i = 1; i <= 10; i++) {
-				if(!worktimeFrame.containsKey(i)) {
+				if(!worktimeFrame.containsKey(i)) {					
 					Integer item = this.lstAfterWorktimeFrameItem().get(i - 1); 
 					lstWorktimeFrameTemp.remove(item);
+				} else {
+					if(lstHolidayWorkFrameTime.isEmpty()) {
+						AttendanceTime worktimeTmp = new AttendanceTime(worktimeFrame.get(i));
+						TimeDivergenceWithCalculation timeCalculation = TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0), new AttendanceTime(0));
+						HolidayWorkFrameTime tmpHolidayWorkFrameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(i),
+								Finally.of(timeCalculation),
+								Finally.of(timeCalculation),
+								Finally.of(worktimeTmp));
+						lstHolidayWorkFrameTimeTmp.add(tmpHolidayWorkFrameTime);
+					}
 				}
 			}	
+		}
+		if(!lstHolidayWorkFrameTimeTmp.isEmpty()) {
+			attendanceTimeData
+			.getActualWorkingTimeOfDaily().getTotalWorkingTime()
+			.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().setHolidayWorkFrameTime(lstHolidayWorkFrameTimeTmp);
+			
 		}
 		dailyData.setAttendanceTimeOfDailyPerformance(Optional.of(attendanceTimeData));
 		//attendanceTime.updateFlush(attendanceTimeData);		
