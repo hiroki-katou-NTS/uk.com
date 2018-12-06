@@ -116,6 +116,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                 let employeeString = '';
                 let params = getShared("QMM005F_outParams");
                 if (!_.isUndefined(params)) {
+                    if(params.returnList) params.returnList = _.orderBy(params.returnList, ['code'],['asc']);
                     for (let i = 0; i < params.returnList.length; i++) {
                         employeeString == '' ? employeeString += params.returnList[i].name : employeeString += (', ' + params.returnList[i].name);
                     }
@@ -250,7 +251,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                             function (o) {
                                 return o.processDate;
                             }),
-                        employeeString, employeeList,
+                        employeeString, _.orderBy(employeeList, ['code'], ['asc']),
                         self.getYear(self.itemTable.setDaySupports, i),
                         self.getListMonth(self.itemTable.setDaySupports, i),
                         currentProcessDates
