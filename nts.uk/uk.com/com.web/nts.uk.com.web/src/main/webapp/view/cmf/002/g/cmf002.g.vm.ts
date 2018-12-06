@@ -215,6 +215,11 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                 }
                 //dialog.alertError({ messageId: "Msg_661" });
             }
+            if (nts.uk.ui.errors.hasError()) {
+                block.clear();
+                self.setFocusG2_3();
+                return;
+            } 
 
             if (model.SCREEN_MODE.NEW == self.screenMode()) {
                 service.addOutputCodeConvert(ko.toJS(self.codeConvertCurrent())).done((outputConvertCode) => {
