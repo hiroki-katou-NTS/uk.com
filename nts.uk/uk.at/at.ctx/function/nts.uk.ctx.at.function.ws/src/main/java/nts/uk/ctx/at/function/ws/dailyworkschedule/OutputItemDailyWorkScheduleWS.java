@@ -21,6 +21,7 @@ import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkS
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleDeleteHandler;
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleSaveHandler;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataInforReturnDto;
+import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataReturnDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputItemDailyWorkScheduleDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputItemDailyWorkScheduleFinder;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.NameWorkTypeOrHourZone;
@@ -100,7 +101,7 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 	 */
 	@Path("executeCopy/{codeCopy}/{codeSourceSerivce}")
 	@POST
-	public List<DataInforReturnDto> executeCopy(@PathParam("codeCopy") String codeCopy, @PathParam("codeSourceSerivce") String codeSourceSerivce){
+	public DataReturnDto executeCopy(@PathParam("codeCopy") String codeCopy, @PathParam("codeSourceSerivce") String codeSourceSerivce){
 		return this.outputItemDailyWorkScheduleFinder.executeCopy(codeCopy, codeSourceSerivce);
 	}
 	

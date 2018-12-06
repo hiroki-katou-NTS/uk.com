@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,11 +29,8 @@ import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateOption;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CommonCompanySettingForCalc;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectBreakTimeOfDailyDomainService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
@@ -96,15 +92,9 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 	@Inject
 	private TemporaryTimeOfDailyPerformanceRepository temporary;
 	@Inject
-	private CalculateDailyRecordService calculate;
-	@Inject
-	private AdTimeAndAnyItemAdUpService timeAndAnyItemUpService;
-	@Inject
 	private WorkUpdateService updateService;
 	@Inject
-	private CalculateDailyRecordServiceCenter calService;
-	@Inject
-	private CommonCompanySettingForCalc commonComSetting;
+	private CommonProcessCheckService commonService;
 	@Override
 	public boolean overtimeReflect(OvertimeParameter param) {
 		try {
@@ -122,9 +112,8 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			workRepository.updateByKeyFlush(dailyInfor);
 			
 			//開始終了時刻の反映 phai lay du lieu cua 日別実績の勤務情報 sau khi update
-			startEndtimeOffReflect.startEndTimeOffReflect(param, workRepository.find(param.getEmployeeId(), param.getDateInfo()).get());
-			
-			
+			startEndtimeOffReflect.startEndTimeOffReflect(param, dailyInfor);
+
 			//残業時間を反映する
 			//残業枠時間
 			Optional<AttendanceTimeOfDailyPerformance> optAttendanceTime = attendanceTime.find(param.getEmployeeId(), param.getDateInfo());
@@ -146,12 +135,8 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			updateService.reflectReason(param.getEmployeeId(), param.getDateInfo(), 
 					param.getOvertimePara().getAppReason(),param.getOvertimePara().getOvertimeAtr());
 			//日別実績の修正からの計算
-			//○日別実績を置き換える Replace daily performance		
-			List<IntegrationOfDaily> lstCal = calService.calculateForSchedule(CalculateOption.asDefault(),
-					Arrays.asList(this.calculateForAppReflect(param.getEmployeeId(), param.getDateInfo())) , Optional.of(commonComSetting.getCompanySetting()));
-			lstCal.stream().forEach(x -> {
-				timeAndAnyItemUpService.addAndUpdate(x);	
-			});
+			//○日別実績を置き換える Replace daily performance	
+			commonService.calculateOfAppReflect(null, param.getEmployeeId(), param.getDateInfo());
 			return true;
 	
 		} catch (Exception ex) {

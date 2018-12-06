@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime;
 
+import java.util.Optional;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 
 public interface AfterOvertimeReflectProcess {
 	/**
@@ -34,14 +37,14 @@ public interface AfterOvertimeReflectProcess {
 	 * @param overtimePara
 	 * @param workTimeType
 	 */
-	public void recordStartEndReflect(OvertimeParameter overtimePara, WorkTimeTypeOutput workTimeType);
+	public Optional<TimeLeavingOfDailyPerformance> recordStartEndReflect(OvertimeParameter overtimePara, WorkTimeTypeOutput workTimeType);
 	/**
 	 * 開始終了時刻の反映(事後)
 	 * @param para
 	 * @param timeTypeData
 	 * @return
 	 */
-	public void reflectStartEndtime(OvertimeParameter para, WorkTimeTypeOutput timeTypeData);
+	public TimeLeavingOfDailyPerformance reflectStartEndtime(OvertimeParameter para, WorkTimeTypeOutput timeTypeData, TimeLeavingOfDailyPerformance timeDaily);
 	/**
 	 * 残業時間の反映
 	 * @param para

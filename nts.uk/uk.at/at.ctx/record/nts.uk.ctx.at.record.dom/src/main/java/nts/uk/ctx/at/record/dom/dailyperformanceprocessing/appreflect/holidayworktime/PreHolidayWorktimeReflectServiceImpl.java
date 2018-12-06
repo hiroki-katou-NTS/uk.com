@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,31 +7,18 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateOption;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
-import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeReflectService{
@@ -43,8 +28,6 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 	private WorkUpdateService workUpdate;
 	@Inject
 	private PreOvertimeReflectService overTimeService;
-	@Inject
-	private CalculateDailyRecordService calculate;
 	@Inject
 	private WorkInformationRepository workRepository;
 	@Inject
@@ -56,9 +39,7 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 	@Inject
 	private AttendanceTimeRepository attendanceTime;
 	@Inject
-	private CalculateDailyRecordServiceCenter calService;
-	@Inject
-	private CommonCompanySettingForCalc commonComSetting;
+	private CommonProcessCheckService commonService;
 	@Override
 	public boolean preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara, boolean isPre) {		
 		try {
@@ -108,11 +89,8 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 			
 			List<EditStateOfDailyPerformance> lstEditState = dailyReposiroty.findByKey(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate());
 			daily.setEditState(lstEditState);
-			List<IntegrationOfDaily> lstCal = calService.calculateForSchedule(CalculateOption.asDefault(),
-					Arrays.asList(daily) , Optional.of(commonComSetting.getCompanySetting()));
-			lstCal.stream().forEach(x -> {
-				timeAndAnyItemUpService.addAndUpdate(x);	
-			});
+			
+			commonService.calculateOfAppReflect(daily, holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate());
 			return true;
 		} catch (Exception e) {
 			return false;
@@ -126,30 +104,9 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 		if(daily == null) {
 			return null;
 		}
-		WorkInfoOfDailyPerformance workInformation = daily.getWorkInformation();
-		workInformation.setRecordInfo(new WorkInformation(workTimeCode, workTypeCode));
-		WorkStamp attendance = new WorkStamp(new TimeWithDayAttr(startTime == null ? 0 : startTime),
-				new TimeWithDayAttr(startTime == null ? 0 : startTime),
-				new WorkLocationCD("01"), 
-				StampSourceInfo.CORRECTION_RECORD_SET );
-
-		WorkStamp leaving = new WorkStamp(new TimeWithDayAttr(endTime == null ? 0 : endTime),
-				new TimeWithDayAttr(endTime == null ? 0 : endTime),
-				new WorkLocationCD("01"),
-				StampSourceInfo.CORRECTION_RECORD_SET );
-
-		TimeActualStamp atStamp = new TimeActualStamp(attendance,attendance,1);
-
-		TimeActualStamp leStamp = new TimeActualStamp(leaving,leaving,1);
-
-		TimeLeavingWork timeLeavingWork = new TimeLeavingWork(new WorkNo(1),atStamp,leStamp);
-		List<TimeLeavingWork> lstTimeLeavingWork = new ArrayList<>();
-		lstTimeLeavingWork.add(timeLeavingWork);
-		TimeLeavingOfDailyPerformance a = new TimeLeavingOfDailyPerformance(employeeId, new WorkTimes(1), lstTimeLeavingWork, baseDate);
-		daily.setAttendanceLeave(Optional.of(a));
-		daily.setWorkInformation(workInformation);
-		IntegrationOfDaily calculateData = calculate.calculate(daily,null,null,Optional.empty(),Optional.empty()).getIntegrationOfDaily();
-		timeAndAnyItemUpService.addAndUpdate(calculateData);
+		AttendanceTimeOfDailyPerformance attendanceTime = AttendanceTimeOfDailyPerformance.allZeroValue(employeeId, baseDate);
+		daily.setAttendanceTimeOfDailyPerformance(Optional.of(attendanceTime));
+		timeAndAnyItemUpService.addAndUpdate(daily);		
 		return daily;
 	}
 

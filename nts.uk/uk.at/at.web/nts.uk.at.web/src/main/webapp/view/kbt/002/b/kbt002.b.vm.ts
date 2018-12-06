@@ -457,6 +457,7 @@ module nts.uk.at.view.kbt002.b {
                     command.reflectResultCls = self.currentExecItem().dailyPerfClsReCreate();
                     command.monthlyAggCls = self.currentExecItem().dailyPerfClsReCreate();
                     command.execScopeCls = 1;
+                    command.execScopeCls = self.currentExecItem().execScopeCls();
                     command.refDate = nts.uk.text.isNullOrEmpty(self.currentExecItem().refDate()) ? null : new Date(self.currentExecItem().refDate());
                     command.workplaceList = self.currentExecItem().workplaceList();
                     command.recreateTypeChangePerson = self.currentExecItem().recreateTypeChangePerson();//B14_2
