@@ -435,9 +435,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 			stringFormat = stdOutputCondSet.getStringFormat();
 		}
 		
-		if(delimiter == Delimiter.COMMA) {
-			fileName = fileName + CSV;
-		}
+		// fixbug 102767
+		// if(delimiter == Delimiter.COMMA) {
+		fileName = fileName + CSV;
+		// }
 		
 		for (OutputItemCustom outputItemCustom : outputItemCustomList) {
 			String outputName = stringFormat.character + outputItemCustom.getStandardOutputItem().getOutputItemName().v() + stringFormat.character;
