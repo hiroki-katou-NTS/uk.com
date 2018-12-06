@@ -50,12 +50,15 @@ public class WageTableFinder {
 
 	@Inject
 	private TimeItemSetRepository timeItemRepo;
-	
+
 	@Inject
 	private WageTableContentRepository wageTableContentRepo;
-	
+
 	@Inject
 	private ElementRangeSettingRepository elemRangeSetRepo;
+
+	@Inject
+	private WageTableContentCreater wageContentCreater;
 
 	public List<WageTableDto> getAll() {
 		String companyId = AppContexts.user().companyId();
@@ -135,16 +138,18 @@ public class WageTableFinder {
 		} else
 			return null;
 	}
-	
-	public WageTableContentDto getWageTableContent(String historyId) {
+
+	public WageTableContentDto getWageTableContent(String historyId, String wageTableCode) {
 		Optional<WageTableContent> optContent = wageTableContentRepo.getWageTableContentById(historyId);
+		String cid = AppContexts.user().companyId();
+		Optional<WageTable> domainOtp = wageTableRepo.getWageTableById(cid, wageTableCode);
 		if (optContent.isPresent()) {
-			return WageTableContentDto.fromDomainToDto(optContent.get());
+			return WageTableContentDto.fromDomainToDto(optContent.get(), domainOtp, wageContentCreater);
 		} else {
 			return null;
 		}
 	}
-	
+
 	public ElementRangeSettingDto getElemRangeSet(String historyId) {
 		Optional<ElementRangeSetting> optSetting = elemRangeSetRepo.getElementRangeSettingById(historyId);
 		if (optSetting.isPresent()) {

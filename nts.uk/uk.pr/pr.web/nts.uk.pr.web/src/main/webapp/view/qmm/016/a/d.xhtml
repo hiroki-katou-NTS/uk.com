@@ -1,3 +1,7 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <div>
     <div class="flex valign-center tab-row">
         <div style="width: 110px;"
@@ -138,17 +142,17 @@
                             <div data-bind="text: elementName"></div>
                         </div>
                         <div style="vertical-align: middle;" id="combo-box" data-bind="ntsComboBox: {
-                        options: $vm.fakeCombobox,
-                        optionsValue: 'value',
-                        width: '120px',
-                        visibleItemsCount: 5,
-                        value: $vm.fakeSelectedValue,
-                        optionsText: 'name',
-                        enable: true,
-                        columns: [
-                            { prop: 'fixed_length', length: 4 },
-                            { prop: 'name', length: 10 },
-                        ]}"></div>
+	                        options: $vm.fakeCombobox,
+	                        optionsValue: 'value',
+	                        width: '150px',
+	                        visibleItemsCount: 5,
+	                        value: $vm.fakeSelectedValue,
+	                        optionsText: 'name',
+	                        enable: true,
+	                        columns: [
+	                            { prop: 'fixed_length', length: 4 },
+	                            { prop: 'name', length: 10 },
+	                        ]}"></div>
                     </th>
                 </tr>
                 </thead>
@@ -262,3 +266,4 @@
         </div>
     </div>
 </div>
+</ui:composition>

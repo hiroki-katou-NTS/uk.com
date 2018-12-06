@@ -32,7 +32,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         fakeCombobox: KnockoutObservableArray<model.EnumModel> = ko.observableArray([new model.EnumModel(0, 'Item 1'), new model.EnumModel(1, 'Item 2')]);
         fakeSelectedValue: KnockoutObservable<string> = ko.observable(null);
         listSecondDimension: KnockoutObservableArray<any> = ko.observableArray([]);
-        listThirdDms: KnockoutObservableArray<any> = ko.observableArray([]);
+        listThirdDimension: KnockoutObservableArray<any> = ko.observableArray([]);
 
         constructor() {
             let self = this;
@@ -149,7 +149,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             if (identifier.length > 36) {
                 block.invisible();
                 let selectedHistoryID = identifier.substring(3, identifier.length);
-                $.when(service.getWageTableContent(selectedHistoryID), service.getElemRangeSet(selectedHistoryID)).done((contentData, settingData) => {
+                $.when(service.getWageTableContent(selectedHistoryID, identifier.substring(0, 3)), service.getElemRangeSet(selectedHistoryID)).done((contentData, settingData) => {
                     if (self.selectedWageTable().elementSetting() == model.ELEMENT_SETTING.TWO_DIMENSION && contentData != null) {
                         let lst2nd: Array<any> = contentData.list2dElements;
                         self.listSecondDimension(lst2nd[0].listSecondDms.map(i => {
@@ -277,7 +277,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     if (params.takeoverMethod == model.TAKEOVER_METHOD.FROM_LAST_HISTORY && history.length > 0) {
                         block.invisible();
                         let selectedHistoryID = history.length > 0 ? history[0].historyID : "";
-                        $.when(service.getWageTableContent(selectedHistoryID), service.getElemRangeSet(selectedHistoryID)).done((contentData, settingData) => {
+                        $.when(service.getWageTableContent(selectedHistoryID, selectedWageTable.wageTableCode), service.getElemRangeSet(selectedHistoryID)).done((contentData, settingData) => {
                             self.wageTableContent(new model.WageTableContent(contentData));
                             self.elementRangeSetting(new model.ElementRangeSetting(settingData));
                             self.wageTableContent().historyID("");

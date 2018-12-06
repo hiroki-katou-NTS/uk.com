@@ -42,7 +42,7 @@ public class WageTableWebService {
 
 	@Inject
 	private DeleteWageTableHistoryCommandHandler deleteHistHandler;
-	
+
 	@Inject
 	private WageTableContentCreater contentCreater;
 
@@ -57,13 +57,14 @@ public class WageTableWebService {
 	public WageTableDto getWageTable(@PathParam("code") String wageTableCode) {
 		return finder.getWageTableById(wageTableCode);
 	}
-	
+
 	@POST
-	@Path("/get-wagetable-content/{histId}")
-	public WageTableContentDto getWageTableContent(@PathParam("histId") String historyId) {
-		return finder.getWageTableContent(historyId);
+	@Path("/get-wagetable-content/{histId}/{wageTableCode}")
+	public WageTableContentDto getWageTableContent(@PathParam("histId") String historyId,
+			@PathParam("wageTableCode") String wageTableCode) {
+		return finder.getWageTableContent(historyId, wageTableCode);
 	}
-	
+
 	@POST
 	@Path("/get-element-range-setting/{histId}")
 	public ElementRangeSettingDto getElemRangeSet(@PathParam("histId") String historyId) {
@@ -105,7 +106,7 @@ public class WageTableWebService {
 	public WageTableContentDto createOneDimensionWageTable(ElementRangeSettingDto params) {
 		return contentCreater.createOneDimensionWageTable(params);
 	}
-	
+
 	@POST
 	@Path("/create-2d-wage-table")
 	public WageTableContentDto createTwoDimensionWageTable(ElementRangeSettingDto params) {
@@ -117,5 +118,5 @@ public class WageTableWebService {
 	public WageTableContentDto createThreeDimensionWageTable(ElementRangeSettingDto params) {
 		return contentCreater.createThreeDimensionWageTable(params);
 	}
-	
+
 }
