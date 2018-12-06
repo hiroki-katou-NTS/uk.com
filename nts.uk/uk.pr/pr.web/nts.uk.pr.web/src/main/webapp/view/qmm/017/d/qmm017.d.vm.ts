@@ -52,8 +52,21 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         displayDetailCalculationFormula: KnockoutObservable<string> = ko.observable("");
         detailCalculationFormula: KnockoutObservableArray<any> = ko.observableArray([]);
         calculationFormulaDictionary = new model.DetailCalculationElement();
+        // formula
 
-        operator: Array<any> = [];
+        operators: Array<any> = ['+', '-','×', '÷','^', '(',')', '>','<', '≦','≧', '=', '#'];
+        separators: Array<any> = ['\\\＋', 'ー', '\\×', '/', '÷'];
+        // for build formula
+        acceptPrefix: Array<any>;
+        acceptFunctionPostfix: Array<any>;
+        acceptVariablePostfix: Array<any>;
+        PAYMENT = '支給'; DEDUCTION = '控除'; ATTENDANCE = '勤怠'; COMPANY_UNIT_PRICE = '会社単価'; FUNCTION = '関数';
+        INDIVIDUAL_UNIT_PRICE = '個人単価';VARIABLE = '変数'; PERSON = '個人'; FORMULA = '計算式'; WAGE_TABLE = '賃金';
+        CONDITIONAL = '条件式'; AND = 'かつ'; OR = 'または'; ROUND_OFF = '四捨五入'; TRUNCATION = 'TRUNCATION';
+        ROUND_UP = '切り上げ'; MAX_VALUE = 'MAX_VALUE'; MIN_VALUE = '最小値'; NUM_OF_FAMILY_MEMBER = '家族人数';
+        YEAR_MONTH = '年月加算'; YEAR_EXTRACTION = '年抽出'; MONTH_EXTRACTION = '月抽出';
+        SYSTEM_YMD_DATE = '年月日'; SYSTEM_YM_DATE = '年月'; SYSTEM_Y_DATE = '月'; PROCESSING_YEAR_MONTH = '処理年月';
+        PROCESSING_YEAR = '処理年'; REFERENCE_TIME = '基準時間'; STANDARD_DAY = '基準日数'; WORKDAY = '要勤務日数';
 
         constructor() {
             var self = this;
@@ -64,9 +77,16 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             self.initWageTableData();
             self.changeDataByWageTable();
             self.initCalculationFormulaDictionary();
+            self.initFormulaComponent();
             $('#D3_5').on('focus', function(){
                 nts.uk.ui.errors.clearAll();
             })
+        }
+        initFormulaComponent () {
+            let self = this;
+            self.acceptPrefix = [self.PAYMENT, self.DEDUCTION, self.ATTENDANCE, self.COMPANY_UNIT_PRICE, self.INDIVIDUAL_UNIT_PRICE, self.FUNCTION, self.VARIABLE, self.PERSON, self.FORMULA, self.WAGE_TABLE];
+            self.acceptFunctionPostfix = [self.CONDITIONAL, self.AND, self.OR, self.ROUND_OFF, self.TRUNCATION, self.ROUND_UP, self.MAX_VALUE, self.MIN_VALUE, self.NUM_OF_FAMILY_MEMBER, self.YEAR_MONTH, self.YEAR_EXTRACTION, self.MONTH_EXTRACTION];
+            self.acceptVariablePostfix = [self.SYSTEM_YM_DATE, self.SYSTEM_Y_DATE, self.SYSTEM_YMD_DATE, self.PROCESSING_YEAR_MONTH, self.PROCESSING_YEAR, self.REFERENCE_TIME, self.STANDARD_DAY, self.WORKDAY];
         }
         // tab 1
         changeDataByLineItemCategory () {
@@ -253,20 +273,21 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         }
         addUnitPriceItem () {
             let self = this, selectedUnitPriceValue = self.selectedPriceItemCategoryValue(), appendFormula = "";
-            let selectedUnitPrice = _.find(self.unitPriceItemList(), {code: self.selectedUnitPriceItemCode()});
+            let selectedUnitPrice:any = _.find(self.unitPriceItemList(), {code: self.selectedUnitPriceItemCode()});
             if (selectedUnitPriceValue == model.UNIT_PRICE_ITEM_CATEGORY.COMPANY_UNIT_PRICE_ITEM) {
-                appendFormula = self.formatParameter(this.calculationFormulaDictionary.COMPANY_UNIT_PRICE.displayContent, [selectedUnitPrice ? selectedUnitPrice['name'] : ""]);
+                appendFormula = self.formatParameter(this.calculationFormulaDictionary.COMPANY_UNIT_PRICE.displayContent, [selectedUnitPrice ? selectedUnitPrice.name : ""]);
             } else {
-                appendFormula = self.formatParameter(this.calculationFormulaDictionary.INDIVIDUAL_UNIT_PRICE.displayContent, [selectedUnitPrice ? selectedUnitPrice['name'] : ""]);
+                appendFormula = self.formatParameter(this.calculationFormulaDictionary.INDIVIDUAL_UNIT_PRICE.displayContent, [selectedUnitPrice ? selectedUnitPrice.name : ""]);
             }
             self.addToFormulaByPosition(appendFormula);
         }
         addFunctionItem () {
-
+            let self = this, selectedFunctionItem:any = self.functionListItem()[self.selectedFunctionListValue()];
+            self.addToFormulaByPosition(self.formatParameter('関数{0}', [selectedFunctionItem.name]));
         }
         addVariableItem () {
-            let self = this, selectedSystemVariableListValue = self.selectedSystemVariableListValue();
-            self.addToFormulaByPosition(self.formatParameter('関数{0}', [self.systemVariableListItem()[selectedSystemVariableListValue]['name']]));
+            let self = this, selectedSystemVariableItem:any = self.systemVariableListItem()[self.selectedSystemVariableListValue()];
+            self.addToFormulaByPosition(self.formatParameter('変数{0}', [selectedSystemVariableItem.name]));
         }
         addFormulaItem () {
             let self = this;
@@ -278,8 +299,8 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         }
 
         addToFormulaByPosition (formulaToAdd: string) {
-            let self = this, calculationFormulaItem = $('#D3_5')[0];
-            let startSelection = calculationFormulaItem['selectionStart'], endSelection = calculationFormulaItem['selectionEnd'];
+            let self = this, calculationFormulaItem:any = $('#D3_5')[0];
+            let startSelection = calculationFormulaItem.selectionStart, endSelection = calculationFormulaItem.selectionEnd;
             self.displayDetailCalculationFormula(self.displayDetailCalculationFormula().substring(0, startSelection) + formulaToAdd + self.displayDetailCalculationFormula().substring(startSelection));
             let newStartSelection = startSelection + formulaToAdd.length;
             $('#D3_5').focus();
@@ -295,8 +316,8 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
 
 
         addSymbol (symbol: string) {
-            let self = this;
-            let symbol = event.target['innerText'];
+            let self = this, targetItem:any = event.target;
+            let symbol = targetItem.innerText;
             this.addToFormulaByPosition(symbol);
         }
 
@@ -306,15 +327,106 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             }
             return resource;
         }
+        convertToPostfix(formula: string) {
+
+        }
         validateSyntax () {
-            let self = this, formula = self.displayDetailCalculationFormula();
+            let self = this, formula = ko.toJS(self.displayDetailCalculationFormula), operands, operators = self.operators, separators: string = self.separators.join('|');
+            let index = 0, currentChar, nextChar, nextElement;
             $('#D3_5').ntsError('clear');
+            if (formula.length == 0) {
+                self.setErrorToFormula('MsgQ_13', []);
+                return;
+            }
+            if (formula.split(self.FORMULA).length > 1) self.setErrorToFormula('MsgQ_19', []);
+            if (formula.includes("÷0")) self.setErrorToFormula('MsgQ_11', []);
             if (formula.split('(').length != formula.split(')').length) {
-                self.setErrorToFormula('MsgQ_8');
+                self.setErrorToFormula('MsgQ_8', []);
+            }
+            for(index = 0 ; index < formula.length; index ++){
+                currentChar = formula[index];
+                if (operators.indexOf(currentChar)>-1){
+                    if (nextChar = formula[index+1] && operators.indexOf(nextChar)>-1 && (!(currentChar!=')' || nextChar!='('))) {
+                        self.setErrorToFormula('MsgQ_9', [currentChar, nextChar]);
+                    }
+                }
+            }
+            operands = formula.split(new RegExp(separators, 'g'));
+            for(let operand of operands) {
+                if (!operand.includes('＠')) {
+                    self.setErrorToFormula('MsgQ_10', [operand]);
+                }
+                let preString = operand.split('＠')[0], postString = operand.split('＠')[1];
+                postString = postString.substring(0, postString.indexOf('(')); // for case function and variable
+                if (!self.acceptPrefix.indexOf(preString)) self.setErrorToFormula('MsgQ_10', [preString]);
+                if (self.checkPostString(preString, postString)) self.setErrorToFormula('MsgQ_10', [operand]);
+                if (postString == self.FUNCTION) {
+
+                }
             }
         }
-        setErrorToFormula (messageId: string) {
-            $('#D3_5').ntsError('error', {messageId: messageId});
+        checkPostString (preString: string, postString: string): boolean {
+            let self = this;
+            if (preString == self.PAYMENT || preString == self.DEDUCTION || preString == self.ATTENDANCE)
+                return (ko.toJS(self.statementItemList).some(item => {return item.name == postString}));
+            if (preString == self.COMPANY_UNIT_PRICE || preString == self.INDIVIDUAL_UNIT_PRICE)
+                return ko.toJS(self.unitPriceItemList).some(item => {return item.name == postString});
+            if (preString == self.FORMULA)
+                return (ko.toJS(self.formulaList).some(item => {return item.formulaName == postString}));
+            if (preString == self.WAGE_TABLE )
+                return (ko.toJS(self.wageTableList).some(item => {return item.wageTableName == postString}));
+            if (preString == self.FUNCTION )
+                return (self.acceptFunctionPostfix.some(item => {return item.name == postString}));
+            if (preString == self.VARIABLE )
+                return (ko.toJS(self.acceptVariablePostfix).some(item => {return item.name == postString}));
+            return false;
+
+        }
+        checkFunctionSyntax (functionSyntax) {
+            let self = this;
+            let functionName = functionSyntax.substring(0, functionSyntax.indexOf('(')), functionParameter = functionSyntax.substring(functionSyntax.indexOf('('), functionSyntax.length);
+            if (functionParameter.length == 0) self.setErrorToFormula('MsgQ_15', [functionName]);
+            if (functionName == self.CONDITIONAL && functionParameter.length != 3){
+                if (functionParameter.length < 3) self.setErrorToFormula('MsgQ_15', [functionName]);
+                else self.setErrorToFormula('MsgQ_16', [functionName]);
+            }
+            if (functionName == self.ROUND_OFF || functionName == self.ROUND_UP || functionName == self.TRUNCATION) {
+                if (functionParameter.length > 1) self.setErrorToFormula('MsgQ_16', [functionName]);
+                if (self.checkNumberDataType(functionParameter)){
+                    self.setErrorToFormula('MsgQ_17', [functionName]);
+                }
+            }
+            if (functionName == self.YEAR_MONTH) {
+                if (functionParameter.length > 1) self.setErrorToFormula('MsgQ_16', [functionName]);
+                if (self.checkDateDataType(functionParameter)){
+                    self.setErrorToFormula('MsgQ_18', [functionName]);
+                }
+            }
+        }
+        checkDecimalDigit (functionParameters) {
+            let self = this;
+            for(var functionParameter of functionParameters ) {
+                if (!isNaN(functionParameter)){
+                    let dotIndex = functionParameter.indexOf('.');
+                    if (functionParameter.length - 1 - (dotIndex ? dotIndex : 0) > 5) self.setErrorToFormula('MsgQ_17', [functionParameter]);
+                }
+            }
+            return true;
+        }
+        checkNumberDataType (functionParameters) {
+            for(var functionParameter of functionParameters ) {
+                if (isNaN(functionParameter)) return false;
+            }
+            return true;
+        }
+        checkDateDataType (functionParameters) {
+            for(var functionParameter of functionParameters ) {
+                if (!(moment(functionParameter).isValid())) return false;
+            }
+            return true;
+        }
+        setErrorToFormula (messageId: string, messageParams: Array) {
+            $('#D3_5').ntsError('error', {messageId: messageId, messageParams: messageParams});
         }
         calculation () {
             let self = this, formula = self.displayDetailCalculationFormula();
@@ -327,7 +439,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 }
                 if (currentChar == '(') {
                     while(operator = operator.pop() != '(') {
-                        prefix.push(this.operator);
+                        // prefix.push(this.operator);
                     }
                 }
             }
