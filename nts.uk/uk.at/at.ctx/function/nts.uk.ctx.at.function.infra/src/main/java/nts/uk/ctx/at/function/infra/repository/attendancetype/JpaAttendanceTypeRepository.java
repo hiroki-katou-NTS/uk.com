@@ -87,7 +87,7 @@ public class JpaAttendanceTypeRepository extends JpaRepository implements Attend
 	@SneakyThrows
 	private List<AttendanceType> runExternal(String companyId, List<ScreenUseAtr> screenUseAtr, int attendanceItemType, List<Integer> ids) {
 		StringBuilder queryBuilder = new StringBuilder("SELECT CID, ATTENDANCEITEM_ID, SCREEN_USE_ATR, ATTENDANCEITEM_TYPE FROM KMNMT_ATTENDANCE_TYPE");
-		queryBuilder.append("WHERE CID = ?");
+		queryBuilder.append(" WHERE CID = ?");
 		if(!CollectionUtil.isEmpty(screenUseAtr)){
 			queryBuilder.append(" AND SCREEN_USE_ATR IN (");
 			queryBuilder.append(screenUseAtr.stream().map(x -> "?").collect(Collectors.joining(",")));
@@ -144,7 +144,7 @@ public class JpaAttendanceTypeRepository extends JpaRepository implements Attend
 			return getItemByAtrandType(companyId, attendanceItemType);
 		}
 		StringBuilder queryBuilder = new StringBuilder("SELECT CID, ATTENDANCEITEM_ID, SCREEN_USE_ATR, ATTENDANCEITEM_TYPE FROM KMNMT_ATTENDANCE_TYPE");
-		queryBuilder.append("WHERE CID = ?  AND SCREEN_USE_ATR IN (");
+		queryBuilder.append(" WHERE CID = ?  AND SCREEN_USE_ATR IN (");
 		queryBuilder.append(screenUseAtr.stream().map(x -> "?").collect(Collectors.joining(",")));
 		queryBuilder.append(") AND ATTENDANCEITEM_TYPE = ?");
 		

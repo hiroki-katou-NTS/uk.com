@@ -151,7 +151,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 		List<String> wplIds = new ArrayList<>();
 		String invidual = "";
-		List<String> empIDs = distinctEmployeeListAfterSort.stream().map(e -> e.getEmployeeId()).collect(Collectors.toList());
+		List<String> empIDs = request.getEmployeeList().stream().map(e -> e.getEmployeeId()).collect(Collectors.toList());
 		
 		GeneralDate endByClosure = GeneralDate.ymd(request.getEndDate().year(), request.getEndDate().month(), request.getEndDate().lastDateInMonth());
 		GeneralDate startTime = request.getStartDate().addMonths(-1);
