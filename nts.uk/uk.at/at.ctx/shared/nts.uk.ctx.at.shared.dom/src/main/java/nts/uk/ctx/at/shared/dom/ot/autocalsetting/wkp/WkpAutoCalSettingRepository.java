@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -12,7 +13,6 @@ import java.util.Optional;
  */
 public interface WkpAutoCalSettingRepository {
 
-	List<WorkPlaceAutoCalSettingExport> getWorkPlaceSettingToExport(String cid);
 	/**
 	 * Update.
 	 *
