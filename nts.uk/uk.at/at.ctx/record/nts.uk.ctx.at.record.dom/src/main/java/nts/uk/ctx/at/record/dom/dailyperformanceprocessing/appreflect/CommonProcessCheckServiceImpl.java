@@ -120,14 +120,19 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 
 	@Override
 	public IntegrationOfDaily updateBreakTimeInfor(String sid, GeneralDate ymd, IntegrationOfDaily integrationOfDaily) {
+
 		String companyId = AppContexts.user().companyId();
 		//日別実績の休憩時間帯
-		BreakTimeOfDailyPerformance breakTimeInfor = breaktimeSevice.reflectBreakTime(companyId, 
-				sid, 
-				ymd, 
-				null,
-				integrationOfDaily.getAttendanceLeave().get(), 
-				integrationOfDaily.getWorkInformation());
+		BreakTimeOfDailyPerformance breakTimeInfor = null; 
+		if(integrationOfDaily.getAttendanceLeave().isPresent()) {
+			breakTimeInfor = breaktimeSevice.reflectBreakTime(companyId, 
+					sid, 
+					ymd, 
+					null,
+					integrationOfDaily.getAttendanceLeave().get(), 
+					integrationOfDaily.getWorkInformation());
+		}
+				
 		List<EditStateOfDailyPerformance> lstEditState = integrationOfDaily.getEditState();
 		List<BreakTimeOfDailyPerformance> lstBeforeBreakTimeInfor = integrationOfDaily.getBreakTime();
 		List<BreakTimeOfDailyPerformance> beforeBreakTime = lstBeforeBreakTimeInfor.stream().filter(x -> x.getBreakType() == BreakType.REFER_WORK_TIME)
@@ -139,7 +144,11 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 			lstBeforeBreakTimeInfor.remove(beforBTWork);
 		} 
 		List<BreakTimeSheet> breakTimeSheetsTmp = beforBTWork.getBreakTimeSheets();
-		List<BreakTimeSheet> lstBreak = breakTimeInfor.getBreakTimeSheets();
+		List<BreakTimeSheet> lstBreak = new ArrayList<>();
+		if(breakTimeInfor != null) {
+			lstBreak = breakTimeInfor.getBreakTimeSheets();
+		}
+				
 		List<BreakTimeSheet> lstBreakOutput = new ArrayList<>();			
 		for (int i = 0 ; i < 10 ; i ++ ) {
 			int num_1 = (i * 6) + 157;
