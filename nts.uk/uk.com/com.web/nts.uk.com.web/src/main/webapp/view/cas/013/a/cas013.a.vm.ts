@@ -4,6 +4,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
     import NtsGridListColumn = nts.uk.ui.NtsGridListColumn;
 
     export class ScreenModel {
+        langId: KnockoutObservable<string> = ko.observable('ja');
         // Metadata
         isCreateMode: KnockoutObservable<boolean> = ko.observable(false);
         isSelectedUser: KnockoutObservable<boolean> = ko.observable(false);
@@ -265,6 +266,18 @@ module nts.uk.com.view.cas013.a.viewmodel {
                     });
                 });
             }
+        }
+        
+        exportExcel(): void {
+            var self = this;
+            nts.uk.ui.block.grayout();
+            let langId = self.langId();
+            new service.Service().saveAsExcel(langId).done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
         }
 
     }
