@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.pereg.dom.person.setting.matrix;
+package nts.uk.ctx.pereg.dom.person.setting.matrix.matrixdisplayset;
 
 /**
  * @author hieult
