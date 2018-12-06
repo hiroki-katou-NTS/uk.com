@@ -8,6 +8,7 @@ import java.util.Optional;
 import nts.uk.shr.infra.file.storage.filestereotype.defines.AvatarFileStereoType;
 import nts.uk.shr.infra.file.storage.filestereotype.defines.CsvFileStereoType;
 import nts.uk.shr.infra.file.storage.filestereotype.defines.DocumentFileStereoType;
+import nts.uk.shr.infra.file.storage.filestereotype.defines.ExcelFileStereoType;
 import nts.uk.shr.infra.file.storage.filestereotype.defines.FlowMenuStereoType;
 import nts.uk.shr.infra.file.storage.filestereotype.defines.SampleFileStereoType;
 import nts.uk.shr.infra.file.storage.filestereotype.defines.SamplePackStereoType;
@@ -25,7 +26,8 @@ final class FileStereoTypeDef {
 				new AvatarFileStereoType(),
 				new CsvFileStereoType(),
 				new DocumentFileStereoType(),
-				new TemporaryZipStereoType()
+				new TemporaryZipStereoType(),
+				new ExcelFileStereoType()
 				
 				).stream().forEach(d -> {
 					map.put(d.name(), d);
