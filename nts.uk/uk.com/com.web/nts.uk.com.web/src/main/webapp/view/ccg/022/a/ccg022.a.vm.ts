@@ -7,6 +7,7 @@ module nts.uk.com.view.ccg022.a.screenModel {
     import jump = nts.uk.request.jump;
     import alError = nts.uk.ui.dialog.alertError;
     import modal = nts.uk.ui.windows.sub.modal;
+    import format = nts.uk.text.format;
 
     export class ViewModel {
 
@@ -42,6 +43,26 @@ module nts.uk.com.view.ccg022.a.screenModel {
 
                 }
             });
+            self.selectedSystemMode.subscribe((value) => {
+                $("#stop_message_txt").ntsError("clear");
+                $("#in_progress_message_txt").ntsError("clear");
+                
+                ko.applyBindingsToNode($("#in_progress_message_txt")[0],{ntsMultilineEditor: { value: self.usageStopMessage() , 
+                                                                name: '#[CCG022_20]', 
+                                                                constraint: 'StopMessage', 
+                                                                option: { width: '500px'},
+                                                                enable:value==1,
+                                                                required:value==1
+                                                                }});
+                
+                ko.applyBindingsToNode($("#stop_message_txt")[0],{ntsMultilineEditor: { value: self.stopMessage() , 
+                                                                name: '#[CCG022_25]', 
+                                                                constraint: 'StopMessage', 
+                                                                option: { width: '500px'},
+                                                                enable:value==2,
+                                                                required:value==2
+                                                                }});
+            });
         }
 
         loadData(state) {
@@ -57,6 +78,7 @@ module nts.uk.com.view.ccg022.a.screenModel {
 
         setData(data: IStopSetting) {
             let self = this;
+            nts.uk.ui.errors.clearAll()
             if (data) {
                 if (!data.admin) {
                     self.isSystemSelected(0);
@@ -65,13 +87,13 @@ module nts.uk.com.view.ccg022.a.screenModel {
                 let state = self.isSystemSelected();
                 let setting: IStopBySystem = state == 1 ? data.system : data.company;
                 self.isAdmin(data.admin);
-
                 self.selectedSystemMode(setting ? setting.systemStatus : 0);
                 if (state == 1) {
                     self.infoLbl1(self.genLbl(true, data.stopCompanys));
                     self.infoLbl2(self.genLbl(false, data.inProgressCompanys));
                 } else {
-                    self.infoLbl1(self.genStopText(data, setting));
+                    self.infoLbl1(self.genStopText(data.system));
+                    self.infoLbl2("");
                 }
                 self.usageStopMessage(setting ? setting.usageStopMessage : "");
                 self.selectedStopMode(setting ? setting.stopMode : 1);
@@ -90,6 +112,10 @@ module nts.uk.com.view.ccg022.a.screenModel {
                         usageStopMessage: self.usageStopMessage(),
                     }
                 };
+            $("#stop_message_txt,#in_progress_message_txt").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
             block.invisible();
             service.save(command).done(() => {
                 self.loadData(command.isSystem);
@@ -100,19 +126,21 @@ module nts.uk.com.view.ccg022.a.screenModel {
 
         }
         genLbl(isStop: boolean, data: Array<IStopByCompany>) {
+            let tag = `<span class='limited-label company-code'>{0}</span>`,
+                textResult = "";
 
-            let inputText = isStop == true ? text("CCG022_30") : text("CCG022_31");
-            if (data) {
-                text(inputText, _.map(data, (item) => { return item.companyCd; }));
+            let inputText = isStop == true ? "CCG022_30" : "CCG022_31";
+            if (data.length) {
+                textResult = text(inputText, [format(tag, _.map(data, (item) => { return item.companyCd; }).toString())]);
             }
-            return "";
+            return textResult;
         }
-        genStopText(data, setting) {
+        genStopText(setting) {
             let status;
-            if (setting != null) {
-                status = data.company.systemStatus;
+            if (setting == null) {
+                return "";
             } else {
-                status = data.system ? data.system.systemStatus : null;
+                status = setting.systemStatus;
             }
             if (status == 1) {
                 return text("CCG022_32");
