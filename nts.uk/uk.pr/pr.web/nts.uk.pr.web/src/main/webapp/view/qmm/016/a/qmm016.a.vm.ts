@@ -469,6 +469,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                         }
                     }));
                     self.elementRangeSetting().historyID(params.historyID);
+                    self.elementRangeSetting().thirdElementRange(null);
                     self.wageTableContent(new model.WageTableContent(data));
 //                    $("#fixed-table-2d").ntsFixedTable({ width: 600 });
                 }

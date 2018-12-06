@@ -44,9 +44,9 @@ public class ElementRangeSetting extends AggregateRoot {
 		this.historyID = historyID;
 	}
 
-	public ElementRangeSetting(ElementRange secondElementRange, ElementRange thirdElementRange,
-			ElementRange firstElementRange, String historyID) {
-		this.firstElementRange = secondElementRange;
+	public ElementRangeSetting(ElementRange firstElementRange, ElementRange secondElementRange,
+			ElementRange thirdElementRange, String historyID) {
+		this.firstElementRange = firstElementRange;
 		this.thirdElementRange = Optional.ofNullable(thirdElementRange);
 		this.secondElementRange = Optional.ofNullable(secondElementRange);
 		this.historyID = historyID;
