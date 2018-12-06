@@ -45,7 +45,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                     self.perUnitPriceCode(temp.code);
                     self.perUnitPriceName(temp.name);
                 }
-                self.filterData();
+                // self.filterData();
             });
         }
 
@@ -125,13 +125,12 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 self.yearMonthFilter(data.salCurrProcessDate);
                 self.reloadCcg001(data.empExtraRefeDate);
                 service.salaryPerUnitPriceName().done(function (individualPriceName) {
-                    if (!individualPriceName) {
+                    if (individualPriceName.length == 0) {
                         nts.uk.ui.dialog.alertError({messageId: "MsgQ_170"});
-                        return;
+                    } else {
+                        self.salaryPerUnitPriceNames(individualPriceName);
+                        self.salaryPerUnitPriceNamesSelectedCode(self.salaryPerUnitPriceNames()[0].code);
                     }
-                    self.salaryPerUnitPriceNames(individualPriceName);
-                    self.salaryPerUnitPriceNamesSelectedCode(self.salaryPerUnitPriceNames()[0].code);
-                    self.filterData();
                     block.clear();
                     dfd.resolve(self);
                 }).fail((err) => {
