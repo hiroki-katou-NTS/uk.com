@@ -49,7 +49,7 @@
             </div>
         </div>
         <div class="tab-row" style="margin-left: 75px; width: 500px; text-align: center;">
-            <button data-bind="click: $vm.createWageTable" style="width: 400px;"
+            <button data-bind="click: $vm.createWageTableQualification" style="width: 400px;"
                     class="caret-bottom large-caret">#{i18n.getText('QMM016_35')}</button>
         </div>
         <div class="tab-row" style="margin-top: 40px;">
@@ -57,14 +57,14 @@
             <button style="margin-left: 30px;">#{i18n.getText('QMM016_37')}</button>
         </div>
         <hr></hr>
-        <div class="tab-row" style="margin-top: 40px;"
-             data-bind="if: $vm.wageTableContent().payment().length >0">
+        <div class="tab-row E5_1" style="margin-top: 40px;"
+             data-bind="if: $vm.wageTableContent().qualificationGroupSetting().length >0">
             <table id="E5_1">
                 <colgroup>
                     <col width="100px"/>
                     <col width="130px"/>
-                    <col width="70px"/>
-                    <col width="400px"/>
+                    <col width="147px"/>
+                    <col width="450px"/>
                 </colgroup>
                 <thead>
                 <tr>
@@ -80,16 +80,23 @@
                         <td class="ui-widget-header"
                             data-bind="visible: $index() ==0, attr: {rowspan: $parent.eligibleQualification().length}, text: $parent.qualificationGroupName">
                         </td>
-                        <td></td>
                         <td class="ui-widget-header">
                             <div data-bind="text: qualificationName"></div>
                         </td>
                         <td>
-                            10000
+                            <input data-bind="ntsNumberEditor: {
+                                                    name: '#[QMM016_39]',
+                                                    value: wageTablePaymentAmount,
+                                                    constraint: 'WageTablePaymentAmount',
+                                                    option: {
+                                                        grouplength: 3,
+                                                        currencyformat: 'JPY',
+                                                        width: '110px'
+                                                    },
+                                                    required: true}"/>
                         </td>
-                        <td data-bind="visible: $index() ==0, attr: {rowspan: $parent.eligibleQualification().length}, text: $parent.displayPaymentMethod">
+                        <td style="vertical-align: top;"  data-bind="visible: $index() ==0, attr: {rowspan: $parent.eligibleQualification().length}, text: $parent.displayPaymentMethod">
                         </td>
-                        <td></td>
                     </tr>
                 </com:ko>
                 </tbody>

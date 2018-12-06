@@ -9,7 +9,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * 範囲下限
  */
 
-@StringMaxLength(3)
+@StringMaxLength(10)
 @StringCharType(CharType.ALPHA_NUMERIC)
 public class MasterCode extends StringPrimitiveValue<MasterCode> {
 

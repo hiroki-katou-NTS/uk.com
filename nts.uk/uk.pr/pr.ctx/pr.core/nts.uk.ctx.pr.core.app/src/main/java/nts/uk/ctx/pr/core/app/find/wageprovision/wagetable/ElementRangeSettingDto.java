@@ -30,6 +30,8 @@ public class ElementRangeSettingDto {
 	 * 履歴ID
 	 */
 	private String historyID;
+	
+	private String wageTableCode;
 
 	public static ElementRangeSettingDto fromDomainToDto(ElementRangeSetting domain) {
 		ElementRangeSettingDto dto = new ElementRangeSettingDto();

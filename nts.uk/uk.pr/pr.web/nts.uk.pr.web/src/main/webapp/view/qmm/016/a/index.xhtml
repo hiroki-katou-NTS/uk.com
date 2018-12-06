@@ -256,11 +256,20 @@
 
                     </div>
                     <div class="tab-content-2">
-                        <div data-bind="if: $vm.selectedWageTable().elementSetting()==0"><ui:include src="b.xhtml"/></div>
-                        <div data-bind="if: $vm.selectedWageTable().elementSetting()==1"><ui:include src="c.xhtml"/></div>
-                        <div data-bind="if: $vm.selectedWageTable().elementSetting()==2"><ui:include src="d.xhtml"/></div>
-                        <div data-bind="if: $vm.selectedWageTable().elementSetting()==3"><ui:include src="e.xhtml"/></div>
-                        <div data-bind="if: $vm.selectedWageTable().elementSetting()==4"><ui:include src="f.xhtml"/>
+                        <div data-bind="if: $vm.selectedWageTable().elementSetting()==0">
+                        	<ui:include src="b.xhtml"/>
+                        </div>
+                        <div data-bind="if: $vm.selectedWageTable().elementSetting()==1">
+                        	<ui:include src="c.xhtml"/>
+                        </div>
+                        <div data-bind="if: $vm.selectedWageTable().elementSetting()==2">
+                        	<ui:include src="d.xhtml"/>
+                       	</div>
+                        <div data-bind="if: $vm.selectedWageTable().elementSetting()==3">
+                        	<ui:include src="e.xhtml"/>
+                        </div>
+                        <div data-bind="if: $vm.selectedWageTable().elementSetting()==4">
+                        	<ui:include src="f.xhtml"/>
                         </div>
                     </div>
                 </div>

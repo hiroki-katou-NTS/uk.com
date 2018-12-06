@@ -253,13 +253,15 @@ module nts.uk.pr.view.qmm016.share.model {
         qualificationGroupCode: KnockoutObservable<string> = ko.observable(null);
         qualificationGroupName: KnockoutObservable<string> = ko.observable(null);
         eligibleQualificationCode: KnockoutObservableArray<string> = ko.observableArray([]);
-        eligibleQualification: KnockoutObservableArray<QualificationInformation> = ko.observableArray([]);
+        eligibleQualification: KnockoutObservableArray<any> = ko.observableArray([]);
         constructor (params: IQualificationGroupSettingContent) {
             this.paymentMethod(params ? params.paymentMethod: null);
             this.qualificationGroupCode(params ? params.qualificationGroupCode: null);
             this.qualificationGroupName(params ? params.qualificationGroupName: null);
-            this.eligibleQualificationCode(params ? params.eligibleQualificationCode: []);
-            this.eligibleQualification(params? params.eligibleQualification ? params.eligibleQualification.map(item => new QualificationInformation(item)) : [] : []);
+            //this.eligibleQualificationCode(params ? params.eligibleQualificationCode: []);
+            this.eligibleQualification(params ? params.eligibleQualificationCode.map(x => {
+                return ko.mapping.fromJS(x)
+            }) : []);
             this.getDisplayPaymentMethod(this.paymentMethod());
             this.paymentMethod.subscribe(newValue => {
                 this.getDisplayPaymentMethod(newValue);
