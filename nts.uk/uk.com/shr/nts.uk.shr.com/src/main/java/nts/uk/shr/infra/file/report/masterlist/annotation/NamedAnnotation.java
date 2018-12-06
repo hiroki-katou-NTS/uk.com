@@ -2,7 +2,7 @@ package nts.uk.shr.infra.file.report.masterlist.annotation;
 
 import javax.enterprise.util.AnnotationLiteral;
 
-public class NamedAnnotation extends AnnotationLiteral<DomainID> /*implements DomainID*/ {
+public class NamedAnnotation extends AnnotationLiteral<DomainID> implements DomainID {
 
 	private static final long serialVersionUID = 1L;
 	
