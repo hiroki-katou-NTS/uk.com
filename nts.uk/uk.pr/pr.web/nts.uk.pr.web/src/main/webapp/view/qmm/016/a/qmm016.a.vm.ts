@@ -40,10 +40,10 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             self.selectedWageTableIdentifier.subscribe((newValue) => {
                 nts.uk.ui.errors.clearAll();
                 if (_.isEmpty(newValue)) {
-                    self.selectedWageTable(new model.WageTable(null));
-                    self.selectedHistory(new model.GenericHistoryYearMonthPeriod({historyID: "", startMonth: null, endMonth: 99912}));
                     self.wageTableContent(new model.WageTableContent(null));
                     self.elementRangeSetting(new model.ElementRangeSetting(null));
+                    self.selectedWageTable(new model.WageTable(null));
+                    self.selectedHistory(new model.GenericHistoryYearMonthPeriod({historyID: "", startMonth: null, endMonth: 999912}));
                     self.selectedTab('tab-1');
                     self.updateMode(false);
                     self.isSelectedHistory(false);
@@ -62,7 +62,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             let self = this;
             $('#A8_2').ntsFixedTable({ width: 300 });
             $('.normal-fixed-table').ntsFixedTable({ width: 600 });
-//            $("#fixed-table-2d").ntsFixedTable({ width: 600 });
+            $("#fixed-table-2d").ntsFixedTable({ width: 600 });
+            $("#fixed-table-1d").ntsFixedTable({ width: 600 });
 //            $('.fixed-table-top').ntsFixedTable({ width: 300, height: 34 });
 //            if (/Chrome/.test(navigator.userAgent)) {
 //                $('.fixed-table-top').ntsFixedTable({ width: 300, height: 34 });
@@ -337,6 +338,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             let self = this;
             let params = {
                 historyID: self.selectedHistory().historyID(),
+                wageTableCode: self.selectedWageTable().wageTableCode(),
                 firstElementRange: null,
                 secondElementRange: null,
                 thirdElementRange: null
@@ -390,6 +392,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             let self = this;
             let params = {
                 historyID: self.selectedHistory().historyID(),
+                wageTableCode: self.selectedWageTable().wageTableCode(),
                 firstElementRange: null,
                 secondElementRange: null,
                 thirdElementRange: null
@@ -480,6 +483,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             let self = this;
             let params = {
                 historyID: self.selectedHistory().historyID(),
+                wageTableCode: self.selectedWageTable().wageTableCode(),
                 firstElementRange: null,
                 secondElementRange: null,
                 thirdElementRange: null
