@@ -41,7 +41,7 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 	private static final String SELECT_BY_HIST_ID = SELECT_ALL
 			+ " INNER JOIN PpemtHistorySelection hs ON si.selectionItemPk.selectionItemId = hs.selectionItemId WHERE hs.histidPK.histId=:histId";
 
-	private String PERSON_SELECT_ALL = "SELECT si.selectionItemName, hs.startDate, hs.endDate, so.initSelection, ss.selectionCd, ss.selectionName, ss.externalCd, ss.memo FROM PpemtSelectionItem si "
+	private static final String PERSON_SELECT_ALL = "SELECT si.selectionItemName, hs.startDate, hs.endDate, so.initSelection, ss.selectionCd, ss.selectionName, ss.externalCd, ss.memo FROM PpemtSelectionItem si "
 			+ "LEFT JOIN PpemtHistorySelection hs ON si.selectionItemPk.selectionItemId = hs.selectionItemId "
 			+ "LEFT JOIN PpemtSelItemOrder so ON hs.histidPK.histId = so.histId "
 			+ "LEFT JOIN PpemtSelection ss ON so.histId = ss.histId AND so.selectionIdPK.selectionId = ss.selectionId.selectionId "
