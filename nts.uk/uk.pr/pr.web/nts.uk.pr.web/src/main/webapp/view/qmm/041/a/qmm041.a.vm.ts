@@ -227,23 +227,28 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                             if (data.length > 0) {
                                 self.dataSource(data);
                                 self.selectedCode(data[0].code);
+                                self.employeeInputList.push(new EmployeeModel(emp.sid,
+                                    emp.employeeCode, emp.employeeName, wp.name, ""));
+                                if (baseDate) {
+                                    self.ccgComponent.baseDate = baseDate;
+                                }
+                                let dto = {
+                                    personalUnitPriceCode: self.selectedCode(),
+                                    employeeId: emp.sid
+                                };
+                                self.getAllIndEmpSalUnitPriceHistory(dto).done(() => {
+                                    block.clear();
+                                    dfd.resolve();
+                                });
                             } else {
-                                self.isAddableHis(false);
-                                nts.uk.ui.dialog.alertError({messageId: "MsgQ_170"});
-                            }
-                            self.employeeInputList.push(new EmployeeModel(emp.sid,
-                                emp.employeeCode, emp.employeeName, wp.name, ""));
-                            if (baseDate) {
-                                self.ccgComponent.baseDate = baseDate;
-                            }
-                            let dto = {
-                                personalUnitPriceCode: self.selectedCode(),
-                                employeeId: emp.sid
-                            };
-                            self.getAllIndEmpSalUnitPriceHistory(dto).done(() => {
+                                self.employeeInputList.push(new EmployeeModel(emp.sid,
+                                    emp.employeeCode, emp.employeeName, wp.name, ""));
+                                nts.uk.ui.dialog.alertError({messageId: "MsgQ_170"}).then(() => {
+                                    self.isAddableHis(false);
+                                });
+                                block.clear();
                                 dfd.resolve();
-                            });
-                            block.clear();
+                            }
                         }).fail((res) => {
                             nts.uk.ui.dialog.alertError(res.message);
                             block.clear();
@@ -413,7 +418,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                         array[index].startYearMonth = params.startYearMonth;
                         array[index].period = format(getText("QMM041_13"), self.formatYM(array[index].startYearMonth), self.formatYM(array[index].endYearMonth));
 
-                        if(index < self.historyList().length - 1){
+                        if (index < self.historyList().length - 1) {
                             array[index + 1].endYearMonth = params.lastEndYearMonth;
                             array[index + 1].period = format(getText("QMM041_13"), self.formatYM(array[index + 1].startYearMonth), self.formatYM(array[index + 1].endYearMonth));
                         }

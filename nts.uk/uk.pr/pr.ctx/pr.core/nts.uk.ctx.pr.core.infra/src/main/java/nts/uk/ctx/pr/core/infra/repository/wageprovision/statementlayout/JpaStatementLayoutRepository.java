@@ -17,6 +17,9 @@ public class JpaStatementLayoutRepository extends JpaRepository implements State
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStatementLayout f ";
     private static final String SELECT_ALL_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE f.statementLayoutPk.cid =:cid ORDER BY f.statementLayoutPk.statementCd ASC";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.statementLayoutPk.cid =:cid AND  f.statementLayoutPk.statementCd =:statementCd ";
+    private static final String SELECT_BY_CODES = SELECT_ALL_QUERY_STRING + " WHERE  f.statementLayoutPk.cid =:cid" +
+            " AND f.statementLayoutPk.statementCd IN :statementCds" +
+            " ORDER BY f.statementLayoutPk.statementCd ASC";
 
     private static final String SELECT_BY_KEY_CID_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.statementLayoutPk.cid =:cid ";
     private static final String SELECT_STATEMENT = "SELECT f FROM QpbmtStatementLayout f Where f.statementLayoutPk.statementCd IN  " +
@@ -49,6 +52,14 @@ public class JpaStatementLayoutRepository extends JpaRepository implements State
         .setParameter("cid", cid)
         .setParameter("statementCd", statementCd)
         .getSingle(c->c.toDomain());
+    }
+
+    @Override
+    public List<StatementLayout> getAllStatementLayoutByCidAndCodes(String cid, List<String> statementCds) {
+        return this.queryProxy().query(SELECT_BY_CODES, QpbmtStatementLayout.class)
+                .setParameter("cid", cid)
+                .setParameter("statementCds", statementCds)
+                .getList(c->c.toDomain());
     }
 
     @Override

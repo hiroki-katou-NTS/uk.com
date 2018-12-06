@@ -113,6 +113,18 @@ public class StatementLayoutWebService {
     }
 
     @POST
+    @Path("getCurrentProcessingDate")
+    public Integer getCurrentProcessingDate() {
+        return statementLayoutFinder.getCurrentProcessingDate();
+    }
+
+    @POST
+    @Path("getStatementLayoutByProcessingDate/{processingDate}")
+    public List<StatementLayoutDto> getStatementLayoutByProcessingDate(@PathParam("processingDate") int processingDate) {
+        return statementLayoutFinder.getStatementLayoutByProcessingDate(processingDate);
+    }
+
+    @POST
     @Path("getAllStatementLayoutAndHist")
     public List<StatementLayoutAndHistDto> getAllStatementLayoutAndHist() {
         return this.statementLayoutFinder.getAllStatementLayoutAndHist();
@@ -146,6 +158,13 @@ public class StatementLayoutWebService {
     @Path("getStatementLayoutHistData/{code}/{histId}")
     public StatementLayoutHistDataDto getStatementLayoutHistData(@PathParam("code") String code, @PathParam("histId") String histId) {
         return this.statementLayoutHistFinder.getStatementLayoutHistData(code, histId).orElse(null);
+    }
+
+    @POST
+    @Path("getInitStatementLayoutHistData/{statementCode}/{histId}/{startMonth}/{itemHistoryDivision}/{layoutPattern}")
+    public StatementLayoutHistDataDto getInitStatementLayoutHistData(@PathParam("statementCode") String statementCode, @PathParam("histId") String histId, @PathParam("startMonth") Integer startMonth,
+                                                                     @PathParam("itemHistoryDivision") Integer itemHistoryDivision, @PathParam("layoutPattern") Integer layoutPattern) {
+        return this.statementLayoutHistFinder.getInitStatementLayoutHistData(statementCode, histId, startMonth, itemHistoryDivision, layoutPattern).orElse(null);
     }
 
     @POST

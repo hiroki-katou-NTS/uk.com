@@ -28,7 +28,7 @@ public class EmployeeResidentTaxPayAmountInfWebService {
 
     @POST
     @Path("deleteTaxPayAmount")
-    public void registerTaxPayAmount(DeleteEmployeeResidentTaxPayAmountInfoCommand command) {
+    public void deleteTaxPayAmount(DeleteEmployeeResidentTaxPayAmountInfoCommand command) {
         deleteEmpRsdtTaxPayAmountInfoHandler.handle(command);
     }
 }
