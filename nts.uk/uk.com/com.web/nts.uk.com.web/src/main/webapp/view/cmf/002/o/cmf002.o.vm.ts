@@ -170,7 +170,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             let isNextGetData: boolean = moment.utc(self.periodDateValue().startDate, "YYYY/MM/DD").diff(moment.utc(self.periodDateValue().endDate, "YYYY/MM/DD")) > 0;
 
             if (isNextGetData) {
-                $('#P6_1').ntsError('set', {messageId: "Msg_662"});
+                alertError({messageId: "Msg_662"});
                 return;
             }else{
                 $('#P6_1').ntsError('clear');
@@ -235,8 +235,8 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             // 外部出力実行社員選択チェック
             self.dataEmployeeId = self.findListId(self.selectedCode());
             if (self.dataEmployeeId.length == 0) {
-                // alertError({ messageId: 'Msg_657'});
-                $('#component-items-list').ntsError('set', {messageId:"Msg_657"});
+                alertError({ messageId: 'Msg_657'});
+                //$('#component-items-list').ntsError('set', {messageId:"Msg_657"});
             }
             else {
                 self.next();
@@ -307,11 +307,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         loadScreenQ() {
             let self = this;
-
-            if(self.isLoadScreenQ){
-                return;    
-            }
-            self.isLoadScreenQ = true;
+//          fix bug 102743
+//            if(self.isLoadScreenQ){
+//                return;    
+//            }
+//            self.isLoadScreenQ = true;
 
             $("#component-items-list").focus();
             self.startDate(self.periodDateValue().startDate);

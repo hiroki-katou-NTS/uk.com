@@ -299,7 +299,11 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                     self.setFocusG2_3();
                 });
             }).fail(error => {
-                $('#G2_3_container').ntsError('set', error);
+                if (error.messageId == "Msg_659") {
+                    dialog.alertError({ messageId: "Msg_659" });
+                } else {
+                    $('#G2_3_container').ntsError('set', error);
+                }
                 block.clear();
                 self.setFocusG2_3();
             });
