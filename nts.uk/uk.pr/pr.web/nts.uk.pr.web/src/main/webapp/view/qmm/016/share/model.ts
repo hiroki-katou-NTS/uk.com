@@ -259,7 +259,7 @@ module nts.uk.pr.view.qmm016.share.model {
             this.qualificationGroupCode(params ? params.qualificationGroupCode: null);
             this.qualificationGroupName(params ? params.qualificationGroupName: null);
             //this.eligibleQualificationCode(params ? params.eligibleQualificationCode: []);
-            this.eligibleQualification(params ? params.eligibleQualificationCode.map(x => {
+            this.eligibleQualificationCode(params ? params.eligibleQualificationCode.map(x => {
                 return ko.mapping.fromJS(x)
             }) : []);
             this.getDisplayPaymentMethod(this.paymentMethod());

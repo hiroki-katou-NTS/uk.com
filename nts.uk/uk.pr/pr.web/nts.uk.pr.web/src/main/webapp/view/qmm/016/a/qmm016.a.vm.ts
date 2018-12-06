@@ -237,6 +237,9 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     break;
                 case model.ELEMENT_SETTING.THREE_DIMENSION:
                 break;
+                case model.ELEMENT_SETTING.QUALIFICATION:
+                    ko.utils.extend(command.wageTableContent, {wageTableQualifications: command.wageTableContent.qualificationGroupSetting});
+                    break;
                 default: break;
             }
             service.updateWageTable(command).done((historyId: string) => {

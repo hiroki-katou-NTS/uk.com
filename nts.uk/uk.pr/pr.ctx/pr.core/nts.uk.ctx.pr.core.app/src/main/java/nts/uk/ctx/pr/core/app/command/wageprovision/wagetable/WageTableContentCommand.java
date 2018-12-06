@@ -8,7 +8,10 @@ import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.WageTableQualificationDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.WageTableQualificationInfoDto;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementsCombinationPaymentAmount;
+import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.QualificationGroupSettingContent;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableContent;
 
 /**
@@ -29,10 +32,11 @@ public class WageTableContentCommand {
 	/**
 	 * 資格グループ設定
 	 */
-	private List<QualificationGroupSettingContentCommand> qualificationGroupSetting;
+	private List<WageTableQualificationDto> wageTableQualifications;
 
 	public WageTableContent fromCommandToDomain() {
 		List<ElementsCombinationPaymentAmount> listPayments = new ArrayList<>();
+		List<QualificationGroupSettingContent> qualificationGroupSettings = new ArrayList<>();
 		if (oneDimensionPayment != null) {
 			for (ElementItemCommand c : oneDimensionPayment) {
 				ElementsCombinationPaymentAmount payment = new ElementsCombinationPaymentAmount(
@@ -50,10 +54,23 @@ public class WageTableContentCommand {
 					listPayments.add(payment);
 				}
 			}
+		} else if(wageTableQualifications != null) {
+			wageTableQualifications.forEach(wageTableQualification -> {
+				wageTableQualification.getEligibleQualificationCode().forEach(eligible -> listPayments.add(new ElementsCombinationPaymentAmount(
+						IdentifierUtil.randomUniqueId(),
+						eligible.getWageTablePaymentAmount(),
+						eligible.getQualificationCode(), null, null, null, null, null, null, null, null, null, null, null)));
+
+				qualificationGroupSettings.add(new QualificationGroupSettingContent(
+						wageTableQualification.getQualificationGroupCode(),
+						wageTableQualification.getPaymentMethod(),
+						wageTableQualification.getEligibleQualificationCode().stream().map(WageTableQualificationInfoDto::getQualificationCode).collect(Collectors.toList())
+				));
+			});
 		}
+
 		return new WageTableContent(historyID, listPayments,
-				qualificationGroupSetting.isEmpty() ? Optional.empty()
-						: Optional.of(qualificationGroupSetting.stream().map(i -> i.fromCommandToDomain())
-								.collect(Collectors.toList())));
+				qualificationGroupSettings.isEmpty() ? Optional.empty()
+						: Optional.of(qualificationGroupSettings));
 	}
 }

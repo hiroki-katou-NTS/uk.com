@@ -8,12 +8,15 @@ import java.util.List;
  */
 public interface WageTableContentRepository {
 
-	List<WageTableContent> getAllWageTableContent();
+    List<WageTableContent> getAllWageTableContent();
 
-	Optional<WageTableContent> getWageTableContentById(String historyId);
+    Optional<WageTableContent> getWageTableContentById(String historyId);
 
-	void addOrUpdate(WageTableContent domain);
+    void addOrUpdate(WageTableContent domain);
 
-	void remove(String historyId);
+    void remove(String historyId);
 
+    List<WageTableQualification> getWageTableQualification(String historyId);
+
+    List<WageTableQualification> getDefaultWageTableQualification();
 }
