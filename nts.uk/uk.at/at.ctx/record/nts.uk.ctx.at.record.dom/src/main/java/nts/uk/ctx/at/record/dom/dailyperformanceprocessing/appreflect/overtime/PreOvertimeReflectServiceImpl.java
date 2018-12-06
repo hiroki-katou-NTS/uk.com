@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -96,8 +95,6 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 	private WorkUpdateService updateService;
 	@Inject
 	private CommonProcessCheckService commonService;
-	@Inject
-	private ReflectBreakTimeOfDailyDomainService breaktimeSevice;
 	@Override
 	public boolean overtimeReflect(OvertimeParameter param) {
 		try {
@@ -115,7 +112,7 @@ public class PreOvertimeReflectServiceImpl implements PreOvertimeReflectService 
 			workRepository.updateByKeyFlush(dailyInfor);
 			
 			//開始終了時刻の反映 phai lay du lieu cua 日別実績の勤務情報 sau khi update
-			Optional<TimeLeavingOfDailyPerformance> timeDaily = startEndtimeOffReflect.startEndTimeOffReflect(param, dailyInfor);
+			startEndtimeOffReflect.startEndTimeOffReflect(param, dailyInfor);
 
 			//残業時間を反映する
 			//残業枠時間
