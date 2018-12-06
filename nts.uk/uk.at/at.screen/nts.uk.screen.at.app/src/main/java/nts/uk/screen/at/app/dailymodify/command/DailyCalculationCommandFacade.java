@@ -22,7 +22,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
+//import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
 import nts.uk.ctx.at.record.app.service.dailycheck.CheckCalcMonthService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CommonCompanySettingForCalc;
@@ -30,8 +30,8 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AggregateSpecifiedDailys;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+//import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+//import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
@@ -62,11 +62,11 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class DailyCalculationCommandFacade {
 
-	@Inject
-	private DailyRecordWorkFinder finder;
-
-	@Inject
-	private OptionalItemRepository optionalMasterRepo;
+//	@Inject
+//	private DailyRecordWorkFinder finder;
+//
+//	@Inject
+//	private OptionalItemRepository optionalMasterRepo;
 
 	@Inject
 	private CalculateDailyRecordServiceCenter calcService;
@@ -115,7 +115,7 @@ public class DailyCalculationCommandFacade {
 				.map(d -> d.toDomain(d.getEmployeeId(), d.getDate())).collect(Collectors.toList());
 
 		// check error truoc khi tinh toan
-		Map<Integer, List<DPItemValue>> resultError = errorCheckBeforeCalculation(dataParent.getItemValues(), querys, mapSidDateEdit);
+		Map<Integer, List<DPItemValue>> resultError = errorCheckBeforeCalculation(dataParent.getItemValues(), querys, mapSidDateEdit, editedDtos);
 		FlexShortageRCDto flexShortage = null;
 		if (resultError.values().stream().filter(z -> z.size() > 0).collect(Collectors.toList()).isEmpty()) {
 			// tinh toan daily result
@@ -184,16 +184,22 @@ public class DailyCalculationCommandFacade {
 	/**
 	 * 計算前エラーチェック
 	 */
-	private Map<Integer, List<DPItemValue>> errorCheckBeforeCalculation(List<DPItemValue> editedItems, List<DailyModifyQuery> querys, Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDateEdit) {
+	private Map<Integer, List<DPItemValue>> errorCheckBeforeCalculation(List<DPItemValue> editedItems, List<DailyModifyQuery> querys, Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDateEdit, List<DailyRecordDto> editedDtos) {
 		Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
-		Pair<List<DailyRecordDto>, List<DailyRecordDto>> mergeDto = toDto(querys);
-		List<DailyRecordDto> dtoOlds = mergeDto.getLeft();
+//		Pair<List<DailyRecordDto>, List<DailyRecordDto>> mergeDto = toDto(querys);
+//		List<DailyRecordDto> dtoOlds = mergeDto.getLeft();
 		// map to list result -> check error;
-		List<DailyModifyResult> resultOlds = dtoOlds.stream()
+//		List<DailyModifyResult> resultOlds = dtoOlds.stream()
+//				.map(c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c))
+//						.workingDate(c.workingDate()).employeeId(c.employeeId()).completed())
+//				.collect(Collectors.toList());
+		
+		List<DailyModifyResult> resultNews = editedDtos.stream()
 				.map(c -> DailyModifyResult.builder().items(AttendanceItemUtil.toItemValues(c))
 						.workingDate(c.workingDate()).employeeId(c.employeeId()).completed())
 				.collect(Collectors.toList());
-		Map<Pair<String, GeneralDate>, List<DailyModifyResult>> mapSidDateOrigin = resultOlds.stream()
+		
+		Map<Pair<String, GeneralDate>, List<DailyModifyResult>> mapSidDateOrigin = resultNews.stream()
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 		List<DPItemValue> itemErrors = new ArrayList<>();
 		List<DPItemValue> itemInputErors = new ArrayList<>();
@@ -319,32 +325,32 @@ public class DailyCalculationCommandFacade {
 		return t -> seen.add(keyExtractor.apply(t));
 	}
 
-	private Pair<List<DailyRecordDto>, List<DailyRecordDto>> toDto(List<DailyModifyQuery> query) {
-		List<DailyRecordDto> dtoNews, dtoOlds = new ArrayList<>();
-		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
-				.findAll(AppContexts.user().companyId()).stream()
-				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
-		dtoOlds = finder.find(query.stream()
-				.collect(Collectors.groupingBy(c -> c.getEmployeeId(), Collectors.collectingAndThen(Collectors.toList(),
-						c -> c.stream().map(q -> q.getBaseDate()).collect(Collectors.toList())))));
-		dtoNews = dtoOlds.stream().map(o -> {
-
-			List<ItemValue> itemValues = query.stream()
-					.filter(q -> q.getBaseDate().equals(o.workingDate()) && q.getEmployeeId().equals(o.employeeId()))
-					.findFirst().get().getItemValues();
-			DailyRecordDto dtoClone = o.clone();
-			AttendanceItemUtil.fromItemValues(dtoClone, itemValues);
-			dtoClone.getOptionalItem().ifPresent(optional -> {
-				optional.correctItems(optionalMaster);
-			});
-			dtoClone.getTimeLeaving().ifPresent(dto -> {
-				if (dto.getWorkAndLeave() != null)
-					dto.getWorkAndLeave().removeIf(tl -> tl.getWorking() == null && tl.getLeave() == null);
-			});
-			return dtoClone;
-		}).collect(Collectors.toList());
-		return Pair.of(dtoOlds, dtoNews);
-	}
+//	private Pair<List<DailyRecordDto>, List<DailyRecordDto>> toDto(List<DailyModifyQuery> query) {
+//		List<DailyRecordDto> dtoNews, dtoOlds = new ArrayList<>();
+//		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
+//				.findAll(AppContexts.user().companyId()).stream()
+//				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
+//		dtoOlds = finder.find(query.stream()
+//				.collect(Collectors.groupingBy(c -> c.getEmployeeId(), Collectors.collectingAndThen(Collectors.toList(),
+//						c -> c.stream().map(q -> q.getBaseDate()).collect(Collectors.toList())))));
+//		dtoNews = dtoOlds.stream().map(o -> {
+//
+//			List<ItemValue> itemValues = query.stream()
+//					.filter(q -> q.getBaseDate().equals(o.workingDate()) && q.getEmployeeId().equals(o.employeeId()))
+//					.findFirst().get().getItemValues();
+//			DailyRecordDto dtoClone = o.clone();
+//			AttendanceItemUtil.fromItemValues(dtoClone, itemValues);
+//			dtoClone.getOptionalItem().ifPresent(optional -> {
+//				optional.correctItems(optionalMaster);
+//			});
+//			dtoClone.getTimeLeaving().ifPresent(dto -> {
+//				if (dto.getWorkAndLeave() != null)
+//					dto.getWorkAndLeave().removeIf(tl -> tl.getWorking() == null && tl.getLeave() == null);
+//			});
+//			return dtoClone;
+//		}).collect(Collectors.toList());
+//		return Pair.of(dtoOlds, dtoNews);
+//	}
 
 	private String converTime(int valueType, String value) {
 		int minute = 0;
