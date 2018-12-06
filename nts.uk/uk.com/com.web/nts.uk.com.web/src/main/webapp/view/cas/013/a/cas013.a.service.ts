@@ -10,9 +10,14 @@ module nts.uk.com.view.cas013.a {
                 getRoleGrant: "ctx/sys/auth/grant/roleindividual/getRoleGrant",
                 insertRoleGrant: "ctx/sys/auth/grant/roleindividual/insertRoleGrant",
                 upDateRoleGrant: "ctx/sys/auth/grant/roleindividual/upDateRoleGrant",
-                deleteRoleGrant: "ctx/sys/auth/grant/roleindividual/deleteRoleGrant"
+                deleteRoleGrant: "ctx/sys/auth/grant/roleindividual/deleteRoleGrant",
+                saveAsExcel: "file/at/personrole/saveAsExcel"
             }
             constructor() {}
+            saveAsExcel(languageId: string, rollType: number): JQueryPromise<any> {
+                return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Indivigrant", domainType: "勤務種類の登録", languageId: languageId, reportType: 0});
+            }
+            
             getRoleTypes(): JQueryPromise<any> {
                 return ajax("com", this.paths.getRoleType);
             }
