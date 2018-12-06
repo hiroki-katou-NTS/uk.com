@@ -13,6 +13,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -51,14 +53,15 @@ public class SubscribeRegisImpl implements SubscribeRegisRepository {
 
     private Map<String, Object> dataContent(Object[] object){
         Map<String, Object> data = new HashMap<>();
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
         //employeeCode
         data.put(SubscribeRegisColumn.CMM044_42, object[0].toString());
         //employeeName
         data.put(SubscribeRegisColumn.CMM044_43, object[1].toString());
         //startDate
-        data.put(SubscribeRegisColumn.CMM044_44, object[2] == null ? null : object[2].toString().substring(0,10));
+        data.put(SubscribeRegisColumn.CMM044_44, object[2] == null ? null : df.format(object[2]).toString());
         //endDate
-        data.put(SubscribeRegisColumn.CMM044_45, object[3] == null ? null : object[3].toString().substring(0,10));
+        data.put(SubscribeRegisColumn.CMM044_45, object[3] == null ? null : df.format(object[3]).toString());
         //type
         data.put(SubscribeRegisColumn.CMM044_46, object[4] == null ? null : TextResource.localize("CMM044_16"));
         //personame

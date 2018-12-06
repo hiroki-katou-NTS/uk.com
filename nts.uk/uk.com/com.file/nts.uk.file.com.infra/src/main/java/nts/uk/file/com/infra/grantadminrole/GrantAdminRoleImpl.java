@@ -1,8 +1,5 @@
 package nts.uk.file.com.infra.grantadminrole;
 
-import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.bs.company.dom.company.Company;
-import nts.uk.ctx.bs.company.infra.entity.company.BcmmtCompanyInfor;
 import nts.uk.file.com.app.grantadminrole.GrantAdminRoleColumn;
 import nts.uk.file.com.app.grantadminrole.GrantAdminRoleRepository;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
@@ -11,6 +8,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Stateless
@@ -23,7 +22,6 @@ public class GrantAdminRoleImpl implements GrantAdminRoleRepository {
             "JOIN SACMT_USER u ON g.USER_ID = u.USER_ID " +
             "JOIN BPSMT_PERSON p ON p.PID = u.ASSO_PID WHERE CID = ? AND ROLE_TYPE = ? ORDER BY LOGIN_ID";
 
-    //private static final String GET_COMPANY_BY_CID = "SELECT c FROM BcmmtCompanyInfor c WHERE c.bcmmtCompanyInforPK.companyId = :cid ";
     @Override
     public List<MasterData> getDataExport(String companyId, int roleType) {
 
@@ -41,10 +39,11 @@ public class GrantAdminRoleImpl implements GrantAdminRoleRepository {
 
     private Map<String, Object> dataContent(Object[] object){
         Map<String, Object> data = new HashMap<>();
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
         data.put(GrantAdminRoleColumn.CAS012_43, object[0] == null ? null : object[0].toString());
         data.put(GrantAdminRoleColumn.CAS012_44, object[1] == null ? null : object[1].toString());
-        data.put(GrantAdminRoleColumn.CAS012_45, object[2] == null ? null : object[2].toString().substring(0,10));
-        data.put(GrantAdminRoleColumn.CAS012_46, object[3] == null ? null : object[3].toString().substring(0,10));
+        data.put(GrantAdminRoleColumn.CAS012_45, object[2] == null ? null : df.format(object[2]).toString());
+        data.put(GrantAdminRoleColumn.CAS012_46, object[3] == null ? null : df.format(object[3]).toString());
         return data;
     }
 }

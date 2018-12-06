@@ -27,7 +27,7 @@ public class GrantAdminRoleExportImpl implements MasterListData {
 
     private static final String COMPANY_ID_SYSADMIN = "000000000000-0000";
 
-    private static final String TABLE_ONE = "table one";
+    private static final String TABLE_ONE = "Table_One";
 
     @Override
     public List<MasterData> getMasterDatas(MasterListExportQuery query) {
@@ -39,6 +39,7 @@ public class GrantAdminRoleExportImpl implements MasterListData {
         int roleType = Integer.parseInt(param.get("roleType"));
         String companyName = "";
         String roleTypeName = param.get("roleTypeName");
+
         if(roleType == RoleType.COMPANY_MANAGER.value){
             Optional<Company> company = companyRepository.getCompany(companyId);
             if(company.isPresent()){
@@ -73,7 +74,7 @@ public class GrantAdminRoleExportImpl implements MasterListData {
         String companyId = param.get("companyId");
         int roleType = Integer.parseInt(param.get("roleType"));
 
-        if ( roleType != RoleType.COMPANY_MANAGER.value)
+        if (roleType != RoleType.COMPANY_MANAGER.value)
             companyId = COMPANY_ID_SYSADMIN;
 
         mapTableData.put(TABLE_ONE,grantAdminRoleRepository.getDataExport(companyId,roleType));

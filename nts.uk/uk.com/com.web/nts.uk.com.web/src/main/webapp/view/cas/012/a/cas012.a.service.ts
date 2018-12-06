@@ -37,7 +37,7 @@ module nts.uk.com.view.cas012.a.service {
             roleTypeName: roleTypeName,
             companyId: companyId,
         };
-        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "GrantAdminRole", domainType: "代行承認", languageId: 'ja', reportType: 0,data: data});
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "GrantAdminRole", domainType: "マスタリスト_ロールの付与（システム管理者）", languageId: 'ja', reportType: 0,data: data});
     }
 
 }

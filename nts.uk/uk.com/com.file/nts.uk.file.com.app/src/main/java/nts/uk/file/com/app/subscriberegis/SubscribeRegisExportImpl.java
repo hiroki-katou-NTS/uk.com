@@ -30,7 +30,7 @@ public class SubscribeRegisExportImpl implements MasterListData {
         List<LinkedHashMap<String, String>> listEmployee = (List<LinkedHashMap<String, String>>) query.getData();
 
         if(CollectionUtil.isEmpty(listEmployee)){
-            return new ArrayList<>();
+            return datas;
         }else{
             List<String> employeeIds = new ArrayList<String>();
 
