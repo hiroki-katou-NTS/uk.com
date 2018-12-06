@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.core.dom.wageprovision.statementlayout;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaCode;
@@ -13,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 * 支給項目明細設定
 */
 @Getter
+@Setter
 public class PaymentItemDetailSet extends AggregateRoot {
     
     /**

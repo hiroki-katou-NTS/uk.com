@@ -1,32 +1,43 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.wagetable;
 
+import java.util.Arrays;
+import java.util.Optional;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.ItemNameCode;
 
-import java.util.Optional;
-
+/**
+ * 要素の属性
+ */
 @Getter
+@AllArgsConstructor
 public class ElementAttribute extends DomainObject {
-    /**
-     * 一次元要素
-     */
-    private Optional<ElementType> fixedElement;
 
-    /**
-     * 二次元要素
-     */
-    private Optional<ItemNameCode> optionalAdditionalElement;
+	/**
+	 * マスタ数値区分
+	 */
+	private Optional<MasterNumericAtr> masterNumericAtr;
 
-    /**
-     * 三次元要素
-     */
-    private Optional<MasterNumericInfomation> masterNumericClassification;
+	/**
+	 * 固定の要素
+	 */
+	private Optional<ElementType> fixedElement;
 
-    public ElementAttribute(Integer fixedElement, String optionalAdditionalElement, Integer masterNumericClassification) {
-        this.fixedElement = Optional.ofNullable(fixedElement == null? null : EnumAdaptor.valueOf(fixedElement,ElementType.class));
-        this.optionalAdditionalElement = Optional.ofNullable(optionalAdditionalElement == null? null :new ItemNameCode(optionalAdditionalElement));
-        this.masterNumericClassification = Optional.ofNullable(masterNumericClassification == null? null : EnumAdaptor.valueOf(masterNumericClassification,MasterNumericInfomation.class));
-    }
+	/**
+	 * 任意追加の要素
+	 */
+	private Optional<ItemNameCode> optionalAdditionalElement;
+
+	public ElementAttribute(Integer masterNumericInformation, Integer fixedElement, String optionalAdditionalElement) {
+		this.masterNumericAtr = masterNumericInformation == null ? Optional.empty()
+				: Optional.of(EnumAdaptor.valueOf(masterNumericInformation, MasterNumericAtr.class));
+		this.fixedElement = fixedElement == null ? Optional.empty()
+				: Arrays.stream(ElementType.values()).filter(item -> item.value == fixedElement).findFirst();
+		this.optionalAdditionalElement = optionalAdditionalElement == null ? Optional.empty()
+				: Optional.of(new ItemNameCode(optionalAdditionalElement));
+
+	}
+
 }

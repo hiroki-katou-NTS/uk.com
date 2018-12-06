@@ -37,14 +37,10 @@ public class QpbmtLineByLineSet extends UkJpaEntity implements Serializable {
         return lineByLineSetPk;
     }
 
-    public Integer getLine() {
-        return lineByLineSetPk.lineNumber;
-    }
-
     @JoinColumns({
             @JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = true, updatable = true),
             @JoinColumn(name="CTG_ATR",referencedColumnName = "CTG_ATR", insertable = true, updatable = true),
-            @JoinColumn(name="CTG_ATR",referencedColumnName = "CTG_ATR", insertable = true, updatable = true)})
+            @JoinColumn(name="LINE_NUM",referencedColumnName = "LINE_NUM", insertable = true, updatable = true)})
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     public List<QpbmtSettingByItem> settingByItems;
 

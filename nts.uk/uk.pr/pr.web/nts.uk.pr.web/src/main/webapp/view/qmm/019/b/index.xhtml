@@ -10,7 +10,7 @@
         <script type='text/javascript'>
             var dialogSize = {
                 width: 1050,
-                height: 620
+                height: 580
             };
         </script>
         <com:scriptfile set="IGNITE"/>
@@ -45,9 +45,15 @@
                                                             required: true,
                                                             dateFormat: 'yearmonth'}"></div>
                 <!-- 開始年月和暦 -->
-                <label id="B1_7" data-bind="text: yearMonthJapan"></label>
+                <div id="B1_7_wrap">
+                    <com:ko-if bind="((yearMonthJapan() != null) &amp;&amp; (yearMonthJapan() != ''))">
+                        <span class="pull-right">)</span>
+                        <label class="pull-right" id="B1_7" data-bind="text: yearMonthJapan"></label>
+                        <span class="pull-right">(</span>
+                    </com:ko-if>
+                </div>
                 <!-- 終了年月 -->
-                <label id="B1_8"> #{i18n.getText('QMM019_44')}</label>
+                <label id="B1_8"> ~ #{i18n.getText('QMM019_44')}</label>
             </div>
             <div class="valign-center control-group">
                 <!-- レイアウトの引き継ぎ -->
@@ -70,7 +76,15 @@
                 <div class="space"></div>
                 <div class="grid-area">
                     <!-- レイアウト一覧 -->
-                    <table id="grid"></table>
+                    <table id="grid" data-bind="ntsGridList: {
+                        width: 830,
+                        rows: 7,
+                        dataSource: layoutPatternData,
+                        primaryKey: 'id',
+                        columns: layoutPatternColumns,
+                        multiple: false,
+                        value: layoutPatternIdSelected
+                    }"></table>
                 </div>
             </div>
         </div>
