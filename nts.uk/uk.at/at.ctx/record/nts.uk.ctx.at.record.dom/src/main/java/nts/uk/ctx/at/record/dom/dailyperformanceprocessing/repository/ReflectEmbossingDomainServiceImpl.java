@@ -3160,7 +3160,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				}
 
 			} else {
-				if (timeDestination != null && (attendanceTime.v().intValue() > timeDestination.v().intValue())) {
+				if (timeDestination == null || (timeDestination != null && (attendanceTime.v().intValue() > timeDestination.v().intValue()))) {
 					return true;
 				} else {
 					return false;
