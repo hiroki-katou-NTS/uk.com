@@ -82,7 +82,8 @@ public class ViewContext extends UIComponentBase {
 			}
 		});
 		
-		if(queryString.length() > 0){
+		// ngao, merge thi lay code cua kiban
+		if(queryString != null && queryString.length() > 0){
 			builder.append(", ");
 		}
 		
