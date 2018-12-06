@@ -12,12 +12,12 @@ import javax.persistence.Query;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
-import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
+//import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogRepository;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtExecutionTaskLog;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLog;
-import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogManage;
-import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogPK;
+//import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogManage;
+//import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogPK;
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
@@ -133,6 +133,7 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 	public Optional<ProcessExecutionLog> getLogReadUncommit(String companyId, String execItemCd){
 		Query query = this.getEntityManager().createNativeQuery(SELECT_BY_KEY_NATIVE, KfnmtProcessExecutionLog.class)
 				.setParameter(1, companyId).setParameter(2, execItemCd);
+		@SuppressWarnings("unchecked")
 		List<KfnmtProcessExecutionLog> resultList = query.getResultList();
 		List<ProcessExecutionLog> lstProcessExecutionLog = new ArrayList<ProcessExecutionLog>();
 		resultList.forEach(x->{

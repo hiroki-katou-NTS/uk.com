@@ -35,7 +35,7 @@ public class HolidayShipmentScreenCFinder {
 
 	public HolidayShipmentDto startPage(String sid, GeneralDate baseDate, int uiType) {
 		String companyID = AppContexts.user().companyId();
-		String employeeID = AppContexts.user().employeeId();
+		String employeeID = sid != null ? sid : AppContexts.user().employeeId();
 		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 		AppCommonSettingOutput appCommonSettingOutput = aFinder.getAppCommonSet(companyID, employeeID, baseDate);
 		// アルゴリズム「起動前共通処理（新規）」を実行する

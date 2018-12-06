@@ -187,6 +187,20 @@ public class DailyWork extends DomainObject { // 1日の勤務
 		}
 		return false;
 	}
+	
+	/**
+	 * 1日振休か判定する
+	 * @return　1日振休である
+	 */
+	public boolean isPause() {
+		if(this.getWorkTypeUnit().isOneDay()) {
+			return this.getOneDay().isPause();
+		}
+		else if(this.getWorkTypeUnit().isMonringAndAfternoon()) {
+			return this.getMorning().isPause() && this.getAfternoon().isPause();
+		}
+		return false;
+	}
 
 	/**
 	 * 受け取った勤務種類の分類に一致しているか判定する

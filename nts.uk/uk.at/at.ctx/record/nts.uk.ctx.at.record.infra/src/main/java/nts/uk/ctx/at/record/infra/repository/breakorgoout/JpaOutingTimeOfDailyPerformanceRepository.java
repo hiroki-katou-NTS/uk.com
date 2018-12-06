@@ -40,7 +40,7 @@ import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		implements OutingTimeOfDailyPerformanceRepository {
 
-	private static final String REMOVE_BY_EMPLOYEE;
+//	private static final String REMOVE_BY_EMPLOYEE;
 
 	private static final String DEL_BY_LIST_KEY;
 
@@ -54,11 +54,11 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 
 	static {
 		StringBuilder builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDaiOutingTime a ");
-		builderString.append("WHERE a.krcdtDaiOutingTimePK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtDaiOutingTimePK.ymd = :ymd ");
-		REMOVE_BY_EMPLOYEE = builderString.toString();
+//		builderString.append("DELETE ");
+//		builderString.append("FROM KrcdtDaiOutingTime a ");
+//		builderString.append("WHERE a.krcdtDaiOutingTimePK.employeeId = :employeeId ");
+//		builderString.append("AND a.krcdtDaiOutingTimePK.ymd = :ymd ");
+//		REMOVE_BY_EMPLOYEE = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");

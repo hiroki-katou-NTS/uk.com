@@ -1,7 +1,6 @@
 package nts.uk.ctx.exio.app.find.exo.outputitembatchsetting;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;

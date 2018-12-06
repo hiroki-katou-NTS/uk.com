@@ -184,7 +184,10 @@ module nts.uk.pr.view.ccg007.d {
                                             nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
                                         });
                                 } else {
-                                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
+                                    nts.uk.characteristics.save("form3LoginInfo", { companyCode: _.escape(self.selectedCompanyCode()) })
+                                        .done(function() {
+                                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
+                                        });
                                 }
                             });
                         }

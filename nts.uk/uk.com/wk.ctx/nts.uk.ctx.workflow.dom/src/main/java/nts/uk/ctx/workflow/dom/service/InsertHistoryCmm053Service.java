@@ -13,6 +13,7 @@ public interface InsertHistoryCmm053Service {
 
 	/**
 	 * Insert History By Manager Setting
+	 * 02.履歴追加を登録する
 	 * @param companyId
 	 * @param historyId
 	 * @param employeeId

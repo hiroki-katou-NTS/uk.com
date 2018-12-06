@@ -27,7 +27,6 @@ import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
-import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.closure.FindClosureDateService;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ActualLockDto;
@@ -51,8 +50,8 @@ public class DPLock {
 	@Inject
 	private DailyPerformanceScreenRepo repo;
 
-	@Inject
-	private ShClosurePub shClosurePub;
+//	@Inject
+//	private ShClosurePub shClosurePub;
 	
 	@Inject
 	private ClosureService closureService;

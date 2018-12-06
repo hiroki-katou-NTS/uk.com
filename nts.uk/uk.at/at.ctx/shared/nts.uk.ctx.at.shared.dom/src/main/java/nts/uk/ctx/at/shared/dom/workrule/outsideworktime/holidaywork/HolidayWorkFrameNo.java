@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork;
 
-import java.math.BigDecimal;
-
-import nts.arc.primitive.DecimalPrimitiveValue;
+//import java.math.BigDecimal;
+//
+//import nts.arc.primitive.DecimalPrimitiveValue;
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.DecimalMaxValue;
 import nts.arc.primitive.constraint.DecimalMinValue;

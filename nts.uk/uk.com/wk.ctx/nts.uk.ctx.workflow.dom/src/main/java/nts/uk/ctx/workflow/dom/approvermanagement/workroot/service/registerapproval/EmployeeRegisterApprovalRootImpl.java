@@ -110,7 +110,7 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 			}
 		}
 		List<WorkplaceImport> lstWpInfor = new ArrayList<>();
-		for (Map.Entry m : appOutput.entrySet()) {
+		for (Map.Entry<String, WpApproverAsAppOutput> m : appOutput.entrySet()) {
 			WpApproverAsAppOutput wp = (WpApproverAsAppOutput) m.getValue();
 			lstWpInfor.add(wp.getWpInfor());
 		}

@@ -18,7 +18,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
-import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
@@ -69,8 +68,8 @@ public class DailyPerformanceErrorCodeProcessor {
 	@Inject
 	private DailyPerformanceCorrectionProcessor dailyProcessor;
 	
-	@Inject
-	private ApprovalStatusAdapter approvalStatusAdapter;
+//	@Inject
+//	private ApprovalStatusAdapter approvalStatusAdapter;
 	
 	@Inject
 	private DPLock findLock;

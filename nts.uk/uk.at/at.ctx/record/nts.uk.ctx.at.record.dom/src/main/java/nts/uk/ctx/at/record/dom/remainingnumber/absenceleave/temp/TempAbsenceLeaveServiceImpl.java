@@ -39,7 +39,7 @@ public class TempAbsenceLeaveServiceImpl implements TempAbsenceLeaveService {
 		
 		// 月初の振休残数を取得　→　繰越数
 		Double carryforwardDays = this.absRecMngQuery.useDays(employeeId);
-		if (carryforwardDays == null) carryforwardDays = 0.0;
+//		if (carryforwardDays == null) carryforwardDays = 0.0;
 		
 		// 暫定データの作成
 		this.interimAbsRecService.create(companyId, employeeId, period, Optional.empty());
@@ -56,8 +56,8 @@ public class TempAbsenceLeaveServiceImpl implements TempAbsenceLeaveService {
 			val interimRemAggrOutput = interimRemAggrOutputs.get(0);
 			occurDays = interimRemAggrOutput.getMonthOccurrence();
 			usedDays = interimRemAggrOutput.getMonthUse();
-			if (occurDays == null) occurDays = 0.0;
-			if (usedDays == null) usedDays = 0.0;
+//			if (occurDays == null) occurDays = 0.0;
+//			if (usedDays == null) usedDays = 0.0;
 			remainDays = carryforwardDays + occurDays - usedDays;
 		}
 		// 暫定振休・振出管理データを削除

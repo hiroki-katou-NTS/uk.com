@@ -230,11 +230,12 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             employeeSearch.baseDate = self.standardDate();
             let lstWkp1 = self.treeGrid.selectedWorkplaceId();
             let lstA = [];
-            for(let i = 0; i < lstWkp1.length; i += 10){
-                if(i + 10 > lstWkp1.length){
+            let UNIT = 100;
+            for(let i = 0; i < lstWkp1.length; i += UNIT){
+                if(i + UNIT > lstWkp1.length){
                     employeeSearch.workplaceIds = lstWkp1.slice(i, lstWkp1.length);
                 }else{
-                    employeeSearch.workplaceIds = lstWkp1.slice(i, i + 10);
+                    employeeSearch.workplaceIds = lstWkp1.slice(i, i + UNIT);
                 }
                 service.searchModeEmployee(employeeSearch).done(function(data: any){
                     let lstTmp = self.toUnitModelList(data);
@@ -242,7 +243,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                         lstA.push(new shrVm.ApproverDtoK(item.id, item.code, item.name, item.approvalAtr,0))
                     });
                     
-                    if(i + 10 > lstWkp1.length) {
+                    if(i + UNIT > lstWkp1.length) {
                         dfd.resolve(lstA);
                     }
                     

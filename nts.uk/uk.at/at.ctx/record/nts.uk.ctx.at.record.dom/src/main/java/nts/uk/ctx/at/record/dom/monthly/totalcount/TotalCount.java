@@ -72,6 +72,6 @@ public class TotalCount implements Cloneable {
 	public void sum(TotalCount target){
 
 		this.count = this.count.addDays(target.count.v());
-		this.time = this.time.addMinutes(this.time.v());
+		this.time = this.time.addMinutes(target.time.v());
 	}
 }

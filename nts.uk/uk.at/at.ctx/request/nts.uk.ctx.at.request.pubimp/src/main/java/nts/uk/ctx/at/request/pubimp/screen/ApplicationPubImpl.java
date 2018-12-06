@@ -27,7 +27,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceA
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppDispNameRepository;
+//import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.DeadlineCriteria;
@@ -41,8 +41,8 @@ public class ApplicationPubImpl implements ApplicationPub {
 	private ApplicationRepository_New applicationRepository_New;
 	@Inject
 	private AppDispNameRepository appDispNameRepository;
-	@Inject
-	private HdAppDispNameRepository hdAppDispNameRepository;
+//	@Inject
+//	private HdAppDispNameRepository hdAppDispNameRepository;
 	@Inject
 	private ApplicationDeadlineRepository appDeadlineRepository;
 	@Inject
