@@ -50,6 +50,7 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingReposito
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
@@ -373,77 +374,65 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 			BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut, WorkStyle checkWorkDay) {
 
 		Optional<FlexWorkSetting> fws = this.flexWorkSettingRepo.find(companyId, workTimeCode);
-		if (!fws.isPresent()) {
-			return false;
-		}
-		if (weekdayHolidayClassification == 0) {
-			fws.get().getLstHalfDayWorkTimezone().stream().forEach(c -> {
-				if (c.getAmpmAtr() == AmPmAtr.ONE_DAY
-						|| (c.getAmpmAtr() == AmPmAtr.AM && checkWorkDay == WorkStyle.MORNING_WORK)
-						|| (c.getAmpmAtr() == AmPmAtr.PM && checkWorkDay == WorkStyle.AFTERNOON_WORK)) {
-					breakTimeZoneSettingOutPut.getLstTimezone()
-							.addAll(c.getRestTimezone().getFixedRestTimezone().getTimezones());
+		FlexWorkSetting flexWorkSetting = fws.get();
+		List<DeductionTime> lstTimezone = null;
+		boolean fixRestTime = true;
+		if ("平日".equals(weekdayHolidayClassification)) {
+			List<FlexHalfDayWorkTime> lstHalfDayWorkTimezone = flexWorkSetting.getLstHalfDayWorkTimezone();
+
+			switch (checkWorkDay.value) {
+			case 3:// 1日出勤系
+				for (FlexHalfDayWorkTime fixHalfDayWorkTimezone : lstHalfDayWorkTimezone) {
+					AmPmAtr dayAtr = fixHalfDayWorkTimezone.getAmpmAtr();
+					// １日
+					if (dayAtr.value == 0) {
+						lstTimezone = fixHalfDayWorkTimezone.getRestTimezone().getFixedRestTimezone().getTimezones();
+						fixRestTime = fixHalfDayWorkTimezone.getRestTimezone().isFixRestTime();
+					}
 				}
-			});
-		}
-		// Optional<FlexWorkSetting> FlexWorkSettingOptional =
-		// this.flexWorkSettingRepo.find(companyId, workTimeCode);
-		// FlexWorkSetting flexWorkSetting = FlexWorkSettingOptional.get();
-		// List<DeductionTime> lstTimezone = null;
-		// boolean fixRestTime = true;
-		// if (weekdayHolidayClassification == 0) {
-		// List<FlexHalfDayWorkTime> lstHalfDayWorkTimezone =
-		// flexWorkSetting.getLstHalfDayWorkTimezone();
-		//
-		// switch (checkWorkDay.value) {
-		// case 3:// 1日出勤系
-		// for (FlexHalfDayWorkTime fixHalfDayWorkTimezone :
-		// lstHalfDayWorkTimezone) {
-		// AmPmAtr dayAtr = fixHalfDayWorkTimezone.getAmpmAtr();
-		// // １日
-		// if (dayAtr.value == 0) {
-		// lstTimezone =
-		// fixHalfDayWorkTimezone.getRestTimezone().getFixedRestTimezone().getTimezones();
-		// fixRestTime =
-		// fixHalfDayWorkTimezone.getRestTimezone().isFixRestTime();
-		// }
-		// }
-		// break;
-		// case 1: // 午前出勤系
-		// for (FlexHalfDayWorkTime fixHalfDayWorkTimezone :
-		// lstHalfDayWorkTimezone) {
-		// AmPmAtr dayAtr = fixHalfDayWorkTimezone.getAmpmAtr();
-		// // 午前
-		// if (dayAtr.value == 1) {
-		// lstTimezone =
-		// fixHalfDayWorkTimezone.getRestTimezone().getFixedRestTimezone().getTimezones();
-		// fixRestTime =
-		// fixHalfDayWorkTimezone.getRestTimezone().isFixRestTime();
-		// }
-		// }
-		// break;
-		// case 2: // 午後出勤系
-		// for (FlexHalfDayWorkTime fixHalfDayWorkTimezone :
-		// lstHalfDayWorkTimezone) {
-		// AmPmAtr dayAtr = fixHalfDayWorkTimezone.getAmpmAtr();
-		// // 午後
-		// if (dayAtr.value == 2) {
-		// lstTimezone =
-		// fixHalfDayWorkTimezone.getRestTimezone().getFixedRestTimezone().getTimezones();
-		// fixRestTime =
-		// fixHalfDayWorkTimezone.getRestTimezone().isFixRestTime();
-		// }
-		// }
-		//
+				break;
+			case 1: // 午前出勤系
+				for (FlexHalfDayWorkTime fixHalfDayWorkTimezone : lstHalfDayWorkTimezone) {
+					AmPmAtr dayAtr = fixHalfDayWorkTimezone.getAmpmAtr();
+					// 午前
+					if (dayAtr.value == 1) {
+						lstTimezone = fixHalfDayWorkTimezone.getRestTimezone().getFixedRestTimezone().getTimezones();
+						fixRestTime = fixHalfDayWorkTimezone.getRestTimezone().isFixRestTime();
+					}
+				}
+				break;
+			case 2: // 午後出勤系
+				for (FlexHalfDayWorkTime fixHalfDayWorkTimezone : lstHalfDayWorkTimezone) {
+					AmPmAtr dayAtr = fixHalfDayWorkTimezone.getAmpmAtr();
+					// 午後
+					if (dayAtr.value == 2) {
+						lstTimezone = fixHalfDayWorkTimezone.getRestTimezone().getFixedRestTimezone().getTimezones();
+						fixRestTime = fixHalfDayWorkTimezone.getRestTimezone().isFixRestTime();
+					}
+				}
+				break;
+			default:
+				for (FlexHalfDayWorkTime fixHalfDayWorkTimezone : lstHalfDayWorkTimezone) {
+					AmPmAtr dayAtr = fixHalfDayWorkTimezone.getAmpmAtr();
+					// １日
+					if (dayAtr.value == 0) {
+						lstTimezone = fixHalfDayWorkTimezone.getRestTimezone().getFixedRestTimezone().getTimezones();
+						fixRestTime = fixHalfDayWorkTimezone.getRestTimezone().isFixRestTime();
 
-		else {
-			if (fws.get().getOffdayWorkTime().getRestTimezone().isFixRestTime()) {
-				breakTimeZoneSettingOutPut.getLstTimezone()
-						.addAll(fws.get().getOffdayWorkTime().getRestTimezone().getFixedRestTimezone().getTimezones());
+					}
+				}
+				break;
 			}
-		}
 
-		return !breakTimeZoneSettingOutPut.getLstTimezone().isEmpty();
+		} else {
+			fixRestTime = flexWorkSetting.getOffdayWorkTime().getRestTimezone().isFixRestTime();
+			lstTimezone = flexWorkSetting.getOffdayWorkTime().getRestTimezone().getFixedRestTimezone().getTimezones();
+		}
+		if (fixRestTime) {
+			breakTimeZoneSettingOutPut.setLstTimezone(lstTimezone);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
