@@ -401,6 +401,9 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             }
             if (errors.hasError() === false && self.isValid()) {
                 block.invisible();
+                for(let i = 0;i<currentStandardOutputItem.categoryItems().length;i++){
+                    currentStandardOutputItem.categoryItems()[i].displayOrder = (i+1);
+                }
                 currentStandardOutputItem.isNewMode = self.isNewMode();
                 currentStandardOutputItem.dispOrder = self.listStandardOutputItem().length > 0 ? self.listStandardOutputItem().length + 1 : 1;
                 // register
