@@ -197,6 +197,9 @@ module nts.uk.at.view.kwr001.a {
                                 employeeSearchs.push(employee);    
                             }
                         });
+                        self.startDatepicker(data.periodStart);
+                        self.endDatepicker(data.periodEnd);
+                        self.datepickerValue.valueHasMutated;
 //                        self.ccg001ComponentOption.baseDate = data.baseDate;
                         self.employeeList(employeeSearchs);
                     }
