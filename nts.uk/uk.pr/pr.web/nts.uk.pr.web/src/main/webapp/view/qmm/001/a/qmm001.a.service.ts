@@ -2,13 +2,13 @@ module nts.uk.pr.view.qmm001.a.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     let paths : any = {
-        getAllSalGenParaIdentification: "shared/payrollgeneralpurposeparameters/getAllSalGenParaIdentification",
-        getSalGenParamOptions: "shared/payrollgeneralpurposeparameters/getSalGenParamOptions/{0}",
-        getSalGenParaDateHistory: "shared/payrollgeneralpurposeparameters/getSalGenParaDateHistory/{0}",
-        getSalGenParaYearMonthHistory: "shared/payrollgeneralpurposeparameters/getSalGenParaYearMonthHistory/{0}",
-        getSalGenParaValue: "shared/payrollgeneralpurposeparameters/getSalGenParaValue/{0}",
-        addSelectionProcess: "shared/payrollgeneralpurposeparameters/addSelectionProcess",
-        getListHistory: "shared/payrollgeneralpurposeparameters/getListHistory"
+        getAllSalGenParaIdentification: "shared/salgenpurposeparam/getAllSalGenParaIdentification",
+        getSalGenParamOptions: "shared/salgenpurposeparam/getSalGenParamOptions/{0}",
+        getSalGenParaDateHistory: "shared/salgenpurposeparam/getSalGenParaDateHistory/{0}",
+        getSalGenParaYearMonthHistory: "shared/salgenpurposeparam/getSalGenParaYearMonthHistory/{0}",
+        getSalGenParaValue: "shared/salgenpurposeparam/getSalGenParaValue/{0}",
+        addSelectionProcess: "shared/salgenpurposeparam/addSelectionProcess",
+        getListHistory: "shared/salgenpurposeparam/getListHistory"
     };
 
     export function getAllSalGenParaIdentification(): JQueryPromise<any> {

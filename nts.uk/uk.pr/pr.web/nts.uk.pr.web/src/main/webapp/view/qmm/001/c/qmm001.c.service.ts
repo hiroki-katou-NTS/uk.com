@@ -5,8 +5,8 @@ module nts.uk.pr.view.qmm001.c {
          * define path to service
          */
         var path: any = {
-            updateHistoryDate: "shared/payrollgeneralpurposeparameters/UpdateHistoryDate",
-            updateHistoryYearMonth: "shared/payrollgeneralpurposeparameters/UpdateHistoryYearMonth"
+            updateHistoryDate: "shared/salgenpurposeparam/UpdateHistoryDate",
+            updateHistoryYearMonth: "shared/salgenpurposeparam/UpdateHistoryYearMonth"
         };
 
         export function updateHistoryDate(data :any): JQueryPromise<any> {
