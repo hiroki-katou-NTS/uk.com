@@ -439,8 +439,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 			fileName = fileName + CSV;
 		}
 		
-		for(OutputItemCustom outputItemCustom : outputItemCustomList) {
-			header.add(outputItemCustom.getStandardOutputItem().getOutputItemName().v());
+		for (OutputItemCustom outputItemCustom : outputItemCustomList) {
+			String outputName = stringFormat.character + outputItemCustom.getStandardOutputItem().getOutputItemName().v() + stringFormat.character;
+			if (stringFormat == StringFormat.SINGLE_QUOTATION) {
+				outputName = stringFormat.character + outputName;
+			}
+			header.add(outputName);
 		}
 
 		Map<String, String> sqlAndParam;
