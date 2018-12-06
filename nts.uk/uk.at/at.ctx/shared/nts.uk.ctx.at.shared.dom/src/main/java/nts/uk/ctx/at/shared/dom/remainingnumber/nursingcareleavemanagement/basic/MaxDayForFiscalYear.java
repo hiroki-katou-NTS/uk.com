@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.basi
 
 import nts.arc.primitive.HalfIntegerPrimitiveValue;
 import nts.arc.primitive.constraint.HalfIntegerRange;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
+//import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 
 @HalfIntegerRange(min = 0, max = 999.5)
 public class MaxDayForFiscalYear extends HalfIntegerPrimitiveValue<MaxDayForFiscalYear> {

@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
-import java.util.ArrayList;
-import java.util.Collections;
+//import java.util.ArrayList;
+//import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -57,6 +57,7 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 	 * @param empCalAndSumExecLogID 就業計算と集計実行ログID
 	 * @param executionLog 実行ログ
 	 */
+	@SuppressWarnings("rawtypes")
 	@Override
 	public ProcessState manager(AsyncCommandHandlerContext asyncContext, List<String> employeeIds,
 			DatePeriod datePeriod, ExecutionAttr executionAttr, String empCalAndSumExecLogID,

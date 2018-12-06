@@ -1,22 +1,22 @@
 package nts.uk.ctx.sys.assist.dom.mastercopy.handler;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringJoiner;
+import java.util.UUID;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
 import nts.uk.shr.com.context.AppContexts;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringJoiner;
-import java.util.UUID;
 
 /**
  * The Interface CopyHandler.
@@ -38,7 +38,7 @@ public class DataCopyHandler {
     /**
      * Logger
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(DataCopyHandler.class);
+//    private static final Logger LOGGER = LoggerFactory.getLogger(DataCopyHandler.class);
 
     /**
      * The entity manager.

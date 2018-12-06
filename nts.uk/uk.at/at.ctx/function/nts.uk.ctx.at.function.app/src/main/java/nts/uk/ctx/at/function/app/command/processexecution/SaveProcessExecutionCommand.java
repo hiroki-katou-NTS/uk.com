@@ -1,8 +1,7 @@
 package nts.uk.ctx.at.function.app.command.processexecution;
 
 import java.util.List;
-import java.util.Optional;
-
+//import java.util.Optional;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
@@ -97,5 +96,14 @@ public class SaveProcessExecutionCommand {
 	private Boolean mailPrincipal;
 	
 	private Boolean mailAdministrator;
+	
+	/* 指定年 */
+	private Integer designatedYear;
+	
+	/* 指定開始月日 */
+	private Integer startMonthDay;
+	
+	/* 指定終了月日*/
+	private Integer endMonthDay;
 
 }

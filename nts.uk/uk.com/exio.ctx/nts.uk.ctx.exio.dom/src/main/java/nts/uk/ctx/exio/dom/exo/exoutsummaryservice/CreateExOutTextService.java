@@ -436,12 +436,17 @@ public class CreateExOutTextService extends ExportService<Object> {
 			stringFormat = stdOutputCondSet.getStringFormat();
 		}
 		
-		if(delimiter == Delimiter.COMMA) {
-			fileName = fileName + CSV;
-		}
+		// fixbug 102767
+		// if(delimiter == Delimiter.COMMA) {
+		fileName = fileName + CSV;
+		// }
 		
-		for(OutputItemCustom outputItemCustom : outputItemCustomList) {
-			header.add(outputItemCustom.getStandardOutputItem().getOutputItemName().v());
+		for (OutputItemCustom outputItemCustom : outputItemCustomList) {
+			String outputName = stringFormat.character + outputItemCustom.getStandardOutputItem().getOutputItemName().v() + stringFormat.character;
+			if (stringFormat == StringFormat.SINGLE_QUOTATION) {
+				outputName = stringFormat.character + outputName;
+			}
+			header.add(outputName);
 		}
 
 		Map<String, String> sqlAndParam;
@@ -680,14 +685,14 @@ public class CreateExOutTextService extends ExportService<Object> {
 								+ "'";
 						break;
 					case TIME:
-						value = outCndDetailItem.getSearchClock().map(i -> i.v().toString()).orElse("");
-						value1 = outCndDetailItem.getSearchClockStartVal().map(i -> i.v().toString()).orElse("");
-						value2 = outCndDetailItem.getSearchClockEndVal().map(i -> i.v().toString()).orElse("");
-						break;
-					case INS_TIME:
 						value = outCndDetailItem.getSearchTime().map(i -> i.v().toString()).orElse("");
 						value1 = outCndDetailItem.getSearchTimeStartVal().map(i -> i.v().toString()).orElse("");
 						value2 = outCndDetailItem.getSearchTimeEndVal().map(i -> i.v().toString()).orElse("");
+						break;
+					case INS_TIME:
+						value = outCndDetailItem.getSearchClock().map(i -> i.v().toString()).orElse("");
+						value1 = outCndDetailItem.getSearchClockStartVal().map(i -> i.v().toString()).orElse("");
+						value2 = outCndDetailItem.getSearchClockEndVal().map(i -> i.v().toString()).orElse("");
 						break;
 
 					default:
@@ -1380,11 +1385,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 				}
 			}
 		}
-
 		if (setting.getSpaceEditting() == EditSpace.DELETE_SPACE_AFTER) {
-			targetValue.replaceAll("\\s+$", "");
+			targetValue =  targetValue.replaceAll("\\s+$", "");
 		} else if (setting.getSpaceEditting() == EditSpace.DELETE_SPACE_BEFORE) {
-			targetValue.replaceAll("^\\s+", "");
+			targetValue = targetValue.replaceAll("^\\s+", "");
 		}
 
 		if ((setting.getCdEditting() == NotUseAtr.USE)

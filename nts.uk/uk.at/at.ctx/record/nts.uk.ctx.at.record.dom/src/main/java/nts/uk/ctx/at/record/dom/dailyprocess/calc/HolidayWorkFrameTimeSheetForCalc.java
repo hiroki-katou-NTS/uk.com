@@ -18,7 +18,7 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
+//import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
@@ -216,7 +216,7 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 		//今回の処理の経過時間
 		AttendanceTime elapsedTime = fluWorkHolidayTimeSheet.getFlowTimeSetting().getElapsedTime();
 		//休出枠の時間を計算する (今回処理する経過時間-前回の経過時間)
-		AttendanceTime holidayWorkFrameTime =  new AttendanceTime(elapsedTime.valueAsMinutes()-previousElapsedTime.valueAsMinutes());
+//		AttendanceTime holidayWorkFrameTime =  new AttendanceTime(elapsedTime.valueAsMinutes()-previousElapsedTime.valueAsMinutes());
 		//休出枠時間から終了時刻を計算する
 		TimeWithDayAttr endClock = collectCalcRange.getStart().backByMinutes(elapsedTime.valueAsMinutes());
 		//休出枠時間帯　（一時的に作成）
@@ -234,8 +234,8 @@ public class HolidayWorkFrameTimeSheetForCalc extends CalculationTimeSheet{
 //						timeSheetOfDeductionItem.getDeductionAtr(),
 //						WithinStatutoryAtr.WithinStatutory);
 				//控除時間分、終了時刻を遅くする
-				TimeSpanForCalc collectTimeSheet = this.timeSheet.timeSpan().shiftEndBack(duplicateTime.lengthAsMinutes());
-				TimeZoneRounding newTimeSheet = this.timeSheet;
+//				TimeSpanForCalc collectTimeSheet = this.timeSheet.timeSpan().shiftEndBack(duplicateTime.lengthAsMinutes());
+//				TimeZoneRounding newTimeSheet = this.timeSheet;
 				// ここはベトナムへ連絡後コメントアウトを外すnewTimeSheet.newTimeSpan(collectTimeSheet);
 			}	
 		}

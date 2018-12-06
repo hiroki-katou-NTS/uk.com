@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.app.command.workrecord.log;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
+//import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;

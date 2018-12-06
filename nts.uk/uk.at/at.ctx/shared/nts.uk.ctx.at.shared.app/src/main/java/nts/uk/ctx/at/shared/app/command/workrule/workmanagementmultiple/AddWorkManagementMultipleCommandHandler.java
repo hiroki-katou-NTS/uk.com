@@ -10,6 +10,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
+import nts.uk.ctx.at.shared.dom.workmanagementmultiple.UseATR;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleDomainEvent;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
@@ -51,7 +52,7 @@ public class AddWorkManagementMultipleCommandHandler
 
 		// check managementCategory change
 		if (!optWorkMntMultiple.isPresent() || !optWorkMntMultiple.get().getUseATR()
-				.equals(EnumAdaptor.valueOf(command.getUseAtr(), UseAtr.class))) {
+				.equals(EnumAdaptor.valueOf(command.getUseAtr(), UseATR.class))) {
 			val workManagementMultipleDomainEvent = new WorkManagementMultipleDomainEvent(
 					command.getUseAtr() == UseAtr.USE.value);
 			workManagementMultipleDomainEvent.toBePublished();

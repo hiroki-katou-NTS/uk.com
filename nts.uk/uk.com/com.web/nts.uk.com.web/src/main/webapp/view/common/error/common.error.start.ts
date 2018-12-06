@@ -12,9 +12,15 @@ module common.error.system {
     class ScreenModel {
         
         details: KnockoutObservable<string>;
+        isDebugMode: KnockoutObservable<boolean>;
         
         constructor() {
             this.details = ko.observable("");
+            if(__viewContext.program.isDebugMode == true){
+                this.isDebugMode = ko.observable(true);    
+            } else {
+                this.isDebugMode = ko.observable(false);    
+            }
         }
         
         gotoLogin() {

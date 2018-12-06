@@ -36,7 +36,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+//import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;;
@@ -75,8 +75,8 @@ public class ScheBatchCorrectExecutionCommandHandler
 	@Inject
 	private ClosureService closureService;
 	
-	@Inject
-	private WorkTypeRepository workTypeRepository;
+//	@Inject
+//	private WorkTypeRepository workTypeRepository;
 	
 	@Inject
 	private RegisterBasicScheduleCommandHandler registerBasicScheduleCommandHandler;
@@ -85,7 +85,7 @@ public class ScheBatchCorrectExecutionCommandHandler
 	private static final int NEXT_DAY_MONTH = 1;
 	
 	/** The Constant PREV_MONTH. */
-	private static final int PREV_DAY_MONTH = -1;
+//	private static final int PREV_DAY_MONTH = -1;
 	
 	/** The Constant NUMBER_OF_SUCCESS. */
 	private static final String NUMBER_OF_SUCCESS = "NUMBER_OF_SUCCESS";
@@ -97,7 +97,7 @@ public class ScheBatchCorrectExecutionCommandHandler
 	private static final int DEFAULT_VALUE = 0;
 	
 	/** The Constant DAY_ONE. */
-	private static final int DAY_ONE = 1;
+//	private static final int DAY_ONE = 1;
 	
 	/** The Constant DATA_PREFIX. */
 	private static final String DATA_PREFIX = "DATA_";

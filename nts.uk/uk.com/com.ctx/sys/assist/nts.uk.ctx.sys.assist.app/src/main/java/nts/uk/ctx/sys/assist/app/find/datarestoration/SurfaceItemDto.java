@@ -1,10 +1,7 @@
 package nts.uk.ctx.sys.assist.app.find.datarestoration;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 
 @AllArgsConstructor

@@ -5,21 +5,21 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 public class AgreementTimeBreakdownImport {
 
 	/** 残業時間 */
-	private AttendanceTimeMonth overTime;
+	/*private*/ AttendanceTimeMonth overTime;
 	/** 振替残業時間 */
-	private AttendanceTimeMonth transferOverTime;
+	/*private*/ AttendanceTimeMonth transferOverTime;
 	/** 休出時間 */
-	private AttendanceTimeMonth holidayWorkTime;
+	/*private*/ AttendanceTimeMonth holidayWorkTime;
 	/** 振替時間 */
-	private AttendanceTimeMonth transferTime;
+	/*private*/ AttendanceTimeMonth transferTime;
 	/** フレックス超過時間 */
-	private AttendanceTimeMonth flexExcessTime;
+	/*private*/ AttendanceTimeMonth flexExcessTime;
 	/** 所定内割増時間 */
-	private AttendanceTimeMonth withinPrescribedPremiumTime;
+	/*private*/ AttendanceTimeMonth withinPrescribedPremiumTime;
 	/** 週割増時間 */
-	private AttendanceTimeMonth weeklyPremiumTime;
+	/*private*/ AttendanceTimeMonth weeklyPremiumTime;
 	/** 月割増時間 */
-	private AttendanceTimeMonth monthlyPremiumTime;
+	/*private*/ AttendanceTimeMonth monthlyPremiumTime;
 	
 	/**
 	 * コンストラクタ

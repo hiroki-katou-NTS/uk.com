@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
+//import nts.arc.time.GeneralDate;
 
 @Getter
 @Setter

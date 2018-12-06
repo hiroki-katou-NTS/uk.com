@@ -7,7 +7,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.stream.Collectors;
+//import java.util.stream.Collectors;
 
 /**
  * The Class AttendanceRecordExportSettingDeleteCommandHandler.
