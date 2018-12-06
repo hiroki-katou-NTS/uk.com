@@ -17,6 +17,7 @@
         <com:scriptfile path="qmm019.a.service.js"/>
         <com:scriptfile path="qmm019.a.vm.js"/>
         <com:scriptfile path="qmm019.a.start.js"/>
+        <com:scriptfile path="knockout-sortable.min.js"/>
     </ui:define>
 
     <ui:define name="content">
@@ -143,9 +144,9 @@
                                             <span class="caret-right"></span>
                                             <button id="A4_4" class=""
                                                     data-bind="enable: !hasFixed(), click: editLine"></button>
-                                            <div class="item-sort" data-bind="ntsSortable: {
+                                            <div class="item-sort" data-bind="sortable: {
                                                                         data: listSetByItem,
-                                                                        isEnabled: true }">
+                                                                        beforeMove: preventStopSort}">
                                                 <div class="item limited-label" data-bind="
                                                                     text: shortName,
                                                                     click: openSetting,
@@ -175,9 +176,9 @@
                                             <span class="caret-right"></span>
                                             <button id="A5_4" class=""
                                                     data-bind="enable: !hasFixed(), click: editLine"></button>
-                                            <div class="item-sort" data-bind="ntsSortable: {
+                                            <div class="item-sort" data-bind="sortable: {
                                                                         data: listSetByItem,
-                                                                        isEnabled: true }">
+                                                                        beforeMove: preventStopSort }">
                                                 <div class="item limited-label" data-bind="
                                                                     text: shortName,
                                                                     click: openSetting,
@@ -212,9 +213,9 @@
                                                 <span class="caret-right"></span>
                                                 <button id="A7_4" class=""
                                                         data-bind="enable: true, click: editLine"></button>
-                                                <div class="item-sort" data-bind="ntsSortable: {
+                                                <div class="item-sort" data-bind="sortable: {
                                                                             data: listSetByItem,
-                                                                            isEnabled: true }">
+                                                                            beforeMove: preventStopSort }">
                                                     <div class="item limited-label" data-bind="
                                                                         text: shortName,
                                                                         click: openSetting,
@@ -253,9 +254,9 @@
                                                 <span class="caret-right"></span>
                                                 <button id="A8_4" class=""
                                                         data-bind="enable: true, click: editLine"></button>
-                                                <div class="item-sort" data-bind="ntsSortable: {
+                                                <div class="item-sort" data-bind="sortable: {
                                                                             data: listSetByItem,
-                                                                            isEnabled: true }">
+                                                                            beforeMove: preventStopSort }">
                                                     <div class="item limited-label" data-bind="
                                                                         text: shortName,
                                                                         click: openSetting,

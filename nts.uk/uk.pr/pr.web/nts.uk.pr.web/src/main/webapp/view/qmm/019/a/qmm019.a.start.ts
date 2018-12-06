@@ -1,6 +1,7 @@
 module nts.uk.pr.view.qmm019.a {
     __viewContext.ready(function() {
         let screenModel = new viewmodel.ScreenModel();
+        __viewContext['screenModel'] = screenModel;
         screenModel.loadListData().done(function() {
             if(screenModel.statementLayoutList().length > 0) {
                 let histLength = screenModel.statementLayoutList()[0].history.length;
