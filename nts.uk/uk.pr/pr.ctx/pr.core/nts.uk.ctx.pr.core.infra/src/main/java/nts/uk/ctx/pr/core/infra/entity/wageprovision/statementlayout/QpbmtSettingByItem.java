@@ -61,7 +61,8 @@ public class QpbmtSettingByItem {
     public QpbmtDdtItemDetailSet ddtItemDetailSet;
 
     public SettingByItemCustom toDomain() {
-        return new SettingByItemCustom(this.settingByItemPk.itemPosition, this.itemNameCd, this.statementItemName.shortName,
+        return new SettingByItemCustom(this.settingByItemPk.itemPosition, this.itemNameCd,
+                this.statementItemName == null ? null : this.statementItemName.shortName,
                 this.ddtItemDetailSet == null ? null : this.ddtItemDetailSet.toDomain(),
                 this.payItemDetailSet == null ? null : this.payItemDetailSet.toDomain());
     }

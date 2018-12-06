@@ -15,12 +15,20 @@ import nts.uk.ctx.pr.core.infra.entity.wageprovision.salaryindividualamountname.
 public class JpaSalIndAmountNameRepository extends JpaRepository implements SalIndAmountNameRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtSalIndAmountName f";
+    private static final String SELECT_BY_CID_QUERY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.salIndAmountNamePk.cid =:cid";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.salIndAmountNamePk.cid =:cid AND  f.salIndAmountNamePk.cateIndicator =:cateIndicator AND  f.salIndAmountNamePk.individualPriceCode =:individualPriceCode  ";
     private static final String SELECT_ALL_BY_CATEINDICATOR = SELECT_ALL_QUERY_STRING + " WHERE  f.salIndAmountNamePk.cid =:cid AND  f.salIndAmountNamePk.cateIndicator =:cateIndicator ORDER BY f.salIndAmountNamePk.individualPriceCode ASC";
 
     @Override
     public List<SalIndAmountName> getAllSalIndAmountName() {
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtSalIndAmountName.class)
+                .getList(item -> item.toDomain());
+    }
+
+    @Override
+    public List<SalIndAmountName> getSalIndAmountName(String cid) {
+        return this.queryProxy().query(SELECT_BY_CID_QUERY_STRING, QpbmtSalIndAmountName.class)
+                .setParameter("cid", cid)
                 .getList(item -> item.toDomain());
     }
 

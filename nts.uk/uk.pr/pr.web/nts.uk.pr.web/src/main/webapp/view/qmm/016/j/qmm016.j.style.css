@@ -1,0 +1,9 @@
+.dialog-title {
+    margin-top: 20px;
+    font-size: 1.5rem;
+    min-width: 550px;
+}
+
+#J3_2 label:nth-child(2) {
+    margin-top: 70px;
+}

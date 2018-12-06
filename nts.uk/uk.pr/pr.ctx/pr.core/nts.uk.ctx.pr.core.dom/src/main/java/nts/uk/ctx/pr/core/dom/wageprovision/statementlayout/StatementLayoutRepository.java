@@ -16,6 +16,8 @@ public interface StatementLayoutRepository {
 
     Optional<StatementLayout> getStatementLayoutById(String cid, String statementCd);
 
+    List<StatementLayout> getAllStatementLayoutByCidAndCodes(String cid, List<String> statementCds);
+
     List<StatementLayout> getStatementLayoutByCId(String cid);
 
     void add(StatementLayout domain);
