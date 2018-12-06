@@ -23,6 +23,7 @@
 					<button tabindex="1" data-bind="click: createBtn">#{i18n.getText('CAS012_4')}</button>
 					<button class="proceed" tabindex="2"
 						data-bind="click : registryBtn ,enable: $root.errors.isEmpty">#{i18n.getText('CAS012_5')}</button>
+					<button class="exportExcel" data-bind="click: exportExcel" >#{i18n.getText('CAS012_48')}</button>
 					<button class="danger" tabindex="3"
 						data-bind="click: deleteBtn, enable: !isCreate()">#{i18n.getText('CAS012_6')}</button>
 				</div>

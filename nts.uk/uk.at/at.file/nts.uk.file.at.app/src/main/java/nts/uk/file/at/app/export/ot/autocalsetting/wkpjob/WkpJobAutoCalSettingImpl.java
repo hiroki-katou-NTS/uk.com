@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.export;
+package nts.uk.file.at.app.export.ot.autocalsetting.wkpjob;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,8 +6,9 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkpjob.WkpJobAutoCalSettingExport;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkpjob.WkpJobAutoCalSettingRepository;
+
+import nts.arc.error.BusinessException;
+import nts.uk.file.at.app.export.ot.autocalsetting.AutoCalSettingExport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
@@ -51,14 +52,18 @@ public class WkpJobAutoCalSettingImpl implements MasterListData{
     @Override
     public List<MasterData> getMasterDatas(MasterListExportQuery query){
         String companyId = AppContexts.user().companyId();
-        List<WkpJobAutoCalSettingExport> wkpJobAutoCalSetting = wkpJobAutoCalSettingRepository.getWkpJobSettingToExport(companyId);
+        String baseDate = query.getData().toString();
+        List<Object[]> wkpJobAutoCalSetting = wkpJobAutoCalSettingRepository.getWkpJobSettingToExport(companyId, baseDate);
+        if(wkpJobAutoCalSetting.size() == 0) {
+            throw new BusinessException("Msg_1480");
+        }
         List <MasterData> datas = new ArrayList<>();
         wkpJobAutoCalSetting.forEach(item -> {
             Map<String, Object> data = new HashMap<>();
-            data.put(KMK006_76, item.getWorkPlaceCode());
-            data.put(KMK006_77, item.getWorkPlaceName());
-            data.put(KMK006_79, item.getPositionCode());
-            data.put(KMK006_80, item.getPositionName());
+            data.put(KMK006_76, item[23]);
+            data.put(KMK006_77, item[24]);
+            data.put(KMK006_79, item[25]);
+            data.put(KMK006_80, item[26]);
             autoCalSettingExport.putDatas(item, data);
             datas.add(new MasterData(data, null, ""));
         });
