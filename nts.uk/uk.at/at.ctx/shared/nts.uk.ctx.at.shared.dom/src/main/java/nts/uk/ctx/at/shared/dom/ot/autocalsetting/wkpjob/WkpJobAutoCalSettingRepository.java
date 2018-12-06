@@ -12,8 +12,6 @@ import java.util.Optional;
  */
 public interface WkpJobAutoCalSettingRepository {
 
-
-	List<Object[]> getWkpJobSettingToExport(String cid, String baseDate);
 	/**
 	 * Update.
 	 *
