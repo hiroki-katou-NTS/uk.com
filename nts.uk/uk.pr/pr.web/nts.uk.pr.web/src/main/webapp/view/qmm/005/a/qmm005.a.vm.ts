@@ -230,6 +230,7 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
                     });
 
                     if (employeeSetting) {
+                        employeeSetting.getEmploymentCodes = _.orderBy(employeeSetting.getEmploymentCodes);
                         for (let j = 0; j < employeeSetting.getEmploymentCodes.length; j++) {
                             let obj = _.find(self.itemTable.empCdNameImports, x => {
                                 return x.code == employeeSetting.getEmploymentCodes[j];
