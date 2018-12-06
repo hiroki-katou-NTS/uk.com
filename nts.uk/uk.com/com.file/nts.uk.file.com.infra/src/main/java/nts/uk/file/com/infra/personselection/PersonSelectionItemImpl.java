@@ -14,7 +14,6 @@ import javax.persistence.Query;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.file.com.app.personselection.PersonSelectionItemColumn;
 import nts.uk.file.com.app.personselection.PersonSelectionItemRepository;
 import nts.uk.shr.com.context.AppContexts;
