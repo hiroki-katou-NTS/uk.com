@@ -684,14 +684,14 @@ public class CreateExOutTextService extends ExportService<Object> {
 								+ "'";
 						break;
 					case TIME:
-						value = outCndDetailItem.getSearchClock().map(i -> i.v().toString()).orElse("");
-						value1 = outCndDetailItem.getSearchClockStartVal().map(i -> i.v().toString()).orElse("");
-						value2 = outCndDetailItem.getSearchClockEndVal().map(i -> i.v().toString()).orElse("");
-						break;
-					case INS_TIME:
 						value = outCndDetailItem.getSearchTime().map(i -> i.v().toString()).orElse("");
 						value1 = outCndDetailItem.getSearchTimeStartVal().map(i -> i.v().toString()).orElse("");
 						value2 = outCndDetailItem.getSearchTimeEndVal().map(i -> i.v().toString()).orElse("");
+						break;
+					case INS_TIME:
+						value = outCndDetailItem.getSearchClock().map(i -> i.v().toString()).orElse("");
+						value1 = outCndDetailItem.getSearchClockStartVal().map(i -> i.v().toString()).orElse("");
+						value2 = outCndDetailItem.getSearchClockEndVal().map(i -> i.v().toString()).orElse("");
 						break;
 
 					default:
@@ -1384,11 +1384,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 				}
 			}
 		}
-
 		if (setting.getSpaceEditting() == EditSpace.DELETE_SPACE_AFTER) {
-			targetValue.replaceAll("\\s+$", "");
+			targetValue =  targetValue.replaceAll("\\s+$", "");
 		} else if (setting.getSpaceEditting() == EditSpace.DELETE_SPACE_BEFORE) {
-			targetValue.replaceAll("^\\s+", "");
+			targetValue = targetValue.replaceAll("^\\s+", "");
 		}
 
 		if ((setting.getCdEditting() == NotUseAtr.USE)

@@ -29,6 +29,7 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.EmpPerformMonthPar
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByEmpl;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApproverEmployeeState;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ReleasedProprietyDivision;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
@@ -353,21 +354,21 @@ public class MonthlyPerformanceReload {
 					: lockStatusMap.get(employee.getId()).getLockStatusString();
 
 			// set state approval
-			if (param.getInitMenuMode() == 2) { // mode approve disable cot approve theo ket qua no.534
-				if (approvalRootOfEmloyee != null && approvalRootOfEmloyee.getApprovalRootSituations() != null) {
-					for (AppRootSituationMonth approvalRootSituation : approvalRootOfEmloyee
-							.getApprovalRootSituations()) {
-						// 基準社員の承認状況 ＝ フェーズ最中 の場合 => unlock
-						if (approvalRootSituation.getTargetID().equals(employeeId)
-								&& approvalRootSituation.getApprovalAtr() != ApproverEmployeeState.PHASE_DURING) {
-							lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
-							break;
-						}
-					}
-				}
-			} else { // cac mode khac luon disable cot approve
-				lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
-			}
+//			if (param.getInitMenuMode() == 2) { // mode approve disable cot approve theo ket qua no.534
+//				if (approvalRootOfEmloyee != null && approvalRootOfEmloyee.getApprovalRootSituations() != null) {
+//					for (AppRootSituationMonth approvalRootSituation : approvalRootOfEmloyee
+//							.getApprovalRootSituations()) {
+//						// 基準社員の承認状況 ＝ フェーズ最中 の場合 => unlock
+//						if (approvalRootSituation.getTargetID().equals(employeeId)
+//								&& approvalRootSituation.getApprovalAtr() != ApproverEmployeeState.PHASE_DURING) {
+//							lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
+//							break;
+//						}
+//					}
+//				}
+//			} else { // cac mode khac luon disable cot approve
+//				lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
+//			}
 
 			// set dailyConfirm
 			MonthlyPerformaceLockStatus monthlyPerformaceLockStatus = lockStatusMap.get(employeeId);
@@ -425,6 +426,24 @@ public class MonthlyPerformanceReload {
 					}
 
 				}
+			}
+			
+			// set state approval
+			if (param.getInitMenuMode() == 2) { // mode approve disable cot approve theo data lay duoc tu no.534
+				if(approvalRootOfEmloyee!=null && approvalRootOfEmloyee.getApprovalRootSituations()!=null){
+					for (AppRootSituationMonth approvalRootSituation : approvalRootOfEmloyee.getApprovalRootSituations()) {
+						// 基準社員の承認状況　＝　フェーズ最中　の場合 => unlock
+						if(approvalRootSituation.getTargetID().equals(employeeId) && approvalRootSituation.getApprovalAtr() != ApproverEmployeeState.PHASE_DURING && !approve){
+							lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
+							break;
+						}else if(approve && approvalRootSituation.getTargetID().equals(employeeId) && approvalRootSituation.getApprovalStatus().getReleaseDivision() != ReleasedProprietyDivision.NOT_RELEASE && !approve) {
+							lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
+							break;
+						}
+					}
+				}
+			} else { // mode khac luon disable cot approve
+				lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
 			}
 
 			MPDataDto mpdata = new MPDataDto(employeeId, lockStatus, "", employee.getCode(), employee.getBusinessName(),
