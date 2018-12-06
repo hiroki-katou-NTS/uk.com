@@ -509,6 +509,44 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 //TODO $("#C3_8").focus();
             });
         }
+
+        public preventStopSort(data, event, ui): void {
+            let dragItem: SettingByItem = data.item;
+            let listItemSource: Array<SettingByItem> = data.sourceParent();
+            let listItemTarget: Array<SettingByItem> = data.targetParent();
+            console.log(data);
+            let checkCategory = dragItem.parent.parent.ctgAtr != listItemTarget[0].parent.parent.ctgAtr;
+            let checkPrintLine = dragItem.parent.printSet() != listItemTarget[0].parent.printSet();
+            let checkDragToOtherLine = dragItem.parent.lineNumber() != listItemTarget[0].parent.lineNumber();
+
+            if(checkCategory || checkPrintLine) {
+                data.cancelDrop = true;
+            } else if(checkDragToOtherLine) {
+                let targetItem = listItemTarget[data.targetIndex];
+                let category: SettingByCtg = dragItem.parent.parent;
+                let categoryIndex = category.ctgAtr;
+                let sourceIndex = data.sourceIndex;
+                let targetIndex= data.targetIndex;
+                let targetLineIndex: number;
+                let sourceLineIndex: number;
+
+                for(let i = 0; i < category.listLineByLineSet().length; i++) {
+                    if(category.listLineByLineSet()[i].lineNumber() == targetItem.parent.lineNumber()) {
+                        targetLineIndex = i;
+                    }
+
+                    if(category.listLineByLineSet()[i].lineNumber() == listItemSource[0].parent.lineNumber()) {
+                        sourceLineIndex = i;
+                    }
+                }
+
+                let currentCategory: SettingByCtg = __viewContext['screenModel'].statementLayoutHistData().statementLayoutSet().listSettingByCtg()[categoryIndex];
+                currentCategory.listLineByLineSet()[sourceLineIndex].listSetByItem()[data.sourceIndex] = targetItem;
+                currentCategory.listLineByLineSet()[targetLineIndex].listSetByItem()[data.targetIndex] = dragItem;
+
+                data.cancelDrop = true;
+            }
+        }
     }
 
     class SettingByItem {
@@ -646,7 +684,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                         break;
                     }
                     case CategoryAtr.DEDUCTION_ITEM: {
-                        setShared("QMM019_E_TO_D_PARAMS", {
+                        setShared("QMM019_A_TO_E_PARAMS", {
                             listItemSetting: listItemSetting,
                             itemId: self.itemId(),
                             detail: self.deductionItemDetailSet
@@ -664,7 +702,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                         break;
                     }
                     case CategoryAtr.REPORT_ITEM: {
-                        setShared("QMM019_E_TO_G_PARAMS", {
+                        setShared("QMM019_A_TO_G_PARAMS", {
                             listItemSetting: listItemSetting,
                             itemId: self.itemId()
                         });
