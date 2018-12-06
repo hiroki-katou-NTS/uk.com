@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 580,
-					height : 650
+					width : 500,
+					height : 500
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -42,6 +42,7 @@
 						<span data-bind="text: '#{i18n.getText('CPS003_38')}' "></span>
 					</div>
 					<div class="cf" data-bind="ntsSwitchButton: {
+						name: '#CPS003_17',
 						options: roundingRules,
 						optionsValue: 'value',
 						optionsText: 'name',
@@ -52,13 +53,21 @@
 											
 			</div>
 			
-			<div id="reference-area">
-			
+			<div id="reference-area" data-bind="with: currentFile">
+			<div id="B1">
 			<span id="B1_011">#{i18n.getText('CPS003_39')}</span>
+			</div>
 			
 			<div id="reference">
-				<input type="file" id="custom-upload" accept=".xls,.xlsx" />
-				<button id="B1_12" data-bind="">#{i18n.getText('CPS005_4')}</button>
+					<div id="file-upload"
+						data-bind="ntsFileUpload:{
+							filename: filename,
+							accept: accept,
+							text: textId,
+							aslink: asLink,
+							onchange: upload.bind($data)
+					}"></div>
+					<span id="diplay-size" data-bind="text: imageSize"></span>
 			</div>
 			</div>
 			
@@ -66,7 +75,7 @@
 			<div id="functions-area-bottom">
 				<span id="B2_001">#{i18n.getText('CPS003_43')}</span>
 				<div>
-					<button id="B2_002" class="proceed x-large" data-bind="">#{i18n.getText('CPS003_44')}</button>
+					<button id="B2_002" class="proceed x-large" data-bind="click: decide, enable: $root.errors.isEmpty()">#{i18n.getText('CPS003_44')}</button>
 					<button id="B2_003" data-bind="click: close">#{i18n.getText('CPS003_45')}</button>
 				</div>
 			</div>

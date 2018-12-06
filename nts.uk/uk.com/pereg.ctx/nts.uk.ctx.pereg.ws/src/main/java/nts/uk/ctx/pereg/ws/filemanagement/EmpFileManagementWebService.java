@@ -12,6 +12,8 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.bs.employee.app.find.empfilemanagement.dto.EmployeeFileManagementDto;
 import nts.uk.ctx.pereg.app.command.filemanagement.AddEmpAvaOrMapCommandHandler;
 import nts.uk.ctx.pereg.app.command.filemanagement.AddEmpDocumentFileCommand;
+import nts.uk.ctx.pereg.app.command.filemanagement.CheckFileCommand;
+import nts.uk.ctx.pereg.app.command.filemanagement.CheckFileCommandHandler;
 import nts.uk.ctx.pereg.app.command.filemanagement.EmpAvaOrMapCommand;
 import nts.uk.ctx.pereg.app.command.filemanagement.EmpDocumentFileCommandHandler;
 import nts.uk.ctx.pereg.app.command.filemanagement.RemoveDocumentFileCommand;
@@ -45,7 +47,10 @@ public class EmpFileManagementWebService extends WebService {
 	RemoveDocumentFileEmpCommandHandler removeDocFileCommandHandler;
 	
 	@Inject
-	UpdateCtgDocFileCommandHandler updateCtgDocumentFile;;
+	UpdateCtgDocFileCommandHandler updateCtgDocumentFile;
+	
+	@Inject
+	CheckFileCommandHandler checkFileCommandHandler;
 	/**
 	 * Gets employee file management by employeeId.
 	 *
@@ -111,5 +116,11 @@ public class EmpFileManagementWebService extends WebService {
 	@Path("updatectgdocfile")
 	public void updateCtgForDocFile(UpdateCtgDocFileDocumentFileCommand command) {
 		this.updateCtgDocumentFile.handle(command);
+	}
+	
+	@POST
+	@Path("command/checkFile")
+	public void checkFile(CheckFileCommand command) {
+		this.checkFileCommandHandler.handle(command);
 	}
 }

@@ -1,8 +1,34 @@
+#display{
+	height: 115px;
+}
+
 .distance{
 	margin-bottom: 5px;
+	margin-left: 5px;
 }
 
 .margin-right-FormLabel{
 	margin-right: 10px;
 	width: 120px;
+}
+
+#reference-area{
+	border-top: solid 1px #B1B1B1;
+	margin-top: 30px;
+	height: 200px;
+	margin-left: 10px;
+}
+
+#B1{
+	margin-top: 20px;
+}
+
+#reference{
+	margin-top: 20px;
+	margin-left: 30px;
+}
+
+#diplay-size{
+	margin-left: 52px;
+	font-size: 10px;
 }
