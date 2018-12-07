@@ -134,7 +134,9 @@ module cps003.a.vm {
                     systemDate: "2018/12/21",
                     categoryId: "111",
                     categoryName: "AAAA",
-                    mode: 1
+                    mode: 1,
+                    columnChange: [],
+                    sids: []
                 };
 
             block();
