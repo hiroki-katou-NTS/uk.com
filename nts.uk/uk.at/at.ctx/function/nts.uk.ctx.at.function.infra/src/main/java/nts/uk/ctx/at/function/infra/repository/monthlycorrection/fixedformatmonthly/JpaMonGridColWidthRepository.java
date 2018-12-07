@@ -23,8 +23,8 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaMonGridColWidthRepository extends JpaRepository implements ColumnWidtgByMonthlyRepository {
 
-	private static final String Get_COL_WIDTH_BY_CID = "SELECT c FROM KrcmtMonGridColWidth c "
-			+ " WHERE c.monGridColWidthPk.cid = :companyID";
+//	private static final String Get_COL_WIDTH_BY_CID = "SELECT c FROM KrcmtMonGridColWidth c "
+//			+ " WHERE c.monGridColWidthPk.cid = :companyID";
 
 	private static final String Get_COL_WIDTH_BY_CID_AND_ATTDID = "SELECT c FROM KrcmtMonGridColWidth c "
 			+ " WHERE c.monGridColWidthPk.cid = :companyID "

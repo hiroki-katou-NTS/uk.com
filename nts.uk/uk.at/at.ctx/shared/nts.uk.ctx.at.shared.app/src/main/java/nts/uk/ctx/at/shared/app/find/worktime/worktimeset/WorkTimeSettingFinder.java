@@ -269,13 +269,13 @@ public class WorkTimeSettingFinder {
 	 *            the work time set
 	 * @return true, if successful
 	 */
-	private boolean checkNotUse(PredetemineTimeSetting workTimeSet) {
-		for (TimezoneUse timezone : workTimeSet.getPrescribedTimezoneSetting().getLstTimezone()) {
-			if (timezone.getUseAtr().equals(UseSetting.NOT_USE) && timezone.getWorkNo() == TimezoneUse.SHIFT_ONE)
-				return true;
-		}
-		return false;
-	}
+//	private boolean checkNotUse(PredetemineTimeSetting workTimeSet) {
+//		for (TimezoneUse timezone : workTimeSet.getPrescribedTimezoneSetting().getLstTimezone()) {
+//			if (timezone.getUseAtr().equals(UseSetting.NOT_USE) && timezone.getWorkNo() == TimezoneUse.SHIFT_ONE)
+//				return true;
+//		}
+//		return false;
+//	}
 
 	/**
 	 * Creates the work time field.

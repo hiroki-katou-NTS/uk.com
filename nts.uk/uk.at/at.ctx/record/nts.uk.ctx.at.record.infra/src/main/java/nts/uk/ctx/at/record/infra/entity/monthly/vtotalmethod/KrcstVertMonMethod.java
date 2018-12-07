@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-import java.math.BigDecimal;
+//import java.math.BigDecimal;
 
 
 /**

@@ -1,6 +1,7 @@
 module nts.uk.pr.view.qmm042.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import dialog = nts.uk.ui.dialog;
+    import block = nts.uk.ui.block;
 
     export class ScreenModel {
 
@@ -32,20 +33,9 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
             }
 
             self.salaryPerUnitPriceNamesSelectedCode.subscribe(function (selectcode) {
-
-
                 self.workIndividualPrices.removeAll();
                 self.workIndividualPricesDisplay.removeAll();
                 nts.uk.ui.errors.clearAll();
-
-                if(self.workIndividualPrices().length<=10){
-                    if (/Edge/.test(navigator.userAgent)) {
-                        $('.scroll-header').removeClass('edge_scroll_header');
-                    } else {
-                        $('.scroll-header').removeClass('ci_scroll_header');
-                    }
-                }
-
                 if (!selectcode)
                     return;
                 let temp = _.find(self.salaryPerUnitPriceNames(), function (o) {
@@ -55,6 +45,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                     self.perUnitPriceCode(temp.code);
                     self.perUnitPriceName(temp.name);
                 }
+                // self.filterData();
             });
         }
 
@@ -96,48 +87,60 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 });
                 self.workIndividualPricesDisplay(personalAmountData);
             })
-            if (self.workIndividualPricesDisplay().length > 10) {
-                if (/Edge/.test(navigator.userAgent)) {
-                    $('.scroll-header').addClass('edge_scroll_header');
-                    $('.nts-fixed-body-container').addClass('edge_scroll_body');
+            setTimeout(function () {
+                if (self.workIndividualPricesDisplay().length > 10) {
+                    if (/Edge/.test(navigator.userAgent)) {
+                        $('.scroll-header').addClass('edge_scroll_header');
+                        $('.nts-fixed-body-container').addClass('edge_scroll_body');
+                    } else {
+                        $('.scroll-header').addClass('ci_scroll_header');
+                        $('.nts-fixed-body-container').addClass('ci_scroll_body');
+                    }
                 } else {
-                    $('.scroll-header').addClass('ci_scroll_header');
-                    $('.nts-fixed-body-container').addClass('ci_scroll_body');
+                    if (/Edge/.test(navigator.userAgent)) {
+                        $('.scroll-header').removeClass('edge_scroll_header');
+                        $('.nts-fixed-body-container').removeClass('edge_scroll_body');
+                    } else {
+                        $('.scroll-header').removeClass('ci_scroll_header');
+                        $('.nts-fixed-body-container').removeClass('ci_scroll_body');
+                    }
                 }
-
-            }
+            }, 0);
         }
 
 
         registerAmount(): void {
             let self = this;
-
-
-
             service.empSalUnitUpdateAll({
                 payrollInformationCommands: ko.toJS(self.workIndividualPricesDisplay)}).done(function () {
                 dialog.info({messageId: "Msg_15"});
-            })
+            });
         }
 
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+            block.invisible();
             service.employeeReferenceDate().done(function (data) {
                 self.yearMonthFilter(data.salCurrProcessDate);
                 self.reloadCcg001(data.empExtraRefeDate);
+                service.salaryPerUnitPriceName().done(function (individualPriceName) {
+                    if (individualPriceName.length == 0) {
+                        nts.uk.ui.dialog.alertError({messageId: "MsgQ_170"});
+                    } else {
+                        self.salaryPerUnitPriceNames(individualPriceName);
+                        self.salaryPerUnitPriceNamesSelectedCode(self.salaryPerUnitPriceNames()[0].code);
+                    }
+                    block.clear();
+                    dfd.resolve(self);
+                }).fail((err) => {
+                    block.clear();
+                    dfd.reject();
+                });
+            }).fail((err) => {
+                block.clear();
+                dfd.reject();
             });
-
-            service.salaryPerUnitPriceName().done(function (individualPriceName) {
-                if (!individualPriceName) {
-                    nts.uk.ui.dialog.alertError({messageId: "MsgQ_170"});
-                    return;
-                }
-                self.salaryPerUnitPriceNames(individualPriceName);
-                self.salaryPerUnitPriceNamesSelectedCode(self.salaryPerUnitPriceNames()[0].code);
-            });
-
-            dfd.resolve(self);
             return dfd.promise();
         }
 

@@ -55,7 +55,7 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerforma
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.employmentrules.temporarywork.repository.TempWorkUseManageRepository;
+//import nts.uk.ctx.at.shared.dom.employmentrules.temporarywork.repository.TempWorkUseManageRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
@@ -99,8 +99,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 	private GetCommonSet getCommonSet;
 	@Inject
 	private OutingManagementRepository outingManagementRepo;
-	@Inject
-	private TempWorkUseManageRepository tempWorkUseManageRepo;
+//	@Inject
+//	private TempWorkUseManageRepository tempWorkUseManageRepo;
 	@Inject
 	private ManageWorkTemporaryRepository temporaryWorkManageRepo;
 
@@ -908,7 +908,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			String attendanceClass, ReflectEntryGateOutput reflectEntryGateOutput) {
 		if (reflectEntryGateOutput != null) {
 			StampSourceInfo stampSourceInfo = reflectEntryGateOutput.getStampSourceInfo();
-			if (stampSourceInfo.value == 6 || stampSourceInfo.value == 7) {
+			if (stampSourceInfo != null && (stampSourceInfo.value == 6 || stampSourceInfo.value == 7)) {
 				return false;
 			} else {
 				// 前優先後優先を見て反映するか確認する
@@ -1751,7 +1751,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// Xác nhận 最大使用回数 (最大使用回数 lấy từ 打刻反映管理 .外出管理 )
 		Optional<StampReflectionManagement> stampOptional = this.stampRepo.findByCid(companyId);
 		if (stampOptional.isPresent()) {
-			StampReflectionManagement stampReflectionManagement = stampOptional.get();
+//			StampReflectionManagement stampReflectionManagement = stampOptional.get();
 			// stampReflectionManagement sẽ gọi .外出管理.最大使用回数
 			// (outingManager)
 			Optional<OutingManagement> OutingManagementOptional = this.outingManagementRepo.findByKey(companyId);
@@ -1908,7 +1908,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		// 外出時間帯Listに最大枠数分の枠を用意する
 		Optional<StampReflectionManagement> stampOptional = this.stampRepo.findByCid(companyId);
 		if (stampOptional.isPresent()) {
-			StampReflectionManagement stampReflectionManagement = stampOptional.get();
+//			StampReflectionManagement stampReflectionManagement = stampOptional.get();
 			// stampReflectionManagement sẽ gọi .外出管理.最大使用回数
 			// (outingManager)
 			Optional<OutingManagement> OutingManagementOptional = this.outingManagementRepo.findByKey(companyId);
@@ -2857,40 +2857,40 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 	 * 
 	 * } return null; }
 	 */
-	private WorkStamp getWorkStamp(TimeLeavingOfDailyPerformance timeDailyPer, int worktNo, String attendanceClass,
-			String actualStampClass) {
-
-		if (timeDailyPer != null) {
-			List<TimeLeavingWork> lstTimeLeavingWork = timeDailyPer.getTimeLeavingWorks();
-			int n = lstTimeLeavingWork.size();
-			for (int i = 0; i < n; i++) {
-				TimeLeavingWork timeLeavingWork = lstTimeLeavingWork.get(i);
-				if (timeLeavingWork.getWorkNo().v().intValue() == worktNo) {
-					// 出勤
-					TimeActualStamp attendanceStamp = null;
-					if ("出勤".equals(attendanceClass)) {
-						attendanceStamp = (timeLeavingWork.getAttendanceStamp() != null
-								&& timeLeavingWork.getAttendanceStamp().isPresent())
-										? timeLeavingWork.getAttendanceStamp().get() : null;
-					} else {
-						attendanceStamp = (timeLeavingWork.getLeaveStamp() != null
-								&& timeLeavingWork.getLeaveStamp().isPresent()) ? timeLeavingWork.getLeaveStamp().get()
-										: null;
-					}
-					// 実打刻
-					if ("実打刻".equals(actualStampClass)) {
-						return (attendanceStamp.getActualStamp() != null
-								&& attendanceStamp.getActualStamp().isPresent())
-										? attendanceStamp.getActualStamp().get() : null;
-					}
-					return (attendanceStamp.getStamp() != null && attendanceStamp.getStamp().isPresent())
-							? attendanceStamp.getStamp().get() : null;
-				}
-			}
-
-		}
-		return null;
-	}
+//	private WorkStamp getWorkStamp(TimeLeavingOfDailyPerformance timeDailyPer, int worktNo, String attendanceClass,
+//			String actualStampClass) {
+//
+//		if (timeDailyPer != null) {
+//			List<TimeLeavingWork> lstTimeLeavingWork = timeDailyPer.getTimeLeavingWorks();
+//			int n = lstTimeLeavingWork.size();
+//			for (int i = 0; i < n; i++) {
+//				TimeLeavingWork timeLeavingWork = lstTimeLeavingWork.get(i);
+//				if (timeLeavingWork.getWorkNo().v().intValue() == worktNo) {
+//					// 出勤
+//					TimeActualStamp attendanceStamp = null;
+//					if ("出勤".equals(attendanceClass)) {
+//						attendanceStamp = (timeLeavingWork.getAttendanceStamp() != null
+//								&& timeLeavingWork.getAttendanceStamp().isPresent())
+//										? timeLeavingWork.getAttendanceStamp().get() : null;
+//					} else {
+//						attendanceStamp = (timeLeavingWork.getLeaveStamp() != null
+//								&& timeLeavingWork.getLeaveStamp().isPresent()) ? timeLeavingWork.getLeaveStamp().get()
+//										: null;
+//					}
+//					// 実打刻
+//					if ("実打刻".equals(actualStampClass)) {
+//						return (attendanceStamp.getActualStamp() != null
+//								&& attendanceStamp.getActualStamp().isPresent())
+//										? attendanceStamp.getActualStamp().get() : null;
+//					}
+//					return (attendanceStamp.getStamp() != null && attendanceStamp.getStamp().isPresent())
+//							? attendanceStamp.getStamp().get() : null;
+//				}
+//			}
+//
+//		}
+//		return null;
+//	}
 
 	private TimeActualStamp getTimeActualStamp(TimeLeavingOfDailyPerformance timeDailyPer, int worktNo,
 			String attendanceClass) {
@@ -3153,14 +3153,14 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			AttendanceTime attendanceTime = stamp.getAttendanceTime();
 			TimeWithDayAttr timeDestination = reflectEntryGateOutput.getTimeOfDay();
 			if (priorityAtr.value == 0) {
-				if (attendanceTime.v().intValue() >= timeDestination.v().intValue()) {
+				if (timeDestination != null && (attendanceTime.v().intValue() >= timeDestination.v().intValue())) {
 					return false;
 				} else {
 					return true;
 				}
 
 			} else {
-				if (attendanceTime.v().intValue() > timeDestination.v().intValue()) {
+				if (timeDestination != null && (attendanceTime.v().intValue() > timeDestination.v().intValue())) {
 					return true;
 				} else {
 					return false;

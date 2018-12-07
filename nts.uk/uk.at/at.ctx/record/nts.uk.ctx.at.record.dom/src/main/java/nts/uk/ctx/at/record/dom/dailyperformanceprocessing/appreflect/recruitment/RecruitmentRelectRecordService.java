@@ -26,13 +26,13 @@ public interface RecruitmentRelectRecordService {
 	 * 開始終了時刻の反映
 	 * @param param
 	 */
-	public void reflectRecordStartEndTime(CommonReflectParameter param);
+	public IntegrationOfDaily reflectRecordStartEndTime(CommonReflectParameter param, IntegrationOfDaily daily);
 	/**
 	 * 休出時間振替時間をクリアする
 	 * @param employeeId
 	 * @param baseDate
 	 */
-	public void clearRecruitmenFrameTime(String employeeId, GeneralDate baseDate, IntegrationOfDaily daily);
+	public IntegrationOfDaily clearRecruitmenFrameTime(String employeeId, GeneralDate baseDate, IntegrationOfDaily daily);
 	/**
 	 * 開始時刻が反映できるか
 	 * @param employeeId

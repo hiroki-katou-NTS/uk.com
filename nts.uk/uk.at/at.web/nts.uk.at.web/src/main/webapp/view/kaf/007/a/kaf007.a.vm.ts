@@ -55,6 +55,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         targetDate: any = moment(new Date()).format("YYYY/MM/DD");
         requiredCheckTime: KnockoutObservable<boolean> = ko.observable(this.isWorkChange() && true);
         timeRequired: KnockoutObservable<boolean> = ko.observable(false);
+        showExcludeHoliday: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this,
                 application = self.appWorkChange().application();
@@ -201,6 +202,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 //A3 事前事後区分
                 //事前事後区分 ※A１
                 self.prePostDisp(appCommonSettingDto.applicationSettingDto.displayPrePostFlg == 1 ? true : false);
+                self.showExcludeHoliday(appWorkChangeCommonSetting.excludeHoliday);
                 if (!nts.uk.util.isNullOrEmpty(appCommonSettingDto.appTypeDiscreteSettingDtos) &&
                     appCommonSettingDto.appTypeDiscreteSettingDtos.length > 0) {
                     //事前事後区分 Enable ※A２

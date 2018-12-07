@@ -18,7 +18,7 @@ public class JpaSalaryPerUnitPriceRepository extends JpaRepository implements Sa
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtPerUnitPrice f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.perUnitPricePk.cid =:cid AND  f.perUnitPricePk.code =:code ";
-    private static final String SELECT_ALL_IN_COMPANY = SELECT_ALL_QUERY_STRING + " WHERE  f.perUnitPricePk.cid =:cid ORDER BY f.perUnitPricePk.code";
+    private static final String SELECT_ALL_IN_COMPANY = SELECT_ALL_QUERY_STRING + " WHERE  f.perUnitPricePk.cid =:cid AND f.abolition = 0 ORDER BY f.perUnitPricePk.code";
 
     @Override
     public List<SalaryPerUnitPrice> getAllSalaryPerUnitPrice(){

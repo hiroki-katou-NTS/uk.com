@@ -10,7 +10,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
-import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
+//import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.OverallErrorDetail;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
@@ -140,13 +140,13 @@ public class ProcessExecutionLogDto {
 			dailyCalcStart = procExecLog.getEachProcPeriod().get().getDailyCalcPeriod().get().start();
 			dailyCalcEnd = procExecLog.getEachProcPeriod().get().getDailyCalcPeriod().get().end();
 		}
-		GeneralDate reflectApprovalResultStart = null;
-		GeneralDate reflectApprovalResultEnd = null;
+//		GeneralDate reflectApprovalResultStart = null;
+//		GeneralDate reflectApprovalResultEnd = null;
 		if (procExecLog.getEachProcPeriod() != null && procExecLog.getEachProcPeriod().isPresent()
 				&& procExecLog.getEachProcPeriod().get().getReflectApprovalResult() != null
 				&& procExecLog.getEachProcPeriod().get().getReflectApprovalResult().isPresent()) {
-			reflectApprovalResultStart = procExecLog.getEachProcPeriod().get().getReflectApprovalResult().get().start();
-			reflectApprovalResultEnd = procExecLog.getEachProcPeriod().get().getReflectApprovalResult().get().end();
+//			reflectApprovalResultStart = procExecLog.getEachProcPeriod().get().getReflectApprovalResult().get().start();
+//			reflectApprovalResultEnd = procExecLog.getEachProcPeriod().get().getReflectApprovalResult().get().end();
 		}
 		return new ProcessExecutionLogDto(
 				procExecLog.getExecItemCd().v(),

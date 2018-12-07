@@ -51,6 +51,7 @@ public class AutoCalOvertimeSetting extends DomainObject {
 	 * @param legalOTTime the legal OT time
 	 * @param legalMidOTTime the legal mid OT time
 	 */
+	@SuppressWarnings("rawtypes")
 	public AutoCalOvertimeSetting(AutoCalOvertimeSettingGetMemento memento) {
 		this.earlyOtTime = memento.getEarlyOtTime();
 		this.earlyMidOtTime = memento.getEarlyMidOtTime();

@@ -9,7 +9,9 @@ public class AnyItemTime extends TimeDurationPrimitiveValue<AnyItemTime>{
 	private static final long serialVersionUID = 1L;
 	
 	public AnyItemTime(Integer rawValue) {
-		super(rawValue);
+		super(rawValue.compareTo(60*99 + 59) > 0 ? 60*99 + 59 
+   			 								 	 : rawValue.compareTo(-(60*99 + 59)) < 0 ? -(60*99 + 59) 
+   			 										 						   		     : rawValue);
 	}
 
 	@Override

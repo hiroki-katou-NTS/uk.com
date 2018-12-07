@@ -8,7 +8,19 @@ module nts.uk.pr.view.ccg007.c {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.start().done(function() {
             __viewContext.bind(screenModel);
-            $('#company-code-inp').focus();
+            nts.uk.characteristics.restore("form2LoginInfo").done(function(loginInfo: any) {
+                if (!loginInfo || !loginInfo.companyCode) {
+                    $('#company-code-inp').focus();
+                }
+                else {
+                    if (!loginInfo.employeeCode) {
+                        $('#employee-code-inp').focus();
+                    }
+                    else {
+                        $('#password-input').focus();
+                    }
+                }
+            });
         });
     });
 }

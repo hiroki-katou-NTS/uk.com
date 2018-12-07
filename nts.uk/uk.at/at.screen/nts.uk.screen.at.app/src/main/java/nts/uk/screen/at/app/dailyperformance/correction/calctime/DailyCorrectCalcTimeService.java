@@ -59,8 +59,8 @@ public class DailyCorrectCalcTimeService {
 
 		val itemValues = itemEdits.stream().map(x -> new ItemValue(x.getValue(), x.getValueType() == null ? ValueType.UNKNOWN : ValueType.valueOf(x.getValueType()),
 				x.getLayoutCode(), x.getItemId())).collect(Collectors.toList());
-		val itemBase =  new ItemValue(itemEditCalc.getValue(), ValueType.valueOf(itemEditCalc.getValueType()),
-				itemEditCalc.getLayoutCode(), itemEditCalc.getItemId());
+//		val itemBase =  new ItemValue(itemEditCalc.getValue(), ValueType.valueOf(itemEditCalc.getValueType()),
+//				itemEditCalc.getLayoutCode(), itemEditCalc.getItemId());
 		
 		addEditState(dtoEdit, itemEdits);
 		

@@ -12,7 +12,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionReposit
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtraConRepository;
+//import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtraConRepository;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.ErrorAlarmWorkRecordPub;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.ErrorAlarmWorkRecordPubExport;
 import nts.uk.shr.com.i18n.TextResource;
@@ -22,8 +22,8 @@ public class ErrorAlarmWorkRecordPubImpl implements ErrorAlarmWorkRecordPub {
 	@Inject
 	private ErrorAlarmWorkRecordRepository repo;
 	
-	@Inject
-	private WorkRecordExtraConRepository workRecordExtraConRepo;
+//	@Inject
+//	private WorkRecordExtraConRepository workRecordExtraConRepo;
 
 	@Inject 
 	private ErrorAlarmConditionRepository errorAlarmConditionRepo;

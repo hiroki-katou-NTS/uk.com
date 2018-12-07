@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.transfer.app.find.rsdttaxpayee;
 
-import nts.uk.ctx.pr.transfer.dom.adapter.employee.EmployeeInformationAdapter;
-import nts.uk.ctx.pr.transfer.dom.adapter.employee.EmployeeInformationQueryDtoImport;
+import nts.uk.ctx.pr.transfer.dom.adapter.query.employee.EmployeeInformationAdapter;
+import nts.uk.ctx.pr.transfer.dom.adapter.query.employee.EmployeeInformationQueryDtoImport;
 import nts.uk.ctx.pr.transfer.dom.rsdttaxpayee.service.RsdtTaxPayAmountDto;
 import nts.uk.ctx.pr.transfer.dom.rsdttaxpayee.service.RsdtTaxPayAmountService;
 

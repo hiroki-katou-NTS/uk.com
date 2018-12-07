@@ -27,15 +27,15 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 
 	private static final String FIND_BY_KEY;
 
-	private static final String REMOVE_BY_KEY;
+//	private static final String REMOVE_BY_KEY;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDaiWorkType a ");
-		builderString.append("WHERE a.krcdtDaiWorkTypePK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtDaiWorkTypePK.ymd = :ymd ");
-		REMOVE_BY_KEY = builderString.toString();
+//		builderString.append("DELETE ");
+//		builderString.append("FROM KrcdtDaiWorkType a ");
+//		builderString.append("WHERE a.krcdtDaiWorkTypePK.employeeId = :employeeId ");
+//		builderString.append("AND a.krcdtDaiWorkTypePK.ymd = :ymd ");
+//		REMOVE_BY_KEY = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");

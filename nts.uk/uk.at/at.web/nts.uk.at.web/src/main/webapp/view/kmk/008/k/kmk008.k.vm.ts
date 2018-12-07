@@ -81,6 +81,7 @@ module nts.uk.at.view.kmk008.k {
                 let dfd = $.Deferred();
                 $('#txt-year-error-time').trigger("validate");
                 $('#txt-year-alarm-time').trigger("validate");
+                $('#txt-year').trigger("validate");
                 self.listItemDataGrid([]);
                 if (self.isYearMonth) {
                     new service.Service().getDetailYearMonth(self.employeeId).done(data => {
@@ -130,22 +131,23 @@ module nts.uk.at.view.kmk008.k {
                 self.currentSelectItem(new SettingModel(null, self.employeeId));
                 self.currentCodeSelect(null);
                 self.updateEnable(false);
+                $('input.nts-input').trigger("validate");
                 $("#txt-year").focus();
             }
 
             addOrUpdateClick() {
                 let self = this;
-                $('#txt-year-error-time').trigger("validate");
-                $('#txt-year-alarm-time').trigger("validate");
-                            _.defer(() => {
-                if (!$('.nts-editor').ntsError("hasError")) {
-                    if (self.isUpdate) {
-                        self.updateData();
-                    return;
-                    } else
-                        self.register();
-                }
-            });
+                $('input.nts-input').trigger("validate");
+                                
+                setTimeout(() => {
+                    if (!$('.nts-editor').ntsError("hasError")) {
+                        if (self.isUpdate) {
+                            self.updateData();
+                            return;
+                        } else
+                            self.register();
+                    }
+                }, 100);
             }
 
             register() {
