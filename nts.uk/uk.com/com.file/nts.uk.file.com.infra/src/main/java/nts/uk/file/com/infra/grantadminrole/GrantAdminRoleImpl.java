@@ -35,7 +35,7 @@ public class GrantAdminRoleImpl extends JpaRepository implements GrantAdminRoleR
             " ROW_NUMBER() OVER(PARTITION BY c.CID ORDER BY c.CID, u.LOGIN_ID) AS ROW_NUMBER,c.CID ,c.NAME, u.LOGIN_ID, p.BUSINESS_NAME,g.ROLE_TYPE, g.STR_D, g.END_D " +
             " FROM BCMMT_COMPANY c LEFT JOIN SACMT_ROLE_INDIVI_GRANT g ON c.CID = g.CID " +
             " LEFT JOIN SACMT_USER u ON g.USER_ID = u.USER_ID " +
-            " LEFT JOIN BPSMT_PERSON p ON p.PID = u.ASSO_PID WHERE g.ROLE_TYPE = ?) tb ORDER BY tb.CID";
+            " LEFT JOIN BPSMT_PERSON p ON p.PID = u.ASSO_PID WHERE g.ROLE_TYPE = ? AND c.ABOLITION_ATR = 0) tb ORDER BY tb.CID";
 
     @SneakyThrows
     @Override
