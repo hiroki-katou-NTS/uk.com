@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout;
 
 import nts.uk.ctx.pr.core.app.find.socialinsurance.welfarepensioninsurance.dto.YearMonthHistoryItemDto;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.*;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.service.StatementLayoutService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 
@@ -20,6 +21,10 @@ public class StatementLayoutHistFinder {
     private StatementLayoutHistRepository statementLayoutHistRepo;
     @Inject
     private StatementLayoutSetRepository statementLayoutSetRepo;
+    @Inject
+    private StatementLayoutService statementLayoutService;
+
+    private static final int END_MONTH = 999912;
 
     public List<YearMonthHistoryItemDto> getHistByCidAndCodeAndAfterDate(String code, int startYearMonth) {
         String cid = AppContexts.user().companyId();
@@ -53,6 +58,23 @@ public class StatementLayoutHistFinder {
 
             return Optional.of(new StatementLayoutHistDataDto(statementLayout.getStatementCode().v(), statementLayout.getStatementName().v(),
                     yearMonthHistoryItem.identifier(), yearMonthHistoryItem.start().v(), yearMonthHistoryItem.end().v(), new StatementLayoutSetDto(statementLayoutSet)));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<StatementLayoutHistDataDto> getInitStatementLayoutHistData(String statementCode, String histId, int startMonth, int itemHistoryDivision, int layoutPattern) {
+        String cid = AppContexts.user().companyId();
+
+        Optional<StatementLayout> statementLayoutOptional = statementLayoutRepo.getStatementLayoutById(cid, statementCode);
+        Optional<StatementLayoutSet> statementLayoutSetOptional = statementLayoutService.initStatementLayoutData(statementCode, histId, itemHistoryDivision, layoutPattern);
+
+        if(statementLayoutOptional.isPresent() && statementLayoutSetOptional.isPresent()) {
+            StatementLayout statementLayout = statementLayoutOptional.get();
+            StatementLayoutSet statementLayoutSet = statementLayoutSetOptional.get();
+
+            return Optional.of(new StatementLayoutHistDataDto(statementLayout.getStatementCode().v(), statementLayout.getStatementName().v(),
+                    histId, startMonth, END_MONTH, new StatementLayoutSetDto(statementLayoutSet)));
         } else {
             return Optional.empty();
         }

@@ -33,8 +33,8 @@ import nts.uk.ctx.at.record.dom.stamp.StampItem;
 import nts.uk.ctx.at.record.dom.stamp.StampRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
+//import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
+//import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -51,8 +51,8 @@ public class DataExport {
 	private StampCardRepository stampCardRepository;
 	
 	/** The work location repository. */
-	@Inject
-	private WorkLocationRepository workLocationRepository;
+//	@Inject
+//	private WorkLocationRepository workLocationRepository;
 	
 	/** The work time setting repository. */
 	@Inject
@@ -95,7 +95,7 @@ public class DataExport {
 	private List<StampItem> lstStampItem = new ArrayList<>();
 	private Map<String, List<String>> mapEmpIdWkpId = new HashMap<>();
 	private GeneralDate dateStampItem;
-	private Map<String, DatePeriod> mapWkpIdPeriod;
+//	private Map<String, DatePeriod> mapWkpIdPeriod;
 	private Map<String, List<ExWorkplaceHistItemImport>> mapEmpIdWkps;
 	/**
 	 * Gets the target data.
@@ -162,7 +162,8 @@ public class DataExport {
 				lstTemp.addAll(domain.getWorkplaceItems());
 			});
 			
-			mapWkpIdPeriod = lstTemp.stream().collect(Collectors.toMap(ExWorkplaceHistItemImport::getWorkplaceId, ExWorkplaceHistItemImport::getPeriod, (objDup1, objDup2) -> {return objDup2;}));
+			//mapWkpIdPeriod = 
+					lstTemp.stream().collect(Collectors.toMap(ExWorkplaceHistItemImport::getWorkplaceId, ExWorkplaceHistItemImport::getPeriod, (objDup1, objDup2) -> {return objDup2;}));
 			
 			
 			mapEmpIdWkpId.entrySet().stream().forEach(dto -> lstWkpID.addAll(dto.getValue()));

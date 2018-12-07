@@ -22,7 +22,7 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
+//import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
@@ -59,8 +59,8 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	private OvertimeRepository overtimeRepo;
 	@Inject
 	private AppHolidayWorkRepository holidayWorkRepo; 
-	@Inject
-	private CompltLeaveSimMngRepository compltLeaveRepo;
+//	@Inject
+//	private CompltLeaveSimMngRepository compltLeaveRepo;
 	
 	@Override
 	public List<AppRemainCreateInfor> lstRemainDataFromApp(String cid, String sid, DatePeriod dateData) {

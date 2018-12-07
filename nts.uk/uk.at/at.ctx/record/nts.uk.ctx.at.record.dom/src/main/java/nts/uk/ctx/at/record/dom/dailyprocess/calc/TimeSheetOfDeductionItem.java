@@ -13,7 +13,7 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+//import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
@@ -745,14 +745,17 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 			//就業時間内
 			case WithinWorkTime:
 				returnValue = goOutingRounding(dedAtr,goOutSet.getDiffTimezoneSetting().getWorkTimezone(),rounding);
+				break;
 			//残業
 			case EarlyWork:
 			case OverTimeWork:
 			case StatutoryOverTimeWork:
 				returnValue = goOutingRounding(dedAtr,goOutSet.getDiffTimezoneSetting().getOttimezone(),rounding);
+				break;
 			//休出
 			case HolidayWork:
 				returnValue = goOutingRounding(dedAtr,goOutSet.getDiffTimezoneSetting().getPubHolWorkTimezone(),rounding);
+				break;
 			default:
 				throw new RuntimeException("Unknown ActualAtr:"+actualAtr);
 			}

@@ -12,9 +12,9 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapte
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverPersonImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
+//import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
+//import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
@@ -34,8 +34,8 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 	@Inject
 	private ApplicationRepository_New applicationRepository;
 	
-	@Inject
-	private InitMode initMode;
+//	@Inject
+//	private InitMode initMode;
 	
 	@Override
 	public DetailedScreenPreBootModeOutput judgmentDetailScreenMode(String companyID, String employeeID, String appID, GeneralDate baseDate) {

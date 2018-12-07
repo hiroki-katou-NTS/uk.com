@@ -29,4 +29,8 @@ public class DPAttendanceItemRC {
 	private Integer typeGroup;
 	
 	private Integer primitive;
+	
+	public  boolean isNumber() {
+		return attendanceAtr ==  2 || attendanceAtr == 3 || attendanceAtr == 5;
+	}
 }

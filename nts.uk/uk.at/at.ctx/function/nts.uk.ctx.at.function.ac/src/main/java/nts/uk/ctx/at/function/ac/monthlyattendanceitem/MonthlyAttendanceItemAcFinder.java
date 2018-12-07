@@ -1,12 +1,16 @@
 package nts.uk.ctx.at.function.ac.monthlyattendanceitem;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.AttendanceItemValueImport;
 import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.MonthlyAttendanceItemAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.MonthlyAttendanceItemFunImport;
@@ -19,6 +23,9 @@ public class MonthlyAttendanceItemAcFinder implements MonthlyAttendanceItemAdapt
 
 	@Inject
 	private AttendanceItemService attendanceItemService;
+	
+	@Inject
+	private ManagedParallelWithContext parallel;
 
 	@Override
 	public List<MonthlyAttendanceItemFunImport> getMonthlyAttendanceItem(String companyId,
@@ -55,6 +62,16 @@ public class MonthlyAttendanceItemAcFinder implements MonthlyAttendanceItemAdapt
 						return new AttendanceItemValueImport(item.getValueType(), item.getItemId(), item.value());
 					}).collect(Collectors.toList()));
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<MonthlyAttendanceResultImport> getMonthlyValueOfParallel(Collection<String> employeeIds,
+			YearMonthPeriod range, Collection<Integer> itemIds) {
+		List<MonthlyAttendanceResultImport> itemValuesSync = Collections.synchronizedList(new ArrayList<>());
+		this.parallel.forEach(employeeIds, employeeID -> {
+			itemValuesSync.addAll(this.getMonthlyValueOf(employeeID, range, itemIds));
+		});
+		return new ArrayList<>(itemValuesSync);
 	}
 
 }

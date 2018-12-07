@@ -705,18 +705,12 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Override
 	public List<String> getListEmployee(List<String> jobTitleIds, GeneralDate baseDate) {
 		String cid = AppContexts.user().companyId();
-		List<AffJobTitleHistoryItem> listAffItem = new ArrayList<>();
 		List<AffCompanyHist> listAffComHist = new ArrayList<>();
 		List<String> employee = new ArrayList<>();
-		// Lấy domain [AffJobHistory]
-		Optional<AffJobTitleHistory> affHist = affJobRep.getListEmployee(baseDate, cid);
-		if (affHist.isPresent()) {
-			// (Lấy domain [AffJobHistoryItem])
-			for (String item : affHist.get().getHistoryIds()) {
-				List<AffJobTitleHistoryItem> affItem = jobTitleHistoryItemRepository.findHistJob(item, jobTitleIds);
-				listAffItem.addAll(affItem);
-			}
-		}
+		
+		// (Lấy domain [AffJobHistoryItem])
+		List<AffJobTitleHistoryItem> listAffItem = jobTitleHistoryItemRepository.findHistJob(cid, baseDate, jobTitleIds);
+
 		if (!listAffItem.isEmpty()) {
 			// (Lấy domain [EmployeeDataMngInfo], filter chỉ những employee chưa bị delete)
 			List<EmployeeDataMngInfo> mngInfo = empDataMngRepo

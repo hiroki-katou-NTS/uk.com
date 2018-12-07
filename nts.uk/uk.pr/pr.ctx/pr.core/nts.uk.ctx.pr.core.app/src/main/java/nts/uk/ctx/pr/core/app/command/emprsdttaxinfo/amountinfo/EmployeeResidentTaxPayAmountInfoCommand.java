@@ -13,11 +13,6 @@ public class EmployeeResidentTaxPayAmountInfoCommand {
     private String sid;
 
     /**
-     * 年度
-     */
-    private int year;
-
-    /**
      * 住民税納付先.名称
      */
     private String rsdtTaxPayeeName;
@@ -87,8 +82,8 @@ public class EmployeeResidentTaxPayAmountInfoCommand {
      */
     private BigDecimal amountDecember;
 
-    public EmployeeResidentTaxPayAmountInfo toDomain() {
-        return new EmployeeResidentTaxPayAmountInfo(this.sid, this.year, this.inputAtr,
+    public EmployeeResidentTaxPayAmountInfo toDomain(int year) {
+        return new EmployeeResidentTaxPayAmountInfo(this.sid, year, this.inputAtr,
                 this.amountJanuary, this.amountFebruary, this.amountMarch, this.amountApril, this.amountMay,
                 this.amountJune, this.amountJuly, this.amountAugust, this.amountSeptember, this.amountOctober,
                 this.amountNovember, this.amountDecember);

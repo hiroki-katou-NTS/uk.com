@@ -483,7 +483,8 @@ module nts.uk.pr.view.qmm019.share.model {
             this.startMonth = params.startMonth;
             this.endMonth = params.endMonth;
             this.historyId = params.historyId;
-            this.nodeText = params.startMonth + " ~ " + params.endMonth;
+            this.nodeText = nts.uk.time.parseYearMonth(params.startMonth).format()
+                    + " ~ " + nts.uk.time.parseYearMonth(params.endMonth).format();
             this.history = [];
         }
     }

@@ -19,7 +19,7 @@ public class ExecLogGeneratorCSV extends AsposeCellsReportGenerator implements E
 
 	private static final int RESULT_LOG = 0;
 
-	private static final int ERROR_LOG = 1;
+//	private static final int ERROR_LOG = 1;
 
 	private static final int CSV_START_COLUMN = 0;
 

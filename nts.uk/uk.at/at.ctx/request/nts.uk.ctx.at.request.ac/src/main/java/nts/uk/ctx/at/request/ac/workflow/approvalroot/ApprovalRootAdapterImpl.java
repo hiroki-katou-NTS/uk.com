@@ -28,7 +28,7 @@ import nts.uk.ctx.workflow.pub.approvalroot.ApprovalRootPub;
 import nts.uk.ctx.workflow.pub.approvalroot.export.ApprovalPhaseExport;
 import nts.uk.ctx.workflow.pub.approvalroot.export.ApprovalRootExport;
 import nts.uk.ctx.workflow.pub.approvalroot.export.ApproverInfoExport;
-import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
+//import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -47,8 +47,8 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 	@Inject
 	private AgentAdapter agentAdapter;
 	
-	@Inject
-	private ApprovalRootStatePub approvalStatePub;
+//	@Inject
+//	private ApprovalRootStatePub approvalStatePub;
 
 	@Override
 	public List<ApprovalRootImport> getApprovalRootOfSubjectRequest(String cid, String sid, int employmentRootAtr,int appType, GeneralDate standardDate) {

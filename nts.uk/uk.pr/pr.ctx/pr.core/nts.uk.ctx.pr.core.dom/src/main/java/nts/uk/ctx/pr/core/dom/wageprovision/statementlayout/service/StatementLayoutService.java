@@ -80,15 +80,39 @@ public class StatementLayoutService {
         statementLayoutRepo.add(statementLayout);
         statementLayoutHistRepo.add(cid, statementCode, statementLayoutHist, layoutPattern);
 
+        Optional<StatementLayoutSet> statementLayoutSet;
         if (isClone == 0) {
-            addNewStatementLayoutSet(histIdNew, layoutPattern);
+            statementLayoutSet = getNewStatementLayoutSet(histIdNew, layoutPattern);
         } else {
-            cloneStatementLayoutSet(histIdNew, histIdClone);
+            statementLayoutSet = cloneStatementLayoutSet(histIdNew, histIdClone, layoutPattern);
         }
+
+        if(statementLayoutSet.isPresent()) {
+            statementLayoutSetRepo.add(statementLayoutSet.get());
+        } else {
+            throw new BusinessException("Some err");
+        }
+
+    }
+
+    public Optional<StatementLayoutSet> initStatementLayoutData(String statementCode, String histIdNew, int isClone, int layoutPattern) {
+        String cid = AppContexts.user().companyId();
+        Optional<YearMonthHistoryItem> lastHistOptional = statementLayoutHistRepo.getLatestHistByCidAndCode(cid, statementCode);
+        Optional<StatementLayoutSet> statementLayoutSet;
+
+        if (isClone == 1) {
+            statementLayoutSet = getNewStatementLayoutSet(histIdNew, layoutPattern);
+        } else if(lastHistOptional.isPresent()){
+            statementLayoutSet = cloneStatementLayoutSet(histIdNew, lastHistOptional.get().identifier(), layoutPattern);
+        } else {
+            return Optional.empty();
+        }
+
+        return statementLayoutSet;
     }
 
     //新規に作成の場合
-    private void addNewStatementLayoutSet(String histIdNew, int layoutPattern) {
+    private Optional<StatementLayoutSet> getNewStatementLayoutSet(String histIdNew, int layoutPattern) {
         List<SettingByCtg> listSettingByCtg = new ArrayList<>();
 
         //支給項目
@@ -102,29 +126,36 @@ public class StatementLayoutService {
 
         //控除項目
         List<LineByLineSetting> deducationLineList = new ArrayList<>();
-        deducationLineList.add(getNewLineTypeDeduction(histIdNew, 1, 1, F101, DeductionTotalObjAtr.INSIDE.value));
-        deducationLineList.add(getNewLineTypeDeduction(histIdNew, 1, 2, F102, DeductionTotalObjAtr.INSIDE.value));
-        deducationLineList.add(getNewLineTypeDeduction(histIdNew, 1, 3, F103, DeductionTotalObjAtr.INSIDE.value));
-        deducationLineList.add(getNewLineTypeDeduction(histIdNew, 1, 4, F104, DeductionTotalObjAtr.INSIDE.value));
-        deducationLineList.add(getNewLineTypeDeduction(histIdNew, 1, 5, F105, DeductionTotalObjAtr.OUTSIDE.value));
-        deducationLineList.add(getNewLineTypeDeduction(histIdNew, 1, 6, F106, DeductionTotalObjAtr.OUTSIDE.value));
-        deducationLineList.add(getNewLineTypeDeduction(histIdNew, 1, 7, F107, DeductionTotalObjAtr.INSIDE.value));
-        deducationLineList.add(getNewLineTypeDeduction(histIdNew, 1, 8, F108, DeductionTotalObjAtr.INSIDE.value));
-        deducationLineList.add(getNewLineTypeDeduction(histIdNew, 2, 9, F114, DeductionTotalObjAtr.OUTSIDE.value));
+        List<SettingByItem> itemsInLine1 = new ArrayList<>();
+        List<SettingByItem> itemsInLine2 = new ArrayList<>();
+        itemsInLine1.add(getNewItemTypeDeduction(histIdNew, 1, F101, DeductionTotalObjAtr.INSIDE.value));
+        itemsInLine1.add(getNewItemTypeDeduction(histIdNew, 2, F102, DeductionTotalObjAtr.INSIDE.value));
+        itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  3, F103, DeductionTotalObjAtr.INSIDE.value));
+        itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  4, F104, DeductionTotalObjAtr.INSIDE.value));
+        itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  5, F105, DeductionTotalObjAtr.OUTSIDE.value));
+        itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  6, F106, DeductionTotalObjAtr.OUTSIDE.value));
+        itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  7, F107, DeductionTotalObjAtr.INSIDE.value));
+        itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  8, F108, DeductionTotalObjAtr.INSIDE.value));
+        itemsInLine2.add(getNewItemTypeDeduction(histIdNew,  9, F114, DeductionTotalObjAtr.OUTSIDE.value));
+
+        LineByLineSetting line1 = new LineByLineSetting(StatementPrintAtr.PRINT.value, 1, itemsInLine1);
+        LineByLineSetting line2 = new LineByLineSetting(StatementPrintAtr.PRINT.value, 2, itemsInLine2);
+        deducationLineList.add(line1);
+        deducationLineList.add(line2);
 
         SettingByCtg deducationCtgSetting = new SettingByCtg(CategoryAtr.DEDUCTION_ITEM.value, deducationLineList);
         listSettingByCtg.add(deducationCtgSetting);
 
+        //勤怠項目
+        List<LineByLineSetting> timeLineList = new ArrayList<>();
+        SettingByCtg timeCtgSetting = new SettingByCtg(CategoryAtr.ATTEND_ITEM.value, timeLineList);
+        listSettingByCtg.add(timeCtgSetting);
+
         if(StatementLayoutPattern.DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON.value == layoutPattern) {
             deducationLineList.add(new LineByLineSetting(StatementPrintAtr.PRINT.value, 3, new ArrayList<>()));
 
-            //勤怠項目
-            List<LineByLineSetting> timeLineList = new ArrayList<>();
             timeLineList.add(new LineByLineSetting(StatementPrintAtr.PRINT.value, 1, new ArrayList<>()));
             timeLineList.add(new LineByLineSetting(StatementPrintAtr.PRINT.value, 2, new ArrayList<>()));
-
-            SettingByCtg timeCtgSetting = new SettingByCtg(CategoryAtr.ATTEND_ITEM.value, timeLineList);
-            listSettingByCtg.add(timeCtgSetting);
         }
 
         //記事項目
@@ -139,21 +170,38 @@ public class StatementLayoutService {
         SettingByCtg reportCtgSetting = new SettingByCtg(CategoryAtr.REPORT_ITEM.value, reportLineList);
         listSettingByCtg.add(reportCtgSetting);
 
-        StatementLayoutSet statementLayoutSet = new StatementLayoutSet(histIdNew, layoutPattern, listSettingByCtg);
-        statementLayoutSetRepo.add(statementLayoutSet);
+        return Optional.of(new StatementLayoutSet(histIdNew, layoutPattern, listSettingByCtg));
     }
 
     //既存のレイアウトをコピーする場合
-    private void cloneStatementLayoutSet(String histIdNew, String histIdClone) {
+    private Optional<StatementLayoutSet> cloneStatementLayoutSet(String histIdNew, String histIdClone, int layoutPattern) {
         Optional<StatementLayoutSet> cloneStatementLayoutSetOptional = statementLayoutSetRepo.getStatementLayoutSetById(histIdClone);
 
         if(cloneStatementLayoutSetOptional.isPresent()) {
             StatementLayoutSet cloneStatementLayoutSet = cloneStatementLayoutSetOptional.get();
             cloneStatementLayoutSet.setHistId(histIdNew);
+            cloneStatementLayoutSet.setLayoutPattern(EnumAdaptor.valueOf(layoutPattern, StatementLayoutPattern.class));
 
-            statementLayoutSetRepo.add(cloneStatementLayoutSet);
+            for (SettingByCtg settingByCtg : cloneStatementLayoutSet.getListSettingByCtg()) {
+                for (LineByLineSetting lineByLineSetting : settingByCtg.getListLineByLineSet()) {
+                    for (SettingByItem settingByItem : lineByLineSetting.getListSetByItem()) {
+                        if(settingByItem instanceof SettingByItemCustom) {
+                            SettingByItemCustom settingByItemCustom = (SettingByItemCustom) settingByItem;
+                            if(settingByItemCustom.getPaymentItemDetailSet().isPresent()) {
+                                settingByItemCustom.getPaymentItemDetailSet().get().setHistId(histIdNew);
+                            }
+
+                            if(settingByItemCustom.getDeductionItemDetailSet().isPresent()) {
+                                settingByItemCustom.getDeductionItemDetailSet().get().setHistId(histIdNew);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return Optional.of(cloneStatementLayoutSet);
         } else {
-            throw new BusinessException("sai me roi");
+            return Optional.empty();
         }
     }
 
@@ -167,14 +215,10 @@ public class StatementLayoutService {
         return new LineByLineSetting(StatementPrintAtr.PRINT.value, lineNumber, listSetByItem);
     }
 
-    private LineByLineSetting getNewLineTypeDeduction(String histId, int lineNumber, int position, String statementCode, int totalObj) {
+    private SettingByItem getNewItemTypeDeduction(String histId, int position, String statementCode, int totalObj) {
         DeductionItemDetailSet detail = new DeductionItemDetailSet(histId, statementCode, totalObj, PaymentProportionalAtr.NOT_PROPORTIONAL.value,
                 null, PaymentCaclMethodAtr.MANUAL_INPUT.value, null, null, null, null, null);
-        SettingByItem item = new SettingByItemCustom(position, statementCode, null, detail, null);
-        List<SettingByItem> listSetByItem = new ArrayList<>();
-        listSetByItem.add(item);
-
-        return new LineByLineSetting(StatementPrintAtr.PRINT.value, lineNumber, listSetByItem);
+        return new SettingByItemCustom(position, statementCode, null, detail, null);
     }
 
     //新規作成時チェック処理
@@ -213,9 +257,9 @@ public class StatementLayoutService {
             case LASER_PRINT_A4_LANDSCAPE_TWO_PERSON:
                 return 10;
             case LASER_CRIMP_PORTRAIT_ONE_PERSON:
-                return 11111111;
-            case LASER_CRIMP_LANDSCAPE_ONE_PERSON:
                 return 17;
+            case LASER_CRIMP_LANDSCAPE_ONE_PERSON:
+                return 11111111;
             case DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON:
                 return 11111111;
             default:

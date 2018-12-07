@@ -32,9 +32,9 @@
                 <div class="cell valign-center">
                     <!--P1_3-->
                     <div id="P1_3" tabindex="1"
-                         data-bind="ntsDatePicker: { name: '#[QMM019_204]', value: standardYM, dateFormat: 'yearmonth'}"></div>
+                         data-bind="ntsDatePicker: { name: '#[QMM019_204]', value: processingDate, dateFormat: 'yearmonth'}"/>
                     <!--P1_4-->
-                    <button id="P1_4" tabindex="2" data-bind="click: cancel">#{i18n.getText('QMM019_207')}</button>
+                    <button id="P1_4" tabindex="2" data-bind="click: reflect">#{i18n.getText('QMM019_207')}</button>
                 </div>
             </div>
             <div class="table">
@@ -47,12 +47,15 @@
                     <table id="P1_6" data-bind="ntsGridList: {
                         name: '#[QMM019_13]',
                         rows: 10,
-                        options: specLayouts,
-                        optionsValue: 'specCode',
-                        columns: columns,
+                        options: statementLayouts,
+                        optionsValue: 'statementCode',
+                        columns: [
+                            {headerText: '', key: 'statementCode', hidden: true},
+                            {headerText: '#{i18n.getText('QMM019_21')}', key: 'statementName', width: 200, formatter: _.escape}
+                        ],
                         multiple: true,
-                        value: specLayoutsSelected
-                    }"></table>
+                        value: statementLayoutsSelected
+                    }"/>
                 </div>
             </div>
         </div>

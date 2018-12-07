@@ -17,8 +17,6 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepo
 import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
 import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
 import nts.uk.ctx.at.record.dom.adapter.company.SyCompanyRecordAdapter;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyFlexStatutoryLaborTime;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyStatutoryWorkingHours;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
@@ -28,16 +26,13 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -61,8 +56,8 @@ public class CheckBeforeCalcFlexChange {
 	@Inject
 	private SyCompanyRecordAdapter syCompanyRecordAdapter;
 
-	@Inject
-	private AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthlyRepository;
+//	@Inject
+//	private AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthlyRepository;
 
 	@Inject
 	private MonthlyStatutoryWorkingHours monthlyStatutoryWorkingHours;
@@ -70,8 +65,8 @@ public class CheckBeforeCalcFlexChange {
 	@Inject
 	private DailyPerformanceScreenRepo dailyPerformanceScreenRepo;
 
-	@Inject
-	private AffWorkplaceHistoryItemRepository affWorkplaceHis;
+//	@Inject
+//	private AffWorkplaceHistoryItemRepository affWorkplaceHis;
 
 	@Inject
 	private AttendanceTimeRepository attendanceTime;
@@ -79,29 +74,33 @@ public class CheckBeforeCalcFlexChange {
 	private static final String TIME_DEFAULT = "0:00";
 
 	// 社員のフレックス繰越上限時間を求める
-	public String getConditionCalcFlex(String companyId, CalcFlexChangeDto calc) {
+	public ConditionCalcResult getConditionCalcFlex(String companyId, CalcFlexChangeDto calc) {
 		return getConditionCalcFlex(companyId, calc, Optional.empty(), Optional.empty());
 	}
 	
 	// 社員のフレックス繰越上限時間を求める
-	public String getConditionCalcFlex(String companyId, CalcFlexChangeDto calc, Optional<ClosureEmployment> closureEmployment,
+	public ConditionCalcResult getConditionCalcFlex(String companyId, CalcFlexChangeDto calc, Optional<ClosureEmployment> closureEmployment,
 			Optional<PresentClosingPeriodExport> periodExportOpt) {
-		String timeCheck = "15:00";
 		
 		if(!closureEmployment.isPresent()){
 			closureEmployment = this.closureEmploymentRepository
 					.findByEmploymentCD(companyId, processor.getEmploymentCode(companyId, calc.getDate(), calc.getEmployeeId()));
 		}
 		if (!closureEmployment.isPresent())
-			return "";
+			return new ConditionCalcResult("", MessageFlex.Normal);
 		// 指定した年月日時点の締め期間を取得する
 		if(!periodExportOpt.isPresent()){
 			periodExportOpt = shClosurePub.find(companyId, closureEmployment.get().getClosureId(), calc.getDate());
 		}
 		
 		if (periodExportOpt.isPresent() && (calc.getDate().after(periodExportOpt.get().getClosureEndDate())
-				|| calc.getDate().after(periodExportOpt.get().getClosureStartDate()))) {
-			// TODO ドメインモデル「フレックス不足の繰越上限時間」を取得する
+				|| calc.getDate().before(periodExportOpt.get().getClosureStartDate()))) {
+			// ドメインモデル「フレックス不足の繰越上限時間」を取得する
+			Integer valueLimit = dailyPerformanceScreenRepo.getLimitFexMonth(companyId);
+			if (valueLimit == null)
+				valueLimit = 0;
+			//102745  ・状態：正常 
+			return new ConditionCalcResult(converMinutesToHours(valueLimit), MessageFlex.Normal);
 		}
 
 		// 社員ID（List）と指定期間から所属会社履歴項目を取得
@@ -112,13 +111,15 @@ public class CheckBeforeCalcFlexChange {
 			for (AffComHistItemImport his : affCompanyHis.get(0).getLstAffComHistItem()) {
 				// 「所属会社履歴項目．退職日」がパラメータ「当月の期間」に含まれているかチェックする
 				if (his.getDatePeriod().end() != null && datePeriod.contains(his.getDatePeriod().end())) {
-					return TIME_DEFAULT;
+					//102745 ・状態：当月退職
+					return new ConditionCalcResult(TIME_DEFAULT, MessageFlex.Retirement);
 				}
 			}
 		}
 		
 		if (calc.getWCItems().isEmpty()) {
-			return TIME_DEFAULT;
+			//102745 ・状態：当月退職
+			return new ConditionCalcResult(TIME_DEFAULT, MessageFlex.Retirement);
 		}
 		
 		// ドメインモデル「労働条件」を取得する
@@ -166,31 +167,33 @@ public class CheckBeforeCalcFlexChange {
 		}
         
 		if(!checkFlex){
-			return TIME_DEFAULT;
+			//102745 ・状態：翌月フレックスでない
+			return new ConditionCalcResult(TIME_DEFAULT, MessageFlex.Not_Next_Month);
 		}
 		// フレックス時間勤務の場合(là フレックス時間勤務)
 		// 指定した年月日時点の締め期間を取得する
 		Optional<PresentClosingPeriodExport> periodExportOptNext = shClosurePub.find(companyId,
 				closureEmployment.get().getClosureId(), periodExportOpt.get().getClosureEndDate().addDays(1));
-		// ドメインモデル「月別実績の勤怠時間」を取得する
-		Optional<AttendanceTimeOfMonthly> attTiemOpt = attendanceTimeOfMonthlyRepository.find(calc.getEmployeeId(),
-				periodExportOptNext.get().getProcessingYm(),
-				ClosureId.valueOf(closureEmployment.get().getClosureId()),
-				new ClosureDate(periodExportOptNext.get().getClosureDate().getClosureDay(),
-						periodExportOptNext.get().getClosureDate().getLastDayOfMonth()));
-
-		// String timeCarryoverTime = "0:00";
+		// ドメインモデル「月別実績の勤怠時間」を取得する 
+		// #102745 change EAP
+//		Optional<AttendanceTimeOfMonthly> attTiemOpt = attendanceTimeOfMonthlyRepository.find(calc.getEmployeeId(),
+//				periodExportOptNext.get().getProcessingYm(),
+//				ClosureId.valueOf(closureEmployment.get().getClosureId()),
+//				new ClosureDate(periodExportOptNext.get().getClosureDate().getClosureDay(),
+//						periodExportOptNext.get().getClosureDate().getLastDayOfMonth()));
+//
+//		// String timeCarryoverTime = "0:00";
 		long timeSum = 0L;
-		if (attTiemOpt.isPresent()) {
-			// 「法定労働時間」-「所定労働時間」をパラメータ「翌月繰越可能時間」にセットする
-			if (attTiemOpt.get().getMonthlyCalculation() == null
-					|| attTiemOpt.get().getMonthlyCalculation().getStatutoryWorkingTime() == null)
-				return TIME_DEFAULT;
-			timeSum = attTiemOpt.get().getMonthlyCalculation().getStatutoryWorkingTime().v()
-					- attTiemOpt.get().getMonthlyCalculation().getAggregateTime().getPrescribedWorkingTime()
-							.getSchedulePrescribedWorkingTime().v();
-			// timeCarryoverTime = String.format("%d:%02d", time);
-		} else {
+//		if (attTiemOpt.isPresent()) {
+//			// 「法定労働時間」-「所定労働時間」をパラメータ「翌月繰越可能時間」にセットする
+//			if (attTiemOpt.get().getMonthlyCalculation() == null
+//					|| attTiemOpt.get().getMonthlyCalculation().getStatutoryWorkingTime() == null)
+//				return TIME_DEFAULT;
+//			timeSum = attTiemOpt.get().getMonthlyCalculation().getStatutoryWorkingTime().v()
+//					- attTiemOpt.get().getMonthlyCalculation().getAggregateTime().getPrescribedWorkingTime()
+//							.getSchedulePrescribedWorkingTime().v();
+//			// timeCarryoverTime = String.format("%d:%02d", time);
+//		} else {
 			// 社員と基準日から雇用履歴項目を取得する
 			AffEmploymentHistoryDto afEmpDto = dailyPerformanceScreenRepo.getAffEmploymentHistory(companyId, calc.getEmployeeId(),
 														periodExportOptNext.get().getClosureStartDate());
@@ -218,7 +221,7 @@ public class CheckBeforeCalcFlexChange {
 
 			timeSum = (monthFlex != null && monthFlex.getStatutorySetting() != null)
 					? monthFlex.getStatutorySetting().v() - calcSumTime(listAttTime) : 0 - calcSumTime(listAttTime);
-		}
+//		}
 
 		if (timeSum <= 0) {
 			timeSum = 0;
@@ -228,9 +231,11 @@ public class CheckBeforeCalcFlexChange {
 		Integer valueLimit = dailyPerformanceScreenRepo.getLimitFexMonth(companyId);
 		if(valueLimit == null) valueLimit = 0;
 		if (valueLimit >= timeSum) {
-			return converMinutesToHours((int)timeSum);
+			//102745  ・状態：正常
+			return new ConditionCalcResult(converMinutesToHours((int)timeSum), MessageFlex.Normal);
 		} else {
-			return converMinutesToHours(valueLimit);
+			////102745  ・状態：正常
+			return new ConditionCalcResult(converMinutesToHours(valueLimit), MessageFlex.Normal);
 		}
 	}
 

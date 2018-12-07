@@ -2,7 +2,6 @@ package nts.uk.screen.at.app.monthlyperformance.correction.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -11,10 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyDto;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.Constraint;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.primitive.PrimitiveValueDaily;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.PAttendanceItem;
 import nts.uk.shr.com.i18n.TextResource;
 

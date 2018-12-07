@@ -2,6 +2,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import dialog = nts.uk.ui.dialog;
     import block  = nts.uk.ui.block;
+
     export class ScreenModel {
 
         //SalIndAmountName
@@ -9,19 +10,18 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
         ccg001ReturnData: any;
 
 
-
         salIndAmountNames: KnockoutObservableArray<SalIndAmountName>;
         salIndAmountNamesSelectedCode: KnockoutObservable<string>;
 
-        personalAmount:KnockoutObservableArray<PersonalAmount>;
-        personalDisplay:KnockoutObservableArray<PersonalAmount>;
+        personalAmount: KnockoutObservableArray<PersonalAmount>;
+        personalDisplay: KnockoutObservableArray<PersonalAmount>;
 
         //onSelected
         cateIndicator: KnockoutObservable<number>;
         salBonusCate: KnockoutObservable<number>;
         //ccg001
-        employeeList:any;
-        employeeInfoImports:any;
+        employeeList: any;
+        employeeInfoImports: any;
         referenceDate: KnockoutObservable<string> = ko.observable('');
         ccgcomponent: GroupOption;
         tilteTable: KnockoutObservableArray<any>;
@@ -49,25 +49,17 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
 
             ]);
-            self.personalAmount =ko.observableArray([]);
-            self.personalDisplay =ko.observableArray([]);
-
-
-
+            self.personalAmount = ko.observableArray([]);
+            self.personalDisplay = ko.observableArray([]);
             self.yearMonthFilter = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
             self.cateIndicator = ko.observable(0);
             self.salBonusCate = ko.observable(0);
-
             self.salIndAmountNames = ko.observableArray([]);
             self.salIndAmountNamesSelectedCode = ko.observable('');
-
-
-
             self.selectedEmployeeCode = ko.observable('1');
             self.individualPriceCode = ko.observable('');
             self.individualPriceName = ko.observable('');
             self.onSelectTab(self.onTab);
-
 
             self.salIndAmountNamesSelectedCode.subscribe(function (data) {
                 self.personalAmount.removeAll();
@@ -82,29 +74,28 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 if (temp) {
                     self.individualPriceCode(temp.individualPriceCode);
                     self.individualPriceName(temp.individualPriceName);
-
                 }
             });
-
-
-
-
-
         }
 
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+            block.invisible();
             service.employeeReferenceDate().done(function (data) {
-                if(data)
+                if (data)
                     self.reloadCcg001(data.empExtraRefeDate);
                 else
                     self.reloadCcg001(moment(Date.now()).format("YYYY/MM/DD"));
 
                 $('#A5_7').focus();
+                // self.filterData();
+                block.clear();
+                dfd.resolve(self);
+            }).fail((err) => {
+                block.clear();
+                dfd.reject();
             });
-
-            dfd.resolve(self);
             return dfd.promise();
         }
 
@@ -175,21 +166,20 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", 0);
                     break;
             }
-            setTimeout(function(){
+            setTimeout(function () {
                 nts.uk.ui.errors.clearAll();
             }, 100)
         }
 
         public loadSalIndAmountName(cateIndicator: number): void {
             let self = this;
+            block.invisible();
             service.salIndAmountNameByCateIndicator(cateIndicator).done((data) => {
-                block.invisible();
                 if (data) {
-                    self.salIndAmountNames(_.sortBy(data,function (o) {
+                    self.salIndAmountNames(_.sortBy(data, function (o) {
                         return o.individualPriceCode;
                     }));
                     if (data.length > 0) {
-
                         self.salIndAmountNamesSelectedCode(self.salIndAmountNames()[0].individualPriceCode);
                         self.salIndAmountNamesSelectedCode.valueHasMutated();
                     }
@@ -201,10 +191,12 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     }
                 }
                 block.clear();
+            }).fail((err) => {
+                block.clear();
             });
         }
 
-        filterData(): void {
+        filterData() {
             let self = this;
             self.yearMonthFilter();
             $('#A5_7').ntsError('check');
@@ -258,7 +250,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 }, 0);
                 block.clear();
             }).fail((err) => {
-                nts.uk.ui.dialog.alertError(err.getMessage());
+                nts.uk.ui.dialog.alertError(err.message);
                 block.clear();
             });
         }
@@ -267,7 +259,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             let self = this;
 
             service.salIndAmountUpdateAll({
-                salIndAmountUpdateCommandList: ko.toJS(self.personalAmount)}).done(function () {
+                salIndAmountUpdateCommandList: ko.toJS(self.personalAmount)
+            }).done(function () {
                 dialog.info({messageId: "Msg_15"});
             })
         }
@@ -445,23 +438,23 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
     export class PersonalAmount {
         empId: string;
         historyId: string;
-        employeeCode:KnockoutObservable<string>=ko.observable('');
-        businessName: KnockoutObservable<string>=ko.observable('');
+        employeeCode: KnockoutObservable<string> = ko.observable('');
+        businessName: KnockoutObservable<string> = ko.observable('');
         startYearMonth: number;
         endYearMonth: number;
-        period:string;
-        amount: KnockoutObservable<number>=ko.observable(0);
+        period: string;
+        amount: KnockoutObservable<number> = ko.observable(0);
 
-        constructor(param:IPersonalAmount){
-            let self=this;
-            self.empId=param.empId;
-            self.historyId=param.historyId;
-            self.employeeCode=ko.observable('');
-            self.businessName=ko.observable('');
-            self.startYearMonth=param.startYearMonth;
-            self.endYearMonth=param.endYearMonth;
+        constructor(param: IPersonalAmount) {
+            let self = this;
+            self.empId = param.empId;
+            self.historyId = param.historyId;
+            self.employeeCode = ko.observable('');
+            self.businessName = ko.observable('');
+            self.startYearMonth = param.startYearMonth;
+            self.endYearMonth = param.endYearMonth;
 
-            self.period=nts.uk.time.formatYearMonth(param.startYearMonth) + ' ～ ' + nts.uk.time.formatYearMonth(param.endYearMonth);
+            self.period = nts.uk.time.formatYearMonth(param.startYearMonth) + ' ～ ' + nts.uk.time.formatYearMonth(param.endYearMonth);
             self.amount(param.amount);
         }
 

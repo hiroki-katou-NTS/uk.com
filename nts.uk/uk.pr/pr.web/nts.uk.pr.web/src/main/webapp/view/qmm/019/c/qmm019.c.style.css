@@ -6,6 +6,11 @@
     width: 120px;
 }
 
+#C1_3 {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
 #C1_7, #right-item {
     display: inline-block;
 }

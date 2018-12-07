@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.jobtitle.main.JobTitleMain;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.strategic.PersistentResidentHistory;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -37,7 +36,7 @@ public class AssignedWorkplace extends AggregateRoot implements PersistentReside
 	private List<DateHistoryItem> dateHistoryItem;
 
 	@Override
-	public List items() {
+	public List<DateHistoryItem> items() {
 		return this.dateHistoryItem;
 	}
 	

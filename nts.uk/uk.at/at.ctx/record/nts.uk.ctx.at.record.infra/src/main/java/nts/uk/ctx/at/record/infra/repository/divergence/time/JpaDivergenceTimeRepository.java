@@ -358,8 +358,8 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	 */
 	private KrcstDvgcTime toEntity(DivergenceTime domain) {
 
-		List<KrcstDvgcAttendance> entityAttendanceList = this.findAttendance(domain.getCompanyId(),
-				domain.getDivergenceTimeNo());
+//		List<KrcstDvgcAttendance> entityAttendanceList = this.findAttendance(domain.getCompanyId(),
+//				domain.getDivergenceTimeNo());
 		KrcstDvgcTimePK PK = new KrcstDvgcTimePK(domain.getCompanyId(), domain.getDivergenceTimeNo());
 		KrcstDvgcTime entityDvgcTime = this.queryProxy().find(PK, KrcstDvgcTime.class).orElse(new KrcstDvgcTime());
 

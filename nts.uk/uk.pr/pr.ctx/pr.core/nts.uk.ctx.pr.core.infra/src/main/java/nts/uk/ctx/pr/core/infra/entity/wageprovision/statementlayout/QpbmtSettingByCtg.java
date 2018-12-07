@@ -42,8 +42,7 @@ public class QpbmtSettingByCtg extends UkJpaEntity implements Serializable
     }
 
     public SettingByCtg toDomain() {
-        CategoryAtr category = listLineByLineSet.isEmpty() ? null : EnumAdaptor.valueOf(listLineByLineSet.get(0).lineByLineSetPk.categoryAtr, CategoryAtr.class);
-        return new SettingByCtg(category, listLineByLineSet.stream().map(entity -> entity.toDomain()).collect(Collectors.toList()));
+        return new SettingByCtg(this.settingByCtgPk.categoryAtr, listLineByLineSet.stream().map(entity -> entity.toDomain()).collect(Collectors.toList()));
     }
 
     public static QpbmtSettingByCtg toEntity(String histId, SettingByCtg settingByCtg) {

@@ -30,10 +30,10 @@ public class JpaIdentificationRepository extends JpaRepository implements Identi
 			+ " AND c.krcdtIdentificationStatusPK.employeeId = :employeeId "
 			+ " AND c.krcdtIdentificationStatusPK.processingYmd BETWEEN :startDate AND :endDate  ";
 
-	private static final String GET_BY_LIST_EMPLOYEE_ID = "SELECT c from KrcdtIdentificationStatus c "
-			+ " WHERE c.krcdtIdentificationStatusPK.companyID = :companyID "
-			+ " AND c.krcdtIdentificationStatusPK.employeeId IN :employeeIds "
-			+ " AND c.krcdtIdentificationStatusPK.processingYmd BETWEEN :startDate AND :endDate  ";
+//	private static final String GET_BY_LIST_EMPLOYEE_ID = "SELECT c from KrcdtIdentificationStatus c "
+//			+ " WHERE c.krcdtIdentificationStatusPK.companyID = :companyID "
+//			+ " AND c.krcdtIdentificationStatusPK.employeeId IN :employeeIds "
+//			+ " AND c.krcdtIdentificationStatusPK.processingYmd BETWEEN :startDate AND :endDate  ";
 
 	private static final String GET_BY_CODE = "SELECT c from KrcdtIdentificationStatus c "
 			+ " WHERE c.krcdtIdentificationStatusPK.companyID = :companyID "

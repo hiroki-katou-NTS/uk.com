@@ -48,6 +48,8 @@ module nts.uk.at.view.kaf007.b {
             targetDate: any = moment(new Date()).format("YYYY/MM/DD");
             requiredCheckTime: KnockoutObservable<boolean> = ko.observable(this.isWorkChange() && true);
             timeRequired: KnockoutObservable<boolean> = ko.observable(false);
+            //screen B default hidden
+            showExcludeHoliday: KnockoutObservable<boolean> = ko.observable(false);
             constructor( listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata ) {
                 super( listAppMetadata, currentApp );
                 let self = this;

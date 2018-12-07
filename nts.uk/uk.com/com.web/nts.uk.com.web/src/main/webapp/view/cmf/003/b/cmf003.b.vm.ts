@@ -499,7 +499,7 @@ module nts.uk.com.view.cmf003.b {
                 var self = this;
                 var dfd = $.Deferred();
                 var employeeSearchs: TargetEmployee[] = [];
-                self.selectedEmployeeCode([]);
+                var selectedCodes = [];
                 for (var i = 0; i < dataList.length; i++) {
                     let employeeSearch = dataList[i];
                     let employee : UnitModel = {
@@ -511,12 +511,14 @@ module nts.uk.com.view.cmf003.b {
                         businessname: employeeSearch.employeeName
                     };
                     employeeSearchs.push(employee);
-                    self.selectedEmployeeCode.push(employee.code);
+                    selectedCodes.push(employee.code);
                     
                     if (i == (dataList.length - 1)) {
                         dfd.resolve();
                     }
                 }
+                
+                self.selectedEmployeeCode(selectedCodes);
                 self.employeeList(employeeSearchs);
                 return dfd.promise();
             }

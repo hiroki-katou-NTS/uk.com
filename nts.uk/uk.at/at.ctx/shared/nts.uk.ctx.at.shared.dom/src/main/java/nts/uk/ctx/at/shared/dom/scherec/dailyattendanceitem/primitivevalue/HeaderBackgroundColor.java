@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
-import nts.uk.shr.com.primitive.CodePrimitiveValue;
+//import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 @StringMaxLength(7)
 public class HeaderBackgroundColor extends StringPrimitiveValue<HeaderBackgroundColor> {

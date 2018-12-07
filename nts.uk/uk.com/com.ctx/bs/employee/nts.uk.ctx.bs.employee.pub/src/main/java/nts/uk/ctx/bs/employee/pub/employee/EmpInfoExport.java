@@ -5,7 +5,6 @@
 package nts.uk.ctx.bs.employee.pub.employee;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;

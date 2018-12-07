@@ -1,10 +1,8 @@
 package nts.uk.file.at.app.export.dailyschedule;
 
 import java.util.List;
-import java.util.Optional;
 
 import lombok.Data;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
