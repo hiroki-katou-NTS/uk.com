@@ -25,7 +25,57 @@ public class PersonRoleImpl implements PersonRoleRepository {
 	@PersistenceContext
 	private EntityManager entityManager;
 	
-	private static final String GET_EXPORT_EXCEL = "SELECT x.ROLE_CD,x.ROLE_NAME,c.CATEGORY_NAME, "
+	private static final String VALUE_TRUE = "可";
+	private static final String VALUE_FALSE = "木可";
+	
+	private static final String GET_EXPORT_EXCEL = "SELECT "
+			+ " CASE WHEN TBL.ROW_NUMBER1 = 1 THEN TBL.ROLE_CD"
+			+ " ELSE NULL"
+			+ " END ROLE_CD,"
+			+ " CASE WHEN TBL.ROW_NUMBER2 = 1 THEN TBL.ROLE_NAME"
+			+ " ELSE NULL END ROLE_NAME,"
+			+ " CASE WHEN TBL.ROW_NUMBER3 = 1 THEN TBL.CATEGORY_NAME"
+			+ " ELSE NULL END CATEGORY_NAME,"
+			+ " CASE WHEN TBL.ROW_NUMBER4 = 1 THEN TBL.CATEGORY_TYPE"
+			+ " ELSE NULL END CATEGORY_TYPE,"
+			+ " CASE WHEN TBL.ROW_NUMBER5 = 1 THEN TBL.ALLOW_OTHER_REF_ATR"
+			+ " ELSE NULL END ALLOW_OTHER_REF_ATR,"
+			+ " CASE WHEN TBL.ROW_NUMBER6 = 1 THEN TBL.ALLOW_PER_REF_ATR"
+			+ " ELSE NULL END ALLOW_PER_REF_ATR,"
+			+ " CASE WHEN TBL.ROW_NUMBER7 = 1 THEN TBL.OTHER_ALLOW_ADD_MULTI_ATR"
+			+ " ELSE NULL END OTHER_ALLOW_ADD_MULTI_ATR,"
+			+ " CASE WHEN TBL.ROW_NUMBER8 = 1 THEN TBL.OTHER_ALLOW_DEL_MULTI_ATR"
+			+ " ELSE NULL END OTHER_ALLOW_DEL_MULTI_ATR,"
+			+ " CASE WHEN TBL.ROW_NUMBER9 = 1 THEN TBL.SELF_ALLOW_ADD_MULTI_ATR"
+			+ " ELSE NULL END SELF_ALLOW_ADD_MULTI_ATR,"
+			+ " CASE WHEN TBL.ROW_NUMBER10 = 1 THEN TBL.SELF_ALLOW_DEL_MULTI_ATR"
+			+ " ELSE NULL END SELF_ALLOW_DEL_MULTI_ATR,"
+			+ " CASE WHEN TBL.ROW_NUMBER11 = 1 THEN TBL.OTHER_ALLOW_ADD_HIS_ATR"
+			+ " ELSE NULL END OTHER_ALLOW_ADD_HIS_ATR,"
+			+ " CASE WHEN TBL.ROW_NUMBER12 = 1 THEN TBL.OTHER_ALLOW_DEL_HIS_ATR"
+			+ " ELSE NULL END OTHER_ALLOW_DEL_HIS_ATR,"
+			+ " CASE WHEN TBL.ROW_NUMBER13 = 1 THEN TBL.OTHER_FUTURE_HIS_AUTH_TYPE"
+			+ " ELSE NULL END OTHER_FUTURE_HIS_AUTH_TYPE,"
+			+ " CASE WHEN TBL.ROW_NUMBER14 = 1 THEN TBL.OTHER_PAST_HIS_AUTH_TYPE"
+			+ " ELSE NULL END OTHER_PAST_HIS_AUTH_TYPE,"
+			+ " CASE WHEN TBL.ROW_NUMBER15 = 1 THEN TBL.SELF_ALLOW_ADD_HIS_ATR"
+			+ " ELSE NULL END SELF_ALLOW_ADD_HIS_ATR,"
+			+ " CASE WHEN TBL.ROW_NUMBER16 = 1 THEN TBL.SELF_ALLOW_DEL_HIS_ATR"
+			+ " ELSE NULL END SELF_ALLOW_DEL_HIS_ATR,"
+			+ " CASE WHEN TBL.ROW_NUMBER17 = 1 THEN TBL.SELF_FUTURE_HIS_AUTH_TYPE"
+			+ " ELSE NULL END SELF_FUTURE_HIS_AUTH_TYPE,"
+			+ " CASE WHEN TBL.ROW_NUMBER18 = 1 THEN TBL.SELF_PAST_HIS_AUTH_TYPE"
+			+ " ELSE NULL END SELF_PAST_HIS_AUTH_TYPE,"
+			+ " TBL.ITEM_NAME,"
+			+ " CASE WHEN TBL.ROW_NUMBER19 = 1 THEN TBL.OTHER_PERSON_AUTH_TYPE"
+			+ " ELSE NULL END OTHER_PERSON_AUTH_TYPE,"
+			+ " CASE WHEN TBL.ROW_NUMBER19 = 1 THEN TBL.SELF_AUTH_TYPE"
+			+ " ELSE NULL END SELF_AUTH_TYPE,"
+			+ " (select count(*) from PPEMT_PER_INFO_ITEM ii where ii.PER_INFO_CTG_ID = TBL.PER_INFO_CTG_ID and  ii.ABOLITION_ATR =0) as count_i,"
+			+ " (select count(*) from PPEMT_PERSON_ITEM_AUTH ia where ia.PER_INFO_CTG_ID=TBL.PER_INFO_CTG_ID and ia.ROLE_ID=TBL.ROLE_ID) as count_ia,"
+			+ " TBL.IsItemConfig "
+			+ " FROM"
+			+ " (SELECT x.ROLE_CD,x.ROLE_NAME,c.CATEGORY_NAME,"
 			+ " CASE WHEN xx.PER_INFO_CTG_ID IS NOT NULL  THEN 'True' ELSE 'False' END AS IsConfig,"
 			+ " ctgau.OTHER_PERSON_AUTH_TYPE, xx.ALLOW_PER_REF_ATR, xx.ALLOW_OTHER_REF_ATR,"
 			+ " xx.SELF_PAST_HIS_AUTH_TYPE,xx.SELF_FUTURE_HIS_AUTH_TYPE,xx.SELF_ALLOW_ADD_HIS_ATR,"
@@ -33,26 +83,86 @@ public class PersonRoleImpl implements PersonRoleRepository {
 			+ " xx.OTHER_ALLOW_ADD_HIS_ATR,xx.OTHER_ALLOW_DEL_HIS_ATR,xx.SELF_ALLOW_ADD_MULTI_ATR,"
 			+ " xx.SELF_ALLOW_DEL_MULTI_ATR,xx.OTHER_ALLOW_ADD_MULTI_ATR,xx.OTHER_ALLOW_DEL_MULTI_ATR,"
 			+ " CASE WHEN ctgau.PER_INFO_ITEM_DEF_ID IS NOT NULL  THEN 'True' ELSE 'False' END AS IsItemConfig,"
-			+ " cm.CATEGORY_TYPE,"
-			+ " item.ITEM_NAME,"
-			+ " ctgau.SELF_AUTH_TYPE,"
-			+ " ctgau.OTHER_PERSON_AUTH_TYPE,"
-			+ " (select count(*) from PPEMT_PER_INFO_ITEM ii where ii.PER_INFO_CTG_ID = c.PER_INFO_CTG_ID and  ii.ABOLITION_ATR =0) as count_i,"
-			+ "	(select count(*) from PPEMT_PERSON_ITEM_AUTH ia where ia.PER_INFO_CTG_ID=c.PER_INFO_CTG_ID and ia.ROLE_ID=xx.ROLE_ID) as count_ia"
+			+ " cm.CATEGORY_TYPE,item.ITEM_NAME,ctgau.SELF_AUTH_TYPE,xx.PER_INFO_CTG_ID,xx.ROLE_ID,"
+			+ " ROW_NUMBER() OVER (PARTITION BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,ctgau.OTHER_PERSON_AUTH_TYPE, xx.ALLOW_PER_REF_ATR, "
+			+ " xx.ALLOW_OTHER_REF_ATR ORDER BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,cm.CATEGORY_TYPE,xx.ALLOW_OTHER_REF_ATR, xx.ALLOW_PER_REF_ATR,"
+			+ " xx.OTHER_ALLOW_ADD_MULTI_ATR,xx.OTHER_ALLOW_DEL_MULTI_ATR,xx.SELF_ALLOW_ADD_MULTI_ATR,xx.SELF_ALLOW_DEL_MULTI_ATR,"
+			+ " xx.OTHER_ALLOW_ADD_HIS_ATR,xx.OTHER_ALLOW_DEL_HIS_ATR,xx.OTHER_FUTURE_HIS_AUTH_TYPE,xx.OTHER_PAST_HIS_AUTH_TYPE,"
+			+ " xx.SELF_ALLOW_ADD_HIS_ATR,xx.SELF_ALLOW_DEL_HIS_ATR,xx.SELF_FUTURE_HIS_AUTH_TYPE,xx.SELF_PAST_HIS_AUTH_TYPE,ctgau.OTHER_PERSON_AUTH_TYPE,ctgau.SELF_AUTH_TYPE,co.DISPORDER) AS ROW_NUMBER20,"
+			+ " ROW_NUMBER() OVER (PARTITION BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,ctgau.OTHER_PERSON_AUTH_TYPE, xx.ALLOW_PER_REF_ATR, "
+			+ " xx.ALLOW_OTHER_REF_ATR ORDER BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,cm.CATEGORY_TYPE,xx.ALLOW_OTHER_REF_ATR, xx.ALLOW_PER_REF_ATR,"
+			+ " xx.OTHER_ALLOW_ADD_MULTI_ATR,xx.OTHER_ALLOW_DEL_MULTI_ATR,xx.SELF_ALLOW_ADD_MULTI_ATR,xx.SELF_ALLOW_DEL_MULTI_ATR,"
+			+ " xx.OTHER_ALLOW_ADD_HIS_ATR,xx.OTHER_ALLOW_DEL_HIS_ATR,xx.OTHER_FUTURE_HIS_AUTH_TYPE,xx.OTHER_PAST_HIS_AUTH_TYPE,"
+			+ " xx.SELF_ALLOW_ADD_HIS_ATR,xx.SELF_ALLOW_DEL_HIS_ATR,xx.SELF_FUTURE_HIS_AUTH_TYPE,xx.SELF_PAST_HIS_AUTH_TYPE,ctgau.OTHER_PERSON_AUTH_TYPE,co.DISPORDER) AS ROW_NUMBER19,"
+			+ " ROW_NUMBER() OVER (PARTITION BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,ctgau.OTHER_PERSON_AUTH_TYPE, xx.ALLOW_PER_REF_ATR, "
+			+ " xx.ALLOW_OTHER_REF_ATR ORDER BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,cm.CATEGORY_TYPE,xx.ALLOW_OTHER_REF_ATR, xx.ALLOW_PER_REF_ATR,"
+			+ " xx.OTHER_ALLOW_ADD_MULTI_ATR,xx.OTHER_ALLOW_DEL_MULTI_ATR,xx.SELF_ALLOW_ADD_MULTI_ATR,xx.SELF_ALLOW_DEL_MULTI_ATR,"
+			+ " xx.OTHER_ALLOW_ADD_HIS_ATR,xx.OTHER_ALLOW_DEL_HIS_ATR,xx.OTHER_FUTURE_HIS_AUTH_TYPE,xx.OTHER_PAST_HIS_AUTH_TYPE,"
+			+ " xx.SELF_ALLOW_ADD_HIS_ATR,xx.SELF_ALLOW_DEL_HIS_ATR,xx.SELF_FUTURE_HIS_AUTH_TYPE,xx.SELF_PAST_HIS_AUTH_TYPE,co.DISPORDER) AS ROW_NUMBER18,"
+			+ " ROW_NUMBER() OVER (PARTITION BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,ctgau.OTHER_PERSON_AUTH_TYPE, xx.ALLOW_PER_REF_ATR, "
+			+ " xx.ALLOW_OTHER_REF_ATR ORDER BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,cm.CATEGORY_TYPE,xx.ALLOW_OTHER_REF_ATR, xx.ALLOW_PER_REF_ATR,"
+			+ " xx.OTHER_ALLOW_ADD_MULTI_ATR,xx.OTHER_ALLOW_DEL_MULTI_ATR,xx.SELF_ALLOW_ADD_MULTI_ATR,xx.SELF_ALLOW_DEL_MULTI_ATR,"
+			+ " xx.OTHER_ALLOW_ADD_HIS_ATR,xx.OTHER_ALLOW_DEL_HIS_ATR,xx.OTHER_FUTURE_HIS_AUTH_TYPE,xx.OTHER_PAST_HIS_AUTH_TYPE,"
+			+ " xx.SELF_ALLOW_ADD_HIS_ATR,xx.SELF_ALLOW_DEL_HIS_ATR,xx.SELF_FUTURE_HIS_AUTH_TYPE,co.DISPORDER) AS ROW_NUMBER17,"
+			+ " ROW_NUMBER() OVER (PARTITION BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,ctgau.OTHER_PERSON_AUTH_TYPE, xx.ALLOW_PER_REF_ATR, "
+			+ " xx.ALLOW_OTHER_REF_ATR ORDER BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,cm.CATEGORY_TYPE,xx.ALLOW_OTHER_REF_ATR, xx.ALLOW_PER_REF_ATR,"
+			+ " xx.OTHER_ALLOW_ADD_MULTI_ATR,xx.OTHER_ALLOW_DEL_MULTI_ATR,xx.SELF_ALLOW_ADD_MULTI_ATR,xx.SELF_ALLOW_DEL_MULTI_ATR,"
+			+ " xx.OTHER_ALLOW_ADD_HIS_ATR,xx.OTHER_ALLOW_DEL_HIS_ATR,xx.OTHER_FUTURE_HIS_AUTH_TYPE,xx.OTHER_PAST_HIS_AUTH_TYPE,"
+			+ " xx.SELF_ALLOW_ADD_HIS_ATR,xx.SELF_ALLOW_DEL_HIS_ATR,co.DISPORDER) AS ROW_NUMBER16,"
+			+ " ROW_NUMBER() OVER (PARTITION BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,ctgau.OTHER_PERSON_AUTH_TYPE, xx.ALLOW_PER_REF_ATR,"
+			+ " xx.ALLOW_OTHER_REF_ATR ORDER BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,cm.CATEGORY_TYPE,xx.ALLOW_OTHER_REF_ATR, xx.ALLOW_PER_REF_ATR,"
+			+ " xx.OTHER_ALLOW_ADD_MULTI_ATR,xx.OTHER_ALLOW_DEL_MULTI_ATR,xx.SELF_ALLOW_ADD_MULTI_ATR,xx.SELF_ALLOW_DEL_MULTI_ATR,"
+			+ " xx.OTHER_ALLOW_ADD_HIS_ATR,xx.OTHER_ALLOW_DEL_HIS_ATR,xx.OTHER_FUTURE_HIS_AUTH_TYPE,xx.OTHER_PAST_HIS_AUTH_TYPE,xx.SELF_ALLOW_ADD_HIS_ATR,co.DISPORDER) AS ROW_NUMBER15,"
+			+ " ROW_NUMBER() OVER (PARTITION BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,ctgau.OTHER_PERSON_AUTH_TYPE, xx.ALLOW_PER_REF_ATR, "
+			+ " xx.ALLOW_OTHER_REF_ATR ORDER BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,cm.CATEGORY_TYPE,xx.ALLOW_OTHER_REF_ATR, xx.ALLOW_PER_REF_ATR,"
+			+ " xx.OTHER_ALLOW_ADD_MULTI_ATR,xx.OTHER_ALLOW_DEL_MULTI_ATR,xx.SELF_ALLOW_ADD_MULTI_ATR,xx.SELF_ALLOW_DEL_MULTI_ATR,"
+			+ " xx.OTHER_ALLOW_ADD_HIS_ATR,xx.OTHER_ALLOW_DEL_HIS_ATR,xx.OTHER_FUTURE_HIS_AUTH_TYPE,xx.OTHER_PAST_HIS_AUTH_TYPE,co.DISPORDER) AS ROW_NUMBER14,"
+			+ " ROW_NUMBER() OVER (PARTITION BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,ctgau.OTHER_PERSON_AUTH_TYPE, xx.ALLOW_PER_REF_ATR,"
+			+ " xx.ALLOW_OTHER_REF_ATR ORDER BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,cm.CATEGORY_TYPE,xx.ALLOW_OTHER_REF_ATR, xx.ALLOW_PER_REF_ATR,"
+			+ " xx.OTHER_ALLOW_ADD_MULTI_ATR,xx.OTHER_ALLOW_DEL_MULTI_ATR,xx.SELF_ALLOW_ADD_MULTI_ATR,xx.SELF_ALLOW_DEL_MULTI_ATR,"
+			+ " xx.OTHER_ALLOW_ADD_HIS_ATR,xx.OTHER_ALLOW_DEL_HIS_ATR,xx.OTHER_FUTURE_HIS_AUTH_TYPE,co.DISPORDER) AS ROW_NUMBER13,"
+			+ " ROW_NUMBER() OVER (PARTITION BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,ctgau.OTHER_PERSON_AUTH_TYPE, xx.ALLOW_PER_REF_ATR, "
+			+ " xx.ALLOW_OTHER_REF_ATR ORDER BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,cm.CATEGORY_TYPE,xx.ALLOW_OTHER_REF_ATR, xx.ALLOW_PER_REF_ATR,"
+			+ " xx.OTHER_ALLOW_ADD_MULTI_ATR,xx.OTHER_ALLOW_DEL_MULTI_ATR,xx.SELF_ALLOW_ADD_MULTI_ATR,xx.SELF_ALLOW_DEL_MULTI_ATR,"
+			+ " xx.OTHER_ALLOW_ADD_HIS_ATR,xx.OTHER_ALLOW_DEL_HIS_ATR,co.DISPORDER) AS ROW_NUMBER12,"
+			+ " ROW_NUMBER() OVER (PARTITION BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,ctgau.OTHER_PERSON_AUTH_TYPE, xx.ALLOW_PER_REF_ATR, "
+			+ " xx.ALLOW_OTHER_REF_ATR ORDER BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,cm.CATEGORY_TYPE,xx.ALLOW_OTHER_REF_ATR, xx.ALLOW_PER_REF_ATR,"
+			+ " xx.OTHER_ALLOW_ADD_MULTI_ATR,xx.OTHER_ALLOW_DEL_MULTI_ATR,xx.SELF_ALLOW_ADD_MULTI_ATR,xx.SELF_ALLOW_DEL_MULTI_ATR,"
+			+ " xx.OTHER_ALLOW_ADD_HIS_ATR,co.DISPORDER) AS ROW_NUMBER11,"
+			+ " ROW_NUMBER() OVER (PARTITION BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,ctgau.OTHER_PERSON_AUTH_TYPE, xx.ALLOW_PER_REF_ATR, "
+			+ " xx.ALLOW_OTHER_REF_ATR ORDER BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,cm.CATEGORY_TYPE,xx.ALLOW_OTHER_REF_ATR, xx.ALLOW_PER_REF_ATR,"
+			+ " xx.OTHER_ALLOW_ADD_MULTI_ATR,xx.OTHER_ALLOW_DEL_MULTI_ATR,xx.SELF_ALLOW_ADD_MULTI_ATR,xx.SELF_ALLOW_DEL_MULTI_ATR,co.DISPORDER) AS ROW_NUMBER10,"
+			+ " ROW_NUMBER() OVER (PARTITION BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,ctgau.OTHER_PERSON_AUTH_TYPE, xx.ALLOW_PER_REF_ATR,"
+			+ " xx.ALLOW_OTHER_REF_ATR ORDER BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,cm.CATEGORY_TYPE,xx.ALLOW_OTHER_REF_ATR, xx.ALLOW_PER_REF_ATR,"
+			+ " xx.OTHER_ALLOW_ADD_MULTI_ATR,xx.OTHER_ALLOW_DEL_MULTI_ATR,xx.SELF_ALLOW_ADD_MULTI_ATR,co.DISPORDER) AS ROW_NUMBER9,"
+			+ " ROW_NUMBER() OVER (PARTITION BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,ctgau.OTHER_PERSON_AUTH_TYPE, xx.ALLOW_PER_REF_ATR, "
+			+ " xx.ALLOW_OTHER_REF_ATR ORDER BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,cm.CATEGORY_TYPE,xx.ALLOW_OTHER_REF_ATR, xx.ALLOW_PER_REF_ATR,"
+			+ " xx.OTHER_ALLOW_ADD_MULTI_ATR,xx.OTHER_ALLOW_DEL_MULTI_ATR,co.DISPORDER) AS ROW_NUMBER8,"
+			+ " ROW_NUMBER() OVER (PARTITION BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,ctgau.OTHER_PERSON_AUTH_TYPE, xx.ALLOW_PER_REF_ATR, "
+			+ " xx.ALLOW_OTHER_REF_ATR ORDER BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,cm.CATEGORY_TYPE,xx.ALLOW_OTHER_REF_ATR, xx.ALLOW_PER_REF_ATR,"
+			+ " xx.OTHER_ALLOW_ADD_MULTI_ATR,co.DISPORDER) AS ROW_NUMBER7,"
+			+ " ROW_NUMBER() OVER (PARTITION BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,ctgau.OTHER_PERSON_AUTH_TYPE, xx.ALLOW_PER_REF_ATR, "
+			+ " xx.ALLOW_OTHER_REF_ATR ORDER BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,cm.CATEGORY_TYPE,xx.ALLOW_OTHER_REF_ATR, xx.ALLOW_PER_REF_ATR,"
+			+ " co.DISPORDER) AS ROW_NUMBER6,"
+			+ " ROW_NUMBER() OVER (PARTITION BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,ctgau.OTHER_PERSON_AUTH_TYPE, xx.ALLOW_PER_REF_ATR ORDER BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,cm.CATEGORY_TYPE, xx.ALLOW_OTHER_REF_ATR, co.DISPORDER) AS ROW_NUMBER5,"
+			+ " ROW_NUMBER() OVER (PARTITION BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,ctgau.OTHER_PERSON_AUTH_TYPE ORDER BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,cm.CATEGORY_TYPE, co.DISPORDER) AS ROW_NUMBER4,"
+			+ " ROW_NUMBER() OVER (PARTITION BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME ORDER BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME, co.DISPORDER) AS ROW_NUMBER3,"
+			+ " ROW_NUMBER() OVER (PARTITION BY x.ROLE_CD, x.ROLE_NAME ORDER BY x.ROLE_CD, x.ROLE_NAME, co.DISPORDER) AS ROW_NUMBER2,"
+			+ " ROW_NUMBER() OVER (PARTITION BY x.ROLE_CD ORDER BY x.ROLE_CD, co.DISPORDER) AS ROW_NUMBER1"
 			+ " FROM PPEMT_PER_INFO_CTG c "
 			+ " INNER JOIN PPEMT_PER_INFO_CTG_CM cm"
 			+ " ON c.CATEGORY_CD = cm.CATEGORY_CD AND c.CID = ?1 AND c.ABOLITION_ATR = 0"
-			+ " AND cm.CONTRACT_CD = ?2 "
+			+ " AND cm.CONTRACT_CD = ?2"
 			+ " INNER JOIN PPEMT_PER_INFO_CTG_ORDER co"
 			+ " ON c.PER_INFO_CTG_ID = co.PER_INFO_CTG_ID"
-			+ " Cross JOIN (SELECT DISTINCT pp.ROLE_ID,r.ROLE_CD, r.ROLE_NAME FROM PPEMT_PERSON_CTG_AUTH pp JOIN PPEMT_PER_INFO_CTG c on pp.PER_INFO_CTG_ID = c.PER_INFO_CTG_ID JOIN SACMT_ROLE r on pp.ROLE_ID = r.ROLE_ID  WHERE c.CID = ?3 AND r.ROLE_TYPE = ?4) x"
+			+ " Cross JOIN (SELECT DISTINCT pp.ROLE_ID,r.ROLE_CD, r.ROLE_NAME FROM PPEMT_PERSON_CTG_AUTH pp JOIN PPEMT_PER_INFO_CTG c on pp.PER_INFO_CTG_ID = c.PER_INFO_CTG_ID "
+			+ " JOIN SACMT_ROLE r on pp.ROLE_ID = r.ROLE_ID  WHERE c.CID = ?3 AND r.ROLE_TYPE = ?4) x"
 			+ " LEFT JOIN PPEMT_PERSON_CTG_AUTH xx On c.PER_INFO_CTG_ID = xx.PER_INFO_CTG_ID AND xx.ROLE_ID = x.ROLE_ID"
 			+ " INNER JOIN PPEMT_PER_INFO_ITEM item ON c.PER_INFO_CTG_ID = item.PER_INFO_CTG_ID AND item.ABOLITION_ATR = 0"
 			+ " INNER JOIN PPEMT_PER_INFO_ITEM_CM itemCM ON item.ITEM_CD = itemCM.ITEM_CD AND itemCM.CONTRACT_CD = ?5 AND c.CATEGORY_CD = itemCM.CATEGORY_CD AND itemCM.ITEM_PARENT_CD IS NULL"
 			+ " LEFT JOIN PPEMT_PERSON_ITEM_AUTH ctgau ON item.PER_INFO_CTG_ID = ctgau.PER_INFO_CTG_ID AND x.ROLE_ID = ctgau.ROLE_ID AND ctgau.PER_INFO_ITEM_DEF_ID = item.PER_INFO_ITEM_DEFINITION_ID"
-			+ " WHERE"
-			+ " ((cm.SALARY_USE_ATR = 1 AND ?6 = 1) OR (cm.PERSONNEL_USE_ATR = 1 AND ?7 = 1) OR (cm.EMPLOYMENT_USE_ATR = 1 AND ?8 = 1)) OR (?9 =  0 AND  ?10 = 0 AND ?11 = 0) "
-			+ " AND item.ABOLITION_ATR = 0 ORDER BY ROLE_CD,co.DISPORDER";
+			+ " WHERE ((cm.SALARY_USE_ATR = 1 AND ?6 = 1) OR (cm.PERSONNEL_USE_ATR = 1 AND ?7 = 1) OR (cm.EMPLOYMENT_USE_ATR = 1 AND ?8 = 1)) OR (?9 =  0 AND  ?10 = 0 AND ?11 = 0)  ) TBL";
+			
 	
 	
 	@Override
@@ -75,6 +185,7 @@ public class PersonRoleImpl implements PersonRoleRepository {
 		@SuppressWarnings("unchecked")
 		List<Object[]> data = query.getResultList();
 		for (Object[] objects : data) {
+			if(dataContent(objects) != null)
 			datas.add(new MasterData(dataContent(objects), null, ""));
 		}
 		return datas;
@@ -82,78 +193,101 @@ public class PersonRoleImpl implements PersonRoleRepository {
 	
 	
 	private Map<String, Object> dataContent(Object[] object) {
-		boolean isHigher = Integer.valueOf(object[24].toString()) > Integer.valueOf(object[25].toString());
-		boolean isCateConfig = !isHigher ? Boolean.valueOf(object[3].toString()) : false;
+		boolean isHigher = Integer.valueOf(object[21].toString()) > Integer.valueOf(object[22].toString());
+		boolean isCateConfig = false;
+		if(object[3]  != null) {
+			isCateConfig = !isHigher ? Boolean.valueOf(object[3].toString()) : false;
+		}
+		if(object[23].equals("False") && !isCateConfig) {
+			return null;
+		}
 		Map<String, Object> data = new HashMap<>();
-		// A6_1
+		// A7_1
 		data.put(PersonRoleColumn.CAS001_77, (String) object[0]);
-		// A6_2
+		// A7_2
 		data.put(PersonRoleColumn.CAS001_78, (String) object[1]);
-		// A6_3
+		// A7_3
 		data.put(PersonRoleColumn.CAS001_79, (String) object[2]);
-		// A6_4
-		data.put(PersonRoleColumn.CAS001_80, isCateConfig ? "●" : "");
-		// A6_5
-		data.put(PersonRoleColumn.CAS001_81, getTypeName(object[20] != null ? ((BigDecimal) object[20]).intValue() : null));
-		// A6_6
-		data.put(PersonRoleColumn.CAS001_82, object[6] != null ? ((BigDecimal) object[6]).intValue() == 1 ? "○" : "ー" : "");
-		// A6_7
-		Integer cateType = object[20] != null ? ((BigDecimal) object[20]).intValue() : null;
-		data.put(PersonRoleColumn.CAS001_83,  cateType != 2 ? "ー"
-				: object[15] == null ? "" : ((BigDecimal) object[15]).intValue() == 1 ? "○" : "ー");
-		// A6_8
-		data.put(PersonRoleColumn.CAS001_84, cateType != 2 ? "ー"
-				: object[16] == null ? "" : ((BigDecimal) object[16]).intValue() == 1 ? "○" : "ー");
-		// A6_9
-		data.put(PersonRoleColumn.CAS001_85, checkValue2(cateType) != null ? checkValue2(cateType)
-				: object[9] == null ? "" : ((BigDecimal) object[9]).intValue() == 1 ? "○" : "ー");
-		// A6_10
-		data.put(PersonRoleColumn.CAS001_86, checkValue2(cateType) != null ? checkValue2(cateType)
-				: object[10] == null ? "" : ((BigDecimal) object[10]).intValue() == 1 ? "○" : "ー");
-		// A6_11
-		data.put(PersonRoleColumn.CAS001_87, checkValue2(cateType) != null ? checkValue2(cateType)
-				: object[12] == null ? "" : checkValue3(((BigDecimal) object[12]).intValue(), 1, 0));
-		// A6_12
-		data.put(PersonRoleColumn.CAS001_88, checkValue2(cateType) != null ? checkValue2(cateType)
-				: object[11] == null ? "" : checkValue3(((BigDecimal) object[11]).intValue(), 1, 0));
-		// A6_13
-		data.put(PersonRoleColumn.CAS001_89, object[5] != null ? ((BigDecimal) object[5]).intValue() == 1 ? "○" : "ー" : "");
-		// A6_14
-		data.put(PersonRoleColumn.CAS001_90, checkValue1(cateType) != null ? checkValue1(cateType)
-				: object[15] == null ? "" : ((BigDecimal) object[15]).intValue() == 1 ? "○" : "ー");
-		// A6_15
-		data.put(PersonRoleColumn.CAS001_91, checkValue2(cateType) != null ? checkValue1(cateType)
-				: object[16] == null ? "" : ((BigDecimal) object[16]).intValue() == 1 ? "○" : "ー");
-		// A6_16
-		data.put(PersonRoleColumn.CAS001_92, checkValue2(cateType) != null ? checkValue2(cateType)
-				: object[9] == null ? "" : ((BigDecimal) object[9]).intValue() == 1 ? "○" : "ー");
-		// A6_17
-		data.put(PersonRoleColumn.CAS001_93, checkValue2(cateType) != null ? checkValue2(cateType)
-				: object[10] == null ? "" : ((BigDecimal) object[10]).intValue() == 1 ? "○" : "ー");
-		// A6_18
-		data.put(PersonRoleColumn.CAS001_94, checkValue2(cateType) != null ? checkValue2(cateType)
-				: object[8] == null ? "" : checkValue3(((BigDecimal) object[8]).intValue(), 1, 0));
-		// A6_19
-		data.put(PersonRoleColumn.CAS001_95, checkValue2(cateType) != null ? checkValue2(cateType)
-				: object[7] == null ? "" : checkValue3(((BigDecimal) object[7]).intValue(), 1, 0));
-		// A6_20
-		data.put(PersonRoleColumn.CAS001_96, object[19].equals("True") ? "●" : "");
-		// A6_21
-		data.put(PersonRoleColumn.CAS001_97, object[21] != null ? (String) object[21] : null);
-		// A6_22
-		data.put(PersonRoleColumn.CAS001_98, checkValue3(object[22] != null ? ((BigDecimal) object[22]).intValue() : null, object[6] != null ? ((BigDecimal) object[6]).intValue() : null, 0));
-		// A6_23
-		data.put(PersonRoleColumn.CAS001_99, checkValue3(object[23] != null ? ((BigDecimal) object[23]).intValue() : null, object[5] != null ? ((BigDecimal) object[5]).intValue() : null, 0));
+		
+		// A7_4
+		data.put(PersonRoleColumn.CAS001_81, object[3] != null ? getTypeName(((BigDecimal) object[3]).intValue()) : "");
+		
+		// A7_5
+		data.put(PersonRoleColumn.CAS001_82, object[4] != null ? ((BigDecimal) object[4]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE : "");
+		
+		// A7_6
+		data.put(PersonRoleColumn.CAS001_89, object[5] != null ? ((BigDecimal) object[5]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE : "");
+		
+		// A7_7
+		Integer cateType = object[3] != null ? ((BigDecimal) object[3]).intValue() : null;
+		data.put(PersonRoleColumn.CAS001_83,  cateType == null || cateType != 2 ? ""
+				: object[6] == null ? "" : ((BigDecimal) object[6]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
+		
+		// A7_8
+		data.put(PersonRoleColumn.CAS001_84, cateType == null || cateType != 2 ? ""
+				: object[7] == null ? "" : ((BigDecimal) object[7]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
+		
+		// A7_9
+		data.put(PersonRoleColumn.CAS001_85,cateType == null || cateType != 2 ? ""
+				: object[8] == null ? "" : ((BigDecimal) object[8]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
+		
+		// A7_10
+		data.put(PersonRoleColumn.CAS001_90,cateType == null || cateType != 2 ? ""
+				: object[9] == null ? "" : ((BigDecimal) object[9]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
+		
+		// A7_11
+		data.put(PersonRoleColumn.CAS001_91,cateType == null || cateType == 1 || cateType == 2 ? ""
+				: object[10] == null ? "" : ((BigDecimal) object[10]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
+		
+		// A7_12
+		data.put(PersonRoleColumn.CAS001_86,cateType == null || cateType == 1 || cateType == 2 ? ""
+				: object[11] == null ? "" : ((BigDecimal) object[11]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
+		
+		// A7_13
+		data.put(PersonRoleColumn.CAS001_87,cateType == null || cateType == 1 || cateType == 2 ? ""
+				: object[12] == null ? "" : ((BigDecimal) object[12]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
+		
+		// A7_14
+		data.put(PersonRoleColumn.CAS001_88,cateType == null || cateType == 1 || cateType == 2 ? ""
+				: object[13] == null ? "" : ((BigDecimal) object[13]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
+		
+		// A7_15
+		data.put(PersonRoleColumn.CAS001_92,cateType == null || cateType == 1 || cateType == 2 ? ""
+				: object[14] == null ? "" : ((BigDecimal) object[14]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
+		
+		// A7_16
+		data.put(PersonRoleColumn.CAS001_93,cateType == null || cateType == 1 || cateType == 2 ? ""
+				: object[15] == null ? "" : ((BigDecimal) object[15]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
+		
+		// A7_17
+		data.put(PersonRoleColumn.CAS001_94,cateType == null || cateType == 1 || cateType == 2 ? ""
+				: object[16] == null ? "" : ((BigDecimal) object[16]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
+		
+		// A7_18
+		data.put(PersonRoleColumn.CAS001_95,cateType == null || cateType == 1 || cateType == 2 ? ""
+				: object[17] == null ? "" : ((BigDecimal) object[17]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
+		
+		// A7_19
+		data.put(PersonRoleColumn.CAS001_97, object[18] != null ? (String) object[18] : null);
+		
+		// A7_20
+		data.put(PersonRoleColumn.CAS001_98, checkValue3(object[19] != null ? ((BigDecimal) object[19]).intValue() : null, object[6] != null ? ((BigDecimal) object[6]).intValue() : null, 0));
+		
+		// A7_21
+		data.put(PersonRoleColumn.CAS001_99, checkValue3(object[20] != null ? ((BigDecimal) object[20]).intValue() : null, object[5] != null ? ((BigDecimal) object[5]).intValue() : null, 0));
+		
 		return data;
 	}
+	
 
+	
 	private String checkValue1(Integer categoryType) {
 		String value = null;
 		if (categoryType == null)
 			value = "";
 		CategoryType type = EnumAdaptor.valueOf(categoryType, CategoryType.class);
 		if (type.value != 2)
-			value = "ー";
+			value = VALUE_FALSE;
 		return value;
 	}
 
@@ -163,7 +297,7 @@ public class PersonRoleImpl implements PersonRoleRepository {
 			value = "";
 		CategoryType type = EnumAdaptor.valueOf(categoryType, CategoryType.class);
 		if (type.value != 3 && type.value != 4) {
-			value = "ー";
+			value = VALUE_FALSE;
 		}
 		return value;
 	}
@@ -171,7 +305,7 @@ public class PersonRoleImpl implements PersonRoleRepository {
 	private String checkValue3(Integer authType, Integer check, Integer paramCheck) {
 		String value = null;
 		if (check == paramCheck || authType == null) {
-			value = "ー";
+			value = VALUE_FALSE;
 		} else if (authType == 1) {
 			value = I18NText.getText("CAS001_49");
 		} else if (authType == 2) {
