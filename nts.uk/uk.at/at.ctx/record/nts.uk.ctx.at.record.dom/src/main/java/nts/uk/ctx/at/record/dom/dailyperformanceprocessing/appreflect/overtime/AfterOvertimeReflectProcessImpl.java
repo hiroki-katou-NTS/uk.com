@@ -2,8 +2,6 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -13,8 +11,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRec
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
 
@@ -30,8 +26,6 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 	private StartEndTimeOffReflect startEndTimeOffReflect;
 	@Inject
 	private WorkUpdateService scheWorkUpdate;
-	@Inject 
-	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDaily;
 	@Override
 	public WorkInfoOfDailyPerformance checkScheReflect(OvertimeParameter overtimePara, WorkInfoOfDailyPerformance dailyInfor) {
 		//ＩNPUT．勤務種類コードとＩNPUT．就業時間帯コードをチェックする
@@ -100,27 +94,21 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 	}
 
 	@Override
-	public Optional<TimeLeavingOfDailyPerformance> recordStartEndReflect(OvertimeParameter overtimePara, WorkTimeTypeOutput workTimeType) {
-		Optional<TimeLeavingOfDailyPerformance> optTimeLeaving = timeLeavingOfDaily.findByKey(overtimePara.getEmployeeId(), overtimePara.getDateInfo());
-		if(!optTimeLeaving.isPresent()) {
-			return Optional.empty();
-		}
-		TimeLeavingOfDailyPerformance timeDaily = optTimeLeaving.get();
+	public void recordStartEndReflect(OvertimeParameter overtimePara, WorkTimeTypeOutput workTimeType) {
 		//自動打刻をクリアする
-		timeDaily = startEndTimeOffReflect.clearAutomaticEmbossing(overtimePara.getEmployeeId(), overtimePara.getDateInfo(), workTimeType.getWorkTypeCode(),
-				overtimePara.isAutoClearStampFlg(), overtimePara.getOvertimePara(), timeDaily);
+		startEndTimeOffReflect.clearAutomaticEmbossing(overtimePara.getEmployeeId(), overtimePara.getDateInfo(), workTimeType.getWorkTypeCode(),
+				overtimePara.isAutoClearStampFlg(), overtimePara.getOvertimePara());
 		//出退勤時刻反映できるかチェックする
 		if(!overtimePara.isActualReflectFlg()
 				&& !overtimePara.isScheTimeOutFlg()) {
-			return Optional.of(timeDaily);
+			return;
 		}
 		//開始終了時刻の反映(事後)
-		timeDaily = this.reflectStartEndtime(overtimePara, workTimeType, timeDaily);
-		return Optional.of(timeDaily);
+		this.reflectStartEndtime(overtimePara, workTimeType);
 	}
 
 	@Override
-	public TimeLeavingOfDailyPerformance reflectStartEndtime(OvertimeParameter para, WorkTimeTypeOutput timeTypeData, TimeLeavingOfDailyPerformance timeDaily) {
+	public void reflectStartEndtime(OvertimeParameter para, WorkTimeTypeOutput timeTypeData) {
 		//反映する開始終了時刻を求める
 		StartEndTimeRelectCheck startEndTimeCheck = new StartEndTimeRelectCheck(para.getEmployeeId(), para.getDateInfo(), para.getOvertimePara().getStartTime1(), 
 				para.getOvertimePara().getEndTime1(), para.getOvertimePara().getStartTime2(), 
@@ -139,7 +127,7 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 				//開始時刻の反映
 				//終了時刻の反映
 				TimeReflectPara timePara = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), startEndTimeData.getStart1(), startEndTimeData.getEnd1(), 1, true, true);
-				timeDaily = scheWorkUpdate.updateRecordStartEndTimeReflect(timePara, timeDaily);
+				scheWorkUpdate.updateRecordStartEndTimeReflect(timePara);
 				
 			}
 			//２回勤務反映区分(output)をチェックする
@@ -147,7 +135,7 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 				//開始時刻２の反映
 				//終了時刻２の反映
 				TimeReflectPara timePara = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), startEndTimeData.getStart2(), startEndTimeData.getEnd2(), 2, true, true);
-				timeDaily = scheWorkUpdate.updateRecordStartEndTimeReflect(timePara, timeDaily);
+				scheWorkUpdate.updateRecordStartEndTimeReflect(timePara);
 			}
 		} else {
 			//１回勤務反映区分(output)をチェックする
@@ -159,7 +147,7 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 				boolean isEnd = scheStartEndTimeReflect.checkRecordStartEndTimereflect(para.getEmployeeId(), para.getDateInfo(), 1,
 						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(),false);
 				TimeReflectPara timePara1 = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), startEndTimeData.getStart1(), startEndTimeData.getEnd1(), 1, isStart, isEnd);
-				timeDaily = scheWorkUpdate.updateRecordStartEndTimeReflect(timePara1, timeDaily);
+				scheWorkUpdate.updateRecordStartEndTimeReflect(timePara1);
 				
 			}
 			//２回勤務反映区分(output)をチェックする
@@ -171,10 +159,9 @@ public class AfterOvertimeReflectProcessImpl implements AfterOvertimeReflectProc
 				boolean isEnd = scheStartEndTimeReflect.checkRecordStartEndTimereflect(para.getEmployeeId(), para.getDateInfo(), 2, 
 						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(), false);
 				TimeReflectPara timePara2 = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), startEndTimeData.getStart2(), startEndTimeData.getEnd2(), 2, isStart, isEnd);
-				timeDaily = scheWorkUpdate.updateRecordStartEndTimeReflect(timePara2, timeDaily);
+				scheWorkUpdate.updateRecordStartEndTimeReflect(timePara2);
 			}
 		}
-		return timeDaily;
 	}
 
 	@Override
