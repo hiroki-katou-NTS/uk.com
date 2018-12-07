@@ -490,7 +490,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		
 		reportData.setHeaderData(new DailyPerformanceHeaderData());
 		collectHeaderData(reportData.getHeaderData(), condition);
-		collectDisplayMap(reportData.getHeaderData(), outputItem, companyId, roleId);
+		List<Integer> lstHaveName = collectDisplayMap(reportData.getHeaderData(), outputItem, companyId, roleId);
 		GeneralDate endDate = query.getEndDate();
 		GeneralDate baseDate = query.getBaseDate();
 		
@@ -571,7 +571,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			lstWorkplace.putAll(collectWorkplaceHierarchy(entry, baseDate, lstWorkplaceConfigInfo));
 		}
 		
-		List<Integer> itemsId = AttendanceResultImportAdapter.convertList(outputItem.getLstDisplayedAttendance(), x -> x.getAttendanceDisplay());
+//		List<Integer> itemsId = AttendanceResultImportAdapter.convertList(outputItem.getLstDisplayedAttendance(), x -> x.getAttendanceDisplay());
+		List<Integer> itemsId = lstHaveName;
 		// Add additional item from remark input
 		List<RemarksContentChoice> lstRemarkEnable = outputItem.getLstRemarkContent().stream().filter(x -> x.isUsedClassification()).map(x -> {
 			return x.getPrintItem();
@@ -699,7 +700,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		}
 		
 		// Sort attendance display
-		List<AttendanceItemsDisplay> lstAttendanceItemsDisplay = outputItem.getLstDisplayedAttendance().stream().sorted((o1,o2) -> o1.getOrderNo() - o2.getOrderNo()).collect(Collectors.toList());
+		List<AttendanceItemsDisplay> lstAttendanceItemsDisplay = outputItem.getLstDisplayedAttendance().stream()
+				.filter(item -> itemsId.contains(item.getAttendanceDisplay()))
+				.sorted((o1,o2) -> o1.getOrderNo() - o2.getOrderNo()).collect(Collectors.toList());
 		queryData.setLstDisplayItem(lstAttendanceItemsDisplay);
 		
 		if (condition.getOutputType() == FormOutputType.BY_EMPLOYEE) {
@@ -830,7 +833,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				if (dailyWorkplaceData != null) {
 					DailyPersonalPerformanceData personalPerformanceDate = new DailyPersonalPerformanceData();
 					if (optEmployeeDto.isPresent())
+					{
 						personalPerformanceDate.setEmployeeName(optEmployeeDto.get().getEmployeeName());
+						personalPerformanceDate.setEmployeeCode(optEmployeeDto.get().getEmployeeCode());
+					}
 					dailyWorkplaceData.getLstDailyPersonalData().add(personalPerformanceDate);
 					
 					lstAttendanceResultImport.stream().filter(x -> (x.getEmployeeId().equals(employeeId) && x.getWorkingDate().compareTo(date) == 0)).forEach(x -> {
@@ -1781,12 +1787,16 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param companyId the company id
 	 * @param roleId the role id
 	 */
-	private void collectDisplayMap(DailyPerformanceHeaderData headerData, OutputItemDailyWorkSchedule condition, String companyId, String roleId) {
+	private List<Integer> collectDisplayMap(DailyPerformanceHeaderData headerData,
+			OutputItemDailyWorkSchedule condition, String companyId, String roleId) {
+		List<Integer> lstHaveNameIds = new ArrayList<>();
 		List<AttendanceItemsDisplay> lstItem = condition.getLstDisplayedAttendance();
 		headerData.setLstOutputItemSettingCode(new ArrayList<>());
-		
-		List<Integer> lstAttendanceId = lstItem.stream().sorted((o1, o2) -> (o1.getOrderNo() - o2.getOrderNo())).map(x -> x.getAttendanceDisplay()).collect(Collectors.toList());
-		List<AttItemName> lstDailyAttendanceItem = companyDailyItemService.getDailyItems(companyId, Optional.of(roleId), lstAttendanceId, Arrays.asList(DailyAttendanceAtr.values()));
+
+		List<Integer> lstAttendanceId = lstItem.stream().sorted((o1, o2) -> (o1.getOrderNo() - o2.getOrderNo()))
+				.map(x -> x.getAttendanceDisplay()).collect(Collectors.toList());
+		List<AttItemName> lstDailyAttendanceItem = companyDailyItemService.getDailyItems(companyId, Optional.of(roleId),
+				lstAttendanceId, Arrays.asList(DailyAttendanceAtr.values()));
 		if (lstDailyAttendanceItem.isEmpty())
 			throw new BusinessException(new RawErrorMessage("Msg_1417"));
 		//condition.setLstDisplayedAttendance(lstItem.stream().filter(x -> lstAttendanceId.contains(x.getAttendanceDisplay())).collect(Collectors.toList()));
@@ -1798,13 +1808,16 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			if (opAttendanceItem.isPresent()) {
 				setting.setItemCode(opAttendanceItem.get().getAttendanceItemDisplayNumber());
 				setting.setItemName(opAttendanceItem.get().getAttendanceItemName());
-
-			} else {
-				setting.setItemCode(null);
-				setting.setItemName("");
-			}
-			headerData.lstOutputItemSettingCode.add(setting);
+				lstHaveNameIds.add(x);
+				headerData.lstOutputItemSettingCode.add(setting);
+			} 
+//			else {
+//				setting.setItemCode(null);
+//				setting.setItemName("");
+//			}
+//			headerData.lstOutputItemSettingCode.add(setting);
 		});
+		return lstHaveNameIds;
 	}
 	
 	/**
@@ -2555,11 +2568,16 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				erAlMark.setValue(employee.getErrorAlarmCode());
 				
 				// B5_2
-				Cell employeeCell = cells.get(currentRow, 1);
-				employeeCell.setValue(employee.getEmployeeName());
+				Cell employeeCodeCell = cells.get(currentRow, 1);
+				employeeCodeCell.setValue(employee.getEmployeeCode());
 				
-				Range employeeRange = cells.createRange(currentRow, 1, dataRowCount, 2);
-				employeeRange.merge();
+				
+				Cell employeeNameCell = cells.get(currentRow, 2);
+				employeeNameCell.setValue(employee.getEmployeeName());
+				
+				
+//				Range employeeRange = cells.createRange(currentRow, 1, dataRowCount, 2);
+//				employeeRange.merge();
 				
 				
 				if (lstItem != null) {

@@ -1,8 +1,13 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.file.at.app.export.dailyschedule.data;
 
 import java.util.List;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.file.at.app.export.dailyschedule.ActualValue;
 
 /**
@@ -10,6 +15,7 @@ import nts.uk.file.at.app.export.dailyschedule.ActualValue;
  * @author HoangNDH
  */
 @Data
+@NoArgsConstructor
 public class DailyPersonalPerformanceData {
 	
 	/** The error alarm code. */
@@ -18,9 +24,13 @@ public class DailyPersonalPerformanceData {
 	/** The employee name. */
 	public String employeeName;
 	
+	/** The employee code. */
+	public String employeeCode;
+	
 	/** The detailed error data. */
 	public String detailedErrorData;
 	
 	/** The actual value. */
 	public List<ActualValue> actualValue;
+	
 }
