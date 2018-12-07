@@ -65,8 +65,8 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             self.selectedTab = ko.observable('tab-1');
             self.columns = [
                 {key: 'index', length: 0, hidden: true},
-                {key: 'period', length: 8},
-                {key: 'amount', length: 6, template: "<div style='text-align: right'>${amount}</div>"}
+                {key: 'period', length: 7},
+                {key: 'amount', length: 3, template: "<div style='text-align: right'>${amount}</div>"}
             ];
             // initial ccg options
             self.itemList = ko.observableArray([]);

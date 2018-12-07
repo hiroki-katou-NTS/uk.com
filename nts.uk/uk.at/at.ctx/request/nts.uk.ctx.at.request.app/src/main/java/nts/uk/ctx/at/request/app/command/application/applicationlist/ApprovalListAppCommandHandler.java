@@ -19,7 +19,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
+//import nts.uk.ctx.at.request.dom.setting.company.request.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * 14 - 申請一覧承認登録
@@ -43,9 +43,9 @@ public class ApprovalListAppCommandHandler extends CommandHandlerWithResult<List
 		String companyId = AppContexts.user().companyId();
 		//ドメインモデル「承認一覧表示設定」を取得する-(Lấy domain Approval List display Setting)
 		Optional<RequestSetting> requestSet = repoRequestSet.findByCompany(companyId);
-		ApprovalListDisplaySetting appDisplaySet = null;
+		//ApprovalListDisplaySetting appDisplaySet = null;
 		if(requestSet.isPresent()){
-			appDisplaySet = requestSet.get().getApprovalListDisplaySetting();
+			//appDisplaySet = requestSet.get().getApprovalListDisplaySetting();
 		}
 		//ドメインモデル「申請一覧共通設定」を取得する-(Lấy domain Application list common settings) - wait YenNTH
 		Optional<AppCommonSet> appCommonSet = repoAppCommonSet.find();

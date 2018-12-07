@@ -313,6 +313,7 @@ module nts.uk.at.view.ksc001.b {
                     alreadySettingList: self.alreadySettingPersonal,
                     isShowWorkPlaceName: true,
                     isShowSelectAllButton: false,
+                    isSelectAllAfterReload: true,
                     maxWidth: 550,
                     maxRows: 10,
                     tabindex: 5

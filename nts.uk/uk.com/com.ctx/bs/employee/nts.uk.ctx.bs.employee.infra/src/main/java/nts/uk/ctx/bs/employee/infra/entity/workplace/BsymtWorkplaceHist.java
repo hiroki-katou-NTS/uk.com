@@ -5,7 +5,6 @@
 package nts.uk.ctx.bs.employee.infra.entity.workplace;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

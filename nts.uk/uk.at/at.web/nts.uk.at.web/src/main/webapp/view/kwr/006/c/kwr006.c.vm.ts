@@ -99,8 +99,10 @@ module nts.uk.at.view.kwr006.c {
                 const lstSwapLeft = _.sortBy(self.outputItemPossibleLst(), i => i.code);
                 let lstSwapRight = [];
                 if (lstDisplayedAttendance) {
-                    lstSwapRight = lstDisplayedAttendance.map(item => {
-                        return { code: self.mapIdCodeAtd[item.attendanceDisplay], name: item.attendanceName, id: item.attendanceDisplay };
+                    _.forEach(lstDisplayedAttendance, (item, index) => {
+                        if (item.attendanceName) {
+                            lstSwapRight.push({ code: self.mapIdCodeAtd[item.attendanceDisplay], name: item.attendanceName, id: item.attendanceDisplay });
+                        }
                     });
                 }
 

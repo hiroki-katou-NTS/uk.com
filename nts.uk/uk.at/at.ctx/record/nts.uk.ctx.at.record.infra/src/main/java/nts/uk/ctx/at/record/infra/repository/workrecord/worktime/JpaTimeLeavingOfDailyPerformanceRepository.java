@@ -29,8 +29,8 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTime;
-import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTimePK;
+//import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTime;
+//import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTimePK;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiLeavingWork;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiLeavingWorkPK;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWork;
@@ -43,29 +43,29 @@ import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		implements TimeLeavingOfDailyPerformanceRepository {
 
-	private static final String REMOVE_BY_EMPLOYEE;
-
-	private static final String REMOVE_TIME_LEAVING_WORK;
+//	private static final String REMOVE_BY_EMPLOYEE;
+//
+//	private static final String REMOVE_TIME_LEAVING_WORK;
 
 	private static final String FIND_BY_KEY;
 
-	private static final String FIND_BY_PERIOD_ORDER_BY_YMD;
+//	private static final String FIND_BY_PERIOD_ORDER_BY_YMD;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDaiLeavingWork a ");
-		builderString.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd = :ymd ");
-		REMOVE_BY_EMPLOYEE = builderString.toString();
-
-		builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtTimeLeavingWork a ");
-		builderString.append("WHERE a.krcdtTimeLeavingWorkPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtTimeLeavingWorkPK.ymd = :ymd ");
-		builderString.append("AND a.krcdtTimeLeavingWorkPK.timeLeavingType = :timeLeavingType ");
-		REMOVE_TIME_LEAVING_WORK = builderString.toString();
+//		builderString.append("DELETE ");
+//		builderString.append("FROM KrcdtDaiLeavingWork a ");
+//		builderString.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId = :employeeId ");
+//		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd = :ymd ");
+//		REMOVE_BY_EMPLOYEE = builderString.toString();
+//
+//		builderString = new StringBuilder();
+//		builderString.append("DELETE ");
+//		builderString.append("FROM KrcdtTimeLeavingWork a ");
+//		builderString.append("WHERE a.krcdtTimeLeavingWorkPK.employeeId = :employeeId ");
+//		builderString.append("AND a.krcdtTimeLeavingWorkPK.ymd = :ymd ");
+//		builderString.append("AND a.krcdtTimeLeavingWorkPK.timeLeavingType = :timeLeavingType ");
+//		REMOVE_TIME_LEAVING_WORK = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
@@ -74,14 +74,14 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd = :ymd ");
 		FIND_BY_KEY = builderString.toString();
 
-		builderString = new StringBuilder();
-		builderString.append("SELECT a ");
-		builderString.append("FROM KrcdtDaiLeavingWork a ");
-		builderString.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd >= :start ");
-		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd <= :end ");
-		builderString.append("ORDER BY a.krcdtDaiLeavingWorkPK.ymd ");
-		FIND_BY_PERIOD_ORDER_BY_YMD = builderString.toString();
+//		builderString = new StringBuilder();
+//		builderString.append("SELECT a ");
+//		builderString.append("FROM KrcdtDaiLeavingWork a ");
+//		builderString.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId = :employeeId ");
+//		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd >= :start ");
+//		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd <= :end ");
+//		builderString.append("ORDER BY a.krcdtDaiLeavingWorkPK.ymd ");
+//		FIND_BY_PERIOD_ORDER_BY_YMD = builderString.toString();
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)

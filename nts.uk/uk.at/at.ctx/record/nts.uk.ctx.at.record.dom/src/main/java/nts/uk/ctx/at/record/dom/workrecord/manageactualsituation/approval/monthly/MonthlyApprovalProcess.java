@@ -19,7 +19,7 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcess;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcessRepository;
 import nts.uk.ctx.at.shared.dom.adapter.dailyperformance.DailyPerformanceAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
-import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
+//import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
@@ -27,8 +27,8 @@ public class MonthlyApprovalProcess {
 	
 	@Inject 
 	ApprovalProcessRepository approvalRepo;
-	@Inject
-	private SharedAffJobtitleHisAdapter affJobTitleAdapter;
+//	@Inject
+//	private SharedAffJobtitleHisAdapter affJobTitleAdapter;
 	@Inject
 	DailyPerformanceAdapter dailyPerformanceAdapter;
 	

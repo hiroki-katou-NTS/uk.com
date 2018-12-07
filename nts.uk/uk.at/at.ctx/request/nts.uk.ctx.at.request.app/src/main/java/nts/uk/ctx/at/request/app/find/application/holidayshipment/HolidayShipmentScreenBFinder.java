@@ -78,14 +78,13 @@ public class HolidayShipmentScreenBFinder {
 	public HolidayShipmentDto findByID(String applicationID) {
 		HolidayShipmentDto screenInfo = new HolidayShipmentDto();
 		String companyID = AppContexts.user().companyId();
-		String employeeID = AppContexts.user().employeeId();
-		screenInfo.setEmployeeID(employeeID);
+		String enteredEmployeeID = AppContexts.user().employeeId();
 		boolean isRecAppID = isRecAppID(applicationID, screenInfo);
 		// 1-1.新規画面起動前申請共通設定を取得する
 		int rootAtr = 1;
 
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet
-				.prelaunchAppCommonSetService(companyID, employeeID, rootAtr, APP_TYPE, GeneralDate.today());
+				.prelaunchAppCommonSetService(companyID, enteredEmployeeID, rootAtr, APP_TYPE, GeneralDate.today());
 
 		screenInfo.setApplicationSetting(ApplicationSettingDto.convertToDto(appCommonSettingOutput.applicationSetting));
 
@@ -97,6 +96,10 @@ public class HolidayShipmentScreenBFinder {
 			Application_New appOutput = appOutputOpt.get();
 
 			setEmployeeDisplayText(appOutput, screenInfo);
+			
+			String employeeID = appOutput.getEmployeeID();
+			screenInfo.setEmployeeID(employeeID);
+			
 
 			screenInfo.setApplication(ApplicationDto_New.fromDomain(appOutput));
 

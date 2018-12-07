@@ -14,7 +14,7 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
+//import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
@@ -32,9 +32,9 @@ import nts.uk.ctx.at.schedule.dom.schedule.algorithm.CreScheWithBusinessDayCalSe
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareAtr;
+//import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareSchedule;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareScheduleRound;
+//import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule.ChildCareScheduleRound;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.helper.ErrorList;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.helper.Helper;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.helper.MasterCache;
@@ -499,12 +499,12 @@ public class DefaultRegisterBasicScheduleService implements RegisterBasicSchedul
 		return listWorkScheduleBreak;
 	}
 
-	private void addChildCare(BasicSchedule bSchedule) {
-		List<ChildCareSchedule> listChildCareSchedule = new ArrayList<>();
-		listChildCareSchedule.add(new ChildCareSchedule(EnumAdaptor.valueOf(0, ChildCareScheduleRound.class), null,
-				null, EnumAdaptor.valueOf(0, ChildCareAtr.class)));
-		bSchedule.setChildCareSchedules(listChildCareSchedule);
-	}
+//	private void addChildCare(BasicSchedule bSchedule) {
+//		List<ChildCareSchedule> listChildCareSchedule = new ArrayList<>();
+//		listChildCareSchedule.add(new ChildCareSchedule(EnumAdaptor.valueOf(0, ChildCareScheduleRound.class), null,
+//				null, EnumAdaptor.valueOf(0, ChildCareAtr.class)));
+//		bSchedule.setChildCareSchedules(listChildCareSchedule);
+//	}
 
 
 	/**

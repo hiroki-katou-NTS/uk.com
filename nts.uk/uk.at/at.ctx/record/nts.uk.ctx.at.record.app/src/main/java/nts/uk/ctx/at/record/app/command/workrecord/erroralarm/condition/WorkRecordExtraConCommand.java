@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.app.command.workrecord.erroralarm.condition;
 
-import lombok.NoArgsConstructor;
+//import lombok.NoArgsConstructor;
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.DisplayMessages;

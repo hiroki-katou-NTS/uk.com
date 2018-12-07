@@ -4,6 +4,7 @@ import javax.print.attribute.HashAttributeSet;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;*/
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -107,7 +108,7 @@ public class ApplicationListFinder {
 		Optional<HdAppSet> lstHdAppSet = repoHdAppSet.getAll();
 		HdAppSetDto hdAppSetDto = HdAppSetDto.convertToDto(lstHdAppSet.get());
 		List<AppInfor> lstAppType = this.findListApp(lstApp.getDataMaster().getLstAppMasterInfo(), param.isSpr(), param.getExtractCondition());
-		List<ApplicationDto_New> lstAppSort = param.getCondition().getAppListAtr() == 1 ? this.sortById(lstAppDto) : 
+		List<ApplicationDto_New> lstAppSort = param.getCondition().getAppListAtr() == 1 ? this.sortByIdModeApproval(lstAppDto, lstApp.getDataMaster().getLstAppMasterInfo()) : 
 									this.sortByIdModeApp(lstAppDto, lstApp.getDataMaster().getMapAppBySCD(), lstApp.getDataMaster().getLstSCD());
 		return new ApplicationListDto(isDisPreP, condition.getStartDate(), condition.getEndDate(), displaySet, lstApp.getDataMaster().getLstAppMasterInfo(),lstAppSort,
 				lstApp.getLstAppOt(),lstApp.getLstAppGoBack(), lstApp.getAppStatusCount(), lstApp.getLstAppGroup(), lstAgent,
@@ -233,5 +234,21 @@ public class ApplicationListFinder {
 			}
 		}
 		return lstAppFind;
+	}
+	private List<ApplicationDto_New> sortByIdModeApproval(List<ApplicationDto_New> lstApp, List<AppMasterInfo> lstAppMasterInfo){
+		List<String> lstSCD = new ArrayList<>();
+		for(AppMasterInfo master : lstAppMasterInfo){
+			if(!lstSCD.contains(master.getEmpSD())){
+				lstSCD.add(master.getEmpSD());
+			}
+		}
+		Collections.sort(lstSCD);
+		List<ApplicationDto_New> lstResult = new ArrayList<>();
+		for (String sCD : lstSCD) {
+			List<String> lstAppID = lstAppMasterInfo.stream().filter(c -> c.getEmpSD().equals(sCD))
+					.map(d -> d.getAppID()).collect(Collectors.toList());
+			lstResult.addAll(this.sortById(this.findBylstID(lstApp, lstAppID)));
+		}
+		return lstResult;
 	}
 }

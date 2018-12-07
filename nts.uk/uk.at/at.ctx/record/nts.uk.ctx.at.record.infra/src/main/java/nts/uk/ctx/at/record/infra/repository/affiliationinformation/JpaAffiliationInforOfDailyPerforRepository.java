@@ -28,17 +28,17 @@ import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		implements AffiliationInforOfDailyPerforRepository {
 
-	private static final String REMOVE_BY_EMPLOYEE;
+//	private static final String REMOVE_BY_EMPLOYEE;
 
 	private static final String FIND_BY_KEY;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDaiAffiliationInf a ");
-		builderString.append("WHERE a.krcdtDaiAffiliationInfPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtDaiAffiliationInfPK.ymd = :ymd ");
-		REMOVE_BY_EMPLOYEE = builderString.toString();
+//		builderString.append("DELETE ");
+//		builderString.append("FROM KrcdtDaiAffiliationInf a ");
+//		builderString.append("WHERE a.krcdtDaiAffiliationInfPK.employeeId = :employeeId ");
+//		builderString.append("AND a.krcdtDaiAffiliationInfPK.ymd = :ymd ");
+//		REMOVE_BY_EMPLOYEE = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
@@ -85,6 +85,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private KrcdtDaiAffiliationInf toEntity(AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor) {
 		val entity = new KrcdtDaiAffiliationInf();
 

@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.dom.role;
 
-import java.util.UUID;
-
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;

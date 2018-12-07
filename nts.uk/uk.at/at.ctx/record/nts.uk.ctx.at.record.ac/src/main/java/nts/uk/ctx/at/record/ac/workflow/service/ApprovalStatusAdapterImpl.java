@@ -38,7 +38,7 @@ import nts.uk.ctx.workflow.pub.resultrecord.EmpPerformMonthParam;
 import nts.uk.ctx.workflow.pub.resultrecord.EmployeePerformParam;
 import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppEmpStatusExport;
-import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
+//import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
 import nts.uk.ctx.workflow.pub.spr.SprAppRootStatePub;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -50,8 +50,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 
-	@Inject
-	private ApprovalRootStatePub approvalRootStatePub;
+//	@Inject
+//	private ApprovalRootStatePub approvalRootStatePub;
 	
 	@Inject
 	private IntermediateDataPub intermediateDataPub;

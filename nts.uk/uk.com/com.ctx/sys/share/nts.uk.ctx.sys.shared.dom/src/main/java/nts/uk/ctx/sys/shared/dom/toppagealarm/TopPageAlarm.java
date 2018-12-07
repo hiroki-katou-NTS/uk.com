@@ -2,7 +2,6 @@ package nts.uk.ctx.sys.shared.dom.toppagealarm;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.shared.dom.toppagealarmset.AlarmCategory;
 /**

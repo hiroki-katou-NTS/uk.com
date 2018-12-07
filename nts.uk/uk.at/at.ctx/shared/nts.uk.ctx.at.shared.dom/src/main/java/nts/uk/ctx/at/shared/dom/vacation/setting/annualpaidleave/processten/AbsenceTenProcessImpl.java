@@ -5,7 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
+//import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
@@ -42,8 +42,8 @@ public class AbsenceTenProcessImpl implements AbsenceTenProcess{
 	private ComSubstVacationRepository repoComSubVaca;
 	@Inject
 	private EmploymentSettingRepository repoEmpSet;
-	@Inject
-	private AnnualPaidLeaveSettingRepository repoAnnualSet;
+//	@Inject
+//	private AnnualPaidLeaveSettingRepository repoAnnualSet;
 	@Inject
 	private RetentionYearlySettingRepository retentionYearlySetRepo;
 	// 10-1.年休の設定を取得する

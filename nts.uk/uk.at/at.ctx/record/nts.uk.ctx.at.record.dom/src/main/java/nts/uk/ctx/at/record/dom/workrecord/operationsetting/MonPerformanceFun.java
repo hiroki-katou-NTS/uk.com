@@ -2,11 +2,11 @@ package nts.uk.ctx.at.record.dom.workrecord.operationsetting;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
-import nts.arc.enums.EnumAdaptor;
+//import lombok.Setter;
+//import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
+//import nts.arc.time.GeneralDate;
+//import nts.arc.time.GeneralDateTime;
 
 /**
 * 月別実績の修正の機能
