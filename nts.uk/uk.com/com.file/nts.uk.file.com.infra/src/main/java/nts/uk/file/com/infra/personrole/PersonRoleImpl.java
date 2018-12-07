@@ -245,11 +245,11 @@ public class PersonRoleImpl implements PersonRoleRepository {
 		
 		// A7_13
 		data.put(PersonRoleColumn.CAS001_87,cateType == null || cateType == 1 || cateType == 2 ? ""
-				: object[12] == null ? "" : ((BigDecimal) object[12]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
+				: object[12] == null ? "" : checkValue3(((BigDecimal) object[12]).intValue()));
 		
 		// A7_14
 		data.put(PersonRoleColumn.CAS001_88,cateType == null || cateType == 1 || cateType == 2 ? ""
-				: object[13] == null ? "" : ((BigDecimal) object[13]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
+				: object[13] == null ? "" : checkValue3(((BigDecimal) object[13]).intValue()));
 		
 		// A7_15
 		data.put(PersonRoleColumn.CAS001_92,cateType == null || cateType == 1 || cateType == 2 ? ""
@@ -261,20 +261,20 @@ public class PersonRoleImpl implements PersonRoleRepository {
 		
 		// A7_17
 		data.put(PersonRoleColumn.CAS001_94,cateType == null || cateType == 1 || cateType == 2 ? ""
-				: object[16] == null ? "" : ((BigDecimal) object[16]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
+				: object[16] == null ? "" : checkValue3(((BigDecimal) object[16]).intValue()));
 		
 		// A7_18
 		data.put(PersonRoleColumn.CAS001_95,cateType == null || cateType == 1 || cateType == 2 ? ""
-				: object[17] == null ? "" : ((BigDecimal) object[17]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
+				: object[17] == null ? "" : checkValue3(((BigDecimal) object[17]).intValue()));
 		
 		// A7_19
 		data.put(PersonRoleColumn.CAS001_97, object[18] != null ? (String) object[18] : null);
 		
 		// A7_20
-		data.put(PersonRoleColumn.CAS001_98, checkValue3(object[19] != null ? ((BigDecimal) object[19]).intValue() : null, object[6] != null ? ((BigDecimal) object[6]).intValue() : null, 0));
+		data.put(PersonRoleColumn.CAS001_98, object[19] != null ? ((BigDecimal) object[19]).intValue() : null);
 		
 		// A7_21
-		data.put(PersonRoleColumn.CAS001_99, checkValue3(object[20] != null ? ((BigDecimal) object[20]).intValue() : null, object[5] != null ? ((BigDecimal) object[5]).intValue() : null, 0));
+		data.put(PersonRoleColumn.CAS001_99, object[20] != null ? ((BigDecimal) object[20]).intValue() : null);
 		
 		return data;
 	}
@@ -302,11 +302,9 @@ public class PersonRoleImpl implements PersonRoleRepository {
 		return value;
 	}
 
-	private String checkValue3(Integer authType, Integer check, Integer paramCheck) {
+	private String checkValue3(Integer authType) {
 		String value = null;
-		if (check == paramCheck || authType == null) {
-			value = VALUE_FALSE;
-		} else if (authType == 1) {
+		if (authType == 1) {
 			value = I18NText.getText("CAS001_49");
 		} else if (authType == 2) {
 			value = I18NText.getText("CAS001_50");
