@@ -110,8 +110,7 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 			////終了時刻の反映
 			TimeReflectPara startTimeData = new TimeReflectPara(param.getEmployeeId(), param.getBaseDate(), justLateEarly.getStart1(), 
 					justLateEarly.getEnd1(), 1, isStartTime, isEndTime);
-			dailyPerformance =  workUpdate.updateRecordStartEndTimeReflectRecruitment(startTimeData, 
-					daily.getAttendanceLeave().get());
+			dailyPerformance =  workUpdate.updateRecordStartEndTimeReflectRecruitment(startTimeData);
 			daily.setAttendanceLeave(Optional.of(dailyPerformance));
 			
 		}		
