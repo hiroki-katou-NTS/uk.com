@@ -64,10 +64,10 @@ public class StopSettingFinder {
 		// ドメインモデル「会社単位の利用停止の設定」を取得する
 		this.companyRepo.findByKey(contractCd, companyCd).ifPresent(company -> {
 			result.setCompany(StopByCompanyDto.fromDomain(company));
-			// ドメインモデル「システム全体の利用停止の設定」を取得しシステム全体の「システム利用状態」を取得する
-			this.systemRepo.findByKey(contractCd).ifPresent(system -> {
-				result.setSystem(StopBySystemDto.fromDomain(system));
-			});
+		});
+		// ドメインモデル「システム全体の利用停止の設定」を取得しシステム全体の「システム利用状態」を取得する
+		this.systemRepo.findByKey(contractCd).ifPresent(system -> {
+			result.setSystem(StopBySystemDto.fromDomain(system));
 		});
 	}
 
