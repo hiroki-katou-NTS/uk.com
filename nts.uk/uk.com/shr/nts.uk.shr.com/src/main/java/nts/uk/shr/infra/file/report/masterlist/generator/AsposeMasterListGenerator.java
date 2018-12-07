@@ -137,7 +137,8 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 	}
 
 	private String getSheetName(String sheetName, int idx) {
-		return idx > 0 ? sheetName + idx : sheetName;
+		//return idx > 0 ? sheetName + idx : sheetName;
+		return sheetName;
 	}
 
 	private void setDefaultSheetOption(final Worksheet sheet) {
