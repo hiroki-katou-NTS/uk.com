@@ -35,7 +35,7 @@ public interface WorkUpdateService {
 	 * 開始時刻の反映, 終了時刻を反映
 	 * @param data
 	 */
-	public TimeLeavingOfDailyPerformance updateRecordStartEndTimeReflect(TimeReflectPara data, TimeLeavingOfDailyPerformance timeDaily);
+	public TimeLeavingOfDailyPerformance updateRecordStartEndTimeReflect(TimeReflectPara data);
 	
 	public TimeLeavingOfDailyPerformance updateRecordStartEndTimeReflectRecruitment(TimeReflectPara data, TimeLeavingOfDailyPerformance timeLeavingOfDailyData);
 	/**

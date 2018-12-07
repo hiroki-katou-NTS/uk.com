@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.absenceleave;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,15 +8,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.HolidayWorkReflectProcess;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OverTimeRecordAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.StartEndTimeOffReflect;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.StartEndTimeRelectCheck;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectBreakTimeOfDailyDomainService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
@@ -60,8 +56,6 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDaily;
 	@Inject
 	private CommonProcessCheckService commonService;
-	@Inject
-	private ReflectBreakTimeOfDailyDomainService breaktimeSevice;
 	@Override
 	public boolean reflectAbsenceLeave(CommonReflectParameter param, boolean isPre) {
 		try {
@@ -207,8 +201,6 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 		dailyInfor = workUpdate.updateRecordWorkType(param.getEmployeeId(), param.getBaseDate(), param.getWorkTypeCode(), false, dailyInfor);
 		//1日半日出勤・1日休日系の判定
 		WorkStyle checkworkDay = basicService.checkWorkDay(param.getWorkTypeCode());
-		Optional<TimeLeavingOfDailyPerformance> optTimeLeaving = timeLeavingOfDaily.findByKey(param.getEmployeeId(), param.getBaseDate());
-		TimeLeavingOfDailyPerformance timeDaily = null;
 		if(checkworkDay == WorkStyle.ONE_DAY_REST) {
 			//就業時間帯の必須チェック
 			SetupType checkNeededOfWorkTimeSetting = basicService.checkNeededOfWorkTimeSetting(param.getWorkTypeCode());
@@ -217,14 +209,12 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 				dailyInfor = workUpdate.updateRecordWorkTime(param.getEmployeeId(), param.getBaseDate(), null, false, dailyInfor);
 			}
 			//開始終了時刻が反映できるか(1日休日)
-			if(this.checkReflectRecordStartEndTime(param.getEmployeeId(), param.getBaseDate(), 1, true)
-					&& optTimeLeaving.isPresent()) {
-				timeDaily = optTimeLeaving.get();
+			if(this.checkReflectRecordStartEndTime(param.getEmployeeId(), param.getBaseDate(), 1, true)) {
 				//開始時刻の反映 開始時刻をクリア
 				//終了時刻の反映 終了時刻をクリア
 				TimeReflectPara timePara1 = new TimeReflectPara(param.getEmployeeId(), param.getBaseDate(), 
 						null, null, 1, true, true);
-				timeDaily = workUpdate.updateRecordStartEndTimeReflect(timePara1, timeDaily);
+				workUpdate.updateRecordStartEndTimeReflect(timePara1);
 			}
 			
 		} else if (checkworkDay == WorkStyle.AFTERNOON_WORK || checkworkDay == WorkStyle.MORNING_WORK) {
@@ -237,9 +227,7 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 			//開始終了時刻の反映(事前)
 			StartEndTimeRelectCheck startEndTimeData = new StartEndTimeRelectCheck(param.getEmployeeId(), param.getBaseDate(), param.getStartTime(), param.getEndTime(), 
 					null, null, param.getWorkTimeCode(), param.getWorkTypeCode(), OverTimeRecordAtr.ALL);
-			if(optTimeLeaving.isPresent()) {
-				timeDaily = recordStartEndTimeRelect.startEndTimeOutput(startEndTimeData, dailyInfor, timeDaily);	
-			}
+			recordStartEndTimeRelect.startEndTimeOutput(startEndTimeData, dailyInfor);	
 			
 		}		
 		return dailyInfor;

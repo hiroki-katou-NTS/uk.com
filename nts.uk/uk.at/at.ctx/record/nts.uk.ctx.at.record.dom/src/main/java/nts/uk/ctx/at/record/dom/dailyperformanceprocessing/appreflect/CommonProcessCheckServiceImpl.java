@@ -25,7 +25,6 @@ import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
 import nts.uk.shr.com.context.AppContexts;
@@ -48,8 +47,6 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 	private ReflectBreakTimeOfDailyDomainService breaktimeSevice;
 	@Inject
 	private BreakTimeOfDailyPerformanceRepository breakTimeRepo;
-	@Inject
-	private BreakTimeOfDailyPerformanceRepository breakTimeOfDaily;
 	@Override
 	public boolean commonProcessCheck(CommonCheckParameter para) {
 		ReflectedStateRecord state = ReflectedStateRecord.CANCELED;

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -41,11 +42,13 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
+import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
@@ -522,19 +525,33 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 	}
 	
 	@Override
-	public TimeLeavingOfDailyPerformance updateRecordStartEndTimeReflect(TimeReflectPara data, TimeLeavingOfDailyPerformance timeDaily) {		
+	public TimeLeavingOfDailyPerformance updateRecordStartEndTimeReflect(TimeReflectPara data) {
+		Optional<TimeLeavingOfDailyPerformance> optTimeLeaving = timeLeavingOfDaily.findByKey(data.getEmployeeId(), data.getDateData());
+		TimeLeavingOfDailyPerformance timeDaily = null;
+		if(optTimeLeaving.isPresent()) {
+			timeDaily = optTimeLeaving.get();
+		}
 		if(!data.isStart()
 				&& !data.isEnd()) {
 			return timeDaily;
 		}
 		//開始時刻を反映する
-		
-		List<TimeLeavingWork> lstTimeLeavingWorks = timeDaily.getTimeLeavingWorks().stream()
-				.filter(x -> x.getWorkNo().v() == data.getFrameNo()).collect(Collectors.toList());
-		if(lstTimeLeavingWorks.isEmpty()) {
-			return timeDaily;
+		List<TimeLeavingWork> lstTimeLeavingWorks = new ArrayList<>();
+		if(timeDaily != null) {
+			lstTimeLeavingWorks = timeDaily.getTimeLeavingWorks().stream()
+					.filter(x -> x.getWorkNo().v() == data.getFrameNo()).collect(Collectors.toList());
 		}
-		TimeLeavingWork timeLeavingWork = lstTimeLeavingWorks.get(0);
+		TimeLeavingWork timeLeavingWork = null;
+		if(lstTimeLeavingWorks.isEmpty()) {
+			WorkStamp workStamp = new WorkStamp(new TimeWithDayAttr(data.getStartTime()),
+					new TimeWithDayAttr(data.getEndTime()),
+					null,
+					StampSourceInfo.GO_STRAIGHT_APPLICATION);
+			TimeActualStamp timeActualStamp = new TimeActualStamp(workStamp, workStamp, 0);
+			timeLeavingWork = new TimeLeavingWork(new WorkNo(1), timeActualStamp, timeActualStamp);
+		} else {
+			timeLeavingWork = lstTimeLeavingWorks.get(0);
+		}
 		Optional<TimeActualStamp> optTimeAttendanceStart = timeLeavingWork.getAttendanceStamp();
 		Optional<TimeActualStamp> optTimeAttendanceEnd = timeLeavingWork.getLeaveStamp();
 		if(data.isStart() && optTimeAttendanceStart.isPresent()) {
@@ -551,7 +568,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			} else {
 				if(data.getStartTime() != null) {
 					stampTmp = new WorkStamp(new TimeWithDayAttr(data.getStartTime()),
-							new TimeWithDayAttr(data.getStartTime()),
+							new TimeWithDayAttr(data.getEndTime()),
 							null,
 							StampSourceInfo.GO_STRAIGHT_APPLICATION);
 				}
@@ -586,8 +603,12 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		TimeLeavingWork timeLeavingWorkTmp = new TimeLeavingWork(timeLeavingWork.getWorkNo(),
 				optTimeAttendanceStart.get(),
 				optTimeAttendanceEnd.get());
-		timeDaily.getTimeLeavingWorks().remove(timeLeavingWork);
-		timeDaily.getTimeLeavingWorks().add(timeLeavingWorkTmp);	
+		if(!lstTimeLeavingWorks.isEmpty()) {
+			timeDaily.getTimeLeavingWorks().remove(timeLeavingWork);
+			timeDaily.getTimeLeavingWorks().add(timeLeavingWorkTmp);
+		} else {
+			timeDaily = new TimeLeavingOfDailyPerformance(data.getEmployeeId(), new WorkTimes(1), Arrays.asList(timeLeavingWorkTmp), data.getDateData());
+		}
 		timeLeavingOfDaily.updateFlush(timeDaily);
 		//開始時刻の編集状態を更新する
 		//予定項目ID=出勤の項目ID	
