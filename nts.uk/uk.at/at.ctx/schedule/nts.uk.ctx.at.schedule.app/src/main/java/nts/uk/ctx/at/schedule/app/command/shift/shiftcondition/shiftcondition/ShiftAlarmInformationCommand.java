@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.schedule.app.command.shift.shiftcondition.shiftcondition;
 
 import java.util.List;
-import java.util.Map;
+//import java.util.Map;
 
 import lombok.Value;
 

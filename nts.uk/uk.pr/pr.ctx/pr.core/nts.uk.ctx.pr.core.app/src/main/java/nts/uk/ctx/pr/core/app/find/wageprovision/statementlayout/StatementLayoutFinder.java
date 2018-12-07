@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statementlayout;
 
+import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.CurrProcessDate;
+import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.CurrProcessDateRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.deductionitemset.DeductionItemSet;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.deductionitemset.DeductionItemSetRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.PaymentItemSet;
@@ -32,6 +34,8 @@ public class StatementLayoutFinder {
     private PaymentItemSetRepository paymentItemSetRepo;
     @Inject
     private DeductionItemSetRepository deductionItemSetRepo;
+    @Inject
+    private CurrProcessDateRepository currProcessDateRepo;
 
     @Inject
     private TimeItemSetRepository timeItemSetRepository;
@@ -101,6 +105,33 @@ public class StatementLayoutFinder {
         String cid = AppContexts.user().companyId();
         Optional<TimeItemSet> attItem = timeItemSetRepository.getTimeItemStById(cid, categoryAtr, itemNameCode);
         return attItem.map(AttendanceItemSetDto::new).orElse(null);
+    }
+
+    /**
+     * Screen P
+     */
+    public Integer getCurrentProcessingDate() {
+        String cid = AppContexts.user().companyId();
+        Optional<CurrProcessDate> processDateOtp = currProcessDateRepo.getCurrProcessDateByIdAndProcessCateNo(cid, 1);
+        if (processDateOtp.isPresent()) {
+            return processDateOtp.get().getGiveCurrTreatYear().v();
+        }
+        return null;
+    }
+
+    /**
+     * Screen P
+     */
+    public List<StatementLayoutDto> getStatementLayoutByProcessingDate(int processingDate) {
+        String cid = AppContexts.user().companyId();
+        // ドメインモデル「明細書レイアウト履歴」を取得する
+        List<String> sttCodes = statementLayoutHistRepo.getAllStatementLayoutHistByCid(cid, processingDate)
+                .stream().map(x -> x.getStatementCode().v()).collect(Collectors.toList());
+        // ドメインモデル「明細書レイアウト」を取得する
+        List<StatementLayoutDto> sttLayouts = statementLayoutRepo.getAllStatementLayoutByCidAndCodes(cid, sttCodes)
+                .stream().map(x -> new StatementLayoutDto(x.getStatementCode().v(), x.getStatementName().v()))
+                .collect(Collectors.toList());
+        return sttLayouts;
     }
 
 }

@@ -1,8 +1,7 @@
 package nts.uk.shr.com.program.nosession;
 
-import static mockit.Deencapsulation.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 

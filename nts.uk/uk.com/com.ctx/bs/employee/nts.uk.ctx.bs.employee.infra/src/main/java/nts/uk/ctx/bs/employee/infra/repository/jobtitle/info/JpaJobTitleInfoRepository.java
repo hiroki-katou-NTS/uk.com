@@ -473,6 +473,7 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository#findByIds(java.lang.String, java.util.List, java.util.List)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public Map<GeneralDate, List<JobTitleInfo>> findByIds(String companyId, List<String> jobIds,
 			List<GeneralDate> baseDates) {

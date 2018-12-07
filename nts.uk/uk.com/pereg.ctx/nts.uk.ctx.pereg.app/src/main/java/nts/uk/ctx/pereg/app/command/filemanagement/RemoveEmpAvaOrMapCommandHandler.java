@@ -10,7 +10,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.dom.filemanagement.EmpFileManagementRepository;
-import nts.uk.ctx.pereg.dom.filemanagement.PersonFileManagement;
 
 @Stateless
 public class RemoveEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapCommand> {

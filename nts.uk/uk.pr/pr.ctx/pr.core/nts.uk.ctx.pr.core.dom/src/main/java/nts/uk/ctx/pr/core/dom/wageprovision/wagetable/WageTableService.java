@@ -15,7 +15,7 @@ public class WageTableService {
     private WageTableRepository wageTableRepo;
 
     @Inject
-    private WageTableHistRepository wageTableHistRepo;
+    private WageTableHistoryRepository wageTableHistRepo;
 
     public List<WageTable> getFormulaByYearMonth(YearMonth yearMonth) {
         String cid = AppContexts.user().companyId();

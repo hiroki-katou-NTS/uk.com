@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import org.eclipse.persistence.exceptions.IntegrityException;
+//import org.eclipse.persistence.exceptions.IntegrityException;
 
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;

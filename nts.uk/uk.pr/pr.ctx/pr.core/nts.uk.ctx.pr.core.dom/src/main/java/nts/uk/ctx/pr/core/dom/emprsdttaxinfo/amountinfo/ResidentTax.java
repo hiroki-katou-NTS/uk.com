@@ -5,6 +5,9 @@ import nts.arc.primitive.constraint.DecimalRange;
 
 import java.math.BigDecimal;
 
+/**
+ * 住民税額
+ */
 @DecimalRange(min = "0", max = "9999999999")
 public class ResidentTax extends DecimalPrimitiveValue<ResidentTax> {
 

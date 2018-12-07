@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.dom.adapter.approvalrootstate.AppRootStateConfirmAdapter;
+//import nts.uk.ctx.at.record.dom.adapter.approvalrootstate.AppRootStateConfirmAdapter;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.approvalmanagement.domainservice.DeleteApprovalStaOfDailyPerforService;
@@ -19,7 +19,7 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDa
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.stamp.StampRepository;
+//import nts.uk.ctx.at.record.dom.stamp.StampRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.updateworkinfo.DeleteWorkInfoOfDailyPerforService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
@@ -57,8 +57,8 @@ public class DeleteWorkInfoOfDaiPerService {
 	@Inject
 	private OutingTimeOfDailyPerformanceRepository outingTimeOfDailyPerformanceRepository;
 
-	@Inject
-	private StampRepository stampRepository;
+//	@Inject
+//	private StampRepository stampRepository;
 
 	@Inject
 	private DeleteApprovalStaOfDailyPerforService deleteApprovalStaOfDailyPerforService;
@@ -90,8 +90,8 @@ public class DeleteWorkInfoOfDaiPerService {
 	@Inject
 	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepository;
 	
-	@Inject
-	private AppRootStateConfirmAdapter appRootStateConfirmAdapter;
+//	@Inject
+//	private AppRootStateConfirmAdapter appRootStateConfirmAdapter;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void deleteWorkInfoOfDaiPerService(String employeeId, GeneralDate day) {

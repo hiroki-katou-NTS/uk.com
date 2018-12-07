@@ -9,7 +9,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
 import nts.uk.screen.at.app.ktgwidget.KTG027QueryProcessor;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OvertimeHours;

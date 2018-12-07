@@ -39,7 +39,7 @@ public class TempDayoffServiceImpl implements TempDayoffService {
 		
 		// 月初の代休残数を取得　→　繰越数
 		Double carryforwardDays = this.breakDayoffMngQuery.getDayOffRemainOfBeginMonth(companyId, employeeId);
-		if (carryforwardDays == null) carryforwardDays = 0.0;
+//		if (carryforwardDays == null) carryforwardDays = 0.0;
 		
 		// 暫定データの作成
 		this.interimBreakDayoffService.create(companyId, employeeId, period, Optional.empty(), Optional.empty());
@@ -56,8 +56,8 @@ public class TempDayoffServiceImpl implements TempDayoffService {
 			val interimRemAggrOutput = interimRemAggrOutputs.get(0);
 			occurDays = interimRemAggrOutput.getMonthOccurrence();
 			usedDays = interimRemAggrOutput.getMonthUse();
-			if (occurDays == null) occurDays = 0.0;
-			if (usedDays == null) usedDays = 0.0;
+//			if (occurDays == null) occurDays = 0.0;
+//			if (usedDays == null) usedDays = 0.0;
 			remainDays = carryforwardDays + occurDays - usedDays;
 		}
 		// 暫定代休・休出管理データを削除

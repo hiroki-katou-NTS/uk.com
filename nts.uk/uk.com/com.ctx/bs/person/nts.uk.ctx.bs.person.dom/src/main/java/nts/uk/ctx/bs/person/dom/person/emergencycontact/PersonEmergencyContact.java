@@ -2,9 +2,7 @@ package nts.uk.ctx.bs.person.dom.person.emergencycontact;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.bs.person.dom.person.deletemanagement.PersonDeleteManagement;
 import nts.uk.ctx.bs.person.dom.person.info.PersonMailAddress;
 import nts.uk.ctx.bs.person.dom.person.info.PersonMobile;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonName;

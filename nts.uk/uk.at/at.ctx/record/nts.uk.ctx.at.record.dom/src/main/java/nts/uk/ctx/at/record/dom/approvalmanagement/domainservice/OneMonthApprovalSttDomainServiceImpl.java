@@ -5,7 +5,7 @@ package nts.uk.ctx.at.record.dom.approvalmanagement.domainservice;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
+//import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -116,10 +116,10 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 		List<ApprovalEmployeeDto> lstApprovalEmployee = new ArrayList<>();
 		List<ApprovalRootSituation> lstApproval = approvalRootOfEmployeeImport.getApprovalRootSituations();
 
-		GeneralDate startDate = GeneralDate.ymd(lstApproval.get(0).getAppDate().year(),lstApproval.get(0).getAppDate().month(),1);
-		GeneralDate endDate = GeneralDate.ymd(lstApproval.get(0).getAppDate().year(),
-												lstApproval.get(0).getAppDate().month(),
-												lstApproval.get(0).getAppDate().lastDateInMonth());
+//		GeneralDate startDate = GeneralDate.ymd(lstApproval.get(0).getAppDate().year(),lstApproval.get(0).getAppDate().month(),1);
+//		GeneralDate endDate = GeneralDate.ymd(lstApproval.get(0).getAppDate().year(),
+//												lstApproval.get(0).getAppDate().month(),
+//												lstApproval.get(0).getAppDate().lastDateInMonth());
 		
 		
 		

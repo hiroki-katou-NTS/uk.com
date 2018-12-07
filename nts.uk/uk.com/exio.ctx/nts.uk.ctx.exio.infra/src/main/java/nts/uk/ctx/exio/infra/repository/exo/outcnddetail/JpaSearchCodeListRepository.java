@@ -18,7 +18,7 @@ public class JpaSearchCodeListRepository extends JpaRepository implements Search
 	private static final String SELECT_BY_CATEID_AND_CATENO = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.searchCodeListPk.categoryId =:categoryId AND  f.searchCodeListPk.categoryItemNo =:categoryItemNo ";
 
-	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.searchCodeListPk.id =:id";
+//	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.searchCodeListPk.id =:id";
 
 	@Override
 	public void add(SearchCodeList domain) {

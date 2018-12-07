@@ -401,7 +401,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 			return breakTimeInput;
 		}
 		//Imported(申請承認)「勤務実績」を取得する
-		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,appDate);
+		//RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,appDate);
 		if(breakTimeInput.getApplicationTime() != null && breakTimeInput.getApplicationTime() > 0){
 			breakTimeInput.setErrorCode(2);
 		}

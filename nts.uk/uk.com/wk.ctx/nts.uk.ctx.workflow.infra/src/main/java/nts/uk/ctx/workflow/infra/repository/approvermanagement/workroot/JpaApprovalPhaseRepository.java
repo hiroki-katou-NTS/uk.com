@@ -12,12 +12,9 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import org.eclipse.persistence.jpa.rs.features.fieldsfiltering.FieldsFilterType;
-
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
@@ -25,16 +22,10 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
-import nts.uk.ctx.workflow.dom.resultrecord.AppFrameInstance;
-import nts.uk.ctx.workflow.dom.resultrecord.AppPhaseInstance;
-import nts.uk.ctx.workflow.dom.resultrecord.AppRootInstance;
-import nts.uk.ctx.workflow.dom.resultrecord.RecordRootType;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.FullJoinWwfmtApprovalPhase;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtAppover;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtApprovalPhase;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtApprovalPhasePK;
-import nts.uk.ctx.workflow.infra.entity.resultrecord.FullJoinAppRootInstance;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author hoatt

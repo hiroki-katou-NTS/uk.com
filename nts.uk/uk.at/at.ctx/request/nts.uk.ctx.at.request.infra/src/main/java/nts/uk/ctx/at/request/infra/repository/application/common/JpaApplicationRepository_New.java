@@ -32,12 +32,12 @@ public class JpaApplicationRepository_New extends JpaRepository implements Appli
 	
 	private static final String SELECT_FROM_APPLICATION = "SELECT a FROM KrqdtApplication_New a"
 			+ " WHERE a.krqdpApplicationPK.companyID = :companyID";
-	private static final String UPDATE = "UPDATE KrqdtApplication_New a "
-			+ "SET a.reversionReason = :reversionReason"
-			+ ", a.appReason = :appReason"
-			+ ", a.stateReflectionReal = :stateReflectionReal"
-			+ ", a.version = :version"
-			+ " WHERE a.krqdpApplicationPK.appID = :appID AND a.krqdpApplicationPK.companyID = :companyID";
+//	private static final String UPDATE = "UPDATE KrqdtApplication_New a "
+//			+ "SET a.reversionReason = :reversionReason"
+//			+ ", a.appReason = :appReason"
+//			+ ", a.stateReflectionReal = :stateReflectionReal"
+//			+ ", a.version = :version"
+//			+ " WHERE a.krqdpApplicationPK.appID = :appID AND a.krqdpApplicationPK.companyID = :companyID";
 	private static final String SELECT_APP = "SELECT c FROM KrqdtApplication_New c "
 			+ "WHERE c.employeeID = :applicantSID "
 			+ "AND c.appDate = :appDate "

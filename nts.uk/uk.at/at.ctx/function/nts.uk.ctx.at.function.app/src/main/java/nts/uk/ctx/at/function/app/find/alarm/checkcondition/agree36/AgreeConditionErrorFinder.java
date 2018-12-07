@@ -1,10 +1,10 @@
 package nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
-
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeConditionErrorRepository;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeNameErrorRepository;
+//import javax.inject.Inject;
+//
+//import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeConditionErrorRepository;
+//import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeNameErrorRepository;
 
 /**
  * 
@@ -13,11 +13,11 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeNameErrorRe
  */
 @Stateless
 public class AgreeConditionErrorFinder {
-	@Inject
-	private IAgreeConditionErrorRepository errorRep;
-
-	@Inject
-	private IAgreeNameErrorRepository nameRep;
+//	@Inject
+//	private IAgreeConditionErrorRepository errorRep;
+//
+//	@Inject
+//	private IAgreeNameErrorRepository nameRep;
 
 //	public List<AgreeConditionErrorDto> finder() {
 //		List<AgreeConditionError> listConError = errorRep.findAll();

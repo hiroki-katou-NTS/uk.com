@@ -23,6 +23,10 @@ public class JpaStatementLayoutSetRepository extends JpaRepository implements St
     private static final String SELECT_BY_HISTORY_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.settingByCtgPk.histId =:histId ";
     private static final String SELECT_HIST_BY_ID = "SELECT f FROM QpbmtStatementLayoutHist f " +
             " WHERE f.statementLayoutHistPk.histId = :histId ";
+    private static final String DELETE_ALL_PAYMENT_DETAIL_BY_HISTID = "DELETE FROM QpbmtPayItemDetailSet f " +
+            " WHERE f.payItemDetailSetPk.histId =:histId";
+    private static final String DELETE_ALL_DEDU_DETAIL_BY_HISTID = "DELETE FROM QpbmtDdtItemDetailSet f " +
+            " WHERE f.ddtItemDetailSetPk.histId =:histId";
 
     @Override
     public List<StatementLayoutSet> getAllStatementLayoutSet(){
@@ -65,6 +69,9 @@ public class JpaStatementLayoutSetRepository extends JpaRepository implements St
     public void remove(String histId){
         for(CategoryAtr category : CategoryAtr.values()) {
             this.commandProxy().remove(QpbmtSettingByCtg.class, new QpbmtSettingByCtgPk(histId, category.value));
+            this.getEntityManager().createQuery(DELETE_ALL_PAYMENT_DETAIL_BY_HISTID).setParameter("histId", histId).executeUpdate();
+            this.getEntityManager().createQuery(DELETE_ALL_DEDU_DETAIL_BY_HISTID).setParameter("histId", histId).executeUpdate();
+            //delete time detail
         }
     }
 

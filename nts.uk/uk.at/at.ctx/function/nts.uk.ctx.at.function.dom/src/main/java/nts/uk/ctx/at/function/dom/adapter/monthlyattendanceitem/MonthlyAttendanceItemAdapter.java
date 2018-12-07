@@ -16,4 +16,7 @@ public interface MonthlyAttendanceItemAdapter {
 	/** RequestList421 */
 	public List<MonthlyAttendanceResultImport> getMonthlyValueOf(String employeeId, YearMonthPeriod range,
 			Collection<Integer> itemIds);
+	
+	public List<MonthlyAttendanceResultImport> getMonthlyValueOfParallel(Collection<String> employeeIds, YearMonthPeriod range,
+			Collection<Integer> itemIds);
 }

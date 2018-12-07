@@ -1,32 +1,5 @@
 package i18n;
 
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.CacheControl;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.EntityTag;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-
-import org.apache.logging.log4j.util.Strings;
-
-//import nts.arc.i18n.custom.IInternationalization;
-//import nts.arc.i18n.custom.ISessionLocale;
-//import nts.arc.i18n.custom.ResourceType;
-import nts.arc.layer.app.command.JavaTypeResult;
-import nts.arc.scoped.session.SessionContextProvider;
-import nts.uk.shr.infra.i18n.SystemProperties;
-
 //@Path("loadresource")
 //@Produces("text/javascript")
 public class ResourceLoading {

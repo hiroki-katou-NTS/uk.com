@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.shared.dom.workrule.overtime;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
+//import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.BaseAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.ComAutoCalSetting;
@@ -31,8 +31,8 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkpjob.WkpJobAutoCalSettingRep
 @Stateless
 public class AutoCalculationSetServiceImpl implements AutoCalculationSetService {
 
-	@Inject
-	private SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter;
+//	@Inject
+//	private SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter;
 
 	@Inject
 	private UseUnitAutoCalSettingRepository useUnitAutoCalSettingRepository;
