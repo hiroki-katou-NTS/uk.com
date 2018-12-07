@@ -40,7 +40,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 treeType: 1,
                 selectType: 4,
                 isDialog: true,
-                isMultiSelect: true,
+                isMultiSelect: false,
                 isShowAlreadySet: false,
                 isShowSelectButton: true,
                 baseDate: ko.observable(this.standardDate()),
@@ -228,7 +228,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             let dfd = $.Deferred();
             var employeeSearch = new service.model.EmployeeSearchInDto();
             employeeSearch.baseDate = self.standardDate();
-            let lstWkp1 = self.treeGrid.selectedWorkplaceId();
+            let lstWkp1 = [self.treeGrid.selectedWorkplaceId()];
             let lstA = [];
             let UNIT = 100;
             for(let i = 0; i < lstWkp1.length; i += UNIT){
