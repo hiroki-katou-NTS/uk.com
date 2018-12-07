@@ -4,10 +4,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
-import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
-import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
-import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
-import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
+import nts.uk.shr.infra.file.report.masterlist.data.*;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
 
 import javax.ejb.Stateless;
@@ -15,6 +12,7 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 @DomainID("SubscribeRegis")
@@ -32,11 +30,7 @@ public class SubscribeRegisExportImpl implements MasterListData {
         if(CollectionUtil.isEmpty(listEmployee)){
             return datas;
         }else{
-            List<String> employeeIds = new ArrayList<String>();
-
-            listEmployee.forEach(x -> {
-                employeeIds.add(x.get("employeeId"));
-            });
+            List<String> employeeIds = listEmployee.stream().map(x -> x.get("employeeId")).collect(Collectors.toList());
             datas = subscribeRegisRepository.getDataExport(companyId,  employeeIds);
         }
 
@@ -58,18 +52,7 @@ public class SubscribeRegisExportImpl implements MasterListData {
                 ColumnTextAlign.LEFT, "", true));
         columns.add(new MasterHeaderColumn(SubscribeRegisColumn.CMM044_47, TextResource.localize("CMM044_47"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SubscribeRegisColumn.CMM044_48, TextResource.localize("CMM044_48"),
-                ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SubscribeRegisColumn.CMM044_49, TextResource.localize("CMM044_49"),
-                ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SubscribeRegisColumn.CMM044_50, TextResource.localize("CMM044_50"),
-                ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SubscribeRegisColumn.CMM044_51, TextResource.localize("CMM044_51"),
-                ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SubscribeRegisColumn.CMM044_52, TextResource.localize("CMM044_52"),
-                ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SubscribeRegisColumn.CMM044_53, TextResource.localize("CMM044_53"),
-                ColumnTextAlign.LEFT, "", true));
         return columns;
     }
+
 }
