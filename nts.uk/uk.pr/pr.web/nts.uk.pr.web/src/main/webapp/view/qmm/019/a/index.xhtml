@@ -17,7 +17,7 @@
         <com:scriptfile path="qmm019.a.service.js"/>
         <com:scriptfile path="qmm019.a.vm.js"/>
         <com:scriptfile path="qmm019.a.start.js"/>
-        <com:scriptfile path="knockout-sortable.min.js"/>
+        <!-- <com:scriptfile path="knockout-sortable.min.js"/> -->
     </ui:define>
 
     <ui:define name="content">
@@ -127,7 +127,7 @@
                                  data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM019_21')}</div>
                             <!-- 印刷プレビュー -->
                             <button id="A3_14" tabindex="13" class=""
-                                    data-bind="enable: true">#{i18n.getText('QMM019_22')}</button>
+                                    data-bind="click: $vm.openP, enable: true">#{i18n.getText('QMM019_22')}</button>
                         </div>
                         <hr/>
                         <div id="statementLayoutSet" data-bind="with: statementLayoutSet">
@@ -144,7 +144,7 @@
                                             <span class="caret-right"></span>
                                             <button id="A4_4" class=""
                                                     data-bind="enable: !hasFixed(), click: editLine"></button>
-                                            <div class="item-sort" data-bind="sortable: {
+                                            <div class="item-sort" data-bind="ntsSortable: {
                                                                         data: listSetByItem,
                                                                         beforeMove: preventStopSort}">
                                                 <div class="item limited-label" data-bind="
@@ -176,7 +176,7 @@
                                             <span class="caret-right"></span>
                                             <button id="A5_4" class=""
                                                     data-bind="enable: !hasFixed(), click: editLine"></button>
-                                            <div class="item-sort" data-bind="sortable: {
+                                            <div class="item-sort" data-bind="ntsSortable: {
                                                                         data: listSetByItem,
                                                                         beforeMove: preventStopSort }">
                                                 <div class="item limited-label" data-bind="
@@ -213,7 +213,7 @@
                                                 <span class="caret-right"></span>
                                                 <button id="A7_4" class=""
                                                         data-bind="enable: true, click: editLine"></button>
-                                                <div class="item-sort" data-bind="sortable: {
+                                                <div class="item-sort" data-bind="ntsSortable: {
                                                                             data: listSetByItem,
                                                                             beforeMove: preventStopSort }">
                                                     <div class="item limited-label" data-bind="
@@ -254,7 +254,7 @@
                                                 <span class="caret-right"></span>
                                                 <button id="A8_4" class=""
                                                         data-bind="enable: true, click: editLine"></button>
-                                                <div class="item-sort" data-bind="sortable: {
+                                                <div class="item-sort" data-bind="ntsSortable: {
                                                                             data: listSetByItem,
                                                                             beforeMove: preventStopSort }">
                                                     <div class="item limited-label" data-bind="
