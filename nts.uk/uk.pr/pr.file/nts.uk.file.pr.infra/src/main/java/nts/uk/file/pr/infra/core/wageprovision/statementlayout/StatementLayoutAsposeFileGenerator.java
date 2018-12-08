@@ -1,5 +1,6 @@
 package nts.uk.file.pr.infra.core.wageprovision.statementlayout;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,7 +45,7 @@ public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerat
 				offset = this.printCtg(ranges, stt, CategoryAtr.PAYMENT_ITEM, offset) + 1;
 				offset = this.printCtg(ranges, stt, CategoryAtr.DEDUCTION_ITEM, offset) + 1;
 				offset = this.printCtg(ranges, stt, CategoryAtr.ATTEND_ITEM, offset);
-				offset = this.printCtg(ranges, stt, CategoryAtr.REPORT_ITEM,offset);
+				offset = this.printCtg(ranges, stt, CategoryAtr.REPORT_ITEM, offset);
 				pageBreaks.add(offset);
 			}
 			ranges.deleteOrginRange();
@@ -63,6 +64,7 @@ public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerat
 		}
 		SettingByCtgExportData setByCtg = setByCtgOtp.get();
 		List<LineByLineSettingExportData> listLineByLineSet = setByCtg.getListLineByLineSet();
+		listLineByLineSet.sort(Comparator.comparingInt(LineByLineSettingExportData::getLineNumber));
 		for (LineByLineSettingExportData line : listLineByLineSet) {
 			offset = this.printLine(ranges, line, ctg, offset);
 		}
