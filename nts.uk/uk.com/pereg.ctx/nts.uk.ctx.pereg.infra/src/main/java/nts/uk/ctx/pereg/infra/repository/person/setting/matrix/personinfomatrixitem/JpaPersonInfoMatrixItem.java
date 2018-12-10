@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.pereg.infra.repository.person.setting.matrix.personinfomatrixitem;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -22,6 +23,9 @@ public class JpaPersonInfoMatrixItem extends JpaRepository implements PersonInfo
 	private static final String SELECT_BY_KEY = "SELECT c FROM PpestPersonInfoMatrixItem c WHERE c.PpestPersonInfoMatrixItemPK.pInfoCategoryID = :pInfoCategoryID"
 			+ " AND c.pInfoDefiID = :pInfoDefiID";
 	
+	private static final String SELECT_BY_CATEGORY_ID= "SELECT c FROM PpestPersonInfoMatrixItem c WHERE c.PpestPersonInfoMatrixItemPK.pInfoCategoryID = :pInfoCategoryID";
+			
+	
 	@Override
 	public Optional<PersonInfoMatrixItem> findbyKey(String pInfoCategoryID, String pInfoDefiID) {
 		// TODO Auto-generated method stub
@@ -40,6 +44,18 @@ public class JpaPersonInfoMatrixItem extends JpaRepository implements PersonInfo
 			updateEntity.columnWidth = newEntity.columnWidth;
 			updateEntity.regulationATR   = newEntity.regulationATR;
 			this.commandProxy().update(updateEntity);
+	}
+
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInfoMatrixItemRepo#findByCategoryID(java.lang.String)
+	 */
+	@Override
+	public List<PersonInfoMatrixItem> findByCategoryID(String pInfoCategoryID) {
+		
+		return this.queryProxy().query(SELECT_BY_CATEGORY_ID, PpestPersonInfoMatrixItem.class)
+				.setParameter("pInfoCategoryID", pInfoCategoryID)
+				.getList(c -> c.toDomain());
 	}
 
 }

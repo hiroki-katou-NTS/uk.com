@@ -21,3 +21,17 @@
 #swap-list-search-area-input {
 	width: 150px !important;
 }
+
+label.ntsControl.limited-label {
+    width: 400px;
+}
+
+div.form-label.required {
+    margin-left: 10px;
+	margin-right: 10px;
+}
+.valign-center.control-group{
+	height: 45px;
+    width: 100%;
+    border-bottom: solid 1px #B1B1B1;
+}
