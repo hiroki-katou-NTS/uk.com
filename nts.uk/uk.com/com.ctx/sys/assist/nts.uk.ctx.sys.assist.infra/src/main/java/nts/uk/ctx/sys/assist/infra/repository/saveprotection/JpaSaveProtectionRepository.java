@@ -17,7 +17,7 @@ public class JpaSaveProtectionRepository extends JpaRepository implements SavePr
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspmtSaveProtection f ";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE ";
+    //private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE ";
 
     @Override
     public List<SaveProtetion> getAllSaveProtection(){
@@ -45,13 +45,13 @@ public class JpaSaveProtectionRepository extends JpaRepository implements SavePr
 
     @Override
     public void remove(){
-        this.commandProxy().remove(SspmtSaveProtection.class, new SspmtSaveProtectionPk()); 
+        this.commandProxy().remove(SspmtSaveProtection.class, new SspmtSaveProtectionPk());
     }
 
     private static final String SELECT_BY_CAT_AND_TABLE = SELECT_ALL_QUERY_STRING 
     		+ "WHERE f.saveProtectionPk.categoryId =:categoryId "
     		+ "AND f.saveProtectionPk.tableNo =:tableNo ";
-    
+
 	@Override
 	public List<SaveProtetion> getSaveProtection(int categoryId, int tableNo) {
 		return this.queryProxy().query(SELECT_BY_CAT_AND_TABLE, SspmtSaveProtection.class)
