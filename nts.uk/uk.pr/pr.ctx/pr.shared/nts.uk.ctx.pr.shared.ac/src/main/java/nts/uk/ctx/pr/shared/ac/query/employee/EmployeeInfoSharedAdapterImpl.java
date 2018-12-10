@@ -3,7 +3,7 @@ package nts.uk.ctx.pr.shared.ac.query.employee;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.shared.dom.adapter.query.classification.ClassificationImport;
 import nts.uk.ctx.pr.shared.dom.adapter.query.department.DepartmentImport;
-import nts.uk.ctx.pr.shared.dom.adapter.query.employee.EmployeeInfoAverAdapter;
+import nts.uk.ctx.pr.shared.dom.adapter.query.employee.EmployeeInformationAdapter;
 import nts.uk.ctx.pr.shared.dom.adapter.query.employee.EmployeeInformationImport;
 import nts.uk.ctx.pr.shared.dom.adapter.query.employee.EmployeeInformationQueryDtoImport;
 import nts.uk.ctx.pr.shared.dom.adapter.query.employement.EmploymentImport;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Stateless
-public class EmployeeInfoAverAdapterImpl implements EmployeeInfoAverAdapter {
+public class EmployeeInfoSharedAdapterImpl implements EmployeeInformationAdapter {
 
     @Inject
     private EmployeeInformationPub employeeInformationPub;

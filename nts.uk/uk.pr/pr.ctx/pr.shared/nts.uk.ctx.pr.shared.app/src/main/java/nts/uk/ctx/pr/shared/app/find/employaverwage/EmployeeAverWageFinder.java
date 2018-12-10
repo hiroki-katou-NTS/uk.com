@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.shared.app.find.employaverwage;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.shared.app.command.employaverwage.EmployeeComand;
-import nts.uk.ctx.pr.shared.dom.adapter.query.employee.EmployeeInfoAverAdapter;
+import nts.uk.ctx.pr.shared.dom.adapter.query.employee.EmployeeInformationAdapter;
 import nts.uk.ctx.pr.shared.dom.adapter.query.employee.EmployeeInformationQueryDtoImport;
 import nts.uk.ctx.pr.shared.dom.adapter.wageprovision.processdatecls.ProcessDateClassificationAdapter;
 import nts.uk.ctx.pr.shared.dom.adapter.wageprovision.processdatecls.ProcessDateClassificationImport;
@@ -21,7 +21,7 @@ public class EmployeeAverWageFinder {
     private EmployAverWageRepository employAverWageRepository;
 
     @Inject
-    private EmployeeInfoAverAdapter employeeInfoAverAdapter;
+    private EmployeeInformationAdapter employeeInformationAdapter;
 
     @Inject
     private ProcessDateClassificationAdapter processDateClassificationAdapter;
@@ -45,7 +45,7 @@ public class EmployeeAverWageFinder {
             List<EmployAverWage> employAverWages = employAverWageRepository.getEmployByIds(param.getEmployeeIds(), Integer.valueOf(param.getGiveCurrTreatYear().replaceAll("/", "")));
             employAverWages.stream().map(x -> employeeIds.add(x.getEmployeeId())).collect(Collectors.toList());
         }
-        return employeeInfoAverAdapter
+        return employeeInformationAdapter
                 .getEmployeeInfo(new EmployeeInformationQueryDtoImport(employeeIds, GeneralDate.fromString(param.getBaseDate(), "yyyy/MM/dd"),
                         false,
                         true,
@@ -74,7 +74,7 @@ public class EmployeeAverWageFinder {
     }
 
     public EmploymentCodeDto getEmploymentCodeByEmpIdAndBaseDate(String employeeId) {
-        return employeeInfoAverAdapter
+        return employeeInformationAdapter
                 .getEmployeeInfo(new EmployeeInformationQueryDtoImport(Collections.singletonList(employeeId), GeneralDate.today(),
                         false,
                         false,
