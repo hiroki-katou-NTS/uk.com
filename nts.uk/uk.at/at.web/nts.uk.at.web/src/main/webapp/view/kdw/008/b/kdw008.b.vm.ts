@@ -124,6 +124,7 @@ module nts.uk.at.view.kdw008.b {
                 ]);
                 self.selectedSheetNo = ko.observable(1);
                 self.selectedSheetNo.subscribe((value) => {
+                    nts.uk.ui.errors.clearAll();
                     block.invisible();
                     if (value == 1) {
                         self.enableSheetNo(false);
