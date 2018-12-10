@@ -18,6 +18,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.function.app.find.annualworkschedule.PeriodDto;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
@@ -35,7 +38,10 @@ import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkSched
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessType;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
+import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -75,6 +81,12 @@ public class OutputItemMonthlyWorkScheduleFinder {
 	@Inject
 	private CompanyMonthlyItemService companyMonthlyItemService;
 
+	@Inject
+	private ClosureEmploymentService closureEmploymentService;
+	
+	@Inject
+	private ClosureService closureService;
+	
 	/** The Constant AUTHORITY. */
 	// SettingUnitType.AUTHORITY.value
 	private static final int AUTHORITY = 0;
@@ -318,5 +330,18 @@ public class OutputItemMonthlyWorkScheduleFinder {
 	private Map<Integer, String> convertListToMapAttendanceItem(List<MonthlyAttendanceItemDto> lst) {
 		return lst.stream()
 				.collect(Collectors.toMap(MonthlyAttendanceItemDto::getId, MonthlyAttendanceItemDto::getName));
+	}
+
+	public PeriodDto getPeriod() {
+		// 社員に対応する処理締めを取得する
+		Optional<Closure> closureOtp = closureEmploymentService.findClosureByEmployee(AppContexts.user().employeeId(),
+				GeneralDate.today());
+		if (!closureOtp.isPresent()) {
+			throw new BusinessException("Msg_1134");
+		} else {
+			Closure closure = closureOtp.get();
+			YearMonth date = closure.getClosureMonth().getProcessingYm();
+			return new PeriodDto(date.toString(), date.toString());
+		}
 	}
 }

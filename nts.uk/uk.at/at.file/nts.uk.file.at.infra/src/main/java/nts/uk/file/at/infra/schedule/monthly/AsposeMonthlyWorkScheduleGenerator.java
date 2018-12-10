@@ -917,8 +917,10 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					lstAttendanceResultImport.stream().filter(x -> (x.getEmployeeId().equals(employeeId) && x.getYearMonth().compareTo(date) == 0) && 
 							StringUtils.equalsAnyIgnoreCase(x.getEmployeeId(), employeeId)).forEach(x -> {
 						MonthlyPersonalPerformanceData personalPerformanceDate = new MonthlyPersonalPerformanceData();
-						if (optEmployeeDto.isPresent())
-							personalPerformanceDate.setEmployeeName(optEmployeeDto.get().getEmployeeName());
+								if (optEmployeeDto.isPresent()) {
+									personalPerformanceDate.setEmployeeName(optEmployeeDto.get().getEmployeeName());
+									personalPerformanceDate.setEmployeeCode(optEmployeeDto.get().getEmployeeCode());
+								}
 						dailyWorkplaceData.getLstDailyPersonalData().add(personalPerformanceDate);
 						
 						// Closure date
@@ -1468,6 +1470,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 						else {
 							dateCell.setValue(yearMonthStr);
 						}
+						
+						Range dateRange2 = cells.createRange(currentRow, 0, dataRowCount, 2);
+						dateRange2.merge();
 						
 						// A5_2
 						List<ActualValue> lstItem = detailedDailyPerformanceReportData.getActualValue();
@@ -2021,7 +2026,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				}
 				
 				// B5_1
-				Cell employeeCell = cells.get(currentRow, 0);
+				Cell employeeCodeCell = cells.get(currentRow, 0);
+				Cell employeeNameCell = cells.get(currentRow, 1);
+				
 				Cell prevEmployeeCell = cells.get(currentRow - dataRowCount, 0);
 				if (prevEmployeeCell.getValue() != null && prevEmployeeCell.getValue().toString().equals(employee.getEmployeeName()) && condition.getPageBreakIndicator() == MonthlyWorkScheduleCondition.PAGE_BREAK_EMPLOYEE) {
 					colorWhite = !colorWhite;
@@ -2057,7 +2064,8 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 					employeeRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.NONE, Color.getBlack());
 				}
 				else {
-					employeeCell.setValue(employee.getEmployeeName());
+					employeeCodeCell.setValue(employee.getEmployeeCode());
+					employeeNameCell.setValue(employee.getEmployeeName());
 				}
 				
 				// B5_3
