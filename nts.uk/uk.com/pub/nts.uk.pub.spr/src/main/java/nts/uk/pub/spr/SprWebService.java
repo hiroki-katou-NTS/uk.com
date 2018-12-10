@@ -149,7 +149,7 @@ public class SprWebService {
 					"SPR001",
 					"A");
 			if(systemSuspendOutput.isError()){
-				throw new BusinessException(systemSuspendOutput.getMsgContent());
+				throw new Exception(systemSuspendOutput.getMsgContent());
 			}
 			
 			// アルゴリズム「ログイン記録」を実行する１

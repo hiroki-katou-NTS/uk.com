@@ -6,8 +6,8 @@ __viewContext.ready(function() {
     nts.uk.ui.block.invisible();
     nts.uk.request.ajax("com", server_path)
     .done((success) => {   
-        if(!nts.uk.util.isNullOrUndefined(messError.successMsg)&&!nts.uk.util.isNullOrEmpty(messError.successMsg)){
-            nts.uk.ui.dialog.info({ messageId: messError.successMsg }).then(()=>{
+        if(!nts.uk.util.isNullOrUndefined(success.successMsg)&&!nts.uk.util.isNullOrEmpty(success.successMsg)){
+            nts.uk.ui.dialog.info({ messageId: success.successMsg }).then(()=>{
                 routeData(success);     
             });
         } else {
