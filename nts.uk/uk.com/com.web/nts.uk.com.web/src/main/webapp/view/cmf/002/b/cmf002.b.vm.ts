@@ -132,13 +132,18 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             if (!self.conditionSettingList()) {
                 return;
             }
-            let condSet: IConditionSet = self.conditionSettingList()[self.index()];
+            let condSet: IConditionSet = self.conditionSettingList()[self.index()],
+                categoryId: string = condSet.categoryId,
+                categoryName: string = self.getCategoryName(categoryId);
             self.conditionSetData().cId(condSet.cId);
             self.conditionSetData().conditionSetCode(condSet.conditionSetCode);
             self.conditionSetData().conditionSetName(condSet.conditionSetName);
-            self.conditionSetData().categoryId(condSet.categoryId);
-            if (self.listCategory() && self.listCategory().length > 0 && self.getCategoryName(condSet.categoryId)) {
-                self.categoryName(condSet.categoryId + "　" + self.getCategoryName(condSet.categoryId));
+            self.conditionSetData().categoryId(categoryId);
+            
+            if (self.listCategory() && self.listCategory().length > 0 && categoryName) {
+                self.categoryName(categoryId + "　" + categoryName);
+            } else {
+                self.categoryName("");                
             }
             self.conditionSetData().conditionOutputName(condSet.conditionOutputName);
             self.conditionSetData().autoExecution(condSet.autoExecution);
