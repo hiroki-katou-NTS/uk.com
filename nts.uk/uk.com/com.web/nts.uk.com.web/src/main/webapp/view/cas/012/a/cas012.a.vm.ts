@@ -83,8 +83,7 @@ module nts.uk.com.view.cas012.a.viewmodel {
         exportExcel(){
             let self = this;
             nts.uk.ui.block.invisible();
-            let roleType = _.find(self.listRoleType(),(o)=> { return o.value === self.selectedRoleType()});
-            service.exportExcel(self.selectedRoleType().toString(),roleType.localizedName,self.selectedCompany()).done(function() {
+            service.exportExcel().done(function() {
 
             }).fail(function(error) {
                 if(error)

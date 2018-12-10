@@ -231,6 +231,18 @@ module nts.uk.at.view.ksm003.a {
                 });
 
             }
+            /**
+             * export excel
+             */
+            exportExcel(){
+                nts.uk.at.view.ksm003.a.service.exportExcel().done(function(data) {
+                }).fail(function(res: any) {
+                    nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
+                }).always(()=>{
+                    nts.uk.ui.block.clear;
+                });
+            }
+
 
             //select switch New Mode
             public switchNewMode(): void {
