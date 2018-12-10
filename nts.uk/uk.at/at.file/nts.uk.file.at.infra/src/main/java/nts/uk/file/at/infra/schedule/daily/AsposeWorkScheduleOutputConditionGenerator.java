@@ -1838,14 +1838,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	private void writeHeaderData(WorkScheduleOutputQuery query, OutputItemDailyWorkSchedule outputItem, Worksheet sheet, DailyPerformanceReportData reportData, int dateRow) {
 		// Company name
 		PageSetup pageSetup = sheet.getPageSetup();
-		pageSetup.setHeader(0, "&8 " + reportData.getHeaderData().companyName);
+		pageSetup.setHeader(0, "&8&\"MS ゴシック\"" + reportData.getHeaderData().companyName);
 		
 		// Output item name
-		pageSetup.setHeader(1, "&16&\"源ノ角ゴシック Normal,Bold\"" + outputItem.getItemName().v());
+		pageSetup.setHeader(1, "&16&\"MS ゴシック\"" + outputItem.getItemName().v());
 		
 		// Set header date
 		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
-		pageSetup.setHeader(2, "&8 " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
+		pageSetup.setHeader(2, "&8&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
 		
 		Cells cells = sheet.getCells();
 		Cell periodCell = cells.get(dateRow,0);
