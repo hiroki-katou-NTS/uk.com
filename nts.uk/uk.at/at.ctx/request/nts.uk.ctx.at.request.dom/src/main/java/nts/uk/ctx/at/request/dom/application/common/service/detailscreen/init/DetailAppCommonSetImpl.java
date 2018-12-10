@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.NewAppCommonSetService;
+//import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.NewAppCommonSetService;
 
 /**
  * 
@@ -23,8 +23,8 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 	@Inject
 	private ApplicationRepository_New applicationRepository;
 	
-	@Inject
-	private NewAppCommonSetService newAppCommonSetService;
+//	@Inject
+//	private NewAppCommonSetService newAppCommonSetService;
 	
 	@Override
 	public ApplicationMetaOutput getDetailAppCommonSet(String companyID, String applicationID) {

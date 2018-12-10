@@ -1,7 +1,6 @@
 package nts.uk.ctx.sys.assist.dom.datarestoration.common;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -46,6 +45,7 @@ public class TableItemValidation {
 		if (csvHeader.size() >5){
 			return csvHeader.subList(5, csvHeader.size());
 		}
-		return Collections.EMPTY_LIST;
+//		return Collections.EMPTY_LIST;
+		return new ArrayList<>();
 	}
 }

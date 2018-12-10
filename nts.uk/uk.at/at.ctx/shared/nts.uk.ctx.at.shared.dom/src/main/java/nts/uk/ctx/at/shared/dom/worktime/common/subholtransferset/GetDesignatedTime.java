@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
+//import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 
 /**

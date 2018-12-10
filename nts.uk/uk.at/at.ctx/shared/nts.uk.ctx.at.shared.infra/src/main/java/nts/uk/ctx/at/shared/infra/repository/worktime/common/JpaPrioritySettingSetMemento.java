@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtPioritySet;
 public class JpaPrioritySettingSetMemento implements PrioritySettingSetMemento {
 
 	/** The entity. */
-	private KshmtPioritySet entity;
+	 KshmtPioritySet entity;
 
 	/**
 	 * Instantiates a new jpa priority setting set memento.

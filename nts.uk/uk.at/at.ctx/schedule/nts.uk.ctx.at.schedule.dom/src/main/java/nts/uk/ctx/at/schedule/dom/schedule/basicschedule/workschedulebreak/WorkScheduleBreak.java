@@ -7,7 +7,7 @@ package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workschedulebreak;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.BounceAtr;
+//import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.BounceAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**

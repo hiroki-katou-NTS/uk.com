@@ -20,7 +20,9 @@ public enum PeriodClassification {
 	
 	/** 分 */
 	MINUTE (4);
-	private int value;
+	
+	public int value;
+	
 	private PeriodClassification (int rawValue){
 		this.value = rawValue;
 	}

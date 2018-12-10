@@ -353,6 +353,7 @@ public class ExpressionParser implements ExpressionParserConstants {
 	final private boolean logicExpression() throws ParseException {
 		boolean flag1, flag2, flag3 = true, flag4 = true;
 		BigDecimal a, b;
+		boolean result = true;
 		switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
 		case AND:
 			jj_consume_token(AND);
@@ -375,7 +376,7 @@ public class ExpressionParser implements ExpressionParserConstants {
 			}
 			jj_consume_token(RBRACKET); {
 			if (true)
-				return flag1 && flag2 && flag4;
+				result = flag1 && flag2 && flag4;
 		}
 			break;
 		case OR:
@@ -399,7 +400,7 @@ public class ExpressionParser implements ExpressionParserConstants {
 			}
 			jj_consume_token(RBRACKET); {
 			if (true)
-				return flag1 || flag2 || flag4;
+				result = flag1 || flag2 || flag4;
 		}
 			break;
 		default:
@@ -412,7 +413,7 @@ public class ExpressionParser implements ExpressionParserConstants {
 				b = argStack.pop();
 				{
 					if (true)
-						return a.compareTo(b) > 0;
+						result = a.compareTo(b) > 0;
 				}
 			} else if (jj_2_2(2147483647)) {
 				basicOperate();
@@ -422,7 +423,7 @@ public class ExpressionParser implements ExpressionParserConstants {
 				b = argStack.pop();
 				{
 					if (true)
-						return a.compareTo(b) < 0;
+						result = a.compareTo(b) < 0;
 				}
 			} else if (jj_2_3(2147483647)) {
 				basicOperate();
@@ -432,7 +433,7 @@ public class ExpressionParser implements ExpressionParserConstants {
 				b = argStack.pop();
 				{
 					if (true)
-						return a.compareTo(b) == 0;
+						result = a.compareTo(b) == 0;
 				}
 			} else if (jj_2_4(2147483647)) {
 				basicOperate();
@@ -442,7 +443,7 @@ public class ExpressionParser implements ExpressionParserConstants {
 				b = argStack.pop();
 				{
 					if (true)
-						return a.compareTo(b) != 0;
+						result = a.compareTo(b) != 0;
 				}
 			} else if (jj_2_5(2147483647)) {
 				basicOperate();
@@ -452,7 +453,7 @@ public class ExpressionParser implements ExpressionParserConstants {
 				b = argStack.pop();
 				{
 					if (true)
-						return a.compareTo(b) >= 0;
+						result = a.compareTo(b) >= 0;
 				}
 			} else if (jj_2_6(2147483647)) {
 				basicOperate();
@@ -462,14 +463,14 @@ public class ExpressionParser implements ExpressionParserConstants {
 				b = argStack.pop();
 				{
 					if (true)
-						return a.compareTo(b) <= 0;
+						result = a.compareTo(b) <= 0;
 				}
 			} else {
 				jj_consume_token(-1);
 				throw new ParseException();
 			}
 		}
-		throw new Error("Missing return statement in function");
+		return result;
 	}
 
 	private MathContext getMathContext() throws ParseException {
@@ -1141,6 +1142,7 @@ public class ExpressionParser implements ExpressionParserConstants {
 	}
 
 	static private final class LookaheadSuccess extends java.lang.Error {
+		private static final long serialVersionUID = 1L;
 	}
 
 	final private LookaheadSuccess jj_ls = new LookaheadSuccess();

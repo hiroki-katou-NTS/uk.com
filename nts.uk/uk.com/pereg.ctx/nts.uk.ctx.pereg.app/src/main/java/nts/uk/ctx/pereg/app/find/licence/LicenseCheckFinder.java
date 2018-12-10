@@ -2,12 +2,12 @@ package nts.uk.ctx.pereg.app.find.licence;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.employee.dom.employee.employeelicense.EmployeeLicense;
 import nts.uk.ctx.bs.employee.dom.employee.employeelicense.EmployeeLicenseRepository;

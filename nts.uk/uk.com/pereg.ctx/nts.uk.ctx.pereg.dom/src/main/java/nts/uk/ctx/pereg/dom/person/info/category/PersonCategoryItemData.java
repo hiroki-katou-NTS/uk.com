@@ -107,7 +107,7 @@ public class PersonCategoryItemData {
 		Map<Integer, String>  selSub = new HashMap<>();
 		selSub.put(3, "女");
 		selSub.put(3, "男");
-		referenceData.selectionLst.put(3, selSub);
+//		referenceData.selectionLst.put(3, selSub);
 		referenceData = new ReferenceStateData();
 		referenceData.setConstraint("PersonMobile");
 		itemData.put("IS00015", referenceData);

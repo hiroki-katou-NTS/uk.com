@@ -317,7 +317,10 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		for (Entry<String, Object> entry : params.entrySet()) {
 			queryString.setParameter(entry.getKey(), entry.getValue());
 		}
+		
+		@SuppressWarnings("unchecked")
 		List<Object[]> listTemp = (List<Object[]>) queryString.getResultList();
+		
 		return listTemp.stream().map(objects -> {
 			List<String> record = new ArrayList<String>();
 			for (Object field : objects) {

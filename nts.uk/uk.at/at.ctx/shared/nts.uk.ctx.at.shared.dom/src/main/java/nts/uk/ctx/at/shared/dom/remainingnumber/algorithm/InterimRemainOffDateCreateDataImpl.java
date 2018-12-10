@@ -583,7 +583,8 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 				if(!coditionInfo.isPresent()) {
 					return "";
 				} else {
-					coditionInfo.get().getWorkCategory().getHolidayWork().getWorkTimeCode();
+					// chưa check null nên bị exception,get ra nhưng không set vào đâu cả ?
+					//coditionInfo.get().getWorkCategory().getHolidayWork().getWorkTimeCode();
 				}
 			}
 		}

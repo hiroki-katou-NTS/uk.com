@@ -13,8 +13,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
+//import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
+//import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
@@ -32,8 +32,8 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 	@Inject 
 	private ApplicationRepository_New appRepo;
 
-	@Inject
-	private ApplicationSettingRepository applicationSettingRepository;
+//	@Inject
+//	private ApplicationSettingRepository applicationSettingRepository;
 	
 	@Inject
 	private DetailAfterUpdate detailAfterUpdate;
@@ -44,8 +44,8 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 	@Inject
 	private GoBackDirectlyRegisterService goBackDirectlyRegisterService;
 
-	@Inject
-	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+//	@Inject
+//	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 	
 	@Inject
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;

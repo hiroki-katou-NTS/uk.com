@@ -16,17 +16,17 @@ import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.daily.midnight.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
-import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrSheet;
+//import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrSheet;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
+//import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
+//import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
@@ -366,7 +366,7 @@ public abstract class CalculationTimeSheet {
 	 */
 	public List<BonusPayTimeSheetForCalc> recreateBonusPayListBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore){
 		List<BonusPayTimeSheetForCalc> bonusPayList = new ArrayList<>();
-		for(BonusPayTimeSheetForCalc bonusPay : bonusPayList) {
+	//	for(BonusPayTimeSheetForCalc bonusPay : bonusPayList) {
 //			if(bonusPay..contains(baseTime)) {
 //				bonusPayList.add(bonusPay.reCreateOwn(baseTime,isDateBefore));
 //			}
@@ -376,7 +376,7 @@ public abstract class CalculationTimeSheet {
 //			else if(bonusPay.calcrange.getStart().greaterThan(baseTime) && !isDateBefore) {
 //				bonusPayList.add(bonusPay);
 //			}
-		}
+		//}
 		return bonusPayList; 
 	}
 	
@@ -388,7 +388,7 @@ public abstract class CalculationTimeSheet {
 	 */
 	public List<SpecBonusPayTimeSheetForCalc> recreateSpecifiedBonusPayListBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore){
 		List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayList = new ArrayList<>();
-		for(SpecBonusPayTimeSheetForCalc specifiedBonusPay : specifiedBonusPayList) {
+//		for(SpecBonusPayTimeSheetForCalc specifiedBonusPay : specifiedBonusPayList) {
 //			if(specifiedBonusPay.contains(baseTime)) {
 //				specifiedBonusPayList.add(specifiedBonusPay.reCreateOwn(baseTime,isDateBefore));
 //			}
@@ -398,7 +398,7 @@ public abstract class CalculationTimeSheet {
 //			else if(specifiedBonusPay.calcrange.getStart().greaterThan(baseTime) && !isDateBefore) {
 //				specifiedBonusPayList.add(specifiedBonusPay);
 //			}
-		}
+//		}
 		return specifiedBonusPayList; 
 	}
 	
@@ -835,6 +835,7 @@ public abstract class CalculationTimeSheet {
 	 * 深夜時間帯と重複している控除項目時間帯を深夜時間帯へ保持させる 
 	 * (実働時間帯へ持っていきたい)
 	 */
+	@SuppressWarnings("static-access")
 	public static Optional<MidNightTimeSheetForCalc> getMidNightTimeSheetIncludeDedTimeSheet(MidNightTimeSheet midNightTimeSheet,TimeSpanForCalc duplicateTimeSheet,
 															   List<TimeSheetOfDeductionItem> dedTimeSheet,
 															   List<TimeSheetOfDeductionItem> recordTimeSheet,Optional<WorkTimezoneCommonSet> commonSetting){

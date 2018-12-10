@@ -97,9 +97,9 @@ public class DataCorrectionContext {
 	 * This method must be called when transaction begin.
 	 * @param processorId Processor ID
 	 */
-	private static void transactionBegun(CorrectionProcessorId processorId) {
-		transactionBegun(processorId, DEFAULT_TRANSACTION_CONTROL_LEVEL);
-	}
+//	private static void transactionBegun(CorrectionProcessorId processorId) {
+//		transactionBegun(processorId, DEFAULT_TRANSACTION_CONTROL_LEVEL);
+//	}
 	
 	/**
 	 * This method must be called when transaction begin.
@@ -120,9 +120,9 @@ public class DataCorrectionContext {
 	/**
 	 * This method must be called when transaction finish.
 	 */
-	private static void transactionFinishing() {
-		transactionFinishing(DEFAULT_TRANSACTION_CONTROL_LEVEL);
-	}
+//	private static void transactionFinishing() {
+//		transactionFinishing(DEFAULT_TRANSACTION_CONTROL_LEVEL);
+//	}
 	
 	/**
 	 * This method must be called when transaction finish.

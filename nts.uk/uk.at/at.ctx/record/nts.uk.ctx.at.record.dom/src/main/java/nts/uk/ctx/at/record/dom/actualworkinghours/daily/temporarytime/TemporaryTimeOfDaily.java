@@ -1,13 +1,13 @@
 package nts.uk.ctx.at.record.dom.actualworkinghours.daily.temporarytime;
 
-import java.util.Collections;
+//import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.omg.CORBA.TCKind;
+//import org.omg.CORBA.TCKind;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+//import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /** 日別実績の臨時時間 */
 @Getter

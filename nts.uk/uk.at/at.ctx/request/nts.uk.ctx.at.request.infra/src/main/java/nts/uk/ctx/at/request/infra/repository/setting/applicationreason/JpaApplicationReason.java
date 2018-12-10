@@ -21,7 +21,7 @@ import nts.uk.ctx.at.request.dom.setting.applicationreason.DefaultFlg;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ReasonTemp;
 import nts.uk.ctx.at.request.infra.entity.setting.applicationformreason.KrqstAppReason;
 import nts.uk.ctx.at.request.infra.entity.setting.applicationformreason.KrqstAppReasonPK;
-import nts.uk.shr.com.context.AppContexts;
+//import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
@@ -34,7 +34,7 @@ public class JpaApplicationReason extends JpaRepository implements ApplicationRe
 	
 	private static final String FINDBYREASONID = FINDBYCOMPANYID + " AND c.krqstAppReasonPK.reasonID = :reasonID";
 	
-	private static final String FINDBYDEFAULT = FINDBYAPPTYPE + " AND c.defaultFlg = :defaultFlg";
+//	private static final String FINDBYDEFAULT = FINDBYAPPTYPE + " AND c.defaultFlg = :defaultFlg";
 	
 	private static final String DELETEREASON = "DELETE FROM KrqstAppReason c WHERE c.krqstAppReasonPK.companyId = :companyId "
 			+ "AND c.krqstAppReasonPK.appType = :appType AND c.krqstAppReasonPK.reasonID = :reasonID ";

@@ -62,9 +62,10 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 				dailyInfor = this.reflectScheStartEndTime(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTypeCode(), isRecordWorkType, dailyInfor);			
 				//勤種の反映
 				dailyInfor = workTimeUpdate.updateRecordWorkType(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTypeCode(), false, dailyInfor);
-				//開始終了時刻の反映
-				this.reflectRecordStartEndTime(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTypeCode());
 				workRepository.updateByKeyFlush(dailyInfor);
+				//開始終了時刻の反映
+				this.reflectRecordStartEndTime(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTypeCode());					
+				commonService.calculateOfAppReflect(null, absencePara.getEmployeeId(), loopDate);
 			}
 			return true;
 		} catch (Exception e) {
@@ -90,12 +91,12 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 		return dailyInfor;
 	}
 	@Override
-	public void reflectRecordStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode) {
+	public TimeLeavingOfDailyPerformance reflectRecordStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode) {
 		boolean isCheckClean =  this.checkTimeClean(employeeId, baseDate, workTypeCode);
 		//開始終了時刻をクリアするかチェックする 値：０になる。		
 		TimeReflectPara timeData = new TimeReflectPara(employeeId, baseDate, null, null, 1, isCheckClean, isCheckClean);
-		workTimeUpdate.updateRecordStartEndTimeReflect(timeData);
-		
+		TimeLeavingOfDailyPerformance timeDaily = workTimeUpdate.updateRecordStartEndTimeReflect(timeData);
+		return timeDaily;
 	}
 	@Override
 	public boolean checkTimeClean(String employeeId, GeneralDate baseDate, String workTypeCode) {

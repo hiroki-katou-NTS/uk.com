@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.raisesalarytime;
 
-import java.math.BigDecimal;
+//import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;

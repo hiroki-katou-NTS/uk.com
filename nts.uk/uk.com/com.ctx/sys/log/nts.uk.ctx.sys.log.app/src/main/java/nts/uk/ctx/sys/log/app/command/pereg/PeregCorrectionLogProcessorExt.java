@@ -1,7 +1,6 @@
 package nts.uk.ctx.sys.log.app.command.pereg;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;

@@ -3,7 +3,6 @@
  */
 package nts.uk.ctx.bs.person.infra.repository.person.info.widowhistory;
 
-import java.awt.Window;
 import java.util.List;
 import java.util.Optional;
 

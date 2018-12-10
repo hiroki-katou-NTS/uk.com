@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.EnumType;
+//import javax.persistence.EnumType;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDateTime;

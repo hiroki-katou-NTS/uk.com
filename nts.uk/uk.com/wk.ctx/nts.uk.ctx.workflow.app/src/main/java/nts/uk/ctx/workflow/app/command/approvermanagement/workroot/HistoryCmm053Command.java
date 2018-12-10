@@ -1,7 +1,6 @@
 package nts.uk.ctx.workflow.app.command.approvermanagement.workroot;
 
 import lombok.Data;
-import lombok.Value;
 import nts.arc.time.GeneralDate;
 
 @Data

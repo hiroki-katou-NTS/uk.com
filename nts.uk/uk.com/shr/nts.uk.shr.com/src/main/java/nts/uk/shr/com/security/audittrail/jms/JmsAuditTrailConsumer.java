@@ -1,16 +1,7 @@
 package nts.uk.shr.com.security.audittrail.jms;
 
-import javax.ejb.MessageDriven;
-import javax.enterprise.inject.spi.CDI;
-import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-
-import lombok.val;
-import nts.arc.diagnose.PrintStackTrace;
-import nts.uk.shr.com.security.audittrail.AuditTrailTransaction;
-
-import javax.ejb.ActivationConfigProperty;
 
 //@MessageDriven(name = "JmsAuditTrailConsumer", activationConfig = {
 //        @ActivationConfigProperty(propertyName = "destination", propertyValue = "java:jboss/jms/queue/UKAuditTrail"),

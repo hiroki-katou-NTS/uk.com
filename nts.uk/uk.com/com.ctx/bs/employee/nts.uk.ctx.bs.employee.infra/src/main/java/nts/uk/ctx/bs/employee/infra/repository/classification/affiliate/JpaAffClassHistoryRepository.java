@@ -39,8 +39,8 @@ public class JpaAffClassHistoryRepository extends JpaRepository implements AffCl
 	
 	private static final String GET_BY_EID_DESC = GET_BY_EID + " DESC";
 
-	private static final String GET_BY_SID_DATE = "select h from BsymtAffClassHistory h"
-			+ " where h.sid = :sid and h.startDate <= :standardDate and h.endDate >= :standardDate";
+//	private static final String GET_BY_SID_DATE = "select h from BsymtAffClassHistory h"
+//			+ " where h.sid = :sid and h.startDate <= :standardDate and h.endDate >= :standardDate";
 	
 	private static final String GET_BY_SID_LIST_PERIOD = "select h from BsymtAffClassHistory h"
 			+ " where h.sid IN :employeeIds and h.startDate <= :endDate and h.endDate >= :startDate"

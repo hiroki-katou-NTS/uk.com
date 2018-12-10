@@ -19,10 +19,8 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
-import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist;
-import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -35,8 +33,8 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 
 	private static final String QUERY_BYEMPLOYEEID_DESC = QUERY_BYEMPLOYEEID + " DESC";
 
-	private static final String GET_BY_EMPID_AND_STD = "SELECT h FROM BsymtEmploymentHist h"
-			+ " WHERE h.sid = :sid AND h.strDate <= :stdDate AND h.endDate >= :stdDate";
+//	private static final String GET_BY_EMPID_AND_STD = "SELECT h FROM BsymtEmploymentHist h"
+//			+ " WHERE h.sid = :sid AND h.strDate <= :stdDate AND h.endDate >= :stdDate";
 
 	private static final String SELECT_BY_LISTSID = "SELECT a FROM BsymtEmploymentHist a"
 			+ " INNER JOIN BsymtEmploymentHistItem b on a.hisId = b.hisId" + " WHERE a.sid IN :listSid "
