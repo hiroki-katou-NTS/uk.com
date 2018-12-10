@@ -25,24 +25,12 @@ public class SalIndAmountHisFinder {
     private SalIndAmountNameRepository salIndAmountNameRepository;
 
     @Inject
-    private SalIndAmountRepository salIndAmountRepository;
-
-    @Inject
     private AlgorithmProcessYearFromEmp algorithmProcessYearFromEmp;
 
     public SalIndAmountHisPackDto getSalIndAmountHis(SalIndAmountHisDto dto) {
-        Optional<SalIndAmountHis> salIndAmountHis = finder.getSalIndAmountHis(dto.getPerValCode(), dto.getEmpId(), dto.getSalBonusCate(), dto.getCateIndicator());
-        if (salIndAmountHis.isPresent()) {
-            SalIndAmountHis salIndAmount = salIndAmountHis.get();
-            SalIndAmountHisPackDto salIndAmountHisPackDto = SalIndAmountHisPackDto.fromSalIndAmountHisDomain(salIndAmount);
-            List<GenericHistYMPeriod> list = salIndAmount.getPeriod();
-            if (!list.isEmpty()) {
-                for (GenericHistYMPeriod item : list) {
-                    SalIndAmount amount = salIndAmountRepository.getSalIndAmountById(item.getHistoryID()).get();
-                    salIndAmountHisPackDto.getSalIndAmountList().add(SalIndAmountDto.fromDomain(amount));
-                }
-            }
-            return salIndAmountHisPackDto;
+        List<SalaryIndividualAmountHistory> histories = finder.getSalIndAmountHis(dto.getPerValCode(), dto.getEmpId(), dto.getSalBonusCate(), dto.getCateIndicator());
+        if (histories.size() > 0) {
+            return SalIndAmountHisPackDto.fromSalIndAmountHisDomain(histories);
         } else {
             return null;
         }
@@ -52,31 +40,22 @@ public class SalIndAmountHisFinder {
     public List<SalIndAmountHisPackDto> salIndAmountHisDisplay(SalIndAmountHisDisplayDto dto) {
         List<SalIndAmountHisPackDto> salIndAmountHisPackDtos = new ArrayList<>();
         String cid = AppContexts.user().companyId();
-        List<SalIndAmountNameDto> salIndAmountNameDto = salIndAmountNameRepository.getAllSalIndAmountNameByCateIndi(cid, dto.getCateIndicator()).stream().map(item -> SalIndAmountNameDto.fromDomain(item)).collect(Collectors.toList());
+        List<SalIndAmountNameDto> salIndAmountNameDto = salIndAmountNameRepository.getAllSalIndAmountNameByCateIndi(cid, dto.getCateIndicator()).stream().map(SalIndAmountNameDto::fromDomain).collect(Collectors.toList());
         for (SalIndAmountNameDto salIndAmountName : salIndAmountNameDto) {
-            Optional<SalIndAmountHis> salIndAmountHis;
-            if(dto.getCurrentProcessYearMonth() != 0){
-                salIndAmountHis = finder.getSalIndAmountHisDisplay(salIndAmountName.getIndividualPriceCode(), dto.getEmpId(), dto.getSalBonusCate(), dto.getCateIndicator(), dto.getCurrentProcessYearMonth());
-            }else {
-                salIndAmountHis = finder.getSalIndAmountHisDisplay(salIndAmountName.getIndividualPriceCode(), dto.getEmpId(), dto.getSalBonusCate(), dto.getCateIndicator(), processYearFromEmp(salIndAmountName.getIndividualPriceCode()));
+            List<SalaryIndividualAmountHistory> histories;
+            if (dto.getCurrentProcessYearMonth() != 0) {
+                histories = finder.getSalIndAmountHisDisplay(salIndAmountName.getIndividualPriceCode(), dto.getEmpId(), dto.getSalBonusCate(), dto.getCateIndicator(), dto.getCurrentProcessYearMonth());
+            } else {
+                histories = finder.getSalIndAmountHisDisplay(salIndAmountName.getIndividualPriceCode(), dto.getEmpId(), dto.getSalBonusCate(), dto.getCateIndicator(), processYearFromEmp(salIndAmountName.getIndividualPriceCode()));
             }
-            if (salIndAmountHis.isPresent()) {
-                SalIndAmountHis salIndAmount = salIndAmountHis.get();
-                SalIndAmountHisPackDto salIndAmountHisPackDto = SalIndAmountHisPackDto.fromSalIndAmountHisDomain(salIndAmount);
+            if (histories.size() > 0) {
+                SalIndAmountHisPackDto salIndAmountHisPackDto = SalIndAmountHisPackDto.fromSalIndAmountHisDomain(histories);
                 salIndAmountHisPackDto.setPerValName(salIndAmountName.getIndividualPriceName());
-                List<GenericHistYMPeriod> list = salIndAmount.getPeriod();
-                if (!list.isEmpty()) {
-                    for (GenericHistYMPeriod item : list) {
-                        SalIndAmount amount = salIndAmountRepository.getSalIndAmountById(item.getHistoryID()).get();
-                        salIndAmountHisPackDto.getSalIndAmountList().add(SalIndAmountDto.fromDomain(amount));
-                    }
-                }
                 salIndAmountHisPackDtos.add(salIndAmountHisPackDto);
             }
         }
         return salIndAmountHisPackDtos;
     }
-
 
     public Integer processYearFromEmp(String employmentCode) {
         return algorithmProcessYearFromEmp.getProcessYear(employmentCode).v();

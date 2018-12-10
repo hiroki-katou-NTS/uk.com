@@ -40,11 +40,11 @@
     </ui:define>
     <ui:define name="sidebar-content">
         <div id="tabpanel-1" role="tabpanel1">
-            <div class="sidebar-content-header" style="width: 1100px">
+            <div class="sidebar-content-header">
 
                 <div class="title" data-bind="text : titleTab"/>
                 <button tabindex="1" class="proceed" data-bind="click:registerAmount ,enable: $root.errors.isEmpty">#{i18n.getText('QMM040_2')}</button>
-                <a tabindex="9" class="goout" style="margin-left: 600px"
+                <a tabindex="9" class="goout" style="margin-left: 630px"
                    data-bind="ntsLinkButton: { jump: '../../039/a/index.xhtml' }">#{i18n.getText('QMM040_21')}</a>
 
             </div>
@@ -157,7 +157,6 @@
                                             grouplength: 3,
                                             currencyformat: 'JPY'}}"/>
                             </td>
-
                         </tr>
                         </tbody>
                     </table>

@@ -65,7 +65,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             self.selectedTab = ko.observable('tab-1');
             self.columns = [
                 {key: 'index', length: 0, hidden: true},
-                {key: 'period', length: 7},
+                {key: 'period', length: 7, template: "<div>${period}</div>"},
                 {key: 'amount', length: 3, template: "<div style='text-align: right'>${amount}</div>"}
             ];
             // initial ccg options
@@ -152,7 +152,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 option: new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     decimallength: 0,
-                    currencyformat: "JPY"
+                    currencyformat: 'JPY'
                 }),
                 required: ko.observable(false),
                 enable: ko.observable(true),

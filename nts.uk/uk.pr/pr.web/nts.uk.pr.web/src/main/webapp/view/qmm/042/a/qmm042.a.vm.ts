@@ -175,7 +175,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 showSameWorkplaceAndChild: false,
 
                 /** Advanced search properties */
-                showEmployment: false,
+                showEmployment: true,
                 showWorkplace: false,
                 showClassification: false,
                 showJobTitle: false,

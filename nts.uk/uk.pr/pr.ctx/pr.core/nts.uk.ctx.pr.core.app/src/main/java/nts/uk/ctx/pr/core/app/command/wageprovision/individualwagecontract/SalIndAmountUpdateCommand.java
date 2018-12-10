@@ -7,7 +7,7 @@ import lombok.Value;
 @Value
 @Data
 @AllArgsConstructor
-public class SalIndAmountUpdateCommand{
+public class SalIndAmountUpdateCommand {
     /**
      * 履歴ID
      */
@@ -16,6 +16,6 @@ public class SalIndAmountUpdateCommand{
     /**
      * 金額
      */
-    private String amount;
+    private long amount;
 
 }

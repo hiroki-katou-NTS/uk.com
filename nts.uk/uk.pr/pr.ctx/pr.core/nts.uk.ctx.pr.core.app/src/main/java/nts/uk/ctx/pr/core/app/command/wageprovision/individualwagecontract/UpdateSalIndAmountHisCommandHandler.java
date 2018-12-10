@@ -29,10 +29,9 @@ public class UpdateSalIndAmountHisCommandHandler extends CommandHandler<SalIndAm
         int salBonusCate = command.getSalBonusCate();
         List<GenericHistYMPeriod> period = command.getYearMonthHistoryItem().stream().map(item -> new GenericHistYMPeriod(item.historyId, item.startMonth, item.endMonth)).collect(Collectors.toList());
         SalIndAmountHis salIndAmountHis = new SalIndAmountHis(perValCode, empId, cateIndicator, period, salBonusCate);
-        salIndAmountHisRepository.update(salIndAmountHis);
-
+        salIndAmountHisRepository.updateHistory(salIndAmountHis);
         if(command.getLastHistoryId() != null){
-            this.salIndAmountHisRepository.updateOldHistorty(command.getLastHistoryId(),new YearMonth(command.getYearMonthHistoryItem().get(0).startMonth).addMonths(-1).v());
+            this.salIndAmountHisRepository.updateOldHistory(command.getLastHistoryId(),new YearMonth(command.getYearMonthHistoryItem().get(0).startMonth).addMonths(-1).v());
         }
 
     }
