@@ -65,19 +65,19 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	private final static int FIRST_ITEM_INDEX = 0;
 
 	/** The Constant FIND_BY_SID_AND_PERIOD_ORDER_BY_STR_D. */
-	private final static String FIND_BY_SID_AND_PERIOD_ORDER_BY_STR_D =
-			"SELECT wi FROM KshmtWorkingCondItem wi "
-			+ "WHERE wi.sid = :employeeId "
-			+ "AND wi.kshmtWorkingCond.strD <= :endDate "
-			+ "AND wi.kshmtWorkingCond.endD >= :startDate "
-			+ "ORDER BY wi.kshmtWorkingCond.strD";
-	
-	private final static String FIND_BY_SID_AND_PERIOD_ORDER_BY_STR_D_FOR_MULTI =
-			"SELECT wi FROM KshmtWorkingCondItem wi "
-			+ "WHERE wi.sid IN :employeeId "
-			+ "AND wi.kshmtWorkingCond.strD <= :endDate "
-			+ "AND wi.kshmtWorkingCond.endD >= :startDate "
-			+ "ORDER BY wi.kshmtWorkingCond.strD";
+//	private final static String FIND_BY_SID_AND_PERIOD_ORDER_BY_STR_D =
+//			"SELECT wi FROM KshmtWorkingCondItem wi "
+//			+ "WHERE wi.sid = :employeeId "
+//			+ "AND wi.kshmtWorkingCond.strD <= :endDate "
+//			+ "AND wi.kshmtWorkingCond.endD >= :startDate "
+//			+ "ORDER BY wi.kshmtWorkingCond.strD";
+//	
+//	private final static String FIND_BY_SID_AND_PERIOD_ORDER_BY_STR_D_FOR_MULTI =
+//			"SELECT wi FROM KshmtWorkingCondItem wi "
+//			+ "WHERE wi.sid IN :employeeId "
+//			+ "AND wi.kshmtWorkingCond.strD <= :endDate "
+//			+ "AND wi.kshmtWorkingCond.endD >= :startDate "
+//			+ "ORDER BY wi.kshmtWorkingCond.strD";
 	
 	private final static String FIND_BY_SID_AND_PERIOD_WITH_JOIN = new StringBuilder("SELECT wi, c, m, wc, dw FROM KshmtWorkingCondItem wi ")
 																						.append(" LEFT JOIN wi.kshmtWorkingCond c ")

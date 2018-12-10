@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.DetermineActualResultLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.PerformanceType;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
+//import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.approval.monthly.MonthlyApprovalProcess;
 import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.identity.monthly.IdentityConfirmProcess;
@@ -31,8 +31,8 @@ public class MonthlyActualSituationStatus {
 	@Inject
 	private IdentityConfirmProcess indentityStatus;
 	
-	@Inject
-	private CreateEmployeeDailyPerError dailyRecordError;
+//	@Inject
+//	private CreateEmployeeDailyPerError dailyRecordError;
 	/**
 	 * 月の実績の状況を取得する
 	 * @param param 実績状況を取得する

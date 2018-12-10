@@ -58,6 +58,7 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationExportDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListForScreen;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
@@ -205,6 +206,9 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	@Inject
 	private ErrorMonthProcessor errorMonthProcessor;
+	
+	@Inject
+	private PublicHolidayRepository publicHolidayRepository;
 	
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
@@ -565,6 +569,9 @@ public class DailyPerformanceCorrectionProcessor {
 						.collect(Collectors.toMap(x -> mergeString(x.getCode(), "|", x.getId()), x -> x))
 				: Collections.emptyMap();
 						//get status check box 
+		List<GeneralDate> holidayDate = publicHolidayRepository
+				.getpHolidayWhileDate(companyId, dateRange.getStartDate(), dateRange.getEndDate()).stream()
+				.map(x -> x.getDate()).collect(Collectors.toList());
 		for (DPDataDto data : screenDto.getLstData()) {
 			boolean textColorSpr = false;
 			data.setEmploymentCode(screenDto.getEmploymentCode());
@@ -622,7 +629,7 @@ public class DailyPerformanceCorrectionProcessor {
 				}
 				//set cell state day
 				if(!textColorSpr){
-					setTextColorDay(screenDto, data.getDate(), "date", data.getId());
+					setTextColorDay(screenDto, data.getDate(), "date", data.getId(), holidayDate);
 				}
 				itemValueMap = resultOfOneRow.getItems().stream()
 						.collect(Collectors.toMap(x -> mergeString(String.valueOf(x.getItemId()), "|",
@@ -1784,11 +1791,13 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 	}
 	
-	public void setTextColorDay(DailyPerformanceCorrectionDto screenDto, GeneralDate date, String columnKey, String rowId){
-		     // Sunday
-		if(date.dayOfWeek() == 7){
+	public void setTextColorDay(DailyPerformanceCorrectionDto screenDto, GeneralDate date, String columnKey, String rowId, List<GeneralDate> holidayDates){
+		
+		boolean isHoliday = holidayDates.contains(date);
+		if (isHoliday || date.dayOfWeek() == 7) {
+			// Sunday
 			screenDto.setCellSate(rowId, columnKey, DPText.COLOR_SUN);
-		}else if(date.dayOfWeek() == 6){
+		} else if (date.dayOfWeek() == 6) {
 			// Saturday
 			screenDto.setCellSate(rowId, columnKey, DPText.COLOR_SAT);
 		}

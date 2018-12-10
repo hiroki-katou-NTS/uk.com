@@ -1,6 +1,6 @@
 package nts.uk.ctx.bs.company.dom.company.primitive;
 
-import java.math.BigDecimal;
+//import java.math.BigDecimal;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;

@@ -12,7 +12,6 @@ import nts.uk.ctx.bs.person.dom.person.family.FamilyMember;
 import nts.uk.ctx.bs.person.dom.person.family.FamilyMemberRepository;
 import nts.uk.ctx.bs.person.infra.entity.person.family.BpsmtFamily;
 import nts.uk.ctx.bs.person.infra.entity.person.family.BpsmtFamilyPk;
-import nts.uk.ctx.bs.person.infra.entity.person.info.widowhistory.BpsmtWidowHis;
 
 @Stateless
 public class JpaFamilyMember extends JpaRepository implements FamilyMemberRepository {

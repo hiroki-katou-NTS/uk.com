@@ -2,7 +2,7 @@ package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.fixedvertical
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+//import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;

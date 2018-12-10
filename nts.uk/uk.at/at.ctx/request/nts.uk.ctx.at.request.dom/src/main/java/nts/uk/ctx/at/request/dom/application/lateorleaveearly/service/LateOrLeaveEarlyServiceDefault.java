@@ -80,7 +80,7 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		validateReason(lateOrLeaveEarly.getApplication().getCompanyID(),lateOrLeaveEarly.getApplication().getAppReason().v());
 
 		// [画面Bのみ]遅刻時刻早退時刻がともに設定されているとき、遅刻時刻≧早退時刻 (#Msg_381#)
-		if(lateTime1==null && earlyTime1==null && lateTime2!=null && earlyTime2!=null){
+		if(lateTime1!=null && earlyTime1!=null && lateTime2!=null && earlyTime2!=null){
 			if (((late1 == 1 && early1 == 1 && lateTime1 >= earlyTime1) || (late2 == 1 && early2 == 1 && lateTime2 >= earlyTime2)) 
 				&& prePost == 0) {
 				throw new BusinessException("Msg_381");

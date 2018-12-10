@@ -322,7 +322,6 @@ module nts.uk.com.view.cmf002.c.viewmodel {
 
             service.getOutItems(self.conditionCode()).done((outputItems: Array<any>) => {
                 if (outputItems && outputItems.length) {
-                    outputItems = _.sortBy(outputItems, ['outItemCd']);
                     let rsOutputItems: Array<model.StandardOutputItem> = _.map(outputItems, x => {
                         let listCategoryItem: Array<model.CategoryItem> = _.map(x.categoryItems, (y : model.ICategoryItem) => {
                             return new model.CategoryItem(self.categoryId(), y.categoryItemNo,
@@ -401,6 +400,9 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             }
             if (errors.hasError() === false && self.isValid()) {
                 block.invisible();
+                for(let i = 0;i<currentStandardOutputItem.categoryItems().length;i++){
+                    currentStandardOutputItem.categoryItems()[i].displayOrder = (i+1);
+                }
                 currentStandardOutputItem.isNewMode = self.isNewMode();
                 currentStandardOutputItem.dispOrder = self.listStandardOutputItem().length > 0 ? self.listStandardOutputItem().length + 1 : 1;
                 // register

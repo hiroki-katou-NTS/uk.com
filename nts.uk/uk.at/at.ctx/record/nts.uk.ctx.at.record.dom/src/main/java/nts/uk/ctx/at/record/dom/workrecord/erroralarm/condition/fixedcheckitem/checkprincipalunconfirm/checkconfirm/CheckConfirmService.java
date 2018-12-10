@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.checkprincipalunconfirm.checkconfirm;
 
 import java.util.ArrayList;
-import java.util.Collections;
+//import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+//import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

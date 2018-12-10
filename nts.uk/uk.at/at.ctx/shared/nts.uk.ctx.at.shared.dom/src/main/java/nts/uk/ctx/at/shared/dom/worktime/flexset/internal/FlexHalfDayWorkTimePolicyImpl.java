@@ -49,9 +49,9 @@ public class FlexHalfDayWorkTimePolicyImpl implements FlexHalfDayWorkTimePolicy 
 		// validate FlowWorkRestTimezone
 		this.flowRestPolicy.validate(be, predTime, halfDayWork.getRestTimezone());
 		
-		if (!((AmPmAtr.AM.equals(halfDayWork.getAmpmAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
-				|| (AmPmAtr.PM.equals(halfDayWork.getAmpmAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
-				|| ((AmPmAtr.AM.equals(halfDayWork.getAmpmAtr()) || AmPmAtr.PM.equals(halfDayWork.getAmpmAtr())) && DisplayMode.SIMPLE.equals(displayMode)))) {
+		if (!((AmPmAtr.AM.equals(halfDayWork.getAmpmAtr()) && DisplayMode.DETAIL.equals(displayMode.getDisplayMode()) && !isUseHalfDayShift)
+				|| (AmPmAtr.PM.equals(halfDayWork.getAmpmAtr()) && DisplayMode.DETAIL.equals(displayMode.getDisplayMode()) && !isUseHalfDayShift)
+				|| ((AmPmAtr.AM.equals(halfDayWork.getAmpmAtr()) || AmPmAtr.PM.equals(halfDayWork.getAmpmAtr())) && DisplayMode.SIMPLE.equals(displayMode.getDisplayMode())))) {
 			
 			// Msg_755
 			if (halfDayWork.getRestTimezone().isFixRestTime() && !halfDayWork.isInFixedWork(halfDayWork.getRestTimezone())) {

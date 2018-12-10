@@ -1,7 +1,7 @@
 package nts.uk.ctx.bs.company.infra.entity.company;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
+//import java.math.BigDecimal;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

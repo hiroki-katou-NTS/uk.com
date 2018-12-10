@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.stamp;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
+//import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 
 @AllArgsConstructor
 public enum GoOutReason {
