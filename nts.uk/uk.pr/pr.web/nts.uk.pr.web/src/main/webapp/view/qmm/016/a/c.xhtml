@@ -108,57 +108,8 @@
         <img style="position: relative; top: 26px;" src="../resource/QMM016_6.png"></img>
         <img style="position: relative;top: 50px; left: 520px;" src="../resource/QMM016_7.png"></img>
         <div>
-            <table id="fixed-table-2d">
-                <colgroup>
-                    <col width="150px"/>
-                    <com:ko bind="$vm.listSecondDimension" tag="foreach">
-                    	<col width="150px"/>
-                    </com:ko>
-                </colgroup>
-                <thead>
-                <tr>
-                    <th style="border: none"></th>
-                    <th colspan="5" class="ui-widget-header">
-                        <div data-bind="with: selectedWageTable().elementInformation().twoDimensionElement">
-                            <div data-bind="text: elementName"></div>
-                        </div>
-                    </th>
-                </tr>
-                <tr>
-                    <th class="ui-widget-header">
-                        <div data-bind="with: selectedWageTable().elementInformation().oneDimensionElement">
-                            <div data-bind="text: elementName"></div>
-                        </div>
-                    </th>
-                    <com:ko bind="$vm.listSecondDimension" tag="foreach">
-                    	<th class="ui-widget-header" data-bind="text: name"></th>
-                    </com:ko>
-                </tr>
-                </thead>
-                <tbody data-bind="foreach: $vm.wageTableContent().payment">
-	                <tr>
-	                    <td class="ui-widget-header">
-		                    <div data-bind="if: $vm.selectedWageTable().elementInformation().oneDimensionElement().masterNumericClassification() == 0">
-		                		<span data-bind="text: masterName"></span>
-		                	</div>
-		                	<div data-bind="if: $vm.selectedWageTable().elementInformation().oneDimensionElement().masterNumericClassification() == 1">
-			                    <span data-bind="text: frameLowerLimit"></span>
-			                    <span>#{i18n.getText('QMM016_31')}</span>
-			                    <span data-bind="text: frameUpperLimit"></span>
-		                    </div>
-	                    </td>
-	                    <com:ko bind="listSecondDms" tag="foreach">
-			            <td>
- 				            <input data-bind="ntsNumberEditor: {
- 								option: { grouplength: 3, width: '120px' }, 
-  								name: '#[QMM016_39]', 
-  								value: paymentAmount, 
-  								constraint: 'WageTablePaymentAmount', 
-  								required: true}" /> 
-			            </td>
-				        </com:ko>
-	                </tr>
-                </tbody>
+            <table id="wage-table-2d">
+
             </table>
         </div>
     </div>

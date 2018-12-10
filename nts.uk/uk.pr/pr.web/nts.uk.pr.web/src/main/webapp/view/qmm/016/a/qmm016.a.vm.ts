@@ -48,6 +48,10 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     self.updateMode(false);
                     self.isSelectedHistory(false);
                 } else {
+                    if ($("#wage-table-2d").data('mGrid')) {
+                        $("#wage-table-2d").mGrid("destroy");
+                        $("#wage-table-2d").off();
+                    }
                     self.elementRangeSetting(new model.ElementRangeSetting(null));
                     self.wageTableContent(new model.WageTableContent(null));
                     self.showWageTableInfoByValue(newValue);
@@ -63,7 +67,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             $('#A8_2').ntsFixedTable({ width: 300 });
             $('.normal-fixed-table').ntsFixedTable({ width: 600 });
             $("#fixed-table-1d").ntsFixedTable({ width: 600 });
-            $("#fixed-table-2d").ntsFixedTable({ width: 600 });
+//            $("#wage-table-2d").ntsFixedTable({ width: 600 });
             $('.fixed-table-top').ntsFixedTable({ width: 300, height: 34 });
             if (/Chrome/.test(navigator.userAgent)) {
                 $('.fixed-table-top').ntsFixedTable({ width: 300, height: 34 });
@@ -162,13 +166,88 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     }
                     self.wageTableContent(new model.WageTableContent(contentData));
                     self.elementRangeSetting(new model.ElementRangeSetting(settingData));
-//                    $("#fixed-table-2d").ntsFixedTable({ width: 600 });
+                    if (!_.isEmpty(contentData) && !_.isEmpty(contentData.listData) && !_.isEmpty(contentData.listHeader)) {
+                        self.loadGrid(contentData.listData, contentData.listHeader);
+                    }
                 }).fail(error => {
                     dialog.alertError(error);
                 }).always(() => {
                     block.clear();
                 });
             }
+        }
+        
+        formatData(lstData) {
+            let self = this;
+            let data = lstData.map((data) => {
+                let object = {
+                    id: data.rowId,
+                    element: data.element
+                }
+                _.each(data.cellData, item => { 
+                    object[item.columnKey] = item.value; 
+                });
+                return object;
+            });
+            return data;
+        }
+        
+        loadGrid(listData: Array<any>, listHeader: Array<any>) {
+            let self = this;
+            let dataSource = self.formatData(listData);
+            listHeader.forEach(i => {
+                i["constraint"] = { primitiveValue: 'WageTablePaymentAmount', required: true };
+            });
+            new nts.uk.ui.mgrid.MGrid($("#wage-table-2d")[0], {
+                width: "600px",
+                height: "300px",
+                subWidth: "130px",
+                subHeight: "270px",
+                headerHeight: '50px',
+                dataSource: dataSource,
+                primaryKey: 'id',
+                primaryKeyDataType: 'string',
+                rowVirtualization: true,
+                virtualization: true,
+                virtualizationMode: 'continuous',
+                enter: 'right',
+                autoFitWindow: false,
+                hidePrimaryKey: true,
+                errorsOnPage: false,
+                columns: [
+                    {headerText: "ID", key: 'id', dataType: 'string', hidden: true},
+                    {
+                        headerText: "", group: [
+                            {   
+                                headerText: "First Elements", key: 'element', dataType: 'string', width: "100px", ntsControl: "Label"
+                            }
+                        ]
+                    },
+                    {
+                        headerText: "Second Elements", group: listHeader
+                    }
+                ],
+                ntsControls: [
+                    
+                ],
+                features: [
+                    {
+                        name: 'HeaderStyles',
+                        columns: [
+                            {key: 'element', colors: ['left-align']}
+                        ]
+                    },
+                    {
+                        name: "ColumnFixing",
+                        showFixButtons: false,
+                        fixingDirection: 'left',
+                        columnSettings: [
+                            { columnKey: "id", isFixed: true },
+                            { columnKey: "element", isFixed: true }
+                        ]
+                    }
+                ]
+            }).create();
         }
 
         createNewWageTable() {

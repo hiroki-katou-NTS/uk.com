@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.Data;
@@ -17,6 +19,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.MasterNumericAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTable;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableContent;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 @NoArgsConstructor
 @Data
@@ -29,6 +32,10 @@ public class WageTableContentDto {
 	private List<TwoDmsElementItemDto> list2dElements;
 
 	private List<ElementItemDto> list3dElements;
+
+	private List<WageTableRowDto> listData;
+
+	private List<WageTableHeaderDto> listHeader;
 
 	public static WageTableContentDto fromDomainToDto(WageTableContent domain, Optional<WageTable> domainOtp,
 			WageTableContentCreater wageContentCreater) {
@@ -76,6 +83,7 @@ public class WageTableContentDto {
 			else if (domain.getPayments().get(0).getElementAttribute().getSecondElementItem().isPresent()
 					&& !domain.getPayments().get(0).getElementAttribute().getThirdElementItem().isPresent()) {
 				dto.list2dElements = new ArrayList<>();
+				dto.listData = new ArrayList<>();
 				Map<ElementItem, List<ElementsCombinationPaymentAmount>> mapPayments = domain.getPayments().stream()
 						.collect(Collectors.groupingBy(i -> i.getElementAttribute().getFirstElementItem()));
 				Map<String, String> mapMaster1 = new HashMap<>();
@@ -85,6 +93,7 @@ public class WageTableContentDto {
 							.getOneDimensionalElement().getFixedElement().get().value, AppContexts.user().companyId());
 				}
 				for (ElementItem key : mapPayments.keySet()) {
+					dto.listHeader = new ArrayList<>();
 					List<ElementsCombinationPaymentAmount> value = mapPayments.get(key);
 					List<ElementItemDto> list2ndDmsElements = new ArrayList<>();
 					Map<String, String> mapMaster2 = new HashMap<>();
@@ -94,6 +103,7 @@ public class WageTableContentDto {
 								.getTwoDimensionalElement().get().getFixedElement().get().value,
 								AppContexts.user().companyId());
 					}
+					Set<WageTableCellDto> cellData = new HashSet<>();
 					for (ElementsCombinationPaymentAmount payment : value) {
 						if (payment.getElementAttribute().getSecondElementItem().get().getMasterElementItem()
 								.isPresent()) {
@@ -104,17 +114,26 @@ public class WageTableContentDto {
 									masterName == null ? masterCode : masterName, null, null, null,
 									payment.getWageTablePaymentAmount().v());
 							list2ndDmsElements.add(item);
+							cellData.add(new WageTableCellDto("2nd-dms-master-" + masterCode,
+									payment.getWageTablePaymentAmount().v()));
+							dto.listHeader.add(new WageTableHeaderDto(masterName, "2nd-dms-master-" + masterCode, "number",
+									"150px", false, null));
 						} else if (payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem()
 								.isPresent()) {
-							ElementItemDto item = new ElementItemDto(null, null,
-									payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem()
-											.get().getFrameNumber().v(),
-									payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem()
-											.get().getFrameLowerLimit().v(),
-									payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem()
-											.get().getFrameUpperLimit().v(),
+							int frameNumber = payment.getElementAttribute().getSecondElementItem().get()
+									.getNumericElementItem().get().getFrameNumber().v();
+							int frameLower = payment.getElementAttribute().getSecondElementItem().get()
+									.getNumericElementItem().get().getFrameLowerLimit().v();
+							int frameUpper = payment.getElementAttribute().getSecondElementItem().get()
+									.getNumericElementItem().get().getFrameUpperLimit().v();
+							ElementItemDto item = new ElementItemDto(null, null, frameNumber, frameLower, frameUpper,
 									payment.getWageTablePaymentAmount().v());
 							list2ndDmsElements.add(item);
+							cellData.add(new WageTableCellDto("2nd-dms-numeric-" + frameNumber,
+									payment.getWageTablePaymentAmount().v()));
+							dto.listHeader.add(
+									new WageTableHeaderDto(frameLower + TextResource.localize("QMM016_31") + frameUpper,
+											"2nd-dms-numeric-" + frameNumber, "number", "150px", false, null));
 						}
 					}
 					Collections.sort(list2ndDmsElements, comparator);
@@ -123,11 +142,15 @@ public class WageTableContentDto {
 						String masterName = mapMaster1.get(masterCode);
 						dto.list2dElements.add(new TwoDmsElementItemDto(masterCode,
 								masterName == null ? masterCode : masterName, null, null, null, list2ndDmsElements));
+						dto.listData.add(new WageTableRowDto("1st-dms-master-" + masterCode, masterName, cellData));
 					} else if (key.getNumericElementItem().isPresent()) {
-						dto.list2dElements.add(new TwoDmsElementItemDto(null, null,
-								key.getNumericElementItem().get().getFrameNumber().v(),
-								key.getNumericElementItem().get().getFrameLowerLimit().v(),
-								key.getNumericElementItem().get().getFrameUpperLimit().v(), list2ndDmsElements));
+						int frameNumber = key.getNumericElementItem().get().getFrameNumber().v();
+						int frameLower = key.getNumericElementItem().get().getFrameLowerLimit().v();
+						int frameUpper = key.getNumericElementItem().get().getFrameUpperLimit().v();
+						dto.list2dElements.add(new TwoDmsElementItemDto(null, null, frameNumber, frameLower, frameUpper,
+								list2ndDmsElements));
+						dto.listData.add(new WageTableRowDto("1st-dms-numeric-" + frameNumber,
+								frameLower + TextResource.localize("QMM016_31") + frameUpper, cellData));
 					}
 				}
 				Comparator<TwoDmsElementItemDto> comparators = Comparator
