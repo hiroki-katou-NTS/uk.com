@@ -119,7 +119,6 @@ public interface AgentRepository {
 	 */
 	List<Agent> getAgentBySidDate(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate);
 
-	List<AgentExportData> getAgentByEmployeeID(String companyId, List<String> employeeId);
 
 
 }

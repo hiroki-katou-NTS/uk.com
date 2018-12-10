@@ -39,6 +39,6 @@ module cmm044.a.service {
     }
 
     export function exportExcel(listEmployee: any): JQueryPromise<any> {
-        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "SubscribeRegis", domainType: "代行承認", languageId: 'ja', reportType: 0,data: listEmployee});
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "SubscribeRegis", domainType: "マスタリスト_代行者", languageId: 'ja', reportType: 0,data: listEmployee});
     }
 }

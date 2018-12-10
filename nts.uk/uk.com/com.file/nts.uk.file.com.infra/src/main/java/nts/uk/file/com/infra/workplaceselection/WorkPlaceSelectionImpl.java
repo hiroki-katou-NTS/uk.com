@@ -1,7 +1,6 @@
 package nts.uk.file.com.infra.workplaceselection;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,7 +14,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import nts.uk.ctx.sys.auth.dom.export.wkpmanager.WorkPlaceSelectionExportData;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceFunction;
 import nts.uk.file.com.app.workplaceselection.WorkPlaceSelectionColumn;
 import nts.uk.file.com.app.workplaceselection.WorkPlaceSelectionRepository;
@@ -110,10 +108,4 @@ public class WorkPlaceSelectionImpl implements WorkPlaceSelectionRepository {
 		return data;
 	}
 
-	@Override
-	public List<WorkPlaceSelectionExportData> findAllWorkPlaceSelection(String companyId,
-			List<WorkPlaceFunction> functionNo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

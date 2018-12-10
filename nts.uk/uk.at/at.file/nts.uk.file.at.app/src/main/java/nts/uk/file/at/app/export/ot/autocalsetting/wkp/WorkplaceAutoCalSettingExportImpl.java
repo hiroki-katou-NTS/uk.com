@@ -1,11 +1,11 @@
-package nts.uk.ctx.at.shared.app.export;
+package nts.uk.file.at.app.export.ot.autocalsetting.wkp;
 
 import java.util.*;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp.WkpAutoCalSettingRepository;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp.WorkPlaceAutoCalSettingExport;
+import nts.arc.error.BusinessException;
+import nts.uk.file.at.app.export.ot.autocalsetting.AutoCalSettingExport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
@@ -24,8 +24,6 @@ public class WorkplaceAutoCalSettingExportImpl implements MasterListData{
 
     @Inject
     private AutoCalSettingExport autoCalSettingExport;
-
-    public static final String REGISTERED = "YES";
 
     private static final String KMK006_76 = "職場コード";
     private static final String KMK006_77 = "職場名";
@@ -47,21 +45,18 @@ public class WorkplaceAutoCalSettingExportImpl implements MasterListData{
     @Override
     public List<MasterData> getMasterDatas(MasterListExportQuery query) {
         String companyId = AppContexts.user().companyId();
-
-        List<WorkPlaceAutoCalSettingExport> workPlaceAutoCalSetting = wkpAutoCalSettingRepository.getWorkPlaceSettingToExport(companyId);
+        String baseDate = query.getData().toString().substring(0,10);
+        List<Object[]> workPlaceAutoCalSetting = wkpAutoCalSettingRepository.getWorkPlaceSettingToExport(companyId, baseDate);
+        if(workPlaceAutoCalSetting.size() == 0) {
+            throw new BusinessException("Msg_1480");
+        }
         List <MasterData> datas = new ArrayList<>();
         workPlaceAutoCalSetting.forEach(item -> {
             Map<String, Object> data = new HashMap<>();
-                    data.put(KMK006_76, item.getWorkPlaceCode());
-                    data.put(KMK006_77, item.getWorkPlaceName());
-                    if(REGISTERED.equals(item.getRegistered())) {
-                        data.put(KMK006_78, "✓");
-                        autoCalSettingExport.putDatas(item, data);
-                    } else {
-                        data.put(KMK006_78, "");
-                        autoCalSettingExport.putNoDatas(data);
-
-                     }
+            data.put(KMK006_76, item[23]);
+            data.put(KMK006_77, item[24]);
+            data.put(KMK006_78, "✓");
+            autoCalSettingExport.putDatas(item, data);
             datas.add(new MasterData(data, null, ""));
         });
         return datas;
