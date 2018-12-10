@@ -2,7 +2,7 @@ package nts.uk.ctx.at.function.dom.processexecution.executionlog;
 
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
+//import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 

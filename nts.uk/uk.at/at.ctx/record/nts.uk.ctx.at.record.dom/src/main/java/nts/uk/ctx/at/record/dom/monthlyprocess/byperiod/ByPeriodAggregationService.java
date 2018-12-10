@@ -31,6 +31,7 @@ public interface ByPeriodAggregationService {
 	 * @param companySets 月別集計で必要な会社別設定
 	 * @return 終了状態
 	 */
+	@SuppressWarnings("rawtypes")
 	ProcessState aggregate(AsyncCommandHandlerContext async,
 			String companyId, String employeeId, DatePeriod period, String executeId,
 			OptionalAggrPeriod optionalPeriod, MonAggrCompanySettings companySets);

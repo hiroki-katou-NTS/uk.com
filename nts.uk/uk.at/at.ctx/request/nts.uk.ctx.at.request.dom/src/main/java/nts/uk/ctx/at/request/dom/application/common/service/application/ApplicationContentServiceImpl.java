@@ -225,15 +225,15 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 				content += (!Objects.isNull(overTime.getWorkClockTo2()) ? repoAppDetailInfo.convertTime(overTime.getWorkClockTo2()) : "");
 				String moreInf = "";
 				int count = 0;
-				int totalWorkUnit = 0;
+				//int totalWorkUnit = 0;
 				if (overTime.getOverTimeShiftNight() != null && overTime.getOverTimeShiftNight() > 0) {
-					totalWorkUnit += overTime.getOverTimeShiftNight();
+					//totalWorkUnit += overTime.getOverTimeShiftNight();
 					if (count < 3)
 						moreInf += I18NText.getText("CMM045_270") + " " + this.clockShorHm(overTime.getOverTimeShiftNight()) + " ";
 					count++;
 				}
 				if (overTime.getFlexExessTime() != null && overTime.getFlexExessTime() > 0) {
-					totalWorkUnit += overTime.getFlexExessTime();
+					//totalWorkUnit += overTime.getFlexExessTime();
 					if (count < 3)
 						moreInf += I18NText.getText("CMM045_271") + " " + this.clockShorHm(overTime.getFlexExessTime()) + " ";
 					count++;
@@ -246,7 +246,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 						continue;
 					}
 					if (x.getApplicationTime().v() > 0) {
-						totalWorkUnit += x.getApplicationTime().v();
+						//totalWorkUnit += x.getApplicationTime().v();
 						if (count < 3) {
 							String type = "";
 							String cid = AppContexts.user().companyId();
@@ -315,15 +315,15 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 							? repoAppDetailInfo.convertTime(preOverTime.getWorkClockTo2()) : "");
 					String moreInf = "";
 					int count = 0;
-					int totalWorkUnit = 0;
+					//int totalWorkUnit = 0;
 					if (preOverTime.getOverTimeShiftNight() != null && preOverTime.getOverTimeShiftNight() > 0) {
-						totalWorkUnit += preOverTime.getOverTimeShiftNight();
+						//totalWorkUnit += preOverTime.getOverTimeShiftNight();
 						if (count < 3)
 							moreInf += I18NText.getText("CMM045_270") + " " + this.clockShorHm(preOverTime.getOverTimeShiftNight()) + " ";
 						count++;
 					}
 					if (preOverTime.getFlexExessTime() != null && preOverTime.getFlexExessTime() > 0) {
-						totalWorkUnit += preOverTime.getFlexExessTime();
+						//totalWorkUnit += preOverTime.getFlexExessTime();
 						if (count < 3)
 							moreInf += I18NText.getText("CMM045_271") + " " + this.clockShorHm(preOverTime.getFlexExessTime()) + " ";
 						count++;
@@ -336,7 +336,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 							continue;
 						}
 						if (x.getApplicationTime().v() > 0) {
-							totalWorkUnit += x.getApplicationTime().v();
+							//totalWorkUnit += x.getApplicationTime().v();
 							if (count < 3) {
 								String type = "";
 								String cid = AppContexts.user().companyId();
@@ -395,15 +395,15 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 				contentPost += (!Objects.isNull(overTime.getWorkClockTo2()) ? overTime.getWorkClockTo2() : "");
 				String moreInf = "";
 				int count = 0;
-				int totalWorkUnit = 0;
+				//int totalWorkUnit = 0;
 				if (overTime.getOverTimeShiftNight() != null && overTime.getOverTimeShiftNight() > 0) {
-					totalWorkUnit += overTime.getOverTimeShiftNight();
+					//totalWorkUnit += overTime.getOverTimeShiftNight();
 					if (count < 3)
 						moreInf += I18NText.getText("CMM045_270") + " " + this.clockShorHm(overTime.getOverTimeShiftNight()) + " ";
 					count++;
 				}
 				if (overTime.getFlexExessTime() != null && overTime.getFlexExessTime() > 0) {
-					totalWorkUnit += overTime.getFlexExessTime();
+					//totalWorkUnit += overTime.getFlexExessTime();
 					if (count < 3)
 						moreInf += I18NText.getText("CMM045_271") + " " + this.clockShorHm(overTime.getFlexExessTime()) + " ";
 					count++;
@@ -416,7 +416,7 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 						continue;
 					}
 					if (x.getApplicationTime().v() > 0) {
-						totalWorkUnit += x.getApplicationTime().v();
+						//totalWorkUnit += x.getApplicationTime().v();
 						if (count < 3) {
 							if (count < 3) {
 								String type = "";
@@ -669,14 +669,14 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 						}
 						String moreInf = "";
 						int count = 0;
-						int totalWorkUnit = 0;
+						//int totalWorkUnit = 0;
 						if (!Objects.isNull(appWork.getHolidayWorkInputs())){
 							for (val x : appWork.getHolidayWorkInputs()) {
 								if(x.getAttendanceType().equals(AttendanceType.RESTTIME)){
 									continue;
 								}
 								if (x.getApplicationTime().v() > 0) {
-									totalWorkUnit += x.getApplicationTime().v();
+									//totalWorkUnit += x.getApplicationTime().v();
 									if (count < 3) {
 										String type = "";
 										String cid = AppContexts.user().companyId();
@@ -765,14 +765,14 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 							}
 							String moreInf = "";
 							int count = 0;
-							int totalWorkUnit = 0;
+							//int totalWorkUnit = 0;
 							if (!Objects.isNull(preAppWork.getHolidayWorkInputs())){
 								for (val x : preAppWork.getHolidayWorkInputs()) {
 									if(x.getAttendanceType().equals(AttendanceType.RESTTIME)){
 										continue;
 									}
 									if (x.getApplicationTime().v() > 0) {
-										totalWorkUnit += x.getApplicationTime().v();
+										//totalWorkUnit += x.getApplicationTime().v();
 										if (count < 3) {
 											String type = "";
 											String cid = AppContexts.user().companyId();
@@ -852,14 +852,14 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 						}
 						String moreInf = "";
 						int count = 0;
-						int totalWorkUnit = 0;
+						//int totalWorkUnit = 0;
 						if (!Objects.isNull(appWork.getHolidayWorkInputs())){
 							for (val x : appWork.getHolidayWorkInputs()) {
 								if(x.getAttendanceType().equals(AttendanceType.RESTTIME)){
 									continue;
 								}
 								if (x.getApplicationTime().v() > 0) {
-									totalWorkUnit += x.getApplicationTime().v();
+									//totalWorkUnit += x.getApplicationTime().v();
 									if (count < 3) {
 										String type = "";
 										String cid = AppContexts.user().companyId();

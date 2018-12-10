@@ -66,13 +66,13 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 		return newHistoryId;
 	}
 
-	private boolean isGroupManager() {
-		String groupManageRoleId = AppContexts.user().roles().forGroupCompaniesAdmin();
-		if (groupManageRoleId != null) {
-			return true;
-		}
-		return false;
-	}
+//	private boolean isGroupManager() {
+//		String groupManageRoleId = AppContexts.user().roles().forGroupCompaniesAdmin();
+//		if (groupManageRoleId != null) {
+//			return true;
+//		}
+//		return false;
+//	}
 
 
 	private void copyHistory(String sourceHistId, String newHistoryId) {

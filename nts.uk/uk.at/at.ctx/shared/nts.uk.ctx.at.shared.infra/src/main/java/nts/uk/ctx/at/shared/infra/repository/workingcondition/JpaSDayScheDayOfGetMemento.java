@@ -58,7 +58,7 @@ public class JpaSDayScheDayOfGetMemento implements SingleDayScheduleGetMemento {
 	 * nts.uk.ctx.at.shared.dom.workingcondition.SingleDayScheduleGetMemento#
 	 * getWorkingHours()
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public List<TimeZone> getWorkingHours() {
 		if(CollectionUtil.isEmpty(this.entity.getKshmtDayofweekTimeZones())) {

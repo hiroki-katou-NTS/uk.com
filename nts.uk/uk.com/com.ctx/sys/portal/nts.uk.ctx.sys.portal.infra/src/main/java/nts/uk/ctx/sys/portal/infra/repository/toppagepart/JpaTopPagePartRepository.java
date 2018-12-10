@@ -20,7 +20,6 @@ import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePartPK;
 @Stateless
 public class JpaTopPagePartRepository extends JpaRepository implements TopPagePartRepository {
 
-	private static final String SELECT_SINGLE = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.topPagePartID = :topPagePartID";
 	private static final String SELECT_SINGLE_BY_KEY = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.topPagePartID = :topPagePartID AND c.ccgmtTopPagePartPK.companyID = :cID";
 	private static final String SELECT_BY_COMPANY = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID";
 	private static final String SELECT_BY_TYPE = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID AND c.topPagePartType = :topPagePartType";

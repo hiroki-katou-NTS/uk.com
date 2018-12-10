@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
+//import java.util.stream.Collectors;
 
 import lombok.Getter;
-import lombok.Value;
+//import lombok.Value;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
@@ -17,12 +17,12 @@ import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.bonuspaytime.BonusPayTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
+//import nts.uk.ctx.at.record.dom.dailyprocess.calc.ConditionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkFrameTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
+//import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeFrameTime;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -32,7 +32,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryO
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
+//import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
@@ -104,9 +104,9 @@ public class HolidayWorkTimeOfDaily {
 	 */
 	public List<BonusPayTime> calcBonusPay(AutoCalRaisingSalarySetting bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily){
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
-		for(HolidayWorkFrameTimeSheet frameTimeSheet: holidayWorkFrameTimeSheet) {
+//		for(HolidayWorkFrameTimeSheet frameTimeSheet: holidayWorkFrameTimeSheet) {
 			//bonusPayList.addAll(frameTimeSheet.calcBonusPay(ActualWorkTimeSheetAtr.HolidayWork,bonusPayAutoCalcSet,calcAtrOfDaily));
-		}
+//		}
 		return bonusPayList;
 	}
 	
@@ -116,9 +116,9 @@ public class HolidayWorkTimeOfDaily {
 	 */
 	public List<BonusPayTime> calcSpecifiedBonusPay(AutoCalRaisingSalarySetting bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalAttrOfDailyPerformance calcAtrOfDaily){
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
-		for(HolidayWorkFrameTimeSheet frameTimeSheet: holidayWorkFrameTimeSheet) {
+//		for(HolidayWorkFrameTimeSheet frameTimeSheet: holidayWorkFrameTimeSheet) {
 			//bonusPayList.addAll(frameTimeSheet.calcSpacifiedBonusPay(ActualWorkTimeSheetAtr.HolidayWork,bonusPayAutoCalcSet,calcAtrOfDaily));
-		}
+//		}
 		return bonusPayList;
 	}
 	/**

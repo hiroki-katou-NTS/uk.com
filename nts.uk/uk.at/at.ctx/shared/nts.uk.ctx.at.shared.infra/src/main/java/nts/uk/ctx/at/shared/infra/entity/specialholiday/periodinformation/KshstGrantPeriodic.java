@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantPeriodic;
-import nts.uk.shr.com.time.calendar.MonthDay;
+//import nts.uk.shr.com.time.calendar.MonthDay;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

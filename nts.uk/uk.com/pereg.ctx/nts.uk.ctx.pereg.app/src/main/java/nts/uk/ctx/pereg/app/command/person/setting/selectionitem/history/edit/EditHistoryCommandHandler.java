@@ -39,12 +39,12 @@ public class EditHistoryCommandHandler extends CommandHandler<EditHistoryCommand
 		this.historySelecitonRepo.update(history, updateDateHistItem);
 	}
 
-	private boolean isGroupManager() {
-		String groupManageRoleId = AppContexts.user().roles().forGroupCompaniesAdmin();
-		if (groupManageRoleId != null) {
-			return true;
-		}
-		return false;
-	}
+//	private boolean isGroupManager() {
+//		String groupManageRoleId = AppContexts.user().roles().forGroupCompaniesAdmin();
+//		if (groupManageRoleId != null) {
+//			return true;
+//		}
+//		return false;
+//	}
 
 }

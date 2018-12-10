@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.breakorgoout;
 
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.ResultSet;
+//import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		implements BreakTimeOfDailyPerformanceRepository {
 
-	private static final String REMOVE_BY_EMPLOYEE;
+//	private static final String REMOVE_BY_EMPLOYEE;
 
 	private static final String DEL_BY_LIST_KEY;
 
@@ -54,11 +54,11 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 
 	static {
 		StringBuilder builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDaiBreakTime a ");
-		builderString.append("WHERE a.krcdtDaiBreakTimePK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtDaiBreakTimePK.ymd = :ymd ");
-		REMOVE_BY_EMPLOYEE = builderString.toString();
+//		builderString.append("DELETE ");
+//		builderString.append("FROM KrcdtDaiBreakTime a ");
+//		builderString.append("WHERE a.krcdtDaiBreakTimePK.employeeId = :employeeId ");
+//		builderString.append("AND a.krcdtDaiBreakTimePK.ymd = :ymd ");
+//		REMOVE_BY_EMPLOYEE = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("DELETE ");

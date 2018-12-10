@@ -59,6 +59,7 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 	private static final String STATUS = "status";
 	
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void handle(CommandHandlerContext<SyncServerUploadProcessingCommand> context) {
 		val asyncTask = context.asAsync();

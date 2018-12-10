@@ -20,7 +20,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlg
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
+//import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -41,8 +41,8 @@ public class DataWorkServiceImpl implements IDataWorkService {
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
-	@Inject
-	private PersonalLaborConditionRepository personalLaborConditionRepository;
+//	@Inject
+//	private PersonalLaborConditionRepository personalLaborConditionRepository;
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
 	@Inject

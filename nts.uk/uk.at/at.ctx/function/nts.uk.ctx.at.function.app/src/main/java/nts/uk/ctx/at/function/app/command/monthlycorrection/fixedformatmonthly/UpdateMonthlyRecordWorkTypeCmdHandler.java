@@ -11,7 +11,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.SerializationUtils;
+//import org.apache.commons.lang3.SerializationUtils;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;

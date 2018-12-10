@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +13,9 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepo
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateOption;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
@@ -51,6 +55,10 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 	private AdTimeAndAnyItemAdUpService timeAndAnyItemUpService;
 	@Inject
 	private AttendanceTimeRepository attendanceTime;
+	@Inject
+	private CalculateDailyRecordServiceCenter calService;
+	@Inject
+	private CommonCompanySettingForCalc commonComSetting;
 	@Override
 	public boolean preHolidayWorktimeReflect(HolidayWorktimePara holidayWorkPara, boolean isPre) {		
 		try {
@@ -58,7 +66,6 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 					holidayWorkPara.getBaseDate(), holidayWorkPara.getHolidayWorkPara().getWorkTimeCode(), 
 					holidayWorkPara.getHolidayWorkPara().getWorkTypeCode(), holidayWorkPara.getHolidayWorkPara().getStartTime(), 
 					holidayWorkPara.getHolidayWorkPara().getEndTime());
-			//IntegrationOfDaily calculateData = calculate.calculate(daily,null);
 			// 予定勤種・就時の反映
 			daily = holidayWorkProcess.updateScheWorkTimeType(holidayWorkPara.getEmployeeId(),
 					holidayWorkPara.getBaseDate(), 
@@ -101,8 +108,11 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 			
 			List<EditStateOfDailyPerformance> lstEditState = dailyReposiroty.findByKey(holidayWorkPara.getEmployeeId(), holidayWorkPara.getBaseDate());
 			daily.setEditState(lstEditState);
-			IntegrationOfDaily calculateData = calculate.calculate(daily,null,null,Optional.empty(),Optional.empty()).getIntegrationOfDaily();
-			timeAndAnyItemUpService.addAndUpdate(calculateData);
+			List<IntegrationOfDaily> lstCal = calService.calculateForSchedule(CalculateOption.asDefault(),
+					Arrays.asList(daily) , Optional.of(commonComSetting.getCompanySetting()));
+			lstCal.stream().forEach(x -> {
+				timeAndAnyItemUpService.addAndUpdate(x);	
+			});
 			return true;
 		} catch (Exception e) {
 			return false;

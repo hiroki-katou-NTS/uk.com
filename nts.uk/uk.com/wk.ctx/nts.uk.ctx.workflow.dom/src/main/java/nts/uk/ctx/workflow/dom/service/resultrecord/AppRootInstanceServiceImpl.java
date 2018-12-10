@@ -479,7 +479,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		int employeePhase = 0;
 		// 承認中のフェーズ=0
 		int approvedPhase = 0;
-		ApprovalBehaviorAtr approvalPhaseEnum = ApprovalBehaviorAtr.UNAPPROVED;
+		ApprovalBehaviorAtr approvalPhaseEnum = ApprovalBehaviorAtr.APPROVED;
 		// ドメインモデル「承認フェーズインスタンス」．順序5～1の順でループする
 		List<ApprovalPhaseState> approvalPhaseStateLst = approvalRootState.getListApprovalPhaseState().stream()
 				.sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed()).collect(Collectors.toList());
@@ -533,7 +533,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 			routeSituation.setApproverEmpState(ApproverEmpState.PHASE_DURING);
 		} else if(approvedPhase==0){
 			routeSituation.setApproverEmpState(ApproverEmpState.COMPLETE);
-		} else if((approvedPhase==employeePhase)&&approvalPhaseEnum==ApprovalBehaviorAtr.UNAPPROVED){
+		} else if((approvedPhase==employeePhase)&&approvalPhaseEnum==ApprovalBehaviorAtr.APPROVED){
 			routeSituation.setApproverEmpState(ApproverEmpState.COMPLETE);
 		} else if(approvedPhase < employeePhase){
 			routeSituation.setApproverEmpState(ApproverEmpState.PHASE_LESS);

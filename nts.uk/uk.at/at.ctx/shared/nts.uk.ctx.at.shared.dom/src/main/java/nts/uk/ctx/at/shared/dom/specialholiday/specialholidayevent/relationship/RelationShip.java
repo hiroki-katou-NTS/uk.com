@@ -1,15 +1,18 @@
 package nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.relationship;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+//import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.relationship.primitives.RelationshipCode;
 import nts.uk.ctx.at.shared.dom.relationship.primitives.RelationshipName;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 // 続柄
 public class RelationShip extends AggregateRoot {
 

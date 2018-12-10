@@ -1,19 +1,18 @@
 package nts.uk.ctx.pr.core.infra.repository.wageprovision.statementitem;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import javax.ejb.Stateless;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.averagewagecalculationset.StatementCustom;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItem;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemCustom;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemRepository;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.QpbmtStatementItem;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementitem.QpbmtStatementItemPk;
+
+import javax.ejb.Stateless;
+import java.util.List;
+import java.util.Optional;
 
 @Stateless
 public class JpaStatementItemRepository extends JpaRepository implements StatementItemRepository {
@@ -53,6 +52,27 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 	private static final String SELECT_CUSTOM_BY_CTG = SELECT_CUSTOM
 					+ " AND f.statementItemPk.categoryAtr =:categoryAtr "
                     + " AND f.deprecatedAtr = :deprecatedAtr ";
+
+    private static final String SELECT_CUSTOM_BY_STATEMENT_ITEM =
+            "SELECT a.statementItemPk.categoryAtr, a.statementItemPk.itemNameCd, c.name "
+                    + " FROM QpbmtStatementItem a INNER JOIN QpbmtPaymentItemSt b "
+                    + " ON a.statementItemPk.cid = b.paymentItemStPk.cid "
+                    + " AND a.statementItemPk.categoryAtr = b.paymentItemStPk.categoryAtr "
+                    + " AND a.statementItemPk.itemNameCd = b.paymentItemStPk.itemNameCd "
+                    + " INNER JOIN QpbmtStatementItemName c"
+                    + " ON a.statementItemPk.cid = c.statementItemNamePk.cid "
+                    + " AND a.statementItemPk.categoryAtr = c.statementItemNamePk.categoryAtr "
+                    + " AND a.statementItemPk.itemNameCd = c.statementItemNamePk.itemNameCd "
+                    + " INNER JOIN QpbmtDeductionItemSt d"
+                    + " ON a.statementItemPk.cid = d.deductionItemStPk.cid "
+                    + " AND a.statementItemPk.categoryAtr = d.deductionItemStPk.categoryAtr "
+                    + " AND a.statementItemPk.itemNameCd = d.deductionItemStPk.itemNameCd "
+                    + " WHERE  a.statementItemPk.cid =:cid "
+                    + " AND a.statementItemPk.categoryAtr = 0 OR a.statementItemPk.categoryAtr = 1"
+                    + " AND a.defaultAtr = 0"
+                    + " AND a.deprecatedAtr = 0"
+                    + " AND b.breakdownItemUseAtr = 1"
+                    + " AND d.breakdownItemUseAtr = 1";
 
 	@Override
 	public List<StatementItem> getAllStatementItem() {
@@ -142,7 +162,15 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 		return result;
 	}
 
-	@Override
+    @Override
+    public List<StatementCustom> getItemCustomByDeprecated(String cid) {
+        return this.queryProxy().query(SELECT_CUSTOM_BY_STATEMENT_ITEM, Object[].class).setParameter("cid", cid).getList(
+                item -> new StatementCustom(item[0] != null ? String.valueOf(item[0]) : "", item[1] != null ? String.valueOf(item[1]) : "",
+                        item[2] != null ? String.valueOf(item[2]) : "")
+        );
+    }
+
+    @Override
 	public void add(StatementItem domain) {
 		this.commandProxy().insert(QpbmtStatementItem.toEntity(domain));
 	}
