@@ -18,6 +18,8 @@ import nts.arc.time.YearMonth;
 import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
@@ -134,8 +136,9 @@ public class GetRsvLeaNumAfterCurrentMonImpl implements GetRsvLeaNumAfterCurrent
 		return results;
 	}
 
+	//RequestList364 - ver2
 	@Override
-	public List<RsvLeaUsedCurrentMonExport> getRemainRsvAnnAfCurMonV2(String employeeId, YearMonthPeriod period) {
+	public List<RsvLeaUsedCurrentMonExport> getRemainRsvAnnAfCurMonV2(String employeeId, YearMonthPeriod period, MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets) {
 
 		// 社員に対応する処理締めを取得する
 		val closure = this.closureService.getClosureDataByEmployee(employeeId, GeneralDate.today());
@@ -180,7 +183,9 @@ public class GetRsvLeaNumAfterCurrentMonImpl implements GetRsvLeaNumAfterCurrent
 					closure.getCompanyId().v(), employeeId, clsPeriod, InterimRemainMngMode.OTHER,
 					clsPeriod.end(), false, false, Optional.empty(), Optional.empty(), Optional.empty(),
 					Optional.empty(), Optional.empty(), prevAnnLea.optional(), prevRsvLeave.optional(),
-					Optional.empty(),Optional.empty(),Optional.empty(),sttMng, closureStartOpt);
+					companySets == null ?  Optional.empty() : Optional.of(companySets),
+					employeeSets == null ? Optional.empty() : Optional.of(employeeSets),
+					Optional.empty(),sttMng, closureStartOpt);
 			
 			prevAnnLea.set(aggrResult.getAnnualLeave().isPresent() ? aggrResult.getAnnualLeave().get() : null);
 			prevRsvLeave.set(aggrResult.getReserveLeave().isPresent() ? aggrResult.getReserveLeave().get() : null);

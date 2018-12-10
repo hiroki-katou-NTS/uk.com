@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-//import nts.uk.ctx.at.record.pub.remainnumber.annualleave.export.CalYearOffWorkAttendRateExport;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.export.ReNumAnnLeaReferenceDateExport;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -50,4 +51,17 @@ public interface AnnLeaveRemainNumberPub {
 	 * @return
 	 */
 	public NextHolidayGrantDate getNextHdGrantDateVer2(String companyId, String employeeId, Optional<GeneralDate> closureDate);	
+	/**
+	 * RequestList #No.363 - ver2
+	 * @param employeeId
+	 * @param datePeriod
+	 * @return
+	 */
+	List<AggrResultOfAnnualLeaveEachMonth> getAnnLeaRemainAfThisMonVer2(String employeeId, DatePeriod datePeriod, MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets);
+	/**
+	 * RequestList #No.265 - ver2
+	 * @param employeeId
+	 * @return
+	 */
+	AnnLeaveOfThisMonth getAnnLeaOfThisMonVer2(String employeeId, MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets);
 }

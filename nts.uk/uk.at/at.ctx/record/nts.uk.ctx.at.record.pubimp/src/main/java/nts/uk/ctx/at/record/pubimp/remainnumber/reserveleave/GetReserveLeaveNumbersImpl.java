@@ -7,6 +7,8 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
@@ -119,7 +121,7 @@ public class GetReserveLeaveNumbersImpl implements GetReserveLeaveNumbers {
 	 * @return 積立年休現在状況
 	 */
 	@Override
-	public ReserveLeaveNowExport getRsvRemainVer2(String employeeId, Optional<GeneralDate> closureDate) {
+	public ReserveLeaveNowExport getRsvRemainVer2(String employeeId, Optional<GeneralDate> closureDate, MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets) {
 		//　社員に対応する締め開始日を取得する
 		if (!closureDate.isPresent()){
 			return null;
@@ -149,8 +151,10 @@ public class GetReserveLeaveNumbersImpl implements GetReserveLeaveNumbers {
 		AggrResultOfAnnAndRsvLeave aggrResult = getAnnAndRsvRemNumWithinPeriod.getRemainAnnRscByPeriod(
 				closure.getCompanyId().v(), employeeId, closurePeriod, InterimRemainMngMode.OTHER,
 				closurePeriod.end(), false, false, Optional.empty(), Optional.empty(), Optional.empty(),
-				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty(),
-				Optional.empty(), Optional.empty(), sttMng, closureStartOpt);
+				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+				companySets == null ?  Optional.empty() : Optional.of(companySets),
+				employeeSets == null ? Optional.empty() : Optional.of(employeeSets), 
+				Optional.empty(), sttMng, closureStartOpt);
 		val aggrResultOfReserveOpt = aggrResult.getReserveLeave();
 		if (!aggrResultOfReserveOpt.isPresent()){
 			return null;

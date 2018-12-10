@@ -3,7 +3,8 @@ package nts.uk.ctx.at.record.pub.remainnumber.reserveleave;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 
 /**
  * 社員の積立年休の月初残・使用・残数・未消化を取得する
@@ -25,5 +26,5 @@ public interface GetReserveLeaveNumbers {
 	 * @param employeeId 社員ID
 	 * @return 積立年休現在状況
 	 */
-	public ReserveLeaveNowExport getRsvRemainVer2(String employeeId, Optional<GeneralDate> closureDate);
+	public ReserveLeaveNowExport getRsvRemainVer2(String employeeId, Optional<GeneralDate> closureDate, MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets);
 }

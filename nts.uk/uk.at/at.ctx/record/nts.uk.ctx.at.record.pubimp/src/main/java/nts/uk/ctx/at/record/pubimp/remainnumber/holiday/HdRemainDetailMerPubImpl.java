@@ -9,6 +9,9 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AggrResultOfAnnualLeaveEachMonth;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AnnLeaveOfThisMonth;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AnnLeaveRemainNumberPub;
@@ -39,7 +42,9 @@ public class HdRemainDetailMerPubImpl implements HdRemainDetailMerPub{
 	private BreakDayOffManagementQuery rq269;
 	@Inject
 	private GetRsvLeaNumAfterCurrentMon rq364;
-	
+	/** 月別集計が必要とするリポジトリ */
+	@Inject
+	private RepositoriesRequiredByMonthlyAggr repoRqMonAgg;
 	
 	/**
 	 * Mer RQ265,268,269,363,364,369
@@ -58,15 +63,22 @@ public class HdRemainDetailMerPubImpl implements HdRemainDetailMerPub{
 			closureDate = closure.algorithm(employeeId);
 		}
 		String companyId = AppContexts.user().companyId();
+		MonAggrCompanySettings companySets = null;
+		if(checkCall.isCall265() || checkCall.isCall268() || checkCall.isCall363() || checkCall.isCall364()){
+			companySets = MonAggrCompanySettings.loadSettings(companyId, repoRqMonAgg);
+		}
+//		MonAggrEmployeeSettings employeeSets = MonAggrEmployeeSettings.loadSettings(
+//				companyId, employeeId, period, repoRqMonAgg);
+		MonAggrEmployeeSettings employeeSets = null;
 		//265
 		AnnLeaveOfThisMonth result265 = null;
 		if(checkCall.isCall265()){
-			result265 = rq265.getAnnLeaveOfThisMonth(employeeId);
+			result265 = rq265.getAnnLeaOfThisMonVer2(employeeId, companySets, employeeSets);
 		}
 		//268
 		ReserveLeaveNowExport result268 = null;
 		if(checkCall.isCall268()){
-			result268 = rq268.getRsvRemainVer2(employeeId, closureDate);
+			result268 = rq268.getRsvRemainVer2(employeeId, closureDate, companySets, employeeSets);
 		}
 		//269
 		List<InterimRemainAggregateOutputData> result269 = new ArrayList<>();
@@ -76,12 +88,12 @@ public class HdRemainDetailMerPubImpl implements HdRemainDetailMerPub{
 		//363
 		List<AggrResultOfAnnualLeaveEachMonth> result363 = new ArrayList<>();
 		if(checkCall.isCall363()){
-			result363 = rq265.getAnnLeaveRemainAfterThisMonth(employeeId, new DatePeriod(GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1), period.end()));
+			result363 = rq265.getAnnLeaRemainAfThisMonVer2(employeeId, new DatePeriod(GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1), period.end()), companySets, employeeSets);
 		}
 		//364
 		List<RsvLeaUsedCurrentMonExport> result364 = new ArrayList<>();
 		if(checkCall.isCall364()){
-			result364 = rq364.getRemainRsvAnnAfCurMonV2(employeeId, new YearMonthPeriod(currentMonth, period.end().yearMonth()));
+			result364 = rq364.getRemainRsvAnnAfCurMonV2(employeeId, new YearMonthPeriod(currentMonth, period.end().yearMonth()), companySets, employeeSets);
 		}
 		//369
 		NextHolidayGrantDate result369 = null;
