@@ -64,18 +64,33 @@ public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerat
 		}
 		SettingByCtgExportData setByCtg = setByCtgOtp.get();
 		List<LineByLineSettingExportData> listLineByLineSet = setByCtg.getListLineByLineSet();
+		if (listLineByLineSet.isEmpty()) {
+			return offset;
+		}
 		listLineByLineSet.sort(Comparator.comparingInt(LineByLineSettingExportData::getLineNumber));
+		int firstLine = listLineByLineSet.get(0).getLineNumber();
+		int lastLine = listLineByLineSet.get(listLineByLineSet.size() - 1).getLineNumber();		
 		for (LineByLineSettingExportData line : listLineByLineSet) {
-			offset = this.printLine(ranges, line, ctg, offset);
+			LinePosition pos = LinePosition.MIDDLE;
+			if (line.getLineNumber() == firstLine) {
+				pos = LinePosition.FIRST;
+				if (line.getLineNumber() == lastLine) {
+					pos = LinePosition.FIRST_AND_LAST;
+				}
+			} else if (line.getLineNumber() == lastLine) {
+				pos = LinePosition.LAST;
+			}
+			offset = this.printLine(ranges, line, ctg, pos, offset);
 		}
 
 		return offset;
 	}
 
-	private int printLine(StatementLayoutRange ranges, LineByLineSettingExportData line, CategoryAtr ctg, int offset) {
+	private int printLine(StatementLayoutRange ranges, LineByLineSettingExportData line, CategoryAtr ctg,
+			LinePosition pos, int offset) {
 		switch (ctg) {
 		case PAYMENT_ITEM:
-			return ranges.printPaymentItem(line, offset);
+			return ranges.printPaymentItem(line, pos, offset);
 		case DEDUCTION_ITEM:
 			return ranges.printDeductionItem(line, offset);
 		case ATTEND_ITEM:

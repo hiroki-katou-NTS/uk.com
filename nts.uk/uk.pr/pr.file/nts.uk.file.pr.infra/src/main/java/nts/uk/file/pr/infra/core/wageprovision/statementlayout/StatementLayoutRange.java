@@ -2,8 +2,13 @@ package nts.uk.file.pr.infra.core.wageprovision.statementlayout;
 
 import java.util.List;
 
+import com.aspose.cells.Border;
+import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
+import com.aspose.cells.CellBorderType;
+import com.aspose.cells.Color;
 import com.aspose.cells.Range;
+import com.aspose.cells.Style;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
@@ -14,6 +19,7 @@ import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.ItemRangeSetExp
 import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.LineByLineSettingExportData;
 import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.PaymentExportData;
 import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.SettingByItemExportData;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Getter
 public class StatementLayoutRange {
@@ -44,8 +50,38 @@ public class StatementLayoutRange {
 		return this.header.getFirstRow() + this.header.getRowCount() + offset;
 	}
 
-	public int printPaymentItem(LineByLineSettingExportData lineSet, int offset) {
+	public int printPaymentItem(LineByLineSettingExportData lineSet, LinePosition linePosition, int offset) {
 		this.copyRange(this.paymentRow, offset);
+		Cell cell;
+		Style style;
+		switch (linePosition) {
+		case FIRST:
+			this.printCell("paymentLabel", TextResource.localize("QMM019_23"), offset + 2);
+			cell = this.getLastCell("paymentHead", offset);
+			style = cell.getStyle();
+			style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.NONE, Color.getEmpty());
+			cell.setStyle(style);
+			break;
+		case MIDDLE:
+			cell = this.getFirstCell("paymentHead", offset);
+			style = cell.getStyle();
+			style.setBorder(BorderType.TOP_BORDER, CellBorderType.NONE, Color.getEmpty());
+			cell.setStyle(style);
+			
+			cell = this.getLastCell("paymentHead", offset);
+			style = cell.getStyle();
+			style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.NONE, Color.getEmpty());
+			cell.setStyle(style);
+			break;
+		case LAST:
+			cell = this.getFirstCell("paymentHead", offset);
+			style = cell.getStyle();
+			style.setBorder(BorderType.TOP_BORDER, CellBorderType.NONE, Color.getEmpty());
+			cell.setStyle(style);
+			break;
+		case FIRST_AND_LAST:
+			break;
+		}
 		List<SettingByItemExportData> items = lineSet.getListSetByItem();
 		for (SettingByItemExportData item : items) {
 			PaymentExportData payment = item.getPayment();
@@ -125,6 +161,18 @@ public class StatementLayoutRange {
 		Cell orginCell = this.wsc.getRangeByName(name).get(0, 0);
 		Cell cell = this.ws.getCells().get(offset, orginCell.getColumn());
 		cell.setValue(value);
+	}
+
+	private Cell getFirstCell(String rangeName, int offset) {
+		Range orginRange = this.wsc.getRangeByName(rangeName);
+		Cell orginCell = orginRange.get(0, 0);
+		return this.ws.getCells().get(offset, orginCell.getColumn());
+	}
+
+	private Cell getLastCell(String rangeName, int offset) {
+		Range orginRange = this.wsc.getRangeByName(rangeName);
+		Cell orginCell = orginRange.get(0, 0);
+		return this.ws.getCells().get(orginRange.getRowCount() + offset - 1, orginCell.getColumn());
 	}
 
 	private void copyRange(Range range, int firstRow) {
