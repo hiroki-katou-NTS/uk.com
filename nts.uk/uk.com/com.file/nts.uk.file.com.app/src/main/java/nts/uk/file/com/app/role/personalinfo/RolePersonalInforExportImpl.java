@@ -19,7 +19,6 @@ public class RolePersonalInforExportImpl implements MasterListData {
     @Inject
     private RolePersonalInforRepository mRolePersonalInforRepository;
 
-    private List<MasterData> masterData = new ArrayList<MasterData>();
     private static final String CAS009_23 = "コードカラム";
     private static final String CAS009_24 = "名称カラム";
     private static final String CAS009_25 = "担当区分カラム";
@@ -28,10 +27,6 @@ public class RolePersonalInforExportImpl implements MasterListData {
     private static final String FUNCTION_NO_ = "FUNCTION_NO_";
     private static final int ROLE_TYPE_CAS009 = 8;
 
-    public RolePersonalInforExportImpl() {
-        String companyId = AppContexts.user().companyId();
-        masterData = mRolePersonalInforRepository.findAllRolePersonalInfor(ROLE_TYPE_CAS009,companyId);
-    }
 
     @Override
     public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
@@ -45,17 +40,20 @@ public class RolePersonalInforExportImpl implements MasterListData {
         columns.add(
                 new MasterHeaderColumn(CAS009_26, TextResource.localize("CAS009_26"), ColumnTextAlign.LEFT, "", true));
         columns.add(
-                new MasterHeaderColumn(CAS009_27, TextResource.localize("CAS009_27"), ColumnTextAlign.CENTER, "", true));
-        for (int i = masterData.size() -5 ; i < masterData.size() ; i++ ) {
+                new MasterHeaderColumn(CAS009_27, TextResource.localize("CAS009_27"), ColumnTextAlign.LEFT, "", true));
+        Map<Integer,String> listFunctionNo = mRolePersonalInforRepository.findAllFunctionNo();
+        for(int key : listFunctionNo.keySet()){
             columns.add(
-                    new MasterHeaderColumn(FUNCTION_NO_ +i ,masterData.get(i).getDatas().get(i).toString(),
-                            ColumnTextAlign.CENTER, "", true));
+                    new MasterHeaderColumn(FUNCTION_NO_ +key ,listFunctionNo.get(key),
+                            ColumnTextAlign.LEFT, "", true));
         }
+
         return columns;
     }
 
     @Override
     public List<MasterData> getMasterDatas(MasterListExportQuery query) {
-        return masterData;
+        String companyId = AppContexts.user().companyId();
+        return mRolePersonalInforRepository.findAllRolePersonalInfor(ROLE_TYPE_CAS009,companyId);
     }
 }

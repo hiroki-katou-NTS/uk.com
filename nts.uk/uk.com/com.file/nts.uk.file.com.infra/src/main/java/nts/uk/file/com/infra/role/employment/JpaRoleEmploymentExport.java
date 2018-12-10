@@ -1,64 +1,54 @@
 package nts.uk.file.com.infra.role.employment;
 
+import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.file.com.app.role.employment.RoleEmpExportRepository;
+import nts.uk.file.com.infra.role.CommonRole;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Stateless
 public class JpaRoleEmploymentExport extends JpaRepository implements RoleEmpExportRepository {
 
-    private static final String CAS005_122 = "コードカラム";
-    private static final String CAS005_123 = "名称カラム";
-    private static final String CAS005_124 = "担当区分カラム";
-    private static final String CAS005_125 = "社員１参照範囲カラム";
-    private static final String CAS005_126 = "未来日参照権限カラム";
-    private static final String CAS005_127 = "メニュー設定カラム";
-    private static final String CAS005_128 = "スケジュール画面社員１参照カラム";
-    private static final String FUNCTION_NO_ = "FUNCTION_NO_";
-    private static final int ROLE_TYPE_CAS005 = 3;
-
-    private static final String GET_FUNCTION_ON = "SELECT FUNCTION_NO" +
-            "FROM KASMT_WORPLACE_FUNCTION";
-
+    private Map<Integer, String> functionNo;
 
     @Override
     public List<MasterData> findAllRoleEmployment(int roleType, String cId) {
         List<MasterData> datas = new ArrayList<>();
-        List<Integer> listFunctionNo = GenFunctionNo();
-        StringBuffer functionNo = new StringBuffer();
-        for (int i = 0; i > listFunctionNo.size(); i++) {
-            functionNo.append("[");
-            functionNo.append(listFunctionNo.get(i));
-            if (i == listFunctionNo.size() - 1) {
-                functionNo.append("]");
-            } else {
-                functionNo.append("],");
-            }
+        functionNo = findAllFunctionNo();
+        if(functionNo.isEmpty()){
+            return new ArrayList<MasterData>();
         }
-        String GET_EXPORT_EXCEL = "SELECT ROLE_ID ,ROLE_CD,ROLE_TYPE,REF_RANGE ,REFER_FUTURE_DATE, "
-                 +functionNo+ "FROM ( SELECT wm.ROLE_ID , wm.ROLE_CD,wm.ROLE_TYPE, wm.REF_RANGE ,wi.REFER_FUTURE_DATE, IS_AVAILABLE, wkf.FUNCTION_NO" +
-                "FROM SACMT_ROLE wm " +
-                "LEFT JOIN SACMT_PERSON_ROLE wi ON wm.ROLE_ID = wi.ROLE_ID \n" +
-                "INNER JOIN PPEMT_PER_INFO_AUTH kwa ON  wm.CID = kwa.CID AND wm.ROLE_ID = kwa.ROLE_ID\n" +
-                "INNER JOIN PPEMT_PER_INFO_FUNCTION wkf on wkf.FUNCTION_NO = kwa.FUNCTION_NO\n" +
-                "WHERE wm.CID = '?1' AND wm.ROLE_TYPE ='?2'" +
-                ")" +
+        List<Integer> listFunctionNo = functionNo.keySet().stream().collect(Collectors.toList());
+        String functionNo = CommonRole.getQueryFunctionNo(listFunctionNo);
+        String GET_EXPORT_EXCEL = "SELECT ROLE_CD , ROLE_NAME , ASSIGN_ATR , REF_RANGE , FUTURE_DATE_REF_PERMIT, WEB_MENU_NAME,SCHEDULE_EMPLOYEE_REF, " +
+                functionNo +
+                " FROM ( SELECT wm.ROLE_CD , wm.ROLE_NAME, wm.ASSIGN_ATR, wm.REF_RANGE,wi.FUTURE_DATE_REF_PERMIT , edm.WEB_MENU_NAME ,wi.SCHEDULE_EMPLOYEE_REF, AVAILABILITY, wkf.FUNCTION_NO " +
+                "FROM (Select * FROM SACMT_ROLE wm1 WHERE wm1.CID = ?cId AND wm1.ROLE_TYPE = ?roleType ) As  wm " +
+                "LEFT JOIN KACMT_EMPLOYMENT_ROLE wi ON wm.ROLE_ID = wi.ROLE_ID " +
+                "LEFT JOIN CCGST_WEB_MENU edm ON wm.CID = edm.CID AND edm.DEFAULT_MENU= '1' " +
+                "INNER JOIN KASMT_WORKPLACE_AUTHORITY kwa ON wm.ROLE_ID = kwa.ROLE_ID AND wm.CID = kwa.CID " +
+                "INNER JOIN KASMT_WORPLACE_FUNCTION wkf on wkf.FUNCTION_NO = kwa.FUNCTION_NO )" +
                 "AS sourceTable PIVOT (" +
-                "    MAX(IS_AVAILABLE)\n" +
+                "    MAX(AVAILABILITY)" +
                 "    FOR [FUNCTION_NO] IN (" +
                 functionNo +
-                ") AS pvt \n";
+                ")) AS pvt ";
 
         Query query = this.getEntityManager().createNativeQuery(GET_EXPORT_EXCEL)
-                .setParameter(1, cId)
-                .setParameter(2, roleType);
+                .setParameter("cId", cId)
+                .setParameter("roleType", roleType);
         @SuppressWarnings("unchecked")
         List<Object[]> data = query.getResultList();
         for (Object[] objects : data) {
@@ -67,29 +57,31 @@ public class JpaRoleEmploymentExport extends JpaRepository implements RoleEmpExp
         return datas;
     }
 
+
     private Map<String, Object> dataContent(Object[] objects, List<Integer> listFunctionNo) {
         Map<String, Object> data = new HashMap<>();
-        data.put(CAS005_122, objects[0]);
-        data.put(CAS005_123, objects[1]);
-        data.put(CAS005_124, objects[2]);
-        data.put(CAS005_125, objects[3]);
-        data.put(CAS005_126, objects[4]);
-        data.put(CAS005_127, objects[5]);
-        data.put(CAS005_128, objects[6]);
-        listFunctionNo.stream().forEach(x -> {
-            data.put(FUNCTION_NO_ + x.toString(), (int) objects[x + 3] == 1 ? "○" : "ー");
-        });
+        data.put(CommonRole.CAS005_122, objects[0]);
+        data.put(CommonRole.CAS005_123, objects[1]);
+        data.put(CommonRole.CAS005_124, CommonRole.getTextRoleAtr(objects[2].toString()));
+        data.put(CommonRole.CAS005_125, CommonRole.getTextEnumEmplReferRange(Integer.valueOf(objects[3].toString())));
+        data.put(CommonRole.CAS005_126, objects[4].toString().equals("1")?I18NText.getText("CAS005_42"):I18NText.getText("CAS005_41"));
+        data.put(CommonRole.CAS005_127, objects[5]);
+        data.put(CommonRole.CAS005_128, objects[6]);
+        for (int i = 0 ; i < listFunctionNo.size() ; i++){
+            data.put(CommonRole.FUNCTION_NO_+listFunctionNo.get(i) ,objects[i+7].toString().equals("1")? "○" : "ー");
+        }
         return data;
     }
-
-    public List<Integer> GenFunctionNo() {
-        List<Integer> resulf = new ArrayList<Integer>();
-        Query query = this.getEntityManager().createNativeQuery(GET_FUNCTION_ON.toString());
+    @Override
+    public Map<Integer, String> findAllFunctionNo() {
+        Map<Integer, String> resulf = new HashMap<>();
+        Query query =  this.getEntityManager().createNativeQuery(CommonRole.GET_FUNCTION_NO_CAS005);
         @SuppressWarnings("unchecked")
         List<Object[]> data = query.getResultList();
         for (Object[] objects : data) {
-            resulf.add((int) (objects[0]));
+            resulf.put(Integer.valueOf(objects[0].toString()),objects[1].toString());
         }
         return resulf;
     }
+
 }
