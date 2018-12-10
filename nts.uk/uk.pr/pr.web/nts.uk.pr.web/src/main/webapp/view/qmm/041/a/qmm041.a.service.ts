@@ -9,7 +9,7 @@ module nts.uk.pr.view.qmm041.a.service {
         getAllIndEmpSalUnitPriceHistory: "ctx/pr/core/wageprovision/empsalunitprice/getAllIndEmpSalUnitPriceHistory",
         getBaseDate: "ctx/pr/core/wageprovision/processdatecls/getBaseDate",
         getSalaryPerUnitPriceName: "ctx/pr/core/wageprovision/empsalunitprice/getSalaryPerUnitPriceName",
-        getEmploymentCode: "pr/core/employeeaverwage/getEmploymentCode",
+        getEmploymentCode: "ctx/pr/shared/employeeaverwage/getEmploymentCode",
         processYearFromEmp: "ctx/pr/core/ws/wageprovision/individualwagecontract/processYearFromEmp/{0}",
         addHistory: "ctx/pr/core/wageprovision/empsalunitprice/addHistory",
         updateAmount: "ctx/pr/core/wageprovision/empsalunitprice/updateAmount",
