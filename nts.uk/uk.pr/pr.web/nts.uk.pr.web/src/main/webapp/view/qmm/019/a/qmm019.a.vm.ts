@@ -541,8 +541,8 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 }
 
                 let currentCategory: SettingByCtg = __viewContext['screenModel'].statementLayoutHistData().statementLayoutSet().listSettingByCtg()[categoryIndex];
-                currentCategory.listLineByLineSet()[sourceLineIndex].listSetByItem()[data.sourceIndex] = targetItem;
-                currentCategory.listLineByLineSet()[targetLineIndex].listSetByItem()[data.targetIndex] = dragItem;
+                //currentCategory.listLineByLineSet()[sourceLineIndex].listSetByItem()[data.sourceIndex] = targetItem;
+                //currentCategory.listLineByLineSet()[targetLineIndex].listSetByItem()[data.targetIndex] = dragItem;
 
                 data.cancelDrop = true;
             }

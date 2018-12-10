@@ -88,7 +88,7 @@ public class StatementLayoutService {
         }
 
         if(statementLayoutSet.isPresent()) {
-            statementLayoutSetRepo.add(statementLayoutSet.get());
+            statementLayoutSetRepo.add(statementCode, statementLayoutSet.get());
         } else {
             throw new BusinessException("Some err");
         }

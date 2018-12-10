@@ -21,13 +21,6 @@ public class QpbmtSettingByItem {
     QpbmtSettingByItemPk settingByItemPk;
 
     /**
-     * 会社ID
-     */
-    @Basic(optional = false)
-    @Column(name = "CID")
-    public String cid;
-
-    /**
      * 項目名コード
      */
     @Basic(optional = false)
@@ -67,9 +60,8 @@ public class QpbmtSettingByItem {
                 this.payItemDetailSet == null ? null : this.payItemDetailSet.toDomain());
     }
 
-    public static QpbmtSettingByItem toEntity(String histId, int categoryAtr, int lineNumber, SettingByItem settingByItem) {
-        String cid = AppContexts.user().companyId();
-        QpbmtSettingByItemPk settingByItemPk = new QpbmtSettingByItemPk(histId, categoryAtr, lineNumber, settingByItem.getItemPosition());
+    public static QpbmtSettingByItem toEntity(String cid, String statementCd, String histId, int categoryAtr, int lineNumber, SettingByItem settingByItem) {
+        QpbmtSettingByItemPk settingByItemPk = new QpbmtSettingByItemPk(cid, statementCd, histId, categoryAtr, lineNumber, settingByItem.getItemPosition());
         QpbmtPayItemDetailSet payItemDetailSet = null;
         QpbmtDdtItemDetailSet ddtItemDetailSet = null;
 
@@ -79,6 +71,6 @@ public class QpbmtSettingByItem {
             ddtItemDetailSet = settingByItemCustom.getDeductionItemDetailSet().map(i -> QpbmtDdtItemDetailSet.toEntity(i, categoryAtr, lineNumber, settingByItem.getItemPosition())).orElse(null);
         }
 
-        return new QpbmtSettingByItem(settingByItemPk, cid, settingByItem.getItemId(), null, payItemDetailSet, ddtItemDetailSet);
+        return new QpbmtSettingByItem(settingByItemPk, settingByItem.getItemId(), null, payItemDetailSet, ddtItemDetailSet);
     }
 }
