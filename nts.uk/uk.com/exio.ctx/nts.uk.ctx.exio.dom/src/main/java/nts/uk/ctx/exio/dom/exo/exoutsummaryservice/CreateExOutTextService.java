@@ -1491,7 +1491,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				JapaneseEraName japaneseEraName = japaneseEraNameOptional.get();
 				
 				StringBuilder japaneseDate = new StringBuilder(japaneseEraName.getName()); 
-				japaneseDate.append((date.year() - japaneseEraName.startDate().year()) + SLASH);		
+				japaneseDate.append((date.year() - japaneseEraName.startDate().year() + 1) + SLASH);		
 				japaneseDate.append(date.month() + SLASH);
 				japaneseDate.append(date.day());
 				
