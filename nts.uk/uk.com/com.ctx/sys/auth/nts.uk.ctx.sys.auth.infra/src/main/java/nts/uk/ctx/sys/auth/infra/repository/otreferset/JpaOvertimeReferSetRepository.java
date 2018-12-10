@@ -43,10 +43,10 @@ public class JpaOvertimeReferSetRepository extends JpaRepository implements Over
 	 * @param domain the domain
 	 * @return the sacmt ot refer set
 	 */
-	private SacmtOtReferSet toEntity(OvertimeReferSet domain) {
-		SacmtOtReferSet entity = new SacmtOtReferSet();
-		domain.saveToMemento(new JpaOvertimeReferSetSetMemento(entity));
-		return entity;
-	}
+//	private SacmtOtReferSet toEntity(OvertimeReferSet domain) {
+//		SacmtOtReferSet entity = new SacmtOtReferSet();
+//		domain.saveToMemento(new JpaOvertimeReferSetSetMemento(entity));
+//		return entity;
+//	}
 }
 

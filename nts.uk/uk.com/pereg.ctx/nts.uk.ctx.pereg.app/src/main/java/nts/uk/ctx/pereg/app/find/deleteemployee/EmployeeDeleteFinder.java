@@ -56,7 +56,7 @@ public class EmployeeDeleteFinder {
 
 	public EmployeeToDeleteDetailDto getDetailEmployeeInfoToDelete(String employeeId) {
 
-		EmployeeToDeleteDetailDto result = null;
+//		EmployeeToDeleteDetailDto result = null;
 		List<EmployeeDataMngInfo> listEmpData = empDataMngRepo.findByEmployeeId(employeeId);
 		if (!listEmpData.isEmpty()) {
 			EmployeeDataMngInfo empInfo = listEmpData.get(0);

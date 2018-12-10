@@ -1,10 +1,10 @@
 package nts.uk.ctx.at.function.infra.entity.alarm.extraprocessstatus;
 
 import java.io.Serializable;
-import java.util.Optional;
+//import java.util.Optional;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
+//import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;

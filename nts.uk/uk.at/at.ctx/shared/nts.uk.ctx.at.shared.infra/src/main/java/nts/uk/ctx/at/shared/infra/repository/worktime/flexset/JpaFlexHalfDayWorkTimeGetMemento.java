@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOtTimeSet;
 public class JpaFlexHalfDayWorkTimeGetMemento implements FlexHalfDayWorkTimeGetMemento {
 
 	/** The entity. */
-	private List<KshmtFlexOtTimeSet> entity;
+	/*private*/ List<KshmtFlexOtTimeSet> entity;
 
 	/** The entity group. */
 	// private KshmtFlexHaGroup entityGroup;

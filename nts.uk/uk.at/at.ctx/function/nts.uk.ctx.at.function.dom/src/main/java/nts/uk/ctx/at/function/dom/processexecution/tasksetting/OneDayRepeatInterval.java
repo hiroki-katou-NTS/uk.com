@@ -2,7 +2,7 @@ package nts.uk.ctx.at.function.dom.processexecution.tasksetting;
 
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
+//import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.OneDayRepeatClassification;

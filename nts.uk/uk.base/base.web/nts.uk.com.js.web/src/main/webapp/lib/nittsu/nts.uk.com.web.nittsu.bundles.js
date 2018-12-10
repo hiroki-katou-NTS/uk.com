@@ -24925,7 +24925,7 @@ var nts;
                                     _vessel().zeroHidden = val;
                             }
                         },
-                        updatedCells: function () {
+                        updatedCells: function (all) {
                             var arr = [];
                             var toNumber = false, column = _columnsMap[_pk];
                             if ((column && _.toLower(column[0].dataType) === "number")
@@ -24937,6 +24937,20 @@ var nts;
                                     arr.push({ rowId: (toNumber ? parseFloat(r) : r), columnKey: c, value: _dirties[r][c] });
                                 });
                             });
+                            if (all) {
+                                _.forEach(_.keys(_mafollicle[SheetDef]), function (k) {
+                                    if (k === _currentSheet)
+                                        return;
+                                    var maf = _mafollicle[_currentPage][k];
+                                    if (!maf || !maf.dirties)
+                                        return;
+                                    _.forEach(_.keys(maf.dirties), function (r) {
+                                        _.forEach(_.keys(maf.dirties[r]), function (c) {
+                                            arr.push({ rowId: (toNumber ? parseFloat(r) : r), columnKey: c, value: maf.dirties[r][c] });
+                                        });
+                                    });
+                                });
+                            }
                             return arr;
                         },
                         showColumn: function (col) {
@@ -29914,6 +29928,8 @@ var nts;
                                         dfd.resolve(data);
                                     }
                                 }).fail(function (jqXHR, textStatus, errorThrown) {
+                                    // 413はnginxが返す
+                                    // ただ、Wildflyにも最大値が設定されているので注意（こちらはオーバーすると500が返る）
                                     if (jqXHR.status === 413) {
                                         dfd.reject({ message: "ファイルサイズが大きすぎます。", messageId: "0" });
                                     }

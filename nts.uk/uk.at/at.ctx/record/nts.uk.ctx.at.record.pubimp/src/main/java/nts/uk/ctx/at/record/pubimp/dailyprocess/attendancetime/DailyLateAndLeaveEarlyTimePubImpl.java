@@ -70,6 +70,7 @@ public class DailyLateAndLeaveEarlyTimePubImpl implements DailyLateAndLeaveEarly
 	 * @param returnMap 変換したいmap
 	 * @return 変換後List
 	 */
+	@SuppressWarnings("unused")
 	private DailyLateAndLeaveEarlyTimePubExport plainMap(Map<GeneralDate, List<LateLeaveEarlyAtr>> returnMap) {
 		List<LateLeaveEarlyManage> list = new ArrayList<>();
 		for(Map.Entry<GeneralDate, List<LateLeaveEarlyAtr>> e : returnMap.entrySet()) {
@@ -100,6 +101,7 @@ public class DailyLateAndLeaveEarlyTimePubImpl implements DailyLateAndLeaveEarly
 	 * 早退の埋め込み(遅刻取得時に作成したクラスに対して埋め込む) 
 	 * @return
 	 */
+	@SuppressWarnings("unused")
 	private List<LateLeaveEarlyAtr> getLeaveEarlyList(List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily,
 			List<LateLeaveEarlyAtr> returnList) {
 		
@@ -123,6 +125,7 @@ public class DailyLateAndLeaveEarlyTimePubImpl implements DailyLateAndLeaveEarly
 	/**
 	 * 遅刻の取得
 	 */
+	@SuppressWarnings("unused")
 	private List<LateLeaveEarlyAtr> getLateList(List<LateTimeOfDaily> lateTimeOfDaily) {
 		List<LateLeaveEarlyAtr> returnList = new ArrayList<>();
 		for(LateTimeOfDaily a : lateTimeOfDaily) {

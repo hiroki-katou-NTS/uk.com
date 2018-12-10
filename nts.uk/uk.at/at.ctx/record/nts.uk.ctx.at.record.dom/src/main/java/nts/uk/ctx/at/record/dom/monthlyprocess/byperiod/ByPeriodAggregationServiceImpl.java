@@ -153,6 +153,7 @@ public class ByPeriodAggregationServiceImpl implements ByPeriodAggregationServic
 	}
 	
 	/** 社員の任意期間別実績を集計する */
+	@SuppressWarnings("rawtypes")
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public ProcessState aggregate(

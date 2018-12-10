@@ -11,7 +11,7 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog
 import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskLogRepository;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtExecutionTaskLog;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtExecutionTaskLogPK;
-import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLog;
+//import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLog;
 
 @Stateless
 public class JpaExecutionTaskLogRepository extends JpaRepository

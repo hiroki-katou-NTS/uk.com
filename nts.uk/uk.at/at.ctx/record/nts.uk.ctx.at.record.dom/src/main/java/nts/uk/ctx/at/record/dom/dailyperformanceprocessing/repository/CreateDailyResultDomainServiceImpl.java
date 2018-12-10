@@ -140,6 +140,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 	
 	public static int MAX_DELAY_PARALLEL = 0;
 
+	@SuppressWarnings("rawtypes")
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public ProcessState createDailyResult(AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
@@ -548,6 +549,7 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 	}
 
 	// @Transactional(value = TxType.SUPPORTS)
+	@SuppressWarnings("rawtypes")
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	private ProcessState createData(AsyncCommandHandlerContext asyncContext, DatePeriod periodTime,
 			ExecutionAttr executionAttr, String companyId, String empCalAndSumExecLogID,

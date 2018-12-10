@@ -3,7 +3,9 @@ package nts.uk.ctx.at.record.dom.workinformation;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+//import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.event.DomainEvent;
 import nts.arc.time.GeneralDate;
 
@@ -12,7 +14,8 @@ import nts.arc.time.GeneralDate;
  * @author nampt
  *
  */
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 public class WorkInfoOfDaiPerEvent extends DomainEvent{
 

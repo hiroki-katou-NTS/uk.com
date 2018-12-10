@@ -48,6 +48,7 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 	private CreateDailyApprover createDailyApprover;
 
 	/**
+	 * 02.履歴追加を登録する
 	 * Add history
 	 * @param command
 	 * @param historyId

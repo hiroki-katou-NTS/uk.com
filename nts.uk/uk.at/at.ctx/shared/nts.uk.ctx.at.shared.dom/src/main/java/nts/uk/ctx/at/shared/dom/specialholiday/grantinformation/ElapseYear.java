@@ -1,8 +1,9 @@
 package nts.uk.ctx.at.shared.dom.specialholiday.grantinformation;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationMonths;
 
@@ -14,7 +15,8 @@ import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacation
  */
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class ElapseYear extends DomainObject {
 	/** 会社ID */
 	private String companyId;

@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.ws.workrecord.log;
 
-import java.util.List;
+//import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -19,7 +19,7 @@ import nts.uk.ctx.at.record.app.command.workrecord.log.UpdateDailyLogStateComman
 import nts.uk.ctx.at.record.app.command.workrecord.log.UpdateExecutionTimeCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.log.UpdateExecutionTimeCommandHandler;
 import nts.uk.ctx.at.record.app.find.log.ImplementationResultFinder;
-import nts.uk.ctx.at.record.app.find.log.dto.PersonInfoErrMessageLogDto;
+//import nts.uk.ctx.at.record.app.find.log.dto.PersonInfoErrMessageLogDto;
 import nts.uk.ctx.at.record.app.find.log.dto.PersonInfoErrMessageLogResultDto;
 import nts.uk.ctx.at.record.app.find.log.dto.ScreenImplementationResultDto;
 

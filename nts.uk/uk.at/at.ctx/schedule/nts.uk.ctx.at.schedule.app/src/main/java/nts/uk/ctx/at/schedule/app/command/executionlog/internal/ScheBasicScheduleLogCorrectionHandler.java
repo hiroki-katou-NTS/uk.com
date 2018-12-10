@@ -8,7 +8,7 @@ import java.util.stream.IntStream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.EnumType;
+//import javax.persistence.EnumType;
 
 import org.apache.commons.lang3.StringUtils;
 

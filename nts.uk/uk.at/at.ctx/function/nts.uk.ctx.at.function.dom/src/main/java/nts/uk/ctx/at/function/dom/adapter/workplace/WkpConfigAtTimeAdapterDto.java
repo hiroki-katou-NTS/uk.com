@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.function.dom.adapter.workplace;
 
-import lombok.Data;
+//import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

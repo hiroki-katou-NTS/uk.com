@@ -30,10 +30,10 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
+//import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
 import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
+//import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
@@ -103,8 +103,8 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Inject
 	private TempAbsHistRepository tempAbsHistRepository;
 
-	@Inject
-	private AffJobTitleHistoryRepository affJobRep;
+//	@Inject
+//	private AffJobTitleHistoryRepository affJobRep;
 
 	/*
 	 * (non-Javadoc)
@@ -705,18 +705,12 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Override
 	public List<String> getListEmployee(List<String> jobTitleIds, GeneralDate baseDate) {
 		String cid = AppContexts.user().companyId();
-		List<AffJobTitleHistoryItem> listAffItem = new ArrayList<>();
 		List<AffCompanyHist> listAffComHist = new ArrayList<>();
 		List<String> employee = new ArrayList<>();
-		// Lấy domain [AffJobHistory]
-		Optional<AffJobTitleHistory> affHist = affJobRep.getListEmployee(baseDate, cid);
-		if (affHist.isPresent()) {
-			// (Lấy domain [AffJobHistoryItem])
-			for (String item : affHist.get().getHistoryIds()) {
-				List<AffJobTitleHistoryItem> affItem = jobTitleHistoryItemRepository.findHistJob(item, jobTitleIds);
-				listAffItem.addAll(affItem);
-			}
-		}
+		
+		// (Lấy domain [AffJobHistoryItem])
+		List<AffJobTitleHistoryItem> listAffItem = jobTitleHistoryItemRepository.findHistJob(cid, baseDate, jobTitleIds);
+
 		if (!listAffItem.isEmpty()) {
 			// (Lấy domain [EmployeeDataMngInfo], filter chỉ những employee chưa bị delete)
 			List<EmployeeDataMngInfo> mngInfo = empDataMngRepo

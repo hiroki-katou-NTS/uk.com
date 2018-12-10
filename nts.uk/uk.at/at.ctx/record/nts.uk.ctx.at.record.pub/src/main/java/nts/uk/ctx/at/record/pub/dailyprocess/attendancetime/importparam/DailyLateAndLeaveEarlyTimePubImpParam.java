@@ -1,10 +1,10 @@
 package nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.importparam;
 
-import java.util.List;
+//import java.util.List;
 
 import lombok.Getter;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.exportparam.LateLeaveEarlyAtr;
+//import nts.arc.time.GeneralDate;
+//import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.exportparam.LateLeaveEarlyAtr;
 
 /**
  * RequestList No.197

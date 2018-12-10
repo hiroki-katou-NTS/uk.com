@@ -1,8 +1,6 @@
 package nts.uk.ctx.sys.portal.infra.repository.webmenu.webmenulinking;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
