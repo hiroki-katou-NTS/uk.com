@@ -750,6 +750,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		
 			List<EmployeeDto> lstEmloyeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeWithData);
 			
+			lstEmloyeeDto = lstEmloyeeDto.stream().sorted((a,b)-> (a.getEmployeeCode().compareTo(b.getEmployeeCode()))).collect(Collectors.toList());
 			for (EmployeeDto dto: lstEmloyeeDto) {
 				collectEmployeePerformanceDataByEmployee(reportData, queryData, dto);
 			}
