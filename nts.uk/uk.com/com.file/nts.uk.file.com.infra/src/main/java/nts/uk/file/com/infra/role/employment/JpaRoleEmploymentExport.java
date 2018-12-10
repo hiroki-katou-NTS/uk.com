@@ -66,7 +66,7 @@ public class JpaRoleEmploymentExport extends JpaRepository implements RoleEmpExp
         data.put(CommonRole.CAS005_125, CommonRole.getTextEnumEmplReferRange(Integer.valueOf(objects[3].toString())));
         data.put(CommonRole.CAS005_126, objects[4].toString().equals("1")?I18NText.getText("CAS005_42"):I18NText.getText("CAS005_41"));
         data.put(CommonRole.CAS005_127, objects[5]);
-        data.put(CommonRole.CAS005_128, objects[6]);
+        data.put(CommonRole.CAS005_128, CommonRole.getFutureDateRefPermit(Integer.valueOf(objects[6].toString())));
         for (int i = 0 ; i < listFunctionNo.size() ; i++){
             data.put(CommonRole.FUNCTION_NO_+listFunctionNo.get(i) ,objects[i+7].toString().equals("1")? "○" : "ー");
         }
