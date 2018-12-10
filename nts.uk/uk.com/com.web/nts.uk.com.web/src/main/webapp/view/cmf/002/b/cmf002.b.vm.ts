@@ -100,7 +100,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             let conditionSetCodeParam: string = '';
             self.standType(1);
             //アルゴリズム「外部出力取得設定一覧」を実行する
-            service.getCndSet().done((itemList: Array<IConditionSet>) =>{
+            service.getCndSet(self.roleAuthority).done((itemList: Array<IConditionSet>) =>{
                 self.conditionSettingList.removeAll();
                 if (itemList && itemList.length > 0) {
                     self.conditionSettingList(itemList);
