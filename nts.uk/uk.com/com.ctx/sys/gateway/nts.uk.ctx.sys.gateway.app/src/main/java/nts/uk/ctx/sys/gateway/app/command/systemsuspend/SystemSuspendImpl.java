@@ -46,24 +46,24 @@ public class SystemSuspendImpl implements SystemSuspendService {
 		if(usageStopOutput.getStopMode()==StopModeType.ADMIN_MODE){
 			// システム管理者ロールの設定があるか判別
 			if(Strings.isNotBlank(loginUserRoles.forSystemAdmin())){
-				return new SystemSuspendOutput(true, "Msg_1475", "");
+				return new SystemSuspendOutput(false, "Msg_1475", "");
 			} 
 			// 会社管理者ロールの設定があるか判別
 			if(Strings.isNotBlank(loginUserRoles.forCompanyAdmin())){
-				return new SystemSuspendOutput(true, "Msg_1475", "");
+				return new SystemSuspendOutput(false, "Msg_1475", "");
 			}
 		} else {
 			// システム管理者ロールの設定があるか判別
 			if(Strings.isNotBlank(loginUserRoles.forSystemAdmin())){
-				return new SystemSuspendOutput(true, "Msg_1475", "");
+				return new SystemSuspendOutput(false, "Msg_1475", "");
 			} 
 			// 会社管理者ロールの設定があるか判別
 			if(Strings.isNotBlank(loginUserRoles.forCompanyAdmin())){
-				return new SystemSuspendOutput(true, "Msg_1475", "");
+				return new SystemSuspendOutput(false, "Msg_1475", "");
 			}
 			// リクエストリスト497を呼ぶ。：「ログイン者が担当者か判断する」で担当者ロールが存在するかを判別
 			if(roleAdapter.isEmpWhetherLoginerCharge()){
-				return new SystemSuspendOutput(true, "Msg_1475", "");
+				return new SystemSuspendOutput(false, "Msg_1475", "");
 			}
 		}
 		// エラーメッセージダイアログを表示して、処理をエラー状態とする

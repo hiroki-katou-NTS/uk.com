@@ -10,7 +10,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -145,11 +144,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 				programID,
 				screenID);
 		if(systemSuspendOutput.isError()){
-			if(Strings.isNotBlank(systemSuspendOutput.getMsgID())){
-				throw new BusinessException(systemSuspendOutput.getMsgID());
-			} else {
-				throw new BusinessException(systemSuspendOutput.getMsgContent());
-			}
+			throw new BusinessException(systemSuspendOutput.getMsgContent());
 		}
 		
 		//アルゴリズム「ログイン記録」を実行する
@@ -167,7 +162,9 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		ParamLoginRecord param = new ParamLoginRecord(companyId, loginMethod, LoginStatus.Success.value, null, employeeId);
 		this.service.callLoginRecord(param);
 		
-		return new CheckChangePassDto(false, null,false);
+		CheckChangePassDto checkChangePassDto = new CheckChangePassDto(false, null,false);
+		checkChangePassDto.successMsg = systemSuspendOutput.getMsgID();
+		return checkChangePassDto;
 	}
 
 	/**

@@ -149,11 +149,7 @@ public class SprWebService {
 					"SPR001",
 					"A");
 			if(systemSuspendOutput.isError()){
-				if(!Strings.isNullOrEmpty(systemSuspendOutput.getMsgID())){
-					throw new BusinessException(systemSuspendOutput.getMsgID());
-				} else {
-					throw new BusinessException(systemSuspendOutput.getMsgContent());
-				}
+				throw new BusinessException(systemSuspendOutput.getMsgContent());
 			}
 			
 			// アルゴリズム「ログイン記録」を実行する１
@@ -207,6 +203,7 @@ public class SprWebService {
 			paramsValue.put("loginEmployeeID", loginUserContextSpr.getLoginEmployeeID());
 			paramsValue.put("roleID", "");
 			paramsValue.put("employeeID", loginUserContextSpr.getEmployeeID());
+			paramsValue.put("successMsg", systemSuspendOutput.getMsgID());
 			
 			val html = new StringBuilder()
 					.append("<!DOCTYPE html>")

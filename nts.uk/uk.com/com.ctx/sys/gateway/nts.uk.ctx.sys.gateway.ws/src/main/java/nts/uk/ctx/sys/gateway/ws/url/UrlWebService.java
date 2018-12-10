@@ -122,7 +122,7 @@ public class UrlWebService {
 		Contract contract = this.executionContractSet(contractCD);
 		
 		// アルゴリズム「埋込URL実行ログイン」を実行する
-		this.executionURLLogin(urlExecInfoExport.getScd(), urlExecInfoExport.getLoginId(), urlExecInfoExport.getCid(), contract, urlExecInfoExport);
+		String succesMsg = this.executionURLLogin(urlExecInfoExport.getScd(), urlExecInfoExport.getLoginId(), urlExecInfoExport.getCid(), contract, urlExecInfoExport);
 		
 		// アルゴリズム「ログイン記録」を実行する１ Thực thi thuật toán "Login record"
 		loginRecordRegistService.loginRecord(
@@ -152,7 +152,8 @@ public class UrlWebService {
 			    urlExecInfoExport.getIssueDate(),
 			    urlExecInfoExport.getSid(),
 			    urlExecInfoExport.getScd(),
-				result);
+				result,
+				succesMsg);
 	}
 	
 	private Contract executionContractSet(String contractCD){
@@ -171,7 +172,7 @@ public class UrlWebService {
 		return opContract.get();
 	}
 	
-	private void executionURLLogin(String employeeCD, String loginID, String companyID, Contract contract, UrlExecInfo urlExecInfoExport){
+	private String executionURLLogin(String employeeCD, String loginID, String companyID, Contract contract, UrlExecInfo urlExecInfoExport){
 		// アルゴリズム「埋込URL実行ログインアカウント承認」を実行する
 		URLAccApprovalOutput urlAccApprovalOutput = this.executionURLAccApproval(employeeCD, companyID, loginID, contract, urlExecInfoExport);
 		
@@ -203,12 +204,9 @@ public class UrlWebService {
 				AppContexts.programId(),
 				"A");
 		if(systemSuspendOutput.isError()){
-			if(Strings.isNotBlank(systemSuspendOutput.getMsgID())){
-				throw new BusinessException(systemSuspendOutput.getMsgID());
-			} else {
-				throw new BusinessException(systemSuspendOutput.getMsgContent());
-			}
+			throw new BusinessException(systemSuspendOutput.getMsgContent());
 		}
+		return systemSuspendOutput.getMsgID();
 	}
 	
 	private URLAccApprovalOutput executionURLAccApproval(String employeeCD, String companyID, String loginID, Contract contract, UrlExecInfo urlExecInfoExport){
