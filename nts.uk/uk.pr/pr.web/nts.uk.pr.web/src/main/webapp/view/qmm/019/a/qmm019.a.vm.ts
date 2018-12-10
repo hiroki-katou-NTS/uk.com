@@ -15,6 +15,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import StatementPrintAtr = nts.uk.pr.view.qmm019.share.model.StatementPrintAtr;
     import CategoryAtr = nts.uk.pr.view.qmm019.share.model.CategoryAtr;
+    import IItemRangeSet = nts.uk.pr.view.qmm019.share.model.IItemRangeSet;
 
     export class ScreenModel {
 
@@ -559,6 +560,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         shortName: KnockoutObservable<string>;
         paymentItemDetailSet: IPaymentItemDetail;
         deductionItemDetailSet: IDeductionItemDetail;
+        itemRangeSet: IItemRangeSet;
 
         parent: LineByLineSetting;
         deleted: KnockoutObservable<boolean>;
@@ -575,6 +577,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 self.shortName = ko.observable(data.shortName);
                 self.paymentItemDetailSet = data.paymentItemDetailSet;
                 self.deductionItemDetailSet = data.deductionItemDetailSet;
+                self.itemRangeSet = data.itemRangeSet;
 
                 if((self.paymentItemDetailSet != null) && ((self.paymentItemDetailSet.salaryItemId == "F001") ||
                         (self.paymentItemDetailSet.salaryItemId == "F002") || (self.paymentItemDetailSet.salaryItemId == "F003"))) {
@@ -590,6 +593,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 self.shortName = ko.observable("+");
                 self.paymentItemDetailSet = null;
                 self.deductionItemDetailSet = null;
+                self.itemRangeSet = null;
             }
 
             self.parent = parent;
@@ -677,9 +681,12 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 switch (self.parent.parent.ctgAtr) {
                     case CategoryAtr.PAYMENT_ITEM: {
                         setShared("QMM019_A_TO_D_PARAMS", {
+                            printSet: this.parent.printSet(),
+                            yearMonth: __viewContext['screenModel'].statementLayoutHistData().startMonth(),
+                            itemNameCode: self.itemId(),
                             listItemSetting: listItemSetting,
-                            itemId: self.itemId(),
-                            detail: self.paymentItemDetailSet
+                            detail: self.paymentItemDetailSet,
+                            itemRangeSet: self.itemRangeSet
                         });
 
                         nts.uk.ui.windows.sub.modal('../d/index.xhtml').onClosed(() => {
@@ -689,9 +696,12 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                     }
                     case CategoryAtr.DEDUCTION_ITEM: {
                         setShared("QMM019_A_TO_E_PARAMS", {
+                            printSet: this.parent.printSet(),
+                            yearMonth: __viewContext['screenModel'].statementLayoutHistData().startMonth(),
+                            itemNameCode: self.itemId(),
                             listItemSetting: listItemSetting,
-                            itemId: self.itemId(),
-                            detail: self.deductionItemDetailSet
+                            detail: self.deductionItemDetailSet,
+                            itemRangeSet: self.itemRangeSet
                         });
 
                         nts.uk.ui.windows.sub.modal('../e/index.xhtml').onClosed(() => {
@@ -700,6 +710,14 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                         break;
                     }
                     case CategoryAtr.ATTEND_ITEM: {
+                        setShared("QMM019_A_TO_F_PARAMS", {
+                            printSet: this.parent.printSet(),
+                            yearMonth: __viewContext['screenModel'].statementLayoutHistData().startMonth(),
+                            itemNameCode: self.itemId(),
+                            listItemSetting: listItemSetting,
+                            itemRangeSet: self.itemRangeSet
+                        });
+
                         nts.uk.ui.windows.sub.modal('../f/index.xhtml').onClosed(() => {
 
                         });
@@ -707,8 +725,10 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                     }
                     case CategoryAtr.REPORT_ITEM: {
                         setShared("QMM019_A_TO_G_PARAMS", {
-                            listItemSetting: listItemSetting,
-                            itemId: self.itemId()
+                            printSet: this.parent.printSet(),
+                            yearMonth: __viewContext['screenModel'].statementLayoutHistData().startMonth(),
+                            itemNameCode: self.itemId(),
+                            listItemSetting: listItemSetting
                         });
                         nts.uk.ui.windows.sub.modal('../g/index.xhtml').onClosed(() => {
 

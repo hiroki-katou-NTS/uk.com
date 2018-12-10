@@ -25,6 +25,10 @@ public class JpaStatementLayoutSetRepository extends JpaRepository implements St
             " WHERE f.statementLayoutHistPk.histId = :histId ";
     private static final String DELETE_ALL_LINE_BY_HISTID = "DELETE FROM QpbmtLineByLineSet f " +
             " WHERE f.lineByLineSetPk.histId =:histId";
+    private static final String DELETE_ALL_ITEM_BY_HISTID = "DELETE FROM QpbmtSettingByItem f " +
+            " WHERE f.settingByItemPk.histId =:histId";
+    private static final String DELETE_ALL_RANGE_BY_HISTID = "DELETE FROM QpbmtStateItemRangeSet f " +
+            " WHERE f.stateItemRangeSetPk.histId =:histId";
     private static final String DELETE_ALL_PAYMENT_DETAIL_BY_HISTID = "DELETE FROM QpbmtPayItemDetailSet f " +
             " WHERE f.payItemDetailSetPk.histId =:histId";
     private static final String DELETE_ALL_DEDU_DETAIL_BY_HISTID = "DELETE FROM QpbmtDdtItemDetailSet f " +
@@ -79,9 +83,10 @@ public class JpaStatementLayoutSetRepository extends JpaRepository implements St
     @Override
     public void remove(String histId){
         this.getEntityManager().createQuery(DELETE_ALL_LINE_BY_HISTID).setParameter("histId", histId).executeUpdate();
+        this.getEntityManager().createQuery(DELETE_ALL_ITEM_BY_HISTID).setParameter("histId", histId).executeUpdate();
         this.getEntityManager().createQuery(DELETE_ALL_PAYMENT_DETAIL_BY_HISTID).setParameter("histId", histId).executeUpdate();
         this.getEntityManager().createQuery(DELETE_ALL_DEDU_DETAIL_BY_HISTID).setParameter("histId", histId).executeUpdate();
-        //delete time detail
+        this.getEntityManager().createQuery(DELETE_ALL_RANGE_BY_HISTID).setParameter("histId", histId).executeUpdate();
     }
 
 }

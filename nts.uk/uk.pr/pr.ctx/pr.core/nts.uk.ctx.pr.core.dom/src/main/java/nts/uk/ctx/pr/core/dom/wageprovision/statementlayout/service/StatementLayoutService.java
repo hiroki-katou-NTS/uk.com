@@ -208,7 +208,7 @@ public class StatementLayoutService {
     private LineByLineSetting getNewLineTypePayment(String histId, int lineNumber, String statementCode) {
         PaymentItemDetailSet detail = new PaymentItemDetailSet(histId, statementCode, PaymentTotalObjAtr.OUTSIDE.value, PaymentProportionalAtr.NOT_PROPORTIONAL.value,
                 null, PaymentCaclMethodAtr.MANUAL_INPUT.value, null, null, null, null, null);
-        SettingByItemCustom item = new SettingByItemCustom(LAST_POSITION, statementCode, null, null, detail);
+        SettingByItemCustom item = new SettingByItemCustom(LAST_POSITION, statementCode, null, null, detail, null);
         List<SettingByItem> listSetByItem = new ArrayList<>();
         listSetByItem.add(item);
 
@@ -218,7 +218,7 @@ public class StatementLayoutService {
     private SettingByItem getNewItemTypeDeduction(String histId, int position, String statementCode, int totalObj) {
         DeductionItemDetailSet detail = new DeductionItemDetailSet(histId, statementCode, totalObj, PaymentProportionalAtr.NOT_PROPORTIONAL.value,
                 null, PaymentCaclMethodAtr.MANUAL_INPUT.value, null, null, null, null, null);
-        return new SettingByItemCustom(position, statementCode, null, detail, null);
+        return new SettingByItemCustom(position, statementCode, null, detail, null, null);
     }
 
     //新規作成時チェック処理

@@ -548,34 +548,57 @@ module nts.uk.pr.view.qmm019.share.model {
         shortName: string;
         paymentItemDetailSet: IPaymentItemDetail;
         deductionItemDetailSet: IDeductionItemDetail;
+        itemRangeSet: IItemRangeSet;
     }
 
     export interface IPaymentItemDetail {
         histId: string;
         salaryItemId: string;
-        totalObj: number;
-        proportionalAtr: number;
-        proportionalMethod: number;
-        calcMethod: number;
+        totalObj: string;
+        proportionalAtr: string;
+        proportionalMethod: string;
+        calcMethod: string;
         calcFomulaCd: string;
         personAmountCd: string;
-        commonAmount: number;
+        commonAmount: string;
         wageTblCode: string;
-        workingAtr: number;
+        workingAtr: string;
     }
 
     export interface IDeductionItemDetail {
         histId: string;
         salaryItemId: string;
-        totalObj: number;
-        proportionalAtr: number;
-        proportionalMethod: number;
-        calcMethod: number;
+        totalObj: string;
+        proportionalAtr: string;
+        proportionalMethod: string;
+        calcMethod: string;
         calcFormulaCd: string;
         personAmountCd: string;
-        commonAmount: number;
+        commonAmount: string;
         wageTblCd: string;
         supplyOffset: string;
+    }
+
+    export interface IItemRangeSet {
+        histId: string;
+        salaryItemId: string;
+        rangeValAttribute: string;
+        errorUpperLimitSetAtr: string;
+        errorUpRangeValAmount: string;
+        errorUpRangeValTime: string;
+        errorUpRangeValNum: string;
+        errorLowerLimitSetAtr: string;
+        errorLoRangeValAmount: string;
+        errorLoRangeValTime: string;
+        errorLoRangeValNum: string;
+        alarmUpperLimitSetAtr: string;
+        alarmUpRangeValAmount: string;
+        alarmUpRangeValTime: string;
+        alarmUpRangeValNum: string;
+        alarmLowerLimitSetAtr: string;
+        alarmLoRangeValAmount: string;
+        alarmLoRangeValTime: string;
+        alarmLoRangeValNum: string;
     }
 
     export class LayoutPattern {
