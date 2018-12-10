@@ -1,7 +1,7 @@
 module nts.uk.at.view.kmk006.a {
 
     import Enum = service.model.Enum;
-    
+    import setShared = nts.uk.ui.windows.setShared;
     // Import Dto
     import ComAutoCalSettingDto = a.service.model.ComAutoCalSettingDto;
     import JobAutoCalSettingDto = service.model.JobAutoCalSettingDto;
@@ -34,7 +34,7 @@ module nts.uk.at.view.kmk006.a {
             itemWkpAutoCalModel: WkpAutoCalSettingModel;
             itemJobAutoCalModel: JobAutoCalSettingModel;
             itemWkpJobAutoCalModel: WkpJobAutoCalSettingModel;
-            langId: KnockoutObservable<string> = ko.observable('ja');
+
             // define value Enum
             valueEnumNorEarLi: KnockoutObservable<number>;
             valueEnumNorEarAtr: KnockoutObservable<number>;
@@ -1192,13 +1192,12 @@ module nts.uk.at.view.kmk006.a {
                 });
             }
 
-            private exportExcel(domainId: string, domainType :string){
+            private exportExcel(){
                 var self = this;
-                let baseDate: any = moment.utc(self.baseDateTreeList(), 'YYYY/MM/DD').toISOString();
-                service.exportExcel(self.langId(), domainId, domainType, baseDate)
-                .fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res);
-                })
+                setShared('KMK006',{
+                    baseDate:self.baseDateTreeList()
+                });
+                nts.uk.ui.windows.sub.modal("/view/kmk/006/temp/index.xhtml");
             }
 
             private clearAllError() {
