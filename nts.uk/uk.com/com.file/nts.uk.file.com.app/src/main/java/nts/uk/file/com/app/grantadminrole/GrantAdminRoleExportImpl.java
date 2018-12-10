@@ -33,9 +33,9 @@ public class GrantAdminRoleExportImpl implements MasterListData {
         columns.add(new MasterHeaderColumn(GrantAdminRoleColumn.CAS012_38, TextResource.localize("CAS012_38"),
                 ColumnTextAlign.LEFT, "", true));
         columns.add(new MasterHeaderColumn(GrantAdminRoleColumn.CAS012_39, TextResource.localize("CAS012_39"),
-                ColumnTextAlign.CENTER, "", true));
+                ColumnTextAlign.LEFT, "", true));
         columns.add(new MasterHeaderColumn(GrantAdminRoleColumn.CAS012_40, TextResource.localize("CAS012_40"),
-                ColumnTextAlign.CENTER, "", true));
+                ColumnTextAlign.LEFT, "", true));
 
         return columns;
     }
@@ -55,9 +55,9 @@ public class GrantAdminRoleExportImpl implements MasterListData {
         columns.add(new MasterHeaderColumn(GrantAdminRoleColumn.CAS012_38, TextResource.localize("CAS012_38"),
                 ColumnTextAlign.LEFT, "", true));
         columns.add(new MasterHeaderColumn(GrantAdminRoleColumn.CAS012_39, TextResource.localize("CAS012_39"),
-                ColumnTextAlign.CENTER, "", true));
+                ColumnTextAlign.LEFT, "", true));
         columns.add(new MasterHeaderColumn(GrantAdminRoleColumn.CAS012_40, TextResource.localize("CAS012_40"),
-                ColumnTextAlign.CENTER, "", true));
+                ColumnTextAlign.LEFT, "", true));
 
         return columns;
     }

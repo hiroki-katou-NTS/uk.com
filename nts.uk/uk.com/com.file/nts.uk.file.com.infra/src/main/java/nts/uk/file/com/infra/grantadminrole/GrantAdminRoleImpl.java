@@ -16,9 +16,8 @@ import java.util.*;
 public class GrantAdminRoleImpl extends JpaRepository implements GrantAdminRoleRepository {
 
 
-    private static final String GET_EXPORT_EXCEL = "SELECT u.LOGIN_ID, p.BUSINESS_NAME, g.STR_D, g.END_D FROM SACMT_ROLE_INDIVI_GRANT g " +
-            " INNER JOIN SACMT_USER u ON g.USER_ID = u.USER_ID " +
-            " INNER JOIN BPSMT_PERSON p ON p.PID = u.ASSO_PID WHERE CID = ? AND ROLE_TYPE = ? ORDER BY LOGIN_ID";
+    private static final String GET_EXPORT_EXCEL = "SELECT u.LOGIN_ID, p.BUSINESS_NAME, tb.STR_D, tb.END_D FROM " +
+            " (SELECT g.USER_ID, g.STR_D, g.END_D FROM SACMT_ROLE_INDIVI_GRANT g WHERE g.CID = ? AND ROLE_TYPE = ?) tb INNER JOIN SACMT_USER u ON tb.USER_ID = u.USER_ID INNER JOIN BPSMT_PERSON p ON p.PID = u.ASSO_PID ORDER BY LOGIN_ID";
 
     private static final String GET_EXPORT_EXCEL_COMPANY_MANAGER = " SELECT " +
             " CASE WHEN tb.ROW_NUMBER = 1 THEN tb.CID" +
@@ -33,9 +32,9 @@ public class GrantAdminRoleImpl extends JpaRepository implements GrantAdminRoleR
             " FROM" +
             " (SELECT " +
             " ROW_NUMBER() OVER(PARTITION BY c.CID ORDER BY c.CID, u.LOGIN_ID) AS ROW_NUMBER,c.CID ,c.NAME, u.LOGIN_ID, p.BUSINESS_NAME,g.ROLE_TYPE, g.STR_D, g.END_D " +
-            " FROM BCMMT_COMPANY c LEFT JOIN SACMT_ROLE_INDIVI_GRANT g ON c.CID = g.CID " +
-            " LEFT JOIN SACMT_USER u ON g.USER_ID = u.USER_ID " +
-            " LEFT JOIN BPSMT_PERSON p ON p.PID = u.ASSO_PID WHERE g.ROLE_TYPE = ? AND c.ABOLITION_ATR = 0) tb ORDER BY tb.CID";
+            " FROM BCMMT_COMPANY c INNER JOIN SACMT_ROLE_INDIVI_GRANT g ON c.CID = g.CID " +
+            " INNER JOIN SACMT_USER u ON g.USER_ID = u.USER_ID " +
+            " INNER JOIN BPSMT_PERSON p ON p.PID = u.ASSO_PID WHERE g.ROLE_TYPE = ? AND c.ABOLITION_ATR = 0) tb ORDER BY tb.CID";
 
     @SneakyThrows
     @Override
