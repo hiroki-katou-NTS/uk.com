@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface GrantAdminRoleRepository {
     List<MasterData> getDataExport(String companyId, int roleType);
+    List<MasterData> getDataExportCompanyManagerMode(int roleType);
+
 }

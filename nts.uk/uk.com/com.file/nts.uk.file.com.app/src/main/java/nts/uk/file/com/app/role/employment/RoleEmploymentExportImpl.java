@@ -28,15 +28,8 @@ public class RoleEmploymentExportImpl implements MasterListData {
     private static final String CAS005_126 = "未来日参照権限カラム";
     private static final String CAS005_127 = "メニュー設定カラム";
     private static final String CAS005_128 = "スケジュール画面社員１参照カラム";
-
     private static final String FUNCTION_NO_ = "FUNCTION_NO_";
-
     private static final int ROLE_TYPE_CAS005 = 3;
-
-    public RoleEmploymentExportImpl() {
-        String companyId = AppContexts.user().companyId();
-        masterData = mRoleEmpExportRepository.findAllRoleEmployment(ROLE_TYPE_CAS005,companyId);
-    }
 
     @Override
     public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
@@ -50,21 +43,23 @@ public class RoleEmploymentExportImpl implements MasterListData {
         columns.add(
                 new MasterHeaderColumn(CAS005_125, TextResource.localize("CAS005_125"), ColumnTextAlign.LEFT, "", true));
         columns.add(
-                new MasterHeaderColumn(CAS005_126, TextResource.localize("CAS005_126"), ColumnTextAlign.CENTER, "",true));
+                new MasterHeaderColumn(CAS005_126, TextResource.localize("CAS005_126"), ColumnTextAlign.LEFT, "",true));
         columns.add(
-                new MasterHeaderColumn(CAS005_127, TextResource.localize("CAS005_127"), ColumnTextAlign.CENTER, "",true));
+                new MasterHeaderColumn(CAS005_127, TextResource.localize("CAS005_127"), ColumnTextAlign.LEFT, "",true));
         columns.add(
-                new MasterHeaderColumn(CAS005_128, TextResource.localize("CAS005_128"), ColumnTextAlign.CENTER, "",true));
-        for (int i = masterData.size() -5 ; i < masterData.size() ; i++ ) {
+                new MasterHeaderColumn(CAS005_128, TextResource.localize("CAS005_128"), ColumnTextAlign.LEFT, "",true));
+        Map<Integer,String>  allFunctionNo = mRoleEmpExportRepository.findAllFunctionNo();
+        for(int key : allFunctionNo.keySet()){
             columns.add(
-                    new MasterHeaderColumn(FUNCTION_NO_ +i ,masterData.get(i).getDatas().get(i).toString(),
-                            ColumnTextAlign.CENTER, "", true));
+                    new MasterHeaderColumn(FUNCTION_NO_ +key ,allFunctionNo.get(key),
+                            ColumnTextAlign.LEFT, "", true));
         }
         return columns;
     }
 
     @Override
     public List<MasterData> getMasterDatas(MasterListExportQuery query) {
-        return masterData;
+        String companyId = AppContexts.user().companyId();
+        return mRoleEmpExportRepository.findAllRoleEmployment(ROLE_TYPE_CAS005,companyId);
     }
 }
