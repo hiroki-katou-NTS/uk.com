@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.pub.remainnumber.reserveleave;
 
 import java.util.List;
 
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 /**
@@ -25,5 +27,5 @@ public interface GetRsvLeaNumAfterCurrentMon {
 	 * @param period
 	 * @return
 	 */
-	List<RsvLeaUsedCurrentMonExport> getRemainRsvAnnAfCurMonV2(String employeeId, YearMonthPeriod period);
+	List<RsvLeaUsedCurrentMonExport> getRemainRsvAnnAfCurMonV2(String employeeId, YearMonthPeriod period, MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets);
 }
