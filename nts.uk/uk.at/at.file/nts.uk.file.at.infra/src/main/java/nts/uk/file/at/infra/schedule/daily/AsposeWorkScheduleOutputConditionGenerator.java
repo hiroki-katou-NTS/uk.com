@@ -339,7 +339,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			// Calculate row size and get sheet
 			List<AttendanceItemsDisplay> lstAttendanceItemDisplay = outputItemDailyWork.getLstDisplayedAttendance();
-			int nListOutputCode = lstAttendanceItemDisplay.size();
+			List<Integer> lstAttendanceId = lstAttendanceItemDisplay.stream().sorted((o1, o2) -> (o1.getOrderNo() - o2.getOrderNo()))
+					.map(x -> x.getAttendanceDisplay()).collect(Collectors.toList());
+			String companyID = AppContexts.user().companyId();
+			String roleId = AppContexts.user().roles().forAttendance();
+			List<AttItemName> lstDailyAttendanceItem = companyDailyItemService.getDailyItems(companyID, Optional.of(roleId),
+					lstAttendanceId, Arrays.asList(DailyAttendanceAtr.values()));
+			int nListOutputCode = lstDailyAttendanceItem.size();
 			int nSize;
 			if (nListOutputCode % CHUNK_SIZE == 0) {
 				nSize = nListOutputCode / CHUNK_SIZE;
@@ -1867,8 +1873,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			Cell erAlCell = cells.get(currentRow, 0);
 			erAlCell.setValue(headerData.getFixedHeaderData().get(0));
 			
-			// A2_2
 			Cell dateCell = cells.get(currentRow, 1);
+			// A2_2
 			dateCell.setValue(headerData.getFixedHeaderData().get(1));
 			
 //			// A2_3
