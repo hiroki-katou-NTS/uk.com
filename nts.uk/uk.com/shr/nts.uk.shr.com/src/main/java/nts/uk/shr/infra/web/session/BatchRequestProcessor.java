@@ -27,6 +27,7 @@ public class BatchRequestProcessor implements Filter {
 		String userContextBase64 = httpRequest.getHeader(BatchServer.CUSTOM_HEADER_USER_CONTEXT);
 
 		CDI.current().select(LoginUserContextManager.class).get().restoreBase64(userContextBase64);
+		chain.doFilter(httpRequest, response);
 	}
 
 	@Override
