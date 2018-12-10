@@ -65,6 +65,7 @@ import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataDailyRes;
+import nts.uk.screen.at.app.dailyperformance.correction.checkdata.dto.ErrorAfterCalcDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.dto.ItemFlex;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemCheckBox;
@@ -355,31 +356,36 @@ public class DailyModifyResCommandFacade {
 				resultIU = handleUpdate(querys, dailyOlds, dailyEdits, dailyItems, monthParam, dataParent.getMode(),
 						dataParent.isFlagCalculation(), itemAtr);
 				if (resultIU != null) {
-					val errorDivergence = validatorDataDaily.errorCheckDivergence(resultIU.getLstDailyDomain(),
-							resultIU.getLstMonthDomain());
-					if (!errorDivergence.isEmpty()) {
-						resultError.putAll(errorDivergence);
-						hasError = true;
-					}
-					if (dataParent.getMode() == 0 && monthParam.getHasFlex() != null && monthParam.getHasFlex()) {
-						val flexShortageRCDto = validatorDataDaily.errorCheckFlex(resultIU.getLstMonthDomain(),
-								monthParam);
-						dataResultAfterIU.setFlexShortage(flexShortageRCDto);
-						if (flexShortageRCDto.isError() || !flexShortageRCDto.getMessageError().isEmpty()) {
-							hasError = true;
-							if(!resultIU.getLstMonthDomain().isEmpty()) flexShortageRCDto.createDataCalc(convertMonthToItem(MonthlyRecordWorkDto.fromOnlyAttTime(resultIU.getLstMonthDomain().get(0)), dataParent.getMonthValue()));
-						}
-					}
-					// 残数系のエラーチェック（月次集計なし）
-					val sidChange = itemInGroupChange(resultIU.getLstDailyDomain(), resultOlds);
-					val errorMonth = validatorDataDaily.errorMonthNew(mapDomainMonthChange(sidChange, resultIU.getLstDailyDomain(), resultIU.getLstMonthDomain(),dataParent.getDateRange()));
-					//val errorMonth = validatorDataDaily.errorMonth(resultIU.getLstMonthDomain(), monthParam);
-					
-					if (!errorMonth.isEmpty()) {
-						resultError.putAll(errorMonth);
-						hasError = true;
-					}
+//					val errorDivergence = validatorDataDaily.errorCheckDivergence(resultIU.getLstDailyDomain(),
+//							resultIU.getLstMonthDomain());
+//					if (!errorDivergence.isEmpty()) {
+//						resultError.putAll(errorDivergence);
+//						hasError = true;
+//					}
+//					if (dataParent.getMode() == 0 && monthParam.getHasFlex() != null && monthParam.getHasFlex()) {
+//						val flexShortageRCDto = validatorDataDaily.errorCheckFlex(resultIU.getLstMonthDomain(),
+//								monthParam);
+//						dataResultAfterIU.setFlexShortage(flexShortageRCDto);
+//						if (flexShortageRCDto.isError() || !flexShortageRCDto.getMessageError().isEmpty()) {
+//							hasError = true;
+//							if(!resultIU.getLstMonthDomain().isEmpty()) flexShortageRCDto.createDataCalc(convertMonthToItem(MonthlyRecordWorkDto.fromOnlyAttTime(resultIU.getLstMonthDomain().get(0)), dataParent.getMonthValue()));
+//						}
+//					}
+//					// 残数系のエラーチェック（月次集計なし）
+//					val sidChange = itemInGroupChange(resultIU.getLstDailyDomain(), resultOlds);
+//					val errorMonth = validatorDataDaily.errorMonthNew(mapDomainMonthChange(sidChange, resultIU.getLstDailyDomain(), resultIU.getLstMonthDomain(),dataParent.getDateRange()));
+//					//val errorMonth = validatorDataDaily.errorMonth(resultIU.getLstMonthDomain(), monthParam);
+//					
+//					if (!errorMonth.isEmpty()) {
+//						resultError.putAll(errorMonth);
+//						hasError = true;
+//					}
                     
+					ErrorAfterCalcDaily errorCheck = checkErrorAfterCalc(resultIU, monthParam, resultOlds, dataParent.getMode(), dataParent.getMonthValue(), dataParent.getDateRange());
+					hasError = errorCheck.getHasError();
+					dataResultAfterIU.setFlexShortage(errorCheck.getFlexShortage());
+					resultError = errorCheck.getResultError();
+					
 					val errorSign = validatorDataDaily.releaseDivergence(resultIU.getLstDailyDomain());
 					if(!errorSign.isEmpty()) {
 						//resultError.putAll(errorSign);
@@ -742,4 +748,38 @@ public class DailyModifyResCommandFacade {
 			return false;
 		return settingMaster == null ? false : settingMaster.isShowError();
 	}
+	
+	public ErrorAfterCalcDaily checkErrorAfterCalc(RCDailyCorrectionResult resultIU,   UpdateMonthDailyParam monthlyParam, List<DailyModifyResult> resultOlds, int mode, DPMonthValue monthValue, DateRange range) {
+		Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
+		boolean hasError = false;
+		DataResultAfterIU dataResultAfterIU = new DataResultAfterIU();
+		
+		val errorDivergence = validatorDataDaily.errorCheckDivergence(resultIU.getLstDailyDomain(),
+				resultIU.getLstMonthDomain());
+		if (!errorDivergence.isEmpty()) {
+			resultError.putAll(errorDivergence);
+			hasError = true;
+		}
+		if (mode == 0 && monthlyParam.getHasFlex() != null && monthlyParam.getHasFlex()) {
+			val flexShortageRCDto = validatorDataDaily.errorCheckFlex(resultIU.getLstMonthDomain(),
+					monthlyParam);
+			if (flexShortageRCDto.isError() || !flexShortageRCDto.getMessageError().isEmpty()) {
+				hasError = true;
+				if(!resultIU.getLstMonthDomain().isEmpty()) flexShortageRCDto.createDataCalc(convertMonthToItem(MonthlyRecordWorkDto.fromOnlyAttTime(resultIU.getLstMonthDomain().get(0)), monthValue));
+			}
+			dataResultAfterIU.setFlexShortage(flexShortageRCDto);
+		}
+		// 残数系のエラーチェック（月次集計なし）
+		val sidChange = itemInGroupChange(resultIU.getLstDailyDomain(), resultOlds);
+		val errorMonth = validatorDataDaily.errorMonthNew(mapDomainMonthChange(sidChange, resultIU.getLstDailyDomain(), resultIU.getLstMonthDomain(), range));
+		//val errorMonth = validatorDataDaily.errorMonth(resultIU.getLstMonthDomain(), monthParam);
+		
+		if (!errorMonth.isEmpty()) {
+			resultError.putAll(errorMonth);
+			hasError = true;
+		}
+		
+		return new ErrorAfterCalcDaily(hasError, resultError, dataResultAfterIU.getFlexShortage());
+	}
+	
 }
