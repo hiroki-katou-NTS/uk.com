@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.pubimp.employment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,6 +18,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
+import nts.uk.ctx.bs.employee.dom.employment.EmpmInfo;
+import nts.uk.ctx.bs.employee.dom.employment.history.DateHistItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
@@ -41,11 +44,11 @@ public class EmploymentPubImp implements SyEmploymentPub {
 
 	/** The employment history repository. */
 	@Inject
-	private EmploymentHistoryRepository employmentHistoryRepository;
+	private EmploymentHistoryRepository empHistRepo;
 
 	/** The employment history item repository. */
 	@Inject
-	private EmploymentHistoryItemRepository employmentHistoryItemRepository;
+	private EmploymentHistoryItemRepository empHistItemRepo;
 
 	/** The employment repository. */
 	@Inject
@@ -74,10 +77,10 @@ public class EmploymentPubImp implements SyEmploymentPub {
 	public Optional<SEmpHistExport> findSEmpHistBySid(String companyId, String employeeId, GeneralDate baseDate) {
 
 		// Query
-		Optional<EmploymentInfo> employmentInfo = employmentHistoryItemRepository
+		Optional<EmploymentInfo> employmentInfo = empHistItemRepo
 				.getDetailEmploymentHistoryItem(companyId, employeeId, baseDate);
 
-		Optional<DateHistoryItem> optHistoryItem = employmentHistoryRepository
+		Optional<DateHistoryItem> optHistoryItem = empHistRepo
 				.getByEmployeeIdAndStandardDate(employeeId, baseDate);
 
 		// Check exist
@@ -123,7 +126,7 @@ public class EmploymentPubImp implements SyEmploymentPub {
 		if (sids.isEmpty() || datePeriod.start() == null || datePeriod.end() == null)
 			return new ArrayList<>();
 
-		List<EmploymentHistory> lstEmpHist = employmentHistoryRepository.getByListSid(sids, datePeriod);
+		List<EmploymentHistory> lstEmpHist = empHistRepo.getByListSid(sids, datePeriod);
 
 		if (lstEmpHist.isEmpty())
 			return new ArrayList<>();
@@ -143,7 +146,7 @@ public class EmploymentPubImp implements SyEmploymentPub {
 		if (historyIds.isEmpty())
 			return new ArrayList<>();
 
-		List<EmploymentHistoryItem> empHistItems = employmentHistoryItemRepository.getByListHistoryId(historyIds);
+		List<EmploymentHistoryItem> empHistItems = empHistItemRepo.getByListHistoryId(historyIds);
 		Map<String, String> mapHistIdToEmpCode = empHistItems.stream().collect(Collectors.toMap( x -> x.getHistoryId(), x -> x.getEmploymentCode() == null ? null : x.getEmploymentCode().v()));
 		
 		return lstEmpHist.stream().map(x-> {
@@ -166,14 +169,14 @@ public class EmploymentPubImp implements SyEmploymentPub {
 	public List<AffPeriodEmpCdHistExport> getEmpHistBySidAndPeriod(List<String> sids,
 			DatePeriod datePeriod) {
 
-		List<EmploymentHistory> lstEmpHist = employmentHistoryRepository.getByListSid(sids,
+		List<EmploymentHistory> lstEmpHist = empHistRepo.getByListSid(sids,
 				datePeriod);
 
 		List<String> historyIds = lstEmpHist.stream().map(EmploymentHistory::getHistoryItems)
 				.flatMap(listContainer -> listContainer.stream()).map(DateHistoryItem::identifier)
 				.collect(Collectors.toList());
 
-		List<EmploymentHistoryItem> empHistItems = employmentHistoryItemRepository
+		List<EmploymentHistoryItem> empHistItems = empHistItemRepo
 				.getByListHistoryId(historyIds);
 		
 		Map<String, String> mapHistIdToEmpCode = empHistItems.stream()
@@ -200,6 +203,30 @@ public class EmploymentPubImp implements SyEmploymentPub {
 		List<Employment> empList = this.employmentRepository.findByEmpCodes(companyId, empCodes);
 		return empList.stream().collect(Collectors.toMap(item -> item.getEmploymentCode().v(),
 				item -> item.getEmploymentName().v()));
+	}
+
+	@Override
+	public Map<String, SEmpHistExport> findSEmpHistBySidVer2(String companyId, List<String> lstSID, GeneralDate baseDate) {
+		//get emp hist
+		Map<String, EmpmInfo> mapEmpInfo = empHistItemRepo.getLstDetailEmpHistItem(companyId, lstSID, baseDate);
+
+		Map<String, DateHistItem> mapHistItem = empHistRepo.getBySIdAndate(lstSID, baseDate);
+
+		// Check exist
+		if (mapEmpInfo.isEmpty() || mapHistItem.isEmpty()) {
+			return new HashMap<>();
+		}
+		Map<String, SEmpHistExport> mapResult = new HashMap<>();
+		for(String sid : lstSID){		
+			if(!mapEmpInfo.containsKey(sid) || !mapHistItem.containsKey(sid)){
+				continue;
+			}
+			EmpmInfo emp = mapEmpInfo.get(sid);
+			DateHistItem hist = mapHistItem.get(sid);
+			mapResult.put(sid, SEmpHistExport.builder().employeeId(emp.getSid()).employmentCode(emp.getEmploymentCode())
+						.employmentName(emp.getEmploymentName()).period(hist.getPeriod()).build());
+		}
+		return mapResult;
 	}
 
 }
