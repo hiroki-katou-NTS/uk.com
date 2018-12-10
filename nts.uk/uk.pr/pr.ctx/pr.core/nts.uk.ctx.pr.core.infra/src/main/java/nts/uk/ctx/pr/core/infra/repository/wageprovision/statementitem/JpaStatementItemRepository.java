@@ -72,7 +72,7 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
                     + " AND a.defaultAtr = 0"
                     + " AND a.deprecatedAtr = 0"
                     + " AND b.breakdownItemUseAtr = 1"
-                    + " AND d.breakdownItemUseAtr = 1";
+                    + " OR d.breakdownItemUseAtr = 1";
 
 	@Override
 	public List<StatementItem> getAllStatementItem() {
