@@ -53,6 +53,12 @@ module nts.uk.at.view.ksm003.a {
         export function findByIdWorkType(workTypeCode: string): JQueryPromise<model.WorkTypeDto> {
             return nts.uk.request.ajax("at", paths.findByIdWorkType + '/' + workTypeCode);
         }
+        /**
+         * Export File Excel
+         */
+        export function exportExcel(): JQueryPromise<any> {
+            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "RegisterPattern", domainType: "代行承認", languageId: 'ja', reportType: 0});
+        }
 
         export module model {
 

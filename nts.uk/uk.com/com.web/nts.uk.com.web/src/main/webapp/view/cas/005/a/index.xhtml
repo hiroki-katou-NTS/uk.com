@@ -41,9 +41,7 @@
 					<!-- A1_002 -->
 					<button tabindex="2" class="proceed"
 						data-bind="click : registerButton ,enable : isRegister">#{i18n.getText('CAS005_11')}</button>
-					<!--Export Excel-->
-					<button tabindex="3" class="danger"
-							data-bind="click : exportExcel , enable : isDelete">#{i18n.getText('CAS005_12')}</button>
+
 					<!-- A1_003 -->
 					<button tabindex="3" class="danger"
 						data-bind="click : deleteButton , enable : isDelete">#{i18n.getText('CAS005_12')}</button>
@@ -52,8 +50,9 @@
 					<!-- A1_005 -->
 					<button tabindex="5"
 						data-bind="click : openDialogB , enable : isCopy	 ">#{i18n.getText('CAS005_14')}</button>
-					<!-- A1_006 -->
-					<!-- <span style="float: right; margin-top: 7px;">#{i18n.getText('CAS005_15')}</span> -->
+					<!--Export Excel-->
+					<button tabindex="3" class="danger"
+							data-bind="click : exportExcel , enable : isDelete">#{i18n.getText('CAS005_12')}</button>
 				</div>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
