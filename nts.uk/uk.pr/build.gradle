@@ -202,6 +202,7 @@ project (':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.ac') {
 	dependencies {
 		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
 		compile project(':pr.ctx:pr.core:nts.uk.ctx.pr.core.pub')
+		compile (group: 'com.query', name: 'nts.uk.query.pub', version: version)
 	}
 }
 
