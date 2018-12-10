@@ -1,7 +1,6 @@
 package nts.uk.shr.com.communicate.batch;
 
 import java.net.URI;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -26,17 +25,14 @@ public class DefaultBatchServer implements BatchServer, InitializeWhenDeploy {
 	
 	@Inject
 	private SystemConfiguration system;
-
-	private Optional<String> serverAddress;
 	
 	@Override
 	public void initialize() {
-		this.serverAddress = this.system.getBatchServerAddress();
 	}
 	
 	@Override
 	public boolean exists() {
-		return this.serverAddress.isPresent();
+		return this.system.getBatchServerAddress().isPresent();
 	}
 	
 	@Override
@@ -45,7 +41,7 @@ public class DefaultBatchServer implements BatchServer, InitializeWhenDeploy {
 			RequestDefine<Q> requestDefine,
 			ResponseDefine<S> responseDefine) {
 		
-		String serverAddr = this.serverAddress
+		String serverAddr = this.system.getBatchServerAddress()
 				.orElseThrow(() -> new RuntimeException("バッチサーバのアドレスが設定されていません。"));
 		
 		URI uriToWebApi = URI.create("http://" + serverAddr + "/" + path.createPath());
@@ -64,5 +60,7 @@ public class DefaultBatchServer implements BatchServer, InitializeWhenDeploy {
 		val client = DefaultNtsHttpClient.createDefault();
 		client.request(api, communicationBuilder);
 	}
+
+	
 
 }
