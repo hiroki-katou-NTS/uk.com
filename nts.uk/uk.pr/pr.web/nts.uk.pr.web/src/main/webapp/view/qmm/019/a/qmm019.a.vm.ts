@@ -690,7 +690,13 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                         });
 
                         nts.uk.ui.windows.sub.modal('../d/index.xhtml').onClosed(() => {
+                            let params = getShared("QMM019D_RESULTS");
 
+                            if(params) {
+                                self.shortName(params.name);
+                                self.itemId(params.itemNameCode);
+                                self.paymentItemDetailSet = params.detail;
+                            }
                         });
                         break;
                     }
@@ -705,7 +711,13 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                         });
 
                         nts.uk.ui.windows.sub.modal('../e/index.xhtml').onClosed(() => {
+                            let params = getShared("QMM019E_RESULTS");
 
+                            if(params) {
+                                self.shortName(params.name);
+                                self.itemId(params.itemNameCode);
+                                self.deductionItemDetailSet = params.detail;
+                            }
                         });
                         break;
                     }
@@ -719,7 +731,12 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                         });
 
                         nts.uk.ui.windows.sub.modal('../f/index.xhtml').onClosed(() => {
+                            let params = getShared("QMM019F_RESULTS");
 
+                            if(params) {
+                                self.shortName(params.name);
+                                self.itemId(params.itemNameCode);
+                            }
                         });
                         break;
                     }
@@ -731,7 +748,12 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                             listItemSetting: listItemSetting
                         });
                         nts.uk.ui.windows.sub.modal('../g/index.xhtml').onClosed(() => {
+                            let params = getShared("QMM019G_RESULTS");
 
+                            if(params) {
+                                self.shortName(params.name);
+                                self.itemId(params.itemNameCode);
+                            }
                         });
                         break;
                     }
