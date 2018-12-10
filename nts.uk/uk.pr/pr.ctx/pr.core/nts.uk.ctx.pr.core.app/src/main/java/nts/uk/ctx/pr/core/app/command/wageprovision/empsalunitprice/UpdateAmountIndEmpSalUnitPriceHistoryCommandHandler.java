@@ -19,6 +19,6 @@ public class UpdateAmountIndEmpSalUnitPriceHistoryCommandHandler extends Command
     @Override
     protected void handle(CommandHandlerContext<UpdateAmountIndEmpSalUnitPriceHistoryCommand> commandHandlerContext) {
         UpdateAmountIndEmpSalUnitPriceHistoryCommand command = commandHandlerContext.getCommand();
-        employeeSalaryUnitPriceHistoryRepository.updateUnitPriceAmount(new PayrollInformation(command.getHistoryId(), command.getAmountOfMoney()));
+        employeeSalaryUnitPriceHistoryRepository.updateAmount(new PayrollInformation(command.getHistoryId(), command.getAmountOfMoney()));
     }
 }

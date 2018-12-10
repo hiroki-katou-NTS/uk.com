@@ -8,20 +8,20 @@ import java.util.List;
  */
 public interface SalIndAmountHisRepository {
 
-    List<SalIndAmountHis> getAllSalIndAmountHis();
+    List<SalaryIndividualAmountHistory> getSalIndAmountHis(String perValCode, String empId, int salBonusCate, int cateIndicator);
 
-    Optional<SalIndAmountHis> getSalIndAmountHis(String perValCode, String empId, int salBonusCate, int cateIndicator);
-
-    Optional<SalIndAmountHis> getSalIndAmountHisDisplay(String perValCode, String empId, int salBonusCate, int cateIndicator, int currentProcessYearMonth);
+    List<SalaryIndividualAmountHistory> getSalIndAmountHisDisplay(String perValCode, String empId, int salBonusCate, int cateIndicator, int currentProcessYearMonth);
 
     List<PersonalAmount> getSalIndAmountHisByPerVal(String perValCode, int cateIndicator, int salBonusCate, int standardYearMonth, List<String> empIds);
 
-    void updateOldHistorty(String historyId, int newEndMonthOfOldHistory);
+    void updateOldHistory(String historyId, int newEndMonthOfOldHistory);
 
-    void add(SalIndAmountHis domain);
+    void updateHistory(SalIndAmountHis domain);
 
-    void update(SalIndAmountHis domain);
+    void remove(String historyId);
 
-    void remove(String historyId, String perValCode, String empId);
+    void add(SalIndAmountHis domain1, SalIndAmount domain2);
+
+    void updateAmount(SalIndAmount domain);
 
 }

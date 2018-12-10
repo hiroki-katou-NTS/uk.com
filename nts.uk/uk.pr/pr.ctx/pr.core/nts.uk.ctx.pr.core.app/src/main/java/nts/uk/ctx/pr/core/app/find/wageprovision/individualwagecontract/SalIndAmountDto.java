@@ -9,30 +9,28 @@ import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmount;
 import java.util.Objects;
 
 /**
-* 給与個人別金額: DTO
-*/
+ * 給与個人別金額: DTO
+ */
 @AllArgsConstructor
 @Value
-public class SalIndAmountDto
-{
-    
+public class SalIndAmountDto {
+
     /**
-    * 履歴ID
-    */
+     * 履歴ID
+     */
     private String historyId;
-    
+
     /**
-    * 金額
-    */
+     * 金額
+     */
     private long amountOfMoney;
-    
-    
-    public static SalIndAmountDto fromDomain(SalIndAmount domain)
-    {
-        if(Objects.isNull(domain))
+
+
+    public static SalIndAmountDto fromDomain(SalIndAmount domain) {
+        if (Objects.isNull(domain))
             return null;
         return new SalIndAmountDto(domain.getHistoryId(), domain.getAmountOfMoney().v());
 
     }
-    
+
 }

@@ -47,7 +47,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
             //VM
             self.columns = [
                 {key: 'historyId', length: 0, hidden: true},
-                {key: 'period', length: 8},
+                {key: 'period', length: 8, template: "<div>${period}</div>"},
                 {key: 'amountOfMoney', length: 3, template: "<div style='text-align: right'>${amountOfMoney}</div>"}
             ];
 

@@ -7,7 +7,7 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmount;
-import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmountRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmountHisRepository;
 
 @Stateless
 @Transactional
@@ -15,12 +15,11 @@ public class UpdateSalIndAmountCommandHandler extends CommandHandler<SalIndAmoun
 {
     
     @Inject
-    private SalIndAmountRepository repository;
+    private SalIndAmountHisRepository repository;
     
     @Override
     protected void handle(CommandHandlerContext<SalIndAmountCommand> context) {
         SalIndAmountCommand command = context.getCommand();
-        repository.update(new SalIndAmount(command.getHistoryId(), command.getAmountOfMoney()));
-    
+        repository.updateAmount(new SalIndAmount(command.getHistoryId(), command.getAmountOfMoney()));
     }
 }

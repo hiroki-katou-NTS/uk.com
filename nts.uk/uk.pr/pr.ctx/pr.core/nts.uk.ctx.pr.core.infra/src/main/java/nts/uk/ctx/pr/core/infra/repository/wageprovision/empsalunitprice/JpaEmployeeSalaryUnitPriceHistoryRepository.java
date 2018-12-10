@@ -20,7 +20,7 @@ public class JpaEmployeeSalaryUnitPriceHistoryRepository extends JpaRepository i
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtEmpSalPriHis f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE f.empSalPriHisPk.personalUnitPriceCode = :personalUnitPriceCode AND f.empSalPriHisPk.employeeId IN :employeeId AND f.startYearMonth <= :yearMonthFilter AND f.endYearMonth >= :yearMonthFilter";
     private static final String SELECT_BY_CODE_STRING = SELECT_ALL_QUERY_STRING + " WHERE f.empSalPriHisPk.personalUnitPriceCode = :personalUnitPriceCode AND f.empSalPriHisPk.employeeId = :employeeId ORDER BY f.startYearMonth desc";
-    private static final String SELECT_BY_EMPID_STRING = SELECT_ALL_QUERY_STRING + " WHERE f.empSalPriHisPk.personalUnitPriceCode = :personalUnitPriceCode AND f.empSalPriHisPk.employeeId = :employeeId AND f.startYearMonth <= :baseYearMonth AND f.endYearMonth >= :baseYearMonth ORDER BY f.empSalPriHisPk.personalUnitPriceCode";
+    private static final String SELECT_BY_EMP_ID_STRING = SELECT_ALL_QUERY_STRING + " WHERE f.empSalPriHisPk.personalUnitPriceCode = :personalUnitPriceCode AND f.empSalPriHisPk.employeeId = :employeeId AND f.startYearMonth <= :baseYearMonth AND f.endYearMonth >= :baseYearMonth ORDER BY f.empSalPriHisPk.personalUnitPriceCode";
     private static final String UPDATE_AMOUNT_BY_HISTORY_ID = "UPDATE QpbmtEmpSalPriHis f SET f.indvidualUnitPrice = :indvidualUnitPrice WHERE f.empSalPriHisPk.historyId = :historyId";
     private static final String UPDATE_HISTORY_BY_HISTORY_ID = "UPDATE QpbmtEmpSalPriHis f SET f.startYearMonth = :startYearMonth, f.endYearMonth = :endYearMonth WHERE f.empSalPriHisPk.historyId = :historyId";
     private static final String DELETE_HISTORY_BY_HISTORY_ID = "DELETE FROM QpbmtEmpSalPriHis f WHERE f.empSalPriHisPk.historyId = :historyId";
@@ -79,7 +79,7 @@ public class JpaEmployeeSalaryUnitPriceHistoryRepository extends JpaRepository i
     }
 
     @Override
-    public void updateUnitPriceAmount(PayrollInformation domain) {
+    public void updateAmount(PayrollInformation domain) {
         this.getEntityManager().createQuery(UPDATE_AMOUNT_BY_HISTORY_ID,QpbmtEmpSalPriHis.class)
                 .setParameter("historyId", domain.getHistoryID())
                 .setParameter("indvidualUnitPrice", domain.getIndividualUnitPrice().v())
@@ -117,7 +117,7 @@ public class JpaEmployeeSalaryUnitPriceHistoryRepository extends JpaRepository i
 
     @Override
     public  List<IndEmpSalUnitPriceHistory> getIndividualUnitPriceList(String perUnitPriceCode, String employeeId, int baseYearMonth) {
-        return queryProxy().query(SELECT_BY_EMPID_STRING, QpbmtEmpSalPriHis.class)
+        return queryProxy().query(SELECT_BY_EMP_ID_STRING, QpbmtEmpSalPriHis.class)
                 .setParameter("personalUnitPriceCode", perUnitPriceCode)
                 .setParameter("baseYearMonth", baseYearMonth)
                 .setParameter("employeeId", employeeId)

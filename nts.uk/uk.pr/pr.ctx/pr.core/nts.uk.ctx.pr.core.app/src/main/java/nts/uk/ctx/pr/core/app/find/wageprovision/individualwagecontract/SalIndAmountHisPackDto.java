@@ -7,6 +7,7 @@ import lombok.Value;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.GenericHistYMPeriod;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmount;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmountHis;
+import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalaryIndividualAmountHistory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,9 @@ public class SalIndAmountHisPackDto {
     private List<SalIndAmountDto> salIndAmountList;
 
 
-    public static SalIndAmountHisPackDto fromSalIndAmountHisDomain(SalIndAmountHis domain) {
-        return new SalIndAmountHisPackDto(domain.getPerValCode(), null, domain.getEmpId(), domain.getCateIndicator().value, domain.getPeriod().stream().map(item -> GenericHistYMPeriodDto.fromDomain(item)).collect(Collectors.toList()), domain.getSalBonusCate().value, new ArrayList<SalIndAmountDto>());
+    public static SalIndAmountHisPackDto fromSalIndAmountHisDomain(List<SalaryIndividualAmountHistory> domains) {
+        List<GenericHistYMPeriodDto> period = domains.stream().map(e -> new GenericHistYMPeriodDto(e.getHistoryId(), e.getPeriodStartYm(), e.getPeriodEndYm())).collect(Collectors.toList());
+        List<SalIndAmountDto> amounts = domains.stream().map(e -> new SalIndAmountDto(e.getHistoryId(), e.getAmountOfMoney())).collect(Collectors.toList());
+        return new SalIndAmountHisPackDto(domains.get(0).getPerValCode(), null, domains.get(0).getEmpId(), domains.get(0).getCateIndicator(), period, domains.get(0).getSalBonusCate(), amounts);
     }
 }
