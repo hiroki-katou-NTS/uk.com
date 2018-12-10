@@ -141,7 +141,7 @@ module cas009.a.viewmodel {
          * export excel
          */
         exportExcel(){
-            service.exportExcel().done(function(data) {
+            cas009.a.exportExcel().done(function(data) {
 
             }).fail(function(res: any) {
                 nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
@@ -283,6 +283,7 @@ module cas009.a.viewmodel {
                 });
             }
         }
+
     }
 
     export interface EnumConstantDto {
