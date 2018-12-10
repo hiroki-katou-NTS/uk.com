@@ -136,7 +136,7 @@ public class DailyModifyResCommandFacade {
 
 	public RCDailyCorrectionResult handleUpdate(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoOlds,
 			List<DailyRecordDto> dtoNews, List<DailyItemValue> dailyItems, UpdateMonthDailyParam month, int mode,
-			boolean flagCalculation, Map<Integer, DPAttendanceItemRC> lstAttendanceItem) {
+			boolean flagCalculation, Map<Integer, DPAttendanceItemRC> lstAttendanceItem, DPItemParent dataParent) {
 		String sid = AppContexts.user().employeeId();
 
 		List<DailyRecordWorkCommand> commandNew = createCommands(sid, dtoNews, querys);
@@ -154,6 +154,10 @@ public class DailyModifyResCommandFacade {
 			lstError = validatorDataDaily.removeErrorRemark(AppContexts.user().companyId(), lstError, dtoNews);
 			this.handler.handlerNoCalc(commandNew, commandOld, lstError, dailyItems, true, month, mode,
 					lstAttendanceItem);
+			if (dataParent.getSpr() != null) {
+				processor.insertStampSourceInfo(dataParent.getSpr().getEmployeeId(), dataParent.getSpr().getDate(),
+						dataParent.getSpr().isChange31(), dataParent.getSpr().isChange34());
+			}
 			return null;
 		}
 	}
@@ -278,11 +282,6 @@ public class DailyModifyResCommandFacade {
 			}
 		}
 
-		if (dataParent.getSpr() != null) {
-			processor.insertStampSourceInfo(dataParent.getSpr().getEmployeeId(), dataParent.getSpr().getDate(),
-					dataParent.getSpr().isChange31(), dataParent.getSpr().isChange34());
-		}
-
 		Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate = dataParent.getItemValues().stream()
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 
@@ -354,7 +353,7 @@ public class DailyModifyResCommandFacade {
 				Map<Integer, DPAttendanceItemRC> itemAtr = dataParent.getLstAttendanceItem().entrySet().stream()
 						.collect(Collectors.toMap(x -> x.getKey(), x -> convertItemAtr(x.getValue())));
 				resultIU = handleUpdate(querys, dailyOlds, dailyEdits, dailyItems, monthParam, dataParent.getMode(),
-						dataParent.isFlagCalculation(), itemAtr);
+						dataParent.isFlagCalculation(), itemAtr, dataParent);
 				if (resultIU != null) {
 //					val errorDivergence = validatorDataDaily.errorCheckDivergence(resultIU.getLstDailyDomain(),
 //							resultIU.getLstMonthDomain());
@@ -400,6 +399,11 @@ public class DailyModifyResCommandFacade {
 						insertSign(dataParent.getDataCheckSign());
 						// insert approval
 						insertApproval(dataParent.getDataCheckApproval());
+						
+						if (dataParent.getSpr() != null) {
+							processor.insertStampSourceInfo(dataParent.getSpr().getEmployeeId(), dataParent.getSpr().getDate(),
+									dataParent.getSpr().isChange31(), dataParent.getSpr().isChange34());
+						}
 						
 						// 暫定データを登録する - Register provisional data
 						List<DailyModifyResult> resultNews = AttendanceItemUtil.toItemValues(dailyEdits).entrySet()
