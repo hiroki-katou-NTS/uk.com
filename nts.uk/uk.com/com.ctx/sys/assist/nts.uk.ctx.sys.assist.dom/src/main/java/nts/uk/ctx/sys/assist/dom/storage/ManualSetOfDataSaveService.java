@@ -91,7 +91,10 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	private TableListRepository repoTableList;
 	@Inject
 	private ApplicationTemporaryFileFactory applicationTemporaryFileFactory;
-
+	
+	@Inject
+	private TargetEmployeesRepository targetEmployeesRepo;
+	
 	@Override
 	protected void handle(ExportServiceContext<Object> context) {
 		ManualSetOfDataSave domain = (ManualSetOfDataSave) context.getQuery();
@@ -343,16 +346,17 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			List<Map<String, Object>> dataSourceCsv = new ArrayList<>();
 			int offset = 0;
 			List<String> categoryIds = new ArrayList<>();
+			List<String> targetEmployeesSid = targetEmployeesRepo.getTargetEmployeesListById(storeProcessingId).stream().map(c -> c.getSid()).collect(Collectors.toList());
 			while (true) {
 				// テーブル一覧の１行分を処理する
 				List<TableList> tableLists = repoTableList.getByOffsetAndNumber(storeProcessingId, offset,
 						NUM_OF_TABLE_EACH_PROCESS);
 
 				for (TableList tableList : tableLists) {
-					dataSourceCsv = getDataSourceCsv1(dataSourceCsv, headerCsv, tableList);
+					dataSourceCsv = getDataSourceCsv1(dataSourceCsv, headerCsv, tableList, targetEmployeesSid);
 
 					// Add Table to CSV Auto
-					resultState = generalCsvAuto(generatorContext, storeProcessingId, tableList);
+					resultState = generalCsvAuto(generatorContext, storeProcessingId, tableList, targetEmployeesSid);
 					if (resultState != ResultState.NORMAL_END) {
 						return resultState;
 					}
@@ -384,7 +388,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	}
 
 	private List<Map<String, Object>> getDataSourceCsv1(List<Map<String, Object>> dataSourceCsv, List<String> headerCsv,
-			TableList tableList) {
+			TableList tableList,  List<String> targetEmployeesSid) {
 		Map<String, Object> rowCsv = new HashMap<>();
 		rowCsv.put(headerCsv.get(0), tableList.getDataStorageProcessingId());
 		rowCsv.put(headerCsv.get(1), tableList.getSaveForm());
@@ -531,7 +535,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	}
 
 	private ResultState generalCsvAuto(FileGeneratorContext generatorContext, String storeProcessingId,
-			TableList tableList) {
+			TableList tableList, List<String> targetEmployeesSid) {
 		try {
 			// ドメインモデル「データ保存動作管理」を取得し「中断終了」を判別
 			Optional<DataStorageMng> dataStorageMng = repoDataSto.getDataStorageMngById(storeProcessingId);
@@ -541,7 +545,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				return ResultState.INTERRUPTION;
 			}
 
-			List<List<String>> listObject = repoTableList.getDataDynamic(tableList);
+			List<List<String>> listObject = repoTableList.getDataDynamic(tableList, targetEmployeesSid);
 
 			// Add Table to CSV Auto
 			List<String> headerCsv3 = this.getTextHeaderCsv3(tableList.getTableEnglishName());
