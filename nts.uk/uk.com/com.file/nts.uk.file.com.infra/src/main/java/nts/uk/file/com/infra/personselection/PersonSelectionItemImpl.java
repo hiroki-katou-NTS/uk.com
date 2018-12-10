@@ -49,7 +49,7 @@ public class PersonSelectionItemImpl implements PersonSelectionItemRepository {
 		@SuppressWarnings("unchecked")
 		List<Object[]> data = query.getResultList();
 		if (data.isEmpty()) {
-			throw new BusinessException("Msg_1480");
+			return datas;
 		} else {
 			for (Object[] objects : data) {
 				datas.add(new MasterData(dataContent(objects), null, ""));
