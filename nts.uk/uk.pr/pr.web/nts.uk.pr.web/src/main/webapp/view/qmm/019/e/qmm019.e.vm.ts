@@ -531,7 +531,23 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            windows.setShared("QMM019E_RESULTS", ko.toJS(self.dataScreen()));
+            let detail: shareModel.IDeductionItemDetail = <shareModel.IDeductionItemDetail>{};
+            detail.salaryItemId = self.dataScreen().itemNameCode();
+            detail.totalObj = self.dataScreen().totalObject();
+            detail.proportionalAtr = self.dataScreen().proportionalAtr();
+            detail.proportionalMethod = self.dataScreen().proportionalMethod();
+            detail.calcMethod = self.dataScreen().calcMethod();
+            detail.calcFormulaCd = self.dataScreen().formulaCode();
+            detail.personAmountCd = self.dataScreen().perValCode();
+            detail.commonAmount = self.dataScreen().commonAmount();
+            detail.wageTblCd = self.dataScreen().wageTableCode();
+            detail.supplyOffset = self.dataScreen().statementItemCode();
+            let result = {
+                itemNameCode: self.dataScreen().itemNameCode(),
+                name: self.dataScreen().name(),
+                detail: detail
+            };
+            windows.setShared("QMM019E_RESULTS", result);
             windows.close();
         }
 

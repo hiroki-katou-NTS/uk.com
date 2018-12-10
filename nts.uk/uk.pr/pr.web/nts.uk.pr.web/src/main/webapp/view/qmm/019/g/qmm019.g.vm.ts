@@ -165,7 +165,11 @@ module nts.uk.pr.view.qmm019.g.viewmodel {
 
         decide() {
             let self = this;
-            windows.setShared("QMM019G_RESULTS", ko.toJS(self.dataScreen()));
+            let result = {
+                itemNameCode: self.dataScreen().itemNameCode(),
+                name: self.dataScreen().name()
+            };
+            windows.setShared("QMM019G_RESULTS", result);
             windows.close();
         }
 

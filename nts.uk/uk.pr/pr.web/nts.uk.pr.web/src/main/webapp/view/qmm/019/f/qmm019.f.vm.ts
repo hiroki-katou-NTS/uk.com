@@ -379,7 +379,11 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            windows.setShared("QMM019F_RESULTS", ko.toJS(self.dataScreen()));
+            let result = {
+                itemNameCode: self.dataScreen().itemNameCode(),
+                name: self.dataScreen().name()
+            };
+            windows.setShared("QMM019F_RESULTS", result);
             windows.close();
         }
 
