@@ -1071,8 +1071,8 @@ public class AppOvertimeFinder {
 					result.getWorkType().getWorkTypeCode(),
 					result.getWorkClockFrom1(),
 					result.getWorkClockTo1(),
-					null,
-					null));
+					result.getTimezones().stream().map(x -> x.getStart()).collect(Collectors.toList()),
+					result.getTimezones().stream().map(x -> x.getEnd()).collect(Collectors.toList())));
 			result.setResultCaculationTimeFlg(true);
 			
 		}

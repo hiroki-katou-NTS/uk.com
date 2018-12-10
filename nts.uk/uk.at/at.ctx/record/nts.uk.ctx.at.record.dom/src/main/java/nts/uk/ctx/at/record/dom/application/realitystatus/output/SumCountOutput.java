@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.record.dom.application.realitystatus.output;
 
+import lombok.NoArgsConstructor;
+
 /**
  * @author dat.lh
  */
+@NoArgsConstructor
 public class SumCountOutput {
 	/**
 	 * 月別確認件数
