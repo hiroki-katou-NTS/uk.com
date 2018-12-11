@@ -151,10 +151,10 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                 self.unselectedMode();
                 return;
             }
-            self.codeSelected(item.itemNameCd);
             // TODO #125441
             // パラメータを受け取り取得した情報と合わせて画面上に表示する
             self.dataScreen().setData(self.params);
+            self.codeSelected(item.itemNameCd);
         }
 
         getDataAccordion(): JQueryPromise<any> {
@@ -178,7 +178,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                 self.categoryAtrText(shareModel.getCategoryAtrText(self.categoryAtr));
                 if (!isNullOrUndefined(dedu)) {
                     self.deductionItemSet().setData(dedu);
-                    self.loadControlE2_9();
+                    self.loadControlE2_9(self.params.detail.calcMethod);
                 }
                 self.breakdownItemSets(_.isEmpty(breakItems) ? [] : BreakdownItemSet.fromApp(breakItems));
                 self.dataScreen().perValName(isNullOrUndefined(perVal) ? null : perVal.individualPriceName);
@@ -190,14 +190,14 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             return dfd.promise();
         }
 
-        loadControlE2_9() {
+        loadControlE2_9(calcMethod) {
             let self = this;
             // ※補足資料8参照
             self.calcMethods(shareModel.getDeductionCaclMethodAtr(self.deductionItemSet().breakdownItemUseAtr()));
             if (self.deductionItemSet().breakdownItemUseAtr() == shareModel.BreakdownItemUseAtr.USE) {
                 self.dataScreen().calcMethod(shareModel.DeductionCaclMethodAtr.BREAKDOWN_ITEM.toString());
             } else {
-                self.dataScreen().calcMethod(shareModel.DeductionCaclMethodAtr.MANUAL_INPUT.toString());
+                self.dataScreen().calcMethod(calcMethod);
             }
         }
 
@@ -730,21 +730,32 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
 
         initSubscribe() {
             let self = this;
-            self.calcMethod.subscribe(() => {
-                self.perValCode(null);
-                self.perValName(null);
-                self.clearError("#E5_2");
-                self.formulaCode(null);
-                self.formulaName(null);
-                self.clearError("#E6_2");
-                self.wageTableCode(null);
-                self.wageTableName(null);
-                self.clearError("#E7_2");
-                self.commonAmount(null);
-                self.clearError("#E8_2");
-                self.statementItemCode(null);
-                self.statementItemName(null);
-                self.clearError("#E9_2");
+            self.calcMethod.subscribe((value) => {
+                if(isNullOrUndefined(value)) return;
+                if(value != shareModel.DeductionCaclMethodAtr.PERSON_INFO_REF){
+                    self.perValCode(null);
+                    self.perValName(null);
+                    self.clearError("#E5_2");
+                }
+                if(value != shareModel.DeductionCaclMethodAtr.CACL_FOMULA){
+                    self.formulaCode(null);
+                    self.formulaName(null);
+                    self.clearError("#E6_2");
+                }
+                if(value != shareModel.DeductionCaclMethodAtr.WAGE_TABLE){
+                    self.wageTableCode(null);
+                    self.wageTableName(null);
+                    self.clearError("#E7_2");
+                }
+                if(value != shareModel.DeductionCaclMethodAtr.COMMON_AMOUNT){
+                    self.commonAmount(null);
+                    self.clearError("#E8_2");
+                }
+                if(value != shareModel.DeductionCaclMethodAtr.SUPPLY_OFFSET){
+                    self.statementItemCode(null);
+                    self.statementItemName(null);
+                    self.clearError("#E9_2");
+                }
             });
             self.perValCode.subscribe(() => {
                 self.clearError("#E5_2");

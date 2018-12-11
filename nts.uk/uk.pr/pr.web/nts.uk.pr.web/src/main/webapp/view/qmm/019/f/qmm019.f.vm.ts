@@ -142,10 +142,10 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
                 self.unselectedMode();
                 return;
             }
-            self.codeSelected(item.itemNameCd);
             // TODO #125441
             // パラメータを受け取り取得した情報と合わせて画面上に表示する
             self.dataScreen().setData(self.params);
+            self.codeSelected(item.itemNameCd);
         }
 
         getDataAccordion(): JQueryPromise<any> {
