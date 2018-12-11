@@ -672,7 +672,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
             let listLineInCtg = self.parent.parent.listLineByLineSet();
 
             for (let lineByLine: LineByLineSetting of listLineInCtg) {
-                for(let item: SettingByItem of lineByLine.listSetByItem) {
+                for(let item: SettingByItem of lineByLine.listSetByItem()) {
                     if (item.itemId() != null) listItemSetting.push(item.itemId());
                 }
             }
@@ -693,6 +693,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                             let params = getShared("QMM019D_RESULTS");
 
                             if(params) {
+                                params.detail.histId = __viewContext['screenModel'].statementLayoutHistData().historyId;
                                 self.shortName(params.shortName);
                                 self.itemId(params.itemNameCode);
                                 self.paymentItemDetailSet = params.detail;
@@ -714,6 +715,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                             let params = getShared("QMM019E_RESULTS");
 
                             if(params) {
+                                params.detail.histId = __viewContext['screenModel'].statementLayoutHistData().historyId;
                                 self.shortName(params.shortName);
                                 self.itemId(params.itemNameCode);
                                 self.deductionItemDetailSet = params.detail;
