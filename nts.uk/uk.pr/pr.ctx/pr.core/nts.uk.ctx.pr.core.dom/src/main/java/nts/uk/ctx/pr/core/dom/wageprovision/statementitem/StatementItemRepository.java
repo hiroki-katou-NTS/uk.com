@@ -30,6 +30,8 @@ public interface StatementItemRepository {
 
 	List<StatementCustom> getItemCustomByDeprecated(String cid);
 
+    List<StatementCustom> getItemCustomByDeprecated2(String cid);
+
 	void add(StatementItem domain);
 
 	void update(StatementItem domain);
