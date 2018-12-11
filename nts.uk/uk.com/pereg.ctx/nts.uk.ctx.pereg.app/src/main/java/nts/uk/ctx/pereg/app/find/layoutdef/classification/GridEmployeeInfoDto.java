@@ -12,5 +12,5 @@ public class GridEmployeeInfoDto {
 	private String employeeId;
 		
 	/** Contains all columns (fixed and selected category) */
-	private List<LayoutPersonInfoValueDto> items;
+	private List<GridEmpBody> items;
 }

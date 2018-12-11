@@ -1232,5 +1232,11 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		}
 		return new ArrayList<>();
 	}
+
+	@Override
+	public List<PersonInfoItemDefinition> findByIDandIsAbolition(String perInfoCtgId, int abolitionAtr) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
 

@@ -19,5 +19,5 @@ public class PeregGridQuery {
 	
 	private GeneralDate standardDate;
 	
-	private List<EmployeeQuery> lstEmployee;
+	private List<String> lstEmployee;
 }

@@ -11,20 +11,22 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.task.parallel.ManagedParallelWithContext;
-import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.PerEmpData;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpBody;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpHead;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmployeeDto;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmployeeInfoDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
-import nts.uk.ctx.pereg.app.find.person.category.PerInfoCategoryFinder;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutFinder;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
-import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoAuthType;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -47,53 +49,73 @@ public class GridPeregProcessor {
 	private PersonInfoItemAuthRepository itemAuthRepo;
 
 	@Inject
-	private PerInfoCategoryFinder perInfoCategoryFinder;
-
-	@Inject
 	private PerInfoCategoryRepositoty perInfoCtgRepositoty;
 
 	@Inject
 	private PerInfoItemDefForLayoutFinder itemForLayoutFinder;
 
+	@Inject
+	private EmployeeDataMngInfoRepository employeeMngRepo;
+
 	public GridEmployeeDto getGridLaoyout(PeregGridQuery query) {
 		// app context
 		LoginUserContext loginUser = AppContexts.user();
 		String contractCode = loginUser.contractCode();
-		String loginEmpId = loginUser.employeeId();
 		String roleId = loginUser.roles().forPersonalInfo();
 
 		GridEmployeeDto geDto = new GridEmployeeDto(query.getCategoryId(), query.getStandardDate(), Arrays.asList(),
 				Arrays.asList());
-		
+		// get category
+		PersonInfoCategory perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(query.getCategoryId(), contractCode)
+				.get();
+
 		// get header
 		{
-			// get category
-			PersonInfoCategory perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(query.getCategoryId(), contractCode).get();
-	
-			// map PersonInfoItemDefinition →→ PerInfoItemDefForLayoutDto
-			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDefForLayout = getPerItemDefForLayout(perInfoCtg, contractCode, roleId);
-			
-			
-			geDto.setHeadDatas(lstPerInfoItemDefForLayout);
-			
+			// map PersonInfoItemDefinition → GridEmpHead
+			List<GridEmpHead> headers = getPerItemDefForLayout(perInfoCtg, contractCode, roleId).stream()
+					.map(m -> new GridEmpHead(m.getId(), m.getDispOrder(), m.getItemCode(), m.getItemParentCode(),
+							m.getItemName(), m.getItemTypeState(), m.getIsRequired() == 1, m.getResourceId(),
+							m.getLstChildItemDef().stream()
+									.map(c -> new GridEmpHead(c.getId(), c.getDispOrder(), c.getItemCode(),
+											c.getItemParentCode(), c.getItemName(), c.getItemTypeState(),
+											c.getIsRequired() == 1, c.getResourceId(), null))
+									.collect(Collectors.toList())))
+					.collect(Collectors.toList());
+
+			headers.addAll(headers.stream().flatMap(m -> m.getChilds().stream()).collect(Collectors.toList()));
+			geDto.setHeadDatas(headers.stream()
+					.map(m -> new GridEmpHead(m.getItemId(), m.getItemOrder(), m.getItemCode(), m.getItemParentCode(),
+							m.getItemName(), m.getItemTypeState(), m.isRequired(), m.getResourceId(), null))
+					.collect(Collectors.toList()));
 		}
 
 		// get body
 		if (!CollectionUtil.isEmpty(query.getLstEmployee())) {
-			List<EmpMaintLayoutDto> resultsSync = Collections.synchronizedList(new ArrayList<>());
+			List<PerEmpData> personDatas = employeeMngRepo.getPersonIds(query.getLstEmployee());
+			List<GridEmployeeInfoDto> resultsSync = Collections.synchronizedList(new ArrayList<>());
 
-			this.parallel.forEach(query.getLstEmployee(), empl -> {
+			this.parallel.forEach(personDatas, pdt -> {
+
 				// Miss infoId (get infoId by baseDate)
-				EmpMaintLayoutDto dto = layoutProcessor.getCategoryDetail(PeregQuery.createQueryCategory("",
-						query.getCategoryCode(), empl.getEmployeeId(), empl.getPersonId()));
+				PeregQuery subq = PeregQuery.createQueryCategory(null, perInfoCtg.getCategoryCode().v(),
+						pdt.getEmployeeId(), pdt.getPersonId());
 
-				resultsSync.add(dto);
+				subq.setCategoryId(query.getCategoryId());
+				subq.setStandardDate(query.getStandardDate());
+
+				EmpMaintLayoutDto dto = layoutProcessor.getCategoryDetail(subq);
 
 				List<LayoutPersonInfoValueDto> items = dto.getClassificationItems().stream()
 						.flatMap(f -> f.getItems().stream()).collect(Collectors.toList());
 
-				// geDto.setHeadDatas(headDatas);
+				resultsSync.add(new GridEmployeeInfoDto(pdt.getPersonId(), pdt.getEmployeeId(),
+						items.stream()
+								.map(m -> new GridEmpBody(m.getItemCode(), m.getItemParentCode(), m.getActionRole(),
+										m.getValue(), m.getTextValue(), m.getRecordId(), m.getLstComboBoxValue()))
+								.collect(Collectors.toList())));
 			});
+
+			geDto.setBodyDatas(new ArrayList<>(resultsSync));
 		}
 
 		return geDto;
@@ -126,10 +148,12 @@ public class GridPeregProcessor {
 			}
 
 			// convert item-definition to layoutDto
-			PerInfoItemDefForLayoutDto itemDto = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition, i, ActionRole.EDIT);
+			PerInfoItemDefForLayoutDto itemDto = itemForLayoutFinder.createItemLayoutDto(category, itemDefinition, i,
+					ActionRole.EDIT);
 
 			// get and convert childrenItems
-			List<PerInfoItemDefForLayoutDto> childrenItems = itemForLayoutFinder.getChildrenItems(fullItemDefinitionList, category, itemDefinition, i, ActionRole.EDIT);
+			List<PerInfoItemDefForLayoutDto> childrenItems = itemForLayoutFinder
+					.getChildrenItems(fullItemDefinitionList, category, itemDefinition, i, ActionRole.EDIT);
 
 			itemDto.setLstChildItemDef(childrenItems);
 

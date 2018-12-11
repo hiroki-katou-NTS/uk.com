@@ -24,8 +24,10 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDeletionAttr;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeSimpleInfo;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.PerEmpData;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfoPk;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements EmployeeDataMngInfoRepository {
@@ -126,6 +128,12 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	
 	
 	private static final String SELECT_EMPL_NOT_DELETE_BY_CID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId AND e.delStatus = 0");
+	
+	private static final String SELECT_PID_BY_SID = String.join(" ", "SELECT p.bpsmtPersonPk.pId, e.bsymtEmployeeDataMngInfoPk.sId",
+			"FROM BsymtEmployeeDataMngInfo e INNER JOIN BpsmtPerson p",
+			"ON e.bsymtEmployeeDataMngInfoPk.pId = p.bpsmtPersonPk.pId",
+			"AND e.companyId = :cid",
+			"WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :sids");
 	
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
@@ -548,4 +556,22 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				.getList().stream().map(m -> toDomain(m)).collect(Collectors.toList());
 	}
 	// laitv code end
+
+	@Override
+	public List<PerEmpData> getPersonIds(List<String> sids) {
+		List<PerEmpData> data = new ArrayList<>();
+		
+		if(CollectionUtil.isEmpty(sids)) {
+			return null;
+		}
+		
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, sl -> {
+			data.addAll(queryProxy().query(SELECT_PID_BY_SID, Object[].class)
+					.setParameter("cid", AppContexts.user().companyId())
+					.setParameter("sids", sl)
+					.getList().stream().map(m -> new PerEmpData(m[0].toString(), m[1].toString())).collect(Collectors.toList()));
+		});
+		
+		return data;
+	}
 }

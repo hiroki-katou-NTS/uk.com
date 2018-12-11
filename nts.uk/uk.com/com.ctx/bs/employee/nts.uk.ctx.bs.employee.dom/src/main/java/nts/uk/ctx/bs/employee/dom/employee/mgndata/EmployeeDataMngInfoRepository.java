@@ -148,4 +148,12 @@ public interface EmployeeDataMngInfoRepository {
 	 */
 	List<EmployeeDataMngInfo> getAllEmpNotDeleteByCid(String companyId);
 	
+	
+	/**
+	 * Get personIds by employeeIds
+	 * @param sids
+	 * @return List<PerEmpData>
+	 * */
+	List<PerEmpData> getPersonIds(List<String> sids);
+	
 }
