@@ -69,9 +69,9 @@ module cps003.a.vm {
             },
             outData: ko.observableArray([])
         }
-        
+
         gridOptions: any = {};
-        
+
         baseDate: KnockoutObservable<Date> = ko.observable();
 
         category: {
@@ -94,9 +94,9 @@ module cps003.a.vm {
 
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
             });
-            
+
             self.baseDate(moment().format("YYYY/MM/DD"));
-//            self.requestData();
+            //            self.requestData();
         }
 
         start() {
@@ -146,11 +146,11 @@ module cps003.a.vm {
 
             block();
             setShared('CPS003B_VALUE', params);
-            
+
             modal("/view/cps/003/b/index.xhtml").onClosed(() => {
             });
         }
-        
+
         loadGrid() {
             let self = this;
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
@@ -170,7 +170,7 @@ module cps003.a.vm {
                 ntsControls: self.gridOptions.ntsControls
             });
         }
-        
+
         requestData() {
             // { categoryId: 'COM1_00000000000000000000000_CS00020', employeeIds: [], baseDate: '2818/01/01' };
             let self = this;
@@ -181,9 +181,9 @@ module cps003.a.vm {
                 self.loadGrid();
             });
         }
-        
+
         convertData(data) {
-            
+
         }
     }
 
@@ -191,5 +191,160 @@ module cps003.a.vm {
     }
 
     class Employee {
+    }
+
+    /* Dữ liệu nhận về từ  */
+    interface IRequestData {
+        baseDate: string;
+        categoryId: string;
+        headDatas: IDataHead[];
+        bodyDatas: IDataBody[];
+    }
+
+    /* Dữ liệu  */
+    interface IDataHead {
+        itemCode: string;
+        itemName: string;
+        itemOrder: number;
+        itemParentCode: string;
+        itemTypeState: ISingleItem;
+        required: boolean;
+        resourceId: string;
+    }
+
+    /* Dữ liệu body (điều chỉnh thêm) */
+    interface IDataBody {
+        personId: string;
+        employeeId: string;
+        items: IColumnData[];
+    }
+
+    /* Dữ liệu tương ứng từng cột */
+    interface IColumnData {
+        actionRole: ACTION_ROLE;
+        itemCode: string;
+        itemParentCode: string;
+        
+        lstComboBoxValue: any[]; // list data để validate 
+        
+        recordId: string | null; // id bản ghi trong db
+        textValue: string | null; // giá trị hiển thị 
+        value: Object | null; // giá trị
+    }
+
+    enum ACTION_ROLE {
+        HIDDEN = <any>"HIDDEN",
+        VIEW_ONLY = <any>"VIEW_ONLY",
+        EDIT = <any>"EDIT"
+    }
+
+    // define ITEM_SINGLE_TYPE
+    // type of item if it's single item
+    enum ITEM_SINGLE_TYPE {
+        STRING = 1,
+        NUMERIC = 2,
+        DATE = 3,
+        TIME = 4,
+        TIMEPOINT = 5,
+        SELECTION = 6,
+        SEL_RADIO = 7,
+        SEL_BUTTON = 8,
+        READONLY = 9,
+        RELATE_CATEGORY = 10,
+        NUMBERIC_BUTTON = 11,
+        READONLY_BUTTON = 12
+    }
+
+    // define ITEM_STRING_DATA_TYPE
+    enum ITEM_STRING_DTYPE {
+        FIXED_LENGTH = 1, // fixed length
+        VARIABLE_LENGTH = 2 // variable length
+    }
+
+    enum ITEM_STRING_TYPE {
+        ANY = 1,
+        // 2:全ての半角文字(AnyHalfWidth)
+        ANYHALFWIDTH = 2,
+        // 3:半角英数字(AlphaNumeric)
+        ALPHANUMERIC = 3,
+        // 4:半角数字(Numeric)
+        NUMERIC = 4,
+        // 5:全角カタカナ(Kana)
+        KANA = 5,
+        // 6: カードNO
+        CARDNO = 6,
+        // 7: 社員コード
+        EMPLOYEE_CODE = 7
+    }
+
+    // define ITEM_SELECT_TYPE
+    // type of item if it's selection item
+    enum ITEM_SELECT_TYPE {
+        // 1:専用マスタ(DesignatedMaster)
+        DESIGNATED_MASTER = <any>"DESIGNATED_MASTER",
+        // 2:コード名称(CodeName)
+        CODE_NAME = <any>"CODE_NAME",
+        // 3:列挙型(Enum)
+        ENUM = <any>"ENUM"
+    }
+
+    enum DateType {
+        YEARMONTHDAY = 1,
+        YEARMONTH = 2,
+        YEAR = 3
+    }
+
+    interface ISingleItem {
+        itemType: number;
+        dataTypeState?: IItemDefinitionData // Single item value
+    }
+
+    interface IItemDefinitionData extends IItemTime, IItemDate, IItemString, IItemTimePoint, IItemNumeric, IItemSelection {
+        dataTypeValue: ITEM_SINGLE_TYPE; // type of value of item
+    }
+
+    interface IItemTime {
+        min?: number;
+        max?: number;
+    }
+
+    interface IItemDate {
+        dateItemType?: DateType;
+    }
+
+    interface IItemString {
+        stringItemDataType?: ITEM_STRING_DTYPE;
+        stringItemLength?: number;
+        stringItemType?: ITEM_STRING_TYPE;
+    }
+
+    interface IItemTimePoint {
+        timePointItemMin?: number;
+        timePointItemMax?: number;
+    }
+
+    interface IItemNumeric {
+        numericItemMinus?: number;
+        numericItemAmount?: number;
+        integerPart?: number;
+        decimalPart?: number;
+        numericItemMin?: number;
+        numericItemMax?: number;
+    }
+
+    interface IItemSelection extends IItemMasterSelection, IItemEnumSelection, IItemCodeNameSelection {
+        referenceType?: ITEM_SELECT_TYPE;
+    }
+
+    interface IItemMasterSelection {
+        masterType?: string;
+    }
+
+    interface IItemEnumSelection {
+        typeCode?: string;
+    }
+
+    interface IItemCodeNameSelection {
+        enumName?: string;
     }
 }
