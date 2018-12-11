@@ -70,6 +70,8 @@ module cps003.a.vm {
             outData: ko.observableArray([])
         }
         
+        gridOptions: any = {};
+        
         baseDate: KnockoutObservable<Date> = ko.observable();
 
         category: {
@@ -92,6 +94,9 @@ module cps003.a.vm {
 
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
             });
+            
+            self.baseDate(moment().format("YYYY/MM/DD"));
+//            self.requestData();
         }
 
         start() {
@@ -144,6 +149,41 @@ module cps003.a.vm {
             
             modal("/view/cps/003/b/index.xhtml").onClosed(() => {
             });
+        }
+        
+        loadGrid() {
+            let self = this;
+            new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
+                width: "1000px",
+                height: "800px",
+                headerHeight: "80px",
+                dataSource: self.gridOptions.dataSource,
+                primaryKey: "id",
+                virtualization: true,
+                virtualizationMode: "continuous",
+                enter: "right",
+                autoFitWindow: true,
+                errorColumns: [],
+                idGen: (id) => id + "",
+                columns: self.gridOptions.columns,
+                features: self.gridOptions.features,
+                ntsControls: self.gridOptions.ntsControls
+            });
+        }
+        
+        requestData() {
+            // { categoryId: 'COM1_00000000000000000000000_CS00020', employeeIds: [], baseDate: '2818/01/01' };
+            let self = this;
+            let employeeIds = _.map(self.employees(), e => e.employeeId),
+                param = { categoryId: self.category.catId(), employeeIds: employeeIds, baseDate: self.baseDate() };
+            nts.uk.request.ajax('com', 'ctx/pereg/grid-layout/get-data', param).done(data => {
+                self.convertData(data);
+                self.loadGrid();
+            });
+        }
+        
+        convertData(data) {
+            
         }
     }
 
