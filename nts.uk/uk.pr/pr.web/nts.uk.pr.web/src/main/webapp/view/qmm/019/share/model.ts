@@ -560,7 +560,7 @@ module nts.uk.pr.view.qmm019.share.model {
         calcMethod: string;
         calcFomulaCd: string;
         personAmountCd: string;
-        commonAmount: string;
+        commonAmount: number;
         wageTblCode: string;
         workingAtr: string;
     }
@@ -574,7 +574,7 @@ module nts.uk.pr.view.qmm019.share.model {
         calcMethod: string;
         calcFormulaCd: string;
         personAmountCd: string;
-        commonAmount: string;
+        commonAmount: number;
         wageTblCd: string;
         supplyOffset: string;
     }
