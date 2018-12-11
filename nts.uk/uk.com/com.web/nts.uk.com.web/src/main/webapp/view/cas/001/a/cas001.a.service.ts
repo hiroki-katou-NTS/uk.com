@@ -31,7 +31,7 @@ module nts.uk.com.view.cas001.a.service {
        return ajax(paths.getAllItemIdRequired);
     }
     export function saveAsExcel(languageId: string): JQueryPromise<any> {
-        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "PersonRole", domainType: "勤務種類の登録", languageId: languageId, reportType: 0});
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "PersonRole", domainType: "個人情報アクセス権限の設定", languageId: languageId, reportType: 0});
     }
 
 }

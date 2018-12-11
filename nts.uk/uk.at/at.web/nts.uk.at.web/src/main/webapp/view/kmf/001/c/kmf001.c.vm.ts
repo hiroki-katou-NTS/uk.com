@@ -399,6 +399,20 @@ module nts.uk.pr.view.kmf001.c {
                 });
                 return dfd.promise();
             }
+            
+            /**
+         * Print file excel
+         */
+        private exportExcel(): void {
+            let self = this;
+            nts.uk.ui.block.grayout();
+            service.saveAsExcel('ja').done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+        }
         }
     }
 }
