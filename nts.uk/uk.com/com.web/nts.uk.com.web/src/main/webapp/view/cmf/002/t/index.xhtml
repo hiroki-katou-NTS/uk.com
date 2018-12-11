@@ -65,13 +65,13 @@
 								</td>
 								<!-- T3_1条件コード/名称 -->
 								<td class="td_left">
-									<div data-bind="ntsFormLabel: {required: true }"
+									<div data-bind="ntsFormLabel: {constraint: 'ExternalOutputConditionCode',required: true }"
 										class="form-label enable">
 										<label>#{i18n.getText('CMF002_254')}</label>
 									</div>
 								</td>
 								<!-- T3_2コード -->
-								<td><input class="td_center_sp" id="T3_2" tabindex="1"
+								<td class="td_center_sp"><input id="T3_2" tabindex="1"
 									data-bind="ntsTextEditor: {value: copyDestinationCode, name: '#[CMF002_256]', optionsText: 'name', required: true, constraint: 'ExternalOutputConditionCode'}" /></td>
 								<!-- T3_3名称 -->
 								<td class="td_right"><input tabindex="2" id="T3_3" style="width: 185px;"

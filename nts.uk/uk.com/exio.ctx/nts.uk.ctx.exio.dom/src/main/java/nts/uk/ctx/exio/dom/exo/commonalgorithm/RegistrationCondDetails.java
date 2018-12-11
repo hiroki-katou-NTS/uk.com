@@ -9,7 +9,6 @@ import javax.transaction.Transactional;
 import nts.uk.ctx.exio.dom.exo.condset.StandardAtr;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetail;
 import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class RegistrationCondDetails {
@@ -28,7 +27,7 @@ public class RegistrationCondDetails {
 	 */
 	@Transactional
 	public void algorithm(Optional<OutCndDetail> outCndDetailOtp, StandardAtr standardAtr, RegisterMode registerMode) {
-		String cid = AppContexts.user().companyId();
+//		String cid = AppContexts.user().companyId();
 		if (!outCndDetailOtp.isPresent()) {
 			return;
 		}
@@ -37,8 +36,8 @@ public class RegistrationCondDetails {
 			if (RegisterMode.NEW.equals(registerMode)) {
 				stdOutCndDetailRepo.add(outCndDetail);
 			} else {
-				stdOutCndDetailRepo.remove(cid, outCndDetail.getConditionSettingCd().v());
-				stdOutCndDetailRepo.add(outCndDetail);
+//				stdOutCndDetailRepo.remove(cid, outCndDetail.getConditionSettingCd().v());
+				stdOutCndDetailRepo.update(outCndDetail);
 			}
 		}
 	}

@@ -117,8 +117,10 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 		Optional<Map<String, EmptYearlyRetentionSetting>> emptYearlyRetentionSetMap = Optional.empty();
 		if (companySets.isPresent()){
 			annualLeaveSet = companySets.get().getAnnualLeaveSet();
-			retentionYearlySet = companySets.get().getRetentionYearlySet();
-			emptYearlyRetentionSetMap = Optional.of(companySets.get().getEmptYearlyRetentionSetMap());
+			retentionYearlySet = companySets.get().getRetentionYearlySet() == null ? Optional.empty() : companySets.get().getRetentionYearlySet();
+			if(companySets.get().getEmptYearlyRetentionSetMap() != null){
+				emptYearlyRetentionSetMap = Optional.of(companySets.get().getEmptYearlyRetentionSetMap());
+			}
 		}
 		else {
 			annualLeaveSet = this.annualPaidLeaveSet.findByCompanyId(companyId);

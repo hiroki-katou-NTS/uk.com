@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -718,11 +720,9 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			if (!mngInfo.isEmpty()) {
 				// (Lấy domain [AffCompanyHistByEmployee], chỉ filter employee đang làm tại thời
 				// điểm baseDate)
-				for (EmployeeDataMngInfo obj : mngInfo) {
-					AffCompanyHist sid = affComHistRepo.getAffCompanyHistoryOfEmployeeAndBaseDate(obj.getEmployeeId(),
-							baseDate);
-					listAffComHist.add(sid);
-				}
+				listAffComHist = affComHistRepo.getAffCompanyHistoryOfEmployeeListAndBaseDate(
+					mngInfo.stream().map(x -> x.getEmployeeId()).collect(Collectors.toList()),
+					baseDate);
 			}
 			if (!listAffComHist.isEmpty()) {
 				// lấy list employee Id

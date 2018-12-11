@@ -11,7 +11,10 @@ public enum TargetMonth {
 	MONTH_LATER(1),
 	
 	/* システム日付の翌々月 */
-	TWO_MONTH_LATER(2);
+	TWO_MONTH_LATER(2),
+	
+	/* 開始月を指定する */
+	DESIGNATE_START_MONTH(3);
 	
 	/** The value. */
 	public final int value;

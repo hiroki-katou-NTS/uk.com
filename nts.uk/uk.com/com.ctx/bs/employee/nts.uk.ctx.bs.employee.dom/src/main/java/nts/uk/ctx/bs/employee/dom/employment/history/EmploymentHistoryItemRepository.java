@@ -1,10 +1,12 @@
 package nts.uk.ctx.bs.employee.dom.employment.history;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
+import nts.uk.ctx.bs.employee.dom.employment.EmpmInfo;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface EmploymentHistoryItemRepository {
@@ -109,6 +111,14 @@ public interface EmploymentHistoryItemRepository {
 	 * @return
 	 */
 	List<EmploymentHistoryItem> getEmploymentHistoryItem(String cid, GeneralDate baseDate);
-
+	/**
+	 * @author hoatt
+	 * key: sid, value: EmploymentInfo
+	 * @param companyId
+	 * @param lstSID
+	 * @param date
+	 * @return
+	 */
+	Map<String, EmpmInfo> getLstDetailEmpHistItem(String companyId, List<String> lstSID, GeneralDate date);
 
 }
