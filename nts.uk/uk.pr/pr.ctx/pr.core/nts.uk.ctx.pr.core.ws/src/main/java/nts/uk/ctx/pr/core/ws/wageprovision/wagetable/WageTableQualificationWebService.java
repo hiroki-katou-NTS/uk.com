@@ -17,8 +17,8 @@ public class WageTableQualificationWebService {
     private WageTableQualificationFinder wageTableQualificationFinder;
 
     @POST
-    @Path("/get-wage-table-qualification/{historyId}")
-    public List<WageTableQualificationDto> getWageTableQualification(@PathParam("historyId") String historyId) {
-        return wageTableQualificationFinder.createWageTableQualification(historyId);
+    @Path("/get-wage-table-qualification/{historyId}/{isInitScreen}")
+    public List<WageTableQualificationDto> getWageTableQualification(@PathParam("historyId") String historyId, @PathParam("isInitScreen") boolean isInitScreen) {
+        return wageTableQualificationFinder.createWageTableQualification(historyId, isInitScreen);
     }
 }

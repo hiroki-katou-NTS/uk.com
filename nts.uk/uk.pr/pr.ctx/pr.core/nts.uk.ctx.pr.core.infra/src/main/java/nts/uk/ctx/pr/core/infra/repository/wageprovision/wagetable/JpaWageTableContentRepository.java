@@ -137,7 +137,7 @@ public class JpaWageTableContentRepository extends JpaRepository implements Wage
 				.setParameter("cid", AppContexts.user().companyId())
 				.getList();
 
-		Map<String, List<Object[]>> result = data.stream().collect(Collectors.groupingBy(x -> String.valueOf(x[0])));
+		Map<String, List<Object[]>> result = data.stream().collect(Collectors.groupingBy(x -> String.valueOf(x[1])));
 
 		return getWageTableQualificationFromDB(result);
 	}
@@ -150,12 +150,12 @@ public class JpaWageTableContentRepository extends JpaRepository implements Wage
 			int paymentMethod             = (int) v.get(0)[6];
 			wageTableQualification.add(new WageTableQualification(
 					qualificationGroupCode,
-					Objects.isNull(qualificationGroupCode) ? NONE_GROUP : qualificationGroupName,
+					StringUtil.isNullOrEmpty(qualificationGroupCode, true) ? NONE_GROUP : qualificationGroupName,
 					paymentMethod,
 					v.stream().map(x -> new WageTableQualificationInfo(
-							x[0].toString(),
-							x[3].toString(),
-							x[4].toString(),
+							(String) x[0],
+							(String) x[3],
+							(String) x[4],
 							(Long) x[5]
 					)).collect(Collectors.toList())
 			));

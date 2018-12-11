@@ -11,7 +11,7 @@ module nts.uk.pr.view.qmm016.a.service {
         createOneDimentionWageTable: "ctx/pr/core/wageprovision/wagetable/create-1d-wage-table",
         createTwoDimentionWageTable: "ctx/pr/core/wageprovision/wagetable/create-2d-wage-table",
         createThreeDimentionWageTable: "ctx/pr/core/wageprovision/wagetable/create-3d-wage-table",
-        getWageTableQualification: "ctx/pr/core/wageprovision/wagetable/get-wage-table-qualification/{0}"
+        getWageTableQualification: "ctx/pr/core/wageprovision/wagetable/get-wage-table-qualification/{0}/{1}"
     };
 
     export function getAllWageTable(): JQueryPromise<any> {
@@ -42,8 +42,8 @@ module nts.uk.pr.view.qmm016.a.service {
         return ajax('pr', format(paths.getElemRangeSet, histId));
     }
 
-    export function getWageTableQualification(historyId: string): JQueryPromise<any> {
-        return ajax('pr', format(paths.getWageTableQualification, historyId));
+    export function getWageTableQualification(historyId: string, isInitScreen: boolean): JQueryPromise<any> {
+        return ajax('pr', format(paths.getWageTableQualification, historyId, isInitScreen));
     }
 
     export function createTwoDimentionWageTable(data): JQueryPromise<any> {

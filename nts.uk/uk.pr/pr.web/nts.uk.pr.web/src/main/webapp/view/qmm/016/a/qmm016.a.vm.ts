@@ -55,7 +55,6 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     self.elementRangeSetting(new model.ElementRangeSetting(null));
                     self.wageTableContent(new model.WageTableContent(null));
                     self.showWageTableInfoByValue(newValue);
-                    self.showSettingDataByValue(newValue)
                     self.updateMode(true);
                 }
             });
@@ -136,6 +135,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     let selectedHistory = _.find(selectedWageTable.histories, { historyID: selectedHistoryID });
                     self.selectedHistory(new model.GenericHistoryYearMonthPeriod(selectedHistory));
                     self.isSelectedHistory(true);
+                    self.showSettingDataByValue(identifier);
                 } else {
                     self.selectedHistory(new model.GenericHistoryYearMonthPeriod(null));
                     self.selectedTab('tab-1');
@@ -153,30 +153,45 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             if (identifier.length > 36) {
                 block.invisible();
                 let selectedHistoryID = identifier.substring(3, identifier.length);
-                $.when(service.getWageTableContent(selectedHistoryID, identifier.substring(0, 3)), service.getElemRangeSet(selectedHistoryID)).done((contentData, settingData) => {
-                    if (self.selectedWageTable().elementSetting() == model.ELEMENT_SETTING.TWO_DIMENSION && contentData != null) {
-                        let lst2nd: Array<any> = contentData.list2dElements;
-                        self.listSecondDimension(lst2nd[0].listSecondDms.map(i => {
-                            if (i.masterCode) {
-                                return {value: i.masterCode, name: i.masterName};
-                            } else {
-                                return {value: i.frameNumber, name: i.frameLowerLimit + getText("QMM016_31") + i.frameUpperLimit};
-                            }
-                        }));
-                    }
-                    self.wageTableContent(new model.WageTableContent(contentData));
-                    self.elementRangeSetting(new model.ElementRangeSetting(settingData));
-                    if (!_.isEmpty(contentData) && !_.isEmpty(contentData.listData) && !_.isEmpty(contentData.listHeader)) {
-                        self.loadGrid(contentData.listData, contentData.listHeader);
-                    }
-                }).fail(error => {
-                    dialog.alertError(error);
-                }).always(() => {
-                    block.clear();
-                });
+                if (self.selectedWageTable().elementSetting() == model.ELEMENT_SETTING.QUALIFICATION) {
+                    //Get Wage Table Qualification in screen E
+                    service.getWageTableQualification(selectedHistoryID, true).done((result: any) => {
+                        let wageTableContent = {
+                            historyID: selectedHistoryID,
+                            payments: [],
+                            qualificationGroupSettings: result
+                        };
+                        self.wageTableContent(new WageTableContent(wageTableContent));
+                    });
+                } else {
+                    $.when(service.getWageTableContent(selectedHistoryID, identifier.substring(0, 3)), service.getElemRangeSet(selectedHistoryID)).done((contentData, settingData) => {
+                        if (self.selectedWageTable().elementSetting() == model.ELEMENT_SETTING.TWO_DIMENSION && contentData != null) {
+                            let lst2nd: Array<any> = contentData.list2dElements;
+                            self.listSecondDimension(lst2nd[0].listSecondDms.map(i => {
+                                if (i.masterCode) {
+                                    return {value: i.masterCode, name: i.masterName};
+                                } else {
+                                    return {
+                                        value: i.frameNumber,
+                                        name: i.frameLowerLimit + getText("QMM016_31") + i.frameUpperLimit
+                                    };
+                                }
+                            }));
+                        }
+                        self.wageTableContent(new model.WageTableContent(contentData));
+                        self.elementRangeSetting(new model.ElementRangeSetting(settingData));
+                        if (!_.isEmpty(contentData) && !_.isEmpty(contentData.listData) && !_.isEmpty(contentData.listHeader)) {
+                            self.loadGrid(contentData.listData, contentData.listHeader);
+                        }
+                    }).fail(error => {
+                        dialog.alertError(error);
+                    }).always(() => {
+                        block.clear();
+                    });
+                }
             }
         }
-        
+
         formatData(lstData) {
             let self = this;
             let data = lstData.map((data) => {
@@ -677,7 +692,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         createWageTableQualification() {
             let self = this,
                 historyId = self.selectedHistory().historyID();
-            service.getWageTableQualification(historyId).done((result: any) => {
+            service.getWageTableQualification(historyId, false).done((result: any) => {
                 let wageTableContent = {
                     historyID: historyId,
                     payments: [],
