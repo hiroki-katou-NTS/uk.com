@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -27,6 +28,7 @@ import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.task.data.TaskDataSetter;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport;
@@ -124,6 +126,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 	@Inject
 	private WorkplaceAdapter workplaceAdapter;
+	
+	@Inject
+	private ManagedParallelWithContext parallel;
 
 	@Override
 	protected void handle(ExportServiceContext<AttendanceRecordRequest> context) {
@@ -267,7 +272,15 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		
 		YearMonthPeriod periodMonthly = new YearMonthPeriod(request.getStartDate().yearMonth(), request.getEndDate().yearMonth());
 		List<MonthlyAttendanceItemValueResult> monthlyValues = attendanceService.getMonthlyValueOf(empIDs, periodMonthly, monthlyId);
-		List<AttendanceItemValueResult> dailyValues = attendanceService.getValueOf(empIDs, period, singleId);
+		
+		List<AttendanceItemValueResult> dailyValues;
+		{
+			List<AttendanceItemValueResult> syncResults = Collections.synchronizedList(new ArrayList<>());
+			this.parallel.forEach(empIDs, empId -> {
+				syncResults.addAll(attendanceService.getValueOf(Arrays.asList(empId), period, singleId));
+			});
+			dailyValues = new ArrayList<>(syncResults);
+		}
 
 		for (Employee employee : distinctEmployeeListAfterSort) {
 
