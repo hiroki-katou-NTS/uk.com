@@ -693,6 +693,8 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                             let params = getShared("QMM019D_RESULTS");
 
                             if(params) {
+                                params.detail.histId = __viewContext['screenModel'].statementLayoutHistData().historyId;
+
                                 self.shortName(params.name);
                                 self.itemId(params.itemNameCode);
                                 self.paymentItemDetailSet = params.detail;
@@ -714,6 +716,8 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                             let params = getShared("QMM019E_RESULTS");
 
                             if(params) {
+                                params.detail.histId = __viewContext['screenModel'].statementLayoutHistData().historyId;
+
                                 self.shortName(params.name);
                                 self.itemId(params.itemNameCode);
                                 self.deductionItemDetailSet = params.detail;
