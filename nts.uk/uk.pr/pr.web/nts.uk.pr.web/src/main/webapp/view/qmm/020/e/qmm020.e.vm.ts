@@ -185,8 +185,11 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
         openMScreen(item, code) {
             block.invisible();
             let self = this;
+            let salaryCode = item.displayE3_4.split('    ')[0];
+            let bonusCode = item.displayE3_5.split('    ')[0];
             setShared(model.PARAMETERS_SCREEN_M.INPUT, {
                 startYearMonth: self.startYearMonth(),
+                statementCode: code === 1 ? salaryCode : bonusCode,
                 modeScreen: model.MODE_SCREEN.CLASSIFICATION
             });
             modal("/view/qmm/020/m/index.xhtml").onClosed(() =>{
