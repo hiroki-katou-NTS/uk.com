@@ -23,8 +23,8 @@ import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyW
 import nts.uk.ctx.at.function.app.find.annualworkschedule.PeriodDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.RoleWhetherLoginDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.RoleWhetherLoginFinder;
-import nts.uk.ctx.at.function.app.find.monthlyworkschedule.DisplayTimeItemDto;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.MonthlyPerformanceDataReturnDto;
+import nts.uk.ctx.at.function.app.find.monthlyworkschedule.MonthlyReturnItemDto;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.OutputItemMonthlyWorkScheduleDto;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.OutputItemMonthlyWorkScheduleFinder;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
@@ -149,7 +149,7 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 	 */
 	@Path("executeCopy/{codeCopy}/{codeSourceSerivce}")
 	@POST
-	public List<DisplayTimeItemDto> executeCopy(@PathParam("codeCopy") String codeCopy,
+	public MonthlyReturnItemDto executeCopy(@PathParam("codeCopy") String codeCopy,
 			@PathParam("codeSourceSerivce") String codeSourceSerivce) {
 		return this.outputItemMonthlyWorkScheduleFinder.executeCopy(codeCopy, codeSourceSerivce);
 	}

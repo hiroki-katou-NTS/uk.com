@@ -19,6 +19,8 @@ public interface WorkplaceAdapter {
 	 * @return
 	 */
 	public WkpHistImport findWkpBySid(String sID, GeneralDate date);
+	
+	public List<WkpHistImport> findWkpBySid(List<String> sID, GeneralDate date);
 
 	Optional<EmploymentHistoryImported> getEmpHistBySid(String companyId, String employeeId, GeneralDate baseDate);
 	
