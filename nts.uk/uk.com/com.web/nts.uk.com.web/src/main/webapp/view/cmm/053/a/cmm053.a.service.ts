@@ -9,8 +9,11 @@ module nts.uk.com.view.cmm053.a.service {
         getPastHistory: "workflow/approvermanagement/workroot/find/settingOfManager/getPastHistory/{0}",
         insertHistoryByManagerSetting: "workflow/approvermanagement/workroot/managersetting/insert",
         updateHistoryByManagerSetting: "workflow/approvermanagement/workroot/managersetting/update",
-        deleteHistoryByManagerSetting: "workflow/approvermanagement/workroot/managersetting/delete"
+        deleteHistoryByManagerSetting: "workflow/approvermanagement/workroot/managersetting/delete",
+        checkApprovalSetting:"screen/com/cmm053/check-approval-setting"
     }
+    
+    
 
     export function getSettingManager(employeeId: string): JQueryPromise<any> {
         return ajax(format(paths.getSettingManager, employeeId));
@@ -42,5 +45,9 @@ module nts.uk.com.view.cmm053.a.service {
 
     export function deleteHistoryByManagerSetting(command): JQueryPromise<any> {
         return ajax(paths.deleteHistoryByManagerSetting, command);
+    }
+    
+    export function checkApprovalSetting(command): JQueryPromise<any> {
+        return ajax(paths.checkApprovalSetting, command);
     }
 }

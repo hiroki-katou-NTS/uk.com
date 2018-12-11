@@ -1,7 +1,10 @@
 package nts.uk.ctx.at.record.pub.monthly.vacation.reserveleave;
 
 import java.util.List;
+import java.util.Map;
 
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 /**
@@ -18,4 +21,13 @@ public interface GetConfirmedReserveLeave {
 	 */
 	// RequestList258
 	List<ReserveLeaveUsageExport> algorithm(String employeeId, YearMonthPeriod period);
+	/**
+	 * @author hoatt
+	 * Doi ung response KDR001
+	 * RequestList258 社員の月毎の確定済み積立年休を取得する - ver2
+	 * @param employeeId 社員ID
+	 * @param period 年月期間
+	 * @return 年休利用状況リスト
+	 */
+	List<ReserveLeaveUsageExport> getYearRsvMonthlyVer2(String employeeId, YearMonthPeriod period, Map<YearMonth, List<RemainMerge>> mapRemainMer);
 }

@@ -9,5 +9,5 @@ import javax.ws.rs.core.Application;
 @ApplicationPath("/webapi")
 public class WebApiSetting extends Application {
 
-	
+	public static final String ROOT_PATH = "/webapi";
 }

@@ -1850,7 +1850,6 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	}
 
 	// 期間を求める
-	@SuppressWarnings("incomplete-switch")
 	private DailyCreatAndCalOutput calculateDailyPeriod(ProcessExecution procExec, int closureId,
 			CurrentMonth currentMonth) {
 		DatePeriod closurePeriod = this.closureService.getClosurePeriod(closureId, currentMonth.getProcessingYm());

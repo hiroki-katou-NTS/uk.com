@@ -20,6 +20,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleCommand;
 import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleDeleteHandler;
 import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleSaveHandler;
+import nts.uk.ctx.at.function.app.find.annualworkschedule.PeriodDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.RoleWhetherLoginDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.RoleWhetherLoginFinder;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.DisplayTimeItemDto;
@@ -28,6 +29,7 @@ import nts.uk.ctx.at.function.app.find.monthlyworkschedule.OutputItemMonthlyWork
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.OutputItemMonthlyWorkScheduleFinder;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.PrintSettingRemarksColumn;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 
 /**
  * The Class OutputItemMonthlyWorkScheduleWS.
@@ -52,6 +54,8 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 	@Inject
 	private OutputItemMonthlyWorkScheduleDeleteHandler outputItemMonthlyWorkScheduleDeleteHandler;
 
+	@Inject
+	private ClosureService closureService;
 	
 	/**
 	 * Gets the current loginer role.
@@ -161,4 +165,9 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 		return EnumAdaptor.convertToValueNameList(RemarkInputContent.class);
 	}
 
+	@Path("get/monthlyPeriod")
+	@POST
+	public PeriodDto getList() {
+		return this.outputItemMonthlyWorkScheduleFinder.getPeriod();
+	}
 }

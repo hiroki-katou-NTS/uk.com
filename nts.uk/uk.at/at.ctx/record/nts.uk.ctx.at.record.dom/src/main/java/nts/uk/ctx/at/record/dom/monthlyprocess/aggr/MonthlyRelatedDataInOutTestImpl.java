@@ -320,9 +320,9 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 						new AttendanceTimeMonth(0))
 			);
 		this.agreementTimeOfManagePeriodRepository.persistAndUpdate(agreementTimeOfManagePeriod);
-		val agreementTimeOpt = this.agreementTimeOfManagePeriodRepository.find(employeeId, yearMonth);
-		AgreementTimeOfManagePeriod agreementTime = null;
-		if (agreementTimeOpt.isPresent()) agreementTime = agreementTimeOpt.get();
+//		val agreementTimeOpt = this.agreementTimeOfManagePeriodRepository.find(employeeId, yearMonth);
+//		AgreementTimeOfManagePeriod agreementTime = null;
+//		if (agreementTimeOpt.isPresent()) agreementTime = agreementTimeOpt.get();
 		
 		return returnValue;
 	}	

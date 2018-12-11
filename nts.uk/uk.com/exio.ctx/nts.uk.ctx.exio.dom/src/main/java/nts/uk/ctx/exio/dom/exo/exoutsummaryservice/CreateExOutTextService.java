@@ -291,7 +291,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				processStartDateTime, standardClass, executeForm, executeId, designatedReferenceDate, specifiedEndDate,
 				specifiedStartDate, codeSettingCondition, resultStatus, nameSetting);
 
-		String errorContent = null;
+		String errorContent = I18NText.getText("CMF002_524");
 		String errorTargetValue = null;
 		GeneralDate errorDate = null;
 		String errorEmployee = null;
@@ -367,7 +367,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		String companyId = AppContexts.user().companyId();
 		String outputProcessId = processingId;
-		String errorContent = null;
+		String errorContent = I18NText.getText("CMF002_525");
 		String errorTargetValue = null;
 		GeneralDate errorDate = null;
 		String errorEmployee = null;
