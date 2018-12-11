@@ -132,8 +132,9 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			}
 			
 		}
-		if(para.isStart()
-				|| para.isEnd()) {
+		if((para.isStart()
+				|| para.isEnd())
+				&& (para.getStartTime() != null && para.getEndTime() != null)) {
 			dailyPerfor.getScheduleTimeSheets().add(timeSheet);
 		}
 		//workRepository.updateByKeyFlush(dailyPerfor);
