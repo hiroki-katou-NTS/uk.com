@@ -45,11 +45,18 @@ public class JpaWkpCalSettingRepository extends JpaRepository implements WkpAuto
 			"k.DIVERGENCE,  "+
 			"w.WKPCD, " +
 			"w.WKP_NAME " +
-            "FROM BSYMT_WORKPLACE_INFO w INNER JOIN BSYMT_WKP_CONFIG c ON c.CID = w.CID " +
-            "INNER JOIN BSYMT_WORKPLACE_HIST h ON w.HIST_ID = h.HIST_ID AND w.WKPID = h.WKPID "+
+            "FROM (SELECT HIST_ID, CID, WKPID, WKPCD, WKP_NAME "+
+					"FROM BSYMT_WORKPLACE_INFO "+
+					"WHERE CID = ?cid) w  "+
+			"INNER JOIN (SELECT CID "+
+					"FROM BSYMT_WKP_CONFIG "+
+					"WHERE START_DATE <= ?baseDate AND END_DATE >= ?baseDate ) c "+
+				"ON c.CID = w.CID  "+
+            "INNER JOIN (SELECT HIST_ID, WKPID, CID "+
+			"FROM BSYMT_WORKPLACE_HIST "+
+			"WHERE START_DATE <= ?baseDate AND END_DATE >= ?baseDate )  h "+
+			"ON w.HIST_ID = h.HIST_ID AND w.WKPID = h.WKPID AND h.CID = w.CID "+
             "INNER JOIN KSHMT_AUTO_WKP_CAL_SET k on w.WKPID = k.WKPID " +
-            "WHERE w.CID = ?cid AND h.START_DATE <= ?baseDate AND h.END_DATE >= ?baseDate "+
-            "AND c.START_DATE <= ?baseDate AND c.END_DATE >= ?baseDate "+
 			"ORDER BY w.WKPCD";
 
 	@Override

@@ -42,11 +42,15 @@ public class JpaJobCalSettingRepository extends JpaRepository implements JobAuto
 			"k.DIVERGENCE,  "+
 			"w.JOB_CD,  " +
 			"w.JOB_NAME  " +
-			"FROM  BSYMT_JOB_INFO w " +
-			"INNER JOIN BSYMT_JOB_HIST h on w.HIST_ID = h.HIST_ID AND w.JOB_ID = h.JOB_ID AND w.CID = h.CID " +
-			"INNER JOIN  KSHMT_AUTO_JOB_CAL_SET k on w.JOB_ID = k.JOBID AND k.CID = w.CID " +
-			"WHERE w.CID = ?cid AND h.START_DATE <= ?baseDate AND h.END_DATE >= ?baseDate " +
-			"ORDER BY w.JOB_CD";
+			"FROM  (SELECT JOB_CD, JOB_NAME, JOB_ID, HIST_ID, CID " +
+					"FROM BSYMT_JOB_INFO "+
+					"WHERE CID = ?cid ) w "+
+			"INNER JOIN (SELECT HIST_ID, JOB_ID, CID "+
+					"FROM BSYMT_JOB_HIST " +
+					"WHERE START_DATE <= ?baseDate AND END_DATE >= ?baseDate) h " +
+					"ON w.HIST_ID = h.HIST_ID AND w.JOB_ID = h.JOB_ID AND w.CID = h.CID "+
+			"INNER JOIN  KSHMT_AUTO_JOB_CAL_SET k on w.JOB_ID = k.JOBID AND k.CID = w.CID "+
+			"ORDER BY w.JOB_CD ";
 
 	@Override
 	public List<Object[]> getPositionSettingToExport(String cid, String baseDate) {

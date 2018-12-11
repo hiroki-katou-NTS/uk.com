@@ -14,6 +14,7 @@ import javax.persistence.Query;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
+import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoAuthType;
 import nts.uk.file.com.app.personrole.PersonRoleColumn;
 import nts.uk.file.com.app.personrole.PersonRoleRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -67,10 +68,8 @@ public class PersonRoleImpl implements PersonRoleRepository {
 			+ " CASE WHEN TBL.ROW_NUMBER18 = 1 THEN TBL.SELF_PAST_HIS_AUTH_TYPE"
 			+ " ELSE NULL END SELF_PAST_HIS_AUTH_TYPE,"
 			+ " TBL.ITEM_NAME,"
-			+ " CASE WHEN TBL.ROW_NUMBER19 = 1 THEN TBL.OTHER_PERSON_AUTH_TYPE"
-			+ " ELSE NULL END OTHER_PERSON_AUTH_TYPE,"
-			+ " CASE WHEN TBL.ROW_NUMBER19 = 1 THEN TBL.SELF_AUTH_TYPE"
-			+ " ELSE NULL END SELF_AUTH_TYPE,"
+			+ " TBL.OTHER_PERSON_AUTH_TYPE,"
+			+ " TBL.SELF_AUTH_TYPE,"
 			+ " (select count(*) from PPEMT_PER_INFO_ITEM ii where ii.PER_INFO_CTG_ID = TBL.PER_INFO_CTG_ID and  ii.ABOLITION_ATR =0) as count_i,"
 			+ " (select count(*) from PPEMT_PERSON_ITEM_AUTH ia where ia.PER_INFO_CTG_ID=TBL.PER_INFO_CTG_ID and ia.ROLE_ID=TBL.ROLE_ID) as count_ia,"
 			+ " TBL.IsItemConfig "
@@ -84,16 +83,6 @@ public class PersonRoleImpl implements PersonRoleRepository {
 			+ " xx.SELF_ALLOW_DEL_MULTI_ATR,xx.OTHER_ALLOW_ADD_MULTI_ATR,xx.OTHER_ALLOW_DEL_MULTI_ATR,"
 			+ " CASE WHEN ctgau.PER_INFO_ITEM_DEF_ID IS NOT NULL  THEN 'True' ELSE 'False' END AS IsItemConfig,"
 			+ " cm.CATEGORY_TYPE,item.ITEM_NAME,ctgau.SELF_AUTH_TYPE,xx.PER_INFO_CTG_ID,xx.ROLE_ID,"
-			+ " ROW_NUMBER() OVER (PARTITION BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,ctgau.OTHER_PERSON_AUTH_TYPE, xx.ALLOW_PER_REF_ATR, "
-			+ " xx.ALLOW_OTHER_REF_ATR ORDER BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,cm.CATEGORY_TYPE,xx.ALLOW_OTHER_REF_ATR, xx.ALLOW_PER_REF_ATR,"
-			+ " xx.OTHER_ALLOW_ADD_MULTI_ATR,xx.OTHER_ALLOW_DEL_MULTI_ATR,xx.SELF_ALLOW_ADD_MULTI_ATR,xx.SELF_ALLOW_DEL_MULTI_ATR,"
-			+ " xx.OTHER_ALLOW_ADD_HIS_ATR,xx.OTHER_ALLOW_DEL_HIS_ATR,xx.OTHER_FUTURE_HIS_AUTH_TYPE,xx.OTHER_PAST_HIS_AUTH_TYPE,"
-			+ " xx.SELF_ALLOW_ADD_HIS_ATR,xx.SELF_ALLOW_DEL_HIS_ATR,xx.SELF_FUTURE_HIS_AUTH_TYPE,xx.SELF_PAST_HIS_AUTH_TYPE,ctgau.OTHER_PERSON_AUTH_TYPE,ctgau.SELF_AUTH_TYPE,co.DISPORDER) AS ROW_NUMBER20,"
-			+ " ROW_NUMBER() OVER (PARTITION BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,ctgau.OTHER_PERSON_AUTH_TYPE, xx.ALLOW_PER_REF_ATR, "
-			+ " xx.ALLOW_OTHER_REF_ATR ORDER BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,cm.CATEGORY_TYPE,xx.ALLOW_OTHER_REF_ATR, xx.ALLOW_PER_REF_ATR,"
-			+ " xx.OTHER_ALLOW_ADD_MULTI_ATR,xx.OTHER_ALLOW_DEL_MULTI_ATR,xx.SELF_ALLOW_ADD_MULTI_ATR,xx.SELF_ALLOW_DEL_MULTI_ATR,"
-			+ " xx.OTHER_ALLOW_ADD_HIS_ATR,xx.OTHER_ALLOW_DEL_HIS_ATR,xx.OTHER_FUTURE_HIS_AUTH_TYPE,xx.OTHER_PAST_HIS_AUTH_TYPE,"
-			+ " xx.SELF_ALLOW_ADD_HIS_ATR,xx.SELF_ALLOW_DEL_HIS_ATR,xx.SELF_FUTURE_HIS_AUTH_TYPE,xx.SELF_PAST_HIS_AUTH_TYPE,ctgau.OTHER_PERSON_AUTH_TYPE,co.DISPORDER) AS ROW_NUMBER19,"
 			+ " ROW_NUMBER() OVER (PARTITION BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,ctgau.OTHER_PERSON_AUTH_TYPE, xx.ALLOW_PER_REF_ATR, "
 			+ " xx.ALLOW_OTHER_REF_ATR ORDER BY x.ROLE_CD, x.ROLE_NAME,c.CATEGORY_NAME,cm.CATEGORY_TYPE,xx.ALLOW_OTHER_REF_ATR, xx.ALLOW_PER_REF_ATR,"
 			+ " xx.OTHER_ALLOW_ADD_MULTI_ATR,xx.OTHER_ALLOW_DEL_MULTI_ATR,xx.SELF_ALLOW_ADD_MULTI_ATR,xx.SELF_ALLOW_DEL_MULTI_ATR,"
@@ -220,88 +209,67 @@ public class PersonRoleImpl implements PersonRoleRepository {
 		
 		// A7_7
 		Integer cateType = object[3] != null ? ((BigDecimal) object[3]).intValue() : null;
-		data.put(PersonRoleColumn.CAS001_83,  cateType == null || cateType != 2 ? ""
+		data.put(PersonRoleColumn.CAS001_83,  cateType == null || cateType != 2 || (object[4] != null && ((BigDecimal) object[4]).intValue() == 0) ? ""
 				: object[6] == null ? "" : ((BigDecimal) object[6]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
 		
 		// A7_8
-		data.put(PersonRoleColumn.CAS001_84, cateType == null || cateType != 2 ? ""
+		data.put(PersonRoleColumn.CAS001_84, cateType == null || cateType != 2 || (object[4] != null && ((BigDecimal) object[4]).intValue() == 0) ?  ""
 				: object[7] == null ? "" : ((BigDecimal) object[7]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
 		
 		// A7_9
-		data.put(PersonRoleColumn.CAS001_85,cateType == null || cateType != 2 ? ""
+		data.put(PersonRoleColumn.CAS001_85,cateType == null || cateType != 2 || (object[5] != null && ((BigDecimal) object[5]).intValue() == 0) ?  ""
 				: object[8] == null ? "" : ((BigDecimal) object[8]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
 		
 		// A7_10
-		data.put(PersonRoleColumn.CAS001_90,cateType == null || cateType != 2 ? ""
+		data.put(PersonRoleColumn.CAS001_90,cateType == null || cateType != 2 || (object[5] != null && ((BigDecimal) object[5]).intValue() == 0) ? ""
 				: object[9] == null ? "" : ((BigDecimal) object[9]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
 		
 		// A7_11
-		data.put(PersonRoleColumn.CAS001_91,cateType == null || cateType == 1 || cateType == 2 ? ""
+		data.put(PersonRoleColumn.CAS001_91,cateType == null || cateType == 1 || cateType == 2 || (object[4] != null && ((BigDecimal) object[4]).intValue() == 0) ? ""
 				: object[10] == null ? "" : ((BigDecimal) object[10]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
 		
 		// A7_12
-		data.put(PersonRoleColumn.CAS001_86,cateType == null || cateType == 1 || cateType == 2 ? ""
+		data.put(PersonRoleColumn.CAS001_86,cateType == null || cateType == 1 || cateType == 2 || (object[4] != null && ((BigDecimal) object[4]).intValue() == 0) ? ""
 				: object[11] == null ? "" : ((BigDecimal) object[11]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
 		
 		// A7_13
-		data.put(PersonRoleColumn.CAS001_87,cateType == null || cateType == 1 || cateType == 2 ? ""
+		data.put(PersonRoleColumn.CAS001_87,cateType == null || cateType == 1 || cateType == 2 || (object[4] != null && ((BigDecimal) object[4]).intValue() == 0) ? ""
 				: object[12] == null ? "" : checkValue3(((BigDecimal) object[12]).intValue()));
 		
 		// A7_14
-		data.put(PersonRoleColumn.CAS001_88,cateType == null || cateType == 1 || cateType == 2 ? ""
+		data.put(PersonRoleColumn.CAS001_88,cateType == null || cateType == 1 || cateType == 2 || (object[4] != null && ((BigDecimal) object[4]).intValue() == 0) ? ""
 				: object[13] == null ? "" : checkValue3(((BigDecimal) object[13]).intValue()));
 		
 		// A7_15
-		data.put(PersonRoleColumn.CAS001_92,cateType == null || cateType == 1 || cateType == 2 ? ""
+		data.put(PersonRoleColumn.CAS001_92,cateType == null || cateType == 1 || cateType == 2 || (object[5] != null && ((BigDecimal) object[5]).intValue() == 0) ?  ""
 				: object[14] == null ? "" : ((BigDecimal) object[14]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
 		
 		// A7_16
-		data.put(PersonRoleColumn.CAS001_93,cateType == null || cateType == 1 || cateType == 2 ? ""
+		data.put(PersonRoleColumn.CAS001_93,cateType == null || cateType == 1 || cateType == 2 || (object[5] != null && ((BigDecimal) object[5]).intValue() == 0) ? ""
 				: object[15] == null ? "" : ((BigDecimal) object[15]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
 		
 		// A7_17
-		data.put(PersonRoleColumn.CAS001_94,cateType == null || cateType == 1 || cateType == 2 ? ""
+		data.put(PersonRoleColumn.CAS001_94,cateType == null || cateType == 1 || cateType == 2 || (object[5] != null && ((BigDecimal) object[5]).intValue() == 0) ? ""
 				: object[16] == null ? "" : checkValue3(((BigDecimal) object[16]).intValue()));
 		
 		// A7_18
-		data.put(PersonRoleColumn.CAS001_95,cateType == null || cateType == 1 || cateType == 2 ? ""
+		data.put(PersonRoleColumn.CAS001_95,cateType == null || cateType == 1 || cateType == 2 || (object[5] != null && ((BigDecimal) object[5]).intValue() == 0) ? ""
 				: object[17] == null ? "" : checkValue3(((BigDecimal) object[17]).intValue()));
 		
 		// A7_19
 		data.put(PersonRoleColumn.CAS001_97, object[18] != null ? (String) object[18] : null);
 		
 		// A7_20
-		data.put(PersonRoleColumn.CAS001_98, object[19] != null ? ((BigDecimal) object[19]).intValue() : null);
+		data.put(PersonRoleColumn.CAS001_98, object[19] != null ? object[4] != null ? ((BigDecimal) object[4]).intValue() == 1 ? getPersonInfoItemAuth(((BigDecimal) object[19]).intValue()) : ""  : "" : "");
 		
 		// A7_21
-		data.put(PersonRoleColumn.CAS001_99, object[20] != null ? ((BigDecimal) object[20]).intValue() : null);
+		data.put(PersonRoleColumn.CAS001_99, object[20] != null ? object[5] != null ? ((BigDecimal) object[5]).intValue() == 1 ? getPersonInfoItemAuth(((BigDecimal) object[20]).intValue()) : "" : "" : "");
 		
 		return data;
 	}
 	
 
 	
-	private String checkValue1(Integer categoryType) {
-		String value = null;
-		if (categoryType == null)
-			value = "";
-		CategoryType type = EnumAdaptor.valueOf(categoryType, CategoryType.class);
-		if (type.value != 2)
-			value = VALUE_FALSE;
-		return value;
-	}
-
-	private String checkValue2(Integer categoryType) {
-		String value = null;
-		if (categoryType == null)
-			value = "";
-		CategoryType type = EnumAdaptor.valueOf(categoryType, CategoryType.class);
-		if (type.value != 3 && type.value != 4) {
-			value = VALUE_FALSE;
-		}
-		return value;
-	}
-
 	private String checkValue3(Integer authType) {
 		String value = null;
 		if (authType == 1) {
@@ -313,7 +281,26 @@ public class PersonRoleImpl implements PersonRoleRepository {
 		}
 		return value;
 	}
-
+	
+	private String getPersonInfoItemAuth(int type) {
+		String nameType = null;
+		PersonInfoAuthType personInfoAuthType = EnumAdaptor.valueOf(type,PersonInfoAuthType.class);
+		switch (personInfoAuthType) {
+		case HIDE :
+			nameType = I18NText.getText("Enum_PersonInfoAuthTypes_HIDE");
+			break;
+		case REFERENCE:
+			nameType = I18NText.getText("Enum_PersonInfoAuthTypes_REFERENCE");
+			break;
+		case UPDATE:
+			nameType = I18NText.getText("Enum_PersonInfoAuthTypes_UPDATE");
+			break;
+		default:
+			break;
+		}
+		return nameType;
+	}
+	
 	private String getTypeName(int categoryType) {
 		String nameType = null;
 		CategoryType type = EnumAdaptor.valueOf(categoryType, CategoryType.class);

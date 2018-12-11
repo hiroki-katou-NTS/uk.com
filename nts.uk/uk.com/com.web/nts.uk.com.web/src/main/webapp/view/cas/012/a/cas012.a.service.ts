@@ -32,7 +32,7 @@ module nts.uk.com.view.cas012.a.service {
     }
 
     export function exportExcel(): JQueryPromise<any> {
-        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "GrantAdminRole", domainType: "マスタリスト_ロールの付与（システム管理者）", languageId: 'ja', reportType: 0});
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "GrantAdminRole", domainType: "ロールの付与（システム管理者）", languageId: 'ja', reportType: 0});
     }
 
 }

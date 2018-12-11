@@ -19,13 +19,11 @@ public class GrantAdminRoleExportImpl implements MasterListData {
 
     private static final String COMPANY_ID_SYSADMIN = "000000000000-0000";
 
-    @Override
-    public List<MasterData> getMasterDatas(MasterListExportQuery query) {
+    private List<MasterData> getMasterDatasSysAd() {
         return grantAdminRoleRepository.getDataExport(COMPANY_ID_SYSADMIN,RoleType.SYSTEM_MANAGER.value);
     }
 
-    @Override
-    public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
+    private List<MasterHeaderColumn> getHeaderColumnsSysAd() {
         List <MasterHeaderColumn> columns = new ArrayList<>();
 
         columns.add(new MasterHeaderColumn(GrantAdminRoleColumn.CAS012_37, TextResource.localize("CAS012_37"),
@@ -33,9 +31,9 @@ public class GrantAdminRoleExportImpl implements MasterListData {
         columns.add(new MasterHeaderColumn(GrantAdminRoleColumn.CAS012_38, TextResource.localize("CAS012_38"),
                 ColumnTextAlign.LEFT, "", true));
         columns.add(new MasterHeaderColumn(GrantAdminRoleColumn.CAS012_39, TextResource.localize("CAS012_39"),
-                ColumnTextAlign.CENTER, "", true));
+                ColumnTextAlign.LEFT, "", true));
         columns.add(new MasterHeaderColumn(GrantAdminRoleColumn.CAS012_40, TextResource.localize("CAS012_40"),
-                ColumnTextAlign.CENTER, "", true));
+                ColumnTextAlign.LEFT, "", true));
 
         return columns;
     }
@@ -55,9 +53,9 @@ public class GrantAdminRoleExportImpl implements MasterListData {
         columns.add(new MasterHeaderColumn(GrantAdminRoleColumn.CAS012_38, TextResource.localize("CAS012_38"),
                 ColumnTextAlign.LEFT, "", true));
         columns.add(new MasterHeaderColumn(GrantAdminRoleColumn.CAS012_39, TextResource.localize("CAS012_39"),
-                ColumnTextAlign.CENTER, "", true));
+                ColumnTextAlign.LEFT, "", true));
         columns.add(new MasterHeaderColumn(GrantAdminRoleColumn.CAS012_40, TextResource.localize("CAS012_40"),
-                ColumnTextAlign.CENTER, "", true));
+                ColumnTextAlign.LEFT, "", true));
 
         return columns;
     }
@@ -68,19 +66,28 @@ public class GrantAdminRoleExportImpl implements MasterListData {
 
     @Override
     public List<SheetData> extraSheets(MasterListExportQuery query) {
+    	
         List<SheetData> sheetDatas = new ArrayList<>();
+        
+        SheetData sheetData = SheetData.builder()
+                .mainData(this.getMasterDatasSysAd())
+                .mainDataColumns(this.getHeaderColumnsSysAd())
+                .sheetName(TextResource.localize("CAS012_44"))
+                .build();
+        
         SheetData sheetData1 = SheetData.builder()
                 .mainData(this.getMasterDatasCompanyManager())
                 .mainDataColumns(this.getHeaderColumnsCompanyManager())
-                .sheetName(this.mainSheetName())
+                .sheetName(TextResource.localize("CAS012_45"))
                 .build();
 
         SheetData sheetData2 = SheetData.builder()
                 .mainData(this.getMasterDatasGroupCompanyManager())
                 .mainDataColumns(this.getHeaderColumns(query))
-                .sheetName(this.mainSheetName())
+                .sheetName(TextResource.localize("CAS012_46"))
                 .build();
 
+        sheetDatas.add(sheetData);
         sheetDatas.add(sheetData1);
         sheetDatas.add(sheetData2);
         return sheetDatas;

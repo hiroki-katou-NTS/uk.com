@@ -1,5 +1,6 @@
 package nts.uk.file.com.infra.role;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
 
 import java.util.List;
@@ -59,5 +60,22 @@ public class CommonRole {
 
     }
 
+    public static String getFutureDateRefPermit(int value){
+    	// enum ScheduleEmployeeRef
+    	switch (value) {
+		case 0:
+			return I18NText.getText("Enum_ScheduleEmployeeRef_ALL");
+		case 1:
+			return I18NText.getText("Enum_ScheduleEmployeeRef_ALL_INCLUDE_SUBOR");
+		case 2:
+			return I18NText.getText("Enum_ScheduleEmployeeRef_ALL_EXCLUDE_SUBOR");
+		case 3:
+			return I18NText.getText("Enum_ScheduleEmployeeRef_ALL_TEAMS");
+		case 4:
+			return I18NText.getText("Enum_ScheduleEmployeeRef_SAME_EMPLOYEE_REF_RANGE");
+        
+    	}
+    	return null;
+    }
 
 }
