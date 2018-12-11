@@ -36,6 +36,7 @@ public class WageTableQualificationDto {
                 wageTableQualification.getQualificationGroupName(),
                 wageTableQualification.getPaymentMethod(),
                 wageTableQualification.getEligibleQualificationCode().stream().map(x -> new WageTableQualificationInfoDto(
+                        x.getId(),
                         x.getQualificationCode(),
                         x.getQualificationName(),
                         x.getWageTablePaymentAmount()
