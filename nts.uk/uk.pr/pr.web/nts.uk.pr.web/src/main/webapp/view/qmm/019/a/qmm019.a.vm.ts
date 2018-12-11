@@ -672,7 +672,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
             let listLineInCtg = self.parent.parent.listLineByLineSet();
 
             for (let lineByLine: LineByLineSetting of listLineInCtg) {
-                for(let item: SettingByItem of lineByLine.listSetByItem) {
+                for(let item: SettingByItem of lineByLine.listSetByItem()) {
                     if (item.itemId() != null) listItemSetting.push(item.itemId());
                 }
             }
