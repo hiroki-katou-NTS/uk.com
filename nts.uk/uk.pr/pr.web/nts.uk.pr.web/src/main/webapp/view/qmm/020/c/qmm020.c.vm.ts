@@ -427,11 +427,11 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
         constructor(id: number,employeeCode: string, employeeName: string,salaryCode: string, salaryLayoutName: string, bonusCode: string,bonusLayoutName: string  ) {
             this.id = id;
             this.employeeCode = employeeCode;
-            this.employeeName = employeeName;
+            this.employeeName = _.escape(employeeName);
             this.salaryCode = salaryCode;
-            this.salaryLayoutName = salaryLayoutName;
+            this.salaryLayoutName = _.escape(salaryLayoutName);
             this.bonusCode = bonusCode;
-            this.bonusLayoutName = bonusLayoutName;
+            this.bonusLayoutName = _.escape(bonusLayoutName);
         }
     }
 
