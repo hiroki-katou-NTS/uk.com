@@ -2,7 +2,6 @@ package nts.uk.file.com.infra.JobInfo;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,19 +11,20 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.file.com.app.JobInfo.JobInfoColumn;
 import nts.uk.file.com.app.JobInfo.JobInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 @Stateless
-public class JobInfoImpl implements JobInfoRepository {
+public class JobInfoImpl extends JpaRepository implements JobInfoRepository {
 	
 	@PersistenceContext
 	private EntityManager entityManager;
 	
 	private static final String GET_EXPORT_EXCEL = 
-			"  SELECT job.APPLY_CONCURRENT_PERSON, info.JOB_CD, info.JOB_NAME, d.ROLE_SET_CD +' '+ s.ROLE_SET_NAME AS ROLESET_NAME"
+			"  SELECT job.APPLY_CONCURRENT_PERSON, info.JOB_CD, info.JOB_NAME, d.ROLESET_CD +' '+ s.ROLE_SET_NAME AS ROLESET_NAME"
 			+" FROM BSYMT_JOB_INFO info INNER JOIN BSYMT_JOB_HIST his ON info.CID = his.CID AND info.HIST_ID = his.HIST_ID AND info.JOB_ID = his.JOB_ID "
 						+" INNER JOIN SACMT_ROLE_SET s ON info.CID = s.CID "
 						+" INNER JOIN SACMT_ROLESET_JOB_DETAIL d ON s.ROLE_SET_CD = d.ROLESET_CD AND info.JOB_ID = d.JOB_ID"

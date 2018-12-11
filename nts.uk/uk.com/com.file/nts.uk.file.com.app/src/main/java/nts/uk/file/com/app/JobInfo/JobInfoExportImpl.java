@@ -1,6 +1,7 @@
 package nts.uk.file.com.app.JobInfo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -12,6 +13,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
+import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
 
 @Stateless
@@ -20,6 +22,7 @@ public class JobInfoExportImpl implements MasterListData{
 	
 	@Inject
 	private JobInfoRepository repository;
+	
 	
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
@@ -37,13 +40,33 @@ public class JobInfoExportImpl implements MasterListData{
 						ColumnTextAlign.LEFT, "", true));
 		return columns;
 	}
-
-	@Override
+	
+	
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		List<MasterData> datas = new ArrayList<>();
 		String date = query.getOption().toString();
 		datas = repository.getDataExport(date);
 		return datas;
+	}
+	
+	@Override
+    public List<SheetData> extraSheets(MasterListExportQuery query) {
+    	
+        List<SheetData> sheetDatas = new ArrayList<>();
+        
+//        SheetData sheetData = SheetData.builder()
+//                .mainData(this.getMasterDatas(query))
+//                .mainDataColumns(this.getHeaderColumns(query))
+//                .sheetName(TextResource.localize("CAS014_51"))
+//                .build();
+//
+//        sheetDatas.add(sheetData);
+        return Collections.emptyList();
+    }
+	
+	@Override
+	public String mainSheetName(){
+		return TextResource.localize("CAS014_51");
 	}
 	
 }

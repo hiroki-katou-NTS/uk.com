@@ -42,7 +42,7 @@ public class IndivigrantImpl implements IndivigrantRepository {
 			+ " INNER JOIN SACMT_ROLE role "
 			+ " ON gr.ROLE_ID = role.ROLE_ID"
 			+ " WHERE gr.CID = ?cid " 
-			+ " AND role.ROLE_TYPE = "+ RoleType.EMPLOYMENT.value +" OR role.ROLE_TYPE = "+ RoleType.PERSONAL_INFO.value +" AND role.ASSIGN_ATR = 0) TBL";
+			+ " AND (role.ROLE_TYPE = "+ RoleType.EMPLOYMENT.value +" OR role.ROLE_TYPE = "+ RoleType.PERSONAL_INFO.value +") AND role.ASSIGN_ATR = 0) TBL";
 
 	@Override
 	public List<MasterData> getDataExport() {
