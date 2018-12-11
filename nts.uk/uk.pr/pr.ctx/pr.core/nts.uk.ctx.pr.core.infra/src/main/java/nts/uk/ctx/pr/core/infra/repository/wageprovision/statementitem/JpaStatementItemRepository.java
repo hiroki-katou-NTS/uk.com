@@ -53,13 +53,25 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 					+ " AND f.statementItemPk.categoryAtr =:categoryAtr "
                     + " AND f.deprecatedAtr = :deprecatedAtr ";
 
-    private static final String SELECT_CUSTOM_BY_STATEMENT_ITEM =
+    private static final String SELECT_CUSTOM_BY_STATEMENT_ITEMST =
             "SELECT a.statementItemPk.categoryAtr, a.statementItemPk.itemNameCd, c.name "
                     + " FROM QpbmtStatementItem a INNER JOIN QpbmtPaymentItemSt b "
                     + " ON a.statementItemPk.cid = b.paymentItemStPk.cid "
                     + " AND a.statementItemPk.categoryAtr = b.paymentItemStPk.categoryAtr "
                     + " AND a.statementItemPk.itemNameCd = b.paymentItemStPk.itemNameCd "
                     + " INNER JOIN QpbmtStatementItemName c"
+                    + " ON a.statementItemPk.cid = c.statementItemNamePk.cid "
+                    + " AND a.statementItemPk.categoryAtr = c.statementItemNamePk.categoryAtr "
+                    + " AND a.statementItemPk.itemNameCd = c.statementItemNamePk.itemNameCd "
+                    + " WHERE  a.statementItemPk.cid =:cid "
+                    + " AND a.statementItemPk.categoryAtr = 0 OR a.statementItemPk.categoryAtr = 1"
+                    + " AND a.defaultAtr = 0"
+                    + " AND a.deprecatedAtr = 0"
+                    + " AND b.breakdownItemUseAtr = 1";
+
+    private static final String SELECT_CUSTOM_BY_STATEMENT_ITEMDEDUCTION =
+            "SELECT a.statementItemPk.categoryAtr, a.statementItemPk.itemNameCd, c.name "
+                    + " FROM QpbmtStatementItem a INNER JOIN QpbmtStatementItemName c"
                     + " ON a.statementItemPk.cid = c.statementItemNamePk.cid "
                     + " AND a.statementItemPk.categoryAtr = c.statementItemNamePk.categoryAtr "
                     + " AND a.statementItemPk.itemNameCd = c.statementItemNamePk.itemNameCd "
@@ -71,8 +83,7 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
                     + " AND a.statementItemPk.categoryAtr = 0 OR a.statementItemPk.categoryAtr = 1"
                     + " AND a.defaultAtr = 0"
                     + " AND a.deprecatedAtr = 0"
-                    + " AND b.breakdownItemUseAtr = 1"
-                    + " OR d.breakdownItemUseAtr = 1";
+                    + " AND d.breakdownItemUseAtr = 1";
 
 	@Override
 	public List<StatementItem> getAllStatementItem() {
@@ -164,7 +175,15 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 
     @Override
     public List<StatementCustom> getItemCustomByDeprecated(String cid) {
-        return this.queryProxy().query(SELECT_CUSTOM_BY_STATEMENT_ITEM, Object[].class).setParameter("cid", cid).getList(
+        return this.queryProxy().query(SELECT_CUSTOM_BY_STATEMENT_ITEMST, Object[].class).setParameter("cid", cid).getList(
+                item -> new StatementCustom(item[0] != null ? String.valueOf(item[0]) : "", item[1] != null ? String.valueOf(item[1]) : "",
+                        item[2] != null ? String.valueOf(item[2]) : "")
+        );
+    }
+
+    @Override
+    public List<StatementCustom> getItemCustomByDeprecated2(String cid) {
+        return this.queryProxy().query(SELECT_CUSTOM_BY_STATEMENT_ITEMDEDUCTION, Object[].class).setParameter("cid", cid).getList(
                 item -> new StatementCustom(item[0] != null ? String.valueOf(item[0]) : "", item[1] != null ? String.valueOf(item[1]) : "",
                         item[2] != null ? String.valueOf(item[2]) : "")
         );
