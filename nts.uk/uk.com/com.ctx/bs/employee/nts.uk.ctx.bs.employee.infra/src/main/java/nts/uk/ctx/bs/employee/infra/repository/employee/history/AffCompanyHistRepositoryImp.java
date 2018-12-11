@@ -156,7 +156,8 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 				+ " inner join BSYMT_AFF_COM_INFO i"
 				+ " on h.HIST_ID = i.HIST_ID"
 				+ " where h.CID = ?"
-				+ " and h.SID = ?";
+				+ " and h.SID = ?"
+				+ " order by h.START_DATE desc";
 		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 			stmt.setString(1, cid);
 			stmt.setString(2, employeeId);
