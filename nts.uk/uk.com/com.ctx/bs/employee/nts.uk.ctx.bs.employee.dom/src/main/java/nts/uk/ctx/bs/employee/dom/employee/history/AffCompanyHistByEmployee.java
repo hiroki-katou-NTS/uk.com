@@ -43,12 +43,16 @@ public class AffCompanyHistByEmployee extends DomainEvent
 	}
 
 	public void addAffCompanyHistItem(AffCompanyHistItem domain) {
+		this.addAffCompanyHistItemWithoutEvent(domain);
+		this.toBePublished();
+	}
+
+	public void addAffCompanyHistItemWithoutEvent(AffCompanyHistItem domain) {
 		if (lstAffCompanyHistoryItem == null) {
 			lstAffCompanyHistoryItem = new ArrayList<AffCompanyHistItem>();
 		}
 
 		lstAffCompanyHistoryItem.add(domain);
-		this.toBePublished();
 	}
 
 	@Override

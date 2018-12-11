@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -703,10 +705,10 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 	// request list 515
 	@Override
-	public List<String> getListEmployee(List<String> jobTitleIds, GeneralDate baseDate) {
+	public Set<String> getListEmployee(List<String> jobTitleIds, GeneralDate baseDate) {
 		String cid = AppContexts.user().companyId();
 		List<AffCompanyHist> listAffComHist = new ArrayList<>();
-		List<String> employee = new ArrayList<>();
+		Set<String> employee = new HashSet<>();
 		
 		// (Lấy domain [AffJobHistoryItem])
 		List<AffJobTitleHistoryItem> listAffItem = jobTitleHistoryItemRepository.findHistJob(cid, baseDate, jobTitleIds);
@@ -718,11 +720,9 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			if (!mngInfo.isEmpty()) {
 				// (Lấy domain [AffCompanyHistByEmployee], chỉ filter employee đang làm tại thời
 				// điểm baseDate)
-				for (EmployeeDataMngInfo obj : mngInfo) {
-					AffCompanyHist sid = affComHistRepo.getAffCompanyHistoryOfEmployeeAndBaseDate(obj.getEmployeeId(),
-							baseDate);
-					listAffComHist.add(sid);
-				}
+				listAffComHist = affComHistRepo.getAffCompanyHistoryOfEmployeeListAndBaseDate(
+					mngInfo.stream().map(x -> x.getEmployeeId()).collect(Collectors.toList()),
+					baseDate);
 			}
 			if (!listAffComHist.isEmpty()) {
 				// lấy list employee Id
@@ -736,7 +736,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			}
 			return employee;
 		}
-		return new ArrayList<>();
+		return new HashSet<>();
 	}
 
 	@Override
