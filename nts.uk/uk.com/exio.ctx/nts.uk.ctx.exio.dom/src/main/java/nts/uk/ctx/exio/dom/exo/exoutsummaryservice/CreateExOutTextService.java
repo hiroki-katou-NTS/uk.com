@@ -28,6 +28,7 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.StringLength;
+import nts.uk.ctx.exio.dom.exo.adapter.bs.employee.PersonInfoAdapter;
 import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.category.Association;
 import nts.uk.ctx.exio.dom.exo.category.CategorySetting;
@@ -152,6 +153,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 	
 	@Inject
 	private JapaneseErasAdapter japaneseErasAdapter;
+	
+	@Inject
+	private PersonInfoAdapter personInfoAdapter;
 	
 	@Inject
 	private FileStorage fileStorage;
@@ -821,6 +825,11 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	private void createOutputLogError(String processingId, String errorContent, String targetValue, String sid,
 			String errorItem) {
+		String employeeCode = null;
+		if (sid != null) {
+			employeeCode = personInfoAdapter.getPersonInfo(sid).getEmployeeCode();
+		}
+		
 		Optional<ExOutOpMng> exOutOpMng = exOutOpMngRepo.getExOutOpMngById(processingId);
 
 		if (!exOutOpMng.isPresent())
@@ -828,13 +837,13 @@ public class CreateExOutTextService extends ExportService<Object> {
 		exOutOpMng.get().setOpCond(ExIoOperationState.EXPORTING);
 		exOutOpMng.get().setErrCnt(exOutOpMng.get().getErrCnt() + 1);
 		exOutOpMngRepo.update(exOutOpMng.get());
-
+		
 		String companyId = AppContexts.user().companyId();
 		String outputProcessId = processingId;
 		String errorTargetValue = targetValue;
 		// in the case of dateType, never error so it always empty
 		GeneralDate errorDate = null;
-		String errorEmployee = sid;
+		String errorEmployee = employeeCode;
 		GeneralDateTime logRegisterDateTime = GeneralDateTime.now();
 		int logSequenceNumber = exOutOpMng.get().getErrCnt();
 		int processCount = exOutOpMng.get().getProCnt();
