@@ -1,12 +1,17 @@
 package nts.uk.shr.com.communicate.batch;
 
+import java.util.function.Consumer;
+
 import nts.gul.web.communicate.HttpMethod;
 import nts.gul.web.communicate.typedapi.RequestDefine;
 import nts.gul.web.communicate.typedapi.ResponseDefine;
+import nts.gul.web.communicate.typedapi.TypedCommunication;
 import nts.gul.web.communicate.typedapi.TypedWebAPI;
 import nts.uk.shr.com.communicate.PathToWebApi;
 
 public interface BatchServer {
+	
+	public static final String CUSTOM_HEADER_USER_CONTEXT = "X-UserContext";
 	
 	/**
 	 * Returns true if the batch server exists.
@@ -53,4 +58,13 @@ public interface BatchServer {
 				RequestDefine.json(requestEntityClass, HttpMethod.POST),
 				ResponseDefine.noEntity());
 	}
+	
+	/**
+	 * Execute request.
+	 * 
+	 * @param api
+	 * @param requestEntity
+	 * @param communicationBuilder
+	 */
+	<Q, S> void request(TypedWebAPI<Q, S> webApi, Q requestEntity, Consumer<TypedCommunication<Q, S>> communicationBuilder);
 }
