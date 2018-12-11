@@ -181,8 +181,8 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
             }
 
             let data: any = {
-                salary: self.salaryCode(),
-                bonus: self.bonusCode(),
+                salary: self.salaryCode() === '' ? null : self.salaryCode(),
+                bonus: self.bonusCode() === '' ? null : self.bonusCode(),
                 empId: self.selectedItem(),
                 mode: self.mode(),
                 hisId: self.hisIdSelected(),
