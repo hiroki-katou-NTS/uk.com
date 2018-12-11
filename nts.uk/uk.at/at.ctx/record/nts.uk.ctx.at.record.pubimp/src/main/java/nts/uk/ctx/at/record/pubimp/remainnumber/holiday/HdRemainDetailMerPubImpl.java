@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.pubimp.remainnumber.holiday;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -11,7 +13,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AggrResultOfAnnualLeaveEachMonth;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AnnLeaveOfThisMonth;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.AnnLeaveRemainNumberPub;
@@ -23,9 +24,19 @@ import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.GetReserveLeaveNumbers
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.GetRsvLeaNumAfterCurrentMon;
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.ReserveLeaveNowExport;
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.RsvLeaUsedCurrentMonExport;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffManagementQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.InterimRemainAggregateOutputData;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
@@ -44,7 +55,15 @@ public class HdRemainDetailMerPubImpl implements HdRemainDetailMerPub{
 	private GetRsvLeaNumAfterCurrentMon rq364;
 	/** 月別集計が必要とするリポジトリ */
 	@Inject
-	private RepositoriesRequiredByMonthlyAggr repoRqMonAgg;
+	private EmpEmployeeAdapter empEmployee;
+	@Inject
+	private AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo;
+	@Inject
+	private LengthServiceRepository lengthServiceRepo;
+	@Inject
+	private YearHolidayRepository yearHolidayRepo;
+	@Inject
+	private AnnualPaidLeaveSettingRepository annualPaidLeaveSet;
 	
 	/**
 	 * Mer RQ265,268,269,363,364,369
@@ -64,12 +83,30 @@ public class HdRemainDetailMerPubImpl implements HdRemainDetailMerPub{
 		}
 		String companyId = AppContexts.user().companyId();
 		MonAggrCompanySettings companySets = null;
-		if(checkCall.isCall265() || checkCall.isCall268() || checkCall.isCall363() || checkCall.isCall364()){
-			companySets = MonAggrCompanySettings.loadSettings(companyId, repoRqMonAgg);
-		}
-//		MonAggrEmployeeSettings employeeSets = MonAggrEmployeeSettings.loadSettings(
-//				companyId, employeeId, period, repoRqMonAgg);
 		MonAggrEmployeeSettings employeeSets = null;
+		if(checkCall.isCall265() || checkCall.isCall268() || checkCall.isCall363() || checkCall.isCall364()){
+			employeeSets = new MonAggrEmployeeSettings();
+			EmployeeImport employee = empEmployee.findByEmpId(employeeId);
+			Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfoOpt = annLeaEmpBasicInfoRepo.get(employeeId);
+			employeeSets.setEmployee(employee);
+			employeeSets.setAnnualLeaveEmpBasicInfoOpt(annualLeaveEmpBasicInfoOpt);
+			companySets = new MonAggrCompanySettings();
+			AnnualPaidLeaveSetting annualLeaveSet = annualPaidLeaveSet.findByCompanyId(companyId);
+			String grantTableCode = annualLeaveEmpBasicInfoOpt.get().getGrantRule().getGrantTableCode().v();
+			Optional<GrantHdTblSet> grantHdTblSetOpt = yearHolidayRepo.findByCode(companyId, grantTableCode);
+			Optional<List<LengthServiceTbl>> lengthServiceTblsOpt = Optional.ofNullable(this.lengthServiceRepo.findByCode(companyId, grantTableCode));
+			companySets.setAnnualLeaveSet(annualLeaveSet);
+			ConcurrentMap<String, GrantHdTblSet> grantHdTblSetMap = new ConcurrentHashMap<>();
+			if(grantHdTblSetOpt.isPresent()){
+				grantHdTblSetMap.put(grantTableCode, grantHdTblSetOpt.get());
+			}
+			companySets.setGrantHdTblSetMap(grantHdTblSetMap);
+			ConcurrentMap<String, List<LengthServiceTbl>> lengthServiceTblListMap = new ConcurrentHashMap<>();
+			if(lengthServiceTblsOpt.isPresent()){
+				lengthServiceTblListMap.put(grantTableCode, lengthServiceTblsOpt.get());
+			}
+			companySets.setLengthServiceTblListMap(lengthServiceTblListMap);
+		}
 		//265
 		AnnLeaveOfThisMonth result265 = null;
 		if(checkCall.isCall265()){
