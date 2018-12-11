@@ -51,7 +51,9 @@ module nts.uk.pr.view.kmf001.c {
         export function findSetting(): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.findSetting);
         }
-        
+         export function saveAsExcel(languageId: string): JQueryPromise<any> {
+            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "AnnPaidLeave", domainType: "年次有給休暇", languageId: languageId, reportType: 0});
+        }
         /**
         * Model namespace.
         */
