@@ -49,7 +49,7 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
                     return item.itemNameCd == value;
                 });
                 self.dataScreen().itemNameCode(itemName.itemNameCd);
-                self.dataScreen().name(itemName.name);
+                self.dataScreen().shortName(itemName.shortName);
                 self.getDataAccordion().done(() => {
                     // 選択モードへ移行する
                     self.selectedMode();
@@ -381,7 +381,7 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             }
             let result = {
                 itemNameCode: self.dataScreen().itemNameCode(),
-                name: self.dataScreen().name()
+                shortName: self.dataScreen().shortName()
             };
             windows.setShared("QMM019F_RESULTS", result);
             windows.close();
@@ -438,7 +438,7 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
     interface IStatementItem {
         categoryAtr: number;
         itemNameCd: string;
-        name: string;
+        shortName: string;
         defaultAtr: number;
     }
 
@@ -452,9 +452,9 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
          */
         itemNameCd: string;
         /**
-         * 名称
+         * 略名
          */
-        name: string;
+        shortName: string;
         /**
          * 既定区分
          */
@@ -464,13 +464,13 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             if (isNullOrUndefined(data)) {
                 this.categoryAtr = null;
                 this.itemNameCd = null;
-                this.name = null;
+                this.shortName = null;
                 this.defaultAtr = null;
                 return;
             }
             this.categoryAtr = data.categoryAtr;
             this.itemNameCd = data.itemNameCd;
-            this.name = data.name;
+            this.shortName = data.shortName;
             this.defaultAtr = data.defaultAtr;
         }
 
@@ -496,9 +496,9 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
          */
         itemNameCode: KnockoutObservable<string> = ko.observable(null);
         /**
-         * 名称
+         * 略名
          */
-        name: KnockoutObservable<string> = ko.observable(null);
+        shortName: KnockoutObservable<string> = ko.observable(null);
         /**
          * 範囲値の属性
          */

@@ -44,7 +44,7 @@ module nts.uk.pr.view.qmm019.g.viewmodel {
                     return item.itemNameCd == value;
                 })
                 self.dataScreen().itemNameCode(itemName.itemNameCd);
-                self.dataScreen().name(itemName.name);
+                self.dataScreen().shortName(itemName.shortName);
                 // 選択モードへ移行する
                 self.selectedMode();
                 self.categoryAtrText(shareModel.getCategoryAtrText(self.categoryAtr));
@@ -55,14 +55,12 @@ module nts.uk.pr.view.qmm019.g.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             block.invisible();
-            let params: IParams = <IParams>{};
-            params.itemNameCode = "0d001";
-            params.itemNameCdExcludeList = [];
+            let params: IParams = windows.getShared("QMM019_A_TO_G_PARAMS");
             self.params = params;
             let dto = {
                 categoryAtr: self.categoryAtr,
                 itemNameCdSelected: self.params.itemNameCode,
-                itemNameCdExcludeList: self.params.itemNameCdExcludeList
+                itemNameCdExcludeList: self.params.listItemSetting
             };
             service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
                 self.itemNames(StatementItem.fromApp(data));
@@ -152,7 +150,7 @@ module nts.uk.pr.view.qmm019.g.viewmodel {
             let dto = {
                 categoryAtr: self.categoryAtr,
                 itemNameCdSelected: self.params.itemNameCode,
-                itemNameCdExcludeList: self.params.itemNameCdExcludeList
+                itemNameCdExcludeList: self.params.listItemSetting
             };
             service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
                 self.itemNames(StatementItem.fromApp(data));
@@ -167,7 +165,7 @@ module nts.uk.pr.view.qmm019.g.viewmodel {
             let self = this;
             let result = {
                 itemNameCode: self.dataScreen().itemNameCode(),
-                name: self.dataScreen().name()
+                shortName: self.dataScreen().shortName()
             };
             windows.setShared("QMM019G_RESULTS", result);
             windows.close();
@@ -191,7 +189,7 @@ module nts.uk.pr.view.qmm019.g.viewmodel {
     interface IStatementItem {
         categoryAtr: number;
         itemNameCd: string;
-        name: string;
+        shortName: string;
         defaultAtr: number;
     }
 
@@ -205,9 +203,9 @@ module nts.uk.pr.view.qmm019.g.viewmodel {
          */
         itemNameCd: string;
         /**
-         * 名称
+         * 略名
          */
-        name: string;
+        shortName: string;
         /**
          * 既定区分
          */
@@ -217,13 +215,13 @@ module nts.uk.pr.view.qmm019.g.viewmodel {
             if (isNullOrUndefined(data)) {
                 this.categoryAtr = null;
                 this.itemNameCd = null;
-                this.name = null;
+                this.shortName = null;
                 this.defaultAtr = null;
                 return;
             }
             this.categoryAtr = data.categoryAtr;
             this.itemNameCd = data.itemNameCd;
-            this.name = data.name;
+            this.shortName = data.shortName;
             this.defaultAtr = data.defaultAtr;
         }
 
@@ -237,7 +235,7 @@ module nts.uk.pr.view.qmm019.g.viewmodel {
 
     interface IParams {
         itemNameCode: string;
-        itemNameCdExcludeList: Array<string>;
+        listItemSetting: Array<string>;
     }
 
     class Params {
@@ -246,8 +244,8 @@ module nts.uk.pr.view.qmm019.g.viewmodel {
          */
         itemNameCode: KnockoutObservable<string> = ko.observable(null);
         /**
-         * 名称
+         * 略名
          */
-        name: KnockoutObservable<string> = ko.observable(null);
+        shortName: KnockoutObservable<string> = ko.observable(null);
     }
 }

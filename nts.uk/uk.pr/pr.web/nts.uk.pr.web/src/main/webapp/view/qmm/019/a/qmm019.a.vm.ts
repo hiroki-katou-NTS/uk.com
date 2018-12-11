@@ -693,7 +693,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                             let params = getShared("QMM019D_RESULTS");
 
                             if(params) {
-                                self.shortName(params.name);
+                                self.shortName(params.shortName);
                                 self.itemId(params.itemNameCode);
                                 self.paymentItemDetailSet = params.detail;
                             }
@@ -714,7 +714,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                             let params = getShared("QMM019E_RESULTS");
 
                             if(params) {
-                                self.shortName(params.name);
+                                self.shortName(params.shortName);
                                 self.itemId(params.itemNameCode);
                                 self.deductionItemDetailSet = params.detail;
                             }
@@ -734,7 +734,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                             let params = getShared("QMM019F_RESULTS");
 
                             if(params) {
-                                self.shortName(params.name);
+                                self.shortName(params.shortName);
                                 self.itemId(params.itemNameCode);
                             }
                         });
@@ -751,7 +751,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                             let params = getShared("QMM019G_RESULTS");
 
                             if(params) {
-                                self.shortName(params.name);
+                                self.shortName(params.shortName);
                                 self.itemId(params.itemNameCode);
                             }
                         });

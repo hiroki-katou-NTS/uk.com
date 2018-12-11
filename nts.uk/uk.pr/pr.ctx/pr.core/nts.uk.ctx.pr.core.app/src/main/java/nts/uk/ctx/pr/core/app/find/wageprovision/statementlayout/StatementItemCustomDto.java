@@ -18,9 +18,9 @@ public class StatementItemCustomDto {
     private String itemNameCd;
 
     /**
-     * 名称
+     * 略名
      */
-    private String name;
+    private String shortName;
 
     /**
      * 既定区分
@@ -31,7 +31,7 @@ public class StatementItemCustomDto {
         this.key = String.valueOf(domain.getCategoryAtr()) + domain.getItemNameCd();
         this.categoryAtr = domain.getCategoryAtr();
         this.itemNameCd = domain.getItemNameCd();
-        this.name = domain.getName();
+        this.shortName = domain.getShortName();
         this.defaultAtr = domain.getDefaultAtr();
     }
 }
