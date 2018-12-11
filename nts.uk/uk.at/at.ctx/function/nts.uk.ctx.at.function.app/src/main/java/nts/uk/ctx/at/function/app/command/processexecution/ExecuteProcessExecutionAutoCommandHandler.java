@@ -54,7 +54,10 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecution
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogHistory;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionTask;
+import nts.uk.ctx.at.function.dom.processexecution.personalschedule.CreateScheduleYear;
+import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreationPeriod;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetClassification;
+import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetMonth;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetSetting;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskLogRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskSettingRepository;
@@ -449,7 +452,11 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		if (!this.createSchedule(context, execId, procExec, procExecLog)) {
 			// ドメインモデル「更新処理自動実行ログ」を更新する
 			// 各処理の終了状態 ＝ [スケジュールの作成、強制終了]
-			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.FORCE_END);
+			if(procExec.getProcessExecType() == ProcessExecType.RE_CREATE) {
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.ABNORMAL_END);
+			}else {
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.FORCE_END);
+			}
 			// 各処理の終了状態 ＝ [日別作成、未実施]
 			this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CREATION, EndStatus.NOT_IMPLEMENT);
 			// 各処理の終了状態 ＝ [日別計算、未実施]
@@ -565,9 +572,10 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				this.procExecLogRepo.update(procExecLog);
 				return true;
 			}
-
+			//新入社員作成区分（Boolean）←属性「新入社員を作成」
+			boolean checkCreateEmployee = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isCreateEmployee();
 			// 期間の計算
-			DatePeriod calculateSchedulePeriod = this.calculateSchedulePeriod(procExec, procExecLog);
+			DatePeriod calculateSchedulePeriod = this.calculateSchedulePeriod(procExec, procExecLog,checkCreateEmployee);
 
 			/*
 			 * 対象社員を取得 TODO
@@ -776,7 +784,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			scheduleErrorLogGeterCommand.setToDate(GeneralDate.today());
 			// ドメインモデル「スケジュール作成エラーログ」を取得する
 			List<ScheduleErrorLog> listError = this.scheCreExeErrorLogHandler
-					.getListError(new ScheduleErrorLogGeterCommand(), AppContexts.user().employeeId());
+					.getListError(scheduleErrorLogGeterCommand, AppContexts.user().employeeId());
 
 			ExecutionLogImportFn param = new ExecutionLogImportFn();
 			List<ExecutionLogErrorDetailFn> listErrorAndEmpId = new ArrayList<>();
@@ -862,6 +870,13 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		executionLogAdapterFn.updateExecuteLog(param);
 
 		if (isInterruption) {
+			return false;
+		}
+		
+		boolean checkError = this.scheCreExeErrorLogHandler
+				.checkExistErrorByExeId(execId);
+		//再実行の場合にExceptionが発生したかどうかを確認する。
+		if(checkError == true && procExec.getProcessExecType() == ProcessExecType.RE_CREATE) {
 			return false;
 		}
 		return true;
@@ -1758,7 +1773,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	 * @param procExec
 	 * @return 期間
 	 */
-	private DatePeriod calculateSchedulePeriod(ProcessExecution procExec, ProcessExecutionLog procExecLog) {
+	private DatePeriod calculateSchedulePeriod(ProcessExecution procExec, ProcessExecutionLog procExecLog,boolean checkCreateEmployee) {
 
 		GeneralDate today = GeneralDate.today();
 		int targetMonth = procExec.getExecSetting().getPerSchedule().getPeriod().getTargetMonth().value;
@@ -1771,12 +1786,23 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			startDate = GeneralDate.ymd(today.year(), startMonth, targetDate);
 			break;
 		case 1:
-			startMonth = today.month() + 1;
-			startDate = GeneralDate.ymd(today.year(), startMonth, targetDate);
+			startMonth = today.month();
+			startDate = GeneralDate.ymd(today.year(), startMonth, targetDate).addMonths(1);
 			break;
 		case 2:
-			startMonth = today.month() + 2;
-			startDate = GeneralDate.ymd(today.year(), startMonth, targetDate);
+			startMonth = today.month();
+			startDate = GeneralDate.ymd(today.year(), startMonth, targetDate).addMonths(2);
+			break;
+		//開始月を指定する の場合
+		case 3: 
+			PersonalScheduleCreationPeriod creationPeriod =  procExec.getExecSetting().getPerSchedule().getPeriod();
+			//個人スケジュール作成期間の年を計算する
+			int year = GeneralDate.today().year();
+			if(creationPeriod.getDesignatedYear().get() == CreateScheduleYear.FOLLOWING_YEAR ) {
+				year = year + 1;
+			}
+			//個人スケジュール作成期間の月日を計算する
+			startDate = GeneralDate.ymd(year, creationPeriod.getStartMonthDay().get().getMonth(), creationPeriod.getStartMonthDay().get().getDay());
 			break;
 		default:
 			startDate = GeneralDate.ymd(today.year(), startMonth, targetDate);
@@ -1784,17 +1810,33 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		}
 		int createPeriod = procExec.getExecSetting().getPerSchedule().getPeriod().getCreationPeriod().v().intValue();
 		GeneralDate endDate;
-		if (targetDate == 1) {
-			if (createPeriod == 1) {
-				endDate = GeneralDate.ymd(today.year(), startMonth, 1);
-				endDate = GeneralDate.ymd(today.year(), startMonth, endDate.localDate().getMonth().maxLength());
-			} else {
-				endDate = GeneralDate.ymd(today.year(), startMonth + createPeriod - 1, 1);
-				endDate = GeneralDate.ymd(today.year(), startMonth + createPeriod - 1,
-						endDate.localDate().getMonth().maxLength());
+		if(targetMonth == TargetMonth.DESIGNATE_START_MONTH.value) {
+			PersonalScheduleCreationPeriod creationPeriod =  procExec.getExecSetting().getPerSchedule().getPeriod();
+			//個人スケジュール作成期間の年を計算する
+			int year = GeneralDate.today().year();
+			if(creationPeriod.getDesignatedYear().get() == CreateScheduleYear.FOLLOWING_YEAR ) {
+				year = year + 1;
 			}
-		} else {
-			endDate = GeneralDate.ymd(today.year(), startMonth + createPeriod, targetDate);
+			//個人スケジュール作成期間の月日を計算する
+			endDate = GeneralDate.ymd(year, creationPeriod.getStartMonthDay().get().getMonth(), creationPeriod.getStartMonthDay().get().getDay());
+		}else {
+			if (targetDate == 1) {
+				endDate = GeneralDate.ymd(startDate.year(), startDate.month(), 1);
+				endDate = GeneralDate.ymd(startDate.year(), startDate.month(), endDate.lastDateInMonth()).addMonths(createPeriod);
+			} else {
+				GeneralDate dateTest = GeneralDate.ymd(startDate.year(), startDate.month() , 1).addMonths(createPeriod);
+				int maxdate = dateTest.lastDateInMonth();
+				if(maxdate<(targetDate-1)) {
+					targetDate = maxdate;
+				}
+				endDate = GeneralDate.ymd(startDate.year(), startDate.month() , targetDate).addMonths(createPeriod).addDays(-1);
+			}
+		}
+		//パラメータ「新入社員作成区分」を判断 : true
+		if(checkCreateEmployee) {
+			//全締めから一番早い期間.開始日を取得する
+			//開始日を取得した開始日に置き換える
+			startDate = getMinPeriodFromStartDate(AppContexts.user().companyId()).start();
 		}
 
 		if (procExecLog.getEachProcPeriod() == null || procExecLog.getEachProcPeriod().isPresent()) {

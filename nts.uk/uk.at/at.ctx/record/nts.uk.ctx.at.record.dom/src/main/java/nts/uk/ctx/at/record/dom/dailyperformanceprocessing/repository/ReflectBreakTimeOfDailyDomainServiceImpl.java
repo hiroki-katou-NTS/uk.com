@@ -275,7 +275,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		} else {
 			// 休出かどうかの判断
 			int weekdayHolidayClassification = this.checkHolidayOrNot(workTypeOpt);
-			if (WorkInfo.getRecordInfo().getWorkTimeCode() != null) {
+			if (WorkInfo.getRecordInfo().getWorkTimeCode() != null) {	
 				String workTimeCode = WorkInfo.getRecordInfo().getWorkTimeCode().v();
 				Optional<WorkTimeSetting> WorkTimeSettingOptional = this.workTimeSettingRepo.findByCode(companyId,
 						workTimeCode);
@@ -377,7 +377,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		FlexWorkSetting flexWorkSetting = fws.get();
 		List<DeductionTime> lstTimezone = null;
 		boolean fixRestTime = true;
-		if ("平日".equals(weekdayHolidayClassification)) {
+		if (weekdayHolidayClassification == 0) {
 			List<FlexHalfDayWorkTime> lstHalfDayWorkTimezone = flexWorkSetting.getLstHalfDayWorkTimezone();
 
 			switch (checkWorkDay.value) {

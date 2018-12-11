@@ -286,6 +286,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 				data.scheduleTimes.forEach(c -> {
 					this.commandProxy().remove(getEntityManager().merge(c));
 				});
+				data.scheduleTimes = new ArrayList<>();
 //				this.getEntityManager().flush();
 			} else {
 				if (data.scheduleTimes == null || data.scheduleTimes.isEmpty()) {
