@@ -64,7 +64,7 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
                     + " AND a.statementItemPk.categoryAtr = c.statementItemNamePk.categoryAtr "
                     + " AND a.statementItemPk.itemNameCd = c.statementItemNamePk.itemNameCd "
                     + " WHERE  a.statementItemPk.cid =:cid "
-                    + " AND a.statementItemPk.categoryAtr = 0 OR a.statementItemPk.categoryAtr = 1"
+                    + " AND (a.statementItemPk.categoryAtr = 0 OR a.statementItemPk.categoryAtr = 1) "
                     + " AND a.defaultAtr = 0"
                     + " AND a.deprecatedAtr = 0"
                     + " AND b.breakdownItemUseAtr = 1";
@@ -80,7 +80,7 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
                     + " AND a.statementItemPk.categoryAtr = d.deductionItemStPk.categoryAtr "
                     + " AND a.statementItemPk.itemNameCd = d.deductionItemStPk.itemNameCd "
                     + " WHERE  a.statementItemPk.cid =:cid "
-                    + " AND a.statementItemPk.categoryAtr = 0 OR a.statementItemPk.categoryAtr = 1"
+                    + " AND (a.statementItemPk.categoryAtr = 0 OR a.statementItemPk.categoryAtr = 1) "
                     + " AND a.defaultAtr = 0"
                     + " AND a.deprecatedAtr = 0"
                     + " AND d.breakdownItemUseAtr = 1";
