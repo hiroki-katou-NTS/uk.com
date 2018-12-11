@@ -93,7 +93,8 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 		
 		/** どちらか一方が 年休 or 特別休暇 の場合 */
 		if (wt.getDailyWork().isAnnualOrSpecialHoliday()) {
-			return EventHandleResult.withResult(EventHandleAction.UPDATE, deleteTimeLeave(true, command));
+			return EventHandleResult.onFail();
+			//return EventHandleResult.withResult(EventHandleAction.UPDATE, deleteTimeLeave(true, command));
 		}
 		return EventHandleResult.withResult(EventHandleAction.UPDATE, deleteTimeLeave(false, command));
 	}
