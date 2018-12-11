@@ -18,7 +18,7 @@ public class JpaDetailFormulaSettingRepository extends JpaRepository implements 
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtDetailFormulaSetting f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE f.detailFormulaSetPk.historyID =:historyID ";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE f.detailFormulaSetPk.historyID =:historyID ORDER BY f.detailFormulaSetPk.elementOrder";
 
     private static final String REMOVE_BY_HISTORY = "DELETE FROM QpbmtDetailFormulaSetting f WHERE f.detailFormulaSetPk.historyID =:historyID ";
     private static final String REMOVE_BY_FORMULA_CODE = "DELETE FROM QpbmtDetailFormulaSetting f WHERE f.detailFormulaSetPk.formulaCode =:formulaCode ";
