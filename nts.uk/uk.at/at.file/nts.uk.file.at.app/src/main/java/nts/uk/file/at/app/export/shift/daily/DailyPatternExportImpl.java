@@ -21,7 +21,6 @@ public class DailyPatternExportImpl implements MasterListData {
     @Inject
     private DailyPatternExRepository mDailyPatternExRepository;
 
-    private List<MasterData> masterData = new ArrayList<MasterData>();
     private static final String KSM003_37 = "コードカラム";
     private static final String KSM003_38 = "名称カラム";
     private static final String KSM003_39 = "勤務種類カラム";
@@ -40,7 +39,7 @@ public class DailyPatternExportImpl implements MasterListData {
         columns.add(
                 new MasterHeaderColumn(KSM003_40, TextResource.localize("KSM003_40"), ColumnTextAlign.LEFT, "", true));
         columns.add(
-                new MasterHeaderColumn(KSM003_41, TextResource.localize("KSM003_41"), ColumnTextAlign.LEFT, "",true));
+                new MasterHeaderColumn(KSM003_41, TextResource.localize("KSM003_41"), ColumnTextAlign.RIGHT, "",true));
 
         return columns;
     }

@@ -10,6 +10,7 @@ module nts.uk.com.view.cas014.a {
     import error = nts.uk.ui.errors;
     export module viewmodel {
         export class ScreenModel {
+            langId: KnockoutObservable<string> = ko.observable('ja');
             date: KnockoutObservable<string>;
 
             roleSetList: KnockoutObservableArray<RoleSet>;
@@ -123,6 +124,19 @@ module nts.uk.com.view.cas014.a {
                     self.firstLoadTab2(false);
                 }
             }
+            
+            saveAsExcel_tab1(): void {
+            var self = this;
+            nts.uk.ui.block.grayout();
+            let langId = self.langId();
+            let date = self.date();
+            service.saveAsExcel_tab1(langId, date).done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+        }
 
         }
     }

@@ -14,7 +14,7 @@ module nts.uk.com.view.cas013.a {
                 saveAsExcel: "file/at/personrole/saveAsExcel"
             }
             constructor() {}
-            saveAsExcel(languageId: string, rollType: number): JQueryPromise<any> {
+            saveAsExcel(languageId: string): JQueryPromise<any> {
                 return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Indivigrant", domainType: "勤務種類の登録", languageId: languageId, reportType: 0});
             }
             

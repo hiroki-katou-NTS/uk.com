@@ -51,8 +51,8 @@
 					<button tabindex="5"
 						data-bind="click : openDialogB , enable : isCopy	 ">#{i18n.getText('CAS005_14')}</button>
 					<!--Export Excel-->
-					<button tabindex="3" class="danger"
-							data-bind="click : exportExcel , enable : isDelete">#{i18n.getText('CAS005_12')}</button>
+					<button tabindex="5"
+							data-bind="click : exportExcel , enable : isDelete">#{i18n.getText('CAS005_130')}</button>
 				</div>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
@@ -71,7 +71,8 @@
 						<tr>
 							<td>
 								<div style="padding-right: 20px; padding-bottom: 5px;"
-									data-bind="ntsFormLabel: {required: true,constraint:['RoleCode', 'RoleName'] }">#{i18n.getText('CAS005_30')}</div>
+
+									 data-bind="ntsFormLabel: {required: true,constraint:['RoleCode', 'RoleName'] }">#{i18n.getText('CAS005_30')}</div>
 							</td>
 							<td><input id="roleTypeCd" tabindex="7" style="width: 70px;"
 								data-bind="ntsTextEditor: {value: roleCode, name:'#{i18n.getText('CAS005_31')}', constraint: 'RoleCode',required: true, enable : enableRoleCode }" />
