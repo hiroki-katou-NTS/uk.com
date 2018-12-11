@@ -705,10 +705,10 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 	// request list 515
 	@Override
-	public Set<String> getListEmployee(List<String> jobTitleIds, GeneralDate baseDate) {
+	public List<String> getListEmployee(List<String> jobTitleIds, GeneralDate baseDate) {
 		String cid = AppContexts.user().companyId();
 		List<AffCompanyHist> listAffComHist = new ArrayList<>();
-		Set<String> employee = new HashSet<>();
+		List<String> employee = new ArrayList<>();
 		
 		// (Lấy domain [AffJobHistoryItem])
 		List<AffJobTitleHistoryItem> listAffItem = jobTitleHistoryItemRepository.findHistJob(cid, baseDate, jobTitleIds);
@@ -736,7 +736,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			}
 			return employee;
 		}
-		return new HashSet<>();
+		return new ArrayList<>();
 	}
 
 	@Override

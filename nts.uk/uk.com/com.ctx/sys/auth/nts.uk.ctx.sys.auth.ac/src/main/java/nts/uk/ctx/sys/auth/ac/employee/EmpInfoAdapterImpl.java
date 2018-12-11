@@ -107,7 +107,7 @@ public class EmpInfoAdapterImpl implements EmpInfoAdapter {
 	}
 
 	@Override
-	public Set<String> getListEmployee(List<String> jobTitleIds, GeneralDate baseDate) {
+	public List<String> getListEmployee(List<String> jobTitleIds, GeneralDate baseDate) {
 		return syEmployeePub.getListEmployee(jobTitleIds, baseDate);
 	}
 
