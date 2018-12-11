@@ -34,21 +34,21 @@ public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerat
 			Workbook wb = reportContext.getWorkbook();
 			WorksheetCollection wsc = wb.getWorksheets();
 			Worksheet ws = wsc.get(0);
-			StatementLayoutRange ranges = new StatementLayoutRange(wsc, ws);
+			StatementLayoutPrint sttPrint = new StatementLayoutPrint(wsc, ws);
 			HorizontalPageBreakCollection pageBreaks = ws.getHorizontalPageBreaks();
-			int offset = ranges.getStatementLayout().getRowCount();
+			int offset = sttPrint.getStatementLayout().getRowCount();
 			for (StatementLayoutSetExportData stt : exportData) {
 				String statement = "【" + stt.getStatementCode() + "　" + stt.getStatementName() + "】";
 				String processingDate = TextResource.localize("QMM019_204") + "：" + stt.getProcessingDate().year() + "年"
 						+ stt.getProcessingDate().month() + "月";
-				offset = ranges.printHeader(statement, processingDate, offset);
-				offset = this.printCtg(ranges, stt, CategoryAtr.PAYMENT_ITEM, offset) + 1;
-				offset = this.printCtg(ranges, stt, CategoryAtr.DEDUCTION_ITEM, offset) + 1;
-				offset = this.printCtg(ranges, stt, CategoryAtr.ATTEND_ITEM, offset);
-				offset = this.printCtg(ranges, stt, CategoryAtr.REPORT_ITEM, offset);
+				offset = sttPrint.printHeader(statement, processingDate, offset);
+				offset = this.printCtg(sttPrint, stt, CategoryAtr.PAYMENT_ITEM, offset) + 1;
+				offset = this.printCtg(sttPrint, stt, CategoryAtr.DEDUCTION_ITEM, offset) + 1;
+				offset = this.printCtg(sttPrint, stt, CategoryAtr.ATTEND_ITEM, offset);
+				offset = this.printCtg(sttPrint, stt, CategoryAtr.REPORT_ITEM, offset);
 				pageBreaks.add(offset);
 			}
-			ranges.deleteOrginRange();
+			sttPrint.deleteOrginRange();
 			reportContext.processDesigner();
 			reportContext.saveAsExcel(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
 		} catch (Exception e) {
@@ -56,7 +56,7 @@ public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerat
 		}
 	}
 
-	private int printCtg(StatementLayoutRange ranges, StatementLayoutSetExportData stt, CategoryAtr ctg, int offset) {
+	private int printCtg(StatementLayoutPrint sttPrint, StatementLayoutSetExportData stt, CategoryAtr ctg, int offset) {
 		Optional<SettingByCtgExportData> setByCtgOtp = stt.getListSettingByCtg().stream()
 				.filter(x -> ctg.equals(x.getCtgAtr())).findFirst();
 		if (!setByCtgOtp.isPresent()) {
@@ -80,23 +80,23 @@ public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerat
 			} else if (line.getLineNumber() == lastLine) {
 				pos = LinePosition.LAST;
 			}
-			offset = this.printLine(ranges, line, ctg, pos, offset);
+			offset = this.printLine(sttPrint, line, ctg, pos, offset);
 		}
 
 		return offset;
 	}
 
-	private int printLine(StatementLayoutRange ranges, LineByLineSettingExportData line, CategoryAtr ctg,
+	private int printLine(StatementLayoutPrint sttPrint, LineByLineSettingExportData line, CategoryAtr ctg,
 			LinePosition pos, int offset) {
 		switch (ctg) {
 		case PAYMENT_ITEM:
-			return ranges.printPaymentItem(line, pos, offset);
+			return sttPrint.printPaymentItem(line, pos, offset);
 		case DEDUCTION_ITEM:
-			return ranges.printDeductionItem(line, offset);
+			return sttPrint.printDeductionItem(line, pos, offset);
 		case ATTEND_ITEM:
-			return ranges.printAttendItem(line, offset);
+			return sttPrint.printAttendItem(line, pos, offset);
 		case REPORT_ITEM:
-			return ranges.printReportItem(line, offset);
+			return sttPrint.printReportItem(line, pos, offset);
 		case OTHER_ITEM:
 			return offset;
 		}
