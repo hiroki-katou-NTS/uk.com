@@ -67,10 +67,16 @@ public class QpbmtStateCorHisIndi extends UkJpaEntity implements Serializable {
     }
 
     public StateLinkSetIndivi toDomain() {
-        return new StateLinkSetIndivi(this.stateCorHisIndiPk.hisId, new StatementCode(this.salaryCode), new StatementCode(this.bonusCode));
+        return new StateLinkSetIndivi(this.stateCorHisIndiPk.hisId,
+                this.salaryCode == null ? null : new StatementCode(this.salaryCode),
+                this.bonusCode == null ? null : new StatementCode(this.bonusCode));
     }
     public static QpbmtStateCorHisIndi toEntity(String empID,  YearMonthHistoryItem history, String salaryLayoutCode, String bonusLayoutCode) {
-        return new QpbmtStateCorHisIndi(new QpbmtStateCorHisIndiPk(empID, history.identifier()), history.start().v(), history.end().v(),salaryLayoutCode,bonusLayoutCode);
+        return new QpbmtStateCorHisIndi(new QpbmtStateCorHisIndiPk(empID, history.identifier()),
+                history.start().v(),
+                history.end().v(),
+                salaryLayoutCode == null ? null : salaryLayoutCode,
+                bonusLayoutCode == null? null : bonusLayoutCode);
     }
 
 }

@@ -330,9 +330,12 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
         openScreenM(item){
             let self = this;
             let rs = _.find(self.listStateCorrelationHis(),{hisId: self.currentSelectedHis()});
+
             setShared(model.PARAMETERS_SCREEN_M.INPUT,{
-                startYearMonth: rs ? rs.startYearMonth : 0
+                startYearMonth: rs ? rs.startYearMonth : 0,
+                statementCode : self.salaryCode()
             });
+
             modal("/view/qmm/020/m/index.xhtml").onClosed(()=>{
                 let params = getShared(model.PARAMETERS_SCREEN_M.OUTPUT);
                 if(params){
@@ -348,7 +351,8 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
             let self = this;
             let rs = _.find(self.listStateCorrelationHis(),{hisId: self.currentSelectedHis()});
             setShared(model.PARAMETERS_SCREEN_M.INPUT,{
-                startYearMonth: rs ? rs.startYearMonth : 0
+                startYearMonth: rs ? rs.startYearMonth : 0,
+                statementCode : self.bonusCode()
             });
             modal("/view/qmm/020/m/index.xhtml").onClosed(()=>{
                 let params = getShared(model.PARAMETERS_SCREEN_M.OUTPUT);

@@ -264,7 +264,8 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
             let self = this;
             let rs = _.find(self.listStateCorrelationHis(),{hisId: self.currentSelectedHis()});
             setShared(model.PARAMETERS_SCREEN_M.INPUT,{
-                startYearMonth: rs ? rs.startYearMonth : 0
+                startYearMonth: rs ? rs.startYearMonth : 0,
+                statementCode: item.salaryCode
             });
             modal("/view/qmm/020/m/index.xhtml").onClosed(()=>{
                 let params = getShared(model.PARAMETERS_SCREEN_M.OUTPUT);
@@ -280,7 +281,8 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
             let self = this;
             let rs = _.find(self.listStateCorrelationHis(),{hisId: self.currentSelectedHis()});
             setShared(model.PARAMETERS_SCREEN_M.INPUT,{
-                startYearMonth: rs ? rs.startYearMonth : 0
+                startYearMonth: rs ? rs.startYearMonth : 0,
+                statementCode: item.bonusCode
             });
             modal("/view/qmm/020/m/index.xhtml").onClosed(()=>{
                 let params = getShared(model.PARAMETERS_SCREEN_M.OUTPUT);
@@ -427,11 +429,11 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
         constructor(id: number,employeeCode: string, employeeName: string,salaryCode: string, salaryLayoutName: string, bonusCode: string,bonusLayoutName: string  ) {
             this.id = id;
             this.employeeCode = employeeCode;
-            this.employeeName = employeeName;
+            this.employeeName = _.escape(employeeName);
             this.salaryCode = salaryCode;
-            this.salaryLayoutName = salaryLayoutName;
+            this.salaryLayoutName = _.escape(salaryLayoutName);
             this.bonusCode = bonusCode;
-            this.bonusLayoutName = bonusLayoutName;
+            this.bonusLayoutName = _.escape(bonusLayoutName);
         }
     }
 
