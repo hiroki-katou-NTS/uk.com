@@ -105,7 +105,7 @@ public class OutputItemMonthlyWorkScheduleFinder {
 	private static final int SHEET_NO_1 = 1;
 
 	/** The Constant LIMIT_DISPLAY_ITEMS. */
-	private static final int LIMIT_DISPLAY_ITEMS = 39;
+	private static final int LIMIT_DISPLAY_ITEMS = 48;
 
 	/**
 	 * Find employment authority.
@@ -246,8 +246,9 @@ public class OutputItemMonthlyWorkScheduleFinder {
 	}
 
 	// algorithm for screen D: copy
-	public List<DisplayTimeItemDto> executeCopy(String codeCopy, String codeSourceSerivce) {
+	public MonthlyReturnItemDto executeCopy(String codeCopy, String codeSourceSerivce) {
 		String companyId = AppContexts.user().companyId();
+		MonthlyReturnItemDto returnDto = new MonthlyReturnItemDto();
 
 		// get domain 月別勤務表の出力項目
 		Optional<OutputItemMonthlyWorkSchedule> optOutputItemMonthlyWorkSchedule = outputItemMonthlyWorkScheduleRepository
@@ -256,7 +257,24 @@ public class OutputItemMonthlyWorkScheduleFinder {
 		if (optOutputItemMonthlyWorkSchedule.isPresent()) {
 			throw new BusinessException("Msg_3");
 		} else {
-			return getDomConvertMonthlyWork(companyId, codeSourceSerivce);
+			List<DisplayTimeItemDto> dtos = getDomConvertMonthlyWork(companyId, codeSourceSerivce);
+			returnDto.setLstDisplayTimeItem(dtos);
+
+			Map<String, Object> kwr006Lst = this.findByCid();
+			@SuppressWarnings("unchecked")
+			Map<Integer, String> mapCodeNameAttendance = convertListToMapAttendanceItem(
+					(List<MonthlyAttendanceItemDto>)kwr006Lst.get("monthlyAttendanceItem"));
+			//Get size of list item of kdw008 in kwr006 
+			List<DisplayTimeItemDto> newDtos = dtos.stream().filter(item -> mapCodeNameAttendance.containsKey(item.getItemDaily())).map(domain -> {
+				return domain;
+			}).collect(Collectors.toList());
+			//compare if kdw008(right) and kwr006(left) doesn't equals
+			if (newDtos.size() != dtos.size()) {
+				List<String> lstMsgErr = new ArrayList<>();
+				lstMsgErr.add("Msg_1476");
+				returnDto.setErrorList(lstMsgErr);
+			}
+			return returnDto;
 		}
 	}
 
