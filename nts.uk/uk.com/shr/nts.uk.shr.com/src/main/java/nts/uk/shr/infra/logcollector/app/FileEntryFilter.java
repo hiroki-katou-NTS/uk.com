@@ -2,6 +2,7 @@ package nts.uk.shr.infra.logcollector.app;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
 import java.util.Deque;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -42,7 +43,7 @@ public class FileEntryFilter {
 		if (matcher.lookingAt()) {
 			String text = matcher.group(1);
 			String level = matcher.group(2);
-			LocalDateTime recordTime = LocalDateTime.parse(text, DateTimeFormatter.ofPattern(LOG_TIME));
+			LocalDateTime recordTime = LocalDateTime.parse(text, DateTimeFormatter.ofPattern(LOG_TIME)).with(ChronoField.MILLI_OF_SECOND, 0);
 			if (start.compareTo(recordTime) <= 0 && end.compareTo(recordTime) >= 0) {
 				return Optional.of(new BigHeadCursor(recordTime, level, Action.LETTHROUGH));
 			} else if (end.compareTo(recordTime) < 0) {

@@ -106,6 +106,7 @@ public class LogReaderServiceCommandHandler extends AsyncCommandHandler<LogReadR
 				e.printStackTrace();
 				throw new RuntimeException(e);
 			}
+			workingFile.getTempFile().closeOutputStream();
 			fileContext.addWorkingFile(workingFile);
 		});
 		

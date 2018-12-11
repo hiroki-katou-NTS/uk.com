@@ -359,10 +359,9 @@ module nts.uk.request {
                     return nts.uk.request.asyncTask.getInfo(taskId).done(function(res: any) {
                         if (res.succeeded) {
                             setTimeout(() => {
-                                specials.donwloadFile(taskId).done(() => {
-                                    dfd.resolve(null); 
-                                }, 100);    
-                            });
+                                specials.donwloadFile(taskId);    
+                                dfd.resolve(null); 
+                            }, 100);
                         } else {
                             if(res.failed){
                                dfd.reject(res); 
