@@ -26,7 +26,8 @@ public abstract class JpaAvailablityPermissionRepositoryBase<D extends Availabil
 		query.where(
 				cb.equal(root.get("pk").get("companyId"), companyId),
 				cb.equal(root.get("pk").get("roleId"), roleId),
-				cb.equal(root.get("pk").get("functionNo"), functionNo));
+				cb.equal(root.get("pk").get("functionNo"), functionNo),
+				cb.equal(root.get("isAvailable"), true));
 		
 		return this.getEntityManager().createQuery(query).getResultList().stream()
 				.findFirst()

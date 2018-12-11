@@ -154,8 +154,11 @@ module nts.uk.com.view.cmf002.i.viewmodel {
 
             if (!errors.hasError()) {
                 let outputMinusAsZero = self.numberDataFormatSetting().outputMinusAsZero();
-                self.numberDataFormatSetting().outputMinusAsZero(outputMinusAsZero ? 1 : 0);
-
+                if(outputMinusAsZero == 1 || outputMinusAsZero == true){
+                    self.numberDataFormatSetting().outputMinusAsZero(1);    
+                }else{
+                    self.numberDataFormatSetting().outputMinusAsZero(0); 
+                }
                 if (self.numberDataFormatSetting().fixedValue() == this.use) {
                     self.numberDataFormatSetting().formatSelection(model.FORMAT_SELECTION.DECIMAL);
                     self.numberDataFormatSetting().decimalDigit(null);
