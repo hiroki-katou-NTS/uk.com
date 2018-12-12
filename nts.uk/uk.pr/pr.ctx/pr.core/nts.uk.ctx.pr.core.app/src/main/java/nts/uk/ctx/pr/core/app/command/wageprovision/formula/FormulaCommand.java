@@ -19,31 +19,35 @@ public class FormulaCommand {
     /**
     * 会社ID
     */
-    private String companyId;
+    public String companyId;
     
     /**
     * 計算式コード
     */
-    private String formulaCode;
+    public String formulaCode;
     
     /**
     * 計算式名
     */
-    private String formulaName;
+    public String formulaName;
     
     /**
     * 計算式の設定方法
     */
-    private int settingMethod;
+    public int settingMethod;
     
     /**
     * 入れ子利用区分
     */
-    private Integer nestedAtr;
+    public Integer nestedAtr;
 
-    private FormulaSettingCommand formulaSettingCommand;
+    public FormulaSettingCommand formulaSettingCommand;
 
     public Formula fromCommandToDomain(){
         return new Formula(companyId, formulaCode, formulaName, settingMethod, nestedAtr);
+    }
+
+    public void updateHistoryIdentifier () {
+        formulaSettingCommand.updateIdentifier();
     }
 }

@@ -46,8 +46,9 @@ public class BasicCalculationFormula extends AggregateRoot {
         this.historyID = historyID;
         this.masterUseCode = new MasterUseCode(masterUseCode);
         this.calculationFormulaClassification = EnumAdaptor.valueOf(calculationFormulaClassification, CalculationFormulaClassification.class);
-        this.basicCalculationFormula = basicCalculationFormula == null ? Optional.empty() : Optional.of(new FixedAmount(basicCalculationFormula));
-        this.basicCalculationForm = Optional.ofNullable(basicCalculationForm);
+        this.basicCalculationFormula = Optional.empty();
+        this.basicCalculationForm = Optional.empty();
+        if (this.calculationFormulaClassification == CalculationFormulaClassification.FORMULA) this.basicCalculationForm = basicCalculationForm == null ? Optional.empty() : Optional.of(basicCalculationForm);
+        else if (this.calculationFormulaClassification == CalculationFormulaClassification.FIXED_VALUE) this.basicCalculationFormula = basicCalculationFormula == null ? Optional.empty() : Optional.of(new FixedAmount(basicCalculationFormula));
     }
-    
 }

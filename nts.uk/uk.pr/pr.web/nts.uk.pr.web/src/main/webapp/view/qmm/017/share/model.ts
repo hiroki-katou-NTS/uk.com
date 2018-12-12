@@ -46,13 +46,13 @@ module nts.uk.pr.view.qmm017.share.model {
     }
 
     export enum FORMULA_SETTING_METHOD {
-        SIMPLE_SETTING = 0,
+        BASIC_SETTING = 0,
         DETAIL_SETTING = 1
     }
 
     export function getFormulaSettingMethodEnumModel () {
         return [
-            new EnumModel(FORMULA_SETTING_METHOD.SIMPLE_SETTING, 'かんたん設定'),
+            new EnumModel(FORMULA_SETTING_METHOD.BASIC_SETTING, 'かんたん設定'),
             new EnumModel(FORMULA_SETTING_METHOD.DETAIL_SETTING, '詳細設定')
         ];
     }
@@ -465,7 +465,7 @@ module nts.uk.pr.view.qmm017.share.model {
         SYSTEM_YMD_DATE = 0,
         SYSTEM_YM_DATE = 1,
         SYSTEM_Y_DATE = 2,
-        PROCESSING_DATE = 3,
+        PROCESSING_YEAR_MONTH = 3,
         PROCESSING_YEAR = 4,
         REFERENCE_TIME = 5,
         STANDARD_DAY = 6,
@@ -477,7 +477,7 @@ module nts.uk.pr.view.qmm017.share.model {
             new EnumModel(SYSTEM_VARIABLE_LIST.SYSTEM_YMD_DATE, 'システム日付（年月日）'),
             new EnumModel(SYSTEM_VARIABLE_LIST.SYSTEM_YM_DATE, 'システム日付（年月）'),
             new EnumModel(SYSTEM_VARIABLE_LIST.SYSTEM_Y_DATE, 'システム日付（年）'),
-            new EnumModel(SYSTEM_VARIABLE_LIST.PROCESSING_DATE, '処理年月'),
+            new EnumModel(SYSTEM_VARIABLE_LIST.PROCESSING_YEAR_MONTH, '処理年月'),
             new EnumModel(SYSTEM_VARIABLE_LIST.PROCESSING_YEAR, '処理年'),
             new EnumModel(SYSTEM_VARIABLE_LIST.REFERENCE_TIME, '基準時間'),
             new EnumModel(SYSTEM_VARIABLE_LIST.STANDARD_DAY, '基準日数'),
@@ -524,18 +524,22 @@ module nts.uk.pr.view.qmm017.share.model {
         masterUseItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getMasterUseEnumModel());
         masterBranchUseItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getMasterBranchUseEnumModel());
         // display item
+        // C3_2 分岐条件 displayMasterUse + のマスタに該当する場合
         displayMasterUse: KnockoutObservable<string> = ko.observable(null);
+        branchCondition: KnockoutObservable<string> = ko.observable(null);
         displayMasterBranchUse: KnockoutObservable<string> = ko.observable(null);
-
         constructor(params: IBasicFormulaSetting) {
             this.masterUse(params ? params.masterUse : MASTER_USE.EMPLOYMENT);
-            this.masterBranchUse(params ? params.masterBranchUse : MASTER_BRANCH_USE.USE);
+            this.masterBranchUse(params ? params.masterBranchUse : MASTER_BRANCH_USE.NOT_USE);
             this.historyID(params ? params.historyID : null);
             this.displayMasterUse = ko.computed(function() {
                 return this.masterUse() != null ? this.masterUseItem()[this.masterUse()].name : null;
             }, this);
+            this.branchCondition = ko.computed(function() {
+                return this.displayMasterUse() + "のマスタに該当する場合";
+            }, this);
             this.displayMasterBranchUse = ko.computed(function() {
-                return this.masterBranchUseItem()[this.masterBranchUse()].name;
+                return this.masterBranchUse() != null ? this.masterBranchUseItem()[this.masterBranchUse()].name : null;
             }, this);
 
         }
@@ -565,17 +569,17 @@ module nts.uk.pr.view.qmm017.share.model {
         constructor(params: IFormula) {
             this.formulaCode(params ? params.formulaCode : null);
             this.formulaName(params ? params.formulaName : null);
-            this.settingMethod(params ? params.settingMethod : FORMULA_SETTING_METHOD.SIMPLE_SETTING);
+            this.settingMethod(params ? params.settingMethod : FORMULA_SETTING_METHOD.BASIC_SETTING);
             this.nestedAtr(params ? params.nestedAtr : NESTED_USE_CLS.NOT_USE);
             this.history(params? params.history : []);
             this.displayNestedAtr = ko.computed(function() {
-                return this.nestedAtrItem() != null ? this.nestedAtrItem()[this.nestedAtr()].name : null;
+                return this.nestedAtr() != null ? this.nestedAtrItem()[this.nestedAtr()].name : null;
             }, this);
             this.isNotUseNestedAtr = ko.computed(function() {
-                return this.nestedAtr() == model.NESTED_USE_CLS.NOT_USE;
+                return this.nestedAtr() == model.NESTED_USE_CLS.NOT_USE ;
             }, this);
             this.displaySettingMethod = ko.computed(function() {
-                return this.formulaSettingMethodItem()[this.settingMethod()].name;
+                return this.settingMethod() != null ? this.formulaSettingMethodItem()[this.settingMethod()].name : null;
             }, this);
         }
     }
@@ -639,6 +643,7 @@ module nts.uk.pr.view.qmm017.share.model {
         baseItemFixedValue: number;
         premiumRate: number;
         roundingMethod: number;
+        masterUseName: string;
 
     }
     export class BasicCalculationFormula {
@@ -672,6 +677,7 @@ module nts.uk.pr.view.qmm017.share.model {
         roundingResultItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getRoundingResultEnumModel());
         adjustmentClassificationItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getAdjustmentClsEnumModel());
         // display item
+        masterUseName: KnockoutObservable<string> = ko.observable(null);
         displayFormulaType: KnockoutObservable<string> = ko.observable(null);
         displayFormulaImagePath: KnockoutObservable<string> = ko.observable(null);
         constructor(params: IBasicCalculationFormula) {
@@ -692,6 +698,7 @@ module nts.uk.pr.view.qmm017.share.model {
             this.coefficientFixedValue(params ? params.coefficientFixedValue : null);
             this.historyID(params ? params.historyID : null);
             this.targetItemCodeList(params ? params.targetItemCodeList : []);
+            this.masterUseName(params ? params.masterUseName : null);
             this.displayFormulaType = ko.computed(function() {
                 return this.formulaType() != null ? this.formulaTypeItem()[this.formulaType()].name : null
             }, this);
@@ -715,7 +722,6 @@ module nts.uk.pr.view.qmm017.share.model {
         elementInformation: IElementInformation,
         elementSetting: number,
         remarkInformation: string,
-        history: Array<IGenericHistoryYearMonthPeriod>
     }
     // 賃金テーブル
     export class WageTable {
@@ -725,10 +731,6 @@ module nts.uk.pr.view.qmm017.share.model {
         elementInformation: KnockoutObservable<ElementInformation> = ko.observable(null);
         elementSetting: KnockoutObservable<number> = ko.observable(null);
         remarkInformation: KnockoutObservable<string> = ko.observable(null);
-        history: KnockoutObservableArray<GenericHistoryYearMonthPeriod> = ko.observableArray([]);
-        // display item
-        imagePath: KnockoutObservable<string> = ko.observable(null);
-        elementSettingDisplayText: KnockoutObservable<string> = ko.observable(null);
         constructor(params: IWageTable) {
             let self = this;
             this.cid(params ? params.cid : null);
@@ -737,49 +739,6 @@ module nts.uk.pr.view.qmm017.share.model {
             this.elementInformation(new ElementInformation(params ? params.elementInformation : null));
             this.elementSetting(params ? params.elementSetting : 0);
             this.remarkInformation(params ? params.remarkInformation : null);
-            this.history(params ? params.history.map(item => new GenericHistoryYearMonthPeriod(item)) : []);
-            this.elementSetting.subscribe(newValue => {
-                self.changeImagePath(newValue);
-            });
-            self.changeImagePath(self.elementSetting());
-        }
-        changeImagePath (elementSetting: number) {
-            let self = this;
-            let imgName = "", elementSettingDisplayText = "";
-            switch (elementSetting) {
-                case ELEMENT_SETTING.ONE_DIMENSION: {
-                    imgName = "QMM016_1.png";
-                    elementSettingDisplayText = getText('QMM016_69');
-                    break;
-                }
-                case ELEMENT_SETTING.TWO_DIMENSION: {
-                    imgName = "QMM016_2.png";
-                    elementSettingDisplayText = getText('QMM016_70');
-                    break;
-                }
-                case ELEMENT_SETTING.THREE_DIMENSION: {
-                    imgName = "QMM016_3.png";
-                    elementSettingDisplayText = getText('QMM016_71');
-                    break;
-                }
-                case ELEMENT_SETTING.QUALIFICATION: {
-                    imgName = "QMM016_4.png";
-                    elementSettingDisplayText = getText('QMM016_72');
-                    break;
-                }
-                case ELEMENT_SETTING.FINE_WORK: {
-                    imgName = "QMM016_5.png";
-                    elementSettingDisplayText = getText('QMM016_73');
-                    break;
-                }
-            }
-            if (imgName){
-                self.imagePath("../resource/" + imgName);
-            }
-            else{
-                self.imagePath("");
-            }
-            self.elementSettingDisplayText(elementSettingDisplayText);
         }
     }
 
@@ -833,7 +792,6 @@ module nts.uk.pr.view.qmm017.share.model {
 
     // 年月期間の汎用履歴項目
     export class GenericHistoryYearMonthPeriod {
-
         // Item
         startMonth: KnockoutObservable<string> = ko.observable(null);
         endMonth: KnockoutObservable<string> = ko.observable(null);
@@ -856,7 +814,73 @@ module nts.uk.pr.view.qmm017.share.model {
             this.displayJapanStartYearMonth = ko.computed(function() {
                 return this.startMonth() ? nts.uk.time.yearmonthInJapanEmpire(this.startMonth()).toString().split(' ').join(''): "";
             }, this);
-
         }
+    }
+
+    export class DetailCalculationElement {
+        PAYMENT_ITEM;
+        DEDUCTION_ITEM;
+        ATTENDANCE_ITEM;
+        COMPANY_UNIT_PRICE;
+        INDIVIDUAL_UNIT_PRICE;
+        CONDITION_EXPRESSION;
+        AND;
+        OR;
+        ROUND_OFF;
+        TRUNCATION;
+        ROUND_UP;
+        MAX_VALUE;
+        MIN_VALUE;
+        NUMBER_OF_FAMILY_MEMBER;
+        ADDITIONAL_YEAR_MONTH;
+        YEAR_EXTRACTION;
+        MONTH_EXTRACTION;
+        SYSTEM_YMD_DATE;
+        SYSTEM_YM_DATE;
+        SYSTEM_Y_DATE;
+        PROCESSING_YEAR_MONTH;
+        PROCESSING_YEAR;
+        REFERENCE_TIME;
+        STANDARD_DAY;
+        WORKDAY;
+        FORMULA;
+        WAGE_TABLE;
+        constructor(){}
+    }
+
+    export enum DetailCalculationElement {
+        PAYMENT_ITEM = 0,
+        DEDUCTION_ITEM = 1,
+        ATTENDANCE_ITEM = 2,
+        COMPANY_UNIT_PRICE = 3,
+        INDIVIDUAL_UNIT_PRICE = 4,
+        ALL_FUNCTION = 5,
+        TIME_FUNCTION = 6,
+        PAYROLL_FUNCTION = 7,
+        LOGIC = 8,
+        STRING_OPERATION = 9,
+        DATE_TIME = 10,
+        MATHEMATICS = 11,
+        ALL_SYSTEM_VARIABLE = 12,
+        CONDITION_EXPRESSION = 13,
+        AND = 14,
+        OR = 15,
+        ROUND_OFF = 16,
+        TRUNCATION = 17,
+        ROUND_UP = 18,
+        MAX_VALUE = 19,
+        MIN_VALUE = 20,
+        NUMBER_OF_FAMILY_MEMBER = 21,
+        ADDITIONAL_YEAR_MONTH = 22,
+        YEAR_EXTRACTION = 23,
+        MONTH_EXTRACTION = 24,
+        SYSTEM_YMD_DATE = 25,
+        SYSTEM_YM_DATE = 26,
+        SYSTEM_Y_DATE = 27,
+        PROCESSING_YEAR_MONTH = 28,
+        PROCESSING_YEAR = 29,
+        REFERENCE_TIME = 30,
+        STANDARD_DAY = 31,
+        WORKDAY = 32
     }
 }

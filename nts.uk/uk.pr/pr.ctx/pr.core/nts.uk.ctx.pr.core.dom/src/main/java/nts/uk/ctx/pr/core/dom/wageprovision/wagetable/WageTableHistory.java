@@ -41,5 +41,11 @@ public class WageTableHistory extends AggregateRoot
 		this.wageTableCode = new WageTableCode(wageTableCode);
 		this.validityPeriods = history;
 	}
+	
+	@Override
+	public void exCorrectToRemove(YearMonthHistoryItem itemToBeRemoved) {
+		this.validityPeriods.get(0)
+				.changeSpan(new YearMonthPeriod(this.validityPeriods.get(0).start(), itemToBeRemoved.end()));
+	}
 
 }

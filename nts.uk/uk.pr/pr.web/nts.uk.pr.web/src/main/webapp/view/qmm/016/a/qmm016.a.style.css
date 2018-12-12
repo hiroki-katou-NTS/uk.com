@@ -37,3 +37,7 @@
     color: #000;
     background-color: #CFF1A5;
 }
+
+.E5_1 .nts-fixed-body-container {
+    overflow-x: hidden;
+}

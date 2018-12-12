@@ -108,17 +108,17 @@ public class QpbmtElementRangeSetting extends UkJpaEntity {
 						: null,
 				domain.getThirdElementRange().isPresent()
 						? (domain.getThirdElementRange().get().getNumericElementRange().isPresent() ? domain
-								.getSecondElementRange().get().getNumericElementRange().get().getStepIncrement().v()
+								.getThirdElementRange().get().getNumericElementRange().get().getStepIncrement().v()
 								: null)
 						: null,
 				domain.getThirdElementRange().isPresent()
 						? (domain.getThirdElementRange().get().getNumericElementRange().isPresent() ? domain
-								.getSecondElementRange().get().getNumericElementRange().get().getRangeUpperLimit().v()
+								.getThirdElementRange().get().getNumericElementRange().get().getRangeUpperLimit().v()
 								: null)
 						: null,
 				domain.getThirdElementRange().isPresent()
 						? (domain.getThirdElementRange().get().getNumericElementRange().isPresent() ? domain
-								.getSecondElementRange().get().getNumericElementRange().get().getRangeLowerLimit().v()
+								.getThirdElementRange().get().getNumericElementRange().get().getRangeLowerLimit().v()
 								: null)
 						: null);
 	}

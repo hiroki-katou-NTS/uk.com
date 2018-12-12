@@ -50,7 +50,7 @@ public class QpbmtWageTable extends UkJpaEntity {
 
 	@Column(name = "FIXED_ELEMENT_1")
 	@Basic(optional = true)
-	public Integer fixedElement1;
+	public String fixedElement1;
 
 	/**
 	 * 要素情報.二次元要素
@@ -65,7 +65,7 @@ public class QpbmtWageTable extends UkJpaEntity {
 
 	@Column(name = "FIXED_ELEMENT_2")
 	@Basic(optional = true)
-	public Integer fixedElement2;
+	public String fixedElement2;
 
 	/**
 	 * 要素情報.三次元要素
@@ -80,7 +80,7 @@ public class QpbmtWageTable extends UkJpaEntity {
 
 	@Column(name = "FIXED_ELEMENT_3")
 	@Basic(optional = true)
-	public Integer fixedElement3;
+	public String fixedElement3;
 
 	@Override
 	protected Object getKey() {
