@@ -26,7 +26,7 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
         }
         submit(){
             let self = this;
-            self. validate();
+            self.validate();
             if(errors.hasError()){
                 return;
             }
@@ -78,7 +78,11 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
                 self.itemList(getHistoryEditMethod(true));
             }
             if(self.startYearMonthPeriod()!= null){
-                self.itemList()[0] = new model.ItemModel(EDIT_METHOD.COPY, getText('QMM020_59', [self.convertMonthYearToString(self.startYearMonthPeriod())]));
+                let display = self.convertMonthYearToString(self.startYearMonthPeriod());
+                if(self.modeScreen() == MODE_SCREEN.MODE_THREE){
+                    display = self.convertMonthYearToString(self.startYearMonthPeriod()) + getText('QMM020_56') + self.convertMonthYearToString(self.endYearMonthPeriod());
+                }
+                self.itemList()[0] = new model.ItemModel(EDIT_METHOD.COPY, getText('QMM020_59', [display]));
             }
             else{
                 self.itemList()[0] = new model.ItemModel(EDIT_METHOD.COPY, getText('QMM020_59'));
@@ -103,7 +107,7 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
         }
         validate() {
             $("#J1_3").trigger("validate");
-            $("#J1_12").trigger("validate");
+            $("#J1_13").trigger("validate");
         }
 
         convertMonthYearToString(yearMonth: any) {

@@ -66,7 +66,6 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
 
                 ],
                 features: [
-                    {name: 'Sorting', type: 'local'},
                     {name: 'Selection', mode: 'row', multipleSelection: true}],
                 ntsControls: [
                     {name: 'Salary', text: getText("QMM020_21"), click: function (item) {self.openMScreen(item, 1)}, controlType: 'Button'},
