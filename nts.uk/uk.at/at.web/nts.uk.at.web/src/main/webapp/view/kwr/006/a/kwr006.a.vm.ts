@@ -76,7 +76,7 @@ module nts.uk.at.view.kwr006.a {
                 self.isDialog = ko.observable(true);
                 self.isShowNoSelectRow = ko.observable(false);
                 self.isMultiSelect = ko.observable(true);
-                self.isShowWorkPlaceName = ko.observable(false);
+                self.isShowWorkPlaceName = ko.observable(true);
                 self.isShowSelectAllButton = ko.observable(false);
                 self.employeeList = ko.observableArray<UnitModel>([]);
 
@@ -123,7 +123,7 @@ module nts.uk.at.view.kwr006.a {
                     isMultiSelect: self.isMultiSelect(),
                     listType: ListType.EMPLOYEE,
                     employeeInputList: self.employeeList,
-                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    selectType: SelectType.SELECT_ALL,
                     selectedCode: self.multiSelectedCode,
                     isDialog: self.isDialog(),
                     isShowNoSelectRow: self.isShowNoSelectRow(),
@@ -140,10 +140,10 @@ module nts.uk.at.view.kwr006.a {
                     showEmployeeSelection: false,
                     showQuickSearchTab: true,
                     showAdvancedSearchTab: true,
-                    showBaseDate: true,
-                    showClosure: false,
-                    showAllClosure: false,
-                    showPeriod: false,
+                    showBaseDate: false,
+                    showClosure: true,
+                    showAllClosure: true,
+                    showPeriod: true,
                     periodFormatYM: false,
 
                     /** Required parameter */
@@ -174,6 +174,11 @@ module nts.uk.at.view.kwr006.a {
                     * @param: data: the data return from CCG001
                     */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                        
+                        //画面項目「A1_7」「A1_8」を更新する
+                        self.datepickerValue().startDate = moment(data.periodStart).format("YYYY/MM");
+                        self.datepickerValue().endDate = moment(data.periodEnd).format("YYYY/MM");
+                        self.datepickerValue.valueHasMutated();
                         self.employeeList.removeAll();
                         const result = data.listEmployee
                             .filter(f => !_.isEmpty(f.workplaceId))
@@ -181,7 +186,8 @@ module nts.uk.at.view.kwr006.a {
                                 return {
                                     id: item.employeeId,
                                     code: item.employeeCode,
-                                    name: item.employeeName
+                                    name: item.employeeName,
+                                    workplaceName: item.workplaceName
                                 };
                             });
                         self.employeeList(result);
@@ -205,6 +211,10 @@ module nts.uk.at.view.kwr006.a {
             public executeBindingComponent(): void {
                 let self = this;
 
+                //re-set value of component
+                //対象期間：画面項目「A1_7とA1_8」にセットされている期間
+                self.ccg001ComponentOption.periodStartDate =  self.datepickerValue().startDate;
+                self.ccg001ComponentOption.periodEndDate =  self.datepickerValue().endDate;
                 // start component CCG001
                 // start component KCP005
                 $.when($('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption),
