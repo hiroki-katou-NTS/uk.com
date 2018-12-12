@@ -75,7 +75,7 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
             ]
 
             self.items = ko.observableArray([]);
-            self.createList();
+            //self.createList();
             self.currentSelectedDep = ko.observableArray([]);
             //TODO
             self.currentSelectedHis.subscribe((hisId)=>{
