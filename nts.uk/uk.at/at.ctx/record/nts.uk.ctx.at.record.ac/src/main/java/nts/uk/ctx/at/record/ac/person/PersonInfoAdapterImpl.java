@@ -16,8 +16,8 @@ import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter;
 import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoImport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
-import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpBasicInfoExport;
-import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
+//import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpBasicInfoExport;
+//import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.bs.person.pub.person.PersonInfoExport;
 import nts.uk.ctx.bs.person.pub.person.PersonPub;
 
@@ -28,8 +28,8 @@ import nts.uk.ctx.bs.person.pub.person.PersonPub;
 public class PersonInfoAdapterImpl implements PersonInfoAdapter {
 
 	/** The employee info pub. */
-	@Inject
-	private EmployeeInfoPub employeeInfoPub;
+//	@Inject
+//	private EmployeeInfoPub employeeInfoPub;
 	
 	/** The person pub. */
 	@Inject

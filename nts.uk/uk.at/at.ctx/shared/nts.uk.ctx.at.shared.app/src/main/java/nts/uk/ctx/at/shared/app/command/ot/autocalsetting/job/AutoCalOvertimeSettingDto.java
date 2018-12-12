@@ -49,6 +49,7 @@ public class AutoCalOvertimeSettingDto {
 	/**
 	 * The Class DtoGetMemento.
 	 */
+	@SuppressWarnings("rawtypes")
 	private class DtoGetMemento implements AutoCalOvertimeSettingGetMemento {
 
 		/** The command. */

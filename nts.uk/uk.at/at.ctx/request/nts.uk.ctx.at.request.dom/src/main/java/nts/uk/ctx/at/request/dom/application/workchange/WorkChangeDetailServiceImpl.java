@@ -25,8 +25,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.App
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+//import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+//import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -68,8 +68,8 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 	
 	@Inject
 	private IWorkChangeRegisterService workChangeRegisterService;
-	@Inject
-	private BasicScheduleService bacsicService;
+//	@Inject
+//	private BasicScheduleService bacsicService;
 	@Inject
 	private IDataWorkService dataWorkService;
 	@Inject
@@ -145,8 +145,8 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 		//勤務就業ダイアログ用データ取得
 		DataWork dataWork =  dataWorkService.getDataWork(cid, sID, appDate, appCommonSetting, ApplicationType.WORK_CHANGE_APPLICATION.value);
 		//就業時間帯の必須チェック
-		SetupType setupType = this.bacsicService
-				.checkNeededOfWorkTimeSetting(workChangeDetail.getAppWorkChange().getWorkTypeCd());
+//		SetupType setupType = this.bacsicService
+//				.checkNeededOfWorkTimeSetting(workChangeDetail.getAppWorkChange().getWorkTypeCd());
 		workChangeDetail.setDataWork(dataWork);
 		return workChangeDetail;
 	}

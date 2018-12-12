@@ -19,8 +19,6 @@ import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.roles.auth.category.PersonInfoCategoryAuthRepository;
-import nts.uk.ctx.sys.auth.dom.role.personrole.PersonRole;
-import nts.uk.ctx.sys.auth.dom.role.personrole.PersonRoleRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.system.config.InstalledProduct;
 
@@ -39,8 +37,8 @@ public class EmpCopySettingFinder {
 	@Inject
 	private PerInfoItemDefRepositoty pernfoItemDefRep;
 	
-	@Inject
-	private PersonRoleRepository personRoleRepo;
+//	@Inject
+//	private PersonRoleRepository personRoleRepo;
 
 	public List<SettingCtgDto> getEmpCopySetting() {
 

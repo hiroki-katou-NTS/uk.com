@@ -2,7 +2,6 @@ package nts.uk.ctx.workflow.dom.adapter.bs.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.arc.time.GeneralDate;
 @Value
 @AllArgsConstructor
 public class PersonImport {

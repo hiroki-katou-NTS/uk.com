@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItemA
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DisplayAndInputControl;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttdItemAuthRepository;
 import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KshstDailyServiceTypeControl;
-import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KshstDailyServiceTypeControlPK;
+//import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KshstDailyServiceTypeControlPK;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless

@@ -23,6 +23,11 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KRCST_TOPPAGE_ALARM")
 public class KrcstToppageAlarm extends UkJpaEntity implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/** 実行ログID */
 	@Id
 	@Column(name = "EXECUTION_LOG_ID")

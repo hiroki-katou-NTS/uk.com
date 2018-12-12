@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.portal.dom.enums;
 
-import nts.uk.ctx.sys.portal.dom.permissionmenu.RoleType;
-
 public enum MenuClassification {
 	
 	/**0:標準 */

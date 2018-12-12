@@ -3,7 +3,7 @@ package nts.uk.ctx.at.function.infra.entity.processexecution;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+//import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -25,14 +25,14 @@ import nts.uk.ctx.at.function.dom.processexecution.tasksetting.OneDayRepeatInter
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.RepeatDetailSetting;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.TaskEndDate;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.TaskEndTime;
-import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.DailyDaySetting;
-import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.RepeatDetailSettingDaily;
+//import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.DailyDaySetting;
+//import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.RepeatDetailSettingDaily;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.RepeatDetailSettingMonthly;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.RepeatDetailSettingWeekly;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.RepeatMonthDaysSelect;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.RepeatMonthSelect;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.RepeatWeekDaysSelect;
-import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.WeeklyWeekSetting;
+//import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.WeeklyWeekSetting;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.EndDateClassification;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.EndTimeClassification;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.OneDayRepeatClassification;

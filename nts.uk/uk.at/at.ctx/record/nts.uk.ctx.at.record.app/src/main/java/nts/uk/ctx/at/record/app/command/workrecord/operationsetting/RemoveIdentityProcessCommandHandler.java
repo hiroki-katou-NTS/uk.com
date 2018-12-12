@@ -6,9 +6,9 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import javax.transaction.Transactional;
+//import javax.transaction.Transactional;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcessRepository;
-import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcess;
+//import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcess;
 
 @Stateless
 @Transactional

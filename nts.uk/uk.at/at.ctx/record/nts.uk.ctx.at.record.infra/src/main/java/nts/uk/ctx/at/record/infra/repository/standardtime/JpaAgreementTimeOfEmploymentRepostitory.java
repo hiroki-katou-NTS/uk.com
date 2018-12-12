@@ -92,13 +92,13 @@ public class JpaAgreementTimeOfEmploymentRepostitory extends JpaRepository
 		return entity;
 	}
 
-	private static AgreementTimeOfEmployment toDomain(KmkmtAgeementTimeEmployment kmkmtAgeementTimeEmployment) {
-		AgreementTimeOfEmployment agreementTimeOfEmployment = AgreementTimeOfEmployment.createJavaType(
-				kmkmtAgeementTimeEmployment.kmkmtAgeementTimeEmploymentPK.companyId,
-				kmkmtAgeementTimeEmployment.kmkmtAgeementTimeEmploymentPK.basicSettingId,
-				kmkmtAgeementTimeEmployment.laborSystemAtr,
-				kmkmtAgeementTimeEmployment.kmkmtAgeementTimeEmploymentPK.employmentCategoryCode);
-
-		return agreementTimeOfEmployment;
-	}
+//	private static AgreementTimeOfEmployment toDomain(KmkmtAgeementTimeEmployment kmkmtAgeementTimeEmployment) {
+//		AgreementTimeOfEmployment agreementTimeOfEmployment = AgreementTimeOfEmployment.createJavaType(
+//				kmkmtAgeementTimeEmployment.kmkmtAgeementTimeEmploymentPK.companyId,
+//				kmkmtAgeementTimeEmployment.kmkmtAgeementTimeEmploymentPK.basicSettingId,
+//				kmkmtAgeementTimeEmployment.laborSystemAtr,
+//				kmkmtAgeementTimeEmployment.kmkmtAgeementTimeEmploymentPK.employmentCategoryCode);
+//
+//		return agreementTimeOfEmployment;
+//	}
 }

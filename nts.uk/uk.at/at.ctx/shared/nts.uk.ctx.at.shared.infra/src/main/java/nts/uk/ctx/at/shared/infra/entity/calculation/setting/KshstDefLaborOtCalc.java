@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.infra.entity.calculation.setting;
 import java.io.Serializable;
 import javax.persistence.*;
 
-import lombok.Data;
+//import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -6,16 +6,21 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.Value;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
+import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.HistoryCmm053Command;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ManagerSettingDto;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSetting;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.PrincipalApprovalFlg;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
@@ -42,6 +47,9 @@ public class SettingOfManagerFinder {
 
 	@Inject
 	private EmployeeAdapter employeeAdapter;
+	
+	@Inject
+	private ApprovalSettingRepository appSetRepo;
 
 	/**
 	 * Get 上司の設定
@@ -213,6 +221,30 @@ public class SettingOfManagerFinder {
 			existAppPhase = true;
 		}
 		return new SettingInfo(startDate, endDate, approvalCode, approverId, approvalName, existAppPhase);
+	}
+
+	public void checkApprovalSetting(HistoryCmm053Command command) {
+		// ドメインモデル「承認設定」．本人による承認をチェックする
+		String companyId = AppContexts.user().companyId();
+		Optional<ApprovalSetting> appSetOpt = this.appSetRepo.getApprovalByComId(companyId);
+		if (appSetOpt.isPresent()) {
+			appSetOpt.ifPresent(appSet -> {
+				if (appSet.getPrinFlg().equals(PrincipalApprovalFlg.NOT_PRINCIPAL)) {
+					// ドメインモデル「承認設定」．本人による承認がfalse(domain 「承認設定」．本人による承認 = false)
+					String Sid = command.getEmployeeId();
+					String selectedID = command.getDepartmentApproverId();
+					if (Sid.equals(selectedID)) {
+						// 選択している社員ID（A1_6） ＝＝ 入力している社員ID（A2_7）
+						throw new BusinessException("Msg_1487");
+					}
+
+				}
+
+			});
+		} else {
+			throw new BusinessException("Not Found ApprovalSetting(承認設定) domain");
+		}
+
 	}
 }
 

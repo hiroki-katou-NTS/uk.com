@@ -2,7 +2,6 @@ package nts.uk.ctx.sys.log.dom.reference;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.arc.time.GeneralDate;
 
 /**
  * 

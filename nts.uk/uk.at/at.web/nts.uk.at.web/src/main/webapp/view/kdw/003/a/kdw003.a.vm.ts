@@ -159,6 +159,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         listCheck28: KnockoutObservableArray<any> = ko.observableArray([]);
         listCheckDeviation: any = [];
         listErrorMonth: any = [];
+        hasErrorCalc: booelan = false;
+        
         employIdLogin: any;
         dialogShow: any;
         //contain data share
@@ -911,6 +913,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (self.dialogShow != undefined && self.dialogShow.$dialog != null) {
                 self.dialogShow.close();
             }
+            // check error calc 
+            if (self.flagCalculation && self.hasErrorCalc) {
+                self.showErrorDialog()
+                dfd.resolve();
+                return
+            }
+            
             if (self.workTypeNotFound.length > 0) {
                 self.showErrorDialog();
                 dfd.resolve();
@@ -934,7 +943,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.listCheck28([]);
             self.listCheckDeviation = [];
             self.listErrorMonth = [];
-            let dataChange: any = $("#dpGrid").mGrid("updatedCells");
+            let dataChange: any = _.uniqWith($("#dpGrid").mGrid("updatedCells", true),  _.isEqual);
+
             var dataSource = $("#dpGrid").mGrid("dataSource");
             let dataChangeProcess: any = [];
             let dataCheckSign: any = [];
@@ -1183,7 +1193,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.listCheck28([]);
             self.listCheckDeviation = [];
             self.listErrorMonth = [];
-            let dataChange: any = $("#dpGrid").mGrid("updatedCells");
+            let dataChange: any = _.uniqWith($("#dpGrid").mGrid("updatedCells", true),  _.isEqual);
             var dataSource = $("#dpGrid").mGrid("dataSource");
             if (_.isEmpty(dataSource)) {
                 nts.uk.ui.block.clear();
@@ -1274,6 +1284,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.removeErrorRefer();
             let dfd = $.Deferred();
             service.calculation(dataParent).done((data) => {
+                self.flagCalculation = true;
                 if (data.resultError != null && !_.isEmpty(data.resultError.flexShortage)) {
                     if (data.resultError.flexShortage.error && data.resultError.flexShortage.messageError.length != 0) {
                         $("#next-month").ntsError("clear");
@@ -1284,7 +1295,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         $("#next-month").ntsError("clear");
                     }
                 }
-                if (data.resultError == null || !_.isEmpty(data.resultError.errorMap[5])) {
+                if (_.isEmpty(data.resultError)) {
+                    self.hasErrorCalc = false;
                     //self.lstDomainEdit = data.calculatedRows;
                     let lstValue = data.resultValues;
                     _.forEach(self.dpData, row => {
@@ -1325,20 +1337,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         console.log("column key:" + valt.columnKey);
                         $("#dpGrid").mGrid("setState", valt.rowId, valt.columnKey, valt.state);
                     });
-                    self.flagCalculation = true;
                     nts.uk.ui.block.clear();
-                    if (data.resultError != null && data.resultError.errorMap[5] != null) {
-                        self.listErrorMonth = data.resultError.errorMap[5];
-                    }
                 } else {
                     nts.uk.ui.block.clear();
+                    let hasError: boolean = false;
                     if (data.resultError.errorMap[0] != undefined) {
                         self.listCareError(data.resultError.errorMap[0])
                         // nts.uk.ui.dialog.alertError({ messageId: "Msg_996" })
+                        hasError = true;
                     }
                     if (data.resultError.errorMap[1] != undefined) {
                         self.listCareInputError(data.resultError.errorMap[1])
                         // nts.uk.ui.dialog.alertError({ messageId: "Msg_1108" })
+                         hasError = true;
                     }
                     if (data.resultError.errorMap[2] != undefined) {
                         self.listCheckHolidays(data.resultError.errorMap[2]);
@@ -1347,11 +1358,20 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
                     if (data.resultError.errorMap[3] != undefined) {
                         self.listCheck28(data.resultError.errorMap[3]);
+                        hasError = true;
                     }
 
                     if (data.resultError.errorMap[4] != undefined) {
                         self.listCheckDeviation = data.resultError.errorMap[4];
+                        hasError = true;
                     }
+                    
+                    if (data.resultError != null && data.resultError.errorMap[5] != null) {
+                        self.listErrorMonth = data.resultError.errorMap[5];
+                        hasError = true;
+                    }
+                    
+                    self.hasErrorCalc = hasError;
                     self.showErrorDialog();
                 }
                 dfd.resolve();
@@ -1400,7 +1420,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
             let dataSource = $("#dpGrid").mGrid("dataSource");
 
-            let dataChange: any = $("#dpGrid").mGrid("updatedCells");
+            let dataChange: any = _.uniqWith($("#dpGrid").mGrid("updatedCells", true),  _.isEqual);
             let rowIdsTemp = _.uniqBy(dataChange, function(e) {
                 return e.rowId;
             });
@@ -3517,15 +3537,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             headerText = header.headerText + " " + header.key.substring(1, header.key.length);
                             $("#dpGrid").mGrid("headerText", header.key, headerText, false);
                         } else {
-                            headerText = header.headerText.split(" ")[0];
-                            $("#dpGrid").mGrid("headerText", header.key, headerText, false);
+                           // headerText = header.headerText.split(" ")[0];
+                            $("#dpGrid").mGrid("headerText", header.key, header.headerText, false);
                         }
                     } else {
                         if (self.showHeaderNumber()) {
                             headerText = header.headerText + " " + header.group[1].key.substring(4, header.group[1].key.length);
                             $("#dpGrid").mGrid("headerText", header.headerText, headerText, true);
                         } else {
-                            headerText = header.headerText.split(" ")[0];
+                          //  headerText = header.headerText.split(" ")[0];
+                            headerText = header.headerText;
                             $("#dpGrid").mGrid("headerText", headerText + " " + header.group[1].key.substring(4, header.group[1].key.length), headerText, true);
                         }
                     }
@@ -3694,7 +3715,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let dataMap = new InfoCellEdit(rowId, Number(keyId), valuePrimitive, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), item.typeGroup, columnKey);
 
                     // get item change in row
-                    dataChange = $("#dpGrid").mGrid("updatedCells");
+                    dataChange = _.uniqWith($("#dpGrid").mGrid("updatedCells", true),  _.isEqual);
                     dataChageRow = _.map(_.filter(dataChange, row => {
                         return row.columnKey != "sign" && row.columnKey != "approval" && row.columnKey.indexOf("Name") == -1 && row.rowId == rowId && row.columnKey != columnKey;
                     }), allValue => {

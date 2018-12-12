@@ -11,6 +11,11 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
 @ZeroPaddedCode
 public class OutItemsWoScCode extends CodePrimitiveValue<OutItemsWoScCode>{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public OutItemsWoScCode(String rawValue) {
 		super(rawValue);
 	}

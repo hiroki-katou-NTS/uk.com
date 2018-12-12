@@ -179,7 +179,7 @@ public class DailyModifyResCommandFacade {
 			dailyEdits.addAll(queryNotChanges.isEmpty() ? temp : toDto(queryNotChanges, temp));
 		} else {
 			dailyOlds.addAll(dataParent.getDailyOlds());
-			dailyEdits.addAll(queryNotChanges.isEmpty() ? dataParent.getDailyEdits() : toDto(queryNotChanges, dataParent.getDailyEdits()));
+			dailyEdits.addAll(dataParent.getDailyEdits());
 		}
 		Map<Integer, OptionalItemAtr> optionalMaster = optionalMasterRepo.findAll(AppContexts.user().companyId())
 				.stream().collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c.getOptionalItemAtr()));
@@ -197,7 +197,7 @@ public class DailyModifyResCommandFacade {
 		});
 	}
 
-	private List<DailyRecordDto> toDto(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoEdits) {
+	public List<DailyRecordDto> toDto(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoEdits) {
 		List<DailyRecordDto> dtoNews = new ArrayList<>();
 
 		dtoNews = dtoEdits.stream().map(o -> {
@@ -300,8 +300,13 @@ public class DailyModifyResCommandFacade {
 				.map(dto -> DailyModifyResult.builder().items(dto.getValue()).employeeId(dto.getKey().getEmployeeId())
 						.workingDate(dto.getKey().getDate()).completed())
 				.collect(Collectors.toList());
+		
+		List<DailyModifyResult> newResultBefore = AttendanceItemUtil.toItemValues(dailyEdits).entrySet().stream()
+				.map(dto -> DailyModifyResult.builder().items(dto.getValue()).employeeId(dto.getKey().getEmployeeId())
+						.workingDate(dto.getKey().getDate()).completed())
+				.collect(Collectors.toList());
 
-		Map<Pair<String, GeneralDate>, List<DailyModifyResult>> mapSidDateData = resultOlds.stream()
+		Map<Pair<String, GeneralDate>, List<DailyModifyResult>> mapSidDateData = newResultBefore.stream()
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 
 		// check error care item

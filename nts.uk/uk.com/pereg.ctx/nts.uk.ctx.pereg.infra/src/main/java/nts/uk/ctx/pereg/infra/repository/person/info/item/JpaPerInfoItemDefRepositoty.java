@@ -1201,7 +1201,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	public List<PersonInfoItemDefinition> getItemLstByListIdForCPS002B(List<String> listItemDefId, String contractCd,
 			String companyId, List<String> categoryCodeLst) {
 		
-		List<PersonInfoItemDefinition> result = new ArrayList<>();
+//		List<PersonInfoItemDefinition> result = new ArrayList<>();
 		List<String> itemCodeAll = new ArrayList<>();
 		List<String> itemCodeChilds = new ArrayList<>();
 		CollectionUtil.split(listItemDefId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
