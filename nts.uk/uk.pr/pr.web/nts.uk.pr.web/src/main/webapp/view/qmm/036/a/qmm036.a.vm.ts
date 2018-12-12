@@ -163,7 +163,6 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                 else {
                     nts.uk.ui.errors.clearAll();
                     self.lstBreakdownItem = [];
-                    nts.uk.ui.dialog.info({ messageId: "MsgQ_110" });
                 }
                 $("#gridBreakdownItem").ntsGrid("destroy");
                 self.loadGrid();
@@ -205,7 +204,6 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                     nts.uk.ui.errors.clearAll();
                     self.lstHistory([]);
                     self.isScreenC(false);
-                    nts.uk.ui.dialog.info({ messageId: "MsgQ_110" });
                 }
                 block.clear();
                 dfd.resolve();
@@ -245,7 +243,6 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                     nts.uk.ui.errors.clearAll();
                     self.lstHistory([]);
                     self.isScreenC(false);
-                    nts.uk.ui.dialog.info({ messageId: "MsgQ_110" });
                 }
                 block.clear();
                 dfd.resolve();
