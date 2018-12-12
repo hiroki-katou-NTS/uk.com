@@ -9,10 +9,13 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 @Data
 @AllArgsConstructor
 public class YearMonthHistoryItemCommand {
+	
 	private String historyID;
 	private Integer startMonth;
 	private Integer endMonth;
-	public YearMonthHistoryItem fromCommandToDomain (){
-		return new YearMonthHistoryItem(historyID, new YearMonthPeriod(new YearMonth(startMonth), new YearMonth(endMonth)));
+
+	public YearMonthHistoryItem fromCommandToDomain() {
+		return new YearMonthHistoryItem(historyID,
+				new YearMonthPeriod(new YearMonth(startMonth), new YearMonth(endMonth)));
 	}
 }

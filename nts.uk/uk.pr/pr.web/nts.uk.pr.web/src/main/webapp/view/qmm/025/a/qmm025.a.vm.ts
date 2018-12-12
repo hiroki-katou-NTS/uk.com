@@ -6,6 +6,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
     import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
     import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
     import info = nts.uk.ui.dialog.info;
+    import dialog = nts.uk.ui.dialog;
 
     export class ScreenModel {
         year: KnockoutObservable<string> = ko.observable(null);
@@ -99,11 +100,13 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
 
         loadMGrid() {
             let self = this;
+            let height = $(window).height() - 90 - 290; 
+            let width = $(window).width() + 20 - 1170;
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
-                width: "1070px",
+                width: "1170px",
                 height: "200px",
-                subWidth: "130px",
-                subHeight: "270px",
+                subWidth: width + "px",
+                subHeight: height + "px",
                 headerHeight: '30px',
                 dataSource: self.empAmountItems,
                 primaryKey: 'sid',
@@ -297,9 +300,21 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                             {columnKey: "departmentName", allowSorting: true, type: "String"},
                             {columnKey: "empCd", allowSorting: true, type: "String"},
                             {columnKey: "empName", allowSorting: true, type: "String"},
-                            //{columnKey: "rsdtTaxPayeeName", allowSorting: true},
-                            //{columnKey: "yearTaxAmount", allowSorting: true, type: "Number"},
-                            //{columnKey: "amountJune", allowSorting: true, type: "Number"}
+                            {columnKey: "rsdtTaxPayeeName", allowSorting: true},
+                            {columnKey: "yearTaxAmount", allowSorting: true, type: "String"},
+                            {columnKey: "inputAtr", allowSorting: true, type: "String"},
+                            {columnKey: "amountJune", allowSorting: true, type: "Number"},
+                            {columnKey: "amountJuly", allowSorting: true, type: "Number"},
+                            {columnKey: "amountAugust", allowSorting: true, type: "Number"},
+                            {columnKey: "amountSeptember", allowSorting: true, type: "Number"},
+                            {columnKey: "amountOctober", allowSorting: true, type: "Number"},
+                            {columnKey: "amountNovember", allowSorting: true, type: "Number"},
+                            {columnKey: "amountDecember", allowSorting: true, type: "Number"},
+                            {columnKey: "amountJanuary", allowSorting: true, type: "Number"},
+                            {columnKey: "amountFebruary", allowSorting: true, type: "Number"},
+                            {columnKey: "amountMarch", allowSorting: true, type: "Number"},
+                            {columnKey: "amountApril", allowSorting: true, type: "Number"},
+                            {columnKey: "amountMay", allowSorting: true, type: "Number"}
                         ]
                     },
                     {
@@ -520,6 +535,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
         deleteAmount() {
             let self = this;
             block.invisible();
+
             let empAmountItems: Array<RsdtTaxPayAmountDto> = $("#grid").mGrid("dataSource", true);
             let listEmpSelected = _.filter(empAmountItems, (item: RsdtTaxPayAmountDto) => {
                 return item.selectedEmp;
@@ -527,13 +543,21 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
             let listSId = _.map(listEmpSelected, (item: RsdtTaxPayAmountDto) => {
                 return item.sid;
             });
-            service.deleteTaxPayAmount(new DeleteCommand(listSId, self.formatYear(self.year()))).done(() => {
-                info({messageId: "Msg_16"}).then(() => {
-                    self.getEmpAmount();
-                });
-            }).always(() => {
-                self.focusA3_1();
-                block.clear();
+
+            dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+
+                service.deleteTaxPayAmount(new DeleteCommand(listSId, self.formatYear(self.year()))).done(() => {
+                    info({messageId: "Msg_16"}).then(() => {
+                        self.getEmpAmount();
+                    });
+                }).always(() => {
+                    self.focusA3_1();
+                    block.clear();
+                })
+
+            }).ifNo(function() {
+                nts.uk.ui.block.clear();
+                return false;
             })
         }
 

@@ -23,6 +23,11 @@ public class StatementItemCustom {
     private String name;
 
     /**
+     * 略名
+     */
+    private String shortName;
+
+    /**
      * 廃止区分
      */
     private Integer deprecatedAtr;
@@ -39,11 +44,13 @@ public class StatementItemCustom {
         this.deprecatedAtr = Integer.valueOf(deprecatedAtr);
     }
 
-    public StatementItemCustom(String categoryAtr, String itemNameCd, String name, String deprecatedAtr, String defaultAtr) {
+    public StatementItemCustom(String categoryAtr, String itemNameCd, String name, String deprecatedAtr,
+                               String defaultAtr, String shortName) {
         this.categoryAtr = Integer.valueOf(categoryAtr).intValue();
         this.itemNameCd = itemNameCd;
         this.name = name;
         this.deprecatedAtr = Integer.valueOf(deprecatedAtr);
         this.defaultAtr = Integer.valueOf(defaultAtr);
+        this.shortName = shortName;
     }
 }

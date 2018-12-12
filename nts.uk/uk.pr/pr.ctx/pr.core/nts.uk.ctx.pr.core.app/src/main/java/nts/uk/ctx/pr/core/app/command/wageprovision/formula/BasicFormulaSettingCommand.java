@@ -9,27 +9,26 @@ import nts.uk.ctx.pr.core.dom.wageprovision.formula.*;
 */
 @AllArgsConstructor
 @Data
-public class BasicFormulaSettingCommand
-{
+public class BasicFormulaSettingCommand {
 
     /**
      * 履歴ID
      */
-    private String historyID;
+    public String historyID;
     
     /**
     * 使用マスタ
     */
-    private Integer masterUse;
+    public Integer masterUse;
     
     /**
     * マスタ分岐利用
     */
-    private int masterBranchUse;
+    public int masterBranchUse;
     
     
     public BasicFormulaSetting fromCommandToDomain(){
-        return new BasicFormulaSetting(historyID, masterUse, masterBranchUse);
+        return new BasicFormulaSetting(historyID, masterBranchUse, masterUse);
     }
     
 }

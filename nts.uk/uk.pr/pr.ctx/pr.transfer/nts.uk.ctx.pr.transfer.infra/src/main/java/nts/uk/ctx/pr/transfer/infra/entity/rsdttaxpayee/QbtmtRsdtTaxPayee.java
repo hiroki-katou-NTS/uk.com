@@ -19,15 +19,15 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QXXMT_RSDT_TAX_PAYEE")
-public class QxxmtRsdtTaxPayee extends UkJpaEntity implements Serializable {
+@Table(name = "QBTMT_RSDT_TAX_PAYEE")
+public class QbtmtRsdtTaxPayee extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
      * ID
      */
     @EmbeddedId
-    public QxxmtRsdtTaxPayeePk rsdtTaxPayeePk;
+    public QbtmtRsdtTaxPayeePk rsdtTaxPayeePk;
 
     /**
      * 名称
@@ -110,8 +110,8 @@ public class QxxmtRsdtTaxPayee extends UkJpaEntity implements Serializable {
                 this.reportCd, this.designationNum, this.prefectures);
     }
 
-    public static QxxmtRsdtTaxPayee toEntity(ResidentTaxPayee domain) {
-        return new QxxmtRsdtTaxPayee(new QxxmtRsdtTaxPayeePk(domain.getCid(), domain.getCode().v()),
+    public static QbtmtRsdtTaxPayee toEntity(ResidentTaxPayee domain) {
+        return new QbtmtRsdtTaxPayee(new QbtmtRsdtTaxPayeePk(domain.getCid(), domain.getCode().v()),
                 domain.getName().v(), domain.getKanaName().map(i -> i.v()).orElse(null),
                 domain.getCompileStation().getName().map(i -> i.v()).orElse(null),
                 domain.getCompileStation().getZipCode().map(i -> i.v()).orElse(null),

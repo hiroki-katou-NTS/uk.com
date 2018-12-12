@@ -10,8 +10,9 @@ module nts.uk.pr.view.qmm016.i.viewmodel {
         wageTableName: KnockoutObservable<string> = ko.observable('');
         startMonth: KnockoutObservable<string> = ko.observable('');
         takeoverMethod: KnockoutObservable<number> = ko.observable(1);
-        takeoverItem: KnockoutObservableArray<> = ko.observableArray([]);
+        takeoverItem: KnockoutObservableArray<any> = ko.observableArray([]);
         lastHistory: number = 190000;
+        
         constructor() {
             let self = this;
             let params = getShared("QMM016_I_PARAMS");
@@ -35,20 +36,21 @@ module nts.uk.pr.view.qmm016.i.viewmodel {
             }
             block.clear();
         }
+        
         addNewHistory() {
             let self = this;
             nts.uk.ui.errors.clearAll();
             $('.nts-input').trigger("validate");
-            if (nts.uk.ui.errors.hasError()) {
-                return;
+            if (!nts.uk.ui.errors.hasError()) {
+                if (self.startMonth() <= self.lastHistory.toString()) {
+                    dialog.alertError({ messageId: "Msg_79" });
+                } else {
+                    setShared('QMM016_I_RES_PARAMS', { startMonth: self.startMonth(), takeoverMethod: self.takeoverMethod() });
+                    nts.uk.ui.windows.close();
+                }
             }
-            if (self.startMonth() <= self.lastHistory.toString()) {
-                dialog.alertError({ messageId: "Msg_79" });
-                return;
-            }
-            setShared('QMM016_I_RES_PARAMS', { startMonth: self.startMonth(), takeoverMethod: self.takeoverMethod() });
-            nts.uk.ui.windows.close();
         }
+        
         cancel() {
             nts.uk.ui.windows.close();
         }

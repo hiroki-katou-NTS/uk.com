@@ -30,11 +30,11 @@ public class ElementAttribute extends DomainObject {
 	 */
 	private Optional<ItemNameCode> optionalAdditionalElement;
 
-	public ElementAttribute(Integer masterNumericInformation, Integer fixedElement, String optionalAdditionalElement) {
+	public ElementAttribute(Integer masterNumericInformation, String fixedElement, String optionalAdditionalElement) {
 		this.masterNumericAtr = masterNumericInformation == null ? Optional.empty()
 				: Optional.of(EnumAdaptor.valueOf(masterNumericInformation, MasterNumericAtr.class));
 		this.fixedElement = fixedElement == null ? Optional.empty()
-				: Arrays.stream(ElementType.values()).filter(item -> item.value == fixedElement).findFirst();
+				: Arrays.stream(ElementType.values()).filter(item -> item.value.equals(fixedElement)).findFirst();
 		this.optionalAdditionalElement = optionalAdditionalElement == null ? Optional.empty()
 				: Optional.of(new ItemNameCode(optionalAdditionalElement));
 

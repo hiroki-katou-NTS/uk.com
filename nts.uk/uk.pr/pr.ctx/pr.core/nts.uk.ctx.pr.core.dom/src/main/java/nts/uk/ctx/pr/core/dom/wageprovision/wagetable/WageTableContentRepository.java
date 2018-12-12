@@ -4,19 +4,19 @@ import java.util.Optional;
 import java.util.List;
 
 /**
-* 賃金テーブル内容
-*/
-public interface WageTableContentRepository
-{
+ * 賃金テーブル内容
+ */
+public interface WageTableContentRepository {
 
     List<WageTableContent> getAllWageTableContent();
 
-    Optional<WageTableContent> getWageTableContentById();
+    Optional<WageTableContent> getWageTableContentById(String historyId);
 
-    void add(WageTableContent domain);
+    void addOrUpdate(WageTableContent domain);
 
-    void update(WageTableContent domain);
+    void remove(String historyId);
 
-    void remove();
+    List<WageTableQualification> getWageTableQualification(String historyId);
 
+    List<WageTableQualification> getDefaultWageTableQualification();
 }

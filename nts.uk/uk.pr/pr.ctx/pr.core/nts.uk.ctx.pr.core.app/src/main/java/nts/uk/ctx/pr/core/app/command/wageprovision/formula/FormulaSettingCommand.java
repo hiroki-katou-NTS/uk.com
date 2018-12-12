@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -14,4 +15,12 @@ public class FormulaSettingCommand {
     public DetailFormulaSettingCommand detailFormulaSettingCommand;
     public List<BasicCalculationFormulaCommand> basicCalculationFormulaCommand;
     private YearMonthHistoryItemCommand yearMonth;
+    public void updateIdentifier () {
+        this.basicCalculationFormulaCommand = this.basicCalculationFormulaCommand.stream().map(item -> {
+            item.historyID = yearMonth.historyID;
+            return item;
+        }).collect(Collectors.toList());
+        this.basicFormulaSettingCommand.historyID = yearMonth.historyID;
+        this.detailFormulaSettingCommand.historyID = yearMonth.historyID;
+    }
 }

@@ -83,5 +83,7 @@ public class PayrollUnitPriceHistoryFinder {
         return list;
     }
 
-
+    public CompanySalaryUnitPriceSettingDto getPayrollUnitPriceByCodeAndYearMonth(String code, int yearMonth){
+        return finder.getPayrollUnitPriceCodeAndYearMonth(AppContexts.user().companyId(), code, yearMonth).map(CompanySalaryUnitPriceSettingDto::fromDomainToDto).orElse(null);
+    }
 }

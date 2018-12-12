@@ -17,6 +17,7 @@
         <com:scriptfile path="qmm019.a.service.js"/>
         <com:scriptfile path="qmm019.a.vm.js"/>
         <com:scriptfile path="qmm019.a.start.js"/>
+        <!-- <com:scriptfile path="knockout-sortable.min.js"/> -->
     </ui:define>
 
     <ui:define name="content">
@@ -26,7 +27,7 @@
                     data-bind="click: create, enable: true">#{i18n.getText('QMM012_1')}</button>
             <!-- 登録 -->
             <button id="A1_2" tabindex="2" class="proceed"
-                    data-bind="click: registered, enable: true">#{i18n.getText('QMM012_2')}</button>
+                    data-bind="click: registered, enable: statementLayoutHistData().statementCode != null">#{i18n.getText('QMM012_2')}</button>
             <!-- Excel出力 -->
             <button id="A1_3" tabindex="3" class=""
                     data-bind="click: outputExcel, enable: true">#{i18n.getText('QMM012_3')}</button>
@@ -60,10 +61,10 @@
                         <div class="valign-center control-group">
                             <!-- 履歴追加 -->
                             <button id="A2_5" tabindex="9" class=""
-                                    data-bind="click: addHistory, enable: !statementLayoutHistData().checkCreate()">#{i18n.getText('QMM019_11')}</button>
+                                    data-bind="click: addHistory, enable: statementLayoutHistData().statementCode != null">#{i18n.getText('QMM019_11')}</button>
                             <!-- 履歴編集 -->
                             <button id="A2_6" tabindex="10" class=""
-                                    data-bind="click: editHistory, enable: !statementLayoutHistData().checkCreate()">#{i18n.getText('QMM019_12')}</button>
+                                    data-bind="click: editHistory, enable: (statementLayoutHistData().statementCode != null) &amp;&amp; !statementLayoutHistData().checkCreate()">#{i18n.getText('QMM019_12')}</button>
                         </div>
                         <!-- 明細書レイアウト一覧 -->
                         <table id="treegrid1" tabindex="11"
@@ -126,7 +127,7 @@
                                  data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM019_21')}</div>
                             <!-- 印刷プレビュー -->
                             <button id="A3_14" tabindex="13" class=""
-                                    data-bind="enable: true">#{i18n.getText('QMM019_22')}</button>
+                                    data-bind="click: $vm.openP, enable: true">#{i18n.getText('QMM019_22')}</button>
                         </div>
                         <hr/>
                         <div id="statementLayoutSet" data-bind="with: statementLayoutSet">
@@ -145,7 +146,7 @@
                                                     data-bind="enable: !hasFixed(), click: editLine"></button>
                                             <div class="item-sort" data-bind="ntsSortable: {
                                                                         data: listSetByItem,
-                                                                        isEnabled: true }">
+                                                                        beforeMove: preventStopSort}">
                                                 <div class="item limited-label" data-bind="
                                                                     text: shortName,
                                                                     click: openSetting,
@@ -177,7 +178,7 @@
                                                     data-bind="enable: !hasFixed(), click: editLine"></button>
                                             <div class="item-sort" data-bind="ntsSortable: {
                                                                         data: listSetByItem,
-                                                                        isEnabled: true }">
+                                                                        beforeMove: preventStopSort }">
                                                 <div class="item limited-label" data-bind="
                                                                     text: shortName,
                                                                     click: openSetting,
@@ -214,7 +215,7 @@
                                                         data-bind="enable: true, click: editLine"></button>
                                                 <div class="item-sort" data-bind="ntsSortable: {
                                                                             data: listSetByItem,
-                                                                            isEnabled: true }">
+                                                                            beforeMove: preventStopSort }">
                                                     <div class="item limited-label" data-bind="
                                                                         text: shortName,
                                                                         click: openSetting,
@@ -255,7 +256,7 @@
                                                         data-bind="enable: true, click: editLine"></button>
                                                 <div class="item-sort" data-bind="ntsSortable: {
                                                                             data: listSetByItem,
-                                                                            isEnabled: true }">
+                                                                            beforeMove: preventStopSort }">
                                                     <div class="item limited-label" data-bind="
                                                                         text: shortName,
                                                                         click: openSetting,

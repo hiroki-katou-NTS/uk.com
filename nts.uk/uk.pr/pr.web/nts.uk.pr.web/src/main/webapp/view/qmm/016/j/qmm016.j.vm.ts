@@ -12,7 +12,7 @@ module nts.uk.pr.view.qmm016.j.viewmodel {
         startMonth: KnockoutObservable<string> = ko.observable('');
         displayEndMonth: KnockoutObservable<string> = ko.observable('');
         modifyMethod: KnockoutObservable<number> = ko.observable(1);
-        modifyItem: KnockoutObservableArray<> = ko.observableArray([]);
+        modifyItem: KnockoutObservableArray<any> = ko.observableArray([]);
         isLastHistory: KnockoutObservable<boolean> = ko.observable(false);
         selectedHistory: any = null;
         screen: string = "";
@@ -30,7 +30,8 @@ module nts.uk.pr.view.qmm016.j.viewmodel {
                 let history = params.history;
                 if (history && history.length > 0) {
                     history.forEach((historyItem, index) => {
-                        if (self.selectedHistory.historyId == historyItem.historyId) self.previousHistory = history[index + 1];
+                        if (self.selectedHistory.historyID == historyItem.historyID) 
+                            self.previousHistory = history[index + 1];
                     });
                     self.isLastHistory(params.selectedHistory.startMonth == history[0].startMonth);
                 }
@@ -41,16 +42,17 @@ module nts.uk.pr.view.qmm016.j.viewmodel {
             }
             block.clear();
         }
+        
         editHistory() {
             let self = this;
             if (self.modifyMethod() == model.MODIFY_METHOD.UPDATE) {
                 if (self.startMonth() > self.selectedHistory.endMonth.toString()) {
-                    dialog.alertError({ messageId: "Msg_107" });
+                    dialog.alertError({ messageId: "MsgQ_156" });
                     return;
                 }
                 if (self.previousHistory) {
                     if (self.startMonth() <= self.previousHistory.startMonth.toString()) {
-                        dialog.alertError({ messageId: "Msg_107" });
+                        dialog.alertError({ messageId: "MsgQ_156" });
                         return;
                     }
                 }
@@ -64,31 +66,39 @@ module nts.uk.pr.view.qmm016.j.viewmodel {
 
         updateHistory() {
             let self = this;
-            let newHistory = self.selectedHistory;
-            newHistory.startMonth = self.startMonth();
-            let command = { wageTableCode: self.wageTableName(), yearMonthHistoryItem: newHistory };
+            block.invisible();
+            let command = { 
+                wageTableCode: self.wageTableCode(), 
+                historyId: self.selectedHistory.historyID, 
+                startYm: self.startMonth(), 
+                endYm: self.selectedHistory.endMonth 
+            };
             service.editWageTableHistory(command).done(function() {
                 dialog.info({ messageId: "Msg_15" }).then(function() {
-                    setShared('QMM016_J_RES_PARAMS', { modifyMethod: self.modifyMethod() });
+                    setShared('QMM016_J_RES_PARAMS', { modifyMethod: self.modifyMethod(), historyId: self.selectedHistory.historyID });
                     nts.uk.ui.windows.close();
                 })
             }).fail(function(err) {
-                dialog.alertError(err.message);
+                dialog.alertError(err);
+            }).always(() => {
+                block.clear();
             });
         }
 
         deleteHistory() {
             let self = this;
-            let command = { wageTableCode: self.wageTableCode(), yearMonthHistoryItem: self.selectedHistory };
-            service.deleteWageTableHistory(command).done(function() {
+            block.invisible();
+            let command = { wageTableCode: self.wageTableCode(), historyId: self.selectedHistory.historyID };
+            service.deleteWageTableHistory(command).done(function(historyId: string) {
                 nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                    setShared('QMM016_J_RES_PARAMS', { modifyMethod: self.modifyMethod() });
+                    setShared('QMM016_J_RES_PARAMS', { modifyMethod: self.modifyMethod(), historyId: historyId });
                     nts.uk.ui.windows.close();
                 });
             }).fail(function(err) {
-                dialog.alertError(err.message);
+                dialog.alertError(err);
+            }).always(() => {
+                block.clear();
             });
-
         }
 
         cancel() {
