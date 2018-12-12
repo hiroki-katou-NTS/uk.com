@@ -1337,6 +1337,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         console.log("column key:" + valt.columnKey);
                         $("#dpGrid").mGrid("setState", valt.rowId, valt.columnKey, valt.state);
                     });
+                    
+                     if (!self.displayWhenZero()) {
+                        $("#dpGrid").mGrid("hideZero", true)
+                        $("#dpGrid").mGrid("hideZero", false)
+                        $("#dpGrid").mGrid("hideZero", true)
+                    } else {
+                        $("#dpGrid").mGrid("hideZero", false)
+                        $("#dpGrid").mGrid("hideZero", true)
+                        $("#dpGrid").mGrid("hideZero", false)
+                    }
                     nts.uk.ui.block.clear();
                 } else {
                     nts.uk.ui.block.clear();

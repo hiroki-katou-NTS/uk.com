@@ -80,6 +80,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.PeriodInMaster
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeActualStampOutPut;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimeLeavingWorkOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.WorkStampOutPut;
+import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.jobtitle.affiliate.AffJobTitleAdapter;
 import nts.uk.ctx.at.record.dom.jobtitle.affiliate.AffJobTitleSidImport;
@@ -340,18 +341,31 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						reCreateWorkPlace);
 
 				if (exitStatus == ExitStatus.RECREATE) {
-					this.deleteWorkInfoOfDailyPerforService.deleteWorkInfoOfDailyPerforService(employeeId, day);
-					this.affiliationInforOfDailyPerforRepository.delete(employeeId, day);
-					this.calAttrOfDailyPerformanceRepository.deleteByKey(employeeId, day);
-					this.specificDateAttrOfDailyPerforRepo.deleteByEmployeeIdAndDate(employeeId, day);
-					this.workTypeOfDailyPerforRepository.delete(employeeId, day);
-					List<Integer> attItemIds = Arrays.asList(1, 2, 3, 4, 28, 29, 623, 624, 625, 626, 627, 628, 629, 630,
-							631, 632, 633, 634, 635, 636, 637, 638, 639, 640, 824, 825, 826, 827, 828, 829, 830, 831,
-							832);
-					this.editStateOfDailyPerformanceRepository.deleteByListItemId(employeeId, day, attItemIds);
+					
+					Optional<TimeLeavingOfDailyPerformance> timeLeaving = Optional.empty();
+					
+					// 編集状態を取得
+					List<EditStateOfDailyPerformance> editStateOfDailyPerformances = this.editStateOfDailyPerformanceRepository.findByKey(employeeId, day);
+					
+					if (editStateOfDailyPerformances.isEmpty()) {
+						// 日別実績を削除する
+						this.deleteWorkInfoOfDaiPerService.deleteWorkInfoOfDaiPerService(employeeId, day);
+					} else {
+						// 日別実績の情報データのみ削除する - start
+						this.deleteWorkInfoOfDailyPerforService.deleteWorkInfoOfDailyPerforService(employeeId, day);
+						this.affiliationInforOfDailyPerforRepository.delete(employeeId, day);
+						this.calAttrOfDailyPerformanceRepository.deleteByKey(employeeId, day);
+						this.specificDateAttrOfDailyPerforRepo.deleteByEmployeeIdAndDate(employeeId, day);
+						this.workTypeOfDailyPerforRepository.delete(employeeId, day);
+						List<Integer> attItemIds = Arrays.asList(1, 2, 3, 4, 28, 29, 623, 624, 625, 626, 627, 628, 629, 630,
+								631, 632, 633, 634, 635, 636, 637, 638, 639, 640, 824, 825, 826, 827, 828, 829, 830, 831,
+								832);
+						this.editStateOfDailyPerformanceRepository.deleteByListItemId(employeeId, day, attItemIds);
+						// - end
 
-					Optional<TimeLeavingOfDailyPerformance> timeLeaving = this.timeLeavingOfDailyPerformanceRepository
-							.findByKey(employeeId, day);
+						timeLeaving = this.timeLeavingOfDailyPerformanceRepository.findByKey(employeeId, day);
+					}
+					
 
 					this.self.reflect(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr, reCreateWorkType,
 							employeeGeneralInfoImport, stampReflectionManagement, mapWorkingConditionItem,
@@ -408,19 +422,31 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						reCreateWorkPlace);
 
 				if (exitStatus == ExitStatus.RECREATE) {
-					this.deleteWorkInfoOfDailyPerforService.deleteWorkInfoOfDailyPerforService(employeeId, day);
-					this.affiliationInforOfDailyPerforRepository.delete(employeeId, day);
-					this.calAttrOfDailyPerformanceRepository.deleteByKey(employeeId, day);
-					this.specificDateAttrOfDailyPerforRepo.deleteByEmployeeIdAndDate(employeeId, day);
-					this.workTypeOfDailyPerforRepository.delete(employeeId, day);
-					List<Integer> attItemIds = Arrays.asList(1, 2, 3, 4, 28, 29, 623, 624, 625, 626, 627, 628, 629, 630,
-							631, 632, 633, 634, 635, 636, 637, 638, 639, 640, 824, 825, 826, 827, 828, 829, 830, 831,
-							832);
-					this.editStateOfDailyPerformanceRepository.deleteByListItemId(employeeId, day, attItemIds);
+					
+					Optional<TimeLeavingOfDailyPerformance> timeLeaving = Optional.empty();
+					
+					// 編集状態を取得
+					List<EditStateOfDailyPerformance> editStateOfDailyPerformances = this.editStateOfDailyPerformanceRepository.findByKey(employeeId, day);
+					
+					if (editStateOfDailyPerformances.isEmpty()) {
+						// 日別実績を削除する
+						this.deleteWorkInfoOfDaiPerService.deleteWorkInfoOfDaiPerService(employeeId, day);
+					} else {
+						// 日別実績の情報データのみ削除する - start
+						this.deleteWorkInfoOfDailyPerforService.deleteWorkInfoOfDailyPerforService(employeeId, day);
+						this.affiliationInforOfDailyPerforRepository.delete(employeeId, day);
+						this.calAttrOfDailyPerformanceRepository.deleteByKey(employeeId, day);
+						this.specificDateAttrOfDailyPerforRepo.deleteByEmployeeIdAndDate(employeeId, day);
+						this.workTypeOfDailyPerforRepository.delete(employeeId, day);
+						List<Integer> attItemIds = Arrays.asList(1, 2, 3, 4, 28, 29, 623, 624, 625, 626, 627, 628, 629, 630,
+								631, 632, 633, 634, 635, 636, 637, 638, 639, 640, 824, 825, 826, 827, 828, 829, 830, 831,
+								832);
+						this.editStateOfDailyPerformanceRepository.deleteByListItemId(employeeId, day, attItemIds);
+						// - end
 
-					Optional<TimeLeavingOfDailyPerformance> timeLeaving = this.timeLeavingOfDailyPerformanceRepository
-							.findByKey(employeeId, day);
-
+						timeLeaving = this.timeLeavingOfDailyPerformanceRepository.findByKey(employeeId, day);
+					}
+					
 					this.self.reflectWithNoInfoImport(companyId, employeeId, day, empCalAndSumExecLogID, reCreateAttr,
 							reCreateWorkType, stampReflectionManagement,
 							timeLeaving.isPresent() ? timeLeaving.get() : null);

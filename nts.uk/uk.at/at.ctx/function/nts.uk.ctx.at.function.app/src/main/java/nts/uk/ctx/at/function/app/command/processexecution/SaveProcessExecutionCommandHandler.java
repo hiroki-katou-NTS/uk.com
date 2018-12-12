@@ -29,6 +29,7 @@ import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.TargetGroupC
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
+import nts.uk.ctx.at.function.dom.processexecution.personalschedule.CreateScheduleYear;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.CreationPeriod;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreation;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreationPeriod;
@@ -43,6 +44,7 @@ import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLo
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionRepository;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.MonthDay;
 
 @Stateless
 public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult<SaveProcessExecutionCommand, String> {
@@ -85,7 +87,11 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 		PersonalScheduleCreationPeriod period = new PersonalScheduleCreationPeriod(
 										/*command.getCreationPeriod() == null ? null : */new CreationPeriod(command.getCreationPeriod()),
 										/*command.getTargetDate() == null ? null : */new TargetDate(command.getTargetDate()),
-										EnumAdaptor.valueOf(command.getTargetMonth(), TargetMonth.class));
+										EnumAdaptor.valueOf(command.getTargetMonth(), TargetMonth.class),
+										command.getDesignatedYear() == null ? null : EnumAdaptor.valueOf(command.getDesignatedYear(), CreateScheduleYear.class),
+										command.getStartMonthDay() == null ? null : new MonthDay(command.getStartMonthDay()/100, command.getStartMonthDay()%100),
+										command.getEndMonthDay() == null ? null : new MonthDay(command.getEndMonthDay()/100, command.getEndMonthDay()%100)
+				);
 		
 		PersonalScheduleCreationTarget target = new PersonalScheduleCreationTarget(
 				EnumAdaptor.valueOf(command.getCreationTarget(), TargetClassification.class),

@@ -12,7 +12,7 @@ public enum DateOutputFormat {
     YYMMDD(3, "YYMMDD", "yyMMdd"),
 	JJYY_MM_DD(4, "JJYY/MM/DD", ""),
 	JJYYMMDD(5, "JJYYMMDD", ""),
-	DAY_OF_WEEK(6, "曜日", "w");
+	DAY_OF_WEEK(6, "曜日", "e");
 	
 	/** The value. */
 	public final int value;

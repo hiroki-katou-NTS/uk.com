@@ -76,7 +76,7 @@
                 <div class="line-height flex">
                     <div>
                         <div class="float_left display_block" style = "padding-right: 50px;"
-                             data-bind="ntsFormLabel: { required:true  }">#{i18n.getText('CMF002_121')}</div>
+                             data-bind="ntsFormLabel: {constraint: 'ConvertCode', required:true  }">#{i18n.getText('CMF002_121')}</div>
                     </div>
                     <div>
                         <input id = "G3_1" type="text" style="width: 30px;" tabindex="6"
@@ -103,10 +103,10 @@
 
                 <div class="flex">
                     <button style="margin-left: 20px;" data-bind="click: btnAddCdConvertDetails"
-                            tabindex="8">#{i18n.getText('CMF002_125')}</button>
+                            tabindex="-1">#{i18n.getText('CMF002_125')}</button>
 
                     <button class="danger push-right-1x" data-bind="click: btnRemoveCdConvertDetails"
-                            tabindex="9">#{i18n.getText('CMF002_126')}</button>
+                            tabindex="-1">#{i18n.getText('CMF002_126')}</button>
                 </div>
                 <div class="flex">
                     <table id="fixed-table" tabindex="8">
@@ -127,9 +127,9 @@
                             <td class="order-column"><span
                                     data-bind="text: lineNumber"></span></td>
                             <td><input tabindex="9"
-                                       data-bind="ntsTextEditor: {value: outputItem, constraint: 'CdConvertValue',  name:'#{i18n.getText('CMF002_127')}', option: {width: '98px'}}" /></td>
-                            <td><input tabindex="10"
-                                       data-bind="ntsTextEditor: {value: systemCode, constraint: 'CdConvertValue', required: true, name:'#{i18n.getText('CMF002_128')}', option: {width: '98px'}}" /></td>
+                                       data-bind="attr: { 'data-focus-input': lineNumber }, ntsTextEditor: {value: outputItem, constraint: 'CdConvertValue',  name:'#{i18n.getText('CMF002_127')}', option: {width: '98px'}}" /></td>
+                            <td><input tabindex="9"
+                                       data-bind="attr: { 'data-focus-system': lineNumber }, ntsTextEditor: {value: systemCode, constraint: 'CdConvertValue', required: true, name:'#{i18n.getText('CMF002_128')}', option: {width: '98px'}}" /></td>
                         </tr>
                         </tbody>
                     </table>
