@@ -45,22 +45,25 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		String cid = AppContexts.user().companyId();
 		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_1.toString()).setParameter(1, cid);
 		Object[] data = (Object[]) query.getSingleResult();
+		int closeDateAtr = ((BigDecimal)data[1]).intValue();
 		for (int i = 0; i < data.length; i++) {
-			datas.add(new MasterData(dataContent(data[i],i), null, ""));
+			if(closeDateAtr == 0 && i == 2)
+				continue;
+			datas.add(new MasterData(dataContent(data[i],i,closeDateAtr), null, ""));
 		}
 		return datas;
 	}
 	
-	private Map<String, Object> dataContent(Object object,int check) {
+	private Map<String, Object> dataContent(Object object,int check,int closeDateAtr) {
 		Map<String, Object> data = new HashMap<>();
 		data.put(RegistTimeColumn.KMK008_80, check == 0 ? RegistTimeColumn.KMK008_82 : "");
 		data.put(RegistTimeColumn.HEADER_NONE1, check == 0 ? RegistTimeColumn.KMK008_83 : check == 1 ? RegistTimeColumn.KMK008_84 : check == 3 ? RegistTimeColumn.KMK008_85 : check == 4 ? RegistTimeColumn.KMK008_86 : "");
 		data.put(RegistTimeColumn.HEADER_NONE2, check == 4 ? RegistTimeColumn.KMK008_87 : check == 5 ? RegistTimeColumn.KMK008_88 : "");
-		data.put(RegistTimeColumn.KMK008_81, getValue(((BigDecimal)object).intValue(),check));
+		data.put(RegistTimeColumn.KMK008_81, getValue(((BigDecimal)object).intValue(),check,closeDateAtr));
 		return data;
 	}
 	
-	private String getValue(int type,int param){
+	private String getValue(int type,int param,int closeDateAtr){
 		String value = null;
 		switch (param) {
 		case 0:
@@ -80,12 +83,20 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			value = EnumAdaptor.convertToValueName(timeOverLimitType).getLocalizedName();
 			break;
 		case 4:
-			TargetSettingAtr targetSettingAtr = EnumAdaptor.valueOf(type, TargetSettingAtr.class);
-			value = EnumAdaptor.convertToValueName(targetSettingAtr).getLocalizedName();
+			if(closeDateAtr != 0) {
+				TargetSettingAtr targetSettingAtr = EnumAdaptor.valueOf(type, TargetSettingAtr.class);
+				value = EnumAdaptor.convertToValueName(targetSettingAtr).getLocalizedName();
+			} else {
+				value = "";
+			}
 			break;
 		case 5:
-			TargetSettingAtr yearlyWorkTableAtr = EnumAdaptor.valueOf(type, TargetSettingAtr.class);
-			value = EnumAdaptor.convertToValueName(yearlyWorkTableAtr).getLocalizedName();
+			if(closeDateAtr != 0) {
+				TargetSettingAtr yearlyWorkTableAtr = EnumAdaptor.valueOf(type, TargetSettingAtr.class);
+				value = EnumAdaptor.convertToValueName(yearlyWorkTableAtr).getLocalizedName();
+			} else {
+				value = "";
+			}
 			break;
 
 		default:
