@@ -59,8 +59,8 @@ module nts.uk.com.view.cps017.a.service {
         return ajax(paths.reflUnrComp, command);
     }
 
-    export function saveAsExcel(languageId: string): JQueryPromise<any> {
-        return exportFile('/masterlist/report/print', { domainId: "PersonSelectionItem", domainType: "個人情報の選択肢の登録", languageId: languageId, reportType: 0 });
+    export function saveAsExcel(languageId: string, date: string): JQueryPromise<any> {
+        return exportFile('/masterlist/report/print', { domainId: "PersonSelectionItem", domainType: "個人情報の選択肢の登録", languageId: languageId, reportType: 0, option : date });
     }
 
 }
