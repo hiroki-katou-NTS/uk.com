@@ -24,7 +24,6 @@ public class ElementAttributeCommand {
 	private String optionalAdditionalElement;
 
 	public ElementAttribute fromCommandToDomain() {
-		if (masterNumericClassification == null) return null;
 		return new ElementAttribute(masterNumericClassification, fixedElement, optionalAdditionalElement);
 	}
 

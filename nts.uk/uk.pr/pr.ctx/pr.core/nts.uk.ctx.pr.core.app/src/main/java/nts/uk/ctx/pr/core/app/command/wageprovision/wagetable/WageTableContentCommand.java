@@ -29,6 +29,8 @@ public class WageTableContentCommand {
 
 	private List<TwoDmsElementItemCommand> twoDimensionPayment;
 
+	private List<ThreeDmsElementItemCommand> threeDimensionPayment;
+
 	/**
 	 * 資格グループ設定
 	 */
@@ -54,23 +56,35 @@ public class WageTableContentCommand {
 					listPayments.add(payment);
 				}
 			}
-		} else if(wageTableQualifications != null) {
+		} else if (threeDimensionPayment != null) {
+			for (ThreeDmsElementItemCommand h : threeDimensionPayment) {
+				for (TwoDmsElementItemCommand r : h.getListFirstDms()) {
+					for (ElementItemCommand c : r.getListSecondDms()) {
+						ElementsCombinationPaymentAmount payment = new ElementsCombinationPaymentAmount(
+								IdentifierUtil.randomUniqueId(), c.getPaymentAmount(), r.getMasterCode(),
+								r.getFrameNumber(), r.getFrameLowerLimit(), r.getFrameUpperLimit(), c.getMasterCode(),
+								c.getFrameNumber(), c.getFrameLowerLimit(), c.getFrameUpperLimit(), h.getMasterCode(),
+								h.getFrameNumber(), h.getFrameLowerLimit(), h.getFrameUpperLimit());
+						listPayments.add(payment);
+					}
+				}
+			}
+		} else if (wageTableQualifications != null) {
 			wageTableQualifications.forEach(wageTableQualification -> {
-				wageTableQualification.getEligibleQualificationCode().forEach(eligible -> listPayments.add(new ElementsCombinationPaymentAmount(
-						IdentifierUtil.randomUniqueId(),
-						eligible.getWageTablePaymentAmount(),
-						eligible.getQualificationCode(), null, null, null, null, null, null, null, null, null, null, null)));
-
+				wageTableQualification.getEligibleQualificationCode()
+						.forEach(eligible -> listPayments
+								.add(new ElementsCombinationPaymentAmount(IdentifierUtil.randomUniqueId(),
+										eligible.getWageTablePaymentAmount(), eligible.getQualificationCode(), null,
+										null, null, null, null, null, null, null, null, null, null)));
 				qualificationGroupSettings.add(new QualificationGroupSettingContent(
-						wageTableQualification.getQualificationGroupCode(),
-						wageTableQualification.getPaymentMethod(),
-						wageTableQualification.getEligibleQualificationCode().stream().map(WageTableQualificationInfoDto::getQualificationCode).collect(Collectors.toList())
-				));
+						wageTableQualification.getQualificationGroupCode(), wageTableQualification.getPaymentMethod(),
+						wageTableQualification.getEligibleQualificationCode().stream()
+								.map(WageTableQualificationInfoDto::getQualificationCode)
+								.collect(Collectors.toList())));
 			});
 		}
 
 		return new WageTableContent(historyID, listPayments,
-				qualificationGroupSettings.isEmpty() ? Optional.empty()
-						: Optional.of(qualificationGroupSettings));
+				qualificationGroupSettings.isEmpty() ? Optional.empty() : Optional.of(qualificationGroupSettings));
 	}
 }

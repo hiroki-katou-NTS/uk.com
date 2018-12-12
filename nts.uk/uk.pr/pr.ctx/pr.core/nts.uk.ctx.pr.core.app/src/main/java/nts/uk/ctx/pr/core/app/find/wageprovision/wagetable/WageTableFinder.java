@@ -144,7 +144,7 @@ public class WageTableFinder {
 		String cid = AppContexts.user().companyId();
 		Optional<WageTable> domainOtp = wageTableRepo.getWageTableById(cid, wageTableCode);
 		if (optContent.isPresent()) {
-			return WageTableContentDto.fromDomainToDto(optContent.get(), domainOtp, wageContentCreater);
+			return new WageTableContentDto(optContent.get(), domainOtp, wageContentCreater);
 		} else {
 			return null;
 		}
