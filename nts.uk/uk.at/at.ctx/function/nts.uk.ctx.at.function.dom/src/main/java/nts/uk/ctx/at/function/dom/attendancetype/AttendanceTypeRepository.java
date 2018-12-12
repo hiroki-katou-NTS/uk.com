@@ -25,4 +25,31 @@ public interface AttendanceTypeRepository {
 	 */
 	public List<AttendanceType> getItemByAtrandType(String companyId, int screenUseAtr, int attendanceItemType);
 	
+	/**
+	 * 
+	 * @param companyId
+	 * @param attendanceItemType
+	 * @return
+	 */
+	public List<AttendanceType> getItemByAtrandType(String companyId, int attendanceItemType);
+	
+	/**
+	 * 
+	 * @param companyId
+	 * @param screenUseAtr
+	 * @param attendanceItemType
+	 * @return
+	 */
+	public List<AttendanceType> getItemByAtrandType(String companyId, List<ScreenUseAtr> screenUseAtr, int attendanceItemType);
+	
+	/**
+	 * 
+	 * @param companyId
+	 * @param screenUseAtr
+	 * @param attendanceItemType
+	 * @param attendanceIds
+	 * @return
+	 */
+	public List<AttendanceType> getItemByAtrandType(String companyId, List<ScreenUseAtr> screenUseAtr, int attendanceItemType, List<Integer> AttendanceIds);
+	
 }

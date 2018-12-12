@@ -33,6 +33,7 @@ import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.SDelAtr;
 import nts.uk.ctx.sys.gateway.dom.mail.UrlExecInfoRepository;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.program.ProgramsManager;
 import nts.uk.shr.com.url.UrlExecInfo;
 
 @Path("ctx/sys/gateway/url")
@@ -138,6 +139,13 @@ public class UrlWebService {
 		urlExecInfoExport.getTaskIncre().forEach(x -> {
 			result.put(x.getTaskIncreKey(), x.getTaskIncreValue());
 		});
+		String webAppID = ProgramsManager.findById(urlExecInfoExport.getProgramId()+urlExecInfoExport.getScreenId())
+				.map(x -> x.getAppId().toString().toLowerCase()).orElse("");
+		// cho KAF màn B nếu không khai báo trong ProgramsManager
+		if(Strings.isBlank(webAppID)){
+			webAppID = ProgramsManager.findById(urlExecInfoExport.getProgramId()+"A")
+					.map(x -> x.getAppId().toString().toLowerCase()).orElse("");
+		}
 		return new UrlResult(
 				urlExecInfoExport.getProgramId().toLowerCase(), 
 				urlExecInfoExport.getScreenId().toLowerCase(), 
@@ -149,7 +157,8 @@ public class UrlWebService {
 			    urlExecInfoExport.getIssueDate(),
 			    urlExecInfoExport.getSid(),
 			    urlExecInfoExport.getScd(),
-				result);
+				result,
+				webAppID);
 	}
 	
 	private Contract executionContractSet(String contractCD){

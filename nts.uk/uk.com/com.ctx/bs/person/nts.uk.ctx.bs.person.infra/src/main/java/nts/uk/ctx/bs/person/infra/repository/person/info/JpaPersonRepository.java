@@ -4,14 +4,17 @@
  *****************************************************************/
 package nts.uk.ctx.bs.person.infra.repository.person.info;
 
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
@@ -184,12 +187,34 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 	 * String)
 	 */
 	@Override
+	@SneakyThrows
 	public Optional<Person> getByPersonId(String personId) {
-		Optional<BpsmtPerson> person = this.queryProxy().find(new BpsmtPersonPk(personId), BpsmtPerson.class);
-		if (person.isPresent()) {
-			return Optional.of(toFullPersonDomain(person.get()));
-		} else {
-			return Optional.empty();
+		String sql = "select * from BPSMT_PERSON"
+				+ " where PID = ?";
+		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+			stmt.setString(1, personId);
+			return new NtsResultSet(stmt.executeQuery()).getSingle(r -> {
+				BpsmtPerson e = new BpsmtPerson();
+				e.bpsmtPersonPk = new BpsmtPersonPk(personId);
+				e.birthday = r.getGeneralDate("BIRTHDAY");
+				e.bloodType = r.getInt("BLOOD_TYPE");
+				e.gender = r.getInt("GENDER");
+				e.personName = r.getString("PERSON_NAME");
+				e.personNameKana = r.getString("PERSON_NAME_KANA");
+				e.businessName = r.getString("BUSINESS_NAME");
+				e.businessNameKana = r.getString("BUSINESS_NAME_KANA");
+				e.businessEnglishName = r.getString("BUSINESS_ENGLISH_NAME");
+				e.businessOtherName = r.getString("BUSINESS_OTHER_NAME");
+				e.personRomanji = r.getString("P_ROMANJI_FNAME");
+				e.personRomanjiKana = r.getString("P_ROMANJI_FNAME_KANA");
+				e.todokedeFullName = r.getString("TODOKEDE_FNAME");
+				e.todokedeFullNameKana = r.getString("TODOKEDE_FNAME_KANA");
+				e.oldName = r.getString("OLDNAME_FNAME");
+				e.oldNameKana = r.getString("OLDNAME_FNAME_KANA");
+				e.perNameMultilLang = r.getString("PERSON_NAME_MULTIL_LANG");
+				e.perNameMultilLangKana = r.getString("PERSON_NAME_MULTIL_LANG_KANA");
+				return toFullPersonDomain(e);
+			});
 		}
 	}
 

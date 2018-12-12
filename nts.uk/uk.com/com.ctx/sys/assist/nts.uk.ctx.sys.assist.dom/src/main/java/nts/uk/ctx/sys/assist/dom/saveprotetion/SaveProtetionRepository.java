@@ -6,8 +6,7 @@ import java.util.List;
 /**
 * 保存保護
 */
-public interface SaveProtetionRepository
-{
+public interface SaveProtetionRepository {
 
     List<SaveProtetion> getAllSaveProtection();
 
@@ -18,5 +17,12 @@ public interface SaveProtetionRepository
     void update(SaveProtetion domain);
 
     void remove();
-
+    
+    /**
+     * Add by ThanhPV
+     * @param categoryId
+     * @param tableNo
+     * @return Optional<SaveProtetion>
+     */
+    List<SaveProtetion> getSaveProtection(int categoryId, int tableNo);
 }

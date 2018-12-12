@@ -140,10 +140,6 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 
 	@Override
 	public AttendanceTimeOfDailyPerformance getReflectOfOvertime(OvertimeParameter para, AttendanceTimeOfDailyPerformance attendanceTimeData) {
-		//INPUT．残業時間反映フラグをチェックする
-		if(!para.isTimeReflectFlg()) {
-			return attendanceTimeData;
-		}
 		Map<Integer, Integer> tmp = new HashMap<>();
 		for(Map.Entry<Integer,Integer> entry : para.getOvertimePara().getMapOvertimeFrame().entrySet()){
 			//INPUT．残業時間のループ中の番をチェックする
