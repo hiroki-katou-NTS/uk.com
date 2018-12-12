@@ -336,7 +336,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 self.endMonth = ko.observable(null);
                 self.statementLayoutSet = ko.observable(new StatementLayoutSet(null));
 
-                self.checkCreate = ko.observable(true);
+                self.checkCreate = ko.observable(false);
                 self.startMonthText = ko.observable(null);
                 self.endMonthText = ko.observable(null);
             }

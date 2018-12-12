@@ -68,6 +68,7 @@ module nts.uk.pr.view.qmm019.h.viewmodel {
                     if(statementLayout) {
                         self.layoutPatternClone(statementLayout.history[0].layoutPattern);
                         self.layoutPatternCloneText(getLayoutPatternText(statementLayout.history[0].layoutPattern));
+                        self.histIdClone(statementLayout.history[0].historyId);
                     }
                 }
             });
@@ -106,7 +107,9 @@ module nts.uk.pr.view.qmm019.h.viewmodel {
         decide() {
             let self = this;
 
+            nts.uk.ui.errors.clearAll();
             $(".check-validate").trigger("validate");
+
             if(!nts.uk.ui.errors.hasError()) {
                 let histIdNew = nts.uk.util.randomId();
                 let startDate = nts.uk.time.formatDate(new Date( self.startDate()), "yyyyMM");
