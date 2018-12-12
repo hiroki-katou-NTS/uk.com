@@ -100,11 +100,13 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
 
         loadMGrid() {
             let self = this;
+            let height = $(window).height() - 90 - 290; 
+            let width = $(window).width() + 20 - 1170;
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
-                width: "1070px",
+                width: "1170px",
                 height: "200px",
-                subWidth: "130px",
-                subHeight: "270px",
+                subWidth: width + "px",
+                subHeight: height + "px",
                 headerHeight: '30px',
                 dataSource: self.empAmountItems,
                 primaryKey: 'sid',
