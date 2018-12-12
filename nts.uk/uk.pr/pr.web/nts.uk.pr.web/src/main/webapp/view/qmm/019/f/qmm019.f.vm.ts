@@ -78,37 +78,15 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             block.invisible();
-            let params: IParams = <IParams>{};
-            params.itemNameCode = "0003d";
-            params.itemNameCdExcludeList = [];
-            params.rangeValAttribute = null;
-            params.errorRangeSetting = <IErrorAlarmRangeSetting>{};
-            params.errorRangeSetting.upperLimitSetting = <IErrorAlarmValueSetting>{};
-            params.errorRangeSetting.upperLimitSetting.valueSettingAtr = 1;
-            params.errorRangeSetting.upperLimitSetting.time10Value = 1;
-            params.errorRangeSetting.upperLimitSetting.time60Value = 2;
-            params.errorRangeSetting.upperLimitSetting.timesValue = 3;
-            params.errorRangeSetting.lowerLimitSetting = <IErrorAlarmValueSetting>{};
-            params.errorRangeSetting.lowerLimitSetting.valueSettingAtr = 1;
-            params.errorRangeSetting.lowerLimitSetting.time10Value = 4;
-            params.errorRangeSetting.lowerLimitSetting.time60Value = 5;
-            params.errorRangeSetting.lowerLimitSetting.timesValue = 6;
-            params.alarmRangeSetting = <IErrorAlarmRangeSetting>{};
-            params.alarmRangeSetting.upperLimitSetting = <IErrorAlarmValueSetting>{};
-            params.alarmRangeSetting.upperLimitSetting.valueSettingAtr = 1;
-            params.alarmRangeSetting.upperLimitSetting.time10Value = 7;
-            params.alarmRangeSetting.upperLimitSetting.time60Value = 8;
-            params.alarmRangeSetting.upperLimitSetting.timesValue = 9;
-            params.alarmRangeSetting.lowerLimitSetting = <IErrorAlarmValueSetting>{};
-            params.alarmRangeSetting.lowerLimitSetting.valueSettingAtr = 1;
-            params.alarmRangeSetting.lowerLimitSetting.time10Value = 10;
-            params.alarmRangeSetting.lowerLimitSetting.time60Value = 11;
-            params.alarmRangeSetting.lowerLimitSetting.timesValue = 12;
+            let params: IParams = windows.getShared("QMM019_A_TO_F_PARAMS");
+            if (isNullOrUndefined(params.itemRangeSet)) {
+                params.itemRangeSet = <shareModel.IItemRangeSet> {};
+            }            
             self.params = params;
             let dto = {
                 categoryAtr: self.categoryAtr,
                 itemNameCdSelected: self.params.itemNameCode,
-                itemNameCdExcludeList: self.params.itemNameCdExcludeList
+                itemNameCdExcludeList: self.params.listItemSetting
             };
             service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
                 self.itemNames(StatementItem.fromApp(data));
@@ -361,7 +339,7 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             let dto = {
                 categoryAtr: self.categoryAtr,
                 itemNameCdSelected: self.params.itemNameCode,
-                itemNameCdExcludeList: self.params.itemNameCdExcludeList
+                itemNameCdExcludeList: self.params.listItemSetting
             };
             service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
                 self.itemNames(StatementItem.fromApp(data));
@@ -484,10 +462,11 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
 
     interface IParams {
         itemNameCode: string;
-        itemNameCdExcludeList: Array<string>;
-        rangeValAttribute: number;
+        listItemSetting: Array<string>;
+        itemRangeSet: shareModel.IItemRangeSet;
+        /*rangeValAttribute: number;
         errorRangeSetting: IErrorAlarmRangeSetting;
-        alarmRangeSetting: IErrorAlarmRangeSetting;
+        alarmRangeSetting: IErrorAlarmRangeSetting;*/
     }
 
     class Params {
@@ -518,9 +497,9 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
         setData(data: IParams) {
             let self = this;
             self.itemNameCode(data.itemNameCode);
-            self.rangeValAttribute(isNullOrUndefined(data.rangeValAttribute) ? null : data.rangeValAttribute.toString());
+            /*self.rangeValAttribute(isNullOrUndefined(data.rangeValAttribute) ? null : data.rangeValAttribute.toString());
             self.errorRangeSetting.setData(data.errorRangeSetting);
-            self.alarmRangeSetting.setData(data.alarmRangeSetting);
+            self.alarmRangeSetting.setData(data.alarmRangeSetting);*/
         }
 
         initSubscribe() {
