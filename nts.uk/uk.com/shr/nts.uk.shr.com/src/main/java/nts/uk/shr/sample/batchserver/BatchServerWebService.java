@@ -5,8 +5,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.arc.layer.app.command.JavaTypeResult;
-
 @Path("batch")
 @Produces("application/json")
 public class BatchServerWebService {
@@ -16,9 +14,8 @@ public class BatchServerWebService {
 
 	@POST
 	@Path("task")
-	public JavaTypeResult<String> doTask() {
-		task.doSomething();
-		return new JavaTypeResult<>("batch server done!");
+	public BatchResult doTask() {
+		return task.doSomething();
 	}
 	
 }

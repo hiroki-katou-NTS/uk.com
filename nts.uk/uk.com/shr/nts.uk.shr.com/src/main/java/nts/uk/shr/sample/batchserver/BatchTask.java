@@ -8,7 +8,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 @Stateless
 public class BatchTask {
 	
-	public void doSomething() {
+	public BatchResult doSomething() {
 		LoginUserContext loginContext = AppContexts.user();
 		
 		System.out.println("contract-code: " + loginContext.contractCode());
@@ -16,6 +16,8 @@ public class BatchTask {
 		System.out.println("company-id: " + loginContext.companyId());
 		System.out.println("employee-id: " + loginContext.employeeId());
 		System.out.println("employee-code: " + loginContext.employeeCode());
+		
+		return new BatchResult(true, "done!");
 	}
 
 }

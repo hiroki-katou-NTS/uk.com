@@ -5,6 +5,7 @@ import javax.inject.Inject;
 
 import lombok.Value;
 import lombok.val;
+import nts.gul.util.value.MutableValue;
 import nts.uk.shr.com.communicate.PathToWebApi;
 import nts.uk.shr.com.communicate.batch.BatchServer;
 
@@ -17,20 +18,26 @@ public class APBatchTask {
 	@Inject
 	private BatchServer batchServer;
 	
-	public void execute() {
+	public BatchResult execute() {
 
+		MutableValue<BatchResult> result = new MutableValue<>();
+		
 		if (this.batchServer.exists()) {
-			val webApi = this.batchServer.webApi(PathToWebApi.com("/batch/task"), SampleRequest.class);
-			this.batchServer.request(webApi, c -> c.entity(new SampleRequest("hello")).succeeded(x -> {
+			val webApi = this.batchServer.webApi(PathToWebApi.com("/batch/task"), SampleRequest.class, BatchResult.class);
+			this.batchServer.request(webApi, c -> c.entity(new SampleRequest("hello"))
+					.succeeded(x -> {
+						result.set(x);
 			}));
 		} else {
-			service.doSomething();
+			result.set(service.doSomething());
 		}
 		
+		return result.get();
 	}
 
 	@Value
 	public static class SampleRequest {
 		private final String value;
 	}
+
 }
