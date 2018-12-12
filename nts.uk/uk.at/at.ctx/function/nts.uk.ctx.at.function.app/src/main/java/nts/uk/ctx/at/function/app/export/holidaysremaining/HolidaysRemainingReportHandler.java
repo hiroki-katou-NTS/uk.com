@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.app.export.holidaysremaining;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -318,7 +319,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 			// Call RequestList263
 			if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
 				List<SpecialHolidayImported> specialHolidayList = specialLeaveAdapter
-						.getSpeHoliOfConfirmedMonthly(employeeId, startDate.yearMonth(), currentMonth.previousMonth());
+						.getSpeHoliOfConfirmedMonthly(employeeId, startDate.yearMonth(), currentMonth.previousMonth(), Arrays.asList(sphdCode));
 				mapListSpecialHoliday.put(sphdCode, specialHolidayList);
 			} else {
 				mapListSpecialHoliday.put(sphdCode, new ArrayList<SpecialHolidayImported>());
