@@ -1,4 +1,4 @@
-/******************************************************************
+﻿/******************************************************************
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
@@ -108,13 +109,22 @@ public class JpaWorkingConditionItem2SetMemento implements WorkingConditionItemS
 	 * PersonalWorkCategory)
 	 */
 	@Override
-	public void setWorkCategory(PersonalWorkCategory workCategory) {
+	public void setWorkCategory(PersonalWorkCategory workCategory, String employeeId) {
 		if (workCategory != null) {
 			List<KshmtPerWorkCat> kshmtPerWorkCats = new ArrayList<>();
 			if (this.entity.getKshmtPerWorkCats() != null) {
 				kshmtPerWorkCats = this.entity.getKshmtPerWorkCats();
 			}
-			workCategory.saveToMemento(new JpaPerWorkCatSetMemento(this.entity.getHistoryId(), kshmtPerWorkCats));
+			workCategory.saveToMemento(new JpaPerWorkCatSetMemento(this.entity.getHistoryId(), kshmtPerWorkCats, employeeId));
+			kshmtPerWorkCats.stream().forEach(c -> {
+				c.setSid(employeeId);
+				if (!CollectionUtil.isEmpty(c.getKshmtWorkCatTimeZones())) {
+					c.getKshmtWorkCatTimeZones().stream().forEach(catTimeZone -> {
+						catTimeZone.setSid(employeeId);
+					});
+				}
+			});
+
 			this.entity.setKshmtPerWorkCats(kshmtPerWorkCats);
 		}
 	}
@@ -160,14 +170,14 @@ public class JpaWorkingConditionItem2SetMemento implements WorkingConditionItemS
 	 * PersonalDayOfWeek)
 	 */
 	@Override
-	public void setWorkDayOfWeek(PersonalDayOfWeek workDayOfWeek) {
+	public void setWorkDayOfWeek(PersonalDayOfWeek workDayOfWeek, String employeeId) {
 		if (workDayOfWeek != null) {
 			List<KshmtPersonalDayOfWeek> kshmtPersonalDayOfWeeks = new ArrayList<>();
 			if (this.entity.getKshmtPersonalDayOfWeeks() != null) {
 				kshmtPersonalDayOfWeeks = this.entity.getKshmtPersonalDayOfWeeks();
 			}
 			workDayOfWeek
-					.saveToMemento(new JpaPerDayOfWeekSetMemento(this.entity.getHistoryId(), kshmtPersonalDayOfWeeks));
+					.saveToMemento(new JpaPerDayOfWeekSetMemento(this.entity.getHistoryId(), kshmtPersonalDayOfWeeks, employeeId));
 			this.entity.setKshmtPersonalDayOfWeeks(kshmtPersonalDayOfWeeks);
 		}
 	}
@@ -208,7 +218,7 @@ public class JpaWorkingConditionItem2SetMemento implements WorkingConditionItemS
 	 * ScheduleMethod)
 	 */
 	@Override
-	public void setScheduleMethod(Optional<ScheduleMethod> scheduleMethod) {
+	public void setScheduleMethod(Optional<ScheduleMethod> scheduleMethod, String employeeId) {
 		// Check exist
 		if (!scheduleMethod.isPresent()) {
 			//this.entity.setKshmtScheduleMethod(null);
@@ -216,11 +226,11 @@ public class JpaWorkingConditionItem2SetMemento implements WorkingConditionItemS
 		}
 
 		KshmtScheduleMethod kshmtScheduleMethod = this.entity.getKshmtScheduleMethod();
-
+		
 		if (kshmtScheduleMethod == null) {
 			kshmtScheduleMethod = new KshmtScheduleMethod();
 		}
-
+		kshmtScheduleMethod.setSid(employeeId);
 		scheduleMethod.get().saveToMemento(
 				new JpaScheduleMethodSetMemento(this.entity.getHistoryId(), kshmtScheduleMethod));
 
