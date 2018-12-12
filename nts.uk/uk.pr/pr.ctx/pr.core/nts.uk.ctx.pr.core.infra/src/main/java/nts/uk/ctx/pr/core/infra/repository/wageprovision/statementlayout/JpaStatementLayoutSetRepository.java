@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.infra.repository.wageprovision.statementlayout;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.LineByLineSetting;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.SettingByCtg;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutSet;
@@ -54,6 +55,14 @@ public class JpaStatementLayoutSetRepository extends JpaRepository implements St
         lineByLineSetEntityMap.entrySet().forEach(entry ->
                 settingByCtgList.add(new SettingByCtg(entry.getKey(), entry.getValue().stream().map(i -> i.toDomain()).collect(Collectors.toList())))
         );
+
+        // add ATTEND_ITEM or REPORT_ITEM if not exist
+        if(!settingByCtgList.stream().anyMatch(category -> category.getCtgAtr() == CategoryAtr.ATTEND_ITEM)) {
+            settingByCtgList.add(new SettingByCtg(CategoryAtr.ATTEND_ITEM.value, new ArrayList<>()));
+        }
+        if(!settingByCtgList.stream().anyMatch(category -> category.getCtgAtr() == CategoryAtr.REPORT_ITEM)) {
+            settingByCtgList.add(new SettingByCtg(CategoryAtr.REPORT_ITEM.value, new ArrayList<>()));
+        }
 
         if(statementLayoutHistEntity.isPresent()) {
             return lineByLineSetEntityList.isEmpty() ? Optional.empty() : Optional.of(new StatementLayoutSet(histId,

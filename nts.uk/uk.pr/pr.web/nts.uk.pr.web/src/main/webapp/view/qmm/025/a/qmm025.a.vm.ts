@@ -6,6 +6,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
     import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
     import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
     import info = nts.uk.ui.dialog.info;
+    import dialog = nts.uk.ui.dialog;
 
     export class ScreenModel {
         year: KnockoutObservable<string> = ko.observable(null);
@@ -539,14 +540,22 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
             let listSId = _.map(listEmpSelected, (item: RsdtTaxPayAmountDto) => {
                 return item.sid;
             });
-            service.deleteTaxPayAmount(new DeleteCommand(listSId, self.formatYear(self.year()))).done(() => {
-                info({messageId: "Msg_16"}).then(() => {
-                    self.getEmpAmount();
+            dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                service.deleteTaxPayAmount(new DeleteCommand(listSId, self.formatYear(self.year()))).done(() => {
+                    info({messageId: "Msg_35"}).then(() => {
+                        self.getEmpAmount();
+                        nts.uk.ui.block.clear();
+                    });
+                }).always(() => {
+                    self.focusA3_1();
+                    block.clear();
+                })
+
+            }).ifNo(() => {
+                info({messageId: "Msg_36"}).then(() => {
+                    nts.uk.ui.block.clear();
                 });
-            }).always(() => {
-                self.focusA3_1();
-                block.clear();
-            })
+            });
         }
 
         isValidForm() {
