@@ -180,7 +180,7 @@ public class DailyCalculationCommandFacade {
 					return x;
 				}).collect(Collectors.toList());
 				DailyPerformanceCalculationDto returnData = new DailyPerformanceCalculationDto(calculatedDtos,
-						resultValues, null, resultCompare.getLeft());
+						resultValues,  new DataResultAfterIU(resultError, flexShortage, false), resultCompare.getLeft());
 				return returnData;
 			}
 		}
