@@ -6,7 +6,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = {width: 500, height:460 };</script>
+        <script>var dialogSize = {width: 500, height:480 };</script>
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="../share/model.js"/>
         <com:scriptfile path="qmm020.j.vm.js"/>
@@ -68,8 +68,8 @@
                     <div id="J1_6" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 0px 10px;">
                         <span class="label">#{i18n.getText('QMM020_58')}</span>
                     </div>
-                    <div id="J7_1" tabindex="3" style="margin-top: 10px;">
-                        <div style="" class="cell" tabIndex="-1"
+                    <div id="J7_1" tabindex="3" style="margin-top: 10px">
+                        <div  class="cell" tabIndex="-1"
                              data-bind="ntsRadioButton: {
 										checked: transferMethod,
 										option: itemList()[0],
@@ -117,7 +117,7 @@
                         </div>
                     </div>
                     <div class ="cell valign-top">
-                        <div id="J7_1" class="cell" tabIndex="1" style= "display: inline-block;text-align: left;margin-top: 15px; width: 300px"
+                        <div id="J7_1" class="cell" tabIndex="1" style= "display: inline-block;text-align: left;margin-top: 15px"
                              data-bind="ntsRadioBoxGroup: {
 										value: transferMethod,
 										options: itemList(),
