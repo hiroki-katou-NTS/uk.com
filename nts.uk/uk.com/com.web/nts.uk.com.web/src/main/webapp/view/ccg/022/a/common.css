@@ -43,8 +43,9 @@ hr {
 }
 
 .text_line {
-	line-height: 37px;
-	    display: flex;
+	line-height: 25px;
+	display: flex;
+	clear: both;
 }
 
 .bold {

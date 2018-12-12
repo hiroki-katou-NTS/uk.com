@@ -7,7 +7,7 @@
 #group-mode {
 	width: 630px;
 	margin-left: 25px;
-	height: 680px;
+	height: auto;
 }
 
 #group-mode .ntsRadioBox {
@@ -15,11 +15,11 @@
 }
 
 #group-mode .ntsRadioBox:NTH-CHILD(2) {
-	margin-top: 120px;
+	margin-top: 45px;
 }
 
 #group-mode .ntsRadioBox:NTH-CHILD(3) {
-	margin-top: 220px;
+	margin-top: 147px;
 }
 
 .info-group {
@@ -27,17 +27,17 @@
 }
 
 #starting-group {
-	top: 190px;
+	top: 170px;
 	left: 230px;
 }
 
 #in-progress-group {
-	top: 340px;
+	top: 249px;
 	left: 215px;
 }
 
 #stop-group {
-	top: 580px;
+	top: 415px;
 	left: 215px;
 }
 
@@ -54,7 +54,7 @@
 }
 
 #system-mode .ntsRadioBox:NTH-CHILD(2) {
-	margin-top: 20px;
+	margin-top: 5px;
 }
 
 #system-mode {
