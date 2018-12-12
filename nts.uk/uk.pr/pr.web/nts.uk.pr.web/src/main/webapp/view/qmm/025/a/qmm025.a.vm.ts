@@ -533,6 +533,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
         deleteAmount() {
             let self = this;
             block.invisible();
+
             let empAmountItems: Array<RsdtTaxPayAmountDto> = $("#grid").mGrid("dataSource", true);
             let listEmpSelected = _.filter(empAmountItems, (item: RsdtTaxPayAmountDto) => {
                 return item.selectedEmp;
@@ -540,22 +541,22 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
             let listSId = _.map(listEmpSelected, (item: RsdtTaxPayAmountDto) => {
                 return item.sid;
             });
+
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+
                 service.deleteTaxPayAmount(new DeleteCommand(listSId, self.formatYear(self.year()))).done(() => {
-                    info({messageId: "Msg_35"}).then(() => {
+                    info({messageId: "Msg_16"}).then(() => {
                         self.getEmpAmount();
-                        nts.uk.ui.block.clear();
                     });
                 }).always(() => {
                     self.focusA3_1();
                     block.clear();
                 })
 
-            }).ifNo(() => {
-                info({messageId: "Msg_36"}).then(() => {
-                    nts.uk.ui.block.clear();
-                });
-            });
+            }).ifNo(function() {
+                nts.uk.ui.block.clear();
+                return false;
+            })
         }
 
         isValidForm() {
