@@ -201,8 +201,8 @@ public class UrlWebService {
 				contract.getContractCode().v(), 
 				companyCD,
 				2,
-				AppContexts.programId(),
-				"A");
+				urlExecInfoExport.getProgramId(),
+				urlExecInfoExport.getScreenId());
 		if(systemSuspendOutput.isError()){
 			throw new BusinessException(systemSuspendOutput.getMsgContent());
 		}
