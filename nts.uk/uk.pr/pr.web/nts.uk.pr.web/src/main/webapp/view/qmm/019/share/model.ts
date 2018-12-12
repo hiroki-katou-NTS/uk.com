@@ -17,15 +17,15 @@ module nts.uk.pr.view.qmm019.share.model {
     export function getCategoryAtrText(e: CategoryAtr) {
         switch (e) {
             case CategoryAtr.PAYMENT_ITEM:
-                return "支給項目";
+                return getText("Enum_CategoryAtr_PAYMENT_ITEM");
             case CategoryAtr.DEDUCTION_ITEM:
-                return "控除項目";
+                return getText("Enum_CategoryAtr_DEDUCTION_ITEM");
             case CategoryAtr.ATTEND_ITEM:
-                return "勤怠項目";
+                return getText("Enum_CategoryAtr_ATTEND_ITEM");
             case CategoryAtr.REPORT_ITEM:
-                return "記事項目";
+                return getText("Enum_CategoryAtr_ATTEND_ITEM");
             case CategoryAtr.OTHER_ITEM:
-                return "その他項目";
+                return getText("Enum_CategoryAtr_OTHER_ITEM");
             default:
                 return "";
         }
@@ -39,6 +39,13 @@ module nts.uk.pr.view.qmm019.share.model {
         COPY = 1
     }
 
+    export function getSpecCreateAtr(): Array<BoxModel> {
+        return [
+            new model.BoxModel(SpecCreateAtr.NEW, getText('QMM019_178')),
+            new model.BoxModel(SpecCreateAtr.COPY, getText('QMM019_179')),
+        ];
+    }
+
     export enum StatementLayoutPattern {
         LASER_PRINT_A4_PORTRAIT_ONE_PERSON = 0,
         LASER_PRINT_A4_PORTRAIT_TWO_PERSON = 1,
@@ -47,13 +54,6 @@ module nts.uk.pr.view.qmm019.share.model {
         LASER_CRIMP_PORTRAIT_ONE_PERSON = 4,
         LASER_CRIMP_LANDSCAPE_ONE_PERSON = 5,
         DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON = 6
-    }
-
-    export function getSpecCreateAtr(): Array<BoxModel> {
-        return [
-            new model.BoxModel(SpecCreateAtr.NEW, getText('QMM019_178')),
-            new model.BoxModel(SpecCreateAtr.COPY, getText('QMM019_179')),
-        ];
     }
 
     /**
@@ -73,16 +73,16 @@ module nts.uk.pr.view.qmm019.share.model {
     export function getPaymentTotalObjAtr(printSet: StatementPrintAtr): Array<ItemModel> {
         if(printSet == StatementPrintAtr.PRINT){
             return [
-                new model.ItemModel(PaymentTotalObjAtr.INSIDE, '合計対象内'),
-                new model.ItemModel(PaymentTotalObjAtr.OUTSIDE, '合計対象外'),
-                new model.ItemModel(PaymentTotalObjAtr.INSIDE_ACTUAL, '合計対象内（現物）'),
-                new model.ItemModel(PaymentTotalObjAtr.OUTSIDE_ACTUAL, '合計対象外（現物）')
+                new model.ItemModel(PaymentTotalObjAtr.INSIDE, getText("Enum_PaymentTotalObjAtr_INSIDE")),
+                new model.ItemModel(PaymentTotalObjAtr.OUTSIDE, getText("Enum_PaymentTotalObjAtr_OUTSIDE")),
+                new model.ItemModel(PaymentTotalObjAtr.INSIDE_ACTUAL, getText("Enum_PaymentTotalObjAtr_INSIDE_ACTUAL")),
+                new model.ItemModel(PaymentTotalObjAtr.OUTSIDE_ACTUAL, getText("Enum_PaymentTotalObjAtr_OUTSIDE_ACTUAL"))
             ];
         }
         else{
             return [
-                new model.ItemModel(PaymentTotalObjAtr.OUTSIDE, '合計対象外'),
-                new model.ItemModel(PaymentTotalObjAtr.OUTSIDE_ACTUAL, '合計対象外（現物）')
+                new model.ItemModel(PaymentTotalObjAtr.OUTSIDE,  getText("Enum_PaymentTotalObjAtr_OUTSIDE")),
+                new model.ItemModel(PaymentTotalObjAtr.OUTSIDE_ACTUAL,  getText("Enum_PaymentTotalObjAtr_OUTSIDE_ACTUAL"))
             ];
         }
     }
@@ -100,13 +100,13 @@ module nts.uk.pr.view.qmm019.share.model {
     export function getDeductionTotalObjAtr(printSet: StatementPrintAtr): Array<ItemModel> {
         if (printSet == StatementPrintAtr.PRINT) {
             return [
-                new model.ItemModel(DeductionTotalObjAtr.OUTSIDE, '合計対象外'),
-                new model.ItemModel(DeductionTotalObjAtr.INSIDE, '合計対象内')
+                new model.ItemModel(DeductionTotalObjAtr.OUTSIDE, getText("Enum_DeductionTotalObjAtr_OUTSIDE")),
+                new model.ItemModel(DeductionTotalObjAtr.INSIDE, getText("Enum_DeductionTotalObjAtr_INSIDE"))
             ];
         }
         else {
             return [
-                new model.ItemModel(DeductionTotalObjAtr.OUTSIDE, '合計対象外')
+                new model.ItemModel(DeductionTotalObjAtr.OUTSIDE, getText("Enum_DeductionTotalObjAtr_OUTSIDE")),
             ];
         }
     }
@@ -132,15 +132,15 @@ module nts.uk.pr.view.qmm019.share.model {
     export function getPaymentCaclMethodAtr(e: BreakdownItemUseAtr): Array<ItemModel> {
         if (e == BreakdownItemUseAtr.USE) {
             return [
-                new model.ItemModel(PaymentCaclMethodAtr.BREAKDOWN_ITEM, '内訳項目')
+                new model.ItemModel(PaymentCaclMethodAtr.BREAKDOWN_ITEM, getText("Enum_PaymentCaclMethodAtr_BREAKDOWN_ITEM"))
             ];
         }else{
             return [
-                new model.ItemModel(PaymentCaclMethodAtr.MANUAL_INPUT, '手入力'),
-                new model.ItemModel(PaymentCaclMethodAtr.PERSON_INFO_REF, '個人情報参照'),
-                new model.ItemModel(PaymentCaclMethodAtr.CACL_FOMULA, '計算式'),
-                new model.ItemModel(PaymentCaclMethodAtr.WAGE_TABLE, '賃金テーブル'),
-                new model.ItemModel(PaymentCaclMethodAtr.COMMON_AMOUNT, '共通金額')
+                new model.ItemModel(PaymentCaclMethodAtr.MANUAL_INPUT, getText("Enum_PaymentCaclMethodAtr_MANUAL_INPUT")),
+                new model.ItemModel(PaymentCaclMethodAtr.PERSON_INFO_REF, getText("Enum_PaymentCaclMethodAtr_PERSON_INFO_REF")),
+                new model.ItemModel(PaymentCaclMethodAtr.CACL_FOMULA, getText("Enum_PaymentCaclMethodAtr_PERSON_INFO_REF")),
+                new model.ItemModel(PaymentCaclMethodAtr.WAGE_TABLE, getText("Enum_PaymentCaclMethodAtr_WAGE_TABLE")),
+                new model.ItemModel(PaymentCaclMethodAtr.COMMON_AMOUNT, getText("Enum_PaymentCaclMethodAtr_COMMON_AMOUNT"))
             ];
         }
     }
@@ -168,16 +168,16 @@ module nts.uk.pr.view.qmm019.share.model {
     export function getDeductionCaclMethodAtr(e: BreakdownItemUseAtr): Array<ItemModel> {
         if (e == BreakdownItemUseAtr.USE) {
             return [
-                new model.ItemModel(DeductionCaclMethodAtr.BREAKDOWN_ITEM, '内訳項目')
+                new model.ItemModel(DeductionCaclMethodAtr.BREAKDOWN_ITEM, getText("Enum_DeductionCaclMethodAtr_BREAKDOWN_ITEM"))
             ];
         } else {
             return [
-                new model.ItemModel(DeductionCaclMethodAtr.MANUAL_INPUT, '手入力'),
-                new model.ItemModel(DeductionCaclMethodAtr.PERSON_INFO_REF, '個人情報参照'),
-                new model.ItemModel(DeductionCaclMethodAtr.CACL_FOMULA, '計算式'),
-                new model.ItemModel(DeductionCaclMethodAtr.WAGE_TABLE, '賃金テーブル'),
-                new model.ItemModel(DeductionCaclMethodAtr.COMMON_AMOUNT, '共通金額'),
-                new model.ItemModel(DeductionCaclMethodAtr.SUPPLY_OFFSET, '支給相殺'),
+                new model.ItemModel(DeductionCaclMethodAtr.MANUAL_INPUT, getText("Enum_DeductionCaclMethodAtr_MANUAL_INPUT")),
+                new model.ItemModel(DeductionCaclMethodAtr.PERSON_INFO_REF, getText("Enum_DeductionCaclMethodAtr_PERSON_INFO_REF")),
+                new model.ItemModel(DeductionCaclMethodAtr.CACL_FOMULA, getText("Enum_DeductionCaclMethodAtr_CACL_FOMULA")),
+                new model.ItemModel(DeductionCaclMethodAtr.WAGE_TABLE, getText("Enum_DeductionCaclMethodAtr_WAGE_TABLE")),
+                new model.ItemModel(DeductionCaclMethodAtr.COMMON_AMOUNT, getText("Enum_DeductionCaclMethodAtr_COMMON_AMOUNT")),
+                new model.ItemModel(DeductionCaclMethodAtr.SUPPLY_OFFSET, getText("Enum_DeductionCaclMethodAtr_SUPPLY_OFFSET")),
             ];
         }
     }
@@ -234,8 +234,8 @@ module nts.uk.pr.view.qmm019.share.model {
 
     export function getWorkingAtr(): Array<ItemModel> {
         return [
-            new model.ItemModel(WorkingAtr.TRANSPORT_FACILITIES, getText('交通機関')),
-            new model.ItemModel(WorkingAtr.TRANSPORT_EQUIPMENT, getText('交通用具'))
+            new model.ItemModel(WorkingAtr.TRANSPORT_FACILITIES, getText("Enum_WorkingAtr_TRANSPORT_FACILITIES")),
+            new model.ItemModel(WorkingAtr.TRANSPORT_EQUIPMENT, getText('Enum_WorkingAtr_TRANSPORT_EQUIPMENT'))
         ];
     }
 
@@ -270,8 +270,8 @@ module nts.uk.pr.view.qmm019.share.model {
 
     export function getProportionalMethodAtr(): Array<ItemModel> {
         return [
-            new model.ItemModel(ProportionalMethodAtr.BY_PROPORTION, getText('割合で計算')),
-            new model.ItemModel(ProportionalMethodAtr.DAYS_DEDUCTION, getText('日数控除'))
+            new model.ItemModel(ProportionalMethodAtr.BY_PROPORTION, getText('Enum_ProportionalMethodAtr_BY_PROPORTION')),
+            new model.ItemModel(ProportionalMethodAtr.DAYS_DEDUCTION, getText('Enum_ProportionalMethodAtr_DAYS_DEDUCTION'))
         ];
     }
 
@@ -294,15 +294,15 @@ module nts.uk.pr.view.qmm019.share.model {
     export function getTaxAtrText(e: TaxAtr) {
         switch (e) {
             case TaxAtr.TAXATION:
-                return "課税";
+                return getText("Enum_TaxAtr_TAXATION");
             case TaxAtr.LIMIT_TAX_EXEMPTION:
-                return "非課税（限度あり）";
+                return getText("Enum_TaxAtr_LIMIT_TAX_EXEMPTION");
             case TaxAtr.NO_LIMIT_TAX_EXEMPTION:
-                return "非課税（限度なし）";
+                return getText("Enum_TaxAtr_NO_LIMIT_TAX_EXEMPTION");
             case TaxAtr.COMMUTING_EXPENSES_MANUAL:
-                return "通勤費（手入力）";
+                return getText("Enum_TaxAtr_COMMUTING_EXPENSES_MANUAL");
             case TaxAtr.COMMUTING_EXPENSES_USING_COMMUTER:
-                return "通勤費（定期券利用）";
+                return getText("Enum_TaxAtr_COMMUTING_EXPENSES_USING_COMMUTER");
             default:
                 return "";
         }
@@ -325,13 +325,13 @@ module nts.uk.pr.view.qmm019.share.model {
     export function getDeductionItemAtrText(e: DeductionItemAtr) {
         switch (e) {
             case DeductionItemAtr.OPTIONAL_DEDUCTION_ITEM:
-                return "任意控除項目";
+                return getText("Enum_DeductionItemAtr_OPTIONAL_DEDUCTION_ITEM");
             case DeductionItemAtr.SOCIAL_INSURANCE_ITEM:
-                return "社会保険項目";
+                return getText("Enum_DeductionItemAtr_SOCIAL_INSURANCE_ITEM");
             case DeductionItemAtr.INCOME_TAX_ITEM:
-                return "所得税項目";
+                return getText("Enum_DeductionItemAtr_INCOME_TAX_ITEM");
             case DeductionItemAtr.INHABITANT_TAX_ITEM:
-                return "住民税項目";
+                return getText("Enum_DeductionItemAtr_INHABITANT_TAX_ITEM");
             default:
                 return "";
         }
@@ -350,9 +350,9 @@ module nts.uk.pr.view.qmm019.share.model {
     export function getTimeCountAtrText(e: TimeCountAtr) {
         switch (e) {
             case TimeCountAtr.TIME:
-                return "時間";
+                return getText("Enum_TimeCountAtr_TIME");
             case TimeCountAtr.TIMES:
-                return "回数";
+                return getText("Enum_TimeCountAtr_TIMES");
             default:
                 return "";
         }
@@ -370,8 +370,8 @@ module nts.uk.pr.view.qmm019.share.model {
 
     export function getSocialInsuranceCategoryText(e: SocialInsuranceCategory){
         switch (e){
-            case SocialInsuranceCategory.NOT_COVERED: return "対象外";
-            case SocialInsuranceCategory.COVERED: return "対象";
+            case SocialInsuranceCategory.NOT_COVERED: return getText("Enum_SocialInsuranceCategory_NOT_COVERED");
+            case SocialInsuranceCategory.COVERED: return getText("Enum_SocialInsuranceCategory_COVERED");
             default: return "";
         }
     }
@@ -388,8 +388,8 @@ module nts.uk.pr.view.qmm019.share.model {
 
     export function getLaborInsuranceCategoryText(e: LaborInsuranceCategory){
         switch (e){
-            case LaborInsuranceCategory.NOT_COVERED: return "対象外";
-            case LaborInsuranceCategory.COVERED: return "対象";
+            case LaborInsuranceCategory.NOT_COVERED: return getText("Enum_LaborInsuranceCategory_NOT_COVERED");
+            case LaborInsuranceCategory.COVERED: return getText("Enum_LaborInsuranceCategory_COVERED");
             default: return "";
         }
     }
@@ -407,9 +407,9 @@ module nts.uk.pr.view.qmm019.share.model {
     export function getCategoryFixedWageText(e: CategoryFixedWage): string {
         switch (e) {
             case CategoryFixedWage.NOT_COVERED:
-                return "対象外";
+                return getText("Enum_CategoryFixedWage_NOT_COVERED");
             case CategoryFixedWage.COVERED:
-                return "対象";
+                return getText("Enum_CategoryFixedWage_COVERED");
             default:
                 return "";
         }
@@ -427,8 +427,8 @@ module nts.uk.pr.view.qmm019.share.model {
 
     export function getAverageWageAtrText(e: AverageWageAtr){
         switch (e){
-            case AverageWageAtr.NOT_COVERED: return "対象外";
-            case AverageWageAtr.COVERED: return "対象";
+            case AverageWageAtr.NOT_COVERED: return getText("Enum_AverageWageAtr_NOT_COVERED");
+            case AverageWageAtr.COVERED: return getText("Enum_AverageWageAtr_COVERED");
             default: return "";
         }
     }

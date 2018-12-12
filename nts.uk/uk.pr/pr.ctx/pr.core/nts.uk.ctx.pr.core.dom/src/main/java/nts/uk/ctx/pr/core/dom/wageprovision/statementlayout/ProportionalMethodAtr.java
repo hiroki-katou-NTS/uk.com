@@ -6,9 +6,10 @@ package nts.uk.ctx.pr.core.dom.wageprovision.statementlayout;
 */
 public enum ProportionalMethodAtr
 {
-    
-    BY_PROPORTION(0, "割合で計算"),
-    DAYS_DEDUCTION(1, "日数控除");
+    // 割合で計算
+    BY_PROPORTION(0, "Enum_ProportionalMethodAtr_BY_PROPORTION"),
+    // 日数控除
+    DAYS_DEDUCTION(1, "Enum_ProportionalMethodAtr_DAYS_DEDUCTION");
     
     /** The value. */
     public final int value;
