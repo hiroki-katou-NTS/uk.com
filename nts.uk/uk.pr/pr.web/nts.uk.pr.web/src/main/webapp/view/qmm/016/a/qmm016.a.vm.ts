@@ -29,10 +29,11 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         // master data
         qualificationInformationData: Array<model.QualificationInformation>;
         qualificationGroupSettingData: Array<model.QualificationGroupSetting>;
-        fakeCombobox: KnockoutObservableArray<model.EnumModel> = ko.observableArray([new model.EnumModel(0, 'Item 1'), new model.EnumModel(1, 'Item 2')]);
-        fakeSelectedValue: KnockoutObservable<string> = ko.observable(null);
+        fakeSelectedValue: KnockoutObservable<any> = ko.observable(null);
         listSecondDimension: KnockoutObservableArray<any> = ko.observableArray([]);
         listThirdDimension: KnockoutObservableArray<any> = ko.observableArray([]);
+        ignoreScrollEvents: boolean = false;
+        wageTableContent2dData: KnockoutObservableArray<model.TwoDmsElementItem> = ko.observableArray([]);
 
         constructor() {
             let self = this;
@@ -48,10 +49,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     self.updateMode(false);
                     self.isSelectedHistory(false);
                 } else {
-                    if ($("#wage-table-2d").data('mGrid')) {
-                        $("#wage-table-2d").mGrid("destroy");
-                        $("#wage-table-2d").off();
-                    }
+                    self.wageTableContent2dData([]);
+                    self.fakeSelectedValue(null);
                     self.elementRangeSetting(new model.ElementRangeSetting(null));
                     self.wageTableContent(new model.WageTableContent(null));
                     self.showWageTableInfoByValue(newValue);
@@ -60,14 +59,32 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 }
             });
             self.initComponents();
+            self.fakeSelectedValue.subscribe((oldValue) => {
+                if (oldValue != null && !_.isEmpty(self.wageTableContent()) && !_.isEmpty(self.wageTableContent().payment())) {
+                    let i3rdIndex = _.findIndex(self.wageTableContent().payment(), p => {return p.masterCode() == oldValue || p.frameNumber() == oldValue;} );
+                    if (i3rdIndex >= 0) {
+                        let data = _.cloneDeep(self.wageTableContent2dData());
+                        self.wageTableContent().payment()[i3rdIndex].listFirstDms(data);
+                    }
+                }
+            }, null, "beforeChange");
+            self.fakeSelectedValue.subscribe(value => {
+                nts.uk.ui.errors.clearAll();
+                if (value != null && !_.isEmpty(self.wageTableContent()) && !_.isEmpty(self.wageTableContent().payment())) {
+                    let i3rdIndex = _.findIndex(self.wageTableContent().payment(), p => {return p.masterCode() == value || p.frameNumber() == value;} );
+                    if (i3rdIndex >= 0) {
+                        let data = _.cloneDeep(self.wageTableContent().payment()[i3rdIndex].listFirstDms());
+                        self.wageTableContent2dData(data);
+                    }
+                }
+            }); 
         }
 
         initComponents() {
             let self = this;
             $('#A8_2').ntsFixedTable({ width: 300 });
             $('.normal-fixed-table').ntsFixedTable({ width: 600 });
-            $("#fixed-table-1d").ntsFixedTable({ width: 600 });
-//            $("#wage-table-2d").ntsFixedTable({ width: 600 });
+            $("#fixed-table-1d").ntsFixedTable({ width: 600, height: 343 });
             $('.fixed-table-top').ntsFixedTable({ width: 300, height: 34 });
             if (/Chrome/.test(navigator.userAgent)) {
                 $('.fixed-table-top').ntsFixedTable({ width: 300, height: 34 });
@@ -104,6 +121,18 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 { id: 'tab-2', title: getText("QMM016_12"), content: '.tab-content-2', enable: ko.computed(() => { return self.updateMode() && self.isSelectedHistory(); }), visible: ko.observable(true) }
             ]);
             self.selectedTab = ko.observable('tab-1');
+        }
+        
+        
+        syncScroll(element1, element2) {
+            let self = this;
+            element1.scroll(function(e) {
+                let ignore = self.ignoreScrollEvents;
+                self.ignoreScrollEvents = false;
+                if (ignore) return;
+                self.ignoreScrollEvents = true;
+                element2.scrollTop(element1.scrollTop());
+            });
         }
 
         startPage(): JQueryPromise<any> {
@@ -154,9 +183,27 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 block.invisible();
                 let selectedHistoryID = identifier.substring(3, identifier.length);
                 $.when(service.getWageTableContent(selectedHistoryID, identifier.substring(0, 3)), service.getElemRangeSet(selectedHistoryID)).done((contentData, settingData) => {
-                    if (self.selectedWageTable().elementSetting() == model.ELEMENT_SETTING.TWO_DIMENSION && contentData != null) {
-                        let lst2nd: Array<any> = contentData.list2dElements;
-                        self.listSecondDimension(lst2nd[0].listSecondDms.map(i => {
+                    if (contentData != null && !_.isEmpty(contentData.list2dElements)) {
+                        let lst2nd: Array<any> = contentData.list2dElements[0].listSecondDms;
+                        self.listSecondDimension(lst2nd.map(i => {
+                            if (i.masterCode) {
+                                return {value: i.masterCode, name: i.masterName};
+                            } else {
+                                return {value: i.frameNumber, name: i.frameLowerLimit + getText("QMM016_31") + i.frameUpperLimit};
+                            }
+                        }));
+                    }
+                    if (contentData != null && !_.isEmpty(contentData.list3dElements)) {
+                        let lst3rd: Array<any> = contentData.list3dElements;
+                        self.listThirdDimension(lst3rd.map(i => {
+                            if (i.masterCode) {
+                                return {value: i.masterCode, name: i.masterName};
+                            } else {
+                                return {value: i.frameNumber, name: i.frameLowerLimit + getText("QMM016_31") + i.frameUpperLimit};
+                            }
+                        }));
+                        let lst2nd: Array<any> = contentData.list3dElements[0].listFirstDms[0].listSecondDms;
+                        self.listSecondDimension(lst2nd.map(i => {
                             if (i.masterCode) {
                                 return {value: i.masterCode, name: i.masterName};
                             } else {
@@ -165,9 +212,15 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                         }));
                     }
                     self.wageTableContent(new model.WageTableContent(contentData));
+                    if (contentData != null && !_.isEmpty(contentData.list3dElements)) {
+                        self.wageTableContent2dData(self.wageTableContent().payment()[0].listFirstDms());
+                    }
                     self.elementRangeSetting(new model.ElementRangeSetting(settingData));
-                    if (!_.isEmpty(contentData) && !_.isEmpty(contentData.listData) && !_.isEmpty(contentData.listHeader)) {
-                        self.loadGrid(contentData.listData, contentData.listHeader);
+                    if (!_.isEmpty(contentData)) {
+                        $("#wage-table-left").unbind();
+                        $("#wage-table-right").unbind();
+                        self.syncScroll($("#wage-table-left"), $("#wage-table-right"));
+                        self.syncScroll($("#wage-table-right"), $("#wage-table-left"));
                     }
                 }).fail(error => {
                     dialog.alertError(error);
@@ -177,79 +230,6 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             }
         }
         
-        formatData(lstData) {
-            let self = this;
-            let data = lstData.map((data) => {
-                let object = {
-                    id: data.rowId,
-                    element: data.element
-                }
-                _.each(data.cellData, item => { 
-                    object[item.columnKey] = item.value; 
-                });
-                return object;
-            });
-            return data;
-        }
-        
-        loadGrid(listData: Array<any>, listHeader: Array<any>) {
-            let self = this;
-            let dataSource = self.formatData(listData);
-            listHeader.forEach(i => {
-                i["constraint"] = { primitiveValue: 'WageTablePaymentAmount', required: true };
-            });
-            new nts.uk.ui.mgrid.MGrid($("#wage-table-2d")[0], {
-                width: "600px",
-                height: "300px",
-                subWidth: "130px",
-                subHeight: "270px",
-                headerHeight: '50px',
-                dataSource: dataSource,
-                primaryKey: 'id',
-                primaryKeyDataType: 'string',
-                rowVirtualization: true,
-                virtualization: true,
-                virtualizationMode: 'continuous',
-                enter: 'right',
-                autoFitWindow: false,
-                hidePrimaryKey: true,
-                errorsOnPage: false,
-                columns: [
-                    {headerText: "ID", key: 'id', dataType: 'string', hidden: true},
-                    {
-                        headerText: "", group: [
-                            {   
-                                headerText: "First Elements", key: 'element', dataType: 'string', width: "100px", ntsControl: "Label"
-                            }
-                        ]
-                    },
-                    {
-                        headerText: "Second Elements", group: listHeader
-                    }
-                ],
-                ntsControls: [
-                    
-                ],
-                features: [
-                    {
-                        name: 'HeaderStyles',
-                        columns: [
-                            {key: 'element', colors: ['left-align']}
-                        ]
-                    },
-                    {
-                        name: "ColumnFixing",
-                        showFixButtons: false,
-                        fixingDirection: 'left',
-                        columnSettings: [
-                            { columnKey: "id", isFixed: true },
-                            { columnKey: "element", isFixed: true }
-                        ]
-                    }
-                ]
-            }).create();
-        }
-
         createNewWageTable() {
             let self = this;
             if (_.isEmpty(self.selectedWageTableIdentifier()))
@@ -263,6 +243,19 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             $(".nts-input").filter(":enabled").trigger("validate");
 //            $("#A7_4_1").trigger("validate");
 //            $("#A7_4_2").trigger("validate");
+            if (self.selectedWageTable().elementSetting() == model.ELEMENT_SETTING.THREE_DIMENSION && self.updateMode()) {
+                self.wageTableContent().payment().forEach(thirdDms => {
+                    thirdDms.listFirstDms().forEach(firstDms => {
+                        firstDms.listSecondDms().forEach(i => {
+                            if (i.paymentAmount() == null) {
+                                self.fakeSelectedValue(thirdDms.masterCode() == null ? thirdDms.frameNumber() : thirdDms.masterCode());
+                                $(".nts-input").filter(":enabled").trigger("validate");
+                                return;
+                            }
+                        });
+                    });
+                });
+            }
             if (!nts.uk.ui.errors.hasError()) {
                 if (self.updateMode()) {
                     self.updateData();
@@ -315,7 +308,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     ko.utils.extend(command.wageTableContent, {twoDimensionPayment: command.wageTableContent.payment});
                     break;
                 case model.ELEMENT_SETTING.THREE_DIMENSION:
-                break;
+                    ko.utils.extend(command.wageTableContent, {threeDimensionPayment: command.wageTableContent.payment})
+                    break;
                 case model.ELEMENT_SETTING.QUALIFICATION:
                     ko.utils.extend(command.wageTableContent, {wageTableQualifications: command.wageTableContent.qualificationGroupSetting});
                     break;
@@ -461,7 +455,6 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     self.elementRangeSetting().secondElementRange(null);
                     self.elementRangeSetting().thirdElementRange(null);
                     self.wageTableContent(new model.WageTableContent(data));
-//                    $("#fixed-table-1d").ntsFixedTable({ width: 600 });
                 }
             }).fail(error => {
                 dialog.alertError(error);
@@ -553,7 +546,10 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     self.elementRangeSetting().historyID(params.historyID);
                     self.elementRangeSetting().thirdElementRange(null);
                     self.wageTableContent(new model.WageTableContent(data));
-//                    $("#fixed-table-2d").ntsFixedTable({ width: 600 });
+                    $("#wage-table-left").unbind();
+                    $("#wage-table-right").unbind();
+                    self.syncScroll($("#wage-table-left"), $("#wage-table-right"));
+                    self.syncScroll($("#wage-table-right"), $("#wage-table-left"));
                 }
             }).fail(error => {
                 dialog.alertError(error);
@@ -664,8 +660,25 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             block.invisible();
             service.createThreeDimentionWageTable(params).done(data => {
                 if (!_.isEmpty(data)) {
+                    let lst3rd: Array<any> = data.list3dElements;
+                    self.listThirdDimension(lst3rd.map(i => {
+                        if (i.masterCode) {
+                            return {value: i.masterCode, name: i.masterName};
+                        } else {
+                            return {value: i.frameNumber, name: i.frameLowerLimit + getText("QMM016_31") + i.frameUpperLimit};
+                        }
+                    }));
+                    let lst2nd: Array<any> = data.list3dElements[0].listFirstDms[0].listSecondDms;
+                    self.listSecondDimension(lst2nd.map(i => {
+                        if (i.masterCode) {
+                            return {value: i.masterCode, name: i.masterName};
+                        } else {
+                            return {value: i.frameNumber, name: i.frameLowerLimit + getText("QMM016_31") + i.frameUpperLimit};
+                        }
+                    }));
                     self.elementRangeSetting().historyID(params.historyID);
                     self.wageTableContent(new model.WageTableContent(data));
+                    self.wageTableContent2dData(self.wageTableContent().payment()[0].listFirstDms());
                 }
             }).fail(error => {
                 dialog.alertError(error);
