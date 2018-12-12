@@ -24,21 +24,23 @@ public class WageTableQualificationFinder {
     /**
      * アルゴリズム「E画面_賃金テーブル作成処理」を実施
      *
-     * @param historyId 履歴ID
+     * @param historyId    履歴ID
+     * @param isInitScreen isInitScreen
      * @return 資格_賃金テーブル作成
      */
-    public List<WageTableQualificationDto> createWageTableQualification(String historyId) {
+    public List<WageTableQualificationDto> createWageTableQualification(String historyId, boolean isInitScreen) {
+        //ドメインモデル「資格情報」を取得する
         List<QualificationInformation> qualificationInformation = this.qualificationInformationRepository.getQualificationGroupSettingByCompanyID();
-
         if (qualificationInformation.isEmpty()) return Collections.emptyList();
 
         //ドメインモデル「賃金テーブル内容」を取得する
-        List<WageTableQualification> wageTableContent = wageTableContentRepository.getWageTableQualification(historyId);
+        List<WageTableQualification> wageTableContent        = this.wageTableContentRepository.getWageTableQualification(historyId);
+        List<WageTableQualification> wageTableContentDefault = this.wageTableContentRepository.getDefaultWageTableQualification();
 
-        List<WageTableQualification> wageTableContentDefault = wageTableContentRepository.getDefaultWageTableQualification();
-        if (wageTableContent.isEmpty())
-            return wageTableContentDefault.stream().map(WageTableQualificationDto::fromDomain).collect(Collectors.toList());
-
-        return wageTableContent.stream().map(WageTableQualificationDto::fromDomain).collect(Collectors.toList());
+        if (isInitScreen)
+            return wageTableContent.stream().map(WageTableQualificationDto::fromDomain).collect(Collectors.toList());
+        return wageTableContentDefault.stream().map(WageTableQualificationDto::fromDomain).collect(Collectors.toList());
+//        if (wageTableContent.isEmpty())
+//            return Collections.emptyList();
     }
 }

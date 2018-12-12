@@ -7,6 +7,11 @@ import lombok.Data;
 @AllArgsConstructor
 public class WageTableQualificationInfo {
     /**
+     * ID
+     */
+    private String id;
+
+    /**
      * 資格コード
      */
     private String qualificationCode;
