@@ -247,6 +247,14 @@ module nts.uk.com.view.cas014.b {
                     $(".ntsStartDatePicker").focus();
                 });
             }
+            
+            saveAsExcel(): void {
+                let self = this;
+     
+                modal("/view/cas/014/m/index.xhtml").onClosed(function() {
+                });
+            }
+
 
         }
     }
