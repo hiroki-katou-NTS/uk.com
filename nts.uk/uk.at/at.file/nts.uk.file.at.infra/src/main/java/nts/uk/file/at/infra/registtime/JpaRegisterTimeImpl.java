@@ -11,7 +11,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.enums.EnumAdaptor;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateAtr;
 import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateType;
 import nts.uk.ctx.at.record.dom.standardtime.enums.StartingMonthType;
@@ -39,8 +42,93 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "KMKMT_AGREEMENT_OPE_SET "
 			+ "WHERE CID = ?1";
 	
+	private static final String SQL_EXPORT_SHEET_2 = "SELECT aa.ERROR_WEEK,aa.ALARM_WEEK,aa.LIMIT_WEEK, "
+			+ "aa.ERROR_TWO_WEEKS,aa.ALARM_TWO_WEEKS,aa.LIMIT_TWO_WEEKS, "
+			+ "aa.ERROR_FOUR_WEEKS,aa.ALARM_FOUR_WEEKS,aa.LIMIT_FOUR_WEEKS, "
+			+ "aa.ERROR_ONE_MONTH,aa.ALARM_ONE_MONTH,aa.LIMIT_ONE_MONTH, "
+			+ "aa.ERROR_TWO_MONTH,aa.ALARM_TWO_MONTH,aa.LIMIT_TWO_MONTH, "
+			+ "aa.ERROR_THREE_MONTH,aa.ALARM_THREE_MONTH,aa.LIMIT_THREE_MONTH, "
+			+ "aa.ERROR_YEARLY,aa.ALARM_YEARLY,aa.LIMIT_YEARLY "
+			+ "FROM  "
+			+ "KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN  "
+			+ "KMKMT_AGREEMENTTIME_COM bb "
+			+ "ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?1";
+	
+	private static final String SQL_EXPORT_SHEET_3 = "SELECT "
+			+ "kk.CODE,"
+			+ "kk.NAME,"
+			+ "aa.ERROR_WEEK,"
+			+ "aa.ALARM_WEEK,"
+			+ "LIMIT_WEEK = ("
+			+ "SELECT aa.LIMIT_WEEK "
+			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?cid "
+			+ "),"
+			+ "aa.ERROR_TWO_WEEKS, "
+			+ "aa.ALARM_TWO_WEEKS, "
+			+ "LIMIT_TWO_WEEKS = ( "
+			+ "SELECT aa.LIMIT_TWO_WEEKS "
+			+ "FROM "
+			+ "KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?cid"
+			+ "),"
+			+ "aa.ERROR_FOUR_WEEKS, "
+			+ "aa.ALARM_FOUR_WEEKS, "
+			+ "LIMIT_FOUR_WEEKS = ( "
+			+ "SELECT aa.LIMIT_FOUR_WEEKS "
+			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?cid "
+			+ "),"
+			+ "aa.ERROR_ONE_MONTH, "
+			+ "aa.ALARM_ONE_MONTH, "
+			+ "LIMIT_ONE_MONTH = ( "
+			+ "SELECT aa.LIMIT_ONE_MONTH "
+			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?cid "
+			+ "),"
+			+ "aa.ERROR_TWO_MONTH, "
+			+ "aa.ALARM_TWO_MONTH, "
+			+ "LIMIT_TWO_MONTH = ( "
+			+ "SELECT aa.LIMIT_TWO_MONTH "
+			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?cid "
+			+ "),"
+			+ "aa.ERROR_THREE_MONTH, "
+			+ "aa.ALARM_THREE_MONTH, "
+			+ "LIMIT_THREE_MONTH = ("
+			+ "SELECT aa.LIMIT_THREE_MONTH "
+			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE "
+			+ "bb.CID = ?cid "
+			+ "),"
+			+ "aa.ERROR_YEARLY, "
+			+ "aa.ALARM_YEARLY,"
+			+ "LIMIT_YEARLY = ("
+			+ "SELECT aa.LIMIT_YEARLY "
+			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?cid "
+			+ ")"
+			+ "FROM "
+			+ "KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_EMP bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "JOIN BSYMT_EMPLOYMENT kk ON "
+			+ "kk.CODE = bb.EMP_CTG_CODE "
+			+ "WHERE "
+			+ "	bb.CID = ?cid "
+			+ "AND kk.CID = ?cid";
+	
+	
 	@Override
-	public List<MasterData> getDataExport() {
+	public List<MasterData> getDataExportSheet1() {
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
 		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_1.toString()).setParameter(1, cid);
@@ -49,12 +137,12 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		for (int i = 0; i < data.length; i++) {
 			if(closeDateAtr == 0 && i == 2)
 				continue;
-			datas.add(new MasterData(dataContent(data[i],i,closeDateAtr), null, ""));
+			datas.add(new MasterData(dataContentSheet1(data[i],i,closeDateAtr), null, ""));
 		}
 		return datas;
 	}
 	
-	private Map<String, Object> dataContent(Object object,int check,int closeDateAtr) {
+	private Map<String, Object> dataContentSheet1(Object object,int check,int closeDateAtr) {
 		Map<String, Object> data = new HashMap<>();
 		data.put(RegistTimeColumn.KMK008_80, check == 0 ? RegistTimeColumn.KMK008_82 : "");
 		data.put(RegistTimeColumn.HEADER_NONE1, check == 0 ? RegistTimeColumn.KMK008_83 : check == 1 ? RegistTimeColumn.KMK008_84 : check == 3 ? RegistTimeColumn.KMK008_85 : check == 4 ? RegistTimeColumn.KMK008_86 : "");
@@ -103,6 +191,96 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			break;
 		}
 		return value;
+	}
+	
+	private String formatTime(int source) {
+		int regularized = Math.abs(source);
+		int hourPart = (regularized / 60);
+		int minutePart = regularized % 60;
+		String resultString = StringUtils.join(StringUtil.padLeft(String.valueOf(hourPart), 2, '0'),":", StringUtil.padLeft(String.valueOf(minutePart), 2, '0'));
+		return resultString;
+	}
+
+	@Override
+	public List<MasterData> getDataExportSheet2() {
+		List<MasterData> datas = new ArrayList<>();
+		String cid = AppContexts.user().companyId();
+		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_2.toString()).setParameter(1, cid);
+		Object[] data = (Object[]) query.getSingleResult();
+		int j = 0 ;
+		for (int i = 0; i < 6; i++) {
+			datas.add(new MasterData(dataContentSheet2(data,i,j), null, ""));
+			j = i+3;
+		}
+		return datas;
+	}
+	
+	private Map<String, Object> dataContentSheet2(Object[] objects,int rownum,int param) {
+		Map<String, Object> data = new HashMap<>();
+		data.put(RegistTimeColumn.KMK008_89, getColumnOneSheet2(rownum));
+		data.put(RegistTimeColumn.KMK008_90,formatTime(((BigDecimal)objects[param]).intValue()));
+		data.put(RegistTimeColumn.KMK008_91,formatTime(((BigDecimal)objects[++param]).intValue()));
+		data.put(RegistTimeColumn.KMK008_92,formatTime(((BigDecimal)objects[++param]).intValue()));
+		return data;
+	}
+	
+	private String getColumnOneSheet2(int rownum) {
+		String value = "";
+		switch (rownum) {
+		case 0:
+			value = RegistTimeColumn.KMK008_93;
+			break;
+		case 1 :
+			value = RegistTimeColumn.KMK008_94;
+			break;
+		case 2 :
+			value = RegistTimeColumn.KMK008_95;
+			break;
+		case 3 :
+			value = RegistTimeColumn.KMK008_96;
+			break;
+		case 4 :
+			value = RegistTimeColumn.KMK008_97;
+			break;
+		case 5 :
+			value = RegistTimeColumn.KMK008_98;
+			break;
+		case 6 :
+			value = RegistTimeColumn.KMK008_99;
+			break;
+		default:
+			break;
+		}
+		return value;
+	}
+
+	@Override
+	public List<MasterData> getDataExportSheet3() {
+		List<MasterData> datas = new ArrayList<>();
+		String cid = AppContexts.user().companyId();
+		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_3.toString()).
+				setParameter("cid", cid);
+		@SuppressWarnings("unchecked")
+		List<Object[]> data =  query.getResultList();
+		for (Object[] objects : data) {
+			int j = 2 ;
+			for (int i = 0; i < 7; i++) {
+				datas.add(new MasterData(dataContentSheet3(objects,i,j), null, ""));
+				j = j+3;
+			}
+		}
+		return datas;
+	}
+	
+	private Map<String, Object> dataContentSheet3(Object[] objects,int rownum,int param) {
+		Map<String, Object> data = new HashMap<>();
+		data.put(RegistTimeColumn.KMK008_100, rownum == 0 ? objects[0] : "");
+		data.put(RegistTimeColumn.KMK008_101,rownum == 0 ? objects[1] : "");
+		data.put(RegistTimeColumn.KMK008_89, getColumnOneSheet2(rownum));
+		data.put(RegistTimeColumn.KMK008_90,formatTime(((BigDecimal)objects[param]).intValue()));
+		data.put(RegistTimeColumn.KMK008_91,formatTime(((BigDecimal)objects[++param]).intValue()));
+		data.put(RegistTimeColumn.KMK008_92,formatTime(((BigDecimal)objects[++param]).intValue()));
+		return data;
 	}
 	
 }
