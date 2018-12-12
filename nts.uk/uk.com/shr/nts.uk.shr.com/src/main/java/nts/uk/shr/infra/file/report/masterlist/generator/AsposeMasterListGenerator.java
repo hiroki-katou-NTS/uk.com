@@ -1,6 +1,7 @@
 package nts.uk.shr.infra.file.report.masterlist.generator;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,13 +21,18 @@ import com.aspose.cells.Font;
 import com.aspose.cells.Range;
 import com.aspose.cells.Style;
 import com.aspose.cells.TextAlignmentType;
+import com.aspose.cells.Workbook;
+import com.aspose.cells.Worksheet;
 
+import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
+import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.ReportType;
 
 @Stateless
@@ -41,7 +47,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 	private static final int START_COLUMN = 0;
 
 	private static final int MASTERLIST_DATA_START_ROW = 7;
-	
+
 	private static final int TABLE_DISTANCE = 3;
 
 	private static final String FONT_FAMILY = "ＭＳ ゴシック";
@@ -57,32 +63,21 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		val reportContext = this.createEmptyContext(REPORT_ID);
 
 		val workbook = reportContext.getWorkbook();
-		val sheet = workbook.getWorksheets().get(0);
-		val cells = sheet.getCells();
+		
+		List<SheetData> subSheets = dataSource.getDatas().extraSheets(dataSource.getQuery());
 
-		List<MasterHeaderColumn> columns = getViewColumn(dataSource.getHeaderColumns());
+		SheetData mainSheet = dataSource.getDatas().mainSheet(dataSource.getQuery());
 
-		sheet.setName("マスタリスト");
+		String reportName = processSheet(mainSheet, 0, workbook, dataSource, subSheets == null ? 0 : subSheets.size());
 
-		String reportName = this.fillHeader(cells, dataSource, columns.size() <= 1 ? 1 : columns.size() - 1);
-
-		if (!columns.isEmpty()) {
-			this.setCommonStyle(cells);
-
-			int startNextTable = drawATable(cells, columns, dataSource.getMasterList(), /*this.*/MASTERLIST_DATA_START_ROW);
-
-			drawExtraTable(cells, startNextTable, dataSource.getExtraHeaderColumns(), dataSource.getExtraMasterList());
-
-			try {
-				AutoFitterOptions options = new AutoFitterOptions();
-				options.setAutoFitMergedCells(true);
-				options.setOnlyAuto(true);
-				sheet.autoFitColumns(options);
-				sheet.autoFitRows(options);
-			} catch (Exception e) {
-				e.printStackTrace();
+		if (!CollectionUtil.isEmpty(subSheets)) {
+			for(int i = 1; i <= subSheets.size(); i++){
+				processSheet(subSheets.get(i - 1), i, workbook, dataSource, 0);
 			}
 		}
+
+		workbook.getWorksheets().setActiveSheetIndex(0);
+		
 		reportContext.processDesigner();
 
 		switch (dataSource.getReportType()) {
@@ -100,14 +95,71 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		}
 
 	}
+
+	@SneakyThrows
+	private String processSheet(SheetData sheetData, int idx, Workbook workbook, MasterListExportSource dataSource, int max) {
+
+		List<MasterHeaderColumn> columns = this.getViewColumn(sheetData.getMainDataColumns());
+		String reportName = null, sheetName = getSheetName(sheetData.getSheetName(), idx);
+		Worksheet sheet;
+		Cells cells;
+
+		if (idx == 0) {
+			sheet = workbook.getWorksheets().get(0);
+			cells = sheet.getCells();
+			
+			reportName = this.fillHeader(cells, dataSource, columns.size() <= 1 ? 1 : columns.size() - 1, true);
+			
+			this.cloneSheets(max, workbook);
+		} else {
+			sheet = workbook.getWorksheets().get(idx);
+			cells = sheet.getCells();
+		}
+
+		this.setCommonStyle(cells);
+
+		int startNextTable = this.drawATable(cells, columns, sheetData.getMainData(), MASTERLIST_DATA_START_ROW);
+
+		this.drawExtraTable(cells, startNextTable, sheetData.getSubDatas(), sheetData.getSubDataColumns());
+
+		sheet.setName(sheetName);
+		
+		this.setDefaultSheetOption(sheet);
+
+		return reportName;
+	}
 	
-	private String fillHeader(Cells cells, MasterListExportSource dataSource, int columnSize) {
+	@SneakyThrows
+	private void cloneSheets(int max, final com.aspose.cells.Workbook workbook) {
+		for(int i = 0; i < max; i++){
+			workbook.getWorksheets().addCopy(0);
+		}
+	}
+
+	private String getSheetName(String sheetName, int idx) {
+		//return idx > 0 ? sheetName + idx : sheetName;
+		return sheetName;
+	}
+
+	private void setDefaultSheetOption(final Worksheet sheet) {
+		try {
+			AutoFitterOptions options = new AutoFitterOptions();
+			options.setAutoFitMergedCells(true);
+			options.setOnlyAuto(true);
+			sheet.autoFitColumns(options);
+			sheet.autoFitRows(options);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private String fillHeader(Cells cells, MasterListExportSource dataSource, int columnSize, boolean createName) {
 		Map<String, String> headerData = dataSource.getHeaders();
-		int i = /*this.*/HEADER_INFOR_START_ROW;
+		int i = HEADER_INFOR_START_ROW;
 		boolean isCsv = isExportCsvFile(dataSource.getReportType());
 		for (Entry<String, String> headerInfor : headerData.entrySet()) {
-			Cell labelCell = cells.get(/*this.*/HEADER_INFOR_START_ROW + i, 0);
-			Range valueCell = cells.createRange(/*this.*/HEADER_INFOR_START_ROW + i, 1, 1, isCsv ? 1 : columnSize);
+			Cell labelCell = cells.get(HEADER_INFOR_START_ROW + i, 0);
+			Range valueCell = cells.createRange(HEADER_INFOR_START_ROW + i, 1, 1, isCsv ? 1 : columnSize);
 			valueCell.merge();
 
 			Style style = this.getCellStyleNoBorder(labelCell.getStyle());
@@ -120,6 +172,10 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 
 			i++;
 		}
+
+		if (!createName)
+			return "";
+
 		return StringUtils.join(headerData.get("【種類】"), "_", getCreateReportTime(headerData.get("【日時】")));
 	}
 
@@ -132,22 +188,27 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 				.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 	}
 
-	private int drawATable(final Cells cells, List<MasterHeaderColumn> columns,
-			List<MasterData> datas, int startRow) {
+	private int drawATable(final Cells cells, List<MasterHeaderColumn> columns, List<MasterData> datas, int startRow) {
 		this.drawTableHeader(cells, columns, startRow);
 		this.drawTableBody(cells, columns, datas, startRow);
-		return startRow + datas.size() + /*this.*/TABLE_DISTANCE;
+
+		return startRow + datas.size() + TABLE_DISTANCE;
 	}
 
-	private int drawExtraTable(final Cells cells, int startRow,
-			Map<String, List<MasterHeaderColumn>> extraTableColumns, Map<String, List<MasterData>> extraTableDatas) {
-		if (!extraTableColumns.isEmpty()) {
-			for (Entry<String, List<MasterHeaderColumn>> extraTable : extraTableColumns.entrySet()) {
-				List<MasterHeaderColumn> columns = getViewColumn(extraTable.getValue());
-				List<MasterData> extraData = extraTableDatas.get(extraTable.getKey());
-				startRow = drawATable(cells, columns, extraData, startRow);
+	private int drawExtraTable(final Cells cells, int startRow, Map<String, List<MasterData>> dataSource,
+			Map<String, List<MasterHeaderColumn>> extraColumnMaps) {
+		if (!extraColumnMaps.isEmpty()) {
+			val colMap = new ArrayList<>(extraColumnMaps.entrySet());
+
+			for (int i = 0; i < colMap.size(); i++) {
+				Entry<String, List<MasterHeaderColumn>> extraCol = colMap.get(i);
+				List<MasterHeaderColumn> columns = this.getViewColumn(extraCol.getValue());
+				List<MasterData> extraData = dataSource.get(extraCol.getKey());
+
+				startRow = this.drawATable(cells, columns, extraData, startRow);
 			}
 		}
+
 		return startRow;
 	}
 
@@ -169,7 +230,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 	private void drawTableBody(Cells cells, List<MasterHeaderColumn> columns, List<MasterData> datas, int startRow) {
 		for (int i = 0; i < datas.size(); i++) {
 			MasterData data = datas.get(i);
-			int j = /*this.*/START_COLUMN;
+			int j = START_COLUMN;
 			for (MasterHeaderColumn column : columns) {
 				Cell cell = cells.get(startRow + i, j);
 				// TODO: format date with format
@@ -218,7 +279,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 	}
 
 	private void setCommonStyle(Cells cells) {
-		cells.setStandardWidthPixels(/*this.*/STANDARD_WIDTH);
-		cells.setStandardHeightPixels(/*this.*/STANDARD_HEIGHT);
+		cells.setStandardWidthPixels(STANDARD_WIDTH);
+		cells.setStandardHeightPixels(STANDARD_HEIGHT);
 	}
 }
