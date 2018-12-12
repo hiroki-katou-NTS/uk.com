@@ -39,10 +39,10 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 			+ "WHERE a.id.cid = :companyId ";
 	
 	/** The Constant SEL_WORK_HOUR_LIMIT. */
-	private static final String SEL_WORK_HOUR_LIMIT = 
-			"SELECT a "
-			+ "FROM KrcstWkHourLimitCtrl a "
-			+ "WHERE a.id.cid = :companyId ";
+//	private static final String SEL_WORK_HOUR_LIMIT = 
+//			"SELECT a "
+//			+ "FROM KrcstWkHourLimitCtrl a "
+//			+ "WHERE a.id.cid = :companyId ";
 	
 	/**
 	 * To domain.

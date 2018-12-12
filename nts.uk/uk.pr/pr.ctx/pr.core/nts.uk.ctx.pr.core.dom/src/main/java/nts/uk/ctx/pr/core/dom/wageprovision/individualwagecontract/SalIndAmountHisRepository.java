@@ -4,25 +4,24 @@ import java.util.Optional;
 import java.util.List;
 
 /**
-* 給与個人別金額履歴
-*/
-public interface SalIndAmountHisRepository
-{
+ * 給与個人別金額履歴
+ */
+public interface SalIndAmountHisRepository {
 
-    List<SalIndAmountHis> getAllSalIndAmountHis();
+    List<SalaryIndividualAmountHistory> getSalIndAmountHis(String perValCode, String empId, int salBonusCate, int cateIndicator);
 
-    Optional<SalIndAmountHis> getSalIndAmountHis(String perValCode, String empId, int salBonusCate, int cateIndicator);
+    List<SalaryIndividualAmountHistory> getSalIndAmountHisDisplay(String perValCode, String empId, int salBonusCate, int cateIndicator, int currentProcessYearMonth);
 
-    Optional<SalIndAmountHis> getSalIndAmountHisDisplay(String perValCode, String empId, int salBonusCate, int cateIndicator, int currentProcessYearMonth);
+    List<PersonalAmount> getSalIndAmountHisByPerVal(String perValCode, int cateIndicator, int salBonusCate, int standardYearMonth, List<String> empIds);
 
-    List<PersonalAmount> getSalIndAmountHisByPerVal(String perValCode,int cateIndicator,int salBonusCate,List<String> empIds);
+    void updateOldHistory(String historyId, int newEndMonthOfOldHistory);
 
-    void updateOldHistorty(String historyId,int newEndMonthOfOldHistory);
+    void updateHistory(SalIndAmountHis domain);
 
-    void add(SalIndAmountHis domain);
+    void remove(String historyId);
 
-    void update(SalIndAmountHis domain);
+    void add(SalIndAmountHis domain1, SalIndAmount domain2);
 
-    void remove(String historyId, String perValCode, String empId);
+    void updateAmount(SalIndAmount domain);
 
 }

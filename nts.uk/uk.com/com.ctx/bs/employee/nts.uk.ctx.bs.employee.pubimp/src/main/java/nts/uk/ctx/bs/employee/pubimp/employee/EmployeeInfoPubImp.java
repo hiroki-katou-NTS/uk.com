@@ -29,8 +29,8 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 	@Inject
 	private EmployeeDataMngInfoRepository empDataMngRepo;
 
-	@Inject
-	private AffCompanyHistRepository affComHistRepo;
+//	@Inject
+//	private AffCompanyHistRepository affComHistRepo;
 
 	@Inject
 	PersonRepository personRepo;

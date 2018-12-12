@@ -395,9 +395,14 @@ public class InforSpecialLeaveOfEmployeeSeviceImpl implements InforSpecialLeaveO
 				//付与日　←　パラメータ「付与日数一覧．年月日」の次の「特別休暇．期限情報．使用可能期間．開始日」
 				AvailabilityPeriod period = specialHoliday.getGrantPeriodic().getAvailabilityPeriod();
 				GeneralDate ymd = GeneralDate.ymd(x.getYmd().year(), period.getStartDate().getMonth(), period.getStartDate().getDay());
-				x.setYmd(ymd);
+				if(ymd.after(x.getYmd())) {
+					x.setYmd(ymd);	
+				}				
 				//パラメータ「付与日数一覧．年月日」の次の「特別休暇．期限情報．使用可能期間．終了日」
 				GeneralDate ymdDealine = GeneralDate.ymd(x.getYmd().year(), period.getEndDate().getMonth(), period.getEndDate().getDay());
+				if(x.getYmd().after(ymdDealine)) {
+					ymdDealine = ymdDealine.addYears(1);
+				}
 				SpecialHolidayInfor output = new SpecialHolidayInfor(x, Optional.of(ymdDealine));
 				lstOutput.add(output);
 			});

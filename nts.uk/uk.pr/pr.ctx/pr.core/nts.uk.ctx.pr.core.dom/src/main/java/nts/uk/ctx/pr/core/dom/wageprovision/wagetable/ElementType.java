@@ -1,28 +1,30 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.wagetable;
 
-
 /**
- * 明細書印字区分
+ * 要素種類
  */
-public enum ElementType
-{
-    EMPLOYMENT(0),
-    DEPARTMENT(1),
-    CLASSIFICATION(2),
-    JOB_TITLE(3),
-    SALARY_CLASSIFICATION(4),
-    QUALIFICATION(5),
-    FINE_WORK(6),
-    AGE(7),
-    SERVICE_YEAR(8),
-    FAMILY_MEMBER(9);
+public enum ElementType {
 
+	EMPLOYMENT("M001", "雇用"), 
+	DEPARTMENT("M002", "部門"), 
+	CLASSIFICATION("M003", "分類"), 
+	JOB_TITLE("M004", "職位"), 
+	SALARY_CLASSIFICATION("M005", "給与分類"), 
+	QUALIFICATION("M006", "資格"), 
+	FINE_WORK("M007", "精皆勤レベル"), 
+	AGE("N001", "年齢"), 
+	SERVICE_YEAR("N002", "勤続年数"), 
+	FAMILY_MEMBER("N003", "家族人数");
 
-    /** The value. */
-    public final int value;
+	/** The value. */
+	public final String value;
 
-    private ElementType(int value)
-    {
-        this.value = value;
-    }
+	/** The name id. */
+	public final String nameId;
+
+	private ElementType(String value, String nameId) {
+		this.value = value;
+		this.nameId = nameId;
+	}
+
 }

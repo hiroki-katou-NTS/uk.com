@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 

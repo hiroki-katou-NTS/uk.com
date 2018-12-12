@@ -2,8 +2,10 @@ package nts.uk.ctx.pr.core.app.command.wageprovision.individualwagecontract;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.AmountOfMoney;
 import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmount;
-import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmountRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmountHis;
+import nts.uk.ctx.pr.core.dom.wageprovision.individualwagecontract.SalIndAmountHisRepository;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -15,11 +17,14 @@ import java.util.stream.Collectors;
 public class SalIndAmountUpdateCommandHandler extends CommandHandler<SalIndAmountUpdateAllCommand> {
 
     @Inject
-    private SalIndAmountRepository repository;
+    private SalIndAmountHisRepository repository;
 
     @Override
     protected void handle(CommandHandlerContext<SalIndAmountUpdateAllCommand> commandHandlerContext) {
         SalIndAmountUpdateAllCommand command = commandHandlerContext.getCommand();
-        repository.updateAll(command.getSalIndAmountUpdateCommandList().stream().map(v->new SalIndAmount(v.getHistoryId(), Long.parseLong(v.getAmount()))).collect(Collectors.toList()));
+        command.getSalIndAmountUpdateCommandList().forEach(e -> {
+            repository.updateAmount(new SalIndAmount(e.getHistoryId(), e.getAmount()));
+        });
+
     }
 }

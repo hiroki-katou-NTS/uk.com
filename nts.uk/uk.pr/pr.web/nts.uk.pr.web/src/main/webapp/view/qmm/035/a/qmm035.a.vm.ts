@@ -125,14 +125,13 @@ module nts.uk.pr.view.qmm035.a {
                             self.isEnableBtnCreate(true);
                             self.items([]);
                             for (let i = 0; i < response.companies.length; i++) {
+
                                 self.items.push(new CompanyStatutoryWriteOverView(response.companies[i].code, response.companies[i].name));
                             }
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-
-                                self.currentCode(response.codeSelected);
-                                self.isEnableCode(false);
-
                             });
+                            self.currentCode(response.codeSelected);
+                            self.isEnableCode(false);
                             _.defer(function() {
                                 $("#A4_4").focus();
                             });

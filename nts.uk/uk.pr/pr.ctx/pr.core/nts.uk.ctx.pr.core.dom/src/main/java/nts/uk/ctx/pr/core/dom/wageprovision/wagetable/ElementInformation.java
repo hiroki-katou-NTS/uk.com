@@ -1,45 +1,50 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.wagetable;
 
 import java.util.Optional;
-import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
-import nts.arc.enums.EnumAdaptor;
 
 /**
-* 要素情報
-*/
+ * 要素情報
+ */
 @AllArgsConstructor
 @Getter
-public class ElementInformation extends DomainObject
-{
-    
-    /**
-    * 一次元要素
-    */
-    private ElementAttribute oneDimensionalElement;
+public class ElementInformation extends DomainObject {
 
-    /**
-    * 二次元要素
-    */
-    private Optional<ElementAttribute> threeDimensionalElement;
+	/**
+	 * 一次元要素
+	 */
+	private ElementAttribute oneDimensionalElement;
 
-    /**
-    * 三次元要素
-    */
-    private Optional<ElementAttribute> twoDimensionalElement;
+	/**
+	 * 二次元要素
+	 */
+	private Optional<ElementAttribute> twoDimensionalElement;
 
-    public ElementInformation(Integer firstFixedElement, String firstOptionalAddElement, Integer firstMasterNumericCls,
-                              Integer secondFixedElement, String sencondOptionalAddElement, Integer secondMasterNumeric,
-                              Integer thirdFixedElement, String thirdOptionAddElement, Integer thirdMasterNumeric) {
-        this.oneDimensionalElement = new ElementAttribute(firstFixedElement,firstOptionalAddElement,firstMasterNumericCls);
-        this.threeDimensionalElement = Optional.ofNullable((secondFixedElement == null && sencondOptionalAddElement == null && secondMasterNumeric == null)? null
-                : new ElementAttribute(secondFixedElement,sencondOptionalAddElement,secondMasterNumeric));
-        this.twoDimensionalElement =  Optional.ofNullable((thirdFixedElement == null && thirdOptionAddElement == null && thirdMasterNumeric == null)? null
-                : new ElementAttribute(thirdFixedElement,thirdOptionAddElement,thirdMasterNumeric));
-    }
+	/**
+	 * 三次元要素
+	 */
+	private Optional<ElementAttribute> threeDimensionalElement;
+
+	public ElementInformation(Integer oneMasterNumericClassification, String oneFixedElement,
+			String oneOptionalAdditionalElement, Integer twoMasterNumericClassification, String twoFixedElement,
+			String twoOptionalAdditionalElement, Integer threeMasterNumericClassification, String threeFixedElement,
+			String threeOptionalAdditionalElement) {
+		this.oneDimensionalElement = new ElementAttribute(oneMasterNumericClassification, oneFixedElement,
+				oneOptionalAdditionalElement);
+		this.twoDimensionalElement = Optional.of(
+				new ElementAttribute(twoMasterNumericClassification, twoFixedElement, twoOptionalAdditionalElement));
+		this.threeDimensionalElement = Optional.of(new ElementAttribute(threeMasterNumericClassification,
+				threeFixedElement, threeOptionalAdditionalElement));
+	}
+
+	public ElementInformation(ElementAttribute oneDimensionalElement, ElementAttribute twoDimensionalElement,
+			ElementAttribute threeDimensionalElement) {
+		this.oneDimensionalElement = oneDimensionalElement;
+		this.twoDimensionalElement = Optional.ofNullable(twoDimensionalElement);
+		this.threeDimensionalElement = Optional.ofNullable(threeDimensionalElement);
+	}
+
 }

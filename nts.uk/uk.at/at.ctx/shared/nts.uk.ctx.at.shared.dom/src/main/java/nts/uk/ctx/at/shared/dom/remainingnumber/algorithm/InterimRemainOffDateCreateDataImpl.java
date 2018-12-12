@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -496,7 +495,7 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 			//半日の時間をチェックする
 			//振替可能時間と半日の時間を比較する
 			if(transferSetting.getDesignatedTime().getHalfDayTime().v() > 0
-					&& timeSetting > transferSetting.getDesignatedTime().getHalfDayTime().v()) {
+					&& timeSetting >= transferSetting.getDesignatedTime().getHalfDayTime().v()) {
 				outData.setDays(Optional.of(0.5));
 				outData.setTranferTime(transferSetting.getDesignatedTime().getHalfDayTime().v());
 			}			
@@ -584,7 +583,8 @@ public class InterimRemainOffDateCreateDataImpl implements InterimRemainOffDateC
 				if(!coditionInfo.isPresent()) {
 					return "";
 				} else {
-					coditionInfo.get().getWorkCategory().getHolidayWork().getWorkTimeCode();
+					// chưa check null nên bị exception,get ra nhưng không set vào đâu cả ?
+					//coditionInfo.get().getWorkCategory().getHolidayWork().getWorkTimeCode();
 				}
 			}
 		}

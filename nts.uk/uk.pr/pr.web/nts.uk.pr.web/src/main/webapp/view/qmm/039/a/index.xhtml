@@ -44,13 +44,13 @@
     </ui:define>
     <ui:define name="sidebar-content">
         <div id="tabpanel-1">
-            <div class="sidebar-content-header" style="width: 1228px">
+            <div class="sidebar-content-header">
                 <span class="title" data-bind="text : titleTab"/>
                 <!--A1_1 登録-->
                 <button tabindex="1" data-bind="click: registration, enable: isRegistrationable() &amp;&amp; $root.errors.isEmpty"
                         class="proceed">#{i18n.getText('QMM039_5')}</button>
                 <!--A1_2 個人賃金契約（項目別）-->
-                <a tabindex="11" class="goout" style="margin-left: 700px;"
+                <a tabindex="11" class="goout" style="margin-left: 630px;"
                    data-bind="ntsLinkButton: {jump: '../../040/a/index.xhtml' }">#{i18n.getText('QMM039_45')}</a>
             </div>
             <div id="com-ccg001"/>
@@ -68,7 +68,7 @@
                     <div class="cell group-master">
                         <!--A4_1 項目選択パネル-->
                         <div class="panel" style="margin-left: 30px"
-                             data-bind="ntsPanel:{width: '220px', height: '260px',showIcon: true, direction: 'bottom', visible: true}">
+                             data-bind="ntsPanel:{width: '235px', height: '260px',showIcon: true, direction: 'bottom', visible: true}">
                             <!--A4_3 検索-->
                             <div tabindex="5" style="width: 220px"
                                  data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'treegrid',          items: dataSource, searchText: '検索', selected: singleSelectedCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}"/>
@@ -80,7 +80,7 @@
                             <table tabindex="6" id="treegrid"
                                    data-bind="ntsGridList:{
                                 name: '#[QMM039_12]',
-                                width: 220,
+                                width: 235,
                                 height: 210,
                                 dataSource: dataSource,
                                 columns: [
@@ -99,7 +99,7 @@
                         </div>
                         <!--A5_1 履歴選択パネル-->
                         <div class="panel cf"
-                             data-bind="ntsPanel:{width: '270px', height: '215px', direction: 'none', visible: true}">
+                             data-bind="ntsPanel:{width: '270px', direction: 'none', visible: true}">
                             <div class="row margin-bottom-12">
                                 <div class="cell left">
                                     <!--A5_2 履歴追加-->
@@ -122,7 +122,7 @@
                                     multiple: false,
                                     value: selectedHisCode,
                                     enable: true,
-                                    rows: 6,
+                                    rows: 5,
                                     columns: columns
                                     }"/>
                         </div>
@@ -166,7 +166,7 @@
                                 <!--A7_7 履歴開始年月-->
                                 <span class="label" data-bind="text: periodStartYM"/>
                                 <!--A7_8 ～-->
-                                <span class="label">#{i18n.getText('QMM039_24')}</span>
+                                <span class="label" data-bind="text: A7_8"/>
                                 <!--A7_9 履歴開始年月-->
                                 <span class="label" data-bind="text: periodEndYM"/>
                             </div>
@@ -188,7 +188,7 @@
                                             enable: enable,
                                             readonly: readonly,
                                             immediate: false,
-                                            option: {grouplength: 3}
+                                            option: {grouplength: 3, currencyformat: 'JPY'}
                                             }"/>
                                 </div>
                             </div>

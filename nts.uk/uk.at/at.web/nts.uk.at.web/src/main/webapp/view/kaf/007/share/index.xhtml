@@ -82,6 +82,7 @@
 				<div id="singleDate"
 					data-bind="ntsDatePicker: {
 											value: $parent.dateSingle, 
+											valueFormat: 'YYYY/MM/DD' , 
 											dateFormat: 'YYYY/MM/DD' , 
 											required:!$parent.multiDate() , 
 											name:'#{i18n.getText('KAF006_8')}'
@@ -328,7 +329,7 @@
 			</div>
 		</div>
 		<!--A10 休日に関して-->
-		<div class="valign-center control-group-kaf007" data-bind="visible:$parent.screenModeNew()">
+		<div class="valign-center control-group-kaf007" data-bind="visible:$parent.showExcludeHoliday()">
 			<div class="table">
 				<div class="cell valign-center">
 					<div class="lblTitle-kaf007"

@@ -32,7 +32,7 @@ public class JpaPublicHolidayRepository extends JpaRepository implements PublicH
 			+ " WHERE a.ksmmtPublicHolidayPK.companyId = :companyId "
 			+ " AND a.ksmmtPublicHolidayPK.date = :date ";
 	private static final String SELECT_ALL = "SELECT a FROM KsmmtPublicHoliday a WHERE a.ksmmtPublicHolidayPK.companyId = :companyId";
-	private static final String SELECT_SINGLE = "SELECT a FROM KsmmtPublicHoliday a WHERE a.ksmmtPublicHolidayPK.companyId = :companyID AND a.ksmmtPublicHolidayPK.date = :date";
+//	private static final String SELECT_SINGLE = "SELECT a FROM KsmmtPublicHoliday a WHERE a.ksmmtPublicHolidayPK.companyId = :companyID AND a.ksmmtPublicHolidayPK.date = :date";
 	private static final String SELECT_BY_SDATE_EDATE = "SELECT c FROM KsmmtPublicHoliday c"
 			+ " WHERE c.ksmmtPublicHolidayPK.companyId = :companyId"
 			+ " AND c.ksmmtPublicHolidayPK.date >= :strDate"

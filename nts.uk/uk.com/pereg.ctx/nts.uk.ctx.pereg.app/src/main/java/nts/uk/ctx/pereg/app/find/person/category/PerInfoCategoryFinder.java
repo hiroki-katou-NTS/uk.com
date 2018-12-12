@@ -14,7 +14,6 @@ import nts.arc.enums.EnumConstant;
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.NotUseAtr;
-import nts.uk.ctx.pereg.app.find.initsetting.item.SettingItemDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
@@ -252,8 +251,8 @@ public class PerInfoCategoryFinder {
 
 		List<String> lstCtgId = lstCtg.stream().map(c -> c.getPersonInfoCategoryId()).collect(Collectors.toList());
 
-		Map<String, PersonInfoCategory> mapCtgAndId = lstCtg.stream()
-				.collect(Collectors.toMap(e -> e.getPersonInfoCategoryId(), e -> e));
+//		Map<String, PersonInfoCategory> mapCtgAndId = lstCtg.stream()
+//				.collect(Collectors.toMap(e -> e.getPersonInfoCategoryId(), e -> e));
 
 		Map<String, List<Object[]>> mapCategoryIdAndLstItemDf = this.perInfoItemDfFinder
 				.mapCategoryIdAndLstItemDf(lstCtgId);

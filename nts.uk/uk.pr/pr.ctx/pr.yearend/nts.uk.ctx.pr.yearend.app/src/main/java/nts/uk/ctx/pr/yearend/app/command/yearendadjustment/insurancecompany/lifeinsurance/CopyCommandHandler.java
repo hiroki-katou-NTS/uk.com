@@ -34,11 +34,8 @@ public class CopyCommandHandler extends CommandHandler<List<LifeInsuranceCommand
 
         val lstLifeInsuranceCode = command.stream().map(item -> item.getLifeInsuranceCode()).collect(Collectors.toList());
         List<EarthquakeInsurance> lstEarthquakeInsurance = repository.getEarthquakeByLstLifeInsuranceCode(cid, lstLifeInsuranceCode);
-
         if (lstEarthquakeInsurance.size() > 0) {
             val lstEarthquakeInsuranceCode = lstEarthquakeInsurance.stream().map(item -> item.getEarthquakeInsuranceCode()).collect(Collectors.toList());
-            List<LifeInsurance> lstUpdate = repository.getLifeInsurancedByLstEarthquakeInsuranceCode(cid, lstEarthquakeInsuranceCode);
-            repository.updarteAddEarthQuakeInsu(lstUpdate);
             List<String> lstCodeAdd = new ArrayList<>();;
             lstCodeAdd.addAll(lstLifeInsuranceCode);
             for(int i = 0 ; i < lstLifeInsuranceCode.size();i++){

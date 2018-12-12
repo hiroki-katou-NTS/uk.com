@@ -242,6 +242,7 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 		this.settingId = settingId;
 	}
 
+	@SuppressWarnings("static-access") // Leu Thi Lan thêm dòng này 
 	public static String processs(String categoryCode, String itemCode) {
 		PersonCategoryItemData item = new PersonCategoryItemData();
 		for (Map.Entry<String, Map<String, ReferenceStateData>> ctg : item.CategoryMap.entrySet()) {

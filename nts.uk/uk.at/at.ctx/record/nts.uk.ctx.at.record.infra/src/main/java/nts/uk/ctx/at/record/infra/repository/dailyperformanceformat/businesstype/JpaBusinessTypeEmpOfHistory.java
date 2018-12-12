@@ -33,7 +33,7 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 	private static final String FIND_BY_BASE_DATE;
 	private static final String FIND_BY_EMPLOYEE;
 	private static final String FIND_BY_EMPLOYEE_DESC;
-	private static final String SEL_BUSINESS_TYPE;
+//	private static final String SEL_BUSINESS_TYPE;
 
 	private static final String FIND_BY_CID_SID_DATE_PERIOD = "SELECT NEW " + BusinessTypeOfEmpDto.class.getName()
 			+ " (a.cID, a.sId, a.krcmtBusinessTypeOfHistoryPK.historyId, a.startDate, a.endDate, b.businessTypeCode)"
@@ -50,16 +50,16 @@ public class JpaBusinessTypeEmpOfHistory extends JpaRepository
 		stringBuilder.append("AND k.startDate <= :baseDate and k.endDate >= :baseDate");
 		FIND_BY_BASE_DATE = stringBuilder.toString();
 		
-		StringBuilder builderString = new StringBuilder();
-		builderString.append("SELECT h");
-		builderString.append(" FROM KrcmtBusinessTypeOfEmployee b");
-		builderString.append(" JOIN KrcmtBusinessTypeOfHistory h");
-		builderString
-				.append(" ON b.krcmtBusinessTypeOfEmployeePK.historyId = h.krcmtBusinessTypeOfHistoryPK.historyId");
-		builderString.append(" WHERE b.sId IN :lstSID");
-		builderString.append(" AND h.startDate <= :endYmd");
-		builderString.append(" AND h.endDate >= :startYmd");
-		SEL_BUSINESS_TYPE = stringBuilder.toString();
+//		StringBuilder builderString = new StringBuilder();
+//		builderString.append("SELECT h");
+//		builderString.append(" FROM KrcmtBusinessTypeOfEmployee b");
+//		builderString.append(" JOIN KrcmtBusinessTypeOfHistory h");
+//		builderString
+//				.append(" ON b.krcmtBusinessTypeOfEmployeePK.historyId = h.krcmtBusinessTypeOfHistoryPK.historyId");
+//		builderString.append(" WHERE b.sId IN :lstSID");
+//		builderString.append(" AND h.startDate <= :endYmd");
+//		builderString.append(" AND h.endDate >= :startYmd");
+//		SEL_BUSINESS_TYPE = stringBuilder.toString();
 
 		stringBuilder = new StringBuilder();
 		stringBuilder.append("SELECT k ");

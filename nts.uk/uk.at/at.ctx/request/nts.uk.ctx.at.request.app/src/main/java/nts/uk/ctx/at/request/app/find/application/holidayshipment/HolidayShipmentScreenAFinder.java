@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.request.app.find.application.holidayshipment;
-
+/*import java.util.Collections;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.NumberOfRemainOutput;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;*/
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -29,11 +33,8 @@ import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting
 import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
-import nts.uk.ctx.at.request.dom.application.appabsence.service.NumberOfRemainOutput;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
@@ -55,8 +56,6 @@ import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -67,7 +66,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepositor
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -77,7 +75,6 @@ import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -109,8 +106,8 @@ public class HolidayShipmentScreenAFinder {
 	private PredetemineTimeSettingRepository preTimeSetRepo;
 	@Inject
 	private CollectAchievement collectAchievement;
-	@Inject
-	private ApprovalRootAdapter rootAdapter;
+	/*@Inject
+	private ApprovalRootAdapter rootAdapter;*/
 	@Inject
 	private RequestOfEachWorkplaceRepository requestWpRepo;
 	@Inject
@@ -131,8 +128,7 @@ public class HolidayShipmentScreenAFinder {
 	private AtEmployeeAdapter atEmpAdaptor;
 	@Inject
 	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
-	@Inject
-	private GetClosureStartForEmployee getClosureStartForEmp;
+	
 	private static final ApplicationType APP_TYPE = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
 	/**
@@ -273,6 +269,10 @@ public class HolidayShipmentScreenAFinder {
 		builder.append("");
 
 		wkingItem.ifPresent(item -> {
+			if (item == null) {return;}
+			if (item.getWorkCategory() == null) {return;}
+			if (item.getWorkCategory().getWeekdayTime() == null) {return;}
+			if (item.getWorkCategory().getWeekdayTime().getWorkTimeCode() == null) {return;}
 			item.getWorkCategory().getWeekdayTime().getWorkTimeCode().ifPresent(wkIimeCd -> {
 				builder.append(wkIimeCd);
 			});
@@ -299,8 +299,8 @@ public class HolidayShipmentScreenAFinder {
 			inputDate = GeneralDate.today();
 		}
 		// アルゴリズム「社員の対象申請の承認ルートを取得する」を実行する
-		List<ApprovalRootImport> approvalRoots = rootAdapter.getApprovalRootOfSubjectRequest(companyID, employeeID,
-				rootAtr, APP_TYPE.value, referenceDate);
+	/*	List<ApprovalRootImport> approvalRoots = rootAdapter.getApprovalRootOfSubjectRequest(companyID, employeeID,
+				rootAtr, APP_TYPE.value, referenceDate);*/
 		boolean getSetting = true;
 		String recWkTypeCD, recWkTimeCode, absWkTypeCD, absWkTimeCode;
 		recWkTypeCD = recWkTimeCode = absWkTypeCD = absWkTimeCode = null;

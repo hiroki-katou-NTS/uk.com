@@ -40,16 +40,16 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implements CalAttrOfDailyPerformanceRepository {
 
-	private static final String REMOVE_BY_KEY;
+//	private static final String REMOVE_BY_KEY;
 
-	static {
-		StringBuilder builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcstDaiCalculationSet a ");
-		builderString.append("WHERE a.krcstDaiCalculationSetPK.sid = :employeeId ");
-		builderString.append("AND a.krcstDaiCalculationSetPK.ymd = :ymd ");
-		REMOVE_BY_KEY = builderString.toString();
-	}
+//	static {
+//		StringBuilder builderString = new StringBuilder();
+//		builderString.append("DELETE ");
+//		builderString.append("FROM KrcstDaiCalculationSet a ");
+//		builderString.append("WHERE a.krcstDaiCalculationSetPK.sid = :employeeId ");
+//		builderString.append("AND a.krcstDaiCalculationSetPK.ymd = :ymd ");
+//		REMOVE_BY_KEY = builderString.toString();
+//	}
 
 	@Override
 	public CalAttrOfDailyPerformance find(String employeeId, GeneralDate baseDate) {

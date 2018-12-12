@@ -7,8 +7,8 @@ package nts.uk.ctx.pr.core.dom.wageprovision.formula;
 public enum NestedUseCls
 {
     
-    NOTUSABLE(0, "利用不可"),
-    USABLE(1, "利用可能");
+    NOT_USE(0, "利用不可"),
+    USE(1, "利用可能");
     
     /** The value. */
     public final int value;

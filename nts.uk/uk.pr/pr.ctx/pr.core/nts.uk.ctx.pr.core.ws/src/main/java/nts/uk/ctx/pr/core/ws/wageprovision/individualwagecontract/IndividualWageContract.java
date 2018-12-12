@@ -39,14 +39,10 @@ public class IndividualWageContract {
     private SalIndAmountHisFinder salIndAmountHisFinder;
 
     @Inject
-    private RegisterIndividualWageContractCommandHandler commandHandler;
-
-    @Inject
     private UpdateSalIndAmountCommandHandler updateSalIndAmountCommandHandler;
 
     @Inject
     private AddIndividualwagecontractCommandHandler addIndividualwagecontractCommandHandler;
-
 
     @POST
     @Path("getPersonalMoneyName/{cateIndicator}")

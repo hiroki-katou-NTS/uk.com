@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber.absencerecruitment.interim;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -7,17 +9,22 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
+//import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.SelectedAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
@@ -33,6 +40,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaInterimRecAbasMngRepository extends JpaRepository implements InterimRecAbasMngRepository{
 
+	
 	private static final String QUERY_REC_BY_ID = "SELECT c FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.recruitmentMngId = :remainID"
 			+ " AND c.recruitmentMngAtr = :mngAtr";
@@ -314,5 +322,33 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 								.getList(x -> toDomainRecAbs(x)));
 		});
 		return resultList;
+	}
+
+	@SneakyThrows
+	@Override
+	public List<InterimRecMng> getRecBySidDatePeriod(String sid, DatePeriod period) {
+		try(PreparedStatement sql = this.connection().prepareStatement("SELECT a1 FROM KRCMT_INTERIM_REC_MNG a1"
+				+ " INNER JOIN KRCMT_INTERIM_REMAIN_MNG a2 ON a1.RECRUITMENT_MNG_ID = a2.REMAIN_MNG_ID"
+				+ " WHERE a2.SID = ?"
+				+ " AND  a2.REMAIN_TYPE = " + RemainType.PICKINGUP
+				+ " AND a2.YMD >= ? and a2.YMD <= ?"
+				+ " ORDER BY a2.YMD");
+		)
+		{
+			sql.setString(1, sid);
+			sql.setDate(2, Date.valueOf(period.start().localDate()));
+			sql.setDate(3, Date.valueOf(period.end().localDate()));
+			List<InterimRecMng> lstOutput = new NtsResultSet(sql.executeQuery())
+					.getList(x -> toDomain(x));
+			return lstOutput;
+		}
+	}
+
+	private InterimRecMng toDomain(NtsResultRecord x) {		
+		return new InterimRecMng(x.getString("RECRUITMENT_MNG_ID"),
+				x.getGeneralDate("EXPIRATION_DAYS"),
+				new OccurrenceDay(x.getBigDecimal("OCCURRENCE_DAYS") == null ? 0 : x.getBigDecimal("OCCURRENCE_DAYS").doubleValue()),
+				x.getEnum("STATUTORY_ATR", StatutoryAtr.class),
+				new UnUsedDay(x.getBigDecimal("UNUSED_DAYS") == null ? 0 : x.getBigDecimal("UNUSED_DAYS").doubleValue()));
 	}
 }

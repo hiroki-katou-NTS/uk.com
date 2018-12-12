@@ -43,6 +43,7 @@ import nts.uk.ctx.bs.employee.pub.employee.ConcurrentEmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmpInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmpInfoRegistered;
 import nts.uk.ctx.bs.employee.pub.employee.EmpOfLoginCompanyExport;
+import nts.uk.ctx.bs.employee.pub.employee.EmployeIdCdPnameExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeDataMngInfoExport;
@@ -704,18 +705,12 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Override
 	public List<String> getListEmployee(List<String> jobTitleIds, GeneralDate baseDate) {
 		String cid = AppContexts.user().companyId();
-		List<AffJobTitleHistoryItem> listAffItem = new ArrayList<>();
 		List<AffCompanyHist> listAffComHist = new ArrayList<>();
 		List<String> employee = new ArrayList<>();
-		// Lấy domain [AffJobHistory]
-		Optional<AffJobTitleHistory> affHist = affJobRep.getListEmployee(baseDate, cid);
-		if (affHist.isPresent()) {
-			// (Lấy domain [AffJobHistoryItem])
-			for (String item : affHist.get().getHistoryIds()) {
-				List<AffJobTitleHistoryItem> affItem = jobTitleHistoryItemRepository.findHistJob(item, jobTitleIds);
-				listAffItem.addAll(affItem);
-			}
-		}
+		
+		// (Lấy domain [AffJobHistoryItem])
+		List<AffJobTitleHistoryItem> listAffItem = jobTitleHistoryItemRepository.findHistJob(cid, baseDate, jobTitleIds);
+
 		if (!listAffItem.isEmpty()) {
 			// (Lấy domain [EmployeeDataMngInfo], filter chỉ những employee chưa bị delete)
 			List<EmployeeDataMngInfo> mngInfo = empDataMngRepo
@@ -786,5 +781,44 @@ public class SyEmployeePubImp implements SyEmployeePub {
 				pid);
 		
 		return Optional.of(result);
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub#getSidCdPnameBySIds(java.util.List)
+	 */
+	@Override
+	public List<EmployeIdCdPnameExport> getSidCdPnameBySIds(List<String> sIdsInput) {
+
+		List<EmployeeDataMngInfo> emps = this.empDataMngRepo.findByListEmployeeId(sIdsInput);
+
+		if (CollectionUtil.isEmpty(emps)) {
+			return Collections.emptyList();
+		}
+
+		List<String> pIds = emps.stream().map(EmployeeDataMngInfo::getPersonId)
+				.collect(Collectors.toList());
+
+		List<Person> persons = this.personRepository.getPersonByPersonIds(pIds);
+
+		Map<String, Person> mapPersons = persons.stream()
+				.collect(Collectors.toMap(Person::getPersonId, Function.identity()));
+
+		return emps.stream().map(employee -> {
+			// Get Person
+			Person person = mapPersons.get(employee.getPersonId());
+
+			EmployeIdCdPnameExport result = EmployeIdCdPnameExport.builder().build();
+
+			if (person != null) {
+				result.setPName(person.getPersonNameGroup().getBusinessName() == null ? null
+						: person.getPersonNameGroup().getBusinessName().v());
+			}
+
+			result.setEmployeeCode(
+					employee.getEmployeeCode() == null ? null : employee.getEmployeeCode().v());
+			result.setEmployeeId(employee.getEmployeeId());
+
+			return result;
+		}).collect(Collectors.toList());
 	}
 }

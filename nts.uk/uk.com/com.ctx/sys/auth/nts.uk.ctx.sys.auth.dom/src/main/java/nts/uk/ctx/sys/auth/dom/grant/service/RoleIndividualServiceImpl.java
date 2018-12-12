@@ -94,8 +94,8 @@ public class RoleIndividualServiceImpl implements RoleIndividualService {
 		
 		Optional<RoleIndividualGrant> roleIndOpt = roleIndividualGrantRepo.findByUserCompanyRoleTypeDate(userId, companyId, roleType, baseDate);
 		if(!roleIndOpt.isPresent()) {
-			RoleSet roleset = rolesetService.getRoleSetFromUserId(userId, baseDate);
-			String roleID = roleset.getRoleIDByRoleType(RoleType.valueOf(roleType));
+			Optional<RoleSet> roleset = rolesetService.getRoleSetFromUserId(userId, baseDate);
+			String roleID = roleset.isPresent() ? roleset.get().getRoleIDByRoleType(RoleType.valueOf(roleType)) : "";
 			return roleID;
 		}
 		

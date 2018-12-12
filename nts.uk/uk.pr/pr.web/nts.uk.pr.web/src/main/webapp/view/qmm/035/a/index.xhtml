@@ -10,29 +10,28 @@
     <ui:define name="htmlHead">
 
         <com:ValidatorScript>
-            nts.uk.ctx.core.dom.printdata.Code
-            nts.uk.ctx.core.dom.printdata.Name
-            nts.uk.ctx.core.dom.printdata.KanaName
-            nts.uk.ctx.core.dom.printdata.CorporateNumber
-            nts.uk.ctx.core.dom.printdata.RepresentativeName
-            nts.uk.ctx.core.dom.printdata.RepresentativePosition
-            nts.uk.ctx.core.dom.printdata.PostalCode
-            nts.uk.ctx.core.dom.printdata.AddressKana2
-            nts.uk.ctx.core.dom.printdata.AddressKana1
-            nts.uk.ctx.core.dom.printdata.Address2
-            nts.uk.ctx.core.dom.printdata.Address1
-            nts.uk.ctx.core.dom.printdata.PhoneNumber
-            nts.uk.ctx.core.dom.printdata.Memo
-            nts.uk.ctx.core.dom.printdata.AccountManaName
-            nts.uk.ctx.core.dom.printdata.ContactClass
-            nts.uk.ctx.core.dom.printdata.SalaPayMethodDueDate
-            nts.uk.ctx.core.dom.printdata.VibLocaFinIns
-            nts.uk.ctx.core.dom.printdata.NameBankTranfeIns
-            nts.uk.ctx.core.dom.printdata.TaxOffice
-            nts.uk.ctx.core.dom.printdata.BusinessLine
-            nts.uk.ctx.core.dom.printdata.ContactName
-            nts.uk.ctx.core.dom.printdata.AccountingOffName
-
+            nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.Code
+            nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.Name
+            nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.KanaName
+            nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.CorporateNumber
+            nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.RepresentativeName
+            nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.RepresentativePosition
+            nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.PostalCode
+            nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.AddressKana2
+            nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.AddressKana1
+            nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.Address2
+            nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.Address1
+            nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.PhoneNumber
+            nts.uk.shr.com.primitive.Memo
+            nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.AccountManaName
+            nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.ContactClass
+            nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.SalaPayMethodDueDate
+            nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.VibLocaFinIns
+            nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.NameBankTranfeIns
+            nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.TaxOffice
+            nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.BusinessLine
+            nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.ContactName
+            nts.uk.ctx.pr.report.dom.printdata.comlegalrecord.AccountingOffName
         </com:ValidatorScript>
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="qmm035.a.vm.js"/>
@@ -43,14 +42,14 @@
 
     <ui:define name="content">
         <div id="functions-area" >
-            <button id="A1_1" tabindex="1" style="margin-left: 90px;" data-bind="click: create , enable: $vm.isEnableBtnCreate()" >#{i18n.getText('QMM035_2')}</button>
+            <button id="A1_1" tabindex="1" style="margin-left: 40px;" data-bind="click: create , enable: $vm.isEnableBtnCreate()" >#{i18n.getText('QMM035_2')}</button>
             <button class="proceed"  id="A1_2" data-bind="click: update ,enable: $root.errors.isEmpty" tabindex="2">#{i18n.getText('QMM035_3')}</button>
             <button id="A1_3" tabindex="3" data-bind="enable: $vm.isEnableBtnPdf()" >#{i18n.getText('QMM035_4')}</button>
             <button  id="A1_4" tabindex="4" data-bind="enable: $vm.isEnableBtnPdf() " >#{i18n.getText('QMM035_5')}</button>
             <button id="A1_5" class="danger" tabindex="5" data-bind="click: deleteCompany ,enable: $vm.isEnableBtnDelete()" >#{i18n.getText('QMM035_6')}</button>
         </div>
-        <div id="contents-area" class="fixed-flex-layout" style="margin-left: 55px;">
-            <div id="content-left" class="fixed-flex-layout-left">
+        <div id="contents-area" class="fixed-flex-layout" >
+            <div id="content-left" class="fixed-flex-layout-left" style="margin-left: 10px;">
                 <div data-bind="ntsPanel:{width: '330px', height: '530px', direction: 'right', showIcon: true, visible: true}"
                      id="A2_1" style="margin-left: 10px;">
                     <div id="A2_2" style="width: 330px" tabindex="6"
@@ -112,7 +111,7 @@
                         <div class="flex valign-center">
                             <div id="A4_14" class="column-1"
                                  data-bind="ntsFormLabel: { constraint: '', required: false }">#{i18n.getText('QMM035_20')}</div>
-                            <button id="A4_15" tabindex="14" data-bind="click: $parent.findDep " >#{i18n.getText('QMM035_21')}</button>
+                            <button id="A4_15" class="small" tabindex="14" data-bind="click: $parent.findDep " >#{i18n.getText('QMM035_21')}</button>
                             <span id ="A4_16" style="margin-left: 15px;" data-bind = "text: depCode" ></span>
                             <span id ="A4_17" style="margin-left: 15px;" data-bind = "text: depName"></span>
 

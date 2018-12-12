@@ -5,7 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
+//import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
@@ -32,7 +32,7 @@ public class TerminateProcessExecutionAutoCommandHandler extends AsyncCommandHan
 	//終了ボタン押下時処理
 	@Override
 	public void handle(CommandHandlerContext<TerminateProcessExecutionCommand> context) {
-		val asyncContext = context.asAsync();
+//		val asyncContext = context.asAsync();
 		TerminateProcessExecutionCommand command = context.getCommand();
 		String execItemCd = command.getExecItemCd();
 		String companyId = command.getCompanyId();

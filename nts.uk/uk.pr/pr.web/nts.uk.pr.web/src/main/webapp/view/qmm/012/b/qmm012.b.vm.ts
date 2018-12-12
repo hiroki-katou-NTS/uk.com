@@ -317,16 +317,16 @@ module nts.uk.pr.view.qmm012.b {
                     $(".check-validate").trigger("validate");
 
                     // clear rangeSet validate if disable
-                    if(!itemRangeSet.errorUpperLimitSettingAtrCus()) {
+                    if((itemRangeSet != null) && !itemRangeSet.errorUpperLimitSettingAtrCus()) {
                         $('#E1_20').ntsError('clear');
                     }
-                    if(!itemRangeSet.errorLowerLimitSettingAtrCus()) {
+                    if((itemRangeSet != null) && !itemRangeSet.errorLowerLimitSettingAtrCus()) {
                         $('#E1_23').ntsError('clear');
                     }
-                    if(!itemRangeSet.alarmUpperLimitSettingAtrCus()) {
+                    if((itemRangeSet != null) && !itemRangeSet.alarmUpperLimitSettingAtrCus()) {
                         $('#E1_27').ntsError('clear');
                     }
-                    if(!itemRangeSet.alarmLowerLimitSettingAtrCus()) {
+                    if((itemRangeSet != null) && !itemRangeSet.alarmLowerLimitSettingAtrCus()) {
                         $('#E1_30').ntsError('clear');
                     }
                 }
@@ -409,25 +409,25 @@ module nts.uk.pr.view.qmm012.b {
                     }
                     
                     // clear rangeSet value if disable
-                    if(!itemRangeSet.errorUpperLimitSettingAtrCus()) {
+                    if((itemRangeSet != null) && !itemRangeSet.errorUpperLimitSettingAtrCus()) {
                         command.paymentItemSet.errorUpRangeVal = null;
                         command.deductionItemSet.errorUpRangeVal = null;
                         command.timeItemSet.errorUpRangeValNum = null;
                         command.timeItemSet.errorUpRangeValTime = null;
                     }
-                    if(!itemRangeSet.errorLowerLimitSettingAtrCus()) {
+                    if((itemRangeSet != null) && !itemRangeSet.errorLowerLimitSettingAtrCus()) {
                         command.paymentItemSet.errorLoRangeVal = null;
                         command.deductionItemSet.errorLoRangeVal = null;
                         command.timeItemSet.errorLoRangeValNum = null;
                         command.timeItemSet.errorLoRangeValTime = null;
                     }
-                    if(!itemRangeSet.alarmUpperLimitSettingAtrCus()) {
+                    if((itemRangeSet != null) && !itemRangeSet.alarmUpperLimitSettingAtrCus()) {
                         command.paymentItemSet.alarmUpRangeVal = null;
                         command.deductionItemSet.alarmUpRangeVal = null;
                         command.timeItemSet.alarmUpRangeValNum = null;
                         command.timeItemSet.alarmUpRangeValTime = null;
                     }
-                    if(!itemRangeSet.alarmLowerLimitSettingAtrCus()) {
+                    if((itemRangeSet != null) && !itemRangeSet.alarmLowerLimitSettingAtrCus()) {
                         command.paymentItemSet.alarmLoRangeVal = null;
                         command.deductionItemSet.alarmLoRangeVal = null;
                         command.timeItemSet.alarmLoRangeValNum = null;

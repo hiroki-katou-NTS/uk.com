@@ -72,6 +72,7 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 	 * @param empCalAndSumExecLogID 就業計算と集計実行ログID
 	 * @param executionLog 実行ログ
 	 */
+	@SuppressWarnings("rawtypes")
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public ProcessState manager(AsyncCommandHandlerContext asyncContext, String companyId, List<String> employeeIds,
@@ -170,7 +171,7 @@ public class MonthlyAggregationServiceImpl implements MonthlyAggregationService 
 			}
 		});
 		
-		ConcurrentStopwatches.printAll();
+		//ConcurrentStopwatches.printAll();
 		ConcurrentStopwatches.STOPWATCHES.clear();
 		
 		if (stateHolder.isInterrupt()){

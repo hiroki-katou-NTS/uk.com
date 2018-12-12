@@ -9,6 +9,11 @@ import nts.arc.primitive.constraint.StringMaxLength;
 @StringMaxLength(2)
 public class HiringType extends IntegerPrimitiveValue<HiringType> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public HiringType(Integer rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub

@@ -1,109 +1,43 @@
 module nts.uk.pr.view.qmm025.a.viewmodel {
     import time = nts.uk.time;
     import block = nts.uk.ui.block;
-    import alertError = nts.uk.ui.dialog.alertError;
     import getText = nts.uk.resource.getText;
+    import validation = nts.uk.ui.validation;
+    import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
+    import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
+    import info = nts.uk.ui.dialog.info;
+    import dialog = nts.uk.ui.dialog;
 
     export class ScreenModel {
-        year: KnockoutObservable<string>;
-        japanYear: KnockoutObservable<string>
+        year: KnockoutObservable<string> = ko.observable(null);
+        japanYear: KnockoutObservable<string> = ko.observable(null);
 
-        empDeptItems: Array<EmpInfoDeptDto>;
-        empAmountItems: KnockoutObservableArray<RsdtTaxPayAmountDto>;
-        columns: Array<any>;
-        ntsControls: Array<any>;
-        currentSid: KnockoutObservable<any>;
-        currentSidItems: KnockoutObservableArray<any>;
+        empDeptItems: Array<EmpInfoDeptDto> = [];
+        empAmountItems: Array<RsdtTaxPayAmountDto> = [];
 
         ccg001ComponentOption: GroupOption = null;
-        baseDate: KnockoutObservable<string>;
+        baseDate: KnockoutObservable<string> = ko.observable(moment().toISOString());
         empSearchItems: Array<EmployeeSearchDto>;
+
+        residentTaxValidator = new validation.NumberValidator(getText("QMM025_28"), "ResidentTax", {required: true});
+
+        employIdLogin: any;
 
         constructor() {
             let self = this;
-
-            self.year = ko.observable("2018");
-            self.japanYear = ko.observable("");
+            self.employIdLogin = __viewContext.user.employeeId;
 
             self.year.subscribe(newYear => {
-                let year = time.formatDate(new Date(newYear), "yyyy")
-                if (isNaN(year)) {
+                let year = self.formatYear(newYear);
+                let yearJp = time.yearInJapanEmpire(year);
+                if (isNullOrUndefined(yearJp)) {
                     self.japanYear("");
                 } else {
-                    self.japanYear("(" + time.yearInJapanEmpire(year + "06").toLocaleString().split(' ').slice(0, 3).join('') + ")");
+                    self.japanYear("(" + yearJp.toString() + ")");
                 }
 
-            })
+            });
 
-            self.empDeptItems = [];
-            self.empAmountItems = ko.observableArray([]);
-            self.columns = [
-                {headerText: "", key: 'sid', width: 100, hidden: true},
-                // A3_2
-                {
-                    headerText: getText("QMM025_9"), key: 'departmentName', width: 100, hidden: false,
-                    formatter: _.escape
-                },
-                // A3_3
-                {headerText: getText("QMM025_10"), key: 'empCd', width: 100, hidden: false, formatter: _.escape},
-                // A3_4
-                {headerText: getText("QMM025_11"), key: 'empName', width: 100, hidden: false, formatter: _.escape},
-                // A3_5
-                {
-                    headerText: getText("QMM025_12"), key: 'rsdtTaxPayeeName', width: 100, hidden: false,
-                    formatter: _.escape
-                },
-                // A3_6
-                {
-                    headerText: getText("QMM025_13"), key: 'yearTaxAmount', width: 100, hidden: false,
-                    formatter: _.escape
-                },
-                // A3_7
-                {
-                    headerText: getText("QMM025_14"), key: 'inputAtr', width: 100, hidden: false,
-                    dataType: 'boolean', ntsControl: 'CheckInputAtr'
-                },
-                // A3_8
-                {headerText: getText("QMM025_15"), key: 'amountJune', width: 100, hidden: false},
-                // A3_9
-                {headerText: getText("QMM025_16"), key: 'amountJuly', width: 100, hidden: false},
-                // A3_10
-                {headerText: getText("QMM025_17"), key: 'amountAugust', width: 100, hidden: false},
-                // A3_11
-                {headerText: getText("QMM025_18"), key: 'amountSeptember', width: 100, hidden: false},
-                // A3_12
-                {headerText: getText("QMM025_19"), key: 'amountOctober', width: 100, hidden: false},
-                // A3_13
-                {headerText: getText("QMM025_20"), key: 'amountNovember', width: 100, hidden: false,},
-                // A3_14
-                {headerText: getText("QMM025_21"), key: 'amountDecember', width: 100, hidden: false},
-                // A3_15
-                {headerText: getText("QMM025_22"), key: 'amountJanuary', width: 100, hidden: false},
-                // A3_16
-                {headerText: getText("QMM025_23"), key: 'amountFebruary', width: 100, hidden: false},
-                // A3_17
-                {headerText: getText("QMM025_24"), key: 'amountMarch', width: 100, hidden: false},
-                // A3_18
-                {headerText: getText("QMM025_25"), key: 'amountApril', width: 100, hidden: false},
-                // A3_19
-                {headerText: getText("QMM025_26"), key: 'amountMay', width: 100, hidden: false}
-            ];
-            self.ntsControls = [
-                {
-                    name: 'CheckInputAtr', options: {value: 1, text: ''}, optionsValue: 'value',
-                    optionsText: 'text', controlType: 'CheckBox', enable: true
-                },
-                {
-                    name: 'TaxAmount',
-                    controlType: 'TextEditor',
-                    constraint: {valueType: 'Integer', required: true, format: "Number_Separated"}
-                }
-
-            ];
-            self.currentSid = ko.observable(null);
-            self.currentSidItems = ko.observableArray([]);
-
-            self.baseDate = ko.observable(moment().toISOString());
             self.ccg001ComponentOption = <GroupOption>{
                 /** Common properties */
                 systemType: 1,
@@ -144,11 +78,8 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                  * @param: data: the data return from CCG001
                  */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
-                    block.invisible();
                     self.empSearchItems = data.listEmployee;
-                    self.initData().always(() => {
-                        block.clear();
-                    });
+                    self.initData();
                 }
             }
         }
@@ -159,51 +90,271 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
             block.invisible();
             // Start component
             $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);
-            self.loadGrid();
+            self.year(self.formatYear(new Date()));
+            // self.loadGrid();
+            self.loadMGrid();
             block.clear();
             dfd.resolve();
             return dfd.promise();
         }
 
-        createParamGet() {
+        loadMGrid() {
             let self = this;
-            let listSId = _.map(self.empSearchItems, (item: EmployeeSearchDto) => {
-                return item.employeeId;
-            })
-            let param = {
-                listSId: listSId,
-                baseDate: self.baseDate(),
-                year: moment(self.year()).format("YYYY")
-            }
-            return param;
-        }
-
-        loadGrid() {
-            let self = this;
-            $("#grid").ntsGrid({
-                width: "1180px",
-                height: '420px',
-                dataSource: self.empAmountItems(),
+            let height = $(window).height() - 90 - 290; 
+            let width = $(window).width() + 20 - 1170;
+            new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
+                width: "1170px",
+                height: "200px",
+                subWidth: width + "px",
+                subHeight: height + "px",
+                headerHeight: '30px',
+                dataSource: self.empAmountItems,
                 primaryKey: 'sid',
-                multiple: true,
-                value: self.currentSidItems,
+                primaryKeyDataType: 'string',
                 rowVirtualization: true,
                 virtualization: true,
                 virtualizationMode: 'continuous',
+                enter: 'right',
+                autoFitWindow: false,
                 hidePrimaryKey: true,
-                columns: self.columns,
-                ntsControls: self.ntsControls,
+                errorsOnPage: false,
+                columns: [
+                    {headerText: "ID", key: 'sid', dataType: 'string', hidden: true},
+                    {
+                        headerText: '', key: 'selectedEmp', width: "35px", dataType: 'boolean',
+                        checkbox: true,
+                        ntsControl: 'CheckBoxEmp'
+                    },
+                    // A3_2
+                    {
+                        headerText: getText("QMM025_9"), key: 'departmentName', dataType: 'string', width: "100px",
+                        ntsControl: "Label"
+                    },
+                    // A3_3
+                    {
+                        headerText: getText("QMM025_10"), key: 'empCd', dataType: 'string', width: "100px",
+                        ntsControl: "Label"
+                    },
+                    // A3_4
+                    {
+                        headerText: getText("QMM025_11"), key: 'empName', dataType: 'string', width: "100px",
+                        ntsControl: "Label"
+                    },
+                    // A3_5
+                    {
+                        headerText: getText("QMM025_12"), key: 'rsdtTaxPayeeName', dataType: 'string', width: "100px",
+                        ntsControl: "Label", headerCssClass: "left-align",
+                    },
+                    // A3_6
+                    {
+                        headerText: getText("QMM025_13"), key: 'yearTaxAmount', dataType: 'string', width: "100px",
+                        ntsControl: "Label", columnCssClass: "halign-right"
+                    },
+                    // A3_7
+                    {
+                        headerText: getText("QMM025_14"), key: 'inputAtr', width: "35px", dataType: 'boolean',
+                        ntsControl: 'CheckBoxInputAtr'
+                    },
+
+                    {
+                        headerText: getText("QMM025_15"), key: 'amountJune', dataType: 'string', width: '130px',
+                        columnCssClass: 'currency-symbol',
+                        constraint: {
+                            cDisplayType: "Currency",
+                            min: self.residentTaxValidator.constraint.min,
+                            max: self.residentTaxValidator.constraint.max,
+                            required: false
+                        }
+                    },
+                    {
+                        headerText: getText("QMM025_16"), key: 'amountJuly', dataType: 'string', width: '130px',
+                        columnCssClass: 'currency-symbol',
+                        constraint: {
+                            cDisplayType: "Currency",
+                            min: self.residentTaxValidator.constraint.min,
+                            max: self.residentTaxValidator.constraint.max,
+                            required: false
+                        }
+                    },
+                    {
+                        headerText: getText("QMM025_17"), key: 'amountAugust', dataType: 'string', width: '130px',
+                        columnCssClass: 'currency-symbol',
+                        constraint: {
+                            cDisplayType: "Currency",
+                            min: self.residentTaxValidator.constraint.min,
+                            max: self.residentTaxValidator.constraint.max,
+                            required: false
+                        }
+                    },
+                    {
+                        headerText: getText("QMM025_18"), key: 'amountSeptember', dataType: 'string', width: '130px',
+                        columnCssClass: 'currency-symbol',
+                        constraint: {
+                            cDisplayType: "Currency",
+                            min: self.residentTaxValidator.constraint.min,
+                            max: self.residentTaxValidator.constraint.max,
+                            required: false
+                        }
+                    },
+                    {
+                        headerText: getText("QMM025_19"), key: 'amountOctober', dataType: 'string', width: '130px',
+                        columnCssClass: 'currency-symbol',
+                        constraint: {
+                            cDisplayType: "Currency",
+                            min: self.residentTaxValidator.constraint.min,
+                            max: self.residentTaxValidator.constraint.max,
+                            required: false
+                        }
+                    },
+                    {
+                        headerText: getText("QMM025_20"), key: 'amountNovember', dataType: 'string', width: '130px',
+                        columnCssClass: 'currency-symbol',
+                        constraint: {
+                            cDisplayType: "Currency",
+                            min: self.residentTaxValidator.constraint.min,
+                            max: self.residentTaxValidator.constraint.max,
+                            required: false
+                        }
+                    },
+                    {
+                        headerText: getText("QMM025_21"), key: 'amountDecember', dataType: 'string', width: '130px',
+                        columnCssClass: 'currency-symbol',
+                        constraint: {
+                            cDisplayType: "Currency",
+                            min: self.residentTaxValidator.constraint.min,
+                            max: self.residentTaxValidator.constraint.max,
+                            required: false
+                        }
+                    },
+                    {
+                        headerText: getText("QMM025_22"), key: 'amountJanuary', dataType: 'string', width: '130px',
+                        columnCssClass: 'currency-symbol',
+                        constraint: {
+                            cDisplayType: "Currency",
+                            min: self.residentTaxValidator.constraint.min,
+                            max: self.residentTaxValidator.constraint.max,
+                            required: false
+                        }
+                    },
+                    {
+                        headerText: getText("QMM025_23"), key: 'amountFebruary', dataType: 'string', width: '130px',
+                        columnCssClass: 'currency-symbol',
+                        constraint: {
+                            cDisplayType: "Currency",
+                            min: self.residentTaxValidator.constraint.min,
+                            max: self.residentTaxValidator.constraint.max,
+                            required: false
+                        }
+                    },
+                    {
+                        headerText: getText("QMM025_24"), key: 'amountMarch', dataType: 'string', width: '130px',
+                        columnCssClass: 'currency-symbol',
+                        constraint: {
+                            cDisplayType: "Currency",
+                            min: self.residentTaxValidator.constraint.min,
+                            max: self.residentTaxValidator.constraint.max,
+                            required: false
+                        }
+                    },
+                    {
+                        headerText: getText("QMM025_25"), key: 'amountApril', dataType: 'string', width: '130px',
+                        columnCssClass: 'currency-symbol',
+                        constraint: {
+                            cDisplayType: "Currency",
+                            min: self.residentTaxValidator.constraint.min,
+                            max: self.residentTaxValidator.constraint.max,
+                            required: false
+                        }
+                    },
+                    {
+                        headerText: getText("QMM025_26"), key: 'amountMay', dataType: 'string', width: '130px',
+                        columnCssClass: 'currency-symbol',
+                        constraint: {
+                            cDisplayType: "Currency",
+                            min: self.residentTaxValidator.constraint.min,
+                            max: self.residentTaxValidator.constraint.max,
+                            required: false
+                        }
+                    }
+                ],
+                ntsControls: [
+                    {
+                        name: 'CheckBoxInputAtr', options: {value: 1, text: ''}, optionsValue: 'value',
+                        optionsText: 'text', controlType: 'CheckBox', enable: true,
+                        onChange: function (id, columnKey, value, rowData) {
+                            self.selectInputAtr(id, value);
+                        }
+                    },
+                    {
+                        name: 'CheckBoxEmp', options: {value: 1, text: ''}, optionsValue: 'value',
+                        optionsText: 'text', controlType: 'CheckBox', enable: true,
+                        onChange: function (id, columnKey, value, rowData) {
+                            self.selectEmp(id, value, rowData);
+                        }
+                    }
+                ],
                 features: [
                     {
-                        name: 'Paging',
-                        pageSize: 10,
-                        currentPageIndex: 0
+                        name: "Sorting",
+                        columnSettings: [
+                            {columnKey: "departmentName", allowSorting: true, type: "String"},
+                            {columnKey: "empCd", allowSorting: true, type: "String"},
+                            {columnKey: "empName", allowSorting: true, type: "String"},
+                            {columnKey: "rsdtTaxPayeeName", allowSorting: true},
+                            {columnKey: "yearTaxAmount", allowSorting: true, type: "String"},
+                            {columnKey: "inputAtr", allowSorting: true, type: "String"},
+                            {columnKey: "amountJune", allowSorting: true, type: "Number"},
+                            {columnKey: "amountJuly", allowSorting: true, type: "Number"},
+                            {columnKey: "amountAugust", allowSorting: true, type: "Number"},
+                            {columnKey: "amountSeptember", allowSorting: true, type: "Number"},
+                            {columnKey: "amountOctober", allowSorting: true, type: "Number"},
+                            {columnKey: "amountNovember", allowSorting: true, type: "Number"},
+                            {columnKey: "amountDecember", allowSorting: true, type: "Number"},
+                            {columnKey: "amountJanuary", allowSorting: true, type: "Number"},
+                            {columnKey: "amountFebruary", allowSorting: true, type: "Number"},
+                            {columnKey: "amountMarch", allowSorting: true, type: "Number"},
+                            {columnKey: "amountApril", allowSorting: true, type: "Number"},
+                            {columnKey: "amountMay", allowSorting: true, type: "Number"}
+                        ]
                     },
-                    /*{
+                    {
+                        name: 'Resizing',
+                        columnSettings: [{
+                            columnKey: 'sid', allowResizing: false, minimumWidth: 0
+                        }]
+                    },
+                    {
+                        name: 'HeaderStyles',
+                        columns: [
+                            {key: 'selectedEmp', colors: ['left-align']},
+                            {key: 'departmentName', colors: ['left-align']},
+                            {key: 'empCd', colors: ['left-align']},
+                            {key: 'empName', colors: ['left-align']},
+                            {key: 'rsdtTaxPayeeName', colors: ['left-align']},
+                            {key: 'yearTaxAmount', colors: ['left-align']}
+                        ]
+                    },
+                    {
+                        name: 'Paging',
+                        pageSize: 20,
+                        currentPageIndex: 0,
+                        loaded: function () {
+                            self.setPageStatus();
+                        }
+                    },
+                    {
                         name: "ColumnFixing",
                         showFixButtons: false,
                         fixingDirection: 'left',
                         columnSettings: [
+                            {
+                                columnKey: "sid",
+                                isFixed: true
+                            },
+                            {
+                                columnKey: "selectedEmp",
+                                isFixed: true
+                            },
                             {
                                 columnKey: "departmentName",
                                 isFixed: true
@@ -225,19 +376,98 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                                 isFixed: true
                             }
                         ]
-                    }*/
-                ],
-                ntsFeatures: [],
+                    }
+                ]
+            }).create();
+            self.setPageStatus();
+        }
 
+        selectEmp(id, value, rowData: RsdtTaxPayAmountDto) {
+            let self = this;
+            self.setDelete(id, value, rowData.inputAtr);
+        }
+
+        selectInputAtr(id, value) {
+            let self = this;
+            self.setDisable(id, value)
+        }
+
+        setPageStatus() {
+            let self = this;
+            let data = $("#grid").mGrid("dataSource");
+            _.each(data, (item: RsdtTaxPayAmountDto) => {
+                self.setDelete(item.sid, item.selectedEmp, item.inputAtr);
             })
+        }
+
+        setDelete(sid: string, isDelete: boolean, isAllMonth: boolean) {
+            let self = this;
+            self.setStateControl(sid, "selectedEmp", isDelete);
+            self.setStateControl(sid, "departmentName", isDelete);
+            self.setStateControl(sid, "empCd", isDelete);
+            self.setStateControl(sid, "empName", isDelete);
+            self.setStateControl(sid, "rsdtTaxPayeeName", isDelete);
+            self.setStateControl(sid, "yearTaxAmount", isDelete);
+            self.disableControl(sid, "inputAtr", isDelete);
+            self.disableControl(sid, "amountJune", isDelete);
+            self.disableControl(sid, "amountJuly", isDelete);
+            self.setDisable(sid, isDelete ? false : isAllMonth);
+        }
+
+        setDisable(sid: string, isAllMonth: boolean) {
+            let self = this;
+            self.disableControl(sid, "amountAugust", !isAllMonth);
+            self.disableControl(sid, "amountSeptember", !isAllMonth);
+            self.disableControl(sid, "amountOctober", !isAllMonth);
+            self.disableControl(sid, "amountNovember", !isAllMonth);
+            self.disableControl(sid, "amountDecember", !isAllMonth);
+            self.disableControl(sid, "amountJanuary", !isAllMonth);
+            self.disableControl(sid, "amountFebruary", !isAllMonth);
+            self.disableControl(sid, "amountMarch", !isAllMonth);
+            self.disableControl(sid, "amountApril", !isAllMonth);
+            self.disableControl(sid, "amountMay", !isAllMonth);
+        }
+
+        setStateControl(rowId, columnKey, isDelete) {
+            if (isDelete) {
+                $("#grid").mGrid("setState", rowId, columnKey, ['delete']);
+            } else {
+                $("#grid").mGrid("clearState", rowId, columnKey, ['delete'])
+            }
+        }
+
+        disableControl(rowId, columnKey, isDisable) {
+            if (isDisable) {
+                $("#grid").mGrid("disableNtsControlAt", rowId, columnKey)
+            } else {
+                $("#grid").mGrid("enableNtsControlAt", rowId, columnKey)
+            }
+        }
+
+        formatYear(date) {
+            return moment(date).format("YYYY");
+        }
+
+        createParamGet() {
+            let self = this;
+            let listSId = _.map(self.empSearchItems, (item: EmployeeSearchDto) => {
+                return item.employeeId;
+            })
+            let param = {
+                listSId: listSId,
+                baseDate: self.baseDate(),
+                year: self.formatYear(self.year())
+            }
+            return param;
         }
 
         /**
          * 起動する
          */
         initData(): JQueryPromise<any> {
-            let self = this;
-            let dfd = $.Deferred();
+            let self = this,
+                dfd = $.Deferred();
+            block.invisible();
             let param = self.createParamGet();
             let getEmpInfoDept = service.getEmpInfoDept(param);
             let getRsdtTaxPayAmount = service.getRsdtTaxPayAmount(param);
@@ -246,12 +476,12 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                 self.empDeptItems = EmpInfoDeptDto.fromApp(depts);
                 let data: Array<RsdtTaxPayAmountDto> = RsdtTaxPayAmountDto.fromApp(amounts, self.empDeptItems,
                     self.empSearchItems);
-                self.empAmountItems(data);
-                $("#grid").ntsGrid("destroy")
-                self.loadGrid();
-            }).fail(err => {
-                alertError(err);
+                self.empAmountItems = data;
+                $("#grid").mGrid("destroy");
+                self.loadMGrid();
             }).always(() => {
+                $("#A2_3").focus();
+                block.clear();
                 dfd.resolve();
             })
             return dfd.promise();
@@ -265,14 +495,15 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
             block.invisible();
             let param = self.createParamGet();
             let getRsdtTaxPayAmount = service.getRsdtTaxPayAmount(param);
-            $.when(getRsdtTaxPayAmount).done((amounts) => {
+            $.when(getRsdtTaxPayAmount).done((amounts: Array<IRsdtTaxPayAmountDto>) => {
                 let data: Array<RsdtTaxPayAmountDto> = RsdtTaxPayAmountDto.fromApp(amounts, self.empDeptItems,
                     self.empSearchItems);
-                self.empAmountItems(data);
-            }).fail(err => {
-                alertError(err);
+                self.empAmountItems = data;
+                $("#grid").mGrid("destroy");
+                self.loadMGrid();
             }).always(() => {
                 block.clear();
+                self.focusA3_1();
             })
         }
 
@@ -280,15 +511,89 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
          * 住民税を一括登録する
          */
         registerAmount() {
+            let self = this;
+            block.invisible();
+            if (nts.uk.ui.errors.hasError() || !self.isValidForm()) {
+                block.clear();
+                return false;
+            }
 
+            let empAmountItems: Array<RsdtTaxPayAmountDto> = $("#grid").mGrid("dataSource", true);
+            service.registerTaxPayAmount(new RegisterCommand(empAmountItems, self.formatYear(self.year()))).done(() => {
+                info({messageId: "Msg_15"}).then(() => {
+                    self.getEmpAmount();
+                });
+            }).always(() => {
+                self.focusA3_1();
+                block.clear();
+            })
         }
 
         /**
          * 住民税を一括削除する
          */
         deleteAmount() {
+            let self = this;
+            block.invisible();
 
+            let empAmountItems: Array<RsdtTaxPayAmountDto> = $("#grid").mGrid("dataSource", true);
+            let listEmpSelected = _.filter(empAmountItems, (item: RsdtTaxPayAmountDto) => {
+                return item.selectedEmp;
+            });
+            let listSId = _.map(listEmpSelected, (item: RsdtTaxPayAmountDto) => {
+                return item.sid;
+            });
+
+            dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+
+                service.deleteTaxPayAmount(new DeleteCommand(listSId, self.formatYear(self.year()))).done(() => {
+                    info({messageId: "Msg_16"}).then(() => {
+                        self.getEmpAmount();
+                    });
+                }).always(() => {
+                    self.focusA3_1();
+                    block.clear();
+                })
+
+            }).ifNo(function() {
+                nts.uk.ui.block.clear();
+                return false;
+            })
         }
+
+        isValidForm() {
+            let self = this,
+                check: any;
+            let errorList = $("#grid").mGrid("errors", true);
+            if (_.isEmpty(errorList)) {
+                return true;
+            }
+            let empAmountItems: Array<RsdtTaxPayAmountDto> = $("#grid").mGrid("dataSource", true);
+            let isValid = true;
+            _.each(errorList, error => {
+                let emp = _.find(empAmountItems, (item: RsdtTaxPayAmountDto) => {
+                    return item.sid == error.rowId;
+                });
+                if (emp.selectedEmp) return;
+                if (emp.inputAtr) {
+                    isValid = false;
+                }
+                if (error.columnKey == "amountJune" || error.columnKey == "amountJuly") {
+                    isValid = false;
+                }
+            });
+            return isValid;
+        }
+
+
+        jumpToCps001() {
+            nts.uk.request.jump("com", "/view/cps/001/a/index.xhtml");
+        }
+
+        focusA3_1() {
+            $("#grid_container").focus();
+        }
+
     }
 
     class EmpInfoDeptDto {
@@ -318,6 +623,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
 
     class RsdtTaxPayAmountDto {
         sid: string;//社員ID
+        selectedEmp: boolean;
         departmentName: string;//部門表示名
         empCd: string;//社員コード
         empName: string;//社員名称
@@ -325,18 +631,18 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
         rsdtTaxPayeeName: string;//住民税納付先.名称
         yearTaxAmount: string;//年税額
         inputAtr: boolean;//社員住民税納付額情報.入力区分
-        amountJanuary: number;//社員住民税納付額情報.月次納付額.1月納付額
-        amountFebruary: number;//社員住民税納付額情報.月次納付額.2月納付額
-        amountMarch: number;//社員住民税納付額情報.月次納付額.3月納付額
-        amountApril: number;//社員住民税納付額情報.月次納付額.4月納付額
-        amountMay: number;//社員住民税納付額情報.月次納付額.5月納付額
-        amountJune: number;//社員住民税納付額情報.月次納付額.6月納付額
-        amountJuly: number;//社員住民税納付額情報.月次納付額.7月納付額
-        amountAugust: number;//社員住民税納付額情報.月次納付額.8月納付額
-        amountSeptember: number;//社員住民税納付額情報.月次納付額.9月納付額
-        amountOctober: number;//社員住民税納付額情報.月次納付額.10月納付額
-        amountNovember: number;//社員住民税納付額情報.月次納付額.11月納付額
-        amountDecember: number;//社員住民税納付額情報.月次納付額.12月納付額
+        amountJanuary: string;//社員住民税納付額情報.月次納付額.1月納付額
+        amountFebruary: string;//社員住民税納付額情報.月次納付額.2月納付額
+        amountMarch: string;//社員住民税納付額情報.月次納付額.3月納付額
+        amountApril: string;//社員住民税納付額情報.月次納付額.4月納付額
+        amountMay: string;//社員住民税納付額情報.月次納付額.5月納付額
+        amountJune: string;//社員住民税納付額情報.月次納付額.6月納付額
+        amountJuly: string;//社員住民税納付額情報.月次納付額.7月納付額
+        amountAugust: string;//社員住民税納付額情報.月次納付額.8月納付額
+        amountSeptember: string;//社員住民税納付額情報.月次納付額.9月納付額
+        amountOctober: string;//社員住民税納付額情報.月次納付額.10月納付額
+        amountNovember: string;//社員住民税納付額情報.月次納付額.11月納付額
+        amountDecember: string;//社員住民税納付額情報.月次納付額.12月納付額
 
         constructor() {
         }
@@ -348,7 +654,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
             _.each(items, (item: IRsdtTaxPayAmountDto) => {
                 let dto: RsdtTaxPayAmountDto = new RsdtTaxPayAmountDto();
                 dto.sid = item.sid;
-
+                dto.selectedEmp = false;
                 let empDept: EmpInfoDeptDto = _.find(empDeptItems, {'sid': item.sid});
                 if (empDept == null) {
                     dto.departmentName = "";
@@ -367,19 +673,30 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
 
                 dto.year = item.year;
                 dto.rsdtTaxPayeeName = item.rsdtTaxPayeeName;
-                dto.inputAtr = item.inputAtr == 1 ? true : false;
-                dto.amountJanuary = item.amountJanuary;
-                dto.amountFebruary = item.amountFebruary;
-                dto.amountMarch = item.amountMarch;
-                dto.amountApril = item.amountApril;
-                dto.amountMay = item.amountMay;
-                dto.amountJune = item.amountJune;
-                dto.amountJuly = item.amountJuly;
-                dto.amountAugust = item.amountAugust;
-                dto.amountSeptember = item.amountSeptember;
-                dto.amountOctober = item.amountOctober;
-                dto.amountNovember = item.amountNovember;
-                dto.amountDecember = item.amountDecember;
+                dto.inputAtr = ResidentTaxInputAtr.ALL_MONTH == item.inputAtr;
+                if (dto.inputAtr) {
+                    dto.yearTaxAmount = _.sum([
+                        item.amountJanuary, item.amountFebruary, item.amountMarch, item.amountApril, item.amountMay,
+                        item.amountJune, item.amountJuly, item.amountAugust, item.amountSeptember, item.amountOctober,
+                        item.amountNovember, item.amountDecember
+                    ]).toString();
+                } else {
+                    dto.yearTaxAmount = _.sum([item.amountJune, item.amountJuly * 11]).toString();
+                }
+                dto.yearTaxAmount = nts.uk.ntsNumber.formatNumber(dto.yearTaxAmount, new nts.uk.ui.option.NumberEditorOption({grouplength: 3}));
+
+                dto.amountJanuary = isNullOrUndefined(item.amountJanuary) ? null : item.amountJanuary.toString();
+                dto.amountFebruary = isNullOrUndefined(item.amountFebruary) ? null : item.amountFebruary.toString();
+                dto.amountMarch = isNullOrUndefined(item.amountMarch) ? null : item.amountMarch.toString();
+                dto.amountApril = isNullOrUndefined(item.amountApril) ? null : item.amountApril.toString();
+                dto.amountMay = isNullOrUndefined(item.amountMay) ? null : item.amountMay.toString();
+                dto.amountJune = isNullOrUndefined(item.amountJune) ? null : item.amountJune.toString();
+                dto.amountJuly = isNullOrUndefined(item.amountJuly) ? null : item.amountJuly.toString();
+                dto.amountAugust = isNullOrUndefined(item.amountAugust) ? null : item.amountAugust.toString();
+                dto.amountSeptember = isNullOrUndefined(item.amountSeptember) ? null : item.amountSeptember.toString();
+                dto.amountOctober = isNullOrUndefined(item.amountOctober) ? null : item.amountOctober.toString();
+                dto.amountNovember = isNullOrUndefined(item.amountNovember) ? null : item.amountNovember.toString();
+                dto.amountDecember = isNullOrUndefined(item.amountDecember) ? null : item.amountDecember.toString();
                 results.push(dto);
             })
 
@@ -404,6 +721,85 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
         amountOctober: number;//社員住民税納付額情報.月次納付額.10月納付額
         amountNovember: number;//社員住民税納付額情報.月次納付額.11月納付額
         amountDecember: number;//社員住民税納付額情報.月次納付額.12月納付額
+    }
+
+    class RegisterCommand {
+        listEmpPayAmount: Array<EmpPayAmountCommand>;
+        year: string;
+
+        constructor(empAmountItems: Array<RsdtTaxPayAmountDto>, year: string) {
+            this.listEmpPayAmount = EmpPayAmountCommand.toCommand(empAmountItems);
+            this.year = year;
+        }
+    }
+
+    class EmpPayAmountCommand {
+        sid: string;//社員ID
+        rsdtTaxPayeeName: string;//住民税納付先.名称
+        inputAtr: number;//社員住民税納付額情報.入力区分
+        amountJanuary: string;//社員住民税納付額情報.月次納付額.1月納付額
+        amountFebruary: string;//社員住民税納付額情報.月次納付額.2月納付額
+        amountMarch: string;//社員住民税納付額情報.月次納付額.3月納付額
+        amountApril: string;//社員住民税納付額情報.月次納付額.4月納付額
+        amountMay: string;//社員住民税納付額情報.月次納付額.5月納付額
+        amountJune: string;//社員住民税納付額情報.月次納付額.6月納付額
+        amountJuly: string;//社員住民税納付額情報.月次納付額.7月納付額
+        amountAugust: string;//社員住民税納付額情報.月次納付額.8月納付額
+        amountSeptember: string;//社員住民税納付額情報.月次納付額.9月納付額
+        amountOctober: string;//社員住民税納付額情報.月次納付額.10月納付額
+        amountNovember: string;//社員住民税納付額情報.月次納付額.11月納付額
+        amountDecember: string;//社員住民税納付額情報.月次納付額.12月納付額
+
+        constructor(data: RsdtTaxPayAmountDto) {
+            this.sid = data.sid;
+            this.amountJune = isNullOrEmpty(data.amountJune) ? "0" : data.amountJune;
+            this.amountJuly = isNullOrEmpty(data.amountJuly) ? "0" : data.amountJuly;
+            this.rsdtTaxPayeeName = data.rsdtTaxPayeeName;
+            if (data.inputAtr) {
+                this.inputAtr = ResidentTaxInputAtr.ALL_MONTH;
+                this.amountJanuary = data.amountJanuary;
+                this.amountFebruary = data.amountFebruary;
+                this.amountMarch = data.amountMarch;
+                this.amountApril = data.amountApril;
+                this.amountMay = data.amountMay;
+                this.amountAugust = data.amountAugust;
+                this.amountSeptember = data.amountSeptember;
+                this.amountOctober = data.amountOctober;
+                this.amountNovember = data.amountNovember;
+                this.amountDecember = data.amountDecember;
+            } else {
+                this.inputAtr = ResidentTaxInputAtr.NOT_ALL_MONTH;
+                this.amountJanuary = "0";
+                this.amountFebruary = "0";
+                this.amountMarch = "0";
+                this.amountApril = "0";
+                this.amountMay = "0";
+                this.amountAugust = "0";
+                this.amountSeptember = "0";
+                this.amountOctober = "0";
+                this.amountNovember = "0";
+                this.amountDecember = "0";
+            }
+        }
+
+        static toCommand(datas: Array<RsdtTaxPayAmountDto>) {
+            let result: Array<EmpPayAmountCommand> = [];
+            _.each(datas, (item: RsdtTaxPayAmountDto) => {
+                if (item.selectedEmp) return;
+                result.push(new EmpPayAmountCommand(item));
+            })
+            return result;
+        }
+    }
+
+    class DeleteCommand {
+        listSId: Array<string>;
+        year: string;
+
+        constructor(listSId: Array<string>, year: string) {
+            this.listSId = listSId;
+            this.year = year;
+        }
     }
 
     // Note: Defining these interfaces are optional
@@ -463,4 +859,25 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
         periodEnd: string; // 対象期間（終了）
         listEmployee: Array<EmployeeSearchDto>; // 検索結果
     }
+
+    class CellState {
+        rowId: number;
+        columnKey: string;
+        state: Array<any>
+
+        constructor(rowId: any, columnKey: string, state: Array<any>) {
+            this.rowId = rowId;
+            this.columnKey = columnKey;
+            this.state = state;
+        }
+    }
+
+    /**
+     * 住民税入力区分
+     */
+    enum ResidentTaxInputAtr {
+        ALL_MONTH = 1,
+        NOT_ALL_MONTH = 0
+    }
+
 }

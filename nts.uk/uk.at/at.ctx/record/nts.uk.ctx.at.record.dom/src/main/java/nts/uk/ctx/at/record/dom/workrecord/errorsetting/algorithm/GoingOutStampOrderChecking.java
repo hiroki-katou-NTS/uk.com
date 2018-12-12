@@ -124,7 +124,7 @@ public class GoingOutStampOrderChecking {
 
 					// list contain different
 					outingTimeSheetsTemp = newOutingTimeSheets.stream()
-							.filter(item -> !item.getOutingFrameNo().equals(outingTimeSheet.getOutingFrameNo().v()))
+							.filter(item -> !item.getOutingFrameNo().equals(outingTimeSheet.getOutingFrameNo()))
 							.collect(Collectors.toList());
 
 					TimeWithDayAttr stampStartTimeFirstTime = outingTimeSheet.getGoOut().get().getStamp().get()

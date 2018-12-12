@@ -24,17 +24,17 @@
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
-            <button tabindex="1" style="margin-left: 50px" class="proceed" data-bind="click:registerAmount ,enable: $root.errors.isEmpty">#{i18n.getText('QMM042_2')}</button>
+            <button tabindex="1" style="margin-left: 50px" class="proceed"
+                    data-bind="click:registerAmount ,enable: $root.errors.isEmpty">#{i18n.getText('QMM042_2')}</button>
 
-            <a tabindex="11" class="goout" style="margin-left: 820px"
+            <a tabindex="11" class="goout" style="margin-left: 900px"
                data-bind="ntsLinkButton: { jump: '../../041/a/index.xhtml' }">#{i18n.getText('QMM042_14')}</a>
         </div>
-
-        <div id ="contents-area" class=" fixed-flex-layout">
-            <div style="margin-left: 20px"  id="com-ccg001"></div>
-            <div id="panel-left" class="fixed-flex-layout-left margin-top" style="margin-left: 100px; margin-top: 30px;">
-                <div style="float: left;width: 335px;">
-
+        <div id="com-ccg001"/>
+        <div id="contents-area" class=" fixed-flex-layout">
+            <div id="panel-left" class="fixed-flex-layout-left margin-top fixed-flex-layout"
+                 style="margin-left: 100px; margin-top: 30px; ">
+                <div style="width: 335px; margin-right: 0" class="fixed-flex-layout-left">
                     <div tabindex="-1" class="panel" style=" margin-top: 15px"
                          data-bind="ntsPanel:{width: '280px', height: '490px',showIcon: true, direction: 'bottom', visible: true}">
                         <!--A4_3 検索-->
@@ -54,8 +54,8 @@
                                 dataSource: salaryPerUnitPriceNames,
                                 columns: [
                                     {key:'index', length: 0, hidden: true},
-                                    {headerText: '#{i18n.getText('QMM039_13')}', key:'code', length: 2},
-                                    {headerText: '#{i18n.getText('QMM039_14')}', key: 'name', length: 5,formatter: _.escape}
+                                    {headerText: '#{i18n.getText('QMM039_13')}', key:'code', length: 2, width: 70},
+                                    {headerText: '#{i18n.getText('QMM039_14')}', key: 'name', length: 5, formatter: _.escape}
                                 ],
                                 value: salaryPerUnitPriceNamesSelectedCode,
                                 primaryText: 'name',
@@ -65,65 +65,58 @@
                                 showCheckBox: false}">
                         </table>
                     </div>
-
-
                 </div>
-                <div style="float: left;height: 400px;width: 50px;margin-top: 130px;">
-                    <span id="custom-caret" class="caret-right"></span>
+                <div style="height: 400px;width: 50px;margin-top: 130px;" class="fixed-flex-layout-right">
+                    <span id="custom-caret" class="caret-right"/>
                 </div>
-
-
             </div>
-
             <div id="panel-right" class="fixed-flex-layout-right margin-top" style="margin-top: 80px">
-
                 <div class="flex valign-center margin-top-item">
                     <!--A4_1 コード・名称-->
                     <div data-bind="ntsFormLabel: {  required: false}">#{i18n.getText('QMM042_6')}</div>
                     <!--A4_2 コード-->
-                    <span class="label margin-left-item" data-bind="text: perUnitPriceCode()"></span>
+                    <span class="label margin-left-item" data-bind="text: perUnitPriceCode()"/>
                     <!--A4_3 名称-->
-                    <span style="margin-left: 5px" class="label" data-bind="text: perUnitPriceName()"></span>
+                    <span style="margin-left: 5px" class="label" data-bind="text: perUnitPriceName()"/>
                 </div>
-
                 <div class="flex valign-center margin-top-item" style="margin-bottom: 20px">
                     <!--A4_4 基準年月-->
-                    <div data-bind="ntsFormLabel: {  required: true}">#{i18n.getText('QMM042_7')}</div>
+                    <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM042_7')}</div>
                     <!--A4_5 基準年月-->
-                    <div style = "margin-left: 30px;">
-                    <div id="A4_5" tabindex="5"
-                         data-bind="ntsDatePicker: {value: yearMonthFilter, dateFormat: 'yearmonth', name:'#[QMM042_7]',required: true}"></div>
+                    <div style="margin-left: 30px;">
+                        <div id="A4_5" tabindex="5"
+                             data-bind="ntsDatePicker: {value: yearMonthFilter, dateFormat: 'yearmonth', name:'#[QMM042_7]',required: true}"/>
                     </div>
-                        <!--A4_6 抽出-->
+                    <!--A4_6 抽出-->
                     <button tabindex="6" class="caret-bottom" data-bind="click: filterData,enable: $root.errors.isEmpty"
                             style="margin-left: 13px">#{i18n.getText('QMM042_8')}</button>
 
                 </div>
-                <div style = "min-width: 600px;">
-                <table tabindex="7" id="A4_7">
-                    <colgroup>
-                        <col width="130px"/>
-                        <col width="120px"/>
-                        <col width="160px"/>
-                        <col width="158px"/>
+                <div style="min-width: 600px;">
+                    <table tabindex="7" id="A4_7">
+                        <colgroup>
+                            <col width="130px"/>
+                            <col width="120px"/>
+                            <col width="160px"/>
+                            <col width="158px"/>
 
-                    </colgroup>
-                    <thead>
-                    <tr>
-                        <th class="ui-widget-header">#{i18n.getText('QMM042_10')}</th>
-                        <th class="ui-widget-header">#{i18n.getText('QMM042_11')}</th>
-                        <th class="ui-widget-header">#{i18n.getText('QMM042_12')}</th>
-                        <th class="ui-widget-header">#{i18n.getText('QMM042_13')}</th>
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th class="ui-widget-header">#{i18n.getText('QMM042_10')}</th>
+                            <th class="ui-widget-header">#{i18n.getText('QMM042_11')}</th>
+                            <th class="ui-widget-header">#{i18n.getText('QMM042_12')}</th>
+                            <th class="ui-widget-header">#{i18n.getText('QMM042_13')}</th>
 
-                    </tr>
-                    </thead>
-                    <tbody data-bind="foreach: workIndividualPricesDisplay">
-                    <tr>
-                        <td data-bind="text: employeeCode()"></td>
-                        <td data-bind="text: businessName()"></td>
-                        <td data-bind="text: period"></td>
-                        <td>
-                            <input id="A4_15" class="A4_15_input" tabindex="8" style="width: 120px" data-bind="ntsNumberEditor: {
+                        </tr>
+                        </thead>
+                        <tbody data-bind="foreach: workIndividualPricesDisplay">
+                        <tr>
+                            <td data-bind="text: employeeCode()"/>
+                            <td data-bind="text: businessName()"/>
+                            <td data-bind="text: period"/>
+                            <td>
+                                <input id="A4_15" class="A4_15_input" tabindex="8" style="width: 120px" data-bind="ntsNumberEditor: {
                                         constraint:'SalaryUnitPrice',
                                         value: amountOfMoney,
                                         name:'#[QMM042_13]',
@@ -132,11 +125,10 @@
                                             grouplength: 3,
                                             decimallength:2,
                                             currencyformat: 'JPY'}}"/>
-                        </td>
-
-                    </tr>
-                    </tbody>
-                </table>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 

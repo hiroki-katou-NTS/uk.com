@@ -6,8 +6,10 @@ package nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset;
  *
  */
 public enum TimeCountAtr {
-
-	TIME(0, "時間"), TIMES(1, "回数");
+	// 時間
+	TIME(0, "Enum_TimeCountAtr_TIME"), 
+	// 回数
+	TIMES(1, "Enum_TimeCountAtr_TIMES");
 
 	/** The value. */
 	public final int value;

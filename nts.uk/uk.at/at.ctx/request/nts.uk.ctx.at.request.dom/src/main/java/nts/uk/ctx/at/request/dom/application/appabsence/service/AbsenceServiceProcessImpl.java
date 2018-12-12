@@ -22,6 +22,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumb
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaManagerImport;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleError;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleExport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
@@ -71,10 +72,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Override
 	public SpecialLeaveInfor getSpecialLeaveInfor(String workTypeCode) {
 		SpecialLeaveInfor specialLeaveInfor = new SpecialLeaveInfor();
-		boolean relationFlg = false;
-		boolean mournerDisplayFlg = false;
-		boolean displayRelationReasonFlg = false;
-		int maxDayRelate = 0;
+//		boolean relationFlg = false;
+//		boolean mournerDisplayFlg = false;
+//		boolean displayRelationReasonFlg = false;
+//		int maxDayRelate = 0;
 		//指定した勤務種類に特別休暇に当てはまるかチェックする
 		
 		return specialLeaveInfor;
@@ -101,10 +102,15 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		//INPUT．休暇種類をチェックする(check INPUT. phân loại holidays)
 		if(hdAppType.equals(HolidayAppType.ANNUAL_PAID_LEAVE)){//INPUT．休暇種類が年休
 			//計画年休の上限チェック(check giới hạn trên của plan annual holidays)
-			boolean check = planVacationRuleExport.checkMaximumOfPlan(cID, sID, workTypeCD, new DatePeriod(sDate, eDate));
-			if(check){
-				//Msg_1345を表示
-				throw new BusinessException("Msg_1345");
+			List<PlanVacationRuleError> check = planVacationRuleExport.checkMaximumOfPlan(cID, sID, workTypeCD, new DatePeriod(sDate, eDate));
+			if(!check.isEmpty()){
+				if(check.contains(PlanVacationRuleError.OUTSIDEPERIOD)) {
+					//Msg_1345を表示
+					throw new BusinessException("Msg_1453");	
+				} else {
+					throw new BusinessException("Msg_1345");
+				}
+				
 			}
 		}
 	}

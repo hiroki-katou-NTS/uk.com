@@ -3,7 +3,7 @@ package nts.uk.ctx.at.schedule.infra.entity.budget.premium;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinTable;
+//import javax.persistence.JoinTable;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;

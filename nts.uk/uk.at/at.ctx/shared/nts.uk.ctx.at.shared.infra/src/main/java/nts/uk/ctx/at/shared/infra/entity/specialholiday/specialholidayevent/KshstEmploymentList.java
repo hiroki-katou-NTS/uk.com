@@ -17,6 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 // 雇用一覧
 public class KshstEmploymentList extends UkJpaEntity implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public KshstEmploymentListPK pk;
 	

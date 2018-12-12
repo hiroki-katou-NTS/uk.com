@@ -1,143 +1,143 @@
 package nts.uk.ctx.pr.core.infra.entity.wageprovision.wagetable;
 
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.val;
+import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementInformation;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTable;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-import javax.persistence.*;
-import java.io.Serializable;
-
 /**
-* 賃金テーブル
-*/
+ * 
+ * @author HungTT - entity 賃金テーブル
+ *
+ */
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "QPBMT_WAGE_TABLE")
-public class QpbmtWageTable extends UkJpaEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class QpbmtWageTable extends UkJpaEntity {
 
-    /**
-     * ID
-     */
-    @EmbeddedId
-    public QpbmtWageTablePk wageTablePk;
+	@EmbeddedId
+	public QpbmtWageTablePk pk;
 
-    /**
-     * 賃金テーブル名
-     */
-    @Basic(optional = false)
-    @Column(name = "WAGE_TABLE_NAME")
-    public String wageTableName;
+	@Column(name = "NAME")
+	public String name;
 
-    /**
-     * 固定の要素
-     */
-    @Basic(optional = true)
-    @Column(name = "FIRST_FIXED_ELEMENT")
-    public Integer firstFixedElement;
+	@Column(name = "ELEMENT_SET")
+	public int elementSetting;
 
-    /**
-     * 任意追加の要素
-     */
-    @Basic(optional = true)
-    @Column(name = "FIRST_ADDITIONAL_ELEMENT")
-    public String firstAdditionalElement;
+	@Column(name = "MEMO")
+	@Basic(optional = true)
+	public String memo;
 
-    /**
-     * マスタ数値区分
-     */
-    @Basic(optional = true)
-    @Column(name = "FIRST_MASTER_NUMERIC_CLS")
-    public Integer firstMasterNumericCls;
+	/**
+	 * 要素情報.一次元要素
+	 */
+	@Column(name = "MASTER_NUM_ATR_1")
+	@Basic(optional = true)
+	public Integer masterNumericAtr1;
 
-    /**
-     * 固定の要素
-     */
-    @Basic(optional = true)
-    @Column(name = "SECOND_FIXED_ELEMENT")
-    public Integer secondFixedElement;
+	@Column(name = "OPT_ADD_ELEMENT_1")
+	@Basic(optional = true)
+	public String optionalAdditionalElement1;
 
-    /**
-     * 任意追加の要素
-     */
-    @Basic(optional = true)
-    @Column(name = "SECOND_ADDITIONAL_ELEMENT")
-    public String secondAdditionalElement;
+	@Column(name = "FIXED_ELEMENT_1")
+	@Basic(optional = true)
+	public String fixedElement1;
 
-    /**
-     * マスタ数値区分
-     */
-    @Basic(optional = true)
-    @Column(name = "SECOND_MASTER_NUMERIC_CLS")
-    public Integer secondMasterNumericCls;
+	/**
+	 * 要素情報.二次元要素
+	 */
+	@Column(name = "MASTER_NUM_ATR_2")
+	@Basic(optional = true)
+	public Integer masterNumericAtr2;
 
-    /**
-     * 固定の要素
-     */
-    @Basic(optional = true)
-    @Column(name = "THIRD_FIXED_ELEMENT")
-    public Integer thirdFixedElement;
+	@Column(name = "OPT_ADD_ELEMENT_2")
+	@Basic(optional = true)
+	public String optionalAdditionalElement2;
 
-    /**
-     * 任意追加の要素
-     */
-    @Basic(optional = true)
-    @Column(name = "THIRD_ADDITIONAL_ELEMENT")
-    public String thirdAdditionalElement;
+	@Column(name = "FIXED_ELEMENT_2")
+	@Basic(optional = true)
+	public String fixedElement2;
 
-    /**
-     * マスタ数値区分
-     */
-    @Basic(optional = true)
-    @Column(name = "THIRD_MASTER_NUMERIC_CLS")
-    public Integer thirdMasterNumericCls;
+	/**
+	 * 要素情報.三次元要素
+	 */
+	@Column(name = "MASTER_NUM_ATR_3")
+	@Basic(optional = true)
+	public Integer masterNumericAtr3;
 
-    /**
-     * 要素設定
-     */
-    @Basic(optional = false)
-    @Column(name = "ELEMENT_SETTING")
-    public int elementSetting;
+	@Column(name = "OPT_ADD_ELEMENT_3")
+	@Basic(optional = true)
+	public String optionalAdditionalElement3;
 
-    /**
-     * 備考情報
-     */
-    @Basic(optional = true)
-    @Column(name = "REMARK_INFORMATION")
-    public String remarkInformation;
+	@Column(name = "FIXED_ELEMENT_3")
+	@Basic(optional = true)
+	public String fixedElement3;
 
-    @Override
-    protected Object getKey() {
-        return wageTablePk;
-    }
+	@Override
+	protected Object getKey() {
+		return this.pk;
+	}
 
-    public WageTable toDomain() {
-        return new WageTable(this.wageTablePk.cid, this.wageTablePk.wageTableCode, this.wageTableName, this.firstFixedElement, this.firstAdditionalElement, this.firstMasterNumericCls, this.secondFixedElement, this.secondAdditionalElement, this.secondMasterNumericCls, this.thirdFixedElement, this.thirdAdditionalElement, this.thirdMasterNumericCls, this.elementSetting, this.remarkInformation);
-    }
+	public WageTable toDomain() {
+		return new WageTable(this.pk.companyId, this.pk.code, this.name, this.masterNumericAtr1, this.fixedElement1,
+				this.optionalAdditionalElement1, this.masterNumericAtr2, this.fixedElement2,
+				this.optionalAdditionalElement2, this.masterNumericAtr3, this.fixedElement3,
+				this.optionalAdditionalElement3, this.elementSetting, this.memo);
+	}
 
-    public static QpbmtWageTable toEntity(WageTable domain) {
-        val firstFixedElement = domain.getElementInformation().getOneDimensionalElement().getFixedElement().map(v -> v.value).orElse(null);
-        val firstOptionalAddElement = domain.getElementInformation().getOneDimensionalElement().getOptionalAdditionalElement().map(i -> i.v()).orElse(null);
-        val firstMasterNumeric = domain.getElementInformation().getOneDimensionalElement().getMasterNumericClassification().map(i -> i.value).orElse(null);
+	public static QpbmtWageTable fromDomain(WageTable domain) {
+		ElementInformation elementInfor = domain.getElementInformation();
+		return new QpbmtWageTable(new QpbmtWageTablePk(domain.getCid(), domain.getWageTableCode().v()),
+				domain.getWageTableName().v(), domain.getElementSetting().value,
+				domain.getRemarkInformation().isPresent() ? domain.getRemarkInformation().get().v() : null,
+				elementInfor.getOneDimensionalElement().getMasterNumericAtr().isPresent()
+						? elementInfor.getOneDimensionalElement().getMasterNumericAtr().get().value : null,
+				elementInfor.getOneDimensionalElement().getOptionalAdditionalElement().isPresent()
+						? elementInfor.getOneDimensionalElement().getOptionalAdditionalElement().get().v() : null,
+				elementInfor.getOneDimensionalElement().getFixedElement().isPresent()
+						? elementInfor.getOneDimensionalElement().getFixedElement().get().value : null,
 
+				elementInfor.getTwoDimensionalElement().isPresent()
+						? (elementInfor.getTwoDimensionalElement().get().getMasterNumericAtr().isPresent()
+								? elementInfor.getTwoDimensionalElement().get().getMasterNumericAtr()
+										.get().value
+								: null)
+						: null,
+				elementInfor.getTwoDimensionalElement().isPresent()
+						? (elementInfor.getTwoDimensionalElement().get().getOptionalAdditionalElement().isPresent()
+								? elementInfor.getTwoDimensionalElement().get().getOptionalAdditionalElement().get().v()
+								: null)
+						: null,
+				elementInfor.getTwoDimensionalElement().isPresent()
+						? (elementInfor.getTwoDimensionalElement().get().getFixedElement().isPresent()
+								? elementInfor.getTwoDimensionalElement().get().getFixedElement().get().value : null)
+						: null,
 
-        val secondElement = domain.getElementInformation().getTwoDimensionalElement().map(i -> i.getFixedElement().map(v -> v.value).orElse(null)).orElse(null);
-        val secondOptionalAddElement = domain.getElementInformation().getTwoDimensionalElement().map(i -> i.getOptionalAdditionalElement().map(v -> v.v()).orElse(null)).orElse(null);
-        val secondMasterNumeric = domain.getElementInformation().getTwoDimensionalElement().map(i -> i.getMasterNumericClassification().map(v -> v.value).orElse(null)).orElse(null);
+				elementInfor.getThreeDimensionalElement().isPresent()
+						? (elementInfor.getThreeDimensionalElement().get().getMasterNumericAtr().isPresent()
+								? elementInfor.getThreeDimensionalElement().get().getMasterNumericAtr()
+										.get().value
+								: null)
+						: null,
+				elementInfor.getThreeDimensionalElement().isPresent()
+						? (elementInfor.getThreeDimensionalElement().get().getOptionalAdditionalElement().isPresent()
+								? elementInfor.getThreeDimensionalElement().get().getOptionalAdditionalElement().get()
+										.v()
+								: null)
+						: null,
+				elementInfor.getThreeDimensionalElement().isPresent()
+						? (elementInfor.getThreeDimensionalElement().get().getFixedElement().isPresent()
+								? elementInfor.getThreeDimensionalElement().get().getFixedElement().get().value : null)
+						: null);
+	}
 
-
-        val thirdElement = domain.getElementInformation().getThreeDimensionalElement().map(i -> i.getFixedElement().map(v -> v.value).orElse(null)).orElse(null);
-        val thirdOptionalAddElement = domain.getElementInformation().getThreeDimensionalElement().map(i -> i.getOptionalAdditionalElement().map(v -> v.v()).orElse(null)).orElse(null);
-        val thirdMasterNumeric = domain.getElementInformation().getThreeDimensionalElement().map(i -> i.getMasterNumericClassification().map(v -> v.value).orElse(null)).orElse(null);
-
-        return new QpbmtWageTable(new QpbmtWageTablePk(domain.getCID(), domain.getWageTableCode().v()), domain.getWageTableName().v(),
-                firstFixedElement, firstOptionalAddElement, firstMasterNumeric,
-                secondElement, secondOptionalAddElement, secondMasterNumeric,
-                thirdElement, thirdOptionalAddElement, thirdMasterNumeric,
-                domain.getElementSetting().value, domain.getRemarkInformation().map(i -> i.v()).orElse(null));
-
-    }
 }

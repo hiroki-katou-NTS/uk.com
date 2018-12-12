@@ -142,12 +142,15 @@ public class DailyModifyResCommandFacade {
 
 		List<DailyRecordWorkCommand> commandOld = createCommands(sid, dtoOlds, querys);
 		if (!flagCalculation) {
-			return this.handler.handleUpdateRes(commandNew, commandOld, dailyItems, month, mode);
+			val result =  this.handler.handleUpdateRes(commandNew, commandOld, dailyItems, month, mode);
+			validatorDataDaily.removeErrorRemarkAll(AppContexts.user().companyId(), result.getLstDailyDomain(), dtoNews);
+			return result;
 		} else {
 			List<EmployeeDailyPerErrorDto> lstErrorDto = dtoNews.stream().map(result -> result.getErrors())
 					.flatMap(List::stream).collect(Collectors.toList());
 			List<EmployeeDailyPerError> lstError = lstErrorDto.stream()
 					.map(x -> x.toDomain(x.getEmployeeID(), x.getDate())).collect(Collectors.toList());
+			lstError = validatorDataDaily.removeErrorRemark(AppContexts.user().companyId(), lstError, dtoNews);
 			this.handler.handlerNoCalc(commandNew, commandOld, lstError, dailyItems, true, month, mode,
 					lstAttendanceItem);
 			return null;
@@ -194,7 +197,7 @@ public class DailyModifyResCommandFacade {
 		});
 	}
 
-	private List<DailyRecordDto> toDto(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoEdits) {
+	public List<DailyRecordDto> toDto(List<DailyModifyQuery> querys, List<DailyRecordDto> dtoEdits) {
 		List<DailyRecordDto> dtoNews = new ArrayList<>();
 
 		dtoNews = dtoEdits.stream().map(o -> {
@@ -297,8 +300,13 @@ public class DailyModifyResCommandFacade {
 				.map(dto -> DailyModifyResult.builder().items(dto.getValue()).employeeId(dto.getKey().getEmployeeId())
 						.workingDate(dto.getKey().getDate()).completed())
 				.collect(Collectors.toList());
+		
+		List<DailyModifyResult> newResultBefore = AttendanceItemUtil.toItemValues(dailyEdits).entrySet().stream()
+				.map(dto -> DailyModifyResult.builder().items(dto.getValue()).employeeId(dto.getKey().getEmployeeId())
+						.workingDate(dto.getKey().getDate()).completed())
+				.collect(Collectors.toList());
 
-		Map<Pair<String, GeneralDate>, List<DailyModifyResult>> mapSidDateData = resultOlds.stream()
+		Map<Pair<String, GeneralDate>, List<DailyModifyResult>> mapSidDateData = newResultBefore.stream()
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 
 		// check error care item

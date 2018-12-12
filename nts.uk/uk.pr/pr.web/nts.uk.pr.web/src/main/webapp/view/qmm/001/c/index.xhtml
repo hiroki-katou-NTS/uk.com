@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 580, height: 380 };</script>
+        <script>var dialogSize = { width: 600, height: 380 };</script>
         <com:scriptfile set="IGNITE" />
         <com:scriptfile path="../share/model.js" />
         <com:scriptfile path="qmm001.c.vm.js" />
@@ -37,7 +37,7 @@
                     </div>
                 </div>
                 <div class ="cell valign-top">
-                        <div id="C1_6" tabindex="1" style="vertical-align: middle; width: 200px" class="cell"
+                        <div id="C1_6" tabindex="1" style="vertical-align: middle; width: 150px" class="cell"
                              data-bind="ntsRadioBoxGroup:  {
                              value: methodEditing,
                              options: itemList(),
@@ -47,7 +47,7 @@
                     </div>
 
                 </div>
-                <span id = "C1_9" class="label warning" style="height: 100%;width:400px">#{i18n.getText('QMM001_42')}</span>
+                <span id = "C1_9" class="label warning" style="height: 100%;width:280px;margin-left: 10px;">#{i18n.getText('QMM001_42')}</span>
             </div>
             <div  style="margin: 0px 0px 0px 165px;">
 

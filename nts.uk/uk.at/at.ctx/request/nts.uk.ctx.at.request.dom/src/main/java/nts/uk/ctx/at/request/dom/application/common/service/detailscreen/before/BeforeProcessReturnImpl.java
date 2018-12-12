@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
+//import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 

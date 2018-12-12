@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.app.find.divergence.time;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+//import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -10,7 +10,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethod;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethodRepository;
-import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelect;
+//import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelect;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

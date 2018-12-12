@@ -2,7 +2,6 @@ package nts.uk.ctx.sys.portal.infra.entity.toppage.widget;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;

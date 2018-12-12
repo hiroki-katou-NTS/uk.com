@@ -35,7 +35,7 @@ import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
+//import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
@@ -49,8 +49,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class WorkUpdateServiceImpl implements WorkUpdateService{
-	@Inject
-	private WorkInformationRepository workRepository;
 	@Inject
 	private EditStateOfDailyPerformanceRepository dailyReposiroty;
 	@Inject
@@ -529,10 +527,13 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 						stamp.getStampSourceInfo());
 				
 			} else {
-				stampTmp = new WorkStamp(data.getStartTime() != null ? new TimeWithDayAttr(data.getStartTime()) : null,
-						data.getStartTime() != null ? new TimeWithDayAttr(data.getStartTime()) : null,
-						null,
-						StampSourceInfo.GO_STRAIGHT_APPLICATION);
+				if(data.getStartTime() != null) {
+					stampTmp = new WorkStamp(new TimeWithDayAttr(data.getStartTime()),
+							new TimeWithDayAttr(data.getStartTime()),
+							null,
+							StampSourceInfo.GO_STRAIGHT_APPLICATION);
+				}
+				
 			}
 			TimeActualStamp timeActualStam = new TimeActualStamp(timeAttendanceStart.getActualStamp().isPresent() ? timeAttendanceStart.getActualStamp().get() : null,
 					stampTmp,
@@ -711,7 +712,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		
 	}
 	@Override
-	public void updateTransferTimeFrame(String employeeId, GeneralDate dateData,
+	public AttendanceTimeOfDailyPerformance updateTransferTimeFrame(String employeeId, GeneralDate dateData,
 			Map<Integer, Integer> transferTimeFrame, AttendanceTimeOfDailyPerformance attendanceTimeData) {
 		ActualWorkingTimeOfDaily actualWorkingTime = attendanceTimeData.getActualWorkingTimeOfDaily();
 		TotalWorkingTime totalWorkingTime =  actualWorkingTime.getTotalWorkingTime();		
@@ -719,12 +720,12 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		//日別実績の休出時間
 		Optional<HolidayWorkTimeOfDaily> optWorkHolidayTime = excessOfStatutory.getWorkHolidayTime();
 		if(!optWorkHolidayTime.isPresent()) {
-			return;
+			return attendanceTimeData;
 		}
 		HolidayWorkTimeOfDaily workHolidayTime = optWorkHolidayTime.get();
 		List<HolidayWorkFrameTime> lstHolidayWorkFrameTime = workHolidayTime.getHolidayWorkFrameTime();
 		if(lstHolidayWorkFrameTime.isEmpty()) {
-			return;
+			return attendanceTimeData;
 		}
 		lstHolidayWorkFrameTime.stream().forEach(x -> {
 			if(transferTimeFrame.containsKey(x.getHolidayFrameNo().v())) {
@@ -744,18 +745,19 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			}
 		}
 		this.updateEditStateOfDailyPerformance(employeeId, dateData, lstWorktimeFrameTemp);
+		return attendanceTimeData;
 	}
 	@Override
-	public void updateRecordStartEndTimeReflectRecruitment(TimeReflectPara data,
+	public TimeLeavingOfDailyPerformance updateRecordStartEndTimeReflectRecruitment(TimeReflectPara data,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyData) {
 		if(!data.isStart()
 				&& !data.isEnd()) {
-			return;
+			return timeLeavingOfDailyData;
 		}
 		List<TimeLeavingWork> lstTimeLeavingWorks = timeLeavingOfDailyData.getTimeLeavingWorks().stream()
 				.filter(x -> x.getWorkNo().v() == data.getFrameNo()).collect(Collectors.toList());
 		if(lstTimeLeavingWorks.isEmpty()) {
-			return;
+			return timeLeavingOfDailyData;
 		}
 		TimeLeavingWork timeLeavingWork = lstTimeLeavingWorks.get(0);
 		Optional<TimeActualStamp> optTimeAttendanceStart = timeLeavingWork.getAttendanceStamp();
@@ -814,7 +816,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			}
 		}
 		this.updateEditStateOfDailyPerformance(data.getEmployeeId(), data.getDateData(), lstItem);
-		
+		return timeLeavingOfDailyData;
 	}
 
 	@Override

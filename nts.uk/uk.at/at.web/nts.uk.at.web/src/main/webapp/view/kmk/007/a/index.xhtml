@@ -96,6 +96,7 @@
 													value: workAtr,
 													enable: $parent.isEnable }"></div>
 					</div>
+					<!-- 1日 -->
 					<div data-bind="if: currentWorkType().workAtr() == '0'">
 						<div id="duty-type-set-oneday">
 							<div
@@ -115,9 +116,8 @@
 														columns: [
 															{ prop: 'name', length: 10 },
 														]}"></div>
-
-							<div id="oneday-set-1"
-								data-bind="if: currentWorkType().oneDayCls() == '0'">
+							<!-- 出勤 -->
+							<div id="oneday-set-1" data-bind="if: currentWorkType().oneDayCls() == '0'">
 								<div data-bind="with: currentWorkType().oneDay">
 									<div>
 										<div style="margin-left: 20px;"
@@ -133,8 +133,8 @@
 									</div>
 								</div>
 							</div>
-							<div id="oneday-set-2"
-								data-bind="if: currentWorkType().oneDayCls() == '5'">
+							<!-- 欠勤 -->
+							<div id="oneday-set-2" data-bind="if: currentWorkType().oneDayCls() == '5'">
 								<div data-bind="with: currentWorkType().oneDay">
 									<div
 										style="margin-top: 20px; margin-left: 210px; display: inline-block;">
@@ -157,8 +157,8 @@
 										data-bind="click: $parent.openBDialog.bind($parent, 5), enable: $parent.isEnable">#{i18n.getText('KMK007_33')}</button>
 								</div>
 							</div>
-							<div id="oneday-set-3"
-								data-bind="if: currentWorkType().oneDayCls() == '4'">
+							<!-- 特別休暇 -->
+							<div id="oneday-set-3" data-bind="if: currentWorkType().oneDayCls() == '4'">
 								<div data-bind="with: currentWorkType().oneDay">
 									<div
 										style="margin-top: 20px; margin-left: 210px; display: inline-block;">
@@ -181,8 +181,8 @@
 										data-bind="click: $parent.openBDialog.bind($parent, 4)">#{i18n.getText('KMK007_35')}</button>
 								</div>
 							</div>
-							<div id="oneday-set-4"
-								data-bind="if: currentWorkType().oneDayCls() == '11'">
+							<!-- 休日出勤       休出 -->
+							<div id="oneday-set-4" data-bind="if: currentWorkType().oneDayCls() == '11'">
 								<div data-bind="with: currentWorkType().oneDay">
 									<div>
 										<div style="margin-left: 20px;"
@@ -214,8 +214,8 @@
 										style="display: inline-block; margin-top: 10px; vertical-align: middle; margin-left: 20px;">#{i18n.getText('KMK007_29')}</div>
 								</div>
 							</div>
-							<div id="oneday-set-6"
-								data-bind="if: currentWorkType().oneDayCls() == '7'">
+							<!-- 振出 -->
+							<div id="oneday-set-6" data-bind="if: currentWorkType().oneDayCls() == '7'">
 								<div data-bind="with: currentWorkType().oneDay">
 									<div style="margin-left: 20px;"
 										data-bind="ntsCheckBox: { checked: digestPublicHd, enable: $parent.isEnable }">#{i18n.getText('KMK007_27')}</div>
@@ -233,8 +233,8 @@
 									</div>
 								</div>
 							</div>
-							<div id="oneday-set-7"
-								data-bind="if: currentWorkType().oneDayCls() == '8' || currentWorkType().oneDayCls() == '1'">
+							<!-- 休日 || 振休 -->
+							<div id="oneday-set-7" data-bind="if: currentWorkType().oneDayCls() == '8' || currentWorkType().oneDayCls() == '1'">
 								<div data-bind="with: currentWorkType().oneDay">
 									<div>
 										<div style="margin-left: 20px;"
@@ -258,8 +258,8 @@
 										style="display: inline-block; margin-top: 10px; vertical-align: middle; margin-left: 20px;">#{i18n.getText('KMK007_29')}</div>
 								</div>
 							</div>
-							<div id="oneday-set-9"
-								data-bind="if: currentWorkType().oneDayCls() == '13'">
+							<!-- 休業 -->
+							<div id="oneday-set-9" data-bind="if: currentWorkType().oneDayCls() == '13'">
 								<div data-bind="with: currentWorkType().oneDay">
 									<div
 										style="margin-top: 20px; margin-left: 40px; display: inline-block;">
@@ -280,10 +280,33 @@
 														]}"></div>
 								</div>
 							</div>
+							<!-- 代休: ver8 -->
+							<div id="oneday-set-10" data-bind="if: currentWorkType().oneDayCls() == '6'">
+								<div data-bind="with: currentWorkType().oneDay">
+									<!-- A6_6, A6_7 -->
+									<div style="margin-left: 20px; margin-top: 10px; display: inline-block; 
+										vertical-align: middle;" id="combo-box"
+										data-bind="ntsComboBox: {
+														options: $parent.itemHodidayAtr,
+														optionsValue: 'code',
+														visibleItemsCount: 3,
+														value: holidayAtr,
+														optionsText: 'name',
+														editable: false,
+														enable: $parent.isEnable,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}"></div>
+									<!-- A6_8 -->
+									<div style="display: inline-block; margin-top: 10px; vertical-align: middle; 
+									     margin-left: 20px;">#{i18n.getText('KMK007_29')}</div>
+								</div>
+							</div>
 						</div>
 					</div>
-					<div id="duty-type-set-halfday"
-						data-bind="if: currentWorkType().workAtr() == '1'">
+					<!-- 午前と午後 -->
+					<div id="duty-type-set-halfday" data-bind="if: currentWorkType().workAtr() == '1'">
+						<!-- 午前 -->
 						<div id="morning">
 							<div style="margin-top: 20px; margin-left: 40px;">
 								<label>#{i18n.getText('KMK007_40')}</label>
@@ -302,8 +325,8 @@
 															columns: [
 																{ prop: 'name', length: 10 },
 															]}"></div>
-							<div id="morning-set-1"
-								data-bind="if: currentWorkType().morningCls() == '0'">
+							<!-- 出勤 -->
+							<div id="morning-set-1" data-bind="if: currentWorkType().morningCls() == '0'">
 								<div data-bind="with: currentWorkType().morning">
 									<div>
 										<div style="margin-left: 20px;"
@@ -319,8 +342,8 @@
 									</div>
 								</div>
 							</div>
-							<div id="morning-set-2"
-								data-bind="if: currentWorkType().morningCls() == '5'">
+							<!-- 欠勤 -->
+							<div id="morning-set-2" data-bind="if: currentWorkType().morningCls() == '5'">
 								<div data-bind="with: currentWorkType().morning">
 									<div
 										style="margin-top: 20px; margin-left: 40px; display: inline-block;">
@@ -342,8 +365,8 @@
 										data-bind="click: $parent.openBDialog.bind($parent, 5)">#{i18n.getText('KMK007_33')}</button>
 								</div>
 							</div>
-							<div id="morning-set-3"
-								data-bind="if: currentWorkType().morningCls() == '4'">
+							<!-- 特別休暇 -->
+							<div id="morning-set-3" data-bind="if: currentWorkType().morningCls() == '4'">
 								<div data-bind="with: currentWorkType().morning">
 									<div
 										style="margin-top: 20px; margin-left: 40px; display: inline-block">
@@ -365,15 +388,15 @@
 										data-bind="click: $parent.openBDialog.bind($parent, 4)">#{i18n.getText('KMK007_35')}</button>
 								</div>
 							</div>
-							<div id="morning-set-5"
-								data-bind="if: currentWorkType().morningCls() == '8'">
+							<!-- 振休 -->
+							<div id="morning-set-5" data-bind="if: currentWorkType().morningCls() == '8'">
 								<div data-bind="with: currentWorkType().morning">
 									<div style="margin-left: 20px;"
 										data-bind="ntsCheckBox: { checked: digestPublicHd, enable: $parent.isEnable }">#{i18n.getText('KMK007_27')}</div>
 								</div>
 							</div>
-							<div id="morning-set-6"
-								data-bind="if: currentWorkType().morningCls() == '7'">
+							<!-- 振出 -->
+							<div id="morning-set-6" data-bind="if: currentWorkType().morningCls() == '7'">
 								<div data-bind="with: currentWorkType().morning">
 									<div style="margin-left: 20px;"
 										data-bind="ntsCheckBox: { checked: digestPublicHd, enable: $parent.isEnable }">#{i18n.getText('KMK007_27')}</div>
@@ -391,8 +414,8 @@
 									</div>
 								</div>
 							</div>
-							<div id="morning-set-8"
-								data-bind="if: currentWorkType().morningCls() == '1'">
+							<!-- 休日 -->
+							<div id="morning-set-8" data-bind="if: currentWorkType().morningCls() == '1'">
 								<div data-bind="with: currentWorkType().morning">
 									<div style="margin-left: 20px;"
 										data-bind="ntsCheckBox: { checked: digestPublicHd, enable: $parent.isEnable }">#{i18n.getText('KMK007_27')}</div>
@@ -402,8 +425,30 @@
 									</div>
 								</div>
 							</div>
-
+							<!-- 代休: ver8 -->
+							<div id="morning-set-9" data-bind="if: currentWorkType().morningCls() == '6'">
+								<div data-bind="with: currentWorkType().morning">
+									<!-- A6_6, A6_7 -->
+									<div style="margin-left: 20px; margin-top: 10px; display: inline-block; 
+										vertical-align: middle;" id="combo-box"
+										data-bind="ntsComboBox: {
+														options: $parent.itemHodidayAtr,
+														optionsValue: 'code',
+														visibleItemsCount: 3,
+														value: holidayAtr,
+														optionsText: 'name',
+														editable: false,
+														enable: $parent.isEnable,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}"></div>
+									<!-- A6_8 -->
+									<div style="display: inline-block; margin-top: 10px; vertical-align: middle; 
+									     margin-left: 20px;">#{i18n.getText('KMK007_29')}</div>
+								</div>
+							</div>
 						</div>
+						<!-- 午後 -->
 						<div id="afternoon">
 							<div style="margin-top: 20px; margin-left: 40px;">
 								<label>#{i18n.getText('KMK007_43')}</label>
@@ -422,8 +467,8 @@
 															columns: [
 																{ prop: 'name', length: 10 },
 															]}"></div>
-							<div id="afternoon-set-1"
-								data-bind="if: currentWorkType().afternoonCls() == '0'">
+							<!-- 出勤 -->
+							<div id="afternoon-set-1" data-bind="if: currentWorkType().afternoonCls() == '0'">
 								<div data-bind="with: currentWorkType().afternoon">
 									<div>
 										<div style="margin-left: 20px;"
@@ -439,8 +484,8 @@
 									</div>
 								</div>
 							</div>
-							<div id="afternoon-set-2"
-								data-bind="if: currentWorkType().afternoonCls() == '5'">
+							<!-- 欠勤 -->
+							<div id="afternoon-set-2" data-bind="if: currentWorkType().afternoonCls() == '5'">
 								<div data-bind="with: currentWorkType().afternoon">
 									<div
 										style="margin-top: 20px; margin-left: 40px; display: inline-block;">
@@ -462,8 +507,8 @@
 										data-bind="click: $parent.openBDialog.bind($parent, 5)">#{i18n.getText('KMK007_33')}</button>
 								</div>
 							</div>
-							<div id="afternoon-set-3"
-								data-bind="if: currentWorkType().afternoonCls() == '4'">
+							<!-- 特別休暇 -->
+							<div id="afternoon-set-3" data-bind="if: currentWorkType().afternoonCls() == '4'">
 								<div data-bind="with: currentWorkType().afternoon">
 									<div
 										style="margin-top: 20px; margin-left: 40px; display: inline-block">
@@ -485,15 +530,15 @@
 										data-bind="click: $parent.openBDialog.bind($parent, 4)">#{i18n.getText('KMK007_35')}</button>
 								</div>
 							</div>
-							<div id="afternoon-set-5"
-								data-bind="if: currentWorkType().afternoonCls() == '8'">
+							<!-- 振休 -->
+							<div id="afternoon-set-5" data-bind="if: currentWorkType().afternoonCls() == '8'">
 								<div data-bind="with: currentWorkType().afternoon">
 									<div style="margin-left: 20px;"
 										data-bind="ntsCheckBox: { checked: digestPublicHd, enable: $parent.isEnable }">#{i18n.getText('KMK007_27')}</div>
 								</div>
 							</div>
-							<div id="afternoon-set-6"
-								data-bind="if: currentWorkType().afternoonCls() == '7'">
+							<!-- 振出 -->
+							<div id="afternoon-set-6" data-bind="if: currentWorkType().afternoonCls() == '7'">
 								<div data-bind="with: currentWorkType().afternoon">
 									<div style="margin-left: 20px;"
 										data-bind="ntsCheckBox: { checked: digestPublicHd, enable: $parent.isEnable }">#{i18n.getText('KMK007_27')}</div>
@@ -511,8 +556,8 @@
 									</div>
 								</div>
 							</div>
-							<div id="afternoon-set-8"
-								data-bind="if: currentWorkType().afternoonCls() == '1'">
+							<!-- 休日 -->
+							<div id="afternoon-set-8" data-bind="if: currentWorkType().afternoonCls() == '1'">
 								<div data-bind="with: currentWorkType().afternoon">
 									<div style="margin-left: 20px;"
 										data-bind="ntsCheckBox: { checked: digestPublicHd, enable: $parent.isEnable }">#{i18n.getText('KMK007_27')}</div>
@@ -522,7 +567,28 @@
 									</div>
 								</div>
 							</div>
-
+							<!-- 代休: ver8 -->
+							<div id="afternoon-set-9" data-bind="if: currentWorkType().afternoonCls() == '6'">
+								<div data-bind="with: currentWorkType().afternoon">
+									<!-- A6_6, A6_7 -->
+									<div style="margin-left: 20px; margin-top: 10px; display: inline-block; 
+										vertical-align: middle;" id="combo-box"
+										data-bind="ntsComboBox: {
+														options: $parent.itemHodidayAtr,
+														optionsValue: 'code',
+														visibleItemsCount: 3,
+														value: holidayAtr,
+														optionsText: 'name',
+														editable: false,
+														enable: $parent.isEnable,
+														columns: [
+															{ prop: 'name', length: 10 },
+														]}"></div>
+									<!-- A6_8 -->
+									<div style="display: inline-block; margin-top: 10px; vertical-align: middle; 
+									     margin-left: 20px;">#{i18n.getText('KMK007_29')}</div>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="control-group" data-bind="with: currentWorkType">

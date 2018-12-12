@@ -48,7 +48,6 @@ import nts.uk.ctx.at.record.dom.daily.dailyperformance.classification.EnumCodeNa
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
-import nts.uk.ctx.at.record.dom.workrecord.actualsituation.identificationstatus.export.CheckIndentityDayConfirm;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.YourselfConfirmError;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
@@ -126,6 +125,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.error.ShowDialogError;
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
 import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.CheckIndentityMonth;
 import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthParam;
+import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthResult;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.ClosureSidDto;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.ConfirmationMonthDto;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
@@ -191,8 +191,8 @@ public class DailyPerformanceCorrectionProcessor {
 	@Inject
 	private DPLock findLock;
 	
-	@Inject
-	private CheckIndentityDayConfirm checkIndentityDayConfirm;
+//	@Inject
+//	private CheckIndentityDayConfirm checkIndentityDayConfirm;
 	
 	@Inject
 	private ShowDialogError showDialogError;
@@ -441,11 +441,20 @@ public class DailyPerformanceCorrectionProcessor {
 												screenDto.getEmploymentCode(), dailyPerformanceDto, disItem.getAutBussCode())));
 							if (emp.get(0).equals(sId)) {
 								//社員に対応する締め期間を取得する
-								//DatePeriod period = closureService.findClosurePeriod(emp.get(0), dateRangeTemp.getEndDate());
-								//checkIndenityMonth
-								screenDto.setIndentityMonthResult(checkIndentityMonth.checkIndenityMonth(new IndentityMonthParam(companyId, sId, GeneralDate.today())));
-								//対象日の本人確認が済んでいるかチェックする
-								screenDto.checkShowTighProcess(displayFormat, true);
+								DatePeriod period = closureService.findClosurePeriod(emp.get(0), dateRangeTemp.getEndDate());
+								
+								//パラメータ「日別実績の修正の状態．対象期間．終了日」がパラメータ「締め期間」に含まれているかチェックする
+								if (!period.contains(dateRangeTemp.getEndDate())) {
+									screenDto.setIndentityMonthResult(new IndentityMonthResult(false, true, true));
+									//対象日の本人確認が済んでいるかチェックする
+									//screenDto.checkShowTighProcess(displayFormat, true);
+								} else {
+									// checkIndenityMonth
+									screenDto.setIndentityMonthResult(checkIndentityMonth.checkIndenityMonth(
+											new IndentityMonthParam(companyId, sId, GeneralDate.today())));
+									//対象日の本人確認が済んでいるかチェックする
+									screenDto.checkShowTighProcess(displayFormat, true);
+								}
 							}else {
 								screenDto.getIndentityMonthResult().setHideAll(false);
 							}
@@ -475,7 +484,7 @@ public class DailyPerformanceCorrectionProcessor {
 		results = resultPair.getLeft();
 		screenDto.setDomainOld(resultPair.getRight());
 		screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
-		List<ItemValue> dataValue = screenDto.getItemValues().stream().sorted((x, y) -> x.getItemId() - y.getItemId()).collect(Collectors.toList());
+//		List<ItemValue> dataValue = screenDto.getItemValues().stream().sorted((x, y) -> x.getItemId() - y.getItemId()).collect(Collectors.toList());
 		Map<String, DailyModifyResult> resultDailyMap = results.stream().collect(Collectors
 				.toMap(x -> mergeString(x.getEmployeeId(), "|", x.getDate().toString()), Function.identity(), (x, y) -> x));
 		
@@ -499,7 +508,7 @@ public class DailyPerformanceCorrectionProcessor {
 					lstError = new ArrayList<>();
 				}
 				System.out.println("time load Error: "+ (System.currentTimeMillis() - timeT));
-				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
+				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP, false);
 			}
 		}
 
@@ -1588,8 +1597,13 @@ public class DailyPerformanceCorrectionProcessor {
 				// List<RegulationInfoEmployeeQueryR> regulationRs=
 				// regulationInfoEmployeePub.search(createQueryEmployee(new ArrayList<>(),
 				// range.getStartDate(), range.getEndDate()));
+				//社員と同じ職場の社員を取得する
 				List<String> listEmp = repo.getListEmpInDepartment(employeeIdLogin,
 						new DateRange(range.getStartDate(), range.getEndDate()));
+				//社員一覧を特定の会社に在籍している社員に絞り込む
+				listEmp = repo.getAffCompanyHistorySidDate(companyId, listEmp,
+						new DateRange(range.getStartDate(), range.getEndDate()));
+				
 				lstEmployeeId = narrowEmployeeAdapter.findByEmpId(listEmp, 3);
 				if (closureId != null) {
 					Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, lstEmployeeId,

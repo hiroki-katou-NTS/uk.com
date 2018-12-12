@@ -11,7 +11,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import java.util.List;
 
-@Path("ctx.pr.core.ws.wageprovision.individualwagecontract")
+@Path("ctx/pr/core/ws/wageprovision/individualwagecontract")
 @Produces("application/json")
 public class WageItemAcquisitionProcessWebService extends WebService {
 

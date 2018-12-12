@@ -2,7 +2,7 @@ package nts.uk.ctx.at.schedule.app.command.shift.schedulehorizontal;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+//import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -26,7 +26,7 @@ public class UpdateHoriTotalCategoryCommandHandler extends CommandHandler<Update
 	protected void handle(CommandHandlerContext<UpdateHoriTotalCategoryCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		UpdateHoriTotalCategoryCommand data = context.getCommand();
-		Optional<HoriTotalCategory> horiOld = horiRep.findCateByCode(companyId, data.getCategoryCode());
+//		Optional<HoriTotalCategory> horiOld = horiRep.findCateByCode(companyId, data.getCategoryCode());
 		List<TotalEvalOrder> totalEvalOrders = new ArrayList<>();
 		// check list 集計項目一覧 exsisted or not
 		if(data.getTotalEvalOrders() == null || data.getTotalEvalOrders().size() == 0){

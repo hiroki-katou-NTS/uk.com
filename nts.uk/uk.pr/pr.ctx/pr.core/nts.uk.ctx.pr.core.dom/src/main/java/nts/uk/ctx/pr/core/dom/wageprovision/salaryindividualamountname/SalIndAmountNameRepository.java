@@ -11,6 +11,8 @@ public interface SalIndAmountNameRepository
 
     List<SalIndAmountName> getAllSalIndAmountName();
 
+    List<SalIndAmountName> getSalIndAmountName(String cid);
+
     Optional<SalIndAmountName> getSalIndAmountNameById(String cid, String individualPriceCode, int cateIndicator);
 
     List<SalIndAmountName> getAllSalIndAmountNameByCateIndi(String cid, int cateIndicator);

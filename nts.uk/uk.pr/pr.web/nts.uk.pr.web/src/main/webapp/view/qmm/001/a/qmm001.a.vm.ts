@@ -338,7 +338,6 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
 
         register() {
             let self = this;
-            $('#A4_2').focus();
             if( self.selectedSwitchParaAvai() == SWITCH_EFF_CATEGORY.AVAILABLE ){
                 self.validate();
             }
@@ -418,7 +417,9 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
             }).fail(error => {
                 dialog.alertError(error);
-            });
+            }).always(() =>{
+                $('#A4_2').focus();
+        });
 
 
         }

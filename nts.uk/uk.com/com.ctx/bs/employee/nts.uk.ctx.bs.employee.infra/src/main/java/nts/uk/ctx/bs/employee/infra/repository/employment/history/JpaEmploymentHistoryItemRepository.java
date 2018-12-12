@@ -29,26 +29,26 @@ import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryOfEmployee;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository.SingleHistoryItem;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem_;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist_;
 import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaEmploymentHistoryItemRepository extends JpaRepository implements EmploymentHistoryItemRepository {
 
-	private static final String SEL_HIS_ITEM = " SELECT a.bsymtEmploymentPK.code ,a.name FROM BsymtEmployment a"
-			+ " INNER JOIN BsymtEmploymentHist h" 
-			+ " ON a.bsymtEmploymentPK.cid = h.companyId"
-			+ " INNER JOIN BsymtEmploymentHistItem i"
-			+ " ON  h.hisId = i.hisId " 
-			+ " AND h.sid  = i.sid"
-			+ " AND a.bsymtEmploymentPK.code =  i.empCode" 
-			+ " WHERE h.sid =:sid" + " AND h.strDate <= :date"
-			+ " AND h.endDate >= :date " 
-			+ " AND a.bsymtEmploymentPK.cid =:companyId";
+//	private static final String SEL_HIS_ITEM = " SELECT a.bsymtEmploymentPK.code ,a.name FROM BsymtEmployment a"
+//			+ " INNER JOIN BsymtEmploymentHist h" 
+//			+ " ON a.bsymtEmploymentPK.cid = h.companyId"
+//			+ " INNER JOIN BsymtEmploymentHistItem i"
+//			+ " ON  h.hisId = i.hisId " 
+//			+ " AND h.sid  = i.sid"
+//			+ " AND a.bsymtEmploymentPK.code =  i.empCode" 
+//			+ " WHERE h.sid =:sid" + " AND h.strDate <= :date"
+//			+ " AND h.endDate >= :date " 
+//			+ " AND a.bsymtEmploymentPK.cid =:companyId";
 	
 	private static final String SELECT_BY_EMPID_BASEDATE = "SELECT ehi FROM BsymtEmploymentHistItem ehi"
 			+ " INNER JOIN  BsymtEmploymentHist eh on eh.hisId = ehi.hisId"
@@ -58,17 +58,18 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 			+ " INNER JOIN  BsymtEmploymentHist eh on eh.hisId = ehi.hisId"
 			+ " WHERE eh.sid = :sid ORDER BY eh.strDate";
 	
-	/** The Constant SELECT_BY_HISTIDS. */
-	private static final String SELECT_BY_HISTIDS = "SELECT aw FROM BsymtEmploymentHistItem aw"
-			+ " WHERE aw.hisId IN :historyId";
+//	/** The Constant SELECT_BY_HISTIDS. */
+//	private static final String SELECT_BY_HISTIDS = "SELECT aw FROM BsymtEmploymentHistItem aw"
+//			+ " WHERE aw.hisId IN :historyId";
 	
-	private static final String SELECT_BY_LIST_EMPTCODE_DATEPERIOD = "SELECT ehi FROM BsymtEmploymentHistItem ehi" 
-			+ " INNER JOIN  BsymtEmploymentHist eh on eh.hisId = ehi.hisId" 
-			+ " WHERE ehi.empCode IN :employmentCodes AND eh.strDate <= :endDate AND :startDate <= eh.endDate";
+//	private static final String SELECT_BY_LIST_EMPTCODE_DATEPERIOD = "SELECT ehi FROM BsymtEmploymentHistItem ehi" 
+//			+ " INNER JOIN  BsymtEmploymentHist eh on eh.hisId = ehi.hisId" 
+//			+ " WHERE ehi.empCode IN :employmentCodes AND eh.strDate <= :endDate AND :startDate <= eh.endDate";
 	
 	private static final String GET_LST_SID_BY_EMPTCODE_DATEPERIOD = "SELECT ehi.sid FROM BsymtEmploymentHistItem ehi" 
-			+ " INNER JOIN  BsymtEmploymentHist eh on eh.hisId = ehi.hisId" 
-			+ " WHERE ehi.empCode IN :employmentCodes AND eh.strDate <= :endDate AND :startDate <= eh.endDate";
+			+ " INNER JOIN  BsymtEmploymentHist eh on eh.hisId = ehi.hisId " 
+			+ " WHERE ehi.empCode IN :employmentCodes AND eh.strDate <= :endDate AND :startDate <= eh.endDate"
+			+ " AND eh.companyId = :companyId";
 	
 	@Override
 	public Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String companyId, String sid, GeneralDate date) {
@@ -126,16 +127,16 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 				domain.getEmploymentCode().v(), domain.getSalarySegment() !=null? domain.getSalarySegment().value: null);
 	}
 
-	private EmploymentInfo toDomainEmployee(Object[] entity) {
-		EmploymentInfo emp = new EmploymentInfo();
-		if (entity[0] != null) {
-			emp.setEmploymentCode(entity[0].toString());
-		}
-		if (entity[1] != null) {
-			emp.setEmploymentName(entity[1].toString());
-		}
-		return emp;
-	}
+//	private EmploymentInfo toDomainEmployee(Object[] entity) {
+//		EmploymentInfo emp = new EmploymentInfo();
+//		if (entity[0] != null) {
+//			emp.setEmploymentCode(entity[0].toString());
+//		}
+//		if (entity[1] != null) {
+//			emp.setEmploymentName(entity[1].toString());
+//		}
+//		return emp;
+//	}
 
 	/**
 	 * Update entity from domain
@@ -500,11 +501,13 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	@Override
 	public List<String> getLstSidByListCodeAndDatePeriod(DatePeriod dateperiod, List<String> employmentCodes) {
 		List<String> listSid = new ArrayList<>();
+		String companyId = AppContexts.user().companyId();
 		CollectionUtil.split(employmentCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			listSid.addAll(this.queryProxy().query(GET_LST_SID_BY_EMPTCODE_DATEPERIOD, String.class)
 					.setParameter("employmentCodes", subList)
 					.setParameter("startDate", dateperiod.start())
 					.setParameter("endDate", dateperiod.end())
+					.setParameter("companyId", companyId)
 					.getList());
 		});
 		if(listSid.isEmpty()){

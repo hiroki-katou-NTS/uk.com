@@ -18,7 +18,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.ProcessInformation;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.ProcessInformationRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SetDaySupport;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SetDaySupportRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SysEmploymentAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employment.SysEmploymentAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

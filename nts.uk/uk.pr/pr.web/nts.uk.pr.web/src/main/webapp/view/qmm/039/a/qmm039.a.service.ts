@@ -11,7 +11,8 @@ module nts.uk.pr.view.qmm039.a.service {
         updateHistory: "ctx/pr/core/ws/wageprovision/individualwagecontract/updateHistory",
         addHistory: "ctx/pr/core/ws/wageprovision/individualwagecontract/addHistory",
         getBaseDate: "ctx/pr/core/wageprovision/processdatecls/getBaseDate",
-    }
+        getEmploymentCode: "ctx/pr/shared/employeeaverwage/getEmploymentCode",
+    };
 
     export function getInfoEmLogin(): JQueryPromise<any> {
         return ajax("com", paths.getInfoEmLogin);
@@ -43,5 +44,9 @@ module nts.uk.pr.view.qmm039.a.service {
 
     export function getBaseDate(): JQueryPromise<any> {
         return ajax("pr", paths.getBaseDate);
+    }
+
+    export function getEmploymentCode(employeeId) : JQueryPromise<any> {
+        return ajax("pr", paths.getEmploymentCode, employeeId);
     }
 }

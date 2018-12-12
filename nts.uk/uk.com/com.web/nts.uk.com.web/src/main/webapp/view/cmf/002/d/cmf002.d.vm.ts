@@ -64,10 +64,10 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     //get data return from server
                     let outputItemList: CtgItemDataCndDetailDto = res;
                     if (res.cndDetai == null) {
-                        self.registerMode = shareModel.SCREEN_MODE.NEW
+                        self.registerMode = shareModel.SCREEN_MODE.NEW;
                         self.cndDetai(new OutCndDetailDto(self.cndSetCd, "", []));
                     } else {
-                        self.registerMode = shareModel.SCREEN_MODE.UPDATE
+                        self.registerMode = shareModel.SCREEN_MODE.UPDATE;
                         self.cndDetai(OutCndDetailDto.fromApp(res.cndDetai));
                     }
                     self.ctgItemDataList(res.ctgItemDataList);
@@ -182,9 +182,10 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             let command: OutCndDetailInfoCommand = new OutCndDetailInfoCommand(OutCndDetailCommand.fromDto(self.cndDetai()),
                 self.standardAtr, self.registerMode);
             service.register(command).done(() => {
+                self.registerMode = shareModel.SCREEN_MODE.UPDATE;
                 info({ messageId: "Msg_15" }).then(() => {
                     self.focusFirstRowD5_2();
-                    $('#D5_2_container').focus();   
+                    $('#D5_2_container').focus();
                 });
             }).fail(res => {
                 alertError(res);
