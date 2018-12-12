@@ -27,8 +27,8 @@ public class StateLinkSetIndiviDto {
 
 
     public static StateLinkSetIndiviDto fromDomain(StateLinkSetIndivi domain, List<StatementLayout> listStatementLayout) {
-        Optional<StatementLayout> tempSalary = listStatementLayout.stream().filter(item ->item.getStatementCode().v().equals(domain.getSalaryCode().get().v())).findFirst();
-        Optional<StatementLayout> tempBonus = listStatementLayout.stream().filter(item ->item.getStatementCode().v().equals(domain.getBonusCode().get().v())).findFirst();
+        Optional<StatementLayout> tempSalary = domain.getSalaryCode().isPresent() ? listStatementLayout.stream().filter(item ->item.getStatementCode().v().equals(domain.getSalaryCode().get().v())).findFirst() : Optional.empty();
+        Optional<StatementLayout> tempBonus = domain.getBonusCode().isPresent() ? listStatementLayout.stream().filter(item ->item.getStatementCode().v().equals(domain.getBonusCode().get().v())).findFirst() : Optional.empty();
         return new StateLinkSetIndiviDto(
                 domain.getHistoryID(),
                 domain.getSalaryCode().isPresent() ? domain.getSalaryCode().get().v() : null,
