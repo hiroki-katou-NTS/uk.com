@@ -32,11 +32,6 @@ module nts.uk.pr.view.qmm019.c.viewmodel {
             self.newStartMonth = ko.observable(null);
             self.endMonthNumber = null;
 
-            if(params) {
-                self.statementCode(params.code);
-                self.histId(params.histId);
-            }
-
             self.itemHistoryEditList = ko.observableArray([
                 new shareModel.BoxModel(0, getText('QMM019_46')),
                 new shareModel.BoxModel(1, getText('QMM019_47'))
@@ -92,6 +87,7 @@ module nts.uk.pr.view.qmm019.c.viewmodel {
                 let newStartDate = nts.uk.time.parseYearMonth(self.newStartMonth()).toValue();
                 let command = new StatementLayoutHistCommand(self.statementCode(), self.histId(), newStartDate, self.endMonthNumber);
 
+                $("#C1_12").trigger("validate");
                 if(!nts.uk.ui.errors.hasError()) {
                     block.invisible();
 
