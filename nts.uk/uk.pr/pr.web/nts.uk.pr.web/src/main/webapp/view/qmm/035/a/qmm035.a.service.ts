@@ -1,27 +1,32 @@
 module nts.uk.pr.view.qmm035.a.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
-    var paths = {
-        defaultData: "pr/core/fromsetting/start",
-        findByCode: "pr/core/fromsetting/getbycode/{0}",
-        update: "pr/core/fromsetting/update",
-        create: "pr/core/fromsetting/create",
-        delete: "pr/core/fromsetting/delete"
-    }
+    let paths = {
+        defaultData: "ctx/pr/report/printdata/comlegalrecord/start",
+        findByCode: "ctx/pr/report/printdata/comlegalrecord/getbycode/{0}",
+        update: "ctx/pr/report/printdata/comlegalrecord/update",
+        create: "ctx/pr/report/printdata/comlegalrecord/create",
+        delete: "ctx/pr/report/printdata/comlegalrecord/delete"
+    };
+
     export function defaultData(): JQueryPromise<any> {
-       return ajax("pr",paths.defaultData);
+        return ajax("pr", paths.defaultData);
     }
-    export function findByCode(code : string) : JQueryPromise<any>{
+
+    export function findByCode(code: string): JQueryPromise<any> {
         let _path = format(paths.findByCode, code);
         return ajax('pr', _path);
     }
-    export function update(command) : JQueryPromise<any>{
+
+    export function update(command): JQueryPromise<any> {
         return ajax('pr', paths.update, command);
     }
-    export function create(command) : JQueryPromise<any>{
+
+    export function create(command): JQueryPromise<any> {
         return ajax('pr', paths.create, command);
     }
-    export function deleteCompany(command: any){
-       return ajax('pr', paths.delete, command);
+
+    export function deleteCompany(command: any) {
+        return ajax('pr', paths.delete, command);
     }
 }

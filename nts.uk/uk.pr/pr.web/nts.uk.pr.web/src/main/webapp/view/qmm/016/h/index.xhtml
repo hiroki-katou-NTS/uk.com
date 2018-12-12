@@ -10,8 +10,8 @@
     <ui:define name="htmlHead">
         <script>
             var dialogSize = {
-                width: 1140,
-                height: 830
+                width: 1060,
+                height: 870
             };
         </script>
         <com:ValidatorScript>
@@ -59,7 +59,7 @@
             </div>
 
             <div id="fixed-flex-layout-right">
-                <div class="flex valign-center" data-bind = "with: selectedQualification">
+                <div class="control-group valign-center" data-bind = "with: selectedQualification">
                     <div class="column-1"
                          data-bind="ntsFormLabel: {required: true, constraint: ['QualificationGroupCode', 'QualificationGroupName']}">#{i18n.getText('QMM016_8')}</div>
                     <input id = "H3_1"
@@ -67,27 +67,36 @@
                     <input id = "H3_2" style="margin-left: 5px;"
                            data-bind="ntsTextEditor: {constraint: 'QualificationGroupName',value: qualificationGroupName, name: '#[QMM016_62]', required: true}"/>
                 </div>
-                <div data-bind = "with: selectedQualification" class="flex valign-center row">
+                <div data-bind = "with: selectedQualification" class="control-group valign-center">
                     <div class="column-1"
                          data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_51')}</div>
                     <button style="display: inline-block"
                             data-bind="ntsHelpButton: {image: '../resource/QMM016_1.png', position: 'bottom left'}">?</button>
-                    <div style = "margin-left: 15px;" data-bind="ntsComboBox: {
-                        width: '200px',
+                    <div style = "margin-left: 15px" data-bind="ntsComboBox: {
+                        width: '230px',
                         name: '#[QMM016_63]',
                         options: paymentMethodItem,
                         optionsValue: 'value',
                         visibleItemsCount: 5,
                         value: paymentMethod,
+                        dropDownAttachedToBody: true,
                         optionsText: 'name',
                         columns: [
-                            { prop: 'name', length: 10 }
+                            { prop: 'name', length: 7 }
                         ]}">
 
                     </div>
                 </div>
                 <div class="panel panel-frame">
-                    <div class="flex valign-center row">
+                	<div class="pull-left control-group" style="width: 40%; padding-left: 20px">
+                		<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_64')}</div>
+                		<hr/>
+                	</div>
+                	<div class="pull-right control-group" style="width: 40%; padding-right: 31px">
+                		<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_65')}</div>
+                		<hr/>
+                	</div>
+                    <div class="flex valign-center row" style="clear: both; padding-left: 20px">
                         <div id="swap-list" data-bind="ntsSwapList: {
                             showSearchBox: { showLeft : true, showRight: false},
                             height: 330,

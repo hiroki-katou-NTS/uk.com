@@ -29,28 +29,28 @@ module nts.uk.pr.view.qmm016.share.model {
         NUMERIC_ITEM = 1
     }
     // 要素種類
-    export enum ELEMENT_TYPE {
-        M001 = '雇用',
-        M002 = '部門',
-        M003 = '分類',
-        M004 = '職位',
-        M005 = '給与分類',
-        M006 = '資格',
-        M007 = '精皆勤レベル',
-        N001 = '年齢',
-        N002 = '勤続年数',
-        N003 = '家族人数',
-    }
+//    export enum ELEMENT_TYPE {
+//        M001 = '雇用',
+//        M002 = '部門',
+//        M003 = '分類',
+//        M004 = '職位',
+//        M005 = '給与分類',
+//        M006 = '資格',
+//        M007 = '精皆勤レベル',
+//        N001 = '年齢',
+//        N002 = '勤続年数',
+//        N003 = '家族人数'
+//    }
 
     export enum QualificationPaymentMethod {
-        PAY_ONLY_ONE_HIGHEST_BENEFIT = 0,
-        ADD_MULTIPLE_APPLICABLE_AMOUNT = 1
+        ADD_MULTIPLE_APPLICABLE_AMOUNT = 0,
+        PAY_ONLY_ONE_HIGHEST_BENEFIT   = 1
     }
 
     export function getQualificationPaymentMethodItem() {
         return [
-            new EnumModel(QualificationPaymentMethod.PAY_ONLY_ONE_HIGHEST_BENEFIT, '一番高い手当を1つだけ支給する'),
-            new EnumModel(QualificationPaymentMethod.ADD_MULTIPLE_APPLICABLE_AMOUNT, '複数該当した金額を加算する')
+            new EnumModel(QualificationPaymentMethod.ADD_MULTIPLE_APPLICABLE_AMOUNT, '複数該当した金額を加算する'),
+            new EnumModel(QualificationPaymentMethod.PAY_ONLY_ONE_HIGHEST_BENEFIT, '一番高い手当を1つだけ支給する')
         ];
     }
 
@@ -93,7 +93,7 @@ module nts.uk.pr.view.qmm016.share.model {
         elementInformation: IElementInformation,
         elementSetting: number,
         remarkInformation: string,
-        history: Array<IGenericHistoryYearMonthPeriod>
+        histories: Array<IGenericHistoryYearMonthPeriod>
     }
     // 賃金テーブル
     export class WageTable {
@@ -103,7 +103,7 @@ module nts.uk.pr.view.qmm016.share.model {
         elementInformation: KnockoutObservable<ElementInformation> = ko.observable(null);
         elementSetting: KnockoutObservable<number> = ko.observable(null);
         remarkInformation: KnockoutObservable<string> = ko.observable(null);
-        history: KnockoutObservableArray<GenericHistoryYearMonthPeriod> = ko.observableArray([]);
+        histories: KnockoutObservableArray<GenericHistoryYearMonthPeriod> = ko.observableArray([]);
         // Item
         elementSettingItem1: KnockoutObservableArray<EnumModel> = ko.observableArray(getElementItemModel().splice(0, 3));
         elementSettingItem2: KnockoutObservableArray<EnumModel> = ko.observableArray(getElementItemModel().splice(3, 5));
@@ -118,7 +118,7 @@ module nts.uk.pr.view.qmm016.share.model {
             this.elementInformation(new ElementInformation(params ? params.elementInformation : null));
             this.elementSetting(params ? params.elementSetting : 0);
             this.remarkInformation(params ? params.remarkInformation : null);
-            this.history(params ? params.history.map(item => new GenericHistoryYearMonthPeriod(item)) : []);
+            this.histories(params ? params.histories.map(item => new GenericHistoryYearMonthPeriod(item)) : []);
             this.elementSetting.subscribe(newValue => {
                 self.changeImagePath(newValue);
             });
@@ -166,9 +166,9 @@ module nts.uk.pr.view.qmm016.share.model {
 
     // 要素情報
     export interface IElementInformation{
-        oneDimensionElement: IElementAttribute,
-        twoDimensionElement: IElementAttribute,
-        threeDimensionElement: IElementAttribute,
+        oneDimensionalElement: IElementAttribute,
+        twoDimensionalElement: IElementAttribute,
+        threeDimensionalElement: IElementAttribute,
     }
     // 要素情報
     export class ElementInformation{
@@ -176,9 +176,9 @@ module nts.uk.pr.view.qmm016.share.model {
         twoDimensionElement: KnockoutObservable<ElementAttribute> = ko.observable(null);
         threeDimensionElement: KnockoutObservable<ElementAttribute> = ko.observable(null);
         constructor (params: IElementInformation) {
-            this.oneDimensionElement(new ElementAttribute(params ? params.oneDimensionElement: null));
-            this.twoDimensionElement(new ElementAttribute(params ? params.twoDimensionElement: null));
-            this.threeDimensionElement(new ElementAttribute(params ? params.threeDimensionElement: null));
+            this.oneDimensionElement(new ElementAttribute(params ? params.oneDimensionalElement: null));
+            this.twoDimensionElement(new ElementAttribute(params ? params.twoDimensionalElement: null));
+            this.threeDimensionElement(new ElementAttribute(params ? params.threeDimensionalElement: null));
         }
     }
 
@@ -188,6 +188,7 @@ module nts.uk.pr.view.qmm016.share.model {
         masterNumericClassification: number,
         fixedElement: string,
         optionalAdditionalElement: string,
+        displayName: string
     }
     // 要素の属性
     export class ElementAttribute {
@@ -200,29 +201,39 @@ module nts.uk.pr.view.qmm016.share.model {
             this.masterNumericClassification(params ? params.masterNumericClassification : null);
             this.fixedElement(params ? params.fixedElement : null);
             this.optionalAdditionalElement(params ? params.optionalAdditionalElement : null);
-            let fixedElementValue = this.fixedElement();
-            this.elementName(ELEMENT_TYPE[fixedElementValue]);
+            this.elementName(params ? params.displayName : null);
         }
     }
 
     // 賃金テーブル内容
     export interface IWageTableContent {
         historyID: string,
-        payment: Array<IElementsCombinationPaymentAmount>,
-        qualificationGroupSetting: Array<IQualificationGroupSettingContent>
+        payments: Array<IElementsCombinationPaymentAmount>,
+        qualificationGroupSettings: Array<IQualificationGroupSettingContent>
     }
 
     // 賃金テーブル内容
     export class WageTableContent {
         historyID: KnockoutObservable<string> = ko.observable(null);
-        payment: KnockoutObservableArray<ElementsCombinationPaymentAmount> = ko.observableArray([]);
+        payment: KnockoutObservableArray<any> = ko.observableArray([]);
         qualificationGroupSetting: KnockoutObservableArray<QualificationGroupSettingContent> = ko.observableArray([]);
         // control item
         paymentMethodItem: KnockoutObservableArray<model.EnumModel> = ko.observableArray(getQualificationPaymentMethodItem());
-        constructor(params: IWageTableContent) {
-            this.historyID(params ? params.historyID : null);
-            this.payment(params ? params.payment.map(item => new ElementsCombinationPaymentAmount(item)) : []);
-            this.qualificationGroupSetting(params ? params.qualificationGroupSetting.map(item => new QualificationGroupSettingContent(item)) : []);
+        constructor(params: any) {
+            if (params) {
+                this.historyID(params.historyID);
+                if (!_.isEmpty(params.list1dElements)) {
+                    this.payment(params.list1dElements.map(item => new ElementItem(item)));
+                }
+                if (!_.isEmpty(params.list2dElements)) {
+                    this.payment(params.list2dElements.map(item => new TwoDmsElementItem(item)));
+                }
+                if (!_.isEmpty(params.list3dElements)) {
+                    this.payment(params.list3dElements.map(item => new ThreeDmsElementItem(item)));
+                }
+                this.qualificationGroupSetting(params && !_.isEmpty(params.qualificationGroupSettings) ? params.qualificationGroupSettings.map(item => new QualificationGroupSettingContent(item)) : []);
+            }
+            
         }
     }
 
@@ -242,13 +253,15 @@ module nts.uk.pr.view.qmm016.share.model {
         qualificationGroupCode: KnockoutObservable<string> = ko.observable(null);
         qualificationGroupName: KnockoutObservable<string> = ko.observable(null);
         eligibleQualificationCode: KnockoutObservableArray<string> = ko.observableArray([]);
-        eligibleQualification: KnockoutObservableArray<QualificationInformation> = ko.observableArray([]);
+        eligibleQualification: KnockoutObservableArray<any> = ko.observableArray([]);
         constructor (params: IQualificationGroupSettingContent) {
             this.paymentMethod(params ? params.paymentMethod: null);
             this.qualificationGroupCode(params ? params.qualificationGroupCode: null);
             this.qualificationGroupName(params ? params.qualificationGroupName: null);
-            this.eligibleQualificationCode(params ? params.eligibleQualificationCode: []);
-            this.eligibleQualification(params? params.eligibleQualification ? params.eligibleQualification.map(item => new QualificationInformation(item)) : [] : []);
+            //this.eligibleQualificationCode(params ? params.eligibleQualificationCode: []);
+            this.eligibleQualificationCode(params ? params.eligibleQualificationCode.map(x => {
+                return ko.mapping.fromJS(x)
+            }) : []);
             this.getDisplayPaymentMethod(this.paymentMethod());
             this.paymentMethod.subscribe(newValue => {
                 this.getDisplayPaymentMethod(newValue);
@@ -308,14 +321,52 @@ module nts.uk.pr.view.qmm016.share.model {
     // 要素項目（数値）
     export class ElementItem {
         masterCode: KnockoutObservable<string> = ko.observable(null);
+        masterName: KnockoutObservable<string> = ko.observable(null);
         frameNumber: KnockoutObservable<number> = ko.observable(null);
         frameLowerLimit: KnockoutObservable<number> = ko.observable(null);
         frameUpperLimit: KnockoutObservable<number> = ko.observable(null);
-        constructor (params: IElementItem) {
+        paymentAmount: KnockoutObservable<number> = ko.observable(null);
+        constructor (params: any) {
             this.masterCode(params ? params.masterCode : null);
+            this.masterName(params ? params.masterName : null);
             this.frameNumber(params ? params.frameNumber : null);
             this.frameLowerLimit(params ? params.frameLowerLimit : null);
             this.frameUpperLimit(params ? params.frameUpperLimit : null);
+            this.paymentAmount(params ? params.paymentAmount : null);
+        }
+    }
+    
+    export class TwoDmsElementItem {
+        masterCode: KnockoutObservable<string> = ko.observable(null);
+        masterName: KnockoutObservable<string> = ko.observable(null);
+        frameNumber: KnockoutObservable<number> = ko.observable(null);
+        frameLowerLimit: KnockoutObservable<number> = ko.observable(null);
+        frameUpperLimit: KnockoutObservable<number> = ko.observable(null);
+        listSecondDms: KnockoutObservableArray<ElementItem> = ko.observableArray([]);
+        constructor (params: any) {
+            this.masterCode(params ? params.masterCode : null);
+            this.masterName(params ? params.masterName : null);
+            this.frameNumber(params ? params.frameNumber : null);
+            this.frameLowerLimit(params ? params.frameLowerLimit : null);
+            this.frameUpperLimit(params ? params.frameUpperLimit : null);
+            this.listSecondDms(params && !_.isEmpty(params.listSecondDms) ? params.listSecondDms.map(item => new ElementItem(item)) : []);
+        }
+    }
+    
+    export class ThreeDmsElementItem {
+        masterCode: KnockoutObservable<string> = ko.observable(null);
+        masterName: KnockoutObservable<string> = ko.observable(null);
+        frameNumber: KnockoutObservable<number> = ko.observable(null);
+        frameLowerLimit: KnockoutObservable<number> = ko.observable(null);
+        frameUpperLimit: KnockoutObservable<number> = ko.observable(null);
+        listFirstDms: KnockoutObservableArray<TwoDmsElementItem> = ko.observableArray([]);
+        constructor (params: any) {
+            this.masterCode(params ? params.masterCode : null);
+            this.masterName(params ? params.masterName : null);
+            this.frameNumber(params ? params.frameNumber : null);
+            this.frameLowerLimit(params ? params.frameLowerLimit : null);
+            this.frameUpperLimit(params ? params.frameUpperLimit : null);
+            this.listFirstDms(params && !_.isEmpty(params.listFirstDms) ? params.listFirstDms.map(item => new TwoDmsElementItem(item)) : []);
         }
     }
 
@@ -454,8 +505,8 @@ module nts.uk.pr.view.qmm016.share.model {
 
     // 年月期間の汎用履歴項目
     export interface IGenericHistoryYearMonthPeriod {
-        startMonth: string;
-        endMonth: string;
+        startMonth: number;
+        endMonth: number;
         historyID: string;
     }
 
@@ -463,8 +514,8 @@ module nts.uk.pr.view.qmm016.share.model {
     export class GenericHistoryYearMonthPeriod {
 
         // Item
-        startMonth: KnockoutObservable<string> = ko.observable(null);
-        endMonth: KnockoutObservable<string> = ko.observable(null);
+        startMonth: KnockoutObservable<number> = ko.observable(null);
+        endMonth: KnockoutObservable<number> = ko.observable(null);
         historyID: KnockoutObservable<string> = ko.observable(null);
         // display item
         displayStartMonth: any;
@@ -472,8 +523,8 @@ module nts.uk.pr.view.qmm016.share.model {
         displayJapanStartYearMonth: any;
 
         constructor(params: IGenericHistoryYearMonthPeriod) {
-            this.startMonth(params ? params.startMonth : "");
-            this.endMonth(params ? params.endMonth : "");
+            this.startMonth(params ? params.startMonth : null);
+            this.endMonth(params ? params.endMonth : null);
             this.historyID(params ? params.historyID : "");
             this.displayStartMonth = ko.computed(function() {
                 return this.startMonth() ? nts.uk.time.parseYearMonth(this.startMonth()).format() : "";

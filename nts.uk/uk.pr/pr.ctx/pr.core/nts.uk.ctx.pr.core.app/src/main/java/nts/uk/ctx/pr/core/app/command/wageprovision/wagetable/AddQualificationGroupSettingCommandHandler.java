@@ -11,13 +11,15 @@ import javax.inject.Inject;
 @Stateless
 public class AddQualificationGroupSettingCommandHandler extends CommandHandler<QualificationGroupSettingCommand> {
 
-    @Inject
-    private QualificationGroupSettingRepository qualificationGroupSettingRepository;
+	@Inject
+	private QualificationGroupSettingRepository qualificationGroupSettingRepository;
 
-    @Override
-    protected void handle(CommandHandlerContext<QualificationGroupSettingCommand> context) {
-        QualificationGroupSettingCommand command = context.getCommand();
-        if (qualificationGroupSettingRepository.getQualificationGroupSettingById(command.getQualificationGroupCode()).isPresent()) throw new BusinessException("Msg_3");
-        qualificationGroupSettingRepository.add(command.fromCommandToDomain());
-    }
+	@Override
+	protected void handle(CommandHandlerContext<QualificationGroupSettingCommand> context) {
+		QualificationGroupSettingCommand command = context.getCommand();
+		if (qualificationGroupSettingRepository.getQualificationGroupSettingById(command.getQualificationGroupCode())
+				.isPresent())
+			throw new BusinessException("Msg_3");
+		qualificationGroupSettingRepository.add(command.fromCommandToDomain());
+	}
 }

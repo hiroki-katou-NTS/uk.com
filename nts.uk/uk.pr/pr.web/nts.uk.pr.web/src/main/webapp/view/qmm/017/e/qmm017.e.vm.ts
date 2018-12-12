@@ -57,8 +57,12 @@ module nts.uk.pr.view.qmm017.e.viewmodel {
         }
         saveConfiguration () {
             let self = this;
-            // unknown which item to be affect. temporary not link b to e
-            setShared("QMM017_E_RES_PARAMS", {basicCalculationFormula: ko.toJS(self.basicCalculationFormula)});
+            nts.uk.ui.errors.clearAll();
+            $('.nts-input').trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+            setShared("QMM017_E_RES_PARAMS", {basicCalculationFormula: self.fromKnockoutObservableToJS(self.basicCalculationFormula)});
             nts.uk.ui.windows.close();
         }
         cancel () {
