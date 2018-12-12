@@ -1092,10 +1092,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             nts.uk.ui.dialog.info({ messageId: "Msg_1455" });
                         }
 
-                        if ((dataAfter.showErrorDialog == null && self.showDialogError) || dataAfter.showErrorDialog || errorFlex) {
+                        if ((dataAfter.showErrorDialog == null && self.showDialogError) || dataAfter.showErrorDialog) {
                             self.showDialogError = true;
                             self.showErrorDialog();
-                        } else {
+                        } else if(errorFlex){
+                            self.showErrorDialog();
+                        }else {
                             self.showDialogError = false;
                         }
                         nts.uk.ui.block.clear();
