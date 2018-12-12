@@ -802,7 +802,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				return lineDataCSV;
 			}
 			
-			if(outputItemCustom.getStandardOutputItem().getItemType() == ItemType.CHARACTER) {
+			if(outputItemCustom.getStandardOutputItem().getItemType() != ItemType.NUMERIC) {
 				targetValue = stringFormat.character + targetValue + stringFormat.character;
 				
 				if(stringFormat == StringFormat.SINGLE_QUOTATION) {
