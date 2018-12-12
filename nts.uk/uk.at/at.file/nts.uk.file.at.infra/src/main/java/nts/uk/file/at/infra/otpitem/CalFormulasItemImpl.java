@@ -15,6 +15,7 @@ import javax.persistence.Query;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.optitem.EmpConditionAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemUsageAtr;
@@ -311,7 +312,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 		int regularized = Math.abs(source);
 		int hourPart = (regularized / 60);
 		int minutePart = regularized % 60;
-		String resultString = StringUtils.join(hourPart,":",minutePart);
+		String resultString = StringUtils.join(StringUtil.padLeft(String.valueOf(hourPart), 2, '0'),":", StringUtil.padLeft(String.valueOf(minutePart), 2, '0'));
 		return resultString;
 	}
 	
