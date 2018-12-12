@@ -359,7 +359,11 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
             modal("/view/qmm/020/k/index.xhtml").onClosed(function() {
                 let params = getShared(model.PARAMETERS_SCREEN_K.OUTPUT);
                 if(params && params.modeEditHistory == 1) {
-                    self.getHisIndividual(self.selectedItem(), self.hisIdSelected());
+                    service.getStateCorrelationHisIndividual(self.selectedItem()).done(((listStateCorrelationHis: Array<StateCorrelationHisInvidual>)=>{
+                        self.listStateCorrelationHis(StateCorrelationHisInvidual.convertToDisplay(listStateCorrelationHis));
+                        self.index(self.getIndex(self.hisIdSelected()));
+                        self.getStateLinkSettingMasterIndividual(self.selectedItem(), self.hisIdSelected(), self.listStateCorrelationHis()[self.index()].startYearMonth);
+                    }));
                 }
                 if(params && params.modeEditHistory == 0) {
                     self.getHisIndividual(self.selectedItem(), null);
