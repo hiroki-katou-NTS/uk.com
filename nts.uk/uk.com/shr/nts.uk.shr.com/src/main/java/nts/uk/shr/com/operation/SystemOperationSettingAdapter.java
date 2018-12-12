@@ -5,7 +5,7 @@ public interface SystemOperationSettingAdapter {
 	public SystemOperationSetting getSetting();
 	
 	/**
-	 * システム停止中の確認
+	 * システム利用停止の確認
 	 * @return
 	 * if stopping - return Optional with value
 	 * else return empty optional

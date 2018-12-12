@@ -15,7 +15,7 @@ public interface CollectCompanyList {
 	 * @param userID
 	 * @return
 	 */
-	public List<String> getCompanyList(String userID);
+	public List<String> getCompanyList(String userID, String contractCd);
 	/**
 	 * @author hoatt
 	 * 利用停止のチェック

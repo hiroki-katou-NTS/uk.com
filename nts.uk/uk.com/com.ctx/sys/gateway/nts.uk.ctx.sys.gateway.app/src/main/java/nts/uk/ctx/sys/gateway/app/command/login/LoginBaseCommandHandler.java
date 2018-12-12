@@ -657,7 +657,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 		GeneralDate date = GeneralDate.today();
 		// 切替可能な会社一覧を取得する Get list company
-		List<String> companyIds = this.getListCompany(userId, date, roleType);
+		List<String> companyIds = this.getListCompany(userId, date, roleType, contractCode);
 
 		if (companyIds.isEmpty()) {
 			Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
@@ -775,7 +775,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @return the list company
 	 */
 	// 切替可能な会社一覧を取得する
-	private List<String> getListCompany(String userId, GeneralDate date, Integer roleType) {
+	private List<String> getListCompany(String userId, GeneralDate date, Integer roleType, String contractCode) {
 
 		// ドメインモデル「ロール個人別付与」を取得する (get List RoleIndividualGrant)
 		List<RoleIndividualGrantImport> roles = this.roleIndividualGrantAdapter.getByUserIDDateRoleType(userId, date,
@@ -854,7 +854,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		// the acquired company (List))
 		List<String> lstCompanyFinal = lstCompanyId.stream().filter(com -> companyIdAll.contains(com))
 				.collect(Collectors.toList());
-		List<String> lstResult = collectComList.checkStopUse(AppContexts.user().contractCode(), lstCompanyFinal);
+		List<String> lstResult = collectComList.checkStopUse(contractCode, lstCompanyFinal);
 		return lstResult;
 	}
 

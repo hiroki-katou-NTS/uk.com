@@ -26,7 +26,6 @@ import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompanyRepository;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.SystemStatusType;
 import nts.uk.ctx.sys.gateway.dom.stopbysystem.StopBySystem;
 import nts.uk.ctx.sys.gateway.dom.stopbysystem.StopBySystemRepository;
-import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author Doan Duy Hung
@@ -59,7 +58,7 @@ public class CollectCompanyListImpl implements CollectCompanyList {
 	private StopByCompanyRepository repoStopCom;
 	
 	@Override
-	public List<String> getCompanyList(String userID) {
+	public List<String> getCompanyList(String userID, String contractCd) {
 		// ドメインモデル「ロール個人別付与」を取得する (get List RoleIndividualGrant)
 		List<RoleIndividualGrantImport> roles = this.roleIndividualGrantAdapter.getByUserIDDateRoleType(userID, GeneralDate.today(),
 				RoleType.COMPANY_MANAGER.value);
@@ -127,7 +126,7 @@ public class CollectCompanyListImpl implements CollectCompanyList {
 		// the acquired company (List))
 		List<String> lstCompanyFinal = lstCompanyId.stream().filter(com -> companyIdAll.contains(com))
 				.collect(Collectors.toList());
-		List<String> lstResult = this.checkStopUse(AppContexts.user().contractCode(), lstCompanyFinal);
+		List<String> lstResult = this.checkStopUse(contractCd, lstCompanyFinal);
 		return lstResult;
 	}
 	/**

@@ -6,8 +6,9 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.CommandHandler;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.sys.portal.app.find.roleset.RoleSetPortalFinder;
 import nts.uk.ctx.sys.portal.dom.adapter.company.CompanyAdapter;
 import nts.uk.ctx.sys.portal.dom.adapter.company.CompanyDto;
@@ -21,9 +22,11 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager.RoleIdSetter;
+import nts.uk.shr.com.operation.SystemOperationSettingAdapter;
+import nts.uk.shr.com.operation.SystemSuspendOut;
 
 @Stateless
-public class ChangeCompanyCommandHandler extends CommandHandler<ChangeCompanyCommand> {
+public class ChangeCompanyCommandHandler extends CommandHandlerWithResult<ChangeCompanyCommand, String>{
 
 	@Inject
 	private LoginUserContextManager contextManager;
@@ -43,10 +46,22 @@ public class ChangeCompanyCommandHandler extends CommandHandler<ChangeCompanyCom
 	@Inject
 	private RoleSetPortalFinder roleSetFinder;
 	
+	@Inject
+	private SystemOperationSettingAdapter sysOpSetAdapter;
+	
+	
 	@Override
-	protected void handle(CommandHandlerContext<ChangeCompanyCommand> context) {
+	protected String handle(CommandHandlerContext<ChangeCompanyCommand> context) {
+		String msgResult = "";
 		ChangeCompanyCommand command = context.getCommand();
 		LoginUserContext userCtx = AppContexts.user();
+		String companyCD = command.getCompanyId().substring(13, 17);
+		SystemSuspendOut sys = sysOpSetAdapter.stopUseConfirm(userCtx.contractCode(), companyCD, 0, AppContexts.programId(), command.getScreenID());
+		if(sys.isError()){//TH error
+			//TH display msg content
+			throw new BusinessException(sys.getMsgContent());
+		}
+		msgResult = sys.getMsgID();//Msg_1475
 		Optional<CompanyDto> companyOpt = companyAdapter.getCompany(command.getCompanyId());
 		List<ShortEmployeeDto> employees = employeeAdapter.getEmployeesByPId(userCtx.personId());
 		Optional<ShortEmployeeDto> emp = employees.stream()
@@ -71,6 +86,7 @@ public class ChangeCompanyCommandHandler extends CommandHandler<ChangeCompanyCom
 		getRole(userCtx.userId(), command.getCompanyId(), RoleType.COMPANY_MANAGER).ifPresent(r -> roleSetter.forCompanyAdmin(r));
 		getRole(userCtx.userId(), command.getCompanyId(), RoleType.SYSTEM_MANAGER).ifPresent(r -> roleSetter.forSystemAdmin(r));
 		getRole(userCtx.userId(), command.getCompanyId(), RoleType.PERSONAL_INFO).ifPresent(r -> roleSetter.forPersonalInfo(r));
+		return msgResult;
 	}
 	
 	private Optional<String> getRole(String userId, String companyId, RoleType roleType) {
