@@ -49,6 +49,10 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
 
         loadGird(){
             let self = this;
+            if($("#G3_1").length > 0){
+                $("#G3_1").remove();
+                $("#G2_3").after('<table id="G3_1"></table>');
+            }
             $("#G3_1").ntsGrid({
                 height: '320px',
                 dataSource: self.listStateLinkSettingMaster(),
@@ -66,9 +70,6 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
 
                 ],
                 features: [
-                    { name: 'Sorting',
-                        type: 'local'
-                    },
                     {
                         name: 'Selection',
                         mode: 'row',
@@ -264,9 +265,19 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                 let params = getShared(model.PARAMETERS_SCREEN_K.OUTPUT);
                 if(params && params.modeEditHistory == 1) {
                     self.initScreen(self.hisIdSelected());
+                    service.getStateCorrelationHisSalary().done((listStateCorrelationHisSalary: Array<StateCorrelationHisSalary>)=>{
+                        if (listStateCorrelationHisSalary && listStateCorrelationHisSalary.length > 0) {
+                            self.listStateCorrelationHisSalary(StateCorrelationHisSalary.convertToDisplay(listStateCorrelationHisSalary));
+                            self.index(self.getIndex(self.hisIdSelected()));
+                            self.getStateLinkSettingMasterSalary(self.hisIdSelected(), self.listStateCorrelationHisSalary()[self.index()].startYearMonth);
+                        }
+                    });
+
+
                 }
                 if(params && params.modeEditHistory == 0) {
                     self.initScreen(null);
+
                 }
                 $('#G2_1').focus();
 
