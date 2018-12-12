@@ -943,7 +943,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.listCheck28([]);
             self.listCheckDeviation = [];
             self.listErrorMonth = [];
-            let dataChange: any = $("#dpGrid").mGrid("updatedCells");
+            let dataChange: any = _.uniqWith($("#dpGrid").mGrid("updatedCells", true),  _.isEqual);
+
             var dataSource = $("#dpGrid").mGrid("dataSource");
             let dataChangeProcess: any = [];
             let dataCheckSign: any = [];
@@ -1192,7 +1193,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.listCheck28([]);
             self.listCheckDeviation = [];
             self.listErrorMonth = [];
-            let dataChange: any = $("#dpGrid").mGrid("updatedCells");
+            let dataChange: any = _.uniqWith($("#dpGrid").mGrid("updatedCells", true),  _.isEqual);
             var dataSource = $("#dpGrid").mGrid("dataSource");
             if (_.isEmpty(dataSource)) {
                 nts.uk.ui.block.clear();
@@ -1336,6 +1337,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         console.log("column key:" + valt.columnKey);
                         $("#dpGrid").mGrid("setState", valt.rowId, valt.columnKey, valt.state);
                     });
+                    
+                     if (!self.displayWhenZero()) {
+                        $("#dpGrid").mGrid("hideZero", true)
+                        $("#dpGrid").mGrid("hideZero", false)
+                        $("#dpGrid").mGrid("hideZero", true)
+                    } else {
+                        $("#dpGrid").mGrid("hideZero", false)
+                        $("#dpGrid").mGrid("hideZero", true)
+                        $("#dpGrid").mGrid("hideZero", false)
+                    }
                     nts.uk.ui.block.clear();
                 } else {
                     nts.uk.ui.block.clear();
@@ -1419,7 +1430,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
             let dataSource = $("#dpGrid").mGrid("dataSource");
 
-            let dataChange: any = $("#dpGrid").mGrid("updatedCells");
+            let dataChange: any = _.uniqWith($("#dpGrid").mGrid("updatedCells", true),  _.isEqual);
             let rowIdsTemp = _.uniqBy(dataChange, function(e) {
                 return e.rowId;
             });
@@ -3536,15 +3547,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             headerText = header.headerText + " " + header.key.substring(1, header.key.length);
                             $("#dpGrid").mGrid("headerText", header.key, headerText, false);
                         } else {
-                            headerText = header.headerText.split(" ")[0];
-                            $("#dpGrid").mGrid("headerText", header.key, headerText, false);
+                           // headerText = header.headerText.split(" ")[0];
+                            $("#dpGrid").mGrid("headerText", header.key, header.headerText, false);
                         }
                     } else {
                         if (self.showHeaderNumber()) {
                             headerText = header.headerText + " " + header.group[1].key.substring(4, header.group[1].key.length);
                             $("#dpGrid").mGrid("headerText", header.headerText, headerText, true);
                         } else {
-                            headerText = header.headerText.split(" ")[0];
+                          //  headerText = header.headerText.split(" ")[0];
+                            headerText = header.headerText;
                             $("#dpGrid").mGrid("headerText", headerText + " " + header.group[1].key.substring(4, header.group[1].key.length), headerText, true);
                         }
                     }
@@ -3713,7 +3725,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let dataMap = new InfoCellEdit(rowId, Number(keyId), valuePrimitive, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), item.typeGroup, columnKey);
 
                     // get item change in row
-                    dataChange = $("#dpGrid").mGrid("updatedCells");
+                    dataChange = _.uniqWith($("#dpGrid").mGrid("updatedCells", true),  _.isEqual);
                     dataChageRow = _.map(_.filter(dataChange, row => {
                         return row.columnKey != "sign" && row.columnKey != "approval" && row.columnKey.indexOf("Name") == -1 && row.rowId == rowId && row.columnKey != columnKey;
                     }), allValue => {

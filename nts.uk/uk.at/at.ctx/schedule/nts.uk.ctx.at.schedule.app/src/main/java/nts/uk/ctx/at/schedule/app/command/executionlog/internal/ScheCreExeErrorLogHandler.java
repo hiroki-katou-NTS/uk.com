@@ -88,6 +88,15 @@ public class ScheCreExeErrorLogHandler {
 		return true;
 	}
 	
+	public boolean checkExistErrorByExeId(String executionId) {
+		Integer errorLogs = this.scheduleErrorLogRepository.distinctErrorByExecutionId(executionId);
+		// check empty list log error
+		if (errorLogs>0) {
+			return true;
+		}
+		return false;
+	}
+	
 	public List<ScheduleErrorLog> getListError(ScheduleErrorLogGeterCommand command, String employeeId) {
 		List<ScheduleErrorLog> errorLogs = this.scheduleErrorLogRepository.findByEmployeeId(command.getExecutionId(),
 				employeeId);

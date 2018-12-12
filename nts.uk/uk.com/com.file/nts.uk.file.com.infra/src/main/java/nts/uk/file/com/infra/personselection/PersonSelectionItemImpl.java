@@ -3,6 +3,7 @@ package nts.uk.file.com.infra.personselection;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.file.com.app.personselection.PersonSelectionItemColumn;
 import nts.uk.file.com.app.personselection.PersonSelectionItemRepository;
@@ -38,14 +38,15 @@ public class PersonSelectionItemImpl implements PersonSelectionItemRepository {
 			+ "INNER JOIN PPEMT_SEL_ITEM_ORDER so ON hs.HIST_ID = so.HIST_ID "
 			+ "INNER JOIN PPEMT_SELECTION ss ON so.HIST_ID = ss.HIST_ID AND so.SELECTION_ID = ss.SELECTION_ID "
 			+ "WHERE "
-			+ "si.CONTRACT_CD = ? AND hs.CID = ?) TABLE_RESULT ORDER BY TABLE_RESULT.SELECTION_ITEM_NAME ASC;";
+			+ "si.CONTRACT_CD = ? AND hs.CID = ? AND hs.START_DATE <=  CONVERT(DATETIME, ?date , 127) AND CONVERT(DATETIME, ?date , 127) <= hs.END_DATE ) TABLE_RESULT ORDER BY TABLE_RESULT.SELECTION_ITEM_NAME ASC;";
 
 	@Override
-	public List<MasterData> getDataExport(String contractCd) {
+	public List<MasterData> getDataExport(String contractCd, String date) {
+		
 		String companyId = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
 		Query query = entityManager.createNativeQuery(GET_EXPORT_EXCEL.toString()).setParameter(1, contractCd)
-				.setParameter(2, companyId);
+				.setParameter(2, companyId).setParameter("date", date);
 		@SuppressWarnings("unchecked")
 		List<Object[]> data = query.getResultList();
 		if (data.isEmpty()) {

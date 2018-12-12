@@ -72,7 +72,7 @@ public class SaveChangeAbsDateCommandHandler
 		SaveHolidayShipmentCommand command = context.getCommand();
 		AbsenceLeaveAppCommand absCmd = command.getAbsCmd();
 		String companyID = AppContexts.user().companyId();
-		String sID =   AppContexts.user().employeeId();
+		String sID =   command.getAppCmd().getEmployeeID();
 		String oldAppID = absCmd.getAppID();
 		// アルゴリズム「登録前エラーチェック（振休日変更）」を実行する
 		String appReason = errorCheckBeforeReg(command, absCmd);
@@ -177,11 +177,14 @@ public class SaveChangeAbsDateCommandHandler
 	private Application_New createNewCommonApp(SaveHolidayShipmentCommand command, AbsenceLeaveAppCommand absCmd,
 			String appReason) {
 		String companyID = AppContexts.user().companyId();
-		String employeeID = AppContexts.user().employeeId();
+		String employeeID = command.getAppCmd().getEmployeeID();
 		ApplicationType appType = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 		Application_New commonApp = Application_New.firstCreate(companyID,
 				EnumAdaptor.valueOf(command.getAppCmd().getPrePostAtr(), PrePostAtr.class), absCmd.getAppDate(),
 				appType, employeeID, new AppReason(appReason));
+		if (!AppContexts.user().employeeId().equals(employeeID)) {
+			commonApp.setEnteredPersonID(AppContexts.user().employeeId());
+		}
 		appImp.insert(commonApp);
 		return commonApp;
 	}

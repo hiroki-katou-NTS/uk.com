@@ -842,7 +842,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 						WorkingConditionItem wcItem = createWorkConditionItem(c.getValue(), c.getKey());
 						
 						GeneralDate strDate = wc.getStrD().compareTo(period.start()) > 0 ? wc.getStrD() : period.start();
-						GeneralDate endDate = wc.getEndD().compareTo(period.end()) < 0 ? period.end() : wc.getEndD();
+						GeneralDate endDate = wc.getEndD().compareTo(period.end()) > 0 ? period.end() : wc.getEndD();
 						DateHistoryItem dateItem = new DateHistoryItem(wc.getKshmtWorkingCondPK().getHistoryId(), new DatePeriod(strDate, endDate));
 						
 						result.put(dateItem, wcItem);

@@ -1,11 +1,20 @@
 package nts.uk.file.com.app.personselection;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import com.aspose.cells.DateTime;
+
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
@@ -45,8 +54,10 @@ public class PersonSelectionItemExportImpl implements MasterListData {
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		String contractCd = AppContexts.user().contractCode();
-		List<MasterData> datas = new ArrayList<>();
-		datas = personSelectionItemRepository.getDataExport(contractCd);
-		return datas;
+		String date = query.getOption().toString();		
+			List<MasterData> datas = new ArrayList<>();
+			datas = personSelectionItemRepository.getDataExport(contractCd, date);
+			return datas;
+		
 	}
 }

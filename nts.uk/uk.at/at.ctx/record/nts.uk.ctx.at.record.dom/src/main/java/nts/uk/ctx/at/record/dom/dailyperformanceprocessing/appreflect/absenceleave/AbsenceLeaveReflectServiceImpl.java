@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidayworktime.HolidayWorkReflectProcess;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OverTimeRecordAtr;
@@ -53,6 +54,8 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 	private WorkInformationRepository workRepository;
 	@Inject 
 	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDaily;
+	@Inject
+	private CommonProcessCheckService commonService;
 	@Override
 	public boolean reflectAbsenceLeave(CommonReflectParameter param, boolean isPre) {
 		try {
@@ -61,6 +64,8 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 			//勤種就時開始終了の反映
 			dailyInfor = this.reflectRecordStartEndTime(param, dailyInfor);
 			workRepository.updateByKeyFlush(dailyInfor);
+			
+			commonService.calculateOfAppReflect(null, param.getEmployeeId(), param.getBaseDate());
 			return true;
 		}catch (Exception e) {
 			return false;
@@ -222,8 +227,9 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 			//開始終了時刻の反映(事前)
 			StartEndTimeRelectCheck startEndTimeData = new StartEndTimeRelectCheck(param.getEmployeeId(), param.getBaseDate(), param.getStartTime(), param.getEndTime(), 
 					null, null, param.getWorkTimeCode(), param.getWorkTypeCode(), OverTimeRecordAtr.ALL);
-			recordStartEndTimeRelect.startEndTimeOutput(startEndTimeData, dailyInfor);
-		}
+			recordStartEndTimeRelect.startEndTimeOutput(startEndTimeData, dailyInfor);	
+			
+		}		
 		return dailyInfor;
 	}
 
