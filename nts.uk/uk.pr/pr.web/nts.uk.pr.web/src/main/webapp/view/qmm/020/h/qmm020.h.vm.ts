@@ -300,7 +300,6 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
         }
 
         openJScreen() {
-            block.invisible();
             let self = this;
             let start = 0;
             let end = 0;
@@ -323,7 +322,6 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                     self.hisIdSelected(HIS_ID_TEMP);
                 }
             });
-            block.clear();
         }
 
         createStateCorrelationHis(start: number, end: number){
@@ -336,7 +334,6 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
         }
 
         openKScreen(){
-            block.invisible();
             let self = this;
             let index = _.findIndex(self.listStateCorrelationHis(), {hisId: self.hisIdSelected()});
             self.index(self.getIndex(self.hisIdSelected()));
@@ -370,7 +367,6 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                 $('#H2_1').focus();
 
             });
-            block.clear();
         }
 
         openLScreen(){
