@@ -957,5 +957,7 @@ public class ProgramIdConsts {
 	public static final String CAS004B = "CAS004B";
 
 	public static final String KDL020A = "KDL020A";
+	
+	public static final String CMF007 = "CMF007";
 
 }
