@@ -54,7 +54,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 $("#F2_5").after('<table id="F3_1"></table>');
             }
             $("#F3_1").ntsGrid({
-                height: '320px',
+                height: '311px',
                 dataSource: self.listStateLinkSettingMaster(),
                 primaryKey: 'id',
                 virtualization: true,

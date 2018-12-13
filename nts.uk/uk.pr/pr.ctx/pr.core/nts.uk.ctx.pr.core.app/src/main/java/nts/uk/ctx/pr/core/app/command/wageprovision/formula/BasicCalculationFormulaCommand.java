@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.core.app.command.wageprovision.formula;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.*;
 
@@ -19,23 +20,23 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class BasicCalculationFormulaCommand {
 
-    private int calculationFormulaClassification;
-    private String masterUseCode;
-    private String historyID;
-    private BigDecimal basicCalculationFormula;
-    private Integer standardAmountClassification;
-    private BigDecimal standardFixedValue;
-    private List<String> targetItemCodeList;
-    private String attendanceItem;
-    private Integer coefficientClassification;
-    private BigDecimal coefficientFixedValue;
-    private Integer formulaType;
-    private Integer roundingResult;
-    private Integer adjustmentClassification;
-    private Integer baseItemClassification;
-    private BigDecimal baseItemFixedValue;
-    private Integer premiumRate;
-    private Integer roundingMethod;
+    public int calculationFormulaClassification;
+    public String masterUseCode;
+    public String historyID;
+    public BigDecimal basicCalculationFormula;
+    public Integer standardAmountClassification;
+    public BigDecimal standardFixedValue;
+    public List<String> targetItemCodeList;
+    public String attendanceItem;
+    public Integer coefficientClassification;
+    public BigDecimal coefficientFixedValue;
+    public Integer formulaType;
+    public Integer roundingResult;
+    public Integer adjustmentClassification;
+    public Integer baseItemClassification;
+    public BigDecimal baseItemFixedValue;
+    public Integer premiumRate;
+    public Integer roundingMethod;
     
     
     public BasicCalculationFormula fromCommandToDomain(){
@@ -43,11 +44,15 @@ public class BasicCalculationFormulaCommand {
     }
 
     public BasicCalculationFormula toBasicCalculationFormula () {
-        return new BasicCalculationFormula(historyID, masterUseCode, calculationFormulaClassification, basicCalculationFormula, this.toBasicCalculationForm());
+        BasicCalculationForm basicCalculationForm = null;
+        if (calculationFormulaClassification == CalculationFormulaClassification.FORMULA.value) basicCalculationForm = this.toBasicCalculationForm();
+        return new BasicCalculationFormula(historyID, masterUseCode, calculationFormulaClassification, basicCalculationFormula, basicCalculationForm);
     }
 
     public BasicCalculationForm toBasicCalculationForm () {
-        return new BasicCalculationForm(this.toBasicCalculationStandardAmount(), this.toBasicCalculationFactorClassification(), formulaType, roundingResult, adjustmentClassification, this.toBasicCalculationItemCategory(), premiumRate, roundingMethod);
+        Optional<BasicCalculationItemCategory> basicCalculationItemCategory = Optional.empty();
+        if (formulaType == FormulaType.CALCULATION_FORMULA_TYPE3.value) basicCalculationItemCategory = this.toBasicCalculationItemCategory();
+        return new BasicCalculationForm(this.toBasicCalculationStandardAmount(), this.toBasicCalculationFactorClassification(), formulaType, roundingResult, adjustmentClassification, basicCalculationItemCategory, premiumRate, roundingMethod);
     }
 
     public BasicCalculationStandardAmount toBasicCalculationStandardAmount () {
@@ -62,5 +67,4 @@ public class BasicCalculationFormulaCommand {
         if (baseItemClassification == null) return Optional.empty();
         return Optional.of(new BasicCalculationItemCategory(baseItemClassification, baseItemFixedValue));
     }
-    
 }

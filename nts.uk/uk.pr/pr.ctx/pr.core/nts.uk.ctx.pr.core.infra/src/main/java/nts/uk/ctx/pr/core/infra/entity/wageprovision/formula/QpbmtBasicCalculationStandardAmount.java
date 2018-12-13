@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.infra.entity.wageprovision.formula;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,13 +30,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "QPBMT_BASIC_CAL_STD_AMOU")
 public class QpbmtBasicCalculationStandardAmount extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
-    
+
     /**
     * ID
     */
     @EmbeddedId
     public QpbmtBasicCalculationStandardAmountPk basicCalStdAmountPk;
-    
+
     @Override
     protected Object getKey()
     {
@@ -45,7 +46,6 @@ public class QpbmtBasicCalculationStandardAmount extends UkJpaEntity implements 
 
     public static List<QpbmtBasicCalculationStandardAmount> toEntity(BasicCalculationFormula domain) {
         if (!domain.getBasicCalculationForm().isPresent()) return Collections.emptyList();
-        BasicCalculationForm basicCalculationForm = domain.getBasicCalculationForm().get();
-        return basicCalculationForm.getBasicCalculationStandardAmount().getTargetItemCodeList().stream().map(item -> new QpbmtBasicCalculationStandardAmount(new QpbmtBasicCalculationStandardAmountPk(domain.getHistoryID(), domain.getMasterUseCode().v(), item.v()))).collect(Collectors.toList());
+        return domain.getBasicCalculationForm().get().getBasicCalculationStandardAmount().getTargetItemCodeList().stream().map(item -> new QpbmtBasicCalculationStandardAmount(new QpbmtBasicCalculationStandardAmountPk(domain.getHistoryID(), domain.getMasterUseCode().v(), item.v()))).collect(Collectors.toList());
     }
 }

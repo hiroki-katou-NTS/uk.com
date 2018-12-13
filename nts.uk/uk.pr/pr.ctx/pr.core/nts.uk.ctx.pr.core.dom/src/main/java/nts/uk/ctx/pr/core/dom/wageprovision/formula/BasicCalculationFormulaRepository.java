@@ -12,6 +12,8 @@ public interface BasicCalculationFormulaRepository {
 
     void addAll(List<BasicCalculationFormula> domains);
 
+    void upsertAll(String historyID, List<BasicCalculationFormula> domains);
+
     void updateAll(List<BasicCalculationFormula> domains);
 
     void removeAll(List<BasicCalculationFormula> domains);

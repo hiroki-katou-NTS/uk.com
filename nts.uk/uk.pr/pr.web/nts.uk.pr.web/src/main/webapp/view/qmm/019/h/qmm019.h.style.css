@@ -44,3 +44,7 @@
 #H1_9, #H1_12, #H1_15 {
     width: 200px;
 }
+
+#H1_15 {
+    vertical-align: top;
+}

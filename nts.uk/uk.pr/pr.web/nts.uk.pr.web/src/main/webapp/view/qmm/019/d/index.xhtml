@@ -52,7 +52,7 @@
 									items: itemNames,
 									selected: selectedSearchIitemName,
 									selectedKey: 'itemNameCd',
-									fields: ['itemNameCd', 'name'],
+									fields: ['itemNameCd', 'shortName'],
 									mode: 'igGrid'}"/>
                             </div>
                         </div>
@@ -64,7 +64,7 @@
                             primaryKey: 'itemNameCd',
                             columns: [
                                 { headerText: '#{i18n.getText('QMM019_108')}', key: 'itemNameCd', width: 50, formatter: _.escape},
-                                { headerText: '#{i18n.getText('QMM019_109')}', key: 'name', width: 193, formatter: _.escape}
+                                { headerText: '#{i18n.getText('QMM019_109')}', key: 'shortName', width: 193, formatter: _.escape}
                             ],
                             multiple: false,
                             value: codeSelected}"/>
@@ -88,7 +88,7 @@
                         <div class="cell valign-center">
                             <com:ko-if bind="$vm.screenControl().visibleD2_3()">
                                 <!--D2_3-->
-                                <div class="label" data-bind="text: name"/>
+                                <div class="label" data-bind="text: shortName"/>
                             </com:ko-if>
                         </div>
                     </div>
@@ -410,7 +410,7 @@
                                         </th>
                                         <td>
                                             <!--D11_16-->
-                                            <div class="label limited-label" data-bind="text: $vm.dataScreen().name"/>
+                                            <div class="label limited-label" data-bind="text: $vm.dataScreen().shortName"/>
                                         </td>
                                     </tr>
                                     <tr>

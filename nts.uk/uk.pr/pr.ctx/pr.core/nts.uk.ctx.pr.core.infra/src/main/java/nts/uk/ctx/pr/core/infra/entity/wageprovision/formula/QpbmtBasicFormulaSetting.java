@@ -33,7 +33,13 @@ public class QpbmtBasicFormulaSetting extends UkJpaEntity implements Serializabl
     */
     @EmbeddedId
     public QpbmtBasicFormulaSettingPk basicFormulaSetPk;
-    
+
+    /**
+     * マスタ分岐利用
+     */
+    @Basic(optional = false)
+    @Column(name = "MASTER_BRANCH_USE")
+    public int masterBranchUse;
 
     /**
     * 使用マスタ
@@ -42,13 +48,6 @@ public class QpbmtBasicFormulaSetting extends UkJpaEntity implements Serializabl
     @Column(name = "MASTER_USE")
     public Integer masterUse;
     
-    /**
-    * マスタ分岐利用
-    */
-    @Basic(optional = false)
-    @Column(name = "MASTER_BRANCH_USE")
-    public int masterBranchUse;
-    
     @Override
     protected Object getKey()
     {
@@ -56,10 +55,10 @@ public class QpbmtBasicFormulaSetting extends UkJpaEntity implements Serializabl
     }
 
     public BasicFormulaSetting toDomain() {
-        return new BasicFormulaSetting(this.basicFormulaSetPk.historyID, this.masterUse, this.masterBranchUse);
+        return new BasicFormulaSetting(this.basicFormulaSetPk.historyID, this.masterBranchUse, this.masterUse);
     }
     public static QpbmtBasicFormulaSetting toEntity(BasicFormulaSetting domain) {
-        return new QpbmtBasicFormulaSetting(new QpbmtBasicFormulaSettingPk(domain.getHistoryID()), domain.getMasterUse().map(i->i.value).orElse(null), domain.getMasterBranchUse().value);
+        return new QpbmtBasicFormulaSetting(new QpbmtBasicFormulaSettingPk(domain.getHistoryID()), domain.getMasterBranchUse().value, domain.getMasterUse().map(i->i.value).orElse(null));
     }
 
 }

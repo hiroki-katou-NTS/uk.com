@@ -163,3 +163,9 @@
 #statementLayoutSet .category-text, #statementLayoutSet .add-line-btn, #A7_2, #A8_2, #A7_9, #A8_9 {
     margin-left: 5px;
 }
+
+.item-sort {
+    overflow: hidden;
+    width: 775px;
+    height: 28px;
+}

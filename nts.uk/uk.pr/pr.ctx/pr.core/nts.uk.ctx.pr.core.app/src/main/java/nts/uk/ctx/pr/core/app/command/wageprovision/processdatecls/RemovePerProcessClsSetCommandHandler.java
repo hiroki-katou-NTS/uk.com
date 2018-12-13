@@ -12,16 +12,15 @@ import javax.transaction.Transactional;
 
 @Stateless
 @Transactional
-public class RemovePerProcessClsSetCommandHandler extends CommandHandler<PerProcessClsSetCommand>
-{
-    
+public class RemovePerProcessClsSetCommandHandler extends CommandHandler<PerProcessClsSetCommand> {
+
     @Inject
     private PerProcessClsSetRepository repository;
-    
+
     @Override
     protected void handle(CommandHandlerContext<PerProcessClsSetCommand> context) {
         String companyId = context.getCommand().getCid();
-        int processCateNo = context.getCommand().getProcessCateNo();
-        repository.remove(companyId, processCateNo);
+        String userId = context.getCommand().getUid();
+        repository.remove(companyId, userId);
     }
 }

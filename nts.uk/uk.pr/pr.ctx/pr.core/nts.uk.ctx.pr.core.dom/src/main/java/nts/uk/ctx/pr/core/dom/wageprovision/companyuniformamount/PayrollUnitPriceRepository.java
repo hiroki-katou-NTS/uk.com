@@ -13,6 +13,8 @@ public interface PayrollUnitPriceRepository
 
     List<PayrollUnitPrice> getAllPayrollUnitPriceByCID(String cid);
 
+    List<PayrollUnitPrice> getPayrollUnitPriceByYearMonth(int yearMonth);
+
     Optional<PayrollUnitPrice> getPayrollUnitPriceById(String code, String cid);
 
     void add(PayrollUnitPrice domain);

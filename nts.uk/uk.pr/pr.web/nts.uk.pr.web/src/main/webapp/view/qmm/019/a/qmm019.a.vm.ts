@@ -15,6 +15,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import StatementPrintAtr = nts.uk.pr.view.qmm019.share.model.StatementPrintAtr;
     import CategoryAtr = nts.uk.pr.view.qmm019.share.model.CategoryAtr;
+    import IItemRangeSet = nts.uk.pr.view.qmm019.share.model.IItemRangeSet;
 
     export class ScreenModel {
 
@@ -292,6 +293,10 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         public modifyLog(): void {
             modal("/view/qmm/019/e/index.xhtml");
         }
+        
+        public openP(): void {
+            modal("/view/qmm/019/p/index.xhtml");
+        }
     }
 
     class StatementLayoutHistData {
@@ -331,7 +336,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 self.endMonth = ko.observable(null);
                 self.statementLayoutSet = ko.observable(new StatementLayoutSet(null));
 
-                self.checkCreate = ko.observable(true);
+                self.checkCreate = ko.observable(false);
                 self.startMonthText = ko.observable(null);
                 self.endMonthText = ko.observable(null);
             }
@@ -509,6 +514,44 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 //TODO $("#C3_8").focus();
             });
         }
+
+        public preventStopSort(data, event, ui): void {
+            let dragItem: SettingByItem = data.item;
+            let listItemSource: Array<SettingByItem> = data.sourceParent();
+            let listItemTarget: Array<SettingByItem> = data.targetParent();
+            console.log(data);
+            let checkCategory = dragItem.parent.parent.ctgAtr != listItemTarget[0].parent.parent.ctgAtr;
+            let checkPrintLine = dragItem.parent.printSet() != listItemTarget[0].parent.printSet();
+            let checkDragToOtherLine = dragItem.parent.lineNumber() != listItemTarget[0].parent.lineNumber();
+
+            if(checkCategory || checkPrintLine) {
+                data.cancelDrop = true;
+            } else if(checkDragToOtherLine) {
+                let targetItem = listItemTarget[data.targetIndex];
+                let category: SettingByCtg = dragItem.parent.parent;
+                let categoryIndex = category.ctgAtr;
+                let sourceIndex = data.sourceIndex;
+                let targetIndex= data.targetIndex;
+                let targetLineIndex: number;
+                let sourceLineIndex: number;
+
+                for(let i = 0; i < category.listLineByLineSet().length; i++) {
+                    if(category.listLineByLineSet()[i].lineNumber() == targetItem.parent.lineNumber()) {
+                        targetLineIndex = i;
+                    }
+
+                    if(category.listLineByLineSet()[i].lineNumber() == listItemSource[0].parent.lineNumber()) {
+                        sourceLineIndex = i;
+                    }
+                }
+
+                let currentCategory: SettingByCtg = __viewContext['screenModel'].statementLayoutHistData().statementLayoutSet().listSettingByCtg()[categoryIndex];
+                //currentCategory.listLineByLineSet()[sourceLineIndex].listSetByItem()[data.sourceIndex] = targetItem;
+                //currentCategory.listLineByLineSet()[targetLineIndex].listSetByItem()[data.targetIndex] = dragItem;
+
+                data.cancelDrop = true;
+            }
+        }
     }
 
     class SettingByItem {
@@ -517,6 +560,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         shortName: KnockoutObservable<string>;
         paymentItemDetailSet: IPaymentItemDetail;
         deductionItemDetailSet: IDeductionItemDetail;
+        itemRangeSet: IItemRangeSet;
 
         parent: LineByLineSetting;
         deleted: KnockoutObservable<boolean>;
@@ -533,6 +577,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 self.shortName = ko.observable(data.shortName);
                 self.paymentItemDetailSet = data.paymentItemDetailSet;
                 self.deductionItemDetailSet = data.deductionItemDetailSet;
+                self.itemRangeSet = data.itemRangeSet;
 
                 if((self.paymentItemDetailSet != null) && ((self.paymentItemDetailSet.salaryItemId == "F001") ||
                         (self.paymentItemDetailSet.salaryItemId == "F002") || (self.paymentItemDetailSet.salaryItemId == "F003"))) {
@@ -548,6 +593,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 self.shortName = ko.observable("+");
                 self.paymentItemDetailSet = null;
                 self.deductionItemDetailSet = null;
+                self.itemRangeSet = null;
             }
 
             self.parent = parent;
@@ -626,7 +672,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
             let listLineInCtg = self.parent.parent.listLineByLineSet();
 
             for (let lineByLine: LineByLineSetting of listLineInCtg) {
-                for(let item: SettingByItem of lineByLine.listSetByItem) {
+                for(let item: SettingByItem of lineByLine.listSetByItem()) {
                     if (item.itemId() != null) listItemSetting.push(item.itemId());
                 }
             }
@@ -635,41 +681,81 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 switch (self.parent.parent.ctgAtr) {
                     case CategoryAtr.PAYMENT_ITEM: {
                         setShared("QMM019_A_TO_D_PARAMS", {
+                            printSet: this.parent.printSet(),
+                            yearMonth: __viewContext['screenModel'].statementLayoutHistData().startMonth(),
+                            itemNameCode: self.itemId(),
                             listItemSetting: listItemSetting,
-                            itemId: self.itemId(),
-                            detail: self.paymentItemDetailSet
+                            detail: self.paymentItemDetailSet,
+                            itemRangeSet: self.itemRangeSet
                         });
 
                         nts.uk.ui.windows.sub.modal('../d/index.xhtml').onClosed(() => {
+                            let params = getShared("QMM019D_RESULTS");
 
+                            if(params) {
+                                params.detail.histId = __viewContext['screenModel'].statementLayoutHistData().historyId;
+                                self.shortName(params.shortName);
+                                self.itemId(params.itemNameCode);
+                                self.paymentItemDetailSet = params.detail;
+                            }
                         });
                         break;
                     }
                     case CategoryAtr.DEDUCTION_ITEM: {
-                        setShared("QMM019_E_TO_D_PARAMS", {
+                        setShared("QMM019_A_TO_E_PARAMS", {
+                            printSet: this.parent.printSet(),
+                            yearMonth: __viewContext['screenModel'].statementLayoutHistData().startMonth(),
+                            itemNameCode: self.itemId(),
                             listItemSetting: listItemSetting,
-                            itemId: self.itemId(),
-                            detail: self.deductionItemDetailSet
+                            detail: self.deductionItemDetailSet,
+                            itemRangeSet: self.itemRangeSet
                         });
 
                         nts.uk.ui.windows.sub.modal('../e/index.xhtml').onClosed(() => {
+                            let params = getShared("QMM019E_RESULTS");
 
+                            if(params) {
+                                params.detail.histId = __viewContext['screenModel'].statementLayoutHistData().historyId;
+                                self.shortName(params.shortName);
+                                self.itemId(params.itemNameCode);
+                                self.deductionItemDetailSet = params.detail;
+                            }
                         });
                         break;
                     }
                     case CategoryAtr.ATTEND_ITEM: {
-                        nts.uk.ui.windows.sub.modal('../f/index.xhtml').onClosed(() => {
+                        setShared("QMM019_A_TO_F_PARAMS", {
+                            printSet: this.parent.printSet(),
+                            yearMonth: __viewContext['screenModel'].statementLayoutHistData().startMonth(),
+                            itemNameCode: self.itemId(),
+                            listItemSetting: listItemSetting,
+                            itemRangeSet: self.itemRangeSet
+                        });
 
+                        nts.uk.ui.windows.sub.modal('../f/index.xhtml').onClosed(() => {
+                            let params = getShared("QMM019F_RESULTS");
+
+                            if(params) {
+                                self.shortName(params.shortName);
+                                self.itemId(params.itemNameCode);
+                            }
                         });
                         break;
                     }
                     case CategoryAtr.REPORT_ITEM: {
-                        setShared("QMM019_E_TO_G_PARAMS", {
-                            listItemSetting: listItemSetting,
-                            itemId: self.itemId()
+                        setShared("QMM019_A_TO_G_PARAMS", {
+                            printSet: this.parent.printSet(),
+                            yearMonth: __viewContext['screenModel'].statementLayoutHistData().startMonth(),
+                            itemNameCode: self.itemId(),
+                            listItemSetting: listItemSetting
                         });
                         nts.uk.ui.windows.sub.modal('../g/index.xhtml').onClosed(() => {
+                            let params = getShared("QMM019G_RESULTS");
 
+                            if(params) {
+                                self.shortName(params.shortName);
+                                self.itemId(params.itemNameCode);
+                            }
                         });
                         break;
                     }

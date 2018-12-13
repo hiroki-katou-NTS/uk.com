@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaService;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.pr.core.dom.wageprovision.formula.MasterUseDto;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -41,5 +42,11 @@ public class FormulaFinder {
     public FormulaDto getFormulaById(String formulaCode) {
         return formulaRepository.getFormulaById(formulaCode).map(FormulaDto::fromDomainToDto).orElse(null);
     }
+
+    public List<MasterUseDto> getMasterUseInfo (int masterUseClassification) {
+        return formulaService.getMasterUseInfo(masterUseClassification);
+    }
+
+
 }
 

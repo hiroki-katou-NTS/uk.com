@@ -3,7 +3,6 @@ package nts.uk.ctx.pr.core.app.command.wageprovision.wagetable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementRange;
-import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.NumericElementRange;
 
 /**
  * 要素範囲
@@ -28,15 +27,8 @@ public class ElementRangeCommand {
      */
     private Integer rangeUpperLimit;
 
-    public ElementRange fromCommandToDomain() {
-        return new ElementRange(stepIncrement, rangeLowerLimit, rangeUpperLimit);
-    }
+	public ElementRange fromCommandToDomain() {
+		return new ElementRange(stepIncrement, rangeLowerLimit, rangeUpperLimit);
+	}
 
-    public static ElementRangeCommand fromNumericElementToDto(NumericElementRange domain) {
-        ElementRangeCommand dto = new ElementRangeCommand();
-        dto.stepIncrement = domain.getStepIncrement().v();
-        dto.rangeLowerLimit = domain.getRangeLowerLimit().v();
-        dto.rangeUpperLimit = domain.getRangeUpperLimit().v();
-        return dto;
-    }
 }

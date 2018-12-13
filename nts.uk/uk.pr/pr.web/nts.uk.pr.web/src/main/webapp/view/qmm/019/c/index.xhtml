@@ -67,13 +67,14 @@
                                                             enable: itemHistoryEdit() == 1,
                                                             dateFormat: 'yearmonth'}"></div>
                         <!-- 終了年月 -->
+                        <label>  ~</label>
                         <label id="C1_13">  #{i18n.getText('QMM019_44')}</label>
                     </div>
                 </div>
             </div>
         </div>
         <div id="functions-area-bottom">
-            <button tabindex="3" data-bind="click: decide" class="proceed">#{i18n.getText('QMM019_56')}</button>
+            <button tabindex="3" data-bind="click: decide, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('QMM019_56')}</button>
             <button tabindex="4" data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
         </div>
     </ui:define>

@@ -45,6 +45,11 @@ module nts.uk.pr.view.qmm017.i.viewmodel {
         editHistory() {
             let self = this;
             if (self.modifyMethod() == model.MODIFY_METHOD.UPDATE) {
+                nts.uk.ui.errors.clearAll();
+                $('.nts-input').trigger("validate");
+                if (nts.uk.ui.errors.hasError()) {
+                    return;
+                }
                 if (self.startMonth() > self.selectedHistory.endMonth.toString()) {
                     dialog.alertError({ messageId: "Msg_107" });
                     return;

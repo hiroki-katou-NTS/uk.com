@@ -15,6 +15,8 @@ public interface BasicFormulaSettingRepository
 
     void add(BasicFormulaSetting domain);
 
+    void upsert(BasicFormulaSetting domain);
+
     void update(BasicFormulaSetting domain);
 
     void remove(BasicFormulaSetting domain);
