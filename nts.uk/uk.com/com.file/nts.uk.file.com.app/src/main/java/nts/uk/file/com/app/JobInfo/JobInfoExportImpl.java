@@ -56,10 +56,10 @@ public class JobInfoExportImpl implements MasterListData{
 						ColumnTextAlign.LEFT, "", true));
 		columns.add(
 				new MasterHeaderColumn(JobInfoColumn.CAS014_49, TextResource.localize("CAS014_49"), 
-						ColumnTextAlign.LEFT, "", true));
+						ColumnTextAlign.RIGHT, "", true));
 		columns.add(
 				new MasterHeaderColumn(JobInfoColumn.CAS014_50, TextResource.localize("CAS014_50"), 
-						ColumnTextAlign.LEFT, "", true));
+						ColumnTextAlign.RIGHT, "", true));
 		return columns;
 	}
 	

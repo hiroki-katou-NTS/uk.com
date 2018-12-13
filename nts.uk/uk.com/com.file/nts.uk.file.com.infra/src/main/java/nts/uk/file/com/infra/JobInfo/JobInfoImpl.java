@@ -1,8 +1,7 @@
 package nts.uk.file.com.infra.JobInfo;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +13,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.file.com.app.JobInfo.JobInfoColumn;
 import nts.uk.file.com.app.JobInfo.JobInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -87,14 +87,13 @@ public class JobInfoImpl extends JpaRepository implements JobInfoRepository {
 		Query querydata = entityManager.createNativeQuery(GET_EXPORT_DATA.toString()).setParameter("cid", cid);
 		@SuppressWarnings("unchecked")
 		List<Object[]> data = querydata.getResultList();
-		DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
 		for (Object[] objects : data) {
-			datas.add(new MasterData(buildRoleSetEmpRow(objects, df), null, ""));
+			datas.add(new MasterData(buildRoleSetEmpRow(objects), null, ""));
 		}
 		return datas;
 	}
 	
-	private Map<String, Object> buildRoleSetEmpRow(Object[] object, DateFormat df) {
+	private Map<String, Object> buildRoleSetEmpRow(Object[] object) {
 		Map<String, Object> data = new HashMap<>();
 		// R9_1
 		data.put(JobInfoColumn.CAS014_45, object[0] != null ? (String) object[0] : null);
@@ -105,9 +104,9 @@ public class JobInfoImpl extends JpaRepository implements JobInfoRepository {
 		// R9_4
 		data.put(JobInfoColumn.CAS014_48, object[3] != null ? (String) object[3] : null);
 		// R9_5
-		data.put(JobInfoColumn.CAS014_49, object[4] != null ? df.format(object[4]) : null);
+		data.put(JobInfoColumn.CAS014_49, object[4] != null ? GeneralDate.localDate(((Date) object[4]).toLocalDate()) : null);
 		// R9_6
-		data.put(JobInfoColumn.CAS014_50, object[5] != null ? df.format(object[5]) : null);
+		data.put(JobInfoColumn.CAS014_50, object[5] != null ? GeneralDate.localDate(((Date) object[5]).toLocalDate()) : null);
 		return data;
 	}
 }
