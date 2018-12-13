@@ -7,6 +7,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
     export class ScreenModel {
 
         amountValidator = new validation.NumberValidator(getText("QMM040_20"), "AmountOfMoney", {required: true});
+        isRegistrable: KnockoutObservable<boolean> = ko.observable(false);
 
         //SalIndAmountName
         // change logic, get data after click button
@@ -16,7 +17,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
         salIndAmountNames: KnockoutObservableArray<SalIndAmountName>;
         salIndAmountNamesSelectedCode: KnockoutObservable<string>;
 
-        personalAmount: Array<PersonalAmount> = [];
         personalDisplay: Array<PersonalAmount> = [];
 
         //onSelected
@@ -38,12 +38,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
         individualPriceName: KnockoutObservable<string>;
 
         constructor() {
-            var self = this;
-            if (/Chrome/.test(navigator.userAgent) && !/Edge/.test(navigator.userAgent)) {
-                $("#A5_9").ntsFixedTable({height: 344, width: 720});
-            } else {
-                $("#A5_9").ntsFixedTable({height: 340, width: 720});
-            }
+            let self = this;
             self.tilteTable = ko.observableArray([
                 {headerText: getText('QMM040_8'), key: 'individualPriceCode', width: 100},
                 {headerText: getText('QMM040_9'), key: 'individualPriceName', width: 200}
@@ -59,7 +54,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             self.onSelectTab(self.onTab);
 
             self.salIndAmountNamesSelectedCode.subscribe(function (data) {
-                self.personalAmount = [];
                 self.personalDisplay = [];
                 nts.uk.ui.errors.clearAll();
                 if (!data)
@@ -83,19 +77,13 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.reloadCcg001(data.empExtraRefeDate);
                 else
                     self.reloadCcg001(moment(Date.now()).format("YYYY/MM/DD"));
-                if(/Edge/.test(navigator.userAgent)) {
-                    self.mGridSubHeight = '276px';
-                } else if(/Chrome/.test(navigator.userAgent)) {
-                    self.mGridSubHeight = '250px';
-                } else {
-                    self.mGridSubHeight = '272px';
-                }
                 $('#A5_7').focus();
                 // self.filterData();
                 self.loadMGrid();
                 block.clear();
                 dfd.resolve(self);
             }).fail((err) => {
+                nts.uk.ui.dialog.alertError(err.message);
                 block.clear();
                 dfd.reject();
             });
@@ -256,10 +244,12 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                         return o.individualPriceCode;
                     }));
                     if (data.length > 0) {
+                        self.isRegistrable(true);
                         self.salIndAmountNamesSelectedCode(self.salIndAmountNames()[0].individualPriceCode);
                         self.salIndAmountNamesSelectedCode.valueHasMutated();
                     }
                     else {
+                        self.isRegistrable(false);
                         nts.uk.ui.dialog.alertError({messageId: "MsgQ_169"});
                         nts.uk.ui.errors.clearAll();
                         self.individualPriceCode('');
@@ -268,6 +258,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 }
                 block.clear();
             }).fail((err) => {
+                nts.uk.ui.dialog.alertError(err.message);
                 block.clear();
             });
         }
@@ -290,38 +281,13 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             }).done(function (dataNameAndAmount) {
                 self.employeeInfoImports = dataNameAndAmount.employeeInfoImports;
                 let personalAmountData = dataNameAndAmount.personalAmount.map(x => new PersonalAmount(x));
-                console.log(dataNameAndAmount);
-                self.personalAmount = personalAmountData;
-                for (let i = 0; i < self.personalAmount.length; i++) {
-                    let index = _.findIndex(self.employeeInfoImports, function (o) {
-                        return o.sid == self.personalAmount[i].empId
-                    });
-                    if (index != -1) {
-                        self.personalAmount[i].employeeCode = self.employeeInfoImports[index].scd;
-                        self.personalAmount[i].businessName = self.employeeInfoImports[index].businessName;
-                    }
+                for (let personalAmount of personalAmountData) {
+                    let employeeInfo = self.employeeInfoImports.find(x => x.sid === personalAmount.employeeID);
+                    personalAmount.employeeCode = employeeInfo.scd;
+                    personalAmount.businessName = employeeInfo.businessName;
                 }
                 personalAmountData = _.sortBy(personalAmountData,['employeeCode']);
                 self.personalDisplay = personalAmountData;
-                // setTimeout(function () {
-                //     if (self.personalDisplay().length > 10) {
-                //         if (/Edge/.test(navigator.userAgent)) {
-                //             $('.scroll-header').addClass('edge_scroll_header');
-                //             $('.nts-fixed-body-container').addClass('edge_scroll_body');
-                //         } else {
-                //             $('.scroll-header').addClass('ci_scroll_header');
-                //             $('.nts-fixed-body-container').addClass('ci_scroll_body');
-                //         }
-                //     } else {
-                //         if (/Edge/.test(navigator.userAgent)) {
-                //             $('.scroll-header').removeClass('edge_scroll_header');
-                //             $('.nts-fixed-body-container').removeClass('edge_scroll_body');
-                //         } else {
-                //             $('.scroll-header').removeClass('ci_scroll_header');
-                //             $('.nts-fixed-body-container').removeClass('ci_scroll_body');
-                //         }
-                //     }
-                // }, 0);
                 $("#grid").mGrid("destroy");
                 self.loadMGrid();
                 block.clear();
@@ -334,7 +300,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
         registerAmount(): void {
             let self = this;
             service.salIndAmountUpdateAll({
-                // salIndAmountUpdateCommandList: ko.toJS(self.personalAmount)
                 salIndAmountUpdateCommandList: $("#grid").mGrid("dataSource", true)
             }).done(function () {
                 dialog.info({messageId: "Msg_15"});
@@ -393,7 +358,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             $('#com-ccg001').ntsGroupComponent(self.ccgcomponent);
         }
     }
-
 
     export interface GroupOption {
 

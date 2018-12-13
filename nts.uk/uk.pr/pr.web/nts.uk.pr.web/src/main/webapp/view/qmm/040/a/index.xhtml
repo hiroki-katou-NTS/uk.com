@@ -41,11 +41,14 @@
 
                 <div class="title" data-bind="text : titleTab"/>
                 <button tabindex="1" class="proceed"
-                        data-bind="click:registerAmount ,enable: $root.errors.isEmpty">#{i18n.getText('QMM040_2')}</button>
+                        data-bind="click:registerAmount, enable: isRegistrable() &amp;&amp; $root.errors.isEmpty">
+                    #{i18n.getText('QMM040_2')}
+                </button>
                 <!--<div class="pull-right" style="margin-right: 50px">-->
-                    <a tabindex="9" style="margin-left: 630px" class="goout" data-bind="ntsLinkButton: { jump: '../../039/a/index.xhtml' }">
-                        #{i18n.getText('QMM040_21')}
-                    </a>
+                <a tabindex="9" style="margin-left: 630px" class="goout"
+                   data-bind="ntsLinkButton: { jump: '../../039/a/index.xhtml' }">
+                    #{i18n.getText('QMM040_21')}
+                </a>
                 <!--</div>-->
             </div>
             <div class="contents-area fixed-flex-layout">

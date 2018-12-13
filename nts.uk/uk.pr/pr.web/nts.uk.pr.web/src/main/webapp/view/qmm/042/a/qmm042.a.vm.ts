@@ -2,39 +2,31 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import dialog = nts.uk.ui.dialog;
     import block = nts.uk.ui.block;
+    import validation = nts.uk.ui.validation;
 
     export class ScreenModel {
+
+        priceValidator = new validation.NumberValidator(getText("QMM042_13"), "SalaryUnitPrice", {required: true});
+        isRegistrable: KnockoutObservable<boolean> = ko.observable(false);
 
         ccgcomponent: GroupOption;
         salaryPerUnitPriceNames: KnockoutObservableArray<IndividualPriceName> = ko.observableArray([]);
         salaryPerUnitPriceNamesSelectedCode: KnockoutObservable<string> = ko.observable('');
 
-        workIndividualPrices: KnockoutObservableArray<WorkIndividualPrice> = ko.observableArray([]);
-        workIndividualPricesDisplay: KnockoutObservableArray<WorkIndividualPrice> = ko.observableArray([]);
+        workIndividualPricesDisplay: Array<WorkIndividualPrice> = [];
 
         perUnitPriceName: KnockoutObservable<string> = ko.observable('');
         perUnitPriceCode: KnockoutObservable<string> = ko.observable('');
 
         yearMonthFilter = ko.observable(201811);
 
-        employeeInfoImports:any;
+        employeeInfoImports: any;
         listEmployee: any;
-        constructor() {
-            var self = this;
-            //$("#A4_7").ntsFixedTable({height: 343, width: 720});
-            if(/Edge/.test(navigator.userAgent)){
-                $("#A4_7").ntsFixedTable({height: 339.6, width: 720});
-            }
-             else if (/Chrome/.test(navigator.userAgent)) {
-                $("#A4_7").ntsFixedTable({height: 343, width: 720});
-            }
-            else {
-                $("#A4_7").ntsFixedTable({height: 339.6, width: 720});
-            }
 
+        constructor() {
+            let self = this;
             self.salaryPerUnitPriceNamesSelectedCode.subscribe(function (selectcode) {
-                self.workIndividualPrices.removeAll();
-                self.workIndividualPricesDisplay.removeAll();
+                self.workIndividualPricesDisplay = [];
                 nts.uk.ui.errors.clearAll();
                 if (!selectcode)
                     return;
@@ -50,15 +42,16 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
         }
 
         filterData(): void {
-            let self=this;
-
+            let self = this;
             $('#A4_5').ntsError('check');
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-
-            let temp = new Array();
-            if (!self.listEmployee) return;
+            block.invisible();
+            if (!self.listEmployee) {
+                block.clear();
+                return;
+            }
             let command = {
                 personalUnitPriceCode: self.salaryPerUnitPriceNamesSelectedCode(),
                 employeeIds: self.listEmployee.map(v => v.employeeId),
@@ -66,54 +59,108 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
             };
             service.employeeSalaryUnitPriceHistory(command).done(function (dataNameAndAmount) {
                 self.employeeInfoImports = dataNameAndAmount.employeeInfoImports;
-                let personalAmountData: Array<any> = new Array();
-                personalAmountData = dataNameAndAmount.workIndividualPrices.map(x => new WorkIndividualPrice(x));
-                personalAmountData = _.sortBy(personalAmountData, function (o) {
-                    return o.startYaerMonth;
-                });
-                console.log(dataNameAndAmount);
-                self.workIndividualPrices(personalAmountData);
-                for (let i = 0; i < self.workIndividualPrices().length; i++) {
-                    let index = _.findIndex(self.employeeInfoImports, function (o) {
-                        return o.sid == self.workIndividualPrices()[i].employeeID
-                    });
-                    if (index != -1) {
-                        self.workIndividualPrices()[i].employeeCode(self.employeeInfoImports[index].scd);
-                        self.workIndividualPrices()[i].businessName(self.employeeInfoImports[index].businessName);
-                    }
+                let personalAmountData = dataNameAndAmount.workIndividualPrices.map(x => new WorkIndividualPrice(x));
+                for (let personalAmount of personalAmountData) {
+                    let employeeInfo = self.employeeInfoImports.find(x => x.sid === personalAmount.employeeID);
+                    personalAmount.employeeCode = employeeInfo.scd;
+                    personalAmount.businessName = employeeInfo.businessName;
                 }
-                personalAmountData= personalAmountData.sort(function(a, b){
-                    return a.employeeCode().compareTo(b.employeeCode());
-                });
-                self.workIndividualPricesDisplay(personalAmountData);
-            })
-            setTimeout(function () {
-                if (self.workIndividualPricesDisplay().length > 10) {
-                    if (/Edge/.test(navigator.userAgent)) {
-                        $('.scroll-header').addClass('edge_scroll_header');
-                        $('.nts-fixed-body-container').addClass('edge_scroll_body');
-                    } else {
-                        $('.scroll-header').addClass('ci_scroll_header');
-                        $('.nts-fixed-body-container').addClass('ci_scroll_body');
-                    }
-                } else {
-                    if (/Edge/.test(navigator.userAgent)) {
-                        $('.scroll-header').removeClass('edge_scroll_header');
-                        $('.nts-fixed-body-container').removeClass('edge_scroll_body');
-                    } else {
-                        $('.scroll-header').removeClass('ci_scroll_header');
-                        $('.nts-fixed-body-container').removeClass('ci_scroll_body');
-                    }
-                }
-            }, 0);
+                personalAmountData = _.sortBy(personalAmountData, ['employeeCode']);
+                self.workIndividualPricesDisplay = personalAmountData;
+                $("#grid").mGrid("destroy");
+                self.loadMGrid();
+                block.clear();
+            }).fail((err) => {
+                block.clear();
+                dialog.alertError(err.message);
+            });
         }
 
+        loadMGrid() {
+            let self = this;
+            let height = $(window).height() - 90 - 285;
+            let width = $(window).width() + 20 - 1170;
+            new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
+                width: "560px",
+                height: "300px",
+                subWidth: width + 'px',
+                subHeight: height + 'px',
+                headerHeight: '23px',
+                dataSource: self.workIndividualPricesDisplay,
+                primaryKey: 'historyId',
+                primaryKeyDataType: 'string',
+                rowVirtualization: true,
+                virtualization: true,
+                virtualizationMode: 'continuous',
+                enter: 'right',
+                autoFitWindow: false,
+                hidePrimaryKey: true,
+                errorsOnPage: false,
+                columns: [
+                    {headerText: "id", key: 'historyId', dataType: 'string', hidden: true},
+                    // A5_10
+                    {
+                        headerText: getText("QMM042_10"), key: 'employeeCode', dataType: 'string', width: '90px',
+                        ntsControl: "Label"
+                    },
+                    // A5_11
+                    {
+                        headerText: getText("QMM042_11"), key: 'businessName', dataType: 'string', width: "145px",
+                        ntsControl: "Label"
+                    },
+                    // A5_12
+                    {
+                        headerText: getText("QMM042_12"), key: 'period', dataType: 'string', width: "175px",
+                        ntsControl: "Label"
+                    },
+                    // A5_13
+                    {
+                        headerText: getText("QMM042_13"), key: 'amountOfMoney', dataType: 'string', width: "150px",
+                        columnCssClass: 'currency-symbol',
+                        constraint: {
+                            cDisplayType: "Currency",
+                            min: self.priceValidator.constraint.min,
+                            max: self.priceValidator.constraint.max,
+                            required: true
+                        }
+                    }
+                ],
+                features: [
+                    {
+                        name: "Sorting",
+                        columnSettings: [
+                            {columnKey: "employeeCode", allowSorting: true, type: "String"}
+                        ]
+                    },
+                    {
+                        name: 'HeaderStyles',
+                        columns: [
+                            {key: 'employeeCode', colors: ['left-align']},
+                            {key: 'businessName', colors: ['left-align']},
+                            {key: 'period', colors: ['left-align']},
+                            {key: 'amount', colors: ['left-align']}
+                        ]
+                    },
+                    {
+                        name: 'Paging',
+                        pageSize: 20,
+                        currentPageIndex: 0
+                    },
+                ]
+            }).create();
+        }
 
         registerAmount(): void {
             let self = this;
+            block.invisible();
             service.empSalUnitUpdateAll({
-                payrollInformationCommands: ko.toJS(self.workIndividualPricesDisplay)}).done(function () {
+                payrollInformationCommands: $("#grid").mGrid("dataSource", true)
+            }).done(function () {
+                block.clear();
                 dialog.info({messageId: "Msg_15"});
+            }).fail((err) => {
+                dialog.alertError(err.message);
+                block.clear();
             });
         }
 
@@ -126,11 +173,14 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 self.reloadCcg001(data.empExtraRefeDate);
                 service.salaryPerUnitPriceName().done(function (individualPriceName) {
                     if (individualPriceName.length == 0) {
+                        self.isRegistrable(false);
                         nts.uk.ui.dialog.alertError({messageId: "MsgQ_170"});
                     } else {
+                        self.isRegistrable(true);
                         self.salaryPerUnitPriceNames(individualPriceName);
                         self.salaryPerUnitPriceNamesSelectedCode(self.salaryPerUnitPriceNames()[0].code);
                     }
+                    self.loadMGrid();
                     block.clear();
                     dfd.resolve(self);
                 }).fail((err) => {
@@ -146,7 +196,6 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
 
         reloadCcg001(paymentDate: string): void {
             let self = this;
-
             self.ccgcomponent = {
                 /** Common properties */
                 systemType: 1, // システム区分
@@ -188,11 +237,8 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                     self.listEmployee = data.listEmployee
                 }
             };
-
             $('#com-ccg001').ntsGroupComponent(self.ccgcomponent);
-
         }
-
     }
 
     export interface GroupOption {
@@ -235,7 +281,6 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
         showOnStart?: boolean;
         tabindex?: number;
 
-
         /** Data returned */
         returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
     }
@@ -265,7 +310,6 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
         note: string
     }
 
-
     export class IndividualPriceName {
         code: string;
         name: string;
@@ -286,7 +330,6 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
         }
     }
 
-
     export interface IWorkIndividualPrice {
         employeeID: string,
         historyID: string,
@@ -300,30 +343,28 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
     export class WorkIndividualPrice {
         employeeID: string;
         historyID: string;
-        employeeCode: KnockoutObservable<string> = ko.observable('');
-        businessName: KnockoutObservable<string> = ko.observable('');
+        employeeCode: string = '';
+        businessName: string = '';
 
         startYaerMonth: number;
         endYearMonth: number;
 
         period: string;
 
-        amountOfMoney: KnockoutObservable<number> = ko.observable(0);
+        amountOfMoney: string = '0';
 
         constructor(param: IWorkIndividualPrice) {
-            if(param){
+            if (param) {
                 this.employeeID = param.employeeID;
                 this.historyID = param.historyID;
-                this.employeeCode(param.employeeCode);
-                this.businessName(param.businessName);
+                this.employeeCode = param.employeeCode;
+                this.businessName = param.businessName;
                 this.startYaerMonth = param.startYaerMonth;
                 this.endYearMonth = param.endYearMonth;
-                this.amountOfMoney(param.amountOfMoney);
-                this.period=nts.uk.time.formatYearMonth(param.startYaerMonth) + ' ～ ' + nts.uk.time.formatYearMonth(param.endYearMonth);
+                this.amountOfMoney = param.amountOfMoney.toString();
+                this.period = nts.uk.time.formatYearMonth(param.startYaerMonth) + ' ～ ' + nts.uk.time.formatYearMonth(param.endYearMonth);
             }
-
         }
-
     }
 
     export interface IEmployeeInfoImport {
@@ -331,7 +372,6 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
         scd: string,
         businessName: string,
     }
-
 
     export class EmployeeInfoImport {
         sid: string;
@@ -344,7 +384,6 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
             this.businessName = param.businessName;
         }
     }
-
 }
 
 
