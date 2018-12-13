@@ -56,22 +56,6 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
                     block.clear();
                 })
             })
-
-            self.dataScreen().errorRangeSetting.upperLimitSetting.valueSettingAtr.subscribe(value => {
-                self.condition28(value);
-            });
-
-            self.dataScreen().errorRangeSetting.lowerLimitSetting.valueSettingAtr.subscribe(value => {
-                self.condition29(value);
-            });
-
-            self.dataScreen().alarmRangeSetting.upperLimitSetting.valueSettingAtr.subscribe(value => {
-                self.condition30(value);
-            });
-
-            self.dataScreen().alarmRangeSetting.lowerLimitSetting.valueSettingAtr.subscribe(value => {
-                self.condition31(value);
-            });
         }
 
         startPage(): JQueryPromise<any> {
@@ -97,10 +81,30 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             dfd.resolve();
             return dfd.promise();
         }
+        
+        initSubscribe() {
+            let self = this;
+            self.dataScreen().initSubscribe();
+            self.dataScreen().errorRangeSetting.upperLimitSetting.valueSettingAtr.subscribe(value => {
+                self.condition28(value);
+            });
+
+            self.dataScreen().errorRangeSetting.lowerLimitSetting.valueSettingAtr.subscribe(value => {
+                self.condition29(value);
+            });
+
+            self.dataScreen().alarmRangeSetting.upperLimitSetting.valueSettingAtr.subscribe(value => {
+                self.condition30(value);
+            });
+
+            self.dataScreen().alarmRangeSetting.lowerLimitSetting.valueSettingAtr.subscribe(value => {
+                self.condition31(value);
+            });
+        }
 
         initScreen() {
             let self = this;
-            self.dataScreen().initSubscribe();
+            self.initSubscribe();
             // 取得できたデータ件数を確認する
             if (_.isEmpty(self.itemNames())) {
                 // 未選択モードへ移行する

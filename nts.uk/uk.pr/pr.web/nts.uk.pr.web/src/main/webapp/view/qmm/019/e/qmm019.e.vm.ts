@@ -72,31 +72,6 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                     block.clear();
                 })
             })
-
-            self.dataScreen().calcMethod.subscribe(value => {
-                self.condition22(value);
-                self.condition23(value);
-                self.condition24(value);
-                self.condition25(value);
-                self.condition26(value);
-                self.condition44(value);
-            });
-
-            self.dataScreen().errorRangeSetting.upperLimitSetting.valueSettingAtr.subscribe(value => {
-                self.condition18(value);
-            });
-
-            self.dataScreen().errorRangeSetting.lowerLimitSetting.valueSettingAtr.subscribe(value => {
-                self.condition19(value);
-            });
-
-            self.dataScreen().alarmRangeSetting.upperLimitSetting.valueSettingAtr.subscribe(value => {
-                self.condition20(value);
-            });
-
-            self.dataScreen().alarmRangeSetting.lowerLimitSetting.valueSettingAtr.subscribe(value => {
-                self.condition21(value);
-            });
         }
 
         startPage(): JQueryPromise<any> {
@@ -128,10 +103,39 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             dfd.resolve();
             return dfd.promise();
         }
+        
+        initSubscribe(){
+            let self = this;
+            self.dataScreen().initSubscribe();
+            self.dataScreen().calcMethod.subscribe(value => {
+                self.condition22(value);
+                self.condition23(value);
+                self.condition24(value);
+                self.condition25(value);
+                self.condition26(value);
+                self.condition44(value);
+            });
+
+            self.dataScreen().errorRangeSetting.upperLimitSetting.valueSettingAtr.subscribe(value => {
+                self.condition18(value);
+            });
+
+            self.dataScreen().errorRangeSetting.lowerLimitSetting.valueSettingAtr.subscribe(value => {
+                self.condition19(value);
+            });
+
+            self.dataScreen().alarmRangeSetting.upperLimitSetting.valueSettingAtr.subscribe(value => {
+                self.condition20(value);
+            });
+
+            self.dataScreen().alarmRangeSetting.lowerLimitSetting.valueSettingAtr.subscribe(value => {
+                self.condition21(value);
+            });
+        }    
 
         initScreen() {
             let self = this;
-            self.dataScreen().initSubscribe();
+            self.initSubscribe();
             // 取得できたデータ件数を確認する
             if (_.isEmpty(self.itemNames())) {
                 // 未選択モードへ移行する

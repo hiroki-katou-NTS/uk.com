@@ -138,7 +138,7 @@ module nts.uk.pr.view.qmm019.share.model {
             return [
                 new model.ItemModel(PaymentCaclMethodAtr.MANUAL_INPUT, getText("Enum_PaymentCaclMethodAtr_MANUAL_INPUT")),
                 new model.ItemModel(PaymentCaclMethodAtr.PERSON_INFO_REF, getText("Enum_PaymentCaclMethodAtr_PERSON_INFO_REF")),
-                new model.ItemModel(PaymentCaclMethodAtr.CACL_FOMULA, getText("Enum_PaymentCaclMethodAtr_PERSON_INFO_REF")),
+                new model.ItemModel(PaymentCaclMethodAtr.CACL_FOMULA, getText("Enum_PaymentCaclMethodAtr_CACL_FOMULA")),
                 new model.ItemModel(PaymentCaclMethodAtr.WAGE_TABLE, getText("Enum_PaymentCaclMethodAtr_WAGE_TABLE")),
                 new model.ItemModel(PaymentCaclMethodAtr.COMMON_AMOUNT, getText("Enum_PaymentCaclMethodAtr_COMMON_AMOUNT"))
             ];
