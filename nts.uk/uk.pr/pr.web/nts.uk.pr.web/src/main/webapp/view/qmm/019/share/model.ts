@@ -698,6 +698,27 @@ module nts.uk.pr.view.qmm019.share.model {
         return data;
     }
 
+    export function getMaxPrintLineOfLayoutPattern(layoutPattern: StatementLayoutPattern): number {
+        switch (layoutPattern) {
+            case StatementLayoutPattern.LASER_PRINT_A4_PORTRAIT_ONE_PERSON:
+                return 30;
+            case StatementLayoutPattern.LASER_PRINT_A4_PORTRAIT_TWO_PERSON:
+                return 17;
+            case StatementLayoutPattern.LASER_PRINT_A4_PORTRAIT_THREE_PERSON:
+                return 10;
+            case StatementLayoutPattern.LASER_PRINT_A4_LANDSCAPE_TWO_PERSON:
+                return 10;
+            case StatementLayoutPattern.LASER_CRIMP_PORTRAIT_ONE_PERSON:
+                return 17;
+            case StatementLayoutPattern.LASER_CRIMP_LANDSCAPE_ONE_PERSON:
+                return 0;
+            case StatementLayoutPattern.DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON:
+                return 0;
+            default:
+                return 0;
+        }
+    }
+
     export function getLayoutPatternText(e: StatementLayoutPattern): string {
         switch (e) {
             case StatementLayoutPattern.LASER_PRINT_A4_PORTRAIT_ONE_PERSON:
@@ -716,6 +737,46 @@ module nts.uk.pr.view.qmm019.share.model {
                 return getText('QMM019_39');
             default:
                 return "";
+        }
+    }
+
+    export function validateLayout(layoutPattern: number, totalLine: number, ctgAtr: number,
+           printLineInCtg: number, noPrintLineInCtg: number, printSet: number): string {
+        // if no print
+        if(printSet == 1) {
+            if(noPrintLineInCtg >= 5) {
+                return "MsgQ_20";
+            } else {
+                return null;
+            }
+        }
+
+        if(layoutPattern == StatementLayoutPattern.DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON) {
+            return "MsgQ_21";
+        }
+
+        if(layoutPattern != StatementLayoutPattern.LASER_CRIMP_LANDSCAPE_ONE_PERSON) {
+            let maxPrintLine = getMaxPrintLineOfLayoutPattern(layoutPattern);
+
+            if(totalLine >= maxPrintLine) {
+                return "MsgQ_21";
+            } else {
+                return null;
+            }
+        }
+
+        if(ctgAtr == CategoryAtr.REPORT_ITEM) {
+            if(printLineInCtg >= 2) {
+                return "MsgQ_21";
+            } else {
+                return null;
+            }
+        } else {
+            if(printLineInCtg >= 6) {
+                return "MsgQ_21";
+            } else {
+                return null;
+            }
         }
     }
 

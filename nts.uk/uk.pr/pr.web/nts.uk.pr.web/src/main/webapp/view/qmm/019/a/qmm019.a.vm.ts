@@ -16,6 +16,8 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
     import StatementPrintAtr = nts.uk.pr.view.qmm019.share.model.StatementPrintAtr;
     import CategoryAtr = nts.uk.pr.view.qmm019.share.model.CategoryAtr;
     import IItemRangeSet = nts.uk.pr.view.qmm019.share.model.IItemRangeSet;
+    import PaymentTotalObjAtr = nts.uk.pr.view.qmm019.share.model.PaymentTotalObjAtr;
+    import PaymentCaclMethodAtr = nts.uk.pr.view.qmm019.share.model.PaymentCaclMethodAtr;
 
     export class ScreenModel {
 
@@ -478,6 +480,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
             let totalLine = 0;
             let printLineInCtg = 0;
             let noPrintLineInCtg = 0;
+            let haveItemBreakdownInsite = false;
 
             for(let settingByCtg: SettingByCtg of self.parent.parent.listSettingByCtg()) {
                 totalLine += settingByCtg.listLineByLineSet().length;
@@ -491,13 +494,27 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 }
             }
 
+            for(let settingByItem: SettingByItem of self.listSetByItem()) {
+                if((settingByItem.paymentItemDetailSet != null) &&
+                        (String(settingByItem.paymentItemDetailSet.calcMethod) == String(PaymentCaclMethodAtr.BREAKDOWN_ITEM)) &&
+                        ((String(settingByItem.paymentItemDetailSet.totalObj) == String(PaymentTotalObjAtr.INSIDE)) || (String(settingByItem.paymentItemDetailSet.totalObj) == String(PaymentTotalObjAtr.INSIDE_ACTUAL)))) {
+                    haveItemBreakdownInsite = true;
+                }
+
+                if((settingByItem.deductionItemDetailSet != null) && (String(settingByItem.deductionItemDetailSet.calcMethod) == String(PaymentCaclMethodAtr.BREAKDOWN_ITEM)) &&
+                    ((String(settingByItem.deductionItemDetailSet.totalObj) == String(PaymentTotalObjAtr.INSIDE)) || (String(settingByItem.deductionItemDetailSet.totalObj) == String(PaymentTotalObjAtr.INSIDE_ACTUAL)))) {
+                    haveItemBreakdownInsite = true;
+                }
+            }
+
             setShared("QMM019_A_TO_K_PARAMS", {
                 layoutPattern: self.parent.parent.layoutPattern(),
                 totalLine: totalLine,
                 ctgAtr: self.parent.ctgAtr,
                 printLineInCtg: printLineInCtg,
                 noPrintLineInCtg: noPrintLineInCtg,
-                printSet: self.printSet()
+                printSet: self.printSet(),
+                haveItemBreakdownInsite: haveItemBreakdownInsite
             });
 
             nts.uk.ui.windows.sub.modal('../k/index.xhtml').onClosed(() => {
@@ -506,6 +523,19 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 if(params && params.isRegistered) {
                     if((params.printSet == StatementPrintAtr.PRINT) || (params.printSet == StatementPrintAtr.DO_NOT_PRINT)) {
                         self.printSet(params.printSet);
+
+                        if(params.printSet == StatementPrintAtr.DO_NOT_PRINT) {
+                            for(let settingByItem: SettingByItem of self.listSetByItem()) {
+                                if((settingByItem.paymentItemDetailSet != null) &&
+                                    (String(settingByItem.paymentItemDetailSet.calcMethod) == String(PaymentCaclMethodAtr.BREAKDOWN_ITEM))) {
+                                    settingByItem.paymentItemDetailSet.totalObj = PaymentTotalObjAtr.OUTSIDE;
+                                }
+
+                                if((settingByItem.deductionItemDetailSet != null) && (String(settingByItem.deductionItemDetailSet.calcMethod) == String(PaymentCaclMethodAtr.BREAKDOWN_ITEM))) {
+                                    settingByItem.deductionItemDetailSet.totalObj = PaymentTotalObjAtr.OUTSIDE;
+                                }
+                            }
+                        }
                     } else {
                         self.parent.listLineByLineSet.remove(self);
                     }
