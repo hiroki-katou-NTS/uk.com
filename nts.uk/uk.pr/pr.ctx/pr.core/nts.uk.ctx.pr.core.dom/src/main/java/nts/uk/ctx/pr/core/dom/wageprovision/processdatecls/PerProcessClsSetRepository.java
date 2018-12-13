@@ -11,14 +11,12 @@ public interface PerProcessClsSetRepository
 
     List<PerProcessClsSet> getAllPerProcessClsSet();
 
-    Optional<PerProcessClsSet> getPerProcessClsSetById(String companyId, int processCateNo);
-
     Optional<PerProcessClsSet> getPerProcessClsSetByUIDAndCID(String uid,String cid);
 
     void add(PerProcessClsSet domain);
 
     void update(PerProcessClsSet domain);
 
-    void remove(String companyId, int processCateNo);
+    void remove(String companyId, String userId);
 
 }

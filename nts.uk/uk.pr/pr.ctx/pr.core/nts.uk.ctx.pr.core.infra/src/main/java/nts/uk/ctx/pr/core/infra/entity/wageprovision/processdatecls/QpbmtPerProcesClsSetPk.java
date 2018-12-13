@@ -29,10 +29,10 @@ public class QpbmtPerProcesClsSetPk implements Serializable
     public String companyId;
     
     /**
-    * 処理区分NO
+    * ユーザID
     */
     @Basic(optional = false)
-    @Column(name = "PROCESS_CATE_NO")
-    public int processCateNo;
+    @Column(name = "USER_ID")
+    public String userId;
     
 }
