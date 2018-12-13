@@ -1385,10 +1385,29 @@ public class CreateExOutTextService extends ExportService<Object> {
 				}
 			}
 		}
+		targetValue =  targetValue.replaceAll("\\n", "");
 		if (setting.getSpaceEditting() == EditSpace.DELETE_SPACE_AFTER) {
 			targetValue =  targetValue.replaceAll("\\s+$", "");
+			int countSpaceJapan = 0;
+			for(int i = targetValue.length()-1;i>=0;i--) {
+				if(targetValue.charAt(i) == '　' || targetValue.charAt(i) == '　') {
+					countSpaceJapan++;
+				}else {
+					break;
+				}
+			}
+			targetValue = targetValue.substring(0,targetValue.length()-countSpaceJapan);
 		} else if (setting.getSpaceEditting() == EditSpace.DELETE_SPACE_BEFORE) {
 			targetValue = targetValue.replaceAll("^\\s+", "");
+			int countSpaceJapan = 0;
+			for(char x : targetValue.toCharArray()) {
+				if(x == '　' || x == '　') {
+					countSpaceJapan++;
+				}else {
+					break;
+				}
+			}
+			targetValue = targetValue.substring(countSpaceJapan,targetValue.length());
 		}
 
 		if ((setting.getCdEditting() == NotUseAtr.USE)
