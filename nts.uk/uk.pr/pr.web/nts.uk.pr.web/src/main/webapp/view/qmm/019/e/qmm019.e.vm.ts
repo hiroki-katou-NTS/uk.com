@@ -42,8 +42,8 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             self.codeSelected = ko.observable(null);
 
             self.categoryAtr = shareModel.CategoryAtr.DEDUCTION_ITEM;
-            self.totalObjAtrs = ko.observableArray([]);
-            self.calcMethods = ko.observableArray([]);
+            self.totalObjAtrs = ko.observableArray(shareModel.getDeductionTotalObjAtr(null));
+            self.calcMethods = ko.observableArray(shareModel.getPaymentCaclMethodAtr(null));
             self.deductionProportionalAtrs = ko.observableArray(shareModel.getDeductionProportionalAtr())
             self.proportionalMethodAtrs = ko.observableArray(shareModel.getProportionalMethodAtr())
 
@@ -88,7 +88,6 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             }
             self.params = params;
             self.yearMonth = params.yearMonth;
-            self.condition42();
             let dto = {
                 categoryAtr: self.categoryAtr,
                 itemNameCdSelected: self.params.itemNameCode,
@@ -247,6 +246,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
 
         selectedMode(defaultAtr: shareModel.DefaultAtr) {
             let self = this;
+             self.condition42(defaultAtr);
             if (defaultAtr != shareModel.DefaultAtr.SYSTEM_DEFAULT) {
                 self.screenControl().visibleE2_2(true);
                 self.screenControl().visibleE2_3(true);
@@ -413,11 +413,16 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         /**
          * ※42：補足資料7を参照
          */
-        condition42() {
+        condition42(defaultAtr: shareModel.DefaultAtr) {
             let self = this;
-            self.totalObjAtrs(shareModel.getDeductionTotalObjAtr(self.params.printSet));
-            if (self.params.detail.totalObj == shareModel.DeductionTotalObjAtr.INSIDE.toString()) {
-                self.params.detail.totalObj = shareModel.DeductionTotalObjAtr.OUTSIDE.toString();
+            if (defaultAtr == shareModel.DefaultAtr.SYSTEM_DEFAULT) {
+                self.totalObjAtrs(shareModel.getDeductionTotalObjAtr(null));
+            } else {
+                self.totalObjAtrs(shareModel.getDeductionTotalObjAtr(self.params.printSet));
+            }
+            if (self.params.printSet == shareModel.StatementPrintAtr.PRINT) return;
+            if (self.dataScreen().totalObject() == shareModel.DeductionTotalObjAtr.INSIDE.toString()) {
+                self.dataScreen().totalObject(shareModel.DeductionTotalObjAtr.OUTSIDE.toString());
             }
         }
 

@@ -100,7 +100,7 @@
                         <div class="cell valign-center">
                             <!--D2_5-->
                             <div id="D2_5" tabindex="4" data-bind="ntsComboBox: {
-                                name: '#[QMM019_111]',
+                                name: '#{i18n.getText('QMM019_111')}',
                                 options: $vm.totalObjAtrs,
                                 optionsValue: 'code',
                                 visibleItemsCount: 4,
@@ -108,7 +108,7 @@
                                 optionsText: 'name',
                                 required: true,
                                 enable: $vm.screenControl().enableD2_5(),
-                                selectFirstIfNull: true,
+                                selectFirstIfNull: false,
                                 columns: [
                                     { prop: 'name', length: 10 },
                                 ]}"/>
@@ -122,7 +122,7 @@
                         <div class="cell valign-center">
                             <!--D2_8-->
                             <div id="D2_8" tabindex="5" data-bind="ntsComboBox: {
-                                name: '#[QMM019_112]',
+                                name: '#{i18n.getText('QMM019_112')}',
                                 options: $vm.calcMethods,
                                 optionsValue: 'code',
                                 visibleItemsCount: 6,
