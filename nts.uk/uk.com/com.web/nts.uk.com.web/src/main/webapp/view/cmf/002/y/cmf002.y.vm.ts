@@ -26,6 +26,7 @@ module nts.uk.com.view.cmf002.y {
             normalCount: KnockoutObservable<number> = ko.observable(0);
             totalCount: KnockoutObservable<number> = ko.observable(0);
             totalErrorCount: KnockoutObservable<number> = ko.observable(0);
+            groupProcessCount: KnockoutObservable<number> = ko.observable(0);
 
             constructor() {
                 let self = this;
@@ -34,11 +35,15 @@ module nts.uk.com.view.cmf002.y {
 
                 self.exterOutExecLog = ko.observable(new ExterOutExecLog('', '', '', 0, 0, '', 0, 0, '', 0, '', '', '', 0, 0, '', '', '', '', '', 0, ''));
 
-                self.totalCount.subscribe(function(value) {
-                    self.normalCount(self.totalCount() - self.totalErrorCount());
-                });
-                self.totalErrorCount.subscribe(function(value) {
-                    self.normalCount(self.totalCount() - self.totalErrorCount());
+//                self.totalCount.subscribe(function(value) {
+//                    self.normalCount(self.totalCount() - self.totalErrorCount());
+//                });
+//                self.totalErrorCount.subscribe(function(value) {
+//                    self.normalCount(self.totalCount() - self.totalErrorCount());
+//                });
+                
+                self.groupProcessCount.subscribe(function(value) {
+                    self.normalCount(self.totalCount() - self.groupProcessCount());
                 });
 
                 self.iErrorContentCSV = ko.observable(new IErrorContentCSV("", self.exterOutExecLog(), self.externalOutLog()));
@@ -71,6 +76,7 @@ module nts.uk.com.view.cmf002.y {
                             });
 							self.externalOutLog(temp);
 							self.iErrorContentCSV(new IErrorContentCSV(self.exterOutExecLog().nameSetting, self.exterOutExecLog(), self.externalOutLog()));
+                            self.groupProcessCount(_.size(_.countBy(sortByExternalOutLog, 'processCount')));
                         }
                     }
                 }).fail(function(res: any) {
