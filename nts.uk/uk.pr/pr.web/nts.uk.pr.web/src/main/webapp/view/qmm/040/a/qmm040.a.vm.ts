@@ -104,7 +104,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
         loadMGrid() {
             let self = this;
-            let height = $(window).height() - 90 - 290;
+            let height = $(window).height() - 90 - 285;
             let width = $(window).width() + 20 - 1170;
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
                 width: "560px",
