@@ -553,9 +553,9 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 		//パラメータ．特別休暇の残数．未消化数=未消化数
 		useInfor.setUnDisgesteDays(undigested);
 		//特別休暇付与残数データ一覧を特別休暇パラメータに追加する
-		List<SpecialLeaveGrantDetails> lstSpecialLeaveGrantDetails = new ArrayList<>();
 		Map<GeneralDate, Double> limitDays = adjustCarryForward.getMapGrantDays();
-		expiredData.getLstGrantData().forEach(x -> {
+		List<SpecialLeaveGrantDetails> lstSpeLeaGrant = new ArrayList<>();
+		for(SpecialLeaveGrantRemainingData x : expiredData.getLstGrantData()){
 			SpecialLeaveGrantDetails grantDetail = new SpecialLeaveGrantDetails();
 			grantDetail.setCode(x.getSpecialLeaveCode().v());
 			Optional<SpecialLeaveGrantRemainingData> grantDataById = speLeaveRepo.getBySpecialId(x.getSpecialId());
@@ -594,9 +594,9 @@ public class SpecialLeaveManagementServiceImpl implements SpecialLeaveManagement
 					&& grantNumberData.getTimeOfGrant().get() != null
 					? Optional.of(grantNumberData.getTimeOfGrant().get().v()) : Optional.empty());
 			grantDetail.setDetails(inforSevice);
-			lstSpecialLeaveGrantDetails.add(grantDetail);
-		});
-		return new InPeriodOfSpecialLeave(lstSpecialLeaveGrantDetails, useInfor, subtractUseDays.getSpeLeaveResult().getUseOutPeriod(), Collections.emptyList());
+			lstSpeLeaGrant.add(grantDetail);
+		}
+		return new InPeriodOfSpecialLeave(lstSpeLeaGrant, useInfor, subtractUseDays.getSpeLeaveResult().getUseOutPeriod(), Collections.emptyList());
 	}
 
 	@Override

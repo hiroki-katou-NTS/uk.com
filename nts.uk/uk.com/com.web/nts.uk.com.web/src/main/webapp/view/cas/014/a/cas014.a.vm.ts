@@ -127,13 +127,8 @@ module nts.uk.com.view.cas014.a {
             
             saveAsExcel(): void {
                 let self = this;
-//                setShared('CAS014_M_PARAMS', {
-//                });
      
                 modal("/view/cas/014/m/index.xhtml").onClosed(function() {
-//                    let params = getShared('CAS014_A_PARAMS');
-//                    if (params) {
-//                    }
                 });
             }
 

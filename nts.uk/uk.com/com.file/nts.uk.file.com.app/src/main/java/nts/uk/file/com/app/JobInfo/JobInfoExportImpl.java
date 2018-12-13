@@ -1,7 +1,6 @@
 package nts.uk.file.com.app.JobInfo;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -41,6 +40,29 @@ public class JobInfoExportImpl implements MasterListData{
 		return columns;
 	}
 	
+	public List<MasterHeaderColumn> getHeaderColumns_Per() {
+		List<MasterHeaderColumn> columns = new ArrayList<>();
+		columns.add(
+				new MasterHeaderColumn(JobInfoColumn.CAS014_45, TextResource.localize("CAS014_45"), 
+						ColumnTextAlign.LEFT, "", true));
+		columns.add(
+				new MasterHeaderColumn(JobInfoColumn.CAS014_46, TextResource.localize("CAS014_46"), 
+						ColumnTextAlign.LEFT, "", true));
+		columns.add(
+				new MasterHeaderColumn(JobInfoColumn.CAS014_47, TextResource.localize("CAS014_47"), 
+						ColumnTextAlign.LEFT, "", true));
+		columns.add(
+				new MasterHeaderColumn(JobInfoColumn.CAS014_48, TextResource.localize("CAS014_48"), 
+						ColumnTextAlign.LEFT, "", true));
+		columns.add(
+				new MasterHeaderColumn(JobInfoColumn.CAS014_49, TextResource.localize("CAS014_49"), 
+						ColumnTextAlign.LEFT, "", true));
+		columns.add(
+				new MasterHeaderColumn(JobInfoColumn.CAS014_50, TextResource.localize("CAS014_50"), 
+						ColumnTextAlign.LEFT, "", true));
+		return columns;
+	}
+	
 	
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		List<MasterData> datas = new ArrayList<>();
@@ -49,19 +71,25 @@ public class JobInfoExportImpl implements MasterListData{
 		return datas;
 	}
 	
+	public List<MasterData> getMasterDatas_Per() {
+		List<MasterData> datas = new ArrayList<>();
+		datas = repository.getDataExport_Per();
+		return datas;
+	}
+	
 	@Override
     public List<SheetData> extraSheets(MasterListExportQuery query) {
     	
         List<SheetData> sheetDatas = new ArrayList<>();
         
-//        SheetData sheetData = SheetData.builder()
-//                .mainData(this.getMasterDatas(query))
-//                .mainDataColumns(this.getHeaderColumns(query))
-//                .sheetName(TextResource.localize("CAS014_51"))
-//                .build();
-//
-//        sheetDatas.add(sheetData);
-        return Collections.emptyList();
+        SheetData sheetData = SheetData.builder()
+                .mainData(this.getMasterDatas_Per())
+                .mainDataColumns(this.getHeaderColumns_Per())
+                .sheetName(TextResource.localize("CAS014_52"))
+                .build();
+
+        sheetDatas.add(sheetData);
+        return sheetDatas;
     }
 	
 	@Override

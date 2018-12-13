@@ -6,5 +6,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 public interface RegistTimeRepository {
 	
-	List<MasterData> getDataExport();
+	List<MasterData> getDataExportSheet1();
+	List<MasterData> getDataExportSheet2();
+	List<MasterData> getDataExportSheet3();
 }

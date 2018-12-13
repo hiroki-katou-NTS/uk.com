@@ -231,12 +231,13 @@ public class ScheCreExeBasicScheduleHandler {
 		ScTimeParam param = new ScTimeParam(employeeId, dateInPeriod, new WorkTypeCode(worktypeDto.getWorktypeCode()),
 				workTimeCode != null ? new WorkTimeCode(workTimeCode) : null, startClock, endClock, breakStartTime, breakEndTime, childCareStartTime,
 				childCareEndTime);
-		this.saveScheduleTime(command.getCompanySetting(), param, commandSave, command.getExecutionId());
+		if (this.saveScheduleTime(command.getCompanySetting(), param, commandSave, command.getExecutionId()) == null)
+			return;
         
 		// check parameter is delete before insert
-//		if (command.getIsDeleteBeforInsert()) {
-			this.basicScheduleRepository.delete(employeeId, dateInPeriod, commandSave.toDomain());
-//		}
+		// if (command.getIsDeleteBeforInsert()) {
+		this.basicScheduleRepository.delete(employeeId, dateInPeriod, commandSave.toDomain());
+		// }
 		
 		// save command
 		this.saveBasicSchedule(commandSave,
@@ -403,7 +404,8 @@ public class ScheCreExeBasicScheduleHandler {
 		ScTimeParam param = new ScTimeParam(employeeId, toDate, new WorkTypeCode(workTypeCode),
 				new WorkTimeCode(workTimeCode), startClock, endClock, breakStartTime, breakEndTime, childCareStartTime,
 				childCareEndTime);
-		this.saveScheduleTime(command.getCompanySetting(), param, commandSave, command.getExecutionId());
+		if(this.saveScheduleTime(command.getCompanySetting(), param, commandSave, command.getExecutionId()) == null)
+			return;
 		
 //		boolean isDeleteBeforeInsert = false;
 		// save command
@@ -596,7 +598,7 @@ public class ScheCreExeBasicScheduleHandler {
 				ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, executionId,
 						commandSave.getYmd(), commandSave.getEmployeeId());
 				this.scheduleErrorLogRepository.add(scheduleErrorLog);
-				return commandSave;
+				return null;
 			}
 			throw new RuntimeException(e);
 		}
@@ -696,6 +698,9 @@ public class ScheCreExeBasicScheduleHandler {
 		// Imported（勤務予定）「勤務予定の計算時間」を取得する
 		basicScheduleSaveCommand.updateWorkScheduleTimeZonesKeepBounceAtr(prescribedTimezoneSetting, workType);
 		basicScheduleSaveCommand = saveScheduleTime(null, param, basicScheduleSaveCommand, null);
+		
+		if(basicScheduleSaveCommand == null)
+			return;
 		
 		// Get all schedule item by company id (for optimization)
 		List<ScheduleItem> lstScheduleItem = scheduleItemManagementRepository.findAllScheduleItem(companyId);

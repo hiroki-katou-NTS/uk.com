@@ -112,8 +112,8 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		
 		FlexTime flexTime = new FlexTime(TimeDivergenceWithCalculationMinusExist.sameTime(new AttendanceTimeOfExistMinus(0)),new AttendanceTime(0));
 		
-		//1日休日 or 1日休出
-		if(workType.getDailyWork().isOneDayHoliday() || workType.getDailyWork().isHolidayWork())
+		//1日休日 or 1日休出  or 1日振休
+		if(workType.getDailyWork().isOneDayHoliday() || workType.getDailyWork().isHolidayWork() || workType.getDailyWork().isPause())
 			return flexTime;
 		//フレックス計算しない　and 非勤務日
 		if(!calcMethod.isCalclateFlexTime() && workType.getDailyWork().getAttendanceHolidayAttr().isHoliday()) 

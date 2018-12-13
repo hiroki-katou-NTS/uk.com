@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -29,6 +30,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichu_ishida
  */
 @Getter
+@Setter
+@NoArgsConstructor
 public class MonAggrEmployeeSettings {
 
 	/** 社員ID */

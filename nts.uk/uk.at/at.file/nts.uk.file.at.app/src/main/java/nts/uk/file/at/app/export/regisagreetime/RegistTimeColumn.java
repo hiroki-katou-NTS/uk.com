@@ -2,7 +2,9 @@ package nts.uk.file.at.app.export.regisagreetime;
 
 public final class RegistTimeColumn {
 	
-	
+	/**
+	 *  sheet1
+	 */
 	// A7_1
 	public static final String KMK008_80 = "項目";
 	// A7_2
@@ -25,5 +27,39 @@ public final class RegistTimeColumn {
 	public static final String HEADER_NONE1 = "";
 	public static final String HEADER_NONE2 = "  ";
 	
+	/**
+	 *  sheet 2
+	 */
+	
+	//A9_1
+	public static final String KMK008_89 = "期間";
+	// A9_2
+	public static final String KMK008_90 = "エラー時間";
+	// A9_3
+	public static final String KMK008_91 = "アラーム時間";
+	// A9_4
+	public static final String KMK008_92 = "限度時間";
+	// A9_5
+	public static final String KMK008_93 = "1週間";
+	// A9_6
+	public static final String KMK008_94 = "2週間";
+	// A9_7
+	public static final String KMK008_95 = "4週間";
+	// A9_8
+	public static final String KMK008_96 = "1カ月";
+	// A9_9
+	public static final String KMK008_97 = "2カ月";
+	// A9_10
+	public static final String KMK008_98 = "3カ月";
+	// A9_11
+	public static final String KMK008_99 = "1年間";
+	
+	/**
+	 *  sheet3
+	 */
+	// A11_1
+	public static final String KMK008_100 = "雇用コード";
+	// A11_2
+	public static final String KMK008_101 = "雇用名";
 	
 }

@@ -177,6 +177,10 @@ subprojects {
 		// https://mvnrepository.com/artifact/org.quartz-scheduler/quartz
 		compile group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.0'
 		
+		// HttpClient
+		compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.5'
+		compile group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.9'
+		
 		// For Login feature.
 		// https://mvnrepository.com/artifact/com.github.dblock.waffle/waffle-jna
 		compile group: 'com.github.dblock.waffle', name: 'waffle-jna', version: '1.8.1'
@@ -1312,6 +1316,7 @@ project (':pereg.ctx:nts.uk.ctx.pereg.app') {
 		compile project (':com.ctx:basic:nts.uk.ctx.basic.dom')
 		compile project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.app')
 		compile project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
+		compile project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
 		compile project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.app')
 		compile project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
 		compile project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.app')
