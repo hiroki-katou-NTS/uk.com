@@ -14,8 +14,10 @@ import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.PerEmpData;
+import nts.uk.ctx.bs.employee.dom.employee.service.SearchEmployeeService;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.CodeName;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpBody;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpHead;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmployeeDto;
@@ -91,7 +93,7 @@ public class GridPeregProcessor {
 
 		// get body
 		if (!CollectionUtil.isEmpty(query.getLstEmployee())) {
-			List<PerEmpData> personDatas = employeeMngRepo.getPersonIds(query.getLstEmployee());
+			List<PerEmpData> personDatas = employeeMngRepo.getEmploymentInfos(query.getLstEmployee(), query.getStandardDate());
 			List<GridEmployeeInfoDto> resultsSync = Collections.synchronizedList(new ArrayList<>());
 
 			this.parallel.forEach(personDatas, pdt -> {
@@ -109,6 +111,13 @@ public class GridPeregProcessor {
 						.flatMap(f -> f.getItems().stream()).collect(Collectors.toList());
 
 				resultsSync.add(new GridEmployeeInfoDto(pdt.getPersonId(), pdt.getEmployeeId(),
+						new CodeName(pdt.getEmployeeCode(), pdt.getEmployeeName()),
+						pdt.getEmployeeBirthday(),
+						new CodeName(pdt.getDepartmentCode(), pdt.getDepartmentName()),
+						new CodeName(pdt.getWorkplaceCode(), pdt.getWorkplaceName()),
+						new CodeName(pdt.getPositionCode(),pdt.getPositionName()),
+						new CodeName(pdt.getEmploymentCode(), pdt.getEmploymentName()),
+						new CodeName(pdt.getClassificationCode(), pdt.getClassificationName()),
 						items.stream()
 								.map(m -> new GridEmpBody(m.getItemCode(), m.getItemParentCode(), m.getActionRole(),
 										m.getValue(), m.getTextValue(), m.getRecordId(), m.getLstComboBoxValue()))

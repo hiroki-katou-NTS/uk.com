@@ -154,6 +154,6 @@ public interface EmployeeDataMngInfoRepository {
 	 * @param sids
 	 * @return List<PerEmpData>
 	 * */
-	List<PerEmpData> getPersonIds(List<String> sids);
+	List<PerEmpData> getEmploymentInfos(List<String> sids, GeneralDate baseDate);
 	
 }

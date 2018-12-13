@@ -128,12 +128,48 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	
 	
 	private static final String SELECT_EMPL_NOT_DELETE_BY_CID = String.join(" ", SELECT_NO_PARAM, "WHERE e.companyId = :companyId AND e.delStatus = 0");
-	
-	private static final String SELECT_PID_BY_SID = String.join(" ", "SELECT p.bpsmtPersonPk.pId, e.bsymtEmployeeDataMngInfoPk.sId",
-			"FROM BsymtEmployeeDataMngInfo e INNER JOIN BpsmtPerson p",
-			"ON e.bsymtEmployeeDataMngInfoPk.pId = p.bpsmtPersonPk.pId",
-			"AND e.companyId = :cid",
-			"WHERE e.bsymtEmployeeDataMngInfoPk.sId IN :sids");
+
+	private static final String SELECT_FIXED_DATA = String.join(" ", "SELECT",
+			"mng.PID, mng.SID, mng.SCD, per.BUSINESS_NAME, per.PERSON_NAME, per.BIRTHDAY,",
+			"dpi.CD, dpi.NAME,",
+			"wif.WKPCD, wif.WKP_DISPLAY_NAME, wif.WKP_NAME,",
+			"ji.JOB_CD, ji.JOB_NAME,",
+			"epl.CODE, epl.NAME,",
+			"cla.CLSCD, cla.CLSNAME",
+			"FROM [OOTSUKATEST].[dbo].[BSYMT_EMP_DTA_MNG_INFO] mng",
+			"LEFT JOIN [OOTSUKATEST].[dbo].[BSYMT_EMPLOYMENT_HIST] emh",
+			"ON mng.SID = emh.SID AND mng.CID = emh.CID AND emh.START_DATE <= '{basedate} 23:59:59' AND emh.END_DATE >= '{basedate} 00:00:00'",
+			"LEFT JOIN [OOTSUKATEST].[dbo].[BSYMT_EMPLOYMENT_HIS_ITEM] emhi",
+			"ON emh.HIST_ID = emhi.HIST_ID AND emhi.SID = mng.SID",
+			"LEFT JOIN [OOTSUKATEST].[dbo].[BSYMT_EMPLOYMENT] epl", "ON emhi.EMP_CD = epl.CODE AND epl.CID = '{comid}'",
+			"LEFT JOIN [OOTSUKATEST].[dbo].[BPSMT_PERSON] per", "ON mng.PID = per.PID",
+			"LEFT JOIN [OOTSUKATEST].[dbo].[BSYMT_AFF_DEP_HIST] adh",
+			"ON mng.SID = adh.SID AND adh.START_DATE <= '{basedate} 23:59:59' AND adh.END_DATE >= '{basedate} 00:00:00'",
+			"LEFT JOIN [OOTSUKATEST].[dbo].[BSYMT_AFF_DEP_HIST_ITEM] adi",
+			"ON adh.HIST_ID = adi.HIST_ID AND adh.CID = '{comid}' ",
+			"LEFT JOIN [OOTSUKATEST].[dbo].[BSYMT_DEPARTMENT_INFO] dpi",
+			"ON adi.DEP_ID = dpi.DEP_ID AND dpi.CID = '{comid}'",
+			"LEFT JOIN [OOTSUKATEST].[dbo].[BSYMT_AFF_WORKPLACE_HIST] awh",
+			"ON mng.SID = awh.SID AND mng.CID = awh.CID AND awh.CID = '{comid}' AND awh.START_DATE <= '{basedate} 23:59:59' AND awh.END_DATE >= '{basedate} 00:00:00'",
+			"LEFT JOIN [OOTSUKATEST].[dbo].[BSYMT_AFF_WPL_HIST_ITEM] whi", "ON awh.HIST_ID = whi.HIST_ID ",
+			"LEFT JOIN [OOTSUKATEST].[dbo].[BSYMT_WORKPLACE_HIST] wh",
+			"ON whi.WORKPLACE_ID = wh.WKPID AND wh.CID = '{comid}' AND wh.START_DATE <= '{basedate} 23:59:59' AND wh.END_DATE >= '{basedate} 00:00:00'",
+			"LEFT JOIN [OOTSUKATEST].[dbo].[BSYMT_WORKPLACE_INFO] wif",
+			"ON wh.HIST_ID = wif.HIST_ID AND wif.CID = '{comid}'",
+			"LEFT JOIN [OOTSUKATEST].[dbo].[BSYMT_AFF_JOB_HIST] ajh",
+			"ON mng.SID = ajh.SID AND mng.CID = ajh.CID AND ajh.CID = '{comid}'  AND ajh.START_DATE <= '{basedate} 23:59:59' AND ajh.END_DATE >= '{basedate} 00:00:00'",
+			"LEFT JOIN [OOTSUKATEST].[dbo].[BSYMT_AFF_JOB_HIST_ITEM] aji",
+			"ON ajh.HIST_ID = aji.HIST_ID AND ajh.SID = aji.SID", "LEFT JOIN [OOTSUKATEST].[dbo].[BSYMT_JOB_HIST] jh",
+			"ON aji.JOB_TITLE_ID = jh.JOB_ID AND jh.CID = '{comid}' AND jh.START_DATE <= '{basedate} 23:59:59' AND jh.END_DATE >= '{basedate} 00:00:00'",
+			"LEFT JOIN [OOTSUKATEST].[dbo].[BSYMT_JOB_INFO] ji",
+			"ON jh.JOB_ID = ji.JOB_ID AND jh.HIST_ID = ji.HIST_ID AND jh.CID = ji.CID AND ji.CID = '{comid}'",
+			"LEFT JOIN [OOTSUKATEST].[dbo].[BSYMT_AFF_CLASS_HISTORY] ach",
+			"ON mng.SID = ach.SID AND mng.CID = ach.CID AND ach.CID = '{comid}' AND ach.START_DATE <= '{basedate} 23:59:59' AND ach.END_DATE >= '{basedate} 00:00:00'",
+			"LEFT JOIN [OOTSUKATEST].[dbo].[BSYMT_AFF_CLASS_HIS_ITEM] ahi",
+			"ON mng.SID = ahi.SID AND ach.HIST_ID = ahi.HIST_ID AND mng.CID = ach.CID AND ach.CID = '{comid}'",
+			"LEFT JOIN [OOTSUKATEST].[dbo].[BSYMT_CLASSIFICATION] cla",
+			"ON ahi.CLASSIFICATION_CODE = cla.CLSCD AND cla.CID = ach.CID AND cla.CID = '{comid}'",
+			"WHERE mng.CID = '{comid}' AND mng.DEL_STATUS_ATR = 0 AND mng.SID IN ('{sids}')");
 	
 	@Override
 	public void add(EmployeeDataMngInfo domain) {
@@ -556,22 +592,45 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				.getList().stream().map(m -> toDomain(m)).collect(Collectors.toList());
 	}
 	// laitv code end
-
+	
 	@Override
-	public List<PerEmpData> getPersonIds(List<String> sids) {
+	public List<PerEmpData> getEmploymentInfos(List<String> sids, GeneralDate baseDate) {
 		List<PerEmpData> data = new ArrayList<>();
-		
-		if(CollectionUtil.isEmpty(sids)) {
+		String comId = AppContexts.user().companyId();
+
+		if (CollectionUtil.isEmpty(sids)) {
 			return null;
 		}
-		
+
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, sl -> {
-			data.addAll(queryProxy().query(SELECT_PID_BY_SID, Object[].class)
-					.setParameter("cid", AppContexts.user().companyId())
-					.setParameter("sids", sl)
-					.getList().stream().map(m -> new PerEmpData(m[0].toString(), m[1].toString())).collect(Collectors.toList()));
+			String querySQL = SELECT_FIXED_DATA.replaceAll("\\{comid\\}", comId)
+					.replaceAll("\\{basedate\\}", baseDate.toString("yyyy-MM-dd"))
+					.replaceAll("\\{sids\\}", String.join("', '", sl));
+
+			@SuppressWarnings("unchecked")
+			List<Object[]> resultList = getEntityManager().createNativeQuery(querySQL).getResultList();
+
+			data.addAll(resultList.stream().map(m -> {
+				return new PerEmpData(
+						m[0] != null ? m[0].toString() : "", // personId
+						m[1] != null ? m[1].toString() : "", // employeeId								
+						m[2] != null ? m[2].toString() : "", // employeeCode–
+						m[3] != null ? m[3].toString() : (m[4] != null ? m[4].toString() : ""),  // employeeName
+						m[5] != null ? m[5].toString() : "", // employeeBirthday
+						m[6] != null ? m[6].toString() : "", // departmentCode
+						m[7] != null ? m[7].toString() : "", // departmentName
+						m[8] != null ? m[8].toString() : "", //workplaceCode
+						m[9] != null ? m[9].toString() : (m[10] != null ? m[10].toString() : ""), //workplaceName
+						m[11] != null ? m[11].toString() : "", //positionCode
+						m[12] != null ? m[12].toString() : "", //positionName
+						m[13] != null ? m[13].toString() : "", //employmentCode
+						m[14] != null ? m[14].toString() : "", //employmentName
+						m[15] != null ? m[15].toString() : "", //classificationCode
+						m[16] != null ? m[16].toString() : ""// classificationName
+					);
+			}).collect(Collectors.toList()));
 		});
-		
+
 		return data;
 	}
 }
