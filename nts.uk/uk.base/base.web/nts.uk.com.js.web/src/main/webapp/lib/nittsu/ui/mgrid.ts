@@ -4103,10 +4103,17 @@ module nts.uk.ui.mgrid {
                 let parsed, constraint = column.constraint;
                 let valueType = constraint.primitiveValue ? ui.validation.getConstraint(constraint.primitiveValue).valueType
                             : constraint.cDisplayType;
-                if (!_.isNil(value)
-                    && (valueType === "Time" || valueType === "TimeWithDay" || valueType === "Clock")) {
-                    parsed = uk.time.minutesBased.duration.parseString(value);
-                    if (parsed.success) value = parsed.format();
+                if (!_.isNil(value) && value !== "") {
+                    if (valueType === "Time") {
+                        parsed = uk.time.minutesBased.duration.parseString(value);
+                        if (parsed.success) value = parsed.format();
+                    } else if (valueType === "TimeWithDay" || valueType === "Clock") {
+                        let minutes = time.minutesBased.clock.dayattr.parseString(String(value)).asMinutes;
+                        if (_.isNil(minutes)) return value;
+                        try {
+                            value = time.minutesBased.clock.dayattr.create(minutes).shortText;
+                        } catch (e) {}   
+                    }
                 }
             }
             
