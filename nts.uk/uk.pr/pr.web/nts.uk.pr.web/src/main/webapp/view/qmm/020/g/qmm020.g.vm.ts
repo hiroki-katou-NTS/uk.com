@@ -37,14 +37,12 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
         }
 
         openLScreen(){
-            block.invisible();
             let self = this;
             modal("/view/qmm/020/l/index.xhtml").onClosed(()=>{
                 let params = getShared(model.PARAMETERS_SCREEN_L.OUTPUT);
                 if(params && params.isSubmit) location.reload();
 
             });
-            block.clear();
         }
 
         loadGird(){
@@ -215,7 +213,7 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
         }
 
         openJScreen() {
-            block.invisible();
+
             let self = this;
             let start = 0;
             if(self.listStateCorrelationHisSalary() && self.listStateCorrelationHisSalary().length > 0) {
@@ -234,11 +232,11 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                     self.hisIdSelected(HIS_ID_TEMP);
                 }
             });
-            block.clear();
+
         }
 
         openKScreen(){
-            block.invisible();
+
             let self = this;
             let index = _.findIndex(self.listStateCorrelationHisSalary(), {hisId: self.hisIdSelected()});
             self.index(self.getIndex(self.hisIdSelected()));
@@ -282,7 +280,7 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                 $('#G2_1').focus();
 
             });
-            block.clear();
+
         }
 
         getIndex(hisId: string) {

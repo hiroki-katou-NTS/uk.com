@@ -256,7 +256,6 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
 
         openScreenK(){
             let self = this;
-            block.invisible();
             let listStateCorrelationHis = [];
             service.getStateCorrelationHisCompanyById().done((data)=>{
                 listStateCorrelationHis = self.convertToList(data);
@@ -274,7 +273,6 @@ module nts.uk.pr.view.qmm020.b.viewmodel {
             }).fail((err)=>{
                 if(err) dialog.alertError(err);
             }).always(()=>{
-                block.clear();
             });
 
             modal("/view/qmm/020/k/index.xhtml").onClosed(()=>{

@@ -231,7 +231,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
         }
 
         openJScreen() {
-            block.invisible();
+
             let self = this;
             let start = self.startLastYearMonth();
             if (self.listStateCorrelationHisPosition() && self.listStateCorrelationHisPosition().length > 0) {
@@ -254,11 +254,11 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 }
 
             });
-            block.clear();
+
         }
 
         openKScreen() {
-            block.invisible();
+
             let self = this;
             let index = _.findIndex(self.listStateCorrelationHisPosition(), {hisId: self.hisIdSelected()});
             self.index(self.getIndex(self.hisIdSelected()));
@@ -293,7 +293,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 $('#F2_1').focus();
 
             });
-            block.clear();
+
         }
 
         getIndex(hisId: string) {

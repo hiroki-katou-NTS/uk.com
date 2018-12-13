@@ -91,14 +91,12 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
         }
 
         openLScreen(){
-            block.invisible();
             let self = this;
             modal("/view/qmm/020/l/index.xhtml").onClosed(()=>{
                 let params = getShared(model.PARAMETERS_SCREEN_L.OUTPUT);
                 if(params && params.isSubmit) location.reload();
 
             });
-            block.clear();
         }
 
         initScreen(hisId: string){
@@ -205,7 +203,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
         }
 
         openJScreen() {
-            block.invisible();
+
             let self = this;
             let start = self.startLastYearMonth();
             if(self.listStateCorrelationHisClassification() && self.listStateCorrelationHisClassification().length > 0) {
@@ -225,11 +223,10 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                 }
 
             });
-            block.clear();
+
         }
 
         openKScreen(){
-            block.invisible();
             let self = this;
             let index = _.findIndex(self.listStateCorrelationHisClassification(), {hisId: self.hisIdSelected()});
             self.index(self.getIndex(self.hisIdSelected()));
@@ -263,7 +260,6 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                 $('#E2_1').focus();
 
             });
-            block.clear();
         }
 
         findItem(masterCode){
