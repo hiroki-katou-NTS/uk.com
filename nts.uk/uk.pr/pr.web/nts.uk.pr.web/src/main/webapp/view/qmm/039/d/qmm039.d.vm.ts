@@ -122,7 +122,9 @@ module nts.uk.pr.view.qmm039.d.viewmodel {
                     self.items(array);
                 $('#D2_8').focus();
                 }
-            )
+            ).fail((res) => {
+                nts.uk.ui.dialog.alertError(res.message);
+            })
         }
 
         formatYM(intYM) {

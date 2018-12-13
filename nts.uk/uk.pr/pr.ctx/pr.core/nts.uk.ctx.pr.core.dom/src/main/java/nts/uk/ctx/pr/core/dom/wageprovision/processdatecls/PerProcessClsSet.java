@@ -21,16 +21,17 @@ public class PerProcessClsSet extends AggregateRoot {
     private String cid;
     
     /**
-    * 処理区分NO
-    */
-    private int processCateNo;
-    
-    /**
     * ユーザID
     */
     private String uid;
+
+
+    /**
+     * 処理区分NO
+     */
+    private int processCateNo;
     
-    public PerProcessClsSet(String companyId, int processCateNo, String userId) {
+    public PerProcessClsSet(String companyId,  String userId, int processCateNo) {
         this.cid = companyId;
         this.uid = userId;
         this.processCateNo = processCateNo;
