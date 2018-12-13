@@ -916,7 +916,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				}
 			}
 		}
-		return returnList;
+		return returnList.stream().filter(breakTimeSheet -> breakTimeSheet.timeSheet.getTimeSpan().lengthAsMinutes()!=0).collect(Collectors.toList());
 	}
 
 
