@@ -438,6 +438,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         condition42() {
             let self = this;
             self.totalObjAtrs(shareModel.getPaymentTotalObjAtr(self.params.printSet));
+            if(self.params.printSet == shareModel.StatementPrintAtr.PRINT) return;
             if (self.params.detail.totalObj == shareModel.PaymentTotalObjAtr.INSIDE.toString()) {
                 self.params.detail.totalObj = shareModel.PaymentTotalObjAtr.OUTSIDE.toString();
             } else if (self.params.detail.totalObj == shareModel.PaymentTotalObjAtr.INSIDE_ACTUAL.toString()) {

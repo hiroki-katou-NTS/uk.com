@@ -416,6 +416,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         condition42() {
             let self = this;
             self.totalObjAtrs(shareModel.getDeductionTotalObjAtr(self.params.printSet));
+            if(self.params.printSet == shareModel.StatementPrintAtr.PRINT) return;
             if (self.params.detail.totalObj == shareModel.DeductionTotalObjAtr.INSIDE.toString()) {
                 self.params.detail.totalObj = shareModel.DeductionTotalObjAtr.OUTSIDE.toString();
             }
