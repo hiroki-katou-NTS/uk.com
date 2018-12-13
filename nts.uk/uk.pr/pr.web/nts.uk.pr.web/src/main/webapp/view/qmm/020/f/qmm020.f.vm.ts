@@ -49,6 +49,10 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
 
         loadGird() {
             let self = this;
+            if($("#F3_1").length > 0){
+                $("#F3_1").remove();
+                $("#F2_5").after('<table id="F3_1"></table>');
+            }
             $("#F3_1").ntsGrid({
                 height: '320px',
                 dataSource: self.listStateLinkSettingMaster(),
@@ -59,17 +63,17 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                     {headerText: '', key: 'id', dataType: 'number', width: '100', hidden: true},
                     {headerText: getText('QMM020_26'), key: 'masterCode', dataType: 'string', width: '90'},
                     {headerText: getText('QMM020_27'), key: 'categoryName', dataType: 'string', width: '180'},
-                    {headerText: getText('QMM020_20'), key: 'salary', dataType: 'string', width: '75px', unbound: true, ntsControl: 'Salary'},
+                    {headerText: getText('QMM020_20'), key: 'open', dataType: 'string', width: '75px', unbound: true, ntsControl: 'SalaryButton'},
                     {headerText: '', key: 'displayE3_4', dataType: 'string', width: '200'},
-                    {headerText: getText('QMM020_22'), key: 'bonus', dataType: 'string', width: '75px', unbound: true, ntsControl: 'Bonus'},
+                    {headerText: getText('QMM020_22'), key: 'open1', dataType: 'string', width: '75px', unbound: true, ntsControl: 'SalaryButton'},
                     {headerText: '', key: 'displayE3_5', dataType: 'string', width: '200'},
 
                 ],
                 features: [
                     {name: 'Selection', mode: 'row', multipleSelection: true}],
                 ntsControls: [
-                    {name: 'Salary', text: getText("QMM020_21"), click: function (item) {self.openMScreen(item, 1)}, controlType: 'Button'},
-                    {name: 'Bonus', text: getText("QMM020_21"), click: function (item) {self.openMScreen(item, 2)}, controlType: 'Button'}]
+                    {name: 'SalaryButton', text: getText("QMM020_21"), click: function (item) {self.openMScreen(item, 1)}, controlType: 'Button'},
+                    {name: 'SalaryButton', text: getText("QMM020_21"), click: function (item) {self.openMScreen(item, 2)}, controlType: 'Button'}]
             });
             $("#F3_1").setupSearchScroll("igGrid", true);
         }
