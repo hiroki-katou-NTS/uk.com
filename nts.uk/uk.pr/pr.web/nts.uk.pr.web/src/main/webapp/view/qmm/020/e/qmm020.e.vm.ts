@@ -187,6 +187,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
             let bonusCode = item.displayE3_5.split('    ')[0];
             setShared(model.PARAMETERS_SCREEN_M.INPUT, {
                 startYearMonth: self.startYearMonth(),
+                endYearMonth: self.endYearMonth(),
                 statementCode: code === 1 ? salaryCode : bonusCode,
                 modeScreen: model.MODE_SCREEN.CLASSIFICATION
             });

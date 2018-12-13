@@ -219,6 +219,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
             let bonusCode = item.displayE3_5.split('    ')[0];
             setShared(model.PARAMETERS_SCREEN_M.INPUT, {
                 startYearMonth: self.listStateCorrelationHisPosition()[index].startYearMonth,
+                endYearMonth: self.listStateCorrelationHisPosition()[index].endYearMonth,
                 statementCode: code === 1 ? salaryCode : bonusCode,
                 modeScreen: model.MODE_SCREEN.POSITION
             });

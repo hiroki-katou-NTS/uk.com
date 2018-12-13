@@ -198,9 +198,9 @@ public class StatementLayoutWebService {
     }
 
     @POST
-    @Path("getAllStatementLayoutHist/{startYearMonth}")
-    public List<StatementNameLayoutHistDto> getAllStatementLayoutHist(@PathParam("startYearMonth") String startYearMonth) {
-        List<StatementNameLayoutHistDto> stateUseUnitSettingDto = statementLayoutHistFinder.getAllStatementLayoutHist(Integer.valueOf(startYearMonth));
+    @Path("getAllStatementLayoutHist/{startYearMonth}/{endYearMonth}")
+    public List<StatementNameLayoutHistDto> getAllStatementLayoutHist(@PathParam("startYearMonth") String startYearMonth,@PathParam("endYearMonth") String endYearMonth) {
+        List<StatementNameLayoutHistDto> stateUseUnitSettingDto = statementLayoutHistFinder.getAllStatementLayoutHist(Integer.valueOf(startYearMonth),Integer.valueOf(endYearMonth));
         return stateUseUnitSettingDto;
     }
 

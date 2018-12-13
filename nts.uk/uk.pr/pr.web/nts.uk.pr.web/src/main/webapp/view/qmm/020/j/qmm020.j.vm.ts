@@ -66,7 +66,7 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
             self.modeScreen(self.getMode(self.params().modeScreen));
             if (self.modeScreen() == MODE_SCREEN.MODE_ONE || self.modeScreen() == MODE_SCREEN.MODE_THREE) {
                 let windowSize = nts.uk.ui.windows.getSelf();
-                windowSize.$dialog.height(250);
+                windowSize.setSize(250,500);
             }
             if (self.modeScreen() == nts.uk.pr.view.qmm020.j.viewmodel.MODE_SCREEN.MODE_TWO) {
                 self.startDateMaster(self.params().startDateMaster);

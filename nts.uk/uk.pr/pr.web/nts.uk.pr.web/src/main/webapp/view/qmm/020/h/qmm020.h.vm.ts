@@ -115,6 +115,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
             let self = this;
             setShared(model.PARAMETERS_SCREEN_M.INPUT, {
                 startYearMonth: self.listStateCorrelationHis()[self.index()].startYearMonth,
+                endYearMonth: self.listStateCorrelationHis()[self.index()].endYearMonth,
                 statementCode : self.salaryCode(),
                 modeScreen: model.MODE_SCREEN.INDIVIDUAL
             });
@@ -133,6 +134,7 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
             let self = this;
             setShared(model.PARAMETERS_SCREEN_M.INPUT, {
                 startYearMonth: self.listStateCorrelationHis()[self.index()].startYearMonth,
+                endYearMonth: self.listStateCorrelationHis()[self.index()].endYearMonth,
                 statementCode : self.bonusCode(),
                 modeScreen: model.MODE_SCREEN.INDIVIDUAL
             });

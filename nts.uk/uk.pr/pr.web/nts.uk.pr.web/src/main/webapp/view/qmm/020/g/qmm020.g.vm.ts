@@ -197,6 +197,7 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
             let index = this.getIndex(self.hisIdSelected());
             setShared(model.PARAMETERS_SCREEN_M.INPUT, {
                 startYearMonth: self.listStateCorrelationHisSalary()[index].startYearMonth,
+                endYearMonth: self.listStateCorrelationHisPosition()[index].endYearMonth,
                 statementCode: code === 1 ? salaryCode : bonusCode,
                 modeScreen: model.MODE_SCREEN.POSITION
             });
