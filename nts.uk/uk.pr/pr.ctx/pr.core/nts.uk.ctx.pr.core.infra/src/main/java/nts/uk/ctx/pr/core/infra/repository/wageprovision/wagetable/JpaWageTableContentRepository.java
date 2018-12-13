@@ -107,11 +107,7 @@ public class JpaWageTableContentRepository extends JpaRepository implements Wage
 				.getList();
 
 		Map<String, List<Object[]>> result = data.stream().collect(Collectors.groupingBy(x -> String.valueOf(x[1])))
-				.entrySet().stream().sorted((o1, o2) -> {
-					if (StringUtil.isNullOrEmpty(o1.getKey(), true) || StringUtil.isNullOrEmpty(o2.getKey(), true)) return -1;
-					if (Integer.valueOf(o1.getKey()).compareTo(Integer.valueOf(o2.getKey())) > 0) return 1;
-					return 0;
-				})
+				.entrySet().stream().sorted((o1, o2) -> Integer.compare(o1.getKey().compareTo(o2.getKey()), 0))
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 
 		return getWageTableQualificationFromDB(result);
