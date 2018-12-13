@@ -473,12 +473,16 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		//大塚要件対応用
 		//大塚モードの場合には遅刻早退から休憩時間を控除する必要があり、控除時間帯の作成時にはこの休憩が作成されないので
 		//就業時間帯から直接取得した休憩を遅刻早退から控除する為に取得
-		 List<TimeSheetOfDeductionItem> breakTimeList = new ArrayList<>();
-		 Optional<BreakTimeOfDailyPerformance> test = reflectBreakTimeOfDailyDomainService.getBreakTime(companyId, employeeId, 
+		 List<TimeSheetOfDeductionItem> breakTimeSheetOfWorkTimeMaster = new ArrayList<>();
+		 Optional<BreakTimeOfDailyPerformance> masterBreakTimeSheetList = reflectBreakTimeOfDailyDomainService.getBreakTime(companyId, employeeId, 
 				 targetDate,integrationOfDaily.getWorkInformation(), companyCommonSetting.getErrorAlarm(), workTime);
 		
-		if(test.isPresent()) {
-			breakTimeList = test.get().changeAllTimeSheetToDeductionItem();
+		if(masterBreakTimeSheetList.isPresent()) {
+			breakTimeSheetOfWorkTimeMaster = masterBreakTimeSheetList.get().changeAllTimeSheetToDeductionItem();
+			Boolean OOtsukaMode = true;
+			if(OOtsukaMode) {
+				breakTimeSheetOfWorkTimeMaster = devideBreakTimeSheetForOOtsuka(breakTimeSheetOfWorkTimeMaster,oneRange.getAttendanceLeavingWork().getTimeLeavingWorks());
+			}
 		}
 		
 		//加給設定の取得
@@ -681,7 +685,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 												workTime.get().getWorkTimeDivision(),breakTimeOfDailyList,midNightTimeSheet,personalInfo,
 												holidayCalcMethodSet,
 												Optional.of(flexWorkSetOpt.get().getCoreTimeSetting()),
-												dailyUnit,breakTimeList,
+												dailyUnit,breakTimeSheetOfWorkTimeMaster,
 												vacation, 
 						                		oneRange.getTimeVacationAdditionRemainingTime().get(), //oneDay.getTimeVacationAdditionRemainingTime().get()
 						                		Optional.of(workInfo.getRecordInfo().getWorkTimeCode()), 
@@ -804,7 +808,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 						Optional.empty(),
 						holidayCalcMethodSet,
 						dailyUnit,
-						breakTimeList,
+						breakTimeSheetOfWorkTimeMaster,
 						vacation, 
                 		oneRange.getTimeVacationAdditionRemainingTime().get(), 
                 		Optional.of(workInfo.getRecordInfo().getWorkTimeCode()), 
@@ -885,6 +889,38 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 										flexCalcSetting,
 										leaveLate);
 	}
+
+	/**
+	 * 大塚モード用　休憩時間帯が出退勤を含めている場合、切り分け、
+	 * 出退勤範囲外の時間帯を切り出す
+	 * @param breakTimeSheetOfWorkTimeMaster
+	 * @param timeLeavingWorks
+	 * @return
+	 */
+	private List<TimeSheetOfDeductionItem> devideBreakTimeSheetForOOtsuka(
+			List<TimeSheetOfDeductionItem> breakTimeSheetOfWorkTimeMaster, List<TimeLeavingWork> timeLeavingWorks) {
+		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
+		for(TimeSheetOfDeductionItem bTimeSheet:breakTimeSheetOfWorkTimeMaster) {
+			for(TimeLeavingWork tleaving : timeLeavingWorks) {
+				//出勤含み
+				if(bTimeSheet.getTimeSheet().getTimeSpan().contains(tleaving.getTimespan().getStart())) {
+					returnList.add(bTimeSheet.replaceTimeSpan(Optional.of(new TimeSpanForCalc(bTimeSheet.getTimeSheet().getStart(),tleaving.getTimespan().getStart()))));
+				}
+				//退勤含み
+				else if(bTimeSheet.getTimeSheet().getTimeSpan().contains(tleaving.getTimespan().getEnd())){
+					returnList.add(bTimeSheet.replaceTimeSpan(Optional.of(new TimeSpanForCalc(tleaving.getTimespan().getEnd(),bTimeSheet.getTimeSheet().getEnd()))));
+				}
+				//どちらも含んでない
+				else {
+					returnList.add(bTimeSheet);
+				}
+			}
+		}
+		return returnList;
+	}
+
+
+
 
 	private boolean checkAttendanceLeaveState(Optional<TimeLeavingOfDailyPerformance> attendanceLeave) {
 		if(attendanceLeave.isPresent()) {
