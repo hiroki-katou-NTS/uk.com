@@ -11,11 +11,11 @@ public class JobInfoColumn {
 	public static final String CAS014_44 = "ロールセット";
 	
 	// R9_1
-	public static final String CAS014_45 = "ロールセットコードヘッダー";
+	public static final String CAS014_45 = "ロールセットコード";
 	// R9_2
-	public static final String CAS014_46 = "ロールセット名称ヘッダー";
+	public static final String CAS014_46 = "ロールセット名称";
 	// R9_3
-	public static final String CAS014_47 = "ロールセット保持者 社員コードヘッダー";
+	public static final String CAS014_47 = "ロールセット保持者 社員コード";
 	// R9_4
 	public static final String CAS014_48 = "ロールセット保持者 氏名";
 	// R9_5

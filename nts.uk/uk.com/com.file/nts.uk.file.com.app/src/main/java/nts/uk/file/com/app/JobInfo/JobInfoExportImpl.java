@@ -40,7 +40,7 @@ public class JobInfoExportImpl implements MasterListData{
 		return columns;
 	}
 	
-	public List<MasterHeaderColumn> getHeaderColumns_Per() {
+	public List<MasterHeaderColumn> getHeaderColumnsRoleSetEmp() {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 		columns.add(
 				new MasterHeaderColumn(JobInfoColumn.CAS014_45, TextResource.localize("CAS014_45"), 
@@ -67,13 +67,13 @@ public class JobInfoExportImpl implements MasterListData{
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		List<MasterData> datas = new ArrayList<>();
 		String date = query.getOption().toString();
-		datas = repository.getDataExport(date);
+		datas = repository.getDataRoleSetPosExport(date);
 		return datas;
 	}
 	
-	public List<MasterData> getMasterDatas_Per() {
+	public List<MasterData> getMasterDatasRoleSetEmp() {
 		List<MasterData> datas = new ArrayList<>();
-		datas = repository.getDataExport_Per();
+		datas = repository.getDataRoleSetEmpExport();
 		return datas;
 	}
 	
@@ -83,8 +83,8 @@ public class JobInfoExportImpl implements MasterListData{
         List<SheetData> sheetDatas = new ArrayList<>();
         
         SheetData sheetData = SheetData.builder()
-                .mainData(this.getMasterDatas_Per())
-                .mainDataColumns(this.getHeaderColumns_Per())
+                .mainData(this.getMasterDatasRoleSetEmp())
+                .mainDataColumns(this.getHeaderColumnsRoleSetEmp())
                 .sheetName(TextResource.localize("CAS014_52"))
                 .build();
 
