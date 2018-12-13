@@ -71,18 +71,18 @@ module nts.uk.pr.view.qmm019.share.model {
     }
 
     export function getPaymentTotalObjAtr(printSet: StatementPrintAtr): Array<ItemModel> {
-        if(printSet == StatementPrintAtr.PRINT){
+        if(printSet == StatementPrintAtr.DO_NOT_PRINT){
+            return [
+                new model.ItemModel(PaymentTotalObjAtr.OUTSIDE,  getText("Enum_PaymentTotalObjAtr_OUTSIDE")),
+                new model.ItemModel(PaymentTotalObjAtr.OUTSIDE_ACTUAL,  getText("Enum_PaymentTotalObjAtr_OUTSIDE_ACTUAL"))
+            ];
+        }
+        else{            
             return [
                 new model.ItemModel(PaymentTotalObjAtr.INSIDE, getText("Enum_PaymentTotalObjAtr_INSIDE")),
                 new model.ItemModel(PaymentTotalObjAtr.OUTSIDE, getText("Enum_PaymentTotalObjAtr_OUTSIDE")),
                 new model.ItemModel(PaymentTotalObjAtr.INSIDE_ACTUAL, getText("Enum_PaymentTotalObjAtr_INSIDE_ACTUAL")),
                 new model.ItemModel(PaymentTotalObjAtr.OUTSIDE_ACTUAL, getText("Enum_PaymentTotalObjAtr_OUTSIDE_ACTUAL"))
-            ];
-        }
-        else{
-            return [
-                new model.ItemModel(PaymentTotalObjAtr.OUTSIDE,  getText("Enum_PaymentTotalObjAtr_OUTSIDE")),
-                new model.ItemModel(PaymentTotalObjAtr.OUTSIDE_ACTUAL,  getText("Enum_PaymentTotalObjAtr_OUTSIDE_ACTUAL"))
             ];
         }
     }
@@ -98,15 +98,15 @@ module nts.uk.pr.view.qmm019.share.model {
     }
 
     export function getDeductionTotalObjAtr(printSet: StatementPrintAtr): Array<ItemModel> {
-        if (printSet == StatementPrintAtr.PRINT) {
+        if (printSet == StatementPrintAtr.DO_NOT_PRINT) {
             return [
                 new model.ItemModel(DeductionTotalObjAtr.OUTSIDE, getText("Enum_DeductionTotalObjAtr_OUTSIDE")),
-                new model.ItemModel(DeductionTotalObjAtr.INSIDE, getText("Enum_DeductionTotalObjAtr_INSIDE"))
             ];
         }
         else {
             return [
                 new model.ItemModel(DeductionTotalObjAtr.OUTSIDE, getText("Enum_DeductionTotalObjAtr_OUTSIDE")),
+                new model.ItemModel(DeductionTotalObjAtr.INSIDE, getText("Enum_DeductionTotalObjAtr_INSIDE"))
             ];
         }
     }
@@ -130,18 +130,28 @@ module nts.uk.pr.view.qmm019.share.model {
     }
 
     export function getPaymentCaclMethodAtr(e: BreakdownItemUseAtr): Array<ItemModel> {
-        if (e == BreakdownItemUseAtr.USE) {
-            return [
-                new model.ItemModel(PaymentCaclMethodAtr.BREAKDOWN_ITEM, getText("Enum_PaymentCaclMethodAtr_BREAKDOWN_ITEM"))
-            ];
-        }else{
-            return [
-                new model.ItemModel(PaymentCaclMethodAtr.MANUAL_INPUT, getText("Enum_PaymentCaclMethodAtr_MANUAL_INPUT")),
-                new model.ItemModel(PaymentCaclMethodAtr.PERSON_INFO_REF, getText("Enum_PaymentCaclMethodAtr_PERSON_INFO_REF")),
-                new model.ItemModel(PaymentCaclMethodAtr.CACL_FOMULA, getText("Enum_PaymentCaclMethodAtr_CACL_FOMULA")),
-                new model.ItemModel(PaymentCaclMethodAtr.WAGE_TABLE, getText("Enum_PaymentCaclMethodAtr_WAGE_TABLE")),
-                new model.ItemModel(PaymentCaclMethodAtr.COMMON_AMOUNT, getText("Enum_PaymentCaclMethodAtr_COMMON_AMOUNT"))
-            ];
+        switch (e) {
+            case BreakdownItemUseAtr.USE:
+                return [
+                    new model.ItemModel(PaymentCaclMethodAtr.BREAKDOWN_ITEM, getText("Enum_PaymentCaclMethodAtr_BREAKDOWN_ITEM"))
+                ];
+            case BreakdownItemUseAtr.NOT_USE:
+                return [
+                    new model.ItemModel(PaymentCaclMethodAtr.MANUAL_INPUT, getText("Enum_PaymentCaclMethodAtr_MANUAL_INPUT")),
+                    new model.ItemModel(PaymentCaclMethodAtr.PERSON_INFO_REF, getText("Enum_PaymentCaclMethodAtr_PERSON_INFO_REF")),
+                    new model.ItemModel(PaymentCaclMethodAtr.CACL_FOMULA, getText("Enum_PaymentCaclMethodAtr_CACL_FOMULA")),
+                    new model.ItemModel(PaymentCaclMethodAtr.WAGE_TABLE, getText("Enum_PaymentCaclMethodAtr_WAGE_TABLE")),
+                    new model.ItemModel(PaymentCaclMethodAtr.COMMON_AMOUNT, getText("Enum_PaymentCaclMethodAtr_COMMON_AMOUNT"))
+                ];
+            case null:
+                return [
+                    new model.ItemModel(PaymentCaclMethodAtr.MANUAL_INPUT, getText("Enum_PaymentCaclMethodAtr_MANUAL_INPUT")),
+                    new model.ItemModel(PaymentCaclMethodAtr.PERSON_INFO_REF, getText("Enum_PaymentCaclMethodAtr_PERSON_INFO_REF")),
+                    new model.ItemModel(PaymentCaclMethodAtr.CACL_FOMULA, getText("Enum_PaymentCaclMethodAtr_CACL_FOMULA")),
+                    new model.ItemModel(PaymentCaclMethodAtr.WAGE_TABLE, getText("Enum_PaymentCaclMethodAtr_WAGE_TABLE")),
+                    new model.ItemModel(PaymentCaclMethodAtr.COMMON_AMOUNT, getText("Enum_PaymentCaclMethodAtr_COMMON_AMOUNT")),
+                    new model.ItemModel(PaymentCaclMethodAtr.BREAKDOWN_ITEM, getText("Enum_PaymentCaclMethodAtr_BREAKDOWN_ITEM"))
+                ];
         }
     }
 
@@ -166,19 +176,30 @@ module nts.uk.pr.view.qmm019.share.model {
     }
 
     export function getDeductionCaclMethodAtr(e: BreakdownItemUseAtr): Array<ItemModel> {
-        if (e == BreakdownItemUseAtr.USE) {
-            return [
-                new model.ItemModel(DeductionCaclMethodAtr.BREAKDOWN_ITEM, getText("Enum_DeductionCaclMethodAtr_BREAKDOWN_ITEM"))
-            ];
-        } else {
-            return [
-                new model.ItemModel(DeductionCaclMethodAtr.MANUAL_INPUT, getText("Enum_DeductionCaclMethodAtr_MANUAL_INPUT")),
-                new model.ItemModel(DeductionCaclMethodAtr.PERSON_INFO_REF, getText("Enum_DeductionCaclMethodAtr_PERSON_INFO_REF")),
-                new model.ItemModel(DeductionCaclMethodAtr.CACL_FOMULA, getText("Enum_DeductionCaclMethodAtr_CACL_FOMULA")),
-                new model.ItemModel(DeductionCaclMethodAtr.WAGE_TABLE, getText("Enum_DeductionCaclMethodAtr_WAGE_TABLE")),
-                new model.ItemModel(DeductionCaclMethodAtr.COMMON_AMOUNT, getText("Enum_DeductionCaclMethodAtr_COMMON_AMOUNT")),
-                new model.ItemModel(DeductionCaclMethodAtr.SUPPLY_OFFSET, getText("Enum_DeductionCaclMethodAtr_SUPPLY_OFFSET")),
-            ];
+        switch (e) {
+            case BreakdownItemUseAtr.USE:
+                return [
+                    new model.ItemModel(DeductionCaclMethodAtr.BREAKDOWN_ITEM, getText("Enum_DeductionCaclMethodAtr_BREAKDOWN_ITEM"))
+                ];
+            case BreakdownItemUseAtr.NOT_USE:
+                return [
+                    new model.ItemModel(DeductionCaclMethodAtr.MANUAL_INPUT, getText("Enum_DeductionCaclMethodAtr_MANUAL_INPUT")),
+                    new model.ItemModel(DeductionCaclMethodAtr.PERSON_INFO_REF, getText("Enum_DeductionCaclMethodAtr_PERSON_INFO_REF")),
+                    new model.ItemModel(DeductionCaclMethodAtr.CACL_FOMULA, getText("Enum_DeductionCaclMethodAtr_CACL_FOMULA")),
+                    new model.ItemModel(DeductionCaclMethodAtr.WAGE_TABLE, getText("Enum_DeductionCaclMethodAtr_WAGE_TABLE")),
+                    new model.ItemModel(DeductionCaclMethodAtr.COMMON_AMOUNT, getText("Enum_DeductionCaclMethodAtr_COMMON_AMOUNT")),
+                    new model.ItemModel(DeductionCaclMethodAtr.SUPPLY_OFFSET, getText("Enum_DeductionCaclMethodAtr_SUPPLY_OFFSET")),
+                ];
+            case null:
+                return [
+                    new model.ItemModel(DeductionCaclMethodAtr.MANUAL_INPUT, getText("Enum_DeductionCaclMethodAtr_MANUAL_INPUT")),
+                    new model.ItemModel(DeductionCaclMethodAtr.PERSON_INFO_REF, getText("Enum_DeductionCaclMethodAtr_PERSON_INFO_REF")),
+                    new model.ItemModel(DeductionCaclMethodAtr.CACL_FOMULA, getText("Enum_DeductionCaclMethodAtr_CACL_FOMULA")),
+                    new model.ItemModel(DeductionCaclMethodAtr.WAGE_TABLE, getText("Enum_DeductionCaclMethodAtr_WAGE_TABLE")),
+                    new model.ItemModel(DeductionCaclMethodAtr.COMMON_AMOUNT, getText("Enum_DeductionCaclMethodAtr_COMMON_AMOUNT")),
+                    new model.ItemModel(DeductionCaclMethodAtr.SUPPLY_OFFSET, getText("Enum_DeductionCaclMethodAtr_SUPPLY_OFFSET")),
+                    new model.ItemModel(DeductionCaclMethodAtr.BREAKDOWN_ITEM, getText("Enum_DeductionCaclMethodAtr_BREAKDOWN_ITEM"))
+                ];
         }
     }
 

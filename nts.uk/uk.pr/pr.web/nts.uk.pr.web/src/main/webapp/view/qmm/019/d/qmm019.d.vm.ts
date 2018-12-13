@@ -43,8 +43,8 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             self.codeSelected = ko.observable(null);
 
             self.categoryAtr = shareModel.CategoryAtr.PAYMENT_ITEM;
-            self.totalObjAtrs = ko.observableArray([]);
-            self.calcMethods = ko.observableArray([]);
+            self.totalObjAtrs = ko.observableArray(shareModel.getPaymentTotalObjAtr(null));
+            self.calcMethods = ko.observableArray(shareModel.getPaymentCaclMethodAtr(null));
             self.workingAtrs = ko.observableArray(shareModel.getWorkingAtr());
             self.paymentProportionalAtrs = ko.observableArray(shareModel.getPaymentProportionalAtr());
             self.proportionalMethodAtrs = ko.observableArray(shareModel.getProportionalMethodAtr());
@@ -90,7 +90,6 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             }
             self.params = params;
             self.yearMonth = params.yearMonth;
-            self.condition42();
             let dto = {
                 categoryAtr: self.categoryAtr,
                 itemNameCdSelected: self.params.itemNameCode,
@@ -249,6 +248,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
 
         selectedMode(defaultAtr: shareModel.DefaultAtr) {
             let self = this;
+            self.condition42(defaultAtr);
             if (defaultAtr != shareModel.DefaultAtr.SYSTEM_DEFAULT) {
                 self.screenControl().visibleD2_2(true);
                 self.screenControl().visibleD2_3(true);
@@ -435,14 +435,18 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         /**
          * ※42：補足資料7を参照
          */
-        condition42() {
+        condition42(defaultAtr: shareModel.DefaultAtr) {
             let self = this;
-            self.totalObjAtrs(shareModel.getPaymentTotalObjAtr(self.params.printSet));
+            if (defaultAtr == shareModel.DefaultAtr.SYSTEM_DEFAULT) {
+                self.totalObjAtrs(shareModel.getPaymentTotalObjAtr(null));
+            } else {
+                self.totalObjAtrs(shareModel.getPaymentTotalObjAtr(self.params.printSet));
+            }
             if(self.params.printSet == shareModel.StatementPrintAtr.PRINT) return;
-            if (self.params.detail.totalObj == shareModel.PaymentTotalObjAtr.INSIDE.toString()) {
-                self.params.detail.totalObj = shareModel.PaymentTotalObjAtr.OUTSIDE.toString();
-            } else if (self.params.detail.totalObj == shareModel.PaymentTotalObjAtr.INSIDE_ACTUAL.toString()) {
-                self.params.detail.totalObj = shareModel.PaymentTotalObjAtr.OUTSIDE_ACTUAL.toString();
+            if (self.dataScreen().totalObject() == shareModel.PaymentTotalObjAtr.INSIDE.toString()) {
+                self.dataScreen().totalObject(shareModel.PaymentTotalObjAtr.OUTSIDE.toString());
+            } else if (self.dataScreen().totalObject() == shareModel.PaymentTotalObjAtr.INSIDE_ACTUAL.toString()) {
+                self.dataScreen().totalObject(shareModel.PaymentTotalObjAtr.OUTSIDE_ACTUAL.toString());
             }
         }
 
