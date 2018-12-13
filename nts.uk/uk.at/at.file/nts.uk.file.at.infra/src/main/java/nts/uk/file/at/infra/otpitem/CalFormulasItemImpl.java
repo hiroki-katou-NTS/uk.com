@@ -38,38 +38,45 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	private EntityManager entityManager;
 
 	private static final String GET_EXPORT_EXCEL_ONE = "SELECT"
-			+ " 	CASE WHEN ddd.ROW_NUMBER = 1 THEN ddd.OPTIONAL_ITEM_NO" + " 	ELSE NULL"
-			+ " 	END OPTIONAL_ITEM_NO " + " 	,CASE WHEN ddd.ROW_NUMBER = 1 THEN ddd.OPTIONAL_ITEM_NAME"
-			+ " 	ELSE NULL" + " 	END OPTIONAL_ITEM_NAME"
-			+ " 	,CASE WHEN ddd.ROW_NUMBER = 1 THEN ddd.OPTIONAL_ITEM_ATR" + " 	ELSE NULL"
-			+ " 	END OPTIONAL_ITEM_ATR" + " 	,CASE WHEN ddd.ROW_NUMBER = 1 THEN ddd.UNIT_OF_OPTIONAL_ITEM"
-			+ " 	ELSE NULL" + " 	END UNIT_OF_OPTIONAL_ITEM" + " 	,CASE WHEN ddd.ROW_NUMBER = 1 THEN ddd.USAGE_ATR"
-			+ " 	ELSE NULL" + " 	END USAGE_ATR" + " 	,CASE WHEN ddd.ROW_NUMBER = 1 THEN ddd.PERFORMANCE_ATR"
-			+ " 	ELSE NULL" + " 	END PERFORMANCE_ATR"
-			+ " 	,CASE WHEN ddd.ROW_NUMBER = 1 THEN ddd.EMP_CONDITION_ATR" + " 	ELSE NULL"
-			+ " 	END EMP_CONDITION_ATR" + " 	,CASE WHEN ddd.ROW_NUMBER = 1 THEN ddd.NAME" + " 	ELSE NULL"
-			+ " 	END NAME" + " 	,CASE WHEN ddd.ROW_NUMBER = 1 THEN ddd.UPPER_LIMIT_ATR" + " 	ELSE NULL"
-			+ " 	END UPPER_LIMIT_ATR" + " 	,CASE WHEN ddd.ROW_NUMBER = 1 THEN ddd.UPPER_RANGE" + " 	ELSE NULL"
-			+ " 	END UPPER_RANGE" + " 	,CASE WHEN ddd.ROW_NUMBER = 1 THEN ddd.LOWER_LIMIT_ATR" + " 	ELSE NULL"
-			+ " 	END LOWER_LIMIT_ATR" + " 	,CASE WHEN ddd.ROW_NUMBER = 1 THEN ddd.LOWER_RANGE" + " 	ELSE NULL"
-			+ " 	END LOWER_RANGE				" + " 				,ddd.SYMBOL" + " 				,ddd.FORMULA_ATR"
-			+ " 				,ddd.FORMULA_NAME" + " 				,ddd.CALC_ATR"
-			+ " 				,ddd.DAY_ROUNDING_UNIT" + " 				,ddd.DAY_ROUNDING"
-			+ " 				,ddd.MON_ROUNDING_UNIT" + " 				,ddd.MON_ROUNDING"
-			+ " 				,ddd.CALC_ATR_2" + " 				,ddd.ATTENDANCE_ITEM_NAME"
-			+ " 				,ddd.ATTENDANCE_ITEM_2" + " " + " FROM" + " 	(SELECT ccc.DISPORDER"
-			+ " 				,ccc.OPTIONAL_ITEM_NO" + " 				, ccc.OPTIONAL_ITEM_NAME			"
-			+ " 				,ccc.OPTIONAL_ITEM_ATR" + " 				,ccc.UNIT_OF_OPTIONAL_ITEM"
-			+ " 				,ccc.USAGE_ATR" + " 				,ccc.PERFORMANCE_ATR"
-			+ " 				,ccc.EMP_CONDITION_ATR " + " 				,ccc.NAME"
-			+ " 				,ccc.UPPER_LIMIT_ATR" + " 				,ccc.UPPER_RANGE"
-			+ " 				,ccc.LOWER_LIMIT_ATR" + " 				,ccc.LOWER_RANGE" + " 				,ccc.SYMBOL"
-			+ " 				,ccc.FORMULA_ATR" + " 				,ccc.FORMULA_NAME" + " 				,ccc.CALC_ATR"
-			+ " 				,ccc.DAY_ROUNDING_UNIT" + " 				,ccc.DAY_ROUNDING"
-			+ " 				,ccc.MON_ROUNDING_UNIT" + " 				,ccc.MON_ROUNDING"
-			+ " 				,ccc.CALC_ATR_2" + " 				,ccc.ATTENDANCE_ITEM_NAME"
-			+ " 				,ccc.ATTENDANCE_ITEM_2" + " 				"
-			+ " 				, ROW_NUMBER() OVER (PARTITION BY ccc.OPTIONAL_ITEM_NO ORDER BY ccc.DISPORDER, ccc.OPTIONAL_ITEM_NO, ccc.OPTIONAL_ITEM_NAME,ccc.OPTIONAL_ITEM_ATR ,ccc.UNIT_OF_OPTIONAL_ITEM ,ccc.USAGE_ATR ,ccc.PERFORMANCE_ATR ,ccc.EMP_CONDITION_ATR ,ccc.NAME ,ccc.UPPER_LIMIT_ATR ,ccc.UPPER_RANGE ,ccc.LOWER_LIMIT_ATR ,ccc.LOWER_RANGE ) AS ROW_NUMBER"
+			+ " 	CASE WHEN RESULT_FINAL.ROW_NUMBER = 1 THEN RESULT_FINAL.OPTIONAL_ITEM_NO" + " 	ELSE NULL"
+			+ " 	END OPTIONAL_ITEM_NO "
+			+ " 	,CASE WHEN RESULT_FINAL.ROW_NUMBER = 1 THEN RESULT_FINAL.OPTIONAL_ITEM_NAME" + " 	ELSE NULL"
+			+ " 	END OPTIONAL_ITEM_NAME"
+			+ " 	,CASE WHEN RESULT_FINAL.ROW_NUMBER = 1 THEN RESULT_FINAL.OPTIONAL_ITEM_ATR" + " 	ELSE NULL"
+			+ " 	END OPTIONAL_ITEM_ATR"
+			+ " 	,CASE WHEN RESULT_FINAL.ROW_NUMBER = 1 THEN RESULT_FINAL.UNIT_OF_OPTIONAL_ITEM" + " 	ELSE NULL"
+			+ " 	END UNIT_OF_OPTIONAL_ITEM" + " 	,CASE WHEN RESULT_FINAL.ROW_NUMBER = 1 THEN RESULT_FINAL.USAGE_ATR"
+			+ " 	ELSE NULL" + " 	END USAGE_ATR"
+			+ " 	,CASE WHEN RESULT_FINAL.ROW_NUMBER = 1 THEN RESULT_FINAL.PERFORMANCE_ATR" + " 	ELSE NULL"
+			+ " 	END PERFORMANCE_ATR"
+			+ " 	,CASE WHEN RESULT_FINAL.ROW_NUMBER = 1 THEN RESULT_FINAL.EMP_CONDITION_ATR" + " 	ELSE NULL"
+			+ " 	END EMP_CONDITION_ATR" + " 	,CASE WHEN RESULT_FINAL.ROW_NUMBER = 1 THEN RESULT_FINAL.NAME"
+			+ " 	ELSE NULL" + " 	END NAME"
+			+ " 	,CASE WHEN RESULT_FINAL.ROW_NUMBER = 1 THEN RESULT_FINAL.UPPER_LIMIT_ATR" + " 	ELSE NULL"
+			+ " 	END UPPER_LIMIT_ATR" + " 	,CASE WHEN RESULT_FINAL.ROW_NUMBER = 1 THEN RESULT_FINAL.UPPER_RANGE"
+			+ " 	ELSE NULL" + " 	END UPPER_RANGE"
+			+ " 	,CASE WHEN RESULT_FINAL.ROW_NUMBER = 1 THEN RESULT_FINAL.LOWER_LIMIT_ATR" + " 	ELSE NULL"
+			+ " 	END LOWER_LIMIT_ATR" + " 	,CASE WHEN RESULT_FINAL.ROW_NUMBER = 1 THEN RESULT_FINAL.LOWER_RANGE"
+			+ " 	ELSE NULL" + " 	END LOWER_RANGE				" + " 				,RESULT_FINAL.SYMBOL"
+			+ " 				,RESULT_FINAL.FORMULA_ATR" + " 				,RESULT_FINAL.FORMULA_NAME"
+			+ " 				,RESULT_FINAL.CALC_ATR" + " 				,RESULT_FINAL.DAY_ROUNDING_UNIT"
+			+ " 				,RESULT_FINAL.DAY_ROUNDING" + " 				,RESULT_FINAL.MON_ROUNDING_UNIT"
+			+ " 				,RESULT_FINAL.MON_ROUNDING" + " 				,RESULT_FINAL.CALC_ATR_2"
+			+ " 				,RESULT_FINAL.ATTENDANCE_ITEM_NAME" + " 				,RESULT_FINAL.ATTENDANCE_ITEM_2"
+			+ " " + " FROM" + " 	(SELECT RESULT_TOTAL.DISPORDER" + " 				,RESULT_TOTAL.OPTIONAL_ITEM_NO"
+			+ " 				, RESULT_TOTAL.OPTIONAL_ITEM_NAME			"
+			+ " 				,RESULT_TOTAL.OPTIONAL_ITEM_ATR" + " 				,RESULT_TOTAL.UNIT_OF_OPTIONAL_ITEM"
+			+ " 				,RESULT_TOTAL.USAGE_ATR" + " 				,RESULT_TOTAL.PERFORMANCE_ATR"
+			+ " 				,RESULT_TOTAL.EMP_CONDITION_ATR " + " 				,RESULT_TOTAL.NAME"
+			+ " 				,RESULT_TOTAL.UPPER_LIMIT_ATR" + " 				,RESULT_TOTAL.UPPER_RANGE"
+			+ " 				,RESULT_TOTAL.LOWER_LIMIT_ATR" + " 				,RESULT_TOTAL.LOWER_RANGE"
+			+ " 				,RESULT_TOTAL.SYMBOL" + " 				,RESULT_TOTAL.FORMULA_ATR"
+			+ " 				,RESULT_TOTAL.FORMULA_NAME" + " 				,RESULT_TOTAL.CALC_ATR"
+			+ " 				,RESULT_TOTAL.DAY_ROUNDING_UNIT" + " 				,RESULT_TOTAL.DAY_ROUNDING"
+			+ " 				,RESULT_TOTAL.MON_ROUNDING_UNIT" + " 				,RESULT_TOTAL.MON_ROUNDING"
+			+ " 				,RESULT_TOTAL.CALC_ATR_2" + " 				,RESULT_TOTAL.ATTENDANCE_ITEM_NAME"
+			+ " 				,RESULT_TOTAL.ATTENDANCE_ITEM_2" + " 				"
+			+ " 				, ROW_NUMBER() OVER (PARTITION BY RESULT_TOTAL.OPTIONAL_ITEM_NO ORDER BY RESULT_TOTAL.DISPORDER, RESULT_TOTAL.OPTIONAL_ITEM_NO, RESULT_TOTAL.OPTIONAL_ITEM_NAME,RESULT_TOTAL.OPTIONAL_ITEM_ATR ,RESULT_TOTAL.UNIT_OF_OPTIONAL_ITEM ,RESULT_TOTAL.USAGE_ATR ,RESULT_TOTAL.PERFORMANCE_ATR ,RESULT_TOTAL.EMP_CONDITION_ATR ,RESULT_TOTAL.NAME ,RESULT_TOTAL.UPPER_LIMIT_ATR ,RESULT_TOTAL.UPPER_RANGE ,RESULT_TOTAL.LOWER_LIMIT_ATR ,RESULT_TOTAL.LOWER_RANGE ) AS ROW_NUMBER"
 			+ " 	FROM" + " 	(SELECT RESULT_LEFT.OPTIONAL_ITEM_NO" + " 		,RESULT_LEFT.OPTIONAL_ITEM_NAME"
 			+ " 		,RESULT_LEFT.OPTIONAL_ITEM_ATR" + " 		,RESULT_LEFT.UNIT_OF_OPTIONAL_ITEM"
 			+ " 		,RESULT_LEFT.USAGE_ATR" + " 		,RESULT_LEFT.PERFORMANCE_ATR"
@@ -96,8 +103,8 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 			+ " 		KRCST_OPTIONAL_ITEM oi"
 			+ " 		LEFT JOIN KRCST_APPL_EMP_CON ec ON oi.OPTIONAL_ITEM_NO = ec.OPTIONAL_ITEM_NO "
 			+ " 		AND oi.CID = ec.CID" + " 		LEFT JOIN BSYMT_EMPLOYMENT emp ON ec.CID = emp.CID "
-			+ " 		AND ec.EMP_CD = emp.CODE " + " 	WHERE" + " 		oi.CID = ?"
-			+ " ) AS RESULT_ONE" + " GROUP BY" + " 	 RESULT_ONE.OPTIONAL_ITEM_NO" + " 	,RESULT_ONE.OPTIONAL_ITEM_NAME"
+			+ " 		AND ec.EMP_CD = emp.CODE " + " 	WHERE" + " 		oi.CID = ?companyId" + " ) AS RESULT_ONE"
+			+ " GROUP BY" + " 	 RESULT_ONE.OPTIONAL_ITEM_NO" + " 	,RESULT_ONE.OPTIONAL_ITEM_NAME"
 			+ " 	,RESULT_ONE.OPTIONAL_ITEM_ATR" + " 	,RESULT_ONE.UNIT_OF_OPTIONAL_ITEM" + " 	,RESULT_ONE.USAGE_ATR"
 			+ " 	,RESULT_ONE.PERFORMANCE_ATR" + " 	,RESULT_ONE.EMP_CONDITION_ATR" + " ) RESULT_LEFT" + " LEFT JOIN"
 			+ " (SELECT * FROM" + " (" + " 	SELECT" + " 	oi.OPTIONAL_ITEM_NO" + " 	,crr.UPPER_LIMIT_ATR"
@@ -137,19 +144,16 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 			+ " 	LEFT JOIN KRCST_FORMULA_DISPORDER fd ON oif.OPTIONAL_ITEM_NO = fd.OPTIONAL_ITEM_NO AND oif.CID = fd.CID AND oif.FORMULA_ID = fd.FORMULA_ID"
 			+ " 	LEFT JOIN KRCMT_CALC_ITEM_SELECTION cis ON fd.FORMULA_ID = cis.FORMULA_ID AND fd.OPTIONAL_ITEM_NO = cis.OPTIONAL_ITEM_NO AND cis.CID = fd.CID"
 			+ " 	LEFT JOIN KRCMT_FORMULA_SETTING fs ON fd.FORMULA_ID = fs.FORMULA_ID  AND fd.OPTIONAL_ITEM_NO = fs.OPTIONAL_ITEM_NO "
-			+ " WHERE" + " 	oi.CID = ? " + " 	) xxx"
+			+ " WHERE" + " 	oi.CID = ?companyId " + " 	) AS RESULT_END"
 			+ " GROUP BY OPTIONAL_ITEM_NO, SYMBOL, FORMULA_ATR, FORMULA_NAME, CALC_ATR, ATTENDANCE_ITEM_NAME, ATTENDANCE_ITEM_2, UPPER_LIMIT_ATR, UPPER_RANGE, LOWER_LIMIT_ATR, LOWER_RANGE, DAY_ROUNDING_UNIT, DAY_ROUNDING, MON_ROUNDING_UNIT, MON_ROUNDING, UPPER_LIMIT_ATR, CALC_ATR_2, DISPORDER) AS RESULT_RIGHT"
-			+ " ON RESULT_LEFT.OPTIONAL_ITEM_NO = RESULT_RIGHT.OPTIONAL_ITEM_NO ) AS ccc"
-			+ " )AS ddd ORDER BY ddd.OPTIONAL_ITEM_NO ASC ";
+			+ " ON RESULT_LEFT.OPTIONAL_ITEM_NO = RESULT_RIGHT.OPTIONAL_ITEM_NO ) AS RESULT_TOTAL"
+			+ " )AS RESULT_FINAL ORDER BY RESULT_FINAL.OPTIONAL_ITEM_NO ASC ";
 
 	@Override
 	public List<MasterData> getDataTableOneExport(String companyId) {
-		
 		List<MasterData> datas = new ArrayList<>();
-
-		Query query = entityManager.createNativeQuery(GET_EXPORT_EXCEL_ONE.toString()).setParameter(1, companyId)
-				.setParameter(2, companyId);
-
+		Query query = entityManager.createNativeQuery(GET_EXPORT_EXCEL_ONE.toString()).setParameter("companyId",
+				companyId);
 		@SuppressWarnings("unchecked")
 		List<Object[]> data = query.getResultList();
 		Integer optionalItemAtr = null;
@@ -186,88 +190,121 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 				? EnumAdaptor.valueOf(((BigDecimal) object[6]).intValue(), EmpConditionAtr.class).description : "");
 
 		data.put(CalFormulasItemColumn.KMK002_83, object[7] != null && optionalItemUse == 1 ? (String) object[7] : "");
-		data.put(CalFormulasItemColumn.KMK002_84, object[8] != null && optionalItemUse == 1 ? ((BigDecimal) object[8]).intValue() == 1 ? "○" : "ー" : "");
-		//Upper value
+		data.put(CalFormulasItemColumn.KMK002_84,
+				object[8] != null && optionalItemUse == 1 ? ((BigDecimal) object[8]).intValue() == 1 ? "○" : "ー" : "");
+		// Upper value
 		switch (optionalItemAtr) {
 		case 0:
-			data.put(CalFormulasItemColumn.KMK002_85, object[9] != null && optionalItemUse == 1 && ((BigDecimal) object[8]).intValue() == 1 ? formatTime(((BigDecimal) object[9]).intValue()) : "");
+			data.put(CalFormulasItemColumn.KMK002_85,
+					object[9] != null && optionalItemUse == 1 && ((BigDecimal) object[8]).intValue() == 1
+							? formatTime(((BigDecimal) object[9]).intValue()) : "");
 			break;
 		case 1:
-			data.put(CalFormulasItemColumn.KMK002_85, object[9] != null && optionalItemUse == 1 && ((BigDecimal) object[8]).intValue() == 1 ? formatNumber(((BigDecimal) object[9]).toString()) : "");
+			data.put(CalFormulasItemColumn.KMK002_85,
+					object[9] != null && optionalItemUse == 1 && ((BigDecimal) object[8]).intValue() == 1
+							? formatNumber(((BigDecimal) object[9]).toString()) : "");
 			break;
 		case 2:
-			data.put(CalFormulasItemColumn.KMK002_85, object[9] != null && optionalItemUse == 1 && ((BigDecimal) object[8]).intValue() == 1 ? formatAmount(((BigDecimal) object[9]).toString()) : "");
+			data.put(CalFormulasItemColumn.KMK002_85,
+					object[9] != null && optionalItemUse == 1 && ((BigDecimal) object[8]).intValue() == 1
+							? formatAmount(((BigDecimal) object[9]).toString()) : "");
 			break;
 		}
-		data.put(CalFormulasItemColumn.KMK002_86, object[10] != null && optionalItemUse == 1 ? ((BigDecimal) object[10]).intValue() == 1 ? "○" : "ー" : "");
-		//Lower value
+		data.put(CalFormulasItemColumn.KMK002_86, object[10] != null && optionalItemUse == 1
+				? ((BigDecimal) object[10]).intValue() == 1 ? "○" : "ー" : "");
+		// Lower value
 		switch (optionalItemAtr) {
 		case 0:
-			data.put(CalFormulasItemColumn.KMK002_87, object[11] != null && optionalItemUse == 1 && ((BigDecimal) object[10]).intValue() == 1? formatTime(((BigDecimal) object[11]).intValue()) : "");
+			data.put(CalFormulasItemColumn.KMK002_87,
+					object[11] != null && optionalItemUse == 1 && ((BigDecimal) object[10]).intValue() == 1
+							? formatTime(((BigDecimal) object[11]).intValue()) : "");
 			break;
 		case 1:
-			data.put(CalFormulasItemColumn.KMK002_87, object[11] != null && optionalItemUse == 1 && ((BigDecimal) object[10]).intValue() == 1 ? formatNumber(((BigDecimal) object[11]).toString()) : "");
+			data.put(CalFormulasItemColumn.KMK002_87,
+					object[11] != null && optionalItemUse == 1 && ((BigDecimal) object[10]).intValue() == 1
+							? formatNumber(((BigDecimal) object[11]).toString()) : "");
 			break;
 		case 2:
-			data.put(CalFormulasItemColumn.KMK002_87, object[11] != null && optionalItemUse == 1 && ((BigDecimal) object[10]).intValue() == 1 ? formatAmount(((BigDecimal) object[11]).toString()) : "");
+			data.put(CalFormulasItemColumn.KMK002_87,
+					object[11] != null && optionalItemUse == 1 && ((BigDecimal) object[10]).intValue() == 1
+							? formatAmount(((BigDecimal) object[11]).toString()) : "");
 			break;
 		}
-		
-		data.put(CalFormulasItemColumn.KMK002_88, object[12] != null && optionalItemUse == 1 ? (String) object[12] : "");
+
+		data.put(CalFormulasItemColumn.KMK002_88,
+				object[12] != null && optionalItemUse == 1 ? (String) object[12] : "");
 
 		// OptionalItemAtr Enum
-		data.put(CalFormulasItemColumn.KMK002_89, object[13] != null && optionalItemUse == 1 
+		data.put(CalFormulasItemColumn.KMK002_89, object[13] != null && optionalItemUse == 1
 				? EnumAdaptor.valueOf(((BigDecimal) object[13]).intValue(), OptionalItemAtr.class).description : "");
-		data.put(CalFormulasItemColumn.KMK002_90, object[14] != null && optionalItemUse == 1  ? (String) object[14] : "");
+		data.put(CalFormulasItemColumn.KMK002_90,
+				object[14] != null && optionalItemUse == 1 ? (String) object[14] : "");
 		// CalculationAtr Enum
-		data.put(CalFormulasItemColumn.KMK002_91, object[15] != null && optionalItemUse == 1 
+		data.put(CalFormulasItemColumn.KMK002_91, object[15] != null && optionalItemUse == 1
 				? EnumAdaptor.valueOf(((BigDecimal) object[15]).intValue(), CalculationAtr.class).description : "");
 
 		switch (optionalItemAtr) {
 		case 0:
-			data.put(CalFormulasItemColumn.KMK002_92, object[17] != null && optionalItemUse == 1 ? TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) object[17]).intValue(), Rounding.class).nameId) : "");
+			data.put(CalFormulasItemColumn.KMK002_92,
+					object[17] != null && optionalItemUse == 1
+							? TextResource.localize(
+									EnumAdaptor.valueOf(((BigDecimal) object[17]).intValue(), Rounding.class).nameId)
+							: "");
 			break;
 		case 1:
-			data.put(CalFormulasItemColumn.KMK002_92, object[17] != null && optionalItemUse == 1 ? TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) object[17]).intValue(), NumberRounding.class).nameId) : "");
+			data.put(CalFormulasItemColumn.KMK002_92,
+					object[17] != null && optionalItemUse == 1 ? TextResource.localize(
+							EnumAdaptor.valueOf(((BigDecimal) object[17]).intValue(), NumberRounding.class).nameId)
+							: "");
 			break;
 		case 2:
 			data.put(CalFormulasItemColumn.KMK002_92,
-					object[16] != null && optionalItemUse == 1 ? TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) object[17]).intValue(), AmountRounding.class).nameId) : "");
+					object[16] != null && optionalItemUse == 1 ? TextResource.localize(
+							EnumAdaptor.valueOf(((BigDecimal) object[17]).intValue(), AmountRounding.class).nameId)
+							: "");
 			break;
 		}
 
 		// A7_18
 		switch (optionalItemAtr) {
 		case 0:
-			data.put(CalFormulasItemColumn.KMK002_93, object[16] != null && optionalItemUse == 1
-					? TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) object[16]).intValue(), Unit.class).nameId) : "");
+			data.put(CalFormulasItemColumn.KMK002_93, object[16] != null && optionalItemUse == 1 ? TextResource
+					.localize(EnumAdaptor.valueOf(((BigDecimal) object[16]).intValue(), Unit.class).nameId) : "");
 			break;
 		case 1:
-			data.put(CalFormulasItemColumn.KMK002_93, object[16] != null && optionalItemUse == 1
-					? TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) object[16]).intValue(), NumberUnit.class).nameId) : "");
+			data.put(CalFormulasItemColumn.KMK002_93,
+					object[16] != null && optionalItemUse == 1
+							? TextResource.localize(
+									EnumAdaptor.valueOf(((BigDecimal) object[16]).intValue(), NumberUnit.class).nameId)
+							: "");
 			break;
 		case 2:
 			data.put(CalFormulasItemColumn.KMK002_93,
-					object[17] != null && optionalItemUse == 1 ? TextResource.localize(
-							EnumAdaptor.valueOf(((BigDecimal) object[16]).intValue(), AmountUnit.class).nameId)
+					object[17] != null && optionalItemUse == 1
+							? TextResource.localize(
+									EnumAdaptor.valueOf(((BigDecimal) object[16]).intValue(), AmountUnit.class).nameId)
 							: "");
 			break;
 		}
 		// A7_19
 		switch (optionalItemAtr) {
 		case 0:
-			data.put(CalFormulasItemColumn.KMK002_94, object[19] != null && optionalItemUse == 1 
-					? TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) object[19]).intValue(), Rounding.class).nameId) : "");
+			data.put(CalFormulasItemColumn.KMK002_94,
+					object[19] != null && optionalItemUse == 1
+							? TextResource.localize(
+									EnumAdaptor.valueOf(((BigDecimal) object[19]).intValue(), Rounding.class).nameId)
+							: "");
 			break;
 		case 1:
-			data.put(CalFormulasItemColumn.KMK002_94, object[19] != null && optionalItemUse == 1 
-					? TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) object[19]).intValue(), NumberRounding.class).nameId) : "");
+			data.put(CalFormulasItemColumn.KMK002_94,
+					object[19] != null && optionalItemUse == 1 ? TextResource.localize(
+							EnumAdaptor.valueOf(((BigDecimal) object[19]).intValue(), NumberRounding.class).nameId)
+							: "");
 			break;
 		case 2:
 			data.put(CalFormulasItemColumn.KMK002_94,
-					object[19] != null && optionalItemUse == 1 
-							? TextResource.localize(
-									EnumAdaptor.valueOf(((BigDecimal) object[19]).intValue(), AmountRounding.class).nameId)
+					object[19] != null && optionalItemUse == 1 ? TextResource.localize(
+							EnumAdaptor.valueOf(((BigDecimal) object[19]).intValue(), AmountRounding.class).nameId)
 							: "");
 			break;
 		}
@@ -275,47 +312,52 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 		// A7_20
 		switch (optionalItemAtr) {
 		case 0:
-			data.put(CalFormulasItemColumn.KMK002_95,
-					object[19] != null && optionalItemUse == 1 ? TextResource.localize(
-							EnumAdaptor.valueOf(((BigDecimal) object[18]).intValue(), Unit.class).nameId)
-							: "");
+			data.put(CalFormulasItemColumn.KMK002_95, object[19] != null && optionalItemUse == 1 ? TextResource
+					.localize(EnumAdaptor.valueOf(((BigDecimal) object[18]).intValue(), Unit.class).nameId) : "");
 			break;
 		case 1:
-			data.put(CalFormulasItemColumn.KMK002_95, object[18] != null && optionalItemUse == 1
-					? TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) object[18]).intValue(), NumberUnit.class).nameId) : "");
+			data.put(CalFormulasItemColumn.KMK002_95,
+					object[18] != null && optionalItemUse == 1
+							? TextResource.localize(
+									EnumAdaptor.valueOf(((BigDecimal) object[18]).intValue(), NumberUnit.class).nameId)
+							: "");
 			break;
 		case 2:
 			data.put(CalFormulasItemColumn.KMK002_95,
-					object[19] != null && optionalItemUse == 1 ? TextResource.localize(
-							EnumAdaptor.valueOf(((BigDecimal) object[18]).intValue(), AmountUnit.class).nameId)
+					object[19] != null && optionalItemUse == 1
+							? TextResource.localize(
+									EnumAdaptor.valueOf(((BigDecimal) object[18]).intValue(), AmountUnit.class).nameId)
 							: "");
 			break;
 		}
 
-		data.put(CalFormulasItemColumn.KMK002_96,
-				object[20] != null && optionalItemUse == 1 ? ((BigDecimal) object[20]).intValue() == 1 ? "○" : "ー" : "");
+		data.put(CalFormulasItemColumn.KMK002_96, object[20] != null && optionalItemUse == 1
+				? ((BigDecimal) object[20]).intValue() == 1 ? "○" : "ー" : "");
 
 		if (object[20] != null) {
 			switch (((BigDecimal) object[20]).intValue()) {
 			case 0:
-				data.put(CalFormulasItemColumn.KMK002_97, object[21] != null && optionalItemUse == 1 ? ((String) object[21]) : "");
+				data.put(CalFormulasItemColumn.KMK002_97,
+						object[21] != null && optionalItemUse == 1 ? ((String) object[21]) : "");
 				break;
 			case 1:
-				data.put(CalFormulasItemColumn.KMK002_97, object[22] != null && optionalItemUse == 1 ? ((String) object[22]) : "");
+				data.put(CalFormulasItemColumn.KMK002_97,
+						object[22] != null && optionalItemUse == 1 ? ((String) object[22]) : "");
 				break;
 			}
 		}
 		return data;
 	}
-	
+
 	private String formatTime(int source) {
 		int regularized = Math.abs(source);
 		int hourPart = (regularized / 60);
 		int minutePart = regularized % 60;
-		String resultString = StringUtils.join(StringUtil.padLeft(String.valueOf(hourPart), 2, '0'),":", StringUtil.padLeft(String.valueOf(minutePart), 2, '0'));
+		String resultString = StringUtils.join(StringUtil.padLeft(String.valueOf(hourPart), 2, '0'), ":",
+				StringUtil.padLeft(String.valueOf(minutePart), 2, '0'));
 		return resultString;
 	}
-	
+
 	private String formatNumber(String str) {
 		String pathOne = str.substring(0, str.lastIndexOf("."));
 		String pathTwo = str.substring(str.lastIndexOf(".") + 1);
@@ -328,20 +370,16 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 		String output = new StringBuilder(pathOne.length()).append(formatted).append('.').append(pathTwo).toString();
 		return output;
 	}
-	
+
 	private String formatAmount(String str) {
-		String pathOne   = str.substring(0, str.lastIndexOf("."));
-        StringBuilder formatted = new StringBuilder(pathOne);
-        int idx = formatted.length() - 3;     
-        while (idx > 0)
-        {
-            formatted.insert(idx, ",");
-            idx = idx - 3;
-        }
-        String output = new StringBuilder(pathOne.length())
-        .append(formatted)
-        .toString();
+		String pathOne = str.substring(0, str.lastIndexOf("."));
+		StringBuilder formatted = new StringBuilder(pathOne);
+		int idx = formatted.length() - 3;
+		while (idx > 0) {
+			formatted.insert(idx, ",");
+			idx = idx - 3;
+		}
+		String output = new StringBuilder(pathOne.length()).append(formatted).toString();
 		return output;
 	}
-
 }

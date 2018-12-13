@@ -26,45 +26,60 @@ public class WorkPlaceSelectionImpl implements WorkPlaceSelectionRepository {
 
 	// Export Data table
 
-	//@Override
+	// @Override
 
-//	@SneakyThrows
-//	public List<WorkPlaceSelectionExportData> findAllWorkPlaceSelection(String companyId,
-//			List<WorkPlaceFunction> workPlaceFunction) {
-//		String functions = workPlaceFunction.stream().map(x -> x.getFunctionNo().v().toString())
-//				.collect(Collectors.toList()).stream().collect(Collectors.joining("], [", "[", "]"));
-//		String SQL = "SELECT WKPCD , WKP_NAME , SCD , BUSINESS_NAME , START_DATE, END_DATE , %s " + "FROM ( "
-//				+ "SELECT wm.WKPCD , wm.WKP_NAME , edm.SCD , ps.BUSINESS_NAME , wi.START_DATE, wi.END_DATE , AVAILABILITY, wkf.FUNCTION_NO "
-//				+ "FROM " + "BSYMT_WORKPLACE_INFO wm " + "LEFT JOIN SACMT_WORKPLACE_MANAGER wi ON wm.WKPID = wi.WKP_ID "
-//				+ "LEFT JOIN BSYMT_EMP_DTA_MNG_INFO edm ON wi.SID = edm.SID "
-//				+ "LEFT JOIN BPSMT_PERSON ps ON edm.PID = ps.PID "
-//				+ "INNER JOIN KASMT_WORKPLACE_AUTHORITY kwa ON wi.WKP_MANAGER_ID = kwa.ROLE_ID AND wm.CID = kwa.CID "
-//				+ "INNER JOIN KASMT_WORPLACE_FUNCTION wkf on wkf.FUNCTION_NO = kwa.FUNCTION_NO " + "WHERE wm.CID = ? "
-//				+ ") " + "AS sourceTable PIVOT ( " + "MAX(AVAILABILITY) " + "FOR [FUNCTION_NO] IN (%s) "
-//				+ ") AS pvt ORDER BY WKPCD, SCD, START_DATE ASC ";
-//
-//		try (val stmt = this.connection().prepareStatement(String.format(SQL, functions, functions))) {
-//			stmt.setString(1, companyId);
-//			return new NtsResultSet(stmt.executeQuery()).getList(rec -> { //
-//				WorkPlaceSelectionExportData item = new //
-//				WorkPlaceSelectionExportData();
-//				return toReportDataTable(rec, workPlaceFunction);
-//			});
-//		}
-//	}
+	// @SneakyThrows
+	// public List<WorkPlaceSelectionExportData>
+	// findAllWorkPlaceSelection(String companyId,
+	// List<WorkPlaceFunction> workPlaceFunction) {
+	// String functions = workPlaceFunction.stream().map(x ->
+	// x.getFunctionNo().v().toString())
+	// .collect(Collectors.toList()).stream().collect(Collectors.joining("], [",
+	// "[", "]"));
+	// String SQL = "SELECT WKPCD , WKP_NAME , SCD , BUSINESS_NAME , START_DATE,
+	// END_DATE , %s " + "FROM ( "
+	// + "SELECT wm.WKPCD , wm.WKP_NAME , edm.SCD , ps.BUSINESS_NAME ,
+	// wi.START_DATE, wi.END_DATE , AVAILABILITY, wkf.FUNCTION_NO "
+	// + "FROM " + "BSYMT_WORKPLACE_INFO wm " + "LEFT JOIN
+	// SACMT_WORKPLACE_MANAGER wi ON wm.WKPID = wi.WKP_ID "
+	// + "LEFT JOIN BSYMT_EMP_DTA_MNG_INFO edm ON wi.SID = edm.SID "
+	// + "LEFT JOIN BPSMT_PERSON ps ON edm.PID = ps.PID "
+	// + "INNER JOIN KASMT_WORKPLACE_AUTHORITY kwa ON wi.WKP_MANAGER_ID =
+	// kwa.ROLE_ID AND wm.CID = kwa.CID "
+	// + "INNER JOIN KASMT_WORPLACE_FUNCTION wkf on wkf.FUNCTION_NO =
+	// kwa.FUNCTION_NO " + "WHERE wm.CID = ? "
+	// + ") " + "AS sourceTable PIVOT ( " + "MAX(AVAILABILITY) " + "FOR
+	// [FUNCTION_NO] IN (%s) "
+	// + ") AS pvt ORDER BY WKPCD, SCD, START_DATE ASC ";
+	//
+	// try (val stmt = this.connection().prepareStatement(String.format(SQL,
+	// functions, functions))) {
+	// stmt.setString(1, companyId);
+	// return new NtsResultSet(stmt.executeQuery()).getList(rec -> { //
+	// WorkPlaceSelectionExportData item = new //
+	// WorkPlaceSelectionExportData();
+	// return toReportDataTable(rec, workPlaceFunction);
+	// });
+	// }
+	// }
 
-//	private WorkPlaceSelectionExportData toReportDataTable(NtsResultRecord rec,
-//			List<WorkPlaceFunction> workPlaceFunction) {
-//		Map<String, String> values = new HashMap<String, String>();
-//
-//		for (int i = 0; i < workPlaceFunction.size(); i++) {
-//			values.put(workPlaceFunction.get(i).getFunctionNo().v().toString(), rec.getString((i + 1) + ""));
-//		}
-//		WorkPlaceSelectionExportData item = new WorkPlaceSelectionExportData(rec.getString("WKPCD"),
-//				rec.getString("WKP_NAME"), rec.getString("SCD"), rec.getString("BUSINESS_NAME"),
-//				rec.getGeneralDate("START_DATE"), rec.getGeneralDate("END_DATE"), values);
-//		return item;
-//	}
+	// private WorkPlaceSelectionExportData toReportDataTable(NtsResultRecord
+	// rec,
+	// List<WorkPlaceFunction> workPlaceFunction) {
+	// Map<String, String> values = new HashMap<String, String>();
+	//
+	// for (int i = 0; i < workPlaceFunction.size(); i++) {
+	// values.put(workPlaceFunction.get(i).getFunctionNo().v().toString(),
+	// rec.getString((i + 1) + ""));
+	// }
+	// WorkPlaceSelectionExportData item = new
+	// WorkPlaceSelectionExportData(rec.getString("WKPCD"),
+	// rec.getString("WKP_NAME"), rec.getString("SCD"),
+	// rec.getString("BUSINESS_NAME"),
+	// rec.getGeneralDate("START_DATE"), rec.getGeneralDate("END_DATE"),
+	// values);
+	// return item;
+	// }
 
 	private static final String GET_EXPORT_EXCEL = "SELECT WKPCD , WKP_NAME , SCD , BUSINESS_NAME , START_DATE, END_DATE , %s "
 			+ "FROM ( "
@@ -82,8 +97,9 @@ public class WorkPlaceSelectionImpl implements WorkPlaceSelectionRepository {
 		String functions = workPlaceFunction.stream().map(x -> x.getFunctionNo().v().toString())
 				.collect(Collectors.toList()).stream().collect(Collectors.joining("], [", "[", "]"));
 		List<MasterData> datas = new ArrayList<>();
-		Query query = entityManager.createNativeQuery(String.format(GET_EXPORT_EXCEL, functions, functions).toString()).setParameter(1, companyId);
-		
+		Query query = entityManager.createNativeQuery(String.format(GET_EXPORT_EXCEL, functions, functions).toString())
+				.setParameter(1, companyId);
+
 		@SuppressWarnings("unchecked")
 		List<Object[]> data = query.getResultList();
 		for (Object[] objects : data) {
@@ -101,9 +117,10 @@ public class WorkPlaceSelectionImpl implements WorkPlaceSelectionRepository {
 		data.put(WorkPlaceSelectionColumn.CMM051_35, (String) object[3]);
 		data.put(WorkPlaceSelectionColumn.CMM051_36, df.format(object[4]).toString());
 		data.put(WorkPlaceSelectionColumn.CMM051_37, df.format(object[5]).toString());
-		
+
 		for (int i = 0; i < workPlaceFunction.size(); i++) {
-			data.put(workPlaceFunction.get(i).getFunctionNo().v().toString(), ((BigDecimal) object[i+6]).intValue() == 1 ? "○" : "ー");
+			data.put(workPlaceFunction.get(i).getFunctionNo().v().toString(),
+					((BigDecimal) object[i + 6]).intValue() == 1 ? "○" : "ー");
 		}
 		return data;
 	}
