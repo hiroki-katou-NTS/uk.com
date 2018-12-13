@@ -25,7 +25,7 @@ module nts.uk.pr.view.qmm020.m.viewmodel {
                 return;
             }
             this.params(params);
-            nts.uk.pr.view.qmm020.m.service.getDataStatement(this.params().startYearMonth).done((data)=>{
+            nts.uk.pr.view.qmm020.m.service.getDataStatement(this.params().startYearMonth,this.params().endYearMonth).done((data)=>{
                 if(data && data.length > 0){
                     this.items(StatementDto.fromApp(data));
                     self.currentCodeList(params.statementCode != null && params.statementCode != '' ? params.statementCode : self.items()[0].statementCode);

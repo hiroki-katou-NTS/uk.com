@@ -17,8 +17,8 @@
                     <button id="F1_4" tabindex="3" data-bind="click: openKScreen, timeClick: 800, enable: enableEdit()" style="float: right">#{i18n.getText('QMM020_14')}</button>
                 </div>
 
-                <div style="margin-top: 10px">
-                    <table  id="F1_5"  tabindex="4" data-bind="ntsGridList: {
+                <div >
+                    <table  id="F1_5" tabindex="4" data-bind="ntsGridList: {
                                             name: '#QMM020_37',
                                             height: 250,
                                             dataSource: listStateCorrelationHisPosition,
@@ -46,7 +46,7 @@
             </div>
 
             <div>
-                <div style="width: 260px" tabindex="5"  data-bind =
+                <div id="F2_5" style="width: 260px" tabindex="5"  data-bind =
                         "ntsSearchBox: {
                         targetKey: 'id',
                         comId: 'F3_1',

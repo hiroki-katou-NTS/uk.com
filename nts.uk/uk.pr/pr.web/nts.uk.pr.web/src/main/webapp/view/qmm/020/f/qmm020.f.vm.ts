@@ -49,8 +49,12 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
 
         loadGird() {
             let self = this;
+            if($("#F3_1").length > 0){
+                $("#F3_1").remove();
+                $("#F2_5").after('<table id="F3_1"></table>');
+            }
             $("#F3_1").ntsGrid({
-                height: '320px',
+                height: '311px',
                 dataSource: self.listStateLinkSettingMaster(),
                 primaryKey: 'id',
                 virtualization: true,
@@ -59,17 +63,17 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                     {headerText: '', key: 'id', dataType: 'number', width: '100', hidden: true},
                     {headerText: getText('QMM020_26'), key: 'masterCode', dataType: 'string', width: '90'},
                     {headerText: getText('QMM020_27'), key: 'categoryName', dataType: 'string', width: '180'},
-                    {headerText: getText('QMM020_20'), key: 'salary', dataType: 'string', width: '75px', unbound: true, ntsControl: 'Salary'},
+                    {headerText: getText('QMM020_20'), key: 'open', dataType: 'string', width: '75px', unbound: true, ntsControl: 'SalaryButton'},
                     {headerText: '', key: 'displayE3_4', dataType: 'string', width: '200'},
-                    {headerText: getText('QMM020_22'), key: 'bonus', dataType: 'string', width: '75px', unbound: true, ntsControl: 'Bonus'},
+                    {headerText: getText('QMM020_22'), key: 'open1', dataType: 'string', width: '75px', unbound: true, ntsControl: 'SalaryButton'},
                     {headerText: '', key: 'displayE3_5', dataType: 'string', width: '200'},
 
                 ],
                 features: [
                     {name: 'Selection', mode: 'row', multipleSelection: true}],
                 ntsControls: [
-                    {name: 'Salary', text: getText("QMM020_21"), click: function (item) {self.openMScreen(item, 1)}, controlType: 'Button'},
-                    {name: 'Bonus', text: getText("QMM020_21"), click: function (item) {self.openMScreen(item, 2)}, controlType: 'Button'}]
+                    {name: 'SalaryButton', text: getText("QMM020_21"), click: function (item) {self.openMScreen(item, 1)}, controlType: 'Button'},
+                    {name: 'SalaryButton', text: getText("QMM020_21"), click: function (item) {self.openMScreen(item, 2)}, controlType: 'Button'}]
             });
             $("#F3_1").setupSearchScroll("igGrid", true);
         }
@@ -215,6 +219,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
             let bonusCode = item.displayE3_5.split('    ')[0];
             setShared(model.PARAMETERS_SCREEN_M.INPUT, {
                 startYearMonth: self.listStateCorrelationHisPosition()[index].startYearMonth,
+                endYearMonth: self.listStateCorrelationHisPosition()[index].endYearMonth,
                 statementCode: code === 1 ? salaryCode : bonusCode,
                 modeScreen: model.MODE_SCREEN.POSITION
             });
@@ -231,7 +236,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
         }
 
         openJScreen() {
-            block.invisible();
+
             let self = this;
             let start = self.startLastYearMonth();
             if (self.listStateCorrelationHisPosition() && self.listStateCorrelationHisPosition().length > 0) {
@@ -254,11 +259,11 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 }
 
             });
-            block.clear();
+
         }
 
         openKScreen() {
-            block.invisible();
+
             let self = this;
             let index = _.findIndex(self.listStateCorrelationHisPosition(), {hisId: self.hisIdSelected()});
             self.index(self.getIndex(self.hisIdSelected()));
@@ -293,7 +298,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 $('#F2_1').focus();
 
             });
-            block.clear();
+
         }
 
         getIndex(hisId: string) {

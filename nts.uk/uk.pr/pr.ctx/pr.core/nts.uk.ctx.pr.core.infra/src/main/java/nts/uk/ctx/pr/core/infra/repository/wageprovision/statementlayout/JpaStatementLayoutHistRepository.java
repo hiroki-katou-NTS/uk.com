@@ -38,6 +38,8 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
 
     private static final String SELECT_BY_CID_KEY_STRING = "SELECT f FROM QpbmtStatementLayoutHist f Where f.startYearMonth <= :startYearMonth AND f.endYearMonth >= :startYearMonth AND f.statementLayoutHistPk.cid = :cid";
 
+    private static final String SELECT_BY_DATE = "SELECT f FROM QpbmtStatementLayoutHist f WHERE (f.startYearMonth BETWEEN :startYearMonth AND :endYearMonth OR f.endYearMonth BETWEEN :startYearMonth AND :endYearMonth) AND f.statementLayoutHistPk.cid = :cid";
+
     @Override
     public List<StatementLayoutHist> getAllStatementLayoutHist() {
         return null;
@@ -54,6 +56,16 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
     public List<StatementLayoutHist> getAllStatementLayoutHistByCid(String cid, int startYearMonth) {
         List<StatementLayoutHist> statementLayoutHist = toDomains(this.queryProxy().query(SELECT_BY_CID_KEY_STRING, QpbmtStatementLayoutHist.class)
                 .setParameter("startYearMonth", startYearMonth)
+                .setParameter("cid", cid)
+                .getList());
+        return statementLayoutHist;
+    }
+
+    @Override
+    public List<StatementLayoutHist> getAllStatementLayoutHistByCid(String cid, int startYearMonth, int endYearMonth) {
+        List<StatementLayoutHist> statementLayoutHist = toDomains(this.queryProxy().query(SELECT_BY_DATE, QpbmtStatementLayoutHist.class)
+                .setParameter("startYearMonth", startYearMonth)
+                .setParameter("endYearMonth",endYearMonth)
                 .setParameter("cid", cid)
                 .getList());
         return statementLayoutHist;

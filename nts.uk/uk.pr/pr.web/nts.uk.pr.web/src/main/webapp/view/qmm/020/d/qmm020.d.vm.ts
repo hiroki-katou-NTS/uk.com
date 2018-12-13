@@ -177,7 +177,6 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
         }
 
         openScreenK(){
-            block.invisible();
             let self = this;
             let listStateCorrelationHis = [];
             service.getStateCorrelationHisDeparmentById().done((data)=>{
@@ -196,7 +195,6 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
             }).fail((err)=>{
                 if(err) dialog.alertError(err);
             }).always(()=>{
-                block.clear();
             });
 
             modal("/view/qmm/020/k/index.xhtml").onClosed(()=>{
@@ -217,6 +215,10 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
                         }
                         self.enableAddHisButton(true);
                         self.enableEditHisButton(true);
+                    }).fail((err)=>{
+                        if(err) dialog.alertError(err);
+                    }).always(()=>{
+                        block.clear();
                     });
                 }else{
                     block.clear();
