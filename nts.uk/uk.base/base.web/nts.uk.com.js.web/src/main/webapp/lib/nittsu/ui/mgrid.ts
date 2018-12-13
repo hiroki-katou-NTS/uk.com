@@ -2908,7 +2908,7 @@ module nts.uk.ui.mgrid {
                     if (_vessel()) _vessel().zeroHidden = val;
                 }
             },
-            updatedCells: function() {
+            updatedCells: function(all) {
                 let arr = [];
                 let toNumber = false, column = _columnsMap[_pk];
                 if ((column && _.toLower(column[0].dataType) === "number")
@@ -2921,6 +2921,19 @@ module nts.uk.ui.mgrid {
                         arr.push({ rowId: (toNumber ? parseFloat(r) : r), columnKey: c, value: _dirties[r][c] });
                     });
                 });
+                
+                if (all) {
+                    _.forEach(_.keys(_mafollicle[SheetDef]), k => {
+                        if (k === _currentSheet) return;
+                        let maf = _mafollicle[_currentPage][k];
+                        if (!maf || !maf.dirties) return;
+                        _.forEach(_.keys(maf.dirties), r => {
+                            _.forEach(_.keys(maf.dirties[r]), c => {
+                                arr.push({ rowId: (toNumber ? parseFloat(r) : r), columnKey: c, value: maf.dirties[r][c] });
+                            });
+                        });
+                    });    
+                }
                 
                 return arr;
             },
@@ -4090,10 +4103,17 @@ module nts.uk.ui.mgrid {
                 let parsed, constraint = column.constraint;
                 let valueType = constraint.primitiveValue ? ui.validation.getConstraint(constraint.primitiveValue).valueType
                             : constraint.cDisplayType;
-                if (!_.isNil(value)
-                    && (valueType === "Time" || valueType === "TimeWithDay" || valueType === "Clock")) {
-                    parsed = uk.time.minutesBased.duration.parseString(value);
-                    if (parsed.success) value = parsed.format();
+                if (!_.isNil(value) && value !== "") {
+                    if (valueType === "Time") {
+                        parsed = uk.time.minutesBased.duration.parseString(value);
+                        if (parsed.success) value = parsed.format();
+                    } else if (valueType === "TimeWithDay" || valueType === "Clock") {
+                        let minutes = time.minutesBased.clock.dayattr.parseString(String(value)).asMinutes;
+                        if (_.isNil(minutes)) return value;
+                        try {
+                            value = time.minutesBased.clock.dayattr.create(minutes).shortText;
+                        } catch (e) {}   
+                    }
                 }
             }
             

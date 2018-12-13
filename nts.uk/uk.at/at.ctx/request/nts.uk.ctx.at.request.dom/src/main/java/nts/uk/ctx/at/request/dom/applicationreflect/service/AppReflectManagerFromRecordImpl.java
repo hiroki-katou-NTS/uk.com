@@ -109,8 +109,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 			Optional<GeneralDate> closure = getClosureStartForEmp.algorithm(x.getEmployeeId());
 			if(closure.isPresent()) {
 				GeneralDate startDateshime = closure.get();
-				if(startDateshime.afterOrEquals(workDate.start())
-						&& startDateshime.beforeOrEquals(workDate.end())) {
+				if(workDate.start().afterOrEquals(startDateshime)) {
 					//社員の申請を反映 (Phản ánh nhân viên)
 					if(!this.reflectAppOfEmployee(workId, x.getEmployeeId(), workDate, 
 							optRequesSetting.get(), aprResult, reflectSetting)) {

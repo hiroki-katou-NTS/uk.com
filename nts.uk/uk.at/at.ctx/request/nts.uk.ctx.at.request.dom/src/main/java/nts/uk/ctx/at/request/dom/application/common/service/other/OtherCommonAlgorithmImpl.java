@@ -56,7 +56,9 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
@@ -116,6 +118,9 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	private CollectAchievement collectAch;
 	@Inject
 	private WorkTypeIsClosedService workTypeRepo;
+	
+	@Inject
+	private WorkTimeSettingRepository workTimeSettingRepository;
 	public PeriodCurrentMonth employeePeriodCurrentMonthCalculate(String companyID, String employeeID, GeneralDate date){
 		/*
 		アルゴリズム「社員所属雇用履歴を取得」を実行する(thực hiện xử lý 「社員所属雇用履歴を取得」)
@@ -163,6 +168,8 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			}
 			
 		}
+		listWorkTimeCodes = workTimeSettingRepository.findByCompanyId(companyID).stream()
+			.filter(x -> x.getAbolishAtr()==AbolishAtr.NOT_ABOLISH).map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
 		return listWorkTimeCodes;
 	}
 

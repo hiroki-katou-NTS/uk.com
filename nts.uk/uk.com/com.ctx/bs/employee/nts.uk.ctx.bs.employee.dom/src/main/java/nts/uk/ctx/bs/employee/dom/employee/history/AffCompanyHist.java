@@ -51,11 +51,15 @@ public class AffCompanyHist extends AggregateRoot {
 	}
 
 	public void addAffCompanyHistByEmployee(AffCompanyHistByEmployee domain) {
+		this.addAffCompanyHistByEmployeeWithoutEvent(domain);
+		domain.toBePublished();
+	}
+
+	public void addAffCompanyHistByEmployeeWithoutEvent(AffCompanyHistByEmployee domain) {
 		if (lstAffCompanyHistByEmployee == null) {
 			lstAffCompanyHistByEmployee = new ArrayList<AffCompanyHistByEmployee>();
 		}
 
 		lstAffCompanyHistByEmployee.add(domain);
-		domain.toBePublished();
 	}
 }

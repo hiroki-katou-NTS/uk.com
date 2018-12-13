@@ -45,10 +45,16 @@ public class ExternalOutLogExportService extends ExportService<ErrorContentDto> 
 		resultLogs.add(new ArrayList<>(Arrays.asList(TextResource.localize("CMF002_329"),
 				lstError.getResultLog().getProcessStartDateTime().toString())));
 		resultLogs.add(new ArrayList<>(
-				Arrays.asList(TextResource.localize("CMF002_331"), lstError.getResultLog().getTotalCount() + lstError.getResultLog().getProcessUnit())));
+				Arrays.asList(
+						TextResource.localize("CMF002_331"), 
+						String.valueOf(lstError.getResultLog().getTotalCount()),
+						lstError.getResultLog().getProcessUnit())
+				));
 		resultLogs.add(new ArrayList<>(Arrays.asList(TextResource.localize("CMF002_332"),
-				lstError.getResultLog().getTotalCount() - lstError.getResultLog().getTotalErrorCount() + lstError.getResultLog().getProcessUnit())));
-		resultLogs.add(new ArrayList<>(Arrays.asList(TextResource.localize("CMF002_333"), lstError.getResultLog().getTotalErrorCount() + lstError.getResultLog().getProcessUnit())));
+				String.valueOf(lstError.getResultLog().getTotalCount() - lstError.getResultLog().getTotalErrorCount()) ,
+				lstError.getResultLog().getProcessUnit())));
+		resultLogs.add(new ArrayList<>(Arrays.asList(TextResource.localize("CMF002_333"), String.valueOf(lstError.getResultLog().getTotalErrorCount())
+				,lstError.getResultLog().getProcessUnit())));
 
 		if (lstError.getErrorLog() != null) { 
 			for (int i=0; i< lstError.getErrorLog().length; i++) {
