@@ -1,8 +1,7 @@
 package nts.uk.file.com.infra.Indivigrant;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +14,7 @@ import javax.persistence.Query;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.file.com.app.Indivigrant.IndivigrantColumn;
 import nts.uk.file.com.app.Indivigrant.IndivigrantRepository;
@@ -49,6 +49,7 @@ public class IndivigrantImpl implements IndivigrantRepository {
 		String cid = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
 		Query query = entityManager.createNativeQuery(GET_EXPORT_EXCEL.toString()).setParameter("cid", cid);
+		@SuppressWarnings("unchecked")
 		List<Object[]> data = query.getResultList();
 		for (Object[] objects : data) {
 			datas.add(new MasterData(dataContent(objects), null, ""));
@@ -69,14 +70,10 @@ public class IndivigrantImpl implements IndivigrantRepository {
 		// A7_5
 		data.put(IndivigrantColumn.CAS013_48, object[4] != null ? (String) object[4] : null);
 		// A7_6
-		data.put(IndivigrantColumn.CAS013_49, object[5] != null ? checkValue1(object[5]) : null);
+		data.put(IndivigrantColumn.CAS013_49,  object[5] != null ? GeneralDate.localDate(((Date) object[5]).toLocalDate()) : null);
 		// A7_7
-		data.put(IndivigrantColumn.CAS013_50, object[6] != null ? checkValue1(object[6]) : null);
+		data.put(IndivigrantColumn.CAS013_50,  object[6] != null ? GeneralDate.localDate(((Date) object[6]).toLocalDate()) : null);
 		return data;
-	}
-	private String checkValue1(Object date) {
-		DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
-		return df.format(date);
 	}
 	
 	private String getTypeName(int roleType) {
