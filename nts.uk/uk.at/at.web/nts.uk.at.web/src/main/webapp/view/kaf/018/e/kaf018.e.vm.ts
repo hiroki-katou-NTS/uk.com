@@ -76,18 +76,17 @@ module nts.uk.at.view.kaf018.e.viewmodel {
                 service.getUseSetting().done(function(setting) {
                     self.useSetting = setting;
                     service.getStatusActivity(obj).done(function(data: any) {
-                        _.each(data, function(item) {
+                        if(data.error){
+                            nts.uk.ui.dialog.error({messageId: "Msg_1430", messageParams: ["承認者"]});
+                        }
+                        _.each(data.lstData, function(item) {
                             let wkp = _.find(listWorkplace, { code: item.wkpId });
                             self.listWkpStatusConfirm.push(new ApprovalStatusActivity(item.wkpId, wkp.name, item.monthUnconfirm, item.monthConfirm, item.bossUnconfirm, item.bossConfirm, item.personUnconfirm, item.personConfirm))
                             self.listWkpActive.push({ code: item.wkpId, name: wkp.name });
                         })
-
+                        block.clear();
                         dfd.resolve();
                     }).fail(function(res){
-                        nts.uk.ui.dialog.error({ messageId: res.messageId, messageParams: res.parameterIds }).then(() => {
-                            self.goBackA();        
-                        });    
-                    }).always(function() {
                         block.clear();
                     })
                 }).fail(function() {

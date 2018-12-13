@@ -9,6 +9,7 @@ import org.junit.Test;
 
 public class AddSubAttendanceItemsTest {
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void calculate_True() {
 		AddSubAttendanceItems items = createItems();

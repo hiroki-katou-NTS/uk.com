@@ -1,13 +1,13 @@
 package nts.uk.ctx.at.record.dom.workrule.specific;
 
-import java.util.ArrayList;
+/*import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Assert;
+import org.junit.Assert;*/
 import org.junit.Test;
 
-import nts.arc.time.GeneralDate;
+/*import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGate;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
@@ -23,7 +23,7 @@ import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
-import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.shr.com.time.TimeWithDayAttr;*/
 
 public class CalculateOfTotalConstraintTimeTest {
 	

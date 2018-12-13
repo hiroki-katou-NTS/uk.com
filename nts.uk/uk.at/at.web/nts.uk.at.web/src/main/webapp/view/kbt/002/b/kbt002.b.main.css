@@ -81,3 +81,6 @@
 [dropdown-for="combobox-daily-per-id"] .nts-combo-column-0 {
   width: 390px !important;
 }
+.middle .ntsMonthDays_Container{
+	top:0px;
+}

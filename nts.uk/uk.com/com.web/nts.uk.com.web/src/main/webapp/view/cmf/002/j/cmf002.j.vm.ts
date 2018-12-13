@@ -145,8 +145,9 @@ module nts.uk.com.view.cmf002.j.viewmodel {
             if (!hasError()) {
 
                 if (parseInt(self.characterDataFormatSetting().startDigit()) > parseInt(self.characterDataFormatSetting().endDigit()) && self.characterDataFormatSetting().effectDigitLength() == model.NOT_USE_ATR.USE) {
-                    $("#J2_2_1").ntsError('set', { messageId: "Msg_830" });
-                    $('#J2_2_3').ntsError('set', { messageId: "Msg_830" });
+//                    $("#J2_2_1").ntsError('set', { messageId: "Msg_830" });
+//                    $('#J2_2_3').ntsError('set', { messageId: "Msg_830" });
+                      alertError({ messageId: "Msg_830" });
                 } else {
                     if (self.modeScreen() != model.DATA_FORMAT_SETTING_SCREEN_MODE.INDIVIDUAL) {
                         // get data shared

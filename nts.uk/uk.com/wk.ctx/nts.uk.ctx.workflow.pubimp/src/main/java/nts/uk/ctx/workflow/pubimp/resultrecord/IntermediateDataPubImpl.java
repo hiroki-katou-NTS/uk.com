@@ -436,7 +436,7 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 
 	@Override
 	public List<AppRootSttMonthExport> getAppRootStatusByEmpsMonth(
-			List<EmpPerformMonthParam> empPerformMonthParamLst) {
+			List<EmpPerformMonthParam> empPerformMonthParamLst) throws BusinessException{
 		String companyID = AppContexts.user().companyId();
 		List<AppRootSttMonthExport> appRootSttMonthLst = new ArrayList<>();
 		// INPUT．対象者社員IDの先頭から最後へループ
