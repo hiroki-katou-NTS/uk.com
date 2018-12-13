@@ -107,6 +107,7 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
         }
         validate() {
             $("#J1_3").trigger("validate");
+            $("#J1_12").trigger("validate");
             $("#J1_13").trigger("validate");
         }
 
