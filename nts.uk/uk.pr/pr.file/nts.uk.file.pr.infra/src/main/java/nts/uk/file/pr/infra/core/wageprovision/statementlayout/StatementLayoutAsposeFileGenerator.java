@@ -17,7 +17,6 @@ import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.LineByLineSetti
 import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.SettingByCtgExportData;
 import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.StatementLayoutFileGenerator;
 import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.StatementLayoutSetExportData;
-import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -37,11 +36,8 @@ public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerat
 			StatementLayoutPrint sttPrint = new StatementLayoutPrint(wsc, ws);
 			HorizontalPageBreakCollection pageBreaks = ws.getHorizontalPageBreaks();
 			int offset = sttPrint.getStatementLayout().getRowCount();
-			for (StatementLayoutSetExportData stt : exportData) {
-				String statement = "【" + stt.getStatementCode() + "　" + stt.getStatementName() + "】";
-				String processingDate = TextResource.localize("QMM019_204") + "：" + stt.getProcessingDate().year() + "年"
-						+ stt.getProcessingDate().month() + "月";
-				offset = sttPrint.printHeader(statement, processingDate, offset);
+			for (StatementLayoutSetExportData stt : exportData) {				
+				offset = sttPrint.printHeader(stt.getStatementCode(), stt.getStatementName(), stt.getProcessingDate(), offset);
 				offset = this.printCtg(sttPrint, stt, CategoryAtr.PAYMENT_ITEM, offset) + 1;
 				offset = this.printCtg(sttPrint, stt, CategoryAtr.DEDUCTION_ITEM, offset) + 1;
 				offset = this.printCtg(sttPrint, stt, CategoryAtr.ATTEND_ITEM, offset);
