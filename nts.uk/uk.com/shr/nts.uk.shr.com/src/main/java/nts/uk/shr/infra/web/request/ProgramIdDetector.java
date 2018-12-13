@@ -41,24 +41,38 @@ public class ProgramIdDetector implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		request.setAttribute(InputPart.DEFAULT_CHARSET_PROPERTY, FilterConst.DEFAULT_CHARSET_PROPERTY);
-		String requestPagePath = ((HttpServletRequest) request).getHeader(FilterConst.PG_PATH);
-		if (requestPagePath == null) {
-			chain.doFilter(request, response);
-			return;
-		}
-		
-		String ip = FilterHelper.getClientIp((HttpServletRequest) request);
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		httpRequest.setAttribute(InputPart.DEFAULT_CHARSET_PROPERTY, FilterConst.DEFAULT_CHARSET_PROPERTY);
+		String target = httpRequest.getHeader(FilterConst.PG_PATH);
+
+		String ip = FilterHelper.getClientIp(httpRequest);
 		String pcName = FilterHelper.getPcName(ip);
 		
-		AppContextsConfig.setRequestedWebAPI(new RequestInfo(
-													requestPagePath, 
-													FilterHelper.detectWebapi(requestPagePath), 
-													ip, pcName));
-		
-		FilterHelper.detectProgram(requestPagePath).ifPresent(id -> AppContextsConfig.setProgramId(id));
+		if (target == null) {
+			String fullRequestPath = getFullUrl(httpRequest);
+			AppContextsConfig.setRequestedWebAPI(new RequestInfo(fullRequestPath, 
+																FilterHelper.detectWebapi(fullRequestPath),
+																ip, pcName));
+			chain.doFilter(httpRequest, response);
+			return;
+		}
 
-		chain.doFilter(request, response);
+		AppContextsConfig.setRequestedWebAPI(new RequestInfo(target, FilterHelper.detectWebapi(target), ip, pcName));
+		
+		FilterHelper.detectProgram(target).ifPresent(id -> AppContextsConfig.setProgramId(id));
+
+		chain.doFilter(httpRequest, response);
+	}
+
+	private String getFullUrl(HttpServletRequest request) {
+		StringBuilder requestURL = new StringBuilder(request.getRequestURL().toString());
+		String queryString = request.getQueryString();
+
+		if (queryString == null) {
+		    return requestURL.toString();
+		} else {
+		    return requestURL.append('?').append(queryString).toString();
+		}
 	}
 
 	/*
