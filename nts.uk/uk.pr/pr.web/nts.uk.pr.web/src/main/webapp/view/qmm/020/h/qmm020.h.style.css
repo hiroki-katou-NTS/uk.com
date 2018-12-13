@@ -1,3 +1,7 @@
 .ccg001-cell mid{
     height: 360px !important;
 }
+#H3_4, #H3_5 {
+    margin-left: 15px;
+    line-height:12px;
+}
