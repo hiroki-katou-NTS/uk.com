@@ -176,15 +176,24 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 
 		this.drawExtraTable(cells, startNextTable, sheetData.getSubDatas(), sheetData.getSubDataColumns());
 
-		this.processSheetName(getSheetName(sheetData.getSheetName(), idx), sheet, cells);
+		this.processSheetName(sheetData.getSheetName(), sheet, cells, workbook, idx);
 		
 		this.setDefaultSheetOption(sheet);
 
 		return reportName;
 	}
 
-	private void processSheetName(String sheetName, Worksheet sheet, Cells cells) {
-		sheet.setName(sheetName);
+	private void processSheetName(String sheetName, Worksheet sheet, Cells cells, Workbook workbook, int idx) {
+		boolean isExistName = false;
+		
+		for(Object x : workbook.getWorksheets()){
+			if(((Worksheet) x).getName().equals(sheetName)){
+				isExistName = true;
+				break;
+			}
+		}
+		
+		sheet.setName(getSheetName(sheetName, idx, isExistName));
 		
 		cells.get(HEADER_INFOR_START_ROW + 4, 1).setValue(sheetName);
 	}
@@ -196,9 +205,8 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		}
 	}
 
-	private String getSheetName(String sheetName, int idx) {
-//		return idx > 0 ? sheetName + idx : sheetName;
-		return sheetName;
+	private String getSheetName(String sheetName, int idx, boolean isExistName) {
+		return isExistName ? sheetName + "(" + idx + ")" : sheetName;
 	}
 
 	private void setDefaultSheetOption(final Worksheet sheet) {
