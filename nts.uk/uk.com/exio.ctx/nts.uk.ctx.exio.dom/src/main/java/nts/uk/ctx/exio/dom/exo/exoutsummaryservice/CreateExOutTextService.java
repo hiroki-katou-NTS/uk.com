@@ -4,11 +4,14 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -1484,10 +1487,14 @@ public class CreateExOutTextService extends ExportService<Object> {
 		DateOutputFormat formatDate = setting.getFormatSelection();
 
 		if (formatDate == DateOutputFormat.YY_MM_DD || formatDate == DateOutputFormat.YYMMDD
-				|| formatDate == DateOutputFormat.YYYY_MM_DD || formatDate == DateOutputFormat.YYYYMMDD
-				|| formatDate == DateOutputFormat.DAY_OF_WEEK) {
+				|| formatDate == DateOutputFormat.YYYY_MM_DD || formatDate == DateOutputFormat.YYYYMMDD) {
 			targetValue = date.toString(formatDate.format);
-		} else if (formatDate == DateOutputFormat.JJYY_MM_DD || formatDate == DateOutputFormat.JJYYMMDD) {
+		} else if (formatDate == DateOutputFormat.DAY_OF_WEEK){
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E", Locale.JAPAN);			
+			LocalDate dateXX = LocalDate.parse(itemValue, DateTimeFormatter.ofPattern("yyyy-MM-dd"));		
+			targetValue = dateXX.format(formatter);
+		}
+		else if (formatDate == DateOutputFormat.JJYY_MM_DD || formatDate == DateOutputFormat.JJYYMMDD) {
 			JapaneseEras erasList = japaneseErasAdapter.getAllEras();
 			Optional<JapaneseEraName> japaneseEraNameOptional = erasList.eraOf(date);
 			
