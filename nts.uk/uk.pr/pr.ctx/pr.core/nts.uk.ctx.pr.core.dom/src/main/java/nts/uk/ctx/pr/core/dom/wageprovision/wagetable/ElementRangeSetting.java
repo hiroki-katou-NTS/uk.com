@@ -37,9 +37,9 @@ public class ElementRangeSetting extends AggregateRoot {
 			Integer secondStepIncrement, Integer secondRangeLowerLimit, Integer secondRangeUpperLimit,
 			Integer thirdStepIncrement, Integer thirdRangeLowerLimit, Integer thirdRangeUpperLimit, String historyID) {
 		this.firstElementRange = new ElementRange(firstStepIncrement, firstRangeLowerLimit, firstRangeUpperLimit);
-		this.thirdElementRange = Optional
-				.of(new ElementRange(secondStepIncrement, secondRangeLowerLimit, secondRangeUpperLimit));
 		this.secondElementRange = Optional
+				.of(new ElementRange(secondStepIncrement, secondRangeLowerLimit, secondRangeUpperLimit));
+		this.thirdElementRange = Optional
 				.of(new ElementRange(thirdStepIncrement, thirdRangeLowerLimit, thirdRangeUpperLimit));
 		this.historyID = historyID;
 	}

@@ -83,35 +83,46 @@ public class WageTableContentCreater {
 	}
 
 	public WageTableContentDto createTwoDimensionWageTable(ElementRangeSettingDto params) {
-		WageTableContentDto dto = new WageTableContentDto();
-		dto.setHistoryID(params.getHistoryID());
-		List<TwoDmsElementItemDto> payments = new ArrayList<>();
+		WageTableContentDto dto = this.createOneDimensionWageTable(params);
+		List<TwoDmsElementItemDto> payments = dto.getList1dElements().stream().map(i -> new TwoDmsElementItemDto(i))
+				.collect(Collectors.toList());
 		String companyId = AppContexts.user().companyId();
 		Optional<WageTable> optWageTable = wageTableRepo.getWageTableById(companyId, params.getWageTableCode());
-		if (params.getFirstElementRange() == null) {
-			// master item
-			if (optWageTable.isPresent()) {
-				payments = getMasterElementItems(optWageTable.get().getElementInformation().getOneDimensionalElement()
-						.getFixedElement().get().value, companyId).stream().map(i -> new TwoDmsElementItemDto(i))
-								.collect(Collectors.toList());
-			}
-		} else {
-			// numeric item
-			payments = getNumericRange(params.getFirstElementRange()).stream().map(i -> new TwoDmsElementItemDto(i))
-					.collect(Collectors.toList());
-		}
 		List<ElementItemDto> list2nd = params.getSecondElementRange() == null ? getMasterElementItems(
-				optWageTable.get().getElementInformation().getOneDimensionalElement().getFixedElement().get().value,
+				optWageTable.get().getElementInformation().getTwoDimensionalElement().get().getFixedElement().get().value,
 				companyId) : getNumericRange(params.getSecondElementRange());
 		for (TwoDmsElementItemDto t : payments) {
 			t.setListSecondDms(list2nd);
 		}
 		dto.setList2dElements(payments);
+		dto.setList1dElements(null);
 		return dto;
 	}
 
 	public WageTableContentDto createThreeDimensionWageTable(ElementRangeSettingDto params) {
-		WageTableContentDto dto = new WageTableContentDto();
+		WageTableContentDto dto = this.createTwoDimensionWageTable(params);
+		List<ThreeDmsElementItemDto> payments = new ArrayList<>();
+		String companyId = AppContexts.user().companyId();
+		Optional<WageTable> optWageTable = wageTableRepo.getWageTableById(companyId, params.getWageTableCode());
+		if (params.getThirdElementRange() == null) {
+			// master item
+			if (optWageTable.isPresent()) {
+				payments = getMasterElementItems(optWageTable.get().getElementInformation().getThreeDimensionalElement().get()
+						.getFixedElement().get().value, companyId).stream()
+								.map(i -> new ThreeDmsElementItemDto(new TwoDmsElementItemDto(i)))
+								.collect(Collectors.toList());
+			}
+		} else {
+			// numeric item
+			payments = getNumericRange(params.getThirdElementRange()).stream()
+					.map(i -> new ThreeDmsElementItemDto(new TwoDmsElementItemDto(i))).collect(Collectors.toList());
+		}
+		List<TwoDmsElementItemDto> listTwoDms = dto.getList2dElements();
+		for (ThreeDmsElementItemDto t : payments) {
+			t.setListFirstDms(listTwoDms);
+		}
+		dto.setList3dElements(payments);
+		dto.setList2dElements(null);
 		return dto;
 	}
 

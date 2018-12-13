@@ -229,7 +229,7 @@ module nts.uk.pr.view.qmm016.share.model {
                     this.payment(params.list2dElements.map(item => new TwoDmsElementItem(item)));
                 }
                 if (!_.isEmpty(params.list3dElements)) {
-                    
+                    this.payment(params.list3dElements.map(item => new ThreeDmsElementItem(item)));
                 }
                 this.qualificationGroupSetting(params && !_.isEmpty(params.qualificationGroupSettings) ? params.qualificationGroupSettings.map(item => new QualificationGroupSettingContent(item)) : []);
             }
@@ -350,6 +350,23 @@ module nts.uk.pr.view.qmm016.share.model {
             this.frameLowerLimit(params ? params.frameLowerLimit : null);
             this.frameUpperLimit(params ? params.frameUpperLimit : null);
             this.listSecondDms(params && !_.isEmpty(params.listSecondDms) ? params.listSecondDms.map(item => new ElementItem(item)) : []);
+        }
+    }
+    
+    export class ThreeDmsElementItem {
+        masterCode: KnockoutObservable<string> = ko.observable(null);
+        masterName: KnockoutObservable<string> = ko.observable(null);
+        frameNumber: KnockoutObservable<number> = ko.observable(null);
+        frameLowerLimit: KnockoutObservable<number> = ko.observable(null);
+        frameUpperLimit: KnockoutObservable<number> = ko.observable(null);
+        listFirstDms: KnockoutObservableArray<TwoDmsElementItem> = ko.observableArray([]);
+        constructor (params: any) {
+            this.masterCode(params ? params.masterCode : null);
+            this.masterName(params ? params.masterName : null);
+            this.frameNumber(params ? params.frameNumber : null);
+            this.frameLowerLimit(params ? params.frameLowerLimit : null);
+            this.frameUpperLimit(params ? params.frameUpperLimit : null);
+            this.listFirstDms(params && !_.isEmpty(params.listFirstDms) ? params.listFirstDms.map(item => new TwoDmsElementItem(item)) : []);
         }
     }
 
