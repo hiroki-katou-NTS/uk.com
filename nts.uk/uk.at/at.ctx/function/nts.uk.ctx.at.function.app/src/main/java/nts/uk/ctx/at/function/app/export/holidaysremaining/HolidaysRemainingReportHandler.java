@@ -61,6 +61,9 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingInfor
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingEmployee;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingReportGenerator;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -114,7 +117,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	private ManagedParallelWithContext parallel;
 	@Inject
 	private HolidayRemainMergeAdapter hdRemainAdapter;
-
+	@Inject
+	private AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepository;
 	@Override
 	protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
 		val query = context.getQuery();
@@ -127,6 +131,11 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		val hdManagement = hdFinder.findByCode(hdRemainCond.getOutputItemSettingCode());
 		if (!hdManagement.isPresent()) {
 			return;
+		}
+		AnnualPaidLeaveSetting annualPaidLeaveSetting = annualPaidLeaveSettingRepository.findByCompanyId(cId);
+		ManageDistinct enumManageDistinct = annualPaidLeaveSetting.getYearManageType();
+		if(enumManageDistinct == ManageDistinct.NO){
+			throw new BusinessException("Msg_885");
 		}
 		int closureId = hdRemainCond.getClosureId();
 		// ※該当の締めIDが「0：全締め」のときは、「1締め（締めID＝1）」とする
