@@ -3,5 +3,10 @@
 }
 #H3_4, #H3_5 {
     margin-left: 15px;
-    line-height:12px;
+    line-height: 12px;
+}
+#text_Salary{
+    min-width: 500px;
+    padding-top: 15px;
+    padding-left: 25px !important;
 }
