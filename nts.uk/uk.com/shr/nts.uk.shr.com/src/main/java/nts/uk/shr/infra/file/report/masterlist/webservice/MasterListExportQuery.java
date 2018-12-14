@@ -1,6 +1,7 @@
 package nts.uk.shr.infra.file.report.masterlist.webservice;
 
 import lombok.Data;
+import nts.arc.time.GeneralDate;
 
 @Data
 public class MasterListExportQuery {
@@ -16,4 +17,10 @@ public class MasterListExportQuery {
 	private Object option;
 	
 	private Object data;
+	
+	private MasterListMode mode;
+	
+	private GeneralDate startDate;
+	
+	private GeneralDate endDate;
 }
