@@ -3,6 +3,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import block = nts.uk.ui.block;
     import validation = nts.uk.ui.validation;
+    import errors = nts.uk.ui.errors;
 
     export class ScreenModel {
 
@@ -27,7 +28,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
             let self = this;
             self.salaryPerUnitPriceNamesSelectedCode.subscribe(function (selectcode) {
                 self.workIndividualPricesDisplay = [];
-                nts.uk.ui.errors.clearAll();
+                errors.clearAll();
                 if (!selectcode)
                     return;
                 let temp = _.find(self.salaryPerUnitPriceNames(), function (o) {
@@ -44,7 +45,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
         filterData(): void {
             let self = this;
             $('#A4_5').ntsError('check');
-            if (nts.uk.ui.errors.hasError()) {
+            if (errors.hasError()) {
                 return;
             }
             block.invisible();
@@ -87,7 +88,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 subHeight: height + 'px',
                 headerHeight: '23px',
                 dataSource: self.workIndividualPricesDisplay,
-                primaryKey: 'historyId',
+                primaryKey: 'historyID',
                 primaryKeyDataType: 'string',
                 rowVirtualization: true,
                 virtualization: true,
@@ -97,7 +98,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 hidePrimaryKey: true,
                 errorsOnPage: false,
                 columns: [
-                    {headerText: "id", key: 'historyId', dataType: 'string', hidden: true},
+                    {headerText: "id", key: 'historyID', dataType: 'string', hidden: true},
                     // A5_10
                     {
                         headerText: getText("QMM042_10"), key: 'employeeCode', dataType: 'string', width: '90px',
@@ -150,18 +151,24 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
             }).create();
         }
 
+        isValidForm() {
+            return _.isEmpty($("#grid").mGrid("errors", true));
+        }
+
         registerAmount(): void {
             let self = this;
             block.invisible();
+            if (errors.hasError() || !self.isValidForm()) {
+                block.clear();
+                return;
+            }
             service.empSalUnitUpdateAll({
                 payrollInformationCommands: $("#grid").mGrid("dataSource", true)
             }).done(function () {
-                block.clear();
                 dialog.info({messageId: "Msg_15"});
-            }).fail((err) => {
-                dialog.alertError(err.message);
+            }).always(() => {
                 block.clear();
-            });
+            })
         }
 
         startPage(): JQueryPromise<any> {
@@ -174,7 +181,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 service.salaryPerUnitPriceName().done(function (individualPriceName) {
                     if (individualPriceName.length == 0) {
                         self.isRegistrable(false);
-                        nts.uk.ui.dialog.alertError({messageId: "MsgQ_170"});
+                        dialog.alertError({messageId: "MsgQ_170"});
                     } else {
                         self.isRegistrable(true);
                         self.salaryPerUnitPriceNames(individualPriceName);

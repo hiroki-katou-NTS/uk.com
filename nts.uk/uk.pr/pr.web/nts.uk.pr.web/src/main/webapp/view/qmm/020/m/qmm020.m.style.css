@@ -10,3 +10,7 @@
     margin: auto;
     padding: 10px;
 }
+
+#multi-list_container {
+    border: 1px solid #AAB7B8 !important;
+}

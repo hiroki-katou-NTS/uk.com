@@ -46,3 +46,13 @@
 #grid2_container tr th:NTH-CHILD(6) {
     border-right: none;
 }
+
+#img-calendar{
+    position: absolute;
+    z-index: 1;
+    margin: -14px -11px;
+}
+
+#grid2_virtualContainer {
+    border: 1px solid #AAB7B8 !important;
+}
