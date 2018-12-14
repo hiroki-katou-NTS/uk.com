@@ -130,6 +130,7 @@ module nts.uk.at.view.kwr006.a {
                     alreadySettingList: self.alreadySettingList,
                     isShowWorkPlaceName: self.isShowWorkPlaceName(),
                     isShowSelectAllButton: self.isShowSelectAllButton(),
+                    isSelectAllAfterReload: true,
                     tabindex: 5,
                     maxRows: 17
                 };
@@ -181,7 +182,7 @@ module nts.uk.at.view.kwr006.a {
                         self.datepickerValue.valueHasMutated();
                         self.employeeList.removeAll();
                         const result = data.listEmployee
-                            .filter(f => !_.isEmpty(f.workplaceId))
+//                            .filter(f => !_.isEmpty(f.workplaceId))
                             .map(item => {
                                 return {
                                     id: item.employeeId,
