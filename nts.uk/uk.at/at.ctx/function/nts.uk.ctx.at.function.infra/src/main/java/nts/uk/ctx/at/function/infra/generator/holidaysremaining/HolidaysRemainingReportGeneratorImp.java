@@ -702,17 +702,20 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 					// I1_3 代休_使用数_日数
 					cells.get(firstRow, 6).setValue(currentHolidayItem.getMonthUse());
 					if (isRemainingChargeSubstitute) {
-						// I1_4 代休_残数_日数
-						cells.get(firstRow, 7).setValue(currentHolidayItem.getMonthEndRemain());
-						if (currentHolidayItem.getMonthEndRemain() < 0) {
-							setForegroundRed(cells.get(firstRow, 7));
+						if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getSubstituteHoliday()
+								.isOutputItemSubstitute()) {
+							// I1_4 代休_残数_日数
+							cells.get(firstRow, 7).setValue(currentHolidayItem.getMonthEndRemain());
+							if (currentHolidayItem.getMonthEndRemain() < 0) {
+								setForegroundRed(cells.get(firstRow, 7));
+							}
 						}
 					}
 					if (isRepresentSubstitute) {
-						// I1_5 代休_未消化_日数
-						cells.get(firstRow, 8).setValue(currentHolidayItem.getMonthExtinction());
-						if (currentHolidayItem.getMonthExtinction() != null
-								&& currentHolidayItem.getMonthExtinction().intValue() > 0) { 
+						if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getSubstituteHoliday()
+								.isRepresentSubstitute()) {
+							// I1_5 代休_未消化_日数
+							cells.get(firstRow, 8).setValue(currentHolidayItem.getMonthExtinction());
 							setForegroundRed(cells.get(firstRow, 8));
 						}
 					}
@@ -879,17 +882,20 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 					// J1_3 振休_使用数
 					cells.get(firstRow, 6).setValue(holidayRemainItem.getMonthUse());
 					if (isNumberRemainingPause) {
-						// J1_4 振休_残数
-						cells.get(firstRow, 7).setValue(holidayRemainItem.getMonthEndRemain());
-						if (holidayRemainItem.getMonthEndRemain() < 0) {
-							setForegroundRed(cells.get(firstRow, 7));
+						if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getPause()
+								.isNumberRemainingPause()) {
+							// J1_4 振休_残数
+							cells.get(firstRow, 7).setValue(holidayRemainItem.getMonthEndRemain());
+							if (holidayRemainItem.getMonthEndRemain() < 0) {
+								setForegroundRed(cells.get(firstRow, 7));
+							}
 						}
 					}
 					if (isUndigestedPause) {
-						// J1_5 振休_未消化
-						cells.get(firstRow, 8).setValue(holidayRemainItem.getMonthExtinction());
-						if(holidayRemainItem.getMonthExtinction() != null 
-								&& holidayRemainItem.getMonthExtinction().intValue() > 0) {
+						if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getPause()
+								.isUndigestedPause()) {
+							// J1_5 振休_未消化
+							cells.get(firstRow, 8).setValue(holidayRemainItem.getMonthExtinction());
 							setForegroundRed(cells.get(firstRow, 8));
 						}
 					}
