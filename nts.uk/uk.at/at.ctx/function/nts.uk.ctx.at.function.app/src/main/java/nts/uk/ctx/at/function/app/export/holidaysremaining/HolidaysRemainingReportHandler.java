@@ -215,7 +215,9 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		Optional<CompanyInfor> companyCurrent = this.companyRepo.getCurrentCompany();
 		HolidayRemainingDataSource dataSource = new HolidayRemainingDataSource(hdRemainCond.getStartMonth(),
 				hdRemainCond.getEndMonth(), varVacaCtr, hdRemainCond.getPageBreak(),
-				hdRemainCond.getBaseDate(), hdManagement.get(), isSameCurrentMonth.get(), employeeIds, mapEmp, companyCurrent.isPresent() == true? companyCurrent.get().getCompanyName():"");
+				hdRemainCond.getBaseDate(), hdManagement.get(), isSameCurrentMonth.get(), employeeIds, mapEmp, 
+				companyCurrent.isPresent() == true? companyCurrent.get().getCompanyName():"",
+				hdRemainCond.getTitle());
 
 		this.reportGenerator.generate(context.getGeneratorContext(), dataSource);
 
