@@ -15,7 +15,6 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         // mix of 支給項目, 控除項目, 勤怠項目;
         statementItemList: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedStatementItemCode: KnockoutObservable<string> = ko.observable(null);
-        selectedStatementItem: KnockoutObservable<any> = ko.observable(null);
         displayItemNote: KnockoutObservable<string> = ko.observable(null); // D2_10
         // tab 2
         unitPriceItemCategoryItem: KnockoutObservableArray<model.EnumModel> = model.getUnitPriceItemCategoryItem();
@@ -89,7 +88,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             service.getFormulaElements(yearMonth).done(function(data){
                 self.paymentItemList = data.paymentItem;
                 self.deductionItemList = data.deductionItem;
-                self.attendanceItemList = data.paymentItem;
+                self.attendanceItemList = data.attendanceItem;
                 self.companyUnitPriceList = data.companyUnitPriceItem;
                 self.individualUnitPriceList = data.individualUnitPriceItem;
                 self.initWageTableData(data.wageTableItem);
@@ -179,7 +178,6 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             block.invisible();
             // 廃止区分＝廃止しない (false)
             service.getStatementItemData(categoryAtr, itemNameCode).done(function(data) {
-                self.selectedStatementItem(ko.mapping.fromJS(data));
                 self.displayItemNote(categoryAtr == model.LINE_ITEM_CATEGORY.PAYMENT_ITEM ? data.paymentItemSet ? data.paymentItemSet.note : "" : categoryAtr == model.LINE_ITEM_CATEGORY.DEDUCTION_ITEM ? data.deductionItemSet ? data.deductionItemSet.note: null : data.timeItemSet ? data.timeItemSet.note : null);
                 block.clear();
                 dfd.resolve();
@@ -261,13 +259,14 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         }
 
         addStatementItem () {
-            let self = this, selectedCategory = self.selectedCategoryValue(), appendFormula = "";
+            let self = this, selectedCategory = self.selectedCategoryValue(), appendFormula = "",
+                selectedStatementItemName = _.find(ko.toJS(this.statementItemList), {code: self.selectedStatementItemCode()}).name;
             if (selectedCategory == model.LINE_ITEM_CATEGORY.PAYMENT_ITEM) {
-                appendFormula = self.PAYMENT + self.CONCAT_CHAR +  this.selectedStatementItem().name();
+                appendFormula = self.PAYMENT + self.CONCAT_CHAR + selectedStatementItemName;
             } else if (selectedCategory == model.LINE_ITEM_CATEGORY.DEDUCTION_ITEM) {
-                appendFormula = self.DEDUCTION + self.CONCAT_CHAR +  this.selectedStatementItem().name();
+                appendFormula = self.DEDUCTION + self.CONCAT_CHAR + selectedStatementItemName;
             } else {
-                appendFormula = self.ATTENDANCE + self.CONCAT_CHAR +  this.selectedStatementItem().name();
+                appendFormula = self.ATTENDANCE + self.CONCAT_CHAR + selectedStatementItemName;
             }
             self.addToFormulaByPosition(appendFormula);
         }
@@ -308,7 +307,11 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         }
         startTrialCalculation () {
             let self = this;
-            setShared("QMM017_G_PARAMS", {});
+            self.validateSyntax();
+            if (nts.uk.ui.errors.hasError()) {
+                return ;
+            }
+            setShared("QMM017_G_PARAMS", {formulaElement: self, formula: self.displayDetailCalculationFormula()});
             modal("/view/qmm/017/g/index.xhtml").onClosed(function () {
 
             });
@@ -332,7 +335,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             }
         }
         validateSyntax () {
-            let self = this, formula = ko.toJS(self.displayDetailCalculationFormula), operand, operands, dotIndex,
+            let self = this, formula = ko.toJS(self.displayDetailCalculationFormula), operand, prevOperand, operands, dotIndex,
                 operators = self.operators, separators: string = self.separators.join('|'),
                 index = 0, currentChar, nextChar, nextElement, textInsideDoubleQuoteRegex = /"((?:\\.|[^"\\])*)"/;
             $('#D3_5').ntsError('clear');
@@ -367,13 +370,14 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     }
                     let preString = operand.split(self.CONCAT_CHAR)[0], postString = operand.split(self.CONCAT_CHAR)[1];
                     if (!postString) return;
-                    postString.substring(0, postString.indexOf('(')); // for case function and variable
+                    if (preString.startsWith(self.FUNCTION)) postString.substring(0, postString.indexOf(self.OPEN_BRACKET));
                     if (self.acceptPrefix.indexOf(preString) < 0) self.setErrorToFormula('MsgQ_10', [preString]);
                     if (!self.checkPostString(preString, postString)) self.setErrorToFormula('MsgQ_10', [operand]);
                 } else {
                     dotIndex = operand.indexOf('.');
                     if (operand.length - 1 - (dotIndex ? dotIndex : 0) > 5) self.setErrorToFormula('MsgQ_18', [operand]);
                 }
+                prevOperand = operand;
             }
         }
         checkPostString (preString: string, postString: string): boolean {
@@ -431,13 +435,13 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         }
         checkNumberDataType (functionParameters) {
             for(var functionParameter of functionParameters ) {
-                if (isNaN(functionParameter)) return false;
+                if (functionParameter.indexOf('"') > -1) return false;
             }
             return true;
         }
         checkDateDataType (functionParameters) {
             for(var functionParameter of functionParameters ) {
-                if (!(moment(functionParameter).isValid())) return false;
+                if (functionParameter.indexOf('"') > -1) return false;
             }
             return true;
         }
@@ -516,22 +520,6 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             if (elementType.startsWith("wage")) {
                 elementCode = formulaElement.substring(7, formulaElement.length);
                 return calculationFormulaTransfer.displayContent + self.CONCAT_CHAR + _.find(ko.toJS(self.wageTableList), {code: elementCode}).name;
-            }
-        }
-        calculation () {
-            let self = this, formula = self.displayDetailCalculationFormula();
-            let prefix = [], operators = [], operator, currentChar;
-            for(let index = 0; index < formula.length; i++){
-                currentChar = formula[index];
-                if (!isNaN(currentChar)) {
-                    prefix.push(currentChar);
-                    continue;
-                }
-                if (currentChar == '(') {
-                    while(operator = operator.pop() != '(') {
-                        // prefix.push(this.operator);
-                    }
-                }
             }
         }
     }

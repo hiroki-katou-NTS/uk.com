@@ -46,6 +46,9 @@ public class FormulaWebservice extends WebService {
     @Inject
     private RemoveFormulaHistoryCommandHandler removeFormulaHistoryCommandHandler;
 
+    @Inject
+    private DetailFormulaCalculationCommandHandler detailFormulaCalculationCommandHandler;
+
     @POST
     @Path("getAllFormula")
     public List<FormulaDto> getAllFormula() {
@@ -108,5 +111,11 @@ public class FormulaWebservice extends WebService {
     @Path("getFormulaElement/{yearMonth}")
     public Map<String, List<FormulaElementDto>> getFormulaElement(@PathParam("yearMonth") int yearMonth) {
         return formulaFinder.getFormulaElement(yearMonth);
+    }
+
+    @POST
+    @Path("calculation")
+    public String calculation(DetailFormulaCommand command) {
+        return detailFormulaCalculationCommandHandler.handle(command);
     }
 }
