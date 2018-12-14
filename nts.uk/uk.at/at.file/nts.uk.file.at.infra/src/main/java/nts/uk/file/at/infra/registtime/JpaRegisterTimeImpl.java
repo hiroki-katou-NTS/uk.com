@@ -54,7 +54,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "JOIN  "
 			+ "KMKMT_AGREEMENTTIME_COM bb "
 			+ "ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
-			+ "WHERE bb.CID = ?1";
+			+ "WHERE bb.CID = ?1 and bb.LABOR_SYSTEM_ATR = 0";
 	
 	private static final String SQL_EXPORT_SHEET_3 = "SELECT "
 			+ "kk.CODE,"
@@ -65,7 +65,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "SELECT aa.LIMIT_WEEK "
 			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
 			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
-			+ "WHERE bb.CID = ?cid "
+			+ "WHERE bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0 "
 			+ "),"
 			+ "aa.ERROR_TWO_WEEKS, "
 			+ "aa.ALARM_TWO_WEEKS, "
@@ -74,7 +74,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "FROM "
 			+ "KMKMT_BASIC_AGREEMENT_SET aa "
 			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
-			+ "WHERE bb.CID = ?cid"
+			+ "WHERE bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
 			+ "),"
 			+ "aa.ERROR_FOUR_WEEKS, "
 			+ "aa.ALARM_FOUR_WEEKS, "
@@ -82,7 +82,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "SELECT aa.LIMIT_FOUR_WEEKS "
 			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
 			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
-			+ "WHERE bb.CID = ?cid "
+			+ "WHERE bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0 "
 			+ "),"
 			+ "aa.ERROR_ONE_MONTH, "
 			+ "aa.ALARM_ONE_MONTH, "
@@ -90,7 +90,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "SELECT aa.LIMIT_ONE_MONTH "
 			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
 			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
-			+ "WHERE bb.CID = ?cid "
+			+ "WHERE bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0 "
 			+ "),"
 			+ "aa.ERROR_TWO_MONTH, "
 			+ "aa.ALARM_TWO_MONTH, "
@@ -98,7 +98,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "SELECT aa.LIMIT_TWO_MONTH "
 			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
 			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
-			+ "WHERE bb.CID = ?cid "
+			+ "WHERE bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0 "
 			+ "),"
 			+ "aa.ERROR_THREE_MONTH, "
 			+ "aa.ALARM_THREE_MONTH, "
@@ -107,7 +107,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
 			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
 			+ "WHERE "
-			+ "bb.CID = ?cid "
+			+ "bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0 "
 			+ "),"
 			+ "aa.ERROR_YEARLY, "
 			+ "aa.ALARM_YEARLY,"
@@ -115,7 +115,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "SELECT aa.LIMIT_YEARLY "
 			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
 			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
-			+ "WHERE bb.CID = ?cid "
+			+ "WHERE bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0 "
 			+ ")"
 			+ "FROM "
 			+ "KMKMT_BASIC_AGREEMENT_SET aa "
@@ -123,9 +123,234 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "JOIN BSYMT_EMPLOYMENT kk ON "
 			+ "kk.CODE = bb.EMP_CTG_CODE "
 			+ "WHERE "
+			+ "	bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0 "
+			+ "AND kk.CID = ?cid";
+	
+	private static final String SQL_EXPORT_SHEET_5 = "SELECT "
+			+ "kk.CLSCD,"
+			+ "kk.CLSNAME,"
+			+ "aa.ERROR_WEEK,"
+			+ "aa.ALARM_WEEK,"
+			+ "LIMIT_WEEK = ("
+			+ "SELECT aa.LIMIT_WEEK "
+			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0 "
+			+ "),"
+			+ "aa.ERROR_TWO_WEEKS, "
+			+ "aa.ALARM_TWO_WEEKS, "
+			+ "LIMIT_TWO_WEEKS = ( "
+			+ "SELECT aa.LIMIT_TWO_WEEKS "
+			+ "FROM "
+			+ "KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
+			+ "),"
+			+ "aa.ERROR_FOUR_WEEKS, "
+			+ "aa.ALARM_FOUR_WEEKS, "
+			+ "LIMIT_FOUR_WEEKS = ( "
+			+ "SELECT aa.LIMIT_FOUR_WEEKS "
+			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0 "
+			+ "),"
+			+ "aa.ERROR_ONE_MONTH, "
+			+ "aa.ALARM_ONE_MONTH, "
+			+ "LIMIT_ONE_MONTH = ( "
+			+ "SELECT aa.LIMIT_ONE_MONTH "
+			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0 "
+			+ "),"
+			+ "aa.ERROR_TWO_MONTH, "
+			+ "aa.ALARM_TWO_MONTH, "
+			+ "LIMIT_TWO_MONTH = ( "
+			+ "SELECT aa.LIMIT_TWO_MONTH "
+			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0 "
+			+ "),"
+			+ "aa.ERROR_THREE_MONTH, "
+			+ "aa.ALARM_THREE_MONTH, "
+			+ "LIMIT_THREE_MONTH = ("
+			+ "SELECT aa.LIMIT_THREE_MONTH "
+			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE "
+			+ "bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0 "
+			+ "),"
+			+ "aa.ERROR_YEARLY, "
+			+ "aa.ALARM_YEARLY,"
+			+ "LIMIT_YEARLY = ("
+			+ "SELECT aa.LIMIT_YEARLY "
+			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0 "
+			+ ")"
+			+ "FROM "
+			+ "KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_CLASS bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "JOIN BSYMT_CLASSIFICATION kk ON "
+			+ " bb.CLSCD = kk.CLSCD AND bb.LABOR_SYSTEM_ATR = 0 "
+			+ "WHERE "
 			+ "	bb.CID = ?cid "
 			+ "AND kk.CID = ?cid";
 	
+	private static final String SQL_EXPORT_SHEET_6 = "SELECT aa.ERROR_WEEK,aa.ALARM_WEEK,aa.LIMIT_WEEK, "
+			+ "aa.ERROR_TWO_WEEKS,aa.ALARM_TWO_WEEKS,aa.LIMIT_TWO_WEEKS, "
+			+ "aa.ERROR_FOUR_WEEKS,aa.ALARM_FOUR_WEEKS,aa.LIMIT_FOUR_WEEKS, "
+			+ "aa.ERROR_ONE_MONTH,aa.ALARM_ONE_MONTH,aa.LIMIT_ONE_MONTH, "
+			+ "aa.ERROR_TWO_MONTH,aa.ALARM_TWO_MONTH,aa.LIMIT_TWO_MONTH, "
+			+ "aa.ERROR_THREE_MONTH,aa.ALARM_THREE_MONTH,aa.LIMIT_THREE_MONTH, "
+			+ "aa.ERROR_YEARLY,aa.ALARM_YEARLY,aa.LIMIT_YEARLY "
+			+ "FROM  "
+			+ "KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN  "
+			+ "KMKMT_AGREEMENTTIME_COM bb "
+			+ "ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?1 and bb.LABOR_SYSTEM_ATR = 1";
+	
+	
+	private static final String SQL_EXPORT_SHEET_7 = "SELECT "
+			+ "kk.CODE,"
+			+ "kk.NAME,"
+			+ "aa.ERROR_WEEK,"
+			+ "aa.ALARM_WEEK,"
+			+ "LIMIT_WEEK = ("
+			+ "SELECT aa.LIMIT_WEEK "
+			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1 "
+			+ "),"
+			+ "aa.ERROR_TWO_WEEKS, "
+			+ "aa.ALARM_TWO_WEEKS, "
+			+ "LIMIT_TWO_WEEKS = ( "
+			+ "SELECT aa.LIMIT_TWO_WEEKS "
+			+ "FROM "
+			+ "KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?cid  AND bb.LABOR_SYSTEM_ATR = 1"
+			+ "),"
+			+ "aa.ERROR_FOUR_WEEKS, "
+			+ "aa.ALARM_FOUR_WEEKS, "
+			+ "LIMIT_FOUR_WEEKS = ( "
+			+ "SELECT aa.LIMIT_FOUR_WEEKS "
+			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1 "
+			+ "),"
+			+ "aa.ERROR_ONE_MONTH, "
+			+ "aa.ALARM_ONE_MONTH, "
+			+ "LIMIT_ONE_MONTH = ( "
+			+ "SELECT aa.LIMIT_ONE_MONTH "
+			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1 "
+			+ "),"
+			+ "aa.ERROR_TWO_MONTH, "
+			+ "aa.ALARM_TWO_MONTH, "
+			+ "LIMIT_TWO_MONTH = ( "
+			+ "SELECT aa.LIMIT_TWO_MONTH "
+			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1 "
+			+ "),"
+			+ "aa.ERROR_THREE_MONTH, "
+			+ "aa.ALARM_THREE_MONTH, "
+			+ "LIMIT_THREE_MONTH = ("
+			+ "SELECT aa.LIMIT_THREE_MONTH "
+			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE "
+			+ "bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1 "
+			+ "),"
+			+ "aa.ERROR_YEARLY, "
+			+ "aa.ALARM_YEARLY,"
+			+ "LIMIT_YEARLY = ("
+			+ "SELECT aa.LIMIT_YEARLY "
+			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1 "
+			+ ")"
+			+ "FROM "
+			+ "KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_EMP bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "JOIN BSYMT_EMPLOYMENT kk ON "
+			+ "kk.CODE = bb.EMP_CTG_CODE "
+			+ "WHERE "
+			+ "	bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1 "
+			+ "AND kk.CID = ?cid";
+	
+	
+	private static final String SQL_EXPORT_SHEET_9 = "SELECT "
+			+ "kk.CLSCD,"
+			+ "kk.CLSNAME,"
+			+ "aa.ERROR_WEEK,"
+			+ "aa.ALARM_WEEK,"
+			+ "LIMIT_WEEK = ("
+			+ "SELECT aa.LIMIT_WEEK "
+			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1 "
+			+ "),"
+			+ "aa.ERROR_TWO_WEEKS, "
+			+ "aa.ALARM_TWO_WEEKS, "
+			+ "LIMIT_TWO_WEEKS = ( "
+			+ "SELECT aa.LIMIT_TWO_WEEKS "
+			+ "FROM "
+			+ "KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1 "
+			+ "),"
+			+ "aa.ERROR_FOUR_WEEKS, "
+			+ "aa.ALARM_FOUR_WEEKS, "
+			+ "LIMIT_FOUR_WEEKS = ( "
+			+ "SELECT aa.LIMIT_FOUR_WEEKS "
+			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1 "
+			+ "),"
+			+ "aa.ERROR_ONE_MONTH, "
+			+ "aa.ALARM_ONE_MONTH, "
+			+ "LIMIT_ONE_MONTH = ( "
+			+ "SELECT aa.LIMIT_ONE_MONTH "
+			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1 "
+			+ "),"
+			+ "aa.ERROR_TWO_MONTH, "
+			+ "aa.ALARM_TWO_MONTH, "
+			+ "LIMIT_TWO_MONTH = ( "
+			+ "SELECT aa.LIMIT_TWO_MONTH "
+			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1 "
+			+ "),"
+			+ "aa.ERROR_THREE_MONTH, "
+			+ "aa.ALARM_THREE_MONTH, "
+			+ "LIMIT_THREE_MONTH = ("
+			+ "SELECT aa.LIMIT_THREE_MONTH "
+			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE "
+			+ "bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1 "
+			+ "),"
+			+ "aa.ERROR_YEARLY, "
+			+ "aa.ALARM_YEARLY,"
+			+ "LIMIT_YEARLY = ("
+			+ "SELECT aa.LIMIT_YEARLY "
+			+ "FROM KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "WHERE bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1 "
+			+ ")"
+			+ "FROM "
+			+ "KMKMT_BASIC_AGREEMENT_SET aa "
+			+ "JOIN KMKMT_AGREEMENTTIME_CLASS bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
+			+ "JOIN BSYMT_CLASSIFICATION kk ON "
+			+ " bb.CLSCD = kk.CLSCD AND bb.LABOR_SYSTEM_ATR = 1 "
+			+ "WHERE "
+			+ "	bb.CID = ?cid "
+			+ "AND kk.CID = ?cid";
 	
 	@Override
 	public List<MasterData> getDataExportSheet1() {
@@ -206,21 +431,29 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
 		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_2.toString()).setParameter(1, cid);
-		Object[] data = (Object[]) query.getSingleResult();
-		int j = 0 ;
-		for (int i = 0; i < 6; i++) {
-			datas.add(new MasterData(dataContentSheet2(data,i,j), null, ""));
-			j = i+3;
+		Object[] data = null;
+		try {
+			data = (Object[]) query.getSingleResult();
+			int j = 0 ;
+			for (int i = 0; i < 7; i++) {
+				datas.add(new MasterData(dataContentSheet2(data,i,j), null, ""));
+				j = j+3;
+			}
+		} catch (Exception e) {
+			for (int i = 0; i < 7; i++) {
+				datas.add(new MasterData(dataContentSheet2(data,i,0), null, ""));
+			}
 		}
+		
 		return datas;
 	}
 	
 	private Map<String, Object> dataContentSheet2(Object[] objects,int rownum,int param) {
 		Map<String, Object> data = new HashMap<>();
 		data.put(RegistTimeColumn.KMK008_89, getColumnOneSheet2(rownum));
-		data.put(RegistTimeColumn.KMK008_90,formatTime(((BigDecimal)objects[param]).intValue()));
-		data.put(RegistTimeColumn.KMK008_91,formatTime(((BigDecimal)objects[++param]).intValue()));
-		data.put(RegistTimeColumn.KMK008_92,formatTime(((BigDecimal)objects[++param]).intValue()));
+		data.put(RegistTimeColumn.KMK008_90,objects != null ? formatTime(((BigDecimal)objects[param]).intValue()) : "");
+		data.put(RegistTimeColumn.KMK008_91,objects != null ? formatTime(((BigDecimal)objects[++param]).intValue()) : "");
+		data.put(RegistTimeColumn.KMK008_92,objects != null ? formatTime(((BigDecimal)objects[++param]).intValue()) : "");
 		return data;
 	}
 	
@@ -280,6 +513,126 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_90,formatTime(((BigDecimal)objects[param]).intValue()));
 		data.put(RegistTimeColumn.KMK008_91,formatTime(((BigDecimal)objects[++param]).intValue()));
 		data.put(RegistTimeColumn.KMK008_92,formatTime(((BigDecimal)objects[++param]).intValue()));
+		return data;
+	}
+
+	@Override
+	public List<MasterData> getDataExportSheet5() {
+		List<MasterData> datas = new ArrayList<>();
+		String cid = AppContexts.user().companyId();
+		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_5.toString()).
+				setParameter("cid", cid);
+		@SuppressWarnings("unchecked")
+		List<Object[]> data =  query.getResultList();
+		for (Object[] objects : data) {
+			int j = 2 ;
+			for (int i = 0; i < 7; i++) {
+				datas.add(new MasterData(dataContentSheet5(objects,i,j), null, ""));
+				j = j+3;
+			}
+		}
+		return datas;
+	}
+	
+	private Map<String, Object> dataContentSheet5(Object[] objects,int rownum,int param) {
+		Map<String, Object> data = new HashMap<>();
+		data.put(RegistTimeColumn.KMK008_104, rownum == 0 ? objects[0] : "");
+		data.put(RegistTimeColumn.KMK008_105,rownum == 0 ? objects[1] : "");
+		data.put(RegistTimeColumn.KMK008_89, getColumnOneSheet2(rownum));
+		data.put(RegistTimeColumn.KMK008_90,formatTime(((BigDecimal)objects[param]).intValue()));
+		data.put(RegistTimeColumn.KMK008_91,formatTime(((BigDecimal)objects[++param]).intValue()));
+		data.put(RegistTimeColumn.KMK008_92,formatTime(((BigDecimal)objects[++param]).intValue()));
+		return data;
+	}
+
+	@Override
+	public List<MasterData> getDataExportSheet6() {
+		List<MasterData> datas = new ArrayList<>();
+		String cid = AppContexts.user().companyId();
+		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_6.toString()).setParameter(1, cid);
+		Object[] data = null;
+		try {
+			data = (Object[]) query.getSingleResult();
+			int j = 0 ;
+			for (int i = 0; i < 7; i++) {
+				datas.add(new MasterData(dataContentSheet6(data,i,j), null, ""));
+				j = j+3;
+			}
+		} catch (Exception e) {
+			for (int i = 0; i < 7; i++) {
+				datas.add(new MasterData(dataContentSheet6(data, i, 0), null, ""));
+			}
+		}
+		
+		return datas;
+	}
+	
+	private Map<String, Object> dataContentSheet6(Object[] objects,int rownum,int param) {
+		Map<String, Object> data = new HashMap<>();
+		data.put(RegistTimeColumn.KMK008_89, getColumnOneSheet2(rownum));
+		data.put(RegistTimeColumn.KMK008_90,objects == null ? "" : formatTime(((BigDecimal)objects[param]).intValue()));
+		data.put(RegistTimeColumn.KMK008_91,objects == null ? "" : formatTime(((BigDecimal)objects[++param]).intValue()));
+		data.put(RegistTimeColumn.KMK008_92,objects == null  ? "" : formatTime(((BigDecimal)objects[++param]).intValue()));
+		return data;
+	}
+
+	@Override
+	public List<MasterData> getDataExportSheet7() {
+		List<MasterData> datas = new ArrayList<>();
+		String cid = AppContexts.user().companyId();
+		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_7.toString()).
+				setParameter("cid", cid);
+		
+		@SuppressWarnings("unchecked")
+		List<Object[]> data = query.getResultList();
+		for (Object[] objects : data) {
+			int j = 2;
+			for (int i = 0; i < 7; i++) {
+				datas.add(new MasterData(dataContentSheet7(objects, i, j), null, ""));
+				j = j + 3;
+			}
+		}
+		return datas;
+	}
+	
+	private Map<String, Object> dataContentSheet7(Object[] objects,int rownum,int param) {
+		Map<String, Object> data = new HashMap<>();
+		data.put(RegistTimeColumn.KMK008_100, rownum == 0 ? objects[0] : "");
+		data.put(RegistTimeColumn.KMK008_101, rownum == 0 ? objects[1] : "");
+		data.put(RegistTimeColumn.KMK008_89, getColumnOneSheet2(rownum));
+		data.put(RegistTimeColumn.KMK008_90,formatTime(((BigDecimal)objects[param]).intValue()));
+		data.put(RegistTimeColumn.KMK008_91,formatTime(((BigDecimal)objects[++param]).intValue()));
+		data.put(RegistTimeColumn.KMK008_92,formatTime(((BigDecimal)objects[++param]).intValue()));
+		return data;
+	}
+	
+	@Override
+	public List<MasterData> getDataExportSheet9() {
+		List<MasterData> datas = new ArrayList<>();
+		String cid = AppContexts.user().companyId();
+		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_9.toString()).
+				setParameter("cid", cid);
+		@SuppressWarnings("unchecked")
+		List<Object[]> data =  query.getResultList();
+		for (Object[] objects : data) {
+			int j = 2 ;
+			for (int i = 0; i < 7; i++) {
+				datas.add(new MasterData(dataContentSheet9(objects,i,j), null, ""));
+				j = j+3;
+			}
+		}
+		
+		return datas;
+	}
+	
+	private Map<String, Object> dataContentSheet9(Object[] objects,int rownum,int param) {
+		Map<String, Object> data = new HashMap<>();
+		data.put(RegistTimeColumn.KMK008_104, rownum == 0 ? objects[0] : "");
+		data.put(RegistTimeColumn.KMK008_105, rownum == 0 ? objects[1] : "");
+		data.put(RegistTimeColumn.KMK008_89, getColumnOneSheet2(rownum));
+		data.put(RegistTimeColumn.KMK008_90, formatTime(((BigDecimal)objects[param]).intValue()));
+		data.put(RegistTimeColumn.KMK008_91,formatTime(((BigDecimal)objects[++param]).intValue()));
+		data.put(RegistTimeColumn.KMK008_92, formatTime(((BigDecimal)objects[++param]).intValue()));
 		return data;
 	}
 	

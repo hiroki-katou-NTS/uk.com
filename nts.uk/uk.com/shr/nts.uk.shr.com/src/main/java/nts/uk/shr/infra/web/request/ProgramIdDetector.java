@@ -44,19 +44,35 @@ public class ProgramIdDetector implements Filter {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		httpRequest.setAttribute(InputPart.DEFAULT_CHARSET_PROPERTY, FilterConst.DEFAULT_CHARSET_PROPERTY);
 		String target = httpRequest.getHeader(FilterConst.PG_PATH);
-		if (target == null) {
-			chain.doFilter(httpRequest, response);
-			return;
-		}
 
 		String ip = FilterHelper.getClientIp(httpRequest);
 		String pcName = FilterHelper.getPcName(ip);
+		
+		if (target == null) {
+			String fullRequestPath = getFullUrl(httpRequest);
+			AppContextsConfig.setRequestedWebAPI(new RequestInfo(fullRequestPath, 
+																FilterHelper.detectWebapi(fullRequestPath),
+																ip, pcName));
+			chain.doFilter(httpRequest, response);
+			return;
+		}
 
 		AppContextsConfig.setRequestedWebAPI(new RequestInfo(target, FilterHelper.detectWebapi(target), ip, pcName));
 		
 		FilterHelper.detectProgram(target).ifPresent(id -> AppContextsConfig.setProgramId(id));
 
 		chain.doFilter(httpRequest, response);
+	}
+
+	private String getFullUrl(HttpServletRequest request) {
+		StringBuilder requestURL = new StringBuilder(request.getRequestURL().toString());
+		String queryString = request.getQueryString();
+
+		if (queryString == null) {
+		    return requestURL.toString();
+		} else {
+		    return requestURL.append('?').append(queryString).toString();
+		}
 	}
 
 	/*
