@@ -22,8 +22,8 @@ public class JpaStatementLayoutRepository extends JpaRepository implements State
             " ORDER BY f.statementLayoutPk.statementCd ASC";
 
     private static final String SELECT_BY_KEY_CID_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.statementLayoutPk.cid =:cid ";
-    private static final String SELECT_STATEMENT = "SELECT f FROM QpbmtStatementLayout f Where f.statementLayoutPk.statementCd IN  " +
-            "(SELECT e.statementLayoutHistPk.statementCd from QpbmtStatementLayoutHist e WHERE e.startYearMonth <= :startYearMonth AND e.endYearMonth >= :startYearMonth AND e.statementLayoutHistPk.cid = :cid)";
+    private static final String SELECT_STATEMENT = "SELECT f FROM QpbmtStatementLayout f WHERE f.statementLayoutPk.statementCd IN  " +
+            "(SELECT e.statementLayoutHistPk.statementCd from QpbmtStatementLayoutHist e WHERE ( :startYearMonth BETWEEN e.startYearMonth  AND e.endYearMonth ) AND e.statementLayoutHistPk.cid = :cid)";
 
     @Override
     public List<StatementLayout> getStatement(String cid, int startYearMonth) {

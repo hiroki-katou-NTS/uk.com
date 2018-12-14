@@ -26,7 +26,6 @@ public interface StatementLayoutHistRepository {
     List<YearMonthHistoryItem> getHistByCidAndCodeAndAfterDate(String cid, String code, int startYearMonth);
 
     List<StatementLayoutHist> getAllStatementLayoutHistByCid(String cid, int startYearMonth);
-    List<StatementLayoutHist> getAllStatementLayoutHistByCid(String cid, int startYearMonth, int endYearMonth);
 
     Optional<StatementLayoutHist> getStatementLayoutHistById(String cid, int code, String histId);
 

@@ -263,7 +263,6 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
             let rs = _.find(self.listStateCorrelationHis(),{hisId: self.currentSelectedHis()});
             setShared(model.PARAMETERS_SCREEN_M.INPUT,{
                 startYearMonth: rs ? rs.startYearMonth : 0,
-                endYearMonth: rs ? rs.endYearMonth : 0,
                 statementCode: item.salaryCode
             });
             modal("/view/qmm/020/m/index.xhtml").onClosed(()=>{
@@ -281,7 +280,6 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
             let rs = _.find(self.listStateCorrelationHis(),{hisId: self.currentSelectedHis()});
             setShared(model.PARAMETERS_SCREEN_M.INPUT,{
                 startYearMonth: rs ? rs.startYearMonth : 0,
-                endYearMonth: rs ? rs.endYearMonth : 0,
                 statementCode: item.bonusCode
             });
             modal("/view/qmm/020/m/index.xhtml").onClosed(()=>{
