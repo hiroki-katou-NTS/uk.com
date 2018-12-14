@@ -39,9 +39,14 @@ public class UrlTaskIncre extends AggregateRoot
     */
     private String taskIncreValue;
     
+    /**
+     * パラメータ区分
+     */
+    private UrlParamAtr urlParamAtr;
+    
     public static UrlTaskIncre createFromJavaType(String embeddedId, String cid, String taskIncreId, String taskIncreKey, String taskIncreValue)
     {
-        UrlTaskIncre  urlTaskIncre =  new UrlTaskIncre(embeddedId, cid, taskIncreId, taskIncreKey,  taskIncreValue);
+        UrlTaskIncre  urlTaskIncre =  new UrlTaskIncre(embeddedId, cid, taskIncreId, taskIncreKey,  taskIncreValue, UrlParamAtr.PROCESS_PARAM);
         return urlTaskIncre;
     }
     

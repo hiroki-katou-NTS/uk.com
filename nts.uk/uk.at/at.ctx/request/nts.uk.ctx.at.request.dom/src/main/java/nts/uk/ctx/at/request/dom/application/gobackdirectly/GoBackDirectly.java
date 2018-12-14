@@ -2,9 +2,12 @@ package nts.uk.ctx.at.request.dom.application.gobackdirectly;
 
 import java.util.Optional;
 
+import javax.persistence.SecondaryTable;
+
 import org.apache.logging.log4j.util.Strings;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
@@ -51,10 +54,12 @@ public class GoBackDirectly extends AggregateRoot {
 	/**
 	 * 勤務時間開始1
 	 */
+	@Setter
 	private Optional<WorkTimeGoBack> workTimeStart1;
 	/**
 	 * 勤務時間終了1
 	 */
+	@Setter
 	private Optional<WorkTimeGoBack> workTimeEnd1;
 	/**
 	 * 勤務場所選択1
