@@ -12,9 +12,13 @@ import java.util.Optional;
  */
 public interface PersonInfoMatrixItemRepo {
         
-	Optional<PersonInfoMatrixItem> findbyKey(String pInfoCategoryID , String pInfoDefiID);
-    
-	void update (PersonInfoMatrixItem newSetting);
+	Optional<PersonInfoMatrixItem> findbyKey(String pInfoCategoryID, String pInfoDefiID);
+
+	void update(PersonInfoMatrixItem newSetting);
+
+	List<PersonInfoMatrixItem> findByCategoryID(String pInfoCategoryID);
 	
-	 List<PersonInfoMatrixItem> findByCategoryID(String pInfoCategoryID);
+	void insert(PersonInfoMatrixItem newSetting);
+	 
+	 
 }

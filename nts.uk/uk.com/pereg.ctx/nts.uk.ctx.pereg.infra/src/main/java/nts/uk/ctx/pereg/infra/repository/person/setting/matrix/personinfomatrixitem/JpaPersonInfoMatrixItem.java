@@ -20,10 +20,10 @@ import nts.uk.ctx.pereg.infra.entity.person.setting.matrix.personinfomatrixitem.
 @Stateless
 public class JpaPersonInfoMatrixItem extends JpaRepository implements PersonInfoMatrixItemRepo {
 
-	private static final String SELECT_BY_KEY = "SELECT c FROM PpestPersonInfoMatrixItem c WHERE c.PpestPersonInfoMatrixItemPK.pInfoCategoryID = :pInfoCategoryID"
+	private static final String SELECT_BY_KEY = "SELECT c FROM PpestPersonInfoMatrixItem c WHERE c.ppestPersonInfoMatrixItemPK.pInfoCategoryID = :pInfoCategoryID"
 			+ " AND c.pInfoDefiID = :pInfoDefiID";
 	
-	private static final String SELECT_BY_CATEGORY_ID= "SELECT c FROM PpestPersonInfoMatrixItem c WHERE c.PpestPersonInfoMatrixItemPK.pInfoCategoryID = :pInfoCategoryID";
+	private static final String SELECT_BY_CATEGORY_ID= "SELECT c FROM PpestPersonInfoMatrixItem c WHERE c.ppestPersonInfoMatrixItemPK.pInfoCategoryID = :pInfoCategoryID";
 			
 	
 	@Override
@@ -57,5 +57,17 @@ public class JpaPersonInfoMatrixItem extends JpaRepository implements PersonInfo
 				.setParameter("pInfoCategoryID", pInfoCategoryID)
 				.getList(c -> c.toDomain());
 	}
+
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInfoMatrixItemRepo#insert(nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInfoMatrixItem)
+	 */
+	@Override
+	public void insert(PersonInfoMatrixItem newSetting) {
+		this.commandProxy().insert(PpestPersonInfoMatrixItem.toEntity(newSetting));
+		
+	}
+	
+	
 
 }

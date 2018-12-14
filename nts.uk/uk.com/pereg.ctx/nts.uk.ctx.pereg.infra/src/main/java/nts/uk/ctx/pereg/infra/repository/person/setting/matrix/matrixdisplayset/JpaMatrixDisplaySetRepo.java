@@ -44,4 +44,13 @@ public class JpaMatrixDisplaySetRepo extends JpaRepository implements MatrixDisp
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pereg.dom.person.setting.matrix.matrixdisplayset.MatrixDisplaySettingRepo#insert(nts.uk.ctx.pereg.dom.person.setting.matrix.matrixdisplayset.MatrixDisplaySetting)
+	 */
+	@Override
+	public void insert(MatrixDisplaySetting newSetting) {
+		this.commandProxy().insert(PpestMatrixDisplaySet.toEntity(newSetting));
+		this.getEntityManager().flush();
+	}
+
 }

@@ -28,23 +28,23 @@ public class PpestMatrixDisplaySet extends UkJpaEntity implements Serializable {
 	@EmbeddedId
     public PpestMatrixDisplaySetPK ppestMatrixDisplaySetPK;
 	
-	 @Column(name = "CURSOR_DIRECTION")
-	    public int cursonDirection;
-	 
-	 @Column(name = "CLS_ATR")
-	    public int clsATR;
-	 
-	 @Column(name = "POSITION_ATR")
-	    public int positionATR;
-	 
-	 @Column(name = "WORK_PLACE_ATR")
-	    public int workPlaceATR;
-	 
-	 @Column(name = "DEPARTMENT_ATR")
-	    public int departmentATR;
-	 
-	 @Column(name = "EMPLOYMENT_ATR")
-	    public int employmentATR;
+		 @Column(name = "CURSOR_DIRECTION")
+		    public int cursonDirection;
+		 
+		 @Column(name = "CLS_ATR")
+		    public int clsATR;
+		 
+		 @Column(name = "POSITION_ATR")
+		    public int positionATR;
+		 
+		 @Column(name = "WORK_PLACE_ATR")
+		    public int workPlaceATR;
+		 
+		 @Column(name = "DEPARTMENT_ATR")
+		    public int departmentATR;
+		 
+		 @Column(name = "EMPLOYMENT_ATR")
+		    public int employmentATR;
 	 
 
 	@Override

@@ -16,4 +16,5 @@ public interface MatrixDisplaySettingRepo {
 	  
 	  void update(MatrixDisplaySetting newSetting);
 	  
+	  void insert(MatrixDisplaySetting newSetting);
 }
