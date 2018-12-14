@@ -124,17 +124,21 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             self.selectedTab = ko.observable('tab-1');
         }
         
-        
         syncScroll(source, follow1, follow2?) {
             let self = this;
-            source.scroll(function(e) {
+            source.scroll((e) => {
                 let ignore = self.ignoreScrollEvents;
                 self.ignoreScrollEvents = false;
                 if (ignore) return;
                 self.ignoreScrollEvents = true;
-                follow1.scrollTop(source.scrollTop());
-                if (follow2)
-                    follow2.scrollLeft(source.scrollLeft());
+                setTimeout(() => { 
+                    follow1.scrollTop(source.scrollTop()); 
+                }, 10);
+                if (follow2) {
+                    setTimeout(() => { 
+                        follow2.scrollLeft(source.scrollLeft());
+                    }, 10);
+                }
             });
         }
 
@@ -169,6 +173,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     self.selectedHistory(new model.GenericHistoryYearMonthPeriod(selectedHistory));
                     self.isSelectedHistory(true);
                     self.showSettingDataByValue(identifier);
+                    if (self.selectedTab() == 'tab-1')
+                        $("#A5_3").focus();
                 } else {
                     self.selectedHistory(new model.GenericHistoryYearMonthPeriod(null));
                     self.selectedTab('tab-1');
@@ -447,6 +453,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         createOneDimensionWageTable() {
             // B2_8、B2_10、B2_11のエラーチェックを行う
             let self = this;
+            nts.uk.ui.errors.clearAll();
             let params = {
                 historyID: self.selectedHistory().historyID(),
                 wageTableCode: self.selectedWageTable().wageTableCode(),
@@ -500,6 +507,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         
         createTwoDimensionWageTable() {
             let self = this;
+            nts.uk.ui.errors.clearAll();
             let params = {
                 historyID: self.selectedHistory().historyID(),
                 wageTableCode: self.selectedWageTable().wageTableCode(),
@@ -595,6 +603,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
 
         createThreeDimensionWageTable() {
             let self = this;
+            nts.uk.ui.errors.clearAll();
             let params = {
                 historyID: self.selectedHistory().historyID(),
                 wageTableCode: self.selectedWageTable().wageTableCode(),
@@ -725,6 +734,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         createWageTableQualification() {
             let self = this,
                 historyId = self.selectedHistory().historyID();
+            nts.uk.ui.errors.clearAll();
             service.getWageTableQualification(historyId, false).done((result: any) => {
                 let wageTableContent = {
                     historyID: historyId,
@@ -737,6 +747,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         
         createWorkLevelWageTable() {
             let self = this;
+            nts.uk.ui.errors.clearAll();
             let params = {
                 historyID: self.selectedHistory().historyID(),
                 wageTableCode: self.selectedWageTable().wageTableCode(),
@@ -842,7 +853,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             this.wageTableCode = params.wageTableCode;
             this.wageTableName = params.wageTableName;
             this.histories = params.histories.map((historyItem: any) => {
-                historyItem.nodeText = historyItem.startMonth + " ~ " + historyItem.endMonth;
+                historyItem.nodeText = nts.uk.time.formatYearMonth(historyItem.startMonth) + " " + getText("QMM016_31") + " " + nts.uk.time.formatYearMonth(historyItem.endMonth);
                 historyItem.identifier = params.wageTableCode + historyItem.historyID;
                 // prevent handler from null value exception when use search box
                 historyItem.wageTableCode = "";
