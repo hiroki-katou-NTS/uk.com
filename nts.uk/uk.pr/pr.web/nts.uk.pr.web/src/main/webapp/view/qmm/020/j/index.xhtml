@@ -74,7 +74,7 @@
 										checked: transferMethod,
 										option: itemList()[0],
 										optionValue: 'code',
-										enable: isFirst,
+										enable: params().startYearMonth != 0,
 										optionText: 'name',
 										group: 'periodOption'}">
                         </div>
@@ -89,7 +89,7 @@
 										checked: transferMethod,
 										option: itemList()[1],
 										optionValue: 'code',
-										enable: isFirst,
+										enable: params().startYearMonth != 0,
 										optionText: 'name',
 										group: 'periodOption'}">
                         </div>
