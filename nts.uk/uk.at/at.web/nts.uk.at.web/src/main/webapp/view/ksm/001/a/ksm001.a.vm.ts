@@ -1,5 +1,5 @@
 module nts.uk.at.view.ksm001.a {
-
+    import modal = nts.uk.ui.windows.sub.modal;
     import EstimateTimeDto = service.model.EstimateTimeDto;
     import EstimatePriceDto = service.model.EstimatePriceDto;
     import EstimateDaysDto = service.model.EstimateDaysDto;
