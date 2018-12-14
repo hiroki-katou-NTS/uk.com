@@ -14,8 +14,11 @@
                     data-bind=" enable: false">#{i18n.getText('QMM020_4')}</button>
 
     </div>
-    <div style="margin-top: 15px;" class="contents-area fixed-flex-layout">
+    <div style="margin-top: 35px;" class="contents-area fixed-flex-layout">
         <div class="fixed-flex-layout-left" style="margin-left: 20px; margin-right: 10px;">
+            <div >
+                <i id="img-calendar" class="image image-calendar"/>
+            </div>
             <div id = "E1_2" data-bind="ntsPanel:{width: '200px', height: '300px', direction: 'right', showIcon: false, visible: true}">
                 <div>
                     <button id="E1_3" data-bind="click: openJScreen,timeClick: 800, enable: !enableNew()">#{i18n.getText('QMM020_13')}</button>

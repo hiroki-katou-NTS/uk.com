@@ -10,3 +10,12 @@
     padding-top: 15px;
     padding-left: 25px !important;
 }
+
+#img-calendar{
+    position: absolute;
+    z-index: 1;
+    margin: -14px -11px;
+}
+#H1_5_container {
+    margin: 15px 0px 0px 0px !important;
+}
