@@ -81,12 +81,12 @@ module nts.uk.pr.view.qmm016.h.viewmodel {
         getQualificationGroupData(qualificationGroupCode) {
             let self = this;
             block.invisible();
-            service.getQualificationGroupByCode(qualificationGroupCode).done(function (data) {
-                let selectedQualificationGroup: any = data;
+            $.when(service.getQualificationGroupByCode(qualificationGroupCode), service.getAllQualificationInformation(qualificationGroupCode)).done((groupData, infoData) => {
+                let selectedQualificationGroup: any = groupData;
                 self.selectedEligibleQualificationCode(JSON.parse(self.qualificationInformationListInString).filter(item => selectedQualificationGroup.eligibleQualificationCode.indexOf(item.qualificationCode) >= 0));
                 self.selectedQualification(new model.QualificationGroupSetting(selectedQualificationGroup));
                 self.screenMode(model.SCREEN_MODE.UPDATE);
-                self.qualificationInformationList((JSON.parse(self.qualificationInformationListInString)));
+                self.qualificationInformationList(JSON.parse(self.qualificationInformationListInString).filter(item => infoData.indexOf(item.qualificationCode) < 0));
                 $('#H3_2').focus();
                 block.clear();
             }).fail(function () {
@@ -179,8 +179,16 @@ module nts.uk.pr.view.qmm016.h.viewmodel {
             self.selectedQualificationGroupCode(null);
             self.selectedQualification(new model.QualificationGroupSetting(null));
             self.selectedEligibleQualificationCode([]);
-            self.qualificationInformationList((JSON.parse(self.qualificationInformationListInString)));
-            $('#H3_1').focus();
+            block.invisible();
+            service.getAllQualificationInformation("zzz").done(infoData => {
+                self.qualificationInformationList(JSON.parse(self.qualificationInformationListInString).filter(item => infoData.indexOf(item.qualificationCode) < 0));
+                $('#H3_1').focus();
+            }).fail(error => {
+                dialog.alertError(error);
+            }).always(() => {
+                block.clear();
+            });
+            
         }
     }
 }

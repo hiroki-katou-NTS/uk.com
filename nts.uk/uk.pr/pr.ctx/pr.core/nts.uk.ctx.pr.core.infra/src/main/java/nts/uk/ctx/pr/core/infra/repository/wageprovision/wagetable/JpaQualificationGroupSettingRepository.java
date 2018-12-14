@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.infra.repository.wageprovision.wagetable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -63,6 +64,15 @@ public class JpaQualificationGroupSettingRepository extends JpaRepository
 	private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
 		Set<Object> seen = ConcurrentHashMap.newKeySet();
 		return t -> seen.add(keyExtractor.apply(t));
+	}
+
+	@Override
+	public List<String> getUsedQualificationCodeByCompanyID(String targetGroupCode) {
+		Set<String> result = this.queryProxy().query(FIND_BY_COMPANY, QpbmtQualificationGroupSetting.class)
+				.setParameter("cid", AppContexts.user().companyId()).getList().stream()
+				.filter(i -> !i.pk.qualificationGroupCode.equals(targetGroupCode))
+				.map(i -> i.pk.eligibleQualificationCode).collect(Collectors.toSet());
+		return new ArrayList<>(result);
 	}
 
 }
