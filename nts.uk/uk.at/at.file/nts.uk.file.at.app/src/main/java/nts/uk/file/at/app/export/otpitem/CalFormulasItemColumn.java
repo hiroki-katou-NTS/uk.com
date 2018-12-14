@@ -18,10 +18,12 @@ public final class CalFormulasItemColumn {
 	public static final String KMK002_89 = "属性";
 	public static final String KMK002_90 = "計算式名";
 	public static final String KMK002_91 = "計算式設定";
+	//update v1.1
+	public static final String KMK002_97 = "適用計算式";	
 	public static final String KMK002_92 = "日別丸め";
 	public static final String KMK002_93 = "日別端数処理";
 	public static final String KMK002_94 = "月別丸め";
 	public static final String KMK002_95 = "月別端数処理";
 	public static final String KMK002_96 = "マイナス区分";
-	public static final String KMK002_97 = "適用計算式";	
+	
 }

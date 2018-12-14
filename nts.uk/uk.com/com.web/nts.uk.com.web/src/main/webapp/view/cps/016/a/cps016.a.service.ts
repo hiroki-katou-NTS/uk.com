@@ -42,6 +42,10 @@ module nts.uk.com.view.cps016.a.service {
         return nts.uk.request.ajax("com", _path);
     }
     export function saveAsExcel(languageId: string): JQueryPromise<any> {
-        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "SelectionItem", domainType: "就業システム", languageId: languageId, reportType: 0});
+        let _params = {domainId: "SelectionItem", 
+                        domainType: "CPS016個人情報の選択項目の定義", 
+                        languageId: languageId, 
+                        reportType: 0};
+        return nts.uk.request.exportFile('/masterlist/report/print', _params);
     }
 }

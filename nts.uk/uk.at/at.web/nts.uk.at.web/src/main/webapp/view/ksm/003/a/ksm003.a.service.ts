@@ -57,7 +57,7 @@ module nts.uk.at.view.ksm003.a {
          * Export File Excel
          */
         export function exportExcel(): JQueryPromise<any> {
-            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "RegisterPattern", domainType: "代行承認", languageId: 'ja', reportType: 0});
+            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "RegisterPattern", domainType: "KSM003パターンの登録", languageId: 'ja', reportType: 0});
         }
 
         export module model {
