@@ -20,5 +20,5 @@ public interface PersonInfoMatrixItemRepo {
 	
 	void insert(PersonInfoMatrixItem newSetting);
 	 
-	 
+	void insertAll(List<PersonInfoMatrixItem> listNewSetting); 
 }

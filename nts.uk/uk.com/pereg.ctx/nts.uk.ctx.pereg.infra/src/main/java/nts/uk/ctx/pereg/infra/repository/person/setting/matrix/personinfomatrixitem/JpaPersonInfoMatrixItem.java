@@ -5,6 +5,7 @@ package nts.uk.ctx.pereg.infra.repository.person.setting.matrix.personinfomatrix
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -12,6 +13,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInfoMatrixItem;
 import nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInfoMatrixItemRepo;
 import nts.uk.ctx.pereg.infra.entity.person.setting.matrix.personinfomatrixitem.PpestPersonInfoMatrixItem;
+import nts.uk.ctx.pereg.infra.entity.person.setting.matrix.personinfomatrixitem.PpestPersonInfoMatrixItemPK;
 
 /**
  * @author hieult
@@ -66,6 +68,24 @@ public class JpaPersonInfoMatrixItem extends JpaRepository implements PersonInfo
 	public void insert(PersonInfoMatrixItem newSetting) {
 		this.commandProxy().insert(PpestPersonInfoMatrixItem.toEntity(newSetting));
 		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInfoMatrixItemRepo#insertAll(java.util.List)
+	 */
+	@Override
+	public void insertAll(List<PersonInfoMatrixItem> listNewSetting) {
+		List<PpestPersonInfoMatrixItem> listEntity = listNewSetting.stream().map( c -> toEntity(c)).collect(Collectors.toList());
+		commandProxy().insertAll(listEntity);
+	}
+
+	private PpestPersonInfoMatrixItem toEntity(PersonInfoMatrixItem domain) {
+		PpestPersonInfoMatrixItemPK pk = new PpestPersonInfoMatrixItemPK(domain.getPInfoCategoryID(),domain.getPInfoItemDefiID());
+		return new PpestPersonInfoMatrixItem(pk,
+				domain.getColumnWidth(),
+				domain.getRegulationATR().value
+				);
 	}
 	
 	

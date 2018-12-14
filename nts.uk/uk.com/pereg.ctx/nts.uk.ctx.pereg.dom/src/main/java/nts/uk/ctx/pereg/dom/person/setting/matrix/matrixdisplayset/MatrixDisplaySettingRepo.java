@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.pereg.dom.person.setting.matrix.matrixdisplayset;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -17,4 +18,6 @@ public interface MatrixDisplaySettingRepo {
 	  void update(MatrixDisplaySetting newSetting);
 	  
 	  void insert(MatrixDisplaySetting newSetting);
+	  
+	  void insertAll (List<MatrixDisplaySetting> listSetting );
 }

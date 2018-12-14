@@ -3,7 +3,9 @@
  */
 package nts.uk.ctx.pereg.infra.repository.person.setting.matrix.matrixdisplayset;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -11,6 +13,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pereg.dom.person.setting.matrix.matrixdisplayset.MatrixDisplaySetting;
 import nts.uk.ctx.pereg.dom.person.setting.matrix.matrixdisplayset.MatrixDisplaySettingRepo;
 import nts.uk.ctx.pereg.infra.entity.person.setting.matrix.matrixdisplayset.PpestMatrixDisplaySet;
+import nts.uk.ctx.pereg.infra.entity.person.setting.matrix.matrixdisplayset.PpestMatrixDisplaySetPK;
 
 /**
  * @author hieult
@@ -51,6 +54,27 @@ public class JpaMatrixDisplaySetRepo extends JpaRepository implements MatrixDisp
 	public void insert(MatrixDisplaySetting newSetting) {
 		this.commandProxy().insert(PpestMatrixDisplaySet.toEntity(newSetting));
 		this.getEntityManager().flush();
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pereg.dom.person.setting.matrix.matrixdisplayset.MatrixDisplaySettingRepo#insertAll(java.util.List)
+	 */
+	@Override
+	public void insertAll(List<MatrixDisplaySetting> listSetting) {
+		List<PpestMatrixDisplaySet> listEntity = listSetting.stream().map(c -> toEntity(c)).collect(Collectors.toList());
+		commandProxy().insertAll(listEntity);
+	}
+
+	private PpestMatrixDisplaySet toEntity(MatrixDisplaySetting domain) {
+		PpestMatrixDisplaySetPK pk = new PpestMatrixDisplaySetPK(domain.getCompanyID(),domain.getUserID());
+		return new PpestMatrixDisplaySet(pk ,
+				domain.getCursorDirection().value,
+				domain.getClsATR().value,
+				domain.getPositionATR().value,
+				domain.getWorkPlaceATR().value,
+				domain.getDepartmentATR().value,
+				domain.getEmploymentATR().value);
+				
 	}
 
 }
