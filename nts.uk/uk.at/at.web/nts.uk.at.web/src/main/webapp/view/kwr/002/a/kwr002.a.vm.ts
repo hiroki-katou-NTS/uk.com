@@ -244,6 +244,7 @@ module nts.uk.com.view.kwr002.a {
                     alreadySettingList: self.alreadySettingPersonal,
                     isShowWorkPlaceName: true,
                     isShowSelectAllButton: false,
+                    isSelectAllAfterReload: true,
                     maxWidth: 480,
                     maxRows: 12
                 };
