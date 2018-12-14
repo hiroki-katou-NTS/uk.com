@@ -6,7 +6,7 @@ module nts.uk.pr.view.qmm041.a.service {
     let paths = {
         getInfoEmpLogin: "workflow/approvermanagement/workroot/getInforPsLogin",
         getWpName: "screen/com/kcp010/getLoginWorkPlace",
-        getAllIndEmpSalUnitPriceHistory: "ctx/pr/core/wageprovision/empsalunitprice/getAllIndEmpSalUnitPriceHistory",
+        getIndEmpSalUnitPriceHistories: "ctx/pr/core/wageprovision/empsalunitprice/getIndEmpSalUnitPriceHistories",
         getBaseDate: "ctx/pr/core/wageprovision/processdatecls/getBaseDate",
         getSalaryPerUnitPriceName: "ctx/pr/core/wageprovision/empsalunitprice/getSalaryPerUnitPriceName",
         getEmploymentCode: "ctx/pr/shared/employeeaverwage/getEmploymentCode",
@@ -31,8 +31,8 @@ module nts.uk.pr.view.qmm041.a.service {
         return ajax("pr", paths.getSalaryPerUnitPriceName);
     }
 
-    export function getAllIndEmpSalUnitPriceHistory(dto): JQueryPromise<any> {
-        return ajax("pr", paths.getAllIndEmpSalUnitPriceHistory, dto);
+    export function getIndEmpSalUnitPriceHistories(dto): JQueryPromise<any> {
+        return ajax("pr", paths.getIndEmpSalUnitPriceHistories, dto);
     }
 
     export function processYearFromEmp(employmentCode: string): JQueryPromise<any> {

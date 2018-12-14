@@ -41,8 +41,8 @@ public class EmployeeSalaryUnitPriceHistoryWebService extends WebService {
     }
 
     @POST
-    @Path("getAllIndEmpSalUnitPriceHistory")
-    public List<IndEmpSalUnitPriceHistoryDto> getAllIndEmpSalUnitPriceHistory(IndEmpSalUnitPriceHistoryDto dto) {
+    @Path("getIndEmpSalUnitPriceHistories")
+    public List<IndEmpSalUnitPriceHistoryDto> getIndEmpSalUnitPriceHistories(IndEmpSalUnitPriceHistoryDto dto) {
         return finder.getAllIndividualEmpSalUnitPriceHistoryDto(dto);
     }
 
