@@ -389,6 +389,18 @@ module cmm001.a {
             nts.uk.ui.windows.sub.modal('/view/cmm/001/e/index.xhtml', {title: '',}).onClosed(function (): any {
             })
         }
+        
+        private exportExcel(): void {
+                var self = this;
+                nts.uk.ui.block.grayout();
+                let langId = "ja";
+                service.saveAsExcel(langId).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
     }
     class CompanyModel {
         companyCode: KnockoutObservable<string>;

@@ -41,14 +41,33 @@ public class EmployeeExportImpl implements MasterListData {
 		// TODO Auto-generated method stub
 
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn("コード", TextResource.localize("CMM008_7"),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("名称", TextResource.localize("CMM008_8"),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("外部コード", TextResource.localize("CMM008_9"),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("メモ", TextResource.localize("CMM008_10"),
-				ColumnTextAlign.CENTER, "", true));
+		columns.add(new MasterHeaderColumn("No", TextResource.localize("CMM008_7"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("使用区分", TextResource.localize("CMM008_8"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("名称", TextResource.localize("CMM008_9"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("略名", TextResource.localize("CMM008_10"),
+				ColumnTextAlign.LEFT, "", true));
+		
+		columns.add(new MasterHeaderColumn("集計区分", TextResource.localize("CMM008_7"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("勤務種類", TextResource.localize("CMM008_8"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("就業時間帯", TextResource.localize("CMM008_9"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("集計条件以上", TextResource.localize("CMM008_10"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("以上", TextResource.localize("CMM008_7"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("集計条件未満", TextResource.localize("CMM008_8"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("未満", TextResource.localize("CMM008_9"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("対象項目", TextResource.localize("CMM008_10"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("半日勤務区分（0.5回カウント）", TextResource.localize("CMM008_10"),
+				ColumnTextAlign.LEFT, "", true));
 		return columns;
 	}
 
