@@ -8,9 +8,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import lombok.val;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.task.AsyncTaskInfo;
+import nts.gul.util.value.MutableValue;
 //import nts.uk.ctx.at.function.app.command.processexecution.ExecuteProcessExecCommandHandler;
 import nts.uk.ctx.at.function.app.command.processexecution.ExecuteProcessExecutionCommand;
 import nts.uk.ctx.at.function.app.command.processexecution.ExecuteProcessExecutionCommandHandler;
@@ -32,8 +34,12 @@ import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionDate
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionLogDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionLogHistoryDto;
+import nts.uk.shr.com.communicate.PathToWebApi;
+import nts.uk.shr.com.communicate.batch.BatchServer;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
+import nts.uk.shr.sample.batchserver.BatchResult;
+import nts.uk.shr.sample.batchserver.APBatchTask.SampleRequest;
 
 @Path("at/function/processexec")
 @Produces("application/json")
@@ -72,6 +78,9 @@ public class ProcessExecutionWebService extends WebService {
 	/** The i18n. */
 	@Inject
 	private I18NResourcesForUK i18n;
+	
+	@Inject
+	private BatchServer batchServer;
 	
 	/**
 	 * Gets the enum.
@@ -123,7 +132,21 @@ public class ProcessExecutionWebService extends WebService {
 	@POST
 	@Path("execute")
 	public AsyncTaskInfo execute(ExecuteProcessExecutionCommand command) {
-			return this.execHandler.handle(command);
+		
+		MutableValue<AsyncTaskInfo> result = new MutableValue<>();
+		
+		if (this.batchServer.exists()) {
+			val webApi = this.batchServer.webApi(PathToWebApi.com("/batch/batch-execute"), 
+					ExecuteProcessExecutionCommand.class, AsyncTaskInfo.class);
+			this.batchServer.request(webApi, c -> c.entity(command)
+					.succeeded(x -> {
+						result.set(x);
+			}));
+		} else {
+			result.set(this.execHandler.handle(command));
+		}
+		
+		return result.get();
 	}
 	
 	@POST
