@@ -24,20 +24,20 @@
         <div id="functions-area">
             <!-- 新規レイアウト -->
             <button id="A1_1" tabindex="1" class=""
-                    data-bind="click: create, enable: true">#{i18n.getText('QMM012_1')}</button>
+                    data-bind="click: create, enable: true">#{i18n.getText('QMM019_1')}</button>
             <!-- 登録 -->
             <button id="A1_2" tabindex="2" class="proceed"
-                    data-bind="click: registered, enable: statementLayoutHistData().statementCode != null">#{i18n.getText('QMM012_2')}</button>
+                    data-bind="click: registered, enable: statementLayoutHistData().statementCode != null">#{i18n.getText('QMM019_2')}</button>
             <!-- Excel出力 -->
             <button id="A1_3" tabindex="3" class=""
-                    data-bind="click: outputExcel, enable: true">#{i18n.getText('QMM012_3')}</button>
+                    data-bind="click: outputExcel, enable: true">#{i18n.getText('QMM019_3')}</button>
             <!-- マスタ修正ログ -->
             <button id="A1_4" tabindex="4" class=""
-                    data-bind="click: modifyLog, enable: true">#{i18n.getText('QMM012_4')}</button>
+                    data-bind="click: modifyLog, enable: false">#{i18n.getText('QMM019_4')}</button>
             <a id="A1_6" class="goout" tabindex="6"
-               data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('QMM012_6')}</a>
+               data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('QMM019_6')}</a>
             <a id="A1_5" class="goout" tabindex="5"
-               data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('QMM012_5')}</a>
+               data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('QMM019_5')}</a>
         </div>
         <div id="contents-area">
             <div class="table">
@@ -127,7 +127,7 @@
                                  data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM019_21')}</div>
                             <!-- 印刷プレビュー -->
                             <button id="A3_14" tabindex="13" class=""
-                                    data-bind="click: $vm.openP, enable: true">#{i18n.getText('QMM019_22')}</button>
+                                    data-bind="enable: false">#{i18n.getText('QMM019_22')}</button>
                         </div>
                         <hr/>
                         <div id="statementLayoutSet" data-bind="with: statementLayoutSet">
@@ -142,7 +142,7 @@
                                                                     isEnabled: true }">
                                         <div class="form-group item-classification" data-bind="style: { background: printSet() == 0 ? '#E0F59E' : '#DDD'}">
                                             <span class="caret-right"></span>
-                                            <button id="A4_4" class=""
+                                            <button id="A4_4" class="" tabindex="14"
                                                     data-bind="enable: !hasFixed(), click: editLine"></button>
                                             <div class="item-sort" data-bind="ntsSortable: {
                                                                         data: listSetByItem,
@@ -152,7 +152,8 @@
                                                                     click: openSetting,
                                                                     css: id,
                                                                     style: { background: isFixed() ? '#404040' : deleted() ? '#EF7F7F' : '#FFFFFF',
-                                                                    color: isFixed() ? '#FFF' : '#404040'}"> </div>
+                                                                            color: isFixed() ? '#FFF' : '#404040'},
+                                                                    attr: { tabindex: (itemId() != null) ? '15' : '16'}"> </div>
                                             </div>
                                         </div>
                                     </div>
@@ -174,7 +175,7 @@
                                                                     isEnabled: true }">
                                         <div class="form-group item-classification" data-bind="style: { background: printSet() == 0 ? '#E0F59E' : '#DDD'}">
                                             <span class="caret-right"></span>
-                                            <button id="A5_4" class=""
+                                            <button id="A5_4" class="" tabindex="14"
                                                     data-bind="enable: !hasFixed(), click: editLine"></button>
                                             <div class="item-sort" data-bind="ntsSortable: {
                                                                         data: listSetByItem,
@@ -184,7 +185,8 @@
                                                                     click: openSetting,
                                                                     css: id,
                                                                     style: { background: isFixed() ? '#404040' : deleted() ? '#EF7F7F' : '#FFFFFF',
-                                                                    color: isFixed() ? '#FFF' : '#404040'}"> </div>
+                                                                    color: isFixed() ? '#FFF' : '#404040'},
+                                                                    attr: { tabindex: (itemId() != null) ? '15' : '16'}"> </div>
 
                                             </div>
                                         </div>
@@ -193,7 +195,7 @@
                                 <div class="valign-center control-group">
                                     <!-- 控除行追加 -->
                                     <button id="A5_8" tabindex="17" class="add-line-btn"
-                                            data-bind="enable: true, click: addLine">#{i18n.getText('QMM019_24')}</button>
+                                            data-bind="enable: true, click: addLine">#{i18n.getText('QMM019_26')}</button>
                                 </div>
                             </div>
                             <!-- 勤怠設定パネル -->
@@ -201,7 +203,7 @@
                                 <div data-bind="visible: isShowCtg()" class="panel panel-frame">
                                     <!-- 勤怠設定 -->
                                     <button id="A7_2" tabindex="18" class=""
-                                            data-bind="enable: true, visible: $parent.layoutPattern() != 6"></button>
+                                            data-bind="enable: true, visible: $parent.layoutPattern() != 6, click: editCategory"></button>
                                     <!-- 勤怠 -->
                                     <label id="A7_3" class="category-text">#{i18n.getText('QMM019_29')}</label>
                                     <hr/>
@@ -211,16 +213,17 @@
                                                                         isEnabled: true }">
                                             <div class="form-group item-classification" data-bind="style: { background: printSet() == 0 ? '#E0F59E' : '#DDD'}">
                                                 <span class="caret-right"></span>
-                                                <button id="A7_4" class=""
+                                                <button id="A7_4" class="" tabindex="19"
                                                         data-bind="enable: true, click: editLine"></button>
                                                 <div class="item-sort" data-bind="ntsSortable: {
                                                                             data: listSetByItem,
                                                                             beforeMove: preventStopSort }">
-                                                    <div class="item limited-label" data-bind="
+                                                    <div class="item limited-label" tabindex="20" data-bind="
                                                                         text: shortName,
                                                                         click: openSetting,
                                                                         css: id,
-                                                                        style: { background: deleted() ? '#EF7F7F' : '#FFFFFF'}"> </div>
+                                                                        style: { background: deleted() ? '#EF7F7F' : '#FFFFFF',
+                                                                        attr: { tabindex: (itemId() != null) ? '20' : '21'}}"> </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -242,7 +245,7 @@
                                 <div data-bind="visible: isShowCtg()" class="panel panel-frame">
                                     <!-- 記事設定 -->
                                     <button id="A8_2" tabindex="23" class=""
-                                            data-bind="enable: true, visible: $parent.layoutPattern() != 6"></button>
+                                            data-bind="enable: true, visible: $parent.layoutPattern() != 6, click: editCategory"></button>
                                     <!-- 記事 -->
                                     <label id="A8_3" class="category-text">#{i18n.getText('QMM019_31')}</label>
                                     <hr/>
@@ -252,16 +255,17 @@
                                                                         isEnabled: true }">
                                             <div class="form-group item-classification" data-bind="style: { background: printSet() == 0 ? '#E0F59E' : '#DDD'}">
                                                 <span class="caret-right"></span>
-                                                <button id="A8_4" class=""
+                                                <button id="A8_4" class="" tabindex="24"
                                                         data-bind="enable: true, click: editLine"></button>
                                                 <div class="item-sort" data-bind="ntsSortable: {
                                                                             data: listSetByItem,
                                                                             beforeMove: preventStopSort }">
-                                                    <div class="item limited-label" data-bind="
+                                                    <div class="item limited-label" tabindex="25" data-bind="
                                                                         text: shortName,
                                                                         click: openSetting,
                                                                         css: id,
-                                                                        style: { background: deleted() ? '#EF7F7F' : '#FFFFFF'}"> </div>
+                                                                        style: { background: deleted() ? '#EF7F7F' : '#FFFFFF'},
+                                                                        attr: { tabindex: (itemId() != null) ? '25' : '26'}"> </div>
                                                 </div>
                                             </div>
                                         </div>

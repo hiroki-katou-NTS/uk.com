@@ -212,7 +212,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         }
 
         public outputExcel(): void {
-            modal("/view/qmm/019/d/index.xhtml");
+            modal("/view/qmm/019/p/index.xhtml");
         }
 
         public addHistory(): void {
@@ -293,11 +293,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         }
 
         public modifyLog(): void {
-            modal("/view/qmm/019/e/index.xhtml");
-        }
-        
-        public openP(): void {
-            modal("/view/qmm/019/p/index.xhtml");
+
         }
     }
 
@@ -436,8 +432,78 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
 
         public showCtg(): void {
             let self = this;
+            let totalLine = 0;
+            let printLineInCtg = 0;
+            let noPrintLineInCtg = 0;
 
-            self.isShowCtg(true);
+            for(let settingByCtg: SettingByCtg of self.parent.listSettingByCtg()) {
+                totalLine += settingByCtg.listLineByLineSet().length;
+            }
+
+            setShared("QMM019_A_TO_L_PARAMS", {
+                layoutPattern: self.parent.layoutPattern(),
+                totalLine: totalLine,
+                ctgAtr: self.ctgAtr,
+                printLineInCtg: printLineInCtg,
+                noPrintLineInCtg: noPrintLineInCtg,
+                isAddCategory: true
+            });
+
+            nts.uk.ui.windows.sub.modal('../l/index.xhtml').onClosed(() => {
+                let params = getShared("QMM019_L_TO_A_PARAMS");
+
+                if(params && params.isRegistered) {
+                    self.isShowCtg(true);
+                    self.listLineByLineSet.push(new LineByLineSetting(null, params.printSet, self));
+                }
+
+                //TODO $("#C3_8").focus();
+            });
+        }
+
+        public editCategory(): void {
+            let self = this;
+            let totalLine = 0;
+            let printLineInCtg = 0;
+            let noPrintLineInCtg = 0;
+
+            for(let settingByCtg: SettingByCtg of self.parent.listSettingByCtg()) {
+                totalLine += settingByCtg.listLineByLineSet().length;
+            }
+
+            for(let lineByLineSetting: LineByLineSetting of self.listLineByLineSet()) {
+                if(lineByLineSetting.printSet() == StatementPrintAtr.PRINT) {
+                    printLineInCtg++;
+                } else {
+                    noPrintLineInCtg++;
+                }
+            }
+
+            setShared("QMM019_A_TO_L_PARAMS", {
+                layoutPattern: self.parent.layoutPattern(),
+                totalLine: totalLine,
+                ctgAtr: self.ctgAtr,
+                printLineInCtg: printLineInCtg,
+                noPrintLineInCtg: noPrintLineInCtg,
+                isAddCategory: false
+            });
+
+            nts.uk.ui.windows.sub.modal('../l/index.xhtml').onClosed(() => {
+                let params = getShared("QMM019_L_TO_A_PARAMS");
+
+                if(params && params.isRegistered) {
+                    if(params.printSet == 2) {
+                        self.listLineByLineSet.removeAll();
+                        self.isShowCtg(false);
+                    } else {
+                        for(let lineByLineSetting :LineByLineSetting of self.listLineByLineSet()) {
+                            lineByLineSetting.printSet(params.printSet);
+                        }
+                    }
+                }
+
+                //TODO $("#C3_8").focus();
+            });
         }
     }
 
