@@ -12,8 +12,6 @@ module nts.uk.at.view.kmk002.a {
             saveAsExcel: "file/at/worktypereport/saveAsExcel"
         };
 
-
-
         export function saveAsExcel(languageId: string): JQueryPromise<any> {
             return exportFile('/masterlist/report/print', { domainId: "CalFormulasItem", domainType: "KMK002計算式の登録", languageId: languageId, reportType: 0 });
         }

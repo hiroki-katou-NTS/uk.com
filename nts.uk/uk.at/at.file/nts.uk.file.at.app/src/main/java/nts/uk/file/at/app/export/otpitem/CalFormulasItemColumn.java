@@ -4,7 +4,7 @@ public final class CalFormulasItemColumn {
 	/** Table 001 **/
 	public static final String KMK002_76 = "コード";
 	public static final String KMK002_77 = "コード名";
-	public static final String KMK002_78 = "日別/月別";
+	public static final String KMK002_78 = "属性";
 	public static final String KMK002_79 = "単位";
 	public static final String KMK002_80 = "計算区分";
 	public static final String KMK002_81 = "日別/月別";
