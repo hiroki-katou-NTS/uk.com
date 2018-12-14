@@ -24,6 +24,9 @@
 
         </div>-->
         <div class="fixed-flex-layout-left" style="margin-left: 90px;margin-top: 20px; float: left;">
+            <div >
+                <i id="img-calendar" class="image image-calendar"/>
+            </div>
             <div data-bind="ntsPanel:{width: '200px', height: '300px', direction: 'right', showIcon: false, visible: true}">
                 <div>
                     <button id="H2_3" data-bind="click: openJScreen, enable: !enableNew()">#{i18n.getText('QMM020_13')}</button>
@@ -48,7 +51,7 @@
         </div>
         <div class="fixed-flex-layout-right" style="margin-top: 20px;">
             <span id = "H3_1" style="margin-bottom: 15px;">#{i18n.getText('QMM020_46')}</span>
-            <div class="control-group flex valign-center" style="min-width: 500px;padding-top: 15px;margin-left: 20px">
+            <div id="text_Salary" class="control-group flex valign-center">
                 <pre tabindex="-1">#{i18n.getText('QMM020_18')}</pre>
                 <span id="H3_3" style="padding-left: 30px">#{i18n.getText('QMM020_19')}</span>
             </div>

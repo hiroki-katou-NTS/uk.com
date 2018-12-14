@@ -31,3 +31,12 @@
 #E3_1_container tr th:NTH-CHILD(5) {
     border-right: none;
 }
+
+#img-calendar{
+    position: absolute;
+    z-index: 1;
+    margin: -14px -11px;
+}
+#E1_5_container {
+    margin: 15px 0px 0px 0px !important;
+}
