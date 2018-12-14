@@ -57,6 +57,9 @@ public class CalFormulasItemExportImpl implements MasterListData {
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(CalFormulasItemColumn.KMK002_91, TextResource.localize("KMK002_91"),
 				ColumnTextAlign.LEFT, "", true));
+		//update v1.1
+		columns.add(new MasterHeaderColumn(CalFormulasItemColumn.KMK002_97, TextResource.localize("KMK002_97"),
+				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(CalFormulasItemColumn.KMK002_92, TextResource.localize("KMK002_92"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(CalFormulasItemColumn.KMK002_93, TextResource.localize("KMK002_93"),
@@ -67,8 +70,7 @@ public class CalFormulasItemExportImpl implements MasterListData {
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(CalFormulasItemColumn.KMK002_96, TextResource.localize("KMK002_96"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(CalFormulasItemColumn.KMK002_97, TextResource.localize("KMK002_97"),
-				ColumnTextAlign.LEFT, "", true));
+		
 		return columns;
 	}
 
