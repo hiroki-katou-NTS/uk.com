@@ -17,11 +17,11 @@ public class CompanyFinder {
 	
 	@Inject
 	private CompanyAdapter companyAdapter;
-	
+
 	public List<ShortCompanyDto> findAll() {
 		LoginUserContext context = AppContexts.user();
-		List<String> idList = companyAdapter.getCompanyIdList(context.userId(), context.personId());
-		
+		//アルゴリズム「切替可能な会社一覧を取得する」を実行する
+		List<String> idList = companyAdapter.getCompanyIdList(context.userId(), context.contractCode());
 		if (idList == null || idList.isEmpty()) {
 			return companyAdapter.getCompany(context.companyId())
 					.map(c -> Arrays.asList(new ShortCompanyDto(c.getCompanyId(), c.getCompanyName())))

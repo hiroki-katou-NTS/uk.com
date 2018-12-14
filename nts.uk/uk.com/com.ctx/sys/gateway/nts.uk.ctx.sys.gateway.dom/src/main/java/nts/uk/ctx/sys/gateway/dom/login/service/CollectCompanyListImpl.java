@@ -175,7 +175,7 @@ public class CollectCompanyListImpl implements CollectCompanyList {
 				//会社IDを生成する 会社ID＝[会社単位の利用停止.契約コード]+"-"+[会社単位の利用停止.会社コード]
 				//		ex) 000000000001-0001
 				//Output：利用停止会社ID（List）に「会社ID」を追加する
-				result.add(stopCom.getCompanyCd() + "-" + stopCom.getContractCd());
+				result.add(stopCom.getContractCd() + "-" + stopCom.getCompanyCd());
 			}
 		}
 		return result;
