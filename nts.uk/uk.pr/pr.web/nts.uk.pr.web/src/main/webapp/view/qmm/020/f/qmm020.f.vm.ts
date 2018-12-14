@@ -323,7 +323,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
             stateCorrelationHisPosition.hisId = HIS_ID_TEMP;
             stateCorrelationHisPosition.startYearMonth = start;
             stateCorrelationHisPosition.endYearMonth = end;
-            stateCorrelationHisPosition.display = getText('QMM020_16', [model.convertMonthYearToString(start), model.convertMonthYearToString(end)]);
+            stateCorrelationHisPosition.display = getText('QMM020_16', [model.hconvertMonthYearToString(start), model.convertMonthYearToString(end)]);
 
             return stateCorrelationHisPosition;
         }

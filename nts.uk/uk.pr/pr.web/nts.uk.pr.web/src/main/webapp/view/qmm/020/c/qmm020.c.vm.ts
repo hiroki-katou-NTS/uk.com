@@ -216,7 +216,7 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
                 $("#C2_3").after('<table id="grid2"></table>');
             }
             $("#grid2").ntsGrid({
-                height: '350px',
+                height: '311px',
                 dataSource: self.items(),
                 primaryKey: 'id',
                 virtualization: true,
