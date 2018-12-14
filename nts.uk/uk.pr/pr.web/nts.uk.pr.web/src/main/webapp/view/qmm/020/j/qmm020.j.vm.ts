@@ -62,11 +62,11 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
         }
         initView(params: any) {
             let self = this;
+            let windowSize = nts.uk.ui.windows.getSelf();
             self.params(params);
             self.modeScreen(self.getMode(self.params().modeScreen));
             if (self.modeScreen() == MODE_SCREEN.MODE_ONE || self.modeScreen() == MODE_SCREEN.MODE_THREE) {
-                let windowSize = nts.uk.ui.windows.getSelf();
-                windowSize.setSize(250,500);
+                windowSize.$dialog.height(280);
             }
             if (self.modeScreen() == nts.uk.pr.view.qmm020.j.viewmodel.MODE_SCREEN.MODE_TWO) {
                 self.startDateMaster(self.params().startDateMaster);
