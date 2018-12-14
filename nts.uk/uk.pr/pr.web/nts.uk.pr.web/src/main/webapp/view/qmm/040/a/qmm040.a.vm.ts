@@ -56,7 +56,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
             self.salIndAmountNamesSelectedCode.subscribe(function (data) {
                 self.personalDisplay = [];
-                nts.uk.ui.errors.clearAll();
+                errors.clearAll();
                 if (!data)
                     return;
                 let temp = _.find(self.salIndAmountNames(), function (o) {
@@ -74,17 +74,20 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             let dfd = $.Deferred();
             block.invisible();
             service.employeeReferenceDate().done(function (data) {
-                if (data)
+                if (data) {
                     self.reloadCcg001(data.empExtraRefeDate);
-                else
+                    self.yearMonthFilter(data.salCurrProcessDate);
+                }
+                else {
                     self.reloadCcg001(moment(Date.now()).format("YYYY/MM/DD"));
+                }
                 $('#A5_7').focus();
                 // self.filterData();
                 self.loadMGrid();
                 block.clear();
                 dfd.resolve(self);
             }).fail((err) => {
-                nts.uk.ui.dialog.alertError(err.message);
+                dialog.alertError(err.message);
                 block.clear();
                 dfd.reject();
             });
@@ -177,7 +180,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.cateIndicator(CategoryIndicator.PAYMENT);
                     self.salBonusCate(SalBonusCate.SALARY);
                     $("#sidebar").ntsSideBar("active", param);
-                    nts.uk.ui.errors.clearAll();
+                    errors.clearAll();
                     self.yearMonthFilter = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
                     $('#A5_7').focus();
                     break;
@@ -190,7 +193,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.cateIndicator(CategoryIndicator.DEDUCTION);
                     self.salBonusCate(SalBonusCate.SALARY);
                     $("#sidebar").ntsSideBar("active", param);
-                    nts.uk.ui.errors.clearAll();
+                    errors.clearAll();
                     self.yearMonthFilter = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
                     $('#A5_7').focus();
                     break;
@@ -202,10 +205,10 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.salBonusCate(SalBonusCate.BONUSES);
                     self.titleTab(getText('QMM040_5'));
                     self.itemClassification(getText('QMM040_5'));
-                    nts.uk.ui.errors.clearAll();
+                    errors.clearAll();
                     self.yearMonthFilter = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
                     $("#sidebar").ntsSideBar("active", param);
-                    nts.uk.ui.errors.clearAll();
+                    errors.clearAll();
                     self.yearMonthFilter = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
                     $('#A5_7').focus();
                     break;
@@ -218,7 +221,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.cateIndicator(CategoryIndicator.DEDUCTION);
                     self.salBonusCate(SalBonusCate.BONUSES);
                     $("#sidebar").ntsSideBar("active", param);
-                    nts.uk.ui.errors.clearAll();
+                    errors.clearAll();
                     self.yearMonthFilter = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
                     $('#A5_7').focus();
                     break;
@@ -232,7 +235,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     break;
             }
             setTimeout(function () {
-                nts.uk.ui.errors.clearAll();
+                errors.clearAll();
             }, 100)
         }
 
@@ -259,7 +262,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 }
                 block.clear();
             }).fail((err) => {
-                nts.uk.ui.dialog.alertError(err.message);
+                dialog.alertError(err.message);
                 block.clear();
             });
         }
@@ -355,7 +358,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 tabindex: 2,
                 /** Return data */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
-                    nts.uk.ui.errors.clearAll();
+                    errors.clearAll();
                     //self.selectedEmployee(data.listEmployee);
                     if (data && data.listEmployee.length > 0) {
                         self.employeeList = data.listEmployee;

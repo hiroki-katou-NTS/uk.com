@@ -28,7 +28,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
             let self = this;
             self.salaryPerUnitPriceNamesSelectedCode.subscribe(function (selectcode) {
                 self.workIndividualPricesDisplay = [];
-                nts.uk.ui.errors.clearAll();
+                errors.clearAll();
                 if (!selectcode)
                     return;
                 let temp = _.find(self.salaryPerUnitPriceNames(), function (o) {
@@ -45,7 +45,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
         filterData(): void {
             let self = this;
             $('#A4_5').ntsError('check');
-            if (nts.uk.ui.errors.hasError()) {
+            if (errors.hasError()) {
                 return;
             }
             block.invisible();
@@ -165,12 +165,10 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
             service.empSalUnitUpdateAll({
                 payrollInformationCommands: $("#grid").mGrid("dataSource", true)
             }).done(function () {
-                block.clear();
                 dialog.info({messageId: "Msg_15"});
-            }).fail((err) => {
-                dialog.alertError(err.message);
+            }).always(() => {
                 block.clear();
-            });
+            })
         }
 
         startPage(): JQueryPromise<any> {
@@ -183,7 +181,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 service.salaryPerUnitPriceName().done(function (individualPriceName) {
                     if (individualPriceName.length == 0) {
                         self.isRegistrable(false);
-                        nts.uk.ui.dialog.alertError({messageId: "MsgQ_170"});
+                        dialog.alertError({messageId: "MsgQ_170"});
                     } else {
                         self.isRegistrable(true);
                         self.salaryPerUnitPriceNames(individualPriceName);

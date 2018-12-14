@@ -6,7 +6,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
     import format = nts.uk.text.format;
     import getShared = nts.uk.ui.windows.getShared;
     import model = nts.uk.pr.view.qmm041.share.model;
-    import hasError = nts.uk.ui.errors.hasError;
+    import errors = nts.uk.ui.errors;
     import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
 
@@ -105,7 +105,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
             self.employeeInputList = ko.observableArray([]);
             self.systemReference = ko.observable(SystemType.SALARY);
             self.isDisplayOrganizationName = ko.observable(false);
-            self.targetBtnText = nts.uk.resource.getText("KCP009_3");
+            self.targetBtnText = getText("KCP009_3");
             self.selectedItem = ko.observable(null);
             self.tabindex = 2;
 
@@ -138,7 +138,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
             });
 
             self.selectedHistoryCode.subscribe((historyCode) => {
-                nts.uk.ui.errors.clearAll();
+                errors.clearAll();
                 if (self.mode() === model.MODE.ADD_HISTORY) {
                     let dto = {
                         personalUnitPriceCode: self.selectedCode(),
@@ -243,7 +243,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                     } else {
                         self.employeeInputList.push(new EmployeeModel(employee.sid,
                             employee.employeeCode, employee.employeeName, workplace.name, ""));
-                        nts.uk.ui.dialog.alertError({messageId: "MsgQ_170"}).then(() => {
+                        dialog.alertError({messageId: "MsgQ_170"}).then(() => {
                             self.isAddableHis(false);
                         });
                     }
@@ -327,7 +327,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                             };
                             self.openModalB(params);
                         }).fail((err) => {
-                            nts.uk.ui.dialog.alertError(err.message);
+                            dialog.alertError(err.message);
                         });
                     } else {
                         params = {
@@ -348,7 +348,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
             modal('/view/qmm/041/b/index.xhtml').onClosed(() => {
                 let params = getShared("QMM041_B_RES_PARAMS");
                 if (params) {
-                    self.startYearMonth(nts.uk.time.parseYearMonth(params.startYearMonth).format());
+                    self.startYearMonth(self.formatYM(params.startYearMonth));
                     self.endYearMonth("9999/12");
 
                     if (params.takeOverMethod === model.INHERITANCE.NO) {
@@ -444,7 +444,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
         register(): void {
             let self = this;
             $('.nts-input').trigger("validate");
-            if (hasError()) return;
+            if (errors.hasError()) return;
             block.invisible();
             if (self.mode() == model.MODE.NORMAL) {
                 let command = {
@@ -457,7 +457,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                     array[index].amountOfMoney = Number(self.currencyValue());
                     self.historyList([]);
                     self.historyList(array);
-                    nts.uk.ui.dialog.info({messageId: "Msg_15"});
+                    dialog.info({messageId: "Msg_15"});
                 }).always(() => {
                     block.clear();
                 });
