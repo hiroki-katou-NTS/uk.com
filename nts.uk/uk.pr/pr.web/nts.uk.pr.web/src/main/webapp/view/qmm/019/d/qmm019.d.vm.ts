@@ -6,6 +6,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
     import shareModel = nts.uk.pr.view.qmm019.share.model;
     import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
     import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
+    import formatNumber = nts.uk.ntsNumber.formatNumber;
 
     export class ScreenModel {
         screenControl: KnockoutObservable<ScreenControl>;
@@ -183,7 +184,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
                 self.categoryAtrText(shareModel.getCategoryAtrText(self.categoryAtr));
                 if (!isNullOrUndefined(pay)) {
                     self.paymentItemSet().setData(pay);
-                    self.loadControlD2_9(self.params.detail.calcMethod);
+                    self.loadControlD2_9();
                 }
                 self.breakdownItemSets(_.isEmpty(breakItems) ? [] : BreakdownItemSet.fromApp(breakItems));
                 self.dataScreen().perValName(isNullOrUndefined(perVal) ? null : perVal.individualPriceName);
@@ -195,14 +196,12 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             return dfd.promise();
         }
 
-        loadControlD2_9(calcMethod) {
+        loadControlD2_9() {
             let self = this;
             // ※補足資料8参照
             self.calcMethods(shareModel.getPaymentCaclMethodAtr(self.paymentItemSet().breakdownItemUseAtr()));
             if (self.paymentItemSet().breakdownItemUseAtr() == shareModel.BreakdownItemUseAtr.USE) {
                 self.dataScreen().calcMethod(shareModel.PaymentCaclMethodAtr.BREAKDOWN_ITEM.toString());
-            } else {
-                self.dataScreen().calcMethod(calcMethod);
             }
         }
 
@@ -553,6 +552,10 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         cancel() {
             windows.setShared("QMM019D_RESULTS", null);
             windows.close();
+        }
+
+        formatNumber(number){
+            return formatNumber(number, new nts.uk.ui.option.NumberEditorOption({grouplength: 3}))
         }
     }
 
