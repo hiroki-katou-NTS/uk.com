@@ -3,6 +3,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import block = nts.uk.ui.block;
     import validation = nts.uk.ui.validation;
+    import errors = nts.uk.ui.errors;
 
     export class ScreenModel {
 
@@ -87,7 +88,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 subHeight: height + 'px',
                 headerHeight: '23px',
                 dataSource: self.workIndividualPricesDisplay,
-                primaryKey: 'historyId',
+                primaryKey: 'historyID',
                 primaryKeyDataType: 'string',
                 rowVirtualization: true,
                 virtualization: true,
@@ -97,7 +98,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 hidePrimaryKey: true,
                 errorsOnPage: false,
                 columns: [
-                    {headerText: "id", key: 'historyId', dataType: 'string', hidden: true},
+                    {headerText: "id", key: 'historyID', dataType: 'string', hidden: true},
                     // A5_10
                     {
                         headerText: getText("QMM042_10"), key: 'employeeCode', dataType: 'string', width: '90px',
@@ -150,9 +151,17 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
             }).create();
         }
 
+        isValidForm() {
+            return _.isEmpty($("#grid").mGrid("errors", true));
+        }
+
         registerAmount(): void {
             let self = this;
             block.invisible();
+            if (errors.hasError() || !self.isValidForm()) {
+                block.clear();
+                return;
+            }
             service.empSalUnitUpdateAll({
                 payrollInformationCommands: $("#grid").mGrid("dataSource", true)
             }).done(function () {

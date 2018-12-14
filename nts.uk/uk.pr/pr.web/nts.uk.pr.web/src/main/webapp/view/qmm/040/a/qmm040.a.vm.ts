@@ -3,6 +3,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import block  = nts.uk.ui.block;
     import validation = nts.uk.ui.validation;
+    import errors  = nts.uk.ui.errors;
 
     export class ScreenModel {
 
@@ -250,8 +251,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     }
                     else {
                         self.isRegistrable(false);
-                        nts.uk.ui.dialog.alertError({messageId: "MsgQ_169"});
-                        nts.uk.ui.errors.clearAll();
+                        dialog.alertError({messageId: "MsgQ_169"});
+                        errors.clearAll();
                         self.individualPriceCode('');
                         self.individualPriceName('');
                     }
@@ -267,7 +268,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             let self = this;
             self.yearMonthFilter();
             $('#A5_7').ntsError('check');
-            if (nts.uk.ui.errors.hasError()) {
+            if (errors.hasError()) {
                 return;
             }
             if (!self.employeeList) return;
@@ -282,30 +283,37 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 self.employeeInfoImports = dataNameAndAmount.employeeInfoImports;
                 let personalAmountData = dataNameAndAmount.personalAmount.map(x => new PersonalAmount(x));
                 for (let personalAmount of personalAmountData) {
-                    let employeeInfo = self.employeeInfoImports.find(x => x.sid === personalAmount.employeeID);
+                    let employeeInfo = self.employeeInfoImports.find(x => x.sid === personalAmount.empId);
                     personalAmount.employeeCode = employeeInfo.scd;
                     personalAmount.businessName = employeeInfo.businessName;
                 }
-                personalAmountData = _.sortBy(personalAmountData,['employeeCode']);
+                personalAmountData = _.sortBy(personalAmountData, ['employeeCode']);
                 self.personalDisplay = personalAmountData;
                 $("#grid").mGrid("destroy");
                 self.loadMGrid();
-                block.clear();
-            }).fail((err) => {
-                nts.uk.ui.dialog.alertError(err.message);
+            }).always(() => {
                 block.clear();
             });
         }
 
         registerAmount(): void {
-            let self = this;
+            block.invisible();
+            if (errors.hasError() || !this.isValidForm()) {
+                block.clear();
+                return;
+            }
             service.salIndAmountUpdateAll({
                 salIndAmountUpdateCommandList: $("#grid").mGrid("dataSource", true)
             }).done(function () {
                 dialog.info({messageId: "Msg_15"});
+            }).always(() => {
+                block.clear();
             });
         }
 
+        isValidForm(): boolean {
+            return _.isEmpty($("#grid").mGrid("errors", true));
+        }
 
         public reloadCcg001(empExtraRefeDate: string): void {
             let self = this;

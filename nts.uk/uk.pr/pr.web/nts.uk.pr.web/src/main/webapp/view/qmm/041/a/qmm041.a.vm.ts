@@ -251,56 +251,6 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                 block.clear();
                 dfd.resolve();
             });
-
-            // service.getInfoEmpLogin().done((emp) => {
-            //     service.getWpName().done((wp) => {
-            //         service.getBaseDate().done((baseDate) => {
-            //             service.getSalPerUnitPriceName().done((data) => {
-            //                 if (data.length > 0) {
-            //                     self.dataSource(data);
-            //                     self.selectedCode(data[0].code);
-            //                     self.employeeInputList.push(new EmployeeModel(emp.sid,
-            //                         emp.employeeCode, emp.employeeName, wp.name, ""));
-            //                     if (baseDate) {
-            //                         self.ccgComponent.baseDate = baseDate;
-            //                     }
-            //                     let dto = {
-            //                         personalUnitPriceCode: self.selectedCode(),
-            //                         employeeId: emp.sid
-            //                     };
-            //                     self.getIndEmpSalUnitPriceHistories(dto).done(() => {
-            //                         block.clear();
-            //                         dfd.resolve();
-            //                     });
-            //                 } else {
-            //                     self.employeeInputList.push(new EmployeeModel(emp.sid,
-            //                         emp.employeeCode, emp.employeeName, wp.name, ""));
-            //                     nts.uk.ui.dialog.alertError({messageId: "MsgQ_170"}).then(() => {
-            //                         self.isAddableHis(false);
-            //                     });
-            //                     block.clear();
-            //                     dfd.resolve();
-            //                 }
-            //             }).fail((res) => {
-            //                 nts.uk.ui.dialog.alertError(res.message);
-            //                 block.clear();
-            //                 dfd.reject();
-            //             });
-            //         }).fail((res) => {
-            //             nts.uk.ui.dialog.alertError(res.message);
-            //             block.clear();
-            //             dfd.reject();
-            //         });
-            //     }).fail((res) => {
-            //         nts.uk.ui.dialog.alertError(res.message);
-            //         block.clear();
-            //         dfd.reject();
-            //     });
-            // }).fail((res) => {
-            //     nts.uk.ui.dialog.alertError(res.message);
-            //     block.clear();
-            //     dfd.reject();
-            // });
             return dfd.promise();
         }
 
@@ -510,7 +460,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                     nts.uk.ui.dialog.info({messageId: "Msg_15"});
                 }).always(() => {
                     block.clear();
-                })
+                });
             } else if (self.mode() == model.MODE.ADD_HISTORY) {
                 let command = {
                     personalUnitPriceCode: self.selectedCode(),
@@ -522,18 +472,16 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                     oldHistoryId: null,
                     newEndYearMonth: null
                 };
-
                 if (self.historyList().length > 1) {
                     command.oldHistoryId = self.historyList()[1].historyId;
                     command.newEndYearMonth = self.historyList()[1].endYearMonth;
                 }
-
                 service.addHistory(command).done(() => {
                     self.selectedCode.valueHasMutated();
                     dialog.info({messageId: "Msg_15"});
                 }).always(() => {
                     block.clear();
-                })
+                });
             }
         }
     }
