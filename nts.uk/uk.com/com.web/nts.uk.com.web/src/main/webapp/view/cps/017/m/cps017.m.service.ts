@@ -6,7 +6,11 @@ module nts.uk.com.view.cps017.m {
             saveAsExcel: "person/report/masterData"
         }
         export function saveAsExcel(languageId: string, date: string): JQueryPromise<any> {
-            return exportFile('/masterlist/report/print', { domainId: "PersonSelectionItem", domainType: "個人情報の選択肢の登録", languageId: languageId, reportType: 0, option : date });
+            let _params = { domainId: "PersonSelectionItem", 
+                        domainType: "CPS017個人情報の選択肢の登録", 
+                        languageId: languageId, 
+                        reportType: 0, option : date };
+            return exportFile('/masterlist/report/print', _params);
         }
     }
 
