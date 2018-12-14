@@ -16,10 +16,6 @@
 .fixed-table-container tr {
     height:34px;
 }
-.custom-fixed-table .ui-widget-header {
-    color: #000;
-    background-color: #CFF1A5;
-}
 .custom-fixed-table div {
     display: inline-block;
 }
@@ -33,11 +29,6 @@
 .custom-fixed-table-body .nts-fixed-table{
     display: inline-block;
 }
-.ui-widget-header {
-    color: #000;
-    background-color: #CFF1A5;
-}
-
 .E5_1 .nts-fixed-body-container {
     overflow-x: hidden;
 }

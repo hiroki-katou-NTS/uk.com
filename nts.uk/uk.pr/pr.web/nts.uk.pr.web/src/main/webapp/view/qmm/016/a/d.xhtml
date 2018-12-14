@@ -46,7 +46,7 @@
                 </thead>
                 <tbody>
                 <tr data-bind="with: selectedWageTable().elementInformation().oneDimensionElement">
-                    <td class="ui-widget-header">#{i18n.getText('QMM016_29')}</td>
+                    <th class="ui-widget-header">#{i18n.getText('QMM016_29')}</th>
                     <td data-bind="if: masterNumericClassification() == 1">
                         <div data-bind="text: elementName"></div>
                     </td>
@@ -69,7 +69,7 @@
                     </td>
                 </tr>
                 <tr data-bind="with: selectedWageTable().elementInformation().twoDimensionElement">
-                    <td class="ui-widget-header">#{i18n.getText('QMM016_40')}</td>
+                    <th class="ui-widget-header">#{i18n.getText('QMM016_40')}</th>
                     <td data-bind="if: masterNumericClassification() == 1">
                         <div data-bind="text: elementName"></div>
                     </td>
@@ -92,7 +92,7 @@
                     </td>
                 </tr>
                 <tr data-bind="with: selectedWageTable().elementInformation().threeDimensionElement">
-                    <td class="ui-widget-header">#{i18n.getText('QMM016_44')}</td>
+                    <th class="ui-widget-header">#{i18n.getText('QMM016_44')}</th>
                     <td data-bind="if: masterNumericClassification() == 1">
                         <div data-bind="text: elementName"></div>
                     </td>
@@ -127,83 +127,77 @@
         <button style="margin-left: 30px;">#{i18n.getText('QMM016_37')}</button>
     </div>
     <hr></hr>
-    <div class="tab-row" data-bind="if: $vm.wageTableContent().payment().length > 0">
-        <img style="width: 96px" src="../resource/QMM016_6.png"></img>
-        <div style="display: inline-block;">
-            <table class = "fixed-table-top">
-                <colgroup>
-                    <col width="270px"/>
-                </colgroup>
-                <tbody>
-	                <tr>
-	                    <td class="ui-widget-header">
-	                        <div style="width: 100px; display: inline-block; "
-	                             data-bind="with: selectedWageTable().elementInformation().threeDimensionElement">
-	                            <div data-bind="text: elementName"></div>
-	                        </div>
-	                        <div style="vertical-align: middle;" id="combo-box" data-bind="ntsComboBox: {
-		                        options: $vm.listThirdDimension,
-		                        optionsValue: 'value',
-		                        width: '150px',
-		                        visibleItemsCount: 5,
-		                        value: $vm.fakeSelectedValue,
-		                        optionsText: 'name',
-		                        selectFirstIfNull: true,
-		                        enable: true,
-		                        columns: [
-		                            { prop: 'fixed_length', length: 4 },
-		                            { prop: 'name', length: 10 },
-		                        ]}"></div>
-	                    </td>
-	                </tr>
-                </tbody>
-            </table>
-        </div>
-        <img src="../resource/QMM016_8.png"></img>
-    </div>
-    <div style = "margin-top: -7px;" data-bind="if: $vm.wageTableContent().payment().length > 0">
-        <div>
-            <table class="wage-table-3d">
-                <thead>
-	                <tr>
-	                    <th style="height: 32px; width: 150px; border: none"></th>
-	                    <th class="ui-widget-header" style="height: 32px; border: 1px solid #CCC; padding: 0 2px;">
-	                        <div data-bind="with: $vm.selectedWageTable().elementInformation().twoDimensionElement">
-	                            <div data-bind="text: elementName"></div>
-	                        </div>
-	                    </th>
-	                </tr>
-                </thead>
-                <tbody>
-                	<tr>
-                		<th class="ui-widget-header" style="height: 32px; width: 150px; border: 1px solid #CCC;">
-	                        <div data-bind="with: $vm.selectedWageTable().elementInformation().oneDimensionElement">
-	                            <div data-bind="text: elementName"></div>
-	                        </div>
-	                    </th>
-                		<td>
-                			<div style="max-width: 471px; overflow: auto;"  id="wage-table-right-header">
-                				<table>
-                					<tbody>
-   						                <tr>
-	                                        <com:ko bind="$vm.listSecondDimension" tag="foreach">
-						                    	<td class="ui-widget-header" style="height: 32px; width: 150px; border: 1px solid #CCC;"
-						                    		data-bind="text: name"></td>
-						                    </com:ko>
-					                    </tr>
-                					</tbody>
-                				</table>
-                			</div>
-                		</td>
-                	</tr>
-                	<tr>
-                		<td>
-                			<div style="height: 364px; overflow: auto; margin-top: -13px;" id="wage-table-left">
-                				<table>
-                					<tbody data-bind="foreach: $vm.wageTableContent2dData">
-						                <tr>
-						                    <th style="height: 32px; width: 150px; border: 1px solid #CCC;" class="ui-widget-header">
-							                    <div data-bind="if: $vm.selectedWageTable().elementInformation().oneDimensionElement().masterNumericClassification() == 0">
+    <div class="tab-row ui-iggrid" data-bind="if: $vm.wageTableContent().payment().length > 0">
+        <table>
+			<thead>
+				<tr>
+					<td rowspan="2"><img src="../resource/QMM016_6.png"></img></td>
+					<td>
+						<div style="display: inline-block; background-color: #CFF1A5; border: 1px solid #CCC;">
+							<div style="width: 150px; display: inline-block;"
+		                         data-bind="with: selectedWageTable().elementInformation().threeDimensionElement">
+		                        <div data-bind="text: elementName"></div>
+		                    </div>
+		                    <div style="vertical-align: middle;" id="combo-box" data-bind="ntsComboBox: {
+	                     		options: $vm.listThirdDimension,
+			                     optionsValue: 'value',
+			                     width: '150px',
+			                     visibleItemsCount: 5,
+			                     value: $vm.fakeSelectedValue,
+			                     optionsText: 'name',
+			                     selectFirstIfNull: true,
+			                     enable: true,
+			                     columns: [
+			                         { prop: 'fixed_length', length: 4 },
+			                         { prop: 'name', length: 10 },
+			                     ]}"></div>
+						</div>
+						<img src="../resource/QMM016_8.png"></img>
+	                </td>
+					<td></td>
+				</tr>
+				<tr>
+					<th class="ui-widget-header">
+						<div data-bind="with: $vm.selectedWageTable().elementInformation().twoDimensionElement" style="height: 32px">
+	                        <div data-bind="text: elementName"></div>
+	                    </div>
+	                </th>
+					<td rowspan="2"><img src="../resource/QMM016_7.png"></img></td>
+				</tr>
+				<tr>
+					<th class="ui-widget-header">
+						<div data-bind="with: $vm.selectedWageTable().elementInformation().oneDimensionElement">
+		                    <div data-bind="text: elementName"></div>
+		                </div>
+					</th>
+					<th>
+						<div id="elem2-wrapper" style="max-width: 500px; overflow: auto;">
+							<table id="elem2-table">
+								<tbody>
+					                <tr>
+	                                    <com:ko bind="$vm.listSecondDimension" tag="foreach">
+				                    		<td class="ui-widget-header">
+				                    			<div style="height: 32px; width: 150px;" data-bind="text: name"></div>
+			                    			</td>
+				                    	</com:ko>
+			                    	</tr>
+	           					</tbody>
+							</table>
+						</div>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				
+				<tr>
+					<td>
+						<div id="elem1-wrapper" style="max-height: 300px; overflow: auto;">
+							<table id="elem1-table">
+								<tbody data-bind="foreach: $vm.wageTableContent2dData">
+					                <tr>
+					                    <th class="ui-widget-header">
+						                    <div style="height: 32px; width: 150px;">
+						                    	<div data-bind="if: $vm.selectedWageTable().elementInformation().oneDimensionElement().masterNumericClassification() == 0">
 							                		<span data-bind="text: masterName"></span>
 							                	</div>
 							                	<div data-bind="if: $vm.selectedWageTable().elementInformation().oneDimensionElement().masterNumericClassification() == 1">
@@ -211,37 +205,40 @@
 								                    <span>#{i18n.getText('QMM016_31')}</span>
 								                    <span data-bind="text: frameUpperLimit"></span>
 							                    </div>
-						                    </th>
-						                </tr>
-					                </tbody>
-                				</table>
-                			</div>
-                		</td>
-                		<td>
-                			<div style="height: 381px; max-width: 471px; overflow: auto;"  id="wage-table-right">
-                				<table>
-                					<tbody data-bind="foreach: $vm.wageTableContent2dData">
-						                <tr>
-						                    <com:ko bind="listSecondDms" tag="foreach">
-									            <td style="height: 32px; width: 150px; border: 1px solid #CCC; vertical-align: bottom;">
-						 				            <input data-bind="ntsNumberEditor: {
- 						  								option: { grouplength: 3, width: '120px' }, 
- 						   								name: '#[QMM016_39]', 
- 						   								value: paymentAmount, 
- 						   								constraint: 'WageTablePaymentAmount', 
- 						   								required: true}" />  
-									            </td>
-									        </com:ko>
-						                </tr>
-					                </tbody>
-                				</table>
-                			</div>
-                		</td>
-                	</tr>
-                </tbody>
-            </table>
-            <img src="../resource/QMM016_7.png"></img>
-        </div>
+						                    </div>
+					                    </th>
+					                </tr>
+				                </tbody>
+							</table>
+							<div style="height: 17px"></div>
+						</div>
+					</td>
+					<td>
+						<div id="content-wrapper" style="max-width: 500px; max-height: 300px; overflow: auto;">
+							<table id="content-table">
+								<tbody data-bind="foreach: $vm.wageTableContent2dData">
+					                <tr>
+					                    <com:ko bind="listSecondDms" tag="foreach">
+								            <td style="border: 1px solid #CCC; vertical-align: middle;">
+					 				            <div style="height: 32px; width: 150px; text-align: center;">
+					 				            	<input data-bind="ntsNumberEditor: {
+						  								option: { grouplength: 3, width: '120px' }, 
+						   								name: '#[QMM016_39]', 
+						   								value: paymentAmount, 
+						   								constraint: 'WageTablePaymentAmount', 
+						   								required: true}" /> 
+					 				            </div>
+								            </td>
+								        </com:ko>
+					                </tr>
+				                </tbody>
+							</table>
+						</div>
+					</td>
+					<td></td>
+				</tr>
+			</tbody>
+		</table>
     </div>
 </div>
 </ui:composition>

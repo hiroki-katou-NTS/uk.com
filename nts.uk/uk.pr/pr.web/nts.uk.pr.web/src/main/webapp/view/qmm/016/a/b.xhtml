@@ -45,7 +45,7 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td class="ui-widget-header">#{i18n.getText('QMM016_29')}</td>
+                    <th class="ui-widget-header">#{i18n.getText('QMM016_29')}</th>
                     <td>
                         <div data-bind="text: elementName"></div>
                     </td>
@@ -96,7 +96,7 @@
             </thead>
             <tbody data-bind="foreach: $vm.wageTableContent().payment">
 	            <tr>
-	                <td class="ui-widget-header">
+	                <th class="ui-widget-header">
 	                	<div data-bind="if: $vm.selectedWageTable().elementInformation().oneDimensionElement().masterNumericClassification() == 0">
 	                		<span data-bind="text: masterName"></span>
 	                	</div>
@@ -105,7 +105,7 @@
 		                    <span>#{i18n.getText('QMM016_31')}</span>
 		                    <span data-bind="text: frameUpperLimit"></span>
 	                    </div>
-	                </td>
+	                </th>
 	                <td>
 	                    <input data-bind="ntsNumberEditor: {
 							option: { grouplength: 3, width: '120px' },

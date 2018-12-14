@@ -65,8 +65,7 @@ public class UpdateWageTableCommandHandler extends CommandHandlerWithResult<Upda
 			}
 
 			// update element range setting
-			if (context.getCommand().getElementRange() != null
-					&& context.getCommand().getElementRange().getHistoryID() != null) {
+			if (context.getCommand().getElementRange() != null) {
 				context.getCommand().getElementRange().setHistoryID(context.getCommand().getHistory().getHistoryID());
 				Optional<ElementRangeSetting> optElementRange = elemRangeRepo
 						.getElementRangeSettingById(context.getCommand().getHistory().getHistoryID());

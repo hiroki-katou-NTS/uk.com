@@ -77,12 +77,12 @@
                 <tbody data-bind="foreach: $vm.wageTableContent().qualificationGroupSetting()">
                 <com:ko bind="eligibleQualificationCode()" tag="foreach">
                     <tr>
-                        <td style="vertical-align: top; font-weight: normal" class="ui-widget-header"
+                        <th style="vertical-align: top; font-weight: normal" class="ui-widget-header"
                             data-bind="visible: $index() ==0, attr: {rowspan: $parent.eligibleQualificationCode().length}, text: $parent.qualificationGroupName">
-                        </td>
-                        <td style="font-weight: normal" class="ui-widget-header">
+                        </th>
+                        <th style="font-weight: normal" class="ui-widget-header">
                             <div data-bind="text: qualificationName"></div>
-                        </td>
+                        </th>
                         <td>
                             <input data-bind="ntsNumberEditor: {
                                                     name: '#[QMM016_39]',

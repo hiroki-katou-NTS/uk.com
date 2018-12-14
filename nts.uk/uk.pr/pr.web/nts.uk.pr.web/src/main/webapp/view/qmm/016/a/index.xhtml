@@ -113,7 +113,7 @@
                             <input id="A5_2" tabindex="11"
                                    data-bind="ntsTextEditor: {constraint: 'WageTableCode', value: wageTableCode, name: '#[QMM016_14]', required: true , enable: $vm.updateMode() == false}"/>
                             <!--A5_3 名称-->
-                            <input style="margin-left: 15px;" id="A4_3" tabindex="12" width="230px"
+                            <input style="margin-left: 15px;" id="A5_3" tabindex="12" width="230px"
                                    data-bind="ntsTextEditor: {constraint: 'WageTableName',value: wageTableName, name: '#[QMM016_15]', required: true}"/>
                         </div>
                         <div class="flex valign-center tab-row" data-bind="with: $vm.selectedHistory">
@@ -200,7 +200,7 @@
                                     <tbody>
                                     <tr>
                                         <!--A8_4 要素番号1-->
-                                        <td class="ui-widget-header">#{i18n.getText('QMM016_29')}</td>
+                                        <th class="ui-widget-header">#{i18n.getText('QMM016_29')}</th>
                                         <td>
                                             <!--A8_5 参照ボタン1-->
                                             <div data-bind="if: elementSetting() == 0 || elementSetting() == 1 || elementSetting() == 2">
@@ -215,8 +215,8 @@
                                     </tr>
                                     <tr>
                                         <!--A8_7 要素番号2-->
-                                        <td data-bind="if: elementSetting() == 1 || elementSetting() == 2 || elementSetting() == 4"
-                                            class="ui-widget-header">#{i18n.getText('QMM016_40')}</td>
+                                        <th data-bind="if: elementSetting() == 1 || elementSetting() == 2 || elementSetting() == 4"
+                                            class="ui-widget-header">#{i18n.getText('QMM016_40')}</th>
                                         <td data-bind="if: elementSetting() == 1 || elementSetting() == 2">
                                             <!--A8_8 参照ボタン2-->
                                             <div>
@@ -231,8 +231,8 @@
                                     </tr>
                                     <tr>
                                         <!--A8_10  要素番号3-->
-                                        <td data-bind="if: elementSetting() == 2 || elementSetting() == 4"
-                                            class="ui-widget-header">#{i18n.getText('QMM016_44')}</td>
+                                        <th data-bind="if: elementSetting() == 2 || elementSetting() == 4"
+                                            class="ui-widget-header">#{i18n.getText('QMM016_44')}</th>
                                         <td data-bind="if: elementSetting() == 2 || elementSetting() == 4">
                                             <!--A8_11 参照ボタン3-->
                                             <button tabindex="17"
