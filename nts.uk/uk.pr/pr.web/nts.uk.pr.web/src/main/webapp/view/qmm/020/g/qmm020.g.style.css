@@ -31,3 +31,7 @@
 #G3_1_container tr th:NTH-CHILD(5) {
     border-right: none;
 }
+
+#title_G {
+    font-size: 25px !important;
+}
