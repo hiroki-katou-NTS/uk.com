@@ -13,6 +13,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.task.parallel.ManagedParallelWithContext;
+import nts.arc.task.parallel.ParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.pub.employee.ConcurrentEmployeeExport;
@@ -54,6 +56,9 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 	@Inject
 	private StatusOfEmploymentPub statusOfEmploymentPub;
 	
+	@Inject
+	private ManagedParallelWithContext parallel;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -70,6 +75,7 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 //			List<String> empId = roleSetPub.findEmpGrantedInWorkplace(wkpId, period);
 //			lstEmpId.addAll(empId);
 //		}
+
 		List<EmployeeImport> lstEmpDto = lstEmpId.stream().map(x -> {
 			PersonImport perInfo = psInfor.getPersonInfo(x);
 			return new EmployeeImport(companyId,
@@ -80,6 +86,34 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 					"","","",null,null);
 		    }).collect(Collectors.toList());
 		return lstEmpDto;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.
+	 * EmployeeApproveAdapter#findByWpkIds(java.lang.String, java.util.List,
+	 * nts.arc.time.GeneralDate)
+	 */
+	public List<EmployeeImport> findByWpkIdsWithParallel(String companyId, List<String> workplaceIds,
+			GeneralDate baseDate) {
+		List<String> lstEmpId = new ArrayList<>();
+		List<String> empId = roleSetPub.findEmpGrantedInWkpVer2(workplaceIds, baseDate);
+		lstEmpId.addAll(empId);
+
+		List<EmployeeImport> lstEmpDto = Collections.synchronizedList(new ArrayList<>());
+		this.parallel.forEach(lstEmpId, x -> {
+			PersonImport perInfo = psInfor.getPersonInfo(x);
+			EmployeeImport emplpyeeImport = new EmployeeImport(companyId,
+					"",
+					x,
+					perInfo.getEmployeeCode(),
+					perInfo.getEmployeeName(),
+					"","","",null,null);
+			lstEmpDto.add(emplpyeeImport);
+		});
+		
+		return new ArrayList<>(lstEmpDto);
 	}
 
 	@Override

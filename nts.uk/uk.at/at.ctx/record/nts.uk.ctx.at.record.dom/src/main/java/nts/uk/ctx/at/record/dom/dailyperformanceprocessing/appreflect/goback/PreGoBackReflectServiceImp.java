@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.AppReflectRecordWork;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
@@ -19,6 +20,8 @@ public class PreGoBackReflectServiceImp implements PreGoBackReflectService {
 	private AfterScheTimeReflect afterScheTime;
 	@Inject
 	private WorkInformationRepository workRepository;
+	@Inject
+	private CommonProcessCheckService commonService;
 	@Override
 	public boolean gobackReflect(GobackReflectParameter para) {
 		try {
@@ -32,6 +35,7 @@ public class PreGoBackReflectServiceImp implements PreGoBackReflectService {
 			workRepository.updateByKeyFlush(reflectWorkTypeTime.getDailyInfo());
 			//時刻の反映
 			scheTimeReflect.reflectTime(para, reflectWorkTypeTime.isChkReflect());			
+			commonService.calculateOfAppReflect(null, para.getEmployeeId(), para.getDateData());
 			return true;
 		} catch(Exception ex) {
 			return false;
@@ -51,7 +55,7 @@ public class PreGoBackReflectServiceImp implements PreGoBackReflectService {
 			workRepository.updateByKeyFlush(reflectWorkTypeTime.getDailyInfo());
 			//時刻の反映
 			scheTimeReflect.reflectTime(para, reflectWorkTypeTime.isChkReflect());
-			
+			commonService.calculateOfAppReflect(null, para.getEmployeeId(), para.getDateData());
 			return true;
 		} catch (Exception ex) {
 			return false;

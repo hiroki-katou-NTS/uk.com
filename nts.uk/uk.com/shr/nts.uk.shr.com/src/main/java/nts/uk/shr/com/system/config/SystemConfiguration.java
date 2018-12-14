@@ -2,6 +2,7 @@ package nts.uk.shr.com.system.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -33,6 +34,9 @@ public class SystemConfiguration implements InitializeWhenDeploy {
 	/** マニュアル置き場 */
 	private String pathToManual;
 	
+	/** バッチ専用サーバのアドレス */
+	private Optional<String> batchServerAddress;
+	
 	@Override
 	public void initialize() {
 
@@ -42,6 +46,7 @@ public class SystemConfiguration implements InitializeWhenDeploy {
 		this.installationType = this.getValue("InstallationType").asEnum(InstallationType.class).get();
 		this.installedProducts = this.loadInstalledProducts();
 		this.pathToManual = this.getValue("PathToManual").asString().orElse("");
+		this.batchServerAddress = this.getValue("BatchServer").asString();
 		
 		log.info("[INIT END] nts.uk.shr.com.system.config.SystemConfiguration");
 	}

@@ -4,11 +4,14 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,6 +31,7 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.StringLength;
+import nts.uk.ctx.exio.dom.exo.adapter.bs.employee.PersonInfoAdapter;
 import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.category.Association;
 import nts.uk.ctx.exio.dom.exo.category.CategorySetting;
@@ -103,6 +107,7 @@ import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrder;
 import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrderRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.japanese.JapaneseEraName;
 import nts.uk.shr.com.time.japanese.JapaneseEras;
 import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
@@ -151,6 +156,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 	
 	@Inject
 	private JapaneseErasAdapter japaneseErasAdapter;
+	
+	@Inject
+	private PersonInfoAdapter personInfoAdapter;
 	
 	@Inject
 	private FileStorage fileStorage;
@@ -286,7 +294,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				processStartDateTime, standardClass, executeForm, executeId, designatedReferenceDate, specifiedEndDate,
 				specifiedStartDate, codeSettingCondition, resultStatus, nameSetting);
 
-		String errorContent = null;
+		String errorContent = I18NText.getText("CMF002_524");
 		String errorTargetValue = null;
 		GeneralDate errorDate = null;
 		String errorEmployee = null;
@@ -362,7 +370,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		String companyId = AppContexts.user().companyId();
 		String outputProcessId = processingId;
-		String errorContent = null;
+		String errorContent = I18NText.getText("CMF002_525");
 		String errorTargetValue = null;
 		GeneralDate errorDate = null;
 		String errorEmployee = null;
@@ -435,12 +443,17 @@ public class CreateExOutTextService extends ExportService<Object> {
 			stringFormat = stdOutputCondSet.getStringFormat();
 		}
 		
-		if(delimiter == Delimiter.COMMA) {
-			fileName = fileName + CSV;
-		}
+		// fixbug 102767
+		// if(delimiter == Delimiter.COMMA) {
+		fileName = fileName + CSV;
+		// }
 		
-		for(OutputItemCustom outputItemCustom : outputItemCustomList) {
-			header.add(outputItemCustom.getStandardOutputItem().getOutputItemName().v());
+		for (OutputItemCustom outputItemCustom : outputItemCustomList) {
+			String outputName = stringFormat.character + outputItemCustom.getStandardOutputItem().getOutputItemName().v() + stringFormat.character;
+			if (stringFormat == StringFormat.SINGLE_QUOTATION) {
+				outputName = stringFormat.character + outputName;
+			}
+			header.add(outputName);
 		}
 
 		Map<String, String> sqlAndParam;
@@ -679,14 +692,14 @@ public class CreateExOutTextService extends ExportService<Object> {
 								+ "'";
 						break;
 					case TIME:
-						value = outCndDetailItem.getSearchClock().map(i -> i.v().toString()).orElse("");
-						value1 = outCndDetailItem.getSearchClockStartVal().map(i -> i.v().toString()).orElse("");
-						value2 = outCndDetailItem.getSearchClockEndVal().map(i -> i.v().toString()).orElse("");
-						break;
-					case INS_TIME:
 						value = outCndDetailItem.getSearchTime().map(i -> i.v().toString()).orElse("");
 						value1 = outCndDetailItem.getSearchTimeStartVal().map(i -> i.v().toString()).orElse("");
 						value2 = outCndDetailItem.getSearchTimeEndVal().map(i -> i.v().toString()).orElse("");
+						break;
+					case INS_TIME:
+						value = outCndDetailItem.getSearchClock().map(i -> i.v().toString()).orElse("");
+						value1 = outCndDetailItem.getSearchClockStartVal().map(i -> i.v().toString()).orElse("");
+						value2 = outCndDetailItem.getSearchClockEndVal().map(i -> i.v().toString()).orElse("");
 						break;
 
 					default:
@@ -796,7 +809,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				return lineDataCSV;
 			}
 			
-			if(outputItemCustom.getStandardOutputItem().getItemType() == ItemType.CHARACTER) {
+			if(outputItemCustom.getStandardOutputItem().getItemType() != ItemType.NUMERIC) {
 				targetValue = stringFormat.character + targetValue + stringFormat.character;
 				
 				if(stringFormat == StringFormat.SINGLE_QUOTATION) {
@@ -815,6 +828,11 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	private void createOutputLogError(String processingId, String errorContent, String targetValue, String sid,
 			String errorItem) {
+		String employeeCode = null;
+		if (sid != null) {
+			employeeCode = personInfoAdapter.getPersonInfo(sid).getEmployeeCode();
+		}
+		
 		Optional<ExOutOpMng> exOutOpMng = exOutOpMngRepo.getExOutOpMngById(processingId);
 
 		if (!exOutOpMng.isPresent())
@@ -822,13 +840,13 @@ public class CreateExOutTextService extends ExportService<Object> {
 		exOutOpMng.get().setOpCond(ExIoOperationState.EXPORTING);
 		exOutOpMng.get().setErrCnt(exOutOpMng.get().getErrCnt() + 1);
 		exOutOpMngRepo.update(exOutOpMng.get());
-
+		
 		String companyId = AppContexts.user().companyId();
 		String outputProcessId = processingId;
 		String errorTargetValue = targetValue;
 		// in the case of dateType, never error so it always empty
 		GeneralDate errorDate = null;
-		String errorEmployee = sid;
+		String errorEmployee = employeeCode;
 		GeneralDateTime logRegisterDateTime = GeneralDateTime.now();
 		int logSequenceNumber = exOutOpMng.get().getErrCnt();
 		int processCount = exOutOpMng.get().getProCnt();
@@ -1369,7 +1387,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	
 				if (!inConvertCode && (codeConvert.map(i->i.getAcceptWithoutSetting()).orElse(null) == NotUseAtr.NOT_USE)) {
 					state = RESULT_NG;
-					errorMess = "mes-678";
+					errorMess = TextResource.localize("Msg_678");
 	
 					result.put(RESULT_STATE, state);
 					result.put(ERROR_MESS, errorMess);
@@ -1379,11 +1397,29 @@ public class CreateExOutTextService extends ExportService<Object> {
 				}
 			}
 		}
-
+		targetValue =  targetValue.replaceAll("\\n", "");
 		if (setting.getSpaceEditting() == EditSpace.DELETE_SPACE_AFTER) {
-			targetValue.replaceAll("\\s+$", "");
+			targetValue =  targetValue.replaceAll("\\s+$", "");
+			int countSpaceJapan = 0;
+			for(int i = targetValue.length()-1;i>=0;i--) {
+				if(targetValue.charAt(i) == '　' || targetValue.charAt(i) == '　') {
+					countSpaceJapan++;
+				}else {
+					break;
+				}
+			}
+			targetValue = targetValue.substring(0,targetValue.length()-countSpaceJapan);
 		} else if (setting.getSpaceEditting() == EditSpace.DELETE_SPACE_BEFORE) {
-			targetValue.replaceAll("^\\s+", "");
+			targetValue = targetValue.replaceAll("^\\s+", "");
+			int countSpaceJapan = 0;
+			for(char x : targetValue.toCharArray()) {
+				if(x == '　' || x == '　') {
+					countSpaceJapan++;
+				}else {
+					break;
+				}
+			}
+			targetValue = targetValue.substring(countSpaceJapan,targetValue.length());
 		}
 
 		if ((setting.getCdEditting() == NotUseAtr.USE)
@@ -1470,10 +1506,14 @@ public class CreateExOutTextService extends ExportService<Object> {
 		DateOutputFormat formatDate = setting.getFormatSelection();
 
 		if (formatDate == DateOutputFormat.YY_MM_DD || formatDate == DateOutputFormat.YYMMDD
-				|| formatDate == DateOutputFormat.YYYY_MM_DD || formatDate == DateOutputFormat.YYYYMMDD
-				|| formatDate == DateOutputFormat.DAY_OF_WEEK) {
+				|| formatDate == DateOutputFormat.YYYY_MM_DD || formatDate == DateOutputFormat.YYYYMMDD) {
 			targetValue = date.toString(formatDate.format);
-		} else if (formatDate == DateOutputFormat.JJYY_MM_DD || formatDate == DateOutputFormat.JJYYMMDD) {
+		} else if (formatDate == DateOutputFormat.DAY_OF_WEEK){
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E", Locale.JAPAN);			
+			LocalDate dateXX = LocalDate.parse(itemValue, DateTimeFormatter.ofPattern("yyyy-MM-dd"));		
+			targetValue = dateXX.format(formatter);
+		}
+		else if (formatDate == DateOutputFormat.JJYY_MM_DD || formatDate == DateOutputFormat.JJYYMMDD) {
 			JapaneseEras erasList = japaneseErasAdapter.getAllEras();
 			Optional<JapaneseEraName> japaneseEraNameOptional = erasList.eraOf(date);
 			
@@ -1486,7 +1526,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				JapaneseEraName japaneseEraName = japaneseEraNameOptional.get();
 				
 				StringBuilder japaneseDate = new StringBuilder(japaneseEraName.getName()); 
-				japaneseDate.append((date.year() - japaneseEraName.startDate().year()) + SLASH);		
+				japaneseDate.append((date.year() - japaneseEraName.startDate().year() + 1) + SLASH);		
 				japaneseDate.append(date.month() + SLASH);
 				japaneseDate.append(date.day());
 				

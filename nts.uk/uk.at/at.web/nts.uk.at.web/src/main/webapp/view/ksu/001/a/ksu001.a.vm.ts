@@ -1592,6 +1592,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     });
                 }).fail(function(error: any) {
                     alertError({ messageId: error.messageId });
+                    self.setDatasource().done(function() {
+                        self.updateExTable();
+                    });
                 }).always(() => {
                     self.stopRequest(true);
                 });
@@ -1850,9 +1853,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          * Set error
          */
         addListError(errorsRequest: Array<string>) {
-            var errors = [];
+            let errors = [];
             _.forEach(errorsRequest, function(err) {
-                var errSplits = err.split(",");
+                let errSplits = err.split(",");
                 if (errSplits.length == 1) {
                     errors.push({ message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
                 } else {

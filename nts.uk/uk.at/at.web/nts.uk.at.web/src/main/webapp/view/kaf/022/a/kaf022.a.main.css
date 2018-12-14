@@ -32,11 +32,7 @@ td div {
 }
 
 .a17 .ntsRadioBox span.label {
-	padding-right: 169px;
-}
-
-#a17_7>label:nth-child(2) {
-	margin-left: 17px;
+	width: 205px;
 }
 
 .a6_text {

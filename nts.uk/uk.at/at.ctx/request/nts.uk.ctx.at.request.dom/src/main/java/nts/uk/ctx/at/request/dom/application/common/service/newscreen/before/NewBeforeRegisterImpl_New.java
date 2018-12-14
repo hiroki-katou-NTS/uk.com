@@ -354,7 +354,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		}
 		confirmCheck(appLimitSetting,actualLockImport,appDate,companyID,employeeID,closureEmployment);
 	}
-	private void confirmCheckOvertime(String companyID, String employeeID, GeneralDate appDate){
+	public void confirmCheckOvertime(String companyID, String employeeID, GeneralDate appDate){
 		// アルゴリズム「申請の締め切り期限をチェック」を実施する
 				SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID,
 						employeeID, appDate);
