@@ -656,7 +656,19 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             } else {
                 self.checkedCountAtr(false);
             }    
-        }      
+        } 
+        private exportExcel(): void {
+            var self = this;
+            nts.uk.ui.block.grayout();
+            let langId = "ja";
+            service.saveAsExcel(langId).done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+        }
+     
     }
 
     export class TotalTimesModel {
