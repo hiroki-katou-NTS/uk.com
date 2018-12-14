@@ -199,9 +199,9 @@ module nts.uk.at.view.kwr001.a {
                                 name: value.employeeName,
                                 workplaceName: value.workplaceName
                             };
-                            if (!_.isEmpty(value.workplaceId) && !_.isNil(value.workplaceId)) {
+//                            if (!_.isEmpty(value.workplaceId) && !_.isNil(value.workplaceId)) {
                                 employeeSearchs.push(employee);    
-                            }
+//                            }
                         });
                         self.employeeList(employeeSearchs);
                     }
@@ -278,6 +278,7 @@ module nts.uk.at.view.kwr001.a {
                     alreadySettingList: self.alreadySettingList,
                     isShowWorkPlaceName: self.isShowWorkPlaceName(),
                     isShowSelectAllButton: self.isShowSelectAllButton(),
+                    isSelectAllAfterReload: true,
                     tabindex: 5,
                     maxRows: 17
                 };
