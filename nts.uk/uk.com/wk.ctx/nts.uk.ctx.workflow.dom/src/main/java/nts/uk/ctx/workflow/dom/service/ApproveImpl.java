@@ -13,6 +13,8 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.PrincipalApprovalFlg;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
@@ -26,6 +28,7 @@ import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterInforOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
 import nts.uk.ctx.workflow.dom.service.output.RepresenterInforOutput;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -47,6 +50,10 @@ public class ApproveImpl implements ApproveService {
 	@Inject
 	private CollectApprovalRootService collectApprovalRootService;
 	
+	@Inject
+	private ApprovalSettingRepository repoApprSet;
+	
+	//承認する
 	@Override
 	public Integer doApprove(String companyID, String rootStateID, String employeeID, Boolean isCreate, 
 			ApplicationType appType, GeneralDate appDate, String memo, Integer rootType) {
@@ -61,12 +68,23 @@ public class ApproveImpl implements ApproveService {
 					appDate);
 			approvalRootState = approvalRootContentOutput.getApprovalRootState();
 		} else {
+			//ドメインモデル「承認ルートインスタンス」を取得する
 			Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, rootType);
-			if(!opApprovalRootState.isPresent()){
+			if(!opApprovalRootState.isPresent()){//0件
 				throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
 			}
 			approvalRootState = opApprovalRootState.get();
 		}
+		//hoatt 2018.12.14
+		//EA修正履歴 No.3013
+		//ドメインモデル「承認設定」を取得する
+		Optional<PrincipalApprovalFlg> flg = repoApprSet.getPrincipalByCompanyId(companyID);
+		if((!flg.isPresent() || flg.get().equals(PrincipalApprovalFlg.NOT_PRINCIPAL)) &&
+				approvalRootState.getEmployeeID().equals(AppContexts.user().employeeId())){
+			//本人による承認＝false　＆　申請者＝ログイン社員IDの場合
+			return approvalPhaseNumber;
+		}
+		
 		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder));
 		for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
 			if(approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
