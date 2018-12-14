@@ -190,7 +190,6 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
         }
 
         openMScreen(item, code) {
-            block.invisible();
             let self = this;
             let salaryCode = item.displayE3_4.split('    ')[0];
             let bonusCode = item.displayE3_5.split('    ')[0];
@@ -210,7 +209,6 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                 }
 
             });
-            block.clear();
         }
 
         openJScreen() {

@@ -212,7 +212,6 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
         }
 
         openMScreen(item, code) {
-            block.invisible();
             let self = this;
             let index = this.getIndex(self.hisIdSelected());
             let salaryCode = item.displayE3_4.split('    ')[0];
@@ -232,7 +231,6 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 }
 
             });
-            block.clear();
         }
 
         openJScreen() {
