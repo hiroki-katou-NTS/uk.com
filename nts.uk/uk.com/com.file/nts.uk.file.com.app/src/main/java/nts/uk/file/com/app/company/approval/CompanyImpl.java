@@ -70,6 +70,8 @@ public class CompanyImpl implements MasterListData{
 			listCompany.stream().forEach(c->{
 				Map<String, Object> data = new HashMap<>();
 				
+				putEmptyData(data);
+				
 				Optional<Company> listFind = companyRepository.find(c.getCompanyId());
 				
 				Optional<DivWorkDifferInfor> findDivWorks = divRep.findDivWork(c.getCompanyId());
@@ -219,6 +221,29 @@ public class CompanyImpl implements MasterListData{
 				ColumnTextAlign.LEFT, "", true));
 		
 		return columns;
+	}
+	
+	private void putEmptyData (Map<String, Object> data){
+		data.put("会社コード", "");
+		data.put("この会社を廃止する",""); 
+		data.put("会社名","");
+		data.put("会社名（カナ）", "");
+		data.put("会社名（略名）", "");
+		data.put("法人番号", "");
+		data.put("会社代表者名",""); 
+		data.put("会社代表者職位", "");
+		data.put("郵便番号", "");
+		data.put("住所 市区町村・番地","");
+		data.put("住所 建物名など", "");
+		data.put("住所カナ 市区町村・番地","");
+		data.put("住所カナ 建物名など", "");
+		data.put("電話番号", "");
+		data.put("FAX", "");
+		data.put("人事システム", "");
+		data.put("就業システム", "");
+		data.put("給与システム", "");
+		data.put("職場と部門", "");
+		data.put("期首月","");
 	}
 	
 	
