@@ -39,5 +39,9 @@ module nts.uk.at.view.ksm002.b {
         export function deleteCalendarWorkPlace(command): JQueryPromise<any> {
             return ajax(paths.deleteCalendarWorkPlace, command);
         }
+        
+        export function saveAsExcel(): JQueryPromise<any> {
+            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "SpecificdaySet", domainType: "特定日の登録", languageId: "ja", reportType: 0});
+        }
     }
 }

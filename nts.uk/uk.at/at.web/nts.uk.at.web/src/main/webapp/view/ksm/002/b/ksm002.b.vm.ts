@@ -105,7 +105,7 @@ module ksm002.b.viewmodel {
                 bService.getCompanyStartDay(),
                 self.getSpecDateByIsUse(),
                 self.getCalendarWorkPlaceByCode()
-            ).done((data1, data2, data3, data4, data5)=>{
+            ).done((data1, data2, data3, data4, data5)=>{            
                 if(!nts.uk.util.isNullOrUndefined(data3)) { 
                     self.firstDay(data3.startDay); 
                 }
@@ -220,9 +220,9 @@ module ksm002.b.viewmodel {
         getCalendarWorkPlaceByCode(): JQueryPromise<any>{
             var self = this;
             var dfd = $.Deferred();
-            if(!nts.uk.util.isNullOrUndefined(self.currentWorkPlace().id())&&!nts.uk.util.isNullOrEmpty(self.currentWorkPlace().id())){
+//            if(!nts.uk.util.isNullOrUndefined(self.currentWorkPlace().id())&&!nts.uk.util.isNullOrEmpty(self.currentWorkPlace().id())){
                 let workplaceParam = {
-                    workPlaceId: self.currentWorkPlace().id(),
+                    workPlaceId: '69607aa0-e0dc-4deb-92e7-5e7b965bce43',
                     workPlaceDate: moment(self.yearMonthPicked(), "YYYY/MM/01").format("YYYY/MM/DD")
                 }
                 bService.getCalendarWorkPlaceByCode(workplaceParam).done(data=>{
@@ -244,7 +244,7 @@ module ksm002.b.viewmodel {
                 }).fail(res => {
                     dfd.reject(res);
                 });
-            } else dfd.resolve();
+//            } else dfd.resolve();
             return dfd.promise();
         }
         
@@ -477,6 +477,20 @@ module ksm002.b.viewmodel {
                 a.push(rs.id);       
             });
             return a; 
+        }
+        
+        /**
+         * Print file excel
+         */
+        exportExcel() : void {
+            var self = this;
+            nts.uk.ui.block.grayout();
+            service.saveAsExcel().done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
         }
     }
     
