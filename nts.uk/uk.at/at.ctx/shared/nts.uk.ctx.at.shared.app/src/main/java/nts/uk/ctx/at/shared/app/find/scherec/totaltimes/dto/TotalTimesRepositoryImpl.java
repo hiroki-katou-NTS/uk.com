@@ -72,6 +72,8 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 				
 				Map<String, Object> data = new HashMap<>();
 				
+				putEmptyData(data);		
+				
 				data.put("No", c.getTotalCountNo());
 				Optional<TotalTimes> optTotalTimes = this.totalTimesRepository.getTotalTimesDetail(companyId,
 						c.getTotalCountNo());
@@ -79,6 +81,7 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 				if(c.getUseAtr() == UseAtr.NotUse){
 					// neu =0 
 					data.put("使用区分", UseAtr.NotUse.nameId);
+					
 				}else{
 					
 					data.put("使用区分", UseAtr.Use.nameId);
@@ -155,7 +158,6 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 					}
 					
 					if(CollectionUtil.isEmpty(dailyAttendanceItemDomainServiceDtos)){
-						data.put("半日勤務区分", "");
 					}else{
 						dailyAttendanceItemDomainServiceDtos.stream().forEach(m->{
 							data.put("半日勤務区分", m.getAttendanceItemName());
@@ -178,6 +180,7 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 		return datas;
 	}
 
+
 	@Override
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
 		
@@ -191,7 +194,6 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("略名", TextResource.localize("CMM008_10"),
 				ColumnTextAlign.LEFT, "", true));
-		
 		columns.add(new MasterHeaderColumn("集計区分", "集計区分",
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("勤務種類", "就業時間帯",
@@ -211,6 +213,23 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 		columns.add(new MasterHeaderColumn("半日勤務区分", "半日勤務区分",
 				ColumnTextAlign.LEFT, "", true));
 		return columns;
+	}
+	
+	private void putEmptyData (Map<String, Object> data){
+		data.put("No", "");
+		data.put("使用区分", "");
+		data.put("名称", "");
+		data.put("略名", "");
+		data.put("集計区分", "");
+		data.put("勤務種類", "");
+		data.put("就業時間帯", "");
+		data.put("集計条件以上", "");
+		data.put("以上", "");
+		data.put("集計条件未満", "");
+		data.put("未満","");
+		data.put("対象項目", "");
+		data.put("半日勤務区分", "");
+		
 	}
 
 
