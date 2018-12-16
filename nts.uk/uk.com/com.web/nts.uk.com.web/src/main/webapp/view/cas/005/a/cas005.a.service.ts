@@ -55,7 +55,7 @@ module nts.uk.com.view.cas005.a {
         export function exportExcel(): JQueryPromise<any> {
             let _params = { domainId: "RoleEmployment", 
                         domainType: "CAS005ロールの登録（就業）", 
-                        languageId: languageId, 
+                        languageId: "ja", 
                         reportType: 0, option : date };
             return nts.uk.request.exportFile('/masterlist/report/print',_params);
         }
