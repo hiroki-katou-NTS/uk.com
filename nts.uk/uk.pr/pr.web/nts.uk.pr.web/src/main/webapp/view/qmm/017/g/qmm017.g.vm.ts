@@ -1,6 +1,5 @@
 module nts.uk.pr.view.qmm017.g.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
-    import block = nts.uk.ui.block;
     export class ScreenModel {
         calculationFormulaList: KnockoutObservableArray<any> = ko.observableArray([]);
         trialCalculationResult: KnockoutObservable<number> = ko.observable(null);
@@ -45,7 +44,10 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             self.calculationFormulaList(calculationFormulaData);
         }
 
-        calculationInServer () {
+
+
+        // calculation via aspose cell
+        calculateInServer () {
             $('.nts-input').trigger("validate");
             if (nts.uk.ui.errors.hasError()) return;
             let self = this, calculationFormulaData = ko.toJS(self.calculationFormulaList), formulaContent = self.formulaContent();
@@ -66,17 +68,80 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             calculationFormulaData.forEach(item => {
                 formulaContent = formulaContent.replace(item.formulaItem, item.trialCalculationValue);
             });
-            formulaContent = self.doCalculationFunction(formulaContent);
-            let postFix = self.convertToPostfix(formulaContent);
-            self.calculationPostfixFormula(postFix);
+            formulaContent = self.calculateSystemVariable(formulaContent);
+            if (nts.uk.ui.errors.hasError()) {
+                self.trialCalculationResult(null);
+                return;
+            }
+            formulaContent = self.calculateFunction(formulaContent);
+            if (nts.uk.ui.errors.hasError()) {
+                self.trialCalculationResult(null);
+                return;
+            }
+            if (formulaContent != null) {
+                self.trialCalculationResult(self.calculationSuffixFormula(formulaContent));
+            } else {
+                // there are error here;
+            }
         }
 
+        calculateSystemVariable (formulaElement) {
+            let self = this, startFunctionIndex, endFunctionIndex, systemVariable, systemVariableResult;
+            while (formulaElement.indexOf(self.VARIABLE) > -1) {
+                startFunctionIndex = formulaElement.lastIndexOf(self.VARIABLE);
+                endFunctionIndex = self.indexOfEndElement(startFunctionIndex, formulaElement) + 1;
+                systemVariable = formulaElement.substring(startFunctionIndex, endFunctionIndex);
+                systemVariableResult = self.getSystemValueBySystemVariable(systemVariable);
+                if (systemVariableResult) {
+                    formulaElement = formulaElement.replace(systemVariable,  systemVariableResult);
+                } else {
+                    // must set error here
+                    return null;
+                }
+            }
+            return formulaElement;
+        }
+
+        getSystemValueBySystemVariable (systemVariable) {
+            let self = this;
+            let functionName = systemVariable.substring(systemVariable.indexOf(self.CONCAT_CHAR) + 1, systemVariable.indexOf(self.OPEN_BRACKET));
+            switch (functionName) {
+                case self.SYSTEM_YMD_DATE: return moment().format("YYYYMMDD");
+                case self.SYSTEM_YM_DATE: return moment().format("YYYYMM");
+                case self.SYSTEM_Y_DATE: return moment().format("YYYY");
+                // Temporary can't decide value of following item
+                case self.PROCESSING_YEAR: return moment().format("YYYY");
+                case self.PROCESSING_YEAR_MONTH: return moment().format("YYYYMM");
+                case self.REFERENCE_TIME: return moment().format("YYYYMMDD");
+                case self.STANDARD_DAY: return moment().format("YYYYMMDD");
+                case self.WORKDAY: return moment().format("YYYYMMDD");
+                default: return null;
+            }
+        }
+
+        calculateFunction (formulaElement) {
+            let self = this, startFunctionIndex, endFunctionIndex, functionSyntax;
+            let functionResult;
+            while (formulaElement.indexOf(self.FUNCTION) > -1) {
+                startFunctionIndex = formulaElement.lastIndexOf(self.FUNCTION);
+                endFunctionIndex = self.indexOfEndElement(startFunctionIndex, formulaElement) + 1;
+                functionSyntax = formulaElement.substring(startFunctionIndex, endFunctionIndex);
+                functionResult = self.calculateSingleFunction(functionSyntax);
+                if (functionResult) {
+                    formulaElement = formulaElement.replace(functionSyntax,  functionResult);
+                } else {
+                    // must set error here
+                    return null;
+                }
+            }
+            return formulaElement;
+        }
         convertToPostfix (formulaContent) {
             let self = this, regex = new RegExp('([' + ['\\\＋', 'ー', '\\×', '÷', '\\^', '\\\(', '\\\)'].join('|') + '])');
             let formulaElements:any = formulaContent.split(regex).filter(item => {return item && item.length});
             let postfix = [], operators = [], operator, currentChar, closeBracket;
-            for(let index = 0; index < formulaContent.length; index++){
-                currentChar = formulaContent[index];
+            for(let index = 0; index < formulaElements.length; index++){
+                currentChar = formulaElements[index];
                 if (!isNaN(currentChar)) {
                     postfix.push(currentChar);
                     continue;
@@ -113,63 +178,57 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             return 0;
         }
 
-        calculationPostfixFormula (formulaContent) {
+        calculationSuffixFormula (formulaContent) {
             let self = this,  currentChar, result, operands = [], operand1, operand2;
-            for(let index = 0; index < formulaContent.length; index++){
-                currentChar = formulaContent[index];
+            let postFix = self.convertToPostfix(formulaContent);
+            for(let index = 0; index < postFix.length; index++){
+                currentChar = postFix[index];
                 if (!isNaN(currentChar)) {
                     operands.push(currentChar);
                     continue;
                 }
                 operand1 = operands.pop();
                 operand2 = operands.pop();
-                operands.push(self.doCalculation(operand1, operand2, currentChar));
+                operands.push(self.calculateSingleFormula(operand1, operand2, currentChar));
             }
-            self.trialCalculationResult(operands.pop());
+            return operands.pop();
         }
-        doCalculationFunction (formulaElement) {
-            let self = this, originalFormula = formulaElement, startFunctionIndex, endFunctionIndex, functionsSyntax = [];
+
+        calculateSingleFunction (functionSyntax) {
             let self = this;
-            while (formulaElement.indexOf(self.FUNCTION) > -1) {
-                startFunctionIndex = formulaElement.indexOf(self.FUNCTION);
-                endFunctionIndex = startFunctionIndex + formulaElement.substring(startFunctionIndex).indexOf(self.CLOSE_BRACKET) + 1;
-                functionsSyntax.push(formulaElement.substring(startFunctionIndex, endFunctionIndex));
-                formulaElement = formulaElement.substring( endFunctionIndex );
-            }
-            functionsSyntax.forEach(functionSyntax => {
-                let functionName = functionSyntax.substring(functionSyntax.indexOf(self.CONCAT_CHAR) + 1, functionSyntax.indexOf(self.OPEN_BRACKET)),
-                    functionParameter = functionSyntax.substring(functionSyntax.indexOf(self.OPEN_BRACKET) + 1, functionSyntax.length-1).split(self.COMMA_CHAR).map(item => item.trim());
-                if (functionName == self.CONDITIONAL)
-                    originalFormula = originalFormula.replace(functionSyntax, self.doCalculationCondition(functionParameter));
-                if (functionName == self.ROUND_OFF)
-                    originalFormula = originalFormula.replace(functionSyntax, (Number(Math.round(functionParameter[0]))));
-                if (functionName == self.ROUND_UP)
-                    originalFormula = originalFormula.replace(functionSyntax, (Number(Math.ceil(functionParameter[0]))));
-                if (functionName == self.TRUNCATION)
-                    originalFormula = originalFormula.replace(functionSyntax, (Number(Math.floor(functionParameter[0]))));
-                if (functionName == self.MAX_VALUE)
-                    originalFormula = originalFormula.replace(functionSyntax, (Number(Math.max(...functionParameter))));
-                if (functionName == self.MIN_VALUE)
-                    originalFormula = originalFormula.replace(functionSyntax, (Number(Math.min(...functionParameter))));
-                if (functionName == self.NUM_OF_FAMILY_MEMBER)
-                    originalFormula = originalFormula.replace(functionSyntax, 0);
-                if (functionName == self.YEAR_MONTH)
-                    originalFormula = originalFormula.replace(functionSyntax, (Number(moment(functionParameter[0]).add(functionParameter[1], 'm'))));
-                if (functionName == self.YEAR_MONTH)
-                    originalFormula = originalFormula.replace(functionSyntax, moment(functionParameter[0]).year());
-                if (functionName == self.YEAR_MONTH)
-                    originalFormula = originalFormula.replace(functionSyntax, moment(functionParameter[0]).month());
-            })
-            return originalFormula;
+            let functionName = functionSyntax.substring(functionSyntax.indexOf(self.CONCAT_CHAR) + 1, functionSyntax.indexOf(self.OPEN_BRACKET)),
+                functionParameter = functionSyntax.substring(functionSyntax.indexOf(self.OPEN_BRACKET) + 1, functionSyntax.lastIndexOf(self.CLOSE_BRACKET)).split(self.COMMA_CHAR).map(item => item.trim());
+            if (functionName == self.CONDITIONAL)
+                return self.calculateFunctionCondition(functionParameter);
+            if (functionName == self.YEAR_MONTH)
+                return moment(functionParameter[0]).add(functionParameter[1], 'M').format("YYYYMMDD");
+            if (functionName == self.YEAR_EXTRACTION)
+                return moment(functionParameter[0]).year();
+            if (functionName == self.MONTH_EXTRACTION)
+                return moment(functionParameter[0]).month() + 1;
+            functionParameter = functionParameter.map(functionElement => self.calculationSuffixFormula(functionElement));
+            if (functionName == self.ROUND_OFF)
+               return Number(Math.round(functionParameter[0]));
+            if (functionName == self.ROUND_UP)
+                return Number(Math.ceil(functionParameter[0]));
+            if (functionName == self.TRUNCATION)
+                return Number(Math.floor(functionParameter[0]));
+            if (functionName == self.MAX_VALUE)
+                return (Math.max(...functionParameter));
+            if (functionName == self.MIN_VALUE)
+                return Number(Math.min(...functionParameter));
+            if (functionName == self.NUM_OF_FAMILY_MEMBER)
+                return 0;
+            return null;
         }
-        doCalculationCondition (functionParameter) {
+        calculateFunctionCondition (functionParameter) {
             let self = this, conditionSeparators = ['\\>', '\\<', '\\\≦', '\\\≧', '\\\＝', '\\\≠'].join("|");
             let operand1, operand2, operator, result1 = functionParameter[1], result2 = functionParameter[2];
             let firstParameterData = functionParameter[0].split(new RegExp('([' +conditionSeparators + '])')).map(item => item.trim()).filter(item => {
                 return (item && item.length);
             });
-            operand1 = Number(firstParameterData[0]);
-            operand2 = Number(firstParameterData[2]);
+            operand1 = Number(self.calculationSuffixFormula(firstParameterData[0]));
+            operand2 = Number(self.calculationSuffixFormula(firstParameterData[2]));
             operator = firstParameterData[1];
             switch (operator){
                 case self.GREATER:
@@ -188,7 +247,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                     return 0;
             }
         }
-        doCalculation (operand1, operand2, operator) {
+        calculateSingleFormula (operand1, operand2, operator) {
             operand1 = Number(operand1);
             operand2 = Number(operand2);
             let self = this;
@@ -204,8 +263,22 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                 case self.POW:
                     return Math.pow(operand2, operand1);
                 default :
-                    return 0;
+                    return operand1;;
             }
+        }
+        indexOfEndElement (startFunctionIndex, formula) {
+            let self = this, index, openBracketNum = 0, closeBracketNum = 0, currentChar;
+            for(index = startFunctionIndex; index < formula.length ; index ++ ) {
+                currentChar = formula [index];
+                if (currentChar == self.OPEN_BRACKET) openBracketNum ++;
+                if (currentChar == self.CLOSE_BRACKET){
+                    closeBracketNum ++;
+                    if (openBracketNum == closeBracketNum){
+                        return index;
+                    }
+                }
+            }
+            return -1;
         }
 
         closeDialog () {
