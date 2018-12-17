@@ -2,11 +2,20 @@ module cps003.a.service {
     import ajax = nts.uk.request.ajax;
 
     export const push = {
-        data: (command: any) => ajax(``)
+        data: (command: any) => ajax(`ctx/pereg/grid-layout/save-data`, command),
+        setting: (command: any) => ajax(`ctx/pereg/grid-layout/save-setting`, command)
     }
 
     export const fetch = {
-        person: (id: string) => ajax(`/ctx/person/${id}`),
-        category: (id: string) => ajax(`ctx/pereg/employee/category/getall/${id}`)
+        data: (command: any) => ajax(`ctx/pereg/grid-layout/get-data`, command),
+        setting: () => ajax(`ctx/pereg/grid-layout/get-setting`),
+        category: (uid: string) => ajax(`ctx/pereg/employee/category/getall/${uid}`)
     }
+    
+    export interface ISettingCommand {
+    maxtrixDisplays: {
+    };
+    personInfoItems: {
+    };
+}
 }
