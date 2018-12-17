@@ -26,7 +26,6 @@ public class ProcessExecutionBatchWebService extends WebService {
 	@Path("batch-execute")
 	public BatchTaskResult execute(ExecuteProcessExecutionCommand command) {
 		AsyncTaskInfo info = this.execHandler.handle(command);
-		System.out.println("Run batch service !");
 		return new BatchTaskResult(info.getId());
 	}
 

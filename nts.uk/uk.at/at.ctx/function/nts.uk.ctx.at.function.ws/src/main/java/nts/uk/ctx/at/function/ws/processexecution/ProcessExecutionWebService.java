@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.ws.processexecution;
 
-import java.io.Console;
 import java.util.List;
 
 import javax.inject.Inject;
