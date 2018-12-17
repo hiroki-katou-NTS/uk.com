@@ -52,8 +52,15 @@ public class JpaMatrixDisplaySetRepo extends JpaRepository implements MatrixDisp
 	 */
 	@Override
 	public void insert(MatrixDisplaySetting newSetting) {
+		PpestMatrixDisplaySet newEntity = PpestMatrixDisplaySet.toEntity(newSetting);
+		Optional<PpestMatrixDisplaySet> updateEntity = this.queryProxy().find(newEntity.ppestMatrixDisplaySetPK, PpestMatrixDisplaySet.class);
+		if(!updateEntity.isPresent()){
 		this.commandProxy().insert(PpestMatrixDisplaySet.toEntity(newSetting));
 		this.getEntityManager().flush();
+		}
+		else{
+		this.commandProxy().update(updateEntity);	
+		}
 	}
 
 	/* (non-Javadoc)

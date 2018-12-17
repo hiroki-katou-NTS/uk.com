@@ -66,8 +66,13 @@ public class JpaPersonInfoMatrixItem extends JpaRepository implements PersonInfo
 	 */
 	@Override
 	public void insert(PersonInfoMatrixItem newSetting) {
-		this.commandProxy().insert(PpestPersonInfoMatrixItem.toEntity(newSetting));
-		
+		PpestPersonInfoMatrixItem newEntity = PpestPersonInfoMatrixItem.toEntity(newSetting);
+		Optional<PpestPersonInfoMatrixItem> updateEntity = this.queryProxy().find(newEntity.ppestPersonInfoMatrixItemPK,PpestPersonInfoMatrixItem.class);
+		if (!updateEntity.isPresent()) {
+			this.commandProxy().insert(PpestPersonInfoMatrixItem.toEntity(newSetting));
+		} else {
+			this.commandProxy().update(updateEntity);
+		}
 	}
 
 
