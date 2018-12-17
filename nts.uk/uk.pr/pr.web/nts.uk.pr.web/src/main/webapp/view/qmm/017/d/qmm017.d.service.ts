@@ -3,6 +3,8 @@ module nts.uk.pr.view.qmm017.d.service {
     import format = nts.uk.text.format;
 
     let paths = {
+        // all
+        getFormulaElements: "ctx/pr/core/wageprovision/formula/getFormulaElement/{0}",
         // tab 1
         getStatementItemData: "ctx/pr/core/wageprovision/statementitem/getStatementItemData/{0}/{1}",
         getAllStatementItemData: "ctx/pr/core/wageprovision/statementitem/getAllStatementItemData/{0}/{1}",
@@ -55,5 +57,10 @@ module nts.uk.pr.view.qmm017.d.service {
 
     export function getAllWageTable() : JQueryPromise<any> {
         return ajax(paths.getAllWageTable);
+    }
+
+    export function getFormulaElements (yearMonth: number) : JQueryPromise<any> {
+        let _path = nts.uk.text.format(paths.getFormulaElements, yearMonth);
+        return nts.uk.request.ajax("pr", _path);
     }
 }

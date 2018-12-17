@@ -34,7 +34,7 @@
         <div id="functions-area">
             <!--A1_1; A1_,2; A1_3; A1_4; A1_5-->
             <button data-bind = "click: changeToNewMode" tabindex="1">#{i18n.getText('QMM017_1')}</button>
-            <button data-bind = "click: register" tabindex="2" class="proceed">#{i18n.getText('QMM017_2')}</button>
+            <button data-bind = "click: register, enable: $root.errors.isEmpty" tabindex="2" class="proceed">#{i18n.getText('QMM017_2')}</button>
             <button data-bind = "enable: false" tabindex="3">#{i18n.getText('QMM017_3')}</button>
             <button data-bind = "enable: false" tabindex="4">#{i18n.getText('QMM017_4')}</button>
             <button data-bind = "enable: false" tabindex="5">#{i18n.getText('QMM017_5')}</button>
@@ -203,15 +203,15 @@
                         </div>
                     </div>
                     <div  class="tab-content-2">
-                        <div data-bind="visible: selectedFormula().settingMethod() == 0">
+                        <div class = "basic" data-bind="visible: selectedFormula().settingMethod() == 0">
                             <div data-bind="visible: basicFormulaSetting().masterBranchUse() == 1">
                                 <ui:include src="../b/index.xhtml"/>
                             </div>
-                            <div data-bind="visible: basicFormulaSetting().masterBranchUse() == 0">
+                            <div class = "screenC" data-bind="visible: basicFormulaSetting().masterBranchUse() == 0">
                                 <ui:include src="../c/index.xhtml"/>
                             </div>
                         </div>
-                        <div>
+                        <div class = "detail">
                             <div data-bind="visible: selectedFormula().settingMethod() == 1">
                                 <div>
                                     <ui:include src="../d/index.xhtml"/>
