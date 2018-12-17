@@ -119,6 +119,7 @@ module nts.uk.com.view.cmf002.s {
                                     if (data) {
                                         let delFile = data.deleteFile;
                                         let fileId = data.fileId;
+                                        self.isDownloaded(delFile == 0);
                                         if (delFile == 1) {
                                             self.dialogMode("File_delete");
                                             $('#S10_2').focus();
@@ -132,7 +133,6 @@ module nts.uk.com.view.cmf002.s {
                                                 .ifYes(() => {
                                                     if (fileId) {
                                                         nts.uk.request.specials.donwloadFile(fileId);
-                                                        self.isDownloaded(true);
                                                         $('#S10_2').focus();
                                                     }
                                                 })
@@ -210,7 +210,7 @@ module nts.uk.com.view.cmf002.s {
                         service.getExterOutExecLog(self.storeProcessingId).done(function(res: any) {
                             let fileId = res.fileId;
                             nts.uk.request.specials.donwloadFile(fileId);
-                            self.isDownloaded(true);
+                            //self.isDownloaded(true);
                             $('#S10_2').focus();
                         }).fail(function(res: any) {
                             console.log("Get fileId fail");

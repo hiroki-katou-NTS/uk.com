@@ -29,7 +29,7 @@ public class JpaLoginLogGetMemento implements LoginLogGetMemento{
 	 */
 	@Override
 	public String getUserId() {
-		return this.entity.getSgwmtLoginLogPK().getUserId();
+		return this.entity.getUserId();
 	}
 
 	/* (non-Javadoc)
@@ -37,7 +37,7 @@ public class JpaLoginLogGetMemento implements LoginLogGetMemento{
 	 */
 	@Override
 	public ContractCode getContractCode() {
-		return new ContractCode(this.entity.getSgwmtLoginLogPK().getContractCd());
+		return new ContractCode(this.entity.getContractCd());
 	}
 
 	/* (non-Javadoc)
@@ -45,7 +45,7 @@ public class JpaLoginLogGetMemento implements LoginLogGetMemento{
 	 */
 	@Override
 	public String getProgramId() {
-		return this.entity.getSgwmtLoginLogPK().getProgramId();
+		return this.entity.getProgramId();
 	}
 
 	/* (non-Javadoc)
