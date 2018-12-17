@@ -7,8 +7,8 @@
             <button id="A1_2" tabindex="2"
                     data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_2')}</button>
 
-            <button id="A1_3" tabindex="3"
-                    data-bind="click: openLScreen, timeClick: 800, enable: true">#{i18n.getText('QMM020_3')}</button>
+        <button id="A1_3" tabindex="3"
+                data-bind="click: $vm.viewmodelA.openScreenL, enable: true">#{i18n.getText('QMM020_3')}</button>
 
             <button id="A1_4" tabindex="4"
                     data-bind=" enable: false">#{i18n.getText('QMM020_4')}</button>
