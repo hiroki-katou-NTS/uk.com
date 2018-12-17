@@ -310,6 +310,8 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                 self.screenControl().visibleE7(false);
                 self.screenControl().visibleE8(false);
                 self.screenControl().visibleE9(false);
+                // E3_6
+                self.dataScreen().proportionalMethod(null);
             }
             nts.uk.ui.errors.clearAll();
             $("#E1_6_container").focus();
