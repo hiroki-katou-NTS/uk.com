@@ -74,6 +74,10 @@ module nts.uk.com.view.cmf002.y {
                                     index.errorItem
                                 ));     
                             });
+                            
+                            for(let i = 0; i<temp.length; i++){
+                                temp[i]['no'] = i;
+                            }
 							self.externalOutLog(temp);
 							self.iErrorContentCSV(new IErrorContentCSV(self.exterOutExecLog().nameSetting, self.exterOutExecLog(), self.externalOutLog()));
                             self.groupProcessCount(_.size(_.countBy(sortByExternalOutLog, 'processCount')));
@@ -86,6 +90,7 @@ module nts.uk.com.view.cmf002.y {
                 });
 
                 this.columnsExternalOutLog = ko.observableArray([
+                    { headerText: '', key: 'no', formatter: _.escape, hidden: true},
                     { headerText: getText('CMF002_336'), key: 'processCount', width: 40, formatter: _.escape},
                     { headerText: getText('CMF002_337'), key: 'errorItem', width: 80, formatter: _.escape },
                     { headerText: getText('CMF002_338'), key: 'errorTargetValue', width: 80, formatter: _.escape },
