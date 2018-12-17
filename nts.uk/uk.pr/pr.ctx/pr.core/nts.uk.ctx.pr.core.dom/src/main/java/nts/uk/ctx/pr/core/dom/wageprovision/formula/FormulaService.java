@@ -181,5 +181,4 @@ public class FormulaService {
         }
         return Collections.emptyList();
     }
-
 }

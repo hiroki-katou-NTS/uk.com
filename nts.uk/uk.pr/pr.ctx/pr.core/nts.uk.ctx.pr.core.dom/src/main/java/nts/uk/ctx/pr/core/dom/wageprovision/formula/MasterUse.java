@@ -4,8 +4,7 @@ package nts.uk.ctx.pr.core.dom.wageprovision.formula;
 /**
 * 使用マスタ
 */
-public enum MasterUse
-{
+public enum MasterUse {
     
     EMPLOYMENT(0, "雇用"),
     DEPARTMENT(1, "部門"),
@@ -23,5 +22,9 @@ public enum MasterUse
     {
         this.value = value;
         this.nameId = nameId;
+    }
+
+    public static void main(String[] args) {
+
     }
 }
