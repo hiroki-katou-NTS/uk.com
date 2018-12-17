@@ -223,14 +223,14 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
                 virtualizationMode: 'continuous',
                 columns: [
                     { headerText: '', key: 'id', dataType: 'number', ntsControl: 'Label',hidden: true },
-                    { headerText: getText('QMM020_26'),key: 'employeeCode', dataType: 'string', width: '100px'},
-                    { headerText: getText('QMM020_27'),key: 'employeeName', dataType: 'string', width: '150px',  },
+                    { headerText: getText('QMM020_26'),key: 'employeeCode', dataType: 'string', width: '50px'},
+                    { headerText: getText('QMM020_27'),key: 'employeeName', dataType: 'string', width: '200px',  },
                     { headerText: getText('QMM020_20'), key: 'open', dataType: 'string', width: '80px', unbound: true, ntsControl: 'ButtonSalary' },
                     { headerText: '',template: '<div>${salaryCode}</div>', key: 'salaryCode', dataType: 'string', width: '30px' },
-                    { headerText: '',template: '<div>${salaryLayoutName}</div>', key: 'salaryLayoutName', dataType: 'string', width: '150px' },
+                    { headerText: '',template: '<div style="text-overflow: ellipsis; ">${salaryLayoutName}</div>', key: 'salaryLayoutName', dataType: 'string', width: '200px' },
                     { headerText: getText('QMM020_22'), key: 'open1', dataType: 'string', width: '80px', unbound: true, ntsControl: 'ButtonBonus' },
                     { headerText: '',template: '<div>${bonusCode}</div>', key: 'bonusCode', dataType: 'string', width: '30px' },
-                    { headerText: '',template: '<div>${bonusLayoutName}</div>', key: 'bonusLayoutName', dataType: 'string', width: '150px' },
+                    { headerText: '',template: '<div>${bonusLayoutName}</div>', key: 'bonusLayoutName', dataType: 'string', width: '200px' },
 
                 ],
                 features: [
