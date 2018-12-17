@@ -15,7 +15,7 @@ module nts.uk.com.view.cas013.a {
             }
             constructor() {}
             saveAsExcel(languageId: string): JQueryPromise<any> {
-                return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Indivigrant", domainType: "勤務種類の登録", languageId: languageId, reportType: 0});
+                return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Indivigrant", domainType: "CAS013担当ロールの付与", languageId: languageId, reportType: 0});
             }
             
             getRoleTypes(): JQueryPromise<any> {

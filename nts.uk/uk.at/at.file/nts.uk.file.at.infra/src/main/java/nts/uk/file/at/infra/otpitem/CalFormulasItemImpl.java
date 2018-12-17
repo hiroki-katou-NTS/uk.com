@@ -15,6 +15,7 @@ import javax.persistence.Query;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.optitem.EmpConditionAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
@@ -93,7 +94,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 			+ " 		,RESULT_ONE.OPTIONAL_ITEM_ATR" + " 		,RESULT_ONE.UNIT_OF_OPTIONAL_ITEM"
 			+ " 		,RESULT_ONE.USAGE_ATR" + " 		,RESULT_ONE.PERFORMANCE_ATR"
 			+ " 		,RESULT_ONE.EMP_CONDITION_ATR "
-			+ " 		,IIF(RESULT_ONE.EMP_CONDITION_ATR = 1,STRING_AGG (CONCAT(RESULT_ONE.EMP_CD,'+', RESULT_ONE.NAME),  '、' ), NULL) AS NAME"
+			+ " 		,IIF(RESULT_ONE.EMP_CONDITION_ATR = 1,STUFF(( SELECT ', ' + ec.EMP_CD + '+'+ emp.NAME FROM KRCST_OPTIONAL_ITEM oi LEFT JOIN KRCST_APPL_EMP_CON ec ON oi.OPTIONAL_ITEM_NO = ec.OPTIONAL_ITEM_NO AND oi.CID = ec.CID LEFT JOIN BSYMT_EMPLOYMENT emp ON ec.CID = emp.CID AND ec.EMP_CD = emp.CODE WHERE oi.CID = ?companyId ORDER BY ec.EMP_CD FOR XML PATH ('') ), 1, 1, '' ), NULL) AS NAME"
 			+ " 			FROM (SELECT" + " 			 oi.OPTIONAL_ITEM_NO"
 			+ " 			,oi.OPTIONAL_ITEM_NAME			" + " 			,oi.OPTIONAL_ITEM_ATR"
 			+ " 			,oi.UNIT_OF_OPTIONAL_ITEM" + " 			,oi.USAGE_ATR" + " 			,oi.PERFORMANCE_ATR"
@@ -150,27 +151,31 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 			+ " )AS RESULT_FINAL ORDER BY RESULT_FINAL.OPTIONAL_ITEM_NO ASC ";
 
 	@Override
-	public List<MasterData> getDataTableOneExport(String companyId) {
+	public List<MasterData> getDataTableExport(String companyId) {
 		List<MasterData> datas = new ArrayList<>();
 		Query query = entityManager.createNativeQuery(GET_EXPORT_EXCEL_ONE.toString()).setParameter("companyId",
 				companyId);
 		@SuppressWarnings("unchecked")
 		List<Object[]> data = query.getResultList();
-		Integer optionalItemAtr = null;
-		Integer optionalItemUse = null;
-		for (Object[] objects : data) {
-			if (!Objects.isNull(objects[2])) {
-				optionalItemAtr = ((BigDecimal) objects[2]).intValue();
+		if (data.isEmpty()) {
+			throw new BusinessException("Msg_393");
+		} else {
+			Integer optionalItemAtr = null;
+			Integer optionalItemUse = null;
+			for (Object[] objects : data) {
+				if (!Objects.isNull(objects[2])) {
+					optionalItemAtr = ((BigDecimal) objects[2]).intValue();
+				}
+				if (!Objects.isNull(objects[4])) {
+					optionalItemUse = ((BigDecimal) objects[4]).intValue();
+				}
+				datas.add(new MasterData(dataContentTable(objects, optionalItemAtr, optionalItemUse), null, ""));
 			}
-			if (!Objects.isNull(objects[4])) {
-				optionalItemUse = ((BigDecimal) objects[4]).intValue();
-			}
-			datas.add(new MasterData(dataContentTableOne(objects, optionalItemAtr, optionalItemUse), null, ""));
+			return datas;
 		}
-		return datas;
 	}
 
-	private Map<String, Object> dataContentTableOne(Object[] object, Integer optionalItemAtr, Integer optionalItemUse) {
+	private Map<String, Object> dataContentTable(Object[] object, Integer optionalItemAtr, Integer optionalItemUse) {
 		Map<String, Object> data = new HashMap<>();
 		data.put(CalFormulasItemColumn.KMK002_76, object[0] != null ? (BigDecimal) object[0] : "");
 		data.put(CalFormulasItemColumn.KMK002_77, object[1] != null ? (String) object[1] : "");
@@ -188,47 +193,48 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 		// EmpConditionAtr Enum
 		data.put(CalFormulasItemColumn.KMK002_82, object[6] != null && optionalItemUse == 1
 				? EnumAdaptor.valueOf(((BigDecimal) object[6]).intValue(), EmpConditionAtr.class).description : "");
-
+		
 		data.put(CalFormulasItemColumn.KMK002_83, object[7] != null && optionalItemUse == 1 ? (String) object[7] : "");
+		
 		data.put(CalFormulasItemColumn.KMK002_84,
 				object[8] != null && optionalItemUse == 1 ? ((BigDecimal) object[8]).intValue() == 1 ? "○" : "ー" : "");
 		// Upper value
 		switch (optionalItemAtr) {
-		case 0:
-			data.put(CalFormulasItemColumn.KMK002_85,
-					object[9] != null && optionalItemUse == 1 && ((BigDecimal) object[8]).intValue() == 1
-							? formatTime(((BigDecimal) object[9]).intValue()) : "");
-			break;
-		case 1:
-			data.put(CalFormulasItemColumn.KMK002_85,
-					object[9] != null && optionalItemUse == 1 && ((BigDecimal) object[8]).intValue() == 1
-							? formatNumber(((BigDecimal) object[9]).toString()) : "");
-			break;
-		case 2:
-			data.put(CalFormulasItemColumn.KMK002_85,
-					object[9] != null && optionalItemUse == 1 && ((BigDecimal) object[8]).intValue() == 1
-							? formatAmount(((BigDecimal) object[9]).toString()) : "");
-			break;
+			case 0:
+				data.put(CalFormulasItemColumn.KMK002_85,
+						object[9] != null && optionalItemUse == 1 && ((BigDecimal) object[8]).intValue() == 1
+								? formatTime(((BigDecimal) object[9]).intValue()) : "");
+				break;
+			case 1:
+				data.put(CalFormulasItemColumn.KMK002_85,
+						object[9] != null && optionalItemUse == 1 && ((BigDecimal) object[8]).intValue() == 1
+								? formatNumber(((BigDecimal) object[9]).toString()) : "");
+				break;
+			case 2:
+				data.put(CalFormulasItemColumn.KMK002_85,
+						object[9] != null && optionalItemUse == 1 && ((BigDecimal) object[8]).intValue() == 1
+								? formatAmount(((BigDecimal) object[9]).toString()) : "");
+				break;
 		}
 		data.put(CalFormulasItemColumn.KMK002_86, object[10] != null && optionalItemUse == 1
 				? ((BigDecimal) object[10]).intValue() == 1 ? "○" : "ー" : "");
 		// Lower value
 		switch (optionalItemAtr) {
-		case 0:
-			data.put(CalFormulasItemColumn.KMK002_87,
-					object[11] != null && optionalItemUse == 1 && ((BigDecimal) object[10]).intValue() == 1
-							? formatTime(((BigDecimal) object[11]).intValue()) : "");
-			break;
-		case 1:
-			data.put(CalFormulasItemColumn.KMK002_87,
-					object[11] != null && optionalItemUse == 1 && ((BigDecimal) object[10]).intValue() == 1
-							? formatNumber(((BigDecimal) object[11]).toString()) : "");
-			break;
-		case 2:
-			data.put(CalFormulasItemColumn.KMK002_87,
-					object[11] != null && optionalItemUse == 1 && ((BigDecimal) object[10]).intValue() == 1
-							? formatAmount(((BigDecimal) object[11]).toString()) : "");
-			break;
+			case 0:
+				data.put(CalFormulasItemColumn.KMK002_87,
+						object[11] != null && optionalItemUse == 1 && ((BigDecimal) object[10]).intValue() == 1
+								? formatTime(((BigDecimal) object[11]).intValue()) : "");
+				break;
+			case 1:
+				data.put(CalFormulasItemColumn.KMK002_87,
+						object[11] != null && optionalItemUse == 1 && ((BigDecimal) object[10]).intValue() == 1
+								? formatNumber(((BigDecimal) object[11]).toString()) : "");
+				break;
+			case 2:
+				data.put(CalFormulasItemColumn.KMK002_87,
+						object[11] != null && optionalItemUse == 1 && ((BigDecimal) object[10]).intValue() == 1
+								? formatAmount(((BigDecimal) object[11]).toString()) : "");
+				break;
 		}
 
 		data.put(CalFormulasItemColumn.KMK002_88,
@@ -358,9 +364,9 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 		return resultString;
 	}
 
-	private String formatNumber(String str) {
-		String pathOne = str.substring(0, str.lastIndexOf("."));
-		String pathTwo = str.substring(str.lastIndexOf(".") + 1);
+	private String formatNumber(String number) {
+		String pathOne = number.substring(0, number.lastIndexOf("."));
+		String pathTwo = number.substring(number.lastIndexOf(".") + 1);
 		StringBuilder formatted = new StringBuilder(pathOne);
 		int idx = formatted.length() - 3;
 		while (idx > 1) {
@@ -371,8 +377,8 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 		return output;
 	}
 
-	private String formatAmount(String str) {
-		String pathOne = str.substring(0, str.lastIndexOf("."));
+	private String formatAmount(String amount) {
+		String pathOne = amount.substring(0, amount.lastIndexOf("."));
 		StringBuilder formatted = new StringBuilder(pathOne);
 		int idx = formatted.length() - 3;
 		while (idx > 0) {
