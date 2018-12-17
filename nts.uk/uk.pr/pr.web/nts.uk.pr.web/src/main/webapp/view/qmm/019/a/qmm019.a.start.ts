@@ -8,6 +8,8 @@ module nts.uk.pr.view.qmm019.a {
                 if(histLength > 0) {
                     screenModel.currentHistoryId(screenModel.statementLayoutList()[0].history[histLength - 1].historyId);
                 }
+            } else {
+                screenModel.createIfEmpty();
             }
 
             __viewContext.bind(screenModel);

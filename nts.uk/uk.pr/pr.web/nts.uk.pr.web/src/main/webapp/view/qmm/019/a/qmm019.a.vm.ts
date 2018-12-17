@@ -18,6 +18,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
     import IItemRangeSet = nts.uk.pr.view.qmm019.share.model.IItemRangeSet;
     import PaymentTotalObjAtr = nts.uk.pr.view.qmm019.share.model.PaymentTotalObjAtr;
     import PaymentCaclMethodAtr = nts.uk.pr.view.qmm019.share.model.PaymentCaclMethodAtr;
+    import getLayoutPatternText = nts.uk.pr.view.qmm019.share.model.getLayoutPatternText;
 
     export class ScreenModel {
 
@@ -67,6 +68,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
             service.getStatementLayoutHistData(code, histId).done(function(data: IStatementLayoutHistData) {
                 if(data) {
                     self.statementLayoutHistData(new StatementLayoutHistData(data, false));
+                    $("#A3_4").focus();
                 } else {
                     self.statementLayoutHistData(new StatementLayoutHistData(null, false));
                 }
@@ -86,23 +88,17 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
 
             service.getAllStatementLayoutAndHist().done(function(data: Array<IStatementLayout>) {
                 let statementLayoutList = data.map(x => new StatementLayout(x));
-                self.statementLayoutList(statementLayoutList);
 
-                // TODO ????????????????????
-                if(statementLayoutList.length <= 0) {
-                    self.currentHistoryId(null);
-                    self.statementLayoutHistData(new StatementLayoutHistData(null, false));
-                } else {
-                    self.currentHistoryId(null);
-                    self.statementLayoutHistData(new StatementLayoutHistData(null, false));
-                }
+                self.statementLayoutList(statementLayoutList);
+                self.currentHistoryId(null);
+                self.statementLayoutHistData(new StatementLayoutHistData(null, false));
 
                 block.clear();
                 dfd.resolve();
             }).fail(() => {
                 block.clear();
                 dfd.resolve();
-            });
+            })
 
             return dfd.promise();
         }
@@ -135,6 +131,39 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 }
 
                 $("#A3_4").focus();
+            });
+        }
+
+        public createIfEmpty(): void {
+            let self = this;
+
+            nts.uk.ui.windows.sub.modal('../h/index.xhtml').onClosed(() => {
+                let params = getShared("QMM019_H_TO_A_PARAMS");
+                let histID = params.histID;
+
+                if(params && params.isRegistered) {
+                    self.loadListData().done(function() {
+                        let matchKey: boolean = _.filter(self.statementLayoutList(), function (o: StatementLayout) {
+                            return _.filter(o.history, function (h: YearMonthHistory) {
+                                return h.historyId == histID;
+                            }).length > 0;
+                        }).length > 0;
+
+                        if (matchKey) {
+                            self.currentHistoryId(histID);
+                            //self.currentHistoryId.valueHasMutated();
+                        } else if (self.statementLayoutList().length > 0) {
+                            let histLength = self.statementLayoutList()[0].history.length;
+                            if (histLength > 0) {
+                                self.currentHistoryId(self.statementLayoutList()[0].history[histLength - 1].historyId);
+                            }
+                        }
+                    });
+
+                    $("#A3_4").focus();
+                } else {
+                    nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+                }
             });
         }
 
@@ -231,13 +260,14 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
 
                     service.getInitStatementLayoutHistData(statementCode, histId, startMonth, itemHistoryDivision, layoutPattern).done(function (data: IStatementLayoutHistData) {
                         if(data) {
+                            self.statementLayoutList.removeAll();
                             self.currentHistoryId("");
                             self.statementLayoutHistData(new StatementLayoutHistData(data, true));
+
+                            $("#A3_4").focus();
                         }
                     });
                 }
-
-                $("#A3_4").focus();
             });
         }
 
@@ -283,6 +313,8 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                                 if(histLength > 0) {
                                     self.currentHistoryId(self.statementLayoutList()[0].history[histLength - 1].historyId);
                                 }
+                            } else {
+                                self.createIfEmpty();
                             }
                         }
                     });
@@ -311,6 +343,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         // not submit
         startMonthText: KnockoutObservable<string>;
         endMonthText: KnockoutObservable<string>;
+        layoutPatternText: string;
 
         constructor(data: IStatementLayoutHistData, isCreate: boolean) {
             let self = this;
@@ -326,6 +359,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 self.checkCreate = ko.observable(isCreate);
                 self.startMonthText = ko.observable(nts.uk.time.parseYearMonth(data.startMonth).format());
                 self.endMonthText = ko.observable(nts.uk.time.parseYearMonth(data.endMonth).format());
+                self.layoutPatternText = getLayoutPatternText(data.statementLayoutSet.layoutPattern);
             } else {
                 self.statementCode = null;
                 self.statementName = ko.observable(null);
@@ -337,6 +371,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 self.checkCreate = ko.observable(false);
                 self.startMonthText = ko.observable(null);
                 self.endMonthText = ko.observable(null);
+                self.layoutPatternText = "";
             }
 
             nts.uk.ui.errors.clearAll();
@@ -425,8 +460,6 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 if(params && params.isRegistered) {
                     self.listLineByLineSet.push(new LineByLineSetting(null, params.printSet, self));
                 }
-
-                //TODO $("#C3_8").focus();
             });
         }
 
@@ -456,8 +489,6 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                     self.isShowCtg(true);
                     self.listLineByLineSet.push(new LineByLineSetting(null, params.printSet, self));
                 }
-
-                //TODO $("#C3_8").focus();
             });
         }
 
@@ -501,8 +532,6 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                         }
                     }
                 }
-
-                //TODO $("#C3_8").focus();
             });
         }
     }
@@ -606,8 +635,6 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                         self.parent.listLineByLineSet.remove(self);
                     }
                 }
-
-                //TODO $("#C3_8").focus();
             });
         }
 

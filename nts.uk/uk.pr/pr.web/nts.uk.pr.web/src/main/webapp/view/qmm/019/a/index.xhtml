@@ -35,9 +35,9 @@
             <button id="A1_4" tabindex="4" class=""
                     data-bind="click: modifyLog, enable: false">#{i18n.getText('QMM019_4')}</button>
             <a id="A1_6" class="goout" tabindex="6"
-               data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('QMM019_6')}</a>
+               data-bind="ntsLinkButton: { jump: '../../017/a/index.xhtml' }">#{i18n.getText('QMM019_6')}</a>
             <a id="A1_5" class="goout" tabindex="5"
-               data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('QMM019_5')}</a>
+               data-bind="ntsLinkButton: { jump: '../../016/a/index.xhtml' }">#{i18n.getText('QMM019_5')}</a>
         </div>
         <div id="contents-area">
             <div class="table">
@@ -57,11 +57,11 @@
                                         selected: currentHistoryId,
                                         selectedKey: 'historyId',
                                         childField: 'history',
-                                        fields: ['name', 'specCode']}"/>
+                                        fields: ['nodeText']}"/>
                         <div class="valign-center control-group">
                             <!-- 履歴追加 -->
                             <button id="A2_5" tabindex="9" class=""
-                                    data-bind="click: addHistory, enable: statementLayoutHistData().statementCode != null">#{i18n.getText('QMM019_11')}</button>
+                                    data-bind="click: addHistory, enable: (statementLayoutHistData().statementCode != null) &amp;&amp; !statementLayoutHistData().checkCreate()">#{i18n.getText('QMM019_11')}</button>
                             <!-- 履歴編集 -->
                             <button id="A2_6" tabindex="10" class=""
                                     data-bind="click: editHistory, enable: (statementLayoutHistData().statementCode != null) &amp;&amp; !statementLayoutHistData().checkCreate()">#{i18n.getText('QMM019_12')}</button>
@@ -100,7 +100,9 @@
 											enable: true,
 											readonly: false}"/>
                             <!-- 印刷情報 -->
-                            <label id="A3_5"></label>
+                            <label> ( </label>
+                            <label id="A3_5" data-bind="text: layoutPatternText"></label>
+                            <label> ) </label>
                         </div>
                         <div class="valign-center control-group">
                             <!-- 有効期間 -->
