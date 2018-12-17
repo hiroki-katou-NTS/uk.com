@@ -312,6 +312,8 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
                 self.screenControl().visibleD7(false);
                 self.screenControl().visibleD8(false);
                 self.screenControl().visibleD9(false);
+                // D3_6
+                self.dataScreen().proportionalMethod(null);
             }
             nts.uk.ui.errors.clearAll();
             $("#D1_6_container").focus();
