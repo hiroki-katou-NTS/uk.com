@@ -15,7 +15,7 @@
                     data-bind=" enable: false">#{i18n.getText('QMM020_4')}</button>
 
     </div>
-    <div style="margin-top: 15px;" class="contents-area ">
+    <div style="margin-top: 15px; min-width: 1000px;" class="contents-area " >
         <div id="com-ccg001"></div>
         <div id = "H1_1" style="margin-left: 70px; ">
             <div tabindex="1" id="emp-component" style="margin-left: 10px;"></div>
@@ -49,14 +49,14 @@
                 </div>
             </div>
         </div>
-        <div class="fixed-flex-layout-right" style="margin-top: 29px;">
+        <div class="fixed-flex-layout-right" id="group_h_right" style="margin-top: 29px; min-width:400px;">
             <span id = "H3_1" style="margin-bottom: 15px;">#{i18n.getText('QMM020_46')}</span>
-            <div id="text_Salary" class="control-group flex valign-center">
+            <div id="text_Salary" class="control-group flex valign-center" style="min-width: 500px;">
                 <pre tabindex="-1" style="line-height: 1.8;">#{i18n.getText('QMM020_18')}</pre>
                 <span id="H3_3" style="padding-left: 30px">#{i18n.getText('QMM020_19')}</span>
             </div>
             <hr></hr>
-            <div class="control-group" style="margin-top: 20px;">
+            <div class="control-group" id="label_H3_4" style="margin-top: 20px;">
                 <div data-bind="ntsFormLabel: {}">
                     <span class="label">#{i18n.getText('QMM020_20')}</span>
                     <button id="H3_4" data-bind="click: selectSalary, enable: !enableRegis() ">#{i18n.getText('QMM020_21')}</button>
@@ -65,8 +65,8 @@
                 </div>
             </div>
 
-            <div class="control-group" style="margin-top: 15px;">
-                <div data-bind="ntsFormLabel: {}">
+            <div id="label_H3_5" class="control-group" style="margin-top: 15px;">
+                <div data-bind="ntsFormLabel: {}" >
                     <span class="label">#{i18n.getText('QMM020_22')}</span>
                     <button id="H3_5" data-bind=" click: selectBonus, enable: !enableRegis() ">#{i18n.getText('QMM020_21')}</button>
                     <span style="margin-left: 20px;" data-bind="text: bonusCode"></span>
