@@ -8,7 +8,7 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
     export class ScreenModel {
         itemList:               KnockoutObservableArray<model.ItemModel> = ko.observableArray(getHistoryEditMethod(false));
         isFirst:              KnockoutObservable<boolean> = ko.observable(true);
-        transferMethod:          KnockoutObservable<number> = ko.observable(1);
+        transferMethod:          KnockoutObservable<number> = ko.observable(0);
         startYearMonthPeriod: KnockoutObservable<number> = ko.observable(null);
         startDateMaster: KnockoutObservable<string> = ko.observable();
         endYearMonthPeriod: KnockoutObservable<number> = ko.observable(999912);
@@ -62,7 +62,6 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
         }
         initView(params: any) {
             let self = this;
-            let windowSize = nts.uk.ui.windows.getSelf();
             self.params(params);
             self.modeScreen(self.getMode(self.params().modeScreen));
             if (self.modeScreen() == nts.uk.pr.view.qmm020.j.viewmodel.MODE_SCREEN.MODE_TWO) {
