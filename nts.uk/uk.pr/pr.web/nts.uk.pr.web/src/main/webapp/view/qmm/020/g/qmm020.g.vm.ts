@@ -260,7 +260,6 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
             modal("/view/qmm/020/k/index.xhtml").onClosed(function() {
                 let params = getShared(model.PARAMETERS_SCREEN_K.OUTPUT);
                 if(params && params.modeEditHistory == 1) {
-                    self.initScreen(self.hisIdSelected());
                     service.getStateCorrelationHisSalary().done((listStateCorrelationHisSalary: Array<StateCorrelationHisSalary>)=>{
                         if (listStateCorrelationHisSalary && listStateCorrelationHisSalary.length > 0) {
                             self.listStateCorrelationHisSalary(StateCorrelationHisSalary.convertToDisplay(listStateCorrelationHisSalary));
