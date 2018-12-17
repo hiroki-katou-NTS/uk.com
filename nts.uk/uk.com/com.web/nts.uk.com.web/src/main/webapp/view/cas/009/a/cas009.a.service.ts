@@ -17,7 +17,7 @@ module cas009.a {
     export function exportExcel(): JQueryPromise<any> {
         let _params = { domainId: "RolePersonalInfor", 
                         domainType: "CAS009ロールの登録（個人情報）", 
-                        languageId: languageId, 
+                        languageId: "ja", 
                         reportType: 0, option : date };
         return nts.uk.request.exportFile('/masterlist/report/print', _params);
     }
