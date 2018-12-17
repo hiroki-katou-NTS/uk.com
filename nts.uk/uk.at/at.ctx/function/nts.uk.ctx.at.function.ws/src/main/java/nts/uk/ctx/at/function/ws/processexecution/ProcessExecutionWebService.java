@@ -140,7 +140,7 @@ public class ProcessExecutionWebService extends WebService {
 		MutableValue<AsyncTaskInfo> result = new MutableValue<>();
 		
 		if (this.batchServer.exists()) {
-			System.out.println("Call web serveice execute !");
+			System.out.println("Call batch service  !");
 			val webApi = this.batchServer.webApi(PathToWebApi.at("/batch/batch-execute"), 
 					ExecuteProcessExecutionCommand.class, BatchTaskResult.class);
 			this.batchServer.request(webApi, c -> c.entity(command)
@@ -150,7 +150,9 @@ public class ProcessExecutionWebService extends WebService {
 						result.set(taskInfo);
 			}));
 		} else {
+			System.out.println("No call batch service !");
 			result.set(this.execHandler.handle(command));
+			
 		}
 		
 		return result.get();

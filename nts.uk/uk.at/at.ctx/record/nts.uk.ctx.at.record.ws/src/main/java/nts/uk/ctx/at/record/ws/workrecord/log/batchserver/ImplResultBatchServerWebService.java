@@ -7,6 +7,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.task.AsyncTaskInfo;
 import nts.uk.ctx.at.record.app.command.workrecord.log.CheckProcessCommand;
+import nts.uk.ctx.at.record.app.command.workrecord.log.CheckProcessCommandHandler;
 import nts.uk.ctx.at.record.ws.workrecord.log.ImplementationResultWebService;
 
 @Path("batch")
@@ -14,11 +15,13 @@ import nts.uk.ctx.at.record.ws.workrecord.log.ImplementationResultWebService;
 public class ImplResultBatchServerWebService {
 	
 	@Inject
-	private ImplementationResultWebService implementationResultWebService;
-
+	private CheckProcessCommandHandler queryExecutionStatusCommandHandler;
+	
 	@POST
 	@Path("task")
-	public AsyncTaskInfo doTask(CheckProcessCommand command) {
-		return implementationResultWebService.executeTask(command);
+	public ImplResultDto doTask(CheckProcessCommand command) {
+		AsyncTaskInfo info = this.queryExecutionStatusCommandHandler.handle(command);
+		return new ImplResultDto(info.getId());
+		
 	}
 }
