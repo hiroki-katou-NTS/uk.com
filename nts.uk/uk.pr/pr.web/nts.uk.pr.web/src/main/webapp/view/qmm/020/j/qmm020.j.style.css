@@ -16,3 +16,14 @@
     margin: auto;
     padding: 10px;
 }
+#J7_1 {
+    float: left;
+}
+
+#J1_1 {
+    position: relative !important;
+    overflow: auto;
+    overflow-y: hidden;
+    -ms-overflow-x: hidden;
+    white-space: nowrap;
+}

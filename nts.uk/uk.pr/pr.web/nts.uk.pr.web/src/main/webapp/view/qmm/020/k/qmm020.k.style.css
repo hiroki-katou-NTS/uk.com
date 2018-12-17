@@ -24,3 +24,10 @@
     width: 69px !important;
     text-align: center;
 }
+
+#table_K6_K7_K8, #K1_1 {
+    position: relative !important;
+    overflow-y: hidden;
+    -ms-overflow-x: hidden;
+    white-space: nowrap;
+}

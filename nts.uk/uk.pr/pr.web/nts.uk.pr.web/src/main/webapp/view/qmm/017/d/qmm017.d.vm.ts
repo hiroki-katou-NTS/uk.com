@@ -84,22 +84,23 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         }
         getFormulaElements (yearMonth) {
             let self = this;
-            block.invisible()
-            service.getFormulaElements(yearMonth).done(function(data){
-                self.paymentItemList = data.paymentItem;
-                self.deductionItemList = data.deductionItem;
-                self.attendanceItemList = data.attendanceItem;
-                self.companyUnitPriceList = data.companyUnitPriceItem;
-                self.individualUnitPriceList = data.individualUnitPriceItem;
-                self.initWageTableData(data.wageTableItem);
-                self.selectedCategoryValue.valueHasMutated();
-                self.selectedPriceItemCategoryValue.valueHasMutated();
-                self.combineFormulaElement();
-                __viewContext.screenModel.isCompleteStartScreen = true;
-                block.clear();
-            }).fail(function(err) {
-                dialog.alertError(err.errorMessage);
-            })
+            if (yearMonth) {
+                block.invisible();
+                service.getFormulaElements(yearMonth).done(function (data) {
+                    self.paymentItemList = data.paymentItem;
+                    self.deductionItemList = data.deductionItem;
+                    self.attendanceItemList = data.attendanceItem;
+                    self.companyUnitPriceList = data.companyUnitPriceItem;
+                    self.individualUnitPriceList = data.individualUnitPriceItem;
+                    self.initWageTableData(data.wageTableItem);
+                    self.selectedCategoryValue.valueHasMutated();
+                    self.selectedPriceItemCategoryValue.valueHasMutated();
+                    self.combineFormulaElement();
+                    block.clear();
+                }).fail(function (err) {
+                    dialog.alertError(err.errorMessage);
+                })
+            }
         }
         initFormulaComponent () {
             let self = this;
