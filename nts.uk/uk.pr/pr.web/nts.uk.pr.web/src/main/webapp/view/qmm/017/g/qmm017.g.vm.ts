@@ -44,8 +44,6 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             self.calculationFormulaList(calculationFormulaData);
         }
 
-
-
         // calculation via aspose cell
         calculateInServer () {
             $('.nts-input').trigger("validate");
@@ -95,7 +93,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                 if (systemVariableResult) {
                     formulaElement = formulaElement.replace(systemVariable,  systemVariableResult);
                 } else {
-                    // must set error here
+                    // there are error here;
                     return null;
                 }
             }

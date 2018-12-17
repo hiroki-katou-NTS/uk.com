@@ -53,7 +53,6 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 self.isNewMode(newValue == model.SCREEN_MODE.NEW);
                 self.isUpdateMode(newValue == model.SCREEN_MODE.UPDATE);
                 self.isAddHistoryMode(newValue == model.SCREEN_MODE.ADD_HISTORY);
-                console.log(newValue);
             })
             self.selectedFormulaIdentifier.subscribe(newValue => {
                 if (self.screenMode() == model.SCREEN_MODE.ADD_HISTORY && self.isCompleteChangeToAddHistoryMode){
@@ -221,12 +220,13 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
 
         convertToTreeList(formulaData, itemToBeSelect) {
             let self = this;
-            formulaData.map(function (item) {
-                item.nodeText = item.formulaCode + " " + item.formulaName;
+            formulaData = formulaData.map(function (item) {
+                item.formulaName = _.escape(item.formulaName);
+                item.nodeText =  item.formulaCode + " " + item.formulaName;
                 item['identifier'] = item.formulaCode;
                 item.history = item.history.map(function (historyItem) {
-                    historyItem.nodeText = historyItem.startMonth + " ~ " + historyItem.endMonth;
                     historyItem['identifier'] = item.formulaCode + historyItem.historyID;
+                    historyItem.nodeText = moment(historyItem.startMonth, "YYYYMM").format("YYYY/MM") + " ~ " + moment(historyItem.endMonth, "YYYYMM").format("YYYY/MM");
                     // prevent handler from null value exception when use search box
                     historyItem.formulaCode = "";
                     historyItem.formulaName = "";
@@ -280,6 +280,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 selectedHistory;
             selectedFormulaCode = identifier.substring(0, 3);
             selectedFormula = _.find(currentFormulaList, {formulaCode: selectedFormulaCode});
+            selectedFormula.formulaName = _.unescape(selectedFormula.formulaName);
             self.selectedFormula(new model.Formula(selectedFormula));
             self.isSelectedHistory(false);
             // if select history

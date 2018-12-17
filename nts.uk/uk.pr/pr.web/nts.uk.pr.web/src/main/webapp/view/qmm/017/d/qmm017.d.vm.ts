@@ -220,7 +220,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             });
             return dfd.promise();
         }
-        
+
         startPage(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             dfd.resolve();
@@ -262,15 +262,20 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         addStatementItem () {
             let self = this, selectedCategory = self.selectedCategoryValue(), appendFormula = "",
                 selectedStatementItemName = _.find(ko.toJS(this.statementItemList), {code: self.selectedStatementItemCode()}).name;
-            if (selectedCategory == model.LINE_ITEM_CATEGORY.PAYMENT_ITEM) {
-                appendFormula = self.PAYMENT + self.CONCAT_CHAR + selectedStatementItemName;
-            } else if (selectedCategory == model.LINE_ITEM_CATEGORY.DEDUCTION_ITEM) {
-                appendFormula = self.DEDUCTION + self.CONCAT_CHAR + selectedStatementItemName;
-            } else {
-                appendFormula = self.ATTENDANCE + self.CONCAT_CHAR + selectedStatementItemName;
+            switch (selectedCategory) {
+                case model.LINE_ITEM_CATEGORY.PAYMENT_ITEM:
+                    appendFormula = self.PAYMENT;
+                    break;
+                case model.LINE_ITEM_CATEGORY.DEDUCTION_ITEM :
+                    appendFormula = self.DEDUCTION;
+                    break;
+                default:
+                    appendFormula = self.ATTENDANCE;
+                    break;
             }
-            self.addToFormulaByPosition(appendFormula);
+            self.addToFormulaByPosition(appendFormula + self.CONCAT_CHAR + selectedStatementItemName);
         }
+
         addUnitPriceItem () {
             let self = this, selectedUnitPriceValue = self.selectedPriceItemCategoryValue(), appendFormula = "";
             let selectedUnitPrice:any = _.find(self.unitPriceItemList(), {code: self.selectedUnitPriceItemCode()});
@@ -346,7 +351,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             }
             if (formula.split(self.FORMULA).length > 1) self.setErrorToFormula('MsgQ_19', []);
             if (formula.indexOf("÷0") > -1) self.setErrorToFormula('MsgQ_11', []);
-            if (formula.split('(').length != formula.split(')').length) {
+            if (formula.split(self.OPEN_BRACKET).length != formula.split(')').length) {
                 self.setErrorToFormula('MsgQ_8', []);
             }
             for(index = 0 ; index < formula.length; index ++){
