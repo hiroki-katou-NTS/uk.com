@@ -78,24 +78,25 @@ public class JpaWkpJobCalSettingRepository extends JpaRepository implements WkpJ
 				"j.JOB_CD, "+
 				"j.JOB_NAME "+
 
-			"FROM (SELECT HIST_ID, CID, WKPID, WKPCD, WKP_NAME " +
-					"FROM BSYMT_WORKPLACE_INFO " +
-					"WHERE CID = ?cid) w "+
-				"INNER JOIN (SELECT CID " +
-						      "FROM BSYMT_WKP_CONFIG "+
-							  "WHERE START_DATE <= ?baseDate AND END_DATE >= ?baseDate ) c "+
-					"ON c.CID = w.CID "+
-				"INNER JOIN (SELECT HIST_ID, WKPID, CID "+
-							  "FROM BSYMT_WORKPLACE_HIST "+
-							  "WHERE START_DATE <= ?baseDate AND END_DATE >= ?baseDate )  h "+
-					"ON w.HIST_ID = h.HIST_ID AND w.WKPID = h.WKPID AND h.CID = w.CID "+
-				"INNER JOIN KSHMT_AUTO_WKP_JOB_CAL wj on  wj.WPKID = w.WKPID AND wj.CID = w.CID "+
-				"INNER JOIN BSYMT_JOB_INFO j ON wj.JOBID = j.JOB_ID AND wj.CID = j.CID "+
-				"INNER JOIN (SELECT JOB_ID, HIST_ID, CID "+
-							  "FROM BSYMT_JOB_HIST "+
-					 		  "WHERE START_DATE <= ?baseDate AND END_DATE >= ?baseDate ) jh "+
-					"ON j.HIST_ID = jh.HIST_ID AND j.JOB_ID = jh.JOB_ID AND j.CID = jh.CID "+
-				")temp ";
+			"FROM (SELECT HIST_ID, WKPID, CID "+
+					"FROM BSYMT_WORKPLACE_HIST "+
+					"WHERE START_DATE <= ?baseDate AND END_DATE >= ?baseDate "+
+					"AND CID = ?cid)  h "+
+			"INNER JOIN (SELECT CID  "+
+						"FROM BSYMT_WKP_CONFIG "+
+						"WHERE START_DATE <= ?baseDate AND END_DATE >= ?baseDate ) c " +
+						"ON c.CID = h.CID "+
+			"INNER JOIN (SELECT HIST_ID, CID, WKPID, WKPCD, WKP_NAME "+
+						"FROM BSYMT_WORKPLACE_INFO ) w "+
+						"ON w.HIST_ID = h.HIST_ID AND w.WKPID = h.WKPID AND h.CID = w.CID "+
+			"INNER JOIN KSHMT_AUTO_WKP_JOB_CAL wj on  wj.WPKID = w.WKPID AND wj.CID = w.CID "+
+			"INNER JOIN (SELECT JOB_ID, HIST_ID, CID "+
+						"FROM BSYMT_JOB_HIST "+
+						"WHERE START_DATE <= ?baseDate AND END_DATE >= ?baseDate ) jh "+
+						"ON jh.JOB_ID = wj.JOBID AND jh.CID = wj.CID "+
+			"INNER JOIN BSYMT_JOB_INFO j "+
+						"ON j.HIST_ID = jh.HIST_ID AND j.JOB_ID = jh.JOB_ID AND j.CID = jh.CID "+
+		")temp ";
 
 	@Override
 	public List<Object[]> getWkpJobSettingToExport(String cid, String baseDate) {
