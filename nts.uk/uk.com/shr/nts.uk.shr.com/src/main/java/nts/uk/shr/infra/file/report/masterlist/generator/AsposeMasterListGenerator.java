@@ -45,15 +45,11 @@ import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 import nts.uk.shr.infra.file.report.masterlist.webservice.ReportType;
-//import nts.uk.shr.infra.i18n.loading.LanguageMasterRepository;
+import nts.uk.shr.infra.i18n.loading.LanguageMasterRepository;
 
 @Stateless
 public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implements MasterListReportGenerator {
 
-	public static final int DEFAULT_FONT_SIZE = 10;
-	
-	public static final String DEFAULT_FONT_FAMILY = "ＭＳ ゴシック";
-	
 	private static final String PDF_FILE = ".pdf";
 
 	private static final String EXCEL_FILE = ".xlsx";
@@ -78,7 +74,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 
 	private static final String DATETIME = "【日時】";
 
-	//private static final String LANGUAGE = "【選択言語】 ";
+	private static final String LANGUAGE = "【選択言語】 ";
 
 	private static final String SHEET_NAME = "【sheet名】";
 
@@ -100,7 +96,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 
 	private static final int START_COLUMN = 0;
 
-	private static final int MASTERLIST_DATA_START_ROW = 10;
+	private static final int MASTERLIST_DATA_START_ROW = 8;
 
 	private static final int TABLE_DISTANCE = 3;
 
@@ -108,8 +104,8 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 
 	private static final int STANDARD_HEIGHT = 25;
 
-	//@Inject
-	//private LanguageMasterRepository languageRepo;
+	@Inject
+	private LanguageMasterRepository languageRepo;
 
 	@Inject
 	private CompanyAdapter company;
@@ -237,8 +233,8 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW, isCsv, COMPANY, context.companyCode() + SPACE + companyname);
 		processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW + 1, isCsv, FEATURE_TYPE, query.getDomainType());
 		processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW + 2, isCsv, DATETIME, now.toString(YYYY_MM_DD_HH_MM_SS));
-		//processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW + 3, isCsv, LANGUAGE, 
-		//		languageRepo.getSystemLanguage(query.getLanguageId()).get().getLanguageName());
+		processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW + 3, isCsv, LANGUAGE, 
+				languageRepo.getSystemLanguage(query.getLanguageId()).get().getLanguageName());
 		processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW + 4, isCsv, SHEET_NAME, EMPTY_STRING);
 		
 		if(query.getMode() == MasterListMode.BASE_DATE){
@@ -366,9 +362,6 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		style.copy(s);
 		style.setHorizontalAlignment(TextAlignmentType.LEFT);
 		style.setVerticalAlignment(TextAlignmentType.CENTER);
-		Font font = style.getFont();
-		font.setSize(DEFAULT_FONT_SIZE);
-		font.setName(DEFAULT_FONT_FAMILY);
 
 		this.setFontStyle(style);
 
