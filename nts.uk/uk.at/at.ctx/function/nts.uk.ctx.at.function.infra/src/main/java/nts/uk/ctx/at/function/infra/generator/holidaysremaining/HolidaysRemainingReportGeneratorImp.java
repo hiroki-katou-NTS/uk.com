@@ -286,10 +286,11 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		// D2_3 No.369
 		Optional<GeneralDate> grantDate = dataSource.getMapEmployees().get(employee.getEmployeeId())
 				.getHolidayRemainingInfor().getGrantDate();
-		//  truyền params 事象(3), ý 3 của bug #102883 
-		grantDate.ifPresent(generalDate -> cells.get(rowIndexD + 1, 0)
-				.setValue(TextResource.localize("KDR001_56", generalDate.toString("yyyy-MM-dd"))));
-
+		//  truyền params 事象(3), ý 3 của bug #102883
+		if(dataSource.getVariousVacationControl().isAnnualHolidaySetting()) {
+			grantDate.ifPresent(generalDate -> cells.get(rowIndexD + 1, 0)
+					.setValue(TextResource.localize("KDR001_56", generalDate.toString("yyyy-MM-dd"))));
+		}
 		// merger cột D2_4, ý 2 của bug #102883
 		cells.merge(rowIndexD + 2, 0, 1, 2, true);
 		// D2_4
