@@ -235,6 +235,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	// 実行処理
 	@Override
 	public void handle(CommandHandlerContext<ExecuteProcessExecutionCommand> context) {
+		System.out.println("Run batch service !");
 		//val asyncContext = context.asAsync();
 		context.asAsync().getDataSetter().setData("taskId", context.asAsync().getTaskId());
 		ExecuteProcessExecutionCommand command = context.getCommand();
