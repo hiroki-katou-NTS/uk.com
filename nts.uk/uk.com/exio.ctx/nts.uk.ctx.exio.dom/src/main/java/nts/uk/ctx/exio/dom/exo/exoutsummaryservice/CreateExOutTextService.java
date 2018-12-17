@@ -108,6 +108,7 @@ import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrderRepository
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.japanese.JapaneseEraName;
 import nts.uk.shr.com.time.japanese.JapaneseEras;
 import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
@@ -162,6 +163,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	
 	@Inject
 	private FileStorage fileStorage;
+
 
 	private final static String GET_ASSOCIATION = "getOutCondAssociation";
 	private final static String GET_ITEM_NAME = "getOutCondItemName";
@@ -1315,7 +1317,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		String errorMess = "";
 		String targetValue;
 		BigDecimal decimaValue = new BigDecimal(itemValue);
-
+		
 		if ((setting.getFixedValueOperation() == NotUseAtr.USE) && setting.getFixedCalculationValue().isPresent()) {
 			if (setting.getFixedValueOperationSymbol() == FixedValueOperationSymbol.MINUS) {
 				decimaValue = decimaValue.subtract(setting.getFixedCalculationValue().get().v());
@@ -1454,33 +1456,39 @@ public class CreateExOutTextService extends ExportService<Object> {
 				BigDecimal intValue = decimaValue.divideToIntegralValue(BigDecimal.valueOf(60.00));
 				BigDecimal remainValue = decimaValue.subtract(intValue.multiply(BigDecimal.valueOf(60.00)));
 				decimaValue = intValue.add(remainValue.divide(BigDecimal.valueOf(100.00), 2, RoundingMode.HALF_UP));
+				targetValue = decimaValue.toString();
 			}
 		}
 		
 		decimaValue = ((setting.getOutputMinusAsZero() == NotUseAtr.USE) && (decimaValue.doubleValue() < 0))
 				? BigDecimal.valueOf(0) : decimaValue;
-
+				targetValue = decimaValue.toString();		
 		if (setting.getDecimalSelection() == DecimalSelection.DECIMAL) {
 			int precision = setting.getMinuteFractionDigit().map(item -> item.v()).orElse(0);
 			decimaValue = roundDecimal(decimaValue, precision, setting.getMinuteFractionDigitProcessCls());
+			targetValue = decimaValue.toString();
 		}
 
 		if ((Double.valueOf(itemValue) > 1440)
 				&& (setting.getTimeSeletion() == HourMinuteClassification.HOUR_AND_MINUTE)
 				&& (setting.getNextDayOutputMethod() == NextDayOutputMethod.OUT_PUT_24HOUR)) {
-			decimaValue.subtract(new BigDecimal(24.00));
+			//decimaValue.subtract(new BigDecimal(24.00));
+			decimaValue = decimaValue.subtract(new BigDecimal(24.00));
+			targetValue = "翌日" + decimaValue.toString();
 		}
 
 		if ((decimaValue.doubleValue() < 0)
 				&& (setting.getTimeSeletion() == HourMinuteClassification.HOUR_AND_MINUTE)) {
 			if (setting.getPrevDayOutputMethod() == PreviousDayOutputMethod.FORMAT0H00) {
 				decimaValue = new BigDecimal(0.00);
+				targetValue = decimaValue.toString();
 			} else if (setting.getPrevDayOutputMethod() == PreviousDayOutputMethod.FORMAT24HOUR) {
-				decimaValue.add(new BigDecimal(24.00));
+				decimaValue = decimaValue.add(new BigDecimal(24.00));
+				targetValue = "前日" + decimaValue.toString();
 			}
 		}
-
-		targetValue = decimaValue.toString();
+		
+		
 		if (setting.getDelimiterSetting() == DelimiterSetting.NO_DELIMITER) {
 			targetValue = targetValue.replace(DOT, "");
 		} else if (setting.getDelimiterSetting() == DelimiterSetting.SEPARATE_BY_COLON) {
@@ -1497,7 +1505,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		result.put(ERROR_MESS, errorMess);
 		result.put(RESULT_VALUE, targetValue);
 
-		return result;
+ 		return result;
 	}
 
 	// サーバ外部出力ファイル型チェック日付型
@@ -1530,10 +1538,16 @@ public class CreateExOutTextService extends ExportService<Object> {
 			} else {
 				JapaneseEraName japaneseEraName = japaneseEraNameOptional.get();
 				
-				StringBuilder japaneseDate = new StringBuilder(japaneseEraName.getName()); 
+				StringBuilder japaneseDate = new StringBuilder(japaneseEraName.getName());
+				if(formatDate == DateOutputFormat.JJYY_MM_DD){
 				japaneseDate.append((date.year() - japaneseEraName.startDate().year() + 1) + SLASH);		
 				japaneseDate.append(date.month() + SLASH);
 				japaneseDate.append(date.day());
+				} else if(formatDate == DateOutputFormat.JJYYMMDD){
+					japaneseDate.append((date.year() - japaneseEraName.startDate().year() + 1) );		
+					japaneseDate.append(date.month() );
+					japaneseDate.append(date.day());	
+				}
 				
 				targetValue = japaneseDate.toString();
 			}
