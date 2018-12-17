@@ -106,9 +106,7 @@ public class JpaWageTableContentRepository extends JpaRepository implements Wage
 				.setParameter("historyId", historyId)
 				.getList();
 
-		Map<String, List<Object[]>> result = data.stream().collect(Collectors.groupingBy(x -> String.valueOf(x[1])))
-				.entrySet().stream().sorted((o1, o2) -> Integer.compare(o1.getKey().compareTo(o2.getKey()), 0))
-				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+		Map<String, List<Object[]>> result = sortByQualificationGroupCode(data);
 
 		return getWageTableQualificationFromDB(result);
 	}
@@ -133,9 +131,19 @@ public class JpaWageTableContentRepository extends JpaRepository implements Wage
 				.setParameter("cid", AppContexts.user().companyId())
 				.getList();
 
-		Map<String, List<Object[]>> result = data.stream().collect(Collectors.groupingBy(x -> String.valueOf(x[1])));
+		Map<String, List<Object[]>> result = sortByQualificationGroupCode(data);
 
 		return getWageTableQualificationFromDB(result);
+	}
+
+	private LinkedHashMap<String, List<Object[]>> sortByQualificationGroupCode(List<Object[]> data) {
+		return data.stream().collect(Collectors.groupingBy(x -> String.valueOf(x[1])))
+				.entrySet().stream().sorted((o1, o2) -> {
+					if(StringUtil.isNullOrEmpty(o1.getKey(), true)) return 1;
+					if(StringUtil.isNullOrEmpty(o2.getKey(), true)) return -1;
+                    return Integer.compare(o1.getKey().compareTo(o2.getKey()), 0);
+                })
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 	}
 
 	private List<WageTableQualification> getWageTableQualificationFromDB(Map<String, List<Object[]>> result){
