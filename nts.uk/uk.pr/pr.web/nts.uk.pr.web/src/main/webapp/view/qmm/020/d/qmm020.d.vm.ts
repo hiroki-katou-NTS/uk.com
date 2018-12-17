@@ -145,7 +145,7 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
                 modeScreen: model.MODE_SCREEN.DEPARMENT,
             });
 
-            modal("/view/qmm/020/j/index.xhtml").onClosed(()=>{
+            modal("/view/qmm/020/j/index1.xhtml").onClosed(()=>{
                 block.invisible();
                 let params = getShared(model.PARAMETERS_SCREEN_J.OUTPUT);
                 if(params){
