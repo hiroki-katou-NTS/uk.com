@@ -14,10 +14,10 @@
             <div style="width: 110px;"
                  data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_26')}</div>
             <div data-bind="with: selectedHistory">
-                <div style="display: inline-block" data-bind="text: startMonth"></div>
+                <div style="display: inline-block" data-bind="text: displayStartMonth"></div>
                 <div style="display: inline-block; margin-left: 5px;">#{i18n.getText('QMM016_31')}</div>
                 <div style="display: inline-block; margin-left: 5px;"
-                     data-bind="text: endMonth"></div>
+                     data-bind="text: displayEndMonth"></div>
             </div>
         </div>
         <hr></hr>
@@ -39,7 +39,7 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="ui-widget-header">#{i18n.getText('QMM016_29')}</td>
+                        <th class="ui-widget-header" style="text-align: center">#{i18n.getText('QMM016_29')}</th>
                         <td>
                             <div>#{i18n.getText('QMM016_50')}</div>
                         </td>
@@ -90,8 +90,7 @@
                                                     constraint: 'WageTablePaymentAmount',
                                                     option: {
                                                         grouplength: 3,
-                                                        currencyformat: 'JPY',
-                                                        width: '110px'
+                                                        width: '120px'
                                                     },
                                                     required: true}"/>
                         </td>

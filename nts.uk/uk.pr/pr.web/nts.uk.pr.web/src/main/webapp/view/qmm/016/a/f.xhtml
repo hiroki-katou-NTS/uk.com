@@ -14,9 +14,9 @@
         <div style="width: 110px;"
              data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_26')}</div>
         <div data-bind="with: selectedHistory">
-            <div style="display: inline-block" data-bind="text: startMonth"></div>
+            <div style="display: inline-block" data-bind="text: displayStartMonth"></div>
             <div style="display: inline-block; margin-left: 5px;">#{i18n.getText('QMM016_31')}</div>
-            <div style="display: inline-block; margin-left: 5px;" data-bind="text: endMonth"></div>
+            <div style="display: inline-block; margin-left: 5px;" data-bind="text: displayEndMonth"></div>
         </div>
     </div>
     <hr></hr>
@@ -32,73 +32,73 @@
                     <col width="90px"/>
                 </colgroup>
                 <thead>
-                <tr>
-                    <th class="ui-widget-header"></th>
-                    <th class="ui-widget-header">#{i18n.getText('QMM016_22')}</th>
-                    <th class="ui-widget-header">
-                        <div style="display: inline-block">#{i18n.getText('QMM016_27')}</div>
-                        <button style="display: inline-block"
-                                data-bind="ntsHelpButton: {image: '../resource/QMM016_1.png', position: 'bottom left'}">?
-                        </button>
-                    </th>
-                    <th class="ui-widget-header">#{i18n.getText('QMM016_28')}</th>
-                </tr>
+	                <tr>
+	                    <th class="ui-widget-header"></th>
+	                    <th class="ui-widget-header">#{i18n.getText('QMM016_22')}</th>
+	                    <th class="ui-widget-header">
+	                        <div style="display: inline-block">#{i18n.getText('QMM016_27')}</div>
+	                        <button style="display: inline-block"
+	                                data-bind="ntsHelpButton: {image: '../resource/QMM016_5.png', position: 'bottom left'}">?
+	                        </button>
+	                    </th>
+	                    <th class="ui-widget-header">#{i18n.getText('QMM016_28')}</th>
+	                </tr>
                 </thead>
                 <tbody>
-                <tr data-bind="with: selectedWageTable().elementInformation().oneDimensionElement">
-                    <th class="ui-widget-header">#{i18n.getText('QMM016_29')}</th>
-                    <td>
-                        <div data-bind="text: elementName"></div>
-                    </td>
-                    <td style="text-align: center;">
-                        <div data-bind="with: $vm.elementRangeSetting().firstElementRange">
-                            <input style="width: 20px;" id="F2_8"
-                                   data-bind="ntsNumberEditor: {constraint: 'RangeLowerLimit', value: rangeLowerLimit, name: '#[QMM016_30]'}"/>
-                            <div style="margin-left: 10px; margin-right: 10px;">#{i18n.getText('QMM016_31')}</div>
-                            <input style="width: 20px;" id="F2_10"
-                                   data-bind="ntsNumberEditor: {constraint: 'RangeUpperLimit', value: rangeUpperLimit, name: '#[QMM016_32]'}"/>
-                        </div>
-                    </td>
-                    <td style="text-align: center;">
-                        <div data-bind="with: $vm.elementRangeSetting().firstElementRange">
-                            <input style="width: 20px;" id="F2_11"
-                                   data-bind="ntsNumberEditor: {constraint: 'StepIncrement', value: stepIncrement, name: '#[QMM016_33]'}"/>
-                        </div>
-                    </td>
-                </tr>
-                <tr data-bind="with: selectedWageTable().elementInformation().twoDimensionElement">
-                    <th class="ui-widget-header">#{i18n.getText('QMM016_40')}</th>
-                    <td>
-                        <div data-bind="text: elementName"></div>
-                    </td>
-                    <td style="text-align: center;">
-                        <div data-bind="with: $vm.elementRangeSetting().secondElementRange">
-                            <input style="width: 20px;" id="F2_15"
-                                   data-bind="ntsNumberEditor: {constraint: 'RangeLowerLimit', value: rangeLowerLimit, name: '#[QMM016_30]'}"/>
-                            <div style="margin-left: 10px; margin-right: 10px;">#{i18n.getText('QMM016_31')}</div>
-                            <input style="width: 20px;" id="F2_17"
-                                   data-bind="ntsNumberEditor: {constraint: 'RangeUpperLimit', value: rangeUpperLimit, name: '#[QMM016_32]'}"/>
-                        </div>
-                    </td>
-                    <td style="text-align: center;">
-                        <div data-bind="with: $vm.elementRangeSetting().secondElementRange">
-                            <input style="width: 20px;" id="F2_18"
-                                   data-bind="ntsNumberEditor: {constraint: 'StepIncrement', value: stepIncrement, name: '#[QMM016_33]'}"/>
-                        </div>
-                    </td>
-                </tr>
-                <tr data-bind="with: selectedWageTable().elementInformation().threeDimensionElement">
-                    <th class="ui-widget-header">#{i18n.getText('QMM016_44')}</th>
-                    <td>
-                        #{i18n.getText('QMM016_53')}
-                    </td>
-                    <td style="text-align: center;">
-                        #{i18n.getText('QMM016_34')}
-                    </td>
-                    <td style="text-align: center;">
-                        #{i18n.getText('QMM016_34')}
-                    </td>
-                </tr>
+	                <tr data-bind="with: selectedWageTable().elementInformation().oneDimensionElement">
+	                    <th class="ui-widget-header" style="text-align: center;">#{i18n.getText('QMM016_29')}</th>
+	                    <td>
+	                        <div data-bind="text: elementName"></div>
+	                    </td>
+	                    <td style="text-align: center;">
+	                        <div data-bind="with: $vm.elementRangeSetting().firstElementRange">
+	                            <input style="width: 20px;" id="F2_8"
+	                                   data-bind="ntsNumberEditor: {constraint: 'RangeLowerLimit', value: rangeLowerLimit, name: '#[QMM016_30]'}"/>
+	                            <div style="margin-left: 10px; margin-right: 10px;">#{i18n.getText('QMM016_31')}</div>
+	                            <input style="width: 20px;" id="F2_10"
+	                                   data-bind="ntsNumberEditor: {constraint: 'RangeUpperLimit', value: rangeUpperLimit, name: '#[QMM016_32]'}"/>
+	                        </div>
+	                    </td>
+	                    <td style="text-align: center;">
+	                        <div data-bind="with: $vm.elementRangeSetting().firstElementRange">
+	                            <input style="width: 20px;" id="F2_11"
+	                                   data-bind="ntsNumberEditor: {constraint: 'StepIncrement', value: stepIncrement, name: '#[QMM016_33]'}"/>
+	                        </div>
+	                    </td>
+	                </tr>
+	                <tr data-bind="with: selectedWageTable().elementInformation().twoDimensionElement">
+	                    <th class="ui-widget-header" style="text-align: center;">#{i18n.getText('QMM016_40')}</th>
+	                    <td>
+	                        <div data-bind="text: elementName"></div>
+	                    </td>
+	                    <td style="text-align: center;">
+	                        <div data-bind="with: $vm.elementRangeSetting().secondElementRange">
+	                            <input style="width: 20px;" id="F2_15"
+	                                   data-bind="ntsNumberEditor: {constraint: 'RangeLowerLimit', value: rangeLowerLimit, name: '#[QMM016_30]'}"/>
+	                            <div style="margin-left: 10px; margin-right: 10px;">#{i18n.getText('QMM016_31')}</div>
+	                            <input style="width: 20px;" id="F2_17"
+	                                   data-bind="ntsNumberEditor: {constraint: 'RangeUpperLimit', value: rangeUpperLimit, name: '#[QMM016_32]'}"/>
+	                        </div>
+	                    </td>
+	                    <td style="text-align: center;">
+	                        <div data-bind="with: $vm.elementRangeSetting().secondElementRange">
+	                            <input style="width: 20px;" id="F2_18"
+	                                   data-bind="ntsNumberEditor: {constraint: 'StepIncrement', value: stepIncrement, name: '#[QMM016_33]'}"/>
+	                        </div>
+	                    </td>
+	                </tr>
+	                <tr data-bind="with: selectedWageTable().elementInformation().threeDimensionElement">
+	                    <th class="ui-widget-header" style="text-align: center;">#{i18n.getText('QMM016_44')}</th>
+	                    <td>
+	                        #{i18n.getText('QMM016_53')}
+	                    </td>
+	                    <td style="text-align: center;">
+	                        #{i18n.getText('QMM016_34')}
+	                    </td>
+	                    <td style="text-align: center;">
+	                        #{i18n.getText('QMM016_34')}
+	                    </td>
+	                </tr>
                 </tbody>
             </table>
         </div>
@@ -116,9 +116,9 @@
         <table>
 			<thead>
 				<tr>
-					<td rowspan="2"><img src="../resource/QMM016_6.png"></img></td>
-					<td>
-						<div style="display: inline-block; background-color: #CFF1A5; border: 1px solid #CCC;">
+					<td rowspan="2" style="border: none;"><img src="../resource/QMM016_6.png"></img></td>
+					<td style="border: none; padding: 0 0px">
+						<div style="display: inline-block; background-color: #CFF1A5; border: 1px solid #CCC; font-weight: bold; color: #000;">
 							<div style="width: 150px; display: inline-block;">
 		                        <div>#{i18n.getText('QMM016_53')}</div>
 		                    </div>
@@ -138,15 +138,15 @@
 						</div>
 						<img src="../resource/QMM016_8.png"></img>
 	                </td>
-					<td></td>
+					<td style="border: none;"></td>
 				</tr>
 				<tr>
-					<th class="ui-widget-header">
-						<div data-bind="with: $vm.selectedWageTable().elementInformation().twoDimensionElement" style="height: 32px">
+					<th class="ui-widget-header" style="height: 32px">
+						<div data-bind="with: $vm.selectedWageTable().elementInformation().twoDimensionElement">
 	                        <div data-bind="text: elementName"></div>
 	                    </div>
 	                </th>
-					<td rowspan="2"><img src="../resource/QMM016_7.png"></img></td>
+					<td rowspan="2" style="border: none;"><img src="../resource/QMM016_7.png"></img></td>
 				</tr>
 				<tr>
 					<th class="ui-widget-header">
@@ -154,15 +154,15 @@
 		                    <div data-bind="text: elementName"></div>
 		                </div>
 					</th>
-					<th>
-						<div id="elem2-wrapper" style="max-width: 500px; overflow: auto;">
+					<th style="padding: 0 0px">
+						<div id="elem2-wrapper" style="width: 500px; overflow-x: hidden; overflow-y: scroll">
 							<table id="elem2-table">
 								<tbody>
 					                <tr>
 	                                    <com:ko bind="$vm.listSecondDimension" tag="foreach">
-				                    		<td class="ui-widget-header">
-				                    			<div style="height: 32px; width: 150px;" data-bind="text: name"></div>
-			                    			</td>
+				                    		<th class="ui-widget-header" style="height: 32px;">
+				                    			<div style="width: 150px;" data-bind="text: name"></div>
+			                    			</th>
 				                    	</com:ko>
 			                    	</tr>
 	           					</tbody>
@@ -172,15 +172,14 @@
 				</tr>
 			</thead>
 			<tbody>
-				
 				<tr>
-					<td>
-						<div id="elem1-wrapper" style="max-height: 300px; overflow: auto;">
+					<td style="padding: 0 0px">
+						<div id="elem1-wrapper" style="height: 348px; overflow-x: scroll; overflow-y: hidden;">
 							<table id="elem1-table">
 								<tbody data-bind="foreach: $vm.wageTableContent2dData">
 					                <tr>
-					                    <th class="ui-widget-header">
-						                    <div style="height: 32px; width: 150px;">
+					                    <th class="ui-widget-header" style="height: 32px;">
+						                    <div style="width: 150px;">
 						                    	<div data-bind="if: $vm.selectedWageTable().elementInformation().oneDimensionElement().masterNumericClassification() == 0">
 							                		<span data-bind="text: masterName"></span>
 							                	</div>
@@ -197,8 +196,8 @@
 							<div style="height: 17px"></div>
 						</div>
 					</td>
-					<td>
-						<div id="content-wrapper" style="max-width: 500px; max-height: 300px; overflow: auto;">
+					<td style="padding: 0 0px">
+						<div id="content-wrapper" style="width: 500px; height: 348px; overflow: scroll;">
 							<table id="content-table">
 								<tbody data-bind="foreach: $vm.wageTableContent2dData">
 					                <tr>
@@ -219,7 +218,7 @@
 							</table>
 						</div>
 					</td>
-					<td></td>
+					<td style="border: none;"></td>
 				</tr>
 			</tbody>
 		</table>

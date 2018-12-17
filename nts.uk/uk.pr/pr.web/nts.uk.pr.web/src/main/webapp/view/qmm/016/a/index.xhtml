@@ -191,58 +191,58 @@
                                         <col width="200px"/>
                                     </colgroup>
                                     <thead>
-                                    <tr>
-                                        <th class="ui-widget-header"></th>
-                                        <!--A8_3 要素-->
-                                        <th class="ui-widget-header">#{i18n.getText('QMM016_22')}</th>
-                                    </tr>
+	                                    <tr>
+	                                        <th class="ui-widget-header" style="text-align: center;"></th>
+	                                        <!--A8_3 要素-->
+	                                        <th class="ui-widget-header">#{i18n.getText('QMM016_22')}</th>
+	                                    </tr>
                                     </thead>
                                     <tbody>
-                                    <tr>
-                                        <!--A8_4 要素番号1-->
-                                        <th class="ui-widget-header">#{i18n.getText('QMM016_29')}</th>
-                                        <td>
-                                            <!--A8_5 参照ボタン1-->
-                                            <div data-bind="if: elementSetting() == 0 || elementSetting() == 1 || elementSetting() == 2">
-                                                <button tabindex="15"
-                                                        data-bind="click: function(){$vm.selectElement(1)}, enable: !$vm.updateMode()">#{i18n.getText('QMM016_23')}</button>
-                                            </div>
-                                            <!--A8_6 選択要素1-->
-                                            <div data-bind="with: elementInformation().oneDimensionElement">
-                                                <div data-bind="text: elementName"></div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <!--A8_7 要素番号2-->
-                                        <th data-bind="if: elementSetting() == 1 || elementSetting() == 2 || elementSetting() == 4"
-                                            class="ui-widget-header">#{i18n.getText('QMM016_40')}</th>
-                                        <td data-bind="if: elementSetting() == 1 || elementSetting() == 2">
-                                            <!--A8_8 参照ボタン2-->
-                                            <div>
-                                                <button tabindex="16"
-                                                        data-bind="click: function(){$vm.selectElement(2)}, enable: !$vm.updateMode()">#{i18n.getText('QMM016_23')}</button>
-                                            </div>
-                                            <!--A8_9 選択要素2-->
-                                            <div data-bind="with: elementInformation().twoDimensionElement">
-                                                <div data-bind="text: elementName"></div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <!--A8_10  要素番号3-->
-                                        <th data-bind="if: elementSetting() == 2 || elementSetting() == 4"
-                                            class="ui-widget-header">#{i18n.getText('QMM016_44')}</th>
-                                        <td data-bind="if: elementSetting() == 2 || elementSetting() == 4">
-                                            <!--A8_11 参照ボタン3-->
-                                            <button tabindex="17"
-                                                    data-bind="click: function(){$vm.selectElement(3)}, enable: !$vm.updateMode()">#{i18n.getText('QMM016_23')}</button>
-                                            <!--A8_12 選択要素3-->
-                                            <div data-bind="with: elementInformation().threeDimensionElement">
-                                                <div data-bind="text: elementName"></div>
-                                            </div>
-                                        </td>
-                                    </tr>
+	                                    <tr>
+	                                        <!--A8_4 要素番号1-->
+	                                        <th class="ui-widget-header" style="text-align: center;">#{i18n.getText('QMM016_29')}</th>
+	                                        <td>
+	                                            <!--A8_5 参照ボタン1-->
+	                                            <div data-bind="if: elementSetting() == 0 || elementSetting() == 1 || elementSetting() == 2">
+	                                                <button tabindex="15"
+	                                                        data-bind="click: function(){$vm.selectElement(1)}, enable: !$vm.updateMode()">#{i18n.getText('QMM016_23')}</button>
+	                                            </div>
+	                                            <!--A8_6 選択要素1-->
+	                                            <div data-bind="with: elementInformation().oneDimensionElement">
+	                                                <div data-bind="text: elementName"></div>
+	                                            </div>
+	                                        </td>
+	                                    </tr>
+	                                    <tr>
+	                                        <!--A8_7 要素番号2-->
+	                                        <th style="text-align: center;" data-bind="if: elementSetting() == 1 || elementSetting() == 2 || elementSetting() == 4"
+	                                            class="ui-widget-header">#{i18n.getText('QMM016_40')}</th>
+	                                        <td data-bind="if: elementSetting() == 1 || elementSetting() == 2">
+	                                            <!--A8_8 参照ボタン2-->
+	                                            <div>
+	                                                <button tabindex="16"
+	                                                        data-bind="click: function(){$vm.selectElement(2)}, enable: !$vm.updateMode()">#{i18n.getText('QMM016_23')}</button>
+	                                            </div>
+	                                            <!--A8_9 選択要素2-->
+	                                            <div data-bind="with: elementInformation().twoDimensionElement">
+	                                                <div data-bind="text: elementName"></div>
+	                                            </div>
+	                                        </td>
+	                                    </tr>
+	                                    <tr>
+	                                        <!--A8_10  要素番号3-->
+	                                        <th style="text-align: center;" data-bind="if: elementSetting() == 2 || elementSetting() == 4"
+	                                            class="ui-widget-header">#{i18n.getText('QMM016_44')}</th>
+	                                        <td data-bind="if: elementSetting() == 2 || elementSetting() == 4">
+	                                            <!--A8_11 参照ボタン3-->
+	                                            <button tabindex="17"
+	                                                    data-bind="click: function(){$vm.selectElement(3)}, enable: !$vm.updateMode()">#{i18n.getText('QMM016_23')}</button>
+	                                            <!--A8_12 選択要素3-->
+	                                            <div data-bind="with: elementInformation().threeDimensionElement">
+	                                                <div data-bind="text: elementName"></div>
+	                                            </div>
+	                                        </td>
+	                                    </tr>
                                     </tbody>
                                 </table>
                             </div>

@@ -134,11 +134,13 @@ public class WageTableContentCreater {
 			}
 		} else {
 			int frameNum = 1;
-			while (rangeDto.getRangeLowerLimit() + rangeDto.getStepIncrement() <= rangeDto.getRangeUpperLimit()) {
-				result.add(new ElementItemDto(null, null, frameNum, rangeDto.getRangeLowerLimit(),
-						rangeDto.getRangeLowerLimit() + rangeDto.getStepIncrement() - 1, null));
-				rangeDto.setRangeLowerLimit(rangeDto.getRangeLowerLimit() + rangeDto.getStepIncrement());
-				frameNum++;
+			if (rangeDto.getStepIncrement() > 0) {
+				while (rangeDto.getRangeLowerLimit() + rangeDto.getStepIncrement() <= rangeDto.getRangeUpperLimit()) {
+					result.add(new ElementItemDto(null, null, frameNum, rangeDto.getRangeLowerLimit(),
+							rangeDto.getRangeLowerLimit() + rangeDto.getStepIncrement() - 1, null));
+					rangeDto.setRangeLowerLimit(rangeDto.getRangeLowerLimit() + rangeDto.getStepIncrement());
+					frameNum++;
+				}
 			}
 			result.add(new ElementItemDto(null, null, frameNum, rangeDto.getRangeLowerLimit(),
 					rangeDto.getRangeUpperLimit(), null));
