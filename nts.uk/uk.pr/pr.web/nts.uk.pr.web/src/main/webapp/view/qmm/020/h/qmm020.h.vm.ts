@@ -369,15 +369,6 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
             });
         }
 
-        openLScreen(){
-            let self = this;
-            modal("/view/qmm/020/l/index.xhtml").onClosed(()=>{
-                let params = getShared(model.PARAMETERS_SCREEN_L.OUTPUT);
-                if(params && params.isSubmit) location.reload();
-
-            });
-        }
-
 
 
         enableRegis() {

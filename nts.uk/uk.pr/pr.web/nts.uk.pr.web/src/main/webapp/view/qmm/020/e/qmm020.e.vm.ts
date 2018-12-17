@@ -90,15 +90,6 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
             $("#E3_1").setupSearchScroll("igGrid", true);
         }
 
-        openLScreen(){
-            let self = this;
-            modal("/view/qmm/020/l/index.xhtml").onClosed(()=>{
-                let params = getShared(model.PARAMETERS_SCREEN_L.OUTPUT);
-                if(params && params.isSubmit) location.reload();
-
-            });
-        }
-
         initScreen(hisId: string){
             let self = this;
             block.invisible();

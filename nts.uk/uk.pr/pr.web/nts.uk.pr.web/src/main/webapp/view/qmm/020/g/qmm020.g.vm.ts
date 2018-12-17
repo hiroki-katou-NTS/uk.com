@@ -36,15 +36,6 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
 
         }
 
-        openLScreen(){
-            let self = this;
-            modal("/view/qmm/020/l/index.xhtml").onClosed(()=>{
-                let params = getShared(model.PARAMETERS_SCREEN_L.OUTPUT);
-                if(params && params.isSubmit) location.reload();
-
-            });
-        }
-
         loadGird(){
             let self = this;
             if($("#G3_1").length > 0){
