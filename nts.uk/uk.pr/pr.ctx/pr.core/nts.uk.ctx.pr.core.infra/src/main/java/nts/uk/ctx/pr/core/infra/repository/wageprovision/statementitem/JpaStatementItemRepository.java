@@ -134,15 +134,25 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 																	   List<String> itemNameCdExList) {
 	    boolean hasItemNameCdFixedList = itemNameCdFixedList != null && !itemNameCdFixedList.isEmpty();
         boolean hasItemNameCdExList = itemNameCdExList != null && !itemNameCdExList.isEmpty();
+        boolean hasItemNameCdSelected = itemNameCdSelected != null;
 		TypedQueryWrapper<Object[]> typeQuery;
         StringBuilder builder = new StringBuilder();
         builder.append(SELECT_CUSTOM_BY_CTG);
+		builder.append(" AND ( ");
 		if(hasItemNameCdFixedList){
-            builder.append(" AND f.statementItemPk.itemNameCd NOT IN :itemNameCdFixedList ");
-        }
+            builder.append(" f.statementItemPk.itemNameCd NOT IN :itemNameCdFixedList ");
+        }else{
+			builder.append(" f.statementItemPk.itemNameCd IS NOT NULL ");
+		}
         if(hasItemNameCdExList){
-            builder.append(" AND (f.statementItemPk.itemNameCd NOT IN :itemNameCdExList OR f.statementItemPk.itemNameCd = :itemNameCdSelected) ");
+            builder.append(" AND f.statementItemPk.itemNameCd NOT IN :itemNameCdExList ");
+        }else{
+			builder.append(" AND f.statementItemPk.itemNameCd IS NOT NULL ");
+		}
+		if(hasItemNameCdSelected){
+            builder.append(" OR f.statementItemPk.itemNameCd = :itemNameCdSelected ");
         }
+		builder.append(" ) ");
         builder.append(ORDER_BY_ITEM_NAME_CD_ASC);
         typeQuery = this.queryProxy().query(builder.toString(), Object[].class)
                 .setParameter("cid", cid)
@@ -152,9 +162,11 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 			typeQuery.setParameter("itemNameCdFixedList", itemNameCdFixedList);
 		}
 		if (hasItemNameCdExList) {
-			typeQuery.setParameter("itemNameCdExList", itemNameCdExList)
-					.setParameter("itemNameCdSelected", itemNameCdSelected);
+			typeQuery.setParameter("itemNameCdExList", itemNameCdExList);
 		}
+        if(hasItemNameCdSelected){
+            typeQuery.setParameter("itemNameCdSelected", itemNameCdSelected);
+        }
 		List<StatementItemCustom> result = typeQuery
 				.getList(item -> new StatementItemCustom(item[0] != null ? String.valueOf(item[0]) : "", item[1] != null ? String.valueOf(item[1]) : "",
 						item[2] != null ? String.valueOf(item[2]) : "", item[3] != null ? String.valueOf(item[3]) : "",
