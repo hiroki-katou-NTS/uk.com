@@ -898,7 +898,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
                 }
             } else {
                 // エラー範囲下限値チェック状況を確認する
-                if (self.errorRangeSetting.upperLimitSetting.valueSettingAtr()) {
+                if (self.errorRangeSetting.lowerLimitSetting.valueSettingAtr()) {
                     // エラー範囲下限値の入力を確認する
                     if (isNullOrEmpty(self.errorRangeSetting.lowerLimitSetting.rangeValue())) {
                         // alertError({messageId: "MsgQ_15"});
