@@ -864,7 +864,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	// サーバ外部出力ファイル項目作成
 	private Map<String, String> fileItemDataCreation(List<String> lineData, OutputItemCustom outputItemCustom,
 			boolean isSetNull, String nullValueReplace, int index) {
-		String itemValue = "";
+		String itemValue = "0";
 		String value;
 		Map<String, String> result = new HashMap<String, String>();
 
@@ -873,8 +873,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 			result.put(USE_NULL_VALUE, USE_NULL_VALUE_ON);
 			return result;
 		}
-
-		for (int i = 0; i < outputItemCustom.getStandardOutputItem().getCategoryItems().size(); i++) {
+		List<CategoryItem> categoryItems = outputItemCustom.getStandardOutputItem().getCategoryItems();
+		for (int i = 0; i < categoryItems.size(); i++) {
 			value = lineData.get(index);
 			index++;
 
@@ -887,10 +887,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 				}
 			}
 
-			if ((i == 0) || StringUtils.isEmpty(itemValue)) {
-				itemValue = value;
-				continue;
-			}
+//			if ((i == 0) || StringUtils.isEmpty(itemValue)) {
+//				itemValue = value;
+//				continue;
+//			}
 
 			if ((outputItemCustom.getStandardOutputItem().getItemType() != ItemType.NUMERIC)
 					&& (outputItemCustom.getStandardOutputItem().getItemType() != ItemType.TIME)
@@ -899,18 +899,18 @@ public class CreateExOutTextService extends ExportService<Object> {
 				continue;
 			}
 			
-			Optional<OperationSymbol> operationSymbol = outputItemCustom.getStandardOutputItem().getCategoryItems()
+			Optional<OperationSymbol> operationSymbol = categoryItems
 					.get(i).getOperationSymbol();
-			if (!operationSymbol.isPresent() || StringUtils.isEmpty(value))
+			if ( StringUtils.isEmpty(value))
 				continue;
-			if (operationSymbol.get() == OperationSymbol.PLUS) {
+			if ( !operationSymbol.isPresent() || operationSymbol.get() == OperationSymbol.PLUS) {
 				itemValue = String.valueOf((Double.parseDouble(itemValue)) + Double.parseDouble(value));
 			} else if (operationSymbol.get() == OperationSymbol.MINUS) {
 				itemValue = String.valueOf(Double.parseDouble(itemValue) - Double.parseDouble(value));
 			}
 		}
 
-		result.put(ITEM_VALUE, itemValue);
+		result.put(ITEM_VALUE, itemValue.equals("0")?"":itemValue);
 		result.put(USE_NULL_VALUE, USE_NULL_VALUE_OFF);
 
 		return result;

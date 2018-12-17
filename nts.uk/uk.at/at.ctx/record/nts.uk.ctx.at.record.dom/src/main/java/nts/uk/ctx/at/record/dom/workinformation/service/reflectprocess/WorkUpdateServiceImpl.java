@@ -110,7 +110,10 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 	
 	@Override
 	public WorkInfoOfDailyPerformance updateScheStartEndTime(TimeReflectPara para, WorkInfoOfDailyPerformance dailyPerfor) {
-		
+		if(!para.isStart()
+				&& !para.isEnd()) {
+			return dailyPerfor;
+		}
 		ScheduleTimeSheet timeSheet;
 		if(dailyPerfor.getScheduleTimeSheets().isEmpty()) {
 			timeSheet = new ScheduleTimeSheet(1, 

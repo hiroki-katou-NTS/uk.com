@@ -13,6 +13,8 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.shr.com.url.UrlParamAtr;
 import nts.uk.shr.com.url.UrlTaskIncre;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -47,6 +49,9 @@ public class SgwmtUrlTaskIncre extends UkJpaEntity implements Serializable
     @Column(name = "TASK_INCRE_VALUE")
     public String taskIncreValue;
     
+    @Column(name = "URL_ATR")
+    public Integer urlAtr;
+    
     @ManyToOne
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name="CID", referencedColumnName="CID"),
@@ -61,10 +66,12 @@ public class SgwmtUrlTaskIncre extends UkJpaEntity implements Serializable
     }
 
     public UrlTaskIncre toDomain() {
-        return new UrlTaskIncre(this.urlTaskIncrePk.embeddedId, this.urlTaskIncrePk.cid, this.urlTaskIncrePk.taskIncreId, this.taskIncreKey, this.taskIncreValue);
+        return new UrlTaskIncre(this.urlTaskIncrePk.embeddedId, this.urlTaskIncrePk.cid, this.urlTaskIncrePk.taskIncreId, 
+        		this.taskIncreKey, this.taskIncreValue, this.urlAtr==null ? UrlParamAtr.PROCESS_PARAM : EnumAdaptor.valueOf(this.urlAtr, UrlParamAtr.class));
     }
     public static SgwmtUrlTaskIncre toEntity(UrlTaskIncre domain) {
-        return new SgwmtUrlTaskIncre(new SgwmtUrlTaskIncrePk(domain.getEmbeddedId(), domain.getCid(), domain.getTaskIncreId()), domain.getTaskIncreKey(), domain.getTaskIncreValue(), null);
+        return new SgwmtUrlTaskIncre(new SgwmtUrlTaskIncrePk(domain.getEmbeddedId(), domain.getCid(), domain.getTaskIncreId()), 
+        		domain.getTaskIncreKey(), domain.getTaskIncreValue(), domain.getUrlParamAtr().value, null);
     }
 
 }
