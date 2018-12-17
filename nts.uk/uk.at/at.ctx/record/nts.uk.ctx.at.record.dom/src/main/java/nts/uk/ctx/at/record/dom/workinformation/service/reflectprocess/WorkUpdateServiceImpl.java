@@ -110,7 +110,10 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 	
 	@Override
 	public WorkInfoOfDailyPerformance updateScheStartEndTime(TimeReflectPara para, WorkInfoOfDailyPerformance dailyPerfor) {
-		
+		if(!para.isStart()
+				&& !para.isEnd()) {
+			return dailyPerfor;
+		}
 		ScheduleTimeSheet timeSheet;
 		if(dailyPerfor.getScheduleTimeSheets().isEmpty()) {
 			timeSheet = new ScheduleTimeSheet(1, 
@@ -132,8 +135,9 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			}
 			
 		}
-		if(para.isStart()
-				|| para.isEnd()) {
+		if((para.isStart()
+				|| para.isEnd())
+				&& (para.getStartTime() != null && para.getEndTime() != null)) {
 			dailyPerfor.getScheduleTimeSheets().add(timeSheet);
 		}
 		//workRepository.updateByKeyFlush(dailyPerfor);
@@ -495,7 +499,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		List<Integer> lstItem = new ArrayList<>();		
 		lstItem.add(267);
 		lstItem.add(272);
-		lstItem.add(276);
+		lstItem.add(277);
 		lstItem.add(282);
 		lstItem.add(287);
 		lstItem.add(292);

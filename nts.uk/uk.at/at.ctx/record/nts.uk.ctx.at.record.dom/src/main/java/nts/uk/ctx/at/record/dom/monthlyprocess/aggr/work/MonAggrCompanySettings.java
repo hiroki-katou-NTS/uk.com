@@ -10,6 +10,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -63,6 +65,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * 月別集計で必要な会社別設定
  * @author shuichu_ishida
  */
+@Setter
+@NoArgsConstructor
 public class MonAggrCompanySettings {
 
 	/** 会社ID */

@@ -322,7 +322,6 @@ module nts.uk.com.view.cmf002.c.viewmodel {
 
             service.getOutItems(self.conditionCode()).done((outputItems: Array<any>) => {
                 if (outputItems && outputItems.length) {
-                    outputItems = _.sortBy(outputItems, ['outItemCd']);
                     let rsOutputItems: Array<model.StandardOutputItem> = _.map(outputItems, x => {
                         let listCategoryItem: Array<model.CategoryItem> = _.map(x.categoryItems, (y : model.ICategoryItem) => {
                             return new model.CategoryItem(self.categoryId(), y.categoryItemNo,
@@ -401,15 +400,17 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             }
             if (errors.hasError() === false && self.isValid()) {
                 block.invisible();
+                for(let i = 0;i<currentStandardOutputItem.categoryItems().length;i++){
+                    currentStandardOutputItem.categoryItems()[i].displayOrder = (i+1);
+                }
                 currentStandardOutputItem.isNewMode = self.isNewMode();
                 currentStandardOutputItem.dispOrder = self.listStandardOutputItem().length > 0 ? self.listStandardOutputItem().length + 1 : 1;
                 // register
                 service.registerOutputItem(ko.toJS(currentStandardOutputItem)).done(() => {
-                    info({ messageId: "Msg_15" }).then(() => {
-                        self.getAllOutputItem(currentStandardOutputItem.outItemCd()).done(() => {
-                            self.setFocus();
-                            self.isUpdateExecution(true);
-                        });
+                    info({ messageId: "Msg_15" });
+                    self.getAllOutputItem(currentStandardOutputItem.outItemCd()).done(() => {
+                        self.setFocus();
+                        self.isUpdateExecution(true);
                     });
                 }).fail(function(error) {
                     alertError({ messageId: error.messageId });
@@ -431,19 +432,18 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                     });
 
                     service.removeOutputItem(ko.toJS(currentStandardOutputItem)).done(function() {                     
-                        info({ messageId: "Msg_16" }).then(() => {
-                            self.getAllOutputItem(currentStandardOutputItem.outItemCd()).done(() => {
-                                if (self.listStandardOutputItem().length == 0) {
-                                    self.selectedStandardOutputItemCode("");
+                        info({ messageId: "Msg_16" });
+                        self.getAllOutputItem(currentStandardOutputItem.outItemCd()).done(() => {
+                            if (self.listStandardOutputItem().length == 0) {
+                                self.selectedStandardOutputItemCode("");
+                            } else {
+                                if (index == self.listStandardOutputItem().length) {
+                                    self.selectedStandardOutputItemCode(self.listStandardOutputItem()[index - 1].outItemCd());
                                 } else {
-                                    if (index == self.listStandardOutputItem().length) {
-                                        self.selectedStandardOutputItemCode(self.listStandardOutputItem()[index - 1].outItemCd());
-                                    } else {
-                                        self.selectedStandardOutputItemCode(self.listStandardOutputItem()[index].outItemCd());
-                                    }
+                                    self.selectedStandardOutputItemCode(self.listStandardOutputItem()[index].outItemCd());
                                 }
-                                self.isUpdateExecution(true);                       
-                            });
+                            }
+                            self.isUpdateExecution(true);                       
                         });
                     }).fail(function(error) {
                         alertError({ messageId: error.messageId });

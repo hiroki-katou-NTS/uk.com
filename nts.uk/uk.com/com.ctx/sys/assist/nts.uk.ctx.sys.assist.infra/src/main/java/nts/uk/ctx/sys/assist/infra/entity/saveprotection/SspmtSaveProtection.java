@@ -11,6 +11,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.sys.assist.dom.saveprotetion.SaveProtetion;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -43,11 +44,11 @@ public class SspmtSaveProtection extends UkJpaEntity implements Serializable
         return saveProtectionPk;
     }
 
-   /* public SaveProtection toDomain() {
-        return new SaveProtection(this.saveProtectionPk.categoryId, this.saveProtectionPk.replaceColumn, this.saveProtectionPk.tableNo, this.correctClasscification);
+    public SaveProtetion toDomain() {
+        return new SaveProtetion(this.saveProtectionPk.categoryId, this.correctClasscification, this.saveProtectionPk.replaceColumn, this.saveProtectionPk.tableNo );
     }
-    public static SspmtSaveProtection toEntity(SaveProtection domain) {
+    public static SspmtSaveProtection toEntity(SaveProtetion domain) {
         return new SspmtSaveProtection(new SspmtSaveProtectionPk(domain.getCategoryId(), domain.getReplaceColumn(), domain.getTableNo()), domain.getCorrectClasscification());
-    }*/
+    }
 
 }

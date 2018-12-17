@@ -71,7 +71,8 @@ public interface BasicScheduleRepository {
 	 *            work time code
 	 */
 	void changeWorkTypeTime(String sId, GeneralDate date, String workTypeCode, String workTimeCode);
-
+	void changeWorkType(String sid, GeneralDate date, String workTypeCode);
+	void changeWorkTime(String sid, GeneralDate date, String worktimeCode);
 	/**
 	 * Delete.
 	 *

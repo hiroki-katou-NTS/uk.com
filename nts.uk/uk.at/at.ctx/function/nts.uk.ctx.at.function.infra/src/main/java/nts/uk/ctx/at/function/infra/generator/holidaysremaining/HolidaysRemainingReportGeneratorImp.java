@@ -447,10 +447,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		// Set data for 積立年休 (H)
 		// Result RequestList268
 		val reserveHolidayImported = hdRemainingInfor.getReserveHoliday();
-		{
-			if (reserveHolidayImported != null)
+		if (reserveHolidayImported != null){
 				// H1_2
-				cells.get(firstRow, 4).setValue(reserveHolidayImported.getGrantNumber());
+			cells.get(firstRow, 4).setValue(reserveHolidayImported.getGrantNumber());
 			// H1_3
 			cells.get(firstRow, 5).setValue(reserveHolidayImported.getStartMonthRemain());
 			if (reserveHolidayImported.getStartMonthRemain() < 0) {
