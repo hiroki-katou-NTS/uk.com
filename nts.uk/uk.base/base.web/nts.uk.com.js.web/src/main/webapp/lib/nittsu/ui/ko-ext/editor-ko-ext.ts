@@ -951,11 +951,23 @@ module nts.uk.ui.koExtentions {
     
         var handlesEnterKey = (typeof data.enterkey === "function");
         var onEnterKey = handlesEnterKey ? data.enterkey : $.noop;
+        var checkProcessing = function (){
+            if($(".blockUI").length > 0){
+                setTimeout(() => checkProcessing(), 100);    
+            } else {
+                $input.data("enter-processing", false);
+            }    
+        }
         if (handlesEnterKey) {
             $input.addClass("enterkey")
                 .onkey("down", uk.KeyCodes.Enter, e => {
-                    $input.change();
-                    onEnterKey.call(ko.dataFor(e.target), e);
+                    if($input.data("enter-processing") != true){
+                        $input.data("enter-processing", true);
+                        $input.change();
+                        onEnterKey.call(ko.dataFor(e.target), e);
+                        checkProcessing();
+                    }
+                    
                 });
         }
     }
