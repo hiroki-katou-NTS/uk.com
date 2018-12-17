@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.ws.processexecution;
 
+import java.io.Console;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -12,6 +13,7 @@ import lombok.val;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.task.AsyncTaskInfo;
+import nts.arc.task.AsyncTaskInfoRepository;
 import nts.gul.util.value.MutableValue;
 //import nts.uk.ctx.at.function.app.command.processexecution.ExecuteProcessExecCommandHandler;
 import nts.uk.ctx.at.function.app.command.processexecution.ExecuteProcessExecutionCommand;
@@ -34,12 +36,11 @@ import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionDate
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionLogDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionLogHistoryDto;
+import nts.uk.ctx.at.function.ws.processexecution.batchserver.BatchTaskResult;
 import nts.uk.shr.com.communicate.PathToWebApi;
 import nts.uk.shr.com.communicate.batch.BatchServer;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
-import nts.uk.shr.sample.batchserver.BatchResult;
-import nts.uk.shr.sample.batchserver.APBatchTask.SampleRequest;
 
 @Path("at/function/processexec")
 @Produces("application/json")
@@ -81,6 +82,9 @@ public class ProcessExecutionWebService extends WebService {
 	
 	@Inject
 	private BatchServer batchServer;
+	
+	@Inject
+	private AsyncTaskInfoRepository asyncTaskInfoRepository;
 	
 	/**
 	 * Gets the enum.
@@ -136,11 +140,14 @@ public class ProcessExecutionWebService extends WebService {
 		MutableValue<AsyncTaskInfo> result = new MutableValue<>();
 		
 		if (this.batchServer.exists()) {
-			val webApi = this.batchServer.webApi(PathToWebApi.com("/batch/batch-execute"), 
-					ExecuteProcessExecutionCommand.class, AsyncTaskInfo.class);
+			System.out.println("Call web serveice execute !");
+			val webApi = this.batchServer.webApi(PathToWebApi.at("/batch/batch-execute"), 
+					ExecuteProcessExecutionCommand.class, BatchTaskResult.class);
 			this.batchServer.request(webApi, c -> c.entity(command)
 					.succeeded(x -> {
-						result.set(x);
+						String taskId = x.getId();
+						AsyncTaskInfo taskInfo = asyncTaskInfoRepository.find(taskId).get();
+						result.set(taskInfo);
 			}));
 		} else {
 			result.set(this.execHandler.handle(command));
@@ -152,7 +159,22 @@ public class ProcessExecutionWebService extends WebService {
 	@POST
 	@Path("terminate")
 	public AsyncTaskInfo terminate(TerminateProcessExecutionCommand command) {
-		return this.termHandler.handle(command);
+		MutableValue<AsyncTaskInfo> result = new MutableValue<>();
+		
+		if (this.batchServer.exists()) {
+			val webApi = this.batchServer.webApi(PathToWebApi.at("/batch/batch-terminate"), 
+					TerminateProcessExecutionCommand.class, BatchTaskResult.class);
+			this.batchServer.request(webApi, c -> c.entity(command)
+					.succeeded(x -> {
+						String taskId = x.getId();
+						AsyncTaskInfo taskInfo = asyncTaskInfoRepository.find(taskId).get();
+						result.set(taskInfo);
+			}));
+		} else {
+			result.set(this.termHandler.handle(command));
+		}
+		
+		return result.get();
 	}
 	
 	@POST

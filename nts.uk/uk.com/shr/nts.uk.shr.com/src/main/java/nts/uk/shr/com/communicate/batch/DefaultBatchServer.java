@@ -33,7 +33,8 @@ public class DefaultBatchServer implements BatchServer, InitializeWhenDeploy {
 	
 	@Override
 	public boolean exists() {
-		return this.system.getBatchServerAddress().isPresent();
+		return true;
+		//return this.system.getBatchServerAddress().isPresent();
 	}
 	
 	@Override
@@ -42,8 +43,10 @@ public class DefaultBatchServer implements BatchServer, InitializeWhenDeploy {
 			RequestDefine<Q> requestDefine,
 			ResponseDefine<S> responseDefine) {
 		
-		String serverAddr = this.system.getBatchServerAddress()
-				.orElseThrow(() -> new RuntimeException("バッチサーバのアドレスが設定されていません。"));
+//		String serverAddr = this.system.getBatchServerAddress()
+//				.orElseThrow(() -> new RuntimeException("バッチサーバのアドレスが設定されていません。"));
+		String serverAddr = "192.168.100.150:8080";	
+			
 		
 		URI uriToWebApi = URI.create("http://" + serverAddr + "/" + path.createPath());
 		

@@ -24,13 +24,16 @@ public class ProcessExecutionBatchWebService extends WebService {
 	
 	@POST
 	@Path("batch-execute")
-	public AsyncTaskInfo execute(ExecuteProcessExecutionCommand command) {
-			return this.execHandler.handle(command);
+	public BatchTaskResult execute(ExecuteProcessExecutionCommand command) {
+		AsyncTaskInfo info = this.execHandler.handle(command);
+		System.out.println("Run web serveice execute!");
+		return new BatchTaskResult(info.getId());
 	}
 
 	@POST
 	@Path("batch-terminate")
-	public AsyncTaskInfo terminate(TerminateProcessExecutionCommand command) {
-		return this.termHandler.handle(command);
+	public BatchTaskResult terminate(TerminateProcessExecutionCommand command) {
+		AsyncTaskInfo info = this.termHandler.handle(command);
+		return new BatchTaskResult(info.getId());
 	}
 }
