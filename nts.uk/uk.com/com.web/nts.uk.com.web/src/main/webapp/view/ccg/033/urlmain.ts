@@ -19,6 +19,10 @@ __viewContext.ready(function() {
             nts.uk.ui.dialog.alertError({ messageId: failure.messageId, messageParams: failure.parameterIds }).then(function() {
                 nts.uk.request.jump("com", "/view/ccg/007/d/index.xhtml"); 
             });
+        } else if(!nts.uk.util.isNullOrEmpty(failure.message)){
+            nts.uk.ui.dialog.alertError(failure.message).then(function() {
+                nts.uk.request.jump("com", "/view/ccg/007/d/index.xhtml"); 
+            });
         } else {
             nts.uk.request.jump("com", "/view/ccg/007/d/index.xhtml"); 
         }

@@ -13,6 +13,7 @@ import javax.ws.rs.Produces;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginRecordRegistService;
@@ -204,7 +205,7 @@ public class UrlWebService {
 				urlExecInfoExport.getProgramId(),
 				urlExecInfoExport.getScreenId());
 		if(systemSuspendOutput.isError()){
-			throw new BusinessException(systemSuspendOutput.getMsgContent());
+			throw new BusinessException(new RawErrorMessage(systemSuspendOutput.getMsgContent()));
 		}
 		return systemSuspendOutput.getMsgID();
 	}
