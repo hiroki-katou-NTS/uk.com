@@ -24,9 +24,14 @@ public class InsertAllData {
 	private DailyRecordWorkCommandHandler hander;
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void handlerInsertAll(List<DailyRecordWorkCommand> commandNew, List<IntegrationOfDaily> domainDailyNew,
-			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems,
-			List<IntegrationOfMonthly> lstMonthDomain, boolean isUpdate, UpdateMonthDailyParam month, Map<Integer, DPAttendanceItemRC> itemAtr) {
-		hander.handlerInsertAll(commandNew, domainDailyNew, commandOld, dailyItems, lstMonthDomain, isUpdate, month, itemAtr);
+	public void handlerInsertAllDaily(List<DailyRecordWorkCommand> commandNew, List<IntegrationOfDaily> domainDailyNew,
+			List<DailyRecordWorkCommand> commandOld, List<DailyItemValue> dailyItems, boolean isUpdate, UpdateMonthDailyParam month, Map<Integer, DPAttendanceItemRC> itemAtr) {
+		hander.handlerInsertAllDaily(commandNew, domainDailyNew, commandOld, dailyItems, isUpdate, month, itemAtr);
 	}
+	
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void handlerInsertAllMonth(List<IntegrationOfMonthly> lstMonthDomain, UpdateMonthDailyParam month) {
+		hander.handlerInsertAllMonth(lstMonthDomain, month);
+	}
+	
 }

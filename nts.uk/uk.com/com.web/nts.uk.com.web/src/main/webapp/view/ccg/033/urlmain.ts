@@ -63,6 +63,15 @@ __viewContext.ready(function() {
                         nts.uk.request.jump(success.webAppID, "/view/kdw/003/a/index.xhtml", {initParam: initParam, extractionParam: extractionParam});    
                         break;
                     }
+                    case "kmw003": {
+                        if(success.urlTaskValueList["activeMode"]=="approval"){
+                            nts.uk.request.jump(success.webAppID, "/view/kmw/003/a/index.xhtml?initmode=2");    
+                            break;    
+                        } else {
+                            nts.uk.request.jump(success.webAppID, "/view/kmw/003/a/index.xhtml");    
+                            break; 
+                        }
+                    }    
                     default: {
                         let programString = success.programID.substring(0,3);
                         let programNumber = success.programID.substring(3);   
