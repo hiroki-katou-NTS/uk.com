@@ -51,7 +51,7 @@ public class QpbmtStateCorHisPos extends UkJpaEntity implements Serializable {
      * マスタ基準日
      */
     @Basic(optional = false)
-    @Column(name = "BASE_DATE")
+    @Column(name = "MASTER_BASE_DATE")
     public GeneralDate baseDate;
 
     /**
