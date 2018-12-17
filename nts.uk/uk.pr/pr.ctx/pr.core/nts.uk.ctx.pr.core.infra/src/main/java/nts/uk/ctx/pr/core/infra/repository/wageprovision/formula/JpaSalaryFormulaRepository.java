@@ -31,6 +31,7 @@ public class JpaSalaryFormulaRepository extends JpaRepository implements Formula
     private static final String SELECT_BY_YM = SELECT_ALL_HIS_QUERY_STRING + " WHERE  f.formulaHistoryPk.cid =:cid AND" +
             " f.startMonth <= :yearMonth AND f.endMonth >= :yearMonth ";
 
+    private static final String DELETE_FORMULA_BY_CODE = "DELETE FROM QpbmtFormula f WHERE f.formulaPk.formulaCode =:formulaCode";
     private static final String DELETE_FORMULA_HISTORY_BY_ID = "DELETE FROM QpbmtFormulaHistory f WHERE f.formulaHistoryPk.historyID =:historyID";
     private static final String DELETE_FORMULA_HISTORY_BY_CODE = "DELETE FROM QpbmtFormulaHistory f WHERE f.formulaHistoryPk.cid =:cid AND f.formulaHistoryPk.formulaCode =:formulaCode";
     @Override
@@ -82,8 +83,7 @@ public class JpaSalaryFormulaRepository extends JpaRepository implements Formula
 
     @Override
     public void removeByFormulaCode(String formulaCode) {
-        this.commandProxy().remove(new QpbmtFormula(new QpbmtFormulaPk(AppContexts.user().companyId(), formulaCode)));
-        this.getEntityManager().createQuery(DELETE_FORMULA_HISTORY_BY_CODE).setParameter("cid", AppContexts.user().companyId()).setParameter("formulaCode", formulaCode).executeUpdate();
+        this.getEntityManager().createQuery(DELETE_FORMULA_BY_CODE).setParameter("formulaCode", formulaCode).executeUpdate();
     }
 
     @Override

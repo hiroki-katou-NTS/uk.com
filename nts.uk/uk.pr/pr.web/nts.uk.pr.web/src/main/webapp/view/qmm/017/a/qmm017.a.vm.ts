@@ -10,7 +10,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
 
     export class ScreenModel {
         // screen state
-        isNewMode: KnockoutObservable<boolean> = ko.observable(false);
+        isNewMode: KnockoutObservable<boolean> = ko.observable(true);
         isUpdateMode: KnockoutObservable<boolean> = ko.observable(false);
         isAddHistoryMode: KnockoutObservable<boolean> = ko.observable(false);
         screenMode: KnockoutObservable<number> = ko.observable(model.SCREEN_MODE.NEW);
@@ -53,10 +53,11 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 self.isNewMode(newValue == model.SCREEN_MODE.NEW);
                 self.isUpdateMode(newValue == model.SCREEN_MODE.UPDATE);
                 self.isAddHistoryMode(newValue == model.SCREEN_MODE.ADD_HISTORY);
+                console.log(newValue);
             })
             self.selectedFormulaIdentifier.subscribe(newValue => {
                 if (self.screenMode() == model.SCREEN_MODE.ADD_HISTORY && self.isCompleteChangeToAddHistoryMode){
-                    self.getListFormula();
+                    self.getListFormula(null);
                     self.isCompleteChangeToAddHistoryMode = false;
                 }
                 if (newValue) {
@@ -136,11 +137,12 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             if (self.screenMode() == model.SCREEN_MODE.NEW){
                 $('.tab-content-1 .nts-input').trigger("validate");
             } else {
-                if (self.selectedFormula().settingMethod() == model.FORMULA_SETTING_METHOD.BASIC_SETTING) $('.basic.nts-input').trigger("validate");
-                else $('.detail.nts-input').trigger("validate");
+                if (self.selectedFormula().settingMethod() == model.FORMULA_SETTING_METHOD.BASIC_SETTING) $('.basic .nts-input').trigger("validate");
+                else {
+                    $('.detail .nts-input').trigger("validate");
+                    self.screenDViewModel.validateSyntax();
+                }
             }
-            if (nts.uk.ui.errors.hasError()) return;
-            self.screenDViewModel.validateSyntax();
             if (nts.uk.ui.errors.hasError()) return;
             let formulaSettingCommand = {
                 basicFormulaSettingCommand: ko.toJS(self.basicFormulaSetting),
@@ -180,9 +182,8 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             command.formulaSettingCommand.yearMonth.endMonth = lastYmValue;
             service.addFormula(command).done(function(data) {
                 block.clear();
-                self.getListFormula();
                 dialog.info({ messageId: 'Msg_15' }).then(function() {
-                    self.selectedFormulaIdentifier(command.formulaCode + command.formulaSettingCommand.yearMonth.historyID);
+                    self.getListFormula(command.formulaCode + command.formulaSettingCommand.yearMonth.historyID);
                 });
             }).fail(function(err) {
                 block.clear();
@@ -218,7 +219,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             });
         }
 
-        convertToTreeList(formulaData) {
+        convertToTreeList(formulaData, itemToBeSelect) {
             let self = this;
             formulaData.map(function (item) {
                 item.nodeText = item.formulaCode + " " + item.formulaName;
@@ -236,10 +237,13 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             self.formulaList(formulaData);
             if (formulaData.length == 0)
                 self.changeToNewMode();
-            else {
+            else if (!self.isCompleteStartScreen){
                 // selected first formula and history
                 var identifier = formulaData[0].history.length > 0 ? formulaData[0].history[0].identifier : formulaData[0].identifier;
                 self.selectedFormulaIdentifier(identifier);
+                self.isCompleteStartScreen = true;
+            } else if (itemToBeSelect) {
+                self.selectedFormulaIdentifier(itemToBeSelect);
             }
         }
 
@@ -250,8 +254,10 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             self.selectedFormula(new model.Formula(null));
             self.selectedHistory(new model.GenericHistoryYearMonthPeriod(null));
             self.selectedTab('tab-1');
-            $('#A3_3').focus();
             nts.uk.ui.errors.clearAll();
+            setTimeout(function(){
+                $('#A3_3').focus();
+            }, 50);
         }
 
         changeToUpdateMode() {
@@ -282,21 +288,21 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 selectedHistory = _.find(selectedFormula.history, {historyID: selectedHistoryID});
                 self.selectedHistory(new model.GenericHistoryYearMonthPeriod(selectedHistory));
                 self.isSelectedHistory(true);
-                if (self.screenMode() != model.SCREEN_MODE.ADD_HISTORY) self.showFormulaSettingByHistory(selectedHistoryID, true, null)
+                if (self.screenMode() != model.SCREEN_MODE.ADD_HISTORY) self.showFormulaSettingByHistory(selectedHistory, true, null)
             }
             else {
                 self.selectedHistory(new model.GenericHistoryYearMonthPeriod(null));
             }
             self.changeToUpdateMode();
         };
-        showFormulaSettingByHistory(historyID: string, withSetting: boolean, masterUse: number) {
+        showFormulaSettingByHistory(history , withSetting: boolean, masterUse: number) {
             let self = this;
+            let setting = {historyID: history.historyID, withSetting: withSetting, masterUse: masterUse};
             block.invisible();
-            let setting = {historyID: historyID, withSetting: withSetting, masterUse: masterUse};
             service.getFormulaSettingByHistory(setting).done(function (data) {
                 if (self.screenMode() != model.SCREEN_MODE.ADD_HISTORY) self.basicFormulaSetting(new model.BasicFormulaSetting(data.basicFormulaSettingDto));
                 self.detailFormulaSetting(new model.DetailFormulaSetting(data.detailFormulaSettingDto));
-                if (self.isCompleteStartScreen) self.screenDViewModel.combineFormulaElement();
+                self.screenDViewModel.getFormulaElements(history.startMonth);
                 self.mapListCalculationToMasterUseItem(data.masterUseDto, data.basicCalculationFormulaDto);
                 block.clear();
             }).fail(function (err) {
@@ -324,10 +330,12 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             self.basicCalculationFormulaList(formulas);
         }
 
-        getListFormula(): JQueryPromise<any> {
+        getListFormula(itemToBeSelect): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
+            block.invisible();
             service.getAllFormula().done(function(data){
-                self.convertToTreeList(data);
+                block.clear();
+                self.convertToTreeList(data, itemToBeSelect);
                 dfd.resolve();
             });
             return dfd.promise();
@@ -335,11 +343,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
 
         startPage(): JQueryPromise<any> {
             let self = this;
-            return self.getListFormula();
-        }
-
-        getHistoryOfFormula () {
-
+            return self.getListFormula(null);
         }
 
         createNewHistory () {
@@ -369,15 +373,14 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                     self.screenMode(model.SCREEN_MODE.ADD_HISTORY);
                     // to prevent call service for new history
                     // update formula and tree grid
-                    self.convertToTreeList(formulaList);
-                    self.selectedFormulaIdentifier(selectedFormula.formulaCode + historyID);
+                    self.convertToTreeList(formulaList, selectedFormula.formulaCode + historyID);
                     self.isCompleteChangeToAddHistoryMode = true;
                     self.screenMode(model.SCREEN_MODE.ADD_HISTORY);
                     // clone data
                     if (params.takeoverMethod == model.TAKEOVER_METHOD.FROM_LAST_HISTORY && history.length > 1) {
-                        self.showFormulaSettingByHistory(history[1].historyID, true, null);
+                        self.showFormulaSettingByHistory(history[1], true, null);
                     } else {
-                        self.showFormulaSettingByHistory(history[1].historyID, false, params.masterUse);
+                        self.showFormulaSettingByHistory(history[1], false, params.masterUse);
                     }
                     self.basicFormulaSetting(new model.BasicFormulaSetting({
                         masterUse: params.masterUse,
@@ -390,26 +393,29 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         editHistory () {
             var self = this;
             var selectedFormula = ko.toJS(self.selectedFormula), selectedHistory = ko.toJS(self.selectedHistory), formulaList = ko.toJS(self.formulaList);
-            let history = _.find(formulaList, {formulaCode: selectedFormula.formulaCode}).history;
+            let currentFormula = _.find(formulaList, {formulaCode: selectedFormula.formulaCode});
+            let history = currentFormula.history;
             setShared("QMM017_I_PARAMS", { selectedFormula: selectedFormula, history: history, selectedHistory: selectedHistory });
             modal("/view/qmm/017/i/index.xhtml").onClosed(function () {
                 var params = getShared("QMM017_I_RES_PARAMS");
-                if (params) {
-                    service.getAllFormula().done(function(data){
-                        self.convertToTreeList(data);
-                        // change selected value
-                        if (params.modifyMethod == model.MODIFY_METHOD.DELETE) {
-                            if (history.length <= 1) {
-                                self.selectedFormulaIdentifier(selectedFormula.formulaCode);
-                            }
-                            else {
-                                self.selectedFormulaIdentifier(selectedFormula.formulaCode + history[1].historyID);
-                            }
-                        } else {
-                            self.selectedFormulaIdentifier.valueHasMutated();
-                        }
-                    })
 
+                if (params) {
+                    if (params.modifyMethod == model.MODIFY_METHOD.DELETE) {
+                        if (history.length <= 1) {
+                            let currentIndex = _.findIndex(formulaList, currentFormula), formulaToSelect;
+                            if (currentIndex == formulaList.length -1 && formulaList.length > 1) formulaToSelect = formulaList[currentIndex-1];
+                            else if (currentIndex < formulaList.length -1  && formulaList.length > 1) formulaToSelect = formulaList[currentIndex+1];
+                            self.getListFormula(formulaToSelect.formulaCode + formulaToSelect.history[0].historyID);
+                        }
+                        else {
+                            self.selectedFormulaIdentifier(selectedFormula.formulaCode + history[1].historyID);
+                            self.getListFormula(null);
+                        }
+                    } else {
+                        self.getListFormula(null).done(function(){
+                            self.selectedFormulaIdentifier.valueHasMutated();
+                        });
+                    }
                 }
             });
         };
@@ -462,8 +468,15 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
 
         initScreenDTabData () {
             let self = this;
-            this.screenDViewModel.getFormulaElements(self.selectedHistory().startMonth())
+            this.screenDViewModel.getFormulaElements(self.selectedHistory().startMonth());
             if (this.screenDViewModel.selectedFormulaCode() == null && this.screenDViewModel.formulaList().length > 0) this.screenDViewModel.selectedFormulaCode(this.screenDViewModel.formulaList()[0]['formulaCode']);
+        }
+        openScreenM () {
+            modal("/view/qmm/017/m/index.xhtml").onClosed(function () {
+            });
+        }
+        closeScreenM () {
+            nts.uk.ui.windows.close();
         }
     }
 
