@@ -895,7 +895,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 			if ((outputItemCustom.getStandardOutputItem().getItemType() != ItemType.NUMERIC)
 					&& (outputItemCustom.getStandardOutputItem().getItemType() != ItemType.TIME)
 					&& (outputItemCustom.getStandardOutputItem().getItemType() != ItemType.INS_TIME)) {
-				itemValue += value;
+				itemValue = value;
 				continue;
 			}
 			
