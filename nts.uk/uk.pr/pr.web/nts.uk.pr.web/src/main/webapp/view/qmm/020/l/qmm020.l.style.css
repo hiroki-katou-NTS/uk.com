@@ -10,3 +10,10 @@
     margin-top: 9px;
 }
 
+#control-group-l5-l6, #L1_2, #L1_1 {
+    position: relative !important;
+    overflow: auto;
+    overflow-y: hidden;
+    -ms-overflow-x: hidden;
+    white-space: nowrap;
+}
