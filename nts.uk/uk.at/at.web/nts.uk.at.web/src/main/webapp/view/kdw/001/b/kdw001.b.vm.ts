@@ -63,7 +63,8 @@ module nts.uk.at.view.kdw001.b {
             //re-create devision
             itemRecreateDevision: KnockoutObservableArray<any>;
             selectedRecreateDevision: KnockoutObservable<number>;
-
+            
+            monthResoult :any;
             constructor() {
                 var self = this;
                // self.params.setParamsScreenA({ closure: self.closureID });
@@ -219,6 +220,16 @@ module nts.uk.at.view.kdw001.b {
                     }
                 })
             }
+            
+            getMonthlyResult(closureId : number, yearMonth : string){
+                let self = this;
+                let dfd = $.Deferred<void>();
+                service.findMonthlyResult(closureId,yearMonth).done(function(data) {
+                    self.monthResoult = data;
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
 
             opendScreenD() {
                 var self = this;
@@ -239,7 +250,11 @@ module nts.uk.at.view.kdw001.b {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_572" });
                     return;
                 }
-
+                self.getMonthlyResult(self.params.closureID,self.params.processingMonth).done(()=>{
+                   
+                    
+                
+                
                 if (self.selectedCreatDivisionCode() == 1 || 
                     self.selectedCalDivisionCode() == 1  || 
                     self.selectedAggregateClassCode() == 1 ) {
@@ -579,10 +594,13 @@ module nts.uk.at.view.kdw001.b {
                     }
 
 
-
+    
                     $("#wizard").ntsWizard("next");
                      $('#button113').focus();
                 }
+                    self.params.startMonthResult = self.monthResoult.startMonth;
+                    self.params.endMonthResult = self.monthResoult.endMonth;
+                });
 
             }
 
