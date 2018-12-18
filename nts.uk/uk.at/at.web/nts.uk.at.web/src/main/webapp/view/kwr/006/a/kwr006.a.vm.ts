@@ -145,7 +145,7 @@ module nts.uk.at.view.kwr006.a {
                     showClosure: true,
                     showAllClosure: true,
                     showPeriod: true,
-                    periodFormatYM: false,
+                    periodFormatYM: true,
 
                     /** Required parameter */
                     baseDate: moment().toISOString(),
