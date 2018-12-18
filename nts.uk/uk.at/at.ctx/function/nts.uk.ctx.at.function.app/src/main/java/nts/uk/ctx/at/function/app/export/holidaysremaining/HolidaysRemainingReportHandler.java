@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.app.export.holidaysremaining;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -60,6 +61,9 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingInfor
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingEmployee;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingReportGenerator;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -113,7 +117,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	private ManagedParallelWithContext parallel;
 	@Inject
 	private HolidayRemainMergeAdapter hdRemainAdapter;
-
+	@Inject
+	private AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepository;
 	@Override
 	protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
 		val query = context.getQuery();
@@ -126,6 +131,11 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		val hdManagement = hdFinder.findByCode(hdRemainCond.getOutputItemSettingCode());
 		if (!hdManagement.isPresent()) {
 			return;
+		}
+		AnnualPaidLeaveSetting annualPaidLeaveSetting = annualPaidLeaveSettingRepository.findByCompanyId(cId);
+		ManageDistinct enumManageDistinct = annualPaidLeaveSetting.getYearManageType();
+		if(enumManageDistinct == ManageDistinct.NO){
+			throw new BusinessException("Msg_885");
 		}
 		int closureId = hdRemainCond.getClosureId();
 		// ※該当の締めIDが「0：全締め」のときは、「1締め（締めID＝1）」とする
@@ -214,7 +224,9 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		Optional<CompanyInfor> companyCurrent = this.companyRepo.getCurrentCompany();
 		HolidayRemainingDataSource dataSource = new HolidayRemainingDataSource(hdRemainCond.getStartMonth(),
 				hdRemainCond.getEndMonth(), varVacaCtr, hdRemainCond.getPageBreak(),
-				hdRemainCond.getBaseDate(), hdManagement.get(), isSameCurrentMonth.get(), employeeIds, mapEmp, companyCurrent.isPresent() == true? companyCurrent.get().getCompanyName():"");
+				hdRemainCond.getBaseDate(), hdManagement.get(), isSameCurrentMonth.get(), employeeIds, mapEmp, 
+				companyCurrent.isPresent() == true? companyCurrent.get().getCompanyName():"",
+				hdRemainCond.getTitle());
 
 		this.reportGenerator.generate(context.getGeneratorContext(), dataSource);
 
@@ -337,7 +349,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 
 			// Call RequestList263 ver2 - hoatt
 			if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
-				List<SpecialHolidayImported> specialHolidayList = hdRemainMer.getResult263();
+				List<SpecialHolidayImported> specialHolidayList = specialLeaveAdapter
+						.getSpeHoliOfConfirmedMonthly(employeeId, startDate.yearMonth(), currentMonth.previousMonth(), Arrays.asList(sphdCode));
 				tmpSpeHd.put(sphdCode, specialHolidayList);
 			} else {
 				tmpSpeHd.put(sphdCode, new ArrayList<SpecialHolidayImported>());
