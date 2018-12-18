@@ -42,7 +42,7 @@
                         optionsValue: 'id',
                         optionsText: 'name',
                         value: isClone,
-                        enable: true}"/>
+                        enable: statementLayoutList().length > 0}"/>
                 </div>
                 <div class="cell valign-center">
                     <!--H1_5-->
@@ -102,10 +102,11 @@
                 </div>
                 <div class="cell valign-center">
                     <!--H1_13-->
-                    <div tabindex="5" data-bind="ntsDatePicker: {
+                    <div tabindex="5" class="check-validate" data-bind="ntsDatePicker: {
                         name: '#[QMM019_43]',
                         value: startDate,
-                        dateFormat: 'yearmonth'}"/>
+                        dateFormat: 'yearmonth',
+                        required: true}"/>
                     <!--H1_14-->
                     <com:ko-if bind="(startDateJp() != null)">
                         <span>  (</span>

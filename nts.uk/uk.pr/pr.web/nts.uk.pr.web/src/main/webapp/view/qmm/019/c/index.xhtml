@@ -50,7 +50,7 @@
                                                             optionsValue: 'id',
                                                             optionsText: 'name',
                                                             value: itemHistoryEdit,
-                                                            enable: true}"></div>
+                                                            enable: isLastHistory}"></div>
                 <div id="right-item">
                     <div class="valign-center control-group">
                         <!-- ※すべての履歴を削除すると、明細書のデータも削除します -->
@@ -67,8 +67,8 @@
                                                             enable: itemHistoryEdit() == 1,
                                                             dateFormat: 'yearmonth'}"></div>
                         <!-- 終了年月 -->
-                        <label>  ~</label>
-                        <label id="C1_13">  #{i18n.getText('QMM019_44')}</label>
+                        <label>  ~  </label>
+                        <label id="C1_13" data-bind="text: endMonth"></label>
                     </div>
                 </div>
             </div>
