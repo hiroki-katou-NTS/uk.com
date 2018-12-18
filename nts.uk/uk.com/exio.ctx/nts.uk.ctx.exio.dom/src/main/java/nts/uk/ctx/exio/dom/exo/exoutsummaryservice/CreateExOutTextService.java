@@ -862,7 +862,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	// サーバ外部出力ファイル項目作成
 	private Map<String, String> fileItemDataCreation(List<String> lineData, OutputItemCustom outputItemCustom,
 			boolean isSetNull, String nullValueReplace, int index) {
-		String itemValue = "0";
+		String itemValue = "";
 		String value;
 		Map<String, String> result = new HashMap<String, String>();
 
@@ -907,13 +907,13 @@ public class CreateExOutTextService extends ExportService<Object> {
 			if ( StringUtils.isEmpty(value))
 				continue;
 			if ( !operationSymbol.isPresent() || operationSymbol.get() == OperationSymbol.PLUS) {
-				itemValue = String.valueOf((Double.parseDouble(itemValue)) + Double.parseDouble(value));
+				itemValue = String.valueOf((Double.parseDouble(itemValue.equals("")?"0":itemValue)) + Double.parseDouble(value.equals("")?"0":value));
 			} else if (operationSymbol.get() == OperationSymbol.MINUS) {
-				itemValue = String.valueOf(Double.parseDouble(itemValue) - Double.parseDouble(value));
+				itemValue = String.valueOf(Double.parseDouble(itemValue.equals("")?"0":itemValue) - Double.parseDouble(value.equals("")?"0":value));
 			}
 		}
 
-		result.put(ITEM_VALUE, itemValue.equals("0")?"":itemValue);
+		result.put(ITEM_VALUE,itemValue);
 		result.put(USE_NULL_VALUE, USE_NULL_VALUE_OFF);
 
 		return result;
