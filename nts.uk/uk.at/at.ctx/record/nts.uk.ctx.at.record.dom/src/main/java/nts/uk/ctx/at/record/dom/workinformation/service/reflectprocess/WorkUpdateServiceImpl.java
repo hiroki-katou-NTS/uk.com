@@ -530,6 +530,22 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		TimeLeavingWork timeLeavingWork = null;
 		if(lstTimeLeavingWorks.isEmpty()) {
 			if(data.getStartTime() == null || data.getEndTime() == null) {
+				List<Integer> lstItem = new ArrayList<Integer>();
+				if(data.isStart()) {
+					if(data.getFrameNo() == 1) {
+						lstItem.add(31);
+					} else {
+						lstItem.add(41);
+					}
+				}
+				if(data.isEnd()) {
+					if(data.getFrameNo() == 1) {
+						lstItem.add(34);
+					} else {
+						lstItem.add(44);
+					}
+				}
+				this.updateEditStateOfDailyPerformance(data.getEmployeeId(), data.getDateData(), lstItem);
 				return timeDaily;
 			}
 			WorkStamp workStamp = new WorkStamp(new TimeWithDayAttr(data.getStartTime()),
