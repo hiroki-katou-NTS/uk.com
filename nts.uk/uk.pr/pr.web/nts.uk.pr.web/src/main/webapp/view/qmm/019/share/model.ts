@@ -505,7 +505,7 @@ module nts.uk.pr.view.qmm019.share.model {
             this.endMonth = params.endMonth;
             this.historyId = params.historyId;
             this.nodeText = nts.uk.time.parseYearMonth(params.startMonth).format()
-                    + " ~ " + nts.uk.time.parseYearMonth(params.endMonth).format();
+                    + " ～ " + nts.uk.time.parseYearMonth(params.endMonth).format();
             this.history = [];
         }
     }
@@ -756,6 +756,27 @@ module nts.uk.pr.view.qmm019.share.model {
                 return getText('QMM019_38');
             case StatementLayoutPattern.DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON:
                 return getText('QMM019_39');
+            default:
+                return "";
+        }
+    }
+
+    export function getLayoutPatternContent(e: StatementLayoutPattern): string {
+        switch (e) {
+            case StatementLayoutPattern.LASER_PRINT_A4_PORTRAIT_ONE_PERSON:
+                return "30行";
+            case StatementLayoutPattern.LASER_PRINT_A4_PORTRAIT_TWO_PERSON:
+                return "17行";
+            case StatementLayoutPattern.LASER_PRINT_A4_PORTRAIT_THREE_PERSON:
+                return "10行";
+            case StatementLayoutPattern.LASER_PRINT_A4_LANDSCAPE_TWO_PERSON:
+                return "10行";
+            case StatementLayoutPattern.LASER_CRIMP_PORTRAIT_ONE_PERSON:
+                return "17行";
+            case StatementLayoutPattern.LASER_CRIMP_LANDSCAPE_ONE_PERSON:
+                return "各カテゴリにつき6行 　52項目まで（記事項目は2行まで）";
+            case StatementLayoutPattern.DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON:
+                return "印刷できる行数は固定";
             default:
                 return "";
         }

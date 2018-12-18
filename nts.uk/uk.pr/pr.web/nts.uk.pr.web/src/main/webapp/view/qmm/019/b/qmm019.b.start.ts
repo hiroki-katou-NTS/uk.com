@@ -4,5 +4,9 @@ module nts.uk.pr.view.qmm019.b {
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
         });
+
+        setTimeout(function(){
+            $(".ui-iggrid-headertext").addClass("limited-label");
+        }, 200);
     });
 }
