@@ -2,6 +2,7 @@ module nts.uk.pr.view.qmm019.o.viewmodel {
     import getText = nts.uk.resource.getText;
     import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
     import windows = nts.uk.ui.windows;
+    import shareModel = nts.uk.pr.view.qmm019.share.model;
 
     export class ScreenModel {
 
@@ -33,7 +34,7 @@ module nts.uk.pr.view.qmm019.o.viewmodel {
                 return dfd.promise();
             }
             // ドメインモデル「明細書項目」を取得する
-            service.getAllStatementItemData(0, false).done((data: Array<IStatementItem>) => {
+            service.getAllStatementItemData(shareModel.CategoryAtr.PAYMENT_ITEM, false).done((data: Array<IStatementItem>) => {
                 data = _.sortBy(data, [(item: IStatementItem) => {
                     return item.itemNameCd;
                 }]);

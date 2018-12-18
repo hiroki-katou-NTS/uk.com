@@ -174,11 +174,13 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             let sv4 = service.getFormulaById(self.dataScreen().formulaCode());
             // ドメインモデル「賃金テーブル」を取得する
             let sv5 = service.getWageTableById(self.dataScreen().wageTableCode());
-            $.when(sv1, sv2, sv3, sv4, sv5).done((dedu: IDeductionItemSet,
+            let sv6 = service.getStatementItemName(shareModel.CategoryAtr.PAYMENT_ITEM, self.dataScreen().statementItemCode())
+            $.when(sv1, sv2, sv3, sv4, sv5, sv6).done((dedu: IDeductionItemSet,
                                                   breakItems: Array<IBreakdownItemSet>,
                                                   perVal: any,
                                                   formula: any,
-                                                  wageTable: any) => {
+                                                  wageTable: any,
+                                                  statementItemName: any) => {
                 self.categoryAtrText(shareModel.getCategoryAtrText(self.categoryAtr));
                 if (!isNullOrUndefined(dedu)) {
                     self.deductionItemSet().setData(dedu);
@@ -188,6 +190,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                 self.dataScreen().perValName(isNullOrUndefined(perVal) ? null : perVal.individualPriceName);
                 self.dataScreen().formulaName(isNullOrUndefined(formula) ? null : formula.formulaName);
                 self.dataScreen().wageTableName(isNullOrUndefined(wageTable) ? null : wageTable.wageTableName);
+                self.dataScreen().statementItemName(isNullOrUndefined(statementItemName) ? null : statementItemName.shortName);
                 dfd.resolve();
             });
 
@@ -781,7 +784,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                 self.clearError("#E7_2");
             });
             self.statementItemCode.subscribe(() => {
-                self.clearError("#E8_2");
+                self.clearError("#E9_2");
             });
 
             self.errorRangeSetting.upperLimitSetting.valueSettingAtr.subscribe(() => {
@@ -856,7 +859,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                     break;
                 case shareModel.DeductionCaclMethodAtr.SUPPLY_OFFSET:
                     // 相殺対象項目コードが設定されているか確認する
-                    if (isNullOrEmpty(self.wageTableCode())) {
+                    if (isNullOrEmpty(self.statementItemCode())) {
                         // alertError({messageId: "MsgQ_32"});
                         self.setError("#E9_2", "MsgQ_32");
                     }
