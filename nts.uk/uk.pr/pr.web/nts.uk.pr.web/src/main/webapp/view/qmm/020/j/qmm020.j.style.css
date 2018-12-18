@@ -27,3 +27,10 @@
     -ms-overflow-x: hidden;
     white-space: nowrap;
 }
+#J1_10 {
+    font-size: 14px;
+    margin: 10px 10px 10px 31px;
+    padding: 13px 12px 13px 15px;
+    white-space: pre;
+    width: 312px;
+}

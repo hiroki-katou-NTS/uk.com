@@ -24,4 +24,6 @@
     overflow-y: hidden;
     -ms-overflow-x: hidden;
     white-space: pre;
+    font-size: 14px;
+    width: 534px;
 }
