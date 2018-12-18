@@ -50,10 +50,6 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
     private static final String KMK006_72 = "職場名";
     private static final String KMK006_73 = "設定済み";
     private static final String KMK006_74 = "職位コード";
-    private static final String COMPANY = "会社";
-    private static final String WORK_PLACE = "職場";
-    private static final String JOB = "職位";
-    private static final String WORK_JOB = "復号";
 
     @Inject
     private ComAutoCalSettingRepository comAutoCalSettingExport;

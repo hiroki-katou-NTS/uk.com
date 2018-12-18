@@ -1,28 +1,13 @@
-module nts.uk.at.view.kmk006.e {
+module nts.uk.at.view.kmk006.temp {
 
     export module service {
+        import exportFile = nts.uk.request.exportFile;
         var paths = {
-            findEnumUnitAutoCal: "ctx/at/shared/ot/autocal/unit/find/autocalunit",
-            saveUnitAutoCal: "ctx/at/shared/ot/autocal/unit/save",
+           
         }
 
-        export function getUseUnitAutoCal(): JQueryPromise<model.UnitAutoCalSettingDto> {
-            return nts.uk.request.ajax("at", paths.findEnumUnitAutoCal);
-        }
-        
-        /**
-        * save
-        */
-        export function saveUnitAutoCal(command: model.UnitAutoCalSettingDto): JQueryPromise<void> {
-            return nts.uk.request.ajax("at", paths.saveUnitAutoCal, command);
-        }
-
-        export module model {
-            export interface UnitAutoCalSettingDto {
-                useWkpSet: boolean;
-                useJobSet: boolean;
-                useJobwkpSet: boolean;
-            }
+        export function exportExcel(languageId: string, domainId, domainType: string, baseDate: any): JQueryPromise<any> {
+            return exportFile('/masterlist/report/print', { domainId: domainId, domainType: domainType, languageId: languageId, reportType: 0, data: baseDate });
         }
     }
 }

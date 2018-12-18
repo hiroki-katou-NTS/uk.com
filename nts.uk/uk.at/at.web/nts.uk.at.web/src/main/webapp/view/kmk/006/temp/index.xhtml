@@ -14,37 +14,30 @@
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="kmk006.e.main.css" />
-			<com:scriptfile path="../a/kmk006.a.service.js" />
-			<com:scriptfile path="../a/kmk006.a.vm.js" />
-			<com:scriptfile path="kmk006.e.service.js" />
-			<com:scriptfile path="kmk006.e.vm.js" />
-			<com:scriptfile path="kmk006.e.start.js" />
+			<com:stylefile path="kmk006.temp.main.css" />
+			<com:scriptfile path="kmk006.temp.service.js" />
+			<com:scriptfile path="kmk006.temp.vm.js" />
+			<com:scriptfile path="kmk006.temp.start.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="contents-area" data-bind="with: unitAtutoCalSettingModel">
-				<div class="description-top"
-					data-bind="text: nts.uk.resource.getText('KMK006_27')"></div>
-				<img class="imageSettings" src="img001.png"></img>
-				<div class="companyInfo">#{i18n.getText('Com_Company')}</div>
-				<div class="checkSetting">
-					<div id="ckb-employment" tabindex="1"
-						data-bind="ntsCheckBox: { checked: useWkpSet }">#{i18n.getText('Com_Workplace')}</div>
-				</div>
-				<div class="checkSetting">
-					<div tabindex="2" data-bind="ntsCheckBox: { checked: useJobSet }">#{i18n.getText('Com_Jobtitle')}</div>
-				</div>
-				<div class="checkSetting">
-					<div tabindex="2"
-						data-bind="ntsCheckBox: { checked: useJobwkpSet }">#{i18n.getText('KMK006_28')}</div>
-				</div>
+			<div id="contents-area">
+                <div class="">基準日</div>
+                <div id = "E1_5"  style="margin-left: 80px" data-bind="ntsDatePicker: {
+																name: '#{i18n.getText('QMM011_45')}',
+																value: baseDate,
+																valueFormat: 'YYYY/MM/DD',
+																required: true
+																}" tabindex="1"></div>
+            </div>
+            <div id="functions-area-bottom">
+                <!-- E2_1 登録 -->
+                <button id="E2_1" tabindex="3" class="proceed large"
+                        data-bind="click: function(){exportExcel('AutomaticCalculationSetting','KMK006自動計算の登録')}">#{i18n.getText('QMM011_50')}</button>
+                <!-- E2_2 削除 -->
+                <button id="E2_2" tabindex="4"
+                        data-bind="click: cancel">#{i18n.getText('QMM011_42')}</button>
+            </div>
 
-			</div>
-			<div id="functions-area-bottom">
-				<button tabindex="3" class="x-large proceed"
-					data-bind="click: saveUnitAutoCalSettingModel">#{i18n.getText('KSM001_48')}</button>
-				<button tabindex="4" data-bind="click: cancelSaveUsageSettingModel">#{i18n.getText('KSM001_49')}</button>
-			</div>
 		</ui:define>
 	</ui:composition>
 </body>
