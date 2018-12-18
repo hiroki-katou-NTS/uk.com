@@ -288,19 +288,20 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		Optional<GeneralDate> grantDate = dataSource.getMapEmployees().get(employee.getEmployeeId())
 				.getHolidayRemainingInfor().getGrantDate();
 		//  truyền params 事象(3), ý 3 của bug #102883
-		if (dataSource.getVariousVacationControl().isAnnualHolidaySetting() && dataSource.getHolidaysRemainingManagement()
-				.getListItemsOutput().getAnnualHoliday().isYearlyHoliday()) {
+		boolean isDisplayHolidayYear = dataSource.getVariousVacationControl().isAnnualHolidaySetting() && dataSource.getHolidaysRemainingManagement()
+				.getListItemsOutput().getAnnualHoliday().isYearlyHoliday();
+		if (isDisplayHolidayYear) {
 			grantDate.ifPresent(generalDate -> cells.get(rowIndexD + 1, 0)
 					.setValue(TextResource.localize("KDR001_56", generalDate.toString("yyyy-MM-dd"))));
 		}
 		// merger cột D2_4, ý 2 của bug #102883
-		cells.merge(rowIndexD + 2, 0, 1, 2, true);
+		cells.merge(isDisplayHolidayYear== true? rowIndexD + 2: rowIndexD + 1, 0, 1, 2, true);
 		// D2_4
-		cells.get(rowIndexD + 2, 0).setValue(employee.getEmploymentName());
+		cells.get(isDisplayHolidayYear== true? rowIndexD + 2: rowIndexD + 1, 0).setValue(employee.getEmploymentName());
 		
 		// merger cột D2_5, ý 2 của bug #102883
-		cells.merge(rowIndexD + 3, 0, 1, 2, true);
-		cells.get(rowIndexD + 3, 0).setValue(employee.getJobTitle());
+		cells.merge(isDisplayHolidayYear== true? rowIndexD + 3: rowIndexD + 2, 0, 1, 2, true);
+		cells.get(isDisplayHolidayYear== true? rowIndexD + 3: rowIndexD + 2, 0).setValue(employee.getJobTitle());
 
 		// Set Style
 		for (int index = 0; index < NUMBER_COLUMN; index++) {
