@@ -529,6 +529,9 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		}
 		TimeLeavingWork timeLeavingWork = null;
 		if(lstTimeLeavingWorks.isEmpty()) {
+			if(data.getStartTime() == null || data.getEndTime() == null) {
+				return timeDaily;
+			}
 			WorkStamp workStamp = new WorkStamp(new TimeWithDayAttr(data.getStartTime()),
 					new TimeWithDayAttr(data.getEndTime()),
 					null,
