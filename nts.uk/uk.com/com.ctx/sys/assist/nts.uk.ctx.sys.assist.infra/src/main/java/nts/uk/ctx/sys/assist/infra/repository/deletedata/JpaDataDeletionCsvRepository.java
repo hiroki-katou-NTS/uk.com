@@ -13,14 +13,23 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.Query;
+
+import com.google.common.base.Strings;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
+import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionCsvRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.TableDeletionDataCsv;
+import nts.uk.ctx.sys.assist.dom.saveprotetion.SaveProtetion;
+import nts.uk.ctx.sys.assist.dom.saveprotetion.SaveProtetionRepository;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * @author hiep.th
@@ -57,7 +66,15 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 	
 	private static final String SELECT_COLUMN_NAME_SQL = "select COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS"
 			+ " where TABLE_NAME = ?tableName";
-
+	private static final String COMPANY_CD = "0";
+	private static final String EMPLOYEE_CD = "5";
+	private static final String YEAR = "6";
+	private static final String YEAR_MONTH = "7";
+	private static final String YEAR_MONTH_DAY = "8";
+	
+	@Inject
+	private SaveProtetionRepository saveProtetionRepo;
+	
 	@Override
 	public List<TableDeletionDataCsv> getTableDelDataCsvById(String delId) {
 		List<Object[]> listTemp = this.queryProxy().query(SELECT_TABLE_DEL_DATA_SQL.toString(), Object[].class)
@@ -228,22 +245,25 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 	 */
 	@Override
 	public List<List<String>> getDataForEachCaegory(TableDeletionDataCsv tableDelData, List<EmployeeDeletion> employeeDeletions) {
-		Map<String, Object> parrams = new HashMap<>();
-		String sqlStr = buildGetDataForEachCatSql(tableDelData, employeeDeletions, parrams);
-		Query query = this.getEntityManager().createNativeQuery(sqlStr);
-		for(Entry<String, Object> entry : parrams.entrySet()) {
-			query.setParameter(entry.getKey(), entry.getValue());
-		}
-		
-		@SuppressWarnings("unchecked")
-		List<Object[]> listTemp = (List<Object[]>)query.getResultList();
-		return listTemp.stream().map(objects -> {
-			List<String> record = new ArrayList<String>();
-			for (Object field : objects) {
-				record.add(String.valueOf(field == null ? "" : field));
-			}
-			return record;
-        }).collect(Collectors.toList());
+//		Map<String, Object> parrams = new HashMap<>();
+//		String sqlStr = buildGetDataForEachCatSql(tableDelData, employeeDeletions, parrams);
+//		Query query = this.getEntityManager().createNativeQuery(sqlStr);
+//		for(Entry<String, Object> entry : parrams.entrySet()) {
+//			query.setParameter(entry.getKey(), entry.getValue());
+//		}
+//		
+//		@SuppressWarnings("unchecked")
+//		List<Object[]> listTemp = (List<Object[]>)query.getResultList();
+//		return listTemp.stream().map(objects -> {
+//			List<String> record = new ArrayList<String>();
+//			for (Object field : objects) {
+//				record.add(String.valueOf(field == null ? "" : field));
+//			}
+//			return record;
+//        }).collect(Collectors.toList());
+		List targetEmployeesSid = employeeDeletions.stream().map(emp -> emp.getEmployeeId()).collect(Collectors.toList());
+		List<List<String>> result =  this.getDataDynamic(tableDelData, targetEmployeesSid);
+		return result;
 	}
 
 	/**
@@ -269,6 +289,289 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		buildWherePart(query, tableDelData, employeeDeletions, parrams);
 		return query.toString();
 	}
+	
+	private String getFieldAcq(List<String> allColumns, Optional<String> fieldName, String fieldAcqName) {
+		String fieldAcq = fieldName.orElse("");
+		if (!Strings.isNullOrEmpty(fieldAcq)) {
+			if (allColumns.contains(fieldAcq)) {
+				return " t." + fieldAcq + " AS " + fieldAcqName + ", ";
+			} else {
+				return " p." + fieldAcq + " AS " + fieldAcqName + ", ";
+			}
+		} else {
+			return " '' AS " + fieldAcqName + ", ";
+		}
+	}
+	
+	
+	
+	public List<List<String>> getDataDynamic(TableDeletionDataCsv tableList, List<String> targetEmployeesSid) {
+		StringBuffer query = new StringBuffer("");
+		// All Column
+		List<String> columns = getAllColumnName(tableList.getTableEnglishName());
+		// Select
+		query.append("SELECT ");
+		
+		query.append(getFieldAcq(columns, tableList.getFieldAcqCid(), "H_CID"));
+		query.append(getFieldAcq(columns, tableList.getFieldAcqEmployeeId(), "H_SID"));
+		query.append(getFieldAcq(columns, tableList.getFieldAcqDateTime(), "H_DATE"));
+		query.append(getFieldAcq(columns, tableList.getFieldAcqStartDate(), "H_DATE_START"));
+		query.append(getFieldAcq(columns, tableList.getFieldAcqEndDate(), "H_DATE_END"));
+
+		// All Column
+		for (int i = 0; i < columns.size(); i++) {
+			query.append(" t.").append(columns.get(i));
+			if (i < columns.size() - 1) {
+				query.append(",");
+			}
+		}
+		
+		//アルゴリズム「個人情報の保護」を実行する 
+		List<SaveProtetion> listSaveProtetion = saveProtetionRepo.getSaveProtection(Integer.valueOf(tableList.getCategoryId()), tableList.getTableNo());
+		if(tableList.getSaveForInvest() == NotUseAtr.USE.value && !listSaveProtetion.isEmpty()) {
+			for (SaveProtetion saveProtetion : listSaveProtetion) {
+				String rePlaceCol = saveProtetion.getReplaceColumn().trim();
+				String newValue = "";
+				// Vì domain không tạo Enum nên phải fix code ngu
+				if(saveProtetion.getCorrectClasscification() == 0) {
+					newValue = "'' AS " + rePlaceCol;
+				}else if(saveProtetion.getCorrectClasscification() == 1){
+					if(columns.contains("EMPLOYEE_CODE")) {
+						newValue = "t.EMPLOYEE_CODE AS " + rePlaceCol;
+					}else {
+						newValue = "'' AS " + rePlaceCol;
+					}
+				}else if(saveProtetion.getCorrectClasscification() == 2) {
+					newValue = "0 AS " + rePlaceCol;
+				}else if(saveProtetion.getCorrectClasscification() == 3) {
+					newValue = "'0' AS " + rePlaceCol;
+				}
+				query = new StringBuffer(query.toString().replaceAll("t." + rePlaceCol, newValue));
+			}
+		}
+		
+		// From
+		query.append(" FROM SSPDT_EMPLOYEES_DELETION e, ").append(tableList.getTableEnglishName()).append(" t");
+		if (tableList.getHasParentTblFlg() == NotUseAtr.USE.value && tableList.getParentTblName().isPresent()) {
+			// アルゴリズム「親テーブルをJOINする」を実行する
+			query.append(" INNER JOIN ").append(tableList.getParentTblName().get()).append(" p ON ");
+
+			String[] parentFields = { tableList.getFieldParent1().orElse(""), tableList.getFieldParent2().orElse(""),
+					tableList.getFieldParent3().orElse(""), tableList.getFieldParent4().orElse(""),
+					tableList.getFieldParent5().orElse(""), tableList.getFieldParent6().orElse(""),
+					tableList.getFieldParent7().orElse(""), tableList.getFieldParent8().orElse(""),
+					tableList.getFieldParent9().orElse(""), tableList.getFieldParent10().orElse("") };
+
+			String[] childFields = { tableList.getFieldChild1().orElse(""), tableList.getFieldChild2().orElse(""),
+					tableList.getFieldChild3().orElse(""), tableList.getFieldChild4().orElse(""),
+					tableList.getFieldChild5().orElse(""), tableList.getFieldChild6().orElse(""),
+					tableList.getFieldChild7().orElse(""), tableList.getFieldChild8().orElse(""),
+					tableList.getFieldChild9().orElse(""), tableList.getFieldChild10().orElse("") };
+
+			boolean isFirstOnStatement = true;
+			for (int i = 0; i < parentFields.length; i++) {
+				if (!Strings.isNullOrEmpty(parentFields[i]) && !Strings.isNullOrEmpty(childFields[i])) {
+					if (!isFirstOnStatement) {
+						query.append(" AND ");
+					}
+					isFirstOnStatement = false;
+					query.append("p." + parentFields[i] + "=" + "t." + childFields[i]);
+				}
+			}
+		}
+
+		String[] fieldKeyQuerys = { tableList.getFieldKeyQuery1().orElse(""), tableList.getFieldKeyQuery2().orElse(""),
+				tableList.getFieldKeyQuery3().orElse(""), tableList.getFieldKeyQuery4().orElse(""),
+				tableList.getFieldKeyQuery5().orElse(""), tableList.getFieldKeyQuery6().orElse(""),
+				tableList.getFieldKeyQuery7().orElse(""), tableList.getFieldKeyQuery8().orElse(""),
+				tableList.getFieldKeyQuery9().orElse(""), tableList.getFieldKeyQuery10().orElse("") };
+		String[] clsKeyQuerys = { tableList.getClsKeyQuery1().orElse(""), tableList.getClsKeyQuery2().orElse(""),
+				tableList.getClsKeyQuery3().orElse(""), tableList.getClsKeyQuery4().orElse(""),
+				tableList.getClsKeyQuery5().orElse(""), tableList.getClsKeyQuery6().orElse(""),
+				tableList.getClsKeyQuery7().orElse(""), tableList.getClsKeyQuery8().orElse(""),
+				tableList.getClsKeyQuery9().orElse(""), tableList.getClsKeyQuery10().orElse("") };
+		
+		// Where
+		query.append(" WHERE 1 = 1 ");
+
+		List<Integer> companyCdIndexs = new ArrayList<Integer>();
+		List<Integer> yearIndexs = new ArrayList<Integer>();
+		List<Integer> yearMonthIndexs = new ArrayList<Integer>();
+		List<Integer> yearMonthDayIndexs = new ArrayList<Integer>();
+		for (int i = 0; i < clsKeyQuerys.length; i++) {
+			if (clsKeyQuerys[i] == "")
+				continue;
+			switch (clsKeyQuerys[i]) {
+			case COMPANY_CD:
+				companyCdIndexs.add(i);
+				break;
+
+			case YEAR:
+				yearIndexs.add(i);
+				break;
+
+			case YEAR_MONTH:
+				yearMonthIndexs.add(i);
+				break;
+
+			case YEAR_MONTH_DAY:
+				yearMonthDayIndexs.add(i);
+				break;
+
+			default:
+				break;
+			}
+		}
+
+		Map<String, Object> params = new HashMap<>();
+		if (companyCdIndexs.size() > 0) {
+			query.append(" AND ( ");
+			boolean isFirstOrStatement = true;
+			for (Integer index : companyCdIndexs) {
+				if (!isFirstOrStatement) {
+					query.append(" OR ");
+				}
+				isFirstOrStatement = false;
+				if (columns.contains(fieldKeyQuerys[index])) {
+					query.append(" t.");
+					query.append(fieldKeyQuerys[index]);
+				} else {
+					query.append(" p.");
+					query.append(fieldKeyQuerys[index]);
+				}
+				query.append(" = ?companyId ");
+				params.put("companyId", AppContexts.user().companyId());
+			}
+			query.append(" ) ");
+		}
+
+		// 履歴区分を判別する。履歴なしの場合
+		if (tableList.getHistoryCls() == HistoryDiviSion.NO_HISTORY.value) {
+			List<Integer> indexs = new ArrayList<Integer>();
+			switch (tableList.getTimeStore()) {
+			case 3: // ANNUAL
+				indexs = yearIndexs;
+				break;
+			case 2: // MONTHLY
+				indexs = yearMonthIndexs;
+				break;
+			case 1: // DAILY
+				indexs = yearMonthDayIndexs;
+				break;
+
+			default:
+				break;
+			}
+
+			if (indexs.size() > 0) {
+				query.append(" AND ( ");
+				boolean isFirstOrStatement = true;
+				for (Integer index : indexs) {
+					if (!isFirstOrStatement) {
+						query.append(" OR ");
+					}
+					isFirstOrStatement = false;
+					// Start Date
+					if (columns.contains(fieldKeyQuerys[index])) {
+						query.append(" (t.");
+						query.append(fieldKeyQuerys[index]);
+					} else {
+						query.append(" (p.");
+						query.append(fieldKeyQuerys[index]);
+					}
+
+					query.append(" >= ?startDate ");
+					query.append(" AND ");
+
+					// End Date
+					if (columns.contains(fieldKeyQuerys[index])) {
+						query.append(" t.");
+						query.append(fieldKeyQuerys[index]);
+					} else {
+						query.append(" p.");
+						query.append(fieldKeyQuerys[index]);
+					}
+
+					query.append(" <= ?endDate) ");
+
+					switch (tableList.getTimeStore()) {
+					case 1 : //DAILY
+						params.put("startDate", tableList.getStartDateOfDaily());
+						params.put("endDate", tableList.getEndDateOfDaily());
+						break;
+					case 2 : //MONTHLY
+						params.put("startDate",
+								Integer.valueOf(tableList.getStartDateOfDaily().replaceAll("\\/", "")));
+						params.put("endDate", Integer.valueOf(tableList.getEndDateOfDaily().replaceAll("\\/", "")));
+						break;
+					case 3 : // ANNUAL
+						params.put("startDate", Integer.valueOf(tableList.getStartDateOfDaily()));
+						params.put("endDate", Integer.valueOf(tableList.getEndDateOfDaily()));
+						break;
+
+					default:
+						break;
+					}
+				}
+				query.append(" ) ");
+			}
+		}
+
+		// 抽出条件キー固定
+		query.append(tableList.getDefaultCondKeyQuery().orElse(""));
+		
+		for (int i = 0; i < clsKeyQuerys.length; i++) {
+			if (EMPLOYEE_CD.equals(clsKeyQuerys[i]) && !targetEmployeesSid.isEmpty()) {
+				if (tableList.getHasParentTblFlg() == NotUseAtr.USE.value) {
+					query.append(" AND p." + fieldKeyQuerys[i] + " IN (?listTargetSid) ");
+				} else {
+					query.append(" AND t." + fieldKeyQuerys[i] + " IN (?listTargetSid) ");
+				}
+			}
+		}
+		
+		// Order By
+		query.append(" ORDER BY H_CID, H_SID, H_DATE, H_DATE_START");
+		String querySql = query.toString();
+		List<Object[]> listTemp = new ArrayList<>();
+		if(!targetEmployeesSid.isEmpty()) {
+			CollectionUtil.split(targetEmployeesSid, 1000, subIdList -> {
+				String lSid = subIdList.toString().replaceAll("\\[", "\\'").replaceAll("\\]", "\\'").replaceAll(", ","\\', '");
+				Query queryString = getEntityManager().createNativeQuery(querySql);
+				queryString.setParameter("listTargetSid", lSid);
+				for (Entry<String, Object> entry : params.entrySet()) {
+					queryString.setParameter(entry.getKey(), entry.getValue());
+				}
+				listTemp.addAll((List<Object[]>) queryString.getResultList());
+			});
+		}else {
+			Query queryString = getEntityManager().createNativeQuery(querySql);
+			for (Entry<String, Object> entry : params.entrySet()) {
+				queryString.setParameter(entry.getKey(), entry.getValue());
+			}
+			listTemp.addAll((List<Object[]>) queryString.getResultList());
+		}
+		return listTemp.stream().map(objects -> {
+			List<String> record = new ArrayList<String>();
+			for (Object field : objects) {
+				record.add(field != null ? String.valueOf(field) : "");
+			}
+			return record;
+		}).collect(Collectors.toList());
+	}
+
+
+	public List<String> getAllColumnName(String tableName) {
+		List<?> columns = this.getEntityManager().createNativeQuery(SELECT_COLUMN_NAME_SQL)
+				.setParameter("tableName", tableName).getResultList();
+		if (columns == null || columns.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return columns.stream().map(item -> {
+			return String.valueOf(item);
+		}).collect(Collectors.toList());
+
+	}
 
 	/**
 	 * build the select part
@@ -291,37 +594,40 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		String acqEndDateField = tableDelData.getFieldAcqEndDate().get();
 		String tblName = tableDelData.getTableEnglishName();
 		String parentTblName = tableDelData.getParentTblName().get();
-		
+		String tblAcq = tblName;
+		if (hasParentTbl) {
+			tblAcq = parentTblName;
+		}
 
 		buffer.append("SELECT ");
 		// acqCidField
 		if (acqCidField != null && !"null".equals(acqCidField) && !acqCidField.isEmpty()) {
-			buffer.append(tblName + "." + acqCidField + " AS H_CID, ");
+			buffer.append(tblAcq + "." + acqCidField + " AS H_CID, ");
 		} else {
 			buffer.append(" NULL AS H_CID, ");
 		}
 		
 		// acqEmployeeField
 		if (acqEmployeeField != null && !"null".equals(acqEmployeeField) && !acqEmployeeField.isEmpty()) {
-			buffer.append(tblName + "." + acqEmployeeField + " AS H_SID, ");
+			buffer.append(tblAcq + "." + acqEmployeeField + " AS H_SID, ");
 		} else {
 			buffer.append(" NULL AS H_SID, ");
 		}
 		// acqDateField
 		if (acqDateField != null && !"null".equals(acqDateField) && !acqDateField.isEmpty()) {
-			buffer.append(tblName + "." + acqDateField + " AS H_DATE, ");
+			buffer.append(tblAcq + "." + acqDateField + " AS H_DATE, ");
 		} else {
 			buffer.append(" NULL AS H_DATE, ");
 		}
 		// acqStartDateField
 		if (acqStartDateField != null && !"null".equals(acqStartDateField) && !acqStartDateField.isEmpty()) {
-			buffer.append(tblName + "." + acqStartDateField + " AS H_DATE_START, ");
+			buffer.append(tblAcq + "." + acqStartDateField + " AS H_DATE_START, ");
 		} else {
 			buffer.append(" NULL AS H_DATE_START, ");
 		}
 		// acqEndDateField
 		if (acqEndDateField != null && !"null".equals(acqEndDateField) && !acqEndDateField.isEmpty()) {
-			buffer.append(tblName + "." + acqEndDateField + " AS H_DATE_END, ");
+			buffer.append(tblAcq + "." + acqEndDateField + " AS H_DATE_END, ");
 		} else {
 			buffer.append(" NULL AS H_DATE_END, ");
 		}

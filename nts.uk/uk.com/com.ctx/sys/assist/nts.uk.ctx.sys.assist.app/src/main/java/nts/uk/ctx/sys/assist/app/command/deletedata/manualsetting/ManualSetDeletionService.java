@@ -25,6 +25,8 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFileFactory;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFilesContainer;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.assist.dom.categoryfieldmtfordelete.CategoryFieldMtForDelRepository;
+import nts.uk.ctx.sys.assist.dom.categoryfieldmtfordelete.CategoryFieldMtForDelete;
 import nts.uk.ctx.sys.assist.dom.categoryfordelete.CategoryForDelete;
 import nts.uk.ctx.sys.assist.dom.categoryfordelete.CategoryForDeleteRepository;
 import nts.uk.ctx.sys.assist.dom.categoryfordelete.TimeStore;
@@ -99,7 +101,11 @@ public class ManualSetDeletionService extends ExportService<Object>{
 //	@Inject
 //	private ManualSetDeletionRepository repoManualSetDel;
 	@Inject
-	private CategoryForDeleteRepository repoCategory;
+	private CategoryForDeleteRepository repoCategoryForDel;
+	
+	@Inject
+	private CategoryFieldMtForDelRepository repoCtgFieldMtForDelRep;
+	
 	@Inject
 	private ResultDeletionRepository repoResultDel;
 	@Inject
@@ -319,15 +325,23 @@ public class ManualSetDeletionService extends ExportService<Object>{
 		List<String> categoryIds = categoryDeletions.stream().map(x -> {
 			return x.getCategoryId();
 		}).collect(Collectors.toList());
-		List<CategoryForDelete> categorys = repoCategory.getCategoryByListId(categoryIds);
-		// List<CategoryFieldMt> categoryFieldMts =
-		// repoCateField.getCategoryFieldMtByListId(categoryIds);
-
+		List<CategoryForDelete> categorys = repoCategoryForDel.getCategoryByListId(categoryIds);
 		// update domain 「データ保存動作管理」 Data operation management
 		int totalCount = categorys.size();
 		repoManagementDel.updateTotalCatCount(delId, totalCount);
 
 		return categorys;
+	}
+	
+	
+	/**
+	 * アルゴリズム「サーバデータ削除テーブル取得」を実行する
+	 */
+	private List<CategoryFieldMtForDelete> getCtgFildMtForDel(List<String> categoryIds) {
+		// Get list category from
+		List<CategoryFieldMtForDelete> categoryFieldMts = repoCtgFieldMtForDelRep.getCategoryFieldMtByListId(categoryIds);
+
+		return categoryFieldMts;
 	}
 
 	/**
@@ -398,12 +412,12 @@ public class ManualSetDeletionService extends ExportService<Object>{
 					}
 					
 					String categoryId = category.getCategoryId().v();
-					List<TableDeletionDataCsv> catDatas = mapCatWithDatas.get(categoryId);
-					if (catDatas != null) {
-						for (TableDeletionDataCsv tableDataDel : catDatas) {
+					List<TableDeletionDataCsv> listTableForDel = mapCatWithDatas.get(categoryId);
+					if (listTableForDel != null) {
+						for (TableDeletionDataCsv tableDataDel : listTableForDel) {
 							// アルゴリズム「サーバデータ削除テーブルデータ書出」を実行する
 							ResultState generalResult = generalDataForCategoryToCsv(generatorContext, domain,
-									employeeDeletions, categories, tableDataDel);
+									employeeDeletions, tableDataDel);
 							if (generalResult == ResultState.ABNORMAL_END) {
 								ManagementDeletion managementDeletion = maOptional.get();
 								int errorCount = managementDeletion.getErrorCount();
@@ -456,7 +470,7 @@ public class ManualSetDeletionService extends ExportService<Object>{
 	 * アルゴリズム「サーバデータ削除テーブルデータ書出」を実行する
 	 */
 	private ResultState generalDataForCategoryToCsv(FileGeneratorContext generatorContext, ManualSetDeletion domain,
-			List<EmployeeDeletion> employeeDeletions, List<CategoryForDelete> categories, TableDeletionDataCsv tableDataDel) {
+			List<EmployeeDeletion> employeeDeletions, TableDeletionDataCsv tableDataDel) {
 		try {
 			String nameFile = tableDataDel.getCompanyId() + tableDataDel.getCategoryName()
 					+ tableDataDel.getTableJapanName() + FILE_EXTENSION;
@@ -510,7 +524,7 @@ public class ManualSetDeletionService extends ExportService<Object>{
 		
 		Path compressedFile = null;
 		if (!isExistCompressPassFlg) {
-			compressedFile = applicationTemporaryFilesContainer.zipWithName(generatorContext, nameFile);
+			compressedFile = applicationTemporaryFilesContainer.zipWithName(generatorContext, nameFile, false);
 		} else {
 			String password = domain.getPasswordCompressFileEncrypt().get().v();
 			compressedFile = applicationTemporaryFilesContainer.zipWithName(generatorContext, nameFile,
