@@ -130,7 +130,7 @@ public class JpaSpecialHolidayExRepository extends JpaRepository implements Spec
 			.append("	END GENDER_REST, ")
 			// 性別条件 is 0 Gender is blank")
 			.append("	CASE WHEN (TABLE_RESULT.ROW_NUMBER = 1 AND TABLE_RESULT.GENDER_REST = 0) THEN ")
-			.append("		CASE TABLE_RESULT.GENDER WHEN 0 THEN ? WHEN 1 THEN ? END")
+			.append("		CASE TABLE_RESULT.GENDER WHEN 1 THEN ? WHEN 2 THEN ? END")
 			.append("	ELSE NULL")
 			.append("	END GENDER, ")
 			.append("	CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN ")
