@@ -192,32 +192,44 @@ public class WageTableContentDto {
 			Map<String, String> mapMaster, boolean isFirst) {
 		List<ElementItemDto> result = new ArrayList<>();
 		for (ElementsCombinationPaymentAmount payment : listPayment) {
-			if (payment.getElementAttribute().getFirstElementItem().getMasterElementItem().isPresent()) {
-				String masterCode = payment.getElementAttribute().getFirstElementItem().getMasterElementItem().get()
-						.getMasterCode().v();
-				String masterName = mapMaster.get(masterCode);
-				ElementItemDto item = new ElementItemDto(masterCode, masterName == null ? masterCode : masterName, null,
-						null, null, payment.getWageTablePaymentAmount().v());
-				result.add(item);
-			} else if (payment.getElementAttribute().getFirstElementItem().getNumericElementItem().isPresent()) {
-				int frameNumber = isFirst
-						? payment.getElementAttribute().getFirstElementItem().getNumericElementItem().get()
-								.getFrameNumber().v()
-						: payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem().get()
-								.getFrameNumber().v();
-				int lowerLimit = isFirst
-						? payment.getElementAttribute().getFirstElementItem().getNumericElementItem().get()
-								.getFrameLowerLimit().v()
-						: payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem().get()
-								.getFrameLowerLimit().v();
-				int upperLimit = isFirst
-						? payment.getElementAttribute().getFirstElementItem().getNumericElementItem().get()
-								.getFrameUpperLimit().v()
-						: payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem().get()
-								.getFrameUpperLimit().v();
-				ElementItemDto item = new ElementItemDto(null, null, frameNumber, lowerLimit, upperLimit,
-						payment.getWageTablePaymentAmount().v());
-				result.add(item);
+			if (isFirst) {
+				if (payment.getElementAttribute().getFirstElementItem().getMasterElementItem().isPresent()) {
+					String masterCode = payment.getElementAttribute().getFirstElementItem().getMasterElementItem().get()
+							.getMasterCode().v();
+					String masterName = mapMaster.get(masterCode);
+					ElementItemDto item = new ElementItemDto(masterCode, masterName == null ? masterCode : masterName, null,
+							null, null, payment.getWageTablePaymentAmount().v());
+					result.add(item);
+				} else if (payment.getElementAttribute().getFirstElementItem().getNumericElementItem().isPresent()) {
+					int frameNumber = payment.getElementAttribute().getFirstElementItem().getNumericElementItem().get()
+									.getFrameNumber().v();
+					int lowerLimit = payment.getElementAttribute().getFirstElementItem().getNumericElementItem().get()
+									.getFrameLowerLimit().v();
+					int upperLimit = payment.getElementAttribute().getFirstElementItem().getNumericElementItem().get()
+									.getFrameUpperLimit().v();
+					ElementItemDto item = new ElementItemDto(null, null, frameNumber, lowerLimit, upperLimit,
+							payment.getWageTablePaymentAmount().v());
+					result.add(item);
+				}
+			} else {
+				if (payment.getElementAttribute().getSecondElementItem().get().getMasterElementItem().isPresent()) {
+					String masterCode = payment.getElementAttribute().getSecondElementItem().get().getMasterElementItem().get()
+							.getMasterCode().v();
+					String masterName = mapMaster.get(masterCode);
+					ElementItemDto item = new ElementItemDto(masterCode, masterName == null ? masterCode : masterName, null,
+							null, null, payment.getWageTablePaymentAmount().v());
+					result.add(item);
+				} else if (payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem().isPresent()) {
+					int frameNumber = payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem().get()
+									.getFrameNumber().v();
+					int lowerLimit = payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem().get()
+									.getFrameLowerLimit().v();
+					int upperLimit = payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem().get()
+									.getFrameUpperLimit().v();
+					ElementItemDto item = new ElementItemDto(null, null, frameNumber, lowerLimit, upperLimit,
+							payment.getWageTablePaymentAmount().v());
+					result.add(item);
+				}
 			}
 		}
 		return result;

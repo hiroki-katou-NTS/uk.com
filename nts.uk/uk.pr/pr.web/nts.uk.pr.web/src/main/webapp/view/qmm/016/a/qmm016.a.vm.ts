@@ -122,7 +122,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 { id: 'tab-1', title: getText("QMM016_11"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-2', title: getText("QMM016_12"), content: '.tab-content-2', enable: ko.computed(() => { return self.updateMode() && self.isSelectedHistory(); }), visible: ko.observable(true) }
             ]);
-            self.selectedTab = ko.observable('tab-2');
+            self.selectedTab = ko.observable('tab-1');
         }
         
         syncScroll(source, follow1, follow2?) {

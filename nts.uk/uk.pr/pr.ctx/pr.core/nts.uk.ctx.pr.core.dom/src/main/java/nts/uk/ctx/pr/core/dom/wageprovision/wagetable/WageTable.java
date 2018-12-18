@@ -65,7 +65,7 @@ public class WageTable extends AggregateRoot {
 		this.wageTableCode = new WageTableCode(wageTableCode);
 		this.wageTableName = new WageTableName(wageTableName);
 		this.elementSetting = EnumAdaptor.valueOf(elementSetting, ElementSetting.class);
-		this.remarkInformation = remarkInformation == null ? Optional.empty()
+		this.remarkInformation = remarkInformation == null || remarkInformation.isEmpty() ? Optional.empty()
 				: Optional.of(new Memo(remarkInformation));
 		this.elementInformation = elementInformation;
 	}
