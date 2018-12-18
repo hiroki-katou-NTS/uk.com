@@ -77,7 +77,6 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         closureId: KnockoutObservable<number> = ko.observable(0);
         constructor() {
             var self = this;
-
             self.systemType = ko.observableArray([
                 { name: 'システム管理者', value: 1 }, // PERSONAL_INFORMATION
                 { name: '就業', value: 2 } // EMPLOYMENT
@@ -379,7 +378,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
 
             let holidayRemainingOutputCondition = new HolidayRemainingOutputCondition(
                 startMonth.format("YYYY/MM/DD"),
-                endMonth.format("YYYY/MM/DD"),
+                endMonth.endOf('month').format("YYYY/MM/DD"),
                 self.holidayRemainingSelectedCd(),
                 self.selectedCode(),
                 self.baseDate().format("YYYY/MM/DD"),
