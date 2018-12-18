@@ -284,7 +284,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             } else {
                 self.screenControl().visibleE2_2(true);
                 self.screenControl().visibleE2_3(true);
-                self.screenControl().enableE2_5(false);
+                self.screenControl().enableE2_5(true);
                 self.screenControl().enableE2_8(false);
                 self.screenControl().enableE2_10(true);
                 self.screenControl().enableE3_2(false);
