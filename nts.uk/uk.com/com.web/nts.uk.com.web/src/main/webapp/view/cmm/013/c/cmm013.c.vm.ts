@@ -33,9 +33,14 @@ module nts.uk.com.view.cmm013.c {
 
                 // Load sequence data list
                 let data: SequenceMaster[] = nts.uk.ui.windows.getShared(Constants.SHARE_IN_DIALOG_SELECT_SEQUENCE);
+                let currentSelectedCode = nts.uk.ui.windows.getShared("currentSelectedCode");
                 if (data) {
-                     _self.items(data);
-                    _self.currentCode(data[0].sequenceCode);         
+                    _self.items(data);
+                    if (_.isEmpty(currentSelectedCode)) {
+                        _self.currentCode(data[0].sequenceCode);
+                    } else {
+                        _self.currentCode(currentSelectedCode); 
+                    }
                 }
                 dfd.resolve();               
                 
