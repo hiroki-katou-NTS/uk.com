@@ -6,8 +6,8 @@ public final class ShiftEstimateColumn {
 	public static final String KSM001_101_1 = " ";
 	public static final String KSM001_101_2 = "  ";
 	public static final String KSM001_101_3 = "   ";
-	public static final String KSM001_102 = "値";	
-	//Value Data
+	public static final String KSM001_102 = "値";
+	// Value Data
 	public static final String KSM001_103 = "月間勤務日数の集計方法";
 	public static final String KSM001_104 = "休暇集計設定";
 	public static final String KSM001_105 = "休日をカウントする";
@@ -17,7 +17,7 @@ public final class ShiftEstimateColumn {
 	public static final String KSM001_109 = "半日は0.5カウントする";
 	public static final String KSM001_110 = "人件費時間の集計対象項目";
 	public static final String KSM001_111 = "選択した項目";
-	
+
 	/** Sheet 2 **/
 	public static final String KSM001_112 = "項目";
 	public static final String KSM001_112_1 = " ";
@@ -50,4 +50,25 @@ public final class ShiftEstimateColumn {
 	public static final String KSM001_138 = "年間アラームチェック条件";
 	public static final String KSM001_139 = "月間アラームチェック条件";
 	public static final String KSM001_140 = "対象比較区分";
+
+	/** Sheet 3 **/
+	public static final String KSM001_141 = "対象年";
+	public static final String KSM001_142 = "条件値";
+	public static final String KSM001_143 = "目安時間条件１";
+	public static final String KSM001_144 = "条件２";
+	public static final String KSM001_145 = "条件３";
+	public static final String KSM001_146 = "条件４";
+	public static final String KSM001_147 = "条件５";
+	public static final String KSM001_148 = "目安金額条件１";
+	public static final String KSM001_149 = "条件２";
+	public static final String KSM001_150 = "条件３";
+	public static final String KSM001_151 = "条件４";
+	public static final String KSM001_152 = "条件５";
+	public static final String KSM001_153 = "目安勤務日数条件１";
+	public static final String KSM001_154 = "条件２";
+	public static final String KSM001_155 = "条件３";
+	public static final String KSM001_156 = "条件４";
+	public static final String KSM001_157 = "条件５";
+	
+	public static final String KSM001_196 = "￥";
 }
