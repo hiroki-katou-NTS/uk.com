@@ -23,9 +23,11 @@ import nts.uk.ctx.sys.gateway.dom.login.dto.RoleImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.RoleIndividualGrantImport;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompany;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompanyRepository;
+import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopModeType;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.SystemStatusType;
 import nts.uk.ctx.sys.gateway.dom.stopbysystem.StopBySystem;
 import nts.uk.ctx.sys.gateway.dom.stopbysystem.StopBySystemRepository;
+import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author Doan Duy Hung
@@ -143,7 +145,10 @@ public class CollectCompanyListImpl implements CollectCompanyList {
 		//取得できる
 		//ドメインモデル「システム全体の利用停止.システム利用状態」をチェックする (StopBySystem.systemStatus)
 		if(stopSys.isPresent() && stopSys.get().getSystemStatus().equals(SystemStatusType.STOP)){//「利用停止中」の場合
-			return new ArrayList<>();
+			//アルゴリズム「権限(ロール)のチェック」を実行する
+			if(!this.checkRoleAuth(stopSys.get().getStopMode())){//False：ログイン権限なし
+				return new ArrayList<>();
+			}
 		}
 		//ドメインモデル「会社単位の利用停止」を取得する
 		List<StopByCompany> lstCom = repoStopCom.getListComByContractCD(contractCd);
@@ -172,6 +177,10 @@ public class CollectCompanyListImpl implements CollectCompanyList {
 		for(StopByCompany stopCom : lstComStop){
 			//ドメインモデル「会社単位の利用停止.システム利用状態」をチェックする(check StopByCompany.systemStatus)
 			if(stopCom.getSystemStatus().equals(SystemStatusType.STOP)){
+				//アルゴリズム「権限(ロール)のチェック」を実行する
+				if(this.checkRoleAuth(stopCom.getStopMode())){//True：ログイン権限あり
+					continue;
+				}
 				//会社IDを生成する 会社ID＝[会社単位の利用停止.契約コード]+"-"+[会社単位の利用停止.会社コード]
 				//		ex) 000000000001-0001
 				//Output：利用停止会社ID（List）に「会社ID」を追加する
@@ -179,6 +188,40 @@ public class CollectCompanyListImpl implements CollectCompanyList {
 			}
 		}
 		return result;
+	}
+	/**
+	 * 権限(ロール)のチェック
+	 * @param stopMode
+	 * @return True：ログイン権限あり
+　				False：ログイン権限なし
+	 */
+	@Override
+	public boolean checkRoleAuth(StopModeType stopMode) {
+		//[利用停止モード]を判別 (phân biệt [mode stop use])
+		if(stopMode.equals(StopModeType.ADMIN_MODE)){
+			//システム管理者ロールの設定があるか判別
+			if(AppContexts.user().roles().forSystemAdmin() != null){
+				return true;
+			}
+			//会社管理者ロールの設定があるか判別
+			if(AppContexts.user().roles().forCompanyAdmin() != null){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			//システム管理者ロールの設定があるか判別
+			if(AppContexts.user().roles().forSystemAdmin() != null){
+				return true;
+			}
+			//会社管理者ロールの設定があるか判別
+			if(AppContexts.user().roles().forCompanyAdmin() != null){
+				return true;
+			}else{
+				//リクエストリスト497を呼ぶ。：「ログイン者が担当者か判断する」で担当者ロールが存在するかを判別
+				return roleAdapter.isEmpWhetherLoginerCharge();
+			}
+		}
 	}
 
 }
