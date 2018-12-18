@@ -80,7 +80,7 @@ public class GridPeregProcessor {
 							m.getItemName(), m.getItemTypeState(), m.getIsRequired() == 1, m.getResourceId(),
 							m.getLstChildItemDef().stream()
 							.sorted(Comparator.comparing(PerInfoItemDefDto::getItemCode, Comparator.naturalOrder()))
-									.map(c -> new GridEmpHead(c.getId(), c.getDispOrder() == 0 ? m.getDispOrder() : c.getDispOrder(), c.getItemCode(),
+									.map(c -> new GridEmpHead(c.getId(), m.getDispOrder(), c.getItemCode(),
 											c.getItemParentCode(), c.getItemName(), c.getItemTypeState(),
 											c.getIsRequired() == 1, c.getResourceId(), null))
 									.collect(Collectors.toList())))
