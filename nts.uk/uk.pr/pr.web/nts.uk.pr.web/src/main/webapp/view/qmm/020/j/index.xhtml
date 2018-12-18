@@ -23,24 +23,23 @@
             <table>
                 <tr>
                     <td>
-                        <div id="J1_2" data-bind="ntsFormLabel: {required: true}" style="margin: 0px 10px 0px 10px;">
+                        <div id="J1_2'" data-bind="ntsFormLabel: {required: true}" style="margin: 0px 10px 0px 10px;">
                             <span class="label">#{i18n.getText('QMM020_54')}</span>
-                            <div id="J1_3" style="margin-left: 70px;" tabindex="1" data-bind="ntsDatePicker: {
-												name: '#{i18n.getText('QMM020_55')}',
-												value: startYearMonthPeriod,
-												required: true,
-												enable: true,
-												valueFormat: 'YYYYMM',
-												dateFormat: 'yearmonth'
-												}">
-                            </div>
-                            <span style="margin-left: 15px;" class="label">#{i18n.getText('QMM020_56')}</span>
                         </div>
-
+                        <div id="J1_3" style="" tabindex="2" data-bind="ntsDatePicker: {
+                                                    name: '#{i18n.getText('QMM020_63')}',
+                                                    value: startYearMonthPeriod,
+                                                    required: true,
+                                                    enable: true,
+                                                    valueFormat: 'YYYYMM',
+                                                    dateFormat: 'yearmonth'
+                                                }">
+                        </div>
+                        <span style="margin-left: 15px;" class="label">#{i18n.getText('QMM020_56')}</span>
                     </td>
                     <td>
                         <div data-bind="if: modeScreen() == nts.uk.pr.view.qmm020.j.viewmodel.MODE_SCREEN.MODE_THREE">
-                            <div id="J1_13" style="" tabindex="2" data-bind="ntsDatePicker: {
+                            <div id="J1_13" style="margin: 0px 10px 0px 15px;" tabindex="2" data-bind="ntsDatePicker: {
 												name: '#{i18n.getText('QMM020_63')}',
 												value: endYearMonthPeriod,
 												required: true,
