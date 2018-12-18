@@ -69,8 +69,8 @@ module nts.uk.com.view.cmf002.y {
                                 temp.push(new ExternalOutLog(
                                     index.processCount,
                                     index.errorContent,
-                                    index.errorEmployee,
                                     index.errorTargetValue,
+                                    index.errorEmployee,
                                     index.errorItem
                                 ));     
                             });
@@ -153,10 +153,10 @@ module nts.uk.com.view.cmf002.y {
             constructor(processCount : number, errorContent?: string, errorTargetValue?: string, errorEmployee?: string, errorItem?: string) {
                 this.processCount = processCount ? processCount : null;
                 this.errorContent = errorContent ? errorContent : null;
-                this.errorTargetValue = errorEmployee ? errorEmployee : null;
+                this.errorTargetValue = errorTargetValue ? errorTargetValue : null;
                 this.errorEmployee = errorEmployee ? errorEmployee : null;
                 this.errorItem = errorItem ? errorItem : null;
-                this.customerrorContent = errorContent + "(" + getText('CMF002_356') + errorTargetValue + ")";   
+                this.customerrorContent = errorContent + "(" + getText('CMF002_356') + errorEmployee + ")";   
             }
         }
 
