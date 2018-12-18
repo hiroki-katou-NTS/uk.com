@@ -419,14 +419,15 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
          */
         condition42(defaultAtr: shareModel.DefaultAtr) {
             let self = this;
+            if (self.params.printSet == shareModel.StatementPrintAtr.DO_NOT_PRINT){
+                if (self.dataScreen().totalObject() == shareModel.DeductionTotalObjAtr.INSIDE.toString()) {
+                    self.dataScreen().totalObject(shareModel.DeductionTotalObjAtr.OUTSIDE.toString());
+                }
+            }
             if (defaultAtr == shareModel.DefaultAtr.SYSTEM_DEFAULT) {
                 self.totalObjAtrs(shareModel.getDeductionTotalObjAtr(null));
             } else {
                 self.totalObjAtrs(shareModel.getDeductionTotalObjAtr(self.params.printSet));
-            }
-            if (self.params.printSet == shareModel.StatementPrintAtr.PRINT) return;
-            if (self.dataScreen().totalObject() == shareModel.DeductionTotalObjAtr.INSIDE.toString()) {
-                self.dataScreen().totalObject(shareModel.DeductionTotalObjAtr.OUTSIDE.toString());
             }
         }
 
