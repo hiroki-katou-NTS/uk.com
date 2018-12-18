@@ -19,6 +19,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
     import PaymentTotalObjAtr = nts.uk.pr.view.qmm019.share.model.PaymentTotalObjAtr;
     import PaymentCaclMethodAtr = nts.uk.pr.view.qmm019.share.model.PaymentCaclMethodAtr;
     import getLayoutPatternText = nts.uk.pr.view.qmm019.share.model.getLayoutPatternText;
+    import getLayoutPatternContent = nts.uk.pr.view.qmm019.share.model.getLayoutPatternContent;
 
     export class ScreenModel {
 
@@ -344,6 +345,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         startMonthText: KnockoutObservable<string>;
         endMonthText: KnockoutObservable<string>;
         layoutPatternText: string;
+        layoutPatternContent: string;
 
         constructor(data: IStatementLayoutHistData, isCreate: boolean) {
             let self = this;
@@ -360,6 +362,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 self.startMonthText = ko.observable(nts.uk.time.parseYearMonth(data.startMonth).format());
                 self.endMonthText = ko.observable(nts.uk.time.parseYearMonth(data.endMonth).format());
                 self.layoutPatternText = getLayoutPatternText(data.statementLayoutSet.layoutPattern);
+                self.layoutPatternContent = getLayoutPatternContent(data.statementLayoutSet.layoutPattern);
             } else {
                 self.statementCode = null;
                 self.statementName = ko.observable(null);
@@ -372,6 +375,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 self.startMonthText = ko.observable(null);
                 self.endMonthText = ko.observable(null);
                 self.layoutPatternText = "";
+                self.layoutPatternContent = "";
             }
 
             nts.uk.ui.errors.clearAll();

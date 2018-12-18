@@ -100,16 +100,16 @@
 											enable: true,
 											readonly: false}"/>
                             <!-- 印刷情報 -->
-                            <label> ( </label>
+                            <label> （ </label>
                             <label id="A3_5" data-bind="text: layoutPatternText"></label>
-                            <label> ) </label>
+                            <label> ） </label>
                         </div>
                         <div class="valign-center control-group">
                             <!-- 有効期間 -->
                             <div id="A3_6" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_17')}</div>
                             <!-- 開始年月日 -->
                             <label id="A3_7" data-bind="text: startMonthText"></label>
-                            <label> ~ </label>
+                            <label> ～ </label>
                             <!-- 終了年月日 -->
                             <label id="A3_8" data-bind="text: endMonthText"></label>
                         </div>
@@ -120,8 +120,9 @@
                             <label id="A3_10"></label>
                             <!-- 使用未表示行数 -->
                             <label id="A3_11"></label>
+                            <label> / </label>
                             <!-- 最大行数 -->
-                            <label id="A3_12"></label>
+                            <label id="A3_12" data-bind="text: layoutPatternContent"></label>
                         </div>
                         <div class="valign-center control-group">
                             <!-- 明細書レイアウト -->
