@@ -326,32 +326,8 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 			}
 		}
 		
-		//アルゴリズム「個人情報の保護」を実行する 
-		List<SaveProtetion> listSaveProtetion = saveProtetionRepo.getSaveProtection(Integer.valueOf(tableList.getCategoryId()), tableList.getTableNo());
-		if(tableList.getSaveForInvest() == NotUseAtr.USE.value && !listSaveProtetion.isEmpty()) {
-			for (SaveProtetion saveProtetion : listSaveProtetion) {
-				String rePlaceCol = saveProtetion.getReplaceColumn().trim();
-				String newValue = "";
-				// Vì domain không tạo Enum nên phải fix code ngu
-				if(saveProtetion.getCorrectClasscification() == 0) {
-					newValue = "'' AS " + rePlaceCol;
-				}else if(saveProtetion.getCorrectClasscification() == 1){
-					if(columns.contains("EMPLOYEE_CODE")) {
-						newValue = "t.EMPLOYEE_CODE AS " + rePlaceCol;
-					}else {
-						newValue = "'' AS " + rePlaceCol;
-					}
-				}else if(saveProtetion.getCorrectClasscification() == 2) {
-					newValue = "0 AS " + rePlaceCol;
-				}else if(saveProtetion.getCorrectClasscification() == 3) {
-					newValue = "'0' AS " + rePlaceCol;
-				}
-				query = new StringBuffer(query.toString().replaceAll("t." + rePlaceCol, newValue));
-			}
-		}
-		
 		// From
-		query.append(" FROM SSPDT_EMPLOYEES_DELETION e, ").append(tableList.getTableEnglishName()).append(" t");
+		query.append(" FROM ").append(tableList.getTableEnglishName()).append(" t");
 		if (tableList.getHasParentTblFlg() == NotUseAtr.USE.value && tableList.getParentTblName().isPresent()) {
 			// アルゴリズム「親テーブルをJOINする」を実行する
 			query.append(" INNER JOIN ").append(tableList.getParentTblName().get()).append(" p ON ");
@@ -390,6 +366,21 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 				tableList.getClsKeyQuery5().orElse(""), tableList.getClsKeyQuery6().orElse(""),
 				tableList.getClsKeyQuery7().orElse(""), tableList.getClsKeyQuery8().orElse(""),
 				tableList.getClsKeyQuery9().orElse(""), tableList.getClsKeyQuery10().orElse("") };
+		
+		String defaultConditionSID = " AND e.DEL_ID = '" + tableList.getDelId()+"'";
+		for (int i = 0; i < clsKeyQuerys.length; i++) {
+			if (EMPLOYEE_CD.equals(clsKeyQuerys[i])) {
+				if (tableList.getHasParentTblFlg() == NotUseAtr.USE.value) {
+					query.append(" INNER JOIN SSPDT_EMPLOYEES_DELETION e ON e.EMPLOYEE_ID = p.");
+					query.append(fieldKeyQuerys[i]);
+					query.append(defaultConditionSID);
+				} else {
+					query.append(" INNER JOIN SSPDT_EMPLOYEES_DELETION e ON e.EMPLOYEE_ID = t.");
+					query.append(fieldKeyQuerys[i]);
+					query.append(defaultConditionSID);
+				}
+			}
+		}
 		
 		// Where
 		query.append(" WHERE 1 = 1 ");
@@ -520,37 +511,13 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		// 抽出条件キー固定
 		query.append(tableList.getDefaultCondKeyQuery().orElse(""));
 		
-		for (int i = 0; i < clsKeyQuerys.length; i++) {
-			if (EMPLOYEE_CD.equals(clsKeyQuerys[i]) && !targetEmployeesSid.isEmpty()) {
-				if (tableList.getHasParentTblFlg() == NotUseAtr.USE.value) {
-					query.append(" AND p." + fieldKeyQuerys[i] + " IN (?listTargetSid) ");
-				} else {
-					query.append(" AND t." + fieldKeyQuerys[i] + " IN (?listTargetSid) ");
-				}
-			}
-		}
-		
 		// Order By
 		query.append(" ORDER BY H_CID, H_SID, H_DATE, H_DATE_START");
-		String querySql = query.toString();
-		List<Object[]> listTemp = new ArrayList<>();
-		if(!targetEmployeesSid.isEmpty()) {
-			CollectionUtil.split(targetEmployeesSid, 1000, subIdList -> {
-				String lSid = subIdList.toString().replaceAll("\\[", "\\'").replaceAll("\\]", "\\'").replaceAll(", ","\\', '");
-				Query queryString = getEntityManager().createNativeQuery(querySql);
-				queryString.setParameter("listTargetSid", lSid);
-				for (Entry<String, Object> entry : params.entrySet()) {
-					queryString.setParameter(entry.getKey(), entry.getValue());
-				}
-				listTemp.addAll((List<Object[]>) queryString.getResultList());
-			});
-		}else {
-			Query queryString = getEntityManager().createNativeQuery(querySql);
-			for (Entry<String, Object> entry : params.entrySet()) {
-				queryString.setParameter(entry.getKey(), entry.getValue());
-			}
-			listTemp.addAll((List<Object[]>) queryString.getResultList());
+		Query queryString = getEntityManager().createNativeQuery(query.toString());
+		for (Entry<String, Object> entry : params.entrySet()) {
+			queryString.setParameter(entry.getKey(), entry.getValue());
 		}
+		List<Object[]> listTemp = (List<Object[]>) queryString.getResultList();
 		return listTemp.stream().map(objects -> {
 			List<String> record = new ArrayList<String>();
 			for (Object field : objects) {

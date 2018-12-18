@@ -25,6 +25,7 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFileFactory;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFilesContainer;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmtfordelete.CategoryFieldMtForDelRepository;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmtfordelete.CategoryFieldMtForDelete;
 import nts.uk.ctx.sys.assist.dom.categoryfordelete.CategoryForDelete;
@@ -732,7 +733,10 @@ public class ManualSetDeletionService extends ExportService<Object>{
 			Map<String, Object> rowCsv2 = new HashMap<>();
 			rowCsv2.put(headerCsv2.get(0), employeeDeletion.getEmployeeId());
 			rowCsv2.put(headerCsv2.get(1), employeeDeletion.getEmployeeCode());
-			rowCsv2.put(headerCsv2.get(2), Base64.getEncoder().encodeToString(employeeDeletion.getBusinessName().v().getBytes()));
+			rowCsv2.put(headerCsv2.get(2), employeeDeletion.getBusinessName() != null
+					? CommonKeyCrypt.encrypt(employeeDeletion.getBusinessName().v()) : "");
+			
+//			rowCsv2.put(headerCsv2.get(2), Base64.getEncoder().encodeToString(employeeDeletion.getBusinessName().v().getBytes()));
 //			rowCsv2.put(headerCsv2.get(2), CommonKeyCrypt.encrypt(employeeDeletion.getBusinessName().v()));  << error Illegal key size
 			dataSourceCsv2.add(rowCsv2);
 		}
