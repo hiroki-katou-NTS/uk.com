@@ -108,9 +108,9 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                         else itemToBeFocus = '#C2_7';
                     } else itemToBeFocus = '#D1_4';
                 } else if (self.screenMode() != model.SCREEN_MODE.NEW){ itemToBeFocus = '#A3_4'};
-                setTimeout(function(){
+                setTimeout (function(){
                     $(itemToBeFocus).focus();
-                }, 100)
+                }, 50);
             });
             self.screenDSelectedTab.subscribe(newTab => {
                 let itemToBeFocus = "";
@@ -125,7 +125,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 }
                 setTimeout(function(){
                     $(itemToBeFocus).focus();
-                }, 100)
+                }, 50)
             })
         }
 
@@ -226,7 +226,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 item['identifier'] = item.formulaCode;
                 item.history = item.history.map(function (historyItem) {
                     historyItem['identifier'] = item.formulaCode + historyItem.historyID;
-                    historyItem.nodeText = moment(historyItem.startMonth, "YYYYMM").format("YYYY/MM") + " ~ " + moment(historyItem.endMonth, "YYYYMM").format("YYYY/MM");
+                    historyItem.nodeText = moment(historyItem.startMonth, "YYYYMM").format("YYYY/MM") + " ～ " + moment(historyItem.endMonth, "YYYYMM").format("YYYY/MM");
                     // prevent handler from null value exception when use search box
                     historyItem.formulaCode = "";
                     historyItem.formulaName = "";
@@ -289,7 +289,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 selectedHistory = _.find(selectedFormula.history, {historyID: selectedHistoryID});
                 self.selectedHistory(new model.GenericHistoryYearMonthPeriod(selectedHistory));
                 self.isSelectedHistory(true);
-                if (self.screenMode() != model.SCREEN_MODE.ADD_HISTORY) self.showFormulaSettingByHistory(selectedHistory, true, null)
+                if (!self.isCompleteChangeToAddHistoryMode) self.showFormulaSettingByHistory(selectedHistory, true, null)
             }
             else {
                 self.selectedHistory(new model.GenericHistoryYearMonthPeriod(null));
@@ -305,6 +305,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 self.detailFormulaSetting(new model.DetailFormulaSetting(data.detailFormulaSettingDto));
                 self.screenDViewModel.getFormulaElements(history.startMonth);
                 self.mapListCalculationToMasterUseItem(data.masterUseDto, data.basicCalculationFormulaDto);
+                self.selectedTab.valueHasMutated();
                 block.clear();
             }).fail(function (err) {
                 block.clear();
@@ -371,7 +372,6 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                         }
                     });
                     self.isCompleteChangeToAddHistoryMode = false;
-                    self.screenMode(model.SCREEN_MODE.ADD_HISTORY);
                     // to prevent call service for new history
                     // update formula and tree grid
                     self.convertToTreeList(formulaList, selectedFormula.formulaCode + historyID);
@@ -471,10 +471,6 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             let self = this;
             this.screenDViewModel.getFormulaElements(self.selectedHistory().startMonth());
             if (this.screenDViewModel.selectedFormulaCode() == null && this.screenDViewModel.formulaList().length > 0) this.screenDViewModel.selectedFormulaCode(this.screenDViewModel.formulaList()[0]['formulaCode']);
-        }
-        openScreenM () {
-            modal("/view/qmm/017/m/index.xhtml").onClosed(function () {
-            });
         }
         closeScreenM () {
             nts.uk.ui.windows.close();
