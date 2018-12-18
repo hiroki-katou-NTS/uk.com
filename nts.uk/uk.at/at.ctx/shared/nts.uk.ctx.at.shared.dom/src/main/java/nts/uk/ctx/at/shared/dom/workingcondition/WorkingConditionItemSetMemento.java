@@ -44,7 +44,7 @@ public interface WorkingConditionItemSetMemento {
 	 *
 	 * @param workCategory the new work category
 	 */
-	void setWorkCategory(PersonalWorkCategory workCategory);
+	void setWorkCategory(PersonalWorkCategory workCategory, String employeeId);
 
 	/**
 	 * Sets the contract time.
@@ -72,7 +72,7 @@ public interface WorkingConditionItemSetMemento {
 	 *
 	 * @param workDayOfWeek the new work day of week
 	 */
-	void setWorkDayOfWeek(PersonalDayOfWeek workDayOfWeek);
+	void setWorkDayOfWeek(PersonalDayOfWeek workDayOfWeek, String employeeId);
 
 	/**
 	 * Sets the employee id.
@@ -93,7 +93,7 @@ public interface WorkingConditionItemSetMemento {
 	 *
 	 * @param scheduleMethod the new schedule method
 	 */
-	void setScheduleMethod(Optional<ScheduleMethod> scheduleMethod);
+	void setScheduleMethod(Optional<ScheduleMethod> scheduleMethod, String employeeId);
 
 	/**
 	 * Sets the holiday add time set.

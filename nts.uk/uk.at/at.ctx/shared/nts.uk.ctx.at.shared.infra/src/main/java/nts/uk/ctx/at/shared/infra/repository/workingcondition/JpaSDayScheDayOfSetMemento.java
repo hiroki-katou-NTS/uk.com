@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDayScheduleSetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -37,13 +38,14 @@ public class JpaSDayScheDayOfSetMemento implements SingleDayScheduleSetMemento {
 	 *            the entity
 	 */
 	public JpaSDayScheDayOfSetMemento(String historyId, int perWorkDayOffAtr,
-			KshmtPersonalDayOfWeek entity) {
+			KshmtPersonalDayOfWeek entity, String employeeId) {
 		this.historyId = historyId;
 		this.perWorkDayOffAtr = perWorkDayOffAtr;
 		if (entity.getKshmtPersonalDayOfWeekPK() == null) {
 			entity.setKshmtPersonalDayOfWeekPK(
 					new KshmtPersonalDayOfWeekPK(historyId, perWorkDayOffAtr));
 		}
+		entity.setSid(employeeId);
 		this.entity = entity;
 	}
 
