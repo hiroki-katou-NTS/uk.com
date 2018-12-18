@@ -3,6 +3,7 @@ package nts.uk.ctx.pereg.app.find.processor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,6 +23,7 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpHead;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmployeeDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmployeeInfoDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutFinder;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
@@ -77,10 +79,12 @@ public class GridPeregProcessor {
 					.map(m -> new GridEmpHead(m.getId(), m.getDispOrder(), m.getItemCode(), m.getItemParentCode(),
 							m.getItemName(), m.getItemTypeState(), m.getIsRequired() == 1, m.getResourceId(),
 							m.getLstChildItemDef().stream()
-									.map(c -> new GridEmpHead(c.getId(), c.getDispOrder(), c.getItemCode(),
+							.sorted(Comparator.comparing(PerInfoItemDefDto::getItemCode, Comparator.naturalOrder()))
+									.map(c -> new GridEmpHead(c.getId(), c.getDispOrder() == 0 ? m.getDispOrder() : c.getDispOrder(), c.getItemCode(),
 											c.getItemParentCode(), c.getItemName(), c.getItemTypeState(),
 											c.getIsRequired() == 1, c.getResourceId(), null))
 									.collect(Collectors.toList())))
+					.sorted(Comparator.comparing(GridEmpHead::getItemOrder, Comparator.naturalOrder()).thenComparing(GridEmpHead::getItemCode, Comparator.naturalOrder()))
 					.collect(Collectors.toList());
 
 			headers.addAll(headers.stream().flatMap(m -> m.getChilds().stream()).collect(Collectors.toList()));
