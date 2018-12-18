@@ -14,33 +14,23 @@ import nts.uk.ctx.at.schedule.app.export.horitotalcategory.HoriTotalCategoryExce
 import nts.uk.ctx.at.schedule.app.export.horitotalcategory.HoriTotalExel;
 import nts.uk.ctx.at.schedule.app.export.horitotalcategory.ItemCNTSetExcel;
 import nts.uk.ctx.at.schedule.app.export.horitotalcategory.ItemTotalExcel;
+import nts.uk.shr.com.i18n.TextResource;
 @Stateless
 public class JpaHoriTotalCateExcel extends JpaRepository implements HoriTotalCategoryExcelRepo {
-	// hori total category
-		// total eval order
-		// total eval item
-		// hori cal days set
-		// hori total cnt set
-		//EXPORT EXCEL
-//		private static final String SELECT_CATE_EXCEL = SELECT_CATE_ITEM + "JOIN " + SELECT_ORDER_ITEM + "ON ";
-		
-//		private static final String SELECT_CATE_EXCEL = "SELECT c.kscmtHoriTotalCategoryPK.categoryCode, c.categoryName, c.memo, d.kscmtTotalEvalOrderPK.totalItemNo as totalItemNo,"+
-//										"(SELECT e.totalItemName FROM KscmtTotalEvalItem e "+
-//											"WHERE e.kscmtTotalEvalItemPK.totalItemNo = d.kscmtTotalEvalOrderPK.totalItemNo and e.kscmtTotalEvalItemPK.companyId = :companyId) as itemName, "+
-//										"f.kscstHoriTotalCntSetPK.totalItemNo as totalTimeNo "+
-//								" FROM KscmtHoriTotalCategoryItem c "+
-//								" JOIN KscmtTotalEvalOrderItem d on d.kscmtTotalEvalOrderPK.companyId =:companyId and d.kscmtTotalEvalOrderPK.categoryCode = c.kscmtHoriTotalCategoryPK.categoryCode "+
-//								" LEFT JOIN KscstHoriTotalCntSetItem f "+
-//								" on  f.kscstHoriTotalCntSetPK.totalItemNo = d.kscmtTotalEvalOrderPK.totalTimeNo and f.kscstHoriTotalCntSetPK.companyId = :companyId and f.kscstHoriTotalCntSetPK.categoryCode = d.kscmtTotalEvalOrderPK.categoryCode;";
-		
-		private static final String SELECT_CATE_EXCEL = "SELECT c.CATEGORY_CD, c.CATEGORY_NAME, c.MEMO, d.TOTAL_ITEM_NO as totalItemNo, "
+
+	private static final String SELECT_CATE_EXCEL = "SELECT c.CATEGORY_CD, c.CATEGORY_NAME, c.MEMO, d.TOTAL_ITEM_NO as totalItemNo, "
 				+ "(SELECT e.TOTAL_ITEM_NAME FROM KSCMT_TOTAL_EVAL_ITEM e 	"
 				+ "WHERE e.TOTAL_ITEM_NO = d.TOTAL_ITEM_NO and e.CID = ?companyId) "
-				+ "as itemName, f.TOTAL_TIME_NO as totalTimeNo FROM KSCMT_HORI_TOTAL_CATEGORY c "
+				+ "as itemName, g.TOTAL_TIMES_NAME as totalTimesName , h.YEAR_HD_ATR,h.HAVY_HD_ATR, h.SPHD_ATR, h.HALF_DAY_ATR as halfDay "
+				+ "FROM KSCMT_HORI_TOTAL_CATEGORY c "
 				+ "JOIN KSCMT_TOTAL_EVAL_ORDER d on d.CID = ?companyId "
 				+ "and d.CATEGORY_CD = c.CATEGORY_CD LEFT JOIN KSCST_HORI_TOTAL_CNT_SET f "
 				+ "on  f.TOTAL_ITEM_NO = d.TOTAL_ITEM_NO and f.CID = ?companyId"
-				+ " and f.CATEGORY_CD = d.CATEGORY_CD;";
+				+ " and f.CATEGORY_CD = d.CATEGORY_CD "
+				+ "LEFT JOIN KSHST_TOTAL_TIMES g on g.TOTAL_TIMES_NO = f.TOTAL_TIME_NO and g.CID=?companyId "
+				+ "LEFT JOIN KSCST_HORI_CAL_DAYS_SET h on h.TOTAL_ITEM_NO = d.TOTAL_ITEM_NO and h.CID = ?companyId  and h.CATEGORY_CD = d.CATEGORY_CD "
+				
+				;
 				
 		@Override
 		public List<HoriTotalExel> getAll(String companyId) {
@@ -59,28 +49,78 @@ public class JpaHoriTotalCateExcel extends JpaRepository implements HoriTotalCat
 			String categoryCode = (String)x[0];
 			String categoryName = (String) x[1];
 			String categoryMemo = (String) x[2];
-			Integer itemNo = ((BigDecimal) x[3]).intValue();
-			String totalItemName = (String) x[4];
-			String totalTimeNo = String.valueOf(((BigDecimal) x[5]).intValue());
 			
+			Integer itemNo = -1;
+			if(x[3] !=null){
+				itemNo = ((BigDecimal) x[3]).intValue();
+			}
+			String totalItemName = (String) x[4];
+			String totalTimeName = "";
+			if(x[5] !=null){
+				totalTimeName = (String) x[5];
+			}
 			HoriTotalExel horiTotalExel = result.get(categoryCode);
 			if (horiTotalExel == null) {
 				horiTotalExel = new HoriTotalExel(categoryCode, categoryName, categoryMemo);
 				ItemTotalExcel newItemTotalExcel = new ItemTotalExcel(totalItemName, itemNo);
-				newItemTotalExcel.putItemTotalExcel(new ItemCNTSetExcel(totalTimeNo, totalTimeNo));
+				if(newItemTotalExcel.getItemNo()==3){
+					newItemTotalExcel.setItemDaySets(genListItemDaySet(x[6],x[7],x[8],x[9]));
+				}
+				newItemTotalExcel.putItemTotalExcel(new ItemCNTSetExcel(totalTimeName));
 				horiTotalExel.putItemTotalExcel(newItemTotalExcel);
 				result.put(categoryCode, horiTotalExel);
 			} else {
 				Optional<ItemTotalExcel> itemTotalExcel = horiTotalExel.getItemTotalExcelByItemNo(itemNo);
 				if (!itemTotalExcel.isPresent()) {
 					ItemTotalExcel newItemTotalExcel = new ItemTotalExcel(totalItemName, itemNo);
-					newItemTotalExcel.putItemTotalExcel(new ItemCNTSetExcel(totalTimeNo, totalTimeNo));
+					if(newItemTotalExcel.getItemNo()==3){
+						newItemTotalExcel.setItemDaySets(genListItemDaySet(x[6],x[7],x[8],x[9]));
+					}
+					newItemTotalExcel.putItemTotalExcel(new ItemCNTSetExcel(totalTimeName));
 					horiTotalExel.putItemTotalExcel(newItemTotalExcel);
 				}
 				else {
-					itemTotalExcel.get().putItemTotalExcel(new ItemCNTSetExcel(totalTimeNo, totalTimeNo));
+					itemTotalExcel.get().putItemTotalExcel(new ItemCNTSetExcel(totalTimeName));
+					if(itemTotalExcel.get().getItemNo()==3){
+						itemTotalExcel.get().setItemDaySets(genListItemDaySet(x[6],x[7],x[8],x[9]));
+					}
 				}
 			}
+		}
+
+		private List<String> genListItemDaySet(Object x6, Object x7, Object x8, Object x9) {
+			int yeardHd = -1,yeardHavy =-1,specialHoliday =-1,halfDay =-1;
+			List<String> listItemDaySet = new ArrayList<>();
+			String yeardHdStr = TextResource.localize("KML004_20");
+			String yeardHavyStr =  TextResource.localize("KML004_21");
+			String specialHolidayStr =  TextResource.localize("KML004_22");
+			String halfDayStr =  TextResource.localize("KML004_24");
+			if(x6!=null){
+				yeardHd = ((BigDecimal) x6).intValue();
+				if(yeardHd==1){
+					listItemDaySet.add(yeardHdStr);
+				}
+			}
+			if(x7!=null){
+				yeardHavy = ((BigDecimal) x7).intValue();
+				if(yeardHavy==1){
+					listItemDaySet.add(yeardHavyStr);
+				}
+			}
+			if(x8!=null){
+				specialHoliday = ((BigDecimal) x8).intValue();
+				if(specialHoliday==1){
+					listItemDaySet.add(specialHolidayStr);
+				}
+			}
+			if(x9!=null){
+				halfDay = ((BigDecimal) x9).intValue();
+				if(halfDay==1){
+					listItemDaySet.add(halfDayStr);
+				}
+			}
+			
+			return listItemDaySet;
 		}
 
 

@@ -10,10 +10,6 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriTotalCategory;
-import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.TotalEvalOrder;
-import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.TotalItemNo;
-import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.repository.HoriTotalCategoryRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
@@ -40,15 +36,15 @@ public class HoriTotalCategoryExportImpl implements MasterListData {
 		
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 		columns.add(new MasterHeaderColumn("コード", TextResource.localize("KML004_9"),
-				ColumnTextAlign.CENTER, "", true));
+				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("名称", TextResource.localize("KML004_10"),
-				ColumnTextAlign.CENTER, "", true));
+				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("メモ", TextResource.localize("KML004_11"),
-				ColumnTextAlign.CENTER, "", true));
+				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("選択された対象項目", TextResource.localize("KML004_16"),
-				ColumnTextAlign.CENTER, "", true));
+				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("回数集計集計設定", "回数集計集計設定",
-				ColumnTextAlign.CENTER, "", true));
+				ColumnTextAlign.LEFT, "", true));
  
 		return columns;
 	}
@@ -62,7 +58,9 @@ public class HoriTotalCategoryExportImpl implements MasterListData {
 			throw new BusinessException("Msg_393");
 		} else {
 			listHoriTotalExel.stream().forEach(c -> {
+				
 				Map<String, Object> data = new HashMap<>();
+				putDataEmpty(data);
 				if(c.getCode()!=null){
 				data.put("コード", c.getCode());
 				}
@@ -79,13 +77,20 @@ public class HoriTotalCategoryExportImpl implements MasterListData {
 						ItemTotalExcel itemTotalExcel =listItemTotals.get(i);
 						if(i == 0 && itemTotalExcel!=null){
 							data.put("選択された対象項目", itemTotalExcel.getNameItemTotal());
-							data.put("回数集計集計設定",itemTotalExcel.getItemSets().toString());
+							data.put("回数集計集計設定",itemTotalExcel.toStringItemSet());
+							if(itemTotalExcel.getItemNo()==3){
+								data.put("回数集計集計設定",itemTotalExcel.toStringListDaySet());
+							}
 							datas.add(new MasterData(data, null, "選択された対象項目"));
 							
 						}
 						else if(itemTotalExcel!=null){
+							putDataEmpty(dataChild);
 							dataChild.put("選択された対象項目", itemTotalExcel.getNameItemTotal());
-							dataChild.put("回数集計集計設定",itemTotalExcel.getItemSets().toString());
+							dataChild.put("回数集計集計設定",itemTotalExcel.toStringItemSet());
+							if(itemTotalExcel.getItemNo()==3){
+								dataChild.put("回数集計集計設定",itemTotalExcel.toStringListDaySet());
+							}
 							datas.add(new MasterData(dataChild, null, ""));
 						}
 						
@@ -98,10 +103,16 @@ public class HoriTotalCategoryExportImpl implements MasterListData {
 	
 	@Override
 	public String mainSheetName() {
-		return "HoiDD";
+		return "マスタリスト";
 	}
 	
-	
+	private void putDataEmpty(Map<String, Object> data){
+		data.put("コード","");
+		data.put("名称","");
+		data.put("メモ","");
+		data.put("選択された対象項目","");
+		data.put("回数集計集計設定","");
+	}
 	
 	
 }
