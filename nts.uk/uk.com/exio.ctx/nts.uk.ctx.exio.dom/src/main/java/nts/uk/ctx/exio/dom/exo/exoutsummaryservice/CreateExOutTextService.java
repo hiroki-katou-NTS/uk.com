@@ -874,8 +874,13 @@ public class CreateExOutTextService extends ExportService<Object> {
 			return result;
 		}
 		List<CategoryItem> categoryItems = outputItemCustom.getStandardOutputItem().getCategoryItems();
-		for (int i = 0; i < categoryItems.size(); i++) {
-			value = lineData.get(index);
+		for(int i =0;i<categoryItems.size();i++) {
+			categoryItems.get(i).setIndexValue(i);
+		}
+		List<CategoryItem> categoryItemsSort = categoryItems.stream().sorted((x,y) -> x.getDisplayOrder() - y.getDisplayOrder()).collect(Collectors.toList());
+
+		for (int i = 0; i < categoryItemsSort.size(); i++) {
+			value = lineData.get(categoryItemsSort.get(i).getIndexValue());
 			index++;
 
 			if (StringUtils.isEmpty(value)) {
@@ -899,7 +904,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				continue;
 			}
 			
-			Optional<OperationSymbol> operationSymbol = categoryItems
+			Optional<OperationSymbol> operationSymbol = categoryItemsSort
 					.get(i).getOperationSymbol();
 			if ( StringUtils.isEmpty(value))
 				continue;
