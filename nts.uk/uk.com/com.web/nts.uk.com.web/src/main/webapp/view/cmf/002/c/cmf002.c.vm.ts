@@ -15,6 +15,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
         currentStandardOutputItem: KnockoutObservable<model.StandardOutputItem>;
         selectedStandardOutputItemCode: KnockoutObservable<string> = ko.observable("");
         listStandardOutputItem: KnockoutObservableArray<model.StandardOutputItem> = ko.observableArray([]);
+        listStandardOutputItemTemp: KnockoutObservableArray<any> = ko.observableArray([]);
         itemTypes: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
         itemType: KnockoutObservable<number> = ko.observable(0);
         conditionCode: KnockoutObservable<string>;
@@ -319,8 +320,8 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             let dfd = $.Deferred();
             block.invisible();
             self.listStandardOutputItem.removeAll();
-
             service.getOutItems(self.conditionCode()).done((outputItems: Array<any>) => {
+                 time = performance.now();
                 if (outputItems && outputItems.length) {
                     let rsOutputItems: Array<model.StandardOutputItem> = _.map(outputItems, x => {
                         let listCategoryItem: Array<model.CategoryItem> = _.map(x.categoryItems, (y : model.ICategoryItem) => {
@@ -330,7 +331,14 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                         return new model.StandardOutputItem(x.outItemCd, x.outItemName, x.condSetCd,
                             x.itemType, listCategoryItem);
                     });
+                    
+                     let rsOutputItemTemp: Array<any> = _.map(outputItems, x => {
+                        return {dispOutputItemCode: x.outItemCd, dispOutputItemName:x.outItemName};
+                    });
+                    
+                    self.listStandardOutputItemTemp(rsOutputItemTemp);
                     self.listStandardOutputItem(rsOutputItems);
+                    
                     if (code) {
                         if (code == self.selectedStandardOutputItemCode())
                             self.selectedStandardOutputItemCode.valueHasMutated();
