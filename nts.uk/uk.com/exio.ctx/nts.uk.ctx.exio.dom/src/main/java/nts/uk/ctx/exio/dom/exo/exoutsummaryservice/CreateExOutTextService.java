@@ -479,7 +479,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 						stateResult = (String) lineDataResult.get(RESULT_STATE);
 						lineDataCSV = (Map<String, Object>) lineDataResult.get(LINE_DATA_CSV);
 						if ((lineDataCSV != null) && RESULT_OK.equals(stateResult))
-							csvData.add(lineDataCSV);
+							csvData.add(lineDataCSV); 
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -536,7 +536,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	public ExIoOperationState checkInterruptAndIncreaseProCnt(String processingId) {
 		ExIoOperationState result = ExIoOperationState.EXPORTING;
 		Optional<ExOutOpMng> exOutOpMng = exOutOpMngRepo.getExOutOpMngById(processingId);
-		if (!exOutOpMng.isPresent()) {
+		if (!exOutOpMng.isPresent() || exOutOpMng.get().getDoNotInterrupt() == NotUseAtr.USE) {
 			return ExIoOperationState.FAULT_FINISH;
 		}
 

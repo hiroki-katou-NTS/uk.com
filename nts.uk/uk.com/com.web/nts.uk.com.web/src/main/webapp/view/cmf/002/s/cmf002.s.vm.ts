@@ -188,10 +188,10 @@ module nts.uk.com.view.cmf002.s {
 
                         //delete dataStorageMng of process when interrupt
                         let exOutOpMng = new ExOutOpMng(self.storeProcessingId, 0, 0, 0, 0, '0', 0);
-                        service.deleteexOutOpMng(exOutOpMng).done(function(res: any) {
-                            console.log("delete success");
+                        service.updateexOutOpMng(exOutOpMng).done(function(res: any) {
+                            console.log("update interrupt success");
                         }).fail(function(res: any) {
-                            console.log("delete fails");
+                            console.log("interrupt fails");
                         });
                     })
                     .ifNo(() => {
