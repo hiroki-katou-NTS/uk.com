@@ -122,6 +122,8 @@ public class SpecialHolidayExportImpl implements MasterListData{
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_144, TextResource.localize("KMF004_144"),
 				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_161, TextResource.localize("KMF004_161"),
+				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_145, TextResource.localize("KMF004_145"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(SpecialHolidayUtils.KMF004_146, TextResource.localize("KMF004_146"),

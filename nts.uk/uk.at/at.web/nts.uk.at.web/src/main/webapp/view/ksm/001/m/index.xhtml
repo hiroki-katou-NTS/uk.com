@@ -8,7 +8,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 280, height: 350 };</script>
+			<script>var dialogSize = { width: 375, height: 380 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksm001.m.main.css" />
 			<com:scriptfile path="ksm001.m.start.js" />
@@ -25,11 +25,9 @@
 
 				<div id="divImage" class="label with-image">
 					<i class="image image-calendar" /> <span>#{i18n.getText('CMM018_74')}</span>
-					<!-- M1_6 -->
-					<div id="basedate" data-bind="ntsDatePicker: {
-											name: '#{i18n.getText('CMM018_74')}',
-											value: date,
-											dateFormat: 'YYYY/MM/DD'}"></div>
+					<!-- M1_6 -->										
+					<div id="daterangepicker" tabindex="1"
+						data-bind="ntsDateRangePicker: { required: required, enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneMonth', type: 'year'}" />
 				</div>
 			</div>
 		</ui:define>
