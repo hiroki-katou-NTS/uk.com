@@ -82,20 +82,36 @@ module cps003.a.vm {
             items: ko.observableArray([])
         };
 
+        settings: ISettingData = {
+            matrixDisplay: ko.observable({})
+        };
+
         // for employee info.
         employees: KnockoutObservableArray<IEmployee> = ko.observableArray([]);
 
         constructor() {
             let self = this;
 
+            self.baseDate(moment().format("YYYY/MM/DD"));
+
             //fetch all category by login 
             service.fetch.category(__viewContext.user.employeeId)
                 .done(data => self.category.items(data));
 
-            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
+            self.category.catId.subscribe((cid: string) => {
+                if (cid) {
+                    // fetch all setting
+                    service.fetch.setting(cid).done((data: ISettingData) => {
+                        if (ko.isObservable(self.settings.matrixDisplay)) {
+                            self.settings.matrixDisplay(data.matrixDisplay);
+                        }
+                    });
+
+                    // fetch data (Manh code)
+                }
             });
 
-            self.baseDate(moment().format("YYYY/MM/DD"));
+            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {});
             //            self.requestData();
         }
 
@@ -224,9 +240,9 @@ module cps003.a.vm {
         actionRole: ACTION_ROLE;
         itemCode: string;
         itemParentCode: string;
-        
+
         lstComboBoxValue: any[]; // list data để validate 
-        
+
         recordId: string | null; // id bản ghi trong db
         textValue: string | null; // giá trị hiển thị 
         value: Object | null; // giá trị
@@ -346,5 +362,31 @@ module cps003.a.vm {
 
     interface IItemCodeNameSelection {
         enumName?: string;
+    }
+
+    interface ISettingData {
+        "personInfoItems": KnockoutObservableArray<any> | [];
+        "matrixDisplay": KnockoutObservable<IMatrixDisplay> | IMatrixDisplay;
+    }
+
+    interface IMatrixDisplay {
+        "companyID"?: String;
+        "userID"?: String;
+        "cursorDirection": CURSOR_DIRC,
+        "clsATR": IUSE_SETTING;
+        "jobATR": IUSE_SETTING;
+        "workPlaceATR": IUSE_SETTING,
+        "departmentATR": IUSE_SETTING;
+        "employmentATR": IUSE_SETTING;
+    }
+
+    enum IUSE_SETTING {
+        USE = <any>'USE',
+        NOT_USE = <any>'NOT_USE'
+    }
+
+    enum CURSOR_DIRC {
+        VERTICAL = <any>'VERTICAL',
+        HORIZONTAL = <any>'HORIZONTAL'
     }
 }
