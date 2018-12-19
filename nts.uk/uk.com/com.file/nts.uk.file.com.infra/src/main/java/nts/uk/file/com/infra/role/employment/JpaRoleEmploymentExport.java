@@ -36,8 +36,9 @@ public class JpaRoleEmploymentExport extends JpaRepository implements RoleEmpExp
                 functionNo +
                 " FROM ( SELECT wm.ROLE_CD , wm.ROLE_NAME, wm.ASSIGN_ATR, wm.REF_RANGE,wi.FUTURE_DATE_REF_PERMIT , edm.WEB_MENU_NAME ,wi.SCHEDULE_EMPLOYEE_REF, AVAILABILITY, wkf.FUNCTION_NO " +
                 "FROM (Select * FROM SACMT_ROLE wm1 WHERE wm1.CID = ?cId AND wm1.ROLE_TYPE = ?roleType ) As  wm " +
-                "LEFT JOIN KACMT_EMPLOYMENT_ROLE wi ON wm.ROLE_ID = wi.ROLE_ID " +
-                "LEFT JOIN CCGST_WEB_MENU edm ON wm.CID = edm.CID AND edm.DEFAULT_MENU= '1' " +
+                "INNER JOIN KACMT_EMPLOYMENT_ROLE wi ON wm.ROLE_ID = wi.ROLE_ID AND wi.CID = wm.CID " +
+                "LEFT JOIN SACMT_ROLE_BY_ROLE_TIES  rbrt on rbrt.CID = wm.CID AND rbrt.ROLE_ID = wm.ROLE_ID " +
+                "LEFT JOIN CCGST_WEB_MENU edm ON wm.CID = edm.CID AND edm.WEB_MENU_CD = rbrt.WEB_MENU_CD " +
                 "INNER JOIN KASMT_WORKPLACE_AUTHORITY kwa ON wm.ROLE_ID = kwa.ROLE_ID AND wm.CID = kwa.CID " +
                 "INNER JOIN KASMT_WORPLACE_FUNCTION wkf on wkf.FUNCTION_NO = kwa.FUNCTION_NO )" +
                 "AS sourceTable PIVOT (" +

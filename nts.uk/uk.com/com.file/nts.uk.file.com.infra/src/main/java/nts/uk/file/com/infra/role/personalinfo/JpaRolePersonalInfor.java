@@ -34,10 +34,14 @@ public class JpaRolePersonalInfor extends JpaRepository implements RolePersonalI
                 + functionNo +
                 " FROM (" +
                 "SELECT wm.ROLE_CD,wm.ROLE_NAME, wm.ASSIGN_ATR, wm.REF_RANGE ,wi.REFER_FUTURE_DATE, IS_AVAILABLE, wkf.FUNCTION_NO " +
-                "FROM (Select * FROM SACMT_ROLE wm1 WHERE wm1.CID = ?1 AND wm1.ROLE_TYPE = ?2 ) As  wm " +
-                "LEFT JOIN SACMT_PERSON_ROLE wi ON wm.ROLE_ID = wi.ROLE_ID " +
-                "INNER JOIN PPEMT_PER_INFO_AUTH kwa ON  wm.CID = kwa.CID AND wm.ROLE_ID = kwa.ROLE_ID " +
-                "INNER JOIN PPEMT_PER_INFO_FUNCTION wkf on wkf.FUNCTION_NO = kwa.FUNCTION_NO )" +
+                "FROM (SELECT r.ROLE_ID , r.ROLE_CD,r.ROLE_TYPE, r.REF_RANGE ,pr.REFER_FUTURE_DATE, " +
+                " CASE WHEN a.IS_AVAILABLE IS NULL THEN f.DEFAULT_VALUE " +
+                " ELSE a.IS_AVAILABLE " +
+                " END IS_AVAILABLE, f.FUNCTION_NO " +
+                " FROM (Select * FROM SACMT_ROLE wm1 WHERE wm1.CID = ?1 AND wm1.ROLE_TYPE = ?2 ) As  r" +
+                " LEFT JOIN SACMT_PERSON_ROLE pr ON r.ROLE_ID = pr.ROLE_ID " +
+                " LEFT JOIN PPEMT_PER_INFO_FUNCTION f on f.FUNCTION_NO = f.FUNCTION_NO " +
+                " LEFT JOIN PPEMT_PER_INFO_AUTH a ON  r.CID = a.CID AND r.ROLE_ID = a.ROLE_ID AND f.FUNCTION_NO = a.FUNCTION_NO " +
                 "AS sourceTable PIVOT (" +
                 "    MAX(IS_AVAILABLE)" +
                 "    FOR [FUNCTION_NO] IN (" +
