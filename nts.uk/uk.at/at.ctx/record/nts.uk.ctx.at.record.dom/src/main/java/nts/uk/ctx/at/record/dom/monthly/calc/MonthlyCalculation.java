@@ -434,16 +434,17 @@ public class MonthlyCalculation {
 					employeeId, nextYearMonth, EnumAdaptor.valueOf(nextClosureId, ClosureId.class), nextClosureDate);
 			
 			int canNextCarryforwardMinute = 0;		// 翌月繰越可能時間
-			if (nextAttendanceTimeOpt.isPresent()){
-				val nextMonthlyCalculation = nextAttendanceTimeOpt.get().getMonthlyCalculation();
-				
-				// 「月別実績の勤怠時間」から翌月繰越可能時間を算出する
-				int nextStatMinutes = nextMonthlyCalculation.getStatutoryWorkingTime().v();
-				int nextPredMinutes = nextMonthlyCalculation.getAggregateTime().getPrescribedWorkingTime()
-						.getSchedulePrescribedWorkingTime().v();
-				canNextCarryforwardMinute = nextStatMinutes - nextPredMinutes;
-			}
-			else {
+// delete Redmine#102997　（Redmine#102745 の対応による削除漏れ）
+//			if (nextAttendanceTimeOpt.isPresent()){
+//				val nextMonthlyCalculation = nextAttendanceTimeOpt.get().getMonthlyCalculation();
+//				
+//				// 「月別実績の勤怠時間」から翌月繰越可能時間を算出する
+//				int nextStatMinutes = nextMonthlyCalculation.getStatutoryWorkingTime().v();
+//				int nextPredMinutes = nextMonthlyCalculation.getAggregateTime().getPrescribedWorkingTime()
+//						.getSchedulePrescribedWorkingTime().v();
+//				canNextCarryforwardMinute = nextStatMinutes - nextPredMinutes;
+//			}
+//			else {
 				
 				// 週・月の法定労働時間を取得（フレックス用）
 				val nextFlexMonAndWeekStatTime = repositories.getMonthlyStatutoryWorkingHours().getFlexMonAndWeekStatutoryTime(
@@ -473,7 +474,7 @@ public class MonthlyCalculation {
 					checkDate = checkDate.addDays(1);
 				}
 				canNextCarryforwardMinute = nextStatMinutes - nextPredMinutes;
-			}
+//			}
 			if (canNextCarryforwardMinute < 0) canNextCarryforwardMinute = 0;
 			this.settingsByFlex.setCanNextCarryforwardTimeMonth(new AttendanceTimeMonth(canNextCarryforwardMinute));
 			break;

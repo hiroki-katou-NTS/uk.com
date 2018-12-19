@@ -80,8 +80,8 @@ public class JpaExOutCtgRepository extends JpaRepository implements ExOutCtgRepo
 	public List<List<String>> getData(Map<String, String> sqlAndParams) {
 		String sql = sqlAndParams.get(SQL);
 		sqlAndParams.remove(SQL);
-		
-		Query queryString = getEntityManager().createNativeQuery(sql);
+		// fixbug 102764
+		Query queryString = getEntityManager().createNativeQuery(sql.replaceAll("@", "?"));
 		for (Entry<String, String> entry : sqlAndParams.entrySet()) {
 			queryString.setParameter(entry.getKey(), entry.getValue());
 		}
