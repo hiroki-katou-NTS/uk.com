@@ -276,16 +276,12 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         addStatementItem () {
             let self = this, selectedCategory = self.selectedCategoryValue(), appendFormula = "",
                 selectedStatementItemName = _.find(ko.toJS(this.statementItemList), {code: self.selectedStatementItemCode()}).name;
-            switch (selectedCategory) {
-                case model.LINE_ITEM_CATEGORY.PAYMENT_ITEM:
-                    appendFormula = self.PAYMENT;
-                    break;
-                case model.LINE_ITEM_CATEGORY.DEDUCTION_ITEM :
-                    appendFormula = self.DEDUCTION;
-                    break;
-                default:
-                    appendFormula = self.ATTENDANCE;
-                    break;
+            if (selectedCategory == model.LINE_ITEM_CATEGORY.PAYMENT_ITEM) {
+                appendFormula = self.PAYMENT;
+            } else if (selectedCategory == model.LINE_ITEM_CATEGORY.DEDUCTION_ITEM) {
+                appendFormula = self.DEDUCTION;
+            } else {
+                appendFormula = self.ATTENDANCE;
             }
             self.addToFormulaByPosition(appendFormula + self.CONCAT_CHAR + selectedStatementItemName);
         }

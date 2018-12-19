@@ -152,6 +152,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                     while (operators[operators.length-1] != self.OPEN_BRACKET) {
                         postfix.push(operators.pop());
                     }
+                    operators.pop();
                     continue;
                 }
                 while(self.getPriority(currentChar) <= self.getPriority(operators[operators.length-1]) && operators.length > 0){
