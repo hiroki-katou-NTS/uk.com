@@ -6,7 +6,6 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 public interface RoleSetMenuRepository {
 	
-	List<MasterData> findTable1();
-	List<MasterData> findTable2();
+	List<MasterData> exportDataExcel();
 	
 }

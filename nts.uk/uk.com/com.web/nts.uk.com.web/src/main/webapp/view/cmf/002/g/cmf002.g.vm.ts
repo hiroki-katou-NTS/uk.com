@@ -18,6 +18,9 @@ module nts.uk.com.view.cmf002.g.viewmodel {
         codeConvertCurrent: KnockoutObservable<OutputCodeConvert> = ko.observable(new OutputCodeConvert('', '', 0, []));
 
         acceptWithoutSettingItems: KnockoutObservableArray<model.ItemModel>;
+        
+        //true -> left, false-> right;
+        selectedFocus: boolean;
 
         constructor() {
             let self = this;
@@ -146,14 +149,23 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             } else {
                 indexFocus = self.selectedConvertDetail();
             }
-
+            
             self.selectedConvertDetail.valueHasMutated();
             if (self.codeConvertCurrent().listCdConvertDetail().length == 0) {
                 self.addCdConvertDetails();
                 self.selectedConvertDetail(0);
+                indexFocus= 0;
             }
             block.clear();
-             $('#fixed-table').focus();
+            if(indexFocus == 0){
+                 $('#fixed-table').focus();
+            }else{
+                if (self.selectedFocus) {
+                    $('input[data-focus-input= ' + indexFocus + ']').focus();
+                }else{
+                    $('input[data-focus-system= ' + indexFocus + ']').focus();
+                }
+            }
         } // END Remove table>tbody>tr
 
         btnCreateCodeConvert() {
@@ -215,6 +227,11 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                 }
                 //dialog.alertError({ messageId: "Msg_661" });
             }
+            if (nts.uk.ui.errors.hasError()) {
+                block.clear();
+                self.setFocusG2_3();
+                return;
+            } 
 
             if (model.SCREEN_MODE.NEW == self.screenMode()) {
                 service.addOutputCodeConvert(ko.toJS(self.codeConvertCurrent())).done((outputConvertCode) => {
@@ -282,7 +299,11 @@ module nts.uk.com.view.cmf002.g.viewmodel {
                     self.setFocusG2_3();
                 });
             }).fail(error => {
-                $('#G2_3_container').ntsError('set', error);
+                if (error.messageId == "Msg_659") {
+                    dialog.alertError({ messageId: "Msg_659" });
+                } else {
+                    $('#G2_3_container').ntsError('set', error);
+                }
                 block.clear();
                 self.setFocusG2_3();
             });
@@ -386,8 +407,22 @@ $(function() {
         //alert( 'Row index: '+ index );
         nts.uk.ui.errors.clearAll();
         nts.uk.ui._viewModel.content.selectedConvertDetail(index);
+        nts.uk.ui._viewModel.content.selectedFocus = true;
+    });
+    
+    //tab , shif+tab    
+    $("#fixed-table tbody").on("focus", "input", function() {
+        var index = $(this).data('focus-input');
+         nts.uk.ui._viewModel.content.selectedFocus = true;
+         if (index == undefined) {
+             index = $(this).data('focus-system');
+             nts.uk.ui._viewModel.content.selectedFocus = false;
+         }
+        nts.uk.ui.errors.clearAll();
+        nts.uk.ui._viewModel.content.selectedConvertDetail(""+index);
     });
 })
+
 
 
 

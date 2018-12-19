@@ -23,6 +23,7 @@ import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
@@ -49,6 +50,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerfo
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
 import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.CheckIndentityMonth;
 import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthParam;
+import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthResult;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexParam;
@@ -56,6 +58,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexPro
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class DPLoadRowProcessor {
@@ -87,6 +90,9 @@ public class DPLoadRowProcessor {
     @Inject
 	private CheckIndentityMonth checkIndentityMonth;
     
+    @Inject
+	private ClosureService closureService;
+    
 	public DailyPerformanceCorrectionDto reloadGrid(DPPramLoadRow param){
 		DailyPerformanceCorrectionDto result = new DailyPerformanceCorrectionDto();
 		
@@ -115,11 +121,21 @@ public class DPLoadRowProcessor {
 			// screenDto.setFlexShortage(null);
 			//}
 			if (emp.equals(sId) && !param.getOnlyLoadMonth()) {
-//				DatePeriod period = closureService.findClosurePeriod(emp, dateRange.getEndDate());
-				//checkIndenityMonth
-				result.setIndentityMonthResult(checkIndentityMonth.checkIndenityMonth(new IndentityMonthParam(companyId, sId, GeneralDate.today())));
-				//対象日の本人確認が済んでいるかチェックする
-				result.checkShowTighProcess(displayFormat, true);
+				//社員に対応する締め期間を取得する
+				DatePeriod period = closureService.findClosurePeriod(emp, dateRange.getEndDate());
+				
+				//パラメータ「日別実績の修正の状態．対象期間．終了日」がパラメータ「締め期間」に含まれているかチェックする
+				if (!period.contains(dateRange.getEndDate())) {
+					result.setIndentityMonthResult(new IndentityMonthResult(false, true, true));
+					//対象日の本人確認が済んでいるかチェックする
+					//screenDto.checkShowTighProcess(displayFormat, true);
+				} else {
+					// checkIndenityMonth
+					result.setIndentityMonthResult(checkIndentityMonth.checkIndenityMonth(
+							new IndentityMonthParam(companyId, sId, GeneralDate.today())));
+					//対象日の本人確認が済んでいるかチェックする
+					result.checkShowTighProcess(displayFormat, true);
+				}
 			}else {
 				result.getIndentityMonthResult().setHideAll(false);
 			}

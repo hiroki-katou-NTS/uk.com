@@ -20,33 +20,35 @@ import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
 public class PersonSelectionItemExportImpl implements MasterListData {
 	@Inject
 	private PersonSelectionItemRepository personSelectionItemRepository;
+
 	@Override
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(
-				new MasterHeaderColumn(PersonSelectionItemColumn.CPS017_55, TextResource.localize("CPS017_55"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(PersonSelectionItemColumn.CPS017_56, TextResource.localize("CPS017_56"), ColumnTextAlign.CENTER, "",
-				true));
-		columns.add(new MasterHeaderColumn(PersonSelectionItemColumn.CPS017_57, TextResource.localize("CPS017_57"), ColumnTextAlign.CENTER, "",
-				true));
-		columns.add(new MasterHeaderColumn(PersonSelectionItemColumn.CPS017_58, TextResource.localize("CPS017_58"), ColumnTextAlign.LEFT, "",
-				true));
-		columns.add(
-				new MasterHeaderColumn(PersonSelectionItemColumn.CPS017_59, TextResource.localize("CPS017_59"), ColumnTextAlign.LEFT, "", true));
-		columns.add(
-				new MasterHeaderColumn(PersonSelectionItemColumn.CPS017_60, TextResource.localize("CPS017_60"), ColumnTextAlign.LEFT, "", true));
-		columns.add(
-				new MasterHeaderColumn(PersonSelectionItemColumn.CPS017_61, TextResource.localize("CPS017_61"), ColumnTextAlign.LEFT, "", true));
-		columns.add(
-				new MasterHeaderColumn(PersonSelectionItemColumn.CPS017_62, TextResource.localize("CPS017_62"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(PersonSelectionItemColumn.CPS017_55, TextResource.localize("CPS017_55"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(PersonSelectionItemColumn.CPS017_56, TextResource.localize("CPS017_56"),
+				ColumnTextAlign.RIGHT, "", true));
+		columns.add(new MasterHeaderColumn(PersonSelectionItemColumn.CPS017_57, TextResource.localize("CPS017_57"),
+				ColumnTextAlign.RIGHT, "", true));
+		columns.add(new MasterHeaderColumn(PersonSelectionItemColumn.CPS017_58, TextResource.localize("CPS017_58"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(PersonSelectionItemColumn.CPS017_59, TextResource.localize("CPS017_59"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(PersonSelectionItemColumn.CPS017_60, TextResource.localize("CPS017_60"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(PersonSelectionItemColumn.CPS017_61, TextResource.localize("CPS017_61"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(PersonSelectionItemColumn.CPS017_62, TextResource.localize("CPS017_62"),
+				ColumnTextAlign.LEFT, "", true));
 		return columns;
 	}
 
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		String contractCd = AppContexts.user().contractCode();
+		String date = query.getOption().toString();
 		List<MasterData> datas = new ArrayList<>();
-		datas = personSelectionItemRepository.getDataExport(contractCd);
+		datas = personSelectionItemRepository.getDataExport(contractCd, date);
 		return datas;
 	}
 }

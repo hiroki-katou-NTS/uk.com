@@ -18,7 +18,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- X1 -->
-				<a class="goback" tabindex="1"
+				<a class="goback"
 					data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF002_27')}</a>
 				<!-- X1_2 -->
 				<span id="X1_2" class="label">#{i18n.getText('CMF002_25')}</span>
@@ -37,7 +37,7 @@
 							</div>
 							<div class="cell valign-center">
 								<!-- X3_1_1 -->
-								<div id="X3_1_1" tabindex="2"
+								<div id="X3_1_1" tabindex="1"
 									data-bind="ntsDateRangePicker: {name: '#[CMF002_305]', required: true, enable: true, showNextPrevious: false, value: exePeriod}" />
 							</div>
 							<div class="cell valign-center"></div>
@@ -61,13 +61,13 @@
 							</div>
 							<div class="cell valign-bottom">
 								<!-- X4 -->
-								<button id="X4" tabindex="3" class="large caret-bottom"
+								<button id="X4" tabindex="2" class="large caret-bottom"
 									data-bind="click: searchExecHist, enable: $root.errors.isEmpty">#{i18n.getText('CMF002_344')}</button>
 							</div>
 						</div>
 					</div>
 					<!-- X5 -->
-					<table id="execHistGrid" tabindex="4"></table>
+					<table id="execHistGrid" tabindex="3"></table>
 				</div>
 			</div>
 		</ui:define>

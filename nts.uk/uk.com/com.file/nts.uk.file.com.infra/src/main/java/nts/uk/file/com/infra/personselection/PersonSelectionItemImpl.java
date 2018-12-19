@@ -26,30 +26,61 @@ public class PersonSelectionItemImpl implements PersonSelectionItemRepository {
 
 	// Export Data table
 
-	private static final String GET_EXPORT_EXCEL = "SELECT "
-			+ "CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.SELECTION_ITEM_NAME ELSE NULL END SELECTION_ITEM_NAME "
-			+ ",CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.START_DATE ELSE NULL END START_DATE "
-			+ ",CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.END_DATE ELSE NULL END END_DATE "
-			+ ",TABLE_RESULT.INIT_SELECTION, TABLE_RESULT.SELECTION_CD, TABLE_RESULT.SELECTION_NAME, TABLE_RESULT.EXTERNAL_CD, TABLE_RESULT.MEMO "
-			+ "FROM "
-			+ "(SELECT si.SELECTION_ITEM_NAME, hs.START_DATE, hs.END_DATE, so.INIT_SELECTION, ss.SELECTION_CD, ss.SELECTION_NAME, ss.EXTERNAL_CD, ss.MEMO, ROW_NUMBER() OVER (PARTITION BY si.SELECTION_ITEM_NAME ORDER BY si.SELECTION_ITEM_NAME ASC) "
-			+ "AS ROW_NUMBER " + "FROM " + "PPEMT_SELECTION_ITEM si "
-			+ "INNER JOIN PPEMT_HISTORY_SELECTION hs ON si.SELECTION_ITEM_ID = hs.SELECTION_ITEM_ID "
-			+ "INNER JOIN PPEMT_SEL_ITEM_ORDER so ON hs.HIST_ID = so.HIST_ID "
-			+ "INNER JOIN PPEMT_SELECTION ss ON so.HIST_ID = ss.HIST_ID AND so.SELECTION_ID = ss.SELECTION_ID "
-			+ "WHERE "
-			+ "si.CONTRACT_CD = ? AND hs.CID = ?) TABLE_RESULT ORDER BY TABLE_RESULT.SELECTION_ITEM_NAME ASC;";
+	private static final String GET_EXPORT_EXCEL = "SELECT" 
+			+ " CASE" 
+			+ " WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN"
+					+ " TABLE_RESULT.SELECTION_ITEM_NAME ELSE NULL" 
+					+ " END SELECTION_ITEM_NAME," 
+			+ " CASE"
+			+ " WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN" 
+				+ " TABLE_RESULT.START_DATE ELSE NULL" 
+				+ " END START_DATE,"
+			+ " CASE" 
+				+ " WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN" 
+				+ " TABLE_RESULT.END_DATE ELSE NULL" 
+				+ " END END_DATE,"
+			+ " TABLE_RESULT.INIT_SELECTION," 
+			+ " TABLE_RESULT.SELECTION_CD," 
+			+ " TABLE_RESULT.SELECTION_NAME,"
+			+ " TABLE_RESULT.EXTERNAL_CD," 
+			+ " TABLE_RESULT.MEMO" + " FROM"
+			+ " (" 
+				+ " SELECT"
+				+ " si.SELECTION_ITEM_NAME," 
+				+ " hs.START_DATE," 
+				+ " hs.END_DATE," 
+				+ " so.INIT_SELECTION,"
+				+ " ss.SELECTION_CD," 
+				+ " ss.SELECTION_NAME," 
+				+ " ss.EXTERNAL_CD," 
+				+ " ss.MEMO,"
+				+ " ROW_NUMBER () OVER ( PARTITION BY si.SELECTION_ITEM_NAME ORDER BY si.SELECTION_ITEM_NAME, ss.SELECTION_CD ASC ) AS ROW_NUMBER"
+				+ " FROM" 
+				+ " PPEMT_SELECTION_ITEM si"
+				+ " INNER JOIN PPEMT_HISTORY_SELECTION hs ON si.SELECTION_ITEM_ID = hs.SELECTION_ITEM_ID"
+				+ " AND hs.START_DATE <= CONVERT ( DATETIME, ?date, 127 )" 
+				+ " AND hs.CID = ?companyId"
+				+ " AND CONVERT ( DATETIME, ?date, 127 ) <= hs.END_DATE"
+				+ " INNER JOIN PPEMT_SEL_ITEM_ORDER so ON hs.HIST_ID = so.HIST_ID"
+				+ " INNER JOIN PPEMT_SELECTION ss ON so.HIST_ID = ss.HIST_ID" 
+				+ " AND so.SELECTION_ID = ss.SELECTION_ID"
+				+ " WHERE" 
+				+ " si.CONTRACT_CD = ?contractCd" 
+			+ " ) TABLE_RESULT" 
+			+ " ORDER BY"
+			+ " TABLE_RESULT.START_DATE DESC";
 
 	@Override
-	public List<MasterData> getDataExport(String contractCd) {
+	public List<MasterData> getDataExport(String contractCd, String date) {
+
 		String companyId = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
-		Query query = entityManager.createNativeQuery(GET_EXPORT_EXCEL.toString()).setParameter(1, contractCd)
-				.setParameter(2, companyId);
+		Query query = entityManager.createNativeQuery(GET_EXPORT_EXCEL.toString())
+				.setParameter("contractCd", contractCd).setParameter("companyId", companyId).setParameter("date", date);
 		@SuppressWarnings("unchecked")
 		List<Object[]> data = query.getResultList();
 		if (data.isEmpty()) {
-			return datas;
+			throw new BusinessException("Msg_1480");
 		} else {
 			for (Object[] objects : data) {
 				datas.add(new MasterData(dataContent(objects), null, ""));

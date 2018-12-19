@@ -82,8 +82,8 @@ module nts.uk.com.view.cmf002.y {
                 this.columnsExternalOutLog = ko.observableArray([
                     { headerText: getText('CMF002_336'), key: 'processCount', width: 40, formatter: _.escape},
                     { headerText: getText('CMF002_337'), key: 'errorItem', width: 80, formatter: _.escape },
-                    { headerText: getText('CMF002_338'), key: 'errorTargetValue', width: 120, formatter: _.escape },
-                    { headerText: getText('CMF002_339'), key: 'customerrorContent', width: 300, formatter: _.escapes }
+                    { headerText: getText('CMF002_338'), key: 'errorTargetValue', width: 80, formatter: _.escape },
+                    { headerText: getText('CMF002_339'), key: 'customerrorContent', width: 340, formatter: _.escapes }
                 ]);
                 this.currentCode = ko.observableArray();
             }
@@ -142,10 +142,10 @@ module nts.uk.com.view.cmf002.y {
             constructor(processCount : number, errorContent?: string, errorTargetValue?: string, errorEmployee?: string, errorItem?: string) {
                 this.processCount = processCount ? processCount : null;
                 this.errorContent = errorContent ? errorContent : null;
-                this.errorTargetValue = errorTargetValue ? errorTargetValue : null;
+                this.errorTargetValue = errorEmployee ? errorEmployee : null;
                 this.errorEmployee = errorEmployee ? errorEmployee : null;
                 this.errorItem = errorItem ? errorItem : null;
-                this.customerrorContent = errorContent + "(" + getText('CMF002_356') + errorEmployee + ")";
+                this.customerrorContent = errorContent + "(" + getText('CMF002_356') + errorTargetValue + ")";   
             }
         }
 

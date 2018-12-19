@@ -908,7 +908,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			String attendanceClass, ReflectEntryGateOutput reflectEntryGateOutput) {
 		if (reflectEntryGateOutput != null) {
 			StampSourceInfo stampSourceInfo = reflectEntryGateOutput.getStampSourceInfo();
-			if (stampSourceInfo.value == 6 || stampSourceInfo.value == 7) {
+			if (stampSourceInfo != null && (stampSourceInfo.value == 6 || stampSourceInfo.value == 7)) {
 				return false;
 			} else {
 				// 前優先後優先を見て反映するか確認する
@@ -3153,14 +3153,14 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			AttendanceTime attendanceTime = stamp.getAttendanceTime();
 			TimeWithDayAttr timeDestination = reflectEntryGateOutput.getTimeOfDay();
 			if (priorityAtr.value == 0) {
-				if (attendanceTime.v().intValue() >= timeDestination.v().intValue()) {
+				if (timeDestination != null && (attendanceTime.v().intValue() >= timeDestination.v().intValue())) {
 					return false;
 				} else {
 					return true;
 				}
 
 			} else {
-				if (attendanceTime.v().intValue() > timeDestination.v().intValue()) {
+				if (timeDestination == null || (timeDestination != null && (attendanceTime.v().intValue() > timeDestination.v().intValue()))) {
 					return true;
 				} else {
 					return false;

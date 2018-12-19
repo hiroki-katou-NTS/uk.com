@@ -1,5 +1,5 @@
 module nts.uk.at.view.ksm001.a {
-
+    import modal = nts.uk.ui.windows.sub.modal;
     import EstimateTimeDto = service.model.EstimateTimeDto;
     import EstimatePriceDto = service.model.EstimatePriceDto;
     import EstimateDaysDto = service.model.EstimateDaysDto;
@@ -14,6 +14,9 @@ module nts.uk.at.view.ksm001.a {
     export module viewmodel {
 
         export class ScreenModel {
+            langId: KnockoutObservable<string> = ko.observable('ja');
+            date: KnockoutObservable<Date> = ko.observable(moment(new Date()).toDate());
+            
             // Common
             usageSettingModel: UsageSettingModel;
             lstTargetYear: KnockoutObservableArray<any>;
@@ -51,7 +54,16 @@ module nts.uk.at.view.ksm001.a {
             alreadySettingEmployment: KnockoutObservableArray<UnitAlreadySettingModel>;
             employmentList: KnockoutObservableArray<UnitModel>;
 
-
+            
+            /**
+            * Print file excel
+            */
+            saveAsExcel(): void {
+                let self = this;
+                modal("/view/ksm/001/m/index.xhtml").onClosed(function() {
+                });
+            }
+            
             constructor() {
                 var self = this;
 

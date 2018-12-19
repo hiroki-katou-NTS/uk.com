@@ -11,8 +11,7 @@ module nts.uk.com.view.cps017.a.service {
         updateDataSelection: "ctx/pereg/person/info/setting/selection/updateSelection",
         removeDataSelection: "ctx/pereg/person/info/setting/selection/removeSelection",
         removeHistory: "ctx/pereg/person/info/setting/selection/removeHistory",
-        reflUnrComp: "ctx/pereg/person/info/setting/selection/reflunrcomp",
-        saveAsExcel: "person/report/masterData"
+        reflUnrComp: "ctx/pereg/person/info/setting/selection/reflunrcomp"
     }
 
     export function getAllSelectionItems() {
@@ -57,10 +56,6 @@ module nts.uk.com.view.cps017.a.service {
     // Phan anh den cty:
     export function reflUnrComp(command) {
         return ajax(paths.reflUnrComp, command);
-    }
-
-    export function saveAsExcel(languageId: string): JQueryPromise<any> {
-        return exportFile('/masterlist/report/print', { domainId: "PersonSelectionItem", domainType: "個人情報の選択肢の登録", languageId: languageId, reportType: 0 });
     }
 
 }

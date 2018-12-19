@@ -22,72 +22,65 @@ public class JpaRoleSetMenuImpl implements RoleSetMenuRepository {
 	@PersistenceContext
 	private EntityManager entityManager;
 	
-	private static String QUERY_TAB_1 = "SELECT bb.ROLE_SET_CD,bb.ROLE_SET_NAME,bb.ROLE_NAME,cc.ROLE_NAME,cc.APPROVAL_AUTHORITY FROM ("
-			+ " SELECT aa.ROLE_SET_CD, aa.ROLE_SET_NAME, aa.EMPLOYMENT_ROLE, aa.PERSON_INF_ROLE,bb.ROLE_NAME, bb.ROLE_ID "
-			+ " FROM SACMT_ROLE_SET aa"
-			+ " JOIN SACMT_ROLE bb ON aa.EMPLOYMENT_ROLE = bb.ROLE_ID"
-			+ " where aa.CID = ?1 ) bb"
-			+ " JOIN ("
-			+ " SELECT aa.ROLE_SET_CD, aa.ROLE_SET_NAME, aa.EMPLOYMENT_ROLE, aa.PERSON_INF_ROLE,aa.APPROVAL_AUTHORITY,bb.ROLE_NAME, bb.ROLE_ID"
-			+ " FROM SACMT_ROLE_SET aa JOIN SACMT_ROLE bb ON"
-			+ " aa.PERSON_INF_ROLE = bb.ROLE_ID"
-			+ " where aa.CID = ?2 ) cc"
-			+ " ON bb.ROLE_SET_CD = cc.ROLE_SET_CD"
-			+ " ORDER BY cc.ROLE_SET_CD";
-	
-	private static String QUERY_TAB_2 = "SELECT aa.ROLE_SET_CD,aa.ROLE_SET_NAME,bb.WEB_MENU_CD,cc.WEB_MENU_NAME "
-			+ " FROM SACMT_ROLE_SET aa JOIN SPTMT_ROLE_SET_WEB_MENU bb "
-			+ " ON aa.ROLE_SET_CD = bb.ROLE_SET_CD"
-			+ " JOIN CCGST_WEB_MENU cc "
-			+ " ON bb.WEB_MENU_CD = cc.WEB_MENU_CD"
-			+ " where aa.CID = ?1 AND bb.CID = ?2 AND cc.CID = ?3"
-			+ " ORDER BY aa.ROLE_SET_CD";
-	
+	private static String QUERY_EXPORT = "SELECT "
+			+ " aa.ROLE_SET_CD, "
+			+ " aa.ROLE_SET_NAME,"
+			+ " (SELECT ROLE_SET_CD from SACMT_DEFAULT_ROLE_SET where CID = ?cid) AS DEFAULT_MENU,"
+			+ " bb.ROLE_CD,bb.ROLE_NAME,ee.ROLE_CD,"
+			+ " ee.ROLE_NAME,aa.APPROVAL_AUTHORITY,"
+			+ " cc.WEB_MENU_CD,dd.WEB_MENU_NAME "
+			+ " FROM SACMT_ROLE_SET aa "
+			+ " Left JOIN SACMT_ROLE bb ON   aa.EMPLOYMENT_ROLE = bb.ROLE_ID "
+			+ " Left JOIN SACMT_ROLE ee ON   aa.PERSON_INF_ROLE = ee.ROLE_ID "
+			+ " JOIN SPTMT_ROLE_SET_WEB_MENU cc "
+			+ " ON aa.ROLE_SET_CD = cc.ROLE_SET_CD "
+			+ " JOIN CCGST_WEB_MENU dd "
+			+ " ON cc.WEB_MENU_CD = dd.WEB_MENU_CD "
+			+ " where aa.CID = ?cid AND cc.CID = ?cid AND dd.CID = ?cid "
+			+ " ORDER BY ROLE_SET_CD";
+
 	@Override
-	public List<MasterData> findTable1() {
-		List<MasterData> datas = new ArrayList<>();
-		Query query = entityManager.createNativeQuery(QUERY_TAB_1.toString())
-				.setParameter(1, AppContexts.user().companyId())
-				.setParameter(2, AppContexts.user().companyId());
+	public List<MasterData> exportDataExcel() {
+		String cid = AppContexts.user().companyId();
+		Query query = entityManager.createNativeQuery(QUERY_EXPORT.toString()).
+				setParameter("cid", cid);
 		@SuppressWarnings("unchecked")
-		List<Object[]> data = query.getResultList();
+		List<Object[]> data =  query.getResultList();
+		HashMap<String , Object[]> dataHashMap = new HashMap<>();
+		String V_CAS011_41 = "";
 		for (Object[] objects : data) {
-			datas.add(new MasterData(dataContentTabOne(objects), null, ""));
+			if(dataHashMap.containsKey((String)objects[0])) {
+				V_CAS011_41 = V_CAS011_41 + "," + objects[8] +(String)objects[9] ;
+				objects[9] = V_CAS011_41;
+				dataHashMap.put((String)objects[0], objects);
+			} else {
+				V_CAS011_41 = "";
+				V_CAS011_41 = V_CAS011_41 + objects[8] + (String) objects[9];
+				objects[9] = V_CAS011_41;
+				dataHashMap.put((String)objects[0], objects);
+			}
 		}
+		return toData(dataHashMap);
+	}
+	
+	@SuppressWarnings("rawtypes")
+	private List<MasterData> toData(HashMap<String , Object[]> dataHashMap) {
+		List<MasterData> datas = new ArrayList<>();
+		for (Map.Entry datarow : dataHashMap.entrySet()) {
+			datas.add(new MasterData(dataContent((Object[]) datarow.getValue()), null, ""));
+	    }
 		return datas;
 	}
 	
-	private Map<String, Object> dataContentTabOne(Object[] object) {
+	private Map<String, Object> dataContent(Object[] datarow) {
 		Map<String, Object> data = new HashMap<>();
-		data. put(RoleSetMenuColumn.CAS011_39, (String)object[0]);
-		data. put(RoleSetMenuColumn.CAS011_40, (String)object[1]);
-		data. put(RoleSetMenuColumn.CAS011_41, (String)object[2]);
-		data. put(RoleSetMenuColumn.CAS011_42, (String)object[3]);
-		data. put(RoleSetMenuColumn.CAS011_43, Math.round(((BigDecimal)object[4]).floatValue()) == 1 ? "○" : "ー");
-		return data;
-	}
-	
-	@Override
-	public List<MasterData> findTable2() {
-		List<MasterData> datas = new ArrayList<>();
-		Query query = entityManager.createNativeQuery(QUERY_TAB_2)
-				.setParameter(1, AppContexts.user().companyId())
-				.setParameter(2, AppContexts.user().companyId())
-				.setParameter(3, AppContexts.user().companyId());
-		@SuppressWarnings("unchecked")
-		List<Object[]> data = query.getResultList();
-		for (Object[] objects : data) {
-			datas.add(new MasterData(dataContentTabTwo(objects), null, ""));
-		}
-		return datas;
-	}
-	
-	private Map<String, Object> dataContentTabTwo(Object[] object) {
-		Map<String, Object> data = new HashMap<>();
-		data. put(RoleSetMenuColumn.CAS011_39, (String)object[0]);
-		data. put(RoleSetMenuColumn.CAS011_40, (String)object[1]);
-		data. put(RoleSetMenuColumn.CAS011_44, (String)object[2]);
-		data. put(RoleSetMenuColumn.CAS011_45, (String)object[3]);
+		data.put(RoleSetMenuColumn.CAS011_35,datarow[0]);
+		data.put(RoleSetMenuColumn.CAS011_36,datarow[1]);
+		data.put(RoleSetMenuColumn.CAS011_37,datarow[2].equals(datarow[0]) ? "○" :"");
+		data.put(RoleSetMenuColumn.CAS011_38,(String)datarow[3] != null ? (String)datarow[3]+(String)datarow[4] : "なし");
+		data.put(RoleSetMenuColumn.CAS011_39,(String)datarow[5] != null ? (String)datarow[5]+(String)datarow[6] : "なし");
+		data.put(RoleSetMenuColumn.CAS011_40,((BigDecimal)datarow[7]).intValue() == 0 ? "なし" : "あり");
+		data.put(RoleSetMenuColumn.CAS011_41,datarow[9]);
 		return data;
 	}
 	

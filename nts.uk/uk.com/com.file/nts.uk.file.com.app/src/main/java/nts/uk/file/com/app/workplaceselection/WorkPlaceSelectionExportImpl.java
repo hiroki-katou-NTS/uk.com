@@ -6,7 +6,6 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.sys.auth.dom.export.wkpmanager.WorkPlaceSelectionExportData;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceFunction;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceFunctionRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -23,7 +22,7 @@ import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
 public class WorkPlaceSelectionExportImpl implements MasterListData {
 	@Inject
 	private WorkPlaceSelectionRepository workplaceManagerRepository;
-	
+
 	@Inject
 	private WorkPlaceFunctionRepository workPlaceFunctionRepository;
 
@@ -31,18 +30,18 @@ public class WorkPlaceSelectionExportImpl implements MasterListData {
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 		List<WorkPlaceFunction> workPlaceFunction = workPlaceFunctionRepository.getAllWorkPlaceFunction();
-		columns.add(
-				new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_32, TextResource.localize("CMM051_32"), ColumnTextAlign.LEFT, "", true));
-		columns.add(
-				new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_33, TextResource.localize("CMM051_33"), ColumnTextAlign.LEFT, "", true));
-		columns.add(
-				new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_34, TextResource.localize("CMM051_34"), ColumnTextAlign.LEFT, "", true));
-		columns.add(
-				new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_35, TextResource.localize("CMM051_35"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_36, TextResource.localize("CMM051_36"), ColumnTextAlign.CENTER, "",
-				true));
-		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_37, TextResource.localize("CMM051_37"), ColumnTextAlign.CENTER, "",
-				true));
+		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_32, TextResource.localize("CMM051_32"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_33, TextResource.localize("CMM051_33"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_34, TextResource.localize("CMM051_34"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_35, TextResource.localize("CMM051_35"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_36, TextResource.localize("CMM051_36"),
+				ColumnTextAlign.CENTER, "", true));
+		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_37, TextResource.localize("CMM051_37"),
+				ColumnTextAlign.CENTER, "", true));
 		for (WorkPlaceFunction item : workPlaceFunction) {
 			columns.add(new MasterHeaderColumn(item.getFunctionNo().v().toString(), item.getDisplayName().v(),
 					ColumnTextAlign.CENTER, "", true));
@@ -55,43 +54,35 @@ public class WorkPlaceSelectionExportImpl implements MasterListData {
 		String companyId = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
 		List<WorkPlaceFunction> workPlaceFunction = workPlaceFunctionRepository.getAllWorkPlaceFunction();
-		
-		/*if (CollectionUtil.isEmpty(listWorkPlaceSelectionExportData)) {
-			throw new BusinessException("Msg_7");
-		} else {
-			listWorkPlaceSelectionExportData.stream().forEach(c -> {
-				Map<String, Object> data = new HashMap<>();
-				data.put(CMM051_32, c.getWorkplaceCode());
-				data.put(CMM051_33, c.getWorkplaceName());
-				data.put(CMM051_34, c.getEmployeeCode());
-				data.put(CMM051_35, c.getBusinessName());
-				data.put(CMM051_36, c.getStartDate());
-				data.put(CMM051_37, c.getEndDate());
-				c.getFunctionNo().entrySet().forEach(x -> {
-					data.put(FUNCTION_NO_ + x.getKey(), "1".equals(x.getValue()) ? "○" : "ー");
-				});
-//				List<WorkPlaceAuthority> workPlaceAuthority = workPlaceAuthorityRepository
-//						.getAllWorkPlaceAuthorityByRoleId(companyId, c.getWorkplaceManagerId());
-				//if (!workPlaceAuthority.isEmpty()) {
-					//List<WorkPlaceFunction> workPlaceFunction = workPlaceFunctionRepository.getAllWorkPlaceFunction();
-					//if (!workPlaceFunction.isEmpty()) {
-						for (WorkPlaceFunction item : workPlaceFunction) {
-							Boolean availability = workPlaceAuthority.stream()
-									.filter(x -> x.getFunctionNo().v().equals(item.getFunctionNo().v())).findFirst()
-									.map(x1 -> x1.isAvailability()).orElse(null);
-							if (Objects.isNull(availability) || !availability) {
-								data.put(FUNCTION_NO_ + item.getFunctionNo().v(), "ー");
-							} else {
-								data.put(FUNCTION_NO_ + item.getFunctionNo().v(), "○");
-							}
-						}
-					//}
-				//}
-				datas.add(new MasterData(data, null, ""));
-			});
-		}
-		return datas;*/
-		
+
+		/*
+		 * if (CollectionUtil.isEmpty(listWorkPlaceSelectionExportData)) { throw
+		 * new BusinessException("Msg_7"); } else {
+		 * listWorkPlaceSelectionExportData.stream().forEach(c -> { Map<String,
+		 * Object> data = new HashMap<>(); data.put(CMM051_32,
+		 * c.getWorkplaceCode()); data.put(CMM051_33, c.getWorkplaceName());
+		 * data.put(CMM051_34, c.getEmployeeCode()); data.put(CMM051_35,
+		 * c.getBusinessName()); data.put(CMM051_36, c.getStartDate());
+		 * data.put(CMM051_37, c.getEndDate());
+		 * c.getFunctionNo().entrySet().forEach(x -> { data.put(FUNCTION_NO_ +
+		 * x.getKey(), "1".equals(x.getValue()) ? "○" : "ー"); }); //
+		 * List<WorkPlaceAuthority> workPlaceAuthority =
+		 * workPlaceAuthorityRepository //
+		 * .getAllWorkPlaceAuthorityByRoleId(companyId,
+		 * c.getWorkplaceManagerId()); //if (!workPlaceAuthority.isEmpty()) {
+		 * //List<WorkPlaceFunction> workPlaceFunction =
+		 * workPlaceFunctionRepository.getAllWorkPlaceFunction(); //if
+		 * (!workPlaceFunction.isEmpty()) { for (WorkPlaceFunction item :
+		 * workPlaceFunction) { Boolean availability =
+		 * workPlaceAuthority.stream() .filter(x ->
+		 * x.getFunctionNo().v().equals(item.getFunctionNo().v())).findFirst()
+		 * .map(x1 -> x1.isAvailability()).orElse(null); if
+		 * (Objects.isNull(availability) || !availability) {
+		 * data.put(FUNCTION_NO_ + item.getFunctionNo().v(), "ー"); } else {
+		 * data.put(FUNCTION_NO_ + item.getFunctionNo().v(), "○"); } } //} //}
+		 * datas.add(new MasterData(data, null, "")); }); } return datas;
+		 */
+
 		datas = workplaceManagerRepository.getDataExport(companyId, workPlaceFunction);
 		return datas;
 	}
