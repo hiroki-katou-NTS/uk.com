@@ -69,11 +69,15 @@ module nts.uk.com.view.cmf002.y {
                                 temp.push(new ExternalOutLog(
                                     index.processCount,
                                     index.errorContent,
-                                    index.errorEmployee,
                                     index.errorTargetValue,
+                                    index.errorEmployee,
                                     index.errorItem
                                 ));     
                             });
+                            
+                            for(let i = 0; i<temp.length; i++){
+                                temp[i]['no'] = i;
+                            }
 							self.externalOutLog(temp);
 							self.iErrorContentCSV(new IErrorContentCSV(self.exterOutExecLog().nameSetting, self.exterOutExecLog(), self.externalOutLog()));
                             self.groupProcessCount(_.size(_.countBy(sortByExternalOutLog, 'processCount')));
@@ -86,6 +90,7 @@ module nts.uk.com.view.cmf002.y {
                 });
 
                 this.columnsExternalOutLog = ko.observableArray([
+                    { headerText: '', key: 'no', formatter: _.escape, hidden: true},
                     { headerText: getText('CMF002_336'), key: 'processCount', width: 40, formatter: _.escape},
                     { headerText: getText('CMF002_337'), key: 'errorItem', width: 80, formatter: _.escape },
                     { headerText: getText('CMF002_338'), key: 'errorTargetValue', width: 80, formatter: _.escape },
@@ -148,10 +153,10 @@ module nts.uk.com.view.cmf002.y {
             constructor(processCount : number, errorContent?: string, errorTargetValue?: string, errorEmployee?: string, errorItem?: string) {
                 this.processCount = processCount ? processCount : null;
                 this.errorContent = errorContent ? errorContent : null;
-                this.errorTargetValue = errorEmployee ? errorEmployee : null;
+                this.errorTargetValue = errorTargetValue ? errorTargetValue : null;
                 this.errorEmployee = errorEmployee ? errorEmployee : null;
                 this.errorItem = errorItem ? errorItem : null;
-                this.customerrorContent = errorContent + "(" + getText('CMF002_356') + errorTargetValue + ")";   
+                this.customerrorContent = errorContent + "(" + getText('CMF002_356') + errorEmployee + ")";   
             }
         }
 

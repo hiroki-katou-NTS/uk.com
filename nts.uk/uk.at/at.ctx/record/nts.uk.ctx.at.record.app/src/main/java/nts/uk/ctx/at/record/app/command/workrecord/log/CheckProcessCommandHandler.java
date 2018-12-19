@@ -25,6 +25,7 @@ public class CheckProcessCommandHandler extends AsyncCommandHandler<CheckProcess
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	protected void handle(CommandHandlerContext<CheckProcessCommand> context) {
+		System.out.println("Run batch service !");
 		val asyncContext = context.asAsync();
 //		val dataSetter = asyncContext.getDataSetter();
 		val command = context.getCommand();

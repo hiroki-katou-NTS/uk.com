@@ -1306,7 +1306,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         self.lstErrorFlex = [];
                     }
                 }
-                if (_.isEmpty(data.resultError)) {
+                if (_.isEmpty(data.resultError) || _.isEmpty(data.resultError.errorMap)) {
                     self.hasErrorCalc = false;
                     //self.lstDomainEdit = data.calculatedRows;
                     let lstValue = data.resultValues;

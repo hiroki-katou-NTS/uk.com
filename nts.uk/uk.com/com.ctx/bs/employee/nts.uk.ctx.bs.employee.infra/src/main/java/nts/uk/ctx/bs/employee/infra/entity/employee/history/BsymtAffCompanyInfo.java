@@ -27,6 +27,10 @@ public class BsymtAffCompanyInfo extends UkJpaEntity implements Serializable {
 
 	@EmbeddedId
 	public BsymtAffCompanyInfoPk bsymtAffCompanyInfoPk;
+	
+	/** SID */
+	@Column(name = "SID")
+	public String sid;
 
 	@Column(name = "RECRUIMENT_CATEGORY_CD")
 	public String recruitmentCategoryCode;
