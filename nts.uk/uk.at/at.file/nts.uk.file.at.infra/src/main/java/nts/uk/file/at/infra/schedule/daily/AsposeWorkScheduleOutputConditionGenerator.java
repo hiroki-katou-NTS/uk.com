@@ -236,7 +236,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	private OptionalItemRepository optionalItemRepo;
 	
 	/** The Constant filename. */
-	private static final String filename = "report/KWR001.xlsx";
+	private static final String TEMPLATE_DATE = "report/KWR001_Date.xlsx";
+	
+	/** The Constant filename. */
+	private static final String TEMPLATE_EMPLOYEE = "report/KWR001_Employee.xlsx";
 	
 	/** The Constant DATA_PREFIX. */
 	private static final String DATA_PREFIX = "DATA_";
@@ -316,8 +319,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 */
 	@Override
 	public void generate(FileGeneratorContext generatorContext, TaskDataSetter setter, WorkScheduleOutputQuery query) {
-		AsposeCellsReportContext reportContext = this.createContext(filename);
+		AsposeCellsReportContext reportContext = null;
 		WorkScheduleOutputCondition condition = query.getCondition();
+		if (condition.getOutputType() == FormOutputType.BY_EMPLOYEE) {
+			reportContext = this.createContext(TEMPLATE_EMPLOYEE);
+		} else {
+			reportContext = this.createContext(TEMPLATE_DATE);
+		}
 		
 		// ドメインモデル「日別勤務表の出力項目」を取得する
 		Optional<OutputItemDailyWorkSchedule> optOutputItemDailyWork = outputItemRepo.findByCidAndCode(AppContexts.user().companyId(), query.getCondition().getCode().v());
@@ -1986,11 +1994,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				
 				// A3_1
 				Cell workplaceTagCell = cells.get(currentRow, 0);
-				workplaceTagCell.setValue(WorkScheOutputConstants.WORKPLACE);
+				workplaceTagCell.setValue(WorkScheOutputConstants.WORKPLACE +"　"+ workplaceReportData.getWorkplaceCode() +"　"+ workplaceReportData.getWorkplaceName());
 				
 				// A3_2
-				Cell workplaceInfo = cells.get(currentRow, DATA_COLUMN_INDEX[0]);
-				workplaceInfo.setValue(workplaceReportData.getWorkplaceCode() + " " + workplaceReportData.getWorkplaceName());
+//				Cell workplaceInfo = cells.get(currentRow, DATA_COLUMN_INDEX[0]);
+//				workplaceInfo.setValue(workplaceReportData.getWorkplaceCode() + " " + workplaceReportData.getWorkplaceName());
 				
 				currentRow++;
 
@@ -2011,27 +2019,30 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				
 				// A4_1
 				Cell employeeTagCell = cells.get(currentRow, 0);
-				employeeTagCell.setValue(WorkScheOutputConstants.EMPLOYEE);
-				
-				// A4_2
-				Cell employeeCell = cells.get(currentRow, 3);
-				employeeCell.setValue(employeeReportData.employeeCode + " " + employeeReportData.employeeName);
-				
-				// A4_3
-				Cell employmentTagCell = cells.get(currentRow, 9);
-				employmentTagCell.setValue(WorkScheOutputConstants.EMPLOYMENT);
-				
-				// A4_5
-				Cell employmentCell = cells.get(currentRow, 11);
-				employmentCell.setValue(employeeReportData.employmentName);
-				
-				// A4_6
-				Cell jobTitleTagCell = cells.get(currentRow, 15);
-				jobTitleTagCell.setValue(WorkScheOutputConstants.POSITION);
+				employeeTagCell.setValue(WorkScheOutputConstants.EMPLOYEE + "　" + employeeReportData.employeeCode + "　"
+						+ employeeReportData.employeeName + "　" + WorkScheOutputConstants.EMPLOYMENT + "　"
+						+ employeeReportData.employmentName + "　" + WorkScheOutputConstants.POSITION + "　"
+						+ employeeReportData.position);
 
-				// A4_7
-				Cell jobTitleCell = cells.get(currentRow, 17);
-				jobTitleCell.setValue(employeeReportData.position);
+//				// A4_2
+//				Cell employeeCell = cells.get(currentRow, 3);
+//				employeeCell.setValue(employeeReportData.employeeCode + " " + employeeReportData.employeeName);
+//				
+//				// A4_3
+//				Cell employmentTagCell = cells.get(currentRow, 9);
+//				employmentTagCell.setValue(WorkScheOutputConstants.EMPLOYMENT);
+//				
+//				// A4_5
+//				Cell employmentCell = cells.get(currentRow, 11);
+//				employmentCell.setValue(employeeReportData.employmentName);
+//				
+//				// A4_6
+//				Cell jobTitleTagCell = cells.get(currentRow, 15);
+//				jobTitleTagCell.setValue(WorkScheOutputConstants.POSITION);
+//
+//				// A4_7
+//				Cell jobTitleCell = cells.get(currentRow, 17);
+//				jobTitleCell.setValue(employeeReportData.position);
 				
 				currentRow++;
 				boolean colorWhite = true; // true = white, false = light blue, start with white row
@@ -2457,13 +2468,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			// B3_1
 			Cell dateTagCell = cells.get(currentRow, 0);
-			dateTagCell.setValue(WorkScheOutputConstants.DATE_BRACKET);
-			
-			// B3_2
 			DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd (E)", Locale.JAPAN);
 			String date = dailyReportData.getDate().toLocalDate().format(jpFormatter);
-			Cell dateCell = cells.get(currentRow, 2);
-			dateCell.setValue(date);
+			dateTagCell.setValue(WorkScheOutputConstants.DATE_BRACKET +"　"+ date);
+			
+//			// B3_2
+//			Cell dateCell = cells.get(currentRow, 2);
+//			dateCell.setValue(date);
 			
 			currentRow++;
 			
@@ -2530,11 +2541,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			rowPageTracker.useOneRowAndCheckResetRemainingRow(sheet, currentRow);
 			// B4_1
 			Cell workplaceTagCell = cells.get(currentRow, 0);
-			workplaceTagCell.setValue(WorkScheOutputConstants.WORKPLACE);
+			workplaceTagCell.setValue(WorkScheOutputConstants.WORKPLACE +"　"+ rootWorkplace.getWorkplaceCode() +"　"+ rootWorkplace.getWorkplaceName());
 			
-			// B4_2
-			Cell workplaceCell = cells.get(currentRow, 2);
-			workplaceCell.setValue(rootWorkplace.getWorkplaceCode() + " " + rootWorkplace.getWorkplaceName());
+//			// B4_2
+//			Cell workplaceCell = cells.get(currentRow, 2);
+//			workplaceCell.setValue(rootWorkplace.getWorkplaceCode() + " " + rootWorkplace.getWorkplaceName());
 			
 			currentRow++;
 			
