@@ -10,7 +10,7 @@ module nts.uk.pr.view.qmm017.e.viewmodel {
     export class ScreenModel {
         basicCalculationFormula: KnockoutObservable<model.BasicCalculationFormula> = ko.observable(new model.BasicCalculationFormula(null));
         baseAmountTargetItem: KnockoutObservable<string> = ko.observable(null);
-        conditionItemName: KnockoutObservable<string> = ko.observable('UNDEFINED');
+        conditionItemName: KnockoutObservable<string> = ko.observable(null);
         isShowConditionItem: KnockoutObservable<boolean> = ko.observable(true);
         //mix of 3 case
         targetItemCodeListItem: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -20,11 +20,9 @@ module nts.uk.pr.view.qmm017.e.viewmodel {
             let params = getShared("QMM017_E_PARAMS");
             if (params) {
                 self.basicCalculationFormula(new model.BasicCalculationFormula(params.basicCalculationFormula));
+                self.conditionItemName(params.basicCalculationFormula.masterUseName)
                 self.isShowConditionItem(params.originalScreen == 'C');
             }
-            // ko.computed(function(){
-            //     self.getTargetItemCodeList(newValue);
-            // }, this)
             self.basicCalculationFormula().standardAmountClassification.subscribe(newValue => {
                 if (newValue && self.allowToDirectiveChange) self.getTargetItemCodeList(newValue);
             })

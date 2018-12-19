@@ -72,6 +72,15 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         SYSTEM_YMD_DATE = 'システム日付（年月日）'; SYSTEM_YM_DATE = 'システム日付（年月）'; SYSTEM_Y_DATE = 'システム日付（年）'; PROCESSING_YEAR_MONTH = '処理年月';
         PROCESSING_YEAR = '処理年'; REFERENCE_TIME = '基準時間'; STANDARD_DAY = '基準日数'; WORKDAY = '要勤務日数';
 
+        // column for listbox
+        listBoxColumn: KnockoutObservableArray<any> = ko.observableArray([
+            { key: 'code', length: 2 },
+            { key: 'name', length: 8, template: '<div class = "limited-label"></div>' }
+        ])
+        listBoxWageTableColumn: KnockoutObservableArray<any> = ko.observableArray([
+            { key: 'formulaCode', length: 2 },
+            { key: 'formulaName', length: 8, template: '<div class = "limited-label"></div>' }
+        ])
         constructor() {
             var self = this;
             self.initTabPanel();
@@ -136,12 +145,14 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             self.selectedFormulaCode.subscribe(newValue => {
                 let currentFormulaList = ko.toJS(self.formulaList), selectedFormula = null;
                 selectedFormula = _.find(currentFormulaList, {formulaCode: newValue});
+                selectedFormula.formulaName = _.unescape(selectedFormula.formulaName);
                 self.selectedFormula(new model.Formula(selectedFormula));
             })
         }
 
         initWageTableData (wageTableData) {
             let self = this;
+            wageTableData.map(function(item){ item.name = _.escape(item.name); return item});
             if (wageTableData){
                 self.wageTableList(wageTableData);
                 if (wageTableData.length > 0) self.selectedWageTableCode(wageTableData[0].code);
@@ -156,6 +167,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             self.selectedWageTableCode.subscribe(newValue => {
                 let currentWageTableList = ko.toJS(self.wageTableList), selectedWageTable;
                 selectedWageTable = _.find(currentWageTableList, {code: newValue});
+                selectedWageTable.name = _.unescape(selectedWageTable.name);
                 self.selectedWageTable(new model.WageTable(selectedWageTable));
             })
         }
@@ -169,6 +181,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             let statementItemList = self.paymentItemList;
             if (categoryAtr == model.LINE_ITEM_CATEGORY.DEDUCTION_ITEM) statementItemList = self.deductionItemList;
             if (categoryAtr == model.LINE_ITEM_CATEGORY.ATTENDANCE_ITEM) statementItemList = self.attendanceItemList;
+            statementItemList.map(function(item){item.name = _.escape(item.name); return item;});
             self.statementItemList(statementItemList);
             if (statementItemList.length > 0) self.selectedStatementItemCode(statementItemList[0].code)
             else self.selectedStatementItemCode(null);
@@ -195,6 +208,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             let self = this;
             let unitPriceList = self.companyUnitPriceList;
             if (unitPriceItemCategory == model.UNIT_PRICE_ITEM_CATEGORY.INDIVIDUAL_UNIT_PRICE_ITEM) unitPriceList = self.individualUnitPriceList;
+            unitPriceList.map(function(item){item.name = _.escape(item.name); return item;})
             self.unitPriceItemList(unitPriceList);
             if (unitPriceList.length > 0) self.selectedUnitPriceItemCode(unitPriceList[0].code);
             else self.selectedUnitPriceItemCode(null);
@@ -410,44 +424,47 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
 
         }
         validateFunctionSyntax (formula) {
-            let self = this, startFunctionIndex, endFunctionIndex, functionsSyntax = [], index,
-                conditionRegex = new RegExp( ['\\\<', '>', '\\\≧', '\\\≦', '\\\＝', '\\\≠'].join('|'));
+            let self = this, startFunctionIndex, endFunctionIndex, functionsSyntax = [], index;
             while (formula.indexOf(self.FUNCTION) > -1) {
                 startFunctionIndex = formula.lastIndexOf(self.FUNCTION);
-                endFunctionIndex = self.indexOfEndFunction(startFunctionIndex, formula) + 1;
-                if (endFunctionIndex == -1) self.setErrorToFormula('MsgQ_15', [formula.substring(startFunctionIndex, formula.substring(startFunctionIndex).indexOf(self.OPEN_BRACKET))]);
-                functionsSyntax.push(formula.substring(startFunctionIndex, endFunctionIndex));
-                formula = formula.replace(formula.substring(startFunctionIndex, endFunctionIndex),  0 );
+                endFunctionIndex = self.indexOfEndFunction(startFunctionIndex, formula);
+                if (endFunctionIndex == -1){
+                    self.setErrorToFormula('MsgQ_15', [formula.substring(startFunctionIndex, formula.substring(startFunctionIndex).indexOf(self.OPEN_BRACKET))]);
+                    break;
+                }
+                self.checkFunctionSyntax(formula.substring(startFunctionIndex, endFunctionIndex + 1));
+                formula = formula.replace(formula.substring(startFunctionIndex, endFunctionIndex + 1),  0 );
             }
-            functionsSyntax.forEach(functionSyntax => {
-                let functionName = functionSyntax.substring(functionSyntax.indexOf(self.CONCAT_CHAR) + 1, functionSyntax.indexOf(self.OPEN_BRACKET)),
-                    functionParameter = functionSyntax.substring(functionSyntax.indexOf(self.OPEN_BRACKET) + 1, functionSyntax.lastIndexOf(self.CLOSE_BRACKET)).split(self.COMMA_CHAR).map(item => item.trim());
-                if (functionParameter.length == 0) self.setErrorToFormula('MsgQ_15', [functionName]);
-                if (functionName == self.CONDITIONAL){
-                    if (functionParameter.length != 3) {
-                        if (functionParameter.length < 3) self.setErrorToFormula('MsgQ_15', [functionName]);
-                        else self.setErrorToFormula('MsgQ_16', [functionName]);
-                    } else if (functionParameter[0].split(conditionRegex).length > 2) {
-                        // should have a different message, temporary use msg 16
-                        // condition is invalid
-                        self.setErrorToFormula('MsgQ_16', [functionName]);
-                    }
+        }
+        checkFunctionSyntax (functionSyntax) {
+            let self = this, conditionRegex = new RegExp( ['\\\<', '>', '\\\≧', '\\\≦', '\\\＝', '\\\≠'].join('|'));;
+            let functionName = functionSyntax.substring(functionSyntax.indexOf(self.CONCAT_CHAR) + 1, functionSyntax.indexOf(self.OPEN_BRACKET)),
+                functionParameter = functionSyntax.substring(functionSyntax.indexOf(self.OPEN_BRACKET) + 1, functionSyntax.lastIndexOf(self.CLOSE_BRACKET)).split(self.COMMA_CHAR).map(item => item.trim());
+            if (functionParameter.length == 0) self.setErrorToFormula('MsgQ_15', [functionName]);
+            if (functionName == self.CONDITIONAL){
+                if (functionParameter.length != 3) {
+                    if (functionParameter.length < 3) self.setErrorToFormula('MsgQ_15', [functionName]);
+                    else self.setErrorToFormula('MsgQ_16', [functionName]);
+                } else if (functionParameter[0].split(conditionRegex).length > 2) {
+                    // should have a different message, temporary use msg 16
+                    // condition is invalid
+                    self.setErrorToFormula('MsgQ_16', [functionName]);
                 }
-                if (functionName == self.ROUND_OFF || functionName == self.ROUND_UP || functionName == self.TRUNCATION) {
-                    if (functionParameter.length > 1) self.setErrorToFormula('MsgQ_16', [functionName]);
-                    if (!self.checkNumberDataType(functionParameter)){
-                        self.setErrorToFormula('MsgQ_17', [functionName]);
-                    }
+            }
+            if (functionName == self.ROUND_OFF || functionName == self.ROUND_UP || functionName == self.TRUNCATION) {
+                if (functionParameter.length > 1) self.setErrorToFormula('MsgQ_16', [functionName]);
+                if (!self.checkNumberDataType(functionParameter)){
+                    self.setErrorToFormula('MsgQ_17', [functionName]);
                 }
-                if (functionName == self.YEAR_MONTH) {
-                    if (functionParameter.length != 2) {
-                        if (functionParameter.length < 2) self.setErrorToFormula('MsgQ_15', [functionName]);
-                        else self.setErrorToFormula('MsgQ_16', [functionName]);
-                    } else if (!self.checkDateDataType(functionParameter)){
-                        self.setErrorToFormula('MsgQ_17', [functionName]);
-                    }
+            }
+            if (functionName == self.YEAR_MONTH) {
+                if (functionParameter.length != 2) {
+                    if (functionParameter.length < 2) self.setErrorToFormula('MsgQ_15', [functionName]);
+                    else self.setErrorToFormula('MsgQ_16', [functionName]);
+                } else if (!self.checkDateDataType(functionParameter)){
+                    self.setErrorToFormula('MsgQ_17', [functionName]);
                 }
-            })
+            }
         }
         indexOfEndFunction (startFunctionIndex, formula) {
             let self = this, index, openBracketNum = 0, closeBracketNum = 0, currentChar;
@@ -456,7 +473,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 if (currentChar == self.OPEN_BRACKET) openBracketNum ++;
                 if (currentChar == self.CLOSE_BRACKET){
                     closeBracketNum ++;
-                    if (openBracketNum == closeBracketNum){
+                    if (openBracketNum > 0 && openBracketNum == closeBracketNum){
                         return index;
                     }
                 }

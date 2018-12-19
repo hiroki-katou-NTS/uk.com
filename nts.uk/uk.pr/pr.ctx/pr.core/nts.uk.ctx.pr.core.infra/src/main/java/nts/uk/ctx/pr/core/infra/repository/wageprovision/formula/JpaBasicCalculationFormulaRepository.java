@@ -54,7 +54,7 @@ public class JpaBasicCalculationFormulaRepository extends JpaRepository implemen
 
     public BasicCalculationFormula toBasicCalculationFormula (QpbmtBasicCalculationFormula basicCalculationForm, List<QpbmtBasicCalculationStandardAmount> basicCalculationStandardAmount) {
         BasicCalculationForm domain = null;
-        if (basicCalculationForm.calculationFormulaCls == CalculationFormulaClassification.FORMULA.value) domain = this.toBasicCalculationForm(basicCalculationForm, basicCalculationStandardAmount);
+        if (basicCalculationForm.calculationFormulaCls == CalculationFormulaClassification.FORMULA.value && basicCalculationForm.formulaType !=null) domain = this.toBasicCalculationForm(basicCalculationForm, basicCalculationStandardAmount);
         return new BasicCalculationFormula(basicCalculationForm.basicCalFormPk.historyID, basicCalculationForm.basicCalFormPk.masterUseCode, basicCalculationForm.calculationFormulaCls, basicCalculationForm.basicCalculationFormula, domain);
     }
 

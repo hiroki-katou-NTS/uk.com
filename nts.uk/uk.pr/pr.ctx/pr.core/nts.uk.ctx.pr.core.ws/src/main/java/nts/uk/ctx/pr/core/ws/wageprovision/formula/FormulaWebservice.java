@@ -35,6 +35,9 @@ public class FormulaWebservice extends WebService {
     private AddFormulaCommandHandler addFormulaCommandHandler;
 
     @Inject
+    private UpdateFormulaCommandHandler updateFormulaCommandHandler;
+
+    @Inject
     private UpdateFormulaSettingCommandHandler updateFormulaSettingCommandHandler;
 
     @Inject
@@ -73,6 +76,12 @@ public class FormulaWebservice extends WebService {
     public void addFormula(FormulaCommand command) {
         command.updateHistoryIdentifier();
         addFormulaCommandHandler.handle(command);
+    }
+
+    @POST
+    @Path("updateFormula")
+    public void updateFormula(FormulaCommand command) {
+        updateFormulaCommandHandler.handle(command);
     }
 
     @POST

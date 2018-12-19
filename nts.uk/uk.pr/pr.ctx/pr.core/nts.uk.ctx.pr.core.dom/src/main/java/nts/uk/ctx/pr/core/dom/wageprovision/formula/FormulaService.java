@@ -65,6 +65,10 @@ public class FormulaService {
         if (formula.getSettingMethod() == FormulaSettingMethod.BASIC_SETTING) basicFormulaSettingRepository.add(basicFormulaSetting);
     }
 
+    public void updateFormula (Formula formula) {
+        formulaRepository.update(formula);
+    }
+
     public void removeFormula (String formulaCode) {
         formulaRepository.removeByFormulaCode(formulaCode);
         detailFormulaSettingRepository.removeByFormulaCode(formulaCode);

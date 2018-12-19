@@ -23,7 +23,7 @@
         <table id = "C2_1">
             <colgroup>
                 <col width="250px" />
-                <col width="230px" />
+                <col width="140px" />
                 <col width="300px" />
             </colgroup>
             <thead>
@@ -55,8 +55,8 @@
                         </div>
                         <div data-bind = "visible: calculationFormulaClassification() == 1">
                             <!--C2_7; C2_8-->
-                            <button tabindex="13">#{i18n.getText('QMM017_34')}</button>
-                            <div style = "display: inline-block" data-bind = "text: displayFormulaType"></div>
+                            <button data-bind = "click: function(){$vm.doMasterConfiguration()}" tabindex="13">#{i18n.getText('QMM017_27')}</button>
+                            <div style = "display: inline-block" data-bind = "text: displaySetting"></div>
                         </div>
                     </th>
                 </tr>
@@ -109,9 +109,9 @@
                         </div>
                         <div data-bind = "visible: calculationFormulaClassification() == 1">
                             <!--C3_11-->
-                            <button data-bind = "click: function(){$vm.doConfiguration($index())}" tabindex="18">#{i18n.getText('QMM017_34')}</button>
+                            <button data-bind = "click: function(){$vm.doConfiguration($index())}" tabindex="18">#{i18n.getText('QMM017_27')}</button>
                             <!--C3_12-->
-                            <div style = "display: inline-block" data-bind = "text: displayFormulaType"></div>
+                            <div style = "display: inline-block" data-bind = "text: displaySetting"></div>
                         </div>
                     </td>
                 </tr>

@@ -99,3 +99,14 @@
 .formula-button {
     width: 232px;
 }
+.list-box tr td:nth-child(1) {
+    width: 65px;
+}
+#D9_5_grid tr td:nth-child(2) {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 148px;
+    height: 23px;
+}

@@ -55,6 +55,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 self.isAddHistoryMode(newValue == model.SCREEN_MODE.ADD_HISTORY);
             })
             self.selectedFormulaIdentifier.subscribe(newValue => {
+                nts.uk.ui.errors.clearAll();
                 if (self.screenMode() == model.SCREEN_MODE.ADD_HISTORY && self.isCompleteChangeToAddHistoryMode){
                     self.getListFormula(null);
                     self.isCompleteChangeToAddHistoryMode = false;
@@ -82,7 +83,9 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             let self = this;
             self.tabs = ko.observableArray([
                 {id: 'tab-1', title: getText('QMM017_6'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true)},
-                {id: 'tab-2', title: getText('QMM017_7'), content: '.tab-content-2',enable: ko.computed(function() {return self.screenMode() != model.SCREEN_MODE.NEW;}, this), visible: ko.observable(true)}
+                {id: 'tab-2', title: getText('QMM017_7'), content: '.tab-content-2',enable: ko.computed(function() {
+                    return (self.screenMode() == model.SCREEN_MODE.UPDATE || self.screenMode() == model.SCREEN_MODE.ADD_HISTORY);}, this),
+                    visible: ko.observable(true)}
             ]);
             self.selectedTab = ko.observable('tab-1');
             let self = this;
@@ -104,8 +107,8 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 let itemToBeFocus = "";
                 if (newTab == 'tab-2') {
                     if (self.selectedFormula().settingMethod() == model.FORMULA_SETTING_METHOD.BASIC_SETTING) {
-                        if (self.basicFormulaSetting().masterBranchUse() == model.MASTER_BRANCH_USE.USE) itemToBeFocus = '#B1_4';
-                        else itemToBeFocus = '#C2_7';
+                        if (self.basicFormulaSetting().masterBranchUse() == model.MASTER_BRANCH_USE.USE) itemToBeFocus = '#C2_7';
+                        else itemToBeFocus = '#B1_4';
                     } else itemToBeFocus = '#D1_4';
                 } else if (self.screenMode() != model.SCREEN_MODE.NEW){ itemToBeFocus = '#A3_4'};
                 setTimeout (function(){
@@ -133,12 +136,12 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             let self = this;
             let command = ko.toJS(self.selectedFormula);
             nts.uk.ui.errors.clearAll();
-            if (self.screenMode() == model.SCREEN_MODE.NEW){
-                $('.tab-content-1 .nts-input').trigger("validate");
+            if (self.screenMode() == model.SCREEN_MODE.NEW || self.screenMode() == model.SCREEN_MODE.UPDATE_FORMULA ){
+                $('.tab-content-1 .nts-input').filter(':enabled').trigger("validate");
             } else {
                 if (self.selectedFormula().settingMethod() == model.FORMULA_SETTING_METHOD.BASIC_SETTING) $('.basic .nts-input').trigger("validate");
                 else {
-                    $('.detail .nts-input').trigger("validate");
+                    $('.detail .nts-input').filter(':enabled').trigger("validate");
                     self.screenDViewModel.validateSyntax();
                 }
             }
@@ -169,8 +172,10 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 self.addFormula(command);
             } else if (self.screenMode() == model.SCREEN_MODE.UPDATE) {
                 self.updateFormulaSetting(command);
-            } else {
+            } else if (self.screenMode() == model.SCREEN_MODE.ADD_HISTORY){
                 self.addFormulaHistory(command)
+            } else {
+                self.updateFormula(command);
             }
         }
 
@@ -183,6 +188,22 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 block.clear();
                 dialog.info({ messageId: 'Msg_15' }).then(function() {
                     self.getListFormula(command.formulaCode + command.formulaSettingCommand.yearMonth.historyID);
+                });
+            }).fail(function(err) {
+                block.clear();
+                dialog.alertError(err.message);
+            });
+        }
+
+        updateFormula (command) {
+            let self = this;
+            block.invisible();
+            service.updateFormula(command).done(function(data) {
+                block.clear();
+                dialog.info({ messageId: 'Msg_15' }).then(function() {
+                    self.getListFormula(null).done(function(){
+                        self.selectedFormulaIdentifier.valueHasMutated();
+                    });
                 });
             }).fail(function(err) {
                 block.clear();
@@ -252,6 +273,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             self.screenMode(model.SCREEN_MODE.NEW);
             self.selectedFormulaIdentifier(null);
             self.selectedFormula(new model.Formula(null));
+            self.basicFormulaSetting(new model.BasicFormulaSetting(null));
             self.selectedHistory(new model.GenericHistoryYearMonthPeriod(null));
             self.selectedTab('tab-1');
             nts.uk.ui.errors.clearAll();
@@ -289,12 +311,13 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 selectedHistory = _.find(selectedFormula.history, {historyID: selectedHistoryID});
                 self.selectedHistory(new model.GenericHistoryYearMonthPeriod(selectedHistory));
                 self.isSelectedHistory(true);
-                if (!self.isCompleteChangeToAddHistoryMode) self.showFormulaSettingByHistory(selectedHistory, true, null)
+                if (!self.isCompleteChangeToAddHistoryMode) self.showFormulaSettingByHistory(selectedHistory, true, null);
+                self.changeToUpdateMode();
             }
             else {
                 self.selectedHistory(new model.GenericHistoryYearMonthPeriod(null));
+                if (identifier.length > 0 ) self.screenMode(model.SCREEN_MODE.UPDATE_FORMULA);
             }
-            self.changeToUpdateMode();
         };
         showFormulaSettingByHistory(history , withSetting: boolean, masterUse: number) {
             let self = this;
@@ -406,10 +429,10 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                             let currentIndex = _.findIndex(formulaList, currentFormula), formulaToSelect;
                             if (currentIndex == formulaList.length -1 && formulaList.length > 1) formulaToSelect = formulaList[currentIndex-1];
                             else if (currentIndex < formulaList.length -1  && formulaList.length > 1) formulaToSelect = formulaList[currentIndex+1];
-                            self.getListFormula(formulaToSelect.formulaCode + formulaToSelect.history[0].historyID);
+                            self.getListFormula(formulaToSelect ? formulaToSelect.formulaCode + formulaToSelect.history[0].historyID : null);
                         }
                         else {
-                            self.selectedFormulaIdentifier(selectedFormula.formulaCode + history[1].historyID);
+                            self.selectedFormulaIdentifier(selectedFormula ? selectedFormula.formulaCode + history[1].historyID: null);
                             self.getListFormula(null);
                         }
                     } else {
@@ -420,7 +443,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 }
             });
         };
-        // screen B
+
         doMasterConfiguration () {
             let self = this;
             // unknown which item to be affect. temporary not link b to e
@@ -440,7 +463,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 let params = getShared("QMM017_E_RES_PARAMS");
                 if (params){
                     let newModel: any = new model.BasicCalculationFormula(params.basicCalculationFormula);
-                    self.basicCalculationFormulaList()[index] = newModel;
+                    self.basicCalculationFormulaList.replace(self.basicCalculationFormulaList()[index], newModel);
                 }
             });
         };

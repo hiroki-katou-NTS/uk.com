@@ -45,7 +45,7 @@ public class BasicCalculationFormulaCommand {
 
     public BasicCalculationFormula toBasicCalculationFormula () {
         BasicCalculationForm basicCalculationForm = null;
-        if (calculationFormulaClassification == CalculationFormulaClassification.FORMULA.value) basicCalculationForm = this.toBasicCalculationForm();
+        if (calculationFormulaClassification == CalculationFormulaClassification.FORMULA.value && formulaType!= null) basicCalculationForm = this.toBasicCalculationForm();
         return new BasicCalculationFormula(historyID, masterUseCode, calculationFormulaClassification, basicCalculationFormula, basicCalculationForm);
     }
 

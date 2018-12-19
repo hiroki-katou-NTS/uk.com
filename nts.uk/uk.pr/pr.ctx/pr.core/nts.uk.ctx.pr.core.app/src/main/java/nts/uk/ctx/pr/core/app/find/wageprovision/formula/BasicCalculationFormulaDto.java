@@ -32,15 +32,15 @@ public class BasicCalculationFormulaDto {
     private BigDecimal standardFixedValue;
     private List<String> targetItemCodeList = new ArrayList<>();
     private String attendanceItem;
-    private int coefficientClassification;
+    private Integer coefficientClassification;
     private BigDecimal coefficientFixedValue;
-    private int formulaType;
-    private int roundingResult;
-    private int adjustmentClassification;
-    private int baseItemClassification;
+    private Integer formulaType;
+    private Integer roundingResult;
+    private Integer adjustmentClassification;
+    private Integer baseItemClassification;
     private BigDecimal baseItemFixedValue;
     private Integer premiumRate;
-    private int roundingMethod;
+    private Integer roundingMethod;
     
     
     public static BasicCalculationFormulaDto fromDomainToDto(BasicCalculationFormula domain){

@@ -5,7 +5,8 @@ module nts.uk.pr.view.qmm017.share.model {
     export enum SCREEN_MODE {
         NEW = 0,
         UPDATE = 1,
-        ADD_HISTORY =2
+        ADD_HISTORY =2,
+        UPDATE_FORMULA = 3
     }
     export enum TAKEOVER_METHOD {
         FROM_LAST_HISTORY = 0,
@@ -644,7 +645,7 @@ module nts.uk.pr.view.qmm017.share.model {
         premiumRate: number;
         roundingMethod: number;
         masterUseName: string;
-
+        displayAlreadySetting: string;
     }
     export class BasicCalculationFormula {
         // item
@@ -680,6 +681,9 @@ module nts.uk.pr.view.qmm017.share.model {
         masterUseName: KnockoutObservable<string> = ko.observable(null);
         displayFormulaType: KnockoutObservable<string> = ko.observable(null);
         displayFormulaImagePath: KnockoutObservable<string> = ko.observable(null);
+
+        displaySetting: KnockoutObservable<string> = ko.observable(null);
+
         constructor(params: IBasicCalculationFormula) {
             this.masterUseCode(params ? params.masterUseCode : null);
             this.calculationFormulaClassification(params ? params.calculationFormulaClassification : CALCULATION_FORMULA_CLS.FIXED_VALUE);
@@ -688,7 +692,7 @@ module nts.uk.pr.view.qmm017.share.model {
             this.roundingMethod(params ? params.roundingMethod : ROUNDING_METHOD.ROUND_OFF);
             this.roundingResult(params ? params.roundingResult : ROUNDING_RESULT.ROUND_OFF);
             this.adjustmentClassification(params ? params.adjustmentClassification : null);
-            this.formulaType(params ? params.formulaType : FORMULA_TYPE.CALCULATION_FORMULA_TYPE_1);
+            this.formulaType(params ? params.formulaType : null);
             this.standardAmountClassification(params ? params.standardAmountClassification : null);
             this.standardFixedValue(params ? params.standardFixedValue : null);
             this.baseItemClassification(params ? params.baseItemClassification : null);
@@ -702,10 +706,15 @@ module nts.uk.pr.view.qmm017.share.model {
             this.displayFormulaType = ko.computed(function() {
                 return this.formulaType() != null ? this.formulaTypeItem()[this.formulaType()].name : null
             }, this);
+            this.displaySetting = ko.computed(function() {
+                if (this.formulaType() != null) return "設定済み";
+                return "";
+            }, this);
             this.displayFormulaImagePath = ko.computed(function() {
                 if (this.formulaType() == FORMULA_TYPE.CALCULATION_FORMULA_TYPE_1) return "../resource/QMM017_1.png";
                 if (this.formulaType() == FORMULA_TYPE.CALCULATION_FORMULA_TYPE_2) return "../resource/QMM017_2.png";
-                return "../resource/QMM017_3.png";
+                if (this.formulaType() == FORMULA_TYPE.CALCULATION_FORMULA_TYPE_3) return "../resource/QMM017_3.png";
+                return null;
             }, this);
             ko.computed(function() {
                 this.formulaType(), this.standardAmountClassification(), this.baseItemClassification(), this.coefficientClassification(), this.adjustmentClassification();

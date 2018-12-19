@@ -24,10 +24,10 @@
             </div>
             <div style="margin-top: 10px;">
                 <!--A2_4 履歴追加ボタン-->
-                <button id="A2_4" tabindex="7"
+                <button class = "small" id="A2_4" tabindex="7"
                         data-bind="click: createNewHistory, enable: isUpdateMode">#{i18n.getText('QMM017_9')}</button>
                 <!--A2_5 履歴編集ボタン-->
-                <button style="float: right" id="A2_5" tabindex="8"
+                <button class = "small" style="float: right" id="A2_5" tabindex="8"
                         data-bind="click: editHistory, enable: isUpdateMode() ? isSelectedHistory() : false">#{i18n.getText('QMM017_10')}</button>
             </div>
             <div style="margin-top: 10px;">
@@ -80,7 +80,7 @@
                                         dateFormat: 'yearmonth',
                                         valueFormat: 'YYYYMM',
                                         required: true,
-                                        enable: !$vm.isUpdateMode()}"
+                                        enable: $vm.isNewMode()}"
                     />
                     <!--A3_7-->
                     <div style="margin-left: 10px; display: inline-block"
@@ -140,7 +140,7 @@
                                                     columns: [
                                                         { prop: 'fix_length', length: 0 },
                                                         { prop: 'name', length: 10 },
-                                                    ]}, visible: masterBranchUse() == 0">
+                                                    ]}, visible: masterBranchUse() == 1">
                                     </div>
                                 </div>
                             </div>
@@ -169,10 +169,10 @@
             </div>
             <div  class="tab-content-2">
                 <div class = "basic" data-bind="if: selectedFormula().settingMethod() == 0">
-                    <div data-bind="if: basicFormulaSetting().masterBranchUse() == 1">
+                    <div data-bind="if: basicFormulaSetting().masterBranchUse() == 0">
                         <ui:include src="../b/index.xhtml"/>
                     </div>
-                    <div class = "screenC" data-bind="if: basicFormulaSetting().masterBranchUse() == 0">
+                    <div class = "screenC" data-bind="if: basicFormulaSetting().masterBranchUse() == 1">
                         <ui:include src="../c/index.xhtml"/>
                     </div>
                 </div>
