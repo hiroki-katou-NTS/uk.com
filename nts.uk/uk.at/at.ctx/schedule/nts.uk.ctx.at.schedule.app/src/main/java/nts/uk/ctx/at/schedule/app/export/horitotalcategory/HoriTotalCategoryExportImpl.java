@@ -14,6 +14,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
@@ -43,7 +44,7 @@ public class HoriTotalCategoryExportImpl implements MasterListData {
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("選択された対象項目", TextResource.localize("KML004_16"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("回数集計集計設定", "回数集計集計設定",
+		columns.add(new MasterHeaderColumn("回数集計集計設定", TextResource.localize("KML004_53"),
 				ColumnTextAlign.LEFT, "", true));
  
 		return columns;
@@ -81,7 +82,13 @@ public class HoriTotalCategoryExportImpl implements MasterListData {
 							if(itemTotalExcel.getItemNo()==3){
 								data.put("回数集計集計設定",itemTotalExcel.toStringListDaySet());
 							}
-							datas.add(new MasterData(data, null, "選択された対象項目"));
+							MasterData masterData = new MasterData(data, null, "");
+							masterData.cellAt("コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+							masterData.cellAt("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+							masterData.cellAt("メモ").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+							masterData.cellAt("選択された対象項目").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+							masterData.cellAt("回数集計集計設定").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+							datas.add(masterData);
 							
 						}
 						else if(itemTotalExcel!=null){
@@ -91,7 +98,13 @@ public class HoriTotalCategoryExportImpl implements MasterListData {
 							if(itemTotalExcel.getItemNo()==3){
 								dataChild.put("回数集計集計設定",itemTotalExcel.toStringListDaySet());
 							}
-							datas.add(new MasterData(dataChild, null, ""));
+							MasterData masterData = new MasterData(dataChild, null, "");
+							masterData.cellAt("コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+							masterData.cellAt("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+							masterData.cellAt("メモ").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+							masterData.cellAt("選択された対象項目").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+							masterData.cellAt("回数集計集計設定").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+							datas.add(masterData);
 						}
 						
 					}

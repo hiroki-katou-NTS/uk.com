@@ -53,4 +53,8 @@ module kdl024.a.service {
             unitAtr: number;
         }
     }
+        //ExportExcel
+    export function saveAsExcel(languageId: string): JQueryPromise<any> {
+    return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Budget", domainType: "外部予算実績の設定", languageId: languageId, reportType: 0});
+    }
 }
