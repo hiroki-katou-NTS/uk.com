@@ -101,15 +101,17 @@ public class ApplicationListForScreen {
 				applicationExport.setAppTypeName(this.getAppAbsenceName(optAppAbsence.get().getHolidayAppType().value));
 				applicationExports.add(applicationExport);
 			} else {
-				Optional<AppAbsence> optAppAbsence = appAbsenceRepository.getAbsenceById(app.getCompanyID(), app.getAppID());
-				ApplicationExportDto applicationExport = new ApplicationExportDto();
-				applicationExport.setAppDate(app.getAppDate());
-				applicationExport.setAppType(app.getAppType().value);
-				applicationExport.setEmployeeID(app.getEmployeeID());
-				applicationExport.setReflectState(app.getReflectionInformation().getStateReflectionReal().value);
-				// ドメインモデル「休暇申請種類表示名」を取得する
-				applicationExport.setAppTypeName(this.getAppAbsenceName(optAppAbsence.get().getHolidayAppType().value));
-				applicationExports.add(applicationExport);
+				for(GeneralDate loopDate = app.getStartDate().get(); loopDate.beforeOrEquals(app.getEndDate().get()); loopDate = loopDate.addDays(1)){
+					Optional<AppAbsence> optAppAbsence = appAbsenceRepository.getAbsenceById(app.getCompanyID(), app.getAppID());
+					ApplicationExportDto applicationExport = new ApplicationExportDto();
+					applicationExport.setAppDate(loopDate);
+					applicationExport.setAppType(app.getAppType().value);
+					applicationExport.setEmployeeID(app.getEmployeeID());
+					applicationExport.setReflectState(app.getReflectionInformation().getStateReflectionReal().value);
+					// ドメインモデル「休暇申請種類表示名」を取得する
+					applicationExport.setAppTypeName(this.getAppAbsenceName(optAppAbsence.get().getHolidayAppType().value));
+					applicationExports.add(applicationExport);
+				}
 			}
 		}
 		List<Application_New> appWorkChangeLst = application.stream()
