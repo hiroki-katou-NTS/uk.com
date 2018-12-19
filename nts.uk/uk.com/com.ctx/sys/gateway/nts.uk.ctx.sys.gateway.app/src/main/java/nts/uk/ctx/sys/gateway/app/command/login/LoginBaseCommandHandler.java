@@ -39,7 +39,6 @@ import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
 import nts.uk.ctx.sys.gateway.dom.login.LoginStatus;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.CompanyInformationAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.ListCompanyAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleFromUserIdAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleIndividualGrantAdapter;
@@ -98,10 +97,6 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	/** The company information adapter. */
 	@Inject
 	private CompanyInformationAdapter companyInformationAdapter;
-
-	/** The list company adapter. */
-	@Inject
-	private ListCompanyAdapter listCompanyAdapter;
 
 	/** The manager. */
 	@Inject
@@ -313,6 +308,8 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	}
 
 	/**
+	 * セッション生成
+	 * login CCG007B
 	 * Inits the session.
 	 *
 	 * @param user
@@ -320,13 +317,16 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @return the check change pass dto
 	 */
 	// init session
-	public CheckChangePassDto initSession(UserImportNew user, boolean isSignon) {
-		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(),
-				user.getAssociatePersonId().get());
+	public CheckChangePassDto initSessionOld(UserImportNew user, boolean isSignon) {
+		//切替可能な会社一覧を取得する(Có được danh sách công ty có thể chuyển đổi)
+		List<String> lstCompanyId = collectComList.getCompanyList(user.getUserId(), user.getContractCode());
 		if (lstCompanyId.isEmpty()) {
+			//「ログインユーザコンテキスト」に情報設定（会社情報・社員情報はセットしません。） 
+			//(Tạo mới "Login user context" rồi lưu vào session. Khong set company info.employee info)
 			manager.loggedInAsUser(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(), null, null);
-		} else {
+		} else {//取得できた場合　会社Listの件数　＞　０
 			// get employee
+			//Imported（GateWay）「社員」を取得する (Imported (GateWay) Acquire 'Employee')
 			Optional<EmployeeImport> opEm = this.employeeAdapter.getByPid(lstCompanyId.get(FIST_COMPANY),
 					user.getAssociatePersonId().get());
 
@@ -334,8 +334,8 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				// Check employee deleted status.
 				this.checkEmployeeDelStatus(opEm.get().getEmployeeId(), isSignon);
 			}
-
 			// save to session
+			//Imported（GateWay）「会社情報」を取得する(Imported (GateWay) Acquire "company information")
 			CompanyInformationImport companyInformation = this.companyInformationAdapter
 					.findById(lstCompanyId.get(FIST_COMPANY));
 			if (opEm.isPresent() && opEm.get().getEmployeeId() != null) {
@@ -348,11 +348,45 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 						companyInformation.getCompanyId(), companyInformation.getCompanyCode());
 			}
 		}
+		//権限（ロール）情報を取得、設定する(Acquire and set authority (role) information)
 		this.setRoleId(user.getUserId());
-
 		return new CheckChangePassDto(false, null, false);
 	}
-
+	public CheckChangePassDto initSession(UserImportNew user, boolean isSignon) {
+		//「ログインユーザコンテキスト」を新規作成、セッションに格納(Tạo mới "Login user context" rồi lưu vào session)
+//		ユーザID　＝　「ユーザ.ユーザID」
+//		契約コード　＝　「ユーザ.契約コード」
+//		表示言語設定　＝　未定
+		manager.loggedInAsUser(user.getUserId(), null, user.getContractCode(), null, null);
+		//権限（ロール）情報を取得、設定する(Acquire and set authority (role) information)
+		this.setRoleId(user.getUserId());
+		//切替可能な会社一覧を取得する(Có được danh sách công ty có thể chuyển đổi)
+		List<String> lstCID = collectComList.getCompanyList(user.getUserId(), user.getContractCode());
+		String assePersonId = user.getAssociatePersonId().isPresent() ? user.getAssociatePersonId().get() : null;
+		if (lstCID.isEmpty()) {//取得できた場合　会社Listの件数　=　０
+			//「ログインユーザコンテキスト」に情報設定（会社情報・社員情報はセットしません。） 
+			//個人ID　＝　「ユーザ.紐付け先個人ID」
+			manager.loggedInAsUser(user.getUserId(), assePersonId, user.getContractCode(), null, null);
+		} else {//取得できた場合　会社Listの件数　＞　０
+			Optional<EmployeeImport> opEm = Optional.empty();
+			if(assePersonId != null){//ユーザ．紐付先個人ID　≠　Null
+				//Imported（GateWay）「社員」を取得する (Imported (GateWay) Acquire 'Employee')
+				opEm = employeeAdapter.getByPid(lstCID.get(FIST_COMPANY), assePersonId);
+			}
+			//Imported（GateWay）「会社情報」を取得する(Imported (GateWay) Acquire "company information")
+			CompanyInformationImport comInfo = this.companyInformationAdapter
+					.findById(lstCID.get(FIST_COMPANY));
+			//「ログインユーザコンテキスト」に会社情報・社員情報をセットします。
+			String contractCD = AppContexts.system().isOnPremise() ? "000000000001" : user.getContractCode();
+			if(opEm.isPresent()){
+				manager.loggedInAsEmployee(user.getUserId(), assePersonId, contractCD, 
+						comInfo.getCompanyId(), comInfo.getCompanyCode(), opEm.get().getEmployeeId(), opEm.get().getEmployeeCode());
+			}else{
+				manager.loggedInAsUser(user.getUserId(), assePersonId, contractCD, comInfo.getCompanyId(), comInfo.getCompanyCode());
+			}
+		}
+		return new CheckChangePassDto(false, null, false);
+	}
 	/**
 	 * Check after login.
 	 *
