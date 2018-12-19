@@ -180,7 +180,7 @@ module nts.custombinding {
 
             // hide dialog
             ko.utils.registerEventHandler(document, 'click', (evt: MouseEvent) => {
-                if (evt.target != element && document.body.contains(dialog)) {
+                if (evt.target != element && document.body.contains(dialog) && !dialog.contains(evt.target)) {
                     let bound = dialog.getBoundingClientRect();
 
                     if (bound.top > evt.pageY || bound.right < evt.pageX || bound.bottom < evt.pageY || bound.left > evt.pageX) {
