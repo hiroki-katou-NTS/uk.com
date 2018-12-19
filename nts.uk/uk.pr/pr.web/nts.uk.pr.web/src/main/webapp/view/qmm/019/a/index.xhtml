@@ -116,13 +116,13 @@
                         <div class="valign-center control-group">
                             <!-- 現在使用行数/最大行数 -->
                             <div id="A3_9" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_20')}</div>
-                            <!-- 使用印字行数 -->
-                            <label id="A3_10"></label>
-                            <!-- 使用未表示行数 -->
-                            <label id="A3_11"></label>
-                            <label> / </label>
-                            <!-- 最大行数 -->
-                            <label id="A3_12" data-bind="text: layoutPatternContent"></label>
+                            <div style="display: inline-block; max-width: 590px;">
+                                <!-- 使用印字行数 --><!-- 使用未表示行数 -->
+                                <label id="A3_1011" data-bind="text: usedLines"></label>
+                                <label> / </label>
+                                <!-- 最大行数 -->
+                                <label id="A3_12" data-bind="text: layoutPatternContent"></label>
+                            </div>
                         </div>
                         <div class="valign-center control-group">
                             <!-- 明細書レイアウト -->
@@ -150,13 +150,15 @@
                                             <div class="item-sort" data-bind="ntsSortable: {
                                                                         data: listSetByItem,
                                                                         beforeMove: preventStopSort}">
-                                                <div class="item limited-label" data-bind="
-                                                                    text: shortName,
+                                                <div class="item" data-bind="
+
                                                                     click: openSetting,
                                                                     css: id,
                                                                     style: { background: isFixed() ? '#404040' : deleted() ? '#EF7F7F' : '#FFFFFF',
                                                                             color: isFixed() ? '#FFF' : '#404040'},
-                                                                    attr: { tabindex: (itemId() != null) ? '15' : '16'}"> </div>
+                                                                    attr: { tabindex: (itemId() != null) ? '15' : '16'}">
+                                                    <label class="limited-label" data-bind="text: shortName"></label>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

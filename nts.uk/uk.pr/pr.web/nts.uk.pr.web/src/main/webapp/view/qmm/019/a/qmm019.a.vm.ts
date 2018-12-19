@@ -20,6 +20,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
     import PaymentCaclMethodAtr = nts.uk.pr.view.qmm019.share.model.PaymentCaclMethodAtr;
     import getLayoutPatternText = nts.uk.pr.view.qmm019.share.model.getLayoutPatternText;
     import getLayoutPatternContent = nts.uk.pr.view.qmm019.share.model.getLayoutPatternContent;
+    import StatementLayoutPattern = nts.uk.pr.view.qmm019.share.model.StatementLayoutPattern;
 
     export class ScreenModel {
 
@@ -62,6 +63,129 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
             });
         }
 
+        calculatePrintLine() {
+            let self = this;
+            let totalLines = 0;
+            let printLines = 0;
+            let noPrintLines = 0;
+            let printLinesPayment = 0;
+            let noPrintLinesPayment = 0;
+            let printLinesDedu = 0;
+            let noPrintLinesDedu = 0;
+            let printLinesTime = 0;
+            let noPrintLinesTime = 0;
+            let printLinesReport = 0;
+            let noPrintLinesReport = 0;
+
+            switch (self.statementLayoutHistData().statementLayoutSet().layoutPattern()) {
+                case StatementLayoutPattern.LASER_PRINT_A4_PORTRAIT_ONE_PERSON:
+                case StatementLayoutPattern.LASER_PRINT_A4_PORTRAIT_TWO_PERSON:
+                case StatementLayoutPattern.LASER_PRINT_A4_PORTRAIT_THREE_PERSON:
+                case StatementLayoutPattern.LASER_PRINT_A4_LANDSCAPE_TWO_PERSON:
+                case StatementLayoutPattern.LASER_CRIMP_PORTRAIT_ONE_PERSON:
+                    for(let settingByCtg: SettingByCtg of self.statementLayoutHistData().statementLayoutSet().listSettingByCtg()) {
+                        totalLines += settingByCtg.listLineByLineSet().length;
+
+                        for(let lineByLineSetting: LineByLineSetting of settingByCtg.listLineByLineSet()) {
+                            if(lineByLineSetting.printSet() == StatementPrintAtr.PRINT) {
+                                printLines++;
+                            } else {
+                                noPrintLines++;
+                            }
+                        }
+                    }
+
+                    self.statementLayoutHistData().usedLines(printLines + "行 (+非表示" + noPrintLines + "行)");
+                    break;
+                case StatementLayoutPattern.LASER_CRIMP_LANDSCAPE_ONE_PERSON:
+                    for(let settingByCtg: SettingByCtg of self.statementLayoutHistData().statementLayoutSet().listSettingByCtg()) {
+                        if(settingByCtg.ctgAtr == CategoryAtr.PAYMENT_ITEM) {
+                            for(let lineByLineSetting: LineByLineSetting of settingByCtg.listLineByLineSet()) {
+                                if(lineByLineSetting.printSet() == StatementPrintAtr.PRINT) {
+                                    printLinesPayment++;
+                                } else {
+                                    noPrintLinesPayment++;
+                                }
+                            }
+                        } else if(settingByCtg.ctgAtr == CategoryAtr.DEDUCTION_ITEM) {
+                            for(let lineByLineSetting: LineByLineSetting of settingByCtg.listLineByLineSet()) {
+                                if(lineByLineSetting.printSet() == StatementPrintAtr.PRINT) {
+                                    printLinesDedu++;
+                                } else {
+                                    noPrintLinesDedu++;
+                                }
+                            }
+                        } else if(settingByCtg.ctgAtr == CategoryAtr.ATTEND_ITEM) {
+                            for(let lineByLineSetting: LineByLineSetting of settingByCtg.listLineByLineSet()) {
+                                if(lineByLineSetting.printSet() == StatementPrintAtr.PRINT) {
+                                    printLinesTime++;
+                                } else {
+                                    noPrintLinesTime++;
+                                }
+                            }
+                        } else if(settingByCtg.ctgAtr == CategoryAtr.REPORT_ITEM) {
+                            for(let lineByLineSetting: LineByLineSetting of settingByCtg.listLineByLineSet()) {
+                                if(lineByLineSetting.printSet() == StatementPrintAtr.PRINT) {
+                                    printLinesReport++;
+                                } else {
+                                    noPrintLinesReport++;
+                                }
+                            }
+                        }
+                    }
+
+                    self.statementLayoutHistData().usedLines("支給" + printLinesPayment + "行(+非表示" + noPrintLinesPayment + "行) " +
+                                                            "控除" + printLinesDedu + "行(+非表示" + noPrintLinesDedu + "行) " +
+                                                            "勤怠" + printLinesTime + "行(+非表示" + noPrintLinesTime + "行) " +
+                                                            "記事" + printLinesReport + "行(+非表示" + noPrintLinesReport + "行) ");
+                    break;
+                case StatementLayoutPattern.DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON:
+                    for(let settingByCtg: SettingByCtg of self.statementLayoutHistData().statementLayoutSet().listSettingByCtg()) {
+                        if(settingByCtg.ctgAtr == CategoryAtr.PAYMENT_ITEM) {
+                            for(let lineByLineSetting: LineByLineSetting of settingByCtg.listLineByLineSet()) {
+                                if(lineByLineSetting.printSet() == StatementPrintAtr.PRINT) {
+                                    printLinesPayment++;
+                                } else {
+                                    noPrintLinesPayment++;
+                                }
+                            }
+                        } else if(settingByCtg.ctgAtr == CategoryAtr.DEDUCTION_ITEM) {
+                            for(let lineByLineSetting: LineByLineSetting of settingByCtg.listLineByLineSet()) {
+                                if(lineByLineSetting.printSet() == StatementPrintAtr.PRINT) {
+                                    printLinesDedu++;
+                                } else {
+                                    noPrintLinesDedu++;
+                                }
+                            }
+                        } else if(settingByCtg.ctgAtr == CategoryAtr.ATTEND_ITEM) {
+                            for(let lineByLineSetting: LineByLineSetting of settingByCtg.listLineByLineSet()) {
+                                if(lineByLineSetting.printSet() == StatementPrintAtr.PRINT) {
+                                    printLinesTime++;
+                                } else {
+                                    noPrintLinesTime++;
+                                }
+                            }
+                        } else if(settingByCtg.ctgAtr == CategoryAtr.REPORT_ITEM) {
+                            for(let lineByLineSetting: LineByLineSetting of settingByCtg.listLineByLineSet()) {
+                                if(lineByLineSetting.printSet() == StatementPrintAtr.PRINT) {
+                                    printLinesReport++;
+                                } else {
+                                    noPrintLinesReport++;
+                                }
+                            }
+                        }
+                    }
+
+                    self.statementLayoutHistData().usedLines("支給3行(+非表示" + noPrintLinesPayment + "行) " +
+                                                            "控除3行(+非表示" + noPrintLinesDedu + "行) " +
+                                                            "勤怠1行(+非表示" + noPrintLinesTime + "行) " +
+                                                            "記事2行(+非表示" + noPrintLinesReport + "行) ");
+                    break;
+                default:
+                    return "";
+            }
+        }
+
         loadLayoutHistData(code: string, histId: string) {
             let self = this;
             block.invisible();
@@ -69,6 +193,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
             service.getStatementLayoutHistData(code, histId).done(function(data: IStatementLayoutHistData) {
                 if(data) {
                     self.statementLayoutHistData(new StatementLayoutHistData(data, false));
+                    self.calculatePrintLine();
                     $("#A3_4").focus();
                 } else {
                     self.statementLayoutHistData(new StatementLayoutHistData(null, false));
@@ -264,6 +389,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                             self.statementLayoutList.removeAll();
                             self.currentHistoryId("");
                             self.statementLayoutHistData(new StatementLayoutHistData(data, true));
+                            self.calculatePrintLine();
 
                             $("#A3_4").focus();
                         }
@@ -346,6 +472,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         endMonthText: KnockoutObservable<string>;
         layoutPatternText: string;
         layoutPatternContent: string;
+        usedLines: KnockoutObservable<string>;
 
         constructor(data: IStatementLayoutHistData, isCreate: boolean) {
             let self = this;
@@ -377,6 +504,8 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 self.layoutPatternText = "";
                 self.layoutPatternContent = "";
             }
+
+            self.usedLines = ko.observable("");
 
             nts.uk.ui.errors.clearAll();
         }
@@ -463,6 +592,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
 
                 if(params && params.isRegistered) {
                     self.listLineByLineSet.push(new LineByLineSetting(null, params.printSet, self));
+                    __viewContext['screenModel'].calculatePrintLine();
                 }
             });
         }
@@ -492,6 +622,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 if(params && params.isRegistered) {
                     self.isShowCtg(true);
                     self.listLineByLineSet.push(new LineByLineSetting(null, params.printSet, self));
+                    __viewContext['screenModel'].calculatePrintLine();
                 }
             });
         }
@@ -535,6 +666,8 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                             lineByLineSetting.printSet(params.printSet);
                         }
                     }
+
+                    __viewContext['screenModel'].calculatePrintLine();
                 }
             });
         }
@@ -638,6 +771,8 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                     } else {
                         self.parent.listLineByLineSet.remove(self);
                     }
+
+                    __viewContext['screenModel'].calculatePrintLine();
                 }
             });
         }
@@ -678,6 +813,8 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
 
                 data.cancelDrop = true;
             }
+
+            $(".limited-label-view").remove();
         }
     }
 
