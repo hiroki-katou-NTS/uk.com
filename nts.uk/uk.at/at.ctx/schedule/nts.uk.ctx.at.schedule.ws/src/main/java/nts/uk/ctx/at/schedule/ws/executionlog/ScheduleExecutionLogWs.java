@@ -189,7 +189,7 @@ public class ScheduleExecutionLogWs extends WebService {
 		if (this.batchServer.exists()) {
 			System.out.println("Call batch service  !");
 			
-			val webApi = this.batchServer.webApi(PathToWebApi.com("/batch/batch-execute"),
+			val webApi = this.batchServer.webApi(PathToWebApi.at("/batch/batch-execute"),
 					ScheduleCreatorExecutionCommand.class, AsyncTaskInfo.class);
 			this.batchServer.request(webApi, c -> c.entity(command).succeeded(x -> {
 				String taskId = x.getId();
