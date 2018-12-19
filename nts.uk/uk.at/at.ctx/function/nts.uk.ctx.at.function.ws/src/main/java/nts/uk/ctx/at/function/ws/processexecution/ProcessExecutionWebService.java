@@ -147,7 +147,10 @@ public class ProcessExecutionWebService extends WebService {
 						String taskId = x.getId();
 						AsyncTaskInfo taskInfo = asyncTaskInfoRepository.find(taskId).get();
 						result.set(taskInfo);
-			}));
+			})
+					.failed(f -> {
+						throw new RuntimeException(f.toString());
+					}));
 		} else {
 			System.out.println("No call batch service !");
 			result.set(this.execHandler.handle(command));
