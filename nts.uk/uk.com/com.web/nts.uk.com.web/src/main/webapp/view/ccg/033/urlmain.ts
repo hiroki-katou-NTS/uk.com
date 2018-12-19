@@ -24,7 +24,9 @@ __viewContext.ready(function() {
                 nts.uk.request.jump("com", "/view/ccg/007/d/index.xhtml"); 
             });
         } else {
-            nts.uk.request.jump("com", "/view/ccg/007/d/index.xhtml"); 
+            nts.uk.ui.dialog.alertError({ messageId: "unknown error" }).then(function() {
+                nts.uk.request.jump("com", "/view/ccg/007/d/index.xhtml"); 
+            });
         }
     });
 });

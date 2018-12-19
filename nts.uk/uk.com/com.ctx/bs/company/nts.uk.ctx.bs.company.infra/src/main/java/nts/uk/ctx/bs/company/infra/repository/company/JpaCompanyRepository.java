@@ -4,11 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.bs.company.infra.repository.company;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
+//import java.util.stream.Collector;
+//import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 

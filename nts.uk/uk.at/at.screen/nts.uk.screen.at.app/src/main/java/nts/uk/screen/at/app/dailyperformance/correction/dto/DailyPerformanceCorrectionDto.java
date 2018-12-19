@@ -332,6 +332,6 @@ public class DailyPerformanceCorrectionDto {
 	public void checkShowTighProcess(int displayMode, boolean userLogin){
 		this.showTighProcess = identityProcessDto.isUseIdentityOfMonth() && displayMode == 0 && userLogin && indentityMonthResult.getEnableButton();
 		indentityMonthResult.setShow26(indentityMonthResult.getShow26() && identityProcessDto.isUseIdentityOfMonth() && displayMode == 0 && userLogin);
-		indentityMonthResult.setHideAll(displayMode != 0);
+		indentityMonthResult.setHideAll(displayMode != 0 || !identityProcessDto.isUseIdentityOfMonth());
 	}
 }

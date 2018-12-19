@@ -10,7 +10,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.app.find.dailyperformanceformat.businesstype.BusinessTypeDto;
 import nts.uk.ctx.pereg.app.find.common.InitDefaultValue;
 import nts.uk.ctx.pereg.app.find.common.LayoutControlComBoBox;
 import nts.uk.ctx.pereg.app.find.common.MappingFactory;
@@ -26,7 +25,6 @@ import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutFinder;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
 import nts.uk.ctx.pereg.dom.person.additemdata.item.EmpInfoItemDataRepository;
-import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;

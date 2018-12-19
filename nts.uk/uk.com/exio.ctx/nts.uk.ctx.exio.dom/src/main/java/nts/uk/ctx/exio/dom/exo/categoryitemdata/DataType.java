@@ -8,7 +8,7 @@ public enum DataType {
 	CHARACTER(1, "Enum_ItemType_CHARACTER"),
 	//日付型
 	DATE(2, "Enum_ItemType_DATE"),
-	//時刻型
+	//時間型
 	TIME(3, "Enum_ItemType_TIME"),
 	//時刻型
 	INS_TIME(4, "Enum_ItemType_INS_TIME"),

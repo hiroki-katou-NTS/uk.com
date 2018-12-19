@@ -15,7 +15,6 @@ import javax.transaction.Transactional;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatMonthlyRepository;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatMonthlyRepository;
-import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.ConfirmationMonthRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthFinder;
@@ -51,8 +50,8 @@ public class DPMonthFlexProcessor {
 	@Inject
 	private MonthlyModifyQueryProcessor monthlyModifyQueryProcessor;
 
-	@Inject
-	private ConfirmationMonthRepository confirmationMonthRepository;
+//	@Inject
+//	private ConfirmationMonthRepository confirmationMonthRepository;
 	
 	@Inject
 	private FlexInfoDisplayChange flexInfoDisplayChange;
@@ -74,7 +73,7 @@ public class DPMonthFlexProcessor {
 
 	private static final List<Integer> DAFAULT_ITEM = Arrays.asList(18, 19, 21, 189, 190, 191, 202, 204);
 	
-	private static final String FORMAT_HH_MM = "%d:%02d";
+//	private static final String FORMAT_HH_MM = "%d:%02d";
 
 	public DPMonthResult getDPMonthFlex(DPMonthFlexParam param) {
 		String companyId = param.getCompanyId();

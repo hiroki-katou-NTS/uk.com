@@ -403,6 +403,12 @@ module kcp.share.list {
                         self.selectedCodes(selectedValues);
                         gridList.ntsGridList("setSelectedValue", []);
                         gridList.ntsGridList("setSelectedValue", selectedValues);
+                        setTimeout(function() {
+                            let chk = gridList.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
+                            if (chk[0].getAttribute("data-chk") == "off") {
+                                chk.click();
+                            }
+                        }, 1);
                     }
                 });
             }

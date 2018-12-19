@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.find.application.applicationlist;
 
+/*import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppDispNameRepository;*/
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +23,6 @@ import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
-import nts.uk.ctx.at.request.dom.setting.company.displayname.HdAppDispNameRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.shr.com.context.AppContexts;
@@ -34,8 +34,8 @@ public class ApplicationListForScreen {
 	private ApplicationRepository_New applicationRepository_New;
 	@Inject
 	private AppDispNameRepository appDispNameRepository;
-	@Inject
-	private HdAppDispNameRepository hdAppDispNameRepository;
+	/*@Inject
+	private HdAppDispNameRepository hdAppDispNameRepository;*/
 	@Inject
 	private AppAbsenceRepository appAbsenceRepository;
 	@Inject
@@ -101,15 +101,17 @@ public class ApplicationListForScreen {
 				applicationExport.setAppTypeName(this.getAppAbsenceName(optAppAbsence.get().getHolidayAppType().value));
 				applicationExports.add(applicationExport);
 			} else {
-				Optional<AppAbsence> optAppAbsence = appAbsenceRepository.getAbsenceById(app.getCompanyID(), app.getAppID());
-				ApplicationExportDto applicationExport = new ApplicationExportDto();
-				applicationExport.setAppDate(app.getAppDate());
-				applicationExport.setAppType(app.getAppType().value);
-				applicationExport.setEmployeeID(app.getEmployeeID());
-				applicationExport.setReflectState(app.getReflectionInformation().getStateReflectionReal().value);
-				// ドメインモデル「休暇申請種類表示名」を取得する
-				applicationExport.setAppTypeName(this.getAppAbsenceName(optAppAbsence.get().getHolidayAppType().value));
-				applicationExports.add(applicationExport);
+				for(GeneralDate loopDate = app.getStartDate().get(); loopDate.beforeOrEquals(app.getEndDate().get()); loopDate = loopDate.addDays(1)){
+					Optional<AppAbsence> optAppAbsence = appAbsenceRepository.getAbsenceById(app.getCompanyID(), app.getAppID());
+					ApplicationExportDto applicationExport = new ApplicationExportDto();
+					applicationExport.setAppDate(loopDate);
+					applicationExport.setAppType(app.getAppType().value);
+					applicationExport.setEmployeeID(app.getEmployeeID());
+					applicationExport.setReflectState(app.getReflectionInformation().getStateReflectionReal().value);
+					// ドメインモデル「休暇申請種類表示名」を取得する
+					applicationExport.setAppTypeName(this.getAppAbsenceName(optAppAbsence.get().getHolidayAppType().value));
+					applicationExports.add(applicationExport);
+				}
 			}
 		}
 		List<Application_New> appWorkChangeLst = application.stream()

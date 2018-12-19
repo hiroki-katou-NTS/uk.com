@@ -36,16 +36,18 @@ public class ReflectBreakTimzoneImpl implements BreakTimeZoneService {
 		// weekdayHolidayClassification :
 		// 平日 : 0 , 休日 : 1
 
-		boolean checkReflect = false;
+//		boolean checkReflect = false;
 		if (workTimeSetting != null && workTimeSetting.getWorkTimeDivision().getWorkTimeDailyAtr().value == 0) {
 
 			switch (workTimeSetting.getWorkTimeDivision().getWorkTimeMethodSet().value) {
 			case 0:// 固定勤務
-				checkReflect = reflectBreakTimeOfDailyDomainService.CheckBreakTimeFromFixedWorkSetting(companyId,
+				//checkReflect = 
+				reflectBreakTimeOfDailyDomainService.CheckBreakTimeFromFixedWorkSetting(companyId,
 						weekdayHolidayClassification, workTimeCode, breakTimeZoneSettingOutPut, checkWorkDay);
 				break;
 			case 2:// 流動勤務
-				checkReflect = reflectBreakTimeOfDailyDomainService.confirmIntermissionTimeZone(companyId,
+				//checkReflect = 
+				reflectBreakTimeOfDailyDomainService.confirmIntermissionTimeZone(companyId,
 						weekdayHolidayClassification, workTimeCode, breakTimeZoneSettingOutPut);
 
 				break;
@@ -57,13 +59,15 @@ public class ReflectBreakTimzoneImpl implements BreakTimeZoneService {
 				break;
 
 			default:
-				checkReflect = reflectBreakTimeOfDailyDomainService.CheckBreakTimeFromFixedWorkSetting(companyId,
+				//checkReflect = 
+				reflectBreakTimeOfDailyDomainService.CheckBreakTimeFromFixedWorkSetting(companyId,
 						weekdayHolidayClassification, workTimeCode, breakTimeZoneSettingOutPut, checkWorkDay);
 				break;
 			}
 
 		} else {
-			checkReflect = reflectBreakTimeOfDailyDomainService.confirmInterFlexWorkSetting(companyId,
+			//checkReflect = 
+					reflectBreakTimeOfDailyDomainService.confirmInterFlexWorkSetting(companyId,
 					weekdayHolidayClassification, workTimeCode, breakTimeZoneSettingOutPut, checkWorkDay);
 		}
 

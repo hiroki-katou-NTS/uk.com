@@ -1,13 +1,9 @@
 package nts.uk.file.at.app.export.dailyschedule;
 
-import java.math.BigDecimal;
-
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
@@ -38,6 +34,7 @@ public class ActualValue {
 	 * @param <T> the generic type
 	 * @return the t
 	 */
+	@SuppressWarnings("unchecked")
 	public <T> T value() {
 		if(value == null){
 			return null;

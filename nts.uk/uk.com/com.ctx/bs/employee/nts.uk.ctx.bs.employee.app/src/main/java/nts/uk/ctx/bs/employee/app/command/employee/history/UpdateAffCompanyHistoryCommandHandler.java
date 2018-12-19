@@ -16,7 +16,6 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistService;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfo;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyInfoRepository;
 import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
@@ -65,7 +64,7 @@ public class UpdateAffCompanyHistoryCommandHandler extends CommandHandler<Update
 					command.getEndDate() != null ? command.getEndDate() : ConstantUtils.maxDate()));
 			affCompanyHistService.update(listHistBySID, itemToBeUpdated.get());
 		}
-		AffCompanyInfo histItem = AffCompanyInfo.createFromJavaType(command.getHistoryId(),
+		AffCompanyInfo histItem = AffCompanyInfo.createFromJavaType(command.getSId(), command.getHistoryId(),
 				command.getRecruitmentClassification(), command.getAdoptionDate(),
 				command.getRetirementAllowanceCalcStartDate());
 		affCompanyInfoRepository.update(histItem);

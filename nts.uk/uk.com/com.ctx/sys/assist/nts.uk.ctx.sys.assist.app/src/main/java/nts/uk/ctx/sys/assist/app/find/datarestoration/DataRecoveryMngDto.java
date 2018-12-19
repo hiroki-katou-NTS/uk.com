@@ -1,15 +1,8 @@
 package nts.uk.ctx.sys.assist.app.find.datarestoration;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
-import lombok.Setter;
 import lombok.Value;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMng;
-import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryOperatingCondition;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @AllArgsConstructor
 @Value

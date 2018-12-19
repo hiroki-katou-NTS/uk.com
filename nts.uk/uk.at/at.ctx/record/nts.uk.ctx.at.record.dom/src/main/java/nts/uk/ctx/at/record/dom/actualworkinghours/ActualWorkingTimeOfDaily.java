@@ -192,7 +192,7 @@ public class ActualWorkingTimeOfDaily {
 //													   recordClass.getFixRestTimeSetting(),
 //													   calcResultOotsuka
 //													   );
-		DivergenceTimeOfDaily divergenceTimeOfDaily = new DivergenceTimeOfDaily(Collections.emptyList());
+//		DivergenceTimeOfDaily divergenceTimeOfDaily = new DivergenceTimeOfDaily(Collections.emptyList());
 		
 		/*返値*/
 		return new ActualWorkingTimeOfDaily(
@@ -371,7 +371,8 @@ public class ActualWorkingTimeOfDaily {
 						recordClass.getIntegrationOfDaily().getCalAttr().getOvertimeSetting(),
 						recordClass.getDailyUnit(),
 						recordClass.getFixRestTimeSetting(),
-						recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet()
+						recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet(),
+						recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc()
 						);
 				
 			}
@@ -460,11 +461,11 @@ public class ActualWorkingTimeOfDaily {
 		Optional<BreakTimeSheet> breakTimeSheet = breakList.stream().filter(tc -> tc.getBreakFrameNo().v() == 2).findFirst();
 		if(!breakTimeSheet.isPresent()) return 0;
 		//出退勤取得
-		TimeSpanForCalc attendanceLeave = new TimeSpanForCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0));
+		//TimeSpanForCalc attendanceLeave = new TimeSpanForCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0));
 		if(integrationOfDailyInDto.getAttendanceLeave().isPresent()) {
 			val attendanceTimeByWorkNo = integrationOfDailyInDto.getAttendanceLeave().get().getAttendanceLeavingWork(1);
 			if(attendanceTimeByWorkNo.isPresent()) {
-				attendanceLeave = attendanceTimeByWorkNo.get().getTimespan();
+			//	attendanceLeave = attendanceTimeByWorkNo.get().getTimespan();
 			}
 		}
 		//実働時間 > 8:00 && 残業合計(振替残業含む)>0

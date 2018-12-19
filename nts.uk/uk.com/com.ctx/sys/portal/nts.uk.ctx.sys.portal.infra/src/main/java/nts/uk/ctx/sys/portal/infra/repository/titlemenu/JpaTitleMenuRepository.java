@@ -2,13 +2,14 @@ package nts.uk.ctx.sys.portal.infra.repository.titlemenu;
 
 import java.util.List;
 import java.util.Optional;
+
 import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.titlemenu.TitleMenu;
 import nts.uk.ctx.sys.portal.dom.titlemenu.TitleMenuRepository;
 import nts.uk.ctx.sys.portal.infra.entity.titlemenu.CcgmtTitleMenu;
 import nts.uk.ctx.sys.portal.infra.entity.titlemenu.CcgmtTitleMenuPK;
-import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePart;
 
 @Stateless
 /**

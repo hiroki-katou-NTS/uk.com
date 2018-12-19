@@ -102,36 +102,36 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			+ "WHERE a.pk.companyId = :companyID "
 			+ "AND a.pk.specialHolidayCode = :specialHolidayCD";
 	
-	private final static String FIND_GRANT_REGULAR = "SELECT e,f FROM KshstGrantRegular e "
-			+ " LEFT JOIN KshstGrantDateTbl f "
-			+ " ON e.pk.companyId = f.pk.companyId AND e.pk.specialHolidayCode = f.pk.specialHolidayCode";
+//	private final static String FIND_GRANT_REGULAR = "SELECT e,f FROM KshstGrantRegular e "
+//			+ " LEFT JOIN KshstGrantDateTbl f "
+//			+ " ON e.pk.companyId = f.pk.companyId AND e.pk.specialHolidayCode = f.pk.specialHolidayCode";
 	
-	private final static String FIND_GRANT_REGULAR_TEST = FIND_GRANT_REGULAR
-			+ " WHERE e.pk.companyId = 'hung-test'";
+//	private final static String FIND_GRANT_REGULAR_TEST = FIND_GRANT_REGULAR
+//			+ " WHERE e.pk.companyId = 'hung-test'";
 	
-	private final static String FIND_SPECICAL_LEAVE =  "SELECT g,h,i FROM KshstSpecialLeaveRestriction g"
-			+ " LEFT JOIN KshstSpecEmp h"
-			+ " ON g.pk.companyId = h.pk.companyId AND g.pk.specialHolidayCode = h.pk.specialHolidayCode"
-			+ "	LEFT JOIN KshstSpecCls i"
-			+ " ON i.pk.companyId = i.pk.companyId AND i.pk.specialHolidayCode = i.pk.specialHolidayCode";
+//	private final static String FIND_SPECICAL_LEAVE =  "SELECT g,h,i FROM KshstSpecialLeaveRestriction g"
+//			+ " LEFT JOIN KshstSpecEmp h"
+//			+ " ON g.pk.companyId = h.pk.companyId AND g.pk.specialHolidayCode = h.pk.specialHolidayCode"
+//			+ "	LEFT JOIN KshstSpecCls i"
+//			+ " ON i.pk.companyId = i.pk.companyId AND i.pk.specialHolidayCode = i.pk.specialHolidayCode";
 	
-	private final static String FIND_BY_CID = "SELECT a, b, c, d, k, l "
-			+ " FROM KshstSpecialHoliday a"
-			+ " LEFT JOIN ("
-			+ FIND_GRANT_REGULAR
-			+ " ) b"
-			+ " ON a.pk.companyId = b.pk.companyId AND a.pk.specialHolidayCode = b.pk.specialHolidayCode"
-			+ " LEFT JOIN KshstGrantPeriodic c"
-			+ " ON a.pk.companyId = c.pk.companyId AND a.pk.specialHolidayCode = c.pk.specialHolidayCode"
-			+ " LEFT JOIN ("
-			+ FIND_SPECICAL_LEAVE
-			+ " ) d"
-			+ " ON a.pk.companyId = d.pk.companyId AND a.pk.specialHolidayCode = d.pk.specialHolidayCode"
-			+ " LEFT JOIN KshstSphdSpecLeave k"
-			+ " ON a.pk.companyId = k.pk.companyId AND a.pk.specialHolidayCode = k.pk.specialHolidayCode"
-			+ " LEFT JOIN KshstSphdAbsence l"
-			+ " ON a.pk.companyId = l.pk.companyId AND a.pk.specialHolidayCode = l.pk.specialHolidayCode"
-			+ " WHERE a.pk.companyId = :companyId ORDER BY e.pk.specialHolidayCode ASC";
+//	private final static String FIND_BY_CID = "SELECT a, b, c, d, k, l "
+//			+ " FROM KshstSpecialHoliday a"
+//			+ " LEFT JOIN ("
+//			+ FIND_GRANT_REGULAR
+//			+ " ) b"
+//			+ " ON a.pk.companyId = b.pk.companyId AND a.pk.specialHolidayCode = b.pk.specialHolidayCode"
+//			+ " LEFT JOIN KshstGrantPeriodic c"
+//			+ " ON a.pk.companyId = c.pk.companyId AND a.pk.specialHolidayCode = c.pk.specialHolidayCode"
+//			+ " LEFT JOIN ("
+//			+ FIND_SPECICAL_LEAVE
+//			+ " ) d"
+//			+ " ON a.pk.companyId = d.pk.companyId AND a.pk.specialHolidayCode = d.pk.specialHolidayCode"
+//			+ " LEFT JOIN KshstSphdSpecLeave k"
+//			+ " ON a.pk.companyId = k.pk.companyId AND a.pk.specialHolidayCode = k.pk.specialHolidayCode"
+//			+ " LEFT JOIN KshstSphdAbsence l"
+//			+ " ON a.pk.companyId = l.pk.companyId AND a.pk.specialHolidayCode = l.pk.specialHolidayCode"
+//			+ " WHERE a.pk.companyId = :companyId ORDER BY e.pk.specialHolidayCode ASC";
 	
 	private final static String DELETE_SPECICAL_LEAVE_RESTRICTION = "DELETE FROM KshstSpecialLeaveRestriction a "
 			+ "WHERE a.pk.companyId = :companyID "
@@ -210,7 +210,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		}
 		int ageLowerLimit = c.getInt("AGE_LOWER_LIMIT") != null ? c.getInt("AGE_LOWER_LIMIT") : 0;
 		int ageHigherLimit = c.getInt("AGE_HIGHER_LIMIT") != null ? c.getInt("AGE_HIGHER_LIMIT") : 0;
-		int gender = c.getInt("GENDER") != null ? c.getInt("GENDER") : 0;
+		int gender = c.getInt("GENDER") != null ? c.getInt("GENDER") : 1;
 		
 		FixGrantDate fixGrantDate = FixGrantDate.createFromJavaType(interval, grantedDays);
 		GrantTime grantTime = GrantTime.createFromJavaType(fixGrantDate, null);

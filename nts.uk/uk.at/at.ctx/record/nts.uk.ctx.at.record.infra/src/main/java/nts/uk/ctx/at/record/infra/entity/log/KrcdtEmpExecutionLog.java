@@ -1,24 +1,24 @@
 package nts.uk.ctx.at.record.infra.entity.log;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.persistence.CascadeType;
+//import java.util.List;
+//import java.util.stream.Collectors;
+//
+//import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
+//import javax.persistence.JoinTable;
+//import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
+//import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
+//import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

@@ -207,9 +207,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.acquiredBaseDate = ko.observable('');
 
                 // status of employee
-                self.selectedIncumbent = ko.observable(false);
-                self.selectedClosed = ko.observable(false);
-                self.selectedLeave = ko.observable(false);
+                self.selectedIncumbent = ko.observable(true);
+                self.selectedClosed = ko.observable(true);
+                self.selectedLeave = ko.observable(true);
                 self.selectedRetirement = ko.observable(false);
                 
                 //WorkType
@@ -671,11 +671,12 @@ module nts.uk.com.view.ccg.share.ccg {
 
                 /** Required parameter */
                 self.setBaseDateAndPeriodOnInit(options);
-
-                self.selectedIncumbent(options.inService);
-                self.selectedLeave(options.leaveOfAbsence);
-                self.selectedClosed(options.closed);
-                self.selectedRetirement(options.retirement);
+                
+//                   3.14 #102965                
+//                self.selectedIncumbent(options.inService);
+//                self.selectedLeave(options.leaveOfAbsence);
+//                self.selectedClosed(options.closed);
+//                self.selectedRetirement(options.retirement);
 
                 /** Quick search tab options */
                 self.showAllReferableEmployee = _.isNil(options.showAllReferableEmployee) ? true : options.showAllReferableEmployee;
@@ -770,6 +771,7 @@ module nts.uk.com.view.ccg.share.ccg {
                                     this.saveEmployeeRangeSelection();
                                     // apply data search
                                     self.applyDataSearch();
+                                    self.employeeListTab3([]);
                                 });
                             });
 

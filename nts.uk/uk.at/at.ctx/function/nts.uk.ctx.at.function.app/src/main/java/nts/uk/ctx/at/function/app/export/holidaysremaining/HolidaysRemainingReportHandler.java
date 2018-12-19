@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.function.app.export.holidaysremaining;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -18,12 +20,13 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
+import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.function.app.find.holidaysremaining.HdRemainManageFinder;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
-import nts.uk.ctx.at.function.dom.adapter.annualleave.GetNextAnnLeaGrantDateAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationQueryDtoImport;
@@ -33,21 +36,23 @@ import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveOfThisMonthI
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveRemainingAdapter;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveUsageStatusOfThisMonthImported;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnualLeaveUsageImported;
+import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.CheckCallRequest;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.ChildNursingLeaveCurrentSituationImported;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.ChildNursingLeaveRemainingAdapter;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.CurrentHolidayRemainImported;
+import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.HdRemainDetailMerEx;
+import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.HolidayRemainMerEx;
+import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.HolidayRemainMergeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.NursingLeaveCurrentSituationImported;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.NursingLeaveRemainingAdapter;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.StatusOfHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.ComplileInPeriodOfSpecialLeaveAdapter;
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialVacationImported;
-import nts.uk.ctx.at.function.dom.adapter.reserveleave.GetReserveLeaveNumbersAdpter;
 import nts.uk.ctx.at.function.dom.adapter.reserveleave.ReserveHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.reserveleave.ReservedYearHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.reserveleave.RsvLeaUsedCurrentMonImported;
 import nts.uk.ctx.at.function.dom.adapter.vacation.CurrentHolidayImported;
-import nts.uk.ctx.at.function.dom.adapter.vacation.MonthlyDayoffRemainAdapter;
 import nts.uk.ctx.at.function.dom.adapter.vacation.StatusHolidayImported;
 import nts.uk.ctx.at.function.dom.holidaysremaining.VariousVacationControl;
 import nts.uk.ctx.at.function.dom.holidaysremaining.VariousVacationControlService;
@@ -55,6 +60,16 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingDataS
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingInfor;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingEmployee;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingReportGenerator;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -84,14 +99,14 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	private ClosureRepository closureRepository;
 	@Inject
 	private ClosureService closureService;
-	@Inject
-	private GetNextAnnLeaGrantDateAdapter getNextAnnLeaGrantDateAdapter;
+//	@Inject
+//	private GetNextAnnLeaGrantDateAdapter getNextAnnLeaGrantDateAdapter;
 	@Inject
 	private AnnLeaveRemainingAdapter annLeaveAdapter;
-	@Inject
-	private GetReserveLeaveNumbersAdpter reserveLeaveAdpter;
-	@Inject
-	private MonthlyDayoffRemainAdapter monthlyDayoffAdapter;
+//	@Inject
+//	private GetReserveLeaveNumbersAdpter reserveLeaveAdpter;
+//	@Inject
+//	private MonthlyDayoffRemainAdapter monthlyDayoffAdapter;
 	@Inject
 	private AbsenceReruitmentManaAdapter absenceReruitmentAdapter;
 	@Inject
@@ -101,16 +116,25 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	@Inject
 	private NursingLeaveRemainingAdapter nursingLeaveAdapter;
 	@Inject
-	private VariousVacationControlService variousVacationControlService;
+	private VariousVacationControlService varVacaCtrSv;
 	@Inject
 	private CompanyAdapter companyRepo;
+	@Inject
+	private ManagedParallelWithContext parallel;
+	@Inject
+	private HolidayRemainMergeAdapter hdRemainAdapter;
+	@Inject
+	private AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepository;
+	@Inject
+	private AbsenceReruitmentMngInPeriodQuery absenceReruitmentMngInPeriodQuery;
+	@Inject
+	private BreakDayOffMngInPeriodQuery breakDayOffMngInPeriodQuery;
 	
-
 	@Override
 	protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
 		val query = context.getQuery();
 		val hdRemainCond = query.getHolidayRemainingOutputCondition();
-		val cId = AppContexts.user().companyId();
+		String cId = AppContexts.user().companyId();
 		val baseDate = GeneralDate.fromString(hdRemainCond.getBaseDate(), "yyyy/MM/dd");
 		val startDate = GeneralDate.fromString(hdRemainCond.getStartMonth(), "yyyy/MM/dd");
 		val endDate = GeneralDate.fromString(hdRemainCond.getEndMonth(), "yyyy/MM/dd");
@@ -118,6 +142,11 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		val hdManagement = hdFinder.findByCode(hdRemainCond.getOutputItemSettingCode());
 		if (!hdManagement.isPresent()) {
 			return;
+		}
+		AnnualPaidLeaveSetting annualPaidLeaveSetting = annualPaidLeaveSettingRepository.findByCompanyId(cId);
+		ManageDistinct enumManageDistinct = annualPaidLeaveSetting.getYearManageType();
+		if(enumManageDistinct == ManageDistinct.NO){
+			throw new BusinessException("Msg_885");
 		}
 		int closureId = hdRemainCond.getClosureId();
 		// ※該当の締めIDが「0：全締め」のときは、「1締め（締めID＝1）」とする
@@ -149,8 +178,6 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		Map<String, EmployeeQuery> empMap = query.getLstEmpIds().stream()
 				.collect(Collectors.toMap(EmployeeQuery::getEmployeeId, Function.identity()));
 
-		Map<String, HolidaysRemainingEmployee> employees = new HashMap<>();
-
 		// <<Public>> 社員の情報を取得する
 		List<EmployeeInformationImport> listEmployeeInformationImport = employeeInformationAdapter
 				.getEmployeeInfo(new EmployeeInformationQueryDtoImport(employeeIds, criteriaDate, true, false, true,
@@ -160,42 +187,57 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 			throw new BusinessException("Msg_885");
 		}
 
-		val variousVacationControl = variousVacationControlService.getVariousVacationControl();
+		val varVacaCtr = varVacaCtrSv.getVariousVacationControl();
 		val closureInforOpt = this.getClosureInfor(closureId);
 
-		boolean isSameCurrentMonth = true;
-		boolean isFirstEmployee = true;
-		Optional<YearMonth> currentMonthOfFirstEmp = Optional.empty();
-		for (EmployeeInformationImport emp : listEmployeeInformationImport) {
+//		boolean isSameCurrentMonth = true;
+//		boolean isFirstEmployee = true;
+        MutableValue<Boolean> isSameCurrentMonth = new MutableValue<>();
+        MutableValue<Boolean> isFirstEmployee = new MutableValue<>();
+        isSameCurrentMonth.set(true);
+        isFirstEmployee.set(true);
+//		Optional<YearMonth> currentMonthOfFirstEmp = Optional.empty();
+		MutableValue<YearMonth> currentMonthOfFirstEmp = new MutableValue<>();
+		//hoatt
+//		List<String> lstSID = listEmployeeInformationImport.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+//		Map<String, YearMonth> mapCurMon = hdRemainManageFinder.getCurrentMonthVer2(cId, lstSID, baseDate);
+		Map<String, HolidaysRemainingEmployee> mapTmp = Collections.synchronizedMap(new HashMap<String, HolidaysRemainingEmployee>());
+		parallel.forEach(listEmployeeInformationImport, emp -> {
 			String wpCode = emp.getWorkplace() != null ? emp.getWorkplace().getWorkplaceCode() : "";
 			String wpName = emp.getWorkplace() != null ? emp.getWorkplace().getWorkplaceName()
 					: TextResource.localize("KDR001_55");
 			String empmentName = emp.getEmployment() != null ? emp.getEmployment().getEmploymentName() : "";
 			String positionName = emp.getPosition() != null ? emp.getPosition().getPositionName() : "";
+            Optional<YearMonth> currentMonth = hdRemainManageFinder.getCurrentMonth(cId, emp.getEmployeeId(), baseDate);
 
 			// List内の締め情報．当月をチェックする
-			Optional<YearMonth> currentMonth = hdRemainManageFinder.getCurrentMonth(cId, emp.getEmployeeId(), baseDate);
-			if (isFirstEmployee) {
-				isFirstEmployee = false;
-				currentMonthOfFirstEmp = currentMonth;
+//			Optional<YearMonth> currentMonth = Optional.empty();
+//			if(mapCurMon.containsKey(emp.getEmployeeId())){
+//				currentMonth = Optional.of(mapCurMon.get(emp.getEmployeeId()));
+//			}
+			if (isFirstEmployee.get()) {
+				isFirstEmployee.set(false);
+				currentMonthOfFirstEmp.set(currentMonth.isPresent() ? currentMonth.get() : null);;
 			} else {
-				if (isSameCurrentMonth && !currentMonth.equals(currentMonthOfFirstEmp)) {
-					isSameCurrentMonth = false;
+				if (isSameCurrentMonth.get() && !currentMonth.equals(currentMonthOfFirstEmp)) {
+					isSameCurrentMonth.set(false);
 				}
 			}
-			val holidayRemainingInfor = this.getHolidayRemainingInfor(variousVacationControl, closureInforOpt,
+			HolidayRemainingInfor holidayRemainingInfor = this.getHolidayRemainingInfor(varVacaCtr, closureInforOpt,
 					emp.getEmployeeId(), baseDate, startDate, endDate,currentMonth);
 
-			employees.put(emp.getEmployeeId(), new HolidaysRemainingEmployee(emp.getEmployeeId(), emp.getEmployeeCode(),
+			mapTmp.put(emp.getEmployeeId(), new HolidaysRemainingEmployee(emp.getEmployeeId(), emp.getEmployeeCode(),
 					empMap.get(emp.getEmployeeId()).getEmployeeName(), empMap.get(emp.getEmployeeId()).getWorkplaceId(),
 					wpCode, wpName, empmentName, positionName, currentMonth, holidayRemainingInfor));
-		}
-		
+		});
+		Map<String, HolidaysRemainingEmployee> mapEmp = new HashMap<>();
+		mapEmp.putAll(mapTmp);
 		Optional<CompanyInfor> companyCurrent = this.companyRepo.getCurrentCompany();
-
 		HolidayRemainingDataSource dataSource = new HolidayRemainingDataSource(hdRemainCond.getStartMonth(),
-				hdRemainCond.getEndMonth(), variousVacationControl, hdRemainCond.getPageBreak(),
-				hdRemainCond.getBaseDate(), hdManagement.get(), isSameCurrentMonth, employeeIds, employees, companyCurrent.isPresent() == true? companyCurrent.get().getCompanyName():"");
+				hdRemainCond.getEndMonth(), varVacaCtr, hdRemainCond.getPageBreak(),
+				hdRemainCond.getBaseDate(), hdManagement.get(), isSameCurrentMonth.get(), employeeIds, mapEmp, 
+				companyCurrent.isPresent() == true? companyCurrent.get().getCompanyName():"",
+				hdRemainCond.getTitle());
 
 		this.reportGenerator.generate(context.getGeneratorContext(), dataSource);
 
@@ -222,19 +264,14 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		// RequestList364
 		List<RsvLeaUsedCurrentMonImported> listRsvLeaUsedCurrentMon = null;
 		// RequestList269
-		List<CurrentHolidayImported> listCurrentHoliday = null;
+		List<CurrentHolidayImported> listCurrentHoliday = new ArrayList<>();
 		// RequestList259
 		List<StatusHolidayImported> listStatusHoliday = null;
 		// RequestList270
-		List<CurrentHolidayRemainImported> listCurrentHolidayRemain = null;
+		List<CurrentHolidayRemainImported> listCurrentHolidayRemain = new ArrayList<>();
 		// RequestList260
 		List<StatusOfHolidayImported> listStatusOfHoliday = null;
-		// RequestList273
-		Map<Integer, SpecialVacationImported> mapSpecialVacation = new HashMap<>();
-        Map<Integer, SpecialVacationImported> mapSPVaCrurrentMonth = new HashMap<>();
 
-		// RequestList263
-		Map<Integer, List<SpecialHolidayImported>> mapListSpecialHoliday = new HashMap<>();
 		// RequestList206
 		ChildNursingLeaveCurrentSituationImported childNursingLeave = null;
 		// RequestList207
@@ -243,95 +280,123 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		if (!closureInforOpt.isPresent()) {
 			return null;
 		}
-
-		val currentMonth = closureInforOpt.get().getCurrentMonth();
+		
+		YearMonth currentMonth = closureInforOpt.get().getCurrentMonth();
 		val cId = AppContexts.user().companyId();
 		val datePeriod = new DatePeriod(startDate, endDate);
-
+		//hoatt
+		YearMonthPeriod period = new YearMonthPeriod(startDate.yearMonth(),currentMonth.previousMonth());
+		//Mer RQ255,258,259,260,263
+		HolidayRemainMerEx hdRemainMer = hdRemainAdapter.getRemainMer(employeeId, period);
+		//Mer RQ265,268,269,363,364,369
+		boolean call265 = variousVacationControl.isAnnualHolidaySetting();
+		boolean call268 = variousVacationControl.isYearlyReservedSetting();
+		boolean call269 = variousVacationControl.isSubstituteHolidaySetting();
+		boolean call363 = variousVacationControl.isAnnualHolidaySetting() && currentMonth.compareTo(endDate.yearMonth()) <= 0;
+		boolean call364 = variousVacationControl.isYearlyReservedSetting() && currentMonth.compareTo(endDate.yearMonth()) <= 0;
+		boolean call369 = variousVacationControl.isAnnualHolidaySetting();
+		CheckCallRequest check = new CheckCallRequest(call265, call268, call269, call363, call364, call369);
+		HdRemainDetailMerEx remainDel = hdRemainAdapter.getRemainDetailMer(employeeId, currentMonth, baseDate, new DatePeriod(startDate, endDate), check);
 		if (variousVacationControl.isAnnualHolidaySetting()) {
 			// Call RequestList369
-			grantDate = getNextAnnLeaGrantDateAdapter.algorithm(cId, employeeId);
+			grantDate = remainDel.getResult369();
 			// Call RequestList281
 			listAnnLeaGrantNumber = annLeaveAdapter.algorithm(employeeId);
 			listAnnLeaGrantNumber = listAnnLeaGrantNumber.stream()
 					.sorted(Comparator.comparing(AnnLeaGrantNumberImported::getGrantDate)).collect(Collectors.toList());
 			// Call RequestList265
-			annLeaveOfThisMonth = annLeaveAdapter.getAnnLeaveOfThisMonth(employeeId);
-			// Call RequestList255
+			annLeaveOfThisMonth = remainDel.getResult265();
+			// Call RequestList255 ver2 - hoatt
 			if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
-				listAnnualLeaveUsage = annLeaveAdapter.algorithm(employeeId,
-						new YearMonthPeriod(startDate.yearMonth(),currentMonth.previousMonth()));
+				listAnnualLeaveUsage = hdRemainMer.getResult255();
 			}
 			// Call RequestList363
 			if (currentMonth.compareTo(endDate.yearMonth()) <= 0) {
-				listAnnLeaveUsageStatusOfThisMonth = annLeaveAdapter.getAnnLeaveUsageOfThisMonth(employeeId,
-						new DatePeriod(GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1), endDate));
+				listAnnLeaveUsageStatusOfThisMonth = remainDel.getResult363();
 			}
 		}
 
 		if (variousVacationControl.isYearlyReservedSetting()) {
 			// Call RequestList268
-			reserveHoliday = reserveLeaveAdpter.algorithm(employeeId);
-			// Call RequestList258
+			reserveHoliday = remainDel.getResult268();
+			// Call RequestList258 ver2 - hoatt
 			if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
-				listReservedYearHoliday = reserveLeaveAdpter.algorithm(employeeId,
-						new YearMonthPeriod(startDate.yearMonth(), currentMonth.previousMonth()));
+				listReservedYearHoliday = hdRemainMer.getResult258();
 			}
 			// Call RequestList364
 			if (currentMonth.compareTo(endDate.yearMonth()) <= 0) {
-				listRsvLeaUsedCurrentMon = reserveLeaveAdpter.algorithm364(employeeId,
-						new YearMonthPeriod(currentMonth, endDate.yearMonth()));
+				listRsvLeaUsedCurrentMon = remainDel.getResult364();
 			}
 		}
 
 		if (variousVacationControl.isSubstituteHolidaySetting()) {
 			// Call RequestList269
-			listCurrentHoliday = monthlyDayoffAdapter.getInterimRemainAggregate(employeeId, baseDate,
-					startDate.yearMonth(), endDate.yearMonth());
-			// Call RequestList259
+			//listCurrentHoliday = remainDel.getResult269();
+			for(YearMonth s = currentMonth; s.lessThanOrEqualTo(endDate.yearMonth()); s = s.addMonths(1)) {
+				GeneralDate end = GeneralDate.ymd(s.year(), s.month(), 1).addMonths(1).addDays(-1);
+				DatePeriod periodDate = new DatePeriod(GeneralDate.ymd(s.year(), s.month(), 1), endDate.before(end) ? endDate : end);
+				BreakDayOffRemainMngParam param =  new BreakDayOffRemainMngParam(cId, employeeId, periodDate, false, closureInforOpt.get().getPeriod().end(), false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+				BreakDayOffRemainMngOfInPeriod currentHoliday = breakDayOffMngInPeriodQuery.getBreakDayOffMngInPeriod(param);
+				listCurrentHoliday.add(new CurrentHolidayImported(currentMonth, currentHoliday.getCarryForwardDays(), currentHoliday.getOccurrenceDays(), currentHoliday.getUseDays(), currentHoliday.getUnDigestedDays(), currentHoliday.getRemainDays()));
+			}
+			// Call RequestList259 ver2 - hoatt
 			if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
-				listStatusHoliday = monthlyDayoffAdapter.lstDayoffCurrentMonthOfEmployee(employeeId,
-						startDate.yearMonth(), currentMonth.previousMonth());
+				listStatusHoliday = hdRemainMer.getResult259();
 			}
 		}
 
 		if (variousVacationControl.isPauseItemHolidaySetting()) {
 			// Call RequestList270
-			listCurrentHolidayRemain = absenceReruitmentAdapter.getAbsRecRemainAggregate(employeeId, baseDate,
-					startDate.yearMonth(), endDate.yearMonth());
-			// Call RequestList260
+			/*listCurrentHolidayRemain = absenceReruitmentAdapter.getAbsRecRemainAggregate(employeeId, baseDate, startDate.yearMonth(), endDate.yearMonth());*/
+			for(YearMonth s = currentMonth; s.lessThanOrEqualTo(endDate.yearMonth()); s = s.addMonths(1)) {
+				GeneralDate end = GeneralDate.ymd(s.year(), s.month(), 1).addMonths(1).addDays(-1);
+				DatePeriod periodDate = new DatePeriod(GeneralDate.ymd(s.year(), s.month(), 1), endDate.before(end) ? endDate : end);
+				AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(cId, employeeId, periodDate, closureInforOpt.get().getPeriod().end(), false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+				AbsRecRemainMngOfInPeriod remainMng = absenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(param);
+				listCurrentHolidayRemain.add(new CurrentHolidayRemainImported(s, remainMng.getCarryForwardDays(), remainMng.getOccurrenceDays(), remainMng.getUseDays(), remainMng.getUnDigestedDays(), remainMng.getRemainDays()));
+			}
+			
+			// Call RequestList260 ver2 - hoatt
 			if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
-				listStatusOfHoliday = absenceReruitmentAdapter.getDataCurrentMonthOfEmployee(employeeId,
-						startDate.yearMonth(), currentMonth.previousMonth());
+				listStatusOfHoliday = hdRemainMer.getResult260();
 			}
 		}
-
-		for (val specialHolidayDto : variousVacationControl.getListSpecialHoliday()) {
+		//hoatt
+		Map<Integer, SpecialVacationImported> tmpCurrMon = Collections.synchronizedMap(new HashMap<Integer, SpecialVacationImported>());
+		Map<Integer, SpecialVacationImported> tmpSpeVaca = Collections.synchronizedMap(new HashMap<Integer, SpecialVacationImported>());
+		Map<Integer, List<SpecialHolidayImported>> tmpSpeHd = Collections.synchronizedMap(new HashMap<Integer, List<SpecialHolidayImported>>());
+		for(SpecialHoliday specialHolidayDto : variousVacationControl.getListSpecialHoliday()){
 			int sphdCode = specialHolidayDto.getSpecialHolidayCode().v();
-
-			
 			// Call RequestList273
 			SpecialVacationImported specialVacationImported = specialLeaveAdapter.complileInPeriodOfSpecialLeave(cId,
 					employeeId, closureInforOpt.get().getPeriod(), false, baseDate, sphdCode, false);
-			mapSpecialVacation.put(sphdCode, specialVacationImported);
+			tmpSpeVaca.put(sphdCode, specialVacationImported);
 
-			// Call RequestList263
+			// Call RequestList263 ver2 - hoatt
 			if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
 				List<SpecialHolidayImported> specialHolidayList = specialLeaveAdapter
-						.getSpeHoliOfConfirmedMonthly(employeeId, startDate.yearMonth(), currentMonth.previousMonth());
-				mapListSpecialHoliday.put(sphdCode, specialHolidayList);
+						.getSpeHoliOfConfirmedMonthly(employeeId, startDate.yearMonth(), currentMonth.previousMonth(), Arrays.asList(sphdCode));
+				tmpSpeHd.put(sphdCode, specialHolidayList);
 			} else {
-				mapListSpecialHoliday.put(sphdCode, new ArrayList<SpecialHolidayImported>());
+				tmpSpeHd.put(sphdCode, new ArrayList<SpecialHolidayImported>());
 			}
 
             // Call RequestList273
 			if (currMonth.isPresent() && currMonth.get().lessThanOrEqualTo(endDate.yearMonth())){
 	            SpecialVacationImported spVaImported = specialLeaveAdapter.complileInPeriodOfSpecialLeave(cId,
 	                    employeeId, closureInforOpt.get().getPeriod(), false, baseDate, sphdCode, false);
-	            mapSPVaCrurrentMonth.put(sphdCode, spVaImported);
+	            tmpCurrMon.put(sphdCode, spVaImported);
 			}
 		}
-
+		//convert
+		// RequestList273
+		Map<Integer, SpecialVacationImported> mapSpecVaca = new HashMap<>();
+		mapSpecVaca.putAll(tmpSpeVaca);
+        Map<Integer, SpecialVacationImported> mapSPVaCurrMon = new HashMap<>();
+		mapSPVaCurrMon.putAll(tmpCurrMon);
+		// RequestList263
+		Map<Integer, List<SpecialHolidayImported>> mapSpeHd = new HashMap<>();
+		mapSpeHd.putAll(tmpSpeHd);
 		if (variousVacationControl.isChildNursingSetting()) {
 			// Call RequestList206
 			childNursingLeave = childNursingAdapter.getChildNursingLeaveCurrentSituation(cId, employeeId, datePeriod);
@@ -345,7 +410,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		return new HolidayRemainingInfor(grantDate, listAnnLeaGrantNumber, annLeaveOfThisMonth, listAnnualLeaveUsage,
 				listAnnLeaveUsageStatusOfThisMonth, reserveHoliday, listReservedYearHoliday, listRsvLeaUsedCurrentMon,
 				listCurrentHoliday, listStatusHoliday, listCurrentHolidayRemain, listStatusOfHoliday,
-				mapSpecialVacation, mapSPVaCrurrentMonth, mapListSpecialHoliday, childNursingLeave, nursingLeave);
+				mapSpecVaca, mapSPVaCurrMon, mapSpeHd, childNursingLeave, nursingLeave);
 	}
 
 	private Optional<ClosureInfo> getClosureInfor(int closureId) {

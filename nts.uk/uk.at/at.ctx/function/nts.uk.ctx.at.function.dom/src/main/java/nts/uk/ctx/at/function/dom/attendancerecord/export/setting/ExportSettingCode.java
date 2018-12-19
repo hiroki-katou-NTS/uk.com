@@ -3,7 +3,7 @@ package nts.uk.ctx.at.function.dom.attendancerecord.export.setting;
 import nts.arc.primitive.LongPrimitiveValue;
 import nts.arc.primitive.PrimitiveValue;
 import nts.arc.primitive.constraint.*;
-import nts.uk.shr.com.primitive.ZeroPaddedCode;
+//import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
 /**
  * The Class OutputSettingCode.

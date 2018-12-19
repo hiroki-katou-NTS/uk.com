@@ -32,7 +32,7 @@ import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffMonthProcess;
+//import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffMonthProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
@@ -73,8 +73,8 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 	@Inject
 	private GetRsvLeaRemNumWithinPeriod getRsvLeaRemNumWithinPeriod;
 	/** 月次処理用の暫定残数管理データを作成する */
-	@Inject
-	private InterimRemainOffMonthProcess interimRemOffMonth;
+//	@Inject
+//	private InterimRemainOffMonthProcess interimRemOffMonth;
 	/** 暫定残数管理データ */
 	@Inject
 	private InterimRemainRepository interimRemainRepo;
@@ -117,8 +117,10 @@ public class GetRsvLeaRemNumWithinPeriodImpl implements GetRsvLeaRemNumWithinPer
 		Optional<Map<String, EmptYearlyRetentionSetting>> emptYearlyRetentionSetMap = Optional.empty();
 		if (companySets.isPresent()){
 			annualLeaveSet = companySets.get().getAnnualLeaveSet();
-			retentionYearlySet = companySets.get().getRetentionYearlySet();
-			emptYearlyRetentionSetMap = Optional.of(companySets.get().getEmptYearlyRetentionSetMap());
+			retentionYearlySet = companySets.get().getRetentionYearlySet() == null ? Optional.empty() : companySets.get().getRetentionYearlySet();
+			if(companySets.get().getEmptYearlyRetentionSetMap() != null){
+				emptYearlyRetentionSetMap = Optional.of(companySets.get().getEmptYearlyRetentionSetMap());
+			}
 		}
 		else {
 			annualLeaveSet = this.annualPaidLeaveSet.findByCompanyId(companyId);

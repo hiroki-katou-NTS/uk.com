@@ -12,7 +12,6 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.file.at.app.export.monthlyschedule.MonthlyWorkScheduleQuery;
-import nts.uk.screen.at.ws.dailyschedule.DailyPerformanceExportResponse;
 
 /**
  * The Class Kwr006WebService.

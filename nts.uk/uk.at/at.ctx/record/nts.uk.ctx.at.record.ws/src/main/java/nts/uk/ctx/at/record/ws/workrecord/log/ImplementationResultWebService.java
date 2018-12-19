@@ -1,15 +1,18 @@
 package nts.uk.ctx.at.record.ws.workrecord.log;
 
-import java.util.List;
+//import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import lombok.val;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.task.AsyncTaskInfo;
+import nts.arc.task.AsyncTaskInfoRepository;
+import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.record.app.command.workrecord.log.AddEmpCalSumAndTargetCommandHandler;
 import nts.uk.ctx.at.record.app.command.workrecord.log.AddEmpCalSumAndTargetCommandResult;
 import nts.uk.ctx.at.record.app.command.workrecord.log.CheckProcessCommand;
@@ -19,9 +22,11 @@ import nts.uk.ctx.at.record.app.command.workrecord.log.UpdateDailyLogStateComman
 import nts.uk.ctx.at.record.app.command.workrecord.log.UpdateExecutionTimeCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.log.UpdateExecutionTimeCommandHandler;
 import nts.uk.ctx.at.record.app.find.log.ImplementationResultFinder;
-import nts.uk.ctx.at.record.app.find.log.dto.PersonInfoErrMessageLogDto;
+//import nts.uk.ctx.at.record.app.find.log.dto.PersonInfoErrMessageLogDto;
 import nts.uk.ctx.at.record.app.find.log.dto.PersonInfoErrMessageLogResultDto;
 import nts.uk.ctx.at.record.app.find.log.dto.ScreenImplementationResultDto;
+import nts.uk.shr.com.communicate.PathToWebApi;
+import nts.uk.shr.com.communicate.batch.BatchServer;
 
 /**
  * 
@@ -46,7 +51,13 @@ public class ImplementationResultWebService extends WebService {
 	
 	@Inject
 	private UpdateDailyLogStateCommandHandler updateDailyLogStateCommandHandler;
+	
+	@Inject
+	private BatchServer batchServer;
 
+	@Inject
+	private AsyncTaskInfoRepository asyncTaskInfoRepository;
+	
 	@POST
 	@Path("addEmpCalSumAndTarget")
 	public AddEmpCalSumAndTargetCommandResult addEmpCalSumAndTarget(AddEmpCalSumAndTargetCommand command) {
@@ -56,7 +67,22 @@ public class ImplementationResultWebService extends WebService {
 	@POST
 	@Path("checkprocess")
 	public AsyncTaskInfo executeTask(CheckProcessCommand command) {
-		return queryExecutionStatusCommandHandler.handle(command);
+		MutableValue<AsyncTaskInfo> result = new MutableValue<>();
+		
+		if (this.batchServer.exists()) {
+			System.out.println("Call batch service  !");
+			val webApi = this.batchServer.webApi(PathToWebApi.com("/batch/task"), CheckProcessCommand.class, AsyncTaskInfo.class);
+			this.batchServer.request(webApi, c -> c.entity(command)
+					.succeeded(x -> {
+						String taskId = x.getId();
+						AsyncTaskInfo taskInfo = asyncTaskInfoRepository.find(taskId).get();
+						result.set(taskInfo);
+			}));
+		} else {
+			System.out.println("No call batch service  !");
+			result.set(queryExecutionStatusCommandHandler.handle(command));
+		}
+		return result.get();
 	}
 
 	@POST

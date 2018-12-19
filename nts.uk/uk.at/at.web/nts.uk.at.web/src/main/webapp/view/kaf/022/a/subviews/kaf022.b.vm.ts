@@ -164,19 +164,20 @@ ko.components.register('kaf022-b', {
                             enable: true}">
                         </div>
                     </td>
-                </tr>
-                <tr>
-                    <td class="color-header" id="b18" data-bind = "text: text('KAF022_426')"></td>
-                    <td>
-                        <div class="blockrow" id="b19" tabindex="8" data-bind="ntsRadioBoxGroup: {
-                            options: $bv.itemListB8,
-                            optionsValue: 'code',
-                            optionsText: 'name',
-                            value: $bv.selectedIdB19,
-                            enable: true}">
-                        </div>
-                    </td>
-                </tr>
+                </tr>`+
+//                <tr>
+//                    <td class="color-header" id="b18" data-bind = "text: text('KAF022_426')"></td>
+//                    <td>
+//                        <div class="blockrow" id="b19" tabindex="8" data-bind="ntsRadioBoxGroup: {
+//                            options: $bv.itemListB8,
+//                            optionsValue: 'code',
+//                            optionsText: 'name',
+//                            value: $bv.selectedIdB19,
+//                            enable: true}">
+//                        </div>
+//                    </td>
+//                </tr>
+                `
                 <tr>
                     <td class="color-header" id="b20" data-bind = "text: text('KAF022_430')"></td>
                     <td>

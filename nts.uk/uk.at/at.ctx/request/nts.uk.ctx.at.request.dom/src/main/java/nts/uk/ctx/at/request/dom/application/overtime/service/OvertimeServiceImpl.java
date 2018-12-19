@@ -231,6 +231,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 				return workTypeAndSiftType;
 			}
 		}
+		baseDate = GeneralDate.today();
 		//ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
 		Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(employeeID,baseDate);
 		

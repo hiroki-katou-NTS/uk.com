@@ -81,9 +81,10 @@ public class FlowWorkTimezoneSetting extends WorkTimeDomainObject {
 		List<FlowOTTimezone> timeSheet = this.lstOTTimezone.stream().filter(tc -> tc.getOTFrameNo().v().intValue() == overTimeFrameNo).collect(Collectors.toList());
 		if(timeSheet.size()>1) {
 			throw new RuntimeException("Exist duplicate overTimeFrameNo : " + overTimeFrameNo);
-		}else if(timeSheet==null) {
-			return Optional.empty();
 		}
+//		else if(timeSheet==null) {
+//			return Optional.empty();
+//		}
 		return Optional.of(timeSheet.get(0));
 	}
 

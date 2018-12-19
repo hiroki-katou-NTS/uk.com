@@ -10,12 +10,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.Query;
 
 import com.google.common.base.Strings;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
+import nts.uk.ctx.sys.assist.dom.saveprotetion.SaveProtetion;
+import nts.uk.ctx.sys.assist.dom.saveprotetion.SaveProtetionRepository;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableListRepository;
 import nts.uk.ctx.sys.assist.infra.entity.tablelist.SspmtTableList;
@@ -33,6 +37,9 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 	private static final String YEAR = "6";
 	private static final String YEAR_MONTH = "7";
 	private static final String YEAR_MONTH_DAY = "8";
+	
+	@Inject
+	private SaveProtetionRepository saveProtetionRepo;
 
 	@Override
 	public void add(TableList domain) {
@@ -74,7 +81,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 	}
 	
 	@Override
-	public List<List<String>> getDataDynamic(TableList tableList) {
+	public List<List<String>> getDataDynamic(TableList tableList, List<String> targetEmployeesSid) {
 		StringBuffer query = new StringBuffer("");
 		// All Column
 		List<String> columns = getAllColumnName(tableList.getTableEnglishName());
@@ -95,8 +102,32 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 			}
 		}
 
+		//アルゴリズム「個人情報の保護」を実行する 
+		List<SaveProtetion> listSaveProtetion = saveProtetionRepo.getSaveProtection(Integer.valueOf(tableList.getCategoryId()), tableList.getTableNo());
+		if(tableList.getSurveyPreservation() == NotUseAtr.USE && !listSaveProtetion.isEmpty()) {
+			for (SaveProtetion saveProtetion : listSaveProtetion) {
+				String rePlaceCol = saveProtetion.getReplaceColumn().trim();
+				String newValue = "";
+				// Vì domain không tạo Enum nên phải fix code ngu
+				if(saveProtetion.getCorrectClasscification() == 0) {
+					newValue = "'' AS " + rePlaceCol;
+				}else if(saveProtetion.getCorrectClasscification() == 1){
+					if(columns.contains("EMPLOYEE_CODE")) {
+						newValue = "t.EMPLOYEE_CODE AS " + rePlaceCol;
+					}else {
+						newValue = "'' AS " + rePlaceCol;
+					}
+				}else if(saveProtetion.getCorrectClasscification() == 2) {
+					newValue = "0 AS " + rePlaceCol;
+				}else if(saveProtetion.getCorrectClasscification() == 3) {
+					newValue = "'0' AS " + rePlaceCol;
+				}
+				query = new StringBuffer(query.toString().replaceAll("t." + rePlaceCol, newValue));
+			}
+		}
+		
 		// From
-		query.append(" FROM ").append(tableList.getTableEnglishName()).append(" t");
+		query.append(" FROM SSPMT_TARGET_EMPLOYEES e, ").append(tableList.getTableEnglishName()).append(" t");
 		if (tableList.getHasParentTblFlg() == NotUseAtr.USE && tableList.getParentTblName().isPresent()) {
 			// アルゴリズム「親テーブルをJOINする」を実行する
 			query.append(" INNER JOIN ").append(tableList.getParentTblName().get()).append(" p ON ");
@@ -135,21 +166,6 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 				tableList.getClsKeyQuery5().orElse(""), tableList.getClsKeyQuery6().orElse(""),
 				tableList.getClsKeyQuery7().orElse(""), tableList.getClsKeyQuery8().orElse(""),
 				tableList.getClsKeyQuery9().orElse(""), tableList.getClsKeyQuery10().orElse("") };
-
-		String defaultConditionSID = " AND e.STORE_PROCESSING_ID = '" + tableList.getDataStorageProcessingId()+"'";
-		for (int i = 0; i < clsKeyQuerys.length; i++) {
-			if (EMPLOYEE_CD.equals(clsKeyQuerys[i])) {
-				if (tableList.getHasParentTblFlg() == NotUseAtr.USE) {
-					query.append(" INNER JOIN SSPMT_TARGET_EMPLOYEES e ON e.SID = p.");
-					query.append(fieldKeyQuerys[i]);
-					query.append(defaultConditionSID);
-				} else {
-					query.append(" INNER JOIN SSPMT_TARGET_EMPLOYEES e ON e.SID = t.");
-					query.append(fieldKeyQuerys[i]);
-					query.append(defaultConditionSID);
-				}
-			}
-		}
 
 		// Where
 		query.append(" WHERE 1 = 1 ");
@@ -279,15 +295,37 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 
 		// 抽出条件キー固定
 		query.append(tableList.getDefaultCondKeyQuery().orElse(""));
+		for (int i = 0; i < clsKeyQuerys.length; i++) {
+			if (EMPLOYEE_CD.equals(clsKeyQuerys[i]) && !targetEmployeesSid.isEmpty()) {
+				if (tableList.getHasParentTblFlg() == NotUseAtr.USE) {
+					query.append(" AND p." + fieldKeyQuerys[i] + " IN (?listTargetSid) ");
+				} else {
+					query.append(" AND t." + fieldKeyQuerys[i] + " IN (?listTargetSid) ");
+				}
+			}
+		}
 		
 		// Order By
 		query.append(" ORDER BY H_CID, H_SID, H_DATE, H_DATE_START");
-
-		Query queryString = getEntityManager().createNativeQuery(query.toString());
-		for (Entry<String, Object> entry : params.entrySet()) {
-			queryString.setParameter(entry.getKey(), entry.getValue());
+		String querySql = query.toString();
+		List<Object[]> listTemp = new ArrayList<>();
+		if(!targetEmployeesSid.isEmpty()) {
+			CollectionUtil.split(targetEmployeesSid, 1000, subIdList -> {
+				String lSid = subIdList.toString().replaceAll("\\[", "\\'").replaceAll("\\]", "\\'").replaceAll(", ","\\', '");
+				Query queryString = getEntityManager().createNativeQuery(querySql);
+				queryString.setParameter("listTargetSid", lSid);
+				for (Entry<String, Object> entry : params.entrySet()) {
+					queryString.setParameter(entry.getKey(), entry.getValue());
+				}
+				listTemp.addAll((List<Object[]>) queryString.getResultList());
+			});
+		}else {
+			Query queryString = getEntityManager().createNativeQuery(querySql);
+			for (Entry<String, Object> entry : params.entrySet()) {
+				queryString.setParameter(entry.getKey(), entry.getValue());
+			}
+			listTemp.addAll((List<Object[]>) queryString.getResultList());
 		}
-		List<Object[]> listTemp = (List<Object[]>) queryString.getResultList();
 		return listTemp.stream().map(objects -> {
 			List<String> record = new ArrayList<String>();
 			for (Object field : objects) {

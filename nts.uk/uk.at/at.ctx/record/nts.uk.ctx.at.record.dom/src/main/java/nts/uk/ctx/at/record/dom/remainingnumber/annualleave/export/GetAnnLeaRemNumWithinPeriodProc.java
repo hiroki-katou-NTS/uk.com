@@ -79,6 +79,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	/** 次回年休付与日を計算 */
 	private CalcNextAnnualLeaveGrantDate calcNextAnnualLeaveGrantDate;
 	/** 月次処理用の暫定残数管理データを作成する */
+	@SuppressWarnings("unused")
 	private InterimRemainOffMonthProcess interimRemOffMonth;
 	/** 暫定年休管理データを作成する */
 	private CreateInterimAnnualMngData createInterimAnnual;

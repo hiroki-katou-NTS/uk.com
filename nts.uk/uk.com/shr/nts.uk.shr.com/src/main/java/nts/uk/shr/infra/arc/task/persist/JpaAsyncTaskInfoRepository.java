@@ -8,8 +8,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -27,7 +25,6 @@ import nts.arc.task.AsyncTaskStatus;
 import nts.arc.task.data.AsyncTaskData;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
-import nts.gul.text.StringLength;
 import nts.gul.util.Nullable;
 
 @Stateless

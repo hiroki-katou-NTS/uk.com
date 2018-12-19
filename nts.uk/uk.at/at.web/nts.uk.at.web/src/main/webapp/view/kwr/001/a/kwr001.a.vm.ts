@@ -151,10 +151,10 @@ module nts.uk.at.view.kwr001.a {
                     showEmployeeSelection: false,
                     showQuickSearchTab: true,
                     showAdvancedSearchTab: true,
-                    showBaseDate: true,
-                    showClosure: false,
-                    showAllClosure: false,
-                    showPeriod: false,
+                    showBaseDate: false,
+                    showClosure: true,
+                    showAllClosure: true,
+                    showPeriod: true,
                     periodFormatYM: false,
                     
                     /** Required parameter */
@@ -185,6 +185,11 @@ module nts.uk.at.view.kwr001.a {
                     * @param: data: the data return from CCG001
                     */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                        //画面項目「A1_7」「A1_8」を更新する
+                        self.datepickerValue().startDate = moment(data.periodStart).format("YYYY/MM/DD");
+                        self.datepickerValue().endDate = moment(data.periodEnd).format("YYYY/MM/DD");
+                        self.datepickerValue.valueHasMutated();
+                        
                         self.employeeList.removeAll();
                         var employeeSearchs: UnitModel[] = [];
                         _.forEach(data.listEmployee, function(value) {
@@ -192,12 +197,12 @@ module nts.uk.at.view.kwr001.a {
                                 id: value.employeeId,
                                 code: value.employeeCode,
                                 name: value.employeeName,
+                                workplaceName: value.workplaceName
                             };
-                            if (!_.isEmpty(value.workplaceId) && !_.isNil(value.workplaceId)) {
+//                            if (!_.isEmpty(value.workplaceId) && !_.isNil(value.workplaceId)) {
                                 employeeSearchs.push(employee);    
-                            }
+//                            }
                         });
-//                        self.ccg001ComponentOption.baseDate = data.baseDate;
                         self.employeeList(employeeSearchs);
                     }
                 }
@@ -258,7 +263,7 @@ module nts.uk.at.view.kwr001.a {
                 self.isDialog = ko.observable(true);
                 self.isShowNoSelectRow = ko.observable(false);
                 self.isMultiSelect = ko.observable(true);
-                self.isShowWorkPlaceName = ko.observable(false);
+                self.isShowWorkPlaceName = ko.observable(true);
                 self.isShowSelectAllButton = ko.observable(false);
                 self.employeeList = ko.observableArray<UnitModel>([]);
                 self.listComponentOption = {
@@ -266,13 +271,14 @@ module nts.uk.at.view.kwr001.a {
                     isMultiSelect: self.isMultiSelect(),
                     listType: ListType.EMPLOYEE,
                     employeeInputList: self.employeeList,
-                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    selectType: SelectType.SELECT_ALL,
                     selectedCode: self.multiSelectedCode,
                     isDialog: self.isDialog(),
                     isShowNoSelectRow: self.isShowNoSelectRow(),
                     alreadySettingList: self.alreadySettingList,
                     isShowWorkPlaceName: self.isShowWorkPlaceName(),
                     isShowSelectAllButton: self.isShowSelectAllButton(),
+                    isSelectAllAfterReload: true,
                     tabindex: 5,
                     maxRows: 17
                 };
@@ -370,6 +376,10 @@ module nts.uk.at.view.kwr001.a {
             // run after create success html 
             public executeBindingComponent(): void {
                 let self = this;
+                //re-set value of component
+                //対象期間：画面項目「A1_7とA1_8」にセットされている期間
+                self.ccg001ComponentOption.periodStartDate =  self.datepickerValue().startDate;
+                self.ccg001ComponentOption.periodEndDate =  self.datepickerValue().endDate;
                 
                 // start component CCG001
                 // start component KCP005

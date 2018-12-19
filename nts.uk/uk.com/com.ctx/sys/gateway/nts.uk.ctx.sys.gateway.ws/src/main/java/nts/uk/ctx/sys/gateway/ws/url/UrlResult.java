@@ -36,5 +36,6 @@ public class UrlResult {
 	public Map<String, String> urlTaskValueList;
 	
 	public String successMsg;
+	public String webAppID;
 	
 }

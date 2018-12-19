@@ -438,9 +438,9 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 				if(!CollectionUtil.isEmpty(approverFromPhases)){
 					if(!listApprovalPhaseState.get(i).getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
 						// 承認中のフェーズ＝ループ中のフェーズ．順序
-						int approverPhase = i;
+//						int approverPhase = i;
 						// フェーズ承認区分＝ループ中のフェーズ．承認区分
-						int approverPhaseIndicator = listApprovalPhaseState.get(i).getApprovalAtr().value;
+//						int approverPhaseIndicator = listApprovalPhaseState.get(i).getApprovalAtr().value;
 					}
 					//1.承認状況の判断
 					ApprovalStatusOutput approvalStatusOutput = judgmentApprovalStatusService.judmentApprovalStatusNodataDatabaseAcess(

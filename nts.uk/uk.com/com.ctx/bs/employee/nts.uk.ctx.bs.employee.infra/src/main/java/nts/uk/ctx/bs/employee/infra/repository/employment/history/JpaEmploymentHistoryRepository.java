@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,11 +19,10 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.dom.employment.history.DateHistItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
-import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist;
-import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHistItem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -35,13 +35,15 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 
 	private static final String QUERY_BYEMPLOYEEID_DESC = QUERY_BYEMPLOYEEID + " DESC";
 
-	private static final String GET_BY_EMPID_AND_STD = "SELECT h FROM BsymtEmploymentHist h"
-			+ " WHERE h.sid = :sid AND h.strDate <= :stdDate AND h.endDate >= :stdDate";
+//	private static final String GET_BY_EMPID_AND_STD = "SELECT h FROM BsymtEmploymentHist h"
+//			+ " WHERE h.sid = :sid AND h.strDate <= :stdDate AND h.endDate >= :stdDate";
 
 	private static final String SELECT_BY_LISTSID = "SELECT a FROM BsymtEmploymentHist a"
 			+ " INNER JOIN BsymtEmploymentHistItem b on a.hisId = b.hisId" + " WHERE a.sid IN :listSid "
 			+ " AND ( a.strDate <= :end AND a.endDate >= :start ) ";
-
+	private static final String GET_BY_LSTSID_DATE = "SELECT c FROM BsymtEmploymentHist c where c.sid IN :lstSID" 
+			+ " AND c.strDate <= :date and c.endDate >= :date";
+	
 	/**
 	 * Convert from BsymtEmploymentHist to domain EmploymentHistory
 	 * 
@@ -280,5 +282,22 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		throw new RuntimeException(e);
 	}
 	return Optional.empty();
+	}
+
+	@Override
+	public Map<String, DateHistItem> getBySIdAndate(List<String> lstSID, GeneralDate date) {
+		List<DateHistItem> lst =  this.queryProxy().query(GET_BY_LSTSID_DATE, BsymtEmploymentHist.class)
+				.setParameter("lstSID", lstSID)
+				.setParameter("date", date)
+				.getList(c -> new DateHistItem(c.sid, c.hisId, new DatePeriod(c.strDate, c.endDate)));
+		Map<String, DateHistItem> mapResult = new HashMap<>();
+		for(String sid : lstSID){
+			List<DateHistItem> hist = lst.stream().filter(c -> c.getSid().equals(sid)).collect(Collectors.toList());
+			if(hist.isEmpty()){
+				continue;
+			}
+			mapResult.put(sid, hist.get(0));
+		}
+		return mapResult;
 	}
 }

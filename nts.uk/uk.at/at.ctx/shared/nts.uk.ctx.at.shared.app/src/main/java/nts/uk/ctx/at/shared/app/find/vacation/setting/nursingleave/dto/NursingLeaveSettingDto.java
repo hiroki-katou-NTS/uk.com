@@ -4,10 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.vacation.setting.nursingleave.dto;
 
-import java.util.List;
+//import java.util.List;
 import java.util.Optional;
 
-import lombok.Setter;
+//import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;

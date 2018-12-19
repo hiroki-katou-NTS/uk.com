@@ -114,7 +114,11 @@ public class PlanActualWorkTime extends WorkTimeCondition {
 	public WorkCheckResult checkWorkTime(WorkInfoOfDailyPerformance workInfo) {
 		WorkCheckResult compareTypeError = WorkCheckResult.NOT_CHECK;
 		if(this.getComparePlanAndActual() == FilterByCompare.EXTRACT_DIFFERENT){
-			if(workInfo.getRecordInfo().getWorkTimeCode().equals(workInfo.getScheduleInfo().getWorkTimeCode())){
+			if(workInfo.getRecordInfo().getWorkTimeCode() == null && workInfo.getScheduleInfo().getWorkTimeCode() == null) {
+				compareTypeError = WorkCheckResult.NOT_ERROR;
+			} else if(workInfo.getRecordInfo().getWorkTimeCode() == null || workInfo.getScheduleInfo().getWorkTimeCode() == null) {
+				compareTypeError = WorkCheckResult.ERROR;
+			} else if(workInfo.getRecordInfo().getWorkTimeCode().equals(workInfo.getScheduleInfo().getWorkTimeCode())){
 				compareTypeError = WorkCheckResult.NOT_ERROR;
 			} else {
 				compareTypeError = WorkCheckResult.ERROR;

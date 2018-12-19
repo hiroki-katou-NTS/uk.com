@@ -36,12 +36,12 @@ public class JpaMonthlyItemControlByAuthRepository  extends JpaRepository implem
 	private static final String SELECT_BY_KEY_ATT_ITEM_ID = SELECT_BY_KEY 
 			+ " AND c.krcstDisplayAndInputMonthlyPK.itemMonthlyID IN :itemMonthlyIDs";
 
-	private static final String SELECT_BY_AUTHORITY_MONTHLY_LIST_ID = "SELECT c FROM KrcstDisplayAndInputMonthly c"
-			+ " WHERE c.krcstDisplayAndInputMonthlyPK.companyID = :companyID"
-			+ " AND c.krcstDisplayAndInputMonthlyPK.authorityMonthlyID = :authorityMonthlyID"
-			+ " AND c.krcstDisplayAndInputMonthlyPK.itemMonthlyID  IN  :itemMonthlyIDs"
-			+ " AND c.toUse = :toUse "
-			+ " ORDER BY c.krcstDisplayAndInputMonthlyPK.itemMonthlyID";
+//	private static final String SELECT_BY_AUTHORITY_MONTHLY_LIST_ID = "SELECT c FROM KrcstDisplayAndInputMonthly c"
+//			+ " WHERE c.krcstDisplayAndInputMonthlyPK.companyID = :companyID"
+//			+ " AND c.krcstDisplayAndInputMonthlyPK.authorityMonthlyID = :authorityMonthlyID"
+//			+ " AND c.krcstDisplayAndInputMonthlyPK.itemMonthlyID  IN  :itemMonthlyIDs"
+//			+ " AND c.toUse = :toUse "
+//			+ " ORDER BY c.krcstDisplayAndInputMonthlyPK.itemMonthlyID";
 
 //	
 //	private final String SELECT_BY_AUTHORITY_MONTHLY_ID_AND_TO_USE = "SELECT c FROM KrcstDisplayAndInputMonthly c"

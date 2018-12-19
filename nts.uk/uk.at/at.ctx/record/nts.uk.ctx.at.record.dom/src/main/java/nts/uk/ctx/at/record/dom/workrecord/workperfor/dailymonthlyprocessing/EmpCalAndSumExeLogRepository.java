@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing;
 import java.util.List;
 import java.util.Optional;
 
-import nts.arc.time.GeneralDate;
+//import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 
 /**
