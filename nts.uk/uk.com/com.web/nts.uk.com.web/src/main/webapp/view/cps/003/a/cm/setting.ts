@@ -86,18 +86,18 @@ module nts.custombinding {
                     <div data-bind="ntsFormLabel: { text: i18n('CPS003_27') }"></div>
                     <div data-bind="ntsMultiCheckBox: {
                             options: ko.observableArray([
-                                { id: 1, name: i18n('CPS003_28'), enable: false },
-                                { id: 2, name: i18n('CPS003_29'), enable: false },
-                                { id: 3, name: i18n('CPS003_30'), enable: true },
-                                { id: 4, name: i18n('CPS003_31'), enable: true },
-                                { id: 5, name: i18n('CPS003_32'), enable: true },
-                                { id: 6, name: i18n('CPS003_33'), enable: true },
-                                { id: 7, name: i18n('CPS003_34'), enable: true }
+                                { id: 1, name: i18n('CPS003_28'), enable: ko.observable(false) },
+                                { id: 2, name: i18n('CPS003_29'), enable: ko.observable(false) },
+                                { id: 3, name: i18n('CPS003_30'), enable: ko.observable(true) },
+                                { id: 4, name: i18n('CPS003_31'), enable: ko.observable(true) },
+                                { id: 5, name: i18n('CPS003_32'), enable: ko.observable(true) },
+                                { id: 6, name: i18n('CPS003_33'), enable: ko.observable(true) },
+                                { id: 7, name: i18n('CPS003_34'), enable: ko.observable(true) }
                             ]),
                             optionsValue: 'id',
                             optionsText: 'name',
                             value: fixCols,
-                            enable: true
+                            enable: ko.observable(true)
                         }"></div>
                 </div>
                 <div class="form-group btn-group">
