@@ -66,6 +66,7 @@ module nts.uk.pr.view.qmm031.a.viewmodel {
                         else {
                             nts.uk.ui.errors.clearAll();
                             self.lstInsuranceType([]);
+                            $("#B2_6").attr('disabled','disabled');
                         }
                         block.clear();
                         dfd.resolve(self);
