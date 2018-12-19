@@ -103,7 +103,9 @@ module cps003.a.vm {
                     // fetch all setting
                     service.fetch.setting(cid).done((data: ISettingData) => {
                         if (ko.isObservable(self.settings.matrixDisplay)) {
-                            self.settings.matrixDisplay(data.matrixDisplay);
+                            if(_.size(self.settings.matrixDisplay()) == 0) {
+                                self.settings.matrixDisplay(data.matrixDisplay);
+                            }
                         }
                     });
 

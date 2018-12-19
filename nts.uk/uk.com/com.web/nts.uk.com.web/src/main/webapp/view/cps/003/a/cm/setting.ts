@@ -86,18 +86,18 @@ module nts.custombinding {
                     <div data-bind="ntsFormLabel: { text: i18n('CPS003_27') }"></div>
                     <div data-bind="ntsMultiCheckBox: {
                             options: ko.observableArray([
-                                { id: 1, name: i18n('CPS003_28'), enable: ko.observable(false) },
-                                { id: 2, name: i18n('CPS003_29'), enable: ko.observable(false) },
-                                { id: 3, name: i18n('CPS003_30'), enable: ko.observable(true) },
-                                { id: 4, name: i18n('CPS003_31'), enable: ko.observable(true) },
-                                { id: 5, name: i18n('CPS003_32'), enable: ko.observable(true) },
-                                { id: 6, name: i18n('CPS003_33'), enable: ko.observable(true) },
-                                { id: 7, name: i18n('CPS003_34'), enable: ko.observable(true) }
+                                { id: 1, name: i18n('CPS003_28'), enable: false },
+                                { id: 2, name: i18n('CPS003_29'), enable: false },
+                                { id: 3, name: i18n('CPS003_30'), enable: true },
+                                { id: 4, name: i18n('CPS003_31'), enable: true },
+                                { id: 5, name: i18n('CPS003_32'), enable: true },
+                                { id: 6, name: i18n('CPS003_33'), enable: true },
+                                { id: 7, name: i18n('CPS003_34'), enable: true }
                             ]),
                             optionsValue: 'id',
                             optionsText: 'name',
                             value: fixCols,
-                            enable: ko.observable(true)
+                            enable: true
                         }"></div>
                 </div>
                 <div class="form-group btn-group">
@@ -138,31 +138,6 @@ module nts.custombinding {
                     }
                 };
 
-            // bind data in
-            ko.computed({
-                read: () => {
-                    let access: ISetting = ko.toJS(valueAccessor() || ko.observable({
-                        "cursorDirection": ko.observable(CURSOR_DIRC.HORIZONTAL),
-                        "clsATR": NOT_USE,
-                        "jobATR": NOT_USE,
-                        "workPlaceATR": NOT_USE,
-                        "departmentATR": NOT_USE,
-                        "employmentATR": NOT_USE,
-                    })), fixCols: Array<number> = [
-                        1,
-                        2,
-                        access.clsATR == USE ? 7 : -1,
-                        access.jobATR == USE ? 5 : -1,
-                        access.workPlaceATR == USE ? 4 : -1,
-                        access.departmentATR == USE ? 3 : -1,
-                        access.employmentATR == USE ? 6 : -1
-                    ];
-
-                    dialogVm.fixCols(fixCols.filter(f => f != -1));
-                    dialogVm.cursorDirection(access.cursorDirection || CURSOR_DIRC.HORIZONTAL);
-                }
-            });
-
             // set root class for dialog container
             dialog.className = 'cps003 setting-dialog';
 
@@ -175,11 +150,31 @@ module nts.custombinding {
                 if (document.body.contains(dialog)) {
                     document.body.removeChild(dialog);
                 } else {
-                    let bound = element.getBoundingClientRect();
+                    let bound = element.getBoundingClientRect(),
+                        access: ISetting = ko.toJS(valueAccessor() || ko.observable({
+                            "cursorDirection": ko.observable(CURSOR_DIRC.HORIZONTAL),
+                            "clsATR": NOT_USE,
+                            "jobATR": NOT_USE,
+                            "workPlaceATR": NOT_USE,
+                            "departmentATR": NOT_USE,
+                            "employmentATR": NOT_USE,
+                        })), fixCols: Array<number> = [
+                            1,
+                            2,
+                            access.clsATR == USE ? 7 : -1,
+                            access.jobATR == USE ? 5 : -1,
+                            access.workPlaceATR == USE ? 4 : -1,
+                            access.departmentATR == USE ? 3 : -1,
+                            access.employmentATR == USE ? 6 : -1
+                        ];
 
                     document.body.appendChild(dialog);
                     dialog.style.top = (bound.bottom + 5) + 'px';
                     dialog.style.left = (bound.left + bound.width - dialog.offsetWidth) + 'px';
+
+                    // bind data in
+                    dialogVm.fixCols(fixCols.filter(f => f != -1));
+                    dialogVm.cursorDirection(access.cursorDirection || CURSOR_DIRC.HORIZONTAL);
                 }
             });
 
