@@ -1,7 +1,8 @@
 package nts.uk.file.com.infra.Indivigrant;
 
-import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,19 +11,24 @@ import java.util.Map;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.file.com.app.Indivigrant.IndivigrantColumn;
 import nts.uk.file.com.app.Indivigrant.IndivigrantRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 @Stateless
-public class IndivigrantImpl implements IndivigrantRepository {
+public class IndivigrantImpl  extends JpaRepository implements IndivigrantRepository {
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -54,38 +60,60 @@ public class IndivigrantImpl implements IndivigrantRepository {
 				+" INNER JOIN BPSMT_PERSON per ON per.PID = us.ASSO_PID"						
 				+" INNER JOIN SACMT_ROLE role ON gr.ROLE_ID = role.ROLE_ID "
 				+" AND role.ROLE_TYPE BETWEEN "+ RoleType.EMPLOYMENT.value +" AND "+ RoleType.PERSONAL_INFO.value +""					
-				+" WHERE gr.CID = ?cid) TBL";
+				+" WHERE gr.CID = ?) TBL";
 
 	@Override
 	public List<MasterData> getDataExport() {
 		String cid = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
-		Query query = entityManager.createNativeQuery(GET_EXPORT_EXCEL.toString()).setParameter("cid", cid);
-		@SuppressWarnings("unchecked")
-		List<Object[]> data = query.getResultList();
-		for (Object[] objects : data) {
-			datas.add(new MasterData(dataContent(objects), null, ""));
+		try (PreparedStatement stmt = this.connection().prepareStatement(GET_EXPORT_EXCEL.toString())){
+			stmt.setString(1, cid);
+			datas.addAll(new NtsResultSet(stmt.executeQuery()).getList(i->buildMasterListData(i)));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return datas;
 	}
 
-	private Map<String, Object> dataContent(Object[] object) {
-		Map<String, Object> data = new HashMap<>();
-		// R7_1
-		data.put(IndivigrantColumn.CAS013_40, object[0] != null ? getTypeName(((BigDecimal) object[0]).intValue()) : null);
-		// R7_2
-		data.put(IndivigrantColumn.CAS013_41, object[1] != null ? (String) object[1] : null);
-		// R7_3
-		data.put(IndivigrantColumn.CAS013_42, object[2] != null ? (String) object[2] : null);
-		// R7_4
-		data.put(IndivigrantColumn.CAS013_43, object[3] != null ? (String) object[3] : null);
-		// A7_5
-		data.put(IndivigrantColumn.CAS013_44, object[4] != null ? (String) object[4] : null);
-		// A7_6
-		data.put(IndivigrantColumn.CAS013_45,  object[5] != null ? GeneralDate.localDate(((Date) object[5]).toLocalDate()) : null);
-		// A7_7
-		data.put(IndivigrantColumn.CAS013_46,  object[6] != null ? GeneralDate.localDate(((Date) object[6]).toLocalDate()) : null);
-		return data;
+	private MasterData buildMasterListData(NtsResultRecord r){
+		Map<String,MasterCellData> data = new HashMap<>();
+			data.put(IndivigrantColumn.CAS013_40, MasterCellData.builder()
+                .columnId(IndivigrantColumn.CAS013_40)
+                .value(r.getInt("ROLE_TYPE") != null ? getTypeName(r.getInt("ROLE_TYPE")) : null)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+            data.put(IndivigrantColumn.CAS013_41, MasterCellData.builder()
+                .columnId(IndivigrantColumn.CAS013_41)
+                .value(r.getString("ROLE_CD"))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+            data.put(IndivigrantColumn.CAS013_42, MasterCellData.builder()
+                .columnId(IndivigrantColumn.CAS013_42)
+                .value(r.getString("ROLE_NAME"))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+            data.put(IndivigrantColumn.CAS013_43, MasterCellData.builder()
+                .columnId(IndivigrantColumn.CAS013_43)
+                .value(r.getString("LOGIN_ID"))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+            data.put(IndivigrantColumn.CAS013_44, MasterCellData.builder()
+                .columnId(IndivigrantColumn.CAS013_44)
+                .value(r.getString("BUSINESS_NAME"))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+            data.put(IndivigrantColumn.CAS013_45, MasterCellData.builder()
+                .columnId(IndivigrantColumn.CAS013_45)
+                .value(GeneralDate.localDate(((Date) (r.getDate("STR_D"))).toLocalDate()))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+            data.put(IndivigrantColumn.CAS013_46, MasterCellData.builder()
+                .columnId(IndivigrantColumn.CAS013_46)
+                .value(GeneralDate.localDate(((Date) (r.getDate("END_D"))).toLocalDate()))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		return MasterData.builder().rowData(data).build();
 	}
 	
 	private String getTypeName(int roleType) {
