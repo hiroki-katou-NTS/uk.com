@@ -13,10 +13,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import lombok.val;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.task.AsyncTaskInfo;
+import nts.arc.task.AsyncTaskInfoRepository;
+import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionRespone;
@@ -34,6 +37,8 @@ import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleCreatorDto;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleErrorLogDto;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleExecutionLogDto;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleExecutionLogInfoDto;
+import nts.uk.shr.com.communicate.PathToWebApi;
+import nts.uk.shr.com.communicate.batch.BatchServer;
 
 /**
  * The Class ScheduleExecutionLogWs.
@@ -70,6 +75,11 @@ public class ScheduleExecutionLogWs extends WebService {
 	@Inject
 	private ExeErrorLogExportService exeErrorLogExportService;
 
+	@Inject
+	private BatchServer batchServer;
+	
+	@Inject
+	private AsyncTaskInfoRepository asyncTaskInfoRepository;
 	/**
 	 * Find all exe log.
 	 *
@@ -174,10 +184,26 @@ public class ScheduleExecutionLogWs extends WebService {
 	@POST
 	@Path("execution")
 	public ScheduleCreatorExecutionRespone execution(ScheduleCreatorExecutionCommand command) {
-		AsyncTaskInfo taskInfor = this.execution.handle(command);
+
+		MutableValue<AsyncTaskInfo> result = new MutableValue<>();
+		if (this.batchServer.exists()) {
+			System.out.println("Call batch service  !");
+			
+			val webApi = this.batchServer.webApi(PathToWebApi.com("/batch/batch-execute"),
+					ScheduleCreatorExecutionCommand.class, AsyncTaskInfo.class);
+			this.batchServer.request(webApi, c -> c.entity(command).succeeded(x -> {
+				String taskId = x.getId();
+				AsyncTaskInfo taskInfo = asyncTaskInfoRepository.find(taskId).get();
+				result.set(taskInfo);
+			}));
+		} else {
+			System.out.println("No call batch service !");
+			result.set(this.execution.handle(command));
+		}
+
 		ScheduleCreatorExecutionRespone respone = new ScheduleCreatorExecutionRespone();
 		respone.setExecuteId(command.getExecutionId());
-		respone.setTaskInfor(taskInfor);
+		respone.setTaskInfor(result.get());
 		return respone;
 
 	}

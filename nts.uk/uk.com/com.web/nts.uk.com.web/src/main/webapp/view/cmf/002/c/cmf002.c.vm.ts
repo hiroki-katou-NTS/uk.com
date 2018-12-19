@@ -407,11 +407,10 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                 currentStandardOutputItem.dispOrder = self.listStandardOutputItem().length > 0 ? self.listStandardOutputItem().length + 1 : 1;
                 // register
                 service.registerOutputItem(ko.toJS(currentStandardOutputItem)).done(() => {
-                    info({ messageId: "Msg_15" }).then(() => {
-                        self.getAllOutputItem(currentStandardOutputItem.outItemCd()).done(() => {
-                            self.setFocus();
-                            self.isUpdateExecution(true);
-                        });
+                    info({ messageId: "Msg_15" });
+                    self.getAllOutputItem(currentStandardOutputItem.outItemCd()).done(() => {
+                        self.setFocus();
+                        self.isUpdateExecution(true);
                     });
                 }).fail(function(error) {
                     alertError({ messageId: error.messageId });
@@ -433,19 +432,18 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                     });
 
                     service.removeOutputItem(ko.toJS(currentStandardOutputItem)).done(function() {                     
-                        info({ messageId: "Msg_16" }).then(() => {
-                            self.getAllOutputItem(currentStandardOutputItem.outItemCd()).done(() => {
-                                if (self.listStandardOutputItem().length == 0) {
-                                    self.selectedStandardOutputItemCode("");
+                        info({ messageId: "Msg_16" });
+                        self.getAllOutputItem(currentStandardOutputItem.outItemCd()).done(() => {
+                            if (self.listStandardOutputItem().length == 0) {
+                                self.selectedStandardOutputItemCode("");
+                            } else {
+                                if (index == self.listStandardOutputItem().length) {
+                                    self.selectedStandardOutputItemCode(self.listStandardOutputItem()[index - 1].outItemCd());
                                 } else {
-                                    if (index == self.listStandardOutputItem().length) {
-                                        self.selectedStandardOutputItemCode(self.listStandardOutputItem()[index - 1].outItemCd());
-                                    } else {
-                                        self.selectedStandardOutputItemCode(self.listStandardOutputItem()[index].outItemCd());
-                                    }
+                                    self.selectedStandardOutputItemCode(self.listStandardOutputItem()[index].outItemCd());
                                 }
-                                self.isUpdateExecution(true);                       
-                            });
+                            }
+                            self.isUpdateExecution(true);                       
                         });
                     }).fail(function(error) {
                         alertError({ messageId: error.messageId });

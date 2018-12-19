@@ -16,6 +16,7 @@ import javax.persistence.Query;
 import com.google.common.base.Strings;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
 import nts.uk.ctx.sys.assist.dom.saveprotetion.SaveProtetion;
 import nts.uk.ctx.sys.assist.dom.saveprotetion.SaveProtetionRepository;
@@ -80,7 +81,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 	}
 	
 	@Override
-	public List<List<String>> getDataDynamic(TableList tableList) {
+	public List<List<String>> getDataDynamic(TableList tableList, List<String> targetEmployeesSid) {
 		StringBuffer query = new StringBuffer("");
 		// All Column
 		List<String> columns = getAllColumnName(tableList.getTableEnglishName());
@@ -165,21 +166,6 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 				tableList.getClsKeyQuery5().orElse(""), tableList.getClsKeyQuery6().orElse(""),
 				tableList.getClsKeyQuery7().orElse(""), tableList.getClsKeyQuery8().orElse(""),
 				tableList.getClsKeyQuery9().orElse(""), tableList.getClsKeyQuery10().orElse("") };
-
-		String defaultConditionSID = " AND e.STORE_PROCESSING_ID = '" + tableList.getDataStorageProcessingId()+"'";
-		for (int i = 0; i < clsKeyQuerys.length; i++) {
-			if (EMPLOYEE_CD.equals(clsKeyQuerys[i])) {
-				if (tableList.getHasParentTblFlg() == NotUseAtr.USE) {
-					query.append(" INNER JOIN SSPMT_TARGET_EMPLOYEES e ON e.SID = p.");
-					query.append(fieldKeyQuerys[i]);
-					query.append(defaultConditionSID);
-				} else {
-					query.append(" INNER JOIN SSPMT_TARGET_EMPLOYEES e ON e.SID = t.");
-					query.append(fieldKeyQuerys[i]);
-					query.append(defaultConditionSID);
-				}
-			}
-		}
 
 		// Where
 		query.append(" WHERE 1 = 1 ");
@@ -309,18 +295,42 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 
 		// 抽出条件キー固定
 		query.append(tableList.getDefaultCondKeyQuery().orElse(""));
+		for (int i = 0; i < clsKeyQuerys.length; i++) {
+			if (EMPLOYEE_CD.equals(clsKeyQuerys[i]) && !targetEmployeesSid.isEmpty()) {
+				if (tableList.getHasParentTblFlg() == NotUseAtr.USE) {
+					query.append(" AND p." + fieldKeyQuerys[i] + " IN (?listTargetSid) ");
+				} else {
+					query.append(" AND t." + fieldKeyQuerys[i] + " IN (?listTargetSid) ");
+				}
+			}
+		}
 		
 		// Order By
 		query.append(" ORDER BY H_CID, H_SID, H_DATE, H_DATE_START");
-
-		Query queryString = getEntityManager().createNativeQuery(query.toString());
-		for (Entry<String, Object> entry : params.entrySet()) {
-			queryString.setParameter(entry.getKey(), entry.getValue());
+		String querySql = query.toString();
+		if(tableList.getTableEnglishName().equals("BPSMT_PERSON")) {
+			query.toString();
 		}
-		
-		@SuppressWarnings("unchecked")
-		List<Object[]> listTemp = (List<Object[]>) queryString.getResultList();
-		
+		List<Object[]> listTemp = new ArrayList<>();
+		if(!targetEmployeesSid.isEmpty()) {
+			List<String> lSid = new ArrayList<>();
+			CollectionUtil.split(targetEmployeesSid, 1000, subIdList -> {
+				lSid.add(subIdList.toString().replaceAll("\\[", "\\'").replaceAll("\\]", "\\'").replaceAll(", ","\\', '"));
+			});
+			for (String sid : lSid) {
+				Query queryString = getEntityManager().createNativeQuery(querySql.replaceAll("\\?listTargetSid", sid));
+				for (Entry<String, Object> entry : params.entrySet()) {
+					queryString.setParameter(entry.getKey(), entry.getValue());
+				}
+				listTemp.addAll((List<Object[]>) queryString.getResultList());
+			}
+		}else {
+			Query queryString = getEntityManager().createNativeQuery(querySql);
+			for (Entry<String, Object> entry : params.entrySet()) {
+				queryString.setParameter(entry.getKey(), entry.getValue());
+			}
+			listTemp.addAll((List<Object[]>) queryString.getResultList());
+		}
 		return listTemp.stream().map(objects -> {
 			List<String> record = new ArrayList<String>();
 			for (Object field : objects) {

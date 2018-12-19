@@ -110,7 +110,10 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 	
 	@Override
 	public WorkInfoOfDailyPerformance updateScheStartEndTime(TimeReflectPara para, WorkInfoOfDailyPerformance dailyPerfor) {
-		
+		if(!para.isStart()
+				&& !para.isEnd()) {
+			return dailyPerfor;
+		}
 		ScheduleTimeSheet timeSheet;
 		if(dailyPerfor.getScheduleTimeSheets().isEmpty()) {
 			timeSheet = new ScheduleTimeSheet(1, 
@@ -496,7 +499,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		List<Integer> lstItem = new ArrayList<>();		
 		lstItem.add(267);
 		lstItem.add(272);
-		lstItem.add(276);
+		lstItem.add(277);
 		lstItem.add(282);
 		lstItem.add(287);
 		lstItem.add(292);
@@ -526,6 +529,25 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		}
 		TimeLeavingWork timeLeavingWork = null;
 		if(lstTimeLeavingWorks.isEmpty()) {
+			if(data.getStartTime() == null || data.getEndTime() == null) {
+				List<Integer> lstItem = new ArrayList<Integer>();
+				if(data.isStart()) {
+					if(data.getFrameNo() == 1) {
+						lstItem.add(31);
+					} else {
+						lstItem.add(41);
+					}
+				}
+				if(data.isEnd()) {
+					if(data.getFrameNo() == 1) {
+						lstItem.add(34);
+					} else {
+						lstItem.add(44);
+					}
+				}
+				this.updateEditStateOfDailyPerformance(data.getEmployeeId(), data.getDateData(), lstItem);
+				return timeDaily;
+			}
 			WorkStamp workStamp = new WorkStamp(new TimeWithDayAttr(data.getStartTime()),
 					new TimeWithDayAttr(data.getEndTime()),
 					null,

@@ -379,7 +379,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_ABS_MNG a1"
 				+ " INNER JOIN KRCMT_INTERIM_REMAIN_MNG a2 ON a1.ABSENCE_MNG_ID = a2.REMAIN_MNG_ID"
 				+ " WHERE a2.SID = ?"
-				+ " AND a2.REMAIN_TYPE = " + RemainType.PICKINGUP.value
+				+ " AND a2.REMAIN_TYPE = " + RemainType.PAUSE.value
 				+ " AND a2.YMD >= ? and a2.YMD <= ?"
 				+ " ORDER BY a2.YMD");
 				)

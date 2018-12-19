@@ -4,11 +4,14 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,6 +31,7 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.StringLength;
+import nts.uk.ctx.exio.dom.exo.adapter.bs.employee.PersonInfoAdapter;
 import nts.uk.ctx.exio.dom.exo.base.ItemType;
 import nts.uk.ctx.exio.dom.exo.category.Association;
 import nts.uk.ctx.exio.dom.exo.category.CategorySetting;
@@ -104,6 +108,7 @@ import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrderRepository
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.japanese.JapaneseEraName;
 import nts.uk.shr.com.time.japanese.JapaneseEras;
 import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
@@ -154,7 +159,11 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private JapaneseErasAdapter japaneseErasAdapter;
 	
 	@Inject
+	private PersonInfoAdapter personInfoAdapter;
+	
+	@Inject
 	private FileStorage fileStorage;
+
 
 	private final static String GET_ASSOCIATION = "getOutCondAssociation";
 	private final static String GET_ITEM_NAME = "getOutCondItemName";
@@ -802,7 +811,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				return lineDataCSV;
 			}
 			
-			if(outputItemCustom.getStandardOutputItem().getItemType() == ItemType.CHARACTER) {
+			if(outputItemCustom.getStandardOutputItem().getItemType() != ItemType.NUMERIC) {
 				targetValue = stringFormat.character + targetValue + stringFormat.character;
 				
 				if(stringFormat == StringFormat.SINGLE_QUOTATION) {
@@ -821,6 +830,11 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	private void createOutputLogError(String processingId, String errorContent, String targetValue, String sid,
 			String errorItem) {
+		String employeeCode = null;
+		if (sid != null) {
+			employeeCode = personInfoAdapter.getPersonInfo(sid).getEmployeeCode();
+		}
+		
 		Optional<ExOutOpMng> exOutOpMng = exOutOpMngRepo.getExOutOpMngById(processingId);
 
 		if (!exOutOpMng.isPresent())
@@ -828,13 +842,13 @@ public class CreateExOutTextService extends ExportService<Object> {
 		exOutOpMng.get().setOpCond(ExIoOperationState.EXPORTING);
 		exOutOpMng.get().setErrCnt(exOutOpMng.get().getErrCnt() + 1);
 		exOutOpMngRepo.update(exOutOpMng.get());
-
+		
 		String companyId = AppContexts.user().companyId();
 		String outputProcessId = processingId;
 		String errorTargetValue = targetValue;
 		// in the case of dateType, never error so it always empty
 		GeneralDate errorDate = null;
-		String errorEmployee = sid;
+		String errorEmployee = employeeCode;
 		GeneralDateTime logRegisterDateTime = GeneralDateTime.now();
 		int logSequenceNumber = exOutOpMng.get().getErrCnt();
 		int processCount = exOutOpMng.get().getProCnt();
@@ -859,9 +873,14 @@ public class CreateExOutTextService extends ExportService<Object> {
 			result.put(USE_NULL_VALUE, USE_NULL_VALUE_ON);
 			return result;
 		}
+		List<CategoryItem> categoryItems = outputItemCustom.getStandardOutputItem().getCategoryItems();
+		for(int i =0;i<categoryItems.size();i++) {
+			categoryItems.get(i).setIndexValue(i);
+		}
+		List<CategoryItem> categoryItemsSort = categoryItems.stream().sorted((x,y) -> x.getDisplayOrder() - y.getDisplayOrder()).collect(Collectors.toList());
 
-		for (int i = 0; i < outputItemCustom.getStandardOutputItem().getCategoryItems().size(); i++) {
-			value = lineData.get(index);
+		for (int i = 0; i < categoryItemsSort.size(); i++) {
+			value = lineData.get(categoryItemsSort.get(i).getIndexValue());
 			index++;
 
 			if (StringUtils.isEmpty(value)) {
@@ -873,30 +892,30 @@ public class CreateExOutTextService extends ExportService<Object> {
 				}
 			}
 
-			if ((i == 0) || StringUtils.isEmpty(itemValue)) {
-				itemValue = value;
-				continue;
-			}
+//			if ((i == 0) || StringUtils.isEmpty(itemValue)) {
+//				itemValue = value;
+//				continue;
+//			}
 
 			if ((outputItemCustom.getStandardOutputItem().getItemType() != ItemType.NUMERIC)
 					&& (outputItemCustom.getStandardOutputItem().getItemType() != ItemType.TIME)
 					&& (outputItemCustom.getStandardOutputItem().getItemType() != ItemType.INS_TIME)) {
-				itemValue += value;
+				itemValue = value;
 				continue;
 			}
 			
-			Optional<OperationSymbol> operationSymbol = outputItemCustom.getStandardOutputItem().getCategoryItems()
+			Optional<OperationSymbol> operationSymbol = categoryItemsSort
 					.get(i).getOperationSymbol();
-			if (!operationSymbol.isPresent() || StringUtils.isEmpty(value))
+			if ( StringUtils.isEmpty(value))
 				continue;
-			if (operationSymbol.get() == OperationSymbol.PLUS) {
-				itemValue = String.valueOf((Double.parseDouble(itemValue)) + Double.parseDouble(value));
+			if ( !operationSymbol.isPresent() || operationSymbol.get() == OperationSymbol.PLUS) {
+				itemValue = String.valueOf((Double.parseDouble(itemValue.equals("")?"0":itemValue)) + Double.parseDouble(value.equals("")?"0":value));
 			} else if (operationSymbol.get() == OperationSymbol.MINUS) {
-				itemValue = String.valueOf(Double.parseDouble(itemValue) - Double.parseDouble(value));
+				itemValue = String.valueOf(Double.parseDouble(itemValue.equals("")?"0":itemValue) - Double.parseDouble(value.equals("")?"0":value));
 			}
 		}
 
-		result.put(ITEM_VALUE, itemValue);
+		result.put(ITEM_VALUE,itemValue);
 		result.put(USE_NULL_VALUE, USE_NULL_VALUE_OFF);
 
 		return result;
@@ -1298,7 +1317,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		String errorMess = "";
 		String targetValue;
 		BigDecimal decimaValue = new BigDecimal(itemValue);
-
+		
 		if ((setting.getFixedValueOperation() == NotUseAtr.USE) && setting.getFixedCalculationValue().isPresent()) {
 			if (setting.getFixedValueOperationSymbol() == FixedValueOperationSymbol.MINUS) {
 				decimaValue = decimaValue.subtract(setting.getFixedCalculationValue().get().v());
@@ -1385,10 +1404,29 @@ public class CreateExOutTextService extends ExportService<Object> {
 				}
 			}
 		}
+		targetValue =  targetValue.replaceAll("\\n", "");
 		if (setting.getSpaceEditting() == EditSpace.DELETE_SPACE_AFTER) {
 			targetValue =  targetValue.replaceAll("\\s+$", "");
+			int countSpaceJapan = 0;
+			for(int i = targetValue.length()-1;i>=0;i--) {
+				if(targetValue.charAt(i) == '　' || targetValue.charAt(i) == '　') {
+					countSpaceJapan++;
+				}else {
+					break;
+				}
+			}
+			targetValue = targetValue.substring(0,targetValue.length()-countSpaceJapan);
 		} else if (setting.getSpaceEditting() == EditSpace.DELETE_SPACE_BEFORE) {
 			targetValue = targetValue.replaceAll("^\\s+", "");
+			int countSpaceJapan = 0;
+			for(char x : targetValue.toCharArray()) {
+				if(x == '　' || x == '　') {
+					countSpaceJapan++;
+				}else {
+					break;
+				}
+			}
+			targetValue = targetValue.substring(countSpaceJapan,targetValue.length());
 		}
 
 		if ((setting.getCdEditting() == NotUseAtr.USE)
@@ -1418,33 +1456,39 @@ public class CreateExOutTextService extends ExportService<Object> {
 				BigDecimal intValue = decimaValue.divideToIntegralValue(BigDecimal.valueOf(60.00));
 				BigDecimal remainValue = decimaValue.subtract(intValue.multiply(BigDecimal.valueOf(60.00)));
 				decimaValue = intValue.add(remainValue.divide(BigDecimal.valueOf(100.00), 2, RoundingMode.HALF_UP));
+				targetValue = decimaValue.toString();
 			}
 		}
 		
 		decimaValue = ((setting.getOutputMinusAsZero() == NotUseAtr.USE) && (decimaValue.doubleValue() < 0))
 				? BigDecimal.valueOf(0) : decimaValue;
-
+				targetValue = decimaValue.toString();		
 		if (setting.getDecimalSelection() == DecimalSelection.DECIMAL) {
 			int precision = setting.getMinuteFractionDigit().map(item -> item.v()).orElse(0);
 			decimaValue = roundDecimal(decimaValue, precision, setting.getMinuteFractionDigitProcessCls());
+			targetValue = decimaValue.toString();
 		}
 
 		if ((Double.valueOf(itemValue) > 1440)
 				&& (setting.getTimeSeletion() == HourMinuteClassification.HOUR_AND_MINUTE)
 				&& (setting.getNextDayOutputMethod() == NextDayOutputMethod.OUT_PUT_24HOUR)) {
-			decimaValue.subtract(new BigDecimal(24.00));
+			//decimaValue.subtract(new BigDecimal(24.00));
+			decimaValue = decimaValue.subtract(new BigDecimal(24.00));
+			targetValue = "翌日" + decimaValue.toString();
 		}
 
 		if ((decimaValue.doubleValue() < 0)
 				&& (setting.getTimeSeletion() == HourMinuteClassification.HOUR_AND_MINUTE)) {
 			if (setting.getPrevDayOutputMethod() == PreviousDayOutputMethod.FORMAT0H00) {
 				decimaValue = new BigDecimal(0.00);
+				targetValue = decimaValue.toString();
 			} else if (setting.getPrevDayOutputMethod() == PreviousDayOutputMethod.FORMAT24HOUR) {
-				decimaValue.add(new BigDecimal(24.00));
+				decimaValue = decimaValue.add(new BigDecimal(24.00));
+				targetValue = "前日" + decimaValue.toString();
 			}
 		}
-
-		targetValue = decimaValue.toString();
+		
+		
 		if (setting.getDelimiterSetting() == DelimiterSetting.NO_DELIMITER) {
 			targetValue = targetValue.replace(DOT, "");
 		} else if (setting.getDelimiterSetting() == DelimiterSetting.SEPARATE_BY_COLON) {
@@ -1461,7 +1505,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		result.put(ERROR_MESS, errorMess);
 		result.put(RESULT_VALUE, targetValue);
 
-		return result;
+ 		return result;
 	}
 
 	// サーバ外部出力ファイル型チェック日付型
@@ -1475,10 +1519,14 @@ public class CreateExOutTextService extends ExportService<Object> {
 		DateOutputFormat formatDate = setting.getFormatSelection();
 
 		if (formatDate == DateOutputFormat.YY_MM_DD || formatDate == DateOutputFormat.YYMMDD
-				|| formatDate == DateOutputFormat.YYYY_MM_DD || formatDate == DateOutputFormat.YYYYMMDD
-				|| formatDate == DateOutputFormat.DAY_OF_WEEK) {
+				|| formatDate == DateOutputFormat.YYYY_MM_DD || formatDate == DateOutputFormat.YYYYMMDD) {
 			targetValue = date.toString(formatDate.format);
-		} else if (formatDate == DateOutputFormat.JJYY_MM_DD || formatDate == DateOutputFormat.JJYYMMDD) {
+		} else if (formatDate == DateOutputFormat.DAY_OF_WEEK){
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E", Locale.JAPAN);			
+			LocalDate dateXX = LocalDate.parse(itemValue, DateTimeFormatter.ofPattern("yyyy-MM-dd"));		
+			targetValue = dateXX.format(formatter);
+		}
+		else if (formatDate == DateOutputFormat.JJYY_MM_DD || formatDate == DateOutputFormat.JJYYMMDD) {
 			JapaneseEras erasList = japaneseErasAdapter.getAllEras();
 			Optional<JapaneseEraName> japaneseEraNameOptional = erasList.eraOf(date);
 			
@@ -1490,10 +1538,16 @@ public class CreateExOutTextService extends ExportService<Object> {
 			} else {
 				JapaneseEraName japaneseEraName = japaneseEraNameOptional.get();
 				
-				StringBuilder japaneseDate = new StringBuilder(japaneseEraName.getName()); 
+				StringBuilder japaneseDate = new StringBuilder(japaneseEraName.getName());
+				if(formatDate == DateOutputFormat.JJYY_MM_DD){
 				japaneseDate.append((date.year() - japaneseEraName.startDate().year() + 1) + SLASH);		
 				japaneseDate.append(date.month() + SLASH);
 				japaneseDate.append(date.day());
+				} else if(formatDate == DateOutputFormat.JJYYMMDD){
+					japaneseDate.append((date.year() - japaneseEraName.startDate().year() + 1) );		
+					japaneseDate.append(date.month() );
+					japaneseDate.append(date.day());	
+				}
 				
 				targetValue = japaneseDate.toString();
 			}

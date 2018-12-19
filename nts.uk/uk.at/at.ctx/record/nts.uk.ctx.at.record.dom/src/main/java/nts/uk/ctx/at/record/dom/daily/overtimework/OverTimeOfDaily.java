@@ -408,6 +408,7 @@ public class OverTimeOfDaily {
 	 * 
 	 * @param actualWorkTime 実働就業時間
 	 * @param dailyUnit 
+	 * @param predetermineTimeSetForCalc 
 	 * @param finally1 
 	 * @param optional 
 	 * @param unUseBreakTime　休憩未取得時間
@@ -419,12 +420,12 @@ public class OverTimeOfDaily {
 									Optional<FixedWorkCalcSetting> ootsukaFixedCalcSet,
 									AutoCalOvertimeSetting autoCalcSet, DailyUnit dailyUnit, 
 									Optional<FixRestTimezoneSet> restTimeSheet, 
-									Finally<WithinWorkTimeSheet> withinWorkTimeSheet) {
+									Finally<WithinWorkTimeSheet> withinWorkTimeSheet, PredetermineTimeSetForCalc predetermineTimeSetForCalc) {
 		if(ootsukaFixedCalcSet != null && ootsukaFixedCalcSet.isPresent() ) {
 			//休憩未取得時間から残業時間計算
 			calcOverTimeFromUnuseTime(actualWorkTime, unUseBreakTime, ootsukaFixedCalcSet.get().getOverTimeCalcNoBreak(),dailyUnit,predTime);
 			//所定時間を超過した残業時間を計算
-			calcOverTimeFromOverPredTime(actualWorkTime, unUseBreakTime, annualAddTime, predTime, ootsukaFixedCalcSet.get().getExceededPredAddVacationCalc(), 
+			calcOverTimeFromOverPredTime(actualWorkTime, unUseBreakTime, annualAddTime, predetermineTimeSetForCalc.getAdditionSet().getPredTime().getOneDay(), ootsukaFixedCalcSet.get().getExceededPredAddVacationCalc(), 
 										 autoCalcSet,restTimeSheet,withinWorkTimeSheet);
 		}
 	}

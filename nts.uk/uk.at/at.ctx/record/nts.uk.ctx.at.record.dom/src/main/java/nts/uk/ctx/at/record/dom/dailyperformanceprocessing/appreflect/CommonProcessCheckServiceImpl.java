@@ -88,7 +88,7 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 		//INPUT．予定と実績を同じに変更する区分をチェックする
 		if(commonPara.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.AUTO_CHANGE_ONLY_WORK) {
 			//ドメインモデル「日別実績の勤務情報」を取得する
-			WorkInformation recordWorkInformation = dailyInfo.getRecordInfo();
+			WorkInformation recordWorkInformation = dailyInfo.getScheduleInfo();
 			if(recordWorkInformation.getWorkTimeCode() == null) {
 				return true;
 			}
