@@ -108,7 +108,6 @@ import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrderRepository
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.japanese.JapaneseEraName;
 import nts.uk.shr.com.time.japanese.JapaneseEras;
 import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
@@ -1477,7 +1476,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				&& (setting.getTimeSeletion() == HourMinuteClassification.HOUR_AND_MINUTE)) {
 			if (setting.getPrevDayOutputMethod() == PreviousDayOutputMethod.FORMAT0H00) {
 				decimaValue = new BigDecimal(0.00);
-				targetValue = decimaValue.toString();
+				targetValue = decimaValue.toString() + ":00";
 			} else if (setting.getPrevDayOutputMethod() == PreviousDayOutputMethod.FORMAT24HOUR) {
 				decimaValue = decimaValue.add(new BigDecimal(24.00));
 				targetValue = "前日" + decimaValue.toString();
