@@ -2,10 +2,14 @@ package nts.uk.file.at.app.export.regisagreetime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.standardtime.AgreementUnitSetting;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementUnitSettingRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
@@ -21,6 +25,9 @@ public class RegisteTimeImpl implements MasterListData {
 	
 	@Inject
 	private RegistTimeRepository registTimeRepository;
+	
+	@Inject
+	private AgreementUnitSettingRepository agreementUnitSettingRepository;
 	
 	/**
 	 *  Sheet1
@@ -217,22 +224,31 @@ public class RegisteTimeImpl implements MasterListData {
                 .mainDataColumns(this.getHeaderColumnsSheet2())
                 .sheetName(TextResource.localize("KMK008_71"))
                 .build();
+        
+        Optional<AgreementUnitSetting> agreementUnitSetting = agreementUnitSettingRepository.find(AppContexts.user().companyId());
+        
+        
         /**
          *  sheet 3
          */
-        SheetData sheetData3 = SheetData.builder()
-       		 .mainData(this.getMasterDatasSheet3())
-               .mainDataColumns(this.getHeaderColumnsSheet3())
-               .sheetName(TextResource.localize("KMK008_72"))
-               .build();
+        if(agreementUnitSetting.isPresent() && agreementUnitSetting.get().getEmploymentUseAtr().value == 1) {
+        	 SheetData sheetData3 = SheetData.builder()
+               		 .mainData(this.getMasterDatasSheet3())
+                       .mainDataColumns(this.getHeaderColumnsSheet3())
+                       .sheetName(TextResource.localize("KMK008_72"))
+                       .build();
+        	 sheetDatas.add(sheetData3);
+        }
+       
         /**
          *  sheet 5
          */
-        SheetData sheetData5 = SheetData.builder()
-          		 .mainData(this.getMasterDatasSheet5())
-                  .mainDataColumns(this.getHeaderColumnsSheet5())
-                  .sheetName(TextResource.localize("KMK008_74"))
-                  .build();
+		if (agreementUnitSetting.isPresent() && agreementUnitSetting.get().getClassificationUseAtr().value == 1) {
+			SheetData sheetData5 = SheetData.builder().mainData(this.getMasterDatasSheet5())
+					.mainDataColumns(this.getHeaderColumnsSheet5()).sheetName(TextResource.localize("KMK008_74"))
+					.build();
+			sheetDatas.add(sheetData5);
+		}
         
         /**
          *  sheet 6
@@ -246,27 +262,29 @@ public class RegisteTimeImpl implements MasterListData {
         /**
          *  sheet 7
          */
-        SheetData sheetData7 = SheetData.builder()
-          		 .mainData(this.getMasterDatasSheet7())
-                  .mainDataColumns(this.getHeaderColumnsSheet7())
-                  .sheetName(TextResource.localize("KMK008_76"))
-                  .build();
+        if(agreementUnitSetting.isPresent() && agreementUnitSetting.get().getEmploymentUseAtr().value == 1) {
+	        SheetData sheetData7 = SheetData.builder()
+	          		 .mainData(this.getMasterDatasSheet7())
+	                  .mainDataColumns(this.getHeaderColumnsSheet7())
+	                  .sheetName(TextResource.localize("KMK008_76"))
+	                  .build();
+	        sheetDatas.add(sheetData7);
+        }
         
         /**
          *  sheet 9
          */
-        SheetData sheetData9 = SheetData.builder()
-          		 .mainData(this.getMasterDatasSheet9())
-                  .mainDataColumns(this.getHeaderColumnsSheet9())
-                  .sheetName(TextResource.localize("KMK008_78"))
-                  .build();
+        if (agreementUnitSetting.isPresent() && agreementUnitSetting.get().getClassificationUseAtr().value == 1) {
+	        SheetData sheetData9 = SheetData.builder()
+	          		 .mainData(this.getMasterDatasSheet9())
+	                  .mainDataColumns(this.getHeaderColumnsSheet9())
+	                  .sheetName(TextResource.localize("KMK008_78"))
+	                  .build();
+	        sheetDatas.add(sheetData9);
+        }
 
         sheetDatas.add(sheetData2);
-        sheetDatas.add(sheetData3);
-        sheetDatas.add(sheetData5);
         sheetDatas.add(sheetData6);
-        sheetDatas.add(sheetData7);
-        sheetDatas.add(sheetData9);
         return sheetDatas;
     }
 	

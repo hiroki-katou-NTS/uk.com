@@ -621,7 +621,6 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 				j = j+3;
 			}
 		}
-		
 		return datas;
 	}
 	

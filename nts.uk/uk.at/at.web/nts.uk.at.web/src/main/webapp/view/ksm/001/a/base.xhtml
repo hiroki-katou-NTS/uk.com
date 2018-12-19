@@ -11,6 +11,8 @@
 			<span class="action-bar">
 			<ui:insert name="extended-action-bar" />
 			<button tabindex="5" data-bind="click: openDialogCommonSetting">#{i18n.getText('KSM001_51')}</button>
+			<!-- Print Excel -->
+            <button tabindex="5" id="print-button" data-bind="click: saveAsExcel" style="width: 120px;">#{i18n.getText('KSM001_196')}</button>
 			</span>
 		</div>
 		<div class="contents-area cf" data-bind="visible: true" style="display: none">

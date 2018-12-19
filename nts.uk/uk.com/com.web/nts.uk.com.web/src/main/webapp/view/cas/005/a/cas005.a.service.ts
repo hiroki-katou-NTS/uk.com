@@ -56,7 +56,7 @@ module nts.uk.com.view.cas005.a {
             let _params = { domainId: "RoleEmployment", 
                         domainType: "CAS005ロールの登録（就業）", 
                         languageId: "ja", 
-                        reportType: 0, option : date };
+                        reportType: 0};
             return nts.uk.request.exportFile('/masterlist/report/print',_params);
         }
 
