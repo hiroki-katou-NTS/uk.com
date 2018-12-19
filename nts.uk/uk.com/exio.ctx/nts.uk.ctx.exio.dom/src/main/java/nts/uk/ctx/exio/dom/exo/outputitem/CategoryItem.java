@@ -51,8 +51,6 @@ public class CategoryItem extends DomainObject {
 	 */
 	private int displayOrder;
 	
-	@Setter
-	private Integer indexValue;
 
 	public CategoryItem(int itemNo, int categoryId, Integer operationSymbol, int displayOrder) {
 		this.itemNo = new ItemNo(itemNo);
