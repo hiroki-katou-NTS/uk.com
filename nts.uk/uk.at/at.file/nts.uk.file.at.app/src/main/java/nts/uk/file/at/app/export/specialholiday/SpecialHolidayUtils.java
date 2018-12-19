@@ -59,6 +59,7 @@ public class SpecialHolidayUtils {
     public static final String KMF004_151 = "続柄上限日数";
     public static final String KMF004_152 = "喪主時加算日数";
     public static final String KMF004_161 = "メモ";
+    public static final String KMF004_162 = "続柄入力を利用する";
     public static final String MONTH = "MONTH";
     public static final String DAY = "DAY";
     
