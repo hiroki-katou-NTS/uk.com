@@ -134,7 +134,7 @@ public class WorkScheduleOutputConditionFinder {
 	 * @return the dom closure
 	 */
 	// アルゴリズム「社員に対応する締め期間を取得する」を実行する(Execute the algorithm "Acquire closing period corresponding to employee")
-	private Optional<Closure> getDomClosure(String employeeId, GeneralDate systemDate) {
+	public Optional<Closure> getDomClosure(String employeeId, GeneralDate systemDate) {
 		
 		String companyId = AppContexts.user().companyId();
 		
