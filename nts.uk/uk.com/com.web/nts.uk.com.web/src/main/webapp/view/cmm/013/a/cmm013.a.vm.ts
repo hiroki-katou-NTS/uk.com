@@ -456,6 +456,7 @@ module nts.uk.com.view.cmm013.a {
              */
             public openSelectSequenceDialog(data: SequenceMaster[]) {
                 let _self = this;
+                nts.uk.ui.windows.setShared("currentSelectedCode", _self.sequenceCode());
                 nts.uk.ui.windows.setShared(Constants.SHARE_IN_DIALOG_SELECT_SEQUENCE, data);
                 nts.uk.ui.windows.sub.modal('/view/cmm/013/c/index.xhtml').onClosed(() => {
                     // Check if apply button was clicked
