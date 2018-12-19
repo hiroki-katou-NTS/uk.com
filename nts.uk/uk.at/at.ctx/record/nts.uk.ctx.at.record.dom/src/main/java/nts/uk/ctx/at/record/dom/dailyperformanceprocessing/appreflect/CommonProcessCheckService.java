@@ -41,5 +41,5 @@ public interface CommonProcessCheckService {
 	 * @param ymd
 	 * @param optTimeLeaving
 	 */
-	public IntegrationOfDaily updateBreakTimeInfor(String sid, GeneralDate ymd, IntegrationOfDaily integrationOfDaily);
+	public IntegrationOfDaily updateBreakTimeInfor(String sid, GeneralDate ymd, IntegrationOfDaily integrationOfDaily, String companyId);
 }
