@@ -89,6 +89,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                         self.wageTableContent2dData(data);
                     }
                 }
+                $(".input-amount")[0].focus();
             }); 
         }
 
@@ -483,6 +484,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     self.elementRangeSetting().secondElementRange(null);
                     self.elementRangeSetting().thirdElementRange(null);
                     self.wageTableContent(new model.WageTableContent(data));
+                    $(".input-amount")[0].focus();
                 }
             }).fail(error => {
                 dialog.alertError(error);
@@ -598,6 +600,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     $("#content-wrapper").unbind();
                     self.syncScroll($("#content-wrapper"), $("#elem1-wrapper"), $("#elem2-wrapper"));
                     self.syncScroll($("#elem1-wrapper"), $("#content-wrapper"));
+                    $(".input-amount")[0].focus();
                 }
             }).fail(error => {
                 dialog.alertError(error);
@@ -665,6 +668,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     $("#content-wrapper").unbind();
                     self.syncScroll($("#content-wrapper"), $("#elem1-wrapper"), $("#elem2-wrapper"));
                     self.syncScroll($("#elem1-wrapper"), $("#content-wrapper"));
+                    $(".input-amount")[0].focus();
                 }
             }).fail(error => {
                 dialog.alertError(error);

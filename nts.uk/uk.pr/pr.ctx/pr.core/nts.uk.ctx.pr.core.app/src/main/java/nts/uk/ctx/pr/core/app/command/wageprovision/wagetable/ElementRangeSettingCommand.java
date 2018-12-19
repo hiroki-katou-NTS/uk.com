@@ -34,15 +34,15 @@ public class ElementRangeSettingCommand {
 
 	public ElementRangeSetting fromCommandToDomain() {
 		if (firstElementRange.getRangeLowerLimit() != null && firstElementRange.getRangeUpperLimit() != null
-				&& firstElementRange.getRangeUpperLimit() <= firstElementRange.getRangeLowerLimit())
+				&& firstElementRange.getRangeUpperLimit() < firstElementRange.getRangeLowerLimit())
 			throw new BusinessException("MsgQ_153");
 		if (secondElementRange != null && secondElementRange.getRangeLowerLimit() != null
 				&& secondElementRange.getRangeUpperLimit() != null
-				&& secondElementRange.getRangeUpperLimit() <= secondElementRange.getRangeLowerLimit())
+				&& secondElementRange.getRangeUpperLimit() < secondElementRange.getRangeLowerLimit())
 			throw new BusinessException("MsgQ_154");
 		if (thirdElementRange != null && thirdElementRange.getRangeLowerLimit() != null
 				&& thirdElementRange.getRangeUpperLimit() != null
-				&& thirdElementRange.getRangeUpperLimit() <= thirdElementRange.getRangeLowerLimit())
+				&& thirdElementRange.getRangeUpperLimit() < thirdElementRange.getRangeLowerLimit())
 			throw new BusinessException("MsgQ_155");
 		return new ElementRangeSetting(firstElementRange.fromCommandToDomain(),
 				secondElementRange == null ? null : secondElementRange.fromCommandToDomain(),

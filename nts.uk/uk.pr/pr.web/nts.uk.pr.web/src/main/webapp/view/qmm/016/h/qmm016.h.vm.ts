@@ -134,11 +134,14 @@ module nts.uk.pr.view.qmm016.h.viewmodel {
 
         registerQualificationGroup() {
             let self = this;
-            let selectedQualification = ko.toJS(self.selectedQualification),
-                selectedEligibleQualificationCode = ko.toJS(self.selectedEligibleQualificationCode);
-            selectedQualification.eligibleQualificationCode = selectedEligibleQualificationCode.map(item => item.qualificationCode);
-            if (self.screenMode() == model.SCREEN_MODE.NEW) self.addQualificationGroup(selectedQualification);
-            else self.updateQualificationGroup(selectedQualification);
+            $(".nts-input").filter(":enabled").trigger("validate");
+            if (!nts.uk.ui.errors.hasError()) {
+                let selectedQualification = ko.toJS(self.selectedQualification),
+                    selectedEligibleQualificationCode = ko.toJS(self.selectedEligibleQualificationCode);
+                selectedQualification.eligibleQualificationCode = selectedEligibleQualificationCode.map(item => item.qualificationCode);
+                if (self.screenMode() == model.SCREEN_MODE.NEW) self.addQualificationGroup(selectedQualification);
+                else self.updateQualificationGroup(selectedQualification);
+            }
         }
 
         deleteQualificationGroup() {
@@ -147,13 +150,15 @@ module nts.uk.pr.view.qmm016.h.viewmodel {
                 block.invisible();
                 let selectedQualificationGroup = ko.toJS(self.selectedQualification), qualificationGroupList = ko.toJS(self.qualificationGroupList), currentIndex, newQualificationGroupCode;
                 service.deleteQualificationGroup(selectedQualificationGroup).done(function () {
-                    // find new item
-                    if (qualificationGroupList.length > 1)
-                        currentIndex = _.findIndex(qualificationGroupList, {qualificationGroupCode: self.selectedQualificationGroupCode()});
-                    if (currentIndex == qualificationGroupList.length - 1) {
-                        newQualificationGroupCode = qualificationGroupList[currentIndex - 1].qualificationGroupCode;
+                    currentIndex = _.findIndex(qualificationGroupList, {qualificationGroupCode: self.selectedQualificationGroupCode()});
+                    if (qualificationGroupList.length == 0) {
+                        newQualificationGroupCode = null;
                     } else {
-                        newQualificationGroupCode = qualificationGroupList[currentIndex + 1].qualificationGroupCode;
+                        if (currentIndex == qualificationGroupList.length) {
+                            newQualificationGroupCode = qualificationGroupList[currentIndex - 1].qualificationGroupCode;
+                        } else {
+                            newQualificationGroupCode = qualificationGroupList[currentIndex].qualificationGroupCode;
+                        }
                     }
                     dialog.info({messageId: 'Msg_16'}).then(function () {
                         // update after delete

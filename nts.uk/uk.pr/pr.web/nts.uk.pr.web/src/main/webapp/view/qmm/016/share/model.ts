@@ -121,6 +121,7 @@ module nts.uk.pr.view.qmm016.share.model {
             this.histories(params ? params.histories.map(item => new GenericHistoryYearMonthPeriod(item)) : []);
             this.elementSetting.subscribe(newValue => {
                 self.changeImagePath(newValue);
+                this.elementInformation(new ElementInformation(null));
             });
             self.changeImagePath(self.elementSetting());
         }

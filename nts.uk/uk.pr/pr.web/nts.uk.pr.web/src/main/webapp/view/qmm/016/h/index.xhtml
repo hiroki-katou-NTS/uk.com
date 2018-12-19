@@ -41,7 +41,7 @@
                      style="margin-left: 10px; margin-bottom: 20px;">
                     <div style="width: 240px"
                          data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'qualificationGroupCode', comId: 'H2_3',
-                        items: qualificationGroupList, selected: selectedQualificationGroupCode, selectedKey: 'laborOfficeCode', fields: ['qualificationGroupCode', 'qualificationGroupCode'], mode: 'igGrid'}"/>
+                        items: qualificationGroupList, selected: selectedQualificationGroupCode, selectedKey: 'laborOfficeCode', fields: ['qualificationGroupCode', 'qualificationGroupName'], mode: 'igGrid'}"/>
                     <table id="H2_3"
                            data-bind="ntsGridList: {
                             rows: 15,
@@ -67,7 +67,7 @@
                     <input id = "H3_2" style="margin-left: 5px;"
                            data-bind="ntsTextEditor: {constraint: 'QualificationGroupName',value: qualificationGroupName, name: '#[QMM016_62]', required: true}"/>
                 </div>
-                <div data-bind = "with: selectedQualification" class="control-group valign-center">
+                <div data-bind = "with: selectedQualification" class="control-group valign-center" style="width: 631px">
                     <div class="column-1"
                          data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM016_51')}</div>
                     <button style="display: inline-block"
