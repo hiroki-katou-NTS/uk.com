@@ -127,9 +127,9 @@ public class ApplicationListForScreen {
 				applicationExport.setAppTypeName(appDispNameRepository.getDisplay(app.getAppType().value).isPresent() ? appDispNameRepository.getDisplay(app.getAppType().value).get().getDispName().toString() : "" );
 				applicationExports.add(applicationExport);
 			} else {
+				// 申請種類＝勤務変更申請　＆　休日を除外するの場合
+				AppWorkChange appWorkChange = appWorkChangeRepository.getAppworkChangeById(companyID, app.getAppID()).get();
 				for(GeneralDate loopDate = app.getStartDate().get(); loopDate.beforeOrEquals(app.getEndDate().get()); loopDate = loopDate.addDays(1)){
-					// 申請種類＝勤務変更申請　＆　休日を除外するの場合
-					AppWorkChange appWorkChange = appWorkChangeRepository.getAppworkChangeById(companyID, app.getAppID()).get();
 					if(appWorkChange.getExcludeHolidayAtr()==0){
 						ApplicationExportDto applicationExport = new ApplicationExportDto();
 						applicationExport.setAppDate(loopDate);
@@ -149,6 +149,7 @@ public class ApplicationListForScreen {
 							applicationExport.setReflectState(app.getReflectionInformation().getStateReflectionReal().value);
 							applicationExport.setAppTypeName(appDispNameRepository.getDisplay(app.getAppType().value).isPresent() ? appDispNameRepository.getDisplay(app.getAppType().value).get().getDispName().toString() : "" );
 							applicationExports.add(applicationExport);
+							continue;
 						}
 						// 1日半日出勤・1日休日系の判定
 						WorkStyle workStyle = basicScheduleService.checkWorkDay(opScBasicScheduleImport.get().getWorkTypeCode());
