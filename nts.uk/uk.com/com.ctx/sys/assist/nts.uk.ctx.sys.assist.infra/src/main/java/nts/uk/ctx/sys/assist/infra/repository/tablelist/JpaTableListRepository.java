@@ -308,6 +308,9 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		// Order By
 		query.append(" ORDER BY H_CID, H_SID, H_DATE, H_DATE_START");
 		String querySql = query.toString();
+		if(tableList.getTableEnglishName().equals("BPSMT_PERSON")) {
+			query.toString();
+		}
 		List<Object[]> listTemp = new ArrayList<>();
 		if(!targetEmployeesSid.isEmpty()) {
 			List<String> lSid = new ArrayList<>();
@@ -315,8 +318,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 				lSid.add(subIdList.toString().replaceAll("\\[", "\\'").replaceAll("\\]", "\\'").replaceAll(", ","\\', '"));
 			});
 			for (String sid : lSid) {
-				Query queryString = getEntityManager().createNativeQuery(querySql);
-				queryString.setParameter("listTargetSid", sid);
+				Query queryString = getEntityManager().createNativeQuery(querySql.replaceAll("\\?listTargetSid", sid));
 				for (Entry<String, Object> entry : params.entrySet()) {
 					queryString.setParameter(entry.getKey(), entry.getValue());
 				}
