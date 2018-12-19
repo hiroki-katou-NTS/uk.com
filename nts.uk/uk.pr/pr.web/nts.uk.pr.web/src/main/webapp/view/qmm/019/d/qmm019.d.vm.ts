@@ -438,16 +438,17 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
          */
         condition42(defaultAtr: shareModel.DefaultAtr) {
             let self = this;
+            if(self.params.printSet == shareModel.StatementPrintAtr.DO_NOT_PRINT){
+                if (self.dataScreen().totalObject() == shareModel.PaymentTotalObjAtr.INSIDE.toString()) {
+                    self.dataScreen().totalObject(shareModel.PaymentTotalObjAtr.OUTSIDE.toString());
+                } else if (self.dataScreen().totalObject() == shareModel.PaymentTotalObjAtr.INSIDE_ACTUAL.toString()) {
+                    self.dataScreen().totalObject(shareModel.PaymentTotalObjAtr.OUTSIDE_ACTUAL.toString());
+                }
+            }
             if (defaultAtr == shareModel.DefaultAtr.SYSTEM_DEFAULT) {
                 self.totalObjAtrs(shareModel.getPaymentTotalObjAtr(null));
             } else {
                 self.totalObjAtrs(shareModel.getPaymentTotalObjAtr(self.params.printSet));
-            }
-            if(self.params.printSet == shareModel.StatementPrintAtr.PRINT) return;
-            if (self.dataScreen().totalObject() == shareModel.PaymentTotalObjAtr.INSIDE.toString()) {
-                self.dataScreen().totalObject(shareModel.PaymentTotalObjAtr.OUTSIDE.toString());
-            } else if (self.dataScreen().totalObject() == shareModel.PaymentTotalObjAtr.INSIDE_ACTUAL.toString()) {
-                self.dataScreen().totalObject(shareModel.PaymentTotalObjAtr.OUTSIDE_ACTUAL.toString());
             }
         }
 
