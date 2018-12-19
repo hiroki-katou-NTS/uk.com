@@ -84,7 +84,7 @@ module nts.uk.com.view.cdl027.a.viewmodel {
         private exportCsv(): void {
             let self = this, l = self.items().length;
             if (l > 0) {
-                block.invisible();
+                block.grayout();
                 service.exportCsv(self.formatParams()).always(() => {
                     block.clear();
                 });
