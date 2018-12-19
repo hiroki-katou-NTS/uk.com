@@ -39,7 +39,7 @@ public class JpaMatrixDisplaySetRepo extends JpaRepository implements MatrixDisp
 			PpestMatrixDisplaySet updateEntity = this.queryProxy().find(newEntity.ppestMatrixDisplaySetPK, PpestMatrixDisplaySet.class).get();
 			updateEntity.cursonDirection = newEntity.cursonDirection;
 			updateEntity.clsATR  = newEntity.clsATR;
-			updateEntity.positionATR        = newEntity.positionATR;
+			updateEntity.jobATR        = newEntity.jobATR;
 			updateEntity.workPlaceATR       = newEntity.workPlaceATR;
 			updateEntity.departmentATR      = newEntity.departmentATR;
 			updateEntity.employmentATR      = newEntity.employmentATR;
@@ -77,11 +77,10 @@ public class JpaMatrixDisplaySetRepo extends JpaRepository implements MatrixDisp
 		return new PpestMatrixDisplaySet(pk ,
 				domain.getCursorDirection().value,
 				domain.getClsATR().value,
-				domain.getPositionATR().value,
+				domain.getJobATR().value,
 				domain.getWorkPlaceATR().value,
 				domain.getDepartmentATR().value,
 				domain.getEmploymentATR().value);
 				
 	}
-
 }

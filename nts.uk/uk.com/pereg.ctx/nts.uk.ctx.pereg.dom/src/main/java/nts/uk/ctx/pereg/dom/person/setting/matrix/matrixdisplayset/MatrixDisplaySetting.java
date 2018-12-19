@@ -31,7 +31,7 @@ public class MatrixDisplaySetting {
 	private NotUseAtr clsATR;
 	
 	/** 職位  **/
-	private NotUseAtr positionATR;
+	private NotUseAtr jobATR;
 	
 	/** 職場  **/
 	private NotUseAtr workPlaceATR;

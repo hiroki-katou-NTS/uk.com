@@ -34,16 +34,16 @@ public class PpestMatrixDisplaySet extends UkJpaEntity implements Serializable {
 		 @Column(name = "CLS_ATR")
 		    public int clsATR;
 		 
-		 @Column(name = "POSITION_ATR")
-		    public int positionATR;
+		 @Column(name = "JOB_ATR")
+		    public int jobATR;
 		 
-		 @Column(name = "WORK_PLACE_ATR")
+		 @Column(name = "WKP_ATR")
 		    public int workPlaceATR;
 		 
-		 @Column(name = "DEPARTMENT_ATR")
+		 @Column(name = "DEP_ATR")
 		    public int departmentATR;
 		 
-		 @Column(name = "EMPLOYMENT_ATR")
+		 @Column(name = "EMP_ATR")
 		    public int employmentATR;
 	 
 
@@ -58,7 +58,7 @@ public class PpestMatrixDisplaySet extends UkJpaEntity implements Serializable {
 				this.ppestMatrixDisplaySetPK.userID, 
 				cursonDirection, 
 				clsATR, 
-				positionATR, 
+				jobATR, 
 				workPlaceATR, 
 				departmentATR, 
 				employmentATR);
@@ -69,7 +69,7 @@ public class PpestMatrixDisplaySet extends UkJpaEntity implements Serializable {
 				new PpestMatrixDisplaySetPK(setting.getCompanyID() , setting.getUserID()),
 				setting.getCursorDirection().value,
 				setting.getClsATR().value,
-				setting.getPositionATR().value,
+				setting.getJobATR().value,
 				setting.getWorkPlaceATR().value,
 				setting.getDepartmentATR().value,
 				setting.getEmploymentATR().value);
