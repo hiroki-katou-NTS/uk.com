@@ -190,7 +190,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                 self.dataScreen().perValName(isNullOrUndefined(perVal) ? null : perVal.individualPriceName);
                 self.dataScreen().formulaName(isNullOrUndefined(formula) ? null : formula.formulaName);
                 self.dataScreen().wageTableName(isNullOrUndefined(wageTable) ? null : wageTable.wageTableName);
-                self.dataScreen().statementItemName(isNullOrUndefined(statementItemName) ? null : statementItemName.shortName);
+                self.dataScreen().statementItemName(isNullOrUndefined(statementItemName) ? null : statementItemName.name);
                 dfd.resolve();
             });
 
