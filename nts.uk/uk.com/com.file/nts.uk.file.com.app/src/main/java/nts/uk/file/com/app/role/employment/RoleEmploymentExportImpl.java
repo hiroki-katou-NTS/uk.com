@@ -20,7 +20,6 @@ public class RoleEmploymentExportImpl implements MasterListData {
     @Inject
     private RoleEmpExportRepository mRoleEmpExportRepository;
 
-    private List<MasterData> masterData = new ArrayList<MasterData>();
     private static final String CAS005_122 = "コードカラム";
     private static final String CAS005_123 = "名称カラム";
     private static final String CAS005_124 = "担当区分カラム";
