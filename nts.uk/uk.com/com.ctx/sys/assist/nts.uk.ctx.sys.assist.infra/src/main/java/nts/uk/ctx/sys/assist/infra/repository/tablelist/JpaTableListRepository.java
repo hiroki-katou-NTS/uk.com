@@ -127,7 +127,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		}
 		
 		// From
-		query.append(" FROM SSPMT_TARGET_EMPLOYEES e, ").append(tableList.getTableEnglishName()).append(" t");
+		query.append(" FROM ").append(tableList.getTableEnglishName()).append(" t");
 		if (tableList.getHasParentTblFlg() == NotUseAtr.USE && tableList.getParentTblName().isPresent()) {
 			// アルゴリズム「親テーブルをJOINする」を実行する
 			query.append(" INNER JOIN ").append(tableList.getParentTblName().get()).append(" p ON ");
@@ -310,15 +310,18 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		String querySql = query.toString();
 		List<Object[]> listTemp = new ArrayList<>();
 		if(!targetEmployeesSid.isEmpty()) {
+			List<String> lSid = new ArrayList<>();
 			CollectionUtil.split(targetEmployeesSid, 1000, subIdList -> {
-				String lSid = subIdList.toString().replaceAll("\\[", "\\'").replaceAll("\\]", "\\'").replaceAll(", ","\\', '");
+				lSid.add(subIdList.toString().replaceAll("\\[", "\\'").replaceAll("\\]", "\\'").replaceAll(", ","\\', '"));
+			});
+			for (String sid : lSid) {
 				Query queryString = getEntityManager().createNativeQuery(querySql);
-				queryString.setParameter("listTargetSid", lSid);
+				queryString.setParameter("listTargetSid", sid);
 				for (Entry<String, Object> entry : params.entrySet()) {
 					queryString.setParameter(entry.getKey(), entry.getValue());
 				}
 				listTemp.addAll((List<Object[]>) queryString.getResultList());
-			});
+			}
 		}else {
 			Query queryString = getEntityManager().createNativeQuery(querySql);
 			for (Entry<String, Object> entry : params.entrySet()) {
