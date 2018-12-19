@@ -55,10 +55,10 @@ public class JpaQualificationGroupSettingRepository extends JpaRepository
 	}
 
 	@Override
-	public void remove(QualificationGroupSetting domain) {
+	public void remove(String companyId, String code) {
 		this.getEntityManager().createQuery(DELETE_BY_COMPANY_AND_CODE, QpbmtQualificationGroupSetting.class)
-				.setParameter("cid", AppContexts.user().companyId())
-				.setParameter("qualificationGroupCode", domain.getQualificationGroupCode().v()).executeUpdate();
+				.setParameter("cid", companyId)
+				.setParameter("qualificationGroupCode", code).executeUpdate();
 	}
 
 	private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {

@@ -44,6 +44,10 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             self.initTabPanel();
             self.selectedWageTableIdentifier.subscribe((newValue) => {
                 nts.uk.ui.errors.clearAll();
+				if (self.addHistoryMode()) {
+					self.convertToTreeList(self.backupTreeList);
+					self.addHistoryMode(false);
+				} 
                 if (_.isEmpty(newValue)) {
                     self.wageTableContent(new model.WageTableContent(null));
                     self.elementRangeSetting(new model.ElementRangeSetting(null));
@@ -54,10 +58,6 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     self.isSelectedHistory(false);
                     $("#A5_2").focus();
                 } else {
-                    if (self.addHistoryMode()) {
-                        self.convertToTreeList(self.backupTreeList);
-                        self.addHistoryMode(false);
-                    } 
                     self.wageTableContent2dData([]);
                     self.fakeSelectedValue(null);
                     self.elementRangeSetting(new model.ElementRangeSetting(null));
@@ -87,9 +87,9 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     if (i3rdIndex >= 0) {
                         let data = _.cloneDeep(self.wageTableContent().payment()[i3rdIndex].listFirstDms());
                         self.wageTableContent2dData(data);
+						$(".input-amount")[0].focus();
                     }
                 }
-                $(".input-amount")[0].focus();
             }); 
         }
 
@@ -444,8 +444,29 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         }
 
         selectElement(dimension) {
-            let self = this;
-            setShared("QMM016_G_PARAMS", {});
+            let self = this, selected = null, otherSelected = [], elemInfo = ko.toJS(self.selectedWageTable().elementInformation());
+            if (dimension == 1) {
+                selected = elemInfo.oneDimensionElement.fixedElement ? elemInfo.oneDimensionElement.fixedElement : elemInfo.oneDimensionElement.optionalAdditionalElement;
+                if (elemInfo.twoDimensionElement.fixedElement || elemInfo.twoDimensionElement.optionalAdditionalElement)
+                    otherSelected.push(elemInfo.twoDimensionElement.fixedElement ? elemInfo.twoDimensionElement.fixedElement : elemInfo.twoDimensionElement.optionalAdditionalElement);
+                if (elemInfo.threeDimensionElement.fixedElement || elemInfo.threeDimensionElement.optionalAdditionalElement)
+                    otherSelected.push(elemInfo.threeDimensionElement.fixedElement ? elemInfo.threeDimensionElement.fixedElement : elemInfo.threeDimensionElement.optionalAdditionalElement);
+            }
+            if (dimension == 2) {
+                selected = elemInfo.twoDimensionElement.fixedElement ? elemInfo.twoDimensionElement.fixedElement : elemInfo.twoDimensionElement.optionalAdditionalElement;
+                if (elemInfo.oneDimensionElement.fixedElement || elemInfo.oneDimensionElement.optionalAdditionalElement)
+                    otherSelected.push(elemInfo.oneDimensionElement.fixedElement ? elemInfo.oneDimensionElement.fixedElement : elemInfo.oneDimensionElement.optionalAdditionalElement);
+                if (elemInfo.threeDimensionElement.fixedElement || elemInfo.threeDimensionElement.optionalAdditionalElement)
+                    otherSelected.push(elemInfo.threeDimensionElement.fixedElement ? elemInfo.threeDimensionElement.fixedElement : elemInfo.threeDimensionElement.optionalAdditionalElement);
+            }
+            if (dimension == 3) {
+                selected = elemInfo.threeDimensionElement.fixedElement ? elemInfo.threeDimensionElement.fixedElement : elemInfo.threeDimensionElement.optionalAdditionalElement;
+                if (elemInfo.oneDimensionElement.fixedElement || elemInfo.oneDimensionElement.optionalAdditionalElement)
+                    otherSelected.push(elemInfo.oneDimensionElement.fixedElement ? elemInfo.oneDimensionElement.fixedElement : elemInfo.oneDimensionElement.optionalAdditionalElement);
+                if (elemInfo.twoDimensionElement.fixedElement || elemInfo.twoDimensionElement.optionalAdditionalElement)
+                    otherSelected.push(elemInfo.twoDimensionElement.fixedElement ? elemInfo.twoDimensionElement.fixedElement : elemInfo.twoDimensionElement.optionalAdditionalElement);
+            }
+            setShared("QMM016_G_PARAMS", {selected: selected, otherSelected: otherSelected});
             modal("/view/qmm/016/g/index.xhtml").onClosed(() => {
                 let params: any = getShared("QMM016_G_RES_PARAMS");
                 if (params) {
