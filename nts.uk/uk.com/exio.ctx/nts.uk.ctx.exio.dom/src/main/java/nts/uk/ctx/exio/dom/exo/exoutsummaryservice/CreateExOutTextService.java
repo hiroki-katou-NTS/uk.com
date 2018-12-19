@@ -108,7 +108,6 @@ import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrderRepository
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.japanese.JapaneseEraName;
 import nts.uk.shr.com.time.japanese.JapaneseEras;
 import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
@@ -205,17 +204,17 @@ public class CreateExOutTextService extends ExportService<Object> {
 	@Override
 	protected void handle(ExportServiceContext<Object> context) {
 		ExOutSetting domain = (ExOutSetting) context.getQuery();
-		executeServerExOutManual(domain, context.getGeneratorContext());
+		executeServerExOutManual(domain, context.getGeneratorContext(),domain.getReferenceDate());
 	}
 
-	public void executeServerExOutManual(ExOutSetting exOutSetting, FileGeneratorContext generatorContext) {
+	public void executeServerExOutManual(ExOutSetting exOutSetting, FileGeneratorContext generatorContext,GeneralDate baseDate) {
 		ExOutSettingResult settingResult = getServerExOutSetting(exOutSetting);
 		if (settingResult == null) {
 			finishFaultWhenStart(exOutSetting.getProcessingId());
 			return;
 		}
 		initExOutLogInformation(exOutSetting, settingResult);
-		serverExOutExecution(generatorContext, exOutSetting, settingResult);
+		serverExOutExecution(generatorContext, exOutSetting, settingResult, baseDate);
 	}
 
 	// サーバ外部出力設定取得
@@ -316,7 +315,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	// サーバ外部出力実行
 	private void serverExOutExecution(FileGeneratorContext generatorContext, ExOutSetting exOutSetting,
-			ExOutSettingResult settingResult) {
+			ExOutSettingResult settingResult,GeneralDate baseDate) {
 
 		String processingId = exOutSetting.getProcessingId();
 		OperationStateResult state;
@@ -355,7 +354,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		exOutOpMngRepo.update(exOutOpMng);
 
 		CategorySetting type = exOutCtg.get().getCategorySet();
-		state = serverExOutTypeDataOrMaster(type, generatorContext, exOutSetting, settingResult, fileName);
+		state = serverExOutTypeDataOrMaster(type, generatorContext, exOutSetting, settingResult, fileName, baseDate);
 
 		createOutputLogInfoEnd(generatorContext, processingId, state, fileName);
 	}
@@ -423,7 +422,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	
 	@SuppressWarnings("unchecked")
 	private OperationStateResult serverExOutTypeDataOrMaster(CategorySetting type, FileGeneratorContext generatorContext,
-			ExOutSetting exOutSetting, ExOutSettingResult settingResult, String fileName) {
+			ExOutSetting exOutSetting, ExOutSettingResult settingResult, String fileName,GeneralDate baseDate) {
 		String loginSid = AppContexts.user().employeeId();
 		List<String> header = new ArrayList<>();
 		List<Map<String, Object>> csvData = new ArrayList<>();
@@ -475,7 +474,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 					
 					for (List<String> lineData : data) {
 						lineDataResult = fileLineDataCreation(exOutSetting.getProcessingId(), lineData,
-								outputItemCustomList, sid, stringFormat);
+								outputItemCustomList, sid, stringFormat, baseDate);
 						stateResult = (String) lineDataResult.get(RESULT_STATE);
 						lineDataCSV = (Map<String, Object>) lineDataResult.get(LINE_DATA_CSV);
 						if ((lineDataCSV != null) && RESULT_OK.equals(stateResult))
@@ -510,7 +509,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 						return new OperationStateResult(checkResult);;
 	
 					lineDataResult = fileLineDataCreation(exOutSetting.getProcessingId(), lineData, outputItemCustomList,
-							loginSid, stringFormat);
+							loginSid, stringFormat,baseDate);
 					stateResult = (String) lineDataResult.get(RESULT_STATE);
 					lineDataCSV = (Map<String, Object>) lineDataResult.get(LINE_DATA_CSV);
 					if (RESULT_OK.equals(stateResult) && (lineDataCSV != null))
@@ -752,7 +751,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	// サーバ外部出力ファイル行データ作成
 	private Map<String, Object> fileLineDataCreation(String processingId, List<String> lineData,
-			List<OutputItemCustom> outputItemCustomList, String sid, StringFormat stringFormat) {
+			List<OutputItemCustom> outputItemCustomList, String sid, StringFormat stringFormat,GeneralDate baseDate) {
 
 		Map<String, Object> result = new HashMap<String, Object>();
 		Map<String, Object> lineDataCSV = new HashMap<String, Object>();
@@ -798,7 +797,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 			fileItemDataCheckedResult = checkOutputFileType(targetValue,
 					outputItemCustom.getStandardOutputItem().getItemType(), outputItemCustom.getDataFormatSetting(),
-					sid);
+					sid,baseDate);
 			resultState = fileItemDataCheckedResult.get(RESULT_STATE);
 			errorMess = fileItemDataCheckedResult.get(ERROR_MESS);
 			targetValue = fileItemDataCheckedResult.get(RESULT_VALUE);
@@ -874,7 +873,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 			return result;
 		}
 		List<CategoryItem> categoryItems = outputItemCustom.getStandardOutputItem().getCategoryItems();
-
+		List<ResultCharater> listResultCharater = new ArrayList<>();
 		for (int i = 0; i < categoryItems.size(); i++) {
 			value = lineData.get(index);
 			index++;
@@ -893,6 +892,11 @@ public class CreateExOutTextService extends ExportService<Object> {
 //				continue;
 //			}
 
+			if (outputItemCustom.getStandardOutputItem().getItemType() == ItemType.CHARACTER) {
+				listResultCharater.add(new ResultCharater(categoryItems.get(i).getDisplayOrder(),value));
+				//itemValue += value;
+				continue;
+			}  
 			if ((outputItemCustom.getStandardOutputItem().getItemType() != ItemType.NUMERIC)
 					&& (outputItemCustom.getStandardOutputItem().getItemType() != ItemType.TIME)
 					&& (outputItemCustom.getStandardOutputItem().getItemType() != ItemType.INS_TIME)) {
@@ -910,7 +914,14 @@ public class CreateExOutTextService extends ExportService<Object> {
 				itemValue = String.valueOf(Double.parseDouble(itemValue.equals("")?"0":itemValue) - Double.parseDouble(value.equals("")?"0":value));
 			}
 		}
-
+		if(outputItemCustom.getStandardOutputItem().getItemType() == ItemType.CHARACTER) {
+			if(!listResultCharater.isEmpty()) {
+				List<ResultCharater> listResultCharaterSort = listResultCharater.stream().sorted((x,y)->x.getIndex()-y.getIndex()).collect(Collectors.toList());
+				for(ResultCharater resultCharater : listResultCharaterSort ) {
+					itemValue += resultCharater.getValue();
+				}
+			}
+		}
 		result.put(ITEM_VALUE,itemValue);
 		result.put(USE_NULL_VALUE, USE_NULL_VALUE_OFF);
 
@@ -1228,7 +1239,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	// サーバ外部出力ファイル型チェック
 	private Map<String, String> checkOutputFileType(String itemValue, ItemType itemType,
-			DataFormatSetting dataFormatSetting, String sid) {
+			DataFormatSetting dataFormatSetting, String sid,GeneralDate baseDate) {
 		Map<String, String> result;
 
 		try {
@@ -1249,7 +1260,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				result = checkDateType(itemValue, (DateFormatSet) dataFormatSetting);
 				break;
 			case AT_WORK_CLS:
-				result = checkOfficeType(itemValue, (AwDataFormatSet) dataFormatSetting, sid);
+				result = checkOfficeType(itemValue, (AwDataFormatSet) dataFormatSetting, sid, baseDate);
 				break;
 			default:
 				result = new HashMap<String, String>();
@@ -1477,7 +1488,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				&& (setting.getTimeSeletion() == HourMinuteClassification.HOUR_AND_MINUTE)) {
 			if (setting.getPrevDayOutputMethod() == PreviousDayOutputMethod.FORMAT0H00) {
 				decimaValue = new BigDecimal(0.00);
-				targetValue = decimaValue.toString();
+				targetValue = decimaValue.toString() + ":00";
 			} else if (setting.getPrevDayOutputMethod() == PreviousDayOutputMethod.FORMAT24HOUR) {
 				decimaValue = decimaValue.add(new BigDecimal(24.00));
 				targetValue = "前日" + decimaValue.toString();
@@ -1557,16 +1568,16 @@ public class CreateExOutTextService extends ExportService<Object> {
 	}
 
 	// サーバ外部出力ファイル型チェック在職区分型
-	private Map<String, String> checkOfficeType(String itemValue, AwDataFormatSet setting, String sid) {
+	private Map<String, String> checkOfficeType(String itemValue, AwDataFormatSet setting, String sid,GeneralDate baseDate) {
 		Map<String, String> result = new HashMap<String, String>();
 		String state = RESULT_OK;
 		String errorMess = "";
 		String targetValue = "";
 		StatusOfEmployment status;
-		GeneralDate date = GeneralDate.fromString(itemValue, yyyy_MM_dd);
+		//GeneralDate date = GeneralDate.fromString(itemValue, yyyy_MM_dd);
 		
 		Optional<StatusOfEmploymentResult> statusOfEmployment = statusOfEmploymentAdapter.getStatusOfEmployment(sid,
-				date);
+				baseDate);
 		if (statusOfEmployment.isPresent()) {
 			status = EnumAdaptor.valueOf(statusOfEmployment.get().getStatusOfEmployment(), StatusOfEmployment.class);
 			switch (status) {
