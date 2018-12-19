@@ -478,7 +478,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 						stateResult = (String) lineDataResult.get(RESULT_STATE);
 						lineDataCSV = (Map<String, Object>) lineDataResult.get(LINE_DATA_CSV);
 						if ((lineDataCSV != null) && RESULT_OK.equals(stateResult))
-							csvData.add(lineDataCSV);
+							csvData.add(lineDataCSV); 
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
