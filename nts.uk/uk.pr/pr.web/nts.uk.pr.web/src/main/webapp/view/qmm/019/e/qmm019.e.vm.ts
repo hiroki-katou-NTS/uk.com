@@ -44,7 +44,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
 
             self.categoryAtr = shareModel.CategoryAtr.DEDUCTION_ITEM;
             self.totalObjAtrs = ko.observableArray(shareModel.getDeductionTotalObjAtr(null));
-            self.calcMethods = ko.observableArray(shareModel.getPaymentCaclMethodAtr(null));
+            self.calcMethods = ko.observableArray(shareModel.getDeductionCaclMethodAtr(null));
             self.deductionProportionalAtrs = ko.observableArray(shareModel.getDeductionProportionalAtr())
             self.proportionalMethodAtrs = ko.observableArray(shareModel.getProportionalMethodAtr())
 
