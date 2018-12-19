@@ -292,7 +292,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 				.getListItemsOutput().getAnnualHoliday().isYearlyHoliday();
 		if (isDisplayHolidayYear) {
 			grantDate.ifPresent(generalDate -> cells.get(rowIndexD + 1, 0)
-					.setValue(TextResource.localize("KDR001_56", generalDate.toString("yyyy-MM-dd"))));
+					.setValue(TextResource.localize("KDR001_56", generalDate.toString("yyyy/MM/dd"))));
 		}
 		// merger cột D2_4, ý 2 của bug #102883
 		cells.merge(isDisplayHolidayYear== true? rowIndexD + 2: rowIndexD + 1, 0, 1, 2, true);
@@ -347,7 +347,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 				}
 				// E1_2, 事象(4)của bug #102883
 				cells.get(firstRow + i, 3).setValue(TextResource.localize("KDR001_57",
-						listAnnLeaGrant.get(i).getGrantDate().toString("yyyy-MM-dd")));
+						listAnnLeaGrant.get(i).getGrantDate().toString("yyyy/MM/dd")));
 				// E1_3
 				cells.get(firstRow + i, 4).setValue(listAnnLeaGrant.get(i).getGrantDays());
 			}
