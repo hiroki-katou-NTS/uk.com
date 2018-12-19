@@ -66,14 +66,13 @@
                 </div>
             </div>
             <!--B2_4-->
-            <com:ko-if bind="(check() != true)">
             <hr/>
             <div class="table">
                 <div class="cell valign-top">
                     <!--B2_5-->
                     <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM031_18')}</div>
                     <!-- B2_6 -->
-                    <button id="B2_6" class="small" tabindex="11" data-bind="click: openD"
+                    <button id="B2_6" class="small" tabindex="11" data-bind="click: openD ,disable: check()"
                             style="margin-left: 50px;">#{i18n.getText('QMM031_18')}</button>
                 </div>
             </div>
@@ -89,8 +88,6 @@
 								value: currentCodeInsuranceType
 							}"></table>
             </div>
-            </com:ko-if>
         </div>
-
     </div>
 </ui:composition>

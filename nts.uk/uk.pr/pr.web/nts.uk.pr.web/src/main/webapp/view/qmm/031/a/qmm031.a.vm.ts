@@ -62,12 +62,10 @@ module nts.uk.pr.view.qmm031.a.viewmodel {
                             let dataSort = _.sortBy(data, ["insuranceTypeCode"]);
                             self.lstInsuranceType(dataSort);
                             self.currentCodeInsuranceType(self.lstInsuranceType()[0].insuranceTypeCode);
-                            $("#B2_6").removeAttr('disabled');
                         }
                         else {
                             nts.uk.ui.errors.clearAll();
                             self.lstInsuranceType([]);
-                            $("#B2_6").attr('disabled','disabled');
                         }
                         block.clear();
                         dfd.resolve(self);
@@ -176,6 +174,7 @@ module nts.uk.pr.view.qmm031.a.viewmodel {
             self.currentCodeLifeInsurance('');
             self.isNewMode(true);
             self.enableLifeInsuranceCode(true);
+            self.lstInsuranceType([]);
             $("#lifeInsuranceCode").focus();
         };
 
