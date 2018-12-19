@@ -61,7 +61,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 
 	private static final String EMPLOYMENT_QUERY = "SELECT eh.sid, e.bsymtEmploymentPK.code, e.name "
 			+ "FROM BsymtEmploymentHist eh "
-			+ "LEFT JOIN BsymtEmploymentHistItem ehi ON ehi.hisId = eh.hisId AND eh.companyId =:cid"
+			+ "LEFT JOIN BsymtEmploymentHistItem ehi ON ehi.hisId = eh.hisId AND eh.companyId =:cid "
 			+ "LEFT JOIN BsymtEmployment e ON e.bsymtEmploymentPK.code = ehi.empCode AND  e.bsymtEmploymentPK.cid =:cid "
 			+ "WHERE eh.sid IN :listSid "
 			+ "AND eh.strDate <= :refDate "
@@ -70,7 +70,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 	private static final String CLASSIFICATION_QUERY = "SELECT ach.sid, c.bsymtClassificationPK.clscd, c.clsname "
 			+ "FROM BsymtAffClassHistory ach "
 			+ "LEFT JOIN BsymtAffClassHistItem achi ON achi.historyId = ach.historyId AND ach.cid =:cid "
-			+ "LEFT JOIN BsymtClassification c ON c.bsymtClassificationPK.clscd = achi.classificationCode AND c.bsymtClassificationPK.cid =:cid"
+			+ "LEFT JOIN BsymtClassification c ON c.bsymtClassificationPK.clscd = achi.classificationCode AND c.bsymtClassificationPK.cid =:cid "
 			+ "WHERE ach.sid IN :listSid "
 			+ "AND ach.startDate <= :refDate "
 			+ "AND ach.endDate >= :refDate";
