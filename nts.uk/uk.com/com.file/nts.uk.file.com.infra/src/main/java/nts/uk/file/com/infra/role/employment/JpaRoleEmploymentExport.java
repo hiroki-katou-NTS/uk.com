@@ -10,6 +10,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
+import javax.ejb.Stateless;
 import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Stateless
 public class JpaRoleEmploymentExport  extends JpaRepository implements RoleEmpExportRepository {
     private Map<Integer, String> functionNo;
 

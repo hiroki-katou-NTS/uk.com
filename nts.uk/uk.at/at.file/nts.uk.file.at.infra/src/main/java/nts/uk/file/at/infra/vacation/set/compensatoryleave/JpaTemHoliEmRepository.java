@@ -5,6 +5,7 @@ import nts.uk.file.at.app.export.vacation.set.compensatoryleave.TemHoliEmployeeI
 import nts.uk.file.at.app.export.vacation.set.compensatoryleave.TemHoliEmployeeRepository;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
+import javax.ejb.Stateless;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
