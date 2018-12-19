@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+@Stateless
 public class JpaTemHoliEmRepository extends JpaRepository implements TemHoliEmployeeRepository {
 
     private static final String GET_TEM_HOLIDAYS_EMPLOYEE=

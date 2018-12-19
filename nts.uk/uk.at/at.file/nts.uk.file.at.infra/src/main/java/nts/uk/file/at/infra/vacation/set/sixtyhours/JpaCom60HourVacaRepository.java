@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import static nts.uk.file.at.infra.vacation.set.compensatoryleave.CommonTempHolidays.*;
-
+@Stateless
 public class JpaCom60HourVacaRepository extends JpaRepository implements Com60HourVacaRepository {
     private static final String GET_COM_60HOUR_VACATION =
                     "SELECT " +

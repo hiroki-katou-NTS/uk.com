@@ -19,7 +19,7 @@ import java.util.Map;
 import static nts.uk.file.at.infra.vacation.set.compensatoryleave.CommonTempHolidays.getTextEnumApplyPermission;
 import static nts.uk.file.at.infra.vacation.set.compensatoryleave.CommonTempHolidays.getTextEnumExpirationTime;
 import static nts.uk.file.at.infra.vacation.set.compensatoryleave.CommonTempHolidays.getTextEnumManageDistinct;
-
+@Stateless
 public class JpaNursingLeaveSetRepository extends JpaRepository implements NursingLeaveSetRepository {
     private static final String GET_NURSING_LEAVE_SETTING =
             "SELECT " +
