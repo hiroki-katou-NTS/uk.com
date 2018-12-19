@@ -7,10 +7,13 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
     import model = nts.uk.pr.view.qmm016.share.model;
     import getText = nts.uk.resource.getText;
     import WageTableContent = nts.uk.pr.view.qmm016.share.model.WageTableContent;
+    
+    const NEW_HIST_ID = "zzzzzz10";
+    
     export class ScreenModel {
 
         // screen state
-        isOnStartUp: boolean = true;
+        addHistoryMode: KnockoutObservable<boolean> = ko.observable(false);
         updateMode: KnockoutObservable<boolean> = ko.observable(false);
         isSelectedHistory: KnockoutObservable<boolean> = ko.observable(false);
 
@@ -21,7 +24,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         // screen item
         selectedWageTableIdentifier: KnockoutObservable<string> = ko.observable("");
         selectedWageTable: KnockoutObservable<model.WageTable> = ko.observable(new model.WageTable(null));
-        selectedHistory: KnockoutObservable<model.GenericHistoryYearMonthPeriod> = ko.observable(new model.GenericHistoryYearMonthPeriod({historyID: "", startMonth: null, endMonth: 99912}));
+        selectedHistory: KnockoutObservable<model.GenericHistoryYearMonthPeriod> = ko.observable(new model.GenericHistoryYearMonthPeriod({historyID: "", startMonth: null, endMonth: 999912}));
         wageTableTreeList: KnockoutObservableArray<Node> = ko.observableArray([]);
         elementRangeSetting: KnockoutObservable<model.ElementRangeSetting> = ko.observable(new model.ElementRangeSetting(null));
         wageTableContent: KnockoutObservable<model.WageTableContent> = ko.observable(new model.WageTableContent(null));
@@ -34,6 +37,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         listThirdDimension: KnockoutObservableArray<any> = ko.observableArray([]);
         ignoreScrollEvents: boolean = false;
         wageTableContent2dData: KnockoutObservableArray<model.TwoDmsElementItem> = ko.observableArray([]);
+        backupTreeList: Array<any> = [];
 
         constructor() {
             let self = this;
@@ -50,11 +54,17 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     self.isSelectedHistory(false);
                     $("#A5_2").focus();
                 } else {
+                    if (self.addHistoryMode()) {
+                        self.convertToTreeList(self.backupTreeList);
+                        self.addHistoryMode(false);
+                    } 
                     self.wageTableContent2dData([]);
                     self.fakeSelectedValue(null);
                     self.elementRangeSetting(new model.ElementRangeSetting(null));
                     self.wageTableContent(new model.WageTableContent(null));
-                    self.showWageTableInfoByValue(newValue);
+                    if (newValue.indexOf(NEW_HIST_ID) < 0) {
+                        self.showWageTableInfoByValue(newValue);
+                    }
                     self.updateMode(true);
                     $("#A3_1").focus();
                 }
@@ -104,16 +114,6 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 return new Node(item);
             })
             self.wageTableTreeList(wageTableTreeData);
-            if (wageTableData.length == 0)
-                self.selectedWageTableIdentifier("");
-            else {
-                // selected first wage table and history
-                let identifier = wageTableTreeData[0].histories.length > 0 ? wageTableTreeData[0].histories[0].identifier : wageTableTreeData[0].identifier;
-                if (self.selectedWageTableIdentifier() == identifier)
-                    self.selectedWageTableIdentifier.valueHasMutated();
-                else
-                    self.selectedWageTableIdentifier(identifier);
-            }
         }
 
         initTabPanel() {
@@ -143,13 +143,22 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             });
         }
 
-        startPage(): JQueryPromise<any> {
+        startPage(identifier?: string): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             block.invisible();
             self.wageTableTreeList([]);
             service.getAllWageTable().done((data: Array<any>) => {
+                self.backupTreeList = data;
                 if (!_.isEmpty(data)) {
                     self.convertToTreeList(data);
+                    if (identifier == null) {
+                        identifier = self.wageTableTreeList()[0].histories.length > 0 ? self.wageTableTreeList()[0].histories[0].identifier : self.wageTableTreeList()[0].identifier;
+                    }
+                    if (self.selectedWageTableIdentifier() == identifier)
+                        self.selectedWageTableIdentifier.valueHasMutated();
+                    else
+                        self.selectedWageTableIdentifier(identifier);
+                        
                 } else {
                     self.selectedWageTableIdentifier("");
                 }
@@ -160,7 +169,6 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             }).always(() => {
                 block.clear();
             });
-
             return dfd.promise();
         }
 
@@ -203,6 +211,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                             qualificationGroupSettings: result
                         };
                         self.wageTableContent(new WageTableContent(wageTableContent));
+                    }).always(() => {
+                        block.clear();
                     });
                 } else {
 					$.when(service.getWageTableContent(selectedHistoryID, identifier.substring(0, 3)), service.getElemRangeSet(selectedHistoryID)).done((contentData, settingData) => {
@@ -318,9 +328,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             }
             service.addNewWageTable(command).done((histId: string) => {
                 dialog.info({messageId: "Msg_15"}).then(() => {
-                    self.startPage().done(() => {
-                        self.selectedWageTableIdentifier(command.wageTableCode + histId);
-                    });
+                    self.startPage(command.wageTableCode + histId);
                 });
             }).fail(error => {
                 dialog.alertError(error);
@@ -360,10 +368,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             }
             service.updateWageTable(command).done((historyId: string) => {
                 dialog.info({messageId: "Msg_15"}).then(() => {
-                    self.startPage().done(() => {
-                        let identifier = command.wageTableCode + historyId;
-                        self.selectedWageTableIdentifier(identifier);
-                    });
+                    if (self.addHistoryMode()) self.addHistoryMode(false);
+                    self.startPage(command.wageTableCode + historyId);
                 });
             }).fail(error => {
                 dialog.alertError(error);
@@ -387,29 +393,37 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             modal("/view/qmm/016/i/index.xhtml").onClosed(() => {
                 let params = getShared("QMM016_I_RES_PARAMS");
                 if (params) {
-                    let selectedHistory = { 
-                        historyID: "", 
-                        startMonth: params.startMonth, 
-                        endMonth: 999912 
-                    };
-                    self.selectedHistory(new model.GenericHistoryYearMonthPeriod(selectedHistory));
+                    let wageTableTreeList = ko.toJS(self.wageTableTreeList);
+                    let newHistoryID = NEW_HIST_ID; //nts.uk.util.randomId();
+                    let latestHistoryID = "";
+                    // update previous history
+                    if (history.length > 0) {
+                        history[0].endMonth = params.startMonth - 1;
+                        latestHistoryID = history[0].historyID;
+                    }
+                    // add new history
+                    let newHistory = { historyID: newHistoryID, startMonth: params.startMonth, endMonth: 999912 };
+                    history.unshift(newHistory);
+                    wageTableTreeList.forEach(wageTable => {
+                        if (wageTable.wageTableCode == selectedWageTable.wageTableCode) {
+                            wageTable.histories = history;
+                            wageTable = new model.WageTable(wageTable);
+                        }
+                    });
+                    // update wage table and tree grid
+                    self.convertToTreeList(wageTableTreeList);
+                    self.selectedWageTableIdentifier(selectedWageTable.wageTableCode + newHistoryID);
+                    
+                    self.selectedHistory(new model.GenericHistoryYearMonthPeriod(newHistory));
                     if (params.takeoverMethod == model.TAKEOVER_METHOD.FROM_LAST_HISTORY && history.length > 0) {
-                        block.invisible();
-                        let selectedHistoryID = history.length > 0 ? history[0].historyID : "";
-                        $.when(service.getWageTableContent(selectedHistoryID, selectedWageTable.wageTableCode), service.getElemRangeSet(selectedHistoryID)).done((contentData, settingData) => {
-                            self.wageTableContent(new model.WageTableContent(contentData));
-                            self.elementRangeSetting(new model.ElementRangeSetting(settingData));
-                            self.wageTableContent().historyID("");
-                            self.elementRangeSetting().historyID("");
-                        }).fail(error => {
-                            dialog.alertError(error);
-                        }).always(() => {
-                            block.clear();
-                        });
+                        self.showSettingDataByValue(selectedWageTable.wageTableCode + latestHistoryID);
+                        self.wageTableContent().historyID("");
+                        self.elementRangeSetting().historyID("");
                     } else {
                         self.elementRangeSetting(new model.ElementRangeSetting(null));
                         self.wageTableContent(new WageTableContent(null));
                     }
+                    self.addHistoryMode(true);
                 }
             });
         }
@@ -423,14 +437,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 let params = getShared("QMM016_J_RES_PARAMS");
                 if (params) {
                     block.invisible();
-                    self.startPage().done(() => {
-                        if (params.historyId)
-                            self.selectedWageTableIdentifier(self.selectedWageTable().wageTableCode() + params.historyId);
-                    }).fail(error => {
-                        dialog.alertError(error);
-                    }).always(() => {
-                        block.clear();
-                    });
+                    self.startPage(params.historyId ? self.selectedWageTable().wageTableCode() + params.historyId : null);
                 }
             });
         }
