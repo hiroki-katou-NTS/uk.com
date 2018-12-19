@@ -56,7 +56,7 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 				//予定勤種の反映
 				if(commonService.checkReflectScheWorkTimeType(absencePara, true, dailyInfor)) {
 					isRecordWorkType = true;
-					dailyInfor = workTimeUpdate.updateRecordWorkType(absencePara.getEmployeeId(), absencePara.getBaseDate(), absencePara.getWorkTypeCode(), true, dailyInfor);
+					dailyInfor = workTimeUpdate.updateRecordWorkType(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTypeCode(), true, dailyInfor);
 				}				
 				//予定開始終了時刻の反映
 				dailyInfor = this.reflectScheStartEndTime(absencePara.getEmployeeId(), loopDate, absencePara.getWorkTypeCode(), isRecordWorkType, dailyInfor);			
