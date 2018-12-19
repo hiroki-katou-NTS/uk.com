@@ -536,7 +536,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	public ExIoOperationState checkInterruptAndIncreaseProCnt(String processingId) {
 		ExIoOperationState result = ExIoOperationState.EXPORTING;
 		Optional<ExOutOpMng> exOutOpMng = exOutOpMngRepo.getExOutOpMngById(processingId);
-		if (!exOutOpMng.isPresent() || exOutOpMng.get().getDoNotInterrupt() == NotUseAtr.USE) {
+		if (!exOutOpMng.isPresent()) {
 			return ExIoOperationState.FAULT_FINISH;
 		}
 
