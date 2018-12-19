@@ -28,6 +28,7 @@ import com.aspose.cells.Worksheet;
 import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
@@ -180,26 +181,32 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 
 		this.drawExtraTable(cells, startNextTable, sheetData.getSubDatas(), sheetData.getSubDataColumns());
 
-		this.processSheetName(sheetData.getSheetName(), sheet, cells, workbook, idx);
+		this.processEachSheet(sheetData, sheet, cells, workbook, idx, query, columns.size());
 		
 		this.setDefaultSheetOption(sheet);
 
 		return reportName;
 	}
 
-	private void processSheetName(String sheetName, Worksheet sheet, Cells cells, Workbook workbook, int idx) {
+	private void processEachSheet(SheetData sheetData, Worksheet sheet, Cells cells, Workbook workbook, int idx, 
+			MasterListExportQuery query, int columnSize) {
 		boolean isExistName = false;
 		
 		for(Object x : workbook.getWorksheets()){
-			if(((Worksheet) x).getName().equals(sheetName)){
+			if(((Worksheet) x).getName().equals(sheetData.getSheetName())){
 				isExistName = true;
 				break;
 			}
 		}
 		
-		sheet.setName(getSheetName(sheetName, idx, isExistName));
+		sheet.setName(getSheetName(sheetData.getSheetName(), idx, isExistName));
 		
-		cells.get(HEADER_INFOR_START_ROW + 4, 1).setValue(sheetName);
+		cells.get(HEADER_INFOR_START_ROW + 4, 1).setValue(sheetData.getSheetName());
+		
+		if(sheetData.getMode() != MasterListMode.NONE){
+			checkMode(cells, sheetData.getMode(), columnSize, isExportCsvFile(query.getReportType()), 
+					query.getBaseDate(), query.getStartDate(), query.getEndDate());
+		}
 	}
 	
 	@SneakyThrows
@@ -241,21 +248,25 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		//		languageRepo.getSystemLanguage(query.getLanguageId()).get().getLanguageName());
 		processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW + 4, isCsv, SHEET_NAME, EMPTY_STRING);
 		
-		if(query.getMode() == MasterListMode.BASE_DATE){
-			processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW + 5, isCsv, BASE_DATE_LABEL, 
-					query.getStartDate() == null ? EMPTY_STRING : query.getStartDate().toString(YYYY_MM_DD));
-		} else if (query.getMode() == MasterListMode.FISCAL_YEAR_RANGE) {
-			String range = (query.getStartDate() == null ? EMPTY_STRING : query.getStartDate().year() + YEAR)
-								+ FROM_TO
-								+ (query.getEndDate() == null ? EMPTY_STRING : query.getEndDate().year() + YEAR);
-			processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW + 5, isCsv, FISCAL_YEAR, range);
-		}
-		
+		checkMode(cells, query.getMode(), columnSize, isCsv, query.getBaseDate(), query.getStartDate(), query.getEndDate());
 		
 		if (!createName)
 			return EMPTY_STRING;
 
 		return StringUtils.join(query.getDomainType(), UNDERLINE, now.toString(YYYY_M_MDD_H_HMMSS));
+	}
+
+	private void checkMode(Cells cells, MasterListMode mode, int columnSize, boolean isCsv, 
+			GeneralDate baseDate, GeneralDate startDate, GeneralDate endDate) {
+		if(mode == MasterListMode.BASE_DATE){
+			processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW + 5, isCsv, BASE_DATE_LABEL, 
+					baseDate == null ? EMPTY_STRING : baseDate.toString(YYYY_MM_DD));
+		} else if (mode == MasterListMode.FISCAL_YEAR_RANGE) {
+			String range = (startDate == null ? EMPTY_STRING : startDate.year() + YEAR)
+								+ FROM_TO
+								+ (endDate == null ? EMPTY_STRING : endDate.year() + YEAR);
+			processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW + 5, isCsv, FISCAL_YEAR, range);
+		}
 	}
 
 	private void processHeaderInfo(Cells cells, int columnSize, int row, boolean isCsv,
