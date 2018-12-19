@@ -63,7 +63,7 @@ public class FormulaWebservice extends WebService {
     public FormulaSettingDto getFormulaSettingByHistoryID(FormulaSearchDto setting) {
         List<MasterUseDto> masterUseList = Collections.emptyList();
         if (!setting.withSetting){
-            masterUseList = formulaFinder.getMasterUseInfo(setting.masterUse);
+            if (null != setting.masterUse ) masterUseList = formulaFinder.getMasterUseInfo(setting.masterUse);
             return new FormulaSettingDto(null, null, null, masterUseList);
         }
         BasicFormulaSettingDto basicFormulaSettingDto = basicFormulaSettingFinder.getBasicFormulaSettingByHistoryID(setting.historyID);

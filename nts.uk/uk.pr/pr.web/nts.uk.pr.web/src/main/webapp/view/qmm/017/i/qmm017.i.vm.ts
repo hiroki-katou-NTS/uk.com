@@ -39,7 +39,7 @@ module nts.uk.pr.view.qmm017.i.viewmodel {
                 self.modifyItem.push(new model.EnumModel(model.MODIFY_METHOD.DELETE, getText('QMM008_206')));
                 self.modifyItem.push(new model.EnumModel(model.MODIFY_METHOD.UPDATE, getText('QMM008_207')));
             }
-            self.isLastHistory() ? setTimeout(function(){$('#I1_11').focus()}, 100) : $('#I1_6').focus();
+            setTimeout(function(){self.isLastHistory() ? $('#I1_6').focus(): $('#I1_11').focus();}, 100) ;
             block.clear();
         }
         editHistory() {

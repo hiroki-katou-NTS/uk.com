@@ -191,7 +191,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 });
             }).fail(function(err) {
                 block.clear();
-                dialog.alertError(err.message);
+                dialog.alertError({messageId: err.messageId});
             });
         }
 
@@ -207,7 +207,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 });
             }).fail(function(err) {
                 block.clear();
-                dialog.alertError(err.message);
+                dialog.alertError({messageId: err.messageId});
             });
         }
 
@@ -217,11 +217,13 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             service.updateFormulaSetting(command).done(function(data) {
                 block.clear();
                 dialog.info({ messageId: 'Msg_15' }).then(function() {
-                    self.selectedFormulaIdentifier.valueHasMutated();
+                    self.getListFormula(null).done(function(){
+                        self.selectedFormulaIdentifier.valueHasMutated();
+                    });
                 });
             }).fail(function(err) {
                 block.clear();
-                dialog.alertError(err.message);
+                dialog.alertError({messageId: err.messageId});
             });
         }
 
@@ -235,7 +237,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 });
             }).fail(function(err) {
                 block.clear();
-                dialog.alertError(err.message);
+                dialog.alertError({messageId: err.messageId});
             });
         }
 
@@ -316,7 +318,10 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             }
             else {
                 self.selectedHistory(new model.GenericHistoryYearMonthPeriod(null));
-                if (identifier.length > 0 ) self.screenMode(model.SCREEN_MODE.UPDATE_FORMULA);
+                if (identifier.length > 0 ){
+                    self.screenMode(model.SCREEN_MODE.UPDATE_FORMULA);
+                    self.basicFormulaSetting(new model.BasicFormulaSetting(null));
+                }
             }
         };
         showFormulaSettingByHistory(history , withSetting: boolean, masterUse: number) {
