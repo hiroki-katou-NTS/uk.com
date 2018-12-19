@@ -2,26 +2,63 @@ package nts.uk.file.com.infra.role.employment;
 
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.file.com.app.role.employment.RoleEmpExportRepository;
 import nts.uk.file.com.infra.role.CommonRole;
+import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Stateless
-public class JpaRoleEmploymentExport extends JpaRepository implements RoleEmpExportRepository {
-
+public class JpaRoleEmploymentExport  extends JpaRepository implements RoleEmpExportRepository {
     private Map<Integer, String> functionNo;
+
+    private MasterData toData(NtsResultSet.NtsResultRecord r) {
+        Map<String, MasterCellData> data = new HashMap<>();
+        data.put(CommonRole.CAS005_122, MasterCellData.builder()
+                .columnId(CommonRole.CAS005_122)
+                .value(r.getString(""))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+        data.put(CommonRole.CAS005_123, MasterCellData.builder()
+                .columnId(CommonRole.CAS005_123)
+                .value(r.getString(""))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+        data.put(CommonRole.CAS005_124, MasterCellData.builder()
+                .columnId(CommonRole.CAS005_124)
+                .value(r.getString(""))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+        data.put(CommonRole.CAS005_125, MasterCellData.builder()
+                .columnId(CommonRole.CAS005_125)
+                .value(r.getString(""))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+        data.put(CommonRole.CAS005_126, MasterCellData.builder()
+                .columnId(CommonRole.CAS005_126)
+                .value(r.getString(""))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+        data.put(CommonRole.CAS005_127, MasterCellData.builder()
+                .columnId(CommonRole.CAS005_127)
+                .value(r.getString(""))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+        data.put(CommonRole.CAS005_128, MasterCellData.builder()
+                .columnId(CommonRole.CAS005_128)
+                .value(r.getString(""))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+        return MasterData.builder().rowData(data).build();
+    }
 
     @Override
     public List<MasterData> findAllRoleEmployment(int roleType, String cId) {
@@ -57,8 +94,6 @@ public class JpaRoleEmploymentExport extends JpaRepository implements RoleEmpExp
         }
         return datas;
     }
-
-
     private Map<String, Object> dataContent(Object[] objects, List<Integer> listFunctionNo) {
         Map<String, Object> data = new HashMap<>();
         data.put(CommonRole.CAS005_122, objects[0]);
@@ -73,6 +108,7 @@ public class JpaRoleEmploymentExport extends JpaRepository implements RoleEmpExp
         }
         return data;
     }
+
     @Override
     public Map<Integer, String> findAllFunctionNo() {
         Map<Integer, String> resulf = new HashMap<>();
@@ -84,5 +120,4 @@ public class JpaRoleEmploymentExport extends JpaRepository implements RoleEmpExp
         }
         return resulf;
     }
-
 }

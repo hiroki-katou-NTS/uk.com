@@ -8,6 +8,7 @@ import nts.uk.file.at.app.export.vacation.set.subst.EmplYearlyRetenSetRepository
 import nts.uk.file.at.app.export.vacation.set.subst.RetenYearlySetImpl;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
+import javax.ejb.Stateless;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,6 +21,7 @@ import static nts.uk.file.at.infra.vacation.set.compensatoryleave.CommonTempHoli
 import static nts.uk.file.at.infra.vacation.set.compensatoryleave.CommonTempHolidays.getTextEnumExpirationTime;
 import static nts.uk.file.at.infra.vacation.set.compensatoryleave.CommonTempHolidays.getTextEnumManageDistinct;
 
+@Stateless
 public class JpaComSubstVacatRepository extends JpaRepository implements ComSubstVacatRepository {
     private static final String GET_COM_SUBST_VACATION =
             "SELECT " +

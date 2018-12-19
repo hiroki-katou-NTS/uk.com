@@ -15,7 +15,7 @@ import java.util.Map;
 
 import static nts.uk.file.at.infra.vacation.set.compensatoryleave.CommonTempHolidays.getTextEnumExpirationTime;
 import static nts.uk.file.at.infra.vacation.set.compensatoryleave.CommonTempHolidays.getTextEnumManageDistinct;
-
+@Stateless
 public class JpaEmpSubstVacaRepository extends JpaRepository implements EmpSubstVacaRepository {
     private static final String GET_EM_SUBST_VACATION =
             "SELECT " +
