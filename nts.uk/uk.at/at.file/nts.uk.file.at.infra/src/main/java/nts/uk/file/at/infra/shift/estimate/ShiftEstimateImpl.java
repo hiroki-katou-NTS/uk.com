@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -15,8 +14,9 @@ import javax.persistence.Query;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.EstComparisonAtr;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTargetClassification;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimatedCondition;
-import nts.uk.file.at.app.export.otpitem.CalFormulasItemColumn;
 import nts.uk.file.at.app.export.shift.estimate.ShiftEstimateColumn;
 import nts.uk.file.at.app.export.shift.estimate.ShiftEstimateRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -101,14 +101,13 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 			+" 	,etcs.TARGET_CLS AS MONTH_PRICE"
 			+" 	,edcs.TARGET_YEAR AS YEAR_DAYS"
 			+" 	,etcs.TARGET_CLS AS MONTH_DAYS"
-			+" 	,ROW_NUMBER () OVER ( PARTITION BY etcs.TARGET_YEAR ORDER BY etcs.TARGET_YEAR ASC ) AS ROW_NUMBER"
-			+" FROM"
-			+" 	KSCMT_EST_TIME_COM_SET etcs "
+			+" 	,ROW_NUMBER () OVER ( PARTITION BY etcs.TARGET_YEAR, epcs.TARGET_YEAR, edcs.TARGET_YEAR ORDER BY etcs.TARGET_CLS, epcs.TARGET_CLS, edcs.TARGET_CLS  ASC ) AS ROW_NUMBER"
+			+" FROM"			
+			+" 	KSCMT_EST_TIME_COM_SET etcs"
 			+" 	INNER JOIN KSCMT_EST_PRICE_COM_SET epcs ON etcs.CID = epcs.CID AND etcs.TARGET_YEAR = epcs.TARGET_YEAR AND etcs.TARGET_CLS = epcs.TARGET_CLS"
-			+" 	INNER JOIN KSCMT_EST_DAYS_COM_SET edcs ON etcs.CID = edcs.CID AND etcs.TARGET_YEAR = edcs.TARGET_YEAR AND etcs.TARGET_CLS = edcs.TARGET_CLS"
+			+" 	INNER JOIN KSCMT_EST_DAYS_COM_SET edcs ON etcs.CID = edcs.CID AND etcs.TARGET_YEAR = edcs.TARGET_YEAR AND epcs.TARGET_CLS = edcs.TARGET_CLS "
 			+" 	WHERE etcs.CID = ?cid AND  ?startDate <= etcs.TARGET_YEAR AND etcs.TARGET_YEAR <= ?endDate"
-			+" ) AS TABLE_RESULT ORDER BY TABLE_RESULT.YEAR_TIME, TABLE_RESULT.MONTH_TIME ASC";
-
+			+" ) AS TABLE_RESULT  ";
 	/** Sheet 1 **/
 	@Override
 	public List<MasterData> getDataExport() {
@@ -200,39 +199,57 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 		}
 		
 		if (rowNumber > 4) {
-			data.put(ShiftEstimateColumn.KSM001_113, EnumAdaptor.valueOf(((BigDecimal) dataFromDB.get(0)[rowNumber - 5]).intValue(), EstimatedCondition.class).description);
+			// EstComparisonAtr enum
+			// EstimatedCondition enum
+			data.put(ShiftEstimateColumn.KSM001_113,
+					rowNumber == 17
+							? EnumAdaptor.valueOf(((BigDecimal) dataFromDB.get(0)[rowNumber - 5]).intValue(),
+									EstComparisonAtr.class).description
+							: EnumAdaptor.valueOf(((BigDecimal) dataFromDB.get(0)[rowNumber - 5]).intValue(),
+									EstimatedCondition.class).description);
 		}
-		
 		return data;
 	}
  
 	private Map<String, Object> dataContentThree(Object[] object) {
 		Map<String, Object> data = new HashMap<>();
 		data.put(ShiftEstimateColumn.KSM001_141, object[0] != null ? (BigDecimal) object[0] : "");
-		data.put(ShiftEstimateColumn.KSM001_142, object[1] != null ? (BigDecimal) object[1] : "");
+		//Enum EstimateTargetClassification
+		data.put(ShiftEstimateColumn.KSM001_142, object[1] != null ? EnumAdaptor.valueOf(((BigDecimal) object[1]).intValue(), EstimateTargetClassification.class).description : "");
 		data.put(ShiftEstimateColumn.KSM001_143, object[2] != null ? formatTime(((BigDecimal) object[2]).intValue()) : "");
 		data.put(ShiftEstimateColumn.KSM001_144, object[3] != null ? formatTime(((BigDecimal) object[3]).intValue()) : "");
 		data.put(ShiftEstimateColumn.KSM001_145, object[4] != null ? formatTime(((BigDecimal) object[4]).intValue()) : "");
 		data.put(ShiftEstimateColumn.KSM001_146, object[5] != null ? formatTime(((BigDecimal) object[5]).intValue()) : "");
 		data.put(ShiftEstimateColumn.KSM001_147, object[6] != null ? formatTime(((BigDecimal) object[6]).intValue()) : "");
-		data.put(ShiftEstimateColumn.KSM001_148, object[7] != null ?  (BigDecimal) object[7] : "");
-		data.put(ShiftEstimateColumn.KSM001_149, object[8] != null ?  ShiftEstimateColumn.KSM001_196+(BigDecimal) object[8] : "");
-		data.put(ShiftEstimateColumn.KSM001_150, object[9] != null ?  ShiftEstimateColumn.KSM001_196+(BigDecimal) object[9] : "");
-		data.put(ShiftEstimateColumn.KSM001_151, object[10] != null ? ShiftEstimateColumn.KSM001_196+(BigDecimal) object[10] : "");
-		data.put(ShiftEstimateColumn.KSM001_152, object[11] != null ? ShiftEstimateColumn.KSM001_196+(BigDecimal) object[11] : "");
-		data.put(ShiftEstimateColumn.KSM001_153, object[12] != null ? (BigDecimal) object[12] : "");
-		data.put(ShiftEstimateColumn.KSM001_154, object[13] != null ? (BigDecimal) object[13] : "");
-		data.put(ShiftEstimateColumn.KSM001_155, object[14] != null ? (BigDecimal) object[14] : "");
-		data.put(ShiftEstimateColumn.KSM001_156, object[15] != null ? (BigDecimal) object[15] : "");
-		data.put(ShiftEstimateColumn.KSM001_157, object[16] != null ? (BigDecimal) object[16] : "");
+		data.put(ShiftEstimateColumn.KSM001_148, object[7] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[7]).toString()) : "");
+		data.put(ShiftEstimateColumn.KSM001_149, object[8] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[8]).toString()) : "");
+		data.put(ShiftEstimateColumn.KSM001_150, object[9] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[9]).toString()) : "");
+		data.put(ShiftEstimateColumn.KSM001_151, object[10] != null ? ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[10]).toString()) : "");
+		data.put(ShiftEstimateColumn.KSM001_152, object[11] != null ? ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[11]).toString()) : "");
+		data.put(ShiftEstimateColumn.KSM001_153, object[12] != null ? formatDays(((BigDecimal) object[12]).intValue()) : "");
+		data.put(ShiftEstimateColumn.KSM001_154, object[13] != null ? formatDays(((BigDecimal) object[13]).intValue()) : "");
+		data.put(ShiftEstimateColumn.KSM001_155, object[14] != null ? formatDays(((BigDecimal) object[14]).intValue()) : "");
+		data.put(ShiftEstimateColumn.KSM001_156, object[15] != null ? formatDays(((BigDecimal) object[15]).intValue()) : "");
+		data.put(ShiftEstimateColumn.KSM001_157, object[16] != null ? formatDays(((BigDecimal) object[16]).intValue()) : "");
 		return data;
 	}
 	
-	private String formatTime(int time){
+	private String formatTime(int time) {
 		int hours = time / 60;
 		int minutes = time % 60;
 		String result = String.format("%d:%02d", hours, minutes);
 		return result;
+	}
+
+	private String formatDays(int day) {
+		String result = String.format("%d.0", day);
+		return result;
+	}
+
+	private String formatPrice(String price) {
+		double amountParse = Double.parseDouble(price);
+		DecimalFormat formatter = new DecimalFormat("#,###");
+		return formatter.format(amountParse);
 	}
 
 }

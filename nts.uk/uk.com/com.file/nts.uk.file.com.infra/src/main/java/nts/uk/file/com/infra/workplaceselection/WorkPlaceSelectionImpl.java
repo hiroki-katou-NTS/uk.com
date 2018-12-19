@@ -17,6 +17,9 @@ import javax.persistence.Query;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceFunction;
 import nts.uk.file.com.app.workplaceselection.WorkPlaceSelectionColumn;
 import nts.uk.file.com.app.workplaceselection.WorkPlaceSelectionRepository;
+import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 @Stateless
@@ -103,26 +106,55 @@ public class WorkPlaceSelectionImpl implements WorkPlaceSelectionRepository {
 		@SuppressWarnings("unchecked")
 		List<Object[]> data = query.getResultList();
 		for (Object[] objects : data) {
-			datas.add(new MasterData(dataContent(objects, workPlaceFunction), null, ""));
+			datas.add(dataContent(objects, workPlaceFunction));
 		}
 		return datas;
 	}
 
-	private Map<String, Object> dataContent(Object[] object, List<WorkPlaceFunction> workPlaceFunction) {
-		Map<String, Object> data = new HashMap<>();
+	private MasterData dataContent(Object[] object, List<WorkPlaceFunction> workPlaceFunction) {
+		Map<String,MasterCellData> data = new HashMap<>();
 		DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
-		data.put(WorkPlaceSelectionColumn.CMM051_32, (String) object[0]);
-		data.put(WorkPlaceSelectionColumn.CMM051_33, (String) object[1]);
-		data.put(WorkPlaceSelectionColumn.CMM051_34, (String) object[2]);
-		data.put(WorkPlaceSelectionColumn.CMM051_35, (String) object[3]);
-		data.put(WorkPlaceSelectionColumn.CMM051_36, df.format(object[4]).toString());
-		data.put(WorkPlaceSelectionColumn.CMM051_37, df.format(object[5]).toString());
-
-		for (int i = 0; i < workPlaceFunction.size(); i++) {
-			data.put(workPlaceFunction.get(i).getFunctionNo().v().toString(),
-					((BigDecimal) object[i + 6]).intValue() == 1 ? "○" : "ー");
-		}
-		return data;
+		
+		data.put(WorkPlaceSelectionColumn.CMM051_27, MasterCellData.builder()
+                .columnId(WorkPlaceSelectionColumn.CMM051_27)
+                .value((String) object[0])
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+            data.put(WorkPlaceSelectionColumn.CMM051_28, MasterCellData.builder()
+                .columnId(WorkPlaceSelectionColumn.CMM051_28)
+                .value((String) object[1])
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+            data.put(WorkPlaceSelectionColumn.CMM051_29, MasterCellData.builder()
+                .columnId(WorkPlaceSelectionColumn.CMM051_29)
+                .value((String) object[2])
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+            data.put(WorkPlaceSelectionColumn.CMM051_30, MasterCellData.builder()
+                .columnId(WorkPlaceSelectionColumn.CMM051_30)
+                .value((String) object[3])
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+            data.put(WorkPlaceSelectionColumn.CMM051_31, MasterCellData.builder()
+                .columnId(WorkPlaceSelectionColumn.CMM051_31)
+                .value(df.format(object[4]).toString())
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+            data.put(WorkPlaceSelectionColumn.CMM051_32, MasterCellData.builder()
+                .columnId(WorkPlaceSelectionColumn.CMM051_32)
+                .value(df.format(object[5]).toString())
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+            
+            for (int i = 0; i < workPlaceFunction.size(); i++) {
+    			data.put(workPlaceFunction.get(i).getFunctionNo().v().toString(), MasterCellData.builder()
+    	                .columnId(WorkPlaceSelectionColumn.CMM051_32)
+    	                .value(((BigDecimal) object[i + 6]).intValue() == 1 ? "○" : "ー")
+    	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+    	                .build());
+    		}
+            
+		return MasterData.builder().rowData(data).build(); 
 	}
 
 }

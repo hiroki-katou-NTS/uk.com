@@ -17,6 +17,9 @@ import nts.arc.time.GeneralDate;
 import nts.uk.file.com.app.personselection.PersonSelectionItemColumn;
 import nts.uk.file.com.app.personselection.PersonSelectionItemRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 @Stateless
@@ -79,30 +82,56 @@ public class PersonSelectionItemImpl implements PersonSelectionItemRepository {
 				.setParameter("contractCd", contractCd).setParameter("companyId", companyId).setParameter("date", date);
 		@SuppressWarnings("unchecked")
 		List<Object[]> data = query.getResultList();
-		if (data.isEmpty()) {
-			throw new BusinessException("Msg_1480");
-		} else {
 			for (Object[] objects : data) {
-				datas.add(new MasterData(dataContent(objects), null, ""));
+				datas.add(dataContent(objects));
 			}
 			return datas;
-		}
 	}
-
-	private Map<String, Object> dataContent(Object[] object) {
-		Map<String, Object> data = new HashMap<>();
-		data.put(PersonSelectionItemColumn.CPS017_55, object[0] != null ? (String) object[0] : "");
-		data.put(PersonSelectionItemColumn.CPS017_56, object[1] != null
-				? GeneralDate.localDate(((Timestamp) object[1]).toLocalDateTime().toLocalDate()) : "");
-		data.put(PersonSelectionItemColumn.CPS017_57, object[2] != null
-				? GeneralDate.localDate(((Timestamp) object[2]).toLocalDateTime().toLocalDate()) : "");
-		data.put(PersonSelectionItemColumn.CPS017_58,
-				object[3] != null ? ((BigDecimal) object[3]).intValue() == 1 ? "○" : "ー" : "");
-		data.put(PersonSelectionItemColumn.CPS017_59, (String) object[4]);
-		data.put(PersonSelectionItemColumn.CPS017_60, (String) object[5]);
-		data.put(PersonSelectionItemColumn.CPS017_61, (String) object[6]);
-		data.put(PersonSelectionItemColumn.CPS017_62, (String) object[7]);
-		return data;
+	
+	private MasterData dataContent(Object[] object) {
+		Map<String,MasterCellData> data = new HashMap<>();
+		data.put(PersonSelectionItemColumn.CPS017_55, MasterCellData.builder()
+                .columnId(PersonSelectionItemColumn.CPS017_55)
+                .value(object[0] != null ? (String) object[0] : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+            data.put(PersonSelectionItemColumn.CPS017_56, MasterCellData.builder()
+                .columnId(PersonSelectionItemColumn.CPS017_56)
+                .value(object[1] != null ? GeneralDate.localDate(((Timestamp) object[1]).toLocalDateTime().toLocalDate()) : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+            data.put(PersonSelectionItemColumn.CPS017_57, MasterCellData.builder()
+                .columnId(PersonSelectionItemColumn.CPS017_57)
+                .value(object[2] != null ? GeneralDate.localDate(((Timestamp) object[2]).toLocalDateTime().toLocalDate()) : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+            data.put(PersonSelectionItemColumn.CPS017_58, MasterCellData.builder()
+                .columnId(PersonSelectionItemColumn.CPS017_58)
+                .value(object[3] != null ? ((BigDecimal) object[3]).intValue() == 1 ? "○" : "ー" : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+            data.put(PersonSelectionItemColumn.CPS017_59, MasterCellData.builder()
+                .columnId(PersonSelectionItemColumn.CPS017_59)
+                .value((String) object[4])
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+            data.put(PersonSelectionItemColumn.CPS017_60, MasterCellData.builder()
+                .columnId(PersonSelectionItemColumn.CPS017_60)
+                .value((String) object[5])
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+            data.put(PersonSelectionItemColumn.CPS017_61, MasterCellData.builder()
+                .columnId(PersonSelectionItemColumn.CPS017_61)
+                .value((String) object[6])
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+            data.put(PersonSelectionItemColumn.CPS017_62, MasterCellData.builder()
+                .columnId(PersonSelectionItemColumn.CPS017_62)
+                .value((String) object[7])
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		
+		return MasterData.builder().rowData(data).build();
 	}
 
 }
