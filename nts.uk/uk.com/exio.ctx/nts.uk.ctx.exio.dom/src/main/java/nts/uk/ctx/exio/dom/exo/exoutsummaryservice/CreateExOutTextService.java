@@ -874,7 +874,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 			return result;
 		}
 		List<CategoryItem> categoryItems = outputItemCustom.getStandardOutputItem().getCategoryItems();
-
+		List<ResultCharater> listResultCharater = new ArrayList<>();
 		for (int i = 0; i < categoryItems.size(); i++) {
 			value = lineData.get(index);
 			index++;
@@ -893,6 +893,11 @@ public class CreateExOutTextService extends ExportService<Object> {
 //				continue;
 //			}
 
+			if (outputItemCustom.getStandardOutputItem().getItemType() == ItemType.CHARACTER) {
+				listResultCharater.add(new ResultCharater(categoryItems.get(i).getDisplayOrder(),value));
+				//itemValue += value;
+				continue;
+			}  
 			if ((outputItemCustom.getStandardOutputItem().getItemType() != ItemType.NUMERIC)
 					&& (outputItemCustom.getStandardOutputItem().getItemType() != ItemType.TIME)
 					&& (outputItemCustom.getStandardOutputItem().getItemType() != ItemType.INS_TIME)) {
@@ -910,7 +915,14 @@ public class CreateExOutTextService extends ExportService<Object> {
 				itemValue = String.valueOf(Double.parseDouble(itemValue.equals("")?"0":itemValue) - Double.parseDouble(value.equals("")?"0":value));
 			}
 		}
-
+		if(outputItemCustom.getStandardOutputItem().getItemType() == ItemType.CHARACTER) {
+			if(!listResultCharater.isEmpty()) {
+				List<ResultCharater> listResultCharaterSort = listResultCharater.stream().sorted((x,y)->x.getIndex()-y.getIndex()).collect(Collectors.toList());
+				for(ResultCharater resultCharater : listResultCharaterSort ) {
+					itemValue += resultCharater.getValue();
+				}
+			}
+		}
 		result.put(ITEM_VALUE,itemValue);
 		result.put(USE_NULL_VALUE, USE_NULL_VALUE_OFF);
 
