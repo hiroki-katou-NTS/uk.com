@@ -367,21 +367,6 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 				tableList.getClsKeyQuery7().orElse(""), tableList.getClsKeyQuery8().orElse(""),
 				tableList.getClsKeyQuery9().orElse(""), tableList.getClsKeyQuery10().orElse("") };
 		
-		String defaultConditionSID = " AND e.DEL_ID = '" + tableList.getDelId()+"'";
-		for (int i = 0; i < clsKeyQuerys.length; i++) {
-			if (EMPLOYEE_CD.equals(clsKeyQuerys[i])) {
-				if (tableList.getHasParentTblFlg() == NotUseAtr.USE.value) {
-					query.append(" INNER JOIN SSPDT_EMPLOYEES_DELETION e ON e.EMPLOYEE_ID = p.");
-					query.append(fieldKeyQuerys[i]);
-					query.append(defaultConditionSID);
-				} else {
-					query.append(" INNER JOIN SSPDT_EMPLOYEES_DELETION e ON e.EMPLOYEE_ID = t.");
-					query.append(fieldKeyQuerys[i]);
-					query.append(defaultConditionSID);
-				}
-			}
-		}
-		
 		// Where
 		query.append(" WHERE 1 = 1 ");
 
@@ -510,14 +495,42 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 
 		// 抽出条件キー固定
 		query.append(tableList.getDefaultCondKeyQuery().orElse(""));
+		for (int i = 0; i < clsKeyQuerys.length; i++) {
+			if (EMPLOYEE_CD.equals(clsKeyQuerys[i]) && !targetEmployeesSid.isEmpty()) {
+				if (tableList.getHasParentTblFlg() == NotUseAtr.USE.value) {
+					query.append(" AND p." + fieldKeyQuerys[i] + " IN (?listTargetSid) ");
+				} else {
+					query.append(" AND t." + fieldKeyQuerys[i] + " IN (?listTargetSid) ");
+				}
+			}
+		}
 		
 		// Order By
 		query.append(" ORDER BY H_CID, H_SID, H_DATE, H_DATE_START");
-		Query queryString = getEntityManager().createNativeQuery(query.toString());
-		for (Entry<String, Object> entry : params.entrySet()) {
-			queryString.setParameter(entry.getKey(), entry.getValue());
+		String querySql = query.toString();
+		if(tableList.getTableEnglishName().equals("BPSMT_PERSON")) {
+			query.toString();
 		}
-		List<Object[]> listTemp = (List<Object[]>) queryString.getResultList();
+		List<Object[]> listTemp = new ArrayList<>();
+		if(!targetEmployeesSid.isEmpty()) {
+			List<String> lSid = new ArrayList<>();
+			CollectionUtil.split(targetEmployeesSid, 1000, subIdList -> {
+				lSid.add(subIdList.toString().replaceAll("\\[", "\\'").replaceAll("\\]", "\\'").replaceAll(", ","\\', '"));
+			});
+			for (String sid : lSid) {
+				Query queryString = getEntityManager().createNativeQuery(querySql.replaceAll("\\?listTargetSid", sid));
+				for (Entry<String, Object> entry : params.entrySet()) {
+					queryString.setParameter(entry.getKey(), entry.getValue());
+				}
+				listTemp.addAll((List<Object[]>) queryString.getResultList());
+			}
+		}else {
+			Query queryString = getEntityManager().createNativeQuery(querySql);
+			for (Entry<String, Object> entry : params.entrySet()) {
+				queryString.setParameter(entry.getKey(), entry.getValue());
+			}
+			listTemp.addAll((List<Object[]>) queryString.getResultList());
+		}
 		return listTemp.stream().map(objects -> {
 			List<String> record = new ArrayList<String>();
 			for (Object field : objects) {
