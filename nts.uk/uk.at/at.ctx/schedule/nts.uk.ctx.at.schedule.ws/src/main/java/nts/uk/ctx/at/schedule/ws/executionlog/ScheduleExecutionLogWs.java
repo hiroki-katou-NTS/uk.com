@@ -37,6 +37,7 @@ import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleCreatorDto;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleErrorLogDto;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleExecutionLogDto;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleExecutionLogInfoDto;
+import nts.uk.ctx.at.schedule.ws.executionlog.batchserver.BatchTaskResult;
 import nts.uk.shr.com.communicate.PathToWebApi;
 import nts.uk.shr.com.communicate.batch.BatchServer;
 
@@ -190,7 +191,7 @@ public class ScheduleExecutionLogWs extends WebService {
 			System.out.println("Call batch service  !");
 
 			val webApi = this.batchServer.webApi(PathToWebApi.at("/batch/batch-schedule"),
-					ScheduleCreatorExecutionCommand.class, AsyncTaskInfo.class);
+					ScheduleCreatorExecutionCommand.class, BatchTaskResult.class);
 			this.batchServer.request(webApi, c -> c.entity(command).succeeded(x -> {
 				String taskId = x.getId();
 				AsyncTaskInfo taskInfo = asyncTaskInfoRepository.find(taskId).get();

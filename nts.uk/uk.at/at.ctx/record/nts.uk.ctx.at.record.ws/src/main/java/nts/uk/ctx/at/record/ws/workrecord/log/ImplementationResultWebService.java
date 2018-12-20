@@ -25,6 +25,7 @@ import nts.uk.ctx.at.record.app.find.log.ImplementationResultFinder;
 //import nts.uk.ctx.at.record.app.find.log.dto.PersonInfoErrMessageLogDto;
 import nts.uk.ctx.at.record.app.find.log.dto.PersonInfoErrMessageLogResultDto;
 import nts.uk.ctx.at.record.app.find.log.dto.ScreenImplementationResultDto;
+import nts.uk.ctx.at.record.ws.workrecord.log.batchserver.ImplResultDto;
 import nts.uk.shr.com.communicate.PathToWebApi;
 import nts.uk.shr.com.communicate.batch.BatchServer;
 
@@ -71,7 +72,7 @@ public class ImplementationResultWebService extends WebService {
 		
 		if (this.batchServer.exists()) {
 			System.out.println("Call batch service  !");
-			val webApi = this.batchServer.webApi(PathToWebApi.at("/batch/task"), CheckProcessCommand.class, AsyncTaskInfo.class);
+			val webApi = this.batchServer.webApi(PathToWebApi.at("/batch/task-result"), CheckProcessCommand.class, ImplResultDto.class);
 			this.batchServer.request(webApi, c -> c.entity(command)
 					.succeeded(x -> {
 						String taskId = x.getId();
