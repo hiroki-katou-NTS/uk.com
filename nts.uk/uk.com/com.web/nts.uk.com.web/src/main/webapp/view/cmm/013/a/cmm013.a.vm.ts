@@ -103,9 +103,10 @@ module nts.uk.com.view.cmm013.a {
             /**
              * Reload component
              */
-            private reloadComponent(): void {
+            private reloadComponent(): JQueryPromise<void> {
                 let _self = this;
-
+                let dfd = $.Deferred<any>();
+                
                 _self.listJobTitleOption.isShowAlreadySet = _self.isShowAlreadySet();
                 _self.listJobTitleOption.isShowNoSelectRow = _self.isShowNoSelectRow();
 
@@ -129,7 +130,9 @@ module nts.uk.com.view.cmm013.a {
                             // Set create mode
                             _self.createMode(true);
                         }
+                        dfd.resolve();
                     });
+                return dfd.promise();
             }
 
             /**
@@ -343,17 +346,18 @@ module nts.uk.com.view.cmm013.a {
                 service.saveJobTitle(_self.toJSON())
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                            _self.reloadComponent();
-                            if (_self.createMode()) {
-                                service.findJobInfoByJobCode(_self.jobTitleCode())
-                                    .done((data: any) => {
-                                        _self.selectedJobTitleId(data.jobTitleId);
-                                        _self.createMode(false);
-                                    })
-                                    .fail((res: any) => {
+                            _self.reloadComponent().done(() => {
+//                                if (_self.createMode()) {
+                                    service.findJobInfoByJobCode(_self.jobTitleCode())
+                                        .done((data: any) => {
+                                            _self.selectedJobTitleId(data.jobTitleId);
+                                            _self.createMode(false);
+                                        })
+                                        .fail((res: any) => {
 
-                                    });
-                            }
+                                        });
+//                                }
+                            });
                         });
                     })
                     .fail((res: any) => {                      
@@ -452,6 +456,7 @@ module nts.uk.com.view.cmm013.a {
              */
             public openSelectSequenceDialog(data: SequenceMaster[]) {
                 let _self = this;
+                nts.uk.ui.windows.setShared("currentSelectedCode", _self.sequenceCode());
                 nts.uk.ui.windows.setShared(Constants.SHARE_IN_DIALOG_SELECT_SEQUENCE, data);
                 nts.uk.ui.windows.sub.modal('/view/cmm/013/c/index.xhtml').onClosed(() => {
                     // Check if apply button was clicked

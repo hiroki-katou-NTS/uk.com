@@ -137,7 +137,7 @@ public class DPLoadRowProcessor {
 					result.checkShowTighProcess(displayFormat, true);
 				}
 			}else {
-				result.getIndentityMonthResult().setHideAll(false);
+				result.getIndentityMonthResult().setHideAll(true);
 			}
 		}
 		if(param.getOnlyLoadMonth()){

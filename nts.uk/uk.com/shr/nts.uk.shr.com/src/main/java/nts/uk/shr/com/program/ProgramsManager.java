@@ -511,6 +511,8 @@ public class ProgramsManager {
 			"/view/kdw/006/d/index.xhtml");
 	public static final Program KDW006E = new Program(WebAppId.AT, ProgramIdConsts.KDW006E, "KDW006_23",
 			"/view/kdw/006/e/index.xhtml");
+	public static final Program KDW006G = new Program(WebAppId.AT, ProgramIdConsts.KDW006G, "KDW006_71",
+			"/view/kdw/006/g/index.xhtml");
 
 	/**
 	 * KDW009A

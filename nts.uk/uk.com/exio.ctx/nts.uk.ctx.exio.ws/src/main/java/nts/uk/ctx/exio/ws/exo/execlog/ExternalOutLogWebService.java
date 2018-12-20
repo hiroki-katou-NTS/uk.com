@@ -11,8 +11,10 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.exio.app.command.exo.executionlog.ExOutOpMngCommandDelete;
+import nts.uk.ctx.exio.app.command.exo.executionlog.ExOutOpMngCommandInterrupt;
 import nts.uk.ctx.exio.app.command.exo.executionlog.ExterOutExecLogCommand;
 import nts.uk.ctx.exio.app.command.exo.executionlog.RemoveExOutOpMngCommandHandler;
+import nts.uk.ctx.exio.app.command.exo.executionlog.UpdateExOutOpMngInterruptHandler;
 import nts.uk.ctx.exio.app.command.exo.executionlog.UpdateExterOutExecLogCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.executionlog.UpdateExterOutExecLogUseDeleteFileCommandHandler;
 import nts.uk.ctx.exio.app.find.exo.execlog.ExternalOutLogDto;
@@ -50,6 +52,9 @@ public class ExternalOutLogWebService extends WebService {
 	@Inject
 	private ExterOutExecLogFinder exterOutExecLogFinder;
 	
+	@Inject
+	private UpdateExOutOpMngInterruptHandler updateExOutOpMngInterruptHandler;
+	
 	@Path("getExternalOutLog/{storeProcessingId}")
 	@POST
 	public List<ExternalOutLogDto> getExternalOutLogById(@PathParam("storeProcessingId") String storeProcessingId) {
@@ -78,6 +83,12 @@ public class ExternalOutLogWebService extends WebService {
 	@Path("deleteexOutOpMng")
 	public void deleteexOutOpMng(ExOutOpMngCommandDelete command) {
 		this.removeExOutOpMngCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("updateexOutOpMng")
+	public void deleteexOutOpMng(ExOutOpMngCommandInterrupt command) {
+		this.updateExOutOpMngInterruptHandler.handle(command);
 	}
 	
 	@POST

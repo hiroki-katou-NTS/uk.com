@@ -311,9 +311,9 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			ManualSetOfDataSave optManualSetting, List<TargetEmployees> targetEmployees) {
 		// アルゴリズム「対象データの保存」を実行
 		ResultState resultState;
-
+		List<String> targetEmployeesSid = targetEmployees.stream().map(c -> c.getSid()).collect(Collectors.toList());
 		// テーブル一覧の内容をテンポラリーフォルダにcsvファイルで書き出す
-		resultState = generalCsv(generatorContext, storeProcessingId);
+		resultState = generalCsv(generatorContext, storeProcessingId, targetEmployeesSid);
 
 		if (resultState != ResultState.NORMAL_END) {
 			return resultState;
@@ -338,7 +338,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		return resultState;
 	}
 
-	private ResultState generalCsv(FileGeneratorContext generatorContext, String storeProcessingId) {
+	private ResultState generalCsv(FileGeneratorContext generatorContext, String storeProcessingId, List<String> targetEmployeesSid) {
 		try {
 			ResultState resultState = ResultState.NORMAL_END;
 			List<String> headerCsv = this.getTextHeaderCsv1();
@@ -346,14 +346,14 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			List<Map<String, Object>> dataSourceCsv = new ArrayList<>();
 			int offset = 0;
 			List<String> categoryIds = new ArrayList<>();
-			List<String> targetEmployeesSid = targetEmployeesRepo.getTargetEmployeesListById(storeProcessingId).stream().map(c -> c.getSid()).collect(Collectors.toList());
+//			List<String> targetEmployeesSid = targetEmployeesRepo.getTargetEmployeesListById(storeProcessingId).stream().map(c -> c.getSid()).collect(Collectors.toList());
 			while (true) {
 				// テーブル一覧の１行分を処理する
 				List<TableList> tableLists = repoTableList.getByOffsetAndNumber(storeProcessingId, offset,
 						NUM_OF_TABLE_EACH_PROCESS);
 
 				for (TableList tableList : tableLists) {
-					dataSourceCsv = getDataSourceCsv1(dataSourceCsv, headerCsv, tableList, targetEmployeesSid);
+					dataSourceCsv = getDataSourceCsv1(dataSourceCsv, headerCsv, tableList);
 
 					// Add Table to CSV Auto
 					resultState = generalCsvAuto(generatorContext, storeProcessingId, tableList, targetEmployeesSid);
@@ -388,7 +388,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	}
 
 	private List<Map<String, Object>> getDataSourceCsv1(List<Map<String, Object>> dataSourceCsv, List<String> headerCsv,
-			TableList tableList,  List<String> targetEmployeesSid) {
+			TableList tableList) {
 		Map<String, Object> rowCsv = new HashMap<>();
 		rowCsv.put(headerCsv.get(0), tableList.getDataStorageProcessingId());
 		rowCsv.put(headerCsv.get(1), tableList.getSaveForm());
