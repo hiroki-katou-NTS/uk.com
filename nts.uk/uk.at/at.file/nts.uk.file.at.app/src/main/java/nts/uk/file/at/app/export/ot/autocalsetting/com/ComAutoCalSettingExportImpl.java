@@ -50,6 +50,8 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
     private static final String KMK006_72 = "職場名";
     private static final String KMK006_73 = "設定済み";
     private static final String KMK006_74 = "職位コード";
+    private static final String NO_REGIS = "マスタ未登録";
+
 
     @Inject
     private ComAutoCalSettingRepository comAutoCalSettingExport;
@@ -62,6 +64,7 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
 
     @Inject
     private WkpJobAutoCalSettingRepository wkpJobAutoCalSettingRepository;
+
 
     @Override
     public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery masterListExportQuery) {
@@ -124,7 +127,6 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
                     columns.add(new MasterHeaderColumn(KMK006_72, TextResource.localize("KMK006_72"),
                             ColumnTextAlign.LEFT, "", true));
                     columns.addAll(this.getHeaderColumns(query));
-
                     break;
                 case JOB:
                     columns.add(new MasterHeaderColumn(KMK006_73, TextResource.localize("KMK006_73"),
@@ -152,11 +154,11 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
     @Override
     public List<MasterData> getMasterDatas(MasterListExportQuery query) {
         String companyId = AppContexts.user().companyId();
+        List<MasterData> datas = new ArrayList<>();
         Object[] comAutoCalSetting = comAutoCalSettingExport.getCompanySettingToExport(companyId);
-        List <MasterData> datas = new ArrayList<>();
-        Map<String, Object> data = new HashMap<>();
+        Map<String, MasterCellData> data = new HashMap<>();
         this.putDatas(comAutoCalSetting, data);
-        datas.add(new MasterData(data, null, ""));
+        datas.add(MasterData.builder().rowData(data).build());
         return datas;
     }
 
@@ -171,39 +173,72 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
 
     private List<MasterData> getData(MasterListExportQuery query, AutoCalRegis autoCalRegis) {
         String companyId = AppContexts.user().companyId();
-        String baseDate = query.getData().toString();
+        String baseDate = "9999-12-31";
         List <MasterData> datas = new ArrayList<>();
             switch (autoCalRegis){
                 case WORKPLACE:
                     List<Object[]> workPlaceAutoCalSetting = wkpAutoCalSettingRepository.getWorkPlaceSettingToExport(companyId, baseDate);
                     workPlaceAutoCalSetting.forEach(w -> {
-                        Map<String, Object> data = new HashMap<>();
-                        data.put(KMK006_71, w[23]);
-                        data.put(KMK006_72, w[24]);
+                        Map<String, MasterCellData> data = new HashMap<>();
+                        data.put(KMK006_71, MasterCellData.builder()
+                                .columnId(KMK006_71)
+                                .value(w[23])
+                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                .build());
+
+                        data.put(KMK006_72, MasterCellData.builder()
+                                .columnId(KMK006_72)
+                                .value(w[24] == null ? NO_REGIS : w[24])
+                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                .build());
                         this.putDatas(w, data);
-                        datas.add(new MasterData(data, null, ""));
+                        datas.add(MasterData.builder().rowData(data).build());
                     });
                     break;
                 case JOB:
                     List<Object[]> positionAutoCalSetting = jobAutoCalSettingRepository.getPositionSettingToExport(companyId , baseDate);
                     positionAutoCalSetting.forEach(j -> {
-                        Map<String, Object> data = new HashMap<String, Object>();
-                        data.put(KMK006_73, j[23]);
-                        data.put(KMK006_74, j[24]);
+                        Map<String, MasterCellData> data = new HashMap<String, MasterCellData>();
+                        data.put(KMK006_73, MasterCellData.builder()
+                                .columnId(KMK006_73)
+                                .value(j[23])
+                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                .build());
+                        data.put(KMK006_74, MasterCellData.builder()
+                                .columnId(KMK006_74)
+                                .value(j[24] == null ? NO_REGIS : j[24])
+                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                .build());
                         this.putDatas(j, data);
-                        datas.add(new MasterData(data, null, ""));
+                        datas.add(MasterData.builder().rowData(data).build());
                     });
                     break;
                 case WORKJOB:
                     List<Object[]> wkpJobAutoCalSetting = wkpJobAutoCalSettingRepository.getWkpJobSettingToExport(companyId, baseDate);
                     wkpJobAutoCalSetting.forEach(wj -> {
-                        Map<String, Object> data = new HashMap<>();
-                        data.put(KMK006_71, wj[23]);
-                        data.put(KMK006_72, wj[24]);
-                        data.put(KMK006_73, wj[25]);
-                        data.put(KMK006_74, wj[26]);
+                        Map<String, MasterCellData> data = new HashMap<>();
+                        data.put(KMK006_71, MasterCellData.builder()
+                                .columnId(KMK006_71)
+                                .value(wj[23])
+                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                .build());
+                        data.put(KMK006_72, MasterCellData.builder()
+                                .columnId(KMK006_72)
+                                .value(wj[24] == null ? NO_REGIS : wj[24])
+                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                .build());
+                        data.put(KMK006_73, MasterCellData.builder()
+                                .columnId(KMK006_73)
+                                .value(wj[25])
+                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                .build());
+                        data.put(KMK006_74, MasterCellData.builder()
+                                .columnId(KMK006_74)
+                                .value(wj[26] == null ? NO_REGIS : wj[26])
+                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                .build());
                         this.putDatas(wj, data);
-                        datas.add(new MasterData(data, null, ""));
+                        datas.add(MasterData.builder().rowData(data).build());
                     });
                     break;
             }
@@ -212,35 +247,164 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
 
     @Override
     public List<SheetData> extraSheets(MasterListExportQuery query){
-        return EnumSet.allOf(AutoCalRegis.class).stream().map(item -> new SheetData(this.getData(query, item),
-                getHeaderColumns(query, item), null, null, getSheetName(item))).collect(Collectors.toList());
+        List<SheetData> sheetData = new ArrayList<>();
+        if(((Map<String, Boolean>) query.getData()).get("useWkpSet")) {
+            SheetData wkp = new SheetData(this.getData(query, AutoCalRegis.WORKPLACE),
+                    getHeaderColumns(query, AutoCalRegis.WORKPLACE), null, null, getSheetName(AutoCalRegis.WORKPLACE));
+            sheetData.add(wkp);
+        }
+        if(((Map<String, Boolean>) query.getData()).get("useJobSet")) {
+            SheetData job = new SheetData(this.getData(query, AutoCalRegis.JOB),
+                    getHeaderColumns(query, AutoCalRegis.JOB), null, null, getSheetName(AutoCalRegis.JOB));
+            sheetData.add(job);
+        }
+        if(((Map<String, Boolean>) query.getData()).get("useJobwkpSet")) {
+            SheetData jobWkp = new SheetData(this.getData(query, AutoCalRegis.WORKJOB),
+                    getHeaderColumns(query, AutoCalRegis.WORKJOB), null, null, getSheetName(AutoCalRegis.WORKJOB));
+            sheetData.add(jobWkp);
+        }
+        return sheetData;
     }
 
-    private void putDatas(Object[] export, Map<String, Object> data) {
+    private void putDatas(Object[] export, Map<String, MasterCellData> data) {
 
-        data.put(KMK006_48, EnumAdaptor.valueOf(((BigDecimal) export[0]).intValue(), AutoCalAtrOvertime.class).description);
-        data.put(KMK006_49, EnumAdaptor.valueOf(((BigDecimal) export[1]).intValue(), TimeLimitUpperLimitSetting.class).description);
-        data.put(KMK006_50, EnumAdaptor.valueOf(((BigDecimal) export[2]).intValue(), AutoCalAtrOvertime.class).description);
-        data.put(KMK006_51, EnumAdaptor.valueOf(((BigDecimal) export[3]).intValue(), TimeLimitUpperLimitSetting.class).description);
-        data.put(KMK006_52, EnumAdaptor.valueOf(((BigDecimal) export[4]).intValue(), AutoCalAtrOvertime.class).description);
-        data.put(KMK006_53, EnumAdaptor.valueOf(((BigDecimal) export[5]).intValue(), TimeLimitUpperLimitSetting.class).description);
-        data.put(KMK006_54, EnumAdaptor.valueOf(((BigDecimal) export[6]).intValue(), AutoCalAtrOvertime.class).description);
-        data.put(KMK006_55, EnumAdaptor.valueOf(((BigDecimal) export[7]).intValue(), TimeLimitUpperLimitSetting.class).description);
-        data.put(KMK006_56, EnumAdaptor.valueOf(((BigDecimal) export[8]).intValue(), AutoCalAtrOvertime.class).description);
-        data.put(KMK006_57, EnumAdaptor.valueOf(((BigDecimal) export[9]).intValue(), TimeLimitUpperLimitSetting.class).description);
-        data.put(KMK006_58, EnumAdaptor.valueOf(((BigDecimal) export[10]).intValue(), AutoCalAtrOvertime.class).description);
-        data.put(KMK006_59, EnumAdaptor.valueOf(((BigDecimal) export[11]).intValue(), TimeLimitUpperLimitSetting.class).description);
-        data.put(KMK006_60, EnumAdaptor.valueOf(((BigDecimal) export[12]).intValue(), AutoCalAtrOvertime.class).description);
-        data.put(KMK006_61, EnumAdaptor.valueOf(((BigDecimal) export[13]).intValue(), TimeLimitUpperLimitSetting.class).description);
-        data.put(KMK006_62, EnumAdaptor.valueOf(((BigDecimal) export[14]).intValue(), AutoCalAtrOvertime.class).description);
-        data.put(KMK006_63, EnumAdaptor.valueOf(((BigDecimal) export[15]).intValue(), TimeLimitUpperLimitSetting.class).description);
-        data.put(KMK006_64, EnumAdaptor.valueOf(((BigDecimal) export[16]).intValue(), AutoCalAtrOvertime.class).description);
-        data.put(KMK006_65, EnumAdaptor.valueOf(((BigDecimal) export[17]).intValue(), TimeLimitUpperLimitSetting.class).description);
-        data.put(KMK006_66, TextResource.localize(this.checkUse(((BigDecimal) export[18]).intValue())));
-        data.put(KMK006_67, TextResource.localize(this.checkUse(((BigDecimal) export[19]).intValue())));
-        data.put(KMK006_68, TextResource.localize(this.checkUse(((BigDecimal) export[20]).intValue())));
-        data.put(KMK006_69, TextResource.localize(this.checkUse(((BigDecimal) export[21]).intValue())));
-        data.put(KMK006_70, TextResource.localize(this.checkUse(((BigDecimal) export[22]).intValue())));
+        data.put(KMK006_48, MasterCellData.builder()
+                .columnId(KMK006_48)
+                .value(EnumAdaptor.valueOf(((BigDecimal) export[0]).intValue(), AutoCalAtrOvertime.class).description)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+
+        data.put(KMK006_49, MasterCellData.builder()
+                .columnId(KMK006_49)
+                .value(((BigDecimal) export[0]).intValue() == 0 ? "" : EnumAdaptor.valueOf(((BigDecimal) export[1]).intValue(), TimeLimitUpperLimitSetting.class).description)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+
+        data.put(KMK006_50, MasterCellData.builder()
+                .columnId(KMK006_50)
+                .value(EnumAdaptor.valueOf(((BigDecimal) export[2]).intValue(), AutoCalAtrOvertime.class).description)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+
+        data.put(KMK006_51, MasterCellData.builder()
+                .columnId(KMK006_51)
+                .value(((BigDecimal) export[2]).intValue() == 0 ? "" : EnumAdaptor.valueOf(((BigDecimal) export[3]).intValue(), TimeLimitUpperLimitSetting.class).description)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+
+        data.put(KMK006_52, MasterCellData.builder()
+                .columnId(KMK006_52)
+                .value(EnumAdaptor.valueOf(((BigDecimal) export[4]).intValue(), AutoCalAtrOvertime.class).description)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+
+        data.put(KMK006_53, MasterCellData.builder()
+                .columnId(KMK006_53)
+                .value(((BigDecimal) export[4]).intValue() == 0 ? "" : EnumAdaptor.valueOf(((BigDecimal) export[5]).intValue(), TimeLimitUpperLimitSetting.class).description)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+
+        data.put(KMK006_54, MasterCellData.builder()
+                .columnId(KMK006_54)
+                .value(EnumAdaptor.valueOf(((BigDecimal) export[6]).intValue(), AutoCalAtrOvertime.class).description)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+
+        data.put(KMK006_55, MasterCellData.builder()
+                .columnId(KMK006_55)
+                .value(((BigDecimal) export[6]).intValue() == 0 ? "" : EnumAdaptor.valueOf(((BigDecimal) export[7]).intValue(), TimeLimitUpperLimitSetting.class).description)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+
+        data.put(KMK006_56, MasterCellData.builder()
+                .columnId(KMK006_56)
+                .value(EnumAdaptor.valueOf(((BigDecimal) export[8]).intValue(), AutoCalAtrOvertime.class).description)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+
+        data.put(KMK006_57, MasterCellData.builder()
+                .columnId(KMK006_57)
+                .value(((BigDecimal) export[8]).intValue() == 0 ? "" : EnumAdaptor.valueOf(((BigDecimal) export[9]).intValue(), TimeLimitUpperLimitSetting.class).description)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+
+        data.put(KMK006_58, MasterCellData.builder()
+                .columnId(KMK006_58)
+                .value(EnumAdaptor.valueOf(((BigDecimal) export[10]).intValue(), AutoCalAtrOvertime.class).description)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+
+        data.put(KMK006_59, MasterCellData.builder()
+                .columnId(KMK006_59)
+                .value(((BigDecimal) export[10]).intValue() == 0 ? "" : EnumAdaptor.valueOf(((BigDecimal) export[11]).intValue(), TimeLimitUpperLimitSetting.class).description)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+
+        data.put(KMK006_60, MasterCellData.builder()
+                .columnId(KMK006_60)
+                .value(EnumAdaptor.valueOf(((BigDecimal) export[12]).intValue(), AutoCalAtrOvertime.class).description)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+
+        data.put(KMK006_61, MasterCellData.builder()
+                .columnId(KMK006_61)
+                .value(((BigDecimal) export[12]).intValue() == 0 ? "" : EnumAdaptor.valueOf(((BigDecimal) export[13]).intValue(), TimeLimitUpperLimitSetting.class).description)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+
+        data.put(KMK006_62, MasterCellData.builder()
+                .columnId(KMK006_62)
+                .value(EnumAdaptor.valueOf(((BigDecimal) export[14]).intValue(), AutoCalAtrOvertime.class).description)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+
+        data.put(KMK006_63, MasterCellData.builder()
+                .columnId(KMK006_63)
+                .value(((BigDecimal) export[14]).intValue() == 0 ? "" : EnumAdaptor.valueOf(((BigDecimal) export[15]).intValue(), TimeLimitUpperLimitSetting.class).description)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+
+        data.put(KMK006_64, MasterCellData.builder()
+                .columnId(KMK006_64)
+                .value(EnumAdaptor.valueOf(((BigDecimal) export[16]).intValue(), AutoCalAtrOvertime.class).description)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+
+        data.put(KMK006_65, MasterCellData.builder()
+                .columnId(KMK006_65)
+                .value(((BigDecimal) export[16]).intValue() == 0 ? "" : EnumAdaptor.valueOf(((BigDecimal) export[17]).intValue(), TimeLimitUpperLimitSetting.class).description)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+
+        data.put(KMK006_66, MasterCellData.builder()
+                .columnId(KMK006_66)
+                .value(TextResource.localize(this.checkUse(((BigDecimal) export[18]).intValue())))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+
+        data.put(KMK006_67, MasterCellData.builder()
+                .columnId(KMK006_67)
+                .value(TextResource.localize(this.checkUse(((BigDecimal) export[19]).intValue())))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+
+        data.put(KMK006_68, MasterCellData.builder()
+                .columnId(KMK006_68)
+                .value(TextResource.localize(this.checkUse(((BigDecimal) export[20]).intValue())))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+
+        data.put(KMK006_69, MasterCellData.builder()
+                .columnId(KMK006_69)
+                .value(TextResource.localize(this.checkUse(((BigDecimal) export[21]).intValue())))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+
+        data.put(KMK006_70, MasterCellData.builder()
+                .columnId(KMK006_70)
+                .value(TextResource.localize(this.checkUse(((BigDecimal) export[22]).intValue())))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
     }
 
     private String checkUse(int obj){

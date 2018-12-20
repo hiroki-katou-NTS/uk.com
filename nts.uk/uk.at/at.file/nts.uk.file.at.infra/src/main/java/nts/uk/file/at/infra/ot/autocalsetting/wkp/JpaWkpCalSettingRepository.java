@@ -43,23 +43,48 @@ public class JpaWkpCalSettingRepository extends JpaRepository implements WkpAuto
 			"k.RAISING_CALC_ATR, "+
 			"k.SPECIFIC_RAISING_CALC_ATR, "+
 			"k.DIVERGENCE,  "+
-			"w.WKPCD, " +
+			"k.WKPCD, " +
 			"w.WKP_NAME " +
-            "FROM (SELECT HIST_ID, WKPID, CID "+
+            "FROM (SELECT HIST_ID, WKPID, CID " +
 					"FROM BSYMT_WORKPLACE_HIST "+
-					"WHERE START_DATE <= ?baseDate AND END_DATE >= ?baseDate AND CID = ?cid "+
+					"WHERE END_DATE >= ?baseDate AND CID = ?cid " +
 					") h " +
-			"INNER JOIN (SELECT CID "+
-						"FROM BSYMT_WKP_CONFIG "+
-						"WHERE START_DATE <= ?baseDate AND END_DATE >= ?baseDate "+
-						") c " +
-						"ON c.CID = h.CID "+
-			"INNER JOIN (SELECT HIST_ID, CID, WKPID, WKPCD, WKP_NAME "+
-						 "FROM BSYMT_WORKPLACE_INFO " +
-						 ") w " +
-						"ON w.HIST_ID = h.HIST_ID AND w.WKPID = h.WKPID AND h.CID = w.CID "+
-            			"INNER JOIN KSHMT_AUTO_WKP_CAL_SET k on w.WKPID = k.WKPID AND w.CID = k.CID " +
-			"ORDER BY w.WKPCD";
+			"INNER JOIN (SELECT HIST_ID, CID, WKPID, WKPCD, WKP_NAME " +
+						  "FROM BSYMT_WORKPLACE_INFO " +
+						  ") w " +
+					"ON w.HIST_ID = h.HIST_ID AND w.WKPID = h.WKPID AND h.CID = w.CID " +
+			"RIGHT JOIN (SELECT a.LEGAL_OT_TIME_ATR, "+
+								  "a.LEGAL_OT_TIME_LIMIT, "+
+								  "a.LEGAL_MID_OT_TIME_ATR, "+
+								  "a.LEGAL_MID_OT_TIME_LIMIT, "+
+								  "a.NORMAL_OT_TIME_ATR, "+
+								  "a.NORMAL_OT_TIME_LIMIT, "+
+								  "a.NORMAL_MID_OT_TIME_ATR, "+
+								  "a.NORMAL_MID_OT_TIME_LIMIT, "+
+								  "a.EARLY_OT_TIME_ATR, "+
+								  "a.EARLY_OT_TIME_LIMIT, "+
+								  "a.EARLY_MID_OT_TIME_ATR, "+
+								  "a.EARLY_MID_OT_TIME_LIMIT, "+
+								  "a.FLEX_OT_TIME_ATR, "+
+								  "a.FLEX_OT_TIME_LIMIT, "+
+								  "a.REST_TIME_ATR, "+
+								  "a.REST_TIME_LIMIT, "+
+								  "a.LATE_NIGHT_TIME_ATR, "+
+								  "a.LATE_NIGHT_TIME_LIMIT, "+
+								  "a.LEAVE_LATE, "+
+								  "a.LEAVE_EARLY, "+
+								  "a.RAISING_CALC_ATR, "+
+								  "a.SPECIFIC_RAISING_CALC_ATR, "+
+								  "a.DIVERGENCE, "+
+								  "i.WKPCD, "+
+								  "a.WKPID, "+
+								  "a.CID "+
+						"FROM (SELECT DISTINCT WKPCD , WKPID, CID "+
+							   "FROM BSYMT_WORKPLACE_INFO "+
+							   "WHERE CID = '000000000000-0001') i "+
+						"INNER JOIN KSHMT_AUTO_WKP_CAL_SET a ON a.CID = i.CID AND a.WKPID = i.WKPID) k "+
+							"ON w.WKPID = k.WKPID AND w.CID = k.CID "+
+			"ORDER BY k.WKPCD ";
 
 	@Override
 	public List<Object[]> getWorkPlaceSettingToExport(String cid, String baseDate) {
