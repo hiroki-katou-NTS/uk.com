@@ -154,7 +154,7 @@ module nts.uk.pr.view.qmm016.h.viewmodel {
                     if (qualificationGroupList.length == 0) {
                         newQualificationGroupCode = null;
                     } else {
-                        if (currentIndex == qualificationGroupList.length) {
+                        if (currentIndex == qualificationGroupList.length - 1) {
                             newQualificationGroupCode = qualificationGroupList[currentIndex - 1].qualificationGroupCode;
                         } else {
                             newQualificationGroupCode = qualificationGroupList[currentIndex].qualificationGroupCode;
