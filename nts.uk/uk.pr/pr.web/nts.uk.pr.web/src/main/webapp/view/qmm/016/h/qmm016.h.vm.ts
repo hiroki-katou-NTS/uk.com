@@ -20,8 +20,8 @@ module nts.uk.pr.view.qmm016.h.viewmodel {
         constructor() {
             let self = this;
             this.columns = ko.observableArray([
-                {headerText: getText('QMM016_61'), key: 'qualificationCode', width: 50},
-                {headerText: getText('QMM016_62'), key: 'qualificationName', width: 150}
+                {headerText: getText('QMM016_61'), key: 'qualificationCode', width: 50, formatter: _.escape },
+                {headerText: getText('QMM016_62'), key: 'qualificationName', width: 150, formatter: _.escape }
             ]);
             self.selectedQualificationGroupCode.subscribe(newValue => {
                 if (newValue) {

@@ -128,7 +128,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             self.selectedTab = ko.observable('tab-1');
         }
         
-        syncScroll(source, follow1, follow2?) {
+        syncScroll(source, follow1, follow2) {
             let self = this;
             source.scroll((e) => {
                 let ignore = self.ignoreScrollEvents;
@@ -138,11 +138,9 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 setTimeout(() => { 
                     follow1.scrollTop(source.scrollTop()); 
                 }, 10);
-                if (follow2) {
-                    setTimeout(() => { 
-                        follow2.scrollLeft(source.scrollLeft());
-                    }, 10);
-                }
+                setTimeout(() => { 
+                    follow2.scrollLeft(source.scrollLeft());
+                }, 10);
             });
         }
 
@@ -262,10 +260,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
 						}
 						self.elementRangeSetting(new model.ElementRangeSetting(settingData));
 						if (!_.isEmpty(contentData)) {
-							$("#elem1-wrapper").unbind();
 							$("#content-wrapper").unbind();
                             self.syncScroll($("#content-wrapper"), $("#elem1-wrapper"), $("#elem2-wrapper"));
-							self.syncScroll($("#elem1-wrapper"), $("#content-wrapper"));
 						}
 					}).fail(error => {
 						dialog.alertError(error);
@@ -560,10 +556,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     self.elementRangeSetting().historyID(params.historyID);
                     self.elementRangeSetting().thirdElementRange(null);
                     self.wageTableContent(new model.WageTableContent(data));
-                    $("#elem1-wrapper").unbind();
                     $("#content-wrapper").unbind();
                     self.syncScroll($("#content-wrapper"), $("#elem1-wrapper"), $("#elem2-wrapper"));
-                    self.syncScroll($("#elem1-wrapper"), $("#content-wrapper"));
                 }
             }).fail(error => {
                 dialog.alertError(error);
@@ -625,10 +619,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     self.elementRangeSetting().historyID(params.historyID);
                     self.wageTableContent(new model.WageTableContent(data));
                     self.wageTableContent2dData(self.wageTableContent().payment()[0].listFirstDms());
-                    $("#elem1-wrapper").unbind();
                     $("#content-wrapper").unbind();
                     self.syncScroll($("#content-wrapper"), $("#elem1-wrapper"), $("#elem2-wrapper"));
-                    self.syncScroll($("#elem1-wrapper"), $("#content-wrapper"));
                     $(".input-amount")[0].focus();
                 }
             }).fail(error => {
@@ -693,10 +685,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     self.elementRangeSetting().historyID(params.historyID);
                     self.wageTableContent(new model.WageTableContent(data));
                     self.wageTableContent2dData(self.wageTableContent().payment()[0].listFirstDms());
-                    $("#elem1-wrapper").unbind();
                     $("#content-wrapper").unbind();
                     self.syncScroll($("#content-wrapper"), $("#elem1-wrapper"), $("#elem2-wrapper"));
-                    self.syncScroll($("#elem1-wrapper"), $("#content-wrapper"));
                     $(".input-amount")[0].focus();
                 }
             }).fail(error => {

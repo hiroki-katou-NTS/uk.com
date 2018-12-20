@@ -85,7 +85,8 @@ public class JpaWageTableContentRepository extends JpaRepository implements Wage
 				" SELECT" +
 				"     wcp.id," +
 				"     wgs.pk.qualificationGroupCode," +
-				"     qgs.qualificationGroupName," +
+				"	  wgs.qualificationGroupName," +
+//				"     qgs.qualificationGroupName," +
 				"     wgs.pk.elegibleQualificationCode," +
 				"     qi.qualificationName," +
 				"     wcp.paymentAmount," +
@@ -94,7 +95,7 @@ public class JpaWageTableContentRepository extends JpaRepository implements Wage
 				"     QpbmtWageTableComboPayment wcp" +
 				"     LEFT JOIN QpbmtWageTableQualifyGroupSet wgs ON wcp.historyId = wgs.pk.historyId AND wcp.masterCode1 = wgs.pk.elegibleQualificationCode" +
 				"     LEFT JOIN QpbmtQualificationInformation qi ON wgs.pk.elegibleQualificationCode = qi.pk.qualificationCode" +
-				"     LEFT JOIN QpbmtQualificationGroupSetting qgs ON qgs.pk.cid = qi.pk.cid AND wgs.pk.elegibleQualificationCode = qgs.pk.eligibleQualificationCode AND wgs.pk.qualificationGroupCode = qgs.pk.qualificationGroupCode " +
+//				"     LEFT JOIN QpbmtQualificationGroupSetting qgs ON qgs.pk.cid = qi.pk.cid AND wgs.pk.elegibleQualificationCode = qgs.pk.eligibleQualificationCode AND wgs.pk.qualificationGroupCode = qgs.pk.qualificationGroupCode " +
 				" WHERE" +
 				"     qi.pk.cid =:cid AND" +
 				"     wgs.pk.historyId =:historyId" +

@@ -79,7 +79,7 @@ public class WageTableContentCommand {
 										eligible.getWageTablePaymentAmount(), eligible.getQualificationCode(), null,
 										null, null, null, null, null, null, null, null, null, null)));
 				qualificationGroupSettings.add(new QualificationGroupSettingContent(
-						wageTableQualification.getQualificationGroupCode(), wageTableQualification.getPaymentMethod(),
+						wageTableQualification.getQualificationGroupCode(), wageTableQualification.getQualificationGroupName(), wageTableQualification.getPaymentMethod(),
 						wageTableQualification.getEligibleQualificationCode().stream()
 								.map(WageTableQualificationInfoDto::getQualificationCode)
 								.collect(Collectors.toList())));
