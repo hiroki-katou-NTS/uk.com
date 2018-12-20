@@ -18,7 +18,7 @@ public class ImplResultBatchServerWebService {
 	private CheckProcessCommandHandler queryExecutionStatusCommandHandler;
 	
 	@POST
-	@Path("task")
+	@Path("task-result")
 	public ImplResultDto doTask(CheckProcessCommand command) {
 		AsyncTaskInfo info = this.queryExecutionStatusCommandHandler.handle(command);
 		return new ImplResultDto(info.getId());
