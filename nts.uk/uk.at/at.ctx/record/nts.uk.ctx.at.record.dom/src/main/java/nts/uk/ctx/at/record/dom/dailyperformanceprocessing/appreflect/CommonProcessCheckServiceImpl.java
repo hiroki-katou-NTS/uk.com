@@ -28,7 +28,6 @@ import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectPa
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
-import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
@@ -124,6 +123,8 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 					null);
 			if(!integrationOfDaily.getAttendanceLeave().isPresent()) {
 				timeLeaving.add(timeInfor);
+			} else {
+				timeLeaving.update(timeInfor);
 			}
 			integrationOfDaily.setAttendanceLeave(Optional.of(timeInfor));	
 		}
