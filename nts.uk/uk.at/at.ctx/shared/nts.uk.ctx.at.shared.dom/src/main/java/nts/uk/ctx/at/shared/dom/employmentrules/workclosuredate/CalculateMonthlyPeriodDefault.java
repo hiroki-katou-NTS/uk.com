@@ -1,11 +1,16 @@
 package nts.uk.ctx.at.shared.dom.employmentrules.workclosuredate;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -20,9 +25,15 @@ public class CalculateMonthlyPeriodDefault implements CalculateMonthlyPeriodServ
 	@Inject
 	private ClosureService closureService;
 
+	@Inject
+	private ClosureRepository closureRepository;
 	@Override
-	public DatePeriod calculateMonthlyPeriod(Integer closureId, YearMonth yearmonth, GeneralDate baseDate) {
+	public DatePeriod calculateMonthlyPeriod(Integer closureId, GeneralDate baseDate) {
 		boolean checkOut = true;
+		String companyId = AppContexts.user().companyId();
+		//ドメイン「締め」を取得する
+		Optional<Closure> closure = closureRepository.findById(companyId, closureId);
+		YearMonth yearmonth = closure.get().getClosureMonth().getProcessingYm();
 		DatePeriod datePeriodResult = closureService.getClosurePeriod(closureId, yearmonth);
 		while (checkOut) {
 			// アルゴリズム「当月の期間を算出する」を実行する
@@ -30,11 +41,12 @@ public class CalculateMonthlyPeriodDefault implements CalculateMonthlyPeriodServ
 			// 締め期間．開始年月日を月別実績集計期間開始年月日に設定する
 			// 締め期間に基準日が含まれているかチェックする
 			if (datePeriod.start().beforeOrEquals(baseDate) && baseDate.beforeOrEquals(datePeriod.end())) {
-				return datePeriod;
+				return datePeriod.newSpan(datePeriodResult.start(), datePeriod.end());
 			}else {
 				//基準日と締め期間．開始年月日を比較する
 				if(baseDate.before(datePeriod.start())) {
-					return datePeriod;
+					//DatePeriod result = datePeriod.newSpan(datePeriodResult.start(), datePeriod.end());
+					return datePeriod.newSpan(datePeriodResult.start(), datePeriod.end());
 				}else {
 					yearmonth = yearmonth.addMonths(1);
 				}

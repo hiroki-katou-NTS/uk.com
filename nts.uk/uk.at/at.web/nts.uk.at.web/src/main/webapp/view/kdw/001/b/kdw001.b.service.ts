@@ -5,7 +5,7 @@ module nts.uk.at.view.kdw001.b {
             };
         
         export function findMonthlyResult(closureId: number, yearMonth: string): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", path.findMonthlyResult + "/" + closureId + "/" + yearMonth);
+            return nts.uk.request.ajax("at", path.findMonthlyResult + "/" + closureId);
         }
     }
 }
