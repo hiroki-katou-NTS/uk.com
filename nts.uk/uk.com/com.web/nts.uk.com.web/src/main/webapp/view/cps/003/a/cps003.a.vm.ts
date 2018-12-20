@@ -83,7 +83,8 @@ module cps003.a.vm {
         };
 
         settings: ISettingData = {
-            matrixDisplay: ko.observable({})
+            matrixDisplay: ko.observable({}),
+            personInfoItems: ko.observableArray([])
         };
 
         // for employee info.
@@ -103,9 +104,13 @@ module cps003.a.vm {
                     // fetch all setting
                     service.fetch.setting(cid).done((data: ISettingData) => {
                         if (ko.isObservable(self.settings.matrixDisplay)) {
-                            if(_.size(self.settings.matrixDisplay()) == 0) {
+                            if (_.size(self.settings.matrixDisplay()) == 0) {
                                 self.settings.matrixDisplay(data.matrixDisplay);
                             }
+                        }
+
+                        if (ko.isObservable(self.settings.personInfoItems)) {
+                            self.settings.personInfoItems(data.personInfoItems);
                         }
                     });
 
@@ -113,7 +118,7 @@ module cps003.a.vm {
                 }
             });
 
-            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {});
+            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => { });
             //            self.requestData();
         }
 
@@ -367,8 +372,15 @@ module cps003.a.vm {
     }
 
     interface ISettingData {
-        "personInfoItems": KnockoutObservableArray<any> | [];
+        "personInfoItems": KnockoutObservableArray<IPersonInfoSetting> | Array<IPersonInfoSetting>;
         "matrixDisplay": KnockoutObservable<IMatrixDisplay> | IMatrixDisplay;
+    }
+
+    interface IPersonInfoSetting {
+        "columnWidth": number;
+        "regulationATR": REGULATION_ATR;
+        "pinfoCategoryID": string;
+        "pinfoItemDefiID": string;
     }
 
     interface IMatrixDisplay {
@@ -390,5 +402,10 @@ module cps003.a.vm {
     enum CURSOR_DIRC {
         VERTICAL = <any>'VERTICAL',
         HORIZONTAL = <any>'HORIZONTAL'
+    }
+
+    enum REGULATION_ATR {
+        PROVISION = <any>'PROVISION',
+        ANY = <any>'ANY'
     }
 }
