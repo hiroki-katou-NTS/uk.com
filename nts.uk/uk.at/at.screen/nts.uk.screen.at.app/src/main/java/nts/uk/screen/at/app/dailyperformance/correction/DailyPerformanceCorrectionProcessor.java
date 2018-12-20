@@ -460,7 +460,7 @@ public class DailyPerformanceCorrectionProcessor {
 									screenDto.checkShowTighProcess(displayFormat, true);
 								}
 							}else {
-								screenDto.getIndentityMonthResult().setHideAll(false);
+								screenDto.getIndentityMonthResult().setHideAll(true);
 							}
 							// screenDto.setFlexShortage(null);
 						}
