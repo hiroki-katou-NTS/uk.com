@@ -56,6 +56,12 @@ module nts.uk.com.view.cmm013.a {
             return nts.uk.request.ajax(servicePath.findAllSequenceMaster);
         }
         
+        
+                //saveAsExcel
+        export function saveAsExcel(languageId: string): JQueryPromise<any> {
+            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Sequence", languageId: languageId, domainType: "CMM013職位情報の登録", reportType: 0, startDate: moment.utc("2018/12/19", 'YYYY/MM/DD'), endDate: moment.utc("2018/12/19", 'YYYY/MM/DD')});
+        }
+        
         /**
          * Model namespace.
          */
