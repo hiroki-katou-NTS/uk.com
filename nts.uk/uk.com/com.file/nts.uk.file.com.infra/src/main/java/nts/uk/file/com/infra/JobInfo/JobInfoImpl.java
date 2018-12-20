@@ -31,33 +31,48 @@ public class JobInfoImpl extends JpaRepository implements JobInfoRepository {
 	private EntityManager entityManager;
 	
 	private static final String GET_EXPORT_EXCEL = 
-			"SELECT CASE WHEN TBL.ROW_NUMBER = 1 THEN TBL.APPLY_CONCURRENT_PERSON"
-			+" ELSE NULL END APPLY_CONCURRENT_PERSON,"
-			+" TBL.JOB_CD, TBL.JOB_NAME, TBL.ROLESET_NAME"
-			+" FROM (SELECT job.APPLY_CONCURRENT_PERSON, info.JOB_CD, info.JOB_NAME, d.ROLESET_CD +' '+ s.ROLE_SET_NAME AS ROLESET_NAME,"
-			+" ROW_NUMBER() OVER (ORDER BY info.JOB_CD ASC) AS ROW_NUMBER"
-			+" FROM "
-			+" BSYMT_JOB_INFO info"
-			+" INNER JOIN BSYMT_JOB_HIST his ON info.CID = his.CID AND info.HIST_ID = his.HIST_ID AND info.JOB_ID = his.JOB_ID"
-			+" INNER JOIN SACMT_ROLE_SET s ON info.CID = s.CID"
-			+" INNER JOIN SACMT_ROLESET_JOB_DETAIL d ON s.ROLE_SET_CD = d.ROLESET_CD AND info.JOB_ID = d.JOB_ID"
-			+" INNER JOIN SACMT_ROLESET_JOB job ON info.CID = job.CID"
-			+" WHERE info.CID = ?"
-			+" AND his.START_DATE <= CONVERT(DATETIME, ?, 127) "
-			+" AND his.END_DATE >= CONVERT(DATETIME, ?, 127)) TBL ";
+			"SELECT"
+			+	" CASE"
+			+		" WHEN TBL.ROW_NUMBER = 1 THEN TBL.APPLY_CONCURRENT_PERSON"
+			+		" ELSE NULL"
+			+	" END APPLY_CONCURRENT_PERSON,"
+			+	" TBL.JOB_CD, TBL.JOB_NAME, TBL.ROLESET_NAME"
+			+	" FROM"
+			+		" (SELECT job.APPLY_CONCURRENT_PERSON, info.JOB_CD, info.JOB_NAME, d.ROLESET_CD +' '+ s.ROLE_SET_NAME AS ROLESET_NAME,"
+			+			" ROW_NUMBER() OVER (ORDER BY info.JOB_CD ASC) AS ROW_NUMBER"
+			+			" FROM BSYMT_JOB_INFO info"
+			+			" INNER JOIN BSYMT_JOB_HIST his ON info.CID = his.CID AND info.HIST_ID = his.HIST_ID AND info.JOB_ID = his.JOB_ID"
+			+			" INNER JOIN SACMT_ROLE_SET s ON info.CID = s.CID"
+			+			" INNER JOIN SACMT_ROLESET_JOB_DETAIL d ON s.ROLE_SET_CD = d.ROLESET_CD AND info.JOB_ID = d.JOB_ID"
+			+			" INNER JOIN SACMT_ROLESET_JOB job ON info.CID = job.CID"
+			+		" WHERE info.CID = ?"
+			+			" AND his.START_DATE <= CONVERT(DATETIME, ?, 127) "
+			+			" AND his.END_DATE >= CONVERT(DATETIME, ?, 127)"
+			+ 		") TBL ";
+	
+	
 	private static final String GET_EXPORT_DATA = 
-			" SELECT CASE WHEN TBL.ROW_NUMBER = 1 THEN TBL.ROLESET_CD ELSE NULL END ROLESET_CD, "
-			+" CASE WHEN TBL.ROW_NUMBER = 1 THEN TBL.ROLE_SET_NAME ELSE NULL END ROLE_SET_NAME, "
-			+" TBL.SCD, TBL.BUSINESS_NAME, TBL.START_DATE, TBL.END_DATE FROM "
-			+ "(SELECT per.ROLESET_CD, rs.ROLE_SET_NAME, em.SCD, p.BUSINESS_NAME, per.START_DATE, per.END_DATE,"
-				+" ROW_NUMBER() OVER (PARTITION BY per.ROLESET_CD "
-				+" ORDER BY  rs.ROLE_SET_CD ASC, em.SCD ASC) AS ROW_NUMBER "
-				+" FROM SACMT_ROLESET_PERSON per"
-				+" INNER JOIN SACMT_ROLE_SET rs ON rs.CID = per.CID AND rs.ROLE_SET_CD = per.ROLESET_CD" 
-				+" INNER JOIN BSYMT_EMP_DTA_MNG_INFO em ON per.SID = em.SID"
-				+" INNER JOIN BSYMT_AFF_COM_HIST aff ON per.SID = aff.SID" 
-				+" INNER JOIN BPSMT_PERSON p ON aff.PID = p.PID "
-				+" WHERE per.CID = ?) TBL";
+			"SELECT"
+			+	" CASE"
+			+		" WHEN TBL.ROW_NUMBER = 1 THEN TBL.ROLESET_CD"
+			+		" ELSE NULL"
+			+	" END ROLESET_CD,"
+			+	" CASE"
+			+		" WHEN TBL.ROW_NUMBER = 1 THEN TBL.ROLE_SET_NAME"
+			+		" ELSE NULL"
+			+	" END ROLE_SET_NAME,"
+			+	" TBL.SCD, TBL.BUSINESS_NAME, TBL.START_DATE, TBL.END_DATE"
+			+ " FROM"
+			+ 		" (SELECT per.ROLESET_CD, rs.ROLE_SET_NAME, em.SCD, p.BUSINESS_NAME, per.START_DATE, per.END_DATE,"
+			+				" ROW_NUMBER() OVER (PARTITION BY per.ROLESET_CD "
+			+				" ORDER BY  rs.ROLE_SET_CD ASC, em.SCD ASC) AS ROW_NUMBER "
+			+			" FROM SACMT_ROLESET_PERSON per"
+			+				" INNER JOIN SACMT_ROLE_SET rs ON rs.CID = per.CID AND rs.ROLE_SET_CD = per.ROLESET_CD" 
+			+				" INNER JOIN BSYMT_EMP_DTA_MNG_INFO em ON per.SID = em.SID"
+			+				" INNER JOIN BSYMT_AFF_COM_HIST aff ON per.SID = aff.SID" 
+			+				" INNER JOIN BPSMT_PERSON p ON aff.PID = p.PID "
+			+			" WHERE per.CID = ?"
+			+ 		") TBL";
 	
 	@Override
 	public List<MasterData> getDataRoleSetPosExport(String date) {
@@ -69,7 +84,6 @@ public class JobInfoImpl extends JpaRepository implements JobInfoRepository {
 			stmt.setString(3, date);
 			datas.addAll(new NtsResultSet(stmt.executeQuery()).getList(i->buildMasterListData(i)));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return datas;
@@ -108,7 +122,6 @@ public class JobInfoImpl extends JpaRepository implements JobInfoRepository {
 			stmt.setString(1, cid);
 			datas.addAll(new NtsResultSet(stmt.executeQuery()).getList(i->getDataRoleSetEmpExport(i)));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return datas;

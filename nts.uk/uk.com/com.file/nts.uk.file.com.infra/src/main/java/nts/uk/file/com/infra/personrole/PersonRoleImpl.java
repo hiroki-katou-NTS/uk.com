@@ -848,17 +848,17 @@ public class PersonRoleImpl implements PersonRoleRepository {
 		String nameType = null;
 		PersonInfoAuthType personInfoAuthType = EnumAdaptor.valueOf(type, PersonInfoAuthType.class);
 		switch (personInfoAuthType) {
-		case HIDE:
-			nameType = I18NText.getText("Enum_PersonInfoAuthTypes_HIDE");
-			break;
-		case REFERENCE:
-			nameType = I18NText.getText("Enum_PersonInfoAuthTypes_REFERENCE");
-			break;
-		case UPDATE:
-			nameType = I18NText.getText("Enum_PersonInfoAuthTypes_UPDATE");
-			break;
-		default:
-			break;
+			case HIDE:
+				nameType = I18NText.getText("Enum_PersonInfoAuthTypes_HIDE");
+				break;
+			case REFERENCE:
+				nameType = I18NText.getText("Enum_PersonInfoAuthTypes_REFERENCE");
+				break;
+			case UPDATE:
+				nameType = I18NText.getText("Enum_PersonInfoAuthTypes_UPDATE");
+				break;
+			default:
+				break;
 		}
 		return nameType;
 	}
@@ -867,26 +867,26 @@ public class PersonRoleImpl implements PersonRoleRepository {
 		String nameType = null;
 		CategoryType type = EnumAdaptor.valueOf(categoryType, CategoryType.class);
 		switch (type) {
-		case SINGLEINFO:
-			nameType = I18NText.getText("Enum_CategoryType_SINGLE_INFO");
-			break;
-		case MULTIINFO:
-			nameType = I18NText.getText("Enum_CategoryType_MULTI_INFO");
-			break;
-		case CONTINUOUSHISTORY:
-			nameType = I18NText.getText("Enum_CategoryType_CONTINUOUS_HISTORY");
-			break;
-		case NODUPLICATEHISTORY:
-			nameType = I18NText.getText("Enum_CategoryType_NODUPLICATE_HISTORY");
-			break;
-		case DUPLICATEHISTORY:
-			nameType = I18NText.getText("Enum_CategoryType_DUPLICATE_HISTORY");
-			break;
-		case CONTINUOUS_HISTORY_FOR_ENDDATE:
-			nameType = I18NText.getText("Enum_CategoryType_CONTINUOUS_HISTORY");
-			break;
-		default:
-			break;
+			case SINGLEINFO:
+				nameType = I18NText.getText("Enum_CategoryType_SINGLE_INFO");
+				break;
+			case MULTIINFO:
+				nameType = I18NText.getText("Enum_CategoryType_MULTI_INFO");
+				break;
+			case CONTINUOUSHISTORY:
+				nameType = I18NText.getText("Enum_CategoryType_CONTINUOUS_HISTORY");
+				break;
+			case NODUPLICATEHISTORY:
+				nameType = I18NText.getText("Enum_CategoryType_NODUPLICATE_HISTORY");
+				break;
+			case DUPLICATEHISTORY:
+				nameType = I18NText.getText("Enum_CategoryType_DUPLICATE_HISTORY");
+				break;
+			case CONTINUOUS_HISTORY_FOR_ENDDATE:
+				nameType = I18NText.getText("Enum_CategoryType_CONTINUOUS_HISTORY");
+				break;
+			default:
+				break;
 		}
 		return nameType;
 	}
