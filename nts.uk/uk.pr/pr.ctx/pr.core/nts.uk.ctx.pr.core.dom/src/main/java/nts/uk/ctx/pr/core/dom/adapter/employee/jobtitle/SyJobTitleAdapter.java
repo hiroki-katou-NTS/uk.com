@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface SyJobTitleAdapter {
     List<JobTitle> findAll(String companyId, GeneralDate baseDate);
+    List<JobTitleImport> getListJobTitleByCompanyID(String companyId, GeneralDate baseDate);
 }

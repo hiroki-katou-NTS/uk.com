@@ -2,32 +2,32 @@ package nts.uk.ctx.pr.core.app.command.wageprovision.wagetable;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.ContentElementAttributeDto;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementsCombinationPaymentAmount;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTablePaymentAmount;
-
-import java.math.BigDecimal;
 
 /**
  * 要素の組み合わせで支払う金額
  */
 @Data
 @NoArgsConstructor
-public class ElementsCombinationPaymentAmountCommand extends DomainObject {
+public class ElementsCombinationPaymentAmountCommand {
 
-    /**
-     * 賃金テーブル支給金額
-     */
-    private BigDecimal wageTablePaymentAmount;
+	private String id;
+	
+	/**
+	 * 賃金テーブル支給金額
+	 */
+	private Long wageTablePaymentAmount;
 
-    /**
-     * 要素属性
-     */
-    private ContentElementAttributeCommand elementAttribute;
+	/**
+	 * 要素属性
+	 */
+	private ContentElementAttributeCommand elementAttribute;
 
-    public ElementsCombinationPaymentAmount fromCommandToDomain() {
-        return new ElementsCombinationPaymentAmount(new WageTablePaymentAmount(wageTablePaymentAmount), elementAttribute.fromCommandToDomain());
-    }
+	public ElementsCombinationPaymentAmount fromCommandToDomain() {
+		return new ElementsCombinationPaymentAmount(id == null || id.isEmpty() ? IdentifierUtil.randomUniqueId() : id,
+				new WageTablePaymentAmount(wageTablePaymentAmount), elementAttribute.fromCommandToDomain());
+	}
 
 }

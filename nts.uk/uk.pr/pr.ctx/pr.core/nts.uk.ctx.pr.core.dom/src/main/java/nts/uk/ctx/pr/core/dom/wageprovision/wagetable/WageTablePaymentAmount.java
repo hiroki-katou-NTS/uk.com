@@ -1,22 +1,19 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.wagetable;
 
-import nts.arc.primitive.DecimalPrimitiveValue;
-import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.DecimalMantissaMaxLength;
-import nts.arc.primitive.constraint.DecimalRange;
-
-import java.math.BigDecimal;
+import nts.arc.primitive.LongPrimitiveValue;
+import nts.arc.primitive.constraint.LongMaxValue;
+import nts.arc.primitive.constraint.LongMinValue;
 
 /**
  * 賃金テーブル支給金額
  */
-@DecimalRange(min = "0.000", max = "99.999")
-@DecimalMantissaMaxLength(3)
-public class WageTablePaymentAmount extends DecimalPrimitiveValue<WageTablePaymentAmount> {
+@LongMinValue(0L)
+@LongMaxValue(9999999999L)
+public class WageTablePaymentAmount extends LongPrimitiveValue<WageTablePaymentAmount> {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public WageTablePaymentAmount(BigDecimal rawValue) {
-        super(rawValue);
-    }
+	public WageTablePaymentAmount(long rawValue) {
+		super(rawValue);
+	}
 }

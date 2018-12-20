@@ -31,6 +31,8 @@ public class ElementItemCommand {
      * 要素項目(数値).当該枠上限
      */
     private Integer frameUpperLimit;
+    
+    private Long paymentAmount;
 
     public ElementItem fromCommandToDomain() {
         return new ElementItem(masterCode, frameNumber, frameLowerLimit, frameUpperLimit);

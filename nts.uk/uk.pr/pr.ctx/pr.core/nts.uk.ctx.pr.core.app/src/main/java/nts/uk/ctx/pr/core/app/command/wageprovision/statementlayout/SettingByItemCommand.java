@@ -9,13 +9,15 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.SettingByItemCustom;
 public class SettingByItemCommand {
     private int itemPosition;
     private String itemId;
-    String shortName;
+    private String shortName;
     private PaymentItemDetailCommand paymentItemDetailSet;
     private DeductionItemDetailCommand deductionItemDetailSet;
+    private ItemRangeSetCommand itemRangeSet;
 
     public SettingByItemCustom toDomain() {
         return new SettingByItemCustom(itemPosition, itemId, shortName,
                 deductionItemDetailSet == null ? null : deductionItemDetailSet.toDomain(),
-                paymentItemDetailSet == null ? null : paymentItemDetailSet.toDomain());
+                paymentItemDetailSet == null ? null : paymentItemDetailSet.toDomain(),
+                itemRangeSet == null ? null : itemRangeSet.toDomain());
     }
 }

@@ -32,9 +32,12 @@ public class BreakdownAmountHisFinder {
 
     public List<StatementDto> getStatemetItem() {
         String cid = AppContexts.user().companyId();
-        List<StatementDto> lstStatement = finderStatementItem.getItemCustomByDeprecated(cid).stream()
+        List<StatementDto> lstStatementSt = finderStatementItem.getItemCustomByDeprecated(cid).stream()
                 .map(i -> new StatementDto(i)).collect(Collectors.toList());
-        return lstStatement;
+        List<StatementDto> lstStatementDeduction = finderStatementItem.getItemCustomByDeprecated2(cid).stream()
+                .map(i -> new StatementDto(i)).collect(Collectors.toList());
+        lstStatementSt.addAll(lstStatementDeduction);
+        return lstStatementSt;
     }
 
     public BreakdownAmountHisDto getBreakdownHis(int categoryAtr, String itemNameCd, int salaryBonusAtr, String employeeID) {

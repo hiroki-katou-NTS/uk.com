@@ -21,14 +21,14 @@ public class QpbmtStatementLayoutHist extends UkJpaEntity implements Serializabl
     @EmbeddedId
     public QpbmtStatementLayoutHistPk statementLayoutHistPk;
     /**
-     * 開始日
+     * 開始年月
      */
     @Basic(optional = false)
     @Column(name = "START_YEAR_MONTH")
     public int startYearMonth;
 
     /**
-     * 終了日
+     * 終了年月
      */
     @Basic(optional = false)
     @Column(name = "END_YEAR_MONTH")

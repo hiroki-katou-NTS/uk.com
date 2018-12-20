@@ -6,48 +6,70 @@ module nts.uk.pr.view.qmm016.g.viewmodel {
     import model = nts.uk.pr.view.qmm016.share.model;
     export class ScreenModel {
         statementItemNameList: KnockoutObservableArray<any> = ko.observableArray([]);
-        selectedStatementItemName: KnockoutObservable<string> = ko.observable(null);
-        fixedElement: Array<any>;
+        selectedStatementItemName: KnockoutObservable<string> = ko.observable("");
+        fixedElements: Array<any> = [
+            { code: "M001", name: '雇用' },
+            { code: "M002", name: '部門' },
+            { code: "M003", name: '分類' },
+            { code: "M004", name: '職位' },
+            { code: "M005", name: '給与分類' },
+            { code: "M006", name: '資格' },
+            { code: "M007", name: '精皆勤レベル' },
+            { code: "N001", name: '年齢' },
+            { code: "N002", name: '勤続年数' },
+            { code: "N003", name: '家族人数' }
+        ];
+        
         constructor() {
         }
         startPage () : JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             block.invisible();
-            // カテゴリ区分＝勤怠項目 (5)
-            // 廃止区分＝廃止しない (false)
-            service.getAllStatementItemData(5, false).done(function(data) {
-                let fixedElementObj = nts.uk.pr.view.qmm016.share.model.ELEMENT_TYPE;
-                let fixedElement: Array<any> = Object.keys(fixedElementObj).map(key => new model.ItemModel(key, key + " " + fixedElementObj[key]));
-                let optionalElement: Array<any> = data.map(item => new model.ItemModel(item.itemNameCd, item.itemNameCd + " " + item.name));
-                self.fixedElement = fixedElement;
-                self.statementItemNameList(fixedElement.concat(optionalElement));
-                block.clear();
+            service.getAllStatementItemData().done((data: Array<any>) => {
+                let fixedElements: Array<any> = self.fixedElements.map(i => {
+                    return {code: i.code, name: i.name, dispname: i.code + " " + i.name}; 
+                });
+                let optionalElements: Array<any> = data.map(item => {
+                    return {code: item.code, name: item.name, dispname: item.code + " " + item.name}; 
+                });
+                ko.utils.arrayPushAll(self.statementItemNameList, fixedElements);
+                ko.utils.arrayPushAll(self.statementItemNameList, optionalElements);
                 dfd.resolve();
-            }).fail(function(err) {
+            }).fail((err) => {
                 dfd.reject();
-                block.clear();
                 dialog.alertError(err.message);
+            }).always(() => {
+                block.clear();
             });
             return dfd.promise();
         }
+        
         decideSelect() {
             let self = this;
-            let elementAttribute = {
+            let elementAttribute: model.IElementAttribute = {
                 masterNumericClassification: null,
                 fixedElement: null,
-                optionalAdditionalElement: null
+                optionalAdditionalElement: null, 
+                displayName: null
             };
-            if (_.find(self.fixedElement, {name: self.selectedStatementItemName()})) {
+            let selectedElem = _.find(self.fixedElements, {code: self.selectedStatementItemName()});
+            if (selectedElem) {
                 elementAttribute.fixedElement = self.selectedStatementItemName();
-                elementAttribute.masterNumericClassification = model.MASTER_NUMERIC_INFORMATION.MASTER_FIELD;
+                if (elementAttribute.fixedElement.charAt(0) == 'M')
+                    elementAttribute.masterNumericClassification = model.MASTER_NUMERIC_INFORMATION.MASTER_FIELD;
+                else 
+                    elementAttribute.masterNumericClassification = model.MASTER_NUMERIC_INFORMATION.NUMERIC_ITEM;
+                elementAttribute.displayName = selectedElem.name;
             } else {
-                // first 4 digit
-                elementAttribute.optionalAdditionalElement = self.selectedStatementItemName().substring(0, 4);
+                let selectedOpt = _.find(self.statementItemNameList(), {code: self.selectedStatementItemName()});
+                elementAttribute.optionalAdditionalElement = self.selectedStatementItemName();
                 elementAttribute.masterNumericClassification = model.MASTER_NUMERIC_INFORMATION.NUMERIC_ITEM;
+                elementAttribute.displayName = selectedOpt.name;
             }
             setShared('QMM016_G_RES_PARAMS', { selectedElement: elementAttribute});
             nts.uk.ui.windows.close();
         }
+        
         cancelSelect() {
             nts.uk.ui.windows.close();
         }

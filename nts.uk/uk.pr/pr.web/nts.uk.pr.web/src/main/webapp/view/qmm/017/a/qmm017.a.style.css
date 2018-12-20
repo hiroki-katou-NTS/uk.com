@@ -73,7 +73,7 @@
     margin-top: 50px;
 }
 .tab-panel-col-2 {
-   width: 210px;
+   width: 215px;
     display: inline-block;
     margin-left: 5px;
 }
@@ -82,7 +82,7 @@
     height: 290px;
     vertical-align: top;
     display: inline-block;
-    margin-left: 20px;
+    margin-left: 28px;
 }
 .cal-container {
     vertical-align: top;
@@ -91,4 +91,11 @@
 .cal-container button {
     height: 30px;
     width: 30px;
+}
+.search-box-sm {
+    margin-left: 40px;
+    width: 88px;
+}
+.formula-button {
+    width: 232px;
 }

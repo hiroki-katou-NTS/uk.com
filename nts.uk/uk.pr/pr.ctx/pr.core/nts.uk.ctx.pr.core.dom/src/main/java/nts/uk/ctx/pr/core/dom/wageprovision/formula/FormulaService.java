@@ -1,6 +1,15 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.formula;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.pr.core.dom.adapter.employee.classification.SysClassificationAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.department.SysDepartmentAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.employment.SysEmploymentAdapter;
+import nts.uk.ctx.pr.core.dom.adapter.employee.jobtitle.SyJobTitleAdapter;
+import nts.uk.ctx.pr.core.dom.wageprovision.organizationinfor.salarycls.salaryclsmaster.SalaryClassificationInformationRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.CurrProcessDateRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SetDaySupportRepository;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import nts.arc.time.YearMonth;
@@ -8,6 +17,8 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +37,27 @@ public class FormulaService {
     @Inject
     private BasicCalculationFormulaRepository basicCalculationFormulaRepository;
 
+    @Inject
+    private SysEmploymentAdapter sysEmploymentAdapter;
+
+    @Inject
+    private SyJobTitleAdapter syJobTitleAdapter;
+
+    @Inject
+    private SysDepartmentAdapter sysDepartmentAdapter;
+
+    @Inject
+    private SysClassificationAdapter sysClassificationAdapter;
+
+    @Inject
+    private SalaryClassificationInformationRepository salaryClassificationInformationRepository;
+
+    @Inject
+    private CurrProcessDateRepository currProcessDateRepository;
+
+    @Inject
+    private SetDaySupportRepository setDaySupportRepository;
+
     public void addFormula (Formula formula, BasicFormulaSetting basicFormulaSetting, YearMonthHistoryItem yearMonthHistoryItem) {
         if (formulaRepository.getFormulaById(formula.getFormulaCode().v()).isPresent()) throw new BusinessException("Msg_3");
         formulaRepository.add(formula);
@@ -40,27 +72,22 @@ public class FormulaService {
         basicFormulaSettingRepository.removeByFormulaCode(formulaCode);
     }
 
-    public void addFormulaSetting (Formula formula, BasicFormulaSetting basicFormulaSetting, DetailFormulaSetting detailFormulaSetting, List<BasicCalculationFormula> basicCalculationFormula) {
-        detailFormulaSettingRepository.add(detailFormulaSetting);
-        basicCalculationFormulaRepository.addAll(basicCalculationFormula);
-        basicFormulaSettingRepository.add(basicFormulaSetting);
-    }
-
     public void updateFormulaSetting (Formula formula, BasicFormulaSetting basicFormulaSetting, DetailFormulaSetting detailFormulaSetting, List<BasicCalculationFormula> basicCalculationFormula) {
-        detailFormulaSettingRepository.update(detailFormulaSetting);
-        basicCalculationFormulaRepository.updateAll(basicCalculationFormula);
-        basicFormulaSettingRepository.update(basicFormulaSetting);
+        basicCalculationFormulaRepository.upsertAll(basicFormulaSetting.getHistoryID(), basicCalculationFormula);
+        if (formula.getSettingMethod() == FormulaSettingMethod.DETAIL_SETTING) detailFormulaSettingRepository.upsert(detailFormulaSetting);
+        else basicFormulaSettingRepository.upsert(basicFormulaSetting);
     }
     public void addFormulaHistory (Formula formula, BasicFormulaSetting basicFormulaSetting, DetailFormulaSetting detailFormulaSetting, List<BasicCalculationFormula> basicCalculationFormula, YearMonthHistoryItem yearMonthHistoryItem) {
         String formulaCode = formula.getFormulaCode().v();
+        formulaRepository.insertFormulaHistory(formulaCode, yearMonthHistoryItem);
         formulaRepository.getFormulaHistoryByCode(formulaCode).ifPresent(formulaHistory -> {
-            if (formulaHistory.getHistory().size() > 0) {
-                YearMonthHistoryItem lastHistory = formulaHistory.getHistory().get(0);
+            if (formulaHistory.getHistory().size() > 1) {
+                YearMonthHistoryItem lastHistory = formulaHistory.getHistory().get(1);
                 lastHistory.changeSpan(new YearMonthPeriod(lastHistory.start(), yearMonthHistoryItem.start().addMonths(-1)));
                 formulaRepository.updateFormulaHistory(formulaCode, lastHistory);
             }
         });
-        this.addFormulaSetting(formula, basicFormulaSetting, detailFormulaSetting, basicCalculationFormula);
+        this.updateFormulaSetting(formula, basicFormulaSetting, detailFormulaSetting, basicCalculationFormula);
     }
     public void updateFormulaHistory (String formulaCode, YearMonthHistoryItem yearMonthUpdate) {
         formulaRepository.getFormulaHistoryByCode(formulaCode).ifPresent(formulaHistory -> {
@@ -90,6 +117,7 @@ public class FormulaService {
                 beforeYearMonth.changeSpan(new YearMonthPeriod(beforeYearMonth.start(), new YearMonth(LAST_YM_VALUE)));
                 formulaRepository.updateFormulaHistory(formulaCode, beforeYearMonth);
             } catch (IndexOutOfBoundsException e) {
+                formulaRepository.removeByFormulaCode(formulaCode);
                 return;
             }
         });
@@ -104,4 +132,54 @@ public class FormulaService {
         return formulaRepository.getFormulaByCodes(cid, formulaCodes);
     }
 
+    public GeneralDate getBaseDate () {
+        /*【条件】
+        会社ID＝ログイン会社
+        処理日区分NO＝1 */
+        GeneralDate [] generalDate = {GeneralDate.today()};
+        currProcessDateRepository.getCurrProcessDateByIdAndProcessCateNo(AppContexts.user().companyId(), 1).ifPresent(processDate -> {
+            setDaySupportRepository.getSetDaySupportByIdAndProcessDate(AppContexts.user().companyId(), 1, processDate.getGiveCurrTreatYear().v()).ifPresent(setDaySupport -> {
+                generalDate[0] = setDaySupport.getEmpExtraRefeDate();
+            });
+        });
+        return generalDate[0];
+    }
+
+    public List<MasterUseDto> getMasterUseInfo (int masterUseClassification) {
+        MasterUse masterUse = EnumAdaptor.valueOf(masterUseClassification, MasterUse.class);
+        GeneralDate baseDate = this.getBaseDate();
+        switch (masterUse) {
+            case EMPLOYMENT: {
+                return sysEmploymentAdapter.findAll(AppContexts.user().companyId()).stream().map(
+                        item -> new MasterUseDto(item.getCode(), item.getName())
+                ).collect(Collectors.toList());
+            }
+            case DEPARTMENT: {
+                return sysDepartmentAdapter.getDepartmentByCompanyIdAndBaseDate(AppContexts.user().companyId(), baseDate).stream().map(item -> new MasterUseDto(item.getDepartmentCode(), item.getDepartmentName())).collect(Collectors.toList());
+            }
+            case CLASSIFICATION: {
+                return sysClassificationAdapter.getClassificationByCompanyId(AppContexts.user().companyId()).stream().map(item -> new MasterUseDto(item.getClassificationCode(), item.getClassificationName())).collect(Collectors.toList());
+            }
+            case JOB_TITLE: {
+                return syJobTitleAdapter.findAll(AppContexts.user().companyId(), baseDate).stream().map(item ->
+                     new MasterUseDto(item.getJobTitleCode(), item.getJobTitleName())
+                ).collect(Collectors.toList());
+            }
+            case SALARY_CLASSIFICATION: {
+                return salaryClassificationInformationRepository.getAllSalaryClassificationInformation(AppContexts.user().companyId()).stream().map(item ->
+                     new MasterUseDto(item.getSalaryClassificationCode().v(), item.getSalaryClassificationName().v())
+                ).collect(Collectors.toList());
+            }
+            case SALARY_FORM: {
+                final String FIXED_PREFIX = "000000000", FIRST_LINE = "月給", SECOND_LINE = "日給月給", THIRD_LINE = "日給", FOURTH_LINE = "時給";
+                ArrayList<MasterUseDto> masterUseList = new ArrayList<>();
+                masterUseList.add(new MasterUseDto(FIXED_PREFIX + 1, FIRST_LINE));
+                masterUseList.add(new MasterUseDto(FIXED_PREFIX + 2, SECOND_LINE));
+                masterUseList.add(new MasterUseDto(FIXED_PREFIX + 3, THIRD_LINE));
+                masterUseList.add(new MasterUseDto(FIXED_PREFIX + 4, FOURTH_LINE));
+                return masterUseList;
+            }
+        }
+        return Collections.emptyList();
+    }
 }

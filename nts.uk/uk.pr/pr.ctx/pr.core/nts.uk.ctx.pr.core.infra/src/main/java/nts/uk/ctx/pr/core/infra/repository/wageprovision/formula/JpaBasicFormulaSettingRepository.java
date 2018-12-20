@@ -40,6 +40,12 @@ public class JpaBasicFormulaSettingRepository extends JpaRepository implements B
     }
 
     @Override
+    public void upsert(BasicFormulaSetting domain){
+        this.removeByHistory(domain.getHistoryID());
+        this.commandProxy().insert(QpbmtBasicFormulaSetting.toEntity(domain));
+    }
+
+    @Override
     public void update(BasicFormulaSetting domain){
         this.commandProxy().update(QpbmtBasicFormulaSetting.toEntity(domain));
     }

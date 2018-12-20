@@ -29,7 +29,9 @@ public class JpaWageTableRepository extends JpaRepository implements WageTableRe
 
 	@Override
 	public Optional<WageTable> getWageTableById(String companyId, String code) {
-		return this.queryProxy().find(new QpbmtWageTablePk(companyId, code), QpbmtWageTable.class).map(i -> i.toDomain());
+		Optional<QpbmtWageTable> optEntity = this.queryProxy().find(new QpbmtWageTablePk(companyId, code),
+				QpbmtWageTable.class);
+		return optEntity.isPresent() ? Optional.of(optEntity.get().toDomain()) : Optional.empty();
 	}
 
 	@Override
@@ -49,7 +51,13 @@ public class JpaWageTableRepository extends JpaRepository implements WageTableRe
 
 	@Override
 	public void update(WageTable domain) {
-		this.commandProxy().update(QpbmtWageTable.fromDomain(domain));
+		Optional<QpbmtWageTable> optEntity = this.queryProxy().find(new QpbmtWageTablePk(domain.getCid(), domain.getWageTableCode().v()), QpbmtWageTable.class);
+		if (optEntity.isPresent()) {
+			QpbmtWageTable entity = optEntity.get();
+			entity.name = domain.getWageTableName().v();
+			entity.memo = domain.getRemarkInformation().isPresent() ? domain.getRemarkInformation().get().v() : null;
+			this.commandProxy().update(entity);
+		}
 	}
 
 	@Override

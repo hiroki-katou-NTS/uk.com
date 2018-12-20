@@ -27,7 +27,8 @@
                         enable: true,
                         rows: 8,
                         columns: [
-                            { key: 'name', length: 13 }
+                            { key: 'name', length: 8 },
+                            { key: 'fixed_size', length: 2 }
                         ]}">
                         </div>
                         <div class="large-right-caret-container" style="display: inline-block">
@@ -36,31 +37,31 @@
                         <div class="tab-panel-col-2">
                             <div style="display: inline-block; ">
                                 <i class="search-icon"></i>
-                                <div style="width: 140px; margin-left: 40px;" data-bind="ntsSearchBox: {
-                            searchMode: 'highlight',
-                            targetKey: 'itemNameCd',
-                            comId: 'D2_5',
-                            items: statementItemList,
-                            selectedKey: 'code',
-                            fields: ['itemNameCd', 'name'],
-                            mode: 'listbox'}"></div>
+                                <div class = "search-box-sm" data-bind="ntsSearchBox: {
+                                    searchMode: 'highlight',
+                                    targetKey: 'itemNameCd',
+                                    comId: 'D2_5',
+                                    items: statementItemList,
+                                    selectedKey: 'code',
+                                    fields: ['code', 'name'],
+                                    mode: 'listbox'}"></div>
                             </div>
                             <div id="D2_5" data-bind="ntsListBox: {
                             options: statementItemList,
-                            optionsValue: 'itemNameCd',
+                            optionsValue: 'code',
                             optionsText: 'name',
                             multiple: false,
                             value: selectedStatementItemCode,
                             enable: true,
                             rows: 8,
                             columns: [
-                                { key: 'itemNameCd', length: 4 },
+                                { key: 'code', length: 2 },
                                 { key: 'name', length: 8 }
                             ]}">
                             </div>
                             <div>
-                                <button style="width: 220px;"
-                                        class="caret-bottom large-caret">#{i18n.getText('QMM016_50')}</button>
+                                <button data-bind = "click: addStatementItem, enable: selectedStatementItemCode()"
+                                        class="formula-button caret-bottom large-caret">#{i18n.getText('QMM016_50')}</button>
                             </div>
                         </div>
                         <div class="panel panel-gray-bg tab-panel-col-3">
@@ -81,7 +82,8 @@
                         enable: true,
                         rows: 8,
                         columns: [
-                            { key: 'name', length: 13 }
+                            { key: 'name', length: 8 },
+                            { key: 'fixed_size', length: 2}
                         ]}">
                         </div>
                         <div class="large-right-caret-container" style="display: inline-block">
@@ -90,14 +92,14 @@
                         <div class="tab-panel-col-2">
                             <div style="display: inline-block; ">
                                 <i class="search-icon"></i>
-                                <div style="width: 140px; margin-left: 40px;" data-bind="ntsSearchBox: {
-                            searchMode: 'highlight',
-                            targetKey: 'code',
-                            comId: 'D5_5',
-                            items: unitPriceItemList,
-                            selectedKey: 'code',
-                            fields: ['code', 'name'],
-                            mode: 'listbox'}"></div>
+                                <div class = "search-box-sm" data-bind="ntsSearchBox: {
+                                    searchMode: 'highlight',
+                                    targetKey: 'code',
+                                    comId: 'D5_5',
+                                    items: unitPriceItemList,
+                                    selectedKey: 'code',
+                                    fields: ['code', 'name'],
+                                    mode: 'listbox'}"></div>
                             </div>
                             <div id="D5_5" data-bind="ntsListBox: {
                             options: unitPriceItemList,
@@ -108,13 +110,13 @@
                             enable: true,
                             rows: 8,
                             columns: [
-                                { key: 'code', length: 4 },
+                                { key: 'code', length: 2 },
                                 { key: 'name', length: 8 }
                             ]}">
                             </div>
                             <div>
-                                <button style="width: 220px;"
-                                        class="caret-bottom large-caret">#{i18n.getText('QMM016_50')}</button>
+                                <button data-bind = "click: addUnitPriceItem, enable: selectedUnitPriceItemCode()"
+                                        class="formula-button caret-bottom large-caret">#{i18n.getText('QMM016_50')}</button>
                             </div>
                         </div>
                         <div class="panel panel-gray-bg tab-panel-col-3">
@@ -135,7 +137,8 @@
                         enable: true,
                         rows: 8,
                         columns: [
-                            { key: 'name', length: 13 }
+                            { key: 'name', length: 8 },
+                            { key: 'fixed_size', length: 2}
                         ]}">
                         </div>
                         <div class="large-right-caret-container" style="display: inline-block">
@@ -144,14 +147,14 @@
                         <div class="tab-panel-col-2">
                             <div style="display: inline-block; ">
                                 <i class="search-icon"></i>
-                                <div style="width: 140px; margin-left: 40px;" data-bind="ntsSearchBox: {
-                            searchMode: 'highlight',
-                            targetKey: 'value',
-                            comId: 'D6_5',
-                            items: functionListItem,
-                            selectedKey: 'value',
-                            fields: ['name'],
-                            mode: 'listbox'}"></div>
+                                <div class = "search-box-sm"  data-bind="ntsSearchBox: {
+                                    searchMode: 'highlight',
+                                    targetKey: 'value',
+                                    comId: 'D6_5',
+                                    items: functionListItem,
+                                    selectedKey: 'value',
+                                    fields: ['name'],
+                                    mode: 'listbox'}"></div>
                             </div>
                             <div id="D6_5" data-bind="ntsListBox: {
                             options: functionListItem,
@@ -163,12 +166,12 @@
                             rows: 8,
                             columns: [
                                 { key: 'name', length: 8 },
-                                { key: 'fixed_with', length: 4 }
+                                { key: 'fixed_size', length: 2 }
                             ]}">
                             </div>
                             <div>
-                                <button style="width: 220px;"
-                                        class="caret-bottom large-caret">#{i18n.getText('QMM016_50')}</button>
+                                <button data-bind = "click: addFunctionItem, enable: selectedFunctionListValue() != null"
+                                        class="formula-button caret-bottom large-caret">#{i18n.getText('QMM016_50')}</button>
                             </div>
                         </div>
                         <div class="panel panel-gray-bg tab-panel-col-3">
@@ -189,23 +192,24 @@
                         enable: true,
                         rows: 8,
                         columns: [
-                            { key: 'name', length: 13 }
+                            { key: 'name', length: 8 },
+                            { key: 'fixed_size', length: 2}
                         ]}">
                         </div>
                         <div class="large-right-caret-container" style="display: inline-block">
-                            <span class="caret-right outline large-right-caret"></span>
+                            <span class="formula-button caret-right outline large-right-caret"></span>
                         </div>
                         <div class="tab-panel-col-2">
                             <div style="display: inline-block; ">
                                 <i class="search-icon"></i>
-                                <div style="width: 140px; margin-left: 40px;" data-bind="ntsSearchBox: {
-                            searchMode: 'highlight',
-                            targetKey: 'value',
-                            comId: 'D7_5',
-                            items: systemVariableListItem,
-                            selectedKey: 'value',
-                            fields: ['name'],
-                            mode: 'listbox'}"></div>
+                                <div class = "search-box-sm"  data-bind="ntsSearchBox: {
+                                    searchMode: 'highlight',
+                                    targetKey: 'value',
+                                    comId: 'D7_5',
+                                    items: systemVariableListItem,
+                                    selectedKey: 'value',
+                                    fields: ['name'],
+                                    mode: 'listbox'}"></div>
                             </div>
                             <div id="D7_5" data-bind="ntsListBox: {
                             options: systemVariableListItem,
@@ -216,13 +220,13 @@
                             enable: true,
                             rows: 8,
                             columns: [
-                                { key: 'name', length: 10 },
-                                { key: 'fixed_with', length: 2 }
+                                { key: 'name', length: 8 },
+                                { key: 'fixed_size', length: 2 }
                             ]}">
                             </div>
                             <div>
-                                <button style="width: 220px;"
-                                        class="caret-bottom large-caret">#{i18n.getText('QMM016_50')}</button>
+                                <button data-bind = "click: addVariableItem, enable: selectedSystemVariableListValue() != null"
+                                        class="formula-button caret-bottom large-caret">#{i18n.getText('QMM016_50')}</button>
                             </div>
                         </div>
                         <div class="panel panel-gray-bg tab-panel-col-3">
@@ -246,7 +250,8 @@
                         enable: true,
                         rows: 8,
                         columns: [
-                            { key: 'name', length: 13 }
+                            { key: 'name', length: 8 },
+                            { key: 'fixed_size', length: 2}
                         ]}">
                         </div>
                         <div class="large-right-caret-container" style="display: inline-block">
@@ -255,14 +260,14 @@
                         <div class="tab-panel-col-2">
                             <div style="display: inline-block; ">
                                 <i class="search-icon"></i>
-                                <div style="width: 140px; margin-left: 40px;" data-bind="ntsSearchBox: {
-                            searchMode: 'highlight',
-                            targetKey: 'formulaCode',
-                            comId: 'D9_5',
-                            items: formulaList,
-                            selectedKey: 'formulaCode',
-                            fields: ['formulaCode', 'formulaName'],
-                            mode: 'listbox'}"></div>
+                                <div class = "search-box-sm"  data-bind="ntsSearchBox: {
+                                searchMode: 'highlight',
+                                targetKey: 'formulaCode',
+                                comId: 'D9_5',
+                                items: formulaList,
+                                selectedKey: 'formulaCode',
+                                fields: ['formulaCode', 'formulaName'],
+                                mode: 'listbox'}"></div>
                             </div>
                             <div id="D9_5" data-bind="ntsListBox: {
                             options: formulaList,
@@ -273,13 +278,13 @@
                             enable: true,
                             rows: 8,
                             columns: [
-                                { key: 'formulaCode', length: 4 },
+                                { key: 'formulaCode', length: 2 },
                                 { key: 'formulaName', length: 8 }
                             ]}">
                             </div>
                             <div>
-                                <button style="width: 220px;"
-                                        class="caret-bottom large-caret">#{i18n.getText('QMM016_50')}</button>
+                                <button data-bind = "click: addFormulaItem, enable: selectedFormulaCode()"
+                                        class="formula-button caret-bottom large-caret">#{i18n.getText('QMM016_50')}</button>
                             </div>
                         </div>
                         <div>
@@ -298,7 +303,8 @@
                         enable: true,
                         rows: 8,
                         columns: [
-                            { key: 'name', length: 13 }
+                            { key: 'name', length: 8 },
+                            { key: 'fixed_size', length: 2 },
                         ]}">
                         </div>
                         <div class="large-right-caret-container" style="display: inline-block">
@@ -307,32 +313,32 @@
                         <div class="tab-panel-col-2">
                             <div style="display: inline-block; ">
                                 <i class="search-icon"></i>
-                                <div style="width: 140px; margin-left: 40px;" data-bind="ntsSearchBox: {
+                                <div class = "search-box-sm"  data-bind="ntsSearchBox: {
                                     searchMode: 'highlight',
-                                    targetKey: 'wageTableCode',
+                                    targetKey: 'code',
                                     comId: 'D10_5',
                                     items: wageTableList,
-                                    selectedKey: 'wageTableCode',
-                                    fields: ['wageTableCode', 'wageTableName'],
+                                    selectedKey: 'code',
+                                    fields: ['code', 'name'],
                                     mode: 'listbox'}">
                                 </div>
                             </div>
                             <div id="D10_5" data-bind="ntsListBox: {
                             options: wageTableList,
-                            optionsValue: 'wageTableCode',
-                            optionsText: 'wageTableName',
+                            optionsValue: 'code',
+                            optionsText: 'name',
                             multiple: false,
                             value: selectedWageTableCode,
                             enable: true,
                             rows: 8,
                             columns: [
-                                { key: 'wageTableCode', length: 4 },
-                                { key: 'wageTableName', length: 8 }
+                                { key: 'code', length: 2 },
+                                { key: 'name', length: 8 }
                             ]}">
                             </div>
                             <div>
-                                <button style="width: 220px;"
-                                        class="caret-bottom large-caret">#{i18n.getText('QMM016_50')}</button>
+                                <button data-bind = "click: addWageTableItem, enable: selectedWageTableCode()"
+                                        class="formula-button caret-bottom large-caret">#{i18n.getText('QMM016_50')}</button>
                             </div>
                         </div>
                         <div class="panel panel-gray-bg tab-panel-col-3">
@@ -345,48 +351,47 @@
             </div>
         </div>
         <div class="tab-row">
-            <div style="width: 550px; display: inline-block; vertical-align: top">
-                <div data-bind = "with: $vm.screenDViewModel">
+            <div data-bind = "with: $vm.screenDViewModel" style="width: 550px; display: inline-block; vertical-align: top">
+                <div>
                     <div style="width: 100px; display: inline-block;"
                          data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM017_45')}</div>
-                    <button style="margin-left: 10px;">#{i18n.getText('QMM017_52')}</button>
+                    <button data-bind = "click: validateSyntaxOnClick" style="margin-left: 10px;">#{i18n.getText('QMM017_52')}</button>
                     <button data-bind = "click: startTrialCalculation">#{i18n.getText('QMM017_53')}</button>
                 </div>
                 <hr></hr>
                 <div>
                     <div class = "cal-container">
                         <div>
-                            <button>#{i18n.getText('QMM017_63')}</button>
-                            <button>#{i18n.getText('QMM017_64')}</button>
+                            <button data-action = "ADD" data-bind = "click: addSymbol">#{i18n.getText('QMM017_63')}</button>
+                            <button data-action = "SUBTRACT" data-bind = "click: addSymbol">#{i18n.getText('QMM017_64')}</button>
                         </div>
                         <div>
-                            <button>#{i18n.getText('QMM017_65')}</button>
-                            <button>#{i18n.getText('QMM017_66')}</button>
+                            <button data-action = "MULTIPLICATION" data-bind = "click: addSymbol">#{i18n.getText('QMM017_65')}</button>
+                            <button data-action = "DIVIDE" data-bind = "click: addSymbol">#{i18n.getText('QMM017_66')}</button>
                         </div>
                         <div>
-                            <button>#{i18n.getText('QMM017_67')}</button>
+                            <button data-action = "POW" data-bind = "click: addSymbol">#{i18n.getText('QMM017_67')}</button>
                         </div>
                         <div>
-                            <button>#{i18n.getText('QMM017_68')}</button>
-                            <button>#{i18n.getText('QMM017_69')}</button>
+                            <button data-action = "OPEN_PARENTHESES" data-bind = "click: addSymbol">#{i18n.getText('QMM017_68')}</button>
+                            <button data-action = "CLOSE_PARENTHESES" data-bind = "click: addSymbol">#{i18n.getText('QMM017_69')}</button>
                         </div>
                         <div>
-                            <button>#{i18n.getText('QMM017_70')}</button>
-                            <button>#{i18n.getText('QMM017_71')}</button>
+                            <button data-action = "LESS" data-bind = "click: addSymbol">#{i18n.getText('QMM017_70')}</button>
+                            <button data-action = "GREATER" data-bind = "click: addSymbol">#{i18n.getText('QMM017_71')}</button>
                         </div>
                         <div>
-                            <button>#{i18n.getText('QMM017_72')}</button>
-                            <button>#{i18n.getText('QMM017_73')}</button>
+                            <button data-action = "LESS_OR_EQUAL" data-bind = "click: addSymbol">#{i18n.getText('QMM017_72')}</button>
+                            <button data-action = "GREATER_OR_EQUAL" data-bind = "click: addSymbol">#{i18n.getText('QMM017_73')}</button>
                         </div>
                         <div>
-                            <button>#{i18n.getText('QMM017_74')}</button>
-                            <button>#{i18n.getText('QMM017_75')}</button>
+                            <button data-action = "EQUAL" data-bind = "click: addSymbol">#{i18n.getText('QMM017_74')}</button>
+                            <button data-action = "NOT_EQUAL" data-bind = "click: addSymbol">#{i18n.getText('QMM017_75')}</button>
                         </div>
                     </div>
                     <div style="display: inline-block">
-                        <div style = "height: 205px;width: 445px;" class="panel panel-frame">
-
-                        </div>
+                        <textarea id = "D3_5" style = "height: 215px; width: 458px;" data-bind="ntsMultilineEditor: {
+                                value: displayDetailCalculationFormula}" />
                     </div>
                 </div>
             </div>

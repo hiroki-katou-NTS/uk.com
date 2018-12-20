@@ -65,7 +65,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                     return item.itemNameCd == value;
                 });
                 self.dataScreen().itemNameCode(itemName.itemNameCd);
-                self.dataScreen().name(itemName.name);
+                self.dataScreen().shortName(itemName.shortName);
                 self.getDataAccordion().done(() => {
                     // 選択モードへ移行する
                     self.selectedMode(itemName.defaultAtr);
@@ -104,42 +104,20 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                 dfd = $.Deferred();
             block.invisible();
             $("#fixed-table").ntsFixedTable({height: 139});
-            let params: IParams = <IParams>{};
-            params.itemNameCode = "000s1";
-            params.itemNameCdExcludeList = ["0003", "0031"];
-            params.printSet = shareModel.StatementPrintAtr.DO_NOT_PRINT;
-            params.yearMonth = 201802;
-            params.workingAtr = null;
-            params.totalObject = null;
-            params.calcMethod = null;
-            params.proportionalAtr = null;
-            params.proportionalMethod = null;
-            params.rangeValAttribute = null;
-            params.errorRangeSetting = <IErrorAlarmRangeSetting>{};
-            params.errorRangeSetting.upperLimitSetting = <IErrorAlarmValueSetting>{};
-            params.errorRangeSetting.upperLimitSetting.valueSettingAtr = 1;
-            params.errorRangeSetting.upperLimitSetting.rangeValue = 100;
-            params.errorRangeSetting.lowerLimitSetting = <IErrorAlarmValueSetting>{};
-            params.errorRangeSetting.lowerLimitSetting.valueSettingAtr = 0;
-            params.errorRangeSetting.lowerLimitSetting.rangeValue = null;
-            params.alarmRangeSetting = <IErrorAlarmRangeSetting>{};
-            params.alarmRangeSetting.upperLimitSetting = <IErrorAlarmValueSetting>{};
-            params.alarmRangeSetting.upperLimitSetting.valueSettingAtr = 1;
-            params.alarmRangeSetting.upperLimitSetting.rangeValue = null;
-            params.alarmRangeSetting.lowerLimitSetting = <IErrorAlarmValueSetting>{};
-            params.alarmRangeSetting.lowerLimitSetting.valueSettingAtr = 1;
-            params.alarmRangeSetting.lowerLimitSetting.rangeValue = null;
-            params.perValCode = null;
-            params.formulaCode = null;
-            params.wageTableCode = null;
-            params.commonAmount = null;
+            let params: IParams = windows.getShared("QMM019_A_TO_E_PARAMS");
+            if (isNullOrUndefined(params.detail)) {
+                params.detail = <shareModel.IDeductionItemDetail>{};
+            }
+            if (isNullOrUndefined(params.itemRangeSet)) {
+                params.itemRangeSet = <shareModel.IItemRangeSet> {};
+            }
             self.params = params;
             self.yearMonth = params.yearMonth;
             self.condition42();
             let dto = {
                 categoryAtr: self.categoryAtr,
                 itemNameCdSelected: self.params.itemNameCode,
-                itemNameCdExcludeList: self.params.itemNameCdExcludeList
+                itemNameCdExcludeList: self.params.listItemSetting
             };
             service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
                 self.itemNames(StatementItem.fromApp(data));
@@ -173,10 +151,10 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                 self.unselectedMode();
                 return;
             }
-            self.codeSelected(item.itemNameCd);
             // TODO #125441
             // パラメータを受け取り取得した情報と合わせて画面上に表示する
             self.dataScreen().setData(self.params);
+            self.codeSelected(item.itemNameCd);
         }
 
         getDataAccordion(): JQueryPromise<any> {
@@ -200,7 +178,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                 self.categoryAtrText(shareModel.getCategoryAtrText(self.categoryAtr));
                 if (!isNullOrUndefined(dedu)) {
                     self.deductionItemSet().setData(dedu);
-                    self.loadControlE2_9();
+                    self.loadControlE2_9(self.params.detail.calcMethod);
                 }
                 self.breakdownItemSets(_.isEmpty(breakItems) ? [] : BreakdownItemSet.fromApp(breakItems));
                 self.dataScreen().perValName(isNullOrUndefined(perVal) ? null : perVal.individualPriceName);
@@ -212,14 +190,14 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             return dfd.promise();
         }
 
-        loadControlE2_9() {
+        loadControlE2_9(calcMethod) {
             let self = this;
             // ※補足資料8参照
             self.calcMethods(shareModel.getDeductionCaclMethodAtr(self.deductionItemSet().breakdownItemUseAtr()));
             if (self.deductionItemSet().breakdownItemUseAtr() == shareModel.BreakdownItemUseAtr.USE) {
                 self.dataScreen().calcMethod(shareModel.DeductionCaclMethodAtr.BREAKDOWN_ITEM.toString());
             } else {
-                self.dataScreen().calcMethod(shareModel.DeductionCaclMethodAtr.MANUAL_INPUT.toString());
+                self.dataScreen().calcMethod(calcMethod);
             }
         }
 
@@ -434,8 +412,8 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         condition42() {
             let self = this;
             self.totalObjAtrs(shareModel.getDeductionTotalObjAtr(self.params.printSet));
-            if (self.params.totalObject == shareModel.DeductionTotalObjAtr.INSIDE) {
-                self.params.totalObject = shareModel.DeductionTotalObjAtr.OUTSIDE;
+            if (self.params.detail.totalObj == shareModel.DeductionTotalObjAtr.INSIDE.toString()) {
+                self.params.detail.totalObj = shareModel.DeductionTotalObjAtr.OUTSIDE.toString();
             }
         }
 
@@ -453,7 +431,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             let dto = {
                 categoryAtr: self.categoryAtr,
                 itemNameCdSelected: self.params.itemNameCode,
-                itemNameCdExcludeList: self.params.itemNameCdExcludeList
+                itemNameCdExcludeList: self.params.listItemSetting
             };
             service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
                 self.itemNames(StatementItem.fromApp(data));
@@ -531,7 +509,23 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            windows.setShared("QMM019E_RESULTS", ko.toJS(self.dataScreen()));
+            let detail: shareModel.IDeductionItemDetail = <shareModel.IDeductionItemDetail>{};
+            detail.salaryItemId = self.dataScreen().itemNameCode();
+            detail.totalObj = self.dataScreen().totalObject();
+            detail.proportionalAtr = self.dataScreen().proportionalAtr();
+            detail.proportionalMethod = self.dataScreen().proportionalMethod();
+            detail.calcMethod = self.dataScreen().calcMethod();
+            detail.calcFormulaCd = self.dataScreen().formulaCode();
+            detail.personAmountCd = self.dataScreen().perValCode();
+            detail.commonAmount = self.dataScreen().commonAmount();
+            detail.wageTblCd = self.dataScreen().wageTableCode();
+            detail.supplyOffset = self.dataScreen().statementItemCode();
+            let result = {
+                itemNameCode: self.dataScreen().itemNameCode(),
+                shortName: self.dataScreen().shortName(),
+                detail: detail
+            };
+            windows.setShared("QMM019E_RESULTS", result);
             windows.close();
         }
 
@@ -580,7 +574,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
     interface IStatementItem {
         categoryAtr: number;
         itemNameCd: string;
-        name: string;
+        shortName: string;
         defaultAtr: number;
     }
 
@@ -594,9 +588,9 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
          */
         itemNameCd: string;
         /**
-         * 名称
+         * 略名
          */
-        name: string;
+        shortName: string;
         /**
          * 既定区分
          */
@@ -606,13 +600,13 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             if (isNullOrUndefined(data)) {
                 this.categoryAtr = null;
                 this.itemNameCd = null;
-                this.name = null;
+                this.shortName = null;
                 this.defaultAtr = null;
                 return;
             }
             this.categoryAtr = data.categoryAtr;
             this.itemNameCd = data.itemNameCd;
-            this.name = data.name;
+            this.shortName = data.shortName;
             this.defaultAtr = data.defaultAtr;
         }
 
@@ -628,8 +622,10 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         printSet: number;
         yearMonth: number;
         itemNameCode: string;
-        itemNameCdExcludeList: Array<string>;
-        workingAtr: number;
+        listItemSetting: Array<string>;
+        detail: shareModel.IDeductionItemDetail;
+        itemRangeSet: shareModel.IItemRangeSet;
+        /*workingAtr: number;
         totalObject: number;
         calcMethod: number;
         proportionalAtr: number;
@@ -641,7 +637,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         formulaCode: string;
         wageTableCode: string;
         statementItemCode: string;
-        commonAmount: number;
+        commonAmount: number;*/
     }
 
     class Params {
@@ -650,13 +646,9 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
          */
         itemNameCode: KnockoutObservable<string> = ko.observable(null);
         /**
-         * 名称
+         * 略名
          */
-        name: KnockoutObservable<string> = ko.observable(null);
-        /**
-         * 通勤区分
-         */
-        workingAtr: KnockoutObservable<string> = ko.observable(null);
+        shortName: KnockoutObservable<string> = ko.observable(null);
         /**
          * 合計対象
          */
@@ -722,38 +714,48 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         setData(data: IParams) {
             let self = this;
             self.itemNameCode(data.itemNameCode);
-            self.workingAtr(isNullOrUndefined(data.workingAtr) ? null : data.workingAtr.toString());
-            self.totalObject(isNullOrUndefined(data.totalObject) ? null : data.totalObject.toString());
-            self.calcMethod(isNullOrUndefined(data.calcMethod) ? null : data.calcMethod.toString());
-            self.proportionalAtr(isNullOrUndefined(data.proportionalAtr) ? null : data.proportionalAtr.toString());
-            self.proportionalMethod(isNullOrUndefined(data.proportionalMethod) ? null : data.proportionalMethod.toString());
-            self.rangeValAttribute(isNullOrUndefined(data.rangeValAttribute) ? null : data.rangeValAttribute.toString());
+            self.totalObject(isNullOrUndefined(data.detail.totalObj) ? null : data.detail.totalObj.toString());
+            self.calcMethod(isNullOrUndefined(data.detail.calcMethod) ? null : data.detail.calcMethod.toString());
+            self.proportionalAtr(isNullOrUndefined(data.detail.proportionalAtr) ? null : data.detail.proportionalAtr.toString());
+            self.proportionalMethod(isNullOrUndefined(data.detail.proportionalMethod) ? null : data.detail.proportionalMethod.toString());
+            /*self.rangeValAttribute(isNullOrUndefined(data.rangeValAttribute) ? null : data.rangeValAttribute.toString());
             self.errorRangeSetting.setData(data.errorRangeSetting);
-            self.alarmRangeSetting.setData(data.alarmRangeSetting);
-            self.perValCode(data.perValCode);
-            self.formulaCode(data.formulaCode);
-            self.wageTableCode(data.wageTableCode);
-            self.statementItemCode(data.statementItemCode);
-            self.commonAmount(data.commonAmount);
+            self.alarmRangeSetting.setData(data.alarmRangeSetting);*/
+            self.perValCode(data.detail.personAmountCd);
+            self.formulaCode(data.detail.calcFormulaCd);
+            self.wageTableCode(data.detail.wageTblCd);
+            self.statementItemCode(data.detail.supplyOffset);
+            self.commonAmount(data.detail.commonAmount);
         }
 
         initSubscribe() {
             let self = this;
-            self.calcMethod.subscribe(() => {
-                self.perValCode(null);
-                self.perValName(null);
-                self.clearError("#E5_2");
-                self.formulaCode(null);
-                self.formulaName(null);
-                self.clearError("#E6_2");
-                self.wageTableCode(null);
-                self.wageTableName(null);
-                self.clearError("#E7_2");
-                self.commonAmount(null);
-                self.clearError("#E8_2");
-                self.statementItemCode(null);
-                self.statementItemName(null);
-                self.clearError("#E9_2");
+            self.calcMethod.subscribe((value) => {
+                if(isNullOrUndefined(value)) return;
+                if(value != shareModel.DeductionCaclMethodAtr.PERSON_INFO_REF){
+                    self.perValCode(null);
+                    self.perValName(null);
+                    self.clearError("#E5_2");
+                }
+                if(value != shareModel.DeductionCaclMethodAtr.CACL_FOMULA){
+                    self.formulaCode(null);
+                    self.formulaName(null);
+                    self.clearError("#E6_2");
+                }
+                if(value != shareModel.DeductionCaclMethodAtr.WAGE_TABLE){
+                    self.wageTableCode(null);
+                    self.wageTableName(null);
+                    self.clearError("#E7_2");
+                }
+                if(value != shareModel.DeductionCaclMethodAtr.COMMON_AMOUNT){
+                    self.commonAmount(null);
+                    self.clearError("#E8_2");
+                }
+                if(value != shareModel.DeductionCaclMethodAtr.SUPPLY_OFFSET){
+                    self.statementItemCode(null);
+                    self.statementItemName(null);
+                    self.clearError("#E9_2");
+                }
             });
             self.perValCode.subscribe(() => {
                 self.clearError("#E5_2");

@@ -49,7 +49,7 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
                     return item.itemNameCd == value;
                 });
                 self.dataScreen().itemNameCode(itemName.itemNameCd);
-                self.dataScreen().name(itemName.name);
+                self.dataScreen().shortName(itemName.shortName);
                 self.getDataAccordion().done(() => {
                     // 選択モードへ移行する
                     self.selectedMode();
@@ -78,37 +78,15 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             block.invisible();
-            let params: IParams = <IParams>{};
-            params.itemNameCode = "0003d";
-            params.itemNameCdExcludeList = [];
-            params.rangeValAttribute = null;
-            params.errorRangeSetting = <IErrorAlarmRangeSetting>{};
-            params.errorRangeSetting.upperLimitSetting = <IErrorAlarmValueSetting>{};
-            params.errorRangeSetting.upperLimitSetting.valueSettingAtr = 1;
-            params.errorRangeSetting.upperLimitSetting.time10Value = 1;
-            params.errorRangeSetting.upperLimitSetting.time60Value = 2;
-            params.errorRangeSetting.upperLimitSetting.timesValue = 3;
-            params.errorRangeSetting.lowerLimitSetting = <IErrorAlarmValueSetting>{};
-            params.errorRangeSetting.lowerLimitSetting.valueSettingAtr = 1;
-            params.errorRangeSetting.lowerLimitSetting.time10Value = 4;
-            params.errorRangeSetting.lowerLimitSetting.time60Value = 5;
-            params.errorRangeSetting.lowerLimitSetting.timesValue = 6;
-            params.alarmRangeSetting = <IErrorAlarmRangeSetting>{};
-            params.alarmRangeSetting.upperLimitSetting = <IErrorAlarmValueSetting>{};
-            params.alarmRangeSetting.upperLimitSetting.valueSettingAtr = 1;
-            params.alarmRangeSetting.upperLimitSetting.time10Value = 7;
-            params.alarmRangeSetting.upperLimitSetting.time60Value = 8;
-            params.alarmRangeSetting.upperLimitSetting.timesValue = 9;
-            params.alarmRangeSetting.lowerLimitSetting = <IErrorAlarmValueSetting>{};
-            params.alarmRangeSetting.lowerLimitSetting.valueSettingAtr = 1;
-            params.alarmRangeSetting.lowerLimitSetting.time10Value = 10;
-            params.alarmRangeSetting.lowerLimitSetting.time60Value = 11;
-            params.alarmRangeSetting.lowerLimitSetting.timesValue = 12;
+            let params: IParams = windows.getShared("QMM019_A_TO_F_PARAMS");
+            if (isNullOrUndefined(params.itemRangeSet)) {
+                params.itemRangeSet = <shareModel.IItemRangeSet> {};
+            }            
             self.params = params;
             let dto = {
                 categoryAtr: self.categoryAtr,
                 itemNameCdSelected: self.params.itemNameCode,
-                itemNameCdExcludeList: self.params.itemNameCdExcludeList
+                itemNameCdExcludeList: self.params.listItemSetting
             };
             service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
                 self.itemNames(StatementItem.fromApp(data));
@@ -142,10 +120,10 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
                 self.unselectedMode();
                 return;
             }
-            self.codeSelected(item.itemNameCd);
             // TODO #125441
             // パラメータを受け取り取得した情報と合わせて画面上に表示する
             self.dataScreen().setData(self.params);
+            self.codeSelected(item.itemNameCd);
         }
 
         getDataAccordion(): JQueryPromise<any> {
@@ -361,7 +339,7 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             let dto = {
                 categoryAtr: self.categoryAtr,
                 itemNameCdSelected: self.params.itemNameCode,
-                itemNameCdExcludeList: self.params.itemNameCdExcludeList
+                itemNameCdExcludeList: self.params.listItemSetting
             };
             service.getStatementItem(dto).done((data: Array<IStatementItem>) => {
                 self.itemNames(StatementItem.fromApp(data));
@@ -379,7 +357,11 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            windows.setShared("QMM019F_RESULTS", ko.toJS(self.dataScreen()));
+            let result = {
+                itemNameCode: self.dataScreen().itemNameCode(),
+                shortName: self.dataScreen().shortName()
+            };
+            windows.setShared("QMM019F_RESULTS", result);
             windows.close();
         }
 
@@ -434,7 +416,7 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
     interface IStatementItem {
         categoryAtr: number;
         itemNameCd: string;
-        name: string;
+        shortName: string;
         defaultAtr: number;
     }
 
@@ -448,9 +430,9 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
          */
         itemNameCd: string;
         /**
-         * 名称
+         * 略名
          */
-        name: string;
+        shortName: string;
         /**
          * 既定区分
          */
@@ -460,13 +442,13 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             if (isNullOrUndefined(data)) {
                 this.categoryAtr = null;
                 this.itemNameCd = null;
-                this.name = null;
+                this.shortName = null;
                 this.defaultAtr = null;
                 return;
             }
             this.categoryAtr = data.categoryAtr;
             this.itemNameCd = data.itemNameCd;
-            this.name = data.name;
+            this.shortName = data.shortName;
             this.defaultAtr = data.defaultAtr;
         }
 
@@ -480,10 +462,11 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
 
     interface IParams {
         itemNameCode: string;
-        itemNameCdExcludeList: Array<string>;
-        rangeValAttribute: number;
+        listItemSetting: Array<string>;
+        itemRangeSet: shareModel.IItemRangeSet;
+        /*rangeValAttribute: number;
         errorRangeSetting: IErrorAlarmRangeSetting;
-        alarmRangeSetting: IErrorAlarmRangeSetting;
+        alarmRangeSetting: IErrorAlarmRangeSetting;*/
     }
 
     class Params {
@@ -492,9 +475,9 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
          */
         itemNameCode: KnockoutObservable<string> = ko.observable(null);
         /**
-         * 名称
+         * 略名
          */
-        name: KnockoutObservable<string> = ko.observable(null);
+        shortName: KnockoutObservable<string> = ko.observable(null);
         /**
          * 範囲値の属性
          */
@@ -514,9 +497,9 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
         setData(data: IParams) {
             let self = this;
             self.itemNameCode(data.itemNameCode);
-            self.rangeValAttribute(isNullOrUndefined(data.rangeValAttribute) ? null : data.rangeValAttribute.toString());
+            /*self.rangeValAttribute(isNullOrUndefined(data.rangeValAttribute) ? null : data.rangeValAttribute.toString());
             self.errorRangeSetting.setData(data.errorRangeSetting);
-            self.alarmRangeSetting.setData(data.alarmRangeSetting);
+            self.alarmRangeSetting.setData(data.alarmRangeSetting);*/
         }
 
         initSubscribe() {

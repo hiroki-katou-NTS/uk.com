@@ -10,14 +10,12 @@ import nts.arc.primitive.constraint.StringMaxLength;
  */
 @StringMaxLength(4)
 @StringCharType(CharType.NUMERIC)
-public class ItemNameCode extends StringPrimitiveValue<ItemNameCode>
-{
-    
-    private static final long serialVersionUID = 1L;
-    
-    public ItemNameCode(String rawValue)
-    {
-         super(rawValue);
-    }
-    
+public class ItemNameCode extends StringPrimitiveValue<ItemNameCode> {
+
+	private static final long serialVersionUID = 1L;
+
+	public ItemNameCode(String rawValue) {
+		super(rawValue);
+	}
+
 }

@@ -163,7 +163,6 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                 else {
                     nts.uk.ui.errors.clearAll();
                     self.lstBreakdownItem = [];
-                    nts.uk.ui.dialog.info({ messageId: "MsgQ_110" });
                 }
                 $("#gridBreakdownItem").ntsGrid("destroy");
                 self.loadGrid();
@@ -205,7 +204,6 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                     nts.uk.ui.errors.clearAll();
                     self.lstHistory([]);
                     self.isScreenC(false);
-
                 }
                 block.clear();
                 dfd.resolve();
@@ -245,7 +243,6 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                     nts.uk.ui.errors.clearAll();
                     self.lstHistory([]);
                     self.isScreenC(false);
-
                 }
                 block.clear();
                 dfd.resolve();
@@ -351,6 +348,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                     nts.uk.ui.errors.clearAll();
                     self.lstStatementItem([]);
                     self.isScreenB(false);
+                    nts.uk.ui.dialog.info({ messageId: "MsgQ_110" });
                 }
                 block.clear();
                 dfd.resolve(self);
@@ -375,7 +373,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                         self.initKCP009();
                         dfd.resolve();
                     }
-                    self.onSelectTab(ITEM_CLASS.SALARY_SUPLY);
+                    self.onStart(ITEM_CLASS.SALARY_SUPLY);
                 }).fail(function (result) {
                     dfd.reject();
                 });
@@ -405,6 +403,26 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                     self.titleTab(getText('QMM036_4'));
                     self.reloadCcg001();
                     self.getStatementData();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        onStart(param) {
+            let self = this;
+            switch (param) {
+                case 0:
+                    self.bonusAtr(param);
+                    self.titleTab(getText('QMM036_3'));
+                    self.reloadCcg001();
+
+                    break;
+                case 1:
+                    self.isScreenB(true);
+                    self.bonusAtr(param);
+                    self.titleTab(getText('QMM036_4'));
+                    self.reloadCcg001();
                     break;
                 default:
                     break;

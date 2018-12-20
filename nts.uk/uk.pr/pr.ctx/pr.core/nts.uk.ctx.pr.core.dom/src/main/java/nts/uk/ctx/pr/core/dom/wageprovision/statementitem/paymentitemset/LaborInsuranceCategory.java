@@ -6,9 +6,10 @@ package nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset;
  *
  */
 public enum LaborInsuranceCategory {
-
-	NOT_COVERED(0, "対象外"), 
-	COVERED(1, "対象");
+	// 対象外
+	NOT_COVERED(0, "Enum_LaborInsuranceCategory_NOT_COVERED"),
+	// 対象
+	COVERED(1, "Enum_LaborInsuranceCategory_COVERED");
 
 	/** The value. */
 	public final int value;

@@ -46,13 +46,13 @@ module nts.uk.pr.view.qmm017.share.model {
     }
 
     export enum FORMULA_SETTING_METHOD {
-        SIMPLE_SETTING = 0,
+        BASIC_SETTING = 0,
         DETAIL_SETTING = 1
     }
 
     export function getFormulaSettingMethodEnumModel () {
         return [
-            new EnumModel(FORMULA_SETTING_METHOD.SIMPLE_SETTING, 'かんたん設定'),
+            new EnumModel(FORMULA_SETTING_METHOD.BASIC_SETTING, 'かんたん設定'),
             new EnumModel(FORMULA_SETTING_METHOD.DETAIL_SETTING, '詳細設定')
         ];
     }
@@ -465,7 +465,7 @@ module nts.uk.pr.view.qmm017.share.model {
         SYSTEM_YMD_DATE = 0,
         SYSTEM_YM_DATE = 1,
         SYSTEM_Y_DATE = 2,
-        PROCESSING_DATE = 3,
+        PROCESSING_YEAR_MONTH = 3,
         PROCESSING_YEAR = 4,
         REFERENCE_TIME = 5,
         STANDARD_DAY = 6,
@@ -477,7 +477,7 @@ module nts.uk.pr.view.qmm017.share.model {
             new EnumModel(SYSTEM_VARIABLE_LIST.SYSTEM_YMD_DATE, 'システム日付（年月日）'),
             new EnumModel(SYSTEM_VARIABLE_LIST.SYSTEM_YM_DATE, 'システム日付（年月）'),
             new EnumModel(SYSTEM_VARIABLE_LIST.SYSTEM_Y_DATE, 'システム日付（年）'),
-            new EnumModel(SYSTEM_VARIABLE_LIST.PROCESSING_DATE, '処理年月'),
+            new EnumModel(SYSTEM_VARIABLE_LIST.PROCESSING_YEAR_MONTH, '処理年月'),
             new EnumModel(SYSTEM_VARIABLE_LIST.PROCESSING_YEAR, '処理年'),
             new EnumModel(SYSTEM_VARIABLE_LIST.REFERENCE_TIME, '基準時間'),
             new EnumModel(SYSTEM_VARIABLE_LIST.STANDARD_DAY, '基準日数'),
@@ -524,18 +524,22 @@ module nts.uk.pr.view.qmm017.share.model {
         masterUseItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getMasterUseEnumModel());
         masterBranchUseItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getMasterBranchUseEnumModel());
         // display item
+        // C3_2 分岐条件 displayMasterUse + のマスタに該当する場合
         displayMasterUse: KnockoutObservable<string> = ko.observable(null);
+        branchCondition: KnockoutObservable<string> = ko.observable(null);
         displayMasterBranchUse: KnockoutObservable<string> = ko.observable(null);
-
         constructor(params: IBasicFormulaSetting) {
             this.masterUse(params ? params.masterUse : MASTER_USE.EMPLOYMENT);
-            this.masterBranchUse(params ? params.masterBranchUse : MASTER_BRANCH_USE.USE);
+            this.masterBranchUse(params ? params.masterBranchUse : MASTER_BRANCH_USE.NOT_USE);
             this.historyID(params ? params.historyID : null);
             this.displayMasterUse = ko.computed(function() {
                 return this.masterUse() != null ? this.masterUseItem()[this.masterUse()].name : null;
             }, this);
+            this.branchCondition = ko.computed(function() {
+                return this.displayMasterUse() + "のマスタに該当する場合";
+            }, this);
             this.displayMasterBranchUse = ko.computed(function() {
-                return this.masterBranchUseItem()[this.masterBranchUse()].name;
+                return this.masterBranchUse() != null ? this.masterBranchUseItem()[this.masterBranchUse()].name : null;
             }, this);
 
         }
@@ -565,17 +569,17 @@ module nts.uk.pr.view.qmm017.share.model {
         constructor(params: IFormula) {
             this.formulaCode(params ? params.formulaCode : null);
             this.formulaName(params ? params.formulaName : null);
-            this.settingMethod(params ? params.settingMethod : FORMULA_SETTING_METHOD.SIMPLE_SETTING);
+            this.settingMethod(params ? params.settingMethod : FORMULA_SETTING_METHOD.BASIC_SETTING);
             this.nestedAtr(params ? params.nestedAtr : NESTED_USE_CLS.NOT_USE);
             this.history(params? params.history : []);
             this.displayNestedAtr = ko.computed(function() {
-                return this.nestedAtrItem() != null ? this.nestedAtrItem()[this.nestedAtr()].name : null;
+                return this.nestedAtr() != null ? this.nestedAtrItem()[this.nestedAtr()].name : null;
             }, this);
             this.isNotUseNestedAtr = ko.computed(function() {
-                return this.nestedAtr() == model.NESTED_USE_CLS.NOT_USE;
+                return this.nestedAtr() == model.NESTED_USE_CLS.NOT_USE ;
             }, this);
             this.displaySettingMethod = ko.computed(function() {
-                return this.formulaSettingMethodItem()[this.settingMethod()].name;
+                return this.settingMethod() != null ? this.formulaSettingMethodItem()[this.settingMethod()].name : null;
             }, this);
         }
     }
@@ -639,6 +643,7 @@ module nts.uk.pr.view.qmm017.share.model {
         baseItemFixedValue: number;
         premiumRate: number;
         roundingMethod: number;
+        masterUseName: string;
 
     }
     export class BasicCalculationFormula {
@@ -672,6 +677,7 @@ module nts.uk.pr.view.qmm017.share.model {
         roundingResultItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getRoundingResultEnumModel());
         adjustmentClassificationItem: KnockoutObservableArray<EnumModel> = ko.observableArray(getAdjustmentClsEnumModel());
         // display item
+        masterUseName: KnockoutObservable<string> = ko.observable(null);
         displayFormulaType: KnockoutObservable<string> = ko.observable(null);
         displayFormulaImagePath: KnockoutObservable<string> = ko.observable(null);
         constructor(params: IBasicCalculationFormula) {
@@ -692,6 +698,7 @@ module nts.uk.pr.view.qmm017.share.model {
             this.coefficientFixedValue(params ? params.coefficientFixedValue : null);
             this.historyID(params ? params.historyID : null);
             this.targetItemCodeList(params ? params.targetItemCodeList : []);
+            this.masterUseName(params ? params.masterUseName : null);
             this.displayFormulaType = ko.computed(function() {
                 return this.formulaType() != null ? this.formulaTypeItem()[this.formulaType()].name : null
             }, this);
@@ -709,120 +716,22 @@ module nts.uk.pr.view.qmm017.share.model {
 
     // 賃金テーブル
     export interface IWageTable {
-        cid: string,
-        wageTableCode: string,
-        wageTableName: string,
-        elementInformation: IElementInformation,
-        elementSetting: number,
+        code: string,
+        name: string
         remarkInformation: string,
-        history: Array<IGenericHistoryYearMonthPeriod>
     }
     // 賃金テーブル
     export class WageTable {
-        cid: KnockoutObservable<string> = ko.observable(null);
-        wageTableCode: KnockoutObservable<string> = ko.observable(null);
-        wageTableName: KnockoutObservable<string> = ko.observable(null);
-        elementInformation: KnockoutObservable<ElementInformation> = ko.observable(null);
-        elementSetting: KnockoutObservable<number> = ko.observable(null);
+        code: KnockoutObservable<string> = ko.observable(null);
+        name: KnockoutObservable<string> = ko.observable(null);
         remarkInformation: KnockoutObservable<string> = ko.observable(null);
-        history: KnockoutObservableArray<GenericHistoryYearMonthPeriod> = ko.observableArray([]);
-        // display item
-        imagePath: KnockoutObservable<string> = ko.observable(null);
-        elementSettingDisplayText: KnockoutObservable<string> = ko.observable(null);
         constructor(params: IWageTable) {
             let self = this;
-            this.cid(params ? params.cid : null);
-            this.wageTableCode(params ? params.wageTableCode : null);
-            this.wageTableName(params ? params.wageTableName : null);
-            this.elementInformation(new ElementInformation(params ? params.elementInformation : null));
-            this.elementSetting(params ? params.elementSetting : 0);
+            this.code(params ? params.code : null);
+            this.name(params ? params.name : null);
             this.remarkInformation(params ? params.remarkInformation : null);
-            this.history(params ? params.history.map(item => new GenericHistoryYearMonthPeriod(item)) : []);
-            this.elementSetting.subscribe(newValue => {
-                self.changeImagePath(newValue);
-            });
-            self.changeImagePath(self.elementSetting());
-        }
-        changeImagePath (elementSetting: number) {
-            let self = this;
-            let imgName = "", elementSettingDisplayText = "";
-            switch (elementSetting) {
-                case ELEMENT_SETTING.ONE_DIMENSION: {
-                    imgName = "QMM016_1.png";
-                    elementSettingDisplayText = getText('QMM016_69');
-                    break;
-                }
-                case ELEMENT_SETTING.TWO_DIMENSION: {
-                    imgName = "QMM016_2.png";
-                    elementSettingDisplayText = getText('QMM016_70');
-                    break;
-                }
-                case ELEMENT_SETTING.THREE_DIMENSION: {
-                    imgName = "QMM016_3.png";
-                    elementSettingDisplayText = getText('QMM016_71');
-                    break;
-                }
-                case ELEMENT_SETTING.QUALIFICATION: {
-                    imgName = "QMM016_4.png";
-                    elementSettingDisplayText = getText('QMM016_72');
-                    break;
-                }
-                case ELEMENT_SETTING.FINE_WORK: {
-                    imgName = "QMM016_5.png";
-                    elementSettingDisplayText = getText('QMM016_73');
-                    break;
-                }
-            }
-            if (imgName){
-                self.imagePath("../resource/" + imgName);
-            }
-            else{
-                self.imagePath("");
-            }
-            self.elementSettingDisplayText(elementSettingDisplayText);
         }
     }
-
-    // 要素情報
-    export interface IElementInformation{
-        oneDimensionElement: IElementAttribute,
-        twoDimensionElement: IElementAttribute,
-        threeDimensionElement: IElementAttribute,
-    }
-    // 要素情報
-    export class ElementInformation{
-        oneDimensionElement: KnockoutObservable<ElementAttribute> = ko.observable(null);
-        twoDimensionElement: KnockoutObservable<ElementAttribute> = ko.observable(null);
-        threeDimensionElement: KnockoutObservable<ElementAttribute> = ko.observable(null);
-        constructor (params: IElementInformation) {
-            this.oneDimensionElement(new ElementAttribute(params ? params.oneDimensionElement: null));
-            this.twoDimensionElement(new ElementAttribute(params ? params.twoDimensionElement: null));
-            this.threeDimensionElement(new ElementAttribute(params ? params.threeDimensionElement: null));
-        }
-    }
-
-
-    // 要素の属性
-    export interface IElementAttribute {
-        masterNumericClassification: number,
-        fixedElement: string,
-        optionalAdditionalElement: string,
-    }
-    // 要素の属性
-    export class ElementAttribute {
-        masterNumericClassification: KnockoutObservable<number> = ko.observable(null);
-        fixedElement: KnockoutObservable<string> = ko.observable(null);
-        optionalAdditionalElement: KnockoutObservable<string> = ko.observable(null);
-        // for display data
-        elementName: KnockoutObservable<string> = ko.observable(null);
-        constructor (params: IElementAttribute) {
-            this.masterNumericClassification(params ? params.masterNumericClassification : null);
-            this.fixedElement(params ? params.fixedElement : null);
-            this.optionalAdditionalElement(params ? params.optionalAdditionalElement : null);
-        }
-    }
-
-
 
     // 年月期間の汎用履歴項目
     export interface IGenericHistoryYearMonthPeriod {
@@ -833,7 +742,6 @@ module nts.uk.pr.view.qmm017.share.model {
 
     // 年月期間の汎用履歴項目
     export class GenericHistoryYearMonthPeriod {
-
         // Item
         startMonth: KnockoutObservable<string> = ko.observable(null);
         endMonth: KnockoutObservable<string> = ko.observable(null);
@@ -856,7 +764,6 @@ module nts.uk.pr.view.qmm017.share.model {
             this.displayJapanStartYearMonth = ko.computed(function() {
                 return this.startMonth() ? nts.uk.time.yearmonthInJapanEmpire(this.startMonth()).toString().split(' ').join(''): "";
             }, this);
-
         }
     }
 }

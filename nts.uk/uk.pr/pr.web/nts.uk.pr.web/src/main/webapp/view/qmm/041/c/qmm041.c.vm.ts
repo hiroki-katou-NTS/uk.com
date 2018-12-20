@@ -45,7 +45,7 @@ module nts.uk.pr.view.qmm041.c.viewmodel {
             let self = this;
             let params = getShared("QMM041_C_PARAMS");
             if (self.startYearMonth() <= params.lastStartYearMonth || self.startYearMonth() > params.endYearMonth) {
-                nts.uk.ui.dialog.info({messageId: "Msg_127"});
+                dialog.info({messageId: "Msg_127"});
                 return;
             }
             let command = {
@@ -60,7 +60,7 @@ module nts.uk.pr.view.qmm041.c.viewmodel {
             };
 
             service.updateHistory(command).done(() => {
-                nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
+                dialog.info({messageId: "Msg_15"}).then(() => {
                     let dto = {
                         modifyMethod: self.modifyMethod(),
                         startYearMonth: self.startYearMonth(),
@@ -83,7 +83,7 @@ module nts.uk.pr.view.qmm041.c.viewmodel {
                 lastHistoryId: params.lastHistoryId
             };
             service.deleteHistory(command).done(() => {
-                nts.uk.ui.dialog.info({messageId: "Msg_16"}).then(() => {
+                dialog.info({messageId: "Msg_16"}).then(() => {
                     setShared('QMM041_C_RES_PARAMS', {modifyMethod: self.modifyMethod()});
                     nts.uk.ui.windows.close();
                 });

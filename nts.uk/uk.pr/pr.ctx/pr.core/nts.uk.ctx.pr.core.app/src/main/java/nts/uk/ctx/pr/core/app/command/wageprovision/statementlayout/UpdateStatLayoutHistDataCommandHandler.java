@@ -12,8 +12,6 @@ import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.Optional;
-
 @Stateless
 @Transactional
 public class UpdateStatLayoutHistDataCommandHandler extends CommandHandler<StatementLayoutHistDataCommand> {
@@ -46,10 +44,10 @@ public class UpdateStatLayoutHistDataCommandHandler extends CommandHandler<State
 
             // add new history
             statementLayoutHistRepo.add(cid, command.getStatementCode(), yearMonthHist, statementLayoutSet.getLayoutPattern().value);
-            statementLayoutSetService.addStatementLayoutSet(statementLayoutSet);
+            statementLayoutSetService.addStatementLayoutSet(command.getStatementCode(), statementLayoutSet);
         } else {
             statementLayoutHistRepo.update(cid, command.getStatementCode(), yearMonthHist);
-            statementLayoutSetService.updateStatementLayoutSet(statementLayoutSet);
+            statementLayoutSetService.updateStatementLayoutSet(command.getStatementCode(), statementLayoutSet);
         }
     }
 }

@@ -35,6 +35,10 @@ public class StatementLayoutService {
     @Inject
     private StatementLayoutSetRepository statementLayoutSetRepo;
 
+    @Inject
+    private
+    StatementItemNameRepository statementItemNameRepo;
+
     private static final int LAST_END_YEAR_MONTH = 999912;
     private static final int LAST_POSITION = 9;
     private static final String F001 = "F001";
@@ -88,11 +92,10 @@ public class StatementLayoutService {
         }
 
         if(statementLayoutSet.isPresent()) {
-            statementLayoutSetRepo.add(statementLayoutSet.get());
+            statementLayoutSetRepo.add(statementCode, statementLayoutSet.get());
         } else {
             throw new BusinessException("Some err");
         }
-
     }
 
     public Optional<StatementLayoutSet> initStatementLayoutData(String statementCode, String histIdNew, int isClone, int layoutPattern) {
@@ -109,6 +112,11 @@ public class StatementLayoutService {
         }
 
         return statementLayoutSet;
+    }
+
+    public String getShortName(int categoryAtr, String itemNameCd) {
+        String cid = AppContexts.user().companyId();
+        return statementItemNameRepo.getStatementItemNameById(cid, categoryAtr, itemNameCd).map(i -> i.getShortName().v()).orElse(null);
     }
 
     //新規に作成の場合
@@ -160,7 +168,7 @@ public class StatementLayoutService {
 
         //記事項目
         List<LineByLineSetting> reportLineList = new ArrayList<>();
-        SettingByItem item = new SettingByItem(9, F309);
+        SettingByItem item = new SettingByItemCustom(9, F309, getShortName(CategoryAtr.REPORT_ITEM.value, F309), null, null, null);
         List<SettingByItem> listSetByItem = new ArrayList<>();
         listSetByItem.add(item);
 
@@ -208,7 +216,7 @@ public class StatementLayoutService {
     private LineByLineSetting getNewLineTypePayment(String histId, int lineNumber, String statementCode) {
         PaymentItemDetailSet detail = new PaymentItemDetailSet(histId, statementCode, PaymentTotalObjAtr.OUTSIDE.value, PaymentProportionalAtr.NOT_PROPORTIONAL.value,
                 null, PaymentCaclMethodAtr.MANUAL_INPUT.value, null, null, null, null, null);
-        SettingByItemCustom item = new SettingByItemCustom(LAST_POSITION, statementCode, null, null, detail);
+        SettingByItemCustom item = new SettingByItemCustom(LAST_POSITION, statementCode, getShortName(CategoryAtr.PAYMENT_ITEM.value, statementCode), null, detail, null);
         List<SettingByItem> listSetByItem = new ArrayList<>();
         listSetByItem.add(item);
 
@@ -218,7 +226,7 @@ public class StatementLayoutService {
     private SettingByItem getNewItemTypeDeduction(String histId, int position, String statementCode, int totalObj) {
         DeductionItemDetailSet detail = new DeductionItemDetailSet(histId, statementCode, totalObj, PaymentProportionalAtr.NOT_PROPORTIONAL.value,
                 null, PaymentCaclMethodAtr.MANUAL_INPUT.value, null, null, null, null, null);
-        return new SettingByItemCustom(position, statementCode, null, detail, null);
+        return new SettingByItemCustom(position, statementCode, getShortName(CategoryAtr.DEDUCTION_ITEM.value, statementCode), detail, null, null);
     }
 
     //新規作成時チェック処理

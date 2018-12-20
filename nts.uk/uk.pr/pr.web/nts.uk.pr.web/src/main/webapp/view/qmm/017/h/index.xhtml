@@ -56,21 +56,42 @@
             <div style="margin-top: 20px; min-width: 550px">
                 <div style="width: 130px; margin-left: 150px;"
                      data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_17')}</div>
-                <div style = "display: inline-block" data-bind = "text: displayCalculationMethod"></div>
+                <div style = "display: inline-block" data-bind = "text: displaySettingMethod"></div>
             </div>
-            <div style="margin-top: 20px; min-width: 550px">
+            <div data-bind="if: settingMethod() == 0" style="margin-top: 20px; min-width: 550px">
                 <div style="width: 130px; margin-left: 180px;"
                      data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_21')}</div>
+                <div style="margin-left: 200px;" tabindex="3" class="cf" data-bind="ntsSwitchButton: {
+                    name: '#[QMM017_22]',
+                    options: masterBranchUseItem,
+                    optionsValue: 'value',
+                    optionsText: 'name',
+                    value: masterBranchUse,
+                    required: true}">
+                </div>
             </div>
-            <div style="margin-top: 20px; min-width: 550px">
+            <div data-bind="if: settingMethod() == 0" style="margin-top: 20px; min-width: 550px">
                 <div style="width: 130px; margin-left: 180px;"
                      data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_23')}</div>
+                <div style="vertical-align: middle" tabindex="4" data-bind="ntsComboBox: {
+                        name: '#[QMM016_6]',
+                        options: masterUseItem,
+                        optionsValue: 'value',
+                        visibleItemsCount: 5,
+                        value: masterUse,
+                        optionsText: 'name',
+                        required: true,
+                        columns: [
+                            { prop: 'fix_length', length: 0 },
+                            { prop: 'name', length: 10 },
+                        ]}, visible: masterBranchUse() == 0">
+                </div>
             </div>
         </div>
         <div id="functions-area-bottom">
-            <button tabindex ="3" class="x-large proceed "
+            <button tabindex ="5" class="x-large proceed "
                     data-bind="click: addNewHistory, enable: $root.errors.isEmpty">#{i18n.getText('QMM017_153')}</button>
-            <button tabindex ="4" class="large" data-bind="click: cancel">#{i18n.getText('QMM017_104')}</button>
+            <button tabindex ="6" class="large" data-bind="click: cancel">#{i18n.getText('QMM017_104')}</button>
         </div>
     </ui:define>
 </ui:composition>

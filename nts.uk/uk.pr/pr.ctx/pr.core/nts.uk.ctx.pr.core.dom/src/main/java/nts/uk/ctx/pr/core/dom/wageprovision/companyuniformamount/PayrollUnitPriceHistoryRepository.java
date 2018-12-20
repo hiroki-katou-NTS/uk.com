@@ -13,6 +13,8 @@ public interface PayrollUnitPriceHistoryRepository {
 
     Optional<PayrollUnitPriceHistory> getPayrollUnitPriceHistoryById(String cid, String code, String hisId);
 
+    Optional<PayrollUnitPriceSetting>  getPayrollUnitPriceCodeAndYearMonth(String cid, String code, int yearMonth);
+
     Optional<PayrollUnitPriceHistory> getPayrollUnitPriceHistoryByCidCode(String cid, String code);
 
     void add(String code,String cId, YearMonthHistoryItem domain, PayrollUnitPriceSetting payrollUnitPriceSet);

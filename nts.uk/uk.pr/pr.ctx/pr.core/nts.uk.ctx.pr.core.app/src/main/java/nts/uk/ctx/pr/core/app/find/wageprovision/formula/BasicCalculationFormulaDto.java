@@ -12,6 +12,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.formula.BasicCalculationFormula;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.BasicCalculationItemCategory;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,7 @@ public class BasicCalculationFormulaDto {
     private BigDecimal basicCalculationFormula;
     private Integer standardAmountClassification;
     private BigDecimal standardFixedValue;
-    private List<String> targetItemCodeList;
+    private List<String> targetItemCodeList = new ArrayList<>();
     private String attendanceItem;
     private int coefficientClassification;
     private BigDecimal coefficientFixedValue;

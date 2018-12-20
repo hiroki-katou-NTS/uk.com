@@ -23,11 +23,15 @@ public class StateCorreHisIndiviService {
             hisIndividual = itemtoBeAdded.get();
         }
         hisIndividual.add(yearMonthItem);
-        stateCorreHisIndiviRepository.add(empId, yearMonthItem, stateLinkSetIndivi.getSalaryCode().get().v(), stateLinkSetIndivi.getBonusCode().get().v());
+        stateCorreHisIndiviRepository.add(empId, yearMonthItem,
+                stateLinkSetIndivi.getSalaryCode().isPresent() ? stateLinkSetIndivi.getSalaryCode().get().v() : null,
+                stateLinkSetIndivi.getBonusCode().isPresent() ? stateLinkSetIndivi.getBonusCode().get().v() : null);
     }
 
     public void updateHistoryIndividual(YearMonthHistoryItem history, StateLinkSetIndivi stateLinkSetIndivi, String empId){
-        stateCorreHisIndiviRepository.update(empId,history, stateLinkSetIndivi.getSalaryCode().get().v(), stateLinkSetIndivi.getBonusCode().get().v());
+        stateCorreHisIndiviRepository.update(empId,history,
+                stateLinkSetIndivi.getSalaryCode().isPresent() ? stateLinkSetIndivi.getSalaryCode().get().v() : null,
+                stateLinkSetIndivi.getBonusCode().isPresent() ? stateLinkSetIndivi.getBonusCode().get().v() : null);
     }
 
     

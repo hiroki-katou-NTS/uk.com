@@ -28,9 +28,9 @@ public class ElementInformation extends DomainObject {
 	 */
 	private Optional<ElementAttribute> threeDimensionalElement;
 
-	public ElementInformation(Integer oneMasterNumericClassification, Integer oneFixedElement,
-			String oneOptionalAdditionalElement, Integer twoMasterNumericClassification, Integer twoFixedElement,
-			String twoOptionalAdditionalElement, Integer threeMasterNumericClassification, Integer threeFixedElement,
+	public ElementInformation(Integer oneMasterNumericClassification, String oneFixedElement,
+			String oneOptionalAdditionalElement, Integer twoMasterNumericClassification, String twoFixedElement,
+			String twoOptionalAdditionalElement, Integer threeMasterNumericClassification, String threeFixedElement,
 			String threeOptionalAdditionalElement) {
 		this.oneDimensionalElement = new ElementAttribute(oneMasterNumericClassification, oneFixedElement,
 				oneOptionalAdditionalElement);
@@ -43,8 +43,8 @@ public class ElementInformation extends DomainObject {
 	public ElementInformation(ElementAttribute oneDimensionalElement, ElementAttribute twoDimensionalElement,
 			ElementAttribute threeDimensionalElement) {
 		this.oneDimensionalElement = oneDimensionalElement;
-		this.twoDimensionalElement = Optional.of(twoDimensionalElement);
-		this.threeDimensionalElement = Optional.of(threeDimensionalElement);
+		this.twoDimensionalElement = Optional.ofNullable(twoDimensionalElement);
+		this.threeDimensionalElement = Optional.ofNullable(threeDimensionalElement);
 	}
 
 }
