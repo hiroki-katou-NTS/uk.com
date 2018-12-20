@@ -285,11 +285,11 @@
                     </com:ko-if>
                     <com:ko-if bind="$vm.screenControl().visibleF3_18()">
                         <!--F3_18-->
-                        <div class="label label-annotate">#{i18n.getText('QMM019_170')}</div>
+                        <div class="label label-annotate">値は「 ー999:59 ～ 999:59 」 の範囲で入力してください。</div>
                     </com:ko-if>
                     <com:ko-if bind="$vm.screenControl().visibleF3_19()">
                         <!--F3_19-->
-                        <div class="label label-annotate">#{i18n.getText('QMM019_170')}</div>
+                        <div class="label label-annotate">値は「 ー9,9999.99 ～ 99,999.99 」 の範囲で入力してください。</div>
                     </com:ko-if>
                 </div>
                 <div class="cell valign-top">
@@ -297,7 +297,7 @@
                     <div data-bind="ntsAccordion: { enable: $vm.screenControl().enableF2_4() }">
                         <h3>#{i18n.getText('QMM019_113')}</h3>
                         <div class="acc-content">
-                            <!--F4_1-->
+                            <!--F5_1-->
                             <div class="ui-iggrid">
                                 <table class="acc-table" data-bind="with: attendanceItemSet">
                                     <colgroup>
