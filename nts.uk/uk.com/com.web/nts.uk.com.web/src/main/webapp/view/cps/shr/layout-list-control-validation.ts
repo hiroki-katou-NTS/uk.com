@@ -1,3 +1,0 @@
-module nts.layout.list {
-    
-}
