@@ -531,11 +531,11 @@ public class WorkingConditionDto extends PeregDomainDto {
 		dto.setVacationAddedTimeAtr(workingConditionItem.getVacationAddedTimeAtr().value);
 
 		workingConditionItem.getHolidayAddTimeSet().ifPresent(hat -> {
-			Optional.of(hat.getOneDay()).ifPresent(od -> dto.setOneDay(od.v()));
+			Optional.ofNullable(hat.getOneDay()).ifPresent(od -> dto.setOneDay(od.v()));
 
-			Optional.of(hat.getMorning()).ifPresent(od -> dto.setMorning(od.v()));
+			Optional.ofNullable(hat.getMorning()).ifPresent(od -> dto.setMorning(od.v()));
 
-			Optional.of(hat.getAfternoon()).ifPresent(od -> dto.setAfternoon(od.v()));
+			Optional.ofNullable(hat.getAfternoon()).ifPresent(od -> dto.setAfternoon(od.v()));
 		});
 
 		dto.setLaborSystem(workingConditionItem.getLaborSystem().value);
@@ -584,7 +584,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 	}
 
 	private static void setWeekDay(WorkingConditionDto dto, SingleDaySchedule weekDay) {
-		Optional.of(weekDay).ifPresent(wd -> {
+		Optional.ofNullable(weekDay).ifPresent(wd -> {
 			dto.setWeekdayWorkTypeCode(wd.getWorkTypeCode().map(i->i.v()).orElse(null));
 
 			wd.getWorkTimeCode().ifPresent(wt -> dto.setWeekdayWorkTimeCode(wt.v()));
