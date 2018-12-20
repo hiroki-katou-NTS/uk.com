@@ -169,7 +169,7 @@
             </div>
             <div  class="tab-content-2">
                 <div class = "basic" data-bind="if: selectedFormula().settingMethod() == 0">
-                    <div data-bind="if: basicFormulaSetting().masterBranchUse() == 0">
+                    <div class = "screenB"  data-bind="if: basicFormulaSetting().masterBranchUse() == 0">
                         <ui:include src="../b/index.xhtml"/>
                     </div>
                     <div class = "screenC" data-bind="if: basicFormulaSetting().masterBranchUse() == 1">

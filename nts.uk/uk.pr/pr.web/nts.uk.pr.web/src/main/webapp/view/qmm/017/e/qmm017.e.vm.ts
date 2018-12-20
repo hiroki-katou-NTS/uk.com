@@ -15,14 +15,27 @@ module nts.uk.pr.view.qmm017.e.viewmodel {
         //mix of 3 case
         targetItemCodeListItem: KnockoutObservableArray<any> = ko.observableArray([]);
         allowToDirectiveChange: boolean = false;
+        startMonth = moment().year();
         constructor() {
             let self = this;
             let params = getShared("QMM017_E_PARAMS");
             if (params) {
+                if (params.basicCalculationFormula.roundingMethod == null) params.basicCalculationFormula.roundingMethod = model.ROUNDING_METHOD.ROUND_OFF;
+                if (params.basicCalculationFormula.roundingResult == null) params.basicCalculationFormula.roundingResult = model.ROUNDING_RESULT.ROUND_OFF
                 self.basicCalculationFormula(new model.BasicCalculationFormula(params.basicCalculationFormula));
                 self.conditionItemName(params.basicCalculationFormula.masterUseName)
                 self.isShowConditionItem(params.originalScreen == 'C');
+                self.startMonth = params.yearMonth.startMonth;
             }
+            self.basicCalculationFormula().standardAmountClassification.subscribe(newValue => {
+                $('#E2_6').ntsError('clear');
+            })
+            self.basicCalculationFormula().coefficientClassification.subscribe(newValue => {
+                $('#E6_4').ntsError('clear');
+            })
+            self.basicCalculationFormula().baseItemClassification.subscribe(newValue => {
+                $('#E3_4').ntsError('clear');
+            })
             self.basicCalculationFormula().standardAmountClassification.subscribe(newValue => {
                 if (newValue && self.allowToDirectiveChange) self.getTargetItemCodeList(newValue);
             })
@@ -30,7 +43,7 @@ module nts.uk.pr.view.qmm017.e.viewmodel {
         getTargetItemCodeList(standardAmountCls): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             block.invisible();
-            service.getTargetItemCodeList(standardAmountCls).done(function(data) {
+            service.getTargetItemCodeList(standardAmountCls, self.startMonth).done(function(data) {
                 if (standardAmountCls == model.STANDARD_AMOUNT_CLS.PAYMENT_ITEM || standardAmountCls == model.STANDARD_AMOUNT_CLS.DEDUCTION_ITEM)
                     data = data.map(item => {return {code: item.itemNameCd, name: item.name}})
                 self.targetItemCodeListItem(data);
@@ -49,14 +62,13 @@ module nts.uk.pr.view.qmm017.e.viewmodel {
             block.invisible();
             let standardAmountCls = self.basicCalculationFormula().standardAmountClassification();
             return self.getTargetItemCodeList(standardAmountCls).done(function() {
-                $('#E5_1').focus();
                 block.clear();
             });
         }
         saveConfiguration () {
             let self = this;
             nts.uk.ui.errors.clearAll();
-            $('.nts-input').trigger("validate");
+            $('.nts-input').filter(':enabled').trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
@@ -70,13 +82,14 @@ module nts.uk.pr.view.qmm017.e.viewmodel {
         selectTargetItem () {
             let self = this;
             let basicCalculationFormula = self.fromKnockoutObservableToJS(self.basicCalculationFormula), targetItemCodeListItem = ko.toJS(self.targetItemCodeListItem), targetItemCodeList = basicCalculationFormula.targetItemCodeList;;
-            setShared("QMM017_F_PARAMS", {targetItemCodeListItem: targetItemCodeListItem, basicCalculationFormula: basicCalculationFormula});
+            setShared("QMM017_F_PARAMS", {startMonth: self.startMonth, targetItemCodeListItem: targetItemCodeListItem, basicCalculationFormula: basicCalculationFormula});
             modal("/view/qmm/017/f/index.xhtml").onClosed(function () {
                 var params = getShared("QMM017_F_RES_PARAMS");
                 if (params) {
                     self.basicCalculationFormula().targetItemCodeList(params.targetItemCodeList);
                     self.computeBaseAmountTargetItem();
                 }
+                $('#E2_4').focus();
             });
         }
         fromKnockoutObservableToJS (basicCalculationFormula: KnockoutObservable<any>) {
@@ -86,8 +99,8 @@ module nts.uk.pr.view.qmm017.e.viewmodel {
         }
         computeBaseAmountTargetItem () {
             let self = this, targetItemCodeList = self.fromKnockoutObservableToJS(self.basicCalculationFormula).targetItemCodeList;
-            let targetItem = ko.toJS(self.targetItemCodeListItem).filter(item => targetItemCodeList.indexOf(item.code) > -1).map(item => item.code + item.name);
-            if (targetItem) self.baseAmountTargetItem(targetItem.join(" "));
+            let targetItem = ko.toJS(self.targetItemCodeListItem).filter(item => targetItemCodeList.indexOf(item.code) > -1).map(item => item.name);
+            if (targetItem) self.baseAmountTargetItem(targetItem.join(" ＋ "));
         }
     }
 }

@@ -139,7 +139,10 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             if (self.screenMode() == model.SCREEN_MODE.NEW || self.screenMode() == model.SCREEN_MODE.UPDATE_FORMULA ){
                 $('.tab-content-1 .nts-input').filter(':enabled').trigger("validate");
             } else {
-                if (self.selectedFormula().settingMethod() == model.FORMULA_SETTING_METHOD.BASIC_SETTING) $('.basic .nts-input').trigger("validate");
+                if (self.selectedFormula().settingMethod() == model.FORMULA_SETTING_METHOD.BASIC_SETTING){
+                    let screenClass = ".screenB";
+                    $('.basic .nts-input').filter(':enabled').trigger("validate");
+                }
                 else {
                     $('.detail .nts-input').filter(':enabled').trigger("validate");
                     self.screenDViewModel.validateSyntax();
@@ -149,7 +152,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             let formulaSettingCommand = {
                 basicFormulaSettingCommand: ko.toJS(self.basicFormulaSetting),
                 detailFormulaSettingCommand: ko.toJS(self.detailFormulaSetting),
-                basicCalculationFormulaCommand: null,
+                basicCalculationFormulaCommand: [],
                 yearMonth: ko.toJS(self.selectedHistory)
             }
             let basicCalculationFormula = [];
@@ -157,7 +160,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 let fixedMasterUseCode = "0000000000";
                 basicCalculationFormula.push(ko.toJS(self.masterBasicCalculationFormula));
                 basicCalculationFormula[0].masterUseCode = fixedMasterUseCode;
-                if (command.nestedAtr == model.NESTED_USE_CLS.NOT_USE) {
+                if (formulaSettingCommand.basicFormulaSettingCommand.masterBranchUse == model.MASTER_BRANCH_USE.USE) {
                     basicCalculationFormula.push.apply(basicCalculationFormula, ko.toJS(self.basicCalculationFormulaList));
                 }
             } else {
@@ -177,6 +180,10 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             } else {
                 self.updateFormula(command);
             }
+        }
+
+        formatMasterCalculationFormula () {
+
         }
 
         addFormula (command) {
@@ -452,10 +459,13 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         doMasterConfiguration () {
             let self = this;
             // unknown which item to be affect. temporary not link b to e
-            setShared("QMM017_E_PARAMS", {basicCalculationFormula: ko.toJS(self.masterBasicCalculationFormula), originalScreen: 'B'});
+            setShared("QMM017_E_PARAMS", {yearMonth: ko.toJS(self.selectedHistory), basicCalculationFormula: ko.toJS(self.masterBasicCalculationFormula), originalScreen: 'B'});
             modal("/view/qmm/017/e/index.xhtml").onClosed(function () {
                 let params = getShared("QMM017_E_RES_PARAMS");
-                if (params) self.masterBasicCalculationFormula(new model.BasicCalculationFormula(params.basicCalculationFormula));
+                if (params){
+                    params.basicCalculationFormula.calculationFormulaClassification = model.CALCULATION_FORMULA_CLS.FORMULA;
+                    self.masterBasicCalculationFormula(new model.BasicCalculationFormula(params.basicCalculationFormula));
+                }
             });
 
         };
@@ -463,7 +473,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         doConfiguration (index) {
             let self = this;
             // unknown which item to be affect. temporary not link b to e
-            setShared("QMM017_E_PARAMS", {masterBasicCalculationFormula: ko.toJS(self.masterBasicCalculationFormula), basicCalculationFormula: ko.toJS(self.basicCalculationFormulaList)[index], originalScreen: 'C'});
+            setShared("QMM017_E_PARAMS", {yearMonth: ko.toJS(self.selectedHistory), masterBasicCalculationFormula: ko.toJS(self.masterBasicCalculationFormula), basicCalculationFormula: ko.toJS(self.basicCalculationFormulaList)[index], originalScreen: 'C'});
             modal("/view/qmm/017/e/index.xhtml").onClosed(function () {
                 let params = getShared("QMM017_E_RES_PARAMS");
                 if (params){

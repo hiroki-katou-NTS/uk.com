@@ -6,4 +6,5 @@
 
 #I1_6 label:nth-child(2) {
     margin-top: 90px;
+    display: block !important;
 }

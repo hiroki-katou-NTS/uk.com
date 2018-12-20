@@ -253,15 +253,6 @@ module nts.uk.pr.view.qmm017.share.model {
         ];
     }
 
-    export function getRoundingMethodEnumModel () {
-        return [
-            new EnumModel(ROUNDING_METHOD.ROUND_OFF, '切り上げ'),
-            new EnumModel(ROUNDING_METHOD.ROUND_UP, 'プラス調整'),
-            new EnumModel(ROUNDING_METHOD.TRUNCATION, 'マイナス調整'),
-            new EnumModel(ROUNDING_METHOD.DO_NOTHING, 'プラスマイナス反転')
-        ];
-    }
-
     export enum ADJUSTMENT_CLASSIFICATION {
         NOT_ADJUST = 0,
         PLUS_ADJUST = 1,
@@ -717,7 +708,7 @@ module nts.uk.pr.view.qmm017.share.model {
                 return null;
             }, this);
             ko.computed(function() {
-                this.formulaType(), this.standardAmountClassification(), this.baseItemClassification(), this.coefficientClassification(), this.adjustmentClassification();
+                this.formulaType();
                 nts.uk.ui.errors.clearAll();
             }, this);
         }

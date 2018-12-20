@@ -33,7 +33,7 @@
                         </th>
                     <th>
                         <!--C2_3-->
-                        <div id  = "C2_7" class="cf" tabindex="11" data-bind="ntsSwitchButton: {
+                        <div id  = "C2_7" class="cf switch-button" tabindex="11" data-bind="ntsSwitchButton: {
 									name: '#[QMM017_36]',
 									options: calculationFormulaFixedFormulaItem,
 									optionsValue: 'value',
@@ -43,7 +43,7 @@
                     </th>
                     <th>
                         <!--C2_6-->
-                        <div data-bind = "if: calculationFormulaClassification() == 0">
+                        <div data-bind = "visible: calculationFormulaClassification() == 0">
                             <input tabindex="12" data-bind="ntsNumberEditor: {
                                 value: basicCalculationFormula,
                                 constraint: 'FixedAmount',
@@ -51,7 +51,9 @@
                                 option: {
                                     decimallength: 3
                                 },
-                                required: true}" />
+                                required: true,
+                                enable: calculationFormulaClassification() == 0
+                                }" />
                         </div>
                         <div data-bind = "if: calculationFormulaClassification() == 1">
                             <!--C2_7; C2_8-->
@@ -87,7 +89,7 @@
                     <td data-bind="text: masterUseName"></td>
                     <td>
                         <!--C3_6-->
-                        <div class="cf" tabindex="16" data-bind="ntsSwitchButton: {
+                        <div class="cf switch-button" tabindex="16" data-bind="ntsSwitchButton: {
 									name: '#[QMM017_36]',
 									options: calculationFormulaClassificationItem,
 									optionsValue: 'value',
@@ -97,7 +99,7 @@
                     </td>
                     <td>
                         <!--C3_10-->
-                        <div data-bind = "if: calculationFormulaClassification() == 0">
+                        <div data-bind = "visible: calculationFormulaClassification() == 0">
                             <input tabindex="17" data-bind="ntsNumberEditor: {
                                 value: basicCalculationFormula,
                                 constraint: 'FixedAmount',
@@ -105,7 +107,9 @@
                                 option: {
                                     decimallength: 3
                                 },
-                                required: true}" />
+                                required: true,
+                                enable: calculationFormulaClassification() == 0
+                                }" />
                         </div>
                         <div data-bind = "visible: calculationFormulaClassification() == 1">
                             <!--C3_11-->

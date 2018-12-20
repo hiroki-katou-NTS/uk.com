@@ -5,17 +5,17 @@ module nts.uk.pr.view.qmm017.f.service {
 
     let paths = {
         getAllStatementItemData: "ctx/pr/core/wageprovision/statementitem/getAllStatementItemData/{0}/{1}",
-        getAllPayrollUnitPriceByCID: "core/wageprovision/companyuniformamount/getAllPayrollUnitPriceByCID",
+        getAllPayrollUnitPriceByYearMonth: "core/wageprovision/companyuniformamount/getAllPayrollUnitPriceByYearMonth{0}",
         getAllUnitPriceName: "ctx/pr/core/wageprovision/unitpricename/getAllUnitPriceName/{0}"
     }
 
-    export function getTargetItemCodeList (standardAmountCls: number) : JQueryPromise<any> {
+    export function getTargetItemCodeList (standardAmountCls: number, yearMonth) : JQueryPromise<any> {
         if (standardAmountCls == standardAmountClsEnum.DEDUCTION_ITEM || standardAmountCls == standardAmountClsEnum.PAYMENT_ITEM){
             // PAYMENT_ITEM(0, "支給項目")
-            return getAllStatementItemData(0, false);
+            return getAllStatementItemData(standardAmountCls - 1, false);
         }
         if (standardAmountCls == standardAmountClsEnum.INDIVIDUAL_UNIT_PRICE_ITEM) return getAllUnitPriceName(false);
-        return getAllPayrollUnitPrice();
+        return getAllPayrollUnitPriceByYearMonth(yearMonth);
     }
 
     export function getAllStatementItemData(categoryAtr: number, isdisplayAbolition: boolean): JQueryPromise<any> {
@@ -23,8 +23,9 @@ module nts.uk.pr.view.qmm017.f.service {
         return ajax('pr', _path);
     }
 
-    export function getAllPayrollUnitPrice() : JQueryPromise<any> {
-        return nts.uk.request.ajax(paths.getAllPayrollUnitPriceByCID);
+    export function getAllPayrollUnitPriceByYearMonth(yearMonth) : JQueryPromise<any> {
+        let _path = nts.uk.text.format(paths.getAllPayrollUnitPriceByYearMonth, yearMonth);
+        return nts.uk.request.ajax("pr", _path);
     }
 
     export function getAllUnitPriceName(isdisplayAbolition: boolean) : JQueryPromise<any> {

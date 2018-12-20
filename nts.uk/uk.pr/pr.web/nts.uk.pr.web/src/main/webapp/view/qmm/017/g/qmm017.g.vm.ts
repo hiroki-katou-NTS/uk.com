@@ -5,8 +5,8 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
         trialCalculationResult: KnockoutObservable<number> = ko.observable(null);
         formulaContent: KnockoutObservable<string> = ko.observable(null);
         formulaElement: any;
-
-        CONCAT_CHAR = '＠'; COMMA_CHAR = ',';
+        OPEN_CURLY_BRACKET = '{'; CLOSE_CURLY_BRACKET = '}';
+        COMMA_CHAR = ',';
         PLUS = '＋'; SUBTRACT = 'ー'; MULTIPLICY = '×'; DIVIDE = '÷'; POW = '^'; OPEN_BRACKET = '('; CLOSE_BRACKET = ')';
         GREATER = '>'; LESS = '<'; LESS_OR_EQUAL = '≦'; GREATER_OR_EQUAL = '≧'; EQUAL = '＝'; DIFFERENCE = '≠';
 
@@ -102,7 +102,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
 
         getSystemValueBySystemVariable (systemVariable) {
             let self = this;
-            let functionName = systemVariable.substring(systemVariable.indexOf(self.CONCAT_CHAR) + 1, systemVariable.indexOf(self.OPEN_BRACKET));
+            let functionName = systemVariable.substring(systemVariable.indexOf(self.OPEN_CURLY_BRACKET) + 1, systemVariable.indexOf(self.CLOSE_CURLY_BRACKET));
             switch (functionName) {
                 case self.SYSTEM_YMD_DATE: return moment().format("YYYYMMDD");
                 case self.SYSTEM_YM_DATE: return moment().format("YYYYMM");
@@ -195,7 +195,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
 
         calculateSingleFunction (functionSyntax) {
             let self = this;
-            let functionName = functionSyntax.substring(functionSyntax.indexOf(self.CONCAT_CHAR) + 1, functionSyntax.indexOf(self.OPEN_BRACKET)),
+            let functionName = functionSyntax.substring(functionSyntax.indexOf(self.OPEN_CURLY_BRACKET) + 1, functionSyntax.indexOf(self.CLOSE_CURLY_BRACKET)),
                 functionParameter = functionSyntax.substring(functionSyntax.indexOf(self.OPEN_BRACKET) + 1, functionSyntax.lastIndexOf(self.CLOSE_BRACKET)).split(self.COMMA_CHAR).map(item => item.trim());
             if (functionName == self.CONDITIONAL)
                 return self.calculateFunctionCondition(functionParameter);

@@ -55,7 +55,8 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         detailCalculationFormula: KnockoutObservableArray<any> = ko.observableArray([]);
         calculationFormulaDictionary:Array<any> = [];
         // formula
-        CONCAT_CHAR = '＠'; COMMA_CHAR = ',';
+        OPEN_CURLY_BRACKET = '{'; CLOSE_CURLY_BRACKET = '}';
+        COMMA_CHAR = ',';
         PLUS = '＋'; SUBTRACT = 'ー'; MULTIPLICY = '×'; DIVIDE = '÷'; POW = '^'; OPEN_BRACKET = '('; CLOSE_BRACKET = ')';
         GREATER = '>'; LESS = '<'; LESS_OR_EQUAL = '≦'; GREATER_OR_EQUAL = '≧'; EQUAL = '＝'; DIFFERENCE = '≠';
         operators: Array<any>
@@ -72,15 +73,18 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         SYSTEM_YMD_DATE = 'システム日付（年月日）'; SYSTEM_YM_DATE = 'システム日付（年月）'; SYSTEM_Y_DATE = 'システム日付（年）'; PROCESSING_YEAR_MONTH = '処理年月';
         PROCESSING_YEAR = '処理年'; REFERENCE_TIME = '基準時間'; STANDARD_DAY = '基準日数'; WORKDAY = '要勤務日数';
 
-        // column for listbox
-        listBoxColumn: KnockoutObservableArray<any> = ko.observableArray([
-            { key: 'code', length: 2 },
-            { key: 'name', length: 8, template: '<div class = "limited-label"></div>' }
-        ])
-        listBoxWageTableColumn: KnockoutObservableArray<any> = ko.observableArray([
-            { key: 'formulaCode', length: 2 },
-            { key: 'formulaName', length: 8, template: '<div class = "limited-label"></div>' }
-        ])
+        autoComplete = ko.observableArray([
+            new model.ItemModel('001', '基本給'),
+            new model.ItemModel('150', '役職手当'),
+            new model.ItemModel('ABC', '基12本ghj給'),
+            new model.ItemModel('002', '基本給'),
+            new model.ItemModel('153', '役職手当'),
+            new model.ItemModel('AB4', '基12本ghj給'),
+            new model.ItemModel('003', '基本給'),
+            new model.ItemModel('155', '役職手当'),
+            new model.ItemModel('AB5', '基12本ghj給')
+        ]);
+
         constructor() {
             var self = this;
             self.initTabPanel();
@@ -249,26 +253,26 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             self.calculationFormulaDictionary.push({displayContent: self.ATTENDANCE, registerContent: '0002_0'});
             self.calculationFormulaDictionary.push({displayContent: self.COMPANY_UNIT_PRICE, registerContent: 'U000_0'});
             self.calculationFormulaDictionary.push({displayContent: self.INDIVIDUAL_UNIT_PRICE, registerContent: 'U001_0'});
-            self.calculationFormulaDictionary.push({displayContent: self.FUNCTION + self.CONCAT_CHAR + self.CONDITIONAL, registerContent: 'Func_00001'});
-            self.calculationFormulaDictionary.push({displayContent: self.FUNCTION + self.CONCAT_CHAR + self.AND, registerContent: 'Func_00002'});
-            self.calculationFormulaDictionary.push({displayContent: self.FUNCTION + self.CONCAT_CHAR + self.OR, registerContent: 'Func_00003'});
-            self.calculationFormulaDictionary.push({displayContent: self.FUNCTION + self.CONCAT_CHAR + self.ROUND_OFF, registerContent: 'Func_00004'});
-            self.calculationFormulaDictionary.push({displayContent: self.FUNCTION + self.CONCAT_CHAR + self.TRUNCATION, registerContent: 'Func_00005'});
-            self.calculationFormulaDictionary.push({displayContent: self.FUNCTION + self.CONCAT_CHAR + self.ROUND_UP, registerContent: 'Func_00006'});
-            self.calculationFormulaDictionary.push({displayContent: self.FUNCTION + self.CONCAT_CHAR + self.MAX_VALUE, registerContent: 'Func_00007'});
-            self.calculationFormulaDictionary.push({displayContent: self.FUNCTION + self.CONCAT_CHAR + self.MIN_VALUE, registerContent: 'Func_00008'});
-            self.calculationFormulaDictionary.push({displayContent: self.FUNCTION + self.CONCAT_CHAR + self.NUM_OF_FAMILY_MEMBER, registerContent: 'Func_00009'});
-            self.calculationFormulaDictionary.push({displayContent: self.FUNCTION + self.CONCAT_CHAR + self.YEAR_MONTH, registerContent: 'Func_00010'});
-            self.calculationFormulaDictionary.push({displayContent: self.FUNCTION + self.CONCAT_CHAR + self.YEAR_EXTRACTION, registerContent: 'Func_00011'});
-            self.calculationFormulaDictionary.push({displayContent: self.FUNCTION + self.CONCAT_CHAR + self.MONTH_EXTRACTION, registerContent: 'Func_00012'});
-            self.calculationFormulaDictionary.push({displayContent: self.VARIABLE + self.CONCAT_CHAR + self.SYSTEM_YMD_DATE, registerContent: 'vari_00001'});
-            self.calculationFormulaDictionary.push({displayContent: self.VARIABLE + self.CONCAT_CHAR + self.SYSTEM_Y_DATE, registerContent: 'vari_00002'});
-            self.calculationFormulaDictionary.push({displayContent: self.VARIABLE + self.CONCAT_CHAR + self.SYSTEM_YM_DATE, registerContent: 'vari_00003'});
-            self.calculationFormulaDictionary.push({displayContent: self.VARIABLE + self.CONCAT_CHAR + self.PROCESSING_YEAR_MONTH, registerContent: 'vari_00004'});
-            self.calculationFormulaDictionary.push({displayContent: self.VARIABLE + self.CONCAT_CHAR + self.PROCESSING_YEAR, registerContent: 'vari_00005'});
-            self.calculationFormulaDictionary.push({displayContent: self.VARIABLE + self.CONCAT_CHAR + self.REFERENCE_TIME, registerContent: 'vari_00006'});
-            self.calculationFormulaDictionary.push({displayContent: self.VARIABLE + self.CONCAT_CHAR + self.STANDARD_DAY, registerContent: 'vari_00007'});
-            self.calculationFormulaDictionary.push({displayContent: self.VARIABLE + self.CONCAT_CHAR + self.WORKDAY, registerContent: 'vari_00008'});
+            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.FUNCTION, self.CONDITIONAL)    , registerContent: 'Func_00001'});
+            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.FUNCTION, self.AND), registerContent: 'Func_00002'});
+            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.FUNCTION, self.OR), registerContent: 'Func_00003'});
+            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.FUNCTION, self.ROUND_OFF), registerContent: 'Func_00004'});
+            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.FUNCTION, self.TRUNCATION), registerContent: 'Func_00005'});
+            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.FUNCTION, self.ROUND_UP), registerContent: 'Func_00006'});
+            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.FUNCTION, self.MAX_VALUE), registerContent: 'Func_00007'});
+            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.FUNCTION, self.MIN_VALUE), registerContent: 'Func_00008'});
+            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.FUNCTION, self.NUM_OF_FAMILY_MEMBER), registerContent: 'Func_00009'});
+            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.FUNCTION, self.YEAR_MONTH), registerContent: 'Func_00010'});
+            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.FUNCTION, self.YEAR_EXTRACTION), registerContent: 'Func_00011'});
+            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.FUNCTION, self.MONTH_EXTRACTION), registerContent: 'Func_00012'});
+            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.VARIABLE, self.SYSTEM_YMD_DATE), registerContent: 'vari_00001'});
+            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.VARIABLE, self.SYSTEM_Y_DATE), registerContent: 'vari_00002'});
+            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.VARIABLE, self.SYSTEM_YM_DATE), registerContent: 'vari_00003'});
+            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.VARIABLE, self.PROCESSING_YEAR_MONTH), registerContent: 'vari_00004'});
+            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.VARIABLE, self.PROCESSING_YEAR), registerContent: 'vari_00005'});
+            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.VARIABLE, self.REFERENCE_TIME), registerContent: 'vari_00006'});
+            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.VARIABLE, self.STANDARD_DAY), registerContent: 'vari_00007'});
+            self.calculationFormulaDictionary.push({displayContent: self.combineElementTypeAndName(self.VARIABLE, self.WORKDAY), registerContent: 'vari_00008'});
             self.calculationFormulaDictionary.push({displayContent: self.FORMULA, registerContent: 'calc_00'});
             self.calculationFormulaDictionary.push({displayContent: self.WAGE_TABLE, registerContent: 'wage_00'});
         }
@@ -283,34 +287,34 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             } else {
                 appendFormula = self.ATTENDANCE;
             }
-            self.addToFormulaByPosition(appendFormula + self.CONCAT_CHAR + selectedStatementItemName);
+            self.addToFormulaByPosition(self.combineElementTypeAndName(appendFormula, selectedStatementItemName));
         }
 
         addUnitPriceItem () {
             let self = this, selectedUnitPriceValue = self.selectedPriceItemCategoryValue(), appendFormula = "";
             let selectedUnitPrice:any = _.find(self.unitPriceItemList(), {code: self.selectedUnitPriceItemCode()});
             if (selectedUnitPriceValue == model.UNIT_PRICE_ITEM_CATEGORY.COMPANY_UNIT_PRICE_ITEM) {
-                appendFormula = self.COMPANY_UNIT_PRICE + self.CONCAT_CHAR + (selectedUnitPrice ? selectedUnitPrice.name : "");
+                appendFormula = self.combineElementTypeAndName(self.COMPANY_UNIT_PRICE, (selectedUnitPrice ? selectedUnitPrice.name : ""));
             } else {
-                appendFormula = self.INDIVIDUAL_UNIT_PRICE + self.CONCAT_CHAR + (selectedUnitPrice ? selectedUnitPrice.name : "");
+                appendFormula = self.combineElementTypeAndName(self.INDIVIDUAL_UNIT_PRICE, (selectedUnitPrice ? selectedUnitPrice.name : ""));
             }
             self.addToFormulaByPosition(appendFormula);
         }
         addFunctionItem () {
             let self = this, selectedFunctionItem:any = self.functionListItem()[self.selectedFunctionListValue()];
-            self.addToFormulaByPosition(self.FUNCTION + self.CONCAT_CHAR + selectedFunctionItem.name);
+            self.addToFormulaByPosition(self.combineElementTypeAndName(self.FUNCTION, selectedFunctionItem.name));
         }
         addVariableItem () {
             let self = this, selectedSystemVariableItem:any = self.systemVariableListItem()[self.selectedSystemVariableListValue()];
-            self.addToFormulaByPosition(self.VARIABLE + self.CONCAT_CHAR + selectedSystemVariableItem.name);
+            self.addToFormulaByPosition(self.combineElementTypeAndName(self.VARIABLE, selectedSystemVariableItem.name));
         }
         addFormulaItem () {
             let self = this;
-            self.addToFormulaByPosition(self.FORMULA + self.CONCAT_CHAR + self.selectedFormula().formulaName());
+            self.addToFormulaByPosition(self.combineElementTypeAndName(self.FORMULA, self.selectedFormula().formulaName()));
         }
         addWageTableItem () {
             let self = this;
-            self.addToFormulaByPosition(self.WAGE_TABLE + self.CONCAT_CHAR + self.selectedWageTable().name());
+            self.addToFormulaByPosition(self.combineElementTypeAndName(self.WAGE_TABLE, self.selectedWageTable().name()));
         }
 
         addToFormulaByPosition (formulaToAdd: string) {
@@ -338,9 +342,6 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             let symbol = targetItem.innerText;
             this.addToFormulaByPosition(symbol);
         }
-        convertToPostfix(formula: string) {
-
-        }
         validateSyntaxOnClick () {
             let self = this;
             self.validateSyntax();
@@ -351,20 +352,41 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             }
         }
         validateSyntax () {
-            let self = this, formula = ko.toJS(self.displayDetailCalculationFormula), operand, prevOperand, operands, dotIndex,
-                operators = self.operators, separators: string = self.separators.join('|'),
-                index = 0, currentChar, nextChar, nextElement, textInsideDoubleQuoteRegex = /"((?:\\.|[^"\\])*)"/;
+            let self = this, formula = self.displayDetailCalculationFormula();
             $('#D3_5').ntsError('clear');
             if (formula.length == 0) {
                 self.setErrorToFormula('MsgQ_13', []);
                 return;
             }
-            if (formula.split(self.FORMULA).length > 1) self.setErrorToFormula('MsgQ_19', []);
+            self.checkDivideZero(formula);
+            self.checkBracket (formula);
+            self.checkOperator (formula);
+            self.checkInputContent(formula);
+            self.checkFunctionSyntax(formula);
+        }
+        checkDivideZero (formula) {
+            let self = this;
             if (formula.indexOf("÷0") > -1) self.setErrorToFormula('MsgQ_11', []);
-            if (formula.split(self.OPEN_BRACKET).length != formula.split(')').length) {
+        }
+        checkBracket (formula) {
+            let self = this, index, openBracketNum = 0, closeBracketNum = 0, currentChar;
+            for(index = 0; index < formula.length ; index ++ ) {
+                currentChar = formula [index];
+                if (currentChar == self.OPEN_BRACKET) openBracketNum ++;
+                if (currentChar == self.CLOSE_BRACKET) closeBracketNum ++;
+                if (openBracketNum - closeBracketNum < 0) {
+                    self.setErrorToFormula('MsgQ_8', []);
+                    return;
+                }
+            }
+            if (openBracketNum != closeBracketNum) {
                 self.setErrorToFormula('MsgQ_8', []);
             }
-            for(index = 0 ; index < formula.length; index ++){
+            return;
+        }
+        checkOperator(formula) {
+            let self = this, index = 0, currentChar, nextChar, nextElement, operators = self.operators;
+                for(index = 0 ; index < formula.length; index ++){
                 currentChar = formula[index];
                 if (operators.indexOf(currentChar)>-1){
                     nextChar = formula[index+1];
@@ -373,22 +395,23 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     }
                 }
             }
+        }
+        checkInputContent (formula) {
+            let self = this, operand, prevOperand, operands, dotIndex,
+                separators: string = self.separators.join('|'),
+                textInsideDoubleQuoteRegex = /"((?:\\.|[^"\\])*)"/;
             operands = formula.split(new RegExp(separators, 'g')).map(item => item.trim()).filter(item => {
                 return (item && item.length);
             });
-            self.validateFunctionSyntax(formula);
             for(operand of operands) {
                 if (isNaN(operand)) {
-                    operand = operand.trim();
-                    if (! (operand.indexOf(self.CONCAT_CHAR) > -1) && operand.replace(textInsideDoubleQuoteRegex, "").length > 0) {
+                    if (! (operand.indexOf(self.OPEN_CURLY_BRACKET) > -1) && operand.replace(textInsideDoubleQuoteRegex, "").length > 0) {
                         self.setErrorToFormula('MsgQ_10', [operand]);
                         continue;
                     }
-                    let preString = operand.split(self.CONCAT_CHAR)[0], postString = operand.split(self.CONCAT_CHAR)[1];
-                    if (!postString) return;
-                    if (preString.startsWith(self.FUNCTION)) postString.substring(0, postString.indexOf(self.OPEN_BRACKET));
-                    if (self.acceptPrefix.indexOf(preString) < 0) self.setErrorToFormula('MsgQ_10', [preString]);
-                    if (!self.checkPostString(preString, postString)) self.setErrorToFormula('MsgQ_10', [operand]);
+                    let elementType = operand.substring(0, operand.indexOf(self.OPEN_CURLY_BRACKET)), elementName = operand.substring(operand.indexOf(self.OPEN_CURLY_BRACKET) + 1, operand.indexOf(self.CLOSE_CURLY_BRACKET));
+                    if (self.acceptPrefix.indexOf(elementType) < 0) self.setErrorToFormula('MsgQ_10', [operand]);
+                    if (!self.checkElementName(elementType, elementName)) self.setErrorToFormula('MsgQ_10', [operand]);
                 } else {
                     dotIndex = operand.indexOf('.');
                     if (dotIndex > - 1 && operand.length - 1 - dotIndex > 5) self.setErrorToFormula('MsgQ_18', [operand]);
@@ -396,30 +419,30 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 prevOperand = operand;
             }
         }
-        checkPostString (preString: string, postString: string): boolean {
+        checkElementName (elementType: string, elementName: string): boolean {
             let self = this;
-            if (preString == self.PAYMENT)
-                return self.paymentItemList.some(item => {return item.name == postString});
-            if (preString == self.DEDUCTION)
-                return self.deductionItemList.some(item => {return item.name == postString});
-            if (preString == self.ATTENDANCE)
-                return self.attendanceItemList.some(item => {return item.name == postString});
-            if (preString == self.COMPANY_UNIT_PRICE)
-                return self.companyUnitPriceList.some(item => {return item.name == postString});
-            if (preString == self.INDIVIDUAL_UNIT_PRICE)
-                return self.individualUnitPriceList.some(item => {return item.name == postString});
-            if (preString == self.FORMULA)
-                return (ko.toJS(self.formulaList).some(item => {return item.formulaName == postString}));
-            if (preString == self.WAGE_TABLE )
-                return (ko.toJS(self.wageTableList).some(item => {return item.name == postString}));
-            if (preString == self.FUNCTION )
-                return (self.acceptFunctionPostfix.indexOf(postString) > -1);
-            if (preString == self.VARIABLE )
-                return (self.acceptVariablePostfix.indexOf(postString) > -1);
+            if (elementType == self.PAYMENT)
+                return self.paymentItemList.some(item => {return item.name == elementName});
+            if (elementType == self.DEDUCTION)
+                return self.deductionItemList.some(item => {return item.name == elementName});
+            if (elementType == self.ATTENDANCE)
+                return self.attendanceItemList.some(item => {return item.name == elementName});
+            if (elementType == self.COMPANY_UNIT_PRICE)
+                return self.companyUnitPriceList.some(item => {return item.name == elementName});
+            if (elementType == self.INDIVIDUAL_UNIT_PRICE)
+                return self.individualUnitPriceList.some(item => {return item.name == elementName});
+            if (elementType == self.FORMULA)
+                return (ko.toJS(self.formulaList).some(item => {return item.formulaName == elementName}));
+            if (elementType == self.WAGE_TABLE )
+                return (ko.toJS(self.wageTableList).some(item => {return item.name == elementName}));
+            if (elementType == self.FUNCTION )
+                return (self.acceptFunctionPostfix.indexOf(elementName) > -1);
+            if (elementType == self.VARIABLE )
+                return (self.acceptVariablePostfix.indexOf(elementName) > -1);
             return true;
 
         }
-        validateFunctionSyntax (formula) {
+        checkFunctionSyntax (formula) {
             let self = this, startFunctionIndex, endFunctionIndex, functionsSyntax = [], index;
             while (formula.indexOf(self.FUNCTION) > -1) {
                 startFunctionIndex = formula.lastIndexOf(self.FUNCTION);
@@ -434,7 +457,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         }
         checkFunctionSyntax (functionSyntax) {
             let self = this, conditionRegex = new RegExp( ['\\\<', '>', '\\\≧', '\\\≦', '\\\＝', '\\\≠'].join('|'));;
-            let functionName = functionSyntax.substring(functionSyntax.indexOf(self.CONCAT_CHAR) + 1, functionSyntax.indexOf(self.OPEN_BRACKET)),
+            let functionName = functionSyntax.substring(functionSyntax.indexOf(self.OPEN_CURLY_BRACKET) + 1, functionSyntax.indexOf(self.OPEN_BRACKET)),
                 functionParameter = functionSyntax.substring(functionSyntax.indexOf(self.OPEN_BRACKET) + 1, functionSyntax.lastIndexOf(self.CLOSE_BRACKET)).split(self.COMMA_CHAR).map(item => item.trim());
             if (functionParameter.length == 0) self.setErrorToFormula('MsgQ_15', [functionName]);
             if (functionName == self.CONDITIONAL){
@@ -504,14 +527,14 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             return formulaElements;
         }
         convertToRegisterContent (formulaElement) {
-            let self = this, elementName = formulaElement.split(self.CONCAT_CHAR)[1];
+            let self = this, elementName = formulaElement.substring(formulaElement.indexOf(self.OPEN_CURLY_BRACKET) + 1, formulaElement.indexOf(self.CLOSE_CURLY_BRACKET));
             if (!elementName) return formulaElement;
             let calculationFormulaTransfer;
             if (formulaElement.startsWith(self.FUNCTION) || formulaElement.startsWith(self.VARIABLE)){
                 calculationFormulaTransfer = self.calculationFormulaDictionary.filter(item => {return item.displayContent == formulaElement}) [0];
                 return calculationFormulaTransfer.registerContent;
             }
-            calculationFormulaTransfer = self.calculationFormulaDictionary.filter(item => {return item.displayContent.startsWith(formulaElement.substring(0, formulaElement.indexOf(self.CONCAT_CHAR)))})[0];
+            calculationFormulaTransfer = self.calculationFormulaDictionary.filter(item => {return item.displayContent.startsWith(formulaElement.substring(0, formulaElement.indexOf(self.OPEN_CURLY_BRACKET)))})[0];
             if (formulaElement.startsWith(self.PAYMENT))
                 return calculationFormulaTransfer.registerContent + _.find(self.paymentItemList, {name: elementName}).code;
             if (formulaElement.startsWith(self.DEDUCTION))
@@ -547,23 +570,33 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             }
             calculationFormulaTransfer = self.calculationFormulaDictionary.filter(item => {return item.registerContent.startsWith(elementType)}) [0];
             if (elementType.startsWith("0000_0"))
-                return calculationFormulaTransfer.displayContent + self.CONCAT_CHAR + _.find(self.paymentItemList, {code: elementCode}).name;
+                return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, _.find(self.paymentItemList, {code: elementCode}).name);
             if (elementType.startsWith("0001_0"))
-                return calculationFormulaTransfer.displayContent + self.CONCAT_CHAR + _.find(self.deductionItemList, {code: elementCode}).name;
+                return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, _.find(self.deductionItemList, {code: elementCode}).name);
             if (elementType.startsWith("0002_0"))
-                return calculationFormulaTransfer.displayContent + self.CONCAT_CHAR + _.find(self.attendanceItemList, {code: elementCode}).name;
+                return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, _.find(self.attendanceItemList, {code: elementCode}).name);
             if (elementType.startsWith("U000_0"))
-                return calculationFormulaTransfer.displayContent + self.CONCAT_CHAR + _.find(self.companyUnitPriceList, {code: elementCode}).name;
+                return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, _.find(self.companyUnitPriceList, {code: elementCode}).name);
             if (elementType.startsWith("U001_0"))
-                return calculationFormulaTransfer.displayContent + self.CONCAT_CHAR + _.find(self.individualUnitPriceList, {code: elementCode}).name;
+                return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, _.find(self.individualUnitPriceList, {code: elementCode}).name);
             if (elementType.startsWith("calc")) {
                 elementCode = formulaElement.substring(7, formulaElement.length);
-                return calculationFormulaTransfer.displayContent + self.CONCAT_CHAR + _.find(ko.toJS(self.formulaList), {code: elementCode}).name;
+                return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, _.find(ko.toJS(self.formulaList), {code: elementCode}).name);
             }
             if (elementType.startsWith("wage")) {
                 elementCode = formulaElement.substring(7, formulaElement.length);
-                return calculationFormulaTransfer.displayContent + self.CONCAT_CHAR + _.find(ko.toJS(self.wageTableList), {code: elementCode}).name;
+                return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent,  _.find(ko.toJS(self.wageTableList), {code: elementCode}).name);
             }
+        }
+        combineElementTypeAndName (elementType, elementName) {
+            let self = this;
+            return elementType + self.OPEN_CURLY_BRACKET + elementName + self.CLOSE_CURLY_BRACKET;
+        }
+        showHindBox () {
+            let self = this;
+            $('#D3_5').on('change', function () {
+
+            })
         }
     }
 }
