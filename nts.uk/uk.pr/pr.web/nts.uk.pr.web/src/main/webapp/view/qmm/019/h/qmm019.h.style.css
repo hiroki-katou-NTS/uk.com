@@ -48,3 +48,8 @@
 #H1_15 {
     vertical-align: top;
 }
+
+.grid-area {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}

@@ -9,7 +9,7 @@
     <ui:define name="htmlHead">
         <script type='text/javascript'>
             var dialogSize = {
-                width: 570,
+                width: 680,
                 height: 330
             };
         </script>
@@ -42,9 +42,9 @@
                 <!-- 編集方法の選択 -->
                 <div id="C1_6" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM019_102')}</div>
             </div>
-            <div style="padding-left: 30px" class="valign-center control-group">
+            <div class="valign-center control-group">
                 <!-- 編集方法 -->
-                <div id="C1_7" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                <div style="margin-left: 30px" id="C1_7" tabindex="1" data-bind="ntsRadioBoxGroup: {
                                                             name: '#[QMM019_102]',
                                                             options: itemHistoryEditList,
                                                             optionsValue: 'id',
