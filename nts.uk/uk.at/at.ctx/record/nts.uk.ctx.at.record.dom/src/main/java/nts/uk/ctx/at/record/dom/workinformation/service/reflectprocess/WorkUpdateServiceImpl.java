@@ -496,7 +496,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		List<Integer> lstItem = new ArrayList<>();		
 		lstItem.add(267);
 		lstItem.add(272);
-		lstItem.add(276);
+		lstItem.add(277);
 		lstItem.add(282);
 		lstItem.add(287);
 		lstItem.add(292);

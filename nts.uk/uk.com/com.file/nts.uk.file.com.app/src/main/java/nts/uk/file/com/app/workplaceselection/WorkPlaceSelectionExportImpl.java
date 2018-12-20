@@ -30,21 +30,21 @@ public class WorkPlaceSelectionExportImpl implements MasterListData {
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 		List<WorkPlaceFunction> workPlaceFunction = workPlaceFunctionRepository.getAllWorkPlaceFunction();
-		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_32, TextResource.localize("CMM051_32"),
+		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_27, TextResource.localize("CMM051_32"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_33, TextResource.localize("CMM051_33"),
+		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_28, TextResource.localize("CMM051_33"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_34, TextResource.localize("CMM051_34"),
+		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_29, TextResource.localize("CMM051_34"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_35, TextResource.localize("CMM051_35"),
+		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_30, TextResource.localize("CMM051_35"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_36, TextResource.localize("CMM051_36"),
-				ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_37, TextResource.localize("CMM051_37"),
-				ColumnTextAlign.CENTER, "", true));
+		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_31, TextResource.localize("CMM051_36"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_32, TextResource.localize("CMM051_37"),
+				ColumnTextAlign.LEFT, "", true));
 		for (WorkPlaceFunction item : workPlaceFunction) {
 			columns.add(new MasterHeaderColumn(item.getFunctionNo().v().toString(), item.getDisplayName().v(),
-					ColumnTextAlign.CENTER, "", true));
+					ColumnTextAlign.LEFT, "", true));
 		}
 		return columns;
 	}

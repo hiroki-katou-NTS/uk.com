@@ -26,7 +26,7 @@ module nts.uk.com.view.cmm051.a {
         };
 
         export function saveAsExcel(languageId: string, wkpId: string): JQueryPromise<any> {
-            return exportFile('/masterlist/report/print', { domainId: "WorkPlaceSelection", domainType: "職場管理者の登録", languageId: languageId, reportType: 0, data: wkpId });
+            return exportFile('/masterlist/report/print', { domainId: "WorkPlaceSelection", domainType: "CMM051職場管理者の登録", languageId: languageId, reportType: 0, data: wkpId });
         }
     }
 }

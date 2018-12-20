@@ -11,11 +11,12 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionitem.SelectionItemReportData;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
@@ -44,11 +45,11 @@ public class SelectionItemExportImp implements MasterListData {
 		        columns.add(new MasterHeaderColumn(CPS016_28, TextResource.localize("CPS016_28"),
 		        ColumnTextAlign.LEFT, "", true));
 		        columns.add(new MasterHeaderColumn(CPS016_29, TextResource.localize("CPS016_29"),
-		        ColumnTextAlign.RIGHT, "", true));
+		        ColumnTextAlign.LEFT, "", true));
 		        columns.add(new MasterHeaderColumn(CPS016_30, TextResource.localize("CPS016_30"),
-		        ColumnTextAlign.RIGHT, "", true));
+		        ColumnTextAlign.LEFT, "", true));
 		        columns.add(new MasterHeaderColumn(CPS016_31, TextResource.localize("CPS016_31"),
-		        ColumnTextAlign.RIGHT, "", true));
+		        ColumnTextAlign.LEFT, "", true));
 		        columns.add(new MasterHeaderColumn(CPS016_32, TextResource.localize("CPS016_32"),
 		        ColumnTextAlign.LEFT, "", true));
 		        columns.add(new MasterHeaderColumn(CPS016_33, TextResource.localize("CPS016_33"),
@@ -66,21 +67,53 @@ public class SelectionItemExportImp implements MasterListData {
 			throw new BusinessException("Msg_1480");
 		} else {
 			selectionItemReportDats.stream().forEach(x -> {
-				Map<String, Object> data = new HashMap<>();
-				data.put(CPS016_27, x.getSelectionItemName());
-				data.put(CPS016_28, x.getCharacterType() == 0 ? I18NText.getText("Enum_SelectionCodeCharacter_NUMBER_TYPE") : I18NText.getText("Enum_SelectionCodeCharacter_CHARATERS_TYPE"));
-				data.put(CPS016_29, x.getCodeLength()); 
-				data.put(CPS016_30, x.getNameLength());
-				data.put(CPS016_31, x.getExternalCodeLength());
-				data.put(CPS016_32, x.getIntegrationCode());
-				data.put(CPS016_33, x.getMemo());
-				datas.add(new MasterData(data, null, ""));
+				datas.add(toData(x));
 			}); 
 		}
 		return datas;
 		
 	}
-
+	
+	private MasterData toData(SelectionItemReportData x){
+		Map<String, MasterCellData> data = new HashMap<>();
+		data.put(CPS016_27, MasterCellData.builder()
+                .columnId(CPS016_27)
+                .value(x.getSelectionItemName())
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+            data.put(CPS016_28, MasterCellData.builder()
+                .columnId(CPS016_28)
+                .value(x.getCharacterType() == 0 ? I18NText.getText("Enum_SelectionCodeCharacter_NUMBER_TYPE") : I18NText.getText("Enum_SelectionCodeCharacter_CHARATERS_TYPE"))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+            data.put(CPS016_29, MasterCellData.builder()
+                .columnId(CPS016_29)
+                .value(x.getCodeLength())
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+            data.put(CPS016_30, MasterCellData.builder()
+                .columnId(CPS016_30)
+                .value(x.getNameLength())
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+            data.put(CPS016_31, MasterCellData.builder()
+                .columnId(CPS016_31)
+                .value(x.getExternalCodeLength())
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+            data.put(CPS016_32, MasterCellData.builder()
+                .columnId(CPS016_32)
+                .value(x.getIntegrationCode())
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+            data.put(CPS016_33, MasterCellData.builder()
+                .columnId(CPS016_33)
+                .value(x.getMemo())
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		return MasterData.builder().rowData(data).build();
+	}
+	
 	
 
 }

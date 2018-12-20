@@ -75,6 +75,7 @@ div.form-label.broken {
 .workSelect{
     height: 70px;
     margin-left: 45px;
+    margin-top: 10px;
 }
 .panel.panel-gray-bg {
 	float: right;

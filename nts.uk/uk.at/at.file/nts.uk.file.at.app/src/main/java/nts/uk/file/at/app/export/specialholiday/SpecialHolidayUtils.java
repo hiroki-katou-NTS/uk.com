@@ -56,8 +56,10 @@ public class SpecialHolidayUtils {
     public static final String KMF004_148 = "オプション 休日をまたがって取得した場合には休日を含めて上限チェックをおこなう";
     public static final String KMF004_149 = "コード";
     public static final String KMF004_150 = "名称";
-    public static final String KMF004_151 = "上限日数";
+    public static final String KMF004_151 = "続柄上限日数";
     public static final String KMF004_152 = "喪主時加算日数";
+    public static final String KMF004_161 = "メモ";
+    public static final String KMF004_162 = "続柄入力を利用する";
     public static final String MONTH = "MONTH";
     public static final String DAY = "DAY";
     

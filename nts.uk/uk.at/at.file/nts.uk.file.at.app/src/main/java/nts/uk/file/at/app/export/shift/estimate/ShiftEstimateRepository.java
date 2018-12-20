@@ -7,4 +7,5 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 public interface ShiftEstimateRepository {
 	List<MasterData> getDataExport();
 	List<MasterData> getDataSheetTwoExport();
+	List<MasterData> getDataSheetThreeExport(String startDate, String endDate);
 }

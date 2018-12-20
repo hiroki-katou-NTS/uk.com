@@ -18,7 +18,7 @@ module cas009.a {
         let _params = { domainId: "RolePersonalInfor", 
                         domainType: "CAS009ロールの登録（個人情報）", 
                         languageId: "ja", 
-                        reportType: 0, option : date };
+                        reportType: 0};
         return nts.uk.request.exportFile('/masterlist/report/print', _params);
     }
 }

@@ -44,11 +44,11 @@ public class CalFormulasItemExportImpl implements MasterListData {
 		columns.add(new MasterHeaderColumn(CalFormulasItemColumn.KMK002_84, TextResource.localize("KMK002_84"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(CalFormulasItemColumn.KMK002_85, TextResource.localize("KMK002_85"),
-				ColumnTextAlign.RIGHT, "", true));
+				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(CalFormulasItemColumn.KMK002_86, TextResource.localize("KMK002_86"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(CalFormulasItemColumn.KMK002_87, TextResource.localize("KMK002_87"),
-				ColumnTextAlign.RIGHT, "", true));
+				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(CalFormulasItemColumn.KMK002_88, TextResource.localize("KMK002_88"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(CalFormulasItemColumn.KMK002_89, TextResource.localize("KMK002_89"),
@@ -61,7 +61,7 @@ public class CalFormulasItemExportImpl implements MasterListData {
 		columns.add(new MasterHeaderColumn(CalFormulasItemColumn.KMK002_97, TextResource.localize("KMK002_97"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(CalFormulasItemColumn.KMK002_92, TextResource.localize("KMK002_92"),
-				ColumnTextAlign.CENTER, "", true));
+				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(CalFormulasItemColumn.KMK002_93, TextResource.localize("KMK002_93"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(CalFormulasItemColumn.KMK002_94, TextResource.localize("KMK002_94"),
