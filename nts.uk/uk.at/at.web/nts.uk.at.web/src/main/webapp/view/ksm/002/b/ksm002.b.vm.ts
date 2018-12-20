@@ -33,11 +33,13 @@ module ksm002.b.viewmodel {
             isShowSelectButton: false,
             baseDate: ko.observable(new Date()),
             selectedWorkplaceId: this.currentWorkPlace().id,
-            alreadySettingList: ko.observableArray([])
+            alreadySettingList: ko.observableArray([]),
+            systemType : 5
         };
         
         constructor() {
             var self = this;
+            console.log(self.currentWorkPlace().name);
             
             // get new data when year month change
             self.yearMonthPicked.subscribe(value => {
@@ -485,7 +487,7 @@ module ksm002.b.viewmodel {
         exportExcel() : void {
             var self = this;
             nts.uk.ui.block.grayout();
-            service.saveAsExcel().done(function() {
+            bService.saveAsExcel().done(function() {
             }).fail(function(error) {
                 nts.uk.ui.dialog.alertError({ messageId: error.messageId });
             }).always(function() {
