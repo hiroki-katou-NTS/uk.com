@@ -595,7 +595,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			} else {
 				if(data.getStartTime() != null) {
 					stampTmp = new WorkStamp(new TimeWithDayAttr(data.getStartTime()),
-							new TimeWithDayAttr(data.getEndTime()),
+							new TimeWithDayAttr(data.getStartTime()),
 							null,
 							StampSourceInfo.GO_STRAIGHT_APPLICATION);
 				}
@@ -617,10 +617,12 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 						stamp.getLocationCode().isPresent() ? stamp.getLocationCode().get() : null,
 						stamp.getStampSourceInfo());
 			} else {
-				stampTmp = new WorkStamp(data.getEndTime() != null ? new TimeWithDayAttr(data.getEndTime()) : null,
-						data.getEndTime() != null ? new TimeWithDayAttr(data.getEndTime()) : null,
-						null,
-						data.getEndTime() != null ? StampSourceInfo.GO_STRAIGHT_APPLICATION : null);
+				if(data.getEndTime() != null) {
+					stampTmp = new WorkStamp(new TimeWithDayAttr(data.getEndTime()),
+							new TimeWithDayAttr(data.getEndTime()),
+							null,
+							StampSourceInfo.GO_STRAIGHT_APPLICATION);
+				}
 			}
 			TimeActualStamp timeActualStam = new TimeActualStamp(timeAttendanceEnd.getActualStamp().isPresent() ? timeAttendanceEnd.getActualStamp().get() : null,
 					stampTmp,
