@@ -553,7 +553,6 @@ public class WorkingConditionDto extends PeregDomainDto {
 			dto.setReferenceBusinessDayCalendar(wsb.getReferenceBusinessDayCalendar().value);
 		});
 
-		// cần xem lại thuật toán thực thi đoạn mã này
 		switch (scheduleMethod.getBasicCreateMethod()) {
 		case BUSINESS_DAY_CALENDAR:
 			scheduleMethod.getWorkScheduleBusCal().ifPresent(wsb -> {
@@ -566,11 +565,11 @@ public class WorkingConditionDto extends PeregDomainDto {
 			});
 			break;
 		default:
-			if(scheduleMethod.getWorkScheduleBusCal().isPresent()) {
+			if (scheduleMethod.getWorkScheduleBusCal().isPresent()) {
 				dto.setReferenceType(scheduleMethod.getWorkScheduleBusCal().get().getReferenceWorkingHours().value);
-			}else if(scheduleMethod.getMonthlyPatternWorkScheduleCre().isPresent()) {
+			} else if (scheduleMethod.getMonthlyPatternWorkScheduleCre().isPresent()) {
 				dto.setReferenceType(scheduleMethod.getMonthlyPatternWorkScheduleCre().get().getReferenceType().value);
-			}else {
+			} else {
 				dto.setReferenceType(0);
 			}
 			break;
