@@ -8,4 +8,6 @@ public interface ShiftEstimateRepository {
 	List<MasterData> getDataExport();
 	List<MasterData> getDataSheetTwoExport();
 	List<MasterData> getDataSheetThreeExport(String startDate, String endDate);
+	List<MasterData> getDataSheetFourExport(String startDate, String endDate);
+	List<MasterData> getDataSheetFiveExport(String startDate, String endDate);
 }
