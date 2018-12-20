@@ -31,6 +31,8 @@ public class PersonRoleImpl implements PersonRoleRepository {
 	
 	private static final String VALUE_TRUE = "可";
 	private static final String VALUE_FALSE = "木可";
+	private static Integer allowOther = null;
+	private static Integer allowPer = null;
 	
 	private static final String GET_EXPORT_EXCEL = " 	SELECT "
 			+ " 		CASE WHEN TH.ROW_NUMBER1 = 1 THEN TH.ROLE_CD ELSE NULL END ROLE_CD,"
@@ -596,7 +598,10 @@ public class PersonRoleImpl implements PersonRoleRepository {
 		if(object[21].equals("False")) {
 			return null;
 		}
-		
+		if(object[2] != null) {
+			allowOther = ((BigDecimal) object[4]).intValue();
+			allowPer = ((BigDecimal) object[5]).intValue();
+		}
 		// A7_1
 		data.put(PersonRoleColumn.CAS001_77, MasterCellData.builder()
                 .columnId(PersonRoleColumn.CAS001_77)
@@ -727,14 +732,14 @@ public class PersonRoleImpl implements PersonRoleRepository {
 		//A7_20
 		data.put(PersonRoleColumn.CAS001_98, MasterCellData.builder()
                 .columnId(PersonRoleColumn.CAS001_98)
-                .value(object[19] != null ? object[4] != null ? ((BigDecimal) object[4]).intValue() == 1 ? 
+                .value(object[19] != null ? allowOther != null ? allowOther == 1 ? 
                 		getPersonInfoItemAuth(((BigDecimal) object[19]).intValue()) : ""  : "" : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		//A7_21
 		data.put(PersonRoleColumn.CAS001_99, MasterCellData.builder()
 		                .columnId(PersonRoleColumn.CAS001_99)
-		                .value(object[20] != null ? object[5] != null ? ((BigDecimal) object[5]).intValue() == 1 ? 
+		                .value(object[20] != null ? allowPer != null ? allowPer == 1 ? 
 		                		getPersonInfoItemAuth(((BigDecimal) object[20]).intValue()) : "" : "" : "")
 		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 		                .build());
