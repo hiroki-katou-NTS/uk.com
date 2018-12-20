@@ -12,7 +12,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.file.com.app.personselection.PersonSelectionItemColumn;
 import nts.uk.file.com.app.personselection.PersonSelectionItemRepository;
@@ -57,7 +56,7 @@ public class PersonSelectionItemImpl implements PersonSelectionItemRepository {
 				+ " ss.SELECTION_NAME," 
 				+ " ss.EXTERNAL_CD," 
 				+ " ss.MEMO,"
-				+ " ROW_NUMBER () OVER ( PARTITION BY si.SELECTION_ITEM_NAME ORDER BY si.SELECTION_ITEM_NAME, ss.SELECTION_CD ASC ) AS ROW_NUMBER"
+				+ " ROW_NUMBER () OVER ( PARTITION BY si.SELECTION_ITEM_NAME ORDER BY si.SELECTION_ITEM_NAME, ss.SELECTION_CD ASC , hs.START_DATE DESC ) AS ROW_NUMBER"
 				+ " FROM" 
 				+ " PPEMT_SELECTION_ITEM si"
 				+ " INNER JOIN PPEMT_HISTORY_SELECTION hs ON si.SELECTION_ITEM_ID = hs.SELECTION_ITEM_ID"
@@ -69,9 +68,7 @@ public class PersonSelectionItemImpl implements PersonSelectionItemRepository {
 				+ " AND so.SELECTION_ID = ss.SELECTION_ID"
 				+ " WHERE" 
 				+ " si.CONTRACT_CD = ?contractCd" 
-			+ " ) TABLE_RESULT" 
-			+ " ORDER BY"
-			+ " TABLE_RESULT.START_DATE DESC";
+			+ " ) TABLE_RESULT";
 
 	@Override
 	public List<MasterData> getDataExport(String contractCd, String date) {
@@ -107,7 +104,7 @@ public class PersonSelectionItemImpl implements PersonSelectionItemRepository {
                 .build());
             data.put(PersonSelectionItemColumn.CPS017_58, MasterCellData.builder()
                 .columnId(PersonSelectionItemColumn.CPS017_58)
-                .value(object[3] != null ? ((BigDecimal) object[3]).intValue() == 1 ? "○" : "ー" : "")
+                .value(object[3] != null ? ((BigDecimal) object[3]).intValue() == 1 ? "○" : "-" : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
             data.put(PersonSelectionItemColumn.CPS017_59, MasterCellData.builder()
