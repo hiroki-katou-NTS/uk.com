@@ -19,11 +19,10 @@ public class CalculateMonthlyPeriodWS extends WebService {
 	private CalculateMonthlyPeriodFinder finder;
 	
 	
-	@Path("findbyclosureid/{closureid}/{yearmonth}")
+	@Path("findbyclosureid/{closureid}")
 	@POST
-	public OutputCalculateMonthly saveData(@PathParam("closureid") int closureId,@PathParam("yearmonth") String yearMonth) {
-		return finder.getMonthlyPeriodResult(
-				new InputCalculateMonthly(closureId, Integer.parseInt(yearMonth)));
+	public OutputCalculateMonthly saveData(@PathParam("closureid") int closureId) {
+		return finder.getMonthlyPeriodResult(closureId);
 	}
 	
 }

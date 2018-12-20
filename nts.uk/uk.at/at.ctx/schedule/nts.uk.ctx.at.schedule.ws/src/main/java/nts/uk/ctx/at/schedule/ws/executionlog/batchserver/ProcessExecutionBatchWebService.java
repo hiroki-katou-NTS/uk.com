@@ -18,7 +18,7 @@ public class ProcessExecutionBatchWebService extends WebService {
 	private ScheduleCreatorExecutionCommandHandler execution;
 
 	@POST
-	@Path("batch-execute")
+	@Path("batch-schedule")
 	public BatchTaskResult execute(ScheduleCreatorExecutionCommand command) {
 		AsyncTaskInfo info = this.execution.handle(command);
 		return new BatchTaskResult(info.getId());

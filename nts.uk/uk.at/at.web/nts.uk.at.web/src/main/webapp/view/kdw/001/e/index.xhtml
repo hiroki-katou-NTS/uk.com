@@ -78,9 +78,9 @@
 							<td class="fix-width">#{i18n.getText('KDW001_15')}</td>　
 							<td><span data-bind="text: startPeriod"></span> ～ <span data-bind="text: endPeriod"></span></td>
 						</tr>
-						<tr data-bind="visible : disableMonthResult()">
+						<tr >
 							<td class="fix-width">#{i18n.getText('KDW001_117')}</td>　
-							<td><span data-bind="text: startMonthResult"></span> ～ <span data-bind="text: endMonthResult"></span>#{i18n.getText('KDW001_118')}</td>
+							<td><span data-bind="visible : disableMonthResult()"><span data-bind="text: startMonthResult"></span> ～ <span data-bind="text: endMonthResult"></span>#{i18n.getText('KDW001_118')}</span></td>
 						</tr>
 					</table>
 				</div>
