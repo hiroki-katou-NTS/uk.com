@@ -88,9 +88,8 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 	@Inject
 	private EmpEmployeeAdapter empEmployee;
 	
-	/** 年休付与テーブル設定 */
 //	@Inject
-//	private YearHolidayRepository yearHolidayRepo;
+//	private AnnLeaGrantRemDataRepository repoAnnLeaGrantRe;
 
 	@Override
 	public AnnLeaveOfThisMonth getAnnLeaveOfThisMonth(String employeeId) {
@@ -502,8 +501,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
             Optional<AggrResultOfAnnualLeave> aggrResultOfAnnualLeave = Optional.empty();
             for (ClosurePeriodEachYear item : listClosurePeriodEachYear) {
 				// 期間中の年休残数を取得
-            	GetAnnLeaRemNumWithinPeriodProc a = new GetAnnLeaRemNumWithinPeriodProc(null, null, null, null, null, null, null, null, null, 
-            			null, null, null, null, null, null, null, null, null, null);
+            	GetAnnLeaRemNumWithinPeriodProc a = getAnnLeaRemNumWithinPeriod.createProc();
             	aggrResultOfAnnualLeave = a.algorithm(companyId, employeeId,
             			item.getDatePeriod(), InterimRemainMngMode.OTHER, item.getDatePeriod().end(), false, false,
 		    			Optional.empty(), Optional.empty(), aggrResultOfAnnualLeave, false,
@@ -546,8 +544,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			result.setFirstMonthRemNumMinutes(remainNumber.getMinutes());
 			
 			// 期間中の年休残数を取得
-			GetAnnLeaRemNumWithinPeriodProc proc = new GetAnnLeaRemNumWithinPeriodProc(null, null, null, null, null, null, null, null, 
-					null, null, null, null, null, null, null, null, null, null, null);
+			GetAnnLeaRemNumWithinPeriodProc proc = getAnnLeaRemNumWithinPeriod.createProc();
 			Optional<AggrResultOfAnnualLeave> aggrResult = proc.algorithm( companyId, employeeId,
 					datePeriod, InterimRemainMngMode.OTHER, datePeriod.end(),
 					false, false, Optional.empty(), Optional.empty(), Optional.empty(), false,

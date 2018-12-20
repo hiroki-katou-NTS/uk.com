@@ -221,10 +221,10 @@ module nts.uk.at.view.kdw001.b {
                 })
             }
             
-            getMonthlyResult(closureId : number, yearMonth : string){
+            getMonthlyResult(closureId : number){
                 let self = this;
                 let dfd = $.Deferred<void>();
-                service.findMonthlyResult(closureId,yearMonth).done(function(data) {
+                service.findMonthlyResult(closureId).done(function(data) {
                     self.monthResoult = data;
                     dfd.resolve();
                 });
@@ -250,7 +250,7 @@ module nts.uk.at.view.kdw001.b {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_572" });
                     return;
                 }
-                self.getMonthlyResult(self.params.closureID,self.params.processingMonth).done(()=>{
+                self.getMonthlyResult(self.params.closureID).done(()=>{
                    
                     
                 

@@ -73,12 +73,12 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 	public boolean holidayWorkReflect(ReflectScheDto relectSche) {
 		CommonReflectSchePubParam holidayWork = new CommonReflectSchePubParam(relectSche.getEmployeeId(), 
 				relectSche.getDatePara(), 
-				relectSche.getHolidayWork().getWorkTimeCode().v(),
 				relectSche.getHolidayWork().getWorkTypeCode().v(),
+				relectSche.getHolidayWork().getWorkTimeCode().v(),
 				null, 
 				null,
-				null,
-				null);		
+				relectSche.getHolidayWork().getWorkClock1().getStartTime().v(),
+				relectSche.getHolidayWork().getWorkClock1().getEndTime().v());
 		return appReflectSchePub.holidayWorkReflectSche(holidayWork);
 	}
 

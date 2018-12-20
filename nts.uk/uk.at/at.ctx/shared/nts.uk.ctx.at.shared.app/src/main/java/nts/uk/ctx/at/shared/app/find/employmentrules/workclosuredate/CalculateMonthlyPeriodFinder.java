@@ -14,10 +14,9 @@ public class CalculateMonthlyPeriodFinder {
 	@Inject
 	private CalculateMonthlyPeriodService calculateMonthlyPeriodService;
 	
-	public OutputCalculateMonthly getMonthlyPeriodResult(InputCalculateMonthly inputCalculateMonthly) {
+	public OutputCalculateMonthly getMonthlyPeriodResult(int closureId) {
 		GeneralDate baseDate = GeneralDate.today();
-		DatePeriod datePeriod  =  calculateMonthlyPeriodService.calculateMonthlyPeriod(inputCalculateMonthly.getClosureId(),
-				YearMonth.of(inputCalculateMonthly.getYearmonthly()), baseDate);
+		DatePeriod datePeriod  =  calculateMonthlyPeriodService.calculateMonthlyPeriod(closureId, baseDate);
 		return new OutputCalculateMonthly(datePeriod.start(),datePeriod.end());
 	}
 

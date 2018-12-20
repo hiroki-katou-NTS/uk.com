@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectBreakTimeOfDailyDomainService;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectWorkInforDomainService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateOption;
@@ -25,7 +26,11 @@ import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -47,6 +52,12 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 	private ReflectBreakTimeOfDailyDomainService breaktimeSevice;
 	@Inject
 	private BreakTimeOfDailyPerformanceRepository breakTimeRepo;
+	@Inject
+	private ReflectWorkInforDomainService reflectWorkInfor;
+	@Inject
+	private WorkingConditionItemRepository workingCondition;
+	@Inject
+	private TimeLeavingOfDailyPerformanceRepository timeLeaving;
 	@Override
 	public boolean commonProcessCheck(CommonCheckParameter para) {
 		ReflectedStateRecord state = ReflectedStateRecord.CANCELED;
@@ -104,8 +115,27 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 		if(integrationOfDaily == null) {
 			integrationOfDaily = preOvertime.calculateForAppReflect(sid, ymd);
 		}
+
+		String companyId = AppContexts.user().companyId();
+		if(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode() != null
+				&& integrationOfDaily.getWorkInformation().getScheduleInfo().getWorkTimeCode() != null) {
+			Optional<WorkingConditionItem> optWorkingCondition = workingCondition.getBySidAndStandardDate(sid, ymd);
+			TimeLeavingOfDailyPerformance timeInfor = reflectWorkInfor.createStamp(companyId, 
+					integrationOfDaily.getWorkInformation(),
+					optWorkingCondition,
+					integrationOfDaily.getAttendanceLeave().isPresent() ? integrationOfDaily.getAttendanceLeave().get() : null,
+					sid,
+					ymd,
+					null);
+			if(!integrationOfDaily.getAttendanceLeave().isPresent()) {
+				timeLeaving.add(timeInfor);
+			}
+			integrationOfDaily.setAttendanceLeave(Optional.of(timeInfor));	
+		}
+		
+		
 		//就業時間帯の休憩時間帯を日別実績に反映する
-		integrationOfDaily = this.updateBreakTimeInfor(sid, ymd, integrationOfDaily);
+		integrationOfDaily = this.updateBreakTimeInfor(sid, ymd, integrationOfDaily, companyId);
 		
 		List<IntegrationOfDaily> lstCal = calService.calculateForSchedule(CalculateOption.asDefault(),
 				Arrays.asList(integrationOfDaily) , 
@@ -116,9 +146,7 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 	}
 
 	@Override
-	public IntegrationOfDaily updateBreakTimeInfor(String sid, GeneralDate ymd, IntegrationOfDaily integrationOfDaily) {
-
-		String companyId = AppContexts.user().companyId();
+	public IntegrationOfDaily updateBreakTimeInfor(String sid, GeneralDate ymd, IntegrationOfDaily integrationOfDaily, String companyId) {
 		//日別実績の休憩時間帯
 		BreakTimeOfDailyPerformance breakTimeInfor = null; 
 		if(integrationOfDaily.getAttendanceLeave().isPresent()) {

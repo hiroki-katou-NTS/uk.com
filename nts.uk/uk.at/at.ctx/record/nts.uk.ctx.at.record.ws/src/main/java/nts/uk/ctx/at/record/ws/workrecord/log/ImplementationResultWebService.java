@@ -71,13 +71,16 @@ public class ImplementationResultWebService extends WebService {
 		
 		if (this.batchServer.exists()) {
 			System.out.println("Call batch service  !");
-			val webApi = this.batchServer.webApi(PathToWebApi.com("/batch/task"), CheckProcessCommand.class, AsyncTaskInfo.class);
+			val webApi = this.batchServer.webApi(PathToWebApi.at("/batch/task"), CheckProcessCommand.class, AsyncTaskInfo.class);
 			this.batchServer.request(webApi, c -> c.entity(command)
 					.succeeded(x -> {
 						String taskId = x.getId();
 						AsyncTaskInfo taskInfo = asyncTaskInfoRepository.find(taskId).get();
 						result.set(taskInfo);
-			}));
+			}).failed(f -> {
+				throw new RuntimeException(f.toString());
+			})
+					);
 		} else {
 			System.out.println("No call batch service  !");
 			result.set(queryExecutionStatusCommandHandler.handle(command));
