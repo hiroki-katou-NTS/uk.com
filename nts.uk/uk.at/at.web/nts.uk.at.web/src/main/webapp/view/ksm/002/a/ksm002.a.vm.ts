@@ -438,6 +438,20 @@ module ksm002.a.viewmodel {
                 };
             });
         }
+        
+        /**
+         * Print file excel
+         */
+        exportExcel() : void {
+            var self = this;
+            nts.uk.ui.block.grayout();
+            service.saveAsExcel().done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+        }
     }
 
     interface IData {

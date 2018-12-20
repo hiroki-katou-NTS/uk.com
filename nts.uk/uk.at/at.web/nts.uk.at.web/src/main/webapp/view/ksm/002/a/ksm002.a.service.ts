@@ -64,5 +64,11 @@ module ksm002.a.service {
     export function deleteComSpecificDate(command): JQueryPromise<any> {
         return ajax(paths.deleteComSpecDate, command);
     }
+    
+    
+    export function saveAsExcel(): JQueryPromise<any> {
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: 'SpecificdaySet', domainType: '特定日の登録', 
+            languageId: 'ja', reportType: 0, startDate : moment.utc('2018', 'YYYY'), endDate : moment.utc('2018', 'YYYY')});
+    }
 
 }
