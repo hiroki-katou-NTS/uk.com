@@ -139,9 +139,9 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 		+" 			IIF(oi.EMP_CONDITION_ATR = 1,', ' + ec.EMP_CD + '+'+ emp.NAME, NULL)"
 		+"  			FROM"
 		+" 		KRCST_OPTIONAL_ITEM oi"
-		+" 		INNER JOIN KRCST_APPL_EMP_CON ec ON oi.OPTIONAL_ITEM_NO = ec.OPTIONAL_ITEM_NO"
+		+" 		LEFT JOIN KRCST_APPL_EMP_CON ec ON oi.OPTIONAL_ITEM_NO = ec.OPTIONAL_ITEM_NO"
 		+" 		AND oi.CID = ec.CID "
-		+" 		INNER JOIN BSYMT_EMPLOYMENT emp ON ec.CID = emp.CID "
+		+" 		LEFT JOIN BSYMT_EMPLOYMENT emp ON ec.CID = emp.CID "
 		+" 		AND ec.EMP_CD = emp.CODE "
 		+" 	WHERE"
 		+" 		oi.CID = ?companyId AND ec.EMP_APPL_ATR = 1 ORDER BY ec.EMP_CD"
@@ -153,9 +153,9 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 		+"  		), NULL) AS NAME"
 		+" 		FROM"
 		+" 		KRCST_OPTIONAL_ITEM oi"
-		+" 		INNER JOIN KRCST_APPL_EMP_CON ec ON oi.OPTIONAL_ITEM_NO = ec.OPTIONAL_ITEM_NO"
+		+" 		LEFT JOIN KRCST_APPL_EMP_CON ec ON oi.OPTIONAL_ITEM_NO = ec.OPTIONAL_ITEM_NO"
 		+" 		AND oi.CID = ec.CID "
-		+" 		INNER JOIN BSYMT_EMPLOYMENT emp ON ec.CID = emp.CID"
+		+" 		LEFT JOIN BSYMT_EMPLOYMENT emp ON ec.CID = emp.CID"
 		+" 		AND ec.EMP_CD = emp.CODE "
 		+" 	WHERE"
 		+" 		oi.CID = ?companyId"
@@ -501,24 +501,25 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
             
-            if (object[20] != null) {
-    			switch (((BigDecimal) object[20]).intValue()) {
-    				case 0:
-    					data.put(CalFormulasItemColumn.KMK002_97, MasterCellData.builder()
-    			                .columnId(CalFormulasItemColumn.KMK002_97)
-    			                .value(object[21] != null && optionalItemUse == 1 ? ((String) object[21]) : "")
-    			                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-    			                .build());
-    					break;
-    				case 1:
-    					data.put(CalFormulasItemColumn.KMK002_97, MasterCellData.builder()
-    			                .columnId(CalFormulasItemColumn.KMK002_97)
-    			                .value(object[22] != null && optionalItemUse == 1 ? ((String) object[22]) : "")
-    			                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-    			                .build());
-    					break;
-    			}
-    		}
+		if (object[20] != null) {
+			switch (((BigDecimal) object[20]).intValue()) {
+			case 0:
+				data.put(CalFormulasItemColumn.KMK002_97,
+						MasterCellData.builder().columnId(CalFormulasItemColumn.KMK002_97)
+								.value(object[21] != null && optionalItemUse == 1 ? ((String) object[21]) : "")
+								.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				break;
+			case 1:
+				data.put(CalFormulasItemColumn.KMK002_97,
+						MasterCellData.builder().columnId(CalFormulasItemColumn.KMK002_97)
+								.value(object[22] != null && optionalItemUse == 1 ? ((String) object[22]) : "")
+								.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				break;
+			}
+		} else {
+			data.put(CalFormulasItemColumn.KMK002_97, MasterCellData.builder().columnId(CalFormulasItemColumn.KMK002_97)
+					.value("").style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		}
 		
 		return MasterData.builder().rowData(data).build();
 	}
