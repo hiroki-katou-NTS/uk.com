@@ -7,7 +7,6 @@
 }
 
 #kcp005{
-	height: 355px;
 	width: 562px;
     margin-left: 105px;
     margin-top: 7px;
@@ -25,9 +24,6 @@
 
 #formLabe12{
 	float: left;
-}
-#component-items-list{
-	    margin-top: -25px;
 }
 #contents-area{
 	overflow-y: hidden;
