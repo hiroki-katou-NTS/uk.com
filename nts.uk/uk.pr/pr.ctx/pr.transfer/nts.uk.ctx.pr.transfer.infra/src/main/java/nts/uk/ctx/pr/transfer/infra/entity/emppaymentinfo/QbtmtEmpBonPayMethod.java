@@ -25,11 +25,11 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "QXXMT_EMP_BON_PAY_METHOD")
-public class QxxmtEmpBonPayMethod extends UkJpaEntity {
+@Table(name = "QBTMT_EMP_BON_PAY_METHOD")
+public class QbtmtEmpBonPayMethod extends UkJpaEntity {
 
 	@EmbeddedId
-	public QxxmtEmpPayMethodPk pk;
+	public QbtmtEmpPayMethodPk pk;
 
 	@Column(name = "INDIVIDUAL_SETTING_ATR")
 	public int individualSettingAtr;
@@ -86,12 +86,12 @@ public class QxxmtEmpBonPayMethod extends UkJpaEntity {
 		return this.pk;
 	}
 
-	public QxxmtEmpBonPayMethod(String historyId, int paymentMethodNo, int individualSettingAtr, Integer useAtr,
+	public QbtmtEmpBonPayMethod(String historyId, int paymentMethodNo, int individualSettingAtr, Integer useAtr,
 			Integer paymentProportionAtr, Integer paymentMethod, Integer paymentRate, Long paymentAmount,
 			Integer paymentPriority, String sourceBankCode, String desAccountNumber, String desAccountName,
 			String desAccountKanaName, String desBranchId, Integer desDepositType) {
 		super();
-		this.pk = new QxxmtEmpPayMethodPk(historyId, paymentMethodNo);
+		this.pk = new QbtmtEmpPayMethodPk(historyId, paymentMethodNo);
 		this.individualSettingAtr = individualSettingAtr;
 		this.useAtr = useAtr;
 		this.paymentProportionAtr = paymentProportionAtr;
@@ -107,11 +107,11 @@ public class QxxmtEmpBonPayMethod extends UkJpaEntity {
 		this.desDepositType = desDepositType;
 	}
 
-	public QxxmtEmpBonPayMethod(String historyId, boolean individualSettingAtr,
+	public QbtmtEmpBonPayMethod(String historyId, boolean individualSettingAtr,
 			PaymentMethodDetail paymentMethodDetail) {
 		super();
 		if (individualSettingAtr) {
-			this.pk = new QxxmtEmpPayMethodPk(historyId, paymentMethodDetail.getPaymentMethodNo());
+			this.pk = new QbtmtEmpPayMethodPk(historyId, paymentMethodDetail.getPaymentMethodNo());
 			this.individualSettingAtr = 1;
 			this.useAtr = paymentMethodDetail.getUseAtr().value ? 1 : 0;
 			if (paymentMethodDetail.getUseAtr().value) {
@@ -138,12 +138,12 @@ public class QxxmtEmpBonPayMethod extends UkJpaEntity {
 				}
 			}
 		} else {
-			this.pk = new QxxmtEmpPayMethodPk(historyId, 0);
+			this.pk = new QbtmtEmpPayMethodPk(historyId, 0);
 			this.individualSettingAtr = 0;
 		}
 	}
 
-	public static EmployeeBonusPaymentMethod toDomain(List<QxxmtEmpBonPayMethod> listEntity) {
+	public static EmployeeBonusPaymentMethod toDomain(List<QbtmtEmpBonPayMethod> listEntity) {
 		if (listEntity.isEmpty())
 			return null;
 		if (listEntity.size() == 1 && listEntity.get(0).individualSettingAtr == 0) {
@@ -160,12 +160,12 @@ public class QxxmtEmpBonPayMethod extends UkJpaEntity {
 		}
 	}
 
-	public static List<QxxmtEmpBonPayMethod> fromDomain(EmployeeBonusPaymentMethod domain) {
+	public static List<QbtmtEmpBonPayMethod> fromDomain(EmployeeBonusPaymentMethod domain) {
 		if (domain.getSettingAtr().value) {
 			return domain.getListPaymentMethod().get().stream()
-					.map(m -> new QxxmtEmpBonPayMethod(domain.getHistoryId(), true, m)).collect(Collectors.toList());
+					.map(m -> new QbtmtEmpBonPayMethod(domain.getHistoryId(), true, m)).collect(Collectors.toList());
 		} else {
-			return Arrays.asList(new QxxmtEmpBonPayMethod(domain.getHistoryId(), false, null));
+			return Arrays.asList(new QbtmtEmpBonPayMethod(domain.getHistoryId(), false, null));
 		}
 	}
 

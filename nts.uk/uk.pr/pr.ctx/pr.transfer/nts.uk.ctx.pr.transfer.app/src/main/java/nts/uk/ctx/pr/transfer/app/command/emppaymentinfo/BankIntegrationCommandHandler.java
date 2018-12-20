@@ -35,12 +35,12 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
- * @author HungTT - WORKING IN PROGRESS
+ * @author HungTT
  *
  */
 
 @Stateless
-public class BankIntegrationCommandHandler extends CommandHandler<List<String>> {
+public class BankIntegrationCommandHandler extends CommandHandler<IntegrationCommand> {
 
 	@Inject
 	private ProcessInformationAdapter procInfoAdapter;
@@ -64,15 +64,15 @@ public class BankIntegrationCommandHandler extends CommandHandler<List<String>> 
 	private TransferSourceBankRepository sourceBankRepo;
 
 	@Override
-	protected void handle(CommandHandlerContext<List<String>> context) {
+	protected void handle(CommandHandlerContext<IntegrationCommand> context) {
 		String companyId = AppContexts.user().companyId();
-		List<String> selectedBankBranches = context.getCommand();
-		String selectedBranchId = selectedBankBranches.get(0);
+		IntegrationCommand command = context.getCommand();
 
-		// dang ki source bank
-		List<TransferSourceBank> lstSourceBank = sourceBankRepo.getAllSourceBank(companyId);
+		// update source bank
+		List<TransferSourceBank> lstSourceBank = sourceBankRepo.getSourceBankByBranchId(companyId,
+				command.getSourceIds());
 		for (TransferSourceBank srcBank : lstSourceBank) {
-			srcBank.setBranchId(selectedBranchId);
+			srcBank.setBranchId(command.getDestinationId());
 			sourceBankRepo.updateSourceBank(srcBank);
 		}
 
@@ -95,15 +95,16 @@ public class BankIntegrationCommandHandler extends CommandHandler<List<String>> 
 
 		for (EmploymentHistImport empHist : lstEmpHist) {
 			empIntegrationProcess(empHist.getEmployeeId(), empHist.getEmploymentCode(), lstEmpTiedProcYm, lstCurrProcYm,
-					selectedBranchId);
+					command.getSourceIds(), command.getDestinationId());
 		}
 	}
 
 	private void empIntegrationProcess(String employeeId, String employmentCode,
 			List<EmploymentTiedProcYmImport> lstEmpTiedProcYm, List<CurrProcessYmImport> lstCurrProcYm,
-			String selectedBranchId) {
+			List<String> sourceIds, String destinationId) {
 		val optEmpTiedProcYm = lstEmpTiedProcYm.stream().filter(t -> t.getEmploymentCodes().contains(employmentCode))
 				.findFirst();
+		// salary payment
 		val optSalPayInfor = payInfoRepo.getEmpSalPaymentInfo(employeeId);
 		if (optSalPayInfor.isPresent()) {
 			String salHistId = getSalaryHistId(optSalPayInfor.get(), optEmpTiedProcYm, lstCurrProcYm);
@@ -111,14 +112,15 @@ public class BankIntegrationCommandHandler extends CommandHandler<List<String>> 
 			if (salPayMethod.isPresent()) {
 				EmployeeSalaryPaymentMethod domain = salPayMethod.get();
 				for (PaymentMethodDetail pmd : domain.getListPaymentMethod()) {
-					if (pmd.getTransferInfor().isPresent()) {
-						pmd.getTransferInfor().get().setDesBankBranchInfor(selectedBranchId);
+					if (pmd.getTransferInfor().isPresent()
+							&& sourceIds.contains(pmd.getTransferInfor().get().getDesBankBranchInfor())) {
+						pmd.getTransferInfor().get().setDesBankBranchInfor(destinationId);
 					}
 				}
 				payMethodRepo.updateEmpSalaryPayMethod(domain);
 			}
 		}
-
+		// bonus payment
 		val optBonusPayInfor = payInfoRepo.getEmpBonusPaymentInfo(employeeId);
 		if (optBonusPayInfor.isPresent()) {
 			String bonHistId = getBonusHistId(optBonusPayInfor.get(), optEmpTiedProcYm, lstCurrProcYm);
@@ -128,8 +130,9 @@ public class BankIntegrationCommandHandler extends CommandHandler<List<String>> 
 				if (domain.getSettingAtr() == IndividualSettingAtr.PAY_WITH_INDIVIDUAL_SETTING
 						&& domain.getListPaymentMethod().isPresent()) {
 					for (PaymentMethodDetail pmd : domain.getListPaymentMethod().get()) {
-						if (pmd.getTransferInfor().isPresent()) {
-							pmd.getTransferInfor().get().setDesBankBranchInfor(selectedBranchId);
+						if (pmd.getTransferInfor().isPresent()
+								&& sourceIds.contains(pmd.getTransferInfor().get().getDesBankBranchInfor())) {
+							pmd.getTransferInfor().get().setDesBankBranchInfor(destinationId);
 						}
 					}
 					payMethodRepo.updateEmpBonusPayMethod(domain);

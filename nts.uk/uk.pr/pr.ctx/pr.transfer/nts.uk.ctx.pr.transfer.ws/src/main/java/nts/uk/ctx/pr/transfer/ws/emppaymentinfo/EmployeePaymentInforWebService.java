@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.transfer.app.command.emppaymentinfo.BankIntegrationCommandHandler;
+import nts.uk.ctx.pr.transfer.app.command.emppaymentinfo.IntegrationCommand;
 import nts.uk.ctx.pr.transfer.app.command.emppaymentinfo.SourceBankIntegrationCommandHandler;
 
 /**
@@ -36,8 +37,8 @@ public class EmployeePaymentInforWebService extends WebService {
 	
 	@POST
 	@Path("bank-integration")
-	public void sourceBankIntegration(List<String> branchIds) {
-		bankIntegration.handle(branchIds);
+	public void sourceBankIntegration(IntegrationCommand command) {
+		bankIntegration.handle(command);
 	}
 
 }

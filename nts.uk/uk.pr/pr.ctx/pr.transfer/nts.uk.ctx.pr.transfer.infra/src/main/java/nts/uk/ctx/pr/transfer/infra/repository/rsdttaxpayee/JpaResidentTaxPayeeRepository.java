@@ -55,7 +55,7 @@ public class JpaResidentTaxPayeeRepository extends JpaRepository implements Resi
 	@Override
 	public List<ResidentTaxPayee> getAllResidentTaxPayee(String companyId) {
 		String query = SELECT_ALL_QUERY_STRING + " WHERE  f.rsdtTaxPayeePk.cid =:cid ORDER BY f.rsdtTaxPayeePk.code";
-		return this.queryProxy().query(query, QxxmtRsdtTaxPayee.class).setParameter("cid", companyId)
+		return this.queryProxy().query(query, QbtmtRsdtTaxPayee.class).setParameter("cid", companyId)
 				.getList(item -> item.toDomain());
 	}
 
@@ -63,7 +63,7 @@ public class JpaResidentTaxPayeeRepository extends JpaRepository implements Resi
 	public List<ResidentTaxPayee> getResidentTaxPayeeWithReportCd(String cid, String reportCode) {
 		String query = SELECT_ALL_QUERY_STRING
 				+ " WHERE  f.rsdtTaxPayeePk.cid =:cid AND f.reportCd = :reportCode ORDER BY f.rsdtTaxPayeePk.code";
-		return this.queryProxy().query(query, QxxmtRsdtTaxPayee.class).setParameter("cid", cid)
+		return this.queryProxy().query(query, QbtmtRsdtTaxPayee.class).setParameter("cid", cid)
 				.setParameter("reportCode", reportCode).getList(item -> item.toDomain());
 	}
 	

@@ -12,6 +12,8 @@ public interface TransferSourceBankRepository {
 	
 	public List<TransferSourceBank> getAllSourceBank(String companyId);
 	
+	public List<TransferSourceBank> getSourceBankByBranchId(String companyId, List<String> branchIds);
+	
 	public Optional<TransferSourceBank> getSourceBank(String companyId, String code);
 	
 	public void addSourceBank(TransferSourceBank sourceBank);

@@ -23,11 +23,11 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "QXXMT_TRF_SRC_BANK")
-public class QxxmtTrfSrcBank extends UkJpaEntity {
+@Table(name = "QBTMT_TRF_SRC_BANK")
+public class QbtmtTrfSrcBank extends UkJpaEntity {
 
 	@EmbeddedId
-	public QxxmtTrfSrcBankPk pk;
+	public QbtmtTrfSrcBankPk pk;
 
 	/**
 	 * 名称
@@ -128,8 +128,8 @@ public class QxxmtTrfSrcBank extends UkJpaEntity {
 				this.accountAtr, entrustorInfor, this.transferRequesterName, this.memo);
 	}
 
-	public QxxmtTrfSrcBank(TransferSourceBank domain) {
-		this.pk = new QxxmtTrfSrcBankPk(domain.getCompanyId(), domain.getCode().v());
+	public QbtmtTrfSrcBank(TransferSourceBank domain) {
+		this.pk = new QbtmtTrfSrcBankPk(domain.getCompanyId(), domain.getCode().v());
 		this.name = domain.getName().v();
 		this.branchId = domain.getBranchId();
 		this.accountAtr = domain.getAccountAtr().value;

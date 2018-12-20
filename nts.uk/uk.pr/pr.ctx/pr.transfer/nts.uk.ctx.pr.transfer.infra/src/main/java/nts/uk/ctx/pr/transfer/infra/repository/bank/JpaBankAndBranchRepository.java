@@ -12,9 +12,9 @@ import nts.uk.ctx.pr.transfer.dom.bank.Bank;
 import nts.uk.ctx.pr.transfer.dom.bank.BankBranch;
 import nts.uk.ctx.pr.transfer.dom.bank.BankBranchRepository;
 import nts.uk.ctx.pr.transfer.dom.bank.BankRepository;
-import nts.uk.ctx.pr.transfer.infra.entity.bank.QxxmtBank;
-import nts.uk.ctx.pr.transfer.infra.entity.bank.QxxmtBankBranch;
-import nts.uk.ctx.pr.transfer.infra.entity.bank.QxxmtBankPk;
+import nts.uk.ctx.pr.transfer.infra.entity.bank.QbtmtBank;
+import nts.uk.ctx.pr.transfer.infra.entity.bank.QbtmtBankBranch;
+import nts.uk.ctx.pr.transfer.infra.entity.bank.QbtmtBankPk;
 
 /**
  * 
@@ -27,8 +27,8 @@ public class JpaBankAndBranchRepository extends JpaRepository implements BankRep
 
 	@Override
 	public Optional<BankBranch> findBranch(String companyId, String branchId) {
-		String query = "SELECT b FROM QxxmtBankBranch b WHERE b.companyId = :companyId AND b.branchId = :branchId";
-		return this.queryProxy().query(query, QxxmtBankBranch.class).setParameter("companyId", companyId)
+		String query = "SELECT b FROM QbtmtBankBranch b WHERE b.companyId = :companyId AND b.branchId = :branchId";
+		return this.queryProxy().query(query, QbtmtBankBranch.class).setParameter("companyId", companyId)
 				.setParameter("branchId", branchId).getSingle(c -> c.toDomain());
 	}
 
@@ -36,22 +36,22 @@ public class JpaBankAndBranchRepository extends JpaRepository implements BankRep
 	public List<BankBranch> findAllBranch(String companyId, List<String> bankCodes) {
 		if (bankCodes.isEmpty())
 			return Collections.emptyList();
-		String query = "SELECT b FROM QxxmtBankBranch b WHERE b.companyId = :companyId AND b.bankCode IN :bankCodes ORDER BY b.bankCode, b.bankBranchCode";
-		return this.queryProxy().query(query, QxxmtBankBranch.class).setParameter("companyId", companyId)
+		String query = "SELECT b FROM QbtmtBankBranch b WHERE b.companyId = :companyId AND b.bankCode IN :bankCodes ORDER BY b.bankCode, b.bankBranchCode";
+		return this.queryProxy().query(query, QbtmtBankBranch.class).setParameter("companyId", companyId)
 				.setParameter("bankCodes", bankCodes).getList(c -> c.toDomain());
 	}
 
 	@Override
 	public List<BankBranch> findAllBranchByBank(String companyId, String bankCode) {
-		String query = "SELECT b FROM QxxmtBankBranch b WHERE b.companyId = :companyId AND b.bankCode = :bankCode ORDER BY b.bankBranchCode";
-		return this.queryProxy().query(query, QxxmtBankBranch.class).setParameter("companyId", companyId)
+		String query = "SELECT b FROM QbtmtBankBranch b WHERE b.companyId = :companyId AND b.bankCode = :bankCode ORDER BY b.bankBranchCode";
+		return this.queryProxy().query(query, QbtmtBankBranch.class).setParameter("companyId", companyId)
 				.setParameter("bankCode", bankCode).getList(c -> c.toDomain());
 	}
 
 	@Override
 	public boolean checkExistBranch(String companyCode, String bankCode, String branchCode) {
-		String query = "SELECT b FROM QxxmtBankBranch b WHERE b.companyId = :companyId AND b.bankCode = :bankCode AND b.bankBranchCode = : branchCode";
-		val result = this.queryProxy().query(query, QxxmtBankBranch.class).setParameter("companyId", companyCode)
+		String query = "SELECT b FROM QbtmtBankBranch b WHERE b.companyId = :companyId AND b.bankCode = :bankCode AND b.bankBranchCode = : branchCode";
+		val result = this.queryProxy().query(query, QbtmtBankBranch.class).setParameter("companyId", companyCode)
 				.setParameter("bankCode", bankCode).setParameter("branchCode", branchCode).getList(c -> c.toDomain());
 		if (result.isEmpty())
 			return false;
@@ -61,52 +61,52 @@ public class JpaBankAndBranchRepository extends JpaRepository implements BankRep
 
 	@Override
 	public List<Bank> findAllBank(String companyId) {
-		String query = "SELECT b FROM QxxmtBank b WHERE b.pk.companyId = :companyId  ORDER BY b.pk.bankCode";
-		return this.queryProxy().query(query, QxxmtBank.class).setParameter("companyId", companyId)
+		String query = "SELECT b FROM QbtmtBank b WHERE b.pk.companyId = :companyId  ORDER BY b.pk.bankCode";
+		return this.queryProxy().query(query, QbtmtBank.class).setParameter("companyId", companyId)
 				.getList(c -> c.toDomain());
 	}
 
 	@Override
 	public Optional<Bank> findBank(String companyId, String bankCode) {
-		val entity = this.queryProxy().find(new QxxmtBankPk(companyId, bankCode), QxxmtBank.class);
+		val entity = this.queryProxy().find(new QbtmtBankPk(companyId, bankCode), QbtmtBank.class);
 		return entity.isPresent() ? Optional.of(entity.get().toDomain()) : Optional.empty();
 	}
 
 	@Override
 	public void addBranch(BankBranch bank) {
-		this.commandProxy().insert(new QxxmtBankBranch(bank));
+		this.commandProxy().insert(new QbtmtBankBranch(bank));
 	}
 
 	@Override
 	public void updateBranch(BankBranch bank) {
-		this.commandProxy().update(new QxxmtBankBranch(bank));
+		this.commandProxy().update(new QbtmtBankBranch(bank));
 	}
 
 	@Override
 	public void removeBranch(String companyId, String branchId) {
-		this.commandProxy().remove(QxxmtBankBranch.class, branchId);
+		this.commandProxy().remove(QbtmtBankBranch.class, branchId);
 	}
 
 	@Override
 	public void removeListBranchFromBank(String companyId, String bankCode) {
-		String sql = "DELETE FROM QxxmtBankBranch a WHERE a.companyId = :companyId AND a.bankCode = :bankCode";
+		String sql = "DELETE FROM QbtmtBankBranch a WHERE a.companyId = :companyId AND a.bankCode = :bankCode";
 		this.getEntityManager().createQuery(sql).setParameter("companyId", companyId).setParameter("bankCode", bankCode)
 				.executeUpdate();
 	}
 
 	@Override
 	public void addBank(Bank bank) {
-		this.commandProxy().insert(new QxxmtBank(bank));
+		this.commandProxy().insert(new QbtmtBank(bank));
 	}
 
 	@Override
 	public void updateBank(Bank bank) {
-		this.commandProxy().update(new QxxmtBank(bank));
+		this.commandProxy().update(new QbtmtBank(bank));
 	}
 
 	@Override
 	public void removeBank(String companyId, String bankCode) {
-		this.commandProxy().remove(QxxmtBank.class, new QxxmtBankPk(companyId, bankCode));
+		this.commandProxy().remove(QbtmtBank.class, new QbtmtBankPk(companyId, bankCode));
 	}
 
 	@Override
@@ -123,7 +123,7 @@ public class JpaBankAndBranchRepository extends JpaRepository implements BankRep
 	@Override
 	public void removeListBranch(String companyId, List<String> branchIds) {
 		if (!branchIds.isEmpty()) {
-			String sql = "DELETE FROM QxxmtBankBranch a WHERE a.companyId = :companyId AND a.branchId IN :branchIds";
+			String sql = "DELETE FROM QbtmtBankBranch a WHERE a.companyId = :companyId AND a.branchId IN :branchIds";
 			this.getEntityManager().createQuery(sql).setParameter("companyId", companyId)
 					.setParameter("branchIds", branchIds).executeUpdate();
 		}

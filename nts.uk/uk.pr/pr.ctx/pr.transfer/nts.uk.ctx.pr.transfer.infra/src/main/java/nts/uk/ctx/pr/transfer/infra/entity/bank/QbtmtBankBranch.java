@@ -18,8 +18,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "QXXMT_BANK_BRANCH")
-public class QxxmtBankBranch extends UkJpaEntity {
+@Table(name = "QBTMT_BANK_BRANCH")
+public class QbtmtBankBranch extends UkJpaEntity {
 
 	/**
 	 * Branch id
@@ -67,7 +67,7 @@ public class QxxmtBankBranch extends UkJpaEntity {
 		return this.branchId;
 	}
 
-	public QxxmtBankBranch(String branchId, String companyId, String bankCode, String bankBranchCode,
+	public QbtmtBankBranch(String branchId, String companyId, String bankCode, String bankBranchCode,
 			String bankBranchName, String bankBranchNameKana, String memo) {
 		super();
 		this.branchId = branchId;
@@ -79,7 +79,7 @@ public class QxxmtBankBranch extends UkJpaEntity {
 		this.memo = memo;
 	}
 
-	public QxxmtBankBranch(BankBranch domain) {
+	public QbtmtBankBranch(BankBranch domain) {
 		super();
 		this.branchId = domain.getBranchId();
 		this.companyId = domain.getCompanyId();

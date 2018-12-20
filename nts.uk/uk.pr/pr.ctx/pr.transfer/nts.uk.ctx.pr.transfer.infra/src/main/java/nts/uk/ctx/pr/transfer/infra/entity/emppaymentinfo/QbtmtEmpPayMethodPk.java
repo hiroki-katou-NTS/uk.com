@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.transfer.infra.entity.sourcebank;
+package nts.uk.ctx.pr.transfer.infra.entity.emppaymentinfo;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -17,18 +17,12 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class QxxmtTrfSrcBankPk {
+public class QbtmtEmpPayMethodPk {
 
-	/**
-	 * 会社ID
-	 */
-	@Column(name = "CID")
-	public String companyId;
-
-	/**
-	 * コード
-	 */
-	@Column(name = "CD")
-	public String code;
+	@Column(name = "HIST_ID")
+	public String historyId;
+	
+	@Column(name = "PAY_METHOD_NO")
+	public int paymentMethodNo;
 	
 }

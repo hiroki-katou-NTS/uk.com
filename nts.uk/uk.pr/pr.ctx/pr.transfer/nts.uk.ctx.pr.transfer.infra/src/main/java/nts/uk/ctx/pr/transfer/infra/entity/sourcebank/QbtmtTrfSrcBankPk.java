@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.transfer.infra.entity.bank;
+package nts.uk.ctx.pr.transfer.infra.entity.sourcebank;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class QxxmtBankPk {
+public class QbtmtTrfSrcBankPk {
 
 	/**
 	 * 会社ID
@@ -29,6 +29,6 @@ public class QxxmtBankPk {
 	 * コード
 	 */
 	@Column(name = "CD")
-	public String bankCode;
-
+	public String code;
+	
 }

@@ -23,11 +23,11 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "QXXMT_EMP_SAL_PAY_METHOD")
-public class QxxmtEmpSalPayMethod extends UkJpaEntity {
+@Table(name = "QBTMT_EMP_SAL_PAY_METHOD")
+public class QbtmtEmpSalPayMethod extends UkJpaEntity {
 
 	@EmbeddedId
-	public QxxmtEmpPayMethodPk pk;
+	public QbtmtEmpPayMethodPk pk;
 
 	@Column(name = "USE_ATR")
 	public int useAtr;
@@ -81,12 +81,12 @@ public class QxxmtEmpSalPayMethod extends UkJpaEntity {
 		return this.pk;
 	}
 
-	public QxxmtEmpSalPayMethod(String historyId, int paymentMethodNo, int useAtr, Integer paymentProportionAtr,
+	public QbtmtEmpSalPayMethod(String historyId, int paymentMethodNo, int useAtr, Integer paymentProportionAtr,
 			Integer paymentMethod, Integer paymentRate, Long paymentAmount, Integer paymentPriority,
 			String sourceBankCode, String desAccountNumber, String desAccountName, String desAccountKanaName,
 			String desBranchId, Integer desDepositType) {
 		super();
-		this.pk = new QxxmtEmpPayMethodPk(historyId, paymentMethodNo);
+		this.pk = new QbtmtEmpPayMethodPk(historyId, paymentMethodNo);
 		this.useAtr = useAtr;
 		this.paymentProportionAtr = paymentProportionAtr;
 		this.paymentMethod = paymentMethod;
@@ -101,9 +101,9 @@ public class QxxmtEmpSalPayMethod extends UkJpaEntity {
 		this.desDepositType = desDepositType;
 	}
 
-	public QxxmtEmpSalPayMethod(String historyId, PaymentMethodDetail paymentMethodDetail) {
+	public QbtmtEmpSalPayMethod(String historyId, PaymentMethodDetail paymentMethodDetail) {
 		super();
-		this.pk = new QxxmtEmpPayMethodPk(historyId, paymentMethodDetail.getPaymentMethodNo());
+		this.pk = new QbtmtEmpPayMethodPk(historyId, paymentMethodDetail.getPaymentMethodNo());
 		this.useAtr = paymentMethodDetail.getUseAtr().value ? 1 : 0;
 		if (paymentMethodDetail.getUseAtr().value) {
 			this.paymentMethod = paymentMethodDetail.getPaymentMethod().get().value ? 1 : 0;
@@ -130,7 +130,7 @@ public class QxxmtEmpSalPayMethod extends UkJpaEntity {
 		}
 	}
 
-	public static EmployeeSalaryPaymentMethod toDomain(List<QxxmtEmpSalPayMethod> listEntity) {
+	public static EmployeeSalaryPaymentMethod toDomain(List<QbtmtEmpSalPayMethod> listEntity) {
 		if (listEntity.isEmpty())
 			return null;
 		List<PaymentMethodDetail> listPaymentMethod = listEntity.stream()
@@ -143,8 +143,8 @@ public class QxxmtEmpSalPayMethod extends UkJpaEntity {
 		return new EmployeeSalaryPaymentMethod(listEntity.get(0).pk.historyId, listPaymentMethod);
 	}
 
-	public static List<QxxmtEmpSalPayMethod> fromDomain(EmployeeSalaryPaymentMethod domain) {
-		return domain.getListPaymentMethod().stream().map(m -> new QxxmtEmpSalPayMethod(domain.getHistoryId(), m))
+	public static List<QbtmtEmpSalPayMethod> fromDomain(EmployeeSalaryPaymentMethod domain) {
+		return domain.getListPaymentMethod().stream().map(m -> new QbtmtEmpSalPayMethod(domain.getHistoryId(), m))
 				.collect(Collectors.toList());
 	}
 	

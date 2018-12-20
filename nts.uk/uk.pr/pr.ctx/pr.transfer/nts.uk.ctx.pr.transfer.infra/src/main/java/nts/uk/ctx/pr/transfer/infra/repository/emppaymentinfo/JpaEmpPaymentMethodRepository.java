@@ -13,8 +13,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.transfer.dom.emppaymentinfo.EmployeeBonusPaymentMethod;
 import nts.uk.ctx.pr.transfer.dom.emppaymentinfo.EmployeePaymentMethodRepository;
 import nts.uk.ctx.pr.transfer.dom.emppaymentinfo.EmployeeSalaryPaymentMethod;
-import nts.uk.ctx.pr.transfer.infra.entity.emppaymentinfo.QxxmtEmpBonPayMethod;
-import nts.uk.ctx.pr.transfer.infra.entity.emppaymentinfo.QxxmtEmpSalPayMethod;
+import nts.uk.ctx.pr.transfer.infra.entity.emppaymentinfo.QbtmtEmpBonPayMethod;
+import nts.uk.ctx.pr.transfer.infra.entity.emppaymentinfo.QbtmtEmpSalPayMethod;
 
 /**
  * 
@@ -29,14 +29,14 @@ public class JpaEmpPaymentMethodRepository extends JpaRepository implements Empl
 	public List<EmployeeSalaryPaymentMethod> getSalPayMethodByHistoryId(List<String> listHistId) {
 		if (listHistId.isEmpty())
 			return Collections.emptyList();
-		String query = "SELECT e FROM QxxmtEmpSalPayMethod e WHERE e.pk.historyId IN :listHistId";
-		Map<String, List<QxxmtEmpSalPayMethod>> mapEntity = this.queryProxy().query(query, QxxmtEmpSalPayMethod.class)
+		String query = "SELECT e FROM QbtmtEmpSalPayMethod e WHERE e.pk.historyId IN :listHistId";
+		Map<String, List<QbtmtEmpSalPayMethod>> mapEntity = this.queryProxy().query(query, QbtmtEmpSalPayMethod.class)
 				.setParameter("listHistId", listHistId).getList().stream()
 				.collect(Collectors.groupingBy(m -> m.pk.historyId));
 		List<EmployeeSalaryPaymentMethod> result = new ArrayList<>();
 		mapEntity.entrySet().forEach(e -> {
-			List<QxxmtEmpSalPayMethod> listEntity = e.getValue();
-			result.add(QxxmtEmpSalPayMethod.toDomain(listEntity));
+			List<QbtmtEmpSalPayMethod> listEntity = e.getValue();
+			result.add(QbtmtEmpSalPayMethod.toDomain(listEntity));
 		});
 		return result;
 	}
@@ -45,52 +45,52 @@ public class JpaEmpPaymentMethodRepository extends JpaRepository implements Empl
 	public List<EmployeeBonusPaymentMethod> getBonusPayMethodByHistoryId(List<String> listHistId) {
 		if (listHistId.isEmpty())
 			return Collections.emptyList();
-		String query = "SELECT e FROM QxxmtEmpBonPayMethod e WHERE e.pk.historyId IN :listHistId";
-		Map<String, List<QxxmtEmpBonPayMethod>> mapEntity = this.queryProxy().query(query, QxxmtEmpBonPayMethod.class)
+		String query = "SELECT e FROM QbtmtEmpBonPayMethod e WHERE e.pk.historyId IN :listHistId";
+		Map<String, List<QbtmtEmpBonPayMethod>> mapEntity = this.queryProxy().query(query, QbtmtEmpBonPayMethod.class)
 				.setParameter("listHistId", listHistId).getList().stream()
 				.collect(Collectors.groupingBy(m -> m.pk.historyId));
 		List<EmployeeBonusPaymentMethod> result = new ArrayList<>();
 		mapEntity.entrySet().forEach(e -> {
-			List<QxxmtEmpBonPayMethod> listEntity = e.getValue();
-			result.add(QxxmtEmpBonPayMethod.toDomain(listEntity));
+			List<QbtmtEmpBonPayMethod> listEntity = e.getValue();
+			result.add(QbtmtEmpBonPayMethod.toDomain(listEntity));
 		});
 		return result;
 	}
 
 	@Override
 	public Optional<EmployeeSalaryPaymentMethod> getSalPayMethodByHistoryId(String histId) {
-		String query = "SELECT e FROM QxxmtEmpSalPayMethod e WHERE e.pk.historyId = :histId";
-		List<QxxmtEmpSalPayMethod> listEntity = this.queryProxy().query(query, QxxmtEmpSalPayMethod.class)
+		String query = "SELECT e FROM QbtmtEmpSalPayMethod e WHERE e.pk.historyId = :histId";
+		List<QbtmtEmpSalPayMethod> listEntity = this.queryProxy().query(query, QbtmtEmpSalPayMethod.class)
 				.setParameter("histId", histId).getList();
-		return listEntity.isEmpty() ? Optional.empty() : Optional.of(QxxmtEmpSalPayMethod.toDomain(listEntity));
+		return listEntity.isEmpty() ? Optional.empty() : Optional.of(QbtmtEmpSalPayMethod.toDomain(listEntity));
 	}
 
 	@Override
 	public Optional<EmployeeBonusPaymentMethod> getBonusPayMethodByHistoryId(String histId) {
-		String query = "SELECT e FROM QxxmtEmpBonPayMethod e WHERE e.pk.historyId = :histId";
-		List<QxxmtEmpBonPayMethod> listEntity = this.queryProxy().query(query, QxxmtEmpBonPayMethod.class)
+		String query = "SELECT e FROM QbtmtEmpBonPayMethod e WHERE e.pk.historyId = :histId";
+		List<QbtmtEmpBonPayMethod> listEntity = this.queryProxy().query(query, QbtmtEmpBonPayMethod.class)
 				.setParameter("histId", histId).getList();
-		return listEntity.isEmpty() ? Optional.empty() : Optional.of(QxxmtEmpBonPayMethod.toDomain(listEntity));
+		return listEntity.isEmpty() ? Optional.empty() : Optional.of(QbtmtEmpBonPayMethod.toDomain(listEntity));
 	}
 
 	@Override
 	public void addEmpSalaryPayMethod(EmployeeSalaryPaymentMethod domain) {
-		this.commandProxy().insertAll(QxxmtEmpSalPayMethod.fromDomain(domain));
+		this.commandProxy().insertAll(QbtmtEmpSalPayMethod.fromDomain(domain));
 	}
 
 	@Override
 	public void addEmpBonusPayMethod(EmployeeBonusPaymentMethod domain) {
-		this.commandProxy().insertAll(QxxmtEmpBonPayMethod.fromDomain(domain));
+		this.commandProxy().insertAll(QbtmtEmpBonPayMethod.fromDomain(domain));
 	}
 
 	@Override
 	public void updateEmpSalaryPayMethod(EmployeeSalaryPaymentMethod domain) {
-		this.commandProxy().updateAll(QxxmtEmpSalPayMethod.fromDomain(domain));
+		this.commandProxy().updateAll(QbtmtEmpSalPayMethod.fromDomain(domain));
 	}
 
 	@Override
 	public void updateEmpBonusPayMethod(EmployeeBonusPaymentMethod domain) {
-		this.commandProxy().updateAll(QxxmtEmpBonPayMethod.fromDomain(domain));
+		this.commandProxy().updateAll(QbtmtEmpBonPayMethod.fromDomain(domain));
 
 	}
 

@@ -18,11 +18,11 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "QXXMT_BANK")
-public class QxxmtBank extends UkJpaEntity {
+@Table(name = "QBTMT_BANK")
+public class QbtmtBank extends UkJpaEntity {
 
 	@EmbeddedId
-	public QxxmtBankPk pk;
+	public QbtmtBankPk pk;
 
 	/**
 	 * 名称
@@ -49,17 +49,17 @@ public class QxxmtBank extends UkJpaEntity {
 		return this.pk;
 	}
 
-	public QxxmtBank(String companyId, String bankCode, String bankName, String bankNameKana, String memo) {
+	public QbtmtBank(String companyId, String bankCode, String bankName, String bankNameKana, String memo) {
 		super();
-		this.pk = new QxxmtBankPk(companyId, bankCode);
+		this.pk = new QbtmtBankPk(companyId, bankCode);
 		this.bankName = bankName;
 		this.bankNameKana = bankNameKana;
 		this.memo = memo;
 	}
 
-	public QxxmtBank(Bank domain) {
+	public QbtmtBank(Bank domain) {
 		super();
-		this.pk = new QxxmtBankPk(domain.getCompanyId(), domain.getBankCode().v());
+		this.pk = new QbtmtBankPk(domain.getCompanyId(), domain.getBankCode().v());
 		this.bankName = domain.getBankName().v();
 		this.bankNameKana = domain.getBankNameKana().isPresent() ? domain.getBankNameKana().get().v() : null;
 		this.memo = domain.getMemo().isPresent() ? domain.getMemo().get().v() : null;

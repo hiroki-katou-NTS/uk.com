@@ -17,12 +17,12 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class QxxmtEmpPayMethodPk {
+public class QbtmtEmpPayInfoPk {
+
+	@Column(name = "SID")
+	public String employeeId;
 
 	@Column(name = "HIST_ID")
 	public String historyId;
-	
-	@Column(name = "PAY_METHOD_NO")
-	public int paymentMethodNo;
 	
 }
