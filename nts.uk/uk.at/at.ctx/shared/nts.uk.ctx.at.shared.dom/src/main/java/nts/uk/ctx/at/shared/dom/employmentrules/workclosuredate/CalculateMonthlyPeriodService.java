@@ -9,5 +9,5 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  *
  */
 public interface CalculateMonthlyPeriodService {
-	public DatePeriod calculateMonthlyPeriod(Integer closureId,YearMonth yearmonth,GeneralDate baseDate);
+	public DatePeriod calculateMonthlyPeriod(Integer closureId,GeneralDate baseDate);
 }
