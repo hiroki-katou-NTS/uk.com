@@ -316,7 +316,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
                 .build());
             data.put(CalFormulasItemColumn.KMK002_84, MasterCellData.builder()
                 .columnId(CalFormulasItemColumn.KMK002_84)
-                .value(object[8] != null && optionalItemUse == 1 ? ((BigDecimal) object[8]).intValue() == 1 ? "○" : "ー" : "")
+                .value(object[8] != null && optionalItemUse == 1 ? ((BigDecimal) object[8]).intValue() == 1 ? "○" : "-" : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
          // Upper value
@@ -346,7 +346,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
             
             data.put(CalFormulasItemColumn.KMK002_86, MasterCellData.builder()
                 .columnId(CalFormulasItemColumn.KMK002_86)
-                .value(object[10] != null && optionalItemUse == 1 ? ((BigDecimal) object[10]).intValue() == 1 ? "○" : "ー" : "")
+                .value(object[10] != null && optionalItemUse == 1 ? ((BigDecimal) object[10]).intValue() == 1 ? "○" : "-" : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
          // Lower value
@@ -497,7 +497,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
             
             data.put(CalFormulasItemColumn.KMK002_96, MasterCellData.builder()
                 .columnId(CalFormulasItemColumn.KMK002_96)
-                .value(object[20] != null && optionalItemUse == 1 ? ((BigDecimal) object[20]).intValue() == 1 ? "○" : "ー" : "")
+                .value(object[20] != null && optionalItemUse == 1 ? ((BigDecimal) object[20]).intValue() == 1 ? "○" : "-" : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
             

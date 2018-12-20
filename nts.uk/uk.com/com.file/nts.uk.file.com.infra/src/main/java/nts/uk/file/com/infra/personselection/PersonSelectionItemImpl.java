@@ -56,7 +56,7 @@ public class PersonSelectionItemImpl implements PersonSelectionItemRepository {
 				+ " ss.SELECTION_NAME," 
 				+ " ss.EXTERNAL_CD," 
 				+ " ss.MEMO,"
-				+ " ROW_NUMBER () OVER ( PARTITION BY si.SELECTION_ITEM_NAME ORDER BY si.SELECTION_ITEM_NAME, ss.SELECTION_CD ASC , hs.START_DATE DESC ) AS ROW_NUMBER"
+				+ " ROW_NUMBER () OVER ( PARTITION BY si.SELECTION_ITEM_NAME ORDER BY si.SELECTION_ITEM_NAME, ss.SELECTION_CD ASC) AS ROW_NUMBER"
 				+ " FROM" 
 				+ " PPEMT_SELECTION_ITEM si"
 				+ " INNER JOIN PPEMT_HISTORY_SELECTION hs ON si.SELECTION_ITEM_ID = hs.SELECTION_ITEM_ID"
@@ -68,7 +68,7 @@ public class PersonSelectionItemImpl implements PersonSelectionItemRepository {
 				+ " AND so.SELECTION_ID = ss.SELECTION_ID"
 				+ " WHERE" 
 				+ " si.CONTRACT_CD = ?contractCd" 
-			+ " ) TABLE_RESULT";
+			+ " ) TABLE_RESULT ORDER BY TABLE_RESULT.SELECTION_ITEM_NAME, TABLE_RESULT.SELECTION_CD ASC ,TABLE_RESULT.START_DATE DESC";
 
 	@Override
 	public List<MasterData> getDataExport(String contractCd, String date) {
