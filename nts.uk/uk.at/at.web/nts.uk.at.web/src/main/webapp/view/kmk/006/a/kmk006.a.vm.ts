@@ -114,7 +114,11 @@ module nts.uk.at.view.kmk006.a {
             // UI 
             createModeScreenB: KnockoutObservable<boolean>;
             createModeScreenC: KnockoutObservable<boolean>;
-            createModeScreenD: KnockoutObservable<boolean>;           
+            createModeScreenD: KnockoutObservable<boolean>;
+
+            //export
+            baseDate: KnockoutObservable<string> = ko.observable('9999/12/31');
+            langId: KnockoutObservable<string> = ko.observable('ja');
 
             constructor() {
                 var self = this;
@@ -1192,12 +1196,14 @@ module nts.uk.at.view.kmk006.a {
                 });
             }
 
-            private exportExcel(){
+            private exportExcel(domainId: string, domainType: string) {
                 var self = this;
-                setShared('KMK006',{
-                    baseDate:self.baseDateTreeList()
-                });
-                nts.uk.ui.windows.sub.modal("/view/kmk/006/temp/index.xhtml");
+                let baseDate: any = moment.utc(self.baseDateTreeList(), 'YYYY/MM/DD').toISOString();
+                let useUnit: any = self.useUnitAutoCalSettingModel();
+                service.exportExcel(self.langId(), domainId, domainType, useUnit, baseDate)
+                    .fail(function (res) {
+                        nts.uk.ui.dialog.alertError(res);
+                    });
             }
 
             private clearAllError() {
