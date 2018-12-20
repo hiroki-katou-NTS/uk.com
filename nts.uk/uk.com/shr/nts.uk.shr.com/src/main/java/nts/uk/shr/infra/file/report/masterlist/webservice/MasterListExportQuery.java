@@ -20,6 +20,8 @@ public class MasterListExportQuery {
 	
 	private MasterListMode mode;
 	
+	private GeneralDate baseDate;
+	
 	private GeneralDate startDate;
 	
 	private GeneralDate endDate;

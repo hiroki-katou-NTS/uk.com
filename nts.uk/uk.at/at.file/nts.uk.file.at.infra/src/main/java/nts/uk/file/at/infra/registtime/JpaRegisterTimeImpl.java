@@ -23,6 +23,9 @@ import nts.uk.ctx.at.record.dom.standardtime.enums.TimeOverLimitType;
 import nts.uk.file.at.app.export.regisagreetime.RegistTimeColumn;
 import nts.uk.file.at.app.export.regisagreetime.RegistTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 @Stateless
@@ -362,19 +365,46 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		for (int i = 0; i < data.length; i++) {
 			if(closeDateAtr == 0 && i == 2)
 				continue;
-			datas.add(new MasterData(dataContentSheet1(data[i],i,closeDateAtr), null, ""));
+			datas.add(toDataSheet1(data[i],i,closeDateAtr));
 		}
 		return datas;
 	}
 	
-	private Map<String, Object> dataContentSheet1(Object object,int check,int closeDateAtr) {
+	
+	/*private Map<String, Object> dataContentSheet1(Object object,int check,int closeDateAtr) {
 		Map<String, Object> data = new HashMap<>();
 		data.put(RegistTimeColumn.KMK008_80, check == 0 ? RegistTimeColumn.KMK008_82 : "");
 		data.put(RegistTimeColumn.HEADER_NONE1, check == 0 ? RegistTimeColumn.KMK008_83 : check == 1 ? RegistTimeColumn.KMK008_84 : check == 3 ? RegistTimeColumn.KMK008_85 : check == 4 ? RegistTimeColumn.KMK008_86 : "");
 		data.put(RegistTimeColumn.HEADER_NONE2, check == 4 ? RegistTimeColumn.KMK008_87 : check == 5 ? RegistTimeColumn.KMK008_88 : "");
 		data.put(RegistTimeColumn.KMK008_81, getValue(((BigDecimal)object).intValue(),check,closeDateAtr));
 		return data;
+	}*/
+	
+	private MasterData toDataSheet1(Object object,int check,int closeDateAtr) {
+		Map<String,MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.KMK008_80, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_80)
+                .value(check == 0 ? RegistTimeColumn.KMK008_82 : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.HEADER_NONE1, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_80)
+                .value(check == 0 ? RegistTimeColumn.KMK008_83 : check == 1 ? RegistTimeColumn.KMK008_84 : check == 3 ? RegistTimeColumn.KMK008_85 : check == 4 ? RegistTimeColumn.KMK008_86 : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.HEADER_NONE2, MasterCellData.builder()
+                .columnId(RegistTimeColumn.HEADER_NONE2)
+                .value(check == 4 ? RegistTimeColumn.KMK008_87 : check == 5 ? RegistTimeColumn.KMK008_88 : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_81, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_81)
+                .value(getValue(((BigDecimal)object).intValue(),check,closeDateAtr))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		return MasterData.builder().rowData(data).build();
 	}
+	
 	
 	private String getValue(int type,int param,int closeDateAtr){
 		String value = null;
@@ -436,26 +466,52 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			data = (Object[]) query.getSingleResult();
 			int j = 0 ;
 			for (int i = 0; i < 7; i++) {
-				datas.add(new MasterData(dataContentSheet2(data,i,j), null, ""));
+				datas.add(toDataSheet2(data,i,j));
 				j = j+3;
 			}
 		} catch (Exception e) {
 			for (int i = 0; i < 7; i++) {
-				datas.add(new MasterData(dataContentSheet2(data,i,0), null, ""));
+				datas.add(toDataSheet2(data,i,0));
 			}
 		}
 		
 		return datas;
 	}
 	
-	private Map<String, Object> dataContentSheet2(Object[] objects,int rownum,int param) {
+	/*private Map<String, Object> dataContentSheet2(Object[] objects,int rownum,int param) {
 		Map<String, Object> data = new HashMap<>();
 		data.put(RegistTimeColumn.KMK008_89, getColumnOneSheet2(rownum));
 		data.put(RegistTimeColumn.KMK008_90,objects != null ? formatTime(((BigDecimal)objects[param]).intValue()) : "");
 		data.put(RegistTimeColumn.KMK008_91,objects != null ? formatTime(((BigDecimal)objects[++param]).intValue()) : "");
 		data.put(RegistTimeColumn.KMK008_92,objects != null ? formatTime(((BigDecimal)objects[++param]).intValue()) : "");
 		return data;
+	}*/
+	
+	private MasterData toDataSheet2(Object[] objects,int rownum,int param) {
+		Map<String,MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_89)
+                .value(getColumnOneSheet2(rownum))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_90)
+                .value(objects != null ? formatTime(((BigDecimal)objects[param]).intValue()) : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_91)
+                .value(objects != null ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_92)
+                .value(objects != null ? formatTime(((BigDecimal)objects[++param]).intValue()) : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		return MasterData.builder().rowData(data).build();
 	}
+	
 	
 	private String getColumnOneSheet2(int rownum) {
 		String value = "";
@@ -498,14 +554,14 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		for (Object[] objects : data) {
 			int j = 2 ;
 			for (int i = 0; i < 7; i++) {
-				datas.add(new MasterData(dataContentSheet3(objects,i,j), null, ""));
+				datas.add(toDataSheet3(objects,i,j));
 				j = j+3;
 			}
 		}
 		return datas;
 	}
 	
-	private Map<String, Object> dataContentSheet3(Object[] objects,int rownum,int param) {
+	/*private Map<String, Object> dataContentSheet3(Object[] objects,int rownum,int param) {
 		Map<String, Object> data = new HashMap<>();
 		data.put(RegistTimeColumn.KMK008_100, rownum == 0 ? objects[0] : "");
 		data.put(RegistTimeColumn.KMK008_101,rownum == 0 ? objects[1] : "");
@@ -514,6 +570,41 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_91,formatTime(((BigDecimal)objects[++param]).intValue()));
 		data.put(RegistTimeColumn.KMK008_92,formatTime(((BigDecimal)objects[++param]).intValue()));
 		return data;
+	}*/
+	
+	private MasterData toDataSheet3(Object[] objects,int rownum,int param) {
+		Map<String,MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.KMK008_100, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_100)
+                .value(rownum == 0 ? objects[0] : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_101, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_101)
+                .value(rownum == 0 ? objects[1] : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_89)
+                .value(getColumnOneSheet2(rownum))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		 data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
+	                .columnId(RegistTimeColumn.KMK008_90)
+	                .value(formatTime(((BigDecimal)objects[param]).intValue()))
+	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+	                .build());
+		 data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
+	                .columnId(RegistTimeColumn.KMK008_91)
+	                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
+	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+	                .build());
+		 data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
+	                .columnId(RegistTimeColumn.KMK008_92)
+	                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
+	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+	                .build());
+		return MasterData.builder().rowData(data).build();
 	}
 
 	@Override
@@ -527,14 +618,14 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		for (Object[] objects : data) {
 			int j = 2 ;
 			for (int i = 0; i < 7; i++) {
-				datas.add(new MasterData(dataContentSheet5(objects,i,j), null, ""));
+				datas.add(toDataSheet5(objects,i,j));
 				j = j+3;
 			}
 		}
 		return datas;
 	}
 	
-	private Map<String, Object> dataContentSheet5(Object[] objects,int rownum,int param) {
+	/*private Map<String, Object> dataContentSheet5(Object[] objects,int rownum,int param) {
 		Map<String, Object> data = new HashMap<>();
 		data.put(RegistTimeColumn.KMK008_104, rownum == 0 ? objects[0] : "");
 		data.put(RegistTimeColumn.KMK008_105,rownum == 0 ? objects[1] : "");
@@ -543,6 +634,41 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_91,formatTime(((BigDecimal)objects[++param]).intValue()));
 		data.put(RegistTimeColumn.KMK008_92,formatTime(((BigDecimal)objects[++param]).intValue()));
 		return data;
+	}*/
+	
+	private MasterData toDataSheet5(Object[] objects,int rownum,int param) {
+		Map<String,MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.KMK008_104, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_104)
+                .value(rownum == 0 ? objects[0] : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_105, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_105)
+                .value(rownum == 0 ? objects[1] : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_89)
+                .value(getColumnOneSheet2(rownum))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_90)
+                .value(formatTime(((BigDecimal)objects[param]).intValue()))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_91)
+                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_92)
+                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		return MasterData.builder().rowData(data).build();
 	}
 
 	@Override
@@ -555,25 +681,50 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			data = (Object[]) query.getSingleResult();
 			int j = 0 ;
 			for (int i = 0; i < 7; i++) {
-				datas.add(new MasterData(dataContentSheet6(data,i,j), null, ""));
+				datas.add(toDataSheet6(data,i,j));
 				j = j+3;
 			}
 		} catch (Exception e) {
 			for (int i = 0; i < 7; i++) {
-				datas.add(new MasterData(dataContentSheet6(data, i, 0), null, ""));
+				datas.add(toDataSheet6(data, i, 0));
 			}
 		}
 		
 		return datas;
 	}
 	
-	private Map<String, Object> dataContentSheet6(Object[] objects,int rownum,int param) {
+	/*private Map<String, Object> dataContentSheet6(Object[] objects,int rownum,int param) {
 		Map<String, Object> data = new HashMap<>();
 		data.put(RegistTimeColumn.KMK008_89, getColumnOneSheet2(rownum));
 		data.put(RegistTimeColumn.KMK008_90,objects == null ? "" : formatTime(((BigDecimal)objects[param]).intValue()));
 		data.put(RegistTimeColumn.KMK008_91,objects == null ? "" : formatTime(((BigDecimal)objects[++param]).intValue()));
 		data.put(RegistTimeColumn.KMK008_92,objects == null  ? "" : formatTime(((BigDecimal)objects[++param]).intValue()));
 		return data;
+	}*/
+	
+	private MasterData toDataSheet6(Object[] objects,int rownum,int param) {
+		Map<String,MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_89)
+                .value(getColumnOneSheet2(rownum))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_90)
+                .value(objects == null ? "" : formatTime(((BigDecimal)objects[param]).intValue()))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_91)
+                .value(objects == null ? "" : formatTime(((BigDecimal)objects[++param]).intValue()))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_92)
+                .value(objects == null  ? "" : formatTime(((BigDecimal)objects[++param]).intValue()))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		return MasterData.builder().rowData(data).build();
 	}
 
 	@Override
@@ -588,14 +739,14 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		for (Object[] objects : data) {
 			int j = 2;
 			for (int i = 0; i < 7; i++) {
-				datas.add(new MasterData(dataContentSheet7(objects, i, j), null, ""));
+				datas.add(toDataSheet7(objects, i, j));
 				j = j + 3;
 			}
 		}
 		return datas;
 	}
 	
-	private Map<String, Object> dataContentSheet7(Object[] objects,int rownum,int param) {
+	/*private Map<String, Object> dataContentSheet7(Object[] objects,int rownum,int param) {
 		Map<String, Object> data = new HashMap<>();
 		data.put(RegistTimeColumn.KMK008_100, rownum == 0 ? objects[0] : "");
 		data.put(RegistTimeColumn.KMK008_101, rownum == 0 ? objects[1] : "");
@@ -604,6 +755,41 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_91,formatTime(((BigDecimal)objects[++param]).intValue()));
 		data.put(RegistTimeColumn.KMK008_92,formatTime(((BigDecimal)objects[++param]).intValue()));
 		return data;
+	}*/
+	
+	private MasterData toDataSheet7(Object[] objects,int rownum,int param) {
+		Map<String,MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.KMK008_100, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_100)
+                .value(rownum == 0 ? objects[0] : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_101, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_101)
+                .value(rownum == 0 ? objects[1] : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_89)
+                .value(getColumnOneSheet2(rownum))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		 data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
+	                .columnId(RegistTimeColumn.KMK008_90)
+	                .value(formatTime(((BigDecimal)objects[param]).intValue()))
+	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+	                .build());
+		 data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
+	                .columnId(RegistTimeColumn.KMK008_91)
+	                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
+	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+	                .build());
+		 data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
+	                .columnId(RegistTimeColumn.KMK008_92)
+	                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
+	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+	                .build());
+		return MasterData.builder().rowData(data).build();
 	}
 	
 	@Override
@@ -617,14 +803,14 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		for (Object[] objects : data) {
 			int j = 2 ;
 			for (int i = 0; i < 7; i++) {
-				datas.add(new MasterData(dataContentSheet9(objects,i,j), null, ""));
+				datas.add(toDataSheet9(objects,i,j));
 				j = j+3;
 			}
 		}
 		return datas;
 	}
 	
-	private Map<String, Object> dataContentSheet9(Object[] objects,int rownum,int param) {
+	/*private Map<String, Object> dataContentSheet9(Object[] objects,int rownum,int param) {
 		Map<String, Object> data = new HashMap<>();
 		data.put(RegistTimeColumn.KMK008_104, rownum == 0 ? objects[0] : "");
 		data.put(RegistTimeColumn.KMK008_105, rownum == 0 ? objects[1] : "");
@@ -633,6 +819,41 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_91,formatTime(((BigDecimal)objects[++param]).intValue()));
 		data.put(RegistTimeColumn.KMK008_92, formatTime(((BigDecimal)objects[++param]).intValue()));
 		return data;
+	}*/
+	
+	private MasterData toDataSheet9(Object[] objects,int rownum,int param) {
+		Map<String,MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.KMK008_104, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_104)
+                .value(rownum == 0 ? objects[0] : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_105, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_105)
+                .value(rownum == 0 ? objects[1] : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_89)
+                .value(getColumnOneSheet2(rownum))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_90)
+                .value(formatTime(((BigDecimal)objects[param]).intValue()))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_91)
+                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_92)
+                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		return MasterData.builder().rowData(data).build();
 	}
 	
 }

@@ -55,20 +55,20 @@ public final class ShiftEstimateColumn {
 	public static final String KSM001_141 = "対象年";
 	public static final String KSM001_142 = "条件値";
 	public static final String KSM001_143 = "目安時間条件１";
-	public static final String KSM001_144 = "条件２";
-	public static final String KSM001_145 = "条件３";
-	public static final String KSM001_146 = "条件４";
-	public static final String KSM001_147 = "条件５";
+	public static final String KSM001_144 = "目安時間_条件２";
+	public static final String KSM001_145 = "目安時間_条件３";
+	public static final String KSM001_146 = "目安時間_条件４";
+	public static final String KSM001_147 = "目安時間_条件５";
 	public static final String KSM001_148 = "目安金額条件１";
-	public static final String KSM001_149 = "条件２";
-	public static final String KSM001_150 = "条件３";
-	public static final String KSM001_151 = "条件４";
-	public static final String KSM001_152 = "条件５";
+	public static final String KSM001_149 = "目安金額_条件２";
+	public static final String KSM001_150 = "目安金額_条件３";
+	public static final String KSM001_151 = "目安金額_条件４";
+	public static final String KSM001_152 = "目安金額_条件５";
 	public static final String KSM001_153 = "目安勤務日数条件１";
-	public static final String KSM001_154 = "条件２";
-	public static final String KSM001_155 = "条件３";
-	public static final String KSM001_156 = "条件４";
-	public static final String KSM001_157 = "条件５";
+	public static final String KSM001_154 = "目安勤務日数_条件２";
+	public static final String KSM001_155 = "目安勤務日数_条件３";
+	public static final String KSM001_156 = "目安勤務日数_条件４";
+	public static final String KSM001_157 = "目安勤務日数_条件５";
 	
 	public static final String KSM001_196 = "￥";
 }

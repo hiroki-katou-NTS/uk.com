@@ -141,7 +141,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 {
                     let dataCndSetCd: Array<StdOutputCondSetDto> = res;
                     self.loadListCondition(dataCndSetCd);
-                    $('#ex_output_wizard').ntsWizard("next");
+                    $('#ex_output_wizard').ntsWizard("next");        
                     $("#grd_Condition_container").focus();
 
                     block.clear();

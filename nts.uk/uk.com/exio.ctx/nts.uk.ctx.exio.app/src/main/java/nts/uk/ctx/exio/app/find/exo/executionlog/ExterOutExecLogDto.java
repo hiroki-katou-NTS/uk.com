@@ -2,6 +2,7 @@ package nts.uk.ctx.exio.app.find.exo.executionlog;
 
 import lombok.Value;
 import nts.uk.ctx.exio.dom.exo.execlog.ExterOutExecLog;
+import nts.uk.shr.com.i18n.TextResource;
 @Value
 public class ExterOutExecLogDto {
 	/**
@@ -121,7 +122,7 @@ public class ExterOutExecLogDto {
 				domain.getDeleteFile() != null ? domain.getDeleteFile().value : null,
 				domain.getFileName().isPresent() ? domain.getFileName().get().v() : null,
 				domain.getCategoryID().isPresent() ? domain.getCategoryID().get().v() : null,
-				domain.getProcessUnit().orElse(null),
+				domain.getProcessUnit().isPresent() ? TextResource.localize("CMF002_528") : null,
 				domain.getProcessEndDateTime().isPresent() ? domain.getProcessEndDateTime().get().toString() : null,
 				domain.getProcessStartDateTime() != null ? domain.getProcessStartDateTime().toString() : null,
 				domain.getStandardClass() != null ? domain.getStandardClass().value : null,
