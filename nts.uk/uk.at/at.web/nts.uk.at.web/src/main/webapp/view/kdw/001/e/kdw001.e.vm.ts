@@ -86,6 +86,7 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         startMonthResult : KnockoutObservable<string> = ko.observable("");
         endMonthResult :  KnockoutObservable<string> = ko.observable("");
         disableMonthResult :KnockoutObservable<boolean> = ko.observable(false);
+        disableDayResult :KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             var self = this;
             self.elapseTime.start();
@@ -106,10 +107,8 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             self.selectedExeContent.subscribe((value) => {
                 if(value != undefined && value.length == undefined) {
                     if(self.selectedExeContent() == 3){
-                       self.disableMonthResult(true);
                        self.textHearderDisposalDay(getText('KDW001_116'));
                     }else{
-                        self.disableMonthResult(false);
                         self.textHearderDisposalDay(getText('KDW001_36'));
                     }
                     $('#single-list_disposalDay .ui-iggrid-headertext').text(self.textHearderDisposalDay());
@@ -168,13 +167,20 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                     });
                     self.visibleMonthly(true);
                 }
-
+                
                 self.contents = res.enumComboBox;
+                self.disableDayResult(false);
+                self.disableMonthResult(false);
+                for(let i =0;i<self.contents.length;i++){
+                   if(self.contents[i].value ==0 || self.contents[i].value ==1 ||self.contents[i].value ==2){
+                       self.disableDayResult(true);
+                   }else if(self.contents[i].value ==3){
+                       self.disableMonthResult(true);
+                   } 
+                }
                 if(self.contents[0].value == 3){
-                   self.disableMonthResult(true); 
                    self.textHearderDisposalDay(getText('KDW001_116')); 
                 }else{
-                   self.disableMonthResult(false);
                     self.textHearderDisposalDay(getText('KDW001_36')); 
                 }
                 self.columns([
