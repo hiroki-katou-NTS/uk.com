@@ -59,6 +59,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     $("#A5_2").focus();
                 } else {
                     self.wageTableContent2dData([]);
+                    self.listSecondDimension([]);
+                    self.listThirdDimension([])
                     self.fakeSelectedValue(null);
                     self.elementRangeSetting(new model.ElementRangeSetting(null));
                     self.wageTableContent(new model.WageTableContent(null));
@@ -288,18 +290,24 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
 //            $("#A7_4_1").trigger("validate");
 //            $("#A7_4_2").trigger("validate");
             if ((self.selectedWageTable().elementSetting() == model.ELEMENT_SETTING.THREE_DIMENSION || self.selectedWageTable().elementSetting() == model.ELEMENT_SETTING.FINE_WORK) && self.updateMode()) {
-                self.wageTableContent().payment().forEach(thirdDms => {
-                    let inputEmptyAll = true; 
-                    thirdDms.listFirstDms().forEach(firstDms => {
-                        firstDms.listSecondDms().forEach(i => {
-                            if (i.paymentAmount() == null) {
-                                self.fakeSelectedValue(thirdDms.masterCode() == null ? thirdDms.frameNumber() : thirdDms.masterCode());
-                                $(".nts-input").filter(":enabled").trigger("validate");
-                                return;
+                for (var i = 0; i < self.wageTableContent().payment().length; i++) {
+                    let thirdDms = self.wageTableContent().payment()[i];
+                    let inputTotal = thirdDms.listFirstDms().length * thirdDms.listFirstDms()[0].listSecondDms().length, inputed = 0;
+                    for (var j = 0; j < thirdDms.listFirstDms().length; j++) {
+                        let firstDms = thirdDms.listFirstDms()[j];
+                        for (var k = 0; k < firstDms.listSecondDms().length; k++) {
+                            let input = firstDms.listSecondDms()[k];
+                            if (!_.isEmpty(input.paymentAmount())) {
+                                inputed++;
                             }
-                        });
-                    });
-                });
+                        }
+                    }
+                    if (inputed < inputTotal) {
+                        self.fakeSelectedValue(thirdDms.masterCode() == null ? thirdDms.frameNumber() : thirdDms.masterCode());
+                        $(".nts-input").filter(":enabled").trigger("validate");
+                        break;
+                    }
+                }
             }
             if (!nts.uk.ui.errors.hasError()) {
                 if (self.updateMode()) {
