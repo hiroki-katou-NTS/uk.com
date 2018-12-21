@@ -12,8 +12,23 @@ import javax.inject.Inject;
 import org.apache.http.ContentTooLongException;
 
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.app.find.dailyperformanceformat.BusinessTypesFinder;
+import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeDto;
 import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTimeInputMethodDto;
 import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTimeInputMethodFinder;
+import nts.uk.ctx.at.record.app.find.divergence.time.history.CompanyDivergenceReferenceTimeDto;
+import nts.uk.ctx.at.record.app.find.divergence.time.history.CompanyDivergenceReferenceTimeFinder;
+import nts.uk.ctx.at.record.app.find.divergence.time.history.CompanyDivergenceReferenceTimeHistoryDto;
+import nts.uk.ctx.at.record.app.find.divergence.time.history.CompanyDivergenceReferenceTimeHistoryFinder;
+import nts.uk.ctx.at.record.app.find.divergence.time.history.WorkTypeDivergenceReferenceTimeDto;
+import nts.uk.ctx.at.record.app.find.divergence.time.history.WorkTypeDivergenceReferenceTimeFinder;
+import nts.uk.ctx.at.record.app.find.divergence.time.history.WorkTypeDivergenceReferenceTimeHistoryDto;
+import nts.uk.ctx.at.record.app.find.divergence.time.history.WorkTypeDivergenceReferenceTimeHistoryFinder;
+import nts.uk.ctx.at.record.app.find.divergence.time.message.DivergenceTimeErrorAlarmMessageDto;
+import nts.uk.ctx.at.record.app.find.divergence.time.message.DivergenceTimeErrorAlarmMessageFinder;
+import nts.uk.ctx.at.record.app.find.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageDto;
+import nts.uk.ctx.at.record.app.find.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageFinder;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
@@ -25,6 +40,8 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
@@ -45,6 +62,27 @@ public class DivergenceExportImpl  implements MasterListData{
 	/** The div time inputmethod finder. */
 	@Inject
 	private DivergenceTimeInputMethodFinder divTimeInputmethodFinder;
+	
+	@Inject
+	private CompanyDivergenceReferenceTimeHistoryFinder historyFinder;
+	@Inject
+	private CompanyDivergenceReferenceTimeFinder finder;
+	
+	@Inject
+	private DivergenceTimeErrorAlarmMessageFinder findermesg;
+	
+	@Inject
+	private BusinessTypesFinder findAllBusineesType;
+	
+	@Inject
+	private WorkTypeDivergenceReferenceTimeHistoryFinder historyFinderwroktype;
+	
+	@Inject
+	private WorkTypeDivergenceReferenceTimeFinder finderworkType;
+	/** The WorkType Divergence Time Error Alarm Message finder. */
+	@Inject
+	private WorkTypeDivergenceTimeErrorAlarmMessageFinder finderWorkTypeMsg;
+	
 	private static final String select = "〇";
 	private static final String unselect = "-";
 
@@ -56,8 +94,10 @@ public class DivergenceExportImpl  implements MasterListData{
 	@Override
 	public List<SheetData> extraSheets(MasterListExportQuery query) {
 		 List<SheetData> sheetDatas = new ArrayList<>();
-		 SheetData divergencetimeData = new SheetData(getDataDevergenceTimeCompany(query), getHeaderColumnsDevergenceTimeCompany(query), null, null, "乖離基準時間の設定 会社");
+		 SheetData divergencetimeData = new SheetData(getDataDevergenceTimeCompany(query), getHeaderColumnsDevergenceTimeCompany(query), null, null, "乖離基準時間の設定会社");	 
 		 sheetDatas.add(divergencetimeData);
+		 SheetData divergenceworktypeData = new SheetData(getDataDevergenceTimeWorktype(query), getHeaderColumnsDevergenceTimeWorktype(query), null, null, "乖離基準時間の設定 勤務種別");
+		 sheetDatas.add(divergenceworktypeData);
 		return sheetDatas;
 	}
 
@@ -67,20 +107,15 @@ public class DivergenceExportImpl  implements MasterListData{
 		Map<String, Object> data = new HashMap<>();		
 		// Get company id
 		String companyId = AppContexts.user().companyId();
-	//	data=putEntryGetMasterDatas();
 		// Get list divergence time
 		List<DivergenceTime> listDivTime = this.divTimeRepo.getAllDivTime(companyId);
+		listDivTime.sort((DivergenceTime o1,DivergenceTime o2) -> o1.getDivergenceTimeNo()-o2.getDivergenceTimeNo());
 		// Check list empty
 		if (listDivTime.isEmpty()) {
 			return Collections.emptyList();
 		}
 		for(DivergenceTime divergenceTime:listDivTime){
-			data=putEntryGetMasterDatas();
-			divergenceTime.getDivergenceTimeNo();
-		    divergenceTime.getDivTimeName();
-		    divergenceTime.getDivTimeUseSet();
-		    divergenceTime.getTargetItems();
-		    divergenceTime.getErrorCancelMedthod().isReasonSelected();
+			data=putEntryGetMasterDatas();			
 		    data.put("No", divergenceTime.getDivergenceTimeNo());
 			data.put("名称",  divergenceTime.getDivTimeName().v());
 			data.put("使用区分", getDivergenceTimeUseSet(divergenceTime.getDivTimeUseSet().value));
@@ -95,9 +130,7 @@ public class DivergenceExportImpl  implements MasterListData{
 						nameCode=nameCode+","+rsattendanceName.get(i).getAttendanceItemDisplayNumber()+rsattendanceName.get(i).getAttendanceItemName();
 					}
 				}
-				data.put("対象項目", nameCode);			
-			/*	resultDivergenceInfo.isDivergenceReasonSelected();
-				boolean reasonSelected= divergenceTime.getErrorCancelMedthod().isReasonSelected();*/
+				data.put("対象項目", nameCode);					
 				data.put("乖離理由の選択", getDivergenceTimeReasonSelect(resultDivergenceInfo.isDivergenceReasonSelected()));
 				if(resultDivergenceInfo.isDivergenceReasonSelected()){					
 					// Get list divergence reason
@@ -125,8 +158,19 @@ public class DivergenceExportImpl  implements MasterListData{
 					}
 				
 			}
-	
-			datas.add(new MasterData(data, null, ""));
+			MasterData masterData = new MasterData(data, null, "");
+			Map<String, MasterCellData> rowData = masterData.getRowData();
+			rowData.get("No").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+			rowData.get("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+			rowData.get("使用区分").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+			rowData.get("乖離の種類").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+			rowData.get("対象項目").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+			rowData.get("乖離理由の選択").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+			rowData.get("選択肢の設定").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+			rowData.get("乖離理由が選択された場合、エラー／アラームを解除する").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+			rowData.get("乖離理由の入力").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+			rowData.get("乖離理由が入力された場合、エラー／アラームを解除する").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+			datas.add(masterData);
 		}
 
 		
@@ -167,21 +211,210 @@ public class DivergenceExportImpl  implements MasterListData{
 		
 	}
 	
+	
 	private List<MasterHeaderColumn> getHeaderColumnsDevergenceTimeCompany (MasterListExportQuery query){
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn("コード", "コード", ColumnTextAlign.CENTER, "", true));
-		columns.add(new MasterHeaderColumn("名称", "名称", ColumnTextAlign.CENTER, "", true));
+		columns.add(new MasterHeaderColumn("開始日", "開始日", ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("終了日", "終了日", ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("NO", "NO", ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("使用区分", "使用区分", ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("名称", "名称", ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("アラーム時間", "アラーム時間", ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("エラー時間", "エラー時間", ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("エラーメッセージ", "エラーメッセージ", ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("アラームメッセージ", "アラームメッセージ", ColumnTextAlign.LEFT, "", true));
 		return columns;
 		
 	}
 	private List<MasterData> getDataDevergenceTimeCompany(MasterListExportQuery query){
 		List<MasterData> datas = new ArrayList<>();
 		Map<String, Object> data = new HashMap<>();
-		data.put("コード", "code2");
-		data.put("名称", "name2");
-		datas.add(new MasterData(data, null, ""));
+		List<CompanyDivergenceReferenceTimeHistoryDto> listHistory=	this.historyFinder.getAllHistories();
+		if (!CollectionUtil.isEmpty(listHistory)) {
+			//set basedate
+			for(int i=0;i<listHistory.size();i++){
+				data=putEntryDevergenceTimeCompanyDatas();
+				List<CompanyDivergenceReferenceTimeDto> listcompanyDiven =this.finder.getDivergenceReferenceTimeItemByHist(listHistory.get(i).getHistoryId());
+				boolean check=true;
+				if(!CollectionUtil.isEmpty(listcompanyDiven)){							
+					for(int j=0;j<listcompanyDiven.size();j++){
+						CompanyDivergenceReferenceTimeDto idata=listcompanyDiven.get(j);					
+						data.put("開始日",listHistory.get(i).getStartDate().toString());
+						data.put("終了日",listHistory.get(i).getEndDate().toString());	
+					
+						DivergenceTimeInputMethodDto resultDivergenceInfo = this.divTimeInputmethodFinder.getDivTimeInputMethodInfo(idata.getDivergenceTimeNo());
+						if(resultDivergenceInfo.getDivergenceTimeUseSet()==DivergenceTimeUseSet.USE.value){	
+							if(check==false){
+								data.put("開始日","");
+								data.put("終了日","");	
+							}
+							check=false;
+							data.put("NO",idata.getDivergenceTimeNo());
+							data.put("使用区分",getDivergenceTimeUseSet(idata.getNotUseAtr()));
+							data.put("名称",resultDivergenceInfo.getDivergenceTimeName());
+							if(idata.getNotUseAtr()==DivergenceTimeUseSet.USE.value){
+								data.put("アラーム時間",idata.getDivergenceReferenceTimeValue().getAlarmTime()==null?"": formatValueAttendance(idata.getDivergenceReferenceTimeValue().getAlarmTime()));
+								data.put("エラー時間",idata.getDivergenceReferenceTimeValue().getErrorTime()==null?"":formatValueAttendance(idata.getDivergenceReferenceTimeValue().getErrorTime()));
+							}else{
+								data.put("アラーム時間","");
+								data.put("エラー時間","");
+							}
+							DivergenceTimeErrorAlarmMessageDto divergenceTimeErrorAlarmMessageDto=findermesg.findByDivergenceTimeNo(resultDivergenceInfo.getDivergenceTimeNo());												
+							if(divergenceTimeErrorAlarmMessageDto!=null && divergenceTimeErrorAlarmMessageDto.getErrorMessage() !=null ){
+								data.put("エラーメッセージ",divergenceTimeErrorAlarmMessageDto.getErrorMessage());
+							}
+							if(divergenceTimeErrorAlarmMessageDto!=null && divergenceTimeErrorAlarmMessageDto.getAlarmMessage() !=null ){
+								data.put("アラームメッセージ",divergenceTimeErrorAlarmMessageDto.getAlarmMessage());
+							}
+							
+							MasterData masterData = new MasterData(data, null, "");
+							datas.add(masterData);
+						}
+						
+					}
+				}
+				
+			}
+		}
+		
 		return datas;
 	}
+	
+	private Map<String, Object> putEntryDevergenceTimeCompanyDatas (){
+	    Map<String, Object> data = new HashMap<>();
+	   			data.put("開始日","");
+				data.put("終了日","");
+				data.put("NO", "");
+				data.put("使用区分","");
+				data.put("名称", "");
+				data.put("アラーム時間","");
+				data.put("エラー時間","");
+				data.put("エラーメッセージ","");
+				data.put("アラームメッセージ","");
+											
+	return data;
+	
+}
+	private List<MasterHeaderColumn> getHeaderColumnsDevergenceTimeWorktype (MasterListExportQuery query){
+		List<MasterHeaderColumn> columns = new ArrayList<>();
+		columns.add(new MasterHeaderColumn("コード", "コード", ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("勤務種類", "勤務種類", ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("開始日", "開始日", ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("終了日", "終了日", ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("NO", "NO", ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("使用区分", "使用区分", ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("名称", "名称", ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("アラーム時間", "アラーム時間", ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("エラー時間", "エラー時間", ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("エラーメッセージ", "エラーメッセージ", ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("アラームメッセージ", "アラームメッセージ", ColumnTextAlign.LEFT, "", true));
+		return columns;
+		
+	}
+	
+	private List<MasterData> getDataDevergenceTimeWorktype(MasterListExportQuery query){
+		List<MasterData> datas = new ArrayList<>();
+		Map<String, Object> data = new HashMap<>();
+		List<BusinessTypeDto> listBusinesType=this.findAllBusineesType.findAll();
+		if(!CollectionUtil.isEmpty(listBusinesType)){
+			for(int i=0;i<listBusinesType.size();i++){
+				data=putEntryDevergenceTimeWorkTypeDatas();
+				BusinessTypeDto businessTypeDto=listBusinesType.get(i);
+				data.put("コード",businessTypeDto.getBusinessTypeCode());
+				data.put("勤務種類",businessTypeDto.getBusinessTypeName());
+				boolean checkShowTypecode=true;
+				List<WorkTypeDivergenceReferenceTimeHistoryDto> listHiswork=this.historyFinderwroktype.getAllHistories(businessTypeDto.getBusinessTypeCode());
+				//set base date them tai day
+					if(!CollectionUtil.isEmpty(listHiswork)){
+						for (int j=0;j<listHiswork.size();j++){
+							WorkTypeDivergenceReferenceTimeHistoryDto workTypeDivergenceReferenceTimeHistoryDto=listHiswork.get(j);
+							boolean checkShowStardEnDate=true;
+							/*data.put("開始日", "");
+							data.put("終了日","");*/
+							if(workTypeDivergenceReferenceTimeHistoryDto !=null && businessTypeDto.getBusinessTypeCode() !=null
+									&& workTypeDivergenceReferenceTimeHistoryDto.getHistoryId() !=null){
+								
+								if(workTypeDivergenceReferenceTimeHistoryDto !=null && workTypeDivergenceReferenceTimeHistoryDto.getStartDate() !=null ){
+									data.put("開始日",workTypeDivergenceReferenceTimeHistoryDto.getStartDate().toString());
+								}
+								if(workTypeDivergenceReferenceTimeHistoryDto !=null && workTypeDivergenceReferenceTimeHistoryDto.getEndDate() !=null ){
+									data.put("終了日",workTypeDivergenceReferenceTimeHistoryDto.getEndDate().toString());
+								}							
+								List<WorkTypeDivergenceReferenceTimeDto> listworkDivergence=this.finderworkType.
+										getDivergenceReferenceTimeItemByHist(workTypeDivergenceReferenceTimeHistoryDto.getHistoryId(), businessTypeDto.getBusinessTypeCode());
+								
+								if(!CollectionUtil.isEmpty(listworkDivergence)){
+									for(WorkTypeDivergenceReferenceTimeDto workTypeDivergenceReferenceTimeDto:listworkDivergence){									
+								  
+									DivergenceTimeInputMethodDto resultDivergenceInfo = this.divTimeInputmethodFinder.getDivTimeInputMethodInfo(workTypeDivergenceReferenceTimeDto.getDivergenceTimeNo());
+										if(resultDivergenceInfo.getDivergenceTimeUseSet()==DivergenceTimeUseSet.USE.value){
+											if(checkShowTypecode==false){
+												data.put("コード","");
+												data.put("勤務種類","");
+											}
+											checkShowTypecode=false;
+											if(checkShowStardEnDate==false){
+												data.put("開始日", "");
+												data.put("終了日","");
+											}
+											 checkShowStardEnDate=false;
+											data.put("NO", workTypeDivergenceReferenceTimeDto.getDivergenceTimeNo());
+											if(workTypeDivergenceReferenceTimeDto.getNotUseAtr()==DivergenceTimeUseSet.USE.value){
+												data.put("使用区分",getDivergenceTimeUseSet(workTypeDivergenceReferenceTimeDto.getNotUseAtr()));
+												data.put("名称",resultDivergenceInfo.getDivergenceTimeName());
+												if(workTypeDivergenceReferenceTimeDto.getDivergenceReferenceTimeValue().getAlarmTime() !=null){
+													data.put("アラーム時間",formatValueAttendance( workTypeDivergenceReferenceTimeDto.getDivergenceReferenceTimeValue().getAlarmTime()));
+												}
+												if(workTypeDivergenceReferenceTimeDto.getDivergenceReferenceTimeValue().getErrorTime() !=null){
+													data.put("エラー時間",formatValueAttendance( workTypeDivergenceReferenceTimeDto.getDivergenceReferenceTimeValue().getErrorTime()));
+												}
+												
+											//	DivergenceTimeErrorAlarmMessageDto divergenceTimeErrorAlarmMessageDto=findermesg.findByDivergenceTimeNo(resultDivergenceInfo.getDivergenceTimeNo());
+												WorkTypeDivergenceTimeErrorAlarmMessageDto 	workTypeDivergenceTimeErrorAlarmMessageDto=	finderWorkTypeMsg.findByWorkTypeDivTimeErrAlarmMsg(Integer.valueOf(workTypeDivergenceReferenceTimeDto.getDivergenceTimeNo()) , new BusinessTypeCode(businessTypeDto.getBusinessTypeCode()));	
+												if(workTypeDivergenceTimeErrorAlarmMessageDto!=null && workTypeDivergenceTimeErrorAlarmMessageDto.getErrorMessage() !=null ){
+													data.put("エラーメッセージ",workTypeDivergenceTimeErrorAlarmMessageDto.getErrorMessage());
+												}
+												if(workTypeDivergenceTimeErrorAlarmMessageDto!=null && workTypeDivergenceTimeErrorAlarmMessageDto.getAlarmMessage() !=null ){
+													data.put("アラームメッセージ",workTypeDivergenceTimeErrorAlarmMessageDto.getAlarmMessage());
+												}
+												
+												MasterData masterData = new MasterData(data, null, "");
+												//set align
+												datas.add(masterData);
+											}
+											
+										}
+								
+										
+									}
+								}
+								
+							}
+						}
+					}
+			}
+		}				
+		
+		return datas;
+	}
+	
+	private Map<String, Object> putEntryDevergenceTimeWorkTypeDatas (){
+	    Map<String, Object> data = new HashMap<>();
+	   			data.put("コード","");
+				data.put("勤務種類","");
+				data.put("開始日", "");
+				data.put("終了日","");
+				data.put("NO", "");
+				data.put("使用区分","");
+				data.put("名称","");
+				data.put("アラーム時間","");
+				data.put("エラー時間","");
+				data.put("エラーメッセージ","");
+				data.put("アラームメッセージ","");
+											
+	return data;
+	
+}
 	
 	public String getDivergenceTimeUseSet(int attr) {
 		DivergenceTimeUseSet divergenceTimeUseSet = DivergenceTimeUseSet.valueOf(attr);
@@ -206,6 +439,11 @@ public class DivergenceExportImpl  implements MasterListData{
 		default:
 			return "";
 		}
+	}
+	
+	private String formatValueAttendance(int att) {
+		Integer hours = att / 60, minutes = att % 60;
+		return String.join("", hours < 10 ? "0" : "", hours.toString(), ":", minutes < 10 ? "0" : "", minutes.toString());
 	}
 	
 	
