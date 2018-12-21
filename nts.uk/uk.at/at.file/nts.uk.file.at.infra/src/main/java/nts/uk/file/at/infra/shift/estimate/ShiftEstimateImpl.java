@@ -52,7 +52,7 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 			+" ,ecs.DAYS_M_ALARM_CHECK"
 			+" ,ec.COMPARISON_ATR"
 			+" ,eac.COLOR_CD"
-			+" FROM"
+		+" FROM"
 			+" KSCST_EST_ALARM_COLOR eac"
 			+" INNER JOIN KSCST_EST_COM_SET ecs ON ecs.CID = eac.CID"
 			+" INNER JOIN KSCST_EST_COMPARISON ec ON ecs.CID = ec.CID"
@@ -159,10 +159,60 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 			+" INNER JOIN KSCMT_EST_PRICE_EMP_SET epes ON etes.CID = epes.CID AND etes.TARGET_YEAR = epes.TARGET_YEAR AND etes.TARGET_CLS = epes.TARGET_CLS AND etes.EMPCD = epes.EMPCD "
 			+" INNER JOIN KSCMT_EST_DAYS_EMP_SET edes ON etes.CID = edes.CID AND etes.TARGET_YEAR = edes.TARGET_YEAR AND etes.TARGET_CLS = edes.TARGET_CLS AND etes.EMPCD = edes.EMPCD "
 			+" INNER JOIN BSYMT_EMPLOYMENT emp ON etes.CID = emp.CID AND etes.EMPCD = emp.CODE"
-			+" WHERE etes.CID = ?cid AND  ?startDate <= etes.TARGET_YEAR AND ?endDate <= 2018"
+			+" WHERE etes.CID = ?cid AND  ?startDate <= etes.TARGET_YEAR AND  etes.TARGET_YEAR <= ?endDate"
 			+" ) AS TABLE_RESULT";
 	
-	private static final String GET_EXPORT_EXCEL_SHEET_FIVE = "";
+	private static final String GET_EXPORT_EXCEL_SHEET_FIVE = "SELECT"
+			+" 		CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.YEAR_TIME ELSE NULL END YEAR_TIME"
+			+" 		,CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.CODE ELSE NULL END CODE "
+			+" 		,CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.BUSINESS_NAME ELSE NULL END BUSINESS_NAME"
+			+" 		,TABLE_RESULT.MONTH_TIME"
+			+" 		,TABLE_RESULT.EST_CONDITION_1ST_TIME"
+			+" 		,TABLE_RESULT.EST_CONDITION_2ND_TIME"
+			+" 		,TABLE_RESULT.EST_CONDITION_3RD_TIME"
+			+" 		,TABLE_RESULT.EST_CONDITION_4TH_TIME"
+			+" 		,TABLE_RESULT.EST_CONDITION_5TH_TIME"
+			+" 		,TABLE_RESULT.EST_CONDITION_1ST_MNY"
+			+" 		,TABLE_RESULT.EST_CONDITION_2ND_MNY"
+			+" 		,TABLE_RESULT.EST_CONDITION_3RD_MNY"
+			+" 		,TABLE_RESULT.EST_CONDITION_4TH_MNY"
+			+" 		,TABLE_RESULT.EST_CONDITION_5TH_MNY"
+			+" 		,TABLE_RESULT.EST_CONDITION_1ST_DAYS"
+			+" 		,TABLE_RESULT.EST_CONDITION_2ND_DAYS"
+			+" 		,TABLE_RESULT.EST_CONDITION_3RD_DAYS"
+			+" 		,TABLE_RESULT.EST_CONDITION_4TH_DAYS"
+			+" 		,TABLE_RESULT.EST_CONDITION_5TH_DAYS"
+			+" FROM"
+			+" (SELECT"
+			+" 	etes.TARGET_YEAR AS YEAR_TIME"
+			+" 	,edmi.SCD AS CODE"
+			+" 	,per.BUSINESS_NAME AS BUSINESS_NAME"
+			+" 	,etes.TARGET_CLS AS MONTH_TIME"
+			+" 	,etes.EST_CONDITION_1ST_TIME"
+			+" 	,etes.EST_CONDITION_2ND_TIME"
+			+" 	,etes.EST_CONDITION_3RD_TIME"
+			+" 	,etes.EST_CONDITION_4TH_TIME"
+			+" 	,etes.EST_CONDITION_5TH_TIME"
+			+" 	,epes.EST_CONDITION_1ST_MNY"
+			+" 	,epes.EST_CONDITION_2ND_MNY"
+			+" 	,epes.EST_CONDITION_3RD_MNY"
+			+" 	,epes.EST_CONDITION_4TH_MNY"
+			+" 	,epes.EST_CONDITION_5TH_MNY"
+			+" 	,edes.EST_CONDITION_1ST_DAYS"
+			+" 	,edes.EST_CONDITION_2ND_DAYS"
+			+" 	,edes.EST_CONDITION_3RD_DAYS"
+			+" 	,edes.EST_CONDITION_4TH_DAYS"
+			+" 	,edes.EST_CONDITION_5TH_DAYS	"
+			+" 	,ROW_NUMBER () OVER ( PARTITION BY etes.TARGET_YEAR,edmi.SCD, per.BUSINESS_NAME  ORDER BY etes.TARGET_CLS, edmi.SCD ASC ) AS ROW_NUMBER"
+			+" FROM"
+			+" 	BSYMT_EMP_DTA_MNG_INFO edmi"
+			+" 	INNER JOIN BPSMT_PERSON per ON edmi.PID = per.PID"
+			+" 	INNER JOIN KSCMT_EST_TIME_PER_SET etes ON edmi.SID = etes.SID"
+			+" 	INNER JOIN KSCMT_EST_PRICE_PER_SET epes ON edmi.SID = epes.SID AND etes.TARGET_YEAR = epes.TARGET_YEAR AND etes.TARGET_CLS = epes.TARGET_CLS"
+			+" 	INNER JOIN KSCMT_EST_DAYS_PER_SET edes ON edmi.SID = edes.SID AND etes.TARGET_YEAR = edes.TARGET_YEAR AND etes.TARGET_CLS = edes.TARGET_CLS "
+			+" 	WHERE edmi.CID = ?cid "
+			+" AND  ?startDate <= etes.TARGET_YEAR AND etes.TARGET_YEAR <= ?endDate"
+			+" ) AS TABLE_RESULT";
 	
 	/** Sheet 1 **/
 	@Override
@@ -244,7 +294,7 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 		return datas;
 	}
 
-	/** Sheet 4 **/
+	/** Sheet 5 **/
 	@Override
 	public List<MasterData> getDataSheetFiveExport(String startDate, String endDate) {
 		String cid = AppContexts.user().companyId();
@@ -500,7 +550,101 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 	
 	private MasterData dataContentFive(Object[] object) {
 		Map<String,MasterCellData> data = new HashMap<>();
-		
+		data.put(ShiftEstimateColumn.KSM001_177, MasterCellData.builder()
+                .columnId(ShiftEstimateColumn.KSM001_177)
+                .value(object[0] != null ? (BigDecimal) object[0] : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+            data.put(ShiftEstimateColumn.KSM001_178, MasterCellData.builder()
+                .columnId(ShiftEstimateColumn.KSM001_178)
+                .value(object[1] != null ? (String) object[1] : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+            data.put(ShiftEstimateColumn.KSM001_179, MasterCellData.builder()
+                .columnId(ShiftEstimateColumn.KSM001_179)
+                .value(object[2] != null ? (String) object[2] : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+            data.put(ShiftEstimateColumn.KSM001_180, MasterCellData.builder()
+                .columnId(ShiftEstimateColumn.KSM001_180)
+                .value(object[3] != null ? EnumAdaptor.valueOf(((BigDecimal) object[3]).intValue(), EstimateTargetClassification.class).description : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+            data.put(ShiftEstimateColumn.KSM001_181, MasterCellData.builder()
+                .columnId(ShiftEstimateColumn.KSM001_181)
+                .value(object[4] != null ? formatTime(((BigDecimal) object[4]).intValue()) : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+            data.put(ShiftEstimateColumn.KSM001_182, MasterCellData.builder()
+                .columnId(ShiftEstimateColumn.KSM001_182)
+                .value(object[5] != null ? formatTime(((BigDecimal) object[5]).intValue()) : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+            data.put(ShiftEstimateColumn.KSM001_183, MasterCellData.builder()
+                .columnId(ShiftEstimateColumn.KSM001_183)
+                .value(object[6] != null ? formatTime(((BigDecimal) object[6]).intValue()) : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+            data.put(ShiftEstimateColumn.KSM001_184, MasterCellData.builder()
+                .columnId(ShiftEstimateColumn.KSM001_184)
+                .value(object[7] != null ? formatTime(((BigDecimal) object[7]).intValue()) : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+            data.put(ShiftEstimateColumn.KSM001_185, MasterCellData.builder()
+                .columnId(ShiftEstimateColumn.KSM001_185)
+                .value(object[8] != null ? formatTime(((BigDecimal) object[8]).intValue()) : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+            data.put(ShiftEstimateColumn.KSM001_186, MasterCellData.builder()
+                .columnId(ShiftEstimateColumn.KSM001_186)
+                .value(object[9] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[9]).toString()) : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+            data.put(ShiftEstimateColumn.KSM001_187, MasterCellData.builder()
+                .columnId(ShiftEstimateColumn.KSM001_187)
+                .value(object[10] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[10]).toString()) : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+            data.put(ShiftEstimateColumn.KSM001_188, MasterCellData.builder()
+                .columnId(ShiftEstimateColumn.KSM001_188)
+                .value(object[11] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[11]).toString()) : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+            data.put(ShiftEstimateColumn.KSM001_189, MasterCellData.builder()
+                .columnId(ShiftEstimateColumn.KSM001_189)
+                .value(object[12] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[12]).toString()) : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+            data.put(ShiftEstimateColumn.KSM001_190, MasterCellData.builder()
+                .columnId(ShiftEstimateColumn.KSM001_190)
+                .value(object[13] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[13]).toString()) : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+            data.put(ShiftEstimateColumn.KSM001_191, MasterCellData.builder()
+                .columnId(ShiftEstimateColumn.KSM001_191)
+                .value(object[14] != null ? formatDays(((BigDecimal) object[14]).intValue()) : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+            data.put(ShiftEstimateColumn.KSM001_192, MasterCellData.builder()
+                .columnId(ShiftEstimateColumn.KSM001_192)
+                .value(object[15] != null ? formatDays(((BigDecimal) object[15]).intValue()) : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+            data.put(ShiftEstimateColumn.KSM001_193, MasterCellData.builder()
+                .columnId(ShiftEstimateColumn.KSM001_193)
+                .value(object[16] != null ? formatDays(((BigDecimal) object[16]).intValue()) : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+            data.put(ShiftEstimateColumn.KSM001_194, MasterCellData.builder()
+                .columnId(ShiftEstimateColumn.KSM001_194)
+                .value(object[17] != null ? formatDays(((BigDecimal) object[17]).intValue()) : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+            data.put(ShiftEstimateColumn.KSM001_195, MasterCellData.builder()
+                .columnId(ShiftEstimateColumn.KSM001_195)
+                .value(object[18] != null ? formatDays(((BigDecimal) object[18]).intValue()) : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
 		return MasterData.builder().rowData(data).build();
 	}
 	
