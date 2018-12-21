@@ -23,13 +23,17 @@ public class HolidayWorkReflectScheImpl implements HolidayWorkReflectSche{
 					holidayWorkPara.getWorktypeCode(),
 					holidayWorkPara.getWorkTimeCode());
 			//開始・終了時刻
-			startEndTimeScheService.updateStartTimeRflect(new TimeReflectScheDto(holidayWorkPara.getEmployeeId(),
-					holidayWorkPara.getDatePara(),
-					holidayWorkPara.getStartTime(),
-					holidayWorkPara.getEndTime(),
-					1,
-					true,
-					true));
+			if(holidayWorkPara.getStartTime() != null
+					&& holidayWorkPara.getEndTime() != null) {
+				startEndTimeScheService.updateStartTimeRflect(new TimeReflectScheDto(holidayWorkPara.getEmployeeId(),
+						holidayWorkPara.getDatePara(),
+						holidayWorkPara.getStartTime(),
+						holidayWorkPara.getEndTime(),
+						1,
+						true,
+						true));	
+			}
+			
 			return true;	
 		}catch (Exception e) {
 			return false;

@@ -122,7 +122,11 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 					ymd,
 					null);
 			if(!integrationOfDaily.getAttendanceLeave().isPresent()) {
-				timeLeaving.add(timeInfor);
+				//日別実績の出退勤
+				Optional<TimeLeavingOfDailyPerformance> findByKeyTimeLeaving = timeLeaving.findByKey(sid, ymd);
+				if(!findByKeyTimeLeaving.isPresent()) {
+					timeLeaving.add(timeInfor);
+				}
 			} else {
 				timeLeaving.update(timeInfor);
 			}
