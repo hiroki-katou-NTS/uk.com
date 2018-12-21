@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 500,
-					height : 500
+					width : 450,
+					height : 450
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -40,6 +40,7 @@
 				<div class="valign-center distance">
 					<div id="B1_005" data-bind="ntsFormLabel: { required: true }" class="margin-right-FormLabel">
 						<span data-bind="text: '#{i18n.getText('CPS003_38')}' "></span>
+						<button data-bind="ntsHelpButton: {textId: 'CPS003_18', position: 'right top'}">？</button>
 					</div>
 					<div class="cf" data-bind="ntsSwitchButton: {
 						name: '#CPS003_17',
@@ -72,9 +73,9 @@
 			</div>
 			
 			</div>
-			<div id="functions-area-bottom">
-				<span id="B2_001">#{i18n.getText('CPS003_43')}</span>
-				<div>
+			<div id="functions-area-bottom" style="height: 100px !important;">
+				<div><span id="B2_001">#{i18n.getText('CPS003_43')}</span></div>
+				<div id="register">
 					<button id="B2_002" class="proceed x-large" data-bind="click: decide, enable: $root.errors.isEmpty()">#{i18n.getText('CPS003_44')}</button>
 					<button id="B2_003" data-bind="click: close">#{i18n.getText('CPS003_45')}</button>
 				</div>
