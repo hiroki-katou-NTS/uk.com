@@ -115,8 +115,9 @@ module nts.uk.com.view.kwr002.a {
 
                     /** Required parameter */
                     baseDate: self.baseDate().toISOString(), // 基準日
-                    periodStartDate: self.dateValue().startDate, // 対象期間開始日
-                    periodEndDate: self.dateValue().endDate, // 対象期間終了日
+//                    periodStartDate: self.dateValue().startDate, // 対象期間開始日
+//                    periodEndDate: self.dateValue().endDate, // 対象期間終了日
+                    dateRangePickerValue: self.dateValue,
                     inService: true, // 在職区分
                     leaveOfAbsence: true, // 休職区分
                     closed: true, // 休業区分
