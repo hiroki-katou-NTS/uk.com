@@ -49,53 +49,87 @@ public class JpaWkpJobCalSettingRepository extends JpaRepository implements WkpJ
 	"FROM "+
 		"( " +
 			"SELECT  "+
-				"ROW_NUMBER() OVER (PARTITION BY w.WKPCD ORDER BY  w.WKPCD, j.JOB_CD) AS ROW_NUMBER, "+
-				"wj.LEGAL_OT_TIME_ATR, "+
-				"wj.LEGAL_OT_TIME_LIMIT, "+
-				"wj.LEGAL_MID_OT_TIME_ATR, "+
-				"wj.LEGAL_MID_OT_TIME_LIMIT, "+
-				"wj.NORMAL_OT_TIME_ATR, "+
-				"wj.NORMAL_OT_TIME_LIMIT, "+
-				"wj.NORMAL_MID_OT_TIME_ATR, "+
-				"wj.NORMAL_MID_OT_TIME_LIMIT, "+
-				"wj.EARLY_OT_TIME_ATR, "+
-				"wj.EARLY_OT_TIME_LIMIT, "+
-				"wj.EARLY_MID_OT_TIME_ATR, "+
-				"wj.EARLY_MID_OT_TIME_LIMIT, "+
-				"wj.FLEX_OT_TIME_ATR, "+
-				"wj.FLEX_OT_TIME_LIMIT, "+
-				"wj.REST_TIME_ATR, "+
-				"wj.REST_TIME_LIMIT, "+
-				"wj.LATE_NIGHT_TIME_ATR, "+
-				"wj.LATE_NIGHT_TIME_LIMIT, "+
-				"wj.LEAVE_LATE, "+
-				"wj.LEAVE_EARLY, "+
-				"wj.RAISING_CALC_ATR, "+
-				"wj.SPECIFIC_RAISING_CALC_ATR, "+
-				"wj.DIVERGENCE,  "+
-				"w.WKPCD, " +
-				"w.WKP_NAME, "+
-				"j.JOB_CD, "+
-				"j.JOB_NAME "+
-
-			"FROM (SELECT HIST_ID, WKPID, CID "+
+					"ROW_NUMBER() OVER (PARTITION BY wj.WKPCD ORDER BY  wj.WKPCD, wj.JOB_CD) AS ROW_NUMBER, "+
+					"wj.LEGAL_OT_TIME_ATR, "+
+					"wj.LEGAL_OT_TIME_LIMIT, "+
+					"wj.LEGAL_MID_OT_TIME_ATR, "+
+					"wj.LEGAL_MID_OT_TIME_LIMIT, "+
+					"wj.NORMAL_OT_TIME_ATR, "+
+					"wj.NORMAL_OT_TIME_LIMIT, "+
+					"wj.NORMAL_MID_OT_TIME_ATR, "+
+					"wj.NORMAL_MID_OT_TIME_LIMIT, "+
+					"wj.EARLY_OT_TIME_ATR, "+
+					"wj.EARLY_OT_TIME_LIMIT, "+
+					"wj.EARLY_MID_OT_TIME_ATR, "+
+					"wj.EARLY_MID_OT_TIME_LIMIT, "+
+					"wj.FLEX_OT_TIME_ATR, "+
+					"wj.FLEX_OT_TIME_LIMIT, "+
+					"wj.REST_TIME_ATR, "+
+					"wj.REST_TIME_LIMIT, "+
+					"wj.LATE_NIGHT_TIME_ATR, "+
+					"wj.LATE_NIGHT_TIME_LIMIT, "+
+					"wj.LEAVE_LATE, "+
+					"wj.LEAVE_EARLY, "+
+					"wj.RAISING_CALC_ATR, "+
+					"wj.SPECIFIC_RAISING_CALC_ATR, "+
+					"wj.DIVERGENCE, "+
+					"wj.WKPCD, "+
+					"w.WKP_NAME, "+
+					"wj.JOB_CD, "+
+					"jn.JOB_NAME "+
+			"FROM 	(SELECT HIST_ID, WKPID, CID "+
 					"FROM BSYMT_WORKPLACE_HIST "+
-					"WHERE START_DATE <= ?baseDate AND END_DATE >= ?baseDate "+
-					"AND CID = ?cid)  h "+
-			"INNER JOIN (SELECT CID  "+
-						"FROM BSYMT_WKP_CONFIG "+
-						"WHERE START_DATE <= ?baseDate AND END_DATE >= ?baseDate ) c " +
-						"ON c.CID = h.CID "+
-			"INNER JOIN (SELECT HIST_ID, CID, WKPID, WKPCD, WKP_NAME "+
-						"FROM BSYMT_WORKPLACE_INFO ) w "+
-						"ON w.HIST_ID = h.HIST_ID AND w.WKPID = h.WKPID AND h.CID = w.CID "+
-			"INNER JOIN KSHMT_AUTO_WKP_JOB_CAL wj on  wj.WPKID = w.WKPID AND wj.CID = w.CID "+
-			"INNER JOIN (SELECT JOB_ID, HIST_ID, CID "+
-						"FROM BSYMT_JOB_HIST "+
-						"WHERE START_DATE <= ?baseDate AND END_DATE >= ?baseDate ) jh "+
-						"ON jh.JOB_ID = wj.JOBID AND jh.CID = wj.CID "+
-			"INNER JOIN BSYMT_JOB_INFO j "+
-						"ON j.HIST_ID = jh.HIST_ID AND j.JOB_ID = jh.JOB_ID AND j.CID = jh.CID "+
+				  	 "WHERE END_DATE >= ?baseDate  AND CID = ?cid)  h "+
+					"INNER JOIN (SELECT HIST_ID, CID, WKPID, WKP_NAME "+
+								 "FROM BSYMT_WORKPLACE_INFO "+
+		") w "+
+	"ON w.HIST_ID = h.HIST_ID AND w.WKPID = h.WKPID AND h.CID = w.CID "+
+	"RIGHT JOIN (SELECT j.LEGAL_OT_TIME_ATR, "+
+				 		"j.LEGAL_OT_TIME_LIMIT, "+
+						"j.LEGAL_MID_OT_TIME_ATR, "+
+						"j.LEGAL_MID_OT_TIME_LIMIT, "+
+						"j.NORMAL_OT_TIME_ATR, "+
+						"j.NORMAL_OT_TIME_LIMIT, "+
+						"j.NORMAL_MID_OT_TIME_ATR, "+
+						"j.NORMAL_MID_OT_TIME_LIMIT, "+
+						"j.EARLY_OT_TIME_ATR, "+
+						"j.EARLY_OT_TIME_LIMIT, "+
+						"j.EARLY_MID_OT_TIME_ATR, "+
+						"j.EARLY_MID_OT_TIME_LIMIT, "+
+						"j.FLEX_OT_TIME_ATR, "+
+						"j.FLEX_OT_TIME_LIMIT, "+
+						"j.REST_TIME_ATR, "+
+						"j.REST_TIME_LIMIT, "+
+						"j.LATE_NIGHT_TIME_ATR, "+
+						"j.LATE_NIGHT_TIME_LIMIT, "+
+						"j.LEAVE_LATE, "+
+						"j.LEAVE_EARLY, "+
+						"j.RAISING_CALC_ATR, "+
+						"j.SPECIFIC_RAISING_CALC_ATR, "+
+						"j.DIVERGENCE, "+
+						"j.WPKID, "+
+						"j.CID, "+
+						"jf.JOB_ID, "+
+						"wf.WKPCD, "+
+						"jf.JOB_CD "+
+				"FROM (SELECT DISTINCT JOB_ID, JOB_CD, CID "+
+						"FROM BSYMT_JOB_INFO "+
+						" WHERE CID = ?cid) jf "+
+				"INNER JOIN KSHMT_AUTO_WKP_JOB_CAL j ON j.CID = jf.CID AND j.JOBID = jf.JOB_ID "+
+				"INNER JOIN (SELECT DISTINCT WKPCD , WKPID, CID "+
+							"FROM BSYMT_WORKPLACE_INFO "+
+							"WHERE CID = ?cid)  wf "+
+				"ON j.WPKID = wf.WKPID AND j.CID = wf.CID  "+
+			") wj "+
+	"ON  wj.WPKID = w.WKPID AND wj.CID = w.CID "+
+	"LEFT JOIN (SELECT jh.JOB_ID , jh.HIST_ID, ji.JOB_NAME, jh.CID "+
+				"FROM (SELECT JOB_ID, HIST_ID, CID "+
+					   "FROM BSYMT_JOB_HIST "+
+					   "WHERE END_DATE >= ?baseDate ) jh "+
+				"INNER JOIN BSYMT_JOB_INFO ji "+
+				"ON ji.HIST_ID = jh.HIST_ID AND ji.JOB_ID = jh.JOB_ID AND ji.CID = jh.CID "+
+				") jn "+
+	"ON wj.JOB_ID = jn.JOB_ID  AND wj.CID = jn.CID "+
 		")temp ";
 
 	@Override

@@ -245,6 +245,14 @@ module nts.uk.at.view.kmk004.a {
                     $('#worktimeYearPicker').focus();
                 });
             }
+            /**
+             * Go to screen m (setting date).
+             */
+            saveAsExcel(): void {
+                let self = this;
+                nts.uk.ui.windows.sub.modal("/view/kmk/004/m/index.xhtml").onClosed(function() {
+                });
+            }
         } // --- end ScreenModel
     }
 }

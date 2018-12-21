@@ -27,9 +27,9 @@ public class PersonSelectionItemExportImpl implements MasterListData {
 		columns.add(new MasterHeaderColumn(PersonSelectionItemColumn.CPS017_55, TextResource.localize("CPS017_55"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(PersonSelectionItemColumn.CPS017_56, TextResource.localize("CPS017_56"),
-				ColumnTextAlign.RIGHT, "", true));
+				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(PersonSelectionItemColumn.CPS017_57, TextResource.localize("CPS017_57"),
-				ColumnTextAlign.RIGHT, "", true));
+				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(PersonSelectionItemColumn.CPS017_58, TextResource.localize("CPS017_58"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(PersonSelectionItemColumn.CPS017_59, TextResource.localize("CPS017_59"),

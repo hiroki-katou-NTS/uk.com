@@ -40,17 +40,47 @@ public class JpaJobCalSettingRepository extends JpaRepository implements JobAuto
 			"k.RAISING_CALC_ATR, "+
 			"k.SPECIFIC_RAISING_CALC_ATR, "+
 			"k.DIVERGENCE,  "+
-			"w.JOB_CD,  " +
+			"k.JOB_CD,  " +
 			"w.JOB_NAME  " +
 			"FROM  (SELECT HIST_ID, JOB_ID, CID "+
 					"FROM BSYMT_JOB_HIST "+
-					"WHERE START_DATE <= ?baseDate AND END_DATE >= ?baseDate AND CID = ?cid) h "+
-			"INNER JOIN (SELECT JOB_CD, JOB_NAME, JOB_ID, HIST_ID, CID " +
-						 "FROM BSYMT_JOB_INFO "+
-						 ") w "+
-						"ON w.HIST_ID = h.HIST_ID AND w.JOB_ID = h.JOB_ID AND w.CID = h.CID "+
-			"INNER JOIN  KSHMT_AUTO_JOB_CAL_SET k on w.JOB_ID = k.JOBID AND k.CID = w.CID "+
-			"ORDER BY w.JOB_CD";
+					"WHERE  END_DATE >= ?baseDate AND CID = ?cid) h "+
+			"INNER JOIN (SELECT JOB_NAME, JOB_ID, HIST_ID, CID "+
+						"FROM BSYMT_JOB_INFO "+
+					") w "+
+				"ON w.HIST_ID = h.HIST_ID AND w.JOB_ID = h.JOB_ID AND w.CID = h.CID "+
+			"RIGHT JOIN (SELECT j.LEGAL_OT_TIME_ATR, "+
+								"j.LEGAL_OT_TIME_LIMIT, "+
+								"j.LEGAL_MID_OT_TIME_ATR, "+
+								"j.LEGAL_MID_OT_TIME_LIMIT, "+
+								"j.NORMAL_OT_TIME_ATR, "+
+								"j.NORMAL_OT_TIME_LIMIT, "+
+								"j.NORMAL_MID_OT_TIME_ATR, "+
+								"j.NORMAL_MID_OT_TIME_LIMIT, "+
+								"j.EARLY_OT_TIME_ATR, "+
+								"j.EARLY_OT_TIME_LIMIT, "+
+								"j.EARLY_MID_OT_TIME_ATR, "+
+								"j.EARLY_MID_OT_TIME_LIMIT, "+
+								"j.FLEX_OT_TIME_ATR, "+
+								"j.FLEX_OT_TIME_LIMIT, "+
+								"j.REST_TIME_ATR, "+
+								"j.REST_TIME_LIMIT, "+
+								"j.LATE_NIGHT_TIME_ATR, "+
+								"j.LATE_NIGHT_TIME_LIMIT, "+
+								"j.LEAVE_LATE, "+
+								"j.LEAVE_EARLY, "+
+								"j.RAISING_CALC_ATR, "+
+								"j.SPECIFIC_RAISING_CALC_ATR, "+
+								"j.DIVERGENCE, "+
+								"i.JOB_CD, "+
+								"i.JOB_ID, "+
+								"i.CID "+
+						"FROM  (SELECT JOB_ID, JOB_CD, CID "+
+								"FROM BSYMT_JOB_INFO " +
+								"WHERE CID = ?cid) i "+
+						"INNER JOIN KSHMT_AUTO_JOB_CAL_SET j ON j.CID = i.CID AND j.JOBID = i.JOB_ID ) k "+
+				"ON w.JOB_ID = k.JOB_ID AND k.CID = w.CID "+
+			"ORDER BY k.JOB_CD ";
 
 	@Override
 	public List<Object[]> getPositionSettingToExport(String cid, String baseDate) {

@@ -37,8 +37,8 @@ module nts.uk.at.view.kmk006.a {
 
         }
 
-        export function exportExcel(languageId: string, domainId, domainType: string, baseDate: any): JQueryPromise<any> {
-            return exportFile('/masterlist/report/print', { domainId: domainId, domainType: domainType, languageId: languageId, reportType: 0, data: baseDate });
+        export function exportExcel(languageId: string, domainId, domainType: string, unit: any, baseDate: any): JQueryPromise<any> {
+            return exportFile('/masterlist/report/print', { domainId: domainId, domainType: domainType, languageId: languageId, reportType: 0, data: unit, startDate: baseDate });
         }
         
         export function getDetailWkpl(obj: any): JQueryPromise<any> {

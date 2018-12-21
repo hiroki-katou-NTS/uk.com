@@ -3,6 +3,7 @@ package nts.uk.shr.infra.file.report.masterlist.data;
 import java.awt.Color;
 
 import nts.gul.text.StringUtil;
+import nts.uk.shr.infra.file.report.masterlist.generator.AsposeMasterListGenerator;
 
 public class MasterCellStyle {
 
@@ -12,9 +13,9 @@ public class MasterCellStyle {
 
 	private boolean display = false;
 
-	private int fontSize = 10;
+	private int fontSize = AsposeMasterListGenerator.DEFAULT_FONT_SIZE;
 	
-	private String fontFamily = "ＭＳ ゴシック";
+	private String fontFamily = AsposeMasterListGenerator.DEFAULT_FONT_FAMILY;
 	
 	private String columnFormat = null;
 	

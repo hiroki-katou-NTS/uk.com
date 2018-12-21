@@ -41,10 +41,10 @@ public class IndivigrantExportImpl implements MasterListData {
 				ColumnTextAlign.LEFT, "", true));
 		//A6_6
 		columns.add(new MasterHeaderColumn(IndivigrantColumn.CAS013_45, TextResource.localize("CAS013_45"),
-				ColumnTextAlign.RIGHT, "", true));
+				ColumnTextAlign.LEFT, "", true));
 		//A6_7
 		columns.add(new MasterHeaderColumn(IndivigrantColumn.CAS013_46, TextResource.localize("CAS013_46"),
-				ColumnTextAlign.RIGHT, "", true));
+				ColumnTextAlign.LEFT, "", true));
 		return columns;
 	}
 	

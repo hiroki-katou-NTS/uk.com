@@ -21,17 +21,16 @@ public class DailyPatternExportImpl implements MasterListData {
     @Inject
     private DailyPatternExRepository mDailyPatternExRepository;
 
-    private static final String KSM003_37 = "コードカラム";
-    private static final String KSM003_38 = "名称カラム";
-    private static final String KSM003_39 = "勤務種類カラム";
-    private static final String KSM003_40 = "就業時間帯カラム";
-    private static final String KSM003_41 = "期間カラム";
+    public static final String KSM003_38 = "コード";
+    public static final String KSM003_39 = "名称";
+    public static final String KSM003_40 = "勤務種類";
+    public static final String KSM003_41 = "就業時間帯";
+    public static final String KSM003_42 = "期間";
 
     @Override
     public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
         List<MasterHeaderColumn> columns = new ArrayList<>();
-        columns.add(
-                new MasterHeaderColumn(KSM003_37, TextResource.localize("KSM003_37"), ColumnTextAlign.LEFT, "", true));
+
         columns.add(
                 new MasterHeaderColumn(KSM003_38, TextResource.localize("KSM003_38"), ColumnTextAlign.LEFT, "", true));
         columns.add(
@@ -40,6 +39,8 @@ public class DailyPatternExportImpl implements MasterListData {
                 new MasterHeaderColumn(KSM003_40, TextResource.localize("KSM003_40"), ColumnTextAlign.LEFT, "", true));
         columns.add(
                 new MasterHeaderColumn(KSM003_41, TextResource.localize("KSM003_41"), ColumnTextAlign.RIGHT, "",true));
+        columns.add(
+                new MasterHeaderColumn(KSM003_42, TextResource.localize("KSM003_42"), ColumnTextAlign.RIGHT, "",true));
 
         return columns;
     }

@@ -108,6 +108,10 @@ module nts.uk.pr.view.kmf001.f {
         export function findAllEmploymentSetting(): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.findAllEmploymentSetting);
         }
+        // Export Excel
+        export function exportExcel(): JQueryPromise<any> {
+            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "TempHolidaysCom", domainType: "代行承認", languageId: 'ja', reportType: 0});
+        }
         /**
         * Model namespace.
         */
