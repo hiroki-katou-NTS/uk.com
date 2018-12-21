@@ -24,13 +24,11 @@ module nts.uk.com.view.cmm013 {
 
             listJobTitleHistory: KnockoutObservableArray<History>;
             selectedHistoryId: KnockoutObservable<string>;
-            oldSelectedHistoryId: KnockoutObservable<string>;
             
             constructor() {
                 let _self = this;
                 _self.listJobTitleHistory = ko.observableArray([]);
                 _self.selectedHistoryId = ko.observable(null);
-                _self.oldSelectedHistoryId = ko.observable(null);
                 
                 _self.listJobTitleHistory.subscribe((newListHistory) => {
                     _self.fillTextDisplay();               
