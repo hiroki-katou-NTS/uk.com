@@ -14,6 +14,9 @@ import javax.persistence.Query;
 import nts.uk.file.com.app.rolesetmenu.RoleSetMenuColumn;
 import nts.uk.file.com.app.rolesetmenu.RoleSetMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 @Stateless
@@ -67,21 +70,50 @@ public class JpaRoleSetMenuImpl implements RoleSetMenuRepository {
 	private List<MasterData> toData(HashMap<String , Object[]> dataHashMap) {
 		List<MasterData> datas = new ArrayList<>();
 		for (Map.Entry datarow : dataHashMap.entrySet()) {
-			datas.add(new MasterData(dataContent((Object[]) datarow.getValue()), null, ""));
+			datas.add(toData((Object[]) datarow.getValue()));
 	    }
 		return datas;
 	}
 	
-	private Map<String, Object> dataContent(Object[] datarow) {
-		Map<String, Object> data = new HashMap<>();
-		data.put(RoleSetMenuColumn.CAS011_35,datarow[0]);
-		data.put(RoleSetMenuColumn.CAS011_36,datarow[1]);
-		data.put(RoleSetMenuColumn.CAS011_37,datarow[2].equals(datarow[0]) ? "○" :"");
-		data.put(RoleSetMenuColumn.CAS011_38,(String)datarow[3] != null ? (String)datarow[3]+(String)datarow[4] : "なし");
-		data.put(RoleSetMenuColumn.CAS011_39,(String)datarow[5] != null ? (String)datarow[5]+(String)datarow[6] : "なし");
-		data.put(RoleSetMenuColumn.CAS011_40,((BigDecimal)datarow[7]).intValue() == 0 ? "なし" : "あり");
-		data.put(RoleSetMenuColumn.CAS011_41,datarow[9]);
-		return data;
+	private MasterData toData(Object[] datarow) {
+		Map<String,MasterCellData> data = new HashMap<>();
+        data.put(RoleSetMenuColumn.CAS011_35, MasterCellData.builder()
+            .columnId(RoleSetMenuColumn.CAS011_35)
+            .value(datarow[0])
+            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+            .build());
+        data.put(RoleSetMenuColumn.CAS011_36, MasterCellData.builder()
+            .columnId(RoleSetMenuColumn.CAS011_36)
+            .value(datarow[1])
+            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+            .build());
+        data.put(RoleSetMenuColumn.CAS011_37, MasterCellData.builder()
+            .columnId(RoleSetMenuColumn.CAS011_37)
+            .value(datarow[2].equals(datarow[0]) ? "○" :"")
+            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+            .build());
+        data.put(RoleSetMenuColumn.CAS011_38, MasterCellData.builder()
+            .columnId(RoleSetMenuColumn.CAS011_38)
+            .value((String)datarow[3] != null ? (String)datarow[3]+(String)datarow[4] : "なし")
+            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+            .build());
+        data.put(RoleSetMenuColumn.CAS011_39, MasterCellData.builder()
+            .columnId(RoleSetMenuColumn.CAS011_39)
+            .value((String)datarow[5] != null ? (String)datarow[5]+(String)datarow[6] : "なし")
+            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+            .build());
+        data.put(RoleSetMenuColumn.CAS011_40, MasterCellData.builder()
+            .columnId(RoleSetMenuColumn.CAS011_40)
+            .value(((BigDecimal)datarow[7]).intValue() == 0 ? "なし" : "あり")
+            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+            .build());
+        data.put(RoleSetMenuColumn.CAS011_41, MasterCellData.builder()
+            .columnId(RoleSetMenuColumn.CAS011_41)
+            .value(datarow[9])
+            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+            .build());
+    return MasterData.builder().rowData(data).build();
 	}
+	
 	
 }

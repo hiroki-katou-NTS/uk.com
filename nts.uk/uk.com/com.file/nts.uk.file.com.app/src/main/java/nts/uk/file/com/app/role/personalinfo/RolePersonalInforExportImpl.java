@@ -19,28 +19,28 @@ public class RolePersonalInforExportImpl implements MasterListData {
     @Inject
     private RolePersonalInforRepository mRolePersonalInforRepository;
 
-    private static final String CAS009_23 = "コードカラム";
-    private static final String CAS009_24 = "名称カラム";
-    private static final String CAS009_25 = "担当区分カラム";
-    private static final String CAS009_26 = "社員１参照範囲カラム";
-    private static final String CAS009_27 = "未来日参照権限カラム";
-    private static final String FUNCTION_NO_ = "FUNCTION_NO_";
+    public static final String CAS009_23 = "コード";
+    public static final String CAS009_24 = "名称";
+    public static final String CAS009_25 = "担当区分";
+    public static final String CAS009_26 = "社員１参照範囲";
+    public static final String CAS009_27 = "未来日参照権限";
+    public static final String FUNCTION_NO_ = "FUNCTION_NO_";
     private static final int ROLE_TYPE_CAS009 = 8;
 
 
     @Override
     public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
         List<MasterHeaderColumn> columns = new ArrayList<>();
-        columns.add(
-                new MasterHeaderColumn(CAS009_23, TextResource.localize("CAS009_23"), ColumnTextAlign.LEFT, "", true));
-        columns.add(
-                new MasterHeaderColumn(CAS009_24, TextResource.localize("CAS009_24"), ColumnTextAlign.LEFT, "", true));
-        columns.add(
-                new MasterHeaderColumn(CAS009_25, TextResource.localize("CAS009_25"), ColumnTextAlign.LEFT, "", true));
-        columns.add(
-                new MasterHeaderColumn(CAS009_26, TextResource.localize("CAS009_26"), ColumnTextAlign.LEFT, "", true));
-        columns.add(
-                new MasterHeaderColumn(CAS009_27, TextResource.localize("CAS009_27"), ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(CAS009_23, TextResource.localize("CAS009_23"),
+                ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(CAS009_24, TextResource.localize("CAS009_24"),
+                ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(CAS009_25, TextResource.localize("CAS009_25"),
+                ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(CAS009_26, TextResource.localize("CAS009_26"),
+                ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(CAS009_27, TextResource.localize("CAS009_27"),
+                ColumnTextAlign.LEFT, "", true));
         Map<Integer,String> listFunctionNo = mRolePersonalInforRepository.findAllFunctionNo();
         for(int key : listFunctionNo.keySet()){
             columns.add(

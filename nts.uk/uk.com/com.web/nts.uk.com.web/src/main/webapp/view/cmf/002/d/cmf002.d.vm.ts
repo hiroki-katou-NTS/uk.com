@@ -754,12 +754,6 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             _.each(listSearchCode, item => {
                 let searchCode = _.trim(item);
 
-                // 対象の値の桁数が「検索コード」の桁数より大きい場合
-                if (!self.searchCdValidator.validate(searchCode).isValid) {
-                    self.setError(control, "Msg_1346");
-                    return false;
-                }
-
                 // 検索コードがカテゴリ項目の型と同じ場合
                 switch (self.dataType) {
                     case shareModel.ITEM_TYPE.CHARACTER:
@@ -802,8 +796,14 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                         }
                         this.parsedValSearchCodeList.push(check.parsedValue);
                         break;
+                };
+
+                // 対象の値の桁数が「検索コード」の桁数より大きい場合
+                if (!self.searchCdValidator.validate(searchCode).isValid) {
+                    self.setError(control, "Msg_1346");
+                    return false;
                 }
-            })
+            });
         }
 
         removeValidate() {

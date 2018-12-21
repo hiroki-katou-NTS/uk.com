@@ -7,14 +7,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CommonRole {
-    public static final String CAS005_122 = "コードカラム";
-    public static final String CAS005_123 = "名称カラム";
-    public static final String CAS005_124 = "担当区分カラム";
-    public static final String CAS005_125 = "社員１参照範囲カラム";
-    public static final String CAS005_126 = "未来日参照権限カラム";
-    public static final String CAS005_127 = "メニュー設定カラム";
-    public static final String CAS005_128 = "スケジュール画面社員１参照カラム";
-    public static final String FUNCTION_NO_ = "FUNCTION_NO_";
     public static final String GET_FUNCTION_NO_CAS005 = "SELECT FUNCTION_NO,DISPLAY_NAME " +
             "FROM KASMT_WORPLACE_FUNCTION ORDER BY DISPLAY_ORDER ASC";
     //CAS 009

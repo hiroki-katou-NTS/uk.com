@@ -38,10 +38,7 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 			return processScheReflect.forleaveReflect(reflectParam)
 					? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
 		} else if (application.getAppType() == ApplicationType.BREAK_TIME_APPLICATION) {
-			/**TODO chua doi ung lan nay
-			/*reflectSchePara.setHolidayWork(reflectParam.getHolidayWork());
-			isReflect = processScheReflect.holidayWorkReflect(reflectSchePara);*/
-			return ReflectInformationResult.CHECKFALSE;
+			return processScheReflect.holidayWorkReflect(reflectParam) ? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
 		} else if (application.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION) {
 			if(reflectParam.getAbsenceLeave() != null) {
 				return processScheReflect.ebsenceLeaveReflect(reflectParam)

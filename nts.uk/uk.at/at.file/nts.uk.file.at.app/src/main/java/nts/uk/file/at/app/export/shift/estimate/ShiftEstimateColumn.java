@@ -55,20 +55,64 @@ public final class ShiftEstimateColumn {
 	public static final String KSM001_141 = "対象年";
 	public static final String KSM001_142 = "条件値";
 	public static final String KSM001_143 = "目安時間条件１";
-	public static final String KSM001_144 = "条件２";
-	public static final String KSM001_145 = "条件３";
-	public static final String KSM001_146 = "条件４";
-	public static final String KSM001_147 = "条件５";
+	public static final String KSM001_144 = "目安時間_条件２";
+	public static final String KSM001_145 = "目安時間_条件３";
+	public static final String KSM001_146 = "目安時間_条件４";
+	public static final String KSM001_147 = "目安時間_条件５";
 	public static final String KSM001_148 = "目安金額条件１";
-	public static final String KSM001_149 = "条件２";
-	public static final String KSM001_150 = "条件３";
-	public static final String KSM001_151 = "条件４";
-	public static final String KSM001_152 = "条件５";
+	public static final String KSM001_149 = "目安金額_条件２";
+	public static final String KSM001_150 = "目安金額_条件３";
+	public static final String KSM001_151 = "目安金額_条件４";
+	public static final String KSM001_152 = "目安金額_条件５";
 	public static final String KSM001_153 = "目安勤務日数条件１";
-	public static final String KSM001_154 = "条件２";
-	public static final String KSM001_155 = "条件３";
-	public static final String KSM001_156 = "条件４";
-	public static final String KSM001_157 = "条件５";
+	public static final String KSM001_154 = "目安勤務日数_条件２";
+	public static final String KSM001_155 = "目安勤務日数_条件３";
+	public static final String KSM001_156 = "目安勤務日数_条件４";
+	public static final String KSM001_157 = "目安勤務日数_条件５";
 	
+	/** Sheet 4 **/
+	public static final String KSM001_158 = "対象年";
+	public static final String KSM001_159 = "雇用コード";
+	public static final String KSM001_160 = "雇用名";
+	public static final String KSM001_161 = "条件値";
+	public static final String KSM001_162 = "目安時間条件１";
+	public static final String KSM001_163 = "条件２_目安時間";
+	public static final String KSM001_164 = "条件３_目安時間";
+	public static final String KSM001_165 = "条件４_目安時間";
+	public static final String KSM001_166 = "条件５_目安時間";
+	public static final String KSM001_167 = "目安金額条件１";
+	public static final String KSM001_168 = "条件２_目安金額";
+	public static final String KSM001_169 = "条件３_目安金額";
+	public static final String KSM001_170 = "条件４_目安金額";
+	public static final String KSM001_171 = "条件５_目安金額";
+	public static final String KSM001_172 = "目安勤務日数条件１";
+	public static final String KSM001_173 = "条件２_目安勤務日数";
+	public static final String KSM001_174 = "条件３_目安勤務日数";
+	public static final String KSM001_175 = "条件４_目安勤務日数";
+	public static final String KSM001_176 = "条件５_目安勤務日数";
+	
+	/** Sheet 5 **/
+	public static final String KSM001_177 = "対象年";
+	public static final String KSM001_178 = "社員コード";
+	public static final String KSM001_179 = "社員名";
+	public static final String KSM001_180 = "条件値";
+	public static final String KSM001_181 = "目安時間条件１";
+	public static final String KSM001_182 = "条件２_１";
+	public static final String KSM001_183 = "条件３_１";
+	public static final String KSM001_184 = "条件４_１";
+	public static final String KSM001_185 = "条件５_１";
+	public static final String KSM001_186 = "目安金額条件１";
+	public static final String KSM001_187 = "条件２_２";
+	public static final String KSM001_188 = "条件３_２";
+	public static final String KSM001_189 = "条件４_２";
+	public static final String KSM001_190 = "条件５_２";
+	public static final String KSM001_191 = "目安勤務日数条件１";
+	public static final String KSM001_192 = "条件２_３";
+	public static final String KSM001_193 = "条件３_３";
+	public static final String KSM001_194 = "条件４_３";
+	public static final String KSM001_195 = "条件５_３";
+	
+	
+	/** Common **/
 	public static final String KSM001_196 = "￥";
 }

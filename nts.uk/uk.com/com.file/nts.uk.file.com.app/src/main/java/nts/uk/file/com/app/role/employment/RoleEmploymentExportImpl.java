@@ -20,33 +20,33 @@ public class RoleEmploymentExportImpl implements MasterListData {
     @Inject
     private RoleEmpExportRepository mRoleEmpExportRepository;
 
-    private static final String CAS005_122 = "コードカラム";
-    private static final String CAS005_123 = "名称カラム";
-    private static final String CAS005_124 = "担当区分カラム";
-    private static final String CAS005_125 = "社員１参照範囲カラム";
-    private static final String CAS005_126 = "未来日参照権限カラム";
-    private static final String CAS005_127 = "メニュー設定カラム";
-    private static final String CAS005_128 = "スケジュール画面社員１参照カラム";
-    private static final String FUNCTION_NO_ = "FUNCTION_NO_";
+    public static final String CAS005_122 = "コード";
+    public static final String CAS005_123 = "名称";
+    public static final String CAS005_124 = "担当区分";
+    public static final String CAS005_125 = "社員１参照範囲";
+    public static final String CAS005_126 = "未来日参照権限";
+    public static final String CAS005_127 = "メニュー設定";
+    public static final String CAS005_128 = "スケジュール画面社員１参照";
+    public static final String FUNCTION_NO_ = "FUNCTION_NO_";
     private static final int ROLE_TYPE_CAS005 = 3;
 
     @Override
     public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
         List<MasterHeaderColumn> columns = new ArrayList<>();
-        columns.add(
-                new MasterHeaderColumn(CAS005_122, TextResource.localize("CAS005_122"), ColumnTextAlign.LEFT, "", true));
-        columns.add(
-                new MasterHeaderColumn(CAS005_123, TextResource.localize("CAS005_123"), ColumnTextAlign.LEFT, "", true));
-        columns.add(
-                new MasterHeaderColumn(CAS005_124, TextResource.localize("CAS005_124"), ColumnTextAlign.LEFT, "", true));
-        columns.add(
-                new MasterHeaderColumn(CAS005_125, TextResource.localize("CAS005_125"), ColumnTextAlign.LEFT, "", true));
-        columns.add(
-                new MasterHeaderColumn(CAS005_126, TextResource.localize("CAS005_126"), ColumnTextAlign.LEFT, "",true));
-        columns.add(
-                new MasterHeaderColumn(CAS005_127, TextResource.localize("CAS005_127"), ColumnTextAlign.LEFT, "",true));
-        columns.add(
-                new MasterHeaderColumn(CAS005_128, TextResource.localize("CAS005_128"), ColumnTextAlign.LEFT, "",true));
+        columns.add(new MasterHeaderColumn(CAS005_122, TextResource.localize("CAS005_122"),
+                ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(CAS005_123, TextResource.localize("CAS005_123"),
+                ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(CAS005_124, TextResource.localize("CAS005_124"),
+                ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(CAS005_125, TextResource.localize("CAS005_125"),
+                ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(CAS005_126, TextResource.localize("CAS005_126"),
+                ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(CAS005_127, TextResource.localize("CAS005_127"),
+                ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(CAS005_128, TextResource.localize("CAS005_127"),
+                ColumnTextAlign.LEFT, "", true));
         Map<Integer,String>  allFunctionNo = mRoleEmpExportRepository.findAllFunctionNo();
         for(int key : allFunctionNo.keySet()){
             columns.add(
