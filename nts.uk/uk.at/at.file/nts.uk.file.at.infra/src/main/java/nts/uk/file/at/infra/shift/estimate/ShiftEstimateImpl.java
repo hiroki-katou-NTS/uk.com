@@ -1,5 +1,6 @@
 package nts.uk.file.at.infra.shift.estimate;
 
+import java.awt.Color;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -268,7 +269,7 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 
 	/** Sheet 3 **/
 	@Override
-	public List<MasterData> getDataSheetThreeExport(String startDate, String endDate) {
+	public List<MasterData> getDataSheetThreeExport(int startDate, int endDate) {
 		String cid = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
 		Query query = entityManager.createNativeQuery(GET_EXPORT_EXCEL_SHEET_THREE.toString()).setParameter("cid", cid).setParameter("startDate", startDate).setParameter("endDate", endDate);
@@ -282,7 +283,7 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 	
 	/** Sheet 4 **/
 	@Override
-	public List<MasterData> getDataSheetFourExport(String startDate, String endDate) {
+	public List<MasterData> getDataSheetFourExport(int startDate, int endDate) {
 		String cid = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
 		Query query = entityManager.createNativeQuery(GET_EXPORT_EXCEL_SHEET_FOUR.toString()).setParameter("cid", cid).setParameter("startDate", startDate).setParameter("endDate", endDate);
@@ -296,7 +297,7 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 
 	/** Sheet 5 **/
 	@Override
-	public List<MasterData> getDataSheetFiveExport(String startDate, String endDate) {
+	public List<MasterData> getDataSheetFiveExport(int startDate, int endDate) {
 		String cid = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
 		Query query = entityManager.createNativeQuery(GET_EXPORT_EXCEL_SHEET_FIVE.toString()).setParameter("cid", cid).setParameter("startDate", startDate).setParameter("endDate", endDate);
@@ -340,9 +341,10 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 			data.put(ShiftEstimateColumn.KSM001_113, MasterCellData.builder()
 	                .columnId(ShiftEstimateColumn.KSM001_113)
 	                .value(dataFromDB.get(rowNumber)[13])
-	                .style(MasterCellStyle.build().backgroundColor(java.awt.Color.BLACK))	                
+	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+	                //NOTE:
+	                .style(MasterCellStyle.build().backgroundColor(Color.GREEN))	                
 	                .build());
-	
 		}
 		 
 		if (rowNumber > 4) {
