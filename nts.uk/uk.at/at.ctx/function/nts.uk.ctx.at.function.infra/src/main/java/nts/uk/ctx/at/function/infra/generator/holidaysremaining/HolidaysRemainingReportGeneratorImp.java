@@ -725,8 +725,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 						if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getSubstituteHoliday()
 								.isRepresentSubstitute()) {
 							// I1_5 代休_未消化_日数
-							cells.get(firstRow, 8).setValue(currentHolidayItem.getMonthExtinction());
-							setForegroundRed(cells.get(firstRow, 8));
+							if (currentHolidayItem.getMonthExtinction() != null
+									&& currentHolidayItem.getMonthExtinction().intValue() > 0) {
+								setForegroundRed(cells.get(firstRow, 8));
+							}
 						}
 					}
 				}
@@ -906,7 +908,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 								.isUndigestedPause()) {
 							// J1_5 振休_未消化
 							cells.get(firstRow, 8).setValue(holidayRemainItem.getMonthExtinction());
-							setForegroundRed(cells.get(firstRow, 8));
+							if(holidayRemainItem.getMonthExtinction() != null 
+									&& holidayRemainItem.getMonthExtinction().intValue() > 0) {
+								setForegroundRed(cells.get(firstRow, 8));
+							}
 						}
 					}
 				}
@@ -1334,9 +1339,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		pageSetup.setFirstPageNumber(1);
 		pageSetup.setPrintArea("A1:N");
 		//ý 1 của bug #102883  事象(1)
-		pageSetup.setHeader(0, "&9&\"MS ゴシック\" "+ dataSource.getCompanyName());
-		pageSetup.setHeader(1, "&16&\"MS ゴシック\" "+ dataSource.getTitle());
+		pageSetup.setHeader(0, "&9&\"MS ゴシック\""+ dataSource.getCompanyName());
+		pageSetup.setHeader(1, "&16&\"MS ゴシック\""+ dataSource.getTitle());
 		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm", Locale.JAPAN);
-		pageSetup.setHeader(2, "&9&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
+		pageSetup.setHeader(2, "&9&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P");
 	}
 }
