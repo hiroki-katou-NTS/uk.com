@@ -84,24 +84,64 @@ public class WorkPlaceSelectionImpl implements WorkPlaceSelectionRepository {
 	// return item;
 	// }
 
-	private static final String GET_EXPORT_EXCEL = "SELECT WKPCD , WKP_NAME , SCD , BUSINESS_NAME , START_DATE, END_DATE , %s "
-			+ "FROM ( "
-			+ "SELECT wm.WKPCD , wm.WKP_NAME , edm.SCD , ps.BUSINESS_NAME , wi.START_DATE, wi.END_DATE , AVAILABILITY, wkf.FUNCTION_NO "
-			+ "FROM " + "BSYMT_WORKPLACE_INFO wm " + "LEFT JOIN SACMT_WORKPLACE_MANAGER wi ON wm.WKPID = wi.WKP_ID "
-			+ "LEFT JOIN BSYMT_EMP_DTA_MNG_INFO edm ON wi.SID = edm.SID "
-			+ "LEFT JOIN BPSMT_PERSON ps ON edm.PID = ps.PID "
-			+ "INNER JOIN KASMT_WORKPLACE_AUTHORITY kwa ON wi.WKP_MANAGER_ID = kwa.ROLE_ID AND wm.CID = kwa.CID "
-			+ "INNER JOIN KASMT_WORPLACE_FUNCTION wkf on wkf.FUNCTION_NO = kwa.FUNCTION_NO " + "WHERE wm.CID = ? "
-			+ ") " + "AS sourceTable PIVOT ( " + "MAX(AVAILABILITY) " + "FOR [FUNCTION_NO] IN (%s) "
-			+ ") AS pvt ORDER BY WKPCD, SCD, START_DATE ASC";
+	private static final String GET_EXPORT_EXCEL = "SELECT "
+		+" 	CASE	"
+		+" 		WHEN"
+		+" 			RESULT.ROW_NUMBER = 1 THEN"
+		+" 				RESULT.WKPCD ELSE NULL "
+		+" 			END WKPCD,"
+		+" 	 CASE	"
+		+" 		WHEN"
+		+" 			RESULT.ROW_NUMBER = 1 THEN"
+		+" 				RESULT.WKP_NAME ELSE NULL "
+		+" 			END WKP_NAME"
+		+" 	,RESULT.SCD"
+		+" 	,RESULT.BUSINESS_NAME"
+		+" 	,RESULT.START_DATE"
+		+" 	,RESULT.END_DATE"
+		+" 	,RESULT.[1] , RESULT.[2] , RESULT.[3]"
+		+" FROM"
+		+" 	(SELECT "
+		+" 		WKPCD "
+		+" 		, WKP_NAME "
+		+" 		, SCD "
+		+" 		, BUSINESS_NAME "
+		+" 		, START_DATE"
+		+" 		, END_DATE "
+		+" 		, [1], [2], [3]"
+		+" 		, ROW_NUMBER () OVER ( PARTITION BY WKPCD, WKP_NAME ORDER BY WKPCD ASC ) AS ROW_NUMBER"
+		+" 	FROM ("
+		+" 					SELECT wm.WKPCD "
+		+" 					,CASE	"
+		+" 						WHEN"
+		+" 								bwh.END_DATE = CONVERT ( DATETIME, '9999-12-31T00:00:00.000Z', 127 ) THEN"
+		+" 								wm.WKP_NAME ELSE 'マスタ未登録' "
+		+" 							END WKP_NAME "
+		+" 						, edm.SCD , ps.BUSINESS_NAME , wi.START_DATE, wi.END_DATE , AVAILABILITY, wkf.FUNCTION_NO					"
+		+" 					FROM "
+		+" 						BSYMT_WORKPLACE_INFO wm "
+		+" 						LEFT JOIN SACMT_WORKPLACE_MANAGER wi ON wm.WKPID = wi.WKP_ID "
+		+" 						LEFT JOIN BSYMT_EMP_DTA_MNG_INFO edm ON wi.SID = edm.SID  AND edm.CID = '000000000000-0001'"
+		+" 						LEFT JOIN BPSMT_PERSON ps ON edm.PID = ps.PID "
+		+" 						INNER JOIN KASMT_WORKPLACE_AUTHORITY kwa ON wi.WKP_MANAGER_ID = kwa.ROLE_ID AND wm.CID = kwa.CID"
+		+" 						INNER JOIN KASMT_WORPLACE_FUNCTION wkf on wkf.FUNCTION_NO = kwa.FUNCTION_NO"
+		+" 						INNER JOIN BSYMT_WORKPLACE_HIST bwh ON wm.CID = bwh.CID AND wm.WKPID = bwh.WKPID AND wm.HIST_ID = bwh.HIST_ID"
+		+" 						WHERE wm.CID = '000000000000-0001' AND"
+		+" 						wi.START_DATE <= CONVERT ( DATETIME, '2016-11-15T00:00:00.000Z', 127 ) AND"
+		+" 						wi.END_DATE   >= CONVERT ( DATETIME, '2016-11-15T00:00:00.000Z', 127 ) "
+		+" 				)"
+		+" 				AS sourceTable PIVOT ("
+		+" 			MAX(AVAILABILITY)"
+		+" 			FOR [FUNCTION_NO] IN ([1],[2],[3])"
+		+" 	) AS pvt ) AS RESULT";
 
-	@Override
-	public List<MasterData> getDataExport(String companyId, List<WorkPlaceFunction> workPlaceFunction) {
+	@Override 
+	public List<MasterData> getDataExport(String companyId, List<WorkPlaceFunction> workPlaceFunction, String baseDate) {
 		String functions = workPlaceFunction.stream().map(x -> x.getFunctionNo().v().toString())
 				.collect(Collectors.toList()).stream().collect(Collectors.joining("], [", "[", "]"));
 		List<MasterData> datas = new ArrayList<>();
 		Query query = entityManager.createNativeQuery(String.format(GET_EXPORT_EXCEL, functions, functions).toString())
-				.setParameter(1, companyId);
+				.setParameter("cid", companyId).setParameter("baseDate", baseDate);
 
 		@SuppressWarnings("unchecked")
 		List<Object[]> data = query.getResultList();
@@ -148,8 +188,8 @@ public class WorkPlaceSelectionImpl implements WorkPlaceSelectionRepository {
             
             for (int i = 0; i < workPlaceFunction.size(); i++) {
     			data.put(workPlaceFunction.get(i).getFunctionNo().v().toString(), MasterCellData.builder()
-    	                .columnId(WorkPlaceSelectionColumn.CMM051_32)
-    	                .value(((BigDecimal) object[i + 6]).intValue() == 1 ? "○" : "ー")
+    	                .columnId(WorkPlaceSelectionColumn.CMM051_32_2)
+    	                .value(((BigDecimal) object[i + 6]).intValue() == 1 ? "○" : "-")
     	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
     	                .build());
     		}

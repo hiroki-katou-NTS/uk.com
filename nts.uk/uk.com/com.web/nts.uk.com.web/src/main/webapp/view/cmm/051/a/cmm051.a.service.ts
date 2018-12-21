@@ -6,7 +6,6 @@ module nts.uk.com.view.cmm051.a {
             saveWkpManager: "at/auth/workplace/manager/save/",
             deleteWkpManager: "at/auth/workplace/manager/remove/",
             getEmpInfo: "ctx/sys/auth/grant/rolesetperson/getempinfo/",
-            saveAsExcel: "person/report/masterData"
         }
 
         export function findAllWkpManagerByWkpId(wkpId: string): JQueryPromise<Array<base.WorkplaceManager>> {
@@ -25,8 +24,5 @@ module nts.uk.com.view.cmm051.a {
             return nts.uk.request.ajax("com", paths.getEmpInfo + empId);
         };
 
-        export function saveAsExcel(languageId: string, wkpId: string): JQueryPromise<any> {
-            return exportFile('/masterlist/report/print', { domainId: "WorkPlaceSelection", domainType: "CMM051職場管理者の登録", languageId: languageId, reportType: 0, data: wkpId });
-        }
     }
 }

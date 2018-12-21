@@ -351,20 +351,11 @@ module nts.uk.com.view.cmm051.a {
                 return command;
             }
             
-            /**
          * Print file excel
          */
-        private exportExcel(): void {
-            var self = this;
-            nts.uk.ui.block.grayout();
-            let langId = self.langId();
-            let wkpId = self.selectedWkpId();
-            let roleId = self.selectedWpkManagerId();
-            service.saveAsExcel(langId, wkpId, roleId).done(function() {
-            }).fail(function(error) {
-                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-            }).always(function() {
-                nts.uk.ui.block.clear();
+        saveAsExcel(): void {
+            let self = this;
+            modal("/view/cmm/051/m/index.xhtml").onClosed(function() {
             });
         }
             
