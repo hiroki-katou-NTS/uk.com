@@ -60,7 +60,6 @@ public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidL
 	private List<MasterData> buildMasterListData(ResultSet rs) {
 		List<MasterData> datas = new ArrayList<>();
 		try {
-
 			// Row 1
 			datas.add(buildARow(I18NText.getText("KMF001_176"), "", "", "", rs.getInt(1) == 0 ? "管理する" : "管理しない"));
 			// Row 2
