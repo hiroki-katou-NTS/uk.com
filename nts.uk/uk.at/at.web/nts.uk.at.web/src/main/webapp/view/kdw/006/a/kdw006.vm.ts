@@ -72,6 +72,17 @@ module nts.uk.at.view.kdw006 {
                 let isDaily = false;
                 nts.uk.request.jump("/view/kdw/002/c/index.xhtml", { ShareObject: isDaily });
             }
+            private exportExcel(): void {
+                var self = this;
+                nts.uk.ui.block.grayout();
+                let langId = "ja";
+                service.saveAsExcel(langId).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+         }
 
         }
     }

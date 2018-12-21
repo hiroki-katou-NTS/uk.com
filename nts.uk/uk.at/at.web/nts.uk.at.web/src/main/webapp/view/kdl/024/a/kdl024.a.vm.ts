@@ -215,6 +215,18 @@ module kdl024.a.viewmodel {
             let length : number = code.length;
             return format.substr(0,3-length) + code;
         }
+        /** ExportExcel */
+        private exportExcel(): void {
+            var self = this;
+            nts.uk.ui.block.grayout();
+            let langId = "ja";
+            service.saveAsExcel(langId).done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+         }
         
     }
     

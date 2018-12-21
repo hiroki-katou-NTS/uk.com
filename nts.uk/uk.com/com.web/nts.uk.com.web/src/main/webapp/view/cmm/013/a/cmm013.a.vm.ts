@@ -513,6 +513,18 @@ module nts.uk.com.view.cmm013.a {
                 let _self = this;
                 nts.uk.ui.windows.sub.modal('/view/cmm/013/f/index.xhtml').onClosed(() => { });
             }
+            
+            private exportExcel(): void {
+                var self = this;
+                nts.uk.ui.block.grayout();
+                let langId = "ja";
+                service.saveAsExcel(langId).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
         }
 
         /**

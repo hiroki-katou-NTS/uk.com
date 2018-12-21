@@ -70,7 +70,7 @@ public class ItemTotalExcel {
 
 	public String toStringListDaySet(){
 		String result ="";
-		if(CollectionUtil.isEmpty(itemDaySets)){
+		if(!CollectionUtil.isEmpty(itemDaySets)){
 			result = String.join(",", itemDaySets);
 			return result;
 		}

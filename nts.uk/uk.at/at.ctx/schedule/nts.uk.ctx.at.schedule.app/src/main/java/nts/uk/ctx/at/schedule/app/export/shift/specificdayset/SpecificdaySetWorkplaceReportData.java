@@ -10,18 +10,23 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives
 @Getter
 @Setter
 @AllArgsConstructor
-public class SpecificdaySetReportData {
-	private String companyId;
+public class SpecificdaySetWorkplaceReportData {
+	private String workplaceId;
 	private GeneralDate specificDate;
 	private SpecificDateItemNo specificDateItemNo;
 	private SpecificName specificDateItemName;
-
-	public static SpecificdaySetReportData createFromJavaType(String companyId, GeneralDate specificDate, Integer specificDateItemNo, String specificDateItemName) {
-		return new SpecificdaySetReportData(
-				companyId, 
-				specificDate,
+	private String workplaceCode;
+	private String workplaceName;
+	
+	public static SpecificdaySetWorkplaceReportData createFromJavaType(String workplaceId, 
+			GeneralDate specificDate, Integer specificDateItemNo, String specificDateItemName, String workplaceCode, String workplaceName) {
+		return new SpecificdaySetWorkplaceReportData(
+				workplaceId, 
+				specificDate, 
 				new SpecificDateItemNo(specificDateItemNo),
-				new SpecificName(specificDateItemName));
+				new SpecificName(specificDateItemName),
+				workplaceCode,
+				workplaceName);
 	}
 	
 	public String getYearMonth() {
@@ -31,4 +36,5 @@ public class SpecificdaySetReportData {
 	public int getDay() {
 		return specificDate.day();
 	}
+
 }
