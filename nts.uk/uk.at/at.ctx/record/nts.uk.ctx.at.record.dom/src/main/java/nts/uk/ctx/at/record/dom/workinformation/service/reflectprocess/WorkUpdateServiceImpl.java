@@ -72,18 +72,8 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		WorkInformation workInfor = new WorkInformation(para.getWorkTimeCode(), para.getWorkTypeCode());
 		List<Integer> lstItem = new ArrayList<>();
 		if(scheUpdate) {
-			String companyId = AppContexts.user().companyId();
-			List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
-			if(para.getWorkTimeCode() != null) {				
-				PredetermineTimeSetForCalc predetermine = workTimeSetting.getPredeterminedTimezone(companyId, para.getWorkTimeCode(), para.getWorkTypeCode(), 1);
-				List<TimezoneUse> lstTimezone = predetermine.getTimezones();
-				
-				lstTimezone.stream().forEach(x -> {
-					ScheduleTimeSheet scheIn = new ScheduleTimeSheet(x.getWorkNo(), x.getStart().v(), x.getEnd().v());
-					scheduleTimeSheets.add(scheIn);				
-				});	
-			}
-			dailyInfo.setScheduleTimeSheets(scheduleTimeSheets);
+			dailyInfo = this.dailyInfo(para.getWorkTimeCode(), para.getWorkTypeCode(), dailyInfo);
+			
 			dailyInfo.setScheduleInfo(workInfor);
 			
 			lstItem.add(2);	
@@ -101,6 +91,26 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		this.updateEditStateOfDailyPerformance(para.getEmployeeId(), para.getDateData(), lstItem);
 		return dailyInfo;
 		
+	}
+	/**
+	 * 申請の時刻がなくて実績の勤務種類区分が休日の場合
+	 * 時刻反映する前に予定時間帯を追加しないはいけない
+	 * @return
+	 */
+	private WorkInfoOfDailyPerformance dailyInfo(String workTimeCode, String workTypeCode, WorkInfoOfDailyPerformance dailyInfo) {
+		String companyId = AppContexts.user().companyId();
+		List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
+		if(workTimeCode != null) {				
+			PredetermineTimeSetForCalc predetermine = workTimeSetting.getPredeterminedTimezone(companyId, workTimeCode, workTypeCode, 1);
+			List<TimezoneUse> lstTimezone = predetermine.getTimezones();
+			
+			lstTimezone.stream().forEach(x -> {
+				ScheduleTimeSheet scheIn = new ScheduleTimeSheet(x.getWorkNo(), x.getStart().v(), x.getEnd().v());
+				scheduleTimeSheets.add(scheIn);				
+			});	
+		}
+		dailyInfo.setScheduleTimeSheets(scheduleTimeSheets);
+		return dailyInfo;
 	}
 	/**
 	 * 日別実績の編集状態
@@ -666,17 +676,16 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		WorkInformation workInfor = new WorkInformation(para.getWorkTimeCode(), para.getWorkTypeCode());
 		List<Integer> lstItem = new ArrayList<>();
 		if(scheUpdate) {
+			dailyPerfor = this.dailyInfo(para.getWorkTimeCode(), para.getWorkTypeCode(), dailyPerfor);
 			lstItem.add(1);
 			lstItem.add(2);
 			dailyPerfor.setScheduleInfo(workInfor);
 			dailyData.setWorkInformation(dailyPerfor);
-			//workRepository.updateByKeyFlush(dailyPerfor);
 		} else {
 			lstItem.add(28);
 			lstItem.add(29);
 			dailyPerfor.setRecordInfo(workInfor);
 			dailyData.setWorkInformation(dailyPerfor);
-			//workRepository.updateByKeyFlush(dailyPerfor);
 		}
 		//日別実績の編集状態	
 		this.updateEditStateOfDailyPerformance(para.getEmployeeId(), para.getDateData(), lstItem);

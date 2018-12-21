@@ -77,8 +77,8 @@ public class ApplicationReflectProcessScheImpl implements ApplicationReflectProc
 				relectSche.getHolidayWork().getWorkTimeCode().v(),
 				null, 
 				null,
-				relectSche.getHolidayWork().getWorkClock1().getStartTime().v(),
-				relectSche.getHolidayWork().getWorkClock1().getEndTime().v());
+				relectSche.getHolidayWork().getWorkClock1().getStartTime() != null ? relectSche.getHolidayWork().getWorkClock1().getStartTime().v() : null,
+				relectSche.getHolidayWork().getWorkClock1().getEndTime() != null ? relectSche.getHolidayWork().getWorkClock1().getEndTime().v() : null);
 		return appReflectSchePub.holidayWorkReflectSche(holidayWork);
 	}
 
