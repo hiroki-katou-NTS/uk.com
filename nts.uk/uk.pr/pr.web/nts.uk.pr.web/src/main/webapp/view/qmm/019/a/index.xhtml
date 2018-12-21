@@ -150,14 +150,13 @@
                                             <div class="item-sort" data-bind="ntsSortable: {
                                                                         data: listSetByItem,
                                                                         beforeMove: preventStopSort}">
-                                                <div class="item" data-bind="
-
+                                                <div class="item limited-label" data-bind="
+                                                                    text: shortName,
                                                                     click: openSetting,
                                                                     css: id,
                                                                     style: { background: isFixed() ? '#404040' : deleted() ? '#EF7F7F' : '#FFFFFF',
                                                                             color: isFixed() ? '#FFF' : '#404040'},
                                                                     attr: { tabindex: (itemId() != null) ? '15' : '16'}">
-                                                    <label class="limited-label" data-bind="text: shortName"></label>
                                                 </div>
                                             </div>
                                         </div>
