@@ -53,7 +53,7 @@ module nts.uk.com.view.cmm013.a {
                 // Init list JobTitle setting
                 _self.baseDate = ko.observable(moment(new Date()).toDate());
 
-                _self.selectedJobTitleId = ko.observable(null);
+                _self.selectedJobTitleId = ko.observable("");
                 _self.selectedJobTitleId.subscribe((newValue) => {
                     if (_.isEmpty(newValue) || newValue == "undefined") {
                         _self.startCreateMode();
@@ -103,35 +103,34 @@ module nts.uk.com.view.cmm013.a {
             /**
              * Reload component
              */
-            private reloadComponent(): JQueryPromise<void> {
+            public reloadComponent(): JQueryPromise<void> {
                 let _self = this;
                 let dfd = $.Deferred<any>();
                 
                 _self.listJobTitleOption.isShowAlreadySet = _self.isShowAlreadySet();
                 _self.listJobTitleOption.isShowNoSelectRow = _self.isShowNoSelectRow();
-
                 $('#job-title-items-list').ntsListComponent(_self.listJobTitleOption)
                     .then(() => {
                         let dataList: any = $('#job-title-items-list').getDataList();
-                        if (dataList[0]) {
-                            // Focus first item
-                            if (!_self.selectedJobTitleId()) {
+                        if (dataList && _self.selectedJobTitleId()) {
+                            let filtered = _.filter(dataList, (item: any) => item.id === _self.selectedJobTitleId());
+                            if (filtered.length == 0) {
                                 _self.selectedJobTitleId(dataList[0].id);
                             } else {
-                                let filtered = _.filter(dataList, (item: any) => item.id === _self.selectedJobTitleId());
-                                if (filtered.length == 0) {
-                                    _self.selectedJobTitleId(dataList[0].id);
-                                } else {
-                                    // Reload history
-                                    _self.findJobHistoryById(_self.selectedJobTitleId());
-                                }
+                                // Reload history
+                                _self.findJobHistoryById(_self.selectedJobTitleId());
                             }
                         } else {
                             // Set create mode
                             _self.createMode(true);
                         }
                         dfd.resolve();
+                    }).done(()=>{
+                        nts.uk.ui.block.clear();
                     });
+                if (_self.listJobTitleOption.selectType === 3) {
+                    _self.listJobTitleOption.selectType = 1;
+                }
                 return dfd.promise();
             }
             private reloadDoneComponent():any{
@@ -144,7 +143,7 @@ module nts.uk.com.view.cmm013.a {
                         })
                         .fail((res: any) => {
 
-                        });
+                        })
                 });
             }
             /**
