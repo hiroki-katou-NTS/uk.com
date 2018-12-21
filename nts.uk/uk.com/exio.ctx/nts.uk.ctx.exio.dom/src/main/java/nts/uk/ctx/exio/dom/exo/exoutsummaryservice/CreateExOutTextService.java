@@ -792,6 +792,11 @@ public class CreateExOutTextService extends ExportService<Object> {
 			useNullValue = fileItemDataCreationResult.get(USE_NULL_VALUE);
 
 			if (useNullValue == USE_NULL_VALUE_ON || StringUtils.isEmpty(targetValue)) {
+				if(stringFormat == StringFormat.SINGLE_QUOTATION) {
+					targetValue = stringFormat.character +stringFormat.character + stringFormat.character;
+				}else if(stringFormat == StringFormat.DOUBLE_QUOTATION) {
+					targetValue = stringFormat.character +stringFormat.character ;
+				}
 				lineDataCSV.put(outputItemCustom.getStandardOutputItem().getOutputItemName().v(), targetValue);
 				index += outputItemCustom.getCtgItemDataList().size();
 				continue;
@@ -829,6 +834,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		return result;
 	}
 
+	//サーバ外部出力ログエラー作成
 	private void createOutputLogError(String processingId, String errorContent, String targetValue, String sid,
 			String errorItem) {
 		String employeeCode = null;
