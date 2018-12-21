@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 500, height: 350 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmk004.m.main.css" />
+			<com:scriptfile path="kmk004.m.start.js" />
+			<com:scriptfile path="kmk004.m.vm.js" />
+			<com:scriptfile path="kmk004.m.service.js" />
+		</ui:define>
+		<!-- TODO -->
+		<ui:define name="content">
+			<div id="functions-area">
+				<button id="btnPrint" data-bind="click: printExcel" class="proceed">#{i18n.getText('CMM018_71')}</button>
+				<button id="btnClose" data-bind="click: closeDialog">#{i18n.getText('CMM018_72')}</button>
+			</div>
+			<div id="contents-area">
+
+				<div id="daterangepicker"
+				data-bind="ntsDateRangePicker: { required: true, 
+												enable: true, 
+												showNextPrevious: true, 
+												value: dateValue, 
+												type: 'year',
+												jumpUnit: 'year'}"/>
+			</div>
+		</ui:define>
+
+	</ui:composition>
+</body>
+</html>

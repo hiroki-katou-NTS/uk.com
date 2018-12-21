@@ -94,7 +94,8 @@ public class JpaRoleEmploymentExport  extends JpaRepository implements RoleEmpEx
                 "    MAX(AVAILABILITY)" +
                 "    FOR [FUNCTION_NO] IN (" +
                 functionNo +
-                ")) AS pvt ";
+                ")) AS pvt "+
+                "ORDER BY ROLE_CD,ASSIGN_ATR ASC";
         try (PreparedStatement stmt = this.connection()
                 .prepareStatement(GET_EXPORT_EXCEL)){
             stmt.setString(1,cId);
@@ -106,20 +107,6 @@ public class JpaRoleEmploymentExport  extends JpaRepository implements RoleEmpEx
         }
         return datas;
     }
-//    private Map<String, Object> dataContent(Object[] objects, List<Integer> listFunctionNo) {
-//        Map<String, Object> data = new HashMap<>();
-//        data.put(RoleEmploymentExportImpl.CAS005_122, objects[0]);
-//        data.put(RoleEmploymentExportImpl.CAS005_123, objects[1]);
-//        data.put(RoleEmploymentExportImpl.CAS005_124, RoleEmploymentExportImpl.getTextRoleAtr(objects[2].toString()));
-//        data.put(RoleEmploymentExportImpl.CAS005_125, RoleEmploymentExportImpl.getTextEnumEmplReferRange(Integer.valueOf(objects[3].toString())));
-//        data.put(RoleEmploymentExportImpl.CAS005_126, objects[4].toString().equals("1")?I18NText.getText("CAS005_42"):I18NText.getText("CAS005_41"));
-//        data.put(RoleEmploymentExportImpl.CAS005_127, objects[5]);
-//        data.put(RoleEmploymentExportImpl.CAS005_128, RoleEmploymentExportImpl.getFutureDateRefPermit(Integer.valueOf(objects[6].toString())));
-//        for (int i = 0 ; i < listFunctionNo.size() ; i++){
-//            data.put(RoleEmploymentExportImpl.FUNCTION_NO_+listFunctionNo.get(i) ,objects[i+7].toString().equals("1")? "○" : "ー");
-//        }
-//        return data;
-//    }
 
     @Override
     public Map<Integer, String> findAllFunctionNo() {

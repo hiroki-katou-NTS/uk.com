@@ -32,7 +32,7 @@ public class JpaDailyPatternExport extends JpaRepository implements DailyPattern
             +" TABLE_RESULT.WORK_TYPE_CD, "
             +" TABLE_RESULT.DAYS FROM("
             +" SELECT T1.PATTERN_CD,T1.PATTERN_NAME,T3.NAME,T4.NAME AS NAMET4,T2.WORKING_CD,T2.DAYS,T2.WORK_TYPE_CD, "
-            +" ROW_NUMBER() OVER (PARTITION BY T1.PATTERN_CD ORDER BY T1.PATTERN_CD, T1.PATTERN_NAME) AS ROW_NUMBER "
+            +" ROW_NUMBER() OVER (PARTITION BY T1.PATTERN_CD ORDER BY T1.PATTERN_CD, T1.PATTERN_NAME,T2.DISP_ORDER) AS ROW_NUMBER "
             +" FROM KSCMT_DAILY_PATTERN_SET T1 "
             +" INNER JOIN KSCMT_DAILY_PATTERN_VAL T2 ON T1.PATTERN_CD = T2.PATTERN_CD AND T2.CID = T1.CID  "
             +" INNER JOIN KSHMT_WORKTYPE T3 ON T2.WORK_TYPE_CD = T3.CD AND T3.CID = T1.CID"
@@ -74,7 +74,7 @@ public class JpaDailyPatternExport extends JpaRepository implements DailyPattern
                 .build());
         data.put(DailyPatternExportImpl.KSM003_41, MasterCellData.builder()
                 .columnId(DailyPatternExportImpl.KSM003_41)
-                .value( r.getString("WORKING_CD")+r.getString("NAMET4"))
+                .value( r.getString("WORKING_CD").isEmpty() ? null : r.getString("WORKING_CD")+r.getString("NAMET4"))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(DailyPatternExportImpl.KSM003_42, MasterCellData.builder()
