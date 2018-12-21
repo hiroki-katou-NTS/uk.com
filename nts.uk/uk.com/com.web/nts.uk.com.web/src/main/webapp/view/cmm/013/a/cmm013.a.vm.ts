@@ -134,7 +134,19 @@ module nts.uk.com.view.cmm013.a {
                     });
                 return dfd.promise();
             }
+            private reloadDoneComponent():any{
+                let _self= this;
+                _self.reloadComponent().done(() => {
+                    service.findJobInfoByJobCode(_self.jobTitleCode())
+                        .done((data: any) => {
+                            _self.selectedJobTitleId(data.jobTitleId);
+                            _self.createMode(false);
+                        })
+                        .fail((res: any) => {
 
+                        });
+                });
+            }
             /**
              * Start page
              */
@@ -346,18 +358,7 @@ module nts.uk.com.view.cmm013.a {
                 service.saveJobTitle(_self.toJSON())
                     .done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                            _self.reloadComponent().done(() => {
-//                                if (_self.createMode()) {
-                                    service.findJobInfoByJobCode(_self.jobTitleCode())
-                                        .done((data: any) => {
-                                            _self.selectedJobTitleId(data.jobTitleId);
-                                            _self.createMode(false);
-                                        })
-                                        .fail((res: any) => {
-
-                                        });
-//                                }
-                            });
+                            _self.reloadDoneComponent();
                         });
                     })
                     .fail((res: any) => {                      
@@ -386,7 +387,7 @@ module nts.uk.com.view.cmm013.a {
                                     // Show message
                                     nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
                                         // Reload list
-                                        _self.reloadComponent();
+                                      _self.reloadDoneComponent();
                                     });                                   
                                 })
                                 .fail((res: any) => {                                   
@@ -487,7 +488,7 @@ module nts.uk.com.view.cmm013.a {
                     let isSuccess: boolean = nts.uk.ui.windows.getShared(Constants.SHARE_OUT_DIALOG_ADD_HISTORY);
                     if (isSuccess) {
                         // Reload list
-                        _self.reloadComponent();
+                        _self.reloadDoneComponent();
                     }
                 });
             }
@@ -506,7 +507,7 @@ module nts.uk.com.view.cmm013.a {
                     let isSuccess: boolean = nts.uk.ui.windows.getShared(Constants.SHARE_OUT_DIALOG_EDIT_HISTORY);
                     if (isSuccess) {
                         // Reload list
-                        _self.reloadComponent();
+                        _self.reloadDoneComponent();
                     }
                 });
             }
