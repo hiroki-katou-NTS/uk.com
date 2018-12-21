@@ -3,7 +3,6 @@ package nts.uk.file.com.infra.grantadminrole;
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.arc.time.GeneralDate;
 import nts.uk.file.com.app.grantadminrole.GrantAdminRoleColumn;
 import nts.uk.file.com.app.grantadminrole.GrantAdminRoleRepository;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
