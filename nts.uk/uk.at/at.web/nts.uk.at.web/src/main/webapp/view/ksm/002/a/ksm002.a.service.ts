@@ -1,6 +1,7 @@
 module ksm002.a.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
+    import getText = nts.uk.resource.getText;
     var paths = {
         getAllSpecDate: "at/schedule/shift/businesscalendar/specificdate/getallspecificdate",
         getSpecDateByIsUse: "at/schedule/shift/businesscalendar/specificdate/getspecificdatebyuse/{0}",
@@ -67,7 +68,7 @@ module ksm002.a.service {
     
     
     export function saveAsExcel(): JQueryPromise<any> {
-        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: 'SpecificdaySet', domainType: '特定日の登録', 
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: 'SpecificdaySet', domainType: 'KSM002' + getText("KSM002_1"), 
             languageId: 'ja', reportType: 0, startDate : moment.utc('2018', 'YYYY'), endDate : moment.utc('2018', 'YYYY')});
     }
 
