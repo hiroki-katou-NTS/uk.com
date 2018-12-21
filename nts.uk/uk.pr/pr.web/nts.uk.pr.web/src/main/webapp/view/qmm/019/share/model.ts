@@ -1,7 +1,7 @@
 module nts.uk.pr.view.qmm019.share.model {
     import getText = nts.uk.resource.getText;
 
-    export enum CategoryAtr{
+    export enum CategoryAtr {
         // 支給項目
         PAYMENT_ITEM = 0,
         // 控除項目
@@ -71,13 +71,13 @@ module nts.uk.pr.view.qmm019.share.model {
     }
 
     export function getPaymentTotalObjAtr(printSet: StatementPrintAtr): Array<ItemModel> {
-        if(printSet == StatementPrintAtr.DO_NOT_PRINT){
+        if (printSet == StatementPrintAtr.DO_NOT_PRINT) {
             return [
-                new model.ItemModel(PaymentTotalObjAtr.OUTSIDE,  getText("Enum_PaymentTotalObjAtr_OUTSIDE")),
-                new model.ItemModel(PaymentTotalObjAtr.OUTSIDE_ACTUAL,  getText("Enum_PaymentTotalObjAtr_OUTSIDE_ACTUAL"))
+                new model.ItemModel(PaymentTotalObjAtr.OUTSIDE, getText("Enum_PaymentTotalObjAtr_OUTSIDE")),
+                new model.ItemModel(PaymentTotalObjAtr.OUTSIDE_ACTUAL, getText("Enum_PaymentTotalObjAtr_OUTSIDE_ACTUAL"))
             ];
         }
-        else{            
+        else {
             return [
                 new model.ItemModel(PaymentTotalObjAtr.INSIDE, getText("Enum_PaymentTotalObjAtr_INSIDE")),
                 new model.ItemModel(PaymentTotalObjAtr.OUTSIDE, getText("Enum_PaymentTotalObjAtr_OUTSIDE")),
@@ -246,7 +246,7 @@ module nts.uk.pr.view.qmm019.share.model {
     /**
      * 通勤区分
      */
-    export enum WorkingAtr{
+    export enum WorkingAtr {
         // 交通機関
         TRANSPORT_FACILITIES = 0,
         // 交通用具
@@ -263,7 +263,7 @@ module nts.uk.pr.view.qmm019.share.model {
     /**
      * 範囲利用区分
      */
-    export enum UseRangeAtr{
+    export enum UseRangeAtr {
         // 設定する
         USE = 1,
         // 設定しない
@@ -273,7 +273,7 @@ module nts.uk.pr.view.qmm019.share.model {
     /**
      * 範囲値の属性
      */
-    export enum RangeValueEnum{
+    export enum RangeValueEnum {
         AMOUNT_OF_MONEY = 0,
         TIME = 1,
         TIMES = 2
@@ -282,7 +282,7 @@ module nts.uk.pr.view.qmm019.share.model {
     /**
      * 按分方法区分
      */
-    export enum ProportionalMethodAtr{
+    export enum ProportionalMethodAtr {
         // 割合で計算
         BY_PROPORTION = 0,
         // 日数控除
@@ -332,7 +332,7 @@ module nts.uk.pr.view.qmm019.share.model {
     /**
      * 控除項目区分
      */
-    export enum DeductionItemAtr{
+    export enum DeductionItemAtr {
         // 任意控除項目
         OPTIONAL_DEDUCTION_ITEM = 0,
         // 社会保険項目
@@ -361,7 +361,7 @@ module nts.uk.pr.view.qmm019.share.model {
     /**
      * 平均賃金区分
      */
-    export enum TimeCountAtr{
+    export enum TimeCountAtr {
         // 時間
         TIME = 0,
         // 回数
@@ -382,43 +382,49 @@ module nts.uk.pr.view.qmm019.share.model {
     /**
      * 固定的賃金の設定区分
      */
-    export enum SocialInsuranceCategory{
+    export enum SocialInsuranceCategory {
         // 対象外
         NOT_COVERED = 0,
         // 対象
         COVERED = 1
     }
 
-    export function getSocialInsuranceCategoryText(e: SocialInsuranceCategory){
-        switch (e){
-            case SocialInsuranceCategory.NOT_COVERED: return getText("Enum_SocialInsuranceCategory_NOT_COVERED");
-            case SocialInsuranceCategory.COVERED: return getText("Enum_SocialInsuranceCategory_COVERED");
-            default: return "";
+    export function getSocialInsuranceCategoryText(e: SocialInsuranceCategory) {
+        switch (e) {
+            case SocialInsuranceCategory.NOT_COVERED:
+                return getText("Enum_SocialInsuranceCategory_NOT_COVERED");
+            case SocialInsuranceCategory.COVERED:
+                return getText("Enum_SocialInsuranceCategory_COVERED");
+            default:
+                return "";
         }
     }
 
     /**
      * 労働保険区分
      */
-    export enum LaborInsuranceCategory{
+    export enum LaborInsuranceCategory {
         // 対象外
         NOT_COVERED = 0,
         // 対象
         COVERED = 1
     }
 
-    export function getLaborInsuranceCategoryText(e: LaborInsuranceCategory){
-        switch (e){
-            case LaborInsuranceCategory.NOT_COVERED: return getText("Enum_LaborInsuranceCategory_NOT_COVERED");
-            case LaborInsuranceCategory.COVERED: return getText("Enum_LaborInsuranceCategory_COVERED");
-            default: return "";
+    export function getLaborInsuranceCategoryText(e: LaborInsuranceCategory) {
+        switch (e) {
+            case LaborInsuranceCategory.NOT_COVERED:
+                return getText("Enum_LaborInsuranceCategory_NOT_COVERED");
+            case LaborInsuranceCategory.COVERED:
+                return getText("Enum_LaborInsuranceCategory_COVERED");
+            default:
+                return "";
         }
     }
 
     /**
      * 固定的賃金の対象区分
      */
-    export enum CategoryFixedWage{
+    export enum CategoryFixedWage {
         // 対象外
         NOT_COVERED = 0,
         // 対象
@@ -439,25 +445,28 @@ module nts.uk.pr.view.qmm019.share.model {
     /**
      * 平均賃金区分
      */
-    export enum AverageWageAtr{
+    export enum AverageWageAtr {
         // 対象外
         NOT_COVERED = 0,
         // 対象
         COVERED = 1
     }
 
-    export function getAverageWageAtrText(e: AverageWageAtr){
-        switch (e){
-            case AverageWageAtr.NOT_COVERED: return getText("Enum_AverageWageAtr_NOT_COVERED");
-            case AverageWageAtr.COVERED: return getText("Enum_AverageWageAtr_COVERED");
-            default: return "";
+    export function getAverageWageAtrText(e: AverageWageAtr) {
+        switch (e) {
+            case AverageWageAtr.NOT_COVERED:
+                return getText("Enum_AverageWageAtr_NOT_COVERED");
+            case AverageWageAtr.COVERED:
+                return getText("Enum_AverageWageAtr_COVERED");
+            default:
+                return "";
         }
     }
 
     /**
      * 既定区分
      */
-    export enum DefaultAtr{
+    export enum DefaultAtr {
         // ユーザ作成
         USER_CREATE = 0,
         // システム既定
@@ -467,7 +476,7 @@ module nts.uk.pr.view.qmm019.share.model {
     /**
      * 明細書印字区分
      */
-    export enum StatementPrintAtr{
+    export enum StatementPrintAtr {
         PRINT = 0,
         DO_NOT_PRINT = 1
     }
@@ -475,7 +484,7 @@ module nts.uk.pr.view.qmm019.share.model {
     /**
      * 内訳項目利用区分
      */
-    export enum BreakdownItemUseAtr{
+    export enum BreakdownItemUseAtr {
         NOT_USE = 0,
         USE = 1
     }
@@ -505,7 +514,7 @@ module nts.uk.pr.view.qmm019.share.model {
             this.endMonth = params.endMonth;
             this.historyId = params.historyId;
             this.nodeText = nts.uk.time.parseYearMonth(params.startMonth).format()
-                    + " ～ " + nts.uk.time.parseYearMonth(params.endMonth).format();
+                + " ～ " + nts.uk.time.parseYearMonth(params.endMonth).format();
             this.history = [];
         }
     }
@@ -549,7 +558,7 @@ module nts.uk.pr.view.qmm019.share.model {
     export interface IStatementLayoutSet {
         histId: string;
         layoutPattern: number;
-        listSettingByCtg: Array<ISettingByCtg> ;
+        listSettingByCtg: Array<ISettingByCtg>;
     }
 
     export interface ISettingByCtg {
@@ -603,23 +612,23 @@ module nts.uk.pr.view.qmm019.share.model {
     export interface IItemRangeSet {
         histId: string;
         salaryItemId: string;
-        rangeValAttribute: string;
-        errorUpperLimitSetAtr: string;
-        errorUpRangeValAmount: string;
-        errorUpRangeValTime: string;
-        errorUpRangeValNum: string;
-        errorLowerLimitSetAtr: string;
-        errorLoRangeValAmount: string;
-        errorLoRangeValTime: string;
-        errorLoRangeValNum: string;
-        alarmUpperLimitSetAtr: string;
-        alarmUpRangeValAmount: string;
-        alarmUpRangeValTime: string;
-        alarmUpRangeValNum: string;
-        alarmLowerLimitSetAtr: string;
-        alarmLoRangeValAmount: string;
-        alarmLoRangeValTime: string;
-        alarmLoRangeValNum: string;
+        rangeValAttribute: RangeValueEnum;
+        errorUpperLimitSetAtr: UseRangeAtr;
+        errorUpRangeValAmount: any;
+        errorUpRangeValTime: any;
+        errorUpRangeValNum: any;
+        errorLowerLimitSetAtr: UseRangeAtr;
+        errorLoRangeValAmount: any;
+        errorLoRangeValTime: any;
+        errorLoRangeValNum: any;
+        alarmUpperLimitSetAtr: UseRangeAtr;
+        alarmUpRangeValAmount: any;
+        alarmUpRangeValTime: any;
+        alarmUpRangeValNum: any;
+        alarmLowerLimitSetAtr: UseRangeAtr;
+        alarmLoRangeValAmount: any;
+        alarmLoRangeValTime: any;
+        alarmLoRangeValNum: any;
     }
 
     export class LayoutPattern {
@@ -636,7 +645,7 @@ module nts.uk.pr.view.qmm019.share.model {
             this.id = id;
             this.printerType = printerType;
             this.paper = paper;
-            this.direction =  direction;
+            this.direction = direction;
             this.numberPersonInPage = numberPersonInPage;
             this.numberOfDisplayItem = numberOfDisplayItem;
             this.remarks = remarks;
@@ -783,38 +792,38 @@ module nts.uk.pr.view.qmm019.share.model {
     }
 
     export function validateLayout(layoutPattern: number, totalLine: number, ctgAtr: number,
-           printLineInCtg: number, noPrintLineInCtg: number, printSet: number): string {
+                                   printLineInCtg: number, noPrintLineInCtg: number, printSet: number): string {
         // if no print
-        if(printSet == 1) {
-            if(noPrintLineInCtg >= 5) {
+        if (printSet == 1) {
+            if (noPrintLineInCtg >= 5) {
                 return "MsgQ_20";
             } else {
                 return null;
             }
         }
 
-        if(layoutPattern == StatementLayoutPattern.DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON) {
+        if (layoutPattern == StatementLayoutPattern.DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON) {
             return "MsgQ_21";
         }
 
-        if(layoutPattern != StatementLayoutPattern.LASER_CRIMP_LANDSCAPE_ONE_PERSON) {
+        if (layoutPattern != StatementLayoutPattern.LASER_CRIMP_LANDSCAPE_ONE_PERSON) {
             let maxPrintLine = getMaxPrintLineOfLayoutPattern(layoutPattern);
 
-            if(totalLine >= maxPrintLine) {
+            if (totalLine >= maxPrintLine) {
                 return "MsgQ_21";
             } else {
                 return null;
             }
         }
 
-        if(ctgAtr == CategoryAtr.REPORT_ITEM) {
-            if(printLineInCtg >= 2) {
+        if (ctgAtr == CategoryAtr.REPORT_ITEM) {
+            if (printLineInCtg >= 2) {
                 return "MsgQ_21";
             } else {
                 return null;
             }
         } else {
-            if(printLineInCtg >= 6) {
+            if (printLineInCtg >= 6) {
                 return "MsgQ_21";
             } else {
                 return null;

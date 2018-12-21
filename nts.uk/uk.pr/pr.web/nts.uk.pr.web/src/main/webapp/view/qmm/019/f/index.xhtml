@@ -98,7 +98,7 @@
                     </div>
                     <hr/>
                     <div class="table table-error-alarm"
-                         data-bind="with: errorRangeSetting.upperLimitSetting">
+                         data-bind="with: itemRangeSet">
                         <div class="cell valign-center">
                             <!--F3_1-->
                             <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_120')}</div>
@@ -106,23 +106,13 @@
                         <div class="cell valign-center">
                             <!--F3_2-->
                             <div tabindex="8" data-bind="ntsCheckBox: {
-                                checked: valueSettingAtr,
+                                checked: errorUpperLimitSetAtr,
                                 enable: $vm.screenControl().enableF3_2() }"/>
-                            <com:ko-if bind="$vm.screenControl().visibleF3_3()">
-                                <!--F3_3-->
-                                <input id="F3_3" tabindex="9" data-bind="ntsTimeEditor: {
-                                    name: '#[QMM019_121]',
-                                    value: time10Value,
-                                    enable: $vm.screenControl().enableF3_3(),
-                                    constraint: 'TimeValue',
-                                    inputFormat: 'time',
-                                    mode: 'time'}"/>
-                            </com:ko-if>
                             <com:ko-if bind="$vm.screenControl().visibleF3_20()">
                                 <!--F3_20-->
                                 <input id="F3_20" tabindex="9" data-bind="ntsTimeEditor: {
                                     name: '#[QMM019_121]',
-                                    value: time60Value,
+                                    value: errorUpRangeValTime,
                                     enable: $vm.screenControl().enableF3_20(),
                                     constraint: 'TimeValue',
                                     inputFormat: 'time',
@@ -132,7 +122,7 @@
                                 <!--F3_24-->
                                 <input id="F3_24" tabindex="9" data-bind="ntsNumberEditor: {
                                     name: '#[QMM019_121]',
-                                    value: timesValue,
+                                    value: errorUpRangeValNum,
                                     enable: $vm.screenControl().enableF3_24(),
                                     constraint: 'TimesValue'}"/>
                             </com:ko-if>
@@ -143,28 +133,18 @@
                         </div>
                     </div>
                     <div class="table table-error-alarm"
-                         data-bind="with: errorRangeSetting.lowerLimitSetting">
+                         data-bind="with: itemRangeSet">
                         <div class="cell valign-center"/>
                         <div class="cell valign-center">
                             <!--F3_5-->
                             <div tabindex="10" data-bind="ntsCheckBox: {
-                                checked: valueSettingAtr,
+                                checked: errorLowerLimitSetAtr,
                                 enable: $vm.screenControl().enableF3_5() }"/>
-                            <com:ko-if bind="$vm.screenControl().visibleF3_6()">
-                                <!--F3_6-->
-                                <input id="F3_6" tabindex="11" data-bind="ntsTimeEditor: {
-                                    name: '#[QMM019_123]',
-                                    value: time10Value,
-                                    enable: $vm.screenControl().enableF3_6(),
-                                    constraint: 'TimeValue',
-                                    inputFormat: 'time',
-                                    mode: 'time'}"/>
-                            </com:ko-if>
                             <com:ko-if bind="$vm.screenControl().visibleF3_21()">
                                 <!--F3_21-->
                                 <input id="F3_21" tabindex="11" data-bind="ntsTimeEditor: {
                                     name: '#[QMM019_123]',
-                                    value: time60Value,
+                                    value: errorLoRangeValTime,
                                     enable: $vm.screenControl().enableF3_21(),
                                     constraint: 'TimeValue',
                                     inputFormat: 'time',
@@ -174,7 +154,7 @@
                                 <!--F3_25-->
                                 <input id="F3_25" tabindex="11" data-bind="ntsNumberEditor: {
                                     name: '#[QMM019_123]',
-                                    value: timesValue,
+                                    value: errorLoRangeValNum,
                                     enable: $vm.screenControl().enableF3_25(),
                                     constraint: 'TimesValue'}"/>
                             </com:ko-if>
@@ -185,7 +165,7 @@
                         </div>
                     </div>
                     <div class="table table-error-alarm"
-                         data-bind="with: alarmRangeSetting.upperLimitSetting">
+                         data-bind="with: itemRangeSet">
                         <div class="cell valign-center">
                             <!--F3_8-->
                             <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_125')}</div>
@@ -193,23 +173,13 @@
                         <div class="cell valign-center">
                             <!--F3_9-->
                             <div tabindex="12" data-bind="ntsCheckBox: {
-                                checked: valueSettingAtr,
+                                checked: alarmUpperLimitSetAtr,
                                 enable: $vm.screenControl().enableF3_9() }"/>
-                            <com:ko-if bind="$vm.screenControl().visibleF3_10()">
-                                <!--F3_10-->
-                                <input id="F3_10" tabindex="13" data-bind="ntsTimeEditor: {
-                                    name: '#[QMM019_126]',
-                                    value: time10Value,
-                                    enable: $vm.screenControl().enableF3_10(),
-                                    constraint: 'TimeValue',
-                                    inputFormat: 'time',
-                                    mode: 'time'}"/>
-                            </com:ko-if>
                             <com:ko-if id="F3_22" bind="$vm.screenControl().visibleF3_22()">
                                 <!--F3_22-->
                                 <input id="F3_22" tabindex="13" data-bind="ntsTimeEditor: {
                                     name: '#[QMM019_126]',
-                                    value: time60Value,
+                                    value: alarmUpRangeValTime,
                                     enable: $vm.screenControl().enableF3_22(),
                                     constraint: 'TimeValue',
                                     inputFormat: 'time',
@@ -219,7 +189,7 @@
                                 <!--F3_26-->
                                 <input id="F3_26" tabindex="13" data-bind="ntsNumberEditor: {
                                     name: '#[QMM019_126]',
-                                    value: timesValue,
+                                    value: alarmUpRangeValNum,
                                     enable: $vm.screenControl().enableF3_26(),
                                     constraint: 'TimesValue'}"/>
                             </com:ko-if>
@@ -230,28 +200,18 @@
                         </div>
                     </div>
                     <div class="table table-error-alarm"
-                         data-bind="with: alarmRangeSetting.lowerLimitSetting">
+                         data-bind="with: itemRangeSet">
                         <div class="cell valign-center"/>
                         <div class="cell valign-center">
                             <!--F3_12-->
                             <div tabindex="14" data-bind="ntsCheckBox: {
-                                checked: valueSettingAtr,
+                                checked: alarmLowerLimitSetAtr,
                                 enable: $vm.screenControl().enableF3_12() }"/>
-                            <com:ko-if bind="$vm.screenControl().visibleF3_13()">
-                                <!--F3_13-->
-                                <input id="F3_13" tabindex="15" data-bind="ntsTimeEditor: {
-                                    name: '#[QMM019_128]',
-                                    value: time10Value,
-                                    enable: $vm.screenControl().enableF3_13(),
-                                    constraint: 'TimeValue',
-                                    inputFormat: 'time',
-                                    mode: 'time'}"/>
-                            </com:ko-if>
                             <com:ko-if bind="$vm.screenControl().visibleF3_23()">
                                 <!--F3_23-->
                                 <input id="F3_23" tabindex="15" data-bind="ntsTimeEditor: {
                                     name: '#[QMM019_128]',
-                                    value: time60Value,
+                                    value: alarmLoRangeValTime,
                                     enable: $vm.screenControl().enableF3_23(),
                                     constraint: 'TimeValue',
                                     inputFormat: 'time',
@@ -261,7 +221,7 @@
                                 <!--F3_27-->
                                 <input id="F3_27" tabindex="15" data-bind="ntsNumberEditor: {
                                     name: '#[QMM019_128]',
-                                    value: timesValue,
+                                    value: alarmLoRangeValNum,
                                     enable: $vm.screenControl().enableF3_27(),
                                     constraint: 'TimesValue'}"/>
                             </com:ko-if>
