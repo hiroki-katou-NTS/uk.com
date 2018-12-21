@@ -302,7 +302,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             });
             if (dataShare != undefined) {
                 self.shareObject().mapDataShare(dataShare.initParam, dataShare.extractionParam, dataShare.dataSPR);
-                self.showDateRange(self.shareObject().changePeriodAtr);
+                self.showDateRange(_.isEmpty(self.shareObject().changePeriodAtr) ? true : self.shareObject().changePeriodAtr);
                 self.transitionDesScreen = _.isEmpty(self.shareObject().transitionDesScreen) ? false : true;
             }
 
@@ -2182,7 +2182,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             displayFormat: self.displayFormat(),
                             mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
                             errorCodes: errorCodes,
-                            formatCodes: self.formatCodes()
+                            formatCodes: self.formatCodes(),
+                            showLock: self.showLock()
                         };
                         nts.uk.ui.block.invisible();
                         nts.uk.ui.block.grayout();

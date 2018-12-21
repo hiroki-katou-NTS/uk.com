@@ -1241,7 +1241,9 @@ public class DailyPerformanceCorrectionProcessor {
 								// -> {
 								lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(rowId), value.getEmployeeId(),
 										"", "", value.getProcessingDate(), value.getErrorCode(),
-										value.getErrorAlarmMessage() == null ? (errorSetting.getMessageDisplay() == null ? "" : errorSetting.getMessageDisplay())
+										value.getErrorAlarmMessage() == null
+												? (errorSetting.getMessageDisplay() == null ? ""
+														: errorSetting.getMessageDisplay())
 												: value.getErrorAlarmMessage(),
 										lstError.get(id).getAttendanceItemId().get(x), "", errorSetting.isBoldAtr(),
 										errorSetting.getMessageColor(),
@@ -1255,7 +1257,14 @@ public class DailyPerformanceCorrectionProcessor {
 						} else {
 							lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(rowId), value.getEmployeeId(),
 									value.getProcessingDate(), value.getErrorCode(),
-									value.getErrorAlarmMessage() == null ? (errorSetting.getMessageDisplay() == null ? "" : errorSetting.getMessageDisplay()) : value.getErrorAlarmMessage()));
+									value.getErrorAlarmMessage() == null ? (errorSetting.getMessageDisplay() == null ? "" : errorSetting.getMessageDisplay()) : value.getErrorAlarmMessage(),
+									errorSetting.isBoldAtr(),
+									errorSetting.getMessageColor(),
+									appMapDateSid
+											.containsKey(value.getEmployeeId() + "|" + value.getProcessingDate())
+													? appMapDateSid.get(
+															value.getEmployeeId() + "|" + value.getProcessingDate())
+													: ""));
 							rowId++;
 						}
 					}
