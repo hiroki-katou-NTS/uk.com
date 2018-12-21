@@ -42,7 +42,7 @@ public class GrantAdminRoleImpl extends JpaRepository implements GrantAdminRoleR
             " END BUSINESS_NAME" +
             " FROM BCMMT_COMPANY c INNER JOIN SACMT_ROLE_INDIVI_GRANT g ON c.CID = g.CID " +
             " INNER JOIN SACMT_USER u ON g.USER_ID = u.USER_ID " +
-            " LEFT JOIN BPSMT_PERSON p ON p.PID = u.ASSO_PID WHERE g.ROLE_TYPE = ? AND c.ABOLITION_ATR = 0) tb ORDER BY tb.CID";
+            " LEFT JOIN BPSMT_PERSON p ON p.PID = u.ASSO_PID WHERE g.ROLE_TYPE = ? AND c.ABOLITION_ATR = 0) tb ORDER BY tb.CID, tb.LOGIN_ID";
 
     @SneakyThrows
     @Override
