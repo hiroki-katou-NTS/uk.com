@@ -482,8 +482,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-					
-					createOutputLogError(exOutSetting.getProcessingId(), "Sql Exception", null, sid, null);
+					String str = e.getMessage();
+					str.indexOf("Internal Exception");
+					str.indexOf("Error Code");
+					createOutputLogError(exOutSetting.getProcessingId(), str.substring(181, 275).trim().split(":")[2], null, sid, null);
 				}
 			}
 			// サーバ外部出力タイプマスター系
