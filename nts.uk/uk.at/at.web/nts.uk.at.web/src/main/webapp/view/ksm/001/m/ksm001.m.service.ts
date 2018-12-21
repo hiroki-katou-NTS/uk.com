@@ -5,8 +5,8 @@ module nts.uk.com.view.ksm001.m {
         var servicePath = {
             saveAsExcel: "person/report/masterData"
         }
-        export function saveAsExcel(languageId: string, period: any): JQueryPromise<any> {
-            return exportFile('/masterlist/report/print', { domainId: "ShiftEstimate", domainType: "目安時間・金額の登録", languageId: languageId, reportType: 0, option : period });
+        export function saveAsExcel(languageId: string, startDate: any , endDate: any): JQueryPromise<any> {
+            return exportFile('/masterlist/report/print', { domainId: "ShiftEstimate", domainType: "KSM001目安時間・金額の登録", languageId: languageId, reportType: 0, startDate : startDate, endDate : endDate });
         }
     }
 

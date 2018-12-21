@@ -38,10 +38,10 @@ module nts.uk.com.view.ksm001.m {
                 nts.uk.ui.block.grayout();
                 let langId = self.langId();
                 let date = self.date();
-                let startDate = self.dateValue().startDate;
-                let endDate = self.dateValue().endDate;
+                let startDate = moment.utc(self.dateValue().startDate, "YYYY/MM/DD");
+                let endDate = moment.utc(self.dateValue().endDate, "YYYY/MM/DD");
                 let period = self.dateValue();
-                service.saveAsExcel(langId, period).done(function() {
+                service.saveAsExcel(langId, startDate, endDate).done(function() {
                     nts.uk.ui.windows.close();
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError({ messageId: error.messageId });

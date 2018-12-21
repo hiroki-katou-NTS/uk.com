@@ -105,7 +105,7 @@ public class ShiftEstimateExportImpl implements MasterListData {
 	}
 
 	// sheet 3
-	private List<MasterData> getMasterDatasThree(String startDate, String endDate) {
+	private List<MasterData> getMasterDatasThree(int startDate, int endDate) {
 		return repository.getDataSheetThreeExport(startDate, endDate);
 	}
 
@@ -155,7 +155,7 @@ public class ShiftEstimateExportImpl implements MasterListData {
 	}
 
 	// sheet 4
-	private List<MasterData> getMasterDatasFour(String startDate, String endDate) {
+	private List<MasterData> getMasterDatasFour(int startDate, int endDate) {
 		return repository.getDataSheetFourExport(startDate, endDate);
 	}
 	
@@ -204,28 +204,27 @@ public class ShiftEstimateExportImpl implements MasterListData {
 	}
 
 	// sheet 5
-	private List<MasterData> getMasterDatasFive(String startDate, String endDate) {
+	private List<MasterData> getMasterDatasFive(int startDate, int endDate) {
 		return repository.getDataSheetFiveExport(startDate, endDate);
 	}
 	
 	@Override
 	public List<SheetData> extraSheets(MasterListExportQuery query) {
-		@SuppressWarnings("unchecked")
-		Map<String, String> period = (HashMap<String, String>) query.getOption();
-		String startDate = period.get("startDate");
-		String endDate = period.get("endDate");
+		//Map<String, String> period = (HashMap<String, String>) query.getOption();
+		int startDate = query.getStartDate().year();
+		int endDate = query.getEndDate().year();
 		List<SheetData> sheetDatas = new ArrayList<>();
 		SheetData sheetData2 = SheetData.builder().mainData(this.getMasterDatasTwo())
-				.mainDataColumns(this.getHeaderColumnsTwo()).sheetName(TextResource.localize("KSM001_197")).build();
+				.mainDataColumns(this.getHeaderColumnsTwo()).sheetName(TextResource.localize("KSM001_97")).build();
 
 		SheetData sheetData3 = SheetData.builder().mainData(this.getMasterDatasThree(startDate, endDate))
-				.mainDataColumns(this.getHeaderColumnsThree()).sheetName(TextResource.localize("KSM001_198")).build();
+				.mainDataColumns(this.getHeaderColumnsThree()).sheetName(TextResource.localize("KSM001_98")).build();
 
 		SheetData sheetData4 = SheetData.builder().mainData(this.getMasterDatasFour(startDate, endDate))
-				.mainDataColumns(this.getHeaderColumnsFour()).sheetName(TextResource.localize("KSM001_199")).build();
+				.mainDataColumns(this.getHeaderColumnsFour()).sheetName(TextResource.localize("KSM001_99")).build();
 		
 		SheetData sheetData5 = SheetData.builder().mainData(this.getMasterDatasFive(startDate, endDate))
-				.mainDataColumns(this.getHeaderColumnsFive()).sheetName(TextResource.localize("KSM001_200")).build();
+				.mainDataColumns(this.getHeaderColumnsFive()).sheetName(TextResource.localize("KSM001_100")).build();
 
 		sheetDatas.add(sheetData2);
 		sheetDatas.add(sheetData3);
@@ -236,7 +235,7 @@ public class ShiftEstimateExportImpl implements MasterListData {
 
 	@Override
 	public String mainSheetName() {
-		return TextResource.localize("KSM001_196");
+		return TextResource.localize("KSM001_96");
 	}
 
 }
