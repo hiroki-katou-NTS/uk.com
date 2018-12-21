@@ -1,9 +1,8 @@
 package nts.uk.ctx.pr.core.dom.emprsdttaxinfo;
 
-import nts.arc.time.YearMonth;
-
-import java.util.Optional;
 import java.util.List;
+
+import nts.arc.time.YearMonth;
 
 /**
  * 社員住民税納付先情報
@@ -11,6 +10,8 @@ import java.util.List;
 public interface EmployeeResidentTaxPayeeInfoRepository {
 
     List<EmployeeResidentTaxPayeeInfo> getEmpRsdtTaxPayeeInfo(List<String> listSId, YearMonth periodYM);
+    
+    List<EmployeeResidentTaxPayeeInfo> getEmpRsdtTaxPayeeInfo(List<String> listSId);
 
     void add(List<EmployeeResidentTaxPayeeInfo> domain);
 

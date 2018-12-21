@@ -40,7 +40,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 
 @Stateless
-public class BankIntegrationCommandHandler extends CommandHandler<IntegrationCommand> {
+public class BankIntegrationCommandHandler extends CommandHandler<BankIntegrationCommand> {
 
 	@Inject
 	private ProcessInformationAdapter procInfoAdapter;
@@ -64,9 +64,9 @@ public class BankIntegrationCommandHandler extends CommandHandler<IntegrationCom
 	private TransferSourceBankRepository sourceBankRepo;
 
 	@Override
-	protected void handle(CommandHandlerContext<IntegrationCommand> context) {
+	protected void handle(CommandHandlerContext<BankIntegrationCommand> context) {
 		String companyId = AppContexts.user().companyId();
-		IntegrationCommand command = context.getCommand();
+		BankIntegrationCommand command = context.getCommand();
 
 		// update source bank
 		List<TransferSourceBank> lstSourceBank = sourceBankRepo.getSourceBankByBranchId(companyId,

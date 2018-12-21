@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.transfer.dom.rsdttaxpayee;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.transfer.dom.bank.AccountNumber;
 import nts.uk.shr.com.primitive.Memo;
@@ -56,6 +57,7 @@ public class ResidentTaxPayee extends AggregateRoot {
     /**
      * 報告先コード
      */
+    @Setter
     private Optional<ResidentTaxPayeeCode> reportCd;
 
     /**

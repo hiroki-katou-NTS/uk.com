@@ -24,7 +24,16 @@
 					<!-- E1_2 -->
 					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM003_30')}</div>
 					<!-- E1_3 -->
+					<div id="E1_3" tabindex="13"
+                                 data-bind="ntsDatePicker: {
+                                    name: '#[QMM016_16]',
+                                    value: targetYm,
+                                    dateFormat: 'yearmonth',
+                                    valueFormat: 'YYYYMM',
+                                    required: true,
+                                    enable: true}"/>
 					<!-- E1_4 -->
+					<div style="margin-left: 10px;" id="E1_4" data-bind="text: displayJapanYm"/>
 				</div>
 				<div id="source" style="display: inline-block">
 					<div class="valign-center control-group">

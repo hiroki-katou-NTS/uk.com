@@ -1,16 +1,14 @@
 package nts.uk.ctx.pr.transfer.ws.emppaymentinfo;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.transfer.app.command.emppaymentinfo.BankIntegrationCommandHandler;
-import nts.uk.ctx.pr.transfer.app.command.emppaymentinfo.IntegrationCommand;
+import nts.uk.ctx.pr.transfer.app.command.emppaymentinfo.SourceBankIntegrationCommand;
+import nts.uk.ctx.pr.transfer.app.command.emppaymentinfo.BankIntegrationCommand;
 import nts.uk.ctx.pr.transfer.app.command.emppaymentinfo.SourceBankIntegrationCommandHandler;
 
 /**
@@ -25,19 +23,19 @@ public class EmployeePaymentInforWebService extends WebService {
 
 	@Inject
 	private SourceBankIntegrationCommandHandler sourceBankIntegration;
-	
+
 	@Inject
 	private BankIntegrationCommandHandler bankIntegration;
 
 	@POST
-	@Path("source-bank-integration/{code}")
-	public void sourceBankIntegration(@PathParam("code") String code) {
-		sourceBankIntegration.handle(code);
+	@Path("source-bank-integration")
+	public void sourceBankIntegration(SourceBankIntegrationCommand command) {
+		sourceBankIntegration.handle(command);
 	}
-	
+
 	@POST
 	@Path("bank-integration")
-	public void sourceBankIntegration(IntegrationCommand command) {
+	public void bankIntegration(BankIntegrationCommand command) {
 		bankIntegration.handle(command);
 	}
 

@@ -11,8 +11,10 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.transfer.app.command.rsdttaxpayee.DeleteListResidentTaxPayeeCommandHandler;
 import nts.uk.ctx.pr.transfer.app.command.rsdttaxpayee.DeleteResidentTaxPayeeCommandHandler;
+import nts.uk.ctx.pr.transfer.app.command.rsdttaxpayee.RtpIntegrationCommand;
 import nts.uk.ctx.pr.transfer.app.command.rsdttaxpayee.RegisterResidentTaxPayeeCommandHandler;
 import nts.uk.ctx.pr.transfer.app.command.rsdttaxpayee.ResidentTaxPayeeCommand;
+import nts.uk.ctx.pr.transfer.app.command.rsdttaxpayee.ResidentTaxPayeeIntegrationCommandHandler;
 import nts.uk.ctx.pr.transfer.app.find.rsdttaxpayee.ResidentTaxPayeeDto;
 import nts.uk.ctx.pr.transfer.app.find.rsdttaxpayee.ResidentTaxPayeeFinder;
 import nts.uk.shr.com.context.AppContexts;
@@ -32,6 +34,9 @@ public class RsdtTaxPayeeWebService extends WebService {
 	
 	@Inject
 	private DeleteListResidentTaxPayeeCommandHandler delListHandler;
+	
+	@Inject
+	private ResidentTaxPayeeIntegrationCommandHandler rsdTaxPayeeIntegrationHanler;
 
 	@POST
 	@Path("get-all-resident-tax-payee")
@@ -79,6 +84,12 @@ public class RsdtTaxPayeeWebService extends WebService {
 	@Path("delete-list")
 	public void deleteList(List<String> codes) {
 		delListHandler.handle(codes);
+	}
+	
+	@POST
+	@Path("integration")
+	public void integration(RtpIntegrationCommand command) {
+		rsdTaxPayeeIntegrationHanler.handle(command);
 	}
 
 }

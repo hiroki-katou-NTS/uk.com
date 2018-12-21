@@ -16,7 +16,7 @@ module nts.uk.pr.view.qmm002.c {
             return ajax("pr", paths.getAllBankBranch, data);
         };
         
-        export function integration(data: Array<any>): JQueryPromise<any> {
+        export function integration(data: any): JQueryPromise<any> {
             return ajax("pr", paths.integration, data);
         };
 

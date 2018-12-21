@@ -17,6 +17,8 @@ module nts.uk.pr.view.qmm003.e.viewmodel {
         listRegions: Array<any> = constants.listRegions;
         listPrefectures: Array<any>;
         listRsdTaxPayeeNodes: Array<Node> = [];
+        targetYm: KnockoutObservable<number>;
+        displayJapanYm: KnockoutObservable<string>;
 
         constructor() {
             let self = this;
@@ -26,6 +28,10 @@ module nts.uk.pr.view.qmm003.e.viewmodel {
             self.selectedCode = ko.observable("");
             self.headers = ko.observableArray([getText("QMM003_9")]);
             self.listPrefectures = constants.listPrefectures;
+            self.targetYm = ko.observable(null);
+            self.displayJapanYm = ko.computed(function() {
+                return self.targetYm() ? nts.uk.time.yearmonthInJapanEmpire(this.startMonth()).toString().split(' ').join(''): "";
+            }, this);
         }
         
         startPage(): JQueryPromise<any> {
@@ -69,7 +75,18 @@ module nts.uk.pr.view.qmm003.e.viewmodel {
 
         execute() {
             let self = this;
-            
+            $(".nts-input").filter(":enabled").trigger("validate");
+            if (!nts.uk.ui.errors.hasError()) {
+                block.invisible();
+                let command = { sourceCode: self.sourceSelectedCode(), 
+                                destinationCode: self.selectedCode(), 
+                                targetYm: self.targetYm() };
+                service.integration(command).done(() => {
+                    nts.uk.ui.windows.close();
+                }).always(() => {
+                    block.clear;
+                });
+            }
         }
 
         close() {

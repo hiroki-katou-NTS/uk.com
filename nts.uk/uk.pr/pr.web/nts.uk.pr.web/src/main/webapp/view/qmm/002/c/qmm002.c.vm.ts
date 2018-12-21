@@ -72,7 +72,8 @@ module nts.uk.pr.view.qmm002.c.viewmodel {
         execute() {
             let self = this;
             block.invisible();
-            service.integration(self.selectedSourceBranchCodes()).done(() => {
+            let command = {sourceIds: self.selectedSourceBranchCodes(), destinationId: self.selectedDesBranchCode()};
+            service.integration(command).done(() => {
                 nts.uk.ui.windows.close();
             }).fail(error => {
                 alertError(error);

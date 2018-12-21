@@ -47,7 +47,8 @@ module nts.uk.pr.view.qmm006.c.viewmodel {
         execute() {
             let self = this;
             block.invisible();
-            service.integration(self.selectedCodeLeft()).done(() => {
+            let command = { sourceCode: self.selectedCodeLeft(), destinationCode: self.selectedCodeRight() };
+            service.integration(command).done(() => {
                 nts.uk.ui.windows.close();
             }).fail(error => {
                 alertError(error);

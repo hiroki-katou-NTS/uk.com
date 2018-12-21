@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Value;
 
 @Value
-public class IntegrationCommand {
+public class BankIntegrationCommand {
 
 	private List<String> sourceIds;
 
