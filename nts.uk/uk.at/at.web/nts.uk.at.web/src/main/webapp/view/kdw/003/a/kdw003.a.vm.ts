@@ -1288,6 +1288,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail, endDate: dataSource[dataSource.length - 1].dateDetail } : null;
                 }
                 dataParent["monthValue"] = self.valueUpdateMonth;
+            }else{
+                 dataParent["dateRange"] = {
+                    startDate: moment(self.dateRanger().startDate).toISOString(),
+                    endDate: moment(self.dateRanger().endDate).toISOString()
+                }
             }
             self.removeErrorRefer();
             let dfd = $.Deferred();
