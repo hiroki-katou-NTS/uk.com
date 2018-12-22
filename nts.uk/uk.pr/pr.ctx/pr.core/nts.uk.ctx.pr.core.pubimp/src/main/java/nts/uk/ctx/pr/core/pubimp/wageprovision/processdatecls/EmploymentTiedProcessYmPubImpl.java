@@ -31,7 +31,7 @@ public class EmploymentTiedProcessYmPubImpl implements EmploymentTiedProcessYmPu
 	
 	private EmploymentTiedProcessYearMonth fromDomain(EmpTiedProYear domain) {
 		return new EmploymentTiedProcessYearMonth(domain.getCid(), domain.getProcessCateNo(),
-				domain.getEmploymentCodes().v());
+				domain.getEmploymentCodes().stream().map(c -> c.v()).collect(Collectors.toList()));
 	}
 
 }
