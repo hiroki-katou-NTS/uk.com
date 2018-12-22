@@ -140,14 +140,14 @@
                                 <label id="A4_2" class="category-text">#{i18n.getText('QMM019_23')}</label>
                                 <hr/>
                                 <div id="payment-table" class="drag-panel">
-                                    <div class="line-sort" data-bind="sortable: {
+                                    <div class="line-sort" data-bind="ntsSortable: {
                                                                     data: listLineByLineSet,
                                                                     isEnabled: true }">
                                         <div class="form-group item-classification" data-bind="style: { background: printSet() == 0 ? '#E0F59E' : '#DDD'}">
                                             <span class="caret-right"></span>
                                             <button id="A4_4" class="" tabindex="14"
                                                     data-bind="enable: !hasFixed(), click: editLine"></button>
-                                            <div class="item-sort" data-bind="sortable: {
+                                            <div class="item-sort" data-bind="ntsSortable: {
                                                                         data: listSetByItem,
                                                                         beforeMove: preventStopSort}">
                                                 <div class="item limited-label" data-bind="
