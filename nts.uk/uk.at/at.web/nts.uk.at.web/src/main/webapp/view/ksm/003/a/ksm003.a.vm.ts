@@ -243,7 +243,17 @@ module nts.uk.at.view.ksm003.a {
                 });
             }
 
-
+            /**
+             * check role
+             */
+            hasPermission(): boolean {
+                if (__viewContext.user.role.attendance || __viewContext.user.role.payroll 
+                    || __viewContext.user.role.personnel  || __viewContext.user.role.officeHelper){
+                    return true;
+                }
+                
+                return false;
+            }
             //select switch New Mode
             public switchNewMode(): void {
                 let self = this;
