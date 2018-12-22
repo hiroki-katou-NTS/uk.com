@@ -55,7 +55,11 @@ module nts.uk.at.view.kmf003.a.service {
         var path = nts.uk.text.format(servicePath.deleteYearHolidayGrant);
         return nts.uk.request.ajax(path, {yearHolidayCode: yearHolidayCode});
     } 
-    
+    //saveAsExcel
+    export function saveAsExcel(languageId: string): JQueryPromise<any> {
+        return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "YearHoliday", languageId: languageId, domainType: "KMF003年休付与の登録", reportType: 0 });
+    }
+
     export interface YearHolidayGrantDto {
         yearHolidayCode: string,
         yearHolidayName: string,
