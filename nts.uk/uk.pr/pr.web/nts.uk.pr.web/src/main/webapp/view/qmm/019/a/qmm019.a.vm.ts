@@ -810,7 +810,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 data.targetParent().splice(targetIndex, 1);
                 data.sourceParent().add(targetItem);
 
-                //data.cancelDrop = true;
+                data.cancelDrop = true;
 
                 //let currentCategory: SettingByCtg = __viewContext['screenModel'].statementLayoutHistData().statementLayoutSet().listSettingByCtg()[categoryIndex];
                 //currentCategory.listLineByLineSet()[sourceLineIndex].listSetByItem()[data.sourceIndex] = targetItem;
@@ -865,7 +865,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
 
             self.parent = parent;
             self.deleted = ko.observable(false);
-            self.id = ko.observable("item_" + self.parent.parent.ctgAtr + "_" + self.parent.lineNumber() + "_" + self.itemPosition());
+            self.id = ko.observable("item_" + self.parent.parent.ctgAtr + "_" + self.parent.lineNumber() + "_" + self.itemId());
 
             if(!self.isFixed() && self.itemId() != null) {
                 self.menu = new nts.uk.ui.contextmenu.ContextMenu("." + self.id(), [
@@ -897,9 +897,10 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                     self.menu.setVisibleItem(true, 0);
                 }
             });
-
             self.itemId.subscribe(id => {
-                if(_.isEmpty(id) && (self.menu == null)) {
+                if(!_.isEmpty(id) && (self.menu == null)) {
+                    self.id("item_" + self.parent.parent.ctgAtr + "_" + self.parent.lineNumber() + "_" + id);
+
                     self.menu = new nts.uk.ui.contextmenu.ContextMenu("." + self.id(), [
                         new nts.uk.ui.contextmenu.ContextMenuItem(
                             "Delete",
