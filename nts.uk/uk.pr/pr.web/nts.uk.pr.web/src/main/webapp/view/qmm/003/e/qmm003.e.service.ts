@@ -12,7 +12,7 @@ module nts.uk.pr.view.qmm003.e.service {
     }
     
     export function integration(command: any): JQueryPromise<any> {
-        return ajax('pr', paths.getAllResidentTaxPayee, command);
+        return ajax('pr', paths.integration, command);
     }
     
 }

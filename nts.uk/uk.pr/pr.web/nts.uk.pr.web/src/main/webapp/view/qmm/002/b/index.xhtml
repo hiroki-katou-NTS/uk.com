@@ -37,11 +37,10 @@
 						primaryText: 'nodeText',
 						multiple: true,
 						enable: true,
-						initialExpandDepth: 0,
 						showCheckBox: true}"></table>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex = "3" class="x-large danger" data-bind="click: deleteList, timeClick: 500">#{i18n.getText('QMM002_7')}</button>
+				<button tabindex = "3" class="x-large danger" data-bind="click: deleteList, enable: selectedBranchCodes().length > 0, timeClick: 500">#{i18n.getText('QMM002_7')}</button>
 				<button tabindex = "4" data-bind="click: cancel, timeClick: 500">#{i18n.getText('QMM002_21')}</button>
 			</div>
 			<style>

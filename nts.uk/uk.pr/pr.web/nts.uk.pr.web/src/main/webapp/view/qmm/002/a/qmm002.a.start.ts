@@ -9,7 +9,7 @@ module nts.uk.pr.view.qmm002.a {
                 if (__viewContext['screenModel'].listBranch().length > 0)
                     __viewContext['screenModel'].setSelectedCode(__viewContext['screenModel'].listBranch()[0].id);
                 else
-                    __viewContext['screenModel'].setSelectedCode(__viewContext['screenModel'].listBank()[0].code);
+                    __viewContext['screenModel'].setSelectedCode(__viewContext['screenModel'].listBank()[0].code());
             }
         });
     });

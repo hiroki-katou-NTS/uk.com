@@ -129,7 +129,10 @@ module nts.uk.pr.view.qmm006.a.viewmodel {
         }
         
         openDialogQmm006c() {
-            modal("/view/qmm/006/c/index.xhtml");
+            let self = this;
+            modal("/view/qmm/006/c/index.xhtml").onClosed(() => {
+                self.selectedSourceBankCode.valueHasMutated();
+            });
         }
         
         setData(data: any) {

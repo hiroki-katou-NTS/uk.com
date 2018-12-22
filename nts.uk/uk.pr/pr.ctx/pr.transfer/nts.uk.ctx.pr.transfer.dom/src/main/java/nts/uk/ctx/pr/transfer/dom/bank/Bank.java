@@ -91,6 +91,7 @@ public class Bank extends AggregateRoot {
 	public static Bank createFromJavaType(String companyCode, String bankCode, String bankName, String bankNameKana,
 			String memo) {
 		return new Bank(companyCode, new BankCode(bankCode), new BankName(bankName),
-				bankNameKana.isEmpty() ? null : new BankNameKana(bankNameKana), memo.isEmpty() ? null : new Memo(memo));
+				bankNameKana == null || bankNameKana.isEmpty() ? null : new BankNameKana(bankNameKana), 
+						memo == null || memo.isEmpty() ? null : new Memo(memo));
 	}
 }

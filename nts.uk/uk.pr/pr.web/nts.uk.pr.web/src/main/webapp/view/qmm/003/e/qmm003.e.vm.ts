@@ -30,7 +30,7 @@ module nts.uk.pr.view.qmm003.e.viewmodel {
             self.listPrefectures = constants.listPrefectures;
             self.targetYm = ko.observable(null);
             self.displayJapanYm = ko.computed(function() {
-                return self.targetYm() ? nts.uk.time.yearmonthInJapanEmpire(this.startMonth()).toString().split(' ').join(''): "";
+                return self.targetYm() ? nts.uk.time.yearmonthInJapanEmpire(self.targetYm()).toString().split(' ').join('') : "";
             }, this);
         }
         

@@ -22,7 +22,7 @@ module nts.uk.pr.view.qmm002.c.viewmodel {
             self.sourceBankBranchList = ko.observableArray([]);
             self.selectedSourceBranchCodes = ko.observableArray([]);
             self.desBankBranchList = ko.observableArray([]);
-            self.selectedDesBranchCode = ko.observable(null);
+            self.selectedDesBranchCode = ko.observable("");
         }
         
         startPage(): JQueryPromise<any> {
@@ -72,7 +72,20 @@ module nts.uk.pr.view.qmm002.c.viewmodel {
         execute() {
             let self = this;
             block.invisible();
-            let command = {sourceIds: self.selectedSourceBranchCodes(), destinationId: self.selectedDesBranchCode()};
+            let sourceBranchIds = [];
+            self.selectedSourceBranchCodes().forEach(nodeId => {
+                if (nodeId.length > 4) 
+                    sourceBranchIds.push(nodeId);
+                else {
+                    let node = _.find(self.sourceBankBranchList(), n => n.id == nodeId);
+                    if (node) {
+                        node.children.forEach(c => {
+                            sourceBranchIds.push(c.id);
+                        });
+                    }
+                }
+            });
+            let command = {sourceIds: sourceBranchIds, destinationId: self.selectedDesBranchCode()};
             service.integration(command).done(() => {
                 nts.uk.ui.windows.close();
             }).fail(error => {

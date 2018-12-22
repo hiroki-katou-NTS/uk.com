@@ -101,8 +101,8 @@ public class BankBranch extends AggregateRoot {
 			String bankBranchCode, String bankBranchName, String bankBranchNameKana, String memo) {
 		return new BankBranch(companyId, branchId, new BankCode(bankCode), new BankBranchCode(bankBranchCode),
 				new BankBranchName(bankBranchName),
-				bankBranchNameKana.isEmpty() ? null : new BankBranchNameKana(bankBranchNameKana),
-				memo.isEmpty() ? null : new Memo(memo));
+				bankBranchNameKana == null || bankBranchNameKana.isEmpty() ? null : new BankBranchNameKana(bankBranchNameKana),
+				memo == null || memo.isEmpty() ? null : new Memo(memo));
 	}
 
 	/**

@@ -153,6 +153,11 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
                     self.startPage().done(() => {
                         if (self.listBank().length == 0) {
                             self.openDialogQmm002d();
+                        } else {
+                            if (self.listBranch().length > 0)
+                                self.setSelectedCode(self.listBranch()[0].id);
+                            else
+                                self.setSelectedCode(self.listBank()[0].code());
                         }
                     });
                 }
@@ -160,7 +165,10 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
         }
         
         openDialogQmm002c() {
-            modal("/view/qmm/002/c/index.xhtml");
+            let self = this;
+            modal("/view/qmm/002/c/index.xhtml").onClosed(() => {
+                self.selectedCode.valueHasMutated();
+            });
         }
         
         openDialogQmm002d() {
@@ -171,9 +179,13 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
                     if (_.isEmpty(data)) {
                         nts.uk.request.jumpToTopPage();
                     } else {
-                        block.invisible();
                         self.listBank(_.map(data, b => new Bank(b.code, b.name, b.kanaName, b.memo)));
-                        self.getAllBranch(data);
+                        self.getAllBranch(data).done(() => {
+                            if (self.listBranch().length > 0)
+                                self.setSelectedCode(self.listBranch()[0].id);
+                            else
+                                self.setSelectedCode(self.listBank()[0].code());
+                        });
                     }
                 }).fail(error => {
                     alertError(error);

@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 942, height: 690 };</script>
+			<script>var dialogSize = { width: 942, height: 740 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/constants.js"/>
 			<com:scriptfile path="qmm003.e.service.js" />
@@ -33,9 +33,9 @@
                                     required: true,
                                     enable: true}"/>
 					<!-- E1_4 -->
-					<div style="margin-left: 10px;" id="E1_4" data-bind="text: displayJapanYm"/>
+					<div style="margin-left: 10px; display: inline" id="E1_4" data-bind="text: displayJapanYm"/>
 				</div>
-				<div id="source" style="display: inline-block">
+				<div id="source" style="float: left">
 					<div class="valign-center control-group">
 						<!-- E2_1 -->
 						<span class="label">#{i18n.getText('QMM003_31')}</span>
@@ -52,7 +52,7 @@
 					<table id="treegridsource" tabindex="3"
 						data-bind="ntsTreeGridView:{
 							width: 400,
-							rows: 15,
+							rows: 13,
 							name: '#[QMM003_32]',
 							dataSource: source,
 							value: sourceSelectedCode,
@@ -65,13 +65,13 @@
 							initialExpandDepth: 1,
 							showCheckBox: false}"></table>
 				</div>
-				<div id="midsec" style="display: inline-block; width: 65px">
+				<div id="midsec" style="float: left; width: 65px">
 					<!-- E1_5 -->
-					<hr width="1" size="430"/>
+					<hr width="1" size="400"/>
 					<!-- E1_6 -->
 					<span class="caret-right caret-inline"></span>
 				</div>
-				<div id="destination" style="display: inline-block">
+				<div id="destination" style="float: left">
 					<div class="valign-center control-group">
 						<!-- E3_1 -->
 						<span class="label">#{i18n.getText('QMM003_33')}</span>
@@ -88,7 +88,7 @@
 					<table id="treegriddestination" tabindex="5"
 						data-bind="ntsTreeGridView:{
 							width: 400,
-							rows: 15,
+							rows: 13,
 							name: '#[QMM003_34]',
 							dataSource: destination,
 							value: selectedCode,
@@ -104,7 +104,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!-- E4_1 -->
-				<button tabindex="6" class="x-large proceed" data-bind="click: execute, enable: sourceSelectedCode().length > 2, timeClick: 500">#{i18n.getText('QMM003_35')}</button>
+				<button tabindex="6" class="x-large proceed" data-bind="click: execute, enable: sourceSelectedCode().length > 2 &amp;&amp; selectedCode().length > 2, timeClick: 500">#{i18n.getText('QMM003_35')}</button>
 				<!-- E4_2 -->
 				<button tabindex="7" data-bind="click: close, timeClick: 500">#{i18n.getText('QMM003_25')}</button>
 			</div>

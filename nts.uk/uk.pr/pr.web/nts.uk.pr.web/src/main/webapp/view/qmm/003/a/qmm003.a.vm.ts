@@ -176,13 +176,21 @@ module nts.uk.pr.view.qmm003.a.viewmodel {
             modal("/view/qmm/003/d/index.xhtml").onClosed(() => {
                 let cancel = getShared("QMM003DCancel");
                 if (!cancel) {
-                    self.startPage();
+                    self.startPage().done(() => {
+                        if (self.listRsdTaxPayees.length > 0)
+                            self.setSelectedCode(self.listRsdTaxPayees[0].code);
+                        else
+                            self.setSelectedCode("");
+                    });
                 }
             });
         }
         
         openDialogQmm003e() {
-            modal("/view/qmm/003/e/index.xhtml");
+            let self = this;
+            modal("/view/qmm/003/e/index.xhtml").onClosed(() => {
+                self.selectedCode.valueHasMutated();
+            });
         }
         
         setData(data: any) {
