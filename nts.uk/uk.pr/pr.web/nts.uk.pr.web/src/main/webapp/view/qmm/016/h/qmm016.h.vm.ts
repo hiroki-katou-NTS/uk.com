@@ -150,14 +150,14 @@ module nts.uk.pr.view.qmm016.h.viewmodel {
                 block.invisible();
                 let selectedQualificationGroup = ko.toJS(self.selectedQualification), qualificationGroupList = ko.toJS(self.qualificationGroupList), currentIndex, newQualificationGroupCode;
                 service.deleteQualificationGroup(selectedQualificationGroup).done(function () {
-                    currentIndex = _.findIndex(qualificationGroupList, {qualificationGroupCode: self.selectedQualificationGroupCode()});
-                    if (qualificationGroupList.length == 0) {
+                    if (qualificationGroupList.length == 1) {
                         newQualificationGroupCode = null;
                     } else {
+                        currentIndex = _.findIndex(qualificationGroupList, {qualificationGroupCode: self.selectedQualificationGroupCode()});
                         if (currentIndex == qualificationGroupList.length - 1) {
                             newQualificationGroupCode = qualificationGroupList[currentIndex - 1].qualificationGroupCode;
                         } else {
-                            newQualificationGroupCode = qualificationGroupList[currentIndex].qualificationGroupCode;
+                            newQualificationGroupCode = qualificationGroupList[currentIndex + 1].qualificationGroupCode;
                         }
                     }
                     dialog.info({messageId: 'Msg_16'}).then(function () {
