@@ -85,7 +85,8 @@ public class JpaWageTableContentRepository extends JpaRepository implements Wage
 				" SELECT" +
 				"     wcp.id," +
 				"     wgs.pk.qualificationGroupCode," +
-				"     qgs.qualificationGroupName," +
+				"	  wgs.qualificationGroupName," +
+//				"     qgs.qualificationGroupName," +
 				"     wgs.pk.elegibleQualificationCode," +
 				"     qi.qualificationName," +
 				"     wcp.paymentAmount," +
@@ -94,7 +95,7 @@ public class JpaWageTableContentRepository extends JpaRepository implements Wage
 				"     QpbmtWageTableComboPayment wcp" +
 				"     LEFT JOIN QpbmtWageTableQualifyGroupSet wgs ON wcp.historyId = wgs.pk.historyId AND wcp.masterCode1 = wgs.pk.elegibleQualificationCode" +
 				"     LEFT JOIN QpbmtQualificationInformation qi ON wgs.pk.elegibleQualificationCode = qi.pk.qualificationCode" +
-				"     LEFT JOIN QpbmtQualificationGroupSetting qgs ON qgs.pk.cid = qi.pk.cid AND wgs.pk.elegibleQualificationCode = qgs.pk.eligibleQualificationCode AND wgs.pk.qualificationGroupCode = qgs.pk.qualificationGroupCode " +
+//				"     LEFT JOIN QpbmtQualificationGroupSetting qgs ON qgs.pk.cid = qi.pk.cid AND wgs.pk.elegibleQualificationCode = qgs.pk.eligibleQualificationCode AND wgs.pk.qualificationGroupCode = qgs.pk.qualificationGroupCode " +
 				" WHERE" +
 				"     qi.pk.cid =:cid AND" +
 				"     wgs.pk.historyId =:historyId" +
@@ -106,13 +107,7 @@ public class JpaWageTableContentRepository extends JpaRepository implements Wage
 				.setParameter("historyId", historyId)
 				.getList();
 
-		Map<String, List<Object[]>> result = data.stream().collect(Collectors.groupingBy(x -> String.valueOf(x[1])))
-				.entrySet().stream().sorted((o1, o2) -> {
-					if (StringUtil.isNullOrEmpty(o1.getKey(), true) || StringUtil.isNullOrEmpty(o2.getKey(), true)) return -1;
-					if (Integer.valueOf(o1.getKey()).compareTo(Integer.valueOf(o2.getKey())) > 0) return 1;
-					return 0;
-				})
-				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+		Map<String, List<Object[]>> result = sortByQualificationGroupCode(data);
 
 		return getWageTableQualificationFromDB(result);
 	}
@@ -137,9 +132,19 @@ public class JpaWageTableContentRepository extends JpaRepository implements Wage
 				.setParameter("cid", AppContexts.user().companyId())
 				.getList();
 
-		Map<String, List<Object[]>> result = data.stream().collect(Collectors.groupingBy(x -> String.valueOf(x[1])));
+		Map<String, List<Object[]>> result = sortByQualificationGroupCode(data);
 
 		return getWageTableQualificationFromDB(result);
+	}
+
+	private LinkedHashMap<String, List<Object[]>> sortByQualificationGroupCode(List<Object[]> data) {
+		return data.stream().collect(Collectors.groupingBy(x -> String.valueOf(x[1])))
+				.entrySet().stream().sorted((o1, o2) -> {
+					if(StringUtil.isNullOrEmpty(o1.getKey(), true)) return 1;
+					if(StringUtil.isNullOrEmpty(o2.getKey(), true)) return -1;
+                    return Integer.compare(o1.getKey().compareTo(o2.getKey()), 0);
+                })
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 	}
 
 	private List<WageTableQualification> getWageTableQualificationFromDB(Map<String, List<Object[]>> result){

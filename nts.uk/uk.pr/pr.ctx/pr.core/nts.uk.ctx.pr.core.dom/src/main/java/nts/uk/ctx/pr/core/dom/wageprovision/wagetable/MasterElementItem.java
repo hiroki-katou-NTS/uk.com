@@ -16,10 +16,6 @@ public class MasterElementItem extends DomainObject {
 	/**
 	 * マスタコード
 	 */
-	private MasterCode masterCode;
-
-	public MasterElementItem(String masterCode) {
-		this.masterCode = new MasterCode(masterCode);
-	}
+	private String masterCode;
 
 }

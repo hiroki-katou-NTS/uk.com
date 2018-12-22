@@ -19,6 +19,8 @@ public class QualificationGroupSettingContent extends DomainObject {
 	 * 資格グループコード
 	 */
 	private QualificationGroupCode qualificationGroupCode;
+	
+	private QualificationGroupName qualificationGroupName;
 
 	/**
 	 * 支払方法
@@ -30,9 +32,10 @@ public class QualificationGroupSettingContent extends DomainObject {
 	 */
 	private List<QualificationCode> eligibleQualificationCodes;
 
-	public QualificationGroupSettingContent(String qualificationGroupCode, Integer paymentMethod,
+	public QualificationGroupSettingContent(String qualificationGroupCode, String qualificationGroupName, Integer paymentMethod,
 			List<String> eligibleQualificationCodes) {
 		this.qualificationGroupCode = new QualificationGroupCode(qualificationGroupCode);
+		this.qualificationGroupName = new QualificationGroupName(qualificationGroupName);
 		this.paymentMethod = EnumAdaptor.valueOf(paymentMethod, QualificationPaymentMethod.class);
 		this.eligibleQualificationCodes = eligibleQualificationCodes.stream().map(item -> new QualificationCode(item))
 				.collect(Collectors.toList());

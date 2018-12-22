@@ -16,10 +16,6 @@
 .fixed-table-container tr {
     height:34px;
 }
-.custom-fixed-table .ui-widget-header {
-    color: #000;
-    background-color: #CFF1A5;
-}
 .custom-fixed-table div {
     display: inline-block;
 }
@@ -29,15 +25,20 @@
 .large-caret::after{
     font-size: 3em;
     color: #97D155 !important;
+    margin-top: 4px
 }
 .custom-fixed-table-body .nts-fixed-table{
     display: inline-block;
 }
-.ui-widget-header {
-    color: #000;
-    background-color: #CFF1A5;
-}
-
 .E5_1 .nts-fixed-body-container {
     overflow-x: hidden;
+}
+
+.ntsHelpButton {
+	position: absolute;
+	padding-left: 3px;
+	margin-top: -7px;
+}
+.hover { 
+	background-color: #C5F1F7; 
 }

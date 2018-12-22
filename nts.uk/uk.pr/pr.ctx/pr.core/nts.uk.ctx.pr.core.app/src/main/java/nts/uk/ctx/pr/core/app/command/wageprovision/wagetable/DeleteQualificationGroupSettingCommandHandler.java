@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.core.app.command.wageprovision.wagetable;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.QualificationGroupSettingRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -16,6 +17,6 @@ public class DeleteQualificationGroupSettingCommandHandler extends CommandHandle
     @Override
     protected void handle(CommandHandlerContext<QualificationGroupSettingCommand> context) {
         QualificationGroupSettingCommand command = context.getCommand();
-        qualificationGroupSettingRepository.remove(command.fromCommandToDomain());
+        qualificationGroupSettingRepository.remove(AppContexts.user().companyId(), command.getQualificationGroupCode());
     }
 }

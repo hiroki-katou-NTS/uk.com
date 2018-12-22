@@ -121,6 +121,7 @@ module nts.uk.pr.view.qmm016.share.model {
             this.histories(params ? params.histories.map(item => new GenericHistoryYearMonthPeriod(item)) : []);
             this.elementSetting.subscribe(newValue => {
                 self.changeImagePath(newValue);
+                this.elementInformation(new ElementInformation(null));
             });
             self.changeImagePath(self.elementSetting());
         }
@@ -230,6 +231,9 @@ module nts.uk.pr.view.qmm016.share.model {
                 }
                 if (!_.isEmpty(params.list3dElements)) {
                     this.payment(params.list3dElements.map(item => new ThreeDmsElementItem(item)));
+                }
+                if (!_.isEmpty(params.listWorkElements)) {
+                    this.payment(params.listWorkElements.map(item => new ThreeDmsElementItem(item)));
                 }
                 this.qualificationGroupSetting(params && !_.isEmpty(params.qualificationGroupSettings) ? params.qualificationGroupSettings.map(item => new QualificationGroupSettingContent(item)) : []);
             }
@@ -527,13 +531,13 @@ module nts.uk.pr.view.qmm016.share.model {
             this.endMonth(params ? params.endMonth : null);
             this.historyID(params ? params.historyID : "");
             this.displayStartMonth = ko.computed(function() {
-                return this.startMonth() ? nts.uk.time.parseYearMonth(this.startMonth()).format() : "";
+                return this.startMonth() ? nts.uk.time.formatYearMonth(this.startMonth()): "";
             }, this);
             this.displayEndMonth = ko.computed(function() {
-                return this.endMonth() ? nts.uk.time.parseYearMonth(this.endMonth()).format() : "";
+                return this.endMonth() ? nts.uk.time.formatYearMonth(this.endMonth()) : "";
             }, this);
             this.displayJapanStartYearMonth = ko.computed(function() {
-                return this.startMonth() ? nts.uk.time.yearmonthInJapanEmpire(this.startMonth()).toString().split(' ').join(''): "";
+                return this.startMonth() ? "(" + nts.uk.time.yearmonthInJapanEmpire(this.startMonth()).toString().split(' ').join('') + ")" : "";
             }, this);
 
         }

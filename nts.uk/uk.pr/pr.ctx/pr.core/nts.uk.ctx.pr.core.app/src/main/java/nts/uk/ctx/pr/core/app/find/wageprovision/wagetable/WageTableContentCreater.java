@@ -128,15 +128,23 @@ public class WageTableContentCreater {
 
 	private List<ElementItemDto> getNumericRange(ElementRangeDto rangeDto) {
 		List<ElementItemDto> result = new ArrayList<>();
-		int frameNum = 1;
-		while (rangeDto.getRangeLowerLimit() + rangeDto.getStepIncrement() < rangeDto.getRangeUpperLimit()) {
+		if (rangeDto.getStepIncrement() == null) { // screen F: enum 精皆勤レベル
+			for (int i = 1; i <= 5; i ++) {
+				result.add(new ElementItemDto(null, null, i, i, i, null));
+			}
+		} else {
+			int frameNum = 1;
+			if (rangeDto.getStepIncrement() > 0) {
+				while (rangeDto.getRangeLowerLimit() + rangeDto.getStepIncrement() <= rangeDto.getRangeUpperLimit()) {
+					result.add(new ElementItemDto(null, null, frameNum, rangeDto.getRangeLowerLimit(),
+							rangeDto.getRangeLowerLimit() + rangeDto.getStepIncrement() - 1, null));
+					rangeDto.setRangeLowerLimit(rangeDto.getRangeLowerLimit() + rangeDto.getStepIncrement());
+					frameNum++;
+				}
+			}
 			result.add(new ElementItemDto(null, null, frameNum, rangeDto.getRangeLowerLimit(),
-					rangeDto.getRangeLowerLimit() + rangeDto.getStepIncrement() - 1, null));
-			rangeDto.setRangeLowerLimit(rangeDto.getRangeLowerLimit() + rangeDto.getStepIncrement());
-			frameNum++;
+					rangeDto.getRangeUpperLimit(), null));
 		}
-		result.add(new ElementItemDto(null, null, frameNum, rangeDto.getRangeLowerLimit(),
-				rangeDto.getRangeUpperLimit(), null));
 		return result;
 	}
 

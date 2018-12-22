@@ -1,17 +1,21 @@
 package nts.uk.ctx.pr.core.ws.wageprovision.wagetable;
 
-import nts.uk.ctx.pr.core.app.command.wageprovision.wagetable.*;
-import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.QualificationGroupSettingDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.QualificationGroupSettingFinder;
-import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.QualificationInformationDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.QualificationInformationFinder;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import java.util.*;
+
+import nts.uk.ctx.pr.core.app.command.wageprovision.wagetable.AddQualificationGroupSettingCommandHandler;
+import nts.uk.ctx.pr.core.app.command.wageprovision.wagetable.DeleteQualificationGroupSettingCommandHandler;
+import nts.uk.ctx.pr.core.app.command.wageprovision.wagetable.QualificationGroupSettingCommand;
+import nts.uk.ctx.pr.core.app.command.wageprovision.wagetable.UpdateQualificationGroupSettingCommandHandler;
+import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.QualificationGroupSettingDto;
+import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.QualificationGroupSettingFinder;
+import nts.uk.ctx.pr.core.app.find.wageprovision.wagetable.QualificationInformationFinder;
 
 @Path("ctx/pr/core/wageprovision/wagetable")
 @Produces("application/json")
@@ -39,9 +43,9 @@ public class QualificationGroupWebService {
     }
 
     @POST
-    @Path("/getAllQualificationInformation")
-    public List<QualificationInformationDto> getAllQualificationInformation() {
-        return qualificationInformationFinder.findByCompany();
+    @Path("/getAllQualificationInformationExcludeUsed/{groupCode}")
+    public List<String> getAllQualificationInformation(@PathParam("groupCode") String targetGroupCode) {
+        return qualificationInformationFinder.findByCompanyExcludeUsed(targetGroupCode);
     }
 
     @POST

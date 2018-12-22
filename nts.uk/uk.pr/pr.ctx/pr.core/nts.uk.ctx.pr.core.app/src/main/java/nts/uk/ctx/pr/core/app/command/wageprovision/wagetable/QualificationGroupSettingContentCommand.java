@@ -17,6 +17,8 @@ public class QualificationGroupSettingContentCommand {
 	 * 資格グループコード
 	 */
 	private String qualificationGroupCode;
+	
+	private String qualificationGroupName;
 
 	/**
 	 * 支払方法
@@ -29,7 +31,7 @@ public class QualificationGroupSettingContentCommand {
 	private List<String> eligibleQualificationCode;
 
 	public QualificationGroupSettingContent fromCommandToDomain() {
-		return new QualificationGroupSettingContent(qualificationGroupCode, paymentMethod, eligibleQualificationCode);
+		return new QualificationGroupSettingContent(qualificationGroupCode, qualificationGroupName, paymentMethod, eligibleQualificationCode);
 	}
 
 }
