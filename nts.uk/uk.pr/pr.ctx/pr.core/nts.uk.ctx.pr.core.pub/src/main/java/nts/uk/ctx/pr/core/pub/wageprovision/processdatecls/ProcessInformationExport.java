@@ -1,9 +1,6 @@
 package nts.uk.ctx.pr.core.pub.wageprovision.processdatecls;
 
 import lombok.Value;
-import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.AbolitionAtr;
-import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.ProcessCls;
-import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.ProcessInformation;
 
 /**
  * 
@@ -27,16 +24,11 @@ public class ProcessInformationExport {
 	/**
 	 * 廃止区分
 	 */
-	private AbolitionAtr deprecatCate;
+	private int deprecatCate;
 
 	/**
 	 * 処理区分名称
 	 */
-	private ProcessCls processCls;
-
-	public static ProcessInformationExport fromDomain(ProcessInformation domain) {
-		return new ProcessInformationExport(domain.getCid(), domain.getProcessCateNo(), domain.getDeprecatCate(),
-				domain.getProcessCls());
-	}
+	private String processCls;
 
 }

@@ -3,8 +3,6 @@ package nts.uk.ctx.pr.core.pub.wageprovision.processdatecls;
 import java.util.List;
 
 import lombok.Value;
-import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.EmpTiedProYear;
-import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.EmploymentCode;
 
 /**
  * 
@@ -28,11 +26,6 @@ public class EmploymentTiedProcessYearMonth {
 	/**
 	 * 雇用コード
 	 */
-	private List<EmploymentCode> employmentCodes;
-
-	public static EmploymentTiedProcessYearMonth fromDomain(EmpTiedProYear domain) {
-		return new EmploymentTiedProcessYearMonth(domain.getCid(), domain.getProcessCateNo(),
-				domain.getEmploymentCodes());
-	}
+	private List<String> employmentCodes;
 
 }

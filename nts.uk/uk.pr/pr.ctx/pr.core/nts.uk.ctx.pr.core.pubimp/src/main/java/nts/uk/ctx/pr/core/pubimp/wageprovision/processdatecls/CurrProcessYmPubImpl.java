@@ -28,7 +28,7 @@ public class CurrProcessYmPubImpl implements CurrProcessYmPub {
 	public Optional<CurrProcessYmExport> getCurrentSalaryProcessYm(String companyId, int processCateNo) {
 		Optional<CurrProcessDate> optCurrYm = currYmRepo.getCurrProcessDateByKey(companyId, processCateNo);
 		if (optCurrYm.isPresent())
-			return Optional.of(CurrProcessYmExport.fromDomain(optCurrYm.get()));
+			return Optional.of(fromDomain(optCurrYm.get()));
 		else
 			return Optional.empty();
 	}
@@ -39,9 +39,13 @@ public class CurrProcessYmPubImpl implements CurrProcessYmPub {
 		for (Integer i : processCateNo) {
 			Optional<CurrProcessDate> optCurrYm = currYmRepo.getCurrProcessDateByKey(companyId, i);
 			if (optCurrYm.isPresent())
-				result.add(CurrProcessYmExport.fromDomain(optCurrYm.get()));
+				result.add(fromDomain(optCurrYm.get()));
 		}
 		return result;
+	}
+	
+	private CurrProcessYmExport fromDomain(CurrProcessDate domain) {
+		return new CurrProcessYmExport(domain.getCid(), domain.getProcessCateNo(), domain.getGiveCurrTreatYear());
 	}
 
 }

@@ -31,7 +31,7 @@ public class EmploymentTiedProcYmAdapterImpl implements EmploymentTiedProcYmAdap
 
 	private EmploymentTiedProcYmImport fromExport(EmploymentTiedProcessYearMonth export) {
 		return new EmploymentTiedProcYmImport(export.getCid(), export.getProcessCateNo(),
-				export.getEmploymentCodes().stream().map(c -> c.v()).collect(Collectors.toList()));
+				export.getEmploymentCodes());
 	}
 
 }

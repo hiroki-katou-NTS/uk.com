@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.ProcessInformationRepository;
 import nts.uk.ctx.pr.core.pub.wageprovision.processdatecls.ProcessInformationExport;
 import nts.uk.ctx.pr.core.pub.wageprovision.processdatecls.ProcessInformationPub;
+import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.ProcessInformation;
 
 /**
  * 
@@ -26,7 +27,12 @@ public class ProcessInformationPubImpl implements ProcessInformationPub {
 	public List<ProcessInformationExport> getProcessInformationByDeprecatedCategory(String companyId,
 			int deprecateAtr) {
 		return processInforRepo.getProcessInformationByDeprecatedCategory(companyId, deprecateAtr).stream()
-				.map(p -> ProcessInformationExport.fromDomain(p)).collect(Collectors.toList());
+				.map(p -> fromDomain(p)).collect(Collectors.toList());
+	}
+	
+	private ProcessInformationExport fromDomain(ProcessInformation domain) {
+		return new ProcessInformationExport(domain.getCid(), domain.getProcessCateNo(), domain.getDeprecatCate().value,
+				domain.getProcessCls().v());
 	}
 
 }
