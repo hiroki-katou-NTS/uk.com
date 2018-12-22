@@ -190,3 +190,7 @@
     width: 775px;
     height: 28px;
 }
+
+.tree-grid-edge, .tree-grid-ie {
+    height: 489px !important;
+}

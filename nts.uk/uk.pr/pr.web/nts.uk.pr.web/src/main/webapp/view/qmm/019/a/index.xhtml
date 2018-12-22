@@ -17,7 +17,7 @@
         <com:scriptfile path="qmm019.a.service.js"/>
         <com:scriptfile path="qmm019.a.vm.js"/>
         <com:scriptfile path="qmm019.a.start.js"/>
-        <!-- <com:scriptfile path="knockout-sortable.min.js"/> -->
+        <!--<com:scriptfile path="knockout-sortable.min.js"/>-->
     </ui:define>
 
     <ui:define name="content">
@@ -44,7 +44,7 @@
                 <div class="cell valign-top">
                     <!-- マスタリスト選択パネル -->
                     <div id="A2_1"
-                         data-bind="ntsPanel:{width: '270px', height: '450px', direction: 'right', showIcon: true, visible: true}">
+                         data-bind="ntsPanel:{width: '270px', height: '600px', direction: 'right', showIcon: true, visible: true}">
                         <!-- 検索 -->
                         <div id="A2_3" style="width: 270px" tabindex="7"
                              data-bind="ntsSearchBox: {
@@ -70,7 +70,7 @@
                         <table id="treegrid1" tabindex="11"
                                data-bind="ntsTreeGridView:{
                                         width: 270,
-                                        height: 350,
+                                        height: 505,
                                         options: statementLayoutList,
                                         value: currentHistoryId,
                                         optionsValue: 'historyId',
@@ -140,21 +140,21 @@
                                 <label id="A4_2" class="category-text">#{i18n.getText('QMM019_23')}</label>
                                 <hr/>
                                 <div id="payment-table" class="drag-panel">
-                                    <div class="line-sort" data-bind="ntsSortable: {
+                                    <div class="line-sort" data-bind="sortable: {
                                                                     data: listLineByLineSet,
                                                                     isEnabled: true }">
                                         <div class="form-group item-classification" data-bind="style: { background: printSet() == 0 ? '#E0F59E' : '#DDD'}">
                                             <span class="caret-right"></span>
                                             <button id="A4_4" class="" tabindex="14"
                                                     data-bind="enable: !hasFixed(), click: editLine"></button>
-                                            <div class="item-sort" data-bind="ntsSortable: {
+                                            <div class="item-sort" data-bind="sortable: {
                                                                         data: listSetByItem,
                                                                         beforeMove: preventStopSort}">
                                                 <div class="item limited-label" data-bind="
                                                                     text: shortName,
                                                                     click: openSetting,
                                                                     css: id,
-                                                                    style: { background: isFixed() ? '#404040' : deleted() ? '#EF7F7F' : '#FFFFFF',
+                                                                    style: { background: (itemId() == null) ? '#E0F59E' : isFixed() ? '#404040' : deleted() ? '#EF7F7F' : '#FFFFFF',
                                                                             color: isFixed() ? '#FFF' : '#404040'},
                                                                     attr: { tabindex: (itemId() != null) ? '15' : '16'}">
                                                 </div>
@@ -188,7 +188,7 @@
                                                                     text: shortName,
                                                                     click: openSetting,
                                                                     css: id,
-                                                                    style: { background: isFixed() ? '#404040' : deleted() ? '#EF7F7F' : '#FFFFFF',
+                                                                    style: { background: (itemId() == null) ? '#E0F59E' : isFixed() ? '#404040' : deleted() ? '#EF7F7F' : '#FFFFFF',
                                                                     color: isFixed() ? '#FFF' : '#404040'},
                                                                     attr: { tabindex: (itemId() != null) ? '15' : '16'}"> </div>
 
@@ -226,7 +226,7 @@
                                                                         text: shortName,
                                                                         click: openSetting,
                                                                         css: id,
-                                                                        style: { background: deleted() ? '#EF7F7F' : '#FFFFFF',
+                                                                        style: { background: (itemId() == null) ? '#E0F59E' : deleted() ? '#EF7F7F' : '#FFFFFF',
                                                                         attr: { tabindex: (itemId() != null) ? '20' : '21'}}"> </div>
                                                 </div>
                                             </div>
@@ -268,7 +268,7 @@
                                                                         text: shortName,
                                                                         click: openSetting,
                                                                         css: id,
-                                                                        style: { background: deleted() ? '#EF7F7F' : '#FFFFFF'},
+                                                                        style: { background: (itemId() == null) ? '#E0F59E' : deleted() ? '#EF7F7F' : '#FFFFFF'},
                                                                         attr: { tabindex: (itemId() != null) ? '25' : '26'}"> </div>
                                                 </div>
                                             </div>

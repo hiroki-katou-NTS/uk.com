@@ -16,6 +16,14 @@ module nts.uk.pr.view.qmm019.a {
 
             setTimeout(function() {
                 $("#A3_4").focus();
+
+                if (/Edge/.test(navigator.userAgent)) {
+                    $("#treegrid1_scroll").addClass("tree-grid-edge");
+                } else if (/Chrome/.test(navigator.userAgent)) {
+                    $("#treegrid1_scroll").addClass("tree-grid-chrome");
+                } else {
+                    $("#treegrid1_scroll").addClass("tree-grid-ie");
+                }
             }, 200)
         });
     });
