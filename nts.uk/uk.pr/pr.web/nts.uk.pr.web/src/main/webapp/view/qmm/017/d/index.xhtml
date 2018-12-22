@@ -392,15 +392,12 @@
 
                     <div style="display: inline-block">
                         <div id="auto-complete">
-                            <select style = "display: none; width: 150px;" size="5" id="auto-complete-containner" data-bind="options: autoComplete, optionsText: 'displayText', value: autoSelected">
+                            <select style = "display: none; width: 150px;" size="5" id="auto-complete-container" data-bind="options: autoComplete, optionsText: 'displayText', value: autoSelected">
                             </select>
-                            <div id="error-content">
-                                <div id="error-containner"><span id="error-messege"></span></div>
-                            </div>
                         </div>
                         <div id="input-content-area" data-bind="html: divValue"></div>
                         <div id="input-area">
-                            <textarea id = "D3_5" style = "height: 215px; width: 458px;" data-bind="ntsMultilineEditor: {
+                            <textarea id = "D3_5" style = "position: relative; height: 215px; width: 458px;" data-bind="ntsMultilineEditor: {
                                 value: displayDetailCalculationFormula}" />
                         </div>
                     </div>

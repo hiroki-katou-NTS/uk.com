@@ -316,7 +316,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         addToFormulaByPosition (formulaToAdd: string) {
             let self = this, calculationFormulaItem:any = $('#D3_5')[0];
             let startSelection = calculationFormulaItem.selectionStart, endSelection = calculationFormulaItem.selectionEnd;
-            self.displayDetailCalculationFormula(self.displayDetailCalculationFormula().substring(0, startSelection) + formulaToAdd + self.displayDetailCalculationFormula().substring(startSelection));
+            self.displayDetailCalculationFormula(calculationFormulaItem.value.substring(0, startSelection) + formulaToAdd + calculationFormulaItem.value.substring(startSelection));
             let newStartSelection = startSelection + formulaToAdd.length;
             $('#D3_5').focus();
             calculationFormulaItem.setSelectionRange(newStartSelection, newStartSelection);
@@ -590,62 +590,53 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         }
         showHintBox () {
             let self = this;
-            $("#auto-complete-containner").on('click', function(){
-                let selectedValue = $(this).children("option:selected").text().split("    ")[1];
-                if (selectedValue) self.addToFormulaByPosition(selectedValue + self.CLOSE_CURLY_BRACKET);
-                $("#auto-complete-containner").hide();
+            $("#auto-complete-container").on('click', function(){
+                let displayText = $(this).children("option:selected").text();
+                if (displayText.indexOf("    ") > -1 ) displayText = displayText.split("    ")[1];
+                if (displayText) self.addToFormulaByPosition(displayText + self.CLOSE_CURLY_BRACKET);
+                $("#auto-complete-container").hide();
             })
             $("#D3_5").on("keypress", function(event){
                 if (event.keyCode == 13){
-                    let selectedValue = $(this).children("option:selected").text().split("    ")[1];
-                    if (selectedValue) self.addToFormulaByPosition(selectedValue + self.CLOSE_CURLY_BRACKET);
-                    $("#auto-complete-containner").hide();
+                    let displayText = $('#auto-complete-container option:selected').text();
+                    if (displayText.indexOf("    ") > -1 ) displayText = displayText.split("    ")[1];
+                    if (displayText) self.addToFormulaByPosition(displayText + self.CLOSE_CURLY_BRACKET);
+                    $("#auto-complete-container").hide();
                     return event.preventDefault();
                 }
             });
-            $("#D3_5").keyup((event) => {
-                var target = event.target;
-                var start = target.selectionStart;
-                var end = target.selectionEnd;
-                if ((event.shiftKey || event.keyCode === 192) && event.key == self.OPEN_CURLY_BRACKET) {
-                    this.showSupportElement();
-                    var currentRow: any = this.getCurrentPosition(end);
-                    this.index(end);
-                    var preString = target.value.substring(0, start - 1);
-                    var autoCompleteData = self.getAutoCompleteDataByElementType(preString, "");
+            $("#D3_5").on("keydown", function(event){
+                if ((event.keyCode == 38 || event.keyCode == 40) && $("#auto-complete-container").is(":visible")){
+                    if (event.keyCode == 40) $('#auto-complete-container option:selected').next().prop('selected', true);
+                    if (event.keyCode == 38) $('#auto-complete-container option:selected').prev().prop('selected', true);
+                    return event.preventDefault();
+                }
+            });
+            // show hint box if selection change ?
+            $("#D3_5").on('keyup',(event) => {
+                let self = this, target = event.target, start = target.selectionStart, end = target.selectionEnd,
+                    keyCode = event.keyCode, currentRow, autoCompleteData = [];
+                if (event.keyCode != 38 && event.keyCode != 40) {
+                    self.genVirualElement();
+                    currentRow = this.getCurrentPosition(end);
+                    self.index(end);
+                    $("#auto-complete-container").css({
+                        "top": (currentRow.top + 17) + "px",
+                        "left": (currentRow.left + 15) + "px"
+                    });
+                    let indexOfNearestOpenCurlyBracket = target.value.substring(0, start).lastIndexOf(self.OPEN_CURLY_BRACKET);
+                    autoCompleteData = self.getAutoCompleteDataByElementType(target.value.substring(0, indexOfNearestOpenCurlyBracket), target.value.substring(indexOfNearestOpenCurlyBracket + 1, start));
                     if (autoCompleteData.length > 0){
                         self.autoComplete(autoCompleteData);
-                        $("#auto-complete-containner").show();
-                        $("#auto-complete-containner").css({
-                            "top": (currentRow.top + 17) + "px",
-                            "left": (currentRow.left + 15) + "px"
-                        });
+                        $("#auto-complete-container").show();
                         self.autoSelected(autoCompleteData[0]);
                     } else {
-                        $("#auto-complete-containner").hide();
-                    }
-                } else {
-                    this.showSupportElement();
-                    if (event.keyCode == 38 || event.keyCode == 40 && $("#auto-complete-containner").is(":visible")){
-                        if (event.keyCode == 40) $('#auto-complete-containner option:selected').next().prop('selected', true);
-                        if (event.keyCode == 38) $('#auto-complete-containner option:selected').prev().prop('selected', true);
-                        return event.preventDefault();
-                    }
-                    // if (event.keyCode == 8) return $("#auto-complete-containner").hide();
-                    if (event.keyCode != 16){
-                        if ($("#auto-complete-containner").is(":visible")){
-                            let indexOfCloseCurlyBracket = target.value.lastIndexOf(self.OPEN_CURLY_BRACKET);
-                            var autoCompleteData:any = self.getAutoCompleteDataByElementType(target.value.substring(0, indexOfCloseCurlyBracket), target.value.substring(indexOfCloseCurlyBracket + 1, start));
-                            if (autoCompleteData.length == 0)
-                                $("#auto-complete-containner").hide();
-                            } else {
-                            self.autoComplete(autoCompleteData);
-                        }
+                        $("#auto-complete-container").hide();
                     }
                 }
             });
             $('body').on('click', function(event){
-                $("#auto-complete-containner").hide();
+                if (event.target.id != "D3_5") $("#auto-complete-container").hide();
             })
         }
         insertString(original, sub, position) {
@@ -655,7 +646,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             return original.substr(0, position) + sub + original.substr(position);
         }
 
-        showSupportElement() {
+        genVirualElement() {
             var value = $("#D3_5").val();
             var count = 1;
             var toChar = value.split('');
@@ -726,8 +717,12 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         checkJapanese(char) {
             return !nts.uk.text.allHalf(char);
         }
+        changeAutoCompleteData (preString, postString) {
+
+        }
         getAutoCompleteDataByElementType(preString, postString): any{
             let self = this;
+            if (preString == null || postString == null) return [];
             if (preString.endsWith(self.PAYMENT))
                return self.paymentItemList.filter(function(item){return item.name.startsWith(postString) || item.code.startsWith(postString)}).map(item => new model.ItemModel(item.code, item.name));
             if (preString.endsWith(self.DEDUCTION))
@@ -739,9 +734,9 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             if (preString.endsWith(self.INDIVIDUAL_UNIT_PRICE))
                 return self.individualUnitPriceList.filter(function(item){return item.name.startsWith(postString) || item.code.startsWith(postString)}).map(item => new model.ItemModel(item.code, item.name));
             if (preString.endsWith(self.FUNCTION))
-                return ko.toJS(self.functionListItem).filter(function(item){return item.name.startsWith(postString) || item.code.startsWith(postString)}).map(item => new model.ItemModel(null, item.name));
+                return ko.toJS(self.functionListItem).filter(function(item){return item.name.startsWith(postString) || (item.code && item.code.startsWith(postString))}).map(item => new model.ItemModel(null, item.name));
             if (preString.endsWith(self.VARIABLE))
-                return ko.toJS(self.systemVariableListItem).filter(function(item){return item.name.startsWith(postString) || item.code.startsWith(postString)}).map(item => new model.ItemModel(null, item.name));
+                return ko.toJS(self.systemVariableListItem).filter(function(item){return item.name.startsWith(postString) || (item.code && item.code.startsWith(postString))}).map(item => new model.ItemModel(null, item.name));
             if (preString.endsWith(self.FORMULA))
                 return ko.toJS(self.formulaList).filter(function(item){return item.formulaName.startsWith(postString) || item.formulaCode.startsWith(postString)}).map(item => new model.ItemModel(item.formulaCode, item.formulaName));
             if (preString.endsWith(self.WAGE_TABLE))
