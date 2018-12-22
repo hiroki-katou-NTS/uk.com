@@ -494,12 +494,16 @@ module nts.uk.pr.view.qmm017.share.model {
     export class ItemModel {
         value: string;
         name: string;
-
+        displayText: string;
         constructor(value: string, name: string) {
             this.value = value;
             this.name = name;
+            if (!value) this.displayText = name
+            else this.displayText = value + "    " + name;
         }
     }
+
+
 
     // かんたん計算式設定
     export interface IBasicFormulaSetting {

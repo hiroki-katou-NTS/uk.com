@@ -73,18 +73,14 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         SYSTEM_YMD_DATE = 'システム日付（年月日）'; SYSTEM_YM_DATE = 'システム日付（年月）'; SYSTEM_Y_DATE = 'システム日付（年）'; PROCESSING_YEAR_MONTH = '処理年月';
         PROCESSING_YEAR = '処理年'; REFERENCE_TIME = '基準時間'; STANDARD_DAY = '基準日数'; WORKDAY = '要勤務日数';
 
-        autoComplete = ko.observableArray([
-            new model.ItemModel('001', '基本給'),
-            new model.ItemModel('150', '役職手当'),
-            new model.ItemModel('ABC', '基12本ghj給'),
-            new model.ItemModel('002', '基本給'),
-            new model.ItemModel('153', '役職手当'),
-            new model.ItemModel('AB4', '基12本ghj給'),
-            new model.ItemModel('003', '基本給'),
-            new model.ItemModel('155', '役職手当'),
-            new model.ItemModel('AB5', '基12本ghj給')
-        ]);
+        autoComplete: KnockoutObservableArray<any> = ko.observableArray([
 
+        ]);
+        divValue: KnockoutObservable<any> = ko.observable('');
+        autoSelected: KnockoutObservable<any> = ko.observable('');
+        row: KnockoutObservable<number> = ko.observable(1);
+        col: KnockoutObservable<number> = ko.observable(1);
+        index: KnockoutObservable<number> = ko.observable(1);
         constructor() {
             var self = this;
             self.initTabPanel();
@@ -592,11 +588,165 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             let self = this;
             return elementType + self.OPEN_CURLY_BRACKET + elementName + self.CLOSE_CURLY_BRACKET;
         }
-        showHindBox () {
+        showHintBox () {
             let self = this;
-            $('#D3_5').on('change', function () {
-
+            $("#auto-complete-containner").on('click', function(){
+                let selectedValue = $(this).children("option:selected").text().split("    ")[1];
+                if (selectedValue) self.addToFormulaByPosition(selectedValue + self.CLOSE_CURLY_BRACKET);
+                $("#auto-complete-containner").hide();
             })
+            $("#D3_5").on("keypress", function(event){
+                if (event.keyCode == 13){
+                    let selectedValue = $(this).children("option:selected").text().split("    ")[1];
+                    if (selectedValue) self.addToFormulaByPosition(selectedValue + self.CLOSE_CURLY_BRACKET);
+                    $("#auto-complete-containner").hide();
+                    return event.preventDefault();
+                }
+            });
+            $("#D3_5").keyup((event) => {
+                var target = event.target;
+                var start = target.selectionStart;
+                var end = target.selectionEnd;
+                if ((event.shiftKey || event.keyCode === 192) && event.key == self.OPEN_CURLY_BRACKET) {
+                    this.showSupportElement();
+                    var currentRow: any = this.getCurrentPosition(end);
+                    this.index(end);
+                    var preString = target.value.substring(0, start - 1);
+                    var autoCompleteData = self.getAutoCompleteDataByElementType(preString, "");
+                    if (autoCompleteData.length > 0){
+                        self.autoComplete(autoCompleteData);
+                        $("#auto-complete-containner").show();
+                        $("#auto-complete-containner").css({
+                            "top": (currentRow.top + 17) + "px",
+                            "left": (currentRow.left + 15) + "px"
+                        });
+                        self.autoSelected(autoCompleteData[0]);
+                    } else {
+                        $("#auto-complete-containner").hide();
+                    }
+                } else {
+                    this.showSupportElement();
+                    if (event.keyCode == 38 || event.keyCode == 40 && $("#auto-complete-containner").is(":visible")){
+                        if (event.keyCode == 40) $('#auto-complete-containner option:selected').next().prop('selected', true);
+                        if (event.keyCode == 38) $('#auto-complete-containner option:selected').prev().prop('selected', true);
+                        return event.preventDefault();
+                    }
+                    // if (event.keyCode == 8) return $("#auto-complete-containner").hide();
+                    if (event.keyCode != 16){
+                        if ($("#auto-complete-containner").is(":visible")){
+                            let indexOfCloseCurlyBracket = target.value.lastIndexOf(self.OPEN_CURLY_BRACKET);
+                            var autoCompleteData:any = self.getAutoCompleteDataByElementType(target.value.substring(0, indexOfCloseCurlyBracket), target.value.substring(indexOfCloseCurlyBracket + 1, start));
+                            if (autoCompleteData.length == 0)
+                                $("#auto-complete-containner").hide();
+                            } else {
+                            self.autoComplete(autoCompleteData);
+                        }
+                    }
+                }
+            });
+            $('body').on('click', function(event){
+                $("#auto-complete-containner").hide();
+            })
+        }
+        insertString(original, sub, position) {
+            if (original.length === position) {
+                return original + sub;
+            }
+            return original.substr(0, position) + sub + original.substr(position);
+        }
+
+        showSupportElement() {
+            var value = $("#D3_5").val();
+            var count = 1;
+            var toChar = value.split('');
+            var html = "<span class='editor-line'>";
+            for (var i = 0; i < toChar.length; i++) {
+                if (toChar[i] === "\n") {
+                    html += "</span>";
+                    html += "<span class='editor-line'>";
+                } else {
+                    if (toChar[i] === "@") {
+                        html += "<span id='span-" + count + "' class='autocomplete-char'>" + toChar[i] + "</span>";
+                        count++;
+                    } else if (this.checkJapanese(toChar[i])) {
+                        if (toChar[i - 1] === undefined || toChar[i - 1] === "\n") {
+                            html += "<span id='span-" + count + "' class='japanese-character'>" + toChar[i] + "</span>";
+                            count++;
+                        } else if (this.checkJapanese(toChar[i - 1])) {
+                            html = this.insertString(html, toChar[i], html.length - 7);
+                        } else {
+                            html += "<span id='span-" + count + "' class='japanese-character'>" + toChar[i] + "</span>";
+                            count++;
+                        }
+                    } else if (this.checkAlphaOrEmpty(toChar[i])) {
+                        if (toChar[i - 1] === undefined || toChar[i - 1] === "\n") {
+                            html += "<span id='span-" + count + "'>" + toChar[i] + "</span>";
+                            count++;
+                        } else if (this.checkAlphaOrEmpty(toChar[i - 1]) && toChar[i - 1] !== "@") {
+                            html = this.insertString(html, toChar[i], html.length - 7);
+                        } else {
+                            html += "<span id='span-" + count + "'>" + toChar[i] + "</span>";
+                            count++;
+                        }
+                    } else {
+                        html += "<span id='span-" + count + "' class='special-char'>" + toChar[i] + "</span>";
+                        count++;
+                    }
+                }
+            }
+            html += "</span>";
+            this.divValue(html);
+            this.divValue($("#input-content-area").html());
+        }
+
+        getCurrentPosition(position) {
+            var uiPosition = {};
+            var $lines = $("#input-content-area").find(".editor-line");
+            var index = 0;
+            $lines.each(function(index, line) {
+                var $line = $(line);
+                var char = _.find($line.children(), function(text) {
+                    var current = index + $(text).text().length;
+                    index += $(text).text().length;
+                    return current === position;
+                });
+                if(char !== undefined){
+                    uiPosition = $(char).position();
+                    return;
+                }
+            });
+            return uiPosition;
+        }
+
+        checkAlphaOrEmpty(char) {
+            var speChar = new RegExp(/[~`!#$%\^&*+=\-\[\]\\;\',/{}|\\\":<>\?\(\)]/g);
+            return !speChar.test(char) || char === " " || char === undefined;
+        }
+
+        checkJapanese(char) {
+            return !nts.uk.text.allHalf(char);
+        }
+        getAutoCompleteDataByElementType(preString, postString): any{
+            let self = this;
+            if (preString.endsWith(self.PAYMENT))
+               return self.paymentItemList.filter(function(item){return item.name.startsWith(postString) || item.code.startsWith(postString)}).map(item => new model.ItemModel(item.code, item.name));
+            if (preString.endsWith(self.DEDUCTION))
+                return self.deductionItemList.filter(function(item){return item.name.startsWith(postString) || item.code.startsWith(postString)}).map(item => new model.ItemModel(item.code, item.name));
+            if (preString.endsWith(self.ATTENDANCE))
+                return self.attendanceItemList.filter(function(item){return item.name.startsWith(postString) || item.code.startsWith(postString)}).map(item => new model.ItemModel(item.code, item.name));
+            if (preString.endsWith(self.COMPANY_UNIT_PRICE))
+                return self.companyUnitPriceList.filter(function(item){return item.name.startsWith(postString) || item.code.startsWith(postString)}).map(item => new model.ItemModel(item.code, item.name));
+            if (preString.endsWith(self.INDIVIDUAL_UNIT_PRICE))
+                return self.individualUnitPriceList.filter(function(item){return item.name.startsWith(postString) || item.code.startsWith(postString)}).map(item => new model.ItemModel(item.code, item.name));
+            if (preString.endsWith(self.FUNCTION))
+                return ko.toJS(self.functionListItem).filter(function(item){return item.name.startsWith(postString) || item.code.startsWith(postString)}).map(item => new model.ItemModel(null, item.name));
+            if (preString.endsWith(self.VARIABLE))
+                return ko.toJS(self.systemVariableListItem).filter(function(item){return item.name.startsWith(postString) || item.code.startsWith(postString)}).map(item => new model.ItemModel(null, item.name));
+            if (preString.endsWith(self.FORMULA))
+                return ko.toJS(self.formulaList).filter(function(item){return item.formulaName.startsWith(postString) || item.formulaCode.startsWith(postString)}).map(item => new model.ItemModel(item.formulaCode, item.formulaName));
+            if (preString.endsWith(self.WAGE_TABLE))
+                return ko.toJS(self.wageTableList).filter(function(item){return item.name.startsWith(postString) || item.code.startsWith(postString)}).map(item => new model.ItemModel(item.code, item.name));
+            return [];
         }
     }
 }

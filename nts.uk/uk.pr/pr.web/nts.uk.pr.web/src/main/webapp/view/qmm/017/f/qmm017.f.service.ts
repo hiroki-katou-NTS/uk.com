@@ -5,7 +5,7 @@ module nts.uk.pr.view.qmm017.f.service {
 
     let paths = {
         getAllStatementItemData: "ctx/pr/core/wageprovision/statementitem/getAllStatementItemData/{0}/{1}",
-        getAllPayrollUnitPriceByYearMonth: "core/wageprovision/companyuniformamount/getAllPayrollUnitPriceByYearMonth{0}",
+        getAllPayrollUnitPriceByYearMonth: "core/wageprovision/companyuniformamount/getAllPayrollUnitPriceByYearMonth/{0}",
         getAllUnitPriceName: "ctx/pr/core/wageprovision/unitpricename/getAllUnitPriceName/{0}"
     }
 

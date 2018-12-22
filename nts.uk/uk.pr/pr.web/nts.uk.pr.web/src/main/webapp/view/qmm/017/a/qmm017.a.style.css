@@ -110,3 +110,62 @@
     width: 148px;
     height: 23px;
 }
+
+textarea {
+    resize: none;
+    background: transparent;
+    /* color: transparent; */
+}
+#input-containner{
+    width: 803px;
+    height: 365px;
+    position: relative;
+}
+#input-content-area{
+    position: absolute;
+    top: 560px;
+    left: 95px;
+    padding: 3px;
+    /* padding-top: 0px; */
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    word-break: normal;
+    color: transparent;
+    width: 520px;
+    z-index: -9999;
+}
+#input-area{
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+}
+#cursor-key{
+    visibility: hidden;
+    position: relative;
+    z-index: 10;
+}
+#input-cursor{
+    position: absolute;
+    pointer-events: none;
+    border-left: 1px solid black;
+    border-right: none;
+    width: 0;
+    cursor: text;
+    height: 18px;
+}
+.editor-line{
+    display: block;
+}
+.error-char{
+    border-bottom: 1px red dotted;
+}
+#auto-complete{
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+#auto-complete-containner{
+    position: absolute;
+    z-index: 1000;
+}
