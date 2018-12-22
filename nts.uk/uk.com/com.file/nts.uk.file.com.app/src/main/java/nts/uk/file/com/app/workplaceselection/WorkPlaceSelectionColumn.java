@@ -7,4 +7,5 @@ public final class WorkPlaceSelectionColumn {
 	public static final String CMM051_30 = "職場管理者名";
 	public static final String CMM051_31 = "期間．開始日";
 	public static final String CMM051_32 = "期間．終了日";
+	public static final String CMM051_32_2 = "項目移送";
 }

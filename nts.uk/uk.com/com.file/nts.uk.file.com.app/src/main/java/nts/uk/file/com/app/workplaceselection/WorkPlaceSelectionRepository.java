@@ -9,6 +9,6 @@ public interface WorkPlaceSelectionRepository {
 	// Export Data
 	//List<WorkPlaceSelectionExportData> findAllWorkPlaceSelection(String companyId, List<WorkPlaceFunction> functionNo);
 
-	List<MasterData> getDataExport(String companyId, List<WorkPlaceFunction> workPlaceFunction);
+	List<MasterData> getDataExport(String companyId, List<WorkPlaceFunction> workPlaceFunction, String baseDate);
 
 }
