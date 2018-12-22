@@ -109,7 +109,7 @@ public class WorkPlaceSelectionImpl implements WorkPlaceSelectionRepository {
 		+" 		, START_DATE"
 		+" 		, END_DATE "
 		+" 		, [1], [2], [3]"
-		+" 		, ROW_NUMBER () OVER ( PARTITION BY WKPCD, WKP_NAME ORDER BY WKPCD ASC ) AS ROW_NUMBER"
+		+" 		, ROW_NUMBER () OVER ( PARTITION BY WKPCD, WKP_NAME ORDER BY WKPCD, SCD ASC ) AS ROW_NUMBER"
 		+" 	FROM ("
 		+" 					SELECT wm.WKPCD "
 		+" 					,CASE	"
@@ -121,14 +121,14 @@ public class WorkPlaceSelectionImpl implements WorkPlaceSelectionRepository {
 		+" 					FROM "
 		+" 						BSYMT_WORKPLACE_INFO wm "
 		+" 						LEFT JOIN SACMT_WORKPLACE_MANAGER wi ON wm.WKPID = wi.WKP_ID "
-		+" 						LEFT JOIN BSYMT_EMP_DTA_MNG_INFO edm ON wi.SID = edm.SID  AND edm.CID = '000000000000-0001'"
+		+" 						LEFT JOIN BSYMT_EMP_DTA_MNG_INFO edm ON wi.SID = edm.SID  AND edm.CID = ?cid"
 		+" 						LEFT JOIN BPSMT_PERSON ps ON edm.PID = ps.PID "
 		+" 						INNER JOIN KASMT_WORKPLACE_AUTHORITY kwa ON wi.WKP_MANAGER_ID = kwa.ROLE_ID AND wm.CID = kwa.CID"
 		+" 						INNER JOIN KASMT_WORPLACE_FUNCTION wkf on wkf.FUNCTION_NO = kwa.FUNCTION_NO"
 		+" 						INNER JOIN BSYMT_WORKPLACE_HIST bwh ON wm.CID = bwh.CID AND wm.WKPID = bwh.WKPID AND wm.HIST_ID = bwh.HIST_ID"
-		+" 						WHERE wm.CID = '000000000000-0001' AND"
-		+" 						wi.START_DATE <= CONVERT ( DATETIME, '2016-11-15T00:00:00.000Z', 127 ) AND"
-		+" 						wi.END_DATE   >= CONVERT ( DATETIME, '2016-11-15T00:00:00.000Z', 127 ) "
+		+" 						WHERE wm.CID = ?cid AND"
+		+" 						wi.START_DATE <= CONVERT ( DATETIME, ?baseDate, 111 ) AND"
+		+" 						wi.END_DATE   >= CONVERT ( DATETIME, ?baseDate, 111 ) "
 		+" 				)"
 		+" 				AS sourceTable PIVOT ("
 		+" 			MAX(AVAILABILITY)"
@@ -157,32 +157,32 @@ public class WorkPlaceSelectionImpl implements WorkPlaceSelectionRepository {
 		
 		data.put(WorkPlaceSelectionColumn.CMM051_27, MasterCellData.builder()
                 .columnId(WorkPlaceSelectionColumn.CMM051_27)
-                .value((String) object[0])
+                .value(object[0] != null ? (String) object[0] : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
             data.put(WorkPlaceSelectionColumn.CMM051_28, MasterCellData.builder()
                 .columnId(WorkPlaceSelectionColumn.CMM051_28)
-                .value((String) object[1])
+                .value(object[1] != null ? (String) object[1] : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
             data.put(WorkPlaceSelectionColumn.CMM051_29, MasterCellData.builder()
                 .columnId(WorkPlaceSelectionColumn.CMM051_29)
-                .value((String) object[2])
+                .value(object[2] != null ? (String) object[2] : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
             data.put(WorkPlaceSelectionColumn.CMM051_30, MasterCellData.builder()
                 .columnId(WorkPlaceSelectionColumn.CMM051_30)
-                .value((String) object[3])
+                .value(object[3] != null ?  (String) object[3] : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
             data.put(WorkPlaceSelectionColumn.CMM051_31, MasterCellData.builder()
                 .columnId(WorkPlaceSelectionColumn.CMM051_31)
-                .value(df.format(object[4]).toString())
+                .value(object[4] != null ?  df.format(object[4]).toString() : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(WorkPlaceSelectionColumn.CMM051_32, MasterCellData.builder()
                 .columnId(WorkPlaceSelectionColumn.CMM051_32)
-                .value(df.format(object[5]).toString())
+                .value(object[5] != null ?  df.format(object[5]).toString() :"")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             
