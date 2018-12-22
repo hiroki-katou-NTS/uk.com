@@ -38,7 +38,7 @@ module nts.uk.pr.view.qmm019.c.viewmodel {
                 new shareModel.BoxModel(0, getText('QMM019_46')),
                 new shareModel.BoxModel(1, getText('QMM019_47'))
             ]);
-            self.itemHistoryEdit = ko.observable(0);
+            self.itemHistoryEdit = ko.observable(1);
 
             self.isLastHistory = ko.observable(true);
         }
