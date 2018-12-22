@@ -202,6 +202,8 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             self.calcMethods(shareModel.getPaymentCaclMethodAtr(self.paymentItemSet().breakdownItemUseAtr()));
             if (self.paymentItemSet().breakdownItemUseAtr() == shareModel.BreakdownItemUseAtr.USE) {
                 self.dataScreen().calcMethod(shareModel.PaymentCaclMethodAtr.BREAKDOWN_ITEM.toString());
+            } else if (isNullOrUndefined(self.dataScreen().calcMethod())) {
+                self.dataScreen().calcMethod(self.params.detail.calcMethod);
             }
         }
 

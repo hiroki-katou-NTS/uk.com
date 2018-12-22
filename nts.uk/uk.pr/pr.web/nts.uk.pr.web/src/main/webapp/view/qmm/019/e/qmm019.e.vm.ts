@@ -203,6 +203,8 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             self.calcMethods(shareModel.getDeductionCaclMethodAtr(self.deductionItemSet().breakdownItemUseAtr()));
             if (self.deductionItemSet().breakdownItemUseAtr() == shareModel.BreakdownItemUseAtr.USE) {
                 self.dataScreen().calcMethod(shareModel.DeductionCaclMethodAtr.BREAKDOWN_ITEM.toString());
+            } else if (isNullOrUndefined(self.dataScreen().calcMethod())) {
+                self.dataScreen().calcMethod(self.params.detail.calcMethod);
             }
         }
 
@@ -851,28 +853,24 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                 case shareModel.DeductionCaclMethodAtr.PERSON_INFO_REF:
                     // 個人金額コードが設定されているか確認する
                     if (isNullOrEmpty(self.perValCode())) {
-                        // alertError({messageId: "MsgQ_11"});
                         self.setError("#E5_2", "MsgQ_11");
                     }
                     break;
                 case shareModel.DeductionCaclMethodAtr.CACL_FOMULA:
                     // 計算式コードが設定されているか確認する
                     if (isNullOrEmpty(self.formulaCode())) {
-                        // alertError({messageId: "MsgQ_12"});
                         self.setError("#E6_2", "MsgQ_12");
                     }
                     break;
                 case shareModel.DeductionCaclMethodAtr.WAGE_TABLE:
                     // 賃金テーブルコードが設定されているか確認する
                     if (isNullOrEmpty(self.wageTableCode())) {
-                        // alertError({messageId: "MsgQ_13"});
                         self.setError("#E7_2", "MsgQ_13");
                     }
                     break;
                 case shareModel.DeductionCaclMethodAtr.SUPPLY_OFFSET:
                     // 相殺対象項目コードが設定されているか確認する
                     if (isNullOrEmpty(self.statementItemCode())) {
-                        // alertError({messageId: "MsgQ_32"});
                         self.setError("#E9_2", "MsgQ_32");
                     }
                 default:
