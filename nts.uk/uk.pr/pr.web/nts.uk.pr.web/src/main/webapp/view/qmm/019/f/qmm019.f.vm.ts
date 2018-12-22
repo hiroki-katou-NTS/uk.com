@@ -64,18 +64,7 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             block.invisible();
             let params: IParams = windows.getShared("QMM019_A_TO_F_PARAMS");
             if (isNullOrUndefined(params.itemRangeSet)) {
-                params.itemRangeSet = <shareModel.IItemRangeSet> {
-                    rangeValAttribute: share.model.RangeValueEnum.TIME,
-                    errorUpperLimitSetAtr: shareModel.UseRangeAtr.USE,
-                    errorLowerLimitSetAtr: shareModel.UseRangeAtr.USE,
-                    alarmUpperLimitSetAtr: shareModel.UseRangeAtr.USE,
-                    alarmLowerLimitSetAtr: shareModel.UseRangeAtr.USE,
-
-                    errorUpRangeValTime: "10",
-                    errorLoRangeValTime: "8",
-                    alarmUpRangeValTime: "20",
-                    alarmLoRangeValTime: "15"
-                };
+                params.itemRangeSet = <shareModel.IItemRangeSet> {};
             }
             self.params = params;
             let dto = {
@@ -166,17 +155,9 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             self.screenControl().visibleF2_3(false);
             self.screenControl().enableF2_4(false);
             self.screenControl().enableF3_2(false);
-            // self.screenControl().visibleF3_3(true);
-            // self.screenControl().enableF3_3(false);
             self.screenControl().enableF3_5(false);
-            // self.screenControl().visibleF3_6(true);
-            // self.screenControl().enableF3_6(false);
             self.screenControl().enableF3_9(false);
-            // self.screenControl().visibleF3_10(true);
-            // self.screenControl().enableF3_10(false);
             self.screenControl().enableF3_12(false);
-            // self.screenControl().enableF3_13(false);
-            // self.screenControl().visibleF3_13(true);
             self.screenControl().visibleF3_15(false);
             self.screenControl().visibleF3_16(false);
             self.screenControl().visibleF3_17(false);
@@ -714,7 +695,7 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
                 // アラーム範囲下限値チェック状況を確認する
                 if (alarm.lower.atr) {
                     // アラーム範囲下限値の入力を確認する
-                    if (isNullOrEmpty(alarm.lower.value) {
+                    if (isNullOrEmpty(alarm.lower.value)) {
                         self.setError(alarm.lower.control, "MsgQ_17");
                     }
                 }

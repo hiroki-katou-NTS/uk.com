@@ -279,7 +279,7 @@
                         </div>
                     </div>
                     <div class="table table-error-alarm"
-                         data-bind="with: errorRangeSetting.upperLimitSetting">
+                         data-bind="with: itemRangeSet">
                         <div class="cell valign-center">
                             <!--E3_8-->
                             <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_120')}</div>
@@ -287,13 +287,13 @@
                         <div class="cell valign-center">
                             <!--E3_9-->
                             <div tabindex="8" data-bind="ntsCheckBox: {
-                                checked: valueSettingAtr,
+                                checked: errorUpperLimitSetAtr,
                                 enable: $vm.screenControl().enableE3_9()}"/>
                             <com:ko-if bind="$vm.screenControl().visibleE3_10()">
                                 <!--E3_10-->
                                 <input id="E3_10" tabindex="9" data-bind="ntsNumberEditor: {
                                     name: '#[QMM019_121]',
-                                    value: rangeValue,
+                                    value: errorUpRangeValAmount,
                                     option: $vm.option,
                                     enable: $vm.screenControl().enableE3_10(),
                                     constraint: 'DetailAmountType'}"/>
@@ -307,18 +307,18 @@
                         </div>
                     </div>
                     <div class="table table-error-alarm"
-                         data-bind="with: errorRangeSetting.lowerLimitSetting">
+                         data-bind="with: itemRangeSet">
                         <div class="cell valign-center"/>
                         <div class="cell valign-center">
                             <!--E3_12-->
                             <div tabindex="10" data-bind="ntsCheckBox: {
-                                checked: valueSettingAtr,
+                                checked: errorLowerLimitSetAtr,
                                 enable: $vm.screenControl().enableE3_12()}"/>
                             <com:ko-if bind="$vm.screenControl().visibleE3_13()">
                                 <!--E3_13-->
                                 <input id="E3_13" tabindex="11" data-bind="ntsNumberEditor: {
                                     name: '#[QMM019_123]',
-                                    value: rangeValue,
+                                    value: errorLoRangeValAmount,
                                     option: $vm.option,
                                     enable: $vm.screenControl().enableE3_13(),
                                     constraint: 'DetailAmountType'}"/>
@@ -332,7 +332,7 @@
                         </div>
                     </div>
                     <div class="table table-error-alarm"
-                         data-bind="with: alarmRangeSetting.upperLimitSetting">
+                         data-bind="with: itemRangeSet">
                         <div class="cell valign-center">
                             <!--E3_15-->
                             <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_125')}</div>
@@ -340,13 +340,13 @@
                         <div class="cell valign-center">
                             <!--E3_16-->
                             <div tabindex="12" data-bind="ntsCheckBox: {
-                                checked: valueSettingAtr,
+                                checked: alarmUpperLimitSetAtr,
                                 enable: $vm.screenControl().enableE3_16()}"/>
                             <com:ko-if bind="$vm.screenControl().visibleE3_17()">
                                 <!--E3_17-->
                                 <input id="E3_17" tabindex="13" data-bind="ntsNumberEditor: {
                                     name: '#[QMM019_126]',
-                                    value: rangeValue,
+                                    value: alarmUpRangeValAmount,
                                     option: $vm.option,
                                     enable: $vm.screenControl().enableE3_17(),
                                     constraint: 'DetailAmountType'}"/>
@@ -360,18 +360,18 @@
                         </div>
                     </div>
                     <div class="table table-error-alarm"
-                         data-bind="with: alarmRangeSetting.lowerLimitSetting">
+                         data-bind="with: itemRangeSet">
                         <div class="cell valign-center"/>
                         <div class="cell valign-center">
                             <!--E3_19-->
                             <div tabindex="14" data-bind="ntsCheckBox: {
-                                checked: valueSettingAtr,
+                                checked: alarmLowerLimitSetAtr,
                                 enable: $vm.screenControl().enableE3_19()}"/>
                             <com:ko-if bind="$vm.screenControl().visibleE3_20()">
                                 <!--E3_20-->
                                 <input id="E3_20" tabindex="15" data-bind="ntsNumberEditor: {
                                     name: '#[QMM019_128]',
-                                    value: rangeValue,
+                                    value: alarmLoRangeValAmount,
                                     option: $vm.option,
                                     enable: $vm.screenControl().enableE3_20(),
                                     constraint: 'DetailAmountType'}"/>
