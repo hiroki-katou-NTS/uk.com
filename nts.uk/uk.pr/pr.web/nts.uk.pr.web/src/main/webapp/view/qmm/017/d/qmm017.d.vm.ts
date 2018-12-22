@@ -593,16 +593,22 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             $("#auto-complete-container").on('click', function(){
                 let displayText = $(this).children("option:selected").text();
                 if (displayText.indexOf("    ") > -1 ) displayText = displayText.split("    ")[1];
-                if (displayText) self.addToFormulaByPosition(displayText + self.CLOSE_CURLY_BRACKET);
+                if (displayText) self.addToFormulaFromHintBox(displayText + self.CLOSE_CURLY_BRACKET);
                 $("#auto-complete-container").hide();
-            })
+            });
+            // $("#D3_5").on("change", function(event){
+            //     event.target.val(event.target.value.replace(/(?:\r|\n|\r\n)/g, '<br>'));
+            // });
             $("#D3_5").on("keypress", function(event){
                 if (event.keyCode == 13){
+                    event.preventDefault();
                     let displayText = $('#auto-complete-container option:selected').text();
                     if (displayText.indexOf("    ") > -1 ) displayText = displayText.split("    ")[1];
-                    if (displayText) self.addToFormulaByPosition(displayText + self.CLOSE_CURLY_BRACKET);
                     $("#auto-complete-container").hide();
-                    return event.preventDefault();
+                    if (displayText)
+                        setTimeout(function(){
+                            self.addToFormulaFromHintBox(displayText + self.CLOSE_CURLY_BRACKET);
+                        }, 300)
                 }
             });
             $("#D3_5").on("keydown", function(event){
@@ -612,11 +618,12 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     return event.preventDefault();
                 }
             });
+
             // show hint box if selection change ?
             $("#D3_5").on('keyup',(event) => {
                 let self = this, target = event.target, start = target.selectionStart, end = target.selectionEnd,
                     keyCode = event.keyCode, currentRow, autoCompleteData = [];
-                if (event.keyCode != 38 && event.keyCode != 40) {
+                if (keyCode != 38 && keyCode != 40 && keyCode !=13) {
                     self.genVirualElement();
                     currentRow = this.getCurrentPosition(end);
                     self.index(end);
@@ -742,6 +749,14 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             if (preString.endsWith(self.WAGE_TABLE))
                 return ko.toJS(self.wageTableList).filter(function(item){return item.name.startsWith(postString) || item.code.startsWith(postString)}).map(item => new model.ItemModel(item.code, item.name));
             return [];
+        }
+        addToFormulaFromHintBox (formulaToAdd: string) {
+            let self = this, calculationFormulaItem:any = $('#D3_5')[0];
+            let startSelection = calculationFormulaItem.value.substring(0, calculationFormulaItem.selectionStart).lastIndexOf(self.OPEN_CURLY_BRACKET);
+            self.displayDetailCalculationFormula(calculationFormulaItem.value.substring(0, startSelection + 1) + formulaToAdd + calculationFormulaItem.value.substring(calculationFormulaItem.selectionStart));
+            let newStartSelection = startSelection + formulaToAdd.length +1;
+            $('#D3_5').focus();
+            calculationFormulaItem.setSelectionRange(newStartSelection, newStartSelection);
         }
     }
 }
