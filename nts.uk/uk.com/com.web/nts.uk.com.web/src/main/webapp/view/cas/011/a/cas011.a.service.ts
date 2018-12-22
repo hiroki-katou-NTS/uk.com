@@ -62,6 +62,6 @@ module nts.uk.com.view.cas011.a.service {
     
     export function saveAsExcel(languageId: string): JQueryPromise<any> {
         return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "RoleSetMenu", domainType: "CAS011ロールセットの登録", languageId: languageId, reportType: 0});
-
+    }
     
 }
