@@ -13,8 +13,6 @@
             nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableCode
             nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableName
             nts.uk.ctx.pr.core.dom.wageprovision.wagetable.Memo
-            nts.uk.ctx.pr.core.dom.wageprovision.wagetable.FrameLowerLimit
-            nts.uk.ctx.pr.core.dom.wageprovision.wagetable.FrameUpperLimit
             nts.uk.ctx.pr.core.dom.wageprovision.wagetable.StepIncrement
             nts.uk.ctx.pr.core.dom.wageprovision.wagetable.RangeLowerLimit
             nts.uk.ctx.pr.core.dom.wageprovision.wagetable.RangeUpperLimit
@@ -98,7 +96,7 @@
             <div id="fixed-flex-layout-right">
                 <!--A3_1 タブ-->
                 <div id="A3_1" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}"
-                     style="width: 800px; margin-bottom: 20px;">
+                     style="min-width: 800px; margin-bottom: 20px;">
                     <!--A3_2 タブ（基本情報）-->
                     <div class="tab-content-1" data-bind="with: selectedWageTable">
                         <!--A4_1 注意メッセージ-->

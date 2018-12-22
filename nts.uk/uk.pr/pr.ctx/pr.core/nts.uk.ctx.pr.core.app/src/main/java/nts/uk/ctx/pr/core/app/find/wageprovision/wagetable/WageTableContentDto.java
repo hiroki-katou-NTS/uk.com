@@ -111,14 +111,14 @@ public class WageTableContentDto {
 							mapMaster2, comparator1);
 					Collections.sort(listTwoDms, comparator2);
 					if (key.getMasterElementItem().isPresent()) {
-						String masterCode = key.getMasterElementItem().get().getMasterCode().v();
+						String masterCode = key.getMasterElementItem().get().getMasterCode();
 						String masterName = mapMaster3.get(masterCode);
 						this.list3dElements.add(new ThreeDmsElementItemDto(masterCode,
 								masterName == null ? masterCode : masterName, null, null, null, listTwoDms));
 					} else if (key.getNumericElementItem().isPresent()) {
-						int frameNumber = key.getNumericElementItem().get().getFrameNumber().v();
-						int frameLower = key.getNumericElementItem().get().getFrameLowerLimit().v();
-						int frameUpper = key.getNumericElementItem().get().getFrameUpperLimit().v();
+						int frameNumber = key.getNumericElementItem().get().getFrameNumber();
+						int frameLower = key.getNumericElementItem().get().getFrameLowerLimit();
+						int frameUpper = key.getNumericElementItem().get().getFrameUpperLimit();
 						this.list3dElements.add(new ThreeDmsElementItemDto(null, null, frameNumber, frameLower,
 								frameUpper, listTwoDms));
 					}
@@ -166,14 +166,14 @@ public class WageTableContentDto {
 							mapMaster2, comparator1);
 					Collections.sort(listTwoDms, comparator2);
 					if (key.getMasterElementItem().isPresent()) {
-						String masterCode = key.getMasterElementItem().get().getMasterCode().v();
+						String masterCode = key.getMasterElementItem().get().getMasterCode();
 						String masterName = mapMaster3.get(masterCode);
 						this.listWorkElements.add(new ThreeDmsElementItemDto(masterCode,
 								masterName == null ? masterCode : masterName, null, null, null, listTwoDms));
 					} else if (key.getNumericElementItem().isPresent()) {
-						int frameNumber = key.getNumericElementItem().get().getFrameNumber().v();
-						int frameLower = key.getNumericElementItem().get().getFrameLowerLimit().v();
-						int frameUpper = key.getNumericElementItem().get().getFrameUpperLimit().v();
+						int frameNumber = key.getNumericElementItem().get().getFrameNumber();
+						int frameLower = key.getNumericElementItem().get().getFrameLowerLimit();
+						int frameUpper = key.getNumericElementItem().get().getFrameUpperLimit();
 						this.listWorkElements.add(new ThreeDmsElementItemDto(null, null, frameNumber, frameLower,
 								frameUpper, listTwoDms));
 					}
@@ -195,18 +195,18 @@ public class WageTableContentDto {
 			if (isFirst) {
 				if (payment.getElementAttribute().getFirstElementItem().getMasterElementItem().isPresent()) {
 					String masterCode = payment.getElementAttribute().getFirstElementItem().getMasterElementItem().get()
-							.getMasterCode().v();
+							.getMasterCode();
 					String masterName = mapMaster.get(masterCode);
 					ElementItemDto item = new ElementItemDto(masterCode, masterName == null ? masterCode : masterName, null,
 							null, null, payment.getWageTablePaymentAmount().v());
 					result.add(item);
 				} else if (payment.getElementAttribute().getFirstElementItem().getNumericElementItem().isPresent()) {
 					int frameNumber = payment.getElementAttribute().getFirstElementItem().getNumericElementItem().get()
-									.getFrameNumber().v();
+									.getFrameNumber();
 					int lowerLimit = payment.getElementAttribute().getFirstElementItem().getNumericElementItem().get()
-									.getFrameLowerLimit().v();
+									.getFrameLowerLimit();
 					int upperLimit = payment.getElementAttribute().getFirstElementItem().getNumericElementItem().get()
-									.getFrameUpperLimit().v();
+									.getFrameUpperLimit();
 					ElementItemDto item = new ElementItemDto(null, null, frameNumber, lowerLimit, upperLimit,
 							payment.getWageTablePaymentAmount().v());
 					result.add(item);
@@ -214,18 +214,18 @@ public class WageTableContentDto {
 			} else {
 				if (payment.getElementAttribute().getSecondElementItem().get().getMasterElementItem().isPresent()) {
 					String masterCode = payment.getElementAttribute().getSecondElementItem().get().getMasterElementItem().get()
-							.getMasterCode().v();
+							.getMasterCode();
 					String masterName = mapMaster.get(masterCode);
 					ElementItemDto item = new ElementItemDto(masterCode, masterName == null ? masterCode : masterName, null,
 							null, null, payment.getWageTablePaymentAmount().v());
 					result.add(item);
 				} else if (payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem().isPresent()) {
 					int frameNumber = payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem().get()
-									.getFrameNumber().v();
+									.getFrameNumber();
 					int lowerLimit = payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem().get()
-									.getFrameLowerLimit().v();
+									.getFrameLowerLimit();
 					int upperLimit = payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem().get()
-									.getFrameUpperLimit().v();
+									.getFrameUpperLimit();
 					ElementItemDto item = new ElementItemDto(null, null, frameNumber, lowerLimit, upperLimit,
 							payment.getWageTablePaymentAmount().v());
 					result.add(item);
@@ -244,14 +244,14 @@ public class WageTableContentDto {
 			List<ElementItemDto> list2ndDmsElements = this.getOneDmsElemItemDto(value, mapMaster2, false);
 			Collections.sort(list2ndDmsElements, comparator);
 			if (key.getMasterElementItem().isPresent()) {
-				String masterCode = key.getMasterElementItem().get().getMasterCode().v();
+				String masterCode = key.getMasterElementItem().get().getMasterCode();
 				String masterName = mapMaster1.get(masterCode);
 				result.add(new TwoDmsElementItemDto(masterCode, masterName == null ? masterCode : masterName, null,
 						null, null, list2ndDmsElements));
 			} else if (key.getNumericElementItem().isPresent()) {
-				int frameNumber = key.getNumericElementItem().get().getFrameNumber().v();
-				int frameLower = key.getNumericElementItem().get().getFrameLowerLimit().v();
-				int frameUpper = key.getNumericElementItem().get().getFrameUpperLimit().v();
+				int frameNumber = key.getNumericElementItem().get().getFrameNumber();
+				int frameLower = key.getNumericElementItem().get().getFrameLowerLimit();
+				int frameUpper = key.getNumericElementItem().get().getFrameUpperLimit();
 				result.add(
 						new TwoDmsElementItemDto(null, null, frameNumber, frameLower, frameUpper, list2ndDmsElements));
 			}

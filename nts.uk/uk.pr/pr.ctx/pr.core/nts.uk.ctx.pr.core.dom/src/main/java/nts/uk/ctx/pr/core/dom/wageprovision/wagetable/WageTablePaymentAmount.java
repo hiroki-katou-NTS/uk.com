@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.LongMinValue;
 /**
  * 賃金テーブル支給金額
  */
-@LongMinValue(0L)
+@LongMinValue(-9999999999L)
 @LongMaxValue(9999999999L)
 public class WageTablePaymentAmount extends LongPrimitiveValue<WageTablePaymentAmount> {
 

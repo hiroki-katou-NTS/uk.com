@@ -8,8 +8,8 @@
                  data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_8')}</div>
             <div style="width: 260px;" data-bind="with: selectedWageTable">
                 <div style="display: inline-block" data-bind="text: wageTableCode"></div>
-                <div style="display: inline-block; margin-left: 10px;"
-                     data-bind="text: wageTableName"></div>
+                <div class="limited-label" style="display: inline-block; margin-left: 10px; width: 190px; vertical-align: text-bottom;"
+                 	data-bind="text: wageTableName"></div>
             </div>
             <div style="width: 110px;"
                  data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM016_26')}</div>
@@ -57,14 +57,14 @@
             <button style="margin-left: 30px;">#{i18n.getText('QMM016_37')}</button>
         </div>
         <hr></hr>
-        <div class="tab-row E5_1" style="margin-top: 40px;"
+        <div class="tab-row E5_1" style="margin-top: 20px;"
              data-bind="if: $vm.wageTableContent().qualificationGroupSetting().length >0">
             <table id="E5_1">
                 <colgroup>
-                    <col width="100px"/>
                     <col width="130px"/>
+                    <col width="150px"/>
                     <col width="147px"/>
-                    <col width="450px"/>
+                    <col width="370px"/>
                 </colgroup>
                 <thead>
                 <tr>
@@ -77,11 +77,12 @@
                 <tbody data-bind="foreach: $vm.wageTableContent().qualificationGroupSetting()">
                 <com:ko bind="eligibleQualificationCode()" tag="foreach">
                     <tr>
-                        <th style="vertical-align: top; font-weight: normal" class="ui-widget-header"
-                            data-bind="visible: $index() ==0, attr: {rowspan: $parent.eligibleQualificationCode().length}, text: $parent.qualificationGroupName">
+                        <th style="vertical-align: top; font-weight: normal" class="ui-widget-header" 
+                        		data-bind="visible: $index() ==0, attr: {rowspan: $parent.eligibleQualificationCode().length}">
+                            <div class="limited-label" data-bind="text: $parent.qualificationGroupName" />
                         </th>
                         <th style="font-weight: normal" class="ui-widget-header">
-                            <div data-bind="text: qualificationName"></div>
+                            <div class="limited-label" data-bind="text: qualificationName"></div>
                         </th>
                         <td>
                             <input data-bind="ntsNumberEditor: {

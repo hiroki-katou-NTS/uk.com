@@ -7,3 +7,7 @@
 #J3_2 label:nth-child(2) {
     margin-top: 70px;
 }
+
+#J3_2 label {
+	display: block !important;
+}

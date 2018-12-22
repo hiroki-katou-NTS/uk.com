@@ -104,10 +104,10 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
             if (/Chrome/.test(navigator.userAgent)) {
                 $('.fixed-table-top').ntsFixedTable({ width: 300, height: 34 });
                 $('.fixed-table-body').ntsFixedTable({ width: 600, height: 207 });
-                $('#E5_1').ntsFixedTable({ width: 750, height: 344 });
+                $('#E5_1').ntsFixedTable({ width: 800, height: 344 });
             } else {
                 $('.fixed-table-body').ntsFixedTable({ width: 600, height: 204 });
-                $('#E5_1').ntsFixedTable({ width: 750, height: 341 });
+                $('#E5_1').ntsFixedTable({ width: 800, height: 341 });
             }
         }
 

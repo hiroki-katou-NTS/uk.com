@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
 	<ui:define name="htmlHead">
-		<script>var dialogSize = { width: 600, height: 460 };</script>
+		<script>var dialogSize = { width: 630, height: 460 };</script>
 		<com:scriptfile set="IGNITE" />
 		<com:scriptfile path="../share/model.js" />
 		<com:scriptfile path="qmm016.j.service.js" />
@@ -29,8 +29,8 @@
 			<div style="margin-top: 20px; min-width: 550px">
 				<div style="width: 130px;"
 					 data-bind="ntsFormLabel: {required: true}" >#{i18n.getText('QMM016_79')}</div>
-				<div style="width: 200px; display: inline-flex; position: absolute; left: 153px">
-					<div id="J3_2" tabindex="1" style="padding-top: 7px"
+				<div style="width: 437px; display: inline-flex; position: absolute; left: 153px; top: 123px">
+					<div id="J3_2" tabindex="1" style="padding-top: 7px; width: 436px"
 						 data-bind="ntsRadioBoxGroup: {
 										value: modifyMethod,
 										enable: isLastHistory,
