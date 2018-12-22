@@ -60,7 +60,11 @@
 }
 
 .table-col-3 > .cell:nth-child(3) {
-    width: 340px;
+    width: 355px;
+}
+
+.table-col-3 > .cell:nth-child(3) .limited-label{
+    width: 350px;
 }
 
 .table-error-alarm > .cell:nth-child(1) {
@@ -72,7 +76,7 @@
 }
 
 .table-error-alarm > .cell:nth-child(3) {
-    width: 165px;
+    width: 175px;
 }
 
 .table-col-2 > .cell:nth-child(1) {
@@ -80,7 +84,7 @@
 }
 
 .table-col-2 > .cell:nth-child(2) {
-    width: 395px;
+    width: 415px;
 }
 
 .table-col-4 > .cell:nth-child(1) {
@@ -96,7 +100,11 @@
 }
 
 .table-col-4 > .cell:nth-child(4) {
-    width: 285px;
+    width: 305px;
+}
+
+.table-col-4 > .cell:nth-child(4) .limited-label{
+    width: 300px;
 }
 
 #btn-register {
