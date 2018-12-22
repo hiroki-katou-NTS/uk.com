@@ -65,12 +65,17 @@ public final class RegistTimeColumn {
 	/**
 	 *  sheet4
 	 */
+	// A13_1
+	public static final String KMK008_102 = "職場コード";
+	// A13_2
+	public static final String KMK008_103 = "職場名";
 	
 	/**
 	 *  sheet 5
 	 */
 	public static final String KMK008_104 = "分類コード";
 	public static final String KMK008_105 = "分類名";
+	
 	
 	
 }

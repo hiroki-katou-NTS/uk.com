@@ -58,7 +58,7 @@ public class JpaRolePersonalInfor extends JpaRepository implements RolePersonalI
                 functionNo +
                 ") " +
                 ") AS pvt " +
-                "ORDER BY ROLE_CD,ASSIGN_ATR ASC";
+                "ORDER BY ASSIGN_ATR,ROLE_CD ASC";
         try (PreparedStatement stmt = this.connection()
                 .prepareStatement(GET_EXPORT_EXCEL)){
             stmt.setString(1,cId);

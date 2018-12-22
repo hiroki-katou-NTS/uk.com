@@ -30,20 +30,20 @@ public class WorkPlaceSelectionExportImpl implements MasterListData {
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 		List<WorkPlaceFunction> workPlaceFunction = workPlaceFunctionRepository.getAllWorkPlaceFunction();
-		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_27, TextResource.localize("CMM051_32"),
+		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_27, TextResource.localize("CMM051_27"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_28, TextResource.localize("CMM051_33"),
+		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_28, TextResource.localize("CMM051_28"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_29, TextResource.localize("CMM051_34"),
+		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_29, TextResource.localize("CMM051_29"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_30, TextResource.localize("CMM051_35"),
+		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_30, TextResource.localize("CMM051_30"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_31, TextResource.localize("CMM051_36"),
+		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_31, TextResource.localize("CMM051_31"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_32, TextResource.localize("CMM051_37"),
+		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_32, TextResource.localize("CMM051_32"),
 				ColumnTextAlign.LEFT, "", true));
 		for (WorkPlaceFunction item : workPlaceFunction) {
-			columns.add(new MasterHeaderColumn(item.getFunctionNo().v().toString(), item.getDisplayName().v(),
+			columns.add(new MasterHeaderColumn(item.getFunctionNo().v().toString(), WorkPlaceSelectionColumn.CMM051_32_2+item.getDisplayOrder(),
 					ColumnTextAlign.LEFT, "", true));
 		}
 		return columns;
@@ -52,6 +52,7 @@ public class WorkPlaceSelectionExportImpl implements MasterListData {
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		String companyId = AppContexts.user().companyId();
+		String baseDate = query.getStartDate().toString();
 		List<MasterData> datas = new ArrayList<>();
 		List<WorkPlaceFunction> workPlaceFunction = workPlaceFunctionRepository.getAllWorkPlaceFunction();
 
@@ -83,7 +84,7 @@ public class WorkPlaceSelectionExportImpl implements MasterListData {
 		 * datas.add(new MasterData(data, null, "")); }); } return datas;
 		 */
 
-		datas = workplaceManagerRepository.getDataExport(companyId, workPlaceFunction);
+		datas = workplaceManagerRepository.getDataExport(companyId, workPlaceFunction, baseDate);
 		return datas;
 	}
 }
