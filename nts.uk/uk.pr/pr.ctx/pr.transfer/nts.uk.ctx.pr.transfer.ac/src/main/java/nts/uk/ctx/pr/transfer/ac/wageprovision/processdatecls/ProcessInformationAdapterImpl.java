@@ -31,8 +31,8 @@ public class ProcessInformationAdapterImpl implements ProcessInformationAdapter 
 	}
 
 	private ProcessInformationImport fromExport(ProcessInformationExport export) {
-		return new ProcessInformationImport(export.getCid(), export.getProcessCateNo(), export.getDeprecatCate().value,
-				export.getProcessCls().v());
+		return new ProcessInformationImport(export.getCid(), export.getProcessCateNo(), export.getDeprecatCate(),
+				export.getProcessCls());
 	}
 
 }
