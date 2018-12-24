@@ -151,14 +151,14 @@ module nts.custombinding {
                     document.body.removeChild(dialog);
                 } else {
                     let bound = element.getBoundingClientRect(),
-                        access: ISetting = ko.toJS(valueAccessor() || ko.observable({
-                            "cursorDirection": ko.observable(CURSOR_DIRC.HORIZONTAL),
+                        access: ISetting = ko.toJS(valueAccessor()) || {
+                            "cursorDirection": CURSOR_DIRC.HORIZONTAL,
                             "clsATR": NOT_USE,
                             "jobATR": NOT_USE,
                             "workPlaceATR": NOT_USE,
                             "departmentATR": NOT_USE,
                             "employmentATR": NOT_USE,
-                        })), fixCols: Array<number> = [
+                        }, fixCols: Array<number> = [
                             1,
                             2,
                             access.clsATR == USE ? 7 : -1,
