@@ -115,16 +115,5 @@ public class JpaRoleSetMenuImpl implements RoleSetMenuRepository {
     return MasterData.builder().rowData(data).build();
 	}
 	
-	/*private Map<String, Object> dataContent(Object[] datarow) {
-		Map<String, Object> data = new HashMap<>();
-		data.put(RoleSetMenuColumn.CAS011_35,datarow[0]);
-		data.put(RoleSetMenuColumn.CAS011_36,datarow[1]);
-		data.put(RoleSetMenuColumn.CAS011_37,datarow[2].equals(datarow[0]) ? "○" :"");
-		data.put(RoleSetMenuColumn.CAS011_38,(String)datarow[3] != null ? (String)datarow[3]+(String)datarow[4] : "なし");
-		data.put(RoleSetMenuColumn.CAS011_39,(String)datarow[5] != null ? (String)datarow[5]+(String)datarow[6] : "なし");
-		data.put(RoleSetMenuColumn.CAS011_40,((BigDecimal)datarow[7]).intValue() == 0 ? "なし" : "あり");
-		data.put(RoleSetMenuColumn.CAS011_41,datarow[9]);
-		return data;
-	}*/
 	
 }

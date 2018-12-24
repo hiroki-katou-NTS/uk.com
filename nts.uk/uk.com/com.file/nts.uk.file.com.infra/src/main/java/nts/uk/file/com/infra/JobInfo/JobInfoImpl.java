@@ -93,7 +93,7 @@ public class JobInfoImpl extends JpaRepository implements JobInfoRepository {
 		Map<String,MasterCellData> data = new HashMap<>();
 			data.put(JobInfoColumn.CAS014_41, MasterCellData.builder()
                 .columnId(JobInfoColumn.CAS014_41)
-                .value(r.getInt("APPLY_CONCURRENT_PERSON") != null ? r.getInt("APPLY_CONCURRENT_PERSON") == 1 ? "○" : "ー" : null)
+                .value(r.getInt("APPLY_CONCURRENT_PERSON") != null ? r.getInt("APPLY_CONCURRENT_PERSON") == 1 ? "○" : "-" : null)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
             data.put(JobInfoColumn.CAS014_42, MasterCellData.builder()

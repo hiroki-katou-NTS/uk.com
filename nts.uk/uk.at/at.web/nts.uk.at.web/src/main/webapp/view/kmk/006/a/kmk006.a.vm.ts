@@ -1205,7 +1205,17 @@ module nts.uk.at.view.kmk006.a {
                         nts.uk.ui.dialog.alertError(res);
                     });
             }
-
+            /**
+             * check role
+             */
+            hasPermission(): boolean {
+                if (__viewContext.user.role.attendance || __viewContext.user.role.payroll 
+                    || __viewContext.user.role.personnel  || __viewContext.user.role.officeHelper){
+                    return true;
+                }
+                
+                return false;
+            }
             private clearAllError() {
                 nts.uk.ui.errors.clearAll();
             }          

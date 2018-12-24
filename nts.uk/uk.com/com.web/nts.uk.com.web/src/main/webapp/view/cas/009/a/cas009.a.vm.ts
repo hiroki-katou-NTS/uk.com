@@ -149,7 +149,17 @@ module cas009.a.viewmodel {
                 block.clear();
             });
         }
-
+        /**
+         * check role
+         */
+        hasPermission(): boolean {
+            if (__viewContext.user.role.attendance || __viewContext.user.role.payroll 
+                || __viewContext.user.role.personnel  || __viewContext.user.role.officeHelper){
+                return true;
+            }
+            
+            return false;
+        }
         // Kinh dị:
         // Tạo 2 danh sách để lưu 1 giá trị.
         getListRole() {

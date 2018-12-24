@@ -129,6 +129,113 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "	bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0 "
 			+ "AND kk.CID = ?cid";
 	
+	private static final String SQL_EXPORT_SHEET_4 = " WITH summary AS ("
+			+ " SELECT "
+			+ " 	kk.WKPCD,"
+			+ " 	kk.WKP_NAME,"
+			+ " 	ROW_NUMBER() OVER("
+			+ " 	PARTITION BY kk.WKPCD"
+			+ " 	ORDER BY ee.END_DATE DESC) AS rk,"
+			+ " 	aa.ERROR_WEEK,"
+			+ " 	aa.ALARM_WEEK,"
+			+ " 	LIMIT_WEEK = ("
+			+ " 		SELECT"
+			+ " 			aa.LIMIT_WEEK"
+			+ " 		FROM"
+			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+			+ " 		WHERE"
+			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
+			+ " 	),"
+			+ " 	aa.ERROR_TWO_WEEKS,"
+			+ " 	aa.ALARM_TWO_WEEKS,"
+			+ " 	LIMIT_TWO_WEEKS = ("
+			+ " 		SELECT"
+			+ " 			aa.LIMIT_TWO_WEEKS"
+			+ " 		FROM"
+			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+			+ " 		WHERE"
+			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
+			+ " 	),"
+			+ " 	aa.ERROR_FOUR_WEEKS,"
+			+ " 	aa.ALARM_FOUR_WEEKS,"
+			+ " 	LIMIT_FOUR_WEEKS = ("
+			+ " 		SELECT"
+			+ " 			aa.LIMIT_FOUR_WEEKS"
+			+ " 		FROM"
+			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+			+ " 		WHERE"
+			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
+			+ " 	),"
+			+ " 	aa.ERROR_ONE_MONTH,"
+			+ " 	aa.ALARM_ONE_MONTH,"
+			+ " 	LIMIT_ONE_MONTH = ("
+			+ " 		SELECT"
+			+ " 			aa.LIMIT_ONE_MONTH"
+			+ " 		FROM"
+			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+			+ " 		WHERE"
+			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
+			+ " 	),"
+			+ " 	aa.ERROR_TWO_MONTH,"
+			+ " 	aa.ALARM_TWO_MONTH,"
+			+ " 	LIMIT_TWO_MONTH = ("
+			+ " 		SELECT"
+			+ " 			aa.LIMIT_TWO_MONTH"
+			+ " 		FROM"
+			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+			+ " 		WHERE"
+			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
+			+ " 	),"
+			+ " 	aa.ERROR_THREE_MONTH,"
+			+ " 	aa.ALARM_THREE_MONTH,"
+			+ " 	LIMIT_THREE_MONTH = ("
+			+ " 		SELECT"
+			+ " 			aa.LIMIT_THREE_MONTH"
+			+ " 		FROM"
+			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+			+ " 		WHERE"
+			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
+			+ " 	),"
+			+ " 	aa.ERROR_YEARLY,"
+			+ " 	aa.ALARM_YEARLY,"
+			+ " 	LIMIT_YEARLY = ("
+			+ " 		SELECT"
+			+ " 			aa.LIMIT_YEARLY"
+			+ " 		FROM"
+			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+			+ " 		WHERE"
+			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
+			+ " 	)"
+			+ " FROM"
+			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
+			+ " JOIN KMKMT_AGREEMENTTIME_WPL bb "
+			+ " ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+			+ " JOIN BSYMT_WORKPLACE_INFO kk "
+			+ " ON bb.WKPCD = kk.WKPID"
+			+ " JOIN BSYMT_WORKPLACE_HIST ee "
+			+ " ON kk.HIST_ID = ee.HIST_ID"
+			+ " WHERE"
+			+ " 	 bb.LABOR_SYSTEM_ATR = 0 AND kk.CID = ?cid"
+			+ " )"
+			+ " SELECT s.WKPCD,s.WKP_NAME,s.ERROR_WEEK,s.ALARM_WEEK,s.LIMIT_WEEK,"
+			+ " 			 s.ERROR_TWO_WEEKS,s.ALARM_TWO_WEEKS,s.LIMIT_TWO_WEEKS,"
+			+ " 			 s.ERROR_FOUR_WEEKS,s.ALARM_FOUR_WEEKS,s.LIMIT_FOUR_WEEKS,"
+			+ " 			 s.ERROR_ONE_MONTH,s.ALARM_ONE_MONTH,s.LIMIT_ONE_MONTH,"
+			+ " 			 s.ERROR_TWO_MONTH,s.ALARM_TWO_MONTH,s.LIMIT_TWO_MONTH,"
+			+ " 			 s.ERROR_THREE_MONTH,s.ALARM_THREE_MONTH,s.LIMIT_THREE_MONTH,"
+			+ " 			 s.ERROR_YEARLY,s.ALARM_YEARLY,s.LIMIT_YEARLY"
+			+ "   FROM summary s"
+			+ "  WHERE s.rk = 1 ";
+
+	
+	
 	private static final String SQL_EXPORT_SHEET_5 = "SELECT "
 			+ "kk.CLSCD,"
 			+ "kk.CLSNAME,"
@@ -285,6 +392,113 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "AND kk.CID = ?cid";
 	
 	
+	private static final String SQL_EXPORT_SHEET_8 =  " WITH summary AS ("
+			+ " SELECT "
+			+ " 	kk.WKPCD,"
+			+ " 	kk.WKP_NAME,"
+			+ " 	ROW_NUMBER() OVER("
+			+ " 	PARTITION BY kk.WKPCD"
+			+ " 	ORDER BY ee.END_DATE DESC) AS rk,"
+			+ " 	aa.ERROR_WEEK,"
+			+ " 	aa.ALARM_WEEK,"
+			+ " 	LIMIT_WEEK = ("
+			+ " 		SELECT"
+			+ " 			aa.LIMIT_WEEK"
+			+ " 		FROM"
+			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+			+ " 		WHERE"
+			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+			+ " 	),"
+			+ " 	aa.ERROR_TWO_WEEKS,"
+			+ " 	aa.ALARM_TWO_WEEKS,"
+			+ " 	LIMIT_TWO_WEEKS = ("
+			+ " 		SELECT"
+			+ " 			aa.LIMIT_TWO_WEEKS"
+			+ " 		FROM"
+			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+			+ " 		WHERE"
+			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+			+ " 	),"
+			+ " 	aa.ERROR_FOUR_WEEKS,"
+			+ " 	aa.ALARM_FOUR_WEEKS,"
+			+ " 	LIMIT_FOUR_WEEKS = ("
+			+ " 		SELECT"
+			+ " 			aa.LIMIT_FOUR_WEEKS"
+			+ " 		FROM"
+			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+			+ " 		WHERE"
+			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+			+ " 	),"
+			+ " 	aa.ERROR_ONE_MONTH,"
+			+ " 	aa.ALARM_ONE_MONTH,"
+			+ " 	LIMIT_ONE_MONTH = ("
+			+ " 		SELECT"
+			+ " 			aa.LIMIT_ONE_MONTH"
+			+ " 		FROM"
+			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+			+ " 		WHERE"
+			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+			+ " 	),"
+			+ " 	aa.ERROR_TWO_MONTH,"
+			+ " 	aa.ALARM_TWO_MONTH,"
+			+ " 	LIMIT_TWO_MONTH = ("
+			+ " 		SELECT"
+			+ " 			aa.LIMIT_TWO_MONTH"
+			+ " 		FROM"
+			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+			+ " 		WHERE"
+			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+			+ " 	),"
+			+ " 	aa.ERROR_THREE_MONTH,"
+			+ " 	aa.ALARM_THREE_MONTH,"
+			+ " 	LIMIT_THREE_MONTH = ("
+			+ " 		SELECT"
+			+ " 			aa.LIMIT_THREE_MONTH"
+			+ " 		FROM"
+			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+			+ " 		WHERE"
+			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+			+ " 	),"
+			+ " 	aa.ERROR_YEARLY,"
+			+ " 	aa.ALARM_YEARLY,"
+			+ " 	LIMIT_YEARLY = ("
+			+ " 		SELECT"
+			+ " 			aa.LIMIT_YEARLY"
+			+ " 		FROM"
+			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
+			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+			+ " 		WHERE"
+			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
+			+ " 	)"
+			+ " FROM"
+			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
+			+ " JOIN KMKMT_AGREEMENTTIME_WPL bb "
+			+ " ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+			+ " JOIN BSYMT_WORKPLACE_INFO kk "
+			+ " ON bb.WKPCD = kk.WKPID"
+			+ " JOIN BSYMT_WORKPLACE_HIST ee "
+			+ " ON kk.HIST_ID = ee.HIST_ID"
+			+ " WHERE"
+			+ " 	 bb.LABOR_SYSTEM_ATR = 1 AND kk.CID = ?cid"
+			+ " )"
+			+ " SELECT s.WKPCD,s.WKP_NAME,s.ERROR_WEEK,s.ALARM_WEEK,s.LIMIT_WEEK,"
+			+ " 			 s.ERROR_TWO_WEEKS,s.ALARM_TWO_WEEKS,s.LIMIT_TWO_WEEKS,"
+			+ " 			 s.ERROR_FOUR_WEEKS,s.ALARM_FOUR_WEEKS,s.LIMIT_FOUR_WEEKS,"
+			+ " 			 s.ERROR_ONE_MONTH,s.ALARM_ONE_MONTH,s.LIMIT_ONE_MONTH,"
+			+ " 			 s.ERROR_TWO_MONTH,s.ALARM_TWO_MONTH,s.LIMIT_TWO_MONTH,"
+			+ " 			 s.ERROR_THREE_MONTH,s.ALARM_THREE_MONTH,s.LIMIT_THREE_MONTH,"
+			+ " 			 s.ERROR_YEARLY,s.ALARM_YEARLY,s.LIMIT_YEARLY"
+			+ "   FROM summary s"
+			+ "  WHERE s.rk = 1 ";
+
+	
+	
 	private static final String SQL_EXPORT_SHEET_9 = "SELECT "
 			+ "kk.CLSCD,"
 			+ "kk.CLSNAME,"
@@ -371,14 +585,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	}
 	
 	
-	/*private Map<String, Object> dataContentSheet1(Object object,int check,int closeDateAtr) {
-		Map<String, Object> data = new HashMap<>();
-		data.put(RegistTimeColumn.KMK008_80, check == 0 ? RegistTimeColumn.KMK008_82 : "");
-		data.put(RegistTimeColumn.HEADER_NONE1, check == 0 ? RegistTimeColumn.KMK008_83 : check == 1 ? RegistTimeColumn.KMK008_84 : check == 3 ? RegistTimeColumn.KMK008_85 : check == 4 ? RegistTimeColumn.KMK008_86 : "");
-		data.put(RegistTimeColumn.HEADER_NONE2, check == 4 ? RegistTimeColumn.KMK008_87 : check == 5 ? RegistTimeColumn.KMK008_88 : "");
-		data.put(RegistTimeColumn.KMK008_81, getValue(((BigDecimal)object).intValue(),check,closeDateAtr));
-		return data;
-	}*/
+	
 	
 	private MasterData toDataSheet1(Object object,int check,int closeDateAtr) {
 		Map<String,MasterCellData> data = new HashMap<>();
@@ -478,14 +685,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		return datas;
 	}
 	
-	/*private Map<String, Object> dataContentSheet2(Object[] objects,int rownum,int param) {
-		Map<String, Object> data = new HashMap<>();
-		data.put(RegistTimeColumn.KMK008_89, getColumnOneSheet2(rownum));
-		data.put(RegistTimeColumn.KMK008_90,objects != null ? formatTime(((BigDecimal)objects[param]).intValue()) : "");
-		data.put(RegistTimeColumn.KMK008_91,objects != null ? formatTime(((BigDecimal)objects[++param]).intValue()) : "");
-		data.put(RegistTimeColumn.KMK008_92,objects != null ? formatTime(((BigDecimal)objects[++param]).intValue()) : "");
-		return data;
-	}*/
+	
 	
 	private MasterData toDataSheet2(Object[] objects,int rownum,int param) {
 		Map<String,MasterCellData> data = new HashMap<>();
@@ -561,16 +761,6 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		return datas;
 	}
 	
-	/*private Map<String, Object> dataContentSheet3(Object[] objects,int rownum,int param) {
-		Map<String, Object> data = new HashMap<>();
-		data.put(RegistTimeColumn.KMK008_100, rownum == 0 ? objects[0] : "");
-		data.put(RegistTimeColumn.KMK008_101,rownum == 0 ? objects[1] : "");
-		data.put(RegistTimeColumn.KMK008_89, getColumnOneSheet2(rownum));
-		data.put(RegistTimeColumn.KMK008_90,formatTime(((BigDecimal)objects[param]).intValue()));
-		data.put(RegistTimeColumn.KMK008_91,formatTime(((BigDecimal)objects[++param]).intValue()));
-		data.put(RegistTimeColumn.KMK008_92,formatTime(((BigDecimal)objects[++param]).intValue()));
-		return data;
-	}*/
 	
 	private MasterData toDataSheet3(Object[] objects,int rownum,int param) {
 		Map<String,MasterCellData> data = new HashMap<>();
@@ -606,7 +796,61 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	                .build());
 		return MasterData.builder().rowData(data).build();
 	}
-
+	
+	
+	@Override
+	public List<MasterData> getDataExportSheet4() {
+		List<MasterData> datas = new ArrayList<>();
+		String cid = AppContexts.user().companyId();
+		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_4.toString()).
+				setParameter("cid", cid);
+		@SuppressWarnings("unchecked")
+		List<Object[]> data =  query.getResultList();
+		for (Object[] objects : data) {
+			int j = 2 ;
+			for (int i = 0; i < 7; i++) {
+				datas.add(toDataSheet4(objects,i,j));
+				j = j+3;
+			}
+		}
+		return datas;
+	}
+	
+	private MasterData toDataSheet4(Object[] objects,int rownum,int param) {
+		Map<String,MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.KMK008_102, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_102)
+                .value(rownum == 0 ? objects[0] : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_103, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_103)
+                .value(rownum == 0 ? objects[1] : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_89)
+                .value(getColumnOneSheet2(rownum))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		 data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
+	                .columnId(RegistTimeColumn.KMK008_90)
+	                .value(formatTime(((BigDecimal)objects[param]).intValue()))
+	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+	                .build());
+		 data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
+	                .columnId(RegistTimeColumn.KMK008_91)
+	                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
+	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+	                .build());
+		 data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
+	                .columnId(RegistTimeColumn.KMK008_92)
+	                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
+	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+	                .build());
+		return MasterData.builder().rowData(data).build();
+	}
+	
 	@Override
 	public List<MasterData> getDataExportSheet5() {
 		List<MasterData> datas = new ArrayList<>();
@@ -625,16 +869,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		return datas;
 	}
 	
-	/*private Map<String, Object> dataContentSheet5(Object[] objects,int rownum,int param) {
-		Map<String, Object> data = new HashMap<>();
-		data.put(RegistTimeColumn.KMK008_104, rownum == 0 ? objects[0] : "");
-		data.put(RegistTimeColumn.KMK008_105,rownum == 0 ? objects[1] : "");
-		data.put(RegistTimeColumn.KMK008_89, getColumnOneSheet2(rownum));
-		data.put(RegistTimeColumn.KMK008_90,formatTime(((BigDecimal)objects[param]).intValue()));
-		data.put(RegistTimeColumn.KMK008_91,formatTime(((BigDecimal)objects[++param]).intValue()));
-		data.put(RegistTimeColumn.KMK008_92,formatTime(((BigDecimal)objects[++param]).intValue()));
-		return data;
-	}*/
+	
 	
 	private MasterData toDataSheet5(Object[] objects,int rownum,int param) {
 		Map<String,MasterCellData> data = new HashMap<>();
@@ -693,14 +928,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		return datas;
 	}
 	
-	/*private Map<String, Object> dataContentSheet6(Object[] objects,int rownum,int param) {
-		Map<String, Object> data = new HashMap<>();
-		data.put(RegistTimeColumn.KMK008_89, getColumnOneSheet2(rownum));
-		data.put(RegistTimeColumn.KMK008_90,objects == null ? "" : formatTime(((BigDecimal)objects[param]).intValue()));
-		data.put(RegistTimeColumn.KMK008_91,objects == null ? "" : formatTime(((BigDecimal)objects[++param]).intValue()));
-		data.put(RegistTimeColumn.KMK008_92,objects == null  ? "" : formatTime(((BigDecimal)objects[++param]).intValue()));
-		return data;
-	}*/
+	
 	
 	private MasterData toDataSheet6(Object[] objects,int rownum,int param) {
 		Map<String,MasterCellData> data = new HashMap<>();
@@ -746,16 +974,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		return datas;
 	}
 	
-	/*private Map<String, Object> dataContentSheet7(Object[] objects,int rownum,int param) {
-		Map<String, Object> data = new HashMap<>();
-		data.put(RegistTimeColumn.KMK008_100, rownum == 0 ? objects[0] : "");
-		data.put(RegistTimeColumn.KMK008_101, rownum == 0 ? objects[1] : "");
-		data.put(RegistTimeColumn.KMK008_89, getColumnOneSheet2(rownum));
-		data.put(RegistTimeColumn.KMK008_90,formatTime(((BigDecimal)objects[param]).intValue()));
-		data.put(RegistTimeColumn.KMK008_91,formatTime(((BigDecimal)objects[++param]).intValue()));
-		data.put(RegistTimeColumn.KMK008_92,formatTime(((BigDecimal)objects[++param]).intValue()));
-		return data;
-	}*/
+	
 	
 	private MasterData toDataSheet7(Object[] objects,int rownum,int param) {
 		Map<String,MasterCellData> data = new HashMap<>();
@@ -766,6 +985,60 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
                 .build());
 		data.put(RegistTimeColumn.KMK008_101, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_101)
+                .value(rownum == 0 ? objects[1] : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_89)
+                .value(getColumnOneSheet2(rownum))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		 data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
+	                .columnId(RegistTimeColumn.KMK008_90)
+	                .value(formatTime(((BigDecimal)objects[param]).intValue()))
+	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+	                .build());
+		 data.put(RegistTimeColumn.KMK008_91, MasterCellData.builder()
+	                .columnId(RegistTimeColumn.KMK008_91)
+	                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
+	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+	                .build());
+		 data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
+	                .columnId(RegistTimeColumn.KMK008_92)
+	                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
+	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+	                .build());
+		return MasterData.builder().rowData(data).build();
+	}
+	
+	
+	@Override
+	public List<MasterData> getDataExportSheet8() {
+		List<MasterData> datas = new ArrayList<>();
+		String cid = AppContexts.user().companyId();
+		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_8.toString()).
+				setParameter("cid", cid);
+		@SuppressWarnings("unchecked")
+		List<Object[]> data =  query.getResultList();
+		for (Object[] objects : data) {
+			int j = 2 ;
+			for (int i = 0; i < 7; i++) {
+				datas.add(toDataSheet8(objects,i,j));
+				j = j+3;
+			}
+		}
+		return datas;
+	}
+	
+	private MasterData toDataSheet8(Object[] objects,int rownum,int param) {
+		Map<String,MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.KMK008_102, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_102)
+                .value(rownum == 0 ? objects[0] : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_103, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_103)
                 .value(rownum == 0 ? objects[1] : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
@@ -810,17 +1083,6 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		return datas;
 	}
 	
-	/*private Map<String, Object> dataContentSheet9(Object[] objects,int rownum,int param) {
-		Map<String, Object> data = new HashMap<>();
-		data.put(RegistTimeColumn.KMK008_104, rownum == 0 ? objects[0] : "");
-		data.put(RegistTimeColumn.KMK008_105, rownum == 0 ? objects[1] : "");
-		data.put(RegistTimeColumn.KMK008_89, getColumnOneSheet2(rownum));
-		data.put(RegistTimeColumn.KMK008_90, formatTime(((BigDecimal)objects[param]).intValue()));
-		data.put(RegistTimeColumn.KMK008_91,formatTime(((BigDecimal)objects[++param]).intValue()));
-		data.put(RegistTimeColumn.KMK008_92, formatTime(((BigDecimal)objects[++param]).intValue()));
-		return data;
-	}*/
-	
 	private MasterData toDataSheet9(Object[] objects,int rownum,int param) {
 		Map<String,MasterCellData> data = new HashMap<>();
 		data.put(RegistTimeColumn.KMK008_104, MasterCellData.builder()
@@ -855,5 +1117,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
                 .build());
 		return MasterData.builder().rowData(data).build();
 	}
-	
+
+
+
 }

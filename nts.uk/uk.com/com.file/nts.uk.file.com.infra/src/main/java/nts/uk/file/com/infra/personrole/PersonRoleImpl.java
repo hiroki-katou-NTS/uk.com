@@ -31,6 +31,8 @@ public class PersonRoleImpl implements PersonRoleRepository {
 	
 	private static final String VALUE_TRUE = "可";
 	private static final String VALUE_FALSE = "木可";
+	private static Integer allowOther = null;
+	private static Integer allowPer = null;
 	
 	private static final String GET_EXPORT_EXCEL = " 	SELECT "
 			+ " 		CASE WHEN TH.ROW_NUMBER1 = 1 THEN TH.ROLE_CD ELSE NULL END ROLE_CD,"
@@ -596,7 +598,10 @@ public class PersonRoleImpl implements PersonRoleRepository {
 		if(object[21].equals("False")) {
 			return null;
 		}
-		
+		if(object[2] != null) {
+			allowOther = ((BigDecimal) object[4]).intValue();
+			allowPer = ((BigDecimal) object[5]).intValue();
+		}
 		// A7_1
 		data.put(PersonRoleColumn.CAS001_77, MasterCellData.builder()
                 .columnId(PersonRoleColumn.CAS001_77)
@@ -727,14 +732,14 @@ public class PersonRoleImpl implements PersonRoleRepository {
 		//A7_20
 		data.put(PersonRoleColumn.CAS001_98, MasterCellData.builder()
                 .columnId(PersonRoleColumn.CAS001_98)
-                .value(object[19] != null ? object[4] != null ? ((BigDecimal) object[4]).intValue() == 1 ? 
+                .value(object[19] != null ? allowOther != null ? allowOther == 1 ? 
                 		getPersonInfoItemAuth(((BigDecimal) object[19]).intValue()) : ""  : "" : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		//A7_21
 		data.put(PersonRoleColumn.CAS001_99, MasterCellData.builder()
 		                .columnId(PersonRoleColumn.CAS001_99)
-		                .value(object[20] != null ? object[5] != null ? ((BigDecimal) object[5]).intValue() == 1 ? 
+		                .value(object[20] != null ? allowPer != null ? allowPer == 1 ? 
 		                		getPersonInfoItemAuth(((BigDecimal) object[20]).intValue()) : "" : "" : "")
 		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 		                .build());
@@ -742,95 +747,6 @@ public class PersonRoleImpl implements PersonRoleRepository {
 		return MasterData.builder().rowData(data).build();
 	}
 	
-	
-	private Map<String, Object> dataContent(Object[] object) {
-		boolean isHigher = Integer.valueOf(object[21].toString()) > Integer.valueOf(object[22].toString());
-		boolean isCateConfig = false;
-		if(object[3]  != null) {
-			isCateConfig = !isHigher ? Boolean.valueOf(object[3].toString()) : false;
-		}
-		if(object[23].equals("False") && !isCateConfig) {
-			return null;
-		}
-		Map<String, Object> data = new HashMap<>();
-		// A7_1
-		data.put(PersonRoleColumn.CAS001_77, (String) object[0]);
-		// A7_2
-		data.put(PersonRoleColumn.CAS001_78, (String) object[1]);
-		// A7_3
-		data.put(PersonRoleColumn.CAS001_79, (String) object[2]);
-		
-		// A7_4
-		data.put(PersonRoleColumn.CAS001_81, object[3] != null ? getTypeName(((BigDecimal) object[3]).intValue()) : "");
-		
-		// A7_5
-		data.put(PersonRoleColumn.CAS001_82, object[4] != null ? ((BigDecimal) object[4]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE : "");
-		
-		// A7_6
-		data.put(PersonRoleColumn.CAS001_89, object[5] != null ? ((BigDecimal) object[5]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE : "");
-		
-		// A7_7
-		Integer cateType = object[3] != null ? ((BigDecimal) object[3]).intValue() : null;
-		data.put(PersonRoleColumn.CAS001_83,  cateType == null || cateType != 2 || (object[4] != null && ((BigDecimal) object[4]).intValue() == 0) ? ""
-				: object[6] == null ? "" : ((BigDecimal) object[6]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
-		
-		// A7_8
-		data.put(PersonRoleColumn.CAS001_84, cateType == null || cateType != 2 || (object[4] != null && ((BigDecimal) object[4]).intValue() == 0) ?  ""
-				: object[7] == null ? "" : ((BigDecimal) object[7]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
-		
-		// A7_9
-		data.put(PersonRoleColumn.CAS001_85,cateType == null || cateType != 2 || (object[5] != null && ((BigDecimal) object[5]).intValue() == 0) ?  ""
-				: object[8] == null ? "" : ((BigDecimal) object[8]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
-		
-		// A7_10
-		data.put(PersonRoleColumn.CAS001_90,cateType == null || cateType != 2 || (object[5] != null && ((BigDecimal) object[5]).intValue() == 0) ? ""
-				: object[9] == null ? "" : ((BigDecimal) object[9]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
-		
-		// A7_11
-		data.put(PersonRoleColumn.CAS001_91,cateType == null || cateType == 1 || cateType == 2 || (object[4] != null && ((BigDecimal) object[4]).intValue() == 0) ? ""
-				: object[10] == null ? "" : ((BigDecimal) object[10]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
-		
-		// A7_12
-		data.put(PersonRoleColumn.CAS001_86,cateType == null || cateType == 1 || cateType == 2 || (object[4] != null && ((BigDecimal) object[4]).intValue() == 0) ? ""
-				: object[11] == null ? "" : ((BigDecimal) object[11]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
-		
-		// A7_13
-		data.put(PersonRoleColumn.CAS001_87,cateType == null || cateType == 1 || cateType == 2 || (object[4] != null && ((BigDecimal) object[4]).intValue() == 0) ? ""
-				: object[12] == null ? "" : checkValue3(((BigDecimal) object[12]).intValue()));
-		
-		// A7_14
-		data.put(PersonRoleColumn.CAS001_88,cateType == null || cateType == 1 || cateType == 2 || (object[4] != null && ((BigDecimal) object[4]).intValue() == 0) ? ""
-				: object[13] == null ? "" : checkValue3(((BigDecimal) object[13]).intValue()));
-		
-		// A7_15
-		data.put(PersonRoleColumn.CAS001_92,cateType == null || cateType == 1 || cateType == 2 || (object[5] != null && ((BigDecimal) object[5]).intValue() == 0) ?  ""
-				: object[14] == null ? "" : ((BigDecimal) object[14]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
-		
-		// A7_16
-		data.put(PersonRoleColumn.CAS001_93,cateType == null || cateType == 1 || cateType == 2 || (object[5] != null && ((BigDecimal) object[5]).intValue() == 0) ? ""
-				: object[15] == null ? "" : ((BigDecimal) object[15]).intValue() == 1 ? VALUE_TRUE : VALUE_FALSE);
-		
-		// A7_17
-		data.put(PersonRoleColumn.CAS001_94,cateType == null || cateType == 1 || cateType == 2 || (object[5] != null && ((BigDecimal) object[5]).intValue() == 0) ? ""
-				: object[16] == null ? "" : checkValue3(((BigDecimal) object[16]).intValue()));
-		
-		// A7_18
-		data.put(PersonRoleColumn.CAS001_95,cateType == null || cateType == 1 || cateType == 2 || (object[5] != null && ((BigDecimal) object[5]).intValue() == 0) ? ""
-				: object[17] == null ? "" : checkValue3(((BigDecimal) object[17]).intValue()));
-		
-		// A7_19
-		data.put(PersonRoleColumn.CAS001_97, object[18] != null ? (String) object[18] : null);
-		
-		// A7_20
-		data.put(PersonRoleColumn.CAS001_98, object[19] != null ? object[4] != null ? ((BigDecimal) object[4]).intValue() == 1 ? getPersonInfoItemAuth(((BigDecimal) object[19]).intValue()) : ""  : "" : "");
-		
-		// A7_21
-		data.put(PersonRoleColumn.CAS001_99, object[20] != null ? object[5] != null ? ((BigDecimal) object[5]).intValue() == 1 ? getPersonInfoItemAuth(((BigDecimal) object[20]).intValue()) : "" : "" : "");
-		
-		return data;
-	}
-	
-
 	
 	private String checkValue3(Integer authType) {
 		String value = null;
