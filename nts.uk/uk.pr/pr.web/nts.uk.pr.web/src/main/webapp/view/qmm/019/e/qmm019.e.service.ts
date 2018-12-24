@@ -10,6 +10,7 @@ module nts.uk.pr.view.qmm019.e {
             getSalIndAmountNameById: "core/wageprovision/statementlayout/getSalIndAmountNameById/{0}/{1}",
             getFormulaById: "core/wageprovision/statementlayout/getFormulaById/{0}",
             getWageTableById: "core/wageprovision/statementlayout/getWageTableById/{0}",
+            getStatementItemName: "ctx/pr/core/wageprovision/statementitem/getStatementItemName/{0}/{1}"
         }
 
         export function getStatementItem(dataDto: any): JQueryPromise<any> {
@@ -38,6 +39,11 @@ module nts.uk.pr.view.qmm019.e {
 
         export function getWageTableById(wageTableCode: string): JQueryPromise<any> {
             let _path = format(paths.getWageTableById, wageTableCode);
+            return ajax('pr', _path);
+        }
+
+        export function getStatementItemName(categoryAtr: number, itemNameCd: string): JQueryPromise<any> {
+            let _path = format(paths.getStatementItemName, categoryAtr, itemNameCd);
             return ajax('pr', _path);
         }
     }

@@ -1,5 +1,5 @@
 #contents-area {
-    padding: 20px !important;
+    padding-left: 20px !important;
 }
 
 #C1_1, #C1_6 {
@@ -34,4 +34,12 @@
 
 #C1_12 {
     margin-right: 10px;
+}
+
+#contents-area>.valign-center {
+    width: 640px;
+}
+
+#right-item {
+    width: 350px;
 }

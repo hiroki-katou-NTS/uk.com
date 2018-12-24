@@ -16,6 +16,11 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
     import StatementPrintAtr = nts.uk.pr.view.qmm019.share.model.StatementPrintAtr;
     import CategoryAtr = nts.uk.pr.view.qmm019.share.model.CategoryAtr;
     import IItemRangeSet = nts.uk.pr.view.qmm019.share.model.IItemRangeSet;
+    import PaymentTotalObjAtr = nts.uk.pr.view.qmm019.share.model.PaymentTotalObjAtr;
+    import PaymentCaclMethodAtr = nts.uk.pr.view.qmm019.share.model.PaymentCaclMethodAtr;
+    import getLayoutPatternText = nts.uk.pr.view.qmm019.share.model.getLayoutPatternText;
+    import getLayoutPatternContent = nts.uk.pr.view.qmm019.share.model.getLayoutPatternContent;
+    import StatementLayoutPattern = nts.uk.pr.view.qmm019.share.model.StatementLayoutPattern;
 
     export class ScreenModel {
 
@@ -58,6 +63,129 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
             });
         }
 
+        calculatePrintLine() {
+            let self = this;
+            let totalLines = 0;
+            let printLines = 0;
+            let noPrintLines = 0;
+            let printLinesPayment = 0;
+            let noPrintLinesPayment = 0;
+            let printLinesDedu = 0;
+            let noPrintLinesDedu = 0;
+            let printLinesTime = 0;
+            let noPrintLinesTime = 0;
+            let printLinesReport = 0;
+            let noPrintLinesReport = 0;
+
+            switch (self.statementLayoutHistData().statementLayoutSet().layoutPattern()) {
+                case StatementLayoutPattern.LASER_PRINT_A4_PORTRAIT_ONE_PERSON:
+                case StatementLayoutPattern.LASER_PRINT_A4_PORTRAIT_TWO_PERSON:
+                case StatementLayoutPattern.LASER_PRINT_A4_PORTRAIT_THREE_PERSON:
+                case StatementLayoutPattern.LASER_PRINT_A4_LANDSCAPE_TWO_PERSON:
+                case StatementLayoutPattern.LASER_CRIMP_PORTRAIT_ONE_PERSON:
+                    for(let settingByCtg: SettingByCtg of self.statementLayoutHistData().statementLayoutSet().listSettingByCtg()) {
+                        totalLines += settingByCtg.listLineByLineSet().length;
+
+                        for(let lineByLineSetting: LineByLineSetting of settingByCtg.listLineByLineSet()) {
+                            if(lineByLineSetting.printSet() == StatementPrintAtr.PRINT) {
+                                printLines++;
+                            } else {
+                                noPrintLines++;
+                            }
+                        }
+                    }
+
+                    self.statementLayoutHistData().usedLines(printLines + "行 (+非表示" + noPrintLines + "行)");
+                    break;
+                case StatementLayoutPattern.LASER_CRIMP_LANDSCAPE_ONE_PERSON:
+                    for(let settingByCtg: SettingByCtg of self.statementLayoutHistData().statementLayoutSet().listSettingByCtg()) {
+                        if(settingByCtg.ctgAtr == CategoryAtr.PAYMENT_ITEM) {
+                            for(let lineByLineSetting: LineByLineSetting of settingByCtg.listLineByLineSet()) {
+                                if(lineByLineSetting.printSet() == StatementPrintAtr.PRINT) {
+                                    printLinesPayment++;
+                                } else {
+                                    noPrintLinesPayment++;
+                                }
+                            }
+                        } else if(settingByCtg.ctgAtr == CategoryAtr.DEDUCTION_ITEM) {
+                            for(let lineByLineSetting: LineByLineSetting of settingByCtg.listLineByLineSet()) {
+                                if(lineByLineSetting.printSet() == StatementPrintAtr.PRINT) {
+                                    printLinesDedu++;
+                                } else {
+                                    noPrintLinesDedu++;
+                                }
+                            }
+                        } else if(settingByCtg.ctgAtr == CategoryAtr.ATTEND_ITEM) {
+                            for(let lineByLineSetting: LineByLineSetting of settingByCtg.listLineByLineSet()) {
+                                if(lineByLineSetting.printSet() == StatementPrintAtr.PRINT) {
+                                    printLinesTime++;
+                                } else {
+                                    noPrintLinesTime++;
+                                }
+                            }
+                        } else if(settingByCtg.ctgAtr == CategoryAtr.REPORT_ITEM) {
+                            for(let lineByLineSetting: LineByLineSetting of settingByCtg.listLineByLineSet()) {
+                                if(lineByLineSetting.printSet() == StatementPrintAtr.PRINT) {
+                                    printLinesReport++;
+                                } else {
+                                    noPrintLinesReport++;
+                                }
+                            }
+                        }
+                    }
+
+                    self.statementLayoutHistData().usedLines("支給" + printLinesPayment + "行(＋非表示" + noPrintLinesPayment + "行) " +
+                                                            "控除" + printLinesDedu + "行(＋非表示" + noPrintLinesDedu + "行) " +
+                                                            "勤怠" + printLinesTime + "行(＋非表示" + noPrintLinesTime + "行) " +
+                                                            "記事" + printLinesReport + "行(＋非表示" + noPrintLinesReport + "行) ");
+                    break;
+                case StatementLayoutPattern.DOT_PRINT_CONTINUOUS_PAPER_ONE_PERSON:
+                    for(let settingByCtg: SettingByCtg of self.statementLayoutHistData().statementLayoutSet().listSettingByCtg()) {
+                        if(settingByCtg.ctgAtr == CategoryAtr.PAYMENT_ITEM) {
+                            for(let lineByLineSetting: LineByLineSetting of settingByCtg.listLineByLineSet()) {
+                                if(lineByLineSetting.printSet() == StatementPrintAtr.PRINT) {
+                                    printLinesPayment++;
+                                } else {
+                                    noPrintLinesPayment++;
+                                }
+                            }
+                        } else if(settingByCtg.ctgAtr == CategoryAtr.DEDUCTION_ITEM) {
+                            for(let lineByLineSetting: LineByLineSetting of settingByCtg.listLineByLineSet()) {
+                                if(lineByLineSetting.printSet() == StatementPrintAtr.PRINT) {
+                                    printLinesDedu++;
+                                } else {
+                                    noPrintLinesDedu++;
+                                }
+                            }
+                        } else if(settingByCtg.ctgAtr == CategoryAtr.ATTEND_ITEM) {
+                            for(let lineByLineSetting: LineByLineSetting of settingByCtg.listLineByLineSet()) {
+                                if(lineByLineSetting.printSet() == StatementPrintAtr.PRINT) {
+                                    printLinesTime++;
+                                } else {
+                                    noPrintLinesTime++;
+                                }
+                            }
+                        } else if(settingByCtg.ctgAtr == CategoryAtr.REPORT_ITEM) {
+                            for(let lineByLineSetting: LineByLineSetting of settingByCtg.listLineByLineSet()) {
+                                if(lineByLineSetting.printSet() == StatementPrintAtr.PRINT) {
+                                    printLinesReport++;
+                                } else {
+                                    noPrintLinesReport++;
+                                }
+                            }
+                        }
+                    }
+
+                    self.statementLayoutHistData().usedLines("支給3行(＋非表示" + noPrintLinesPayment + "行) " +
+                                                            "控除3行(＋非表示" + noPrintLinesDedu + "行) " +
+                                                            "勤怠1行(＋非表示" + noPrintLinesTime + "行) " +
+                                                            "記事2行(＋非表示" + noPrintLinesReport + "行) ");
+                    break;
+                default:
+                    return "";
+            }
+        }
+
         loadLayoutHistData(code: string, histId: string) {
             let self = this;
             block.invisible();
@@ -65,6 +193,8 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
             service.getStatementLayoutHistData(code, histId).done(function(data: IStatementLayoutHistData) {
                 if(data) {
                     self.statementLayoutHistData(new StatementLayoutHistData(data, false));
+                    self.calculatePrintLine();
+                    $("#A3_4").focus();
                 } else {
                     self.statementLayoutHistData(new StatementLayoutHistData(null, false));
                 }
@@ -84,23 +214,17 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
 
             service.getAllStatementLayoutAndHist().done(function(data: Array<IStatementLayout>) {
                 let statementLayoutList = data.map(x => new StatementLayout(x));
-                self.statementLayoutList(statementLayoutList);
 
-                // TODO ????????????????????
-                if(statementLayoutList.length <= 0) {
-                    self.currentHistoryId(null);
-                    self.statementLayoutHistData(new StatementLayoutHistData(null, false));
-                } else {
-                    self.currentHistoryId(null);
-                    self.statementLayoutHistData(new StatementLayoutHistData(null, false));
-                }
+                self.statementLayoutList(statementLayoutList);
+                self.currentHistoryId(null);
+                self.statementLayoutHistData(new StatementLayoutHistData(null, false));
 
                 block.clear();
                 dfd.resolve();
             }).fail(() => {
                 block.clear();
                 dfd.resolve();
-            });
+            })
 
             return dfd.promise();
         }
@@ -133,6 +257,39 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 }
 
                 $("#A3_4").focus();
+            });
+        }
+
+        public createIfEmpty(): void {
+            let self = this;
+
+            nts.uk.ui.windows.sub.modal('../h/index.xhtml').onClosed(() => {
+                let params = getShared("QMM019_H_TO_A_PARAMS");
+                let histID = params.histID;
+
+                if(params && params.isRegistered) {
+                    self.loadListData().done(function() {
+                        let matchKey: boolean = _.filter(self.statementLayoutList(), function (o: StatementLayout) {
+                            return _.filter(o.history, function (h: YearMonthHistory) {
+                                return h.historyId == histID;
+                            }).length > 0;
+                        }).length > 0;
+
+                        if (matchKey) {
+                            self.currentHistoryId(histID);
+                            //self.currentHistoryId.valueHasMutated();
+                        } else if (self.statementLayoutList().length > 0) {
+                            let histLength = self.statementLayoutList()[0].history.length;
+                            if (histLength > 0) {
+                                self.currentHistoryId(self.statementLayoutList()[0].history[histLength - 1].historyId);
+                            }
+                        }
+                    });
+
+                    $("#A3_4").focus();
+                } else {
+                    nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
+                }
             });
         }
 
@@ -210,7 +367,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         }
 
         public outputExcel(): void {
-            modal("/view/qmm/019/d/index.xhtml");
+            modal("/view/qmm/019/p/index.xhtml");
         }
 
         public addHistory(): void {
@@ -229,13 +386,15 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
 
                     service.getInitStatementLayoutHistData(statementCode, histId, startMonth, itemHistoryDivision, layoutPattern).done(function (data: IStatementLayoutHistData) {
                         if(data) {
+                            self.statementLayoutList.removeAll();
                             self.currentHistoryId("");
                             self.statementLayoutHistData(new StatementLayoutHistData(data, true));
+                            self.calculatePrintLine();
+
+                            $("#A3_4").focus();
                         }
                     });
                 }
-
-                $("#A3_4").focus();
             });
         }
 
@@ -281,6 +440,8 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                                 if(histLength > 0) {
                                     self.currentHistoryId(self.statementLayoutList()[0].history[histLength - 1].historyId);
                                 }
+                            } else {
+                                self.createIfEmpty();
                             }
                         }
                     });
@@ -291,11 +452,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         }
 
         public modifyLog(): void {
-            modal("/view/qmm/019/e/index.xhtml");
-        }
-        
-        public openP(): void {
-            modal("/view/qmm/019/p/index.xhtml");
+
         }
     }
 
@@ -313,6 +470,9 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         // not submit
         startMonthText: KnockoutObservable<string>;
         endMonthText: KnockoutObservable<string>;
+        layoutPatternText: string;
+        layoutPatternContent: string;
+        usedLines: KnockoutObservable<string>;
 
         constructor(data: IStatementLayoutHistData, isCreate: boolean) {
             let self = this;
@@ -328,6 +488,8 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 self.checkCreate = ko.observable(isCreate);
                 self.startMonthText = ko.observable(nts.uk.time.parseYearMonth(data.startMonth).format());
                 self.endMonthText = ko.observable(nts.uk.time.parseYearMonth(data.endMonth).format());
+                self.layoutPatternText = getLayoutPatternText(data.statementLayoutSet.layoutPattern);
+                self.layoutPatternContent = getLayoutPatternContent(data.statementLayoutSet.layoutPattern);
             } else {
                 self.statementCode = null;
                 self.statementName = ko.observable(null);
@@ -339,7 +501,11 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 self.checkCreate = ko.observable(false);
                 self.startMonthText = ko.observable(null);
                 self.endMonthText = ko.observable(null);
+                self.layoutPatternText = "";
+                self.layoutPatternContent = "";
             }
+
+            self.usedLines = ko.observable("");
 
             nts.uk.ui.errors.clearAll();
         }
@@ -426,16 +592,84 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
 
                 if(params && params.isRegistered) {
                     self.listLineByLineSet.push(new LineByLineSetting(null, params.printSet, self));
+                    __viewContext['screenModel'].calculatePrintLine();
                 }
-
-                //TODO $("#C3_8").focus();
             });
         }
 
         public showCtg(): void {
             let self = this;
+            let totalLine = 0;
+            let printLineInCtg = 0;
+            let noPrintLineInCtg = 0;
 
-            self.isShowCtg(true);
+            for(let settingByCtg: SettingByCtg of self.parent.listSettingByCtg()) {
+                totalLine += settingByCtg.listLineByLineSet().length;
+            }
+
+            setShared("QMM019_A_TO_L_PARAMS", {
+                layoutPattern: self.parent.layoutPattern(),
+                totalLine: totalLine,
+                ctgAtr: self.ctgAtr,
+                printLineInCtg: printLineInCtg,
+                noPrintLineInCtg: noPrintLineInCtg,
+                isAddCategory: true
+            });
+
+            nts.uk.ui.windows.sub.modal('../l/index.xhtml').onClosed(() => {
+                let params = getShared("QMM019_L_TO_A_PARAMS");
+
+                if(params && params.isRegistered) {
+                    self.isShowCtg(true);
+                    self.listLineByLineSet.push(new LineByLineSetting(null, params.printSet, self));
+                    __viewContext['screenModel'].calculatePrintLine();
+                }
+            });
+        }
+
+        public editCategory(): void {
+            let self = this;
+            let totalLine = 0;
+            let printLineInCtg = 0;
+            let noPrintLineInCtg = 0;
+
+            for(let settingByCtg: SettingByCtg of self.parent.listSettingByCtg()) {
+                totalLine += settingByCtg.listLineByLineSet().length;
+            }
+
+            for(let lineByLineSetting: LineByLineSetting of self.listLineByLineSet()) {
+                if(lineByLineSetting.printSet() == StatementPrintAtr.PRINT) {
+                    printLineInCtg++;
+                } else {
+                    noPrintLineInCtg++;
+                }
+            }
+
+            setShared("QMM019_A_TO_L_PARAMS", {
+                layoutPattern: self.parent.layoutPattern(),
+                totalLine: totalLine,
+                ctgAtr: self.ctgAtr,
+                printLineInCtg: printLineInCtg,
+                noPrintLineInCtg: noPrintLineInCtg,
+                isAddCategory: false
+            });
+
+            nts.uk.ui.windows.sub.modal('../l/index.xhtml').onClosed(() => {
+                let params = getShared("QMM019_L_TO_A_PARAMS");
+
+                if(params && params.isRegistered) {
+                    if(params.printSet == 2) {
+                        self.listLineByLineSet.removeAll();
+                        self.isShowCtg(false);
+                    } else {
+                        for(let lineByLineSetting :LineByLineSetting of self.listLineByLineSet()) {
+                            lineByLineSetting.printSet(params.printSet);
+                        }
+                    }
+
+                    __viewContext['screenModel'].calculatePrintLine();
+                }
+            });
         }
     }
 
@@ -478,6 +712,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
             let totalLine = 0;
             let printLineInCtg = 0;
             let noPrintLineInCtg = 0;
+            let haveItemBreakdownInsite = false;
 
             for(let settingByCtg: SettingByCtg of self.parent.parent.listSettingByCtg()) {
                 totalLine += settingByCtg.listLineByLineSet().length;
@@ -491,13 +726,27 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 }
             }
 
+            for(let settingByItem: SettingByItem of self.listSetByItem()) {
+                if((settingByItem.paymentItemDetailSet != null) &&
+                        (String(settingByItem.paymentItemDetailSet.calcMethod) == String(PaymentCaclMethodAtr.BREAKDOWN_ITEM)) &&
+                        ((String(settingByItem.paymentItemDetailSet.totalObj) == String(PaymentTotalObjAtr.INSIDE)) || (String(settingByItem.paymentItemDetailSet.totalObj) == String(PaymentTotalObjAtr.INSIDE_ACTUAL)))) {
+                    haveItemBreakdownInsite = true;
+                }
+
+                if((settingByItem.deductionItemDetailSet != null) && (String(settingByItem.deductionItemDetailSet.calcMethod) == String(PaymentCaclMethodAtr.BREAKDOWN_ITEM)) &&
+                    ((String(settingByItem.deductionItemDetailSet.totalObj) == String(PaymentTotalObjAtr.INSIDE)) || (String(settingByItem.deductionItemDetailSet.totalObj) == String(PaymentTotalObjAtr.INSIDE_ACTUAL)))) {
+                    haveItemBreakdownInsite = true;
+                }
+            }
+
             setShared("QMM019_A_TO_K_PARAMS", {
                 layoutPattern: self.parent.parent.layoutPattern(),
                 totalLine: totalLine,
                 ctgAtr: self.parent.ctgAtr,
                 printLineInCtg: printLineInCtg,
                 noPrintLineInCtg: noPrintLineInCtg,
-                printSet: self.printSet()
+                printSet: self.printSet(),
+                haveItemBreakdownInsite: haveItemBreakdownInsite
             });
 
             nts.uk.ui.windows.sub.modal('../k/index.xhtml').onClosed(() => {
@@ -506,12 +755,25 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 if(params && params.isRegistered) {
                     if((params.printSet == StatementPrintAtr.PRINT) || (params.printSet == StatementPrintAtr.DO_NOT_PRINT)) {
                         self.printSet(params.printSet);
+
+                        if(params.printSet == StatementPrintAtr.DO_NOT_PRINT) {
+                            for(let settingByItem: SettingByItem of self.listSetByItem()) {
+                                if((settingByItem.paymentItemDetailSet != null) &&
+                                    (String(settingByItem.paymentItemDetailSet.calcMethod) == String(PaymentCaclMethodAtr.BREAKDOWN_ITEM))) {
+                                    settingByItem.paymentItemDetailSet.totalObj = PaymentTotalObjAtr.OUTSIDE;
+                                }
+
+                                if((settingByItem.deductionItemDetailSet != null) && (String(settingByItem.deductionItemDetailSet.calcMethod) == String(PaymentCaclMethodAtr.BREAKDOWN_ITEM))) {
+                                    settingByItem.deductionItemDetailSet.totalObj = PaymentTotalObjAtr.OUTSIDE;
+                                }
+                            }
+                        }
                     } else {
                         self.parent.listLineByLineSet.remove(self);
                     }
-                }
 
-                //TODO $("#C3_8").focus();
+                    __viewContext['screenModel'].calculatePrintLine();
+                }
             });
         }
 
@@ -545,12 +807,17 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                     }
                 }
 
-                let currentCategory: SettingByCtg = __viewContext['screenModel'].statementLayoutHistData().statementLayoutSet().listSettingByCtg()[categoryIndex];
-                //currentCategory.listLineByLineSet()[sourceLineIndex].listSetByItem()[data.sourceIndex] = targetItem;
-                //currentCategory.listLineByLineSet()[targetLineIndex].listSetByItem()[data.targetIndex] = dragItem;
+                data.targetParent().splice(targetIndex, 1);
+                data.sourceParent().add(targetItem);
 
                 data.cancelDrop = true;
+
+                //let currentCategory: SettingByCtg = __viewContext['screenModel'].statementLayoutHistData().statementLayoutSet().listSettingByCtg()[categoryIndex];
+                //currentCategory.listLineByLineSet()[sourceLineIndex].listSetByItem()[data.sourceIndex] = targetItem;
+                //currentCategory.listLineByLineSet()[targetLineIndex].listSetByItem()[data.targetIndex] = dragItem;
             }
+
+            $(".limited-label-view").remove();
         }
     }
 
@@ -590,7 +857,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
             } else {
                 self.itemPosition = ko.observable(null);
                 self.itemId = ko.observable(null);
-                self.shortName = ko.observable("+");
+                self.shortName = ko.observable("＋");
                 self.paymentItemDetailSet = null;
                 self.deductionItemDetailSet = null;
                 self.itemRangeSet = null;
@@ -598,7 +865,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
 
             self.parent = parent;
             self.deleted = ko.observable(false);
-            self.id = ko.observable("item_" + self.parent.parent.ctgAtr + "_" + self.parent.lineNumber() + "_" + self.itemPosition());
+            self.id = ko.observable("item_" + self.parent.parent.ctgAtr + "_" + self.parent.lineNumber() + "_" + self.itemId());
 
             if(!self.isFixed() && self.itemId() != null) {
                 self.menu = new nts.uk.ui.contextmenu.ContextMenu("." + self.id(), [
@@ -630,9 +897,10 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                     self.menu.setVisibleItem(true, 0);
                 }
             });
-
             self.itemId.subscribe(id => {
-                if(_.isEmpty(id) && (self.menu == null)) {
+                if(!_.isEmpty(id) && (self.menu == null)) {
+                    self.id("item_" + self.parent.parent.ctgAtr + "_" + self.parent.lineNumber() + "_" + id);
+
                     self.menu = new nts.uk.ui.contextmenu.ContextMenu("." + self.id(), [
                         new nts.uk.ui.contextmenu.ContextMenuItem(
                             "Delete",
@@ -694,9 +962,12 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
 
                             if(params) {
                                 params.detail.histId = __viewContext['screenModel'].statementLayoutHistData().historyId;
+                                params.itemRangeSet.histId = __viewContext['screenModel'].statementLayoutHistData().historyId;
+                                params.itemRangeSet.salaryItemId = params.itemNameCode;
                                 self.shortName(params.shortName);
                                 self.itemId(params.itemNameCode);
                                 self.paymentItemDetailSet = params.detail;
+                                self.itemRangeSet = params.itemRangeSet;
                             }
                         });
                         break;
@@ -716,9 +987,12 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
 
                             if(params) {
                                 params.detail.histId = __viewContext['screenModel'].statementLayoutHistData().historyId;
+                                params.itemRangeSet.histId = __viewContext['screenModel'].statementLayoutHistData().historyId;
+                                params.itemRangeSet.salaryItemId = params.itemNameCode;
                                 self.shortName(params.shortName);
                                 self.itemId(params.itemNameCode);
                                 self.deductionItemDetailSet = params.detail;
+                                self.itemRangeSet = params.itemRangeSet;
                             }
                         });
                         break;
@@ -736,8 +1010,11 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                             let params = getShared("QMM019F_RESULTS");
 
                             if(params) {
+                                params.itemRangeSet.histId = __viewContext['screenModel'].statementLayoutHistData().historyId;
+                                params.itemRangeSet.salaryItemId = params.itemNameCode;
                                 self.shortName(params.shortName);
                                 self.itemId(params.itemNameCode);
+                                self.itemRangeSet = params.itemRangeSet;
                             }
                         });
                         break;

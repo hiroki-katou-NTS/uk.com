@@ -1,5 +1,9 @@
 #contents-area {
-    padding: 20px !important;
+    padding-left: 20px !important;
+}
+
+#contents-area  .valign-center {
+    width: 1010px;
 }
 
 #B1_3 {

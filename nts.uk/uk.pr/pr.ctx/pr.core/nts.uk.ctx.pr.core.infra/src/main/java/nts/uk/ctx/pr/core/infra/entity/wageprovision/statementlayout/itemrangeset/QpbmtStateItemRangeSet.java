@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout.itemranges
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.itemrangeset.StatementItemRangeSetting;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -25,7 +26,15 @@ public class QpbmtStateItemRangeSet extends UkJpaEntity implements Serializable
     */
     @EmbeddedId
     public QpbmtStateItemRangeSetPk stateItemRangeSetPk;
-    
+
+    /**
+     * 給/**
+     * 会社ID
+     */
+    @Basic(optional = false)
+    @Column(name = "CID")
+    public String cid;
+
     /**
     * 給与項目ID
     */
@@ -168,6 +177,7 @@ public class QpbmtStateItemRangeSet extends UkJpaEntity implements Serializable
     public static QpbmtStateItemRangeSet toEntity(StatementItemRangeSetting domain, int categoryAtr, int lineNumber, int itemPosition){
         QpbmtStateItemRangeSet entity =  new QpbmtStateItemRangeSet();
         entity.stateItemRangeSetPk = new QpbmtStateItemRangeSetPk(domain.getHistId(), categoryAtr, lineNumber, itemPosition);
+        entity.cid = AppContexts.user().companyId();
         entity.itemNameCd = domain.getSalaryItemId();
         entity.rangeValAttribute = domain.getRangeValAttribute().value;
         entity.errorUpperLimitSetAtr = domain.getErrorRangeSet().getErrorUpperLimitSetting().getErrorUpperLimitSettingAtr().value;
