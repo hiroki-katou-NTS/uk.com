@@ -16,22 +16,16 @@ public class NumericElementItem extends DomainObject {
 	/**
 	 * 枠番
 	 */
-	private FrameNumber frameNumber;
+	private Integer frameNumber;
 
 	/**
 	 * 当該枠下限
 	 */
-	private FrameLowerLimit frameLowerLimit;
+	private Integer frameLowerLimit;
 
 	/**
 	 * 当該枠上限
 	 */
-	private FrameUpperLimit frameUpperLimit;
-
-	public NumericElementItem(Integer frameNumber, Integer frameLowerLimit, Integer frameUpperLimit) {
-		this.frameNumber = new FrameNumber(frameNumber);
-		this.frameLowerLimit = new FrameLowerLimit(frameLowerLimit);
-		this.frameUpperLimit = new FrameUpperLimit(frameUpperLimit);
-	}
+	private Integer frameUpperLimit;
 
 }

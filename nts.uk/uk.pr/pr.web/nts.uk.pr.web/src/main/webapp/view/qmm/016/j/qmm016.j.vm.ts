@@ -45,22 +45,25 @@ module nts.uk.pr.view.qmm016.j.viewmodel {
         
         editHistory() {
             let self = this;
-            if (self.modifyMethod() == model.MODIFY_METHOD.UPDATE) {
-                if (self.startMonth() > self.selectedHistory.endMonth.toString()) {
-                    dialog.alertError({ messageId: "MsgQ_156" });
-                    return;
-                }
-                if (self.previousHistory) {
-                    if (self.startMonth() <= self.previousHistory.startMonth.toString()) {
+            $(".nts-input").filter(":enabled").trigger("validate");
+            if (!nts.uk.ui.errors.hasError()) {
+                if (self.modifyMethod() == model.MODIFY_METHOD.UPDATE) {
+                    if (self.startMonth() > self.selectedHistory.endMonth.toString()) {
                         dialog.alertError({ messageId: "MsgQ_156" });
                         return;
                     }
+                    if (self.previousHistory) {
+                        if (self.startMonth() <= self.previousHistory.startMonth.toString()) {
+                            dialog.alertError({ messageId: "MsgQ_156" });
+                            return;
+                        }
+                    }
+                    self.updateHistory();
+                } else {
+                    dialog.confirm({ messageId: "Msg_18" }).ifYes(function () {
+                        self.deleteHistory();
+                    });
                 }
-                self.updateHistory();
-            } else {
-                dialog.confirm({ messageId: "Msg_18" }).ifYes(function () {
-                    self.deleteHistory();
-                });
             }
         }
 

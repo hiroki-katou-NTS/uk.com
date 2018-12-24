@@ -43,11 +43,11 @@ public class TwoDmsElementItemDto {
 
 	public static TwoDmsElementItemDto fromDomainToDto(ElementItem domain) {
 		TwoDmsElementItemDto dto = new TwoDmsElementItemDto();
-		dto.masterCode = domain.getMasterElementItem().map(i -> i.getMasterCode().v()).orElse(null);
+		dto.masterCode = domain.getMasterElementItem().map(i -> i.getMasterCode()).orElse(null);
 		domain.getNumericElementItem().ifPresent(numericElementItem -> {
-			dto.frameNumber = numericElementItem.getFrameNumber().v();
-			dto.frameLowerLimit = numericElementItem.getFrameLowerLimit().v();
-			dto.frameUpperLimit = numericElementItem.getFrameUpperLimit().v();
+			dto.frameNumber = numericElementItem.getFrameNumber();
+			dto.frameLowerLimit = numericElementItem.getFrameLowerLimit();
+			dto.frameUpperLimit = numericElementItem.getFrameUpperLimit();
 		});
 		return dto;
 	}

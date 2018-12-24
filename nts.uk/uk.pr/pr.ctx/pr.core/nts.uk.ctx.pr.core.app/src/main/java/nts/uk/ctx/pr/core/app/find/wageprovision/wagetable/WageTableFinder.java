@@ -93,24 +93,27 @@ public class WageTableFinder {
 							.filter(i -> i.getItemNameCd().equals(dto.getElementInformation().getOneDimensionalElement()
 									.getOptionalAdditionalElement()))
 							.findFirst();
-					dto.getElementInformation().getOneDimensionalElement()
-							.setDisplayName(optElem.isPresent() ? optElem.get().getName() : null);
+					dto.getElementInformation().getOneDimensionalElement().setDisplayName(optElem.isPresent()
+							? optElem.get().getName()
+							: dto.getElementInformation().getOneDimensionalElement().getOptionalAdditionalElement());
 				}
 				if (dto.getElementInformation().getTwoDimensionalElement().getOptionalAdditionalElement() != null) {
 					Optional<StatementItemCustom> optElem = lstStatementItem.stream()
 							.filter(i -> i.getItemNameCd().equals(dto.getElementInformation().getTwoDimensionalElement()
 									.getOptionalAdditionalElement()))
 							.findFirst();
-					dto.getElementInformation().getTwoDimensionalElement()
-							.setDisplayName(optElem.isPresent() ? optElem.get().getName() : null);
+					dto.getElementInformation().getTwoDimensionalElement().setDisplayName(optElem.isPresent()
+							? optElem.get().getName()
+							: dto.getElementInformation().getTwoDimensionalElement().getOptionalAdditionalElement());
 				}
 				if (dto.getElementInformation().getThreeDimensionalElement().getOptionalAdditionalElement() != null) {
 					Optional<StatementItemCustom> optElem = lstStatementItem.stream()
 							.filter(i -> i.getItemNameCd().equals(dto.getElementInformation()
 									.getThreeDimensionalElement().getOptionalAdditionalElement()))
 							.findFirst();
-					dto.getElementInformation().getThreeDimensionalElement()
-							.setDisplayName(optElem.isPresent() ? optElem.get().getName() : null);
+					dto.getElementInformation().getThreeDimensionalElement().setDisplayName(optElem.isPresent()
+							? optElem.get().getName()
+							: dto.getElementInformation().getThreeDimensionalElement().getOptionalAdditionalElement());
 				}
 			}
 			if (dto.getElementInformation().getOneDimensionalElement().getFixedElement() != null) {

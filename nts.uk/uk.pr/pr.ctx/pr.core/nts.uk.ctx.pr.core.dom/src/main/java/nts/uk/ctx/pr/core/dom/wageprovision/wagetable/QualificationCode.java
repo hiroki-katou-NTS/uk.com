@@ -4,20 +4,20 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
+import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
 /**
  * 資格コード
  */
 @StringMaxLength(3)
-@StringCharType(CharType.ALPHA_NUMERIC)
-public class QualificationCode extends StringPrimitiveValue<QualificationCode>
-{
+@StringCharType(CharType.NUMERIC)
+@ZeroPaddedCode
+public class QualificationCode extends StringPrimitiveValue<QualificationCode> {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public QualificationCode(String rawValue)
-    {
-        super(rawValue);
-    }
+	public QualificationCode(String rawValue) {
+		super(rawValue);
+	}
 
 }

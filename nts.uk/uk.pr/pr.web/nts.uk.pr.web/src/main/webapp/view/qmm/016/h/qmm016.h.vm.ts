@@ -20,8 +20,8 @@ module nts.uk.pr.view.qmm016.h.viewmodel {
         constructor() {
             let self = this;
             this.columns = ko.observableArray([
-                {headerText: getText('QMM016_61'), key: 'qualificationCode', width: 50},
-                {headerText: getText('QMM016_62'), key: 'qualificationName', width: 150}
+                {headerText: getText('QMM016_61'), key: 'qualificationCode', width: 50, formatter: _.escape },
+                {headerText: getText('QMM016_62'), key: 'qualificationName', width: 150, formatter: _.escape }
             ]);
             self.selectedQualificationGroupCode.subscribe(newValue => {
                 if (newValue) {
@@ -81,12 +81,12 @@ module nts.uk.pr.view.qmm016.h.viewmodel {
         getQualificationGroupData(qualificationGroupCode) {
             let self = this;
             block.invisible();
-            service.getQualificationGroupByCode(qualificationGroupCode).done(function (data) {
-                let selectedQualificationGroup: any = data;
+            $.when(service.getQualificationGroupByCode(qualificationGroupCode), service.getAllQualificationInformation(qualificationGroupCode)).done((groupData, infoData) => {
+                let selectedQualificationGroup: any = groupData;
                 self.selectedEligibleQualificationCode(JSON.parse(self.qualificationInformationListInString).filter(item => selectedQualificationGroup.eligibleQualificationCode.indexOf(item.qualificationCode) >= 0));
                 self.selectedQualification(new model.QualificationGroupSetting(selectedQualificationGroup));
                 self.screenMode(model.SCREEN_MODE.UPDATE);
-                self.qualificationInformationList((JSON.parse(self.qualificationInformationListInString)));
+                self.qualificationInformationList(JSON.parse(self.qualificationInformationListInString).filter(item => infoData.indexOf(item.qualificationCode) < 0));
                 $('#H3_2').focus();
                 block.clear();
             }).fail(function () {
@@ -134,11 +134,14 @@ module nts.uk.pr.view.qmm016.h.viewmodel {
 
         registerQualificationGroup() {
             let self = this;
-            let selectedQualification = ko.toJS(self.selectedQualification),
-                selectedEligibleQualificationCode = ko.toJS(self.selectedEligibleQualificationCode);
-            selectedQualification.eligibleQualificationCode = selectedEligibleQualificationCode.map(item => item.qualificationCode);
-            if (self.screenMode() == model.SCREEN_MODE.NEW) self.addQualificationGroup(selectedQualification);
-            else self.updateQualificationGroup(selectedQualification);
+            $(".nts-input").filter(":enabled").trigger("validate");
+            if (!nts.uk.ui.errors.hasError()) {
+                let selectedQualification = ko.toJS(self.selectedQualification),
+                    selectedEligibleQualificationCode = ko.toJS(self.selectedEligibleQualificationCode);
+                selectedQualification.eligibleQualificationCode = selectedEligibleQualificationCode.map(item => item.qualificationCode);
+                if (self.screenMode() == model.SCREEN_MODE.NEW) self.addQualificationGroup(selectedQualification);
+                else self.updateQualificationGroup(selectedQualification);
+            }
         }
 
         deleteQualificationGroup() {
@@ -147,13 +150,15 @@ module nts.uk.pr.view.qmm016.h.viewmodel {
                 block.invisible();
                 let selectedQualificationGroup = ko.toJS(self.selectedQualification), qualificationGroupList = ko.toJS(self.qualificationGroupList), currentIndex, newQualificationGroupCode;
                 service.deleteQualificationGroup(selectedQualificationGroup).done(function () {
-                    // find new item
-                    if (qualificationGroupList.length > 1)
-                        currentIndex = _.findIndex(qualificationGroupList, {qualificationGroupCode: self.selectedQualificationGroupCode()});
-                    if (currentIndex == qualificationGroupList.length - 1) {
-                        newQualificationGroupCode = qualificationGroupList[currentIndex - 1].qualificationGroupCode;
+                    if (qualificationGroupList.length == 1) {
+                        newQualificationGroupCode = null;
                     } else {
-                        newQualificationGroupCode = qualificationGroupList[currentIndex + 1].qualificationGroupCode;
+                        currentIndex = _.findIndex(qualificationGroupList, {qualificationGroupCode: self.selectedQualificationGroupCode()});
+                        if (currentIndex == qualificationGroupList.length - 1) {
+                            newQualificationGroupCode = qualificationGroupList[currentIndex - 1].qualificationGroupCode;
+                        } else {
+                            newQualificationGroupCode = qualificationGroupList[currentIndex + 1].qualificationGroupCode;
+                        }
                     }
                     dialog.info({messageId: 'Msg_16'}).then(function () {
                         // update after delete
@@ -179,8 +184,16 @@ module nts.uk.pr.view.qmm016.h.viewmodel {
             self.selectedQualificationGroupCode(null);
             self.selectedQualification(new model.QualificationGroupSetting(null));
             self.selectedEligibleQualificationCode([]);
-            self.qualificationInformationList((JSON.parse(self.qualificationInformationListInString)));
-            $('#H3_1').focus();
+            block.invisible();
+            service.getAllQualificationInformation("zzz").done(infoData => {
+                self.qualificationInformationList(JSON.parse(self.qualificationInformationListInString).filter(item => infoData.indexOf(item.qualificationCode) < 0));
+                $('#H3_1').focus();
+            }).fail(error => {
+                dialog.alertError(error);
+            }).always(() => {
+                block.clear();
+            });
+            
         }
     }
 }
