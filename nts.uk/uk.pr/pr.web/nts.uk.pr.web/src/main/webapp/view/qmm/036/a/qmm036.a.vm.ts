@@ -337,10 +337,9 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
             self.lstHistory([]);
             service.getStatemetItem().done(function (data: Array<IStatementItem>) {
                 if (data && data.length > 0) {
-                    let dataSort1 = _.sortBy(data, ["categoryAtr"]);
-                    let dataSort2 = _.sortBy(dataSort1, ["itemNameCd"]);
+                    let dataSort1 = _.sortBy(data, ["categoryAtr", "itemNameCd"]);
 
-                    self.lstStatementItem(dataSort2);
+                    self.lstStatementItem(dataSort1);
                     self.currentCodeStatement('');
                     self.currentCodeStatement(self.lstStatementItem()[0].itemNameCd);
 
