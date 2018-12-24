@@ -316,50 +316,8 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 *            the user
 	 * @return the check change pass dto
 	 */
-	// init session
-	public CheckChangePassDto initSessionOld(UserImportNew user, boolean isSignon) {
-		//切替可能な会社一覧を取得する(Có được danh sách công ty có thể chuyển đổi)
-		List<String> lstCompanyId = collectComList.getCompanyList(user.getUserId(), user.getContractCode());
-		if (lstCompanyId.isEmpty()) {
-			//「ログインユーザコンテキスト」に情報設定（会社情報・社員情報はセットしません。） 
-			//(Tạo mới "Login user context" rồi lưu vào session. Khong set company info.employee info)
-			manager.loggedInAsUser(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(), null, null);
-		} else {//取得できた場合　会社Listの件数　＞　０
-			// get employee
-			//Imported（GateWay）「社員」を取得する (Imported (GateWay) Acquire 'Employee')
-			Optional<EmployeeImport> opEm = this.employeeAdapter.getByPid(lstCompanyId.get(FIST_COMPANY),
-					user.getAssociatePersonId().get());
-
-			if (opEm.isPresent() && opEm.get().getEmployeeId() != null) {
-				// Check employee deleted status.
-				this.checkEmployeeDelStatus(opEm.get().getEmployeeId(), isSignon);
-			}
-			// save to session
-			//Imported（GateWay）「会社情報」を取得する(Imported (GateWay) Acquire "company information")
-			CompanyInformationImport companyInformation = this.companyInformationAdapter
-					.findById(lstCompanyId.get(FIST_COMPANY));
-			if (opEm.isPresent() && opEm.get().getEmployeeId() != null) {
-				manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(),
-						companyInformation.getCompanyId(), companyInformation.getCompanyCode(),
-						opEm.get().getEmployeeId(), opEm.get().getEmployeeCode());
-			} else {
-				// set info to session
-				manager.loggedInAsUser(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(),
-						companyInformation.getCompanyId(), companyInformation.getCompanyCode());
-			}
-		}
-		//権限（ロール）情報を取得、設定する(Acquire and set authority (role) information)
-		this.setRoleId(user.getUserId());
-		return new CheckChangePassDto(false, null, false);
-	}
+	//EA修正履歴 No.3033
 	public CheckChangePassDto initSession(UserImportNew user, boolean isSignon) {
-		//「ログインユーザコンテキスト」を新規作成、セッションに格納(Tạo mới "Login user context" rồi lưu vào session)
-//		ユーザID　＝　「ユーザ.ユーザID」
-//		契約コード　＝　「ユーザ.契約コード」
-//		表示言語設定　＝　未定
-		manager.loggedInAsUser(user.getUserId(), null, user.getContractCode(), null, null);
-		//権限（ロール）情報を取得、設定する(Acquire and set authority (role) information)
-		this.setRoleId(user.getUserId());
 		//切替可能な会社一覧を取得する(Có được danh sách công ty có thể chuyển đổi)
 		List<String> lstCID = collectComList.getCompanyList(user.getUserId(), user.getContractCode());
 		String assePersonId = user.getAssociatePersonId().isPresent() ? user.getAssociatePersonId().get() : null;
@@ -377,7 +335,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			CompanyInformationImport comInfo = this.companyInformationAdapter
 					.findById(lstCID.get(FIST_COMPANY));
 			//「ログインユーザコンテキスト」に会社情報・社員情報をセットします。
-			String contractCD = AppContexts.system().isOnPremise() ? "000000000001" : user.getContractCode();
+			String contractCD = AppContexts.system().isOnPremise() ? "000000000000" : user.getContractCode();
 			if(opEm.isPresent()){
 				manager.loggedInAsEmployee(user.getUserId(), assePersonId, contractCD, 
 						comInfo.getCompanyId(), comInfo.getCompanyCode(), opEm.get().getEmployeeId(), opEm.get().getEmployeeCode());
@@ -385,6 +343,8 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				manager.loggedInAsUser(user.getUserId(), assePersonId, contractCD, comInfo.getCompanyId(), comInfo.getCompanyCode());
 			}
 		}
+		//権限（ロール）情報を取得、設定する(Acquire and set authority (role) information)
+		this.setRoleId(user.getUserId());
 		return new CheckChangePassDto(false, null, false);
 	}
 	/**
@@ -888,7 +848,8 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		// the acquired company (List))
 		List<String> lstCompanyFinal = lstCompanyId.stream().filter(com -> companyIdAll.contains(com))
 				.collect(Collectors.toList());
-		List<String> lstResult = collectComList.checkStopUse(contractCode, lstCompanyFinal);
+		//EA修正履歴 No.3031
+		List<String> lstResult = collectComList.checkStopUse(contractCode, lstCompanyFinal, userId);
 		return lstResult;
 	}
 

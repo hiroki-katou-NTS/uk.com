@@ -37,7 +37,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class CollectCompanyListImpl implements CollectCompanyList {
 	
 	@Inject
-	private RoleIndividualGrantAdapter roleIndividualGrantAdapter;
+	private RoleIndividualGrantAdapter roleIndGrantAdapter;
 	
 	@Inject
 	private RoleAdapter roleAdapter;
@@ -62,7 +62,7 @@ public class CollectCompanyListImpl implements CollectCompanyList {
 	@Override
 	public List<String> getCompanyList(String userID, String contractCd) {
 		// ドメインモデル「ロール個人別付与」を取得する (get List RoleIndividualGrant)
-		List<RoleIndividualGrantImport> roles = this.roleIndividualGrantAdapter.getByUserIDDateRoleType(userID, GeneralDate.today(),
+		List<RoleIndividualGrantImport> roles = this.roleIndGrantAdapter.getByUserIDDateRoleType(userID, GeneralDate.today(),
 				RoleType.COMPANY_MANAGER.value);
 
 		List<RoleImport> roleImp = new ArrayList<>();
@@ -128,41 +128,161 @@ public class CollectCompanyListImpl implements CollectCompanyList {
 		// the acquired company (List))
 		List<String> lstCompanyFinal = lstCompanyId.stream().filter(com -> companyIdAll.contains(com))
 				.collect(Collectors.toList());
-		List<String> lstResult = this.checkStopUse(contractCd, lstCompanyFinal);
+		//EA修正履歴 No.3031
+		List<String> lstResult = this.checkStopUse(contractCd, lstCompanyFinal, userID);
 		return lstResult;
 	}
+//	public List<String> checkStopUse2(String contractCd, List<String> lstCID) {
+//		//ドメインモデル「システム全体の利用停止」を取得する (get domain [StopBySystem])
+//		Optional<StopBySystem> stopSys = repoStopSys.findByKey(contractCd);
+//		//取得できる
+//		//ドメインモデル「システム全体の利用停止.システム利用状態」をチェックする (StopBySystem.systemStatus)
+//		if(stopSys.isPresent() && stopSys.get().getSystemStatus().equals(SystemStatusType.STOP)){//「利用停止中」の場合
+//			//アルゴリズム「権限(ロール)のチェック」を実行する
+//			if(!this.checkRoleAuth2(stopSys.get().getStopMode())){//False：ログイン権限なし
+//				return new ArrayList<>();
+//			}
+//		}
+//		//ドメインモデル「会社単位の利用停止」を取得する
+//		List<StopByCompany> lstCom = repoStopCom.getListComByContractCD(contractCd);
+//		if(lstCom.isEmpty()){
+//			return lstCID;
+//		}
+//		List<String> lstComStop = this.getLstComStopUse(lstCom);
+//		List<String> result = new ArrayList<>();
+//		for(String cID : lstCID){
+//			if(!lstComStop.contains(cID)){
+//				result.add(cID);
+//			}
+//		}
+//		return result;
+//	}
 	/**
 	 * @author hoatt
-	 * 利用停止のチェック
-	 * @param 契約コード - contractCd
-	 * @param ・会社ID（List） Before filter - lstCID
-	 * @return 会社ID（List） After filter
+	 * 利用停止のチェック ver2
 	 */
+	//EA修正履歴 No.3032
 	@Override
-	public List<String> checkStopUse(String contractCd, List<String> lstCID) {
+	public List<String> checkStopUse(String contractCd, List<String> lstCID, String userID) {
 		//ドメインモデル「システム全体の利用停止」を取得する (get domain [StopBySystem])
-		Optional<StopBySystem> stopSys = repoStopSys.findByKey(contractCd);
+//		　input.契約コード- contractCd
+//		　システム利用状態＝「利用停止中」
+		Optional<StopBySystem> stopSys = repoStopSys.findByCdStatus(contractCd, SystemStatusType.STOP.value);
 		//取得できる
-		//ドメインモデル「システム全体の利用停止.システム利用状態」をチェックする (StopBySystem.systemStatus)
-		if(stopSys.isPresent() && stopSys.get().getSystemStatus().equals(SystemStatusType.STOP)){//「利用停止中」の場合
+		if(stopSys.isPresent()){
 			//アルゴリズム「権限(ロール)のチェック」を実行する
-			if(!this.checkRoleAuth(stopSys.get().getStopMode())){//False：ログイン権限なし
-				return new ArrayList<>();
-			}
+			return this.checkRoleAuth(stopSys.get().getStopMode(), lstCID, userID);
 		}
-		//ドメインモデル「会社単位の利用停止」を取得する
-		List<StopByCompany> lstCom = repoStopCom.getListComByContractCD(contractCd);
-		if(lstCom.isEmpty()){
+		//取得できない
+		//ドメインモデル「会社単位の利用停止」を取得する (get domain StopByCompany)
+		List<StopByCompany> lstCom = repoStopCom.findByCdStatus(contractCd, SystemStatusType.STOP.value);
+		if(lstCom.isEmpty()){//Iutput：会社ID（List） Before filter　を返す
 			return lstCID;
 		}
-		List<String> lstComStop = this.getLstComStopUse(lstCom);
+		List<String> lstComStop = lstCom.stream().map(c -> c.getContractCd() + "-" + c.getCompanyCd()).collect(Collectors.toList());
+		//取得できる
+		//Output：会社ID（List）に利用停止以外の会社を追加する
 		List<String> result = new ArrayList<>();
+//		ログイン者がログイン可能で停止されていない会社を抽出
 		for(String cID : lstCID){
 			if(!lstComStop.contains(cID)){
 				result.add(cID);
 			}
 		}
+		//取得したドメインモデル「会社単位の利用停止」から会社IDのリストを作成する
+//		条件：
+//		　・[会社単位の利用停止．利用停止モード]＝管理者モード
+//		　・[会社単位の利用停止．会社ID]　IN　（INPUT．会社ID list）
+//		output：
+//		　会社ID List・・・（１）
+		List<String> lst1 = lstCom.stream().filter(c -> c.getStopMode().equals(StopModeType.ADMIN_MODE))
+				.map(d -> d.getContractCd() + "-" + d.getCompanyCd()).collect(Collectors.toList());
+		//アルゴリズム「権限(ロール)のチェック」を実行する
+//		ログイン者がログイン可能かつ担当者モードで停止中の会社リストの中から、
+//		ログイン者に管理権限がある会社のみ抽出する
+//		パラメータ
+//		　・会社単位の利用停止.利用停止モード＝管理者モード
+//		　・会社ID（List）←（１）
+//		　・ユーザID
+//		output：
+//		List＜会社ID＞・・・（２）
+		List<String> lst2 = this.checkRoleAuth(StopModeType.ADMIN_MODE, lst1, userID);
+		//取得したドメインモデル「会社単位の利用停止」から会社IDのリストを作成する
+//		条件：
+//		　・[会社単位の利用停止．利用停止モード]＝担当者モード
+//		　・[会社単位の利用停止．会社ID]　IN　（INPUT．会社ID list）
+//		output：
+//		　会社ID List・・・（３）
+		List<String> lst3 = lstCom.stream().filter(c -> c.getStopMode().equals(StopModeType.PERSON_MODE))
+				.map(d -> d.getContractCd() + "-" + d.getCompanyCd()).collect(Collectors.toList());
+		//アルゴリズム「権限(ロール)のチェック」を実行する
+//		ログイン者がログイン可能かつ担当者モードで停止中の会社リストの中から、
+//		ログイン者に担当権限がある会社のみ抽出する
+//		パラメータ
+//		　・会社単位の利用停止.利用停止モード＝担当者モード
+//		　・会社ID（List）←（３）
+//		　・ユーザID
+//		output：
+//		List＜会社ID＞・・・（４）
+		List<String> lst4 = this.checkRoleAuth(StopModeType.PERSON_MODE, lst3, userID);
+		//Output：会社ID（List）に追加する
+//		（２）と（４）をListに追加する
+		result.addAll(lst2);
+		result.addAll(lst4);
+		//Output：会社ID（List）を返す
 		return result;
+	}
+	/**
+	 * 権限(ロール)のチェック ver2
+	 * @param 利用停止モード　stopMode
+	 * @param List＜会社ID＞ lstCID
+	 * @param ユーザID userID
+	 * @return List＜会社ID＞
+	 */
+	@Override
+	public List<String> checkRoleAuth(StopModeType stopMode, List<String> lstCID, String userID){
+		GeneralDate systemDate = GeneralDate.today();
+		//ドメインモデル「ロール個人別付与」を取得する (Lấy DomainModel 「ロール個人別付与」)
+//		条件：
+//		ユーザID＝input．ユーザID（input．User ID）
+//		ロール種類＝システム管理者
+//		有効期間.From <= システム日付 <= 有効期間.To
+		List<RoleIndividualGrantImport> lstRoleSysAd = roleIndGrantAdapter.getByUserIDDateRoleType(userID, systemDate, RoleType.SYSTEM_MANAGER.value);
+		if(!lstRoleSysAd.isEmpty()){//システム管理者ロールの設定がある
+			return lstCID;
+		}
+		//システム管理者ロールの設定がない
+		//[利用停止モード]を判別 (phân biệt [mode stop use])
+		List<String> lstResult = new ArrayList<>();
+		if(stopMode.equals(StopModeType.ADMIN_MODE)){//管理者モードの場合
+			for(String cID : lstCID){
+				//ドメインモデル「ロール個人別付与」を取得する (Lấy DomainModel 「ロール個人別付与」)
+//				条件：
+//				ユーザID ＝ input．ユーザID（input．User ID）
+//				ロール種類 ＝  会社管理者
+//				会社ID ＝ ループ中の会社ID
+//				有効期間.From <= システム日付 <= 有効期間.To
+				Optional<RoleIndividualGrantImport> roleComAd = roleIndGrantAdapter.getByRoleType(userID, cID, RoleType.COMPANY_MANAGER.value, systemDate);
+				if(roleComAd.isPresent()){
+					lstResult.add(cID);
+				}
+			}
+		}else{//担当者モードの場合
+			for(String cID : lstCID){
+				//ドメインモデル「ロール個人別付与」を取得する (Lấy DomainModel 「ロール個人別付与」)
+//				条件：
+//				ユーザID ＝ input．ユーザID（input．User ID）
+//				ロール種類 ＜＞ グループ会社管理者
+//				会社ID ＝ ループ中の会社ID
+//				有効期間.From <= システム日付 <= 有効期間.To
+				List<RoleIndividualGrantImport> lstRoleDifGr = roleIndGrantAdapter.getListDifRoleType(userID, cID, 
+						RoleType.GROUP_COMAPNY_MANAGER.value, systemDate);
+				if(!lstRoleDifGr.isEmpty()){
+					lstResult.add(cID);
+				}
+			}
+		}
+		return lstResult;
 	}
 	/**
 	 * @author hoatt
@@ -178,7 +298,7 @@ public class CollectCompanyListImpl implements CollectCompanyList {
 			//ドメインモデル「会社単位の利用停止.システム利用状態」をチェックする(check StopByCompany.systemStatus)
 			if(stopCom.getSystemStatus().equals(SystemStatusType.STOP)){
 				//アルゴリズム「権限(ロール)のチェック」を実行する
-				if(this.checkRoleAuth(stopCom.getStopMode())){//True：ログイン権限あり
+				if(this.checkRoleAuth2(stopCom.getStopMode())){//True：ログイン権限あり
 					continue;
 				}
 				//会社IDを生成する 会社ID＝[会社単位の利用停止.契約コード]+"-"+[会社単位の利用停止.会社コード]
@@ -189,14 +309,7 @@ public class CollectCompanyListImpl implements CollectCompanyList {
 		}
 		return result;
 	}
-	/**
-	 * 権限(ロール)のチェック
-	 * @param stopMode
-	 * @return True：ログイン権限あり
-　				False：ログイン権限なし
-	 */
-	@Override
-	public boolean checkRoleAuth(StopModeType stopMode) {
+	private boolean checkRoleAuth2(StopModeType stopMode) {
 		//[利用停止モード]を判別 (phân biệt [mode stop use])
 		if(stopMode.equals(StopModeType.ADMIN_MODE)){
 			//システム管理者ロールの設定があるか判別

@@ -22,9 +22,10 @@ public interface CollectCompanyList {
 	 * 利用停止のチェック
 	 * @param 契約コード - contractCd
 	 * @param ・会社ID（List） Before filter - lstCID
+	 * @param ユーザID userID
 	 * @return 会社ID（List） After filter
 	 */
-	public List<String> checkStopUse(String contractCd, List<String> lstCID);
+	public List<String> checkStopUse(String contractCd, List<String> lstCID, String userID);
 	/**
 	 * @author hoatt
 	 * 利用停止会社リストを取得する
@@ -38,5 +39,5 @@ public interface CollectCompanyList {
 	 * @return True：ログイン権限あり
 　				False：ログイン権限なし
 	 */
-	public boolean checkRoleAuth(StopModeType stopMode);
+	List<String> checkRoleAuth(StopModeType stopMode, List<String> lstCID, String userID);
 }
