@@ -268,6 +268,16 @@ public class DivergenceExportImpl  implements MasterListData{
 							}
 							
 							MasterData masterData = new MasterData(data, null, "");
+							Map<String, MasterCellData> rowData = masterData.getRowData();
+							rowData.get("開始日").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+							rowData.get("終了日").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+							rowData.get("NO").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+							rowData.get("使用区分").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+							rowData.get("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+							rowData.get("アラーム時間").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+							rowData.get("エラー時間").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+							rowData.get("エラーメッセージ").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+							rowData.get("アラームメッセージ").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));							
 							datas.add(masterData);
 						}
 						
@@ -379,7 +389,19 @@ public class DivergenceExportImpl  implements MasterListData{
 												}
 												
 												MasterData masterData = new MasterData(data, null, "");
+												Map<String, MasterCellData> rowData = masterData.getRowData();
 												//set align
+												rowData.get("コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+												rowData.get("勤務種類").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));	
+												rowData.get("開始日").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+												rowData.get("終了日").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+												rowData.get("NO").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+												rowData.get("使用区分").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+												rowData.get("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+												rowData.get("アラーム時間").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+												rowData.get("エラー時間").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+												rowData.get("エラーメッセージ").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+												rowData.get("アラームメッセージ").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));	
 												datas.add(masterData);
 											}
 											

@@ -595,6 +595,18 @@ module nts.uk.at.view.kml001.a {
                 $("#premium-set-tbl > tbody > tr > td:NTH-CHILD(2) input").each(function (i) { $(this).attr('tabindex', i*2 + 9); });
                 $("#premium-set-tbl > tbody > tr > td:NTH-CHILD(3) button").each(function (i) { $(this).attr('tabindex', i*2 + 10); });    
             }
+            
+             public exportExcel(): void {
+                var self = this;
+                nts.uk.ui.block.grayout();
+
+                servicebase.saveAsExcel().done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
         }
     }
 }
