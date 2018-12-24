@@ -83,7 +83,7 @@ public class DivergenceExportImpl  implements MasterListData{
 	@Inject
 	private WorkTypeDivergenceTimeErrorAlarmMessageFinder finderWorkTypeMsg;
 	
-	private static final String select = "〇";
+	private static final String select = "○";
 	private static final String unselect = "-";
 
 	@Override
@@ -121,10 +121,11 @@ public class DivergenceExportImpl  implements MasterListData{
 			data.put("使用区分", getDivergenceTimeUseSet(divergenceTime.getDivTimeUseSet().value));
 			if(divergenceTime.getDivTimeUseSet()==DivergenceTimeUseSet.USE){
 				DivergenceTimeInputMethodDto resultDivergenceInfo = this.divTimeInputmethodFinder.getDivTimeInputMethodInfo(divergenceTime.getDivergenceTimeNo());
-				data.put("乖離の種類", divergenceTime.getDivTimeName().v());
+				data.put("乖離の種類", divergenceTime.getDivType().display);
 				List<AttendanceNameDivergenceDto> rsattendanceName = atName.getDailyAttendanceItemName(divergenceTime.getTargetItems());
 				String nameCode="";
 				if (!CollectionUtil.isEmpty(rsattendanceName)) {
+					rsattendanceName.sort((AttendanceNameDivergenceDto o1,AttendanceNameDivergenceDto o2) -> o1.getAttendanceItemDisplayNumber()-o2.getAttendanceItemDisplayNumber());
 					nameCode=rsattendanceName.get(0).getAttendanceItemDisplayNumber()+rsattendanceName.get(0).getAttendanceItemName();
 					for(int i=1;i<rsattendanceName.size();i++){
 						nameCode=nameCode+","+rsattendanceName.get(i).getAttendanceItemDisplayNumber()+rsattendanceName.get(i).getAttendanceItemName();
@@ -150,12 +151,15 @@ public class DivergenceExportImpl  implements MasterListData{
 					}
 					
 				}
-				data.put("乖離理由の入力", getDivergenceTimeReasonSelect(resultDivergenceInfo.isDivergenceReasonInputed()));			
+				data.put("乖離理由の入力", getDivergenceTimeReasonSelect(resultDivergenceInfo.isDivergenceReasonInputed()));	
+				if(resultDivergenceInfo.isDivergenceReasonInputed()){
 					if(resultDivergenceInfo.isReasonInput()){
 						data.put("乖離理由が入力された場合、エラー／アラームを解除する",select);
 					}else{
 						data.put("乖離理由が入力された場合、エラー／アラームを解除する",unselect);
 					}
+				}
+					
 				
 			}
 			MasterData masterData = new MasterData(data, null, "");
@@ -462,6 +466,7 @@ public class DivergenceExportImpl  implements MasterListData{
 			return "";
 		}
 	}
+	
 	
 	private String formatValueAttendance(int att) {
 		Integer hours = att / 60, minutes = att % 60;
