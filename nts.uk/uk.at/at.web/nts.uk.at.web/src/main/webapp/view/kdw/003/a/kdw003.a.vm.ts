@@ -2187,7 +2187,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             displayFormat: self.displayFormat(),
                             mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
                             errorCodes: errorCodes,
-                            formatCodes: self.formatCodes()
+                            formatCodes: self.formatCodes(),
+                            showLock: self.showLock()
                         };
                         nts.uk.ui.block.invisible();
                         nts.uk.ui.block.grayout();
