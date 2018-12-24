@@ -1442,15 +1442,15 @@ module nts.uk.pr.view.qmm012.b {
         function getCategoryAtrText(itemAtr, row) {
             switch (itemAtr) {
                 case "0":
-                    return getText('Enum_CategoryAtr_PAYMENT_ITEM');
+                    return getText('Enum_CategoryAtr_PAYMENT');
                 case "1":
-                    return getText('Enum_CategoryAtr_DEDUCTION_ITEM');
+                    return getText('Enum_CategoryAtr_DEDUCTION');
                 case "2":
-                    return getText('Enum_CategoryAtr_ATTEND_ITEM');
+                    return getText('Enum_CategoryAtr_ATTEND');
                 case "3":
-                    return getText('Enum_CategoryAtr_REPORT_ITEM');
+                    return getText('Enum_CategoryAtr_REPORT');
                 case "4":
-                    return getText('Enum_CategoryAtr_OTHER_ITEM');
+                    return getText('Enum_CategoryAtr_OTHER');
                 default:
                     return "";
             }

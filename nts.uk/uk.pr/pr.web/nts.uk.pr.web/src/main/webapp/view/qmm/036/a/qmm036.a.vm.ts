@@ -3,7 +3,6 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import block = nts.uk.ui.block;
     import alertError = nts.uk.ui.dialog.alertError;
-    import format = nts.uk.text.format;
     import getShared = nts.uk.ui.windows.getShared;
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
@@ -45,6 +44,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
         currentCodeStatement: KnockoutObservable<string> = ko.observable('');
 
         categoryAtr: KnockoutObservable<number> = ko.observable(null);
+        categoryAtrText: KnockoutObservable<string> = ko.observable("");
         itemNameCd: KnockoutObservable<string> = ko.observable(null);
         name: KnockoutObservable<string> = ko.observable(null);
         columns: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -120,6 +120,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                         return x.itemNameCd == item
                     });
                     self.categoryAtr(itemModel.categoryAtr);
+                    self.categoryAtrText(getCategoryAtrText2(itemModel.categoryAtr));
                     self.itemNameCd(itemModel.itemNameCd);
                     self.name(itemModel.name);
                     self.isScreenB(true);
@@ -809,15 +810,32 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
     function getCategoryAtrText(itemAtr, row) {
         switch (itemAtr) {
             case "0":
-                return getText('Enum_CategoryAtr_PAYMENT_ITEM');
+                return getText('Enum_CategoryAtr_PAYMENT');
             case "1":
-                return getText('Enum_CategoryAtr_DEDUCTION_ITEM');
+                return getText('Enum_CategoryAtr_DEDUCTION');
             case "2":
-                return getText('Enum_CategoryAtr_ATTEND_ITEM');
+                return getText('Enum_CategoryAtr_ATTEND');
             case "3":
-                return getText('Enum_CategoryAtr_REPORT_ITEM');
+                return getText('Enum_CategoryAtr_REPORT');
             case "4":
-                return getText('Enum_CategoryAtr_OTHER_ITEM');
+                return getText('Enum_CategoryAtr_OTHER');
+            default:
+                return "";
+        }
+    }
+
+    function getCategoryAtrText2(itemAtr) {
+        switch (itemAtr) {
+            case 0:
+                return getText('Enum_CategoryAtr_PAYMENT');
+            case 1:
+                return getText('Enum_CategoryAtr_DEDUCTION');
+            case 2:
+                return getText('Enum_CategoryAtr_ATTEND');
+            case 3:
+                return getText('Enum_CategoryAtr_REPORT');
+            case 4:
+                return getText('Enum_CategoryAtr_OTHER');
             default:
                 return "";
         }
