@@ -13,12 +13,12 @@ import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
-import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.task.AsyncTask;
 import nts.uk.file.at.app.export.worktime.WorkTimeReportDatasource;
 import nts.uk.file.at.app.export.worktime.WorkTimeReportGenerator;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 @Stateless
@@ -40,7 +40,7 @@ public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator im
 	@Override
 	public void generate(FileGeneratorContext generatorContext, WorkTimeReportDatasource dataSource) {
 
-		try (val reportContext = this.createContext(TEMPLATE_FILE)) {
+		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
 			Workbook workbook = reportContext.getWorkbook();
 			WorksheetCollection worksheets = workbook.getWorksheets();
 
