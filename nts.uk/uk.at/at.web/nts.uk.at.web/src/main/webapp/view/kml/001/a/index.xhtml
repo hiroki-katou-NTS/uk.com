@@ -23,7 +23,8 @@
 				<div id="functions-area">
 					<div class="valign-center control-group">
 						<button class="proceed short-button" data-bind="click: saveData,  enable: $root.errors.isEmpty">#{i18n.getText('KML001_2')}</button>
-						<button data-bind="click: premiumDialog">#{i18n.getText('KML001_3')}</button>
+						<button data-bind="click: premiumDialog">#{i18n.getText('KML001_3')}</button>						
+						<button id="print-button" data-bind="click: exportExcel">#{i18n.getText('KMK007_4')}</button>
 					</div>
 				</div>
 				<div id="contents-area" class="fixed-flex-layout">
