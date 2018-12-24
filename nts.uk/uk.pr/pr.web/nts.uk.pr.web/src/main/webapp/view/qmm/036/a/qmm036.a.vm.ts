@@ -393,6 +393,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                 case 0:
                     self.bonusAtr(param);
                     self.titleTab(getText('QMM036_3'));
+                    $("#sidebar").ntsSideBar("active", param);
                     self.reloadCcg001();
                     self.getStatementData();
 
@@ -401,6 +402,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                     self.isScreenB(true);
                     self.bonusAtr(param);
                     self.titleTab(getText('QMM036_4'));
+                    $("#sidebar").ntsSideBar("active", param);
                     self.reloadCcg001();
                     self.getStatementData();
                     break;
