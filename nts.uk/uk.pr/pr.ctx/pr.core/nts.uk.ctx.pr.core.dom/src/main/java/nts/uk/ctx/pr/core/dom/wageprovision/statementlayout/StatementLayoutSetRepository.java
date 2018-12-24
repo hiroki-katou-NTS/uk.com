@@ -10,7 +10,7 @@ public interface StatementLayoutSetRepository {
 
     List<StatementLayoutSet> getAllStatementLayoutSet();
 
-    Optional<StatementLayoutSet> getStatementLayoutSetById(String histId);
+    Optional<StatementLayoutSet> getStatementLayoutSetById(String cid, String code, String histId);
 
     void add(String statementCd, StatementLayoutSet domain);
 
