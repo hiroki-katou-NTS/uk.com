@@ -34,7 +34,7 @@ module nts.uk.com.view.cmm008.a {
         
         //saveAsExcel
         export function saveAsExcel(languageId: string): JQueryPromise<any> {
-            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "TotalTimes", languageId: languageId, domainType: "KMK009回数集計", reportType: 0});
+            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Employment", languageId: languageId, domainType: "CMM008雇用情報の登録", reportType: 0});
         }
         
         /**
