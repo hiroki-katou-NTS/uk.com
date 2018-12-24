@@ -21,4 +21,6 @@ public interface PersonInfoMatrixItemRepo {
 	void insert(PersonInfoMatrixItem newSetting);
 	 
 	void insertAll(List<PersonInfoMatrixItem> listNewSetting); 
+	
+	List<PersonInfoMatrixData> findInfoData(String pInfoCategoryID, int isAbolition );
 }

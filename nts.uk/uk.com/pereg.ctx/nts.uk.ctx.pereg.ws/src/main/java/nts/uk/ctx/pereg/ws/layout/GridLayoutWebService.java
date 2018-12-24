@@ -18,6 +18,7 @@ import nts.uk.ctx.pereg.app.find.person.setting.matrix.matrixdisplayset.MatrixDi
 import nts.uk.ctx.pereg.app.find.person.setting.matrix.personinfomatrixitem.DisplayItemColumnSetFinder;
 import nts.uk.ctx.pereg.app.find.processor.GridPeregProcessor;
 import nts.uk.ctx.pereg.dom.person.setting.matrix.matrixdisplayset.MatrixDisplaySetting;
+import nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInfoMatrixData;
 import nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInfoMatrixItem;
 import nts.uk.shr.pereg.app.find.PeregGridQuery;
 
@@ -60,6 +61,8 @@ public class GridLayoutWebService extends WebService {
 			public final List<PersonInfoMatrixItem> personInfoItems = dicFinder.get(categoryId);
 			@SuppressWarnings("unused")
 			public final MatrixDisplaySetting matrixDisplay = mdsFinder.findByKey().orElse(null);
+			@SuppressWarnings("unused")
+			public final List<PersonInfoMatrixData> perInfoData = dicFinder.getData(categoryId);
 		};
 	}
 

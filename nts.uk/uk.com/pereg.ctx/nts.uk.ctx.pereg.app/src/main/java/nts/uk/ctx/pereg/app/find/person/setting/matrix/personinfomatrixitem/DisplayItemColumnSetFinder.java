@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
+import nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInfoMatrixData;
 import nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInfoMatrixItem;
 import nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInfoMatrixItemRepo;
 import nts.uk.ctx.sys.auth.app.find.user.UserDto;
@@ -41,6 +42,11 @@ public class DisplayItemColumnSetFinder {
 	}
 	public List<PersonInfoMatrixItem> get(String pInfoCategoryID ){
 		List<PersonInfoMatrixItem> listData = repo.findByCategoryID(pInfoCategoryID);
+		return listData;
+	}
+	public List<PersonInfoMatrixData> getData(String pInfoCategoryID ){
+		int isAbolition = 0;
+		List<PersonInfoMatrixData> listData = repo.findInfoData(pInfoCategoryID, isAbolition);
 		return listData;
 	}
 }
