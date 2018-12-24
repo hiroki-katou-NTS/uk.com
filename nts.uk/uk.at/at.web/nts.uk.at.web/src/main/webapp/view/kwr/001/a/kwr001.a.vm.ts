@@ -159,8 +159,9 @@ module nts.uk.at.view.kwr001.a {
                     
                     /** Required parameter */
                     baseDate: moment().toISOString(),
-                    periodStartDate: moment().toISOString(),
-                    periodEndDate: moment().toISOString(),
+//                    periodStartDate: moment().toISOString(),
+//                    periodEndDate: moment().toISOString(),
+                    dateRangePickerValue: self.datepickerValue,
                     inService: true,
                     leaveOfAbsence: true,
                     closed: true,
