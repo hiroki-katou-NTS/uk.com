@@ -130,7 +130,6 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                         self.isScreenB(false);
                     }
                     else{
-                        self.isRegistrationable(true);
                         self.isScreenB(true);
                     }
                     self.selectedHisCode(null);
@@ -183,6 +182,13 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
             service.getBreakdownHis(self.categoryAtr(), self.itemNameCd(), self.bonusAtr(), self.selectedItem()).done(function (data) {
                 if (data) {
                     let array = [];
+
+                    if(data.length == 0) {
+                        self.isRegistrationable(false);
+                    } else {
+                        self.isRegistrationable(true);
+                    }
+
                     for (let i = 0; i < data.yearMonthHistory.length; i++) {
                         array.push(
                             new ItemModel(
@@ -204,6 +210,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                 else {
                     nts.uk.ui.errors.clearAll();
                     self.lstHistory([]);
+                    self.isRegistrationable(false);
                     self.isScreenC(false);
                 }
                 block.clear();
@@ -543,6 +550,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                     self.periodStartYM(nts.uk.time.parseYearMonth(params.periodStartYm).format());
                     self.periodEndYM(nts.uk.time.parseYearMonth(params.periodEndYm).format());
                     self.modeScreen(1);
+                    self.isRegistrationable(true);
 
                     let array = self.lstHistory();
                     self.lstHistory([]);
