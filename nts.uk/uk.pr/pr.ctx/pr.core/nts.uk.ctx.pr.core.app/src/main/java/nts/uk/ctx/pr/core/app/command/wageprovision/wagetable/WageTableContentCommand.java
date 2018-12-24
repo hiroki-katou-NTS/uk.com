@@ -30,6 +30,8 @@ public class WageTableContentCommand {
 	private List<TwoDmsElementItemCommand> twoDimensionPayment;
 
 	private List<ThreeDmsElementItemCommand> threeDimensionPayment;
+	
+	private List<ThreeDmsElementItemCommand> workLevelPayment;
 
 	/**
 	 * 資格グループ設定
@@ -77,11 +79,24 @@ public class WageTableContentCommand {
 										eligible.getWageTablePaymentAmount(), eligible.getQualificationCode(), null,
 										null, null, null, null, null, null, null, null, null, null)));
 				qualificationGroupSettings.add(new QualificationGroupSettingContent(
-						wageTableQualification.getQualificationGroupCode(), wageTableQualification.getPaymentMethod(),
+						wageTableQualification.getQualificationGroupCode(), wageTableQualification.getQualificationGroupName(), wageTableQualification.getPaymentMethod(),
 						wageTableQualification.getEligibleQualificationCode().stream()
 								.map(WageTableQualificationInfoDto::getQualificationCode)
 								.collect(Collectors.toList())));
 			});
+		} else if (workLevelPayment != null) {
+			for (ThreeDmsElementItemCommand h : workLevelPayment) {
+				for (TwoDmsElementItemCommand r : h.getListFirstDms()) {
+					for (ElementItemCommand c : r.getListSecondDms()) {
+						ElementsCombinationPaymentAmount payment = new ElementsCombinationPaymentAmount(
+								IdentifierUtil.randomUniqueId(), c.getPaymentAmount(), r.getMasterCode(),
+								r.getFrameNumber(), r.getFrameLowerLimit(), r.getFrameUpperLimit(), c.getMasterCode(),
+								c.getFrameNumber(), c.getFrameLowerLimit(), c.getFrameUpperLimit(), h.getMasterCode(),
+								h.getFrameNumber(), h.getFrameLowerLimit(), h.getFrameUpperLimit());
+						listPayments.add(payment);
+					}
+				}
+			}
 		}
 
 		return new WageTableContent(historyID, listPayments,

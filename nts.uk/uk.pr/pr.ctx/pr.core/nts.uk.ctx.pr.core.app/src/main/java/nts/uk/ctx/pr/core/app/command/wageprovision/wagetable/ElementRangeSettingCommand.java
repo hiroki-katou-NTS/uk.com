@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.app.command.wageprovision.wagetable;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementRangeSetting;
 
 /**
@@ -32,6 +33,17 @@ public class ElementRangeSettingCommand {
 	private String historyID;
 
 	public ElementRangeSetting fromCommandToDomain() {
+		if (firstElementRange.getRangeLowerLimit() != null && firstElementRange.getRangeUpperLimit() != null
+				&& firstElementRange.getRangeUpperLimit() < firstElementRange.getRangeLowerLimit())
+			throw new BusinessException("MsgQ_153");
+		if (secondElementRange != null && secondElementRange.getRangeLowerLimit() != null
+				&& secondElementRange.getRangeUpperLimit() != null
+				&& secondElementRange.getRangeUpperLimit() < secondElementRange.getRangeLowerLimit())
+			throw new BusinessException("MsgQ_154");
+		if (thirdElementRange != null && thirdElementRange.getRangeLowerLimit() != null
+				&& thirdElementRange.getRangeUpperLimit() != null
+				&& thirdElementRange.getRangeUpperLimit() < thirdElementRange.getRangeLowerLimit())
+			throw new BusinessException("MsgQ_155");
 		return new ElementRangeSetting(firstElementRange.fromCommandToDomain(),
 				secondElementRange == null ? null : secondElementRange.fromCommandToDomain(),
 				thirdElementRange == null ? null : thirdElementRange.fromCommandToDomain(), historyID);

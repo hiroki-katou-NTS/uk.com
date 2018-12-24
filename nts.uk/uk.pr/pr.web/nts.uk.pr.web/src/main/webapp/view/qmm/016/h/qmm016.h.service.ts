@@ -3,7 +3,7 @@ module nts.uk.pr.view.qmm016.h.service {
     import format = nts.uk.text.format;
     var paths = {
         getAllQualificationGroup: "ctx/pr/core/wageprovision/wagetable/getAllQualificationGroup",
-        getAllQualificationInformation: "ctx/pr/core/wageprovision/wagetable/getAllQualificationInformation",
+        getAllQualificationInformation: "ctx/pr/core/wageprovision/wagetable/getAllQualificationInformationExcludeUsed/{0}",
         getAllQualificationGroupAndInformation: "ctx/pr/core/wageprovision/wagetable/getAllQualificationGroupAndInformation",
         getQualificationGroupByCode: "ctx/pr/core/wageprovision/wagetable/getQualificationGroupByCode/{0}",
         addQualificationGroup: "ctx/pr/core/wageprovision/wagetable/addQualificationGroup",
@@ -15,8 +15,8 @@ module nts.uk.pr.view.qmm016.h.service {
         return ajax(paths.getAllQualificationGroup);
     }
 
-    export function getAllQualificationInformation(): JQueryPromise<any> {
-        return ajax(paths.getAllQualificationInformation);
+    export function getAllQualificationInformation(groupCode: string): JQueryPromise<any> {
+        return ajax(format(paths.getAllQualificationInformation, groupCode));
     }
 
     export function getAllQualificationGroupAndInformation(): JQueryPromise<any> {

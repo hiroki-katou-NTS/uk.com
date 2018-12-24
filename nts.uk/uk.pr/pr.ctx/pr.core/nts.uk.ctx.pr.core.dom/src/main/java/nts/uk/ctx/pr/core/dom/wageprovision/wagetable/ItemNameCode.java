@@ -9,7 +9,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * 項目名コード
  */
 @StringMaxLength(4)
-@StringCharType(CharType.NUMERIC)
+@StringCharType(CharType.ALPHA_NUMERIC)
 public class ItemNameCode extends StringPrimitiveValue<ItemNameCode> {
 
 	private static final long serialVersionUID = 1L;

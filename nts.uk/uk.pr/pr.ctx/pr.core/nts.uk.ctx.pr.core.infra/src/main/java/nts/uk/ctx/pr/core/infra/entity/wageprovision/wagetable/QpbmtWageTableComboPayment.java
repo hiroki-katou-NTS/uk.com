@@ -106,44 +106,44 @@ public class QpbmtWageTableComboPayment extends UkJpaEntity {
 		this.historyId = historyId;
 		this.paymentAmount = domain.getWageTablePaymentAmount().v();
 		this.masterCode1 = domain.getElementAttribute().getFirstElementItem().getMasterElementItem().isPresent()
-				? domain.getElementAttribute().getFirstElementItem().getMasterElementItem().get().getMasterCode().v()
+				? domain.getElementAttribute().getFirstElementItem().getMasterElementItem().get().getMasterCode()
 				: null;
 		if (domain.getElementAttribute().getFirstElementItem().getNumericElementItem().isPresent()) {
 			this.frameUpperLimit1 = domain.getElementAttribute().getFirstElementItem().getNumericElementItem().get()
-					.getFrameUpperLimit().v();
+					.getFrameUpperLimit();
 			this.frameLowerLimit1 = domain.getElementAttribute().getFirstElementItem().getNumericElementItem().get()
-					.getFrameLowerLimit().v();
+					.getFrameLowerLimit();
 			this.frameNumber1 = domain.getElementAttribute().getFirstElementItem().getNumericElementItem().get()
-					.getFrameNumber().v();
+					.getFrameNumber();
 		}
 		if (domain.getElementAttribute().getSecondElementItem().isPresent()) {
 			this.masterCode2 = domain.getElementAttribute().getSecondElementItem().get().getMasterElementItem()
 					.isPresent()
 							? domain.getElementAttribute().getSecondElementItem().get().getMasterElementItem().get()
-									.getMasterCode().v()
+									.getMasterCode()
 							: null;
 			if (domain.getElementAttribute().getSecondElementItem().get().getNumericElementItem().isPresent()) {
 				this.frameUpperLimit2 = domain.getElementAttribute().getSecondElementItem().get()
-						.getNumericElementItem().get().getFrameUpperLimit().v();
+						.getNumericElementItem().get().getFrameUpperLimit();
 				this.frameLowerLimit2 = domain.getElementAttribute().getSecondElementItem().get()
-						.getNumericElementItem().get().getFrameLowerLimit().v();
+						.getNumericElementItem().get().getFrameLowerLimit();
 				this.frameNumber2 = domain.getElementAttribute().getSecondElementItem().get().getNumericElementItem()
-						.get().getFrameNumber().v();
+						.get().getFrameNumber();
 			}
 		}
 		if (domain.getElementAttribute().getThirdElementItem().isPresent()) {
 			this.masterCode3 = domain.getElementAttribute().getThirdElementItem().get().getMasterElementItem()
 					.isPresent()
 							? domain.getElementAttribute().getThirdElementItem().get().getMasterElementItem().get()
-									.getMasterCode().v()
+									.getMasterCode()
 							: null;
 			if (domain.getElementAttribute().getThirdElementItem().get().getNumericElementItem().isPresent()) {
 				this.frameUpperLimit3 = domain.getElementAttribute().getThirdElementItem().get().getNumericElementItem()
-						.get().getFrameUpperLimit().v();
+						.get().getFrameUpperLimit();
 				this.frameLowerLimit3 = domain.getElementAttribute().getThirdElementItem().get().getNumericElementItem()
-						.get().getFrameLowerLimit().v();
+						.get().getFrameLowerLimit();
 				this.frameNumber3 = domain.getElementAttribute().getThirdElementItem().get().getNumericElementItem()
-						.get().getFrameNumber().v();
+						.get().getFrameNumber();
 			}
 		}
 	}

@@ -29,6 +29,9 @@ public class QpbmtWageTableQualifyGroupSet extends UkJpaEntity {
 	@EmbeddedId
 	public QpbmtWageTableQualifyGroupSetPk pk;
 
+	@Column(name = "QUALIFY_GROUP_NAME")
+	public String qualificationGroupName;
+	
 	@Column(name = "PAY_METHOD")
 	public int paymentMethod;
 
@@ -38,7 +41,7 @@ public class QpbmtWageTableQualifyGroupSet extends UkJpaEntity {
 	}
 
 	public static QualificationGroupSettingContent toDomain(List<QpbmtWageTableQualifyGroupSet> listEntity) {
-		return new QualificationGroupSettingContent(listEntity.get(0).pk.qualificationGroupCode,
+		return new QualificationGroupSettingContent(listEntity.get(0).pk.qualificationGroupCode, listEntity.get(0).qualificationGroupName,
 				listEntity.get(0).paymentMethod,
 				listEntity.stream().map(i -> i.pk.elegibleQualificationCode).collect(Collectors.toList()));
 	}
@@ -48,11 +51,11 @@ public class QpbmtWageTableQualifyGroupSet extends UkJpaEntity {
 		if (domain.getEligibleQualificationCodes().isEmpty())
 			return Arrays.asList(new QpbmtWageTableQualifyGroupSet(
 					new QpbmtWageTableQualifyGroupSetPk(historyId, domain.getQualificationGroupCode().v(), null),
-					domain.getPaymentMethod().value));
+					domain.getQualificationGroupName().v(), domain.getPaymentMethod().value));
 		return domain.getEligibleQualificationCodes().stream()
 				.map(i -> new QpbmtWageTableQualifyGroupSet(
 						new QpbmtWageTableQualifyGroupSetPk(historyId, domain.getQualificationGroupCode().v(), i.v()),
-						domain.getPaymentMethod().value))
+						domain.getQualificationGroupName().v(), domain.getPaymentMethod().value))
 				.collect(Collectors.toList());
 	}
 

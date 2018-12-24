@@ -6,6 +6,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
     import shareModel = nts.uk.pr.view.qmm019.share.model;
     import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
     import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
+    import formatNumber = nts.uk.ntsNumber.formatNumber;
 
     export class ScreenModel {
         screenControl: KnockoutObservable<ScreenControl>;
@@ -42,8 +43,8 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             self.codeSelected = ko.observable(null);
 
             self.categoryAtr = shareModel.CategoryAtr.DEDUCTION_ITEM;
-            self.totalObjAtrs = ko.observableArray([]);
-            self.calcMethods = ko.observableArray([]);
+            self.totalObjAtrs = ko.observableArray(shareModel.getDeductionTotalObjAtr(null));
+            self.calcMethods = ko.observableArray(shareModel.getDeductionCaclMethodAtr(null));
             self.deductionProportionalAtrs = ko.observableArray(shareModel.getDeductionProportionalAtr())
             self.proportionalMethodAtrs = ko.observableArray(shareModel.getProportionalMethodAtr())
 
@@ -72,31 +73,6 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                     block.clear();
                 })
             })
-
-            self.dataScreen().calcMethod.subscribe(value => {
-                self.condition22(value);
-                self.condition23(value);
-                self.condition24(value);
-                self.condition25(value);
-                self.condition26(value);
-                self.condition44(value);
-            });
-
-            self.dataScreen().errorRangeSetting.upperLimitSetting.valueSettingAtr.subscribe(value => {
-                self.condition18(value);
-            });
-
-            self.dataScreen().errorRangeSetting.lowerLimitSetting.valueSettingAtr.subscribe(value => {
-                self.condition19(value);
-            });
-
-            self.dataScreen().alarmRangeSetting.upperLimitSetting.valueSettingAtr.subscribe(value => {
-                self.condition20(value);
-            });
-
-            self.dataScreen().alarmRangeSetting.lowerLimitSetting.valueSettingAtr.subscribe(value => {
-                self.condition21(value);
-            });
         }
 
         startPage(): JQueryPromise<any> {
@@ -113,7 +89,6 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             }
             self.params = params;
             self.yearMonth = params.yearMonth;
-            self.condition42();
             let dto = {
                 categoryAtr: self.categoryAtr,
                 itemNameCdSelected: self.params.itemNameCode,
@@ -129,9 +104,38 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             return dfd.promise();
         }
 
-        initScreen() {
+        initSubscribe() {
             let self = this;
             self.dataScreen().initSubscribe();
+            self.dataScreen().calcMethod.subscribe(value => {
+                self.condition22(value);
+                self.condition23(value);
+                self.condition24(value);
+                self.condition25(value);
+                self.condition26(value);
+                self.condition44(value);
+            });
+
+            self.dataScreen().itemRangeSet.errorUpperLimitSetAtr.subscribe(value => {
+                self.condition18(value);
+            });
+
+            self.dataScreen().itemRangeSet.errorLowerLimitSetAtr.subscribe(value => {
+                self.condition19(value);
+            });
+
+            self.dataScreen().itemRangeSet.alarmUpperLimitSetAtr.subscribe(value => {
+                self.condition20(value);
+            });
+
+            self.dataScreen().itemRangeSet.alarmLowerLimitSetAtr.subscribe(value => {
+                self.condition21(value);
+            });
+        }
+
+        initScreen() {
+            let self = this;
+            self.initSubscribe();
             // 取得できたデータ件数を確認する
             if (_.isEmpty(self.itemNames())) {
                 // 未選択モードへ移行する
@@ -170,34 +174,37 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             let sv4 = service.getFormulaById(self.dataScreen().formulaCode());
             // ドメインモデル「賃金テーブル」を取得する
             let sv5 = service.getWageTableById(self.dataScreen().wageTableCode());
-            $.when(sv1, sv2, sv3, sv4, sv5).done((dedu: IDeductionItemSet,
-                                                  breakItems: Array<IBreakdownItemSet>,
-                                                  perVal: any,
-                                                  formula: any,
-                                                  wageTable: any) => {
+            let sv6 = service.getStatementItemName(shareModel.CategoryAtr.PAYMENT_ITEM, self.dataScreen().statementItemCode())
+            $.when(sv1, sv2, sv3, sv4, sv5, sv6).done((dedu: IDeductionItemSet,
+                                                       breakItems: Array<IBreakdownItemSet>,
+                                                       perVal: any,
+                                                       formula: any,
+                                                       wageTable: any,
+                                                       statementItemName: any) => {
                 self.categoryAtrText(shareModel.getCategoryAtrText(self.categoryAtr));
                 if (!isNullOrUndefined(dedu)) {
                     self.deductionItemSet().setData(dedu);
-                    self.loadControlE2_9(self.params.detail.calcMethod);
+                    self.loadControlE2_9();
                 }
                 self.breakdownItemSets(_.isEmpty(breakItems) ? [] : BreakdownItemSet.fromApp(breakItems));
                 self.dataScreen().perValName(isNullOrUndefined(perVal) ? null : perVal.individualPriceName);
                 self.dataScreen().formulaName(isNullOrUndefined(formula) ? null : formula.formulaName);
                 self.dataScreen().wageTableName(isNullOrUndefined(wageTable) ? null : wageTable.wageTableName);
+                self.dataScreen().statementItemName(isNullOrUndefined(statementItemName) ? null : statementItemName.name);
                 dfd.resolve();
             });
 
             return dfd.promise();
         }
 
-        loadControlE2_9(calcMethod) {
+        loadControlE2_9() {
             let self = this;
             // ※補足資料8参照
             self.calcMethods(shareModel.getDeductionCaclMethodAtr(self.deductionItemSet().breakdownItemUseAtr()));
             if (self.deductionItemSet().breakdownItemUseAtr() == shareModel.BreakdownItemUseAtr.USE) {
                 self.dataScreen().calcMethod(shareModel.DeductionCaclMethodAtr.BREAKDOWN_ITEM.toString());
-            } else {
-                self.dataScreen().calcMethod(calcMethod);
+            } else if (isNullOrUndefined(self.dataScreen().calcMethod())) {
+                self.dataScreen().calcMethod(self.params.detail.calcMethod);
             }
         }
 
@@ -243,6 +250,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
 
         selectedMode(defaultAtr: shareModel.DefaultAtr) {
             let self = this;
+            self.condition42(defaultAtr);
             if (defaultAtr != shareModel.DefaultAtr.SYSTEM_DEFAULT) {
                 self.screenControl().visibleE2_2(true);
                 self.screenControl().visibleE2_3(true);
@@ -253,19 +261,19 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                 self.screenControl().enableE3_6(true);
                 self.screenControl().enableE3_9(true);
                 self.screenControl().visibleE3_10(true);
-                self.condition18(self.dataScreen().errorRangeSetting.upperLimitSetting.valueSettingAtr());
+                self.condition18(self.dataScreen().itemRangeSet.errorUpperLimitSetAtr());
                 self.screenControl().visibleE3_11(true);
                 self.screenControl().enableE3_12(true);
                 self.screenControl().visibleE3_13(true);
-                self.condition19(self.dataScreen().errorRangeSetting.lowerLimitSetting.valueSettingAtr());
+                self.condition19(self.dataScreen().itemRangeSet.errorLowerLimitSetAtr());
                 self.screenControl().visibleE3_14(true);
                 self.screenControl().enableE3_16(true);
                 self.screenControl().visibleE3_17(true);
-                self.condition20(self.dataScreen().alarmRangeSetting.upperLimitSetting.valueSettingAtr());
+                self.condition20(self.dataScreen().itemRangeSet.alarmUpperLimitSetAtr());
                 self.screenControl().visibleE3_18(true);
                 self.screenControl().enableE3_19(true);
                 self.screenControl().visibleE3_20(true);
-                self.condition21(self.dataScreen().alarmRangeSetting.lowerLimitSetting.valueSettingAtr());
+                self.condition21(self.dataScreen().itemRangeSet.alarmLowerLimitSetAtr());
                 self.screenControl().visibleE3_21(true);
                 self.screenControl().visibleE3_22(true);
                 self.screenControl().visibleE3_23(true);
@@ -278,26 +286,26 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             } else {
                 self.screenControl().visibleE2_2(true);
                 self.screenControl().visibleE2_3(true);
-                self.screenControl().enableE2_5(false);
+                self.screenControl().enableE2_5(true);
                 self.screenControl().enableE2_8(false);
                 self.screenControl().enableE2_10(true);
                 self.screenControl().enableE3_2(false);
                 self.screenControl().enableE3_6(false);
                 self.screenControl().enableE3_9(true);
                 self.screenControl().visibleE3_10(true);
-                self.condition18(self.dataScreen().errorRangeSetting.upperLimitSetting.valueSettingAtr());
+                self.condition18(self.dataScreen().itemRangeSet.errorUpperLimitSetAtr());
                 self.screenControl().visibleE3_11(true);
                 self.screenControl().enableE3_12(true);
                 self.screenControl().visibleE3_13(true);
-                self.condition19(self.dataScreen().errorRangeSetting.lowerLimitSetting.valueSettingAtr());
+                self.condition19(self.dataScreen().itemRangeSet.errorLowerLimitSetAtr());
                 self.screenControl().visibleE3_14(true);
                 self.screenControl().enableE3_16(true);
                 self.screenControl().visibleE3_17(true);
-                self.condition20(self.dataScreen().alarmRangeSetting.upperLimitSetting.valueSettingAtr());
+                self.condition20(self.dataScreen().itemRangeSet.alarmUpperLimitSetAtr());
                 self.screenControl().visibleE3_18(true);
                 self.screenControl().enableE3_19(true);
                 self.screenControl().visibleE3_20(true);
-                self.condition21(self.dataScreen().alarmRangeSetting.lowerLimitSetting.valueSettingAtr());
+                self.condition21(self.dataScreen().itemRangeSet.alarmLowerLimitSetAtr());
                 self.screenControl().visibleE3_21(true);
                 self.screenControl().visibleE3_22(true);
                 self.screenControl().visibleE3_23(true);
@@ -307,6 +315,8 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                 self.screenControl().visibleE7(false);
                 self.screenControl().visibleE8(false);
                 self.screenControl().visibleE9(false);
+                // E3_6
+                self.dataScreen().proportionalMethod(null);
             }
             nts.uk.ui.errors.clearAll();
             $("#E1_6_container").focus();
@@ -409,11 +419,17 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         /**
          * ※42：補足資料7を参照
          */
-        condition42() {
+        condition42(defaultAtr: shareModel.DefaultAtr) {
             let self = this;
-            self.totalObjAtrs(shareModel.getDeductionTotalObjAtr(self.params.printSet));
-            if (self.params.detail.totalObj == shareModel.DeductionTotalObjAtr.INSIDE.toString()) {
-                self.params.detail.totalObj = shareModel.DeductionTotalObjAtr.OUTSIDE.toString();
+            if (self.params.printSet == shareModel.StatementPrintAtr.DO_NOT_PRINT) {
+                if (self.dataScreen().totalObject() == shareModel.DeductionTotalObjAtr.INSIDE.toString()) {
+                    self.dataScreen().totalObject(shareModel.DeductionTotalObjAtr.OUTSIDE.toString());
+                }
+            }
+            if (defaultAtr == shareModel.DefaultAtr.SYSTEM_DEFAULT) {
+                self.totalObjAtrs(shareModel.getDeductionTotalObjAtr(null));
+            } else {
+                self.totalObjAtrs(shareModel.getDeductionTotalObjAtr(self.params.printSet));
             }
         }
 
@@ -509,6 +525,13 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
+
+            windows.setShared("QMM019E_RESULTS", self.createResult());
+            windows.close();
+        }
+
+        createResult() {
+            let self = this;
             let detail: shareModel.IDeductionItemDetail = <shareModel.IDeductionItemDetail>{};
             detail.salaryItemId = self.dataScreen().itemNameCode();
             detail.totalObj = self.dataScreen().totalObject();
@@ -520,17 +543,49 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             detail.commonAmount = self.dataScreen().commonAmount();
             detail.wageTblCd = self.dataScreen().wageTableCode();
             detail.supplyOffset = self.dataScreen().statementItemCode();
+
+            let itemRangeSet = <shareModel.IItemRangeSet>{};
+            itemRangeSet.alarmLowerLimitSetAtr = self.dataScreen().itemRangeSet.alarmLowerLimitSetAtr() ? share.model.UseRangeAtr.USE : share.model.UseRangeAtr.NOT_USE;
+            if (self.dataScreen().itemRangeSet.errorUpperLimitSetAtr()) {
+                itemRangeSet.errorUpperLimitSetAtr = share.model.UseRangeAtr.USE;
+                itemRangeSet.errorUpRangeValAmount = self.dataScreen().itemRangeSet.errorUpRangeValAmount();
+            } else {
+                itemRangeSet.errorUpperLimitSetAtr = share.model.UseRangeAtr.NOT_USE;
+            }
+            if (self.dataScreen().itemRangeSet.errorLowerLimitSetAtr()) {
+                itemRangeSet.errorLowerLimitSetAtr = share.model.UseRangeAtr.USE;
+                itemRangeSet.errorLoRangeValAmount = self.dataScreen().itemRangeSet.errorLoRangeValAmount();
+            } else {
+                itemRangeSet.errorLowerLimitSetAtr = share.model.UseRangeAtr.NOT_USE;
+            }
+            if (self.dataScreen().itemRangeSet.alarmUpperLimitSetAtr()) {
+                itemRangeSet.alarmUpperLimitSetAtr = share.model.UseRangeAtr.USE;
+                itemRangeSet.alarmUpRangeValAmount = self.dataScreen().itemRangeSet.alarmUpRangeValAmount();
+            } else {
+                itemRangeSet.alarmUpperLimitSetAtr = share.model.UseRangeAtr.NOT_USE;
+            }
+            if (self.dataScreen().itemRangeSet.alarmLowerLimitSetAtr()) {
+                itemRangeSet.alarmLowerLimitSetAtr = share.model.UseRangeAtr.USE;
+                itemRangeSet.alarmLoRangeValAmount = self.dataScreen().itemRangeSet.alarmLoRangeValAmount();
+            } else {
+                itemRangeSet.alarmLowerLimitSetAtr = share.model.UseRangeAtr.NOT_USE;
+            }
+
             let result = {
                 itemNameCode: self.dataScreen().itemNameCode(),
                 shortName: self.dataScreen().shortName(),
-                detail: detail
+                detail: detail,
+                itemRangeSet: itemRangeSet
             };
-            windows.setShared("QMM019E_RESULTS", result);
-            windows.close();
+            return result;
         }
 
         cancel() {
             windows.close();
+        }
+
+        formatNumber(number) {
+            return formatNumber(number, new nts.uk.ui.option.NumberEditorOption({grouplength: 3}))
         }
     }
 
@@ -625,19 +680,6 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         listItemSetting: Array<string>;
         detail: shareModel.IDeductionItemDetail;
         itemRangeSet: shareModel.IItemRangeSet;
-        /*workingAtr: number;
-        totalObject: number;
-        calcMethod: number;
-        proportionalAtr: number;
-        proportionalMethod: number;
-        rangeValAttribute: number;
-        errorRangeSetting: IErrorAlarmRangeSetting;
-        alarmRangeSetting: IErrorAlarmRangeSetting;
-        perValCode: string;
-        formulaCode: string;
-        wageTableCode: string;
-        statementItemCode: string;
-        commonAmount: number;*/
     }
 
     class Params {
@@ -665,18 +707,9 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
          * 按分方法
          */
         proportionalMethod: KnockoutObservable<string> = ko.observable(null);
-        /**
-         * 範囲値の属性
-         */
-        rangeValAttribute: KnockoutObservable<string> = ko.observable(null);
-        /**
-         * エラー範囲設定
-         */
-        errorRangeSetting: ErrorAlarmRangeSetting = new ErrorAlarmRangeSetting();
-        /**
-         * アラーム範囲設定
-         */
-        alarmRangeSetting: ErrorAlarmRangeSetting = new ErrorAlarmRangeSetting();
+
+        itemRangeSet: ItemRangeSet = new ItemRangeSet();
+
         /**
          * 個人金額コード
          */
@@ -718,9 +751,7 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
             self.calcMethod(isNullOrUndefined(data.detail.calcMethod) ? null : data.detail.calcMethod.toString());
             self.proportionalAtr(isNullOrUndefined(data.detail.proportionalAtr) ? null : data.detail.proportionalAtr.toString());
             self.proportionalMethod(isNullOrUndefined(data.detail.proportionalMethod) ? null : data.detail.proportionalMethod.toString());
-            /*self.rangeValAttribute(isNullOrUndefined(data.rangeValAttribute) ? null : data.rangeValAttribute.toString());
-            self.errorRangeSetting.setData(data.errorRangeSetting);
-            self.alarmRangeSetting.setData(data.alarmRangeSetting);*/
+            self.itemRangeSet.setData(data.itemRangeSet);
             self.perValCode(data.detail.personAmountCd);
             self.formulaCode(data.detail.calcFormulaCd);
             self.wageTableCode(data.detail.wageTblCd);
@@ -731,27 +762,27 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         initSubscribe() {
             let self = this;
             self.calcMethod.subscribe((value) => {
-                if(isNullOrUndefined(value)) return;
-                if(value != shareModel.DeductionCaclMethodAtr.PERSON_INFO_REF){
+                if (isNullOrUndefined(value)) return;
+                if (value != shareModel.DeductionCaclMethodAtr.PERSON_INFO_REF) {
                     self.perValCode(null);
                     self.perValName(null);
                     self.clearError("#E5_2");
                 }
-                if(value != shareModel.DeductionCaclMethodAtr.CACL_FOMULA){
+                if (value != shareModel.DeductionCaclMethodAtr.CACL_FOMULA) {
                     self.formulaCode(null);
                     self.formulaName(null);
                     self.clearError("#E6_2");
                 }
-                if(value != shareModel.DeductionCaclMethodAtr.WAGE_TABLE){
+                if (value != shareModel.DeductionCaclMethodAtr.WAGE_TABLE) {
                     self.wageTableCode(null);
                     self.wageTableName(null);
                     self.clearError("#E7_2");
                 }
-                if(value != shareModel.DeductionCaclMethodAtr.COMMON_AMOUNT){
+                if (value != shareModel.DeductionCaclMethodAtr.COMMON_AMOUNT) {
                     self.commonAmount(null);
                     self.clearError("#E8_2");
                 }
-                if(value != shareModel.DeductionCaclMethodAtr.SUPPLY_OFFSET){
+                if (value != shareModel.DeductionCaclMethodAtr.SUPPLY_OFFSET) {
                     self.statementItemCode(null);
                     self.statementItemName(null);
                     self.clearError("#E9_2");
@@ -767,31 +798,31 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                 self.clearError("#E7_2");
             });
             self.statementItemCode.subscribe(() => {
-                self.clearError("#E8_2");
+                self.clearError("#E9_2");
             });
 
-            self.errorRangeSetting.upperLimitSetting.valueSettingAtr.subscribe(() => {
-                self.errorRangeSetting.upperLimitSetting.rangeValue(null);
+            self.itemRangeSet.errorUpperLimitSetAtr.subscribe(() => {
+                self.itemRangeSet.errorUpRangeValAmount(null);
                 self.clearError("#E3_10");
             });
-            self.errorRangeSetting.lowerLimitSetting.valueSettingAtr.subscribe(() => {
-                self.errorRangeSetting.lowerLimitSetting.rangeValue(null);
+            self.itemRangeSet.errorLowerLimitSetAtr.subscribe(() => {
+                self.itemRangeSet.errorLoRangeValAmount(null);
                 self.clearError("#E3_13");
             });
-            self.errorRangeSetting.upperLimitSetting.rangeValue.subscribe(() => {
+            self.itemRangeSet.errorUpperLimitSetAtr.subscribe(() => {
                 self.clearError("#E3_13");
                 self.checkError("#E3_13");
             });
 
-            self.alarmRangeSetting.upperLimitSetting.valueSettingAtr.subscribe(() => {
-                self.alarmRangeSetting.upperLimitSetting.rangeValue(null);
+            self.itemRangeSet.alarmUpperLimitSetAtr.subscribe(() => {
+                self.itemRangeSet.alarmUpRangeValAmount(null);
                 self.clearError("#E3_17");
             });
-            self.alarmRangeSetting.lowerLimitSetting.valueSettingAtr.subscribe(() => {
-                self.alarmRangeSetting.lowerLimitSetting.rangeValue(null);
+            self.itemRangeSet.alarmLowerLimitSetAtr.subscribe(() => {
+                self.itemRangeSet.alarmLoRangeValAmount(null);
                 self.clearError("#E3_20");
             });
-            self.alarmRangeSetting.upperLimitSetting.rangeValue.subscribe(() => {
+            self.itemRangeSet.alarmUpperLimitSetAtr.subscribe(() => {
                 self.clearError("#E3_20");
                 self.checkError("#E3_20");
             });
@@ -822,28 +853,24 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                 case shareModel.DeductionCaclMethodAtr.PERSON_INFO_REF:
                     // 個人金額コードが設定されているか確認する
                     if (isNullOrEmpty(self.perValCode())) {
-                        // alertError({messageId: "MsgQ_11"});
                         self.setError("#E5_2", "MsgQ_11");
                     }
                     break;
                 case shareModel.DeductionCaclMethodAtr.CACL_FOMULA:
                     // 計算式コードが設定されているか確認する
                     if (isNullOrEmpty(self.formulaCode())) {
-                        // alertError({messageId: "MsgQ_12"});
                         self.setError("#E6_2", "MsgQ_12");
                     }
                     break;
                 case shareModel.DeductionCaclMethodAtr.WAGE_TABLE:
                     // 賃金テーブルコードが設定されているか確認する
                     if (isNullOrEmpty(self.wageTableCode())) {
-                        // alertError({messageId: "MsgQ_13"});
                         self.setError("#E7_2", "MsgQ_13");
                     }
                     break;
                 case shareModel.DeductionCaclMethodAtr.SUPPLY_OFFSET:
                     // 相殺対象項目コードが設定されているか確認する
-                    if (isNullOrEmpty(self.wageTableCode())) {
-                        // alertError({messageId: "MsgQ_32"});
+                    if (isNullOrEmpty(self.statementItemCode())) {
                         self.setError("#E9_2", "MsgQ_32");
                     }
                 default:
@@ -854,22 +881,19 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         checkErrorRange() {
             let self = this;
             // エラー範囲上限値チェック状況を確認する
-            if (self.errorRangeSetting.upperLimitSetting.valueSettingAtr()) {
+            if (self.itemRangeSet.errorUpperLimitSetAtr()) {
                 // エラー範囲上限値の入力を確認する
-                if (isNullOrEmpty(self.errorRangeSetting.upperLimitSetting.rangeValue())) {
-                    // alertError({messageId: "MsgQ_14"});
+                if (isNullOrEmpty(self.itemRangeSet.errorUpRangeValAmount())) {
                     self.setError("#E3_10", "MsgQ_14");
                 } else {
                     // エラー範囲下限値チェック状況を確認する
-                    if (self.errorRangeSetting.lowerLimitSetting.valueSettingAtr()) {
+                    if (self.itemRangeSet.errorLowerLimitSetAtr()) {
                         // エラー範囲下限値の入力を確認する
-                        if (isNullOrEmpty(self.errorRangeSetting.lowerLimitSetting.rangeValue())) {
-                            // alertError({messageId: "MsgQ_15"});
+                        if (isNullOrEmpty(self.itemRangeSet.errorLoRangeValAmount())) {
                             self.setError("#E3_13", "MsgQ_15");
                         } else {
                             // エラー範囲の入力確認をする
-                            if (parseInt(self.errorRangeSetting.lowerLimitSetting.rangeValue()) > parseInt(self.errorRangeSetting.upperLimitSetting.rangeValue())) {
-                                // alertError({messageId: "MsgQ_1"});
+                            if (parseInt(self.itemRangeSet.errorLoRangeValAmount()) > parseInt(self.itemRangeSet.errorUpRangeValAmount())) {
                                 self.setError("#E3_13", "MsgQ_1");
                             }
                         }
@@ -877,10 +901,9 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                 }
             } else {
                 // エラー範囲下限値チェック状況を確認する
-                if (self.errorRangeSetting.upperLimitSetting.valueSettingAtr()) {
+                if (self.itemRangeSet.errorLowerLimitSetAtr()) {
                     // エラー範囲下限値の入力を確認する
-                    if (isNullOrEmpty(self.errorRangeSetting.lowerLimitSetting.rangeValue())) {
-                        // alertError({messageId: "MsgQ_15"});
+                    if (isNullOrEmpty(self.itemRangeSet.errorLoRangeValAmount())) {
                         self.setError("#E3_13", "MsgQ_15");
                     }
                 }
@@ -890,21 +913,21 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
         checkAlarmRange() {
             let self = this;
             // アラーム範囲上限値チェック状況を確認する
-            if (self.alarmRangeSetting.upperLimitSetting.valueSettingAtr()) {
+            if (self.itemRangeSet.alarmUpperLimitSetAtr()) {
                 // アラーム範囲上限値の入力を確認する
-                if (isNullOrEmpty(self.alarmRangeSetting.upperLimitSetting.rangeValue())) {
+                if (isNullOrEmpty(self.itemRangeSet.alarmUpRangeValAmount())) {
                     // alertError({messageId: "MsgQ_16"});
                     self.setError("#E3_17", "MsgQ_16");
                 } else {
                     // アラーム範囲下限値チェック状況を確認する
-                    if (self.alarmRangeSetting.lowerLimitSetting.valueSettingAtr()) {
+                    if (self.itemRangeSet.alarmLowerLimitSetAtr()) {
                         // アラーム範囲下限値の入力を確認する
-                        if (isNullOrEmpty(self.alarmRangeSetting.lowerLimitSetting.rangeValue())) {
+                        if (isNullOrEmpty(self.itemRangeSet.alarmLoRangeValAmount())) {
                             // alertError({messageId: "MsgQ_17"});
                             self.setError("#E3_20", "MsgQ_17");
                         } else {
                             // エラー範囲の入力確認をする
-                            if (parseInt(self.alarmRangeSetting.lowerLimitSetting.rangeValue()) > parseInt(self.alarmRangeSetting.upperLimitSetting.rangeValue())) {
+                            if (parseInt(self.itemRangeSet.alarmLoRangeValAmount()) > parseInt(self.itemRangeSet.alarmUpRangeValAmount())) {
                                 // alertError({messageId: "MsgQ_2"});
                                 self.setError("#E3_20", "MsgQ_2");
                             }
@@ -913,9 +936,9 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
                 }
             } else {
                 // アラーム範囲下限値チェック状況を確認する
-                if (self.alarmRangeSetting.lowerLimitSetting.valueSettingAtr()) {
+                if (self.itemRangeSet.alarmLowerLimitSetAtr()) {
                     // アラーム範囲下限値の入力を確認する
-                    if (isNullOrEmpty(self.alarmRangeSetting.lowerLimitSetting.rangeValue())) {
+                    if (isNullOrEmpty(self.itemRangeSet.alarmLoRangeValAmount())) {
                         // alertError({messageId: "MsgQ_17"});
                         self.setError("#E3_20", "MsgQ_17");
                     }
@@ -933,6 +956,34 @@ module nts.uk.pr.view.qmm019.e.viewmodel {
 
         checkError(control) {
             $(control).ntsError('check');
+        }
+    }
+
+    class ItemRangeSet {
+        errorUpperLimitSetAtr: KnockoutObservable<boolean> = ko.observable(null);
+        errorUpRangeValAmount: KnockoutObservable<string> = ko.observable(null);
+        errorLowerLimitSetAtr: KnockoutObservable<boolean> = ko.observable(null);
+        errorLoRangeValAmount: KnockoutObservable<string> = ko.observable(null);
+        alarmUpperLimitSetAtr: KnockoutObservable<boolean> = ko.observable(null);
+        alarmUpRangeValAmount: KnockoutObservable<string> = ko.observable(null);
+        alarmLowerLimitSetAtr: KnockoutObservable<boolean> = ko.observable(null);
+        alarmLoRangeValAmount: KnockoutObservable<string> = ko.observable(null);
+
+        constructor() {
+        }
+
+        setData(data: shareModel.IItemRangeSet) {
+            this.errorUpperLimitSetAtr(data.errorUpperLimitSetAtr == shareModel.UseRangeAtr.USE);
+            this.errorUpRangeValAmount(isNullOrUndefined(data.errorUpRangeValAmount) ? null : data.errorUpRangeValAmount);
+
+            this.errorLowerLimitSetAtr(data.errorLowerLimitSetAtr == shareModel.UseRangeAtr.USE);
+            this.errorLoRangeValAmount(isNullOrUndefined(data.errorLoRangeValAmount) ? null : data.errorLoRangeValAmount);
+
+            this.alarmUpperLimitSetAtr(data.alarmUpperLimitSetAtr == shareModel.UseRangeAtr.USE);
+            this.alarmUpRangeValAmount(isNullOrUndefined(data.alarmUpRangeValAmount) ? null : data.alarmUpRangeValAmount);
+
+            this.alarmLowerLimitSetAtr(data.alarmLowerLimitSetAtr == shareModel.UseRangeAtr.USE);
+            this.alarmLoRangeValAmount(isNullOrUndefined(data.alarmLoRangeValAmount) ? null : data.alarmLoRangeValAmount);
         }
     }
 

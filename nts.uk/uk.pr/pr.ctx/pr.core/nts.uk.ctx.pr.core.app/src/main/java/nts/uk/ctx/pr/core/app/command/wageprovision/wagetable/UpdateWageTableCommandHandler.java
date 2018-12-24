@@ -47,9 +47,7 @@ public class UpdateWageTableCommandHandler extends CommandHandlerWithResult<Upda
 
 		if (context.getCommand().getHistory() != null) {
 			// neu them moi lich su
-			if (context.getCommand().getHistory().getHistoryID().isEmpty()
-					&& context.getCommand().getHistory().getStartMonth() != null
-					&& context.getCommand().getHistory().getEndMonth() != null) {
+			if (context.getCommand().getHistory().getHistoryID().equals("zzzzzz10")) {
 				context.getCommand().getHistory().setHistoryID(IdentifierUtil.randomUniqueId());
 				Optional<WageTableHistory> optWageHist = wageHistRepo.getWageTableHistByCode(companyId,
 						context.getCommand().getWageTableCode());
@@ -65,8 +63,7 @@ public class UpdateWageTableCommandHandler extends CommandHandlerWithResult<Upda
 			}
 
 			// update element range setting
-			if (context.getCommand().getElementRange() != null
-					&& context.getCommand().getElementRange().getHistoryID() != null) {
+			if (context.getCommand().getElementRange() != null) {
 				context.getCommand().getElementRange().setHistoryID(context.getCommand().getHistory().getHistoryID());
 				Optional<ElementRangeSetting> optElementRange = elemRangeRepo
 						.getElementRangeSettingById(context.getCommand().getHistory().getHistoryID());
@@ -77,8 +74,7 @@ public class UpdateWageTableCommandHandler extends CommandHandlerWithResult<Upda
 			}
 
 			// update wage table content
-			if (context.getCommand().getWageTableContent() != null
-					&& context.getCommand().getWageTableContent().getHistoryID() != null) {
+			if (context.getCommand().getWageTableContent() != null) {
 				context.getCommand().getWageTableContent().setHistoryID(context.getCommand().getHistory().getHistoryID());
 				wageContentRepo.addOrUpdate(context.getCommand().getWageTableContent().fromCommandToDomain());
 			}

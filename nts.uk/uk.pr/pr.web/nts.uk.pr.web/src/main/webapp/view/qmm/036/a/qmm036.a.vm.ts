@@ -189,7 +189,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                                 data.yearMonthHistory[i].historyID,
                                 data.yearMonthHistory[i].periodStartYm,
                                 data.yearMonthHistory[i].periodEndYm,
-                                format(getText("QMM039_18"), self.formatYM(data.yearMonthHistory[i].periodStartYm), self.formatYM(data.yearMonthHistory[i].periodEndYm))))
+                                self.formatYM(data.yearMonthHistory[i].periodStartYm) + "    ～    " + self.formatYM(data.yearMonthHistory[i].periodEndYm)))
                     }
                     let dataSort = _.orderBy(array, ["periodStartYm"], 'desc');
                     for (let i = 0; i < dataSort.length; i++) {
@@ -229,7 +229,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                                 data.yearMonthHistory[i].historyID,
                                 data.yearMonthHistory[i].periodStartYm,
                                 data.yearMonthHistory[i].periodEndYm,
-                                format(getText("QMM039_18"), self.formatYM(data.yearMonthHistory[i].periodStartYm), self.formatYM(data.yearMonthHistory[i].periodEndYm))))
+                                self.formatYM(data.yearMonthHistory[i].periodStartYm) + "    ～    " + self.formatYM(data.yearMonthHistory[i].periodEndYm)))
                     }
                     let dataSort = _.orderBy(array, ["periodStartYm"], 'desc');
                     for (let i = 0; i < dataSort.length; i++) {
@@ -549,11 +549,11 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                         null,
                         params.periodStartYm,
                         params.periodEndYm,
-                        format(getText("QMM039_18"), nts.uk.time.parseYearMonth(params.periodStartYm).format(), nts.uk.time.parseYearMonth(params.periodEndYm).format())
+                        nts.uk.time.parseYearMonth(params.periodStartYm).format() + "    ～    " + nts.uk.time.parseYearMonth(params.periodEndYm).format()
                     ));
                     if (array.length > 1) {
                         array[1].periodEndYm = (params.periodStartYm - 1) % 100 == 0 ? params.periodStartYm - 101 + 12 : params.periodStartYm - 1;
-                        array[1].period = format(getText("QMM039_18"), nts.uk.time.parseYearMonth(array[1].periodStartYm).format(), nts.uk.time.parseYearMonth(array[1].periodEndYm).format());
+                        array[1].period = nts.uk.time.parseYearMonth(array[1].periodStartYm).format() + "    ～    " + nts.uk.time.parseYearMonth(array[1].periodEndYm).format();
                     }
                     for (let i = 0; i < array.length; i++) {
                         array[i].index = i;
