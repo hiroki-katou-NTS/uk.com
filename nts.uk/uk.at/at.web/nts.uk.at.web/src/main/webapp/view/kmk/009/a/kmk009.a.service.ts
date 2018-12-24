@@ -102,7 +102,7 @@ module nts.uk.at.view.kmk009.a {
         
         //saveAsExcel
         export function saveAsExcel(languageId: string): JQueryPromise<any> {
-            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "TotalTimes", languageId: languageId, domainType: "KMK009回数集計", reportType: 0});
+            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "TotalTimes", languageId: languageId, domainType: "KMK009"+nts.uk.resource.getText('KMK009_25'), reportType: 0});
         }
 
 

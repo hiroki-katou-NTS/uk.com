@@ -16,6 +16,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
@@ -50,10 +51,16 @@ public class ClassificationExportImpl implements MasterListData{
 		} else {
 			listEmployeeExport.stream().forEach(c -> {
 				Map<String, Object> data = new HashMap<>();
+				putEmptyData(data);
 				data.put("コード", c.getClassificationCode());
 				data.put("名称", c.getClassificationName());
 				data.put("メモ", c.getMemo());
-				datas.add(new MasterData(data, null, ""));
+				MasterData masterData = new MasterData(data, null, "");
+				masterData.cellAt("コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("メモ").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				
+				datas.add(masterData);
 				
 			});
 		}
@@ -64,12 +71,24 @@ public class ClassificationExportImpl implements MasterListData{
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 		columns.add(new MasterHeaderColumn("コード", TextResource.localize("CMM014_6"),
-				ColumnTextAlign.CENTER, "", true));
+				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("名称", TextResource.localize("CMM014_7"),
-				ColumnTextAlign.CENTER, "", true));
+				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("メモ", TextResource.localize("CMM014_8"),
-				ColumnTextAlign.CENTER, "", true));
+				ColumnTextAlign.LEFT, "", true));
 		return columns;
 	}
+	
+	private void putEmptyData(Map<String, Object> data){
+		data.put("コード", "");
+		data.put("名称", "");
+		data.put("メモ", "");
+	}
+
+	@Override
+	public String mainSheetName() {
+		return TextResource.localize("CMM014_9");
+	}
+	
 
 }

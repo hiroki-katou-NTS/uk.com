@@ -26,8 +26,10 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMaster;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
@@ -103,7 +105,13 @@ public class SequenceMasterExportImpl implements MasterListData{
 				data.put("コード", c.getSequenceCode());
 				data.put("名称", c.getSequenceName());
 				data.put("順位", c.getOrder());
-				datas.add(new MasterData(data, null, ""));
+				
+				MasterData masterData = new MasterData(data, null, "");
+				masterData.cellAt("コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("順位").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+				
+				datas.add(masterData);
 			});
 		}
 		
@@ -141,7 +149,7 @@ public class SequenceMasterExportImpl implements MasterListData{
 	@Override
 	public List<SheetData> extraSheets(MasterListExportQuery query){
 		List<SheetData> listSheetData = new ArrayList<>();
-		SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, "シーケンス設定");
+		SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("CMM013_54"));
 		listSheetData.add(sheetDataTwo);
 		return listSheetData;
 	}
@@ -157,10 +165,6 @@ public class SequenceMasterExportImpl implements MasterListData{
 		List<JobTitleInfo> listFindAll = sequenceMasterExportRepository.findAll(companyId,query.getStartDate(), query.getEndDate())
 				.stream()
 				.sorted(Comparator.comparing(JobTitleInfo::getJobTitleCode)).collect(Collectors.toList());
-		
-//		List<String> listJobTitleItemDto =  listFindAll.stream()
-//				.map(job -> job.getJobTitleId())
-//				.collect(Collectors.toList());
 
 		if(CollectionUtil.isEmpty(listFindAll)){
 			throw new BusinessException("Msg_393");
@@ -224,7 +228,16 @@ public class SequenceMasterExportImpl implements MasterListData{
 							}
 							
 						}
-						datas.add(new MasterData(data, null, ""));
+						MasterData masterData = new MasterData(data, null, "");
+						masterData.cellAt("コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+						masterData.cellAt("職歴開始日").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+						masterData.cellAt("職歴終了").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+						masterData.cellAt("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+						masterData.cellAt("36協定対象外").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+						masterData.cellAt("序列コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+						masterData.cellAt("序列名").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+						
+						datas.add(masterData);
 					}
 					
 				}
@@ -236,13 +249,10 @@ public class SequenceMasterExportImpl implements MasterListData{
 	}
 
 
-
-
-
 	@Override
 	public String mainSheetName() {
 		// TODO Auto-generated method stub
-		return "職位情報の登録";
+		return TextResource.localize("CMM013_53");
 	}
 	
 

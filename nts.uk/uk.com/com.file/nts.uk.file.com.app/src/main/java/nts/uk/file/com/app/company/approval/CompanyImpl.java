@@ -25,6 +25,7 @@ import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.primitive.PostCode;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
@@ -168,7 +169,31 @@ public class CompanyImpl implements MasterListData{
 					data.put("期首月", MonthStr.TWELVE.month);
 				}
 
-				datas.add(new MasterData(data, null, ""));
+				MasterData masterData = new MasterData(data, null, "");
+				masterData.cellAt("会社コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("この会社を廃止する").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("会社名").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("会社名（カナ）").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("会社名（略名）").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("法人番号").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("会社代表者名").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("会社代表者職位").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("郵便番号").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("住所 市区町村・番地").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("住所 建物名など").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("住所カナ 市区町村・番地").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("住所カナ 建物名など").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("電話番号").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("FAX").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("人事システム").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("就業システム").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("給与システム").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("職場と部門").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("期首月").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				
+				
+
+				datas.add(masterData);
 			});
 		}
 		return datas;
@@ -244,6 +269,12 @@ public class CompanyImpl implements MasterListData{
 		data.put("給与システム", "");
 		data.put("職場と部門", "");
 		data.put("期首月","");
+	}
+
+	@Override
+	public String mainSheetName() {
+		// TODO Auto-generated method stub
+		return TextResource.localize("CMM001_39");
 	}
 	
 	

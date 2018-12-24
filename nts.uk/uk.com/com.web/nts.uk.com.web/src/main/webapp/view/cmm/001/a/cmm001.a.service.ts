@@ -53,6 +53,6 @@ module cmm001.a.service {
     }
     //saveAsExcel
         export function saveAsExcel(languageId: string): JQueryPromise<any> {
-            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Company", languageId: languageId, domainType: "会社情報", reportType: 0});
+            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Company", languageId: languageId, domainType: "CMM001"+ nts.uk.resource.getText("CMM001_39"), reportType: 0});
         }
 }
