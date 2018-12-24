@@ -996,6 +996,20 @@ module nts.uk.at.view.ksm004.a {
             getBlankOptionDate(): any{
                 return [{ start: "", textColor: "", backgroundColor: "", listText: [], insertText: false }];
             }
+            
+            /**
+         * Print file excel
+         */
+        exportExcel() : void {
+            var self = this;
+            nts.uk.ui.block.grayout();
+            aService.saveAsExcel().done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+        }
         }
         
         interface ICalendarPanel{

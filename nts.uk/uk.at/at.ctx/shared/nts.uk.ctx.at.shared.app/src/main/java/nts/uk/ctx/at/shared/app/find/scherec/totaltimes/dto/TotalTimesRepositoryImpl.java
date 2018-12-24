@@ -27,6 +27,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
@@ -174,7 +175,24 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 				}else{
 					data.put("集計区分", SummaryAtr.COMBINATION.nameId);
 				}
-				datas.add(new MasterData(data, null, ""));
+				
+				MasterData masterData = new MasterData(data, null, "");
+				masterData.cellAt("No").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("使用区分").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("略名").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("集計区分").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("勤務種類").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("就業時間帯").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("集計条件以上").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("以上").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("集計条件未満").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("未満").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("対象項目").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("半日勤務区分").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+
+				
+				datas.add(masterData);
 			});	
 		}
 		return datas;
@@ -231,6 +249,15 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 		data.put("半日勤務区分", "");
 		
 	}
+
+
+	@Override
+	public String mainSheetName() {
+		// TODO Auto-generated method stub
+		return TextResource.localize("KMK009_25");
+	}
+	
+	
 
 
 }
