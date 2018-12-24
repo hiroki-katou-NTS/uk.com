@@ -15,7 +15,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         isAddHistoryMode: KnockoutObservable<boolean> = ko.observable(false);
         screenMode: KnockoutObservable<number> = ko.observable(model.SCREEN_MODE.NEW);
         isSelectedHistory: KnockoutObservable<boolean> = ko.observable(false);
-        isCompleteChangeToAddHistoryMode: boolean = false;
+        isCompleteChangeMode: boolean = true;
         isCompleteStartScreen: boolean = false;
         // tabs variables
         tabs: any;
@@ -43,7 +43,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         screenDSelectedTab: KnockoutObservable<string>;
 
         constructor() {
-            var self = this;
+            let self = this;
             self.initFixedElement();
             self.initTabPanel();
             self.initComponents();
@@ -56,9 +56,8 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             })
             self.selectedFormulaIdentifier.subscribe(newValue => {
                 nts.uk.ui.errors.clearAll();
-                if (self.screenMode() == model.SCREEN_MODE.ADD_HISTORY && self.isCompleteChangeToAddHistoryMode){
+                if (self.screenMode() == model.SCREEN_MODE.ADD_HISTORY && self.isCompleteChangeMode){
                     self.getListFormula(null);
-                    self.isCompleteChangeToAddHistoryMode = false;
                 }
                 if (newValue) {
                     self.showFormulaInfoByValue(newValue);
@@ -182,10 +181,6 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             }
         }
 
-        formatMasterCalculationFormula () {
-
-        }
-
         addFormula (command) {
             let self = this;
             block.invisible();
@@ -240,7 +235,9 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             service.addFormulaHistory(command).done(function(data) {
                 block.clear();
                 dialog.info({ messageId: 'Msg_15' }).then(function() {
-                    self.selectedFormulaIdentifier.valueHasMutated();
+                    self.getListFormula(null).done(function(){
+                        self.selectedFormulaIdentifier.valueHasMutated();
+                    });
                 });
             }).fail(function(err) {
                 block.clear();
@@ -286,9 +283,11 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             self.selectedHistory(new model.GenericHistoryYearMonthPeriod(null));
             self.selectedTab('tab-1');
             nts.uk.ui.errors.clearAll();
-            setTimeout(function(){
-                $('#A3_3').focus();
-            }, 50);
+            self.getListFormula(null).done(function(){
+                setTimeout(function(){
+                    $('#A3_3').focus();
+                }, 50);
+            })
         }
 
         changeToUpdateMode() {
@@ -318,15 +317,17 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             if (identifier.length > 36) {
                 selectedHistoryID = identifier.substring(3, identifier.length);
                 selectedHistory = _.find(selectedFormula.history, {historyID: selectedHistoryID});
+                if ((self.screenMode() == model.SCREEN_MODE.ADD_HISTORY && selectedFormula.history[1].historyID == selectedHistoryID) || selectedFormula.history.length <= 1) selectedHistory.endMonth = 999912;
                 self.selectedHistory(new model.GenericHistoryYearMonthPeriod(selectedHistory));
                 self.isSelectedHistory(true);
-                if (!self.isCompleteChangeToAddHistoryMode) self.showFormulaSettingByHistory(selectedHistory, true, null);
+                if (self.isCompleteChangeMode) self.showFormulaSettingByHistory(selectedHistory, true, null);
                 self.changeToUpdateMode();
             }
             else {
                 self.selectedHistory(new model.GenericHistoryYearMonthPeriod(null));
                 if (identifier.length > 0 ){
                     self.screenMode(model.SCREEN_MODE.UPDATE_FORMULA);
+                    $("#A3_4").focus();
                     self.basicFormulaSetting(new model.BasicFormulaSetting(null));
                 }
             }
@@ -336,9 +337,11 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             let setting = {historyID: history.historyID, withSetting: withSetting, masterUse: masterUse};
             block.invisible();
             service.getFormulaSettingByHistory(setting).done(function (data) {
-                if (self.screenMode() != model.SCREEN_MODE.ADD_HISTORY) self.basicFormulaSetting(new model.BasicFormulaSetting(data.basicFormulaSettingDto));
-                self.detailFormulaSetting(new model.DetailFormulaSetting(data.detailFormulaSettingDto));
-                self.screenDViewModel.getFormulaElements(history.startMonth);
+                if (withSetting) {
+                    self.basicFormulaSetting(new model.BasicFormulaSetting(data.basicFormulaSettingDto));
+                    self.detailFormulaSetting(new model.DetailFormulaSetting(data.detailFormulaSettingDto));
+                    self.screenDViewModel.getFormulaElements(history.startMonth);
+                }
                 self.mapListCalculationToMasterUseItem(data.masterUseDto, data.basicCalculationFormulaDto);
                 self.selectedTab.valueHasMutated();
                 block.clear();
@@ -373,6 +376,11 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             service.getAllFormula().done(function(data){
                 block.clear();
                 self.convertToTreeList(data, itemToBeSelect);
+                if (self.screenMode() == model.SCREEN_MODE.ADD_HISTORY) {
+                    let selectedHistoryID = self.selectedFormulaIdentifier().substring(3, self.selectedFormulaIdentifier().length);
+                    let selectedHistory = _.find(ko.toJS(self.selectedFormula).history, {historyID: selectedHistoryID});
+                    self.selectedHistory(new model.GenericHistoryYearMonthPeriod(selectedHistory));
+                }
                 dfd.resolve();
             });
             return dfd.promise();
@@ -393,12 +401,10 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 if (params) {
                     let formulaList = ko.toJS(self.formulaList);
                     let historyID = nts.uk.util.randomId();
-                    // update previous history
                     if (history.length > 0) {
                         let beforeLastMonth = moment(params.startMonth, 'YYYYMM').subtract(1, 'month');
                         history[0].endMonth = beforeLastMonth.format('YYYYMM');
                     }
-                    // add new history
                     history.unshift({ historyID: historyID, startMonth: params.startMonth, endMonth: '999912' });
                     formulaList.forEach(function (formula) {
                         if (formula.formulaCode == selectedFormula.formulaCode) {
@@ -406,23 +412,23 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                             formula = new model.Formula(formula);
                         }
                     });
-                    self.isCompleteChangeToAddHistoryMode = false;
+                    self.isCompleteChangeMode = false;
                     // to prevent call service for new history
                     // update formula and tree grid
                     self.convertToTreeList(formulaList, selectedFormula.formulaCode + historyID);
-                    self.isCompleteChangeToAddHistoryMode = true;
-                    self.screenMode(model.SCREEN_MODE.ADD_HISTORY);
                     // clone data
                     if (params.takeoverMethod == model.TAKEOVER_METHOD.FROM_LAST_HISTORY && history.length > 1) {
                         self.showFormulaSettingByHistory(history[1], true, null);
                     } else {
                         self.showFormulaSettingByHistory(history[1], false, params.masterUse);
+                        self.basicFormulaSetting(new model.BasicFormulaSetting({
+                            masterUse: params.masterUse,
+                            masterBranchUse: params.masterBranchUse,
+                            historyID: historyID
+                        }));
                     }
-                    self.basicFormulaSetting(new model.BasicFormulaSetting({
-                        masterUse: params.masterUse,
-                        masterBranchUse: params.masterBranchUse,
-                        historyID: historyID
-                    }));
+                    self.isCompleteChangeMode = true;
+                    self.screenMode(model.SCREEN_MODE.ADD_HISTORY);
                 }
             });
         };

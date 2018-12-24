@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
 	<ui:define name="htmlHead">
-		<script>var dialogSize = { width: 600, height: 460 };</script>
+		<script>var dialogSize = { width: 600, height: 520 };</script>
 		<com:scriptfile set="IGNITE" />
 		<com:scriptfile path="../share/model.js" />
 		<com:scriptfile path="qmm017.i.service.js" />
@@ -29,7 +29,7 @@
 			<div style="margin-top: 20px; min-width: 550px">
 				<div style="width: 130px;"
 					 data-bind="ntsFormLabel: {required: true}" >#{i18n.getText('QMM017_162')}</div>
-				<div style="width: 400px; display: inline-flex; position: absolute; left: 155px;">
+				<div style="width: 392px; display: inline-flex; position: absolute; left: 155px; top: 130px;">
 					<div id="I1_6" tabindex="1" style="width: 400px; "
 						 data-bind="ntsRadioBoxGroup: {
 										value: modifyMethod,
@@ -39,8 +39,8 @@
 										optionsText: 'name'}"></div>
 
 				</div>
-				<span style = "position: absolute; z-index: -1; margin-top: 30px; margin-left: 5px; white-space: pre-line" class="label warning tab-row">#{i18n.getText('QMM017_164')}</span>
-				<div style="margin-top: 100px; margin-left: 150px;  min-width: 420px">
+				<span style = "position: absolute; z-index: -1; margin-top: 37px; min-width: 393px; white-space: pre-line" class="label warning tab-row">#{i18n.getText('QMM017_164')}</span>
+				<div style="margin-top: 115px; margin-left: 150px;  min-width: 420px">
 					<div style="width: 100px; display: inline-block"
 						 data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_165')}</div>
 					<div id="I1_11" style="display: inline-block"
@@ -52,7 +52,7 @@
 							required: true,
 							enable: modifyMethod() == 1}"
 						 tabindex="2" />
-					<div style= "width: 100px; display: inline-block; margin-left: 5px;" data-bind="text: displayEndMonth"></div>
+					<div style= "width: 115px; display: inline-block; margin-left: 5px;" data-bind="text: displayEndMonth"></div>
 				</div>
 			</div>
 

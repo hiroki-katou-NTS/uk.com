@@ -13,6 +13,7 @@ module nts.uk.pr.view.qmm017.f.viewmodel {
         //mix of 3 case
         targetItemCodeListItem: KnockoutObservableArray<any> = ko.observableArray([]);
         startMonth = moment().year();
+        standardAmountType: KnockoutObservable<string> = ko.observable(getText("QMM017_138"));
         constructor() {
             let self = this;
             let params = getShared("QMM017_F_PARAMS");
@@ -20,7 +21,14 @@ module nts.uk.pr.view.qmm017.f.viewmodel {
                 self.startMonth = params.startMonth;
                 self.basicCalculationFormula = params.basicCalculationFormula;
                 self.targetItemCodeList(params.basicCalculationFormula.targetItemCodeList);
-                self.targetItemCodeListItem(params.targetItemCodeListItem);
+            }
+            let standardAmountCls = params.basicCalculationFormula.standardAmountClassification;
+            if (standardAmountCls == model.STANDARD_AMOUNT_CLS.PAYMENT_ITEM) {
+                self.standardAmountType(getText("QMM017_126"));
+            } else if (standardAmountCls == model.STANDARD_AMOUNT_CLS.DEDUCTION_ITEM) {
+                self.standardAmountType(getText("QMM017_130"));
+            } else if (standardAmountCls == model.STANDARD_AMOUNT_CLS.INDIVIDUAL_UNIT_PRICE_ITEM) {
+                self.standardAmountType(getText("QMM017_134"));
             }
         }
 

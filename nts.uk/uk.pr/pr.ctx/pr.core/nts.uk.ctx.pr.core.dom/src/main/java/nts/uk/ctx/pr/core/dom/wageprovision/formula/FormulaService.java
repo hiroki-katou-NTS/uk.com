@@ -66,7 +66,7 @@ public class FormulaService {
     }
 
     public void updateFormula (Formula formula) {
-        formulaRepository.add(formula);
+        formulaRepository.update(formula);
     }
 
     public void removeFormula (String formulaCode) {

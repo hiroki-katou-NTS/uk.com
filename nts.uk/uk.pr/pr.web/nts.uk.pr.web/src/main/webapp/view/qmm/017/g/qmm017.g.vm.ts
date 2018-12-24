@@ -23,7 +23,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             self.formulaContent(params.formula);
             self.formulaElement = params.formulaElement;
             self.extractInputParameter(params.formula);
-            $('#G1_2').ntsFixedTable({height: 178});
+            $('#G1_2').ntsFixedTable({height: 184});
         }
         extractInputParameter (formula) {
             let self = this, separators = ['\\\＋', 'ー', '\\×', '÷', '\\^', '\\\(', '\\\)', '\\>', '\\<', '\\\≦', '\\\≧', '\\\＝', '\\\≠', '\\\,'].join("|");
@@ -35,10 +35,11 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                 if (operand.startsWith(self.PAYMENT) || operand.startsWith(self.DEDUCTION) || operand.startsWith(self.ATTENDANCE)
                     || operand.startsWith(self.COMPANY_UNIT_PRICE) || operand.startsWith(self.INDIVIDUAL_UNIT_PRICE)
                     || operand.startsWith(self.WAGE_TABLE)){
-                    calculationFormulaData.push({
-                        formulaItem: operand,
-                        trialCalculationValue: ko.observable(null)
-                    })
+                    if (!(_.some(calculationFormulaData, {formulaItem: operand})))
+                        calculationFormulaData.push({
+                            formulaItem: operand,
+                            trialCalculationValue: ko.observable(null)
+                        })
                 }
             })
             self.calculationFormulaList(calculationFormulaData);
@@ -64,7 +65,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             if (nts.uk.ui.errors.hasError()) return;
             let self = this, calculationFormulaData = ko.toJS(self.calculationFormulaList), formulaContent = self.formulaContent();
             calculationFormulaData.forEach(item => {
-                formulaContent = formulaContent.replace(item.formulaItem, item.trialCalculationValue);
+                formulaContent = formulaContent.replace(new RegExp(item.formulaItem, 'g'), item.trialCalculationValue);
             });
             formulaContent = self.calculateSystemVariable(formulaContent);
             if (nts.uk.ui.errors.hasError()) {

@@ -16,7 +16,7 @@
     </ui:define>
     <ui:define name="content">
         <div class="contents-area" style="margin-left: 20px;">
-            <div class="label dialog-title">#{i18n.getText('QMM017_174')}</div>
+            <div class="label dialog-title">#{i18n.getText('QMM017_147')}</div>
             <div style="margin-top: 20px; min-width: 550px">
                 <div style="width: 130px; display: inline-block;"
                      data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM017_8')}</div>
@@ -38,12 +38,11 @@
 							enable: true}"
                      tabindex="1" />
                 <div style = "display: inline-block" data-bind = "text: displayStartJapanYearMonth"></div>
-                <div style="width: 100px; margin-left: 10px; display: inline-block;">#{i18n.getText('QMM016_76')}</div>
             </div>
             <div style="margin-top: 20px; min-width: 550px">
                 <div style="width: 130px;"
                      data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_151')}</div>
-                <div style = "width: 280px;display: inline-flex">
+                <div style = "width: 280px;display: inline-flex; vertical-align: text-top">
                     <div tabindex = "2" id = "H1_9"
                          data-bind="ntsRadioBoxGroup: {
 										value: takeoverMethod,
@@ -67,6 +66,7 @@
                     optionsValue: 'value',
                     optionsText: 'name',
                     value: masterBranchUse,
+                    enable: takeoverMethod () == 1,
                     required: true}">
                 </div>
             </div>
@@ -80,6 +80,7 @@
                         visibleItemsCount: 5,
                         value: masterUse,
                         optionsText: 'name',
+                        enable: takeoverMethod () == 1,
                         required: true,
                         columns: [
                             { prop: 'fix_length', length: 0 },

@@ -30,7 +30,7 @@ module nts.uk.pr.view.qmm017.i.viewmodel {
                 let history = params.history;
                 if (history && history.length > 0) {
                     history.forEach((historyItem, index) => {
-                        if (self.selectedHistory.historyId == historyItem.historyId) self.previousHistory = history[index + 1];
+                        if (self.selectedHistory.historyID == historyItem.historyID) self.previousHistory = history[index + 1];
                     });
                     self.isLastHistory(params.selectedHistory.startMonth == history[0].startMonth);
                 }

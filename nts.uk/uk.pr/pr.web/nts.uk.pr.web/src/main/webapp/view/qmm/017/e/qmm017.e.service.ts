@@ -11,8 +11,7 @@ module nts.uk.pr.view.qmm017.e.service {
 
     export function getTargetItemCodeList (standardAmountCls: number, yearMonth) : JQueryPromise<any> {
         if (standardAmountCls == standardAmountClsEnum.DEDUCTION_ITEM || standardAmountCls == standardAmountClsEnum.PAYMENT_ITEM){
-            // PAYMENT_ITEM(0, "支給項目")
-            return getAllStatementItemData(0, false);
+            return getAllStatementItemData(standardAmountCls - 1, false);
         }
         if (standardAmountCls == standardAmountClsEnum.INDIVIDUAL_UNIT_PRICE_ITEM) return getAllUnitPriceName(false);
         return getAllPayrollUnitPriceByYearMonth(yearMonth);

@@ -12,9 +12,6 @@ module nts.uk.pr.view.qmm017.e.viewmodel {
         baseAmountTargetItem: KnockoutObservable<string> = ko.observable(null);
         conditionItemName: KnockoutObservable<string> = ko.observable(null);
         isShowConditionItem: KnockoutObservable<boolean> = ko.observable(true);
-        //mix of 3 case
-        targetItemCodeListItem: KnockoutObservableArray<any> = ko.observableArray([]);
-        allowToDirectiveChange: boolean = false;
         startMonth = moment().year();
         constructor() {
             let self = this;
@@ -37,33 +34,10 @@ module nts.uk.pr.view.qmm017.e.viewmodel {
                 $('#E3_4').ntsError('clear');
             })
             self.basicCalculationFormula().standardAmountClassification.subscribe(newValue => {
-                if (newValue && self.allowToDirectiveChange) self.getTargetItemCodeList(newValue);
+                self.baseAmountTargetItem("");
+                if (newValue) self.basicCalculationFormula().targetItemCodeList([]);
             })
-        }
-        getTargetItemCodeList(standardAmountCls): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-            block.invisible();
-            service.getTargetItemCodeList(standardAmountCls, self.startMonth).done(function(data) {
-                if (standardAmountCls == model.STANDARD_AMOUNT_CLS.PAYMENT_ITEM || standardAmountCls == model.STANDARD_AMOUNT_CLS.DEDUCTION_ITEM)
-                    data = data.map(item => {return {code: item.itemNameCd, name: item.name}})
-                self.targetItemCodeListItem(data);
-                self.computeBaseAmountTargetItem();
-                self.allowToDirectiveChange = true;
-                block.clear();
-                dfd.resolve();
-            }).fail(function(err) {
-                block.clear();
-                dialog.alertError(err.message);
-            });
-            return dfd.promise();
-        }
-        startPage(): JQueryPromise<any> {
-            let self = this;
-            block.invisible();
-            let standardAmountCls = self.basicCalculationFormula().standardAmountClassification();
-            return self.getTargetItemCodeList(standardAmountCls).done(function() {
-                block.clear();
-            });
+            self.computeBaseAmountTargetItem(self.basicCalculationFormula().standardAmountClassification());
         }
         saveConfiguration () {
             let self = this;
@@ -81,13 +55,13 @@ module nts.uk.pr.view.qmm017.e.viewmodel {
         }
         selectTargetItem () {
             let self = this;
-            let basicCalculationFormula = self.fromKnockoutObservableToJS(self.basicCalculationFormula), targetItemCodeListItem = ko.toJS(self.targetItemCodeListItem), targetItemCodeList = basicCalculationFormula.targetItemCodeList;;
-            setShared("QMM017_F_PARAMS", {startMonth: self.startMonth, targetItemCodeListItem: targetItemCodeListItem, basicCalculationFormula: basicCalculationFormula});
+            let basicCalculationFormula = self.fromKnockoutObservableToJS(self.basicCalculationFormula), targetItemCodeList = basicCalculationFormula.targetItemCodeList;;
+            setShared("QMM017_F_PARAMS", {startMonth: self.startMonth, basicCalculationFormula: basicCalculationFormula});
             modal("/view/qmm/017/f/index.xhtml").onClosed(function () {
                 var params = getShared("QMM017_F_RES_PARAMS");
                 if (params) {
                     self.basicCalculationFormula().targetItemCodeList(params.targetItemCodeList);
-                    self.computeBaseAmountTargetItem();
+                    self.computeBaseAmountTargetItem(self.basicCalculationFormula().standardAmountClassification());
                 }
                 $('#E2_4').focus();
             });
@@ -97,10 +71,19 @@ module nts.uk.pr.view.qmm017.e.viewmodel {
             basicCalculationFormula.targetItemCodeList =  Object.keys(basicCalculationFormula.targetItemCodeList).map(key => basicCalculationFormula.targetItemCodeList[key]);
             return basicCalculationFormula;
         }
-        computeBaseAmountTargetItem () {
-            let self = this, targetItemCodeList = self.fromKnockoutObservableToJS(self.basicCalculationFormula).targetItemCodeList;
-            let targetItem = ko.toJS(self.targetItemCodeListItem).filter(item => targetItemCodeList.indexOf(item.code) > -1).map(item => item.name);
-            if (targetItem) self.baseAmountTargetItem(targetItem.join(" ＋ "));
+        computeBaseAmountTargetItem (standardAmountCls) {
+            let self = this;
+            service.getTargetItemCodeList(standardAmountCls, self.startMonth).done(function(data) {
+                if (standardAmountCls == model.STANDARD_AMOUNT_CLS.PAYMENT_ITEM || standardAmountCls == model.STANDARD_AMOUNT_CLS.DEDUCTION_ITEM)
+                    data = data.map(item => {return {code: item.itemNameCd, name: item.name}})
+                let targetItemCodeList = self.fromKnockoutObservableToJS(self.basicCalculationFormula).targetItemCodeList;
+                let targetItem = data.filter(item => targetItemCodeList.indexOf(item.code) > -1).map(item => item.name);
+                if (targetItem) self.baseAmountTargetItem(targetItem.join(" ＋ "));
+                block.clear();
+            }).fail(function(err) {
+                block.clear();
+                dialog.alertError(err.message);
+            });
         }
     }
 }

@@ -84,6 +84,9 @@
     display: inline-block;
     margin-left: 28px;
 }
+#D1_4 div[class^='tab-content']{
+    height: 325px;
+}
 .cal-container {
     vertical-align: top;
     display: inline-block;
@@ -94,7 +97,7 @@
 }
 .search-box-sm {
     margin-left: 40px;
-    width: 150px;
+    width: 88px;
 }
 .formula-button {
     width: 232px;
@@ -168,9 +171,3 @@ textarea {
     position: absolute;
     z-index: 9999;
 }
-/*#auto-complete-container option::selection{*/
-    /*background-color: #007fff;*/
-/*}*/
-/*#auto-complete-container option:hover{*/
-    /*background-color: #007fff;*/
-/*}*/
