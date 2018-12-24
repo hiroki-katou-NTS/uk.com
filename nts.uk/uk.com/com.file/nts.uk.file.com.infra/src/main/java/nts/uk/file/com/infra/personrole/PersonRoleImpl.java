@@ -30,7 +30,7 @@ public class PersonRoleImpl implements PersonRoleRepository {
 	private EntityManager entityManager;
 	
 	private static final String VALUE_TRUE = "可";
-	private static final String VALUE_FALSE = "木可";
+	private static final String VALUE_FALSE = "不可";
 	private static Integer allowOther = null;
 	private static Integer allowPer = null;
 	
