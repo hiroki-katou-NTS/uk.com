@@ -350,14 +350,14 @@ module nts.uk.com.view.cmm051.a {
 
                 return command;
             }
-            
-         * Print file excel
-         */
-        saveAsExcel(): void {
-            let self = this;
-            modal("/view/cmm/051/m/index.xhtml").onClosed(function() {
-            });
-        }
+            /*  
+           * Print file excel
+           */
+           private saveAsExcel(): void {
+                let self = this;
+                modal("/view/cmm/051/m/index.xhtml").onClosed(function() {
+                });
+            }
             
         }
         

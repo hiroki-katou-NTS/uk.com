@@ -328,7 +328,7 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 		
 		data.put(ShiftEstimateColumn.KSM001_112_1, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_112_1)
-                .value(rowNumber == 0 ? ShiftEstimateColumn.KSM001_115 : rowNumber == 1 ? ShiftEstimateColumn.KSM001_117 : rowNumber == 2 ? ShiftEstimateColumn.KSM001_119 : rowNumber == 3 ? ShiftEstimateColumn.KSM001_121 : rowNumber == 4 ? ShiftEstimateColumn.KSM001_123 : rowNumber == 5 ? ShiftEstimateColumn.KSM001_126 : rowNumber == 6 ? ShiftEstimateColumn.KSM001_127 : rowNumber == 7 ? ShiftEstimateColumn.KSM001_128 : rowNumber == 8 ? ShiftEstimateColumn.KSM001_129 : rowNumber == 9 ? ShiftEstimateColumn.KSM001_131 : rowNumber == 10 ? ShiftEstimateColumn.KSM001_132 : rowNumber == 11 ? ShiftEstimateColumn.KSM001_133 : rowNumber == 12 ? ShiftEstimateColumn.KSM001_134 : rowNumber == 13 ? ShiftEstimateColumn.KSM001_136 : rowNumber == 14 ? ShiftEstimateColumn.KSM001_137 : rowNumber == 15 ? ShiftEstimateColumn.KSM001_138 : rowNumber == 16 ? ShiftEstimateColumn.KSM001_139 : "")
+				.value(getHeader(rowNumber))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		
@@ -666,6 +666,67 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 		double amountParse = Double.parseDouble(price);
 		DecimalFormat formatter = new DecimalFormat("#,###");
 		return formatter.format(amountParse);
+	}
+	
+	private String getHeader(int rowNumber) {
+		String value = "";
+		switch (rowNumber) {
+		case 0:
+			value = ShiftEstimateColumn.KSM001_115;
+			break;
+		case 1:
+			value = ShiftEstimateColumn.KSM001_117;
+			break;
+		case 2:
+			value = ShiftEstimateColumn.KSM001_119;
+			break;
+		case 3:
+			value = ShiftEstimateColumn.KSM001_121;
+			break;
+		case 4:
+			value = ShiftEstimateColumn.KSM001_123;
+			break;
+		case 5:
+			value = ShiftEstimateColumn.KSM001_126;
+			break;
+		case 6:
+			value = ShiftEstimateColumn.KSM001_127;
+			break;
+		case 7:
+			value = ShiftEstimateColumn.KSM001_128;
+			break;
+		case 8:
+			value = ShiftEstimateColumn.KSM001_129;
+			break;
+		case 9:
+			value = ShiftEstimateColumn.KSM001_131;
+			break;
+		case 10:
+			value = ShiftEstimateColumn.KSM001_132;
+			break;
+		case 11:
+			value = ShiftEstimateColumn.KSM001_133;
+			break;
+		case 12:
+			value = ShiftEstimateColumn.KSM001_134;
+			break;
+		case 13:
+			value = ShiftEstimateColumn.KSM001_136;
+			break;
+		case 14:
+			value = ShiftEstimateColumn.KSM001_137;
+			break;
+		case 15:
+			value = ShiftEstimateColumn.KSM001_138;
+			break;
+		case 16:
+			value = ShiftEstimateColumn.KSM001_139;
+			break;
+
+		default:
+			break;
+		}
+		return value ;
 	}
 
 }
