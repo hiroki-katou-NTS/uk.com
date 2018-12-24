@@ -276,18 +276,18 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
 
         changeToNewMode() {
             let self = this;
-            self.screenMode(model.SCREEN_MODE.NEW);
             self.selectedFormulaIdentifier(null);
             self.selectedFormula(new model.Formula(null));
             self.basicFormulaSetting(new model.BasicFormulaSetting(null));
             self.selectedHistory(new model.GenericHistoryYearMonthPeriod(null));
-            self.selectedTab('tab-1');
             nts.uk.ui.errors.clearAll();
-            self.getListFormula(null).done(function(){
-                setTimeout(function(){
-                    $('#A3_3').focus();
-                }, 50);
-            })
+            $('#A3_3').focus();
+            if (self.screenMode()!= model.SCREEN_MODE.NEW) {
+                self.getListFormula(null).done(function () {
+                })
+            }
+            self.screenMode(model.SCREEN_MODE.NEW);
+            self.selectedTab('tab-1');
         }
 
         changeToUpdateMode() {
@@ -375,13 +375,13 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             block.invisible();
             service.getAllFormula().done(function(data){
                 block.clear();
+                dfd.resolve();
                 self.convertToTreeList(data, itemToBeSelect);
                 if (self.screenMode() == model.SCREEN_MODE.ADD_HISTORY) {
                     let selectedHistoryID = self.selectedFormulaIdentifier().substring(3, self.selectedFormulaIdentifier().length);
                     let selectedHistory = _.find(ko.toJS(self.selectedFormula).history, {historyID: selectedHistoryID});
                     self.selectedHistory(new model.GenericHistoryYearMonthPeriod(selectedHistory));
                 }
-                dfd.resolve();
             });
             return dfd.promise();
         }
