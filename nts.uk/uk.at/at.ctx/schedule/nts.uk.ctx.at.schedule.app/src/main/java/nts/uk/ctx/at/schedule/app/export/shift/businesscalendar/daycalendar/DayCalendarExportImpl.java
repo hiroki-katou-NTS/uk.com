@@ -350,7 +350,7 @@ public class DayCalendarExportImpl implements MasterListData {
 			if (day == i) {
 				String value = (String) data.get(key);
 				if (value != null && !value.isEmpty()) {
-					value += "," + setReportData.getWorkingDayAtrName();
+//					value += "," + setReportData.getWorkingDayAtrName();
 				}
 				else if (value != null && value.isEmpty()){
 					value += setReportData.getWorkingDayAtrName();
@@ -477,7 +477,7 @@ public class DayCalendarExportImpl implements MasterListData {
 			if (day == i) {
 				String value = (String) data.get(key);
 				if (value != null && !value.isEmpty()) {
-					value += "," + setReportData.getWorkingDayAtrName();
+//					value += "," + setReportData.getWorkingDayAtrName();
 				}
 				else if (value != null && value.isEmpty()){
 					value += setReportData.getWorkingDayAtrName();
