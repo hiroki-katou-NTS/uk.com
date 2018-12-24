@@ -1,6 +1,7 @@
 module nts.uk.at.view.ksm004.a {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
+    import getText = nts.uk.resource.getText;
     export module service {
         var paths: any = {
             getCalendarCompanySet: "at/schedule/calendar/getCalendarCompanySetByYear",
@@ -80,6 +81,11 @@ module nts.uk.at.view.ksm004.a {
         
         export function deleteCalendarWorkPlace(command): JQueryPromise<any> {
             return ajax(paths.deleteCalendarWorkPlace, command);
+        }
+        
+        export function saveAsExcel(): JQueryPromise<any> {
+            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "DayCalendar", domainType: 'KSM004' + getText("KSM004_55"), 
+            languageId: "ja", reportType: 0, startDate : moment.utc('2018', 'YYYY'), endDate : moment.utc('2018', 'YYYY')});
         }
     }
 }
