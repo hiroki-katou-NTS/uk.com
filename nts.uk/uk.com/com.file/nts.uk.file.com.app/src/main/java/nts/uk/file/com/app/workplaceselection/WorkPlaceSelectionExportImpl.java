@@ -52,7 +52,7 @@ public class WorkPlaceSelectionExportImpl implements MasterListData {
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		String companyId = AppContexts.user().companyId();
-		String baseDate = query.getStartDate().toString();
+		String baseDate = query.getBaseDate().toString();
 		List<MasterData> datas = new ArrayList<>();
 		List<WorkPlaceFunction> workPlaceFunction = workPlaceFunctionRepository.getAllWorkPlaceFunction();
 		datas = workplaceManagerRepository.getDataExport(companyId, workPlaceFunction, baseDate);

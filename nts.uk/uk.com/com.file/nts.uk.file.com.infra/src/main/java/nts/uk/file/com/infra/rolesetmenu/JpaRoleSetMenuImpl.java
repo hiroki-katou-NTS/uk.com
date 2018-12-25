@@ -2,6 +2,7 @@ package nts.uk.file.com.infra.rolesetmenu;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,15 +64,17 @@ public class JpaRoleSetMenuImpl implements RoleSetMenuRepository {
 				dataHashMap.put((String)objects[0], objects);
 			}
 		}
-		return toData(dataHashMap);
+		Object[] keys = dataHashMap.keySet().toArray();
+		Arrays.sort(keys);
+		return toData(dataHashMap,keys);
 	}
 	
-	@SuppressWarnings("rawtypes")
-	private List<MasterData> toData(HashMap<String , Object[]> dataHashMap) {
+	
+	private List<MasterData> toData(HashMap<String , Object[]> dataHashMap,Object[] keys) {
 		List<MasterData> datas = new ArrayList<>();
-		for (Map.Entry datarow : dataHashMap.entrySet()) {
-			datas.add(toData((Object[]) datarow.getValue()));
-	    }
+		for(Object key : keys) {
+			datas.add(toData((Object[]) dataHashMap.get(key)));
+		}
 		return datas;
 	}
 	
