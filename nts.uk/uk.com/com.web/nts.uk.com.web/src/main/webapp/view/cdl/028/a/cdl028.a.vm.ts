@@ -68,8 +68,6 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                     break;
 
                 case MODE_SCREEN.YEAR_PERIOD_FINANCE:
-                    self.standardDate(self.convertYearToInt(self.standardDate())+"0101");
-
                     service.getStartMonth().done(function(response: IStartMonth) {
                         if(response.startMonth != null){
                             startMonthDB = response.startMonth;
@@ -90,22 +88,7 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                     break;
 
                 case MODE_SCREEN.YEAR_PERIOD:
-                    service.getStartMonth().done(function(response: IStartMonth) {
-                        if(response.startMonth != null){
-                            startMonthDB = response.startMonth;
-                            if(( startMonthDB) >= self.getMonthToInt(self.standardDate())){
-                                self.financialYear(startDateTemp+""+startMonthDB +"01");
-                            } else {
-                                self.financialYear((startDateTemp - 1)+""+startMonthDB+"01");
-                            }
-                            self.firstMonth(startMonthDB);
-                        }
-                    }).fail(function() {
-                        setShared('CDL028_A_PARAMS', {
-                            status: false
-                        });
-                        nts.uk.ui.windows.close();
-                    });
+                    self.standardDate(self.convertYearToInt(self.standardDate())+"0101");
 
                     break;
             }
