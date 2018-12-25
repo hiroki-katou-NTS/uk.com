@@ -1555,13 +1555,29 @@ public class CreateExOutTextService extends ExportService<Object> {
 				
 				StringBuilder japaneseDate = new StringBuilder(japaneseEraName.getName());
 				if(formatDate == DateOutputFormat.JJYY_MM_DD){
-				japaneseDate.append((date.year() - japaneseEraName.startDate().year() + 1) + SLASH);		
-				japaneseDate.append(date.month() + SLASH);
-				japaneseDate.append(date.day());
+				japaneseDate.append((date.year() - japaneseEraName.startDate().year() + 1) + SLASH);
+				if (date.month() < 10) {
+					japaneseDate.append("0" + date.month() + SLASH);
+				}else{
+					japaneseDate.append(date.month() + SLASH);
+				}
+				if (date.day() < 10) {
+					japaneseDate.append("0" + date.day());
+				}else{
+					japaneseDate.append(date.day());
+				}
 				} else if(formatDate == DateOutputFormat.JJYYMMDD){
-					japaneseDate.append((date.year() - japaneseEraName.startDate().year() + 1) );		
-					japaneseDate.append(date.month() );
-					japaneseDate.append(date.day());	
+					japaneseDate.append((date.year() - japaneseEraName.startDate().year() + 1) );
+					if (date.month() < 10) {
+					japaneseDate.append("0" + date.month());
+					} else {
+						japaneseDate.append(date.month());
+					}
+					if (date.day() < 10) {
+						japaneseDate.append("0" + date.day());
+					}else {
+					japaneseDate.append(date.day());
+					}
 				}
 				
 				targetValue = japaneseDate.toString();
