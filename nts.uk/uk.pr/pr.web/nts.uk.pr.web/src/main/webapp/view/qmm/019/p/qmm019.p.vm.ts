@@ -74,6 +74,7 @@ module nts.uk.pr.view.qmm019.p.viewmodel {
             };
             service.exportExcel(dto).done((data: Array<IStatementLayoutDto>) => {
                 block.clear();
+                windows.close();
             }).fail(err => {
                 alertError(err);
                 block.clear();
