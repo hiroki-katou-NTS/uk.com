@@ -4497,7 +4497,7 @@ var nts;
             (function (notify) {
                 var error;
                 (function (error) {
-                    ui.documentReady.add(function () {
+                    ui.viewModelApplied.add(function () {
                         var $functionsArea = $('#functions-area');
                         var $functionsAreaBottom = $('#functions-area-bottom');
                         if ($functionsArea.length > 0) {
@@ -18821,6 +18821,7 @@ var nts;
                         var features = [];
                         features.push({ name: 'Selection', multipleSelection: isMultiSelect });
                         var maxWidthCharacter = 15;
+                        var SCROLL_WIDTH = 20;
                         var gridFeatures = ko.unwrap(data.features);
                         var width = 0;
                         var iggridColumns = [];
@@ -18832,12 +18833,16 @@ var nts;
                         }
                         else {
                             var isHaveKey_1 = false;
-                            iggridColumns = _.map(columns, function (c) {
+                            iggridColumns = _.map(columns, function (c, index, columns) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
-                                c["width"] = c["length"] * maxWidthCharacter + 20;
+                                var columnWidth = c["length"] * maxWidthCharacter + 20;
+                                if (index = columns.length - 1) {
+                                    columnWidth += SCROLL_WIDTH;
+                                }
+                                c["width"] = columnWidth;
                                 c["headerText"] = '';
                                 c["columnCssClass"] = 'nts-column';
-                                width += c["length"] * maxWidthCharacter + 20;
+                                width += columnWidth;
                                 if (optionValue === c["key"]) {
                                     isHaveKey_1 = true;
                                 }
@@ -24200,8 +24205,10 @@ var nts;
                             };
                             self.$ownerDoc.addXEventListener(ssk.MOUSE_MOVE, self.unshiftRight ? self.cursorMove.bind(self) : self.cursorMoveShift.bind(self));
                             self.$ownerDoc.addXEventListener(ssk.MOUSE_UP, self.unshiftRight ? self.cursorUp.bind(self) : self.cursorUpShift.bind(self));
-                            if (!trg)
+                            if (!trg) {
                                 event.preventDefault();
+                                event.stopPropagation();
+                            }
                         };
                         /**
                          * Cursor move shift.
@@ -24918,7 +24925,7 @@ var nts;
                                     _vessel().zeroHidden = val;
                             }
                         },
-                        updatedCells: function () {
+                        updatedCells: function (all) {
                             var arr = [];
                             var toNumber = false, column = _columnsMap[_pk];
                             if ((column && _.toLower(column[0].dataType) === "number")
@@ -24930,6 +24937,20 @@ var nts;
                                     arr.push({ rowId: (toNumber ? parseFloat(r) : r), columnKey: c, value: _dirties[r][c] });
                                 });
                             });
+                            if (all) {
+                                _.forEach(_.keys(_mafollicle[SheetDef]), function (k) {
+                                    if (k === _currentSheet)
+                                        return;
+                                    var maf = _mafollicle[_currentPage][k];
+                                    if (!maf || !maf.dirties)
+                                        return;
+                                    _.forEach(_.keys(maf.dirties), function (r) {
+                                        _.forEach(_.keys(maf.dirties[r]), function (c) {
+                                            arr.push({ rowId: (toNumber ? parseFloat(r) : r), columnKey: c, value: maf.dirties[r][c] });
+                                        });
+                                    });
+                                });
+                            }
                             return arr;
                         },
                         showColumn: function (col) {
@@ -26172,11 +26193,21 @@ var nts;
                             var parsed = void 0, constraint = column.constraint;
                             var valueType = constraint.primitiveValue ? ui.validation.getConstraint(constraint.primitiveValue).valueType
                                 : constraint.cDisplayType;
-                            if (!_.isNil(value)
-                                && (valueType === "Time" || valueType === "TimeWithDay" || valueType === "Clock")) {
-                                parsed = uk.time.minutesBased.duration.parseString(value);
-                                if (parsed.success)
-                                    value = parsed.format();
+                            if (!_.isNil(value) && value !== "") {
+                                if (valueType === "Time") {
+                                    parsed = uk.time.minutesBased.duration.parseString(value);
+                                    if (parsed.success)
+                                        value = parsed.format();
+                                }
+                                else if (valueType === "TimeWithDay" || valueType === "Clock") {
+                                    var minutes = uk.time.minutesBased.clock.dayattr.parseString(String(value)).asMinutes;
+                                    if (_.isNil(minutes))
+                                        return value;
+                                    try {
+                                        value = uk.time.minutesBased.clock.dayattr.create(minutes).shortText;
+                                    }
+                                    catch (e) { }
+                                }
                             }
                         }
                         return value;
@@ -26208,7 +26239,7 @@ var nts;
                             return;
                         }
                         if (su.afterCollertar)
-                            su.afterCollertar.focus({ preventScroll: true });
+                            setTimeout(function () { return su.afterCollertar.focus({ preventScroll: true }); }, 1);
                         var formatted, disFormat, coord = ti.getCellCoord(target), col = _columnsMap[coord.columnKey];
                         var inputRidd = function ($t, rowIdx, columnKey, dFormat) {
                             if ($t.classList.contains(khl.ERROR_CLS))
@@ -27504,9 +27535,9 @@ var nts;
                         var isSelecting;
                         $grid.addXEventListener(ssk.MOUSE_DOWN, function (evt) {
                             var $target = evt.target;
-                            isSelecting = true;
                             if (!selector.is($target, ".mcell"))
                                 return;
+                            isSelecting = true;
                             window.addXEventListener(ssk.MOUSE_UP + ".block", function (evt) {
                                 isSelecting = false;
                                 $grid.onselectstart = null;
@@ -28997,6 +29028,32 @@ var nts;
     (function (uk) {
         var ui;
         (function (ui) {
+            var action;
+            (function (action) {
+                var content;
+                (function (content) {
+                    ui.documentReady.add(function () {
+                        $('#functions-area').addClass("disappear");
+                        $('#functions-area-bottom').addClass("disappear");
+                        $('#contents-area').addClass("disappear");
+                    });
+                    ui.viewModelApplied.add(function () {
+                        $('#functions-area').removeClass("disappear");
+                        $('#functions-area-bottom').removeClass("disappear");
+                        $('#contents-area').removeClass("disappear");
+                    });
+                })(content || (content = {}));
+            })(action = ui.action || (ui.action = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
             var file;
             (function (file_1) {
                 var FileDownload = (function () {
@@ -29881,6 +29938,8 @@ var nts;
                                         dfd.resolve(data);
                                     }
                                 }).fail(function (jqXHR, textStatus, errorThrown) {
+                                    // 413はnginxが返す
+                                    // ただ、Wildflyにも最大値が設定されているので注意（こちらはオーバーすると500が返る）
                                     if (jqXHR.status === 413) {
                                         dfd.reject({ message: "ファイルサイズが大きすぎます。", messageId: "0" });
                                     }
@@ -32956,11 +33015,11 @@ var nts;
                                     var rId = rowObj[$grid.igGrid("option", "primaryKey")];
                                     var $gridCell = internal.getCellById($grid, rId, column.key);
                                     if ($gridCell && $($gridCell.children()[0]).children().length === 0) {
-                                        var action = void 0;
+                                        var action_1;
                                         if (column.click && _.isFunction(column.click)) {
-                                            action = function () { return column.click(rowId, column.key); };
+                                            action_1 = function () { return column.click(rowId, column.key); };
                                         }
-                                        $("." + controlCls).append(new Label(action).draw({ text: value }));
+                                        $("." + controlCls).append(new Label(action_1).draw({ text: value }));
                                         var cellElement = {
                                             id: rId,
                                             columnKey: column.key,
@@ -36767,9 +36826,9 @@ var nts;
                                     selectedItems = component_2.ntsTreeDrag("getSelected");
                                     isMulti = component_2.ntsTreeDrag('option', 'isMulti');
                                 }
-                                var srh_1 = $container.data("searchObject");
-                                var result_3 = srh_1.search(searchKey, selectedItems);
-                                if (nts.uk.util.isNullOrEmpty(result_3.options)) {
+                                var srh = $container.data("searchObject");
+                                var result = srh.search(searchKey, selectedItems);
+                                if (nts.uk.util.isNullOrEmpty(result.options)) {
                                     var mes = '';
                                     if (searchMode === "highlight") {
                                         mes = nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT");
@@ -36783,22 +36842,23 @@ var nts;
                                     });
                                     return false;
                                 }
-                                var selectedProperties = _.map(result_3.selectItems, primaryKey);
+                                var selectedProperties = _.map(result.selectItems, primaryKey);
                                 if (targetMode === 'igGrid') {
                                     component_2.ntsGridList("setSelected", selectedProperties);
                                     if (searchMode === "filter") {
-                                        $container.data("filteredSrouce", result_3.options);
+                                        $container.data("filteredSrouce", result.options);
                                         component_2.attr("filtered", "true");
                                         //selected(selectedValue);
                                         //selected.valueHasMutated();
-                                        var source = _.filter(srh_1.getDataSource(), function (item) {
-                                            return _.find(result_3.options, function (itemFilterd) {
-                                                return itemFilterd[primaryKey] === item[primaryKey];
-                                            }) !== undefined || _.find(srh_1.getDataSource(), function (oldItem) {
-                                                return oldItem[primaryKey] === item[primaryKey];
-                                            }) === undefined;
-                                        });
-                                        component_2.igGrid("option", "dataSource", _.cloneDeep(source));
+                                        //                            let source = _.filter(srh.getDataSource(), function (item: any){
+                                        //                                             return _.find(result.options, function (itemFilterd: any){
+                                        //                                            return itemFilterd[primaryKey] === item[primaryKey];        
+                                        //                                                }) !== undefined || _.find(srh.getDataSource(), function (oldItem: any){
+                                        //                                             return oldItem[primaryKey] === item[primaryKey];        
+                                        //                                            }) === undefined;            
+                                        //                            });
+                                        //                            component.igGrid("option", "dataSource", _.cloneDeep(source));
+                                        component_2.igGrid("option", "dataSource", _.cloneDeep(result.options));
                                         component_2.igGrid("dataBind");
                                         //                            if(nts.uk.util.isNullOrEmpty(selectedProperties)){
                                         component_2.trigger("selectionchanged");
@@ -36837,9 +36897,9 @@ var nts;
                         $input.keydown(function (event) {
                             if (event.which == 13) {
                                 event.preventDefault();
-                                var result_4 = nextSearch();
+                                var result_3 = nextSearch();
                                 _.defer(function () {
-                                    if (result_4) {
+                                    if (result_3) {
                                         $input.focus();
                                     }
                                 });

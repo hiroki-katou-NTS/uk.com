@@ -16,8 +16,8 @@ public class SampleCancellableAsyncCommandHandler extends AsyncCommandHandler<Sa
 		
 		for (int i = 0; i < 10; i++) {
 			
-			String s = null;
-			s.toString();
+//			String s = null;
+//			s.toString();
 			
 			// user requested to cancel task
 			if (asyncContext.hasBeenRequestedToCancel()) {

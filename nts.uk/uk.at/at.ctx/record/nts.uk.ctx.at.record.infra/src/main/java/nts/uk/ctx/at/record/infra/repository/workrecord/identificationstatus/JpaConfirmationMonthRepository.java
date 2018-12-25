@@ -38,12 +38,12 @@ public class JpaConfirmationMonthRepository  extends JpaRepository implements Co
 			+ "AND a.krcdtConfirmationMonthPK.employeeId = :employeeId "
 			+ "AND a.krcdtConfirmationMonthPK.processYM = :processYM ";
 	
-	private static final String FIND_BY_SOME_PROPERTY = "SELECT a FROM KrcdtConfirmationMonth a "
-			+ "WHERE a.krcdtConfirmationMonthPK.employeeId IN :employeeIds "
-			+ "AND a.krcdtConfirmationMonthPK.processYM = :processYM "
-			+ "AND a.krcdtConfirmationMonthPK.closureDay = :closureDay "
-			+ "AND a.krcdtConfirmationMonthPK.isLastDay = :isLastDayOfMonth "
-			+ "AND a.krcdtConfirmationMonthPK.closureId = :closureId ";
+//	private static final String FIND_BY_SOME_PROPERTY = "SELECT a FROM KrcdtConfirmationMonth a "
+//			+ "WHERE a.krcdtConfirmationMonthPK.employeeId IN :employeeIds "
+//			+ "AND a.krcdtConfirmationMonthPK.processYM = :processYM "
+//			+ "AND a.krcdtConfirmationMonthPK.closureDay = :closureDay "
+//			+ "AND a.krcdtConfirmationMonthPK.isLastDay = :isLastDayOfMonth "
+//			+ "AND a.krcdtConfirmationMonthPK.closureId = :closureId ";
 	@Override
 	public Optional<ConfirmationMonth> findByKey(String companyID, String employeeID, ClosureId closureId, ClosureDate closureDate, YearMonth processYM) {
 		return this.queryProxy().find(new KrcdtConfirmationMonthPK(companyID, employeeID,

@@ -2,7 +2,6 @@ package nts.uk.screen.at.app.dailyperformance.correction.flex.change;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

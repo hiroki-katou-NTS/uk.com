@@ -17,7 +17,6 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectParameter;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -79,7 +78,9 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 						findStartEndTime.getStartTime1(), 
 						findStartEndTime.getEndTime1(), 
 						1, isStartTime, isEndTime);
-				dailyInfor = scheWork.updateScheStartEndTime(timeData1, dailyInfor);
+				if(isStartTime || isEndTime) {
+					dailyInfor = scheWork.updateScheStartEndTime(timeData1, dailyInfor);	
+				}				
 			}
 			//２回勤務反映区分(output)をチェックする
 			if(findStartEndTime.isCountReflect2Atr()) {
@@ -100,7 +101,9 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 						2,
 						isStartTime, 
 						isEndTime);
-				dailyInfor = scheWork.updateScheStartEndTime(timeData2, dailyInfor);
+				if(isStartTime || isEndTime) {
+					dailyInfor = scheWork.updateScheStartEndTime(timeData2, dailyInfor);	
+				}				
 			}
 		} else {
 			//１回勤務反映区分(output)をチェックする
@@ -110,11 +113,12 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(), true);
 				boolean isCheckEnd = this.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 1, 
 						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(), false);
-				TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), 
-						findStartEndTime.getStartTime1(), findStartEndTime.getEndTime1(), 
-						1, isCheckStart, isCheckEnd);
-				dailyInfor = scheWork.updateScheStartEndTime(timeData1, dailyInfor);		
-				
+				if(isCheckStart || isCheckEnd) {
+					TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), 
+							findStartEndTime.getStartTime1(), findStartEndTime.getEndTime1(), 
+							1, isCheckStart, isCheckEnd);
+					dailyInfor = scheWork.updateScheStartEndTime(timeData1, dailyInfor);	
+				}
 			}
 			//２回勤務反映区分(output)をチェックする
 			if(findStartEndTime.isCountReflect2Atr()) {
@@ -122,8 +126,16 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(), true);
 				boolean isCheckEnd = this.checkStartEndTimeReflect(para.getEmployeeId(), para.getDateInfo(), 2, 
 						timeTypeData.getWorkTypeCode(), para.getOvertimePara().getOvertimeAtr(), false);
-				TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(), para.getDateInfo(), findStartEndTime.getStartTime2(), findStartEndTime.getEndTime2(), 2, isCheckStart, isCheckEnd);
-				dailyInfor = scheWork.updateScheStartEndTime(timeData1, dailyInfor);
+				
+				if(isCheckStart || isCheckEnd) {
+					TimeReflectPara timeData1 = new TimeReflectPara(para.getEmployeeId(),
+							para.getDateInfo(),
+							findStartEndTime.getStartTime2(),
+							findStartEndTime.getEndTime2(),
+							2, isCheckStart, isCheckEnd);
+					dailyInfor = scheWork.updateScheStartEndTime(timeData1, dailyInfor);	
+				}
+				
 			}
 		}
 		

@@ -20,6 +20,7 @@ import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
 @DomainID(value = "personError")
 public class PersonErrorListExportImpl implements MasterListData {
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		List<MasterData> datas = new ArrayList<>();

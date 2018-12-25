@@ -206,9 +206,9 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 		KrcdtWekAttendanceTime entity;
 		try (PreparedStatement stmt = this.connection().prepareStatement(
 				"select INS_DATE, INS_CCD, INS_SCD, INS_PG from KRCDT_WEK_ATTENDANCE_TIME"
-				// SQLServerの場合は共有ロックがかかってしまい、デッドロックが起きるのでNOLOCKで取得
-				// ダーティリードは許容する（週次テーブルへの更新は月次集計だけなので、恐らく問題になることはない）
-				+ (this.database().product().equals(DatabaseProduct.MSSQLSERVER) ? " with(nolock)" : "")
+				// SQLServerの場合は共有ロックがかかってしまい、並列で実行するとここでデッドロックが起きるのでNOLOCKで取得
+				// ダーティリードの可能性があるが許容する（週次テーブルへの更新は月次集計だけなので、恐らく問題になることはない）
+				+ (this.database().is(DatabaseProduct.MSSQLSERVER) ? " with(nolock)" : "")
 				+ " where SID = ?"
 				+ " and YM = ?"
 				+ " and CLOSURE_ID = ?"

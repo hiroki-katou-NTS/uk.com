@@ -1,13 +1,13 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
+//import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
-import nts.uk.ctx.at.request.dom.application.common.service.other.DestinationJudgmentProcess;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.shr.com.mail.MailSender;
+//import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
+//import nts.uk.ctx.at.request.dom.application.common.service.other.DestinationJudgmentProcess;
+//import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
+//import nts.uk.shr.com.mail.MailSender;
 
 /**
  * 
@@ -16,14 +16,14 @@ import nts.uk.shr.com.mail.MailSender;
  */
 @Stateless
 public class AfterProcessReturnImpl implements AfterProcessReturn {
-	@Inject
-	private AppTypeDiscreteSettingRepository appTypeSettingRepo;
-	@Inject
-	private AgentAdapter  approvalAgencyInformationServiceRepo;
-	@Inject
-	private DestinationJudgmentProcess destinationJudgmentProcessServiceRepo;
-	@Inject
-	private MailSender mailSender;
+//	@Inject
+//	private AppTypeDiscreteSettingRepository appTypeSettingRepo;
+//	@Inject
+//	private AgentAdapter  approvalAgencyInformationServiceRepo;
+//	@Inject
+//	private DestinationJudgmentProcess destinationJudgmentProcessServiceRepo;
+//	@Inject
+//	private MailSender mailSender;
 	@Override
 	public void detailScreenProcessAfterReturn(Application_New application, boolean checkApplicant, int orderPhase) {
 		/*

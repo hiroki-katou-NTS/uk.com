@@ -3,19 +3,13 @@
  */
 package nts.uk.ctx.bs.employee.app.command.classification.affiliate;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.gul.reflection.AnnotationUtil;
-import nts.gul.reflection.ReflectionUtil;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItem;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistItemRepository;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
@@ -25,8 +19,6 @@ import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
-import nts.uk.shr.pereg.app.ItemValue;
-import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 /**
  * @author danpv

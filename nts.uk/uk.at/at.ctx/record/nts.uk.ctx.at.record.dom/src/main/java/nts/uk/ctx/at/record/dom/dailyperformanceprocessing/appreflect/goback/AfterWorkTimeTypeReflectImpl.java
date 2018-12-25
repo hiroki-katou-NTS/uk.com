@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.AppReflectRecordWork;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -22,7 +21,7 @@ public class AfterWorkTimeTypeReflectImpl implements AfterWorkTimeTypeReflect{
 	
 	@Override
 	public AppReflectRecordWork workTimeAndTypeScheReflect(GobackReflectParameter para, WorkInfoOfDailyPerformance dailyInfor) {
-		if(!this.checkReflectWorkTimeType(para)) {
+		if(!this.checkReflectWorkTimeType(para, dailyInfor)) {
 			return new AppReflectRecordWork(false, dailyInfor);
 		}
 		//予定勤種・就時の反映
@@ -35,7 +34,7 @@ public class AfterWorkTimeTypeReflectImpl implements AfterWorkTimeTypeReflect{
 	}
 
 	@Override
-	public boolean checkReflectWorkTimeType(GobackReflectParameter para) {
+	public boolean checkReflectWorkTimeType(GobackReflectParameter para, WorkInfoOfDailyPerformance dailyInfor) {
 		//INPUT．勤務を変更するをチェックする
 		if(para.getGobackData().getChangeAppGobackAtr() == ChangeAppGobackAtr.NOTCHANGE) {
 			return false;
@@ -46,7 +45,7 @@ public class AfterWorkTimeTypeReflectImpl implements AfterWorkTimeTypeReflect{
 		} else if (para.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.ALWAYS_CHANGE_AUTO
 				|| (para.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.AUTO_CHANGE_ONLY_WORK
 						&& isFluidWork.checkWorkTimeIsFluidWork(para.getGobackData().getWorkTimeCode()))){
-			return tyScheReflect.checkScheAndRecordSamseChange(para.getEmployeeId(), para.getDateData(), para.isOutResReflectAtr());
+			return tyScheReflect.checkScheAndRecordSamseChange(para.getEmployeeId(), para.getDateData(), para.isOutResReflectAtr(), dailyInfor);
 		} 
 		return false;
 	}

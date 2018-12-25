@@ -7,6 +7,8 @@ module kcp009.a.viewmodel {
         empList: KnockoutObservableArray<EmployeeModel>;
         systemType: KnockoutObservable<number>;
         isDisplayOrganizationName: KnockoutObservable<boolean>;
+        setBaseDate: KnockoutObservable<boolean>;
+        baseDate: KnockoutObservable<Date>;
         targetBtnText: string;
 
         systemReferenceList: KnockoutObservableArray<any>;
@@ -17,8 +19,12 @@ module kcp009.a.viewmodel {
         selectedItem: KnockoutObservable<string>;
         selectedItem1: KnockoutObservable<string>;
         tabindex: number;
+        
+        isLoading: boolean;
+        
         constructor() {
             let self = this;
+            self.isLoading = true;
 //            self.empList = ko.observableArray([]);
             self.empList = ko.observableArray([
             {id: '000426a2-181b-4c7f-abc8-6fff9f4f983a', code: '000000000001', businessName: 'Test 1', workplaceName: 'Webメニューの設定', depName: '部門2'},
@@ -39,6 +45,19 @@ module kcp009.a.viewmodel {
             self.isDisplayOrganizationName.subscribe(function(value: boolean) {
                 self.reloadComponent();
             });
+            
+            self.setBaseDate = ko.observable(true);
+            self.setBaseDate.subscribe(function(value: boolean) {
+                self.reloadComponent();
+            });
+            
+            self.baseDate = ko.observable(moment(new Date()).toDate());
+//            self.baseDate.subscribe(function(value: Date) {
+//                if (!self.isLoading) {
+//                    self.reloadComponent();
+//                }
+//            });
+            
             self.targetBtnText = nts.uk.resource.getText("KCP009_3");
             self.selectedItem = ko.observable(null);
             self.selectedItem1 = ko.observable(null);
@@ -67,7 +86,8 @@ module kcp009.a.viewmodel {
                 employeeInputList: self.empList,
                 targetBtnText: self.targetBtnText,
                 selectedItem: self.selectedItem,
-                tabIndex: self.tabindex
+                tabIndex: self.tabindex,
+                baseDate: self.baseDate
             };
             
             // Initial listComponentOption
@@ -77,8 +97,11 @@ module kcp009.a.viewmodel {
                 employeeInputList: self.empList,
                 targetBtnText: self.targetBtnText,
                 selectedItem: self.selectedItem1,
-                tabIndex: self.tabindex
+                tabIndex: self.tabindex,
+                baseDate: self.baseDate
             };
+            
+            self.isLoading = false;
             
         }
         
@@ -87,6 +110,11 @@ module kcp009.a.viewmodel {
             let self = this;
             self.listComponentOption.systemReference = self.systemType();
             self.listComponentOption.isDisplayOrganizationName = self.isDisplayOrganizationName();
+            if(self.setBaseDate()) {
+               self.listComponentOption.baseDate = self.baseDate;
+            } else {
+                self.listComponentOption.baseDate = null;
+            }
             self.listComponentOption.targetBtnText = self.targetBtnText;
             self.listComponentOption.employeeInputList(self.empList());
             // Load listComponent
@@ -94,6 +122,11 @@ module kcp009.a.viewmodel {
             
             self.listComponentOption1.systemReference = self.systemType();
             self.listComponentOption1.isDisplayOrganizationName = self.isDisplayOrganizationName();
+            if(self.setBaseDate()) {
+               self.listComponentOption1.baseDate = self.baseDate;
+            } else {
+                self.listComponentOption.baseDate = null;
+            }
             self.listComponentOption1.targetBtnText = self.targetBtnText;
             self.listComponentOption1.employeeInputList(self.empList());
             // Load listComponent

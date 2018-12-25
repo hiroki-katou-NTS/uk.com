@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess;
 
 import java.util.Map;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
@@ -34,9 +35,11 @@ public interface WorkUpdateService {
 	 * 開始時刻の反映, 終了時刻を反映
 	 * @param data
 	 */
-	public void updateRecordStartEndTimeReflect(TimeReflectPara data);
+	public TimeLeavingOfDailyPerformance updateRecordStartEndTimeReflect(TimeReflectPara data);
 	
-	public void updateRecordStartEndTimeReflectRecruitment(TimeReflectPara data, TimeLeavingOfDailyPerformance timeLeavingOfDailyData);
+	public void updateTimeNotReflect(String employeeId, GeneralDate dateData);
+	
+	public TimeLeavingOfDailyPerformance updateRecordStartEndTimeReflectRecruitment(TimeReflectPara data);
 	/**
 	 * 残業時間の反映
 	 * @param employeeId
@@ -102,7 +105,8 @@ public interface WorkUpdateService {
 	 * @param dateData
 	 * @param transferTimeFrame
 	 */
-	public void updateTransferTimeFrame(String employeeId, GeneralDate dateData, Map<Integer, Integer> transferTimeFrame, AttendanceTimeOfDailyPerformance attendanceTimeData);
+	public AttendanceTimeOfDailyPerformance updateTransferTimeFrame(String employeeId, GeneralDate dateData, Map<Integer, Integer> transferTimeFrame, 
+			AttendanceTimeOfDailyPerformance attendanceTimeData);
 	/**
 	 * 申請理由の反映
 	 * @param sid

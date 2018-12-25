@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.request.app.command.application.appabsence;
 
+/*import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;*/
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +22,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.DisplayReasonDto;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.AllDayHalfDayLeaveAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
@@ -28,15 +31,13 @@ import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSp
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
+import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
@@ -66,8 +67,10 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 	private DisplayReasonRepository displayRep;
 	@Inject
 	ApplicationSettingRepository applicationSettingRepository;
+//	@Inject
+//	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 	@Inject
-	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+	private OtherCommonAlgorithm otherCommonAlg;	
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<UpdateAppAbsenceCommand> context) {
 		String companyID = AppContexts.user().companyId();
@@ -76,9 +79,9 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 		if(!opAppAbsence.isPresent()){
 			throw new BusinessException("Msg_198");
 		}
-		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
-				companyID, 
-				ApplicationType.ABSENCE_APPLICATION.value).get();
+//		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(
+//				companyID, 
+//				ApplicationType.ABSENCE_APPLICATION.value).get();
 		List<DisplayReasonDto> displayReasonDtoLst = 
 				displayRep.findDisplayReason(companyID).stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList());
 		DisplayReasonDto displayReasonSet = displayReasonDtoLst.stream().filter(x -> x.getTypeOfLeaveApp() == command.getHolidayAppType())
@@ -171,7 +174,7 @@ public class UpdateAppAbsenceCommandHandler extends CommandHandlerWithResult<Upd
 		for(GeneralDate loopDate = cmdStartDate; loopDate.beforeOrEquals(cmdEndDate); loopDate = loopDate.addDays(1)){
 			listDate.add(loopDate);
 		}
-		List<GeneralDate> lstHoliday = insertAppAbsence.lstDateNotHoliday(companyID, command.getEmployeeID(), new DatePeriod(cmdStartDate, cmdEndDate));
+		List<GeneralDate> lstHoliday = otherCommonAlg.lstDateNotHoliday(companyID, command.getEmployeeID(), new DatePeriod(cmdStartDate, cmdEndDate));
 		for(GeneralDate loopDate = cmdStartDate; loopDate.beforeOrEquals(cmdEndDate); loopDate = loopDate.addDays(1)){
 			if(!lstHoliday.contains(loopDate)) {
 				listDate.add(loopDate);	

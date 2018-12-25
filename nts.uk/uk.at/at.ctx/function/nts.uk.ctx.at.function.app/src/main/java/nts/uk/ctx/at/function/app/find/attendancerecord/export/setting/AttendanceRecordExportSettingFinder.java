@@ -7,11 +7,14 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.app.find.dailyworkschedule.scrA.WorkScheduleOutputConditionFinder;
 import nts.uk.ctx.at.function.dom.adapter.RoleLogin.LoginRoleAdapter;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
-import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
+//import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -32,6 +35,9 @@ public class AttendanceRecordExportSettingFinder {
 	@Inject
 	LoginRoleAdapter loginRoleAdapter;
 
+	/** Get Closure Month. */
+	@Inject
+	WorkScheduleOutputConditionFinder workScheduleOutputConditionFinder;
 	/**
 	 * Gets the all attendance record export setting.
 	 *
@@ -57,7 +63,6 @@ public class AttendanceRecordExportSettingFinder {
 		// return
 		return dtoList;
 	}
-
 	/**
 	 * Gets the attendance record export setting dto.
 	 *
@@ -109,5 +114,11 @@ public class AttendanceRecordExportSettingFinder {
 		Boolean permission = loginRoleAdapter.getCurrentLoginerRole().isEmployeeCharge();
 
 		return permission;
+	}
+	
+	public AttendaceMonthDto getClosureMonth(){
+		Optional<Closure> closureMonth = workScheduleOutputConditionFinder.getDomClosure(AppContexts.user().employeeId(), GeneralDate.today());
+		Closure optCls = closureMonth.get();
+		return new AttendaceMonthDto(optCls.getClosureMonth().getProcessingYm().toString());
 	}
 }

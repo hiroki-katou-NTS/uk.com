@@ -65,19 +65,19 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	private final static int FIRST_ITEM_INDEX = 0;
 
 	/** The Constant FIND_BY_SID_AND_PERIOD_ORDER_BY_STR_D. */
-	private final static String FIND_BY_SID_AND_PERIOD_ORDER_BY_STR_D =
-			"SELECT wi FROM KshmtWorkingCondItem wi "
-			+ "WHERE wi.sid = :employeeId "
-			+ "AND wi.kshmtWorkingCond.strD <= :endDate "
-			+ "AND wi.kshmtWorkingCond.endD >= :startDate "
-			+ "ORDER BY wi.kshmtWorkingCond.strD";
-	
-	private final static String FIND_BY_SID_AND_PERIOD_ORDER_BY_STR_D_FOR_MULTI =
-			"SELECT wi FROM KshmtWorkingCondItem wi "
-			+ "WHERE wi.sid IN :employeeId "
-			+ "AND wi.kshmtWorkingCond.strD <= :endDate "
-			+ "AND wi.kshmtWorkingCond.endD >= :startDate "
-			+ "ORDER BY wi.kshmtWorkingCond.strD";
+//	private final static String FIND_BY_SID_AND_PERIOD_ORDER_BY_STR_D =
+//			"SELECT wi FROM KshmtWorkingCondItem wi "
+//			+ "WHERE wi.sid = :employeeId "
+//			+ "AND wi.kshmtWorkingCond.strD <= :endDate "
+//			+ "AND wi.kshmtWorkingCond.endD >= :startDate "
+//			+ "ORDER BY wi.kshmtWorkingCond.strD";
+//	
+//	private final static String FIND_BY_SID_AND_PERIOD_ORDER_BY_STR_D_FOR_MULTI =
+//			"SELECT wi FROM KshmtWorkingCondItem wi "
+//			+ "WHERE wi.sid IN :employeeId "
+//			+ "AND wi.kshmtWorkingCond.strD <= :endDate "
+//			+ "AND wi.kshmtWorkingCond.endD >= :startDate "
+//			+ "ORDER BY wi.kshmtWorkingCond.strD";
 	
 	private final static String FIND_BY_SID_AND_PERIOD_WITH_JOIN = new StringBuilder("SELECT wi, c, m, wc, dw FROM KshmtWorkingCondItem wi ")
 																						.append(" LEFT JOIN wi.kshmtWorkingCond c ")
@@ -842,7 +842,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 						WorkingConditionItem wcItem = createWorkConditionItem(c.getValue(), c.getKey());
 						
 						GeneralDate strDate = wc.getStrD().compareTo(period.start()) > 0 ? wc.getStrD() : period.start();
-						GeneralDate endDate = wc.getEndD().compareTo(period.end()) < 0 ? period.end() : wc.getEndD();
+						GeneralDate endDate = wc.getEndD().compareTo(period.end()) > 0 ? period.end() : wc.getEndD();
 						DateHistoryItem dateItem = new DateHistoryItem(wc.getKshmtWorkingCondPK().getHistoryId(), new DatePeriod(strDate, endDate));
 						
 						result.put(dateItem, wcItem);

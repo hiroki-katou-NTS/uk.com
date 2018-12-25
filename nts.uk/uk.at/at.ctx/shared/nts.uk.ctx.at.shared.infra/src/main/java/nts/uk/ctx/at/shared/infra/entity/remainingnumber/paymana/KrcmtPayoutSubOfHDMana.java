@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.shared.infra.entity.remainingnumber.paymana;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
+//import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;

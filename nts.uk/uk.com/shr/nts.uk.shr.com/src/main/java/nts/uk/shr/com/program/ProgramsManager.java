@@ -511,6 +511,8 @@ public class ProgramsManager {
 			"/view/kdw/006/d/index.xhtml");
 	public static final Program KDW006E = new Program(WebAppId.AT, ProgramIdConsts.KDW006E, "KDW006_23",
 			"/view/kdw/006/e/index.xhtml");
+	public static final Program KDW006G = new Program(WebAppId.AT, ProgramIdConsts.KDW006G, "KDW006_71",
+			"/view/kdw/006/g/index.xhtml");
 
 	/**
 	 * KDW009A
@@ -2170,6 +2172,8 @@ public class ProgramsManager {
 			"/view/kdp/003/b/index.xhtml");
 	public static final Program KDP003C = new Program(WebAppId.AT, ProgramIdConsts.KDP003C, "KDP003_3",
 			"/view/kdp/003/c/index.xhtml");
+	public static final Program CMF007 = new Program(WebAppId.COM, ProgramIdConsts.CMF007, "CMF007_1",
+			"/view/cmf/007/a/index.xhtml");
 	/**
 	 * All programs map.
 	 */
@@ -2224,6 +2228,20 @@ public class ProgramsManager {
 		if (!programsOpt.isPresent())
 			return Optional.empty();
 		return programsOpt.get().stream().filter(a -> programId.equals(a.getPId())).findFirst();
+	}
+	
+	/**
+	 * Finds program by Id.
+	 * 
+	 * @param programId programId
+	 * @return optional program
+	 */
+	public static Optional<Program> findById(String programId) {
+		return Optional.ofNullable(findById(WebAppId.COM, programId).orElseGet(() ->
+			findById(WebAppId.AT, programId).orElseGet(() ->
+				findById(WebAppId.PR, programId).orElse(null)
+			)
+		));
 	}
 
 	/**

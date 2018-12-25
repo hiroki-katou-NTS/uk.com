@@ -41,6 +41,10 @@ public class KshmtPersonalDayOfWeek extends UkJpaEntity implements Serializable 
 	@Column(name = "EXCLUS_VER")
 	private int exclusVer;
 
+	/** SID */
+	@Column(name = "SID")
+	private String sid;
+
 	/** The work type code. */
 	@Column(name = "WORK_TYPE_CODE")
 	private String workTypeCode;

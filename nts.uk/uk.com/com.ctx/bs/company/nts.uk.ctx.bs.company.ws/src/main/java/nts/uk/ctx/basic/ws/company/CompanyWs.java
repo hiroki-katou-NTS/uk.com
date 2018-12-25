@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.basic.ws.company;
 
-import javax.inject.Inject;
-import javax.ws.rs.POST;
+//import javax.inject.Inject;
+//import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 

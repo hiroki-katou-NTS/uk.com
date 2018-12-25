@@ -26,6 +26,11 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	private static final String QUERY_GET_TEMPORARYABSENCE_BYSID = "SELECT ta FROM BsymtTempAbsHistory ta"
 			+ " WHERE ta.sid = :sid and ta.cid = :cid ORDER BY ta.startDate";
 	
+	private static final String QUERY_GET_TEMPORARYABSENCE_BYSID_AND_CLS = String.join(" ","SELECT ta FROM BsymtTempAbsHistory ta INNER JOIN BsymtTempAbsHisItem item",
+			 "ON  ta.histId = item.histId AND ta.sid = item.sid",
+			 "WHERE ta.sid = :sid AND ta.cid = :cid  AND item.tempAbsFrameNo = 1",
+			 "ORDER BY ta.startDate");
+	
 	private static final String QUERY_GET_TEMPORARYABSENCE_BYSID_DESC = QUERY_GET_TEMPORARYABSENCE_BYSID + " DESC";
 	
 	private static final String GET_BY_SID_DATE = "select h from BsymtTempAbsHistory h"
@@ -212,5 +217,16 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 			return Collections.emptyList();
 		}
 		return listSid;
+	}
+	
+	@Override
+	public Optional<TempAbsenceHistory> getBySidAndLeave(String cid, String employeeId) {
+		List<BsymtTempAbsHistory> listHist = this.queryProxy()
+				.query(QUERY_GET_TEMPORARYABSENCE_BYSID_AND_CLS, BsymtTempAbsHistory.class).setParameter("sid", employeeId)
+				.setParameter("cid", cid).getList();
+		if (listHist != null && !listHist.isEmpty()) {
+			return Optional.of(toDomainTemp(listHist));
+		}
+		return Optional.empty();
 	}
 }

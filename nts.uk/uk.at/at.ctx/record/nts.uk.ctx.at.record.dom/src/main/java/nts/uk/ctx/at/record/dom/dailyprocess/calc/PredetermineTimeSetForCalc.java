@@ -87,7 +87,7 @@ public class PredetermineTimeSetForCalc {
 	 * 所定終了時間を所定開始時間と同じ時刻に変更する
 	 */
 	public void endTimeSetStartTime() {
-		val copyTimeSheet = this.getTimeSheets();
+		val copyTimeSheet = new ArrayList<>(this.getTimeSheets());
 		this.timeSheets.clear();
 		for(TimezoneUse timeSheet : copyTimeSheet) {
 			this.timeSheets.add(new TimezoneUse(timeSheet.getStart(),

@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.Value;
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -43,6 +44,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Getter
+@Setter
 public class HolidayWorkTimeOfDaily {
 	//休出枠時間帯
 	private List<HolidayWorkFrameTimeSheet> holidayWorkFrameTimeSheet;

@@ -34,7 +34,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         requiredReason: KnockoutObservable<boolean> = ko.observable(false);
         multilContent: KnockoutObservable<string> = ko.observable('');
         //A10_1 休日は除く
-        excludeHolidayAtr: KnockoutObservable<boolean> = ko.observable(false);
+        excludeHolidayAtr: KnockoutObservable<boolean> = ko.observable(true);
         //Approval 
         approvalSource: Array<common.AppApprovalPhase> = [];
         //menu-bar 
@@ -55,36 +55,20 @@ module nts.uk.at.view.kaf007.a.viewmodel {
         targetDate: any = moment(new Date()).format("YYYY/MM/DD");
         requiredCheckTime: KnockoutObservable<boolean> = ko.observable(this.isWorkChange() && true);
         timeRequired: KnockoutObservable<boolean> = ko.observable(false);
+        showExcludeHoliday: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this,
                 application = self.appWorkChange().application();
             __viewContext.transferred.ifPresent(data => {
                 if(!nts.uk.util.isNullOrUndefined(data.appDate)){
                     self.targetDate = moment(data.appDate).format("YYYY/MM/DD");
-                    self.datePeriod({
-                        startDate: self.targetDate,
-                        endDate: self.targetDate    
-                    });
+                    self.dateSingle(self.targetDate);
                 }
                 if(!nts.uk.util.isNullOrEmpty(data.employeeIds)){
                     self.employeeID = data.employeeIds[0];
                 }
                 return null;
             });
-            //KAF000_A
-            self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
-            self.startPage().done(function() {
-                self.kaf000_a.start(self.employeeID, 1, 2, self.targetDate).done(function() {
-                    nts.uk.ui.block.clear();
-                });
-            }).fail((res) => {
-                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() {
-                    nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");
-                });
-                nts.uk.ui.block.clear();
-            });
-            
-            
 
             // 申請日を変更する          
             //Start Date
@@ -218,6 +202,7 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                 //A3 事前事後区分
                 //事前事後区分 ※A１
                 self.prePostDisp(appCommonSettingDto.applicationSettingDto.displayPrePostFlg == 1 ? true : false);
+                self.showExcludeHoliday(appWorkChangeCommonSetting.excludeHoliday);
                 if (!nts.uk.util.isNullOrEmpty(appCommonSettingDto.appTypeDiscreteSettingDtos) &&
                     appCommonSettingDto.appTypeDiscreteSettingDtos.length > 0) {
                     //事前事後区分 Enable ※A２
@@ -553,6 +538,10 @@ module nts.uk.at.view.kaf007.a.viewmodel {
                     workChange.workTimeName(childData.selectedWorkTimeName);
                     service.isTimeRequired( workChange.workTypeCd()).done((rs) =>{
                         self.requiredCheckTime(self.isWorkChange() && rs);    
+                        if(self.requiredCheckTime()){
+                            workChange.workTimeStart1(childData.first.start);
+                            workChange.workTimeEnd1(childData.first.end); 
+                        }
                     });
                 }
                 //フォーカス制御

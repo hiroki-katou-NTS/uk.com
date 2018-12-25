@@ -8,13 +8,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
@@ -38,7 +39,8 @@ import nts.uk.ctx.workflow.pub.resultrecord.EmpPerformMonthParam;
 import nts.uk.ctx.workflow.pub.resultrecord.EmployeePerformParam;
 import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppEmpStatusExport;
-import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
+import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootSttMonthExport;
+//import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
 import nts.uk.ctx.workflow.pub.spr.SprAppRootStatePub;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -47,11 +49,11 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author hungnm
  *
  */
-@Stateless
+@RequestScoped
 public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 
-	@Inject
-	private ApprovalRootStatePub approvalRootStatePub;
+//	@Inject
+//	private ApprovalRootStatePub approvalRootStatePub;
 	
 	@Inject
 	private IntermediateDataPub intermediateDataPub;
@@ -208,12 +210,19 @@ public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 	// RequestList 533
 	@Override
 	public List<AppRootSttMonthEmpImport> getAppRootStatusByEmpsMonth(
-			List<EmpPerformMonthParamImport> empPerformMonthParamLst) {
+			List<EmpPerformMonthParamImport> empPerformMonthParamLst) throws BusinessException{
 		List<EmpPerformMonthParam> listParam = empPerformMonthParamLst.stream()
 				.map(i -> new EmpPerformMonthParam(i.getYearMonth(), i.getClosureID(), i.getClosureDate(),
 						i.getBaseDate(), i.getEmployeeID()))
 				.collect(Collectors.toList());
-		val exportResult = intermediateDataPub.getAppRootStatusByEmpsMonth(listParam);
+		List<AppRootSttMonthExport> exportResult = new ArrayList<>();
+		try{
+			exportResult = intermediateDataPub.getAppRootStatusByEmpsMonth(listParam);
+		}
+		catch(BusinessException ex){
+			throw new BusinessException("Msg_1430", "承認者");
+		}
+		
 		return exportResult.stream()
 				.map((pub) -> new AppRootSttMonthEmpImport(pub.getEmployeeID(),
 						EnumAdaptor.valueOf(pub.getDailyConfirmAtr(), ApprovalStatusForEmployee.class),

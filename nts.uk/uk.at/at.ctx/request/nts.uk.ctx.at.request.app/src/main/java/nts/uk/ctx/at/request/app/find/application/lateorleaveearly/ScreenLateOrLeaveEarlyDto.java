@@ -4,7 +4,7 @@ import java.util.List;
 
 import lombok.Value;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto;
-import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
+/*import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;*/
 
 /**
  * 

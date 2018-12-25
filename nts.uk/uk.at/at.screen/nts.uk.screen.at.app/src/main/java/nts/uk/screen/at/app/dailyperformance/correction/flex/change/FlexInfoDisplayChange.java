@@ -1,6 +1,5 @@
 package nts.uk.screen.at.app.dailyperformance.correction.flex.change;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,11 +15,8 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
-import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
-import nts.uk.ctx.at.shared.pub.worktime.predset.PredetemineTimeSettingPub;
-import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.shr.com.context.AppContexts;
@@ -35,17 +31,17 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class FlexInfoDisplayChange {
 
-	@Inject
-	private WorkingConditionService workingConditionService;
+//	@Inject
+//	private WorkingConditionService workingConditionService;
 
 	@Inject
 	private CheckShortageFlex checkShortageFlex;
 
-	@Inject
-	private PredetemineTimeSettingPub predetemineTimeSettingPub;
+//	@Inject
+//	private PredetemineTimeSettingPub predetemineTimeSettingPub;
 
-	@Inject
-	private DailyPerformanceScreenRepo repo;
+//	@Inject
+//	private DailyPerformanceScreenRepo repo;
 
 	@Inject
 	private IFindData findData;
@@ -53,8 +49,8 @@ public class FlexInfoDisplayChange {
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
 
-	@Inject
-	private DailyPerformanceScreenRepo dailyPerformanceScreenRepo;
+//	@Inject
+//	private DailyPerformanceScreenRepo dailyPerformanceScreenRepo;
 
 	@Inject
 	private CheckBeforeCalcFlexChange checkBeforeCalcFlex;
@@ -97,17 +93,17 @@ public class FlexInfoDisplayChange {
 //			Optional<WorkingConditionItem> wCItem = workConditions.stream().filter(x -> x.getHistoryId().equals(hist))
 //					.findFirst();
 		calcFlex.createWCItem(workConditions);
-		String condition = checkBeforeCalcFlex.getConditionCalcFlex(companyId, calcFlex, closureEmployment, closingPeriod);
-		dataMonth.createRedConditionMessage(condition);
+		ConditionCalcResult conditionResult = checkBeforeCalcFlex.getConditionCalcFlex(companyId, calcFlex, closureEmployment, closingPeriod);
+		dataMonth.createRedConditionMessage(conditionResult.getValueResult());
 		dataMonth.createNotForward("");
 
 		// TODO フレックス不足の相殺が実施できるかチェックする
 		CheckShortage checkShortage = checkShortageFlex.checkShortageFlex(employeeId, baseDate);
 		boolean checkFlex = checkShortage.isCheckShortage() && employeeId.equals(AppContexts.user().employeeId());
 		//checkShortage.createRetiredFlag(checkShortage.isRetiredFlag());
-		if (condition.equals("0:00") && !checkFlex) {
-			dataMonth.createNotForward(TextResource.localize("KDW003_114"));
-		}
+		//if (condition.equals("0:00") && !checkFlex) {
+		dataMonth.createNotForward(messageE22(conditionResult.getMessage()));
+		//}
 		return dataMonth.createCanFlex(checkFlex).createShowFlex(showFlex()).createCalcFlex(calcFlex);
 	}
 
@@ -144,6 +140,19 @@ public class FlexInfoDisplayChange {
 			break;
 		default:
 			break;
+		}
+	}
+	
+	private String messageE22(MessageFlex messageFlex) {
+		switch (messageFlex.value) {
+		case 0:
+			return "";
+		case 1:
+			return TextResource.localize("KDW003_114");
+		case 2:
+			return TextResource.localize("KDW003_127");
+		default:
+			return "";
 		}
 	}
 }

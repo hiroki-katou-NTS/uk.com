@@ -4,14 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.sys.auth.dom.role.ContractCode;
-import nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange;
 import nts.uk.ctx.sys.auth.dom.role.Role;
-import nts.uk.ctx.sys.auth.dom.role.RoleAtr;
-import nts.uk.ctx.sys.auth.dom.role.RoleCode;
-import nts.uk.ctx.sys.auth.dom.role.RoleName;
-import nts.uk.ctx.sys.auth.dom.role.RoleType;
 
 @Getter
 @Setter

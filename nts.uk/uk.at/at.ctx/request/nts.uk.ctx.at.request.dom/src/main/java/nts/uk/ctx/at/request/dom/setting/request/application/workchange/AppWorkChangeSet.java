@@ -1,10 +1,10 @@
 package nts.uk.ctx.at.request.dom.setting.request.application.workchange;
 
+/*import nts.gul.text.StringUtil;*/
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.setting.request.application.comment.CommentContent;
 import nts.uk.ctx.at.request.dom.setting.request.application.comment.CommentFontColor;
 import nts.uk.ctx.at.request.dom.setting.request.application.comment.FontWeightFlg;

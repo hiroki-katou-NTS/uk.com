@@ -21,7 +21,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
-import nts.uk.ctx.at.record.dom.workrecord.actualsituation.identificationstatus.export.CheckIndentityDayConfirm;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -51,6 +50,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerfo
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
 import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.CheckIndentityMonth;
 import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthParam;
+import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthResult;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexParam;
@@ -81,14 +81,17 @@ public class DPLoadRowProcessor {
     @Inject
 	private DPLock findLock;
     
-    @Inject
-	private CheckIndentityDayConfirm checkIndentityDayConfirm;
+//    @Inject
+//	private CheckIndentityDayConfirm checkIndentityDayConfirm;
     
-    @Inject
-	private ClosureService closureService;
+//    @Inject
+//	private ClosureService closureService;
     
     @Inject
 	private CheckIndentityMonth checkIndentityMonth;
+    
+    @Inject
+	private ClosureService closureService;
     
 	public DailyPerformanceCorrectionDto reloadGrid(DPPramLoadRow param){
 		DailyPerformanceCorrectionDto result = new DailyPerformanceCorrectionDto();
@@ -97,7 +100,7 @@ public class DPLoadRowProcessor {
 		Integer mode = param.getMode();
 		Integer displayFormat = param.getDisplayFormat();
 		List<DPDataDto> lstDataTemp = param.getLstData();
-		List<Integer> itemIds = param.getLstAttendanceItem().stream().map(x -> x.getId()).collect(Collectors.toList());
+//		List<Integer> itemIds = param.getLstAttendanceItem().stream().map(x -> x.getId()).collect(Collectors.toList());
 		result.setIdentityProcessDto(param.getIdentityProcess());
 		String NAME_EMPTY = TextResource.localize("KDW003_82");
 		String NAME_NOT_FOUND = TextResource.localize("KDW003_81");
@@ -118,13 +121,23 @@ public class DPLoadRowProcessor {
 			// screenDto.setFlexShortage(null);
 			//}
 			if (emp.equals(sId) && !param.getOnlyLoadMonth()) {
+				//社員に対応する締め期間を取得する
 				DatePeriod period = closureService.findClosurePeriod(emp, dateRange.getEndDate());
-				//checkIndenityMonth
-				result.setIndentityMonthResult(checkIndentityMonth.checkIndenityMonth(new IndentityMonthParam(companyId, sId, GeneralDate.today())));
-				//対象日の本人確認が済んでいるかチェックする
-				result.checkShowTighProcess(displayFormat, true);
+				
+				//パラメータ「日別実績の修正の状態．対象期間．終了日」がパラメータ「締め期間」に含まれているかチェックする
+				if (!period.contains(dateRange.getEndDate())) {
+					result.setIndentityMonthResult(new IndentityMonthResult(false, true, true));
+					//対象日の本人確認が済んでいるかチェックする
+					//screenDto.checkShowTighProcess(displayFormat, true);
+				} else {
+					// checkIndenityMonth
+					result.setIndentityMonthResult(checkIndentityMonth.checkIndenityMonth(
+							new IndentityMonthParam(companyId, sId, GeneralDate.today())));
+					//対象日の本人確認が済んでいるかチェックする
+					result.checkShowTighProcess(displayFormat, true);
+				}
 			}else {
-				result.getIndentityMonthResult().setHideAll(false);
+				result.getIndentityMonthResult().setHideAll(true);
 			}
 		}
 		if(param.getOnlyLoadMonth()){
@@ -188,7 +201,7 @@ public class DPLoadRowProcessor {
 				if(lstErrorSetting.isEmpty()) {
 					lstError = new ArrayList<>();
 				}
-				result.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
+				result.addErrorToResponseData(lstError, lstErrorSetting, mapDP, false);
 			}
 		}
 		

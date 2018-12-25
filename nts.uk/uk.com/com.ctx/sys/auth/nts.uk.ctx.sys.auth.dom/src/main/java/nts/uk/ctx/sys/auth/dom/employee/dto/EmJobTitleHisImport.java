@@ -1,6 +1,5 @@
 package nts.uk.ctx.sys.auth.dom.employee.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 

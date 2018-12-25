@@ -33,10 +33,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.CheckInden
 import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthParam;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
-import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexParam;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class DPDisplayLockProcessor {
@@ -92,7 +90,7 @@ public class DPDisplayLockProcessor {
 				if(lstErrorSetting.isEmpty()) {
 					lstError = new ArrayList<>();
 				}
-				result.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
+				result.addErrorToResponseData(lstError, lstErrorSetting, mapDP, false);
 			}
 		}
 
@@ -118,7 +116,7 @@ public class DPDisplayLockProcessor {
 				//対象日の本人確認が済んでいるかチェックする
 				result.checkShowTighProcess(displayFormat, true);
 			}else {
-				result.getIndentityMonthResult().setHideAll(false);
+				result.getIndentityMonthResult().setHideAll(true);
 			}
 			// screenDto.setFlexShortage(null);
 		}

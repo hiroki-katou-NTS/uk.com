@@ -1,13 +1,12 @@
 package nts.uk.ctx.sys.portal.dom.webmenu;
 
 import java.util.List;
-import java.util.UUID;
 
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.sys.portal.dom.enums.System;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
+import nts.uk.ctx.sys.portal.dom.enums.System;
 /**
  * 
  * @author sonnh

@@ -28,6 +28,8 @@ public class MonthlyModifyQueryProcessor {
 			return new ArrayList<>();
 		}
 		List<MonthlyRecordWorkDto> lstData = this.monthlyRecordWorkFinder.find(query.getEmployeeIds(), Arrays.asList(yearMonth));
+		lstData = lstData.stream().filter(x -> x.getClosureID() == closureId.value).collect(Collectors.toList());
+		if(lstData.isEmpty()) return new ArrayList<>();
 		return AttendanceItemUtil.toItemValues(lstData, itemIds, AttendanceItemUtil.AttendanceItemType.MONTHLY_ITEM).entrySet().stream().map(record -> {
 			return MonthlyModifyResult.builder()
 					.items(record.getValue())

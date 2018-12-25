@@ -14,6 +14,8 @@ public interface StandardOutputItemOrderRepository {
 			String conditionSettingCode);
 
 	List<StandardOutputItemOrder> getStandardOutputItemOrderByCidAndSetCd(String cid, String conditionSettingCode);
+	
+	int getMaxOrder(String cid, String conditionSettingCode);
 
 	void add(StandardOutputItemOrder domain);
 	

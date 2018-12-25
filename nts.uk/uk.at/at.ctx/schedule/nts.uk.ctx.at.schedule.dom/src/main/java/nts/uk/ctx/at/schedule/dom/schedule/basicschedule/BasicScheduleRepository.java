@@ -48,36 +48,12 @@ public interface BasicScheduleRepository {
 	 */
 	void insert(BasicSchedule bSchedule);
 	
-//	void insertKSU001(BasicSchedule bSchedule);
-	
-	void insertAll(List<BasicSchedule> listBSchedule);
-	
-	void insertScheTimeZone(BasicSchedule bSchedule);
-	
-	void insertScheTime(BasicSchedule bSchedule);
-	
-	void insertScheBreak(BasicSchedule listBSchedule);
-	
-	void insertRelateToWorkTimeCd(BasicSchedule bSchedule);
-
 	/**
 	 * update Basic Schedule
 	 * 
 	 * @param bSchedule
 	 */
 	void update(BasicSchedule bSchedule);
-	
-//	void updateKSUKSC001(BasicSchedule bSchedule, boolean isUpdateTimeZone, boolean isUpdateBreakTime, boolean isUpdateScheTime);
-	
-	void updateScheBasicState(BasicSchedule bSchedule);
-	
-//	void updateKSU001(BasicSchedule bSchedule);
-	
-	void updateScheTime(BasicSchedule listBSchedule);
-	
-	void updateScheBreak(BasicSchedule listBSchedule);
-	
-	void updateAll(List<BasicSchedule> listBSchedule);
 	
 	void updateConfirmAtr(List<BasicSchedule> listBasicSchedule);
 
@@ -95,7 +71,8 @@ public interface BasicScheduleRepository {
 	 *            work time code
 	 */
 	void changeWorkTypeTime(String sId, GeneralDate date, String workTypeCode, String workTimeCode);
-
+	void changeWorkType(String sid, GeneralDate date, String workTypeCode);
+	void changeWorkTime(String sid, GeneralDate date, String worktimeCode);
 	/**
 	 * Delete.
 	 *

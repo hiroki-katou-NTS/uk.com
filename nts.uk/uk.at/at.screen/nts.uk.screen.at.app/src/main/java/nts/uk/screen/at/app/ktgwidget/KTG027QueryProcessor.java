@@ -6,20 +6,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.at.auth.dom.adapter.AuthWorkPlaceAdapter;
-import nts.uk.ctx.at.auth.dom.adapter.WorkplaceInfoImport;
-import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
-import nts.uk.ctx.at.function.dom.alarm.alarmlist.AlarmExtraValueWkReDto;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AgreementTimeDetail;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.GetAgreementTime;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.auth.dom.adapter.AuthWorkPlaceAdapter;
+import nts.uk.ctx.at.auth.dom.adapter.WorkplaceInfoImport;
+import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AgreementTimeDetail;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.GetAgreementTime;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -34,10 +31,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
-import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.screen.at.app.ktgwidget.find.dto.AgreementTimeList36;
 import nts.uk.screen.at.app.ktgwidget.find.dto.AgreementTimeOfMonthlyDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OvertimeHours;
@@ -135,15 +130,14 @@ public class KTG027QueryProcessor {
 		if (listClosureEmployment == null || listClosureEmployment.isEmpty()) {
 			throw new BusinessException("Msg_1136");
 		}
-		
-		List<String> listEmploymentCD = listClosureEmployment.stream().map(c -> c.getEmploymentCD()).collect(Collectors.toList());
-		// (Lấy target) Lấy request list 335
-		
 		List<AgreementTimeList36> data = new ArrayList<>();
-		// for (DatePeriod datePeriod : listDatePeriod) {
 		
+		// (Lấy target) Lấy request list 335
+		List<String> listEmploymentCD = listClosureEmployment.stream().map(c -> c.getEmploymentCD()).collect(Collectors.toList());
+		//Dòng code bị comment là code gốc của RQ 335
 		//List<String> listEmpID = empEmployeeAdapter.getListEmpByWkpAndEmpt(listWorkPlaceID, listEmploymentCD, datePeriod.get());
 		List<String> listEmpID = getListEmpByWkpAndEmpt(listWorkPlaceID, listEmploymentCD, datePeriod.get());
+		
 		if (listEmpID == null || listEmpID.isEmpty() ) {
 			throw new BusinessException("Msg_1137");
 		}

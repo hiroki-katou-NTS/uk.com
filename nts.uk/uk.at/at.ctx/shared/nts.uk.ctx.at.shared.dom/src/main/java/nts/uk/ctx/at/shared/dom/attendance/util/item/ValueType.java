@@ -98,4 +98,9 @@ public enum ValueType {
 	public boolean isTime() {
 		return TIME.equals(this) || CLOCK.equals(this) || TIME_WITH_DAY.equals(this);
 	}
+	
+	public boolean isCompare() {
+		return TIME.equals(this) || COUNT.equals(this) || COUNT_WITH_DECIMAL.equals(this) || DAYS.equals(this)
+				|| AMOUNT.equals(this) || NUMBER.equals(this);
+	}
 }

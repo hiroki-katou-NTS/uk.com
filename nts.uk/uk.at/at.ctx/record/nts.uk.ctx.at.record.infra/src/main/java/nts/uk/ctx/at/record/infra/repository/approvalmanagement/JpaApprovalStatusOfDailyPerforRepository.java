@@ -20,17 +20,17 @@ import nts.uk.ctx.at.record.infra.entity.approvalmanagement.KrcdtDaiApprovalStat
 public class JpaApprovalStatusOfDailyPerforRepository extends JpaRepository
 		implements ApprovalStatusOfDailyPerforRepository {
 
-	private static final String REMOVE_BY_EMPLOYEE;
+//	private static final String REMOVE_BY_EMPLOYEE;
 
 	private static final String DEL_BY_LIST_KEY;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDaiApprovalStatus a ");
-		builderString.append("WHERE a.krcdtDaiApprovalPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtDaiApprovalPK.ymd = :ymd ");
-		REMOVE_BY_EMPLOYEE = builderString.toString();
+//		builderString.append("DELETE ");
+//		builderString.append("FROM KrcdtDaiApprovalStatus a ");
+//		builderString.append("WHERE a.krcdtDaiApprovalPK.employeeId = :employeeId ");
+//		builderString.append("AND a.krcdtDaiApprovalPK.ymd = :ymd ");
+//		REMOVE_BY_EMPLOYEE = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("DELETE ");

@@ -1,11 +1,11 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord;
 
+/*import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;*/
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.ClassifyScheAchieveAtr;
 @AllArgsConstructor
 @Getter

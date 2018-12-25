@@ -15,7 +15,6 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.export.Absenceleav
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.export.MonthlyAbsenceleaveRemainExport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentManaQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.InterimRemainAggregateOutputData;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AbsenceReruitmentManaFinder implements AbsenceReruitmentManaAdapter {
@@ -24,7 +23,7 @@ public class AbsenceReruitmentManaFinder implements AbsenceReruitmentManaAdapter
 	private AbsenceReruitmentManaQuery absenceReruitmentManaQuery;
 
 	@Inject
-	private MonthlyAbsenceleaveRemainExport monthlyAbsenceleaveRemainExport;
+	private MonthlyAbsenceleaveRemainExport monAbleaRemainEx;
 
 	@Override
 	public List<CurrentHolidayRemainImported> getAbsRecRemainAggregate(String employeeId, GeneralDate baseDate,
@@ -52,7 +51,7 @@ public class AbsenceReruitmentManaFinder implements AbsenceReruitmentManaAdapter
 	public List<StatusOfHolidayImported> getDataCurrentMonthOfEmployee(String employeeId, YearMonth startMonth,
 			YearMonth endMonth) {
 		// requestList260
-		List<AbsenceleaveCurrentMonthOfEmployee> lstDataCurrentMonthOfEmployee = monthlyAbsenceleaveRemainExport
+		List<AbsenceleaveCurrentMonthOfEmployee> lstDataCurrentMonthOfEmployee = monAbleaRemainEx
 				.getDataCurrentMonthOfEmployee(employeeId, startMonth, endMonth);
 		
 		// TODO requestList260 fail
@@ -71,6 +70,29 @@ public class AbsenceReruitmentManaFinder implements AbsenceReruitmentManaAdapter
 		});
 
 		return lstStatusOfHoliday;
+	}
+	/**
+	 * @author hoatt
+	 * Doi ung response KDR001
+	 * RequestList260 社員の月毎の確定済み振休を取得する - ver2
+	 * @param employeeId
+	 * @param startMonth
+	 * @param endMonth
+	 * @return
+	 */
+	@Override
+	public List<StatusOfHolidayImported> getDataCurrMonOfEmpVer2(String employeeId, YearMonth startMonth,
+			YearMonth endMonth) {
+//		List<AbsenceleaveCurrentMonthOfEmployee> lstDataCurrMonOfEmp = monAbleaRemainEx.getDataCurrMonOfEmpVer2(employeeId, startMonth, endMonth);
+//		if (lstDataCurrMonOfEmp == null)
+//			return null;
+		List<StatusOfHolidayImported> lstSttOfHd = new ArrayList<>();
+//		lstDataCurrMonOfEmp.forEach(item -> {
+//			StatusOfHolidayImported sttOfHd = new StatusOfHolidayImported(item.getYm(), item.getOccurredDay(),
+//					item.getUsedDays(), item.getUnUsedDays(), item.getRemainingDays());
+//			lstSttOfHd.add(sttOfHd);
+//		});
+		return lstSttOfHd;
 	}
 
 }

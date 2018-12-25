@@ -16,7 +16,7 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkRepository;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
-import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
+//import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;

@@ -69,7 +69,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		if (!columns.isEmpty()) {
 			this.setCommonStyle(cells);
 
-			int startNextTable = drawATable(cells, columns, dataSource.getMasterList(), this.MASTERLIST_DATA_START_ROW);
+			int startNextTable = drawATable(cells, columns, dataSource.getMasterList(), /*this.*/MASTERLIST_DATA_START_ROW);
 
 			drawExtraTable(cells, startNextTable, dataSource.getExtraHeaderColumns(), dataSource.getExtraMasterList());
 
@@ -103,11 +103,11 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 	
 	private String fillHeader(Cells cells, MasterListExportSource dataSource, int columnSize) {
 		Map<String, String> headerData = dataSource.getHeaders();
-		int i = this.HEADER_INFOR_START_ROW;
+		int i = /*this.*/HEADER_INFOR_START_ROW;
 		boolean isCsv = isExportCsvFile(dataSource.getReportType());
 		for (Entry<String, String> headerInfor : headerData.entrySet()) {
-			Cell labelCell = cells.get(this.HEADER_INFOR_START_ROW + i, 0);
-			Range valueCell = cells.createRange(this.HEADER_INFOR_START_ROW + i, 1, 1, isCsv ? 1 : columnSize);
+			Cell labelCell = cells.get(/*this.*/HEADER_INFOR_START_ROW + i, 0);
+			Range valueCell = cells.createRange(/*this.*/HEADER_INFOR_START_ROW + i, 1, 1, isCsv ? 1 : columnSize);
 			valueCell.merge();
 
 			Style style = this.getCellStyleNoBorder(labelCell.getStyle());
@@ -136,7 +136,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 			List<MasterData> datas, int startRow) {
 		this.drawTableHeader(cells, columns, startRow);
 		this.drawTableBody(cells, columns, datas, startRow);
-		return startRow + datas.size() + this.TABLE_DISTANCE;
+		return startRow + datas.size() + /*this.*/TABLE_DISTANCE;
 	}
 
 	private int drawExtraTable(final Cells cells, int startRow,
@@ -169,7 +169,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 	private void drawTableBody(Cells cells, List<MasterHeaderColumn> columns, List<MasterData> datas, int startRow) {
 		for (int i = 0; i < datas.size(); i++) {
 			MasterData data = datas.get(i);
-			int j = this.START_COLUMN;
+			int j = /*this.*/START_COLUMN;
 			for (MasterHeaderColumn column : columns) {
 				Cell cell = cells.get(startRow + i, j);
 				// TODO: format date with format
@@ -218,7 +218,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 	}
 
 	private void setCommonStyle(Cells cells) {
-		cells.setStandardWidthPixels(this.STANDARD_WIDTH);
-		cells.setStandardHeightPixels(this.STANDARD_HEIGHT);
+		cells.setStandardWidthPixels(/*this.*/STANDARD_WIDTH);
+		cells.setStandardHeightPixels(/*this.*/STANDARD_HEIGHT);
 	}
 }

@@ -90,7 +90,7 @@ module nts.uk.com.view.cmf002.l.viewmodel {
         sendData() {
 
             let self = this;
-            if (self.decimalSelectionCls() && self.timeDataFormatSetting().fixedValue() == 0) {
+            if (self.decimalSelectionCls()) {
                 $("#L3_1").trigger("validate");
             }
             if (self.timeDataFormatSetting().fixedValueOperation() == 1 && self.timeDataFormatSetting().fixedValue() == 0) {

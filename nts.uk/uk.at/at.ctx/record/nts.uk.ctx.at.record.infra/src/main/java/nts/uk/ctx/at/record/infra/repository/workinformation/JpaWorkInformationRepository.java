@@ -42,38 +42,12 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaWorkInformationRepository extends JpaRepository implements WorkInformationRepository {
 
-	private static final String DEL_BY_KEY;
-
-	private static final String FIND_BY_PERIOD_ORDER_BY_YMD;
-
 	private static final String FIND_BY_PERIOD_ORDER_BY_YMD_AND_EMPS;
 
-	private static final String FIND_BY_PERIOD_ORDER_BY_YMD_DESC;
-
-	private static final String FIND_BY_LIST_SID_AND_PERIOD;
-
-	private static final String DEL_BY_KEY_ID;
-
-	private static final String FIND_BY_ID = "SELECT a FROM KrcdtDaiPerWorkInfo a "
-			+ " WHERE a.krcdtDaiPerWorkInfoPK.employeeId = :employeeId " + " AND a.krcdtDaiPerWorkInfoPK.ymd = :ymd ";
 	private static final String FIND_BY_EMPLOYEE_ID = "SELECT a FROM KrcdtDaiPerWorkInfo a "
 			+ " WHERE a.krcdtDaiPerWorkInfoPK.employeeId = :employeeId ";
 	static {
 		StringBuilder builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDaiPerWorkInfo a ");
-		builderString.append("WHERE a.krcdtDaiPerWorkInfoPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd = :ymd ");
-		DEL_BY_KEY = builderString.toString();
-
-		builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtWorkScheduleTime a ");
-		builderString.append("WHERE a.krcdtWorkScheduleTimePK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtWorkScheduleTimePK.ymd = :ymd ");
-		DEL_BY_KEY_ID = builderString.toString();
-
-		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcdtDaiPerWorkInfo a ");
 		builderString.append("WHERE a.krcdtDaiPerWorkInfoPK.employeeId IN :employeeIds ");
@@ -81,24 +55,6 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd <= :endDate ");
 		builderString.append("ORDER BY a.krcdtDaiPerWorkInfoPK.ymd ");
 		FIND_BY_PERIOD_ORDER_BY_YMD_AND_EMPS = builderString.toString();
-
-		builderString = new StringBuilder();
-		builderString.append("SELECT a ");
-		builderString.append("FROM KrcdtDaiPerWorkInfo a ");
-		builderString.append("WHERE a.krcdtDaiPerWorkInfoPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd >= :startDate ");
-		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd <= :endDate ");
-		builderString.append("ORDER BY a.krcdtDaiPerWorkInfoPK.ymd ");
-		FIND_BY_PERIOD_ORDER_BY_YMD = builderString.toString();
-		builderString.append(" DESC");
-		FIND_BY_PERIOD_ORDER_BY_YMD_DESC = builderString.toString();
-		builderString = new StringBuilder();
-		builderString.append("SELECT a ");
-		builderString.append("FROM KrcdtDaiPerWorkInfo a ");
-		builderString.append("WHERE a.krcdtDaiPerWorkInfoPK.employeeId IN :employeeIds ");
-		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd >= :startDate ");
-		builderString.append("AND a.krcdtDaiPerWorkInfoPK.ymd <= :endDate ");
-		FIND_BY_LIST_SID_AND_PERIOD = builderString.toString();
 	}
 
 	private String FIND_BY_WORKTYPE_PERIOD = "SELECT c.krcdtDaiPerWorkInfoPK.ymd" + " FROM KrcdtDaiPerWorkInfo c"
@@ -330,6 +286,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 				data.scheduleTimes.forEach(c -> {
 					this.commandProxy().remove(getEntityManager().merge(c));
 				});
+				data.scheduleTimes = new ArrayList<>();
 //				this.getEntityManager().flush();
 			} else {
 				if (data.scheduleTimes == null || data.scheduleTimes.isEmpty()) {

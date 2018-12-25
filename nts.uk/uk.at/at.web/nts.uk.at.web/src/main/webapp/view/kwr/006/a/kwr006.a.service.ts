@@ -2,7 +2,7 @@ module nts.uk.at.view.kwr006.a {
     export module service {
         var paths = {
             exportSchedule: "screen/at/monthlyschedule/export",
-            getPeriod: "at/function/annualworkschedule/get/period",
+            getPeriod: "at/function/monthlyworkschedule/get/monthlyPeriod",
             findAllOutputItemMonthlyWorkSchedule: "at/function/monthlyworkschedule/findall",
             getCurrentLoginerRole: "at/function/monthlyworkschedule/getCurrentLoginerRole"
         }

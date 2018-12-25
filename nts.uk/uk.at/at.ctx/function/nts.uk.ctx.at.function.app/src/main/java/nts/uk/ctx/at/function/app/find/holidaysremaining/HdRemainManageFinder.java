@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.function.app.find.holidaysremaining;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -37,7 +39,7 @@ public class HdRemainManageFinder {
 	@Inject
 	private ClosureRepository closureRepository;
 	@Inject
-	private ShareEmploymentAdapter shareEmploymentAdapter;
+	private ShareEmploymentAdapter shrEmpAdapter;
 	@Inject
 	private PermissionOfEmploymentFormRepository permissionOfEmploymentFormRepository;
 	@Inject
@@ -64,7 +66,7 @@ public class HdRemainManageFinder {
 	// 当月を取得
 	public Optional<YearMonth> getCurrentMonth(String companyId, String employeeId, GeneralDate systemDate) {
 		// ドメインモデル「所属雇用履歴」を取得する
-		Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt = shareEmploymentAdapter
+		Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt = shrEmpAdapter
 				.findEmploymentHistory(companyId, employeeId, systemDate);
 		if (!bsEmploymentHistOpt.isPresent()) {
 			return Optional.empty();
@@ -99,7 +101,9 @@ public class HdRemainManageFinder {
 		if (!currentMonthOpt.isPresent()) {
 			return null;
 		}
-		GeneralDate endDate = GeneralDate.ymd(currentMonthOpt.get().year(), currentMonthOpt.get().month() + 1, 1);
+		
+		// fix hộ bug team G #102630
+		GeneralDate endDate = GeneralDate.ymd(currentMonthOpt.get().year(), currentMonthOpt.get().month(), 1).addMonths(1);
 		GeneralDate startDate = endDate.addYears(-1);
 
 		return new DateHolidayRemainingDto(startDate.toString(), endDate.toString());
@@ -128,5 +132,62 @@ public class HdRemainManageFinder {
 	public VariousVacationControlDto getVariousVacationControl() {
 		return VariousVacationControlDto.fromDomain(variousVacationControlService.getVariousVacationControl());
 	}
+	
+	// 当月を取得 - ver2
+	public Map<String, YearMonth> getCurrentMonthVer2(String companyId, List<String> lstSID, GeneralDate systemDate) {
+		// ドメインモデル「所属雇用履歴」を取得する
+		Map<String, BsEmploymentHistoryImport> bsEmpHistt = shrEmpAdapter.findEmpHistoryVer2(companyId, lstSID, systemDate);
+		if (bsEmpHistt.isEmpty()) {
+			return new HashMap<>();
+		}
 
+		List<String> lstEmpCode = bsEmpHistt.entrySet().stream().map(c -> c.getValue().getEmploymentCode()).collect(Collectors.toList());
+		// ドメインモデル「雇用に紐づく就業締め」を取得する
+		List<ClosureEmployment> lstClosureEmp = closureEmploymentRepository.findListEmployment(companyId, lstEmpCode);
+		if(lstClosureEmp.isEmpty()){
+			return new HashMap<>();
+		}
+		// 雇用に紐づく締めを取得する
+		Integer clsIdDefault = 1;
+		List<Integer> lstClsId = lstClosureEmp.stream().map(c -> c.getClosureId()).collect(Collectors.toList());
+		if(!lstClsId.contains(clsIdDefault)){
+			lstClsId.add(clsIdDefault);
+		}
+		// 当月の年月を取得する
+		List<Closure> lstCls = closureRepository.findByListId(companyId, lstClsId);
+		Map<String, YearMonth> mapResult = new HashMap<>();//key sid
+		Map<String, YearMonth> mapTmp = new HashMap<>();//key empCD
+		for(String sid : lstSID){
+			String empCD = bsEmpHistt.get(sid).getEmploymentCode();
+			if(mapTmp.containsKey(sid)){//co san trong mapTmp
+				if(mapTmp.get(empCD) == null){//Gtri null
+					continue;
+				}
+				mapResult.put(sid, mapTmp.get(empCD));
+			}else{
+				YearMonth curMon = this.findCurrMon(empCD, lstClosureEmp, lstCls);
+				if(curMon != null){//Gtri != null
+					mapResult.put(sid, curMon);
+				}
+				mapTmp.put(empCD, curMon);
+			}
+		}
+		return mapResult;
+	}
+	private YearMonth findCurrMon(String empCD, List<ClosureEmployment> lstClosureEmp, List<Closure> lstCls){
+		for (ClosureEmployment closure : lstClosureEmp) {
+			if(closure.getEmploymentCD().equals(empCD)){
+				return this.findYearMonth(lstCls, closure.getClosureId());
+			}
+		}
+		return this.findYearMonth(lstCls, 1);
+	}
+	private YearMonth findYearMonth(List<Closure> lstCls, Integer clsID){
+		for (Closure closure : lstCls) {
+			if(closure.getClosureId().value == clsID){
+				return closure.getClosureMonth().getProcessingYm();
+			}
+		}
+		return null;
+	}
 }

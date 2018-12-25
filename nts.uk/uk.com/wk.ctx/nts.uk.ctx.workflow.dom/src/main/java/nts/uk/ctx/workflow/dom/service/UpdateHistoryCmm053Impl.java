@@ -40,6 +40,7 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 	private CreateDailyApprover createDailyApprover;
 	
 	@Override
+	//03.履歴更新を登録する
 	public void updateHistoryByManagerSetting(String companyId, String historyId, String employeeId, GeneralDate startDate,
 			String departmentApproverId, String dailyApproverId) {
 		String endDate    = "9999-12-31";
@@ -65,12 +66,12 @@ public class UpdateHistoryCmm053Impl implements UpdateHistoryCmm053Service {
 		GeneralDate systemDate = GeneralDate.today();
 		if(startDate.beforeOrEquals(systemDate)){
 			//指定社員の中間データを作成する（日別）
-			AppRootInstanceContent result =  createDailyApprover.createDailyApprover(employeeId, RecordRootType.CONFIRM_WORK_BY_DAY, startDate);
+			AppRootInstanceContent result =  createDailyApprover.createDailyApprover(employeeId, RecordRootType.CONFIRM_WORK_BY_DAY, startDate, startDate);
 			if(!result.getErrorFlag().equals(ErrorFlag.NO_ERROR)){
 				throw new BusinessException(result.getErrorMsgID());
 			}
 			//指定社員の中間データを作成する（月別）
-			result = createDailyApprover.createDailyApprover(employeeId, RecordRootType.CONFIRM_WORK_BY_MONTH, startDate);
+			result = createDailyApprover.createDailyApprover(employeeId, RecordRootType.CONFIRM_WORK_BY_MONTH, startDate, startDate);
 			if(!result.getErrorFlag().equals(ErrorFlag.NO_ERROR)){
 				throw new BusinessException(result.getErrorMsgID());
 			}

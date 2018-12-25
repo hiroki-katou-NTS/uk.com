@@ -231,15 +231,19 @@ public class ScheCreExeBasicScheduleHandler {
 		ScTimeParam param = new ScTimeParam(employeeId, dateInPeriod, new WorkTypeCode(worktypeDto.getWorktypeCode()),
 				workTimeCode != null ? new WorkTimeCode(workTimeCode) : null, startClock, endClock, breakStartTime, breakEndTime, childCareStartTime,
 				childCareEndTime);
-		this.saveScheduleTime(command.getCompanySetting(), param, commandSave, command.getExecutionId());
+		if (this.saveScheduleTime(command.getCompanySetting(), param, commandSave, command.getExecutionId()) == null)
+			return;
         
 		// check parameter is delete before insert
-		if (command.getIsDeleteBeforInsert()) {
-			this.basicScheduleRepository.delete(employeeId, dateInPeriod, commandSave.toDomain());
-		}
+		// if (command.getIsDeleteBeforInsert()) {
+		this.basicScheduleRepository.delete(employeeId, dateInPeriod, commandSave.toDomain());
+		// }
 		
 		// save command
-		this.saveBasicSchedule(commandSave, listBasicSchedule, command.getIsDeleteBeforInsert(), dateRegistedEmpSche);
+		this.saveBasicSchedule(commandSave,
+//				listBasicSchedule, 
+//				command.getIsDeleteBeforInsert(), 
+				dateRegistedEmpSche);
 	}
 
 	/**
@@ -287,29 +291,33 @@ public class ScheCreExeBasicScheduleHandler {
 	}
 	
 	// 勤務予定情報を登録する-for KSC001
-	private void saveBasicSchedule(BasicScheduleSaveCommand command, List<BasicSchedule> listBasicSchedule,
-			boolean isDeleteBeforeInsert, DateRegistedEmpSche dateRegistedEmpSche) {
+	private void saveBasicSchedule(BasicScheduleSaveCommand command, 
+//			List<BasicSchedule> listBasicSchedule,
+//			boolean isDeleteBeforeInsert, 
+			DateRegistedEmpSche dateRegistedEmpSche) {
 		// 登録対象日を保持しておく（暫定データ作成用）
 		dateRegistedEmpSche.getListDate().add(command.getYmd());
 		
+		this.basicScheduleRepository.insert(command.toDomain());
+		
 		// if delete before, it always insert
-		if(isDeleteBeforeInsert){
-			this.basicScheduleRepository.insert(command.toDomain());
-			return;
-		}
+//		if(isDeleteBeforeInsert){
+//			this.basicScheduleRepository.insert(command.toDomain());
+//			return;
+//		}
 		
 		// find basic schedule by id
 		// fix for response
-		Optional<BasicSchedule> optionalBasicSchedule = listBasicSchedule.stream()
-				.filter(x -> (x.getEmployeeId().equals(command.getEmployeeId())
-						&& x.getDate().compareTo(command.getYmd()) == 0))
-				.findFirst();
-		
-		if (optionalBasicSchedule.isPresent()) {
-			this.basicScheduleRepository.update(command.toDomain());
-		} else {
-			this.basicScheduleRepository.insert(command.toDomain());
-		}
+//		Optional<BasicSchedule> optionalBasicSchedule = listBasicSchedule.stream()
+//				.filter(x -> (x.getEmployeeId().equals(command.getEmployeeId())
+//						&& x.getDate().compareTo(command.getYmd()) == 0))
+//				.findFirst();
+//		
+//		if (optionalBasicSchedule.isPresent()) {
+//			this.basicScheduleRepository.update(command.toDomain());
+//		} else {
+//			this.basicScheduleRepository.insert(command.toDomain());
+//		}
 		
 	}
 
@@ -396,11 +404,15 @@ public class ScheCreExeBasicScheduleHandler {
 		ScTimeParam param = new ScTimeParam(employeeId, toDate, new WorkTypeCode(workTypeCode),
 				new WorkTimeCode(workTimeCode), startClock, endClock, breakStartTime, breakEndTime, childCareStartTime,
 				childCareEndTime);
-		this.saveScheduleTime(command.getCompanySetting(), param, commandSave, command.getExecutionId());
+		if(this.saveScheduleTime(command.getCompanySetting(), param, commandSave, command.getExecutionId()) == null)
+			return;
 		
-		boolean isDeleteBeforeInsert = false;
+//		boolean isDeleteBeforeInsert = false;
 		// save command
-		this.saveBasicSchedule(commandSave, listBasicSchedule, isDeleteBeforeInsert, dateRegistedEmpSche);
+		this.saveBasicSchedule(commandSave,
+//				listBasicSchedule, 
+//				isDeleteBeforeInsert, 
+				dateRegistedEmpSche);
 	}
 
 	/**
@@ -586,7 +598,7 @@ public class ScheCreExeBasicScheduleHandler {
 				ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, executionId,
 						commandSave.getYmd(), commandSave.getEmployeeId());
 				this.scheduleErrorLogRepository.add(scheduleErrorLog);
-				return commandSave;
+				return null;
 			}
 			throw new RuntimeException(e);
 		}
@@ -686,6 +698,9 @@ public class ScheCreExeBasicScheduleHandler {
 		// Imported（勤務予定）「勤務予定の計算時間」を取得する
 		basicScheduleSaveCommand.updateWorkScheduleTimeZonesKeepBounceAtr(prescribedTimezoneSetting, workType);
 		basicScheduleSaveCommand = saveScheduleTime(null, param, basicScheduleSaveCommand, null);
+		
+		if(basicScheduleSaveCommand == null)
+			return;
 		
 		// Get all schedule item by company id (for optimization)
 		List<ScheduleItem> lstScheduleItem = scheduleItemManagementRepository.findAllScheduleItem(companyId);

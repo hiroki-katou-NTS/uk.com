@@ -48,7 +48,6 @@ import nts.uk.ctx.at.record.dom.daily.dailyperformance.classification.EnumCodeNa
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
-import nts.uk.ctx.at.record.dom.workrecord.actualsituation.identificationstatus.export.CheckIndentityDayConfirm;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.YourselfConfirmError;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
@@ -59,6 +58,7 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationExportDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListForScreen;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
@@ -126,6 +126,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.error.ShowDialogError;
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
 import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.CheckIndentityMonth;
 import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthParam;
+import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthResult;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.ClosureSidDto;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.ConfirmationMonthDto;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
@@ -191,8 +192,8 @@ public class DailyPerformanceCorrectionProcessor {
 	@Inject
 	private DPLock findLock;
 	
-	@Inject
-	private CheckIndentityDayConfirm checkIndentityDayConfirm;
+//	@Inject
+//	private CheckIndentityDayConfirm checkIndentityDayConfirm;
 	
 	@Inject
 	private ShowDialogError showDialogError;
@@ -205,6 +206,9 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	@Inject
 	private ErrorMonthProcessor errorMonthProcessor;
+	
+	@Inject
+	private PublicHolidayRepository publicHolidayRepository;
 	
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
@@ -441,13 +445,22 @@ public class DailyPerformanceCorrectionProcessor {
 												screenDto.getEmploymentCode(), dailyPerformanceDto, disItem.getAutBussCode())));
 							if (emp.get(0).equals(sId)) {
 								//社員に対応する締め期間を取得する
-								//DatePeriod period = closureService.findClosurePeriod(emp.get(0), dateRangeTemp.getEndDate());
-								//checkIndenityMonth
-								screenDto.setIndentityMonthResult(checkIndentityMonth.checkIndenityMonth(new IndentityMonthParam(companyId, sId, GeneralDate.today())));
-								//対象日の本人確認が済んでいるかチェックする
-								screenDto.checkShowTighProcess(displayFormat, true);
+								DatePeriod period = closureService.findClosurePeriod(emp.get(0), dateRangeTemp.getEndDate());
+								
+								//パラメータ「日別実績の修正の状態．対象期間．終了日」がパラメータ「締め期間」に含まれているかチェックする
+								if (!period.contains(dateRangeTemp.getEndDate())) {
+									screenDto.setIndentityMonthResult(new IndentityMonthResult(false, true, true));
+									//対象日の本人確認が済んでいるかチェックする
+									//screenDto.checkShowTighProcess(displayFormat, true);
+								} else {
+									// checkIndenityMonth
+									screenDto.setIndentityMonthResult(checkIndentityMonth.checkIndenityMonth(
+											new IndentityMonthParam(companyId, sId, GeneralDate.today())));
+									//対象日の本人確認が済んでいるかチェックする
+									screenDto.checkShowTighProcess(displayFormat, true);
+								}
 							}else {
-								screenDto.getIndentityMonthResult().setHideAll(false);
+								screenDto.getIndentityMonthResult().setHideAll(true);
 							}
 							// screenDto.setFlexShortage(null);
 						}
@@ -475,7 +488,7 @@ public class DailyPerformanceCorrectionProcessor {
 		results = resultPair.getLeft();
 		screenDto.setDomainOld(resultPair.getRight());
 		screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
-		List<ItemValue> dataValue = screenDto.getItemValues().stream().sorted((x, y) -> x.getItemId() - y.getItemId()).collect(Collectors.toList());
+//		List<ItemValue> dataValue = screenDto.getItemValues().stream().sorted((x, y) -> x.getItemId() - y.getItemId()).collect(Collectors.toList());
 		Map<String, DailyModifyResult> resultDailyMap = results.stream().collect(Collectors
 				.toMap(x -> mergeString(x.getEmployeeId(), "|", x.getDate().toString()), Function.identity(), (x, y) -> x));
 		
@@ -499,7 +512,7 @@ public class DailyPerformanceCorrectionProcessor {
 					lstError = new ArrayList<>();
 				}
 				System.out.println("time load Error: "+ (System.currentTimeMillis() - timeT));
-				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
+				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP, false);
 			}
 		}
 
@@ -556,6 +569,9 @@ public class DailyPerformanceCorrectionProcessor {
 						.collect(Collectors.toMap(x -> mergeString(x.getCode(), "|", x.getId()), x -> x))
 				: Collections.emptyMap();
 						//get status check box 
+		List<GeneralDate> holidayDate = publicHolidayRepository
+				.getpHolidayWhileDate(companyId, dateRange.getStartDate(), dateRange.getEndDate()).stream()
+				.map(x -> x.getDate()).collect(Collectors.toList());
 		for (DPDataDto data : screenDto.getLstData()) {
 			boolean textColorSpr = false;
 			data.setEmploymentCode(screenDto.getEmploymentCode());
@@ -613,7 +629,7 @@ public class DailyPerformanceCorrectionProcessor {
 				}
 				//set cell state day
 				if(!textColorSpr){
-					setTextColorDay(screenDto, data.getDate(), "date", data.getId());
+					setTextColorDay(screenDto, data.getDate(), "date", data.getId(), holidayDate);
 				}
 				itemValueMap = resultOfOneRow.getItems().stream()
 						.collect(Collectors.toMap(x -> mergeString(String.valueOf(x.getItemId()), "|",
@@ -1225,7 +1241,9 @@ public class DailyPerformanceCorrectionProcessor {
 								// -> {
 								lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(rowId), value.getEmployeeId(),
 										"", "", value.getProcessingDate(), value.getErrorCode(),
-										value.getErrorAlarmMessage() == null ? (errorSetting.getMessageDisplay() == null ? "" : errorSetting.getMessageDisplay())
+										value.getErrorAlarmMessage() == null
+												? (errorSetting.getMessageDisplay() == null ? ""
+														: errorSetting.getMessageDisplay())
 												: value.getErrorAlarmMessage(),
 										lstError.get(id).getAttendanceItemId().get(x), "", errorSetting.isBoldAtr(),
 										errorSetting.getMessageColor(),
@@ -1239,7 +1257,14 @@ public class DailyPerformanceCorrectionProcessor {
 						} else {
 							lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(rowId), value.getEmployeeId(),
 									value.getProcessingDate(), value.getErrorCode(),
-									value.getErrorAlarmMessage() == null ? (errorSetting.getMessageDisplay() == null ? "" : errorSetting.getMessageDisplay()) : value.getErrorAlarmMessage()));
+									value.getErrorAlarmMessage() == null ? (errorSetting.getMessageDisplay() == null ? "" : errorSetting.getMessageDisplay()) : value.getErrorAlarmMessage(),
+									errorSetting.isBoldAtr(),
+									errorSetting.getMessageColor(),
+									appMapDateSid
+											.containsKey(value.getEmployeeId() + "|" + value.getProcessingDate())
+													? appMapDateSid.get(
+															value.getEmployeeId() + "|" + value.getProcessingDate())
+													: ""));
 							rowId++;
 						}
 					}
@@ -1588,8 +1613,13 @@ public class DailyPerformanceCorrectionProcessor {
 				// List<RegulationInfoEmployeeQueryR> regulationRs=
 				// regulationInfoEmployeePub.search(createQueryEmployee(new ArrayList<>(),
 				// range.getStartDate(), range.getEndDate()));
+				//社員と同じ職場の社員を取得する
 				List<String> listEmp = repo.getListEmpInDepartment(employeeIdLogin,
 						new DateRange(range.getStartDate(), range.getEndDate()));
+				//社員一覧を特定の会社に在籍している社員に絞り込む
+				listEmp = repo.getAffCompanyHistorySidDate(companyId, listEmp,
+						new DateRange(range.getStartDate(), range.getEndDate()));
+				
 				lstEmployeeId = narrowEmployeeAdapter.findByEmpId(listEmp, 3);
 				if (closureId != null) {
 					Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, lstEmployeeId,
@@ -1770,11 +1800,13 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 	}
 	
-	public void setTextColorDay(DailyPerformanceCorrectionDto screenDto, GeneralDate date, String columnKey, String rowId){
-		     // Sunday
-		if(date.dayOfWeek() == 7){
+	public void setTextColorDay(DailyPerformanceCorrectionDto screenDto, GeneralDate date, String columnKey, String rowId, List<GeneralDate> holidayDates){
+		
+		boolean isHoliday = holidayDates.contains(date);
+		if (isHoliday || date.dayOfWeek() == 7) {
+			// Sunday
 			screenDto.setCellSate(rowId, columnKey, DPText.COLOR_SUN);
-		}else if(date.dayOfWeek() == 6){
+		} else if (date.dayOfWeek() == 6) {
 			// Saturday
 			screenDto.setCellSate(rowId, columnKey, DPText.COLOR_SAT);
 		}

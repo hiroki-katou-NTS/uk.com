@@ -33,6 +33,7 @@ public class ServerPreparationService {
 	private ServerPrepareMngRepository serverPrepareMngRepository;
 
 	// アルゴリズム「サーバー準備処理」を実行する
+	@SuppressWarnings("unchecked")
 	public ServerPrepareMng serverPreparationProcessing(ServerPrepareMng serverPrepareMng) {
 		serverPrepareMng = dataExtractionService.extractData(serverPrepareMng);
 		if (checkNormalFile(serverPrepareMng)) {

@@ -5,6 +5,8 @@
 package nts.uk.screen.at.ws.monthlyschedule;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.file.export.ExportService;
@@ -17,6 +19,7 @@ import nts.uk.file.at.app.export.monthlyschedule.MonthlyWorkScheduleQuery;
  * The Class MonthlyPerformanceExportService.
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class MonthlyPerformanceExportService extends ExportService<MonthlyWorkScheduleQuery> {
 
 	/** The generator. */

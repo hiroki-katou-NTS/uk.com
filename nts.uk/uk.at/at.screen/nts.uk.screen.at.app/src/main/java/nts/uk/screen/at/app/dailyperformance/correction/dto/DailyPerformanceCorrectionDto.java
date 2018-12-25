@@ -217,12 +217,14 @@ public class DailyPerformanceCorrectionDto {
 	}
 	
 	/** Set Error/Alarm text and state for cell */
-	public void addErrorToResponseData(List<DPErrorDto> lstError, List<DPErrorSettingDto> lstErrorSetting, Map<Integer, DPAttendanceItem> mapDP) {
+	public void addErrorToResponseData(List<DPErrorDto> lstError, List<DPErrorSettingDto> lstErrorSetting, Map<Integer, DPAttendanceItem> mapDP, boolean showTextError) {
 		lstError.forEach(error -> {
 			this.lstData.forEach(data -> {
 				if (data.getEmployeeId().equals(error.getEmployeeId())
 						&& data.getDate().equals(error.getProcessingDate())) {
-					String errorType = getErrorType(lstErrorSetting, error);
+					String errorTypeTemp = getErrorType(lstErrorSetting, error, showTextError);
+					String errorType = errorTypeTemp.equals("T") ? "" : errorTypeTemp;
+					if(!errorTypeTemp.equals("")) data.setErrorOther(true);
 					// add error alarm to response data
 					if (!data.getError().isEmpty()) {
 						if (!errorType.equals(data.getError()) && !errorType.isEmpty()) {
@@ -241,13 +243,13 @@ public class DailyPerformanceCorrectionDto {
 		});
 	}
 
-	private String getErrorType(List<DPErrorSettingDto> lstErrorSetting, DPErrorDto error) {
+	private String getErrorType(List<DPErrorSettingDto> lstErrorSetting, DPErrorDto error, boolean showTextError) {
 		DPErrorSettingDto setting = lstErrorSetting.stream()
 				.filter(c -> c.getErrorAlarmCode().equals(error.getErrorCode())).findFirst().orElse(null);
 		if (setting == null) {
 			return "";
 		}
-		return setting.getTypeAtr() == 0 ? "ER" : setting.getTypeAtr() == 2 ? "" : "AL";
+		return setting.getTypeAtr() == 0 ? "ER" : setting.getTypeAtr() == 2 ? (showTextError ? "T" : "") : "AL";
 	}
 
 	/** Set AlarmCell state for Fixed cell */
@@ -330,6 +332,6 @@ public class DailyPerformanceCorrectionDto {
 	public void checkShowTighProcess(int displayMode, boolean userLogin){
 		this.showTighProcess = identityProcessDto.isUseIdentityOfMonth() && displayMode == 0 && userLogin && indentityMonthResult.getEnableButton();
 		indentityMonthResult.setShow26(indentityMonthResult.getShow26() && identityProcessDto.isUseIdentityOfMonth() && displayMode == 0 && userLogin);
-		indentityMonthResult.setHideAll(displayMode != 0);
+		indentityMonthResult.setHideAll(displayMode != 0 || !identityProcessDto.isUseIdentityOfMonth());
 	}
 }

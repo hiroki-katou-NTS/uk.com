@@ -1,19 +1,16 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.ejb.TransactionManagementType;
 import javax.inject.Inject;
 
-import nts.arc.task.parallel.ManagedParallelWithContext;
+//import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
@@ -47,8 +44,6 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 	private ComSubstVacationRepository subRepos;
 	@Inject
 	private CompensLeaveComSetRepository leaveSetRepos;
-	@Inject
-	private ManagedParallelWithContext managedParallelWithContext;
 	@Inject
 	private InterimRemainRepository inRemainData;
 	@Inject

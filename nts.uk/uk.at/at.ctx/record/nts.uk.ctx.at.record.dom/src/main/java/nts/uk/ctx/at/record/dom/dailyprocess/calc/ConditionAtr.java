@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
-import nts.uk.ctx.at.record.dom.stamp.GoOutReason;
+//import nts.uk.ctx.at.record.dom.stamp.GoOutReason;
 
 /**
  * 条件

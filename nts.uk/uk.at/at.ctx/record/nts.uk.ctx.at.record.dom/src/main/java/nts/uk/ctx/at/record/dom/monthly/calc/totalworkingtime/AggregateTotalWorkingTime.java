@@ -25,6 +25,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByDefo;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByFlex;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByReg;
 import nts.uk.ctx.at.record.dom.weekly.RegAndIrgTimeOfWeekly;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.ExcessOutsideTimeSetReg;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
@@ -110,12 +111,20 @@ public class AggregateTotalWorkingTime implements Cloneable {
 	 * 共有項目を集計する
 	 * @param datePeriod 期間
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
+	 * @param workInfoOfDailyMap 日別実績の勤務情報リスト
+	 * @param companySets 月別集計で必要な会社別設定
+	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void aggregateSharedItem(DatePeriod datePeriod,
-			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap){
+	public void aggregateSharedItem(
+			DatePeriod datePeriod,
+			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
+			Map<GeneralDate, WorkInfoOfDailyPerformance> workInfoOfDailyMap,
+			MonAggrCompanySettings companySets,
+			RepositoriesRequiredByMonthlyAggr repositories){
 	
 		// 休暇使用時間を集計する
-		this.vacationUseTime.confirm(datePeriod, attendanceTimeOfDailyMap);
+		this.vacationUseTime.confirm(datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap,
+				companySets, repositories);
 		
 		// 所定労働時間を集計する
 		this.prescribedWorkingTime.confirm(datePeriod, attendanceTimeOfDailyMap);

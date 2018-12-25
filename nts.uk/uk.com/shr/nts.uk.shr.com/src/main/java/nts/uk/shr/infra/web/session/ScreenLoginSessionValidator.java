@@ -1,8 +1,6 @@
 package nts.uk.shr.infra.web.session;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;

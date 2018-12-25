@@ -15,10 +15,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
+//import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.adapter.RegularSortingTypeImport;
@@ -89,6 +92,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	public static final String YM_FORMATER = "uuuu/MM";
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public ExportData outputProcess(String cid, String setItemsOutputCd, Year fiscalYear, YearMonth startYm,
 			YearMonth endYm, List<Employee> employees, PrintFormat printFormat, int breakPage, ExcludeEmp excludeEmp,
 			Integer monthLimit) {
@@ -410,7 +414,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		allItemIds = allItemIds.stream().distinct().collect(Collectors.toList());
 		// アルゴリズム「対象期間の月次データの取得」を実行する
 		List<MonthlyAttendanceResultImport> allMonthlyAtt = monthlyAttendanceItemAdapter
-				.getMonthlyValueOf(employeeIds, yearMonthPeriod, allItemIds);
+				.getMonthlyValueOfParallel(employeeIds, yearMonthPeriod, allItemIds);
 
 		listItemOut.forEach(itemOut -> {
 			// アルゴリズム「出力項目の値の算出」を実行する

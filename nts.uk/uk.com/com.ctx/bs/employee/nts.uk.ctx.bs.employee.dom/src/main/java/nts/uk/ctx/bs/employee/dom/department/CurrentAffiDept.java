@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.history.strategic.ContinuousResidentHistory;
 
 /**
  * 所属部門（兼務）
@@ -14,7 +13,7 @@ import nts.uk.shr.com.history.strategic.ContinuousResidentHistory;
  * */
 @Getter
 @AllArgsConstructor
-public class CurrentAffiDept extends AggregateRoot implements ContinuousResidentHistory{
+public class CurrentAffiDept extends AggregateRoot {//implements ContinuousResidentHistory{ Chưa dùng đến nên comment để xóa warning
 	/**社員ID EmployeeId*/
 	private String employeeId;
 	/**所属部門ID AffiliationDepartmentID*/
@@ -24,9 +23,10 @@ public class CurrentAffiDept extends AggregateRoot implements ContinuousResident
 	/** The DateHistoryItem. */
 	private List<DateHistoryItem> dateHistoryItem;
 	
-	@Override
-	public List items() {
-		return this.dateHistoryItem;
-	}
+//	Chưa dùng đến nên comment để xóa warning
+//	@Override
+//	public List items() {
+//		return this.dateHistoryItem;
+//	}
 	
 }

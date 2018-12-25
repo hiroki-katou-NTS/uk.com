@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 
@@ -14,6 +13,12 @@ public class DatePeriod extends GeneralPeriod<DatePeriod, GeneralDate> {
 
 	public DatePeriod(GeneralDate start, GeneralDate end) {
 		super(start, end);
+	}
+	
+	public static DatePeriod daysFirstToLastIn(YearMonth yearMonth) {
+		return new DatePeriod(
+				GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1),
+				GeneralDate.ymd(yearMonth.year(), yearMonth.month(), yearMonth.lastDateInMonth()));
 	}
 
 	@Override

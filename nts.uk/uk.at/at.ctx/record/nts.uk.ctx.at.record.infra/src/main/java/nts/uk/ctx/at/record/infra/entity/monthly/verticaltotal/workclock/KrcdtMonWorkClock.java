@@ -25,7 +25,7 @@ import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.PCLogonD
 import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.PCLogonOfMonthly;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
-import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonTime;
+//import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 

@@ -2182,7 +2182,10 @@ module nts.uk.ui.mgrid {
                 
                 self.$ownerDoc.addXEventListener(ssk.MOUSE_MOVE, self.unshiftRight ? self.cursorMove.bind(self) : self.cursorMoveShift.bind(self));
                 self.$ownerDoc.addXEventListener(ssk.MOUSE_UP, self.unshiftRight ? self.cursorUp.bind(self) : self.cursorUpShift.bind(self));
-                if (!trg) event.preventDefault();
+                if (!trg) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
             }
             
             /**
@@ -2905,7 +2908,7 @@ module nts.uk.ui.mgrid {
                     if (_vessel()) _vessel().zeroHidden = val;
                 }
             },
-            updatedCells: function() {
+            updatedCells: function(all) {
                 let arr = [];
                 let toNumber = false, column = _columnsMap[_pk];
                 if ((column && _.toLower(column[0].dataType) === "number")
@@ -2918,6 +2921,19 @@ module nts.uk.ui.mgrid {
                         arr.push({ rowId: (toNumber ? parseFloat(r) : r), columnKey: c, value: _dirties[r][c] });
                     });
                 });
+                
+                if (all) {
+                    _.forEach(_.keys(_mafollicle[SheetDef]), k => {
+                        if (k === _currentSheet) return;
+                        let maf = _mafollicle[_currentPage][k];
+                        if (!maf || !maf.dirties) return;
+                        _.forEach(_.keys(maf.dirties), r => {
+                            _.forEach(_.keys(maf.dirties[r]), c => {
+                                arr.push({ rowId: (toNumber ? parseFloat(r) : r), columnKey: c, value: maf.dirties[r][c] });
+                            });
+                        });
+                    });    
+                }
                 
                 return arr;
             },
@@ -4087,10 +4103,17 @@ module nts.uk.ui.mgrid {
                 let parsed, constraint = column.constraint;
                 let valueType = constraint.primitiveValue ? ui.validation.getConstraint(constraint.primitiveValue).valueType
                             : constraint.cDisplayType;
-                if (!_.isNil(value)
-                    && (valueType === "Time" || valueType === "TimeWithDay" || valueType === "Clock")) {
-                    parsed = uk.time.minutesBased.duration.parseString(value);
-                    if (parsed.success) value = parsed.format();
+                if (!_.isNil(value) && value !== "") {
+                    if (valueType === "Time") {
+                        parsed = uk.time.minutesBased.duration.parseString(value);
+                        if (parsed.success) value = parsed.format();
+                    } else if (valueType === "TimeWithDay" || valueType === "Clock") {
+                        let minutes = time.minutesBased.clock.dayattr.parseString(String(value)).asMinutes;
+                        if (_.isNil(minutes)) return value;
+                        try {
+                            value = time.minutesBased.clock.dayattr.create(minutes).shortText;
+                        } catch (e) {}   
+                    }
                 }
             }
             
@@ -4121,7 +4144,7 @@ module nts.uk.ui.mgrid {
                 return;
             }
             
-            if (afterCollertar) afterCollertar.focus({ preventScroll: true });
+            if (afterCollertar) setTimeout(() => afterCollertar.focus({ preventScroll: true }), 1);
             let formatted, disFormat, coord = ti.getCellCoord(target), col = _columnsMap[coord.columnKey];
             
             let inputRidd = function($t, rowIdx, columnKey, dFormat) {
@@ -5479,8 +5502,8 @@ module nts.uk.ui.mgrid {
             
             $grid.addXEventListener(ssk.MOUSE_DOWN, function(evt: any) {
                 let $target = evt.target;
-                isSelecting = true;
                 if (!selector.is($target, ".mcell")) return;
+                isSelecting = true;
                 
                 window.addXEventListener(ssk.MOUSE_UP + ".block", function(evt: any) {
                     isSelecting = false;

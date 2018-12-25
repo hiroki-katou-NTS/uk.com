@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.dom.employee.history;
 
 import java.util.List;
+import java.util.Set;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -41,6 +42,8 @@ public interface AffCompanyHistRepository {
 
 	AffCompanyHist getAffCompanyHistoryOfEmployeeAndBaseDate(String employeeId, GeneralDate baseDate);
 
+	List<AffCompanyHist> getAffCompanyHistoryOfEmployeeListAndBaseDate(List<String> employeeIds, GeneralDate baseDate);
+	
 	AffCompanyHist getAffCompanyHistoryOfHistInfo(String histId);
 
 	/** Hop.NT */

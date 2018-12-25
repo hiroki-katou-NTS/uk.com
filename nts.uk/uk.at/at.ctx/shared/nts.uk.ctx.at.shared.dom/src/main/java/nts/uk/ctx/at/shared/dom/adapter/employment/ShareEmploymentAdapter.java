@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.adapter.employment;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -37,4 +38,6 @@ public interface ShareEmploymentAdapter {
 	 * @return
 	 */
 	public List<SharedSidPeriodDateEmploymentImport> getEmpHistBySidAndPeriod(List<String> sids , DatePeriod datePeriod);
+	
+	public Map<String, BsEmploymentHistoryImport> findEmpHistoryVer2(String companyId, List<String> lstSID, GeneralDate baseDate);
 }

@@ -26,6 +26,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImpor
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationContentService;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
@@ -55,7 +56,10 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -110,7 +114,13 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	
 	@Inject
 	private IApplicationContentService applicationContentService;
+	@Inject
+	private CollectAchievement collectAch;
+	@Inject
+	private WorkTypeIsClosedService workTypeRepo;
 	
+	@Inject
+	private WorkTimeSettingRepository workTimeSettingRepository;
 	public PeriodCurrentMonth employeePeriodCurrentMonthCalculate(String companyID, String employeeID, GeneralDate date){
 		/*
 		アルゴリズム「社員所属雇用履歴を取得」を実行する(thực hiện xử lý 「社員所属雇用履歴を取得」)
@@ -158,6 +168,8 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			}
 			
 		}
+		listWorkTimeCodes = workTimeSettingRepository.findByCompanyId(companyID).stream()
+			.filter(x -> x.getAbolishAtr()==AbolishAtr.NOT_ABOLISH).map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
 		return listWorkTimeCodes;
 	}
 
@@ -452,5 +464,21 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			failList.add(employeeName);
 		}
 		return new MailResult(successList, failList);
+	}
+	@Override
+	public List<GeneralDate> lstDateNotHoliday(String cid, String sid, DatePeriod dates) {
+		List<GeneralDate> lstOutput = new ArrayList<>();
+		for(int i = 0; dates.start().daysTo(dates.end()) - i >= 0; i++){
+			GeneralDate loopDate = dates.start().addDays(i);
+			//実績の取得
+			AchievementOutput achInfor = collectAch.getAchievement(cid, sid, loopDate);
+			if(achInfor != null 
+					&& achInfor.getWorkType() != null
+					&& workTypeRepo.checkHoliday(achInfor.getWorkType().getWorkTypeCode()) //1日休日の判定
+					) {
+				lstOutput.add(loopDate);
+			}
+		}
+		return lstOutput;
 	}
 }
