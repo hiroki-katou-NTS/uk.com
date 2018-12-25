@@ -133,9 +133,9 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                 setShared('CDL028_A_PARAMS', {
                  status: true,
                  mode: self.modeScreen() == MODE_SCREEN.YEAR_PERIOD ? MODE_SCREEN.YEAR_PERIOD_FINANCE : self.modeScreen(),
-                 standardDate: moment(self.standardDate() + "").format("YYYY/MM/DD"),
-                 startDateFiscalYear: moment(self.startDateFiscalYear() + "").format("YYYY/MM/DD"),
-                 endDateFiscalYear: moment(self.endDateFiscalYear() + "").format("YYYY/MM/DD")
+                 standardDate: ((self.modeScreen() == MODE_SCREEN.BASE_DATE) || (self.modeScreen() == MODE_SCREEN.ALL)) ? moment(self.standardDate() + "").format("YYYY/MM/DD") : null,
+                 startDateFiscalYear: (self.modeScreen() == MODE_SCREEN.BASE_DATE) ? null : moment(self.startDateFiscalYear() + "").format("YYYY/MM/DD"),
+                 endDateFiscalYear: (self.modeScreen() == MODE_SCREEN.BASE_DATE) ? null : moment(self.endDateFiscalYear() + "").format("YYYY/MM/DD")
                 });
                  nts.uk.ui.windows.close();
                  dfd.resolve();
