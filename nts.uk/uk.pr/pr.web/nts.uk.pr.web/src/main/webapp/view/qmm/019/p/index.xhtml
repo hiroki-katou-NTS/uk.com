@@ -61,7 +61,7 @@
         </div>
         <div id="functions-area-bottom">
             <!--P2_1-->
-            <button tabindex="3" data-bind="click: output" class="proceed">#{i18n.getText('QMM019_206')}</button>
+            <button tabindex="3" data-bind="click: output, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('QMM019_206')}</button>
             <!--P2_2-->
             <button tabindex="4" data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
         </div>

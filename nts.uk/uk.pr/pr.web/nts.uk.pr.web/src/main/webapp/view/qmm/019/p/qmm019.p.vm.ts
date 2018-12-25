@@ -3,6 +3,7 @@ module nts.uk.pr.view.qmm019.p.viewmodel {
     import windows = nts.uk.ui.windows;
     import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
     import alertError = nts.uk.ui.dialog.alertError;
+    import getText = nts.uk.resource.getText;
 
     export class ScreenModel {
         processingDate: KnockoutObservable<number> = ko.observable(null);
@@ -10,6 +11,14 @@ module nts.uk.pr.view.qmm019.p.viewmodel {
         statementLayoutsSelected: KnockoutObservableArray<any> = ko.observableArray([]);
 
         constructor() {
+            let self = this;
+            self.statementLayoutsSelected.subscribe(value => {
+                if (_.isEmpty(value)) {
+                    $('#P1_6_container').ntsError('set', {messageId: "FND_E_REQ_INPUT", messageParams: [getText("QMM019_13")]});
+                }else{
+                    $('#P1_6_container').ntsError('clear');
+                }
+            })
         }
 
         startPage(): JQueryPromise<any> {
@@ -34,13 +43,14 @@ module nts.uk.pr.view.qmm019.p.viewmodel {
 
         reflect() {
             let self = this;
+            nts.uk.ui.errors.clearAll();
+            $('#P1_3').ntsError('check');
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
             block.invisible();
             let processingDate = moment(self.processingDate()).format("YYYYMM");
             service.getStatementLayoutByProcessingDate(processingDate).done((data: Array<IStatementLayoutDto>) => {
-                self.statementLayoutsSelected.removeAll();
                 self.statementLayouts(data);
                 block.clear();
             })
@@ -48,6 +58,11 @@ module nts.uk.pr.view.qmm019.p.viewmodel {
 
         output() {
             let self = this;
+            nts.uk.ui.errors.clearAll();
+            $('#P1_3').ntsError('check');
+            if (_.isEmpty(self.statementLayoutsSelected())) {
+                $('#P1_6_container').ntsError('set', {messageId: "FND_E_REQ_INPUT", messageParams: [getText("QMM019_13")]});
+            }
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
