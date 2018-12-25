@@ -7,6 +7,8 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.PaymentCaclMethodAtr
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.PaymentProportionalAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.PaymentTotalObjAtr;
 
+import java.util.Optional;
+
 @NoArgsConstructor
 @Getter
 @Setter
@@ -27,7 +29,7 @@ public class PaymentExportData {
      */
     private PaymentProportionalAtr proportionalAtr;
 
-    private ItemRangeSetExportData itemRangeSet;
+    private Optional<ItemRangeSetExportData> itemRangeSet;
 
     /**
      * 計算式コード

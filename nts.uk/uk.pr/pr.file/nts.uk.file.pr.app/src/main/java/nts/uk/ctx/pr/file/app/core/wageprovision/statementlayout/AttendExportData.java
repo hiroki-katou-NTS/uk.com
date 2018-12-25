@@ -4,10 +4,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Optional;
+
 @NoArgsConstructor
 @Getter
 @Setter
 public class AttendExportData {
 
-    private ItemRangeSetExportData itemRangeSet;
+    private Optional<ItemRangeSetExportData> itemRangeSet;
 }

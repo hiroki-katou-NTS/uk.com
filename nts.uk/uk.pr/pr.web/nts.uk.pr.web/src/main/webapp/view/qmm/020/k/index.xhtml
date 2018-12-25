@@ -6,7 +6,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = {width: 480, height: 340};</script>
+        <script>var dialogSize = {width: 520, height: 330};</script>
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="../share/model.js"/>
         <com:scriptfile path="qmm020.k.vm.js"/>
@@ -18,30 +18,29 @@
         <div id="contents-area" style="padding: 20px;">
             <div id="title" style="margin: 0px 0px 10px 5px">
                 <!-- K1_1 -->
-                <span id="K1_1" class="label">#{i18n.getText('QMM020_66')}</span>
+                <span id="K1_1" class="label" style="font-size: 19px;    margin: 5px 0px 5px 5px;">#{i18n.getText('QMM020_66')}</span>
             </div>
             <!-- K1_2 名称 -->
-            <div class=" table table-col-2">
+            <div class=" table table-col-3">
                 <div class="cell valign-top">
-                    <div id="K1_2" data-bind="ntsFormLabel: { required: true}" style="margin: 0px 10px 0px 10px;">
+                    <div id="K1_2" data-bind="ntsFormLabel: { required: true}" style="margin: 9px 10px 0px 10px;">
                         <span class="label">#{i18n.getText('QMM020_67')}</span>
                     </div>
                 </div>
                 <div class ="cell valign-top" >
-                    <div id="K1_3" class="cell" tabIndex="1" style="display: grid;margin: 10px 0px 0px 10px"
-                         data-bind="ntsRadioBoxGroup: {
-										value: methodEditing,
-										options: itemList(),
-										optionsValue: 'code',
-										enable: isFirst,
-										optionsText: 'name'}">
+                    <div id="K1_3" class="cell" tabIndex="1" data-bind="ntsRadioBoxGroup: {
+                                                            value: methodEditing,
+                                                            options: itemList(),
+                                                            optionsValue: 'code',
+                                                            enable: isFirst,
+                                                            optionsText: 'name'}">
                     </div>
                 </div>
             </div>
-            <table style="margin-top: 10px;">
+            <table style="margin-top: 18px;" id="table_K6_K7_K8">
                 <tr>
                     <td>
-                        <div id="K1_6" data-bind="ntsFormLabel: {required: true}" style="margin: 0px -20px 0px 165px;">
+                        <div id="K1_6" data-bind="ntsFormLabel: {required: false}" style="margin: 0px -20px 0px 182px;">
                             <span  class="label">#{i18n.getText('QMM020_54')}</span>
                         </div>
                     </td>

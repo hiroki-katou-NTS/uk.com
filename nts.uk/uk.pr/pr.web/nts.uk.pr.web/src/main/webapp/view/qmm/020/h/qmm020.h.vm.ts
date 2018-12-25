@@ -111,7 +111,6 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
         }
 
         selectSalary(){
-            block.invisible();
             let self = this;
             setShared(model.PARAMETERS_SCREEN_M.INPUT, {
                 startYearMonth: self.listStateCorrelationHis()[self.index()].startYearMonth,
@@ -125,11 +124,9 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                     self.salaryName(params.statementName);
                 }
             });
-            block.clear();
         }
 
         selectBonus(){
-            block.invisible();
             let self = this;
             setShared(model.PARAMETERS_SCREEN_M.INPUT, {
                 startYearMonth: self.listStateCorrelationHis()[self.index()].startYearMonth,
@@ -143,7 +140,6 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                     self.bonusName(params.statementName);
                 }
             });
-            block.clear();
         }
 
         setEmployee(item){
@@ -371,17 +367,6 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                 $('#H2_1').focus();
 
             });
-        }
-
-        openLScreen(){
-            block.invisible();
-            let self = this;
-            modal("/view/qmm/020/l/index.xhtml").onClosed(()=>{
-                let params = getShared(model.PARAMETERS_SCREEN_L.OUTPUT);
-                if(params && params.isSubmit) location.reload();
-
-            });
-            block.clear();
         }
 
 

@@ -81,8 +81,8 @@ public class FormulaService {
         String formulaCode = formula.getFormulaCode().v();
         formulaRepository.insertFormulaHistory(formulaCode, yearMonthHistoryItem);
         formulaRepository.getFormulaHistoryByCode(formulaCode).ifPresent(formulaHistory -> {
-            if (formulaHistory.getHistory().size() > 0) {
-                YearMonthHistoryItem lastHistory = formulaHistory.getHistory().get(0);
+            if (formulaHistory.getHistory().size() > 1) {
+                YearMonthHistoryItem lastHistory = formulaHistory.getHistory().get(1);
                 lastHistory.changeSpan(new YearMonthPeriod(lastHistory.start(), yearMonthHistoryItem.start().addMonths(-1)));
                 formulaRepository.updateFormulaHistory(formulaCode, lastHistory);
             }
@@ -117,6 +117,7 @@ public class FormulaService {
                 beforeYearMonth.changeSpan(new YearMonthPeriod(beforeYearMonth.start(), new YearMonth(LAST_YM_VALUE)));
                 formulaRepository.updateFormulaHistory(formulaCode, beforeYearMonth);
             } catch (IndexOutOfBoundsException e) {
+                formulaRepository.removeByFormulaCode(formulaCode);
                 return;
             }
         });
@@ -181,5 +182,4 @@ public class FormulaService {
         }
         return Collections.emptyList();
     }
-
 }

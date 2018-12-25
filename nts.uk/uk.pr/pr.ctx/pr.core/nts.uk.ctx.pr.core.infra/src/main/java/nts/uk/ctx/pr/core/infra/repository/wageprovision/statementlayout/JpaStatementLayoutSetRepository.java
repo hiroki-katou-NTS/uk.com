@@ -8,6 +8,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutSet;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutSetRepository;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout.QpbmtLineByLineSet;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout.QpbmtStatementLayoutHist;
+import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout.QpbmtStatementLayoutHistPk;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -21,9 +22,10 @@ public class JpaStatementLayoutSetRepository extends JpaRepository implements St
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtLineByLineSet f";
-    private static final String SELECT_LINE_BY_HISTORY_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.lineByLineSetPk.histId =:histId ";
-    private static final String SELECT_HIST_BY_ID = "SELECT f FROM QpbmtStatementLayoutHist f " +
-            " WHERE f.statementLayoutHistPk.histId = :histId ";
+    private static final String SELECT_LINE_BY_HISTORY_ID = SELECT_ALL_QUERY_STRING +
+            " WHERE f.lineByLineSetPk.cid =:cid " +
+            " AND f.lineByLineSetPk.statementCd =:statementCd " +
+            " AND f.lineByLineSetPk.histId =:histId ";
     private static final String DELETE_ALL_LINE_BY_HISTID = "DELETE FROM QpbmtLineByLineSet f " +
             " WHERE f.lineByLineSetPk.histId =:histId";
     private static final String DELETE_ALL_ITEM_BY_HISTID = "DELETE FROM QpbmtSettingByItem f " +
@@ -41,11 +43,13 @@ public class JpaStatementLayoutSetRepository extends JpaRepository implements St
     }
 
     @Override
-    public Optional<StatementLayoutSet> getStatementLayoutSetById(String histId){
-        Optional<QpbmtStatementLayoutHist> statementLayoutHistEntity = this.queryProxy().query(SELECT_HIST_BY_ID, QpbmtStatementLayoutHist.class)
-                .setParameter("histId", histId).getSingle();
+    public Optional<StatementLayoutSet> getStatementLayoutSetById(String cid, String code, String histId) {
+        Optional<QpbmtStatementLayoutHist> statementLayoutHistEntity = this.queryProxy()
+                .find(new QpbmtStatementLayoutHistPk(cid, code, histId), QpbmtStatementLayoutHist.class);
 
         List<QpbmtLineByLineSet> lineByLineSetEntityList = this.queryProxy().query(SELECT_LINE_BY_HISTORY_ID, QpbmtLineByLineSet.class)
+                .setParameter("cid", cid)
+                .setParameter("statementCd", code)
                 .setParameter("histId", histId)
                 .getList();
 

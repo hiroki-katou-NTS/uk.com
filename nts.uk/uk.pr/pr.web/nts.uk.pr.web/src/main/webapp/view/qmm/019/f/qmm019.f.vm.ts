@@ -56,22 +56,6 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
                     block.clear();
                 })
             })
-
-            self.dataScreen().errorRangeSetting.upperLimitSetting.valueSettingAtr.subscribe(value => {
-                self.condition28(value);
-            });
-
-            self.dataScreen().errorRangeSetting.lowerLimitSetting.valueSettingAtr.subscribe(value => {
-                self.condition29(value);
-            });
-
-            self.dataScreen().alarmRangeSetting.upperLimitSetting.valueSettingAtr.subscribe(value => {
-                self.condition30(value);
-            });
-
-            self.dataScreen().alarmRangeSetting.lowerLimitSetting.valueSettingAtr.subscribe(value => {
-                self.condition31(value);
-            });
         }
 
         startPage(): JQueryPromise<any> {
@@ -81,7 +65,7 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             let params: IParams = windows.getShared("QMM019_A_TO_F_PARAMS");
             if (isNullOrUndefined(params.itemRangeSet)) {
                 params.itemRangeSet = <shareModel.IItemRangeSet> {};
-            }            
+            }
             self.params = params;
             let dto = {
                 categoryAtr: self.categoryAtr,
@@ -98,9 +82,29 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             return dfd.promise();
         }
 
-        initScreen() {
+        initSubscribe() {
             let self = this;
             self.dataScreen().initSubscribe();
+            self.dataScreen().itemRangeSet.errorUpperLimitSetAtr.subscribe(value => {
+                self.condition28(value);
+            });
+
+            self.dataScreen().itemRangeSet.errorLowerLimitSetAtr.subscribe(value => {
+                self.condition29(value);
+            });
+
+            self.dataScreen().itemRangeSet.alarmUpperLimitSetAtr.subscribe(value => {
+                self.condition30(value);
+            });
+
+            self.dataScreen().itemRangeSet.alarmLowerLimitSetAtr.subscribe(value => {
+                self.condition31(value);
+            });
+        }
+
+        initScreen() {
+            let self = this;
+            self.initSubscribe();
             // 取得できたデータ件数を確認する
             if (_.isEmpty(self.itemNames())) {
                 // 未選択モードへ移行する
@@ -151,17 +155,9 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             self.screenControl().visibleF2_3(false);
             self.screenControl().enableF2_4(false);
             self.screenControl().enableF3_2(false);
-            self.screenControl().visibleF3_3(true);
-            self.screenControl().enableF3_3(false);
             self.screenControl().enableF3_5(false);
-            self.screenControl().visibleF3_6(true);
-            self.screenControl().enableF3_6(false);
             self.screenControl().enableF3_9(false);
-            self.screenControl().visibleF3_10(true);
-            self.screenControl().enableF3_10(false);
             self.screenControl().enableF3_12(false);
-            self.screenControl().enableF3_13(false);
-            self.screenControl().visibleF3_13(true);
             self.screenControl().visibleF3_15(false);
             self.screenControl().visibleF3_16(false);
             self.screenControl().visibleF3_17(false);
@@ -200,13 +196,12 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             self.screenControl().visibleF3_15(true);
             self.screenControl().visibleF3_16(true);
             self.screenControl().enableF4_1(true);
-            self.condition28(self.dataScreen().errorRangeSetting.upperLimitSetting.valueSettingAtr());
-            self.condition29(self.dataScreen().errorRangeSetting.lowerLimitSetting.valueSettingAtr());
-            self.condition30(self.dataScreen().alarmRangeSetting.upperLimitSetting.valueSettingAtr());
-            self.condition31(self.dataScreen().alarmRangeSetting.lowerLimitSetting.valueSettingAtr());
-            self.condition45(self.dataType);
-            self.condition46(self.dataType);
-            self.condition47(self.dataType);
+            self.condition28(self.dataScreen().itemRangeSet.errorUpperLimitSetAtr());
+            self.condition29(self.dataScreen().itemRangeSet.errorLowerLimitSetAtr());
+            self.condition30(self.dataScreen().itemRangeSet.alarmUpperLimitSetAtr());
+            self.condition31(self.dataScreen().itemRangeSet.alarmLowerLimitSetAtr());
+            self.condition46(self.attendanceItemSet().timeCountAtr());
+            self.condition47(self.attendanceItemSet().timeCountAtr());
             nts.uk.ui.errors.clearAll();
             $("#F1_6_container").focus();
         }
@@ -274,31 +269,11 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
         }
 
         /**
-         * ※45
-         */
-        condition45(type: DataType) {
-            let self = this;
-            if (type == DataType.TIME10) {
-                self.screenControl().visibleF3_3(true);
-                self.screenControl().visibleF3_6(true);
-                self.screenControl().visibleF3_10(true);
-                self.screenControl().visibleF3_13(true);
-                self.screenControl().visibleF3_17(true);
-            } else {
-                self.screenControl().visibleF3_3(false);
-                self.screenControl().visibleF3_6(false);
-                self.screenControl().visibleF3_10(false);
-                self.screenControl().visibleF3_13(false);
-                self.screenControl().visibleF3_17(false);
-            }
-        }
-
-        /**
          * ※46
          */
-        condition46(type: DataType) {
+        condition46(type: shareModel.TimeCountAtr) {
             let self = this;
-            if (type == DataType.TIME60) {
+            if (type == shareModel.TimeCountAtr.TIME) {
                 self.screenControl().visibleF3_18(true);
                 self.screenControl().visibleF3_20(true);
                 self.screenControl().visibleF3_21(true);
@@ -316,9 +291,9 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
         /**
          * ※47
          */
-        condition47(type: DataType) {
+        condition47(type: shareModel.TimeCountAtr) {
             let self = this;
-            if (type == DataType.TIMES) {
+            if (type == shareModel.TimeCountAtr.TIMES) {
                 self.screenControl().visibleF3_19(true);
                 self.screenControl().visibleF3_24(true);
                 self.screenControl().visibleF3_25(true);
@@ -353,16 +328,78 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
         decide() {
             let self = this;
             // アルゴリズム「決定時チェック処理」を実施
-            self.dataScreen().checkDecide();
+            self.dataScreen().checkDecide(self.attendanceItemSet().timeCountAtr());
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
+            windows.setShared("QMM019F_RESULTS", self.createResult());
+            windows.close();
+        }
+
+        createResult(){
+            let self = this;
+            let itemRangeSet = <shareModel.IItemRangeSet>{};
+            itemRangeSet.alarmLowerLimitSetAtr = self.dataScreen().itemRangeSet.alarmLowerLimitSetAtr() ? share.model.UseRangeAtr.USE : share.model.UseRangeAtr.NOT_USE;
+            if (self.attendanceItemSet().timeCountAtr() == shareModel.TimeCountAtr.TIME) {
+                itemRangeSet.rangeValAttribute = share.model.RangeValueEnum.TIME;
+                if (self.dataScreen().itemRangeSet.errorUpperLimitSetAtr()) {
+                    itemRangeSet.errorUpperLimitSetAtr = share.model.UseRangeAtr.USE;
+                    itemRangeSet.errorUpRangeValTime = self.dataScreen().itemRangeSet.errorUpRangeValTime();
+                } else {
+                    itemRangeSet.errorUpperLimitSetAtr = share.model.UseRangeAtr.NOT_USE;
+                }
+                if (self.dataScreen().itemRangeSet.errorLowerLimitSetAtr()) {
+                    itemRangeSet.errorLowerLimitSetAtr = share.model.UseRangeAtr.USE;
+                    itemRangeSet.errorLoRangeValTime = self.dataScreen().itemRangeSet.errorLoRangeValTime();
+                } else {
+                    itemRangeSet.errorLowerLimitSetAtr = share.model.UseRangeAtr.NOT_USE;
+                }
+                if (self.dataScreen().itemRangeSet.alarmUpperLimitSetAtr()) {
+                    itemRangeSet.alarmUpperLimitSetAtr = share.model.UseRangeAtr.USE;
+                    itemRangeSet.alarmUpRangeValTime = self.dataScreen().itemRangeSet.alarmUpRangeValTime();
+                } else {
+                    itemRangeSet.alarmUpperLimitSetAtr = share.model.UseRangeAtr.NOT_USE;
+                }
+                if (self.dataScreen().itemRangeSet.alarmLowerLimitSetAtr()) {
+                    itemRangeSet.alarmLowerLimitSetAtr = share.model.UseRangeAtr.USE;
+                    itemRangeSet.alarmLoRangeValTime = self.dataScreen().itemRangeSet.alarmLoRangeValTime();
+                } else {
+                    itemRangeSet.alarmLowerLimitSetAtr = share.model.UseRangeAtr.NOT_USE;
+                }
+            } else if (self.attendanceItemSet().timeCountAtr() == shareModel.TimeCountAtr.TIMES) {
+                itemRangeSet.rangeValAttribute = share.model.RangeValueEnum.TIME;
+                if (self.dataScreen().itemRangeSet.errorUpperLimitSetAtr()) {
+                    itemRangeSet.errorUpperLimitSetAtr = share.model.UseRangeAtr.USE;
+                    itemRangeSet.errorUpRangeValNum = self.dataScreen().itemRangeSet.errorUpRangeValNum();
+                } else {
+                    itemRangeSet.errorUpperLimitSetAtr = share.model.UseRangeAtr.NOT_USE;
+                }
+                if (self.dataScreen().itemRangeSet.errorLowerLimitSetAtr()) {
+                    itemRangeSet.errorLowerLimitSetAtr = share.model.UseRangeAtr.USE;
+                    itemRangeSet.errorLoRangeValNum = self.dataScreen().itemRangeSet.errorLoRangeValNum();
+                } else {
+                    itemRangeSet.errorLowerLimitSetAtr = share.model.UseRangeAtr.NOT_USE;
+                }
+                if (self.dataScreen().itemRangeSet.alarmUpperLimitSetAtr()) {
+                    itemRangeSet.alarmUpperLimitSetAtr = share.model.UseRangeAtr.USE;
+                    itemRangeSet.alarmUpRangeValNum = self.dataScreen().itemRangeSet.alarmUpRangeValNum();
+                } else {
+                    itemRangeSet.alarmUpperLimitSetAtr = share.model.UseRangeAtr.NOT_USE;
+                }
+                if (self.dataScreen().itemRangeSet.alarmLowerLimitSetAtr()) {
+                    itemRangeSet.alarmLowerLimitSetAtr = share.model.UseRangeAtr.USE;
+                    itemRangeSet.alarmLoRangeValNum = self.dataScreen().itemRangeSet.alarmLoRangeValNum();
+                } else {
+                    itemRangeSet.alarmLowerLimitSetAtr = share.model.UseRangeAtr.NOT_USE;
+                }
+            }
+
             let result = {
                 itemNameCode: self.dataScreen().itemNameCode(),
-                shortName: self.dataScreen().shortName()
+                shortName: self.dataScreen().shortName(),
+                itemRangeSet: itemRangeSet
             };
-            windows.setShared("QMM019F_RESULTS", result);
-            windows.close();
+            return result;
         }
 
         cancel() {
@@ -375,16 +412,16 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
         visibleF2_3: KnockoutObservable<boolean> = ko.observable(false);
         enableF2_4: KnockoutObservable<boolean> = ko.observable(false);
         enableF3_2: KnockoutObservable<boolean> = ko.observable(false);
-        visibleF3_3: KnockoutObservable<boolean> = ko.observable(false);
+        // visibleF3_3: KnockoutObservable<boolean> = ko.observable(false);
         enableF3_3: KnockoutObservable<boolean> = ko.observable(false);
         enableF3_5: KnockoutObservable<boolean> = ko.observable(false);
-        visibleF3_6: KnockoutObservable<boolean> = ko.observable(false);
+        // visibleF3_6: KnockoutObservable<boolean> = ko.observable(false);
         enableF3_6: KnockoutObservable<boolean> = ko.observable(false);
         enableF3_9: KnockoutObservable<boolean> = ko.observable(false);
-        visibleF3_10: KnockoutObservable<boolean> = ko.observable(false);
+        // visibleF3_10: KnockoutObservable<boolean> = ko.observable(false);
         enableF3_10: KnockoutObservable<boolean> = ko.observable(false);
         enableF3_12: KnockoutObservable<boolean> = ko.observable(false);
-        visibleF3_13: KnockoutObservable<boolean> = ko.observable(false);
+        // visibleF3_13: KnockoutObservable<boolean> = ko.observable(false);
         enableF3_13: KnockoutObservable<boolean> = ko.observable(false);
         visibleF3_15: KnockoutObservable<boolean> = ko.observable(false);
         visibleF3_16: KnockoutObservable<boolean> = ko.observable(false);
@@ -464,9 +501,6 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
         itemNameCode: string;
         listItemSetting: Array<string>;
         itemRangeSet: shareModel.IItemRangeSet;
-        /*rangeValAttribute: number;
-        errorRangeSetting: IErrorAlarmRangeSetting;
-        alarmRangeSetting: IErrorAlarmRangeSetting;*/
     }
 
     class Params {
@@ -478,18 +512,8 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
          * 略名
          */
         shortName: KnockoutObservable<string> = ko.observable(null);
-        /**
-         * 範囲値の属性
-         */
-        rangeValAttribute: KnockoutObservable<string> = ko.observable(null);
-        /**
-         * エラー範囲設定
-         */
-        errorRangeSetting: ErrorAlarmRangeSetting = new ErrorAlarmRangeSetting();
-        /**
-         * アラーム範囲設定
-         */
-        alarmRangeSetting: ErrorAlarmRangeSetting = new ErrorAlarmRangeSetting();
+
+        itemRangeSet: ItemRangeSet = new ItemRangeSet();
 
         constructor() {
         }
@@ -497,68 +521,49 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
         setData(data: IParams) {
             let self = this;
             self.itemNameCode(data.itemNameCode);
-            /*self.rangeValAttribute(isNullOrUndefined(data.rangeValAttribute) ? null : data.rangeValAttribute.toString());
-            self.errorRangeSetting.setData(data.errorRangeSetting);
-            self.alarmRangeSetting.setData(data.alarmRangeSetting);*/
+            self.itemRangeSet.setData(data.itemRangeSet);
         }
 
         initSubscribe() {
             let self = this;
-
-            self.errorRangeSetting.upperLimitSetting.valueSettingAtr.subscribe(() => {
-                self.errorRangeSetting.upperLimitSetting.time10Value(null);
-                self.clearError("#F3_3");
-                self.errorRangeSetting.upperLimitSetting.time60Value(null);
+            self.itemRangeSet.errorUpperLimitSetAtr.subscribe(() => {
+                self.itemRangeSet.errorUpRangeValTime(null);
                 self.clearError("#F3_20");
-                self.errorRangeSetting.upperLimitSetting.timesValue(null);
+                self.itemRangeSet.errorUpRangeValNum(null);
                 self.clearError("#F3_24");
             });
-            self.errorRangeSetting.lowerLimitSetting.valueSettingAtr.subscribe(() => {
-                self.errorRangeSetting.lowerLimitSetting.time10Value(null);
-                self.clearError("#F3_6");
-                self.errorRangeSetting.lowerLimitSetting.time60Value(null);
+            self.itemRangeSet.errorLowerLimitSetAtr.subscribe(() => {
+                self.itemRangeSet.errorLoRangeValTime(null);
                 self.clearError("#F3_21");
-                self.errorRangeSetting.lowerLimitSetting.timesValue(null);
+                self.itemRangeSet.errorLoRangeValNum(null);
                 self.clearError("#F3_25");
             });
-            self.errorRangeSetting.upperLimitSetting.time10Value.subscribe(() => {
-                self.clearError("#F3_6");
-                self.checkError("#F3_6");
-            });
-            self.errorRangeSetting.upperLimitSetting.time60Value.subscribe(() => {
+            self.itemRangeSet.errorLoRangeValTime.subscribe(() => {
                 self.clearError("#F3_21");
                 self.checkError("#F3_21");
             });
-            self.errorRangeSetting.upperLimitSetting.timesValue.subscribe(() => {
+            self.itemRangeSet.errorLoRangeValNum.subscribe(() => {
                 self.clearError("#F3_25");
                 self.checkError("#F3_25");
             });
 
-            self.alarmRangeSetting.upperLimitSetting.valueSettingAtr.subscribe(() => {
-                self.alarmRangeSetting.upperLimitSetting.time10Value(null);
-                self.clearError("#F3_10");
-                self.alarmRangeSetting.upperLimitSetting.time60Value(null);
+            self.itemRangeSet.alarmUpperLimitSetAtr.subscribe(() => {
+                self.itemRangeSet.alarmUpRangeValTime(null);
                 self.clearError("#F3_22");
-                self.alarmRangeSetting.upperLimitSetting.timesValue(null);
+                self.itemRangeSet.alarmUpRangeValNum(null);
                 self.clearError("#F3_26");
             });
-            self.alarmRangeSetting.lowerLimitSetting.valueSettingAtr.subscribe(() => {
-                self.alarmRangeSetting.lowerLimitSetting.time10Value(null);
-                self.clearError("#F3_13");
-                self.alarmRangeSetting.lowerLimitSetting.time60Value(null);
+            self.itemRangeSet.alarmLowerLimitSetAtr.subscribe(() => {
+                self.itemRangeSet.alarmLoRangeValTime(null);
                 self.clearError("#F3_23");
-                self.alarmRangeSetting.lowerLimitSetting.timesValue(null);
+                self.itemRangeSet.alarmLoRangeValNum(null);
                 self.clearError("#F3_27");
             });
-            self.alarmRangeSetting.upperLimitSetting.time10Value.subscribe(() => {
-                self.clearError("#F3_13");
-                self.checkError("#F3_13");
-            });
-            self.alarmRangeSetting.upperLimitSetting.time60Value.subscribe(() => {
+            self.itemRangeSet.alarmLoRangeValTime.subscribe(() => {
                 self.clearError("#F3_23");
                 self.checkError("#F3_23");
             });
-            self.alarmRangeSetting.upperLimitSetting.timesValue.subscribe(() => {
+            self.itemRangeSet.alarmLoRangeValNum.subscribe(() => {
                 self.clearError("#F3_27");
                 self.checkError("#F3_27");
             });
@@ -567,85 +572,135 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
         /**
          * 決定時チェック処理
          */
-        checkDecide() {
+        checkDecide(type: shareModel.TimeCountAtr) {
             let self = this;
-            // self.checkErrorRange();
-            // self.checkAlarmRange();
+            self.checkErrorRange(type);
+            self.checkAlarmRange(type);
         }
 
-        /*
-        checkErrorRange() {
+        checkErrorRange(type: shareModel.TimeCountAtr) {
             let self = this;
+
+            let error = {
+                upper: {
+                    atr: null,
+                    value: null,
+                    control: null
+                },
+                lower: {
+                    atr: null,
+                    value: null,
+                    control: null
+                }
+            };
+            error.upper.atr = self.itemRangeSet.errorUpperLimitSetAtr();
+            error.lower.atr = self.itemRangeSet.errorLowerLimitSetAtr();
+            switch (type) {
+                case shareModel.TimeCountAtr.TIME:
+                    error.upper.value = self.itemRangeSet.errorUpRangeValTime();
+                    error.upper.control = "#F3_20";
+                    error.lower.value = self.itemRangeSet.errorLoRangeValTime();
+                    error.lower.control = "#F3_21";
+                    break;
+                case shareModel.TimeCountAtr.TIMES:
+                    error.upper.value = self.itemRangeSet.errorUpRangeValNum();
+                    error.upper.control = "#F3_24";
+                    error.lower.value = self.itemRangeSet.errorLoRangeValNum();
+                    error.lower.control = "#F3_25";
+                    break;
+                default:
+                    return;
+            }
+
             // エラー範囲上限値チェック状況を確認する
-            if (self.errorRangeSetting.upperLimitSetting.valueSettingAtr()) {
+            if (error.upper.atr) {
                 // エラー範囲上限値の入力を確認する
-                if (isNullOrEmpty(self.errorRangeSetting.upperLimitSetting.rangeValue())) {
-                    // alertError({messageId: "MsgQ_14"});
-                    self.setError("#E3_10", "MsgQ_14");
+                if (isNullOrEmpty(error.upper.value)) {
+                    self.setError(error.upper.control, "MsgQ_14");
                 } else {
                     // エラー範囲下限値チェック状況を確認する
-                    if (self.errorRangeSetting.lowerLimitSetting.valueSettingAtr()) {
+                    if (error.lower.atr) {
                         // エラー範囲下限値の入力を確認する
-                        if (isNullOrEmpty(self.errorRangeSetting.lowerLimitSetting.rangeValue())) {
-                            // alertError({messageId: "MsgQ_15"});
-                            self.setError("#E3_13", "MsgQ_15");
+                        if (isNullOrEmpty(error.lower.value)) {
+                            self.setError(error.lower.control, "MsgQ_15");
                         } else {
                             // エラー範囲の入力確認をする
-                            if (parseInt(self.errorRangeSetting.lowerLimitSetting.rangeValue()) > parseInt(self.errorRangeSetting.upperLimitSetting.rangeValue())) {
-                                // alertError({messageId: "MsgQ_1"});
-                                self.setError("#E3_13", "MsgQ_1");
+                            if (parseInt(error.lower.value) > parseInt(error.upper.value)) {
+                                self.setError(error.lower.control, "MsgQ_1");
                             }
                         }
                     }
                 }
             } else {
                 // エラー範囲下限値チェック状況を確認する
-                if (self.errorRangeSetting.upperLimitSetting.valueSettingAtr()) {
+                if (error.lower.atr) {
                     // エラー範囲下限値の入力を確認する
-                    if (isNullOrEmpty(self.errorRangeSetting.lowerLimitSetting.rangeValue())) {
-                        // alertError({messageId: "MsgQ_15"});
-                        self.setError("#E3_13", "MsgQ_15");
+                    if (isNullOrEmpty(error.lower.value)) {
+                        self.setError(error.lower.control, "MsgQ_15");
                     }
                 }
             }
         }
 
-        checkAlarmRange() {
+        checkAlarmRange(type: shareModel.TimeCountAtr) {
             let self = this;
+            let alarm = {
+                upper: {
+                    atr: null,
+                    value: null,
+                    control: null
+                },
+                lower: {
+                    atr: null,
+                    value: null,
+                    control: null
+                }
+            };
+            alarm.upper.atr = self.itemRangeSet.alarmUpperLimitSetAtr();
+            alarm.lower.atr = self.itemRangeSet.alarmLowerLimitSetAtr();
+            switch (type) {
+                case shareModel.TimeCountAtr.TIME:
+                    alarm.upper.value = self.itemRangeSet.alarmUpRangeValTime();
+                    alarm.upper.control = "#F3_22";
+                    alarm.lower.value = self.itemRangeSet.alarmLoRangeValTime();
+                    alarm.lower.control = "#F3_23";
+                    break;
+                case shareModel.TimeCountAtr.TIMES:
+                    alarm.upper.value = self.itemRangeSet.alarmUpRangeValNum();
+                    alarm.upper.control = "#F3_26";
+                    alarm.lower.value = self.itemRangeSet.alarmLoRangeValNum();
+                    alarm.lower.control = "#F3_27";
+                    break;
+            }
             // アラーム範囲上限値チェック状況を確認する
-            if (self.alarmRangeSetting.upperLimitSetting.valueSettingAtr()) {
+            if (alarm.upper.atr) {
                 // アラーム範囲上限値の入力を確認する
-                if (isNullOrEmpty(self.alarmRangeSetting.upperLimitSetting.rangeValue())) {
-                    // alertError({messageId: "MsgQ_16"});
-                    self.setError("#E3_17", "MsgQ_16");
+                if (isNullOrEmpty(alarm.upper.value)) {
+                    self.setError(alarm.upper.control, "MsgQ_16");
                 } else {
                     // アラーム範囲下限値チェック状況を確認する
-                    if (self.alarmRangeSetting.lowerLimitSetting.valueSettingAtr()) {
+                    if (alarm.lower.atr) {
                         // アラーム範囲下限値の入力を確認する
-                        if (isNullOrEmpty(self.alarmRangeSetting.lowerLimitSetting.rangeValue())) {
-                            // alertError({messageId: "MsgQ_17"});
-                            self.setError("#E3_20", "MsgQ_17");
+                        if (isNullOrEmpty(alarm.lower.value)) {
+                            self.setError(alarm.lower.control, "MsgQ_17");
                         } else {
                             // エラー範囲の入力確認をする
-                            if (parseInt(self.alarmRangeSetting.lowerLimitSetting.rangeValue()) > parseInt(self.alarmRangeSetting.upperLimitSetting.rangeValue())) {
-                                // alertError({messageId: "MsgQ_2"});
-                                self.setError("#E3_20", "MsgQ_2");
+                            if (parseInt(alarm.lower.value) > parseInt(alarm.upper.value)) {
+                                self.setError(alarm.lower.control, "MsgQ_2");
                             }
                         }
                     }
                 }
             } else {
                 // アラーム範囲下限値チェック状況を確認する
-                if (self.alarmRangeSetting.lowerLimitSetting.valueSettingAtr()) {
+                if (alarm.lower.atr) {
                     // アラーム範囲下限値の入力を確認する
-                    if (isNullOrEmpty(self.alarmRangeSetting.lowerLimitSetting.rangeValue())) {
-                        // alertError({messageId: "MsgQ_17"});
-                        self.setError("#E3_20", "MsgQ_17");
+                    if (isNullOrEmpty(alarm.lower.value)) {
+                        self.setError(alarm.lower.control, "MsgQ_17");
                     }
                 }
             }
         }
-        */
 
         setError(control, messageId) {
             $(control).ntsError('set', {messageId: messageId});
@@ -660,69 +715,39 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
         }
     }
 
-    interface IErrorAlarmRangeSetting {
-        upperLimitSetting: IErrorAlarmValueSetting;
-        lowerLimitSetting: IErrorAlarmValueSetting;
-    }
-
-    class ErrorAlarmRangeSetting {
-        /**
-         * 上限設定
-         */
-        upperLimitSetting: ErrorAlarmValueSetting;
-        /**
-         * 下限設定
-         */
-        lowerLimitSetting: ErrorAlarmValueSetting;
-
-        constructor() {
-            this.upperLimitSetting = new ErrorAlarmValueSetting();
-            this.lowerLimitSetting = new ErrorAlarmValueSetting();
-        }
-
-        setData(data: IErrorAlarmRangeSetting) {
-            this.upperLimitSetting.setData(data.upperLimitSetting);
-            this.lowerLimitSetting.setData(data.lowerLimitSetting);
-        }
-    }
-
-    interface IErrorAlarmValueSetting {
-        valueSettingAtr: number;
-        time10Value: number;
-        time60Value: number;
-        timesValue: number;
-    }
-
-    class ErrorAlarmValueSetting {
-        /**
-         * 値設定区分
-         */
-        valueSettingAtr: KnockoutObservable<boolean>;
-        /**
-         * 時間 & 10進表記の場合
-         */
-        time10Value: KnockoutObservable<string>;
-        /**
-         * 時間 & 60進表記の場合
-         */
-        time60Value: KnockoutObservable<string>;
-        /**
-         * 明細範囲値（回数）
-         */
-        timesValue: KnockoutObservable<string>;
+    class ItemRangeSet {
+        errorUpperLimitSetAtr: KnockoutObservable<boolean> = ko.observable(null);
+        errorUpRangeValTime: KnockoutObservable<string> = ko.observable(null);
+        errorUpRangeValNum: KnockoutObservable<string> = ko.observable(null);
+        errorLowerLimitSetAtr: KnockoutObservable<boolean> = ko.observable(null);
+        errorLoRangeValTime: KnockoutObservable<string> = ko.observable(null);
+        errorLoRangeValNum: KnockoutObservable<string> = ko.observable(null);
+        alarmUpperLimitSetAtr: KnockoutObservable<boolean> = ko.observable(null);
+        alarmUpRangeValTime: KnockoutObservable<string> = ko.observable(null);
+        alarmUpRangeValNum: KnockoutObservable<string> = ko.observable(null);
+        alarmLowerLimitSetAtr: KnockoutObservable<boolean> = ko.observable(null);
+        alarmLoRangeValTime: KnockoutObservable<string> = ko.observable(null);
+        alarmLoRangeValNum: KnockoutObservable<string> = ko.observable(null);
 
         constructor() {
-            this.valueSettingAtr = ko.observable(false);
-            this.time10Value = ko.observable(null);
-            this.time60Value = ko.observable(null);
-            this.timesValue = ko.observable(null);
         }
 
-        setData(data: IErrorAlarmValueSetting) {
-            this.valueSettingAtr(data.valueSettingAtr == shareModel.UseRangeAtr.USE);
-            this.time10Value(isNullOrUndefined(data.time10Value) ? null : data.time10Value.toString());
-            this.time60Value(isNullOrUndefined(data.time60Value) ? null : data.time60Value.toString());
-            this.timesValue(isNullOrUndefined(data.timesValue) ? null : data.timesValue.toString());
+        setData(data: shareModel.IItemRangeSet) {
+            this.errorUpperLimitSetAtr(data.errorUpperLimitSetAtr == shareModel.UseRangeAtr.USE);
+            this.errorUpRangeValTime(isNullOrUndefined(data.errorUpRangeValTime) ? null : data.errorUpRangeValTime);
+            this.errorUpRangeValNum(isNullOrUndefined(data.errorUpRangeValNum) ? null : data.errorUpRangeValNum);
+
+            this.errorLowerLimitSetAtr(data.errorLowerLimitSetAtr == shareModel.UseRangeAtr.USE);
+            this.errorLoRangeValTime(isNullOrUndefined(data.errorLoRangeValTime) ? null : data.errorLoRangeValTime);
+            this.errorLoRangeValNum(isNullOrUndefined(data.errorLoRangeValNum) ? null : data.errorLoRangeValNum);
+
+            this.alarmUpperLimitSetAtr(data.alarmUpperLimitSetAtr == shareModel.UseRangeAtr.USE);
+            this.alarmUpRangeValTime(isNullOrUndefined(data.alarmUpRangeValTime) ? null : data.alarmUpRangeValTime);
+            this.alarmUpRangeValNum(isNullOrUndefined(data.alarmUpRangeValNum) ? null : data.alarmUpRangeValNum);
+
+            this.alarmLowerLimitSetAtr(data.alarmLowerLimitSetAtr == shareModel.UseRangeAtr.USE);
+            this.alarmLoRangeValTime(isNullOrUndefined(data.alarmLoRangeValTime) ? null : data.alarmLoRangeValTime);
+            this.alarmLoRangeValNum(isNullOrUndefined(data.alarmLoRangeValNum) ? null : data.alarmLoRangeValNum);
         }
     }
 
@@ -736,7 +761,7 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
         /**
          * 時間回数区分
          */
-        timeCountAtr: KnockoutObservable<number> = ko.observable(null);
+        timeCountAtr: KnockoutObservable<shareModel.TimeCountAtr> = ko.observable(null);
         timeCountAtrText: KnockoutObservable<string> = ko.observable(null);
         /**
          * 勤怠エラー範囲設定

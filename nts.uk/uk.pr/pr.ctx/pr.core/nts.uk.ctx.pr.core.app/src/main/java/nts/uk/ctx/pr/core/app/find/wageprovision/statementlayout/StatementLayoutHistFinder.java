@@ -49,7 +49,7 @@ public class StatementLayoutHistFinder {
 
         Optional<StatementLayout> statementLayoutOptional = statementLayoutRepo.getStatementLayoutById(cid, code);
         Optional<YearMonthHistoryItem> yearMonthHistoryItemOptional = statementLayoutHistRepo.getStatementLayoutHistById(histId);
-        Optional<StatementLayoutSet> statementLayoutSetOptional = statementLayoutSetRepo.getStatementLayoutSetById(histId);
+        Optional<StatementLayoutSet> statementLayoutSetOptional = statementLayoutSetRepo.getStatementLayoutSetById(cid, code, histId);
 
         if (statementLayoutOptional.isPresent() && yearMonthHistoryItemOptional.isPresent() && statementLayoutSetOptional.isPresent()) {
             StatementLayout statementLayout = statementLayoutOptional.get();
@@ -91,7 +91,7 @@ public class StatementLayoutHistFinder {
             StatementLayout statementLayout = statementLayoutOptional.get();
             YearMonthHistoryItem yearMonthHistoryItemLast = yearMonthHistoryItemLastOptional.get();
             String histId = yearMonthHistoryItemLast.identifier();
-            StatementLayoutSetDto statementLayoutSetDto = statementLayoutSetRepo.getStatementLayoutSetById(histId).map(i -> new StatementLayoutSetDto(i)).orElse(null);
+            StatementLayoutSetDto statementLayoutSetDto = statementLayoutSetRepo.getStatementLayoutSetById(cid, code, histId).map(i -> new StatementLayoutSetDto(i)).orElse(null);
 
             StatementLayoutHistDataDto result = new StatementLayoutHistDataDto(statementLayout.getStatementCode().v(), statementLayout.getStatementName().v(),
                     yearMonthHistoryItemLast.identifier(), yearMonthHistoryItemLast.start().v(), yearMonthHistoryItemLast.end().v(),

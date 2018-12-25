@@ -5,12 +5,18 @@ module nts.uk.pr.view.qmm019.c {
     export module service {
         var paths = {
             getStatementLayoutAndHistById: "core/wageprovision/statementlayout/getStatementLayoutAndHistById/{0}/{1}",
+            getStatementLayoutAndLastHist: "core/wageprovision/statementlayout/getStatementLayoutAndLastHist/{0}",
             updateStatementLayoutHist: "core/wageprovision/statementlayout/updateStatementLayoutHist",
             deleteStatementLayoutHist: "core/wageprovision/statementlayout/deleteStatementLayoutHist"
         }
 
         export function getStatementLayoutAndHistById(code: string, histId: string): JQueryPromise<any> {
             let _path = format(paths.getStatementLayoutAndHistById, code, histId);
+            return ajax('pr', _path);
+        }
+
+        export function getStatementLayoutAndLastHist(code: string): JQueryPromise<any> {
+            let _path = format(paths.getStatementLayoutAndLastHist, code);
             return ajax('pr', _path);
         }
 

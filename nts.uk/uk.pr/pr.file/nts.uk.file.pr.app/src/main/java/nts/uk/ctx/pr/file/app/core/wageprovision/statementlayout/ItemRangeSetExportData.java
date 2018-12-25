@@ -1,32 +1,36 @@
 package nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.UseRangeAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.itemrangeset.RangeSettingEnum;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.itemrangeset.StatementItemRangeSetting;
 
-@NoArgsConstructor
 @Getter
-@Setter
 public class ItemRangeSetExportData {
 
     /**
      * エラー上限値設定
      */
-    private UseRangeAtr errorUpperSettingAtr;
+    private RangeSettingEnum errorUpperSettingAtr;
 
     /**
      * エラー下限値設定
      */
-    private UseRangeAtr errorLowerSettingAtr;
+    private RangeSettingEnum errorLowerSettingAtr;
 
     /**
      * アラーム上限値設定
      */
-    private UseRangeAtr alarmUpperSettingAtr;
+    private RangeSettingEnum alarmUpperSettingAtr;
 
     /**
      * アラーム下限値設定
      */
-    private UseRangeAtr alarmLowerSettingAtr;
+    private RangeSettingEnum alarmLowerSettingAtr;
+
+    public ItemRangeSetExportData(StatementItemRangeSetting domain) {
+        this.errorUpperSettingAtr = domain.getErrorRangeSet().getErrorUpperLimitSetting().getErrorUpperLimitSettingAtr();
+        this.errorLowerSettingAtr = domain.getErrorRangeSet().getErrorLowerLimitSetting().getErrorLowerLimitSettingAtr();
+        this.alarmUpperSettingAtr = domain.getAlarmRangeSet().getAlarmUpperLimitSetting().getAlarmUpperLimitSettingAtr();
+        this.alarmLowerSettingAtr = domain.getAlarmRangeSet().getAlarmLowerLimitSetting().getAlarmLowerLimitSettingAtr();
+    }
 }
