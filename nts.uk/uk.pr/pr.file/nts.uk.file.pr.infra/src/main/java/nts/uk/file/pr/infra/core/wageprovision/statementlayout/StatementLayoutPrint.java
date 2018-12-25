@@ -1,27 +1,14 @@
 package nts.uk.file.pr.infra.core.wageprovision.statementlayout;
 
-import java.util.List;
-
-import com.aspose.cells.BorderType;
-import com.aspose.cells.Cell;
-import com.aspose.cells.CellBorderType;
-import com.aspose.cells.Color;
-import com.aspose.cells.Range;
-import com.aspose.cells.Style;
-import com.aspose.cells.Worksheet;
-import com.aspose.cells.WorksheetCollection;
-
+import com.aspose.cells.*;
 import lombok.Getter;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.UseRangeAtr;
-import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.AttendExportData;
-import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.DeductionExportData;
-import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.ItemRangeSetExportData;
-import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.LineByLineSettingExportData;
-import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.PaymentExportData;
-import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.SettingByItemExportData;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.itemrangeset.RangeSettingEnum;
+import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.*;
 import nts.uk.shr.com.i18n.TextResource;
+
+import java.util.List;
 
 @Getter
 public class StatementLayoutPrint {
@@ -34,7 +21,7 @@ public class StatementLayoutPrint {
 	private Range attendRow;
 	private Range reportRow;
 
-	public StatementLayoutPrint(WorksheetCollection wsc, Worksheet ws) {
+	StatementLayoutPrint(WorksheetCollection wsc, Worksheet ws) {
 		this.wsc = wsc;
 		this.ws = ws;
 		this.statementLayout = wsc.getRangeByName("statement_layout");
@@ -88,26 +75,28 @@ public class StatementLayoutPrint {
 			this.printCell("paymentItem" + item.getItemPosition() + "_info4", proportionalSet, offset + 4);
 
 			// A2_6, A2_7
-			ItemRangeSetExportData itemRangeSet = payment.getItemRangeSet();
-			String errorSet = "エラー設定：";
-			if (UseRangeAtr.USE.equals(itemRangeSet.getErrorUpperSettingAtr())
-					&& UseRangeAtr.USE.equals(itemRangeSet.getErrorLowerSettingAtr())) {
-				errorSet += "あり";
-			} else {
-				errorSet += "なし";
+			if (payment.getItemRangeSet().isPresent()) {
+				ItemRangeSetExportData itemRangeSet = payment.getItemRangeSet().get();
+				String errorSet = "エラー設定：";
+				if (RangeSettingEnum.USE.equals(itemRangeSet.getErrorUpperSettingAtr())
+						&& RangeSettingEnum.USE.equals(itemRangeSet.getErrorLowerSettingAtr())) {
+					errorSet += "あり";
+				} else {
+					errorSet += "なし";
+				}
+				String alarmSet = "アラーム設定：";
+				if (RangeSettingEnum.USE.equals(itemRangeSet.getAlarmUpperSettingAtr())
+						&& RangeSettingEnum.USE.equals(itemRangeSet.getAlarmLowerSettingAtr())) {
+					alarmSet += "あり";
+				} else {
+					alarmSet += "なし";
+				}
+				this.printCell("paymentItem" + item.getItemPosition() + "_info5", errorSet, offset + 5);
+				this.printCell("paymentItem" + item.getItemPosition() + "_info6", alarmSet, offset + 6);
 			}
-			String alarmSet = "アラーム設定：";
-			if (UseRangeAtr.USE.equals(itemRangeSet.getAlarmUpperSettingAtr())
-					&& UseRangeAtr.USE.equals(itemRangeSet.getAlarmLowerSettingAtr())) {
-				alarmSet += "あり";
-			} else {
-				alarmSet += "なし";
-			}
-			this.printCell("paymentItem" + item.getItemPosition() + "_info5", errorSet, offset + 5);
-			this.printCell("paymentItem" + item.getItemPosition() + "_info6", alarmSet, offset + 6);
 
 			// A2_8
-			String referInfo = "";
+			String referInfo;
 			switch (payment.getCalcMethod()) {
 			case PERSON_INFO_REF:
 				referInfo = "参照：";
@@ -167,26 +156,28 @@ public class StatementLayoutPrint {
 			this.printCell("deductionItem" + item.getItemPosition() + "_info4", proportionalSet, offset + 4);
 
 			// A3_6, A3_7
-			ItemRangeSetExportData itemRangeSet = deduction.getItemRangeSet();
-			String errorSet = "エラー設定：";
-			if (UseRangeAtr.USE.equals(itemRangeSet.getErrorUpperSettingAtr())
-					&& UseRangeAtr.USE.equals(itemRangeSet.getErrorLowerSettingAtr())) {
-				errorSet += "あり";
-			} else {
-				errorSet += "なし";
-			}
-			String alarmSet = "アラーム設定：";
-			if (UseRangeAtr.USE.equals(itemRangeSet.getAlarmUpperSettingAtr())
-					&& UseRangeAtr.USE.equals(itemRangeSet.getAlarmLowerSettingAtr())) {
-				alarmSet += "あり";
-			} else {
-				alarmSet += "なし";
-			}
-			this.printCell("deductionItem" + item.getItemPosition() + "_info5", errorSet, offset + 5);
-			this.printCell("deductionItem" + item.getItemPosition() + "_info6", alarmSet, offset + 6);
+            if (deduction.getItemRangeSet().isPresent()) {
+                ItemRangeSetExportData itemRangeSet = deduction.getItemRangeSet().get();
+                String errorSet = "エラー設定：";
+                if (RangeSettingEnum.USE.equals(itemRangeSet.getErrorUpperSettingAtr())
+                        && RangeSettingEnum.USE.equals(itemRangeSet.getErrorLowerSettingAtr())) {
+                    errorSet += "あり";
+                } else {
+                    errorSet += "なし";
+                }
+                String alarmSet = "アラーム設定：";
+                if (RangeSettingEnum.USE.equals(itemRangeSet.getAlarmUpperSettingAtr())
+                        && RangeSettingEnum.USE.equals(itemRangeSet.getAlarmLowerSettingAtr())) {
+                    alarmSet += "あり";
+                } else {
+                    alarmSet += "なし";
+                }
+                this.printCell("deductionItem" + item.getItemPosition() + "_info5", errorSet, offset + 5);
+                this.printCell("deductionItem" + item.getItemPosition() + "_info6", alarmSet, offset + 6);
+            }
 
 			// A3_8
-			String referInfo = "";
+			String referInfo;
 			switch (deduction.getCalcMethod()) {
 			case PERSON_INFO_REF:
 				referInfo = "参照：";
@@ -207,6 +198,7 @@ public class StatementLayoutPrint {
 			case SUPPLY_OFFSET:
 				referInfo = "対象：";
 				referInfo += deduction.getSupplyOffsetName();
+				break;
 			default:
 				referInfo = "";
 			}
@@ -224,25 +216,27 @@ public class StatementLayoutPrint {
 			AttendExportData attend = item.getAttend();
 			// A4_2
 			this.printCell("attendItem" + item.getItemPosition() + "_name", item.getItemName(), offset);
-			
-			// A4_3, A4_4
-			ItemRangeSetExportData itemRangeSet = attend.getItemRangeSet();
-			String errorSet = "エラー設定：";
-			if (UseRangeAtr.USE.equals(itemRangeSet.getErrorUpperSettingAtr())
-					&& UseRangeAtr.USE.equals(itemRangeSet.getErrorLowerSettingAtr())) {
-				errorSet += "あり";
-			} else {
-				errorSet += "なし";
-			}
-			String alarmSet = "アラーム設定：";
-			if (UseRangeAtr.USE.equals(itemRangeSet.getAlarmUpperSettingAtr())
-					&& UseRangeAtr.USE.equals(itemRangeSet.getAlarmLowerSettingAtr())) {
-				alarmSet += "あり";
-			} else {
-				alarmSet += "なし";
-			}
-			this.printCell("attendItem" + item.getItemPosition() + "_info1", errorSet, offset + 1);
-			this.printCell("attendItem" + item.getItemPosition() + "_info2", alarmSet, offset + 2);
+
+            // A4_3, A4_4
+            if (attend.getItemRangeSet().isPresent()) {
+                ItemRangeSetExportData itemRangeSet = attend.getItemRangeSet().get();
+                String errorSet = "エラー設定：";
+                if (RangeSettingEnum.USE.equals(itemRangeSet.getErrorUpperSettingAtr())
+                        && RangeSettingEnum.USE.equals(itemRangeSet.getErrorLowerSettingAtr())) {
+                    errorSet += "あり";
+                } else {
+                    errorSet += "なし";
+                }
+                String alarmSet = "アラーム設定：";
+                if (RangeSettingEnum.USE.equals(itemRangeSet.getAlarmUpperSettingAtr())
+                        && RangeSettingEnum.USE.equals(itemRangeSet.getAlarmLowerSettingAtr())) {
+                    alarmSet += "あり";
+                } else {
+                    alarmSet += "なし";
+                }
+                this.printCell("attendItem" + item.getItemPosition() + "_info1", errorSet, offset + 1);
+                this.printCell("attendItem" + item.getItemPosition() + "_info2", alarmSet, offset + 2);
+            }
 		}
 		return this.attendRow.getRowCount() + offset;
 	}

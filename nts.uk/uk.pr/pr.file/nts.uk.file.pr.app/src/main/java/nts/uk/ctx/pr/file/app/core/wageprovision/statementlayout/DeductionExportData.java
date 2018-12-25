@@ -7,6 +7,8 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.DeductionCaclMethodA
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.DeductionProportionalAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.DeductionTotalObjAtr;
 
+import java.util.Optional;
+
 @NoArgsConstructor
 @Getter
 @Setter
@@ -27,7 +29,7 @@ public class DeductionExportData {
      */
     private DeductionProportionalAtr proportionalAtr;
 
-    private ItemRangeSetExportData itemRangeSet;
+    private Optional<ItemRangeSetExportData> itemRangeSet;
 
     /**
      * 計算式コード
