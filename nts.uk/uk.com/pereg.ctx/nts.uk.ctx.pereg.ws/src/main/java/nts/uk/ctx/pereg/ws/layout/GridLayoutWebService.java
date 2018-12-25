@@ -19,7 +19,6 @@ import nts.uk.ctx.pereg.app.find.person.setting.matrix.personinfomatrixitem.Disp
 import nts.uk.ctx.pereg.app.find.processor.GridPeregProcessor;
 import nts.uk.ctx.pereg.dom.person.setting.matrix.matrixdisplayset.MatrixDisplaySetting;
 import nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInfoMatrixData;
-import nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInfoMatrixItem;
 import nts.uk.shr.pereg.app.find.PeregGridQuery;
 
 @Path("ctx/pereg/grid-layout")
@@ -57,8 +56,6 @@ public class GridLayoutWebService extends WebService {
 	@Path("get-setting/{categoryId}")
 	public Object getFixedSetting(@PathParam("categoryId") String categoryId) {
 		return new Object() {
-			@SuppressWarnings("unused")
-			public final List<PersonInfoMatrixItem> personInfoItems = dicFinder.get(categoryId);
 			@SuppressWarnings("unused")
 			public final MatrixDisplaySetting matrixDisplay = mdsFinder.findByKey().orElse(null);
 			@SuppressWarnings("unused")

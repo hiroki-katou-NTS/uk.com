@@ -84,7 +84,7 @@ module cps003.a.vm {
 
         settings: ISettingData = {
             matrixDisplay: ko.observable({}),
-            personInfoItems: ko.observableArray([])
+            perInfoData: ko.observableArray([])
         };
 
         // for employee info.
@@ -109,8 +109,8 @@ module cps003.a.vm {
                             }
                         }
 
-                        if (ko.isObservable(self.settings.personInfoItems)) {
-                            self.settings.personInfoItems(data.personInfoItems);
+                        if (ko.isObservable(self.settings.perInfoData)) {
+                            self.settings.perInfoData(data.perInfoData);
                         }
                     });
 
@@ -207,6 +207,21 @@ module cps003.a.vm {
 
         convertData(data) {
 
+        }
+
+        settingColumns() {
+            let self = this,
+                id = self.category.catId(),
+                ctg = _.first(self.category.items(), m => m.id == id);
+
+            setShared('CPS003D_PARAM', {
+                id: id,
+                name: ctg.categoryName
+            });
+
+            modal("/view/cps/003/d/index.xhtml").onClosed(() => {
+               console.log(getShared('CPS003D_VALUE'));    
+            });
         }
     }
 
@@ -372,15 +387,18 @@ module cps003.a.vm {
     }
 
     interface ISettingData {
-        "personInfoItems": KnockoutObservableArray<IPersonInfoSetting> | Array<IPersonInfoSetting>;
+        "perInfoData": KnockoutObservableArray<IPersonInfoSetting> | Array<IPersonInfoSetting>;
         "matrixDisplay": KnockoutObservable<IMatrixDisplay> | IMatrixDisplay;
     }
 
     interface IPersonInfoSetting {
-        "columnWidth": number;
-        "regulationATR": REGULATION_ATR;
-        "pinfoCategoryID": string;
-        "pinfoItemDefiID": string;
+        "perInfoItemDefID": string;
+        "itemCD": string;
+        "itemName": string;
+        "regulationAtr": boolean;
+        "dispOrder": number;
+        "width": number;
+        "required": boolean;
     }
 
     interface IMatrixDisplay {
@@ -402,10 +420,5 @@ module cps003.a.vm {
     enum CURSOR_DIRC {
         VERTICAL = <any>'VERTICAL',
         HORIZONTAL = <any>'HORIZONTAL'
-    }
-
-    enum REGULATION_ATR {
-        PROVISION = <any>'PROVISION',
-        ANY = <any>'ANY'
     }
 }

@@ -22,8 +22,11 @@ public class PersonInfoMatrixData {
 	
 	private String itemName;
 	
-	private int regulationATR;
+	private boolean regulationAtr;
 	
 	private int dispOrder;
 	
+	private int width;
+	
+	private boolean required;
 }
