@@ -7,19 +7,17 @@ import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
 /**
-* 資格グループコード
-*/
+ * 資格グループコード
+ */
 @StringMaxLength(2)
-@StringCharType(CharType.ALPHA_NUMERIC)
+@StringCharType(CharType.NUMERIC)
 @ZeroPaddedCode
-public class QualificationGroupCode extends StringPrimitiveValue<QualificationGroupCode>
-{
-    
-    private static final long serialVersionUID = 1L;
-    
-    public QualificationGroupCode(String rawValue)
-    {
-         super(rawValue);
-    }
-    
+public class QualificationGroupCode extends StringPrimitiveValue<QualificationGroupCode> {
+
+	private static final long serialVersionUID = 1L;
+
+	public QualificationGroupCode(String rawValue) {
+		super(rawValue);
+	}
+
 }

@@ -59,7 +59,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
         loadGird(){
             let self = this;
             $("#E3_1").ntsGrid({
-                height: '320px',
+                height: '311px',
                 dataSource: self.listStateLinkSettingMaster(),
                 primaryKey: 'id',
                 virtualization: true,
@@ -88,17 +88,6 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                     { name: 'Bonus', text: getText("QMM020_21"), click: function(item) { self.openMScreen(item, 2) }, controlType: 'Button' }]
             });
             $("#E3_1").setupSearchScroll("igGrid", true);
-        }
-
-        openLScreen(){
-            block.invisible();
-            let self = this;
-            modal("/view/qmm/020/l/index.xhtml").onClosed(()=>{
-                let params = getShared(model.PARAMETERS_SCREEN_L.OUTPUT);
-                if(params && params.isSubmit) location.reload();
-
-            });
-            block.clear();
         }
 
         initScreen(hisId: string){
@@ -183,10 +172,12 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
         }
 
         openMScreen(item, code) {
-            block.invisible();
             let self = this;
+            let salaryCode = item.displayE3_4.split('    ')[0];
+            let bonusCode = item.displayE3_5.split('    ')[0];
             setShared(model.PARAMETERS_SCREEN_M.INPUT, {
                 startYearMonth: self.startYearMonth(),
+                statementCode: code === 1 ? salaryCode : bonusCode,
                 modeScreen: model.MODE_SCREEN.CLASSIFICATION
             });
             modal("/view/qmm/020/m/index.xhtml").onClosed(() =>{
@@ -198,11 +189,10 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                 }
 
             });
-            block.clear();
         }
 
         openJScreen() {
-            block.invisible();
+
             let self = this;
             let start = self.startLastYearMonth();
             if(self.listStateCorrelationHisClassification() && self.listStateCorrelationHisClassification().length > 0) {
@@ -222,12 +212,12 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                 }
 
             });
-            block.clear();
+
         }
 
         openKScreen(){
-            block.invisible();
             let self = this;
+            let index = _.findIndex(self.listStateCorrelationHisClassification(), {hisId: self.hisIdSelected()});
             self.index(self.getIndex(self.hisIdSelected()));
             let laststartYearMonth: number = 0;
             if (self.listStateCorrelationHisClassification() && self.listStateCorrelationHisClassification().length != self.index() + 1) {
@@ -245,7 +235,8 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                 startLastYearMonth: laststartYearMonth,
                 canDelete: canDelete,
                 isPerson: false,
-                modeScreen: model.MODE_SCREEN.CLASSIFICATION
+                modeScreen: model.MODE_SCREEN.CLASSIFICATION,
+                isFirst: index === 0 && self.listStateCorrelationHisClassification().length > 1 ? true : false
             });
             modal("/view/qmm/011/k/index.xhtml").onClosed(function() {
                 let params = getShared(model.PARAMETERS_SCREEN_K.OUTPUT);
@@ -258,7 +249,6 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                 $('#E2_1').focus();
 
             });
-            block.clear();
         }
 
         findItem(masterCode){

@@ -20,6 +20,8 @@ module nts.uk.pr.view.qmm019.c.viewmodel {
         itemHistoryEditList: KnockoutObservableArray<shareModel.BoxModel>;
         itemHistoryEdit: KnockoutObservable<number>;
 
+        isLastHistory: KnockoutObservable<boolean>;
+
         constructor() {
             let self = this;
             let params = getShared("QMM019_A_TO_C_PARAMS");
@@ -32,16 +34,13 @@ module nts.uk.pr.view.qmm019.c.viewmodel {
             self.newStartMonth = ko.observable(null);
             self.endMonthNumber = null;
 
-            if(params) {
-                self.statementCode(params.code);
-                self.histId(params.histId);
-            }
-
             self.itemHistoryEditList = ko.observableArray([
                 new shareModel.BoxModel(0, getText('QMM019_46')),
                 new shareModel.BoxModel(1, getText('QMM019_47'))
             ]);
-            self.itemHistoryEdit = ko.observable(0);
+            self.itemHistoryEdit = ko.observable(1);
+
+            self.isLastHistory = ko.observable(true);
         }
 
         startPage(): JQueryPromise<any> {
@@ -58,6 +57,15 @@ module nts.uk.pr.view.qmm019.c.viewmodel {
                         self.endMonth(nts.uk.time.parseYearMonth(data.history[0].endMonth).format());
                         self.newStartMonth(data.history[0].startMonth);
                         self.endMonthNumber = data.history[0].endMonth;
+
+                        service.getStatementLayoutAndLastHist(self.statementCode()).done(function(lastHist: IStatementLayout) {
+                            if ((lastHist.history.length > 0) && (lastHist.history[0].historyId == data.history[0].historyId)) {
+                                self.isLastHistory(true);
+                            } else {
+                                self.isLastHistory(false);
+                                self.itemHistoryEdit(1);
+                            }
+                        })
                     }
                 }
 
@@ -92,6 +100,7 @@ module nts.uk.pr.view.qmm019.c.viewmodel {
                 let newStartDate = nts.uk.time.parseYearMonth(self.newStartMonth()).toValue();
                 let command = new StatementLayoutHistCommand(self.statementCode(), self.histId(), newStartDate, self.endMonthNumber);
 
+                $("#C1_12").trigger("validate");
                 if(!nts.uk.ui.errors.hasError()) {
                     block.invisible();
 

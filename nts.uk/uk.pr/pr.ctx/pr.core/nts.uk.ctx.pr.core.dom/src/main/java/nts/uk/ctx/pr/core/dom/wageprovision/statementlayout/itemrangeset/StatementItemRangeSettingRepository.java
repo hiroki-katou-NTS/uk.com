@@ -13,10 +13,10 @@ public interface StatementItemRangeSettingRepository
 
     Optional<StatementItemRangeSetting> getStatementItemRangeSettingById(String histId);
 
-    void add(StatementItemRangeSetting domain);
+    void add(StatementItemRangeSetting domain, int categoryAtr, int lineNumber, int itemPosition);
 
-    void update(StatementItemRangeSetting domain);
+    void update(StatementItemRangeSetting domain, int categoryAtr, int lineNumber, int itemPosition);
 
-    void remove(String histId);
+    void remove(String histId, int categoryAtr, int lineNumber, int itemPosition);
 
 }

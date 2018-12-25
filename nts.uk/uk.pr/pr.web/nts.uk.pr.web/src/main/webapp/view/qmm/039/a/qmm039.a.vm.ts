@@ -65,7 +65,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             self.selectedTab = ko.observable('tab-1');
             self.columns = [
                 {key: 'index', length: 0, hidden: true},
-                {key: 'period', length: 7},
+                {key: 'period', length: 7, template: "<div>${period}</div>"},
                 {key: 'amount', length: 3, template: "<div style='text-align: right'>${amount}</div>"}
             ];
             // initial ccg options
@@ -99,7 +99,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.individualPriceNameLabel('');
                     self.periodStartYM('');
                     self.periodEndYM('');
-                    self.currencyeditor.value('');
+                    self.currencyeditor.value(null);
                 }
             });
             self.focusStartPage = true;
@@ -117,12 +117,10 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 self.selectedHisCode(0);
             });
             self.selectedItem.subscribe((newValue) => {
-                // nts.uk.ui.block.invisible();
                 self.historyProcess(self.individualPriceCode(), 0);
                 if (self.itemList().length > 0) {
                     self.selectedHisCode(0);
                 }
-                // nts.uk.ui.block.clear();
             });
             self.selectedHisCode = ko.observable(0);
             self.selectedHisCode.subscribe(function (newValue) {
@@ -131,30 +129,19 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 }
                 self.changeHistory(self.itemList()[newValue]);
                 if (self.mode() == MODE.ADD_HISTORY) {
-                    // let array = self.itemList();
-                    // self.itemList([]);
-                    // array.shift();
-                    // self.itemList(array);
-                    //self.singleSelectedCode();
                     self.singleSelectedCode.valueHasMutated();
-                    //setTimeout(function () {
-
-                    //self.selectedHisCode((parseInt(newValue) -1)+'');
-                    //},200);
-
-
                     self.mode(MODE.NORMAL);
                 }
             });
             self.currencyeditor = {
-                value: ko.observable(''),
+                value: ko.observable(null),
                 constraint: '',
                 option: new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     decimallength: 0,
-                    currencyformat: "JPY"
+                    currencyformat: 'JPY'
                 }),
-                required: ko.observable(false),
+                required: ko.observable(true),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
@@ -206,10 +193,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.selectedEmployee(data.listEmployee);
                     self.convertEmployeeCcg01ToKcp009(data.listEmployee);
                 }
-
             }
-
-
         }
 
         onSelectTab(param) {
@@ -302,7 +286,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.individualPriceNameLabel('');
                     self.periodStartYM('');
                     self.periodEndYM('');
-                    self.currencyeditor.value('');
+                    self.currencyeditor.value(null);
                     self.mode(MODE.HISTORY_UNREGISTERED);
                     self.isAddableHis(false);
                 }
@@ -351,7 +335,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.periodStartYM(null);
                     self.periodEndYM(null);
                     self.isRegistrationable(false);
-                    self.currencyeditor.value('');
+                    self.currencyeditor.value(null);
                     self.currencyeditor.enable(false);
                     self.mode(MODE.HISTORY_UNREGISTERED);
                 }
@@ -365,7 +349,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
             nts.uk.ui.errors.clearAll();
             self.periodStartYM(self.formatYM(self.selectedHis().periodStartYm));
             self.periodEndYM(self.formatYM(self.selectedHis().periodEndYm));
-            self.currencyeditor.value(parseInt(self.selectedHis().amount));
+            self.currencyeditor.value(self.selectedHis().amount);
         }
 
         formatYM(intYM) {
@@ -532,9 +516,9 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.periodEndYM(nts.uk.time.parseYearMonth(params.periodEndYm).format());
 
                     if (params.takeoverMethod == 1) {
-                        self.currencyeditor.value('');
+                        self.currencyeditor.value(null);
                     } else {
-                        self.currencyeditor.value(parseInt(self.itemList()[0].amount));
+                        self.currencyeditor.value(self.itemList()[0].amount);
                     }
                     let array = self.itemList();
                     array.unshift(new ItemModel(
@@ -632,12 +616,13 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         registration(): void {
             //TODO REGISTRATION
             let self = this;
+            $('.nts-input').trigger('validate');
             if (hasError()) return;
             if (self.mode() == MODE.NORMAL) {
                 let command = {
                     historyId: self.selectedHis().historyID,
-                    amountOfMoney: self.currencyeditor.value() == '' ? 0 : parseInt(self.currencyeditor.value())
-                }
+                    amountOfMoney: self.currencyeditor.value()
+                };
                 service.updateHistory(command).done(function (data) {
                     nts.uk.ui.dialog.info({messageId: "Msg_15"});
                     let tempSelected = self.selectedHisCode();
@@ -662,11 +647,11 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     },
                     salIndAmountCommand: {
                         historyId: historyId,
-                        amountOfMoney: self.currencyeditor.value() == '' ? 0 : parseInt(self.currencyeditor.value())
+                        amountOfMoney: self.currencyeditor.value()
                     },
                     oldHistoryId: null,
                     newEndMonthOfOldHistory: null
-                }
+                };
                 if (self.itemList().length > 1) {
                     command.oldHistoryId = self.itemList()[1].historyID;
                     command.newEndMonthOfOldHistory = self.itemList()[1].periodEndYm;
@@ -677,7 +662,6 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     nts.uk.ui.dialog.info({messageId: "Msg_15"});
                     self.historyProcess(self.individualPriceCode(), 0);
                     self.isEditableHis(true);
-
                     self.mode(MODE.NORMAL);
                 });
             }
@@ -788,9 +772,9 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
         periodStartYm: number;
         periodEndYm: number;
         period: string;
-        amount: string;
+        amount: number;
 
-        constructor(index: number, historyID: string, periodStartYm: number, periodEndYm: number, period: string, amount: string) {
+        constructor(index: number, historyID: string, periodStartYm: number, periodEndYm: number, period: string, amount: number) {
             this.index = index;
             this.historyID = historyID;
             this.periodStartYm = periodStartYm;

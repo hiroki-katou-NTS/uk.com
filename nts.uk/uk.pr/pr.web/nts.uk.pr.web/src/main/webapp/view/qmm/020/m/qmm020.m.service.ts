@@ -5,8 +5,8 @@ module nts.uk.pr.view.qmm020.m.service {
         getAllStatementLayoutHist: "core/wageprovision/statementlayout/getAllStatementLayoutHist/{0}"
     };
 
-    export function getDataStatement(param :any): JQueryPromise<any> {
-        let _path = format(paths.getAllStatementLayoutHist, param);
+    export function getDataStatement(startYearMonth :any): JQueryPromise<any> {
+        let _path = format(paths.getAllStatementLayoutHist, startYearMonth);
         return ajax("pr", _path);
     }
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.wagetable;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
@@ -9,15 +10,12 @@ import nts.arc.layer.dom.DomainObject;
  */
 @AllArgsConstructor
 @Getter
+@EqualsAndHashCode(callSuper=false)
 public class MasterElementItem extends DomainObject {
 
 	/**
 	 * マスタコード
 	 */
-	private MasterCode masterCode;
-
-	public MasterElementItem(String masterCode) {
-		this.masterCode = new MasterCode(masterCode);
-	}
+	private String masterCode;
 
 }

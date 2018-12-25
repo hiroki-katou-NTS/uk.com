@@ -14,5 +14,7 @@ public interface WageTableHistoryRepository {
     public Optional<WageTableHistory> getWageTableHistByCode(String companyId, String code);
     
     public void addOrUpdate(WageTableHistory domain);
+    
+    public void remove(String companyId, String code);
 
 }

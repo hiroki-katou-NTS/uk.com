@@ -42,7 +42,7 @@
                         optionsValue: 'id',
                         optionsText: 'name',
                         value: isClone,
-                        enable: true}"/>
+                        enable: statementLayoutList().length > 0}"/>
                 </div>
                 <div class="cell valign-center">
                     <!--H1_5-->
@@ -59,12 +59,12 @@
                             { prop: 'statementName', length: 20 },
                         ]}"/>
                 </div>
-                <div class="cell valign-center">
+                <div class="cell valign-center" style="white-space: nowrap;">
                     <com:ko-if bind="(layoutPatternCloneText() != '')">
-                        <label>( </label>
+                        <label>（ </label>
                         <!--H1_7-->
                         <label id="H1_7" class="label" data-bind="text: layoutPatternCloneText"/>
-                        <label> )</label>
+                        <label> ）</label>
                     </com:ko-if>
                 </div>
             </div>
@@ -98,24 +98,25 @@
             <div class="table table3">
                 <div class="cell valign-center">
                     <!--H1_12-->
-                    <div id="H1_12" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_7')}</div>
+                    <div id="H1_12" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_43')}</div>
                 </div>
                 <div class="cell valign-center">
                     <!--H1_13-->
-                    <div tabindex="5" data-bind="ntsDatePicker: {
+                    <div tabindex="5" class="check-validate" data-bind="ntsDatePicker: {
                         name: '#[QMM019_43]',
                         value: startDate,
-                        dateFormat: 'yearmonth'}"/>
+                        dateFormat: 'yearmonth',
+                        required: true}"/>
                     <!--H1_14-->
                     <com:ko-if bind="(startDateJp() != null)">
-                        <span>  (</span>
+                        <span> （</span>
                         <span class="label" data-bind="text: startDateJp"/>
-                        <span>)</span>
+                        <span>）</span>
                     </com:ko-if>
                 </div>
             </div>
             <div class="table table3">
-                <div class="cell valign-center">
+                <div class="cell">
                     <!--H1_15-->
                     <div id="H1_15" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM019_48')}</div>
                 </div>
@@ -139,7 +140,7 @@
             </div>
         </div>
         <div id="functions-area-bottom">
-            <button tabindex="6" data-bind="click: decide" class="proceed">#{i18n.getText('QMM019_56')}</button>
+            <button tabindex="6" data-bind="click: decide" class="proceed">#{i18n.getText('QMM019_183')}</button>
             <button tabindex="7" data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
         </div>
     </ui:define>

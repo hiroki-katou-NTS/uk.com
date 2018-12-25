@@ -6,7 +6,7 @@ module nts.uk.pr.view.qmm039.d.service {
         processYearFromEmp: "ctx/pr/core/ws/wageprovision/individualwagecontract/processYearFromEmp/{0}",
         getPersonalMoneyName: "ctx/pr/core/ws/wageprovision/individualwagecontract/getPersonalMoneyName/{0}",
         salIndAmountHisDisplay: "ctx/pr/core/ws/wageprovision/individualwagecontract/salIndAmountHisDisplay",
-        getEmploymentCode: "pr/core/employeeaverwage/getEmploymentCode"
+        getEmploymentCode: "ctx/pr/shared/employeeaverwage/getEmploymentCode"
     };
 
     export function getEmploymentCode(employeeId) : JQueryPromise<any> {

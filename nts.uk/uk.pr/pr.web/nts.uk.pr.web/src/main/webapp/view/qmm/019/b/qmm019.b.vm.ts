@@ -21,6 +21,8 @@ module nts.uk.pr.view.qmm019.b.viewmodel {
         layoutPatternColumns: Array<any>;
         layoutPatternIdSelected: KnockoutObservable<number>;
 
+        layoutPatternClone: number;
+
         constructor() {
             let self = this;
             let params = getShared("QMM019_A_TO_B_PARAMS");
@@ -42,7 +44,7 @@ module nts.uk.pr.view.qmm019.b.viewmodel {
             });
 
             self.itemHistoryDivisionList = ko.observableArray([
-                new shareModel.BoxModel(0, getText('QMM019_46')),
+                new shareModel.BoxModel(0, getText('QMM019_46', ["nguuuu"])),
                 new shareModel.BoxModel(1, getText('QMM019_47'))
             ]);
             self.itemHistoryDivision = ko.observable(0);
@@ -71,6 +73,7 @@ module nts.uk.pr.view.qmm019.b.viewmodel {
 
                     if (data.history.length > 0) {
                         self.startMonth(data.history[0].startMonth);
+                        self.layoutPatternClone = data.history[0].layoutPattern;
                         self.itemHistoryDivision(0);
                     } else {
                         self.itemHistoryDivision(1);
@@ -101,7 +104,7 @@ module nts.uk.pr.view.qmm019.b.viewmodel {
                                                               code: self.statementCode(),
                                                               startMonth: self.startMonth(),
                                                               itemHistoryDivision: self.itemHistoryDivision(),
-                                                              layoutPattern: self.layoutPatternIdSelected()
+                                                              layoutPattern: self.itemHistoryDivision() == 1 ? self.layoutPatternIdSelected() : self.layoutPatternClone
                                                           });
                         nts.uk.ui.windows.close();
                     }

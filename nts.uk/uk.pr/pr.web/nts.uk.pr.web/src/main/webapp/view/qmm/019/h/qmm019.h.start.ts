@@ -5,5 +5,9 @@ module nts.uk.pr.view.qmm019.h {
             __viewContext.bind(screenModel);
             $("#H1_10").focus();
         });
+
+        setTimeout(function(){
+            $(".ui-iggrid-headertext").addClass("limited-label");
+        }, 200);
     });
 }

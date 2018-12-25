@@ -11,7 +11,7 @@ module nts.uk.pr.view.qmm039.a.service {
         updateHistory: "ctx/pr/core/ws/wageprovision/individualwagecontract/updateHistory",
         addHistory: "ctx/pr/core/ws/wageprovision/individualwagecontract/addHistory",
         getBaseDate: "ctx/pr/core/wageprovision/processdatecls/getBaseDate",
-        getEmploymentCode: "pr/core/employeeaverwage/getEmploymentCode",
+        getEmploymentCode: "ctx/pr/shared/employeeaverwage/getEmploymentCode",
     };
 
     export function getInfoEmLogin(): JQueryPromise<any> {

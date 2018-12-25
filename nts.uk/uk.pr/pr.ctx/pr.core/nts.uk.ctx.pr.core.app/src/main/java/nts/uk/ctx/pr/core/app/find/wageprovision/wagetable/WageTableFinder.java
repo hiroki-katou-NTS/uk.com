@@ -15,8 +15,12 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemRepositor
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeCountAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeItemSet;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.timeitemset.TimeItemSetRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementRangeSetting;
+import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementRangeSettingRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementType;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTable;
+import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableContent;
+import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableContentRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableHistory;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableHistoryRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableRepository;
@@ -46,6 +50,15 @@ public class WageTableFinder {
 
 	@Inject
 	private TimeItemSetRepository timeItemRepo;
+
+	@Inject
+	private WageTableContentRepository wageTableContentRepo;
+
+	@Inject
+	private ElementRangeSettingRepository elemRangeSetRepo;
+
+	@Inject
+	private WageTableContentCreater wageContentCreater;
 
 	public List<WageTableDto> getAll() {
 		String companyId = AppContexts.user().companyId();
@@ -80,24 +93,27 @@ public class WageTableFinder {
 							.filter(i -> i.getItemNameCd().equals(dto.getElementInformation().getOneDimensionalElement()
 									.getOptionalAdditionalElement()))
 							.findFirst();
-					dto.getElementInformation().getOneDimensionalElement()
-							.setDisplayName(optElem.isPresent() ? optElem.get().getName() : null);
+					dto.getElementInformation().getOneDimensionalElement().setDisplayName(optElem.isPresent()
+							? optElem.get().getName()
+							: dto.getElementInformation().getOneDimensionalElement().getOptionalAdditionalElement());
 				}
 				if (dto.getElementInformation().getTwoDimensionalElement().getOptionalAdditionalElement() != null) {
 					Optional<StatementItemCustom> optElem = lstStatementItem.stream()
 							.filter(i -> i.getItemNameCd().equals(dto.getElementInformation().getTwoDimensionalElement()
 									.getOptionalAdditionalElement()))
 							.findFirst();
-					dto.getElementInformation().getTwoDimensionalElement()
-							.setDisplayName(optElem.isPresent() ? optElem.get().getName() : null);
+					dto.getElementInformation().getTwoDimensionalElement().setDisplayName(optElem.isPresent()
+							? optElem.get().getName()
+							: dto.getElementInformation().getTwoDimensionalElement().getOptionalAdditionalElement());
 				}
 				if (dto.getElementInformation().getThreeDimensionalElement().getOptionalAdditionalElement() != null) {
 					Optional<StatementItemCustom> optElem = lstStatementItem.stream()
 							.filter(i -> i.getItemNameCd().equals(dto.getElementInformation()
 									.getThreeDimensionalElement().getOptionalAdditionalElement()))
 							.findFirst();
-					dto.getElementInformation().getThreeDimensionalElement()
-							.setDisplayName(optElem.isPresent() ? optElem.get().getName() : null);
+					dto.getElementInformation().getThreeDimensionalElement().setDisplayName(optElem.isPresent()
+							? optElem.get().getName()
+							: dto.getElementInformation().getThreeDimensionalElement().getOptionalAdditionalElement());
 				}
 			}
 			if (dto.getElementInformation().getOneDimensionalElement().getFixedElement() != null) {
@@ -124,6 +140,26 @@ public class WageTableFinder {
 			return dto;
 		} else
 			return null;
+	}
+
+	public WageTableContentDto getWageTableContent(String historyId, String wageTableCode) {
+		Optional<WageTableContent> optContent = wageTableContentRepo.getWageTableContentById(historyId);
+		String cid = AppContexts.user().companyId();
+		Optional<WageTable> domainOtp = wageTableRepo.getWageTableById(cid, wageTableCode);
+		if (optContent.isPresent()) {
+			return new WageTableContentDto(optContent.get(), domainOtp, wageContentCreater);
+		} else {
+			return null;
+		}
+	}
+
+	public ElementRangeSettingDto getElemRangeSet(String historyId) {
+		Optional<ElementRangeSetting> optSetting = elemRangeSetRepo.getElementRangeSettingById(historyId);
+		if (optSetting.isPresent()) {
+			return ElementRangeSettingDto.fromDomainToDto(optSetting.get());
+		} else {
+			return null;
+		}
 	}
 
 	public List<ElementItemNameDto> getElements() {

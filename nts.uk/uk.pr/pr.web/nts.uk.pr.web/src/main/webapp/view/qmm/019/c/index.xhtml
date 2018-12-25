@@ -9,7 +9,7 @@
     <ui:define name="htmlHead">
         <script type='text/javascript'>
             var dialogSize = {
-                width: 570,
+                width: 680,
                 height: 330
             };
         </script>
@@ -30,27 +30,27 @@
                 <label id="C1_2" data-bind="text: statementCode"></label>
                 <!-- 明細書名 -->
                 <label id="C1_3" data-bind="text: statementName"></label>
-                <label>(</label>
+                <label>（</label>
                 <!-- 開始年月 -->
                 <label id="C1_4" data-bind="text: startMonth"></label>
-                <label> ~ </label>
+                <label> ～ </label>
                 <!-- 終了年月 -->
                 <label id="C1_5" data-bind="text: endMonth"></label>
-                <label>)</label>
+                <label>）</label>
             </div>
             <div class="valign-center control-group">
                 <!-- 編集方法の選択 -->
                 <div id="C1_6" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM019_102')}</div>
             </div>
-            <div style="padding-left: 30px" class="valign-center control-group">
+            <div class="valign-center control-group">
                 <!-- 編集方法 -->
-                <div id="C1_7" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                <div style="margin-left: 30px" id="C1_7" tabindex="1" data-bind="ntsRadioBoxGroup: {
                                                             name: '#[QMM019_102]',
                                                             options: itemHistoryEditList,
                                                             optionsValue: 'id',
                                                             optionsText: 'name',
                                                             value: itemHistoryEdit,
-                                                            enable: true}"></div>
+                                                            enable: isLastHistory}"></div>
                 <div id="right-item">
                     <div class="valign-center control-group">
                         <!-- ※すべての履歴を削除すると、明細書のデータも削除します -->
@@ -67,13 +67,14 @@
                                                             enable: itemHistoryEdit() == 1,
                                                             dateFormat: 'yearmonth'}"></div>
                         <!-- 終了年月 -->
-                        <label id="C1_13">  #{i18n.getText('QMM019_44')}</label>
+                        <label>  ～  </label>
+                        <label id="C1_13" data-bind="text: endMonth"></label>
                     </div>
                 </div>
             </div>
         </div>
         <div id="functions-area-bottom">
-            <button tabindex="3" data-bind="click: decide" class="proceed">#{i18n.getText('QMM019_56')}</button>
+            <button tabindex="3" data-bind="click: decide, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('QMM019_56')}</button>
             <button tabindex="4" data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
         </div>
     </ui:define>

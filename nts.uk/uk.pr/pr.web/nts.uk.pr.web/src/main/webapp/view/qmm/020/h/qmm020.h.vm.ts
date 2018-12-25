@@ -111,10 +111,10 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
         }
 
         selectSalary(){
-            block.invisible();
             let self = this;
             setShared(model.PARAMETERS_SCREEN_M.INPUT, {
                 startYearMonth: self.listStateCorrelationHis()[self.index()].startYearMonth,
+                statementCode : self.salaryCode(),
                 modeScreen: model.MODE_SCREEN.INDIVIDUAL
             });
             modal("/view/qmm/020/m/index.xhtml").onClosed(() =>{
@@ -124,14 +124,13 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                     self.salaryName(params.statementName);
                 }
             });
-            block.clear();
         }
 
         selectBonus(){
-            block.invisible();
             let self = this;
             setShared(model.PARAMETERS_SCREEN_M.INPUT, {
                 startYearMonth: self.listStateCorrelationHis()[self.index()].startYearMonth,
+                statementCode : self.bonusCode(),
                 modeScreen: model.MODE_SCREEN.INDIVIDUAL
             });
             modal("/view/qmm/020/m/index.xhtml").onClosed(() =>{
@@ -141,7 +140,6 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                     self.bonusName(params.statementName);
                 }
             });
-            block.clear();
         }
 
         setEmployee(item){
@@ -181,8 +179,8 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
             }
 
             let data: any = {
-                salary: self.salaryCode(),
-                bonus: self.bonusCode(),
+                salary: self.salaryCode() === '' ? null : self.salaryCode(),
+                bonus: self.bonusCode() === '' ? null : self.bonusCode(),
                 empId: self.selectedItem(),
                 mode: self.mode(),
                 hisId: self.hisIdSelected(),
@@ -298,7 +296,6 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
         }
 
         openJScreen() {
-            block.invisible();
             let self = this;
             let start = 0;
             let end = 0;
@@ -321,7 +318,6 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                     self.hisIdSelected(HIS_ID_TEMP);
                 }
             });
-            block.clear();
         }
 
         createStateCorrelationHis(start: number, end: number){
@@ -334,8 +330,8 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
         }
 
         openKScreen(){
-            block.invisible();
             let self = this;
+            let index = _.findIndex(self.listStateCorrelationHis(), {hisId: self.hisIdSelected()});
             self.index(self.getIndex(self.hisIdSelected()));
             let lastStartYearMonth: number = 0;
             if (self.listStateCorrelationHis() && self.listStateCorrelationHis().length != self.index() + 1) {
@@ -353,12 +349,17 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                 startLastYearMonth: lastStartYearMonth,
                 canDelete: canDelete,
                 modeScreen: model.MODE_SCREEN.INDIVIDUAL,
-                employeeId: self.selectedItem()
+                employeeId: self.selectedItem(),
+                isFirst: index === 0 && self.listStateCorrelationHis().length > 1 ? true : false
             });
             modal("/view/qmm/020/k/index.xhtml").onClosed(function() {
                 let params = getShared(model.PARAMETERS_SCREEN_K.OUTPUT);
                 if(params && params.modeEditHistory == 1) {
-                    self.getHisIndividual(self.selectedItem(), self.hisIdSelected());
+                    service.getStateCorrelationHisIndividual(self.selectedItem()).done(((listStateCorrelationHis: Array<StateCorrelationHisInvidual>)=>{
+                        self.listStateCorrelationHis(StateCorrelationHisInvidual.convertToDisplay(listStateCorrelationHis));
+                        self.index(self.getIndex(self.hisIdSelected()));
+                        self.getStateLinkSettingMasterIndividual(self.selectedItem(), self.hisIdSelected(), self.listStateCorrelationHis()[self.index()].startYearMonth);
+                    }));
                 }
                 if(params && params.modeEditHistory == 0) {
                     self.getHisIndividual(self.selectedItem(), null);
@@ -366,18 +367,6 @@ module nts.uk.pr.view.qmm020.h.viewmodel {
                 $('#H2_1').focus();
 
             });
-            block.clear();
-        }
-
-        openLScreen(){
-            block.invisible();
-            let self = this;
-            modal("/view/qmm/020/l/index.xhtml").onClosed(()=>{
-                let params = getShared(model.PARAMETERS_SCREEN_L.OUTPUT);
-                if(params && params.isSubmit) location.reload();
-
-            });
-            block.clear();
         }
 
 

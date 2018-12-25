@@ -3,11 +3,20 @@ module nts.uk.pr.view.qmm019.k.viewmodel {
     import shareModel = nts.uk.pr.view.qmm019.share.model;
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
+    import validateLayout = nts.uk.pr.view.qmm019.share.model.validateLayout;
+    import CategoryAtr = nts.uk.pr.view.qmm019.share.model.CategoryAtr;
 
     export class ScreenModel {
 
         itemList: KnockoutObservableArray<shareModel.BoxModel>;
-        selectedId: KnockoutObservable<number>;
+        oldPrintSet: number;
+        printSet: KnockoutObservable<number>;
+        layoutPattern: number;
+        totalLine: number;
+        ctgAtr: number;
+        printLineInCtg: number;
+        noPrintLineInCtg: number;
+        haveItemBreakdownInsite: boolean;
 
         constructor() {
             let self = this;
@@ -20,9 +29,17 @@ module nts.uk.pr.view.qmm019.k.viewmodel {
             ]);
 
             if(params) {
-                self.selectedId = ko.observable(params.printSet);
+                self.printSet = ko.observable(params.printSet);
+                self.oldPrintSet = params.printSet;
+
+                self.layoutPattern = params.layoutPattern;
+                self.totalLine = params.totalLine;
+                self.ctgAtr = params.ctgAtr;
+                self.printLineInCtg = params.printLineInCtg;
+                self.noPrintLineInCtg = params.noPrintLineInCtg;
+                self.haveItemBreakdownInsite = params.haveItemBreakdownInsite;
             } else {
-                self.selectedId = ko.observable(1);
+                self.printSet = ko.observable(1);
             }
         }
 
@@ -35,11 +52,25 @@ module nts.uk.pr.view.qmm019.k.viewmodel {
 
         decide(){
             let self = this;
-            // validate
+            nts.uk.ui.errors.clearAll();
 
-            if(!nts.uk.ui.errors.hasError()) {
-                setShared("QMM019_K_TO_A_PARAMS", {isRegistered: true, printSet: self.selectedId()});
+            if(self.printSet() == self.oldPrintSet) {
+                setShared("QMM019_K_TO_A_PARAMS", {isRegistered: false});
                 nts.uk.ui.windows.close();
+            } else {
+                if(self.printSet() != 2) {
+                    let messageId = validateLayout(self.layoutPattern, self.totalLine, self.ctgAtr, self.printLineInCtg, self.noPrintLineInCtg, self.printSet());
+                    if(messageId != null) {
+                        $('#K1_2').ntsError('set', { messageId: messageId });
+                    } else if((self.printSet() == 1) && ((self.ctgAtr == CategoryAtr.PAYMENT_ITEM) || (self.ctgAtr == CategoryAtr.DEDUCTION_ITEM)) && self.haveItemBreakdownInsite) {
+                        nts.uk.ui.dialog.info({ messageId: "QMsg_" });
+                    }
+                }
+
+                if(!nts.uk.ui.errors.hasError()) {
+                    setShared("QMM019_K_TO_A_PARAMS", {isRegistered: true, printSet: self.printSet()});
+                    nts.uk.ui.windows.close();
+                }
             }
         }
 

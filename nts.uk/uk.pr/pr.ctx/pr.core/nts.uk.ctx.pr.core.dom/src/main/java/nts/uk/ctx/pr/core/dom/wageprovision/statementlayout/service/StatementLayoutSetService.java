@@ -12,12 +12,12 @@ public class StatementLayoutSetService {
     @Inject
     private StatementLayoutSetRepository statementLayoutSetRepo;
 
-    public void addStatementLayoutSet(StatementLayoutSet statementLayoutSet) {
-        statementLayoutSetRepo.add(statementLayoutSet);
+    public void addStatementLayoutSet(String statementCode, StatementLayoutSet statementLayoutSet) {
+        statementLayoutSetRepo.add(statementCode, statementLayoutSet);
     }
 
-    public void updateStatementLayoutSet(StatementLayoutSet statementLayoutSet) {
+    public void updateStatementLayoutSet(String statementCode, StatementLayoutSet statementLayoutSet) {
         statementLayoutSetRepo.remove(statementLayoutSet.getHistId());
-        addStatementLayoutSet(statementLayoutSet);
+        addStatementLayoutSet(statementCode, statementLayoutSet);
     }
 }

@@ -11,15 +11,18 @@ import java.util.Optional;
  */
 @AllArgsConstructor
 @Getter
-public class ElementRange extends DomainObject{
+public class ElementRange extends DomainObject {
 
-    /**
-     * 数値要素範囲
-     */
-    Optional<NumericElementRange> numericElementRange;
+	/**
+	 * 数値要素範囲
+	 */
+	Optional<NumericElementRange> numericElementRange;
 
-    public ElementRange (Integer stepIncrement, Integer rangeLowerLimit, Integer rangeUpperLimit) {
-        if (stepIncrement == null && rangeLowerLimit == null && rangeUpperLimit == null) this.numericElementRange = Optional.empty();
-        else this.numericElementRange = Optional.of(new NumericElementRange(stepIncrement, rangeLowerLimit, rangeUpperLimit));
-    }
+	public ElementRange(Integer stepIncrement, Integer rangeLowerLimit, Integer rangeUpperLimit) {
+		if (stepIncrement == null && rangeLowerLimit == null && rangeUpperLimit == null)
+			this.numericElementRange = Optional.empty();
+		else
+			this.numericElementRange = Optional
+					.of(new NumericElementRange(stepIncrement, rangeLowerLimit, rangeUpperLimit));
+	}
 }

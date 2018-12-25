@@ -33,7 +33,7 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 			+ " f.statementItemPk.itemNameCd =:itemNameCd"
 			+ ORDER_BY_ITEM_NAME_CD_ASC;
 	private static final String SELECT_CUSTOM =
-			"SELECT f.statementItemPk.categoryAtr, f.statementItemPk.itemNameCd, n.name, f.deprecatedAtr, f.defaultAtr "
+			"SELECT f.statementItemPk.categoryAtr, f.statementItemPk.itemNameCd, n.name, f.deprecatedAtr, f.defaultAtr, n.shortName "
 					+ " FROM QpbmtStatementItem f INNER JOIN QpbmtStatementItemName n "
 					+ " ON f.statementItemPk.cid = n.statementItemNamePk.cid "
 					+ " AND f.statementItemPk.categoryAtr = n.statementItemNamePk.categoryAtr "
@@ -53,7 +53,7 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 					+ " AND f.statementItemPk.categoryAtr =:categoryAtr "
                     + " AND f.deprecatedAtr = :deprecatedAtr ";
 
-    private static final String SELECT_CUSTOM_BY_STATEMENT_ITEM =
+    private static final String SELECT_CUSTOM_BY_STATEMENT_ITEMST =
             "SELECT a.statementItemPk.categoryAtr, a.statementItemPk.itemNameCd, c.name "
                     + " FROM QpbmtStatementItem a INNER JOIN QpbmtPaymentItemSt b "
                     + " ON a.statementItemPk.cid = b.paymentItemStPk.cid "
@@ -63,15 +63,26 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
                     + " ON a.statementItemPk.cid = c.statementItemNamePk.cid "
                     + " AND a.statementItemPk.categoryAtr = c.statementItemNamePk.categoryAtr "
                     + " AND a.statementItemPk.itemNameCd = c.statementItemNamePk.itemNameCd "
+                    + " WHERE  a.statementItemPk.cid =:cid "
+                    + " AND (a.statementItemPk.categoryAtr = 0 OR a.statementItemPk.categoryAtr = 1) "
+                    + " AND a.defaultAtr = 0"
+                    + " AND a.deprecatedAtr = 0"
+                    + " AND b.breakdownItemUseAtr = 1";
+
+    private static final String SELECT_CUSTOM_BY_STATEMENT_ITEMDEDUCTION =
+            "SELECT a.statementItemPk.categoryAtr, a.statementItemPk.itemNameCd, c.name "
+                    + " FROM QpbmtStatementItem a INNER JOIN QpbmtStatementItemName c"
+                    + " ON a.statementItemPk.cid = c.statementItemNamePk.cid "
+                    + " AND a.statementItemPk.categoryAtr = c.statementItemNamePk.categoryAtr "
+                    + " AND a.statementItemPk.itemNameCd = c.statementItemNamePk.itemNameCd "
                     + " INNER JOIN QpbmtDeductionItemSt d"
                     + " ON a.statementItemPk.cid = d.deductionItemStPk.cid "
                     + " AND a.statementItemPk.categoryAtr = d.deductionItemStPk.categoryAtr "
                     + " AND a.statementItemPk.itemNameCd = d.deductionItemStPk.itemNameCd "
                     + " WHERE  a.statementItemPk.cid =:cid "
-                    + " AND a.statementItemPk.categoryAtr = 0 OR a.statementItemPk.categoryAtr = 1"
+                    + " AND (a.statementItemPk.categoryAtr = 0 OR a.statementItemPk.categoryAtr = 1) "
                     + " AND a.defaultAtr = 0"
                     + " AND a.deprecatedAtr = 0"
-                    + " AND b.breakdownItemUseAtr = 1"
                     + " AND d.breakdownItemUseAtr = 1";
 
 	@Override
@@ -134,15 +145,25 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 																	   List<String> itemNameCdExList) {
 	    boolean hasItemNameCdFixedList = itemNameCdFixedList != null && !itemNameCdFixedList.isEmpty();
         boolean hasItemNameCdExList = itemNameCdExList != null && !itemNameCdExList.isEmpty();
+        boolean hasItemNameCdSelected = itemNameCdSelected != null;
 		TypedQueryWrapper<Object[]> typeQuery;
         StringBuilder builder = new StringBuilder();
         builder.append(SELECT_CUSTOM_BY_CTG);
+		builder.append(" AND ( ");
 		if(hasItemNameCdFixedList){
-            builder.append(" AND f.statementItemPk.itemNameCd NOT IN :itemNameCdFixedList ");
-        }
+            builder.append(" f.statementItemPk.itemNameCd NOT IN :itemNameCdFixedList ");
+        }else{
+			builder.append(" f.statementItemPk.itemNameCd IS NOT NULL ");
+		}
         if(hasItemNameCdExList){
-            builder.append(" AND (f.statementItemPk.itemNameCd NOT IN :itemNameCdExList OR f.statementItemPk.itemNameCd = :itemNameCdSelected) ");
+            builder.append(" AND f.statementItemPk.itemNameCd NOT IN :itemNameCdExList ");
+        }else{
+			builder.append(" AND f.statementItemPk.itemNameCd IS NOT NULL ");
+		}
+		if(hasItemNameCdSelected){
+            builder.append(" OR f.statementItemPk.itemNameCd = :itemNameCdSelected ");
         }
+		builder.append(" ) ");
         builder.append(ORDER_BY_ITEM_NAME_CD_ASC);
         typeQuery = this.queryProxy().query(builder.toString(), Object[].class)
                 .setParameter("cid", cid)
@@ -152,19 +173,29 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 			typeQuery.setParameter("itemNameCdFixedList", itemNameCdFixedList);
 		}
 		if (hasItemNameCdExList) {
-			typeQuery.setParameter("itemNameCdExList", itemNameCdExList)
-					.setParameter("itemNameCdSelected", itemNameCdSelected);
+			typeQuery.setParameter("itemNameCdExList", itemNameCdExList);
 		}
+        if(hasItemNameCdSelected){
+            typeQuery.setParameter("itemNameCdSelected", itemNameCdSelected);
+        }
 		List<StatementItemCustom> result = typeQuery
 				.getList(item -> new StatementItemCustom(item[0] != null ? String.valueOf(item[0]) : "", item[1] != null ? String.valueOf(item[1]) : "",
 						item[2] != null ? String.valueOf(item[2]) : "", item[3] != null ? String.valueOf(item[3]) : "",
-						item[4] != null ? String.valueOf(item[4]) : ""));
+						item[4] != null ? String.valueOf(item[4]) : "", item[5] != null ? String.valueOf(item[5]) : ""));
 		return result;
 	}
 
     @Override
     public List<StatementCustom> getItemCustomByDeprecated(String cid) {
-        return this.queryProxy().query(SELECT_CUSTOM_BY_STATEMENT_ITEM, Object[].class).setParameter("cid", cid).getList(
+        return this.queryProxy().query(SELECT_CUSTOM_BY_STATEMENT_ITEMST, Object[].class).setParameter("cid", cid).getList(
+                item -> new StatementCustom(item[0] != null ? String.valueOf(item[0]) : "", item[1] != null ? String.valueOf(item[1]) : "",
+                        item[2] != null ? String.valueOf(item[2]) : "")
+        );
+    }
+
+    @Override
+    public List<StatementCustom> getItemCustomByDeprecated2(String cid) {
+        return this.queryProxy().query(SELECT_CUSTOM_BY_STATEMENT_ITEMDEDUCTION, Object[].class).setParameter("cid", cid).getList(
                 item -> new StatementCustom(item[0] != null ? String.valueOf(item[0]) : "", item[1] != null ? String.valueOf(item[1]) : "",
                         item[2] != null ? String.valueOf(item[2]) : "")
         );

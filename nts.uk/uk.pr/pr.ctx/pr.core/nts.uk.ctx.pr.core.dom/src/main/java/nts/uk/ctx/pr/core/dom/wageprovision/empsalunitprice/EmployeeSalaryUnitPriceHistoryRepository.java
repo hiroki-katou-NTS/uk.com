@@ -20,7 +20,7 @@ public interface EmployeeSalaryUnitPriceHistoryRepository {
 
     List<IndEmpSalUnitPriceHistory> getAllIndividualEmpSalUnitPriceHistory(String perUnitPriceCode, String employeeId);
 
-    void updateUnitPriceAmount(PayrollInformation domain);
+    void updateAmount(PayrollInformation domain);
 
     void addHistory(EmployeeSalaryUnitPriceHistory domain1, PayrollInformation domain2);
 

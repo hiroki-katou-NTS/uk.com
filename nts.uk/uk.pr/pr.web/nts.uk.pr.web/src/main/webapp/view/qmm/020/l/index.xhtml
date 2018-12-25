@@ -6,7 +6,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 400, height: 620 };</script>
+        <script>var dialogSize = { width: 525, height: 620};</script>
         <com:scriptfile set="IGNITE" />
         <com:scriptfile path="../share/model.js" />
         <com:scriptfile path="qmm020.l.vm.js" />
@@ -17,7 +17,7 @@
     <ui:define name="content">
         <div id="contents-area">
             <div id="title" style="margin-bottom: 10px">
-                <span id="L1_1" class="label" style="margin-bottom: 10px">#{i18n.getText('QMM020_71')}</span>
+                <span id="L1_1" class="label" style="margin-bottom: 10px; font-size: 19px;">#{i18n.getText('QMM020_71')}</span>
                 <span id="L1_2" class="label warning">#{i18n.getText('QMM020_72')}</span>
             </div>
 
@@ -25,7 +25,7 @@
                 <div id="L1_3" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_73')}</div>
                 <span style="margin-left: 20px" id="L1_4" class="label">#{i18n.getText('QMM020_74')}</span>
             </div>
-            <div class="control-group" style="margin-left:10px">
+            <div class="control-group" style="margin-left:10px" id="control-group-l5-l6">
                 <div id="L1_5" style="width: 55px" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_75')}</div>
                 <div id="L1_6" tabindex="1" class="cf" data-bind="ntsSwitchButton: {
                                         name: '#{i18n.getText('QMM020_76')}',
@@ -48,7 +48,7 @@
                                 }"></div>
             </div>
 
-            <div class="control-group" style="margin-left:10px">
+            <div class="control-group" style="margin-left:10px; " >
                 <div id="L1_15" style="width: 55px" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_11')}</div>
                 <div id="L1_16" tabindex="3" class="cf" data-bind="ntsSwitchButton: {
                                         name: 'Sample Switch',

@@ -33,17 +33,17 @@ public class JpaStatementItemRangeSettingRepository extends JpaRepository implem
     }
 
     @Override
-    public void add(StatementItemRangeSetting domain){
-        this.commandProxy().insert(QpbmtStateItemRangeSet.toEntity(domain));
+    public void add(StatementItemRangeSetting domain, int categoryAtr, int lineNumber, int itemPosition){
+        this.commandProxy().insert(QpbmtStateItemRangeSet.toEntity(domain, categoryAtr, lineNumber, itemPosition));
     }
 
     @Override
-    public void update(StatementItemRangeSetting domain){
-        this.commandProxy().update(QpbmtStateItemRangeSet.toEntity(domain));
+    public void update(StatementItemRangeSetting domain, int categoryAtr, int lineNumber, int itemPosition){
+        this.commandProxy().update(QpbmtStateItemRangeSet.toEntity(domain, categoryAtr, lineNumber, itemPosition));
     }
 
     @Override
-    public void remove( String histId){
-        this.commandProxy().remove(QpbmtStateItemRangeSet.class, new QpbmtStateItemRangeSetPk(histId));
+    public void remove( String histId, int categoryAtr, int lineNumber, int itemPosition){
+        this.commandProxy().remove(QpbmtStateItemRangeSet.class, new QpbmtStateItemRangeSetPk(histId, categoryAtr, lineNumber, itemPosition));
     }
 }

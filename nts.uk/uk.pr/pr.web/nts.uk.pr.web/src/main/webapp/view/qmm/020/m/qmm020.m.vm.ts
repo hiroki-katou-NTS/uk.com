@@ -28,7 +28,7 @@ module nts.uk.pr.view.qmm020.m.viewmodel {
             nts.uk.pr.view.qmm020.m.service.getDataStatement(this.params().startYearMonth).done((data)=>{
                 if(data && data.length > 0){
                     this.items(StatementDto.fromApp(data));
-                    self.currentCodeList(self.items()[0].statementCode);
+                    self.currentCodeList(params.statementCode != null && params.statementCode != '' ? params.statementCode : self.items()[0].statementCode);
                     $('#multi-list_container').focus();
                 }
             }).fail((err) =>{
@@ -67,7 +67,13 @@ module nts.uk.pr.view.qmm020.m.viewmodel {
                 dto.statementCode = item.statementCode;
                 dto.statementName = item.statementName;
                 dto.displayYearMonth = this.convertMonthYearToString(item.startYearMonth)+ " " + to + " "+this.convertMonthYearToString(item.endYearMonth);;
-
+                if(dto.statementName.length > 10){
+                    setTimeout(function() {
+                        $('.limited-label').css("border-left","none");
+                        $('.limited-label').css("border-right","none");
+                        $('#multi-list tr td:nth-child(2)').addClass("limited-label");
+                    }, 50);
+                }
                 listStatementDto.push(dto);
             })
             return listStatementDto;

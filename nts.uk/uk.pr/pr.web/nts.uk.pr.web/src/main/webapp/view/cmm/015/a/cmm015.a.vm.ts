@@ -17,8 +17,8 @@ module nts.uk.pr.view.cmm015.a.viewmodel {
             self.dataSource = ko.observableArray([]);
             self.selectedCode = ko.observable();
             self.columns = ko.observableArray([
-                {headerText: getText("CMM015_7"), key: 'salaryClassificationCode'},
-                {headerText: getText("CMM015_8"), key: 'salaryClassificationName', formatter: _.escape}
+                {headerText: getText("CMM015_7"), key: 'salaryClassificationCode', width: '100'},
+                {headerText: getText("CMM015_8"), key: 'salaryClassificationName', width: '200', formatter: _.escape}
             ]);
             self.isDeleteEnable = ko.observable(false);
             self.selectedItem = ko.observable(new model.SalaryClassificationInformation(null));
@@ -34,7 +34,6 @@ module nts.uk.pr.view.cmm015.a.viewmodel {
                     self.setNewMode();
                 }
             });
-
         }
 
         startPage(): JQueryPromise<any> {

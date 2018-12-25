@@ -174,6 +174,7 @@ module nts.uk.pr.view.qmm031.a.viewmodel {
             self.currentCodeLifeInsurance('');
             self.isNewMode(true);
             self.enableLifeInsuranceCode(true);
+            self.lstInsuranceType([]);
             $("#lifeInsuranceCode").focus();
         };
 

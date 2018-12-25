@@ -16,6 +16,8 @@ public interface QualificationGroupSettingRepository {
 
     void update(QualificationGroupSetting domain);
 
-    void remove(QualificationGroupSetting domain);
+    void remove(String companyId, String code);
+    
+    List<String> getUsedQualificationCodeByCompanyID(String targetCode);
 
 }

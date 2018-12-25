@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.core.infra.entity.wageprovision.statementlayout.itemranges
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.itemrangeset.StatementItemRangeSetting;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -25,13 +26,21 @@ public class QpbmtStateItemRangeSet extends UkJpaEntity implements Serializable
     */
     @EmbeddedId
     public QpbmtStateItemRangeSetPk stateItemRangeSetPk;
-    
+
+    /**
+     * 給/**
+     * 会社ID
+     */
+    @Basic(optional = false)
+    @Column(name = "CID")
+    public String cid;
+
     /**
     * 給与項目ID
     */
     @Basic(optional = false)
-    @Column(name = "SALARY_ITEM_ID")
-    public String salaryItemId;
+    @Column(name = "ITEM_NAME_CD")
+    public String itemNameCd;
     
     /**
     * 範囲値の属性
@@ -159,13 +168,17 @@ public class QpbmtStateItemRangeSet extends UkJpaEntity implements Serializable
     }
 
     public StatementItemRangeSetting toDomain() {
-        return new StatementItemRangeSetting(this.stateItemRangeSetPk.histId, this.salaryItemId, this.rangeValAttribute, this.errorUpperLimitSetAtr, this.errorUpRangeValAmount, this.errorUpRangeValTime, this.errorUpRangeValNum, this.errorLowerLimitSetAtr, this.errorLoRangeValAmount, this.errorLoRangeValTime, this.errorLoRangeValNum, this.alarmUpperLimitSetAtr, this.alarmUpRangeValAmount, this.alarmUpRangeValTime, this.alarmUpRangeValNum, this.alarmLowerLimitSetAtr, this.alarmLoRangeValAmount, this.alarmLoRangeValTime, this.alarmLoRangeValNum);
+        return new StatementItemRangeSetting(this.stateItemRangeSetPk.histId, this.itemNameCd, this.rangeValAttribute, this.errorUpperLimitSetAtr,
+                this.errorUpRangeValAmount, this.errorUpRangeValTime, this.errorUpRangeValNum, this.errorLowerLimitSetAtr, this.errorLoRangeValAmount,
+                this.errorLoRangeValTime, this.errorLoRangeValNum, this.alarmUpperLimitSetAtr, this.alarmUpRangeValAmount, this.alarmUpRangeValTime,
+                this.alarmUpRangeValNum, this.alarmLowerLimitSetAtr, this.alarmLoRangeValAmount, this.alarmLoRangeValTime, this.alarmLoRangeValNum);
     }
 
-    public static QpbmtStateItemRangeSet toEntity(StatementItemRangeSetting domain){
+    public static QpbmtStateItemRangeSet toEntity(StatementItemRangeSetting domain, int categoryAtr, int lineNumber, int itemPosition){
         QpbmtStateItemRangeSet entity =  new QpbmtStateItemRangeSet();
-        entity.stateItemRangeSetPk = new QpbmtStateItemRangeSetPk(domain.getHistId());
-        entity.salaryItemId = domain.getSalaryItemId();
+        entity.stateItemRangeSetPk = new QpbmtStateItemRangeSetPk(domain.getHistId(), categoryAtr, lineNumber, itemPosition);
+        entity.cid = AppContexts.user().companyId();
+        entity.itemNameCd = domain.getSalaryItemId();
         entity.rangeValAttribute = domain.getRangeValAttribute().value;
         entity.errorUpperLimitSetAtr = domain.getErrorRangeSet().getErrorUpperLimitSetting().getErrorUpperLimitSettingAtr().value;
         entity.errorUpRangeValAmount = domain.getErrorRangeSet().getErrorUpperLimitSetting().getErrorUpperRangeValueAmount().map(i->i.v()).orElse(null);

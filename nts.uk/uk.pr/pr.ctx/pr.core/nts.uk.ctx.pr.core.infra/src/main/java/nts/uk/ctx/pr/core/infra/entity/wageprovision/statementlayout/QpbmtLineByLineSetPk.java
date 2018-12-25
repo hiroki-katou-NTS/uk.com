@@ -21,6 +21,20 @@ public class QpbmtLineByLineSetPk implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 会社ID
+     */
+    @Basic(optional = false)
+    @Column(name = "CID")
+    public String cid;
+
+    /**
+     * 明細書コード
+     */
+    @Basic(optional = false)
+    @Column(name = "STATEMENT_CD")
+    public String statementCd;
+
+    /**
      * 履歴ID
      */
     @Basic(optional = false)

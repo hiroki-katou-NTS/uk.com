@@ -1,3 +1,12 @@
+#functions-area {
+    min-width: 1260px;
+}
+
+#contents-area {
+    min-width: 1260px;
+    overflow-y: inherit;
+}
+
 #contents-area .table{
     width: 1220px;
     padding: 15px;
@@ -26,6 +35,18 @@
 
 #A3_3 {
     margin-right: 5px;
+}
+
+#A3_4 {
+    margin-right: 20px;
+}
+
+#A3_10 {
+    margin-right: 5px;
+}
+
+#A3_1011 {
+    white-space: pre;
 }
 
 #A4_1, #A5_1, #A7_1, #A8_1 {
@@ -162,4 +183,14 @@
 
 #statementLayoutSet .category-text, #statementLayoutSet .add-line-btn, #A7_2, #A8_2, #A7_9, #A8_9 {
     margin-left: 5px;
+}
+
+.item-sort {
+    overflow: hidden;
+    width: 775px;
+    height: 28px;
+}
+
+.tree-grid-edge, .tree-grid-ie {
+    height: 489px !important;
 }

@@ -52,7 +52,7 @@ module nts.uk.pr.view.qmm020.share.model {
             dto.hisId = item.hisId;
             dto.id = key;
             dto.masterCode = item.masterCode;
-            dto.categoryName = item.categoryName;
+            dto.categoryName = _.escape(item.categoryName);
             dto.salaryCode = item.salaryCode;
             dto.bonusCode = item.bonusCode;
             dto.bonusName = item.bonusName;

@@ -1,5 +1,6 @@
 module nts.uk.pr.view.qmm016.g.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
     import service = nts.uk.pr.view.qmm016.g.service;
@@ -21,10 +22,13 @@ module nts.uk.pr.view.qmm016.g.viewmodel {
         ];
         
         constructor() {
+            
         }
+        
         startPage () : JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             block.invisible();
+            let params = getShared("QMM016_G_PARAMS");
             service.getAllStatementItemData().done((data: Array<any>) => {
                 let fixedElements: Array<any> = self.fixedElements.map(i => {
                     return {code: i.code, name: i.name, dispname: i.code + " " + i.name}; 
@@ -34,6 +38,10 @@ module nts.uk.pr.view.qmm016.g.viewmodel {
                 });
                 ko.utils.arrayPushAll(self.statementItemNameList, fixedElements);
                 ko.utils.arrayPushAll(self.statementItemNameList, optionalElements);
+                if (params) {
+                    self.selectedStatementItemName(params.selected ? params.selected : "");
+                    self.statementItemNameList(_.filter(self.statementItemNameList(), item => {return !params.otherSelected.contains(item.code)}));
+                }
                 dfd.resolve();
             }).fail((err) => {
                 dfd.reject();

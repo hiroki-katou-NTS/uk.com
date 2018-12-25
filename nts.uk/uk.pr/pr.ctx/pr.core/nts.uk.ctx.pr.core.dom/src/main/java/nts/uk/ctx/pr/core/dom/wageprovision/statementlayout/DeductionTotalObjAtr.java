@@ -7,8 +7,8 @@ package nts.uk.ctx.pr.core.dom.wageprovision.statementlayout;
 public enum DeductionTotalObjAtr
 {
     
-    OUTSIDE(0, "合計対象外"),
-    INSIDE(1, "合計対象内");
+    OUTSIDE(0, "Enum_DeductionTotalObjAtr_OUTSIDE"),
+    INSIDE(1, "Enum_DeductionTotalObjAtr_INSIDE");
     
     /** The value. */
     public final int value;

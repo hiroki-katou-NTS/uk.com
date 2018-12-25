@@ -75,7 +75,7 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
             ]
 
             self.items = ko.observableArray([]);
-            self.createList();
+            //self.createList();
             self.currentSelectedDep = ko.observableArray([]);
             //TODO
             self.currentSelectedHis.subscribe((hisId)=>{
@@ -123,16 +123,6 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
 
         }
 
-        openScreenL(){
-            block.invisible();
-            let self = this;
-            modal("/view/qmm/020/l/index.xhtml").onClosed(()=>{
-                let params = getShared(model.PARAMETERS_SCREEN_L.OUTPUT);
-                if(params && params.isSubmit) location.reload();
-
-            });
-            block.clear();
-        }
 
         openScreenJ(){
 
@@ -145,7 +135,7 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
                 modeScreen: model.MODE_SCREEN.DEPARMENT,
             });
 
-            modal("/view/qmm/020/j/index.xhtml").onClosed(()=>{
+            modal("/view/qmm/020/j/index1.xhtml").onClosed(()=>{
                 block.invisible();
                 let params = getShared(model.PARAMETERS_SCREEN_J.OUTPUT);
                 if(params){
@@ -177,7 +167,6 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
         }
 
         openScreenK(){
-            block.invisible();
             let self = this;
             let listStateCorrelationHis = [];
             service.getStateCorrelationHisDeparmentById().done((data)=>{
@@ -196,7 +185,6 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
             }).fail((err)=>{
                 if(err) dialog.alertError(err);
             }).always(()=>{
-                block.clear();
             });
 
             modal("/view/qmm/020/k/index.xhtml").onClosed(()=>{
@@ -217,6 +205,10 @@ module nts.uk.pr.view.qmm020.d.viewmodel {
                         }
                         self.enableAddHisButton(true);
                         self.enableEditHisButton(true);
+                    }).fail((err)=>{
+                        if(err) dialog.alertError(err);
+                    }).always(()=>{
+                        block.clear();
                     });
                 }else{
                     block.clear();
