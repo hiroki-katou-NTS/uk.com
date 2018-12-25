@@ -49,7 +49,7 @@ module nts.uk.pr.view.qmm019.p.viewmodel {
                 return;
             }
             block.invisible();
-            let processingDate = moment(self.processingDate()).format("YYYYMM");
+            let processingDate = moment(self.processingDate(), "YYYY/MM").format("YYYYMM");
             service.getStatementLayoutByProcessingDate(processingDate).done((data: Array<IStatementLayoutDto>) => {
                 self.statementLayouts(data);
                 block.clear();
