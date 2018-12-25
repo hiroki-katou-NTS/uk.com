@@ -138,7 +138,6 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                  startDateFiscalYear: self.startDateFiscalYear(),
                  endDateFiscalYear: self.startDateFiscalYear(),
                 });
-                 console.log(status+ "--"+self.standardDate()+ "--"+self.startDateFiscalYear()+ "--"+self.endDateFiscalYear())
                  nts.uk.ui.windows.close();
                  dfd.resolve();
                  return dfd.promise();
