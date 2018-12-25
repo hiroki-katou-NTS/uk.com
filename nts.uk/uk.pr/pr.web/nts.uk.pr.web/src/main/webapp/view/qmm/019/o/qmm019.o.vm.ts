@@ -2,19 +2,18 @@ module nts.uk.pr.view.qmm019.o.viewmodel {
     import getText = nts.uk.resource.getText;
     import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
     import windows = nts.uk.ui.windows;
+    import shareModel = nts.uk.pr.view.qmm019.share.model;
 
     export class ScreenModel {
 
         columns: KnockoutObservableArray<any>;
         satementItems: KnockoutObservableArray<IStatementItem>;
-        statementItemSelected: KnockoutObservable<IStatementItem>;
         statementItemNameCdSelected: KnockoutObservable<any>;
 
         constructor() {
             let self = this;
 
             self.satementItems = ko.observableArray([]);
-            self.statementItemSelected = ko.observable(null);
             self.statementItemNameCdSelected = ko.observable(null);
 
             this.columns = ko.observableArray([
@@ -33,7 +32,7 @@ module nts.uk.pr.view.qmm019.o.viewmodel {
                 return dfd.promise();
             }
             // ドメインモデル「明細書項目」を取得する
-            service.getAllStatementItemData(0, false).done((data: Array<IStatementItem>) => {
+            service.getAllStatementItemData(shareModel.CategoryAtr.PAYMENT_ITEM, false).done((data: Array<IStatementItem>) => {
                 data = _.sortBy(data, [(item: IStatementItem) => {
                     return item.itemNameCd;
                 }]);
@@ -49,20 +48,18 @@ module nts.uk.pr.view.qmm019.o.viewmodel {
             // パラメータ.項目名コードを確認する
             if (!isNullOrUndefined(itemNameCd)) {
                 // 相殺項目一覧にパラメータ.項目名コードがあるか確認する
-                let formula = _.find(self.satementItems(), (item: IStatementItem) => {
+                let sttItem = _.find(self.satementItems(), (item: IStatementItem) => {
                     return item.itemNameCd == itemNameCd;
                 })
-                if (!isNullOrUndefined(formula)) {
+                if (!isNullOrUndefined(sttItem)) {
                     // パラメータ.項目名コードの項目を選択状態にする
                     self.statementItemNameCdSelected(itemNameCd);
-                    self.statementItemSelected(formula);
                     return;
                 }
             }
 
             // 一覧の先頭を選択状態に宇する
             let firstItem: IStatementItem = _.head(self.satementItems());
-            self.statementItemSelected(firstItem);
             if (isNullOrUndefined(firstItem)) {
                 self.statementItemNameCdSelected(null);
             } else {
@@ -72,7 +69,10 @@ module nts.uk.pr.view.qmm019.o.viewmodel {
 
         decide() {
             let self = this;
-            windows.setShared("QMM019O_RESULTS", self.statementItemSelected());
+            let sttItem = _.find(self.satementItems(), (item: IStatementItem) => {
+                return item.itemNameCd == self.statementItemNameCdSelected();
+            })
+            windows.setShared("QMM019O_RESULTS", sttItem);
             windows.close();
         }
 

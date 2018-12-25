@@ -20,7 +20,7 @@ public class AddPerProcessClsSetCommandHandler extends CommandHandler<PerProcess
     @Override
     protected void handle(CommandHandlerContext<PerProcessClsSetCommand> context) {
         PerProcessClsSetCommand command = context.getCommand();
-        repository.add(new PerProcessClsSet(command.getCid(), command.getProcessCateNo(), command.getUid()));
+        repository.add(new PerProcessClsSet(command.getCid(), command.getUid(), command.getProcessCateNo()));
     
     }
 }

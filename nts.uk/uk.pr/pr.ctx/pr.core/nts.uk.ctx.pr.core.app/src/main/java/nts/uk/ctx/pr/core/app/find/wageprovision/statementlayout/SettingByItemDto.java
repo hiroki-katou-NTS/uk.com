@@ -21,6 +21,7 @@ public class SettingByItemDto {
     String shortName;
     private PaymentItemDetailDto paymentItemDetailSet;
     private DeductionItemDetailDto deductionItemDetailSet;
+    private ItemRangeSetDto itemRangeSet;
 
     public SettingByItemDto(SettingByItem domain) {
         this.itemPosition = domain.getItemPosition();
@@ -31,10 +32,12 @@ public class SettingByItemDto {
             this.shortName = settingByItemCustom.getShortName();
             this.paymentItemDetailSet = settingByItemCustom.getPaymentItemDetailSet().map(i -> new PaymentItemDetailDto(i)).orElse(null);
             this.deductionItemDetailSet = settingByItemCustom.getDeductionItemDetailSet().map(i -> new DeductionItemDetailDto(i)).orElse(null);
+            this.itemRangeSet = settingByItemCustom.getItemRangeSetting().map(i -> new ItemRangeSetDto(i)).orElse(null);
         } else {
             this.shortName = null;
             this.paymentItemDetailSet = null;
             this.deductionItemDetailSet = null;
+            this.itemRangeSet = null;
         }
     }
 }

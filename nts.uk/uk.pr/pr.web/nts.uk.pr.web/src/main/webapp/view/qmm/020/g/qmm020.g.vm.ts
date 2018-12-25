@@ -36,17 +36,6 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
 
         }
 
-        openLScreen(){
-            block.invisible();
-            let self = this;
-            modal("/view/qmm/020/l/index.xhtml").onClosed(()=>{
-                let params = getShared(model.PARAMETERS_SCREEN_L.OUTPUT);
-                if(params && params.isSubmit) location.reload();
-
-            });
-            block.clear();
-        }
-
         loadGird(){
             let self = this;
             if($("#G3_1").length > 0){
@@ -54,7 +43,7 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                 $("#G2_3").after('<table id="G3_1"></table>');
             }
             $("#G3_1").ntsGrid({
-                height: '320px',
+                height: '311px',
                 dataSource: self.listStateLinkSettingMaster(),
                 primaryKey: 'id',
                 virtualization: true,
@@ -192,7 +181,6 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
         }
 
         openMScreen(item, code) {
-            block.invisible();
             let self = this;
             let salaryCode = item.displayE3_4.split('    ')[0];
             let bonusCode = item.displayE3_5.split('    ')[0];
@@ -211,11 +199,10 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                 }
 
             });
-            block.clear();
         }
 
         openJScreen() {
-            block.invisible();
+
             let self = this;
             let start = 0;
             if(self.listStateCorrelationHisSalary() && self.listStateCorrelationHisSalary().length > 0) {
@@ -234,11 +221,11 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                     self.hisIdSelected(HIS_ID_TEMP);
                 }
             });
-            block.clear();
+
         }
 
         openKScreen(){
-            block.invisible();
+
             let self = this;
             let index = _.findIndex(self.listStateCorrelationHisSalary(), {hisId: self.hisIdSelected()});
             self.index(self.getIndex(self.hisIdSelected()));
@@ -264,7 +251,6 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
             modal("/view/qmm/020/k/index.xhtml").onClosed(function() {
                 let params = getShared(model.PARAMETERS_SCREEN_K.OUTPUT);
                 if(params && params.modeEditHistory == 1) {
-                    self.initScreen(self.hisIdSelected());
                     service.getStateCorrelationHisSalary().done((listStateCorrelationHisSalary: Array<StateCorrelationHisSalary>)=>{
                         if (listStateCorrelationHisSalary && listStateCorrelationHisSalary.length > 0) {
                             self.listStateCorrelationHisSalary(StateCorrelationHisSalary.convertToDisplay(listStateCorrelationHisSalary));
@@ -282,7 +268,7 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                 $('#G2_1').focus();
 
             });
-            block.clear();
+
         }
 
         getIndex(hisId: string) {

@@ -92,7 +92,7 @@
                         <div class="cell valign-center">
                             <com:ko-if bind="$vm.screenControl().visibleE2_3()">
                                 <!--E2_3-->
-                                <div class="label" data-bind="text: shortName"/>
+                                <div class="label limited-label" data-bind="text: shortName"/>
                             </com:ko-if>
                         </div>
                     </div>
@@ -104,7 +104,7 @@
                         <div class="cell valign-center">
                             <!--E2_5-->
                             <div id="E2_5" tabindex="4" data-bind="ntsComboBox: {
-                                name: '#[QMM019_111]',
+                                name: '#{i18n.getText('QMM019_111')}',
                                 options: $vm.totalObjAtrs,
                                 optionsValue: 'code',
                                 visibleItemsCount: 4,
@@ -112,7 +112,7 @@
                                 optionsText: 'name',
                                 required: true,
                                 enable: $vm.screenControl().enableE2_5(),
-                                selectFirstIfNull: true,
+                                selectFirstIfNull: false,
                                 columns: [
                                     { prop: 'name', length: 10 },
                                 ]}"/>
@@ -126,7 +126,7 @@
                         <div class="cell valign-center">
                             <!--E2_8-->
                             <div id="E2_8" tabindex="5" data-bind="ntsComboBox: {
-                                name: '#[QMM019_112]',
+                                name: '#{i18n.getText('QMM019_112')}',
                                 options: $vm.calcMethods,
                                 optionsValue: 'code',
                                 visibleItemsCount: 6,
@@ -158,7 +158,7 @@
                             </div>
                             <div class="cell valign-center">
                                 <!--E5_4-->
-                                <div class="label" data-bind="text: perValName"/>
+                                <div class="label limited-label" data-bind="text: perValName"/>
                             </div>
                         </div>
                     </com:ko-if>
@@ -179,7 +179,7 @@
                             </div>
                             <div class="cell valign-center">
                                 <!--E6_4-->
-                                <div class="label" data-bind="text: formulaName"/>
+                                <div class="label limited-label" data-bind="text: formulaName"/>
                             </div>
                         </div>
                     </com:ko-if>
@@ -200,7 +200,7 @@
                             </div>
                             <div class="cell valign-center">
                                 <!--E7_4-->
-                                <div class="label" data-bind="text: wageTableName"/>
+                                <div class="label limited-label" data-bind="text: wageTableName"/>
                             </div>
                         </div>
                     </com:ko-if>
@@ -215,6 +215,7 @@
                                 <input id="E8_2" data-bind="ntsNumberEditor: {
                                     name: '#[QMM019_143]',
                                     value: commonAmount,
+                                    required: true,
                                     option: $vm.option,
                                     constraint: 'CommonAmount'}"/>
                             </div>
@@ -237,7 +238,7 @@
                             </div>
                             <div class="cell valign-center">
                                 <!--E9_4-->
-                                <div class="label" data-bind="text: statementItemName"/>
+                                <div class="label limited-label" data-bind="text: statementItemName"/>
                             </div>
                         </div>
                     </com:ko-if>
@@ -278,7 +279,7 @@
                         </div>
                     </div>
                     <div class="table table-error-alarm"
-                         data-bind="with: errorRangeSetting.upperLimitSetting">
+                         data-bind="with: itemRangeSet">
                         <div class="cell valign-center">
                             <!--E3_8-->
                             <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_120')}</div>
@@ -286,13 +287,13 @@
                         <div class="cell valign-center">
                             <!--E3_9-->
                             <div tabindex="8" data-bind="ntsCheckBox: {
-                                checked: valueSettingAtr,
+                                checked: errorUpperLimitSetAtr,
                                 enable: $vm.screenControl().enableE3_9()}"/>
                             <com:ko-if bind="$vm.screenControl().visibleE3_10()">
                                 <!--E3_10-->
                                 <input id="E3_10" tabindex="9" data-bind="ntsNumberEditor: {
                                     name: '#[QMM019_121]',
-                                    value: rangeValue,
+                                    value: errorUpRangeValAmount,
                                     option: $vm.option,
                                     enable: $vm.screenControl().enableE3_10(),
                                     constraint: 'DetailAmountType'}"/>
@@ -306,18 +307,18 @@
                         </div>
                     </div>
                     <div class="table table-error-alarm"
-                         data-bind="with: errorRangeSetting.lowerLimitSetting">
+                         data-bind="with: itemRangeSet">
                         <div class="cell valign-center"/>
                         <div class="cell valign-center">
                             <!--E3_12-->
                             <div tabindex="10" data-bind="ntsCheckBox: {
-                                checked: valueSettingAtr,
+                                checked: errorLowerLimitSetAtr,
                                 enable: $vm.screenControl().enableE3_12()}"/>
                             <com:ko-if bind="$vm.screenControl().visibleE3_13()">
                                 <!--E3_13-->
                                 <input id="E3_13" tabindex="11" data-bind="ntsNumberEditor: {
                                     name: '#[QMM019_123]',
-                                    value: rangeValue,
+                                    value: errorLoRangeValAmount,
                                     option: $vm.option,
                                     enable: $vm.screenControl().enableE3_13(),
                                     constraint: 'DetailAmountType'}"/>
@@ -331,7 +332,7 @@
                         </div>
                     </div>
                     <div class="table table-error-alarm"
-                         data-bind="with: alarmRangeSetting.upperLimitSetting">
+                         data-bind="with: itemRangeSet">
                         <div class="cell valign-center">
                             <!--E3_15-->
                             <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM019_125')}</div>
@@ -339,13 +340,13 @@
                         <div class="cell valign-center">
                             <!--E3_16-->
                             <div tabindex="12" data-bind="ntsCheckBox: {
-                                checked: valueSettingAtr,
+                                checked: alarmUpperLimitSetAtr,
                                 enable: $vm.screenControl().enableE3_16()}"/>
                             <com:ko-if bind="$vm.screenControl().visibleE3_17()">
                                 <!--E3_17-->
                                 <input id="E3_17" tabindex="13" data-bind="ntsNumberEditor: {
                                     name: '#[QMM019_126]',
-                                    value: rangeValue,
+                                    value: alarmUpRangeValAmount,
                                     option: $vm.option,
                                     enable: $vm.screenControl().enableE3_17(),
                                     constraint: 'DetailAmountType'}"/>
@@ -359,18 +360,18 @@
                         </div>
                     </div>
                     <div class="table table-error-alarm"
-                         data-bind="with: alarmRangeSetting.lowerLimitSetting">
+                         data-bind="with: itemRangeSet">
                         <div class="cell valign-center"/>
                         <div class="cell valign-center">
                             <!--E3_19-->
                             <div tabindex="14" data-bind="ntsCheckBox: {
-                                checked: valueSettingAtr,
+                                checked: alarmLowerLimitSetAtr,
                                 enable: $vm.screenControl().enableE3_19()}"/>
                             <com:ko-if bind="$vm.screenControl().visibleE3_20()">
                                 <!--E3_20-->
                                 <input id="E3_20" tabindex="15" data-bind="ntsNumberEditor: {
                                     name: '#[QMM019_128]',
-                                    value: rangeValue,
+                                    value: alarmLoRangeValAmount,
                                     option: $vm.option,
                                     enable: $vm.screenControl().enableE3_20(),
                                     constraint: 'DetailAmountType'}"/>
@@ -442,13 +443,13 @@
                                         <td data-bind="with: errorRangeSetting">
                                             <div class="label range-setting">
                                                 <!--E10_17-->
-                                                <span class="label" data-bind="text: upperLimitSetting.rangeValue()"/>
+                                                <span class="label" data-bind="text: $vm.formatNumber(upperLimitSetting.rangeValue())"/>
                                                 <!--E10_18-->
                                                 <span class="label">#{i18n.getText('QMM019_63')}</span>
                                             </div>
                                             <div class="label range-setting">
                                                 <!--E10_19-->
-                                                <span class="label" data-bind="text: lowerLimitSetting.rangeValue()"/>
+                                                <span class="label" data-bind="text: $vm.formatNumber(lowerLimitSetting.rangeValue())"/>
                                                 <!--E10_20-->
                                                 <span class="label">#{i18n.getText('QMM019_69')}</span>
                                             </div>
@@ -464,13 +465,13 @@
                                         <td data-bind="with: alarmRangeSetting">
                                             <div class="label range-setting">
                                                 <!--E10_21-->
-                                                <span class="label" data-bind="text: upperLimitSetting.rangeValue()"/>
+                                                <span class="label" data-bind="text: $vm.formatNumber(upperLimitSetting.rangeValue())"/>
                                                 <!--E10_22-->
                                                 <span class="label">#{i18n.getText('QMM019_63')}</span>
                                             </div>
                                             <div class="label range-setting">
                                                 <!--E10_23-->
-                                                <span class="label" data-bind="text: lowerLimitSetting.rangeValue()"/>
+                                                <span class="label" data-bind="text: $vm.formatNumber(lowerLimitSetting.rangeValue())"/>
                                                 <!--E10_24-->
                                                 <span class="label">#{i18n.getText('QMM019_69')}</span>
                                             </div>

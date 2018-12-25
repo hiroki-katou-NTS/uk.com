@@ -8,12 +8,12 @@ module nts.uk.pr.view.qmm017.h.viewmodel {
     export class ScreenModel {
         formulaCode: KnockoutObservable<string> = ko.observable('');
         formulaName: KnockoutObservable<string> = ko.observable('');
-        calculationMethod: KnockoutObservable<number> = ko.observable(0);
+        settingMethod: KnockoutObservable<number> = ko.observable(0);
         masterBranchUse: KnockoutObservable<number> = ko.observable(0);
         masterBranchUseItem: KnockoutObservableArray<model.EnumModel> = ko.observableArray(model.getMasterBranchUseEnumModel());
         masterUse: KnockoutObservable<number> = ko.observable(null);
         masterUseItem: KnockoutObservableArray<model.EnumModel> = ko.observableArray(model.getMasterUseEnumModel());
-        displayCalculationMethod: KnockoutObservable<string> = ko.observable('');
+        displaySettingMethod: KnockoutObservable<string> = ko.observable('');
         startMonth: KnockoutObservable<string> = ko.observable('');
         displayStartJapanYearMonth: KnockoutObservable<string> = ko.observable('');
         takeoverMethod: KnockoutObservable<number> = ko.observable(1);
@@ -35,8 +35,8 @@ module nts.uk.pr.view.qmm017.h.viewmodel {
                 }
                 self.formulaCode(selectedFormula.formulaCode);
                 self.formulaName(selectedFormula.formulaName);
-                self.calculationMethod(selectedFormula.calculationMethod);
-                self.displayCalculationMethod(selectedFormula.displaySettingMethod);
+                self.settingMethod(selectedFormula.settingMethod);
+                self.displaySettingMethod(selectedFormula.displaySettingMethod);
                 if (displayLastHistory.length > 0) {
                     self.takeoverItem.push(new model.EnumModel(model.TAKEOVER_METHOD.FROM_LAST_HISTORY, getText('QMM008_200', [displayLastHistory])));
                     self.takeoverMethod(0);

@@ -716,72 +716,22 @@ module nts.uk.pr.view.qmm017.share.model {
 
     // 賃金テーブル
     export interface IWageTable {
-        cid: string,
-        wageTableCode: string,
-        wageTableName: string,
-        elementInformation: IElementInformation,
-        elementSetting: number,
+        code: string,
+        name: string
         remarkInformation: string,
     }
     // 賃金テーブル
     export class WageTable {
-        cid: KnockoutObservable<string> = ko.observable(null);
-        wageTableCode: KnockoutObservable<string> = ko.observable(null);
-        wageTableName: KnockoutObservable<string> = ko.observable(null);
-        elementInformation: KnockoutObservable<ElementInformation> = ko.observable(null);
-        elementSetting: KnockoutObservable<number> = ko.observable(null);
+        code: KnockoutObservable<string> = ko.observable(null);
+        name: KnockoutObservable<string> = ko.observable(null);
         remarkInformation: KnockoutObservable<string> = ko.observable(null);
         constructor(params: IWageTable) {
             let self = this;
-            this.cid(params ? params.cid : null);
-            this.wageTableCode(params ? params.wageTableCode : null);
-            this.wageTableName(params ? params.wageTableName : null);
-            this.elementInformation(new ElementInformation(params ? params.elementInformation : null));
-            this.elementSetting(params ? params.elementSetting : 0);
+            this.code(params ? params.code : null);
+            this.name(params ? params.name : null);
             this.remarkInformation(params ? params.remarkInformation : null);
         }
     }
-
-    // 要素情報
-    export interface IElementInformation{
-        oneDimensionElement: IElementAttribute,
-        twoDimensionElement: IElementAttribute,
-        threeDimensionElement: IElementAttribute,
-    }
-    // 要素情報
-    export class ElementInformation{
-        oneDimensionElement: KnockoutObservable<ElementAttribute> = ko.observable(null);
-        twoDimensionElement: KnockoutObservable<ElementAttribute> = ko.observable(null);
-        threeDimensionElement: KnockoutObservable<ElementAttribute> = ko.observable(null);
-        constructor (params: IElementInformation) {
-            this.oneDimensionElement(new ElementAttribute(params ? params.oneDimensionElement: null));
-            this.twoDimensionElement(new ElementAttribute(params ? params.twoDimensionElement: null));
-            this.threeDimensionElement(new ElementAttribute(params ? params.threeDimensionElement: null));
-        }
-    }
-
-
-    // 要素の属性
-    export interface IElementAttribute {
-        masterNumericClassification: number,
-        fixedElement: string,
-        optionalAdditionalElement: string,
-    }
-    // 要素の属性
-    export class ElementAttribute {
-        masterNumericClassification: KnockoutObservable<number> = ko.observable(null);
-        fixedElement: KnockoutObservable<string> = ko.observable(null);
-        optionalAdditionalElement: KnockoutObservable<string> = ko.observable(null);
-        // for display data
-        elementName: KnockoutObservable<string> = ko.observable(null);
-        constructor (params: IElementAttribute) {
-            this.masterNumericClassification(params ? params.masterNumericClassification : null);
-            this.fixedElement(params ? params.fixedElement : null);
-            this.optionalAdditionalElement(params ? params.optionalAdditionalElement : null);
-        }
-    }
-
-
 
     // 年月期間の汎用履歴項目
     export interface IGenericHistoryYearMonthPeriod {
@@ -815,72 +765,5 @@ module nts.uk.pr.view.qmm017.share.model {
                 return this.startMonth() ? nts.uk.time.yearmonthInJapanEmpire(this.startMonth()).toString().split(' ').join(''): "";
             }, this);
         }
-    }
-
-    export class DetailCalculationElement {
-        PAYMENT_ITEM;
-        DEDUCTION_ITEM;
-        ATTENDANCE_ITEM;
-        COMPANY_UNIT_PRICE;
-        INDIVIDUAL_UNIT_PRICE;
-        CONDITION_EXPRESSION;
-        AND;
-        OR;
-        ROUND_OFF;
-        TRUNCATION;
-        ROUND_UP;
-        MAX_VALUE;
-        MIN_VALUE;
-        NUMBER_OF_FAMILY_MEMBER;
-        ADDITIONAL_YEAR_MONTH;
-        YEAR_EXTRACTION;
-        MONTH_EXTRACTION;
-        SYSTEM_YMD_DATE;
-        SYSTEM_YM_DATE;
-        SYSTEM_Y_DATE;
-        PROCESSING_YEAR_MONTH;
-        PROCESSING_YEAR;
-        REFERENCE_TIME;
-        STANDARD_DAY;
-        WORKDAY;
-        FORMULA;
-        WAGE_TABLE;
-        constructor(){}
-    }
-
-    export enum DetailCalculationElement {
-        PAYMENT_ITEM = 0,
-        DEDUCTION_ITEM = 1,
-        ATTENDANCE_ITEM = 2,
-        COMPANY_UNIT_PRICE = 3,
-        INDIVIDUAL_UNIT_PRICE = 4,
-        ALL_FUNCTION = 5,
-        TIME_FUNCTION = 6,
-        PAYROLL_FUNCTION = 7,
-        LOGIC = 8,
-        STRING_OPERATION = 9,
-        DATE_TIME = 10,
-        MATHEMATICS = 11,
-        ALL_SYSTEM_VARIABLE = 12,
-        CONDITION_EXPRESSION = 13,
-        AND = 14,
-        OR = 15,
-        ROUND_OFF = 16,
-        TRUNCATION = 17,
-        ROUND_UP = 18,
-        MAX_VALUE = 19,
-        MIN_VALUE = 20,
-        NUMBER_OF_FAMILY_MEMBER = 21,
-        ADDITIONAL_YEAR_MONTH = 22,
-        YEAR_EXTRACTION = 23,
-        MONTH_EXTRACTION = 24,
-        SYSTEM_YMD_DATE = 25,
-        SYSTEM_YM_DATE = 26,
-        SYSTEM_Y_DATE = 27,
-        PROCESSING_YEAR_MONTH = 28,
-        PROCESSING_YEAR = 29,
-        REFERENCE_TIME = 30,
-        STANDARD_DAY = 31,
-        WORKDAY = 32
     }
 }

@@ -88,7 +88,7 @@ public class StatementLayoutService {
         if (isClone == 0) {
             statementLayoutSet = getNewStatementLayoutSet(histIdNew, layoutPattern);
         } else {
-            statementLayoutSet = cloneStatementLayoutSet(histIdNew, histIdClone, layoutPattern);
+            statementLayoutSet = cloneStatementLayoutSet(cid, statementCode, histIdNew, histIdClone, layoutPattern);
         }
 
         if(statementLayoutSet.isPresent()) {
@@ -106,7 +106,7 @@ public class StatementLayoutService {
         if (isClone == 1) {
             statementLayoutSet = getNewStatementLayoutSet(histIdNew, layoutPattern);
         } else if(lastHistOptional.isPresent()){
-            statementLayoutSet = cloneStatementLayoutSet(histIdNew, lastHistOptional.get().identifier(), layoutPattern);
+            statementLayoutSet = cloneStatementLayoutSet(cid, statementCode, histIdNew, lastHistOptional.get().identifier(), layoutPattern);
         } else {
             return Optional.empty();
         }
@@ -182,8 +182,8 @@ public class StatementLayoutService {
     }
 
     //既存のレイアウトをコピーする場合
-    private Optional<StatementLayoutSet> cloneStatementLayoutSet(String histIdNew, String histIdClone, int layoutPattern) {
-        Optional<StatementLayoutSet> cloneStatementLayoutSetOptional = statementLayoutSetRepo.getStatementLayoutSetById(histIdClone);
+    private Optional<StatementLayoutSet> cloneStatementLayoutSet(String cid, String code, String histIdNew, String histIdClone, int layoutPattern) {
+        Optional<StatementLayoutSet> cloneStatementLayoutSetOptional = statementLayoutSetRepo.getStatementLayoutSetById(cid, code, histIdClone);
 
         if(cloneStatementLayoutSetOptional.isPresent()) {
             StatementLayoutSet cloneStatementLayoutSet = cloneStatementLayoutSetOptional.get();

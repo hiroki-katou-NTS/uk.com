@@ -93,8 +93,6 @@ module nts.uk.pr.view.qmm019.h.viewmodel {
 
                 if(data.length > 0) {
                     self.statementLayoutCodeSelected(data[0].statementCode);
-                } else {
-                    //TODO
                 }
 
                 block.clear();

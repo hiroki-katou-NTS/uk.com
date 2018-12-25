@@ -18,6 +18,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.salaryindividualamountname.SalIndAmountNameRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemCustom;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.DeductionItemDetailSet;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.LineByLineSetting;
@@ -67,7 +68,7 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 		StatementLayoutExportQuery cmd = exportServiceContext.getQuery();
 		List<String> sttCodes = exportServiceContext.getQuery().getStatementCodes();
 		int processingDate = cmd.getProcessingDate();
-		List<StatementLayoutSetExportData> exportData = new ArrayList<StatementLayoutSetExportData>();
+		List<StatementLayoutSetExportData> exportData = new ArrayList<>();
 
 		// ドメインモデル「賃金テーブル」を取得する
 		Map<String, String> wageTableMap = wageTableRepo.getAllWageTable(cid).stream()
@@ -80,7 +81,7 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 		Map<String, String> formulaMap = formulaRepo.getAllFormula().stream()
 				.collect(Collectors.toMap(x -> x.getFormulaCode().v(), x -> x.getFormulaName().v()));
 		Map<MapKey, String> statementItemMap = statementItemRepo.getItemCustomByDeprecated(cid, false).stream()
-				.collect(Collectors.toMap(x -> new MapKey(x.getItemNameCd(), x.getCategoryAtr()), x -> x.getName()));
+				.collect(Collectors.toMap(x -> new MapKey(x.getItemNameCd(), x.getCategoryAtr()), StatementItemCustom::getName));
 
 		// ドメインモデル「明細書レイアウト」を取得する
 		Map<String, StatementLayout> statementLayoutMap = statementLayoutRepo
@@ -98,7 +99,7 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 			StatementLayout sttLayout;
 			StatementLayoutHist sttLayoutHist;
 			String histId = null;
-			List<SettingByCtgExportData> listSettingByCtgEx = new ArrayList<SettingByCtgExportData>();
+			List<SettingByCtgExportData> listSettingByCtgEx = new ArrayList<>();
 
 			// ドメインモデル「明細書レイアウト」を取得する
 			if (!statementLayoutMap.containsKey(sttCode)) {
@@ -116,28 +117,13 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 			if (histId == null)
 				continue;
 			// ドメインモデル「明細書レイアウト設定」を取得する
-			Optional<StatementLayoutSet> sttLayoutSetOtp = statementLayoutSetRepo.getStatementLayoutSetById(histId);
+			Optional<StatementLayoutSet> sttLayoutSetOtp = statementLayoutSetRepo.getStatementLayoutSetById(cid, sttCode, histId);
 			// 取得した給与項目IDごとに処理を実施する
 			if (!sttLayoutSetOtp.isPresent())
 				continue;
 			StatementLayoutSet sttLayoutSet = sttLayoutSetOtp.get();
 			for (SettingByCtg set : sttLayoutSet.getListSettingByCtg()) {
 				SettingByCtgExportData setEx = new SettingByCtgExportData();
-				// ドメインモデル「明細書項目名称」を取得する
-				// ドメインモデル「明細書項目」を取得する
-				switch (set.getCtgAtr()) {
-				case PAYMENT_ITEM:
-					// ドメインモデル「支給項目明細設定」を取得する
-					// paymentItemDetailSetRepo.getPaymentItemDetailSetById(histId);
-					break;
-				case DEDUCTION_ITEM:
-					// ドメインモデル「控除項目明細設定」を取得する
-					// deductionItemDetailSetRepo.getDeductionItemDetailSetById(histId);
-					break;
-				default:
-					break;
-				}
-				// ドメインモデル「明細書項目範囲設定」を取得する
 
 				List<LineByLineSettingExportData> listLineByLineSetEx = this.mapLineSetting(set, wageTableMap,
 						salIndAmountNameMap, formulaMap, statementItemMap);
@@ -160,7 +146,7 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 	private List<LineByLineSettingExportData> mapLineSetting(SettingByCtg set, Map<String, String> wageTableMap,
 			Map<MapKey, String> salIndAmountNameMap, Map<String, String> formulaMap,
 			Map<MapKey, String> statementItemMap) {
-		List<LineByLineSettingExportData> listLineByLineSetEx = new ArrayList<LineByLineSettingExportData>();
+		List<LineByLineSettingExportData> listLineByLineSetEx = new ArrayList<>();
 		for (LineByLineSetting line : set.getListLineByLineSet()) {
 			LineByLineSettingExportData lineEx = new LineByLineSettingExportData();
 			List<SettingByItemExportData> listSetByItemEx = this.mapItemSetting(line, set.getCtgAtr(), wageTableMap,
@@ -177,7 +163,7 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 	private List<SettingByItemExportData> mapItemSetting(LineByLineSetting line, CategoryAtr ctgAtr,
 			Map<String, String> wageTableMap, Map<MapKey, String> salIndAmountNameMap, Map<String, String> formulaMap,
 			Map<MapKey, String> statementItemMap) {
-		List<SettingByItemExportData> listSetByItemEx = new ArrayList<SettingByItemExportData>();
+		List<SettingByItemExportData> listSetByItemEx = new ArrayList<>();
 		for (SettingByItem item : line.getListSetByItem()) {
 			SettingByItemExportData itemEx = new SettingByItemExportData();
 			itemEx.setItemPosition(item.getItemPosition());
@@ -187,9 +173,11 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 				itemEx.setItemName(itemCustom.getShortName());
 				switch (ctgAtr) {
 				case PAYMENT_ITEM:
+				    // ドメインモデル「支給項目明細設定」を取得する
 					this.mapPayment(itemEx, itemCustom, wageTableMap, salIndAmountNameMap, formulaMap);
 					break;
 				case DEDUCTION_ITEM:
+				    // ドメインモデル「控除項目明細設定」を取得する
 					this.mapDeduction(itemEx, itemCustom, wageTableMap, salIndAmountNameMap, formulaMap,
 							statementItemMap);
 					break;
@@ -214,8 +202,8 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 			paymentEx.setTotalObj(paymentItemDetail.getTotalObj());
 			paymentEx.setCalcMethod(paymentItemDetail.getCalcMethod());
 			paymentEx.setProportionalAtr(paymentItemDetail.getProportionalAtr());
-			ItemRangeSetExportData itemRangeSet = new ItemRangeSetExportData();
-			paymentEx.setItemRangeSet(itemRangeSet);
+			// ドメインモデル「明細書項目範囲設定」を取得する
+			paymentEx.setItemRangeSet(this.getItemRangeSet(itemCustom));
 
 			switch (paymentItemDetail.getCalcMethod()) {
 			case CACL_FOMULA:
@@ -255,6 +243,8 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 				break;
 			}
 			itemEx.setPayment(paymentEx);
+		}else{
+			itemEx.setPayment(null);
 		}
 	}
 
@@ -268,8 +258,8 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 			deductionEx.setTotalObj(deductionItemDetail.getTotalObj());
 			deductionEx.setCalcMethod(deductionItemDetail.getCalcMethod());
 			deductionEx.setProportionalAtr(deductionItemDetail.getProportionalAtr());
-			ItemRangeSetExportData itemRangeSet = new ItemRangeSetExportData();
-			deductionEx.setItemRangeSet(itemRangeSet);
+			// ドメインモデル「明細書項目範囲設定」を取得する
+			deductionEx.setItemRangeSet(this.getItemRangeSet(itemCustom));
 
 			switch (deductionItemDetail.getCalcMethod()) {
 			case CACL_FOMULA:
@@ -314,25 +304,25 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 				break;
 			}
 			itemEx.setDeduction(deductionEx);
+		}else{
+			itemEx.setDeduction(null);
 		}
 	}
 
 	private void mapAttend(SettingByItemExportData itemEx, SettingByItemCustom itemCustom) {
 		AttendExportData attendEx = new AttendExportData();
-		ItemRangeSetExportData itemRangeSet = new ItemRangeSetExportData();
-		attendEx.setItemRangeSet(itemRangeSet);
+		// ドメインモデル「明細書項目範囲設定」を取得する
+		attendEx.setItemRangeSet(this.getItemRangeSet(itemCustom));
 		itemEx.setAttend(attendEx);
 	}
 
-	List<String> getItemIds(SettingByCtg settingByCtg) {
-		List<String> itemIds = new ArrayList<String>();
-		for (LineByLineSetting line : settingByCtg.getListLineByLineSet()) {
-			for (SettingByItem item : line.getListSetByItem()) {
-				itemIds.add(item.getItemId());
-			}
-		}
-		return itemIds;
-	}
+    private Optional<ItemRangeSetExportData> getItemRangeSet(SettingByItemCustom itemCustom) {
+        if (itemCustom.getItemRangeSetting().isPresent()) {
+            return Optional.of(new ItemRangeSetExportData(itemCustom.getItemRangeSetting().get()));
+        } else {
+            return Optional.empty();
+        }
+    }
 
 	private static String formatCurrency(Long number) {
 		if (number == null)

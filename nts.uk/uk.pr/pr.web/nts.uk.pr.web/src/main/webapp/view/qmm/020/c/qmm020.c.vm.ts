@@ -216,21 +216,21 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
                 $("#C2_3").after('<table id="grid2"></table>');
             }
             $("#grid2").ntsGrid({
-                height: '350px',
+                height: '311px',
                 dataSource: self.items(),
                 primaryKey: 'id',
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 columns: [
                     { headerText: '', key: 'id', dataType: 'number', ntsControl: 'Label',hidden: true },
-                    { headerText: getText('QMM020_26'),key: 'employeeCode', dataType: 'string', width: '100px'},
-                    { headerText: getText('QMM020_27'),key: 'employeeName', dataType: 'string', width: '150px',  },
+                    { headerText: getText('QMM020_26'),key: 'employeeCode', dataType: 'string', width: '50px'},
+                    { headerText: getText('QMM020_27'),key: 'employeeName', dataType: 'string', width: '200px',  },
                     { headerText: getText('QMM020_20'), key: 'open', dataType: 'string', width: '80px', unbound: true, ntsControl: 'ButtonSalary' },
                     { headerText: '',template: '<div>${salaryCode}</div>', key: 'salaryCode', dataType: 'string', width: '30px' },
-                    { headerText: '',template: '<div>${salaryLayoutName}</div>', key: 'salaryLayoutName', dataType: 'string', width: '150px' },
+                    { headerText: '',template: '<div style="text-overflow: ellipsis; ">${salaryLayoutName}</div>', key: 'salaryLayoutName', dataType: 'string', width: '200px' },
                     { headerText: getText('QMM020_22'), key: 'open1', dataType: 'string', width: '80px', unbound: true, ntsControl: 'ButtonBonus' },
                     { headerText: '',template: '<div>${bonusCode}</div>', key: 'bonusCode', dataType: 'string', width: '30px' },
-                    { headerText: '',template: '<div>${bonusLayoutName}</div>', key: 'bonusLayoutName', dataType: 'string', width: '150px' },
+                    { headerText: '',template: '<div>${bonusLayoutName}</div>', key: 'bonusLayoutName', dataType: 'string', width: '200px' },
 
                 ],
                 features: [
@@ -249,15 +249,6 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
             block.clear();
         }
 
-        openScreenL(){
-            block.invisible();
-            let self = this;
-            modal("/view/qmm/020/l/index.xhtml").onClosed(()=>{
-                let params = getShared(model.PARAMETERS_SCREEN_L.OUTPUT);
-                if(params && params.isSubmit) location.reload();
-            });
-            block.clear();
-        }
 
         openScreenM(item){
 
@@ -337,7 +328,7 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
         }
 
         openScreenK(){
-            block.invisible();
+
             let self = this;
             let listStateCorrelationHis = [];
             service.getStateCorrelationHisEmployeeById().done((data)=>{
@@ -356,7 +347,6 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
             }).fail((err)=>{
                 if(err) dialog.alertError(err);
             }).always(()=>{
-                block.clear();
             });
 
             modal("/view/qmm/020/k/index.xhtml").onClosed(()=>{

@@ -44,7 +44,7 @@ module nts.uk.pr.view.qmm019.b.viewmodel {
             });
 
             self.itemHistoryDivisionList = ko.observableArray([
-                new shareModel.BoxModel(0, getText('QMM019_46')),
+                new shareModel.BoxModel(0, getText('QMM019_46', ["nguuuu"])),
                 new shareModel.BoxModel(1, getText('QMM019_47'))
             ]);
             self.itemHistoryDivision = ko.observable(0);

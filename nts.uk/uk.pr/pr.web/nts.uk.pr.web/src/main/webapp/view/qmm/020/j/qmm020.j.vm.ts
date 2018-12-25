@@ -8,7 +8,7 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
     export class ScreenModel {
         itemList:               KnockoutObservableArray<model.ItemModel> = ko.observableArray(getHistoryEditMethod(false));
         isFirst:              KnockoutObservable<boolean> = ko.observable(true);
-        transferMethod:          KnockoutObservable<number> = ko.observable(1);
+        transferMethod:          KnockoutObservable<number> = ko.observable(0);
         startYearMonthPeriod: KnockoutObservable<number> = ko.observable(null);
         startDateMaster: KnockoutObservable<string> = ko.observable();
         endYearMonthPeriod: KnockoutObservable<number> = ko.observable(999912);
@@ -64,10 +64,6 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
             let self = this;
             self.params(params);
             self.modeScreen(self.getMode(self.params().modeScreen));
-            if (self.modeScreen() == MODE_SCREEN.MODE_ONE || self.modeScreen() == MODE_SCREEN.MODE_THREE) {
-                let windowSize = nts.uk.ui.windows.getSelf();
-                windowSize.$dialog.height(250);
-            }
             if (self.modeScreen() == nts.uk.pr.view.qmm020.j.viewmodel.MODE_SCREEN.MODE_TWO) {
                 self.startDateMaster(self.params().startDateMaster);
             }
@@ -85,7 +81,8 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
                 self.itemList()[0] = new model.ItemModel(EDIT_METHOD.COPY, getText('QMM020_59', [display]));
             }
             else{
-                self.itemList()[0] = new model.ItemModel(EDIT_METHOD.COPY, getText('QMM020_59'));
+                self.itemList()[0] = new model.ItemModel(EDIT_METHOD.COPY, getText('QMM020_59', ['']));
+                self.transferMethod = ko.observable(1);
             }
         }
         cancel(){
@@ -107,6 +104,7 @@ module nts.uk.pr.view.qmm020.j.viewmodel {
         }
         validate() {
             $("#J1_3").trigger("validate");
+            $("#J1_12").trigger("validate");
             $("#J1_13").trigger("validate");
         }
 

@@ -67,7 +67,13 @@ module nts.uk.pr.view.qmm020.m.viewmodel {
                 dto.statementCode = item.statementCode;
                 dto.statementName = item.statementName;
                 dto.displayYearMonth = this.convertMonthYearToString(item.startYearMonth)+ " " + to + " "+this.convertMonthYearToString(item.endYearMonth);;
-
+                if(dto.statementName.length > 10){
+                    setTimeout(function() {
+                        $('.limited-label').css("border-left","none");
+                        $('.limited-label').css("border-right","none");
+                        $('#multi-list tr td:nth-child(2)').addClass("limited-label");
+                    }, 50);
+                }
                 listStatementDto.push(dto);
             })
             return listStatementDto;
