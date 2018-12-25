@@ -34,7 +34,8 @@ public class JpaRoleIndividualGrantRepository extends JpaRepository implements R
 			+ " AND c.strD <= :date AND c.endD >= :date";
 	//hoatt
 	private static final String SELECT_BY_DATE_ROLE_CID_TYPE = "SELECT c FROM SacmtRoleIndiviGrant c"
-			+ " WHERE c.sacmtRoleIndiviGrantPK.userID = :userID"
+			+ " WHERE c.sacmtRoleIndiviGrantPK.companyID = :companyId"
+			+ " AND c.sacmtRoleIndiviGrantPK.userID = :userId"
 			+ " AND c.strD <= :date AND c.endD >= :date" 
 			+ " AND c.sacmtRoleIndiviGrantPK.roleType != :roleType";
 	@Override
