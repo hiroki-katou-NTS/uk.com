@@ -40,6 +40,8 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.dtos.ClosureDto;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dtos.DateApprovalStatusDto;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dtos.OneMonthApprovalStatusDto;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
+import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -110,19 +112,12 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 		return query;
 	}
 
-	private List<ApprovalEmployeeDto> buildApprovalEmployeeData(List<RegulationInfoEmployeeQueryR> lstEmployee,
+	private List<ApprovalEmployeeDto> buildApprovalEmployeeData(List<Identification> listIdentification,List<RegulationInfoEmployeeQueryR> lstEmployee,
 			ApprovalRootOfEmployeeImport approvalRootOfEmployeeImport) {
 
 		List<ApprovalEmployeeDto> lstApprovalEmployee = new ArrayList<>();
 		List<ApprovalRootSituation> lstApproval = approvalRootOfEmployeeImport.getApprovalRootSituations();
 
-//		GeneralDate startDate = GeneralDate.ymd(lstApproval.get(0).getAppDate().year(),lstApproval.get(0).getAppDate().month(),1);
-//		GeneralDate endDate = GeneralDate.ymd(lstApproval.get(0).getAppDate().year(),
-//												lstApproval.get(0).getAppDate().month(),
-//												lstApproval.get(0).getAppDate().lastDateInMonth());
-		
-		
-		
 		for (RegulationInfoEmployeeQueryR empQ : lstEmployee) {
 			ApprovalEmployeeDto approvalEmployee = new ApprovalEmployeeDto();
 
@@ -141,23 +136,33 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 
 						dateApvS.setStatus(3);
 						dateApvS.setDate(apv.getAppDate());
-
-						
-						if (ApproverEmployeeState.COMPLETE.equals(state) 
-								|| ApproverEmployeeState.PHASE_PASS.equals(state)){
-							dateApvS.setStatus(0);
-						}else if(ApproverEmployeeState.PHASE_DURING.equals(state)) {
-							if(ApprovalActionByEmpl.APPROVALED.equals(aproval)) {
+						boolean check = false;
+						for(Identification identification : listIdentification) {
+							if(apv.getAppDate().equals(identification.getProcessingYmd()) && apv.getTargetID().equals(identification.getEmployeeId()) ) {
+								check = true;
+								break;
+							}
+						}
+						if(check) {
+							if (ApproverEmployeeState.COMPLETE.equals(state) 
+									|| ApproverEmployeeState.PHASE_PASS.equals(state)){
 								dateApvS.setStatus(0);
-							}else if(ApprovalActionByEmpl.APPROVAL_REQUIRE.equals(aproval) ) {
-								dateApvS.setStatus(1);
-							}else {
+							}else if(ApproverEmployeeState.PHASE_DURING.equals(state)) {
+								if(ApprovalActionByEmpl.APPROVALED.equals(aproval)) {
+									dateApvS.setStatus(0);
+								}else if(ApprovalActionByEmpl.APPROVAL_REQUIRE.equals(aproval) ) {
+									dateApvS.setStatus(1);
+								}else {
+									dateApvS.setStatus(2);
+								}
+								
+							}else if(ApproverEmployeeState.PHASE_LESS.equals(state)) {
 								dateApvS.setStatus(2);
 							}
-							
-						}else if(ApproverEmployeeState.PHASE_LESS.equals(state)) {
-							dateApvS.setStatus(2);
+						}else {
+							dateApvS.setStatus(4);
 						}
+						
 						
 						
 //						if (ApprovalActionByEmpl.APPROVALED.equals(aproval)
@@ -232,6 +237,7 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 	public OneMonthApprovalStatusDto getOneMonthApprovalStatus(Integer closureIdParam, GeneralDate startDateParam,
 			GeneralDate endDateParam) {
 		YearMonth currentYearMonth = GeneralDate.today().yearMonth();
+		List<Identification> listIdentification = new ArrayList<>();
 		OneMonthApprovalStatusDto oneMonthApprovalStatusDto = new OneMonthApprovalStatusDto();
 		// 対応するドメインモデル「承認処理の利用設定」を取得する
 		Optional<ApprovalProcessingUseSetting> approvalProcUseSet = approvalProcessingUseSettingRepository
@@ -303,7 +309,8 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 				//社員ID（List）と指定期間から所属会社履歴項目を取得 【Request：No211】
 				List<AffCompanyHistImport> listAffCompanyHistImport  = this.syCompanyRecordAdapter
 				.getAffCompanyHistByEmployee(new ArrayList<>(listAppId), datePeriod);
-				
+				//日の本人確認を取得する
+				listIdentification = this.getIdentification(new ArrayList<>(listAppId), datePeriod);
 				//取得した「所属会社履歴項目」に当てはまらない対象者、対象日の「ルート状況」を取り除く
 				for(String approvalId  : listAppId) {
 					//loop find approvalID
@@ -380,7 +387,7 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 			System.out.println(lstEmployee.stream().map(x -> x.getEmployeeId()).collect(Collectors.toList()));
 			System.out.println(approvalRootOfEmployeeImport.getApprovalRootSituations().stream().map(x -> x.getTargetID()).distinct().collect(Collectors.toList()));
 			
-			List<ApprovalEmployeeDto> buildApprovalEmployeeData = buildApprovalEmployeeData(lstEmployee,
+			List<ApprovalEmployeeDto> buildApprovalEmployeeData = buildApprovalEmployeeData(listIdentification,lstEmployee,
 					approvalRootOfEmployeeImport);
 			if (buildApprovalEmployeeData.isEmpty()) {
 				oneMonthApprovalStatusDto.setMessageID("Msg_875");
@@ -400,6 +407,15 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 			throw new BusinessException("Msg_873");
 		}
 		return oneMonthApprovalStatusDto;
+	}
+	
+	@Inject
+	private IdentificationRepository identificationRepo; 
+	
+	/**日の本人確認を取得する*/
+	public List<Identification> getIdentification(List<String> employeeId,DatePeriod datePeriod) {
+		List<Identification> listIdentificationRepo = identificationRepo.findByListEmployeeID(employeeId, datePeriod.start(), datePeriod.end());
+		return listIdentificationRepo;
 	}
 	
 	//並び替え条件　=<職場(inlevel)、1>、<分類コード(ASC)、2>、<職位(序列)、3>、<社員コード(ASC)、4>
