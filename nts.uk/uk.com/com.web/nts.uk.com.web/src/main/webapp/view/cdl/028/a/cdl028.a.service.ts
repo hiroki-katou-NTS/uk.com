@@ -2,7 +2,7 @@ module nts.uk.com.view.cdl028.a.service{
 
     import ajax = nts.uk.request.ajax;
         var paths = {
-            getStartMonth: "basic/company/beginningmonth/find"
+            getStartMonth: "at/shared/holidaysetting/companycommon/getFirstMonth"
         }
 
         //get start month
