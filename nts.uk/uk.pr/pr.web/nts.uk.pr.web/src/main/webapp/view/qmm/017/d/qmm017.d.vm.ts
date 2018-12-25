@@ -3,7 +3,8 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
-    import model = nts.uk.pr.view.qmm017.share.model
+    import model = nts.uk.pr.view.qmm017.share.model;
+    import getText = nts.uk.resource.getText;
     export class ScreenModel {
         // tab 1
         lineItemCategoryItem: KnockoutObservableArray<model.EnumModel> = model.getLineItemCategoryItem();
@@ -65,14 +66,36 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         acceptPrefix: Array<any>;
         acceptFunctionPostfix: Array<any>;
         acceptVariablePostfix: Array<any>;
-        PAYMENT = '支給'; DEDUCTION = '控除'; ATTENDANCE = '勤怠'; COMPANY_UNIT_PRICE = '会社単価'; FUNCTION = '関数';
-        INDIVIDUAL_UNIT_PRICE = '個人単価';VARIABLE = '変数'; PERSON = '個人'; FORMULA = '計算式'; WAGE_TABLE = '賃金';
-        CONDITIONAL = '条件式'; AND = 'かつ'; OR = 'または'; ROUND_OFF = '四捨五入'; TRUNCATION = '切り捨て';
-        ROUND_UP = '切り上げ'; MAX_VALUE = '最大値'; MIN_VALUE = '最小値'; NUM_OF_FAMILY_MEMBER = '家族人数';
-        YEAR_MONTH = '年月加算'; YEAR_EXTRACTION = '年抽出'; MONTH_EXTRACTION = '月抽出';
-        SYSTEM_YMD_DATE = 'システム日付（年月日）'; SYSTEM_YM_DATE = 'システム日付（年月）'; SYSTEM_Y_DATE = 'システム日付（年）'; PROCESSING_YEAR_MONTH = '処理年月';
-        PROCESSING_YEAR = '処理年'; REFERENCE_TIME = '基準時間'; STANDARD_DAY = '基準日数'; WORKDAY = '要勤務日数';
-
+        PAYMENT = getText('Enum_FormulaElementType_PAYMENT_ITEM');
+        DEDUCTION = getText('Enum_FormulaElementType_DEDUCTION_ITEM');
+        ATTENDANCE = getText('Enum_FormulaElementType_ATTENDANCE_ITEM');
+        COMPANY_UNIT_PRICE = getText('Enum_FormulaElementType_COMPANY_UNIT_PRICE_ITEM');
+        FUNCTION = getText('Enum_FormulaElementType_FUNCTION_ITEM');
+        INDIVIDUAL_UNIT_PRICE = getText('Enum_FormulaElementType_INDIVIDUAL_UNIT_PRICE_ITEM');
+        VARIABLE = getText('Enum_FormulaElementType_VARIABLE_ITEM');
+        PERSON = getText('Enum_FormulaElementType_PERSON_ITEM');
+        FORMULA = getText('Enum_FormulaElementType_FORMULA_ITEM');
+        WAGE_TABLE = getText('Enum_FormulaElementType_WAGE_TABLE_ITEM');
+        CONDITIONAL = getText('Enum_FunctionList_CONDITIONAL_EXPRESSION');
+        AND = getText('Enum_FunctionList_AND');
+        OR = getText('Enum_FunctionList_OR');
+        ROUND_OFF = getText('Enum_FunctionList_ROUND_OFF');
+        TRUNCATION = getText('Enum_FunctionList_TRUNCATION');
+        ROUND_UP = getText('Enum_FunctionList_ROUND_UP');
+        MAX_VALUE = getText('Enum_FunctionList_MAX_VALUE');
+        MIN_VALUE = getText('Enum_FunctionList_MIN_VALUE');
+        NUM_OF_FAMILY_MEMBER = getText('Enum_FunctionList_NUMBER_OF_FALIMY_MEMBER');
+        YEAR_MONTH = getText('Enum_FunctionList_ADDITIONAL_YEARMONTH');
+        YEAR_EXTRACTION = getText('Enum_FunctionList_YEAR_EXTRACTION');
+        MONTH_EXTRACTION = getText('Enum_FunctionList_MONTH_EXTRACTION');
+        SYSTEM_YMD_DATE = getText('Enum_SystemVariableList_SYSTEM_YMD_DATE');
+        SYSTEM_YM_DATE = getText('Enum_SystemVariableList_SYSTEM_YM_DATE');
+        SYSTEM_Y_DATE = getText('Enum_SystemVariableList_SYSTEM_Y_DATE');
+        PROCESSING_YEAR_MONTH = getText('Enum_SystemVariableList_PROCESSING_YEAR_MONTH');
+        PROCESSING_YEAR = getText('Enum_SystemVariableList_PROCESSING_YEAR');
+        REFERENCE_TIME = getText('Enum_SystemVariableList_REFERENCE_TIME');
+        STANDARD_DAY = getText('Enum_SystemVariableList_STANDARD_DAY');
+        WORKDAY = getText('Enum_SystemVariableList_WORKDAY');
         autoComplete: KnockoutObservableArray<any> = ko.observableArray([
 
         ]);

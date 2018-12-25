@@ -1,15 +1,16 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.formula;
 
 
+import nts.arc.i18n.I18NText;
+
 /**
 * 固定/計算式/既定区分
 */
-public enum CalculationFormulaClassification
-{
+public enum CalculationFormulaClassification {
     
-    FIXED_VALUE(0, "固定値"),
-    FORMULA(1, "計算式"),
-    DEFINITION_FORMULA(2, "既定計算式");
+    FIXED_VALUE(0, I18NText.getText("Enum_CalculationFormulaCls_FIXED_VALUE")),
+    FORMULA(1, I18NText.getText("Enum_CalculationFormulaCls_FORMULA")),
+    DEFINITION_FORMULA(2, I18NText.getText("Enum_CalculationFormulaCls_DEFINITION_FORMULA"));
     
     /** The value. */
     public final int value;

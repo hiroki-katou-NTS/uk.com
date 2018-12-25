@@ -1,5 +1,7 @@
 module nts.uk.pr.view.qmm017.g.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
+    import block = nts.uk.ui.block;
+    import dialog = nts.uk.ui.dialog;
     export class ScreenModel {
         calculationFormulaList: KnockoutObservableArray<any> = ko.observableArray([]);
         trialCalculationResult: KnockoutObservable<number> = ko.observable(null);
@@ -17,6 +19,8 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
         YEAR_MONTH = '年月加算'; YEAR_EXTRACTION = '年抽出'; MONTH_EXTRACTION = '月抽出';
         SYSTEM_YMD_DATE = 'システム日付（年月日）'; SYSTEM_YM_DATE = 'システム日付（年月）'; SYSTEM_Y_DATE = 'システム日付（年）'; PROCESSING_YEAR_MONTH = '処理年月';
         PROCESSING_YEAR = '処理年'; REFERENCE_TIME = '基準時間'; STANDARD_DAY = '基準日数'; WORKDAY = '要勤務日数';
+
+        processYearMonthAndReferenceTime: any;
         constructor() {
             let self = this;
             let params = getShared("QMM017_G_PARAMS");
@@ -24,6 +28,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             self.formulaElement = params.formulaElement;
             self.extractInputParameter(params.formula);
             $('#G1_2').ntsFixedTable({height: 184});
+            self.getProcessYearMonthAndReferenceTime();
         }
         extractInputParameter (formula) {
             let self = this, separators = ['\\\＋', 'ー', '\\×', '÷', '\\^', '\\\(', '\\\)', '\\>', '\\<', '\\\≦', '\\\≧', '\\\＝', '\\\≠', '\\\,'].join("|");
@@ -45,7 +50,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             self.calculationFormulaList(calculationFormulaData);
         }
 
-        // calculation via aspose cell
+        // calculate via aspose cell
         calculateInServer () {
             $('.nts-input').trigger("validate");
             if (nts.uk.ui.errors.hasError()) return;
@@ -60,7 +65,21 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             })
         }
 
-        calculation () {
+        getProcessYearMonthAndReferenceTime(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            block.invisible();
+            service.getProcessYearMonthAndReferenceTime().done(function(data){
+                block.clear();
+                self.processYearMonthAndReferenceTime = data;
+                dfd.resolve();
+            }).fail(function(err){
+                block.clear();
+                dialog.alertError({messageId: err.messageId});
+            });
+            return dfd.promise();
+        }
+
+        calculate () {
             $('.nts-input').trigger("validate");
             if (nts.uk.ui.errors.hasError()) return;
             let self = this, calculationFormulaData = ko.toJS(self.calculationFormulaList), formulaContent = self.formulaContent();
@@ -78,7 +97,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                 return;
             }
             if (formulaContent != null) {
-                self.trialCalculationResult(self.calculationSuffixFormula(formulaContent));
+                self.trialCalculationResult(self.calculateSuffixFormula(formulaContent));
             } else {
                 // there are error here;
             }
@@ -88,7 +107,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             let self = this, startFunctionIndex, endFunctionIndex, systemVariable, systemVariableResult;
             while (formulaElement.indexOf(self.VARIABLE) > -1) {
                 startFunctionIndex = formulaElement.lastIndexOf(self.VARIABLE);
-                endFunctionIndex = self.indexOfEndElement(startFunctionIndex, formulaElement) + 1;
+                endFunctionIndex = formulaElement.substring(startFunctionIndex).indexOf(self.CLOSE_CURLY_BRACKET) + 1;
                 systemVariable = formulaElement.substring(startFunctionIndex, endFunctionIndex);
                 systemVariableResult = self.getSystemValueBySystemVariable(systemVariable);
                 if (systemVariableResult) {
@@ -105,15 +124,13 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             let self = this;
             let functionName = systemVariable.substring(systemVariable.indexOf(self.OPEN_CURLY_BRACKET) + 1, systemVariable.indexOf(self.CLOSE_CURLY_BRACKET));
             switch (functionName) {
-                case self.SYSTEM_YMD_DATE: return moment().format("YYYYMMDD");
-                case self.SYSTEM_YM_DATE: return moment().format("YYYYMM");
+                case self.SYSTEM_YMD_DATE: return moment().format("YYYY/MM/DD");
+                case self.SYSTEM_YM_DATE: return moment().format("YYYY/MM");
                 case self.SYSTEM_Y_DATE: return moment().format("YYYY");
                 // Temporary can't decide value of following item
-                case self.PROCESSING_YEAR: return moment().format("YYYY");
-                case self.PROCESSING_YEAR_MONTH: return moment().format("YYYYMM");
-                case self.REFERENCE_TIME: return moment().format("YYYYMMDD");
-                case self.STANDARD_DAY: return moment().format("YYYYMMDD");
-                case self.WORKDAY: return moment().format("YYYYMMDD");
+                case self.PROCESSING_YEAR: return moment(self.processYearMonthAndReferenceTime.processYearMonth).format("YYYY");
+                case self.PROCESSING_YEAR_MONTH: return moment(self.processYearMonthAndReferenceTime.processYearMonth).format("YYYY/MM");
+                case self.REFERENCE_TIME: return self.processYearMonthAndReferenceTime.referenceDate;
                 default: return null;
             }
         }
@@ -178,7 +195,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             return 0;
         }
 
-        calculationSuffixFormula (formulaContent) {
+        calculateSuffixFormula (formulaContent) {
             let self = this,  currentChar, result, operands = [], operand1, operand2;
             let postFix = self.convertToPostfix(formulaContent);
             for(let index = 0; index < postFix.length; index++){
@@ -206,7 +223,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                 return moment(functionParameter[0]).year();
             if (functionName == self.MONTH_EXTRACTION)
                 return moment(functionParameter[0]).month() + 1;
-            functionParameter = functionParameter.map(functionElement => self.calculationSuffixFormula(functionElement));
+            functionParameter = functionParameter.map(functionElement => self.calculateSuffixFormula(functionElement));
             if (functionName == self.ROUND_OFF)
                return Number(Math.round(functionParameter[0]));
             if (functionName == self.ROUND_UP)
@@ -227,8 +244,8 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             let firstParameterData = functionParameter[0].split(new RegExp('([' +conditionSeparators + '])')).map(item => item.trim()).filter(item => {
                 return (item && item.length);
             });
-            operand1 = Number(self.calculationSuffixFormula(firstParameterData[0]));
-            operand2 = Number(self.calculationSuffixFormula(firstParameterData[2]));
+            operand1 = Number(self.calculateSuffixFormula(firstParameterData[0]));
+            operand2 = Number(self.calculateSuffixFormula(firstParameterData[2]));
             operator = firstParameterData[1];
             switch (operator){
                 case self.GREATER:

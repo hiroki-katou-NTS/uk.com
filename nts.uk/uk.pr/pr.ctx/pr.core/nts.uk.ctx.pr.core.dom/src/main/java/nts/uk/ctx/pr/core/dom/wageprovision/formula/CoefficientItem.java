@@ -15,8 +15,7 @@ import nts.arc.enums.EnumAdaptor;
 */
 @AllArgsConstructor
 @Getter
-public class CoefficientItem extends DomainObject
-{
+public class CoefficientItem extends DomainObject {
     
     /**
     * 勤怠項目

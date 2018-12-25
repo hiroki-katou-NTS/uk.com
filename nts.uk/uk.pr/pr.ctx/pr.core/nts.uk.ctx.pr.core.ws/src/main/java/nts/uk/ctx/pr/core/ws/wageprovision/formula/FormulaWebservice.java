@@ -127,4 +127,10 @@ public class FormulaWebservice extends WebService {
     public String calculation(DetailFormulaCommand command) {
         return detailFormulaCalculationCommandHandler.handle(command);
     }
+
+    @POST
+    @Path("getProcessYearMonthAndReferenceTime")
+    public Map<String, String> getProcessYearMonthAndReferenceTime(DetailFormulaCommand command) {
+        return formulaFinder.getProcessYearMonthAndReferenceTime();
+    }
 }
