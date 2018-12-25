@@ -7,6 +7,6 @@ module nts.uk.com.view.cdl028.a.service{
 
         //get start month
         export function getStartMonth(): JQueryPromise<any> {
-            return ajax("com", paths.getStartMonth);
+            return ajax("at", paths.getStartMonth);
         };
 }

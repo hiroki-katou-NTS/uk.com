@@ -1,7 +1,5 @@
 module nts.uk.com.view.cdl028.test.viewmodel {
 
-    import MODE_SCREEN = nts.uk.com.view.cdl028.a.viewmodel.MODE_SCREEN;
-
     export class ScreenModel {
 
         constructor() {
@@ -25,7 +23,7 @@ module nts.uk.com.view.cdl028.test.viewmodel {
         public openDialog() {
             let params = {
                 date: "2000/01/01",
-                mode: MODE_SCREEN.YEAR_PERIOD
+                mode: 2
             };
 
             nts.uk.ui.windows.setShared("CDL028_INPUT", params);
