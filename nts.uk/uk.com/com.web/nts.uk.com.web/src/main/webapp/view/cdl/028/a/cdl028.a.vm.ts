@@ -150,7 +150,7 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                */
                 setShared('CDL028_A_PARAMS', {
                  status: true,
-                 mode: self.modeScreen(),
+                 mode: self.modeScreen() == MODE_SCREEN.YEAR_PERIOD ? MODE_SCREEN.YEAR_PERIOD_FINANCE : self.modeScreen(),
                  standardDate: moment(self.standardDate() + "").format("YYYY/MM/DD"),
                  startDateFiscalYear: moment(self.startDateFiscalYear() + "").format("YYYY/MM/DD"),
                  endDateFiscalYear: moment(self.endDateFiscalYear() + "").format("YYYY/MM/DD")
@@ -203,7 +203,7 @@ module nts.uk.com.view.cdl028.a.viewmodel {
         ALL = 3,
 
         //YEAR PERIOD
-        YEAR_PERIOD = 0
+        YEAR_PERIOD = 5
     }
 
     interface  IStartMonth{
