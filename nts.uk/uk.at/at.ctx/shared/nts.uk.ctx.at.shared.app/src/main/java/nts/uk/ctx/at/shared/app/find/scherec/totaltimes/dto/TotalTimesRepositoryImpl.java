@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.app.find.scherec.totaltimes.dto;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,11 @@ import nts.uk.ctx.at.shared.dom.scherec.totaltimes.SummaryAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -48,6 +53,9 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 	
 	@Inject
 	private WorkTypeRepository workTypeRepository;
+	
+	@Inject
+	private WorkTimeSettingRepository workTimeSettingRepository;
 	
 	@Inject
 	private DailyAttendanceItemNameAdapter dailyAttendanceItemNameAdapter;
@@ -100,7 +108,7 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 					
 					List<WorkTypeInfor> lst = workTypeRepository.getPossibleWorkTypeAndOrder(companyId, listWorkTypeCodes);
 					
-					List<WorkType> listFindByCodes = workTypeRepository.findNotDeprecatedByListCode(companyId, listCodes);
+					List<WorkTimeSetting> listFindByCodes = workTimeSettingRepository.findByCodes(companyId,listCodes);
 					
 					List<Integer> listAtdtemId = new ArrayList<>();
 					listAtdtemId.add(c.getTotalCondition().getAtdItemId());
@@ -111,27 +119,38 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 					if(CollectionUtil.isEmpty(lst)){
 						data.put("勤務種類","");
 					}else{
+						//sort 
+						lst = lst.stream().sorted(Comparator
+								.comparing(WorkTypeInfor::getWorkTypeCode))
+								.collect(Collectors.toList());
+						
 						//勤務種類
 						String typeOfDuty = "";
 						for (int n = 0; n < lst.size(); n++) {
 							if (n == 0) {
-								typeOfDuty = lst.get(n).getWorkTypeCode() + " " + lst.get(n).getName();
+								typeOfDuty = lst.get(n).getWorkTypeCode() + "" + lst.get(n).getName();
 							} else {
-								typeOfDuty = lst.get(n).getWorkTypeCode() + " " + lst.get(n).getName() + " + "
+								typeOfDuty = lst.get(n).getWorkTypeCode() + "" + lst.get(n).getName() + ", "
 									+ typeOfDuty;
 							}
 						}
 						data.put("勤務種類", typeOfDuty);
 					}
+					
+					
 					if(CollectionUtil.isEmpty(listFindByCodes)){
 					}else{
+						//sort
+						listFindByCodes = listFindByCodes.stream()
+								.sorted(Comparator.comparing(WorkTimeSetting::getWorktimeCode))
+								.collect(Collectors.toList());
 						//就業時間帯
 						String  workingHours= "";
 						for (int n = 0; n < listFindByCodes.size(); n++) {
 							if (n == 0) {
-								workingHours = listFindByCodes.get(n).getWorkTypeCode()+ " " + listFindByCodes.get(n).getName();
+								workingHours = listFindByCodes.get(n).getWorktimeCode()+ "" + listFindByCodes.get(n).getWorkTimeDisplayName().getWorkTimeName();
 							} else {
-								workingHours = listFindByCodes.get(n).getWorkTypeCode()+ " " + listFindByCodes.get(n).getName() + " + "
+								workingHours = listFindByCodes.get(n).getWorktimeCode()+ "" + listFindByCodes.get(n).getWorkTimeDisplayName().getWorkTimeName() + ", "
 									+ workingHours;
 							}
 						}
