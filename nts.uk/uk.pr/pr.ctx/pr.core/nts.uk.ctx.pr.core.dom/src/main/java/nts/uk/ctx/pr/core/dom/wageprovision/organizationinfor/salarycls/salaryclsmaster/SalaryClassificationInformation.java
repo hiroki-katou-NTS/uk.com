@@ -35,7 +35,7 @@ public class SalaryClassificationInformation extends AggregateRoot {
         this.companyId = cid;
         this.salaryClassificationCode = new SalaryClassificationCode(salaryClsCd);
         this.salaryClassificationName = new SalaryClassificationName(salaryClsName);
-        this.memo = memo == null ? Optional.empty() : Optional.of(new Memo(memo));
+        this.memo = memo == null || memo.isEmpty() ? Optional.empty() : Optional.of(new Memo(memo));
     }
 
 }
