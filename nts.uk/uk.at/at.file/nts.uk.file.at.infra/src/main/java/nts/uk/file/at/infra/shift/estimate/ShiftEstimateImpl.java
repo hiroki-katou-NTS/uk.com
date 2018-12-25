@@ -1,6 +1,5 @@
 package nts.uk.file.at.infra.shift.estimate;
 
-import java.awt.Color;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -32,11 +31,22 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	private static final String GET_EXPORT_EXCEL = "SELECT eas.YEAR_HD_ATR ,eas.HAVY_HD_ATR ,eas.SPHD_ATR ,eas.HALF_DAY_ATR"
-			+ " ,STUFF(( SELECT ', '+kpi.PREMIUM_NAME FROM KSCST_EST_AGGREGATE_SET eas LEFT JOIN KSCST_PER_COST_EXTRA_ITEM cei ON eas.CID = cei.CID LEFT JOIN KMNMT_PREMIUM_ITEM kpi ON eas.CID = kpi.CID AND cei.PREMIUM_NO = kpi.PREMIUM_NO WHERE eas.CID = ?cid ORDER BY kpi.PREMIUM_NO ASC FOR XML PATH ('') ), 1, 1, '' ) as NAME"
-			+ " FROM KSCST_EST_AGGREGATE_SET eas" + " INNER JOIN KSCST_PER_COST_EXTRA_ITEM cei ON eas.CID = cei.CID"
-			+ " INNER JOIN KMNMT_PREMIUM_ITEM kpi ON eas.CID = kpi.CID AND cei.PREMIUM_NO = kpi.PREMIUM_NO"
-			+ " WHERE eas.CID = ?cid" + " GROUP BY eas.YEAR_HD_ATR ,eas.HAVY_HD_ATR ,eas.SPHD_ATR ,eas.HALF_DAY_ATR";
+	private static final String GET_EXPORT_EXCEL = "SELECT "
+			+" 	eas.YEAR_HD_ATR "
+			+" 		,eas.HAVY_HD_ATR "
+			+" 		,eas.SPHD_ATR "
+			+" 		,eas.HALF_DAY_ATR"
+			+" 		,STUFF(( SELECT "
+			+" 					', '+kpi.PREMIUM_NAME "
+			+" 				 FROM KSCST_EST_AGGREGATE_SET eas "
+			+" 					INNER JOIN KSCST_PER_COST_EXTRA_ITEM cei ON eas.CID = cei.CID "
+			+" 					INNER JOIN 	KMNMT_PREMIUM_ITEM kpi ON eas.CID = kpi.CID AND cei.PREMIUM_NO = kpi.PREMIUM_NO "
+			+" 				 WHERE eas.CID = ?cid AND kpi.USE_ATR= 1 ORDER BY kpi.PREMIUM_NO ASC FOR XML PATH ('') ), 1, 1, '' ) AS NAME"
+			+" FROM KSCST_EST_AGGREGATE_SET eas "
+			+" 	INNER JOIN KSCST_PER_COST_EXTRA_ITEM cei ON eas.CID = cei.CID "
+			+" 	INNER JOIN KMNMT_PREMIUM_ITEM kpi ON eas.CID = kpi.CID AND cei.PREMIUM_NO = kpi.PREMIUM_NO AND kpi.USE_ATR= 1 "
+			+" WHERE eas.CID = ?cid"
+			+" 	GROUP BY eas.YEAR_HD_ATR ,eas.HAVY_HD_ATR ,eas.SPHD_ATR ,eas.HALF_DAY_ATR";
 	
 	private static final String GET_EXPORT_EXCEL_SHEET_TWO = "SELECT"
 			+" ecs.TIME_Y_DISP"
@@ -247,7 +257,7 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
                 .build());
 		data.put(ShiftEstimateColumn.KSM001_102, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_102)
-                .value(rowNumber == 0 || rowNumber == 1 || rowNumber == 2 || rowNumber == 3 ?  ((BigDecimal) object).intValue() == 1 ? "○" : "-" : rowNumber == 4 ? (String)object :"")
+                .value(rowNumber < 4 ?  ((BigDecimal) object).intValue() == 1 ? "○" : "-" : rowNumber == 4 ? (String)object :"")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 			return MasterData.builder().rowData(data).build();
@@ -342,15 +352,12 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 	                .columnId(ShiftEstimateColumn.KSM001_113)
 	                .value(dataFromDB.get(rowNumber)[13])
 	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-	                //NOTE:
-	                .style(MasterCellStyle.build().backgroundColor(Color.GREEN))	                
+	                //TODO:
+	                .style(MasterCellStyle.build().backgroundColor(dataFromDB.get(rowNumber)[13].toString()))
 	                .build());
-		}
-		 
-		if (rowNumber > 4) {
+		}else{
 			// EstComparisonAtr enum
 			// EstimatedCondition enum
-			
 			data.put(ShiftEstimateColumn.KSM001_113, MasterCellData.builder()
 	                .columnId(ShiftEstimateColumn.KSM001_113)
 	                .value(rowNumber == 17 ? EnumAdaptor.valueOf(((BigDecimal) dataFromDB.get(0)[rowNumber - 5]).intValue(), EstComparisonAtr.class).description : EnumAdaptor.valueOf(((BigDecimal) dataFromDB.get(0)[rowNumber - 5]).intValue(), EstimatedCondition.class).description)

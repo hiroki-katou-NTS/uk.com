@@ -5,7 +5,6 @@ public final class ShiftEstimateColumn {
 	public static final String KSM001_101 = "項目";
 	public static final String KSM001_101_1 = " ";
 	public static final String KSM001_101_2 = "  ";
-	public static final String KSM001_101_3 = "   ";
 	public static final String KSM001_102 = "値";
 	// Value Data
 	public static final String KSM001_103 = "月間勤務日数の集計方法";
