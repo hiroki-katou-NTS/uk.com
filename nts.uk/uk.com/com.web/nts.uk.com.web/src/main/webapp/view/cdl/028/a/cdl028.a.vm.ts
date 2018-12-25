@@ -26,7 +26,7 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                 return;
             }
             self.modeScreen(params.mode);
-            self.standardDate(params.date == null ? null : nts.uk.time.parseYearMonthDate(params.date).toValue());
+            self.standardDate(params.date == null ? parseInt(moment().format("YYYYMMDD")) : nts.uk.time.parseYearMonthDate(params.date).toValue());
         }
         /**
          * startPage
