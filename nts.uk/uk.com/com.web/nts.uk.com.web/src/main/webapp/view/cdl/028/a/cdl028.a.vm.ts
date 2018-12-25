@@ -26,7 +26,7 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                 return;
             }
             self.modeScreen(params.mode);
-            self.standardDate(params.date);
+            self.standardDate(params.date == null ? null : nts.uk.time.parseYearMonthDate(params.date).toValue());
         }
         /**
          * startPage
@@ -49,11 +49,9 @@ module nts.uk.com.view.cdl028.a.viewmodel {
 
                 case MODE_SCREEN.ALL:
                     self.standardDate(self.convertYearToInt(self.standardDate())+"0101");
-                    console.log(self.standardDate() + "   ----MODE_SCREEN.ALL");
                     service.getStartMonth().done(function(response: IStartMonth) {
                         if(response.startMonth != null){
                             startMonthDB = response.startMonth;
-                            console.log(startMonthDB);
                             if(( startMonthDB) >= self.getMonthToInt(self.standardDate())){
                                 self.financialYear(startDateTemp+""+startMonthDB +"01");
                             } else {
@@ -63,7 +61,7 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                         }
                     }).fail(function() {
                         setShared('CDL028_A_PARAMS', {
-                            status: "NG"
+                            status: false
                         });
                         nts.uk.ui.windows.close();
                     });
@@ -71,13 +69,10 @@ module nts.uk.com.view.cdl028.a.viewmodel {
 
                 case MODE_SCREEN.YEAR_PERIOD_FINANCE:
                     self.standardDate(self.convertYearToInt(self.standardDate())+"0101");
-                    break;
 
-                case MODE_SCREEN.YEAR_PERIOD:
                     service.getStartMonth().done(function(response: IStartMonth) {
                         if(response.startMonth != null){
                             startMonthDB = response.startMonth;
-                            console.log(startMonthDB);
                             if(( startMonthDB) >= self.getMonthToInt(self.standardDate())){
                                 self.financialYear(startDateTemp+""+startMonthDB +"01");
                             } else {
@@ -87,7 +82,27 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                         }
                     }).fail(function() {
                         setShared('CDL028_A_PARAMS', {
-                            status: "NG"
+                            status: false
+                        });
+                        nts.uk.ui.windows.close();
+                    });
+
+                    break;
+
+                case MODE_SCREEN.YEAR_PERIOD:
+                    service.getStartMonth().done(function(response: IStartMonth) {
+                        if(response.startMonth != null){
+                            startMonthDB = response.startMonth;
+                            if(( startMonthDB) >= self.getMonthToInt(self.standardDate())){
+                                self.financialYear(startDateTemp+""+startMonthDB +"01");
+                            } else {
+                                self.financialYear((startDateTemp - 1)+""+startMonthDB+"01");
+                            }
+                            self.firstMonth(startMonthDB);
+                        }
+                    }).fail(function() {
+                        setShared('CDL028_A_PARAMS', {
+                            status: false
                         });
                         nts.uk.ui.windows.close();
                     });
@@ -114,18 +129,19 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                 case MODE_SCREEN.ALL:
                 case MODE_SCREEN.YEAR_PERIOD_FINANCE:
                     self.standardDate();
-                    self.startDateFiscalYear(parseInt(self.startDateTemp)+""+self.firstMonth()+"01"));
+                    self.startDateFiscalYear(self.yearValue().startDate+""+ self.getFullMonth(self.firstMonth()) +"01");
                     if( self.firstMonth()!= 1){
-                        self.endDateDay (moment((self.financialYear()+1)+"-"+self.firstMonth(), "YYYY-MM").daysInMonth() -1);
-                        self.endDateFiscalYear(self.convertYearToInt(self.financialYear())+1)+""+self.firstMonth()+""+self.endDateDay());
+                        self.endDateDay (moment((parseInt(self.yearValue().endDate)+1)+"-"+ self.getFullMonth(self.firstMonth()) , "YYYY-MM").daysInMonth() -1);
+                        self.endDateFiscalYear((self.convertYearToInt(self.yearValue().endDate)+1)+""+ self.getFullMonth(self.firstMonth() - 1) +""+self.endDateDay());
+                    } else {
+                        self.endDateFiscalYear(self.convertYearToInt((self.yearValue().endDate)) + "1231");
                     }
-                    self.endDateFiscalYear(self.convertYearToInt((self.financialYear()))+"1231")
                     break;
 
                 case MODE_SCREEN.YEAR_PERIOD:
                     self.standardDate();
-                    self.startDateFiscalYear(parseInt(self.convertYearToInt(self.financialYear().toString())+"0101"));
-                    self.endDateFiscalYear(parseInt(self.convertYearToInt(self.financialYear().toString())+"1231"));
+                    self.startDateFiscalYear(self.convertYearToInt(self.yearValue().startDate)+"0101");
+                    self.endDateFiscalYear(self.convertYearToInt(self.yearValue().endDate)+"1231");
                     break;
             }
                /**
@@ -133,10 +149,11 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                * status,standardDate,startDateFiscalYear,endDateFiscalYear
                */
                 setShared('CDL028_A_PARAMS', {
-                 status: "OK",
-                 standardDate: self.standardDate(),
-                 startDateFiscalYear: self.startDateFiscalYear(),
-                 endDateFiscalYear: self.startDateFiscalYear(),
+                 status: true,
+                 mode: self.modeScreen(),
+                 standardDate: moment(self.standardDate() + "").format("YYYY/MM/DD"),
+                 startDateFiscalYear: moment(self.startDateFiscalYear() + "").format("YYYY/MM/DD"),
+                 endDateFiscalYear: moment(self.endDateFiscalYear() + "").format("YYYY/MM/DD")
                 });
                  nts.uk.ui.windows.close();
                  dfd.resolve();
@@ -148,7 +165,7 @@ module nts.uk.com.view.cdl028.a.viewmodel {
          */
         cancel(){
             setShared('CDL028_A_PARAMS', {
-                status: "NG"
+                status: false
             });
             nts.uk.ui.windows.close();
         };
@@ -166,6 +183,14 @@ module nts.uk.com.view.cdl028.a.viewmodel {
             month = standardDate.slice(4, 6);
             return parseInt(month,10);
         }
+
+        getFullMonth(month: number): string {
+            if(month < 10) {
+                return "0" + month;
+            } else {
+                return "" + month;
+            }
+        }
     }
     export enum MODE_SCREEN {
         //mode standard date
@@ -178,7 +203,7 @@ module nts.uk.com.view.cdl028.a.viewmodel {
         ALL = 3,
 
         //YEAR PERIOD
-        YEAR_PERIOD = 4
+        YEAR_PERIOD = 0
     }
 
     interface  IStartMonth{

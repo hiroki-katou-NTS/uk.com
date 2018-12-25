@@ -22,14 +22,14 @@ module nts.uk.com.view.cdl028.test.viewmodel {
          */
         public openDialog() {
             let params = {
-                date: 20000101,
+                date: "2000/01/01",
                 mode: 3
             };
-            console.log(params + "1111111");
+
             nts.uk.ui.windows.setShared("CDL028_INPUT", params);
 
             nts.uk.ui.windows.sub.modal("/view/cdl/028/a/index.xhtml").onClosed(function() {
-                console.log(params);
+                console.log(nts.uk.ui.windows.getShared("CDL028_A_PARAMS"));
             });
 
         }
