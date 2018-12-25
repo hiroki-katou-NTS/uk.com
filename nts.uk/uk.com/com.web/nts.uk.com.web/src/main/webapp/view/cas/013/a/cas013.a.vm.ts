@@ -1,5 +1,5 @@
 module nts.uk.com.view.cas013.a.viewmodel {
-
+    import modal = nts.uk.ui.windows.sub.modal;
     import block = nts.uk.ui.block;
     import NtsGridListColumn = nts.uk.ui.NtsGridListColumn;
 
@@ -269,15 +269,10 @@ module nts.uk.com.view.cas013.a.viewmodel {
         }
         
         exportExcel(): void {
-            var self = this;
-            nts.uk.ui.block.grayout();
-            let langId = self.langId();
-            new service.Service().saveAsExcel(langId).done(function() {
-            }).fail(function(error) {
-                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-            }).always(function() {
-                nts.uk.ui.block.clear();
-            });
+            let self = this;
+     
+                modal("/view/cas/013/m/index.xhtml").onClosed(function() {
+                });
         }
 
     }
