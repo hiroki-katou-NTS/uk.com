@@ -1,11 +1,18 @@
 module nts.uk.com.view.cmm051.a {
     export module service {
-        import exportFile = nts.uk.request.exportFile;
         var paths: any = {
             findAllWkpManager: "at/auth/workplace/manager/findAll/",
             saveWkpManager: "at/auth/workplace/manager/save/",
             deleteWkpManager: "at/auth/workplace/manager/remove/",
-            getEmpInfo: "ctx/sys/auth/grant/rolesetperson/getempinfo/",
+            getEmpInfo: "ctx/sys/auth/grant/rolesetperson/getempinfo/"
+        }
+        
+        export function saveAsExcel(languageId: string, date: string): JQueryPromise<any> {
+            let _params = { domainId: "WorkPlaceSelection", 
+                        domainType: "CMM051職場管理者の登録", 
+                        languageId: languageId, 
+                        reportType: 0, baseDate : date };
+            return nts.uk.request.exportFile('/masterlist/report/print', _params);           
         }
 
         export function findAllWkpManagerByWkpId(wkpId: string): JQueryPromise<Array<base.WorkplaceManager>> {
