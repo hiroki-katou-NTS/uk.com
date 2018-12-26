@@ -33,3 +33,7 @@
 **/base.web/**/*bundles.js*
 
 nts.uk/uk.repo/*
+**/lib/**/**/.ts
+**/gitkeep*
+**/quartz.properties
+**/persistence.xml

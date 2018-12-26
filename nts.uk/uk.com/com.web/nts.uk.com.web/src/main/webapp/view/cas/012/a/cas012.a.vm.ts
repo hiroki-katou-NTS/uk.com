@@ -82,13 +82,25 @@ module nts.uk.com.view.cas012.a.viewmodel {
             });
         }
 
-        exportExcel(){
+        hasPermission(): boolean {
+            if (__viewContext.user.role.attendance || __viewContext.user.role.payroll
+                || __viewContext.user.role.personnel  || __viewContext.user.role.officeHelper){
+                return true;
+            }
+
+            return false;
+        }
+
+        private exportExcel(): void {
             let self = this;
-            let params = {
+            let params: any = {
                 date: null,
                 mode: 1
             };
-            setShared("CDL028_INPUT", params);
+            if(!getShared('CDL028_INPUT')){
+                setShared("CDL028_INPUT", params);
+            }
+
             nts.uk.ui.windows.sub.modal("/view/cdl/028/a/index.xhtml").onClosed(function() {
                 var result = getShared('CDL028_A_PARAMS');
                 if (result.status) {
