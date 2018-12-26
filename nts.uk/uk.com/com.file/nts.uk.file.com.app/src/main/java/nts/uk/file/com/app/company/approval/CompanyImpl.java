@@ -189,7 +189,7 @@ public class CompanyImpl implements MasterListData{
 				masterData.cellAt("就業システム").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				masterData.cellAt("給与システム").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				masterData.cellAt("職場と部門").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt("期首月").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("期首月").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
 				
 				
 
