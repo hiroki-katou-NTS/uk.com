@@ -79,14 +79,14 @@ public class StatementLayoutPrint {
 				ItemRangeSetExportData itemRangeSet = payment.getItemRangeSet().get();
 				String errorSet = "エラー設定：";
 				if (RangeSettingEnum.USE.equals(itemRangeSet.getErrorUpperSettingAtr())
-						&& RangeSettingEnum.USE.equals(itemRangeSet.getErrorLowerSettingAtr())) {
+						|| RangeSettingEnum.USE.equals(itemRangeSet.getErrorLowerSettingAtr())) {
 					errorSet += "あり";
 				} else {
 					errorSet += "なし";
 				}
 				String alarmSet = "アラーム設定：";
 				if (RangeSettingEnum.USE.equals(itemRangeSet.getAlarmUpperSettingAtr())
-						&& RangeSettingEnum.USE.equals(itemRangeSet.getAlarmLowerSettingAtr())) {
+						|| RangeSettingEnum.USE.equals(itemRangeSet.getAlarmLowerSettingAtr())) {
 					alarmSet += "あり";
 				} else {
 					alarmSet += "なし";
@@ -160,14 +160,14 @@ public class StatementLayoutPrint {
                 ItemRangeSetExportData itemRangeSet = deduction.getItemRangeSet().get();
                 String errorSet = "エラー設定：";
                 if (RangeSettingEnum.USE.equals(itemRangeSet.getErrorUpperSettingAtr())
-                        && RangeSettingEnum.USE.equals(itemRangeSet.getErrorLowerSettingAtr())) {
+						|| RangeSettingEnum.USE.equals(itemRangeSet.getErrorLowerSettingAtr())) {
                     errorSet += "あり";
                 } else {
                     errorSet += "なし";
                 }
                 String alarmSet = "アラーム設定：";
                 if (RangeSettingEnum.USE.equals(itemRangeSet.getAlarmUpperSettingAtr())
-                        && RangeSettingEnum.USE.equals(itemRangeSet.getAlarmLowerSettingAtr())) {
+						|| RangeSettingEnum.USE.equals(itemRangeSet.getAlarmLowerSettingAtr())) {
                     alarmSet += "あり";
                 } else {
                     alarmSet += "なし";
@@ -222,14 +222,14 @@ public class StatementLayoutPrint {
                 ItemRangeSetExportData itemRangeSet = attend.getItemRangeSet().get();
                 String errorSet = "エラー設定：";
                 if (RangeSettingEnum.USE.equals(itemRangeSet.getErrorUpperSettingAtr())
-                        && RangeSettingEnum.USE.equals(itemRangeSet.getErrorLowerSettingAtr())) {
+						|| RangeSettingEnum.USE.equals(itemRangeSet.getErrorLowerSettingAtr())) {
                     errorSet += "あり";
                 } else {
                     errorSet += "なし";
                 }
                 String alarmSet = "アラーム設定：";
                 if (RangeSettingEnum.USE.equals(itemRangeSet.getAlarmUpperSettingAtr())
-                        && RangeSettingEnum.USE.equals(itemRangeSet.getAlarmLowerSettingAtr())) {
+						|| RangeSettingEnum.USE.equals(itemRangeSet.getAlarmLowerSettingAtr())) {
                     alarmSet += "あり";
                 } else {
                     alarmSet += "なし";

@@ -32,7 +32,7 @@
                 <div class="cell valign-center">
                     <!--P1_3-->
                     <div id="P1_3" tabindex="1"
-                         data-bind="ntsDatePicker: { name: '#[QMM019_204]', value: processingDate, dateFormat: 'yearmonth'}"/>
+                         data-bind="ntsDatePicker: { name: '#[QMM019_204]', required: true, value: processingDate, dateFormat: 'yearmonth'}"/>
                     <!--P1_4-->
                     <button id="P1_4" tabindex="2" data-bind="click: reflect">#{i18n.getText('QMM019_207')}</button>
                 </div>
@@ -61,7 +61,7 @@
         </div>
         <div id="functions-area-bottom">
             <!--P2_1-->
-            <button tabindex="3" data-bind="click: output" class="proceed">#{i18n.getText('QMM019_206')}</button>
+            <button tabindex="3" data-bind="click: output, enable: $root.errors.isEmpty" class="proceed">#{i18n.getText('QMM019_206')}</button>
             <!--P2_2-->
             <button tabindex="4" data-bind="click: cancel">#{i18n.getText('QMM019_57')}</button>
         </div>
