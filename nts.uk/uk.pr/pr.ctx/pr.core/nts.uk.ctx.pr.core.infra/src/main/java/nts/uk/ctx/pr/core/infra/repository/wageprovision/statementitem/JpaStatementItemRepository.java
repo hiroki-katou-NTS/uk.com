@@ -124,7 +124,8 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 		return this.queryProxy().query(query, Object[].class).setParameter("cid", cid)
 				.setParameter("categoryAtr", categoryAtr)
 				.getList(item -> new StatementItemCustom(item[0] != null ? String.valueOf(item[0]) : "", item[1] != null ? String.valueOf(item[1]) : "",
-						item[2] != null ? String.valueOf(item[2]) : "", item[3] != null ? String.valueOf(item[3]) : ""));
+						item[2] != null ? String.valueOf(item[2]) : "", item[3] != null ? String.valueOf(item[3]) : "",
+						item[4] != null ? String.valueOf(item[4]) : "", item[5] != null ? String.valueOf(item[5]) : ""));
 	}
 
 	@Override
@@ -133,7 +134,8 @@ public class JpaStatementItemRepository extends JpaRepository implements Stateme
 
 		List<StatementItemCustom> result = this.queryProxy().query(query, Object[].class).setParameter("cid", cid)
 				.getList(item -> new StatementItemCustom(item[0] != null ? String.valueOf(item[0]) : "", item[1] != null ? String.valueOf(item[1]) : "",
-						item[2] != null ? String.valueOf(item[2]) : "", item[3] != null ? String.valueOf(item[3]) : ""));
+						item[2] != null ? String.valueOf(item[2]) : "", item[3] != null ? String.valueOf(item[3]) : "",
+						item[4] != null ? String.valueOf(item[4]) : "", item[5] != null ? String.valueOf(item[5]) : ""));
 
 		return result;
 	}

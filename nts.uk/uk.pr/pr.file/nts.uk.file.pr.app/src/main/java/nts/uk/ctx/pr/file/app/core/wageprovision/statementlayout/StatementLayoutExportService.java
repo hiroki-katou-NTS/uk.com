@@ -12,12 +12,14 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.salaryindividualamountname.SalIndAmountNameRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.DefaultAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemCustom;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.DeductionItemDetailSet;
@@ -80,8 +82,8 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 		// ドメインモデル「計算式」を取得する
 		Map<String, String> formulaMap = formulaRepo.getAllFormula().stream()
 				.collect(Collectors.toMap(x -> x.getFormulaCode().v(), x -> x.getFormulaName().v()));
-		Map<MapKey, String> statementItemMap = statementItemRepo.getItemCustomByDeprecated(cid, false).stream()
-				.collect(Collectors.toMap(x -> new MapKey(x.getItemNameCd(), x.getCategoryAtr()), StatementItemCustom::getName));
+		Map<MapKey, StatementItemCustom> statementItemMap = statementItemRepo.getItemCustomByDeprecated(cid, false).stream()
+				.collect(Collectors.toMap(x -> new MapKey(x.getItemNameCd(), x.getCategoryAtr()), x -> x));
 
 		// ドメインモデル「明細書レイアウト」を取得する
 		Map<String, StatementLayout> statementLayoutMap = statementLayoutRepo
@@ -145,7 +147,7 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 
 	private List<LineByLineSettingExportData> mapLineSetting(SettingByCtg set, Map<String, String> wageTableMap,
 			Map<MapKey, String> salIndAmountNameMap, Map<String, String> formulaMap,
-			Map<MapKey, String> statementItemMap) {
+			Map<MapKey, StatementItemCustom> statementItemMap) {
 		List<LineByLineSettingExportData> listLineByLineSetEx = new ArrayList<>();
 		for (LineByLineSetting line : set.getListLineByLineSet()) {
 			LineByLineSettingExportData lineEx = new LineByLineSettingExportData();
@@ -162,12 +164,19 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 
 	private List<SettingByItemExportData> mapItemSetting(LineByLineSetting line, CategoryAtr ctgAtr,
 			Map<String, String> wageTableMap, Map<MapKey, String> salIndAmountNameMap, Map<String, String> formulaMap,
-			Map<MapKey, String> statementItemMap) {
+			Map<MapKey, StatementItemCustom> statementItemMap) {
 		List<SettingByItemExportData> listSetByItemEx = new ArrayList<>();
 		for (SettingByItem item : line.getListSetByItem()) {
 			SettingByItemExportData itemEx = new SettingByItemExportData();
 			itemEx.setItemPosition(item.getItemPosition());
 			itemEx.setItemId(item.getItemId());
+
+			MapKey sttKey = new MapKey(item.getItemId(), ctgAtr.value);
+			if (statementItemMap.containsKey(sttKey)) {
+				StatementItemCustom sttItem = statementItemMap.get(sttKey);
+				itemEx.setDefaultAtr(EnumAdaptor.valueOf(sttItem.getDefaultAtr(), DefaultAtr.class));
+			}
+
 			if (item instanceof SettingByItemCustom) {
 				SettingByItemCustom itemCustom = (SettingByItemCustom) item;
 				itemEx.setItemName(itemCustom.getShortName());
@@ -250,7 +259,7 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 
 	private void mapDeduction(SettingByItemExportData itemEx, SettingByItemCustom itemCustom,
 			Map<String, String> wageTableMap, Map<MapKey, String> salIndAmountNameMap, Map<String, String> formulaMap,
-			Map<MapKey, String> statementItemMap) {
+			Map<MapKey, StatementItemCustom> statementItemMap) {
 		DeductionExportData deductionEx = new DeductionExportData();
 		Optional<DeductionItemDetailSet> deductionitemDetailOtp = itemCustom.getDeductionItemDetailSet();
 		if (deductionitemDetailOtp.isPresent()) {
@@ -296,7 +305,7 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 					deductionEx.setSupplyOffset(sttCode);
 					MapKey key = new MapKey(sttCode, CategoryAtr.DEDUCTION_ITEM.value);
 					if (statementItemMap.containsKey(key)) {
-						deductionEx.setSupplyOffsetName(statementItemMap.get(key));
+						deductionEx.setSupplyOffsetName(statementItemMap.get(key).getName());
 					}
 				}
 				break;
