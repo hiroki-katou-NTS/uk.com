@@ -36,7 +36,8 @@ public class UkRequestFilterCollector implements RequestFilterCollector {
 		
 			// This must be executed last
 			// 最後じゃなくても大丈夫かもしれないが、処理内容を考えると、念の為、最後にしておきたい。
-			RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new ContextHolderSwitch())
+			RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new ContextHolderSwitch()),
+			RequestFilterMapping.map(PathPattern.ALL_REQUESTS, new StopUseFilter())
 			);
 
 	@Override

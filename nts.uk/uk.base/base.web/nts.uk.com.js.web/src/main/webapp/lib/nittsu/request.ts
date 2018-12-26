@@ -280,6 +280,10 @@ module nts.uk.request {
                 case 401:
                     handle401(xhr);
                     break;
+                case 403:
+                    handle403(xhr);
+                    break;    
+                   
                 default:
                     handleUnknownError(xhr, status, error);
                     break;
@@ -291,6 +295,10 @@ module nts.uk.request {
             
             // res.sessionTimeout || res.csrfError
             specials.errorPages.sessionTimeout();
+        }
+        
+        function handle403(xhr) {
+            specials.errorPages.stopUse();
         }
         
         function handleUnknownError(xhr, status, error) {
@@ -495,6 +503,10 @@ module nts.uk.request {
             
             export function sessionTimeout() {
                 jump('com', '/view/common/error/sessiontimeout/index.xhtml');
+            }
+            
+            export function stopUse() {
+                jump('com', '/view/common/error/stopuse/index.xhtml');
             }
             
         }
