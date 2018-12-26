@@ -408,7 +408,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		ExterOutExecLog exterOutExecLog = exterOutExecLogOptional.get();
 		exterOutExecLog.setProcessEndDateTime(Optional.of(GeneralDateTime.now()));
 		exterOutExecLog.setFileId(Optional.ofNullable(fileId));
-		exterOutExecLog.setFileName(Optional.of(new UploadFileName(fileName)));
+		exterOutExecLog.setFileName(statusEnd == ResultStatus.INTERRUPTION ? Optional.of(new UploadFileName("")) : Optional.of(new UploadFileName(fileName)));
 		exterOutExecLog.setTotalCount(exOutOpMng.get().getProCnt());
 		exterOutExecLog.setTotalErrorCount(exOutOpMng.get().getErrCnt());
 		exterOutExecLog.setProcessUnit(Optional.of(exOutOpMng.get().getProUnit()));
