@@ -1,8 +1,10 @@
 package nts.uk.ctx.pr.core.infra.repository.wageprovision.formula;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -30,10 +32,10 @@ public class JpaSalaryFormulaRepository extends JpaRepository implements Formula
     private static final String SELECT_ALL_HIS_QUERY_STRING = "SELECT f FROM QpbmtFormulaHistory f";
     private static final String SELECT_BY_YM = SELECT_ALL_HIS_QUERY_STRING + " WHERE  f.formulaHistoryPk.cid =:cid AND" +
             " f.startMonth <= :yearMonth AND f.endMonth >= :yearMonth ";
+    private static final String SELECT_USABLE_DETAIL_SETTING_FORMULA = "SELECT f FROM QpbmtFormula f JOIN QpbmtFormulaHistory h ON f.formulaPk.cid = h.formulaHistoryPk.cid AND f.formulaPk.formulaCode = h.formulaHistoryPk.formulaCode WHERE f.formulaPk.cid =:cid f. AND f.nestedAtr = 1 AND h.endMonth = 999912 AND ORDER BY f.formulaPk.formulaCode ";
 
     private static final String DELETE_FORMULA_BY_CODE = "DELETE FROM QpbmtFormula f WHERE f.formulaPk.formulaCode =:formulaCode";
     private static final String DELETE_FORMULA_HISTORY_BY_ID = "DELETE FROM QpbmtFormulaHistory f WHERE f.formulaHistoryPk.historyID =:historyID";
-    private static final String DELETE_FORMULA_HISTORY_BY_CODE = "DELETE FROM QpbmtFormulaHistory f WHERE f.formulaHistoryPk.cid =:cid AND f.formulaHistoryPk.formulaCode =:formulaCode";
     @Override
     public List<Formula> getAllFormula(){
         return this.queryProxy().query(SELECT_BY_COMPANY, QpbmtFormula.class).setParameter("cid", AppContexts.user().companyId())
@@ -93,6 +95,12 @@ public class JpaSalaryFormulaRepository extends JpaRepository implements Formula
                 .setParameter("cid", cid)
                 .setParameter("formulaCodes", formulaCodes)
                 .getList(QpbmtFormula::toDomain);
+    }
+
+    @Override
+    public Map<String, String> getFormulaWithUsableDetailSetting() {
+        return this.queryProxy().query(SELECT_USABLE_DETAIL_SETTING_FORMULA, QpbmtFormula.class).setParameter("cid", AppContexts.user().companyId())
+                .getList().stream().collect(Collectors.toMap(item -> item.formulaPk.formulaCode, item -> item.formulaName));
     }
 
     @Override

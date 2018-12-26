@@ -73,7 +73,7 @@ module nts.uk.pr.view.qmm017.share.model {
 
     export function getRoundingEnumModel () {
         return [
-            new EnumModel(ROUNDING.ROUND_UP, getText('Enum_Rounding_ROUND_UP ')),
+            new EnumModel(ROUNDING.ROUND_UP, getText('Enum_Rounding_ROUND_UP')),
             new EnumModel(ROUNDING.TRUNCATION, getText('Enum_Rounding_TRUNCATION')),
             new EnumModel(ROUNDING.DOWN_1_UP_2, getText('Enum_Rounding_DOWN_1_UP_2')),
             new EnumModel(ROUNDING.DOWN_2_UP_3, getText('Enum_Rounding_DOWN_2_UP_3')),
@@ -104,7 +104,7 @@ module nts.uk.pr.view.qmm017.share.model {
 
     export function getReferenceMonthEnumModel () {
         return [
-            new EnumModel(REFERENCE_MONTH.CURRENT_MONTH, getText('Enum_ReferenceMonth_CURRENT_MONTH ')),
+            new EnumModel(REFERENCE_MONTH.CURRENT_MONTH, getText('Enum_ReferenceMonth_CURRENT_MONTH')),
             new EnumModel(REFERENCE_MONTH.ONE_MONTH_AGO, getText('Enum_ReferenceMonth_ONE_MONTH_AGO')),
             new EnumModel(REFERENCE_MONTH.TWO_MONTH_AGO, getText('Enum_ReferenceMonth_TWO_MONTH_AGO')),
             new EnumModel(REFERENCE_MONTH.THREE_MONTH_AGO, getText('Enum_ReferenceMonth_THREE_MONTH_AGO')),

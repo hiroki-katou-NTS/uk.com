@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.unitpricename;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.List;
 
@@ -12,6 +13,8 @@ public interface SalaryPerUnitPriceRepository
     List<SalaryPerUnitPrice> getAllSalaryPerUnitPrice();
 
     Optional<SalaryPerUnitPrice> getSalaryPerUnitPriceById(String cid, String code);
+
+    Map<String, String> getAllAbolitionSalaryPerUnitPrice();
 
     void add(SalaryPerUnitPrice domain);
 

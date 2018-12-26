@@ -374,18 +374,35 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             let self = this, formula = self.displayDetailCalculationFormula();
             $('#D3_5').ntsError('clear');
             if (formula.length == 0) {
-                self.setErrorToFormula('MsgQ_13', []);
+                self.setErrorToFormula('MsgQ_236', []);
                 return;
             }
-            self.checkDivideZero(formula);
+            self.checkOperatorAndDivideZero(formula);
+            self.checkResultIsNotNumber(formula);
             self.checkBracket (formula);
-            self.checkOperator (formula);
             self.checkInputContent(formula);
             self.checkFunctionSyntax(formula);
         }
-        checkDivideZero (formula) {
+        checkOperatorAndDivideZero (formula) {
+            let self = this, regex = new RegExp('([' + self.separators.join('|') + '])');
+            let formulaElements:any = formula.split(regex).filter(item => {return item && item.length}), elementType, elementName, detailFormula, calculationFormulaTransfer;
+            let self = this, index = 0, currentChar, nextChar, nextElement, operators = self.operators;
+            for(index = 0 ; index < formulaElements.length; index ++){
+                currentChar = formulaElements[index];
+                if (operators.indexOf(currentChar)>-1){
+                    nextChar = formulaElements[index+1];
+                    if (operators.indexOf(nextChar)>-1 && nextChar != self.OPEN_BRACKET && currentChar != self.CLOSE_BRACKET) {
+                        self.setErrorToFormula('MsgQ_232', [currentChar, nextChar]);
+                    }
+                    if (currentChar == self.DIVIDE && nextChar == 0) self.setErrorToFormula('MsgQ_234', []);
+                }
+            }
+        }
+        checkResultIsNotNumber (formula) {
             let self = this;
-            if (formula.indexOf("÷0") > -1) self.setErrorToFormula('MsgQ_11', []);
+            if (formula.startsWith(self.VARIABLE) || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.AND))
+            || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.OR)) || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.YEAR_MONTH))
+            || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.YEAR_EXTRACTION)) || formula.startsWith(self.combineElementTypeAndName(self.FUNCTION, self.MONTH_EXTRACTION))) self.setErrorToFormula('MsgQ_235', []);
         }
         checkBracket (formula) {
             let self = this, index, openBracketNum = 0, closeBracketNum = 0, currentChar;
@@ -393,47 +410,52 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 currentChar = formula [index];
                 if (currentChar == self.OPEN_BRACKET) openBracketNum ++;
                 if (currentChar == self.CLOSE_BRACKET) closeBracketNum ++;
+                if (openBracketNum - closeBracketNum > 10) {
+                    self.setErrorToFormula('MsgQ_237', []);
+                    return;
+                }
                 if (openBracketNum - closeBracketNum < 0) {
-                    self.setErrorToFormula('MsgQ_8', []);
+                    self.setErrorToFormula('MsgQ_231', []);
                     return;
                 }
             }
             if (openBracketNum != closeBracketNum) {
-                self.setErrorToFormula('MsgQ_8', []);
+                self.setErrorToFormula('MsgQ_231', []);
             }
             return;
         }
-        checkOperator(formula) {
-            let self = this, index = 0, currentChar, nextChar, nextElement, operators = self.operators;
-                for(index = 0 ; index < formula.length; index ++){
-                currentChar = formula[index];
-                if (operators.indexOf(currentChar)>-1){
-                    nextChar = formula[index+1];
-                    if (operators.indexOf(nextChar)>-1 && nextChar != self.OPEN_BRACKET && currentChar != self.CLOSE_BRACKET) {
-                        self.setErrorToFormula('MsgQ_9', [currentChar, nextChar]);
-                    }
-                }
+        replaceTextInsideDoubleQuote (formula) {
+            let self = this, indexToCheck = formula.length, startOfLastFunctionIndex = -1, endOfLastFunctionIndex,
+                singleFunctionContent;
+            let textInsideDoubleQuoteRegex = /"((?:\\.|[^"\\])*)"/g;
+            while (formula.substr(0, indexToCheck).lastIndexOf(self.FUNCTION) > -1){
+                startOfLastFunctionIndex = formula.substr(0, indexToCheck).lastIndexOf(self.FUNCTION);
+                endOfLastFunctionIndex = self.indexOfEndFunction(startOfLastFunctionIndex, formula);
+                singleFunctionContent = formula.substr(startOfLastFunctionIndex, endOfLastFunctionIndex -startOfLastFunctionIndex + 1);
+                formula = formula.replace(singleFunctionContent, singleFunctionContent.replace(textInsideDoubleQuoteRegex, 0));
+                indexToCheck = startOfLastFunctionIndex;
             }
+            return formula;
         }
         checkInputContent (formula) {
             let self = this, operand, prevOperand, operands, dotIndex,
                 separators: string = self.separators.join('|'),
-                textInsideDoubleQuoteRegex = /"((?:\\.|[^"\\])*)"/;
+            formula = this.replaceTextInsideDoubleQuote(formula);
             operands = formula.split(new RegExp(separators, 'g')).map(item => item.trim()).filter(item => {
                 return (item && item.length);
             });
             for(operand of operands) {
                 if (isNaN(operand)) {
-                    if (! (operand.indexOf(self.OPEN_CURLY_BRACKET) > -1) && operand.replace(textInsideDoubleQuoteRegex, "").length > 0) {
-                        self.setErrorToFormula('MsgQ_10', [operand]);
+                    if (! (operand.indexOf(self.OPEN_CURLY_BRACKET) > -1)) {
+                        self.setErrorToFormula('MsgQ_233', [operand]);
                         continue;
                     }
-                    let elementType = operand.substring(0, operand.indexOf(self.OPEN_CURLY_BRACKET)), elementName = operand.substring(operand.indexOf(self.OPEN_CURLY_BRACKET) + 1, operand.indexOf(self.CLOSE_CURLY_BRACKET));
-                    if (self.acceptPrefix.indexOf(elementType) < 0) self.setErrorToFormula('MsgQ_10', [operand]);
-                    if (!self.checkElementName(elementType, elementName)) self.setErrorToFormula('MsgQ_10', [operand]);
+                    let elementType = operand.substring(0, operand.indexOf(self.OPEN_CURLY_BRACKET)), elementName = operand.substring(operand.indexOf(self.OPEN_CURLY_BRACKET) + 1, operand.lastIndexOf(self.CLOSE_CURLY_BRACKET));
+                    if (self.acceptPrefix.indexOf(elementType) < 0) self.setErrorToFormula('MsgQ_233', [operand]);
+                    if (!self.checkElementName(elementType, elementName)) self.setErrorToFormula('MsgQ_233', [operand]);
                 } else {
                     dotIndex = operand.indexOf('.');
-                    if (dotIndex > - 1 && operand.length - 1 - dotIndex > 5) self.setErrorToFormula('MsgQ_18', [operand]);
+                    if (dotIndex > - 1 && operand.length - 1 - dotIndex > 5) self.setErrorToFormula('MsgQ_241', [operand]);
                 }
                 prevOperand = operand;
             }
@@ -467,40 +489,50 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 startFunctionIndex = formula.lastIndexOf(self.FUNCTION);
                 endFunctionIndex = self.indexOfEndFunction(startFunctionIndex, formula);
                 if (endFunctionIndex == -1){
-                    self.setErrorToFormula('MsgQ_15', [formula.substring(startFunctionIndex, formula.substring(startFunctionIndex).indexOf(self.OPEN_BRACKET))]);
+                    self.setErrorToFormula('MsgQ_233', [formula.substring(startFunctionIndex, formula.substring(startFunctionIndex).indexOf(self.OPEN_BRACKET))]);
                     break;
                 }
-                self.checkFunctionSyntax(formula.substring(startFunctionIndex, endFunctionIndex + 1));
+                self.checkSingleFunctionSyntax(formula.substring(startFunctionIndex, endFunctionIndex + 1));
                 formula = formula.replace(formula.substring(startFunctionIndex, endFunctionIndex + 1),  0 );
             }
         }
-        checkFunctionSyntax (functionSyntax) {
-            let self = this, conditionRegex = new RegExp( ['\\\<', '>', '\\\≧', '\\\≦', '\\\＝', '\\\≠'].join('|'));;
-            let functionName = functionSyntax.substring(functionSyntax.indexOf(self.OPEN_CURLY_BRACKET) + 1, functionSyntax.indexOf(self.OPEN_BRACKET)),
-                functionParameter = functionSyntax.substring(functionSyntax.indexOf(self.OPEN_BRACKET) + 1, functionSyntax.lastIndexOf(self.CLOSE_BRACKET)).split(self.COMMA_CHAR).map(item => item.trim());
-            if (functionParameter.length == 0) self.setErrorToFormula('MsgQ_15', [functionName]);
+        checkSingleFunctionSyntax (functionSyntax) {
+            let self = this, conditionRegex = new RegExp(['\\\<', '>', '\\\≧', '\\\≦', '\\\＝', '\\\≠'].join('|'));
+            let functionName = functionSyntax.substring(functionSyntax.indexOf(self.OPEN_CURLY_BRACKET) + 1, functionSyntax.indexOf(self.CLOSE_CURLY_BRACKET)),
+                functionParameter = functionSyntax.substring(functionSyntax.indexOf(self.OPEN_BRACKET) + 1, functionSyntax.lastIndexOf(self.CLOSE_BRACKET)).split(self.COMMA_CHAR).filter(item => item.length).map(item => item.trim());
+            if (functionParameter.length == 0) {
+                self.setErrorToFormula('MsgQ_238', [functionName]);
+                return;
+            }
             if (functionName == self.CONDITIONAL){
                 if (functionParameter.length != 3) {
-                    if (functionParameter.length < 3) self.setErrorToFormula('MsgQ_15', [functionName]);
-                    else self.setErrorToFormula('MsgQ_16', [functionName]);
+                    if (functionParameter.length < 3) self.setErrorToFormula('MsgQ_238', [functionName]);
+                    else self.setErrorToFormula('MsgQ_239', [functionName]);
                 } else if (functionParameter[0].split(conditionRegex).length > 2) {
                     // should have a different message, temporary use msg 16
                     // condition is invalid
-                    self.setErrorToFormula('MsgQ_16', [functionName]);
+                    self.setErrorToFormula('MsgQ_239', [functionName]);
                 }
             }
             if (functionName == self.ROUND_OFF || functionName == self.ROUND_UP || functionName == self.TRUNCATION) {
-                if (functionParameter.length > 1) self.setErrorToFormula('MsgQ_16', [functionName]);
+                if (functionParameter.length > 1) self.setErrorToFormula('MsgQ_239', [functionName]);
                 if (!self.checkNumberDataType(functionParameter)){
-                    self.setErrorToFormula('MsgQ_17', [functionName]);
+                    self.setErrorToFormula('MsgQ_240', [functionName]);
                 }
             }
             if (functionName == self.YEAR_MONTH) {
                 if (functionParameter.length != 2) {
-                    if (functionParameter.length < 2) self.setErrorToFormula('MsgQ_15', [functionName]);
-                    else self.setErrorToFormula('MsgQ_16', [functionName]);
-                } else if (!self.checkDateDataType(functionParameter)){
-                    self.setErrorToFormula('MsgQ_17', [functionName]);
+                    if (functionParameter.length < 2) self.setErrorToFormula('MsgQ_238', [functionName]);
+                    else self.setErrorToFormula('MsgQ_239', [functionName]);
+                } else if (!self.checkDateDataType(functionParameter[0])){
+                    self.setErrorToFormula('MsgQ_240', [functionName]);
+                }
+            }
+            if (functionName == self.YEAR_EXTRACTION || functionName == self.MONTH_EXTRACTION) {
+                if (functionParameter.length > 1) {
+                    self.setErrorToFormula('MsgQ_239', [functionName]);
+                } else if (!self.checkDateDataType(functionParameter[0])){
+                    self.setErrorToFormula('MsgQ_240', [functionName]);
                 }
             }
         }
@@ -519,15 +551,17 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             return -1;
         }
         checkNumberDataType (functionParameters) {
+            let self = this;
             for(var functionParameter of functionParameters ) {
-                if (functionParameter.indexOf('"') > -1) return false;
+                if (functionParameter.indexOf('"') > -1 || functionParameter.startWiths(self.VARIABLE)) return false;
             }
             return true;
         }
-        checkDateDataType (functionParameters) {
-            for(var functionParameter of functionParameters ) {
-                if (functionParameter.indexOf('"') > -1) return false;
-            }
+        checkDateDataType (functionParameter) {
+            let self = this;
+            if (!isNaN(functionParameter)) return false;
+            if (functionParameter.indexOf('"') > -1 && ! moment(functionParameter.split('"')[1], "YYYY/MM/DD", true).isValid()) return false;
+            if (functionParameter.startsWith(self.FUNCTION) && !functionParameter.startsWith(self.FUNCTION + self.OPEN_CURLY_BRACKET + self.CONDITIONAL)) return false;
             return true;
         }
         setErrorToFormula (messageId: string, messageParams: Array) {
@@ -619,9 +653,6 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 if (displayText) self.addToFormulaFromHintBox(displayText + self.CLOSE_CURLY_BRACKET);
                 $("#auto-complete-container").hide();
             });
-            // $("#D3_5").on("change", function(event){
-            //     event.target.val(event.target.value.replace(/(?:\r|\n|\r\n)/g, '<br>'));
-            // });
             $("#D3_5").on("keypress", function(event){
                 if (event.keyCode == 13){
                     event.preventDefault();

@@ -3,6 +3,8 @@ package nts.uk.ctx.pr.core.dom.wageprovision.formula;
 
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
+
+import java.util.Map;
 import java.util.Optional;
 import java.util.List;
 import java.util.Optional;
@@ -10,8 +12,7 @@ import java.util.Optional;
 /**
 * 計算式
 */
-public interface FormulaRepository
-{
+public interface FormulaRepository {
 
     List<Formula> getAllFormula();
 
@@ -20,6 +21,8 @@ public interface FormulaRepository
     Optional<FormulaHistory> getFormulaHistoryByCode(String formulaCode);
 
     List<Formula> getFormulaByCodes(String cid, List<String> formulaCodes);
+
+    Map<String, String> getFormulaWithUsableDetailSetting();
 
     void add(Formula domain);
 
