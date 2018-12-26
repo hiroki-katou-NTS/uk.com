@@ -98,7 +98,7 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 			dailyInfor = workUpdate.updateScheStartEndTime(timePara, dailyInfor);
 		} else if (checkworkDay == WorkStyle.AFTERNOON_WORK || checkworkDay == WorkStyle.MORNING_WORK) {
 			//就業時間帯が反映できるか
-			WorkTimeIsRecordReflect isWorkTimeReflect = this.checkReflectWorktime(param.getEmployeeId(), param.getBaseDate(), param.getWorkTimeCode());
+			WorkTimeIsRecordReflect isWorkTimeReflect = this.checkReflectWorktime(param.getEmployeeId(), param.getBaseDate(), param.getWorkTimeCode(), true);
 			if(isWorkTimeReflect.isChkReflect()) {
 				//就時の反映
 				dailyInfor = workUpdate.updateRecordWorkTime(param.getEmployeeId(), param.getBaseDate(), isWorkTimeReflect.getWorkTimeCode(), true, dailyInfor);
@@ -118,7 +118,7 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 	}
 
 	@Override
-	public WorkTimeIsRecordReflect checkReflectWorktime(String employeeId, GeneralDate dateData, String workTime) {
+	public WorkTimeIsRecordReflect checkReflectWorktime(String employeeId, GeneralDate dateData, String workTime, boolean isChe) {
 		WorkTimeIsRecordReflect outData = new WorkTimeIsRecordReflect(false, null);
 		//INPUT．就業時間帯をチェックする
 		if(workTime != null) {
@@ -130,9 +130,13 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 		Optional<WorkInfoOfDailyPerformance> optWorkInfor = workInforRepo.find(employeeId, dateData);
 		if(optWorkInfor.isPresent()) {
 			WorkInfoOfDailyPerformance workInfo = optWorkInfor.get();
-			if(workInfo.getScheduleInfo().getWorkTimeCode() != null) {
+			if(isChe && workInfo.getScheduleInfo().getWorkTimeCode() != null) {
 				outData.setChkReflect(false);
 				outData.setWorkTimeCode(workInfo.getScheduleInfo().getWorkTimeCode().v());
+				return outData;
+			} else if (!isChe && workInfo.getRecordInfo().getWorkTimeCode() != null) {
+				outData.setChkReflect(false);
+				outData.setWorkTimeCode(workInfo.getRecordInfo().getWorkTimeCode().v());
 				return outData;
 			}
 		}
@@ -219,7 +223,7 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 			
 		} else if (checkworkDay == WorkStyle.AFTERNOON_WORK || checkworkDay == WorkStyle.MORNING_WORK) {
 			//就業時間帯が反映できるか
-			WorkTimeIsRecordReflect isWorkTimeReflect = this.checkReflectWorktime(param.getEmployeeId(), param.getBaseDate(), param.getWorkTimeCode());
+			WorkTimeIsRecordReflect isWorkTimeReflect = this.checkReflectWorktime(param.getEmployeeId(), param.getBaseDate(), param.getWorkTimeCode(), false);
 			if(isWorkTimeReflect.isChkReflect()) {
 				//就時の反映
 				dailyInfor = workUpdate.updateRecordWorkTime(param.getEmployeeId(), param.getBaseDate(), isWorkTimeReflect.getWorkTimeCode(), false, dailyInfor);
