@@ -149,7 +149,7 @@ public class SequenceMasterExportImpl implements MasterListData{
 	@Override
 	public List<SheetData> extraSheets(MasterListExportQuery query){
 		List<SheetData> listSheetData = new ArrayList<>();
-		SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("CMM013_54"));
+		SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("CMM013_61"));
 		listSheetData.add(sheetDataTwo);
 		return listSheetData;
 	}
@@ -252,7 +252,7 @@ public class SequenceMasterExportImpl implements MasterListData{
 	@Override
 	public String mainSheetName() {
 		// TODO Auto-generated method stub
-		return TextResource.localize("CMM013_53");
+		return TextResource.localize("CMM013_60");
 	}
 	
 
