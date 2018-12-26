@@ -20,18 +20,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.salaryindividualamountname.SalIndAmo
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemCustom;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.StatementItemRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.DeductionItemDetailSet;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.LineByLineSetting;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.PaymentItemDetailSet;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.SettingByCtg;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.SettingByItem;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.SettingByItemCustom;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutHist;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutHistRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutRepository;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutSet;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutSetRepository;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.*;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -148,6 +137,7 @@ public class StatementLayoutExportService extends ExportService<StatementLayoutE
 			Map<MapKey, String> statementItemMap) {
 		List<LineByLineSettingExportData> listLineByLineSetEx = new ArrayList<>();
 		for (LineByLineSetting line : set.getListLineByLineSet()) {
+			if (!StatementPrintAtr.PRINT.equals(line.getPrintSet())) continue;
 			LineByLineSettingExportData lineEx = new LineByLineSettingExportData();
 			List<SettingByItemExportData> listSetByItemEx = this.mapItemSetting(line, set.getCtgAtr(), wageTableMap,
 					salIndAmountNameMap, formulaMap, statementItemMap);

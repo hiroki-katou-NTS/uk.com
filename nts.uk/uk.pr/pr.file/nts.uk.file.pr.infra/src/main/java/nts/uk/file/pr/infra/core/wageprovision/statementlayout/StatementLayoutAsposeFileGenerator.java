@@ -1,25 +1,22 @@
 package nts.uk.file.pr.infra.core.wageprovision.statementlayout;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-
-import javax.ejb.Stateless;
-
 import com.aspose.cells.HorizontalPageBreakCollection;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
-
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementPrintAtr;
 import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.LineByLineSettingExportData;
 import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.SettingByCtgExportData;
 import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.StatementLayoutFileGenerator;
 import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.StatementLayoutSetExportData;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
+
+import javax.ejb.Stateless;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 
 @Stateless
 public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerator
@@ -68,7 +65,6 @@ public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerat
 		int firstLine = listLineByLineSet.get(0).getLineNumber();
 		int lastLine = listLineByLineSet.get(listLineByLineSet.size() - 1).getLineNumber();		
 		for (LineByLineSettingExportData line : listLineByLineSet) {
-			if (!StatementPrintAtr.PRINT.equals(line.getPrintSet())) continue;
 			LinePosition pos = LinePosition.MIDDLE;
 			if (line.getLineNumber() == firstLine) {
 				pos = LinePosition.FIRST;
