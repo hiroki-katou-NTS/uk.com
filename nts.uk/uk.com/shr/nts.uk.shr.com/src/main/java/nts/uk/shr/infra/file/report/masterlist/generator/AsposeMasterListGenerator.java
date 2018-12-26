@@ -246,7 +246,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW + 2, isCsv, DATETIME, now.toString(YYYY_MM_DD_HH_MM_SS));
 		//processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW + 3, isCsv, LANGUAGE, 
 		//		languageRepo.getSystemLanguage(query.getLanguageId()).get().getLanguageName());
-		processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW + 4, isCsv, SHEET_NAME, EMPTY_STRING);
+		processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW + 3, isCsv, SHEET_NAME, EMPTY_STRING);
 		
 		checkMode(cells, query.getMode(), columnSize, isCsv, query.getBaseDate(), query.getStartDate(), query.getEndDate());
 		
@@ -259,13 +259,13 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 	private void checkMode(Cells cells, MasterListMode mode, int columnSize, boolean isCsv, 
 			GeneralDate baseDate, GeneralDate startDate, GeneralDate endDate) {
 		if(mode == MasterListMode.BASE_DATE){
-			processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW + 5, isCsv, BASE_DATE_LABEL, 
+			processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW + 4, isCsv, BASE_DATE_LABEL, 
 					baseDate == null ? EMPTY_STRING : baseDate.toString(YYYY_MM_DD));
 		} else if (mode == MasterListMode.FISCAL_YEAR_RANGE) {
 			String range = (startDate == null ? EMPTY_STRING : startDate.year() + YEAR)
 								+ FROM_TO
 								+ (endDate == null ? EMPTY_STRING : endDate.year() + YEAR);
-			processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW + 5, isCsv, FISCAL_YEAR, range);
+			processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW + 4, isCsv, FISCAL_YEAR, range);
 		}
 	}
 
@@ -362,8 +362,13 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		font.setName(cellStyle.fontFamily());
 		style.setHorizontalAlignment(cellStyle.horizontalAlign().value);
 		style.setVerticalAlignment(cellStyle.verticalAlign().value);
-		style.setBackgroundColor(toColor(cellStyle.backgroundColor()));
-		style.setForegroundColor(toColor(cellStyle.textColor()));
+		if(cellStyle.backgroundColor() != null){
+			style.setPattern(BackgroundType.SOLID);
+			style.setForegroundColor(toColor(cellStyle.backgroundColor()));
+		}
+		if(cellStyle.textColor() != null) {
+			font.setColor(toColor(cellStyle.textColor()));
+		}
 
 		return style;
 	}
