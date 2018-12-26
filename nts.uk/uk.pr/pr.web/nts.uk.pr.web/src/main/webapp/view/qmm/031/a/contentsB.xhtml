@@ -39,7 +39,7 @@
             <div class="table">
                 <div class="cell valign-top">
                     <!--B2_1-->
-                    <div data-bind="ntsFormLabel: {
+                    <div id="B2_1" data-bind="ntsFormLabel: {
                                 constraint: ['LifeInsuranceCode','LifeInsuranceName'],
                                 required: true }">#{i18n.getText('QMM031_14')}</div>
                     <!--B2_2-->
@@ -67,7 +67,10 @@
             </div>
             <!--B2_4-->
             <hr/>
-            <div class="table">
+            <div class="userguide-right" data-toggle="userguide" data-target="#B2_1" data-direction="bottom">
+                <div data-target="#B2_1" class="guide-content" data-direction="bottom">#{i18n.getText('QMM031_20')}</div>
+            </div>
+            <div class="table target">
                 <div class="cell valign-top">
                     <!--B2_5-->
                     <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM031_18')}</div>
@@ -76,7 +79,7 @@
                             style="margin-left: 50px;">#{i18n.getText('QMM031_18')}</button>
                 </div>
             </div>
-            <div class="table" style="margin-left: 106px; margin-top: 15px;">
+            <div class="table target" style="margin-left: 106px; margin-top: 15px;">
                 <!-- B2_7 -->
                 <table id="B2_7" tabindex="12"
                        data-bind="ntsGridList: { name: '#[QMM031_19]',

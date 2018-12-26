@@ -176,6 +176,8 @@ module nts.uk.pr.view.qmm031.a.viewmodel {
             self.enableLifeInsuranceCode(true);
             self.lstInsuranceType([]);
             $("#lifeInsuranceCode").focus();
+
+            $(".userguide-right").ntsUserGuide("show");
         };
 
         saveLifeInsurance() {
