@@ -537,6 +537,8 @@ public class RecoveryStorageService {
 					.findByIdsEmployee(new ArrayList<String>(hashId));
 			
 			// fix bug cho trường hợp retore từ màn hình cmf005 - start
+			// Trường hợp này list employeeInfos lấy dữ liệu từ table BSYMT_EMP_DTA_MNG_INFO bị rỗng, do đã bị xóa từ màn cmf005.
+			// Nên list nhân viên tôi sẽ lấy ra từ file excel.
 			if(employeeInfos.size() != hashId.size()){
 				List<String> listSidHasData =  employeeInfos.stream().map(i ->i.getEmployeeId()).collect(Collectors.toList());
 				List<String> listSid        =  new ArrayList<String>(hashId);
