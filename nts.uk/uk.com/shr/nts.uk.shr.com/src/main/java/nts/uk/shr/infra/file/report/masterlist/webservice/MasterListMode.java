@@ -2,6 +2,7 @@ package nts.uk.shr.infra.file.report.masterlist.webservice;
 
 public enum MasterListMode {
 
+	ALL(3, "フル"),
 	FISCAL_YEAR_RANGE(2, "年度期間"),
 	BASE_DATE(1, "基準日"),
 	NONE(0, "なし");

@@ -1,5 +1,5 @@
 
-package nts.uk.ctx.at.schedule.app.export.shift.businesscalendar.daycalendar;
+package nts.uk.file.at.app.export.shift.businesscalendar.daycalendar;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -7,14 +7,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.shared.app.find.pattern.monthly.setting.Period;
+import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WkpConfigInfoFindObject;
+import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WorkplaceHierarchyDto;
+import nts.uk.ctx.bs.employee.app.find.workplace.config.info.WorkplaceConfigInfoFinder;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
@@ -43,6 +49,9 @@ public class DayCalendarExportImpl implements MasterListData {
 
 	@Inject
 	private DayCalendarReportRepository dayCalendarReportRepository;
+	
+	@Inject
+	private WorkplaceConfigInfoFinder workplaceConfigInfoFinder;
 	
 	private Period period;
 	
@@ -243,8 +252,22 @@ public class DayCalendarExportImpl implements MasterListData {
 
 		return columns;
 	}
-	
-	
+	/**
+	 * 
+	 * @param workplaceHierarchyDtos
+	 * @return
+	 */
+	private List<WorkplaceHierarchyDto> spreadOutWorkplaceInfos(List<WorkplaceHierarchyDto> workplaceHierarchyDtos) {
+		List<WorkplaceHierarchyDto> listWorkplaceHierarchyDtos = new ArrayList<>();
+		workplaceHierarchyDtos.stream().forEach(x -> {
+			listWorkplaceHierarchyDtos.add(x);
+			if (!CollectionUtil.isEmpty(x.getChilds())) {
+				listWorkplaceHierarchyDtos.addAll(spreadOutWorkplaceInfos(x.getChilds()));
+			}
+			
+		});
+		return listWorkplaceHierarchyDtos;
+	}
 	
 	/**
 	 * get data for WorkPlace Sheet
@@ -256,9 +279,18 @@ public class DayCalendarExportImpl implements MasterListData {
 		List<MasterData> datas = new ArrayList<>();
 		Optional<Map<String, List<WorkplaceCalendarReportData>>> mapSetReportDatas = dayCalendarReportRepository
 				.findCalendarWorkplaceByDate(companyId, period.getStartDate(), period.getEndDate());
-
+		
+		WkpConfigInfoFindObject wkpConfigInfoFindObject = new WkpConfigInfoFindObject();
+		wkpConfigInfoFindObject.setSystemType(2);
+		wkpConfigInfoFindObject.setBaseDate(GeneralDate.today());
+		wkpConfigInfoFindObject.setRestrictionOfReferenceRange(true);
+		List<WorkplaceHierarchyDto> workplaceHierarchyDtos = spreadOutWorkplaceInfos(workplaceConfigInfoFinder.findAllByBaseDate(wkpConfigInfoFindObject));
+		Map<String, WorkplaceHierarchyDto> mapWorkPlace = workplaceHierarchyDtos.stream()
+				.collect(Collectors.toMap(WorkplaceHierarchyDto::getCode, Function.identity()));
+		
 		if (mapSetReportDatas.isPresent()) {
 			mapSetReportDatas.get().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEachOrdered(x -> {
+				WorkplaceHierarchyDto workplaceHierarchyDto = mapWorkPlace.get(x.getKey());
 				Optional<List<WorkplaceCalendarReportData>> listDataPerOneWp = Optional.ofNullable(x.getValue());
 				if (listDataPerOneWp.isPresent()) {
 					Map<String, List<WorkplaceCalendarReportData>> mapDataByYearMonth = 
@@ -267,7 +299,7 @@ public class DayCalendarExportImpl implements MasterListData {
 					for(int i = 0; i < yearMonthKeys.size(); i++) {
 						String yearMonth = yearMonthKeys.get(i);
 						List<WorkplaceCalendarReportData> listDataPerOneRow = mapDataByYearMonth.get(yearMonth);
-						Optional<MasterData> row = newWorkplaceMasterData(i, yearMonth, Optional.ofNullable(listDataPerOneRow));
+						Optional<MasterData> row = newWorkplaceMasterData(i, yearMonth, Optional.ofNullable(listDataPerOneRow), workplaceHierarchyDto);
 						if (row.isPresent()) {
 							datas.add(row.get());
 						}
@@ -287,15 +319,16 @@ public class DayCalendarExportImpl implements MasterListData {
 	 * @return
 	 */
 	private Optional<MasterData> newWorkplaceMasterData(Integer index, String yearMonth,
-			Optional<List<WorkplaceCalendarReportData>> specificdaySetReportDatas) {
+			Optional<List<WorkplaceCalendarReportData>> specificdaySetReportDatas, WorkplaceHierarchyDto workplaceHierarchyDto) {
 		Map<String, Object> data = new HashMap<>();
 		if (specificdaySetReportDatas.isPresent()) {
 			//put empty to columns
 			putEmptyToColumWorkplace(data);
 			if (index == 0) {
-				WorkplaceCalendarReportData setWorkplaceReportData = specificdaySetReportDatas.get().get(0);
-				data.put("コード", setWorkplaceReportData.getWorkplaceCode());
-				data.put("名称", setWorkplaceReportData.getWorkplaceName());
+				if (workplaceHierarchyDto != null) {
+					data.put("コード", workplaceHierarchyDto.getCode());
+					data.put("名称", workplaceHierarchyDto.getName());
+				}
 			}
 			data.put("年月", yearMonth.substring(0, 4) + "/" + yearMonth.substring(4, yearMonth.length()));
 			
@@ -350,7 +383,7 @@ public class DayCalendarExportImpl implements MasterListData {
 			if (day == i) {
 				String value = (String) data.get(key);
 				if (value != null && !value.isEmpty()) {
-//					value += "," + setReportData.getWorkingDayAtrName();
+					value += "," + setReportData.getWorkingDayAtrName();
 				}
 				else if (value != null && value.isEmpty()){
 					value += setReportData.getWorkingDayAtrName();
@@ -414,19 +447,19 @@ public class DayCalendarExportImpl implements MasterListData {
 	 * @return
 	 */
 	private Optional<MasterData> newClassMasterData(Integer index, String yearMonth,
-			Optional<List<ClassCalendarReportData>> specificdaySetReportDatas) {
+			Optional<List<ClassCalendarReportData>> classCalendarReportDatas) {
 		Map<String, Object> data = new HashMap<>();
-		if (specificdaySetReportDatas.isPresent()) {
+		if (classCalendarReportDatas.isPresent()) {
 			//put empty to columns
 			putEmptyToColumClass(data);
 			if (index == 0) {
-				ClassCalendarReportData setWorkplaceReportData = specificdaySetReportDatas.get().get(0);
-				data.put("コード", setWorkplaceReportData.getClassCode());
+				ClassCalendarReportData setWorkplaceReportData = classCalendarReportDatas.get().get(0);
+				data.put("コード", setWorkplaceReportData.getClassId());
 				data.put("名称", setWorkplaceReportData.getClassName());
 			}
 			data.put("年月", yearMonth.substring(0, 4) + "/" + yearMonth.substring(4, yearMonth.length()));
 			
-			specificdaySetReportDatas.get().stream().sorted(Comparator.comparing(ClassCalendarReportData::getDay))
+			classCalendarReportDatas.get().stream().sorted(Comparator.comparing(ClassCalendarReportData::getDay))
 					.forEachOrdered(x -> {
 						putDataToColumnsClass(data, x);
 					});
@@ -477,7 +510,7 @@ public class DayCalendarExportImpl implements MasterListData {
 			if (day == i) {
 				String value = (String) data.get(key);
 				if (value != null && !value.isEmpty()) {
-//					value += "," + setReportData.getWorkingDayAtrName();
+					value += "," + setReportData.getWorkingDayAtrName();
 				}
 				else if (value != null && value.isEmpty()){
 					value += setReportData.getWorkingDayAtrName();

@@ -1,11 +1,12 @@
-package nts.uk.ctx.at.schedule.app.export.shift.businesscalendar.daycalendar;
+package nts.uk.file.at.app.export.shift.businesscalendar.daycalendar;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
 @Getter
-public class ClassCalendarReportData {
-	private String companyId;
+public class WorkplaceCalendarReportData {
+	
+	private String workplaceId;
 	
 	private GeneralDate date;
 	
@@ -13,18 +14,18 @@ public class ClassCalendarReportData {
 	
 	private String workingDayAtrName;
 	
-	private String classCode;
-	private String className;
+	private String workplaceCode;
+	private String workplaceName;
 	
 
-	public ClassCalendarReportData(String companyId, GeneralDate date, int workingDayAtr, String classCode, String className) {
+	public WorkplaceCalendarReportData(String workplaceId, GeneralDate date, int workingDayAtr, String workplaceCode, String workplaceName) {
 		super();
-		this.companyId = companyId;
+		this.workplaceId = workplaceId;
 		this.date = date;
 		this.workingDayAtr = workingDayAtr;
 		this.workingDayAtrName = getName(workingDayAtr);
-		this.classCode = classCode;
-		this.className = className;
+		this.workplaceCode = workplaceCode;
+		this.workplaceName = workplaceName;
 	}
 	
 	public String getYearMonth() {
@@ -52,13 +53,13 @@ public class ClassCalendarReportData {
 		return null;
 	}
 	
-	public static ClassCalendarReportData createFromJavaType(String workplaceId, 
-			GeneralDate date, Integer workingDayAtr, String classCode, String className) {
-		return new ClassCalendarReportData(
+	public static WorkplaceCalendarReportData createFromJavaType(String workplaceId, 
+			GeneralDate date, Integer workingDayAtr, String workplaceCode, String workplaceName) {
+		return new WorkplaceCalendarReportData(
 				workplaceId, 
 				date, 
 				workingDayAtr,
-				classCode,
-				className);
+				workplaceCode,
+				workplaceName);
 	}
 }
