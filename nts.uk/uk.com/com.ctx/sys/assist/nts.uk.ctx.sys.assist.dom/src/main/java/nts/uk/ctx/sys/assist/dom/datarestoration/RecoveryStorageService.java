@@ -535,6 +535,8 @@ public class RecoveryStorageService {
 			// 対象社員コード＿ID
 			List<EmployeeDataReInfoImport> employeeInfos = empDataMngRepo
 					.findByIdsEmployee(new ArrayList<String>(hashId));
+			
+			// fix bug cho trường hợp retore từ màn hình cmf005 - start
 			if(employeeInfos.size() != hashId.size()){
 				List<String> listSidHasData =  employeeInfos.stream().map(i ->i.getEmployeeId()).collect(Collectors.toList());
 				List<String> listSid        =  new ArrayList<String>(hashId);
