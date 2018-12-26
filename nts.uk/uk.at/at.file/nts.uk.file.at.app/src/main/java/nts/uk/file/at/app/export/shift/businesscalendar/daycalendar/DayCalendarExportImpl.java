@@ -282,7 +282,7 @@ public class DayCalendarExportImpl implements MasterListData {
 		
 		WkpConfigInfoFindObject wkpConfigInfoFindObject = new WkpConfigInfoFindObject();
 		wkpConfigInfoFindObject.setSystemType(2);
-		wkpConfigInfoFindObject.setBaseDate(GeneralDate.today());
+		wkpConfigInfoFindObject.setBaseDate(GeneralDate.ymd(9999, 12, 31));
 		wkpConfigInfoFindObject.setRestrictionOfReferenceRange(true);
 		List<WorkplaceHierarchyDto> workplaceHierarchyDtos = spreadOutWorkplaceInfos(workplaceConfigInfoFinder.findAllByBaseDate(wkpConfigInfoFindObject));
 		Map<String, WorkplaceHierarchyDto> mapWorkPlace = workplaceHierarchyDtos.stream()
