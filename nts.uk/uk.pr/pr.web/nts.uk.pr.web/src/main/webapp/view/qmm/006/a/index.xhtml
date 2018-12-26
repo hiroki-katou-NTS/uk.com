@@ -23,7 +23,7 @@
 	    <ui:define name="content">
 	        <div id="functions-area">
 	            <!-- A1_1 -->
-	            <button tabindex="1" data-bind="click: createNew, timeClick: 500">#{i18n.getText('QMM006_1')}</button>
+	            <button tabindex="1" data-bind="click: createNew, enable: updateMode(), timeClick: 500">#{i18n.getText('QMM006_1')}</button>
 	            <!-- A1_2 -->
 	            <button tabindex="2" class="proceed" data-bind="enable: $root.errors.isEmpty, click: register, timeClick: 500">#{i18n.getText('QMM006_2')}</button>
 	            <!-- A1_3 -->
@@ -86,7 +86,7 @@
 						<!-- A3_7 -->
 						<span class="label" data-bind="text: bankName" style="padding-left: 10px"></span>
 						<!-- A3_8 -->
-						<span class="label" style="padding-left: 10px">#{i18n.getText('QMM006_17')}</span>
+						<span class="label" style="padding-left: 10px" data-bind="visible: branchId() != null">#{i18n.getText('QMM006_17')}</span>
 						<!-- A3_9 -->
 						<span class="label" data-bind="text: branchCode" style="padding-left: 10px"></span>
 						<!-- A3_10 -->
@@ -96,7 +96,7 @@
 						<!-- A3_11 -->
 						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM006_10')}</div>
 						<!-- A3_37 -->
-						<div id="switch-acc-type" data-bind="ntsSwitchButton: {
+						<div tabindex="11" id="switch-acc-type" data-bind="ntsSwitchButton: {
 							name: '口座区分',
 							options: $vm.accountTypes,
 							optionsValue: 'code',

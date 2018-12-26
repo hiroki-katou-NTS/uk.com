@@ -4,6 +4,7 @@ import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
+import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
 /**
  * 
@@ -12,6 +13,7 @@ import nts.uk.shr.com.primitive.CodePrimitiveValue;
  */
 @StringMaxLength(3)
 @StringCharType(CharType.NUMERIC)
+@ZeroPaddedCode
 public class BankBranchCode extends CodePrimitiveValue<BankBranchCode> {
 
 	/**

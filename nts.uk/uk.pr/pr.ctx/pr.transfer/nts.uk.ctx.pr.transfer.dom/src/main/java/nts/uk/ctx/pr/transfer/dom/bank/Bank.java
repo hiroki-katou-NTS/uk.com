@@ -46,14 +46,14 @@ public class Bank extends AggregateRoot {
 	 */
 	@Override
 	public void validate() {
-		super.validate();
-		if (this.bankCode == null || StringUtil.isNullOrEmpty(this.bankCode.v(), true)) {
-			throw new BusinessException("ER001");
-		}
-
-		if (this.bankName == null || StringUtil.isNullOrEmpty(this.bankName.v(), true)) {
-			throw new BusinessException("ER001");
-		}
+//		super.validate();
+//		if (this.bankCode == null || StringUtil.isNullOrEmpty(this.bankCode.v(), true)) {
+//			throw new BusinessException("ER001");
+//		}
+//
+//		if (this.bankName == null || StringUtil.isNullOrEmpty(this.bankName.v(), true)) {
+//			throw new BusinessException("ER001");
+//		}
 	}
 
 	/**

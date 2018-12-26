@@ -21,7 +21,7 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button tabindex = "1" data-bind="click: createNew, timeClick: 500">#{i18n.getText('QMM002_1')}</button>
+				<button tabindex = "1" data-bind="click: createNew, enable: updateMode(), timeClick: 500">#{i18n.getText('QMM002_1')}</button>
 				<button tabindex = "2" class="proceed" data-bind="click: register, enable: $root.errors.isEmpty, timeClick: 500">#{i18n.getText('QMM002_2')}</button>
 				<button tabindex = "3" data-bind="click: close, timeClick: 500">#{i18n.getText('QMM002_23')}</button>
 			</div>
@@ -68,7 +68,7 @@
 					</div>
 					<hr/>
 					<div data-bind="with: selectedBank">
-						<div class="valign-center control-group">
+						<div class="valign-top control-group">
 							<div data-bind="ntsFormLabel: { constraint: 'Memo' }">#{i18n.getText('QMM002_14')}</div>
 							<textarea style="height: 150px" tabindex="8" data-bind="ntsMultilineEditor: {
 								value: memo,

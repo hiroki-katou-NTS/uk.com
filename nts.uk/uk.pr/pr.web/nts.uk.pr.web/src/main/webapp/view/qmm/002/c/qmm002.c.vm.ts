@@ -108,7 +108,7 @@ module nts.uk.pr.view.qmm002.c.viewmodel {
             self.id = id;
             self.code = code;
             self.name = name;
-            self.nodeText = self.code + ' ' + self.name;
+            self.nodeText = _.escape(self.code + ' ' + self.name);
             self.children = children;
         }
     }
