@@ -56,7 +56,7 @@ public class BasicInformation extends DomainObject
         this.corporateNumber = corporateNumber == null ? Optional.empty() : Optional.of(new CorporateNumber(corporateNumber.toString()));
         this.clubRepresentativeName = representativeName == null ? Optional.empty() : Optional.of(new RepresentativeName(representativeName));
         this.clubRepresentativePosition = representativePosition == null ? Optional.empty() : Optional.of(new RepresentativePosition(representativePosition));
-        this.notes = note == null ? Optional.empty() : Optional.of(new Memo(note));
+        this.notes = note == null || note.isEmpty() ? Optional.empty() : Optional.of(new Memo(note));
         this.addressInformation = new AddressInformation(addressInformation.getAddress1().isPresent() ? addressInformation.getAddress1() : null,
                 addressInformation.getAddress2().isPresent() ? addressInformation.getAddress2() : null,
                 addressInformation.getAddressKana1().isPresent() ? addressInformation.getAddressKana1() : null,

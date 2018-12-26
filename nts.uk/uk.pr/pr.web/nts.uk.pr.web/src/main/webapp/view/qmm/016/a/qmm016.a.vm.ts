@@ -336,7 +336,10 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     self.startPage(command.wageTableCode + histId);
                 });
             }).fail(error => {
-                dialog.alertError(error);
+                dialog.alertError(error).then(() => {
+                    if (error.messageId == "Msg_3")
+                        $("#A5_2").focus();
+                });
             }).always(() => {
                 block.clear();
             });
@@ -377,7 +380,36 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     self.startPage(command.wageTableCode + historyId);
                 });
             }).fail(error => {
-                dialog.alertError(error);
+                dialog.alertError(error).then(() => {
+                    if (error.messageId == "MsgQ_153" || error.messageId == "MsgQ_154" || error.messageId == "MsgQ_155") {
+                        switch (self.selectedWageTable().elementSetting()) {
+                            case model.ELEMENT_SETTING.ONE_DIMENSION:
+                                $("#B2_8").focus();
+                                break;
+                            case model.ELEMENT_SETTING.TWO_DIMENSION:
+                                if (error.messageId == "MsgQ_153")
+                                    $("#C2_8").focus();
+                                else
+                                    $("#C2_15").focus();
+                                break;
+                            case model.ELEMENT_SETTING.THREE_DIMENSION:
+                                if (error.messageId == "MsgQ_153")
+                                    $("#D2_8").focus();
+                                else if (error.messageId == "MsgQ_154")
+                                    $("#D2_15").focus();
+                                else 
+                                    $("#D2_22").focus();
+                                break;
+                            case model.ELEMENT_SETTING.FINE_WORK:
+                                if (error.messageId == "MsgQ_153")
+                                    $("#F2_8").focus();
+                                else
+                                    $("#F2_15").focus();
+                                break;
+                            default: break;
+                        }
+                    }
+                });
             }).always(() => {
                 block.clear();
             });
