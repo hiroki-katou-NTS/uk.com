@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.ejb.Stateless;
@@ -167,10 +168,10 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 			+" 	,ROW_NUMBER () OVER ( PARTITION BY etes.TARGET_YEAR,emp.CODE, emp.NAME  ORDER BY etes.TARGET_CLS, emp.CODE ASC ) AS ROW_NUMBER"
 			+" FROM"
 			+" KSCMT_EST_TIME_EMP_SET etes"
-			+" INNER JOIN KSCMT_EST_PRICE_EMP_SET epes ON etes.CID = epes.CID AND etes.TARGET_YEAR = epes.TARGET_YEAR AND etes.TARGET_CLS = epes.TARGET_CLS AND etes.EMPCD = epes.EMPCD "
-			+" INNER JOIN KSCMT_EST_DAYS_EMP_SET edes ON etes.CID = edes.CID AND etes.TARGET_YEAR = edes.TARGET_YEAR AND etes.TARGET_CLS = edes.TARGET_CLS AND etes.EMPCD = edes.EMPCD "
-			+" INNER JOIN BSYMT_EMPLOYMENT emp ON etes.CID = emp.CID AND etes.EMPCD = emp.CODE"
-			+" WHERE etes.CID = ?cid AND  ?startDate <= etes.TARGET_YEAR AND  etes.TARGET_YEAR <= ?endDate"
+			+" INNER JOIN KSCMT_EST_PRICE_EMP_SET epes ON etes.CID = epes.CID AND etes.TARGET_YEAR = epes.TARGET_YEAR AND etes.TARGET_CLS = epes.TARGET_CLS AND etes.EMPCD = epes.EMPCD AND etes.CID = ?cid"
+			+" INNER JOIN KSCMT_EST_DAYS_EMP_SET edes ON etes.CID = edes.CID AND etes.TARGET_YEAR = edes.TARGET_YEAR AND etes.TARGET_CLS = edes.TARGET_CLS AND etes.EMPCD = edes.EMPCD AND etes.CID = ?cid"
+			+" INNER JOIN BSYMT_EMPLOYMENT emp ON etes.CID = emp.CID AND etes.EMPCD = emp.CODE AND etes.CID = ?cid"
+			+" WHERE ?startDate <= etes.TARGET_YEAR AND  etes.TARGET_YEAR <= ?endDate"
 			+" ) AS TABLE_RESULT";
 	
 	private static final String GET_EXPORT_EXCEL_SHEET_FIVE = "SELECT"
@@ -214,15 +215,15 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 			+" 	,edes.EST_CONDITION_3RD_DAYS"
 			+" 	,edes.EST_CONDITION_4TH_DAYS"
 			+" 	,edes.EST_CONDITION_5TH_DAYS	"
-			+" 	,ROW_NUMBER () OVER ( PARTITION BY etes.TARGET_YEAR,edmi.SCD, per.BUSINESS_NAME  ORDER BY etes.TARGET_CLS, edmi.SCD ASC ) AS ROW_NUMBER"
+			+" 	,ROW_NUMBER () OVER ( PARTITION BY etes.TARGET_YEAR,edmi.SCD ORDER BY etes.TARGET_CLS, edmi.SCD ASC ) AS ROW_NUMBER"
 			+" FROM"
 			+" 	BSYMT_EMP_DTA_MNG_INFO edmi"
-			+" 	INNER JOIN BPSMT_PERSON per ON edmi.PID = per.PID"
+			+" 	INNER JOIN BPSMT_PERSON per ON edmi.PID = per.PID  AND edmi.CID = ?cid"
 			+" 	INNER JOIN KSCMT_EST_TIME_PER_SET etes ON edmi.SID = etes.SID"
 			+" 	INNER JOIN KSCMT_EST_PRICE_PER_SET epes ON edmi.SID = epes.SID AND etes.TARGET_YEAR = epes.TARGET_YEAR AND etes.TARGET_CLS = epes.TARGET_CLS"
 			+" 	INNER JOIN KSCMT_EST_DAYS_PER_SET edes ON edmi.SID = edes.SID AND etes.TARGET_YEAR = edes.TARGET_YEAR AND etes.TARGET_CLS = edes.TARGET_CLS "
-			+" 	WHERE edmi.CID = ?cid "
-			+" AND  ?startDate <= etes.TARGET_YEAR AND etes.TARGET_YEAR <= ?endDate"
+			+" 	WHERE "
+			+" ?startDate <= etes.TARGET_YEAR AND etes.TARGET_YEAR <= ?endDate"
 			+" ) AS TABLE_RESULT";
 	
 	/** Sheet 1 **/
@@ -672,6 +673,7 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 	private String formatPrice(String price) {
 		double amountParse = Double.parseDouble(price);
 		DecimalFormat formatter = new DecimalFormat("#,###");
+		DecimalFormat.getCurrencyInstance(Locale.JAPAN).format(formatter);
 		return formatter.format(amountParse);
 	}
 	
