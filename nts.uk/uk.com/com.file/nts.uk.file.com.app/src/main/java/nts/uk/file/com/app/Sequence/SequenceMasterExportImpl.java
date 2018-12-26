@@ -230,8 +230,8 @@ public class SequenceMasterExportImpl implements MasterListData{
 						}
 						MasterData masterData = new MasterData(data, null, "");
 						masterData.cellAt("コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-						masterData.cellAt("職歴開始日").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-						masterData.cellAt("職歴終了").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+						masterData.cellAt("職歴開始日").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+						masterData.cellAt("職歴終了").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
 						masterData.cellAt("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 						masterData.cellAt("36協定対象外").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 						masterData.cellAt("序列コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
