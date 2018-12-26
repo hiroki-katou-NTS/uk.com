@@ -353,6 +353,36 @@ module nts.uk.request {
 
         return dfd.promise();
     }
+        
+    export function exportLog(data: any): JQueryPromise<any> {
+        let dfd = $.Deferred();
+
+        request.ajax("logcollector/extract", data).done((res: any) => {
+                if (res.failed || res.status == "ABORTED") {
+                    dfd.reject(res.error);
+                }
+            
+                let taskId = res.id;
+                deferred.repeat(conf => conf.task(() => {
+                    return nts.uk.request.asyncTask.getInfo(taskId).done(function(res: any) {
+                        if (res.succeeded) {
+                            setTimeout(() => {
+                                specials.donwloadFile(taskId);    
+                                dfd.resolve(null); 
+                            }, 100);
+                        } else {
+                            if(res.failed){
+                               dfd.reject(res); 
+                            }    
+                        }
+                    });    
+                }).while(info => info.pending || info.running).pause(1000));
+            }).fail((res: any) => {
+                dfd.reject(res);
+            });
+
+        return dfd.promise();
+    }
     
     export function downloadFileWithTask(taskId: string, data?: any, options?: any) {
         let dfd = $.Deferred();
@@ -363,7 +393,7 @@ module nts.uk.request {
                     setTimeout(function(){ 
                      checkTask();       
                     }, 1000)
-                } if (res.failed || res.status == "ABORTED") { 
+                } else if (res.failed || res.status == "ABORTED") { 
                         dfd.reject(res.error);
                 } else {
                     specials.donwloadFile(res.id);

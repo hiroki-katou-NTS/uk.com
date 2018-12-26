@@ -10,6 +10,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.servlet.http.HttpServletRequest;
 
+import nts.arc.system.ServerSystemProperties;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.context.loginuser.SelectedLanguage;
@@ -84,6 +85,12 @@ public class ViewContext extends UIComponentBase {
 		});
 		
 		writeOperationSetting(builder);
+
+		if(builder.length() > 0){
+			builder.append(", ");
+		}
+		
+		builder.append("isDebugMode: " + ServerSystemProperties.isDebugMode() + ",");
 		
 		rw.write("program: {" + builder.toString() + "}");
 	}

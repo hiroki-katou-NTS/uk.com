@@ -109,6 +109,16 @@ public class WebMenuFinder {
 															.collect(Collectors.toList());
 			results.addAll(menuDtos);
 		});
+		
+		results.sort((m1, m2) -> {
+			int compared = m1.getCompanyId().compareTo(m2.getCompanyId());
+			if (compared == 0) {
+				return m1.getWebMenuCode().compareTo(m2.getWebMenuCode());
+			}
+			
+			return compared;
+		});
+		
 		return results;
 	}
 	
