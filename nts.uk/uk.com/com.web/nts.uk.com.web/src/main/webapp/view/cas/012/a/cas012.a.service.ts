@@ -33,7 +33,7 @@ module nts.uk.com.view.cas012.a.service {
 
     export function exportExcel(date: string): JQueryPromise<any> {
         let _params = {domainId: "GrantAdminRole",
-            domainType: "CAS012管理者ロールの付与",
+            domainType: "CAS012ロールの付与（システム管理者）",
             languageId: 'ja',
             reportType: 0,
             baseDate: date
