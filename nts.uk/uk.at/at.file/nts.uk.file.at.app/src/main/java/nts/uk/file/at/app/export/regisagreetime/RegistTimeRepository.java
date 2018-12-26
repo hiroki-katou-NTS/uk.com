@@ -15,4 +15,5 @@ public interface RegistTimeRepository {
 	List<MasterData> getDataExportSheet7();
 	List<MasterData> getDataExportSheet8();
 	List<MasterData> getDataExportSheet9();
+	List<MasterData> getDataExportSheet10();
 }

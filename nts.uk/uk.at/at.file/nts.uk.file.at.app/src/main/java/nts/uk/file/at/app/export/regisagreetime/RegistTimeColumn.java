@@ -76,6 +76,18 @@ public final class RegistTimeColumn {
 	public static final String KMK008_104 = "分類コード";
 	public static final String KMK008_105 = "分類名";
 	
+	/**
+	 *  sheet 10
+	 * 
+	 */
 	
+	public static final String KMK008_106 = "社員コード";
+	public static final String KMK008_107 = "社員名";
+	public static final String KMK008_109 = "年月";
+	public static final String KMK008_110 = "エラー_1";
+	public static final String KMK008_111 = "アラーム_1";
+	public static final String KMK008_112 = "年度";
+	public static final String KMK008_113 = "エラー_2";
+	public static final String KMK008_114 = "アラーム_2";
 	
 }
