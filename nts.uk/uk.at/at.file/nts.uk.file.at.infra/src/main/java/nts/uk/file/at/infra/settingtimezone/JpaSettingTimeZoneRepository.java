@@ -216,8 +216,8 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             "  WHERE " +
             "    tb2.TYPE_ATR = 1  " +
             "    OR tb2.TYPE_ATR IS NULL  " +
-            "  ) temp2 ON temp1.BONUS_PAY_TIMESHEET_NO = temp2.BONUS_PAY_TIMESHEET_NO_TAB2  " +
-            "ORDER BY " +
+            "  ) temp2 ON temp1.BONUS_PAY_SET_CD = temp2.BONUS_PAY_SET_CD_TAB2 AND temp1.BONUS_PAY_TIMESHEET_NO = temp2.BONUS_PAY_TIMESHEET_NO_TAB2  " +
+            " ORDER BY " +
             "  BONUS_PAY_SET_CD, " +
             "  BONUS_PAY_TIMESHEET_NO_TAB2";
 

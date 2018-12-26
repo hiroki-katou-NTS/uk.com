@@ -569,6 +569,155 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "	bb.CID = ?cid "
 			+ "AND kk.CID = ?cid";
 	
+	private static final String SQL_EXPORT_SHEET_10 = " SELECT"
+			+" 	CASE"
+			+" WHEN kk.ROW_NUMBER1 = 1 THEN"
+			+" 	kk.SCD"
+			+" ELSE"
+			+" 	NULL"
+			+" END SCD,"
+			+"  CASE"
+			+" WHEN kk.ROW_NUMBER2 = 1 THEN"
+			+" 	kk.BUSINESS_NAME"
+			+" ELSE"
+			+" 	NULL"
+			+" END BUSINESS_NAME,"
+			+"  CASE"
+			+" WHEN kk.ROW_NUMBER3 = 1 THEN"
+			+" 	kk.YM_K"
+			+" ELSE"
+			+" 	NULL"
+			+" END YM_K,"
+			+"  CASE"
+			+" WHEN kk.ROW_NUMBER4 = 1 THEN"
+			+" 	kk.ERROR_ONE_MONTH"
+			+" ELSE"
+			+" 	NULL"
+			+" END ERROR_ONE_MONTH,"
+			+"  CASE"
+			+" WHEN kk.ROW_NUMBER5 = 1 THEN"
+			+" 	kk.ALARM_ONE_MONTH"
+			+" ELSE"
+			+" 	NULL"
+			+" END ALARM_ONE_MONTH,"
+			+"  CASE"
+			+" WHEN kk.ROW_NUMBER6 = 1 THEN"
+			+" 	kk.Y_K"
+			+" ELSE"
+			+" 	NULL"
+			+" END Y_K,"
+			+"  CASE"
+			+" WHEN kk.ROW_NUMBER7 = 1 THEN"
+			+" 	kk.ERROR_YEARLY"
+			+" ELSE"
+			+" 	NULL"
+			+" END ERROR_YEARLY,"
+			+"  CASE"
+			+" WHEN kk.ROW_NUMBER8 = 1 THEN"
+			+" 	kk.ALARM_YEARLY"
+			+" ELSE"
+			+" 	NULL"
+			+" END ALARM_YEARLY"
+			+" FROM"
+			+" 	("
+			+" 		SELECT"
+			+" 			cc.SCD,"
+			+" 			dd.BUSINESS_NAME,"
+			+" 			aa.YM_K,"
+			+" 			aa.ERROR_ONE_MONTH,"
+			+" 			aa.ALARM_ONE_MONTH,"
+			+" 			bb.Y_K,"
+			+" 			bb.ERROR_YEARLY,"
+			+" 			bb.ALARM_YEARLY,"
+			+" 			ROW_NUMBER () OVER ("
+			+" 				PARTITION BY bb.ALARM_YEARLY"
+			+" 				ORDER BY"
+			+" 					cc.SCD,"
+			+" 					dd.BUSINESS_NAME,"
+			+" 					aa.YM_K DESC,"
+			+" 					aa.ERROR_ONE_MONTH,"
+			+" 					aa.ALARM_ONE_MONTH,"
+			+" 					bb.Y_K DESC,"
+			+" 					bb.ERROR_YEARLY,"
+			+" 					bb.ALARM_YEARLY"
+			+" 			) AS ROW_NUMBER8,"
+			+" 			ROW_NUMBER () OVER ("
+			+" 				PARTITION BY bb.ERROR_YEARLY"
+			+" 				ORDER BY"
+			+" 					cc.SCD,"
+			+" 					dd.BUSINESS_NAME,"
+			+" 					aa.YM_K DESC,"
+			+" 					aa.ERROR_ONE_MONTH,"
+			+" 					aa.ALARM_ONE_MONTH,"
+			+" 					bb.Y_K DESC,"
+			+" 					bb.ERROR_YEARLY"
+			+" 			) AS ROW_NUMBER7,"
+			+" 			ROW_NUMBER () OVER ("
+			+" 				PARTITION BY bb.Y_K"
+			+" 				ORDER BY"
+			+" 					cc.SCD,"
+			+" 					dd.BUSINESS_NAME,"
+			+" 					aa.YM_K DESC,"
+			+" 					aa.ERROR_ONE_MONTH,"
+			+" 					aa.ALARM_ONE_MONTH,"
+			+" 					bb.Y_K DESC"
+			+" 			) AS ROW_NUMBER6,"
+			+" 			ROW_NUMBER () OVER ("
+			+" 				PARTITION BY aa.ALARM_ONE_MONTH"
+			+" 				ORDER BY"
+			+" 					cc.SCD,"
+			+" 					dd.BUSINESS_NAME,"
+			+" 					aa.YM_K DESC,"
+			+" 					aa.ERROR_ONE_MONTH,"
+			+" 					aa.ALARM_ONE_MONTH,"
+			+ "					bb.Y_K DESC"
+			+" 			) AS ROW_NUMBER5,"
+			+" 			ROW_NUMBER () OVER ("
+			+" 				PARTITION BY aa.ERROR_ONE_MONTH"
+			+" 				ORDER BY"
+			+" 					cc.SCD,"
+			+" 					dd.BUSINESS_NAME,"
+			+" 					aa.YM_K DESC,"
+			+" 					aa.ERROR_ONE_MONTH,"
+			+ "					bb.Y_K DESC"
+			+" 			) AS ROW_NUMBER4,"
+			+" 			ROW_NUMBER () OVER ("
+			+" 				PARTITION BY aa.YM_K"
+			+" 				ORDER BY"
+			+" 					cc.SCD,"
+			+" 					dd.BUSINESS_NAME,"
+			+" 					aa.YM_K DESC,"
+			+ "					bb.Y_K DESC"
+			+" 			) AS ROW_NUMBER3,"
+			+" 			ROW_NUMBER () OVER ("
+			+" 				PARTITION BY dd.BUSINESS_NAME"
+			+" 				ORDER BY"
+			+" 					cc.SCD,"
+			+" 					dd.BUSINESS_NAME,"
+			+ "					aa.YM_K DESC,bb.Y_K DESC"
+			+" 			) AS ROW_NUMBER2,"
+			+" 			ROW_NUMBER () OVER ("
+			+" 				PARTITION BY cc.SCD"
+			+" 				ORDER BY"
+			+" 					cc.SCD,"
+			+ "					aa.YM_K DESC,bb.Y_K DESC"
+			+" 			) AS ROW_NUMBER1"
+			+" 		FROM"
+			+" 			KMKMT_AGREEMENT_MONTH_SET aa"
+			+" 		JOIN KMKMT_AGREEMENT_YEAR_SET bb ON aa.SID = bb.SID"
+			+" 		JOIN BSYMT_EMP_DTA_MNG_INFO cc ON aa.SID = cc.SID"
+			+" 		JOIN BPSMT_PERSON dd ON cc.PID = dd.PID"
+			+" 		WHERE"
+			+" 			bb.Y_K >= 2014"
+			+" 		AND bb.Y_K <= 2018"
+			+" 		AND aa.YM_K >= 201801"
+			+" 		AND aa.YM_K <= 201808"
+			+" 		AND cc.CID = ?cid"
+			+" 	) kk"
+			+" ORDER BY"
+			+" 	kk.SCD, kk.YM_K DESC,kk.Y_K DESC";
+	
+	
 	@Override
 	public List<MasterData> getDataExportSheet1() {
 		List<MasterData> datas = new ArrayList<>();
@@ -1119,5 +1268,67 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	}
 
 
+
+
+	@Override
+	public List<MasterData> getDataExportSheet10() {
+		List<MasterData> datas = new ArrayList<>();
+		String cid = AppContexts.user().companyId();
+		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_10.toString()).
+				setParameter("cid", cid);
+		@SuppressWarnings("unchecked")
+		List<Object[]> data =  query.getResultList();
+		for (Object[] objects : data) {
+			datas.add(toDataSheet10(objects));
+		}
+		return datas;
+	}
+
+	private MasterData toDataSheet10(Object[] objects) {
+		Map<String,MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.KMK008_106, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_106)
+                .value(objects[0])
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_107, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_107)
+                .value(objects[1])
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		String x = ((BigDecimal)objects[2]).toString();
+		data.put(RegistTimeColumn.KMK008_109, MasterCellData.builder()
+			        .columnId(RegistTimeColumn.KMK008_109)
+			        .value(objects[2] != null ? x.substring(0, 4) + "/" + x.substring(4, x.length()) : "")
+			        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+			        .build());
+		
+		data.put(RegistTimeColumn.KMK008_110, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_110)
+                .value(objects[3] != null ? formatTime(((BigDecimal)objects[3]).intValue()) : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_111, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_111)
+                .value(objects[4] != null ? formatTime(((BigDecimal)objects[4]).intValue()) : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_112, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_112)
+                .value(objects[5])
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_113, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_113)
+                .value(objects[6] != null ? formatTime(((BigDecimal)objects[6]).intValue()) : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_114, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_114)
+                .value(objects[7] != null ? formatTime(((BigDecimal)objects[7]).intValue()) : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		return MasterData.builder().rowData(data).build();
+	}
 
 }

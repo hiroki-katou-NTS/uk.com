@@ -51,33 +51,57 @@ public class SettingTimeZoneExportImpl implements MasterListData {
         sheetDatas.add(sheetData2);
         sheetDatas.add(sheetData3);
         sheetDatas.add(sheetData4);
-
-        if(unitUseSettingDto.getWorkplaceUseAtr() == UseAtr.USE.value){
+        if(unitUseSettingDto == null){
             SheetData sheetData5 = SheetData.builder()
                     .mainData(this.getMasterDatasOfSetSubUseWorkPlace())
                     .mainDataColumns(this.getHeaderColumnsOfSetSubUseWorkPlace())
                     .sheetName(TextResource.localize("KMK005_131"))
                     .build();
             sheetDatas.add(sheetData5);
-        }
 
-        if(unitUseSettingDto.getPersonalUseAtr() == UseAtr.USE.value){
             SheetData sheetData6 = SheetData.builder()
                     .mainData(this.getMasterDatasOfSetEmployees())
                     .mainDataColumns(this.getHeaderColumnsOfSetEmployees())
                     .sheetName(TextResource.localize("KMK005_132"))
                     .build();
             sheetDatas.add(sheetData6);
-        }
 
-        if(unitUseSettingDto.getWorkingTimesheetUseAtr() == UseAtr.USE.value){
             SheetData sheetData7 = SheetData.builder()
                     .mainData(this.getMasterDatasOfSetUsedWorkingHours())
                     .mainDataColumns(this.getHeaderColumnsOfSetUsedWorkingHours())
                     .sheetName(TextResource.localize("KMK005_133"))
                     .build();
             sheetDatas.add(sheetData7);
+        }else{
+            if(unitUseSettingDto.getWorkplaceUseAtr() == UseAtr.USE.value){
+                SheetData sheetData5 = SheetData.builder()
+                        .mainData(this.getMasterDatasOfSetSubUseWorkPlace())
+                        .mainDataColumns(this.getHeaderColumnsOfSetSubUseWorkPlace())
+                        .sheetName(TextResource.localize("KMK005_131"))
+                        .build();
+                sheetDatas.add(sheetData5);
+            }
+
+            if(unitUseSettingDto.getPersonalUseAtr() == UseAtr.USE.value){
+                SheetData sheetData6 = SheetData.builder()
+                        .mainData(this.getMasterDatasOfSetEmployees())
+                        .mainDataColumns(this.getHeaderColumnsOfSetEmployees())
+                        .sheetName(TextResource.localize("KMK005_132"))
+                        .build();
+                sheetDatas.add(sheetData6);
+            }
+
+            if(unitUseSettingDto.getWorkingTimesheetUseAtr() == UseAtr.USE.value){
+                SheetData sheetData7 = SheetData.builder()
+                        .mainData(this.getMasterDatasOfSetUsedWorkingHours())
+                        .mainDataColumns(this.getHeaderColumnsOfSetUsedWorkingHours())
+                        .sheetName(TextResource.localize("KMK005_133"))
+                        .build();
+                sheetDatas.add(sheetData7);
+            }
         }
+
+
         return sheetDatas;
     }
 
