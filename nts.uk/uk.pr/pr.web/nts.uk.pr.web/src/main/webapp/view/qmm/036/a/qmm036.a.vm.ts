@@ -516,8 +516,6 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                 });
             }).fail(function (error) {
                 alertError(error);
-            }).always(function () {
-                nts.uk.ui.windows.close();
             });
 
 
