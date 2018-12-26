@@ -51,7 +51,7 @@ public class AddOptionalCommandHandler extends CommandHandler<PeregUserDefAddCom
 	protected void handle(CommandHandlerContext<PeregUserDefAddCommand> context) {
 		val command = context.getCommand();
 		
-		if (command.getItems() == null || command.getItems().isEmpty()){
+		if (command.getItems() == null || command.getItems().isEmpty() || command.getCategoryCd().indexOf("CS") > -1){
 			return;
 		}
 		// Get company id
