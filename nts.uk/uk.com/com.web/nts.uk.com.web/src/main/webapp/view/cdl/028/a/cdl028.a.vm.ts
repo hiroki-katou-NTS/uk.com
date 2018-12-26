@@ -4,7 +4,6 @@ module nts.uk.com.view.cdl028.a.viewmodel {
 
     export class ScreenModel {
         required: KnockoutObservable<boolean>;
-        standardDate: KnockoutObservable<number> =ko.observable(null);
         enable: KnockoutObservable<boolean>;
         yearValue: KnockoutObservable<any> = ko.observable({startDate: moment.utc().format("YYYY"), endDate: moment.utc().format("YYYY")
         });
@@ -68,7 +67,7 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                     break;
 
                 case MODE_SCREEN.YEAR_PERIOD_FINANCE:
-                    service.getStartMonth().done(function(response: IStartMonth) {
+                    service.getStartMonth().done((response: IStartMonth)=> {
                         if(response.startMonth != null){
                             startMonthDB = response.startMonth;
                             if(( startMonthDB) >= self.getMonthToInt(self.standardDate())){
@@ -130,14 +129,20 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                * share param
                * status,standardDate,startDateFiscalYear,endDateFiscalYear
                */
-                setShared('CDL028_A_PARAMS', {
-                 status: true,
-                 mode: self.modeScreen() == MODE_SCREEN.YEAR_PERIOD ? MODE_SCREEN.YEAR_PERIOD_FINANCE : self.modeScreen(),
-                 standardDate: ((self.modeScreen() == MODE_SCREEN.BASE_DATE) || (self.modeScreen() == MODE_SCREEN.ALL)) ? moment(self.standardDate() + "").format("YYYY/MM/DD") : null,
-                 startDateFiscalYear: (self.modeScreen() == MODE_SCREEN.BASE_DATE) ? null : moment(self.startDateFiscalYear() + "").format("YYYY/MM/DD"),
-                 endDateFiscalYear: (self.modeScreen() == MODE_SCREEN.BASE_DATE) ? null : moment(self.endDateFiscalYear() + "").format("YYYY/MM/DD")
-                });
-                 nts.uk.ui.windows.close();
+               let paramsCdl : IPARAMS_CDL = {
+                   status : true,
+                   mode : self.modeScreen() == MODE_SCREEN.YEAR_PERIOD ? MODE_SCREEN.YEAR_PERIOD_FINANCE : self.modeScreen(),
+                   standardDate :((self.modeScreen() == MODE_SCREEN.BASE_DATE) || (self.modeScreen() == MODE_SCREEN.ALL)) ? moment(self.standardDate() + "").format("YYYY/MM/DD") : null,
+                   startDateFiscalYear : (self.modeScreen() == MODE_SCREEN.BASE_DATE) ? null : moment(self.startDateFiscalYear() + "").format("YYYY/MM/DD"),
+                   endDateFiscalYear : (self.modeScreen() == MODE_SCREEN.BASE_DATE) ? null : moment(self.endDateFiscalYear() + "").format("YYYY/MM/DD")
+               };
+
+                $("#A2_2 .ntsDatepicker").trigger("validate");
+                if (!nts.uk.ui.errors.hasError()) {
+                    setShared('CDL028_A_PARAMS', paramsCdl);
+                    nts.uk.ui.windows.close();
+                    return false;
+                }
                  dfd.resolve();
                  return dfd.promise();
         };
@@ -146,9 +151,8 @@ module nts.uk.com.view.cdl028.a.viewmodel {
          * cancel
          */
         cancel(){
-            setShared('CDL028_A_PARAMS', {
-                status: false
-            });
+            let status: boolean = false;
+            setShared('CDL028_A_PARAMS', status);
             nts.uk.ui.windows.close();
         };
 
@@ -186,6 +190,29 @@ module nts.uk.com.view.cdl028.a.viewmodel {
 
         //YEAR PERIOD
         YEAR_PERIOD = 5
+    }
+    interface IPARAMS_CDL {
+        status: boolean;
+        mode: number;
+        standardDate: KnockoutObservable<number>;
+        startDateFiscalYear: KnockoutObservable<number>;
+        endDateFiscalYear: KnockoutObservable<number>;
+    }
+
+    class PARAMS_CDL {
+        status: boolean;
+        mode: number;
+        standardDate: KnockoutObservable<number>;
+        startDateFiscalYear: KnockoutObservable<number>;
+        endDateFiscalYear: KnockoutObservable<number>;
+
+        constructor(paramsCdl: IPARAMS_CDL){
+            this.status = paramsCdl.status;
+            this.mode = paramsCdl.mode;
+            this.standardDate = paramsCdl.standardDate;
+            this.startDateFiscalYear = paramsCdl.startDateFiscalYear;
+            this.endDateFiscalYear = paramsCdl.endDateFiscalYear;
+        }
     }
 
     interface  IStartMonth{
