@@ -371,7 +371,8 @@ public class ActualWorkingTimeOfDaily {
 						recordClass.getIntegrationOfDaily().getCalAttr().getOvertimeSetting(),
 						recordClass.getDailyUnit(),
 						recordClass.getFixRestTimeSetting(),
-						recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet()
+						recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet(),
+						recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc()
 						);
 				
 			}

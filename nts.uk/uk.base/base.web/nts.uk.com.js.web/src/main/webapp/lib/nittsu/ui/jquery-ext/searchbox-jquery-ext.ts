@@ -213,14 +213,15 @@ module nts.uk.ui.jqueryExtentions {
                             component.attr("filtered", "true");   
                             //selected(selectedValue);
                             //selected.valueHasMutated();
-                            let source = _.filter(srh.getDataSource(), function (item: any){
-                                             return _.find(result.options, function (itemFilterd: any){
-                                            return itemFilterd[primaryKey] === item[primaryKey];        
-                                                }) !== undefined || _.find(srh.getDataSource(), function (oldItem: any){
-                                             return oldItem[primaryKey] === item[primaryKey];        
-                                            }) === undefined;            
-                            });
-                            component.igGrid("option", "dataSource", _.cloneDeep(source));  
+//                            let source = _.filter(srh.getDataSource(), function (item: any){
+//                                             return _.find(result.options, function (itemFilterd: any){
+//                                            return itemFilterd[primaryKey] === item[primaryKey];        
+//                                                }) !== undefined || _.find(srh.getDataSource(), function (oldItem: any){
+//                                             return oldItem[primaryKey] === item[primaryKey];        
+//                                            }) === undefined;            
+//                            });
+//                            component.igGrid("option", "dataSource", _.cloneDeep(source));
+                            component.igGrid("option", "dataSource", _.cloneDeep(result.options));  
                             component.igGrid("dataBind");  
                             
 //                            if(nts.uk.util.isNullOrEmpty(selectedProperties)){

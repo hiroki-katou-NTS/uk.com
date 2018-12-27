@@ -355,7 +355,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
                             nts.uk.ui.block.clear();        
                         });
-                    });
+                    }).fail(() => {
+                        self.start(moment.utc().format("YYYY/MM/DD")).done(() => {
+                            nts.uk.ui.block.clear();
+                        });
+                    });;
                 }else{
                     self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
                             nts.uk.ui.block.clear();        

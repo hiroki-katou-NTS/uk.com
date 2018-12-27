@@ -65,4 +65,22 @@ public class GetReserveLeaveNumbersFinder implements GetReserveLeaveNumbersAdpte
     	   return new RsvLeaUsedCurrentMonImported(item.getYearMonth(), item.getUsedNumber().v(), item.getRemainNumber().v());
        }).collect(Collectors.toList());
 	}
+	/**
+	 * @author hoatt
+	 * Doi ung response KDR001
+	 * RequestList258 社員の月毎の確定済み積立年休を取得する - ver2
+	 * @param employeeId 社員ID
+	 * @param period 年月期間
+	 * @return 年休利用状況リスト
+	 */
+	@Override
+	public List<ReservedYearHolidayImported> getYearRsvMonthlyVer2(String employeeId, YearMonthPeriod period) {
+//		List<ReserveLeaveUsageExport> lstRsvLeaUsage = getConfirmedReserveLeave.getYearRsvMonthlyVer2(employeeId, period);
+		List<ReservedYearHolidayImported> lstRsvYearHd = new ArrayList<>();
+//		lstRsvLeaUsage.forEach(item -> {
+//			lstRsvYearHd.add(new ReservedYearHolidayImported(item.getYearMonth(),
+//					item.getUsedDays().v(), item.getRemainingDays().v()));
+//		});
+		return lstRsvYearHd;
+	}
 }

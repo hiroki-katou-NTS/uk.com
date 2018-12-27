@@ -113,13 +113,16 @@ public class WorkingConditionItem extends AggregateRoot {
 		memento.setScheduleManagementAtr(this.scheduleManagementAtr);
 		memento.setVacationAddedTimeAtr(this.vacationAddedTimeAtr);
 		memento.setLaborSystem(Optional.ofNullable(this.laborSystem).orElseGet(() -> WorkingSystem.REGULAR_WORK));
-		memento.setWorkCategory(this.workCategory);
+		//KSHMT_PER_WORK_CAT
+		memento.setWorkCategory(this.workCategory, this.employeeId);
 		memento.setContractTime(this.contractTime);
 		memento.setAutoIntervalSetAtr(this.autoIntervalSetAtr);
-		memento.setWorkDayOfWeek(this.workDayOfWeek);
+		//KSHMT_PERSONAL_DAY_OF_WEEK
+		memento.setWorkDayOfWeek(this.workDayOfWeek, this.employeeId);
 		memento.setEmployeeId(this.employeeId);
 		memento.setAutoStampSetAtr(this.autoStampSetAtr);
-		memento.setScheduleMethod(this.scheduleMethod);
+		//KSHMT_SCHEDULE_METHOD
+		memento.setScheduleMethod(this.scheduleMethod, this.employeeId);
 		memento.setHolidayAddTimeSet(this.holidayAddTimeSet);
 		memento.setTimeApply(this.timeApply);
 		memento.setMonthlyPattern(this.monthlyPattern);

@@ -115,7 +115,7 @@ public class FileGenerator extends AsposeCellsReportGenerator {
 			Map<String, Object> data = datas.get(i);
 			for (int j = 0; j < headers.size(); j++) {
 				Cell dataCell = cells.get(dataRowStart + i, START_COLUMN + j);
-				dataCell.setValue(data.get(headers.get(j)));
+				dataCell.setValue(data.get(headers.get(j).replaceAll("[\"\']", "")));
 				Style style = this.getCellStyleNoBorder(dataCell.getStyle());
 				dataCell.setStyle(style);
 			}

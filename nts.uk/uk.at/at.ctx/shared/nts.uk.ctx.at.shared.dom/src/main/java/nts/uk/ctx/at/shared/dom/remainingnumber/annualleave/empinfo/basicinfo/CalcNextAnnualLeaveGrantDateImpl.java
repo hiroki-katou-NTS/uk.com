@@ -107,4 +107,64 @@ public class CalcNextAnnualLeaveGrantDateImpl implements CalcNextAnnualLeaveGran
 		// 次回年休付与を返す
 		return nextAnnualLeaveGrantList;
 	}
+
+	@Override
+	public List<NextAnnualLeaveGrant> calNextHdGrantV2(String companyId, String employeeId, Optional<DatePeriod> period,
+			Optional<EmployeeImport> empOp, Optional<AnnualLeaveEmpBasicInfo> annLeaEmpInfoOp,
+			Optional<GrantHdTblSet> grantHdTblSetOpt, Optional<List<LengthServiceTbl>> lengthSvTblsOpt,
+			Optional<GeneralDate> closureDate) {
+
+		List<NextAnnualLeaveGrant> nextAnnualLeaveGrantList = new ArrayList<>();
+		// 「年休社員基本情報」を取得
+		Optional<AnnualLeaveEmpBasicInfo> empBasicInfoOpt = Optional.empty();
+		if (annLeaEmpInfoOp.isPresent()){
+			empBasicInfoOpt = annLeaEmpInfoOp;
+		}
+		else {
+			empBasicInfoOpt = this.annLeaEmpBasicInfoRepo.get(employeeId);
+		}
+		if (!empBasicInfoOpt.isPresent()) return nextAnnualLeaveGrantList;
+		val empBasicInfo = empBasicInfoOpt.get();
+	
+		// 「社員」を取得する
+		EmployeeImport employee = null;
+		if (empOp.isPresent()){
+			employee = empOp.get();
+		}
+		else {
+			employee = this.empEmployee.findByEmpId(employeeId);
+		}
+		if (employee == null) return nextAnnualLeaveGrantList;
+		
+		// 「期間」をチェック
+		DatePeriod targetPeriod = null;
+		boolean isSingleDay = false;	// 単一日フラグ=false
+		if (period.isPresent()){
+			
+			// 開始日、終了日を１日後にずらした期間
+			val paramPeriod = period.get();
+			int addEnd = 0;
+			if (paramPeriod.end().before(GeneralDate.max())) addEnd = 1;
+			targetPeriod = new DatePeriod(paramPeriod.start().addDays(1), paramPeriod.end().addDays(addEnd));
+		}
+		else {
+			
+			// 社員に対応する締め開始日を取得する
+			if (!closureDate.isPresent()) return nextAnnualLeaveGrantList;
+			targetPeriod = new DatePeriod(closureDate.get().addDays(1), GeneralDate.max());
+			isSingleDay = true;			// 単一日フラグ=true
+		}
+		
+		// 年休付与テーブル設定コードを取得する
+		val grantRule = empBasicInfo.getGrantRule();
+		val grantTableCode = grantRule.getGrantTableCode().v();
+		
+		// 次回年休付与を取得する
+		nextAnnualLeaveGrantList = this.getNextAnnualLeaveGrant.algorithm(
+				companyId, grantTableCode, employee.getEntryDate(), grantRule.getGrantStandardDate(),
+				targetPeriod, isSingleDay, grantHdTblSetOpt, lengthSvTblsOpt);
+		
+		// 次回年休付与を返す
+		return nextAnnualLeaveGrantList;
+	}
 }

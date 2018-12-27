@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
