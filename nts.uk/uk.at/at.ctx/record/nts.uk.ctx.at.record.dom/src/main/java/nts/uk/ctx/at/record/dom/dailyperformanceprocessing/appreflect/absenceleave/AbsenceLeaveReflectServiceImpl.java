@@ -151,10 +151,8 @@ public class AbsenceLeaveReflectServiceImpl implements AbsenceLeaveReflectServic
 		workingConditionData.getWorkCategory().getWeekdayTime().getWorkTimeCode().ifPresent(x -> {
 			//反映就業時間帯=「平日時」．就業時間帯コード
 			outData.setWorkTimeCode(x.v());
-				
+			outData.setChkReflect(true);
 		});
-		outData.setChkReflect(true);
-		
 		return outData;
 	}
 
