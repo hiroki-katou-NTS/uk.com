@@ -107,7 +107,7 @@ module nts.uk.com.view.cas012.a.viewmodel {
                     nts.uk.ui.block.grayout();
                     let date = moment(result.standardDate, "YYYY/MM/DD");
                     service.exportExcel(date).done(function() {
-                        nts.uk.ui.windows.close();
+                        
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                     }).always(function() {
