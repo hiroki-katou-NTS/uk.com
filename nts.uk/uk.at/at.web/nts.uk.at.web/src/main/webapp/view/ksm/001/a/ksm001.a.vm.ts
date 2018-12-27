@@ -76,7 +76,7 @@ module nts.uk.at.view.ksm001.a {
                         let startDate = moment.utc(result.startDateFiscalYear, "YYYY/MM/DD");
                         let endDate = moment.utc(result.endDateFiscalYear, "YYYY/MM/DD");
                         service.saveAsExcel(langId, startDate, endDate).done(function() {
-                            nts.uk.ui.windows.close();
+                            //nts.uk.ui.windows.close();
                         }).fail(function(error) {
                             nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                         }).always(function() {

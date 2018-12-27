@@ -372,7 +372,7 @@ module nts.uk.com.view.cmm051.a {
                         let langId = self.langId();
                         let date = moment(result.standardDate, "YYYY/MM/DD");
                         service.saveAsExcel(langId, date).done(function() {
-                            nts.uk.ui.windows.close();
+                            //nts.uk.ui.windows.close();
                         }).fail(function(error) {
                             nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                         }).always(function() {
