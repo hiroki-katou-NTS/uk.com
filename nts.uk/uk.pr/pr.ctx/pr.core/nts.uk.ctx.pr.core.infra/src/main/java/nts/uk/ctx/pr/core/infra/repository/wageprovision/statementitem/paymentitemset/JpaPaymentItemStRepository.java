@@ -15,6 +15,9 @@ import java.util.Optional;
 public class JpaPaymentItemStRepository extends JpaRepository implements PaymentItemSetRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtPaymentItemSt f";
+    private static final String SELECT_BY_CTG_STRING = SELECT_ALL_QUERY_STRING +
+            " WHERE  f.paymentItemStPk.cid =:cid" +
+            " AND  f.paymentItemStPk.categoryAtr =:categoryAtr";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING +
             " WHERE  f.paymentItemStPk.cid =:cid" +
             " AND  f.paymentItemStPk.categoryAtr =:categoryAtr" +
@@ -28,6 +31,14 @@ public class JpaPaymentItemStRepository extends JpaRepository implements Payment
     @Override
     public List<PaymentItemSet> getAllPaymentItemSt() {
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtPaymentItemSt.class)
+                .getList(item -> item.toDomain());
+    }
+
+    @Override
+    public List<PaymentItemSet> getPaymentItemSt(String cid, int categoryAtr) {
+        return this.queryProxy().query(SELECT_BY_CTG_STRING, QpbmtPaymentItemSt.class)
+                .setParameter("cid", cid)
+                .setParameter("categoryAtr", categoryAtr)
                 .getList(item -> item.toDomain());
     }
 

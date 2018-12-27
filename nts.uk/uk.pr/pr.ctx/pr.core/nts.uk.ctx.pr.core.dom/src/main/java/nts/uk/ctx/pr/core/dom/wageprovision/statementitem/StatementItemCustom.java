@@ -37,16 +37,9 @@ public class StatementItemCustom {
      */
     private Integer defaultAtr;
 
-    public StatementItemCustom(String categoryAtr, String itemNameCd, String name, String deprecatedAtr) {
-        this.categoryAtr = Integer.valueOf(categoryAtr).intValue();
-        this.itemNameCd = itemNameCd;
-        this.name = name;
-        this.deprecatedAtr = Integer.valueOf(deprecatedAtr);
-    }
-
     public StatementItemCustom(String categoryAtr, String itemNameCd, String name, String deprecatedAtr,
                                String defaultAtr, String shortName) {
-        this.categoryAtr = Integer.valueOf(categoryAtr).intValue();
+        this.categoryAtr = Integer.valueOf(categoryAtr);
         this.itemNameCd = itemNameCd;
         this.name = name;
         this.deprecatedAtr = Integer.valueOf(deprecatedAtr);

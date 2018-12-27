@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.DefaultAtr;
 
 @Getter
 @Setter
@@ -26,4 +27,5 @@ public class  SettingByItemExportData {
 
     private AttendExportData attend;
 
+    private DefaultAtr defaultAtr;
 }
