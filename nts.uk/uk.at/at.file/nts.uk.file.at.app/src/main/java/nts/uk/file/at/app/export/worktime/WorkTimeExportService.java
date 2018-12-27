@@ -18,7 +18,7 @@ import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class WorkTimeExportService extends ExportService<WorkTimeExportRequest> {
+public class WorkTimeExportService extends ExportService<String> {
 
 	@Inject
 	private WorkTimeReportGenerator reportGenerator;
@@ -30,7 +30,7 @@ public class WorkTimeExportService extends ExportService<WorkTimeExportRequest> 
 	private CompanyRepository companyRepository;
 
 	@Override
-	protected void handle(ExportServiceContext<WorkTimeExportRequest> context) {
+	protected void handle(ExportServiceContext<String> context) {
 		String cid = AppContexts.user().companyId();
 		String companyName =  cid + " " + companyRepository.find(cid).map(i -> i.getCompanyName().v()).orElse("");
 		String exportTime = GeneralDateTime.now().toString();
