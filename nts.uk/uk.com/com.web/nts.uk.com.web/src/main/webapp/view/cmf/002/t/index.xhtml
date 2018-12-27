@@ -13,7 +13,7 @@
             </com:ValidatorScript>
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 550,
+					width : 630,
 					height : 350
 				};
 			</script>
@@ -65,7 +65,7 @@
 								</td>
 								<!-- T3_1条件コード/名称 -->
 								<td class="td_left">
-									<div data-bind="ntsFormLabel: {constraint: 'ExternalOutputConditionCode',required: true }"
+									<div data-bind="ntsFormLabel: {constraint: ['ExternalOutputConditionCode', 'ExternalOutputConditionName'],required: true }"
 										class="form-label enable">
 										<label>#{i18n.getText('CMF002_254')}</label>
 									</div>

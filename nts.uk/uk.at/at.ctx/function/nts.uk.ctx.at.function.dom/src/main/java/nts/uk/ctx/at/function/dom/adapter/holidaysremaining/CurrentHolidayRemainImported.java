@@ -14,13 +14,13 @@ public class CurrentHolidayRemainImported {
 	private YearMonth ym;
 	/** 月初残数*/
 	private Double monthStartRemain;
-	/**	月度内発生数 */
+	/**	月度内発生数 - 発生日数*/
 	private Double monthOccurrence;
-	/** 月度内使用数 */
+	/** 月度内使用数 - 使用日数*/
 	private Double monthUse;
-	/** 月度内消滅数 */
+	/** 月度内消滅数 - 未消化日数 */
 	private Double monthExtinction;
-	/**	月末残数 */
+	/**	月末残数 - 残日数 */
 	private Double monthEndRemain;
 	public CurrentHolidayRemainImported(YearMonth ym, Double monthStartRemain, Double monthOccurrence, Double monthUse,
 			Double monthExtinction, Double monthEndRemain) {

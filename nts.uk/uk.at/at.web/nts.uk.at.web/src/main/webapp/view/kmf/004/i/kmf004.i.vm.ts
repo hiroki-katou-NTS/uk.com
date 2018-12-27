@@ -43,9 +43,9 @@ module nts.uk.at.view.kmf004.i.viewmodel {
         ]);
         genderLst = ko.observableArray([
             //I10_3
-            { code: 0, name: getText('KMF004_55') },
+            { code: 1, name: getText('KMF004_55') },
             //I10_4
-            { code: 1, name: getText('KMF004_56') }
+            { code: 2, name: getText('KMF004_56') }
         ]);
 
         ageStandardlst = ko.observableArray([
@@ -179,7 +179,7 @@ module nts.uk.at.view.kmf004.i.viewmodel {
         genderRestrict: KnockoutObservable<boolean> = ko.observable(false);
         restrictEmployment: KnockoutObservable<boolean> = ko.observable(false);
         restrictClassification: KnockoutObservable<boolean> = ko.observable(false);
-        gender: KnockoutObservable<number> = ko.observable(0);
+        gender: KnockoutObservable<number> = ko.observable(1);
         ageRange: KnockoutObservable<AgeRange> = ko.observable(new AgeRange());
         ageStandard: KnockoutObservable<number> = ko.observable(1);
         ageStandardBaseDate: KnockoutObservable<string> = ko.observable("");

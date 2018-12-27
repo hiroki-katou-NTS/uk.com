@@ -137,11 +137,12 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         selectStandardMode() {
             block.invisible();
             let self = this;
+            $('.content.clearfix .body').attr('style', '');
             service.getConditionSetting(new ParamToScreenP("","")).done(res => {
                 {
                     let dataCndSetCd: Array<StdOutputCondSetDto> = res;
                     self.loadListCondition(dataCndSetCd);
-                    $('#ex_output_wizard').ntsWizard("next");
+                    $('#ex_output_wizard').ntsWizard("next");        
                     $("#grd_Condition_container").focus();
 
                     block.clear();
@@ -159,15 +160,22 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         next() {
             let self = this;
+//            if($('.body.current').attr('id') == 'ex_output_wizard-p-1' ){
+//                $('.content.clearfix .body').attr('style', '');
+//            }
             $('#ex_output_wizard').ntsWizard("next");
         }
         previous() {
             $('#component-items-list').ntsError('clear');
+//            if($('.body.current').attr('id') == 'ex_output_wizard-p-1' ){
+//                $('.content.clearfix .body').attr('style', '');
+//            }
             $('#ex_output_wizard').ntsWizard("prev");
         }
 
         todoScreenQ() {
             let self = this;
+            $('.content.clearfix .body').attr('style', '');
             let isNextGetData: boolean = moment.utc(self.periodDateValue().startDate, "YYYY/MM/DD").diff(moment.utc(self.periodDateValue().endDate, "YYYY/MM/DD")) > 0;
 
             if (isNextGetData) {

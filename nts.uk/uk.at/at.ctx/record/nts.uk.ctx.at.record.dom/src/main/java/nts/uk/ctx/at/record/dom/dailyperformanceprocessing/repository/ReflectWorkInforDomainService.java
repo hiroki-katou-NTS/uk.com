@@ -82,7 +82,17 @@ public interface ReflectWorkInforDomainService {
 	 */
 	CalAttrOfDailyPerformance reflectCalAttOfDaiPer(String companyId, String employeeId, GeneralDate day,
 			AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor, PeriodInMasterList periodInMasterList);
-
+	/**
+	 * 自動打刻セットする
+	 * @param companyId
+	 * @param workInfoOfDailyPerformanceUpdate
+	 * @param workingConditionItem
+	 * @param timeLeavingOptional
+	 * @param employeeID
+	 * @param day
+	 * @param stampReflectionManagement
+	 * @return
+	 */
 	TimeLeavingOfDailyPerformance createStamp(String companyId,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate,
 			Optional<WorkingConditionItem> workingConditionItem, TimeLeavingOfDailyPerformance timeLeavingOptional,

@@ -36,10 +36,14 @@ public class KshmtPerWorkCat extends UkJpaEntity implements Serializable {
 	/** The kshmt per work cat PK. */
 	@EmbeddedId
 	protected KshmtPerWorkCatPK kshmtPerWorkCatPK;
-
+	
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
 	private int exclusVer;
+	
+	/** SID  */
+	@Column(name = "SID")
+	private String sid;
 
 	/** The work type code. */
 	@Column(name = "WORK_TYPE_CODE")

@@ -3532,6 +3532,9 @@ var nts;
                         case 401:
                             handle401(xhr);
                             break;
+                        case 403:
+                            handle403(xhr);
+                            break;
                         default:
                             handleUnknownError(xhr, status, error);
                             break;
@@ -3542,6 +3545,9 @@ var nts;
                     var res = xhr.responseJSON;
                     // res.sessionTimeout || res.csrfError
                     specials.errorPages.sessionTimeout();
+                }
+                function handle403(xhr) {
+                    specials.errorPages.stopUse();
                 }
                 function handleUnknownError(xhr, status, error) {
                     console.log("request failed");
@@ -3593,6 +3599,34 @@ var nts;
                 return dfd.promise();
             }
             request.exportFile = exportFile;
+            function exportLog(data) {
+                var dfd = $.Deferred();
+                request.ajax("logcollector/extract", data).done(function (res) {
+                    if (res.failed || res.status == "ABORTED") {
+                        dfd.reject(res.error);
+                    }
+                    var taskId = res.id;
+                    uk.deferred.repeat(function (conf) { return conf.task(function () {
+                        return nts.uk.request.asyncTask.getInfo(taskId).done(function (res) {
+                            if (res.succeeded) {
+                                setTimeout(function () {
+                                    specials.donwloadFile(taskId);
+                                    dfd.resolve(null);
+                                }, 100);
+                            }
+                            else {
+                                if (res.failed) {
+                                    dfd.reject(res);
+                                }
+                            }
+                        });
+                    }).while(function (info) { return info.pending || info.running; }).pause(1000); });
+                }).fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            request.exportLog = exportLog;
             function downloadFileWithTask(taskId, data, options) {
                 var dfd = $.Deferred();
                 var checkTask = function () {
@@ -3602,7 +3636,7 @@ var nts;
                                 checkTask();
                             }, 1000);
                         }
-                        if (res.failed || res.status == "ABORTED") {
+                        else if (res.failed || res.status == "ABORTED") {
                             dfd.reject(res.error);
                         }
                         else {
@@ -3710,6 +3744,10 @@ var nts;
                         jump('com', '/view/common/error/sessiontimeout/index.xhtml');
                     }
                     errorPages.sessionTimeout = sessionTimeout;
+                    function stopUse() {
+                        jump('com', '/view/common/error/stopuse/index.xhtml');
+                    }
+                    errorPages.stopUse = stopUse;
                 })(errorPages = specials.errorPages || (specials.errorPages = {}));
             })(specials = request.specials || (request.specials = {}));
             function jumpFromDialogOrFrame(webAppId, path, data) {
@@ -4207,11 +4245,20 @@ var nts;
                             var $compItem = $("<li class='menu-item company-item'/>").text(comp.companyName).appendTo($companyList);
                             $compItem.on(constants.CLICK, function () {
                                 nts.uk.request.ajax(constants.APP_ID, constants.ChangeCompany, comp.companyId)
-                                    .done(function (personName) {
+                                    .done(function (data) {
                                     $companyName.text(comp.companyName);
-                                    $userName.text(personName);
+                                    $userName.text(data.personName);
                                     $companyList.css("right", $user.outerWidth() + 30);
-                                    location.reload(true);
+                                    if (!nts.uk.util.isNullOrEmpty(data.msgResult)) {
+                                        nts.uk.ui.dialog.info({ messageId: data.msgResult }).then(function () {
+                                            location.reload(true);
+                                        });
+                                    }
+                                    else {
+                                        location.reload(true);
+                                    }
+                                }).fail(function (msg) {
+                                    nts.uk.ui.dialog.alertError(msg.messageId);
                                 });
                             });
                         });
@@ -15536,7 +15583,7 @@ var nts;
                             // valueKey
                             optionsValue = _.has(accessor, 'optionsValue') ? ko.unwrap(accessor.optionsValue) : null, 
                             // columns
-                            columns = _.has(accessor, 'columns') ? ko.unwrap(accessor.columns) : [{ prop: optionsText }], visibleItemsCount = _.has(accessor, 'visibleItemsCount') ? ko.unwrap(accessor.visibleItemsCount) : 5, dropDownAttachedToBody = _.has(accessor, 'dropDownAttachedToBody') ? ko.unwrap(accessor.dropDownAttachedToBody) : false, $show = $('<div>', {
+                            columns = _.has(accessor, 'columns') ? ko.unwrap(accessor.columns) : [{ prop: optionsText }], visibleItemsCount = _.has(accessor, 'visibleItemsCount') ? ko.unwrap(accessor.visibleItemsCount) : 5, dropDownAttachedToBody = _.has(accessor, 'dropDownAttachedToBody') ? ko.unwrap(accessor.dropDownAttachedToBody) : true, $show = $('<div>', {
                                 'class': 'nts-toggle-dropdown',
                                 'css': {
                                     'color': '#000',
@@ -15607,11 +15654,17 @@ var nts;
                                     $element
                                         .addClass('error')
                                         .ntsError("set", uk.resource.getMessage("FND_E_REQ_SELECT", [data[NAME]]), "FND_E_REQ_SELECT");
+                                    if (accessor.value.addError) {
+                                        accessor.value.addError("FND_E_REQ_SELECT", { MsgId: "FND_E_REQ_SELECT" });
+                                    }
                                 }
                                 else {
                                     $element
                                         .removeClass('error')
                                         .ntsError("clear");
+                                    if (accessor.value.removeError) {
+                                        accessor.value.removeError("FND_E_REQ_SELECT");
+                                    }
                                 }
                             })
                                 .on(KEYDOWN, function (evt, ui) {
@@ -15650,6 +15703,13 @@ var nts;
                                 visibleItemsCount: visibleItemsCount,
                                 dropDownAttachedToBody: dropDownAttachedToBody,
                                 rendered: function (evt, ui) {
+                                    setTimeout(function () {
+                                        $(ui.owner.dropDown()[0])
+                                            .css({
+                                            top: '-99999px',
+                                            left: '-99999px'
+                                        });
+                                    }, 100);
                                     $element
                                         .find('.ui-igcombo')
                                         .css('background', '#fff')
@@ -15873,14 +15933,14 @@ var nts;
                                 if (selectFirstIfNull) {
                                     vio = _.head(options);
                                     if (!vio) {
-                                        value = undefined;
+                                        value = null;
                                     }
                                     else {
                                         value = vio[optionsValue];
                                     }
                                 }
                                 else {
-                                    value = undefined;
+                                    value = null;
                                     //save old value
                                     if (!_.isNil(ko.toJS(accessor.value))) {
                                         $element.trigger(CHANGED, [SHOWVALUE, ko.toJS(accessor.value)]);
@@ -18142,6 +18202,9 @@ var nts;
                     if (handlesEnterKey) {
                         $input.addClass("enterkey")
                             .onkey("down", uk.KeyCodes.Enter, function (e) {
+                            if ($(".blockUI").length <= 0) {
+                                return;
+                            }
                             $input.change();
                             onEnterKey.call(ko.dataFor(e.target), e);
                         });
@@ -26644,7 +26707,7 @@ var nts;
                                     mgrid._vessel().zeroHidden = val;
                             }
                         },
-                        updatedCells: function (a) {
+                        updatedCells: function (all) {
                             var arr = [];
                             var toNumber = false, column = mgrid._columnsMap[mgrid._pk];
                             if ((column && _.toLower(column[0].dataType) === "number")
@@ -26656,7 +26719,7 @@ var nts;
                                     arr.push({ rowId: (toNumber ? parseFloat(r) : r), columnKey: c, value: mgrid._dirties[r][c] });
                                 });
                             });
-                            if (a) {
+                            if (all) {
                                 _.forEach(_.keys(mgrid._mafollicle[SheetDef]), function (k) {
                                     if (k === mgrid._currentSheet)
                                         return;
@@ -28373,11 +28436,21 @@ var nts;
                             var parsed = void 0, constraint = column.constraint;
                             var valueType = constraint.primitiveValue ? ui.validation.getConstraint(constraint.primitiveValue).valueType
                                 : constraint.cDisplayType;
-                            if (!_.isNil(value)
-                                && (valueType === "Time" || valueType === "TimeWithDay" || valueType === "Clock")) {
-                                parsed = uk.time.minutesBased.duration.parseString(value);
-                                if (parsed.success)
-                                    value = parsed.format();
+                            if (!_.isNil(value) && value !== "") {
+                                if (valueType === "Time") {
+                                    parsed = uk.time.minutesBased.duration.parseString(value);
+                                    if (parsed.success)
+                                        value = parsed.format();
+                                }
+                                else if (valueType === "TimeWithDay" || valueType === "Clock") {
+                                    var minutes = uk.time.minutesBased.clock.dayattr.parseString(String(value)).asMinutes;
+                                    if (_.isNil(minutes))
+                                        return value;
+                                    try {
+                                        value = uk.time.minutesBased.clock.dayattr.create(minutes).shortText;
+                                    }
+                                    catch (e) { }
+                                }
                             }
                         }
                         return value;
@@ -31752,11 +31825,47 @@ var nts;
                         $('#functions-area').addClass("disappear");
                         $('#functions-area-bottom').addClass("disappear");
                         $('#contents-area').addClass("disappear");
+                        $('#master-content').addClass("disappear");
                     });
                     ui.viewModelApplied.add(function () {
                         $('#functions-area').removeClass("disappear");
                         $('#functions-area-bottom').removeClass("disappear");
                         $('#contents-area').removeClass("disappear");
+                        $('#master-content').removeClass("disappear");
+                        if ($('#sidebar').length > 0) {
+                            $('#sidebar').ntsSideBar("reactive");
+                        }
+                    });
+                    ui.viewModelApplied.add(function () {
+                        if (!nts.uk.util.isNullOrUndefined(__viewContext.program.operationSetting)
+                            && (__viewContext.program.operationSetting.state == 1 || __viewContext.program.operationSetting.state == 2)) {
+                            var operationInfo = $("<div>", { 'class': 'operation-info-container marquee', 'id': 'operation-info' }), moving_1 = $("<div>"), text_4 = $("<label>"), text2 = $("<label>");
+                            moving_1.append(text_4).append(text2);
+                            operationInfo.append(moving_1).css({ right: ($("#manual").outerWidth() + 5) + "px" });
+                            text_4.text(__viewContext.program.operationSetting.message);
+                            text2.text(__viewContext.program.operationSetting.message);
+                            $("#pg-area").append(operationInfo);
+                            operationInfo.hover(function () {
+                                moving_1.addClass("animate-stopping");
+                            }, function () {
+                                moving_1.removeClass("animate-stopping");
+                            });
+                            var limit_1 = Math.floor(0 - moving_1.width()), current_1 = limit_1, id = setInterval(running, 50);
+                            moving_1.css({ "right": current_1 + "px" });
+                            operationInfo.data("animate-id", id);
+                            function running() {
+                                if (moving_1.hasClass("animate-stopping")) {
+                                    return;
+                                }
+                                if (current_1 >= 200) {
+                                    current_1 = limit_1;
+                                }
+                                else {
+                                    current_1++;
+                                }
+                                moving_1.css({ "right": current_1 + "px" });
+                            }
+                        }
                     });
                 })(content || (content = {}));
             })(action = ui.action || (ui.action = {}));
@@ -32654,6 +32763,8 @@ var nts;
                                         dfd.resolve(data);
                                     }
                                 }).fail(function (jqXHR, textStatus, errorThrown) {
+                                    // 413はnginxが返す
+                                    // ただ、Wildflyにも最大値が設定されているので注意（こちらはオーバーすると500が返る）
                                     if (jqXHR.status === 413) {
                                         dfd.reject({ message: "ファイルサイズが大きすぎます。", messageId: "0" });
                                     }
@@ -32947,7 +33058,14 @@ var nts;
                     function setSelected($grid, selectedId) {
                         deselectAll($grid);
                         if ($grid.igGridSelection('option', 'multipleSelection')) {
-                            selectedId.forEach(function (id) { return $grid.igGridSelection('selectRowById', id); });
+                            // for performance when select all
+                            var baseID = _.map($grid.igGrid("option").dataSource, $grid.igGrid("option", "primaryKey"));
+                            if (_.difference(baseID, baseID).length == 0) {
+                                $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']").click();
+                            }
+                            else {
+                                selectedId.forEach(function (id) { return $grid.igGridSelection('selectRowById', id); });
+                            }
                         }
                         else {
                             $grid.igGridSelection('selectRowById', selectedId);
@@ -39540,9 +39658,9 @@ var nts;
                                     selectedItems = component_2.ntsTreeDrag("getSelected");
                                     isMulti = component_2.ntsTreeDrag('option', 'isMulti');
                                 }
-                                var srh_1 = $container.data("searchObject");
-                                var result_3 = srh_1.search(searchKey, selectedItems);
-                                if (nts.uk.util.isNullOrEmpty(result_3.options)) {
+                                var srh = $container.data("searchObject");
+                                var result = srh.search(searchKey, selectedItems);
+                                if (nts.uk.util.isNullOrEmpty(result.options)) {
                                     var mes = '';
                                     if (searchMode === "highlight") {
                                         mes = nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT");
@@ -39556,22 +39674,23 @@ var nts;
                                     });
                                     return false;
                                 }
-                                var selectedProperties = _.map(result_3.selectItems, primaryKey);
+                                var selectedProperties = _.map(result.selectItems, primaryKey);
                                 if (targetMode === 'igGrid') {
                                     component_2.ntsGridList("setSelected", selectedProperties);
                                     if (searchMode === "filter") {
-                                        $container.data("filteredSrouce", result_3.options);
+                                        $container.data("filteredSrouce", result.options);
                                         component_2.attr("filtered", "true");
                                         //selected(selectedValue);
                                         //selected.valueHasMutated();
-                                        var source = _.filter(srh_1.getDataSource(), function (item) {
-                                            return _.find(result_3.options, function (itemFilterd) {
-                                                return itemFilterd[primaryKey] === item[primaryKey];
-                                            }) !== undefined || _.find(srh_1.getDataSource(), function (oldItem) {
-                                                return oldItem[primaryKey] === item[primaryKey];
-                                            }) === undefined;
-                                        });
-                                        component_2.igGrid("option", "dataSource", _.cloneDeep(source));
+                                        //                            let source = _.filter(srh.getDataSource(), function (item: any){
+                                        //                                             return _.find(result.options, function (itemFilterd: any){
+                                        //                                            return itemFilterd[primaryKey] === item[primaryKey];        
+                                        //                                                }) !== undefined || _.find(srh.getDataSource(), function (oldItem: any){
+                                        //                                             return oldItem[primaryKey] === item[primaryKey];        
+                                        //                                            }) === undefined;            
+                                        //                            });
+                                        //                            component.igGrid("option", "dataSource", _.cloneDeep(source));
+                                        component_2.igGrid("option", "dataSource", _.cloneDeep(result.options));
                                         component_2.igGrid("dataBind");
                                         //                            if(nts.uk.util.isNullOrEmpty(selectedProperties)){
                                         component_2.trigger("selectionchanged");
@@ -39610,9 +39729,9 @@ var nts;
                         $input.keydown(function (event) {
                             if (event.which == 13) {
                                 event.preventDefault();
-                                var result_4 = nextSearch();
+                                var result_3 = nextSearch();
                                 _.defer(function () {
-                                    if (result_4) {
+                                    if (result_3) {
                                         $input.focus();
                                     }
                                 });
@@ -39680,6 +39799,9 @@ var nts;
                         else if (action === "active") {
                             return active($control, option);
                         }
+                        else if (action === "reactive") {
+                            return reactive($control);
+                        }
                         else if (action === "enable") {
                             return enable($control, option);
                         }
@@ -39720,11 +39842,14 @@ var nts;
                                 settings.activate.call(this, event, info);
                             }
                         });
-                        active(control, settings.active, true);
-                        return control;
+                        return active(control, settings.active, true);
+                    }
+                    function reactive(control) {
+                        return active(control, control.data("active"), false);
                     }
                     function active(control, index, isInit) {
                         if (isInit === void 0) { isInit = false; }
+                        control.data("active", index);
                         control.find("#sidebar-area .navigator a").removeClass("active");
                         control.find("#sidebar-area .navigator a").eq(index).addClass("active");
                         control.find(".sidebar-content > div[role=tabpanel]").addClass("disappear");
