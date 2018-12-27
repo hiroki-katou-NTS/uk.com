@@ -16,6 +16,8 @@ import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.context.loginuser.SelectedLanguage;
 import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.operation.SystemOperationSetting;
+import nts.uk.shr.com.operation.SystemOperationSettingAdapter;
 import nts.uk.shr.com.program.ProgramsManager;
 import nts.uk.shr.com.program.WebAppId;
 import nts.uk.shr.infra.i18n.resource.web.webapi.I18NResourcesWebService;
@@ -82,13 +84,28 @@ public class ViewContext extends UIComponentBase {
 			}
 		});
 		
+		writeOperationSetting(builder);
+
 		if(builder.length() > 0){
 			builder.append(", ");
 		}
 		
-		builder.append("isDebugMode: " + ServerSystemProperties.isDebugMode());
+		builder.append("isDebugMode: " + ServerSystemProperties.isDebugMode() + ",");
 		
 		rw.write("program: {" + builder.toString() + "}");
+	}
+
+	private void writeOperationSetting(StringBuilder builder) {
+		SystemOperationSetting operationSetting = CDI.current().select(SystemOperationSettingAdapter.class).get().getSetting();
+		if(builder.length() > 0){
+			builder.append(", ");
+		}
+		builder.append("operationSetting: { ");
+		builder.append("mode: " + operationSetting.getMode().value);
+		builder.append(", type: " + operationSetting.getType().value);
+		builder.append(", message: '" + operationSetting.getMessage());
+		builder.append("' , state: " + operationSetting.getState().value);
+		builder.append("} ");
 	}
 	
 	private void writeLoginPersonInfo (ResponseWriter rw) throws IOException {
