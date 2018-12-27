@@ -1488,8 +1488,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 				&& (setting.getTimeSeletion() == HourMinuteClassification.HOUR_AND_MINUTE)
 				&& (setting.getNextDayOutputMethod() == NextDayOutputMethod.OUT_PUT_24HOUR)) {
 			//decimaValue.subtract(new BigDecimal(24.00));
-			decimaValue = decimaValue.subtract(new BigDecimal(24.00));
-			targetValue = "翌日" + decimaValue.toString();
+			targetValue = decimaValue.subtract(new BigDecimal(24.00)).toString();
+			
 		}
 
 		if ((decimaValue.doubleValue() < 0)
@@ -1498,8 +1498,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				decimaValue = new BigDecimal(0.00);
 				targetValue = decimaValue.toString() + ":00";
 			} else if (setting.getPrevDayOutputMethod() == PreviousDayOutputMethod.FORMAT24HOUR) {
-				decimaValue = decimaValue.add(new BigDecimal(24.00));
-				targetValue = "前日" + decimaValue.toString();
+				targetValue = decimaValue.add(new BigDecimal(24.00)).toString();
 			}
 		}
 		
