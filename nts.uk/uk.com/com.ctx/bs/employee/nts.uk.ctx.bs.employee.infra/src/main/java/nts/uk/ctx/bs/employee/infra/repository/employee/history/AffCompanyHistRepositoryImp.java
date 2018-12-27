@@ -59,8 +59,8 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	private static final String SELECT_BY_EMPLOYEE_ID = String.join(" ", SELECT_NO_PARAM,
 			"WHERE c.bsymtAffCompanyHistPk.sId = :sId ORDER BY c.startDate ");
 
-	private static final String SELECT_BY_EMPLOYEE_ID_DESC = String.join(" ", SELECT_NO_PARAM,
-			"WHERE c.bsymtAffCompanyHistPk.sId = :sId and c.companyId = :cid ORDER BY c.startDate DESC");
+//	private static final String SELECT_BY_EMPLOYEE_ID_DESC = String.join(" ", SELECT_NO_PARAM,
+//			"WHERE c.bsymtAffCompanyHistPk.sId = :sId and c.companyId = :cid ORDER BY c.startDate DESC");
 
 	private static final String SELECT_BY_EMPLOYEE_ID_LIST = String.join(" ", SELECT_NO_PARAM,
 			"WHERE c.bsymtAffCompanyHistPk.sId IN :sIdList  ORDER BY c.startDate ");
@@ -210,7 +210,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 						+ " on h.HIST_ID = i.HIST_ID"
 						+ " where h.START_DATE <= ?"
 						+ " and h.END_DATE >= ?"
-						+ " and SID in (" + NtsStatement.In.createParamsString(subList) + ")";
+						+ " and h.SID in (" + NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setDate(1, Date.valueOf(baseDate.toLocalDate()));
 				stmt.setDate(2, Date.valueOf(baseDate.toLocalDate()));

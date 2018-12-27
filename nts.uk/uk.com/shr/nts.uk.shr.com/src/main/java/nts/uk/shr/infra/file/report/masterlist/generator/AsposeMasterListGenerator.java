@@ -202,7 +202,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		
 		sheet.setName(getSheetName(sheetData.getSheetName(), idx, isExistName));
 		
-		cells.get(HEADER_INFOR_START_ROW + 4, 1).setValue(sheetData.getSheetName());
+		cells.get(HEADER_INFOR_START_ROW + 3, 1).setValue(sheetData.getSheetName());
 		
 		if(sheetData.getMode() != MasterListMode.NONE){
 			checkMode(cells, sheetData.getMode(), columnSize, isExportCsvFile(query.getReportType()), 

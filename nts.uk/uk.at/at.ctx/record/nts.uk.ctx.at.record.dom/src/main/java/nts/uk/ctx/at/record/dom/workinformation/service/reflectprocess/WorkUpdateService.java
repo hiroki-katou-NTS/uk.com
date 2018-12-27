@@ -37,6 +37,8 @@ public interface WorkUpdateService {
 	 */
 	public TimeLeavingOfDailyPerformance updateRecordStartEndTimeReflect(TimeReflectPara data);
 	
+	public void updateTimeNotReflect(String employeeId, GeneralDate dateData);
+	
 	public TimeLeavingOfDailyPerformance updateRecordStartEndTimeReflectRecruitment(TimeReflectPara data);
 	/**
 	 * 残業時間の反映

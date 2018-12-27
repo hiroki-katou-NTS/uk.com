@@ -59,7 +59,7 @@
 								value: minuteFractionDigit,
 								name:'#{i18n.getText('CMF002_197')}',
  								constraint: 'DataFormatDecimalDigit', 
-								required: $vm.decimalSelectionCls(),
+								required: true,
 								enable: $vm.decimalSelectionCls(),
 								option : {width : '45px'}}" />
 						</div>
@@ -228,7 +228,7 @@
 								value: fixedLongIntegerDigit,
 								name:'#{i18n.getText('CMF002_154')}',
  								constraint: 'DataFormatIntegerDigit', 
-								required: $vm.enableFixedLengthOutput(),
+								required: true,
 								enable: $vm.enableFixedLengthOutput(),
 								option : {width : '35px'}}" />
 							<!-- M9_2_3 - 桁(ラベル) -->

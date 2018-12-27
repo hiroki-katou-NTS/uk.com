@@ -66,5 +66,5 @@ public interface BatchServer {
 	 * @param requestEntity
 	 * @param communicationBuilder
 	 */
-	<Q, S> void request(TypedWebAPI<Q, S> webApi, Q requestEntity, Consumer<TypedCommunication<Q, S>> communicationBuilder);
+	<Q, S> void request(TypedWebAPI<Q, S> webApi, Consumer<TypedCommunication<Q, S>> communicationBuilder);
 }

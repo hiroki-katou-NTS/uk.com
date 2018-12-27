@@ -99,7 +99,7 @@ public class AddEmployeeCommandHelper {
 		AffCompanyHist newComHist = AffCompanyHist.createNewEmployeeHist(personId, employeeId, comHistId, hireDate, entryDate);
 		this.companyHistRepo.add(newComHist);
 
-		AffCompanyInfo newComInfo = AffCompanyInfo.createFromJavaType(comHistId, " ", null, null);
+		AffCompanyInfo newComInfo = AffCompanyInfo.createFromJavaType(employeeId, comHistId, " ", null, null);
 		this.companyInfoRepo.add(newComInfo);
 
 	}
