@@ -58,7 +58,8 @@ td{
 }
 
 .td_center_sp {
-		width: 35px;
+	width: 35px;
+	padding-left: 88px;
 }
 
 .td_right {
@@ -66,7 +67,7 @@ td{
 }
 
 .td_left {
-	width: 30px;	
+	width: 40px;	
 }
 
 tr{

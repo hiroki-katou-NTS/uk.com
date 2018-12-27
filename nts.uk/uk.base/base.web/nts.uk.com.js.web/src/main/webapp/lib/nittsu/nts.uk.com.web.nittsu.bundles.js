@@ -26193,11 +26193,21 @@ var nts;
                             var parsed = void 0, constraint = column.constraint;
                             var valueType = constraint.primitiveValue ? ui.validation.getConstraint(constraint.primitiveValue).valueType
                                 : constraint.cDisplayType;
-                            if (!_.isNil(value)
-                                && (valueType === "Time" || valueType === "TimeWithDay" || valueType === "Clock")) {
-                                parsed = uk.time.minutesBased.duration.parseString(value);
-                                if (parsed.success)
-                                    value = parsed.format();
+                            if (!_.isNil(value) && value !== "") {
+                                if (valueType === "Time") {
+                                    parsed = uk.time.minutesBased.duration.parseString(value);
+                                    if (parsed.success)
+                                        value = parsed.format();
+                                }
+                                else if (valueType === "TimeWithDay" || valueType === "Clock") {
+                                    var minutes = uk.time.minutesBased.clock.dayattr.parseString(String(value)).asMinutes;
+                                    if (_.isNil(minutes))
+                                        return value;
+                                    try {
+                                        value = uk.time.minutesBased.clock.dayattr.create(minutes).shortText;
+                                    }
+                                    catch (e) { }
+                                }
                             }
                         }
                         return value;
@@ -36816,9 +36826,9 @@ var nts;
                                     selectedItems = component_2.ntsTreeDrag("getSelected");
                                     isMulti = component_2.ntsTreeDrag('option', 'isMulti');
                                 }
-                                var srh_1 = $container.data("searchObject");
-                                var result_3 = srh_1.search(searchKey, selectedItems);
-                                if (nts.uk.util.isNullOrEmpty(result_3.options)) {
+                                var srh = $container.data("searchObject");
+                                var result = srh.search(searchKey, selectedItems);
+                                if (nts.uk.util.isNullOrEmpty(result.options)) {
                                     var mes = '';
                                     if (searchMode === "highlight") {
                                         mes = nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT");
@@ -36832,22 +36842,23 @@ var nts;
                                     });
                                     return false;
                                 }
-                                var selectedProperties = _.map(result_3.selectItems, primaryKey);
+                                var selectedProperties = _.map(result.selectItems, primaryKey);
                                 if (targetMode === 'igGrid') {
                                     component_2.ntsGridList("setSelected", selectedProperties);
                                     if (searchMode === "filter") {
-                                        $container.data("filteredSrouce", result_3.options);
+                                        $container.data("filteredSrouce", result.options);
                                         component_2.attr("filtered", "true");
                                         //selected(selectedValue);
                                         //selected.valueHasMutated();
-                                        var source = _.filter(srh_1.getDataSource(), function (item) {
-                                            return _.find(result_3.options, function (itemFilterd) {
-                                                return itemFilterd[primaryKey] === item[primaryKey];
-                                            }) !== undefined || _.find(srh_1.getDataSource(), function (oldItem) {
-                                                return oldItem[primaryKey] === item[primaryKey];
-                                            }) === undefined;
-                                        });
-                                        component_2.igGrid("option", "dataSource", _.cloneDeep(source));
+                                        //                            let source = _.filter(srh.getDataSource(), function (item: any){
+                                        //                                             return _.find(result.options, function (itemFilterd: any){
+                                        //                                            return itemFilterd[primaryKey] === item[primaryKey];        
+                                        //                                                }) !== undefined || _.find(srh.getDataSource(), function (oldItem: any){
+                                        //                                             return oldItem[primaryKey] === item[primaryKey];        
+                                        //                                            }) === undefined;            
+                                        //                            });
+                                        //                            component.igGrid("option", "dataSource", _.cloneDeep(source));
+                                        component_2.igGrid("option", "dataSource", _.cloneDeep(result.options));
                                         component_2.igGrid("dataBind");
                                         //                            if(nts.uk.util.isNullOrEmpty(selectedProperties)){
                                         component_2.trigger("selectionchanged");
@@ -36886,9 +36897,9 @@ var nts;
                         $input.keydown(function (event) {
                             if (event.which == 13) {
                                 event.preventDefault();
-                                var result_4 = nextSearch();
+                                var result_3 = nextSearch();
                                 _.defer(function () {
-                                    if (result_4) {
+                                    if (result_3) {
                                         $input.focus();
                                     }
                                 });

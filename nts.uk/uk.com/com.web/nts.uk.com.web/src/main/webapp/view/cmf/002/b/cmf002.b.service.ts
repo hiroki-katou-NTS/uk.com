@@ -12,8 +12,8 @@ module nts.uk.com.view.cmf002.b {
             outSetContent: "exio/exo/condset/outSetContent/{0}/{1}"
         };
 
-        export function getCndSet(): JQueryPromise<any> {
-            return nts.uk.request.ajax(path.getCndSet);
+        export function getCndSet(data: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(path.getCndSet, data);
         }
         
         export function getOutItem(cndSetcd: any): JQueryPromise<any> {

@@ -193,7 +193,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                                 let headerText = header.headerText + " " + header.key.substring(1, header.key.length);
                                 $("#dpGrid").mGrid("headerText", header.key, headerText, false);
                             } else {
-                                let headerText = header.headerText.split(" ")[0];
+                                //let headerText = header.headerText.split(" ")[0];
+                                let headerText = header.headerText;
                                 $("#dpGrid").mGrid("headerText", header.key, headerText, false);
                             }
                         } else {
@@ -201,7 +202,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                                 let headerText = header.headerText + " " + header.group[1].key.substring(4, header.group[1].key.length);
                                 $("#dpGrid").mGrid("headerText", header.headerText, headerText, true);
                             } else {
-                                let headerText = header.headerText.split(" ")[0];
+                                //let headerText = header.headerText.split(" ")[0];
+                                let headerText = header.headerText;
                                 $("#dpGrid").mGrid("headerText", header.headerText, headerText, true);
                             }
                         }
