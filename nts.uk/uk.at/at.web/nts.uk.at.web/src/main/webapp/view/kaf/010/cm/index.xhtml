@@ -415,7 +415,7 @@
 									inputFormat: 'time', 
 									mode: 'time',
 									constraint:'OvertimeAppPrimitiveTime',
-									enable: $vm.editable }" /></td>
+									enable: $vm.editable() &amp;&amp; $vm.enableOvertimeInput() }" /></td>
 						</tr>
 					</tbody>
 				</table>
@@ -460,7 +460,7 @@
 									inputFormat: 'time', 
 									mode: 'time',
 									constraint:'OvertimeAppPrimitiveTime',
-									enable: $vm.editable }" /></td>
+									enable: $vm.editable() &amp;&amp; $vm.enableOvertimeInput() }" /></td>
 							<!--A6_9 休出事前申請時間--> 						
 							<td class="right-content" data-bind="text: preAppTime"></td>
 							<!--A6_11 休出実績時間--> 						
