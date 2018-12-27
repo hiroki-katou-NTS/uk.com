@@ -307,7 +307,7 @@ class NtsSortableBindingHandler implements KnockoutBindingHandler {
                         updateActual.apply(this, arguments);
                     }
                 },
-                connectWith: false
+                connectWith: sortable.connectClass ? '.' + sortable.connectClass : false
             }));
             //handle enabling/disabling sorting
             if (sortable.isEnabled !== undefined) {
