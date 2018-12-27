@@ -15536,7 +15536,7 @@ var nts;
                             // valueKey
                             optionsValue = _.has(accessor, 'optionsValue') ? ko.unwrap(accessor.optionsValue) : null, 
                             // columns
-                            columns = _.has(accessor, 'columns') ? ko.unwrap(accessor.columns) : [{ prop: optionsText }], visibleItemsCount = _.has(accessor, 'visibleItemsCount') ? ko.unwrap(accessor.visibleItemsCount) : 5, dropDownAttachedToBody = _.has(accessor, 'dropDownAttachedToBody') ? ko.unwrap(accessor.dropDownAttachedToBody) : false, $show = $('<div>', {
+                            columns = _.has(accessor, 'columns') ? ko.unwrap(accessor.columns) : [{ prop: optionsText }], visibleItemsCount = _.has(accessor, 'visibleItemsCount') ? ko.unwrap(accessor.visibleItemsCount) : 5, dropDownAttachedToBody = _.has(accessor, 'dropDownAttachedToBody') ? ko.unwrap(accessor.dropDownAttachedToBody) : true, $show = $('<div>', {
                                 'class': 'nts-toggle-dropdown',
                                 'css': {
                                     'color': '#000',
@@ -15607,11 +15607,17 @@ var nts;
                                     $element
                                         .addClass('error')
                                         .ntsError("set", uk.resource.getMessage("FND_E_REQ_SELECT", [data[NAME]]), "FND_E_REQ_SELECT");
+                                    if (accessor.value.addError) {
+                                        accessor.value.addError("FND_E_REQ_SELECT", { MsgId: "FND_E_REQ_SELECT" });
+                                    }
                                 }
                                 else {
                                     $element
                                         .removeClass('error')
                                         .ntsError("clear");
+                                    if (accessor.value.removeError) {
+                                        accessor.value.removeError("FND_E_REQ_SELECT");
+                                    }
                                 }
                             })
                                 .on(KEYDOWN, function (evt, ui) {
@@ -15650,6 +15656,13 @@ var nts;
                                 visibleItemsCount: visibleItemsCount,
                                 dropDownAttachedToBody: dropDownAttachedToBody,
                                 rendered: function (evt, ui) {
+                                    setTimeout(function () {
+                                        $(ui.owner.dropDown()[0])
+                                            .css({
+                                            top: '-99999px',
+                                            left: '-99999px'
+                                        });
+                                    }, 100);
                                     $element
                                         .find('.ui-igcombo')
                                         .css('background', '#fff')
@@ -15873,14 +15886,14 @@ var nts;
                                 if (selectFirstIfNull) {
                                     vio = _.head(options);
                                     if (!vio) {
-                                        value = undefined;
+                                        value = null;
                                     }
                                     else {
                                         value = vio[optionsValue];
                                     }
                                 }
                                 else {
-                                    value = undefined;
+                                    value = null;
                                     //save old value
                                     if (!_.isNil(ko.toJS(accessor.value))) {
                                         $element.trigger(CHANGED, [SHOWVALUE, ko.toJS(accessor.value)]);
@@ -17699,7 +17712,19 @@ var nts;
                         _super.prototype.init.call(this, $input, data);
                         $input.on('focus', function () {
                             if (!$input.attr('readonly')) {
+<<<<<<< HEAD
                                 $input.val(data.value());
+=======
+                                // Remove separator (comma)
+                                var value = ko.toJS(data.value), numb = Number(value);
+                                if (!_.isNil(value) && _.isNumber(numb) && !_.isNaN(numb) && !_.isEqual(String(value).trim(), '')) {
+                                    var match = String(value).match(/.\d+/g);
+                                    $input.val(numb.toLocaleString('ja-JP', { useGrouping: false, minimumFractionDigits: match.length == 2 ? match[1].length - 1 : 0 }));
+                                }
+                                else {
+                                    $input.val(data.value());
+                                }
+>>>>>>> origin/delivery/release_user
                                 // If focusing is caused by Tab key, select text
                                 // this code is needed because removing separator deselects.
                                 if (ui.keyboardStream.wasKeyDown(uk.KeyCodes.Tab, 500)) {
@@ -26644,7 +26669,11 @@ var nts;
                                     mgrid._vessel().zeroHidden = val;
                             }
                         },
+<<<<<<< HEAD
                         updatedCells: function (a) {
+=======
+                        updatedCells: function (all) {
+>>>>>>> origin/delivery/release_user
                             var arr = [];
                             var toNumber = false, column = mgrid._columnsMap[mgrid._pk];
                             if ((column && _.toLower(column[0].dataType) === "number")
@@ -26656,11 +26685,19 @@ var nts;
                                     arr.push({ rowId: (toNumber ? parseFloat(r) : r), columnKey: c, value: mgrid._dirties[r][c] });
                                 });
                             });
+<<<<<<< HEAD
                             if (a) {
                                 _.forEach(_.keys(mgrid._mafollicle[SheetDef]), function (k) {
                                     if (k === mgrid._currentSheet)
                                         return;
                                     var maf = mgrid._mafollicle[mgrid._currentPage][k];
+=======
+                            if (all) {
+                                _.forEach(_.keys(_mafollicle[SheetDef]), function (k) {
+                                    if (k === _currentSheet)
+                                        return;
+                                    var maf = _mafollicle[_currentPage][k];
+>>>>>>> origin/delivery/release_user
                                     if (!maf || !maf.dirties)
                                         return;
                                     _.forEach(_.keys(maf.dirties), function (r) {
@@ -28373,11 +28410,21 @@ var nts;
                             var parsed = void 0, constraint = column.constraint;
                             var valueType = constraint.primitiveValue ? ui.validation.getConstraint(constraint.primitiveValue).valueType
                                 : constraint.cDisplayType;
-                            if (!_.isNil(value)
-                                && (valueType === "Time" || valueType === "TimeWithDay" || valueType === "Clock")) {
-                                parsed = uk.time.minutesBased.duration.parseString(value);
-                                if (parsed.success)
-                                    value = parsed.format();
+                            if (!_.isNil(value) && value !== "") {
+                                if (valueType === "Time") {
+                                    parsed = uk.time.minutesBased.duration.parseString(value);
+                                    if (parsed.success)
+                                        value = parsed.format();
+                                }
+                                else if (valueType === "TimeWithDay" || valueType === "Clock") {
+                                    var minutes = uk.time.minutesBased.clock.dayattr.parseString(String(value)).asMinutes;
+                                    if (_.isNil(minutes))
+                                        return value;
+                                    try {
+                                        value = uk.time.minutesBased.clock.dayattr.create(minutes).shortText;
+                                    }
+                                    catch (e) { }
+                                }
                             }
                         }
                         return value;
@@ -28410,7 +28457,11 @@ var nts;
                         }
                         if (su.afterCollertar)
                             setTimeout(function () { return su.afterCollertar.focus({ preventScroll: true }); }, 1);
+<<<<<<< HEAD
                         var formatted, disFormat, coord = ti.getCellCoord(target), col = mgrid._columnsMap[coord.columnKey];
+=======
+                        var formatted, disFormat, coord = ti.getCellCoord(target), col = _columnsMap[coord.columnKey];
+>>>>>>> origin/delivery/release_user
                         var inputRidd = function ($t, rowIdx, columnKey, dFormat) {
                             if ($t.classList.contains(khl.ERROR_CLS))
                                 return;
@@ -32654,6 +32705,8 @@ var nts;
                                         dfd.resolve(data);
                                     }
                                 }).fail(function (jqXHR, textStatus, errorThrown) {
+                                    // 413はnginxが返す
+                                    // ただ、Wildflyにも最大値が設定されているので注意（こちらはオーバーすると500が返る）
                                     if (jqXHR.status === 413) {
                                         dfd.reject({ message: "ファイルサイズが大きすぎます。", messageId: "0" });
                                     }
@@ -39540,9 +39593,9 @@ var nts;
                                     selectedItems = component_2.ntsTreeDrag("getSelected");
                                     isMulti = component_2.ntsTreeDrag('option', 'isMulti');
                                 }
-                                var srh_1 = $container.data("searchObject");
-                                var result_3 = srh_1.search(searchKey, selectedItems);
-                                if (nts.uk.util.isNullOrEmpty(result_3.options)) {
+                                var srh = $container.data("searchObject");
+                                var result = srh.search(searchKey, selectedItems);
+                                if (nts.uk.util.isNullOrEmpty(result.options)) {
                                     var mes = '';
                                     if (searchMode === "highlight") {
                                         mes = nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT");
@@ -39556,22 +39609,23 @@ var nts;
                                     });
                                     return false;
                                 }
-                                var selectedProperties = _.map(result_3.selectItems, primaryKey);
+                                var selectedProperties = _.map(result.selectItems, primaryKey);
                                 if (targetMode === 'igGrid') {
                                     component_2.ntsGridList("setSelected", selectedProperties);
                                     if (searchMode === "filter") {
-                                        $container.data("filteredSrouce", result_3.options);
+                                        $container.data("filteredSrouce", result.options);
                                         component_2.attr("filtered", "true");
                                         //selected(selectedValue);
                                         //selected.valueHasMutated();
-                                        var source = _.filter(srh_1.getDataSource(), function (item) {
-                                            return _.find(result_3.options, function (itemFilterd) {
-                                                return itemFilterd[primaryKey] === item[primaryKey];
-                                            }) !== undefined || _.find(srh_1.getDataSource(), function (oldItem) {
-                                                return oldItem[primaryKey] === item[primaryKey];
-                                            }) === undefined;
-                                        });
-                                        component_2.igGrid("option", "dataSource", _.cloneDeep(source));
+                                        //                            let source = _.filter(srh.getDataSource(), function (item: any){
+                                        //                                             return _.find(result.options, function (itemFilterd: any){
+                                        //                                            return itemFilterd[primaryKey] === item[primaryKey];        
+                                        //                                                }) !== undefined || _.find(srh.getDataSource(), function (oldItem: any){
+                                        //                                             return oldItem[primaryKey] === item[primaryKey];        
+                                        //                                            }) === undefined;            
+                                        //                            });
+                                        //                            component.igGrid("option", "dataSource", _.cloneDeep(source));
+                                        component_2.igGrid("option", "dataSource", _.cloneDeep(result.options));
                                         component_2.igGrid("dataBind");
                                         //                            if(nts.uk.util.isNullOrEmpty(selectedProperties)){
                                         component_2.trigger("selectionchanged");
@@ -39610,9 +39664,9 @@ var nts;
                         $input.keydown(function (event) {
                             if (event.which == 13) {
                                 event.preventDefault();
-                                var result_4 = nextSearch();
+                                var result_3 = nextSearch();
                                 _.defer(function () {
-                                    if (result_4) {
+                                    if (result_3) {
                                         $input.focus();
                                     }
                                 });

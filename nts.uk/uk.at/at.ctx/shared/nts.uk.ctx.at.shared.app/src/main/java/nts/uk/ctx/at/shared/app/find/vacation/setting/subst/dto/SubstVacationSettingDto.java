@@ -4,16 +4,21 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.vacation.setting.subst.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSettingSetMemento;
 
 /**
  * The Class SubstVacationSettingDto.
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class SubstVacationSettingDto implements SubstVacationSettingSetMemento {
 
 	/** The is manage. */
@@ -66,6 +71,11 @@ public class SubstVacationSettingDto implements SubstVacationSettingSetMemento {
 	@Override
 	public void setAllowPrepaidLeave(ApplyPermission allowPrepaidLeave) {
 		this.allowPrepaidLeave = allowPrepaidLeave.value;
+	}
+	
+	public static SubstVacationSettingDto fromDomain(SubstVacationSetting domain) {
+		return new SubstVacationSettingDto(domain.getIsManage().value, domain.getExpirationDate().value,
+				domain.getAllowPrepaidLeave().value);
 	}
 
 }

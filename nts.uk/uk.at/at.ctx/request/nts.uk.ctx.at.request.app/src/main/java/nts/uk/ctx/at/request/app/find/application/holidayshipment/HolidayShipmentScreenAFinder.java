@@ -1,5 +1,10 @@
 package nts.uk.ctx.at.request.app.find.application.holidayshipment;
-
+/*import java.util.Collections;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.NumberOfRemainOutput;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;*/
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -30,8 +35,6 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
@@ -53,6 +56,7 @@ import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceRepository;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
@@ -102,8 +106,8 @@ public class HolidayShipmentScreenAFinder {
 	private PredetemineTimeSettingRepository preTimeSetRepo;
 	@Inject
 	private CollectAchievement collectAchievement;
-	@Inject
-	private ApprovalRootAdapter rootAdapter;
+	/*@Inject
+	private ApprovalRootAdapter rootAdapter;*/
 	@Inject
 	private RequestOfEachWorkplaceRepository requestWpRepo;
 	@Inject
@@ -122,6 +126,9 @@ public class HolidayShipmentScreenAFinder {
 	private WorkTimeSettingRepository wkTimeSetRepo;
 	@Inject
 	private AtEmployeeAdapter atEmpAdaptor;
+	@Inject
+	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
+	
 	private static final ApplicationType APP_TYPE = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
 	/**
@@ -171,7 +178,10 @@ public class HolidayShipmentScreenAFinder {
 		// アルゴリズム「勤務時間初期値の取得」を実行する
 		String wkTypeCD = result.getRecWkTypes().size() > 0 ? result.getRecWkTypes().get(0).getWorkTypeCode() : "";
 		setWorkTimeInfo(result, wkTimeCD, wkTypeCD, companyID);
-
+		//[No.506]振休残数を取得する
+		double absRecMng = absRertMngInPeriod.getAbsRecMngRemain(employeeID, GeneralDate.today());
+		result.setAbsRecMng(absRecMng);
+		
 		return result;
 	}
 
@@ -259,6 +269,10 @@ public class HolidayShipmentScreenAFinder {
 		builder.append("");
 
 		wkingItem.ifPresent(item -> {
+			if (item == null) {return;}
+			if (item.getWorkCategory() == null) {return;}
+			if (item.getWorkCategory().getWeekdayTime() == null) {return;}
+			if (item.getWorkCategory().getWeekdayTime().getWorkTimeCode() == null) {return;}
 			item.getWorkCategory().getWeekdayTime().getWorkTimeCode().ifPresent(wkIimeCd -> {
 				builder.append(wkIimeCd);
 			});
@@ -285,8 +299,8 @@ public class HolidayShipmentScreenAFinder {
 			inputDate = GeneralDate.today();
 		}
 		// アルゴリズム「社員の対象申請の承認ルートを取得する」を実行する
-		List<ApprovalRootImport> approvalRoots = rootAdapter.getApprovalRootOfSubjectRequest(companyID, employeeID,
-				rootAtr, APP_TYPE.value, referenceDate);
+	/*	List<ApprovalRootImport> approvalRoots = rootAdapter.getApprovalRootOfSubjectRequest(companyID, employeeID,
+				rootAtr, APP_TYPE.value, referenceDate);*/
 		boolean getSetting = true;
 		String recWkTypeCD, recWkTimeCode, absWkTypeCD, absWkTimeCode;
 		recWkTypeCD = recWkTimeCode = absWkTypeCD = absWkTimeCode = null;
@@ -337,7 +351,7 @@ public class HolidayShipmentScreenAFinder {
 			basicService.checkWorkDay(wkTypeCode);
 
 		}
-		if (wkType != null) {
+		if (wkType != null && wkTimeCode != null) {
 
 			setWkTimeZones(wkType.getAttendanceHolidayAttr(), companyID, wkTimeCode, result);
 

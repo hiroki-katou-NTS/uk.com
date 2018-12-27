@@ -215,6 +215,8 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 			workbook.getWorksheets().addCopy(0);
 		}
 	}
+			Cell labelCell = cells.get(/*this.*/HEADER_INFOR_START_ROW + i, 0);
+			Range valueCell = cells.createRange(/*this.*/HEADER_INFOR_START_ROW + i, 1, 1, isCsv ? 1 : columnSize);
 
 	private String getSheetName(String sheetName, int idx, boolean isExistName) {
 		return isExistName ? sheetName + "(" + idx + ")" : sheetName;

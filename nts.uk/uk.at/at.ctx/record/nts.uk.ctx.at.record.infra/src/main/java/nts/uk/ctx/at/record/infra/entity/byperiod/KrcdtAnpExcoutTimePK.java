@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * プライマリキー：期間別の時間外超過項目
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Embeddable
 @EqualsAndHashCode
@@ -23,7 +23,7 @@ public class KrcdtAnpExcoutTimePK implements Serializable {
 
 	/** 社員ID */
 	@Column(name = "SID")
-	public String employeeID;
+	public String employeeId;
 	/** 任意集計枠コード */
 	@Column(name = "FRAME_CODE")
 	public String frameCode;

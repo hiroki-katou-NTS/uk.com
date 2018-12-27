@@ -31,4 +31,12 @@ public class AttendanceDaysMonth extends HalfIntegerPrimitiveValue<AttendanceDay
 		
 		return new AttendanceDaysMonth(this.v() + days);
 	}
+	
+	@Override
+	protected Double reviseRawValue(Double rawValue) {
+		if (rawValue == null) return super.reviseRawValue(rawValue);
+		if (rawValue > 99.5) rawValue = 99.5;
+		if (rawValue < 0) rawValue = 0.0;
+		return super.reviseRawValue(rawValue);
+	}
 }

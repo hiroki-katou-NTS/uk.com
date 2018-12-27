@@ -127,11 +127,5 @@ public interface InterimRemainOffDateCreateData {
 	 */
 	List<DayoffTranferInfor> transferInforFromNotHolidayWork(String cid, boolean dayOffTimeIsUse, AppRemainCreateInfor appInfor,
 			InterimRemainCreateInfor createInfo, List<WorkTypeRemainInfor> remainInfor, CreateAtr createAtr);
-	/**
-	 * 特別休暇枠NOから特別休暇を取得する
-	 * @param cid
-	 * @param holidayFrame
-	 * @return
-	 */
-	String specialHolidayCode(String cid, String holidayFrame);
+
 }

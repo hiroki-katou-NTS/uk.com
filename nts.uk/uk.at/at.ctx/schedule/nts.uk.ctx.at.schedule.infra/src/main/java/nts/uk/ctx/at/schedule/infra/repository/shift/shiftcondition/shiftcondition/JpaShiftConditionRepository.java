@@ -1,10 +1,14 @@
 package nts.uk.ctx.at.schedule.infra.repository.shift.shiftcondition.shiftcondition;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.shiftcondition.shiftcondition.ShiftCondition;
 import nts.uk.ctx.at.schedule.dom.shift.shiftcondition.shiftcondition.ShiftConditionRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.shiftcondition.shiftcondition.KscmtShiftCondition;
@@ -33,9 +37,15 @@ public class JpaShiftConditionRepository extends JpaRepository implements ShiftC
 
 	@Override
 	public List<ShiftCondition> getShiftCondition(String companyId, List<Integer> conditionNos) {
-		return this.queryProxy().query(SELECT_LIST_CONDITION, KscmtShiftCondition.class)
-				.setParameter("companyId", companyId).setParameter("conditionNos", conditionNos)
-				.getList(entity -> toDomain(entity));
+		List<ShiftCondition> resultList = new ArrayList<>();
+		CollectionUtil.split(conditionNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_LIST_CONDITION, KscmtShiftCondition.class)
+				.setParameter("companyId", companyId)
+				.setParameter("conditionNos", subList)
+				.getList(entity -> toDomain(entity)));
+		});
+		resultList.sort(Comparator.comparing(ShiftCondition::getConditionNo));
+		return resultList;
 	}
 
 }

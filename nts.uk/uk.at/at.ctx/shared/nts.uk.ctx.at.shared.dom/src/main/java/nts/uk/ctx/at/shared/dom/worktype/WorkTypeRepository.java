@@ -132,13 +132,13 @@ public interface WorkTypeRepository {
 	List<WorkTypeSet> findWorkTypeSet(String companyId, String workTypeCode);
 	
 	/**
-	 * Find work type set close atr.
+	 * Find work type set close atr and deprecateAtr.
 	 *
 	 * @param companyId the company id
 	 * @param closeAtr the close atr
 	 * @return the list
 	 */
-	List<WorkTypeSet> findWorkTypeSetCloseAtr(String companyId, int closeAtr);
+	List<WorkTypeSet> findWorkTypeSetCloseAtrDeprecateAtr(String companyId, int closeAtr, int deprecateAtr);
 	
 	/**
 	 * Adds the.

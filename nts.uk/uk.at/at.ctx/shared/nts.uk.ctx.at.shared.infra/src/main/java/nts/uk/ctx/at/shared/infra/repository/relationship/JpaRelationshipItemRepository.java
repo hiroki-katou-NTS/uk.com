@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.relationship;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -7,6 +8,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.relationship.Relationship;
@@ -98,9 +100,15 @@ public class JpaRelationshipItemRepository extends JpaRepository implements Rela
 		if(CollectionUtil.isEmpty(relpCds)){
 			return Collections.emptyList();
 		}
-		return this.queryProxy().query(SELECT_ITEM_WITH_SETTING_QUERY, Object.class)
-				.setParameter("companyId", companyId).setParameter("sHENo", sHENo).setParameter("relpCds", relpCds)
-				.getList(c -> String.valueOf(c));
+		List<String> resultList = new ArrayList<>();
+		CollectionUtil.split(relpCds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_ITEM_WITH_SETTING_QUERY, Object.class)
+								  .setParameter("companyId", companyId)
+								  .setParameter("sHENo", sHENo)
+								  .setParameter("relpCds", subList)
+								  .getList(c -> String.valueOf(c)));
+		});
+		return resultList;
 	}
 
 }

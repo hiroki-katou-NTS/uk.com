@@ -46,11 +46,11 @@ public class DPUpdateColWidthCommandHandler extends CommandHandler<UpdateColWidt
 		
 		OperationOfDailyPerformanceDto dailyPerformanceDto = screenRepo.findOperationOfDailyPerformance();
 		if (dailyPerformanceDto.getSettingUnit() == SettingUnitType.AUTHORITY) {
-			this.screenRepo.updateColumnsWidth(lstHeader, listFormatCode);
-			this.authorityFormatMonthlyRepository.updateColumnsWidth(companyId, lstHeaderMIGrid, listFormatCode);
+			if(!lstHeader.isEmpty() && !listFormatCode.isEmpty()) this.screenRepo.updateColumnsWidth(lstHeader, listFormatCode);
+			if(!lstHeaderMIGrid.isEmpty() && !listFormatCode.isEmpty()) this.authorityFormatMonthlyRepository.updateColumnsWidth(companyId, lstHeaderMIGrid, listFormatCode);
 		} else {
-			this.repo.updateColumnsWidth(lstHeader);
-			this.businessTypeFormatMonthlyRepository.updateColumnsWidth(companyId, lstHeaderMIGrid, listFormatCode);
+			if(!lstHeader.isEmpty())  this.repo.updateColumnsWidth(lstHeader);
+			if(!lstHeaderMIGrid.isEmpty() && !listFormatCode.isEmpty())  this.businessTypeFormatMonthlyRepository.updateColumnsWidth(companyId, lstHeaderMIGrid, listFormatCode);
 		}
 	}
 

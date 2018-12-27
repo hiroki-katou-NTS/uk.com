@@ -23,7 +23,7 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class VacationMasterDataCopyEventSubscriber.
  */
 @Stateless
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class VacationMasterDataCopyEventSubscriber extends MasterDataCopyEventSubscriber {
 
 	/** The com 60 hour vacation repo. */

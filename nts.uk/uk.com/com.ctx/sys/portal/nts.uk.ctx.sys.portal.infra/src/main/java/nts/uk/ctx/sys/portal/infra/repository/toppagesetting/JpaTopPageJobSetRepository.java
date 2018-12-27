@@ -1,11 +1,14 @@
 package nts.uk.ctx.sys.portal.infra.repository.toppagesetting;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.enums.System;
@@ -58,8 +61,12 @@ public class JpaTopPageJobSetRepository extends JpaRepository implements TopPage
 	 */
 	@Override
 	public List<TopPageJobSet> findByListJobId(String companyId, List<String> jobId) {
-		return this.queryProxy().query(SEL_BY_LIST_JOB_ID, CcgptTopPageJobSet.class)
-				.setParameter("companyId", companyId).setParameter("jobId", jobId).getList(x -> toDomain(x));
+		List<TopPageJobSet> results = new ArrayList<>();
+		CollectionUtil.split(jobId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			results.addAll(this.queryProxy().query(SEL_BY_LIST_JOB_ID, CcgptTopPageJobSet.class)
+				.setParameter("companyId", companyId).setParameter("jobId", subList).getList(x -> toDomain(x)));
+		});
+		return results;
 	}
 
 	/**

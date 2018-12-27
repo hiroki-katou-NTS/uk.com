@@ -11,8 +11,8 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveRemainNoMinus;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -106,13 +106,13 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 		val remainDays = inPeriod.getRemainDays();
 
 		// 実特別休暇：残数
-		SpecialLeaveRemain actualRemainBefore = new SpecialLeaveRemain(
-				new SpecialLeaveRemainDay(remainDays.getGrantDetailBefore().getRemainDays()),
+		ActualSpecialLeaveRemain actualRemainBefore = new ActualSpecialLeaveRemain(
+				new ActualSpecialLeaveRemainDay(remainDays.getGrantDetailBefore().getRemainDays()),
 				Optional.empty());
-		SpecialLeaveRemain actualRemainAfter = null;
+		ActualSpecialLeaveRemain actualRemainAfter = null;
 		if (remainDays.getGrantDetailAfter().isPresent()){
-			actualRemainAfter = new SpecialLeaveRemain(
-					new SpecialLeaveRemainDay(remainDays.getGrantDetailAfter().get().getRemainDays()),
+			actualRemainAfter = new ActualSpecialLeaveRemain(
+					new ActualSpecialLeaveRemainDay(remainDays.getGrantDetailAfter().get().getRemainDays()),
 					Optional.empty());
 		}
 		
@@ -132,7 +132,7 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 		
 		// 実特別休暇
 		domain.actualSpecial = new ActualSpecialLeave(
-				(actualRemainAfter != null && (actualRemainAfter.getDays().v() != 0 || actualRemainAfter.getTime().isPresent()) ? actualRemainAfter : actualRemainBefore),
+				(actualRemainAfter != null ? actualRemainAfter : actualRemainBefore),
 				actualRemainBefore,
 				new SpecialLeaveUseNumber(
 						actualUseNumberDays,
@@ -171,7 +171,7 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 		
 		// 特別休暇
 		domain.specialLeave = new SpecialLeave(
-				(specialRemainAfter != null &&  (specialRemainAfter.getDays().v() != 0 || specialRemainAfter.getTime().isPresent()) ? specialRemainAfter : specialRemainBefore),
+				(specialRemainAfter != null ? specialRemainAfter : specialRemainBefore),
 				specialRemainBefore,
 				new SpecialLeaveUseNumber(
 						specialUseNumberDays,

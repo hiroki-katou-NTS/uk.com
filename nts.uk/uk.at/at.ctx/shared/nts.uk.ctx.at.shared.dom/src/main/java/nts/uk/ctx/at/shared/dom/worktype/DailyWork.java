@@ -35,14 +35,14 @@ public class DailyWork extends DomainObject { // 1日の勤務
 	// 午後
 	private WorkTypeClassification afternoon;
 
-	public boolean isHalfDayAnnualOrSpecialHoliday() {
+	public boolean isAnnualOrSpecialHoliday() {
 		if(this.workTypeUnit == WorkTypeUnit.OneDay) {
-			return false;
+			return isAnnualOrSpecialHoliday(oneDay);
 		}
-		return isHalfDayAnnualOrSpecialHoliday(afternoon) || isHalfDayAnnualOrSpecialHoliday(morning);
+		return isAnnualOrSpecialHoliday(afternoon) || isAnnualOrSpecialHoliday(morning);
 	}
 	
-	private boolean isHalfDayAnnualOrSpecialHoliday(WorkTypeClassification halfDay) {
+	private boolean isAnnualOrSpecialHoliday(WorkTypeClassification halfDay) {
 		return halfDay.isAnnualLeave() || halfDay.isSpecialHoliday();
 	}
 	/**
@@ -184,6 +184,20 @@ public class DailyWork extends DomainObject { // 1日の勤務
 			return this.oneDay.isHolidayWork();
 		} else if (this.workTypeUnit == WorkTypeUnit.MonringAndAfternoon) {
 			return morning.isHolidayWork() || afternoon.isHolidayWork();
+		}
+		return false;
+	}
+	
+	/**
+	 * 1日振休か判定する
+	 * @return　1日振休である
+	 */
+	public boolean isPause() {
+		if(this.getWorkTypeUnit().isOneDay()) {
+			return this.getOneDay().isPause();
+		}
+		else if(this.getWorkTypeUnit().isMonringAndAfternoon()) {
+			return this.getMorning().isPause() && this.getAfternoon().isPause();
 		}
 		return false;
 	}

@@ -1,12 +1,13 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord;
 
+/*import nts.arc.time.GeneralDate;*/
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.ReflectInformationResult;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.WorkChangeCommonReflectPara;
 
 @Stateless
 public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
@@ -21,7 +22,6 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 		if (!checkReflect) {
 			return ReflectInformationResult.CHECKFALSE;
 		}
-		boolean isReflect = true;
 		//事前事後区分を取得
 		if(recordInfor.getAppInfor().getPrePostAtr() == PrePostAtr.PREDICT) {
 			//申請種類
@@ -41,20 +41,20 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 				return reflectRecord.holidayWorkReflectRecord(holidayworkData, true)
 						? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
 			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.WORK_CHANGE_APPLICATION) {
-				CommonReflectPara workChangeData = appRecordInfor.getWorkchangeInfor();
+				WorkChangeCommonReflectPara workChangeData = appRecordInfor.getWorkchangeInfor();
 				return reflectRecord.workChangeReflectRecord(workChangeData, true)
 						? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
 			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION) {
 				CommonReflectPara absenceLeaveData = appRecordInfor.getAbsenceLeaveAppInfor();
 				CommonReflectPara recruitmentData = appRecordInfor.getRecruitmentInfor();
+				boolean kaf011 = true;
 				if(absenceLeaveData != null) {
-					return reflectRecord.absenceLeaveReflectRecord(absenceLeaveData, true)
-							? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
+					kaf011 = reflectRecord.absenceLeaveReflectRecord(absenceLeaveData, true);
 				}
 				if(recruitmentData != null) {
-					return reflectRecord.recruitmentReflectRecord(recruitmentData, true)
-							? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
+					kaf011 = reflectRecord.recruitmentReflectRecord(recruitmentData, true);
 				}
+				return kaf011 ?  ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
 			}
 		} else {
 			if(recordInfor.getAppInfor().getAppType() == ApplicationType.OVER_TIME_APPLICATION) {		
@@ -62,24 +62,27 @@ public class WorkRecordReflectServiceImpl implements WorkRecordReflectService{
 				//return reflectRecord.overtimeReflectRecord(appRecordInfor.getOvertimeInfor(), false);
 			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION) {
 				GobackReflectPara gobackpara = appRecordInfor.getGobackInfor();
-				isReflect = reflectRecord.gobackReflectRecord(gobackpara, false);
+				return  reflectRecord.gobackReflectRecord(gobackpara, false) 
+						? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
 			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.ABSENCE_APPLICATION) {
 				CommonReflectPara absenceInfor = appRecordInfor.getAbsenceInfor();
-				isReflect = reflectRecord.absenceReflectRecor(absenceInfor, false);
+				return reflectRecord.absenceReflectRecor(absenceInfor, false)
+						? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
 			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.WORK_CHANGE_APPLICATION) {
-				CommonReflectPara workChangeData = appRecordInfor.getWorkchangeInfor();
-				isReflect = reflectRecord.workChangeReflectRecord(workChangeData, false);
+				WorkChangeCommonReflectPara workChangeData = appRecordInfor.getWorkchangeInfor();
+				return reflectRecord.workChangeReflectRecord(workChangeData, false)
+						? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
 			} else if (recordInfor.getAppInfor().getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION) {
 				CommonReflectPara absenceLeaveData = appRecordInfor.getAbsenceLeaveAppInfor();
 				CommonReflectPara recruitmentData = appRecordInfor.getRecruitmentInfor();
+				boolean kaf011 = true;
 				if(absenceLeaveData != null) {
-					return reflectRecord.absenceLeaveReflectRecord(absenceLeaveData, false)
-							? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
+					kaf011 = reflectRecord.absenceLeaveReflectRecord(absenceLeaveData, false);
 				}
 				if(recruitmentData != null) {
-					return reflectRecord.recruitmentReflectRecord(recruitmentData, false)
-							? ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
+					kaf011 = reflectRecord.recruitmentReflectRecord(recruitmentData, false);
 				}
+				return kaf011 ?  ReflectInformationResult.DONE : ReflectInformationResult.NOTDONE;
 			}
 		}
 		

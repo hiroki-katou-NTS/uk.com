@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.command.dailyperform.audittrail;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,5 +19,7 @@ public class DailyCorrectionLogCommand {
 	private List<DailyItemValue> dailyNew;
 	
 	List<DailyRecordWorkCommand> commandNew;
+	
+	Map<Integer, DPAttendanceItemRC> lstAttendanceItem;
 
 }

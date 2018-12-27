@@ -2,15 +2,17 @@ module nts.uk.at.view.kmf004.j.viewmodel {
     export class ScreenModel {
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);;
         columns: KnockoutObservableArray<NtsGridListColumn> = ko.observableArray([
-            { headerText: nts.uk.resource.getText('KMF004_148'), key: 'code', width: 100, hidden: true },
-            { headerText: nts.uk.resource.getText('KMF004_148'), key: 'name', width: 320 }
+            { headerText: nts.uk.resource.getText('KMF004_101'), key: 'code', width: 100, hidden: true },
+            { headerText: nts.uk.resource.getText('KMF004_101'), key: 'name', width: 320 }
         ]);
         currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedCode: KnockoutObservable<number> = ko.observable(null);
 
         constructor() {
-            let self = this;
-            self.currentCodeList(nts.uk.ui.windows.getShared("KMF004_A_TARGET_ITEMS"));
+            let self = this,
+            dataScreenA = nts.uk.ui.windows.getShared("KMF004_A_TARGET_ITEMS");
+            self.currentCodeList(dataScreenA.currentCodeList);
+            self.selectedCode(dataScreenA.selectedCode)
             $("#data-items").focus();
         }
 
@@ -18,13 +20,13 @@ module nts.uk.at.view.kmf004.j.viewmodel {
             let self = this;
             let dfd = $.Deferred(),
                 param = {
-                    selectedNos: _.map(self.currentCodeList(), item => { return item.substring(1) })
+                    currentCode: self.selectedCode()
                 };
 
             service.findForScreenJ(param).done(function(data) {
-                self.items(_.map(data, (item) => {
+                self.items(_.sortBy(_.map(data, (item) => {
                     return new ItemModel(item);
-                }));
+                }), ['itemType','frameNo']));
                 dfd.resolve();
             }).fail(function(error) {
                 nts.uk.ui.dialog.alertError({ messageId: error.messageId });
@@ -54,10 +56,14 @@ module nts.uk.at.view.kmf004.j.viewmodel {
 
     class ItemModel {
         code: string;
+        frameNo: number;
+        itemType: string;
         name: string;
         constructor(data) {
             if (data) {
                 this.code = data.itemType+data.specialHdFrameNo;
+                this.itemType = data.itemType;
+                this.frameNo = data.specialHdFrameNo
                 this.name = data.specialHdFrameName;
             }
         }

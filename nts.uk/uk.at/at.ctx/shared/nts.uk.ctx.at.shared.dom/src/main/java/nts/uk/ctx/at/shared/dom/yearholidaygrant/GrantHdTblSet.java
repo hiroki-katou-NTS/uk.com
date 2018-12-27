@@ -146,7 +146,8 @@ public class GrantHdTblSet extends AggregateRoot {
 		GrantCondition target = null;
 		this.grantConditions.sort((a, b) -> a.getConditionNo() - b.getConditionNo());
 		for (val grantCondition : this.grantConditions){
-			if (grantCondition.getUseConditionAtr() == UseConditionAtr.NOT_USE) continue;
+			if (grantCondition.getUseConditionAtr() != UseConditionAtr.USE) continue;
+			if (grantCondition.getConditionValue() == null) break;
 			
 			// 基準値と付与条件．条件値を比較
 			if (criteria >= grantCondition.getConditionValue().v().doubleValue()) {

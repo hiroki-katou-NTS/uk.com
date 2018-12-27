@@ -50,7 +50,6 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.RootType;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterOutput;
@@ -98,9 +97,6 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 	
 	@Inject
 	private ApprovalSettingRepository approvalSettingRepository;
-	
-	@Inject
-	private ApprovalRootStateRepository approvalRootStateRepository;
 	
 	@Override
 	public ApprovalRootContentOutput getApprovalRootOfSubjectRequest(String companyID, String employeeID, 
@@ -337,12 +333,12 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		
 		List<ApproverInfo> approvers = new ArrayList<>();
 		for (ConcurrentEmployeeImport emp : employeeList) {
-			/*StatusOfEmployment statusOfEmployment = employeeAdapter.getStatusOfEmployment(emp.getEmployeeId(), baseDate).getStatusOfEmployment();
+			StatusOfEmployment statusOfEmployment = employeeAdapter.getStatusOfEmployment(emp.getEmployeeId(), baseDate).getStatusOfEmployment();
 			if((statusOfEmployment==StatusOfEmployment.RETIREMENT)||
 					(statusOfEmployment==StatusOfEmployment.LEAVE_OF_ABSENCE)||
 					(statusOfEmployment==StatusOfEmployment.HOLIDAY)){
 				continue;
-			}*/
+			}
 			WorkplaceImport wkpIdOfEmp = wkApproverAdapter.findBySid(emp.getEmployeeId(), baseDate);
 			if (wkpId.equals(wkpIdOfEmp.getWkpId())) {
 				// truyền tạm approvalAtr = 1

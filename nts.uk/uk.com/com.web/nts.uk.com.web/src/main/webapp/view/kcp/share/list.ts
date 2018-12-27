@@ -165,11 +165,18 @@ module kcp.share.list {
          * in the select-all case, disableSelection is true. Else false
          */
         disableSelection?: boolean;
+
+        /**
+         * Select all item after reload.
+         */
+        isSelectAllAfterReload?: boolean;
         
         /**
          * when reload gridList, check to remove filter value
          */
         isRemoveFilterWhenReload?: boolean;
+        
+        backupSelectedCode?: any;
     }
     
     export class ClosureSelectionType {
@@ -263,6 +270,7 @@ module kcp.share.list {
         searchBoxId: string;
         disableSelection : boolean;
         componentOption: ComponentOption;
+        isSelectAllAfterReload: boolean;
         isRemoveFilterWhenReload: boolean;
         
         constructor() {
@@ -280,6 +288,8 @@ module kcp.share.list {
             // set random id to prevent bug caused by calling multiple component on the same page
             this.componentWrapperId = nts.uk.util.randomId();
             this.searchBoxId = nts.uk.util.randomId();
+            this.isSelectAllAfterReload = true;
+            disableSelection = false;
             this.disableSelection = false;
             this.isRemoveFilterWhenReload = true;
         }
@@ -322,6 +332,7 @@ module kcp.share.list {
             self.optionalColumnName = data.optionalColumnName;
             self.optionalColumnDatasource = data.optionalColumnDatasource;
             self.selectedClosureId = ko.observable(null);
+            self.isSelectAllAfterReload = _.isNil(data.isSelectAllAfterReload) ? false : data.isSelectAllAfterReload;
             self.disableSelection = data.disableSelection;
             if (data.isRemoveFilterWhenReload !== undefined) { 
                 self.isRemoveFilterWhenReload = data.isRemoveFilterWhenReload; 
@@ -390,11 +401,17 @@ module kcp.share.list {
                     }
 
                     // select all items in multi mode
-                    if (!_.isEmpty(self.itemList()) && self.isMultipleSelect) {
-                        const selectedValues = _.map(self.itemList(), item => self.listType == ListType.JOB_TITLE ? item.id : item.code);
+                    if (self.isSelectAllAfterReload && !_.isEmpty(self.itemList()) && self.isMultipleSelect) {
+                        let selectedValues = _.map(self.itemList(), item => self.listType == ListType.JOB_TITLE ? item.id : item.code);
                         self.selectedCodes(selectedValues);
                         gridList.ntsGridList("setSelectedValue", []);
                         gridList.ntsGridList("setSelectedValue", selectedValues);
+                        setTimeout(function() {
+                            let chk = gridList.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
+                            if (chk[0].getAttribute("data-chk") == "off") {
+                                chk.click();
+                            }
+                        }, 1);
                     }
                 });
             }
@@ -475,7 +492,7 @@ module kcp.share.list {
             });
             gridList.on('selectChange', evt => {
                 // scroll to top if select all
-                if (self.itemList().length == self.selectedCodes().length) {
+                if ((!_.isEmpty(self.selectedCodes())) && (self.itemList().length == self.selectedCodes().length)) {
                     gridList.igGrid("virtualScrollTo", '0px');
                 }
             });
@@ -994,6 +1011,13 @@ module kcp.share.list {
                     self.addAreadySettingAttr(data, self.alreadySettingList());
                 }
                 self.itemList(data);
+                let check = _.filter(data, (i: any) => { return i.code == self.componentOption.backupSelectedCode[0];});
+                if (check.length >0) {
+                    self.componentOption.selectedCode(self.componentOption.backupSelectedCode);
+                }
+                else {
+                    self.componentOption.selectedCode([]);
+                }
             })
         }
         
@@ -1050,6 +1074,7 @@ module kcp.share.list {
                 if (empList && empList.length > 0) {
                     // Find by employment codes.
                     nts.uk.request.ajax('com', servicePath.findEmploymentByCodes, empList).done(data => {
+                        data = _.sortBy(data,['code']);
                         dfd.resolve(data);
                     })
                     return dfd.promise();
@@ -1060,7 +1085,12 @@ module kcp.share.list {
         }
         
         export function findAllEmployments(): JQueryPromise<Array<UnitModel>>{
-            return nts.uk.request.ajax('com', servicePath.findEmployments);
+            let dfd = $.Deferred<Array<UnitModel>>();
+            nts.uk.request.ajax('com', servicePath.findEmployments).done((data: any) =>{
+                data =_.sortBy(data,['code']);
+                dfd.resolve(data);
+            });
+            return dfd.promise();
         }
         
         /**

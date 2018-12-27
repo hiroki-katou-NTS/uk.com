@@ -8,14 +8,9 @@ import java.util.List;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-
-import com.fasterxml.jackson.core.JsonParser;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import nts.arc.time.GeneralDateTime;
 
 /**

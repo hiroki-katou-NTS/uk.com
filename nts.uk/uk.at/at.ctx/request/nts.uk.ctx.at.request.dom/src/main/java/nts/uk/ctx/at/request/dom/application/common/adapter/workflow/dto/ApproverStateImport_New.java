@@ -19,4 +19,8 @@ public class ApproverStateImport_New {
 	private String representerID;
 	
 	private String representerName;
+	
+	private String approverEmail;
+	
+	private String representerEmail;
 }

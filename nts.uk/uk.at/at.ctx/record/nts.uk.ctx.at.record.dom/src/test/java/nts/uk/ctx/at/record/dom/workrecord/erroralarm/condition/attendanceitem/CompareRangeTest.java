@@ -12,105 +12,105 @@ public class CompareRangeTest {
 	public void checkRange_BetweenClose_True() {
 		CompareRange<Integer> range = createRange(RangeCompareType.BETWEEN_RANGE_CLOSED);
 		
-		assertTrue(range.checkRange(11, c -> c));
+		assertTrue(range.checkRange(11d, c -> Double.valueOf(c)));
 	}
 	
 	@Test
 	public void checkRange_BetweenClose_False() {
 		CompareRange<Integer> range = createRange(RangeCompareType.BETWEEN_RANGE_CLOSED);
 		
-		assertTrue(!range.checkRange(9, c -> c));
+		assertTrue(!range.checkRange(9d, c -> Double.valueOf(c)));
 	}
 	
 	@Test
 	public void checkRange_BetweenClose_False1() {
 		CompareRange<Integer> range = createRange(RangeCompareType.BETWEEN_RANGE_CLOSED);
 		
-		assertTrue(!range.checkRange(10, c -> c));
+		assertTrue(!range.checkRange(10d, c -> Double.valueOf(c)));
 	}
 	
 	@Test
 	public void checkRange_BetweenClose_False2() {
 		CompareRange<Integer> range = createRange(RangeCompareType.BETWEEN_RANGE_CLOSED);
 		
-		assertTrue(!range.checkRange(30, c -> c));
+		assertTrue(!range.checkRange(30d, c -> Double.valueOf(c)));
 	}
 	
 	@Test
 	public void checkRange_BetweenClose_False3() {
 		CompareRange<Integer> range = createRange(RangeCompareType.BETWEEN_RANGE_CLOSED);
 		
-		assertTrue(!range.checkRange(40, c -> c));
+		assertTrue(!range.checkRange(40d, c -> Double.valueOf(c)));
 	}
 	
 	@Test
 	public void checkRange_BetweenOpen_True() {
 		CompareRange<Integer> range = createRange(RangeCompareType.BETWEEN_RANGE_OPEN);
 		
-		assertTrue(range.checkRange(11, c -> c));
+		assertTrue(range.checkRange(11d, c -> Double.valueOf(c)));
 	}
 	
 	@Test
 	public void checkRange_BetweenOpen_True1() {
 		CompareRange<Integer> range = createRange(RangeCompareType.BETWEEN_RANGE_OPEN);
 		
-		assertTrue(range.checkRange(10, c -> c));
+		assertTrue(range.checkRange(10d, c -> Double.valueOf(c)));
 	}
 	
 	@Test
 	public void checkRange_BetweenOpen_False1() {
 		CompareRange<Integer> range = createRange(RangeCompareType.BETWEEN_RANGE_OPEN);
 		
-		assertTrue(!range.checkRange(9, c -> c));
+		assertTrue(!range.checkRange(9d, c -> Double.valueOf(c)));
 	}
 	
 	@Test
 	public void checkRange_BetweenOpen_True2() {
 		CompareRange<Integer> range = createRange(RangeCompareType.BETWEEN_RANGE_OPEN);
 		
-		assertTrue(range.checkRange(30, c -> c));
+		assertTrue(range.checkRange(30d, c -> Double.valueOf(c)));
 	}
 	
 	@Test
 	public void checkRange_BetweenOpen_False3() {
 		CompareRange<Integer> range = createRange(RangeCompareType.BETWEEN_RANGE_OPEN);
 		
-		assertTrue(!range.checkRange(40, c -> c));
+		assertTrue(!range.checkRange(40d, c -> Double.valueOf(c)));
 	}
 	
 	@Test
 	public void checkRange_OutClose_false() {
 		CompareRange<Integer> range = createRange(RangeCompareType.OUTSIDE_RANGE_CLOSED);
 		
-		assertTrue(!range.checkRange(11, c -> c));
+		assertTrue(!range.checkRange(11d, c -> Double.valueOf(c)));
 	}
 	
 	@Test
 	public void checkRange_OutClose_false1() {
 		CompareRange<Integer> range = createRange(RangeCompareType.OUTSIDE_RANGE_CLOSED);
 		
-		assertTrue(!range.checkRange(10, c -> c));
+		assertTrue(!range.checkRange(10d, c -> Double.valueOf(c)));
 	}
 	
 	@Test
 	public void checkRange_OutClose_True() {
 		CompareRange<Integer> range = createRange(RangeCompareType.OUTSIDE_RANGE_CLOSED);
 		
-		assertTrue(range.checkRange(9, c -> c));
+		assertTrue(range.checkRange(9d, c -> Double.valueOf(c)));
 	}
 	
 	@Test
 	public void checkRange_OutClose_false2() {
 		CompareRange<Integer> range = createRange(RangeCompareType.OUTSIDE_RANGE_CLOSED);
 		
-		assertTrue(!range.checkRange(30, c -> c));
+		assertTrue(!range.checkRange(30d, c -> Double.valueOf(c)));
 	}
 	
 	@Test
 	public void checkRange_OutClose_True1() {
 		CompareRange<Integer> range = createRange(RangeCompareType.OUTSIDE_RANGE_CLOSED);
 		
-		assertTrue(range.checkRange(40, c -> c));
+		assertTrue(range.checkRange(40d, c -> Double.valueOf(c)));
 	}
 	
 
@@ -119,35 +119,35 @@ public class CompareRangeTest {
 	public void checkRange_OutOpen_false() {
 		CompareRange<Integer> range = createRange(RangeCompareType.OUTSIDE_RANGE_OPEN);
 		
-		assertTrue(!range.checkRange(11, c -> c));
+		assertTrue(!range.checkRange(11d, c -> Double.valueOf(c)));
 	}
 	
 	@Test
 	public void checkRange_OutOpen_True() {
 		CompareRange<Integer> range = createRange(RangeCompareType.OUTSIDE_RANGE_OPEN);
 		
-		assertTrue(range.checkRange(10, c -> c));
+		assertTrue(range.checkRange(10d, c -> Double.valueOf(c)));
 	}
 	
 	@Test
 	public void checkRange_OutOpen_True2() {
 		CompareRange<Integer> range = createRange(RangeCompareType.OUTSIDE_RANGE_OPEN);
 		
-		assertTrue(range.checkRange(9, c -> c));
+		assertTrue(range.checkRange(9d, c -> Double.valueOf(c)));
 	}
 	
 	@Test
 	public void checkRange_OutOpen_True3() {
 		CompareRange<Integer> range = createRange(RangeCompareType.OUTSIDE_RANGE_OPEN);
 		
-		assertTrue(range.checkRange(30, c -> c));
+		assertTrue(range.checkRange(30d, c -> Double.valueOf(c)));
 	}
 	
 	@Test
 	public void checkRange_OutOpen_True4() {
 		CompareRange<Integer> range = createRange(RangeCompareType.OUTSIDE_RANGE_OPEN);
 		
-		assertTrue(range.checkRange(40, c -> c));
+		assertTrue(range.checkRange(40d, c -> Double.valueOf(c)));
 	}
 	
 	private CompareRange<Integer> createRange(RangeCompareType type){

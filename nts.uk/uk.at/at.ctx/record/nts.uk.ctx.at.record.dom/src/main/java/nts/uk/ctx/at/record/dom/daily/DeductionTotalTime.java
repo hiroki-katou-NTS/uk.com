@@ -10,8 +10,11 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  */
 @Value
 public class DeductionTotalTime {
+	//合計時間
 	private TimeWithCalculation totalTime;
+	//所定内合計時間
 	private TimeWithCalculation withinStatutoryTotalTime;
+	//所定外合計時間
 	private TimeWithCalculation excessOfStatutoryTotalTime;
 	
 	/**

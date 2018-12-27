@@ -50,6 +50,7 @@ module nts.uk.at.view.kwr006.a {
             // start variable of CCG001
             ccg001ComponentOption: GroupOption;
             // end variable of CCG001
+
             constructor() {
                 let self = this;
                 self.monthlyWorkScheduleConditionModel = new MonthlyWorkScheduleConditionModel();
@@ -75,7 +76,7 @@ module nts.uk.at.view.kwr006.a {
                 self.isDialog = ko.observable(true);
                 self.isShowNoSelectRow = ko.observable(false);
                 self.isMultiSelect = ko.observable(true);
-                self.isShowWorkPlaceName = ko.observable(false);
+                self.isShowWorkPlaceName = ko.observable(true);
                 self.isShowSelectAllButton = ko.observable(false);
                 self.employeeList = ko.observableArray<UnitModel>([]);
 
@@ -122,13 +123,14 @@ module nts.uk.at.view.kwr006.a {
                     isMultiSelect: self.isMultiSelect(),
                     listType: ListType.EMPLOYEE,
                     employeeInputList: self.employeeList,
-                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    selectType: SelectType.SELECT_ALL,
                     selectedCode: self.multiSelectedCode,
                     isDialog: self.isDialog(),
                     isShowNoSelectRow: self.isShowNoSelectRow(),
                     alreadySettingList: self.alreadySettingList,
                     isShowWorkPlaceName: self.isShowWorkPlaceName(),
                     isShowSelectAllButton: self.isShowSelectAllButton(),
+                    isSelectAllAfterReload: true,
                     tabindex: 5,
                     maxRows: 17
                 };
@@ -139,16 +141,17 @@ module nts.uk.at.view.kwr006.a {
                     showEmployeeSelection: false,
                     showQuickSearchTab: true,
                     showAdvancedSearchTab: true,
-                    showBaseDate: true,
-                    showClosure: false,
-                    showAllClosure: false,
-                    showPeriod: false,
-                    periodFormatYM: false,
+                    showBaseDate: false,
+                    showClosure: true,
+                    showAllClosure: true,
+                    showPeriod: true,
+                    periodFormatYM: true,
 
                     /** Required parameter */
                     baseDate: moment().toISOString(),
-                    periodStartDate: moment().toISOString(),
-                    periodEndDate: moment().toISOString(),
+//                    periodStartDate: moment().toISOString(),
+//                    periodEndDate: moment().toISOString(),
+                    dateRangePickerValue: self.datepickerValue,
                     inService: true,
                     leaveOfAbsence: true,
                     closed: true,
@@ -173,14 +176,20 @@ module nts.uk.at.view.kwr006.a {
                     * @param: data: the data return from CCG001
                     */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                        
+                        //画面項目「A1_7」「A1_8」を更新する
+                        self.datepickerValue().startDate = moment(data.periodStart).format("YYYY/MM");
+                        self.datepickerValue().endDate = moment(data.periodEnd).format("YYYY/MM");
+                        self.datepickerValue.valueHasMutated();
                         self.employeeList.removeAll();
                         const result = data.listEmployee
-                            .filter(f => !_.isEmpty(f.workplaceId))
+//                            .filter(f => !_.isEmpty(f.workplaceId))
                             .map(item => {
                                 return {
                                     id: item.employeeId,
                                     code: item.employeeCode,
-                                    name: item.employeeName
+                                    name: item.employeeName,
+                                    workplaceName: item.workplaceName
                                 };
                             });
                         self.employeeList(result);
@@ -191,21 +200,12 @@ module nts.uk.at.view.kwr006.a {
             public startPage(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 let self = this;
-                $.when(self.loadListOutputItemMonthlyWorkSchedule(), self.loadPeriod()).done(() => {
-                    if (_.isEmpty(self.itemListCodeTemplate())) {
-                        self.loadAuthorityOfEmploymentForm().done(hasAuthority => {
-                            if (hasAuthority) {
-                                self.openScreenC();
-                            } else {
-                                nts.uk.ui.dialog.alertError({ messageId: 'Msg_1141' })
-                                    .then(() => nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml"));
-                            }
-                        });
-                        dfd.resolve();
-                    } else {
+                
+                var getCurrentLoginerRole = service.getCurrentLoginerRole().done((role: any) => {
+                    self.enableBtnConfigure(role.employeeCharge);
+                });
+                $.when(self.loadListOutputItemMonthlyWorkSchedule(), self.loadPeriod(), getCurrentLoginerRole).done(() => {
                         self.loadWorkScheduleOutputCondition().done(() => dfd.resolve());
-                    }
-                    
                 });
                 return dfd.promise();
             }
@@ -213,6 +213,10 @@ module nts.uk.at.view.kwr006.a {
             public executeBindingComponent(): void {
                 let self = this;
 
+                //re-set value of component
+                //対象期間：画面項目「A1_7とA1_8」にセットされている期間
+                self.ccg001ComponentOption.periodStartDate =  self.datepickerValue().startDate;
+                self.ccg001ComponentOption.periodEndDate =  self.datepickerValue().endDate;
                 // start component CCG001
                 // start component KCP005
                 $.when($('#ccgcomponent').ntsGroupComponent(self.ccg001ComponentOption),
@@ -399,14 +403,11 @@ module nts.uk.at.view.kwr006.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 service.findAllOutputItemMonthlyWorkSchedule().done(data => {
-                    self.itemListCodeTemplate(_.map(data, item => new ItemModel(item.itemCode, item.itemName)));
+                    let datas = _.sortBy(data, item=> item.itemCode);
+                    self.itemListCodeTemplate(_.map(datas, item => new ItemModel(item.itemCode, item.itemName)));
                     dfd.resolve();
                 });
                 return dfd.promise();
-            }
-
-            private loadAuthorityOfEmploymentForm(): JQueryPromise<boolean> {
-                return service.getExistAuthority();
             }
 
             private loadPeriod(): JQueryPromise<void> {

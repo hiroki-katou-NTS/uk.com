@@ -19,8 +19,6 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
-import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -31,7 +29,6 @@ import nts.uk.ctx.at.shared.pub.worktime.predset.PredetemineTimeSettingPub;
 import nts.uk.ctx.at.shared.pub.worktime.predset.PredeterminedTimeExport;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.FlexShortage;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthParent;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQueryProcessor;
@@ -39,13 +36,14 @@ import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyRes
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyMultiQuery;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class FlexInfoDisplay {
 	
-	@Inject
-	private WorkingConditionService workingConditionService;
+//	@Inject
+//	private WorkingConditionService workingConditionService;
 	
 	@Inject
 	private CheckShortageFlex checkShortageFlex;
@@ -87,7 +85,7 @@ public class FlexInfoDisplay {
 		 }
 		 //TODO 対応するドメインモデル「月別実績の勤怠時間」を取得する
 		Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
-				.findByEmploymentCD(companyId, getEmploymentCode(companyId, new DateRange(null, baseDate), employeeId));
+				.findByEmploymentCD(companyId, getEmploymentCode(companyId, baseDate, employeeId));
 		List<MonthlyModifyResult> results = new ArrayList<>();
 		FlexShortage dataMonth = new FlexShortage();
 		List<WorkingConditionItem> workConditions = new ArrayList<>();
@@ -155,10 +153,9 @@ public class FlexInfoDisplay {
 		return true;
 	}
 	
-	private String getEmploymentCode( String companyId, DateRange dateRange, String sId) {
+	private String getEmploymentCode( String companyId, GeneralDate dateRange, String sId) {
 		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(companyId, sId, dateRange);
-		String employmentCode = employment == null ? "" : employment.getEmploymentCode();
-		return employmentCode;
+		return employment == null ? "" : employment.getEmploymentCode();
 	}
 	
 	private void mapValue(List<ItemValue> items, FlexShortage dataMonth){

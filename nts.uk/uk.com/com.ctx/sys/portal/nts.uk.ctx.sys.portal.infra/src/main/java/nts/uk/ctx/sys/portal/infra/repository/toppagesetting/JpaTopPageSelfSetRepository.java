@@ -23,8 +23,7 @@ import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CjpmtJobPosition;
  */
 @Stateless
 public class JpaTopPageSelfSetRepository extends JpaRepository implements TopPageSelfSetRepository {
-	private static  final String SELECT_TOPPAGE_SELFSET = "SELECT c FROM CcgptTopPageSelfSet c"
-			+ " WHERE c.ccgptTopPageSelfSetPK.employeeId = :employeeId";
+	
 	private static final String SELECT_SINGLE = "SELECT c FROM CcgmtLayout c WHERE c.ccgmtLayoutPK.layoutID = :layoutID AND c.pgType = :pgType";
 	private static final String SELECT_JOB_POSITION = "SELECT c FROM CjpmtJobPosition c"
 			+ " WHERE c.employeeId = :employeeId" + " AND c.startDate <= :date" + " AND c.endDate >= :date";

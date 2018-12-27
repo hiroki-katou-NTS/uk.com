@@ -23,7 +23,8 @@ module nts.uk.at.view.kmk005.h {
                 isShowSelectButton: false,
                 baseDate: ko.observable(new Date()),
                 selectedWorkplaceId: undefined,
-                alreadySettingList: ko.observableArray([])
+                alreadySettingList: ko.observableArray([]),                
+                systemType: 2
             };
 
             model: KnockoutObservable<BonusPaySetting> = ko.observable(new BonusPaySetting({ id: '', name: '' }));
@@ -39,7 +40,7 @@ module nts.uk.at.view.kmk005.h {
                 tree.alreadySettingList.removeAll();
 
                 model.wid.subscribe(x => {
-                    let data: Array<any> = flat($('#tree-grid')['getDataList'](), 'childs'),
+                    let data: Array<any> = flat(_.isFunction($('#tree-grid')['getDataList']) ? $('#tree-grid')['getDataList']() : [] || [], 'childs'),
                         item = _.find(data, m => m.workplaceId == x);
 
                     if (item) {

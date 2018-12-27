@@ -221,8 +221,8 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		// 代行申請かをチェックする
 		// TODO
 		// ３６時間の上限チェック(新規登録)
-		List<AppTimeItem> appTimeItems = overTimeInput.stream().map(x -> {
-			return new AppTimeItem(x.getApplicationTime().v(), x.getFrameNo());
+		List<AppTimeItem> appTimeItems = overTimeInput.stream().filter(x -> x != null && x.getApplicationTimeValue()!=null).collect(Collectors.toList()).stream().map(x -> {
+			return new AppTimeItem(x.getApplicationTimeValue(), x.getFrameNo());
 		}).collect(Collectors.toList());
 		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkRegister(companyId, employeeId, appDate,
 				ApplicationType.OVER_TIME_APPLICATION, appTimeItems);
@@ -252,7 +252,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 				.getAppOvertimeDetailById(companyId, appId);
 		// ３６時間の上限チェック(照会)
 		List<AppTimeItem> appTimeItems = overTimeInput.stream().map(x -> {
-			return new AppTimeItem(x.getApplicationTime().v(), x.getFrameNo());
+			return new AppTimeItem(x.getApplicationTimeValue(), x.getFrameNo());
 		}).collect(Collectors.toList());
 		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkUpdate(companyId, appOvertimeDetailOpt,
 				employeeId, ApplicationType.OVER_TIME_APPLICATION, appTimeItems);
@@ -383,7 +383,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.OVER_TIME_APPLICATION.value);
 		if (overtimeRestAppCommonSet.isPresent()) {
 			// 残業休出申請共通設定.事前表示区分＝表示する
-			if (overtimeRestAppCommonSet.get().getPreDisplayAtr().equals(UseAtr.USE)) {
+			if (overtimeRestAppCommonSet.get().getPreExcessDisplaySetting().equals(UseAtr.USE)) {
 				// 表示する:Trueを返す
 				return true;
 			}

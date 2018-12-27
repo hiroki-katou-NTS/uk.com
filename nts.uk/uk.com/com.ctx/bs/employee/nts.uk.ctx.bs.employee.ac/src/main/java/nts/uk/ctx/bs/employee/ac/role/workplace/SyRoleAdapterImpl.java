@@ -7,6 +7,7 @@ package nts.uk.ctx.bs.employee.ac.role.workplace;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.access.role.SyRoleAdapter;
 import nts.uk.ctx.bs.employee.dom.access.role.WorkplaceIDImport;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
@@ -30,11 +31,11 @@ public class SyRoleAdapterImpl implements SyRoleAdapter {
 	 * findListWkpIdByRoleId(java.lang.Integer)
 	 */
 	@Override
-	public WorkplaceIDImport findListWkpIdByRoleId(Integer systemType) {
+	public WorkplaceIDImport findListWkpIdByRoleId(Integer systemType, GeneralDate baseDate) {
 
 		WorkplaceIDImport workplaceIDImport = new WorkplaceIDImport();
 
-		WorkplaceIdExport workplaceIdExport = roleExportRepo.findWorkPlaceIdByRoleId(systemType);
+		WorkplaceIdExport workplaceIdExport = roleExportRepo.findWorkPlaceIdByRoleId(systemType, baseDate);
 		workplaceIDImport.setIsAllEmp(workplaceIdExport.getIsAllEmp());
 		workplaceIDImport.setListWorkplaceIds(workplaceIdExport.getListWorkplaceIds());
 

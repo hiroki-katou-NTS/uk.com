@@ -206,7 +206,7 @@ module nts.uk.at.view.kal003.a.tab {
          */
         private showDialogKal003B(workRecordExtractingCondition: model.WorkRecordExtractingCondition, rowId: number) {
             let self = this;
-            $(".nameAlarmDaily").ntsError("clear");
+            $(".nameAlarmDailyM").ntsError("clear");
             let sendData = ko.toJS(workRecordExtractingCondition);
             //sendData = shareutils.convertArrayOfWorkRecordExtractingConditionToJS(sendData, workRecordExtractingCondition);
             sendData = { data: shareutils.convertArrayOfWorkRecordExtractingConditionToJS(sendData, workRecordExtractingCondition), category: self.category() };

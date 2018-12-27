@@ -11,13 +11,13 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.AddSubHdManagementService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ItemDays;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -96,7 +96,7 @@ public class PayoutManagementDataService {
 		Optional<GeneralDate> closureDate = this.getClosureDate(closureId, processYearMonth);
 		if (pickUp) {
 			if (this.checkDateClosing(payMana.getPayoutDate().getDayoffDate().get(), closureDate, closureId)) {
-				errors.add("Msg_740");
+				errors.add("Msg_1435");
 			}
 			if (this.checkInfoPayMana(payMana.getCID(), payMana.getSID(), payMana.getPayoutDate().getDayoffDate().orElse(null)) 
 					|| this.checkInfoSubPayMana(payMana.getCID(), payMana.getSID(), payMana.getPayoutDate().getDayoffDate().orElse(null))) {
@@ -177,17 +177,17 @@ public class PayoutManagementDataService {
 	private List<String> checkOffHolidate(GeneralDate restDate,GeneralDate workDate,GeneralDate splitDate, Optional<GeneralDate> closureDate, int closureId,Boolean split, Boolean pickUp) {
 		List<String> errors = new ArrayList<String>();
 		if(checkDateClosing(restDate,closureDate,closureId)) {
-			errors.add("Msg_744");
+			errors.add("Msg_1436");
 		}
 		if(pickUp && restDate.equals(workDate)) {
 			errors.add("Msg_729_SubMana");
 		}
 		if(split) {
 			if(restDate.equals(splitDate)) {
-				errors.add("Msg_744_Split");
+				errors.add("Msg_1437");
 			}
 			if(checkDateClosing(splitDate,closureDate,closureId)){
-				errors.add("Msg_744_Split");
+				errors.add("Msg_1438");
 			}
 			if(pickUp && splitDate.equals(workDate)) {
 				errors.add("Msg_729_Split");

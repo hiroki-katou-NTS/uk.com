@@ -22,6 +22,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumb
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaManagerImport;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
+import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleError;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleExport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
@@ -71,10 +72,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Override
 	public SpecialLeaveInfor getSpecialLeaveInfor(String workTypeCode) {
 		SpecialLeaveInfor specialLeaveInfor = new SpecialLeaveInfor();
-		boolean relationFlg = false;
-		boolean mournerDisplayFlg = false;
-		boolean displayRelationReasonFlg = false;
-		int maxDayRelate = 0;
+//		boolean relationFlg = false;
+//		boolean mournerDisplayFlg = false;
+//		boolean displayRelationReasonFlg = false;
+//		int maxDayRelate = 0;
 		//指定した勤務種類に特別休暇に当てはまるかチェックする
 		
 		return specialLeaveInfor;
@@ -101,10 +102,15 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		//INPUT．休暇種類をチェックする(check INPUT. phân loại holidays)
 		if(hdAppType.equals(HolidayAppType.ANNUAL_PAID_LEAVE)){//INPUT．休暇種類が年休
 			//計画年休の上限チェック(check giới hạn trên của plan annual holidays)
-			boolean check = planVacationRuleExport.checkMaximumOfPlan(cID, sID, workTypeCD, new DatePeriod(sDate, eDate));
-			if(check){
-				//Msg_1345を表示
-				throw new BusinessException("Msg_1345");
+			List<PlanVacationRuleError> check = planVacationRuleExport.checkMaximumOfPlan(cID, sID, workTypeCD, new DatePeriod(sDate, eDate));
+			if(!check.isEmpty()){
+				if(check.contains(PlanVacationRuleError.OUTSIDEPERIOD)) {
+					//Msg_1345を表示
+					throw new BusinessException("Msg_1453");	
+				} else {
+					throw new BusinessException("Msg_1345");
+				}
+				
 			}
 		}
 	}
@@ -274,11 +280,11 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			//・会社ID＝ログイン会社ID
 //			・社員ID＝申請者社員ID
 //			・集計開始日＝締め開始日
-//			・集計終了日＝締め開始日＋２年
+//			・集計終了日＝締め開始日.AddYears(1).AddDays(-1)
 //			・モード＝その他モード
 //			・基準日＝申請開始日
 //			・上書きフラグ＝false
-			AbsRecMngInPeriodParamInput paramInput = new AbsRecMngInPeriodParamInput(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(2)), 
+			AbsRecMngInPeriodParamInput paramInput = new AbsRecMngInPeriodParamInput(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
 					baseDate, false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 			AbsRecRemainMngOfInPeriod subVaca = absRertMngInPeriod.getAbsRecMngInPeriod(paramInput);
 			//振休残数 ← 残日数　（アルゴリズム「期間内の振出振休残数を取得する」のoutput）
@@ -291,11 +297,11 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			//・会社ID＝ログイン会社ID
 //			・社員ID＝申請者社員ID
 //			・集計開始日＝締め開始日
-//			・集計終了日＝締め開始日＋２年
+//			・集計終了日＝締め開始日.AddYears(1).AddDays(-1)
 //			・モード＝その他モード
 //			・基準日＝申請開始日
 //			・上書きフラグ＝false
-			BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(2)), 
+			BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
 					false, baseDate, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 			BreakDayOffRemainMngOfInPeriod subHd = breakDayOffMngInPeriod.getBreakDayOffMngInPeriod(inputParam);
 			//代休残数 ← 残日数　（アルゴリズム「期間内の代休残数を取得する」のoutput）
@@ -327,7 +333,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			yearRemain = year.getAnnualLeaveRemainNumberExport() == null ? null : 
 				year.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantPreDay();
 		}
-		return new NumberOfRemainOutput(yearRemain, subHdRemain, subVacaRemain, stockRemain);
+		return NumberOfRemainOutput.init(yearRemain, subHdRemain, subVacaRemain, stockRemain);
 	}
 	
 }

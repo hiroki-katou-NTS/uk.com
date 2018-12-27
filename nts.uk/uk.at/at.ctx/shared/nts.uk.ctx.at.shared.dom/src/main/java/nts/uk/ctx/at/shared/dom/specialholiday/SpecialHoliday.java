@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.shared.dom.specialholiday;
 
+import java.util.Collections;
+
 import lombok.AllArgsConstructor;
-import lombok.Data;
+//import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.specialholiday.event.SpecialHolidayDomainEvent;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.SpecialLeaveRestriction;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantRegular;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantPeriodic;
@@ -18,7 +21,8 @@ import nts.uk.shr.com.primitive.Memo;
  */
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class SpecialHoliday extends AggregateRoot {
 
 	/** 会社ID */
@@ -103,5 +107,8 @@ public class SpecialHoliday extends AggregateRoot {
 				new Memo(memo));
 	}
 	
+	public TargetItem getTargetItem() {
+		return targetItem != null ? targetItem : new TargetItem(Collections.emptyList(), Collections.emptyList());
+	}
 	
 }

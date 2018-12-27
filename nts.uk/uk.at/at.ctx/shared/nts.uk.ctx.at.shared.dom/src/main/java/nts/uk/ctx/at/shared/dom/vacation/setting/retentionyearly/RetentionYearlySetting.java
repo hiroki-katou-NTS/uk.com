@@ -11,12 +11,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 /**
  * The Class RetentionYearlySetting.
  */
-
-/**
- * Gets the leave as work days.
- *
- * @return the leave as work days
- */
+// 積立年休設定
 @Getter
 public class RetentionYearlySetting extends AggregateRoot {
 	

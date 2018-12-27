@@ -45,11 +45,18 @@ public class DivergenceReasonSelectFinder {
 		}
 
 		// Convert domain to dto
-		return reasonList.stream().map(e -> {
+		List<DivergenceReasonSelectDto> result = reasonList.stream().map(e -> {
 			DivergenceReasonSelectDto dto = new DivergenceReasonSelectDto();
 			e.saveToMemento(dto);
 			return dto;
 		}).collect(Collectors.toList());
+		//sort list by reason code
+		result.sort((DivergenceReasonSelectDto o1,DivergenceReasonSelectDto o2) ->{ 
+			Integer code1 = Integer.parseInt(o1.getDivergenceReasonCode());
+			Integer code2 = Integer.parseInt(o2.getDivergenceReasonCode());
+			return code1 - code2;
+			});
+		return result;
 	}
 
 	/**

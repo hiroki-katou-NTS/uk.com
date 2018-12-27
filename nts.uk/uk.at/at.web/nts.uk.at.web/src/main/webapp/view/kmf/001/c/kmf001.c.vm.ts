@@ -203,7 +203,7 @@ module nts.uk.pr.view.kmf001.c {
                 command.annualPriority = self.enableAnnualVacation() ? self.selectedAnnualPriority() : dataBackup.annualPriority;
                 command.remainingNumberDisplay = self.enableAnnualVacation() ? self.selectedNumberRemainingYearly() : dataBackup.remainingNumberDisplay;
                 command.nextGrantDayDisplay = self.enableAnnualVacation() ? self.selectedNextAnunalVacation() : dataBackup.nextGrantDayDisplay;
-                command.yearlyOfDays = self.enableTimeSetting() ? self.yearlyOfNumberDays() : dataBackup.yearlyOfDays;
+                command.yearlyOfDays = self.enableAnnualVacation() ? self.yearlyOfNumberDays() : dataBackup.yearlyOfDays;
                 command.roundProcessCla = self.enableAnnualVacation() ? self.selectedRoundProcessCla() : dataBackup.roundProcessCla;
                 // Time Leave Setting
                 command.timeManageType = self.enableAnnualVacation() ? self.selectedTimeManagement() : dataBackup.timeManageType;
@@ -288,7 +288,7 @@ module nts.uk.pr.view.kmf001.c {
                     $('#max-grant-day').ntsEditor('validate');
                     $('#max-remaining-day').ntsEditor('validate');
                     $('#number-year-retain').ntsEditor('validate');
-                    if (self.enableTimeSetting()) $('#yearLy-number-days').ntsEditor('validate');
+                    if (self.enableAnnualVacation()) $('#yearLy-number-days').ntsEditor('validate');
                     if (self.enableTimeMaxNumberCompany() && (self.requiredTimeMaxNumberCompany()
                         || (!self.requiredTimeMaxNumberCompany() && self.timeMaxNumberCompany()))) {
                         $('#time-max-day-company').ntsEditor('validate');

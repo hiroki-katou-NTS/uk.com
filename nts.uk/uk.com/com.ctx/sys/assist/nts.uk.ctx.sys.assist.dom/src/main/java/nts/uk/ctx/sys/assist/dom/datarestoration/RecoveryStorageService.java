@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -24,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.assist.dom.category.Category;
 import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
@@ -85,6 +87,9 @@ public class RecoveryStorageService {
 	public static final String GET_CLS_KEY_QUERY = "getClsKeyQuery";
 
 	public static final String GET_FILED_KEY_UPDATE = "getFiledKeyUpdate";
+	
+	// fix bug #125405
+	public static final String GET_FILED_KEY_QUERY = "getFieldKeyQuery";
 
 	public static final String INDEX_HEADER = "indexUpdate";
 
@@ -174,7 +179,7 @@ public class RecoveryStorageService {
 	}
 
 	@Transactional(value = TxType.REQUIRES_NEW, rollbackOn = Exception.class)
-	public DataRecoveryOperatingCondition recoveryDataByEmployee(String dataRecoveryProcessId, String employeeCode,
+	public DataRecoveryOperatingCondition recoveryDataByEmployee(String dataRecoveryProcessId,
 			String employeeId, List<DataRecoveryTable> targetDataByCate, List<Target> listTarget) throws Exception {
 		
 		DataRecoveryOperatingCondition condition = DataRecoveryOperatingCondition.FILE_READING_IN_PROGRESS;
@@ -221,7 +226,7 @@ public class RecoveryStorageService {
 
 			try {
 				// 対象社員の日付順の処理
-				condition = crudDataByTable(dataRecoveryTable.getDataRecovery(), employeeId, employeeCode,
+				condition = crudDataByTable(dataRecoveryTable.getDataRecovery(), employeeId,
 						dataRecoveryProcessId, tableList, performDataRecovery, resultsSetting, true);
 			} catch (Exception e) {
 				// DELETE/INSERT error
@@ -240,7 +245,7 @@ public class RecoveryStorageService {
 	}
 
 	public DataRecoveryOperatingCondition crudDataByTable(List<List<String>> targetDataTable, String employeeId,
-			String employeeCode, String dataRecoveryProcessId, Optional<TableList> tableList,
+			String dataRecoveryProcessId, Optional<TableList> tableList,
 			Optional<PerformDataRecovery> performDataRecovery, List<String> resultsSetting, Boolean tableUse)
 			throws ParseException, NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
@@ -250,7 +255,7 @@ public class RecoveryStorageService {
 		List<String> targetDataHeader = targetDataTable.get(HEADER_CSV);
 		String V_FILED_KEY_UPDATE = null, TABLE_NAME = null, h_Date_Csv = null, dateSub = "";
 
-		HashMap<Integer, String> indexAndFiled = new HashMap<>();
+		HashMap<Integer, String> indexAndFiled = new HashMap<>();	
 		// search data by employee
 
 		if (tableList.isPresent()) {
@@ -388,7 +393,7 @@ public class RecoveryStorageService {
 			for (int i = 1; i < 11; i++) {
 				Method m1 = TableList.class.getMethod(GET_CLS_KEY_QUERY + i);
 				keyQuery = (Optional<Object>) m1.invoke(tableList.get());
-				Method m2 = TableList.class.getMethod(GET_FILED_KEY_UPDATE + i);
+				Method m2 = TableList.class.getMethod(GET_FILED_KEY_QUERY + i);
 				filedKey = (Optional<Object>) m2.invoke(tableList.get());
 				if (keyQuery.isPresent()) {
 					if (keyQuery.get().equals(INDEX_CID_CSV)) {
@@ -419,7 +424,7 @@ public class RecoveryStorageService {
 		for (int i = 1; i < 11; i++) {
 			Method m1 = TableList.class.getMethod(GET_CLS_KEY_QUERY + i);
 			keyQuery = (Optional<Object>) m1.invoke(tableList.get());
-			Method m2 = TableList.class.getMethod(GET_FILED_KEY_UPDATE + i);
+			Method m2 = TableList.class.getMethod(GET_FILED_KEY_QUERY + i);
 			filedKey = (Optional<Object>) m2.invoke(tableList.get());
 			if (keyQuery.isPresent()) {
 				if (keyQuery.get().equals(INDEX_CID_CSV)) {
@@ -523,13 +528,27 @@ public class RecoveryStorageService {
 				if (dataRecovery.size() > 1) {
 					DataRecoveryTable targetData = new DataRecoveryTable(dataRecovery,
 							tableListByCategory.getTables().get(j).getInternalFileName());
-					targetDataByCate.add(targetData);
+					targetDataByCate.add(targetData);							
 				}
 			}
 
 			// 対象社員コード＿ID
 			List<EmployeeDataReInfoImport> employeeInfos = empDataMngRepo
 					.findByIdsEmployee(new ArrayList<String>(hashId));
+			
+			// fix bug cho trường hợp retore từ màn hình cmf005 - start
+			// Trường hợp này list employeeInfos lấy dữ liệu từ table BSYMT_EMP_DTA_MNG_INFO bị rỗng, do đã bị xóa từ màn cmf005.
+			// Nên list nhân viên tôi sẽ lấy ra từ file excel.
+			if(employeeInfos.size() != hashId.size()){
+				List<String> listSidHasData =  employeeInfos.stream().map(i ->i.getEmployeeId()).collect(Collectors.toList());
+				List<String> listSid        =  new ArrayList<String>(hashId);
+				for (int i = 0; i < listSid.size(); i++) {
+					if(!listSidHasData.contains(listSid.get(i))){
+						employeeInfos.add(new EmployeeDataReInfoImport("", "", listSid.get(i),"", GeneralDateTime.now(), "", ""));
+					}
+				}
+			}
+			// - end
 
 			// check employeeId in Target of PreformDataRecovery
 			List<Target> listTarget = performDataRecoveryRepository.findByDataRecoveryId(dataRecoveryProcessId);
@@ -544,8 +563,7 @@ public class RecoveryStorageService {
 				// 対象社員データ処理
 
 				try {
-					condition = self.recoveryDataByEmployee(dataRecoveryProcessId,
-							employeeDataMngInfoImport.getEmployeeCode(), employeeDataMngInfoImport.getEmployeeId(),
+					condition = self.recoveryDataByEmployee(dataRecoveryProcessId,employeeDataMngInfoImport.getEmployeeId(),
 							targetDataByCate, listTarget);
 				} catch (Exception e) {
 					errorCode = e.getMessage();
@@ -700,7 +718,7 @@ public class RecoveryStorageService {
 			Optional<PerformDataRecovery> performDataRecovery = performDataRecoveryRepository
 					.getPerformDatRecoverById(dataRecoveryProcessId);
 
-			condition = this.crudDataByTable(targetDataRecovery, null, null, dataRecoveryProcessId, tableList,
+			condition = this.crudDataByTable(targetDataRecovery, null, dataRecoveryProcessId, tableList,
 					performDataRecovery, resultsSetting, false);
 
 		}

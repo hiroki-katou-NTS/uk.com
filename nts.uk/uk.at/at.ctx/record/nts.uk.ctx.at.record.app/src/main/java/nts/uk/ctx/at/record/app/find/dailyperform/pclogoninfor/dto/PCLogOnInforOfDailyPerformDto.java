@@ -4,11 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.Data;
-import nts.arc.layer.ws.json.serializer.GeneralDateDeserializer;
-import nts.arc.layer.ws.json.serializer.GeneralDateSerializer;
+import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
@@ -22,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 @AttendanceItemRoot(rootName = ItemConst.DAILY_PC_LOG_INFO_NAME)
 public class PCLogOnInforOfDailyPerformDto extends AttendanceItemCommon {
 
@@ -88,6 +87,6 @@ public class PCLogOnInforOfDailyPerformDto extends AttendanceItemCommon {
 	}
 
 	private TimeWithDayAttr toWorkStamp(Integer time){
-		return time == null ? TimeWithDayAttr.THE_PRESENT_DAY_0000 : new TimeWithDayAttr(time);
+		return time == null ? null : new TimeWithDayAttr(time);
 	}
 }

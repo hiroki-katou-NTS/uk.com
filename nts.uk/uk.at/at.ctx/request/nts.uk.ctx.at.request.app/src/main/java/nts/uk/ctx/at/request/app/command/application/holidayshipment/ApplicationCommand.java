@@ -14,5 +14,7 @@ public class ApplicationCommand {
 	private String employeeID;
 
 	private Long appVersion;
+	
+	private Integer remainDays;
 
 }

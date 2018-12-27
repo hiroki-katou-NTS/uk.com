@@ -90,7 +90,7 @@ module nts.uk.at.view.kmk002.a {
             atrDataSource: EnumConstantDto[];
 
             // function
-            getOptItemNoAbove: () => Array<number>;
+            getExcludedOptItems: () => Array<number>;
 
             // flag
             hasChanged: boolean;
@@ -138,6 +138,13 @@ module nts.uk.at.view.kmk002.a {
                 // init subscribe
                 this.initSubscribe();
 
+            }
+
+            /**
+             * Check performance atr
+             */
+            public isDaily(): boolean {
+                return this.performanceAtr() == 1;
             }
 
             /**
@@ -271,9 +278,17 @@ module nts.uk.at.view.kmk002.a {
                     }
                 });
 
+                // update unit stash value if not exists
+                self.unit.subscribe(value => {
+                    if (_.isEmpty(self.optionalItemDtoStash.unit)) {
+                        self.optionalItemDtoStash.unit = value;
+                    }
+                });
+
                 // Event on optionalItemAtr value changed
                 self.optionalItemAtr.subscribe(value => {
-
+                    
+                    self.unit(value == 0 ? '' : self.optionalItemDtoStash.unit);
                     // if value change because of select new optional item
                     // or new value == value in stash
                     // then do nothing
@@ -492,7 +507,7 @@ module nts.uk.at.view.kmk002.a {
                 f.getSymbolById = self.getSymbolById.bind(self);
                 f.setApplyFormula = self.setApplyFormula.bind(self);
                 f.getSelectableFormulas = self.getSelectableFormulas.bind(self);
-                f.getOptItemNoAbove = self.getOptItemNoAbove.bind(self);
+                f.getExcludedOptItems = self.getExcludedOptItems.bind(self);
 
                 // Set order
                 f.orderNo(order);
@@ -763,13 +778,15 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 let dto: OptionalItemDto = <OptionalItemDto>{};
 
-                if (self.usageAtr() == 0) {
+                if (!self.isUsed()) {
                     // get original data from stash
                     dto = jQuery.extend(true, {}, self.optionalItemDtoStash);
 
                     // set updated name & useAtr
                     dto.usageAtr = self.usageAtr();
                     dto.optionalItemName = self.optionalItemName();
+                    dto.optionalItemAtr = self.optionalItemAtr();
+                    dto.unit = self.unit();
 
                     // return dto
                     return dto;
@@ -783,7 +800,7 @@ module nts.uk.at.view.kmk002.a {
                 dto.empConditionAtr = self.empConditionAtr();
                 dto.performanceAtr = self.performanceAtr();
                 dto.calcResultRange = self.calcResultRange.toDto(self.optionalItemDtoStash.calcResultRange);
-                dto.unit = self.enableUnit() ? self.unit() : self.optionalItemDtoStash.unit;
+                dto.unit = self.unit();
                 dto.formulas = self.calcFormulas().map(item => item.toDto());
 
                 return dto;
@@ -854,7 +871,7 @@ module nts.uk.at.view.kmk002.a {
                     formula.getSymbolById = self.getSymbolById.bind(self);
                     formula.setApplyFormula = self.setApplyFormula.bind(self);
                     formula.getSelectableFormulas = self.getSelectableFormulas.bind(self);
-                    formula.getOptItemNoAbove = self.getOptItemNoAbove.bind(self);
+                    formula.getExcludedOptItems = self.getExcludedOptItems.bind(self);
 
                     // convert dto to viewmodel
                     formula.fromDto(item);
@@ -1209,6 +1226,9 @@ module nts.uk.at.view.kmk002.a {
                 // call webservice to save optional item
                 service.saveOptionalItem(command)
                     .done(() => {
+                        // update stash
+                        self.optionalItem.optionalItemDtoStash = _.cloneDeep(command);
+
                         // reload optional item list.
                         self.loadOptionalItemHeaders();
 
@@ -1234,7 +1254,7 @@ module nts.uk.at.view.kmk002.a {
 
                 // useAtr == not used
                 // skip all check except input name
-                if (self.optionalItem.usageAtr() == 0) {
+                if (!self.optionalItem.isUsed()) {
                     // check has error.
                     if ($('.nts-editor').ntsError('hasError')) {
                         return false;
@@ -1314,7 +1334,7 @@ module nts.uk.at.view.kmk002.a {
                         OptionalItem.selectedFormulas([]);
 
                         // bind function
-                        self.optionalItem.getOptItemNoAbove = self.getOptItemNoAbove.bind(self);
+                        self.optionalItem.getExcludedOptItems = self.getExcludedOptItems.bind(self);
 
                         // convert dto to view model.
                         self.optionalItem.fromDto(res);
@@ -1334,12 +1354,14 @@ module nts.uk.at.view.kmk002.a {
             /**
              * Get list optional item above of selected optional item.
              */
-            private getOptItemNoAbove(): Array<number> {
+            private getExcludedOptItems(): Array<number> {
                 let self = this;
                 let selectedNo = self.selectedCode();
                 return self.optionalItemHeaders()
-                    .filter(item => item.performanceAtr == self.optionalItem.performanceAtr()
-                        && item.itemNo < selectedNo)
+                    .filter(item => item.itemNo >= selectedNo
+                        || item.usageAtr == 0
+                        // if performanceAtr is monthly, only exclude below optional item.
+                        || (self.optionalItem.isDaily() && item.performanceAtr != self.optionalItem.performanceAtr()))
                     .map(item => item.itemNo);
             }
         }
@@ -1386,7 +1408,7 @@ module nts.uk.at.view.kmk002.a {
             reCheckAll: () => void;
             getSymbolById: (id: string) => string;
             setApplyFormula: () => void;
-            getOptItemNoAbove: () => Array<number>;
+            getExcludedOptItems: () => Array<number>;
             getSelectableFormulas: (orderNo: number) => Array<FormulaDto>;
 
             // Enums datasource
@@ -1432,9 +1454,9 @@ module nts.uk.at.view.kmk002.a {
 
                 // Rounding
                 this.timeMonthlyRounding = ko.observable(0);
-                this.timeMonthlyUnit = ko.observable(1);
+                this.timeMonthlyUnit = ko.observable(0);
                 this.timeDailyRounding = ko.observable(0);
-                this.timeDailyUnit = ko.observable(1);
+                this.timeDailyUnit = ko.observable(0);
                 this.numberMonthlyRounding = ko.observable(0);
                 this.numberMonthlyUnit = ko.observable(0);
                 this.numberDailyRounding = ko.observable(0);
@@ -1748,11 +1770,11 @@ module nts.uk.at.view.kmk002.a {
                 let param = <ParamToC>{};
                 param.formulaId = dto.formulaId;
                 param.performanceAtr = self.performanceAtr();
-                param.formulaAtr = dto.formulaAtr;
+                param.formulaAtr = self.formulaAtr();
                 param.formulaAtrName = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_OPT_ITEM.formulaAtr);
                 param.formulaName = dto.formulaName;
                 param.itemSelection = dto.itemSelection;
-                param.selectableOptItemNos = self.getOptItemNoAbove();
+                param.excludedOptItemNos = self.getExcludedOptItems();
                 nts.uk.ui.windows.setShared('paramToC', param);
 
                 // Open dialog.
@@ -2019,7 +2041,7 @@ module nts.uk.at.view.kmk002.a {
             formulaAtrName: string;
             formulaName: string;
             itemSelection: ItemSelectionDto;
-            selectableOptItemNos: Array<number>;
+            excludedOptItemNos: Array<number>;
         }
         export interface ParamToD {
             formulaId: string;

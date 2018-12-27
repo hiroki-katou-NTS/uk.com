@@ -21,6 +21,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -458,29 +459,33 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 
 		// select root
 		cq.select(root);
+		
+		List<BsymtWkpConfigInfo> resultList = new ArrayList<>();
+		
+		CollectionUtil.split(wkpIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+			lstpredicateWhere.add(criteriaBuilder.equal(
+					root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.cid),
+					companyId));
+			lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
+					root.get(BsymtWkpConfigInfo_.bsymtWkpConfig).get(BsymtWkpConfig_.strD), baseDate));
+			lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
+					root.get(BsymtWkpConfigInfo_.bsymtWkpConfig).get(BsymtWkpConfig_.endD), baseDate));
+			lstpredicateWhere.add(
+					root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.wkpid).in(subList));
 
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.cid),
-				companyId));
-		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
-				root.get(BsymtWkpConfigInfo_.bsymtWkpConfig).get(BsymtWkpConfig_.strD), baseDate));
-		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
-				root.get(BsymtWkpConfigInfo_.bsymtWkpConfig).get(BsymtWkpConfig_.endD), baseDate));
-		lstpredicateWhere.add(
-				root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.wkpid).in(wkpIds));
-
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-		List<BsymtWkpConfigInfo> lstEntity = em.createQuery(cq).getResultList();
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+			
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
 
 		// check empty
-		if (lstEntity.isEmpty()) {
+		if (resultList.isEmpty()) {
 			return Collections.emptyList();
 		}
 
-		return lstEntity.stream()
+		return resultList.stream()
 				.map(entity -> new WorkplaceConfigInfo(
 						new JpaWorkplaceConfigInfoGetMemento(Arrays.asList(entity))))
 				.collect(Collectors.toList());
@@ -493,9 +498,64 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 	@Override
 	public List<WorkplaceConfigInfo> findByHistoryIdsAndWplIds(String companyId, List<String> historyIds,
 			List<String> workplaceIds) {
+		if (CollectionUtil.isEmpty(historyIds) || CollectionUtil.isEmpty(workplaceIds)) {
+			return Collections.emptyList();
+		}
+		
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<BsymtWkpConfigInfo> cq = criteriaBuilder.createQuery(BsymtWkpConfigInfo.class);
+		Root<BsymtWkpConfigInfo> root = cq.from(BsymtWkpConfigInfo.class);
+
+		// select root
+		cq.select(root);
+		
+		List<BsymtWkpConfigInfo> resultList = new ArrayList<>();
+		
+		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subHistorieIds -> {
+			CollectionUtil.split(workplaceIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subWorkplaceIds -> {
+				// add where
+				List<Predicate> lstpredicateWhere = new ArrayList<>();
+				lstpredicateWhere.add(criteriaBuilder
+						.equal(root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.cid), companyId));
+				
+				lstpredicateWhere.add(root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK)
+						.get(BsymtWkpConfigInfoPK_.historyId).in(subHistorieIds));
+				lstpredicateWhere.add(root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.wkpid)
+						.in(subWorkplaceIds));
+
+				cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+				
+				resultList.addAll(em.createQuery(cq).getResultList());
+			});
+			
+		});
+		
+		// check empty
+		if (resultList.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		return resultList.stream()
+				.map(entity -> new WorkplaceConfigInfo(new JpaWorkplaceConfigInfoGetMemento(Arrays.asList(entity))))
+				.collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.config.info.
+	 * WorkplaceConfigInfoRepository#findByHistoryIds(java.lang.String,
+	 * java.util.List)
+	 */
+	@Override
+	public List<WorkplaceConfigInfo> findByHistoryIds(String companyId, List<String> historyIds) {
 		if (CollectionUtil.isEmpty(historyIds)) {
 			return Collections.emptyList();
 		}
+
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -506,29 +566,28 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository
 		// select root
 		cq.select(root);
 
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.cid), companyId));
-		if (!CollectionUtil.isEmpty(historyIds)) {
+		List<BsymtWkpConfigInfo> resultList = new ArrayList<>();
+
+		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subHistorieIds -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+			lstpredicateWhere.add(criteriaBuilder.equal(
+					root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.cid), companyId));
+
 			lstpredicateWhere.add(root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK)
-					.get(BsymtWkpConfigInfoPK_.historyId).in(historyIds));
-		}
-		if (!CollectionUtil.isEmpty(workplaceIds)) {
-			lstpredicateWhere.add(root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.wkpid)
-					.in(workplaceIds));
-		}
+					.get(BsymtWkpConfigInfoPK_.historyId).in(subHistorieIds));
 
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
-		List<BsymtWkpConfigInfo> lstEntity = em.createQuery(cq).getResultList();
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
 
 		// check empty
-		if (lstEntity.isEmpty()) {
+		if (resultList.isEmpty()) {
 			return Collections.emptyList();
 		}
 
-		return lstEntity.stream()
+		return resultList.stream()
 				.map(entity -> new WorkplaceConfigInfo(new JpaWorkplaceConfigInfoGetMemento(Arrays.asList(entity))))
 				.collect(Collectors.toList());
 	}

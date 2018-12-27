@@ -23,6 +23,7 @@ module nts.uk.at.view.kbt002.g {
                 let self = this;
                 var dfd = $.Deferred();
                 var sharedData = nts.uk.ui.windows.getShared('inputDialogG');
+                sharedData.execLog.taskLogList = _.sortBy(sharedData.execLog.taskLogList, [function(o) { return o.taskId; }]);
                 if (sharedData) {
                     self.execLog = sharedData.execLog;
                     
@@ -120,10 +121,9 @@ module nts.uk.at.view.kbt002.g {
                         execItemCd : self.execLog.execItemCd,
                         isDaily : true,
                         nameObj : "承認ルート更新（日次）"  
-                    }; 
+                    };  
                     nts.uk.ui.windows.setShared('inputDialogI', { sharedObj:self.sharedObj});
-                    nts.uk.ui.windows.sub.modal("/view/kbt/002/i/index.xhtml").onClosed(function() {
-                    });
+                    self.modalLink ="/view/kbt/002/i/index.xhtml";
                 } else if (taskId == 7) { // 承認ルート更新（月次）
                     self.sharedObj = {
                         executionId : logHistory.execId,
@@ -132,8 +132,8 @@ module nts.uk.at.view.kbt002.g {
                         nameObj : "承認ルート更新（月次）"  
                     }; 
                     nts.uk.ui.windows.setShared('inputDialogI', { sharedObj:self.sharedObj});
-                    nts.uk.ui.windows.sub.modal("/view/kbt/002/i/index.xhtml").onClosed(function() {
-                    });
+                    self.modalLink ="/view/kbt/002/i/index.xhtml";
+                    
                 }
             }
         }

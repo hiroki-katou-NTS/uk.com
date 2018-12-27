@@ -346,7 +346,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 				.getOvertimeRestAppCommonSetting(companyId, ApplicationType.BREAK_TIME_APPLICATION.value);
 		if (overtimeRestAppCommonSet.isPresent()) {
 			// 残業休出申請共通設定.事前表示区分＝表示する  
-			if (overtimeRestAppCommonSet.get().getPreDisplayAtr().equals(UseAtr.USE)) {
+			if (overtimeRestAppCommonSet.get().getPreExcessDisplaySetting().equals(UseAtr.USE)) {
 				// 表示する:Trueを返す
 				return true;
 			}
@@ -401,7 +401,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 			return breakTimeInput;
 		}
 		//Imported(申請承認)「勤務実績」を取得する
-		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,appDate);
+		//RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,appDate);
 		if(breakTimeInput.getApplicationTime() != null && breakTimeInput.getApplicationTime() > 0){
 			breakTimeInput.setErrorCode(2);
 		}

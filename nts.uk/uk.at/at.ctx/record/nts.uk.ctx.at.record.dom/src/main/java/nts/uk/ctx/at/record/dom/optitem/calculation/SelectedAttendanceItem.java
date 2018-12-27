@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem.calculation;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
@@ -50,22 +52,23 @@ public class SelectedAttendanceItem extends DomainObject {
 	 * @param result
 	 * @return
 	 */
-	public Integer calc(ItemValue itemValue,Integer result) {
-		Integer value = 0;
+	public BigDecimal calc(ItemValue itemValue,BigDecimal result) {
+		BigDecimal value = BigDecimal.ZERO;
 		if(itemValue.getValue()!=null) {
 			if (itemValue.getValueType().isInteger()){
-				value = itemValue.value();
+				Integer intt = itemValue.value();
+				value = BigDecimal.valueOf(intt.doubleValue());
 			}
 			if (itemValue.getValueType().isDouble()){
 				Double doubleValue = itemValue.value();
-				value = doubleValue.intValue();
+				value = BigDecimal.valueOf(doubleValue);
 			}
 		}
 		switch(this.operator) {
 		case ADD:
-			return result + value;
+			return result.add(value);
 		case SUBTRACT:
-			return result + (value * (-1));
+			return result.add((value.negate()));
 		default:
 			throw new RuntimeException("unknown operator:"+operator);
 		}

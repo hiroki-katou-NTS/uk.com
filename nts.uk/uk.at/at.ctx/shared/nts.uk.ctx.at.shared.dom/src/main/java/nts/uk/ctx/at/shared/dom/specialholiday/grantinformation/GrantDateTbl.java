@@ -1,17 +1,19 @@
 package nts.uk.ctx.at.shared.dom.specialholiday.grantinformation;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+//import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+//import java.util.Set;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+//import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearMonthHoliday;
+//import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearMonthHoliday;
 
 /**
  * 特別休暇付与テーブル
@@ -21,7 +23,8 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearMonthHoliday;
  */
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class GrantDateTbl extends AggregateRoot {
 	/** 会社ID */
 	private String companyId;
@@ -41,7 +44,7 @@ public class GrantDateTbl extends AggregateRoot {
 	/** テーブル以降の固定付与をおこなう */
 	private boolean fixedAssign;
 	
-	/** テーブル以降の固定付与をおこなう */
+	/** テーブル以降の毎年付与日数 */
 	private Integer numberOfDays;
 	
 	/** 経過年数に対する付与日数 */

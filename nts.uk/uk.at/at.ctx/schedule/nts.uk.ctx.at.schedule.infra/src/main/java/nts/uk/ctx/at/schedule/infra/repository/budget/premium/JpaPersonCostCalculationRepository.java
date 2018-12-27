@@ -3,7 +3,7 @@ package nts.uk.ctx.at.schedule.infra.repository.budget.premium;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -61,14 +61,14 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 			+ "AND a.kmldpPremiumAttendancePK.historyID = :historyID "
 			+ "AND a.kmldpPremiumAttendancePK.displayNumber = :displayNumber "
 			+ "AND a.kmldpPremiumAttendancePK.attendanceID = :attendanceID ";
-	private static final String FIND_BY_DISPLAY_NUMBER;
-	static{
-		StringBuilder query = new StringBuilder();
-		query.append("SELECT a FROM KmlmtPersonCostCalculation a WHERE a.kmlmpPersonCostCalculationPK.companyID = :companyID");
-		query.append(" AND a.startDate <= :date");
-		query.append(" AND a.endDate >= :date");
-		FIND_BY_DISPLAY_NUMBER = query.toString();
-	}
+//	private static final String FIND_BY_DISPLAY_NUMBER;
+//	static{
+//		StringBuilder query = new StringBuilder();
+//		query.append("SELECT a FROM KmlmtPersonCostCalculation a WHERE a.kmlmpPersonCostCalculationPK.companyID = :companyID");
+//		query.append(" AND a.startDate <= :date");
+//		query.append(" AND a.endDate >= :date");
+//		FIND_BY_DISPLAY_NUMBER = query.toString();
+//	}
 	@Override
 	public void add(PersonCostCalculation personCostCalculation) {
 		this.commandProxy().insert(toPersonCostCalculationEntity(personCostCalculation));
@@ -279,7 +279,8 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 						premiumSetting.getCompanyID(), 
 						premiumSetting.getDisplayNumber()), 
 				premiumSetting.getName().v(), 
-				premiumSetting.getUseAtr().value);
+				premiumSetting.getUseAtr().value,
+				null);
 	}
 
 	@Override
@@ -325,8 +326,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 		query.append(" WHERE a.CID = ?");
 		query.append(" AND a.START_DATE <= ? AND a.END_DATE >= ?");
 		query.append(" and b.PREMIUM_NO in (" + itemNos.stream().map(s -> "?").collect(Collectors.joining(",")) + ")");
-		try {
-			PreparedStatement statement = this.connection().prepareStatement(query.toString());
+		try (PreparedStatement statement = this.connection().prepareStatement(query.toString())) {
 
 			statement.setString(1, companyID);
 			statement.setDate(2, Date.valueOf(date.end().localDate()));
@@ -391,9 +391,8 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 	}
 
 	private List<KmnmtPremiumItem> getPremiumItems(String comId) {
-		try {
-			PreparedStatement statement = this.connection().prepareStatement(
-					"select * FROM KMNMT_PREMIUM_ITEM where CID = ? ");
+		try (PreparedStatement statement = this.connection().prepareStatement(
+					"select * FROM KMNMT_PREMIUM_ITEM where CID = ? ")) {
 
 			statement.setString(1, comId);
 			List<KmnmtPremiumItem> krcdtTimeLeaveWorks = new NtsResultSet(statement.executeQuery()).getList(rec -> {

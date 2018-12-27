@@ -99,8 +99,10 @@ module nts.uk.at.view.kwr006.c {
                 const lstSwapLeft = _.sortBy(self.outputItemPossibleLst(), i => i.code);
                 let lstSwapRight = [];
                 if (lstDisplayedAttendance) {
-                    lstSwapRight = lstDisplayedAttendance.map(item => {
-                        return { code: self.mapIdCodeAtd[item.attendanceDisplay], name: item.attendanceName, id: item.attendanceDisplay };
+                    _.forEach(lstDisplayedAttendance, (item, index) => {
+                        if (item.attendanceName) {
+                            lstSwapRight.push({ code: self.mapIdCodeAtd[item.attendanceDisplay], name: item.attendanceName, id: item.attendanceDisplay });
+                        }
                     });
                 }
 
@@ -129,11 +131,18 @@ module nts.uk.at.view.kwr006.c {
                     const KWR006DOutput = nts.uk.ui.windows.getShared('KWR006_D');
                     if (!_.isNil(KWR006DOutput)) {
                         self.selectedCodeC2_3('');
-                        if (!_.isEmpty(KWR006DOutput.lstAtdChoose)) {
-                            _.forEach(KWR006DOutput.lstAtdChoose, (value) => {
+                        if (!_.isEmpty(KWR006DOutput.lstAtdChoose.lstDisplayTimeItem)) {
+                            _.forEach(KWR006DOutput.lstAtdChoose.lstDisplayTimeItem, (value) => {
                                 value.code = self.mapIdCodeAtd[value.id];
                             })
-                            const chosen = _.filter(self.outputItemPossibleLst(), item => _.some(KWR006DOutput.lstAtdChoose, atd => atd.itemDaily == item.code));
+                            KWR006DOutput.lstAtdChoose.lstDisplayTimeItem = _.sortBy(KWR006DOutput.lstAtdChoose.lstDisplayTimeItem, o => o.displayOrder);
+                            const chosen = _.filter(self.outputItemPossibleLst(), item => _.some(KWR006DOutput.lstAtdChoose.lstDisplayTimeItem, atd => atd.itemDaily == item.id));
+                            
+                            var sortArr = _.map(KWR006DOutput.lstAtdChoose.lstDisplayTimeItem, 'itemDaily');
+                            chosen = _.sortBy(chosen, function(item) {
+                                return sortArr.indexOf(item.id)
+                            });
+                            
                             if (!_.isEmpty(chosen)) {
                                 self.items(self.outputItemPossibleLst());
                                 self.currentCodeListSwap(chosen);
@@ -149,7 +158,14 @@ module nts.uk.at.view.kwr006.c {
 
                         self.C3_2_value(nts.uk.ui.windows.getShared('KWR006_D').codeCopy);
                         self.C3_3_value(nts.uk.ui.windows.getShared('KWR006_D').nameCopy);
-                        self.saveData();
+                        if (_.size(KWR006DOutput.lstAtdChoose.errorList)) {
+                            nts.uk.ui.dialog.alertError({ messageId: KWR006DOutput.lstAtdChoose.errorList }).then(() => {
+                                self.saveData();
+                            });
+                        }
+                        else {
+                            self.saveData();
+                        }
                     } else {
                         self.selectedCodeC2_3(self.storeCurrentCodeBeforeCopy());
                     }

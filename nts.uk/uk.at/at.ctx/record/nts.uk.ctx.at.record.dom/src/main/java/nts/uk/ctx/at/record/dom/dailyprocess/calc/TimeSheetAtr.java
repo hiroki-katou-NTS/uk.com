@@ -8,8 +8,8 @@ import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
  *
  */
 public enum TimeSheetAtr {
-	RECORD,
-	SCHEDULE;
+	RECORD,  //実績
+	SCHEDULE;//スケジュール
 	
 	/**
 	 * 予定時間帯から呼び出されたか判定する

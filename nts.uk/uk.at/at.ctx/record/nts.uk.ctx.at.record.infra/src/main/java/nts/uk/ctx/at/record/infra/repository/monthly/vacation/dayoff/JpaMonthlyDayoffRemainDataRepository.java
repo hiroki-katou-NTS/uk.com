@@ -17,8 +17,8 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyD
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainDataRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonRemain;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
 public class JpaMonthlyDayoffRemainDataRepository extends JpaRepository implements MonthlyDayoffRemainDataRepository{
@@ -79,14 +79,21 @@ public class JpaMonthlyDayoffRemainDataRepository extends JpaRepository implemen
 		
 		val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
 		
-		List<MonthlyDayoffRemainData> results = new ArrayList<>();
+		List<KrcdtMonRemain> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonRemain.class)
-					.setParameter("employeeIds", splitData)
-					.setParameter("yearMonths", yearMonthValues)
-					.getList(c -> c.toDomainMonthlyDayoffRemainData()));
+			CollectionUtil.split(yearMonthValues, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstYearMonth -> {
+				results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_MONTHS, KrcdtMonRemain.class)
+						.setParameter("employeeIds", splitData)
+						.setParameter("yearMonths", lstYearMonth)
+						.getList());
+			});
 		});
-		return results;
+		results.sort((o1, o2) -> {
+			int tmp = o1.getKrcdtMonRemainPk().getEmployeeId().compareTo(o2.getKrcdtMonRemainPk().getEmployeeId());
+			if (tmp != 0) return tmp;
+			return o1.getStartDate().compareTo(o2.getStartDate());
+		});
+		return results.stream().map(c -> c.toDomainMonthlyDayoffRemainData()).collect(Collectors.toList());
 	}
 	
 	@Override
@@ -116,12 +123,24 @@ public class JpaMonthlyDayoffRemainDataRepository extends JpaRepository implemen
 	@Override
 	public void remove(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
 		
-		this.commandProxy().remove(KrcdtMonRemain.class,
-				new KrcdtMonMergePk(
-						employeeId,
-						yearMonth.v(),
-						closureId.value,
-						closureDate.getClosureDay().v(),
-						(closureDate.getLastDayOfMonth() ? 1 : 0)));
+//		this.commandProxy().remove(KrcdtMonRemain.class,
+//				new KrcdtMonMergePk(
+//						employeeId,
+//						yearMonth.v(),
+//						closureId.value,
+//						closureDate.getClosureDay().v(),
+//						(closureDate.getLastDayOfMonth() ? 1 : 0)));
+		
+		// キー
+		val key = new KrcdtMonMergePk(
+				employeeId,
+				yearMonth.v(),
+				closureId.value,
+				closureDate.getClosureDay().v(),
+				(closureDate.getLastDayOfMonth() ? 1 : 0));
+		
+		// 削除
+		KrcdtMonRemain entity = this.getEntityManager().find(KrcdtMonRemain.class, key);
+		if (entity != null) entity.deleteDayOffRemainDayAndTimes();
 	}
 }

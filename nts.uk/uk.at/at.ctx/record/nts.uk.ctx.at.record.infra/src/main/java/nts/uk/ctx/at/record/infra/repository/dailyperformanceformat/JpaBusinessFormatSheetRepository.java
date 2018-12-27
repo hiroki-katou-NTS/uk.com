@@ -17,7 +17,7 @@ import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessFor
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessFormatSheetPK;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDaily;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaBusinessFormatSheetRepository extends JpaRepository implements BusinessFormatSheetRepository {
 
@@ -117,7 +117,7 @@ public class JpaBusinessFormatSheetRepository extends JpaRepository implements B
 			+ " AND c.krcmtBusinessTypeDailyPK.businessTypeCode  = :businessTypeCode"
 			+ " AND c.krcmtBusinessTypeDailyPK.sheetNo = :sheetNo ";
 	
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void deleteBusBySheetNo(String companyId, String businessTypeCode, BigDecimal sheetNo) {
 		this.commandProxy().remove(KrcmtBusinessFormatSheet.class,new KrcmtBusinessFormatSheetPK(

@@ -20,4 +20,11 @@ public class SpecialLeaveGrantUseDay extends HalfIntegerPrimitiveValue<SpecialLe
 	 */
 	private static final long serialVersionUID = 1L;
 
+	@Override
+	protected Double reviseRawValue(Double rawValue) {
+		if (rawValue == null) return super.reviseRawValue(rawValue);
+		if (rawValue > 9999.9) rawValue = 9999.9;
+		if (rawValue < 0.0) rawValue = 0.0;
+		return super.reviseRawValue(rawValue);
+	}
 }

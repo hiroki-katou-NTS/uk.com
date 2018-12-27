@@ -37,7 +37,22 @@ public enum PrimitiveValueDaily {
 	
 	DiverdenceReasonCode(14, "選択肢コード", "DiverdenceReasonCode"),
 	
-	TimeWithDayAttr(15, "時刻（日区分付き）", "TimeWithDayAttr");
+	TimeWithDayAttr(15, "時刻（日区分付き）", "TimeWithDayAttr"),
+	
+    MoneyDay(54, "日次任意金額", "AnyItemAmount"),
+	
+	MoneyMonth(55, "月次任意金額", "AnyAmountMonth"),
+	
+	TimeDay(56, "日次任意時間", "AnyItemTime"),
+	
+	TimeMonth(57, "月次任意時間", "AnyTimeMonth"),
+	
+	CountDay(58, "日次任意回数", "AnyItemTimes"),
+	
+	CountMonth(59, "月次任意回数", "AnyTimesMonth"),
+	
+	ReasonCode(60, "乖離理由コード", "DiverdenceReasonCode");
+	
 	
 	public final int value;
 	

@@ -33,7 +33,7 @@ public class SyScheduleJobTitleAdapterImpl implements SyJobTitleAdapter {
 	}
 
 	@Override
-	public Map<Pair<String, GeneralDate>, String> getJobTitleMapIdBaseDateName(String companyId, List<String> jobIds,
+	public Map<Pair<String, GeneralDate>, Pair<String,String>> getJobTitleMapIdBaseDateName(String companyId, List<String> jobIds,
 			List<GeneralDate> baseDates) {
 		return this.syJobTitlePub.getJobTitleMapIdBaseDateName(companyId, jobIds, baseDates);
 	}

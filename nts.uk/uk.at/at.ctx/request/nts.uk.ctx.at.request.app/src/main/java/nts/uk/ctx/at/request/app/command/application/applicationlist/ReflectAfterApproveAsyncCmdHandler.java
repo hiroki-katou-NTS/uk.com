@@ -12,6 +12,8 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.AppReflectManager;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.InformationSettingOfAppForReflect;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.InformationSettingOfEachApp;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class ReflectAfterApproveAsyncCmdHandler extends AsyncCommandHandler<List<String>>{
@@ -21,7 +23,8 @@ public class ReflectAfterApproveAsyncCmdHandler extends AsyncCommandHandler<List
 	
 	@Inject
 	private AppReflectManager appReflectManager;
-	
+	@Inject
+	private InformationSettingOfAppForReflect appSetting;
 	@Override
 	protected void handle(CommandHandlerContext<List<String>> context) {
 		List<String> lstID = context.getCommand();
@@ -35,7 +38,8 @@ public class ReflectAfterApproveAsyncCmdHandler extends AsyncCommandHandler<List
 				|| application.getAppType().equals(ApplicationType.WORK_CHANGE_APPLICATION)
 				|| application.getAppType().equals(ApplicationType.ABSENCE_APPLICATION)
 				|| application.getAppType().equals(ApplicationType.COMPLEMENT_LEAVE_APPLICATION)){
-				appReflectManager.reflectEmployeeOfApp(application);
+				InformationSettingOfEachApp reflectSetting = appSetting.getSettingOfEachApp();
+				appReflectManager.reflectEmployeeOfApp(application, reflectSetting);
 			}
 		}
 	}

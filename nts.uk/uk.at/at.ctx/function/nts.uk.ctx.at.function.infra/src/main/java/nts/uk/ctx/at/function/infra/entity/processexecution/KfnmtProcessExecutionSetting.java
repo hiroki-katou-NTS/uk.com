@@ -107,6 +107,27 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 	@Column(name = "ALARM_CODE")
 	public String alarmCode;
 	
+	/* メールを送信する(本人)*/
+	@Column(name = "MAIL_PRINCIPAL")
+	public Integer mailPrincipal;
+	
+	/* メールを送信する(管理者) */
+	@Column(name = "MAIL_ADMINISTRATOR")
+	public Integer mailAdministrator;
+	
+	/* 指定年*/
+	@Column(name = "DESIGNATED_YEAR")
+	public Integer designatedYear;
+	
+	/* 指定開始月日 */
+	@Column(name = "START_MONTHDAY")
+	public Integer startMonthDay;
+	
+	/* 指定終了月日*/
+	@Column(name = "END_MONTHDAY")
+	public Integer endMonthDay;
+	
+	
 	
 	
 	@OneToOne
@@ -126,7 +147,8 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 			int manualCorrection, int createEmployee, int recreateTransfer, int dailyPerfCls, int dailyPerfItem,
 			int midJoinEmployee, int reflectResultCls, int monthlyAggCls, int recreateTypeChangePerson,
 			int recreateTransfers, int appRouteUpdateAtr, Integer createNewEmp, int appRouteUpdateAtrMon, int alarmAtr,
-			String alarmCode) {
+			String alarmCode, Integer mailPrincipal, Integer mailAdministrator, Integer designatedYear, Integer startMonthDay, 
+			Integer endMonthDay) {
 		super();
 		this.kfnmtProcExecSetPK = kfnmtProcExecSetPK;
 		this.perScheduleCls = perScheduleCls;
@@ -150,7 +172,14 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 		this.appRouteUpdateAtrMon = appRouteUpdateAtrMon;
 		this.alarmAtr = alarmAtr;
 		this.alarmCode = alarmCode;
+		this.mailPrincipal = mailPrincipal;
+		this.mailAdministrator = mailAdministrator;
+		this.designatedYear = designatedYear;
+		this.startMonthDay = startMonthDay;
+		this.endMonthDay = endMonthDay;
 	}
+
+	
 
 	
 }

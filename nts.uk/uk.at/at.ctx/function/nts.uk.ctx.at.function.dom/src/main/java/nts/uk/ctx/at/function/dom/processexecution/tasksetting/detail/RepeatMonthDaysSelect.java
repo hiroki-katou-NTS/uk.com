@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail;
 
-import lombok.AllArgsConstructor;
+//import lombok.AllArgsConstructor;
 
 /**
  * 繰り返す日付

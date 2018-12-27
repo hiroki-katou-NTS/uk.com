@@ -128,7 +128,7 @@ module nts.uk.at.view.kfp001.c {
                     showClassification: true, // 分類条件
                     showJobTitle: true, // 職位条件
                     showWorktype: true, // 勤種条件
-                    isMutipleCheck: false, // 選択モード
+                    isMutipleCheck: true, // 選択モード
 
                     /** Return data */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {

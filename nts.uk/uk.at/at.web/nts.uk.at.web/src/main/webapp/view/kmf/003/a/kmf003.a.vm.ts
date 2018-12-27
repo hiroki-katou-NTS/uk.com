@@ -743,6 +743,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             nts.uk.ui.windows.setShared("KMF003_CONDITION_NO", data);
             
             if(conditionNo === 1) {
+                nts.uk.ui.windows.setShared("KMF003_DIALOG_TYPE", "A");
                 nts.uk.ui.windows.sub.modal("/view/kmf/003/b/index.xhtml").onClosed(() => {
                     var dataIsNotNull = nts.uk.ui.windows.getShared("KMF003_HAVE_DATA");
                     
@@ -775,7 +776,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                     nts.uk.ui.windows.setShared("KMF003_CANCEL_DATA", true);
                 });   
             } else {
-                nts.uk.ui.windows.sub.modal("/view/kmf/003/b1/index.xhtml").onClosed(() => {
+                nts.uk.ui.windows.setShared("KMF003_DIALOG_TYPE", "B");
+                nts.uk.ui.windows.sub.modal("/view/kmf/003/b/index.xhtml").onClosed(() => {
                     var dataIsNotNull = nts.uk.ui.windows.getShared("KMF003_HAVE_DATA");
                     
                     if(dataIsNotNull) {

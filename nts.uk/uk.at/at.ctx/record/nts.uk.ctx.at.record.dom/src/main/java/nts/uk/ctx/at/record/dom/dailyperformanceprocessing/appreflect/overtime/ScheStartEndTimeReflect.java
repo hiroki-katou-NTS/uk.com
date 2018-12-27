@@ -32,4 +32,15 @@ public interface ScheStartEndTimeReflect {
 	 * @return
 	 */
 	public boolean checkStartEndTimeReflect(String employeeId, GeneralDate datadata, Integer frameNo, String workTypeCode, OverTimeRecordAtr overTimeAtr, boolean isPre);
+	/**
+	 * 開始時刻を反映できるかチェックする
+	 * @param employeeId
+	 * @param datadata
+	 * @param frameNo
+	 * @param workTypeCode
+	 * @param overTimeAtr
+	 * @param isPre
+	 * @return
+	 */
+	public boolean checkRecordStartEndTimereflect(String employeeId, GeneralDate datadata, Integer frameNo, String workTypeCode, OverTimeRecordAtr overTimeAtr, boolean isPre);
 }

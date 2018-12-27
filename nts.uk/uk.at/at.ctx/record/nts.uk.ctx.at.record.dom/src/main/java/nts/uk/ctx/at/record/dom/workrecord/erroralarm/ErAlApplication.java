@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm;
 
-import java.math.BigDecimal;
+//import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.Getter;

@@ -66,11 +66,13 @@ public class AgreementMonthSetDomainServiceImpl implements AgreementMonthSetDoma
 		if(limitOneMonth.v() > 0 && agreementMonthSetting.getErrorOneMonth().v().compareTo(limitOneMonth.v()) > 0){
 			errors.add("Msg_59,KMK008_42,KMK008_44");
 		}
-		
+		Optional<AgreementMonthSetting> agreementMonth = this.agreementMonthSettingRepository.findByKey(agreementMonthSetting.getEmployeeId(), agreementMonthSetting.getYearMonthValue()); 
+		if(agreementMonth.isPresent()){
+			errors.add("Msg_61,KMK008_30");
+		}
 		if (errors.isEmpty()) {
 			this.agreementMonthSettingRepository.add(agreementMonthSetting);
 		}
-		
 		return errors;
 	}
 
@@ -110,7 +112,6 @@ public class AgreementMonthSetDomainServiceImpl implements AgreementMonthSetDoma
 		if(limitOneMonth.v() > 0 && agreementMonthSetting.getErrorOneMonth().v().compareTo(limitOneMonth.v()) > 0){
 			errors.add("Msg_59,KMK008_42,KMK008_44");
 		}
-		
 		if (errors.isEmpty()) {
 			// fix bug 100605
 			// this.agreementMonthSettingRepository.update(agreementMonthSetting);

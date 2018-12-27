@@ -41,17 +41,18 @@ import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTCalMed;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 時間外超過管理
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class ExcessOutsideWorkMng {
@@ -290,7 +291,8 @@ public class ExcessOutsideWorkMng {
 			// 時間外超過明細．丸め後合計時間に移送する
 			this.excessOutsideWorkDetail.setTotalTimeAfterRound(
 					aggrValue.getAggregateTotalWorkingTime(), regAndIrgTime, flexTime,
-					this.settingsByFlex.getFlexAggrSet(), this.companySets.getRoundingSet());
+					this.settingsByFlex.getFlexAggrSet(), this.companySets.getOutsideOTBDItems(),
+					this.companySets.getRoundingSet());
 			
 			// 月別実績の時間外超過に移送する
 			this.excessOutsideWork.setFromAggregateTime(
@@ -459,17 +461,20 @@ public class ExcessOutsideWorkMng {
 		val targetFlexExcessTime = this.askTargetFlexExcessTime(
 				datePeriod, procDate, aggregateTotalWorkingTime, flexTime);
 		
-		// 「時間外超過対象設定」を確認する
-		// ※　現状、固定的に、法定内フレックスを含む　計算とする。2018.5.11 shuichi_ishida
+		// 法定内フレックス時間を含めるか判断する
 		AttendanceTimeMonthWithMinus excessTimeUntilDay = new AttendanceTimeMonthWithMinus(0);
+		if (ExcessOutsideWorkMng.isIncludeLegalFlexTime(this.companySets.getOutsideOTBDItems())){
 			
-		// 法定外フレックスのみで当日までの超過時間を求める
-		//excessTimeUntilDay = this.askExcessTimeUntilDayOnlyillegalFlex(
-		//		targetFlexExcessTime, procDate, statutoryWorkingTimeMonth);
-		
-		// 法定内フレックスを含んで当日までの超過時間を求める
-		excessTimeUntilDay = this.askExcessTimeUntilDayIncludeLegalFlex(
-				targetFlexExcessTime, procDate, prescribedWorkingTimeMonth);
+			// 法定内フレックスを含んで当日までの超過時間を求める
+			excessTimeUntilDay = this.askExcessTimeUntilDayIncludeLegalFlex(
+					targetFlexExcessTime, procDate, prescribedWorkingTimeMonth);
+		}
+		else {
+			
+			// 法定外フレックスのみで当日までの超過時間を求める
+			excessTimeUntilDay = this.askExcessTimeUntilDayOnlyillegalFlex(
+					targetFlexExcessTime, procDate, statutoryWorkingTimeMonth);
+		}
 
 		// 前日までの超過時間を求める
 		AttendanceTimeMonthWithMinus excessTimeUntilPrevDay = new AttendanceTimeMonthWithMinus(0);
@@ -488,6 +493,27 @@ public class ExcessOutsideWorkMng {
 			val targetTimeSeries = flexExcessTime.get(procDate);
 			targetTimeSeries.addMinutesToFlexTimeInFlexTime(excessTimeOfDay.v());
 		}
+	}
+	
+	/**
+	 * 法定内フレックス時間を含めるか判断する
+	 * @return true:含める（法定内フレックスを含む）、false:含めない（法定外フレックスのみ）
+	 */
+	public static boolean isIncludeLegalFlexTime(List<OutsideOTBRDItem> outsideOTBDItems){
+
+		// 内訳項目一覧を取得
+		boolean isExistLegalFlex = false;
+		boolean isExistIllegalFlex = false;
+		for (val outsideOTBDItem : outsideOTBDItems){
+			for (val attendanceItemId : outsideOTBDItem.getAttendanceItemIds()){
+				if (attendanceItemId == AttendanceItemOfMonthly.FLEX_LEGAL_TIME.value) isExistLegalFlex = true;
+				if (attendanceItemId == AttendanceItemOfMonthly.FLEX_ILLEGAL_TIME.value) isExistIllegalFlex = true;
+			}
+		}
+		
+		// 法定内フレックス時間を含めるかどうか判断
+		if (isExistIllegalFlex == true && isExistLegalFlex == false) return false;
+		return true;
 	}
 	
 	/**
@@ -660,6 +686,9 @@ public class ExcessOutsideWorkMng {
 		if (this.workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
 			addSet = GetAddSet.get(this.workingSystem, PremiumAtr.PREMIUM, this.settingsByDefo.getHolidayAdditionMap());
 		}
+		if (addSet.getErrorInfo().isPresent()){
+			this.errorInfos.add(addSet.getErrorInfo().get());
+		}
 		
 		// 「期間．終了日」を処理日にする
 		GeneralDate procDate = this.procPeriod.end();
@@ -808,6 +837,9 @@ public class ExcessOutsideWorkMng {
 		
 		// 加算設定を取得する　（割増）
 		val addSet = GetAddSet.get(this.workingSystem, PremiumAtr.PREMIUM, this.settingsByDefo.getHolidayAdditionMap());
+		if (addSet.getErrorInfo().isPresent()){
+			this.errorInfos.add(addSet.getErrorInfo().get());
+		}
 		
 		// 「期間．終了日」を処理日にする
 		GeneralDate procDate = this.procPeriod.end();
@@ -834,10 +866,22 @@ public class ExcessOutsideWorkMng {
 	private void assignReverseTimeSeriesForConvenience(
 			FlexTimeOfMonthly flexTimeOfMonthly){
 
-		// フレックス超過対象時間を求める
-		int flexExcessTargetMinutes = flexTimeOfMonthly.getFlexExcessTime().v();
-		flexExcessTargetMinutes += flexTimeOfMonthly.getFlexCarryforwardTime().getFlexCarryforwardWorkTime().v();
-		AttendanceTimeMonthWithMinus flexExcessTargetTime = new AttendanceTimeMonthWithMinus(flexExcessTargetMinutes);
+		// 法定内フレックス時間を含めるか判断する
+		AttendanceTimeMonthWithMinus flexExcessTargetTime = new AttendanceTimeMonthWithMinus(0);
+		if (ExcessOutsideWorkMng.isIncludeLegalFlexTime(this.companySets.getOutsideOTBDItems())){
+			
+			// フレックス超過対象時間を求める（法定内フレックスを含む）
+			int flexExcessTargetMinutes = flexTimeOfMonthly.getFlexExcessTime().v();
+			flexExcessTargetMinutes += flexTimeOfMonthly.getFlexCarryforwardTime().getFlexCarryforwardWorkTime().v();
+			flexExcessTargetTime = new AttendanceTimeMonthWithMinus(flexExcessTargetMinutes);
+		}
+		else {
+			
+			// フレックス超過対象時間を求める（法定外フレックスのみ）
+			int flexExcessTargetMinutes = flexTimeOfMonthly.getFlexTime().getIllegalFlexTime().v();
+			flexExcessTargetMinutes += flexTimeOfMonthly.getFlexCarryforwardTime().getFlexCarryforwardWorkTime().v();
+			flexExcessTargetTime = new AttendanceTimeMonthWithMinus(flexExcessTargetMinutes);
+		}
 		
 		// 「期間．終了日」を処理日にする
 		GeneralDate procDate = this.procPeriod.end();
@@ -868,7 +912,19 @@ public class ExcessOutsideWorkMng {
 			// 内訳項目に設定されている項目の値を取得する
 			val totalTime = this.excessOutsideWorkDetail.getTotalTimeAfterRound();
 			AttendanceTimeMonth breakdownItemTime = new AttendanceTimeMonth(0);
+			boolean addedFlexExcessTime = false;	// フレックス超過時間を足したか
 			for (val attendanceItemId : outsideOTBDItem.getAttendanceItemIds()){
+				
+				// 法定内フレックス時間・法定外フレックス時間がある時、フレックス超過時間を1回だけ足す
+				if (attendanceItemId == AttendanceItemOfMonthly.FLEX_LEGAL_TIME.value ||
+					attendanceItemId == AttendanceItemOfMonthly.FLEX_ILLEGAL_TIME.value){
+					if (addedFlexExcessTime) continue;
+					breakdownItemTime = breakdownItemTime.addMinutes(
+							totalTime.getTimeOfAttendanceItemId(AttendanceItemOfMonthly.FLEX_EXCESS_TIME.value).v());
+					addedFlexExcessTime = true;
+					continue;
+				}
+				
 				breakdownItemTime = breakdownItemTime.addMinutes(
 						totalTime.getTimeOfAttendanceItemId(attendanceItemId).v());
 			}
@@ -908,7 +964,19 @@ public class ExcessOutsideWorkMng {
 				// 内訳項目に設定されている項目の値を取得する
 				val roundDiffTime = this.excessOutsideWorkDetail.getRoundDiffTime();
 				AttendanceTimeMonth breakdownItemTime = new AttendanceTimeMonth(0);
+				boolean addedFlexExcessTime = false;	// フレックス超過時間を足したか
 				for (val attendanceItemId : outsideOTBDItem.getAttendanceItemIds()){
+					
+					// 法定内フレックス時間・法定外フレックス時間がある時、フレックス超過時間を1回だけ足す
+					if (attendanceItemId == AttendanceItemOfMonthly.FLEX_LEGAL_TIME.value ||
+						attendanceItemId == AttendanceItemOfMonthly.FLEX_ILLEGAL_TIME.value){
+						if (addedFlexExcessTime) continue;
+						breakdownItemTime = breakdownItemTime.addMinutes(
+								roundDiffTime.getTimeOfAttendanceItemId(AttendanceItemOfMonthly.FLEX_EXCESS_TIME.value).v());
+						addedFlexExcessTime = true;
+						continue;
+					}
+					
 					breakdownItemTime = breakdownItemTime.addMinutes(
 							roundDiffTime.getTimeOfAttendanceItemId(attendanceItemId).v());
 				}
@@ -933,7 +1001,20 @@ public class ExcessOutsideWorkMng {
 			
 			// 内訳項目に設定されている項目の値を取得する
 			AttendanceTimeMonth breakdownItemTime = new AttendanceTimeMonth(0);
+			boolean addedFlexExcessTime = false;	// フレックス超過時間を足したか
 			for (val attendanceItemId : outsideOTBDItem.getAttendanceItemIds()){
+				
+				// 法定内フレックス時間・法定外フレックス時間がある時、フレックス超過時間を1回だけ足す
+				if (attendanceItemId == AttendanceItemOfMonthly.FLEX_LEGAL_TIME.value ||
+					attendanceItemId == AttendanceItemOfMonthly.FLEX_ILLEGAL_TIME.value){
+					if (addedFlexExcessTime) continue;
+					breakdownItemTime = breakdownItemTime.addMinutes(
+							this.excessOutsideWorkDetail.getTimeOfAttendanceItemId(
+									AttendanceItemOfMonthly.FLEX_EXCESS_TIME.value, procDate).v());
+					addedFlexExcessTime = true;
+					continue;
+				}
+				
 				breakdownItemTime = breakdownItemTime.addMinutes(
 						this.excessOutsideWorkDetail.getTimeOfAttendanceItemId(attendanceItemId, procDate).v());
 			}
@@ -973,5 +1054,17 @@ public class ExcessOutsideWorkMng {
 		
 		// 「内訳項目時間」を「時間外超過累積時間」に加算する
 		this.totalExcessOutside = this.totalExcessOutside.addMinutes(breakdownItemTime.v());
+	}
+	
+	/**
+	 * エラー情報の取得
+	 * @return エラー情報リスト
+	 */
+	public List<MonthlyAggregationErrorInfo> getErrorInfos(){
+		
+		List<MonthlyAggregationErrorInfo> results = new ArrayList<>();
+		results.addAll(this.errorInfos);
+		results.addAll(this.monthlyDetail.getErrorInfos());
+		return results;
 	}
 }

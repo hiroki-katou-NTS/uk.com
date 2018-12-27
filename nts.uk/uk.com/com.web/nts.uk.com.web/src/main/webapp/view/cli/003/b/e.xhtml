@@ -22,10 +22,12 @@
 						</tr>
 					</com:ko-if>
 					<com:ko-if bind="(isDisplayTarget() == true)">
-						<tr>
-							<td><div id="E1_4" data-bind="ntsFormLabel: {}">#{i18n.getText('CLI003_15')}</div></td>
-							<td><div id="E1_5" data-bind="text: dateCtoE" ></div></td>
-						</tr>
+						<com:ko-if bind="(displayTargetDate() == true)">
+							<tr>
+								<td><div id="E1_4" data-bind="ntsFormLabel: {}">#{i18n.getText('CLI003_15')}</div></td>
+								<td><div id="E1_5" data-bind="text: dateCtoE"></div></td>
+							</tr>
+						</com:ko-if>
 						<tr>
 							<td><div id="E1_6" data-bind="ntsFormLabel: {}">#{i18n.getText('CLI003_16')}</div></td>
 							<td><div id="E1_7" data-bind="text: targetNumber" ></div></td>

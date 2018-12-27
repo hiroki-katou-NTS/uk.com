@@ -19,4 +19,14 @@ public interface FrameNoAdapter {
 	 * @author anhnm
 	 */
 	List<FrameNoAdapterDto> getByAnyItem(int typeOfItem);
+
+	/**
+	 * Find by frame nos.
+	 *
+	 * @param frameNos the frame nos
+	 * @param typeOfItem the type of item
+	 * @param frameCategory the frame category
+	 * @return the list
+	 */
+	List<FrameNoAdapterDto> findByFrameNos(List<Integer> frameNos, int typeOfItem, int frameCategory);
 }

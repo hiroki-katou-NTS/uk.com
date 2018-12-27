@@ -1,5 +1,5 @@
 .div-line {
-	margin-bottom: 10px;
+	margin-bottom: 5px;
 }
 
 .container {
@@ -28,4 +28,7 @@
 .arrow-item {
 	width: 60px;
 	margin: 0 10px 0 10px;
+}
+#master-wrapper {
+	overflow: hidden;
 }

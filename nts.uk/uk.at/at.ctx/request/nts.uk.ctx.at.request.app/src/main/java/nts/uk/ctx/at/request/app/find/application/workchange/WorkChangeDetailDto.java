@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
+import nts.uk.ctx.at.request.app.find.application.common.dto.DataWorkDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.DetailedScreenPreBootModeDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.PrelaunchAppSettingDto;
 import nts.uk.ctx.at.request.dom.application.workchange.WorkChangeDetail;
@@ -49,6 +50,11 @@ public class WorkChangeDetailDto {
 	
 	boolean isTimeRequired;
 	
+	/**
+	 * 勤務就業ダイアログ用データ取得
+	 */
+	DataWorkDto dataWorkDto;
+	
 	public static WorkChangeDetailDto  formDomain(WorkChangeDetail domain){
 		return new WorkChangeDetailDto(AppWorkChangeDto.fromDomain(domain.getAppWorkChange()), 
 				ApplicationDto_New.fromDomain(domain.getApplication()), 
@@ -57,6 +63,8 @@ public class WorkChangeDetailDto {
 				PrelaunchAppSettingDto.convertToDto(domain.getPrelaunchAppSetting()),
 				domain.getDetailScreenInitModeOutput().getOutputMode().value,
 				domain.getWorkTypeCodes(), domain.getWorkTimeCodes(),
-				domain.isTimeRequired());
+				domain.isTimeRequired(),
+				DataWorkDto.fromDomain(domain.getDataWork())
+				);
 	}
 }

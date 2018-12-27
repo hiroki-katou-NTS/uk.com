@@ -144,7 +144,8 @@ module cmm001.a {
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.reject();
-                alert(error.message);
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId })
+                    .then(() => nts.uk.request.jump("/view/ccg/008/a/index.xhtml"));
             }).always(() => {
                 nts.uk.ui.block.clear();
             });
@@ -384,7 +385,8 @@ module cmm001.a {
         openEDialog() {
             let self = this;
             nts.uk.ui.windows.setShared('companyId', self.currentCompany().companyId());
-            nts.uk.ui.windows.sub.modal('/view/cmm/001/e/index.xhtml', { title: '', }).onClosed(function(): any {
+            nts.uk.ui.windows.setShared('companyName', self.currentCompany().companyName());
+            nts.uk.ui.windows.sub.modal('/view/cmm/001/e/index.xhtml', {title: '',}).onClosed(function (): any {
             })
         }
     }

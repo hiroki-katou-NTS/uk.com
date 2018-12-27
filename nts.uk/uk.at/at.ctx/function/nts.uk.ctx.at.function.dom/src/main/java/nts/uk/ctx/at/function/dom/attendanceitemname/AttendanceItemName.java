@@ -19,8 +19,8 @@ public class AttendanceItemName {
 
 	private int nameLineFeedPosition;
 
-	private int typeOfAttendanceItem;
+	private Integer typeOfAttendanceItem;
 
-	private int frameCategory;
+	private Integer frameCategory;
 
 }

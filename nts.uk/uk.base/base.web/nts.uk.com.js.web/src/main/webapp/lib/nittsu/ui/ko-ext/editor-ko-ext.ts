@@ -1,4 +1,4 @@
-﻿/// <reference path="../../reference.ts"/>
+/// <reference path="../../reference.ts"/>
 
 module nts.uk.ui.koExtentions {
     import validation = nts.uk.ui.validation;

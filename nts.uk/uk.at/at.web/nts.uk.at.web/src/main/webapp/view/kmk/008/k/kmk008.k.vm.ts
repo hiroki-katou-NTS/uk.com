@@ -62,12 +62,16 @@ module nts.uk.at.view.kmk008.k {
 
                 self.currentCodeSelect.subscribe(newValue => {
                     if (nts.uk.text.isNullOrEmpty(newValue)) return;
+                    
                     let newValueNum = Number(newValue.toString().replace("/", ""));
                     let itemSelect = _.find(self.listItemDataGrid(), item => { return item.yearOrYearMonthValue == newValueNum; });
                     self.currentSelectItem(new SettingModel(itemSelect, self.employeeId));
                     self.newMode(false);
                     self.updateEnable(true);
                     self.deleteEnable(true);
+                    setTimeout(function() {
+                       nts.uk.ui.errors.clearAll();
+                    }, 100);
                 });
 
             }
@@ -75,6 +79,9 @@ module nts.uk.at.view.kmk008.k {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                $('#txt-year-error-time').trigger("validate");
+                $('#txt-year-alarm-time').trigger("validate");
+                $('#txt-year').trigger("validate");
                 self.listItemDataGrid([]);
                 if (self.isYearMonth) {
                     new service.Service().getDetailYearMonth(self.employeeId).done(data => {
@@ -124,16 +131,23 @@ module nts.uk.at.view.kmk008.k {
                 self.currentSelectItem(new SettingModel(null, self.employeeId));
                 self.currentCodeSelect(null);
                 self.updateEnable(false);
+                $('input.nts-input').trigger("validate");
                 $("#txt-year").focus();
             }
 
             addOrUpdateClick() {
                 let self = this;
-                if (self.isUpdate) {
-                    self.updateData();
-                    return;
-                }
-                self.register();
+                $('input.nts-input').trigger("validate");
+                                
+                setTimeout(() => {
+                    if (!$('.nts-editor').ntsError("hasError")) {
+                        if (self.isUpdate) {
+                            self.updateData();
+                            return;
+                        } else
+                            self.register();
+                    }
+                }, 100);
             }
 
             register() {
@@ -151,12 +165,8 @@ module nts.uk.at.view.kmk008.k {
 //                    }).fail((res) => {
 //                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage(res.message));
 //                    });
-                    let updateParam = new AddUpdateMonthSettingModel(self.currentSelectItem());
-                    let command = {
-                        updateParam : updateParam,
-                        yearMonthValueOld : self.currentCodeSelect()
-                    }
-                    new service.Service().addAgreementMonthSetting(command).done(listError => {
+
+                    new service.Service().addAgreementMonthSetting(new AddUpdateMonthSettingModel(self.currentSelectItem())).done(listError => {
                             if (listError.length > 0) {
                                 let errorCode = _.split(listError[0], ',');
                                 nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [nts.uk.resource.getText(errorCode[1]), nts.uk.resource.getText(errorCode[2])] });
@@ -192,6 +202,7 @@ module nts.uk.at.view.kmk008.k {
                 if (self.currentSelectItem().yearOrYearMonthValue() == 0 || nts.uk.text.isNullOrEmpty(self.currentSelectItem().employeeId())) {
                     return;
                 }
+                
                 if (self.isYearMonth) {
 //                    new service.Service().updateAgreementMonthSetting(new AddUpdateMonthSettingModel(self.currentSelectItem())).done((res) => {
 //                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
@@ -200,7 +211,8 @@ module nts.uk.at.view.kmk008.k {
 //                    }).fail((res) => {
 //                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage(res.messageId, ['{#KMK008_42}', '{#KMK008_44}']));
 //                    });
-                   let specialHoliday = {
+
+                    let specialHoliday = {
                         employeeId: self.currentSelectItem().employeeId(),
                         yearMonthValue: self.currentSelectItem().yearOrYearMonthValue(),
                         errorOneMonth: self.currentSelectItem().errorOneYearOrYearMonth(),
@@ -215,7 +227,7 @@ module nts.uk.at.view.kmk008.k {
                                 return;
                             }
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                            self.reloadData(self.currentCodeSelect());
+                            self.reloadData(self.currentCodeSelect(), true);
 
                         });
                 } else {
@@ -226,14 +238,22 @@ module nts.uk.at.view.kmk008.k {
 //                    }).fail((res) => {
 //                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage(res.messageId, ['{#KMK008_42}', '{#KMK008_44}']));
 //                    });
-                    new service.Service().updateAgreementYearSetting(new AddUpdateYearSettingModel(self.currentSelectItem())).done(listError => {
+                    
+                    let data = {
+                        employeeId: self.currentSelectItem().employeeId(),
+                        yearValue: self.currentSelectItem().yearOrYearMonthValue(),
+                        errorOneYear: self.currentSelectItem().errorOneYearOrYearMonth(),
+                        alarmOneYear: self.currentSelectItem().alarmOneYearOrYearMonth(),
+                        yearMonthValueOld: self.currentCodeSelect()
+                    }
+                    new service.Service().updateAgreementYearSetting(data).done(listError => {
                             if (listError.length > 0) {
                                 let errorCode = _.split(listError[0], ',');
                                 nts.uk.ui.dialog.alertError({ messageId: errorCode[0], messageParams: [nts.uk.resource.getText(errorCode[1]), nts.uk.resource.getText(errorCode[2])] });
                                 return;
                             }
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                            self.reloadData(self.currentCodeSelect());
+                            self.reloadData(self.currentCodeSelect(), true);
 
                         });
                 }
@@ -339,14 +359,14 @@ module nts.uk.at.view.kmk008.k {
     }
 
     export class ShowListModel {
-        yearOrYearMonthValue: number;
-        errorOneYearOrYearMonth: number;
-        alarmOneYearOrYearMonth: number;
+        yearOrYearMonthValue: number ;
+        errorOneYearOrYearMonth: number= null;
+        alarmOneYearOrYearMonth: number= null;
         yearOrYearMonthFormat: string;
         constructor(yearOrYearMonthValue: number, errorOneYearOrYearMonth: number, alarmOneYearOrYearMonth: number) {
             this.yearOrYearMonthValue = yearOrYearMonthValue;
-            this.errorOneYearOrYearMonth = errorOneYearOrYearMonth;
-            this.alarmOneYearOrYearMonth = alarmOneYearOrYearMonth;
+            this.errorOneYearOrYearMonth = errorOneYearOrYearMonth || null;
+            this.alarmOneYearOrYearMonth = alarmOneYearOrYearMonth || null;
             this.yearOrYearMonthFormat = yearOrYearMonthValue.toString().length > 4 ? nts.uk.time.parseYearMonth(yearOrYearMonthValue).format() : yearOrYearMonthValue.toString();
         }
     }
@@ -367,29 +387,29 @@ module nts.uk.at.view.kmk008.k {
     export class AddUpdateMonthSettingModel {
         
         employeeId: string = "";
-        yearMonthValue: number = 0;
-        errorOneMonth: number = 0;
-        alarmOneMonth: number = 0;
+        yearMonthValue: number;
+        errorOneMonth: number;
+        alarmOneMonth: number;
         constructor(data: SettingModel) {
             if (!data) return;
             this.employeeId = data.employeeId();
             this.yearMonthValue = Number(data.yearOrYearMonthValue().toString().replace("/", ""));
-            this.errorOneMonth = data.errorOneYearOrYearMonth() || 0;
-            this.alarmOneMonth = data.alarmOneYearOrYearMonth() || 0;
+            this.errorOneMonth = data.errorOneYearOrYearMonth();
+            this.alarmOneMonth = data.alarmOneYearOrYearMonth();
         }
     }
 
     export class AddUpdateYearSettingModel {
         employeeId: string = "";
-        yearValue: number = 0;
-        errorOneYear: number = 0;
-        alarmOneYear: number = 0;
+        yearValue: number;
+        errorOneYear: number;
+        alarmOneYear: number;
         constructor(data: SettingModel) {
             if (!data) return;
             this.employeeId = data.employeeId();
             this.yearValue = Number(data.yearOrYearMonthValue());
-            this.errorOneYear = data.errorOneYearOrYearMonth() || 0;
-            this.alarmOneYear = data.alarmOneYearOrYearMonth() || 0;
+            this.errorOneYear = data.errorOneYearOrYearMonth();
+            this.alarmOneYear = data.alarmOneYearOrYearMonth();
         }
     }
 

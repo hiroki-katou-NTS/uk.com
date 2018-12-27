@@ -1,15 +1,19 @@
 package nts.uk.ctx.at.request.ac.workflow.approvalrootstate;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
@@ -29,24 +33,34 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approve
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverWithFlagImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.RepresenterInformationImport;
+import nts.uk.ctx.sys.env.pub.maildestination.IMailDestinationPub;
+import nts.uk.ctx.sys.env.pub.maildestination.MailDestination;
+import nts.uk.ctx.sys.env.pub.maildestination.OutGoingMail;
 import nts.uk.ctx.workflow.pub.agent.AgentPubExport;
 import nts.uk.ctx.workflow.pub.agent.ApproverRepresenterExport;
+import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
 import nts.uk.ctx.workflow.pub.service.ApprovalRootStatePub;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
-import nts.uk.ctx.workflow.pub.service.export.ApproveRootStatusForEmpExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExport;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author Doan Duy Hung
  *
  */
-@Stateless
+@RequestScoped
 public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	
 	@Inject
 	private ApprovalRootStatePub approvalRootStatePub;
+	
+	@Inject
+	private IntermediateDataPub intermediateDataPub;
+	
+	@Inject
+	private IMailDestinationPub iMailDestinationPub;
 	
 	@Override
 	public Map<String,List<ApprovalPhaseStateImport_New>> getApprovalRootContents(List<String> appIDs, String companyID) {
@@ -70,12 +84,13 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 															z.getApproverID(), 
 															z.getApproverName(), 
 															z.getRepresenterID(),
-															z.getRepresenterName()))
+															z.getRepresenterName(),
+															"", ""))
 													.collect(Collectors.toList()), 
 												y.getApproverID(), 
-												y.getApproverName(),
+												y.getApproverName(),"",
 												y.getRepresenterID(),
-												y.getRepresenterName(),
+												y.getRepresenterName(),"",
 												y.getApprovalReason(), 0);
 									}).collect(Collectors.toList()));
 						}).collect(Collectors.toList());
@@ -95,21 +110,67 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 									EnumAdaptor.valueOf(x.getApprovalAtr().value, ApprovalBehaviorAtrImport_New.class),
 									x.getListApprovalFrame().stream()
 									.map(y -> {
+										String approverPhaseMail = "";
+										String representerPhaseMail = "";
+										if(Strings.isNotBlank(y.getApproverID())){
+											List<MailDestination> approverPhaseDest = iMailDestinationPub.getEmpEmailAddress(companyID, Arrays.asList(y.getApproverID()), 6);
+											if(!CollectionUtil.isEmpty(approverPhaseDest)){
+												List<OutGoingMail> approverPhaseOuts = approverPhaseDest.get(0).getOutGoingMails();
+												if(!CollectionUtil.isEmpty(approverPhaseOuts)){
+													approverPhaseMail = Strings.isNotBlank(approverPhaseOuts.get(0).getEmailAddress())
+															? approverPhaseOuts.get(0).getEmailAddress() : "";
+												}
+											}
+										}
+										if(Strings.isNotBlank(y.getRepresenterID())){
+											List<MailDestination> representerPhaseDest = iMailDestinationPub.getEmpEmailAddress(companyID, Arrays.asList(y.getRepresenterID()), 6);
+											if(!CollectionUtil.isEmpty(representerPhaseDest)){
+												List<OutGoingMail> representerPhaseOuts = representerPhaseDest.get(0).getOutGoingMails();
+												if(!CollectionUtil.isEmpty(representerPhaseOuts)){
+													representerPhaseMail = Strings.isNotBlank(representerPhaseOuts.get(0).getEmailAddress())
+															? representerPhaseOuts.get(0).getEmailAddress() : "";
+												}
+											}
+										}
 										return new ApprovalFrameImport_New(
 												y.getPhaseOrder(), 
 												y.getFrameOrder(), 
 												EnumAdaptor.valueOf(y.getApprovalAtr().value, ApprovalBehaviorAtrImport_New.class),
-												y.getListApprover().stream().map(z -> 
-													new ApproverStateImport_New(
+												y.getListApprover().stream().map(z -> {
+													String approverMail = "";
+													String representerMail = "";
+													List<MailDestination> approverDest = iMailDestinationPub.getEmpEmailAddress(companyID, Arrays.asList(z.getApproverID()), 6);
+													if(!CollectionUtil.isEmpty(approverDest)){
+														List<OutGoingMail> approverOuts = approverDest.get(0).getOutGoingMails();
+														if(!CollectionUtil.isEmpty(approverOuts)){
+															approverMail = Strings.isNotBlank(approverOuts.get(0).getEmailAddress())
+																	? approverOuts.get(0).getEmailAddress() : "";
+														}
+													}
+													if(Strings.isNotBlank(z.getRepresenterID())){
+														List<MailDestination> representerDest = iMailDestinationPub.getEmpEmailAddress(companyID, Arrays.asList(z.getRepresenterID()), 6);
+														if(!CollectionUtil.isEmpty(representerDest)){
+															List<OutGoingMail> representerOuts = representerDest.get(0).getOutGoingMails();
+															if(!CollectionUtil.isEmpty(representerOuts)){
+																representerMail = Strings.isNotBlank(representerOuts.get(0).getEmailAddress())
+																		? representerOuts.get(0).getEmailAddress() : "";
+															}
+														}
+													}
+													return new ApproverStateImport_New(
 															z.getApproverID(), 
 															z.getApproverName(), 
 															z.getRepresenterID(),
-															z.getRepresenterName()))
+															z.getRepresenterName(),
+															approverMail,
+															representerMail);})
 													.collect(Collectors.toList()), 
 												y.getApproverID(), 
 												y.getApproverName(),
+												approverPhaseMail,
 												y.getRepresenterID(),
 												y.getRepresenterName(),
+												representerPhaseMail,
 												y.getApprovalReason(), y.getConfirmAtr());
 									}).collect(Collectors.toList()));
 						}).collect(Collectors.toList())),
@@ -238,19 +299,12 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	// request list 113
 	@Override
 	public List<ApproveRootStatusForEmpImPort> getApprovalByEmplAndDate(GeneralDate startDate, GeneralDate endDate,
-			String employeeID, String companyID, Integer rootType) {
-		List<ApproveRootStatusForEmpImPort> approveRootStatusForEmpImPorts = new ArrayList<>();
-		List<ApproveRootStatusForEmpExport> approverRootStatus = this.approvalRootStatePub.getApprovalByEmplAndDate(startDate, endDate, employeeID, companyID, rootType);
-		if(CollectionUtil.isEmpty(approverRootStatus)){
-			return approveRootStatusForEmpImPorts;
-		}
-		for(ApproveRootStatusForEmpExport approve : approverRootStatus){
-			ApproveRootStatusForEmpImPort  approveRootStatusForEmp = new ApproveRootStatusForEmpImPort(approve.getEmployeeID(),
-					approve.getAppDate(),
-					EnumAdaptor.valueOf(approve.getApprovalStatus().value,ApprovalStatusForEmployeeImport.class));
-			approveRootStatusForEmpImPorts.add(approveRootStatusForEmp);
-		}
-		return approveRootStatusForEmpImPorts;
+			String employeeID, String companyID, Integer rootType) throws BusinessException {
+		return intermediateDataPub.getAppRootStatusByEmpPeriod(employeeID, new DatePeriod(startDate, endDate), rootType)
+				.stream().map(x -> new ApproveRootStatusForEmpImPort(
+						x.getEmployeeID(), 
+						x.getDate(), 
+						EnumAdaptor.valueOf(x.getDailyConfirmAtr(),ApprovalStatusForEmployeeImport.class))).collect(Collectors.toList());
 	}
 	@Override
 	public List<String> getApproverFromPhase(String appID) {
@@ -259,12 +313,19 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	}
 	@Override
 	public List<ApproverRemandImport> getListApproverRemand(String appID) {
-		return approvalRootStatePub.getListApproverRemand(appID).stream()
-				.map(c-> new ApproverRemandImport(c.getPhaseOrder(), c.getSID(), c.isAgent()))
-				.collect(Collectors.toList());
+		return null;
 	}
 	@Override
 	public Boolean isApproveApprovalPhaseStateComplete(String companyID, String rootStateID, Integer phaseNumber) {
 		return approvalRootStatePub.isApproveApprovalPhaseStateComplete(companyID, rootStateID, phaseNumber);
+	}
+	@Override
+	public List<ApproveRootStatusForEmpImPort> getAppRootStatusByEmpPeriodMonth(String employeeID, DatePeriod period) {
+		return Collections.emptyList();
+		/*return intermediateDataPub.getAppRootStatusByEmpPeriodMonth(employeeID, period)
+				.stream().map(x -> new ApproveRootStatusForEmpImPort(
+						x.getEmployeeID(), 
+						x.getDate(), 
+						EnumAdaptor.valueOf(x.getDailyConfirmAtr(),ApprovalStatusForEmployeeImport.class))).collect(Collectors.toList());*/
 	}
 }

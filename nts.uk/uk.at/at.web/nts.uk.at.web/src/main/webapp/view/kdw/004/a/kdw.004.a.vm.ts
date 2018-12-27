@@ -19,18 +19,18 @@ module nts.uk.at.view.kdw004.a.viewmodel {
             <a class='unapproved' href='javascript:void(0)' data-bind="click: clickStatusJumpToKdw003.bind($data, '\${employeeId}', '${startDate}')">！</a>
             {{elseif \${${headerTxtId}} == '${ApprovalStatus.CannotApproved}' }}
             <a class='cannotApproved' href='javascript:void(0);'>＿</a>
-            {{elseif \${${headerTxtId}} == '${ApprovalStatus.Disable}' }}
+            {{elseif \${${headerTxtId}} != '${ApprovalStatus.Approved}' && \${${headerTxtId}} != '${ApprovalStatus.UnApproved}' && \${${headerTxtId}} != '${ApprovalStatus.CannotApproved}'  }}
             <span class='disable'></span>
             {{/if}}`;
 
-    export class ScreenModelKDW004A {
+    export class ScreenModelKDW004A { 
         legendOptions: any = {
             items: [
                 { className: 'approved-img', labelText: text('KDW004_8') },
                 { className: 'cannotApproved-img', labelText: text('KDW004_9') },
                 { className: 'unapproved-img', labelText: text('KDW004_10') },
-                { className: 'disable-img', labelText: text('KDW004_11') },
-                { className: 'nodata-img', labelText: text('KDW004_12') }
+                { className: 'disable-img', labelText: text('KDW004_15') }
+                //{ className: 'nodata-img', labelText: text('KDW004_12') }
             ],
             template: '<div class="#{className}"></div><div class="legend-item-label">#{labelText}</div>'
         };
@@ -86,8 +86,11 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     startDate: moment(result.startDate).format("YYYY/MM/DD"),
                     endDate: moment(result.endDate).format("YYYY/MM/DD")
                 });
-
-                self.lstData = self.convertToGridData(result.lstEmployee);
+                if(result.lstEmployee != null){
+                    self.lstData = self.convertToGridData(result.lstEmployee);
+                } else {
+                    nts.uk.ui.dialog.alert({ messageId: result.messageID  });
+                }
                 self.generateColumns();
                 self.loadGrid();
                 self.addClickEventDateHeader();
@@ -113,13 +116,17 @@ module nts.uk.at.view.kdw004.a.viewmodel {
             nts.uk.ui.block.grayout();
 
             service.extractApprovalStatusData(param).done((result: OneMonthApprovalStatus) => {
-                let approvalSttGrid = document.getElementById('approvalSttGrid'),
-                    approvalSttGrid_headers = document.getElementById('approvalSttGrid_headers');
+                let approvalSttGrid = document.getElementById('approvalSttGrid');
 
-                ko.cleanNode(approvalSttGrid);
                 ko.cleanNode(approvalSttGrid_headers);
-
-                self.lstData = self.convertToGridData(result.lstEmployee);
+                ko.cleanNode(approvalSttGrid);
+    
+                //self.lstData = self.convertToGridData(result.lstEmployee);
+                if(result.lstEmployee != null){
+                    self.lstData = self.convertToGridData(result.lstEmployee);
+                } else {
+                    nts.uk.ui.dialog.alert({ messageId: result.messageID  });
+                }
                 self.generateColumns();
                 self.loadGrid();
                 self.setHeadersColor();
@@ -144,8 +151,9 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     lstEmployee: _.map(self.lstData, data => data.employeeId),
                     //エラー参照を起動する
                     errorRefStartAtr: false,
+                    // fix bug 101435
                     //期間を変更する
-                    changePeriodAtr: false,
+                    changePeriodAtr: true,
                     //処理締め
                     targetClosue: self.selectedClosure(),
                     //Optional
@@ -180,7 +188,9 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     screenMode: DPCorrectionScreenMode.APPROVAL,
                     lstEmployee: [employeeId],
                     errorRefStartAtr: false,
-                    changePeriodAtr: false,
+                    // fix bug 101435
+                    //期間を変更する
+                    changePeriodAtr: true,
                     targetClosue: self.selectedClosure(),
                     initClock: undefined,
                     transitionDesScreen: '/view/kdw/004/a/index.xhtml'
@@ -206,11 +216,14 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     //画面モード
                     screenMode: DPCorrectionScreenMode.APPROVAL,
                     //社員一覧
-                    lstEmployee: _.map(self.lstData, data => data.employeeId),
+                    //fix bug 
+                    //lstEmployee: _.map(self.lstData, data => data.employeeId),
+                    lstEmployee:[employeeId],
                     //エラー参照を起動する
                     errorRefStartAtr: false,
+                    // fix bug 101435
                     //期間を変更する
-                    changePeriodAtr: false,
+                    changePeriodAtr: true,
                     //処理締め
                     targetClosue: self.selectedClosure(),
                     //Optional

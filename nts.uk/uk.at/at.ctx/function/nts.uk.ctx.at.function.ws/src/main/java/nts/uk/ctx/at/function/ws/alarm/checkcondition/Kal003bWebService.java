@@ -73,17 +73,21 @@ public class Kal003bWebService extends WebService{
 
         return EnumAdaptor.convertToValueNameList(TypeCheckWorkRecordMultipleMonth.class, 
         		TypeCheckWorkRecordMultipleMonth.TIME,
-        		TypeCheckWorkRecordMultipleMonth.TIMES,
+        		TypeCheckWorkRecordMultipleMonth.DAYS,
         		TypeCheckWorkRecordMultipleMonth.AMOUNT,
+        		TypeCheckWorkRecordMultipleMonth.TIMES,
         		TypeCheckWorkRecordMultipleMonth.AVERAGE_TIME,
-        		TypeCheckWorkRecordMultipleMonth.AVERAGE_TIMES,
+        		TypeCheckWorkRecordMultipleMonth.AVERAGE_DAYS,
         		TypeCheckWorkRecordMultipleMonth.AVERAGE_AMOUNT,
+        		TypeCheckWorkRecordMultipleMonth.AVERAGE_TIMES,
         		TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIME,
-        		TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIMES,
+        		TypeCheckWorkRecordMultipleMonth.CONTINUOUS_DAYS,
         		TypeCheckWorkRecordMultipleMonth.CONTINUOUS_AMOUNT, 
+        		TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIMES,
         		TypeCheckWorkRecordMultipleMonth.NUMBER_TIME,
-        		TypeCheckWorkRecordMultipleMonth.NUMBER_TIMES,
-        		TypeCheckWorkRecordMultipleMonth.NUMBER_AMOUNT);
+        		TypeCheckWorkRecordMultipleMonth.NUMBER_DAYS,
+        		TypeCheckWorkRecordMultipleMonth.NUMBER_AMOUNT,
+        		TypeCheckWorkRecordMultipleMonth.NUMBER_TIMES);
 
     }
 	

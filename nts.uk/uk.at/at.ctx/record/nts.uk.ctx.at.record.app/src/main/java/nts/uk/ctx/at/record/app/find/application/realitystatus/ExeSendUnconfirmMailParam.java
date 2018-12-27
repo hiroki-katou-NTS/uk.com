@@ -22,4 +22,5 @@ public class ExeSendUnconfirmMailParam {
 	private GeneralDate startDate;
 	private GeneralDate endDate;
 	private List<String> listEmpCd;
+	private Integer closureID;
 }

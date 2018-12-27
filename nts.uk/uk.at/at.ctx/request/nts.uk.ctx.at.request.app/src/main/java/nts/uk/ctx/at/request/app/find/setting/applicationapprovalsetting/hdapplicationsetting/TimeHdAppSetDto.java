@@ -1,10 +1,10 @@
 package nts.uk.ctx.at.request.app.find.setting.applicationapprovalsetting.hdapplicationsetting;
 
+/*import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdapplicationsetting.NameWork;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.UseAtr;*/
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdapplicationsetting.NameWork;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdapplicationsetting.TimeHdAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.UseAtr;
 
 @AllArgsConstructor
 @Data

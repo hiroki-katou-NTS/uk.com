@@ -29,6 +29,16 @@ public interface AttendanceItemLinkingRepository {
 	 * @author anhnm
 	 */
 	List<AttendanceItemLinking> getByAnyItemCategory(TypeOfItem type);
+
+	/**
+	 * Find by frame nos.
+	 *
+	 * @param frameNos the frame nos
+	 * @param typeOfItem the type of item
+	 * @param frameCategory the frame category
+	 * @return the list
+	 */
+	List<AttendanceItemLinking> findByFrameNos(List<Integer> frameNos, int typeOfItem, int frameCategory);
 	
 	List<AttendanceItemLinking> getByAttendanceIdAndType(List<Integer> attendanceItemIds, TypeOfItem type);
 	/**

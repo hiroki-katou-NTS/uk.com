@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDaily
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
+import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -39,7 +40,7 @@ public interface GetAnnAndRsvRemNumWithinPeriod {
 	 * @return 年休積立年休の集計結果
 	 */
 	AggrResultOfAnnAndRsvLeave algorithm(
-			String companyId, String employeeId, DatePeriod aggrPeriod, TempAnnualLeaveMngMode mode,
+			String companyId, String employeeId, DatePeriod aggrPeriod, InterimRemainMngMode mode,
 			GeneralDate criteriaDate, boolean isGetNextMonthData, boolean isCalcAttendanceRate,
 			Optional<Boolean> isOverWrite,
 			Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,
@@ -71,7 +72,7 @@ public interface GetAnnAndRsvRemNumWithinPeriod {
 	 * @return 年休積立年休の集計結果
 	 */
 	AggrResultOfAnnAndRsvLeave algorithm(
-			String companyId, String employeeId, DatePeriod aggrPeriod, TempAnnualLeaveMngMode mode,
+			String companyId, String employeeId, DatePeriod aggrPeriod, InterimRemainMngMode mode,
 			GeneralDate criteriaDate, boolean isGetNextMonthData, boolean isCalcAttendanceRate,
 			Optional<Boolean> isOverWrite,
 			Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,
@@ -83,4 +84,13 @@ public interface GetAnnAndRsvRemNumWithinPeriod {
 			Optional<MonAggrCompanySettings> companySets,
 			Optional<MonAggrEmployeeSettings> employeeSets,
 			Optional<MonthlyCalculatingDailys> monthlyCalcDailys);
+	
+	public AggrResultOfAnnAndRsvLeave getRemainAnnRscByPeriod(String cID, String sID, DatePeriod aggrPeriod,
+			InterimRemainMngMode mode, GeneralDate criteriaDate, boolean isGetNextMonthData, boolean isCalcAttendanceRate, 
+			Optional<Boolean> isOverWrite, Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,
+			Optional<List<TmpReserveLeaveMngWork>> tempRsvDataforOverWriteList, Optional<Boolean> isOutputForShortage,
+			Optional<Boolean> noCheckStartDate, Optional<AggrResultOfAnnualLeave> prevAnnualLeave,
+			Optional<AggrResultOfReserveLeave> prevReserveLeave, Optional<MonAggrCompanySettings> companySets,
+			Optional<MonAggrEmployeeSettings> employeeSets, Optional<MonthlyCalculatingDailys> monthlyCalcDailys,
+			Optional<ClosureStatusManagement> sttMng, Optional<GeneralDate> clsStrOpt);
 }

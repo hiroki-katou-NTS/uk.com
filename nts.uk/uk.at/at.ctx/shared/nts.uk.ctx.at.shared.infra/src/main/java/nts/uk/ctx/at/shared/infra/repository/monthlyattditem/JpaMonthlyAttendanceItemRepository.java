@@ -17,6 +17,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.gul.collection.CollectionUtil;
@@ -122,37 +123,56 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 		builderString.append(" WHERE b.krcmtMonAttendanceItemPK.mAtdItemId IN :attendanceItemIds");
 		builderString.append(" AND b.krcmtMonAttendanceItemPK.cid = :companyId");
 		
-		return this.queryProxy().query(builderString.toString(), KrcmtMonAttendanceItem.class).setParameter("attendanceItemIds", attendanceItemIds)
-				.setParameter("companyId", companyId)
-				.getList(f -> toDomain(f));
+		List<MonthlyAttendanceItem> resultList = new ArrayList<>();
+		CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(builderString.toString(), KrcmtMonAttendanceItem.class)
+								  .setParameter("attendanceItemIds", subList)
+								  .setParameter("companyId", companyId)
+								  .getList(f -> toDomain(f)));
+		});
+		return resultList;
 	}
 	
 	
 	@Override
 	public List<MonthlyAttendanceItem> findByAttendanceItemIdAndAtr(String companyId, List<Integer> attendanceItemIds, 
 			List<Integer> itemAtrs) {
+		
+		List<Integer> listItemIds = new ArrayList<>(Optional.ofNullable(attendanceItemIds).orElse(Collections.emptyList()));
+		List<Integer> listAttrs = new ArrayList<>(Optional.ofNullable(itemAtrs).orElse(Collections.emptyList()));
+		
+		boolean checkAttItems = !CollectionUtil.isEmpty(listItemIds);
+		boolean checkItemAtr = !CollectionUtil.isEmpty(listAttrs);
+		if (!checkAttItems) listItemIds.add(0);
+		if (!checkItemAtr) listAttrs.add(0);
+		
 		StringBuilder builderString = new StringBuilder();	
 		builderString.append("SELECT b");
 		builderString.append(" FROM KrcmtMonAttendanceItem b");
 		builderString.append(" WHERE");
 		builderString.append(" b.krcmtMonAttendanceItemPK.cid = :companyId");
-		if (!CollectionUtil.isEmpty(attendanceItemIds)) {
+		if (checkAttItems) {
 			builderString.append(" AND b.krcmtMonAttendanceItemPK.mAtdItemId IN :attendanceItemIds");
 		}
-		if (!CollectionUtil.isEmpty(itemAtrs)) {
+		if (checkItemAtr) {
 			builderString.append(" AND b.mAtdItemAtr IN :itemAtrs");
 		}
 		
-		TypedQueryWrapper<KrcmtMonAttendanceItem> query = this.queryProxy().query(builderString.toString(), KrcmtMonAttendanceItem.class);
-		query.setParameter("companyId", companyId);
-		if (!CollectionUtil.isEmpty(attendanceItemIds)) {
-			query.setParameter("attendanceItemIds", attendanceItemIds);
-		}
-		
-		if (!CollectionUtil.isEmpty(itemAtrs)) {
-			query.setParameter("itemAtrs", itemAtrs);
-		}
-		return query.getList(f -> toDomain(f));
+		List<MonthlyAttendanceItem> resultList = new ArrayList<>();
+		CollectionUtil.split(listItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstIds -> {
+			CollectionUtil.split(listAttrs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstAtrs -> {
+				TypedQueryWrapper<KrcmtMonAttendanceItem> query = this.queryProxy().query(builderString.toString(), KrcmtMonAttendanceItem.class);
+				query.setParameter("companyId", companyId);
+				if (checkAttItems) {
+					query.setParameter("attendanceItemIds", attendanceItemIds);
+				}
+				if (checkItemAtr) {
+					query.setParameter("itemAtrs", itemAtrs);
+				}
+				resultList.addAll(query.getList(f -> toDomain(f)));
+			});
+		});
+		return resultList;
 	}
 
 	@Override
@@ -212,9 +232,15 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 		builderString.append(" FROM KrcmtMonAttendanceItem b");
 		builderString.append(" WHERE b.primitiveValue IN :listAttdID");
 		builderString.append(" AND b.krcmtMonAttendanceItemPK.cid = :companyId");
-		return this.queryProxy().query(builderString.toString(), KrcmtMonAttendanceItem.class).setParameter("listAttdID", listAttdID)
-				.setParameter("companyId", companyId)
-				.getList(f -> toDomain(f));
+		
+		List<MonthlyAttendanceItem> resultList = new ArrayList<>();
+		CollectionUtil.split(listAttdID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(builderString.toString(), KrcmtMonAttendanceItem.class)
+								  .setParameter("listAttdID", subList)
+								  .setParameter("companyId", companyId)
+								  .getList(f -> toDomain(f)));
+		});
+		return resultList;
 	}
 
 	@Override

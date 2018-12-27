@@ -6,7 +6,9 @@ import lombok.Value;
 
 @Value
 public class BusinessTypeMonthlyDetailDto {
-	
+
+	// private List<AttendanceItemDto> attendanceItemDtos;
+
 	private List<BusinessTypeFormatDetailDto> businessTypeFormatMonthlyDtos;
 
 }

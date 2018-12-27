@@ -1,6 +1,15 @@
 package nts.uk.ctx.at.record.dom.monthly.mergetable;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.monthremaindata.AbsenceLeaveRemainData;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
+import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyDayoffRemainData;
+import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
+import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
 
 /**
  * リポジトリ：残数系
@@ -16,6 +25,14 @@ public interface RemainMergeRepository {
 	Optional<RemainMerge> find(MonthMergeKey key);
 	
 	/**
+	 * 検索
+	 * @param employeeIds list employee ids
+	 * @param yearMonths list yearMonths
+	 * @return 残数系データ
+	 */
+	List<RemainMerge> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths);
+	
+	/**
 	 * 登録および更新
 	 * @param key 月別実績プライマリキー
 	 * @param domains 残数系データ
@@ -27,4 +44,51 @@ public interface RemainMergeRepository {
 	 * @param key 月別実績プライマリキー
 	 */
 	void remove(MonthMergeKey key);
+	/**
+	 * @author hoatt
+	 * Doi ung response KDR001 - RQ260
+	 * @param employeeId
+	 * @param yearMonth
+	 * @return
+	 */
+	public List<AbsenceLeaveRemainData> findByYearMonthRQ260(String employeeId, YearMonth yearMonth);
+	/**
+	 * @author hoatt
+	 * Doi ung response KDR001 - RQ263
+	 * @param sid
+	 * @param month
+	 * @return
+	 */
+	public List<SpecialHolidayRemainData> findByYearMonthRQ263(String sid, YearMonth month);
+	/**
+	 * @author hoatt
+	 * Doi ung response KDR001 - RQ259
+	 * @param employeeId
+	 * @param yearMonth
+	 * @return
+	 */
+	public List<MonthlyDayoffRemainData> findByYearMonthRQ259(String employeeId, YearMonth yearMonth);
+	/**
+	 * @author hoatt
+	 * Doi ung response KDR001 - RQ258
+	 * @param lstSID
+	 * @param lstYearMonth
+	 * @return
+	 */
+	public List<RsvLeaRemNumEachMonth> findByYearMonthRQ258(List<String> lstSID, List<YearMonth> lstYearMonth);
+	/**
+	 * @author hoatt
+	 * Doi ung response KDR001 - RQ255
+	 * @param lstSID
+	 * @param lstYearMonth
+	 * @return
+	 */
+	public List<AnnLeaRemNumEachMonth> findByYearMonthRQ255(List<String> lstSID, List<YearMonth> lstYearMonth);
+	/**
+	 * 
+	 * @param employeeId
+	 * @param lstYrMon
+	 * @return
+	 */
+	public Map<YearMonth, List<RemainMerge>> findBySidsAndYrMons(String employeeId, List<YearMonth> lstYrMon);
 }

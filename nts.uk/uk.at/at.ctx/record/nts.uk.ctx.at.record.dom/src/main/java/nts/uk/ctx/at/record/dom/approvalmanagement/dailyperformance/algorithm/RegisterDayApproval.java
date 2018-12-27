@@ -13,6 +13,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.EmpPerformMonthParamImport;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalStatusOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.approvalmanagement.check.CheckApprovalOperation;
@@ -117,15 +118,11 @@ public class RegisterDayApproval {
 		}
 	}
 	
-	public void registerMonApproval(String approverID, List<Pair<String, GeneralDate>> empAndDates,
-			Integer rootType, String companyID) {
-		approvalStatusAdapter.registerApproval(approverID,
-				empAndDates, 2, companyID);	
+	public void registerMonApproval(String approverID, List<EmpPerformMonthParamImport> listParamApproval) {
+		approvalStatusAdapter.approveMonth(approverID, listParamApproval);;	
 	}
 	
-	public void removeMonApproval(String approverID, List<Pair<String, GeneralDate>> empAndDates,
-			Integer rootType, String companyID) {
-		approvalStatusAdapter.releaseApproval(approverID,
-				empAndDates, 2, companyID);	
+	public void removeMonApproval(String approverID, List<EmpPerformMonthParamImport> listParamApproval) {
+		approvalStatusAdapter.cancelMonth(approverID, listParamApproval);	
 	}
 }

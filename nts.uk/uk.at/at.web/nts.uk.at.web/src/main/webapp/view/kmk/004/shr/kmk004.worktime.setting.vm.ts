@@ -357,6 +357,7 @@ module nts.uk.at.view.kmk004.shr.worktime.setting {
             public gotoG(): void {
                 let self = this;
                 let params: FlexSetParams = new FlexSetParams();
+                params.isEnableOverTime = self.flexAggrSetting().aggregateMethod() == 0 ? true : false;
                 params.isIncludeOverTime = self.flexAggrSetting().includeOT(); // G1_2
                 params.shortageSetting = self.flexAggrSetting().shortageSetting();// G2_2
     

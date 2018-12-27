@@ -23,6 +23,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceI
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValueDay;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Getter
@@ -345,13 +346,17 @@ public class ErrorAlarmConditionPubExport {
 				break;
 			case DAYS:
 				erAlAtdItemConditionDto.setCompareStartValue(
-						new BigDecimal(((CheckedTimesValue) itemDomain.getCompareRange().getStartValue()).v()));
+						new BigDecimal(((CheckedTimesValueDay) itemDomain.getCompareRange().getStartValue()).v()));
+						/*new BigDecimal( ( Double.valueOf(itemDomain.getCompareRange().getStartValue().toString()) ).intValue()));*/
+				
 				erAlAtdItemConditionDto.setCompareEndValue(
-						new BigDecimal(((CheckedTimesValue) itemDomain.getCompareRange().getEndValue()).v()));
+						
+						new BigDecimal(((CheckedTimesValueDay) itemDomain.getCompareRange().getEndValue()).v()));
+						/*new BigDecimal( ( Double.valueOf(itemDomain.getCompareRange().getEndValue().toString()) ).intValue()));*/
 				break;
 			}
 			erAlAtdItemConditionDto.setCompareOperator(itemDomain.getCompareRange().getCompareOperator().value);
-		} else if (itemDomain.getCompareSingleValue() != null) {
+		} else if (itemDomain.getCompareSingleValue() != null && itemDomain.getCompareSingleValue().getValue() !=null ) {
 			if (itemDomain.getCompareSingleValue().getConditionType() == ConditionType.FIXED_VALUE) {
 				switch (itemDomain.getConditionAtr()) {
 				case AMOUNT_VALUE:
@@ -367,12 +372,13 @@ public class ErrorAlarmConditionPubExport {
 							new BigDecimal(((TimeWithDayAttr) itemDomain.getCompareSingleValue().getValue()).v()));
 					break;
 				case TIMES:
-					erAlAtdItemConditionDto.setCompareStartValue(
+					erAlAtdItemConditionDto.setCompareStartValue(							
 							new BigDecimal(((CheckedTimesValue) itemDomain.getCompareSingleValue().getValue()).v()));
 					break;
 				case DAYS:
 					erAlAtdItemConditionDto.setCompareStartValue(
-							new BigDecimal(((CheckedTimesValue) itemDomain.getCompareSingleValue().getValue()).v()));
+						/*	new BigDecimal( ( Double.valueOf(itemDomain.getCompareSingleValue().getValue().toString()) ).intValue()));*/
+						   new BigDecimal(((CheckedTimesValueDay) itemDomain.getCompareSingleValue().getValue()).v()));
 					break;
 				}
 			} else {

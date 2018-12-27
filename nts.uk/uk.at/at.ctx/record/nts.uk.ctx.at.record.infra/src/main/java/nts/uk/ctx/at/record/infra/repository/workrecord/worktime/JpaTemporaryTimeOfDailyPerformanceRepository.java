@@ -27,14 +27,14 @@ import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWork;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWorkPK;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 		implements TemporaryTimeOfDailyPerformanceRepository {
 
-	private static final String REMOVE_BY_EMPLOYEE;
-	
-	private static final String REMOVE_TIME_LEAVING_WORK;
+//	private static final String REMOVE_BY_EMPLOYEE;
+//	
+//	private static final String REMOVE_TIME_LEAVING_WORK;
 	
 	private static final String DEL_BY_LIST_KEY;
 
@@ -42,19 +42,19 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 
 	static {
 		StringBuilder builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDaiTemporaryTime a ");
-		builderString.append("WHERE a.krcdtDaiTemporaryTimePK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtDaiTemporaryTimePK.ymd = :ymd ");
-		REMOVE_BY_EMPLOYEE = builderString.toString();
-		
-		builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtTimeLeavingWork a ");
-		builderString.append("WHERE a.krcdtTimeLeavingWorkPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtTimeLeavingWorkPK.ymd = :ymd ");
-		builderString.append("AND a.krcdtTimeLeavingWorkPK.timeLeavingType = :timeLeavingType ");
-		REMOVE_TIME_LEAVING_WORK = builderString.toString();
+//		builderString.append("DELETE ");
+//		builderString.append("FROM KrcdtDaiTemporaryTime a ");
+//		builderString.append("WHERE a.krcdtDaiTemporaryTimePK.employeeId = :employeeId ");
+//		builderString.append("AND a.krcdtDaiTemporaryTimePK.ymd = :ymd ");
+//		REMOVE_BY_EMPLOYEE = builderString.toString();
+//		
+//		builderString = new StringBuilder();
+//		builderString.append("DELETE ");
+//		builderString.append("FROM KrcdtTimeLeavingWork a ");
+//		builderString.append("WHERE a.krcdtTimeLeavingWorkPK.employeeId = :employeeId ");
+//		builderString.append("AND a.krcdtTimeLeavingWorkPK.ymd = :ymd ");
+//		builderString.append("AND a.krcdtTimeLeavingWorkPK.timeLeavingType = :timeLeavingType ");
+//		REMOVE_TIME_LEAVING_WORK = builderString.toString();
 		
 		builderString = new StringBuilder();
 		builderString.append("DELETE ");
@@ -71,7 +71,7 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 		FIND_BY_KEY = builderString.toString();
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
 		
@@ -94,8 +94,14 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public void deleteByListEmployeeId(List<String> employeeIds, List<GeneralDate> ymds) {
-		this.getEntityManager().createQuery(DEL_BY_LIST_KEY).setParameter("employeeIds", employeeIds)
-		.setParameter("processingYmds", ymds).executeUpdate();	
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstEmpIds -> {
+			CollectionUtil.split(ymds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstYMD -> {
+				this.getEntityManager().createQuery(DEL_BY_LIST_KEY)
+					.setParameter("employeeIds", lstEmpIds)
+					.setParameter("processingYmds", lstYMD).executeUpdate();	
+			});
+		});
+		this.getEntityManager().flush();
 	}
 
 	@Override

@@ -206,8 +206,8 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                             if (errorId === "Msg_737_holiday") {
                                 $('#I6_1').ntsError('set', { messageId: "Msg_737" });
                             }
-                            else if (errorId === "Msg_746") {
-                                $('#I11_1').ntsError('set', { messageId: "Msg_746" });
+                            else if (errorId === "Msg_1440") {
+                                $('#I11_1').ntsError('set', { messageId: "Msg_1440" });
                             }
                             else if (errorId === "Msg_728") {
                                 $('#I4').ntsError('set', { messageId: errorId });
@@ -221,8 +221,8 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                             else if (errorId === "Msg_737_sub_option_holiday_2") {
                                 $('#I12_2').ntsError('set', { messageId: "Msg_737" });
                             }
-                            else if (errorId === "Msg_745_1") {
-                                $('#I6_1').ntsError('set', { messageId: "Msg_745" });
+                            else if (errorId === "Msg_1439") {
+                                $('#I6_1').ntsError('set', { messageId: "Msg_1439" });
                             }
                             else if (errorId === "Msg_745_2") {
                                 $('#I11_1').ntsError('set', { messageId: "Msg_745" });
@@ -233,11 +233,11 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                             else if (errorId === "Msg_730_1") {
                                 $('#I12_2').ntsError('set', { messageId: "Msg_730" });
                             }
-                            else if (errorId === "Msg_746_1") {
-                                $('#I12_2').ntsError('set', { messageId: "Msg_746" });
+                            else if (errorId === "Msg_1442") {
+                                $('#I12_2').ntsError('set', { messageId: "Msg_1442" });
                             }
-                            else if (errorId === "Msg_744") {
-                                $('#I12_2').ntsError('set', { messageId: "Msg_744" });
+                            else if (errorId === "Msg_1441") {
+                                $('#I12_2').ntsError('set', { messageId: "Msg_1441" });
                             }
                             else if (errorId === "Msg_1259") {
                                 $('#I11_3').ntsError('set', { messageId: "Msg_1259" });

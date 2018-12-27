@@ -7,8 +7,8 @@ package nts.uk.ctx.at.record.dom.daily.calcset;
  */
 
 public enum RelationSetOfGoOutAndFluBreakTime {
-	Calculation,
-	norCalculation;
+	Calculation,    //開始時刻が同じ場合は休憩と外出の両方を計算する
+	norCalculation; //開始時刻が同じ場合は外出を計算しない
 	
 	/**
 	 * 開始時刻が同じ場合は休憩と外出の両方を計算する　であるか判定する

@@ -81,9 +81,10 @@ public class AddOptionalCommandHandler extends CommandHandler<PeregUserDefAddCom
 			for (ItemValue item : command.getItems()){
 				
 				state = OptionalUtil.createDataState(item);
-				
-				itemData = new PersonInfoItemData(item.definitionId(), recordId, state);
-				perInfoItemDataRepository.addItemData(itemData);
+				if (state != null) {
+					itemData = new PersonInfoItemData(item.definitionId(), recordId, state);
+					perInfoItemDataRepository.addItemData(itemData);
+				}
 			}
 			
 		} else if (perInfoCategory.get().getPersonEmployeeType() == PersonEmployeeType.EMPLOYEE){
@@ -95,8 +96,10 @@ public class AddOptionalCommandHandler extends CommandHandler<PeregUserDefAddCom
 			DataState state = null;
 			for (ItemValue item : command.getItems()){
 				state = OptionalUtil.createDataState(item);
-				itemData = new EmpInfoItemData(item.definitionId(), recordId, state);
-				empInfoItemDataRepository.addItemData(itemData);
+				if (state != null) {
+					itemData = new EmpInfoItemData(item.definitionId(), recordId, state);
+					empInfoItemDataRepository.addItemData(itemData);
+				}
 			}
 			
 		}

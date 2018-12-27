@@ -119,7 +119,12 @@ module cps001.f.vm {
                     __viewContext['viewModel'].start().done(() => {
                         init();
                         $('.filenamelabel').hide();
-                        $('.browser-button').focus();
+                        setTimeout(() => {
+                            $('.browser-button').focus();
+                            $('.browser-button').attr("tabindex", 2);
+                            $(".link-button").attr("tabindex", 2);
+                            $(".delete-button").attr("tabindex", 2);
+                        }, 500);
                         unblock();
                         dfd.resolve();
                     });
@@ -165,8 +170,8 @@ module cps001.f.vm {
                 });
                 
                 
-            }).ifCancel(() => {
-
+            }).ifNo(() => {
+                unblock();
             });
         }
 

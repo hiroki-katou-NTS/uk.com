@@ -16,6 +16,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.security.audittrail.correction.content.CorrectionAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.DataCorrectionLog;
+import nts.uk.shr.com.security.audittrail.correction.content.DataValueAttribute;
 import nts.uk.shr.com.security.audittrail.correction.content.ItemInfo;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataKey;
 import nts.uk.shr.com.security.audittrail.correction.content.TargetDataType;
@@ -162,6 +163,22 @@ public class SrcdtDataCorrectionLog extends UkJpaEntity {
 		entityLog.showOrder = dataLog.getShowOrder();
 		entityLog.note = dataLog.getRemark();
 		return entityLog;
+	}
+	
+	public DataCorrectionLog toDomain() {
+		GeneralDate ymd = this.pk.ymdKey;
+		if (this.pk.ymdKey == null) {
+			if (this.ymKey != null) {
+				YearMonth ym = YearMonth.of(this.ymKey);
+				ymd = GeneralDate.ymd(ym.year(), ym.month(), 1);
+			} else if (this.yKey != null)
+				ymd = GeneralDate.ymd(this.yKey, 1, 1);
+		}
+		return new DataCorrectionLog(this.pk.operationId, new UserInfo(this.pk.userId, this.employeeId, this.userName),
+				TargetDataType.of(this.pk.targetDataType), TargetDataKey.of(ymd, this.stringKey),
+				CorrectionAttr.of(this.correctionAttr),
+				ItemInfo.createWithViewValue(this.pk.itemId, this.itemName, DataValueAttribute.STRING, this.rawValueBefore, this.rawValueAfter, this.viewValueBefore, this.viewValueAfter),
+				this.showOrder, this.note);
 	}
 	
 }

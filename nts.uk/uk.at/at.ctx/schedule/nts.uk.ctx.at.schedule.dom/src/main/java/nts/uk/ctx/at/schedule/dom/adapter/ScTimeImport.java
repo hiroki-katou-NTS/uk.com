@@ -2,8 +2,10 @@ package nts.uk.ctx.at.schedule.dom.adapter;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
@@ -14,7 +16,9 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
  * @author chinhbv
  *
  */
-@Value
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 @Builder
 public class ScTimeImport {
 

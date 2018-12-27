@@ -74,7 +74,7 @@ public class CopySettingItemFinder {
 		// get employee-copy-category
 		EmployeeCopyCategory empCopyCategory = getEmpCopyCategory(companyId, perInfoCategory.getPersonInfoCategoryId());
 		
-		List<PersonInfoItemDefinition> itemDefList = itemDefRepo.getItemLstByListId(
+		List<PersonInfoItemDefinition> itemDefList = itemDefRepo.getItemLstByListIdForCPS002B(
 				empCopyCategory.getItemDefIdList(), AppContexts.user().contractCode(), companyId, Arrays.asList(categoryCd));
 		
 		List<String> itemIdList =itemDefList.stream().map(i -> i.getPerInfoItemDefId()).collect(Collectors.toList());

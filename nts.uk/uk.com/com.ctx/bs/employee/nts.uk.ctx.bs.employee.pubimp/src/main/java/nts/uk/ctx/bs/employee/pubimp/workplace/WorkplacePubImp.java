@@ -50,6 +50,7 @@ import nts.uk.ctx.bs.employee.pub.workplace.WkpByEmpExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpCdNameExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpConfigAtTimeExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpHistWithPeriodExport;
+import nts.uk.ctx.bs.employee.pub.workplace.WkpIdNameHierarchyCdExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpInfoExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpInfoHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceHistExport;
@@ -179,8 +180,8 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	@Override
 	public List<AffWorkplaceExport> findListSIdByCidAndWkpIdAndPeriod(String workplaceId, GeneralDate startDate,
 			GeneralDate endDate) {
-
-		List<EmployeeDataMngInfo> listEmpDomain = empDataMngRepo.findByCompanyId(AppContexts.user().companyId());
+		//EA修正履歴2638 liên quan đến bug #100243, lọc ra những employee không bị xóa
+		List<EmployeeDataMngInfo> listEmpDomain = empDataMngRepo.getAllEmpNotDeleteByCid(AppContexts.user().companyId());
 
 		Map<String, String> mapSidPid = listEmpDomain.stream()
 				.collect(Collectors.toMap(x -> x.getEmployeeId(), x -> x.getPersonId()));
@@ -198,25 +199,26 @@ public class WorkplacePubImp implements SyWorkplacePub {
 		List<AffWorkplaceExport> result = new ArrayList<>();
 
 		listSid.forEach(sid -> {
-
 			AffCompanyHist affCompanyHist = mapPidAndAffCompanyHist.get(mapSidPid.get(sid));
-
-			AffCompanyHistByEmployee affCompanyHistByEmp = affCompanyHist.getAffCompanyHistByEmployee(sid);
-
-			List<AffCompanyHistItem> listAffComHisItem = affCompanyHistByEmp.getLstAffCompanyHistoryItem();
-
-			if (!CollectionUtil.isEmpty(listAffComHisItem)) {
-				listAffComHisItem.forEach(m -> {
-					/* EA修正履歴2059 update RequestList120
-					 * 【Codition】
-					 *	param．period．startDate　＜＝　retirementDate AND
-					 *	entrialDate　＜＝　param．period．endDate
-					 */
-					if (startDate.beforeOrEquals(m.end()) && endDate.afterOrEquals(m.start())) {
-						AffWorkplaceExport aff = new AffWorkplaceExport(sid, m.start(), m.end());
-						result.add(aff);
+			// check null
+			if (affCompanyHist != null) {
+				AffCompanyHistByEmployee affCompanyHistByEmp = affCompanyHist.getAffCompanyHistByEmployee(sid);
+				// check null
+				if (affCompanyHistByEmp != null) {
+					List<AffCompanyHistItem> listAffComHisItem = affCompanyHistByEmp.getLstAffCompanyHistoryItem() == null? new ArrayList<>(): affCompanyHistByEmp.getLstAffCompanyHistoryItem();
+					if (!CollectionUtil.isEmpty(listAffComHisItem)) {
+						listAffComHisItem.forEach(m -> {
+							/*
+							 * EA修正履歴2059 update RequestList120 【Codition】 param．period．startDate ＜＝
+							 * retirementDate AND entrialDate ＜＝ param．period．endDate
+							 */
+							if (startDate.beforeOrEquals(m.end()) && endDate.afterOrEquals(m.start())) {
+								AffWorkplaceExport aff = new AffWorkplaceExport(sid, m.start(), m.end());
+								result.add(aff);
+							}
+						});
 					}
-				});
+				}
 			}
 		});
 
@@ -596,8 +598,6 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	@Override
 	public List<AffAtWorkplaceExport> findBySIdAndBaseDate(List<String> sids, GeneralDate baseDate) {
 
-		List<AffAtWorkplaceExport> result = new ArrayList<AffAtWorkplaceExport>();
-
 		if (sids.isEmpty() || baseDate == null)
 			return Collections.emptyList();
 
@@ -626,13 +626,21 @@ public class WorkplacePubImp implements SyWorkplacePub {
 
 		List<AffWorkplaceHistoryItem> affWrkPlcItems = affWorkplaceHistoryItemRepository.findByHistIds(historyIds);
 
-		return result = affWrkPlcItems.stream().map(x -> {
+		return affWrkPlcItems.stream().map(x -> {
 			AffAtWorkplaceExport affWkp = new AffAtWorkplaceExport();
 			affWkp.setEmployeeId(x.getEmployeeId());
 			affWkp.setHistoryID(x.getHistoryId());
 			affWkp.setWorkplaceId(x.getWorkplaceId());
 			affWkp.setNormalWorkplaceID(x.getNormalWorkplaceId());
 			return affWkp;
+		}).collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<AffAtWorkplaceExport> findBySIdAndBaseDateV2(List<String> sids, GeneralDate baseDate) {
+
+		return affWorkplaceHistoryItemRepository.getAffWrkplaHistItemByListEmpIdAndDateV2(baseDate, sids).stream().map(x -> {
+			return new AffAtWorkplaceExport(x.getEmployeeId(), x.getWorkplaceId(), x.getHistoryId(), x.getNormalWorkplaceId());
 		}).collect(Collectors.toList());
 	}
 
@@ -673,11 +681,21 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	 * String, nts.arc.time.GeneralDate, java.util.List)
 	 */
 	@Override
-	public List<WkpCdNameExport> getWkpCdName(String companyId, GeneralDate baseDate, List<String> wkpIds) {
-		List<WorkplaceInfo> optWorkplaceInfos = workplaceInfoRepo.findByBaseDateWkpIds(companyId, baseDate, wkpIds);
+	public List<WkpIdNameHierarchyCdExport> getWkpIdNameHierarchyCd(String companyId,
+			GeneralDate baseDate, List<String> wkpIds) {
+		List<WorkplaceInfo> optWorkplaceInfos = workplaceInfoRepo.findByBaseDateWkpIds(companyId,
+				baseDate, wkpIds);
+		List<WorkplaceConfigInfo> workplaceConfigInfos = workplaceConfigInfoRepo
+				.findByWkpIdsAtTime(companyId, baseDate, wkpIds);
+		List<WorkplaceHierarchy> lstWkpHierarchy = workplaceConfigInfos.stream()
+				.flatMap(item -> item.getLstWkpHierarchy().stream()).collect(Collectors.toList());
+		Map<String, String> mapHierarchyCd = lstWkpHierarchy.stream().collect(Collectors
+				.toMap(WorkplaceHierarchy::getWorkplaceId, item -> item.getHierarchyCode().v()));
 
-		return optWorkplaceInfos.stream().map(wkpInfo -> WkpCdNameExport.builder()
-				.wkpCode(wkpInfo.getWorkplaceCode().v()).wkpName(wkpInfo.getWorkplaceName().v()).build())
+		return optWorkplaceInfos.stream()
+				.map(wkpInfo -> WkpIdNameHierarchyCdExport.builder().wkpId(wkpInfo.getWorkplaceId())
+						.wkpName(wkpInfo.getWorkplaceName().v())
+						.hierarchyCd(mapHierarchyCd.get(wkpInfo.getWorkplaceId())).build())
 				.collect(Collectors.toList());
 	}
 
@@ -809,17 +827,17 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	 * @see nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub#getWorkplaceMapCodeBaseDateName(java.lang.String, java.util.List, java.util.List)
 	 */
 	@Override
-	public Map<Pair<String, GeneralDate>, String> getWorkplaceMapCodeBaseDateName(String companyId,
+	public Map<Pair<String, GeneralDate>, Pair<String,String>> getWorkplaceMapCodeBaseDateName(String companyId,
 			List<String> wpkIds, List<GeneralDate> baseDates) {
 		// Query infos
 		Map<GeneralDate, List<WorkplaceInfo>> mapWorkplaceInfos = this.workplaceInfoRepo
 				.findByWkpIds(companyId, wpkIds, baseDates);
 
-		Map<Pair<String, GeneralDate>, String> mapResult = new HashMap<>();
+		Map<Pair<String, GeneralDate>, Pair<String,String>> mapResult = new HashMap<>();
 		mapWorkplaceInfos.entrySet().forEach(item -> {
 			item.getValue().forEach(workplaceInfo -> {
 				mapResult.put(Pair.of(workplaceInfo.getWorkplaceId(), item.getKey()),
-						workplaceInfo.getWorkplaceName().v());
+						Pair.of(workplaceInfo.getWorkplaceCode().v(),workplaceInfo.getWorkplaceName().v()));
 			});
 		});
 

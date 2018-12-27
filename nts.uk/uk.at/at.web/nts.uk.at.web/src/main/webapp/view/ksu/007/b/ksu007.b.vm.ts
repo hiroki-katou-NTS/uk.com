@@ -123,7 +123,7 @@ module nts.uk.at.view.ksu007.b {
                                             employeeId : error.employeeCode,
                                             employeeName : error.employeeName,
                                             ymd : error.dateYMD,
-                                            message : nts.uk.resource.getMessage(error.message)
+                                            message : error.message.length >8?error.message:nts.uk.resource.getMessage(error.message)
                                         }   
                                         self.errorLogs.push(errorContent);
                                     });

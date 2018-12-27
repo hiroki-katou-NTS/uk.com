@@ -321,8 +321,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		List<String> lstCompanyId = listCompanyAdapter.getListCompanyId(user.getUserId(),
 				user.getAssociatePersonId().get());
 		if (lstCompanyId.isEmpty()) {
-			manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(),
-					null, null, null, null);
+			manager.loggedInAsUser(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(), null, null);
 		} else {
 			// get employee
 			Optional<EmployeeImport> opEm = this.employeeAdapter.getByPid(lstCompanyId.get(FIST_COMPANY),
@@ -336,15 +335,14 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			// save to session
 			CompanyInformationImport companyInformation = this.companyInformationAdapter
 					.findById(lstCompanyId.get(FIST_COMPANY));
-			if (opEm.isPresent()) {
-				// set info to session if em # null
+			if (opEm.isPresent() && opEm.get().getEmployeeId() != null) {
 				manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(),
 						companyInformation.getCompanyId(), companyInformation.getCompanyCode(),
 						opEm.get().getEmployeeId(), opEm.get().getEmployeeCode());
 			} else {
 				// set info to session
-				manager.loggedInAsEmployee(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(),
-						companyInformation.getCompanyId(), companyInformation.getCompanyCode(), null, null);
+				manager.loggedInAsUser(user.getUserId(), user.getAssociatePersonId().get(), user.getContractCode(),
+						companyInformation.getCompanyId(), companyInformation.getCompanyCode());
 			}
 		}
 		this.setRoleId(user.getUserId());
@@ -705,7 +703,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 			throw new BusinessException("Msg_281");
 		}
-		
+		if (employeeId != null) {
 		//アルゴリズム「在職状態を取得」を実行する
 		//Request No.280
 		StatusOfEmploymentImport employmentStatus = this.statusEmploymentAdapter.getStatusOfEmployment(employeeId,
@@ -725,6 +723,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			this.service.callLoginRecord(param);
 
 			throw new BusinessException("Msg_286");
+			}
 		}
 		
 		String message = this.checkAccoutLock(contractCode, userId, companyId, isSignon).v();
@@ -807,7 +806,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 					// Imported「社員の履歴情報」 を取得する(get Imported「社員の履歴情報」)
 					EmployeeGeneralInfoImport importPub = employeeGeneralInfoAdapter.getEmployeeGeneralInfo(lstEmployeeId, periodEmployee, IS_EMPLOYMENT, IS_CLASSIFICATION, IS_JOBTITLE, IS_WORKPLACE, IS_DEPARTMENT);
 					// 職場履歴一覧がEmpty or 雇用履歴一覧がEmpty or 職位履歴一覧がEmpty
-					isEmployeeHis = importPub.isLstWorkplace() || importPub.isLstEmployment() || importPub.isLstJobTitle();
+					isEmployeeHis = !importPub.isLstWorkplace() && !importPub.isLstEmployment() && !importPub.isLstJobTitle();
 					return !this.employeeAdapter.getStatusOfEmployee(empItem.getEmployeeId()).isDeleted() && isEmployeeHis;
 				})
 				.collect(Collectors.toList());

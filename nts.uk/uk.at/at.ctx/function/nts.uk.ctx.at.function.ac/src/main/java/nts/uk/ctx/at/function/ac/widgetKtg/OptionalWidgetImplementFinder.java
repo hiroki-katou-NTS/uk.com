@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.function.ac.widgetKtg;
 
-import java.math.BigDecimal;
+//import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +48,9 @@ import nts.uk.ctx.at.request.pub.application.recognition.ApplicationOvertimePub;
 import nts.uk.ctx.at.request.pub.application.recognition.ApplicationTimeUnreflectedPub;
 import nts.uk.ctx.at.request.pub.application.recognition.HolidayInstructPub;
 import nts.uk.ctx.at.request.pub.application.recognition.OverTimeInstructPub;
+import nts.uk.ctx.at.shared.pub.remainingnumber.annualleave.empinfo.basicinfo.GetGrantHdTblSetPub;
+import nts.uk.ctx.at.shared.pub.remainingnumber.annualleave.empinfo.basicinfo.GrantHdTblSetExport;
+import nts.uk.ctx.at.shared.pub.yearholidaygrant.CalculationMethod;
 import nts.uk.ctx.sys.portal.pub.toppagepart.optionalwidget.OptionalWidgetExport;
 import nts.uk.ctx.sys.portal.pub.toppagepart.optionalwidget.OptionalWidgetPub;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -96,6 +99,9 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 	
 	@Inject
 	private GetRsvLeaNumCriteriaDate getRsvLeaNumCriteriaDate;
+	
+	@Inject
+	private GetGrantHdTblSetPub getGrantHdTblSetPub;
 	
 	@Override
 	public int getNumberOT(String employeeId, GeneralDate startDate, GeneralDate endDate) {
@@ -216,10 +222,10 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 			annualLeaveRemainNumberImport = new AnnualLeaveRemainingNumberImport(0.0, 0, 0, 0, 0.0, 0, 0, 0, 0.0,0.0);
 		}else {
 			annualLeaveRemainNumberImport = new AnnualLeaveRemainingNumberImport(
-																				remainNumber.getAnnualLeaveGrantPreDay(),
-																				remainNumber.getAnnualLeaveGrantPreTime(),
-																				remainNumber.getNumberOfRemainGrantPre(),
-																				remainNumber.getTimeAnnualLeaveWithMinusGrantPre(),
+																				remainNumber.getAnnualLeaveGrantDay(),
+																				remainNumber.getAnnualLeaveGrantTime(),
+																				remainNumber.getNumberOfRemainGrant(),
+																				remainNumber.getTimeAnnualLeaveWithMinusGrant(),
 																				remainNumber.getAnnualLeaveGrantPostDay(),
 																				remainNumber.getAnnualLeaveGrantPostTime(),
 																				remainNumber.getNumberOfRemainGrantPost(),
@@ -258,19 +264,30 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 		if(rsvLeaNumByCriteriaDate.isPresent()) {
 			RsvLeaNumByCriteriaDate rsvDate = rsvLeaNumByCriteriaDate.get();
 			////付与日
-			GeneralDate grantDay = rsvDate.getReserveLeaveInfo().getYmd();
+			GeneralDate grantDay = rsvDate.getGrantDate().orElse(null);
 			////付与前残数
 			Double befRemainDay = rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus()
 									.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
+			////積立年休残数
+			Double remainingDays = rsvDate.getRemainingDays().v();
 			//付与後残数
 			Double aftRemainDay = 0.0;
 			if(rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus().getRemainingNumberAfterGrant().isPresent()){
 				aftRemainDay = rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus().getRemainingNumberAfterGrant().get().getTotalRemainingDays().v();
 			}
-			return new KTGRsvLeaveInfoImport(befRemainDay, aftRemainDay, grantDay);
+			return new KTGRsvLeaveInfoImport(befRemainDay, aftRemainDay, remainingDays, grantDay);
 		}else {
-			return new KTGRsvLeaveInfoImport(0.0, 0.0, null);
+			return new KTGRsvLeaveInfoImport(0.0, 0.0, 0.0, null);
 		}
+	}
+
+	@Override
+	public int getGrantHdTblSet(String companyId, String employeeId) {
+		Optional<GrantHdTblSetExport> GrantHdTblSetImport = this.getGrantHdTblSetPub.algorithm(companyId, employeeId);
+		if(GrantHdTblSetImport.isPresent()) {
+			return GrantHdTblSetImport.get().getCalculationMethod() == CalculationMethod.WORKING_DAY ? 0 : 1;
+		}
+		return 3;
 	}
 
 	

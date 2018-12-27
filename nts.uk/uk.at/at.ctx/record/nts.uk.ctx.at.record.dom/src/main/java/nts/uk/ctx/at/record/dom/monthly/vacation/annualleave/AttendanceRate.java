@@ -21,4 +21,12 @@ public class AttendanceRate extends DecimalPrimitiveValue<AttendanceRate> {
 	public AttendanceRate(Double attendanceRate){
 		super(BigDecimal.valueOf(attendanceRate));
 	}
+	
+	@Override
+	protected BigDecimal reviseRawValue(BigDecimal rawValue) {
+		if (rawValue == null) return super.reviseRawValue(rawValue);
+		if (rawValue.doubleValue() > 100.0) rawValue = BigDecimal.valueOf(100.0);
+		if (rawValue.doubleValue() < 0.0) rawValue = BigDecimal.valueOf(0.0);
+		return super.reviseRawValue(rawValue);
+	}
 }

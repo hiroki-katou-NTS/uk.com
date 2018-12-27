@@ -1,4 +1,7 @@
 module nts.uk.at.view.kmk013.n {
+    
+    import blockUI = nts.uk.ui.block;
+    
     export module viewmodel {
         export class ScreenModel {
             start: KnockoutObservable<number>;
@@ -66,16 +69,19 @@ module nts.uk.at.view.kmk013.n {
                 let self = this;
                 $('#start').ntsError('check');
                 $('#end').ntsError('check');
+                blockUI.grayout();
                 
                 if (!$('#start').ntsError('hasError') && !$('#end').ntsError('hasError')) {
-                    let data = self.data;
+                    let data: any = self.data;
                     data.start = self.start();
                     data.end = self.end();
                     if (self.start() >= self.end()){
                         nts.uk.ui.dialog.info({ messageId: 'Msg_1022' });
+                        blockUI.clear();        
                     } else if (self.isCreated()){
                         service.update(data).done(
                             () => {
+                                blockUI.clear();
                                 nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(() => {
                                     $("#start").focus();
                                 });
@@ -84,6 +90,7 @@ module nts.uk.at.view.kmk013.n {
                     } else {
                         service.save(data).done(
                             () => {
+                                blockUI.clear();
                                 nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(() => {
                                     $("#start").focus();
                                 });

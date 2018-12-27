@@ -180,7 +180,7 @@ public class EmployeeInDesignatedFinder {
 		List<EmploymentStatusDto> employmentStatus =  this.getStatusOfEmployments(empIdList,
 				referenceDate);
 		
-		List<String> empIds = employmentStatus.stream().map(EmploymentStatusDto::getEmployeeId).collect(Collectors.toList());
+//		List<String> empIds = employmentStatus.stream().map(EmploymentStatusDto::getEmployeeId).collect(Collectors.toList());
 		
 		Map<String, EmploymentStatusDto> empStatusMap = employmentStatus.parallelStream()
 				.collect(Collectors.toMap(EmploymentStatusDto::getEmployeeId, Function.identity()));

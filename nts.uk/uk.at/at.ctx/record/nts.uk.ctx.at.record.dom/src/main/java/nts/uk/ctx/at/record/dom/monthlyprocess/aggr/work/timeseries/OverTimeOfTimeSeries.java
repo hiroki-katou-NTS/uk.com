@@ -80,7 +80,7 @@ public class OverTimeOfTimeSeries {
 	
 	/**
 	 * 残業時間：振替時間を加算する
-	 * @param transferTime 残業時間　（計算付き時間）
+	 * @param transferTime 振替時間　（計算付き時間）
 	 */
 	public void addTransferTimeInOverTime(TimeDivergenceWithCalculation transferTime){
 		this.overTime = this.addTransferTimeOnly(this.overTime, transferTime);
@@ -88,10 +88,18 @@ public class OverTimeOfTimeSeries {
 	
 	/**
 	 * 法定内残業時間：振替時間を加算する
-	 * @param transferTime 残業時間　（計算付き時間）
+	 * @param transferTime 振替時間　（計算付き時間）
 	 */
 	public void addTransferTimeInLegalOverTime(TimeDivergenceWithCalculation transferTime){
 		this.legalOverTime = this.addTransferTimeOnly(this.legalOverTime, transferTime);
+	}
+	
+	/**
+	 * 残業時間：事前申請時間を加算する
+	 * @param beforeAppTime 事前申請時間　（計算付き時間）
+	 */
+	public void addBeforeAppTimeInOverTime(AttendanceTime beforeAppTime){
+		this.overTime = this.addBeforeAppTimeOnly(this.overTime, beforeAppTime);
 	}
 	
 	/**
@@ -149,5 +157,52 @@ public class OverTimeOfTimeSeries {
 						transferTime.getCalcTime()),
 				target.getBeforeApplicationTime(),
 				target.getOrderTime());
+	}
+	
+	/**
+	 * 残業枠時間の事前申請時間のみ加算する
+	 * @param target 残業枠時間　（加算先）
+	 * @param beforeAppTime 加算する時間
+	 * @return 残業枠時間　（加算後）
+	 */
+	private OverTimeFrameTime addBeforeAppTimeOnly(OverTimeFrameTime target, AttendanceTime beforeAppTime){
+		
+		if (beforeAppTime == null) return target;
+		return new OverTimeFrameTime(
+				target.getOverWorkFrameNo(),
+				target.getOverTimeWork(),
+				target.getTransferTime(),
+				target.getBeforeApplicationTime().addMinutes(beforeAppTime.v()),
+				target.getOrderTime());
+	}
+
+	/**
+	 * 法定内残業の計算残業を残業時間の計算残業へ移送
+	 */
+	public void addCalcLegalOverTimeToCalcOverTime(){
+		int calcLegalOverMinutes = this.legalOverTime.getOverTimeWork().getCalcTime().v();
+		int calcLegalTransferMinutes = this.legalOverTime.getTransferTime().getCalcTime().v();
+		this.legalOverTime = new OverTimeFrameTime(
+				this.legalOverTime.getOverWorkFrameNo(),
+				TimeDivergenceWithCalculation.createTimeWithCalculation(
+						this.legalOverTime.getOverTimeWork().getTime(),
+						new AttendanceTime(0)),
+				TimeDivergenceWithCalculation.createTimeWithCalculation(
+						this.legalOverTime.getTransferTime().getTime(),
+						new AttendanceTime(0)),
+				this.legalOverTime.getBeforeApplicationTime(),
+				this.legalOverTime.getOrderTime()
+			);
+		this.overTime = new OverTimeFrameTime(
+				this.overTime.getOverWorkFrameNo(),
+				this.overTime.getOverTimeWork().addMinutes(
+						new AttendanceTime(0),
+						new AttendanceTime(calcLegalOverMinutes)),
+				this.overTime.getTransferTime().addMinutes(
+						new AttendanceTime(0),
+						new AttendanceTime(calcLegalTransferMinutes)),
+				this.overTime.getBeforeApplicationTime(),
+				this.overTime.getOrderTime()
+			);
 	}
 }

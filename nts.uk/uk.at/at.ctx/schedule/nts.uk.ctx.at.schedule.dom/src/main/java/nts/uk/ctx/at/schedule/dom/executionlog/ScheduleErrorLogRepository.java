@@ -62,4 +62,21 @@ public interface ScheduleErrorLogRepository {
 	 * @param domain the domain
 	 */
 	public void add(ScheduleErrorLog domain);
+	
+	/**
+	 * 
+	 * @param executionId
+	 * @param employeeId
+	 * @param baseDate
+	 * @return
+	 */
+	public Boolean checkExistErrorByKey(String executionId, String employeeId, GeneralDate baseDate); 
+	
+	/**
+	 * 
+	 * @param executionId
+	 * @param employeeId
+	 * @return
+	 */
+	public Boolean checkExistErrorByKey(String executionId, String employeeId);
 }

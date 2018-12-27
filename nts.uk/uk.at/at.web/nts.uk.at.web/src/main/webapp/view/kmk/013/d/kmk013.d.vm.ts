@@ -1,4 +1,7 @@
 module nts.uk.at.view.kmk013.d {
+    
+    import blockUI = nts.uk.ui.block;
+    
     export module viewmodel {
         export class ScreenModel {
             roundingRules1: KnockoutObservableArray<any>;
@@ -123,11 +126,12 @@ module nts.uk.at.view.kmk013.d {
             }
             saveData(): void {
                 let self = this;
+                blockUI.grayout();
                 // Validate. 
                 $('#dateInput').ntsError('check');
                 
                 if (!$('.nts-input').ntsError('hasError')) {
-                    let data = {};
+                    let data: any = {};
                     data.premiumCalcHd = self.selectedId34();
                     data.missCalcHd = self.selectedId310();
                     data.premiumCalcSubhd = self.selectedId44();
@@ -136,9 +140,10 @@ module nts.uk.at.view.kmk013.d {
                     data.flexNonworkingDayCalc = self.selectedId62();
     
                     service.save(data).done(() => {
-                        let insuffData = {};
+                        let insuffData: any = {};
                         insuffData.supplementableDays = self.suppDays();
                         service.saveRefresh(insuffData).done(() => {
+                            blockUI.clear();
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                                 // Focus on D3_4 by default
                                 $('#d3_4').focus();

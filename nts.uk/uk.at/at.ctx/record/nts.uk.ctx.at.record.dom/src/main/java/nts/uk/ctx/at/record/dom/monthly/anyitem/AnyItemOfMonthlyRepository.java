@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * リポジトリ：月別実績の任意項目
@@ -86,6 +86,8 @@ public interface AnyItemOfMonthlyRepository {
 	 * @return 該当する月別実績の任意項目
 	 */
 	List<AnyItemOfMonthly> findBySidsAndMonths(List<String> employeeIds, List<YearMonth> yearMonths);
+	
+	List<AnyItemOfMonthly> findBySidsAndMonthsV2(List<String> employeeIds, List<YearMonth> yearMonths);
 	
 	/**
 	 * 登録および更新

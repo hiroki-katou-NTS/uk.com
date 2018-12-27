@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.schedule.ac.executionlog;
 
 import java.util.List;
@@ -13,7 +17,7 @@ import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
 
 /**
- * The Class SCEmployeeAdapterImpl.
+ * The Class ScEmployeeAdapterImpl.
  */
 @Stateless
 public class ScEmployeeAdapterImpl implements SCEmployeeAdapter {
@@ -21,6 +25,8 @@ public class ScEmployeeAdapterImpl implements SCEmployeeAdapter {
 	/** The pub. */
 	@Inject
 	private IPersonInfoPub pub;
+	
+	/** The sy employee pub. */
 	@Inject
 	private SyEmployeePub syEmployeePub;
 
@@ -35,9 +41,12 @@ public class ScEmployeeAdapterImpl implements SCEmployeeAdapter {
 		return dto;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter#findByEmployeeIds(java.util.List)
+	 */
 	@Override
 	public List<EmployeeDto> findByEmployeeIds(List<String> sids) {
-		return syEmployeePub.findBySIds(sids).stream()
+		return syEmployeePub.getSidCdPnameBySIds(sids).stream()
 				.map(x -> new EmployeeDto(x.getEmployeeId(), x.getEmployeeCode(), x.getPName()))
 				.collect(Collectors.toList());
 	}

@@ -5,8 +5,10 @@ package nts.uk.ctx.at.record.dom.approvalmanagement.domainservice;
 
 import java.util.ArrayList;
 import java.util.Collections;
+//import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -14,8 +16,15 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
+import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
+import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
+import nts.uk.ctx.at.record.dom.adapter.company.SyCompanyRecordAdapter;
+import nts.uk.ctx.at.record.dom.adapter.employee.RegularSortingTypeImport;
+import nts.uk.ctx.at.record.dom.adapter.employee.RegulationInfoEmployeeAdapter;
+import nts.uk.ctx.at.record.dom.adapter.employee.SortingConditionOrderImport;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQuery;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryAdapter;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryR;
@@ -64,6 +73,12 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 
 	@Inject
 	private RegulationInfoEmployeeQueryAdapter regulationInfoEmployeeQueryAdapter;
+	
+	@Inject
+	private RegulationInfoEmployeeAdapter regulationInfoEmployeeAdapter;
+	
+	@Inject
+	private SyCompanyRecordAdapter syCompanyRecordAdapter;
 
 	private RegulationInfoEmployeeQuery createQueryEmployee(List<String> employeeCodes, GeneralDate startDate,
 			GeneralDate endDate) {
@@ -101,13 +116,21 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 		List<ApprovalEmployeeDto> lstApprovalEmployee = new ArrayList<>();
 		List<ApprovalRootSituation> lstApproval = approvalRootOfEmployeeImport.getApprovalRootSituations();
 
+//		GeneralDate startDate = GeneralDate.ymd(lstApproval.get(0).getAppDate().year(),lstApproval.get(0).getAppDate().month(),1);
+//		GeneralDate endDate = GeneralDate.ymd(lstApproval.get(0).getAppDate().year(),
+//												lstApproval.get(0).getAppDate().month(),
+//												lstApproval.get(0).getAppDate().lastDateInMonth());
+		
+		
+		
 		for (RegulationInfoEmployeeQueryR empQ : lstEmployee) {
 			ApprovalEmployeeDto approvalEmployee = new ApprovalEmployeeDto();
 
 			approvalEmployee.setEmployeeId(empQ.getEmployeeId());
 			approvalEmployee.setEmployeeCode(empQ.getEmployeeCode());
 			approvalEmployee.setEmployeeName(empQ.getEmployeeName());
-
+			
+			
 			List<DateApprovalStatusDto> lstDateApprovalStatusDto = lstApproval.stream()
 					.filter(f -> empQ.getEmployeeId().equals(f.getTargetID())).map(apv -> {
 						ApprovalStatus status = apv.getApprovalStatus();
@@ -119,33 +142,68 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 						dateApvS.setStatus(3);
 						dateApvS.setDate(apv.getAppDate());
 
-						if (ApprovalActionByEmpl.APPROVALED.equals(aproval)
-								&& ApproverEmployeeState.PHASE_DURING.equals(state)) {
+						
+						if (ApproverEmployeeState.COMPLETE.equals(state) 
+								|| ApproverEmployeeState.PHASE_PASS.equals(state)){
 							dateApvS.setStatus(0);
-						} else if (ApprovalActionByEmpl.APPROVAL_REQUIRE.equals(aproval)
-								&& ApproverEmployeeState.PHASE_DURING.equals(state)) {
-							dateApvS.setStatus(1);
-						} else if (ApprovalActionByEmpl.NOT_APPROVAL.equals(aproval)
-								&& ApproverEmployeeState.PHASE_LESS.equals(state)) {
+						}else if(ApproverEmployeeState.PHASE_DURING.equals(state)) {
+							if(ApprovalActionByEmpl.APPROVALED.equals(aproval)) {
+								dateApvS.setStatus(0);
+							}else if(ApprovalActionByEmpl.APPROVAL_REQUIRE.equals(aproval) ) {
+								dateApvS.setStatus(1);
+							}else {
+								dateApvS.setStatus(2);
+							}
+							
+						}else if(ApproverEmployeeState.PHASE_LESS.equals(state)) {
 							dateApvS.setStatus(2);
-						} else if (ApprovalActionByEmpl.NOT_APPROVAL.equals(aproval)
-								&& ApproverEmployeeState.PHASE_DURING.equals(state)) {
-							dateApvS.setStatus(2);
-						} else if (ApprovalActionByEmpl.NOT_APPROVAL.equals(aproval)
-								&& ApproverEmployeeState.PHASE_PASS.equals(state)) {
-							dateApvS.setStatus(0);
-						} else if (ApprovalActionByEmpl.NOT_APPROVAL.equals(aproval)
-								&& ApproverEmployeeState.COMPLETE.equals(state)) {
-							dateApvS.setStatus(0);
-						} else if(ApprovalActionByEmpl.APPROVALED.equals(aproval)
-								&& ApproverEmployeeState.COMPLETE.equals(state)) {
-							dateApvS.setStatus(0);
 						}
+						
+						
+//						if (ApprovalActionByEmpl.APPROVALED.equals(aproval)
+//								&& ApproverEmployeeState.PHASE_DURING.equals(state)) {
+//							dateApvS.setStatus(0);
+//						} else if (ApprovalActionByEmpl.APPROVAL_REQUIRE.equals(aproval)
+//								&& ApproverEmployeeState.PHASE_DURING.equals(state)) {
+//							dateApvS.setStatus(1);
+//						} else if (ApprovalActionByEmpl.NOT_APPROVAL.equals(aproval)
+//								&& ApproverEmployeeState.PHASE_LESS.equals(state)) {
+//							dateApvS.setStatus(2);
+//						} else if (ApprovalActionByEmpl.NOT_APPROVAL.equals(aproval)
+//								&& ApproverEmployeeState.PHASE_DURING.equals(state)) {
+//							dateApvS.setStatus(2);
+//						} else if (ApprovalActionByEmpl.NOT_APPROVAL.equals(aproval)
+//								&& ApproverEmployeeState.PHASE_PASS.equals(state)) {
+//							dateApvS.setStatus(0);
+//						} else if (ApprovalActionByEmpl.NOT_APPROVAL.equals(aproval)
+//								&& ApproverEmployeeState.COMPLETE.equals(state)) {
+//							dateApvS.setStatus(0);
+//						} else if(ApprovalActionByEmpl.APPROVALED.equals(aproval)
+//								&& ApproverEmployeeState.COMPLETE.equals(state)) {
+//							dateApvS.setStatus(0);
+//						}
 
 						return dateApvS;
 					}).collect(Collectors.toList());
 
 			if (!lstDateApprovalStatusDto.isEmpty()) {
+//				for(GeneralDate date = startDate;startDate.beforeOrEquals(endDate);) {
+//					boolean check = true;
+//					for(DateApprovalStatusDto dateApprovalStatusDto :lstDateApprovalStatusDto ) {
+//						if(date.equals(dateApprovalStatusDto.getDate())) {
+//							check = false;
+//							break;
+//						}
+//					}
+//					if(!check) {
+//						lstDateApprovalStatusDto.add(new DateApprovalStatusDto(date,3));
+//					}
+//					date = startDate.addDays(1);
+//				}
+				//lstDateApprovalStatusDto.sort(c);
+				
+				//lstDateApprovalStatusDto.sort((x, y) -> x.getDate().compareTo(y.getDate()));
+				
 				approvalEmployee.setLstStatus(lstDateApprovalStatusDto);
 				lstApprovalEmployee.add(approvalEmployee);
 			}
@@ -221,17 +279,93 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 			oneMonthApprovalStatusDto.setStartDate(datePeriod.start());
 			oneMonthApprovalStatusDto.setEndDate(datePeriod.end());
 			// Imported「（就業．勤務実績）基準社員の承認対象者」をすべて取得する
+			// Imported（就業）「基準社員の承認対象者」を取得する
+			ApprovalRootOfEmployeeImport approvalRootOfEmployeeImport = approvalStatusAdapter.getApprovalRootOfEmloyee(
+					datePeriod.start(), datePeriod.end(), AppContexts.user().employeeId(),
+					AppContexts.user().companyId(), 1);
 			
-			ApprovalRootOfEmployeeImport approvalRootOfEmployeeImport = approvalStatusAdapter.getApprovalRootOfEmloyeeNew(datePeriod.start()
-					, datePeriod.end(), AppContexts.user().employeeId(), AppContexts.user().companyId(), 1);
+			List<ApprovalRootSituation> approvalRootSituations = new ArrayList<>();
+			List<String> lstEmployment = new ArrayList<>();
+			// fix bug 91363
+			List<String> lstEmployees= new ArrayList<>();
 			if (approvalRootOfEmployeeImport == null
 					|| approvalRootOfEmployeeImport.getApprovalRootSituations().size() == 0) {
-				throw new BusinessException("Msg_874");
+				//oneMonthApprovalStatusDto.setMessageID("Msg_874");
+				//エラーメッセージ（Msg_916）を表示する
+				oneMonthApprovalStatusDto.setMessageID("Msg_916");
+				return oneMonthApprovalStatusDto;
+				//throw new BusinessException("Msg_874");
 			}
+			else
+			{
+				List<ApprovalRootSituation> listApp =approvalRootOfEmployeeImport.getApprovalRootSituations();
+				Set<String> listAppId = approvalRootOfEmployeeImport.getApprovalRootSituations().stream().map(c->c.getTargetID()).collect(Collectors.toSet());
+				//社員ID（List）と指定期間から所属会社履歴項目を取得 【Request：No211】
+				List<AffCompanyHistImport> listAffCompanyHistImport  = this.syCompanyRecordAdapter
+				.getAffCompanyHistByEmployee(new ArrayList<>(listAppId), datePeriod);
+				
+				//取得した「所属会社履歴項目」に当てはまらない対象者、対象日の「ルート状況」を取り除く
+				for(String approvalId  : listAppId) {
+					//loop find approvalID
+					for(AffCompanyHistImport affCompanyHistImport : listAffCompanyHistImport ) {
+						
+						if(approvalId.equals(affCompanyHistImport.getEmployeeId())) {
+							List<GeneralDate> listDate = new ArrayList<>();
+							//loop list period 
+							List<AffComHistItemImport> listAffComHistItemImport = affCompanyHistImport.getLstAffComHistItem();
+							for(AffComHistItemImport  affComHistItem : listAffComHistItemImport) {
+								GeneralDate startDate = affComHistItem.getDatePeriod().start();
+								GeneralDate endDate = affComHistItem.getDatePeriod().end();
+								if(startDate.after(datePeriod.end()) || endDate.before(datePeriod.start())) {
+									break;
+								}
+								GeneralDate dateS = datePeriod.start();
+								GeneralDate dateE = datePeriod.end();
+								if(startDate.afterOrEquals(datePeriod.start())) {
+									dateS = startDate;
+								}
+								if(endDate.beforeOrEquals(datePeriod.end())) {
+									dateE = endDate;
+								}
+								
+								for(GeneralDate date = dateS;date.beforeOrEquals(dateE);) {
+									listDate.add(date);
+									date = date.addDays(1);
+								}
+							}
+							//get item by date and emp id
+							for(ApprovalRootSituation approval :listApp) {
+								for(GeneralDate date : listDate) {
+									if(approval.getTargetID().equals(approvalId) && approval.getAppDate().equals(date)) {
+										approvalRootSituations.add(approval);
+									}
+								}
+							}
+							
+							break;
+						}
+					}
+					
+					
+				}
+				
+			}
+			
+			approvalRootOfEmployeeImport.setApprovalRootSituations(approvalRootSituations);
+			
+			//クエリ「社員を並び替える(任意)」を実行する (Sort employee)
+			String companyId = AppContexts.user().companyId();
+			List<String> employeeList = approvalRootOfEmployeeImport.getApprovalRootSituations().stream().map(item->{
+				return item.getTargetID();
+			}).collect(Collectors.toList());
+			// list order conditions
+			lstEmployees = this.regulationInfoEmployeeAdapter.sortEmployees(companyId, employeeList,
+					this.createListConditions(), this.convertFromDateToDateTime(datePeriod.end()));
+			
 			// ドメインモデル「雇用に紐づく就業締め」を取得する
 			List<ClosureEmployment> lstClosureEmployment = closureEmploymentRepository
 					.findByClosureId(AppContexts.user().companyId(), currentClosure);
-			List<String> lstEmployment = new ArrayList<>();
+//			List<String> lstEmployment = new ArrayList<>();
 			lstEmployment.addAll(lstClosureEmployment.stream().map(closureEmployment -> {
 				return closureEmployment.getEmploymentCD();
 			}).collect(Collectors.toList()));
@@ -243,16 +377,45 @@ public class OneMonthApprovalSttDomainServiceImpl implements OneMonthApprovalStt
 			// 【条件】 ・取得したドメインモデル「雇用に紐づく就業締め．雇用コード」に一致する基準日時点の所属雇用 ・在職している社員
 			List<RegulationInfoEmployeeQueryR> lstEmployee = regulationInfoEmployeeQueryAdapter
 					.search(createQueryEmployee(lstEmployment, datePeriod.start(), datePeriod.end()));
+			System.out.println(lstEmployee.stream().map(x -> x.getEmployeeId()).collect(Collectors.toList()));
+			System.out.println(approvalRootOfEmployeeImport.getApprovalRootSituations().stream().map(x -> x.getTargetID()).distinct().collect(Collectors.toList()));
+			
 			List<ApprovalEmployeeDto> buildApprovalEmployeeData = buildApprovalEmployeeData(lstEmployee,
 					approvalRootOfEmployeeImport);
-			oneMonthApprovalStatusDto.setLstEmployee(buildApprovalEmployeeData);
 			if (buildApprovalEmployeeData.isEmpty()) {
-				throw new BusinessException("Msg_875");
+				oneMonthApprovalStatusDto.setMessageID("Msg_875");
+				return oneMonthApprovalStatusDto;
+				//throw new BusinessException("Msg_875");
 			}
+			// fix bug 91363
+			List<ApprovalEmployeeDto> buildApprovalEmployeeDataResult = new ArrayList<>();
+			lstEmployees.forEach(item -> {
+				if(buildApprovalEmployeeData.stream().filter(o -> o.getEmployeeId().equals(item)).findFirst().isPresent()){
+				buildApprovalEmployeeDataResult.add(buildApprovalEmployeeData.stream().filter(o -> o.getEmployeeId().equals(item)).findFirst().get());
+				}
+			});
+			oneMonthApprovalStatusDto.setLstEmployee(buildApprovalEmployeeDataResult);
+			
 		} else {
 			throw new BusinessException("Msg_873");
 		}
 		return oneMonthApprovalStatusDto;
 	}
-
+	
+	//並び替え条件　=<職場(inlevel)、1>、<分類コード(ASC)、2>、<職位(序列)、3>、<社員コード(ASC)、4>
+	private List<SortingConditionOrderImport> createListConditions()
+	{
+		List<SortingConditionOrderImport> lstCondition = new ArrayList<>();
+		lstCondition.add(new SortingConditionOrderImport(1,RegularSortingTypeImport.WORKPLACE));
+		lstCondition.add(new SortingConditionOrderImport(2,RegularSortingTypeImport.CLASSIFICATION));
+		lstCondition.add(new SortingConditionOrderImport(3,RegularSortingTypeImport.POSITION));
+		//fix bug 101289
+		//lstCondition.add(new SortingConditionOrderImport(4,RegularSortingTypeImport.EMPLOYMENT));
+		return lstCondition;
+	}
+	
+	//convert from Date to DateTime
+	private GeneralDateTime convertFromDateToDateTime(GeneralDate date) {
+		return GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), 0, 0, 0);
+	}
 }

@@ -2,7 +2,9 @@ package nts.uk.ctx.at.request.app.command.application.holidaywork;
 
 import static java.util.stream.Collectors.groupingBy;
 
+/*import java.lang.reflect.Array;*/
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -109,8 +111,8 @@ public class CheckBeforeRegisterHolidayWork {
 				appHolidayWork.getWorkTimeCode() == null ? "" : appHolidayWork.getWorkTimeCode().toString(), 
 				appHolidayWork.getWorkClock1().getStartTime() == null ? null : appHolidayWork.getWorkClock1().getStartTime().v(),
 				appHolidayWork.getWorkClock1().getEndTime() == null? null: appHolidayWork.getWorkClock1().getEndTime().v(),
-				100,
-				200);
+				Arrays.asList(100),
+				Arrays.asList(200));
 		// 03-02_実績超過チェック
 		for(CaculationTime breakTime : convertList(holidayWorkInputs)){
 			for(Map.Entry<Integer,TimeWithCalculationImport> entry : dailyAttendanceTimeCaculationImport.getHolidayWorkTime().entrySet()){
@@ -198,13 +200,14 @@ public class CheckBeforeRegisterHolidayWork {
 								: holidayWorkDomain.getWorkClock1().getStartTime().v(),
 						holidayWorkDomain.getWorkClock1().getEndTime() == null ? null
 								: holidayWorkDomain.getWorkClock1().getEndTime().v(),
-						100, 200);
+								Arrays.asList(100),
+								Arrays.asList(200));
 		// 03-02_実績超過チェック
 		for(CaculationTime breakTime : convertList(holidayWorkInputs)){
 			for(Map.Entry<Integer,TimeWithCalculationImport> entry : dailyAttendanceTimeCaculationImport.getHolidayWorkTime().entrySet()){
 				if(breakTime.getFrameNo() == entry.getKey()){
 					holidayThreeProcess.checkCaculationActualExcess(appRoot.getPrePostAtr().value, ApplicationType.BREAK_TIME_APPLICATION.value, employeeId, holidayWorkDomain.getCompanyID(), appRoot.getAppDate(), breakTime, 
-							holidayWorkDomain.getWorkTimeCode().toString(), entry.getValue().getCalTime(), false);
+							holidayWorkDomain.getWorkTimeCode() == null ? "" : holidayWorkDomain.getWorkTimeCode().toString(), entry.getValue().getCalTime(), false);
 				}
 			}
 		}

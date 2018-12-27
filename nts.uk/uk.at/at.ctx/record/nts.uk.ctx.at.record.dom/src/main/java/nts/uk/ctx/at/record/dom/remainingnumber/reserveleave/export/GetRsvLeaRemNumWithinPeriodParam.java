@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.TempAnnualLeaveMngMode;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
@@ -29,7 +29,7 @@ public class GetRsvLeaRemNumWithinPeriodParam {
 	/** 集計期間 */
 	private DatePeriod aggrPeriod;
 	/** モード */
-	private TempAnnualLeaveMngMode mode;
+	private InterimRemainMngMode mode;
 	/** 基準日 */
 	private GeneralDate criteriaDate;
 	/** 翌月管理データ取得フラグ */

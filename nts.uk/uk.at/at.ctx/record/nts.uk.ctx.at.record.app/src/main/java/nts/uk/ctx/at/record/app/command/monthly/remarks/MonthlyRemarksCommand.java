@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.command.monthly.remarks;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 public class MonthlyRemarksCommand extends MonthlyWorkCommonCommand{
 
 	@Getter
-	private List<MonthlyRemarksDto> data;
+	private List<MonthlyRemarksDto> data = new ArrayList<>();
 	
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {

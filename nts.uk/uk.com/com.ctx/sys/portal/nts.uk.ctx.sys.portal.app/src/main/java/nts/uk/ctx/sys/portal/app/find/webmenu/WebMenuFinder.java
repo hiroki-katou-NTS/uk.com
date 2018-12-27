@@ -127,7 +127,6 @@ public class WebMenuFinder {
 	 * @return
 	 */
 	public List<WebMenuDto> findAll() {
-		long start = java.lang.System.currentTimeMillis();
 		String companyId = AppContexts.user().companyId();
 
 		List<WebMenu> webMenuList = webMenuRepository.findAll(companyId);
@@ -147,6 +146,7 @@ public class WebMenuFinder {
 	}
 	
 	/**
+	 * RequestList No.95「すべてのWebメニューを取得する」
 	 * Get all simple web menu info
 	 * @return
 	 */

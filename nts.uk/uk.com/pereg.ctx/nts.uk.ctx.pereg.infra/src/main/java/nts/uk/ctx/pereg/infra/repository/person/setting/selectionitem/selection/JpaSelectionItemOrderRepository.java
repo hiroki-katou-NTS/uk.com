@@ -6,7 +6,9 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder.SelectionItemOrder;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selectionorder.SelectionItemOrderRepository;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelItemOrder;
@@ -100,9 +102,17 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 		if (histIdList.isEmpty()) {
 			return new ArrayList<>();
 		}
-		List<SelectionItemOrder> seletionOrders = this.queryProxy()
-				.query(SELECT_BY_HISTORY_ID_LIST, PpemtSelItemOrder.class).setParameter("histIdList", histIdList)
-				.getList(c -> toDomain(c));
+		List<SelectionItemOrder> seletionOrders = new ArrayList<>();
+		CollectionUtil.split(histIdList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			seletionOrders.addAll(this.queryProxy()
+				.query(SELECT_BY_HISTORY_ID_LIST, PpemtSelItemOrder.class).setParameter("histIdList", subList)
+				.getList(c -> toDomain(c)));
+		});
+		seletionOrders.sort((o1, o2) -> {
+			int tmp = o1.getHistId().compareTo(o2.getHistId());
+			if (tmp != 0) return tmp;
+			return o1.getDisporder().compareTo(o2.getDisporder());
+		});
 		return seletionOrders;
 	}
 

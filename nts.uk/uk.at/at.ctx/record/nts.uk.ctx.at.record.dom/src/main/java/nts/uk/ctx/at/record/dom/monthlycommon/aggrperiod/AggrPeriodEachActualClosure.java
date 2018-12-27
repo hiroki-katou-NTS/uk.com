@@ -4,8 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -33,7 +33,7 @@ public class AggrPeriodEachActualClosure {
 	public AggrPeriodEachActualClosure(){
 		
 		this.closureId = ClosureId.RegularEmployee;
-		this.closureDate = new ClosureDate(0, true);
+		this.closureDate = new ClosureDate(1, true);
 		this.yearMonth = YearMonth.of(GeneralDate.today().year(), GeneralDate.today().month());
 		this.period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		this.originalClosurePeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today());

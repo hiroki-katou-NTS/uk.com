@@ -40,7 +40,7 @@ module nts.uk.com.view.kwr002.a {
 
             permission: KnockoutObservable<boolean>;
 
-            lstPersonComponentOption: any;
+            lstPersonComponentOption: ComponentOption;
 
             selectedEmployeeCode: KnockoutObservableArray<string>;
             alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
@@ -50,12 +50,12 @@ module nts.uk.com.view.kwr002.a {
             constructor() {
                 let self = this;
                 self.comboboxName = nts.uk.resource.getText("KWR002_19");
-                let currentDate = self.getCurrentDay(new Date());
+                //let currentDate = self.getCurrentDay(new Date());
                 self.enable = ko.observable(true);
                 self.permission = ko.observable(true);
                 self.startDateString = ko.observable("");
                 self.endDateString = ko.observable("");
-                self.dateValue = ko.observable({ startDate: currentDate, endDate: currentDate });
+                self.dateValue = ko.observable("");
                 self.exportDto = ko.observable<ExportDto>();
                 self.listEmployee = ko.observableArray<Employee>([]);
                 self.startDateString.subscribe(function(value) {
@@ -101,21 +101,23 @@ module nts.uk.com.view.kwr002.a {
 
                 self.ccgcomponent = {
 
+                    tabindex: -1,
                     /** Common properties */
                     systemType: 1, // システム区分
                     showEmployeeSelection: false, // 検索タイプ
                     showQuickSearchTab: true, // クイック検索
                     showAdvancedSearchTab: true, // 詳細検索
                     showBaseDate: false, // 基準日利用
-                    showClosure: false, // 就業締め日利用
-                    showAllClosure: false, // 全締め表示
-                    showPeriod: false, // 対象期間利用
+                    showClosure: true, // 就業締め日利用
+                    showAllClosure: true, // 全締め表示
+                    showPeriod: true, // 対象期間利用
                     periodFormatYM: true, // 対象期間精度
 
                     /** Required parameter */
                     baseDate: self.baseDate().toISOString(), // 基準日
-                    periodStartDate: moment(self.periodStartDate()).format("YYYY-MM-DD"), // 対象期間開始日
-                    periodEndDate: moment(self.periodStartDate()).format("YYYY-MM-DD"), // 対象期間終了日
+//                    periodStartDate: self.dateValue().startDate, // 対象期間開始日
+//                    periodEndDate: self.dateValue().endDate, // 対象期間終了日
+                    dateRangePickerValue: self.dateValue,
                     inService: true, // 在職区分
                     leaveOfAbsence: true, // 休職区分
                     closed: true, // 休業区分
@@ -137,6 +139,10 @@ module nts.uk.com.view.kwr002.a {
 
                     /** Return data */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                        //画面項目「A7_3」を更新する
+                        self.dateValue().startDate = moment(data.periodStart).format("YYYY/MM/DD");
+                        self.dateValue().endDate = moment(data.periodEnd).format("YYYY/MM/DD");
+                        self.dateValue.valueHasMutated();
                         //                        self.selectedEmployee(data.listEmployee);
                         self.applyKCP005ContentSearch(data.listEmployee);
                         self.listEmployee(data.listEmployee);
@@ -198,7 +204,19 @@ module nts.uk.com.view.kwr002.a {
                     }
 
                     dfd.resolve();
-                })
+                });
+                service.getClosureMonth().done(function(dto) {
+                    const startMonth = dto.currentMonth;
+                    const endMonth = dto.currentMonth;
+                    const parsedStart = startMonth.slice(0, 4) + '/' + startMonth.slice(4);
+                    const parsedEnd = endMonth.slice(0, 4) + '/' + endMonth.slice(4);
+                    self.dateValue({
+                        startDate : parsedStart,
+                        endDate : parsedEnd
+                    })
+                    self.dateValue.valueHasMutated();
+                });
+
                 blockUI.clear();
                 return dfd.promise();
             }
@@ -227,17 +245,19 @@ module nts.uk.com.view.kwr002.a {
                 }
                 self.employeeList(employeeSearchs);
                 self.lstPersonComponentOption = {
+                    tabindex: 3,
                     isShowAlreadySet: false,
                     isMultiSelect: true,
                     listType: ListType.EMPLOYEE,
                     employeeInputList: self.employeeList,
-                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    selectType: SelectType.SELECT_ALL,
                     selectedCode: self.selectedEmployeeCode,
                     isDialog: false,
                     isShowNoSelectRow: false,
                     alreadySettingList: self.alreadySettingPersonal,
                     isShowWorkPlaceName: true,
                     isShowSelectAllButton: false,
+                    isSelectAllAfterReload: true,
                     maxWidth: 480,
                     maxRows: 12
                 };

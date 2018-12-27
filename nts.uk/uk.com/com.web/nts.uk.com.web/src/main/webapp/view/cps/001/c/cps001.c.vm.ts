@@ -112,7 +112,7 @@ module cps001.c.vm {
                 return;
             }
 
-            confirm({ messageId: "Msg_528" }).ifYes(() => {
+            confirm({messageId: "Msg_528"}, {buttonStyles: { yes: "proceed" } }).ifYes(() => {
                 let itemListLength = self.listEmployee().length,
                     indexItemDelete = _.findIndex(ko.toJS(self.listEmployee), function(item: any) { return item.id == emp.id; }),
                     objToRestore = {
@@ -155,7 +155,7 @@ module cps001.c.vm {
 
                 });
 
-            }).ifCancel(() => {
+            }).ifNo(() => {
                 unblock();
             });
         }
@@ -173,7 +173,7 @@ module cps001.c.vm {
             }
 
 
-            confirm({ messageId: "Msg_18" }).ifYes(() => {
+            confirm({ messageId: "Msg_1449" }).ifYes(() => {
                 let sid = emp.id;
                 block();
                 service.removedata(sid).done(() => {
@@ -195,7 +195,7 @@ module cps001.c.vm {
                 }).fail((mes) => {
                     unblock();
                 });
-            }).ifCancel(() => {
+            }).ifNo(() => {
                 unblock();
             });
         }

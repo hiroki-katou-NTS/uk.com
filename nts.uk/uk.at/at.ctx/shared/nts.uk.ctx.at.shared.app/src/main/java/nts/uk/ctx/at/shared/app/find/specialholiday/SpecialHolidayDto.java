@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.app.find.specialholiday;
 
+import java.util.Collections;
+
 import lombok.Value;
 import nts.uk.ctx.at.shared.app.find.specialholiday.grantcondition.SpecialLeaveRestrictionDto;
 import nts.uk.ctx.at.shared.app.find.specialholiday.grantinformation.GrantRegularDto;
@@ -56,5 +58,9 @@ public class SpecialHolidayDto {
 				targetItem,
 				specialHoliday.getMemo().v()
 		);
+	}
+
+	public TargetItemDto getTargetItemDto() {
+		return targetItemDto != null ? targetItemDto : new TargetItemDto(Collections.emptyList(), Collections.emptyList());
 	}
 }

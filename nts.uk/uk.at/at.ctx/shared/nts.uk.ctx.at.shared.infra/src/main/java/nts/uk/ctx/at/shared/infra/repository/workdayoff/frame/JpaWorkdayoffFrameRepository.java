@@ -17,13 +17,12 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
-import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFrame;
-import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFramePK_;
-import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFrame_;
 import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshstWorkdayoffFrame;
 import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshstWorkdayoffFramePK;
 import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshstWorkdayoffFramePK_;
@@ -147,25 +146,28 @@ public class JpaWorkdayoffFrameRepository extends JpaRepository
 
 		// select root
 		cq.select(root);
-
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-
-		// eq company id
-		lstpredicateWhere
-				.add(criteriaBuilder.equal(root.get(KshstWorkdayoffFrame_.kshstWorkdayoffFramePK)
-						.get(KshstWorkdayoffFramePK_.cid), companyId));
-		lstpredicateWhere.add(root.get(KshstWorkdayoffFrame_.kshstWorkdayoffFramePK)
-				.get(KshstWorkdayoffFramePK_.wdoFrNo).in(workdayoffFrNos));
 		
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		List<KshstWorkdayoffFrame> resultList = new ArrayList<>();
 
-		// creat query
-		TypedQuery<KshstWorkdayoffFrame> query = em.createQuery(cq);
+		CollectionUtil.split(workdayoffFrNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+			// eq company id
+			lstpredicateWhere
+					.add(criteriaBuilder.equal(root.get(KshstWorkdayoffFrame_.kshstWorkdayoffFramePK)
+							.get(KshstWorkdayoffFramePK_.cid), companyId));
+			lstpredicateWhere.add(root.get(KshstWorkdayoffFrame_.kshstWorkdayoffFramePK)
+					.get(KshstWorkdayoffFramePK_.wdoFrNo).in(splitData));
+			
+			// set where to SQL
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
 
 		// exclude select
-		return query.getResultList().stream().map(category -> toDomain(category))
+		return resultList.stream().map(category -> toDomain(category))
 				.collect(Collectors.toList());
 	}
 

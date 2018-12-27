@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.monthly.agreement;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,6 +42,11 @@ public class JpaAgreementTimeOfManagePeriod extends JpaRepository implements Agr
 			+ "AND a.PK.yearMonth IN :yearMonths "
 			+ "ORDER BY a.PK.employeeId, a.PK.yearMonth ";
 	
+	private static final String REMOVE_BY_PK =
+			"DELETE FROM KrcdtMonMngAgreTime a "
+			+ "WHERE a.PK.employeeId = :employeeId "
+			+ "AND a.PK.yearMonth = :yearMonth ";
+	
 	private static final String REMOVE_BY_YEAR =
 			"DELETE FROM KrcdtMonMngAgreTime a "
 			+ "WHERE a.PK.employeeId = :employeeId "
@@ -79,6 +85,7 @@ public class JpaAgreementTimeOfManagePeriod extends JpaRepository implements Agr
 					.setParameter("yearMonth", yearMonth.v())
 					.getList(c -> c.toDomain()));
 		});
+		results.sort(Comparator.comparing(AgreementTimeOfManagePeriod::getEmployeeId));
 		return results;
 	}
 	
@@ -91,10 +98,17 @@ public class JpaAgreementTimeOfManagePeriod extends JpaRepository implements Agr
 		
 		List<AgreementTimeOfManagePeriod> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_YEARMONTHS, KrcdtMonMngAgreTime.class)
-					.setParameter("employeeIds", splitData)
-					.setParameter("yearMonths", yearMonthValues)
-					.getList(c -> c.toDomain()));
+			CollectionUtil.split(yearMonthValues, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstYearMonth -> {
+				results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_YEARMONTHS, KrcdtMonMngAgreTime.class)
+						.setParameter("employeeIds", splitData)
+						.setParameter("yearMonths", lstYearMonth)
+						.getList(c -> c.toDomain()));
+			});
+		});
+		results.sort((o1, o2) -> {
+			int tmp = o1.getEmployeeId().compareTo(o2.getEmployeeId());
+			if (tmp != 0) return tmp;
+			return o1.getYearMonth().compareTo(o2.getYearMonth());
 		});
 		return results;
 	}
@@ -122,8 +136,10 @@ public class JpaAgreementTimeOfManagePeriod extends JpaRepository implements Agr
 	@Override
 	public void remove(String employeeId, YearMonth yearMonth) {
 
-		this.commandProxy().remove(KrcdtMonMngAgreTime.class,
-				new KrcdtMonMngAgreTimePK(employeeId, yearMonth.v()));
+		this.getEntityManager().createQuery(REMOVE_BY_PK)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearMonth", yearMonth.v())
+				.executeUpdate();
 	}
 
 	/** 削除　（年度） */

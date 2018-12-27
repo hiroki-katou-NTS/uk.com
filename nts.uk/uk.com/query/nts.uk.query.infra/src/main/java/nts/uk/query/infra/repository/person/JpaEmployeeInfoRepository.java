@@ -19,8 +19,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.xml.crypto.Data;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
@@ -110,7 +110,7 @@ public class JpaEmployeeInfoRepository extends JpaRepository implements Employee
 				businessTypePredicate));
 
 		// Where in employee ids.
-		CollectionUtil.split(query.getEmployeeIds(), 1000, subList -> {
+		CollectionUtil.split(query.getEmployeeIds(), DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			conditions.add(root.get(EmployeeDataView_.sid).in(subList));
 
 			cq.where(conditions.toArray(new Predicate[] {}));

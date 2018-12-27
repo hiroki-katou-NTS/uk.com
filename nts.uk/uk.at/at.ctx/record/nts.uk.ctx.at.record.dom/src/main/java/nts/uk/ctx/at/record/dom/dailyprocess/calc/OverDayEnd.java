@@ -11,7 +11,7 @@ import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
+//import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -36,8 +36,10 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 public class OverDayEnd {
 	
+	//日跨ぎ処理後に存在している残業時間帯
 	private List<OverTimeFrameTimeSheetForCalc> overTimeList; 
 	
+	//日跨ぎ処理後に存在している休出時間帯
 	private List<HolidayWorkFrameTimeSheetForCalc> holList; 
 
 	/**
@@ -172,36 +174,6 @@ public class OverDayEnd {
 		return timeSpan.getStart().lessThan(baseTime) && timeSpan.getEnd().lessThan(baseTime); 
 	}
 	/*-----------------------------------翌日系-------------------------------------*/
-	/*-------------------------------前日・翌日両対応---------------------------------*/
-
-	/*-------------------------------前日・翌日両対応---------------------------------*/
-	
-
-//	
-//	/**
-//	 * 該当日の計算するしない設定を取得する
-//	 * @param beforeDay 前の日の勤務種類
-//	 * @param afterDay　　後の日の勤務種類
-//	 * @param overDaySet　0時跨ぎ計算設定
-//	 * @return
-//	 */
-//	private UseAtr getIsUse(DailyWork beforeDay,DailyWork afterDay, OverDayEndCalcSet overDaySet) {
-//		
-////		if(afterDay.) {
-////			/*休日*/
-////			switch() {
-////			case:/*法定内休日*/
-////			case:/*法定外休日*/
-////			case:/*祝日*/
-////			}
-////		}
-////		else {
-////			/*平日*/
-////		}
-//		
-//		/*↓一時的措置*/
-//		return UseAtr.NOT_USE;
-//	}
 	
 	
 		/**
@@ -309,11 +281,11 @@ public class OverDayEnd {
 						//翌日０時以降の残業時間帯を一度作成
 						OverTimeFrameTimeSheetForCalc afteritem = new OverTimeFrameTimeSheetForCalc(new TimeZoneRounding(baseTime,overTimeSheet.getTimeSheet().getEnd(),overTimeSheet.getTimeSheet().getRounding()),
 																								 new TimeSpanForCalc(baseTime,overTimeSheet.getTimeSheet().getEnd()),
-																								 overTimeSheet.recreateDeductionItemBeforeBase(baseTime, true,DeductionAtr.Appropriate),
-																								 overTimeSheet.recreateDeductionItemBeforeBase(baseTime, true,DeductionAtr.Deduction),
-																								 overTimeSheet.recreateBonusPayListBeforeBase(baseTime, true),
-																								 overTimeSheet.recreateSpecifiedBonusPayListBeforeBase(baseTime, true),
-																								 overTimeSheet.recreateMidNightTimeSheetBeforeBase(baseTime, true),
+																								 overTimeSheet.recreateDeductionItemBeforeBase(baseTime, false,DeductionAtr.Appropriate),
+																								 overTimeSheet.recreateDeductionItemBeforeBase(baseTime, false,DeductionAtr.Deduction),
+																								 overTimeSheet.recreateBonusPayListBeforeBase(baseTime, false),
+																								 overTimeSheet.recreateSpecifiedBonusPayListBeforeBase(baseTime, false),
+																								 overTimeSheet.recreateMidNightTimeSheetBeforeBase(baseTime, false),
 																								 overTimeSheet.getFrameTime(),
 																								 overTimeSheet.getWithinStatutryAtr(),
 																								 overTimeSheet.isGoEarly(),

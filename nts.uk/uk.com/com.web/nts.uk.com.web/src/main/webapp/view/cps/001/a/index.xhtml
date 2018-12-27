@@ -34,11 +34,13 @@
 				<button type="button" class="proceed"
 					data-bind="click: saveData, enable: $root.errors.isEmpty &amp;&amp; saveAble"
 					tabindex="1">#{i18n.getText('CPS001_4')}</button>
-				<button type="button" data-bind="click: unManagerEmployee ,
+				<button type="button" data-bind="click: unManagerEmployee,
+												 enable: !!employee.employeeId(),
 												 style: { visibility: enaBtnManagerEmp() ? 'visible' : 'hidden' }"
 					tabindex="2">#{i18n.getText('CPS001_5')}</button>
 				<button type="button" class="danger"
-					data-bind="click: deleteEmployee ,
+					data-bind="click: deleteEmployee,					
+							   enable: !!employee.employeeId(),
 							   style: { visibility: enaBtnDelEmp() ? 'visible' : 'hidden' }" tabindex="3">#{i18n.getText('CPS001_6')}</button>
 				<span class="licenseCheck" data-bind="text:licenseCheck, css: classWarning, style: { visibility: licenseCheckDipslay() ? 'visible' : 'hidden' }"></span>
 				<a class="goout"
@@ -61,7 +63,8 @@
 								personId: employee.personId,
 								employeeId: employee.employeeId,
 								employeeIds: employee.employeeIds,
-								employees: employee.employees
+								employees: employee.employees,
+								hireDate: employee.hireDate
 							}"></employee-list>
 				<div class="left-area">
 					<layout-tabs
@@ -76,6 +79,7 @@
 						<base-date
 							params="
 							id: layout.id,
+							employeeId: employee.employeeId,
 							standardDate: layout.standardDate
 						"></base-date>
 					</com:ko>

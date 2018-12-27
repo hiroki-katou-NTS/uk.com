@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.dom.setting.request.application.apptypediscreteset
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
+/*import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;*/
 
 public interface AppTypeDiscreteSettingRepository {
 	/**

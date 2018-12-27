@@ -60,7 +60,9 @@
 							<td>
 								<label class="labeRight">#{i18n.getText('CMF005_69')}</label>
 								<label data-bind="text: dateStartValue" />
-								<label>#{i18n.getText('CMF005_72')}</label>
+								<com:ko-if bind="enableDate()">
+									<label>#{i18n.getText('CMF005_72')}</label>
+								</com:ko-if>
 								<label data-bind="text: dateEndValue" />
 							</td>
 						</tr>
@@ -68,7 +70,9 @@
 							<td>
 								<label class="labeRight">#{i18n.getText('CMF005_70')}</label>
 								<label data-bind="text: monthStartValue" />
-								<label>#{i18n.getText('CMF005_72')}</label>
+								<com:ko-if bind="enableMonth()">
+									<label>#{i18n.getText('CMF005_72')}</label>
+								</com:ko-if>
 								<label data-bind="text: monthEndValue" />
 							</td>
 						</tr>
@@ -76,7 +80,9 @@
 							<td>
 								<label class="labeRight">#{i18n.getText('CMF005_71')}</label>
 								<label data-bind="text: yearStartValue" />
-								<label>#{i18n.getText('CMF005_72')}</label>
+								<com:ko-if bind="enableYear()">
+									<label>#{i18n.getText('CMF005_72')}</label>
+								</com:ko-if>
 								<label data-bind="text: yearEndValue" />
 							</td>
 						</tr>

@@ -18,8 +18,11 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingAdapter;
+import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingImport;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.Period;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.EndSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.ExtractionPeriodDaily;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
@@ -28,7 +31,6 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.SpecifyEndMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.SpecifyStartMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.periodunit.ExtractionPeriodUnit;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.year.AYear;
-import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfPublicHoliday;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHoliday;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayGrantDate;
@@ -49,9 +51,9 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 	@Inject
 	private ClosureService closureService;
 	@Inject
-	private PublicHolidaySettingRepository publicHolidaySettingRepo; 
+	private PublicHolidaySettingRepository publicHolidaySettingRepo;
 	@Inject
-	private CompanyAdapter companyAdapter;
+	private AgreementOperationSettingAdapter agreementOperationSettingAdapter;
 	
 
 	@Override
@@ -96,7 +98,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		YearMonth startMonth = yearMonth;
 		YearMonth endMonth = yearMonth;
 		int year = 0;
-		
+		int checkMonth = 1;
 		for(ExtractionRangeBase extractBase : c.getExtractPeriodList()) {
 			
 			if(extractBase instanceof ExtractionPeriodDaily) {
@@ -106,6 +108,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				endDate = period.getEndDate();
 				CheckConditionTimeDto dailyDto = new CheckConditionTimeDto(c.getAlarmCategory().value, textAgreementTime(1), formatter.format(startDate), formatter.format(endDate), null, null);
 				dailyDto.setTabOrder(1);
+				dailyDto.setPeriod36Agreement(Period.One_Week.value);
 				result.add(dailyDto);
 				
 			}else if(extractBase instanceof ExtractionPeriodMonth) {
@@ -126,32 +129,53 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				}
 				CheckConditionTimeDto monthDto = new CheckConditionTimeDto(c.getAlarmCategory().value, textAgreementTime(extraction.getNumberOfMonth().value +2), null, null, startMonth.toString(), endMonth.toString());
 				monthDto.setTabOrder(extraction.getNumberOfMonth().value +2);
+				if (checkMonth == 1) {
+					monthDto.setPeriod36Agreement(Period.One_Month.value);
+				} else if (checkMonth == 2) {
+					monthDto.setPeriod36Agreement(Period.Two_Month.value);
+				} else if (checkMonth == 3) {
+					monthDto.setPeriod36Agreement(Period.Three_Month.value);
+				}
+				checkMonth++;
 				result.add(monthDto);
 				
 			}else if(extractBase instanceof AYear) {
 				AYear extraction = (AYear) extractBase;
-				int firstMonth=  companyAdapter.getFirstMonth(AppContexts.user().companyId()).getStartMonth();
-				
+				Optional<AgreementOperationSettingImport> agreementOperationSettingImport =  agreementOperationSettingAdapter.find(AppContexts.user().companyId());
+				int firstMonth = 0;
+				if (agreementOperationSettingImport.isPresent()){
+					firstMonth = agreementOperationSettingImport.get().getStartingMonth().value + 1;
+				}
+				int yearMonthYear = yearMonth.year();
 				if(extraction.isToBeThisYear()){
 					if(firstMonth <= yearMonth.month()) {
-						startMonth = yearMonth.addMonths(firstMonth);
-						firstMonth = firstMonth-1;
-						endMonth = YearMonth.of( yearMonth.year()+1, yearMonth.month()).addMonths(firstMonth);
-						year = yearMonth.year();
+						year = yearMonthYear;
 					}else {
-						startMonth = YearMonth.of( yearMonth.year()-1, yearMonth.month()).addMonths(firstMonth);
-						firstMonth = firstMonth-1;
-						endMonth = yearMonth.addMonths(firstMonth);
-						year = yearMonth.year()-1;
+						year = yearMonthYear - 1;
 					}
+					if (firstMonth == 1) {
+						startMonth = YearMonth.of(year, firstMonth);
+						endMonth = YearMonth.of(year, 12);
+					} else {
+						startMonth = YearMonth.of(year, firstMonth);
+						firstMonth = firstMonth - 1;
+						endMonth = YearMonth.of(year + 1, firstMonth);
+					}
+					
 				}else {
-					startMonth = YearMonth.of( extraction.getYear(),firstMonth);
-					firstMonth = firstMonth-1;
-					endMonth = YearMonth.of( extraction.getYear()+1,firstMonth);
 					year = extraction.getYear();
+					if (firstMonth == 1) {
+						startMonth = YearMonth.of(year, firstMonth);
+						endMonth = YearMonth.of(year, 12);
+					}else{
+						startMonth = YearMonth.of(year, firstMonth);
+						firstMonth = firstMonth - 1;
+						endMonth = YearMonth.of(year + 1, firstMonth);
+					}
 				}
 				CheckConditionTimeDto yearDto = new CheckConditionTimeDto(c.getAlarmCategory().value, textAgreementTime(5), null, null, startMonth.toString(), endMonth.toString(), year );
 				yearDto.setTabOrder(5);
+				yearDto.setPeriod36Agreement(Period.Yearly.value);
 				result.add(yearDto);
 			}
 		}

@@ -13,6 +13,7 @@ public class DPMonthValue extends DPMonthParent {
 	private List<DPItemValue> items;
 	private String redConditionMessage;
 	private Boolean hasFlex;
+	private Boolean needCallCalc;
 
 	public DPMonthValue(String employeeId, int yearMonth, int closureId, ClosureDateDto closureDate,
 			List<DPItemValue> items) {

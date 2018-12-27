@@ -63,7 +63,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.i18n.TextResource;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomainService {
 
@@ -130,7 +130,7 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 	@Inject
 	private ShortTimeOfDailyPerformanceRepository shortTimeOfDailyPerformanceRepository;
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void resetDailyPerformance(String companyID, String employeeID, GeneralDate processingDate,
 			String empCalAndSumExecLogID, ExecutionType reCreateAttr, PeriodInMasterList periodInMasterList,
@@ -160,7 +160,7 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 			if (executionLog.isPresent()) {
 				if (executionLog.get().getDailyCreationSetInfo().isPresent()) {
 					if (executionLog.get().getDailyCreationSetInfo().get().getPartResetClassification().isPresent()) {
-						// 計算区分を日別実績に反映する(Reflect 計算区分 in 日別実績)
+						// 計算区分を再設定する
 						if (executionLog.get().getDailyCreationSetInfo().get().getPartResetClassification().get()
 								.getCalculationClassificationResetting() == true) {
 							
@@ -174,7 +174,7 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 									periodInMasterList);
 
 						}
-						// 所属情報を反映する(Reflect info 所属情報)
+						// 所属情報を再設定する
 						if (executionLog.get().getDailyCreationSetInfo().get().getPartResetClassification().get()
 								.getMasterReconfiguration() == true) {
 							
@@ -414,37 +414,60 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 							converter2.withAttendanceLeavingGate(
 									stampOutput.getReflectStampOutput().getAttendanceLeavingGateOfDaily());
 							converter2.withPCLogInfo(stampOutput.getReflectStampOutput().getPcLogOnInfoOfDaily());
-
-							if (!attItemIdStateOfTimeLeaving.isEmpty()) {
-								List<ItemValue> valueList = new ArrayList<>();
-
-								for (Integer timeLeavingId : attItemIds) {
-									// state of attItemId
-									Optional<EditStateOfDailyPerformance> editState = attItemIdStateOfTimeLeaving
-											.stream().filter(item -> item.getAttendanceItemId() == timeLeavingId)
-											.findFirst();
-									if (editState.isPresent()) {
-										// get data from DB
-										valueList.add(converter.convert(timeLeavingId).get());
-									}
+							
+							// ---------------------
+							// neu nhu attItemIdStateOfTimeLeaving chua gia tri cua Id nao, thi Id do lay
+							// gia tri cua Old, còn nếu k chua thì lấy New			
+														
+							for(int itemId : attItemIds){
+								if (attItemIdStateOfTimeLeaving.stream().anyMatch(item -> item.getAttendanceItemId() == itemId)) {
+									// get itemValue of Id
+									Optional<ItemValue> itemValue = converter.convert(itemId);
+									// merge value of Id to converter2
+									if (itemValue.isPresent()) {
+										converter2.merge(itemValue.get());
+									}								
 								}
-
-								// update value of Attendance Item Id
-								converter2.merge(valueList);
-								// set data stampOutPut
-								stampOutput.getReflectStampOutput().setTimeLeavingOfDailyPerformance(converter.timeLeaving().orElse(null));
-								stampOutput.getReflectStampOutput().setOutingTimeOfDailyPerformance(converter.outingTime().orElse(null));
-								stampOutput.getReflectStampOutput().setTemporaryTimeOfDailyPerformance(converter.temporaryTime().orElse(null));
-								stampOutput.getReflectStampOutput().setAttendanceLeavingGateOfDaily(converter.attendanceLeavingGate().orElse(null));
-								stampOutput.getReflectStampOutput().setPcLogOnInfoOfDaily(converter.pcLogInfo().orElse(null));
-							} else {
-								// set data stampOutPut
-								stampOutput.getReflectStampOutput().setTimeLeavingOfDailyPerformance(converter2.timeLeaving().orElse(null));
-								stampOutput.getReflectStampOutput().setOutingTimeOfDailyPerformance(converter2.outingTime().orElse(null));
-								stampOutput.getReflectStampOutput().setTemporaryTimeOfDailyPerformance(converter2.temporaryTime().orElse(null));
-								stampOutput.getReflectStampOutput().setAttendanceLeavingGateOfDaily(converter2.attendanceLeavingGate().orElse(null));
-								stampOutput.getReflectStampOutput().setPcLogOnInfoOfDaily(converter2.pcLogInfo().orElse(null));
 							}
+							
+							stampOutput.getReflectStampOutput().setTimeLeavingOfDailyPerformance(converter2.timeLeaving().orElse(null));
+							stampOutput.getReflectStampOutput().setOutingTimeOfDailyPerformance(converter2.outingTime().orElse(null));
+							stampOutput.getReflectStampOutput().setTemporaryTimeOfDailyPerformance(converter2.temporaryTime().orElse(null));
+							stampOutput.getReflectStampOutput().setAttendanceLeavingGateOfDaily(converter2.attendanceLeavingGate().orElse(null));
+							stampOutput.getReflectStampOutput().setPcLogOnInfoOfDaily(converter2.pcLogInfo().orElse(null));
+							
+							//---------------
+
+//							if (!attItemIdStateOfTimeLeaving.isEmpty()) {
+//								List<ItemValue> valueList = new ArrayList<>();
+//
+//								for (Integer timeLeavingId : attItemIds) {
+//									// state of attItemId
+//									Optional<EditStateOfDailyPerformance> editState = attItemIdStateOfTimeLeaving
+//											.stream().filter(item -> item.getAttendanceItemId() == timeLeavingId)
+//											.findFirst();
+//									if (editState.isPresent()) {
+//										// get data from DB
+//										valueList.add(converter.convert(timeLeavingId).get());
+//									}
+//								}
+//
+//								// update value of Attendance Item Id
+//								converter2.merge(valueList);
+//								// set data stampOutPut
+//								stampOutput.getReflectStampOutput().setTimeLeavingOfDailyPerformance(converter.timeLeaving().orElse(null));
+//								stampOutput.getReflectStampOutput().setOutingTimeOfDailyPerformance(converter.outingTime().orElse(null));
+//								stampOutput.getReflectStampOutput().setTemporaryTimeOfDailyPerformance(converter.temporaryTime().orElse(null));
+//								stampOutput.getReflectStampOutput().setAttendanceLeavingGateOfDaily(converter.attendanceLeavingGate().orElse(null));
+//								stampOutput.getReflectStampOutput().setPcLogOnInfoOfDaily(converter.pcLogInfo().orElse(null));
+//							} else {
+//								// set data stampOutPut
+//								stampOutput.getReflectStampOutput().setTimeLeavingOfDailyPerformance(converter2.timeLeaving().orElse(null));
+//								stampOutput.getReflectStampOutput().setOutingTimeOfDailyPerformance(converter2.outingTime().orElse(null));
+//								stampOutput.getReflectStampOutput().setTemporaryTimeOfDailyPerformance(converter2.temporaryTime().orElse(null));
+//								stampOutput.getReflectStampOutput().setAttendanceLeavingGateOfDaily(converter2.attendanceLeavingGate().orElse(null));
+//								stampOutput.getReflectStampOutput().setPcLogOnInfoOfDaily(converter2.pcLogInfo().orElse(null));
+//							}
 
 						}
 					}

@@ -48,17 +48,26 @@ public class InitValueSetItemFinder {
 	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
 
 	// sonnlb
-	public List<SettingItemDto> getAllInitItemByCtgCode(boolean isScreenC, FindInitItemDto command, boolean isRegisFrLayoutCPS002) {
+	public List<SettingItemDto> getAllInitItemByCtgCode(boolean isScreenC, FindInitItemDto command, boolean isRegisFrLayoutCPS002 , boolean getCombobox) {
 		List<SettingItemDto> result = new ArrayList<SettingItemDto>();
+		
+		String cid = AppContexts.user().companyId();
 
 		String categoryCd = command.getCategoryCd();
 
 		GeneralDate baseDate = command.getBaseDate();
 
 		String employeeId = AppContexts.user().employeeId();
+		
+		PersonInfoCategory ctg = getCategory(categoryCd, cid);
 
-		List<PerInfoInitValueSetItemDetail> itemList = this.settingItemRepo.getAllInitItem(command.getInitSettingId(),
-				categoryCd);
+		List<PerInfoInitValueSetItemDetail> itemList = new ArrayList<>();
+		if (getCombobox) {
+			itemList = this.settingItemRepo.getAllInitItemForComboBox(command.getInitSettingId(), ctg.getPersonInfoCategoryId(), cid);
+		} else {
+			itemList = this.settingItemRepo.getAllInitItem(command.getInitSettingId(), ctg.getPersonInfoCategoryId(), cid);
+		}
+		
 
 		result.addAll(itemList.stream().map(x -> fromInitValuetoDto(x)).collect(Collectors.toList()));
 
@@ -91,7 +100,7 @@ public class InitValueSetItemFinder {
 			List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119");
 			for (SettingItemDto settingItemDto : result) {
 				if (standardDateItemCodes.contains(settingItemDto.getItemCode())) {
-					comboBoxStandardDate = (GeneralDate) settingItemDto.getSaveData().getValue();
+					comboBoxStandardDate = settingItemDto.getSaveData().getValue().toString().isEmpty()? comboBoxStandardDate :(GeneralDate) settingItemDto.getSaveData().getValue();
 					break;
 				}
 			}
@@ -262,5 +271,17 @@ public class InitValueSetItemFinder {
 	}
 
 	// sonnlb
+	
+	private PersonInfoCategory getCategory(String categoryCd, String companyId) {
+		// Get perInfoCategory
+		Optional<PersonInfoCategory> perInfoCategory = perInfoCategoryRepositoty.getPerInfoCategoryByCtgCD(categoryCd,
+				companyId);
+		
+		if (!perInfoCategory.isPresent()) {
+			throw new RuntimeException("invalid PersonInfoCategory");
+		}
+		
+		return perInfoCategory.get();
+	}
 
 }

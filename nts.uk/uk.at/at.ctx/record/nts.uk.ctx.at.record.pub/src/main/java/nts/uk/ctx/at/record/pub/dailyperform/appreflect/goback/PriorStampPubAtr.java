@@ -4,12 +4,15 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum PriorStampPubAtr {
-	/** 直行直帰の打刻優先 */
-	GOBACKPRIOR(0, "直行直帰の打刻優先"),
 	/**
-	 * 実打刻優先
+	 * 実打刻を優先する
 	 */
-	REALPRIOR(1, "実打刻優先");
+	ACTUAL_TIME(0, "実打刻を優先する"),
+	
+	/**
+	 * 申請の時刻を優先する
+	 */
+	APP_TIME(1, "申請の時刻を優先する");
 	
 	public final Integer value;
 	

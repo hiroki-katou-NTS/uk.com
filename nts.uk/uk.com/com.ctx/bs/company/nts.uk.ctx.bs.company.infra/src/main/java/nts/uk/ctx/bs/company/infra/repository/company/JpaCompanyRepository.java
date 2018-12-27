@@ -4,11 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.bs.company.infra.repository.company;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
+//import java.util.stream.Collector;
+//import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -212,8 +212,11 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	 */
 	@Override
 	public Optional<Company> find(String companyId) {
-		val pk = new BcmmtCompanyInforPK(companyId);
-		return this.queryProxy().find(pk, BcmmtCompanyInfor.class).map(x -> toDomainCom(x));
+		Optional<BcmmtAddInfor> addInforOptional = this.queryProxy().find(new BcmmtAddInforPK(companyId), BcmmtAddInfor.class);
+		return this.queryProxy().find(new BcmmtCompanyInforPK(companyId), BcmmtCompanyInfor.class).map(x -> {
+			x.bcmmtAddInfor = addInforOptional.orElse(null);
+			return toDomainCom(x);
+		});
 	}
 	
 	/**
@@ -232,8 +235,25 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		oldEntity.isAbolition = entity.isAbolition;
 		oldEntity.startMonth = entity.startMonth;
 		oldEntity.taxNo = entity.taxNo;
-		oldEntity.bcmmtAddInfor = entity.bcmmtAddInfor;
 		this.commandProxy().update(oldEntity);
+
+		if (company.getAddInfor() != null) {
+			Optional<BcmmtAddInfor> oldAddEntityOpt = this.queryProxy().find(entity.bcmmtAddInfor.bcmmtAddInforPK, BcmmtAddInfor.class);
+			BcmmtAddInfor newAddEntity = entity.bcmmtAddInfor;
+			if (oldAddEntityOpt.isPresent()) {
+				BcmmtAddInfor oldAddEntity = oldAddEntityOpt.get();
+				oldAddEntity.add_1 = newAddEntity.add_1;
+				oldAddEntity.add_2 = newAddEntity.add_2;
+				oldAddEntity.addKana_1 = newAddEntity.addKana_1;
+				oldAddEntity.addKana_2 = newAddEntity.addKana_2;
+				oldAddEntity.faxNum = newAddEntity.faxNum;
+				oldAddEntity.phoneNum = newAddEntity.phoneNum;
+				oldAddEntity.postCd = newAddEntity.postCd;
+				this.commandProxy().update(oldAddEntity);
+			} else {
+				this.commandProxy().insert(newAddEntity);
+			}
+		}
 	}
 
 	/**

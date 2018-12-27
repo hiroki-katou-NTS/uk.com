@@ -14,12 +14,13 @@ import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.ctx.sys.portal.infra.entity.standardmenu.CcgstStandardMenu;
 import nts.uk.ctx.sys.portal.infra.entity.standardmenu.CcgstStandardMenuPK;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.menu.ShareStandardMenuAdapter;
 
 /**
  * The Class JpaStandardMenuRepository.
  */
 @Stateless
-public class JpaStandardMenuRepository extends JpaRepository implements StandardMenuRepository {
+public class JpaStandardMenuRepository extends JpaRepository implements StandardMenuRepository, ShareStandardMenuAdapter {
 	private static final String SEL = "SELECT s FROM CcgstStandardMenu s ";
 	private static final String GET_ALL_STANDARD_MENU = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId and s.queryString NOT LIKE CONCAT('%',:toppagecode,'%')";
 	private static final String GET_ALL_STANDARD_MENU_BY_SYSTEM = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
@@ -45,6 +46,9 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	
 	private static final String GET_PG = "SELECT a FROM CcgstStandardMenu a WHERE a.ccgmtStandardMenuPK.companyId = :companyId"
 			+ " AND a.programId = :programId AND a.screenID = :screenId";
+	private static final String GET_PG_BYQRY = "SELECT a FROM CcgstStandardMenu a WHERE a.ccgmtStandardMenuPK.companyId = :companyId"
+			+ " AND a.programId = :programId AND a.screenID = :screenId"
+			+ " AND a.queryString = :queryString";
 
 	public CcgstStandardMenu insertToEntity(StandardMenu domain) {
 		 CcgstStandardMenuPK ccgstStandardMenuPK = new CcgstStandardMenuPK(domain.getCompanyId(), domain.getCode().v(), domain.getSystem().value, domain.getClassification().value);
@@ -293,5 +297,40 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 		.setParameter("system",  system)
 		.setParameter("classification",  classification)
 		.executeUpdate();
+	}
+
+	@Override
+	public boolean isEsistMenuWith(String comId, String screenId, String programId, String queryString) {
+		String query = "SELECT c FROM CcgstStandardMenu c WHERE c.ccgmtStandardMenuPK.companyId = :companyId AND c.programId = :programID AND c.screenID = :screenID AND c.queryString =:queryString";
+		return !this.queryProxy().query(query, CcgstStandardMenu.class)
+				.setParameter("companyId", comId)
+				.setParameter("screenID", screenId)
+				.setParameter("programID", programId)
+				.setParameter("queryString", queryString)
+				.getList().isEmpty();
+	}
+
+	@Override
+	public Optional<StandardMenu> getPgName(String companyId, String programId, String screenId, String queryString) {
+		return this.queryProxy().query(GET_PG_BYQRY, CcgstStandardMenu.class)
+				.setParameter("companyId", companyId)
+				.setParameter("programId", programId)
+				.setParameter("screenId", screenId)
+				.setParameter("queryString", queryString)
+				.getSingle(c -> toDomain(c));
+	}
+
+	private static final String GET_MAX_ORDER = "SELECT MAX(t.displayOrder) FROM CcgstStandardMenu t "
+			+ "WHERE t.ccgmtStandardMenuPK.companyId = :companyId "
+			+ "AND t.ccgmtStandardMenuPK.system = :system "
+			+ "AND t.ccgmtStandardMenuPK.classification = :classification ";
+	
+	@Override
+	public int maxOrderStandardMenu(String companyId, int system, int classification) {
+		return this.queryProxy().query(GET_MAX_ORDER, int.class)
+		.setParameter("companyId", companyId)
+		.setParameter("system",  system)
+		.setParameter("classification",  classification)
+		.getSingle().orElse(0);
 	}
 }

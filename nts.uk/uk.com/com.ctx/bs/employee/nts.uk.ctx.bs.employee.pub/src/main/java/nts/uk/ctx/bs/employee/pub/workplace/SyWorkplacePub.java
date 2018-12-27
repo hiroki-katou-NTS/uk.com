@@ -154,6 +154,8 @@ public interface SyWorkplacePub {
 	// RequestList 227
 	List<AffAtWorkplaceExport> findBySIdAndBaseDate(List<String> sids, GeneralDate baseDate);
 	
+	List<AffAtWorkplaceExport> findBySIdAndBaseDateV2(List<String> sids, GeneralDate baseDate);
+	
 	
 	
 	/**
@@ -176,7 +178,7 @@ public interface SyWorkplacePub {
 	 * @return the wkp cd name
 	 */
 	// RequestList164
-	List<WkpCdNameExport> getWkpCdName(String companyId, GeneralDate baseDate, List<String> wkpIds);
+	List<WkpIdNameHierarchyCdExport> getWkpIdNameHierarchyCd(String companyId, GeneralDate baseDate, List<String> wkpIds);
 	
 	// RequestList120 version2
 	List<AffWorkplaceExport> getByLstWkpIdAndPeriod(List<String> lstWkpId, GeneralDate startDate,GeneralDate endDate);
@@ -222,6 +224,6 @@ public interface SyWorkplacePub {
 	 * @param baseDates the base dates
 	 * @return the workplace map code base date name
 	 */
-	Map<Pair<String, GeneralDate>, String> getWorkplaceMapCodeBaseDateName(String companyId,
+	Map<Pair<String, GeneralDate>, Pair<String,String>> getWorkplaceMapCodeBaseDateName(String companyId,
 			List<String> wpkCodes, List<GeneralDate> baseDates);
 }

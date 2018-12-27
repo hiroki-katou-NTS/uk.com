@@ -4,14 +4,15 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum ScheTimeReflectPubAtr {
-	/** 申請した時刻を反映する */
-	APPTIME(0, "申請した時刻を反映する"),
 	/**
-	 * 予定就業時間帯の定時を反映する
+	 * 自動変更しない
 	 */
-	SCHETIME(1, "予定就業時間帯の定時を反映する");
+	PRIORITY_APPLI_TIME(0),
+	/**
+	 * 常に自動変更する
+	 */
+	PRIORITY_FIX_TIME_SCHEDULED_WORK(1);
 	
 	public final Integer value;
 	
-	public final String name;
 }

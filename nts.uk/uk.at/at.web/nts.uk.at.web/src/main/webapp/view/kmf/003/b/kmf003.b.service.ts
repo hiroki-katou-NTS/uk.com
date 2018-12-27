@@ -7,7 +7,8 @@ module nts.uk.at.view.kmf003.b.service {
         findGrantByCode: "at/share/grantholidaytbl/findByCode/{0}/{1}",
         addGrantHdTbl: "at/share/lengthofservice/add",
         calculateGrantDate: "at/share/grantholidaytbl/calculateGrantDate",
-        checkData: "ctx/at/share/vacation/setting/annualpaidleave/find/checkkmf003"
+        checkData: "ctx/at/share/vacation/setting/annualpaidleave/find/checkkmf003",
+        
     }  
     
     /**

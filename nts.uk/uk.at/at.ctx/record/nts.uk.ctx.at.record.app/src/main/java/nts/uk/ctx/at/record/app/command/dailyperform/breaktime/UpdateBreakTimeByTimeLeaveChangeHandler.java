@@ -146,10 +146,10 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends CommandHandlerWithR
 		
 		for(int i = 0; i < startItemsToMerge.size(); i++){
 			int itemNo = DailyCorrectEventServiceCenter.START_BREAK_TIME_CLOCK_ITEMS.indexOf(startItemsToMerge.get(i));
-			
-			if(endItemsToMerge.size() > i && endItemsToMerge.get(i) == DailyCorrectEventServiceCenter.END_BREAK_TIME_CLOCK_ITEMS.get(itemNo)){
+			int itemEndNo = endItemsToMerge.indexOf(DailyCorrectEventServiceCenter.END_BREAK_TIME_CLOCK_ITEMS.get(itemNo));
+			if(itemEndNo >= 0){
 				result.add(startItemsToMerge.get(i));
-				result.add(endItemsToMerge.get(i));
+				result.add(endItemsToMerge.get(itemEndNo));
 			}
 		}
 		

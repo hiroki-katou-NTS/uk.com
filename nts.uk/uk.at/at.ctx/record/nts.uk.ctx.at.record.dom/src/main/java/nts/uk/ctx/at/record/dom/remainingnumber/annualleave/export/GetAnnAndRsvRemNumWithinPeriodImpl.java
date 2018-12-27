@@ -48,7 +48,7 @@ public class GetAnnAndRsvRemNumWithinPeriodImpl implements GetAnnAndRsvRemNumWit
 	/** 期間中の年休積休残数を取得 */
 	@Override
 	public AggrResultOfAnnAndRsvLeave algorithm(String companyId, String employeeId, DatePeriod aggrPeriod,
-			TempAnnualLeaveMngMode mode, GeneralDate criteriaDate, boolean isGetNextMonthData,
+			InterimRemainMngMode mode, GeneralDate criteriaDate, boolean isGetNextMonthData,
 			boolean isCalcAttendanceRate, Optional<Boolean> isOverWrite,
 			Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,
 			Optional<List<TmpReserveLeaveMngWork>> tempRsvDataforOverWriteList,
@@ -65,7 +65,7 @@ public class GetAnnAndRsvRemNumWithinPeriodImpl implements GetAnnAndRsvRemNumWit
 	/** 期間中の年休積休残数を取得　（月次集計用） */
 	@Override
 	public AggrResultOfAnnAndRsvLeave algorithm(String companyId, String employeeId, DatePeriod aggrPeriod,
-			TempAnnualLeaveMngMode mode, GeneralDate criteriaDate, boolean isGetNextMonthData,
+			InterimRemainMngMode mode, GeneralDate criteriaDate, boolean isGetNextMonthData,
 			boolean isCalcAttendanceRate, Optional<Boolean> isOverWrite,
 			Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,
 			Optional<List<TmpReserveLeaveMngWork>> tempRsvDataforOverWriteList,
@@ -178,6 +178,108 @@ public class GetAnnAndRsvRemNumWithinPeriodImpl implements GetAnnAndRsvRemNumWit
 		aggrResult.setReserveLeave(aggrResultOfreserveOpt);
 		
 		// 「年休積立年休の集計結果」を返す
+		return aggrResult;
+	}
+
+	@Override
+	public AggrResultOfAnnAndRsvLeave getRemainAnnRscByPeriod(String cID, String sID, DatePeriod aggrPeriod,
+			InterimRemainMngMode mode, GeneralDate criteriaDate, boolean isGetNextMonthData, boolean isCalcAttendanceRate, 
+			Optional<Boolean> isOverWrite, Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,
+			Optional<List<TmpReserveLeaveMngWork>> tempRsvDataforOverWriteList, Optional<Boolean> isOutputForShortage,
+			Optional<Boolean> noCheckStartDate, Optional<AggrResultOfAnnualLeave> prevAnnualLeave,
+			Optional<AggrResultOfReserveLeave> prevReserveLeave, Optional<MonAggrCompanySettings> companySets,
+			Optional<MonAggrEmployeeSettings> employeeSets, Optional<MonthlyCalculatingDailys> monthlyCalcDailys,
+			Optional<ClosureStatusManagement> sttMng, Optional<GeneralDate> clsStrOpt) {
+		AggrResultOfAnnAndRsvLeave aggrResult = new AggrResultOfAnnAndRsvLeave();
+			// 集計開始日までの年休積立年休を取得
+			{
+				boolean isChangeParam = false;
+				// 集計開始日時点の前回年休の集計結果が存在するかチェック
+				boolean isExistPrevAnnual = false;
+				if (prevAnnualLeave.isPresent()){
+					if (prevAnnualLeave.get().getAsOfStartNextDayOfPeriodEnd().getYmd().equals(aggrPeriod.start())){
+						isExistPrevAnnual = true;
+					}
+				}
+				boolean isExistPrevReserve = false;
+				if (isExistPrevAnnual){
+					// 集計開始日時点の前回の積立年休の集計結果が存在するかチェック
+					if (prevReserveLeave.isPresent()){
+						if (prevReserveLeave.get().getAsOfStartNextDayOfPeriodEnd().getYmd().equals(aggrPeriod.start())){
+							isExistPrevReserve = true;
+						}
+					}
+				}
+				if (!isExistPrevAnnual && !isExistPrevReserve){
+					// 「集計開始日を締め開始日とする」をチェック
+					boolean isCheck = false;
+					if (noCheckStartDate.isPresent()) if (noCheckStartDate.get()) isCheck = true;
+					if (!isCheck) isChangeParam = true;
+				}
+	
+				if (isChangeParam){
+					// 休暇残数を計算する締め開始日を取得する
+					GeneralDate closureStart = null;	// 締め開始日
+					{
+						if (sttMng.isPresent()){
+							closureStart = sttMng.get().getPeriod().end().addDays(1);
+						}else {
+							if (clsStrOpt.isPresent()) closureStart = clsStrOpt.get();
+						}
+					}
+					if (closureStart != null){
+						if (closureStart.equals(aggrPeriod.start())){
+							
+							// 「集計開始日を締め開始日にする」をtrueにする
+							noCheckStartDate = Optional.of(true);
+						}
+						if (closureStart.before(aggrPeriod.start())){
+							// 「期間中の年休積立年休残数を取得」を実行する
+							val prevResult = this.getRemainAnnRscByPeriod(cID, sID,
+									new DatePeriod(closureStart, aggrPeriod.start().addDays(-1)),
+									mode, criteriaDate, isGetNextMonthData, isCalcAttendanceRate, isOverWrite,
+									tempAnnDataforOverWriteList, tempRsvDataforOverWriteList,
+									isOutputForShortage, Optional.of(true), Optional.empty(), Optional.empty(),
+									companySets, employeeSets, Optional.empty(), sttMng, clsStrOpt);
+							
+							// 受け取った結果をパラメータに反映する
+							noCheckStartDate = Optional.of(false);
+							prevAnnualLeave = prevResult.getAnnualLeave();
+							prevReserveLeave = prevResult.getReserveLeave();
+						}
+					}
+				}
+			}
+			
+			// 期間中の年休残数を取得
+			Boolean isNoCheckStartDate = false;
+			if (noCheckStartDate.isPresent()) isNoCheckStartDate = noCheckStartDate.get();
+			val aggrResultOfAnnualOpt = this.getAnnLeaRemNumWithinPeriod.algorithm(cID, sID, aggrPeriod,
+						mode, criteriaDate, isGetNextMonthData, isCalcAttendanceRate, isOverWrite,
+						tempAnnDataforOverWriteList, prevAnnualLeave, isNoCheckStartDate,
+						companySets, employeeSets, monthlyCalcDailys);
+	
+			// 「年休積立年休の集計結果．年休」　←　受け取った「年休の集計結果」
+			aggrResult.setAnnualLeave(aggrResultOfAnnualOpt);
+			
+			// 期間中の積立年休残数を取得
+			List<AnnualLeaveInfo> lapsedAnnualLeaveInfos = new ArrayList<>();
+			if (aggrResultOfAnnualOpt.isPresent()){
+				if (aggrResultOfAnnualOpt.get().getLapsed().isPresent()){
+					lapsedAnnualLeaveInfos = aggrResultOfAnnualOpt.get().getLapsed().get();
+				}
+			}
+			GetRsvLeaRemNumWithinPeriodParam rsvParam = new GetRsvLeaRemNumWithinPeriodParam(
+					cID, sID, aggrPeriod, mode, criteriaDate,
+					isGetNextMonthData, lapsedAnnualLeaveInfos, isOverWrite, tempRsvDataforOverWriteList,
+					isOutputForShortage, noCheckStartDate, prevReserveLeave);
+			val aggrResultOfreserveOpt = this.getRsvLeaRemNumWithinPeriod.algorithm(
+					rsvParam, companySets, monthlyCalcDailys);
+			
+			// 「年休積立年休の集計結果．積休」　←　受け取った「積立年休の集計結果」
+			aggrResult.setReserveLeave(aggrResultOfreserveOpt);
+			
+			// 「年休積立年休の集計結果」を返す
 		return aggrResult;
 	}
 }

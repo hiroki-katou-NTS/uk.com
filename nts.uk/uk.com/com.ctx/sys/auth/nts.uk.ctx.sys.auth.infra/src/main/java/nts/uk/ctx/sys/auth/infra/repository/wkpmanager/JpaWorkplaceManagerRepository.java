@@ -1,11 +1,14 @@
 package nts.uk.ctx.sys.auth.infra.repository.wkpmanager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManager;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManagerRepository;
 import nts.uk.ctx.sys.auth.infra.entity.wkpmanager.SacmtWorkplaceManager;
@@ -90,11 +93,15 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 	@Override
 	public List<WorkplaceManager> findByWkpDateAndManager(String wkpID, GeneralDate baseDate,
 			List<String> wkpManagerIDLst) {
-		return this.queryProxy().query(FIND_BY_WKP_DATE_MANAGER, SacmtWorkplaceManager.class)
+		List<WorkplaceManager> resultList = new ArrayList<>();
+		CollectionUtil.split(wkpManagerIDLst, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_WKP_DATE_MANAGER, SacmtWorkplaceManager.class)
 				.setParameter("workplaceId", wkpID)
 				.setParameter("baseDate", baseDate)
-				.setParameter("wkpManagerLst", wkpManagerIDLst)
-				.getList(c -> c.toDomain());
+				.setParameter("wkpManagerLst", subList)
+				.getList(c -> c.toDomain()));
+		});
+		return resultList;
 	}
 	
 }

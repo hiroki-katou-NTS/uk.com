@@ -1,4 +1,7 @@
 module nts.uk.at.view.kmk013.h {
+    
+    import blockUI = nts.uk.ui.block;
+    
     export module viewmodel {
         export class ScreenModel {
             itemListH2_3: KnockoutObservableArray<any>;
@@ -131,7 +134,10 @@ module nts.uk.at.view.kmk013.h {
                 let dataOutManage = <any>{};
                 let dataManageEntryExit = <any>{};
                 
+                blockUI.grayout();
+                
                 if (nts.uk.ui.errors.hasError()) {
+                    blockUI.clear();
                     return;
                 }
                 
@@ -146,11 +152,11 @@ module nts.uk.at.view.kmk013.h {
                 dataOutManage.maxUsage = self.valueH6_3();
                 
                 dataManageEntryExit.useClassification1 = self.selectedH2_3();
-                dataManageEntryExit.abc = "234";
                 
                 $.when(service.save(data), service.saveOutManage(dataOutManage), service.saveManageEntryExit(dataManageEntryExit)).done(() => {
                     nts.uk.ui.dialog.info({messageId: 'Msg_15'});
-                        $( "#h2_3" ).focus();        
+                        $( "#h2_3" ).focus();
+                        blockUI.clear();
                 });
                 
             }

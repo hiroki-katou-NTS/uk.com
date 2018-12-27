@@ -15,6 +15,8 @@ public interface RervLeaGrantRemDataRepository {
 	
 	Optional<ReserveLeaveGrantRemainingData> getById(String id);
 	
+	boolean checkValidateGrantDay(String sid, String rid, GeneralDate grantDate);
+	
 	void add(ReserveLeaveGrantRemainingData data, String cId);
 	
 	void update(ReserveLeaveGrantRemainingData data);

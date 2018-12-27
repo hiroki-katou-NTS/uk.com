@@ -1,9 +1,9 @@
 package nts.uk.file.at.app.export.dailyschedule.data;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -36,7 +36,7 @@ public class WorkplaceReportData {
 	public List<EmployeeReportData> lstEmployeeReportData = new ArrayList<>();
 	
 	/** The lst child workplace report data. */
-	public Map<String, WorkplaceReportData> lstChildWorkplaceReportData = new HashMap<>();
+	public Map<String, WorkplaceReportData> lstChildWorkplaceReportData = new TreeMap<>();
 	
 	/** The workplace total. */
 	public WorkplaceTotal workplaceTotal;
@@ -46,6 +46,9 @@ public class WorkplaceReportData {
 	
 	// Period for optimizing performance
 	public DatePeriod period;
+
+	// Employee data & child workplaces' employee data presentation
+	boolean hasData = false;
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)

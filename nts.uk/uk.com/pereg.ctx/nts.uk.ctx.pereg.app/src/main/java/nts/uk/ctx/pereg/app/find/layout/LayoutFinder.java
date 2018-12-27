@@ -211,7 +211,7 @@ public class LayoutFinder {
 		Map<String, List<LayoutPersonInfoClsDto>> classItemInCategoryMap = authItemClasList.stream()
 				.filter(classItem -> classItem.getLayoutItemType() != LayoutItemType.SeparatorLine)
 				.collect(Collectors.groupingBy(LayoutPersonInfoClsDto::getPersonInfoCategoryID));
-
+		
 		for (Entry<String, List<LayoutPersonInfoClsDto>> classItemsOfCategory : classItemInCategoryMap.entrySet()) {
 			String categoryId = classItemsOfCategory.getKey();
 			List<LayoutPersonInfoClsDto> classItemList = classItemsOfCategory.getValue();
@@ -371,7 +371,7 @@ public class LayoutFinder {
 				MappingFactory.mapListItemClass(peregDto, classItemList);
 
 				Map<String, Object> itemValueMap = MappingFactory.getFullDtoValue(peregDto);
-				List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119");
+				List<String> standardDateItemCodes = Arrays.asList("IS00020", "IS00077", "IS00082", "IS00119","IS00781");
 				for (String itemCode : standardDateItemCodes) {
 					if (itemValueMap.containsKey(itemCode)) {
 						comboBoxStandardDate = (GeneralDate) itemValueMap.get(itemCode);

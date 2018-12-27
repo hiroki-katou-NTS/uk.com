@@ -13,7 +13,7 @@ module nts.uk.at.view.kal001.d.service {
         
         export function extractAlarm(taskId :any ,numberEmpSuccess: any, statusId:string ,listEmployee: Array<model.UnitModel>, alarmCode: string, listPeriodByCategory: Array<model.PeriodByCategory>): JQueryPromise<ExtractedAlarmDto>{
             let command = new ExtractAlarmCommand(listEmployee, alarmCode, 
-                                                   _.map(listPeriodByCategory, (item) =>{ return new PeriodByCategoryCommand(item);}));
+                                                   _.map(listPeriodByCategory, (item) =>{ return new PeriodByCategoryCommand(item);}),statusId);
             
             let def = $.Deferred();
             
@@ -32,6 +32,7 @@ module nts.uk.at.view.kal001.d.service {
                             let sorted = _.sortBy(res.taskDatas, function(t){ return parseInt(t.key.replace("dataNo", "")) });
                             let dataX = []; 
                             _.forEach(sorted, item => {
+                                
                                 if(item.key === "extracting" ){
                                     data["extracting"] = item.valueAsBoolean;
                                 } else if(item.key === "nullData"){
@@ -48,15 +49,6 @@ module nts.uk.at.view.kal001.d.service {
                         }
                     });
                 }).while(infor => {
-                    if (infor.status == "REQUESTED_CANCEL") {
-                        // Update status into domain (ドメインモデル「アラームリスト抽出処理状況」を更新する)
-                        let status = AlarmExtraStatus.INTERRUPT;
-                        let extraParams = {
-                            processStatusId: statusId,
-                            status: status
-                        };
-                        service.extractFinished(extraParams);
-                    }
                     return (infor.pending || infor.running) && infor.status != "REQUESTED_CANCEL";
                 }).pause(1000));
             });
@@ -93,10 +85,12 @@ module nts.uk.at.view.kal001.d.service {
                 name: string;                
                 startDate: string;                
                 endDate : string; 
+                period36Agreement : numer; 
                 constructor(p: model.PeriodByCategory){
                     
                     this.category = p.category;
                     this.name = p.categoryName;     
+                    this.period36Agreement = p.period36Agreement;     
                                         
                     if(p.category==2|| p.category==5){
                         this.startDate =nts.uk.time.parseMoment(p.startDate).momentObject.toISOString() ;
@@ -121,9 +115,14 @@ module nts.uk.at.view.kal001.d.service {
                             this.endDate = nts.uk.time.parseMoment(p.endDate).momentObject.toISOString() ;
                                                         
                         } else if(p.categoryName=="36協定　年間"){
-                            let sDate =p.year +'/' + p.startDate.slice(5, 7) +"/01";
-                            let eDate =(parseInt(p.year) + 1) +'/' + p.endDate.slice(5,7) ;
-                            
+                            let sMonth = p.startDate.slice(5, 7);
+                            let sDate = p.year +'/' + sMonth +"/01";
+                            let eDate = "" ;
+                            if (sMonth != 1) {
+                                eDate = (parseInt(p.year) + 1) +'/' + p.endDate.slice(5, 7);
+                            } else {
+                                eDate = p.year + '/' + p.endDate.slice(5, 7);
+                            }
                             let lastDay = new Date(Number(eDate.slice(0, 4)), Number(eDate.slice(5, 7)), 0);
                             eDate = eDate + "/"  +(lastDay.getDate() <10? "0" + lastDay.getDate() : lastDay.getDate());                            
                             
@@ -149,11 +148,12 @@ module nts.uk.at.view.kal001.d.service {
             listEmployee: Array<model.UnitModel>;
             alarmCode: string;
             listPeriodByCategory: Array<PeriodByCategoryCommand>;
-            
-            constructor(listEmployee: Array<model.UnitModel>,  alarmCode: string, listPeriodByCategory: Array<PeriodByCategoryCommand>){
+            statusProcessId :string;
+            constructor(listEmployee: Array<model.UnitModel>,  alarmCode: string, listPeriodByCategory: Array<PeriodByCategoryCommand>, statusProcessId : string){
                 this.listEmployee = listEmployee;
                 this.alarmCode = alarmCode;
                 this.listPeriodByCategory = _.uniqWith(listPeriodByCategory, _.isEqual);
+                this.statusProcessId = statusProcessId;
             }
         }
         

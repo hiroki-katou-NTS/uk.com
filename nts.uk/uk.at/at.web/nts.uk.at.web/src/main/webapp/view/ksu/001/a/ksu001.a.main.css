@@ -308,9 +308,8 @@ table th, table td {
 	background-image: url(../image/7.png);
 	height: 20px;
 	width: 20px;
-	left: 1px !important;
-	top: 4px !important;
-	margin-top: 0px !important
+	left: 2px !important;
+	margin-top: -2px !important
 }
 
 .mb-5 {

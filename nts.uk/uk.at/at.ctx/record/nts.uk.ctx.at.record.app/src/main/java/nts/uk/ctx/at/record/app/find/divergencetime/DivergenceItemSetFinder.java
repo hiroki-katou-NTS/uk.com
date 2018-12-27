@@ -9,11 +9,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeRepository;
-import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceAdapter;
+//import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceAdapter;
 import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceDto;
 import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceTypeDivergenceAdapter;
 import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceTypeDivergenceAdapterDto;
-import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.AttendanceItemNameAdapter;
+//import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.AttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.shr.com.context.AppContexts;
@@ -26,11 +26,11 @@ public class DivergenceItemSetFinder {
 	@Inject 
 	private AttendanceTypeDivergenceAdapter atType;
 	//user contexts
-	@Inject
-	private AttendanceNameDivergenceAdapter atName;
-	
-	@Inject
-	private AttendanceItemNameAdapter attendanceItemNameAdapter;
+//	@Inject
+//	private AttendanceNameDivergenceAdapter atName;
+//	
+//	@Inject
+//	private AttendanceItemNameAdapter attendanceItemNameAdapter;
 	
 	@Inject 
 	private CompanyDailyItemService companyDailyItemService;

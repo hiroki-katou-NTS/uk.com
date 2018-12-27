@@ -31,9 +31,9 @@
 							optionsText: 'name',
 							value: isIncludeOverTime,
 							required: true,
-							enable: true }"></div></td></tr>
+							enable: isEnableOverTime }"></div></td></tr>
 						<tr><td><div class="des-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_74')}</div></td></tr>
-						<tr><td><div tabindex="2" class="cf gen-switch"
+						<tr><td><div id="shortageSetting-switch" tabindex="2" class="cf gen-switch"
 						data-bind="ntsSwitchButton: {
 							name: '#[KMK004_75]',
 							options: shortageSettingOpt,

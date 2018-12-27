@@ -23,4 +23,5 @@ public interface ExecutionLogRequestImport {
 	 * @param processStatus enum ExecutionStatus
 	 */
 	void updateLogInfo(String employeeID, String empCalAndSumExecLogId, int executionContent, int state);
+	void updateLogInfo(String empCalAndSumExecLogId, int executionContent, int state);
 }

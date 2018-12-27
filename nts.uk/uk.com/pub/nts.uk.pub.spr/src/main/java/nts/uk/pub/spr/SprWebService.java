@@ -118,14 +118,6 @@ public class SprWebService {
 		    html.append("</body></html>");            
 		    return html.toString();
 		}
-		loginUserContextManager.loggedInAsEmployee(
-				loginUserContextSpr.getUserID(), 
-				loginUserContextSpr.getPersonID(), 
-				loginUserContextSpr.getContractCD(), 
-				loginUserContextSpr.getCompanyID(), 
-				loginUserContextSpr.getCompanyCD(), 
-				loginUserContextSpr.getLoginEmployeeID(), 
-				loginUserContextSpr.getEmployeeCD());
 		for(RoleInfoSpr roleInfor : loginUserContextSpr.getRoleList()){
 			switch (roleInfor.getRoleType()) {
 			case COMPANY_MANAGER:
@@ -200,10 +192,6 @@ public class SprWebService {
 		val html = new StringBuilder()
 				.append("<!DOCTYPE html>")
 				.append("<html><head><meta charset=\"UTF-8\"></head><body>");
-		paramsMap.forEach((name, value) -> {
-			html.append(name + " : " + value + "<br/>");
-			
-		});
 		val paramStringValue = new StringBuilder();
 		paramsValue.forEach((name,value)->{
 			if(value==null){

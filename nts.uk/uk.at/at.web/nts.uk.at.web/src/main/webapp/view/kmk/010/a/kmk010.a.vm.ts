@@ -60,17 +60,15 @@ module nts.uk.at.view.kmk010.a {
                 });
 
                 // find all rounding
-                service.findAllOvertimeRounding().done(function(data) {
-                    self.lstRounding = data;
+                service.findAllOvertimeRounding().done(function(lstRounding) {
+                    self.lstRounding = lstRounding;
+                      // find all rounding sub
+                    service.findAllOvertimeRoundingSub().done(function(lstRoundingSub) {
+                        self.lstRoundingSub = lstRoundingSub;
+                        self.updateSelectUnitRounding(self.superHD60HConMedModel.roundingTime());
+                    });
                 });
                 
-                // find all rounding sub
-                service.findAllOvertimeRoundingSub().done(function(data) {
-                    self.lstRoundingSub = data;
-                });
-                
-                self.updateSelectUnitRounding(self.superHD60HConMedModel.roundingTime());
-
                 // check manage call service
                 service.checkManageSixtyHourVacationSetting().done(function(data){
                     self.isManage(data.manage);
@@ -621,11 +619,10 @@ module nts.uk.at.view.kmk010.a {
             premiumExtra60HRates: PremiumExtra60HRateModel[];
 
             constructor() {
-                this.roundingTime = ko.observable(null);
-                this.rounding = ko.observable(1);
+                this.roundingTime = ko.observable(0);
+                this.rounding = ko.observable(0);
                 this.superHolidayOccurrenceUnit = ko.observable(0);
                 this.premiumExtra60HRates = [];
-
             }
 
             updateData(dto: SuperHD60HConMedDto): void {

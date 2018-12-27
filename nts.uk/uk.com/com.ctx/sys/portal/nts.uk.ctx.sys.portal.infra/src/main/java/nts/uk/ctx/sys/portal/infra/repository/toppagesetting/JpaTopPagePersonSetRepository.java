@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.portal.infra.repository.toppagesetting;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,7 +8,9 @@ import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPagePersonSet;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPagePersonSetRepository;
 import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CcgptTopPagePersonSet;
@@ -56,8 +59,12 @@ public class JpaTopPagePersonSetRepository extends JpaRepository implements TopP
 	 */
 	@Override
 	public List<TopPagePersonSet> findByListSid(String companyId, List<String> sId) {
-		return this.queryProxy().query(SELECT_BY_LIST_SID, CcgptTopPagePersonSet.class)
-				.setParameter("companyId", companyId).setParameter("employeeId", sId).getList(x -> toDomain(x));
+		List<TopPagePersonSet> results = new ArrayList<>();
+		CollectionUtil.split(sId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			results.addAll(this.queryProxy().query(SELECT_BY_LIST_SID, CcgptTopPagePersonSet.class)
+				.setParameter("companyId", companyId).setParameter("employeeId", subList).getList(x -> toDomain(x)));
+		});
+		return results;
 	}
 
 	/**

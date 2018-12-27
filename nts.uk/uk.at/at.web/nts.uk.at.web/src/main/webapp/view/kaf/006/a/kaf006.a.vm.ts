@@ -126,6 +126,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         //ver21
         relaResonDis: KnockoutObservable<boolean> = ko.observable(true);
         hdTypeDis: KnockoutObservable<boolean> = ko.observable(false);
+        dataMax: KnockoutObservable<boolean> = ko.observable(false);
         constructor(transferData :any) {
 
             let self = this;
@@ -155,6 +156,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 if(codeChange === undefined || codeChange == null || codeChange.length == 0){
                     return;
                 }
+                $('#relaReason').ntsError('clear');
                 service.changeRelaCD(self.selectedTypeOfDuty(), codeChange).done(function(data){
                     //上限日数表示エリア(vùng hiển thị số ngày tối đa)
                     let line1 = getText('KAF006_44');
@@ -166,7 +168,10 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                     }
                     if(data.maxDayObj != null){
                         self.maxDay(data.maxDayObj.maxDay);
-                        self.dayOfRela(data.maxDayObj.dayOfRela);  
+                        self.dayOfRela(data.maxDayObj.dayOfRela);
+                        self.dataMax(true);  
+                    }else{
+                        self.dataMax(false);    
                     }
                     let line2 = getText('KAF006_46',[maxDay]);
                     
@@ -346,6 +351,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                         $('.ntsStartDatePicker').focus();
                         self.dateValue({ startDate: self.appDate(), endDate: "" });
                         self.dateValue.subscribe(function() {
+                            if ($("#daterangepicker").find(".ntsDateRangeComponent").ntsError("hasError")) {
+                                return;
+                            }
                             if(self.dateValue().startDate != '' && self.dateValue().endDate != ''){
                                 self.findChangeAppDate(self.dateValue().startDate);
                             }
@@ -427,7 +435,10 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 }
                 if(data.maxDayObj != null){
                     self.maxDay(data.maxDayObj.maxDay);
-                    self.dayOfRela(data.maxDayObj.dayOfRela);  
+                    self.dayOfRela(data.maxDayObj.dayOfRela);
+                    self.dataMax(true);  
+                }else{
+                    self.dataMax(false);    
                 }
                 let line2 = getText('KAF006_46',[maxDay]);
                 
@@ -650,8 +661,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             let self = this;
             self.checkDisplayEndDate(self.displayEndDateFlg());
             if (self.displayEndDateFlg()) {
-                $(".ntsStartDatePicker").trigger("validate");
-                $(".ntsEndDatePicker").trigger("validate");
+               $('#daterangepicker').find(".nts-input").trigger('validate');
             } else {
                 $("#inputdate").trigger("validate");
             }

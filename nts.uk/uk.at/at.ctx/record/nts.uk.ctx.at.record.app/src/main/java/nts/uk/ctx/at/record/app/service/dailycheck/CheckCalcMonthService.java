@@ -16,7 +16,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
+//import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * @author thanhnx 月次集計を実施する必要があるかチェックする
@@ -43,6 +43,7 @@ public class CheckCalcMonthService {
 		return Pair.of(!datePeriod.isEmpty(), datePeriod);
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private Pair<Boolean, List<AggrPeriodEachActualClosure>> isInPeriod(List<AggrPeriodEachActualClosure> periods,
 			List<GeneralDate> lstDayChange) {
 		Set<AggrPeriodEachActualClosure> datePeriods = new HashSet<>();

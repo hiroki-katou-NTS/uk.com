@@ -2,7 +2,6 @@ package nts.uk.ctx.workflow.dom.service;
 
 import java.util.List;
 
-import nts.uk.ctx.workflow.dom.agent.Agent;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
@@ -89,5 +88,5 @@ public interface JudgmentApprovalStatusService {
 	 * @param approvalRootState
 	 * @return
 	 */
-	public ApproverPersonOutput judgmentTargetPerCanApproveNoDB(ApprovalRootState approvalRootState);
+	public ApproverPersonOutput judgmentTargetPerCanApproveNoDB(ApprovalRootState approvalRootState, String approverID);
 }

@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.uk.ctx.bs.employee.pub.employee.EmpInfoRegistered;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoExport;
@@ -43,6 +44,15 @@ public class AuthEmployeeAdapterImpl implements EmployeeAdapter{
 		return lstExport.stream().map(item->{
 			return new EmployeeImport(item.getCompanyId(),item.getPId(),item.getEmployeeId(),item.getEmployeeCode());
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<EmployeeImport> getEmpInfo(String cid, String pid) {
+		Optional<EmpInfoRegistered> data = employeePub.getEmpInfo(cid, pid);
+		if(!data.isPresent())
+			return Optional.empty();
+		EmployeeImport dataImport = new EmployeeImport(data.get().getCid(), data.get().getPid(), data.get().getSid(), data.get().getEmployeeCode(), data.get().getPersonName());
+		return Optional.of(dataImport);
 	}
 
 }

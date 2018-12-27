@@ -23,9 +23,11 @@ module nts.uk.at.view.kbt002.b {
 
             // Enumeration list
             targetMonthList: KnockoutObservableArray<EnumConstantDto> = ko.observableArray([]);
+            
             targetDailyPerfItemList: KnockoutObservableArray<EnumConstantDto> = ko.observableArray([]);
             repeatContentItemList: KnockoutObservableArray<EnumConstantDto> = ko.observableArray([]);
             monthDaysList: KnockoutObservableArray<EnumConstantDto> = ko.observableArray([]);
+            listDesignatedYear: KnockoutObservableArray<EnumConstantDto> = ko.observableArray([]);
 
             settingEnum: ExecItemEnumDto;
             
@@ -45,13 +47,12 @@ module nts.uk.at.view.kbt002.b {
                     self.initProcExec();
                     if (nts.uk.text.isNullOrEmpty(execItemCd)) {
                         self.isNewMode(true);
-
                     } else {
                         // set update mode
                         self.isNewMode(false);
                         let data = _.filter(self.execItemList(), function(o) { return o.execItemCd == execItemCd; });
                         if (data[0]) {
-                            self.currentExecItem(new ExecutionItem(data[0]));
+                            self.currentExecItem().createData(data[0]);
                             //                            self.wkpListText(self.buildWorkplaceStr(_.sortBy(self.currentExecItem().workplaceList())));
                             self.buildWorkplaceStr(self.currentExecItem().workplaceList());
                             if (self.currentExecItem().perScheduleCls()) {
@@ -61,6 +62,7 @@ module nts.uk.at.view.kbt002.b {
                     }
                     setTimeout(function() { self.focusInput(); }, 100);
                     //                    self.currentExecItem().refDate(moment(new Date()).toDate());
+                    nts.uk.ui.errors.clearAll();
                 });
                 
                
@@ -87,6 +89,7 @@ module nts.uk.at.view.kbt002.b {
                     self.targetDailyPerfItemList(setting.dailyPerfItems);
                     self.repeatContentItemList(setting.repeatContentItems);
                     self.monthDaysList(setting.monthDays);
+                    self.listDesignatedYear(setting.designatedYear);
                     service.findWorkplaceTree(moment(new Date()).toDate(), 2).done(function(dataList: Array<WorkplaceSearchData>) {
                         //                        self.workplaceList(_.sortBy(self.convertTreeToArray(dataList), function(wkp) {
                         //                            return parseInt(wkp.hierarchyCode);
@@ -131,12 +134,14 @@ module nts.uk.at.view.kbt002.b {
             // 登録 button
             saveProcExec() {
                 let self = this;
-
+                
                 // validate
                 if (self.validate()) {
                     return;
                 }
-
+                if (nts.uk.ui.errors.hasError()) {
+                    return;
+                }
                 if((self.currentExecItem().execScopeCls() == 1) && (self.currentExecItem().workplaceList().length == 0)) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1294" }); 
                 } else {
@@ -273,7 +278,7 @@ module nts.uk.at.view.kbt002.b {
 
             private buildWorkplaceStr(wkpIdList: any) {
                 let self = this;
-                var wkpText;
+                var wkpText = '';
                 //                wkpList = _.sortBy(wkpList, 'hierarchyCode');
                 if (wkpIdList) {
                     if (wkpIdList.length == 0) {
@@ -281,7 +286,11 @@ module nts.uk.at.view.kbt002.b {
                     } else if (wkpIdList.length == 1) {
                         var wkpId = wkpIdList[0];
                         var wkp = _.find(self.workplaceList(), function(o) { return o.workplaceId == wkpId; });
-                        wkpText = wkp.hierarchyCode + ' ' + wkp.name;
+                        if(_.isNil(wkp)){
+                            wkpText = getText('KBT002_193');
+                        }else{
+                            wkpText = wkp.hierarchyCode + ' ' + wkp.name;
+                        }
                     } else {
                         var workplaceList = [];
                         //                        var firstWkpId = wkpIdList[0];
@@ -289,15 +298,24 @@ module nts.uk.at.view.kbt002.b {
                         //                        var firstWkp = _.find(self.workplaceList(), function(o) { return o.workplaceId == firstWkpId; });
                         //                        var lastWkp = _.find(self.workplaceList(), function(o) { return o.workplaceId == lastWkpId; });
                         _.each(wkpIdList, wkpId => {
-                            var workplace = _.find(self.workplaceList(), function(o) { return o.workplaceId == wkpId; });
-                            workplaceList.push(workplace);
+                            let workplace = _.find(self.workplaceList(), function(o) { return o.workplaceId == wkpId; });
+                            if(!_.isNil(workplace)){
+                                workplaceList.push(workplace);
+                            }
+                            
                         });
-                        workplaceList = _.sortBy(workplaceList, function(wkp) {
-                            return parseInt(wkp.hierarchyCode);
-                        });
-                        var firstWkp = workplaceList[0];
-                        var lastWkp = workplaceList[workplaceList.length - 1];
-                        wkpText = firstWkp.hierarchyCode + ' ' + firstWkp.name + ' ～ ' + lastWkp.hierarchyCode + ' ' + lastWkp.name;
+                        if(workplaceList.length >1){
+                            workplaceList = _.sortBy(workplaceList, function(wkp) {
+                                return parseInt(wkp.hierarchyCode);
+                            });
+                            let firstWkp = workplaceList[0];
+                            let lastWkp = workplaceList[workplaceList.length - 1];    
+                            wkpText = firstWkp.hierarchyCode + ' ' + firstWkp.name + ' ～ ' + lastWkp.hierarchyCode + ' ' + lastWkp.name;
+                        }else if(workplaceList.length ==1){
+                            wkpText = workplaceList[0].hierarchyCode + ' ' + workplaceList[0].name + ' ～ ' + getText('KBT002_193');
+                        }else{
+                            wkpText = getText('KBT002_193') + ' ～ ' + getText('KBT002_193');
+                        }
                     }
                 }
                 self.wkpListText(wkpText);
@@ -327,6 +345,8 @@ module nts.uk.at.view.kbt002.b {
                     
                 } else if (execItem.targetMonth() == 2) {
                     startTargetDate = moment([today.year(), today.month(), execItem.targetDate()]).add(2, 'months');
+                } else if (execItem.targetMonth() == 3) {
+                    startTargetDate = moment([today.year(), today.month(), execItem.targetDate()]);
                 }
                 if(startTargetDate._isValid){
                     targetDateStr += startTargetDate.format("YYYY/MM/DD");
@@ -419,28 +439,34 @@ module nts.uk.at.view.kbt002.b {
                     command.createNewEmp =  self.currentExecItem().createNewEmp();
                     command.appRouteUpdateMonthly =  self.currentExecItem().appRouteUpdateMonthly();
                     command.processExecType = self.currentExecItem().processExecType();
-                    command.alarmCode = self.currentExecItem().alarmCode();
-                    command.alarmExtraction = self.currentExecItem().alarmAtr();
+                    command.alarmCode = _.isNil(self.currentExecItem().alarmCode())?null : self.currentExecItem().alarmCode();
+                    command.alarmAtr = self.currentExecItem().alarmAtr();
+                    command.mailPrincipal = self.currentExecItem().mailPrincipal();
+                    command.mailAdministrator = self.currentExecItem().mailAdministrator();
+                    command.designatedYear = self.currentExecItem().designatedYear();
+                    command.startMonthDay = self.currentExecItem().startMonthDay();
+                    command.endMonthDay = self.currentExecItem().endMonthDay();
                 }else{//再作成
+                    self.listGetAlarmByUser()[0] = undefined;
                     self.currentExecItem().creationTarget(1);
                     command.companyId = self.currentExecItem().companyId();
                     command.execItemCd = self.currentExecItem().execItemCd();
                     command.execItemName = self.currentExecItem().execItemName();
                     command.perScheduleCls = self.currentExecItem().perScheduleClsReCreate();//B7_1
                     command.targetMonth = 0;
-                    command.targetDate =  1;
+                    command.targetDate =  1;  
                     command.creationPeriod = 1;
                     command.creationTarget = 1;
                     command.recreateWorkType = self.currentExecItem().recreateWorkType();//B15_3
                     command.manualCorrection = self.currentExecItem().manualCorrection();//B15_4
                     command.createEmployee = false;
                     command.recreateTransfer = self.currentExecItem().recreateTransfer();//B15_2(1)
-                    command.dailyPerfCls = self.currentExecItem().dailyPerfClsReCreate();//B14_2
+                    command.dailyPerfCls = self.currentExecItem().dailyPerfClsReCreate();//B14_3
                     command.dailyPerfItem = 0;
                     command.midJoinEmployee = false;
-                    command.reflectResultCls = false;
-                    command.monthlyAggCls = false;
-                    command.execScopeCls = 1;
+                    command.reflectResultCls = self.currentExecItem().dailyPerfClsReCreate();
+                    command.monthlyAggCls = self.currentExecItem().dailyPerfClsReCreate();
+                    command.execScopeCls = self.currentExecItem().execScopeCls();
                     command.refDate = nts.uk.text.isNullOrEmpty(self.currentExecItem().refDate()) ? null : new Date(self.currentExecItem().refDate());
                     command.workplaceList = self.currentExecItem().workplaceList();
                     command.recreateTypeChangePerson = self.currentExecItem().recreateTypeChangePerson();//B14_2
@@ -449,9 +475,13 @@ module nts.uk.at.view.kbt002.b {
                     command.createNewEmp =  false;
                     command.appRouteUpdateMonthly =  false;
                     command.processExecType = self.currentExecItem().processExecType();
-                    command.alarmCode = self.listGetAlarmByUser()[0].alarmCode;
-                    command.alarmExtraction = false;
-                    
+                    command.alarmCode = _.isNil(self.listGetAlarmByUser()[0])?null : self.listGetAlarmByUser()[0].alarmCode;
+                    command.alarmAtr = false; 
+                    command.mailPrincipal = false;
+                    command.mailAdministrator = false;
+                    command.designatedYear = 0;
+                    command.startMonthDay = 101;
+                    command.endMonthDay = 101;
                 }
                 
                 
@@ -513,11 +543,6 @@ module nts.uk.at.view.kbt002.b {
             midJoinEmployee: boolean;
             reflectResultCls: boolean;
             monthlyAggCls: boolean;
-            //indvAlarmCls: boolean;
-            //indvMailPrin: boolean;
-            //indvMailMng: boolean;
-            //wkpAlarmCls: boolean;
-            //wkpMailMng: boolean;
             execScopeCls: number;
             refDate: string;
             workplaceList: Array<string>;
@@ -535,6 +560,12 @@ module nts.uk.at.view.kbt002.b {
             //alarmCode
             alarmCode :string;
             alarmAtr : boolean;
+            mailPrincipal : boolean;
+            mailAdministrator : boolean;
+            //ver29
+            designatedYear : number;
+            startMonthDay : number;
+            endMonthDay : number;
         }
 
         export class ExecutionItem {
@@ -573,6 +604,14 @@ module nts.uk.at.view.kbt002.b {
             dailyPerfClsReCreate :KnockoutObservable<boolean> = ko.observable(false);
             alarmCode : KnockoutObservable<string> = ko.observable('');
             alarmAtr :KnockoutObservable<boolean> = ko.observable(false);
+            mailPrincipal :KnockoutObservable<boolean> = ko.observable(false);
+            mailAdministrator :KnockoutObservable<boolean> = ko.observable(false);
+            //ver29
+            designatedYear : KnockoutObservable<number> = ko.observable(null);
+            startMonthDay : KnockoutObservable<number> = ko.observable(101);
+            endMonthDay : KnockoutObservable<number> = ko.observable(101);
+            disableYearMonthDate :KnockoutObservable<boolean> = ko.observable(false);
+            enableMonthDay :KnockoutObservable<boolean> = ko.observable(false);
             constructor(param: IExecutionItem) {
                 let self = this;
                 if (param && param != null) {
@@ -611,6 +650,16 @@ module nts.uk.at.view.kbt002.b {
                     self.dailyPerfClsReCreate(param.dailyPerfCls||false);
                     self.alarmCode(param.alarmCode || '');
                     self.alarmAtr(param.alarmAtr||false);
+                    self.mailPrincipal(param.mailPrincipal||false);
+                    self.mailAdministrator(param.mailAdministrator||false);
+                    self.designatedYear(param.designatedYear);
+                    self.startMonthDay(param.startMonthDay==null?101:param.startMonthDay);
+                    self.endMonthDay(param.endMonthDay==null?101:param.endMonthDay);
+                    if(self.targetMonth() == 3){
+                        self.disableYearMonthDate(true);    
+                    }else{
+                        self.disableYearMonthDate(false);    
+                    }
                     if(self.processExecType()==0){
                         self.creationTarget(0);
                         self.appRouteUpdateAtrNormal(self.appRouteUpdateAtr());
@@ -621,6 +670,10 @@ module nts.uk.at.view.kbt002.b {
                         
                         self.perScheduleClsNomarl(self.perScheduleCls());
                         self.perScheduleClsReCreate(false);
+                        
+                        if(self.perScheduleClsNomarl()){
+                            self.enableMonthDay(true);
+                        }
                     }else{
                         self.creationTarget(1);
                         self.appRouteUpdateAtrNormal(false);
@@ -631,6 +684,10 @@ module nts.uk.at.view.kbt002.b {
                         
                         self.perScheduleClsNomarl(false);
                         self.perScheduleClsReCreate(self.perScheduleCls());
+                        
+                        if(self.perScheduleClsNomarl()){
+                            self.enableMonthDay(false);
+                        }
                     }
                     
                 } else {
@@ -669,13 +726,69 @@ module nts.uk.at.view.kbt002.b {
                     self.alarmAtr(false);
                     self.perScheduleClsNomarl(false);
                     self.perScheduleClsReCreate(false);
-                }
+                    self.mailPrincipal(false);
+                    self.mailAdministrator(false);
+                    self.processExecType(0);
+                    self.designatedYear(0);
+                    self.startMonthDay(101);
+                    self.endMonthDay(101);
+                } 
+                /** self.targetMonth() : 
+                 * 0: システム日付の月
+                    1: システム日付の翌月
+                    2: システム日付の翌々月
+                    3: 開始月を指定する
+                 */
+                self.targetMonth.subscribe(x=>{
+                    if(x!=3){
+                        self.designatedYear(0);
+                        self.startMonthDay(101);
+                        self.endMonthDay(101);
+                        self.disableYearMonthDate(false);    
+                    }else{
+                        self.disableYearMonthDate(true);     
+                    }    
+                });
+                
+//                self.startMonthDay.subscribe(x=>{
+//                    nts.uk.ui.errors.clearAll();
+//                    _.defer(()=>{
+//                        if(self.targetMonth() == 3){
+//                            if(x > self.endMonthDay()){
+//                                $('#start-month-day-id .ntsMonthPicker, #start-month-day-id .ntsDayPicker').addClass('error');
+//                                $('#start-month-day-id').ntsError('set', { messageId: "Msg_927" });
+//                            }    
+//                        }
+//                    });
+//                });
+//                
+//                self.endMonthDay.subscribe(x=>{
+//                   nts.uk.ui.errors.clearAll();
+//                    _.defer(()=>{
+//                        if(self.targetMonth() == 3){
+//                            nts.uk.ui.errors.clearAll();
+//                            if(x < self.startMonthDay()){
+//                                $('#end-month-day-id .ntsMonthPicker, #end-month-day-id .ntsDayPicker').addClass('error');
+//                                $('#end-month-day-id').ntsError('set', { messageId: "Msg_927" });
+//                            }    
+//                        }
+//                        
+//                    });
+//                });
+//                
+                self.perScheduleClsNomarl.subscribe(x=>{
+                    if(x ==true && self.perScheduleClsNomarl() ==true){
+                        self.enableMonthDay(true);
+                    }else{
+                        self.enableMonthDay(false);
+                    }
+                });
                 
                 self.appRouteUpdateAtr.subscribe(x=>{
                     if(x==true && self.perScheduleCls()==true){
                         self.checkCreateNewEmp(true);
                     }else{
-                        self.checkCreateNewEmp(false);
+                        self.checkCreateNewEmp(false); 
                     }
                 });
                 self.perScheduleCls.subscribe(x=>{
@@ -694,6 +807,9 @@ module nts.uk.at.view.kbt002.b {
                         
                         self.dailyPerfClsNormal(self.dailyPerfCls());
                         self.dailyPerfClsReCreate(false);
+                        if(self.perScheduleClsNomarl()){
+                            self.enableMonthDay(true);
+                        }
                     }else{
                         self.creationTarget(1);
                         self.appRouteUpdateAtrNormal(false);
@@ -701,6 +817,10 @@ module nts.uk.at.view.kbt002.b {
                         
                         self.dailyPerfClsNormal(false);
                         self.dailyPerfClsReCreate(self.dailyPerfCls());
+                        
+                        if(self.perScheduleClsNomarl()){
+                            self.enableMonthDay(false);
+                        }
                     }
                 });
                 
@@ -717,6 +837,85 @@ module nts.uk.at.view.kbt002.b {
                        __viewContext.viewModel.targetDateText(__viewContext.viewModel.buildTargetDateStr(data)); 
                 });
             }
+            
+            createData(param: IExecutionItem){
+                let self = this;
+                
+                 self.companyId(param.companyId);
+                    self.execItemCd(param.execItemCd || '');
+                    self.execItemName(param.execItemName || '');
+                    self.perScheduleCls(param.perScheduleCls || false);
+                    self.perScheduleClsNomarl(param.perScheduleCls || false);
+                    self.perScheduleClsReCreate(param.perScheduleCls || false);
+                    self.targetMonth(param.targetMonth);
+                    self.targetDate(param.targetDate);
+                    self.creationPeriod(param.creationPeriod);
+                    self.creationTarget(param.creationTarget);
+                    self.recreateWorkType(param.recreateWorkType || false);
+                    self.manualCorrection(param.manualCorrection || false);
+                    self.createEmployee(param.createEmployee || false);
+                    self.recreateTransfer(param.recreateTransfer || false);
+                    self.dailyPerfCls(param.dailyPerfCls || false);
+                    self.dailyPerfItem(param.dailyPerfItem);
+                    self.midJoinEmployee(param.midJoinEmployee || false);
+                    self.reflectResultCls(param.reflectResultCls || false);
+                    self.monthlyAggCls(param.monthlyAggCls || false);
+                    self.execScopeCls(param.execScopeCls);
+                    self.refDate(param.refDate || moment().format("YYYY/MM/DD"));
+                    self.workplaceList(param.workplaceList || []);
+                    self.recreateTypeChangePerson(param.recreateTypeChangePerson||false);
+                    self.recreateTransfers(param.recreateTransfers||false);
+                    self.appRouteUpdateAtr(param.appRouteUpdateAtr||false);
+                    self.createNewEmp(param.createNewEmp||false);
+                    self.appRouteUpdateMonthly(param.appRouteUpdateMonthly||false);
+                    self.checkCreateNewEmp((param.appRouteUpdateAtr==true && param.appRouteUpdateAtr == true)?true:false);
+                    self.processExecType(param.processExecType);
+                    self.appRouteUpdateAtrNormal(param.appRouteUpdateAtr||false);
+                    self.appRouteUpdateAtrReCreate(param.appRouteUpdateAtr||false);
+                    self.dailyPerfClsNormal(param.dailyPerfCls||false);
+                    self.dailyPerfClsReCreate(param.dailyPerfCls||false);
+                    self.alarmCode(param.alarmCode || '');
+                    self.alarmAtr(param.alarmAtr||false);
+                    self.mailPrincipal(param.mailPrincipal||false);
+                    self.mailAdministrator(param.mailAdministrator||false);
+                    self.designatedYear(param.designatedYear);
+                    self.startMonthDay(param.startMonthDay==null?101:param.startMonthDay);
+                    self.endMonthDay(param.endMonthDay==null?101:param.endMonthDay);
+                    if(self.targetMonth() == 3){
+                        self.disableYearMonthDate(true);    
+                    }else{
+                        self.disableYearMonthDate(false);    
+                    }
+                    if(self.processExecType()==0){
+                        self.creationTarget(0);
+                        self.appRouteUpdateAtrNormal(self.appRouteUpdateAtr());
+                        self.appRouteUpdateAtrReCreate(false);
+                        
+                        self.dailyPerfClsNormal(self.dailyPerfCls());
+                        self.dailyPerfClsReCreate(false);
+                        
+                        self.perScheduleClsNomarl(self.perScheduleCls());
+                        self.perScheduleClsReCreate(false);
+                        
+                        if(self.perScheduleClsNomarl()){
+                            self.enableMonthDay(true);
+                        }
+                    }else{
+                        self.creationTarget(1);
+                        self.appRouteUpdateAtrNormal(false);
+                        self.appRouteUpdateAtrReCreate(self.appRouteUpdateAtr());
+                        
+                        self.dailyPerfClsNormal(false);
+                        self.dailyPerfClsReCreate(self.dailyPerfCls());
+                        
+                        self.perScheduleClsNomarl(false);
+                        self.perScheduleClsReCreate(self.perScheduleCls());
+                        
+                        if(self.perScheduleClsNomarl()){
+                            self.enableMonthDay(false);
+                        }
+                    }
+            }
         }
 
         export interface ExecItemEnumDto {
@@ -724,6 +923,7 @@ module nts.uk.at.view.kbt002.b {
             dailyPerfItems: Array<EnumConstantDto>;
             repeatContentItems: Array<EnumConstantDto>;
             monthDays: Array<EnumConstantDto>;
+            designatedYear: Array<EnumConstantDto>;
         }
 
         export interface EnumConstantDto {

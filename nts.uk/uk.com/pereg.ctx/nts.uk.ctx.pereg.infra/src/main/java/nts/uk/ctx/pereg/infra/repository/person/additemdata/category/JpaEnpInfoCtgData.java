@@ -7,7 +7,9 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmInfoCtgDataRepository;
 import nts.uk.ctx.pereg.dom.person.additemdata.category.EmpInfoCtgData;
 import nts.uk.ctx.pereg.infra.entity.person.additemdata.category.PpemtEmpInfoCtgData;
@@ -82,13 +84,13 @@ public class JpaEnpInfoCtgData extends JpaRepository implements EmInfoCtgDataRep
 
 	@Override
 	public List<EmpInfoCtgData> getByEmpIdAndCtgId(List<String> ctgId) {
-		List<PpemtEmpInfoCtgData> lstEntities = this.queryProxy()
+		List<PpemtEmpInfoCtgData> lstEntities = new ArrayList<>();
+		CollectionUtil.split(ctgId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			lstEntities.addAll(this.queryProxy()
 				.query(SELECT_EMP_DATA_BY_CTG_ID_LST, PpemtEmpInfoCtgData.class)
-				.setParameter("personInfoCtgId", ctgId)
-				.getList();
-		if (lstEntities == null)
-			return new ArrayList<>();
-		
+				.setParameter("personInfoCtgId", subList)
+				.getList());
+		});
 		return lstEntities.stream().map(x -> toDomain(x)).collect(Collectors.toList());
 	}
 

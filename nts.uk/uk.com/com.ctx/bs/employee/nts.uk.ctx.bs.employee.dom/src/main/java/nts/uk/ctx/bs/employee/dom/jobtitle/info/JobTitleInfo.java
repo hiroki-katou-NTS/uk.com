@@ -51,6 +51,18 @@ public class JobTitleInfo extends AggregateRoot {
 		super();
 	}
 
+	public JobTitleInfo(CompanyId companyId, String jobTitleHistoryId, boolean isManager, String jobTitleId,
+			JobTitleCode jobTitleCode, JobTitleName jobTitleName, SequenceCode sequenceCode) {
+		super();
+		this.companyId = companyId;
+		this.jobTitleHistoryId = jobTitleHistoryId;
+		this.isManager = isManager;
+		this.jobTitleId = jobTitleId;
+		this.jobTitleCode = jobTitleCode;
+		this.jobTitleName = jobTitleName;
+		this.sequenceCode = sequenceCode;
+	}
+
 	/**
 	 * Instantiates a new job title info.
 	 *

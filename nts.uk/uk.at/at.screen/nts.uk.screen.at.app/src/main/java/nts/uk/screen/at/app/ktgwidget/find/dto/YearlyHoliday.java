@@ -39,4 +39,6 @@ public class YearlyHoliday {
 	/*一斉付与を利用する*/
 	private int useSimultaneousGrant = 0;
 	
+	private boolean showGrantDate = false;
+	
 }

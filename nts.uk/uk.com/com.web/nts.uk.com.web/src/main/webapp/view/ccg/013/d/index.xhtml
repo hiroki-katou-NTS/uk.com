@@ -27,7 +27,7 @@
 
 				<div class="functions-area-content">
 					<div class="top-left-contents">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG013_47')}</div>
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG013_47')}</div>
 						<div id="combo-box" tabindex="1" class="cbb-system-data"
 							data-bind="ntsComboBox: {
 							options: systemList,
@@ -58,6 +58,7 @@
 								optionsValue: 'primaryKey',
 								columns: columns,
 								multiple: true,
+								rows: 12,
 								value: currentCodeList}">
 						</table>
 					</div>
@@ -82,6 +83,7 @@
 								optionsValue: 'primaryKey',
 								columns: newColumns,
 								multiple: true,
+								rows: 12,
 								value: newCurrentCodeList}">
 						</table>
 					</div>

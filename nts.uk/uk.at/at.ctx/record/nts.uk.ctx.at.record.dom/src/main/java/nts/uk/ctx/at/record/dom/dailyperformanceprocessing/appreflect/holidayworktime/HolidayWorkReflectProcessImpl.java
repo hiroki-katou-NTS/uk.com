@@ -2,13 +2,9 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.holidaywo
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
@@ -40,7 +36,7 @@ public class HolidayWorkReflectProcessImpl implements HolidayWorkReflectProcess{
 		ReflectParameter reflectInfo = new ReflectParameter(employeeId, 
 				baseDate, 
 				workTimeCode, 
-				workTypeCode); 
+				workTypeCode, false); 
 		return workUpdate.updateWorkTimeTypeHoliwork(reflectInfo, true, dailyData);
 	}
 
@@ -49,12 +45,12 @@ public class HolidayWorkReflectProcessImpl implements HolidayWorkReflectProcess{
 			boolean scheReflectFlg, boolean isPre, ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg) {
 		//INPUT．予定反映区分をチェックする
 		if((scheReflectFlg && isPre)
-				|| scheAndRecordSameChangeFlg == ScheAndRecordSameChangeFlg.ALWAY) {
+				|| scheAndRecordSameChangeFlg == ScheAndRecordSameChangeFlg.ALWAYS_CHANGE_AUTO) {
 			return true;
 		}
 		//INPUT．予定と実績を同じに変更する区分をチェックする
 		//INPUT．就業時間帯コードに値があるかチェックする
-		if(scheAndRecordSameChangeFlg == ScheAndRecordSameChangeFlg.NOTAUTO
+		if(scheAndRecordSameChangeFlg == ScheAndRecordSameChangeFlg.DO_NOT_CHANGE_AUTO
 				|| workTimeCode.isEmpty()) {
 			return false;
 		}

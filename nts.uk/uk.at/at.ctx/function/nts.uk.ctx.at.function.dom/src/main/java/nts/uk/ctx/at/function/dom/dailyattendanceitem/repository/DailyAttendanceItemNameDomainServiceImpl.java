@@ -9,9 +9,9 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.function.dom.adapter.DailyAttendanceItemAdapterDto;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.AttendanceItemLinking;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
-import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameService;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.DailyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 
 /*
  * NamPT
@@ -42,8 +42,8 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 	public List<DailyAttendanceItem> getNameOfDailyAttendanceItemNew(
 			List<DailyAttendanceItemAdapterDto> dailyAttendanceItems,
 			List<AttendanceItemLinking> attendanceItemAndFrameNos) {
-		List<AttendanceItemName> attendanceItems = dailyAttendanceItems.stream().map(item -> {
-			AttendanceItemName dto = new AttendanceItemName();
+		List<AttItemName> attendanceItems = dailyAttendanceItems.stream().map(item -> {
+			AttItemName dto = new AttItemName();
 			dto.setAttendanceItemId(item.getAttendanceItemId());
 			dto.setAttendanceItemName(item.getAttendanceName());
 			dto.setAttendanceItemDisplayNumber(item.getDisplayNumber());

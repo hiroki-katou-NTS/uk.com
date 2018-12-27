@@ -31,5 +31,4 @@ public enum CheckExcessAtr {
 	 ERROR_OF_DIVERGENCE_TIME,
 	//乖離時間のアラーム
 	 ALARM_OF_DIVERGENCE_TIME;
-
 }

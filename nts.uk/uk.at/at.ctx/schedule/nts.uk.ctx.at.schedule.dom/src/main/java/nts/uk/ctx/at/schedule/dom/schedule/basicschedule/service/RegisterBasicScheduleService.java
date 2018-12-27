@@ -10,5 +10,5 @@ public interface RegisterBasicScheduleService {
 	 * @return
 	 */
 	public List<String> register(String companyId, Integer modeDisplay, List<BasicSchedule> basicScheduleList,
-			List<BasicSchedule> basicScheduleListBefore, List<BasicSchedule> basicScheduleListAfter, boolean isInsertMode, RegistrationListDateSchedule registrationListDateSchedule);
+			List<BasicSchedule> basicScheduleListBefore, List<BasicSchedule> basicScheduleListAfter, RegistrationListDateSchedule registrationListDateSchedule);
 }

@@ -5,7 +5,7 @@ import nts.arc.primitive.constraint.HalfIntegerRange;
 
 /**
  * 週間日数
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @HalfIntegerRange(min = 0, max = 7.0)
 public class WeeklyDays extends HalfIntegerPrimitiveValue<WeeklyDays> {
@@ -27,5 +27,13 @@ public class WeeklyDays extends HalfIntegerPrimitiveValue<WeeklyDays> {
 	 */
 	public WeeklyDays addDays(Double days){
 		return new WeeklyDays(this.v() + days);
+	}
+	
+	@Override
+	protected Double reviseRawValue(Double rawValue) {
+		if (rawValue == null) return super.reviseRawValue(rawValue);
+		if (rawValue > 7.0) rawValue = 7.0;
+		if (rawValue < 0.0) rawValue = 0.0;
+		return super.reviseRawValue(rawValue);
 	}
 }

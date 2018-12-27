@@ -46,13 +46,20 @@
                     nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode
                     nts.uk.shr.com.time.TimeWithDayAttr
                     nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth
+                    nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemAmount
+                    nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth
+                    nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemTime
+                    nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth
+                    nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemTimes
+                    nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth
+                    nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode
                 </com:ValidatorScript>
             </ui:define>
 
             <ui:define name="content">
                 <div id="functions-area">
                     <div id="function-content">
-                        <button class="proceed"
+                        <button style="margin-left: 15px" class="proceed"
                                 data-bind="enable: $root.errors.isEmpty , visible:showButton().available1, click: proceed ">#{i18n.getText('KDW003_4')}</button>
                         <button
                             data-bind="enable: $root.errors.isEmpty, visible: showButton().available4, click: proceedSave">#{i18n.getText('KDW003_5')}</button>
@@ -62,34 +69,36 @@
                             data-bind="visible: showButton().available3, click: btnReCalculation_Click">#{i18n.getText('KDW003_12')}</button>
                         <button data-bind="click: employmentOk, visible:false">#{i18n.getText('KDW003_65')}</button>
                         <button
-                            data-bind="click: tighProcess, enable:showTighProcess(), visible: showButton().available9">#{i18n.getText('KDW003_88')}</button>
+                            data-bind="click: tighProcessShow, enable:indentityMonth().enableButton, visible: showButton().available9 &amp;&amp; indentityMonth().show26 &amp;&amp; !indentityMonth().hideAll">#{i18n.getText('KDW003_88')}</button>
+                        <button
+                            data-bind="click: tighProcessRelease, enable:indentityMonth().enableButton, visible: showButton().available9 &amp;&amp; !indentityMonth().show26 &amp;&amp; !indentityMonth().hideAll" >#{i18n.getText('KDW003_124')}</button>
                         <!-- 本人締め処理 -->
                         <button
                             data-bind="click : changeExtractionCondition, visible: showButton().available5">#{i18n.getText('KDW003_13')}</button>
                         <button
                             data-bind="click : selectDisplayItem, visible: showButton().available8Authority">#{i18n.getText('KDW003_14')}</button>
-                        <button data-bind="visible: false">#{i18n.getText('KDW003_15')}</button>
-                        <!-- showButton().available22 -->
+                        <button data-bind="click : historyModification ,visible: showButton().available22 ">#{i18n.getText('KDW003_15')}</button>
+                        <!--click : historyModification , showButton().available22 -->
                         <button class="danger"
                                 data-bind="click: showErrorDialog , visible: showButton().available24">#{i18n.getText('KDW003_16')}</button>
                         <button data-bind="visible: false">#{i18n.getText('KDW003_17')}</button>
                         <!-- visible: showButton().available7 -->
-                        <button data-bind="click : proceedUnLock, visible: showLock">#{i18n.getText('KDW003_84')}</button>
-                        <button data-bind="click : proceedLock, visible: unLock">#{i18n.getText('KDW003_85')}</button>
+                        <button data-bind="click : proceedUnLock, visible: showLock() &amp;&amp; hideLock()">#{i18n.getText('KDW003_84')}</button>
+                        <button data-bind="click : proceedLock, visible: unLock() &amp;&amp; hideLock()">#{i18n.getText('KDW003_85')}</button>
                     </div>
                 </div>
                 <div id="contents-area">
                     <div id="left-content">
                         <div>
                             <a id="back-navigate" class="goback" style="float: left;"
-                               data-bind="ntsLinkButton: {}, click: navigateView">#{i18n.getText('KDW003_87')}</a>
+                               data-bind="ntsLinkButton: {}, click: navigateView, visible: transitionDesScreen">#{i18n.getText('KDW003_87')}</a>
                         </div>
                         <div id="ccg001"></div>
                     </div>
                     <div id="right-content">
                         <div class="valign-center control-group">
-                            <div style="margin-top: -20px; float: left">
-                            	<div>
+                            <div style="margin-top: -20px; float: left; width: auto">
+                            
 									<div id = "date-extract" style="width: 315px; display: inline-flex;">
 										<div id="daterangepicker"
 											data-bind="ntsDateRangePicker: { 
@@ -97,12 +106,15 @@
 											enable: showDateRange, 
 											showNextPrevious: true, 
 											value: dateRanger, 
+											startName: nts.uk.resource.getText('KDW003_25'),
+											endName: nts.uk.resource.getText('KDW003_26'),
 											maxRange: 'oneMonth'}" />
 										<div id="cbListDate">
 											<div id="choosenDate" style="top: -12px"
 												data-bind="ntsDatePicker: {value: selectedDate, 
 												dateFormat: 'YYYY/MM/DD', 
-												showJumpButtons: true, 
+												showJumpButtons: true,
+												name: nts.uk.resource.getText('KDW003_27'),
 												enable: showDateRange}" />
 										</div>
 									</div>
@@ -151,7 +163,7 @@
 		                            <button id="btnComfirmAttendance"
 		                                    data-bind="click : referencesActualResult, visible:false">#{i18n.getText('KDW003_22')}</button>
 		                            <!-- visible: showButton().available23 -->
-	                            </div>
+	                            
 	                            <div id="container" style="padding-top: 12px">
 	                                <div id="emp-component"></div>
 	                            </div>                              
@@ -160,10 +172,10 @@
 	                            <table id="fixed-table">
 	                                <thead>
 	                                    <tr>
-	                                        <th class="ui-widget-header" style="width: 65px">#{i18n.getText('KDW003_7',["#Com_CompensationHoliday"])}</th>
-	                                        <th class="ui-widget-header" style="width: 65px">#{i18n.getText('KDW003_7',["#Com_SubstituteHoliday"])}</th>
-	                                        <th class="ui-widget-header" style="width: 65px">#{i18n.getText('KDW003_7',["#Com_PaidHoliday"])}</th>
-	                                        <th class="ui-widget-header" style="width: 85px">#{i18n.getText('KDW003_7',["#Com_FundedPaidHoliday"])}</th>
+	                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_CompensationHoliday"])}</th>
+	                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_SubstituteHoliday"])}</th>
+	                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_PaidHoliday"])}</th>
+	                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_FundedPaidHoliday"])}</th>
 	                                    </tr>
 	                                </thead>
 	                                <tbody>
@@ -226,17 +238,20 @@
                                         <div data-bind="ntsCheckBox: { checked: displayWhenZero }">#{i18n.getText('KDW003_29')}</div>
                                         <br />
                                         <div data-bind="ntsCheckBox: { checked: showHeaderNumber }">#{i18n.getText('KDW003_30')}</div>
-                                        <br />
-                                        <div data-bind="ntsCheckBox: { checked: showProfileIcon }">#{i18n.getText('KDW003_31')}</div>
-                                        <br />
+										<br />
+                                        <div data-bind="if: false">
+	                                        <div data-bind="ntsCheckBox: { checked: showProfileIcon }">#{i18n.getText('KDW003_31')}</div>
+	                                        <br />
+										</div>
                                     </div>
                                 </div>
                             </div>
                             <div class="compact-grid grid-container" id="gid">
-                                <table id="dpGrid"></table>
+                                <div id="dpGrid"></div>
                                 <div id="sample-component"></div>
                             </div>
-                            <div style="margin-top: 5px" data-bind="visible: isVisibleMIGrid">
+                            <!-- fix bug 102423 : margin-top: 10px -->
+                            <div style="margin-top: 10px" data-bind="visible: isVisibleMIGrid">
                                 <table id="miGrid"></table>
                             </div>
                             <div class="Row">
@@ -290,14 +305,16 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <div>
-                                            <span>#{i18n.getText('KDW003_120')}</span>
-                                        </div>
-									<div style="margin-top: 20px">
-										<span data-bind="text: comment"></span>
+									<div>
+										<span>#{i18n.getText('KDW003_120')}</span>
 									</div>
+									<!-- fix bug 102423 -->
+									<!-- 	<div style="margin-top: 20px">
+										<span data-bind="text: comment"></span>
+									</div> -->
 								</div>
-                                    <div id="text-flex">
+									<!-- fix bug 102423 : style="margin-top: 37px;" -->
+                                    <div id="text-flex" style="top: -67px;">
                                         <div>
                                             <span style="color: red"
                                                   data-bind="text: flexShortage().messageRed"></span>
@@ -332,7 +349,11 @@
                                 </div>
                             </div>
 					</div>
-                    </div>
+					<!-- fix bug 102423 -->
+					<div style="margin-top: 5px">
+						<span data-bind="text: comment"></span>
+					</div>
+				</div>
                     <div id="tooltip">
                         <span id="textLock"></span>
                     </div>

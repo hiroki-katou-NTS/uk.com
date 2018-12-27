@@ -721,13 +721,13 @@ module nts.uk.at.view.kmf022 {
 
                 //a17
                 self.itemListA17_4 = ko.observableArray([
-                    new ItemModel(1, getText('KAF022_75')),
-                    new ItemModel(0, getText('KAF022_82')),
+                    new ItemModel(1, getText('KAF022_272')),
+                    new ItemModel(0, getText('KAF022_273')),
                 ]);
                 self.selectedIdA17_4 = ko.observable(0);
                 self.itemListA17_5 = ko.observableArray([
-                    new ItemModel(1, getText('KAF022_75')),
-                    new ItemModel(0, getText('KAF022_82')),
+                    new ItemModel(1, getText('KAF022_389')),
+                    new ItemModel(0, getText('KAF022_390')),
                 ]);
                 // update ver29    
                 self.itemListA17_7 = ko.observableArray([
@@ -2620,9 +2620,9 @@ module nts.uk.at.view.kmf022 {
                 }
 
                 if (nts.uk.ui.errors.hasError() === false) {
+                    nts.uk.ui.block.grayout();
                     service.update(data).done(() => {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                            nts.uk.ui.block.invisible();
                             //Load data setting
                             self.loadData();
                         });

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.app.command.dailyperform.month;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,7 +17,6 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.command.dailyperform.DailyRecordWorkCommand;
 import nts.uk.ctx.at.record.app.service.dailycheck.CheckCalcMonthService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.record.dom.monthly.updatedomain.UpdateAllDomainMonthService;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AggregateSpecifiedDailys;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -37,9 +35,6 @@ public class UpdateMonthAfterProcessDaily {
 	@Inject
 	private AggregateSpecifiedDailys aggregateSpecifiedDailys;
 	
-	@Inject
-	private UpdateAllDomainMonthService updateAllDomainMonthService;
-
 	public List<IntegrationOfMonthly> updateMonth(List<DailyRecordWorkCommand> commandNew,
 			List<IntegrationOfDaily> domainDailyNew, Optional<IntegrationOfMonthly> monthlyWork, UpdateMonthDailyParam month) {
 		String companyId = AppContexts.user().companyId();
@@ -83,7 +78,7 @@ public class UpdateMonthAfterProcessDaily {
 					monthlyWork);
 			if(monthDomainOpt.isPresent()) result.add(monthDomainOpt.get());
 			System.out.println("tg tinh toan thang : "+ (System.currentTimeMillis() - time));
-			if(!monthDomainOpt.get().getEmployeeMonthlyPerErrorList().isEmpty()) return result;
+			if(monthDomainOpt.isPresent() && !monthDomainOpt.get().getEmployeeMonthlyPerErrorList().isEmpty()) return result;
 			//updateAllDomainMonthService.insertUpdateAll(Arrays.asList(monthDomainOpt.get()));
 		}
 		

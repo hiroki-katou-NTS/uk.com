@@ -17,7 +17,7 @@ import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthority
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityFormSheet;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityFormSheetPK;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaAuthorityFormatSheetRepository extends JpaRepository implements AuthorityFormatSheetRepository {
 
@@ -140,7 +140,7 @@ public class JpaAuthorityFormatSheetRepository extends JpaRepository implements 
 			+ " AND c.kfnmtAuthorityDailyItemPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode "
 			+ " AND c.kfnmtAuthorityDailyItemPK.sheetNo = :sheetNo ";
 	
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void deleteBySheetNo(String companyId, String dailyPerformanceFormatCode, BigDecimal sheetNo) {
 		this.commandProxy().remove(KfnmtAuthorityFormSheet.class,new KfnmtAuthorityFormSheetPK(

@@ -38,12 +38,26 @@ public class ExcessOutsideWorkDto implements ItemConst {
 		this.excessNo = excessNo;
 		this.breakdown = breakdown;
 		this.breakdownNo = breakdownNo;
-		this.no = (breakdownNo-1) * 10 + excessNo;
+//		this.no = (breakdownNo-1) * 10 + excessNo;
+		this.no = calcFakeNo(excessNo, breakdownNo);
+	}
+
+	private int calcFakeNo(int excessNo, int breakdownNo) {
+		return (breakdownNo - 1 ) * 5 + excessNo;
+	}
+	
+	private int calcBreakDownNo(int fakeNo) {
+		return ((fakeNo - 1) / 5) + 1;
+	}
+	
+	private int calcExcessNo(int fakeNo) {
+		int excessNo = fakeNo % 5;
+		return excessNo == 0 ? 5 : excessNo;
 	}
 
 	public ExcessOutsideWork toDomain() {
-		//TODO: need check
-		return ExcessOutsideWork.of((no / 10) + 1, (no % 10) + 1, new AttendanceTimeMonth(breakdown));
+//		return ExcessOutsideWork.of((no / 10) + 1, no % 10, new AttendanceTimeMonth(breakdown));
+		return ExcessOutsideWork.of(calcBreakDownNo(no), calcExcessNo(no), new AttendanceTimeMonth(breakdown));
 	}
 
 	public static ExcessOutsideWorkDto from(ExcessOutsideWork domain) {

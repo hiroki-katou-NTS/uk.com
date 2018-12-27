@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -64,9 +65,15 @@ public class DataCorrectionLogFinder {
 		if (listCorrectionLog.isEmpty())
 			throw new BusinessException("Msg_37");
 
+		// lay employee code de sap xep
 		Map<String, String> empIdCode = personEmpInfo.getEmployeeCodesByEmpIds(params.getListEmployeeId());
+		
+		// fix performance
+		List<String> operationIds = listCorrectionLog.stream().map(i -> i.getOperationId()).collect(Collectors.toList());
+		List<LogBasicInformation> basicInfos = basicInfoRepo.getLogBasicInfo(companyId, operationIds);
+		
 		for (DataCorrectionLog d : listCorrectionLog) {
-			Optional<LogBasicInformation> basicInfo = basicInfoRepo.getLogBasicInfo(companyId, d.getOperationId());
+			Optional<LogBasicInformation> basicInfo = basicInfos.stream().filter(i -> d.getOperationId().equals(i.getOperationId())).findFirst();
 			DataCorrectionLogDto log = new DataCorrectionLogDto(d.getTargetDataKey().getDateKey(),
 					d.getTargetUser().getUserName(), d.getCorrectedItem().getName(),
 					d.getCorrectedItem().getValueBefore().getViewValue(),
@@ -76,14 +83,14 @@ public class DataCorrectionLogFinder {
 					empIdCode.get(d.getTargetUser().getEmployeeId()), d.getShowOrder());
 			result.add(log);
 		}
-		if (params.getDisplayFormat() == 0) { // by date
+		if (params.getDisplayFormat() == 0) { // sap xep khi display format by date
 			Comparator<DataCorrectionLogDto> c = Comparator.comparing(DataCorrectionLogDto::getTargetDate)
 					.thenComparing(DataCorrectionLogDto::getEmployeeCode)
 					.thenComparing(DataCorrectionLogDto::getModifiedDateTime, Comparator.nullsLast(Comparator.naturalOrder()))
 					.thenComparing(DataCorrectionLogDto::getDisplayOrder)
 					.thenComparing(DataCorrectionLogDto::getCorrectionAttr);
 			Collections.sort(result, c);
-		} else { // by individual
+		} else { // sap xep khi display format by individual
 			Comparator<DataCorrectionLogDto> c = Comparator.comparing(DataCorrectionLogDto::getEmployeeCode)
 					.thenComparing(DataCorrectionLogDto::getTargetDate)
 					.thenComparing(DataCorrectionLogDto::getModifiedDateTime, Comparator.nullsLast(Comparator.naturalOrder()))

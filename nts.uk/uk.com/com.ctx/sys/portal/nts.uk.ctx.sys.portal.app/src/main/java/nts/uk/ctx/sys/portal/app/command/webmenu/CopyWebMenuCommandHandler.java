@@ -22,6 +22,9 @@ public class CopyWebMenuCommandHandler extends CommandHandler<CopyWebMenuCommand
 
 	@Inject
 	private WebMenuRepository webMenuRepository;
+	
+	
+	
 
 	@Override
 	protected void handle(CommandHandlerContext<CopyWebMenuCommand> context) {
@@ -40,21 +43,25 @@ public class CopyWebMenuCommandHandler extends CommandHandler<CopyWebMenuCommand
 		Optional<WebMenu> webMenu = webMenuRepository.find(companyId, command.getWebMenuCode());
 
 		if (webMenu.isPresent()) {
-			if (!command.isAllowOverwrite()) {
-				throw new BusinessException("Msg_3");
-			} 
-			
+				if (!command.isAllowOverwrite()) {
+					throw new BusinessException("Msg_3");
+				} 
+				
 			Optional<WebMenu> tempCopy = webMenuRepository.find(companyId, command.getWebMenuCode());
 			
 			if(tempCopy.isPresent() && tempCopy.get().isDefault()) {
 				WebMenu newWebMenuWithDefault = new WebMenu(companyId, new WebMenuCode(command.getWebMenuCode()), new WebMenuName(command.getWebMenuName()), DefaultMenu.DefaultMenu, currentWebMenu.getMenuBars());
 				webMenuRepository.update(newWebMenuWithDefault);
 			} else {
-				webMenuRepository.update(newWebMenu);
+				webMenuRepository.remove(companyId, tempCopy.get().getWebMenuCode().toString());
+				//Create New Web Menu 
+				WebMenu newWebMenuJavaType = WebMenu.createFromJavaType(companyId, newWebMenu.getWebMenuCode().toString(), newWebMenu.getWebMenuName().toString(), DefaultMenu.NoDefaultMenu.value, newWebMenu.getMenuBars());
+				webMenuRepository.add(newWebMenuJavaType);
 			}			
+			
 		} else {
 			webMenuRepository.add(newWebMenu);
 		}
 	}
-
+ 
 }

@@ -1,5 +1,5 @@
 .panel.panel-frame {
-	width: 610px;
+	width: 470px;
 }
 
 #unit-combo-box {
@@ -23,7 +23,7 @@
 
 .round-box {
 	border-radius: 5px;
-	width: 550px;
+	width: 440px;
 	height: 100px;
 	padding: 20px 10px 0px 20px;
 	background-color: white;
@@ -36,4 +36,9 @@
 .caret-helpbutton.caret-top:before,
 .caret-helpbutton.caret-top:after {
 	left: 0;
+}
+
+.right-box > .panel.panel-frame {
+	margin-left: 20px;
+	width: 485px;
 }

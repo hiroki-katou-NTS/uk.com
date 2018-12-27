@@ -112,7 +112,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
             let self = this,
                 i: number = 0,
                 currentCtg: any;
-            
             currentCtg = self.findCtg(self.currentCategory().ctgList(), ctgId);
             
             if (currentCtg === undefined) { return; }
@@ -121,7 +120,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             
             block.invisible();
             
-            service.getAllItemByCtgId(settingId, ctgId).done((item: Array<any>) => {
+            service.getAllItemByCtgId(settingId, ctgId, error.hasError()== true? null : moment(self.baseDate()).format('YYYY-MM-DD')).done((item: Array<any>) => {
                 if (item.length > 0) {
                     let itemConvert = _.map(item, function(obj: any) {
                         primitiveConst(obj);
@@ -302,6 +301,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             let i: number = _.indexOf(itemLst, item);
                             if (i > -1) {
                                 self.currentCategory().itemList()[i].selectedRuleCode(Number(itemSelected.refMethodType));
+                                self.currentCategory().itemList()[i].selectedRuleCode.valueHasMutated();
                             }
                         });
                     }
@@ -407,7 +407,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                             ctgCode: obj.ctgCode,
                             perInfoItemDefId: obj.perInfoItemDefId,
                             itemName: obj.itemName,
-                            isRequired: obj.isRequired,
+                            isRequired: obj.isRequired == true? 1: 0,
                             refMethodType: obj.refMethodType,
                             itemType: obj.itemType,
                             dataType: obj.dataType,
@@ -431,10 +431,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     return item.selectedRuleCode() == 2;
                 });
             $('#date1').trigger('validate');
+            $('.ntsDatepicker.nts-input.reset-element.sub-input-units:not(:disabled)').trigger('validate');
+            $('.sub-input-units:not(:disabled)').trigger('validate');
             validation.initCheckError(itemListSetting);
             validation.checkError(itemListSetting);
             
-            if(nts.uk.ui.errors.hasError()){ return;}
+            if(error.hasError()){ return;}
 
             block.invisible();
             service.update(updateObj).done(function(data) {
@@ -460,14 +462,17 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
         //履歴参照基準日を適用する (Áp dụng ngày chuẩn để tham chiếu lịch sử)
         historyFilter() {
+            if(error.hasError()) return;
             let self = this,
                 baseDate = moment(self.baseDate()).format('YYYY-MM-DD'),
-                itemSelection: Array<PerInfoInitValueSettingItemDto> = _.filter(self.currentCategory().itemList(),
+                vm = self.currentCategory().itemList(),
+                itemSelection: Array<PerInfoInitValueSettingItemDto> = _.filter(vm,
                     function(item: PerInfoInitValueSettingItemDto) {
                         return item.selectedRuleCode() == 2 && ((item.dataType() == 6 && (item.selectionItemRefType == 2 || item.selectionItemRefType == 1)) || item.itemCode() == "IS00084" || item.itemCode() == "IS00085");
                     }),
                 itemIdLst = _.map(itemSelection, function(obj: IPerInfoInitValueSettingItemDto) {
                     return {
+                        dataType: obj.dataType(),
                         selectionItemId: obj.selectionItemId,
                         selectionItemRefType: obj.selectionItemRefType,
                         baseDate: baseDate
@@ -477,7 +482,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             if (itemIdLst.length > 0) {
                 _.each(itemIdLst, function(item) {
 
-                    let itemList: Array<any> = ko.toJS(self.currentCategory().itemList()),
+                    let itemList: Array<any> = ko.toJS(vm),
                         indexList: Array<any> = [],
                         itemIndex: number = 0;
                     _.each(itemList, function(obj: PerInfoInitValueSettingItemDto) {
@@ -492,19 +497,24 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         service.getAllComboxByHistory(item).done(function(data: Array<any>) {
                             if (data) {
                                 _.each(indexList, function(index) {
-                                    self.currentCategory().itemList()[index].selection([]);
-                                    self.currentCategory().itemList()[index].selection(data);
-                                    self.currentCategory().itemList()[index].selection.valueHasMutated();
+                                    vm[index].selection([]);
+                                    vm[index].selection(data);
+                                    vm[index].selection.valueHasMutated();
+                                    if (item.dataType === ITEM_SINGLE_TYPE.SEL_BUTTON) {
+                                        let objSel: any =  _.find(vm[index].selection(), function(c) { if (c.optionValue == vm[index].selectedCode()) { return c } });
+                                        vm[index].selectionName(objSel == undefined ? (vm[index].selectedCode()=="" || vm[index].selectedCode()== undefined? "":(vm[index].ctgCode() === "CS00016" || vm[index].ctgCode() === "CS00017") ? text("CPS001_107") : (vm[index].selectedCode() + " " + text("CPS001_107"))) : objSel.optionText);
+                                        vm[index].selectionName.valueHasMutated();
+                                    }else{
+                                        let value: string = vm[index].stringValue();
+                                        vm[index].selectedCode(value);
+                                        vm[index].selectedCode.valueHasMutated();
+                                    }
                                 });
-
                             }
                         });
                     }
-
-
                 });
             }
-
         }
 
         /**
@@ -544,15 +554,13 @@ module nts.uk.com.view.cps009.a.viewmodel {
             { headerText: text('CPS009_15'), key: 'setting', dataType: 'string', width: 50, formatter: makeIcon },
             { headerText: text('CPS009_16'), key: 'categoryName', width: 200 }
         ]);
-        itemList: KnockoutObservableArray<any>;
+        itemList: KnockoutObservableArray<PerInfoInitValueSettingItemDto>;
         constructor(params: IInitValueSettingDetail) {
             let self = this;
             self.settingCode = ko.observable(params.settingCode);
             self.settingName = ko.observable(params.settingName);
             self.ctgList = ko.observableArray(params.ctgList);
             self.itemList = ko.observableArray(params.itemList || []);
-
-
         }
 
         setData(params: IInitValueSettingDetail) {
@@ -560,7 +568,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.settingCode(params.settingCode);
             self.settingName(params.settingName);
             self.ctgList(params.ctgList);
-
         }
     }
 
@@ -726,7 +733,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         settingId: KnockoutObservable<string>;
         perInfoCtgId: KnockoutObservable<string>;
         itemName: KnockoutObservable<string>;
-        isRequired: KnockoutObservable<number>;
+        isRequired: KnockoutObservable<boolean>;
 
         refMethodType: KnockoutObservable<number>;
         itemType: KnockoutObservable<number>;
@@ -828,7 +835,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.ctgCode = ko.observable(params.ctgCode || "");
             self.itemName = ko.observable(params.itemName || "");
 
-            self.isRequired = ko.observable(params.isRequired || 0);
+            self.isRequired = ko.observable(!!params.isRequired || false);
             self.refMethodType = ko.observable(params.refMethodType || 0);
 
             self.saveDataType = ko.observable(params.saveDataType || 0);
@@ -852,6 +859,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.disableCombox(params.disableCombox == true ? false : true);
             self.enableControl(params.enableControl);
             self.selectedRuleCode = ko.observable(params.refMethodType || 1);
+            self.selectedCode = ko.observable();
             
             switch (params.dataType) {
                 case ITEM_SINGLE_TYPE.STRING:
@@ -931,12 +939,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     self.selectionItemRefType = params.selectionItemRefType || undefined;
                     self.selection = ko.observableArray(params.selection || []);
                     self.selectedCode = ko.observable(params.stringValue == null ? undefined : params.stringValue);
-
                     break;
                 case ITEM_SINGLE_TYPE.SEL_RADIO:
+                
                     self.radioId = params.selectionItemId || undefined;
                     self.selectionItemRefType = params.selectionItemRefType || undefined;
-
                     self.selection = ko.observableArray(params.selection || []);
                     self.selectedCode = ko.observable(params.stringValue || "1");
                     break;
@@ -946,13 +953,9 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     self.selectionItemRefType = params.selectionItemRefType || undefined;
                     self.selection = ko.observableArray(params.selection || []);
                     self.selectedCode = ko.observable(params.stringValue == null ? undefined : params.stringValue);
-
                     let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == self.selectedCode()) { return c } });
-
-                    self.selectionName = ko.observable(params.stringValue == null? "": (objSel == undefined ? text("CPS001_107") : objSel.optionText));
-
+                    self.selectionName = ko.observable(params.stringValue == null? "": (objSel == undefined ? ((self.ctgCode() === "CS00016" || self.ctgCode() === "CS00017") ? text("CPS001_107"): (self.selectedCode() + " "+text("CPS001_107"))) : objSel.optionText));
                     break;
-
             }
             
             switch (params.dataType) {
@@ -974,20 +977,20 @@ module nts.uk.com.view.cps009.a.viewmodel {
             }
 
             self.selectedRuleCode.subscribe(value => {
+                
                 if (value !== 2) {
                     error.clearAll();
                 }
-//                if(value == 2){
-//                   self.isFirstSelected = self.isFirstSelected + 1;
-//                    if (self.isFirstSelected > 1) {
-//                        setTimeout(function(c) {
-//                            let x = "#" + self.perInfoItemDefId(), content: string = $("#" + self.perInfoItemDefId()).val();
-//                            if (!_.isNil(content)) {
-//                                $("#" + self.perInfoItemDefId()).trigger("validate");
-//                            }
-//                        }, 100);
-//                    }
-//                }
+                
+                if(value == 2 && self.enableControl() === true){
+                    setTimeout(function(c) {
+                        let x = "#" + self.perInfoItemDefId(), content: string = $("#" + self.perInfoItemDefId()).val();
+                        if (!_.isNil(content) && content !=="") {
+                            $("#" + self.perInfoItemDefId()).trigger("validate");
+                        }
+                    }, 100);
+                }
+                
                 if (self.ctgCode() === "CS00020" || self.ctgCode() === "CS00070") {
                     self.createItemTimePointOfCS00020(value, self.itemCode());
                 }
@@ -1221,7 +1224,6 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         }
                     });
                 } else {
-
                     if (['IS00130', 'IS00131', 'IS00139', 'IS00140'].indexOf(self.itemCode()) > - 1) {
                         let objShare: any = {};
                         if (isWorkType) {
@@ -1378,33 +1380,36 @@ module nts.uk.com.view.cps009.a.viewmodel {
         }
 
         clickButtonCS0017() {
-            let self = this;
-            setShared('inputCDL008', {
-                selectedCodes: [self.selectedCode()],
-                baseDate: moment.utc(__viewContext["viewModel"].baseDate()).toDate(),
-                isMultiple: false,
-                selectedSystemType: 5,
-                isrestrictionOfReferenceRange: false
-            }, true);
+            let self = this,
+                baseDate = moment.utc(__viewContext["viewModel"].baseDate());
+            if(baseDate._isValid){
+                service.checkFunctionNo().done(data => {
+                    setShared('inputCDL008', {
+                        selectedCodes: [self.selectedCode()],
+                        baseDate: baseDate.toDate(),
+                        isMultiple: false,
+                        selectedSystemType: 1,// 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
+                        isrestrictionOfReferenceRange: data.available,
+                        isShowBaseDate: false
+                    }, true);
+                    modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                        // Check is cancel.
+                        if (getShared('CDL008Cancel')) {
+                            return;
+                        }
 
-            modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
-                // Check is cancel.
-                if (getShared('CDL008Cancel')) {
-                    return;
-                }
+                        //view all code of selected item 
+                        let output = getShared('outputCDL008');
+                        if (output) {
+                            let objSel: any = _.find(self.selection(), function(c) { if (c.optionValue == output) { return c; } });
+                            self.selectionName(objSel == undefined ? "" : objSel.optionText);
+                            self.selectedCode(output);
+                        }
 
-                //view all code of selected item 
-                let output = getShared('outputCDL008');
-                if (output) {
-                    let objSel: any = _.find(self.selection(), function(c) { if (c.optionValue == output) { return c; } });
-                    self.selectionName(objSel == undefined ? " " : objSel.optionText);
-                    self.selectedCode(output);
-                }
-            });
+                    });
+                });
+            }
         }
-
-
-
     }
 
     export interface IPerInfoInitValueSettingDto {

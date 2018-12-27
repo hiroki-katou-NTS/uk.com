@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.worktime;
 
-import java.sql.Time;
+//import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -10,7 +10,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.val;
+//import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
@@ -129,10 +129,11 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 		for(TimeLeavingWork attendanceLeave : timeLeavingWorks) {
 			newAttendanceLeave.add(attendanceLeave.correctJustTime(isJustTimeLateAttendance, isJustEarlyLeave));
 		}
-		timeLeavingWorks.clear();
-		timeLeavingWorks.addAll(newAttendanceLeave);
 		
-		return this;
+		return new TimeLeavingOfDailyPerformance(this.getEmployeeId(), 
+												 this.getWorkTimes(), 
+												 newAttendanceLeave, 
+												 this.getYmd());
 	}
 
 	/**
@@ -148,5 +149,18 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 			returnList.addAll(timeSpan.getNotDuplicationWith(tlw.getTimespan()));
 		}
 		return returnList;
+	}
+	
+	/**
+	 * 打刻順序不正かどうかチェックする
+	 * @return 打刻順序不正である
+	 */
+	public boolean isReverseOrder() {
+		for(TimeLeavingWork tl : this.getTimeLeavingWorks()) {
+			if(tl.isReverseOrder()) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

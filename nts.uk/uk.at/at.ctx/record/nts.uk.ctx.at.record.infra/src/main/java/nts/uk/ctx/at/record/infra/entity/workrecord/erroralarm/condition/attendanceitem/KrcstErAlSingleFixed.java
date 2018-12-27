@@ -36,7 +36,7 @@ public class KrcstErAlSingleFixed extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "FIXED_VALUE")
-	public int fixedValue;
+	public double fixedValue;
 	
 	@OneToOne
 	@JoinColumns({
@@ -48,7 +48,7 @@ public class KrcstErAlSingleFixed extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.krcstEralSingleFixedPK;
 	}
-	public KrcstErAlSingleFixed(KrcstErAlSingleFixedPK krcstEralSingleFixedPK, int fixedValue) {
+	public KrcstErAlSingleFixed(KrcstErAlSingleFixedPK krcstEralSingleFixedPK, double fixedValue) {
 		super();
 		this.krcstEralSingleFixedPK = krcstEralSingleFixedPK;
 		this.fixedValue = fixedValue;

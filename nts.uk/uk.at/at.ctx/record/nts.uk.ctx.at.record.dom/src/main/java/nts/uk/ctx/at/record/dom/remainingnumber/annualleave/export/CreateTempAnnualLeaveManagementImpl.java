@@ -46,7 +46,7 @@ public class CreateTempAnnualLeaveManagementImpl implements CreateTempAnnualLeav
 	/** 暫定年休管理データを作成する */
 	@Override
 	public List<TempAnnualLeaveManagement> algorithm(String companyId, String employeeId, DatePeriod period,
-			TempAnnualLeaveMngMode mode) {
+			InterimRemainMngMode mode) {
 		
 		CreateTempAnnLeaMngProc proc = new CreateTempAnnLeaMngProc(
 				this.workInformationRepo,
@@ -61,7 +61,7 @@ public class CreateTempAnnualLeaveManagementImpl implements CreateTempAnnualLeav
 	/** 暫定年休管理データを作成する　（月別集計用） */
 	@Override
 	public List<TempAnnualLeaveManagement> algorithm(String companyId, String employeeId, DatePeriod period,
-			TempAnnualLeaveMngMode mode, Optional<MonAggrCompanySettings> companySets,
+			InterimRemainMngMode mode, Optional<MonAggrCompanySettings> companySets,
 			Optional<MonthlyCalculatingDailys> monthlyCalcDailys) {
 		
 		CreateTempAnnLeaMngProc proc = new CreateTempAnnLeaMngProc(

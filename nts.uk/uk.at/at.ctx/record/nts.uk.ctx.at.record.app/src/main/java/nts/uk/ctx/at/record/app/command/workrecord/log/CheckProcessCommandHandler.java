@@ -4,29 +4,30 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
+//import javax.transaction.Transactional;
 
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
+//import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ProcessFlowOfDailyCreationDomainService;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class CheckProcessCommandHandler extends AsyncCommandHandler<CheckProcessCommand> {
 		
 	@Inject
 	private ProcessFlowOfDailyCreationDomainService processFlowOfDailyCreationDomainService;
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	protected void handle(CommandHandlerContext<CheckProcessCommand> context) {
+		System.out.println("Run batch service !");
 		val asyncContext = context.asAsync();
-		val dataSetter = asyncContext.getDataSetter();
+//		val dataSetter = asyncContext.getDataSetter();
 		val command = context.getCommand();
 
 		DatePeriod periodTime = new DatePeriod(

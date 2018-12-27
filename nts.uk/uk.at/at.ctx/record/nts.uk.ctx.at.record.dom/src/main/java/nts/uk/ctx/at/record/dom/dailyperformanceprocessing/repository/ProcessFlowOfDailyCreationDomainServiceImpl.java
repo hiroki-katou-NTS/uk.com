@@ -37,7 +37,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowOfDailyCreationDomainService{
 	
@@ -65,7 +65,7 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 //	@Inject
 //	private PersonInfoAdapter personInfoAdapter;
 
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public <C> void processFlowOfDailyCreation(AsyncCommandHandlerContext<C> asyncContext, ExecutionAttr executionAttr, DatePeriod periodTime,
 			String empCalAndSumExecLogID) {
@@ -171,6 +171,10 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 			dataSetter.updateData("reflectApprovalStartTime", GeneralDateTime.now().toString());
 			dataSetter.updateData("reflectApprovalStatus", ExecutionStatus.PROCESSING.nameId);
 			finalStatus = this.appReflectService.applicationRellect(empCalAndSumExecLogID, periodTime, asyncContext);
+			if(finalStatus == ProcessState.INTERRUPTION) {
+				this.empCalAndSumExeLogRepository.updateStatus(empCalAndSumExecLogID, ExeStateOfCalAndSum.STOPPING.value);				
+				asyncContext.finishedAsCancelled();
+			}
 			if(finalStatus == ProcessState.SUCCESS) {
 				dataSetter.updateData("reflectApprovalStatus", ExecutionStatus.DONE.nameId);	
 			}

@@ -58,8 +58,9 @@
 									<td data-bind="text: '承認者'+$data.frameOrder" class="bg-green" ></td>
 									<!-- 社員名 -->
 									<td data-bind="foreach: $data.listApprover">
-										<div class = "rowPer"  data-bind="text: $data.dispApproverName,
-																css: { rowBorder:  ($parent.listApprover.length - $index()) > 1 }"></div>
+										<div class = "rowPerName" data-bind="css: { rowBorder:  ($parent.listApprover.length - $index()) > 1 }">
+											<div data-bind="text: $data.dispApproverName"></div>
+										</div>
 									</td>
 									<!-- 状況 -->
 									<td data-bind="text: approvalAtrName" ></td>

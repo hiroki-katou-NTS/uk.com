@@ -19,11 +19,13 @@ import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
 @Stateless
 public class DisplayAgreementInfo {
 	
-	private static String ERROR = "state-error";
+	private static String ERROR = "state-error text-error";
 	
-	private static String ALARM = "state-alarm";
+	private static String ALARM = "state-alarm text-alarm";
 	
 	private static String EXCEPTION = "state-exception";
+	
+	private static final String FORMAT_HH_MM = "%d:%02d";
 	
 
 	@Inject
@@ -50,32 +52,52 @@ public class DisplayAgreementInfo {
 		
 		Optional<AgreementTimeOfManagePeriod> agreeTimeOpt = agreementTimeOfManagePeriodRepository.find(employeeId, YearMonth.of(year, month));
 		
-		if(agreeTimeOpt.isPresent()) result.setCssAgree(convertStateCell(agreeTimeOpt.get().getAgreementTime().getStatus().value));
-		
+		if (agreeTimeOpt.isPresent()) {
+			result.setCssAgree(convertStateCell(agreeTimeOpt.get().getAgreementTime().getStatus().value));
+			result.setAgreementTime36(agreeTimeOpt.get().getAgreementTime() != null
+					&& agreeTimeOpt.get().getAgreementTime().getAgreementTime() != null
+							? convertTime(agreeTimeOpt.get().getAgreementTime().getAgreementTime().v())
+							: "0:00");
+			result.setMaxTime(agreeTimeOpt.get().getAgreementTime() != null
+					&& agreeTimeOpt.get().getAgreementTime().getLimitErrorTime() != null
+							? convertTime(agreeTimeOpt.get().getAgreementTime().getLimitErrorTime().v())
+							: "0:00");
+		}
+
 		Optional<AgreementOperationSetting> agreeOperationOpt = agreementOperationSettingRepository.find(companyId);
-		
-		result.setMaxNumber(agreeOperationOpt.isPresent() ? String.valueOf(agreeOperationOpt.get().getNumberTimesOverLimitType().value) : "0");
+
+		result.setMaxNumber(agreeOperationOpt.isPresent()
+				? String.valueOf(agreeOperationOpt.get().getNumberTimesOverLimitType().value)
+				: "0");
 		result.setExcessFrequency(String.valueOf(getExcessTimesYearAdapter.algorithm(employeeId, new Year(year))));
-		if(Integer.parseInt(result.getExcessFrequency()) >= Integer.parseInt(result.getMaxNumber())){
+		if (Integer.parseInt(result.getExcessFrequency()) >= Integer.parseInt(result.getMaxNumber())) {
 			result.setCssFrequency(ERROR);
 		}
-		
+
 		return result;
 	}
 	
 	private String convertStateCell(int value) {
-		if (value == AgreementTimeStatusOfMonthly.NORMAL_SPECIAL.value
-				|| value == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP.value
+		if (value == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP.value
 				|| value == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP.value) {
 			return EXCEPTION;
 		} else if (value == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR.value
 				|| value == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR.value) {
+			// text error
 			return ERROR;
 		} else if (value == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM.value
 				|| value == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM.value) {
+			// text alarm
 			return ALARM;
 		} else {
 			return "";
 		}
+	}
+	
+	private String convertTime(Integer minute){
+		if(minute == null) minute = 0;
+		int hours = minute / 60;
+		int minutes = Math.abs(minute) % 60;
+		return (minute < 0 && hours == 0) ?  "-"+String.format(FORMAT_HH_MM, hours, minutes) : String.format(FORMAT_HH_MM, hours, minutes);
 	}
 }

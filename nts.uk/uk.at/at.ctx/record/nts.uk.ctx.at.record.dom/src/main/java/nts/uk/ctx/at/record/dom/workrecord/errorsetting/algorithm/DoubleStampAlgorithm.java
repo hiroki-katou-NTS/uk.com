@@ -70,6 +70,7 @@ public class DoubleStampAlgorithm {
 		}
 
 		if (timeActualStamp != null && timeActualStamp.isPresent()
+				&& timeActualStamp.get().getNumberOfReflectionStamp() != null
 				&& timeActualStamp.get().getNumberOfReflectionStamp() >= 2) {
 			return attendanceItemIDs;
 		}

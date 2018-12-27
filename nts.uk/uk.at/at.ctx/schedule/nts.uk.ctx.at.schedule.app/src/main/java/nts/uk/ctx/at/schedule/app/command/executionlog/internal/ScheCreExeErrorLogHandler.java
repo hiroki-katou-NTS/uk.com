@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.executionlog.internal;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -63,7 +63,6 @@ public class ScheCreExeErrorLogHandler {
 		// check exist error
 		if (!this.checkExistErrorByKey(command, employeeId)) {
 			this.scheduleErrorLogRepository.add(this.toScheduleErrorLog(command, employeeId, messageId, paramMsg));
-			
 		}
 	}
 
@@ -77,14 +76,28 @@ public class ScheCreExeErrorLogHandler {
 	 * @return true, if successful
 	 */
 	public boolean checkExistError(ScheduleErrorLogGeterCommand command, String employeeId) {
+		return this.scheduleErrorLogRepository.checkExistErrorByKey(command.getExecutionId(), employeeId);
+
+	}
+	
+	public boolean checkExistErrorByExeId(String executionId) {
+		Integer errorLogs = this.scheduleErrorLogRepository.distinctErrorByExecutionId(executionId);
+		// check empty list log error
+		if (errorLogs>0) {
+			return true;
+		}
+		return false;
+	}
+	
+	public List<ScheduleErrorLog> getListError(ScheduleErrorLogGeterCommand command, String employeeId) {
 		List<ScheduleErrorLog> errorLogs = this.scheduleErrorLogRepository.findByEmployeeId(command.getExecutionId(),
 				employeeId);
 
 		// check empty list log error
 		if (CollectionUtil.isEmpty(errorLogs)) {
-			return false;
+			return Collections.emptyList();
 		}
-		return true;
+		return errorLogs;
 	}
 
 	/**
@@ -97,10 +110,8 @@ public class ScheCreExeErrorLogHandler {
 	 * @return true, if successful
 	 */
 	public boolean checkExistErrorByKey(ScheduleErrorLogGeterCommand command, String employeeId) {
-		Optional<ScheduleErrorLog> optionalError = this.scheduleErrorLogRepository.findByKey(command.getExecutionId(),
+		return this.scheduleErrorLogRepository.checkExistErrorByKey(command.getExecutionId(),
 				employeeId, command.getToDate());
-
-		return optionalError.isPresent();
 	}
 
 	/**

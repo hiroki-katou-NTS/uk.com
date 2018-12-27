@@ -6,7 +6,9 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.portal.dom.webmenu.jobtitletying.JobTitleTying;
 import nts.uk.ctx.sys.portal.dom.webmenu.jobtitletying.JobTitleTyingRepository;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.jobtitletying.CcgstJobTitleTying;
@@ -55,8 +57,12 @@ public class JpaJobTitleTyingRepository extends JpaRepository implements JobTitl
 	 */
 	@Override
 	public List<JobTitleTying> findWebMenuCode(String companyId, List<String> jobId) {
-		return this.queryProxy().query(FIND_WEB_MENU_CODE, CcgstJobTitleTying.class)
-				.setParameter("companyId", companyId).setParameter("jobId", jobId).getList(t -> toDomain(t));
+		List<JobTitleTying> results = new ArrayList<>();
+		CollectionUtil.split(jobId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			results.addAll(this.queryProxy().query(FIND_WEB_MENU_CODE, CcgstJobTitleTying.class)
+				.setParameter("companyId", companyId).setParameter("jobId", subList).getList(t -> toDomain(t)));
+		});
+		return results;
 	}
 	
 	/**
@@ -81,9 +87,12 @@ public class JpaJobTitleTyingRepository extends JpaRepository implements JobTitl
 
 	@Override
 	public void removeByListJobId(String companyId, List<String> listJobId) {
-		this.getEntityManager().createQuery(DELETE_BY_LIST_JOBID)
-		.setParameter("companyId", companyId)
-		.setParameter("listJobId", listJobId)
-		.executeUpdate();
+		CollectionUtil.split(listJobId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			this.getEntityManager().createQuery(DELETE_BY_LIST_JOBID)
+				.setParameter("companyId", companyId)
+				.setParameter("listJobId", subList)
+				.executeUpdate();
+		});
+		this.getEntityManager().flush();
 	}
 }

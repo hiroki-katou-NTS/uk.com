@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.roundingset;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 
 /**
@@ -37,6 +38,23 @@ public class TimeRoundingOfExcessOutsideTime {
 		TimeRoundingOfExcessOutsideTime domain = new TimeRoundingOfExcessOutsideTime();
 		domain.roundingUnit = roundingUnit;
 		domain.roundingProcess = roundingProcess;
+		return domain;
+	}
+	
+	/**
+	 * Of.
+	 *
+	 * @param roundingUnit the rounding unit
+	 * @param roundingProcess the rounding process
+	 * @return the time rounding of excess outside time
+	 */
+	public static TimeRoundingOfExcessOutsideTime of(
+			int roundingUnit,
+			int roundingProcess){
+
+		TimeRoundingOfExcessOutsideTime domain = new TimeRoundingOfExcessOutsideTime();
+		domain.roundingUnit = EnumAdaptor.valueOf(roundingUnit, Unit.class);
+		domain.roundingProcess = EnumAdaptor.valueOf(roundingProcess, RoundingProcessOfExcessOutsideTime.class); ;
 		return domain;
 	}
 }

@@ -17,6 +17,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
         grantHdData: any;
         checkDataExisted: KnockoutObservable<boolean>;
         flag: KnockoutObservable<boolean>;
+        dialogType: KnockoutObservable<string> = ko.observable();
         
         constructor() {
             var self = this;
@@ -56,6 +57,11 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             
             self.payDayCalculate = ko.observable("");
             self.count = ko.observable(0);
+        }
+        
+        isShowCheckBox() {
+            let self = this;
+            return self.conditionData.useCondition;
         }
 
         /**

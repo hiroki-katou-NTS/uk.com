@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceI
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValueDay;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -98,6 +99,10 @@ public class UpdateMonthlyCorrectConCmd {
 					atdItemConDomain.setCompareRange(atdItemCon.getCompareOperator(),
 							(V) new CheckedTimesValue(atdItemCon.getCompareStartValue().intValue()),
 							(V) new CheckedTimesValue(atdItemCon.getCompareEndValue().intValue()));
+				} else if (atdItemCon.getConditionAtr() == ConditionAtr.DAYS.value) {
+					atdItemConDomain.setCompareRange(atdItemCon.getCompareOperator(),
+							(V) new CheckedTimesValueDay(atdItemCon.getCompareStartValue().doubleValue()),
+							(V) new CheckedTimesValueDay(atdItemCon.getCompareEndValue().doubleValue()));
 				}
 			} else {
 				if (atdItemCon.getConditionType() == ConditionType.FIXED_VALUE.value) {
@@ -117,6 +122,10 @@ public class UpdateMonthlyCorrectConCmd {
 						atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(),
 								atdItemCon.getConditionType(),
 								(V) new CheckedTimesValue(atdItemCon.getCompareStartValue() == null ? 0 : atdItemCon.getCompareStartValue().intValue()));
+					} else if (atdItemCon.getConditionAtr() == ConditionAtr.DAYS.value) {
+						atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(),
+								atdItemCon.getConditionType(),
+								(V) new CheckedTimesValueDay(atdItemCon.getCompareStartValue() == null ? 0 : atdItemCon.getCompareStartValue().doubleValue()));
 					}
 				} else {
 					atdItemConDomain.setCompareSingleValue(atdItemCon.getCompareOperator(), atdItemCon.getConditionType(),

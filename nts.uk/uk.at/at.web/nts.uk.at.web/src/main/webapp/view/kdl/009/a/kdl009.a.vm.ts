@@ -27,6 +27,7 @@ module nts.uk.at.view.kdl009.a {
             hint03: KnockoutObservable<string> = ko.observable("");
             value04: KnockoutObservable<string> = ko.observable("");
             hint04: KnockoutObservable<string> = ko.observable("");
+            expirationDateText: KnockoutObservable<string> = ko.observable("");
             
             constructor() {
                 var self = this;
@@ -50,6 +51,7 @@ module nts.uk.at.view.kdl009.a {
                             self.employeeInfo(nts.uk.resource.getText("KDL009_25", [value, itemSelected.businessName]));
                             
                             service.getAcquisitionNumberRestDays(itemSelected.employeeId, data.baseDate).done(function(data) {
+                                self.expirationDateText(ExpirationDate[data.setting.expirationDate]);
                                 self.bindTimeData(data);
                                 self.bindSummaryData(data);
                             }).fail(function(res) {
@@ -59,22 +61,23 @@ module nts.uk.at.view.kdl009.a {
                             
                         self.bindEmpList(data.employeeBasicInfo);
                         
-                        $("#date-fixed-table").ntsFixedTable({ height: 341 });
+                        $("#date-fixed-table").ntsFixedTable({ height: 155 });
                     } else if(data.employeeBasicInfo.length == 1) {
                         self.employeeInfo(nts.uk.resource.getText("KDL009_25", [data.employeeBasicInfo[0].employeeCode, data.employeeBasicInfo[0].businessName]));
                         
                         service.getAcquisitionNumberRestDays(data.employeeBasicInfo[0].employeeId, data.baseDate).done(function(data) {
+                            self.expirationDateText(ExpirationDate[data.setting.expirationDate]);
                             self.bindTimeData(data);
                             self.bindSummaryData(data);
                         }).fail(function(res) {
                             nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                         });
                         
-                        $("#date-fixed-table").ntsFixedTable({ height: 341 });
+                        $("#date-fixed-table").ntsFixedTable({ height: 155 });
                     } else {
                         self.employeeInfo(nts.uk.resource.getText("KDL009_25", ["", ""]));
                         
-                        $("#date-fixed-table").ntsFixedTable({ height: 341 });
+                        $("#date-fixed-table").ntsFixedTable({ height: 155 });
                         
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_918" });
                     }
@@ -83,7 +86,7 @@ module nts.uk.at.view.kdl009.a {
                 });
 
             }
-            
+           
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
@@ -151,7 +154,7 @@ module nts.uk.at.view.kdl009.a {
                                     issueDate = nts.uk.time.applyFormat("Short_YMDW", [item.recHisData.recDate.dayoffDate]);
                                 }
                             } else {
-                                issueDate = nts.uk.resource.getText("KDL009_11");
+                                issueDate = "";
                             }
                             
                             if(item.recHisData.occurrenceDays == 0.5) {
@@ -183,6 +186,7 @@ module nts.uk.at.view.kdl009.a {
                             if(holidayDateTop === nts.uk.resource.getText("KDL009_11")) {
                                 holidayDateTop = "";
                                 occurrenceDays2Top = "";
+                                
                             }
                         }
                         
@@ -193,6 +197,10 @@ module nts.uk.at.view.kdl009.a {
                                 isHalfDay = true;
                             }                            
                         }
+                            
+                            if (issueDate == "" && holidayDateTop == "" && expirationDate != "") {
+                                issueDate = nts.uk.resource.getText("KDL009_11");
+                            }
                         
                         let temp = new DataItems(issueDate, holidayDateTop, holidayDateBot, expirationDate, occurrenceDays1, occurrenceDays2Top, occurrenceDays2Bot, isHalfDay);
                             
@@ -204,22 +212,16 @@ module nts.uk.at.view.kdl009.a {
             bindSummaryData(data: any) {
                 var self = this;
                 
-                if(data.absRemainInfor != null) {
-                    self.value01(nts.uk.resource.getText("KDL009_14", [data.absRemainInfor.carryForwardDays]));
-                    self.value02(nts.uk.resource.getText("KDL009_14", [data.absRemainInfor.recordOccurrenceDays]));
-                    self.hint02(nts.uk.resource.getText("KDL009_15", [data.absRemainInfor.scheOccurrenceDays]));
-                    self.value03(nts.uk.resource.getText("KDL009_14", [data.absRemainInfor.recordUseDays]));
-                    self.hint03(nts.uk.resource.getText("KDL009_15", [data.absRemainInfor.scheUseDays]));
-                    self.value04(nts.uk.resource.getText("KDL009_14", [data.absRemainInfor.recordOccurrenceDays - data.absRemainInfor.recordUseDays]));
-                    self.hint04(nts.uk.resource.getText("KDL009_15", [data.absRemainInfor.scheOccurrenceDays - data.absRemainInfor.scheUseDays]));
+                if (data.absRecMng != null) {
+                    self.value01(nts.uk.resource.getText("KDL009_14", [data.absRecMng.carryForwardDays]));
+                    self.value02(nts.uk.resource.getText("KDL009_14", [data.absRecMng.occurrenceDays]));
+                    self.value03(nts.uk.resource.getText("KDL009_14", [data.absRecMng.useDays]));
+                    self.value04(nts.uk.resource.getText("KDL009_14", [data.absRecMng.remainDays]));
                 } else {
                     self.value01(nts.uk.resource.getText("KDL009_14", ["0"]));
                     self.value02(nts.uk.resource.getText("KDL009_14", ["0"]));
-                    self.hint02(nts.uk.resource.getText("KDL009_15", ["0"]));
                     self.value03(nts.uk.resource.getText("KDL009_14", ["0"]));
-                    self.hint03(nts.uk.resource.getText("KDL009_15", ["0"]));
                     self.value04(nts.uk.resource.getText("KDL009_14", ["0"]));
-                    self.hint04(nts.uk.resource.getText("KDL009_15", ["0"]));
                 }
             }
             
@@ -275,6 +277,23 @@ module nts.uk.at.view.kdl009.a {
                 this.occurrenceDays2Bot = occurrenceDays2Bot;
                 this.isHalfDay = isHalfDay;
             }
+        }
+        export enum ExpirationDate {
+            "当月",//0
+            "常に繰越",//1
+            "年度末クリア",//2
+            "1ヶ月",//3
+            "2ヶ月",//4
+            "3ヶ月",//5
+            "4ヶ月",//6
+            "5ヶ月",//7
+            "6ヶ月",//8
+            "7ヶ月",//9
+            "8ヶ月",//10
+            "9ヶ月",//11
+            "10ヶ月",//12
+            "11ヶ月",//13
+            "1年",//14
         }
     }
 }

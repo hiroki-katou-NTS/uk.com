@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author Doan Duy Hung
@@ -73,7 +74,7 @@ public interface ApprovalRootStateRepository {
 	
 	public void delete(String rootStateID, Integer rootType);
 	
-	public List<ApprovalRootState> getRootStateByDateAndType(GeneralDate date, Integer rootType);
+	public List<ApprovalRootState> getRootStateByApproverDate(String companyID, String approverID, GeneralDate date);
 	
 	public void deleteConfirmDay(String employeeID, GeneralDate date);
 	
@@ -85,4 +86,8 @@ public interface ApprovalRootStateRepository {
 	 * @return
 	 */
 	public List<ApprovalPhaseState> findPhaseApprovalMax(String appID);
+	
+	public List<ApprovalRootState> getByApproverPeriod(String companyID, String approverID, DatePeriod period);
+	
+	public List<ApprovalRootState> getByApproverAgentPeriod(String companyID, String approverID, DatePeriod period, DatePeriod agentPeriod); 
 }

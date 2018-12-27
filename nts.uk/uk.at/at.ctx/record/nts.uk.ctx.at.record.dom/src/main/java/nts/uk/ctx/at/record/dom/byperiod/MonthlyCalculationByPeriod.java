@@ -7,6 +7,7 @@ import nts.uk.ctx.at.record.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
 import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
@@ -15,7 +16,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 期間別の月の計算
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class MonthlyCalculationByPeriod implements Cloneable {
@@ -83,15 +84,20 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 	 * @param workingSystem 労働制
 	 * @param calcDailys 月の計算中の日別実績データ
 	 * @param companySets 月別集計で必要な会社別設定
+	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void calculation(
 			DatePeriod period,
 			WorkingSystem workingSystem,
 			MonthlyCalculatingDailys calcDailys,
-			MonAggrCompanySettings companySets){
+			MonAggrCompanySettings companySets,
+			RepositoriesRequiredByMonthlyAggr repositories){
 
 		// 総労働時間の集計
-		this.aggregateTime.aggregate(period, calcDailys.getAttendanceTimeOfDailyMap(), companySets);
+		this.aggregateTime.aggregate(period,
+				calcDailys.getAttendanceTimeOfDailyMap(),
+				calcDailys.getWorkInfoOfDailyMap(),
+				companySets, repositories);
 
 		// フレックス時間の集計
 		this.flexTime.aggregate(period, calcDailys.getAttendanceTimeOfDailyMap());
@@ -236,6 +242,24 @@ public class MonthlyCalculationByPeriod implements Cloneable {
 			}
 			return roundingSet.itemRound(attendanceItemId,
 					hdwkTimeMap.get(holidayWorkTimeFrameNo).getTransferTime().getCalcTime());
+		}
+		
+		// フレックス法定内時間
+		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_LEGAL_TIME.value){
+			int flexLegalMinutes = 0;
+			if (isExcessOutside){
+				return roundingSet.excessOutsideRound(attendanceItemId, new AttendanceTimeMonth(flexLegalMinutes));
+			}
+			return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexLegalMinutes));
+		}
+		
+		// フレックス法定外時間
+		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_ILLEGAL_TIME.value){
+			val flexIllegalMinutes = this.flexTime.getFlexExcessTime().v();
+			if (isExcessOutside){
+				return roundingSet.excessOutsideRound(attendanceItemId, new AttendanceTimeMonth(flexIllegalMinutes));
+			}
+			return roundingSet.itemRound(attendanceItemId, new AttendanceTimeMonth(flexIllegalMinutes));
 		}
 		
 		// フレックス超過時間　（フレックス時間のプラス分）

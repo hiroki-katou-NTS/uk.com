@@ -8,7 +8,7 @@ import nts.arc.layer.dom.AggregateRoot;
 /**
  * 休暇申請種類表示名
  * @author yennth
- *
+ * Chú ý: DB không có dữ liệu, domain có thể không dùng nữa. Sử dụng name lấy từ domain HdAppSet
  */
 @Getter
 @AllArgsConstructor

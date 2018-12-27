@@ -2,6 +2,7 @@ package nts.uk.shr.com.time.calendar.period;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -12,6 +13,12 @@ public class DatePeriod extends GeneralPeriod<DatePeriod, GeneralDate> {
 
 	public DatePeriod(GeneralDate start, GeneralDate end) {
 		super(start, end);
+	}
+	
+	public static DatePeriod daysFirstToLastIn(YearMonth yearMonth) {
+		return new DatePeriod(
+				GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1),
+				GeneralDate.ymd(yearMonth.year(), yearMonth.month(), yearMonth.lastDateInMonth()));
 	}
 
 	@Override
@@ -45,5 +52,26 @@ public class DatePeriod extends GeneralPeriod<DatePeriod, GeneralDate> {
 			start = start.addDays(1);
 		}
 		return result;
+	}
+	
+	public void forEachByMonths(int unitMonths, Consumer<DatePeriod> process) {
+		
+		GeneralDate currentEnd;
+		for (GeneralDate currentStart = this.start();
+				currentStart.beforeOrEquals(this.end());
+				currentStart = currentEnd.increase()) {
+			
+			currentEnd = whichBefore(
+					currentStart.addMonths(unitMonths).decrease(),
+					this.end());
+			
+			DatePeriod currentPeriod = new DatePeriod(currentStart, currentEnd);
+			
+			process.accept(currentPeriod);
+		}
+	}
+	
+	private static GeneralDate whichBefore(GeneralDate a, GeneralDate b) {
+		return a.beforeOrEquals(b) ? a : b;
 	}
 }

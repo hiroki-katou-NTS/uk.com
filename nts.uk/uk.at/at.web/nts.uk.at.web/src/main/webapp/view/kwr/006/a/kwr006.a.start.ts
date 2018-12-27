@@ -6,6 +6,7 @@ module nts.uk.at.view.kwr006.a {
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
             screenModel.executeBindingComponent();
+            $("#combo-box").ntsEditor("validate");
             blockUI.clear();
         });
     });

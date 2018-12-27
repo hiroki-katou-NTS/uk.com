@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nts.uk.shr.com.context.ScreenIdentifier;
 import nts.uk.shr.com.program.Program;
 import nts.uk.shr.com.program.ProgramsManager;
 import nts.uk.shr.com.program.WebAppId;
@@ -29,6 +30,13 @@ public class FilterHelper {
 	public static boolean isLoginPage(String requestPath){
 		return LOGIN_PATH.stream().anyMatch(lg -> {
 			return requestPath.contains(lg.getPPath());
+		});
+	}
+	
+	public static boolean isLoginPage(ScreenIdentifier target){
+		String pgID = target.getProgramId() + target.getScreenId();
+		return LOGIN_PATH.stream().anyMatch(lg -> {
+			return pgID.equals(lg.getPId());
 		});
 	}
 

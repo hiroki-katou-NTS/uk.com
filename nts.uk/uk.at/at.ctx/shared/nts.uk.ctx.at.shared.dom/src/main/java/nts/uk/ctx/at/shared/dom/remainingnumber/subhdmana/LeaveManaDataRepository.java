@@ -93,4 +93,14 @@ public interface LeaveManaDataRepository {
 	void deleteById(List<String> leaveId);
 	
 	Integer getDeadlineCompensatoryLeaveCom(String sID, GeneralDate dayOff, int deadlMonth);
+	/**
+	 * 
+	 * @param cid
+	 * @param sid
+	 * @param ymd 休出日 < INPUT．集計開始日 OR 休出日がない
+	 * @param unUse 未使用日数 >0  OR 未使用時間数 > 0
+	 * @param state  代休消化区分
+	 * @return
+	 */
+	List<LeaveManagementData> getBySidYmd(String cid, String sid, GeneralDate ymd, DigestionAtr state);
 }

@@ -10,6 +10,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ItemBasicInfo {
+	
 	private String itemCode;
 	
 	private String itemName;
@@ -17,4 +18,6 @@ public class ItemBasicInfo {
 	private String itemId;
 	
 	private int requiredAtr;
+	
+	private int abolitionAtr;
 }

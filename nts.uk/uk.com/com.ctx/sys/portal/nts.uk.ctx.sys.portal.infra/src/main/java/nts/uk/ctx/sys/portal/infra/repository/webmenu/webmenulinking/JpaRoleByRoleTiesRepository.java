@@ -53,4 +53,7 @@ public class JpaRoleByRoleTiesRepository extends JpaRepository implements  RoleB
 		return data;
 	}
 
+
+
+
 }

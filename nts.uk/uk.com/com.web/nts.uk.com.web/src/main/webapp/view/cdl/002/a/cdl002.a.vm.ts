@@ -13,7 +13,6 @@ module nts.uk.com.view.cdl002.a {
             isCheckShowWorkClosure: boolean;
             
             listComponentOption: any;
-            
             constructor() {
                 let self = this;
                 var params = getShared('CDL002Params');
@@ -26,7 +25,9 @@ module nts.uk.com.view.cdl002.a {
                     self.selectedMulEmployment(params.selectedCodes ? params.selectedCodes : []);
                 }
                 else {
-                    self.selectedSelEmployment(params.selectedCodes);
+                    if (params.selectedCodes.length > 0) {
+                        self.selectedSelEmployment(params.selectedCodes[0]);
+                    }
                 }
                 
                 // If Selection Mode is Multiple Then not show Unselected Row
@@ -46,11 +47,14 @@ module nts.uk.com.view.cdl002.a {
                     isDisplayClosureSelection: self.isCheckShowWorkClosure,
                     listType: ListType.EMPLOYMENT,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                    selectedCode: null,
+                    selectedCode: params.selectedCodes,
                     isDialog: true,
+                    selectedClosureId: ko.observable(null),
                     isShowNoSelectRow: self.isDisplayUnselect(),
                     maxRows: 10,
-                    tabindex: 1
+                    isSelectAllAfterReload: false,
+                    tabindex: 1,
+                    backupSelectedCode: params.selectedCodes
                 };
                 if (self.isMultiSelect()) {
                     self.listComponentOption.selectedCode = self.selectedMulEmployment;
@@ -66,6 +70,15 @@ module nts.uk.com.view.cdl002.a {
             closeDialog(): void {
                 setShared('CDL002Cancel', true);
                 nts.uk.ui.windows.close();
+            }
+            
+            getClosureByEmployment(employmentId: string): JQueryPromise<any> {
+                let dfd = $.Deferred<any>();
+
+                nts.uk.request.ajax('at', "ctx/at/shared/workrule/closure/getclosuretiedbyemployment/" + employmentId).done((closureId: any) => {
+                    dfd.resolve(closureId);
+                });
+                    return dfd.promise();
             }
 
             /**

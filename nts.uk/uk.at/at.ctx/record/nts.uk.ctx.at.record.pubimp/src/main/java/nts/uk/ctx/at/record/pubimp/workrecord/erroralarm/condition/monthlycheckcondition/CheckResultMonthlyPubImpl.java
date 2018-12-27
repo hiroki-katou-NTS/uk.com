@@ -32,8 +32,8 @@ import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcond
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.CheckResultMonthlyPub;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.SpecHolidayCheckConPubEx;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
 public class CheckResultMonthlyPubImpl implements CheckResultMonthlyPub {
@@ -175,12 +175,12 @@ public class CheckResultMonthlyPubImpl implements CheckResultMonthlyPub {
 	}
 	//Hoidd No.257
 	@Override
-	public Map<String, Integer> checkPerTimeMonActualResult(YearMonth yearMonth, String employeeID, AttendanceItemConditionPubExport attendanceItemCondition, List<Integer> attendanceIds) {
+	public Map<String, Integer> checkPerTimeMonActualResult(YearMonth yearMonth, String employeeID, AttendanceItemConditionPubExport attendanceItemCondition) {
 		Map<String, Integer> result = perTimeMonActualResult.checkPerTimeMonActualResult(
 				yearMonth, 
 				employeeID, 
-				convertToExport(attendanceItemCondition),
-				attendanceIds);
+				convertToExport(attendanceItemCondition)
+				);
 		return result;
 	}
 

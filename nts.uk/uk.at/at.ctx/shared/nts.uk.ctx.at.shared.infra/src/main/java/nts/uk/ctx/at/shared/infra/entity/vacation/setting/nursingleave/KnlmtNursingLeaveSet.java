@@ -7,7 +7,6 @@ package nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -38,7 +37,6 @@ public class KnlmtNursingLeaveSet extends UkJpaEntity implements Serializable {
     private KnlmtNursingLeaveSetPK knlmtNursingLeaveSetPK;
     
     /** The manage type. */
-    @Basic(optional = false)
     @Column(name = "MANAGE_ATR")
     private Integer manageType;
     
@@ -69,6 +67,7 @@ public class KnlmtNursingLeaveSet extends UkJpaEntity implements Serializable {
      * Instantiates a new kmfmt nursing leave set.
      */
     public KnlmtNursingLeaveSet() {
+    	super();
     }
 
     /* (non-Javadoc)

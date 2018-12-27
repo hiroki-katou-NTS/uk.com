@@ -14,8 +14,7 @@
 }
 
 .form-label {
-	min-width: 110px;
-	margin-right: 40px;
+    margin-right: 10px;
 }
 
 .caret-bottom {
@@ -34,13 +33,15 @@
 }
 
 #btn-selectuser {
-	margin: 40px 0;
-}
-
-.username {
-	font-size: 1.3rem;
+	margin-right: 10px;
+    margin-top: 30px;
+    margin-bottom: 20px;
 }
 
 #daterangepicker {
 	display: inline-block;
+}
+
+label.ntsControl.limited-label {
+	width : 400px;
 }

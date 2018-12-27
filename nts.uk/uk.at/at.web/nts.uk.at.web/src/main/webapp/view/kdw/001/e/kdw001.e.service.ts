@@ -5,7 +5,8 @@ module nts.uk.at.view.kdw001.e.service {
         getErrorMessageInfo: "at/record/log/getErrorMessageInfo",
         addEmpCalSumAndTarget: "at/record/log/addEmpCalSumAndTarget",
         checkprocess: "at/record/log/checkprocess",
-        updateExcutionTime : "at/record/log/updateExcutionTime"
+        updateExcutionTime : "at/record/log/updateExcutionTime",
+        updateLogState : "at/record/log/updateLogState"
     }
     
     export function getErrorMessageInfo(params: any): JQueryPromise<any> {
@@ -26,6 +27,10 @@ module nts.uk.at.view.kdw001.e.service {
     
     export function updateExcutionTime(params: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.updateExcutionTime, params);
+    }
+    
+    export function updateLogState(params: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.updateLogState, params);
     }
 
 }

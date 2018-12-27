@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 
 /**
  * 36協定時間内訳
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class AgreementTimeBreakdown {
@@ -27,8 +27,10 @@ public class AgreementTimeBreakdown {
 	private AttendanceTimeMonth holidayWorkTime;
 	/** 振替時間 */
 	private AttendanceTimeMonth transferTime;
-	/** フレックス超過時間 */
-	private AttendanceTimeMonth flexExcessTime;
+	/** フレックス法定内時間 */
+	private AttendanceTimeMonth flexLegalTime;
+	/** フレックス法定外時間 */
+	private AttendanceTimeMonth flexIllegalTime;
 	/** 所定内割増時間 */
 	private AttendanceTimeMonth withinPrescribedPremiumTime;
 	/** 週割増時間 */
@@ -45,7 +47,8 @@ public class AgreementTimeBreakdown {
 		this.transferOverTime = new AttendanceTimeMonth(0);
 		this.holidayWorkTime = new AttendanceTimeMonth(0);
 		this.transferTime = new AttendanceTimeMonth(0);
-		this.flexExcessTime = new AttendanceTimeMonth(0);
+		this.flexLegalTime = new AttendanceTimeMonth(0);
+		this.flexIllegalTime = new AttendanceTimeMonth(0);
 		this.withinPrescribedPremiumTime = new AttendanceTimeMonth(0);
 		this.weeklyPremiumTime = new AttendanceTimeMonth(0);
 		this.monthlyPremiumTime = new AttendanceTimeMonth(0);
@@ -57,7 +60,8 @@ public class AgreementTimeBreakdown {
 	 * @param transferOverTime 振替残業時間
 	 * @param holidayWorkTime 休出時間
 	 * @param transferTime 振替時間
-	 * @param flexExcessTime フレックス超過時間
+	 * @param flexLegalTime フレックス法定内時間
+	 * @param flexIllegalTime フレックス法定外時間
 	 * @param withinPrescribedPremiumTime 所定内割増時間
 	 * @param weeklyPremiumTime 週割増時間
 	 * @param monthlyPremiumTime 月割増時間
@@ -68,7 +72,8 @@ public class AgreementTimeBreakdown {
 			AttendanceTimeMonth transferOverTime,
 			AttendanceTimeMonth holidayWorkTime,
 			AttendanceTimeMonth transferTime,
-			AttendanceTimeMonth flexExcessTime,
+			AttendanceTimeMonth flexLegalTime,
+			AttendanceTimeMonth flexIllegalTime,
 			AttendanceTimeMonth withinPrescribedPremiumTime,
 			AttendanceTimeMonth weeklyPremiumTime,
 			AttendanceTimeMonth monthlyPremiumTime){
@@ -78,7 +83,8 @@ public class AgreementTimeBreakdown {
 		domain.transferOverTime = transferOverTime;
 		domain.holidayWorkTime = holidayWorkTime;
 		domain.transferTime = transferTime;
-		domain.flexExcessTime = flexExcessTime;
+		domain.flexLegalTime = flexLegalTime;
+		domain.flexIllegalTime = flexIllegalTime;
 		domain.withinPrescribedPremiumTime = withinPrescribedPremiumTime;
 		domain.weeklyPremiumTime = weeklyPremiumTime;
 		domain.monthlyPremiumTime = monthlyPremiumTime;
@@ -101,7 +107,8 @@ public class AgreementTimeBreakdown {
 		this.transferOverTime = new AttendanceTimeMonth(0);
 		this.holidayWorkTime = new AttendanceTimeMonth(0);
 		this.transferTime = new AttendanceTimeMonth(0);
-		this.flexExcessTime = new AttendanceTimeMonth(0);
+		this.flexLegalTime = new AttendanceTimeMonth(0);
+		this.flexIllegalTime = new AttendanceTimeMonth(0);
 		this.withinPrescribedPremiumTime = new AttendanceTimeMonth(0);
 		this.weeklyPremiumTime = new AttendanceTimeMonth(0);
 		this.monthlyPremiumTime = new AttendanceTimeMonth(0);
@@ -137,7 +144,8 @@ public class AgreementTimeBreakdown {
 		this.transferOverTime = new AttendanceTimeMonth(0);
 		this.holidayWorkTime = new AttendanceTimeMonth(0);
 		this.transferTime = new AttendanceTimeMonth(0);
-		this.flexExcessTime = new AttendanceTimeMonth(0);
+		this.flexLegalTime = new AttendanceTimeMonth(0);
+		this.flexIllegalTime = new AttendanceTimeMonth(0);
 		this.withinPrescribedPremiumTime = new AttendanceTimeMonth(0);
 		this.weeklyPremiumTime = new AttendanceTimeMonth(0);
 		this.monthlyPremiumTime = new AttendanceTimeMonth(0);
@@ -213,9 +221,14 @@ public class AgreementTimeBreakdown {
 			this.transferTime = this.transferTime.addMinutes(targetItemTime.v());
 		}
 		
-		// フレックス超過時間
-		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_EXCESS_TIME.value){
-			this.flexExcessTime = this.flexExcessTime.addMinutes(targetItemTime.v());
+		// フレックス法定内時間
+		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_LEGAL_TIME.value){
+			this.flexLegalTime = this.flexLegalTime.addMinutes(targetItemTime.v());
+		}
+		
+		// フレックス法定外時間
+		if (attendanceItemId == AttendanceItemOfMonthly.FLEX_ILLEGAL_TIME.value){
+			this.flexIllegalTime = this.flexIllegalTime.addMinutes(targetItemTime.v());
 		}
 		
 		// 所定内割増時間
@@ -245,10 +258,27 @@ public class AgreementTimeBreakdown {
 		totalTime = totalTime.addMinutes(this.transferOverTime.v());
 		totalTime = totalTime.addMinutes(this.holidayWorkTime.v());
 		totalTime = totalTime.addMinutes(this.transferTime.v());
-		totalTime = totalTime.addMinutes(this.flexExcessTime.v());
+		totalTime = totalTime.addMinutes(this.flexLegalTime.v());
+		totalTime = totalTime.addMinutes(this.flexIllegalTime.v());
 		totalTime = totalTime.addMinutes(this.withinPrescribedPremiumTime.v());
 		totalTime = totalTime.addMinutes(this.weeklyPremiumTime.v());
 		totalTime = totalTime.addMinutes(this.monthlyPremiumTime.v());
 		return totalTime;
+	}
+	
+	/**
+	 * 合算する
+	 * @param target 加算対象
+	 */
+	public void sum(AgreementTimeBreakdown target){
+		this.overTime = this.overTime.addMinutes(target.overTime.v());
+		this.transferOverTime = this.transferOverTime.addMinutes(target.transferOverTime.v());
+		this.holidayWorkTime = this.holidayWorkTime.addMinutes(target.holidayWorkTime.v());
+		this.transferTime = this.transferTime.addMinutes(target.transferTime.v());
+		this.flexLegalTime = this.flexLegalTime.addMinutes(target.flexLegalTime.v());
+		this.flexIllegalTime = this.flexIllegalTime.addMinutes(target.flexIllegalTime.v());
+		this.withinPrescribedPremiumTime = this.withinPrescribedPremiumTime.addMinutes(target.withinPrescribedPremiumTime.v());
+		this.weeklyPremiumTime = this.weeklyPremiumTime.addMinutes(target.weeklyPremiumTime.v());
+		this.monthlyPremiumTime = this.monthlyPremiumTime.addMinutes(target.monthlyPremiumTime.v());
 	}
 }

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -25,9 +26,6 @@ import nts.uk.ctx.bs.employee.infra.entity.temporaryabsence.BsymtTempAbsHisItem;
 @Stateless
 @Transactional
 public class JpaTempAbsItem extends JpaRepository implements TempAbsItemRepository {
-	
-	/** The Constant MAX_ELEMENTS. */
-	private static final Integer MAX_ELEMENTS = 1000;
 	
 	private static final String GET_BY_SID_DATE = "SELECT hi FROM BsymtTempAbsHisItem hi"
 			+ " INNER JOIN BsymtTempAbsHistory h ON h.histId = hi.histId"
@@ -66,7 +64,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 		List<BsymtTempAbsHisItem> resultList = new ArrayList<>();
 		
 		// Split employeeId List if size of employeeId List is greater than 1000
-		CollectionUtil.split(employeeIds, MAX_ELEMENTS, (subList) -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			List<BsymtTempAbsHisItem> optionDatas = this.queryProxy()
 					.query(GET_BY_SIDS_DATE, BsymtTempAbsHisItem.class)
 					.setParameter("sids", subList).setParameter("standardDate", standardDate)
@@ -237,8 +235,16 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 		if (historyIds.isEmpty()) {
 			return new ArrayList<>();
 		}
-		List<BsymtTempAbsHisItem> entities = this.queryProxy().query(GET_BY_HISTORYID_LIST, BsymtTempAbsHisItem.class)
-				.setParameter("histIds", historyIds).getList();
+
+		// ResultList
+		List<BsymtTempAbsHisItem> entities = new ArrayList<>();
+		// Split historyIds List if size of historyIds List is greater than 1000
+		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
+			List<BsymtTempAbsHisItem> lstBsymtAffCompanyHist = this.queryProxy().query(GET_BY_HISTORYID_LIST, BsymtTempAbsHisItem.class)
+					.setParameter("histIds", subList).getList();
+			entities.addAll(lstBsymtAffCompanyHist);
+		});
+		
 		return entities.stream().map(x -> toDomain(x)).collect(Collectors.toList());
 	}
 
