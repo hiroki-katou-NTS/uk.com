@@ -3532,6 +3532,9 @@ var nts;
                         case 401:
                             handle401(xhr);
                             break;
+                        case 403:
+                            handle403(xhr);
+                            break;
                         default:
                             handleUnknownError(xhr, status, error);
                             break;
@@ -3542,6 +3545,9 @@ var nts;
                     var res = xhr.responseJSON;
                     // res.sessionTimeout || res.csrfError
                     specials.errorPages.sessionTimeout();
+                }
+                function handle403(xhr) {
+                    specials.errorPages.stopUse();
                 }
                 function handleUnknownError(xhr, status, error) {
                     console.log("request failed");
@@ -3593,6 +3599,34 @@ var nts;
                 return dfd.promise();
             }
             request.exportFile = exportFile;
+            function exportLog(data) {
+                var dfd = $.Deferred();
+                request.ajax("logcollector/extract", data).done(function (res) {
+                    if (res.failed || res.status == "ABORTED") {
+                        dfd.reject(res.error);
+                    }
+                    var taskId = res.id;
+                    uk.deferred.repeat(function (conf) { return conf.task(function () {
+                        return nts.uk.request.asyncTask.getInfo(taskId).done(function (res) {
+                            if (res.succeeded) {
+                                setTimeout(function () {
+                                    specials.donwloadFile(taskId);
+                                    dfd.resolve(null);
+                                }, 100);
+                            }
+                            else {
+                                if (res.failed) {
+                                    dfd.reject(res);
+                                }
+                            }
+                        });
+                    }).while(function (info) { return info.pending || info.running; }).pause(1000); });
+                }).fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            request.exportLog = exportLog;
             function downloadFileWithTask(taskId, data, options) {
                 var dfd = $.Deferred();
                 var checkTask = function () {
@@ -3602,7 +3636,7 @@ var nts;
                                 checkTask();
                             }, 1000);
                         }
-                        if (res.failed || res.status == "ABORTED") {
+                        else if (res.failed || res.status == "ABORTED") {
                             dfd.reject(res.error);
                         }
                         else {
@@ -3710,6 +3744,10 @@ var nts;
                         jump('com', '/view/common/error/sessiontimeout/index.xhtml');
                     }
                     errorPages.sessionTimeout = sessionTimeout;
+                    function stopUse() {
+                        jump('com', '/view/common/error/stopuse/index.xhtml');
+                    }
+                    errorPages.stopUse = stopUse;
                 })(errorPages = specials.errorPages || (specials.errorPages = {}));
             })(specials = request.specials || (request.specials = {}));
             function jumpFromDialogOrFrame(webAppId, path, data) {
@@ -4207,11 +4245,20 @@ var nts;
                             var $compItem = $("<li class='menu-item company-item'/>").text(comp.companyName).appendTo($companyList);
                             $compItem.on(constants.CLICK, function () {
                                 nts.uk.request.ajax(constants.APP_ID, constants.ChangeCompany, comp.companyId)
-                                    .done(function (personName) {
+                                    .done(function (data) {
                                     $companyName.text(comp.companyName);
-                                    $userName.text(personName);
+                                    $userName.text(data.personName);
                                     $companyList.css("right", $user.outerWidth() + 30);
-                                    location.reload(true);
+                                    if (!nts.uk.util.isNullOrEmpty(data.msgResult)) {
+                                        nts.uk.ui.dialog.info({ messageId: data.msgResult }).then(function () {
+                                            location.reload(true);
+                                        });
+                                    }
+                                    else {
+                                        location.reload(true);
+                                    }
+                                }).fail(function (msg) {
+                                    nts.uk.ui.dialog.alertError(msg.messageId);
                                 });
                             });
                         });
@@ -17712,19 +17759,7 @@ var nts;
                         _super.prototype.init.call(this, $input, data);
                         $input.on('focus', function () {
                             if (!$input.attr('readonly')) {
-<<<<<<< HEAD
                                 $input.val(data.value());
-=======
-                                // Remove separator (comma)
-                                var value = ko.toJS(data.value), numb = Number(value);
-                                if (!_.isNil(value) && _.isNumber(numb) && !_.isNaN(numb) && !_.isEqual(String(value).trim(), '')) {
-                                    var match = String(value).match(/.\d+/g);
-                                    $input.val(numb.toLocaleString('ja-JP', { useGrouping: false, minimumFractionDigits: match.length == 2 ? match[1].length - 1 : 0 }));
-                                }
-                                else {
-                                    $input.val(data.value());
-                                }
->>>>>>> origin/delivery/release_user
                                 // If focusing is caused by Tab key, select text
                                 // this code is needed because removing separator deselects.
                                 if (ui.keyboardStream.wasKeyDown(uk.KeyCodes.Tab, 500)) {
@@ -18167,6 +18202,9 @@ var nts;
                     if (handlesEnterKey) {
                         $input.addClass("enterkey")
                             .onkey("down", uk.KeyCodes.Enter, function (e) {
+                            if ($(".blockUI").length <= 0) {
+                                return;
+                            }
                             $input.change();
                             onEnterKey.call(ko.dataFor(e.target), e);
                         });
@@ -26669,11 +26707,7 @@ var nts;
                                     mgrid._vessel().zeroHidden = val;
                             }
                         },
-<<<<<<< HEAD
-                        updatedCells: function (a) {
-=======
                         updatedCells: function (all) {
->>>>>>> origin/delivery/release_user
                             var arr = [];
                             var toNumber = false, column = mgrid._columnsMap[mgrid._pk];
                             if ((column && _.toLower(column[0].dataType) === "number")
@@ -26685,19 +26719,11 @@ var nts;
                                     arr.push({ rowId: (toNumber ? parseFloat(r) : r), columnKey: c, value: mgrid._dirties[r][c] });
                                 });
                             });
-<<<<<<< HEAD
-                            if (a) {
+                            if (all) {
                                 _.forEach(_.keys(mgrid._mafollicle[SheetDef]), function (k) {
                                     if (k === mgrid._currentSheet)
                                         return;
                                     var maf = mgrid._mafollicle[mgrid._currentPage][k];
-=======
-                            if (all) {
-                                _.forEach(_.keys(_mafollicle[SheetDef]), function (k) {
-                                    if (k === _currentSheet)
-                                        return;
-                                    var maf = _mafollicle[_currentPage][k];
->>>>>>> origin/delivery/release_user
                                     if (!maf || !maf.dirties)
                                         return;
                                     _.forEach(_.keys(maf.dirties), function (r) {
@@ -28457,11 +28483,7 @@ var nts;
                         }
                         if (su.afterCollertar)
                             setTimeout(function () { return su.afterCollertar.focus({ preventScroll: true }); }, 1);
-<<<<<<< HEAD
                         var formatted, disFormat, coord = ti.getCellCoord(target), col = mgrid._columnsMap[coord.columnKey];
-=======
-                        var formatted, disFormat, coord = ti.getCellCoord(target), col = _columnsMap[coord.columnKey];
->>>>>>> origin/delivery/release_user
                         var inputRidd = function ($t, rowIdx, columnKey, dFormat) {
                             if ($t.classList.contains(khl.ERROR_CLS))
                                 return;
@@ -31803,11 +31825,47 @@ var nts;
                         $('#functions-area').addClass("disappear");
                         $('#functions-area-bottom').addClass("disappear");
                         $('#contents-area').addClass("disappear");
+                        $('#master-content').addClass("disappear");
                     });
                     ui.viewModelApplied.add(function () {
                         $('#functions-area').removeClass("disappear");
                         $('#functions-area-bottom').removeClass("disappear");
                         $('#contents-area').removeClass("disappear");
+                        $('#master-content').removeClass("disappear");
+                        if ($('#sidebar').length > 0) {
+                            $('#sidebar').ntsSideBar("reactive");
+                        }
+                    });
+                    ui.viewModelApplied.add(function () {
+                        if (!nts.uk.util.isNullOrUndefined(__viewContext.program.operationSetting)
+                            && (__viewContext.program.operationSetting.state == 1 || __viewContext.program.operationSetting.state == 2)) {
+                            var operationInfo = $("<div>", { 'class': 'operation-info-container marquee', 'id': 'operation-info' }), moving_1 = $("<div>"), text_4 = $("<label>"), text2 = $("<label>");
+                            moving_1.append(text_4).append(text2);
+                            operationInfo.append(moving_1).css({ right: ($("#manual").outerWidth() + 5) + "px" });
+                            text_4.text(__viewContext.program.operationSetting.message);
+                            text2.text(__viewContext.program.operationSetting.message);
+                            $("#pg-area").append(operationInfo);
+                            operationInfo.hover(function () {
+                                moving_1.addClass("animate-stopping");
+                            }, function () {
+                                moving_1.removeClass("animate-stopping");
+                            });
+                            var limit_1 = Math.floor(0 - moving_1.width()), current_1 = limit_1, id = setInterval(running, 50);
+                            moving_1.css({ "right": current_1 + "px" });
+                            operationInfo.data("animate-id", id);
+                            function running() {
+                                if (moving_1.hasClass("animate-stopping")) {
+                                    return;
+                                }
+                                if (current_1 >= 200) {
+                                    current_1 = limit_1;
+                                }
+                                else {
+                                    current_1++;
+                                }
+                                moving_1.css({ "right": current_1 + "px" });
+                            }
+                        }
                     });
                 })(content || (content = {}));
             })(action = ui.action || (ui.action = {}));
@@ -33000,7 +33058,14 @@ var nts;
                     function setSelected($grid, selectedId) {
                         deselectAll($grid);
                         if ($grid.igGridSelection('option', 'multipleSelection')) {
-                            selectedId.forEach(function (id) { return $grid.igGridSelection('selectRowById', id); });
+                            // for performance when select all
+                            var baseID = _.map($grid.igGrid("option").dataSource, $grid.igGrid("option", "primaryKey"));
+                            if (_.difference(baseID, baseID).length == 0) {
+                                $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']").click();
+                            }
+                            else {
+                                selectedId.forEach(function (id) { return $grid.igGridSelection('selectRowById', id); });
+                            }
                         }
                         else {
                             $grid.igGridSelection('selectRowById', selectedId);
@@ -39734,6 +39799,9 @@ var nts;
                         else if (action === "active") {
                             return active($control, option);
                         }
+                        else if (action === "reactive") {
+                            return reactive($control);
+                        }
                         else if (action === "enable") {
                             return enable($control, option);
                         }
@@ -39774,11 +39842,14 @@ var nts;
                                 settings.activate.call(this, event, info);
                             }
                         });
-                        active(control, settings.active, true);
-                        return control;
+                        return active(control, settings.active, true);
+                    }
+                    function reactive(control) {
+                        return active(control, control.data("active"), false);
                     }
                     function active(control, index, isInit) {
                         if (isInit === void 0) { isInit = false; }
+                        control.data("active", index);
                         control.find("#sidebar-area .navigator a").removeClass("active");
                         control.find("#sidebar-area .navigator a").eq(index).addClass("active");
                         control.find(".sidebar-content > div[role=tabpanel]").addClass("disappear");
