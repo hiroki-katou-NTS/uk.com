@@ -938,11 +938,26 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	private void createWhereCondition(StringBuilder temp, String table, String key, String operation, String value) {
 		temp.append(AND_COND);
-		temp.append(table);
-		temp.append(DOT);
-		temp.append(key);
-		temp.append(operation);
-		temp.append(value);
+		if(ConditionSymbol.IS_NOT.operator.equals(operation)) {
+			temp.append("(");
+			temp.append(table);
+			temp.append(DOT);
+			temp.append(key);
+			temp.append(operation);
+			temp.append(value);
+			
+			temp.append(" OR ");
+			temp.append(table);
+			temp.append(DOT);
+			temp.append(key);
+			temp.append(" IS NULL ) ");
+		}else {
+			temp.append(table);
+			temp.append(DOT);
+			temp.append(key);
+			temp.append(operation);
+			temp.append(value);
+		}
 	}
 	
 	private void createWhereCondition(StringBuilder temp, String key, String operation, String value) {
