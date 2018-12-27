@@ -26,9 +26,9 @@ public class ShiftEstimateExportImpl implements MasterListData {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_101, TextResource.localize("KSM001_101"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_101_1, TextResource.localize("KSM001_101_1"),
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_101_1, "",
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_101_2, TextResource.localize("KSM001_101_2"),
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_101_2, "",
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_102, TextResource.localize("KSM001_102"),
 				ColumnTextAlign.LEFT, "", true));
@@ -48,9 +48,9 @@ public class ShiftEstimateExportImpl implements MasterListData {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_112, TextResource.localize("KSM001_112"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_112_1, TextResource.localize("KSM001_112_1"),
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_112_1, "",
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_112_2, TextResource.localize("KSM001_112_2"),
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_112_2, "",
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_113, TextResource.localize("KSM001_113"),
 				ColumnTextAlign.LEFT, "", true));
