@@ -53,12 +53,12 @@ public class DayCalendarExportImpl implements MasterListData {
 	@Inject
 	private WorkplaceConfigInfoFinder workplaceConfigInfoFinder;
 	
-	private Period period;
+//	private Period period;
 	
 	 @Override
 	 public List<SheetData> extraSheets(MasterListExportQuery query) {
 		 String companyId = AppContexts.user().companyId();
-		 period = dayCalendarReportRepository.getBaseDateByCompany(companyId, query.getStartDate(), query.getEndDate());
+//		 period = dayCalendarReportRepository.getBaseDateByCompany(companyId, query.getStartDate(), query.getEndDate());
 		 List<SheetData> sheetDatas = new ArrayList<>();
 		 //add the work place sheet
 		 SheetData sheetCompanyData = new SheetData(getMasterDatasCompany(query), getHeaderColumnsCompany(query),null, null, TextResource.localize("KSM004_95"));
@@ -89,7 +89,7 @@ public class DayCalendarExportImpl implements MasterListData {
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		String companyId = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
-		publicHolidayRepository.getpHolidayWhileDate(companyId, period.getStartDate(), period.getEndDate()).stream()
+		publicHolidayRepository.getpHolidayWhileDate(companyId, query.getStartDate(), query.getEndDate()).stream()
 			.sorted(Comparator.comparing(PublicHoliday::getDate)).forEachOrdered(x -> {
 				Map<String, Object> row = new HashMap<>();
 				putEmptyToColumHoliday(row);
@@ -167,7 +167,7 @@ public class DayCalendarExportImpl implements MasterListData {
 		List<MasterData> datas = new ArrayList<>();
 		
 		Optional<Map<String, List<CompanyCalendarReportData>>> mapSetReportDatas = dayCalendarReportRepository
-				.findCalendarCompanyByDate(companyId, period.getStartDate(), period.getEndDate());
+				.findCalendarCompanyByDate(companyId, query.getStartDate(), query.getEndDate());
 
 		if (mapSetReportDatas.isPresent()) {
 			mapSetReportDatas.get().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEachOrdered(x -> {
@@ -278,7 +278,7 @@ public class DayCalendarExportImpl implements MasterListData {
 		String companyId = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
 		Optional<Map<String, List<WorkplaceCalendarReportData>>> mapSetReportDatas = dayCalendarReportRepository
-				.findCalendarWorkplaceByDate(companyId, period.getStartDate(), period.getEndDate());
+				.findCalendarWorkplaceByDate(companyId, query.getStartDate(), query.getEndDate());
 		
 		WkpConfigInfoFindObject wkpConfigInfoFindObject = new WkpConfigInfoFindObject();
 		wkpConfigInfoFindObject.setSystemType(2);
@@ -415,7 +415,7 @@ public class DayCalendarExportImpl implements MasterListData {
 		String companyId = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
 		Optional<Map<String, List<ClassCalendarReportData>>> mapSetReportDatas = dayCalendarReportRepository
-				.findCalendarClassByDate(companyId, period.getStartDate(), period.getEndDate());
+				.findCalendarClassByDate(companyId, query.getStartDate(), query.getEndDate());
 
 		if (mapSetReportDatas.isPresent()) {
 			mapSetReportDatas.get().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEachOrdered(x -> {

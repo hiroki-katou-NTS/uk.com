@@ -13,7 +13,6 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.app.find.pattern.monthly.setting.Period;
 
 @Stateless
 public class JpaDayCalendarReportRepository extends JpaRepository implements DayCalendarReportRepository{
@@ -42,27 +41,27 @@ public class JpaDayCalendarReportRepository extends JpaRepository implements Day
 			+ " AND s.CID = ?companyId";
 	
 	
-	@Override
-	public Period getBaseDateByCompany(String companyId, GeneralDate startExportDate, GeneralDate endExportDate) {
-		Integer beginMonth = ((BigDecimal)this.getEntityManager().createNativeQuery(GET_BEGIN_MONTH_COMPANY)
-				.setParameter("companyId", companyId).getSingleResult()).intValue();
-		int startYear = startExportDate.year();
-		int endYear = endExportDate.year();
-		
-		GeneralDate start = GeneralDate.ymd(startYear, beginMonth, 1);
-		
-		int endMonth = beginMonth - 1;
-		if (endMonth > 0) {
-			endYear = endYear + 1;
-		}
-		else {
-			endMonth = 12;
-		}
-		GeneralDate startdateOfEndMonth = GeneralDate.ymd(endYear, endMonth, 1);
-		GeneralDate end = GeneralDate.ymd(endYear, endMonth, startdateOfEndMonth.lastDateInMonth());
-		
-		return new Period(start, end);
-	}
+//	@Override
+//	public Period getBaseDateByCompany(String companyId, GeneralDate startExportDate, GeneralDate endExportDate) {
+//		Integer beginMonth = ((BigDecimal)this.getEntityManager().createNativeQuery(GET_BEGIN_MONTH_COMPANY)
+//				.setParameter("companyId", companyId).getSingleResult()).intValue();
+//		int startYear = startExportDate.year();
+//		int endYear = endExportDate.year();
+//		
+//		GeneralDate start = GeneralDate.ymd(startYear, beginMonth, 1);
+//		
+//		int endMonth = beginMonth - 1;
+//		if (endMonth > 0) {
+//			endYear = endYear + 1;
+//		}
+//		else {
+//			endMonth = 12;
+//		}
+//		GeneralDate startdateOfEndMonth = GeneralDate.ymd(endYear, endMonth, 1);
+//		GeneralDate end = GeneralDate.ymd(endYear, endMonth, startdateOfEndMonth.lastDateInMonth());
+//		
+//		return new Period(start, end);
+//	}
 
 	@Override
 	public Optional<Map<String, List<CompanyCalendarReportData>>> findCalendarCompanyByDate(String companyId, GeneralDate startDate,

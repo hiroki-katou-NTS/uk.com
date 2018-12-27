@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.app.find.pattern.monthly.setting.Period;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
@@ -93,9 +92,9 @@ public class SpecificdaySetExportImpl implements MasterListData {
 		String companyId = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
 		
-		Period period = specificdaySetReportRepository.getBaseDateByCompany(companyId, query.getStartDate(), query.getEndDate());
+//		Period period = specificdaySetReportRepository.getBaseDateByCompany(companyId, query.getStartDate(), query.getEndDate());
 		Optional<Map<String, List<SpecificdaySetCompanyReportData>>> mapSetReportDatas = specificdaySetReportRepository
-				.findAllSpecificdaySetCompany(companyId, period.getStartDate(), period.getEndDate());
+				.findAllSpecificdaySetCompany(companyId, query.getStartDate(), query.getEndDate());
 
 		if (mapSetReportDatas.isPresent()) {
 			mapSetReportDatas.get().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEachOrdered(x -> {
@@ -227,9 +226,9 @@ public class SpecificdaySetExportImpl implements MasterListData {
 	private List<MasterData> getMasterDatasForWorkplace(MasterListExportQuery query) {
 		String companyId = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
-		Period period = specificdaySetReportRepository.getBaseDateByCompany(companyId, query.getStartDate(), query.getEndDate());
+//		Period period = specificdaySetReportRepository.getBaseDateByCompany(companyId, query.getStartDate(), query.getEndDate());
 		Optional<Map<String, List<SpecificdaySetWorkplaceReportData>>> mapSetReportDatas = specificdaySetReportRepository
-				.findAllSpecificdaySetWorkplace(companyId, period.getStartDate(), period.getEndDate());
+				.findAllSpecificdaySetWorkplace(companyId, query.getStartDate(), query.getEndDate());
 
 		if (mapSetReportDatas.isPresent()) {
 			mapSetReportDatas.get().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEachOrdered(x -> {
