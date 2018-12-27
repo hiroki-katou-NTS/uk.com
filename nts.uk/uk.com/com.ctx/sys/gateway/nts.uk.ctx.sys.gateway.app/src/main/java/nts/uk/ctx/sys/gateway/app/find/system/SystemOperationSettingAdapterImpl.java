@@ -30,11 +30,7 @@ public class SystemOperationSettingAdapterImpl implements SystemOperationSetting
 
 	@Override
 	public Optional<String> stopUseConfirm() {
-		String contractCode = AppContexts.user().contractCode();
-		String companyCode = AppContexts.user().companyCode();
-		if (contractCode.equals("000000000000") && companyCode.equals("0001")) {
-			return Optional.of("とりあえずサーバーに接続できません。ログインをしなおしてください。");
-		}
+		// TODO: implement checking if the user can login
 		return Optional.empty();
 	}
 
