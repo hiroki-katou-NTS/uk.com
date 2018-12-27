@@ -71,7 +71,7 @@ public class YearHolidayRepositoryImpl implements MasterListData{
 		List<GrantHdTblSet> listFindAll = yearHolidayRepo.findAll(companyId);
 		
 		if(CollectionUtil.isEmpty(listFindAll)) {
-			throw new BusinessException("Msg_393");
+			return  null;
 		}else{
 			listFindAll.stream().forEach(c->{
 				Map<String, Object> data = new HashMap<>();

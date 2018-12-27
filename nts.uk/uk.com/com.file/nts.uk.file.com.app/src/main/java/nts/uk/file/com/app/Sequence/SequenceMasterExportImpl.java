@@ -97,7 +97,7 @@ public class SequenceMasterExportImpl implements MasterListData{
 		List<SequenceMaster> listSequenceMaster = sequenceMasterRepository.findByCompanyId(companyId);
 		
 		if(CollectionUtil.isEmpty(listSequenceMaster)){
-			throw new BusinessException("Msg_393");
+			return null;
 		}else{
 			listSequenceMaster.stream().forEach(c ->{
 				Map<String, Object> data = new HashMap<>();
@@ -167,7 +167,7 @@ public class SequenceMasterExportImpl implements MasterListData{
 				.sorted(Comparator.comparing(JobTitleInfo::getJobTitleCode)).collect(Collectors.toList());
 
 		if(CollectionUtil.isEmpty(listFindAll)){
-			throw new BusinessException("Msg_393");
+			return null;
 		}else{
 			listFindAll.stream().forEach(c ->{
 				Map<String, Object> data = new HashMap<>();

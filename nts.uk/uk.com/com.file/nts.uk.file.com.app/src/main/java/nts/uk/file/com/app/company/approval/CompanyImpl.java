@@ -66,7 +66,7 @@ public class CompanyImpl implements MasterListData{
 				.collect(Collectors.toList());
 		
 		if(CollectionUtil.isEmpty(listCompany)){
-			throw new BusinessException("Msg_393");
+			return null;
 		}else{
 			listCompany.stream().forEach(c->{
 				Map<String, Object> data = new HashMap<>();

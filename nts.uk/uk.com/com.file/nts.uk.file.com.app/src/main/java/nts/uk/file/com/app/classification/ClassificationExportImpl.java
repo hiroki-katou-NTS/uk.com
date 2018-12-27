@@ -47,7 +47,7 @@ public class ClassificationExportImpl implements MasterListData{
 		List<Classification> listEmployeeExport = classificationRepository.getAllManagementCategory(companyId);
 		
 		if (CollectionUtil.isEmpty(listEmployeeExport)) {
-			throw new BusinessException("Msg_393");
+			return null;
 		} else {
 			listEmployeeExport.stream().forEach(c -> {
 				Map<String, Object> data = new HashMap<>();

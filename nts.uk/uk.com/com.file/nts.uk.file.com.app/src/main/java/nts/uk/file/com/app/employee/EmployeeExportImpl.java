@@ -66,7 +66,7 @@ public class EmployeeExportImpl implements MasterListData {
 		List<Employment> listEmployeeExport = employmentRepository.findAll(companyId);
 
 		if (CollectionUtil.isEmpty(listEmployeeExport)) {
-			throw new BusinessException("Msg_393");
+			return null;
 		} else {
 			listEmployeeExport.stream().forEach(c -> {
 
