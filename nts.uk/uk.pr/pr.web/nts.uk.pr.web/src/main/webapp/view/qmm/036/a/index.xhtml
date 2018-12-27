@@ -60,17 +60,17 @@
                             <div tabindex="4" style="width: 220px"
                                  data-bind="ntsSearchBox: {
                                      searchMode: 'highlight',
-                                     targetKey: 'itemNameCd',
+                                     targetKey: 'key',
                                      comId: 'A4_4',
                                      items: lstStatementItem,
-                                     selected: selectStatementItem,
-                                     selectedKey: 'statementItemCode',
+                                     selected: currentCodeStatement,
+                                     selectedKey: 'key',
                                      fields: ['itemNameCd', 'name'],
                                      mode: 'igGrid'}"/>
                             <table id="A4_4" tabindex="5"
                                    data-bind="ntsGridList: { name: '#[QMM031_11]',
                                         options: lstStatementItem,
-                                        primaryKey: 'itemNameCd',
+                                        primaryKey: 'key',
                                         columns: columns,
                                         multiple: false,
                                         rows: 8,

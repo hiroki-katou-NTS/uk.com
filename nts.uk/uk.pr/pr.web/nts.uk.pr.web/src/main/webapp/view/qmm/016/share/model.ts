@@ -49,18 +49,18 @@ module nts.uk.pr.view.qmm016.share.model {
 
     export function getQualificationPaymentMethodItem() {
         return [
-            new EnumModel(QualificationPaymentMethod.ADD_MULTIPLE_APPLICABLE_AMOUNT, '複数該当した金額を加算する'),
-            new EnumModel(QualificationPaymentMethod.PAY_ONLY_ONE_HIGHEST_BENEFIT, '一番高い手当を1つだけ支給する')
+            new EnumModel(QualificationPaymentMethod.ADD_MULTIPLE_APPLICABLE_AMOUNT, getText("Enum_Qualify_Pay_Method_Add_Multiple")),
+            new EnumModel(QualificationPaymentMethod.PAY_ONLY_ONE_HIGHEST_BENEFIT, getText("Enum_Qualify_Pay_Method_Only_One_Highest"))
         ];
     }
 
     export function getElementItemModel () {
         return [
-            new EnumModel(ELEMENT_SETTING.ONE_DIMENSION, '一次元'),
-            new EnumModel(ELEMENT_SETTING.TWO_DIMENSION, '二次元'),
-            new EnumModel(ELEMENT_SETTING.THREE_DIMENSION, '三次元'),
-            new EnumModel(ELEMENT_SETTING.QUALIFICATION, '資格'),
-            new EnumModel(ELEMENT_SETTING.FINE_WORK, '精皆勤')
+            new EnumModel(ELEMENT_SETTING.ONE_DIMENSION, getText("Enum_Element_Setting_One_Dimension")),
+            new EnumModel(ELEMENT_SETTING.TWO_DIMENSION, getText("Enum_Element_Setting_Two_Dimension")),
+            new EnumModel(ELEMENT_SETTING.THREE_DIMENSION, getText("Enum_Element_Setting_Three_Dimension")),
+            new EnumModel(ELEMENT_SETTING.QUALIFICATION, getText("Enum_Element_Setting_Qualification")),
+            new EnumModel(ELEMENT_SETTING.FINE_WORK, getText("Enum_Element_Setting_Fine_Work"))
         ];
     }
 

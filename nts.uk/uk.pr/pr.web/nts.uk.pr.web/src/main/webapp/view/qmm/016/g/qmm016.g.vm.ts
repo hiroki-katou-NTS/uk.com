@@ -5,20 +5,22 @@ module nts.uk.pr.view.qmm016.g.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import service = nts.uk.pr.view.qmm016.g.service;
     import model = nts.uk.pr.view.qmm016.share.model;
+    import getText = nts.uk.resource.getText;
+    
     export class ScreenModel {
         statementItemNameList: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedStatementItemName: KnockoutObservable<string> = ko.observable("");
         fixedElements: Array<any> = [
-            { code: "M001", name: '雇用' },
-            { code: "M002", name: '部門' },
-            { code: "M003", name: '分類' },
-            { code: "M004", name: '職位' },
-            { code: "M005", name: '給与分類' },
-            { code: "M006", name: '資格' },
-            { code: "M007", name: '精皆勤レベル' },
-            { code: "N001", name: '年齢' },
-            { code: "N002", name: '勤続年数' },
-            { code: "N003", name: '家族人数' }
+            { code: "M001", name: getText("Enum_Element_Type_M001") },
+            { code: "M002", name: getText("Enum_Element_Type_M002") },
+            { code: "M003", name: getText("Enum_Element_Type_M003") },
+            { code: "M004", name: getText("Enum_Element_Type_M004") },
+            { code: "M005", name: getText("Enum_Element_Type_M005") },
+            { code: "M006", name: getText("Enum_Element_Type_M006") },
+            { code: "M007", name: getText("Enum_Element_Type_M007") },
+            { code: "N001", name: getText("Enum_Element_Type_N001") },
+            { code: "N002", name: getText("Enum_Element_Type_N002") },
+            { code: "N003", name: getText("Enum_Element_Type_N003") }
         ];
         
         constructor() {

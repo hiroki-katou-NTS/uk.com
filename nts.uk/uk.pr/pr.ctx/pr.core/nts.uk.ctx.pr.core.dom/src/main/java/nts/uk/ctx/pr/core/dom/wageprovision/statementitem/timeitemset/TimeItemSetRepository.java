@@ -12,7 +12,7 @@ public interface TimeItemSetRepository {
 
 	List<TimeItemSet> getAllTimeItemSt();
 	Optional<TimeItemSet> getTimeItemStById(String cid, int categoryAtr, String itemNameCode);
-	List<TimeItemSet> getTimeItemStByCategoryAndCodes(String cid, int categoryAtr, List<String> itemNameCodes);
+	List<TimeItemSet> getTimeItemStByCategoryAndCodes(String cid, int timeCountAtr, List<String> itemNameCodes);
 	void add(TimeItemSet domain);
 	void update(TimeItemSet domain);
 	void remove(String cid, int categoryAtr, String itemNameCode);
