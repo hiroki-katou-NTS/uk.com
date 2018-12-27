@@ -23,6 +23,8 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
 
         employIdLogin: any;
 
+        enableA2_8: KnockoutObservable<boolean> = ko.observable(false);
+
         constructor() {
             let self = this;
             self.employIdLogin = __viewContext.user.employeeId;
@@ -385,6 +387,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
         selectEmp(id, value, rowData: RsdtTaxPayAmountDto) {
             let self = this;
             self.setDelete(id, value, rowData.inputAtr);
+            self.enableA2_8(!_.isEmpty(self.getSidSelected()));
         }
 
         selectInputAtr(id, value) {
@@ -535,18 +538,8 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
         deleteAmount() {
             let self = this;
             block.invisible();
-
-            let empAmountItems: Array<RsdtTaxPayAmountDto> = $("#grid").mGrid("dataSource", true);
-            let listEmpSelected = _.filter(empAmountItems, (item: RsdtTaxPayAmountDto) => {
-                return item.selectedEmp;
-            });
-            let listSId = _.map(listEmpSelected, (item: RsdtTaxPayAmountDto) => {
-                return item.sid;
-            });
-
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-
-                service.deleteTaxPayAmount(new DeleteCommand(listSId, self.formatYear(self.year()))).done(() => {
+                service.deleteTaxPayAmount(new DeleteCommand(self.getSidSelected(), self.formatYear(self.year()))).done(() => {
                     info({messageId: "Msg_16"}).then(() => {
                         self.getEmpAmount();
                     });
@@ -554,11 +547,21 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                     self.focusA3_1();
                     block.clear();
                 })
-
             }).ifNo(function() {
-                nts.uk.ui.block.clear();
+                block.clear();
                 return false;
             })
+        }
+
+        getSidSelected(): Array<string> {
+            let empAmountItems: Array<RsdtTaxPayAmountDto> = $("#grid").mGrid("dataSource", true);
+            let listEmpSelected = _.filter(empAmountItems, (item: RsdtTaxPayAmountDto) => {
+                return item.selectedEmp;
+            });
+            let listSId = _.map(listEmpSelected, (item: RsdtTaxPayAmountDto) => {
+                return item.sid;
+            });
+            return listSId;
         }
 
         isValidForm() {
