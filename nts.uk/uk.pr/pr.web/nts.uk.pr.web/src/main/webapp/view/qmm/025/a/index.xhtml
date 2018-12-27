@@ -47,7 +47,7 @@
                         </div>
                         <div class="cell valign-center">
                             <!--A2_3-->
-                            <div id="A2_3" tabindex="4" data-bind="ntsDatePicker: {value: year, dateFormat: 'YYYY'}"/>
+                            <div id="A2_3" tabindex="4" data-bind="ntsDatePicker: {value: year, required: true, dateFormat: 'YYYY'}"/>
                         </div>
                         <div class="cell valign-center">
                             <!--A2_4-->
@@ -60,13 +60,13 @@
                         <div class="cell valign-center">
                             <!--A2_6-->
                             <button id="A2_6" tabindex="5" class="small"
-                                    data-bind="click: getEmpAmount">#{i18n.getText('QMM025_6')}</button>
+                                    data-bind="click: getEmpAmount, enable: $root.errors.isEmpty">#{i18n.getText('QMM025_6')}</button>
                         </div>
                     </div>
                 </div>
                 <!--A2_8-->
                 <button id="A2_8" tabindex="7" class="danger"
-                        data-bind="click: deleteAmount">#{i18n.getText('QMM025_7')}</button>
+                        data-bind="click: deleteAmount, enable: $root.errors.isEmpty">#{i18n.getText('QMM025_7')}</button>
                 <!--A3_1-->
                 <table id="grid" tabindex="8"/>
             </div>
