@@ -127,7 +127,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		}
 		
 		// From
-		query.append(" FROM SSPMT_TARGET_EMPLOYEES e, ").append(tableList.getTableEnglishName()).append(" t");
+		query.append(" FROM ").append(tableList.getTableEnglishName()).append(" t");
 		if (tableList.getHasParentTblFlg() == NotUseAtr.USE && tableList.getParentTblName().isPresent()) {
 			// アルゴリズム「親テーブルをJOINする」を実行する
 			query.append(" INNER JOIN ").append(tableList.getParentTblName().get()).append(" p ON ");
@@ -308,17 +308,22 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		// Order By
 		query.append(" ORDER BY H_CID, H_SID, H_DATE, H_DATE_START");
 		String querySql = query.toString();
+		if(tableList.getTableEnglishName().equals("BPSMT_PERSON")) {
+			query.toString();
+		}
 		List<Object[]> listTemp = new ArrayList<>();
 		if(!targetEmployeesSid.isEmpty()) {
+			List<String> lSid = new ArrayList<>();
 			CollectionUtil.split(targetEmployeesSid, 1000, subIdList -> {
-				String lSid = subIdList.toString().replaceAll("\\[", "\\'").replaceAll("\\]", "\\'").replaceAll(", ","\\', '");
-				Query queryString = getEntityManager().createNativeQuery(querySql);
-				queryString.setParameter("listTargetSid", lSid);
+				lSid.add(subIdList.toString().replaceAll("\\[", "\\'").replaceAll("\\]", "\\'").replaceAll(", ","\\', '"));
+			});
+			for (String sid : lSid) {
+				Query queryString = getEntityManager().createNativeQuery(querySql.replaceAll("\\?listTargetSid", sid));
 				for (Entry<String, Object> entry : params.entrySet()) {
 					queryString.setParameter(entry.getKey(), entry.getValue());
 				}
 				listTemp.addAll((List<Object[]>) queryString.getResultList());
-			});
+			}
 		}else {
 			Query queryString = getEntityManager().createNativeQuery(querySql);
 			for (Entry<String, Object> entry : params.entrySet()) {

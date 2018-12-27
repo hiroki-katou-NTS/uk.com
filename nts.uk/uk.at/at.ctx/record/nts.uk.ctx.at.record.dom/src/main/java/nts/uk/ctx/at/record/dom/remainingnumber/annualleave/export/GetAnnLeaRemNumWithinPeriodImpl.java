@@ -165,4 +165,29 @@ public class GetAnnLeaRemNumWithinPeriodImpl implements GetAnnLeaRemNumWithinPer
 				isOverWriteOpt, forOverWriteListOpt, prevAnnualLeaveOpt,
 				noCheckStartDate, companySets, employeeSets, monthlyCalcDailys);
 	}
+
+	@Override
+	public GetAnnLeaRemNumWithinPeriodProc createProc() {
+		GetAnnLeaRemNumWithinPeriodProc proc = new GetAnnLeaRemNumWithinPeriodProc(
+				this.empEmployee,
+				this.annLeaEmpBasicInfoRepo,
+				this.yearHolidayRepo,
+				this.lengthServiceRepo,
+				this.annualPaidLeaveSet,
+				this.annLeaGrantRemDataRepo,
+				this.annLeaMaxDataRepo,
+				this.getClosureStartForEmployee,
+				this.calcNextAnnualLeaveGrantDate,
+				this.interimRemOffMonth,
+				this.createInterimAnnual,
+				this.interimRemainRepo,
+				this.tmpAnnualLeaveMng,
+				this.attendanceTimeOfMonthlyRepo,
+				this.getAnnLeaRemNumWithinPeriod,
+				this.closureSttMngRepo,
+				this.calcAnnLeaAttendanceRate,
+				this.grantYearHolidayRepo,
+				this.operationStartSetRepo);
+		return proc;
+	}
 }

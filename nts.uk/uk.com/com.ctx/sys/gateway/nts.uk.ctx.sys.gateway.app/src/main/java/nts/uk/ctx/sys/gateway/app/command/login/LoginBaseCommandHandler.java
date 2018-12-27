@@ -806,7 +806,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 					// Imported「社員の履歴情報」 を取得する(get Imported「社員の履歴情報」)
 					EmployeeGeneralInfoImport importPub = employeeGeneralInfoAdapter.getEmployeeGeneralInfo(lstEmployeeId, periodEmployee, IS_EMPLOYMENT, IS_CLASSIFICATION, IS_JOBTITLE, IS_WORKPLACE, IS_DEPARTMENT);
 					// 職場履歴一覧がEmpty or 雇用履歴一覧がEmpty or 職位履歴一覧がEmpty
-					isEmployeeHis = importPub.isLstWorkplace() || importPub.isLstEmployment() || importPub.isLstJobTitle();
+					isEmployeeHis = !importPub.isLstWorkplace() && !importPub.isLstEmployment() && !importPub.isLstJobTitle();
 					return !this.employeeAdapter.getStatusOfEmployee(empItem.getEmployeeId()).isDeleted() && isEmployeeHis;
 				})
 				.collect(Collectors.toList());

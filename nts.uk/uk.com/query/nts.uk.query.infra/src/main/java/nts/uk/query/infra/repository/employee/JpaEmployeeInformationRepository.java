@@ -24,6 +24,7 @@ import nts.uk.query.model.employee.EmployeeInformationRepository;
 import nts.uk.query.model.employement.EmploymentModel;
 import nts.uk.query.model.position.PositionModel;
 import nts.uk.query.model.workplace.WorkplaceModel;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class JpaEmployeeInformationRepository.
@@ -38,9 +39,9 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 
 	private static final String WORKPLACE_QUERY = "SELECT awh.sid, wi.wkpcd, wi.wkpGenericName, wi.wkpName, wi.bsymtWorkplaceInfoPK.wkpid"
 			+ " FROM BsymtAffiWorkplaceHist awh"
-			+ " LEFT JOIN BsymtAffiWorkplaceHistItem awhi ON awhi.hisId = awh.hisId"
-			+ " LEFT JOIN BsymtWorkplaceHist wh ON awhi.workPlaceId = wh.bsymtWorkplaceHistPK.wkpid"
-			+ " LEFT JOIN BsymtWorkplaceInfo wi ON wi.bsymtWorkplaceInfoPK.historyId = wh.bsymtWorkplaceHistPK.historyId"
+			+ " LEFT JOIN BsymtAffiWorkplaceHistItem awhi ON awhi.hisId = awh.hisId AND awh.cid =:cid"
+			+ " LEFT JOIN BsymtWorkplaceHist wh ON awhi.workPlaceId = wh.bsymtWorkplaceHistPK.wkpid AND wh.bsymtWorkplaceHistPK.cid =:cid"
+			+ " LEFT JOIN BsymtWorkplaceInfo wi ON wi.bsymtWorkplaceInfoPK.historyId = wh.bsymtWorkplaceHistPK.historyId AND wi.bsymtWorkplaceInfoPK.cid =:cid"
 			+ " WHERE awh.sid IN :listSid"
 			+ " AND awh.strDate <= :refDate"
 			+ " AND awh.endDate >= :refDate"
@@ -49,9 +50,9 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 
 	private static final String POSITION_QUERY = "SELECT ajh.sid, ji.jobCd, ji.jobName, ji.bsymtJobInfoPK.jobId"
 			+ " FROM BsymtAffJobTitleHist ajh"
-			+ " LEFT JOIN BsymtAffJobTitleHistItem ajhi ON ajhi.hisId = ajh.hisId"
-			+ " LEFT JOIN BsymtJobHist jh ON jh.bsymtJobHistPK.jobId = ajhi.jobTitleId"
-			+ " LEFT JOIN BsymtJobInfo ji ON ji.bsymtJobInfoPK.histId = jh.bsymtJobHistPK.histId"
+			+ " LEFT JOIN BsymtAffJobTitleHistItem ajhi ON ajhi.hisId = ajh.hisId AND ajh.cid =:cid"
+			+ " LEFT JOIN BsymtJobHist jh ON jh.bsymtJobHistPK.jobId = ajhi.jobTitleId AND jh.bsymtJobHistPK.cid =:cid"
+			+ " LEFT JOIN BsymtJobInfo ji ON ji.bsymtJobInfoPK.histId = jh.bsymtJobHistPK.histId AND ji.bsymtJobInfoPK.cid =:cid"
 			+ " WHERE ajh.sid IN :listSid"
 			+ " AND ajh.strDate <= :refDate"
 			+ " AND ajh.endDate >= :refDate"
@@ -60,16 +61,16 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 
 	private static final String EMPLOYMENT_QUERY = "SELECT eh.sid, e.bsymtEmploymentPK.code, e.name "
 			+ "FROM BsymtEmploymentHist eh "
-			+ "LEFT JOIN BsymtEmploymentHistItem ehi ON ehi.hisId = eh.hisId "
-			+ "LEFT JOIN BsymtEmployment e ON e.bsymtEmploymentPK.code = ehi.empCode "
+			+ "LEFT JOIN BsymtEmploymentHistItem ehi ON ehi.hisId = eh.hisId AND eh.companyId =:cid "
+			+ "LEFT JOIN BsymtEmployment e ON e.bsymtEmploymentPK.code = ehi.empCode AND  e.bsymtEmploymentPK.cid =:cid "
 			+ "WHERE eh.sid IN :listSid "
 			+ "AND eh.strDate <= :refDate "
 			+ "AND eh.endDate >= :refDate";
 
 	private static final String CLASSIFICATION_QUERY = "SELECT ach.sid, c.bsymtClassificationPK.clscd, c.clsname "
 			+ "FROM BsymtAffClassHistory ach "
-			+ "LEFT JOIN BsymtAffClassHistItem achi ON achi.historyId = ach.historyId "
-			+ "LEFT JOIN BsymtClassification c ON c.bsymtClassificationPK.clscd = achi.classificationCode "
+			+ "LEFT JOIN BsymtAffClassHistItem achi ON achi.historyId = ach.historyId AND ach.cid =:cid "
+			+ "LEFT JOIN BsymtClassification c ON c.bsymtClassificationPK.clscd = achi.classificationCode AND c.bsymtClassificationPK.cid =:cid "
 			+ "WHERE ach.sid IN :listSid "
 			+ "AND ach.startDate <= :refDate "
 			+ "AND ach.endDate >= :refDate";
@@ -117,7 +118,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 
 		// set workplace name
 		if (param.isToGetWorkplace()) {
-			List<Object[]> workplaces = this.getOptionalResult(param, WORKPLACE_QUERY);
+			List<Object[]> workplaces = this.getOptionalResult(param, WORKPLACE_QUERY, false);
 
 			employeeInfoList.keySet().forEach(empId -> {
 				Optional<Object[]> workplace = workplaces.stream().filter(wpl -> {
@@ -142,7 +143,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 
 		// set position
 		if (param.isToGetPosition()) {
-			List<Object[]> positions = this.getOptionalResult(param, POSITION_QUERY);
+			List<Object[]> positions = this.getOptionalResult(param, POSITION_QUERY, false);
 			
 			employeeInfoList.keySet().forEach(empId -> {
 				Optional<Object[]> job = positions.stream().filter(pos -> {
@@ -165,7 +166,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 
 		// set employment
 		if (param.isToGetEmployment()) {
-			List<Object[]> employments = this.getOptionalResult(param, EMPLOYMENT_QUERY);
+			List<Object[]> employments = this.getOptionalResult(param, EMPLOYMENT_QUERY, false);
 			
 			employeeInfoList.keySet().forEach(empId -> {
 				Optional<Object[]> em = employments.stream().filter(e -> {
@@ -186,7 +187,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 
 		// set classification
 		if (param.isToGetClassification()) {
-			List<Object[]> classifications = this.getOptionalResult(param, CLASSIFICATION_QUERY);
+			List<Object[]> classifications = this.getOptionalResult(param, CLASSIFICATION_QUERY, false);
 			
 			employeeInfoList.keySet().forEach(empId -> {
 				Optional<Object[]> cls = classifications.stream().filter(c -> {
@@ -205,9 +206,9 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 			});
 		}
 
-		// set Employment classification
+		// set Employment classification của working condition
 		if (param.isToGetEmploymentCls()) {
-			List<Object[]> listEmpCls = this.getOptionalResult(param, EMPCLS_QUERY);
+			List<Object[]> listEmpCls = this.getOptionalResult(param, EMPCLS_QUERY, true);
 			
 			employeeInfoList.keySet().forEach(empId -> {
 				Optional<Object[]> cls = listEmpCls.stream().filter(c -> {
@@ -226,11 +227,20 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<Object[]> getOptionalResult(EmployeeInformationQuery param, String query) {
+	private List<Object[]> getOptionalResult(EmployeeInformationQuery param, String query, boolean isWorkingCondition) {
+		String cid = AppContexts.user().companyId();
 		List<Object[]> results = new ArrayList<>();
+		
 		CollectionUtil.split(param.getEmployeeIds(), DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
-			results.addAll(this.getEntityManager().createQuery(query).setParameter("listSid", subList)
-					.setParameter("refDate", param.getReferenceDate()).getResultList());
+			if (isWorkingCondition) {
+				results.addAll(this.getEntityManager().createQuery(query).setParameter("listSid", subList)
+						.setParameter("refDate", param.getReferenceDate()).getResultList());
+			} else {
+				results.addAll(this.getEntityManager().createQuery(query).setParameter("listSid", subList)
+						.setParameter("refDate", param.getReferenceDate())
+						.setParameter("cid", cid)
+						.getResultList());
+			}
 		});
 		return results;
 	}

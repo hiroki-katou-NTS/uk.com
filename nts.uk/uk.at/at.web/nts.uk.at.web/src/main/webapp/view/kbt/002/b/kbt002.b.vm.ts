@@ -47,7 +47,6 @@ module nts.uk.at.view.kbt002.b {
                     self.initProcExec();
                     if (nts.uk.text.isNullOrEmpty(execItemCd)) {
                         self.isNewMode(true);
-
                     } else {
                         // set update mode
                         self.isNewMode(false);
@@ -63,6 +62,7 @@ module nts.uk.at.view.kbt002.b {
                     }
                     setTimeout(function() { self.focusInput(); }, 100);
                     //                    self.currentExecItem().refDate(moment(new Date()).toDate());
+                    nts.uk.ui.errors.clearAll();
                 });
                 
                
@@ -608,8 +608,8 @@ module nts.uk.at.view.kbt002.b {
             mailAdministrator :KnockoutObservable<boolean> = ko.observable(false);
             //ver29
             designatedYear : KnockoutObservable<number> = ko.observable(null);
-            startMonthDay : KnockoutObservable<number> = ko.observable(null);
-            endMonthDay : KnockoutObservable<number> = ko.observable(null);
+            startMonthDay : KnockoutObservable<number> = ko.observable(101);
+            endMonthDay : KnockoutObservable<number> = ko.observable(101);
             disableYearMonthDate :KnockoutObservable<boolean> = ko.observable(false);
             enableMonthDay :KnockoutObservable<boolean> = ko.observable(false);
             constructor(param: IExecutionItem) {
@@ -653,8 +653,8 @@ module nts.uk.at.view.kbt002.b {
                     self.mailPrincipal(param.mailPrincipal||false);
                     self.mailAdministrator(param.mailAdministrator||false);
                     self.designatedYear(param.designatedYear);
-                    self.startMonthDay(param.startMonthDay);
-                    self.endMonthDay(param.endMonthDay);
+                    self.startMonthDay(param.startMonthDay==null?101:param.startMonthDay);
+                    self.endMonthDay(param.endMonthDay==null?101:param.endMonthDay);
                     if(self.targetMonth() == 3){
                         self.disableYearMonthDate(true);    
                     }else{
@@ -879,8 +879,8 @@ module nts.uk.at.view.kbt002.b {
                     self.mailPrincipal(param.mailPrincipal||false);
                     self.mailAdministrator(param.mailAdministrator||false);
                     self.designatedYear(param.designatedYear);
-                    self.startMonthDay(param.startMonthDay);
-                    self.endMonthDay(param.endMonthDay);
+                    self.startMonthDay(param.startMonthDay==null?101:param.startMonthDay);
+                    self.endMonthDay(param.endMonthDay==null?101:param.endMonthDay);
                     if(self.targetMonth() == 3){
                         self.disableYearMonthDate(true);    
                     }else{

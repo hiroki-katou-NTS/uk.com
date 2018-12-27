@@ -471,6 +471,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 													   new TimeZoneRounding(duplicateTimeSheet.getTimeSheet().getStart(),
 															   				duplicateTimeSheet.getTimeSheet().getEnd(),
 															   				duplicateTimeSheet.getTimeSheet().getRounding()));
+		EmTimeZoneSet originDupTimeSheet = dupTimeSheet;
 		
 		List<TimeSheetOfDeductionItem> addBreakListInLateEarly = new ArrayList<>();
 		
@@ -503,7 +504,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
   	   				 //遅刻時間帯がそもそも存在しない　→　引数dupTimeSheetの開始をそのまま（現状維持)　控除しない場合　→　lateTimeのstart する場合　→lateTimeのEnd
   	   				 TimeWithDayAttr startOclock = test1;
   	   				 if(lateTimeSheet.getForDeducationTimeSheet().isPresent() && isFirstIndex) {
-  	   					 Optional<TimeWithDayAttr> correctStartOclock = deductProcessForLate(lateTimeSheet,breakTimeList,deductionTimeSheet,true);
+  	   					 Optional<TimeWithDayAttr> correctStartOclock = deductProcessForLate(lateTimeSheet,breakTimeList,deductionTimeSheet,true,originDupTimeSheet);
   	   					 startOclock = isDeductLateTime && correctStartOclock.isPresent()? correctStartOclock.get()
   	   							 														 : lateTimeSheet.getForDeducationTimeSheet().get().getTimeSheet().getStart();
   	   				 }
@@ -549,7 +550,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
   	   				 //早退時間帯がそもそも存在しない　→　引数dupTimeSheetの終了をそのまま（現状維持)　控除しない場合　→　leaveearlyのend する場合　→ leaveEarlyのstart
   	   				 TimeWithDayAttr endOclock = test2;
   	   				 if(LeaveEarlyTimeSheet.getForDeducationTimeSheet().isPresent() && isLastIndex) {
-  	   					 Optional<TimeWithDayAttr> correctEndOclock = deductProcessForEarly(LeaveEarlyTimeSheet, breakTimeList, deductionTimeSheet, true);
+  	   					 Optional<TimeWithDayAttr> correctEndOclock = deductProcessForEarly(LeaveEarlyTimeSheet, breakTimeList, deductionTimeSheet, true,originDupTimeSheet);
   	   					 endOclock = isDeductLeaveEarly && correctEndOclock.isPresent() 
   	   							 						? correctEndOclock.get()
   	   							 						: LeaveEarlyTimeSheet.getForDeducationTimeSheet().get().getTimeSheet().getEnd();
@@ -597,7 +598,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 	}
 	
 	private static Optional<TimeWithDayAttr> deductProcessForLate(LateTimeSheet lTSheet,List<TimeSheetOfDeductionItem> breakTimeList, DeductionTimeSheet deductionTimeSheet,
-									  						boolean isOOtsuka) {
+									  						boolean isOOtsuka, EmTimeZoneSet originDupTimeSheet) {
 		if(lTSheet == null) return Optional.empty();
 		List<TimeSheetOfDeductionItem> dedList = new ArrayList<>();
 		TimeWithDayAttr startOclock = lTSheet.getForDeducationTimeSheet().get().getTimeSheet().getEnd();
@@ -609,7 +610,18 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		}
 		for(TimeSheetOfDeductionItem tod : dedList) {
 			if(tod.contains(startOclock)) {
-				startOclock = tod.getTimeSheet().getEnd();
+				if(tod.contains(originDupTimeSheet.getTimezone().getStart())) {
+					startOclock = originDupTimeSheet.getTimezone().getStart();
+				}
+				else if(originDupTimeSheet.getTimezone().getStart().lessThan(tod.getTimeSheet().getStart())) {
+					startOclock = tod.getTimeSheet().getStart();
+				}
+				else if(originDupTimeSheet.getTimezone().getStart().greaterThan(tod.getTimeSheet().getStart())) {
+					startOclock = tod.getTimeSheet().getEnd();
+				}
+//				else {
+//					startOclock = tod.getTimeSheet().getEnd();	
+//				}
 			}
 		}
 		return Optional.of(startOclock);
@@ -617,7 +629,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 
 	
 	private static Optional<TimeWithDayAttr> deductProcessForEarly(LeaveEarlyTimeSheet lSheet,List<TimeSheetOfDeductionItem> breakTimeList, DeductionTimeSheet deductionTimeSheet,
-																   boolean isOOtsuka) {
+																   boolean isOOtsuka, EmTimeZoneSet originDupTimeSheet) {
 		if(lSheet == null) return Optional.empty();
 		List<TimeSheetOfDeductionItem> dedList = new ArrayList<>();
 		TimeWithDayAttr endOclock = lSheet.getForDeducationTimeSheet().get().getTimeSheet().getStart();
@@ -629,7 +641,18 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet{// implements Late
 		}
 		for(TimeSheetOfDeductionItem tod : dedList) {
 			if(tod.contains(endOclock)) {
-				endOclock = tod.getTimeSheet().getStart();
+				if(tod.contains(originDupTimeSheet.getTimezone().getEnd())) {
+					endOclock = originDupTimeSheet.getTimezone().getEnd();
+				}
+				else if(originDupTimeSheet.getTimezone().getStart().greaterThan(tod.getTimeSheet().getStart())) {
+					endOclock = tod.getTimeSheet().getStart();
+				}
+				else if(originDupTimeSheet.getTimezone().getStart().lessThan(tod.getTimeSheet().getStart())) {
+					endOclock = tod.getTimeSheet().getEnd();
+				}
+//				else {
+//					endOclock = tod.getTimeSheet().getStart();	
+//				}
 			}
 		}
 		return Optional.of(endOclock);

@@ -15,7 +15,6 @@ import nts.uk.ctx.at.record.dom.application.realitystatus.enums.ApprovalStatusMa
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.DailyConfirmOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.EmpPerformanceOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.ErrorStatusOutput;
-import nts.uk.ctx.at.record.dom.application.realitystatus.output.StatusWkpActivityOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.SttWkpActivityOutputFull;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.UseSetingOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.WkpIdMailCheckOutput;
