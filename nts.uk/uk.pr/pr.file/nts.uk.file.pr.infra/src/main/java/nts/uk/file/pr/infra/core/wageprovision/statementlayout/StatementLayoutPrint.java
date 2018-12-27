@@ -5,6 +5,8 @@ import lombok.Getter;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.DefaultAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.TaxAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.PaymentCaclMethodAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.itemrangeset.RangeSettingEnum;
 import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.*;
 import nts.uk.shr.com.i18n.TextResource;
@@ -54,14 +56,14 @@ public class StatementLayoutPrint {
 			if (payment == null)
 				continue;
 
+			// ※補足4
 			if (!DefaultAtr.SYSTEM_DEFAULT.equals(item.getDefaultAtr())) {
 				// A2_3
 				String totalObj = TextResource.localize(payment.getTotalObj().nameId);
 				this.printCell("paymentItem" + item.getItemPosition() + "_info1", totalObj, offset + 1);
 
-				// A2_4
-				String calcMethod = TextResource.localize(payment.getCalcMethod().nameId);
-				this.printCell("paymentItem" + item.getItemPosition() + "_info2", calcMethod, offset + 2);
+                // A2_4, A2_9
+                this.printCell("paymentItem" + item.getItemPosition() + "_info2", this.getA2_4_A2_9(payment), offset + 2);
 
 				// A2_5
 				String proportionalSet = "按分設定：";
@@ -76,6 +78,7 @@ public class StatementLayoutPrint {
 				}
 				this.printCell("paymentItem" + item.getItemPosition() + "_info4", proportionalSet, offset + 4);
 
+				// ※補足1
 				// A2_8
 				String referInfo;
 				switch (payment.getCalcMethod()) {
@@ -126,6 +129,24 @@ public class StatementLayoutPrint {
 		return this.paymentRow.getRowCount() + offset;
 	}
 
+    private String getA2_4_A2_9(PaymentExportData payment) {
+        String calcMethod = TextResource.localize(payment.getCalcMethod().nameId);
+        String workingAtr = "";
+        if (!payment.getTaxAtr().isPresent()) return calcMethod;
+        TaxAtr taxAtr = payment.getTaxAtr().get();
+        // ※補足2
+        if (TaxAtr.COMMUTING_EXPENSES_MANUAL.equals(taxAtr) || TaxAtr.COMMUTING_EXPENSES_USING_COMMUTER.equals(taxAtr)) {
+            if (PaymentCaclMethodAtr.PERSON_INFO_REF.equals(payment.getCalcMethod())) {
+                workingAtr += "　";
+                workingAtr += "交通費";
+            } else if (payment.getWorkingAtr().isPresent()) {
+                workingAtr += "　";
+                workingAtr += TextResource.localize(payment.getWorkingAtr().get().nameId);
+            }
+        }
+        return calcMethod + workingAtr;
+    }
+
 	public int printDeductionItem(LineByLineSettingExportData lineSet, LinePosition linePosition, int offset) {
 		this.copyRange(this.deductionRow, offset);
 		// A3_1
@@ -138,6 +159,7 @@ public class StatementLayoutPrint {
 			if (deduction == null)
 				continue;
 
+			// ※補足4
 			if (!DefaultAtr.SYSTEM_DEFAULT.equals(item.getDefaultAtr())) {
 				// A3_3
 				String totalObj = TextResource.localize(deduction.getTotalObj().nameId);
@@ -160,6 +182,7 @@ public class StatementLayoutPrint {
 				}
 				this.printCell("deductionItem" + item.getItemPosition() + "_info4", proportionalSet, offset + 4);
 
+				// ※補足1
 				// A3_8
 				String referInfo;
 				switch (deduction.getCalcMethod()) {

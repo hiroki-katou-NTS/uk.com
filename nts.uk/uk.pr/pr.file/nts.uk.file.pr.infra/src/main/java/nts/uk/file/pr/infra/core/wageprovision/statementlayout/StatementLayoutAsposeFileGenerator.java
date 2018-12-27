@@ -68,6 +68,7 @@ public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerat
 		int firstLine = listLineByLineSet.get(0).getLineNumber();
 		int lastLine = listLineByLineSet.get(listLineByLineSet.size() - 1).getLineNumber();		
 		for (LineByLineSettingExportData line : listLineByLineSet) {
+			// ※補足3
 			if (!StatementPrintAtr.PRINT.equals(line.getPrintSet())) continue;
 			LinePosition pos = LinePosition.MIDDLE;
 			if (line.getLineNumber() == firstLine) {
