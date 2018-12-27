@@ -28,10 +28,13 @@
     <ui:define name="content">
         <div id="functions-area">
             <!--A1_1 登録-->
-            <button class="proceed" tabindex="1" data-bind="click: register, enable: isRegistrable() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('QMM041_5')}</button>
+            <button class="proceed" tabindex="1" data-bind="click: register, enable: isRegistrable() &amp;&amp; $root.errors.isEmpty">
+                #{i18n.getText('QMM041_5')}
+            </button>
             <!--A1_2 社員給与単価（項目別）-->
-            <a id="A1_2" class="goout" data-bind="ntsLinkButton: {jump: '../../042/a/index.xhtml'}"
-               tabindex="11">#{i18n.getText('QMM041_41')}</a>
+            <a id="A1_2" class="goout" data-bind="ntsLinkButton: {action: toQmm042}" tabindex="11">
+                #{i18n.getText('QMM041_41')}
+            </a>
         </div>
         <div id="com-ccg001"/>
         <div id="contents-area">

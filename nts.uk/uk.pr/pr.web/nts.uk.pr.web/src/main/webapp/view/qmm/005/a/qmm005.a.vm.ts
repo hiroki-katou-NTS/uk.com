@@ -37,6 +37,10 @@ module nts.uk.pr.view.qmm005.a.viewmodel {
             self.itemBinding = ko.observableArray([]);
         }
 
+        toCmm008() {
+            nts.uk.request.jump("com", "/view/cmm/008/a/index.xhtml");
+        }
+
         showDialogD(processInfomation, mode): void {
             let self = this;
             let param = {
