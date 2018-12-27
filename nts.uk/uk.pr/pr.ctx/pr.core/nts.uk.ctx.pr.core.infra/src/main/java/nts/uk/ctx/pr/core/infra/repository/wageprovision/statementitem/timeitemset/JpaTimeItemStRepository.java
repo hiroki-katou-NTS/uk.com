@@ -71,13 +71,13 @@ public class JpaTimeItemStRepository extends JpaRepository implements TimeItemSe
     }
 
 	@Override
-	public List<TimeItemSet> getTimeItemStByCategoryAndCodes(String cid, int categoryAtr, List<String> itemNameCodes) {
+	public List<TimeItemSet> getTimeItemStByCategoryAndCodes(String cid, int timeCountAtr, List<String> itemNameCodes) {
 		if (itemNameCodes == null || itemNameCodes.isEmpty())
 			return Collections.emptyList();
 		String query = SELECT_ALL_QUERY_STRING
-				+ " WHERE  f.timeItemStPk.cid =:cid AND  f.timeItemStPk.categoryAtr =:categoryAtr AND  f.timeItemStPk.itemNameCd IN :itemNameCds";
+				+ " WHERE  f.timeItemStPk.cid =:cid AND  f.timeCountAtr =:timeCountAtr AND  f.timeItemStPk.itemNameCd IN :itemNameCds";
 		return this.queryProxy().query(query, QpbmtTimeItemSt.class).setParameter("cid", cid)
-				.setParameter("categoryAtr", categoryAtr).setParameter("itemNameCds", itemNameCodes)
+				.setParameter("timeCountAtr", timeCountAtr).setParameter("itemNameCds", itemNameCodes)
 				.getList(c -> c.toDomain());
 	}
 	

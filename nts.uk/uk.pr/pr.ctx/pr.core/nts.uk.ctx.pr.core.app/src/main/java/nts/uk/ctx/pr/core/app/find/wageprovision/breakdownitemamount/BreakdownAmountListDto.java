@@ -31,7 +31,7 @@ public class BreakdownAmountListDto {
         return new BreakdownAmountListDto(
                 domain2.getBreakdownItemCode().v(),
                 domain2.getBreakdownItemName().v(),
-                domain.map(i -> i.getAmount().v()).orElse(null)
+                domain.map(i -> i.getAmount().v()).orElse(0L)
         );
     }
 }
