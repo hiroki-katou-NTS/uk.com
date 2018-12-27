@@ -35,14 +35,14 @@ public class DailyWork extends DomainObject { // 1日の勤務
 	// 午後
 	private WorkTypeClassification afternoon;
 
-	public boolean isHalfDayAnnualOrSpecialHoliday() {
+	public boolean isAnnualOrSpecialHoliday() {
 		if(this.workTypeUnit == WorkTypeUnit.OneDay) {
-			return false;
+			return isAnnualOrSpecialHoliday(oneDay);
 		}
-		return isHalfDayAnnualOrSpecialHoliday(afternoon) || isHalfDayAnnualOrSpecialHoliday(morning);
+		return isAnnualOrSpecialHoliday(afternoon) || isAnnualOrSpecialHoliday(morning);
 	}
 	
-	private boolean isHalfDayAnnualOrSpecialHoliday(WorkTypeClassification halfDay) {
+	private boolean isAnnualOrSpecialHoliday(WorkTypeClassification halfDay) {
 		return halfDay.isAnnualLeave() || halfDay.isSpecialHoliday();
 	}
 	/**

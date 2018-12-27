@@ -4,12 +4,17 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.repository.executionlog;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -30,6 +35,7 @@ import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheErrLog_;
  * The Class JpaScheduleErrorLogRepository.
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class JpaScheduleErrorLogRepository extends JpaRepository
 		implements ScheduleErrorLogRepository {
 
@@ -192,6 +198,47 @@ public class JpaScheduleErrorLogRepository extends JpaRepository
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 		int cntError = em.createQuery(cq).getSingleResult().intValue();
 		return cntError;
+	}
+	
+	@Override
+	public Boolean checkExistErrorByKey(String executionId, String employeeId, GeneralDate baseDate) {
+		
+		String sqlQuery = "select count(*) from KSCDT_SCHE_ERR_LOG where YMD = " + "'" + baseDate + "' and EXE_ID = " + "'" + executionId + "'"
+				+ "and SID = " + "'" + employeeId + "'";
+		
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		
+		try {
+			ResultSet rs = con.createStatement().executeQuery(sqlQuery);
+			int number = 0;
+			while(rs.next()){
+				number = rs.getInt(1);
+			}
+			if(number > 0) return true;
+			return false;
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public Boolean checkExistErrorByKey(String executionId, String employeeId) {
+		String sqlQuery = "select count(*) from KSCDT_SCHE_ERR_LOG where EXE_ID = " + "'" + executionId + "'"
+				+ "and SID = " + "'" + employeeId + "'";
+		
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+		
+		try {
+			ResultSet rs = con.createStatement().executeQuery(sqlQuery);
+			int number = 0;
+			while(rs.next()){
+				number = rs.getInt(1);
+			}
+			if(number > 0) return true;
+			return false;
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

@@ -116,7 +116,7 @@ public class DPDisplayLockProcessor {
 				//対象日の本人確認が済んでいるかチェックする
 				result.checkShowTighProcess(displayFormat, true);
 			}else {
-				result.getIndentityMonthResult().setHideAll(false);
+				result.getIndentityMonthResult().setHideAll(true);
 			}
 			// screenDto.setFlexShortage(null);
 		}
