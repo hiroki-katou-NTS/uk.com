@@ -54,14 +54,37 @@ module nts.uk.at.view.ksm001.a {
             alreadySettingEmployment: KnockoutObservableArray<UnitAlreadySettingModel>;
             employmentList: KnockoutObservableArray<UnitModel>;
 
-            
             /**
             * Print file excel
             */
             saveAsExcel(): void {
                 let self = this;
-                modal("/view/ksm/001/m/index.xhtml").onClosed(function() {
-                });
+                let params = {
+                   date: null,
+                   mode: 5
+               };
+                
+                if (!nts.uk.ui.windows.getShared("CDL028_INPUT")) {
+                    nts.uk.ui.windows.setShared("CDL028_INPUT", params);
+                }
+                
+                nts.uk.ui.windows.sub.modal('com', '/view/cdl/028/a/index.xhtml').onClosed(() => {
+                    var result = nts.uk.ui.windows.getShared('CDL028_A_PARAMS');
+                   if (result.status) {
+                        nts.uk.ui.block.grayout();
+                        let langId = self.langId();
+                        let startDate = moment.utc(result.startDateFiscalYear, "YYYY/MM/DD");
+                        let endDate = moment.utc(result.endDateFiscalYear, "YYYY/MM/DD");
+                        service.saveAsExcel(langId, startDate, endDate).done(function() {
+                            nts.uk.ui.windows.close();
+                        }).fail(function(error) {
+                            nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                        }).always(function() {
+                            nts.uk.ui.block.clear();
+                        });
+                   }
+                }
+
             }
             
             constructor() {

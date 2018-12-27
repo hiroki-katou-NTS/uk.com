@@ -1,5 +1,7 @@
 module nts.uk.com.view.cas012.a.viewmodel {
     import block = nts.uk.ui.block;
+    import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
 
     export class ScreenModel {
 
@@ -80,17 +82,40 @@ module nts.uk.com.view.cas012.a.viewmodel {
             });
         }
 
-        exportExcel(){
-            let self = this;
-            nts.uk.ui.block.invisible();
-            service.exportExcel().done(function() {
+        hasPermission(): boolean {
+            if (__viewContext.user.role.attendance || __viewContext.user.role.payroll
+                || __viewContext.user.role.personnel  || __viewContext.user.role.officeHelper){
+                return true;
+            }
 
-            }).fail(function(error) {
-                if(error)
-                    nts.uk.ui.dialog.alertError(error.message);
-            }).always(function() {
-                nts.uk.ui.block.clear();
+            return false;
+        }
+
+        private exportExcel(): void {
+            let self = this;
+            let params: any = {
+                date: null,
+                mode: 1
+            };
+            if(!getShared('CDL028_INPUT')){
+                setShared("CDL028_INPUT", params);
+            }
+
+            nts.uk.ui.windows.sub.modal("/view/cdl/028/a/index.xhtml").onClosed(function() {
+                var result = getShared('CDL028_A_PARAMS');
+                if (result.status) {
+                    nts.uk.ui.block.grayout();
+                    let date = moment(result.standardDate, "YYYY/MM/DD");
+                    service.exportExcel(date).done(function() {
+                        
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    }).always(function() {
+                        nts.uk.ui.block.clear();
+                    });
+                }
             });
+
         }
 
         openCAS012_B() {

@@ -1,5 +1,6 @@
 package nts.uk.file.com.app.grantadminrole;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
@@ -8,6 +9,7 @@ import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.sql.Date;
 import java.util.*;
 
 @Stateless
@@ -21,7 +23,8 @@ public class GrantAdminRoleExportImpl implements MasterListData {
 
     @Override
     public List<MasterData> getMasterDatas(MasterListExportQuery query) {
-        return grantAdminRoleRepository.getDataExport(COMPANY_ID_SYSADMIN,RoleType.SYSTEM_MANAGER.value);
+        GeneralDate date = query.getBaseDate();
+        return grantAdminRoleRepository.getDataExport(COMPANY_ID_SYSADMIN,RoleType.SYSTEM_MANAGER.value,new Date(date.date().getTime()));
     }
 
     @Override
@@ -45,8 +48,9 @@ public class GrantAdminRoleExportImpl implements MasterListData {
 		return TextResource.localize("CAS012_44");
 	}
     
-    private List<MasterData> getMasterDatasCompanyManager(){
-        return grantAdminRoleRepository.getDataExportCompanyManagerMode(RoleType.COMPANY_MANAGER.value);
+    private List<MasterData> getMasterDatasCompanyManager(MasterListExportQuery query){
+        GeneralDate date = query.getBaseDate();
+        return grantAdminRoleRepository.getDataExportCompanyManagerMode(RoleType.COMPANY_MANAGER.value,new Date(date.date().getTime()));
     }
 
     private List<MasterHeaderColumn> getHeaderColumnsCompanyManager(){
@@ -67,8 +71,9 @@ public class GrantAdminRoleExportImpl implements MasterListData {
         return columns;
     }
 
-    private List<MasterData> getMasterDatasGroupCompanyManager(){
-        return grantAdminRoleRepository.getDataExport(COMPANY_ID_SYSADMIN,RoleType.GROUP_COMAPNY_MANAGER.value);
+    private List<MasterData> getMasterDatasGroupCompanyManager(MasterListExportQuery query){
+        GeneralDate date = query.getBaseDate();
+        return grantAdminRoleRepository.getDataExport(COMPANY_ID_SYSADMIN,RoleType.GROUP_COMAPNY_MANAGER.value,new Date(date.date().getTime()));
     }
 
     @Override
@@ -77,13 +82,13 @@ public class GrantAdminRoleExportImpl implements MasterListData {
         List<SheetData> sheetDatas = new ArrayList<>();
    
         SheetData sheetData1 = SheetData.builder()
-                .mainData(this.getMasterDatasCompanyManager())
+                .mainData(this.getMasterDatasCompanyManager(query))
                 .mainDataColumns(this.getHeaderColumnsCompanyManager())
                 .sheetName(TextResource.localize("CAS012_45"))
                 .build();
 
         SheetData sheetData2 = SheetData.builder()
-                .mainData(this.getMasterDatasGroupCompanyManager())
+                .mainData(this.getMasterDatasGroupCompanyManager(query))
                 .mainDataColumns(this.getHeaderColumns(query))
                 .sheetName(TextResource.localize("CAS012_46"))
                 .build();

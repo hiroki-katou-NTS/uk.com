@@ -262,6 +262,35 @@ public class RegisteTimeImpl implements MasterListData {
 		return registTimeRepository.getDataExportSheet9();
 	}
 	
+	/**
+	 * sheet 10
+	 */
+	public List<MasterHeaderColumn> getHeaderColumnsSheet10() {
+		 List <MasterHeaderColumn> columns = new ArrayList<>();
+
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_106, TextResource.localize("KMK008_106"),
+	                ColumnTextAlign.LEFT, "", true));
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_107,TextResource.localize("KMK008_107"),
+	                ColumnTextAlign.LEFT, "", true));
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_109, TextResource.localize("KMK008_109"),
+	                ColumnTextAlign.LEFT, "", true));
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_110, TextResource.localize("KMK008_110"),
+	                ColumnTextAlign.LEFT, "", true));
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_111, TextResource.localize("KMK008_111"),
+	                ColumnTextAlign.LEFT, "", true));
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_112, TextResource.localize("KMK008_112"),
+	                ColumnTextAlign.LEFT, "", true));
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_113, TextResource.localize("KMK008_113"),
+	                ColumnTextAlign.LEFT, "", true));
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_114, TextResource.localize("KMK008_114"),
+	                ColumnTextAlign.LEFT, "", true));
+	        return columns;
+	}
+	
+	public List<MasterData> getMasterDatasSheet10() {
+		return registTimeRepository.getDataExportSheet10();
+	}
+	
 	
 	@Override
     public List<SheetData> extraSheets(MasterListExportQuery query) {
@@ -354,6 +383,13 @@ public class RegisteTimeImpl implements MasterListData {
 	                  .build();
 	        sheetDatas.add(sheetData9);
 		}
+		
+		SheetData sheetData10 = SheetData.builder()
+         		 .mainData(this.getMasterDatasSheet10())
+                 .mainDataColumns(this.getHeaderColumnsSheet10())
+                 .sheetName(TextResource.localize("KMK008_79"))
+                 .build();
+       sheetDatas.add(sheetData10);
 		
         return sheetDatas;
     }
