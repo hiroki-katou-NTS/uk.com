@@ -26,6 +26,10 @@ public class KshmtScheduleMethod extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
+	
+	/** The sid. */
+	@Column(name = "SID")
+	private String sid;
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")

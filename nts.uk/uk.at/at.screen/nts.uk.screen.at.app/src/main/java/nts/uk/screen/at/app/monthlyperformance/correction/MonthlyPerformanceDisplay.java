@@ -2,7 +2,7 @@ package nts.uk.screen.at.app.monthlyperformance.correction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
+//import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -470,23 +470,23 @@ public class MonthlyPerformanceDisplay {
 	 * @param cId
 	 * @return 表示する項目一覧
 	 */
-	private List<MonPfmCorrectionFormatDto> getColumnWidtgByMonthly(String cId) {
-		List<MonPfmCorrectionFormatDto> lstMPformats = new ArrayList<>();
-		Optional<ColumnWidtgByMonthly> columnWidtgByMonthly = columnWidtgByMonthlyRepository
-				.getColumnWidtgByMonthly(cId);
-		if (columnWidtgByMonthly.isPresent()) {
-			List<DisplayTimeItemDto> dispItems = columnWidtgByMonthly.get().getListColumnWidthOfDisplayItem().stream()
-					.map(item -> {
-						return new DisplayTimeItemDto(0, item.getAttdanceItemID(), item.getColumnWidthTable());
-					}).collect(Collectors.toList());
-			SheetCorrectedMonthlyDto sheet = new SheetCorrectedMonthlyDto(1, Strings.EMPTY, dispItems);
-			MonthlyActualResultsDto resultDto = new MonthlyActualResultsDto(Arrays.asList(sheet));
-			MonPfmCorrectionFormatDto formatDto = new MonPfmCorrectionFormatDto(
-					columnWidtgByMonthly.get().getCompanyID(), Strings.EMPTY, Strings.EMPTY, resultDto);
-			lstMPformats = Arrays.asList(formatDto);
-		}
-		return lstMPformats;
-	}
+//	private List<MonPfmCorrectionFormatDto> getColumnWidtgByMonthly(String cId) {
+//		List<MonPfmCorrectionFormatDto> lstMPformats = new ArrayList<>();
+//		Optional<ColumnWidtgByMonthly> columnWidtgByMonthly = columnWidtgByMonthlyRepository
+//				.getColumnWidtgByMonthly(cId);
+//		if (columnWidtgByMonthly.isPresent()) {
+//			List<DisplayTimeItemDto> dispItems = columnWidtgByMonthly.get().getListColumnWidthOfDisplayItem().stream()
+//					.map(item -> {
+//						return new DisplayTimeItemDto(0, item.getAttdanceItemID(), item.getColumnWidthTable());
+//					}).collect(Collectors.toList());
+//			SheetCorrectedMonthlyDto sheet = new SheetCorrectedMonthlyDto(1, Strings.EMPTY, dispItems);
+//			MonthlyActualResultsDto resultDto = new MonthlyActualResultsDto(Arrays.asList(sheet));
+//			MonPfmCorrectionFormatDto formatDto = new MonPfmCorrectionFormatDto(
+//					columnWidtgByMonthly.get().getCompanyID(), Strings.EMPTY, Strings.EMPTY, resultDto);
+//			lstMPformats = Arrays.asList(formatDto);
+//		}
+//		return lstMPformats;
+//	}
 
 	/**
 	 * ロック状態をチェックする

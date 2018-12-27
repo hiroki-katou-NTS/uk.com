@@ -36,6 +36,9 @@ module nts.uk.ui.jqueryExtentions {
             else if (action === "active") {
                 return active($control, option);
             }
+            else if (action === "reactive") {
+                return reactive($control);
+            }
             else if (action === "enable") {
                 return enable($control, option);
             }
@@ -78,12 +81,16 @@ module nts.uk.ui.jqueryExtentions {
                     settings.activate.call(this, event, info);
                 }
             });
-
-            active(control, settings.active, true);
-            return control;
+            
+            return active(control, settings.active, true);
+        }
+        
+        function reactive(control: JQuery): JQuery {
+            return active(control, control.data("active"), false);
         }
 
         function active(control: JQuery, index: number, isInit = false): JQuery {
+            control.data("active", index);
             control.find("#sidebar-area .navigator a").removeClass("active");
             control.find("#sidebar-area .navigator a").eq(index).addClass("active");
             control.find(".sidebar-content > div[role=tabpanel]").addClass("disappear");

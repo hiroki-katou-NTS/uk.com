@@ -43,8 +43,8 @@ public class JpaAffJobTitleHistoryItemRepository extends JpaRepository
 	private static final String GET_ALL_BY_HISTID = "select hi from BsymtAffJobTitleHistItem hi"
 			+ " where hi.hisId IN :histIds";
 	
-	private static final String GET_BY_LIST_JOB = "select hi from BsymtAffJobTitleHistItem hi"
-			+ " where hi.hisId = :histId AND  hi.jobTitleId IN :jobTitleIds";
+//	private static final String GET_BY_LIST_JOB = "select hi from BsymtAffJobTitleHistItem hi"
+//			+ " where hi.hisId = :histId AND  hi.jobTitleId IN :jobTitleIds";
 	
 	/**
 	 * Convert from domain to entity

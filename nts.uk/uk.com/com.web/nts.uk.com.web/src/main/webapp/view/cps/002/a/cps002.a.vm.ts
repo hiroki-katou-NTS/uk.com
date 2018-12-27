@@ -230,6 +230,8 @@ module cps002.a.vm {
                             id: "employeeAvatar",
                             src: liveView(avartarId),
                         }));
+                    // remove background
+                    $(".avatar").removeClass();
                 } else {
                     avartarContent.empty();
                 }

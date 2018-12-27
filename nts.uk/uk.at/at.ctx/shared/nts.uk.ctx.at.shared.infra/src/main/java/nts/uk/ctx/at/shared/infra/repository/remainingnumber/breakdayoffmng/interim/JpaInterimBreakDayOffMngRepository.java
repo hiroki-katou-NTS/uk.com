@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber.breakdayoffmng.interim;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -7,10 +9,13 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMng;
@@ -20,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDa
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.SelectedAtr;
@@ -37,7 +43,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements InterimBreakDayOffMngRepository{
-	
 	private static final String QUERY_BREAK_MNG = "SELECT c FROM KrcmtInterimBreakDayOff c"
 			+ " WHERE c.breakDayOffKey.breakMngId = :mngId"
 			+ " AND c.breakMngAtr = :mngAtr";
@@ -115,10 +120,10 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 				new UseDay(x.userDays),
 				EnumAdaptor.valueOf(x.selectedAtr, SelectedAtr.class));
 	}
-	
+	@SneakyThrows
 	@Override
-	public List<InterimBreakMng> getByPeriod(List<String> mngId, double unUseDays, DatePeriod dateData) {
-		if(mngId.isEmpty()) {
+	public List<InterimBreakMng> getByPeriod(String sid, DatePeriod ymd, double unUseDays, DatePeriod dateData) {
+		/*if(mngId.isEmpty()) {
 			return Collections.emptyList();
 		}
 		List<InterimBreakMng> resultList = new ArrayList<>();
@@ -130,7 +135,28 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 								.setParameter("endDate", dateData.end())
 								.getList(c -> toDomainBreakMng(c)));
 		});
-		return resultList;
+		return resultList;*/
+		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_BREAK_MNG a1"
+				+ " INNER JOIN KRCMT_INTERIM_REMAIN_MNG a2 "
+				+ " ON a1.BREAK_MNG_ID = a2.REMAIN_MNG_ID"
+				+ " WHERE a2.SID = ?"
+				+ " AND a2.REMAIN_TYPE = " + RemainType.BREAK.value
+				+ " AND a2.YMD >= ? and a2.YMD <= ?"
+				+ " AND a1.UNUSED_DAYS > ?"
+				+ " AND a1.EXPIRATION_DAYS >= ? and a1.EXPIRATION_DAYS <= ?"
+				+ " ORDER BY a2.YMD");
+				)
+		{
+			sql.setString(1, sid);
+			sql.setDate(2, Date.valueOf(ymd.start().localDate()));
+			sql.setDate(3, Date.valueOf(ymd.end().localDate()));
+			sql.setDouble(4, unUseDays);
+			sql.setDate(5, Date.valueOf(dateData.start().localDate()));
+			sql.setDate(6, Date.valueOf(dateData.end().localDate()));
+			List<InterimBreakMng> lstOutput = new NtsResultSet(sql.executeQuery())
+					.getList(x -> toDomain(x));
+			return lstOutput;
+		}
 	}
 	
 	@Override
@@ -300,5 +326,60 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 			});
 			this.getEntityManager().flush();
 		}
+	}
+	@SneakyThrows
+	@Override
+	public List<InterimBreakMng> getBySidPeriod(String sid, DatePeriod period) {
+		try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_BREAK_MNG a1"
+				+ " INNER JOIN KRCMT_INTERIM_REMAIN_MNG a2 ON a1.BREAK_MNG_ID = a2.REMAIN_MNG_ID"
+				+ " WHERE a2.SID = ?"
+				+ " AND a2.REMAIN_TYPE = " + RemainType.BREAK.value
+				+ " AND a2.YMD >= ? and a2.YMD <= ?"
+				+ " ORDER BY a2.YMD");
+				)
+		{
+			sql.setString(1, sid);
+			sql.setDate(2, Date.valueOf(period.start().localDate()));
+			sql.setDate(3, Date.valueOf(period.end().localDate()));
+			List<InterimBreakMng> lstOutput = new NtsResultSet(sql.executeQuery())
+					.getList(x -> toDomain(x));
+			return lstOutput;
+		}
+	}
+	private InterimBreakMng toDomain(NtsResultRecord x) {
+		return new InterimBreakMng(x.getString("BREAK_MNG_ID"),
+				new AttendanceTime(x.getInt("ONEDAY_EQUIVALENT_TIME")),
+				x.getGeneralDate("EXPIRATION_DAYS"), 
+				new OccurrenceTime(x.getInt("OCCURRENCE_TIMES")),
+				new OccurrenceDay(x.getDouble("OCCURRENCE_DAYS")),
+				new AttendanceTime(x.getInt("HAFTDAY_EQUI_TIME")),
+				new UnUsedTime(x.getInt("UNUSED_TIMES")),
+				new UnUsedDay(x.getDouble("UNUSED_DAYS")));
+	}
+	@SneakyThrows
+	@Override
+	public List<InterimDayOffMng> getDayOffBySidPeriod(String sid, DatePeriod period) {
+		try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_DAYOFF_MNG a1"
+				+ " INNER JOIN KRCMT_INTERIM_REMAIN_MNG a2 ON a1.DAYOFF_MNG_ID = a2.REMAIN_MNG_ID"
+				+ " WHERE a2.SID = ?"
+				+ " AND a2.REMAIN_TYPE = " + RemainType.SUBHOLIDAY.value
+				+ " AND a2.YMD >= ? and a2.YMD <= ?"
+				+ " ORDER BY a2.YMD");
+				)
+		{
+			sql.setString(1, sid);
+			sql.setDate(2, Date.valueOf(period.start().localDate()));
+			sql.setDate(3, Date.valueOf(period.end().localDate()));
+			List<InterimDayOffMng> lstOutput = new NtsResultSet(sql.executeQuery())
+					.getList(x -> toDomainDayOff(x));
+			return lstOutput;
+		}
+	}
+	private InterimDayOffMng toDomainDayOff(NtsResultRecord x) {
+		return new InterimDayOffMng(x.getString("DAYOFF_MNG_ID"),
+				new RequiredTime(x.getInt("REQUIRED_TIMES")),
+				new RequiredDay(x.getDouble("REQUEIRED_DAYS")),
+				new UnOffsetTime(x.getInt("UNOFFSET_TIMES")),
+				new UnOffsetDay(x.getDouble("UNOFFSET_DAYS")));
 	}
 }
