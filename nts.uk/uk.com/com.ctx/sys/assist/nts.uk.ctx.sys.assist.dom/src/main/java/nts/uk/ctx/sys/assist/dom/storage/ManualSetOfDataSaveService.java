@@ -63,8 +63,8 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 	private static final List<String> LST_NAME_ID_HEADER_TABLE_CSV2 = Arrays.asList("SID", "SCD", "BUSINESS_NAME");
 
-	private static final List<String> LST_NAME_ID_HEADER_TABLE_CSV3 = Arrays.asList("H_CID", "H_SID", "H_DATE",
-			"H_DATE_START", "H_DATE_END");
+	private static final List<String> LST_NAME_ID_HEADER_TABLE_CSV3 = Arrays.asList("CMF003_620", "CMF003_621", "CMF003_622",
+			"CMF003_623", "CMF003_624");
 
 	private static final String CSV_EXTENSION = ".csv";
 	private static final String ZIP_EXTENSION = ".zip";
@@ -91,7 +91,10 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	private TableListRepository repoTableList;
 	@Inject
 	private ApplicationTemporaryFileFactory applicationTemporaryFileFactory;
-
+	
+	@Inject
+	private TargetEmployeesRepository targetEmployeesRepo;
+	
 	@Override
 	protected void handle(ExportServiceContext<Object> context) {
 		ManualSetOfDataSave domain = (ManualSetOfDataSave) context.getQuery();
@@ -308,9 +311,9 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			ManualSetOfDataSave optManualSetting, List<TargetEmployees> targetEmployees) {
 		// アルゴリズム「対象データの保存」を実行
 		ResultState resultState;
-
+		List<String> targetEmployeesSid = targetEmployees.stream().map(c -> c.getSid()).collect(Collectors.toList());
 		// テーブル一覧の内容をテンポラリーフォルダにcsvファイルで書き出す
-		resultState = generalCsv(generatorContext, storeProcessingId);
+		resultState = generalCsv(generatorContext, storeProcessingId, targetEmployeesSid);
 
 		if (resultState != ResultState.NORMAL_END) {
 			return resultState;
@@ -335,7 +338,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		return resultState;
 	}
 
-	private ResultState generalCsv(FileGeneratorContext generatorContext, String storeProcessingId) {
+	private ResultState generalCsv(FileGeneratorContext generatorContext, String storeProcessingId, List<String> targetEmployeesSid) {
 		try {
 			ResultState resultState = ResultState.NORMAL_END;
 			List<String> headerCsv = this.getTextHeaderCsv1();
@@ -343,6 +346,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			List<Map<String, Object>> dataSourceCsv = new ArrayList<>();
 			int offset = 0;
 			List<String> categoryIds = new ArrayList<>();
+//			List<String> targetEmployeesSid = targetEmployeesRepo.getTargetEmployeesListById(storeProcessingId).stream().map(c -> c.getSid()).collect(Collectors.toList());
 			while (true) {
 				// テーブル一覧の１行分を処理する
 				List<TableList> tableLists = repoTableList.getByOffsetAndNumber(storeProcessingId, offset,
@@ -352,7 +356,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					dataSourceCsv = getDataSourceCsv1(dataSourceCsv, headerCsv, tableList);
 
 					// Add Table to CSV Auto
-					resultState = generalCsvAuto(generatorContext, storeProcessingId, tableList);
+					resultState = generalCsvAuto(generatorContext, storeProcessingId, tableList, targetEmployeesSid);
 					if (resultState != ResultState.NORMAL_END) {
 						return resultState;
 					}
@@ -531,7 +535,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	}
 
 	private ResultState generalCsvAuto(FileGeneratorContext generatorContext, String storeProcessingId,
-			TableList tableList) {
+			TableList tableList, List<String> targetEmployeesSid) {
 		try {
 			// ドメインモデル「データ保存動作管理」を取得し「中断終了」を判別
 			Optional<DataStorageMng> dataStorageMng = repoDataSto.getDataStorageMngById(storeProcessingId);
@@ -541,7 +545,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				return ResultState.INTERRUPTION;
 			}
 
-			List<List<String>> listObject = repoTableList.getDataDynamic(tableList);
+			List<List<String>> listObject = repoTableList.getDataDynamic(tableList, targetEmployeesSid);
 
 			// Add Table to CSV Auto
 			List<String> headerCsv3 = this.getTextHeaderCsv3(tableList.getTableEnglishName());
@@ -643,7 +647,10 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 	private List<String> getTextHeaderCsv3(String tableName) {
 		List<String> columnNames = repoTableList.getAllColumnName(tableName);
-		List<String> columnFix = new ArrayList<>(LST_NAME_ID_HEADER_TABLE_CSV3);
+		List<String> columnFix   = new ArrayList<>();
+		for (String nameId : LST_NAME_ID_HEADER_TABLE_CSV3) {
+			columnFix.add(TextResource.localize(nameId));
+		}
 		columnFix.addAll(columnNames);
 		return columnFix;
 	}

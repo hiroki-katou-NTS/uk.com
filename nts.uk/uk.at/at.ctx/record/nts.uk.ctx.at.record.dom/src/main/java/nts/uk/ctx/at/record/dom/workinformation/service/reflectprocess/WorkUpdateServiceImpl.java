@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -41,10 +42,17 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
+import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
@@ -57,42 +65,52 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDaily;
 	@Inject
 	private RemarksOfDailyPerformRepo remarksOfDailyRepo;
+	@Inject
+	private WorkTimeSettingService workTimeSetting;
 	@Override
 	public WorkInfoOfDailyPerformance updateWorkTimeType(ReflectParameter para, boolean scheUpdate, WorkInfoOfDailyPerformance dailyInfo) {
 		WorkInformation workInfor = new WorkInformation(para.getWorkTimeCode(), para.getWorkTypeCode());
 		List<Integer> lstItem = new ArrayList<>();
 		if(scheUpdate) {
-			if(dailyInfo.getScheduleInfo().getWorkTimeCode() == null 
-					|| !para.isWorkChange() 
-					|| (para.isWorkChange() && dailyInfo.getScheduleInfo().getWorkTimeCode() != null && !dailyInfo.getScheduleInfo().getWorkTimeCode().v().equals(para.getWorkTimeCode()))){
-				lstItem.add(1);	
-			}
-			if(dailyInfo.getScheduleInfo().getWorkTypeCode() == null
-					|| !para.isWorkChange() 
-					|| (para.isWorkChange() && dailyInfo.getScheduleInfo().getWorkTypeCode() != null && !dailyInfo.getScheduleInfo().getWorkTypeCode().v().equals(para.getWorkTypeCode()))) {
-				lstItem.add(2);	
-			}			
+			dailyInfo = this.dailyInfo(para.getWorkTimeCode(), para.getWorkTypeCode(), dailyInfo);
+			
 			dailyInfo.setScheduleInfo(workInfor);
-			//workRepository.updateByKeyFlush(dailyPerfor);
+			
+			lstItem.add(2);	
+			lstItem.add(1);
 		} else {
-			if(dailyInfo.getRecordInfo().getWorkTimeCode() == null 
-					|| !para.isWorkChange() 
-					|| (para.isWorkChange() && dailyInfo.getRecordInfo().getWorkTimeCode() != null && !dailyInfo.getRecordInfo().getWorkTimeCode().v().equals(para.getWorkTimeCode()))){
-				lstItem.add(28);	
+			if(para.getWorkTimeCode() == null) {
+				this.updateTimeNotReflect(para.getEmployeeId(), para.getDateData());
 			}
-			if(dailyInfo.getRecordInfo().getWorkTypeCode() == null 
-					|| !para.isWorkChange() 
-					|| (para.isWorkChange() && dailyInfo.getRecordInfo().getWorkTypeCode() != null && !dailyInfo.getRecordInfo().getWorkTypeCode().v().equals(para.getWorkTypeCode()))) {
-				lstItem.add(29);
-			}
+			lstItem.add(29);	
+			lstItem.add(28);
 			dailyInfo.setRecordInfo(workInfor);
-			//workRepository.updateByKeyFlush(dailyPerfor);
 		}
 		
 		//日別実績の編集状態
 		this.updateEditStateOfDailyPerformance(para.getEmployeeId(), para.getDateData(), lstItem);
 		return dailyInfo;
 		
+	}
+	/**
+	 * 申請の時刻がなくて実績の勤務種類区分が休日の場合
+	 * 時刻反映する前に予定時間帯を追加しないはいけない
+	 * @return
+	 */
+	private WorkInfoOfDailyPerformance dailyInfo(String workTimeCode, String workTypeCode, WorkInfoOfDailyPerformance dailyInfo) {
+		String companyId = AppContexts.user().companyId();
+		List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
+		if(workTimeCode != null) {				
+			PredetermineTimeSetForCalc predetermine = workTimeSetting.getPredeterminedTimezone(companyId, workTimeCode, workTypeCode, 1);
+			List<TimezoneUse> lstTimezone = predetermine.getTimezones();
+			
+			lstTimezone.stream().forEach(x -> {
+				ScheduleTimeSheet scheIn = new ScheduleTimeSheet(x.getWorkNo(), x.getStart().v(), x.getEnd().v());
+				scheduleTimeSheets.add(scheIn);				
+			});	
+		}
+		dailyInfo.setScheduleTimeSheets(scheduleTimeSheets);
+		return dailyInfo;
 	}
 	/**
 	 * 日別実績の編集状態
@@ -124,7 +142,10 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 	
 	@Override
 	public WorkInfoOfDailyPerformance updateScheStartEndTime(TimeReflectPara para, WorkInfoOfDailyPerformance dailyPerfor) {
-		
+		if(!para.isStart()
+				&& !para.isEnd()) {
+			return dailyPerfor;
+		}
 		ScheduleTimeSheet timeSheet;
 		if(dailyPerfor.getScheduleTimeSheets().isEmpty()) {
 			timeSheet = new ScheduleTimeSheet(1, 
@@ -146,8 +167,9 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			}
 			
 		}
-		if(para.isStart()
-				|| para.isEnd()) {
+		if((para.isStart()
+				|| para.isEnd())
+				&& (para.getStartTime() != null && para.getEndTime() != null)) {
 			dailyPerfor.getScheduleTimeSheets().add(timeSheet);
 		}
 		//workRepository.updateByKeyFlush(dailyPerfor);
@@ -410,9 +432,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		}
 		HolidayWorkTimeOfDaily workHolidayTime = optWorkHolidayTime.get();
 		List<HolidayWorkFrameTime> lstHolidayWorkFrameTime = workHolidayTime.getHolidayWorkFrameTime();
-		if(lstHolidayWorkFrameTime.isEmpty()) {
-			return dailyData;
-		}
+		List<HolidayWorkFrameTime> lstHolidayWorkFrameTimeTmp = new ArrayList<>();		
 		List<Integer> lstWorktimeFrameTemp = new ArrayList<>();
 		if(isPre) {			
 			lstHolidayWorkFrameTime.stream().forEach(x -> {
@@ -424,8 +444,19 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			lstWorktimeFrameTemp = this.lstPreWorktimeFrameItem();
 			for(int i = 1; i <= 10; i++) {
 				if(!worktimeFrame.containsKey(i)) {
+					
 					Integer item = this.lstPreWorktimeFrameItem().get(i - 1); 
 					lstWorktimeFrameTemp.remove(item);
+				} else {
+					if(lstHolidayWorkFrameTime.isEmpty()) {
+						AttendanceTime worktimeTmp = new AttendanceTime(worktimeFrame.get(i));
+						TimeDivergenceWithCalculation timeCalculation = TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0), new AttendanceTime(0));
+						HolidayWorkFrameTime tmpHolidayWorkFrameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(i),
+								Finally.of(timeCalculation),
+								Finally.of(timeCalculation),
+								Finally.of(worktimeTmp));
+						lstHolidayWorkFrameTimeTmp.add(tmpHolidayWorkFrameTime);
+					}
 				}
 			}	
 		} else {
@@ -440,11 +471,27 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			});
 			lstWorktimeFrameTemp = this.lstAfterWorktimeFrameItem();
 			for(int i = 1; i <= 10; i++) {
-				if(!worktimeFrame.containsKey(i)) {
+				if(!worktimeFrame.containsKey(i)) {					
 					Integer item = this.lstAfterWorktimeFrameItem().get(i - 1); 
 					lstWorktimeFrameTemp.remove(item);
+				} else {
+					if(lstHolidayWorkFrameTime.isEmpty()) {
+						AttendanceTime worktimeTmp = new AttendanceTime(worktimeFrame.get(i));
+						TimeDivergenceWithCalculation timeCalculation = TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0), new AttendanceTime(0));
+						HolidayWorkFrameTime tmpHolidayWorkFrameTime = new HolidayWorkFrameTime(new HolidayWorkFrameNo(i),
+								Finally.of(timeCalculation),
+								Finally.of(timeCalculation),
+								Finally.of(worktimeTmp));
+						lstHolidayWorkFrameTimeTmp.add(tmpHolidayWorkFrameTime);
+					}
 				}
 			}	
+		}
+		if(!lstHolidayWorkFrameTimeTmp.isEmpty()) {
+			attendanceTimeData
+			.getActualWorkingTimeOfDaily().getTotalWorkingTime()
+			.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().setHolidayWorkFrameTime(lstHolidayWorkFrameTimeTmp);
+			
 		}
 		dailyData.setAttendanceTimeOfDailyPerformance(Optional.of(attendanceTimeData));
 		//attendanceTime.updateFlush(attendanceTimeData);		
@@ -484,7 +531,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		List<Integer> lstItem = new ArrayList<>();		
 		lstItem.add(267);
 		lstItem.add(272);
-		lstItem.add(276);
+		lstItem.add(277);
 		lstItem.add(282);
 		lstItem.add(287);
 		lstItem.add(292);
@@ -496,23 +543,52 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 	}
 	
 	@Override
-	public void updateRecordStartEndTimeReflect(TimeReflectPara data) {
+	public TimeLeavingOfDailyPerformance updateRecordStartEndTimeReflect(TimeReflectPara data) {
+		Optional<TimeLeavingOfDailyPerformance> optTimeLeaving = timeLeavingOfDaily.findByKey(data.getEmployeeId(), data.getDateData());
+		TimeLeavingOfDailyPerformance timeDaily = null;
+		if(optTimeLeaving.isPresent()) {
+			timeDaily = optTimeLeaving.get();
+		}
 		if(!data.isStart()
 				&& !data.isEnd()) {
-			return;
+			return timeDaily;
 		}
 		//開始時刻を反映する
-		Optional<TimeLeavingOfDailyPerformance> optTimeLeavingOfDaily = timeLeavingOfDaily.findByKey(data.getEmployeeId(), data.getDateData());
-		if(!optTimeLeavingOfDaily.isPresent()) {
-			return;
+		List<TimeLeavingWork> lstTimeLeavingWorks = new ArrayList<>();
+		if(timeDaily != null) {
+			lstTimeLeavingWorks = timeDaily.getTimeLeavingWorks().stream()
+					.filter(x -> x.getWorkNo().v() == data.getFrameNo()).collect(Collectors.toList());
 		}
-		TimeLeavingOfDailyPerformance timeLeavingOfDailyData = optTimeLeavingOfDaily.get();
-		List<TimeLeavingWork> lstTimeLeavingWorks = timeLeavingOfDailyData.getTimeLeavingWorks().stream()
-				.filter(x -> x.getWorkNo().v() == data.getFrameNo()).collect(Collectors.toList());
+		TimeLeavingWork timeLeavingWork = null;
 		if(lstTimeLeavingWorks.isEmpty()) {
-			return;
+			if(data.getStartTime() == null || data.getEndTime() == null) {
+				List<Integer> lstItem = new ArrayList<Integer>();
+				if(data.isStart()) {
+					if(data.getFrameNo() == 1) {
+						lstItem.add(31);
+					} else {
+						lstItem.add(41);
+					}
+				}
+				if(data.isEnd()) {
+					if(data.getFrameNo() == 1) {
+						lstItem.add(34);
+					} else {
+						lstItem.add(44);
+					}
+				}
+				this.updateEditStateOfDailyPerformance(data.getEmployeeId(), data.getDateData(), lstItem);
+				return timeDaily;
+			}
+			WorkStamp workStamp = new WorkStamp(new TimeWithDayAttr(data.getStartTime()),
+					new TimeWithDayAttr(data.getEndTime()),
+					null,
+					StampSourceInfo.GO_STRAIGHT_APPLICATION);
+			TimeActualStamp timeActualStamp = new TimeActualStamp(workStamp, workStamp, 0);
+			timeLeavingWork = new TimeLeavingWork(new WorkNo(1), timeActualStamp, timeActualStamp);
+		} else {
+			timeLeavingWork = lstTimeLeavingWorks.get(0);
 		}
-		TimeLeavingWork timeLeavingWork = lstTimeLeavingWorks.get(0);
 		Optional<TimeActualStamp> optTimeAttendanceStart = timeLeavingWork.getAttendanceStamp();
 		Optional<TimeActualStamp> optTimeAttendanceEnd = timeLeavingWork.getLeaveStamp();
 		if(data.isStart() && optTimeAttendanceStart.isPresent()) {
@@ -551,10 +627,12 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 						stamp.getLocationCode().isPresent() ? stamp.getLocationCode().get() : null,
 						stamp.getStampSourceInfo());
 			} else {
-				stampTmp = new WorkStamp(data.getEndTime() != null ? new TimeWithDayAttr(data.getEndTime()) : null,
-						data.getEndTime() != null ? new TimeWithDayAttr(data.getEndTime()) : null,
-						null,
-						data.getEndTime() != null ? StampSourceInfo.GO_STRAIGHT_APPLICATION : null);
+				if(data.getEndTime() != null) {
+					stampTmp = new WorkStamp(new TimeWithDayAttr(data.getEndTime()),
+							new TimeWithDayAttr(data.getEndTime()),
+							null,
+							StampSourceInfo.GO_STRAIGHT_APPLICATION);
+				}
 			}
 			TimeActualStamp timeActualStam = new TimeActualStamp(timeAttendanceEnd.getActualStamp().isPresent() ? timeAttendanceEnd.getActualStamp().get() : null,
 					stampTmp,
@@ -564,9 +642,13 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		TimeLeavingWork timeLeavingWorkTmp = new TimeLeavingWork(timeLeavingWork.getWorkNo(),
 				optTimeAttendanceStart.get(),
 				optTimeAttendanceEnd.get());
-		timeLeavingOfDailyData.getTimeLeavingWorks().remove(timeLeavingWork);
-		timeLeavingOfDailyData.getTimeLeavingWorks().add(timeLeavingWorkTmp);	
-		timeLeavingOfDaily.updateFlush(timeLeavingOfDailyData);
+		if(!lstTimeLeavingWorks.isEmpty()) {
+			timeDaily.getTimeLeavingWorks().remove(timeLeavingWork);
+			timeDaily.getTimeLeavingWorks().add(timeLeavingWorkTmp);
+		} else {
+			timeDaily = new TimeLeavingOfDailyPerformance(data.getEmployeeId(), new WorkTimes(1), Arrays.asList(timeLeavingWorkTmp), data.getDateData());
+		}
+		timeLeavingOfDaily.updateFlush(timeDaily);
 		//開始時刻の編集状態を更新する
 		//予定項目ID=出勤の項目ID	
 		List<Integer> lstItem = new ArrayList<Integer>();
@@ -585,6 +667,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			}
 		}
 		this.updateEditStateOfDailyPerformance(data.getEmployeeId(), data.getDateData(), lstItem);
+		return timeDaily;
 	}
 	@Override
 	public IntegrationOfDaily updateWorkTimeTypeHoliwork(ReflectParameter para, boolean scheUpdate,
@@ -593,17 +676,16 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		WorkInformation workInfor = new WorkInformation(para.getWorkTimeCode(), para.getWorkTypeCode());
 		List<Integer> lstItem = new ArrayList<>();
 		if(scheUpdate) {
+			dailyPerfor = this.dailyInfo(para.getWorkTimeCode(), para.getWorkTypeCode(), dailyPerfor);
 			lstItem.add(1);
 			lstItem.add(2);
 			dailyPerfor.setScheduleInfo(workInfor);
 			dailyData.setWorkInformation(dailyPerfor);
-			//workRepository.updateByKeyFlush(dailyPerfor);
 		} else {
 			lstItem.add(28);
 			lstItem.add(29);
 			dailyPerfor.setRecordInfo(workInfor);
 			dailyData.setWorkInformation(dailyPerfor);
-			//workRepository.updateByKeyFlush(dailyPerfor);
 		}
 		//日別実績の編集状態	
 		this.updateEditStateOfDailyPerformance(para.getEmployeeId(), para.getDateData(), lstItem);
@@ -748,18 +830,33 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		return attendanceTimeData;
 	}
 	@Override
-	public TimeLeavingOfDailyPerformance updateRecordStartEndTimeReflectRecruitment(TimeReflectPara data,
-			TimeLeavingOfDailyPerformance timeLeavingOfDailyData) {
+	public TimeLeavingOfDailyPerformance updateRecordStartEndTimeReflectRecruitment(TimeReflectPara data) {
+		Optional<TimeLeavingOfDailyPerformance> optTimeLeaving = timeLeavingOfDaily.findByKey(data.getEmployeeId(), data.getDateData());
+		TimeLeavingOfDailyPerformance timeDaily = null;
+		if(optTimeLeaving.isPresent()) {
+			timeDaily = optTimeLeaving.get();
+		}
 		if(!data.isStart()
 				&& !data.isEnd()) {
-			return timeLeavingOfDailyData;
+			return timeDaily;
 		}
-		List<TimeLeavingWork> lstTimeLeavingWorks = timeLeavingOfDailyData.getTimeLeavingWorks().stream()
-				.filter(x -> x.getWorkNo().v() == data.getFrameNo()).collect(Collectors.toList());
+		//開始時刻を反映する
+		List<TimeLeavingWork> lstTimeLeavingWorks = new ArrayList<>();
+		if(timeDaily != null) {
+			lstTimeLeavingWorks = timeDaily.getTimeLeavingWorks().stream()
+					.filter(x -> x.getWorkNo().v() == data.getFrameNo()).collect(Collectors.toList());
+		}
+		TimeLeavingWork timeLeavingWork = null;
 		if(lstTimeLeavingWorks.isEmpty()) {
-			return timeLeavingOfDailyData;
+			WorkStamp workStamp = new WorkStamp(new TimeWithDayAttr(data.getStartTime()),
+					new TimeWithDayAttr(data.getEndTime()),
+					null,
+					StampSourceInfo.GO_STRAIGHT_APPLICATION);
+			TimeActualStamp timeActualStamp = new TimeActualStamp(workStamp, workStamp, 0);
+			timeLeavingWork = new TimeLeavingWork(new WorkNo(1), timeActualStamp, timeActualStamp);
+		} else {
+			timeLeavingWork = lstTimeLeavingWorks.get(0);
 		}
-		TimeLeavingWork timeLeavingWork = lstTimeLeavingWorks.get(0);
 		Optional<TimeActualStamp> optTimeAttendanceStart = timeLeavingWork.getAttendanceStamp();
 		Optional<TimeActualStamp> optTimeAttendanceEnd = timeLeavingWork.getLeaveStamp();
 		if(data.isStart() && optTimeAttendanceStart.isPresent()) {
@@ -795,9 +892,13 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		TimeLeavingWork timeLeavingWorkTmp = new TimeLeavingWork(timeLeavingWork.getWorkNo(),
 				optTimeAttendanceStart.get(),
 				optTimeAttendanceEnd.get());
-		timeLeavingOfDailyData.getTimeLeavingWorks().remove(timeLeavingWork);
-		timeLeavingOfDailyData.getTimeLeavingWorks().add(timeLeavingWorkTmp);
-		timeLeavingOfDaily.updateFlush(timeLeavingOfDailyData);
+		if(!lstTimeLeavingWorks.isEmpty()) {
+			timeDaily.getTimeLeavingWorks().remove(timeLeavingWork);
+			timeDaily.getTimeLeavingWorks().add(timeLeavingWorkTmp);
+		} else {
+			timeDaily = new TimeLeavingOfDailyPerformance(data.getEmployeeId(), new WorkTimes(1), Arrays.asList(timeLeavingWorkTmp), data.getDateData());
+		}
+		timeLeavingOfDaily.updateFlush(timeDaily);
 		//開始時刻の編集状態を更新する
 		//予定項目ID=出勤の項目ID	
 		List<Integer> lstItem = new ArrayList<Integer>();
@@ -816,7 +917,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			}
 		}
 		this.updateEditStateOfDailyPerformance(data.getEmployeeId(), data.getDateData(), lstItem);
-		return timeLeavingOfDailyData;
+		return timeDaily;
 	}
 
 	@Override
@@ -854,6 +955,60 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		}
 
 		this.updateEditStateOfDailyPerformance(sid, appDate, lstItem);
+	}
+	@Override
+	public void updateTimeNotReflect(String employeeId, GeneralDate dateData) {
+		Optional<TimeLeavingOfDailyPerformance> optTimeLeaving = timeLeavingOfDaily.findByKey(employeeId, dateData);
+		if(!optTimeLeaving.isPresent()) {
+			return;
+		}
+		TimeLeavingOfDailyPerformance timeDaily = optTimeLeaving.get();
+
+		//開始時刻を反映する
+		List<TimeLeavingWork> lstTimeLeavingWorks = timeDaily.getTimeLeavingWorks().stream()
+					.filter(x -> x.getWorkNo().v() == 1).collect(Collectors.toList());
+		TimeLeavingWork timeLeavingWork = null;
+		if(!lstTimeLeavingWorks.isEmpty()) {
+			timeLeavingWork = lstTimeLeavingWorks.get(0);
+		} else {
+			return;
+		}
+		Optional<TimeActualStamp> optTimeAttendanceStart = timeLeavingWork.getAttendanceStamp();
+		
+		Optional<TimeActualStamp> optTimeAttendanceEnd = timeLeavingWork.getLeaveStamp();
+		if(optTimeAttendanceStart.isPresent()) {
+			TimeActualStamp timeAttendanceStart= optTimeAttendanceStart.get();
+			Optional<WorkStamp> optStamp = timeAttendanceStart.getStamp();
+			WorkStamp stampTmp = null;
+			if(optStamp.isPresent()) {
+				TimeActualStamp timeActualStam = new TimeActualStamp(timeAttendanceStart.getActualStamp().isPresent() ? timeAttendanceStart.getActualStamp().get() : null,
+						stampTmp,
+						timeAttendanceStart.getNumberOfReflectionStamp());
+				optTimeAttendanceStart = Optional.of(timeActualStam);
+			}
+		}
+		if(optTimeAttendanceEnd.isPresent()) {			
+			TimeActualStamp timeAttendanceEnd = optTimeAttendanceEnd.get();
+			Optional<WorkStamp> optStamp = timeAttendanceEnd.getStamp();
+			WorkStamp stampTmp = null;
+			if(optStamp.isPresent()) {				
+				TimeActualStamp timeActualStam = new TimeActualStamp(timeAttendanceEnd.getActualStamp().isPresent() ? timeAttendanceEnd.getActualStamp().get() : null,
+						stampTmp,
+						timeAttendanceEnd.getNumberOfReflectionStamp());
+				optTimeAttendanceEnd = Optional.of(timeActualStam);
+			}
+		}
+		TimeLeavingWork timeLeavingWorkTmp = new TimeLeavingWork(timeLeavingWork.getWorkNo(),
+				optTimeAttendanceStart.get(),
+				optTimeAttendanceEnd.get());
+		if(!lstTimeLeavingWorks.isEmpty()) {
+			timeDaily.getTimeLeavingWorks().remove(timeLeavingWork);
+			timeDaily.getTimeLeavingWorks().add(timeLeavingWorkTmp);
+		} else {
+			timeDaily = new TimeLeavingOfDailyPerformance(employeeId, new WorkTimes(1), Arrays.asList(timeLeavingWorkTmp), dateData);
+		}
+		timeLeavingOfDaily.updateFlush(timeDaily);
+				
 	}
 
 }

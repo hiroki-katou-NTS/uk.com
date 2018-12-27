@@ -73,7 +73,7 @@ import nts.uk.shr.infra.data.jdbc.JDBCUtil;
  */
 @Stateless
 public class JpaBasicScheduleRepository extends JpaRepository implements BasicScheduleRepository {
-
+		
 	public static final String GET_LIST_DATE_BY_LIST_SID = "SELECT a.kscdpBSchedulePK.date "
 			+ "FROM KscdtBasicSchedule a " + "WHERE a.kscdpBSchedulePK.sId IN :sIds "
 			+ "ORDER BY a.kscdpBSchedulePK.date DESC";
@@ -176,12 +176,8 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 			return;
 		}
 		KscdtBasicSchedule schedule = optionalEntity.get();
-		if (workTypeCode != null) {
-			schedule.workTypeCode = workTypeCode;
-		}
-		if (workTimeCode != null) {
-			schedule.workTimeCode = workTimeCode;
-		}
+		schedule.workTypeCode = workTypeCode;
+		schedule.workTimeCode = workTimeCode;
 		this.commandProxy().update(schedule);
 		this.getEntityManager().flush();
 	}
@@ -1185,5 +1181,29 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 				.getList(x -> toDomain(x)));
 		});
 		return result;
+	}
+
+	@Override
+	public void changeWorkType(String sid, GeneralDate date, String workTypeCode) {
+		Optional<KscdtBasicSchedule> optionalEntity = this.findById(sid, date);
+		if (!optionalEntity.isPresent()) {
+			return;
+		}
+		KscdtBasicSchedule schedule = optionalEntity.get();
+		schedule.workTypeCode = workTypeCode;
+		this.commandProxy().update(schedule);
+		this.getEntityManager().flush();
+	}
+
+	@Override
+	public void changeWorkTime(String sid, GeneralDate date, String worktimeCode) {
+		Optional<KscdtBasicSchedule> optionalEntity = this.findById(sid, date);
+		if (!optionalEntity.isPresent()) {
+			return;
+		}
+		KscdtBasicSchedule schedule = optionalEntity.get();
+		schedule.workTimeCode = worktimeCode;
+		this.commandProxy().update(schedule);
+		this.getEntityManager().flush();
 	}
 }

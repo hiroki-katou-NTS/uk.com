@@ -67,7 +67,7 @@ public class AddAffCompanyHistoryCommandHandler
 
 		affCompanyHistService.add(itemToBeAdded, command.getPId());
 
-		AffCompanyInfo histItem = AffCompanyInfo.createFromJavaType(
+		AffCompanyInfo histItem = AffCompanyInfo.createFromJavaType(command.getSId(),
 				newHistId, !StringUtils.isEmpty(command.getRecruitmentClassification())
 						? command.getRecruitmentClassification() : " ",
 				command.getAdoptionDate(), command.getRetirementAllowanceCalcStartDate());

@@ -286,7 +286,7 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 										this.getAffiliationInfo().toDomain(),
 										this.getBusinessType().toDomain(), 
 										this.getPcLogInfo().toDomain(), 
-										new ArrayList<>(), 
+										this.getErrors().toDomain(), 
 										this.getOutingTime().toDomain(), 
 										this.getBreakTime().toDomain(), 
 										this.getAttendanceTime().toDomain(), 

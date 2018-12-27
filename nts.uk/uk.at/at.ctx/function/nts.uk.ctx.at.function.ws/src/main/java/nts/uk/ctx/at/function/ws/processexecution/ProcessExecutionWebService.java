@@ -8,9 +8,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import lombok.val;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.task.AsyncTaskInfo;
+import nts.arc.task.AsyncTaskInfoRepository;
+import nts.gul.util.value.MutableValue;
 //import nts.uk.ctx.at.function.app.command.processexecution.ExecuteProcessExecCommandHandler;
 import nts.uk.ctx.at.function.app.command.processexecution.ExecuteProcessExecutionCommand;
 import nts.uk.ctx.at.function.app.command.processexecution.ExecuteProcessExecutionCommandHandler;
@@ -32,6 +35,9 @@ import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionDate
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionLogDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionLogHistoryDto;
+import nts.uk.ctx.at.function.ws.processexecution.batchserver.BatchTaskResult;
+import nts.uk.shr.com.communicate.PathToWebApi;
+import nts.uk.shr.com.communicate.batch.BatchServer;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
@@ -72,6 +78,12 @@ public class ProcessExecutionWebService extends WebService {
 	/** The i18n. */
 	@Inject
 	private I18NResourcesForUK i18n;
+	
+	@Inject
+	private BatchServer batchServer;
+	
+	@Inject
+	private AsyncTaskInfoRepository asyncTaskInfoRepository;
 	
 	/**
 	 * Gets the enum.
@@ -123,13 +135,50 @@ public class ProcessExecutionWebService extends WebService {
 	@POST
 	@Path("execute")
 	public AsyncTaskInfo execute(ExecuteProcessExecutionCommand command) {
-			return this.execHandler.handle(command);
+		
+		MutableValue<AsyncTaskInfo> result = new MutableValue<>();
+		
+		if (this.batchServer.exists()) {
+			System.out.println("Call batch service  !");
+			val webApi = this.batchServer.webApi(PathToWebApi.at("/batch/batch-execute"), 
+					ExecuteProcessExecutionCommand.class, BatchTaskResult.class);
+			this.batchServer.request(webApi, c -> c.entity(command)
+					.succeeded(x -> {
+						String taskId = x.getId();
+						AsyncTaskInfo taskInfo = asyncTaskInfoRepository.find(taskId).get();
+						result.set(taskInfo);
+			})
+					.failed(f -> {
+						throw new RuntimeException(f.toString());
+					}));
+		} else {
+			System.out.println("No call batch service !");
+			result.set(this.execHandler.handle(command));
+			
+		}
+		
+		return result.get();
 	}
 	
 	@POST
 	@Path("terminate")
 	public AsyncTaskInfo terminate(TerminateProcessExecutionCommand command) {
-		return this.termHandler.handle(command);
+		MutableValue<AsyncTaskInfo> result = new MutableValue<>();
+		
+		if (this.batchServer.exists()) {
+			val webApi = this.batchServer.webApi(PathToWebApi.at("/batch/batch-terminate"), 
+					TerminateProcessExecutionCommand.class, BatchTaskResult.class);
+			this.batchServer.request(webApi, c -> c.entity(command)
+					.succeeded(x -> {
+						String taskId = x.getId();
+						AsyncTaskInfo taskInfo = asyncTaskInfoRepository.find(taskId).get();
+						result.set(taskInfo);
+			}));
+		} else {
+			result.set(this.termHandler.handle(command));
+		}
+		
+		return result.get();
 	}
 	
 	@POST

@@ -163,6 +163,7 @@ module nts.uk.pr.view.qmm037.a.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             block.invisible();
+            self.lstSalIndAmountName.removeAll();
             service.getPersonalMoneyName(self.cateIndicator()).done(function (data: Array<ISalIndAmountName>) {
                 if (data && data.length > 0) {
                     let dataSort = _.sortBy(data, ["individualPriceCode"]);
@@ -197,6 +198,7 @@ module nts.uk.pr.view.qmm037.a.viewmodel {
             service.getPersonalMoneyName(self.cateIndicator()).done(function (data: Array<ISalIndAmountName>) {
                 if (data && data.length > 0) {
                     let dataSort = _.sortBy(data, ["individualPriceCode"]);
+                    self.lstSalIndAmountName.removeAll();
                     self.lstSalIndAmountName(dataSort);
                 }
                 else {

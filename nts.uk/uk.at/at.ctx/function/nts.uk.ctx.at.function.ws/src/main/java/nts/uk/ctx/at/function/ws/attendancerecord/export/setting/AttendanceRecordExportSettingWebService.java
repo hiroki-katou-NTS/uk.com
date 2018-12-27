@@ -9,6 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.*;
+import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendaceMonthDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendanceRecordExportSettingDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendanceRecordExportSettingFinder;
 import nts.uk.shr.com.context.AppContexts;
@@ -122,5 +123,11 @@ public class AttendanceRecordExportSettingWebService {
 	@Path("getPermission")
 	public Boolean getPermission(){
 		return attendanceEcExpSetFinder.havePermission();
+	}
+	
+	@POST
+	@Path("getClosureMonth")
+	public AttendaceMonthDto getClosureMonth() {
+		return attendanceEcExpSetFinder.getClosureMonth();
 	}
 }
