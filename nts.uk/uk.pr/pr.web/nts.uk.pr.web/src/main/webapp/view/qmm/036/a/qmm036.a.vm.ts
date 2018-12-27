@@ -80,6 +80,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
             ];
 
             self.columns = ko.observableArray([
+                {headerText: getText(''), key: 'key', hidden: true},
                 {headerText: getText('QMM036_7'), key: 'categoryAtr', width: 60, formatter: getCategoryAtrText},
                 {headerText: getText('QMM036_8'), key: 'itemNameCd', width: 60},
                 {headerText: getText('QMM036_9'), key: 'name', width: 100}
@@ -117,7 +118,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                 self.totalAmount('');
                 if (item != '') {
                     let itemModel = _.find(self.lstStatementItem(), function (x) {
-                        return x.itemNameCd == item
+                        return x.key == item
                     });
                     self.categoryAtr(itemModel.categoryAtr);
                     self.categoryAtrText(getCategoryAtrText2(itemModel.categoryAtr));
@@ -348,7 +349,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
 
                     self.lstStatementItem(dataSort1);
                     self.currentCodeStatement('');
-                    self.currentCodeStatement(self.lstStatementItem()[0].itemNameCd);
+                    self.currentCodeStatement(self.lstStatementItem()[0].key);
 
                 }
                 else {
@@ -795,6 +796,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
     }
 
     export interface IStatementItem {
+        key: string;
         categoryAtr: number;
         itemNameCd: string;
         name: string;

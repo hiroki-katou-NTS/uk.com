@@ -8,6 +8,8 @@ import nts.uk.ctx.pr.core.dom.wageprovision.averagewagecalculationset.StatementC
 @AllArgsConstructor
 public class StatementDto {
 
+    private String key;
+
     /**
      * カテゴリ区分
      */
@@ -24,6 +26,7 @@ public class StatementDto {
     private String name;
 
     public StatementDto(StatementCustom domain) {
+        this.key = String.valueOf(domain.getCategoryAtr()) + domain.getItemNameCd();
         this.categoryAtr = domain.getCategoryAtr();
         this.itemNameCd = domain.getItemNameCd();
         this.name = domain.getName();
