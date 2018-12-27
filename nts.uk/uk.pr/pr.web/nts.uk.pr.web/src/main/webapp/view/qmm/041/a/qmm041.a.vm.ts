@@ -218,6 +218,10 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
             return _.findIndex(self.historyList(), x => historyId === x.historyId);
         }
 
+        toQmm042() {
+            nts.uk.request.jump("pr", "/view/qmm/042/a/index.xhtml");
+        }
+
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
