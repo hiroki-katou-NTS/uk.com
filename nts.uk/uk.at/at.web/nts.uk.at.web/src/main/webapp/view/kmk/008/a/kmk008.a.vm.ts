@@ -15,15 +15,32 @@ module nts.uk.at.view.kmk008.a {
             }
             
             private exportExcel(): void {
-                var self = this;
                 nts.uk.ui.block.grayout();
-                let langId = self.langId();
-                service.saveAsExcel(langId).done(function() {
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-                }).always(function() {
-                    nts.uk.ui.block.clear();
-                });
+                let self = this;
+                let params = {
+                   date: null,
+                   mode: 5
+                 };
+                
+                nts.uk.ui.windows.setShared("CDL028_INPUT", params);
+                
+                nts.uk.ui.windows.sub.modal('com', '/view/cdl/028/a/index.xhtml').onClosed(() => {
+                    var result = nts.uk.ui.windows.getShared('CDL028_A_PARAMS');
+                   if (result.status) {
+                        nts.uk.ui.block.grayout();
+                        let langId = self.langId();
+                        let startDate = moment.utc(result.startDateFiscalYear, "YYYY/MM/DD");
+                        let endDate = moment.utc(result.endDateFiscalYear, "YYYY/MM/DD");
+                        service.saveAsExcel(langId, startDate, endDate).done(function() {
+                            
+                        }).fail(function(error) {
+                            nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                        }).always(function() {
+                            nts.uk.ui.block.clear();
+                        });
+                   }
+                }
+                
             }
 
             

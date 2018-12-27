@@ -13,6 +13,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeRange;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.GenderCls;
 import nts.uk.shr.com.primitive.Memo;
 
 @NoArgsConstructor
@@ -52,7 +53,7 @@ public class SpecialHolidayEvent extends AggregateRoot {
 	private UseAtr restrictClassification;
 
 	/* 性別 */
-	private GenderAtr gender;
+	private GenderCls gender;
 
 	/* 年齢範囲 */
 	private AgeRange ageRange;

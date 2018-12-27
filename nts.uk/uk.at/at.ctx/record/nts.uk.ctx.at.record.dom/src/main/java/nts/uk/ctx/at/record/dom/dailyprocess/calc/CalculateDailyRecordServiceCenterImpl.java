@@ -178,7 +178,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 
 	@Override
 	//更新処理自動実行から呼び出す窓口
-	public CalcStatus calculateForclosure(
+	public ManageProcessAndCalcStateResult calculateForclosure(
 			List<IntegrationOfDaily> integrationOfDaily,
 			ManagePerCompanySet companySet,
 			List<ClosureStatusManagement> closureList) {
@@ -186,7 +186,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		result.getLst().forEach(listItem ->{
 			dailyCalculationEmployeeService.upDateCalcState(listItem);
 		});
-		return new CalcStatus(result.getPs(), result.getLst().stream().map(tc -> tc.getIntegrationOfDaily()).collect(Collectors.toList())); 
+		return result; 
 	}
 	
 	

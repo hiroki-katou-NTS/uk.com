@@ -52,38 +52,9 @@ public class WorkPlaceSelectionExportImpl implements MasterListData {
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		String companyId = AppContexts.user().companyId();
-		String baseDate = query.getStartDate().toString();
+		String baseDate = query.getBaseDate().toString();
 		List<MasterData> datas = new ArrayList<>();
 		List<WorkPlaceFunction> workPlaceFunction = workPlaceFunctionRepository.getAllWorkPlaceFunction();
-
-		/*
-		 * if (CollectionUtil.isEmpty(listWorkPlaceSelectionExportData)) { throw
-		 * new BusinessException("Msg_7"); } else {
-		 * listWorkPlaceSelectionExportData.stream().forEach(c -> { Map<String,
-		 * Object> data = new HashMap<>(); data.put(CMM051_32,
-		 * c.getWorkplaceCode()); data.put(CMM051_33, c.getWorkplaceName());
-		 * data.put(CMM051_34, c.getEmployeeCode()); data.put(CMM051_35,
-		 * c.getBusinessName()); data.put(CMM051_36, c.getStartDate());
-		 * data.put(CMM051_37, c.getEndDate());
-		 * c.getFunctionNo().entrySet().forEach(x -> { data.put(FUNCTION_NO_ +
-		 * x.getKey(), "1".equals(x.getValue()) ? "○" : "ー"); }); //
-		 * List<WorkPlaceAuthority> workPlaceAuthority =
-		 * workPlaceAuthorityRepository //
-		 * .getAllWorkPlaceAuthorityByRoleId(companyId,
-		 * c.getWorkplaceManagerId()); //if (!workPlaceAuthority.isEmpty()) {
-		 * //List<WorkPlaceFunction> workPlaceFunction =
-		 * workPlaceFunctionRepository.getAllWorkPlaceFunction(); //if
-		 * (!workPlaceFunction.isEmpty()) { for (WorkPlaceFunction item :
-		 * workPlaceFunction) { Boolean availability =
-		 * workPlaceAuthority.stream() .filter(x ->
-		 * x.getFunctionNo().v().equals(item.getFunctionNo().v())).findFirst()
-		 * .map(x1 -> x1.isAvailability()).orElse(null); if
-		 * (Objects.isNull(availability) || !availability) {
-		 * data.put(FUNCTION_NO_ + item.getFunctionNo().v(), "ー"); } else {
-		 * data.put(FUNCTION_NO_ + item.getFunctionNo().v(), "○"); } } //} //}
-		 * datas.add(new MasterData(data, null, "")); }); } return datas;
-		 */
-
 		datas = workplaceManagerRepository.getDataExport(companyId, workPlaceFunction, baseDate);
 		return datas;
 	}
