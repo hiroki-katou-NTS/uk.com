@@ -64,16 +64,14 @@ module nts.uk.at.view.ksm001.a {
                    mode: 5
                };
                 
-                if (!nts.uk.ui.windows.getShared("CDL028_INPUT")) {
-                    nts.uk.ui.windows.setShared("CDL028_INPUT", params);
-                }
-                
+                nts.uk.ui.windows.setShared("CDL028_INPUT", params);
                 nts.uk.ui.windows.sub.modal('com', '/view/cdl/028/a/index.xhtml').onClosed(() => {
                     var result = nts.uk.ui.windows.getShared('CDL028_A_PARAMS');
                    if (result.status) {
                         nts.uk.ui.block.grayout();
                         let langId = self.langId();
-                        let startDate = moment.utc(result.startDateFiscalYear, "YYYY/MM/DD");
+                         
+                       let startDate = moment.utc(result.startDateFiscalYear, "YYYY/MM/DD");
                         let endDate = moment.utc(result.endDateFiscalYear, "YYYY/MM/DD");
                         service.saveAsExcel(langId, startDate, endDate).done(function() {
                             //nts.uk.ui.windows.close();

@@ -25,9 +25,6 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator implements WorkTimeReportGenerator {
 
 	private static final String TEMPLATE_FILE = "report/KMK003.xlsx";
-	private static final String SHEET_WORK_TIME_NORMAL = "勤務形態_通常";
-	private static final String SHEET_WORK_TIME_FLOW = "勤務形態_流動";
-	private static final String SHEET_WORK_TIME_FLEX = "勤務形態_フレックス";
 	private static final String REPORT_NAME = "KMK003就業時間帯の登録";
 	private static final String REPORT_FILE_EXTENSION = ".xlsx";
 	private static final int WORK_TIME_NORMAL_START_INDEX = 10;
@@ -49,7 +46,7 @@ public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator im
 			AsyncTask taskNormal = AsyncTask.builder().withContexts().keepsTrack(true)
 					.threadName(this.getClass().getName()).build(() -> {
 						try {
-							printWorkTimeNormal(worksheets.get(SHEET_WORK_TIME_NORMAL), dataSource);
+							printWorkTimeNormal(worksheets.get(0), dataSource);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -60,7 +57,7 @@ public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator im
 			AsyncTask taskFlow = AsyncTask.builder().withContexts().keepsTrack(true)
 					.threadName(this.getClass().getName()).build(() -> {
 						try {
-							printWorkTimeFlow(worksheets.get(SHEET_WORK_TIME_FLOW), dataSource);
+							printWorkTimeFlow(worksheets.get(1), dataSource);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -71,7 +68,7 @@ public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator im
 			AsyncTask taskFlex = AsyncTask.builder().withContexts().keepsTrack(true)
 					.threadName(this.getClass().getName()).build(() -> {
 						try {
-							printWorkTimeFlex(worksheets.get(SHEET_WORK_TIME_FLEX), dataSource);
+							printWorkTimeFlex(worksheets.get(2), dataSource);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
