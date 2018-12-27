@@ -66,7 +66,7 @@ public class CompanyImpl implements MasterListData{
 				.collect(Collectors.toList());
 		
 		if(CollectionUtil.isEmpty(listCompany)){
-			throw new BusinessException("Msg_393");
+			return null;
 		}else{
 			listCompany.stream().forEach(c->{
 				Map<String, Object> data = new HashMap<>();
@@ -274,7 +274,7 @@ public class CompanyImpl implements MasterListData{
 	@Override
 	public String mainSheetName() {
 		// TODO Auto-generated method stub
-		return TextResource.localize("CMM001_39");
+		return TextResource.localize("CMM001_77");
 	}
 	
 	

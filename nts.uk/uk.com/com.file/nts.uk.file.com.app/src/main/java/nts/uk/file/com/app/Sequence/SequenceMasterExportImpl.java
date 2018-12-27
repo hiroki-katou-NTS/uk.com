@@ -97,7 +97,7 @@ public class SequenceMasterExportImpl implements MasterListData{
 		List<SequenceMaster> listSequenceMaster = sequenceMasterRepository.findByCompanyId(companyId);
 		
 		if(CollectionUtil.isEmpty(listSequenceMaster)){
-			throw new BusinessException("Msg_393");
+			return null;
 		}else{
 			listSequenceMaster.stream().forEach(c ->{
 				Map<String, Object> data = new HashMap<>();
@@ -149,7 +149,7 @@ public class SequenceMasterExportImpl implements MasterListData{
 	@Override
 	public List<SheetData> extraSheets(MasterListExportQuery query){
 		List<SheetData> listSheetData = new ArrayList<>();
-		SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("CMM013_54"));
+		SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("CMM013_61"));
 		listSheetData.add(sheetDataTwo);
 		return listSheetData;
 	}
@@ -167,7 +167,7 @@ public class SequenceMasterExportImpl implements MasterListData{
 				.sorted(Comparator.comparing(JobTitleInfo::getJobTitleCode)).collect(Collectors.toList());
 
 		if(CollectionUtil.isEmpty(listFindAll)){
-			throw new BusinessException("Msg_393");
+			return null;
 		}else{
 			listFindAll.stream().forEach(c ->{
 				Map<String, Object> data = new HashMap<>();
@@ -230,8 +230,8 @@ public class SequenceMasterExportImpl implements MasterListData{
 						}
 						MasterData masterData = new MasterData(data, null, "");
 						masterData.cellAt("コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-						masterData.cellAt("職歴開始日").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-						masterData.cellAt("職歴終了").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+						masterData.cellAt("職歴開始日").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+						masterData.cellAt("職歴終了").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
 						masterData.cellAt("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 						masterData.cellAt("36協定対象外").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 						masterData.cellAt("序列コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
@@ -252,7 +252,7 @@ public class SequenceMasterExportImpl implements MasterListData{
 	@Override
 	public String mainSheetName() {
 		// TODO Auto-generated method stub
-		return TextResource.localize("CMM013_53");
+		return TextResource.localize("CMM013_60");
 	}
 	
 

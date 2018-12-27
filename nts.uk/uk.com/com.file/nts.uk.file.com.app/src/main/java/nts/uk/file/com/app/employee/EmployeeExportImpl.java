@@ -66,7 +66,7 @@ public class EmployeeExportImpl implements MasterListData {
 		List<Employment> listEmployeeExport = employmentRepository.findAll(companyId);
 
 		if (CollectionUtil.isEmpty(listEmployeeExport)) {
-			throw new BusinessException("Msg_393");
+			return null;
 		} else {
 			listEmployeeExport.stream().forEach(c -> {
 
@@ -95,7 +95,7 @@ public class EmployeeExportImpl implements MasterListData {
 	@Override
 	public String mainSheetName() {
 		// TODO Auto-generated method stub
-		return TextResource.localize("CMM008_13");
+		return TextResource.localize("CMM008_14");
 	}
 	
 	private void putEmptyData(Map<String, Object> data){

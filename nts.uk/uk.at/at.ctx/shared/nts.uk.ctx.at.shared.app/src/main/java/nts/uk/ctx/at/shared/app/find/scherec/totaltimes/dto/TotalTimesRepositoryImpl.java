@@ -72,7 +72,7 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 		List<TotalTimes> listTotalTimesItem = totalTimesRepository.getAllTotalTimes(companyId);
 		
 		if(CollectionUtil.isEmpty(listTotalTimesItem)){
-			throw new BusinessException("Msg_393");
+			return null;
 		}else{
 			listTotalTimesItem.stream().forEach(c->{
 				
@@ -273,7 +273,7 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 	@Override
 	public String mainSheetName() {
 		// TODO Auto-generated method stub
-		return TextResource.localize("KMK009_25");
+		return TextResource.localize("KMK009_56");
 	}
 	
 	
