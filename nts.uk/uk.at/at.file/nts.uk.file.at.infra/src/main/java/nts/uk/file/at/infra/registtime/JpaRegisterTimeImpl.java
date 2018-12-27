@@ -14,6 +14,7 @@ import javax.persistence.Query;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateAtr;
 import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateType;
@@ -708,10 +709,10 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+" 		JOIN BSYMT_EMP_DTA_MNG_INFO cc ON aa.SID = cc.SID"
 			+" 		JOIN BPSMT_PERSON dd ON cc.PID = dd.PID"
 			+" 		WHERE"
-			+" 			bb.Y_K >= 2014"
-			+" 		AND bb.Y_K <= 2018"
-			+" 		AND aa.YM_K >= 201801"
-			+" 		AND aa.YM_K <= 201808"
+			+" 			bb.Y_K >= ?startY"
+			+" 		AND bb.Y_K <= ?endY"
+			+" 		AND aa.YM_K >= ?startYM"
+			+" 		AND aa.YM_K <= ?endYM"
 			+" 		AND cc.CID = ?cid"
 			+" 	) kk"
 			+" ORDER BY"
@@ -1271,11 +1272,19 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 
 
 	@Override
-	public List<MasterData> getDataExportSheet10() {
+	public List<MasterData> getDataExportSheet10(GeneralDate startDate, GeneralDate endDate) {
 		List<MasterData> datas = new ArrayList<>();
+		String startYM = startDate.yearMonth().toString();
+		String endYM = endDate.yearMonth().toString();
+		int startY = startDate.year();
+		int endY = endDate.year();
 		String cid = AppContexts.user().companyId();
 		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_10.toString()).
-				setParameter("cid", cid);
+				setParameter("cid", cid).
+				setParameter("startY", startY).
+				setParameter("endY", endY).
+				setParameter("startYM", startYM).
+				setParameter("endYM", endYM);
 		@SuppressWarnings("unchecked")
 		List<Object[]> data =  query.getResultList();
 		for (Object[] objects : data) {
@@ -1296,10 +1305,9 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
                 .value(objects[1])
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-		String x = ((BigDecimal)objects[2]).toString();
 		data.put(RegistTimeColumn.KMK008_109, MasterCellData.builder()
 			        .columnId(RegistTimeColumn.KMK008_109)
-			        .value(objects[2] != null ? x.substring(0, 4) + "/" + x.substring(4, x.length()) : "")
+			        .value(objects[2] != null ? ((BigDecimal)objects[2]).toString().substring(0, 4) + "/" + ((BigDecimal)objects[2]).toString().substring(4, ((BigDecimal)objects[2]).toString().length()) : "")
 			        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 			        .build());
 		
