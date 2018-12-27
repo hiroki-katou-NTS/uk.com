@@ -97,9 +97,8 @@ module nts.uk.com.view.cas012.a.viewmodel {
                 date: null,
                 mode: 1
             };
-            if(!getShared('CDL028_INPUT')){
-                setShared("CDL028_INPUT", params);
-            }
+
+            setShared("CDL028_INPUT", params);
 
             nts.uk.ui.windows.sub.modal("/view/cdl/028/a/index.xhtml").onClosed(function() {
                 var result = getShared('CDL028_A_PARAMS');
@@ -107,7 +106,7 @@ module nts.uk.com.view.cas012.a.viewmodel {
                     nts.uk.ui.block.grayout();
                     let date = moment(result.standardDate, "YYYY/MM/DD");
                     service.exportExcel(date).done(function() {
-                        
+
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                     }).always(function() {
