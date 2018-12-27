@@ -14,6 +14,8 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.assist.app.command.category.CusCategoryCommand;
 import nts.uk.ctx.sys.assist.app.find.category.CategoryDto;
 import nts.uk.ctx.sys.assist.app.find.category.CategoryFinder;
+import nts.uk.ctx.sys.assist.app.find.categoryfordelete.CategoryForDelDto;
+import nts.uk.ctx.sys.assist.app.find.categoryfordelete.CategoryForDeleteFinder;
 import nts.uk.ctx.sys.assist.dom.storage.SystemType;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
@@ -26,12 +28,24 @@ public class CategoryWebService extends WebService {
 	private CategoryFinder categoryFinder;
 	
 	@Inject
+	private CategoryForDeleteFinder categoryForDelFinder;
+	
+	
+	
+	@Inject
 	private I18NResourcesForUK i18n;
 	
 	@POST
 	@Path("findCategory/{systemType}")
 	public List<CategoryDto> find(@PathParam("systemType") int systemType) {
 		return this.categoryFinder.getCategoryBySystemType(systemType);
+	}
+	
+	// finder cmf005
+	@POST
+	@Path("findCategoryForDel/{systemType}")
+	public List<CategoryForDelDto> findForDel(@PathParam("systemType") int systemType) {
+		return this.categoryForDelFinder.getCategoryBySystemType(systemType);
 	}
 	
 	@POST

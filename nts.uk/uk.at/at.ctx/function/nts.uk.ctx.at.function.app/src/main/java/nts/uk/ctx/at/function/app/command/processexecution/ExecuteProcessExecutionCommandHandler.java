@@ -235,6 +235,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	// 実行処理
 	@Override
 	public void handle(CommandHandlerContext<ExecuteProcessExecutionCommand> context) {
+		System.out.println("Run batch service !");
 		//val asyncContext = context.asAsync();
 		context.asAsync().getDataSetter().setData("taskId", context.asAsync().getTaskId());
 		ExecuteProcessExecutionCommand command = context.getCommand();
@@ -279,8 +280,12 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 
 		// ドメインモデル「更新処理前回実行日時」を取得する
 		LastExecDateTime lastExecDateTime = null;
-		Optional<LastExecDateTime> lastDateTimeOpt = lastExecDateTimeRepo.get(procExec.getCompanyId(),
-				procExec.getExecItemCd().v());
+		Optional<LastExecDateTime> lastDateTimeOpt = Optional.empty();
+		if(procExec != null){
+			lastDateTimeOpt = lastExecDateTimeRepo.get(procExec.getCompanyId(),
+					procExec.getExecItemCd().v());
+		}
+		
 		if (lastDateTimeOpt.isPresent()) {
 			lastExecDateTime = lastDateTimeOpt.get();
 		}

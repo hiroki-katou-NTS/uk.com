@@ -77,7 +77,6 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         closureId: KnockoutObservable<number> = ko.observable(0);
         constructor() {
             var self = this;
-
             self.systemType = ko.observableArray([
                 { name: 'システム管理者', value: 1 }, // PERSONAL_INFORMATION
                 { name: '就業', value: 2 } // EMPLOYMENT
@@ -108,19 +107,18 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             self.resetTimeAssignment = ko.observable(false);
             self.copyStartDate = ko.observable(new Date());
             
-            self.startDateString.subscribe(function(value) {
-                self.periodDate().startDate = value;
-                self.periodDate.valueHasMutated();
-                self.periodStartDate(moment(value));
-                self.periodStartDate.valueHasMutated();
-            });
-
-            self.endDateString.subscribe(function(value) {
-                self.periodDate().endDate = value;
-                self.periodDate.valueHasMutated();
-                self.periodEndDate(moment(value));
-                self.periodEndDate.valueHasMutated();
-            });
+            ko.computed({
+                read: () => {
+                    let start = ko.toJS(self.startDateString),
+                        end = ko.toJS(self.endDateString),
+                        elm = document.querySelector('#ccg001-search-period'),
+                        ccgVM = elm && ko.dataFor(elm);
+                    
+                    if(ccgVM && ko.isObservable(ccgVM.inputPeriod)) {
+                        ccgVM.inputPeriod({ startDate: start, endDate: end });
+                    }
+                }
+            });        
         }
 
         /**
@@ -163,11 +161,11 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             var self = this;
             var periodStartDate, periodEndDate: string;
             if (self.showBaseDate()) {
-                periodStartDate = moment(self.periodStartDate()).format("YYYY-MM-DD");
-                periodEndDate = moment(self.periodEndDate()).format("YYYY-MM-DD");
+                periodStartDate = moment(self.startDateString()).format("YYYY-MM-DD");
+                periodEndDate = moment(self.endDateString()).format("YYYY-MM-DD");
             } else {
-                periodStartDate = moment(self.periodStartDate()).format("YYYY-MM");
-                periodEndDate = moment(self.periodEndDate()).format("YYYY-MM"); // 対象期間終了日
+                periodStartDate = moment(self.startDateString()).format("YYYY-MM");
+                periodEndDate = moment(self.endDateString()).format("YYYY-MM"); // 対象期間終了日
             }
 
             if (!self.showBaseDate() && !self.showClosure() && !self.showPeriod()) {
@@ -368,7 +366,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 return;
             }
             
-            let user: any = __viewContext.user;
+            let user: any = __viewContext.user,
+                objComboxSelected = _.find(self.lstHolidayRemaining(), function(c){ return c.cd == self.holidayRemainingSelectedCd();});
             let userSpecificInformation = new UserSpecificInformation(
                 user.employeeId,
                 user.companyId,
@@ -379,11 +378,12 @@ module nts.uk.at.view.kdr001.a.viewmodel {
 
             let holidayRemainingOutputCondition = new HolidayRemainingOutputCondition(
                 startMonth.format("YYYY/MM/DD"),
-                endMonth.format("YYYY/MM/DD"),
+                endMonth.endOf('month').format("YYYY/MM/DD"),
                 self.holidayRemainingSelectedCd(),
                 self.selectedCode(),
                 self.baseDate().format("YYYY/MM/DD"),
-                self.closureId()
+                self.closureId(),
+                objComboxSelected != undefined? objComboxSelected.name: ""
             );
 
             let data = new ReportInfor(holidayRemainingOutputCondition, lstSelectedEployee);
@@ -572,15 +572,17 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         outputItemSettingCode: string;
         pageBreak: string;
         baseDate: string;
-        closureId: number
+        closureId: number;
+        title: string;
         constructor(startMonth: string, endMonth: string, outputItemSettingCode: string, pageBreak: string, 
-                baseDate: string, closureId: number) {
+                baseDate: string, closureId: number, title: string) {
             this.startMonth = startMonth;
             this.endMonth = endMonth;
             this.outputItemSettingCode = outputItemSettingCode;
             this.pageBreak = pageBreak;
             this.baseDate = baseDate;
             this.closureId = closureId;
+            this.title = title;
         }
     }
 
