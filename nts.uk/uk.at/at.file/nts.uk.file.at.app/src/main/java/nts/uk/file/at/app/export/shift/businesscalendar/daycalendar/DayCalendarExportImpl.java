@@ -17,7 +17,6 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
-import nts.uk.ctx.at.shared.app.find.pattern.monthly.setting.Period;
 import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WkpConfigInfoFindObject;
 import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WorkplaceHierarchyDto;
 import nts.uk.ctx.bs.employee.app.find.workplace.config.info.WorkplaceConfigInfoFinder;
@@ -57,7 +56,7 @@ public class DayCalendarExportImpl implements MasterListData {
 	
 	 @Override
 	 public List<SheetData> extraSheets(MasterListExportQuery query) {
-		 String companyId = AppContexts.user().companyId();
+//		 String companyId = AppContexts.user().companyId();
 //		 period = dayCalendarReportRepository.getBaseDateByCompany(companyId, query.getStartDate(), query.getEndDate());
 		 List<SheetData> sheetDatas = new ArrayList<>();
 		 //add the work place sheet

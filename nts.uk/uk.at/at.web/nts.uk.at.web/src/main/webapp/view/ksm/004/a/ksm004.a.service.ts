@@ -82,10 +82,13 @@ module nts.uk.at.view.ksm004.a {
         export function deleteCalendarWorkPlace(command): JQueryPromise<any> {
             return ajax(paths.deleteCalendarWorkPlace, command);
         }
-        
-        export function saveAsExcel(): JQueryPromise<any> {
-            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "DayCalendar", domainType: 'KSM004' + getText("KSM004_55"), 
-            languageId: "ja", reportType: 0, startDate : moment.utc('2018', 'YYYY'), endDate : moment.utc('2018', 'YYYY')});
-        }
+          
+        export function saveAsExcel(mode: string, startDate: string, endDate: string): JQueryPromise<any> {
+            return nts.uk.request.exportFile('/masterlist/report/print', 
+                {domainId: 'DayCalendar', domainType: 'KSM004' + getText("KSM004_55"), 
+                languageId: 'ja', reportType: 0, mode: mode, 
+                startDate : moment.utc(startDate).format(), 
+                endDate : moment.utc(endDate).format()});
+    }
     }
 }

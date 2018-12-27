@@ -33,7 +33,7 @@ public class JpaSpecificdaySetReportRepository extends JpaRepository implements 
 			+ " AND s.ksmmtWpSpecDateSetPK.specificDate >= :startYm"
 			+ " AND s.ksmmtWpSpecDateSetPK.specificDate <= :endYm";
 	
-	private static final String GET_BEGIN_MONTH_COMPANY = "SELECT a.MONTH_STR FROM BCMMT_COMPANY a WHERE  a.CID = ?companyId";
+//	private static final String GET_BEGIN_MONTH_COMPANY = "SELECT a.MONTH_STR FROM BCMMT_COMPANY a WHERE  a.CID = ?companyId";
 	
 	@Override
 	public Optional<Map<String, List<SpecificdaySetCompanyReportData>>> findAllSpecificdaySetCompany(String companyId, GeneralDate startDate, GeneralDate endDate) {

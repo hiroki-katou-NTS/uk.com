@@ -17,7 +17,7 @@ import nts.arc.time.GeneralDate;
 @Stateless
 public class JpaDayCalendarReportRepository extends JpaRepository implements DayCalendarReportRepository{
 
-	private static final String GET_BEGIN_MONTH_COMPANY = "SELECT a.MONTH_STR FROM BCMMT_COMPANY a WHERE  a.CID = ?companyId";
+//	private static final String GET_BEGIN_MONTH_COMPANY = "SELECT a.MONTH_STR FROM BCMMT_COMPANY a WHERE  a.CID = ?companyId";
 	private static final String SELECT_COMPANY_CALENDAR_BY_DATE = " SELECT c.CID, c.YMD_K, c.WORKING_DAY_ATR FROM KSMMT_CALENDAR_COMPANY c " 
 			+ " WHERE c.CID = ?companyId"
 			+ " AND c.YMD_K >= ?startDate "
