@@ -362,7 +362,9 @@ module nts.uk.com.view.cmm051.a {
                    date: null,
                    mode: 1
                };             
-               nts.uk.ui.windows.setShared("CDL028_INPUT", params);
+               if (!nts.uk.ui.windows.getShared("CDL028_INPUT")) {
+                    nts.uk.ui.windows.setShared("CDL028_INPUT", params);
+                }
                nts.uk.ui.windows.sub.modal("/view/cdl/028/a/index.xhtml").onClosed(function() {
                    var result = getShared('CDL028_A_PARAMS');
                    if (result.status) {
