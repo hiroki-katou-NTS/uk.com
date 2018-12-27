@@ -16,7 +16,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
         empAmountItems: Array<RsdtTaxPayAmountDto> = [];
 
         ccg001ComponentOption: GroupOption = null;
-        baseDate: KnockoutObservable<string> = ko.observable(moment().toISOString());
+        baseDate: string;
         empSearchItems: Array<EmployeeSearchDto>;
 
         residentTaxValidator = new validation.NumberValidator(getText("QMM025_28"), "ResidentTax", {required: true});
@@ -81,6 +81,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                  */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
                     self.empSearchItems = data.listEmployee;
+                    self.baseDate = data.baseDate;
                     self.initData();
                 }
             }
@@ -93,7 +94,6 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
             // Start component
             $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);
             self.year(self.formatYear(new Date()));
-            // self.loadGrid();
             self.loadMGrid();
             block.clear();
             dfd.resolve();
@@ -455,12 +455,12 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
             let self = this;
             let listSId = _.map(self.empSearchItems, (item: EmployeeSearchDto) => {
                 return item.employeeId;
-            })
+            });
             let param = {
                 listSId: listSId,
-                baseDate: self.baseDate(),
+                baseDate: self.baseDate,
                 year: self.formatYear(self.year())
-            }
+            };
             return param;
         }
 
@@ -471,6 +471,14 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             block.invisible();
+            $("#A2_3").ntsError('check');
+            if (nts.uk.ui.errors.hasError()) {
+                $("#grid").mGrid("destroy");
+                self.empAmountItems = [];
+                self.loadMGrid();
+                block.clear();
+                return;
+            }
             let param = self.createParamGet();
             let getEmpInfoDept = service.getEmpInfoDept(param);
             let getRsdtTaxPayAmount = service.getRsdtTaxPayAmount(param);
