@@ -1,27 +1,17 @@
 package nts.uk.file.pr.infra.core.wageprovision.statementlayout;
 
-import java.util.List;
-
-import com.aspose.cells.BorderType;
-import com.aspose.cells.Cell;
-import com.aspose.cells.CellBorderType;
-import com.aspose.cells.Color;
-import com.aspose.cells.Range;
-import com.aspose.cells.Style;
-import com.aspose.cells.Worksheet;
-import com.aspose.cells.WorksheetCollection;
-
+import com.aspose.cells.*;
 import lombok.Getter;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
-import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.UseRangeAtr;
-import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.AttendExportData;
-import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.DeductionExportData;
-import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.ItemRangeSetExportData;
-import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.LineByLineSettingExportData;
-import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.PaymentExportData;
-import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.SettingByItemExportData;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.DefaultAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.TaxAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.PaymentCaclMethodAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.itemrangeset.RangeSettingEnum;
+import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.*;
 import nts.uk.shr.com.i18n.TextResource;
+
+import java.util.List;
 
 @Getter
 public class StatementLayoutPrint {
@@ -34,7 +24,7 @@ public class StatementLayoutPrint {
 	private Range attendRow;
 	private Range reportRow;
 
-	public StatementLayoutPrint(WorksheetCollection wsc, Worksheet ws) {
+	StatementLayoutPrint(WorksheetCollection wsc, Worksheet ws) {
 		this.wsc = wsc;
 		this.ws = ws;
 		this.statementLayout = wsc.getRangeByName("statement_layout");
@@ -66,72 +56,96 @@ public class StatementLayoutPrint {
 			if (payment == null)
 				continue;
 
-			// A2_3
-			String totalObj = TextResource.localize(payment.getTotalObj().nameId);
-			this.printCell("paymentItem" + item.getItemPosition() + "_info1", totalObj, offset + 1);
+			// ※補足4
+			if (!DefaultAtr.SYSTEM_DEFAULT.equals(item.getDefaultAtr())) {
+				// A2_3
+				String totalObj = TextResource.localize(payment.getTotalObj().nameId);
+				this.printCell("paymentItem" + item.getItemPosition() + "_info1", totalObj, offset + 1);
 
-			// A2_4
-			String calcMethod = TextResource.localize(payment.getCalcMethod().nameId);
-			this.printCell("paymentItem" + item.getItemPosition() + "_info2", calcMethod, offset + 2);
+                // A2_4, A2_9
+                this.printCell("paymentItem" + item.getItemPosition() + "_info2", this.getA2_4_A2_9(payment), offset + 2);
 
-			// A2_5
-			String proportionalSet = "按分設定：";
-			switch (payment.getProportionalAtr()) {
-			case NOT_PROPORTIONAL:
-				proportionalSet += "なし";
-				break;
-			case PROPORTIONAL:
-			case PAYMENT_ONE_A_MONTH:
-				proportionalSet += "あり";
-				break;
+				// A2_5
+				String proportionalSet = "按分設定：";
+				switch (payment.getProportionalAtr()) {
+					case NOT_PROPORTIONAL:
+						proportionalSet += "なし";
+						break;
+					case PROPORTIONAL:
+					case PAYMENT_ONE_A_MONTH:
+						proportionalSet += "あり";
+						break;
+				}
+				this.printCell("paymentItem" + item.getItemPosition() + "_info4", proportionalSet, offset + 4);
+
+				// ※補足1
+				// A2_8
+				String referInfo;
+				switch (payment.getCalcMethod()) {
+					case PERSON_INFO_REF:
+						referInfo = "参照：";
+						referInfo += payment.getPersonAmountName();
+						break;
+					case CACL_FOMULA:
+						referInfo = "式：";
+						referInfo += payment.getCalcFomulaName();
+						break;
+					case WAGE_TABLE:
+						referInfo = "表：";
+						referInfo += payment.getWageTblName();
+						break;
+					case COMMON_AMOUNT:
+						referInfo = "金額：";
+						referInfo += payment.getCommonAmount();
+						break;
+					default:
+						referInfo = "";
+				}
+				this.printCell("paymentItem" + item.getItemPosition() + "_info3", referInfo, offset + 3);
 			}
-			this.printCell("paymentItem" + item.getItemPosition() + "_info4", proportionalSet, offset + 4);
 
 			// A2_6, A2_7
-			ItemRangeSetExportData itemRangeSet = payment.getItemRangeSet();
-			String errorSet = "エラー設定：";
-			if (UseRangeAtr.USE.equals(itemRangeSet.getErrorUpperSettingAtr())
-					&& UseRangeAtr.USE.equals(itemRangeSet.getErrorLowerSettingAtr())) {
-				errorSet += "あり";
-			} else {
-				errorSet += "なし";
+			if (payment.getItemRangeSet().isPresent()) {
+				ItemRangeSetExportData itemRangeSet = payment.getItemRangeSet().get();
+				String errorSet = "エラー設定：";
+				if (RangeSettingEnum.USE.equals(itemRangeSet.getErrorUpperSettingAtr())
+						|| RangeSettingEnum.USE.equals(itemRangeSet.getErrorLowerSettingAtr())) {
+					errorSet += "あり";
+				} else {
+					errorSet += "なし";
+				}
+				String alarmSet = "アラーム設定：";
+				if (RangeSettingEnum.USE.equals(itemRangeSet.getAlarmUpperSettingAtr())
+						|| RangeSettingEnum.USE.equals(itemRangeSet.getAlarmLowerSettingAtr())) {
+					alarmSet += "あり";
+				} else {
+					alarmSet += "なし";
+				}
+				this.printCell("paymentItem" + item.getItemPosition() + "_info5", errorSet, offset + 5);
+				this.printCell("paymentItem" + item.getItemPosition() + "_info6", alarmSet, offset + 6);
 			}
-			String alarmSet = "アラーム設定：";
-			if (UseRangeAtr.USE.equals(itemRangeSet.getAlarmUpperSettingAtr())
-					&& UseRangeAtr.USE.equals(itemRangeSet.getAlarmLowerSettingAtr())) {
-				alarmSet += "あり";
-			} else {
-				alarmSet += "なし";
-			}
-			this.printCell("paymentItem" + item.getItemPosition() + "_info5", errorSet, offset + 5);
-			this.printCell("paymentItem" + item.getItemPosition() + "_info6", alarmSet, offset + 6);
 
-			// A2_8
-			String referInfo = "";
-			switch (payment.getCalcMethod()) {
-			case PERSON_INFO_REF:
-				referInfo = "参照：";
-				referInfo += payment.getPersonAmountName();
-				break;
-			case CACL_FOMULA:
-				referInfo = "式：";
-				referInfo += payment.getCalcFomulaName();
-				break;
-			case WAGE_TABLE:
-				referInfo = "表：";
-				referInfo += payment.getWageTblName();
-				break;
-			case COMMON_AMOUNT:
-				referInfo = "金額：";
-				referInfo += payment.getCommonAmount();
-				break;
-			default:
-				referInfo = "";
-			}
-			this.printCell("paymentItem" + item.getItemPosition() + "_info3", referInfo, offset + 3);
 		}
 		return this.paymentRow.getRowCount() + offset;
 	}
+
+    private String getA2_4_A2_9(PaymentExportData payment) {
+        String calcMethod = TextResource.localize(payment.getCalcMethod().nameId);
+        String workingAtr = "";
+        if (!payment.getTaxAtr().isPresent()) return calcMethod;
+        TaxAtr taxAtr = payment.getTaxAtr().get();
+        // ※補足2
+        if (TaxAtr.COMMUTING_EXPENSES_MANUAL.equals(taxAtr) || TaxAtr.COMMUTING_EXPENSES_USING_COMMUTER.equals(taxAtr)) {
+            if (PaymentCaclMethodAtr.PERSON_INFO_REF.equals(payment.getCalcMethod())) {
+                workingAtr += "　";
+                workingAtr += "交通費";
+            } else if (payment.getWorkingAtr().isPresent()) {
+                workingAtr += "　";
+                workingAtr += TextResource.localize(payment.getWorkingAtr().get().nameId);
+            }
+        }
+        return calcMethod + workingAtr;
+    }
 
 	public int printDeductionItem(LineByLineSettingExportData lineSet, LinePosition linePosition, int offset) {
 		this.copyRange(this.deductionRow, offset);
@@ -145,72 +159,79 @@ public class StatementLayoutPrint {
 			if (deduction == null)
 				continue;
 
-			// A3_3
-			String totalObj = TextResource.localize(deduction.getTotalObj().nameId);
-			this.printCell("deductionItem" + item.getItemPosition() + "_info1", totalObj, offset + 1);
+			// ※補足4
+			if (!DefaultAtr.SYSTEM_DEFAULT.equals(item.getDefaultAtr())) {
+				// A3_3
+				String totalObj = TextResource.localize(deduction.getTotalObj().nameId);
+				this.printCell("deductionItem" + item.getItemPosition() + "_info1", totalObj, offset + 1);
 
-			// A3_4
-			String calcMethod = TextResource.localize(deduction.getCalcMethod().nameId);
-			this.printCell("deductionItem" + item.getItemPosition() + "_info2", calcMethod, offset + 2);
+				// A3_4
+				String calcMethod = TextResource.localize(deduction.getCalcMethod().nameId);
+				this.printCell("deductionItem" + item.getItemPosition() + "_info2", calcMethod, offset + 2);
 
-			// A3_5
-			String proportionalSet = "按分設定：";
-			switch (deduction.getProportionalAtr()) {
-			case NOT_PROPORTIONAL:
-				proportionalSet += "なし";
-				break;
-			case PROPORTIONAL:
-			case DEDUCTION_ONCE_A_MONTH:
-				proportionalSet += "あり";
-				break;
+				// A3_5
+				String proportionalSet = "按分設定：";
+				switch (deduction.getProportionalAtr()) {
+					case NOT_PROPORTIONAL:
+						proportionalSet += "なし";
+						break;
+					case PROPORTIONAL:
+					case DEDUCTION_ONCE_A_MONTH:
+						proportionalSet += "あり";
+						break;
+				}
+				this.printCell("deductionItem" + item.getItemPosition() + "_info4", proportionalSet, offset + 4);
+
+				// ※補足1
+				// A3_8
+				String referInfo;
+				switch (deduction.getCalcMethod()) {
+					case PERSON_INFO_REF:
+						referInfo = "参照：";
+						referInfo += deduction.getPersonAmountName();
+						break;
+					case CACL_FOMULA:
+						referInfo = "式：";
+						referInfo += deduction.getCalcFomulaName();
+						break;
+					case WAGE_TABLE:
+						referInfo = "表：";
+						referInfo += deduction.getWageTblName();
+						break;
+					case COMMON_AMOUNT:
+						referInfo = "金額：";
+						referInfo += deduction.getCommonAmount();
+						break;
+					case SUPPLY_OFFSET:
+						referInfo = "対象：";
+						referInfo += deduction.getSupplyOffsetName();
+						break;
+					default:
+						referInfo = "";
+				}
+				this.printCell("deductionItem" + item.getItemPosition() + "_info3", referInfo, offset + 3);
 			}
-			this.printCell("deductionItem" + item.getItemPosition() + "_info4", proportionalSet, offset + 4);
 
 			// A3_6, A3_7
-			ItemRangeSetExportData itemRangeSet = deduction.getItemRangeSet();
-			String errorSet = "エラー設定：";
-			if (UseRangeAtr.USE.equals(itemRangeSet.getErrorUpperSettingAtr())
-					&& UseRangeAtr.USE.equals(itemRangeSet.getErrorLowerSettingAtr())) {
-				errorSet += "あり";
-			} else {
-				errorSet += "なし";
-			}
-			String alarmSet = "アラーム設定：";
-			if (UseRangeAtr.USE.equals(itemRangeSet.getAlarmUpperSettingAtr())
-					&& UseRangeAtr.USE.equals(itemRangeSet.getAlarmLowerSettingAtr())) {
-				alarmSet += "あり";
-			} else {
-				alarmSet += "なし";
-			}
-			this.printCell("deductionItem" + item.getItemPosition() + "_info5", errorSet, offset + 5);
-			this.printCell("deductionItem" + item.getItemPosition() + "_info6", alarmSet, offset + 6);
-
-			// A3_8
-			String referInfo = "";
-			switch (deduction.getCalcMethod()) {
-			case PERSON_INFO_REF:
-				referInfo = "参照：";
-				referInfo += deduction.getPersonAmountName();
-				break;
-			case CACL_FOMULA:
-				referInfo = "式：";
-				referInfo += deduction.getCalcFomulaName();
-				break;
-			case WAGE_TABLE:
-				referInfo = "表：";
-				referInfo += deduction.getWageTblName();
-				break;
-			case COMMON_AMOUNT:
-				referInfo = "金額：";
-				referInfo += deduction.getCommonAmount();
-				break;
-			case SUPPLY_OFFSET:
-				referInfo = "対象：";
-				referInfo += deduction.getSupplyOffsetName();
-			default:
-				referInfo = "";
-			}
-			this.printCell("deductionItem" + item.getItemPosition() + "_info3", referInfo, offset + 3);
+            if (deduction.getItemRangeSet().isPresent()) {
+                ItemRangeSetExportData itemRangeSet = deduction.getItemRangeSet().get();
+                String errorSet = "エラー設定：";
+                if (RangeSettingEnum.USE.equals(itemRangeSet.getErrorUpperSettingAtr())
+						|| RangeSettingEnum.USE.equals(itemRangeSet.getErrorLowerSettingAtr())) {
+                    errorSet += "あり";
+                } else {
+                    errorSet += "なし";
+                }
+                String alarmSet = "アラーム設定：";
+                if (RangeSettingEnum.USE.equals(itemRangeSet.getAlarmUpperSettingAtr())
+						|| RangeSettingEnum.USE.equals(itemRangeSet.getAlarmLowerSettingAtr())) {
+                    alarmSet += "あり";
+                } else {
+                    alarmSet += "なし";
+                }
+                this.printCell("deductionItem" + item.getItemPosition() + "_info5", errorSet, offset + 5);
+                this.printCell("deductionItem" + item.getItemPosition() + "_info6", alarmSet, offset + 6);
+            }
 		}
 		return this.deductionRow.getRowCount() + offset;
 	}
@@ -224,25 +245,27 @@ public class StatementLayoutPrint {
 			AttendExportData attend = item.getAttend();
 			// A4_2
 			this.printCell("attendItem" + item.getItemPosition() + "_name", item.getItemName(), offset);
-			
-			// A4_3, A4_4
-			ItemRangeSetExportData itemRangeSet = attend.getItemRangeSet();
-			String errorSet = "エラー設定：";
-			if (UseRangeAtr.USE.equals(itemRangeSet.getErrorUpperSettingAtr())
-					&& UseRangeAtr.USE.equals(itemRangeSet.getErrorLowerSettingAtr())) {
-				errorSet += "あり";
-			} else {
-				errorSet += "なし";
-			}
-			String alarmSet = "アラーム設定：";
-			if (UseRangeAtr.USE.equals(itemRangeSet.getAlarmUpperSettingAtr())
-					&& UseRangeAtr.USE.equals(itemRangeSet.getAlarmLowerSettingAtr())) {
-				alarmSet += "あり";
-			} else {
-				alarmSet += "なし";
-			}
-			this.printCell("attendItem" + item.getItemPosition() + "_info1", errorSet, offset + 1);
-			this.printCell("attendItem" + item.getItemPosition() + "_info2", alarmSet, offset + 2);
+
+            // A4_3, A4_4
+            if (attend.getItemRangeSet().isPresent()) {
+                ItemRangeSetExportData itemRangeSet = attend.getItemRangeSet().get();
+                String errorSet = "エラー設定：";
+                if (RangeSettingEnum.USE.equals(itemRangeSet.getErrorUpperSettingAtr())
+						|| RangeSettingEnum.USE.equals(itemRangeSet.getErrorLowerSettingAtr())) {
+                    errorSet += "あり";
+                } else {
+                    errorSet += "なし";
+                }
+                String alarmSet = "アラーム設定：";
+                if (RangeSettingEnum.USE.equals(itemRangeSet.getAlarmUpperSettingAtr())
+						|| RangeSettingEnum.USE.equals(itemRangeSet.getAlarmLowerSettingAtr())) {
+                    alarmSet += "あり";
+                } else {
+                    alarmSet += "なし";
+                }
+                this.printCell("attendItem" + item.getItemPosition() + "_info1", errorSet, offset + 1);
+                this.printCell("attendItem" + item.getItemPosition() + "_info2", alarmSet, offset + 2);
+            }
 		}
 		return this.attendRow.getRowCount() + offset;
 	}

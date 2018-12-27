@@ -26,6 +26,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableHistoryRepository
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 /**
  * 
@@ -117,25 +118,31 @@ public class WageTableFinder {
 				}
 			}
 			if (dto.getElementInformation().getOneDimensionalElement().getFixedElement() != null) {
-				dto.getElementInformation().getOneDimensionalElement()
-						.setDisplayName(Arrays.stream(ElementType.values())
-								.filter(item -> item.value.equals(
-										dto.getElementInformation().getOneDimensionalElement().getFixedElement()))
-								.findFirst().get().nameId);
+				Optional<ElementType> e1 = Arrays.stream(ElementType.values())
+						.filter(item -> item.value
+								.equals(dto.getElementInformation().getOneDimensionalElement().getFixedElement()))
+						.findFirst();
+				if (e1.isPresent())
+					dto.getElementInformation().getOneDimensionalElement()
+							.setDisplayName(TextResource.localize(e1.get().nameId));
 			}
 			if (dto.getElementInformation().getTwoDimensionalElement().getFixedElement() != null) {
-				dto.getElementInformation().getTwoDimensionalElement()
-						.setDisplayName(Arrays.stream(ElementType.values())
-								.filter(item -> item.value.equals(
-										dto.getElementInformation().getTwoDimensionalElement().getFixedElement()))
-								.findFirst().get().nameId);
+				Optional<ElementType> e2 = Arrays.stream(ElementType.values())
+						.filter(item -> item.value
+								.equals(dto.getElementInformation().getTwoDimensionalElement().getFixedElement()))
+						.findFirst();
+				if (e2.isPresent())
+					dto.getElementInformation().getTwoDimensionalElement()
+							.setDisplayName(TextResource.localize(e2.get().nameId));
 			}
 			if (dto.getElementInformation().getThreeDimensionalElement().getFixedElement() != null) {
-				dto.getElementInformation().getThreeDimensionalElement()
-						.setDisplayName(Arrays.stream(ElementType.values())
-								.filter(item -> item.value.equals(
-										dto.getElementInformation().getThreeDimensionalElement().getFixedElement()))
-								.findFirst().get().nameId);
+				Optional<ElementType> e3 = Arrays.stream(ElementType.values())
+						.filter(item -> item.value
+								.equals(dto.getElementInformation().getThreeDimensionalElement().getFixedElement()))
+						.findFirst();
+				if (e3.isPresent())
+					dto.getElementInformation().getThreeDimensionalElement()
+							.setDisplayName(TextResource.localize(e3.get().nameId));
 			}
 			return dto;
 		} else

@@ -207,18 +207,18 @@ module nts.uk.pr.view.qmm019.share.model {
      * 支給按分区分
      */
     export enum PaymentProportionalAtr {
-        // 按分しない
+        // 按分する
         PROPORTIONAL = 0,
-        //按分する
+        // 按分しない
         NOT_PROPORTIONAL = 1,
-        //月１回支給
+        // 月１回支給
         PAYMENT_ONE_A_MONTH = 2
     }
 
     export function getPaymentProportionalAtr(): Array<ItemModel> {
         return [
-            new model.ItemModel(PaymentProportionalAtr.PROPORTIONAL, getText('QMM019_116')),
-            new model.ItemModel(PaymentProportionalAtr.NOT_PROPORTIONAL, getText('QMM019_117')),
+            new model.ItemModel(PaymentProportionalAtr.NOT_PROPORTIONAL, getText('QMM019_116')),
+            new model.ItemModel(PaymentProportionalAtr.PROPORTIONAL, getText('QMM019_117')),
             new model.ItemModel(PaymentProportionalAtr.PAYMENT_ONE_A_MONTH, getText('QMM019_118'))
         ];
     }
@@ -227,18 +227,18 @@ module nts.uk.pr.view.qmm019.share.model {
      * 控除按分区分
      */
     export enum DeductionProportionalAtr {
-        // 按分しない
+        // 按分する
         PROPORTIONAL = 0,
-        //按分する
+        // 按分しない
         NOT_PROPORTIONAL = 1,
-        //月１回控除
+        // 月１回控除
         DEDUCTION_ONCE_A_MONTH = 2
     }
 
     export function getDeductionProportionalAtr(): Array<ItemModel> {
         return [
-            new model.ItemModel(DeductionProportionalAtr.PROPORTIONAL, getText('QMM019_116')),
-            new model.ItemModel(DeductionProportionalAtr.NOT_PROPORTIONAL, getText('QMM019_117')),
+            new model.ItemModel(DeductionProportionalAtr.NOT_PROPORTIONAL, getText('QMM019_116')),
+            new model.ItemModel(DeductionProportionalAtr.PROPORTIONAL, getText('QMM019_117')),
             new model.ItemModel(DeductionProportionalAtr.DEDUCTION_ONCE_A_MONTH, getText('QMM019_162'))
         ];
     }

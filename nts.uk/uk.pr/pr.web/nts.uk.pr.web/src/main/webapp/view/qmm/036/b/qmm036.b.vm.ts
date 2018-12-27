@@ -13,6 +13,7 @@ module nts.uk.pr.view.qmm036.b.viewmodel {
         takeoverMethod: KnockoutObservable<number> = ko.observable(1);
         takeoverItem: KnockoutObservableArray<> = ko.observableArray([]);
         yearMonthStart: KnockoutObservable<number> = ko.observable(null);
+        isHaveOldHis: KnockoutObservable<boolean>;
 
 
         constructor() {
@@ -36,6 +37,11 @@ module nts.uk.pr.view.qmm036.b.viewmodel {
                 if (params.historyID) {
                     self.takeoverItem.push(new EnumModel(INHERITANCE_CLS.WITH_HISTORY, getText('QMM036_34', [displayLastestStartHistory])));
                     self.takeoverMethod(0);
+                    self.isHaveOldHis = ko.observable(true);
+                } else {
+                    self.takeoverItem.push(new EnumModel(INHERITANCE_CLS.WITH_HISTORY, getText('QMM036_34', [""])));
+                    self.takeoverMethod(1);
+                    self.isHaveOldHis = ko.observable(false);
                 }
                 self.takeoverItem.push(new EnumModel(INHERITANCE_CLS.NO_HISTORY, getText('QMM036_35')));
 

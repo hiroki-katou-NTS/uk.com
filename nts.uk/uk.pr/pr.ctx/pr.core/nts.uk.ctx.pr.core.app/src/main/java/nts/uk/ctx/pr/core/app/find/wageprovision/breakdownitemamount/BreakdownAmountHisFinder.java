@@ -67,7 +67,7 @@ public class BreakdownAmountHisFinder {
 
         } else {
             List<BreakdownItemSet> breakdownItemSet = breakdownItemSetRepository.getBreakdownItemStByStatementItemId(cid, categoryAtr, itemNameCd);
-            data = breakdownItemSet.stream().map(item -> new BreakdownAmountListDto(item.getBreakdownItemCode().v(), item.getBreakdownItemName().v(), null)).collect(Collectors.toList());
+            data = breakdownItemSet.stream().map(item -> new BreakdownAmountListDto(item.getBreakdownItemCode().v(), item.getBreakdownItemName().v(), 0L)).collect(Collectors.toList());
         }
         return data;
     }

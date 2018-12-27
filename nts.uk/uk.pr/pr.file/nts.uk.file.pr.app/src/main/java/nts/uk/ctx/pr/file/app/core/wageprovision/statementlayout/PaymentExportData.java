@@ -3,9 +3,13 @@ package nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.paymentitemset.TaxAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.PaymentCaclMethodAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.PaymentProportionalAtr;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.PaymentTotalObjAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.WorkingAtr;
+
+import java.util.Optional;
 
 @NoArgsConstructor
 @Getter
@@ -27,7 +31,17 @@ public class PaymentExportData {
      */
     private PaymentProportionalAtr proportionalAtr;
 
-    private ItemRangeSetExportData itemRangeSet;
+    /**
+     * 支給項目設定.課税区分
+     */
+    private Optional<TaxAtr> taxAtr;
+
+    /**
+     * 通勤区分
+     */
+    private Optional<WorkingAtr> workingAtr;
+
+    private Optional<ItemRangeSetExportData> itemRangeSet;
 
     /**
      * 計算式コード

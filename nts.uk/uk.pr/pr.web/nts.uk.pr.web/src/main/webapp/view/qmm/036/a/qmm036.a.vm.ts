@@ -3,7 +3,6 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import block = nts.uk.ui.block;
     import alertError = nts.uk.ui.dialog.alertError;
-    import format = nts.uk.text.format;
     import getShared = nts.uk.ui.windows.getShared;
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
@@ -45,6 +44,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
         currentCodeStatement: KnockoutObservable<string> = ko.observable('');
 
         categoryAtr: KnockoutObservable<number> = ko.observable(null);
+        categoryAtrText: KnockoutObservable<string> = ko.observable("");
         itemNameCd: KnockoutObservable<string> = ko.observable(null);
         name: KnockoutObservable<string> = ko.observable(null);
         columns: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -80,6 +80,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
             ];
 
             self.columns = ko.observableArray([
+                {headerText: getText(''), key: 'key', hidden: true},
                 {headerText: getText('QMM036_7'), key: 'categoryAtr', width: 60, formatter: getCategoryAtrText},
                 {headerText: getText('QMM036_8'), key: 'itemNameCd', width: 60},
                 {headerText: getText('QMM036_9'), key: 'name', width: 100}
@@ -117,9 +118,10 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                 self.totalAmount('');
                 if (item != '') {
                     let itemModel = _.find(self.lstStatementItem(), function (x) {
-                        return x.itemNameCd == item
+                        return x.key == item
                     });
                     self.categoryAtr(itemModel.categoryAtr);
+                    self.categoryAtrText(getCategoryAtrText2(itemModel.categoryAtr));
                     self.itemNameCd(itemModel.itemNameCd);
                     self.name(itemModel.name);
                     self.isScreenB(true);
@@ -129,7 +131,6 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                         self.isScreenB(false);
                     }
                     else{
-                        self.isRegistrationable(true);
                         self.isScreenB(true);
                     }
                     self.selectedHisCode(null);
@@ -182,6 +183,13 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
             service.getBreakdownHis(self.categoryAtr(), self.itemNameCd(), self.bonusAtr(), self.selectedItem()).done(function (data) {
                 if (data) {
                     let array = [];
+
+                    if(data.length == 0) {
+                        self.isRegistrationable(false);
+                    } else {
+                        self.isRegistrationable(true);
+                    }
+
                     for (let i = 0; i < data.yearMonthHistory.length; i++) {
                         array.push(
                             new ItemModel(
@@ -203,6 +211,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                 else {
                     nts.uk.ui.errors.clearAll();
                     self.lstHistory([]);
+                    self.isRegistrationable(false);
                     self.isScreenC(false);
                 }
                 block.clear();
@@ -336,12 +345,11 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
             self.lstHistory([]);
             service.getStatemetItem().done(function (data: Array<IStatementItem>) {
                 if (data && data.length > 0) {
-                    let dataSort1 = _.sortBy(data, ["categoryAtr"]);
-                    let dataSort2 = _.sortBy(dataSort1, ["itemNameCd"]);
+                    let dataSort1 = _.sortBy(data, ["categoryAtr", "itemNameCd"]);
 
-                    self.lstStatementItem(dataSort2);
+                    self.lstStatementItem(dataSort1);
                     self.currentCodeStatement('');
-                    self.currentCodeStatement(self.lstStatementItem()[0].itemNameCd);
+                    self.currentCodeStatement(self.lstStatementItem()[0].key);
 
                 }
                 else {
@@ -393,6 +401,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                 case 0:
                     self.bonusAtr(param);
                     self.titleTab(getText('QMM036_3'));
+                    $("#sidebar").ntsSideBar("active", param);
                     self.reloadCcg001();
                     self.getStatementData();
 
@@ -401,6 +410,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                     self.isScreenB(true);
                     self.bonusAtr(param);
                     self.titleTab(getText('QMM036_4'));
+                    $("#sidebar").ntsSideBar("active", param);
                     self.reloadCcg001();
                     self.getStatementData();
                     break;
@@ -507,8 +517,6 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                 });
             }).fail(function (error) {
                 alertError(error);
-            }).always(function () {
-                nts.uk.ui.windows.close();
             });
 
 
@@ -541,6 +549,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                     self.periodStartYM(nts.uk.time.parseYearMonth(params.periodStartYm).format());
                     self.periodEndYM(nts.uk.time.parseYearMonth(params.periodEndYm).format());
                     self.modeScreen(1);
+                    self.isRegistrationable(true);
 
                     let array = self.lstHistory();
                     self.lstHistory([]);
@@ -787,6 +796,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
     }
 
     export interface IStatementItem {
+        key: string;
         categoryAtr: number;
         itemNameCd: string;
         name: string;
@@ -809,15 +819,32 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
     function getCategoryAtrText(itemAtr, row) {
         switch (itemAtr) {
             case "0":
-                return getText('Enum_CategoryAtr_PAYMENT_ITEM');
+                return getText('Enum_CategoryAtr_PAYMENT');
             case "1":
-                return getText('Enum_CategoryAtr_DEDUCTION_ITEM');
+                return getText('Enum_CategoryAtr_DEDUCTION');
             case "2":
-                return getText('Enum_CategoryAtr_ATTEND_ITEM');
+                return getText('Enum_CategoryAtr_ATTEND');
             case "3":
-                return getText('Enum_CategoryAtr_REPORT_ITEM');
+                return getText('Enum_CategoryAtr_REPORT');
             case "4":
-                return getText('Enum_CategoryAtr_OTHER_ITEM');
+                return getText('Enum_CategoryAtr_OTHER');
+            default:
+                return "";
+        }
+    }
+
+    function getCategoryAtrText2(itemAtr) {
+        switch (itemAtr) {
+            case 0:
+                return getText('Enum_CategoryAtr_PAYMENT');
+            case 1:
+                return getText('Enum_CategoryAtr_DEDUCTION');
+            case 2:
+                return getText('Enum_CategoryAtr_ATTEND');
+            case 3:
+                return getText('Enum_CategoryAtr_REPORT');
+            case 4:
+                return getText('Enum_CategoryAtr_OTHER');
             default:
                 return "";
         }
