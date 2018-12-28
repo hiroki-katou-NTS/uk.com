@@ -42,7 +42,7 @@ module nts.uk.com.view.cmm013.a {
 
             constructor() {
                 let _self = this;
-
+                self.showExportBtn();
                 _self.jobTitleHistoryModel = ko.observable(new JobTitleHistoryModel(_self));
 
                 _self.createMode = ko.observable(null);
@@ -524,6 +524,16 @@ module nts.uk.com.view.cmm013.a {
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 });
+            }
+            showExportBtn() {
+                if (nts.uk.util.isNullOrUndefined(__viewContext.user.role.attendance)
+                    && nts.uk.util.isNullOrUndefined(__viewContext.user.role.payroll)
+                    && nts.uk.util.isNullOrUndefined(__viewContext.user.role.officeHelper)
+                    && nts.uk.util.isNullOrUndefined(__viewContext.user.role.personnel)) {
+                    $("#print-button").hide();
+                } else {
+                    $("#print-button").show();
+                }
             }
         }
 
