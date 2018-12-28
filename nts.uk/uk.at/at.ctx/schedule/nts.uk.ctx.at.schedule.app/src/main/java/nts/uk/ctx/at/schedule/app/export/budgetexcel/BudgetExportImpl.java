@@ -37,13 +37,13 @@ public class BudgetExportImpl implements MasterListData {
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
 		
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn("コード", TextResource.localize("KDL024_5"),
+		columns.add(new MasterHeaderColumn("コード", TextResource.localize("KDL024_16"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("名称", TextResource.localize("KDL024_6"),
+		columns.add(new MasterHeaderColumn("名称", TextResource.localize("KDL024_17"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("属性", TextResource.localize("KDL024_8"),
+		columns.add(new MasterHeaderColumn("属性", TextResource.localize("KDL024_18"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("単位", TextResource.localize("KDL024_9"),
+		columns.add(new MasterHeaderColumn("単位", TextResource.localize("KDL024_19"),
 				ColumnTextAlign.LEFT, "", true));
 		return columns;
 	}
@@ -84,7 +84,7 @@ public class BudgetExportImpl implements MasterListData {
 	
 	@Override
 	public String mainSheetName() {
-		return "マスタリスト";
+		return TextResource.localize("KDL024_15");
 	}
 	
 	private void putDataEmpty(Map<String, Object> data){
