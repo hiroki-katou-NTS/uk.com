@@ -3,7 +3,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import block  = nts.uk.ui.block;
     import validation = nts.uk.ui.validation;
-    import errors  = nts.uk.ui.errors;
+    import errors = nts.uk.ui.errors;
 
     export class ScreenModel {
 
@@ -81,8 +81,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 else {
                     self.reloadCcg001(moment(Date.now()).format("YYYY/MM/DD"));
                 }
-                $('#A5_7').focus();
                 self.loadMGrid();
+                $('#A5_7').focus();
                 block.clear();
                 dfd.resolve(self);
             }).fail((err) => {
@@ -184,6 +184,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", param);
                     self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
+                    self.filterData();
                     $('#A5_7').focus();
                     break;
                 case 1:
@@ -197,6 +198,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", param);
                     self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
+                    self.filterData();
                     $('#A5_7').focus();
                     break;
                 case 2:
@@ -210,6 +212,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", param);
                     self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
+                    self.filterData();
                     $('#A5_7').focus();
                     break;
                 case 3:
@@ -223,6 +226,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", param);
                     self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
+                    self.filterData();
                     $('#A5_7').focus();
                     break;
                 default:
@@ -269,9 +273,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             let self = this;
             self.yearMonthFilter();
             $('#A5_7').ntsError('check');
-            if (errors.hasError()) {
-                return;
-            }
             if (!self.employeeList) return;
             block.invisible();
             service.salIndAmountHisByPeValCode({
@@ -284,7 +285,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 self.employeeInfoImports = dataNameAndAmount.employeeInfoImports;
                 let personalAmountData = dataNameAndAmount.personalAmount.map(x => new PersonalAmount(x));
                 for (let personalAmount of personalAmountData) {
-                    let employeeInfo = self.employeeInfoImports.find(x => x.sid === personalAmount.empId);
+                    let employeeInfo = _.find( self.employeeInfoImports, x => x.sid === personalAmount.empId);
                     personalAmount.employeeCode = employeeInfo.scd;
                     personalAmount.businessName = employeeInfo.businessName;
                 }
@@ -294,6 +295,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 self.loadMGrid();
             }).always(() => {
                 block.clear();
+            }).fail((err) => {
+                console.log(err.message);
             });
         }
 
@@ -304,7 +307,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 return;
             }
             service.salIndAmountUpdateAll({
-                salIndAmountUpdateCommandList: $("#grid").mGrid("dataSource", true)
+                salIndAmountUpdateCommandList: $("#grid").mGrid("dataSource", false)
             }).done(function () {
                 dialog.info({messageId: "Msg_15"});
             }).always(() => {
