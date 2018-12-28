@@ -11,7 +11,7 @@ public interface WageTableContentRepository {
     List<WageTableContent> getAllWageTableContent();
 
     Optional<WageTableContent> getWageTableContentById(String historyId);
-
+    
     void addOrUpdate(WageTableContent domain);
 
     void remove(String historyId);
