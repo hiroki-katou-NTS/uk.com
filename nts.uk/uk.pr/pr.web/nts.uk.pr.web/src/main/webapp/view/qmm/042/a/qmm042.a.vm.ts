@@ -164,7 +164,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 return;
             }
             service.empSalUnitUpdateAll({
-                payrollInformationCommands: $("#grid").mGrid("dataSource", true)
+                payrollInformationCommands: $("#grid").mGrid("dataSource", false)
             }).done(function () {
                 dialog.info({messageId: "Msg_15"});
             }).always(() => {

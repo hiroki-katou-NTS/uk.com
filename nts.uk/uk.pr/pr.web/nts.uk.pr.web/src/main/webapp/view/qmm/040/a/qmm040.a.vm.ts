@@ -3,7 +3,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import block  = nts.uk.ui.block;
     import validation = nts.uk.ui.validation;
-    import errors  = nts.uk.ui.errors;
+    import errors = nts.uk.ui.errors;
 
     export class ScreenModel {
 
@@ -184,6 +184,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", param);
                     self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
+                    self.filterData();
                     $('#A5_7').focus();
                     break;
                 case 1:
@@ -197,6 +198,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", param);
                     self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
+                    self.filterData();
                     $('#A5_7').focus();
                     break;
                 case 2:
@@ -210,6 +212,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", param);
                     self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
+                    self.filterData();
                     $('#A5_7').focus();
                     break;
                 case 3:
@@ -223,6 +226,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", param);
                     self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
+                    self.filterData();
                     $('#A5_7').focus();
                     break;
                 default:
@@ -304,7 +308,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 return;
             }
             service.salIndAmountUpdateAll({
-                salIndAmountUpdateCommandList: $("#grid").mGrid("dataSource", true)
+                salIndAmountUpdateCommandList: $("#grid").mGrid("dataSource", false)
             }).done(function () {
                 dialog.info({messageId: "Msg_15"});
             }).always(() => {
