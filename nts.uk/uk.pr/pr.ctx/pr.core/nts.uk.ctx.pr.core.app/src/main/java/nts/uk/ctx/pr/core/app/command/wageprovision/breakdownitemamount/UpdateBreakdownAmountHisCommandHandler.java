@@ -49,7 +49,7 @@ public class UpdateBreakdownAmountHisCommandHandler extends CommandHandler<Break
         if (lastHistoryId == null){
             return;
         }
-        YearMonth startYearMonth = period.get(0).start();
-        repository.updateByLastHistoryId(cid, categoryAtr, itemNameCd, employeeId, salaryBonusAtr, lastHistoryId , startYearMonth.v());
+
+        repository.updateByLastHistoryId(cid, categoryAtr, itemNameCd, employeeId, salaryBonusAtr, lastHistoryId , period.get(0).start().previousMonth().v());
     }
 }
