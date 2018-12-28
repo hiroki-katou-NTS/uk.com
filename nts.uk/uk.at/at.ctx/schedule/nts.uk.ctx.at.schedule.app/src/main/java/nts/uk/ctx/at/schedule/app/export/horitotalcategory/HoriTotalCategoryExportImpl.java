@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -56,7 +55,7 @@ public class HoriTotalCategoryExportImpl implements MasterListData {
 		List<HoriTotalExel> listHoriTotalExel = horiTotalCategoryExcelRepo.getAll(companyId);
 		List<MasterData> datas = new ArrayList<>();
 		if (CollectionUtil.isEmpty(listHoriTotalExel)) {
-			throw new BusinessException("Msg_393");
+			return null;
 		} else {
 			listHoriTotalExel.stream().forEach(c -> {
 				

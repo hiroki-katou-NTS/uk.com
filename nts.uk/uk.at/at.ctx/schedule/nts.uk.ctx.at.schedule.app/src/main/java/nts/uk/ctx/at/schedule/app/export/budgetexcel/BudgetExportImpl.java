@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
 import nts.uk.shr.com.context.AppContexts;
@@ -53,7 +52,7 @@ public class BudgetExportImpl implements MasterListData {
 		String companyId = AppContexts.user().companyId();
 		List<ExternalBudget> listExternalBudget = budgetExcelRepo.findAll(companyId);
 		if (CollectionUtil.isEmpty(listExternalBudget)) {
-			throw new BusinessException("Msg_393");
+			return null;
 		} else {
 			listExternalBudget.stream().forEach(c -> {
 				Map<String, Object> data = new HashMap<>();
