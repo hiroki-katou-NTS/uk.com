@@ -117,12 +117,7 @@ public class WageTableContentCreater {
 			payments = getNumericRange(params.getThirdElementRange()).stream()
 					.map(i -> new ThreeDmsElementItemDto(new TwoDmsElementItemDto(i))).collect(Collectors.toList());
 		}
-		List<TwoDmsElementItemDto> listTwoDms = dto.getList2dElements();
-		for (ThreeDmsElementItemDto t : payments) {
-			t.setListFirstDms(listTwoDms);
-		}
 		dto.setList3dElements(payments);
-		dto.setList2dElements(null);
 		return dto;
 	}
 
