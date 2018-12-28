@@ -94,6 +94,7 @@ import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.url.RegisterEmbededURL;
+import nts.uk.shr.com.url.UrlParamAtr;
 import nts.uk.shr.com.url.UrlTaskIncre;
 
 @Stateless
@@ -458,7 +459,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// 承認状況メールテンプレート.URL承認埋込
 		if (NotUseAtr.USE.equals(domain.getUrlApprovalEmbed())) {
 			List<UrlTaskIncre> listTask = new ArrayList<>();
-			listTask.add(UrlTaskIncre.createFromJavaType("", "", "", "activeMode", "approval"));
+			listTask.add(new UrlTaskIncre("", "", "", "activeMode", "approval", UrlParamAtr.URL_PARAM));
 			// アルゴリズム「埋込URL情報登録」を実行する
 			String url1 = registerEmbededURL.embeddedUrlInfoRegis("CMM045", "A", 1, 1, eid, contractCD, "", employeeCD, 0, listTask);
 			listUrl.add(url1);
@@ -482,6 +483,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// 承認状況メールテンプレート.URL月別埋込
 		if (NotUseAtr.USE.equals(domain.getUrlMonthEmbed())) {
 			List<UrlTaskIncre> listTask = new ArrayList<>();
+			listTask.add(new UrlTaskIncre("", "", "", "activeMode", "approval", UrlParamAtr.URL_PARAM));
 			// アルゴリズム「埋込URL情報登録」を実行する
 			String url3 = registerEmbededURL.embeddedUrlInfoRegis("KMW003", "A", 1, 1, eid, contractCD, "", employeeCD, 0, listTask);
 			listUrl.add(url3);

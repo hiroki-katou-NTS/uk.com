@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.record.app.command.dailyperform.erroralarm;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.Getter;
 import nts.uk.ctx.at.record.app.find.dailyperform.erroralarm.dto.EmployeeDailyPerErrorDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
@@ -9,21 +13,31 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
 public class EmployeeDailyPerErrorCommand extends DailyWorkCommonCommand {
 
 	@Getter
-	private EmployeeDailyPerErrorDto data;
+	private List<EmployeeDailyPerError> data = new ArrayList<>();
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
-		this.data = item == null || !item.isHaveData() ? null : (EmployeeDailyPerErrorDto) item;
+		if(item != null && item.isHaveData()){
+			updateData(((EmployeeDailyPerErrorDto) item).toDomain(getEmployeeId(), getWorkDate()));
+		}
 	}
 
 	@Override
 	public void updateData(Object data) {
-		if(data == null){ return; }
-		setRecords(EmployeeDailyPerErrorDto.getDto((EmployeeDailyPerError) data));
+		if(data != null){
+			EmployeeDailyPerError d = (EmployeeDailyPerError) data;
+			this.data.removeIf(es ->  es.getErrorAlarmWorkRecordCode().equals(d.getErrorAlarmWorkRecordCode()));
+			this.data.add(d);
+		}
 	}
 
 	@Override
-	public EmployeeDailyPerError toDomain() {
-		return data == null ? null : data.toDomain(getEmployeeId(), getWorkDate());
+	public List<EmployeeDailyPerError> toDomain() {
+		return data;
+	}
+	
+	@Override
+	public List<EmployeeDailyPerErrorDto> toDto() {
+		return getData().stream().map(b -> EmployeeDailyPerErrorDto.getDto(b)).collect(Collectors.toList());
 	}
 }

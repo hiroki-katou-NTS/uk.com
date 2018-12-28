@@ -83,5 +83,28 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 				});
 				return lstSpecialHoliday;
 	}
+	/**
+	 * @author hoatt
+	 * Doi ung response KDR001
+	 * RequestList263 ver2
+	 * @param sid
+	 * @param startMonth
+	 * @param endMonth
+	 * @return
+	 */
+	@Override
+	public List<SpecialHolidayImported> getSpeHdOfConfMonVer2(String sid, YearMonth startMonth, YearMonth endMonth) {
+//		List<SpecialHolidayRemainDataOutput> lstSpeHdOfConfMonthly = specialHolidayRemainDataSevice
+//				.getSpeHdOfConfMonVer2(sid, startMonth, endMonth);
+//		if (lstSpeHdOfConfMonthly == null)
+//			return null;
+		List<SpecialHolidayImported> lstSpecHd = new ArrayList<>();
+//		lstSpeHdOfConfMonthly.forEach(item -> {
+//			SpecialHolidayImported specialHoliday = new SpecialHolidayImported(item.getYm(), item.getUseDays(),
+//					item.getUseTimes(), item.getRemainDays(), item.getRemainTimes());
+//			lstSpecHd.add(specialHoliday);
+//		});
+		return lstSpecHd;
+	}
 	
 }

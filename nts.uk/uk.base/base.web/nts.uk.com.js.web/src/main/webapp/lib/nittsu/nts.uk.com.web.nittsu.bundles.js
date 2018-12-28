@@ -3519,6 +3519,9 @@ var nts;
                         case 401:
                             handle401(xhr);
                             break;
+                        case 403:
+                            handle403(xhr);
+                            break;
                         default:
                             handleUnknownError(xhr, status, error);
                             break;
@@ -3529,6 +3532,9 @@ var nts;
                     var res = xhr.responseJSON;
                     // res.sessionTimeout || res.csrfError
                     specials.errorPages.sessionTimeout();
+                }
+                function handle403(xhr) {
+                    specials.errorPages.stopUse();
                 }
                 function handleUnknownError(xhr, status, error) {
                     console.log("request failed");
@@ -3580,6 +3586,34 @@ var nts;
                 return dfd.promise();
             }
             request.exportFile = exportFile;
+            function exportLog(data) {
+                var dfd = $.Deferred();
+                request.ajax("logcollector/extract", data).done(function (res) {
+                    if (res.failed || res.status == "ABORTED") {
+                        dfd.reject(res.error);
+                    }
+                    var taskId = res.id;
+                    uk.deferred.repeat(function (conf) { return conf.task(function () {
+                        return nts.uk.request.asyncTask.getInfo(taskId).done(function (res) {
+                            if (res.succeeded) {
+                                setTimeout(function () {
+                                    specials.donwloadFile(taskId);
+                                    dfd.resolve(null);
+                                }, 100);
+                            }
+                            else {
+                                if (res.failed) {
+                                    dfd.reject(res);
+                                }
+                            }
+                        });
+                    }).while(function (info) { return info.pending || info.running; }).pause(1000); });
+                }).fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            request.exportLog = exportLog;
             function downloadFileWithTask(taskId, data, options) {
                 var dfd = $.Deferred();
                 var checkTask = function () {
@@ -3589,7 +3623,7 @@ var nts;
                                 checkTask();
                             }, 1000);
                         }
-                        if (res.failed || res.status == "ABORTED") {
+                        else if (res.failed || res.status == "ABORTED") {
                             dfd.reject(res.error);
                         }
                         else {
@@ -3697,6 +3731,10 @@ var nts;
                         jump('com', '/view/common/error/sessiontimeout/index.xhtml');
                     }
                     errorPages.sessionTimeout = sessionTimeout;
+                    function stopUse() {
+                        jump('com', '/view/common/error/stopuse/index.xhtml');
+                    }
+                    errorPages.stopUse = stopUse;
                 })(errorPages = specials.errorPages || (specials.errorPages = {}));
             })(specials = request.specials || (request.specials = {}));
             function jumpFromDialogOrFrame(webAppId, path, data) {
@@ -4194,11 +4232,20 @@ var nts;
                             var $compItem = $("<li class='menu-item company-item'/>").text(comp.companyName).appendTo($companyList);
                             $compItem.on(constants.CLICK, function () {
                                 nts.uk.request.ajax(constants.APP_ID, constants.ChangeCompany, comp.companyId)
-                                    .done(function (personName) {
+                                    .done(function (data) {
                                     $companyName.text(comp.companyName);
-                                    $userName.text(personName);
+                                    $userName.text(data.personName);
                                     $companyList.css("right", $user.outerWidth() + 30);
-                                    location.reload(true);
+                                    if (!nts.uk.util.isNullOrEmpty(data.msgResult)) {
+                                        nts.uk.ui.dialog.info({ messageId: data.msgResult }).then(function () {
+                                            location.reload(true);
+                                        });
+                                    }
+                                    else {
+                                        location.reload(true);
+                                    }
+                                }).fail(function (msg) {
+                                    nts.uk.ui.dialog.alertError(msg.messageId);
                                 });
                             });
                         });
@@ -18106,6 +18153,9 @@ var nts;
                     if (handlesEnterKey) {
                         $input.addClass("enterkey")
                             .onkey("down", uk.KeyCodes.Enter, function (e) {
+                            if ($(".blockUI").length <= 0) {
+                                return;
+                            }
                             $input.change();
                             onEnterKey.call(ko.dataFor(e.target), e);
                         });
@@ -26602,7 +26652,7 @@ var nts;
                                     mgrid._vessel().zeroHidden = val;
                             }
                         },
-                        updatedCells: function (a) {
+                        updatedCells: function (all) {
                             var arr = [];
                             var toNumber = false, column = mgrid._columnsMap[mgrid._pk];
                             if ((column && _.toLower(column[0].dataType) === "number")
@@ -26614,7 +26664,7 @@ var nts;
                                     arr.push({ rowId: (toNumber ? parseFloat(r) : r), columnKey: c, value: mgrid._dirties[r][c] });
                                 });
                             });
-                            if (a) {
+                            if (all) {
                                 _.forEach(_.keys(mgrid._mafollicle[SheetDef]), function (k) {
                                     if (k === mgrid._currentSheet)
                                         return;
@@ -28331,11 +28381,21 @@ var nts;
                             var parsed = void 0, constraint = column.constraint;
                             var valueType = constraint.primitiveValue ? ui.validation.getConstraint(constraint.primitiveValue).valueType
                                 : constraint.cDisplayType;
-                            if (!_.isNil(value)
-                                && (valueType === "Time" || valueType === "TimeWithDay" || valueType === "Clock")) {
-                                parsed = uk.time.minutesBased.duration.parseString(value);
-                                if (parsed.success)
-                                    value = parsed.format();
+                            if (!_.isNil(value) && value !== "") {
+                                if (valueType === "Time") {
+                                    parsed = uk.time.minutesBased.duration.parseString(value);
+                                    if (parsed.success)
+                                        value = parsed.format();
+                                }
+                                else if (valueType === "TimeWithDay" || valueType === "Clock") {
+                                    var minutes = uk.time.minutesBased.clock.dayattr.parseString(String(value)).asMinutes;
+                                    if (_.isNil(minutes))
+                                        return value;
+                                    try {
+                                        value = uk.time.minutesBased.clock.dayattr.create(minutes).shortText;
+                                    }
+                                    catch (e) { }
+                                }
                             }
                         }
                         return value;
@@ -31700,14 +31760,84 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_20) {
-            var koExtentions;
-            (function (koExtentions) {
-                /**
-                 * Dialog binding handler
-                 */
-                var NtsDateRangePickerBindingHandler = (function () {
-                    function NtsDateRangePickerBindingHandler() {
+        (function (ui) {
+            var action;
+            (function (action) {
+                var content;
+                (function (content) {
+                    ui.documentReady.add(function () {
+                        $('#functions-area').addClass("disappear");
+                        $('#functions-area-bottom').addClass("disappear");
+                        $('#contents-area').addClass("disappear");
+                        $('#master-content').addClass("disappear");
+                    });
+                    ui.viewModelApplied.add(function () {
+                        $('#functions-area').removeClass("disappear");
+                        $('#functions-area-bottom').removeClass("disappear");
+                        $('#contents-area').removeClass("disappear");
+                        $('#master-content').removeClass("disappear");
+                        if ($('#sidebar').length > 0) {
+                            $('#sidebar').ntsSideBar("reactive");
+                        }
+                    });
+                    ui.viewModelApplied.add(function () {
+                        if (!nts.uk.util.isNullOrUndefined(__viewContext.program.operationSetting)
+                            && (__viewContext.program.operationSetting.state == 1 || __viewContext.program.operationSetting.state == 2)) {
+                            var operationInfo = $("<div>", { 'class': 'operation-info-container marquee', 'id': 'operation-info' }), moving_1 = $("<div>"), text_4 = $("<label>"), text2 = $("<label>");
+                            moving_1.append(text_4).append(text2);
+                            operationInfo.append(moving_1).css({ right: ($("#manual").outerWidth() + 5) + "px" });
+                            text_4.text(__viewContext.program.operationSetting.message);
+                            text2.text(__viewContext.program.operationSetting.message);
+                            $("#pg-area").append(operationInfo);
+                            operationInfo.hover(function () {
+                                moving_1.addClass("animate-stopping");
+                            }, function () {
+                                moving_1.removeClass("animate-stopping");
+                            });
+                            var limit_1 = Math.floor(0 - moving_1.width()), current_1 = limit_1, id = setInterval(running, 50);
+                            moving_1.css({ "right": current_1 + "px" });
+                            operationInfo.data("animate-id", id);
+                            function running() {
+                                if (moving_1.hasClass("animate-stopping")) {
+                                    return;
+                                }
+                                if (current_1 >= 200) {
+                                    current_1 = limit_1;
+                                }
+                                else {
+                                    current_1++;
+                                }
+                                moving_1.css({ "right": current_1 + "px" });
+                            }
+                        }
+                    });
+                })(content || (content = {}));
+            })(action = ui.action || (ui.action = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var file;
+            (function (file_1) {
+                var FileDownload = (function () {
+                    function FileDownload(servicePath, data) {
+                        var self = this;
+                        self.servicePath = servicePath;
+                        self.data = data;
+                        self.isFinishTask = ko.observable(false);
+                        self.isFinishTask.subscribe(function (value) {
+                            if (value) {
+                                clearInterval(self.interval);
+                                self.isFinishTask(false);
+                                self.download();
+                            }
+                        });
                     }
                     /**
                      * Init. sssss
@@ -32364,7 +32494,14 @@ var nts;
                     function setSelected($grid, selectedId) {
                         deselectAll($grid);
                         if ($grid.igGridSelection('option', 'multipleSelection')) {
-                            selectedId.forEach(function (id) { return $grid.igGridSelection('selectRowById', id); });
+                            // for performance when select all
+                            var baseID = _.map($grid.igGrid("option").dataSource, $grid.igGrid("option", "primaryKey"));
+                            if (_.difference(baseID, baseID).length == 0) {
+                                $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']").click();
+                            }
+                            else {
+                                selectedId.forEach(function (id) { return $grid.igGridSelection('selectRowById', id); });
+                            }
                         }
                         else {
                             $grid.igGridSelection('selectRowById', selectedId);
@@ -41880,9 +42017,168 @@ var nts;
                                 data.selectedCell(value);
                             }
                         });
-                        $(element).bind("sourcechanging", function (evt, value) {
-                            if (!nts.uk.util.isNullOrUndefined(data.source)) {
-                                data.source(value.source);
+                        return $control;
+                    }
+                    $.fn.ntsSearchBox = function (options) {
+                        var self = this;
+                        var $container = $(self);
+                        if (typeof options === "string") {
+                            return delegateMethod($container, options, arguments[1]);
+                        }
+                        var minusWidth = 0;
+                        var fields = options.fields;
+                        var placeHolder = (options.placeHolder !== undefined) ? options.placeHolder : "コード・名称で検索・・・";
+                        var searchMode = (options.searchMode !== undefined) ? options.searchMode : "highlight";
+                        var defaultSearchText = (searchMode === 'highlight') ? '検索' : '絞り込み';
+                        var searchText = (options.searchText !== undefined) ? options.searchText : defaultSearchText;
+                        var label = (options.label !== undefined) ? options.label : "";
+                        var enable = options.enable;
+                        var dataSource = options.items;
+                        var childField = null;
+                        if (options.childField) {
+                            childField = options.childField;
+                        }
+                        var targetMode = options.mode;
+                        if (targetMode === "listbox") {
+                            targetMode = "igGrid";
+                        }
+                        var tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
+                        $container.addClass("nts-searchbbox-wrapper").removeAttr("tabindex");
+                        $container.append("<div class='input-wrapper'><span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor ntsSearchBox_Component' type='text' /></span></div>");
+                        $container.append("<div class='input-wrapper'><button class='search-btn caret-bottom ntsSearchBox_Component'>" + searchText + "</button></div>");
+                        if (!nts.uk.util.isNullOrEmpty(label)) {
+                            var $formLabel = $("<div>", { text: label });
+                            $formLabel.prependTo($container);
+                            ko.bindingHandlers["ntsFormLabel"].init($formLabel[0], function () {
+                                return {};
+                            });
+                            minusWidth += $formLabel.outerWidth(true);
+                        }
+                        var $button = $container.find("button.search-btn");
+                        var $input = $container.find("input.ntsSearchBox");
+                        minusWidth += $button.outerWidth(true);
+                        if (searchMode === "filter") {
+                            $container.append("<button class='clear-btn ntsSearchBox_Component'>" + nts.uk.ui.toBeResource.clear + "</button>");
+                            var $clearButton = $container.find("button.clear-btn");
+                            minusWidth += $clearButton.outerWidth(true);
+                            $clearButton.click(function (evt, ui) {
+                                var component = $("#" + options.comId);
+                                if (component.hasClass("listbox-wrapper")) {
+                                    component = $("#" + options.comId).find(".ntsListBox");
+                                }
+                                var srh = $container.data("searchObject");
+                                $input.val("");
+                                component.igGrid("option", "dataSource", srh.seachBox.getDataSource());
+                                component.igGrid("dataBind");
+                                $container.data("searchKey", null);
+                                component.attr("filtered", "false");
+                                _.defer(function () {
+                                    component.trigger("selectChange");
+                                });
+                            });
+                        }
+                        $input.attr("placeholder", placeHolder);
+                        $input.attr("data-name", nts.uk.ui.toBeResource.searchBox);
+                        $input.outerWidth($container.outerWidth(true) - minusWidth);
+                        var primaryKey = options.targetKey;
+                        var searchObject = new ui_24.koExtentions.SearchPub(primaryKey, searchMode, dataSource, fields, childField);
+                        $container.data("searchObject", searchObject);
+                        var search = function (searchKey) {
+                            if (targetMode) {
+                                var selectedItems = void 0, isMulti = void 0;
+                                var component_2 = $("#" + options.comId);
+                                if (targetMode == 'igGrid') {
+                                    if (component_2.hasClass("listbox-wrapper")) {
+                                        component_2 = $("#" + options.comId).find(".ntsListBox");
+                                    }
+                                    selectedItems = component_2.ntsGridList("getSelected");
+                                    isMulti = component_2.igGridSelection('option', 'multipleSelection');
+                                }
+                                else if (targetMode == 'igTree') {
+                                    selectedItems = component_2.ntsTreeView("getSelected");
+                                    isMulti = component_2.igTreeGridSelection('option', 'multipleSelection');
+                                }
+                                else if (targetMode == 'igTreeDrag') {
+                                    selectedItems = component_2.ntsTreeDrag("getSelected");
+                                    isMulti = component_2.ntsTreeDrag('option', 'isMulti');
+                                }
+                                var srh = $container.data("searchObject");
+                                var result = srh.search(searchKey, selectedItems);
+                                if (nts.uk.util.isNullOrEmpty(result.options)) {
+                                    var mes = '';
+                                    if (searchMode === "highlight") {
+                                        mes = nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT");
+                                    }
+                                    else {
+                                        mes = nts.uk.ui.toBeResource.targetNotFound;
+                                    }
+                                    nts.uk.ui.dialog.alert(mes).then(function () {
+                                        $input.focus();
+                                        $input.select();
+                                    });
+                                    return false;
+                                }
+                                var selectedProperties = _.map(result.selectItems, primaryKey);
+                                if (targetMode === 'igGrid') {
+                                    component_2.ntsGridList("setSelected", selectedProperties);
+                                    if (searchMode === "filter") {
+                                        $container.data("filteredSrouce", result.options);
+                                        component_2.attr("filtered", "true");
+                                        //selected(selectedValue);
+                                        //selected.valueHasMutated();
+                                        //                            let source = _.filter(srh.getDataSource(), function (item: any){
+                                        //                                             return _.find(result.options, function (itemFilterd: any){
+                                        //                                            return itemFilterd[primaryKey] === item[primaryKey];        
+                                        //                                                }) !== undefined || _.find(srh.getDataSource(), function (oldItem: any){
+                                        //                                             return oldItem[primaryKey] === item[primaryKey];        
+                                        //                                            }) === undefined;            
+                                        //                            });
+                                        //                            component.igGrid("option", "dataSource", _.cloneDeep(source));
+                                        component_2.igGrid("option", "dataSource", _.cloneDeep(result.options));
+                                        component_2.igGrid("dataBind");
+                                        //                            if(nts.uk.util.isNullOrEmpty(selectedProperties)){
+                                        component_2.trigger("selectionchanged");
+                                        //                            }
+                                    }
+                                    else {
+                                        component_2.trigger("selectionchanged");
+                                    }
+                                }
+                                else if (targetMode == 'igTree') {
+                                    component_2.ntsTreeView("setSelected", selectedProperties);
+                                    component_2.trigger("selectionchanged");
+                                    //selected(selectedValue);
+                                }
+                                else if (targetMode == 'igTreeDrag') {
+                                    component_2.ntsTreeDrag("setSelected", selectedProperties);
+                                }
+                                _.defer(function () {
+                                    component_2.trigger("selectChange");
+                                });
+                                $container.data("searchKey", searchKey);
+                            }
+                            return true;
+                        };
+                        var nextSearch = function () {
+                            var searchKey = $input.val();
+                            if (nts.uk.util.isNullOrEmpty(searchKey)) {
+                                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOWORD")).then(function () {
+                                    $input.focus();
+                                    //                        $input.select();
+                                });
+                                return false;
+                            }
+                            return search(searchKey);
+                        };
+                        $input.keydown(function (event) {
+                            if (event.which == 13) {
+                                event.preventDefault();
+                                var result_3 = nextSearch();
+                                _.defer(function () {
+                                    if (result_3) {
+                                        $input.focus();
+                                    }
+                                });
                             }
                         });
                     };
@@ -41909,10 +42205,123 @@ var nts;
                         }
                         container.data("o-selected", _.cloneDeep(selectedCell));
                     };
-                    return NtsTableButtonBindingHandler;
-                }());
-                ko.bindingHandlers['ntsTableButton'] = new NtsTableButtonBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+                    $.fn.ntsSideBar = function (action, option) {
+                        var $control = $(this);
+                        if (nts.uk.util.isNullOrUndefined(action) || action === "init") {
+                            return init($control, option);
+                        }
+                        else if (action === "active") {
+                            return active($control, option);
+                        }
+                        else if (action === "reactive") {
+                            return reactive($control);
+                        }
+                        else if (action === "enable") {
+                            return enable($control, option);
+                        }
+                        else if (action === "disable") {
+                            return disable($control, option);
+                        }
+                        else if (action === "show") {
+                            return show($control, option);
+                        }
+                        else if (action === "hide") {
+                            return hide($control, option);
+                        }
+                        else if (action === "getCurrent") {
+                            return getCurrent($control);
+                        }
+                        else {
+                            return $control;
+                        }
+                        ;
+                    };
+                    function init(control, option) {
+                        $("html").addClass("sidebar-html");
+                        control.find(".sidebar-content > div[role=tabpanel]").addClass("disappear");
+                        var settings = $.extend({}, defaultOption, option);
+                        control.off("click.sideBarClick", "#sidebar-area .navigator a");
+                        control.on("click.sideBarClick", "#sidebar-area .navigator a", function (event) {
+                            event.preventDefault();
+                            var info = {
+                                oldIndex: getCurrent(control),
+                                newIndex: $(this).closest("li").index(),
+                                oldTab: control.find("#sidebar-area .navigator a.active").closest("li"),
+                                newTab: $(this).closest("li")
+                            };
+                            if ($(this).attr("disabled") !== "true" && $(this).attr("disabled") !== "disabled") {
+                                settings.beforeActivate.call(this, event, info);
+                                if ($(this).attr("href") !== undefined)
+                                    active(control, $(this).closest("li").index());
+                                settings.activate.call(this, event, info);
+                            }
+                        });
+                        return active(control, settings.active, true);
+                    }
+                    function reactive(control) {
+                        return active(control, control.data("active"), false);
+                    }
+                    function active(control, index, isInit) {
+                        if (isInit === void 0) { isInit = false; }
+                        control.data("active", index);
+                        control.find("#sidebar-area .navigator a").removeClass("active");
+                        control.find("#sidebar-area .navigator a").eq(index).addClass("active");
+                        control.find(".sidebar-content > div[role=tabpanel]").addClass("disappear");
+                        var $displayPanel = $(control.find("#sidebar-area .navigator a").eq(index).attr("href"));
+                        if ($displayPanel.length > 0) {
+                            if (!isInit) {
+                                // keep error in old tab
+                                if (currentTabIndex !== undefined) {
+                                    errorMementos[currentTabIndex] = ui.errors.errorsViewModel().stashMemento();
+                                }
+                                // restore error in new tab
+                                if (errorMementos[index] !== undefined) {
+                                    ui.errors.errorsViewModel().restoreFrom(errorMementos[index]);
+                                }
+                            }
+                            currentTabIndex = index;
+                            $displayPanel.removeClass("disappear");
+                            setErrorPosition($displayPanel);
+                        }
+                        return control;
+                    }
+                    function setErrorPosition($displayPanel) {
+                        setTimeout(function () {
+                            if ($displayPanel.find(".sidebar-content-header").length > 0) {
+                                $('#func-notifier-errors').addClass("show-immediately");
+                                $('#func-notifier-errors').position({ my: 'left+145 top+44', at: 'left top', of: $displayPanel.find(".sidebar-content-header") });
+                                $('#func-notifier-errors').removeClass("show-immediately");
+                            }
+                            else {
+                                setErrorPosition($(".sidebar-content"));
+                            }
+                        }, 10);
+                    }
+                    function enable(control, index) {
+                        control.find("#sidebar-area .navigator a").eq(index).removeAttr("disabled");
+                        return control;
+                    }
+                    function disable(control, index) {
+                        control.find("#sidebar-area .navigator a").eq(index).attr("disabled", "disabled");
+                        return control;
+                    }
+                    function show(control, index) {
+                        control.find("#sidebar-area .navigator a").eq(index).show();
+                        return control;
+                    }
+                    function hide(control, index) {
+                        var current = getCurrent(control);
+                        if (current === index) {
+                            active(control, 0);
+                        }
+                        control.find("#sidebar-area .navigator a").eq(index).hide();
+                        return control;
+                    }
+                    function getCurrent(control) {
+                        return control.find("#sidebar-area .navigator a.active").closest("li").index();
+                    }
+                })(ntsSideBar || (ntsSideBar = {}));
+            })(jqueryExtentions = ui_25.jqueryExtentions || (ui_25.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

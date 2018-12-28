@@ -75,9 +75,11 @@ public class DPText {
 	
 	public static final String STATE_ERROR ="mgrid-error";
 	
-	public static final String COLOR_SAT ="mgrid-saturday";
+	public static final String COLOR_SAT ="color-saturday";
 	
-	public static final String COLOR_SUN ="mgrid-sunday"; 
+	public static final String COLOR_SUN ="color-sunday"; 
+	
+	public static final String COLOR_HOLIDAY ="mgrid-holiday";
 	
 	public static final String ITALIC_TEXT ="italic-text"; 
 	

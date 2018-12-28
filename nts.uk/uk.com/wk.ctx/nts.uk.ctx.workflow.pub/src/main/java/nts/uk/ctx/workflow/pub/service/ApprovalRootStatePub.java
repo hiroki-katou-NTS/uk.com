@@ -97,6 +97,7 @@ public interface ApprovalRootStatePub {
 	 */
 	public ApprovalRootOfEmployeeExport getApprovalRootOfEmloyee(GeneralDate startDate, GeneralDate endDate, String approverID,String companyID,Integer rootType);
 	/**
+	 * 承認ルートを取得する
 	 * @param appID
 	 * @param companyID
 	 * @return

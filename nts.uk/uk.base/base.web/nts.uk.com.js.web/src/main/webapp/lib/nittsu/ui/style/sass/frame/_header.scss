@@ -2,3 +2,25 @@
 	background-color: #ccc;
 	height: $header_height;
 }
+
+#operation-info {
+	position: absolute;
+	top: 61px;
+	width: 200px; 
+	overflow: hidden; 
+	line-height: 30px;
+	height: 30px;
+	background-color: orange;
+	
+	div {
+	  display: block;
+	  width: fit-content;
+	  height: 30px;
+	  position: absolute;
+	  overflow: hidden;
+	}
+	
+	label:last-child {
+		margin-left: 150px;
+	}
+}

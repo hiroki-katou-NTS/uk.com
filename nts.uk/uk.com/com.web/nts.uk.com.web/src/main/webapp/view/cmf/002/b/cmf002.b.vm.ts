@@ -100,7 +100,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             let conditionSetCodeParam: string = '';
             self.standType(1);
             //アルゴリズム「外部出力取得設定一覧」を実行する
-            service.getCndSet().done((itemList: Array<IConditionSet>) =>{
+            service.getCndSet(self.roleAuthority).done((itemList: Array<IConditionSet>) =>{
                 self.conditionSettingList.removeAll();
                 if (itemList && itemList.length > 0) {
                     self.conditionSettingList(itemList);
@@ -132,13 +132,18 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             if (!self.conditionSettingList()) {
                 return;
             }
-            let condSet: IConditionSet = self.conditionSettingList()[self.index()];
+            let condSet: IConditionSet = self.conditionSettingList()[self.index()],
+                categoryId: string = condSet.categoryId,
+                categoryName: string = self.getCategoryName(categoryId);
             self.conditionSetData().cId(condSet.cId);
             self.conditionSetData().conditionSetCode(condSet.conditionSetCode);
             self.conditionSetData().conditionSetName(condSet.conditionSetName);
-            self.conditionSetData().categoryId(condSet.categoryId);
-            if (self.listCategory() && self.listCategory().length > 0 && self.getCategoryName(condSet.categoryId)) {
-                self.categoryName(condSet.categoryId + "　" + self.getCategoryName(condSet.categoryId));
+            self.conditionSetData().categoryId(categoryId);
+            
+            if (self.listCategory() && self.listCategory().length > 0 && categoryName) {
+                self.categoryName(categoryId + "　" + categoryName);
+            } else {
+                self.categoryName("");                
             }
             self.conditionSetData().conditionOutputName(condSet.conditionOutputName);
             self.conditionSetData().autoExecution(condSet.autoExecution);

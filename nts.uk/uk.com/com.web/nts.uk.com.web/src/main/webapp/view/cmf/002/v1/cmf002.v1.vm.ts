@@ -14,6 +14,7 @@ module nts.uk.com.view.cmf002.v1.viewmodel {
         listCategoryItem: KnockoutObservableArray<Category> = ko.observableArray([]);
         selectedCategoryCode: KnockoutObservable<Category>;
         currentCode: KnockoutObservable<string> = ko.observable('');
+        hasData: boolean = true;
         constructor() {
             var self = this;
             self.selectedCategoryCode = ko.observable(new Category('', 0, '', 0, 0, 0, 0, 0, '', '', 0, true));
@@ -37,14 +38,21 @@ module nts.uk.com.view.cmf002.v1.viewmodel {
 
             service.getCategory(self.roleAuthority).done((data: Array<Category>) => {
                 if (data && data.length) {
+                    self.hasData = true;
                     let sortCategory = _.sortBy(data, ['categoryId']);
                     sortCategory.forEach(x => self.listCategoryItem.push(x));
                     if (self.currentCode() == '') {
                         self.currentCode(self.listCategoryItem()[0].categoryId);
                     }
+                    let params = getShared("CMF002_V_PARAMS");
+                    if (!_.isEmpty(params)) {
+                        let getCategoryId = _.find(self.listCategoryItem(), function(x) { return x.categoryId == params.categoryId; });
+                        if(!_.isEmpty(getCategoryId)) self.selectedCategoryCode(getCategoryId);
+                    }
                 }
                 else {
-                    alertError({ messageId: "Msg_656" });
+                    self.hasData = false;
+                    //alertError({ messageId: "Msg_656" });
                 }
                 dfd.resolve();
             }).fail(err => {
@@ -58,6 +66,10 @@ module nts.uk.com.view.cmf002.v1.viewmodel {
         }
         selectCategoryItem() {
             let self = this;
+            if(!self.hasData){
+                alertError({ messageId: "Msg_656" });
+                return;
+            }
             setShared('CMF002_B_PARAMS', {
                 categoryName: self.selectedCategoryCode().categoryName,
                 categoryId: self.selectedCategoryCode().categoryId
