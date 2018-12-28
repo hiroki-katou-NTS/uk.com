@@ -70,26 +70,9 @@ module nts.uk.pr.view.qmm038.a {
                      * @param: data: the data return from CCG001
                      */
                     returnDataFromCcg001: function (data: Ccg001ReturnedData) {
-                        block.invisible();
-                        nts.uk.ui.errors.clearAll();
-                        self.employeeIds = data.listEmployee.map(item => item.employeeId);
-                        let command = {
-                            employeeIds: self.employeeIds,
-                            baseDate: self.baseDate(),
-                            giveCurrTreatYear: moment(self.giveCurrTreatYear(),"YYYY/MM").format("YYYY/MM")
-                        };
-                        nts.uk.pr.view.qmm038.a.service.findByEmployee(command).done(function (response) {
-                            self.statementItems = [];
-                            //if(response.length > 0) {
-                                self.statementItems = _.sortBy(response, ["employeeCode"]);
-                                $("#gridStatement").mGrid("destroy");
-                                self.loadMGrid();
-                            //}
-                            block.clear();
-                        });
+                        self.findByEmployee();
                     }
                 };
-                self.loadMGrid();
             }
 
             loadMGrid() {

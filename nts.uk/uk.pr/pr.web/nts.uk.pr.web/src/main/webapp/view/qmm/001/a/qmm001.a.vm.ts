@@ -186,13 +186,13 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             if(self.modeScreen() == MODESCREEN.ADD || self.salGenParaIdent().historyAtr == PARAHISTORYATR.DONOTMANAGE){
                 return false;
             }
-            if(self.modeScreen() == MODESCREEN.NEW){
-                return true;
-            }
-			
 			if(self.listItems.length == 0){
                 return false;
             }
+            if(self.modeScreen() == MODESCREEN.NEW){
+                return true;
+            }
+					
             return true;
         }
         getHistory(){
