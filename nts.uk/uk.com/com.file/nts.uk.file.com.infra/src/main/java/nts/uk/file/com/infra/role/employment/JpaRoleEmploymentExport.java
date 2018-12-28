@@ -65,7 +65,7 @@ public class JpaRoleEmploymentExport  extends JpaRepository implements RoleEmpEx
         for (int i = 0 ; i < listFunctionNo.size() ; i++){
             data.put(RoleEmploymentExportImpl.FUNCTION_NO_+listFunctionNo.get(i), MasterCellData.builder()
                     .columnId(RoleEmploymentExportImpl.FUNCTION_NO_+listFunctionNo.get(i))
-                    .value(r.getString("REF_RANGE").equals("3") ? null : r.getString(i+7).equals("1")? "○" : "ー")
+                    .value(r.getString("REF_RANGE").equals("3") ? null : r.getString(i+7).equals("1")? "○" : "-")
                     .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                     .build());
         }
@@ -95,7 +95,7 @@ public class JpaRoleEmploymentExport  extends JpaRepository implements RoleEmpEx
                 "    FOR [FUNCTION_NO] IN (" +
                 functionNo +
                 ")) AS pvt "+
-                "ORDER BY ROLE_CD,ASSIGN_ATR ASC";
+                "ORDER BY ASSIGN_ATR,ROLE_CD ASC";
         try (PreparedStatement stmt = this.connection()
                 .prepareStatement(GET_EXPORT_EXCEL)){
             stmt.setString(1,cId);

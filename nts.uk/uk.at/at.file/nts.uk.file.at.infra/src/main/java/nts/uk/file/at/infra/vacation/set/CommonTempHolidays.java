@@ -1,6 +1,7 @@
-package nts.uk.file.at.infra.vacation.set.compensatoryleave;
+package nts.uk.file.at.infra.vacation.set;
 
 import nts.arc.i18n.I18NText;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RoundProcessingClassification;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 import java.util.List;
@@ -130,10 +131,10 @@ public class CommonTempHolidays {
     public static String checkOcurrType(int value){
         switch (value) {
             case 0: {
-                return "○";
+                return "-";
             }
             case 1: {
-                return "ー";
+                return "○";
             }
 
         }
@@ -197,5 +198,55 @@ public class CommonTempHolidays {
         }
         return null;
     }
+    public static String getEnumMaxDayReference(int value){
+        switch (value) {
+            case 0: {
+                return "会社一律";
+            }
+            case 1: {
+                return "年休付与テーブルを参照";
+            }
+        }
+        return "";
+    }
+    public static String getEnumRoundProcessingClassification(int value){
+        switch (value) {
+            case 0: {
+                return I18NText.getText("Enum_RoundUpToTheDay");
+            }
+            case 1: {
+                return I18NText.getText("Enum_TruncateOnDay0");
+            }
+            case 2: {
+                return I18NText.getText("Enum_FractionManagementNo");
+            }
+        }
+        return "";
+    }
+    public static String getEnumAnnualPriority(int value){
+        switch (value) {
+            case 0: {
+                return "当年付与分から消化する";
+            }
+            case 1: {
+                return "繰越分から消化する";
+            }
+
+        }
+        return "";
+    }
+    public static String getEnumTimeAnnualRoundProcesCla(int value){
+        switch (value) {
+            case 0: {
+                return "1日に切り上げる";
+            }
+            case 1: {
+                return "0日に切り捨てる";
+            }
+
+        }
+        return "";
+    }
+
 
 }

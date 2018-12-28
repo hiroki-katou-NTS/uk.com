@@ -1,25 +1,23 @@
 package nts.uk.file.at.infra.vacation.set.subst;
 
-import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.uk.file.at.app.export.vacation.set.EmployeeSystemImpl;
 import nts.uk.file.at.app.export.vacation.set.subst.ComSubstVacatRepository;
-import nts.uk.file.at.app.export.vacation.set.subst.ComSubstVacationImpl;
-import nts.uk.file.at.app.export.vacation.set.subst.EmplYearlyRetenSetRepository;
-import nts.uk.file.at.app.export.vacation.set.subst.RetenYearlySetImpl;
+import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 import javax.ejb.Stateless;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static nts.uk.file.at.infra.vacation.set.compensatoryleave.CommonTempHolidays.getTextEnumApplyPermission;
-import static nts.uk.file.at.infra.vacation.set.compensatoryleave.CommonTempHolidays.getTextEnumExpirationTime;
-import static nts.uk.file.at.infra.vacation.set.compensatoryleave.CommonTempHolidays.getTextEnumManageDistinct;
+import static nts.uk.file.at.infra.vacation.set.CommonTempHolidays.*;
 
 @Stateless
 public class JpaComSubstVacatRepository extends JpaRepository implements ComSubstVacatRepository {
@@ -37,37 +35,45 @@ public class JpaComSubstVacatRepository extends JpaRepository implements ComSubs
         List<MasterData> datas = new ArrayList<>();
         try (PreparedStatement stmt = this.connection().prepareStatement(GET_COM_SUBST_VACATION)) {
             stmt.setString(1, cid);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return buildMasterListData(rs);
-            }
+            NtsResultSet result = new NtsResultSet(stmt.executeQuery());
+            result.forEach(i->{
+                datas.addAll(buildMasterListData(i));
+            });
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         return datas;
     }
-    private List<MasterData> buildMasterListData(ResultSet rs) {
+    private List<MasterData> buildMasterListData(NtsResultSet.NtsResultRecord rs) {
         List<MasterData> datas = new ArrayList<>();
-        try {
-            /*※13*/
-            boolean checkIsManager = rs.getString(0).equals("1");
-            datas.add(buildARow(
-                    getTextEnumManageDistinct(Integer.valueOf(rs.getString(0))),
-                    checkIsManager ? getTextEnumExpirationTime(Integer.valueOf(rs.getString(1))) : null,
-                    checkIsManager ? getTextEnumApplyPermission(Integer.valueOf(rs.getString(2))) : null
-                    ));
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        /*※13*/
+        boolean checkIsManager = rs.getString("IS_MANAGE").equals("1");
+        datas.add(buildARow(
+                getTextEnumManageDistinct(Integer.valueOf(rs.getString("IS_MANAGE"))),
+                checkIsManager ? getTextEnumExpirationTime(Integer.valueOf(rs.getString("EXPIRATION_DATE_SET"))) : null,
+                checkIsManager ? getTextEnumApplyPermission(Integer.valueOf(rs.getString("ALLOW_PREPAID_LEAVE"))) : null
+                ));
 
         return datas;
     }
     private MasterData buildARow(String value1, String value2, String value3) {
-        Map<String, Object> data = new HashMap<>();
-        data.put(ComSubstVacationImpl.KMF001_224, value1);
-        data.put(ComSubstVacationImpl.KMF001_225, value2);
-        data.put(ComSubstVacationImpl.KMF001_226, value3);
-        return new MasterData(data, null, "");
+        Map<String, MasterCellData> data = new HashMap<>();
+        data.put(EmployeeSystemImpl.KMF001_224, MasterCellData.builder()
+                .columnId(EmployeeSystemImpl.KMF001_224)
+                .value(value1)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+        data.put(EmployeeSystemImpl.KMF001_225, MasterCellData.builder()
+                .columnId(EmployeeSystemImpl.KMF001_225)
+                .value(value2)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+        data.put(EmployeeSystemImpl.KMF001_226, MasterCellData.builder()
+                .columnId(EmployeeSystemImpl.KMF001_226)
+                .value(value3)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+
+        return MasterData.builder().rowData(data).build();
     }
 }

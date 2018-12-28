@@ -2,14 +2,18 @@ package nts.uk.file.at.infra.vacation.set.compensatoryleave;
 
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.file.at.app.export.vacation.set.compensatoryleave.TempHoliComImpl;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.uk.file.at.app.export.vacation.set.EmployeeSystemImpl;
 import nts.uk.file.at.app.export.vacation.set.compensatoryleave.TempHoliComImplRepository;
+import nts.uk.file.at.infra.vacation.set.CommonTempHolidays;
+import nts.uk.file.at.infra.vacation.set.DataEachBox;
+import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 import javax.ejb.Stateless;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,123 +36,190 @@ public class JpaTemHoliComRepository extends JpaRepository implements TempHoliCo
                     "OS.CERTAIN_TIME, "+
                     "OS.OCCURR_TYPE, "+
                     "OS.TRANSF_TYPE, "+
-                    "OS1.ONE_DAY_TIME, "+
-                    "OS1.HALF_DAY_TIME, "+
-                    "OS1.CERTAIN_TIME, "+
-                    "OS1.USE_TYPE "+
-            "FROM (SELECT CID, MANAGE_ATR, DEADL_CHECK_MONTH FROM KCLMT_COMPENS_LEAVE_COM WHERE KCLMT_COMPENS_LEAVE_COM.CID = '000000000000-0001' ) AS LC " +
+                    "OS1.ONE_DAY_TIME AS ONE_DAY_TIME_OS1, " +
+                    "OS1.HALF_DAY_TIME AS HALF_DAY_TIME_OS1, " +
+                    "OS1.CERTAIN_TIME AS CERTAIN_TIME_OS1, " +
+                    "OS1.USE_TYPE AS USE_TYPE_OS1, " +
+                    "OS1.CERTAIN_TIME AS CERTAIN_TIME_OS1," +
+                    "OS1.TRANSF_TYPE AS TRANSF_TYPE_OS1 " +
+                    "FROM (SELECT CID, MANAGE_ATR, DEADL_CHECK_MONTH FROM KCLMT_COMPENS_LEAVE_COM WHERE KCLMT_COMPENS_LEAVE_COM.CID = ? ) AS LC " +
             "INNER JOIN KCLMT_ACQUISITION_COM AC ON AC.CID = LC.CID " +
             "INNER JOIN KCTMT_DIGEST_TIME_COM TC ON TC.CID = LC.CID " +
-            "INNER JOIN KOCMT_OCCURRENCE_SET OS ON OS.CID = LC.CID AND OS.OCCURR_TYPE = 0 " +
-            "INNER JOIN KOCMT_OCCURRENCE_SET OS1 ON OS1.CID = LC.CID AND OS1.OCCURR_TYPE = 1";
+                    "INNER JOIN KOCMT_OCCURRENCE_SET OS ON OS.CID = LC.CID AND OS.OCCURR_TYPE = 1 " +
+                    "INNER JOIN KOCMT_OCCURRENCE_SET OS1 ON OS1.CID = LC.CID AND OS1.OCCURR_TYPE = 0";
 
 
     @Override
     public List<MasterData> getAllTemHoliCompany(String cid) {
         List<MasterData> datas = new ArrayList<>();
         try (PreparedStatement stmt = this.connection().prepareStatement(GET_TEM_HOLIDAYS_COMPANY)) {
-            //stmt.setString(1, cid);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return buildMasterListData(rs);
-            }
+            stmt.setString(1, cid);
+            NtsResultSet result = new NtsResultSet(stmt.executeQuery());
+            result.forEach(i -> {
+                datas.addAll(buildMasterListData(i));
+            });
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         return datas;
     }
 
-    private List<MasterData> buildMasterListData(ResultSet rs) {
+    private List<MasterData> buildMasterListData(NtsResultSet.NtsResultRecord rs) {
         List<MasterData> datas = new ArrayList<>();
-        try {
-            /*※6*/
-            boolean isManagement =  rs.getString(0).equals("0");
-            /*※7*/
-            boolean isManagementByTC =  rs.getString(4).equals("0");
-            /*※8*/
-            boolean isUseTypeOS =  rs.getString(6).equals("0");
-            /*※9*/
-            boolean isTransferSetAtrOS =  rs.getString(14).equals("0");
-            /*※10*/
-            boolean isTransferSetAtrOS2 =  rs.getString(14).equals("1");
-            /*A15_1*/
-            String isManagementOfHolidays =  CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(rs.getString(0)));
-            /*A15_2*/
-            String subExpDateColumn = isManagement ? CommonTempHolidays.getTextEnumExpirationTime(Integer.valueOf(rs.getString(1))) : null ;
-            /*A15_3*/
-            String preColumnForHolidays = isManagement ? CommonTempHolidays.getTextEnumApplyPermission(Integer.valueOf(rs.getString(2))) : null ;
-            /*A15_4*/
-            String deadlineCheck =  isManagement ? CommonTempHolidays.getTextEnumDeadlCheckMonth(Integer.valueOf(rs.getString(3))) : null ;
-            /*A15_5*/
-            String managementColumn =  isManagement ? CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(rs.getString(4))) : null ;
-            /*A15_6*/
-            String digestiveUnit =  isManagement && isManagementByTC ? CommonTempHolidays.getTextEnumTimeDigestiveUnit(Integer.valueOf(rs.getString(5))) : null ;
-            /*A15_7*/
-            String occurrType =  isManagement ? CommonTempHolidays.checkOcurrType(Integer.valueOf(rs.getString(15))) : null ;
-            /*A15_8*/
-            String occurrenceSetUseType =   isManagement && isUseTypeOS ? CommonTempHolidays.getTextEnumSubHolTransferSetAtr(Integer.valueOf(rs.getString(6))) : null ;
-            /*A15_9*/
-            String oneDayTime = isManagement && isUseTypeOS && isTransferSetAtrOS ?  rs.getString(7) :null;
-            /*A15_10*/
-            String halfDayTime = isManagement && isUseTypeOS && isTransferSetAtrOS ?  rs.getString(8) :null;
-            /*A15_11*/
-            String certainTime = isManagement && isUseTypeOS && isTransferSetAtrOS2 ?  rs.getString(9)+I18NText.getText("KMF001_222") :null;
-            /*A15_12*/
-            String occurrTypeVer2 = isManagement  ?  rs.getString(15) :null;
-            /*A15_13*/
-            String useType = isManagement && isUseTypeOS  ? CommonTempHolidays.getTextEnumSubHolTransferSetAtr(Integer.valueOf(rs.getString(16))) :null;
-            /*A15_14*/
-            String oneDayTimeV2 = isManagement && isUseTypeOS && isTransferSetAtrOS  ?  rs.getString(12) :null;
-            /*A15_15*/
-            String halfDayTimeV2 = isManagement && isUseTypeOS && isTransferSetAtrOS  ?  rs.getString(13) :null;
-            /*A15_16*/
-            String certainTimeV2 = isManagement && isUseTypeOS && isTransferSetAtrOS2  ?  rs.getString(14)+I18NText.getText("KMF001_222") :null;
+        /*※6*/
+        boolean isManagement = rs.getString("MANAGE_ATR").equals("1");
+        /*※7*/
+        boolean isManagementByTC = rs.getString("MANAGE_ATR_TC").equals("1");
+        /*※8*/
+        boolean isUseTypeOS = rs.getString("USE_TYPE").equals("1");
+        /*※8_01*/
+        boolean isUseTypeOS_01 = rs.getString("USE_TYPE_OS1").equals("1");
+        /*※9*/
+        boolean isTransferSetAtrOS = rs.getString("TRANSF_TYPE").equals("0");
+        /*※10*/
+        boolean isTransferSetAtrOS2 = rs.getString("TRANSF_TYPE_OS1").equals("1");
+        /*A15_1*/
+        String isManagementOfHolidays = CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(rs.getString("MANAGE_ATR")));
+        /*A15_2*/
+        String subExpDateColumn = isManagement ? CommonTempHolidays.getTextEnumExpirationTime(Integer.valueOf(rs.getString("EXP_TIME"))) : null;
+        /*A15_3*/
+        String preColumnForHolidays = isManagement ? CommonTempHolidays.getTextEnumApplyPermission(Integer.valueOf(rs.getString("PREEMP_PERMIT_ATR"))) : null;
+        /*A15_4*/
+        String deadlineCheck = isManagement ? CommonTempHolidays.getTextEnumDeadlCheckMonth(Integer.valueOf(rs.getString("DEADL_CHECK_MONTH"))) : null;
+        /*A15_5*/
+        String managementColumn = isManagement ? CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(rs.getString("MANAGE_ATR_TC"))) : null;
+        /*A15_6*/
+        String digestiveUnit = isManagement && isManagementByTC ? CommonTempHolidays.getTextEnumTimeDigestiveUnit(Integer.valueOf(rs.getString("DIGESTIVE_UNIT"))) : null;
+        /*A15_7*/
+        String occurrType = isManagement ? CommonTempHolidays.checkOcurrType(Integer.valueOf(rs.getString("USE_TYPE"))) : null;
+        /*A15_8*/
+        String occurrenceSetUseType = isManagement && isUseTypeOS ? CommonTempHolidays.getTextEnumSubHolTransferSetAtr(Integer.valueOf(rs.getString("TRANSF_TYPE"))) : null;
+        /*A15_9*/
+        String oneDayTime = isManagement && isUseTypeOS && isTransferSetAtrOS ? rs.getString("ONE_DAY_TIME") : null;
+        /*A15_10*/
+        String halfDayTime = isManagement && isUseTypeOS && isTransferSetAtrOS ? rs.getString("HALF_DAY_TIME") : null;
+        /*A15_11*/
+        String certainTime = isManagement && isUseTypeOS && isTransferSetAtrOS2 == false ? rs.getString("CERTAIN_TIME") + I18NText.getText("KMF001_222") : null;
+        /*A15_12*/
+        String occurrTypeVer2 = isManagement ? CommonTempHolidays.checkOcurrType(Integer.valueOf(rs.getString("USE_TYPE_OS1"))) : null;
+        /*A15_13*/
+        String useType = isManagement && isUseTypeOS_01 ? CommonTempHolidays.getTextEnumSubHolTransferSetAtr(Integer.valueOf(rs.getString("TRANSF_TYPE_OS1"))) : null;
+        /*A15_14*/
+        String oneDayTimeV2 = isManagement && isUseTypeOS_01 && isTransferSetAtrOS ? rs.getString("ONE_DAY_TIME_OS1") : null;
+        /*A15_15*/
+        String halfDayTimeV2 = isManagement && isUseTypeOS_01 && isTransferSetAtrOS ? rs.getString("HALF_DAY_TIME_OS1") : null;
+        /*A15_16*/
+        String certainTimeV2 = isManagement && isUseTypeOS_01 && isTransferSetAtrOS2 == false ? rs.getString("CERTAIN_TIME_OS1") + I18NText.getText("KMF001_222") : null;
 
-            datas.add(buildARow(
-                    isManagementOfHolidays,
-                    subExpDateColumn,
-                    preColumnForHolidays,
-                    deadlineCheck,
-                    managementColumn,
-                    digestiveUnit,
-                    occurrType,
-                    occurrenceSetUseType,
-                    oneDayTime,
-                    halfDayTime,
-                    certainTime,
-                    occurrTypeVer2,
-                    useType,
-                    oneDayTimeV2,
-                    halfDayTimeV2,
-                    certainTimeV2
-            ));
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        datas.add(buildARow(
+                new DataEachBox(isManagementOfHolidays,ColumnTextAlign.LEFT)
+                ,new DataEachBox(subExpDateColumn,ColumnTextAlign.RIGHT)
+                ,new DataEachBox(preColumnForHolidays,ColumnTextAlign.LEFT)
+                ,new DataEachBox(deadlineCheck,ColumnTextAlign.RIGHT)
+                ,new DataEachBox(managementColumn,ColumnTextAlign.LEFT)
+                ,new DataEachBox(digestiveUnit,ColumnTextAlign.RIGHT)
+                ,new DataEachBox(occurrType,ColumnTextAlign.LEFT)
+                ,new DataEachBox(occurrenceSetUseType,ColumnTextAlign.LEFT)
+                ,new DataEachBox(oneDayTime,ColumnTextAlign.RIGHT)
+                ,new DataEachBox(halfDayTime,ColumnTextAlign.RIGHT)
+                ,new DataEachBox(certainTime,ColumnTextAlign.RIGHT)
+                ,new DataEachBox(occurrTypeVer2,ColumnTextAlign.LEFT)
+                ,new DataEachBox(useType,ColumnTextAlign.LEFT)
+                ,new DataEachBox(oneDayTimeV2,ColumnTextAlign.RIGHT)
+                ,new DataEachBox(halfDayTimeV2,ColumnTextAlign.RIGHT)
+                ,new DataEachBox(certainTimeV2,ColumnTextAlign.RIGHT)
+        ));
 
         return datas;
     }
 
-    private MasterData buildARow(String value1, String value2, String value3, String value4, String value5, String value6, String value7, String value8, String value9, String value10, String value11, String value12, String value13, String value14, String value15, String value16) {
-        Map<String, Object> data = new HashMap<>();
-        data.put(TempHoliComImpl.KMF001_206, value1);
-        data.put(TempHoliComImpl.KMF001_207, value2);
-        data.put(TempHoliComImpl.KMF001_208, value3);
-        data.put(TempHoliComImpl.KMF001_209, value4);
-        data.put(TempHoliComImpl.KMF001_210, value5);
-        data.put(TempHoliComImpl.KMF001_211, value6);
-        data.put(TempHoliComImpl.KMF001_212, value7);
-        data.put(TempHoliComImpl.KMF001_213, value8);
-        data.put(TempHoliComImpl.KMF001_214, value9);
-        data.put(TempHoliComImpl.KMF001_215, value10);
-        data.put(TempHoliComImpl.KMF001_216, value11);
-        data.put(TempHoliComImpl.KMF001_217, value12);
-        data.put(TempHoliComImpl.KMF001_218, value13);
-        data.put(TempHoliComImpl.KMF001_219, value14);
-        data.put(TempHoliComImpl.KMF001_220, value15);
-        data.put(TempHoliComImpl.KMF001_221, value16);
-        return new MasterData(data, null, "");
+    private MasterData buildARow(DataEachBox value1, DataEachBox value2, DataEachBox value3, DataEachBox value4, DataEachBox value5, DataEachBox value6, DataEachBox value7, DataEachBox value8, DataEachBox value9, DataEachBox value10, DataEachBox value11, DataEachBox value12, DataEachBox value13, DataEachBox value14, DataEachBox value15, DataEachBox value16) {
+        Map<String, MasterCellData> data = new HashMap<>();
+
+
+        data.put(EmployeeSystemImpl.KMF001_206, MasterCellData.builder()
+                .columnId(EmployeeSystemImpl.KMF001_206)
+                .value(value1.getValue())
+                .style(MasterCellStyle.build().horizontalAlign(value1.getPositon()))
+                .build());
+        data.put(EmployeeSystemImpl.KMF001_207, MasterCellData.builder()
+                .columnId(EmployeeSystemImpl.KMF001_207)
+                .value(value2.getValue())
+                .style(MasterCellStyle.build().horizontalAlign(value2.getPositon()))
+                .build());
+        data.put(EmployeeSystemImpl.KMF001_208, MasterCellData.builder()
+                .columnId(EmployeeSystemImpl.KMF001_208)
+                .value(value3.getValue())
+                .style(MasterCellStyle.build().horizontalAlign(value3.getPositon()))
+                .build());
+        data.put(EmployeeSystemImpl.KMF001_209, MasterCellData.builder()
+                .columnId(EmployeeSystemImpl.KMF001_209)
+                .value(value4.getValue())
+                .style(MasterCellStyle.build().horizontalAlign(value4.getPositon()))
+                .build());
+        data.put(EmployeeSystemImpl.KMF001_210, MasterCellData.builder()
+                .columnId(EmployeeSystemImpl.KMF001_210)
+                .value(value5.getValue())
+                .style(MasterCellStyle.build().horizontalAlign(value5.getPositon()))
+                .build());
+
+        data.put(EmployeeSystemImpl.KMF001_211, MasterCellData.builder()
+                .columnId(EmployeeSystemImpl.KMF001_211)
+                .value(value6.getValue())
+                .style(MasterCellStyle.build().horizontalAlign(value6.getPositon()))
+                .build());
+        data.put(EmployeeSystemImpl.KMF001_212, MasterCellData.builder()
+                .columnId(EmployeeSystemImpl.KMF001_212)
+                .value(value7.getValue())
+                .style(MasterCellStyle.build().horizontalAlign(value7.getPositon()))
+                .build());
+        data.put(EmployeeSystemImpl.KMF001_213, MasterCellData.builder()
+                .columnId(EmployeeSystemImpl.KMF001_213)
+                .value(value8.getValue())
+                .style(MasterCellStyle.build().horizontalAlign(value8.getPositon()))
+                .build());
+        data.put(EmployeeSystemImpl.KMF001_214, MasterCellData.builder()
+                .columnId(EmployeeSystemImpl.KMF001_214)
+                .value(value9.getValue())
+                .style(MasterCellStyle.build().horizontalAlign(value9.getPositon()))
+                .build());
+        data.put(EmployeeSystemImpl.KMF001_215, MasterCellData.builder()
+                .columnId(EmployeeSystemImpl.KMF001_215)
+                .value(value10.getValue())
+                .style(MasterCellStyle.build().horizontalAlign(value10.getPositon()))
+                .build());
+
+        data.put(EmployeeSystemImpl.KMF001_216, MasterCellData.builder()
+                .columnId(EmployeeSystemImpl.KMF001_216)
+                .value(value11.getValue())
+                .style(MasterCellStyle.build().horizontalAlign(value11.getPositon()))
+                .build());
+        data.put(EmployeeSystemImpl.KMF001_217, MasterCellData.builder()
+                .columnId(EmployeeSystemImpl.KMF001_217)
+                .value(value12.getValue())
+                .style(MasterCellStyle.build().horizontalAlign(value12.getPositon()))
+                .build());
+        data.put(EmployeeSystemImpl.KMF001_218, MasterCellData.builder()
+                .columnId(EmployeeSystemImpl.KMF001_218)
+                .value(value13.getValue())
+                .style(MasterCellStyle.build().horizontalAlign(value13.getPositon()))
+                .build());
+        data.put(EmployeeSystemImpl.KMF001_219, MasterCellData.builder()
+                .columnId(EmployeeSystemImpl.KMF001_219)
+                .value(value14.getValue())
+                .style(MasterCellStyle.build().horizontalAlign(value14.getPositon()))
+                .build());
+        data.put(EmployeeSystemImpl.KMF001_220, MasterCellData.builder()
+                .columnId(EmployeeSystemImpl.KMF001_220)
+                .value(value15.getValue())
+                .style(MasterCellStyle.build().horizontalAlign(value15.getPositon()))
+                .build());
+        data.put(EmployeeSystemImpl.KMF001_221, MasterCellData.builder()
+                .columnId(EmployeeSystemImpl.KMF001_221)
+                .value(value16.getValue())
+                .style(MasterCellStyle.build().horizontalAlign(value16.getPositon()))
+                .build());
+        return MasterData.builder().rowData(data).build();
     }
 
 
