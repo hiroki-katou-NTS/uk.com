@@ -97,7 +97,10 @@ public class RoleSetGrantedEmployeePubImpl implements RoleSetGrantedEmployeePub 
 		//条件： 会社ID←ログイン会社ID;基準日←システム日付;職位ID（List）←取得したロールセット職位別付与．職位ID（list）
 		List<String> lst3 = new ArrayList<>();
 		if(!jobTitleIds.isEmpty()){
-			lst3 = empInfoAdapter.getListEmployee(jobTitleIds, GeneralDate.today());
+			//hoatt 2018.12.17
+			//EA修正履歴 No.3022
+			//基準日←パラメータ．基準日
+			lst3 = empInfoAdapter.getListEmployee(jobTitleIds, baseDate);
 		}
 		//（１）の社員リストと（３）の社員リスト両方に存在する社員IDを抽出する-(Xuất ra employeeID có trong cả 2 list: empoyeeList（１） và （３）)
 		List<String> lst4 = lst3.stream().filter(c -> lst1.contains(c)).collect(Collectors.toList());

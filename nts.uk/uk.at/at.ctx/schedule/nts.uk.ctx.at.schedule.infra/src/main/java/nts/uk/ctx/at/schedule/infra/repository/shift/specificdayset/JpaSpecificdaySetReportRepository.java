@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.schedule.infra.repository.shift.specificdayset;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,7 +14,6 @@ import nts.uk.ctx.at.schedule.app.export.shift.specificdayset.SpecificdaySetRepo
 import nts.uk.ctx.at.schedule.app.export.shift.specificdayset.SpecificdaySetWorkplaceReportData;
 import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.company.KsmmtComSpecDateSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.workplace.KsmmtWpSpecDateSet;
-import nts.uk.ctx.at.shared.app.find.pattern.monthly.setting.Period;
 
 @Stateless
 public class JpaSpecificdaySetReportRepository extends JpaRepository implements SpecificdaySetReportRepository {
@@ -35,7 +33,7 @@ public class JpaSpecificdaySetReportRepository extends JpaRepository implements 
 			+ " AND s.ksmmtWpSpecDateSetPK.specificDate >= :startYm"
 			+ " AND s.ksmmtWpSpecDateSetPK.specificDate <= :endYm";
 	
-	private static final String GET_BEGIN_MONTH_COMPANY = "SELECT a.MONTH_STR FROM BCMMT_COMPANY a WHERE  a.CID = ?companyId";
+//	private static final String GET_BEGIN_MONTH_COMPANY = "SELECT a.MONTH_STR FROM BCMMT_COMPANY a WHERE  a.CID = ?companyId";
 	
 	@Override
 	public Optional<Map<String, List<SpecificdaySetCompanyReportData>>> findAllSpecificdaySetCompany(String companyId, GeneralDate startDate, GeneralDate endDate) {
@@ -80,26 +78,26 @@ public class JpaSpecificdaySetReportRepository extends JpaRepository implements 
 		return domain;
 	}
 	
-	@Override
-	public Period getBaseDateByCompany(String companyId, GeneralDate startExportDate, GeneralDate endExportDate) {
-		Integer beginMonth = ((BigDecimal)this.getEntityManager().createNativeQuery(GET_BEGIN_MONTH_COMPANY)
-				.setParameter("companyId", companyId).getSingleResult()).intValue();
-		int startYear = startExportDate.year();
-		int endYear = endExportDate.year();
-		
-		GeneralDate start = GeneralDate.ymd(startYear, beginMonth, 1);
-		
-		int endMonth = beginMonth - 1;
-		if (endMonth > 0) {
-			endYear = endYear + 1;
-		}
-		else {
-			endMonth = 12;
-		}
-		GeneralDate startdateOfEndMonth = GeneralDate.ymd(endYear, endMonth, 1);
-		GeneralDate end = GeneralDate.ymd(endYear, endMonth, startdateOfEndMonth.lastDateInMonth());
-		
-		return new Period(start, end);
-	}
+//	@Override
+//	public Period getBaseDateByCompany(String companyId, GeneralDate startExportDate, GeneralDate endExportDate) {
+//		Integer beginMonth = ((BigDecimal)this.getEntityManager().createNativeQuery(GET_BEGIN_MONTH_COMPANY)
+//				.setParameter("companyId", companyId).getSingleResult()).intValue();
+//		int startYear = startExportDate.year();
+//		int endYear = endExportDate.year();
+//		
+//		GeneralDate start = GeneralDate.ymd(startYear, beginMonth, 1);
+//		
+//		int endMonth = beginMonth - 1;
+//		if (endMonth > 0) {
+//			endYear = endYear + 1;
+//		}
+//		else {
+//			endMonth = 12;
+//		}
+//		GeneralDate startdateOfEndMonth = GeneralDate.ymd(endYear, endMonth, 1);
+//		GeneralDate end = GeneralDate.ymd(endYear, endMonth, startdateOfEndMonth.lastDateInMonth());
+//		
+//		return new Period(start, end);
+//	}
 
 }

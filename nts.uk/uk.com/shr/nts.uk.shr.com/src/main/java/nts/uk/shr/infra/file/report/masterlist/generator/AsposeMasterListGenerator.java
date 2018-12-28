@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 import com.aspose.cells.AutoFitterOptions;
+import com.aspose.cells.BackgroundType;
 import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
 import com.aspose.cells.CellBorderType;
@@ -201,7 +202,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		
 		sheet.setName(getSheetName(sheetData.getSheetName(), idx, isExistName));
 		
-		cells.get(HEADER_INFOR_START_ROW + 4, 1).setValue(sheetData.getSheetName());
+		cells.get(HEADER_INFOR_START_ROW + 3, 1).setValue(sheetData.getSheetName());
 		
 		if(sheetData.getMode() != MasterListMode.NONE){
 			checkMode(cells, sheetData.getMode(), columnSize, isExportCsvFile(query.getReportType()), 

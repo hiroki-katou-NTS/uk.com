@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.app.find.pattern.monthly.setting.Period;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
@@ -43,7 +42,7 @@ public class SpecificdaySetExportImpl implements MasterListData {
 	 public List<SheetData> extraSheets(MasterListExportQuery query) {
 		 List<SheetData> sheetDatas = new ArrayList<>();
 		 //add the work place sheet
-		 SheetData sheetWorkplaceData = new SheetData(getMasterDatasForWorkplace(query), getHeaderColumnsForWorkplace(query),null, null, TextResource.localize("KSM002_99"));
+		 SheetData sheetWorkplaceData = new SheetData(getMasterDatasForWorkplace(query), getHeaderColumnsForWorkplace(query),null, null, TextResource.localize("Com_Workplace"));
 		 sheetDatas.add(sheetWorkplaceData);
 		 return sheetDatas;
 	 }
@@ -93,9 +92,9 @@ public class SpecificdaySetExportImpl implements MasterListData {
 		String companyId = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
 		
-		Period period = specificdaySetReportRepository.getBaseDateByCompany(companyId, query.getStartDate(), query.getEndDate());
+//		Period period = specificdaySetReportRepository.getBaseDateByCompany(companyId, query.getStartDate(), query.getEndDate());
 		Optional<Map<String, List<SpecificdaySetCompanyReportData>>> mapSetReportDatas = specificdaySetReportRepository
-				.findAllSpecificdaySetCompany(companyId, period.getStartDate(), period.getEndDate());
+				.findAllSpecificdaySetCompany(companyId, query.getStartDate(), query.getEndDate());
 
 		if (mapSetReportDatas.isPresent()) {
 			mapSetReportDatas.get().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEachOrdered(x -> {
@@ -113,7 +112,7 @@ public class SpecificdaySetExportImpl implements MasterListData {
 	
 	@Override
 	public String mainSheetName() {
-		return TextResource.localize("KSM002_98");
+		return TextResource.localize("Com_Company");
 	}
 
 	private Optional<MasterData> newCompanyMasterData(String yearMonth,
@@ -227,9 +226,9 @@ public class SpecificdaySetExportImpl implements MasterListData {
 	private List<MasterData> getMasterDatasForWorkplace(MasterListExportQuery query) {
 		String companyId = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
-		Period period = specificdaySetReportRepository.getBaseDateByCompany(companyId, query.getStartDate(), query.getEndDate());
+//		Period period = specificdaySetReportRepository.getBaseDateByCompany(companyId, query.getStartDate(), query.getEndDate());
 		Optional<Map<String, List<SpecificdaySetWorkplaceReportData>>> mapSetReportDatas = specificdaySetReportRepository
-				.findAllSpecificdaySetWorkplace(companyId, period.getStartDate(), period.getEndDate());
+				.findAllSpecificdaySetWorkplace(companyId, query.getStartDate(), query.getEndDate());
 
 		if (mapSetReportDatas.isPresent()) {
 			mapSetReportDatas.get().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEachOrdered(x -> {

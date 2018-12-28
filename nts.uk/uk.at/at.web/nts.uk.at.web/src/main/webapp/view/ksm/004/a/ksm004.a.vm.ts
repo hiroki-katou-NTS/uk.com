@@ -79,6 +79,7 @@ module nts.uk.at.view.ksm004.a {
             isShowDatepicker: boolean = false;
             constructor() {
                 var self = this;
+                self.showExportBtn();
                 self.yearMonthPicked.subscribe(value => {
                     if (!nts.uk.util.isNullOrEmpty(value)) {
                         if ($("#yearMonthPicker1").ntsError("hasError")) {
@@ -998,18 +999,56 @@ module nts.uk.at.view.ksm004.a {
             }
             
             /**
-         * Print file excel
-         */
-        exportExcel() : void {
-            var self = this;
-            nts.uk.ui.block.grayout();
-            aService.saveAsExcel().done(function() {
-            }).fail(function(error) {
-                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-            }).always(function() {
-                nts.uk.ui.block.clear();
-            });
-        }
+             * show export button by role
+             */
+            showExportBtn() {
+                if (nts.uk.util.isNullOrUndefined(__viewContext.user.role.attendance)
+                    && nts.uk.util.isNullOrUndefined(__viewContext.user.role.payroll)
+                    && nts.uk.util.isNullOrUndefined(__viewContext.user.role.officeHelper)
+                    && nts.uk.util.isNullOrUndefined(__viewContext.user.role.personnel)) {
+                    $("#print-button_1").hide();
+                    $("#print-button_2").hide();
+                    $("#print-button_3").hide();
+                } else {
+                    $("#print-button_1").show();
+                    $("#print-button_2").show();
+                    $("#print-button_3").show();
+                }
+            }
+            
+             /**
+             * closeDialog
+             */
+            public opencdl028Dialog() {
+                var self = this;
+                let params = {
+                    date: moment(new Date()).toDate(),
+                    mode: 2 //YEAR_PERIOD_FINANCE
+                };
+    
+                nts.uk.ui.windows.setShared("CDL028_INPUT", params);
+    
+                nts.uk.ui.windows.sub.modal("com", "/view/cdl/028/a/index.xhtml").onClosed(function() {
+                    var params = nts.uk.ui.windows.getShared("CDL028_A_PARAMS");
+                    if (params.status) {
+                        self.exportExcel(params.mode, params.startDateFiscalYear, params.endDateFiscalYear);
+                     }
+                });
+            }                                                           
+        
+            /**
+             * Print file excel
+             */
+            exportExcel(mode: string, startDate: string, endDate: string) : void {
+                var self = this;
+                nts.uk.ui.block.grayout();
+                aService.saveAsExcel(mode, startDate, endDate).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
         }
         
         interface ICalendarPanel{

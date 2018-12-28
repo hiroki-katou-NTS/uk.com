@@ -96,6 +96,7 @@ module ksm002.a.viewmodel {
             var dfd = $.Deferred<any>();
             let isUse: number = 1;
             let arrOptionaDates: Array<OptionalDate> = [];
+            self.showExportBtn();
             service.getSpecificDateByIsUse(isUse).done(function(lstSpecifiDate: any) {
                 if (lstSpecifiDate.length > 0) {
                     //getAll SpecDate
@@ -132,6 +133,17 @@ module ksm002.a.viewmodel {
                 dfd.reject();
             });
             return dfd.promise();
+        }
+        
+        showExportBtn() {
+            if (nts.uk.util.isNullOrUndefined(__viewContext.user.role.attendance)
+                && nts.uk.util.isNullOrUndefined(__viewContext.user.role.payroll)
+                && nts.uk.util.isNullOrUndefined(__viewContext.user.role.officeHelper)
+                && nts.uk.util.isNullOrUndefined(__viewContext.user.role.personnel)) {
+                $("#print-button_1").hide();
+            } else {
+                $("#print-button_1").show();
+            }
         }
 
         /**
@@ -439,13 +451,34 @@ module ksm002.a.viewmodel {
             });
         }
         
+         /**
+         * closeDialog
+         */
+        public opencdl028Dialog() {
+            var self = this;
+            let params = {
+                date: moment(new Date()).toDate(),
+                mode: 2 //YEAR_PERIOD_FINANCE
+            };
+
+            nts.uk.ui.windows.setShared("CDL028_INPUT", params);
+
+            nts.uk.ui.windows.sub.modal("com", "/view/cdl/028/a/index.xhtml").onClosed(function() {
+                var params = nts.uk.ui.windows.getShared("CDL028_A_PARAMS");
+                if (params.status) {
+                    self.exportExcel(params.mode, params.startDateFiscalYear, params.endDateFiscalYear);
+                 }
+            });
+
+        }
+        
         /**
          * Print file excel
          */
-        exportExcel() : void {
+        exportExcel(mode: string, startDate: string, endDate: string) : void {
             var self = this;
             nts.uk.ui.block.grayout();
-            service.saveAsExcel().done(function() {
+            service.saveAsExcel(mode, startDate, endDate).done(function() {
             }).fail(function(error) {
                 nts.uk.ui.dialog.alertError({ messageId: error.messageId });
             }).always(function() {

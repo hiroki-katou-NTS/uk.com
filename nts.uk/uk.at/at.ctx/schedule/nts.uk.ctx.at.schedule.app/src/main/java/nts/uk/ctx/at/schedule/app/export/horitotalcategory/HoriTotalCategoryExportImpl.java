@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -36,13 +35,13 @@ public class HoriTotalCategoryExportImpl implements MasterListData {
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
 		
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn("コード", TextResource.localize("KML004_9"),
+		columns.add(new MasterHeaderColumn("コード", TextResource.localize("KML004_57"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("名称", TextResource.localize("KML004_10"),
+		columns.add(new MasterHeaderColumn("名称", TextResource.localize("KML004_58"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("メモ", TextResource.localize("KML004_11"),
+		columns.add(new MasterHeaderColumn("メモ", TextResource.localize("KML004_59"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("選択された対象項目", TextResource.localize("KML004_16"),
+		columns.add(new MasterHeaderColumn("選択された対象項目", TextResource.localize("KML004_60"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("回数集計集計設定", TextResource.localize("KML004_53"),
 				ColumnTextAlign.LEFT, "", true));
@@ -56,7 +55,7 @@ public class HoriTotalCategoryExportImpl implements MasterListData {
 		List<HoriTotalExel> listHoriTotalExel = horiTotalCategoryExcelRepo.getAll(companyId);
 		List<MasterData> datas = new ArrayList<>();
 		if (CollectionUtil.isEmpty(listHoriTotalExel)) {
-			throw new BusinessException("Msg_393");
+			return null;
 		} else {
 			listHoriTotalExel.stream().forEach(c -> {
 				
@@ -116,7 +115,7 @@ public class HoriTotalCategoryExportImpl implements MasterListData {
 	
 	@Override
 	public String mainSheetName() {
-		return "マスタリスト";
+		return TextResource.localize("KML004_56");
 	}
 	
 	private void putDataEmpty(Map<String, Object> data){

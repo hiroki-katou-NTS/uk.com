@@ -33,6 +33,10 @@ public class ScreenPath {
 			return comweb() + "/view/common/error/sessiontimeout/index.xhtml";
 		}
 		
+		public String stopUse() {
+			return comweb() + "/view/common/error/stopuse/index.xhtml";
+		}
+		
 		public String system() {
 			return comweb() + "/view/common/error/system/index.xhtml";
 		}

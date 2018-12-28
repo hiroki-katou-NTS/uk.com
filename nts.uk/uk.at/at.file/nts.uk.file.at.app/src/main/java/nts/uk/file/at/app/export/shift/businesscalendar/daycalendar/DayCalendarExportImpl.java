@@ -17,7 +17,6 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
-import nts.uk.ctx.at.shared.app.find.pattern.monthly.setting.Period;
 import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WkpConfigInfoFindObject;
 import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WorkplaceHierarchyDto;
 import nts.uk.ctx.bs.employee.app.find.workplace.config.info.WorkplaceConfigInfoFinder;
@@ -53,19 +52,19 @@ public class DayCalendarExportImpl implements MasterListData {
 	@Inject
 	private WorkplaceConfigInfoFinder workplaceConfigInfoFinder;
 	
-	private Period period;
+//	private Period period;
 	
 	 @Override
 	 public List<SheetData> extraSheets(MasterListExportQuery query) {
-		 String companyId = AppContexts.user().companyId();
-		 period = dayCalendarReportRepository.getBaseDateByCompany(companyId, query.getStartDate(), query.getEndDate());
+//		 String companyId = AppContexts.user().companyId();
+//		 period = dayCalendarReportRepository.getBaseDateByCompany(companyId, query.getStartDate(), query.getEndDate());
 		 List<SheetData> sheetDatas = new ArrayList<>();
 		 //add the work place sheet
-		 SheetData sheetCompanyData = new SheetData(getMasterDatasCompany(query), getHeaderColumnsCompany(query),null, null, TextResource.localize("KSM004_95"));
+		 SheetData sheetCompanyData = new SheetData(getMasterDatasCompany(query), getHeaderColumnsCompany(query),null, null, TextResource.localize("Com_Company"));
 		 SheetData sheetWorkplaceData = new SheetData(getMasterDatasForWorkplace(query), 
-				 getHeaderColumnsForWorkplace(query),null, null, TextResource.localize("KSM004_101"));
+				 getHeaderColumnsForWorkplace(query),null, null, TextResource.localize("Com_Workplace"));
 		 SheetData sheetClassData = new SheetData(getMasterDatasForClass(query), 
-				 getHeaderColumnsForClass(query),null, null, TextResource.localize("KSM004_102"));
+				 getHeaderColumnsForClass(query),null, null, TextResource.localize("Com_Class"));
 		 sheetDatas.add(sheetCompanyData);
 		 sheetDatas.add(sheetWorkplaceData);
 		 sheetDatas.add(sheetClassData);
@@ -89,7 +88,7 @@ public class DayCalendarExportImpl implements MasterListData {
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		String companyId = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
-		publicHolidayRepository.getpHolidayWhileDate(companyId, period.getStartDate(), period.getEndDate()).stream()
+		publicHolidayRepository.getpHolidayWhileDate(companyId, query.getStartDate(), query.getEndDate()).stream()
 			.sorted(Comparator.comparing(PublicHoliday::getDate)).forEachOrdered(x -> {
 				Map<String, Object> row = new HashMap<>();
 				putEmptyToColumHoliday(row);
@@ -167,7 +166,7 @@ public class DayCalendarExportImpl implements MasterListData {
 		List<MasterData> datas = new ArrayList<>();
 		
 		Optional<Map<String, List<CompanyCalendarReportData>>> mapSetReportDatas = dayCalendarReportRepository
-				.findCalendarCompanyByDate(companyId, period.getStartDate(), period.getEndDate());
+				.findCalendarCompanyByDate(companyId, query.getStartDate(), query.getEndDate());
 
 		if (mapSetReportDatas.isPresent()) {
 			mapSetReportDatas.get().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEachOrdered(x -> {
@@ -245,8 +244,8 @@ public class DayCalendarExportImpl implements MasterListData {
 	 */
 	private List<MasterHeaderColumn> getHeaderColumnsForWorkplace(MasterListExportQuery query) {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn("コード", TextResource.localize("KSM004_99"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("名称", TextResource.localize("KSM004_100"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("コード", TextResource.localize("KSM004_98"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("名称", TextResource.localize("KSM004_99"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("年月", TextResource.localize("KSM004_63"), ColumnTextAlign.LEFT, "", true));
 		getHeaderColumnsDate(columns);
 
@@ -278,7 +277,7 @@ public class DayCalendarExportImpl implements MasterListData {
 		String companyId = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
 		Optional<Map<String, List<WorkplaceCalendarReportData>>> mapSetReportDatas = dayCalendarReportRepository
-				.findCalendarWorkplaceByDate(companyId, period.getStartDate(), period.getEndDate());
+				.findCalendarWorkplaceByDate(companyId, query.getStartDate(), query.getEndDate());
 		
 		WkpConfigInfoFindObject wkpConfigInfoFindObject = new WkpConfigInfoFindObject();
 		wkpConfigInfoFindObject.setSystemType(2);
@@ -415,7 +414,7 @@ public class DayCalendarExportImpl implements MasterListData {
 		String companyId = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
 		Optional<Map<String, List<ClassCalendarReportData>>> mapSetReportDatas = dayCalendarReportRepository
-				.findCalendarClassByDate(companyId, period.getStartDate(), period.getEndDate());
+				.findCalendarClassByDate(companyId, query.getStartDate(), query.getEndDate());
 
 		if (mapSetReportDatas.isPresent()) {
 			mapSetReportDatas.get().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEachOrdered(x -> {
