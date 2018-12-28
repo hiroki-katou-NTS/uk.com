@@ -55,7 +55,6 @@ public class JpaEmpSubstVacaRepository extends JpaRepository implements EmpSubst
     private List<MasterData> buildMasterListData(NtsResultSet.NtsResultRecord rs) {
         List<MasterData> datas = new ArrayList<>();
         /*※14*/
-        System.out.println(rs.getString("IS_MANAGE")+ " gdfsjsdpofsd");
         boolean checkIsManager = rs.getString("IS_MANAGE").equals("1");
         datas.add(buildARow(
                 rs.getString("EMPCD"),
