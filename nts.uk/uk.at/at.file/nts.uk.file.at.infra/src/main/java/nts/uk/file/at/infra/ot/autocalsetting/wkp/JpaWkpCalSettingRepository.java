@@ -81,7 +81,7 @@ public class JpaWkpCalSettingRepository extends JpaRepository implements WkpAuto
 								  "a.CID "+
 						"FROM (SELECT DISTINCT WKPCD , WKPID, CID "+
 							   "FROM BSYMT_WORKPLACE_INFO "+
-							   "WHERE CID = '000000000000-0001') i "+
+							   "WHERE CID = ?cid) i "+
 						"INNER JOIN KSHMT_AUTO_WKP_CAL_SET a ON a.CID = i.CID AND a.WKPID = i.WKPID) k "+
 							"ON w.WKPID = k.WKPID AND w.CID = k.CID "+
 			"ORDER BY k.WKPCD ";
