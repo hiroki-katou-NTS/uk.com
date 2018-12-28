@@ -52,7 +52,7 @@ public class AppReflectProcessSchePubImpl implements AppReflectProcessSchePub{
 				reflectPara.getGobackInfor().getWorkTimeEnd2()); 
 		GobackReflectParam data = new GobackReflectParam(reflectPara.getEmployeeId(), 
 				reflectPara.getDatePara(), 
-				true,
+				reflectPara.isOutsetBreakReflectAtr(),
 				gobackInfo, 
 				EnumAdaptor.valueOf(reflectPara.getApplyTimeAtr().value, ApplyTimeAtr.class)); 
 			

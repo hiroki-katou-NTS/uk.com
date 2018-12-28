@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -56,6 +55,7 @@ import nts.uk.ctx.at.record.app.command.dailyperform.specificdatetttr.SpecificDa
 import nts.uk.ctx.at.record.app.command.dailyperform.specificdatetttr.SpecificDateAttrOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.temporarytime.TemporaryTimeOfDailyPerformanceCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.temporarytime.TemporaryTimeOfDailyPerformanceCommandUpdateHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.workinfo.WorkInformationOfDailyPerformCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.workinfo.WorkInformationOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.workinfo.WorkInformationOfDailyPerformCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.AttendanceTimeByWorkOfDailyCommandAddHandler;
@@ -520,17 +520,30 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	}
 
 	private <T extends DailyWorkCommonCommand> List<IntegrationOfDaily> updateDomainAfterCalc(List<IntegrationOfDaily> calced) {
-		
+		updateWorkInfoAfterCalc(calced);
+
 		return registerCalcedService.saveOnly(calced);
 	}
 	
 	private <T extends DailyWorkCommonCommand> List<IntegrationOfDaily> updateDomainAfterCalcAndRunStored(List<IntegrationOfDaily> calced, CorrectResult correctResult) {
+		updateWorkInfoAfterCalc(calced);
+		
 		if(correctResult != null){
 			return registerCalcedService.addAndUpdate(calced, correctResult.getWorkType());
 		}
 		return registerCalcedService.addAndUpdate(calced);
 	}
 
+
+	private void updateWorkInfoAfterCalc(List<IntegrationOfDaily> calced) {
+		calced.stream().forEach(c -> {
+			WorkInformationOfDailyPerformCommand wic = new WorkInformationOfDailyPerformCommand();
+			wic.updateData(c.getWorkInformation());
+			wic.forEmployee(c.getWorkInformation().getEmployeeId());
+			wic.withDate(c.getWorkInformation().getYmd());
+			this.workInfoUpdateHandler.handle(wic);
+		});
+	}
 	private void registerErrorWhenCalc(Map<String, List<GeneralDate>> param, List<EmployeeDailyPerError> errors) {
 		// remove data error
 		employeeErrorRepo.removeParam(param);

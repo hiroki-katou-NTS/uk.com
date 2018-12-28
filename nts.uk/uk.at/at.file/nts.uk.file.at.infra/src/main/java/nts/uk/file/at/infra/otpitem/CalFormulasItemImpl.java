@@ -199,7 +199,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 		+"  	,(CASE oi.OPTIONAL_ITEM_ATR "
 		+"  		WHEN 0 THEN fr_day.TIME_ROUNDING "
 		+"  		WHEN 1 THEN fr_day.NUMBER_ROUNDING"
-		+"  		WHEN 2 THEN fr_day.AMOUNT_ROUNDING_UNIT"
+		+"  		WHEN 2 THEN fr_day.AMOUNT_ROUNDING"
 		+"  	 END) AS DAY_ROUNDING"
 		+"  	 "
 		+"  	,(CASE oi.OPTIONAL_ITEM_ATR"
@@ -413,7 +413,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 				case 2:
 					data.put(CalFormulasItemColumn.KMK002_92, MasterCellData.builder()
 			                .columnId(CalFormulasItemColumn.KMK002_92)
-			                .value(object[16] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[17]).intValue(), AmountRounding.class).nameId) : "")
+			                .value(object[17] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[17]).intValue(), AmountRounding.class).nameId) : "")
 			                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 			                .build());
 					break;
@@ -438,7 +438,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
     			case 2:
     				data.put(CalFormulasItemColumn.KMK002_93, MasterCellData.builder()
     		                .columnId(CalFormulasItemColumn.KMK002_93)
-    		                .value(object[17] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[16]).intValue(), AmountUnit.class).nameId) : "")
+    		                .value(object[16] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[16]).intValue(), AmountUnit.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
     				break;
@@ -481,7 +481,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
     			case 1:
     				data.put(CalFormulasItemColumn.KMK002_95, MasterCellData.builder()
     		                .columnId(CalFormulasItemColumn.KMK002_95)
-    		                .value(object[18] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[18]).intValue(), NumberUnit.class).nameId) : "")
+    		                .value(object[19] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[18]).intValue(), NumberUnit.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
     				break;

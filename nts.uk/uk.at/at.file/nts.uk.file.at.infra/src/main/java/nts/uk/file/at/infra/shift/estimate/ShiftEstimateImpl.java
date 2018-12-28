@@ -407,27 +407,27 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
                 .build());
             data.put(ShiftEstimateColumn.KSM001_148, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_148)
-                .value(object[7] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[7]).toString()) : "")
+                .value(object[7] != null ?  formatPrice(((BigDecimal) object[7]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_149, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_149)
-                .value(object[8] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[8]).toString()) : "")
+                .value(object[8] != null ?  formatPrice(((BigDecimal) object[8]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_150, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_150)
-                .value(object[9] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[9]).toString()) : "")
+                .value(object[9] != null ?  formatPrice(((BigDecimal) object[9]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_151, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_151)
-                .value(object[10] != null ? ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[10]).toString()) : "")
+                .value(object[10] != null ? formatPrice(((BigDecimal) object[10]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_152, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_152)
-                .value(object[11] != null ? ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[11]).toString()) : "")
+                .value(object[11] != null ? formatPrice(((BigDecimal) object[11]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_153, MasterCellData.builder()
@@ -507,27 +507,27 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
                 .build());
             data.put(ShiftEstimateColumn.KSM001_167, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_167)
-                .value(object[9] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[9]).toString()) : "")
+                .value(object[9] != null ?  formatPrice(((BigDecimal) object[9]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_168, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_168)
-                .value(object[10] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[10]).toString()) : "")
+                .value(object[10] != null ?  formatPrice(((BigDecimal) object[10]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_169, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_169)
-                .value(object[11] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[11]).toString()) : "")
+                .value(object[11] != null ?  formatPrice(((BigDecimal) object[11]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_170, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_170)
-                .value(object[12] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[12]).toString()) : "")
+                .value(object[12] != null ?  formatPrice(((BigDecimal) object[12]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_171, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_171)
-                .value(object[13] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[13]).toString()) : "")
+                .value(object[13] != null ?  formatPrice(((BigDecimal) object[13]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_172, MasterCellData.builder()
@@ -607,27 +607,27 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
                 .build());
             data.put(ShiftEstimateColumn.KSM001_186, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_186)
-                .value(object[9] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[9]).toString()) : "")
+                .value(object[9] != null ?  formatPrice(((BigDecimal) object[9]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_187, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_187)
-                .value(object[10] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[10]).toString()) : "")
+                .value(object[10] != null ?  formatPrice(((BigDecimal) object[10]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_188, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_188)
-                .value(object[11] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[11]).toString()) : "")
+                .value(object[11] != null ?  formatPrice(((BigDecimal) object[11]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_189, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_189)
-                .value(object[12] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[12]).toString()) : "")
+                .value(object[12] != null ?  formatPrice(((BigDecimal) object[12]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_190, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_190)
-                .value(object[13] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[13]).toString()) : "")
+                .value(object[13] != null ?  formatPrice(((BigDecimal) object[13]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_191, MasterCellData.builder()
@@ -672,9 +672,8 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 
 	private String formatPrice(String price) {
 		double amountParse = Double.parseDouble(price);
-		DecimalFormat formatter = new DecimalFormat("#,###");
-		DecimalFormat.getCurrencyInstance(Locale.JAPAN).format(formatter);
-		return formatter.format(amountParse);
+		String prices = DecimalFormat.getCurrencyInstance(Locale.JAPAN).format(amountParse);
+		return prices;
 	}
 	
 	private String getHeader(int rowNumber) {

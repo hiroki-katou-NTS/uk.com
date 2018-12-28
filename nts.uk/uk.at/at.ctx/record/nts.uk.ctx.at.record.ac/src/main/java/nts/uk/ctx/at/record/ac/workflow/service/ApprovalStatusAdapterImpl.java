@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -49,7 +49,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author hungnm
  *
  */
-@Stateless
+@RequestScoped
 public class ApprovalStatusAdapterImpl implements ApprovalStatusAdapter {
 
 //	@Inject

@@ -595,18 +595,7 @@ module nts.uk.pr.view.kmf001.f {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
                 }
             }
-            /**
-             * export Excel
-             */
-            exportExcel(){
-                nts.uk.pr.view.kmf001.f.service.exportExcel().done(function(data) {
 
-                }).fail(function(res: any) {
-                    nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
-                }).always(()=>{
-                    block.clear();
-                });
-            }
             
             //recall validate for company
             private reCallValidate(): JQueryPromise<void> {

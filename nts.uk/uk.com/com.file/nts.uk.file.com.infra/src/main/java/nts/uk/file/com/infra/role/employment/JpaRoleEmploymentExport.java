@@ -23,7 +23,11 @@ import java.util.stream.Collectors;
 
 @Stateless
 public class JpaRoleEmploymentExport  extends JpaRepository implements RoleEmpExportRepository {
-    private Map<Integer, String> functionNo;
+    /* // 自分のみ
+        ONLY_MYSELF(3, "Enum_EmployeeReferenceRange_onlyMyself", "自分のみ");*/
+    public static final int EmployeeReferenceRange_ONLY_MYSELF = 3;
+    /*It's a point to start Generate function_no */
+    public static final int ROW_START_FUNCTION_NO = 7;
 
     private MasterData toData(NtsResultSet.NtsResultRecord r, List<Integer> listFunctionNo) {
         Map<String, MasterCellData> data = new HashMap<>();
@@ -65,7 +69,7 @@ public class JpaRoleEmploymentExport  extends JpaRepository implements RoleEmpEx
         for (int i = 0 ; i < listFunctionNo.size() ; i++){
             data.put(RoleEmploymentExportImpl.FUNCTION_NO_+listFunctionNo.get(i), MasterCellData.builder()
                     .columnId(RoleEmploymentExportImpl.FUNCTION_NO_+listFunctionNo.get(i))
-                    .value(r.getString("REF_RANGE").equals("3") ? null : r.getString(i+7).equals("1")? "○" : "ー")
+                    .value(r.getString("REF_RANGE").equals(EmployeeReferenceRange_ONLY_MYSELF+"") ? null : r.getString(i+ROW_START_FUNCTION_NO).equals("1")? "○" : "-")
                     .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                     .build());
         }
@@ -75,11 +79,12 @@ public class JpaRoleEmploymentExport  extends JpaRepository implements RoleEmpEx
     @Override
     public List<MasterData> findAllRoleEmployment(int roleType, String cId) {
         List<MasterData> datas = new ArrayList<>();
-        functionNo = findAllFunctionNo();
-        if(functionNo.isEmpty()){
+        Map<Integer, String> arrFunctionNo;
+        arrFunctionNo = findAllFunctionNo();
+        if(arrFunctionNo.isEmpty()){
             return new ArrayList<MasterData>();
         }
-        List<Integer> listFunctionNo = functionNo.keySet().stream().collect(Collectors.toList());
+        List<Integer> listFunctionNo = arrFunctionNo.keySet().stream().collect(Collectors.toList());
         String functionNo = CommonRole.getQueryFunctionNo(listFunctionNo);
         String GET_EXPORT_EXCEL = "SELECT ROLE_CD , ROLE_NAME , ASSIGN_ATR , REF_RANGE , FUTURE_DATE_REF_PERMIT, WEB_MENU_NAME,SCHEDULE_EMPLOYEE_REF, " +
                 functionNo +
@@ -95,7 +100,7 @@ public class JpaRoleEmploymentExport  extends JpaRepository implements RoleEmpEx
                 "    FOR [FUNCTION_NO] IN (" +
                 functionNo +
                 ")) AS pvt "+
-                "ORDER BY ROLE_CD,ASSIGN_ATR ASC";
+                "ORDER BY ASSIGN_ATR,ROLE_CD ASC";
         try (PreparedStatement stmt = this.connection()
                 .prepareStatement(GET_EXPORT_EXCEL)){
             stmt.setString(1,cId);

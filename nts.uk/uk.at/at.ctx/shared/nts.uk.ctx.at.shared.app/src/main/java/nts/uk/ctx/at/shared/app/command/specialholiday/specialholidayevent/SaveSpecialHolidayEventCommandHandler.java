@@ -15,11 +15,11 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeLimit;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeRange;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.GenderCls;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.AgeStandardType;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.ClassificationList;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.EmploymentList;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.FixedDayGrant;
-import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.GenderAtr;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.MaxNumberDayType;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEvent;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEventRepository;
@@ -84,7 +84,7 @@ public class SaveSpecialHolidayEventCommandHandler extends CommandHandler<SaveSp
 				EnumAdaptor.valueOf(cmd.getGenderRestrict(), UseAtr.class),
 				EnumAdaptor.valueOf(cmd.getRestrictEmployment(), UseAtr.class),
 				EnumAdaptor.valueOf(cmd.getRestrictClassification(), UseAtr.class),
-				EnumAdaptor.valueOf(cmd.getGender(), GenderAtr.class),
+				EnumAdaptor.valueOf(cmd.getGender(), GenderCls.class),
 				new AgeRange(new AgeLimit(cmd.getAgeRange().getAgeLowerLimit()),
 						new AgeLimit(cmd.getAgeRange().getAgeHigherLimit())),
 				EnumAdaptor.valueOf(cmd.getAgeStandard(), AgeStandardType.class), cmd.getAgeStandardBaseDate(),

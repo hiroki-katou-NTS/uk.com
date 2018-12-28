@@ -20,5 +20,5 @@ public interface AfterWorkTimeTypeReflect {
 	 * @param para
 	 * @return
 	 */
-	public boolean checkReflectWorkTimeType(GobackReflectParameter para);
+	public boolean checkReflectWorkTimeType(GobackReflectParameter para, WorkInfoOfDailyPerformance dailyInfor);
 }
