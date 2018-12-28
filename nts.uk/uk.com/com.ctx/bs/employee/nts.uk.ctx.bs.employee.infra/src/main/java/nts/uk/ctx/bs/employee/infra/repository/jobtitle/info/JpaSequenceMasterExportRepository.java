@@ -27,8 +27,9 @@ import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMaster_;
 @Stateless
 public class JpaSequenceMasterExportRepository extends JpaRepository implements SequenceMasterExportRepository {
 
+
 	@Override
-	public List<JobTitleInfo> findAll(String companyId, GeneralDate startDate, GeneralDate endDate) {
+	public List<JobTitleInfo> findAll(String companyId, GeneralDate baseDate) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -44,9 +45,9 @@ public class JpaSequenceMasterExportRepository extends JpaRepository implements 
 		listPredicate
 				.add(criteriaBuilder.equal(root.get(BsymtJobInfo_.bsymtJobInfoPK).get(BsymtJobInfoPK_.cid), companyId));
 		listPredicate.add(criteriaBuilder
-				.lessThanOrEqualTo(root.get(BsymtJobInfo_.bsymtJobHist).get(BsymtJobHist_.startDate), startDate));
+				.lessThanOrEqualTo(root.get(BsymtJobInfo_.bsymtJobHist).get(BsymtJobHist_.startDate), baseDate));
 		listPredicate.add(criteriaBuilder
-				.greaterThanOrEqualTo(root.get(BsymtJobInfo_.bsymtJobHist).get(BsymtJobHist_.endDate), endDate));
+				.greaterThanOrEqualTo(root.get(BsymtJobInfo_.bsymtJobHist).get(BsymtJobHist_.endDate), baseDate));
 
 		cq.where(listPredicate.toArray(new Predicate[] {}));
 

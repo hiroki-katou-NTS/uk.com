@@ -57,9 +57,14 @@ module nts.uk.com.view.cmm013.a {
         }
         
         
-                //saveAsExcel
-        export function saveAsExcel(languageId: string): JQueryPromise<any> {
-            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Sequence", languageId: languageId, domainType: "CMM013"+nts.uk.resource.getText("CMM013_53"), reportType: 0, startDate: moment.utc("2018/12/19", 'YYYY/MM/DD'), endDate: moment.utc("2018/12/19", 'YYYY/MM/DD')});
+        export function saveAsExcel(mode: string, baseDate: string): JQueryPromise<any> {
+            return nts.uk.request.exportFile('/masterlist/report/print',
+                {
+                    domainId: 'Sequence', domainType: 'CMM013' + nts.uk.resource.getText("CMM013_53"),
+                    languageId: 'ja', reportType: 0, mode: mode,
+                    baseDate: moment.utc(baseDate).format()
+                   
+                });
         }
         
         /**

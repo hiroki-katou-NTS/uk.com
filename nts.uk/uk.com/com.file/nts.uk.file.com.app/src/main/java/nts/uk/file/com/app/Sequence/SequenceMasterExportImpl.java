@@ -19,6 +19,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterExportRepository;
@@ -162,9 +163,10 @@ public class SequenceMasterExportImpl implements MasterListData{
 		
 		List<MasterData> datas = new ArrayList<>();
 
-		List<JobTitleInfo> listFindAll = sequenceMasterExportRepository.findAll(companyId,query.getStartDate(), query.getEndDate())
+		List<JobTitleInfo> listFindAll = sequenceMasterExportRepository.findAll(companyId , query.getBaseDate())
 				.stream()
-				.sorted(Comparator.comparing(JobTitleInfo::getJobTitleCode)).collect(Collectors.toList());
+				.sorted(Comparator.comparing(JobTitleInfo::getJobTitleCode, Comparator.nullsLast(JobTitleCode::compareTo)))
+				.collect(Collectors.toList());
 
 		if(CollectionUtil.isEmpty(listFindAll)){
 			return null;
