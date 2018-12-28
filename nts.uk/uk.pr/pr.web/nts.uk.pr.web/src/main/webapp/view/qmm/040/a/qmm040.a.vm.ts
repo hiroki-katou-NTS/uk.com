@@ -285,7 +285,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 self.employeeInfoImports = dataNameAndAmount.employeeInfoImports;
                 let personalAmountData = dataNameAndAmount.personalAmount.map(x => new PersonalAmount(x));
                 for (let personalAmount of personalAmountData) {
-                    let employeeInfo = self.employeeInfoImports.find(x => x.sid === personalAmount.empId);
+                    let employeeInfo = _.find( self.employeeInfoImports, x => x.sid === personalAmount.empId);
                     personalAmount.employeeCode = employeeInfo.scd;
                     personalAmount.businessName = employeeInfo.businessName;
                 }
@@ -295,6 +295,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 self.loadMGrid();
             }).always(() => {
                 block.clear();
+            }).fail((err) => {
+                console.log(err.message);
             });
         }
 

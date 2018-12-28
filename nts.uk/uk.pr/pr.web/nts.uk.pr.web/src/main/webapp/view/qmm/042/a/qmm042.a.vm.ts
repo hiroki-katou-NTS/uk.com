@@ -59,7 +59,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 self.employeeInfoImports = dataNameAndAmount.employeeInfoImports;
                 let personalAmountData = dataNameAndAmount.workIndividualPrices.map(x => new WorkIndividualPrice(x));
                 for (let personalAmount of personalAmountData) {
-                    let employeeInfo = self.employeeInfoImports.find(x => x.sid === personalAmount.employeeID);
+                    let employeeInfo = _.find(self.employeeInfoImports, x => x.sid === personalAmount.employeeID);
                     personalAmount.employeeCode = employeeInfo.scd;
                     personalAmount.businessName = employeeInfo.businessName;
                 }
