@@ -172,7 +172,7 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 			+" INNER JOIN KSCMT_EST_DAYS_EMP_SET edes ON etes.CID = edes.CID AND etes.TARGET_YEAR = edes.TARGET_YEAR AND etes.TARGET_CLS = edes.TARGET_CLS AND etes.EMPCD = edes.EMPCD AND etes.CID = ?cid"
 			+" INNER JOIN BSYMT_EMPLOYMENT emp ON etes.CID = emp.CID AND etes.EMPCD = emp.CODE AND etes.CID = ?cid"
 			+" WHERE ?startDate <= etes.TARGET_YEAR AND  etes.TARGET_YEAR <= ?endDate"
-			+" ) AS TABLE_RESULT";
+			+" ) AS TABLE_RESULT ORDER BY TABLE_RESULT.CODE, TABLE_RESULT.YEAR_TIME , TABLE_RESULT.MONTH_TIME ASC ";
 	
 	private static final String GET_EXPORT_EXCEL_SHEET_FIVE = "SELECT"
 			+" 		CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.YEAR_TIME ELSE NULL END YEAR_TIME"
@@ -224,7 +224,7 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 			+" 	INNER JOIN KSCMT_EST_DAYS_PER_SET edes ON edmi.SID = edes.SID AND etes.TARGET_YEAR = edes.TARGET_YEAR AND etes.TARGET_CLS = edes.TARGET_CLS "
 			+" 	WHERE "
 			+" ?startDate <= etes.TARGET_YEAR AND etes.TARGET_YEAR <= ?endDate"
-			+" ) AS TABLE_RESULT";
+			+" ) AS TABLE_RESULT ORDER BY TABLE_RESULT.CODE, TABLE_RESULT.YEAR_TIME , TABLE_RESULT.MONTH_TIME ASC";
 	
 	/** Sheet 1 **/
 	@Override
