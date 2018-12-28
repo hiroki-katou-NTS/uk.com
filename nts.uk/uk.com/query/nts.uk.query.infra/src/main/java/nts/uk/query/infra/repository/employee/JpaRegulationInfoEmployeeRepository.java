@@ -58,7 +58,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 	private static final int MAX_WHERE_IN = 1000;
 	
 	/** The Constant MAX_PARAMETERS. */
-	private static final int MAX_PARAMETERS = 2000;
+	private static final int MAX_PARAMETERS = 800;
 
 	/** The Constant NAME_TYPE. */
 	// 現在は、氏名の種類を選択する機能がないので、「ビジネスネーム日本語」固定で
@@ -84,7 +84,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 
 	private static final String EMPTY_LIST = "EMPTY_LIST";
 	private static final Integer ELEMENT_300 = 300;
-	private static final Integer ELEMENT_2000 = 2000;
+	private static final Integer ELEMENT_800 = 800;
 	
 	/*
 	 * (non-Javadoc)
@@ -95,7 +95,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 	 */
 	@Override
 	public List<RegulationInfoEmployee> find(String comId, EmployeeSearchQuery paramQuery) {
-		// max paramenter count = 2100
+		// max paramenter count = 800
 		int countParameter = 0;
 		
 		// Return empty list if all status of employee = 対象外
@@ -313,7 +313,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 				// classification condition
 				CollectionUtil.split(classificationCodes, ELEMENT_300, splitClassificationCodes -> {
 					// jobtitle condition
-					CollectionUtil.split(workplaceCodes, ELEMENT_2000 - (splitEmploymentCodes.size() + splitJobTitleCodes.size() + splitClassificationCodes.size() - countParameterFinal), splitWorkplaceCodes -> {
+					CollectionUtil.split(workplaceCodes, ELEMENT_800 - (splitEmploymentCodes.size() + splitJobTitleCodes.size() + splitClassificationCodes.size() - countParameterFinal), splitWorkplaceCodes -> {
 						resultList.addAll(executeQuery(paramQuery.getFilterByEmployment(), splitEmploymentCodes, 
 								paramQuery.getFilterByWorkplace(), splitWorkplaceCodes, 
 								paramQuery.getFilterByClassification(), splitClassificationCodes, 

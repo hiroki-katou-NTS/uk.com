@@ -163,6 +163,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	@Inject
 	private FileStorage fileStorage;
 
+
 	private final static String GET_ASSOCIATION = "getOutCondAssociation";
 	private final static String GET_ITEM_NAME = "getOutCondItemName";
 	private final static String USE_NULL_VALUE_ON = "on";
@@ -203,17 +204,17 @@ public class CreateExOutTextService extends ExportService<Object> {
 	@Override
 	protected void handle(ExportServiceContext<Object> context) {
 		ExOutSetting domain = (ExOutSetting) context.getQuery();
-		executeServerExOutManual(domain, context.getGeneratorContext());
+		executeServerExOutManual(domain, context.getGeneratorContext(),domain.getReferenceDate());
 	}
 
-	public void executeServerExOutManual(ExOutSetting exOutSetting, FileGeneratorContext generatorContext) {
+	public void executeServerExOutManual(ExOutSetting exOutSetting, FileGeneratorContext generatorContext,GeneralDate baseDate) {
 		ExOutSettingResult settingResult = getServerExOutSetting(exOutSetting);
 		if (settingResult == null) {
 			finishFaultWhenStart(exOutSetting.getProcessingId());
 			return;
 		}
 		initExOutLogInformation(exOutSetting, settingResult);
-		serverExOutExecution(generatorContext, exOutSetting, settingResult);
+		serverExOutExecution(generatorContext, exOutSetting, settingResult, baseDate);
 	}
 
 	// サーバ外部出力設定取得
@@ -314,7 +315,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	// サーバ外部出力実行
 	private void serverExOutExecution(FileGeneratorContext generatorContext, ExOutSetting exOutSetting,
-			ExOutSettingResult settingResult) {
+			ExOutSettingResult settingResult,GeneralDate baseDate) {
 
 		String processingId = exOutSetting.getProcessingId();
 		OperationStateResult state;
@@ -353,7 +354,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		exOutOpMngRepo.update(exOutOpMng);
 
 		CategorySetting type = exOutCtg.get().getCategorySet();
-		state = serverExOutTypeDataOrMaster(type, generatorContext, exOutSetting, settingResult, fileName);
+		state = serverExOutTypeDataOrMaster(type, generatorContext, exOutSetting, settingResult, fileName, baseDate);
 
 		createOutputLogInfoEnd(generatorContext, processingId, state, fileName);
 	}
@@ -421,7 +422,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	
 	@SuppressWarnings("unchecked")
 	private OperationStateResult serverExOutTypeDataOrMaster(CategorySetting type, FileGeneratorContext generatorContext,
-			ExOutSetting exOutSetting, ExOutSettingResult settingResult, String fileName) {
+			ExOutSetting exOutSetting, ExOutSettingResult settingResult, String fileName,GeneralDate baseDate) {
 		String loginSid = AppContexts.user().employeeId();
 		List<String> header = new ArrayList<>();
 		List<Map<String, Object>> csvData = new ArrayList<>();
@@ -473,16 +474,18 @@ public class CreateExOutTextService extends ExportService<Object> {
 					
 					for (List<String> lineData : data) {
 						lineDataResult = fileLineDataCreation(exOutSetting.getProcessingId(), lineData,
-								outputItemCustomList, sid, stringFormat);
+								outputItemCustomList, sid, stringFormat, baseDate);
 						stateResult = (String) lineDataResult.get(RESULT_STATE);
 						lineDataCSV = (Map<String, Object>) lineDataResult.get(LINE_DATA_CSV);
 						if ((lineDataCSV != null) && RESULT_OK.equals(stateResult))
-							csvData.add(lineDataCSV);
+							csvData.add(lineDataCSV); 
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-					
-					createOutputLogError(exOutSetting.getProcessingId(), "Sql Exception", null, sid, null);
+					String str = e.getMessage();
+					str.indexOf("Internal Exception");
+					str.indexOf("Error Code");
+					createOutputLogError(exOutSetting.getProcessingId(), str.substring(str.indexOf("Internal Exception"), str.indexOf("Error Code")-2).trim().split(":")[2], null, sid, null);
 				}
 			}
 			// サーバ外部出力タイプマスター系
@@ -508,7 +511,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 						return new OperationStateResult(checkResult);;
 	
 					lineDataResult = fileLineDataCreation(exOutSetting.getProcessingId(), lineData, outputItemCustomList,
-							loginSid, stringFormat);
+							loginSid, stringFormat,baseDate);
 					stateResult = (String) lineDataResult.get(RESULT_STATE);
 					lineDataCSV = (Map<String, Object>) lineDataResult.get(LINE_DATA_CSV);
 					if (RESULT_OK.equals(stateResult) && (lineDataCSV != null))
@@ -750,7 +753,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	// サーバ外部出力ファイル行データ作成
 	private Map<String, Object> fileLineDataCreation(String processingId, List<String> lineData,
-			List<OutputItemCustom> outputItemCustomList, String sid, StringFormat stringFormat) {
+			List<OutputItemCustom> outputItemCustomList, String sid, StringFormat stringFormat,GeneralDate baseDate) {
 
 		Map<String, Object> result = new HashMap<String, Object>();
 		Map<String, Object> lineDataCSV = new HashMap<String, Object>();
@@ -789,6 +792,11 @@ public class CreateExOutTextService extends ExportService<Object> {
 			useNullValue = fileItemDataCreationResult.get(USE_NULL_VALUE);
 
 			if (useNullValue == USE_NULL_VALUE_ON || StringUtils.isEmpty(targetValue)) {
+				if(stringFormat == StringFormat.SINGLE_QUOTATION) {
+					targetValue = stringFormat.character +stringFormat.character + stringFormat.character;
+				}else if(stringFormat == StringFormat.DOUBLE_QUOTATION) {
+					targetValue = stringFormat.character +stringFormat.character ;
+				}
 				lineDataCSV.put(outputItemCustom.getStandardOutputItem().getOutputItemName().v(), targetValue);
 				index += outputItemCustom.getCtgItemDataList().size();
 				continue;
@@ -796,7 +804,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 			fileItemDataCheckedResult = checkOutputFileType(targetValue,
 					outputItemCustom.getStandardOutputItem().getItemType(), outputItemCustom.getDataFormatSetting(),
-					sid);
+					sid,baseDate);
 			resultState = fileItemDataCheckedResult.get(RESULT_STATE);
 			errorMess = fileItemDataCheckedResult.get(ERROR_MESS);
 			targetValue = fileItemDataCheckedResult.get(RESULT_VALUE);
@@ -826,6 +834,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		return result;
 	}
 
+	//サーバ外部出力ログエラー作成
 	private void createOutputLogError(String processingId, String errorContent, String targetValue, String sid,
 			String errorItem) {
 		String employeeCode = null;
@@ -862,7 +871,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	// サーバ外部出力ファイル項目作成
 	private Map<String, String> fileItemDataCreation(List<String> lineData, OutputItemCustom outputItemCustom,
 			boolean isSetNull, String nullValueReplace, int index) {
-		String itemValue = "0";
+		String itemValue = "";
 		String value;
 		Map<String, String> result = new HashMap<String, String>();
 
@@ -872,6 +881,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 			return result;
 		}
 		List<CategoryItem> categoryItems = outputItemCustom.getStandardOutputItem().getCategoryItems();
+		List<ResultCharater> listResultCharater = new ArrayList<>();
 		for (int i = 0; i < categoryItems.size(); i++) {
 			value = lineData.get(index);
 			index++;
@@ -890,10 +900,15 @@ public class CreateExOutTextService extends ExportService<Object> {
 //				continue;
 //			}
 
+			if (outputItemCustom.getStandardOutputItem().getItemType() == ItemType.CHARACTER) {
+				listResultCharater.add(new ResultCharater(categoryItems.get(i).getDisplayOrder(),value));
+				//itemValue += value;
+				continue;
+			}  
 			if ((outputItemCustom.getStandardOutputItem().getItemType() != ItemType.NUMERIC)
 					&& (outputItemCustom.getStandardOutputItem().getItemType() != ItemType.TIME)
 					&& (outputItemCustom.getStandardOutputItem().getItemType() != ItemType.INS_TIME)) {
-				itemValue += value;
+				itemValue = value;
 				continue;
 			}
 			
@@ -902,13 +917,20 @@ public class CreateExOutTextService extends ExportService<Object> {
 			if ( StringUtils.isEmpty(value))
 				continue;
 			if ( !operationSymbol.isPresent() || operationSymbol.get() == OperationSymbol.PLUS) {
-				itemValue = String.valueOf((Double.parseDouble(itemValue)) + Double.parseDouble(value));
+				itemValue = String.valueOf((Double.parseDouble(itemValue.equals("")?"0":itemValue)) + Double.parseDouble(value.equals("")?"0":value));
 			} else if (operationSymbol.get() == OperationSymbol.MINUS) {
-				itemValue = String.valueOf(Double.parseDouble(itemValue) - Double.parseDouble(value));
+				itemValue = String.valueOf(Double.parseDouble(itemValue.equals("")?"0":itemValue) - Double.parseDouble(value.equals("")?"0":value));
 			}
 		}
-
-		result.put(ITEM_VALUE, itemValue.equals("0")?"":itemValue);
+		if(outputItemCustom.getStandardOutputItem().getItemType() == ItemType.CHARACTER) {
+			if(!listResultCharater.isEmpty()) {
+				List<ResultCharater> listResultCharaterSort = listResultCharater.stream().sorted((x,y)->x.getIndex()-y.getIndex()).collect(Collectors.toList());
+				for(ResultCharater resultCharater : listResultCharaterSort ) {
+					itemValue += resultCharater.getValue();
+				}
+			}
+		}
+		result.put(ITEM_VALUE,itemValue);
 		result.put(USE_NULL_VALUE, USE_NULL_VALUE_OFF);
 
 		return result;
@@ -1225,7 +1247,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	// サーバ外部出力ファイル型チェック
 	private Map<String, String> checkOutputFileType(String itemValue, ItemType itemType,
-			DataFormatSetting dataFormatSetting, String sid) {
+			DataFormatSetting dataFormatSetting, String sid,GeneralDate baseDate) {
 		Map<String, String> result;
 
 		try {
@@ -1246,7 +1268,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				result = checkDateType(itemValue, (DateFormatSet) dataFormatSetting);
 				break;
 			case AT_WORK_CLS:
-				result = checkOfficeType(itemValue, (AwDataFormatSet) dataFormatSetting, sid);
+				result = checkOfficeType(itemValue, (AwDataFormatSet) dataFormatSetting, sid, baseDate);
 				break;
 			default:
 				result = new HashMap<String, String>();
@@ -1310,7 +1332,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		String errorMess = "";
 		String targetValue;
 		BigDecimal decimaValue = new BigDecimal(itemValue);
-
+		
 		if ((setting.getFixedValueOperation() == NotUseAtr.USE) && setting.getFixedCalculationValue().isPresent()) {
 			if (setting.getFixedValueOperationSymbol() == FixedValueOperationSymbol.MINUS) {
 				decimaValue = decimaValue.subtract(setting.getFixedCalculationValue().get().v());
@@ -1449,33 +1471,39 @@ public class CreateExOutTextService extends ExportService<Object> {
 				BigDecimal intValue = decimaValue.divideToIntegralValue(BigDecimal.valueOf(60.00));
 				BigDecimal remainValue = decimaValue.subtract(intValue.multiply(BigDecimal.valueOf(60.00)));
 				decimaValue = intValue.add(remainValue.divide(BigDecimal.valueOf(100.00), 2, RoundingMode.HALF_UP));
+				targetValue = decimaValue.toString();
 			}
 		}
 		
 		decimaValue = ((setting.getOutputMinusAsZero() == NotUseAtr.USE) && (decimaValue.doubleValue() < 0))
 				? BigDecimal.valueOf(0) : decimaValue;
-
+				targetValue = decimaValue.toString();		
 		if (setting.getDecimalSelection() == DecimalSelection.DECIMAL) {
 			int precision = setting.getMinuteFractionDigit().map(item -> item.v()).orElse(0);
 			decimaValue = roundDecimal(decimaValue, precision, setting.getMinuteFractionDigitProcessCls());
+			targetValue = decimaValue.toString();
 		}
 
 		if ((Double.valueOf(itemValue) > 1440)
 				&& (setting.getTimeSeletion() == HourMinuteClassification.HOUR_AND_MINUTE)
 				&& (setting.getNextDayOutputMethod() == NextDayOutputMethod.OUT_PUT_24HOUR)) {
-			decimaValue.subtract(new BigDecimal(24.00));
+			//decimaValue.subtract(new BigDecimal(24.00));
+			decimaValue = decimaValue.subtract(new BigDecimal(24.00));
+			targetValue = "翌日" + decimaValue.toString();
 		}
 
 		if ((decimaValue.doubleValue() < 0)
 				&& (setting.getTimeSeletion() == HourMinuteClassification.HOUR_AND_MINUTE)) {
 			if (setting.getPrevDayOutputMethod() == PreviousDayOutputMethod.FORMAT0H00) {
 				decimaValue = new BigDecimal(0.00);
+				targetValue = decimaValue.toString() + ":00";
 			} else if (setting.getPrevDayOutputMethod() == PreviousDayOutputMethod.FORMAT24HOUR) {
-				decimaValue.add(new BigDecimal(24.00));
+				decimaValue = decimaValue.add(new BigDecimal(24.00));
+				targetValue = "前日" + decimaValue.toString();
 			}
 		}
-
-		targetValue = decimaValue.toString();
+		
+		
 		if (setting.getDelimiterSetting() == DelimiterSetting.NO_DELIMITER) {
 			targetValue = targetValue.replace(DOT, "");
 		} else if (setting.getDelimiterSetting() == DelimiterSetting.SEPARATE_BY_COLON) {
@@ -1492,7 +1520,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		result.put(ERROR_MESS, errorMess);
 		result.put(RESULT_VALUE, targetValue);
 
-		return result;
+ 		return result;
 	}
 
 	// サーバ外部出力ファイル型チェック日付型
@@ -1525,10 +1553,32 @@ public class CreateExOutTextService extends ExportService<Object> {
 			} else {
 				JapaneseEraName japaneseEraName = japaneseEraNameOptional.get();
 				
-				StringBuilder japaneseDate = new StringBuilder(japaneseEraName.getName()); 
-				japaneseDate.append((date.year() - japaneseEraName.startDate().year() + 1) + SLASH);		
-				japaneseDate.append(date.month() + SLASH);
-				japaneseDate.append(date.day());
+				StringBuilder japaneseDate = new StringBuilder(japaneseEraName.getName());
+				if(formatDate == DateOutputFormat.JJYY_MM_DD){
+				japaneseDate.append((date.year() - japaneseEraName.startDate().year() + 1) + SLASH);
+				if (date.month() < 10) {
+					japaneseDate.append("0" + date.month() + SLASH);
+				}else{
+					japaneseDate.append(date.month() + SLASH);
+				}
+				if (date.day() < 10) {
+					japaneseDate.append("0" + date.day());
+				}else{
+					japaneseDate.append(date.day());
+				}
+				} else if(formatDate == DateOutputFormat.JJYYMMDD){
+					japaneseDate.append((date.year() - japaneseEraName.startDate().year() + 1) );
+					if (date.month() < 10) {
+					japaneseDate.append("0" + date.month());
+					} else {
+						japaneseDate.append(date.month());
+					}
+					if (date.day() < 10) {
+						japaneseDate.append("0" + date.day());
+					}else {
+					japaneseDate.append(date.day());
+					}
+				}
 				
 				targetValue = japaneseDate.toString();
 			}
@@ -1542,16 +1592,16 @@ public class CreateExOutTextService extends ExportService<Object> {
 	}
 
 	// サーバ外部出力ファイル型チェック在職区分型
-	private Map<String, String> checkOfficeType(String itemValue, AwDataFormatSet setting, String sid) {
+	private Map<String, String> checkOfficeType(String itemValue, AwDataFormatSet setting, String sid,GeneralDate baseDate) {
 		Map<String, String> result = new HashMap<String, String>();
 		String state = RESULT_OK;
 		String errorMess = "";
 		String targetValue = "";
 		StatusOfEmployment status;
-		GeneralDate date = GeneralDate.fromString(itemValue, yyyy_MM_dd);
+		//GeneralDate date = GeneralDate.fromString(itemValue, yyyy_MM_dd);
 		
 		Optional<StatusOfEmploymentResult> statusOfEmployment = statusOfEmploymentAdapter.getStatusOfEmployment(sid,
-				date);
+				baseDate);
 		if (statusOfEmployment.isPresent()) {
 			status = EnumAdaptor.valueOf(statusOfEmployment.get().getStatusOfEmployment(), StatusOfEmployment.class);
 			switch (status) {

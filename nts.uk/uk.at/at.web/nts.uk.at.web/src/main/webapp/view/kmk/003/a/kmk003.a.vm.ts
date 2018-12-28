@@ -796,6 +796,28 @@ module nts.uk.at.view.kmk003.a {
                     self.mainSettingModel.predetemineTimeSetting.predTime.addTime.afternoon(self.mainSettingModel.predetemineTimeSetting.predTime.predTime.afternoon());
                 }
             }
+            
+            private exportExcel(): void {
+                let self = this;
+                nts.uk.ui.block.grayout();
+                service.saveAsExcel().done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
+            /**
+             * check role
+             */
+            hasPermission(): boolean {
+                if (__viewContext.user.role.attendance || __viewContext.user.role.payroll 
+                    || __viewContext.user.role.personnel  || __viewContext.user.role.officeHelper){
+                    return true;
+                }
+                
+                return false;
+            }
             //end view model
             
         }

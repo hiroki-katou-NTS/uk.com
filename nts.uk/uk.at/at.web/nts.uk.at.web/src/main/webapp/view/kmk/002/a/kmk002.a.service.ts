@@ -8,8 +8,7 @@ module nts.uk.at.view.kmk002.a {
             findOptionalItemDetail: 'ctx/at/record/optionalitem/find',
             findOptionalItemHeaders: 'ctx/at/record/optionalitem/findall',
             saveOptionalItem: 'ctx/at/record/optionalitem/save',
-            getOptItemEnum: 'ctx/at/record/optionalitem/getenum',
-            saveAsExcel: "file/at/worktypereport/saveAsExcel"
+            getOptItemEnum: 'ctx/at/record/optionalitem/getenum'
         };
 
         export function saveAsExcel(languageId: string): JQueryPromise<any> {

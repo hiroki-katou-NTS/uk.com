@@ -13,6 +13,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import javax.ejb.Stateless;
 import java.sql.PreparedStatement;
 import java.util.*;
+import java.sql.Date;
 
 @Stateless
 public class GrantAdminRoleImpl extends JpaRepository implements GrantAdminRoleRepository {
@@ -28,6 +29,7 @@ public class GrantAdminRoleImpl extends JpaRepository implements GrantAdminRoleR
             "           WHERE g.CID = ? AND ROLE_TYPE = ?) tb " +
             " INNER JOIN SACMT_USER u ON tb.USER_ID = u.USER_ID " +
             " LEFT JOIN BPSMT_PERSON p ON p.PID = u.ASSO_PID " +
+            " WHERE ? BETWEEN STR_D AND END_D" +
             " ORDER BY LOGIN_ID";
 
     private static final String GET_EXPORT_EXCEL_COMPANY_MANAGER = " SELECT " +
@@ -50,17 +52,19 @@ public class GrantAdminRoleImpl extends JpaRepository implements GrantAdminRoleR
             "           INNER JOIN SACMT_ROLE_INDIVI_GRANT g ON c.CID = g.CID " +
             "           INNER JOIN SACMT_USER u ON g.USER_ID = u.USER_ID " +
             "           LEFT JOIN BPSMT_PERSON p ON p.PID = u.ASSO_PID WHERE g.ROLE_TYPE = ? AND c.ABOLITION_ATR = 0" +
+            "           AND ? BETWEEN g.STR_D AND g.END_D" +
             "          ) tb " +
             "ORDER BY tb.CID, tb.LOGIN_ID";
 
     @SneakyThrows
     @Override
-    public List<MasterData> getDataExport(String companyId, int roleType) {
+    public List<MasterData> getDataExport(String companyId, int roleType, Date date) {
 
         List<MasterData> datas;
         try(PreparedStatement stmt = this.connection().prepareStatement(GET_EXPORT_EXCEL)){
             stmt.setString(1,companyId);
             stmt.setInt(2,roleType);
+            stmt.setDate(3,date);
             datas = new NtsResultSet(stmt.executeQuery()).getList(x -> toMasterData(x));
         }
         return datas;
@@ -132,11 +136,12 @@ public class GrantAdminRoleImpl extends JpaRepository implements GrantAdminRoleR
 
     @SneakyThrows
     @Override
-    public List<MasterData> getDataExportCompanyManagerMode(int roleType) {
+    public List<MasterData> getDataExportCompanyManagerMode(int roleType, Date date) {
         List<MasterData> datas;
 
         try(PreparedStatement stmt = this.connection().prepareStatement(GET_EXPORT_EXCEL_COMPANY_MANAGER)){
             stmt.setInt(1,roleType);
+            stmt.setDate(2,date);
             datas = new NtsResultSet(stmt.executeQuery()).getList(x -> toMasterDataCompanyManager(x));
         }
         return datas;

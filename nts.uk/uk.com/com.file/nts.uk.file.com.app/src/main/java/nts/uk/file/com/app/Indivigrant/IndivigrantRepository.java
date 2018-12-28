@@ -5,5 +5,5 @@ import java.util.List;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 public interface IndivigrantRepository {
-	List<MasterData> getDataExport();
+	List<MasterData> getDataExport(String baseDate);
 }

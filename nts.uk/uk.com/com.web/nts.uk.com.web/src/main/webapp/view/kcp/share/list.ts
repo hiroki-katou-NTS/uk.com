@@ -386,7 +386,7 @@ module kcp.share.list {
             let self = this;
             const gridList = $('#' + self.componentGridId);
             const searchBox = $('#' + self.searchBoxId);
-            if (!_.isEmpty(gridList) && gridList.hasClass('nts-gridlist') && !_.isEmpty(searchBox)) {
+            if (!_.isEmpty(gridList) && gridList.hasClass('nts-gridlist')) {
                 _.defer(() => {
                     // clear search box before update datasource
                     if (self.isRemoveFilterWhenReload) {
@@ -395,7 +395,10 @@ module kcp.share.list {
 
                     // update datasource
                     gridList.ntsGridList("setDataSource", self.itemList());
-                    searchBox.ntsSearchBox("setDataSource", self.itemList());
+                    
+                    if (self.listType !== ListType.EMPLOYEE) {
+                        searchBox.ntsSearchBox("setDataSource", self.itemList());        
+                    }
 
                     // select all items in multi mode
                     if (self.isSelectAllAfterReload && !_.isEmpty(self.itemList()) && self.isMultipleSelect) {
@@ -648,7 +651,7 @@ module kcp.share.list {
                 ko.cleanNode($input[0]);
                 ko.applyBindings(self, $input[0]);
                 $input.find('.base-date-editor').find('.nts-input').width(133);
-
+                
                 self.loadNtsGridList();
 
                 // ReloadNtsGridList when itemList changed
@@ -658,7 +661,7 @@ module kcp.share.list {
                     self.reloadNtsGridList();
                     self.createGlobalVarDataList(newList, $input);
                 });
-
+                
                 if (data.listType == ListType.EMPLOYMENT) {
                     self.selectedClosureId.subscribe(id => {
                         self.componentOption.selectedClosureId(id); // update selected closureId to caller's screen
@@ -860,6 +863,7 @@ module kcp.share.list {
          * Init Grid Style.
          */
         private initGridStyle(data: ComponentOption) {
+            let self = this;
             var codeColumnSize: any = 50;
             var companyColumnSize: number = 0;
             var heightOfRow : number = data.isMultiSelect ? 24 : 23;
@@ -886,6 +890,10 @@ module kcp.share.list {
             var minTotalSize = 350;
             var totalRowsHeight = heightOfRow * this.maxRows + 24;
             var totalHeight: number = this.hasBaseDate || this.isDisplayClosureSelection ? 101 : 55;
+            if ( data.listType === ListType.EMPLOYEE) {
+                totalHeight -= 48;
+            }
+            
             var optionalColumnSize = 0;
 
             if (this.showOptionalColumn) {
@@ -1130,7 +1138,7 @@ var LIST_COMPONENT_HTML = `<style type="text/css">
                 padding: hasPadding ? '20px' : '0px'},
                 css: {'caret-right caret-background bg-green': !isDialog},
                 attr: {id: componentWrapperId}">
-        <!-- ko if: !isDialog -->
+        <!-- ko if: (!isDialog && listType !== kcp.share.list.ListType.EMPLOYEE) -->
             <i class="icon icon-searchbox"></i>
         <!-- /ko -->
         <!-- ko if: hasBaseDate -->
@@ -1161,8 +1169,9 @@ var LIST_COMPONENT_HTML = `<style type="text/css">
         <!-- /ko -->
         <!-- End of Upgrade -->
 
-        <div data-bind=" attr: {id: searchBoxId}, style:{width: gridStyle.totalComponentSize + 'px'}" style="display: inline-block"></div>
-
+        <!-- ko if: listType !== kcp.share.list.ListType.EMPLOYEE -->
+            <div data-bind=" attr: {id: searchBoxId}, style:{width: gridStyle.totalComponentSize + 'px'}" style="display: inline-block"></div>
+        <!-- /ko -->
         <table id="grid-list-all-kcp"></table>
     </div>`;
 }

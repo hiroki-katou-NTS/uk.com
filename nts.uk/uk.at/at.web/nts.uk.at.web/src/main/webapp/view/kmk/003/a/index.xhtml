@@ -105,6 +105,7 @@
 				<button id="saveButton" tabindex="2" class="proceed" data-bind="click: save">#{i18n.getText('KMK003_4')}</button>
 				<button tabindex="3" data-bind="enable: isUpdateMode, click: enterCopyMode">
 					#{i18n.getText('KMK003_5')}</button>
+				<button tabindex="3" data-bind="click: exportExcel, visible:hasPermission()">#{i18n.getText('KMK003_1016')}</button>
 				<button tabindex="4" class="danger" data-bind="enable: isUpdateMode, click: removeWorkTime">
 					#{i18n.getText('KMK003_6')}</button>
 			</div>

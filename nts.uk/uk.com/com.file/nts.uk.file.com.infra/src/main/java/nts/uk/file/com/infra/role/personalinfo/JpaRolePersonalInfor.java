@@ -29,15 +29,15 @@ import java.util.stream.Collectors;
 @Stateless
 public class JpaRolePersonalInfor extends JpaRepository implements RolePersonalInforRepository {
   
-    private Map<Integer, String> functionNo;
     @Override
-    public List<MasterData> findAllRolePersonalInfor(int roleType, String cId) {
+    public List<MasterData> findAllRolePersonalInfor(int roleType, String cId) {      
         List<MasterData> datas = new ArrayList<>();
-        functionNo = findAllFunctionNo();
-        if(functionNo.isEmpty()){
+        Map<Integer, String> arrFunctionNo;
+        arrFunctionNo = findAllFunctionNo();
+        if(arrFunctionNo.isEmpty()){
             return new ArrayList<MasterData>();
         }
-        List<Integer> listFunctionNo = functionNo.keySet().stream().collect(Collectors.toList());
+        List<Integer> listFunctionNo = arrFunctionNo.keySet().stream().collect(Collectors.toList());
         String functionNo = CommonRole.getQueryFunctionNo(listFunctionNo);
         String GET_EXPORT_EXCEL = "SELECT ROLE_CD,ROLE_NAME,ASSIGN_ATR,REF_RANGE ,REFER_FUTURE_DATE," +
                 functionNo +
@@ -103,7 +103,7 @@ public class JpaRolePersonalInfor extends JpaRepository implements RolePersonalI
         for (int i = 0 ; i < listFunctionNo.size() ; i++){
             data.put(RolePersonalInforExportImpl.FUNCTION_NO_+listFunctionNo.get(i), MasterCellData.builder()
                     .columnId(RolePersonalInforExportImpl.FUNCTION_NO_+listFunctionNo.get(i))
-                    .value(r.getString(i+6).equals("1")? "○" : "ー")
+                    .value(r.getString(i+6).equals("1")? "○" : "-")
                     .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                     .build());
         }

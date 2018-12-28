@@ -45,7 +45,7 @@ public class PersonSelectionItemImpl implements PersonSelectionItemRepository {
 			+ " TABLE_RESULT.SELECTION_CD," 
 			+ " TABLE_RESULT.SELECTION_NAME,"
 			+ " TABLE_RESULT.EXTERNAL_CD," 
-			+ " TABLE_RESULT.MEMO" + " FROM"
+			+ " TABLE_RESULT.MEMO, TABLE_RESULT.DISPORDER" + " FROM"
 			+ " (" 
 				+ " SELECT"
 				+ " si.SELECTION_ITEM_NAME," 
@@ -56,19 +56,19 @@ public class PersonSelectionItemImpl implements PersonSelectionItemRepository {
 				+ " ss.SELECTION_NAME," 
 				+ " ss.EXTERNAL_CD," 
 				+ " ss.MEMO,"
-				+ " ROW_NUMBER () OVER ( PARTITION BY si.SELECTION_ITEM_NAME ORDER BY si.SELECTION_ITEM_NAME, ss.SELECTION_CD ASC) AS ROW_NUMBER"
+				+ " ROW_NUMBER () OVER ( PARTITION BY si.SELECTION_ITEM_NAME ORDER BY si.SELECTION_ITEM_NAME, so.DISPORDER ASC , hs.START_DATE DESC) AS ROW_NUMBER, so.DISPORDER"
 				+ " FROM" 
 				+ " PPEMT_SELECTION_ITEM si"
 				+ " INNER JOIN PPEMT_HISTORY_SELECTION hs ON si.SELECTION_ITEM_ID = hs.SELECTION_ITEM_ID"
-				+ " AND hs.START_DATE <= CONVERT ( DATETIME, ?date, 127 )" 
+				+ " AND hs.START_DATE <= CONVERT ( DATETIME, ?date, 111 )" 
 				+ " AND hs.CID = ?companyId"
-				+ " AND CONVERT ( DATETIME, ?date, 127 ) <= hs.END_DATE"
+				+ " AND CONVERT ( DATETIME, ?date, 111 ) <= hs.END_DATE"
 				+ " INNER JOIN PPEMT_SEL_ITEM_ORDER so ON hs.HIST_ID = so.HIST_ID"
 				+ " INNER JOIN PPEMT_SELECTION ss ON so.HIST_ID = ss.HIST_ID" 
 				+ " AND so.SELECTION_ID = ss.SELECTION_ID"
 				+ " WHERE" 
 				+ " si.CONTRACT_CD = ?contractCd" 
-			+ " ) TABLE_RESULT ORDER BY TABLE_RESULT.SELECTION_ITEM_NAME, TABLE_RESULT.SELECTION_CD ASC ,TABLE_RESULT.START_DATE DESC";
+			+ " ) TABLE_RESULT ORDER BY TABLE_RESULT.SELECTION_ITEM_NAME, TABLE_RESULT.DISPORDER ASC ,TABLE_RESULT.START_DATE DESC";
 
 	@Override
 	public List<MasterData> getDataExport(String contractCd, String date) {

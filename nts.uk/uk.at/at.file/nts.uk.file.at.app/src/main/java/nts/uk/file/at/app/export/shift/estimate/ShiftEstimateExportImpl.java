@@ -1,9 +1,7 @@
 package nts.uk.file.at.app.export.shift.estimate;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -28,10 +26,8 @@ public class ShiftEstimateExportImpl implements MasterListData {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_101, TextResource.localize("KSM001_101"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_101_1, TextResource.localize("KSM001_101_1"),
-				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_101_2, TextResource.localize("KSM001_101_2"),
-				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_101_1, "", ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_101_2, "", ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_102, TextResource.localize("KSM001_102"),
 				ColumnTextAlign.LEFT, "", true));
 		return columns;
@@ -50,10 +46,8 @@ public class ShiftEstimateExportImpl implements MasterListData {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_112, TextResource.localize("KSM001_112"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_112_1, TextResource.localize("KSM001_112_1"),
-				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_112_2, TextResource.localize("KSM001_112_2"),
-				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_112_1, "", ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_112_2, "", ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_113, TextResource.localize("KSM001_113"),
 				ColumnTextAlign.LEFT, "", true));
 		return columns;
@@ -112,11 +106,11 @@ public class ShiftEstimateExportImpl implements MasterListData {
 	// header sheet4
 	private List<MasterHeaderColumn> getHeaderColumnsFour() {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_158, TextResource.localize("KSM001_158"),
-				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_159, TextResource.localize("KSM001_159"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_160, TextResource.localize("KSM001_160"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_158, TextResource.localize("KSM001_158"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_161, TextResource.localize("KSM001_161"),
 				ColumnTextAlign.LEFT, "", true));
@@ -158,48 +152,48 @@ public class ShiftEstimateExportImpl implements MasterListData {
 	private List<MasterData> getMasterDatasFour(int startDate, int endDate) {
 		return repository.getDataSheetFourExport(startDate, endDate);
 	}
-	
+
 	// header sheet5
 	private List<MasterHeaderColumn> getHeaderColumnsFive() {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_178, TextResource.localize("KSM001_178"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_179, TextResource.localize("KSM001_179"),
+				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_177, TextResource.localize("KSM001_177"),
-		        ColumnTextAlign.LEFT, "", true));
-		        columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_178, TextResource.localize("KSM001_178"),
-		        ColumnTextAlign.LEFT, "", true));
-		        columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_179, TextResource.localize("KSM001_179"),
-		        ColumnTextAlign.LEFT, "", true));
-		        columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_180, TextResource.localize("KSM001_180"),
-		        ColumnTextAlign.LEFT, "", true));
-		        columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_181, TextResource.localize("KSM001_181"),
-		        ColumnTextAlign.LEFT, "", true));
-		        columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_182, TextResource.localize("KSM001_182"),
-		        ColumnTextAlign.LEFT, "", true));
-		        columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_183, TextResource.localize("KSM001_183"),
-		        ColumnTextAlign.LEFT, "", true));
-		        columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_184, TextResource.localize("KSM001_184"),
-		        ColumnTextAlign.LEFT, "", true));
-		        columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_185, TextResource.localize("KSM001_185"),
-		        ColumnTextAlign.LEFT, "", true));
-		        columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_186, TextResource.localize("KSM001_186"),
-		        ColumnTextAlign.LEFT, "", true));
-		        columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_187, TextResource.localize("KSM001_187"),
-		        ColumnTextAlign.LEFT, "", true));
-		        columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_188, TextResource.localize("KSM001_188"),
-		        ColumnTextAlign.LEFT, "", true));
-		        columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_189, TextResource.localize("KSM001_189"),
-		        ColumnTextAlign.LEFT, "", true));
-		        columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_190, TextResource.localize("KSM001_190"),
-		        ColumnTextAlign.LEFT, "", true));
-		        columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_191, TextResource.localize("KSM001_191"),
-		        ColumnTextAlign.LEFT, "", true));
-		        columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_192, TextResource.localize("KSM001_192"),
-		        ColumnTextAlign.LEFT, "", true));
-		        columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_193, TextResource.localize("KSM001_193"),
-		        ColumnTextAlign.LEFT, "", true));
-		        columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_194, TextResource.localize("KSM001_194"),
-		        ColumnTextAlign.LEFT, "", true));
-		        columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_195, TextResource.localize("KSM001_195"),
-				        ColumnTextAlign.LEFT, "", true));
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_180, TextResource.localize("KSM001_180"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_181, TextResource.localize("KSM001_181"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_182, TextResource.localize("KSM001_182"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_183, TextResource.localize("KSM001_183"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_184, TextResource.localize("KSM001_184"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_185, TextResource.localize("KSM001_185"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_186, TextResource.localize("KSM001_186"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_187, TextResource.localize("KSM001_187"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_188, TextResource.localize("KSM001_188"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_189, TextResource.localize("KSM001_189"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_190, TextResource.localize("KSM001_190"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_191, TextResource.localize("KSM001_191"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_192, TextResource.localize("KSM001_192"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_193, TextResource.localize("KSM001_193"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_194, TextResource.localize("KSM001_194"),
+				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_195, TextResource.localize("KSM001_195"),
+				ColumnTextAlign.LEFT, "", true));
 		return columns;
 	}
 
@@ -207,10 +201,11 @@ public class ShiftEstimateExportImpl implements MasterListData {
 	private List<MasterData> getMasterDatasFive(int startDate, int endDate) {
 		return repository.getDataSheetFiveExport(startDate, endDate);
 	}
-	
+
 	@Override
 	public List<SheetData> extraSheets(MasterListExportQuery query) {
-		//Map<String, String> period = (HashMap<String, String>) query.getOption();
+		// Map<String, String> period = (HashMap<String, String>)
+		// query.getOption();
 		int startDate = query.getStartDate().year();
 		int endDate = query.getEndDate().year();
 		List<SheetData> sheetDatas = new ArrayList<>();
@@ -222,7 +217,7 @@ public class ShiftEstimateExportImpl implements MasterListData {
 
 		SheetData sheetData4 = SheetData.builder().mainData(this.getMasterDatasFour(startDate, endDate))
 				.mainDataColumns(this.getHeaderColumnsFour()).sheetName(TextResource.localize("KSM001_99")).build();
-		
+
 		SheetData sheetData5 = SheetData.builder().mainData(this.getMasterDatasFive(startDate, endDate))
 				.mainDataColumns(this.getHeaderColumnsFive()).sheetName(TextResource.localize("KSM001_100")).build();
 

@@ -647,14 +647,37 @@
             return allValid;
         }
         
-        /**
-         * Print file excel
-         */
-        saveAsExcel(): void {
-            let self = this;
-            modal("/view/cps/017/m/index.xhtml").onClosed(function() {
-            });
-        }
+         /*  
+           * Print file excel
+           */
+           private saveAsExcel(): void {
+               let self = this;
+//                modal("/view/cmm/051/m/index.xhtml").onClosed(function() {
+//                });
+               
+               let params = {
+                   date: null,
+                   mode: 1
+               };             
+               if (!nts.uk.ui.windows.getShared("CDL028_INPUT")) {
+                    nts.uk.ui.windows.setShared("CDL028_INPUT", params);
+                }
+               nts.uk.ui.windows.sub.modal("/view/cdl/028/a/index.xhtml").onClosed(function() {
+                   var result = getShared('CDL028_A_PARAMS');
+                   if (result.status) {
+                        nts.uk.ui.block.grayout();
+                        let langId = self.langId();
+                        let date = moment(result.standardDate, "YYYY/MM/DD");
+                        service.saveAsExcel(langId, date).done(function() {
+                            //nts.uk.ui.windows.close();
+                        }).fail(function(error) {
+                            nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                        }).always(function() {
+                            nts.uk.ui.block.clear();
+                        });
+                   }           
+               });
+            }
         
         /**
          * check role

@@ -84,7 +84,7 @@
 					</td>
 					<td width='400px'>
 							<label data-bind="text : exterOutExecLog().totalErrorCount"></label>
-							<label data-bind="text : exterOutExecLog().processUnit"></label>
+							<label data-bind="text : '#{i18n.getText('CMF002_528')}'"></label>
 					</td>
 					
 				</tr>
@@ -94,7 +94,7 @@
 						name:'#{i18n.getText('CMF002_354')}',
 						rows: 5,
 						options: externalOutLog,
-						optionsValue: 'code',
+						primaryKey: 'no',
 						columns: columnsExternalOutLog,
 						multiple: false,
 						value: currentCode

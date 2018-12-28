@@ -11,12 +11,8 @@ module nts.uk.com.view.cas013.a {
                 insertRoleGrant: "ctx/sys/auth/grant/roleindividual/insertRoleGrant",
                 upDateRoleGrant: "ctx/sys/auth/grant/roleindividual/upDateRoleGrant",
                 deleteRoleGrant: "ctx/sys/auth/grant/roleindividual/deleteRoleGrant",
-                saveAsExcel: "file/at/personrole/saveAsExcel"
             }
             constructor() {}
-            saveAsExcel(languageId: string): JQueryPromise<any> {
-                return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Indivigrant", domainType: "CAS013担当ロールの付与", languageId: languageId, reportType: 0});
-            }
             
             getRoleTypes(): JQueryPromise<any> {
                 return ajax("com", this.paths.getRoleType);

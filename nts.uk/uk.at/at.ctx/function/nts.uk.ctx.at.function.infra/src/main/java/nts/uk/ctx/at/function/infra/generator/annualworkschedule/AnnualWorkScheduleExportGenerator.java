@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.function.infra.generator.annualworkschedule;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 import javax.ejb.Stateless;
 
@@ -53,10 +56,15 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			boolean is7Group = true;
 			int pageScale = 95;
 			// set A_11
-			reportContext.setHeader(0, dataSource.getHeader().getTitle());
+			reportContext.setHeader(0, "&8&\"MS ゴシック\""+dataSource.getHeader().getTitle());
 			// set A1_2
-			reportContext.setHeader(1, "&16" /* font size */
+			reportContext.setHeader(1, "&16&\"MS ゴシック\"" /* font size */
 					+ dataSource.getHeader().getReportName());
+			
+			// Set header date
+			DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
+			reportContext.setHeader(2, "&8&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
+			
 			ws.setName(dataSource.getHeader().getReportName());
 
 			// delete superfluous column

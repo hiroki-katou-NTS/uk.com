@@ -7,6 +7,8 @@ package nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.loginlog;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
+import nts.arc.time.GeneralDateTime;
+
 
 /**
  * The Class SgwdtContract_.
@@ -15,11 +17,23 @@ import javax.persistence.metamodel.StaticMetamodel;
 public class SgwmtLoginLog_ {
     
     /** The sgwmt logout data PK. */
-    public static volatile SingularAttribute<SgwmtLoginLog, SgwmtLoginLogPK> sgwmtLoginLogPK;
+    public static volatile SingularAttribute<SgwmtLoginLog, Long> idNumber;
     
     /** The operation section. */
     public static volatile SingularAttribute<SgwmtLoginLog, Integer> operationSection;
     
     /** The success or failure. */
     public static volatile SingularAttribute<SgwmtLoginLog, Integer> successOrFailure;
+    
+    /** The sgwmt logout data PK. */
+	public static volatile SingularAttribute<SgwmtLoginLog, String> userId;
+
+	/** The contract cd. */
+	public static volatile SingularAttribute<SgwmtLoginLog, String> contractCd;
+	
+	/** The program id. */
+	public static volatile SingularAttribute<SgwmtLoginLog, String> programId;
+	
+	/** The process date time. */
+	public static volatile SingularAttribute<SgwmtLoginLog, GeneralDateTime> processDateTime;
 }

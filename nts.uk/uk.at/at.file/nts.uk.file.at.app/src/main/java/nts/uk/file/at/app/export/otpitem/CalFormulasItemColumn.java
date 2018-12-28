@@ -15,7 +15,7 @@ public final class CalFormulasItemColumn {
 	public static final String KMK002_86 = "下限値";
 	public static final String KMK002_87 = "下限値入力";	
 	public static final String KMK002_88 = "記号";
-	public static final String KMK002_89 = "属性";
+	public static final String KMK002_89 = "属性_1";
 	public static final String KMK002_90 = "計算式名";
 	public static final String KMK002_91 = "計算式設定";
 	//update v1.1

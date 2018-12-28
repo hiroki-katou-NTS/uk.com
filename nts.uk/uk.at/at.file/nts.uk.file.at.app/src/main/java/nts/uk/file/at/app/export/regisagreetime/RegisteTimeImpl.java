@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementUnitSetting;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementUnitSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -262,10 +263,41 @@ public class RegisteTimeImpl implements MasterListData {
 		return registTimeRepository.getDataExportSheet9();
 	}
 	
+	/**
+	 * sheet 10
+	 */
+	public List<MasterHeaderColumn> getHeaderColumnsSheet10() {
+		 List <MasterHeaderColumn> columns = new ArrayList<>();
+
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_106, TextResource.localize("KMK008_106"),
+	                ColumnTextAlign.LEFT, "", true));
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_107,TextResource.localize("KMK008_107"),
+	                ColumnTextAlign.LEFT, "", true));
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_109, TextResource.localize("KMK008_109"),
+	                ColumnTextAlign.LEFT, "", true));
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_110, TextResource.localize("KMK008_110"),
+	                ColumnTextAlign.LEFT, "", true));
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_111, TextResource.localize("KMK008_111"),
+	                ColumnTextAlign.LEFT, "", true));
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_112, TextResource.localize("KMK008_112"),
+	                ColumnTextAlign.LEFT, "", true));
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_113, TextResource.localize("KMK008_113"),
+	                ColumnTextAlign.LEFT, "", true));
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_114, TextResource.localize("KMK008_114"),
+	                ColumnTextAlign.LEFT, "", true));
+	        return columns;
+	}
+	
+	public List<MasterData> getMasterDatasSheet10(GeneralDate startDate, GeneralDate endDate) {
+		return registTimeRepository.getDataExportSheet10(startDate,endDate);
+	}
+	
 	
 	@Override
     public List<SheetData> extraSheets(MasterListExportQuery query) {
         List<SheetData> sheetDatas = new ArrayList<>();
+        GeneralDate startDate = query.getStartDate();
+        GeneralDate endDate = query.getEndDate();
         /**
          *  sheet 2
          */
@@ -354,6 +386,13 @@ public class RegisteTimeImpl implements MasterListData {
 	                  .build();
 	        sheetDatas.add(sheetData9);
 		}
+		
+		SheetData sheetData10 = SheetData.builder()
+         		 .mainData(this.getMasterDatasSheet10(startDate, endDate))
+                 .mainDataColumns(this.getHeaderColumnsSheet10())
+                 .sheetName(TextResource.localize("KMK008_79"))
+                 .build();
+       sheetDatas.add(sheetData10);
 		
         return sheetDatas;
     }
