@@ -501,7 +501,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                 }
                 lstPeriod.push(period);
             }
-            let lstBreakdownItem = $("#gridBreakdownItem").mGrid("dataSource", true);
+            let lstBreakdownItem = $("#gridBreakdownItem").mGrid("dataSource", false);
             let command = {
                 categoryAtr: self.categoryAtr(),
                 itemNameCd: self.itemNameCd(),
