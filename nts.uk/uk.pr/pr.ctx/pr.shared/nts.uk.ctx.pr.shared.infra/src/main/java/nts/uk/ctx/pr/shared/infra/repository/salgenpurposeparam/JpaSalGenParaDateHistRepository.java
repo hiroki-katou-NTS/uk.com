@@ -9,8 +9,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.shared.dom.salgenpurposeparam.SalGenParaDateHistRepository;
 import nts.uk.ctx.pr.shared.dom.salgenpurposeparam.SalGenParaDateHistory;
-import nts.uk.ctx.pr.shared.infra.entity.salgenpurposeparam.QpbmtSalGenPrDateHis;
-import nts.uk.ctx.pr.shared.infra.entity.salgenpurposeparam.QpbmtSalGenPrDateHisPk;
+import nts.uk.ctx.pr.shared.infra.entity.salgenpurposeparam.QqsmtSalGenPrDateHis;
+import nts.uk.ctx.pr.shared.infra.entity.salgenpurposeparam.QqsmtSalGenPrDateHisPk;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -18,13 +18,13 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class JpaSalGenParaDateHistRepository extends JpaRepository implements SalGenParaDateHistRepository
 {
 
-    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtSalGenPrDateHis f";
+    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QqsmtSalGenPrDateHis f";
     private static final String SELECT_BY_KEY_PARANO = SELECT_ALL_QUERY_STRING + " WHERE  f.salGenPrDateHisPk.paraNo =:paraNo AND  f.salGenPrDateHisPk.cid =:cid ORDER BY f.startDate DESC  ";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.salGenPrDateHisPk.paraNo =:paraNo AND  f.salGenPrDateHisPk.cid =:cid AND  f.salGenPrDateHisPk.hisId =:hisId ";
 
     @Override
     public Optional<SalGenParaDateHistory> getAllSalGenParaDateHist(String cid,String paraNo){
-        List<QpbmtSalGenPrDateHis> entities = this.queryProxy().query(SELECT_BY_KEY_PARANO,QpbmtSalGenPrDateHis.class)
+        List<QqsmtSalGenPrDateHis> entities = this.queryProxy().query(SELECT_BY_KEY_PARANO,QqsmtSalGenPrDateHis.class)
                 .setParameter("paraNo", paraNo)
                 .setParameter("cid", cid)
                 .getList();
@@ -33,7 +33,7 @@ public class JpaSalGenParaDateHistRepository extends JpaRepository implements Sa
 
     @Override
     public Optional<SalGenParaDateHistory> getSalGenParaDateHistById(String paraNo, String cid, String hisId){
-        List<QpbmtSalGenPrDateHis> entities = this.queryProxy().query(SELECT_BY_KEY_STRING,QpbmtSalGenPrDateHis.class)
+        List<QqsmtSalGenPrDateHis> entities = this.queryProxy().query(SELECT_BY_KEY_STRING,QqsmtSalGenPrDateHis.class)
         .setParameter("paraNo", paraNo)
         .setParameter("cid", cid)
         .setParameter("hisId", hisId)
@@ -43,22 +43,22 @@ public class JpaSalGenParaDateHistRepository extends JpaRepository implements Sa
 
     @Override
     public void add(DateHistoryItem domain,String paraNo,String cId){
-        this.commandProxy().insert(QpbmtSalGenPrDateHis.toEntity(domain,paraNo,cId));
+        this.commandProxy().insert(QqsmtSalGenPrDateHis.toEntity(domain,paraNo,cId));
     }
 
 
 
     @Override
     public void update(DateHistoryItem domain,String paraNo,String cId){
-        this.commandProxy().update(QpbmtSalGenPrDateHis.toEntity(domain,paraNo,cId));
+        this.commandProxy().update(QqsmtSalGenPrDateHis.toEntity(domain,paraNo,cId));
     }
 
     @Override
     public void remove(String paraNo, String cid, String hisId){
-        this.commandProxy().remove(QpbmtSalGenPrDateHis.class, new QpbmtSalGenPrDateHisPk(paraNo, cid, hisId));
+        this.commandProxy().remove(QqsmtSalGenPrDateHis.class, new QqsmtSalGenPrDateHisPk(paraNo, cid, hisId));
     }
 
-    private List<DateHistoryItem> toDomain(List<QpbmtSalGenPrDateHis> entities) {
+    private List<DateHistoryItem> toDomain(List<QqsmtSalGenPrDateHis> entities) {
         List<DateHistoryItem> yearMonthHistoryItemList = new ArrayList<DateHistoryItem>();
         if (entities == null || entities.isEmpty()) {
             return yearMonthHistoryItemList;

@@ -7,19 +7,20 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import nts.arc.time.GeneralDate;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.com.history.YearMonthHistoryItem;
+import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
-* 給与汎用パラメータ年月履歴
+* 給与汎用パラメータ年月日履歴
 */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QPBMT_SAL_GEN_PARA_YM_HIS")
-public class QpbmtSalGenParaYmHis extends UkJpaEntity implements Serializable
+@Table(name = "QQSMT_SAL_GEN_PR_DATE_HIS")
+public class QqsmtSalGenPrDateHis extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
     
@@ -27,31 +28,31 @@ public class QpbmtSalGenParaYmHis extends UkJpaEntity implements Serializable
     * ID
     */
     @EmbeddedId
-    public QpbmtSalGenParaYmHisPk salGenParaYmHisPk;
+    public QqsmtSalGenPrDateHisPk salGenPrDateHisPk;
     
     /**
     * 開始日
     */
     @Basic(optional = false)
-    @Column(name = "START_YEAR_MONTH")
-    public int startYearMonth;
+    @Column(name = "START_DATE")
+    public GeneralDate startDate;
     
     /**
     * 終了日
     */
     @Basic(optional = false)
-    @Column(name = "END_YEAR_MONTH")
-    public int endYearMonth;
+    @Column(name = "END_DATE")
+    public GeneralDate endDate;
     
     @Override
     protected Object getKey()
     {
-        return salGenParaYmHisPk;
+        return salGenPrDateHisPk;
     }
 
 
-    public static QpbmtSalGenParaYmHis toEntity(YearMonthHistoryItem domain, String cId,String paraNo) {
-        return new QpbmtSalGenParaYmHis(new QpbmtSalGenParaYmHisPk(paraNo, cId, domain.identifier()),domain.start().v(), domain.end().v());
+    public static QqsmtSalGenPrDateHis toEntity(DateHistoryItem domain, String paraNo, String cId ) {
+        return new QqsmtSalGenPrDateHis(new QqsmtSalGenPrDateHisPk(paraNo, cId,domain.identifier()),domain.start(), domain.end());
     }
 
 }
