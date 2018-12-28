@@ -27,7 +27,7 @@ public class SalaryPerUnitPriceNameWebService {
     }
 
     @POST
-    @Path("/getSaPerUnitPriceNameWithoutAb")
+    @Path("/getSalaryPerUnitPriceNotAbolition")
     public List<SalaryPerUnitPriceNameDto> getSalaryPerUnitPriceNotAbolition() {
         return salaryPerUnitPriceFinder.getSalaryPerUnitPriceNotAbolition();
     }
