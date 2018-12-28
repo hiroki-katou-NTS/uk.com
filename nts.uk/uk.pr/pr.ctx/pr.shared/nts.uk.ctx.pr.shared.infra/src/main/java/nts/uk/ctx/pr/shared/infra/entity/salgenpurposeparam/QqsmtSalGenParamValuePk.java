@@ -16,7 +16,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QpbmtSalGenParamValuePk implements Serializable
+public class QqsmtSalGenParamValuePk implements Serializable
 {
     private static final long serialVersionUID = 1L;
     

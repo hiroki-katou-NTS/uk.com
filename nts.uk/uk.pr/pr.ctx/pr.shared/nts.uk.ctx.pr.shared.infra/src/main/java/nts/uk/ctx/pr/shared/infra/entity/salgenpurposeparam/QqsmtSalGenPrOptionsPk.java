@@ -11,13 +11,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
-* 給与汎用パラメータ年月日履歴: 主キー情報
+* 給与汎用パラメータ選択肢: 主キー情報
 */
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QpbmtSalGenPrDateHisPk implements Serializable
+public class QqsmtSalGenPrOptionsPk implements Serializable
 {
     private static final long serialVersionUID = 1L;
     
@@ -36,10 +36,10 @@ public class QpbmtSalGenPrDateHisPk implements Serializable
     public String cid;
     
     /**
-    * 履歴ID
+    * 選択肢No
     */
     @Basic(optional = false)
-    @Column(name = "HIS_ID")
-    public String hisId;
+    @Column(name = "OPTION_NO")
+    public int optionNo;
     
 }

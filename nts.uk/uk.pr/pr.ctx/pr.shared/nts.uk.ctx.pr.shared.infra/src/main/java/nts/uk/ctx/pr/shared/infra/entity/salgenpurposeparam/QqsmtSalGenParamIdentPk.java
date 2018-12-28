@@ -11,13 +11,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
-* 給与汎用パラメータ選択肢: 主キー情報
+* 給与汎用パラメータ識別: 主キー情報
 */
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QpbmtSalGenPrOptionsPk implements Serializable
+public class QqsmtSalGenParamIdentPk implements Serializable
 {
     private static final long serialVersionUID = 1L;
     
@@ -34,12 +34,5 @@ public class QpbmtSalGenPrOptionsPk implements Serializable
     @Basic(optional = false)
     @Column(name = "CID")
     public String cid;
-    
-    /**
-    * 選択肢No
-    */
-    @Basic(optional = false)
-    @Column(name = "OPTION_NO")
-    public int optionNo;
     
 }
