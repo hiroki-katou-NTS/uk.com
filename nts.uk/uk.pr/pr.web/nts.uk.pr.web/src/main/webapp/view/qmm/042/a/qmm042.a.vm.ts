@@ -12,7 +12,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
 
         ccgcomponent: GroupOption;
         salaryPerUnitPriceNames: KnockoutObservableArray<IndividualPriceName> = ko.observableArray([]);
-        salaryPerUnitPriceNamesSelectedCode: KnockoutObservable<string> = ko.observable('');
+        salaryPerUnitPriceNamesSelectedCode: KnockoutObservable<string> = ko.observable(null);
 
         workIndividualPricesDisplay: Array<WorkIndividualPrice> = [];
 
@@ -38,7 +38,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                     self.perUnitPriceCode(temp.code);
                     self.perUnitPriceName(temp.name);
                 }
-                // self.filterData();
+                self.filterData();
             });
         }
 
@@ -48,11 +48,11 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
             if (errors.hasError()) {
                 return;
             }
-            block.invisible();
             if (!self.listEmployee) {
                 block.clear();
                 return;
             }
+            block.invisible();
             let command = {
                 personalUnitPriceCode: self.salaryPerUnitPriceNamesSelectedCode(),
                 employeeIds: self.listEmployee.map(v => v.employeeId),
@@ -70,11 +70,9 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 self.workIndividualPricesDisplay = personalAmountData;
                 $("#grid").mGrid("destroy");
                 self.loadMGrid();
+            }).always(() => {
                 block.clear();
-            }).fail((err) => {
-                block.clear();
-                dialog.alertError(err.message);
-            });
+            })
         }
 
         loadMGrid() {
@@ -130,7 +128,10 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                     {
                         name: "Sorting",
                         columnSettings: [
-                            {columnKey: "employeeCode", allowSorting: true, type: "String"}
+                            {columnKey: "employeeCode", allowSorting: true, type: "String"},
+                            {columnKey: "businessName", allowSorting: true, type: "String"},
+                            {columnKey: "period", allowSorting: true, type: "String"},
+                            {columnKey: "amount", allowSorting: true, type: "Number"}
                         ]
                     },
                     {
@@ -232,7 +233,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
 
                 /** Advanced search properties */
                 showEmployment: true,
-                showWorkplace: false,
+                showWorkplace: true,
                 showClassification: false,
                 showJobTitle: false,
                 showWorktype: false,
@@ -242,6 +243,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
 
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
                     self.listEmployee = data.listEmployee
+                    self.filterData();
                 }
             };
             $('#com-ccg001').ntsGroupComponent(self.ccgcomponent);
