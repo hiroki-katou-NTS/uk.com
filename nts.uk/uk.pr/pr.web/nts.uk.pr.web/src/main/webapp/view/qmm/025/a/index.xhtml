@@ -36,7 +36,7 @@
         </div>
         <div id="contents-area">
             <!--A2_7-->
-            <div id="com-ccg001" tabindex="6"/>
+            <div id="com-ccg001"/>
             <div id="content-qmm">
                 <!--A2_1-->
                 <div id="A2_1" class="panel panel-frame">
@@ -68,7 +68,9 @@
                 <button id="A2_8" tabindex="7" class="danger"
                         data-bind="click: deleteAmount, enable: $root.errors.isEmpty &amp;&amp; enableA2_8">#{i18n.getText('QMM025_7')}</button>
                 <!--A3_1-->
-                <table id="grid" tabindex="8"/>
+                <div tabindex="8">
+                    <table id="grid"/>
+                </div>
             </div>
         </div>
     </ui:define>
