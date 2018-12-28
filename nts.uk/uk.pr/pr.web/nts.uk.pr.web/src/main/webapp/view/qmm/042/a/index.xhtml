@@ -34,10 +34,10 @@
         <div id="com-ccg001"/>
         <div id="contents-area" class=" fixed-flex-layout">
             <div id="panel-left" class="fixed-flex-layout-left margin-top fixed-flex-layout"
-                 style="margin-left: 100px; margin-top: 30px; ">
+                 style="margin-left: 80px;">
                 <div style="width: 335px; margin-right: 0" class="fixed-flex-layout-left">
                     <div tabindex="-1" class="panel" style=" margin-top: 15px"
-                         data-bind="ntsPanel:{width: '280px', height: '490px',showIcon: true, direction: 'bottom', visible: true}">
+                         data-bind="ntsPanel:{width: '280px', height: '373px',showIcon: true, direction: 'bottom', visible: true}">
                         <!--A4_3 検索-->
                         <div tabindex="3" style="width: 280px"
                              data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'treegrid',items: salaryPerUnitPriceNames, searchText: '検索', selected: salaryPerUnitPriceNamesSelectedCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}"/>
@@ -49,9 +49,8 @@
                         <table tabindex="4" id="treegrid"
                                data-bind="ntsGridList:{
                                    name: '#[QMM042_3]',
-                                   rows:17,
+                                   rows: 13,
                                 width: 280,
-                                rows: 18,
                                 dataSource: salaryPerUnitPriceNames,
                                 columns: [
                                     {key:'index', length: 0, hidden: true},
@@ -67,11 +66,11 @@
                         </table>
                     </div>
                 </div>
-                <div style="height: 400px;width: 50px;margin-top: 130px;" class="fixed-flex-layout-right">
+                <div style="height: 400px;width: 50px;margin-top: 90px;" class="fixed-flex-layout-right">
                     <span id="custom-caret" class="caret-right"/>
                 </div>
             </div>
-            <div id="panel-right" class="fixed-flex-layout-right margin-top" style="margin-top: 80px">
+            <div id="panel-right" class="fixed-flex-layout-right margin-top">
                 <div class="flex valign-center margin-top-item">
                     <!--A4_1 コード・名称-->
                     <div data-bind="ntsFormLabel: {  required: false}">#{i18n.getText('QMM042_6')}</div>
@@ -84,20 +83,19 @@
                     <!--A4_4 基準年月-->
                     <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM042_7')}</div>
                     <!--A4_5 基準年月-->
-                    <div style="margin-left: 30px;">
+                    <div style="margin-left: 40px;">
                         <div id="A4_5" tabindex="5"
                              data-bind="ntsDatePicker: {value: yearMonthFilter, dateFormat: 'yearmonth', name:'#[QMM042_7]',required: true}"/>
                     </div>
                     <!--A4_6 抽出-->
                     <button tabindex="6" class="caret-bottom" data-bind="click: filterData,enable: $root.errors.isEmpty"
                             style="margin-left: 13px">#{i18n.getText('QMM042_8')}</button>
-
                 </div>
-                <table id="grid" tabindex="7"/>
+                <div tabindex="7">
+                    <table id="grid"/>
+                </div>
             </div>
-
         </div>
-
     </ui:define>
 </ui:composition>
 </body>
