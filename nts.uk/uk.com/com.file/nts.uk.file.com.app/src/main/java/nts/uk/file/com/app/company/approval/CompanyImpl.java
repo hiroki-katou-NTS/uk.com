@@ -119,7 +119,7 @@ public class CompanyImpl implements MasterListData{
 					}
 				}
 				
-				if(findUsageSets.get().getJinji()== 0){
+				if(findUsageSets.get().getJinji()== 1){
 					data.put("人事システム", "利用する");
 				}else{ 
 					data.put("人事システム", "利用しない");
