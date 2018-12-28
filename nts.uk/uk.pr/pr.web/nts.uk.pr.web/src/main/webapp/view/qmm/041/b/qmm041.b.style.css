@@ -1,0 +1,21 @@
+#B1_1 {
+    margin: 20px 0px;
+    font-size: 1.5rem;
+}
+#B1_2, #B1_6 {
+    width: 150px;
+}
+
+#B1_4 {
+    margin-right: 5px;
+}
+
+#B1_7 label:first-child {
+    margin-bottom: 10px;
+}
+
+.B1_7 {
+    display: inline-flex;
+    width: 270px;
+    margin-top: 7px;
+}

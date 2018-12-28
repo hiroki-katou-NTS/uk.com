@@ -204,6 +204,8 @@ project (':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.ws') {
 project (':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.ac') {
 	dependencies {
 		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
+		compile project(':pr.ctx:pr.core:nts.uk.ctx.pr.core.pub')
+		compile (group: 'com.query', name: 'nts.uk.query.pub', version: version)
 	}
 }
 
@@ -249,6 +251,7 @@ project (':pr.ctx:pr.core:nts.uk.ctx.pr.core.ac') {
 		compile project(':pr.ctx:pr.core:nts.uk.ctx.pr.core.dom')
 		compile project(':pr.ctx:pr.shared:nts.uk.ctx.pr.shared.dom')
 		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: version)
+		compile (group: 'com.query', name: 'nts.uk.query.pub', version: version)
 	}
 }
 

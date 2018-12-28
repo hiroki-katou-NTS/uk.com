@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.infra.entity.department;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -13,6 +14,8 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.bs.employee.dom.common.CompanyId;
+import nts.uk.ctx.bs.employee.dom.department.*;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -81,5 +84,9 @@ public class BsymtDepartmentInfo extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.bsymtDepartmentInfoPK;
 	}
+
+	public DepartmentInfo fromEntityToDomain () {
+	    return new DepartmentInfo(new CompanyId(this.getBsymtDepartmentInfoPK().getCid()), this.getBsymtDepartmentInfoPK().getHistId(), this.getBsymtDepartmentInfoPK().getDepId(), new DepartmentCode(this.getCd()), new DepartmentName(this.getName()), new DepartmentDisplayName(this.getName()), new DepartmentGenericName(this.getName()), Optional.empty());
+    }
     
 }

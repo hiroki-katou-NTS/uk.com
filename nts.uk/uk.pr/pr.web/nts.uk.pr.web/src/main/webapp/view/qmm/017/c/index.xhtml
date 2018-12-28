@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:com="http://xmlns.jcp.org/jsf/component"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <div style="min-width: 550px">
+        <div class = "tab-row" data-bind="with: selectedFormula">
+            <div style="width: 130px; display: inline-block;"
+                 data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM017_8')}</div>
+            <div style="display: inline-block;"
+                 data-bind="text: formulaCode"></div>
+            <span style="margin-left: 20px; width: 270px; vertical-align: text-bottom " class="limited-label"
+                  data-bind="text: formulaName"></span>
+        </div>
+        <div class = "tab-row">
+            <div style="width: 130px; display: inline-block;"
+                 data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM017_23')}</div>
+            <div style="display: inline-block;"
+                 data-bind="text: basicFormulaSetting().displayMasterUse"></div>
+        </div>
+        <hr></hr>
+        <!--C2_1-->
+        <table id = "C2_1">
+            <colgroup>
+                <col width="250px" />
+                <col width="230px" />
+                <col width="300px" />
+            </colgroup>
+            <thead>
+                <tr data-bind = "with: masterBasicCalculationFormula">
+                    <th class = "ui-widget-header">
+                        <span style="white-space: pre-line">#{i18n.getText('QMM017_30')}</span>
+                        </th>
+                    <th>
+                        <!--C2_3-->
+                        <div id  = "C2_7" class="cf" tabindex="1" data-bind="ntsSwitchButton: {
+									name: '#[QMM017_36]',
+									options: calculationFormulaFixedFormulaItem,
+									optionsValue: 'value',
+									optionsText: 'name',
+									value: calculationFormulaClassification,
+									required: true }"></div>
+                    </th>
+                    <th>
+                        <!--C2_6-->
+                        <div data-bind = "visible: calculationFormulaClassification() == 0">
+                            <input tabindex="2" data-bind="ntsNumberEditor: {
+                                value: basicCalculationFormula,
+                                constraint: 'FixedAmount',
+                                name: '#[QMM017_32]',
+                                option: {
+                                    decimallength: 3
+                                },
+                                required: true}" />
+                        </div>
+                        <div data-bind = "visible: calculationFormulaClassification() == 1">
+                            <!--C2_7; C2_8-->
+                            <button tabindex="3">#{i18n.getText('QMM017_34')}</button>
+                            <div style = "display: inline-block" data-bind = "text: displayFormulaType"></div>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <!--C3_1-->
+        <div style = "margin-top: 30px;" >
+            <table id = "C3_1">
+                <colgroup>
+                    <col width="250px" />
+                    <col width="230px" />
+                    <col width="300px" />
+                </colgroup>
+                <thead>
+                <tr>
+                    <th class = "ui-widget-header" >
+                        <div data-bind = "text: $vm.basicFormulaSetting().branchCondition"></div>
+                    </th>
+                    <th colspan="2" class = "ui-widget-header">
+                        <button tabindex="4" data-bind = "click: $vm.setAllFixedValue">#{i18n.getText('QMM017_34')}</button>
+                        <button tabindex="5" data-bind = "click: $vm.setAllCalculationFormula">#{i18n.getText('QMM017_35')}</button>
+                    </th>
+                </tr>
+                </thead>
+                <tbody data-bind="foreach: basicCalculationFormulaList">
+                <tr>
+                    <td data-bind="text: masterUseName"></td>
+                    <td>
+                        <!--C3_6-->
+                        <div class="cf" tabindex="6" data-bind="ntsSwitchButton: {
+									name: '#[QMM017_36]',
+									options: calculationFormulaClassificationItem,
+									optionsValue: 'value',
+									optionsText: 'name',
+									value: calculationFormulaClassification,
+									required: true }"></div>
+                    </td>
+                    <td>
+                        <!--C3_10-->
+                        <div data-bind = "visible: calculationFormulaClassification() == 0">
+                            <input tabindex="7" data-bind="ntsNumberEditor: {
+                                value: basicCalculationFormula,
+                                constraint: 'FixedAmount',
+                                name: '#[QMM017_32]',
+                                option: {
+                                    decimallength: 3
+                                },
+                                required: true}" />
+                        </div>
+                        <div data-bind = "visible: calculationFormulaClassification() == 1">
+                            <!--C3_11-->
+                            <button data-bind = "click: function(){$vm.doConfiguration($index())}" tabindex="8">#{i18n.getText('QMM017_34')}</button>
+                            <!--C3_12-->
+                            <div style = "display: inline-block" data-bind = "text: displayFormulaType"></div>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</ui:composition>

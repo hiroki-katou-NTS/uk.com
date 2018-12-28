@@ -12,6 +12,8 @@ public interface PaymentItemSetRepository {
 
 	List<PaymentItemSet> getAllPaymentItemSt();
 
+	List<PaymentItemSet> getPaymentItemSt(String cid, int categoryAtr);
+
 	Optional<PaymentItemSet> getPaymentItemStById(String cid, int categoryAtr, String itemNameCode);
 
 	void add(PaymentItemSet domain);

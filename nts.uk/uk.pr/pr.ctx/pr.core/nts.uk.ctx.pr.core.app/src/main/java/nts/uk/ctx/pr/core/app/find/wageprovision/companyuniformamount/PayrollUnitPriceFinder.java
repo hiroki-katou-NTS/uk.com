@@ -26,6 +26,10 @@ public class PayrollUnitPriceFinder
                 .collect(Collectors.toList());
     }
 
+    public List<PayrollUnitPriceDto> getPayrollUnitPriceByYearMonth(int yearMonth){
+        return finder.getPayrollUnitPriceByYearMonth(yearMonth).stream().map(PayrollUnitPriceDto::fromDomain).collect(Collectors.toList());
+    }
+
     public Optional<PayrollUnitPriceDto> getPayrollUnitPriceById(String code, String cid){
         Optional<PayrollUnitPrice> payrollUnitPrice = finder.getPayrollUnitPriceById(code,cid);
         if(payrollUnitPrice.isPresent()){

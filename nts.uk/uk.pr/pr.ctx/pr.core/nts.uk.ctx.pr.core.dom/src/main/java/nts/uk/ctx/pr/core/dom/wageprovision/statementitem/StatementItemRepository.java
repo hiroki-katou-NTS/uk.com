@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statementitem;
 
+import nts.uk.ctx.pr.core.dom.wageprovision.averagewagecalculationset.StatementCustom;
+
 import java.util.Optional;
 import java.util.List;
 
@@ -21,6 +23,14 @@ public interface StatementItemRepository {
 	List<StatementItemCustom> getItemCustomByCategoryAndDeprecated(String cid, int categoryAtr, boolean isIncludeDeprecated);
 
 	List<StatementItemCustom> getItemCustomByDeprecated(String cid, boolean isIncludeDeprecated);
+
+	List<StatementItemCustom> getItemCustomByCtgAndExcludeCodes(String cid,  int categoryAtr, int deprecatedAtr,
+                                                                List<String> itemNameCdFixedList,
+                                                                String itemNameCdSelected, List<String> itemNameCdExs);
+
+	List<StatementCustom> getItemCustomByDeprecated(String cid);
+
+    List<StatementCustom> getItemCustomByDeprecated2(String cid);
 
 	void add(StatementItem domain);
 
