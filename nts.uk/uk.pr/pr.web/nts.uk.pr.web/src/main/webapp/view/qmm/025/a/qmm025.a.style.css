@@ -52,8 +52,14 @@
     border-color: #AAB7B8;
 }
 
-#grid .mgrid-header td.left-align {
+#grid .mgrid-header .mgrid-fixed-table td.left-align {
     text-align: left;
+    vertical-align: middle!important;
+    padding: 2px;
+}
+
+#grid .mgrid-header .mgrid-free-table td {
+    vertical-align: middle!important;
 }
 
 /*
