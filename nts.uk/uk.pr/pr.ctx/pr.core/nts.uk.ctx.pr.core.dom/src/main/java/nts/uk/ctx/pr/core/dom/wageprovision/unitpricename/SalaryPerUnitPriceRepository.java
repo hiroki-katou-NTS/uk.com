@@ -19,4 +19,6 @@ public interface SalaryPerUnitPriceRepository
 
     void remove(String cid, String code);
 
+    List<SalaryPerUnitPrice> getSalaryPerUnitPriceWithoutab();
+
 }
