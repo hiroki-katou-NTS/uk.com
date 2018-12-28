@@ -74,7 +74,6 @@ module nts.uk.pr.view.qmm036.c.viewmodel {
             let self = this;
             if (self.modifyMethod() == MOFIDY_METHOD.UPDATE) {
                 self.updateHistory();
-                nts.uk.ui.windows.close();
             } else {
                 dialog.confirm({messageId: "Msg_18"}).ifYes(function () {
                     self.deleteHistory();
@@ -111,7 +110,7 @@ module nts.uk.pr.view.qmm036.c.viewmodel {
             };
             service.updateBreakdownAmountHis(ko.toJS(command)).done(() => {
                 dialog.info({messageId: "Msg_15"}).then(() => {
-                    close();
+                    nts.uk.ui.windows.close();
                 });
             }).fail(function (error) {
                 alertError(error);
