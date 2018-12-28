@@ -121,7 +121,9 @@ module nts.uk.pr.view.qmm016.h.viewmodel {
                     self.selectedQualificationGroupCode.valueHasMutated();
                 });
             }).fail(function (error) {
-                dialog.alertError({messageId: error.messageId});
+                dialog.alertError(error).then(() => {
+					if (error.messageId == "Msg_3") $('#H3_2').focus();
+				});
             }).always(function () {
                 block.clear();
             });
