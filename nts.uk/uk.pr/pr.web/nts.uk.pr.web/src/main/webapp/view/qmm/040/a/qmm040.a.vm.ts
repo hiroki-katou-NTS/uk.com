@@ -273,9 +273,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             let self = this;
             self.yearMonthFilter();
             $('#A5_7').ntsError('check');
-            if (errors.hasError()) {
-                return;
-            }
             if (!self.employeeList) return;
             block.invisible();
             service.salIndAmountHisByPeValCode({

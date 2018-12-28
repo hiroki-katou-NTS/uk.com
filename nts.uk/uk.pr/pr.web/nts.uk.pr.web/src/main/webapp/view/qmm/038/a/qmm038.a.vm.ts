@@ -159,7 +159,7 @@ module nts.uk.pr.view.qmm038.a {
 
             findByEmployee() {
                 let self = this;
-                nts.uk.ui.errors.clearAll();
+                $('#A2_4').ntsError('check');
                 block.invisible();
                 let command = {
                     employeeIds: self.employeeIds,
