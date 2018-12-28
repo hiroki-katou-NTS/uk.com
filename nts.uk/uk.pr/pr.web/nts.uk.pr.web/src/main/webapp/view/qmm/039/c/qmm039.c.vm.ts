@@ -102,7 +102,6 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
                         self.canDelete(true);
                     }
                 }
-
                 self.modifyItem.push(new model.EnumModel(model.MOFIDY_METHOD.DELETE, getText('QMM039_36')));
                 self.modifyItem.push(new model.EnumModel(model.MOFIDY_METHOD.UPDATE, getText('QMM039_37')));
             }
@@ -113,6 +112,8 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
         editHistory() {
             let self = this;
             if (self.modifyMethod() == model.MOFIDY_METHOD.UPDATE) {
+                $('.nts-input').trigger('validate');
+                if(nts.uk.ui.errors.hasError()) return;
                 self.updateHistory();
             } else {
                 dialog.confirm({messageId: "Msg_18"}).ifYes(function () {
