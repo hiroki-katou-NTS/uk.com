@@ -81,8 +81,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 else {
                     self.reloadCcg001(moment(Date.now()).format("YYYY/MM/DD"));
                 }
-                $('#A5_7').focus();
                 self.loadMGrid();
+                $('#A5_7').focus();
                 block.clear();
                 dfd.resolve(self);
             }).fail((err) => {
@@ -273,9 +273,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             let self = this;
             self.yearMonthFilter();
             $('#A5_7').ntsError('check');
-            if (errors.hasError()) {
-                return;
-            }
             if (!self.employeeList) return;
             block.invisible();
             service.salIndAmountHisByPeValCode({
