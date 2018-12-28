@@ -65,4 +65,5 @@ public interface GetAnnLeaRemNumWithinPeriod {
 			Optional<MonAggrCompanySettings> companySets,
 			Optional<MonAggrEmployeeSettings> employeeSets,
 			Optional<MonthlyCalculatingDailys> monthlyCalcDailys);
+	public GetAnnLeaRemNumWithinPeriodProc createProc();
 }

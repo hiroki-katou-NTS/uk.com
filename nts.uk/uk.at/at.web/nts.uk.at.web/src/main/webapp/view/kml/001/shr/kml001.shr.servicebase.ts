@@ -48,8 +48,9 @@ module nts.uk.at.view.kml001.shr {
         export function getAttendanceItemByType(command): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getAttendanceItemByType);
         }
-        export function saveAsExcel(): JQueryPromise<any> {
-        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "PersonCostCalculation", domainType: "KML001人件費計算の設定",languageId: 'ja', reportType: 0});
+        export function saveAsExcel(param): JQueryPromise<any> {
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "PersonCostCalculation", domainType: "KML001人件費計算の設定",languageId: 'ja',baseDate:moment.utc(param).format() 
+        ,mode:1 , reportType: 0});
     }
     } 
 }

@@ -16,7 +16,6 @@ import nts.uk.ctx.at.record.app.find.application.realitystatus.RealityStatusFind
 import nts.uk.ctx.at.record.app.find.application.realitystatus.SendMailResultDto;
 import nts.uk.ctx.at.record.app.find.application.realitystatus.UseSetingDto;
 import nts.uk.ctx.at.record.app.find.application.realitystatus.WkpIdMailCheckParam;
-import nts.uk.ctx.at.record.dom.application.realitystatus.output.StatusWkpActivityOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.SttWkpActivityOutputFull;
 
 @Path("at/record/application/realitystatus")

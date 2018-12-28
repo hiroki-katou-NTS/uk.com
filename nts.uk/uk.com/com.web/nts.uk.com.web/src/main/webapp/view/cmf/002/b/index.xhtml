@@ -90,7 +90,7 @@
 								<div class="div-line">
 									<!--B5 条件コード/名称-->
 									<div id="B5" class="column-1"
-										data-bind="ntsFormLabel: {constraint: 'ExternalOutputConditionCode',required:true}">#{i18n.getText('CMF002_40')}</div>
+										data-bind="ntsFormLabel: {constraint: ['ExternalOutputConditionCode', 'ExternalOutputConditionName'], required:true}">#{i18n.getText('CMF002_40')}</div>
 									<!--B5_1 条件設定コード-->
 									<input id="B5_1" style="width: 50px"
 										data-bind="ntsTextEditor: {

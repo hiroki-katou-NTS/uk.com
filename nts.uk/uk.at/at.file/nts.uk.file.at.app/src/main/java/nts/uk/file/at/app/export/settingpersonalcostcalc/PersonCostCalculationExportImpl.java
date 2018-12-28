@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.PersonCostCalculationFinder;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PersonCostCalculationSettingDto;
@@ -41,10 +42,11 @@ public class PersonCostCalculationExportImpl implements  MasterListData {
 		List<MasterData> datas = new ArrayList<>();
 		Map<String, Object> data = new HashMap<>();		
 		// Get company id
-		String companyId = AppContexts.user().companyId();
+		//String companyId = AppContexts.user().companyId();
+		GeneralDate basedate=query.getBaseDate();
 		List<PersonCostCalculationSettingDto> listPersonCostCalculationSetting=	personCostCalculationSettingFinder.findPersonCostCalculationByCompanyID();
-		// set base o day
-		//
+		listPersonCostCalculationSetting.removeIf(x ->x.getStartDate().date().getTime()>basedate.date().getTime()
+				|| x.getEndDate().date().getTime()<basedate.date().getTime());
 		
 	if(!CollectionUtil.isEmpty(listPersonCostCalculationSetting)){
 			for(PersonCostCalculationSettingDto personCostCalculationSettingDto:listPersonCostCalculationSetting){			
