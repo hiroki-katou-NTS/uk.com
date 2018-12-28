@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.infra.repository.wageprovision.statementitem.timeitemset;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,4 +69,16 @@ public class JpaTimeItemStRepository extends JpaRepository implements TimeItemSe
     public void remove(String cid, int categoryAtr, String itemNameCd) {
         this.commandProxy().remove(QpbmtTimeItemSt.class, new QpbmtTimeItemStPk(cid, categoryAtr, itemNameCd));
     }
+
+	@Override
+	public List<TimeItemSet> getTimeItemStByCategoryAndCodes(String cid, int timeCountAtr, List<String> itemNameCodes) {
+		if (itemNameCodes == null || itemNameCodes.isEmpty())
+			return Collections.emptyList();
+		String query = SELECT_ALL_QUERY_STRING
+				+ " WHERE  f.timeItemStPk.cid =:cid AND  f.timeCountAtr =:timeCountAtr AND  f.timeItemStPk.itemNameCd IN :itemNameCds";
+		return this.queryProxy().query(query, QpbmtTimeItemSt.class).setParameter("cid", cid)
+				.setParameter("timeCountAtr", timeCountAtr).setParameter("itemNameCds", itemNameCodes)
+				.getList(c -> c.toDomain());
+	}
+	
 }

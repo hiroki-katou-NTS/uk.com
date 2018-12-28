@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.ws.wageprovision.processdatecls;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.app.command.wageprovision.processdatecls.AddPaymentDateSettingCommandHandler;
 import nts.uk.ctx.pr.core.app.command.wageprovision.processdatecls.PaymentDateSettingListCommand;
 import nts.uk.ctx.pr.core.app.command.wageprovision.processdatecls.UpdatePaymentDateSettingCommandHandler;
@@ -78,4 +79,9 @@ public class SetPaymentDateWebService extends WebService {
         updatePaymentDateSettingCommandHandler.handle(command);
     }
 
+    @POST
+    @Path("getBaseDate")
+    public GeneralDate getBaseDate() {
+        return setDaySupportFinder.getEmployeeExtractionReferenceDateByUIdAndCId();
+    }
 }

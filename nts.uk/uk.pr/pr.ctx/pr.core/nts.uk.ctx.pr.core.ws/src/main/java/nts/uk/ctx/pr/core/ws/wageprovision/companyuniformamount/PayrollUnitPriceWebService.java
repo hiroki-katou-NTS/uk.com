@@ -28,6 +28,12 @@ public class PayrollUnitPriceWebService extends WebService {
     }
 
     @POST
+    @Path("getAllPayrollUnitPriceByYearMonth/{yearMonth}")
+    public List<PayrollUnitPriceDto> getAllPayrollUnitPriceByYearMonth(@PathParam("yearMonth")int yearMonth){
+        return payrollUnitPriceFinder.getPayrollUnitPriceByYearMonth(yearMonth);
+    }
+
+    @POST
     @Path("getPayrollUnitPriceById/{code}")
     public PayrollUnitPriceDto getPayrollUnitPriceById(@PathParam("code") String code){
         String cid = AppContexts.user().companyId();

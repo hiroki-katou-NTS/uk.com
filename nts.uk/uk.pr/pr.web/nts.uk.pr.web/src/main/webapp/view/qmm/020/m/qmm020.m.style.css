@@ -1,0 +1,24 @@
+#A{
+    margin-left: 100px;
+    margin-top: 8px;
+}
+
+.sidebar-content{
+    overflow:inherit !important;
+}
+#center {
+    margin: auto;
+    padding: 10px;
+}
+
+#multi-list_container {
+    border: 1px solid #AAB7B8 !important;
+}
+
+#M1_1 {
+    position: relative !important;
+    overflow: auto;
+    overflow-y: hidden;
+    -ms-overflow-x: hidden;
+    white-space: nowrap;
+}

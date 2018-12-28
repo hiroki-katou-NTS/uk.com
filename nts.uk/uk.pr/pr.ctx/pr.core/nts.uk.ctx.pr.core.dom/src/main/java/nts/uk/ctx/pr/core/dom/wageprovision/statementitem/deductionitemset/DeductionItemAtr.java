@@ -6,11 +6,14 @@ package nts.uk.ctx.pr.core.dom.wageprovision.statementitem.deductionitemset;
  * 
  */
 public enum DeductionItemAtr {
-
-	OPTIONAL_DEDUCTION_ITEM(0, "任意控除項目"), 
-	SOCIAL_INSURANCE_ITEM(1, "社会保険項目"), 
-	INCOME_TAX_ITEM(2,"所得税項目"), 
-	INHABITANT_TAX_ITEM(3, "住民税項目");
+	// 任意控除項目
+	OPTIONAL_DEDUCTION_ITEM(0, "Enum_DeductionItemAtr_OPTIONAL_DEDUCTION_ITEM"), 
+	// 社会保険項目
+	SOCIAL_INSURANCE_ITEM(1, "Enum_DeductionItemAtr_SOCIAL_INSURANCE_ITEM"), 
+	// 所得税項目
+	INCOME_TAX_ITEM(2,"Enum_DeductionItemAtr_INCOME_TAX_ITEM"), 
+	// 住民税項目
+	INHABITANT_TAX_ITEM(3, "Enum_DeductionItemAtr_INHABITANT_TAX_ITEM");
 
 	/** The value. */
 	public final int value;

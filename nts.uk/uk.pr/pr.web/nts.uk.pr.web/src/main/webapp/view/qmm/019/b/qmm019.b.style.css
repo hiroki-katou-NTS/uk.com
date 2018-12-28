@@ -1,0 +1,41 @@
+#contents-area {
+    padding-left: 20px !important;
+}
+
+#contents-area  .valign-center {
+    width: 1010px;
+}
+
+#B1_3 {
+    margin-right: 10px;
+}
+
+#B1_2, #B1_5, #B1_9 {
+    width: 120px;
+}
+
+.space {
+    width: 150px;
+}
+
+.space, #B2_1, .grid-area {
+    display: inline-block;
+}
+
+#B1_7_wrap {
+    display: inline-block;
+    min-width: 120px;
+}
+
+#B1_9 {
+    vertical-align: top;
+}
+
+.ntsRadioBox {
+    display: block !important;
+    margin-top: 8px;
+}
+
+.pull-right {
+    float: right;
+}

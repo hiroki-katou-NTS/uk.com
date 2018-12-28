@@ -10,6 +10,10 @@ module nts.uk.pr.view.qmm011.share.model {
             this.name = name;
         }
     }
+    export enum MODE {
+        NEW = 0,
+        UPDATE = 1
+    }
     
 
 }
