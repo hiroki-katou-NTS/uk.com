@@ -23,8 +23,8 @@ public class SalaryPerUnitPriceFinder
                 .collect(Collectors.toList());
     }
 
-    public List<SalaryPerUnitPriceNameDto> getSalaryPerUnitPriceNameWithoutAb(){
-        return finder.getSalaryPerUnitPriceWithoutab().stream().map(item -> SalaryPerUnitPriceNameDto.fromDomain(item.getSalaryPerUnitPriceName()))
+    public List<SalaryPerUnitPriceNameDto> getSalaryPerUnitPriceNotAbolition(){
+        return finder.getSalaryPerUnitPriceNotAbolition().stream().map(item -> SalaryPerUnitPriceNameDto.fromDomain(item.getSalaryPerUnitPriceName()))
                 .collect(Collectors.toList());
     }
 
