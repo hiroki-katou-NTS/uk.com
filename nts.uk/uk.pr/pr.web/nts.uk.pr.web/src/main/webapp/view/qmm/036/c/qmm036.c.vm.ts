@@ -4,6 +4,7 @@ module nts.uk.pr.view.qmm036.c.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
+    import alertError = nts.uk.ui.dialog.alertError;
 
     export class ScreenModel {
         modifyMethod: KnockoutObservable<number> = ko.observable(1);
@@ -73,6 +74,7 @@ module nts.uk.pr.view.qmm036.c.viewmodel {
             let self = this;
             if (self.modifyMethod() == MOFIDY_METHOD.UPDATE) {
                 self.updateHistory();
+                nts.uk.ui.windows.close();
             } else {
                 dialog.confirm({messageId: "Msg_18"}).ifYes(function () {
                     self.deleteHistory();
