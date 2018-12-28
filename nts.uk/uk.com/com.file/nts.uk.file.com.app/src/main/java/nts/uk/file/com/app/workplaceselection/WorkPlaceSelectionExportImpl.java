@@ -43,7 +43,7 @@ public class WorkPlaceSelectionExportImpl implements MasterListData {
 		columns.add(new MasterHeaderColumn(WorkPlaceSelectionColumn.CMM051_32, TextResource.localize("CMM051_32"),
 				ColumnTextAlign.LEFT, "", true));
 		for (WorkPlaceFunction item : workPlaceFunction) {
-			columns.add(new MasterHeaderColumn(item.getFunctionNo().v().toString(), WorkPlaceSelectionColumn.CMM051_32_2+item.getDisplayOrder(),
+			columns.add(new MasterHeaderColumn(item.getFunctionNo().v().toString(), item.getDisplayName().v(),
 					ColumnTextAlign.LEFT, "", true));
 		}
 		return columns;
