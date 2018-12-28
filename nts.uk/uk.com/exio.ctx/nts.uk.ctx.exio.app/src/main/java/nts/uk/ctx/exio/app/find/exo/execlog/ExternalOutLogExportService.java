@@ -64,8 +64,8 @@ public class ExternalOutLogExportService extends ExportService<ErrorContentDto> 
 				errorItem.put(header.get(0), errorContentList.getProcessCount());
 				errorItem.put(header.get(1), errorContentList.getErrorItem());
 				errorItem.put(header.get(2), errorContentList.getErrorTargetValue());
-				errorItem.put(header.get(3), errorContentList.getErrorContent() + "(" + TextResource.localize("CMF002_356")
-				+ errorContentList.getErrorEmployee() + ")");
+				String str = errorContentList.getErrorEmployee() != null ? "(" + TextResource.localize("CMF002_356") + errorContentList.getErrorEmployee() + ")" : "";
+				errorItem.put(header.get(3), errorContentList.getErrorContent() + str);
 				dataSource.add(errorItem);
 			}
 		}
