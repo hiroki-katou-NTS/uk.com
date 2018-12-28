@@ -85,7 +85,7 @@ module nts.uk.pr.view.qmm036.c.viewmodel {
             let self = this;
             let params = getShared("QMM036_C_PARAMS");
 
-            if (self.yearMonthStart() <= params.lastPeriodStartYm || self.yearMonthStart() > params.period.periodEndYm) {
+            if (((params.period.preHisStartYm != null) && (self.yearMonthStart() <= params.period.preHisStartYm)) || (self.yearMonthStart() > params.period.periodEndYm)) {
                 nts.uk.ui.dialog.info({messageId: "Msg_107"});
                 return;
             }
@@ -122,10 +122,6 @@ module nts.uk.pr.view.qmm036.c.viewmodel {
             let self = this;
             let params = getShared("QMM036_C_PARAMS");
 
-            if (self.yearMonthStart() <= params.lastPeriodStartYm || self.yearMonthStart() > params.period.periodEndYm) {
-                nts.uk.ui.dialog.info({messageId: "Msg_107"});
-                return;
-            }
             let lstPeriod: Array = [];
             let period = {
                 historyId: params.period.historyId,
