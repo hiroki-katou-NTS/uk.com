@@ -8,7 +8,7 @@ module nts.uk.pr.view.qmm041.a.service {
         getWpName: "screen/com/kcp010/getLoginWorkPlace",
         getIndEmpSalUnitPriceHistories: "ctx/pr/core/wageprovision/empsalunitprice/getIndEmpSalUnitPriceHistories",
         getBaseDate: "ctx/pr/core/wageprovision/processdatecls/getBaseDate",
-        getSalaryPerUnitPriceName: "ctx/pr/core/wageprovision/empsalunitprice/getSalaryPerUnitPriceName",
+        getSalaryPerUnitPriceName: "ctx/pr/core/wageprovision/empsalunitprice/getSaPerUnitPriceNameWithoutAb",
         getEmploymentCode: "ctx/pr/shared/employeeaverwage/getEmploymentCode",
         processYearFromEmp: "ctx/pr/core/ws/wageprovision/individualwagecontract/processYearFromEmp/{0}",
         addHistory: "ctx/pr/core/wageprovision/empsalunitprice/addHistory",
