@@ -75,7 +75,6 @@ module nts.uk.pr.view.qmm039.c.viewmodel {
                         //TODO
                         self.cateIndicator(0);
                         self.salBonusCate(1);
-
                         break;
                     case ITEM_CLASS.BONUS_DEDUCTION:
                         //TODO
