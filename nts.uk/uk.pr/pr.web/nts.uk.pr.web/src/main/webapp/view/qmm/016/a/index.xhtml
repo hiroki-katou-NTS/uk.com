@@ -174,7 +174,7 @@
                             <div style="display: inline-block; height: 185px; width: 330px;"
                                  class="panel panel-gray-bg">
                                 <div style="margin-left: 10px;" data-bind="text: elementSettingDisplayText"></div>
-                                <img style="margin-top: 5px;" src='/' data-bind="attr:{src: imagePath}"/>
+                                <img style="margin-top: 5px; max-width: 329px; max-height: 161px;" src='/' data-bind="attr:{src: imagePath}"/>
                             </div>
                         </div>
                         <div class="tab-row">
@@ -231,7 +231,7 @@
 	                                        <!--A8_10  要素番号3-->
 	                                        <th style="text-align: center;" data-bind="if: elementSetting() == 2 || elementSetting() == 4"
 	                                            class="ui-widget-header">#{i18n.getText('QMM016_44')}</th>
-	                                        <td data-bind="if: elementSetting() == 2 || elementSetting() == 4">
+	                                        <td data-bind="if: elementSetting() == 2">
 	                                            <!--A8_11 参照ボタン3-->
 	                                            <button tabindex="17" class="small"
 	                                                    data-bind="click: function(){$vm.selectElement(3)}, enable: !$vm.updateMode()">#{i18n.getText('QMM016_23')}</button>
