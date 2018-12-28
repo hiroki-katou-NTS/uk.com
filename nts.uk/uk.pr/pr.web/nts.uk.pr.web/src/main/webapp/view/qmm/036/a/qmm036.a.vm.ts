@@ -425,6 +425,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                 case 0:
                     self.bonusAtr(param);
                     self.titleTab(getText('QMM036_3'));
+                    $("#sidebar").ntsSideBar("active", param);
                     self.reloadCcg001();
 
                     break;
@@ -432,6 +433,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                     self.isScreenB(true);
                     self.bonusAtr(param);
                     self.titleTab(getText('QMM036_4'));
+                    $("#sidebar").ntsSideBar("active", param);
                     self.reloadCcg001();
                     break;
                 default:
@@ -592,13 +594,17 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
 
         toScreenC() {
             let self = this;
-            let history = _.find(self.lstHistory(), function (x) {
+            let history: ItemModel = _.find(self.lstHistory(), function (x) {
                 return x.index == self.selectedHisCode()
             });
+
             let lastHistoryId = null;
-            if (self.lstHistory().length > 1) {
-                lastHistoryId = self.lstHistory()[1].historyID
+            let preHisStartYm: number = null;
+            if((history != null) && (self.lstHistory().length > (history.index + 1))) {
+                preHisStartYm = self.lstHistory()[history.index + 1].periodStartYm;
+                lastHistoryId = self.lstHistory()[history.index + 1].historyID;
             }
+
             let params = {
                 period: {
                     historyId: history.historyID,
@@ -608,7 +614,8 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                     categoryAtr: self.categoryAtr(),
                     itemNameCd: self.itemNameCd(),
                     employeeID: self.selectedItem(),
-                    salaryBonusAtr: self.bonusAtr()
+                    salaryBonusAtr: self.bonusAtr(),
+                    preHisStartYm: preHisStartYm
                 }
             }
 
