@@ -82,7 +82,7 @@ public class JpaProcessExecutionRepository extends JpaRepository
 		old.midJoinEmployee = update.midJoinEmployee;
 		old.reflectResultCls = update.reflectResultCls;
 		old.monthlyAggCls = update.monthlyAggCls;
-		old.recreateTypeChangePerson = update.recreateTypeChangePerson;
+		old.recreateTypeChangePerson = update.recreateTypeChangePerson; 
 		old.recreateTransfers = update.recreateTransfers;
 		old.appRouteUpdateAtr = update.appRouteUpdateAtr;
 		old.createNewEmp = update.createNewEmp;
@@ -91,6 +91,9 @@ public class JpaProcessExecutionRepository extends JpaRepository
 		old.alarmCode = update.alarmCode;
 		old.mailPrincipal = update.mailPrincipal;
 		old.mailAdministrator = update.mailAdministrator;
+		old.designatedYear = update.designatedYear;
+		old.startMonthDay = update.startMonthDay;
+		old.endMonthDay = update.endMonthDay;
 		return old;
 	}
 }

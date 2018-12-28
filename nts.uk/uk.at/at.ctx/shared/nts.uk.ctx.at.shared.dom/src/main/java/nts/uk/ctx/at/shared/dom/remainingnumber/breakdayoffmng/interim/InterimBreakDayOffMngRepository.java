@@ -14,14 +14,26 @@ public interface InterimBreakDayOffMngRepository {
 	 * @return
 	 */
 	Optional<InterimBreakMng> getBreakManaBybreakMngId(String breakManaId);
-	
+	/**
+	 * 暫定休出管理データ by Sid and date period
+	 * @param sid
+	 * @param period
+	 * @return
+	 */
+	List<InterimBreakMng> getBySidPeriod(String sid, DatePeriod period);
 	/**
 	 * 暫定代休管理データ
 	 * @param dayOffManaId
 	 * @return
 	 */
 	Optional<InterimDayOffMng> getDayoffById(String dayOffManaId);
-	
+	/**
+	 * get 暫定代休管理データ by sid and date period
+	 * @param sid
+	 * @param period
+	 * @return
+	 */
+	List<InterimDayOffMng> getDayOffBySidPeriod(String sid, DatePeriod period);
 	/**
 	 * 暫定休出代休紐付け管理
 	 * @param mngId
@@ -39,7 +51,7 @@ public interface InterimBreakDayOffMngRepository {
 	 * ・使用期限日≦INPUT.期間.終了年月日
 	 * @return
 	 */
-	List<InterimBreakMng> getByPeriod(List<String> mngId, double unUseDays, DatePeriod dateData);
+	List<InterimBreakMng> getByPeriod(String sid, DatePeriod ymd, double unUseDays, DatePeriod dateData);
 	
 	/**
 	 * 暫定休出管理データ 　を追加および更新

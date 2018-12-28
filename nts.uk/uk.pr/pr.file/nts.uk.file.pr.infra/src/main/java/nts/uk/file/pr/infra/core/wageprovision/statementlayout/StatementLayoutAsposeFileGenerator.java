@@ -13,6 +13,7 @@ import com.aspose.cells.WorksheetCollection;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementPrintAtr;
 import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.LineByLineSettingExportData;
 import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.SettingByCtgExportData;
 import nts.uk.ctx.pr.file.app.core.wageprovision.statementlayout.StatementLayoutFileGenerator;
@@ -67,6 +68,8 @@ public class StatementLayoutAsposeFileGenerator extends AsposeCellsReportGenerat
 		int firstLine = listLineByLineSet.get(0).getLineNumber();
 		int lastLine = listLineByLineSet.get(listLineByLineSet.size() - 1).getLineNumber();		
 		for (LineByLineSettingExportData line : listLineByLineSet) {
+			// ※補足3
+			if (!StatementPrintAtr.PRINT.equals(line.getPrintSet())) continue;
 			LinePosition pos = LinePosition.MIDDLE;
 			if (line.getLineNumber() == firstLine) {
 				pos = LinePosition.FIRST;

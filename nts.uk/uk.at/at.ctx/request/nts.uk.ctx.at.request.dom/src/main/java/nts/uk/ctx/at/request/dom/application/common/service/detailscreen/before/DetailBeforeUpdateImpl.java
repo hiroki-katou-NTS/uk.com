@@ -30,7 +30,7 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 		GeneralDate endDate = application.getAppDate();
 		// 申請する開始日～申請する終了日までループする
 		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
-			if(loopDate.equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr.PREDICT) && application.isAppOverTime()){
+			if(application.getPrePostAtr().equals(PrePostAtr.PREDICT) && application.isAppOverTime()){
 				newBeforeRegister.confirmCheckOvertime(application.getCompanyID(), application.getEmployeeID(), loopDate);
 			}else{
 				// アルゴリズム「確定チェック」を実施する

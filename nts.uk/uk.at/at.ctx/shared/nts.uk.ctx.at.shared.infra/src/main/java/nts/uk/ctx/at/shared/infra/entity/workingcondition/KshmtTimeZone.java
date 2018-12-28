@@ -26,6 +26,10 @@ public abstract class KshmtTimeZone extends UkJpaEntity implements Serializable 
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
+	
+	/** SID */
+	@Column(name = "SID")
+	private String sid;
 
 	/** The use atr. */
 	@Column(name = "USE_ATR")

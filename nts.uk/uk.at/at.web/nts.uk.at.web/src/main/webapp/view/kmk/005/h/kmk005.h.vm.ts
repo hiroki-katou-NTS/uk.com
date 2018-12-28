@@ -23,7 +23,8 @@ module nts.uk.at.view.kmk005.h {
                 isShowSelectButton: false,
                 baseDate: ko.observable(new Date()),
                 selectedWorkplaceId: undefined,
-                alreadySettingList: ko.observableArray([])
+                alreadySettingList: ko.observableArray([]),                
+                systemType: 2
             };
 
             model: KnockoutObservable<BonusPaySetting> = ko.observable(new BonusPaySetting({ id: '', name: '' }));

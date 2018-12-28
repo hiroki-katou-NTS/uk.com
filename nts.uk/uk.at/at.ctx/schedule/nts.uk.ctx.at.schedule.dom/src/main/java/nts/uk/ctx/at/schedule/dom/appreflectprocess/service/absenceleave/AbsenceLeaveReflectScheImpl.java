@@ -43,10 +43,9 @@ public class AbsenceLeaveReflectScheImpl implements AbsenceLeaveReflectSche{
 	public boolean absenceLeaveReflect(CommonReflectParamSche param) {
 		try {
 			//勤種・就時の反映 
-			updateSche.updateScheWorkTimeType(param.getEmployeeId(), 
+			updateSche.updateScheWorkType(param.getEmployeeId(), 
 					param.getDatePara(), 
-					param.getWorktypeCode(), 
-					null);
+					param.getWorktypeCode());
 			//開始予定・終了予定の置き換え
 			this.absenceLeaveStartEndTimeReflect(param);
 			return true;
@@ -66,10 +65,9 @@ public class AbsenceLeaveReflectScheImpl implements AbsenceLeaveReflectSche{
 			//必須任意不要区分(output)が不要
 			if(checkNeededOfWorkTimeSetting == SetupType.NOT_REQUIRED) {
 				//就時の反映
-				updateSche.updateScheWorkTimeType(param.getEmployeeId(), 
+				updateSche.updateScheWorkTime(param.getEmployeeId(), 
 						param.getDatePara(), 
-						param.getWorktypeCode(), 
-						"000");//就業時間帯クリア->000
+						null);//就業時間帯クリア
 			}
 			//勤務開始終了のクリア
 			startEndTimeScheService.updateStartTimeRflect(new TimeReflectScheDto(param.getEmployeeId(),
@@ -82,9 +80,8 @@ public class AbsenceLeaveReflectScheImpl implements AbsenceLeaveReflectSche{
 					param.getWorkTimeCode());
 			if(workTimeReflect.isReflect()) {
 				//就時の反映
-				updateSche.updateScheWorkTimeType(param.getEmployeeId(), 
+				updateSche.updateScheWorkTime(param.getEmployeeId(), 
 						param.getDatePara(), 
-						null, 
 						workTimeReflect.getWorkTimeCode());
 			}
 			//開始終了時刻が反映できるか
@@ -107,14 +104,14 @@ public class AbsenceLeaveReflectScheImpl implements AbsenceLeaveReflectSche{
 	@Override
 	public WorkTimeIsReflect workTimeIsReflect(String employeeId, GeneralDate baseDate, String worktimeCode) {
 		//反映できるフラグ=false、反映就業時間帯をクリア(初期化)
-		WorkTimeIsReflect dataOutput = new WorkTimeIsReflect(false, "000");
+		WorkTimeIsReflect dataOutput = new WorkTimeIsReflect(false, null);
 		//INPUT．就業時間帯をチェックする
 		if(worktimeCode == null) {
 			//ドメインモデル「勤務予定基本情報」を取得する
 			Optional<BasicSchedule> optBasicSche = basicScheRepo.find(employeeId, baseDate);
 			//ドメインモデル「勤務予定基本情報」．就業時間帯をチェックする
 			if(optBasicSche.isPresent()
-					|| optBasicSche.get().getWorkTimeCode() != "") {
+					&& optBasicSche.get().getWorkTimeCode() != null) {
 				BasicSchedule basicSche = optBasicSche.get();
 				//dataOutput.setReflect(true);
 				dataOutput.setWorkTimeCode(basicSche.getWorkTimeCode());

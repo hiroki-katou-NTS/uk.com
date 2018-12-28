@@ -2,22 +2,22 @@ package nts.uk.ctx.at.record.dom.daily.attendanceleavinggate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
-import org.junit.Assert;
+//import java.util.Optional;
+//
+//import org.junit.Assert;
 import org.junit.Test;
 
-import nts.arc.time.GeneralDate;
+//import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
+//import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
+//import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+//import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+//import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
+//import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+//import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
+//import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 public class AttendanceLeavingGateOfDailyTest {
@@ -34,11 +34,11 @@ public class AttendanceLeavingGateOfDailyTest {
 //										   new WorkStamp(new TimeWithDayAttr(510),new TimeWithDayAttr(510),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER),
 //										   new WorkStamp(new TimeWithDayAttr(1050),new TimeWithDayAttr(1050),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER)));
 		//日別実績の入退門　　
-		AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily = new AttendanceLeavingGateOfDaily("",GeneralDate.today(),attendanceLeavingGates);
-		
-		List<TimeLeavingWork> list = new ArrayList<>();
-		WorkStamp a = new WorkStamp(new TimeWithDayAttr(510),new TimeWithDayAttr(510),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER);
-		WorkStamp b = new WorkStamp(new TimeWithDayAttr(1050),new TimeWithDayAttr(1050),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER);
+//		AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily = new AttendanceLeavingGateOfDaily("",GeneralDate.today(),attendanceLeavingGates);
+//		
+//		List<TimeLeavingWork> list = new ArrayList<>();
+//		WorkStamp a = new WorkStamp(new TimeWithDayAttr(510),new TimeWithDayAttr(510),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER);
+//		WorkStamp b = new WorkStamp(new TimeWithDayAttr(1050),new TimeWithDayAttr(1050),new WorkLocationCD(null),StampSourceInfo.TIME_RECORDER);
 		
 //		list.add(new TimeLeavingWork(new WorkNo(1),Optional.of(new TimeActualStamp(a,a, 1)),Optional.of(new TimeActualStamp(b,b, 1))));
 ////		list.add(new TimeLeavingWork(new WorkNo(2),Optional.of(new TimeActualStamp(a,b, 1)),Optional.of(new TimeActualStamp(a,b, 1))));

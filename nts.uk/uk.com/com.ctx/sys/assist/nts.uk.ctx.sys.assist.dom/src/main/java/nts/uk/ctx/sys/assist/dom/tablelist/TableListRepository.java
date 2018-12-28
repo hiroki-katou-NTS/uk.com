@@ -8,6 +8,6 @@ public interface TableListRepository {
 	void update(TableList domain);
 	List<TableList> getByOffsetAndNumber(String storeProcessingId, int offset, int number);
 	List<TableList> getByProcessingId(String storeProcessingId);
-	List<List<String>> getDataDynamic(TableList tableList);
+	List<List<String>> getDataDynamic(TableList tableList, List<String> targetEmployeesSid);
 	List<String> getAllColumnName(String tableName);
 }
