@@ -1,0 +1,29 @@
+#L1_9{
+    margin-left: 70px;
+}
+#L1_9 .ntsRadioBox {
+    width: 400px;
+    margin-bottom: 10px;
+}
+
+#L2_1{
+    margin-top: 9px;
+}
+
+#control-group-l5-l6, #L1_1 {
+    position: relative !important;
+    overflow: auto;
+    overflow-y: hidden;
+    -ms-overflow-x: hidden;
+    white-space: nowrap;
+}
+
+#L1_2 {
+    position: relative !important;
+    overflow: auto;
+    overflow-y: hidden;
+    -ms-overflow-x: hidden;
+    white-space: pre;
+    font-size: 14px;
+    width: 485px;
+}

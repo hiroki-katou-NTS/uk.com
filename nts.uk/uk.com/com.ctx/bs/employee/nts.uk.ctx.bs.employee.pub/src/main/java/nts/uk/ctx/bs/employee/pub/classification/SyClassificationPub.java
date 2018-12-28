@@ -45,4 +45,7 @@ public interface SyClassificationPub {
 	 * @return the classification map
 	 */
 	Map<String, String> getClassificationMapCodeName(String companyId, List<String> clsCds);
+
+	// for salary qmm016, 017
+	List<ClassificationExport> getClassificationByCompanyId(String companyId);
 }

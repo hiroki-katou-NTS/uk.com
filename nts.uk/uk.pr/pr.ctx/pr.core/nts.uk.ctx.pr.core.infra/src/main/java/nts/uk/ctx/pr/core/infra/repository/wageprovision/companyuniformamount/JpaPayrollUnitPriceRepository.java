@@ -9,6 +9,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPric
 import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceRepository;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.companyuniformamount.QpbmtPayUnitPrice;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.companyuniformamount.QpbmtPayUnitPricePk;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaPayrollUnitPriceRepository extends JpaRepository implements PayrollUnitPriceRepository {
@@ -16,12 +17,21 @@ public class JpaPayrollUnitPriceRepository extends JpaRepository implements Payr
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtPayUnitPrice f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.payUnitPricePk.code =:code AND  f.payUnitPricePk.cid =:cid ";
     private static final String SELECT_BY_KEY_STRING_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.payUnitPricePk.cid =:cid ORDER BY f.payUnitPricePk.code ASC";
+    private static final String SELECT_PAYROLL_UNIT_PRICE_BY_YEAR_MONTH = "SELECT a FROM QpbmtPayUnitPrice a JOIN QpbmtPayUnitPriceHis b ON a.payUnitPricePk.cid = b.payUnitPriceHisPk.cid AND a.payUnitPricePk.code = b.payUnitPriceHisPk.code WHERE a.payUnitPricePk.cid =:cid AND b.startYearMonth <=:yearMonth AND b.endYearMonth >=:yearMonth ORDER BY a.payUnitPricePk.code ";
 
 
     @Override
     public List<PayrollUnitPrice> getAllPayrollUnitPriceByCID(String cid) {
         return this.queryProxy().query(SELECT_BY_KEY_STRING_BY_CID, QpbmtPayUnitPrice.class)
                 .setParameter("cid", cid)
+                .getList(item ->item.toDomain());
+    }
+
+    @Override
+    public List<PayrollUnitPrice> getPayrollUnitPriceByYearMonth(int yearMonth) {
+        return this.queryProxy().query(SELECT_PAYROLL_UNIT_PRICE_BY_YEAR_MONTH, QpbmtPayUnitPrice.class)
+                .setParameter("cid", AppContexts.user().companyId())
+                .setParameter("yearMonth", yearMonth)
                 .getList(item ->item.toDomain());
     }
 

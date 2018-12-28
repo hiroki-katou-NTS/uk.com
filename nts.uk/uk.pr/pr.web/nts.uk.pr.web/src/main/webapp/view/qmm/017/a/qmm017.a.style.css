@@ -1,0 +1,101 @@
+.column-1 {
+    width: 215px;
+}
+.column-2 {
+    margin-left: 215px;
+}
+.tab-row {
+    margin-top: 10px;
+    min-width: 800px;
+}
+.tab-row-medium {
+    margin-top: 10px;
+    min-width: 600px;
+}
+.tab-row .row {
+    margin-top: 10px;
+}
+.fixed-flex-layout > .fixed-flex-layout-left {
+    margin-right: -10px;
+}
+#C3_1 tr {
+    height: 34px;
+}
+.large-right-caret::after {
+    font-size: 2em;
+}
+.large-right-caret-container {
+    position: relative;
+    left: -5px;
+    vertical-align: top;
+    margin-top: 115px;
+}
+.search-icon {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    background: #00B050;
+    border-radius: 5px;
+}
+.search-icon:before {
+    width: 12px;
+    height: 12px;
+    border: solid 2px #FFF;
+    border-radius: 100%;
+    top: 6px;
+    left: 7px;
+}
+.search-icon::after {
+    top: 18px;
+    left: 22px;
+    height: 8px;
+    width: 2px;
+    border-radius: 0 0 5px 5px;
+    background-color: #FFF;
+    transform: rotate(-45deg);
+}
+.search-icon::before, .search-icon::after {
+    content: '';
+    position: absolute;
+    display: block;
+}
+.large-caret::after{
+    font-size: 3em;
+    color: #97D155 !important;
+}
+.tab-panel-row {
+    height: 310px;
+}
+.tab-panel-col-1 {
+    display: inline-block;
+    width: 215px;
+    vertical-align: top;
+    margin-top: 50px;
+}
+.tab-panel-col-2 {
+   width: 215px;
+    display: inline-block;
+    margin-left: 5px;
+}
+.tab-panel-col-3 {
+    width: 240px;
+    height: 290px;
+    vertical-align: top;
+    display: inline-block;
+    margin-left: 28px;
+}
+.cal-container {
+    vertical-align: top;
+    display: inline-block;
+}
+.cal-container button {
+    height: 30px;
+    width: 30px;
+}
+.search-box-sm {
+    margin-left: 40px;
+    width: 88px;
+}
+.formula-button {
+    width: 232px;
+}

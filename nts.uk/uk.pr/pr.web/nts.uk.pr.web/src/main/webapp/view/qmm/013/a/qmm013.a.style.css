@@ -38,7 +38,7 @@
 	margin-left: 235px;
 }
 
-#A3_1, #A3_6, #A3_1, #A3_13,
+#A3_1, #A3_6, #A3_8, #A3_13,
 #A3_24, #A3_27, .space1 {
 	width: 180px;
 }
@@ -59,4 +59,8 @@
 
 #A3_28 {
 	height: 90px;
+}
+
+.control-group {
+	margin-bottom: 5px !important;
 }

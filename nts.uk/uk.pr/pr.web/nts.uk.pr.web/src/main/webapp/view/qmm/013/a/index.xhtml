@@ -31,6 +31,14 @@
 				<button id="A1_2" tabindex="2" class="registerBtn proceed" data-bind="click: register, enable: true">
 					#{i18n.getText('QMM013_2')}
 				</button>
+				<!-- 印刷（PDF） -->
+				<button id="A1_3" tabindex="3" class="" data-bind="enable: false">
+					#{i18n.getText('QMM013_3')}
+				</button>
+				<!-- マスタ修正ログ -->
+				<button id="A1_4" tabindex="4" class="" data-bind="enable: false">
+					#{i18n.getText('QMM013_4')}
+				</button>
 				<!-- 削除 -->
 				<button id="A1_5" tabindex="5" class="deleteBtn danger" data-bind="click: deleteItem, enable: !checkCreate()">
 					#{i18n.getText('QMM013_5')}
@@ -113,6 +121,14 @@
 										required: true,
 										enable: true,
 										readonly: false}" />
+						</div>
+						<div class="valign-center control-group">
+							<!-- 統合コード -->
+							<div id="A3_8" data-bind="ntsFormLabel: {}">#{i18n.getText('QMM013_17')}</div>
+							<!-- 参照 -->
+							<button id="A3_9" tabindex="13" class="small" data-bind="enable: false">
+								#{i18n.getText('QMM013_18')}
+							</button>
 						</div>
 					</div>
 					<hr style="margin-bottom: 10px;"/>
