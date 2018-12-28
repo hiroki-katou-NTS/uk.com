@@ -507,7 +507,7 @@ module ksm002.b.viewmodel {
 
             nts.uk.ui.windows.sub.modal("com", "/view/cdl/028/a/index.xhtml").onClosed(function() {
                 var params = nts.uk.ui.windows.getShared("CDL028_A_PARAMS");
-                if (!nts.uk.util.isNullOrUndefined(params)) {
+                if (params.status) {
                     self.exportExcel(params.mode, params.startDateFiscalYear, params.endDateFiscalYear);
                  }
             });

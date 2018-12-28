@@ -60,11 +60,11 @@ public class DayCalendarExportImpl implements MasterListData {
 //		 period = dayCalendarReportRepository.getBaseDateByCompany(companyId, query.getStartDate(), query.getEndDate());
 		 List<SheetData> sheetDatas = new ArrayList<>();
 		 //add the work place sheet
-		 SheetData sheetCompanyData = new SheetData(getMasterDatasCompany(query), getHeaderColumnsCompany(query),null, null, TextResource.localize("KSM004_95"));
+		 SheetData sheetCompanyData = new SheetData(getMasterDatasCompany(query), getHeaderColumnsCompany(query),null, null, TextResource.localize("Com_Company"));
 		 SheetData sheetWorkplaceData = new SheetData(getMasterDatasForWorkplace(query), 
-				 getHeaderColumnsForWorkplace(query),null, null, TextResource.localize("KSM004_101"));
+				 getHeaderColumnsForWorkplace(query),null, null, TextResource.localize("Com_Workplace"));
 		 SheetData sheetClassData = new SheetData(getMasterDatasForClass(query), 
-				 getHeaderColumnsForClass(query),null, null, TextResource.localize("KSM004_102"));
+				 getHeaderColumnsForClass(query),null, null, TextResource.localize("Com_Class"));
 		 sheetDatas.add(sheetCompanyData);
 		 sheetDatas.add(sheetWorkplaceData);
 		 sheetDatas.add(sheetClassData);
@@ -244,8 +244,8 @@ public class DayCalendarExportImpl implements MasterListData {
 	 */
 	private List<MasterHeaderColumn> getHeaderColumnsForWorkplace(MasterListExportQuery query) {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn("コード", TextResource.localize("KSM004_99"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("名称", TextResource.localize("KSM004_100"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("コード", TextResource.localize("KSM004_98"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("名称", TextResource.localize("KSM004_99"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("年月", TextResource.localize("KSM004_63"), ColumnTextAlign.LEFT, "", true));
 		getHeaderColumnsDate(columns);
 
