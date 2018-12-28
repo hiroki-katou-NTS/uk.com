@@ -189,6 +189,10 @@ module nts.uk.pr.view.qmm001.a.viewmodel {
             if(self.modeScreen() == MODESCREEN.NEW){
                 return true;
             }
+			
+			if(self.listItems.length == 0){
+                return false;
+            }
             return true;
         }
         getHistory(){
