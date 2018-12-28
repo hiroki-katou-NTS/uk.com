@@ -39,7 +39,7 @@
                      data-bind="ntsFormLabel: { constraint: '', required: true }">#{i18n.getText('QMM038_4')}</div>
                 <div id="A2_3" tabindex="3"
                      data-bind="ntsDatePicker: {value: giveCurrTreatYear, dateFormat: 'yearmonth', name: '#[QMM038_4]',required: true}"></div>
-                <button id="A2_4" class="small" data-bind="click: findByEmployee"
+                <button id="A2_4" class="small" data-bind="click: findByEmployee, enable: $root.errors.isEmpty"
                         tabindex="4">#{i18n.getText('QMM038_5')}</button>
             </div>
             <div style="margin: 19px 19px 19px 89px; width: 50px" tabindex="6">
