@@ -46,8 +46,8 @@ public class JobInfoImpl extends JpaRepository implements JobInfoRepository {
 			+			" INNER JOIN SACMT_ROLESET_JOB_DETAIL d ON s.ROLE_SET_CD = d.ROLESET_CD AND info.JOB_ID = d.JOB_ID"
 			+			" INNER JOIN SACMT_ROLESET_JOB job ON info.CID = job.CID"
 			+		" WHERE info.CID = ?"
-			+			" AND his.START_DATE <= CONVERT(DATETIME, ?, 127) "
-			+			" AND his.END_DATE >= CONVERT(DATETIME, ?, 127)"
+			+			" AND his.START_DATE <= CONVERT(DATETIME, ?, 102) "
+			+			" AND his.END_DATE >= CONVERT(DATETIME, ?, 102)"
 			+ 		") TBL ";
 	
 	
@@ -72,6 +72,8 @@ public class JobInfoImpl extends JpaRepository implements JobInfoRepository {
 			+				" INNER JOIN BSYMT_AFF_COM_HIST aff ON per.SID = aff.SID" 
 			+				" INNER JOIN BPSMT_PERSON p ON aff.PID = p.PID "
 			+			" WHERE per.CID = ?"
+			+		 " AND per.START_DATE <= CONVERT(DATETIME, ?, 102) "
+		    +		 " AND per.END_DATE >= CONVERT(DATETIME, ?, 102)"
 			+ 		") TBL";
 	
 	@Override
@@ -115,11 +117,13 @@ public class JobInfoImpl extends JpaRepository implements JobInfoRepository {
 	}
 	
 	@Override
-	public List<MasterData> getDataRoleSetEmpExport(){
+	public List<MasterData> getDataRoleSetEmpExport(String date){
 		String cid = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
 		try (PreparedStatement stmt = this.connection().prepareStatement(GET_EXPORT_DATA.toString())){
 			stmt.setString(1, cid);
+			stmt.setString(2, date);
+			stmt.setString(3, date);
 			datas.addAll(new NtsResultSet(stmt.executeQuery()).getList(i->getDataRoleSetEmpExport(i)));
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -1,11 +1,11 @@
 package nts.uk.file.at.infra.shift.estimate;
 
-import java.awt.Color;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.ejb.Stateless;
@@ -32,11 +32,22 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	private static final String GET_EXPORT_EXCEL = "SELECT eas.YEAR_HD_ATR ,eas.HAVY_HD_ATR ,eas.SPHD_ATR ,eas.HALF_DAY_ATR"
-			+ " ,STUFF(( SELECT ', '+kpi.PREMIUM_NAME FROM KSCST_EST_AGGREGATE_SET eas LEFT JOIN KSCST_PER_COST_EXTRA_ITEM cei ON eas.CID = cei.CID LEFT JOIN KMNMT_PREMIUM_ITEM kpi ON eas.CID = kpi.CID AND cei.PREMIUM_NO = kpi.PREMIUM_NO WHERE eas.CID = ?cid ORDER BY kpi.PREMIUM_NO ASC FOR XML PATH ('') ), 1, 1, '' ) as NAME"
-			+ " FROM KSCST_EST_AGGREGATE_SET eas" + " INNER JOIN KSCST_PER_COST_EXTRA_ITEM cei ON eas.CID = cei.CID"
-			+ " INNER JOIN KMNMT_PREMIUM_ITEM kpi ON eas.CID = kpi.CID AND cei.PREMIUM_NO = kpi.PREMIUM_NO"
-			+ " WHERE eas.CID = ?cid" + " GROUP BY eas.YEAR_HD_ATR ,eas.HAVY_HD_ATR ,eas.SPHD_ATR ,eas.HALF_DAY_ATR";
+	private static final String GET_EXPORT_EXCEL = "SELECT "
+			+" 	eas.YEAR_HD_ATR "
+			+" 		,eas.HAVY_HD_ATR "
+			+" 		,eas.SPHD_ATR "
+			+" 		,eas.HALF_DAY_ATR"
+			+" 		,STUFF(( SELECT "
+			+" 					', '+kpi.PREMIUM_NAME "
+			+" 				 FROM KSCST_EST_AGGREGATE_SET eas "
+			+" 					INNER JOIN KSCST_PER_COST_EXTRA_ITEM cei ON eas.CID = cei.CID "
+			+" 					INNER JOIN 	KMNMT_PREMIUM_ITEM kpi ON eas.CID = kpi.CID AND cei.PREMIUM_NO = kpi.PREMIUM_NO "
+			+" 				 WHERE eas.CID = ?cid AND kpi.USE_ATR= 1 ORDER BY kpi.PREMIUM_NO ASC FOR XML PATH ('') ), 1, 1, '' ) AS NAME"
+			+" FROM KSCST_EST_AGGREGATE_SET eas "
+			+" 	INNER JOIN KSCST_PER_COST_EXTRA_ITEM cei ON eas.CID = cei.CID "
+			+" 	INNER JOIN KMNMT_PREMIUM_ITEM kpi ON eas.CID = kpi.CID AND cei.PREMIUM_NO = kpi.PREMIUM_NO AND kpi.USE_ATR= 1 "
+			+" WHERE eas.CID = ?cid"
+			+" 	GROUP BY eas.YEAR_HD_ATR ,eas.HAVY_HD_ATR ,eas.SPHD_ATR ,eas.HALF_DAY_ATR";
 	
 	private static final String GET_EXPORT_EXCEL_SHEET_TWO = "SELECT"
 			+" ecs.TIME_Y_DISP"
@@ -157,10 +168,10 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 			+" 	,ROW_NUMBER () OVER ( PARTITION BY etes.TARGET_YEAR,emp.CODE, emp.NAME  ORDER BY etes.TARGET_CLS, emp.CODE ASC ) AS ROW_NUMBER"
 			+" FROM"
 			+" KSCMT_EST_TIME_EMP_SET etes"
-			+" INNER JOIN KSCMT_EST_PRICE_EMP_SET epes ON etes.CID = epes.CID AND etes.TARGET_YEAR = epes.TARGET_YEAR AND etes.TARGET_CLS = epes.TARGET_CLS AND etes.EMPCD = epes.EMPCD "
-			+" INNER JOIN KSCMT_EST_DAYS_EMP_SET edes ON etes.CID = edes.CID AND etes.TARGET_YEAR = edes.TARGET_YEAR AND etes.TARGET_CLS = edes.TARGET_CLS AND etes.EMPCD = edes.EMPCD "
-			+" INNER JOIN BSYMT_EMPLOYMENT emp ON etes.CID = emp.CID AND etes.EMPCD = emp.CODE"
-			+" WHERE etes.CID = ?cid AND  ?startDate <= etes.TARGET_YEAR AND  etes.TARGET_YEAR <= ?endDate"
+			+" INNER JOIN KSCMT_EST_PRICE_EMP_SET epes ON etes.CID = epes.CID AND etes.TARGET_YEAR = epes.TARGET_YEAR AND etes.TARGET_CLS = epes.TARGET_CLS AND etes.EMPCD = epes.EMPCD AND etes.CID = ?cid"
+			+" INNER JOIN KSCMT_EST_DAYS_EMP_SET edes ON etes.CID = edes.CID AND etes.TARGET_YEAR = edes.TARGET_YEAR AND etes.TARGET_CLS = edes.TARGET_CLS AND etes.EMPCD = edes.EMPCD AND etes.CID = ?cid"
+			+" INNER JOIN BSYMT_EMPLOYMENT emp ON etes.CID = emp.CID AND etes.EMPCD = emp.CODE AND etes.CID = ?cid"
+			+" WHERE ?startDate <= etes.TARGET_YEAR AND  etes.TARGET_YEAR <= ?endDate"
 			+" ) AS TABLE_RESULT";
 	
 	private static final String GET_EXPORT_EXCEL_SHEET_FIVE = "SELECT"
@@ -204,15 +215,15 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 			+" 	,edes.EST_CONDITION_3RD_DAYS"
 			+" 	,edes.EST_CONDITION_4TH_DAYS"
 			+" 	,edes.EST_CONDITION_5TH_DAYS	"
-			+" 	,ROW_NUMBER () OVER ( PARTITION BY etes.TARGET_YEAR,edmi.SCD, per.BUSINESS_NAME  ORDER BY etes.TARGET_CLS, edmi.SCD ASC ) AS ROW_NUMBER"
+			+" 	,ROW_NUMBER () OVER ( PARTITION BY etes.TARGET_YEAR,edmi.SCD ORDER BY etes.TARGET_CLS, edmi.SCD ASC ) AS ROW_NUMBER"
 			+" FROM"
 			+" 	BSYMT_EMP_DTA_MNG_INFO edmi"
-			+" 	INNER JOIN BPSMT_PERSON per ON edmi.PID = per.PID"
+			+" 	INNER JOIN BPSMT_PERSON per ON edmi.PID = per.PID  AND edmi.CID = ?cid"
 			+" 	INNER JOIN KSCMT_EST_TIME_PER_SET etes ON edmi.SID = etes.SID"
 			+" 	INNER JOIN KSCMT_EST_PRICE_PER_SET epes ON edmi.SID = epes.SID AND etes.TARGET_YEAR = epes.TARGET_YEAR AND etes.TARGET_CLS = epes.TARGET_CLS"
 			+" 	INNER JOIN KSCMT_EST_DAYS_PER_SET edes ON edmi.SID = edes.SID AND etes.TARGET_YEAR = edes.TARGET_YEAR AND etes.TARGET_CLS = edes.TARGET_CLS "
-			+" 	WHERE edmi.CID = ?cid "
-			+" AND  ?startDate <= etes.TARGET_YEAR AND etes.TARGET_YEAR <= ?endDate"
+			+" 	WHERE "
+			+" ?startDate <= etes.TARGET_YEAR AND etes.TARGET_YEAR <= ?endDate"
 			+" ) AS TABLE_RESULT";
 	
 	/** Sheet 1 **/
@@ -247,7 +258,7 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
                 .build());
 		data.put(ShiftEstimateColumn.KSM001_102, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_102)
-                .value(rowNumber == 0 || rowNumber == 1 || rowNumber == 2 || rowNumber == 3 ?  ((BigDecimal) object).intValue() == 1 ? "○" : "-" : rowNumber == 4 ? (String)object :"")
+                .value(rowNumber < 4 ?  ((BigDecimal) object).intValue() == 1 ? "○" : "-" : rowNumber == 4 ? (String)object :"")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 			return MasterData.builder().rowData(data).build();
@@ -328,7 +339,7 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 		
 		data.put(ShiftEstimateColumn.KSM001_112_1, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_112_1)
-                .value(rowNumber == 0 ? ShiftEstimateColumn.KSM001_115 : rowNumber == 1 ? ShiftEstimateColumn.KSM001_117 : rowNumber == 2 ? ShiftEstimateColumn.KSM001_119 : rowNumber == 3 ? ShiftEstimateColumn.KSM001_121 : rowNumber == 4 ? ShiftEstimateColumn.KSM001_123 : rowNumber == 5 ? ShiftEstimateColumn.KSM001_126 : rowNumber == 6 ? ShiftEstimateColumn.KSM001_127 : rowNumber == 7 ? ShiftEstimateColumn.KSM001_128 : rowNumber == 8 ? ShiftEstimateColumn.KSM001_129 : rowNumber == 9 ? ShiftEstimateColumn.KSM001_131 : rowNumber == 10 ? ShiftEstimateColumn.KSM001_132 : rowNumber == 11 ? ShiftEstimateColumn.KSM001_133 : rowNumber == 12 ? ShiftEstimateColumn.KSM001_134 : rowNumber == 13 ? ShiftEstimateColumn.KSM001_136 : rowNumber == 14 ? ShiftEstimateColumn.KSM001_137 : rowNumber == 15 ? ShiftEstimateColumn.KSM001_138 : rowNumber == 16 ? ShiftEstimateColumn.KSM001_139 : "")
+				.value(getHeader(rowNumber))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		
@@ -342,15 +353,12 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 	                .columnId(ShiftEstimateColumn.KSM001_113)
 	                .value(dataFromDB.get(rowNumber)[13])
 	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-	                //NOTE:
-	                .style(MasterCellStyle.build().backgroundColor(Color.GREEN))	                
+	                //TODO:
+	                .style(MasterCellStyle.build().backgroundColor(dataFromDB.get(rowNumber)[13].toString()))
 	                .build());
-		}
-		 
-		if (rowNumber > 4) {
+		}else{
 			// EstComparisonAtr enum
 			// EstimatedCondition enum
-			
 			data.put(ShiftEstimateColumn.KSM001_113, MasterCellData.builder()
 	                .columnId(ShiftEstimateColumn.KSM001_113)
 	                .value(rowNumber == 17 ? EnumAdaptor.valueOf(((BigDecimal) dataFromDB.get(0)[rowNumber - 5]).intValue(), EstComparisonAtr.class).description : EnumAdaptor.valueOf(((BigDecimal) dataFromDB.get(0)[rowNumber - 5]).intValue(), EstimatedCondition.class).description)
@@ -399,27 +407,27 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
                 .build());
             data.put(ShiftEstimateColumn.KSM001_148, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_148)
-                .value(object[7] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[7]).toString()) : "")
+                .value(object[7] != null ?  formatPrice(((BigDecimal) object[7]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_149, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_149)
-                .value(object[8] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[8]).toString()) : "")
+                .value(object[8] != null ?  formatPrice(((BigDecimal) object[8]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_150, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_150)
-                .value(object[9] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[9]).toString()) : "")
+                .value(object[9] != null ?  formatPrice(((BigDecimal) object[9]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_151, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_151)
-                .value(object[10] != null ? ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[10]).toString()) : "")
+                .value(object[10] != null ? formatPrice(((BigDecimal) object[10]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_152, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_152)
-                .value(object[11] != null ? ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[11]).toString()) : "")
+                .value(object[11] != null ? formatPrice(((BigDecimal) object[11]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_153, MasterCellData.builder()
@@ -499,27 +507,27 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
                 .build());
             data.put(ShiftEstimateColumn.KSM001_167, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_167)
-                .value(object[9] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[9]).toString()) : "")
+                .value(object[9] != null ?  formatPrice(((BigDecimal) object[9]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_168, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_168)
-                .value(object[10] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[10]).toString()) : "")
+                .value(object[10] != null ?  formatPrice(((BigDecimal) object[10]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_169, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_169)
-                .value(object[11] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[11]).toString()) : "")
+                .value(object[11] != null ?  formatPrice(((BigDecimal) object[11]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_170, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_170)
-                .value(object[12] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[12]).toString()) : "")
+                .value(object[12] != null ?  formatPrice(((BigDecimal) object[12]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_171, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_171)
-                .value(object[13] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[13]).toString()) : "")
+                .value(object[13] != null ?  formatPrice(((BigDecimal) object[13]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_172, MasterCellData.builder()
@@ -599,27 +607,27 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
                 .build());
             data.put(ShiftEstimateColumn.KSM001_186, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_186)
-                .value(object[9] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[9]).toString()) : "")
+                .value(object[9] != null ?  formatPrice(((BigDecimal) object[9]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_187, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_187)
-                .value(object[10] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[10]).toString()) : "")
+                .value(object[10] != null ?  formatPrice(((BigDecimal) object[10]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_188, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_188)
-                .value(object[11] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[11]).toString()) : "")
+                .value(object[11] != null ?  formatPrice(((BigDecimal) object[11]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_189, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_189)
-                .value(object[12] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[12]).toString()) : "")
+                .value(object[12] != null ?  formatPrice(((BigDecimal) object[12]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_190, MasterCellData.builder()
                 .columnId(ShiftEstimateColumn.KSM001_190)
-                .value(object[13] != null ?  ShiftEstimateColumn.KSM001_196+formatPrice(((BigDecimal) object[13]).toString()) : "")
+                .value(object[13] != null ?  formatPrice(((BigDecimal) object[13]).toString()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
             data.put(ShiftEstimateColumn.KSM001_191, MasterCellData.builder()
@@ -664,8 +672,69 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 
 	private String formatPrice(String price) {
 		double amountParse = Double.parseDouble(price);
-		DecimalFormat formatter = new DecimalFormat("#,###");
-		return formatter.format(amountParse);
+		String prices = DecimalFormat.getCurrencyInstance(Locale.JAPAN).format(amountParse);
+		return prices;
+	}
+	
+	private String getHeader(int rowNumber) {
+		String value = "";
+		switch (rowNumber) {
+		case 0:
+			value = ShiftEstimateColumn.KSM001_115;
+			break;
+		case 1:
+			value = ShiftEstimateColumn.KSM001_117;
+			break;
+		case 2:
+			value = ShiftEstimateColumn.KSM001_119;
+			break;
+		case 3:
+			value = ShiftEstimateColumn.KSM001_121;
+			break;
+		case 4:
+			value = ShiftEstimateColumn.KSM001_123;
+			break;
+		case 5:
+			value = ShiftEstimateColumn.KSM001_126;
+			break;
+		case 6:
+			value = ShiftEstimateColumn.KSM001_127;
+			break;
+		case 7:
+			value = ShiftEstimateColumn.KSM001_128;
+			break;
+		case 8:
+			value = ShiftEstimateColumn.KSM001_129;
+			break;
+		case 9:
+			value = ShiftEstimateColumn.KSM001_131;
+			break;
+		case 10:
+			value = ShiftEstimateColumn.KSM001_132;
+			break;
+		case 11:
+			value = ShiftEstimateColumn.KSM001_133;
+			break;
+		case 12:
+			value = ShiftEstimateColumn.KSM001_134;
+			break;
+		case 13:
+			value = ShiftEstimateColumn.KSM001_136;
+			break;
+		case 14:
+			value = ShiftEstimateColumn.KSM001_137;
+			break;
+		case 15:
+			value = ShiftEstimateColumn.KSM001_138;
+			break;
+		case 16:
+			value = ShiftEstimateColumn.KSM001_139;
+			break;
+
+		default:
+			break;
+		}
+		return value ;
 	}
 
 }

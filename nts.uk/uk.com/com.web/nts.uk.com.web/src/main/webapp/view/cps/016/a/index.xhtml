@@ -48,7 +48,7 @@
 				<button tabindex="6" id="A_BTN_CPS016_4"
 					data-bind="click: closeDialog, visible: isDialog ">#{i18n.getText('CPS016_4')}</button>
 				
-				<button id="print-button" data-bind="click: exportExcel">#{i18n.getText('KMK007_4')}</button>
+				<button id="print-button" data-bind="click: exportExcel, visible:hasPermission()">#{i18n.getText('KMK007_4')}</button>
 				
 			</div>
 

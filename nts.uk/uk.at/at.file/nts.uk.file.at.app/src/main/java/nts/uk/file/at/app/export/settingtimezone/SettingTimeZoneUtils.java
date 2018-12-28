@@ -18,6 +18,8 @@ public  class SettingTimeZoneUtils {
     public static final String KMK005_105 = "特定加給時間帯 休出時間帯ヘッダ";
     public static final String KMK005_106 = "コードヘッダ";
     public static final String KMK005_107 = "名称ヘッダ";
+    public static final String KMK005_108 = "加給時間帯 使用区分";
+    public static final String KMK005_109 = "加給時間帯 開始";
     public static final String KMK005_110 = "加給時間帯 終了ヘッダ";
     public static final String KMK005_111 = "加給時間帯 集計区分ヘッダ";
     public static final String KMK005_112 = "加給時間帯 丸めヘッダ";

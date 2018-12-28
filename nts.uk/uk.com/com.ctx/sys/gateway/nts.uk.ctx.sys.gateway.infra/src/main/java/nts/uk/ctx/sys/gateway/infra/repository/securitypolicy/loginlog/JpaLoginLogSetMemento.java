@@ -6,7 +6,6 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.LoginLogSetMemento;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.OperationSection;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.SuccessFailureClassification;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.loginlog.SgwmtLoginLog;
-import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.loginlog.SgwmtLoginLogPK;
 
 /**
  * The Class JpaLoginLogSetMemento.
@@ -22,9 +21,6 @@ public class JpaLoginLogSetMemento implements LoginLogSetMemento {
 	 * @param sgwmtLoginLog the sgwmt login log
 	 */
 	public JpaLoginLogSetMemento(SgwmtLoginLog sgwmtLoginLog) {
-		if (sgwmtLoginLog.getSgwmtLoginLogPK() == null) {
-			sgwmtLoginLog.setSgwmtLoginLogPK(new SgwmtLoginLogPK());
-		}
 		this.sgwmtLoginLog = sgwmtLoginLog;
 	}
 
@@ -33,7 +29,7 @@ public class JpaLoginLogSetMemento implements LoginLogSetMemento {
 	 */
 	@Override
 	public void setUserId(String userId) {
-		this.sgwmtLoginLog.getSgwmtLoginLogPK().setUserId(userId);;
+		this.sgwmtLoginLog.setUserId(userId);;
 	}
 
 	/* (non-Javadoc)
@@ -41,7 +37,7 @@ public class JpaLoginLogSetMemento implements LoginLogSetMemento {
 	 */
 	@Override
 	public void setContractCode(ContractCode contractCode) {
-		this.sgwmtLoginLog.getSgwmtLoginLogPK().setContractCd(contractCode.v());
+		this.sgwmtLoginLog.setContractCd(contractCode.v());
 	}
 
 	/* (non-Javadoc)
@@ -49,7 +45,7 @@ public class JpaLoginLogSetMemento implements LoginLogSetMemento {
 	 */
 	@Override
 	public void setProgramId(String programId) {
-		this.sgwmtLoginLog.getSgwmtLoginLogPK().setProgramId(programId);;
+		this.sgwmtLoginLog.setProgramId(programId);;
 	}
 
 	/* (non-Javadoc)
@@ -57,7 +53,7 @@ public class JpaLoginLogSetMemento implements LoginLogSetMemento {
 	 */
 	@Override
 	public void setProcessDateTime(GeneralDateTime processDateTime) {
-		this.sgwmtLoginLog.getSgwmtLoginLogPK().setProcessDateTime(processDateTime);
+		this.sgwmtLoginLog.setProcessDateTime(processDateTime);
 	}
 
 	/* (non-Javadoc)

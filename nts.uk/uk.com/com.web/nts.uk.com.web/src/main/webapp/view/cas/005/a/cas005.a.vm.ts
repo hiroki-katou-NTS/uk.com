@@ -341,7 +341,17 @@ module nts.uk.com.view.cas005.a {
                     block.clear();
                 });
             }
-
+            /**
+             * check role
+             */
+            hasPermission(): boolean {
+                if (__viewContext.user.role.attendance || __viewContext.user.role.payroll 
+                    || __viewContext.user.role.personnel  || __viewContext.user.role.officeHelper){
+                    return true;
+                }
+                
+                return false;
+            }
             /**
              * get data
              */

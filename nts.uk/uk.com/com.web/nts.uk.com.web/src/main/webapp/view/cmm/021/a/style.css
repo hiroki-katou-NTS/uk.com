@@ -14,7 +14,8 @@
 }
 
 .master-list-select .caret-right.caret-background {
-	width: 520px;
+	height: 580px;
+    width: 527px;
 	border-radius: 10px;
 }
 

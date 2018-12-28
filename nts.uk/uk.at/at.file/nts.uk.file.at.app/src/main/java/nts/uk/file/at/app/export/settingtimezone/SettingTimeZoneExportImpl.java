@@ -1,5 +1,8 @@
 package nts.uk.file.at.app.export.settingtimezone;
 
+import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.shared.app.find.bonuspay.BPUnitUseSettingDto;
+import nts.uk.ctx.at.shared.app.find.bonuspay.BPUnitUseSettingFinder;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
@@ -20,51 +23,85 @@ public class SettingTimeZoneExportImpl implements MasterListData {
     @Inject
     private SettingTimeZoneRepository settingTimeZoneRepository;
 
+    @Inject
+    private BPUnitUseSettingFinder bpUnitUseSettingFinder;
+
 
     @Override
     public List<SheetData> extraSheets(MasterListExportQuery query) {
+        BPUnitUseSettingDto unitUseSettingDto = this.bpUnitUseSettingFinder.getSetting();
         List<SheetData> sheetDatas = new ArrayList<>();
         SheetData sheetData2 = SheetData.builder()
-                .mainData(this.getMasterDatasSheet2())
-                .mainDataColumns(this.getHeaderColumnsSheet2())
+                .mainData(this.getMasterDatasOfAutoCalSetting())
+                .mainDataColumns(this.getHeaderColumnsOfAutoCalSetting())
                 .sheetName(TextResource.localize("KMK005_128"))
                 .build();
         SheetData sheetData3 = SheetData.builder()
-                .mainData(this.getMasterDatasSheet3())
-                .mainDataColumns(this.getHeaderColumnsSheet3())
+                .mainData(this.getMasterDatasOfSettingTimeZone())
+                .mainDataColumns(this.getHeaderColumnsOfSettingTimeZone())
                 .sheetName(TextResource.localize("KMK005_129"))
                 .build();
 
         SheetData sheetData4 = SheetData.builder()
-                .mainData(this.getMasterDatasSheet4())
-                .mainDataColumns(this.getHeaderColumnsSheet4())
+                .mainData(this.getMasterDatasSetUpUseCompany())
+                .mainDataColumns(this.getHeaderColumnsSetUpUseCompany())
                 .sheetName(TextResource.localize("KMK005_130"))
-                .build();
-
-        SheetData sheetData5 = SheetData.builder()
-                .mainData(this.getMasterDatasSheet5())
-                .mainDataColumns(this.getHeaderColumnsSheet5())
-                .sheetName(TextResource.localize("KMK005_131"))
-                .build();
-
-        SheetData sheetData6 = SheetData.builder()
-                .mainData(this.getMasterDatasSheet6())
-                .mainDataColumns(this.getHeaderColumnsSheet6())
-                .sheetName(TextResource.localize("KMK005_132"))
-                .build();
-
-        SheetData sheetData7 = SheetData.builder()
-                .mainData(this.getMasterDatasSheet7())
-                .mainDataColumns(this.getHeaderColumnsSheet7())
-                .sheetName(TextResource.localize("KMK005_133"))
                 .build();
 
         sheetDatas.add(sheetData2);
         sheetDatas.add(sheetData3);
         sheetDatas.add(sheetData4);
-        sheetDatas.add(sheetData5);
-        sheetDatas.add(sheetData6);
-        sheetDatas.add(sheetData7);
+        if(unitUseSettingDto == null){
+            SheetData sheetData5 = SheetData.builder()
+                    .mainData(this.getMasterDatasOfSetSubUseWorkPlace())
+                    .mainDataColumns(this.getHeaderColumnsOfSetSubUseWorkPlace())
+                    .sheetName(TextResource.localize("KMK005_131"))
+                    .build();
+            sheetDatas.add(sheetData5);
+
+            SheetData sheetData6 = SheetData.builder()
+                    .mainData(this.getMasterDatasOfSetEmployees())
+                    .mainDataColumns(this.getHeaderColumnsOfSetEmployees())
+                    .sheetName(TextResource.localize("KMK005_132"))
+                    .build();
+            sheetDatas.add(sheetData6);
+
+            SheetData sheetData7 = SheetData.builder()
+                    .mainData(this.getMasterDatasOfSetUsedWorkingHours())
+                    .mainDataColumns(this.getHeaderColumnsOfSetUsedWorkingHours())
+                    .sheetName(TextResource.localize("KMK005_133"))
+                    .build();
+            sheetDatas.add(sheetData7);
+        }else{
+            if(unitUseSettingDto.getWorkplaceUseAtr() == UseAtr.USE.value){
+                SheetData sheetData5 = SheetData.builder()
+                        .mainData(this.getMasterDatasOfSetSubUseWorkPlace())
+                        .mainDataColumns(this.getHeaderColumnsOfSetSubUseWorkPlace())
+                        .sheetName(TextResource.localize("KMK005_131"))
+                        .build();
+                sheetDatas.add(sheetData5);
+            }
+
+            if(unitUseSettingDto.getPersonalUseAtr() == UseAtr.USE.value){
+                SheetData sheetData6 = SheetData.builder()
+                        .mainData(this.getMasterDatasOfSetEmployees())
+                        .mainDataColumns(this.getHeaderColumnsOfSetEmployees())
+                        .sheetName(TextResource.localize("KMK005_132"))
+                        .build();
+                sheetDatas.add(sheetData6);
+            }
+
+            if(unitUseSettingDto.getWorkingTimesheetUseAtr() == UseAtr.USE.value){
+                SheetData sheetData7 = SheetData.builder()
+                        .mainData(this.getMasterDatasOfSetUsedWorkingHours())
+                        .mainDataColumns(this.getHeaderColumnsOfSetUsedWorkingHours())
+                        .sheetName(TextResource.localize("KMK005_133"))
+                        .build();
+                sheetDatas.add(sheetData7);
+            }
+        }
+
+
         return sheetDatas;
     }
 
@@ -95,7 +132,7 @@ public class SettingTimeZoneExportImpl implements MasterListData {
         return TextResource.localize("KMK005_127");
     }
 
-    private List<MasterHeaderColumn> getHeaderColumnsSheet2() {
+    private List<MasterHeaderColumn> getHeaderColumnsOfAutoCalSetting() {
         List <MasterHeaderColumn> columns = new ArrayList<>();
         columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_97, TextResource.localize("KMK005_97"),
                 ColumnTextAlign.LEFT, "", true));
@@ -116,55 +153,55 @@ public class SettingTimeZoneExportImpl implements MasterListData {
         return columns;
     }
 
-    private List<MasterData> getMasterDatasSheet2() {
+    private List<MasterData> getMasterDatasOfAutoCalSetting() {
         String companyId = AppContexts.user().companyId();
         return settingTimeZoneRepository.getAutoCalSetting(companyId);
     }
 
-    private List<MasterHeaderColumn> getHeaderColumnsSheet3() {
+    private List<MasterHeaderColumn> getHeaderColumnsOfSettingTimeZone() {
         List <MasterHeaderColumn> columns = new ArrayList<>();
-        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_99, TextResource.localize("KMK005_97"),
+        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_106, TextResource.localize("KMK005_106"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_100, TextResource.localize("KMK005_100"),
+        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_107, TextResource.localize("KMK005_107"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_101, TextResource.localize("KMK005_101"),
+        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_135, TextResource.localize("KMK005_135"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_102, TextResource.localize("KMK005_102"),
+        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_108, TextResource.localize("KMK005_108"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_103, TextResource.localize("KMK005_99"),
+        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_109, TextResource.localize("KMK005_109"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_104, TextResource.localize("KMK005_103"),
+        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_110, TextResource.localize("KMK005_110"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_105, TextResource.localize("KMK005_104"),
+        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_111, TextResource.localize("KMK005_111"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_106, TextResource.localize("KMK005_105"),
+        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_112, TextResource.localize("KMK005_112"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_107, TextResource.localize("KMK005_97"),
+        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_113, TextResource.localize("KMK005_113"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_110, TextResource.localize("KMK005_100"),
+        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_114, TextResource.localize("KMK005_114"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_111, TextResource.localize("KMK005_101"),
+        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_115, TextResource.localize("KMK005_115"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_112, TextResource.localize("KMK005_102"),
+        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_116, TextResource.localize("KMK005_116"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_113, TextResource.localize("KMK005_99"),
+        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_117, TextResource.localize("KMK005_117"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_114, TextResource.localize("KMK005_103"),
+        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_118, TextResource.localize("KMK005_118"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_115, TextResource.localize("KMK005_104"),
+        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_119, TextResource.localize("KMK005_119"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_116, TextResource.localize("KMK005_105"),
+        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_120, TextResource.localize("KMK005_120"),
                 ColumnTextAlign.LEFT, "", true));
         return columns;
 
     }
 
-    private List<MasterData> getMasterDatasSheet3() {
+    private List<MasterData> getMasterDatasOfSettingTimeZone() {
         String companyId = AppContexts.user().companyId();
         return settingTimeZoneRepository.getDetailSettingTimeZone(companyId);
     }
 
-    public List<MasterHeaderColumn> getHeaderColumnsSheet4() {
+    public List<MasterHeaderColumn> getHeaderColumnsOfSetSubUseWorkPlace() {
         List <MasterHeaderColumn> columns = new ArrayList<>();
         columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_121, TextResource.localize("KMK005_121"),
                 ColumnTextAlign.LEFT, "", true));
@@ -177,12 +214,12 @@ public class SettingTimeZoneExportImpl implements MasterListData {
         return columns;
     }
 
-    private List<MasterData> getMasterDatasSheet4() {
+    private List<MasterData> getMasterDatasOfSetSubUseWorkPlace() {
         String companyId = AppContexts.user().companyId();
         return settingTimeZoneRepository.getInfoSetSubUseWorkPlace(companyId);
     }
 
-    public List<MasterHeaderColumn> getHeaderColumnsSheet5() {
+    public List<MasterHeaderColumn> getHeaderColumnsOfSetEmployees() {
         List <MasterHeaderColumn> columns = new ArrayList<>();
         columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_123, TextResource.localize("KMK005_123"),
                 ColumnTextAlign.LEFT, "", true));
@@ -195,12 +232,12 @@ public class SettingTimeZoneExportImpl implements MasterListData {
         return columns;
     }
 
-    private List<MasterData> getMasterDatasSheet5() {
+    private List<MasterData> getMasterDatasOfSetEmployees() {
         String companyId = AppContexts.user().companyId();
         return settingTimeZoneRepository.getInfoSetEmployees(companyId);
     }
 
-    public List<MasterHeaderColumn> getHeaderColumnsSheet6() {
+    public List<MasterHeaderColumn> getHeaderColumnsOfSetUsedWorkingHours() {
         List <MasterHeaderColumn> columns = new ArrayList<>();
         columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_125, TextResource.localize("KMK005_125"),
                 ColumnTextAlign.LEFT, "", true));
@@ -213,12 +250,12 @@ public class SettingTimeZoneExportImpl implements MasterListData {
         return columns;
     }
 
-    private List<MasterData> getMasterDatasSheet6() {
+    private List<MasterData> getMasterDatasOfSetUsedWorkingHours() {
         String companyId = AppContexts.user().companyId();
         return settingTimeZoneRepository.getInfoSetUsedWorkingHours(companyId);
     }
 
-    public List<MasterHeaderColumn> getHeaderColumnsSheet7() {
+    public List<MasterHeaderColumn> getHeaderColumnsSetUpUseCompany() {
         List <MasterHeaderColumn> columns = new ArrayList<>();
         columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_106, TextResource.localize("KMK005_106"),
                 ColumnTextAlign.LEFT, "", true));
@@ -227,9 +264,9 @@ public class SettingTimeZoneExportImpl implements MasterListData {
         return columns;
     }
 
-    private List<MasterData> getMasterDatasSheet7() {
+    private List<MasterData> getMasterDatasSetUpUseCompany() {
         String companyId = AppContexts.user().companyId();
-        return settingTimeZoneRepository.getInfoSetUsedWorkingHours(companyId);
+        return settingTimeZoneRepository.getInfoSetUpUseCompany(companyId);
     }
 
 }

@@ -61,7 +61,7 @@
 							</div>
 							<div class="div-table-col-standard">
 								<!-- N2_2_2休職時 -->
-								<input id="N2_2_2" style="width: 80px;"
+								<input id="N2_2_2" tabindex="2" style="width: 80px;"
 									data-bind="ntsTextEditor: { 
 																 value: absenceOutput,
 															     enable: $vm.enableAbsenceOutput(),
@@ -81,7 +81,7 @@
 							</div>
 							<div class="div-table-col-standard">
 								<!-- N2_3_2退職時-->
-								<input id="N2_3_2" style="width: 80px;"
+								<input id="N2_3_2" tabindex="3" style="width: 80px;"
 									data-bind="ntsTextEditor: {
 																 value: retirementOutput, 
 															     enable: $vm.retirementOutput(),
@@ -100,7 +100,7 @@
 							</div>
 							<div class="div-table-col-standard">
 								<!--N2_4_2休業時 -->
-								<input id="N2_4_2" style="width: 80px;"
+								<input id="N2_4_2" tabindex="4" style="width: 80px;"
 									data-bind="ntsTextEditor: { 
 																 value: closedOutput,
 															     enable: $vm.enableCloseOutput(),
@@ -126,7 +126,7 @@
 							<!-- N3_1_1使用する -->
 							<div class="div-table-col-standard"
 								style="width: 100px;">
-								<div id="N3_1"
+								<div id="N3_1" tabindex="5"
 									data-bind="ntsRadioBoxGroup: {
 									options: $vm.items,
 									optionsValue: 'code',
@@ -136,7 +136,7 @@
 							</div>
 							<!-- N3_2固定値の値 -->
 							<div class="div-table-col-standard">
-								<input id="N3_2" style="width: 50px;"
+								<input id="N3_2" tabindex="6" style="width: 50px;"
 									data-bind="ntsTextEditor: { 
 																 value: valueOfFixedValue,
 															     enable: true,
@@ -154,9 +154,9 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!-- N20_1設定 -->
-				<button class="x-large" data-bind="click: saveSetting, enable: $root.errors.isEmpty">#{i18n.getText('CMF002_161')}</button>
+				<button class="x-large" tabindex="7" data-bind="click: saveSetting, enable: $root.errors.isEmpty">#{i18n.getText('CMF002_161')}</button>
 				<!-- N20_2キャンセル -->
-				<button id="BTN_CLOSE" class="large"
+				<button id="BTN_CLOSE" tabindex="8" class="large"
 					data-bind="click: cancelSetting">#{i18n.getText('CMF002_162')}</button>
 			</div>
 		</ui:define>

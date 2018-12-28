@@ -51,8 +51,9 @@ public class IndivigrantExportImpl implements MasterListData {
 	//dataExport
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
+		String baseDate =  query.getBaseDate().toString();
 		List<MasterData> datas = new ArrayList<>();
-		datas = repository.getDataExport();
+		datas = repository.getDataExport(baseDate);
 		return datas;
 	}
 	

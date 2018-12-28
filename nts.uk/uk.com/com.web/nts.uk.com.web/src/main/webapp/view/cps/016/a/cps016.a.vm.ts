@@ -271,7 +271,17 @@ module nts.uk.com.view.cps016.a.viewmodel {
             });
         }
 
-        
+        /**
+         * check role
+         */
+        hasPermission(): boolean {
+            if (__viewContext.user.role.attendance || __viewContext.user.role.payroll 
+                || __viewContext.user.role.personnel  || __viewContext.user.role.officeHelper){
+                return true;
+            }
+            
+            return false;
+        }
         
         // 選択肢の登録ボタン
         OpenCPS017() {

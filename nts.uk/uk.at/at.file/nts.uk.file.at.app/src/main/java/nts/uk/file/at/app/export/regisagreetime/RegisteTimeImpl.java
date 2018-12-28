@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementUnitSetting;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementUnitSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -262,10 +263,41 @@ public class RegisteTimeImpl implements MasterListData {
 		return registTimeRepository.getDataExportSheet9();
 	}
 	
+	/**
+	 * sheet 10
+	 */
+	public List<MasterHeaderColumn> getHeaderColumnsSheet10() {
+		 List <MasterHeaderColumn> columns = new ArrayList<>();
+
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_106, TextResource.localize("KMK008_106"),
+	                ColumnTextAlign.LEFT, "", true));
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_107,TextResource.localize("KMK008_107"),
+	                ColumnTextAlign.LEFT, "", true));
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_109, TextResource.localize("KMK008_109"),
+	                ColumnTextAlign.LEFT, "", true));
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_110, TextResource.localize("KMK008_110"),
+	                ColumnTextAlign.LEFT, "", true));
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_111, TextResource.localize("KMK008_111"),
+	                ColumnTextAlign.LEFT, "", true));
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_112, TextResource.localize("KMK008_112"),
+	                ColumnTextAlign.LEFT, "", true));
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_113, TextResource.localize("KMK008_113"),
+	                ColumnTextAlign.LEFT, "", true));
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_114, TextResource.localize("KMK008_114"),
+	                ColumnTextAlign.LEFT, "", true));
+	        return columns;
+	}
+	
+	public List<MasterData> getMasterDatasSheet10(GeneralDate startDate, GeneralDate endDate) {
+		return registTimeRepository.getDataExportSheet10(startDate,endDate);
+	}
+	
 	
 	@Override
     public List<SheetData> extraSheets(MasterListExportQuery query) {
         List<SheetData> sheetDatas = new ArrayList<>();
+        GeneralDate startDate = query.getStartDate();
+        GeneralDate endDate = query.getEndDate();
         /**
          *  sheet 2
          */
@@ -274,12 +306,13 @@ public class RegisteTimeImpl implements MasterListData {
                 .mainDataColumns(this.getHeaderColumnsSheet2())
                 .sheetName(TextResource.localize("KMK008_71"))
                 .build();
+        sheetDatas.add(sheetData2);
         
         Optional<AgreementUnitSetting> agreementUnitSetting = agreementUnitSettingRepository.find(AppContexts.user().companyId());
         
         
         /**
-         *  sheet 3,7
+         *  sheet 3
          */
         if(agreementUnitSetting.isPresent() && agreementUnitSetting.get().getEmploymentUseAtr().value == 1) {
         	 SheetData sheetData3 = SheetData.builder()
@@ -288,17 +321,10 @@ public class RegisteTimeImpl implements MasterListData {
                        .sheetName(TextResource.localize("KMK008_72"))
                        .build();
         	 sheetDatas.add(sheetData3);
-        	 
-        	 SheetData sheetData7 = SheetData.builder()
-	          		 .mainData(this.getMasterDatasSheet7())
-	                  .mainDataColumns(this.getHeaderColumnsSheet7())
-	                  .sheetName(TextResource.localize("KMK008_76"))
-	                  .build();
-	        sheetDatas.add(sheetData7);
         }
         
         /**
-         *  sheet 4,8
+         *  sheet 4
          */
         if (agreementUnitSetting.isPresent() && agreementUnitSetting.get().getWorkPlaceUseAtr().value == 1) {
         	
@@ -306,29 +332,17 @@ public class RegisteTimeImpl implements MasterListData {
 					.mainDataColumns(this.getHeaderColumnsSheet4()).sheetName(TextResource.localize("KMK008_73"))
 					.build();
 			sheetDatas.add(sheetData4);
-			
-			SheetData sheetData8 = SheetData.builder().mainData(this.getMasterDatasSheet8())
-					.mainDataColumns(this.getHeaderColumnsSheet8()).sheetName(TextResource.localize("KMK008_77"))
-					.build();
-			sheetDatas.add(sheetData8);
 		}
         
         
         /**
-         *  sheet 5,9
+         *  sheet 5
          */
 		if (agreementUnitSetting.isPresent() && agreementUnitSetting.get().getClassificationUseAtr().value == 1) {
 			SheetData sheetData5 = SheetData.builder().mainData(this.getMasterDatasSheet5())
 					.mainDataColumns(this.getHeaderColumnsSheet5()).sheetName(TextResource.localize("KMK008_74"))
 					.build();
 			sheetDatas.add(sheetData5);
-			
-			SheetData sheetData9 = SheetData.builder()
-	          		 .mainData(this.getMasterDatasSheet9())
-	                  .mainDataColumns(this.getHeaderColumnsSheet9())
-	                  .sheetName(TextResource.localize("KMK008_78"))
-	                  .build();
-	        sheetDatas.add(sheetData9);
 		}
         
         /**
@@ -339,11 +353,47 @@ public class RegisteTimeImpl implements MasterListData {
                   .mainDataColumns(this.getHeaderColumnsSheet6())
                   .sheetName(TextResource.localize("KMK008_75"))
                   .build();
-        
-        
-
-        sheetDatas.add(sheetData2);
         sheetDatas.add(sheetData6);
+        /**
+         *  sheet 7
+         */
+		if (agreementUnitSetting.isPresent() && agreementUnitSetting.get().getEmploymentUseAtr().value == 1) {
+
+			SheetData sheetData7 = SheetData.builder().mainData(this.getMasterDatasSheet7())
+					.mainDataColumns(this.getHeaderColumnsSheet7()).sheetName(TextResource.localize("KMK008_76"))
+					.build();
+			sheetDatas.add(sheetData7);
+		}
+        
+		/**
+         *  sheet 8
+         */
+        if (agreementUnitSetting.isPresent() && agreementUnitSetting.get().getWorkPlaceUseAtr().value == 1) {	
+			SheetData sheetData8 = SheetData.builder().mainData(this.getMasterDatasSheet8())
+					.mainDataColumns(this.getHeaderColumnsSheet8()).sheetName(TextResource.localize("KMK008_77"))
+					.build();
+			sheetDatas.add(sheetData8);
+		}
+        
+        /**
+         *  sheet 9
+         */
+		if (agreementUnitSetting.isPresent() && agreementUnitSetting.get().getClassificationUseAtr().value == 1) {
+			SheetData sheetData9 = SheetData.builder()
+	          		 .mainData(this.getMasterDatasSheet9())
+	                  .mainDataColumns(this.getHeaderColumnsSheet9())
+	                  .sheetName(TextResource.localize("KMK008_78"))
+	                  .build();
+	        sheetDatas.add(sheetData9);
+		}
+		
+		SheetData sheetData10 = SheetData.builder()
+         		 .mainData(this.getMasterDatasSheet10(startDate, endDate))
+                 .mainDataColumns(this.getHeaderColumnsSheet10())
+                 .sheetName(TextResource.localize("KMK008_79"))
+                 .build();
+       sheetDatas.add(sheetData10);
+		
         return sheetDatas;
     }
 	
