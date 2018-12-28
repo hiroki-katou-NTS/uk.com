@@ -276,23 +276,23 @@ public class SetWorkingHoursAndDaysExportImpl implements MasterListData {
 	
 	@Override
     public List<SheetData> extraSheets(MasterListExportQuery query) {
-    	
+    	Object[] usage = repo.getUsage();
         List<SheetData> sheetDatas = new ArrayList<>();
         // Sheet Employment
-        SheetData sheetDataEmployment = SheetData.builder()
-                .mainData(this.getMasterDatasEmployment(query))
-                .mainDataColumns(this.getHeaderEmploymentColumns())
-                .sheetName(TextResource.localize("KMK004_191"))
-                .build();
-        sheetDatas.add(sheetDataEmployment);
-        //Sheet WorkPlace
-        SheetData sheetDataWorkPlace = SheetData.builder()
-                .mainData(this.getMasterDatasWorkPlace(query))
-                .mainDataColumns(this.getHeaderWorkPlaceColumns())
-                .sheetName(TextResource.localize("KMK004_192"))
-                .build();
-        sheetDatas.add(sheetDataWorkPlace);
-
+		if (Integer.valueOf(usage[2].toString()) == 1) {
+			SheetData sheetDataEmployment = SheetData.builder().mainData(this.getMasterDatasEmployment(query))
+					.mainDataColumns(this.getHeaderEmploymentColumns()).sheetName(TextResource.localize("KMK004_191"))
+					.build();
+			sheetDatas.add(sheetDataEmployment);
+		}
+        
+		// Sheet WorkPlace
+		if (Integer.valueOf(usage[1].toString()) == 1) {
+			SheetData sheetDataWorkPlace = SheetData.builder().mainData(this.getMasterDatasWorkPlace(query))
+					.mainDataColumns(this.getHeaderWorkPlaceColumns()).sheetName(TextResource.localize("KMK004_192"))
+					.build();
+			sheetDatas.add(sheetDataWorkPlace);
+		}
         
         return sheetDatas;
     }

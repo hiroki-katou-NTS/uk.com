@@ -10,4 +10,6 @@ public interface SetWorkingHoursAndDaysExRepository {
 	List<MasterData> getEmploymentExportData(int startDate, int endDate);
 	
 	List<MasterData> getWorkPlaceExportData(int startDate, int endDate);
+	
+	Object[] getUsage();
 }

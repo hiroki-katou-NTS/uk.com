@@ -1,6 +1,5 @@
 package nts.uk.file.com.infra.role;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
 
 import java.util.List;
@@ -69,5 +68,6 @@ public class CommonRole {
     	}
     	return null;
     }
+
 
 }
