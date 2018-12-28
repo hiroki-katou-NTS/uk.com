@@ -4,7 +4,7 @@ module nts.uk.com.view.cmf005.c {
 
     export module service {
         var paths = {
-            getCategoryBySytem: "ctx/sys/assist/app/findCategory/{0}",
+            getCategoryBySytem: "ctx/sys/assist/app/findCategoryForDel/{0}",
             getSystemTypes: "ctx/sys/assist/systemtype/getsystemtypes"
         }
 

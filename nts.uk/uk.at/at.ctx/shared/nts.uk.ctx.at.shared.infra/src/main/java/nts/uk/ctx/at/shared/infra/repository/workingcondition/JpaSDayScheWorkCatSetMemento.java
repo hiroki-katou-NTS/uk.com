@@ -45,11 +45,15 @@ public class JpaSDayScheWorkCatSetMemento implements SingleDayScheduleSetMemento
 			kshmtPerWorkCatPK.setPerWorkCatAtr(workCategoryAtr);
 			entity.setKshmtPerWorkCatPK(kshmtPerWorkCatPK);
 		}
-		
+
 		this.entity = entity;
 		
 		this.mapKshmtWorkCatTimeZone = new HashMap<>();
 		if (!CollectionUtil.isEmpty(entity.getKshmtWorkCatTimeZones())) {
+			entity.getKshmtWorkCatTimeZones().stream().forEach(c -> {
+				c.setSid(entity.getSid());
+			});
+			
 			this.mapKshmtWorkCatTimeZone = entity.getKshmtWorkCatTimeZones().stream()
 					.collect(Collectors.toMap(item -> item.getKshmtWorkCatTimeZonePK().getCnt(), Function.identity()));
 		}

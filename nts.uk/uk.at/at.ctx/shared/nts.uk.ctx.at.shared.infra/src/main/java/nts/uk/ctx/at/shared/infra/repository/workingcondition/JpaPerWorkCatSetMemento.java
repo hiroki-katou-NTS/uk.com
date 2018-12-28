@@ -24,6 +24,9 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 
 	/** The entities. */
 	private List<KshmtPerWorkCat> entities;
+	
+	/** The sid. */
+	private String sid;
 
 	/** The history id. */
 	private String historyId;
@@ -37,17 +40,16 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 * @param entities
 	 *            the entitys
 	 */
-	public JpaPerWorkCatSetMemento(String historyId, List<KshmtPerWorkCat> entities) {
+	public JpaPerWorkCatSetMemento(String historyId, List<KshmtPerWorkCat> entities, String sid) {
 		this.mapSingleDaySchedule = new HashMap<>();
 		if (!CollectionUtil.isEmpty(entities)) {
 			this.mapSingleDaySchedule = entities.stream().collect(Collectors.toMap(
 					entity -> entity.getKshmtPerWorkCatPK().getPerWorkCatAtr(), Function.identity()));
 		}
-
 		this.entities = entities;
 		this.entities.clear();
-
 		this.historyId = historyId;
+		this.sid = sid;
 	}
 
 	/*
@@ -156,9 +158,15 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 		// Create primary key
 		KshmtPerWorkCat entity = this.mapSingleDaySchedule
 				.getOrDefault(Integer.valueOf(workCategoryAtr), new KshmtPerWorkCat());
+		entity.setSid(this.sid);
 		domain.get().saveToMemento(
 				new JpaSDayScheWorkCatSetMemento(this.historyId, workCategoryAtr, entity));
-
+		if (!CollectionUtil.isEmpty(entity.getKshmtWorkCatTimeZones())) {
+			entity.getKshmtWorkCatTimeZones().stream().forEach(catTimeZone -> {
+				catTimeZone.setSid(this.sid);
+			});
+		}
+		
 		// Put new/updated entity into map
 		this.mapSingleDaySchedule.put(workCategoryAtr, entity);
 
