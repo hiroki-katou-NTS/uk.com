@@ -16,7 +16,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
 
         workIndividualPricesDisplay: Array<WorkIndividualPrice> = [];
 
-        perUnitPriceName: KnockoutObservable<string> = ko.observable('');
+        perUnitPriceShortName: KnockoutObservable<string> = ko.observable('');
         perUnitPriceCode: KnockoutObservable<string> = ko.observable('');
 
         yearMonthFilter = ko.observable(201811);
@@ -35,7 +35,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                     });
                     if (temp) {
                         self.perUnitPriceCode(temp.code);
-                        self.perUnitPriceName(temp.name);
+                        self.perUnitPriceShortName(temp.shortName);
                     }
                     self.filterData();
                 }
