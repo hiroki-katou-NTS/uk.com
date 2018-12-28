@@ -74,6 +74,8 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                 showJobTitle: true,
                 showWorktype: true,
                 isMutipleCheck: true,
+                tabindex: 6,
+                showOnStart: true,
 
                 /**
                  * Self-defined function: Return data from CCG001

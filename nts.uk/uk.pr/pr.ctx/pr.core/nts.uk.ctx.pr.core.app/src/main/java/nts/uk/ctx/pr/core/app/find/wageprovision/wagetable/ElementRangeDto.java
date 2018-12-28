@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.wagetable;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementRange;
@@ -9,6 +10,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.NumericElementRange;
  * 要素範囲
  */
 
+@AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class ElementRangeDto {

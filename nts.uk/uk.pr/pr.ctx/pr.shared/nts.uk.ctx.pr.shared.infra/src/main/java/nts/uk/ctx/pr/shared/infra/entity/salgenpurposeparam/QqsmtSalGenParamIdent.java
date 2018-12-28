@@ -14,8 +14,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QPBMT_SAL_GEN_PARAM_IDENT")
-public class QpbmtSalGenParamIdent extends UkJpaEntity implements Serializable
+@Table(name = "QQSMT_SAL_GEN_PARAM_IDENT")
+public class QqsmtSalGenParamIdent extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
     
@@ -23,7 +23,7 @@ public class QpbmtSalGenParamIdent extends UkJpaEntity implements Serializable
     * ID
     */
     @EmbeddedId
-    public QpbmtSalGenParamIdentPk salGenParamIdentPk;
+    public QqsmtSalGenParamIdentPk salGenParamIdentPk;
     
     /**
     * 名称
@@ -62,8 +62,8 @@ public class QpbmtSalGenParamIdent extends UkJpaEntity implements Serializable
     public SalGenParaIdentification toDomain() {
         return new SalGenParaIdentification(this.salGenParamIdentPk.paraNo, this.salGenParamIdentPk.cid, this.name, this.attributeType, this.historyAtr, this.explanation);
     }
-    public static QpbmtSalGenParamIdent toEntity(SalGenParaIdentification domain) {
-        return new QpbmtSalGenParamIdent(new QpbmtSalGenParamIdentPk(domain.getParaNo().v(), domain.getCID()),domain.getName().v(),domain.getAttributeType().value, domain.getHistoryAtr().value, domain.getExplanation().get());
+    public static QqsmtSalGenParamIdent toEntity(SalGenParaIdentification domain) {
+        return new QqsmtSalGenParamIdent(new QqsmtSalGenParamIdentPk(domain.getParaNo().v(), domain.getCID()),domain.getName().v(),domain.getAttributeType().value, domain.getHistoryAtr().value, domain.getExplanation().get());
     }
 
 }

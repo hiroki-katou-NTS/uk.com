@@ -7,6 +7,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
     import modal = nts.uk.ui.windows.sub.modal;
+    import validation = nts.uk.ui.validation;
 
     export class ScreenModel {
 
@@ -68,6 +69,8 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
         bonusAtr: KnockoutObservable<number> = ko.observable(null);
 
         modeScreen: KnockoutObservable<number> = ko.observable(0);
+
+        itemPriceTypeValidator = new validation.NumberValidator(getText("QMM036_29"), "ItemPriceType", {required: false});
 
         constructor() {
             let self = this,
@@ -135,8 +138,8 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                     }
                     self.selectedHisCode(null);
                     self.lstBreakdownItem = [];
-                    $("#gridBreakdownItem").ntsGrid("destroy");
-                    self.loadGrid();
+                    $("#gridBreakdownItem").mGrid("destroy");
+                    self.loadMGrid();
                 }
             });
 
@@ -165,8 +168,8 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                     nts.uk.ui.errors.clearAll();
                     self.lstBreakdownItem = [];
                 }
-                $("#gridBreakdownItem").ntsGrid("destroy");
-                self.loadGrid();
+                $("#gridBreakdownItem").mGrid("destroy");
+                self.loadMGrid();
                 block.clear();
                 dfd.resolve(self);
             }).fail(function (res) {
@@ -263,70 +266,67 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
             return dfd.promise();
         }
 
-        loadGrid() {
+        loadMGrid() {
             let self = this;
-            $("#gridBreakdownItem").ntsGrid({
-                width: '480px',
-                height: '300px',
+            _.each(self.lstBreakdownItem, item => {
+                item.amount = item.amount.toString();
+            });
+            let height = $(window).height() - 337;
+            let width = $(window).width() - 430;
+            new nts.uk.ui.mgrid.MGrid($("#gridBreakdownItem")[0], {
+                width: '880px',
+                height: '500px',
+                subWidth: width + "px",
+                subHeight: height + "px",
+                headerHeight: '30px',
                 dataSource: self.lstBreakdownItem,
                 primaryKey: 'breakdownItemCode',
+                primaryKeyDataType: 'string',
                 rowVirtualization: true,
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 enter: 'right',
                 autoFitWindow: false,
-                preventEditInError: false,
                 hidePrimaryKey: false,
-                showErrorsOnPage: false,
+                errorsOnPage: false,
                 columns: [
                     {
                         headerText: getText("QMM036_27"),
                         key: 'breakdownItemCode',
                         dataType: 'string',
-                        width: '140px',
+                        width: '120px',
                         ntsControl: 'Label'
                     },
                     {
                         headerText: getText("QMM036_28"),
                         key: 'breakdownItemName',
                         dataType: 'string',
-                        width: '140px',
+                        width: '150px',
                         ntsControl: 'Label'
                     },
                     {
-                        headerText: getText("QMM036_29"), key: 'amount', dataType: 'string', width: '100px',
-                        //ntsControl: 'TextEditor'
+                        headerText: getText("QMM036_29"), key: 'amount', dataType: 'string', width: '150px',
                         columnCssClass: 'currency-symbol',
                         constraint: {
-                            // primitiveValue: 'ItemPriceType',
                             cDisplayType: "Currency",
-                            min: 0, max: 10,
+                            min: self.itemPriceTypeValidator.constraint.min,
+                            max: self.itemPriceTypeValidator.constraint.max,
                             required: false
                         }
                     }
                 ],
+                ntsControls: [],
                 features: [
                     {
-                        name: "Selection",
-                        mode: "cell",
-                        multipleSelection: true,
-                        activation: true
-                    },
-                ],
-                ntsControls: [
-                    {name: 'TextEditor', controlType: 'TextEditor', constraint: {valueType: 'String', required: false}}
-                ],
-                ntsFeatures: [
-                    {name: 'CellEdit'},
-                    {
-                        name: 'CellState',
-                        rowId: 'rowId',
-                        columnKey: 'columnKey',
-                        state: 'state',
-                        //states: cellStates
-                    },
+                        name: 'HeaderStyles',
+                        columns: [
+                            {key: 'breakdownItemCode', colors: ['left-align']},
+                            {key: 'breakdownItemName', colors: ['left-align']},
+                            {key: 'amount', colors: ['left-align']}
+                        ]
+                    }
                 ]
-            });
+            }).create();
         }
 
         formatYM(intYM) {
@@ -371,7 +371,7 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            self.loadGrid();
+            self.loadMGrid();
             service.getInfoEmLogin().done(function (emp) {
                 service.getWpName().done(function (wp) {
                     if (wp == null || wp.workplaceId == null || wp.workplaceId == "") {
@@ -489,6 +489,9 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
 
         registration() {
             let self = this;
+            if (!self.isValidForm()) {
+                return;
+            }
             let lstPeriod: Array = [];
             for (let i = 0; i < self.lstHistory().length; i++) {
                 let period = {
@@ -498,13 +501,14 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                 }
                 lstPeriod.push(period);
             }
+            let lstBreakdownItem = $("#gridBreakdownItem").mGrid("dataSource", false);
             let command = {
                 categoryAtr: self.categoryAtr(),
                 itemNameCd: self.itemNameCd(),
                 employeeId: self.selectedItem(),
                 salaryBonusAtr: self.bonusAtr(),
                 period: lstPeriod,
-                breakdownAmountList: self.lstBreakdownItem,
+                breakdownAmountList: lstBreakdownItem,
                 lastHistoryId: null,
                 historyUpdate: self.lstHistory()[self.selectedHisCode()].historyID
             };
@@ -520,6 +524,11 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
             });
 
 
+        }
+
+        isValidForm() {
+            let errorList = $("#gridBreakdownItem").mGrid("errors", true);
+            return _.isEmpty(errorList);
         }
 
         toScreenB() {
@@ -614,8 +623,8 @@ module nts.uk.pr.view.qmm036.a.viewmodel {
                         //self.initSelectedHisCode();
                         self.selectedHisCode.valueHasMutated();
                         self.lstBreakdownItem = [];
-                        $("#gridBreakdownItem").ntsGrid("destroy");
-                        self.loadGrid();
+                        $("#gridBreakdownItem").mGrid("destroy");
+                        self.loadMGrid();
 
                 });
 

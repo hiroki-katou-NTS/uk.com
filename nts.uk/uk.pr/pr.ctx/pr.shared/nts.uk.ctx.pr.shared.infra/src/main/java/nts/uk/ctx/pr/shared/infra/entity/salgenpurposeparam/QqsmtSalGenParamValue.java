@@ -14,8 +14,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QPBMT_SAL_GEN_PARAM_VALUE")
-public class QpbmtSalGenParamValue extends UkJpaEntity implements Serializable
+@Table(name = "QQSMT_SAL_GEN_PARAM_VALUE")
+public class QqsmtSalGenParamValue extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
     
@@ -23,7 +23,7 @@ public class QpbmtSalGenParamValue extends UkJpaEntity implements Serializable
     * ID
     */
     @EmbeddedId
-    public QpbmtSalGenParamValuePk salGenParamValuePk;
+    public QqsmtSalGenParamValuePk salGenParamValuePk;
     
     /**
     * 有効区分
@@ -75,8 +75,8 @@ public class QpbmtSalGenParamValue extends UkJpaEntity implements Serializable
     public SalGenParaValue toDomain() {
         return new SalGenParaValue(this.salGenParamValuePk.hisId, this.selection, this.availableAtr, this.numberValue, this.characterValue, this.timeValue, this.targetAtr);
     }
-    public static QpbmtSalGenParamValue toEntity(SalGenParaValue domain) {
-        return new QpbmtSalGenParamValue(new QpbmtSalGenParamValuePk(domain.getHistoryId()),
+    public static QqsmtSalGenParamValue toEntity(SalGenParaValue domain) {
+        return new QqsmtSalGenParamValue(new QqsmtSalGenParamValuePk(domain.getHistoryId()),
                 domain.getAvailableAtr().value,
                 domain.getNumValue().map(i->i.v()).orElse(null),
                 domain.getCharValue().map(i->i.v()).orElse(null),

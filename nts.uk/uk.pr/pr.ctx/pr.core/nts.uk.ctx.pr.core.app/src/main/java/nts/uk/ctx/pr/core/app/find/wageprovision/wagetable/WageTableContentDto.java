@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementItem;
+import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementRangeSetting;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementSetting;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementsCombinationPaymentAmount;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.MasterNumericAtr;
@@ -30,41 +31,46 @@ public class WageTableContentDto {
 	private List<TwoDmsElementItemDto> list2dElements;
 
 	private List<ThreeDmsElementItemDto> list3dElements;
-	
+
 	private List<ThreeDmsElementItemDto> listWorkElements;
 
-	public WageTableContentDto(WageTableContent domain, Optional<WageTable> domainOtp,
-			WageTableContentCreater wageContentCreater) {
-		Comparator<ElementItemDto> comparator1 = Comparator
-				.comparing(ElementItemDto::getMasterCode, Comparator.nullsLast(Comparator.naturalOrder()))
-				.thenComparing(ElementItemDto::getFrameNumber, Comparator.nullsLast(Comparator.naturalOrder()));
-		this.historyID = domain.getHistoryID();
-		if (!domain.getPayments().isEmpty()) {
+	private ElementRangeSettingDto elemRangeSet;
+
+	public WageTableContentDto(Optional<WageTableContent> optContent, Optional<WageTable> optWage,
+			Optional<ElementRangeSetting> optSetting, WageTableContentCreater wageContentCreater) {
+		this.elemRangeSet = optSetting.isPresent() ? ElementRangeSettingDto.fromDomainToDto(optSetting.get()) : null;
+
+		if (optContent.isPresent() && !optContent.get().getPayments().isEmpty()) {
+			Comparator<ElementItemDto> comparator1 = Comparator
+					.comparing(ElementItemDto::getMasterCode, Comparator.nullsLast(Comparator.naturalOrder()))
+					.thenComparing(ElementItemDto::getFrameNumber, Comparator.nullsLast(Comparator.naturalOrder()));
+			this.historyID = optContent.get().getHistoryID();
+
 			// one dimension
-			if (domainOtp.get().getElementSetting() == ElementSetting.ONE_DIMENSION) {
+			if (optWage.get().getElementSetting() == ElementSetting.ONE_DIMENSION) {
 				Map<String, String> mapMaster = new HashMap<>();
-				if (domainOtp.isPresent() && domainOtp.get().getElementInformation().getOneDimensionalElement()
+				if (optWage.isPresent() && optWage.get().getElementInformation().getOneDimensionalElement()
 						.getMasterNumericAtr().get() == MasterNumericAtr.MASTER_ITEM) {
-					mapMaster = wageContentCreater.getMasterItems(domainOtp.get().getElementInformation()
+					mapMaster = wageContentCreater.getMasterItems(optWage.get().getElementInformation()
 							.getOneDimensionalElement().getFixedElement().get().value, AppContexts.user().companyId());
 				}
-				this.list1dElements = this.getOneDmsElemItemDto(domain.getPayments(), mapMaster, true);
+				this.list1dElements = this.getOneDmsElemItemDto(optContent.get().getPayments(), mapMaster, true);
 				Collections.sort(this.list1dElements, comparator1);
 			}
 			// two dimensions
-			else if (domainOtp.get().getElementSetting() == ElementSetting.TWO_DIMENSION) {
-				Map<ElementItem, List<ElementsCombinationPaymentAmount>> mapPayments = domain.getPayments().stream()
-						.collect(Collectors.groupingBy(i -> i.getElementAttribute().getFirstElementItem()));
+			else if (optWage.get().getElementSetting() == ElementSetting.TWO_DIMENSION) {
+				Map<ElementItem, List<ElementsCombinationPaymentAmount>> mapPayments = optContent.get().getPayments()
+						.stream().collect(Collectors.groupingBy(i -> i.getElementAttribute().getFirstElementItem()));
 				Map<String, String> mapMaster1 = new HashMap<>();
-				if (domainOtp.isPresent() && domainOtp.get().getElementInformation().getOneDimensionalElement()
+				if (optWage.isPresent() && optWage.get().getElementInformation().getOneDimensionalElement()
 						.getMasterNumericAtr().get() == MasterNumericAtr.MASTER_ITEM) {
-					mapMaster1 = wageContentCreater.getMasterItems(domainOtp.get().getElementInformation()
+					mapMaster1 = wageContentCreater.getMasterItems(optWage.get().getElementInformation()
 							.getOneDimensionalElement().getFixedElement().get().value, AppContexts.user().companyId());
 				}
 				Map<String, String> mapMaster2 = new HashMap<>();
-				if (domainOtp.isPresent() && domainOtp.get().getElementInformation().getTwoDimensionalElement().get()
+				if (optWage.isPresent() && optWage.get().getElementInformation().getTwoDimensionalElement().get()
 						.getMasterNumericAtr().get() == MasterNumericAtr.MASTER_ITEM) {
-					mapMaster2 = wageContentCreater.getMasterItems(domainOtp.get().getElementInformation()
+					mapMaster2 = wageContentCreater.getMasterItems(optWage.get().getElementInformation()
 							.getTwoDimensionalElement().get().getFixedElement().get().value,
 							AppContexts.user().companyId());
 				}
@@ -76,30 +82,33 @@ public class WageTableContentDto {
 				Collections.sort(this.list2dElements, comparator2);
 			}
 			// three dimension
-			else if (domainOtp.get().getElementSetting() == ElementSetting.THREE_DIMENSION) {
-				this.list3dElements = new ArrayList<>();
-				Map<ElementItem, List<ElementsCombinationPaymentAmount>> mapPaymentsBy3 = domain.getPayments().stream()
-						.collect(Collectors.groupingBy(i -> i.getElementAttribute().getThirdElementItem().get()));
-				Map<String, String> mapMaster3 = new HashMap<>();
-				if (domainOtp.isPresent() && domainOtp.get().getElementInformation().getOneDimensionalElement()
-						.getMasterNumericAtr().get() == MasterNumericAtr.MASTER_ITEM) {
-					mapMaster3 = wageContentCreater.getMasterItems(domainOtp.get().getElementInformation()
-							.getOneDimensionalElement().getFixedElement().get().value, AppContexts.user().companyId());
+			else if (optWage.get().getElementSetting() == ElementSetting.THREE_DIMENSION
+					|| optWage.get().getElementSetting() == ElementSetting.FINE_WORK) {
+				ElementRangeSettingDto elemRange = ElementRangeSettingDto.fromDomainToDto(optSetting.get());
+				elemRange.setWageTableCode(optWage.get().getWageTableCode().v());
+				if (optWage.get().getElementSetting() == ElementSetting.FINE_WORK) {
+					elemRange.setThirdElementRange(new ElementRangeDto(null, 1, 5));
 				}
+				WageTableContentDto temp = wageContentCreater.createThreeDimensionWageTable(elemRange);
+				this.list3dElements = temp.list3dElements;
+				this.list2dElements = temp.list2dElements;
+				Map<ElementItem, List<ElementsCombinationPaymentAmount>> mapPaymentsBy3 = optContent.get().getPayments()
+						.stream()
+						.collect(Collectors.groupingBy(i -> i.getElementAttribute().getThirdElementItem().get()));
 				Comparator<TwoDmsElementItemDto> comparator2 = Comparator
 						.comparing(TwoDmsElementItemDto::getMasterCode, Comparator.nullsLast(Comparator.naturalOrder()))
 						.thenComparing(TwoDmsElementItemDto::getFrameNumber,
 								Comparator.nullsLast(Comparator.naturalOrder()));
 				Map<String, String> mapMaster1 = new HashMap<>();
-				if (domainOtp.isPresent() && domainOtp.get().getElementInformation().getOneDimensionalElement()
+				if (optWage.isPresent() && optWage.get().getElementInformation().getOneDimensionalElement()
 						.getMasterNumericAtr().get() == MasterNumericAtr.MASTER_ITEM) {
-					mapMaster1 = wageContentCreater.getMasterItems(domainOtp.get().getElementInformation()
+					mapMaster1 = wageContentCreater.getMasterItems(optWage.get().getElementInformation()
 							.getOneDimensionalElement().getFixedElement().get().value, AppContexts.user().companyId());
 				}
 				Map<String, String> mapMaster2 = new HashMap<>();
-				if (domainOtp.isPresent() && domainOtp.get().getElementInformation().getTwoDimensionalElement().get()
+				if (optWage.isPresent() && optWage.get().getElementInformation().getTwoDimensionalElement().get()
 						.getMasterNumericAtr().get() == MasterNumericAtr.MASTER_ITEM) {
-					mapMaster2 = wageContentCreater.getMasterItems(domainOtp.get().getElementInformation()
+					mapMaster2 = wageContentCreater.getMasterItems(optWage.get().getElementInformation()
 							.getTwoDimensionalElement().get().getFixedElement().get().value,
 							AppContexts.user().companyId());
 				}
@@ -110,80 +119,16 @@ public class WageTableContentDto {
 					List<TwoDmsElementItemDto> listTwoDms = this.getTwoDmsElemItemDto(mapPaymentsBy1, mapMaster1,
 							mapMaster2, comparator1);
 					Collections.sort(listTwoDms, comparator2);
-					if (key.getMasterElementItem().isPresent()) {
-						String masterCode = key.getMasterElementItem().get().getMasterCode();
-						String masterName = mapMaster3.get(masterCode);
-						this.list3dElements.add(new ThreeDmsElementItemDto(masterCode,
-								masterName == null ? masterCode : masterName, null, null, null, listTwoDms));
-					} else if (key.getNumericElementItem().isPresent()) {
-						int frameNumber = key.getNumericElementItem().get().getFrameNumber();
-						int frameLower = key.getNumericElementItem().get().getFrameLowerLimit();
-						int frameUpper = key.getNumericElementItem().get().getFrameUpperLimit();
-						this.list3dElements.add(new ThreeDmsElementItemDto(null, null, frameNumber, frameLower,
-								frameUpper, listTwoDms));
+					for (ThreeDmsElementItemDto thDms : this.list3dElements) {
+						if ((key.getMasterElementItem().isPresent()
+								&& key.getMasterElementItem().get().getMasterCode().equals(thDms.getMasterCode()))
+								|| (key.getNumericElementItem().isPresent() && key.getNumericElementItem().get()
+										.getFrameNumber() == thDms.getFrameNumber())) {
+							thDms.setListFirstDms(listTwoDms);
+							break;
+						}
 					}
 				}
-				Comparator<ThreeDmsElementItemDto> comparator3 = Comparator
-						.comparing(ThreeDmsElementItemDto::getMasterCode,
-								Comparator.nullsLast(Comparator.naturalOrder()))
-						.thenComparing(ThreeDmsElementItemDto::getFrameNumber,
-								Comparator.nullsLast(Comparator.naturalOrder()));
-				Collections.sort(this.list3dElements, comparator3);
-			}
-			// fine work ()
-			else if (domainOtp.get().getElementSetting() == ElementSetting.FINE_WORK) {
-				this.listWorkElements = new ArrayList<>();
-				Map<ElementItem, List<ElementsCombinationPaymentAmount>> mapPaymentsBy3 = domain.getPayments().stream()
-						.collect(Collectors.groupingBy(i -> i.getElementAttribute().getThirdElementItem().get()));
-				Map<String, String> mapMaster3 = new HashMap<>();
-				if (domainOtp.isPresent() && domainOtp.get().getElementInformation().getOneDimensionalElement()
-						.getMasterNumericAtr().get() == MasterNumericAtr.MASTER_ITEM) {
-					mapMaster3 = wageContentCreater.getMasterItems(domainOtp.get().getElementInformation()
-							.getOneDimensionalElement().getFixedElement().get().value, AppContexts.user().companyId());
-				}
-				Comparator<TwoDmsElementItemDto> comparator2 = Comparator
-						.comparing(TwoDmsElementItemDto::getMasterCode, Comparator.nullsLast(Comparator.naturalOrder()))
-						.thenComparing(TwoDmsElementItemDto::getFrameNumber,
-								Comparator.nullsLast(Comparator.naturalOrder()));
-				Map<String, String> mapMaster1 = new HashMap<>();
-				if (domainOtp.isPresent() && domainOtp.get().getElementInformation().getOneDimensionalElement()
-						.getMasterNumericAtr().get() == MasterNumericAtr.MASTER_ITEM) {
-					mapMaster1 = wageContentCreater.getMasterItems(domainOtp.get().getElementInformation()
-							.getOneDimensionalElement().getFixedElement().get().value, AppContexts.user().companyId());
-				}
-				Map<String, String> mapMaster2 = new HashMap<>();
-				if (domainOtp.isPresent() && domainOtp.get().getElementInformation().getTwoDimensionalElement().get()
-						.getMasterNumericAtr().get() == MasterNumericAtr.MASTER_ITEM) {
-					mapMaster2 = wageContentCreater.getMasterItems(domainOtp.get().getElementInformation()
-							.getTwoDimensionalElement().get().getFixedElement().get().value,
-							AppContexts.user().companyId());
-				}
-				for (ElementItem key : mapPaymentsBy3.keySet()) {
-					List<ElementsCombinationPaymentAmount> value = mapPaymentsBy3.get(key);
-					Map<ElementItem, List<ElementsCombinationPaymentAmount>> mapPaymentsBy1 = value.stream()
-							.collect(Collectors.groupingBy(i -> i.getElementAttribute().getFirstElementItem()));
-					List<TwoDmsElementItemDto> listTwoDms = this.getTwoDmsElemItemDto(mapPaymentsBy1, mapMaster1,
-							mapMaster2, comparator1);
-					Collections.sort(listTwoDms, comparator2);
-					if (key.getMasterElementItem().isPresent()) {
-						String masterCode = key.getMasterElementItem().get().getMasterCode();
-						String masterName = mapMaster3.get(masterCode);
-						this.listWorkElements.add(new ThreeDmsElementItemDto(masterCode,
-								masterName == null ? masterCode : masterName, null, null, null, listTwoDms));
-					} else if (key.getNumericElementItem().isPresent()) {
-						int frameNumber = key.getNumericElementItem().get().getFrameNumber();
-						int frameLower = key.getNumericElementItem().get().getFrameLowerLimit();
-						int frameUpper = key.getNumericElementItem().get().getFrameUpperLimit();
-						this.listWorkElements.add(new ThreeDmsElementItemDto(null, null, frameNumber, frameLower,
-								frameUpper, listTwoDms));
-					}
-				}
-				Comparator<ThreeDmsElementItemDto> comparator3 = Comparator
-						.comparing(ThreeDmsElementItemDto::getMasterCode,
-								Comparator.nullsLast(Comparator.naturalOrder()))
-						.thenComparing(ThreeDmsElementItemDto::getFrameNumber,
-								Comparator.nullsLast(Comparator.naturalOrder()));
-				Collections.sort(this.listWorkElements, comparator3);
 			}
 		}
 	}
@@ -197,35 +142,36 @@ public class WageTableContentDto {
 					String masterCode = payment.getElementAttribute().getFirstElementItem().getMasterElementItem().get()
 							.getMasterCode();
 					String masterName = mapMaster.get(masterCode);
-					ElementItemDto item = new ElementItemDto(masterCode, masterName == null ? masterCode : masterName, null,
-							null, null, payment.getWageTablePaymentAmount().v());
+					ElementItemDto item = new ElementItemDto(masterCode, masterName == null ? masterCode : masterName,
+							null, null, null, payment.getWageTablePaymentAmount().v());
 					result.add(item);
 				} else if (payment.getElementAttribute().getFirstElementItem().getNumericElementItem().isPresent()) {
 					int frameNumber = payment.getElementAttribute().getFirstElementItem().getNumericElementItem().get()
-									.getFrameNumber();
+							.getFrameNumber();
 					int lowerLimit = payment.getElementAttribute().getFirstElementItem().getNumericElementItem().get()
-									.getFrameLowerLimit();
+							.getFrameLowerLimit();
 					int upperLimit = payment.getElementAttribute().getFirstElementItem().getNumericElementItem().get()
-									.getFrameUpperLimit();
+							.getFrameUpperLimit();
 					ElementItemDto item = new ElementItemDto(null, null, frameNumber, lowerLimit, upperLimit,
 							payment.getWageTablePaymentAmount().v());
 					result.add(item);
 				}
 			} else {
 				if (payment.getElementAttribute().getSecondElementItem().get().getMasterElementItem().isPresent()) {
-					String masterCode = payment.getElementAttribute().getSecondElementItem().get().getMasterElementItem().get()
-							.getMasterCode();
+					String masterCode = payment.getElementAttribute().getSecondElementItem().get()
+							.getMasterElementItem().get().getMasterCode();
 					String masterName = mapMaster.get(masterCode);
-					ElementItemDto item = new ElementItemDto(masterCode, masterName == null ? masterCode : masterName, null,
-							null, null, payment.getWageTablePaymentAmount().v());
+					ElementItemDto item = new ElementItemDto(masterCode, masterName == null ? masterCode : masterName,
+							null, null, null, payment.getWageTablePaymentAmount().v());
 					result.add(item);
-				} else if (payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem().isPresent()) {
-					int frameNumber = payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem().get()
-									.getFrameNumber();
-					int lowerLimit = payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem().get()
-									.getFrameLowerLimit();
-					int upperLimit = payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem().get()
-									.getFrameUpperLimit();
+				} else if (payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem()
+						.isPresent()) {
+					int frameNumber = payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem()
+							.get().getFrameNumber();
+					int lowerLimit = payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem()
+							.get().getFrameLowerLimit();
+					int upperLimit = payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem()
+							.get().getFrameUpperLimit();
 					ElementItemDto item = new ElementItemDto(null, null, frameNumber, lowerLimit, upperLimit,
 							payment.getWageTablePaymentAmount().v());
 					result.add(item);

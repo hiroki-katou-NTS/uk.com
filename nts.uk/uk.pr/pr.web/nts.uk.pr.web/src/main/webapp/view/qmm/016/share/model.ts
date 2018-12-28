@@ -232,9 +232,9 @@ module nts.uk.pr.view.qmm016.share.model {
                 if (!_.isEmpty(params.list3dElements)) {
                     this.payment(params.list3dElements.map(item => new ThreeDmsElementItem(item)));
                 }
-                if (!_.isEmpty(params.listWorkElements)) {
-                    this.payment(params.listWorkElements.map(item => new ThreeDmsElementItem(item)));
-                }
+//                if (!_.isEmpty(params.listWorkElements)) {
+//                    this.payment(params.listWorkElements.map(item => new ThreeDmsElementItem(item)));
+//                }
                 this.qualificationGroupSetting(params && !_.isEmpty(params.qualificationGroupSettings) ? params.qualificationGroupSettings.map(item => new QualificationGroupSettingContent(item)) : []);
             }
             

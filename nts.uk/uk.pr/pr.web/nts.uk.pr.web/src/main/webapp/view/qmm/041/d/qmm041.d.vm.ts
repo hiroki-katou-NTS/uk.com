@@ -34,7 +34,7 @@ module nts.uk.pr.view.qmm041.d.viewmodel {
             let dto = {
                 employeeId: self.employeeId,
                 baseYearMonth: self.baseYearMonth()
-            }
+            };
             self.individualUnitPriceDisplay(dto);
         }
 
