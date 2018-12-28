@@ -274,18 +274,22 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForclosure(createList,companySet ,closureList);
 		
 		
-		for(IntegrationOfDaily value:afterCalcRecord.getIntegrationOfDailyList()) {
+		for(ManageCalcStateAndResult value:afterCalcRecord.getLst()) {
 			// データ更新
 			//*****（未）　日別実績の勤怠情報だけを更新する場合。まとめて更新するなら、integrationOfDailyを入出できるよう調整する。
-			if(value.getAttendanceTimeOfDailyPerformance().isPresent()) {
-				employeeDailyPerErrorRepository.removeParam(value.getAttendanceTimeOfDailyPerformance().get().getEmployeeId(), 
-						value.getAttendanceTimeOfDailyPerformance().get().getYmd());
-				this.registAttendanceTime(employeeId.toString(),value.getAffiliationInfor().getYmd(),
-										  value.getAttendanceTimeOfDailyPerformance().get(),value.getAnyItemValue());
-				determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(value.getEmployeeError());
+			if(value.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().isPresent()) {
+				employeeDailyPerErrorRepository.removeParam(value.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getEmployeeId(), 
+						value.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getYmd());
+				this.registAttendanceTime(employeeId.toString(),value.getIntegrationOfDaily().getAffiliationInfor().getYmd(),
+										  value.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get(),value.getIntegrationOfDaily().getAnyItemValue());
+				determineErrorAlarmWorkRecordService.createEmployeeDailyPerError(value.getIntegrationOfDaily().getEmployeeError());
 			}
 		}
-		return afterCalcRecord.getProcessState();
+		//計算状態更新
+		for(ManageCalcStateAndResult stateInfo : afterCalcRecord.getLst()) {
+			upDateCalcState(stateInfo);
+		}
+		return afterCalcRecord.getPs();
 	}
 
 	/**

@@ -374,6 +374,9 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 			BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut, WorkStyle checkWorkDay) {
 
 		Optional<FlexWorkSetting> fws = this.flexWorkSettingRepo.find(companyId, workTimeCode);
+		if (!fws.isPresent()) {
+			return false;
+		}
 		FlexWorkSetting flexWorkSetting = fws.get();
 		List<DeductionTime> lstTimezone = null;
 		boolean fixRestTime = true;

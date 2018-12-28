@@ -7,6 +7,7 @@ module nts.uk.at.view.kmk011.a {
         export class ScreenModel {
             constructor() {
                 var self = this;
+                self.showExportBtn();
             }
 
             /**
@@ -45,6 +46,17 @@ module nts.uk.at.view.kmk011.a {
                     nts.uk.ui.block.clear();
                 });
             }
+            
+             showExportBtn() {
+                    if (nts.uk.util.isNullOrUndefined(__viewContext.user.role.attendance)
+                            && nts.uk.util.isNullOrUndefined(__viewContext.user.role.payroll)
+                            && nts.uk.util.isNullOrUndefined(__viewContext.user.role.officeHelper)
+                            && nts.uk.util.isNullOrUndefined(__viewContext.user.role.personnel)) {
+                    $("#print-button").hide();
+                    } else {
+                    $("#print-button").show();
+                    }
+                    }
 
         }
 

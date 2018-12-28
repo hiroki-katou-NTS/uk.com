@@ -98,6 +98,9 @@ public class StartEndTimeOffReflectImpl implements StartEndTimeOffReflect{
 						|| workStampEnd.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT)) {
 			isEnd = true;
 		}
+		if(!isStart && !isEnd) {
+			return;
+		}
 		TimeReflectPara timeReflectData = new TimeReflectPara(employeeId, dateData, overInfor.getStartTime1(), overInfor.getEndTime1(), 1, isStart, isEnd);
 		scheWorkUpdate.updateRecordStartEndTimeReflect(timeReflectData);
 	}

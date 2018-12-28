@@ -7,7 +7,7 @@
 
 .A1_5, .A1_6 {
 	display: inline-block;
-	margin-left: 3px;
+	margin-left: 20px;
 }
 
 .A1_6 {
@@ -96,7 +96,7 @@ hr {
 }
 
 .td-left .panel.panel-frame {
-	width: 442px;
+	width: 565px;
 }
 
 .type-page-brake {

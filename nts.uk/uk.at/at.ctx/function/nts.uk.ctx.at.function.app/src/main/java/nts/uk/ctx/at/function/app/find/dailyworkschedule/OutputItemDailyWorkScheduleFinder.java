@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleCopyCommand;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
@@ -44,7 +43,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFo
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
 //import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
-import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject.BundledBusinessExceptionBuffer;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -325,7 +323,10 @@ public class OutputItemDailyWorkScheduleFinder {
 			return dataReturnDto;
 		}
 		else { // 1Sheet目の表示項目の先頭48項目までを返り値とする(Lấy 48 hạng mục đầu trong sheet đầu tiên làm giá trị trả về)
-			return (DataReturnDto) dataReturnDto.getDataInforReturnDtos().stream().limit(48).collect(Collectors.toList());
+			List<DataInforReturnDto> lstDto = dataReturnDto.getDataInforReturnDtos().stream().limit(48)
+					.collect(Collectors.toList());
+			dataReturnDto.setDataInforReturnDtos(lstDto);
+			return dataReturnDto;
 		}
 	}
 	

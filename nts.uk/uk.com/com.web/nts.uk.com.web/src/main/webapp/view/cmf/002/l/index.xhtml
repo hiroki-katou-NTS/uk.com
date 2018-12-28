@@ -80,7 +80,7 @@
 								optionsText: 'name',
 								editable: false,
 								enable: $vm.decimalSelectionCls(),
-								required: $vm.decimalSelectionCls(),
+								required: true,
 								selectFirstIfNull : true,
 								columns: [
 									{ prop: 'name', length: 5 },
@@ -186,7 +186,7 @@
 								value: fixedCalculationValue,
 								name:'#{i18n.getText('CMF002_152')}',
  								constraint: 'DataFormatFixedValueOperation', 
-								required: $vm.enableFixedValueOperation(),
+								required: true,
 								enable: $vm.enableFixedValueOperation(),
 								option : {width : '140px',decimallength: 2}}" />
 							<span>#{i18n.getText('CMF002_195')}</span>
@@ -217,7 +217,7 @@
 								value: fixedLongIntegerDigit,
 								name:'#{i18n.getText('CMF002_154')}',
  								constraint: 'DataFormatIntegerDigit', 
-								required: $vm.enableFixedLengthOutput(),
+								required: true,
 								enable: $vm.enableFixedLengthOutput(),
 								option : {width : '35px'}}" />
 							<div id="L8_2_3" style="display: inline" class="label">#{i18n.getText('CMF002_143')}</div>
