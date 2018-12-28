@@ -50,7 +50,7 @@ module nts.uk.pr.view.qmm038.a {
                     showClassification: false,
                     showJobTitle: false,
                     showWorktype: false,
-                    isMutipleCheck: false,
+                    isMutipleCheck: true,
                     tabindex: 5,
                     showOnStart: true,
 
