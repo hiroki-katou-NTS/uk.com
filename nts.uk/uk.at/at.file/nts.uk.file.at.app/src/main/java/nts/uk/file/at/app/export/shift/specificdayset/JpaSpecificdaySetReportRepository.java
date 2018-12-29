@@ -25,7 +25,7 @@ public class JpaSpecificdaySetReportRepository extends JpaRepository implements 
 			+ " AND s.SPECIFIC_DATE <= ?endYm";
 	
 	private static final String GET_WORKSPACE_SPEC_SET = "SELECT"
-			+ " DISTINCT s.WKPID, s.SPECIFIC_DATE, s.SPECIFIC_DATE_ITEM_NO, w.WKPCD, p.NAME"
+			+ " DISTINCT s.WKPID, s.SPECIFIC_DATE, s.SPECIFIC_DATE_ITEM_NO, w.WKPCD, p.NAME, w.WKP_NAME "
 			+ "	FROM KSMMT_WP_SPEC_DATE_SET s"
 			+ " INNER JOIN KSMST_SPECIFIC_DATE_ITEM p "
 			+ "	ON s.SPECIFIC_DATE_ITEM_NO = p.SPECIFIC_DATE_ITEM_NO "
@@ -82,9 +82,10 @@ public class JpaSpecificdaySetReportRepository extends JpaRepository implements 
 		Integer specificDateItemNo = ((BigDecimal)object[2]).intValue();
 		String workplaceCode = (String) object[3];
 		String specificDateItemName = (String) object[4];
+		String workplaceName = (String) object[5];
 		
 		SpecificdaySetWorkplaceReportData domain = SpecificdaySetWorkplaceReportData.createFromJavaType(
-				workplaceId, date, specificDateItemNo, specificDateItemName, workplaceCode, "");
+				workplaceId, date, specificDateItemNo, specificDateItemName, workplaceCode.trim(), workplaceName);
 		return domain;
 	}
 	

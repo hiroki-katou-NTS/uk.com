@@ -24,7 +24,7 @@ public class JpaDayCalendarReportRepository extends JpaRepository implements Day
 			+ " AND c.YMD_K <= ?endDate";
 	
 	private static final String GET_WORKSPACE_CALENDAR_BY_DATE = "SELECT"
-			+ " distinct w.WKPID, w.WKPCD, s.YMD_K, s.WORKING_DAY_ATR "
+			+ " distinct w.WKPID, w.WKPCD, s.YMD_K, s.WORKING_DAY_ATR, w.WKP_NAME "
 			+ "	FROM KSMMT_CALENDAR_WORKPLACE s"
 			+ " INNER JOIN BSYMT_WORKPLACE_INFO w ON w.CID = ?companyId "
 			+ "	and w.WKPID = s.WKPID"
@@ -110,9 +110,10 @@ public class JpaDayCalendarReportRepository extends JpaRepository implements Day
 		Timestamp timeStamp = (Timestamp)entity[2];
 		GeneralDate date = GeneralDate.legacyDate(new Date(timeStamp.getTime()));
 		int workingDayAtr = ((BigDecimal)entity[3]).intValue();
+		String workPlaceName = (String)entity[4];
 		
 		WorkplaceCalendarReportData domain = WorkplaceCalendarReportData.createFromJavaType(
-				workPlaceId, date, workingDayAtr, workPlaceCode, "");
+				workPlaceId, date, workingDayAtr, workPlaceCode.trim(), workPlaceName);
 		return domain;
 	}
 	
