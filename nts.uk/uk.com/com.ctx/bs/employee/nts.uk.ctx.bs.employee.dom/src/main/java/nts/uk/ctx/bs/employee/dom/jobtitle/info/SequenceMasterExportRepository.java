@@ -5,6 +5,6 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 
 public interface SequenceMasterExportRepository {
-	List<JobTitleInfo> findAll(String companyId, GeneralDate startDate, GeneralDate endDate);
+	List<JobTitleInfo> findAll(String companyId, GeneralDate baseDate);
 	
 }

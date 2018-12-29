@@ -42,7 +42,7 @@ public class SpecificdaySetExportImpl implements MasterListData {
 	 public List<SheetData> extraSheets(MasterListExportQuery query) {
 		 List<SheetData> sheetDatas = new ArrayList<>();
 		 //add the work place sheet
-		 SheetData sheetWorkplaceData = new SheetData(getMasterDatasForWorkplace(query), getHeaderColumnsForWorkplace(query),null, null, TextResource.localize("KSM002_99"));
+		 SheetData sheetWorkplaceData = new SheetData(getMasterDatasForWorkplace(query), getHeaderColumnsForWorkplace(query),null, null, TextResource.localize("Com_Workplace"));
 		 sheetDatas.add(sheetWorkplaceData);
 		 return sheetDatas;
 	 }
@@ -112,7 +112,7 @@ public class SpecificdaySetExportImpl implements MasterListData {
 	
 	@Override
 	public String mainSheetName() {
-		return TextResource.localize("KSM002_98");
+		return TextResource.localize("Com_Company");
 	}
 
 	private Optional<MasterData> newCompanyMasterData(String yearMonth,

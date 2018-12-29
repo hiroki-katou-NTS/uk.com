@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
 import nts.uk.shr.com.context.AppContexts;
@@ -37,13 +36,13 @@ public class BudgetExportImpl implements MasterListData {
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
 		
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn("コード", TextResource.localize("KDL024_5"),
+		columns.add(new MasterHeaderColumn("コード", TextResource.localize("KDL024_16"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("名称", TextResource.localize("KDL024_6"),
+		columns.add(new MasterHeaderColumn("名称", TextResource.localize("KDL024_17"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("属性", TextResource.localize("KDL024_8"),
+		columns.add(new MasterHeaderColumn("属性", TextResource.localize("KDL024_18"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("単位", TextResource.localize("KDL024_9"),
+		columns.add(new MasterHeaderColumn("単位", TextResource.localize("KDL024_19"),
 				ColumnTextAlign.LEFT, "", true));
 		return columns;
 	}
@@ -53,7 +52,7 @@ public class BudgetExportImpl implements MasterListData {
 		String companyId = AppContexts.user().companyId();
 		List<ExternalBudget> listExternalBudget = budgetExcelRepo.findAll(companyId);
 		if (CollectionUtil.isEmpty(listExternalBudget)) {
-			throw new BusinessException("Msg_393");
+			return null;
 		} else {
 			listExternalBudget.stream().forEach(c -> {
 				Map<String, Object> data = new HashMap<>();
@@ -84,7 +83,7 @@ public class BudgetExportImpl implements MasterListData {
 	
 	@Override
 	public String mainSheetName() {
-		return "マスタリスト";
+		return TextResource.localize("KDL024_15");
 	}
 	
 	private void putDataEmpty(Map<String, Object> data){

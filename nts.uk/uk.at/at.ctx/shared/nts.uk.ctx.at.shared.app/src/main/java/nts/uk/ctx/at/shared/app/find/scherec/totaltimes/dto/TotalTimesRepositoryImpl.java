@@ -273,7 +273,7 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 	@Override
 	public String mainSheetName() {
 		// TODO Auto-generated method stub
-		return TextResource.localize("KMK009_56");
+		return TextResource.localize("KMK009_26");
 	}
 	
 	

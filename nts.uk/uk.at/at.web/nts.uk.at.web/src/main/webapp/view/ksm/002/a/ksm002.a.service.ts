@@ -68,7 +68,8 @@ module ksm002.a.service {
     
     
     export function saveAsExcel(mode: string, startDate: string, endDate: string): JQueryPromise<any> {
-        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: 'SpecificdaySet', domainType: 'KSM002' + getText("KSM002_1"), 
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: 'SpecificdaySet', 
+            domainType: 'KSM002' + getText("KSM002_1"), 
             languageId: 'ja', reportType: 0, mode: mode, 
             startDate : moment.utc(startDate).format(), 
             endDate : moment.utc(endDate).format()});

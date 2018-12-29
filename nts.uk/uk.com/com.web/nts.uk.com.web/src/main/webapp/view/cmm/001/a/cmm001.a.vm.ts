@@ -122,6 +122,7 @@ module cmm001.a {
                     self.currentCompanyCode(self.sel001Data()[0].companyCode);
                 }
             });
+            self.showExportBtn();
         }
 
         /** start page */
@@ -391,6 +392,7 @@ module cmm001.a {
         }
         
         private exportExcel(): void {
+            
                 var self = this;
                 nts.uk.ui.block.grayout();
                 let langId = "ja";
@@ -401,6 +403,18 @@ module cmm001.a {
                     nts.uk.ui.block.clear();
                 });
             }
+        
+        
+        showExportBtn() {
+            if (nts.uk.util.isNullOrUndefined(__viewContext.user.role.attendance)
+                && nts.uk.util.isNullOrUndefined(__viewContext.user.role.payroll)
+                && nts.uk.util.isNullOrUndefined(__viewContext.user.role.officeHelper)
+                && nts.uk.util.isNullOrUndefined(__viewContext.user.role.personnel)) {
+                $("#print-button").hide();
+            } else {
+                $("#print-button").show();
+            }
+        }
     }
     class CompanyModel {
         companyCode: KnockoutObservable<string>;
