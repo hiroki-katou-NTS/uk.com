@@ -243,7 +243,7 @@ public class SpecificdaySetExportImpl implements MasterListData {
 		wkpConfigInfoFindObject.setBaseDate(GeneralDate.ymd(9999, 12, 31));
 		wkpConfigInfoFindObject.setRestrictionOfReferenceRange(true);
 		List<WorkplaceHierarchyDto> workplaceHierarchyDtos = spreadOutWorkplaceInfos(workplaceConfigInfoFinder.findAllByBaseDate(wkpConfigInfoFindObject));
-		Map<String, List<WorkplaceHierarchyDto>> mapWorkPlace = workplaceHierarchyDtos.stream()
+		Map<String, List<WorkplaceHierarchyDto>> mapWorkPlace = workplaceHierarchyDtos.stream().filter(x -> x.getCode() != null && x.getName() != null)
 				.collect(Collectors.groupingBy(WorkplaceHierarchyDto::getCode));
 		
 		if (mapSetReportDatas.isPresent()) {
