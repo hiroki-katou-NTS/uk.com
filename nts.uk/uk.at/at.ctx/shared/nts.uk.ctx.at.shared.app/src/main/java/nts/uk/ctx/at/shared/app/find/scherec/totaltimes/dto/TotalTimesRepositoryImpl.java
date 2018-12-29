@@ -223,31 +223,31 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 		
 		
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn("No", "No",
+		columns.add(new MasterHeaderColumn("No", TextResource.localize("#KMK009_4"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("使用区分", TextResource.localize("CMM008_8"),
+		columns.add(new MasterHeaderColumn("使用区分", TextResource.localize("#KMK009_5"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("名称", TextResource.localize("CMM008_9"),
+		columns.add(new MasterHeaderColumn("名称", TextResource.localize("#KMK009_6"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("略名", TextResource.localize("CMM008_10"),
+		columns.add(new MasterHeaderColumn("略名", TextResource.localize("#KMK009_22"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("集計区分", "集計区分",
+		columns.add(new MasterHeaderColumn("集計区分", TextResource.localize("#KMK009_14"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("勤務種類", "就業時間帯",
+		columns.add(new MasterHeaderColumn("勤務種類", TextResource.localize("#KMK009_8"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("就業時間帯", "就業時間帯",
+		columns.add(new MasterHeaderColumn("就業時間帯", TextResource.localize("#KMK009_9"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("集計条件以上", "集計条件以上",
+		columns.add(new MasterHeaderColumn("集計条件以上", TextResource.localize("#KMK009_10")+" "+TextResource.localize("#KMK009_17"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("以上", "以上",
+		columns.add(new MasterHeaderColumn("以上", TextResource.localize("#KMK009_17"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("集計条件未満", "集計条件未満",
+		columns.add(new MasterHeaderColumn("集計条件未満", TextResource.localize("#KMK009_10")+" "+TextResource.localize("#KMK009_20"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("未満", "未満",
+		columns.add(new MasterHeaderColumn("未満", TextResource.localize("KMK009_20"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("対象項目", "対象項目",
+		columns.add(new MasterHeaderColumn("対象項目", TextResource.localize("KMK009_23"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("半日勤務区分", "半日勤務区分",
+		columns.add(new MasterHeaderColumn("半日勤務区分", TextResource.localize("KMK009_11"),
 				ColumnTextAlign.LEFT, "", true));
 		return columns;
 	}

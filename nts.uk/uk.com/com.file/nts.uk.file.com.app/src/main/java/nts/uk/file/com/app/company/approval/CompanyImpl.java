@@ -226,7 +226,7 @@ public class CompanyImpl implements MasterListData{
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("住所 建物名など", TextResource.localize("CMM001_24")+" "+TextResource.localize("CMM001_26"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("住所カナ 市区町村・番地",TextResource.localize("CMM001_27")+" "+TextResource.localize("CMM001_26"),
+		columns.add(new MasterHeaderColumn("住所カナ 市区町村・番地",TextResource.localize("CMM001_27")+" "+TextResource.localize("CMM001_25"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("住所カナ 建物名など", TextResource.localize("CMM001_27")+" "+TextResource.localize("CMM001_26"),
 				ColumnTextAlign.LEFT, "", true));
