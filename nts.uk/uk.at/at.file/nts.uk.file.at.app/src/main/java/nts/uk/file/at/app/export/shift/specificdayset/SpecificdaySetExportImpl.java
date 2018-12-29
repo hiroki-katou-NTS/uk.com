@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -244,12 +243,16 @@ public class SpecificdaySetExportImpl implements MasterListData {
 		wkpConfigInfoFindObject.setBaseDate(GeneralDate.ymd(9999, 12, 31));
 		wkpConfigInfoFindObject.setRestrictionOfReferenceRange(true);
 		List<WorkplaceHierarchyDto> workplaceHierarchyDtos = spreadOutWorkplaceInfos(workplaceConfigInfoFinder.findAllByBaseDate(wkpConfigInfoFindObject));
-		Map<String, WorkplaceHierarchyDto> mapWorkPlace = workplaceHierarchyDtos.stream()
-				.collect(Collectors.toMap(WorkplaceHierarchyDto::getCode, Function.identity()));
+		Map<String, List<WorkplaceHierarchyDto>> mapWorkPlace = workplaceHierarchyDtos.stream()
+				.collect(Collectors.groupingBy(WorkplaceHierarchyDto::getCode));
 		
 		if (mapSetReportDatas.isPresent()) {
 			mapSetReportDatas.get().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEachOrdered(x -> {
-				Optional<WorkplaceHierarchyDto> workplaceHierarchyDto = Optional.ofNullable(mapWorkPlace.get(x.getKey()));
+				Optional<List<WorkplaceHierarchyDto>> workplaceHierarchyListByCode = Optional.ofNullable(mapWorkPlace.get(x.getKey()));
+				Optional<WorkplaceHierarchyDto> workplaceHierarchyDto = Optional.empty();
+				if (workplaceHierarchyListByCode.isPresent()) {
+					workplaceHierarchyDto = Optional.ofNullable(workplaceHierarchyListByCode.get().get(0));
+				}
 				Optional<List<SpecificdaySetWorkplaceReportData>> listDataPerOneWp = Optional.ofNullable(x.getValue());
 				if (listDataPerOneWp.isPresent()) {
 					Map<String, List<SpecificdaySetWorkplaceReportData>> mapDataByYearMonth = 
