@@ -181,7 +181,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 showClassification: false,
                 showJobTitle: false,
                 showWorktype: false,
-                isMutipleCheck: false,
+                isMutipleCheck: true,
                 showOnStart: true,
                 tabindex: 4,
 
