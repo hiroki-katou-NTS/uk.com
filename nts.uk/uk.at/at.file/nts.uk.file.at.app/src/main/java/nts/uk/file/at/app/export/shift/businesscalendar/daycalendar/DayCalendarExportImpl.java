@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -280,16 +279,20 @@ public class DayCalendarExportImpl implements MasterListData {
 				.findCalendarWorkplaceByDate(companyId, query.getStartDate(), query.getEndDate());
 		
 		WkpConfigInfoFindObject wkpConfigInfoFindObject = new WkpConfigInfoFindObject();
-		wkpConfigInfoFindObject.setSystemType(2);
+		wkpConfigInfoFindObject.setSystemType(5);
 		wkpConfigInfoFindObject.setBaseDate(GeneralDate.ymd(9999, 12, 31));
 		wkpConfigInfoFindObject.setRestrictionOfReferenceRange(true);
 		List<WorkplaceHierarchyDto> workplaceHierarchyDtos = spreadOutWorkplaceInfos(workplaceConfigInfoFinder.findAllByBaseDate(wkpConfigInfoFindObject));
-		Map<String, WorkplaceHierarchyDto> mapWorkPlace = workplaceHierarchyDtos.stream()
-				.collect(Collectors.toMap(WorkplaceHierarchyDto::getCode, Function.identity()));
+		Map<String, List<WorkplaceHierarchyDto>> mapWorkPlace = workplaceHierarchyDtos.stream().filter(x -> x.getCode() != null && x.getName() != null)
+				.collect(Collectors.groupingBy(WorkplaceHierarchyDto::getCode));
 		
 		if (mapSetReportDatas.isPresent()) {
 			mapSetReportDatas.get().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEachOrdered(x -> {
-				WorkplaceHierarchyDto workplaceHierarchyDto = mapWorkPlace.get(x.getKey());
+				Optional<List<WorkplaceHierarchyDto>> workplaceHierarchyListByCode = Optional.ofNullable(mapWorkPlace.get(x.getKey()));
+				Optional<WorkplaceHierarchyDto> workplaceHierarchyDto = Optional.empty();
+				if (workplaceHierarchyListByCode.isPresent()) {
+					workplaceHierarchyDto = Optional.ofNullable(workplaceHierarchyListByCode.get().get(0));
+				}
 				Optional<List<WorkplaceCalendarReportData>> listDataPerOneWp = Optional.ofNullable(x.getValue());
 				if (listDataPerOneWp.isPresent()) {
 					Map<String, List<WorkplaceCalendarReportData>> mapDataByYearMonth = 
@@ -318,15 +321,15 @@ public class DayCalendarExportImpl implements MasterListData {
 	 * @return
 	 */
 	private Optional<MasterData> newWorkplaceMasterData(Integer index, String yearMonth,
-			Optional<List<WorkplaceCalendarReportData>> specificdaySetReportDatas, WorkplaceHierarchyDto workplaceHierarchyDto) {
+			Optional<List<WorkplaceCalendarReportData>> specificdaySetReportDatas, Optional<WorkplaceHierarchyDto> workplaceHierarchyDto) {
 		Map<String, Object> data = new HashMap<>();
 		if (specificdaySetReportDatas.isPresent()) {
 			//put empty to columns
 			putEmptyToColumWorkplace(data);
 			if (index == 0) {
-				if (workplaceHierarchyDto != null) {
-					data.put("コード", workplaceHierarchyDto.getCode());
-					data.put("名称", workplaceHierarchyDto.getName());
+				if (workplaceHierarchyDto.isPresent()) {
+					data.put("コード", workplaceHierarchyDto.get().getCode());
+					data.put("名称", workplaceHierarchyDto.get().getName());
 				}
 			}
 			data.put("年月", yearMonth.substring(0, 4) + "/" + yearMonth.substring(4, yearMonth.length()));
