@@ -57,15 +57,20 @@ public class ItemTotalExcel {
 		this.itemNo = itemNo;
 	}
 	public String toStringItemSet(){
-		String listString = "";
+		String stringList = "";
 		if(CollectionUtil.isEmpty(itemSets)){
-			return listString;
+			return stringList;
 		}
-		List<String> B = itemSets.stream()
+		List<String> listString = itemSets.stream()
 		        .map(developer -> new String(developer.getNameItemSet()))
 		        .collect(Collectors.toList());
-		listString = String.join(",", B);
-		return listString;
+		for(int i =  listString.size()-1 ; i >=0;i--) {
+			if(listString.get(i).equals("")){
+				listString.remove(i);
+			}
+		}
+		stringList = String.join(",", listString);
+		return stringList;
 	}
 
 	public String toStringListDaySet(){
@@ -74,6 +79,7 @@ public class ItemTotalExcel {
 			result = String.join(",", itemDaySets);
 			return result;
 		}
+		
 		return result;
 	}
 

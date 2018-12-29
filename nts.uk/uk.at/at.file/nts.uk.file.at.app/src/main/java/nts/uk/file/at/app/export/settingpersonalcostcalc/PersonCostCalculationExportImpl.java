@@ -44,9 +44,9 @@ public class PersonCostCalculationExportImpl implements  MasterListData {
 		// Get company id
 		//String companyId = AppContexts.user().companyId();
 		GeneralDate basedate=query.getBaseDate();
-		List<PersonCostCalculationSettingDto> listPersonCostCalculationSetting=	personCostCalculationSettingFinder.findPersonCostCalculationByCompanyID();
-		listPersonCostCalculationSetting.removeIf(x ->x.getStartDate().date().getTime()>basedate.date().getTime()
-				|| x.getEndDate().date().getTime()<basedate.date().getTime());
+		List<PersonCostCalculationSettingDto> listPersonCostCalculationSetting=	personCostCalculationSettingFinder.findPersonCostCalculationByCompanyID().
+				stream().filter(x ->x.getEndDate().date().getTime()>=basedate.date().getTime() && 
+				basedate.date().getTime()>=x.getStartDate().date().getTime()).collect(Collectors.toList());
 		
 	if(!CollectionUtil.isEmpty(listPersonCostCalculationSetting)){
 			for(PersonCostCalculationSettingDto personCostCalculationSettingDto:listPersonCostCalculationSetting){			
