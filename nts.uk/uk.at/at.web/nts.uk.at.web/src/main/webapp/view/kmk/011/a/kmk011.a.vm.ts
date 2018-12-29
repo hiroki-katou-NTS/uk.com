@@ -34,12 +34,28 @@ module nts.uk.at.view.kmk011.a {
                 })
 
             }
+            
+           public opencdl028Dialog() {
+            var self = this;
+            let params = {
+            //    date: moment(new Date()).toDate(),
+                mode: 1 //basedate
+            };
+            nts.uk.ui.windows.setShared("CDL028_INPUT", params);
+            nts.uk.ui.windows.sub.modal("com", "/view/cdl/028/a/index.xhtml").onClosed(function() {
+                var params = nts.uk.ui.windows.getShared("CDL028_A_PARAMS");
+                if (!nts.uk.util.isNullOrUndefined(params) && !nts.uk.util.isNullOrUndefined(params.standardDate)) {                 
+                    self.exportExcel(params.standardDate);
+                 }
+            });
 
-            public exportExcel(): void {
+        } 
+
+            public exportExcel(param): void {
                 var self = this;
                 nts.uk.ui.block.grayout();
 
-                serviceScreenH.saveAsExcel().done(function() {
+                serviceScreenH.saveAsExcel(param).done(function() {
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                 }).always(function() {
