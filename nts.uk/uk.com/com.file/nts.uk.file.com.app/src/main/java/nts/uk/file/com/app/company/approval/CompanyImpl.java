@@ -274,7 +274,7 @@ public class CompanyImpl implements MasterListData{
 	@Override
 	public String mainSheetName() {
 		// TODO Auto-generated method stub
-		return TextResource.localize("CMM001_77");
+		return TextResource.localize("CMM001_76");
 	}
 	
 	
