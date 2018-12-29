@@ -524,7 +524,7 @@ module nts.uk.com.view.cmm013.a {
             public opencdl028Dialog() {
                 var self = this;
                 let params = {
-                    date: moment(new Date()).toDate(),
+                    //    date: moment(new Date()).toDate(),
                     mode: 1 
                 };
                 nts.uk.ui.windows.setShared("CDL028_INPUT", params);
