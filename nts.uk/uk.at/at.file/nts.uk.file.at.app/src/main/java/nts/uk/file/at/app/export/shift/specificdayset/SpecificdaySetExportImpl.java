@@ -1,5 +1,5 @@
 
-package nts.uk.ctx.at.schedule.app.export.shift.specificdayset;
+package nts.uk.file.at.app.export.shift.specificdayset;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -7,11 +7,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WkpConfigInfoFindObject;
+import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WorkplaceHierarchyDto;
+import nts.uk.ctx.bs.employee.app.find.workplace.config.info.WorkplaceConfigInfoFinder;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
@@ -37,6 +43,9 @@ public class SpecificdaySetExportImpl implements MasterListData {
 
 	@Inject
 	private SpecificdaySetReportRepository specificdaySetReportRepository;
+	
+	@Inject
+	private WorkplaceConfigInfoFinder workplaceConfigInfoFinder;
 	
 	 @Override
 	 public List<SheetData> extraSheets(MasterListExportQuery query) {
@@ -230,8 +239,17 @@ public class SpecificdaySetExportImpl implements MasterListData {
 		Optional<Map<String, List<SpecificdaySetWorkplaceReportData>>> mapSetReportDatas = specificdaySetReportRepository
 				.findAllSpecificdaySetWorkplace(companyId, query.getStartDate(), query.getEndDate());
 
+		WkpConfigInfoFindObject wkpConfigInfoFindObject = new WkpConfigInfoFindObject();
+		wkpConfigInfoFindObject.setSystemType(2);
+		wkpConfigInfoFindObject.setBaseDate(GeneralDate.ymd(9999, 12, 31));
+		wkpConfigInfoFindObject.setRestrictionOfReferenceRange(true);
+		List<WorkplaceHierarchyDto> workplaceHierarchyDtos = spreadOutWorkplaceInfos(workplaceConfigInfoFinder.findAllByBaseDate(wkpConfigInfoFindObject));
+		Map<String, WorkplaceHierarchyDto> mapWorkPlace = workplaceHierarchyDtos.stream()
+				.collect(Collectors.toMap(WorkplaceHierarchyDto::getCode, Function.identity()));
+		
 		if (mapSetReportDatas.isPresent()) {
 			mapSetReportDatas.get().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEachOrdered(x -> {
+				Optional<WorkplaceHierarchyDto> workplaceHierarchyDto = Optional.ofNullable(mapWorkPlace.get(x.getKey()));
 				Optional<List<SpecificdaySetWorkplaceReportData>> listDataPerOneWp = Optional.ofNullable(x.getValue());
 				if (listDataPerOneWp.isPresent()) {
 					Map<String, List<SpecificdaySetWorkplaceReportData>> mapDataByYearMonth = 
@@ -240,7 +258,7 @@ public class SpecificdaySetExportImpl implements MasterListData {
 					for(int i = 0; i < yearMonthKeys.size(); i++) {
 						String yearMonth = yearMonthKeys.get(i);
 						List<SpecificdaySetWorkplaceReportData> listDataPerOneRow = mapDataByYearMonth.get(yearMonth);
-						Optional<MasterData> row = newWorkplaceMasterData(i, yearMonth, Optional.ofNullable(listDataPerOneRow));
+						Optional<MasterData> row = newWorkplaceMasterData(i, yearMonth, Optional.ofNullable(listDataPerOneRow), workplaceHierarchyDto);
 						if (row.isPresent()) {
 							datas.add(row.get());
 						}
@@ -253,6 +271,23 @@ public class SpecificdaySetExportImpl implements MasterListData {
 		return datas;
 	}
 	
+	
+	/* 
+	 * @param workplaceHierarchyDtos
+	 * @return
+	 */
+	private List<WorkplaceHierarchyDto> spreadOutWorkplaceInfos(List<WorkplaceHierarchyDto> workplaceHierarchyDtos) {
+		List<WorkplaceHierarchyDto> listWorkplaceHierarchyDtos = new ArrayList<>();
+		workplaceHierarchyDtos.stream().forEach(x -> {
+			listWorkplaceHierarchyDtos.add(x);
+			if (!CollectionUtil.isEmpty(x.getChilds())) {
+				listWorkplaceHierarchyDtos.addAll(spreadOutWorkplaceInfos(x.getChilds()));
+			}
+			
+		});
+		return listWorkplaceHierarchyDtos;
+	}
+	
 	/**
 	 * create row data for WorkPlace sheet
 	 * @param yearMonth
@@ -260,15 +295,16 @@ public class SpecificdaySetExportImpl implements MasterListData {
 	 * @return
 	 */
 	private Optional<MasterData> newWorkplaceMasterData(Integer index, String yearMonth,
-			Optional<List<SpecificdaySetWorkplaceReportData>> specificdaySetReportDatas) {
+			Optional<List<SpecificdaySetWorkplaceReportData>> specificdaySetReportDatas, Optional<WorkplaceHierarchyDto> workplaceHierarchyDto) {
 		Map<String, Object> data = new HashMap<>();
 		if (specificdaySetReportDatas.isPresent()) {
 			//put empty to columns
 			putEmptyToColumWorkplace(data);
 			if (index == 0) {
-				SpecificdaySetWorkplaceReportData setWorkplaceReportData = specificdaySetReportDatas.get().get(0);
-				data.put("コード", setWorkplaceReportData.getWorkplaceCode());
-				data.put("名称", setWorkplaceReportData.getWorkplaceName());
+				if (workplaceHierarchyDto.isPresent()) {
+					data.put("コード", workplaceHierarchyDto.get().getCode());
+					data.put("名称", workplaceHierarchyDto.get().getName());
+				}
 			}
 			data.put("年月", yearMonth.substring(0, 4) + "/" + yearMonth.substring(4, yearMonth.length()));
 			

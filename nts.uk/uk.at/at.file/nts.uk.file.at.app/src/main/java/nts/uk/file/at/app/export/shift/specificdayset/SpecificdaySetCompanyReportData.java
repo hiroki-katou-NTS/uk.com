@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.export.shift.specificdayset;
+package nts.uk.file.at.app.export.shift.specificdayset;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,23 +10,16 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives
 @Getter
 @Setter
 @AllArgsConstructor
-public class SpecificdaySetWorkplaceReportData {
-	private String workplaceId;
+public class SpecificdaySetCompanyReportData {
 	private GeneralDate specificDate;
 	private SpecificDateItemNo specificDateItemNo;
 	private SpecificName specificDateItemName;
-	private String workplaceCode;
-	private String workplaceName;
-	
-	public static SpecificdaySetWorkplaceReportData createFromJavaType(String workplaceId, 
-			GeneralDate specificDate, Integer specificDateItemNo, String specificDateItemName, String workplaceCode, String workplaceName) {
-		return new SpecificdaySetWorkplaceReportData(
-				workplaceId, 
-				specificDate, 
+
+	public static SpecificdaySetCompanyReportData createFromJavaType(GeneralDate specificDate, Integer specificDateItemNo, String specificDateItemName) {
+		return new SpecificdaySetCompanyReportData(
+				specificDate,
 				new SpecificDateItemNo(specificDateItemNo),
-				new SpecificName(specificDateItemName),
-				workplaceCode,
-				workplaceName);
+				new SpecificName(specificDateItemName));
 	}
 	
 	public String getYearMonth() {
@@ -36,5 +29,6 @@ public class SpecificdaySetWorkplaceReportData {
 	public int getDay() {
 		return specificDate.day();
 	}
-
+	
+	
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.export.shift.specificdayset;
+package nts.uk.file.at.app.export.shift.specificdayset;
 
 import java.util.List;
 import java.util.Map;
