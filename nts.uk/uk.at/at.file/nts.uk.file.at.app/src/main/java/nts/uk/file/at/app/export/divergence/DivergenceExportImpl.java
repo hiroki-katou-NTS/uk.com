@@ -22,6 +22,8 @@ import nts.uk.ctx.at.record.app.find.divergence.time.history.CompanyDivergenceRe
 import nts.uk.ctx.at.record.app.find.divergence.time.history.CompanyDivergenceReferenceTimeFinder;
 import nts.uk.ctx.at.record.app.find.divergence.time.history.CompanyDivergenceReferenceTimeHistoryDto;
 import nts.uk.ctx.at.record.app.find.divergence.time.history.CompanyDivergenceReferenceTimeHistoryFinder;
+import nts.uk.ctx.at.record.app.find.divergence.time.history.DivergenceReferenceTimeUsageUnitDto;
+import nts.uk.ctx.at.record.app.find.divergence.time.history.DivergenceReferenceTimeUsageUnitFinder;
 import nts.uk.ctx.at.record.app.find.divergence.time.history.WorkTypeDivergenceReferenceTimeDto;
 import nts.uk.ctx.at.record.app.find.divergence.time.history.WorkTypeDivergenceReferenceTimeFinder;
 import nts.uk.ctx.at.record.app.find.divergence.time.history.WorkTypeDivergenceReferenceTimeHistoryDto;
@@ -84,6 +86,8 @@ public class DivergenceExportImpl  implements MasterListData{
 	/** The WorkType Divergence Time Error Alarm Message finder. */
 	@Inject
 	private WorkTypeDivergenceTimeErrorAlarmMessageFinder finderWorkTypeMsg;
+	@Inject
+	private DivergenceReferenceTimeUsageUnitFinder finderTimeUsageUnit;
 	
 	private static final String select = "○";
 	private static final String unselect = "-";
@@ -98,8 +102,12 @@ public class DivergenceExportImpl  implements MasterListData{
 		 List<SheetData> sheetDatas = new ArrayList<>();
 		 SheetData divergencetimeData = new SheetData(getDataDevergenceTimeCompany(query), getHeaderColumnsDevergenceTimeCompany(query), null, null,TextResource.localize("KMK011_82"));	 
 		 sheetDatas.add(divergencetimeData);
-		 SheetData divergenceworktypeData = new SheetData(getDataDevergenceTimeWorktype(query), getHeaderColumnsDevergenceTimeWorktype(query), null, null,TextResource.localize("KMK011_83"));
-		 sheetDatas.add(divergenceworktypeData);
+		 DivergenceReferenceTimeUsageUnitDto uset=finderTimeUsageUnit.findByCompanyId();
+		 if(uset.getWorkTypeUseSet()){
+			 SheetData divergenceworktypeData = new SheetData(getDataDevergenceTimeWorktype(query), getHeaderColumnsDevergenceTimeWorktype(query), null, null,TextResource.localize("KMK011_83"));
+			 sheetDatas.add(divergenceworktypeData);
+		 }
+		
 		return sheetDatas;
 	}
 
