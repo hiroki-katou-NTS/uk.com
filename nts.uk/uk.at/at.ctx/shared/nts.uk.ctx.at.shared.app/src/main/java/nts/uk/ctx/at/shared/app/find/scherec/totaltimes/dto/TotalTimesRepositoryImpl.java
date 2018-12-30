@@ -223,25 +223,25 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 		
 		
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn("No", TextResource.localize("#KMK009_4"),
+		columns.add(new MasterHeaderColumn("No",TextResource.localize("KMK009_4"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("使用区分", TextResource.localize("#KMK009_5"),
+		columns.add(new MasterHeaderColumn("使用区分",TextResource.localize("KMK009_5"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("名称", TextResource.localize("#KMK009_6"),
+		columns.add(new MasterHeaderColumn("名称",TextResource.localize("KMK009_6"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("略名", TextResource.localize("#KMK009_22"),
+		columns.add(new MasterHeaderColumn("略名",TextResource.localize("KMK009_22"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("集計区分", TextResource.localize("#KMK009_14"),
+		columns.add(new MasterHeaderColumn("集計区分",TextResource.localize("KMK009_14"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("勤務種類", TextResource.localize("#KMK009_8"),
+		columns.add(new MasterHeaderColumn("勤務種類",TextResource.localize("KMK009_8"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("就業時間帯", TextResource.localize("#KMK009_9"),
+		columns.add(new MasterHeaderColumn("就業時間帯",TextResource.localize("KMK009_9"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("集計条件以上", TextResource.localize("#KMK009_10")+" "+TextResource.localize("#KMK009_17"),
+		columns.add(new MasterHeaderColumn("集計条件以上",TextResource.localize("KMK009_10")+" "+TextResource.localize("KMK009_17"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("以上", TextResource.localize("#KMK009_17"),
+		columns.add(new MasterHeaderColumn("以上",TextResource.localize("KMK009_17"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("集計条件未満", TextResource.localize("#KMK009_10")+" "+TextResource.localize("#KMK009_20"),
+		columns.add(new MasterHeaderColumn("集計条件未満", TextResource.localize("KMK009_10")+" "+TextResource.localize("KMK009_20"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("未満", TextResource.localize("KMK009_20"),
 				ColumnTextAlign.LEFT, "", true));
