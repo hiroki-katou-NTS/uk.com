@@ -542,7 +542,31 @@ module nts.uk.com.view.cps009.a.viewmodel {
         checkError(itemList: Array<any>) {
 
         }
+        
+        /**
+         * export excel
+         */
+        exportExcel() {
+            let self = this;
+            nts.uk.ui.block.grayout();
+            service.saveAsExcel().done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+        }
+        /**
+         * check role
+         */
+        hasPermission(): boolean {
+            if (__viewContext.user.role.attendance || __viewContext.user.role.payroll
+                || __viewContext.user.role.personnel || __viewContext.user.role.officeHelper) {
+                return true;
+            }
 
+            return false;
+        }
     }
     export class InitValueSettingDetail {
         settingCode: KnockoutObservable<string>;
@@ -1410,6 +1434,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 });
             }
         }
+        
+        
     }
 
     export interface IPerInfoInitValueSettingDto {
