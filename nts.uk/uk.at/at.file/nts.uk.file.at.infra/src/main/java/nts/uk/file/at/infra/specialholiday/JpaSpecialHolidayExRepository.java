@@ -171,9 +171,10 @@ public class JpaSpecialHolidayExRepository extends JpaRepository implements Spec
 			// Age_limit is 1 (利用しない) then blank")
 			.append("	CASE WHEN (TABLE_RESULT.ROW_NUMBER = 1 AND TABLE_RESULT.AGE_LIMIT = 0) THEN TABLE_RESULT.AGE_BASE_DATE")
 			.append("	ELSE NULL")
-			.append("	END AGE_BASE_DATE")
+			.append("	END AGE_BASE_DATE,")
+			.append("	TABLE_RESULT.ROW_INDEX")
 			.append("	FROM")
-			.append("		(Select TOP 100 PERCENT sphd.SPHD_CD, sphd.SPHD_NAME, ")
+			.append("		(Select sphd.SPHD_CD, sphd.SPHD_NAME, ")
 			.append("			STUFF((SELECT ',' + mab1.NAME ")
 			.append("					FROM KSHST_SPHD_ABSENCE sab1")
 			.append("						LEFT JOIN KSHMT_ABSENCE_FRAME mab1 ON sab1.ABS_FRAME_NO = mab1.ABSENCE_FRAME_NO ")
@@ -209,7 +210,8 @@ public class JpaSpecialHolidayExRepository extends JpaRepository implements Spec
 			.append("				FOR XML PATH ('')), 1, 1, '') as empName,")
 			.append("			leaRe.AGE_LIMIT, leaRe.AGE_LOWER_LIMIT, leaRe.AGE_HIGHER_LIMIT, leaRe.AGE_CRITERIA_CLS, leaRe.AGE_BASE_DATE,")
 			.append("			ROW_NUMBER() OVER (PARTITION BY sphd.SPHD_CD ORDER BY sphd.SPHD_CD) AS ROW_NUMBER,")
-			.append("			ROW_NUMBER() OVER (PARTITION BY sphd.SPHD_CD, graDa.GD_TBL_CD ORDER BY sphd.SPHD_CD, graDa.GD_TBL_CD) AS ROW_NUMBER2")
+			.append("			ROW_NUMBER() OVER (PARTITION BY sphd.SPHD_CD, graDa.GD_TBL_CD ORDER BY sphd.SPHD_CD,graDa.GD_TBL_CD, ely.[NO]) AS ROW_NUMBER2,")
+			.append("			ROW_NUMBER() OVER (ORDER BY  sphd.SPHD_CD,graDa.GD_TBL_CD, ely.[NO]) AS ROW_INDEX")
 			.append("			FROM KSHST_SPECIAL_HOLIDAY sphd ")
 			.append("				LEFT JOIN KSHST_SPHD_ABSENCE sab ON sphd.SPHD_CD = sab.SPHD_CD AND sphd.CID = sab.CID")
 			.append("				LEFT JOIN KSHMT_ABSENCE_FRAME mab ON sab.ABS_FRAME_NO = mab.ABSENCE_FRAME_NO AND sab.CID = mab.CID AND mab.ABOLISH_ATR = 0")
@@ -230,11 +232,11 @@ public class JpaSpecialHolidayExRepository extends JpaRepository implements Spec
 			.append("	 			ely.[NO], ely.GRANTED_DAYS, ely.MONTHS, ely.YEARS,graPe.LIMIT_CARRYOVER_DAYS, graPe.DEADLINE_YEARS, graPe.DEADLINE_MONTHS, ")
 			.append("				graPe.START_DATE, graPe.END_DATE,leaRe.GENDER_REST, leaRe.GENDER, leaRe.RESTRICTION_CLS, leaRe.REST_EMP,leaRe.AGE_LIMIT, leaRe.AGE_LOWER_LIMIT, ")
 			.append("				leaRe.AGE_HIGHER_LIMIT, leaRe.AGE_CRITERIA_CLS, leaRe.AGE_BASE_DATE,sab.CID, sab.SPHD_CD,spl.CID, ")
-			.append("				spl.SPHD_CD,cls.CID, cls.SPHD_CD,emp.CID, emp.SPHD_CD")
-			.append("			ORDER BY sphd.SPHD_CD,graDa.GD_TBL_CD, ely.[NO]) TABLE_RESULT) R")
+			.append("				spl.SPHD_CD,cls.CID, cls.SPHD_CD,emp.CID, emp.SPHD_CD) TABLE_RESULT) R")
 			.append(" WHERE SPHD_CD IS NOT NULL OR")
 			.append("		GD_TBL_CD IS NOT NULL OR")
-			.append("		TABLE_NO IS NOT NULL ");
+			.append("		TABLE_NO IS NOT NULL ")
+			.append("ORDER BY ROW_INDEX");
 	
 		GET_SPECIAL_HOLIDAY_DATA = specialHDData.toString();
 		
@@ -286,22 +288,24 @@ public class JpaSpecialHolidayExRepository extends JpaRepository implements Spec
 		.append("		CASE WHEN (TABLE_RESULT.MAX_NUMBER_DAYS_TYPE = 2) THEN ")
 		.append("			CASE WHEN (TABLE_RESULT.MORNING_HOUR IS NULL OR TABLE_RESULT.MAKE_INVITATION_ATR = 0) THEN NULL ELSE CONCAT(TABLE_RESULT.MORNING_HOUR,'日') END")
 		.append("		ELSE NULL")
-		.append("		END MORNING_HOUR")
+		.append("		END MORNING_HOUR, ")
+		.append("		TABLE_RESULT.ROW_INDEX ")
 		.append("	FROM	")
-		.append(" 		(SELECT TOP 100 PERCENT hdframe.NAME, holidayevent.MEMO,holidayevent.MAX_NUMBER_DAYS_TYPE, holidayevent.FIXED_DAY_GRANT,")
+		.append(" 		(SELECT hdframe.NAME, holidayevent.MEMO,holidayevent.MAX_NUMBER_DAYS_TYPE, holidayevent.FIXED_DAY_GRANT,")
 		.append("				holidayevent.MAKE_INVITATION_ATR, holidayevent.INCLUDE_HOLIDAYS_ATR,  grantdayrelp.RELATIONSHIP_CD, ")
 		.append("				rel.RELATIONSHIP_NAME, rel.THREE_PARENT_OR_LESS, grantdayrelp.GRANTED_DAY, grantdayrelp.MORNING_HOUR, ")
 		.append("				ROW_NUMBER() OVER (PARTITION BY hdframe.SPHD_FRAME_NO ORDER BY hdframe.SPHD_FRAME_NO, grantdayrelp.RELATIONSHIP_CD) AS ROW_NUMBER,")
-		.append("				DENSE_RANK() OVER (ORDER BY hdframe.SPHD_FRAME_NO) AS DENSE_NUMBER")
+		.append("				DENSE_RANK() OVER (ORDER BY hdframe.SPHD_FRAME_NO) AS DENSE_NUMBER,")
+		.append("				ROW_NUMBER() OVER (ORDER BY hdframe.SPHD_FRAME_NO, grantdayrelp.RELATIONSHIP_CD) AS ROW_INDEX")
 		.append(" 		FROM KSHST_S_HOLIDAY_EVENT holidayevent")
 		.append("			LEFT JOIN KSHMT_SPHD_FRAME hdframe ON holidayevent.S_HOLIDAY_EVENT_NO = hdframe.SPHD_FRAME_NO AND holidayevent.CID = hdframe.CID")
 		.append("			LEFT JOIN KSHST_GRANT_DAY_PER_RELP grantdayperrelp ON holidayevent.S_HOLIDAY_EVENT_NO = grantdayperrelp.S_HOLIDAY_EVENT_NO AND holidayevent.CID = grantdayperrelp.CID")
 		.append("			LEFT JOIN KSHST_GRANT_DAY_RELP grantdayrelp ON holidayevent.S_HOLIDAY_EVENT_NO = grantdayrelp.S_HOLIDAY_EVENT_NO AND holidayevent.CID = grantdayrelp.CID")
 		.append("			LEFT JOIN KSHST_RELATIONSHIP rel ON grantdayrelp.RELATIONSHIP_CD = rel.RELATIONSHIP_CD AND holidayevent.CID = rel.CID")
 		// Param 3
-		.append(" 		WHERE holidayevent.CID = ?")
-		.append("		ORDER BY hdframe.SPHD_FRAME_NO,grantdayrelp.RELATIONSHIP_CD ) TABLE_RESULT) R")
-		.append(" WHERE HOLIDAY_NAME IS NOT NULL OR RELATIONSHIP_CD IS NOT NULL");
+		.append(" 		WHERE holidayevent.CID = ?) TABLE_RESULT) R")
+		.append(" WHERE HOLIDAY_NAME IS NOT NULL OR RELATIONSHIP_CD IS NOT NULL")
+		.append(" ORDER BY ROW_INDEX ");
 		GET_SPECIAL_HOLIDAY_EVENT = specialHDData.toString();
 	}
 	
