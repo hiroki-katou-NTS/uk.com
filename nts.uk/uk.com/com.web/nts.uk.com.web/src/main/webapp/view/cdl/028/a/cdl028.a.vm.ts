@@ -108,6 +108,7 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                     self.startDateFiscalYear(null);
                     self.endDateFiscalYear(null);
                     break;
+                case MODE_SCREEN.ALL:
                 case MODE_SCREEN.YEAR_PERIOD_FINANCE:
                     self.standardDate();
                     self.startDateFiscalYear(self.yearValue().startDate+""+ self.getFullMonth(self.firstMonth()) +"01");
@@ -118,7 +119,6 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                         self.endDateFiscalYear(self.convertYearToInt((self.yearValue().endDate)) + "1231");
                     }
                     break;
-                case MODE_SCREEN.ALL:
                 case MODE_SCREEN.YEAR_PERIOD:
                     self.standardDate();
                     self.startDateFiscalYear(self.convertYearToInt(self.yearValue().startDate)+"0101");
