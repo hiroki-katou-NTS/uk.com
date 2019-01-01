@@ -17,7 +17,6 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.task.AsyncTask;
 import nts.uk.file.at.app.export.worktime.WorkTimeReportDatasource;
 import nts.uk.file.at.app.export.worktime.WorkTimeReportGenerator;
-import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -96,10 +95,9 @@ public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator im
 
 	private void printWorkTimeNormal(Worksheet worksheet, WorkTimeReportDatasource dataSource) throws Exception {
 		List<Object[]> data = dataSource.getWorkTimeNormal();
-		worksheet.setName(TextResource.localize("KMK003_309"));
 		Cells cells = worksheet.getCells();
 		printCommonHeader(cells, dataSource.getCompanyName(), REPORT_NAME, dataSource.getExportTime(),
-				TextResource.localize("KMK003_309"));
+				worksheet.getName());
 		for (int i = 0; i < data.size(); i++) {
 			Object[] dataRow = data.get(i);
 			if (i % WORK_TIME_NORMAL_NUM_ROW == 0 && i + WORK_TIME_NORMAL_NUM_ROW < data.size()) {
@@ -114,10 +112,9 @@ public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator im
 
 	private void printWorkTimeFlow(Worksheet worksheet, WorkTimeReportDatasource dataSource) throws Exception {
 		List<Object[]> data = dataSource.getWorkTimeFlow();
-		worksheet.setName(TextResource.localize("KMK003_552"));
 		Cells cells = worksheet.getCells();
 		printCommonHeader(cells, dataSource.getCompanyName(), REPORT_NAME, dataSource.getExportTime(),
-				TextResource.localize("KMK003_552"));
+				worksheet.getName());
 		for (int i = 0; i < data.size(); i++) {
 			Object[] dataRow = data.get(i);
 			if (i % WORK_TIME_FLOW_NUM_ROW == 0 && i + WORK_TIME_FLOW_NUM_ROW < data.size()) {
@@ -132,10 +129,9 @@ public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator im
 
 	private void printWorkTimeFlex(Worksheet worksheet, WorkTimeReportDatasource dataSource) throws Exception {
 		List<Object[]> data = dataSource.getWorkTimeFlex();
-		worksheet.setName(TextResource.localize("KMK003_761"));
 		Cells cells = worksheet.getCells();
 		printCommonHeader(cells, dataSource.getCompanyName(), REPORT_NAME, dataSource.getExportTime(),
-				TextResource.localize("KMK003_761"));
+				worksheet.getName());
 		for (int i = 0; i < data.size(); i++) {
 			Object[] dataRow = data.get(i);
 			if (i % WORK_TIME_FLEX_NUM_ROW == 0 && i + WORK_TIME_FLEX_NUM_ROW < data.size()) {
