@@ -1,6 +1,7 @@
 package nts.uk.file.com.app.person.setting;
 
 public final class PerInfoInitValueSetCtgUtils {
+	public static final String MasterUnregisted = "マスタ未登録";
 	public static final String CPS009_77 = "コード";
 	public static final String CPS009_78 = "名称";
 	public static final String CPS009_79 = "カテゴリ";

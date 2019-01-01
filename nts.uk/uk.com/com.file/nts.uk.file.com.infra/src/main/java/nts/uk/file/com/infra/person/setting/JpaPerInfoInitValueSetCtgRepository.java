@@ -30,11 +30,16 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append(" IIF (TABLE_RESULT.ROW_NUMBER2 = 1, TABLE_RESULT.CATEGORY_NAME, Null) CTG_NAME,");
 	     exportSQL.append(" TABLE_RESULT.ITEM_NAME,");
 	     exportSQL.append(" TABLE_RESULT.REF_METHOD_ATR,");
-	     exportSQL.append(" CONCAT(TABLE_RESULT.Wrkplace, TABLE_RESULT.emp, TABLE_RESULT.clsname, TABLE_RESULT.JobTitle, ");
-	     exportSQL.append("    TABLE_RESULT.TempAbsence, TABLE_RESULT.BussType, TABLE_RESULT.WorkType, ");
-	     exportSQL.append("    TABLE_RESULT.WorkTime, TABLE_RESULT.WorkType2, TABLE_RESULT.WorkType3, TABLE_RESULT.WorkType4, TABLE_RESULT.WorkType5,");
-	     exportSQL.append("    TABLE_RESULT.MPattern, TABLE_RESULT.BonusPay, TABLE_RESULT.HdTblSet, TABLE_RESULT.DateSet, TABLE_RESULT.Selection,");
-	     exportSQL.append("    TABLE_RESULT.EnumName, TABLE_RESULT.INT_VALUE, TABLE_RESULT.DATE_VAL) AS C_Value,");
+	     exportSQL.append(" CASE ");
+	     exportSQL.append("	WHEN (TABLE_RESULT.SELECTION_ITEM_REF_CODE IS NULL) THEN ");
+	     exportSQL.append("				CONCAT(TABLE_RESULT.STRING_VAL, TABLE_RESULT.INT_VALUE, TABLE_RESULT.DATE_VAL)");
+	     exportSQL.append("	ELSE ");
+	     exportSQL.append("			IIF((TABLE_RESULT.MASTER_VALUE IS NOT NULL AND RTRIM(TABLE_RESULT.MASTER_VALUE) <> '') OR TABLE_RESULT.EnumName IS NOT NULL,");
+	     exportSQL.append("					CONCAT(TABLE_RESULT.MASTER_VALUE,TABLE_RESULT.EnumName), ");
+	     exportSQL.append("					IIF(TABLE_RESULT.STRING_VAL IS NOT NULL AND RTRIM(TABLE_RESULT.STRING_VAL) <> '', ");
+	     exportSQL.append("						IIF(TABLE_RESULT.SELECTION_ITEM_REF_CODE <> 'M00002' AND TABLE_RESULT.SELECTION_ITEM_REF_CODE <> 'M00005',");
+	     exportSQL.append(" 						CONCAT(TABLE_RESULT.STRING_VAL, ?MasterUnregisted), ?MasterUnregisted), NULL))");
+	     exportSQL.append(" END C_Value,");
 	     exportSQL.append(" TABLE_RESULT.Align");
 	     exportSQL.append(" FROM (");
 	     exportSQL.append("  SELECT initset.PER_INIT_SET_CD, initset.PER_INIT_SET_NAME, ");
@@ -53,26 +58,58 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("    WHEN 8 THEN ?Enum_ReferenceMethodType_SAMEASKANANAME");
 	     exportSQL.append("    ELSE ?Enum_ReferenceMethodType_NOSETTING");
 	     exportSQL.append("  END REF_METHOD_ATR,");
-	     exportSQL.append("  CONCAT(wkp.WKPCD,IIF (wkp.END_DATE >= '9999-12-31', wkp.WKP_NAME, ");
-	     exportSQL.append("      IIF (wkp.WKPCD IS NOT NULL,'So what', NULL))) as Wrkplace,");
-	     exportSQL.append("  CONCAT(emp.CODE, emp.NAME) as emp, ");
-	     exportSQL.append("  CONCAT(cls.CLSCD, cls.CLSNAME) as clsname, ");
-	     exportSQL.append("  CONCAT(job.JOB_CD,IIF (job.END_DATE >= '9999-12-31', job.JOB_NAME, ");
-	     exportSQL.append("      IIF (job.JOB_CD IS NOT NULL,'So what', NULL))) as JobTitle,");
-	     exportSQL.append("  CONCAT(temp.TEMP_ABSENCE_FR_NO, temp.TEMP_ABSENCE_FR_NAME) as TempAbsence ,");
-	     exportSQL.append("  CONCAT(busstype.BUSINESS_TYPE_CD,busstype.BUSINESS_TYPE_NAME) as BussType,");
-	     exportSQL.append("  CONCAT(wrktype.CD,wrktype.NAME) as WorkType,");
-	     exportSQL.append("  CONCAT(wrktime.WORKTIME_CD,wrktime.NAME) as WorkTime,");
-	     exportSQL.append("  CONCAT(wrktype2.CD,wrktype2.NAME) as WorkType2,");
-	     exportSQL.append("  CONCAT(wrktype3.CD,wrktype3.NAME) as WorkType3,");
-	     exportSQL.append("  CONCAT(wrktype4.CD,wrktype4.NAME) as WorkType4,");
-	     exportSQL.append("  CONCAT(wrktype5.CD,wrktype5.NAME) as WorkType5, ");
-	     exportSQL.append("  CONCAT(monthPattern.M_PATTERN_CD,monthPattern.M_PATTERN_NAME) as MPattern,");
-	     exportSQL.append("  CONCAT(bonuspay.BONUS_PAY_SET_CD,bonuspay.BONUS_PAY_SET_NAME) as BonusPay,");
-	     exportSQL.append("  CONCAT(hdtblset.YEAR_HD_CD,hdtblset.YEAR_HD_NAME) as HdTblSet,");
-	     exportSQL.append("  CONCAT(dateset.GD_TBL_CD,dateset.GRANT_NAME) as DateSet,");
+	     exportSQL.append(" CONCAT(");
+	     // Workplace
+	     exportSQL.append("  CONCAT(RTRIM(wkp.WKPCD),IIF (wkp.END_DATE >= '9999-12-31', wkp.WKP_NAME, ");
+	     exportSQL.append("      IIF (wkp.WKPCD IS NOT NULL,?MasterUnregisted, NULL))),");
+	     // Employment
+	     exportSQL.append("  CONCAT(RTRIM(emp.CODE), emp.NAME), ");
+	     // Classification
+	     exportSQL.append("  CONCAT(RTRIM(cls.CLSCD), cls.CLSNAME), ");
+	     // Job title
+	     exportSQL.append("  CONCAT(RTRIM(job.JOB_CD),IIF (job.END_DATE >= '9999-12-31', job.JOB_NAME, ");
+	     exportSQL.append("      IIF (job.JOB_CD IS NOT NULL,?MasterUnregisted, NULL))),");
+	     // TempAbsence
+		 exportSQL.append("CONCAT(RTRIM(temp.TEMP_ABSENCE_FR_NO), IIF (temp.USE_ATR = 1 ,temp.TEMP_ABSENCE_FR_NAME, ");
+		 exportSQL.append("			IIF(temp.TEMP_ABSENCE_FR_NO IS NOT NULL,?MasterUnregisted,NULL))),");
+		 // BussType
+	     exportSQL.append("  CONCAT(RTRIM(busstype.BUSINESS_TYPE_CD),busstype.BUSINESS_TYPE_NAME),");
+	     // WorkType
+	     exportSQL.append("  CONCAT(RTRIM(wrktype.CD),IIF(wrktype.ABOLISH_ATR = 0, wrktype.NAME, ");
+	     exportSQL.append("				IIF(wrktype.CD IS NOT NULL, ?MasterUnregisted, NULL))),");
+	     // WorkTime
+	     exportSQL.append("  CONCAT(RTRIM(wrktime.WORKTIME_CD),IIF (wrktime.ABOLITION_ATR = 1,wrktime.NAME,");
+	     exportSQL.append("				IIF(wrktime.WORKTIME_CD IS NOT NULL, ?MasterUnregisted, NULL))),");
+	     // WorkType
+	     exportSQL.append("  CONCAT(RTRIM(wrktype2.CD), IIF(wrktype2.ABOLISH_ATR = 0");
+	     exportSQL.append("				  AND((wrktype2.WORK_ATR = 0 AND wrktype2.ONE_DAY_CLS = 0)");
+	     exportSQL.append("				  OR (wrktype2.WORK_ATR = 0 AND wrktype2.ONE_DAY_CLS = 7)");
+	     exportSQL.append("				  OR (wrktype2.WORK_ATR = 0 AND wrktype2.ONE_DAY_CLS = 10)),wrktype2.NAME, ");
+	     exportSQL.append("					IIF(wrktype2.CD IS NOT NULL, ?MasterUnregisted,NULL))),");
+	     // WorkType
+	     exportSQL.append("CONCAT(RTRIM(wrktype3.CD), IIF(wrktype3.ABOLISH_ATR = 0");
+	     exportSQL.append("		  AND	(wrktype3.WORK_ATR = 0 AND wrktype3.ONE_DAY_CLS = 1) ,wrktype3.NAME, ");
+	     exportSQL.append("				IIF(wrktype3.CD IS NOT NULL,?MasterUnregisted, NULL))),");
+	     // WorkType
+	     exportSQL.append("	CONCAT(RTRIM(wrktype4.CD),IIF(wrktype4.ABOLISH_ATR = 0");
+		 exportSQL.append("				AND	((wrktype4.WORK_ATR = 0 AND wrktype4.ONE_DAY_CLS = 0)");
+		 exportSQL.append("				OR (wrktype4.WORK_ATR = 0 AND wrktype4.ONE_DAY_CLS = 7)");
+		 exportSQL.append("				OR (wrktype4.WORK_ATR = 0 AND wrktype4.ONE_DAY_CLS = 11)), wrktype4.NAME, ");
+		 exportSQL.append("				IIF(wrktype4.CD IS NOT NULL,?MasterUnregisted, NULL))),");
+		 // WorkType
+		 exportSQL.append("CONCAT(RTRIM(wrktype5.CD),IIF(wrktype5.ABOLISH_ATR = 0");
+		 exportSQL.append("		  AND	(wrktype5.WORK_ATR = 0 AND wrktype5.ONE_DAY_CLS = 1), wrktype5.NAME,");
+		 exportSQL.append("					IIF(wrktype5.CD IS NOT NULL, ?MasterUnregisted, NULL))),");
+		 // Monthy pattern
+	     exportSQL.append("  CONCAT(RTRIM(monthPattern.M_PATTERN_CD),monthPattern.M_PATTERN_NAME),");
+	     // BOnus pay
+	     exportSQL.append("  CONCAT(RTRIM(bonuspay.BONUS_PAY_SET_CD),bonuspay.BONUS_PAY_SET_NAME),");
+	     // Special holiday table set
+	     exportSQL.append("  CONCAT(RTRIM(hdtblset.YEAR_HD_CD),hdtblset.YEAR_HD_NAME),");
+	     // Grant day table code
+	     exportSQL.append("  CONCAT(RTRIM(dateset.GD_TBL_CD),dateset.GRANT_NAME),");
 	     //  -- Selection
-	     exportSQL.append("  CONCAT(selection.SELECTION_CD, selection.SELECTION_NAME) as Selection,");
+	     exportSQL.append("  CONCAT(RTRIM(selection.SELECTION_CD), selection.SELECTION_NAME)) MASTER_VALUE,");
 	     //  -- Code name
 	     exportSQL.append("  CASE itemcm.SELECTION_ITEM_REF_CODE ");
 	     // -- 性別 GenderPerson");
@@ -114,8 +151,8 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     // -- するしない区分 NotUseAtr
 	     exportSQL.append("   WHEN 'E00005' THEN");
 	     exportSQL.append("    CASE initsetitem.STRING_VAL");
-	     exportSQL.append("     WHEN '0' THEN ?Enum_UseClassificationAtr_NOT_USE");
-	     exportSQL.append("     WHEN '1' THEN ?Enum_UseClassificationAtr_USE");
+	     exportSQL.append("     WHEN '0' THEN ?Enum_NotUseAtr_NOT_USE");
+	     exportSQL.append("     WHEN '1' THEN ?Enum_NotUseAtr_USE");
 	     exportSQL.append("     ELSE NULL");
 	     exportSQL.append("    END");
 	     exportSQL.append("   WHEN 'E00011' THEN");
@@ -127,7 +164,7 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     // -- 労働制 WorkingSystem
 	     exportSQL.append("   WHEN 'E00006' THEN");
 	     exportSQL.append("    CASE initsetitem.STRING_VAL");
-	     exportSQL.append("     WHEN '0' THEN ?Enum_WorkingSystem_REGULAR_WORK'");
+	     exportSQL.append("     WHEN '0' THEN ?Enum_WorkingSystem_REGULAR_WORK");
 	     exportSQL.append("     WHEN '1' THEN ?Enum_WorkingSystem_FLEX_TIME_WORK");
 	     exportSQL.append("     WHEN '2' THEN ?Enum_WorkingSystem_VARIABLE_WORKING_TIME_WORK");
 	     exportSQL.append("     WHEN '3' THEN ?Enum_WorkingSystem_EXCLUDED_WORKING_CALCULATE");
@@ -222,6 +259,7 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("    END");
 	     exportSQL.append("   ELSE CAST(initsetitem.INT_VAL as NVARCHAR)");
 	     exportSQL.append("  END INT_VALUE,");
+	     exportSQL.append(" initsetitem.STRING_VAL,");
 	     exportSQL.append("  convert(varchar, initsetitem.DATE_VAL, 111) DATE_VAL, ");
 	     exportSQL.append("  CASE ");
 	     exportSQL.append("   WHEN initsetitem.SAVE_DATA_TYPE = '1' THEN 7 ");
@@ -247,7 +285,8 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("       AND ctg.CID = ctgorder.CID ");
 	     exportSQL.append("  INNER JOIN PPEMT_PER_INFO_ITEM item ON ctg.PER_INFO_CTG_ID = item.PER_INFO_CTG_ID AND item.ABOLITION_ATR = 0");
 	     exportSQL.append("  INNER JOIN PPEMT_PER_INFO_ITEM_CM itemcm ON item.ITEM_CD = itemcm.ITEM_CD AND ctgcm.CONTRACT_CD  = itemcm.CONTRACT_CD");
-	     exportSQL.append("       AND itemcm.CATEGORY_CD = ctgcm.CATEGORY_CD ");
+	     // Item code are not  IS00001 - 社員CD AND IS00020 - 入社年月日
+	     exportSQL.append("       AND itemcm.CATEGORY_CD = ctgcm.CATEGORY_CD AND itemcm.ITEM_CD <> 'IS00001' AND itemcm.ITEM_CD <> 'IS00020'");
 	     exportSQL.append("       AND itemcm.ITEM_TYPE = 2 AND itemcm.DATA_TYPE <>9 AND itemcm.DATA_TYPE <>10 AND itemcm.DATA_TYPE <>12");
 	     exportSQL.append("  INNER JOIN PPEMT_PER_INFO_ITEM_ORDER itemorder");
 	     exportSQL.append("       ON  item.PER_INFO_ITEM_DEFINITION_ID = itemorder.PER_INFO_ITEM_DEFINITION_ID");
@@ -271,37 +310,25 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("     ON initsetitem.STRING_VAL = job.JOB_ID AND initset.CID  = job.CID ");
 	     exportSQL.append("       AND itemcm.SELECTION_ITEM_REF_CODE = 'M00005'");
 	     exportSQL.append("  LEFT JOIN BSYST_TEMP_ABSENCE_FRAME temp ON initsetitem.STRING_VAL = CAST(temp.TEMP_ABSENCE_FR_NO AS NVARCHAR) ");
-	     exportSQL.append("       AND initset.CID= emp.CID AND temp.USE_ATR = 1 AND itemcm.SELECTION_ITEM_REF_CODE = 'M00006'");
-	     exportSQL.append("  LEFT JOIN KRCMT_BUSINESS_TYPE busstype ON initsetitem.STRING_VAL = busstype.BUSINESS_TYPE_CD AND initset.CID= emp.CID ");
-	     exportSQL.append("       AND temp.USE_ATR = 1 AND itemcm.SELECTION_ITEM_REF_CODE = 'M00007'");
+	     exportSQL.append("       AND initset.CID= emp.CID AND itemcm.SELECTION_ITEM_REF_CODE = 'M00006'");
+	     exportSQL.append("  LEFT JOIN KRCMT_BUSINESS_TYPE busstype ON initsetitem.STRING_VAL = busstype.BUSINESS_TYPE_CD AND initset.CID= busstype.CID ");
+	     exportSQL.append("       AND itemcm.SELECTION_ITEM_REF_CODE = 'M00007'");
 	     // 廃止されていない勤務種類をすべて取得する
-	     exportSQL.append("  LEFT JOIN KSHMT_WORKTYPE wrktype ON initsetitem.STRING_VAL = wrktype.CD AND initset.CID= emp.CID AND temp.USE_ATR = 1 ");
-	     exportSQL.append("       AND wrktype.ABOLISH_ATR = 0 AND itemcm.SELECTION_ITEM_REF_CODE = 'M00008'");
+	     exportSQL.append("  LEFT JOIN KSHMT_WORKTYPE wrktype ON initsetitem.STRING_VAL = wrktype.CD AND initset.CID= wrktype.CID");
+	     exportSQL.append("       AND itemcm.SELECTION_ITEM_REF_CODE = 'M00008'");
 	     exportSQL.append("  LEFT JOIN KSHMT_WORK_TIME_SET wrktime ON initsetitem.STRING_VAL = wrktime.WORKTIME_CD AND initset.CID= wrktime.CID ");
-	     exportSQL.append("       AND wrktime.ABOLITION_ATR = 0 AND itemcm.SELECTION_ITEM_REF_CODE = 'M00009'");
+	     exportSQL.append("       AND itemcm.SELECTION_ITEM_REF_CODE = 'M00009'");
 	     // 出勤系の勤務種類を取得する
 	     exportSQL.append("  LEFT JOIN KSHMT_WORKTYPE wrktype2 ON initsetitem.STRING_VAL = wrktype2.CD AND initset.CID= wrktype2.CID ");
-	     exportSQL.append("		  AND  wrktype2.ABOLISH_ATR = 0");
-	     exportSQL.append("		  AND	((wrktype2.WORK_ATR = 0 AND wrktype2.ONE_DAY_CLS = 0)");
-	     exportSQL.append("						OR (wrktype2.WORK_ATR = 0 AND wrktype2.ONE_DAY_CLS = 7)");
-	     exportSQL.append("						OR (wrktype2.WORK_ATR = 0 AND wrktype2.ONE_DAY_CLS = 10))");
 	     exportSQL.append("       AND itemcm.SELECTION_ITEM_REF_CODE = 'M00010'");
 	     // 休日系の勤務種類を取得する
 	     exportSQL.append("  LEFT JOIN KSHMT_WORKTYPE wrktype3 ON initsetitem.STRING_VAL = wrktype3.CD AND initset.CID= wrktype3.CID ");
-	     exportSQL.append("		  AND  wrktype3.ABOLISH_ATR = 0");
-	     exportSQL.append("		  AND  (wrktype3.WORK_ATR = 0 AND wrktype3.ONE_DAY_CLS = 1)");
 	     exportSQL.append("       AND itemcm.SELECTION_ITEM_REF_CODE = 'M00011'");
 	     // 休出系の勤務種類を取得する
 	     exportSQL.append("  LEFT JOIN KSHMT_WORKTYPE wrktype4 ON initsetitem.STRING_VAL = wrktype4.CD AND initset.CID= wrktype4.CID ");
-	     exportSQL.append("		  AND  wrktype4.ABOLISH_ATR = 0");
-	     exportSQL.append("		  AND	((wrktype4.WORK_ATR = 0 AND wrktype4.ONE_DAY_CLS = 0)");
-	     exportSQL.append("						OR (wrktype4.WORK_ATR = 0 AND wrktype4.ONE_DAY_CLS = 7)");
-	     exportSQL.append("						OR (wrktype4.WORK_ATR = 0 AND wrktype4.ONE_DAY_CLS = 11))");
 	     exportSQL.append("       AND itemcm.SELECTION_ITEM_REF_CODE = 'M00012'");
 	     // 公休系の勤務種類を取得する
 	     exportSQL.append("  LEFT JOIN KSHMT_WORKTYPE wrktype5 ON initsetitem.STRING_VAL = wrktype5.CD AND initset.CID= wrktype5.CID ");
-	     exportSQL.append("		  AND  wrktype5.ABOLISH_ATR = 0");
-	     exportSQL.append("		  AND  (wrktype5.WORK_ATR = 0 AND wrktype5.ONE_DAY_CLS = 1)");
 	     exportSQL.append("       AND itemcm.SELECTION_ITEM_REF_CODE = 'M00013'");
 	     exportSQL.append("  LEFT JOIN KSCMT_MONTH_PATTERN monthPattern ON initsetitem.STRING_VAL = monthPattern.M_PATTERN_CD ");
 	     exportSQL.append("       AND initset.CID= monthPattern.CID AND itemcm.SELECTION_ITEM_REF_CODE = 'M00014'");
@@ -401,9 +428,9 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 				.setParameter("Enum_SalarySegment_MonthlySalary", I18NText.getText("Enum_SalarySegment_MonthlySalary"))
 				.setParameter("Enum_ChildCareAtr_ChildCare", I18NText.getText("Enum_ChildCareAtr_ChildCare"))
 				.setParameter("Enum_ChildCareAtr_Care", I18NText.getText("Enum_ChildCareAtr_Care"))
-				.setParameter("Enum_UseClassificationAtr_NOT_USE",
-						I18NText.getText("Enum_UseClassificationAtr_NOT_USE"))
-				.setParameter("Enum_UseClassificationAtr_USE", I18NText.getText("Enum_UseClassificationAtr_USE"))
+				.setParameter("Enum_NotUseAtr_NOT_USE",
+						I18NText.getText("Enum_NotUseAtr_NOT_USE"))
+				.setParameter("Enum_NotUseAtr_USE", I18NText.getText("Enum_NotUseAtr_USE"))
 				.setParameter("Enum_UseClassificationAtr_NOT_USE",
 						I18NText.getText("Enum_UseClassificationAtr_NOT_USE"))
 				.setParameter("Enum_UseClassificationAtr_USE", I18NText.getText("Enum_UseClassificationAtr_USE"))
@@ -452,6 +479,7 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 				.setParameter("personnelUseAtr", personnel)
 				.setParameter("employmentUseAtr", atttendance)
 				.setParameter("CID", AppContexts.user().companyId())
+				.setParameter("MasterUnregisted", PerInfoInitValueSetCtgUtils.MasterUnregisted)
 				.setParameter("CONTRACT_CD", AppContexts.user().contractCode());
 
 		@SuppressWarnings("unchecked")

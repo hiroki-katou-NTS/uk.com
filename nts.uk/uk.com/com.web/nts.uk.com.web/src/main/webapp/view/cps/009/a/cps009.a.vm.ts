@@ -1,13 +1,13 @@
     // blockui all ajax request on layout
-    $(document)
-        .ajaxStart(() => {
-            $.blockUI({
-                message: null,
-                overlayCSS: { opacity: 0.1 }
-            });
-        }).ajaxStop(() => {
-            $.unblockUI();
-        });
+//    $(document)
+//        .ajaxStart(() => {
+//            $.blockUI({
+//                message: null,
+//                overlayCSS: { opacity: 0.1 }
+//            });
+//        }).ajaxStop(() => {
+//            $.unblockUI();
+//        });
 
 module nts.uk.com.view.cps009.a.viewmodel {
     import error = nts.uk.ui.errors;
