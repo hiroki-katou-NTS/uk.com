@@ -7,19 +7,19 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 450, height: 620 };</script>
+			<script>var dialogSize = { width: 420, height: 600 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="qmm006.b.service.js" />
 			<com:scriptfile path="qmm006.b.vm.js" />
 			<com:scriptfile path="qmm006.b.start.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div class="contents-area dialog-content" style="padding: 20px 25px">
+			<div id="contents-area">
 				<div class="valign-center control-group">
 					<!-- B1_1 -->
 					<span class="label">#{i18n.getText('QMM006_36')}</span>
 				</div>
-				<div class="valign-center control-group">
+				<div class="valign-center control-group" style="width: 400px">
 					<!-- B1_2 -->
 					<i class="icon icon-searchbox pull-left" style="margin: 0px !important; position: relative !important"></i>
 					<!-- B1_3 -->

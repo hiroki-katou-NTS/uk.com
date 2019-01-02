@@ -28,9 +28,9 @@ public class EntrustorInfor {
 
 	public EntrustorInfor(String code, int entrustorNo, String use) {
 		super();
-		this.code = new EntrustorCode(code);
+		this.code = code == null || code.isEmpty() ? null : new EntrustorCode(code);
 		this.entrustorNo = entrustorNo;
-		this.use = new EntrustorUse(use);
+		this.use = use == null || use.isEmpty() ? null : new EntrustorUse(use);
 	}
 
 }

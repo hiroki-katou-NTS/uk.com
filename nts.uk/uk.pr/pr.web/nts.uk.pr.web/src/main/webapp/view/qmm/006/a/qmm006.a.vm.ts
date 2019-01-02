@@ -26,16 +26,17 @@ module nts.uk.pr.view.qmm006.a.viewmodel {
             self.selectedSourceBankCode = ko.observable("");
             self.selectedSourceBank = ko.observable(new SourceBank(null));
             self.selectedSourceBankCode.subscribe(val => {
-                nts.uk.ui.errors.clearAll();
                 if (_.isEmpty(val)) { //select parent node
                     self.setData(null);
                     self.updateMode(false);
+                    nts.uk.ui.errors.clearAll();
                     $("#A3_2").focus();
                 } else {
                     block.invisible();
                     service.getSourceBank(val).done(data => {
                         self.setData(data);
                         self.updateMode(true);
+                        nts.uk.ui.errors.clearAll();
                         $("#A3_3").focus();
                     }).fail(error => {
                         alertError(error);
