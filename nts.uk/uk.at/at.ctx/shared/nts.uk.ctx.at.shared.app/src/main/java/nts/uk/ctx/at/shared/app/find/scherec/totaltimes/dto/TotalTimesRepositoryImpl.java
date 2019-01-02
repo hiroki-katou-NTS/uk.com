@@ -198,13 +198,18 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 						data.put("半日勤務区分", "-");
 					}
 					
-					if(CollectionUtil.isEmpty(dailyAttendanceItemDomainServiceDtos)){
+					if(c.getTotalCondition().getUpperLimitSettingAtr() == UseAtr.NotUse && c.getTotalCondition().getLowerLimitSettingAtr() == UseAtr.NotUse){
 						data.put("対象項目", "");
 					}else{
-						dailyAttendanceItemDomainServiceDtos.stream().forEach(m->{
-							data.put("対象項目", m.getAttendanceItemName());
-						});
+						if(CollectionUtil.isEmpty(dailyAttendanceItemDomainServiceDtos)){
+							data.put("対象項目", "");
+						}else{
+							dailyAttendanceItemDomainServiceDtos.stream().forEach(m->{
+								data.put("対象項目", m.getAttendanceItemName());
+							});
+						}
 					}
+					
 				}
 				data.put("名称", c.getTotalTimesName());
 				data.put("略名", c.getTotalTimesABName());
