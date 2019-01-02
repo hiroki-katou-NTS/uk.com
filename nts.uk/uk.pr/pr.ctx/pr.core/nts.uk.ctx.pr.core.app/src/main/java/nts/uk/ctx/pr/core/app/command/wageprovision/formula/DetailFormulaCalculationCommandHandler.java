@@ -20,6 +20,6 @@ public class DetailFormulaCalculationCommandHandler extends CommandHandlerWithRe
     @Override
     protected String handle(CommandHandlerContext<DetailFormulaCommand> context) {
         Map<String, String> replaceValues = context.getCommand().getReplaceValues().stream().collect(Collectors.toMap(item -> item.formulaItem, item -> item.trialCalculationValue));
-        return detailFormulaCalculationService.calculateDisplayCalculationFormula(2, context.getCommand().getFormulaContent(), replaceValues);
+        return detailFormulaCalculationService.calculateDisplayCalculationFormula(2, context.getCommand().getFormulaContent(), replaceValues, context.getCommand().getRoundingMethod(), context.getCommand().getRoundingResult());
     }
 }

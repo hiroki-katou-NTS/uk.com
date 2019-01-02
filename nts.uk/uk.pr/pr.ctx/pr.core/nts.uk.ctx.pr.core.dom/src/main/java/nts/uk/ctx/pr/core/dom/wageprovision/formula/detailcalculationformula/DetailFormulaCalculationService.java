@@ -33,8 +33,10 @@ public class DetailFormulaCalculationService {
     @Inject
     private WageTableRepository wageTableRepository;
 
+    @Inject
     private FormulaRepository formulaRepository;
 
+    @Inject
     private DetailFormulaSettingRepository detailFormulaSettingRepository;
 
     /**
@@ -131,10 +133,9 @@ public class DetailFormulaCalculationService {
         Map<String, String> attendanceItem = statementItemRepository.getItemCustomByCategoryAndDeprecated(cid, CategoryAtr.ATTEND_ITEM.value, false).stream().collect(Collectors.toMap(StatementItemCustom::getItemNameCd, StatementItemCustom::getName));
         Map<String, String> companyUnitPriceItem = payrollUnitPriceRepository.getPayrollUnitPriceByYearMonth(yearMonth).stream().collect(Collectors.toMap(item -> item.getCode().v(), item -> item.getName().v()));
         Map<String, String> individualUnitPriceItem = salaryPerUnitPriceRepository.getAllAbolitionSalaryPerUnitPrice();
-        Map<String, String> formulaItem = formulaRepository.getFormulaWithUsableDetailSetting();
         Map<String, String> wageTableItem = wageTableRepository.getAllWageTable(cid).stream().collect(Collectors.toMap(element -> element.getWageTableCode().v(), element -> element.getWageTableName().v()));
         for (String formulaElement: formulaElements) {
-            displayFormula = convertToDisplayContent(formulaElement, paymentItem, deductionItem, attendanceItem, companyUnitPriceItem, individualUnitPriceItem, wageTableItem, yearMonth);
+            displayContent = convertToDisplayContent(formulaElement, paymentItem, deductionItem, attendanceItem, companyUnitPriceItem, individualUnitPriceItem, wageTableItem, yearMonth);
             displayFormula += displayContent;
         }
         return displayFormula;
@@ -142,29 +143,38 @@ public class DetailFormulaCalculationService {
     private String convertToDisplayContent (String formulaElement, Map<String, String> paymentItem, Map<String, String> deductionItem,
            Map<String, String> attendanceItem, Map<String, String> companyUnitPriceItem, Map<String, String> individualUnitPriceItem,
            Map<String, String> wageTableItem, int yearMonth) {
+        // is number or operator
+        if (!isNaN(formulaElement) || formulaElement.length() < 2 ) return formulaElement;
         String elementType = formulaElement.substring(0, 6);
         String elementCode = formulaElement.substring(6, formulaElement.length());
         if (elementType.startsWith("Func") || elementType.startsWith("vari")){
-            return calculationFormulaDictionary.get(formulaElement);
+            return getDisplayTypeByRegisterType(formulaElement, formulaElement);
         }
-        String registerContent = calculationFormulaDictionary.get(elementType);
+        String displayContent = getDisplayTypeByRegisterType(formulaElement, elementType);
         if (elementType.startsWith("0000_0"))
-            return combineElementTypeAndName(registerContent, paymentItem.get(elementCode));
+            return combineElementTypeAndName(displayContent, paymentItem.get(elementCode));
         if (elementType.startsWith("0001_0"))
-            return combineElementTypeAndName(registerContent, deductionItem.get(elementCode));
+            return combineElementTypeAndName(displayContent, deductionItem.get(elementCode));
         if (elementType.startsWith("0002_0"))
-            return combineElementTypeAndName(registerContent, attendanceItem.get(elementCode));
+            return combineElementTypeAndName(displayContent, attendanceItem.get(elementCode));
         if (elementType.startsWith("U000_0"))
-            return combineElementTypeAndName(registerContent, companyUnitPriceItem.get(elementCode));
+            return combineElementTypeAndName(displayContent, companyUnitPriceItem.get(elementCode));
         if (elementType.startsWith("U001_0"))
-            return combineElementTypeAndName(registerContent, individualUnitPriceItem.get(elementCode));
+            return combineElementTypeAndName(displayContent, individualUnitPriceItem.get(elementCode));
         if (elementType.startsWith("calc"))
             return getEmbeddedFormulaDisplayContent(formulaElement, yearMonth);
         elementType = formulaElement.substring(0, 7);
         elementCode = formulaElement.substring(7, formulaElement.length());
         if (elementType.startsWith("wage"))
-            return combineElementTypeAndName(calculationFormulaDictionary.get(elementType),  wageTableItem.get(elementCode));
+            return combineElementTypeAndName(getDisplayTypeByRegisterType(formulaElement, elementType),  wageTableItem.get(elementCode));
         return formulaElement;
+    }
+
+    private String getDisplayTypeByRegisterType (String formulaElement, String elementType) {
+        for(Map.Entry dictionaryItem : calculationFormulaDictionary.entrySet()) {
+            if (dictionaryItem.getValue().equals(elementType)) return dictionaryItem.getKey().toString();
+        }
+        throw new BusinessException("MsgQ_233", formulaElement);
     }
 
     public String getEmbeddedFormulaDisplayContent (String formulaElement, int yearMonth) {
@@ -185,7 +195,7 @@ public class DetailFormulaCalculationService {
         return elementType + OPEN_CURLY_BRACKET + elementName + CLOSE_CURLY_BRACKET;
     }
 
-    public String calculateDisplayCalculationFormula (int type, String formula, Map<String, String> replaceValues) {
+    public String calculateDisplayCalculationFormula (int type, String formula, Map<String, String> replaceValues, int roundingMethod, int roundingResult) {
         // type 1: Salary 給与
         // type 2: Bonus 賞与
         // type 3: Trial calculation お試し計算
@@ -196,8 +206,38 @@ public class DetailFormulaCalculationService {
         formula = calculateFunction(formula);
         formula = calculateSuffixFormula(formula) + "";
         if (isNaN(formula)) throw new BusinessException("Msg_235");
-        return formula;
+        return roundingResult(Double.parseDouble(formula), roundingMethod, roundingResult);
     }
+
+    private String roundingResult (Double result, int roundingMethod, int roundingResult) {
+        int roundingValue = 0;
+        if (roundingMethod == RoundingPosition.ONE_YEN.value) roundingValue = 1;
+        if (roundingMethod == RoundingPosition.TEN_YEN.value) roundingValue = 10;
+        if (roundingMethod == RoundingPosition.ONE_HUNDRED_YEN.value) roundingValue = 100;
+        if (roundingMethod == RoundingPosition.ONE_THOUSAND_YEN.value) roundingValue = 1000;
+        if (roundingResult == Rounding.ROUND_UP.value)
+            return Math.ceil(result) * roundingValue + "";
+        if (roundingResult == Rounding.TRUNCATION.value)
+            return Math.floor(result) * roundingValue + "";
+        if (roundingResult == Rounding.DOWN_1_UP_2.value)
+            return Math.floor(result/roundingValue + 0.9) * roundingValue + "";
+        if (roundingResult == Rounding.DOWN_2_UP_3.value)
+            return Math.floor(result/roundingValue + 0.8) * roundingValue + "";
+        if (roundingResult == Rounding.DOWN_3_UP_4.value)
+            return Math.floor(result/roundingValue + 0.7) * roundingValue + "";
+        if (roundingResult == Rounding.DOWN_4_UP_5.value)
+            return Math.floor(result/roundingValue + 0.6) * roundingValue + "";
+        if (roundingResult == Rounding.DOWN_5_UP_6.value)
+            return Math.floor(result/roundingValue + 0.5) * roundingValue + "";
+        if (roundingResult == Rounding.DOWN_6_UP_7.value)
+            return Math.floor(result/roundingValue + 0.4) * roundingValue + "";
+        if (roundingResult == Rounding.DOWN_7_UP_8.value)
+            return Math.floor(result/roundingValue + 0.3) * roundingValue + "";
+        if (roundingResult == Rounding.DOWN_8_UP_9.value)
+            return Math.floor(result/roundingValue + 0.2) * roundingValue + "";
+        return result + "";
+    }
+
     private String calculateSystemVariable (int type, String formulaElement) {
         if (type != 0 && type !=2) return "";
         Map<String, String> processYearMonthAndReferenceTime = formulaService.getProcessYearMonthAndReferenceTime();
@@ -221,7 +261,7 @@ public class DetailFormulaCalculationService {
         if (functionName.equals(PROCESSING_YEAR)) return processYearMonthAndReferenceTime.get("processYearMonth");
         if (functionName.equals(PROCESSING_YEAR_MONTH)) return processYearMonthAndReferenceTime.get("processYearMonth");
         if (functionName.equals(REFERENCE_TIME)) return processYearMonthAndReferenceTime.get("referenceDate");
-        throw new BusinessException("MsgQ_223", systemVariable);
+        throw new BusinessException("MsgQ_233", systemVariable);
     }
     private String calculateFunction (String formulaElement) {
         int startFunctionIndex, endFunctionIndex;
@@ -235,7 +275,7 @@ public class DetailFormulaCalculationService {
         return formulaElement;
     }
     private String [] convertToPostfix (String formulaContent) {
-        String regex = "(?<=[＋ー*×÷^()><≦≧＝≠、+=*/#=≤≥,])|(?=[＋ー*×÷^()><≦≧＝≠、+=*/#=≤≥,])";
+        String regex = "(?<=[＋ー*×÷^()><≦≧＝≠、+-=*/#=≤≥,])|(?=[＋ー*×÷^()><≦≧＝≠、+-=*/#=≤≥,])";
         String [] formulaElements = formulaContent.split(regex);
         Stack<String> postfix = new Stack<>(), operators = new Stack<>();
         String currentElement;
@@ -268,9 +308,9 @@ public class DetailFormulaCalculationService {
     }
 
     private int getPriority(String operator){
-        if (operator.equals(PLUS) || operator.equals(SUBTRACT))
+        if (operator.equals(PLUS) || operator.equals(HALF_SIZE_PLUS) || operator.equals(SUBTRACT) || operator.equals(HALF_SIZE_SUBTRACT))
             return 1 ;
-        if (operator.equals(MULTIPLICITY) || operator.equals(DIVIDE))
+        if (operator.equals(MULTIPLICITY) || operator.equals(PROGRAMING_MULTIPLICITY) || operator.equals(DIVIDE) || operator.equals(PROGRAMING_DIVIDE))
             return 2;
         if (operator.equals(POW))
             return 3;

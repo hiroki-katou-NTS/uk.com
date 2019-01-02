@@ -10,4 +10,6 @@ import java.util.Map;
 public class DetailFormulaCommand {
     public String formulaContent;
     public List<FormulaReplacedValueCommand> replaceValues;
+    public int roundingMethod;
+    public int roundingResult;
 }

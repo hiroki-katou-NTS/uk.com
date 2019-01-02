@@ -696,7 +696,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             if (formulaElement.startsWith(self.INDIVIDUAL_UNIT_PRICE))
                 return calculationFormulaTransfer.registerContent + _.find(self.individualUnitPriceList, {name: elementName}).code;
             if (formulaElement.startsWith(self.FORMULA))
-                return calculationFormulaTransfer.registerContent + _.find(ko.toJS(self.formulaList), {name: elementName}).code;
+                return calculationFormulaTransfer.registerContent + _.find(ko.toJS(self.formulaList), {formulaName: elementName}).formulaCode;
             if (formulaElement.startsWith(self.WAGE_TABLE))
                 return calculationFormulaTransfer.registerContent + _.find(ko.toJS(self.wageTableList), {name: elementName}).code;
 
@@ -731,7 +731,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, _.find(self.individualUnitPriceList, {code: elementCode}).name);
             if (elementType.startsWith("calc")) {
                 elementCode = formulaElement.substring(7, formulaElement.length);
-                return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, _.find(ko.toJS(self.formulaList), {code: elementCode}).name);
+                return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, _.find(ko.toJS(self.formulaList), {formulaCode: elementCode}).formulaName);
             }
             if (elementType.startsWith("wage")) {
                 elementCode = formulaElement.substring(7, formulaElement.length);

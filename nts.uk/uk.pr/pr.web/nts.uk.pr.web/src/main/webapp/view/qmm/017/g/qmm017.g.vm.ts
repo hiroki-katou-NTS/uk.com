@@ -9,6 +9,8 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
         formulaElement: any;
         formulaListItem: any;
         startMonth: any = 999912;
+        roundingMethod: number;
+        roundingResult: number;
 
         OPEN_CURLY_BRACKET = '{'; CLOSE_CURLY_BRACKET = '}';
         COMMA_CHAR = ',';
@@ -23,6 +25,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
         SYSTEM_YMD_DATE = 'システム日付（年月日）'; SYSTEM_YM_DATE = 'システム日付（年月）'; SYSTEM_Y_DATE = 'システム日付（年）'; PROCESSING_YEAR_MONTH = '処理年月';
         PROCESSING_YEAR = '処理年'; REFERENCE_TIME = '基準時間'; STANDARD_DAY = '基準日数'; WORKDAY = '要勤務日数';
 
+        separators = ['\\\＋', 'ー', '\\×', '÷', '\\^', '\\\(', '\\\)', '\\>', '\\<', '\\\≦', '\\\≧', '\\\＝', '\\\≠', '\\\,'].join("|");
 
         processYearMonthAndReferenceTime: any;
         constructor() {
@@ -30,17 +33,39 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             let self = this;
             let params = getShared("QMM017_G_PARAMS");
             self.formulaElement = params.formulaElement;
-            self.extractInputParameter(params.formula, params.formulaListItem);
+            self.roundingMethod = params.roundingMethod;
+            self.roundingResult = params.roundingResult;
+            self.formulaListItem = params.formulaListItem;
+            self.extractFormula(params.formula);
             self.startMonth = params.startMonth;
             $('#G1_2').ntsFixedTable({height: 184});
             $('#G1_2_container').focus();
         }
-        extractInputParameter (formula, formulaListItem) {
-            let self = this, separators = ['\\\＋', 'ー', '\\×', '÷', '\\^', '\\\(', '\\\)', '\\>', '\\<', '\\\≦', '\\\≧', '\\\＝', '\\\≠', '\\\,'].join("|");
+        extractFormula (formula) {
+            let self = this, separators = self.separators;
             let operands = formula.split(new RegExp(separators, 'g')).map(item => item.trim()).filter(item => {
                 return (item && item.length);
             });
-            let calculationFormulaData = [], embeddedFormulaElement = {}, formulaName, formulaItem, registerContent;
+            let embeddedFormulaElement = {}, formulaName, formulaItem, registerContent;
+            operands.forEach(operand => {
+                if (operand.startsWith(self.FORMULA)) {
+                    formulaName = operand.substring(operand.indexOf(self.OPEN_CURLY_BRACKET) + 1, operand.lastIndexOf(self.CLOSE_CURLY_BRACKET));
+                    formulaItem = _.find(self.formulaListItem, {formulaName: formulaName});
+                    if (!formulaItem){
+                        dialog.alertError({messageId: 'MsgQ_233', messageParams: [operand]});
+                    }
+                    registerContent = 'calc_00' + formulaItem.formulaCode;
+                    embeddedFormulaElement[registerContent] = null;
+                }
+            })
+            self.getEmbeddedFormulaAndDisplay(formula, embeddedFormulaElement);
+        }
+        extractInputParameter (formula) {
+            let self = this, separators = self.separators;
+            let operands = formula.split(new RegExp(separators, 'g')).map(item => item.trim()).filter(item => {
+                return (item && item.length);
+            });
+            let calculationFormulaData = [];
             operands.forEach(operand => {
                 if (operand.startsWith(self.PAYMENT) || operand.startsWith(self.DEDUCTION) || operand.startsWith(self.ATTENDANCE)
                     || operand.startsWith(self.COMPANY_UNIT_PRICE) || operand.startsWith(self.INDIVIDUAL_UNIT_PRICE)
@@ -51,18 +76,8 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                             trialCalculationValue: ko.observable(null)
                         })
                 }
-                if (operand.startsWith(self.FORMULA)) {
-                    formulaName = operand.substring(operand.indexOf(self.OPEN_CURLY_BRACKET) + 1, operand.lastIndexOf(self.CLOSE_CURLY_BRACKET));
-                    formulaItem = _.find(formulaListItem, {formulaName: formulaItem});
-                    if (!formulaItem){
-                        dialog.alertError({messageId: 'MsgQ_233', messageParams: [operand]});
-                    }
-                    registerContent = 'calc_00' + formulaItem.formulaCode;
-                    embeddedFormulaElement[registerContent] = null;
-                }
             })
             self.calculationFormulaList(calculationFormulaData);
-            self.getEmbeddedFormulaAndDisplay(formula, embeddedFormulaElement);
         }
 
         getEmbeddedFormulaAndDisplay (formula, embeddedFormulaElement) {
@@ -72,12 +87,21 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                 formulaElements: embeddedFormulaElement
             }
             service.getEmbeddedFormulaDisplayContent(dto).done(function(data: any){
+                let formulaCode, formulaItem, displayContent;
                 block.clear();
                 Object.keys(data).forEach(key => {
-                    formula = formula.replace(new RegExp(key, 'g'), data[key]);
+                    formulaCode = key.substring(7);
+                    formulaItem = _.find(self.formulaListItem, {formulaCode: formulaCode});
+                    if (!formulaItem){
+                        dialog.alertError({messageId: 'MsgQ_233', messageParams: [key]});
+                    }
+                    displayContent = self.FORMULA + self.OPEN_CURLY_BRACKET + formulaItem.formulaName + self.CLOSE_CURLY_BRACKET;
+                    formula = formula.replace(new RegExp(displayContent, 'g'), data[key]);
                 })
                 self.formulaContent(formula);
+                self.extractInputParameter(formula);
             }).fail(function (err) {
+                block.clear();
                 dialog.alertError(err.errorMessage);
             })
         }
@@ -88,7 +112,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             if (nts.uk.ui.errors.hasError()) return;
             let self = this;
             let replaceValues = ko.toJS(self.calculationFormulaList);
-            service.calculate({formulaContent: self.formulaContent(), replaceValues: replaceValues}).done(function(result){
+            service.calculate({formulaContent: self.formulaContent(), replaceValues: replaceValues, roundingMethod: self.roundingMethod, roundingResult: self.roundingResult}).done(function(result){
                 self.trialCalculationResult(result);
             }).fail(function(err){
                 dialog.alertError(err.errorMessage);
