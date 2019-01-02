@@ -23,6 +23,7 @@
 }
 .large-right-caret::after {
     font-size: 2em;
+    color: #97D155 !important;
 }
 .large-right-caret-container {
     position: relative;
@@ -79,7 +80,7 @@
 }
 .tab-panel-col-3 {
     width: 240px;
-    height: 290px;
+    height: 310px;
     vertical-align: top;
     display: inline-block;
     margin-left: 28px;
@@ -154,9 +155,6 @@ textarea {
 }
 .editor-line{
     display: block;
-}
-.error-char{
-    border-bottom: 1px red dotted;
 }
 #auto-complete{
     position: relative;

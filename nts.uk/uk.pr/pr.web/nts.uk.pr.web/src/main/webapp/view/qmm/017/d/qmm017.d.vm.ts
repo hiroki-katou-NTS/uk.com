@@ -31,25 +31,31 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         // tab 3
         functionClassificationItem: KnockoutObservableArray<model.EnumModel> = model.getFunctionClassificationItem();
         selectedFunctionClassificationValue: KnockoutObservable<number> = ko.observable(model.FUNCTION_CLASSIFICATION.ALL);
-        functionListItem: KnockoutObservableArray<model.EnumModel> = model.getFunctionListItem();
+        functionListItem: KnockoutObservableArray<model.EnumModel> = ko.observableArray(model.getFunctionListEnumModel());
         selectedFunctionListValue: KnockoutObservable<number> = ko.observable(model.FUNCTION_LIST.CONDITIONAL_EXPRESSION);
         // TODO
         displayFunctionNote: KnockoutObservable<string> = ko.observable(null); // D6_10
         // tab 4
         systemVariableClassificationItem: KnockoutObservableArray<model.EnumModel> = model.getSystemVariableClassificationItem();
         selectedSystemVariableClassificationValue: KnockoutObservable<number> = ko.observable(model.SYSTEM_VARIABLE_CLASSIFICATION.ALL);
-        systemVariableListItem: KnockoutObservableArray<model.EnumModel> = model.getSystemVariableListItem();
+        systemVariableListItem: KnockoutObservableArray<model.EnumModel> = ko.observableArray(model.getSystemVariableListEnumModel());
         selectedSystemVariableListValue: KnockoutObservable<number> = ko.observable(model.SYSTEM_VARIABLE_LIST.SYSTEM_YMD_DATE);
         // TODO
         displayVariableNote: KnockoutObservable<string> = ko.observable(null);
         // tab 5 - pending
         // tab 6
-        formulaList: KnockoutObservableArray<model.IFormula>;
+        formulaSystemVariableClassificationItem: KnockoutObservableArray<model.EnumModel> = model.getSystemVariableClassificationItem();
+        formulaSelectedSystemVariableClassificationValue: KnockoutObservable<number> = ko.observable(model.SYSTEM_VARIABLE_CLASSIFICATION.ALL);
+        formulaList: KnockoutObservableArray<model.IFormula> = ko.observableArray([]);
+        formulaData: any;
         selectedFormulaCode: KnockoutObservable<string> = ko.observable(null);
         selectedFormula: KnockoutObservable<model.Formula> = ko.observable(new model.Formula(null));
         // tab 7
+        wageSystemVariableClassificationItem: KnockoutObservableArray<model.EnumModel> = model.getSystemVariableClassificationItem();
+        wageSelectedSystemVariableClassificationValue: KnockoutObservable<number> = ko.observable(model.SYSTEM_VARIABLE_CLASSIFICATION.ALL);
         wageTableList: KnockoutObservableArray<model.IWageTable> = ko.observableArray([]);
         selectedWageTableCode: KnockoutObservable<string> = ko.observable(null);
+        wageTableData: any;
         selectedWageTable: KnockoutObservable<model.WageTable> = ko.observable(new model.WageTable(null));
         // D3_5
         displayDetailCalculationFormula: KnockoutObservable<string> = ko.observable("");
@@ -57,9 +63,13 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         calculationFormulaDictionary:Array<any> = [];
         // formula
         OPEN_CURLY_BRACKET = '{'; CLOSE_CURLY_BRACKET = '}';
-        COMMA_CHAR = ',';
-        PLUS = '＋'; SUBTRACT = 'ー'; MULTIPLICY = '×'; DIVIDE = '÷'; POW = '^'; OPEN_BRACKET = '('; CLOSE_BRACKET = ')';
+        COMMA_CHAR = '、';  HALF_SIZE_COMMA_CHAR = ',';
+        PLUS = '＋'; SUBTRACT = 'ー'; MULTIPLICITY = '×'; DIVIDE = '÷'; POW = '^'; OPEN_BRACKET = '('; CLOSE_BRACKET = ')';
         GREATER = '>'; LESS = '<'; LESS_OR_EQUAL = '≦'; GREATER_OR_EQUAL = '≧'; EQUAL = '＝'; DIFFERENCE = '≠';
+        HALF_SIZE_PLUS = '+'; HALF_SIZE_SUBTRACT = '-';
+        HALF_SIZE_LESS_OR_EQUAL = '≤'; HALF_SIZE_GREATER_OR_EQUAL = '≥'; HALF_SIZE_EQUAL = '=';
+        PROGRAMING_MULTIPLICITY = '*'; PROGRAMING_DIVIDE = '/'; PROGRAMMING_DIFFERENCE = '#';
+
         operators: Array<any>
         separators: Array<any>;
         // for build formula
@@ -109,6 +119,8 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             self.initTabPanel();
             self.changeDataByLineItemCategory();
             self.changeDataByUnitPriceItem();
+            self.changeDataByFunctionItem();
+            self.changeDataByVariableItem();
             self.changeDataByFormula();
             self.changeDataByWageTable();
             self.initCalculationFormulaDictionary();
@@ -124,7 +136,9 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     self.attendanceItemList = data.attendanceItem;
                     self.companyUnitPriceList = data.companyUnitPriceItem;
                     self.individualUnitPriceList = data.individualUnitPriceItem;
-                    self.initWageTableData(data.wageTableItem);
+                    self.wageTableData = data.wageTableItem;
+                    self.initWageTableData();
+                    self.formulaSelectedSystemVariableClassificationValue.valueHasMutated();
                     self.selectedCategoryValue.valueHasMutated();
                     self.selectedPriceItemCategoryValue.valueHasMutated();
                     self.combineFormulaElement();
@@ -136,8 +150,16 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         }
         initFormulaComponent () {
             let self = this;
-            self.operators = [self.PLUS, self.SUBTRACT, self.MULTIPLICY, self.DIVIDE, self.POW, self.OPEN_BRACKET, self.CLOSE_BRACKET, self.LESS, self.GREATER, self.LESS_OR_EQUAL, self.GREATER_OR_EQUAL, self.EQUAL, self.DIFFERENCE];
-            self.separators = ['\\\＋', 'ー', '\\×', '÷', '\\^', '\\\(', '\\\)', '\\>', '\\<', '\\\≦', '\\\≧', '\\\＝', '\\\≠', '\\\,'];
+            self.operators = [self.PLUS, self.SUBTRACT, self.MULTIPLICITY, self.DIVIDE, self.POW,
+                self.OPEN_BRACKET, self.CLOSE_BRACKET, self.LESS, self.GREATER, self.LESS_OR_EQUAL,
+                self.GREATER_OR_EQUAL, self.EQUAL, self.DIFFERENCE,
+                self.HALF_SIZE_PLUS, self.HALF_SIZE_SUBTRACT, self.HALF_SIZE_LESS_OR_EQUAL,
+                self.HALF_SIZE_GREATER_OR_EQUAL, self.HALF_SIZE_EQUAL, self.PROGRAMING_MULTIPLICITY,
+                self.PROGRAMING_DIVIDE, self.PROGRAMMING_DIFFERENCE
+            ];
+            self.separators = ['\\\＋', 'ー', '\\×', '÷', '\\^', '\\\(', '\\\)', '\\>', '\\<', '\\\≦', '\\\≧', '\\\＝', '\\\≠', '\\\,',
+                '\\+', '\\-', '\\*', '\\/', '\\\≤', '\\\≥', '\\\=', '\\\#', '\\\、'
+            ];
             self.acceptPrefix = [self.PAYMENT, self.DEDUCTION, self.ATTENDANCE, self.COMPANY_UNIT_PRICE, self.INDIVIDUAL_UNIT_PRICE, self.FUNCTION, self.VARIABLE, self.PERSON, self.FORMULA, self.WAGE_TABLE];
             self.acceptFunctionPostfix = [self.CONDITIONAL, self.AND, self.OR, self.ROUND_OFF, self.TRUNCATION, self.ROUND_UP, self.MAX_VALUE, self.MIN_VALUE, self.NUM_OF_FAMILY_MEMBER, self.YEAR_MONTH, self.YEAR_EXTRACTION, self.MONTH_EXTRACTION];
             self.acceptVariablePostfix = [self.SYSTEM_YM_DATE, self.SYSTEM_Y_DATE, self.SYSTEM_YMD_DATE, self.PROCESSING_YEAR_MONTH, self.PROCESSING_YEAR, self.REFERENCE_TIME, self.STANDARD_DAY, self.WORKDAY];
@@ -146,35 +168,116 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         changeDataByLineItemCategory () {
             let self = this;
             self.selectedCategoryValue.subscribe(newValue => {
-                if (newValue != null) self.showListStatementItemData(newValue);
+                if (newValue || !newValue && newValue === 0) self.showListStatementItemData(newValue);
+                else {
+                    self.statementItemList([]);
+                    self.selectedStatementItemCode(null);
+                }
             });
             self.selectedStatementItemCode.subscribe(newValue => {
-                if (newValue != null) self.showStatementItemData(self.selectedCategoryValue(), newValue);
+                if (newValue || !newValue && newValue === 0) self.showStatementItemData(self.selectedCategoryValue(), newValue);
+                else  self.displayItemNote(null);
             });
         }
         // tab 2
         changeDataByUnitPriceItem () {
             let self = this;
             self.selectedPriceItemCategoryValue.subscribe(newValue => {
-                if (newValue != null) self.showListUnitPriceItem(newValue);
+                if (newValue || !newValue && newValue === 0) self.showListUnitPriceItem(newValue);
+                else {
+                    self.unitPriceItemList([]);
+                    self.selectedUnitPriceItemCode(null);
+                }
             })
             self.selectedUnitPriceItemCode.subscribe(newValue => {
-                if (newValue != null) self.showUnitPriceItemData(self.selectedPriceItemCategoryValue(), newValue);
+                if (newValue || !newValue && newValue === 0){
+                    self.showUnitPriceItemData(self.selectedPriceItemCategoryValue(), newValue);
+                }
+                else self.displayUnitPriceItemNote(null);
+            })
+        }
+
+        changeDataByFunctionItem () {
+            let self = this;
+            self.selectedFunctionClassificationValue.subscribe(newValue => {
+                let functionListItem: any = [];
+                if (newValue || !newValue && newValue === 0){
+                    functionListItem = model.getFunctionListEnumModelByType(newValue);
+                }
+                if (functionListItem.length > 0) {
+                    self.selectedFunctionListValue(functionListItem[0].value);
+                    self.functionListItem(functionListItem);
+                } else {
+                    self.selectedFunctionListValue(null);
+                    self.functionListItem([])
+                }
+            })
+        }
+
+        changeDataByVariableItem () {
+            let self = this;
+            self.selectedSystemVariableClassificationValue.subscribe(newValue => {
+                if (newValue || !newValue && newValue === 0){
+                    let variableListItem: any = model.getSystemVariableListEnumModel();
+                    self.selectedSystemVariableListValue(variableListItem[0].value);
+                    self.systemVariableListItem(variableListItem);
+                }
+                else {
+                    self.selectedSystemVariableListValue(null);
+                    self.systemVariableListItem([]);
+                }
             })
         }
 
         changeDataByFormula () {
             let self = this;
+            self.formulaSelectedSystemVariableClassificationValue.subscribe(newValue => {
+                if (newValue || !newValue && newValue === 0) {
+                    let embeddableFormulaList: any = __viewContext.screenModel.formulaList().filter(function(formula){ return formula.settingMethod == model.FORMULA_SETTING_METHOD.DETAIL_SETTING && formula.formulaCode != self.selectedFormula().formulaCode});
+                    this.formulaList(embeddableFormulaList);
+                    if (embeddableFormulaList.length > 0 ) self.selectedFormulaCode(embeddableFormulaList[0].formulaCode);
+                } else {
+                    self.formulaList([]);
+                    self.selectedFormulaCode(null);
+                }
+            })
             self.selectedFormulaCode.subscribe(newValue => {
-                let currentFormulaList = ko.toJS(self.formulaList), selectedFormula = null;
-                selectedFormula = _.find(currentFormulaList, {formulaCode: newValue});
-                selectedFormula.formulaName = _.unescape(selectedFormula.formulaName);
-                self.selectedFormula(new model.Formula(selectedFormula));
+                if (newValue || !newValue && newValue === 0) {
+                    let currentFormulaList = ko.toJS(self.formulaList), selectedFormula = null;
+                    selectedFormula = _.find(currentFormulaList, {formulaCode: newValue});
+                    selectedFormula.formulaName = _.unescape(selectedFormula.formulaName);
+                    self.selectedFormula(new model.Formula(selectedFormula));
+                } else {
+                    self.selectedFormula(new model.Formula(null));
+                }
             })
         }
 
-        initWageTableData (wageTableData) {
+        changeDataByWageTable () {
             let self = this;
+            self.wageSelectedSystemVariableClassificationValue.subscribe(newValue => {
+                if (newValue || !newValue && newValue === 0) {
+                    self.initWageTableData();
+                } else {
+                    self.wageTableList([]);
+                    self.selectedWageTableCode(null);
+                }
+            })
+            self.selectedWageTableCode.subscribe(newValue => {
+                if (newValue || !newValue && newValue === 0) {
+                    let currentWageTableList = ko.toJS(self.wageTableList), selectedWageTable;
+                    selectedWageTable = _.find(currentWageTableList, {code: newValue});
+                    selectedWageTable.name = _.unescape(selectedWageTable.name);
+                    self.selectedWageTable(new model.WageTable(selectedWageTable));
+                } else {
+                    self.selectedWageTable(new model.WageTable(null));
+                }
+            })
+        }
+
+        initWageTableData () {
+            let self = this;
+            let wageTableData = self.wageTableData;
             wageTableData.map(function(item){ item.name = _.escape(item.name); return item});
             if (wageTableData){
                 self.wageTableList(wageTableData);
@@ -183,16 +286,6 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 self.wageTableList([]);
                 self.selectedWageTableCode(null);
             }
-        }
-
-        changeDataByWageTable() {
-            let self = this;
-            self.selectedWageTableCode.subscribe(newValue => {
-                let currentWageTableList = ko.toJS(self.wageTableList), selectedWageTable;
-                selectedWageTable = _.find(currentWageTableList, {code: newValue});
-                selectedWageTable.name = _.unescape(selectedWageTable.name);
-                self.selectedWageTable(new model.WageTable(selectedWageTable));
-            })
         }
 
         initTabPanel () {
@@ -240,7 +333,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         showUnitPriceItemData (unitPriceItemCategory, code) {
             let self = this, dfd = $.Deferred();
             // block.invisible();
-            service.getUnitPriceItemByCode(unitPriceItemCategory, code,__viewContext.screenModel.selectedHistory().startMonth()).done(function(data) {
+            service.getUnitPriceItemByCode(unitPriceItemCategory, code, __viewContext.screenModel.selectedHistory().startMonth()).done(function(data) {
                 self.selectedUnitPriceItem(ko.mapping.fromJS(data));
                 // TODO
                 if (unitPriceItemCategory == model.UNIT_PRICE_ITEM_CATEGORY.INDIVIDUAL_UNIT_PRICE_ITEM)
@@ -350,7 +443,11 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             if (nts.uk.ui.errors.hasError()) {
                 return ;
             }
-            setShared("QMM017_G_PARAMS", {formulaElement: self, formula: self.displayDetailCalculationFormula()});
+            setShared("QMM017_G_PARAMS",
+                {formulaElement: self, formula: self.displayDetailCalculationFormula(),
+                    startMonth: __viewContext.screenModel.selectedHistory().startMonth(),
+                    formulaListItem: ko.toJS(self.formulaList())
+                });
             modal("/view/qmm/017/g/index.xhtml").onClosed(function () {
 
             });
@@ -497,9 +594,9 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             }
         }
         checkSingleFunctionSyntax (functionSyntax) {
-            let self = this, conditionRegex = new RegExp(['\\\<', '>', '\\\≧', '\\\≦', '\\\＝', '\\\≠'].join('|'));
+            let self = this, conditionRegex = new RegExp(['\\\<', '>', '\\\≧', '\\\≦', '\\\＝', '\\\≠', '\\\≤', '\\\≥', '\\\=', '\\\#'].join('|'));
             let functionName = functionSyntax.substring(functionSyntax.indexOf(self.OPEN_CURLY_BRACKET) + 1, functionSyntax.indexOf(self.CLOSE_CURLY_BRACKET)),
-                functionParameter = functionSyntax.substring(functionSyntax.indexOf(self.OPEN_BRACKET) + 1, functionSyntax.lastIndexOf(self.CLOSE_BRACKET)).split(self.COMMA_CHAR).filter(item => item.length).map(item => item.trim());
+                functionParameter = functionSyntax.substring(functionSyntax.indexOf(self.OPEN_BRACKET) + 1, functionSyntax.lastIndexOf(self.CLOSE_BRACKET)).split(new RegExp(self.COMMA_CHAR + '|' + self.HALF_SIZE_COMMA_CHAR)).filter(item => item.length).map(item => item.trim());
             if (functionParameter.length == 0) {
                 self.setErrorToFormula('MsgQ_238', [functionName]);
                 return;
@@ -553,7 +650,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         checkNumberDataType (functionParameters) {
             let self = this;
             for(var functionParameter of functionParameters ) {
-                if (functionParameter.indexOf('"') > -1 || functionParameter.startWiths(self.VARIABLE)) return false;
+                if (functionParameter.indexOf('"') > -1 || functionParameter.startsWith(self.VARIABLE)) return false;
             }
             return true;
         }

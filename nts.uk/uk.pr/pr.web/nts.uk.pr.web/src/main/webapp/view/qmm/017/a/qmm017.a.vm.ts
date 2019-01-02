@@ -48,7 +48,6 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             self.initTabPanel();
             self.initComponents();
             self.doFirstFocus();
-            self.initScreenDData();
             self.screenMode.subscribe(newValue => {
                 self.isNewMode(newValue == model.SCREEN_MODE.NEW);
                 self.isUpdateMode(newValue == model.SCREEN_MODE.UPDATE);
@@ -94,7 +93,8 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 {id: 'tab-3', title: getText('QMM017_42'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true)},
                 {id: 'tab-4', title: getText('QMM017_43'), content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true)},
                 {id: 'tab-5', title: getText('QMM017_44'), content: '.tab-content-5', enable: ko.observable(false), visible: ko.observable(true)},
-                {id: 'tab-6', title: getText('QMM017_45'), content: '.tab-content-6', enable: self.selectedFormula().isNotUseNestedAtr, visible: ko.observable(true)},
+                {id: 'tab-6', title: getText('QMM017_45'), content: '.tab-content-6', enable:ko.observable(true), visible: ko.computed(function() {
+                        return (self.selectedFormula().nestedAtr() == model.NESTED_USE_CLS.USE)}, this)},
                 {id: 'tab-7', title: getText('QMM017_46'), content: '.tab-content-7', enable: ko.observable(true), visible: ko.observable(true)}
             ]);
             self.screenDSelectedTab = ko.observable('tab-1');
@@ -337,6 +337,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             let setting = {historyID: history.historyID, withSetting: withSetting, masterUse: masterUse};
             block.invisible();
             service.getFormulaSettingByHistory(setting).done(function (data) {
+                block.clear();
                 if (withSetting) {
                     self.basicFormulaSetting(new model.BasicFormulaSetting(data.basicFormulaSettingDto));
                     self.detailFormulaSetting(new model.DetailFormulaSetting(data.detailFormulaSettingDto));
@@ -344,7 +345,6 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 }
                 self.mapListCalculationToMasterUseItem(data.masterUseDto, data.basicCalculationFormulaDto);
                 self.selectedTab.valueHasMutated();
-                block.clear();
             }).fail(function (err) {
                 block.clear();
                 dialog.alertError(err.message);
@@ -375,8 +375,8 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             block.invisible();
             service.getAllFormula().done(function(data){
                 block.clear();
-                dfd.resolve();
                 self.convertToTreeList(data, itemToBeSelect);
+                dfd.resolve();
                 if (self.screenMode() == model.SCREEN_MODE.ADD_HISTORY) {
                     let selectedHistoryID = self.selectedFormulaIdentifier().substring(3, self.selectedFormulaIdentifier().length);
                     let selectedHistory = _.find(ko.toJS(self.selectedFormula).history, {historyID: selectedHistoryID});
@@ -501,14 +501,6 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             basicCalculationFormulaList = basicCalculationFormulaList.map(item => item['calculationFormulaClassification'](model.CALCULATION_FORMULA_CLS.FIXED_VALUE));
             self.basicCalculationFormulaList(basicCalculationFormulaList);
 
-        }
-
-        // screen D
-        initScreenDData () {
-            let self = this;
-            self.screenDViewModel.formulaList = ko.computed(function(){
-                return self.formulaList();
-            },this);
         }
 
         initScreenDTabData () {

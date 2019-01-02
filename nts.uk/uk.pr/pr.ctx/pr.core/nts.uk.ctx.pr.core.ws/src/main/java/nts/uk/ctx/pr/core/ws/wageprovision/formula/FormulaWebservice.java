@@ -123,14 +123,14 @@ public class FormulaWebservice extends WebService {
     }
 
     @POST
-    @Path("calculation")
-    public String calculation(DetailFormulaCommand command) {
-        return detailFormulaCalculationCommandHandler.handle(command);
+    @Path("getEmbeddedFormulaDisplayContent")
+    public Map<String, String> convertToDisplayContent(DetailFormulaConverterDto dto) {
+        return detailFormulaSettingFinder.getEmbeddedFormulaContent(dto);
     }
 
     @POST
-    @Path("getProcessYearMonthAndReferenceTime")
-    public Map<String, String> getProcessYearMonthAndReferenceTime(DetailFormulaCommand command) {
-        return formulaFinder.getProcessYearMonthAndReferenceTime();
+    @Path("calculate")
+    public String calculate(DetailFormulaCommand command) {
+        return detailFormulaCalculationCommandHandler.handle(command);
     }
 }

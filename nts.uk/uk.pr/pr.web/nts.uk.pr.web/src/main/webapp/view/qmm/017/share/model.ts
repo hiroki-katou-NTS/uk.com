@@ -391,6 +391,48 @@ module nts.uk.pr.view.qmm017.share.model {
         ];
     }
 
+    export function getFunctionListEnumModelByType (type: number) {
+        if (type == FUNCTION_CLASSIFICATION.ALL)
+            return [
+                new EnumModel(FUNCTION_LIST.CONDITIONAL_EXPRESSION, getText('Enum_FunctionList_CONDITIONAL_EXPRESSION')),
+                new EnumModel(FUNCTION_LIST.AND, getText('Enum_FunctionList_AND')),
+                new EnumModel(FUNCTION_LIST.OR, getText('Enum_FunctionList_OR')),
+                new EnumModel(FUNCTION_LIST.ROUND_OFF, getText('Enum_FunctionList_ROUND_OFF')),
+                new EnumModel(FUNCTION_LIST.TRUNCATION, getText('Enum_FunctionList_TRUNCATION')),
+                new EnumModel(FUNCTION_LIST.ROUND_UP, getText('Enum_FunctionList_ROUND_UP')),
+                new EnumModel(FUNCTION_LIST.MAX_VALUE, getText('Enum_FunctionList_MAX_VALUE')),
+                new EnumModel(FUNCTION_LIST.MIN_VALUE, getText('Enum_FunctionList_MIN_VALUE')),
+                new EnumModel(FUNCTION_LIST.NUMBER_OF_FAMILY_MEMBER, getText('Enum_FunctionList_NUMBER_OF_FALIMY_MEMBER')),
+                new EnumModel(FUNCTION_LIST.ADDITIONAL_YEARMONTH, getText('Enum_FunctionList_ADDITIONAL_YEARMONTH')),
+                new EnumModel(FUNCTION_LIST.YEAR_EXTRACTION, getText('Enum_FunctionList_YEAR_EXTRACTION')),
+                new EnumModel(FUNCTION_LIST.MONTH_EXTRACTION, getText('Enum_FunctionList_MONTH_EXTRACTION'))
+            ];
+        if (type == FUNCTION_CLASSIFICATION.TIME_FUNCTION) return [];
+        if (type == FUNCTION_CLASSIFICATION.PAYROLL_SYSTEM) return [];
+        if (type == FUNCTION_CLASSIFICATION.LOGIC)
+            return [
+                new EnumModel(FUNCTION_LIST.CONDITIONAL_EXPRESSION, getText('Enum_FunctionList_CONDITIONAL_EXPRESSION')),
+                new EnumModel(FUNCTION_LIST.AND, getText('Enum_FunctionList_AND')),
+                new EnumModel(FUNCTION_LIST.OR, getText('Enum_FunctionList_OR'))
+            ];
+        if (type == FUNCTION_CLASSIFICATION.STRING_OPERATION) return [];
+        if (type == FUNCTION_CLASSIFICATION.DATETIME)
+            return [
+                new EnumModel(FUNCTION_LIST.ADDITIONAL_YEARMONTH, getText('Enum_FunctionList_ADDITIONAL_YEARMONTH')),
+                new EnumModel(FUNCTION_LIST.YEAR_EXTRACTION, getText('Enum_FunctionList_YEAR_EXTRACTION')),
+                new EnumModel(FUNCTION_LIST.MONTH_EXTRACTION, getText('Enum_FunctionList_MONTH_EXTRACTION'))
+            ];
+        if (type == FUNCTION_CLASSIFICATION.MATHEMATICS)
+            return [
+                new EnumModel(FUNCTION_LIST.ROUND_OFF, getText('Enum_FunctionList_ROUND_OFF')),
+                new EnumModel(FUNCTION_LIST.TRUNCATION, getText('Enum_FunctionList_TRUNCATION')),
+                new EnumModel(FUNCTION_LIST.ROUND_UP, getText('Enum_FunctionList_ROUND_UP')),
+                new EnumModel(FUNCTION_LIST.MAX_VALUE, getText('Enum_FunctionList_MAX_VALUE')),
+                new EnumModel(FUNCTION_LIST.MIN_VALUE, getText('Enum_FunctionList_MIN_VALUE'))
+            ];
+        return [];
+    }
+
     export function getFunctionListItem () {
         return ko.observableArray(getFunctionListEnumModel());
     }
