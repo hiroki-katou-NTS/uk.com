@@ -93,7 +93,12 @@ module nts.custombinding {
                         <div class='cps003d-col3'>
                             <div tabindex="0" class="ntsControl ntsCheckBox" data-bind="event: { keydown: $parent.checkItem }">
                                 <label class="ntsCheckBox-label">
-                                    <input class="check-item" type="checkbox" data-bind="event: { change: $parent.checkItem }, attr: { 'data-id': row['perInfoItemDefID'], disabled: !!row['required'] }" />
+                                    <input class="check-item" type="checkbox" data-bind="event: { change: $parent.checkItem }, attr: {
+                                            'data-id': row['perInfoItemDefID'],
+                                            'data-require': row['required'],
+                                            'data-ic': row['itemCD'],
+                                            'data-pc': row['itemParentCD']
+                                        }" />
                                     <span class="box"></span>
                                 </label>
                             </div>
@@ -112,12 +117,26 @@ module nts.custombinding {
                             }
                         } else if (evt.target.tagName == 'INPUT') {
                             let input = evt.target,
+                                dataSources = ko.toJS(accessor.dataSources),
                                 inputs = element.querySelectorAll('.cps003d-body input.check-item');
 
                             // raise event for all input
                             [].slice.call(inputs).forEach(inp => {
                                 if (inp.disabled) {
-                                    inp.checked = true;
+                                    if (inp.getAttribute('data-require') == 'true') {
+                                        inp.checked = true;
+                                    } else if (inp.getAttribute('data-pc')) {
+                                        let pc = inp.getAttribute('data-pc'),
+                                            parent = !!dataSources.filter(d => d.required == true && d.itemCD == pc).length;
+
+                                        if (parent) {
+                                            inp.checked = true;
+                                        } else {
+                                            inp.checked = input.checked;
+                                        }
+                                    } else {
+                                        inp.checked = input.checked;
+                                    }
                                 } else {
                                     inp.checked = input.checked;
                                 }
@@ -141,6 +160,8 @@ module nts.custombinding {
                                 inputs = element.querySelectorAll('.cps003d-body input.check-item'),
                                 checkAll = element.querySelector('.cps003d-header input.check-all');
 
+                            checkItems(input);
+
                             if (checkAll) {
                                 checkAll.checked = ![].slice.call(inputs).filter(m => !m.checked).length;
                             }
@@ -151,23 +172,51 @@ module nts.custombinding {
 
                         return true;
                     },
-                    afterRender: (item, index) => {
+                    afterRender: (elements, item) => {
                         let dataSources = ko.toJS(accessor.dataSources),
+                            input = element.querySelector(`.cps003d-body input[data-id="${item['perInfoItemDefID']}"]`),
                             inputs = element.querySelectorAll('.cps003d-body input.check-item'),
                             checkall = dataSources.filter(m => m.regulationAtr).length == dataSources.length;
+
+                        if (input && (input.getAttribute('data-require') == 'true' || input.getAttribute('data-pc'))) {
+                            input.disabled = true;
+                        }
 
                         if ([].slice.call(inputs).length == dataSources.length) {
                             // checked item
                             [].slice.call(inputs).forEach(inp => {
-                                let id = inp.getAttribute('data-id');
+                                let id = inp.getAttribute('data-id'),
+                                    row = $(inp).closest('.cps003d-body-row');
 
                                 if (dataSources.filter(m => m.regulationAtr && m.perInfoItemDefID == id).length == 1) {
                                     inp.checked = true;
+                                    if (inp.getAttribute('data-require') == 'true') {
+                                        row.addClass('selected');
+                                    }
                                 } else {
                                     if (inp.disabled) {
-                                        inp.checked = true;
+                                        if (inp.getAttribute('data-require') == 'true') {
+                                            inp.checked = true;
+                                            row.addClass('selected');
+                                        } else if (inp.getAttribute('data-pc')) {
+                                            let pc = inp.getAttribute('data-pc'),
+                                                parent = !!dataSources.filter(d => d.required == true && d.itemCD == pc).length;
+
+                                            if (parent) {
+                                                inp.checked = true;
+                                            } else {
+                                                inp.checked = false;
+                                            }
+                                            row.removeClass('selected');
+                                        } else {
+                                            inp.checked = false;
+                                            row.removeClass('selected');
+                                        }
                                     } else {
                                         inp.checked = false;
+                                        if (inp.getAttribute('data-require') == 'true') {
+                                            row.addClass('selected');
+                                        }
                                     }
                                 }
                             });
@@ -186,17 +235,21 @@ module nts.custombinding {
                         }
                     }
                 },
+                checkItems = (input) => {
+                    let childs = element.querySelectorAll(`input[data-pc="${input.getAttribute('data-ic')}"]`);
+
+                    [].slice.call(childs).forEach(c => {
+                        c.checked = input.checked;
+                        checkItems(c);
+                    });
+                },
                 changeSelect = (inputs) => {
                     if (ko.isObservable(accessor.selecteds)) {
                         let data = [].slice.call(inputs)
                             .map(m => {
-                                let row = $(m).closest('.cps003d-body-row');
-
                                 if (m.checked) {
-                                    row.addClass('selected');
                                     return m.getAttribute('data-id');
                                 } else {
-                                    row.removeClass('selected');
                                     return undefined;
                                 }
                             })

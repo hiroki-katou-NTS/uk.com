@@ -7,6 +7,7 @@ module cps003.d.vm {
     let __viewContext: any = window['__viewContext'] || {};
 
     export class ViewModel {
+        ctgId: KnockoutObservable<string> = ko.observable('');
         ctgName: KnockoutObservable<string> = ko.observable('');
         selecteds: KnockoutObservableArray<string> = ko.observableArray([]);
         dataSources: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -18,20 +19,34 @@ module cps003.d.vm {
             if (!data.id || !data.name) {
                 self.close();
             } else {
+                self.ctgId(data.id);
                 self.ctgName(data.name);
 
                 service.fetch.setting(data.id).done(resp => {
-                    self.dataSources(resp.perInfoData);
+                    self.dataSources(_.orderBy(resp.perInfoData, ['dispOrder', 'itemCD']));
                 });
             }
         }
 
         pushData() {
-            let self = this;
+            let self = this,
+                ctgId = ko.toJS(self.ctgId),
+                selecteds = ko.toJS(self.selecteds),
+                dataSources = ko.toJS(self.dataSources),
+                personItems = dataSources.map(m => ({
+                    pInfoCategoryID: ctgId,
+                    pInfoItemDefiID: m.perInfoItemDefID,
+                    columnWidth: m.width || 100,
+                    regulationATR: selecteds.indexOf(m.perInfoItemDefID) > -1 ? 1 : 0
+                }));
 
-            setShared('CPS003D_VALUE', ko.toJS(self.selecteds));
+            service.push.setting({
+                personInfoItems: personItems
+            }).done(() => {
+                setShared('CPS003D_VALUE', selecteds);
 
-            self.close();
+                self.close();
+            });
         }
 
         close() {
