@@ -349,6 +349,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 			exOutOpMng.setTotalProCnt(exOutSetting.getSidList().size());
 		} else {
 			exOutOpMng.setProUnit(I18NText.getText("CMF002_528"));
+			exOutOpMng.setProCnt(0);
+			exOutOpMng.setTotalProCnt(exOutSetting.getSidList().size());
 		}
 
 		exOutOpMngRepo.update(exOutOpMng);
@@ -408,7 +410,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		ExterOutExecLog exterOutExecLog = exterOutExecLogOptional.get();
 		exterOutExecLog.setProcessEndDateTime(Optional.of(GeneralDateTime.now()));
 		exterOutExecLog.setFileId(Optional.ofNullable(fileId));
-		exterOutExecLog.setFileName(Optional.of(new UploadFileName(fileName)));
+		exterOutExecLog.setFileName(statusEnd == ResultStatus.INTERRUPTION ? Optional.of(new UploadFileName("")) : Optional.of(new UploadFileName(fileName)));
 		exterOutExecLog.setTotalCount(exOutOpMng.get().getProCnt());
 		exterOutExecLog.setTotalErrorCount(exOutOpMng.get().getErrCnt());
 		exterOutExecLog.setProcessUnit(Optional.of(exOutOpMng.get().getProUnit()));
@@ -462,12 +464,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		// サーバ外部出力タイプデータ系
 		if (type == CategorySetting.DATA_TYPE) {
+			ExIoOperationState checkResult = checkInterruptAndIncreaseProCnt(exOutSetting.getProcessingId());
+			if ((checkResult == ExIoOperationState.FAULT_FINISH)
+					|| (checkResult == ExIoOperationState.INTER_FINISH))
+				return new OperationStateResult(checkResult);
+			
 			for (String sid : exOutSetting.getSidList()) {
-				ExIoOperationState checkResult = checkInterruptAndIncreaseProCnt(exOutSetting.getProcessingId());
-				if ((checkResult == ExIoOperationState.FAULT_FINISH)
-						|| (checkResult == ExIoOperationState.INTER_FINISH))
-					return new OperationStateResult(checkResult);
-
 				try {
 					sqlAndParam = getExOutDataSQL(sid, true, exOutSetting, settingResult);
 					data = exOutCtgRepo.getData(sqlAndParam);
@@ -491,6 +493,11 @@ public class CreateExOutTextService extends ExportService<Object> {
 			// サーバ外部出力タイプマスター系
 		} else {
 			try {
+				ExIoOperationState checkResult = checkInterruptAndIncreaseProCnt(exOutSetting.getProcessingId());
+				if ((checkResult == ExIoOperationState.FAULT_FINISH)
+						|| (checkResult == ExIoOperationState.INTER_FINISH))
+					return new OperationStateResult(checkResult);
+				
 				sqlAndParam = getExOutDataSQL(null, false, exOutSetting, settingResult);
 				data = exOutCtgRepo.getData(sqlAndParam);
 			
@@ -505,11 +512,6 @@ public class CreateExOutTextService extends ExportService<Object> {
 				exOutOpMngRepo.update(exOutOpMng);
 	
 				for (List<String> lineData : data) {
-					ExIoOperationState checkResult = checkInterruptAndIncreaseProCnt(exOutSetting.getProcessingId());
-					if ((checkResult == ExIoOperationState.FAULT_FINISH)
-							|| (checkResult == ExIoOperationState.INTER_FINISH))
-						return new OperationStateResult(checkResult);;
-	
 					lineDataResult = fileLineDataCreation(exOutSetting.getProcessingId(), lineData, outputItemCustomList,
 							loginSid, stringFormat,baseDate);
 					stateResult = (String) lineDataResult.get(RESULT_STATE);
@@ -519,8 +521,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				
-				return new OperationStateResult(ExIoOperationState.FAULT_FINISH);
+				String str = e.getMessage();
+				str.indexOf("Internal Exception");
+				str.indexOf("Error Code");
+				createOutputLogError(exOutSetting.getProcessingId(), str.substring(str.indexOf("Internal Exception"), str.indexOf("Error Code")-2).trim().split(":")[2], null, null, null);
 			}
 		}
 
@@ -944,11 +948,26 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	private void createWhereCondition(StringBuilder temp, String table, String key, String operation, String value) {
 		temp.append(AND_COND);
-		temp.append(table);
-		temp.append(DOT);
-		temp.append(key);
-		temp.append(operation);
-		temp.append(value);
+		if(ConditionSymbol.IS_NOT.operator.equals(operation)) {
+			temp.append("(");
+			temp.append(table);
+			temp.append(DOT);
+			temp.append(key);
+			temp.append(operation);
+			temp.append(value);
+			
+			temp.append(" OR ");
+			temp.append(table);
+			temp.append(DOT);
+			temp.append(key);
+			temp.append(" IS NULL ) ");
+		}else {
+			temp.append(table);
+			temp.append(DOT);
+			temp.append(key);
+			temp.append(operation);
+			temp.append(value);
+		}
 	}
 	
 	private void createWhereCondition(StringBuilder temp, String key, String operation, String value) {

@@ -156,7 +156,7 @@ module nts.uk.com.view.cmf002.y {
                 this.errorTargetValue = errorTargetValue ? errorTargetValue : null;
                 this.errorEmployee = errorEmployee ? errorEmployee : null;
                 this.errorItem = errorItem ? errorItem : null;
-                this.customerrorContent = errorContent + "(" + getText('CMF002_356') + errorEmployee + ")";   
+                this.customerrorContent = errorEmployee != null ? errorContent + "(" + getText('CMF002_356') + errorEmployee + ")" : errorContent;   
             }
         }
 

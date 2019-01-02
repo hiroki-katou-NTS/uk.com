@@ -54,7 +54,7 @@ public class ExternalOutLogExportService extends ExportService<ErrorContentDto> 
 				String.valueOf(lstError.getResultLog().getTotalCount() - lstError.getResultLog().getTotalErrorCount()) ,
 				lstError.getResultLog().getProcessUnit())));
 		resultLogs.add(new ArrayList<>(Arrays.asList(TextResource.localize("CMF002_333"), String.valueOf(lstError.getResultLog().getTotalErrorCount())
-				,lstError.getResultLog().getProcessUnit())));
+				,"件")));
 
 		if (lstError.getErrorLog() != null) { 
 			for (int i=0; i< lstError.getErrorLog().length; i++) {
@@ -64,8 +64,8 @@ public class ExternalOutLogExportService extends ExportService<ErrorContentDto> 
 				errorItem.put(header.get(0), errorContentList.getProcessCount());
 				errorItem.put(header.get(1), errorContentList.getErrorItem());
 				errorItem.put(header.get(2), errorContentList.getErrorTargetValue());
-				errorItem.put(header.get(3), errorContentList.getErrorContent() + "(" + TextResource.localize("CMF002_356")
-				+ errorContentList.getErrorEmployee() + ")");
+				String str = errorContentList.getErrorEmployee() != null ? "(" + TextResource.localize("CMF002_356") + errorContentList.getErrorEmployee() + ")" : "";
+				errorItem.put(header.get(3), errorContentList.getErrorContent() + str);
 				dataSource.add(errorItem);
 			}
 		}
