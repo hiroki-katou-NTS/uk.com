@@ -800,10 +800,12 @@ public class CreateExOutTextService extends ExportService<Object> {
 			useNullValue = fileItemDataCreationResult.get(USE_NULL_VALUE);
 
 			if (useNullValue == USE_NULL_VALUE_ON || StringUtils.isEmpty(targetValue)) {
-				if(stringFormat == StringFormat.SINGLE_QUOTATION) {
-					targetValue = stringFormat.character +stringFormat.character + stringFormat.character;
-				}else if(stringFormat == StringFormat.DOUBLE_QUOTATION) {
-					targetValue = stringFormat.character +stringFormat.character ;
+				if(outputItemCustom.getStandardOutputItem().getItemType() != ItemType.NUMERIC) {
+					if(stringFormat == StringFormat.SINGLE_QUOTATION) {
+						targetValue = stringFormat.character +stringFormat.character + stringFormat.character;
+					}else if(stringFormat == StringFormat.DOUBLE_QUOTATION) {
+						targetValue = stringFormat.character +stringFormat.character ;
+					}
 				}
 				lineDataCSV.put(outputItemCustom.getStandardOutputItem().getOutputItemName().v(), targetValue);
 				index += outputItemCustom.getCtgItemDataList().size();
