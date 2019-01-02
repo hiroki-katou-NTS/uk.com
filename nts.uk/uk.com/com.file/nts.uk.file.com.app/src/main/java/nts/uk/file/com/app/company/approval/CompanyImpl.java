@@ -125,13 +125,13 @@ public class CompanyImpl implements MasterListData{
 					data.put("人事システム", "利用しない");
 				}
 				
-				if(findUsageSets.get().getKyuyo() == 1){
+				if(findUsageSets.get().getShugyo()  == 1){
 					data.put("就業システム", "利用する");
 				}else{ 
 					data.put("就業システム", "利用しない");
 				}
 				
-				if(findUsageSets.get().getShugyo() == 1){
+				if(findUsageSets.get().getKyuyo() == 1){
 					data.put("給与システム", "利用する");
 				}else{ 
 					data.put("給与システム", "利用しない");
