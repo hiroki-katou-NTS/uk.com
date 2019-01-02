@@ -90,6 +90,17 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 				if(c.getUseAtr() == UseAtr.NotUse){
 					// neu =0 
 					data.put("使用区分", UseAtr.NotUse.nameId);
+					data.put("名称", "");
+					data.put("略名", "");
+					data.put("集計区分", "");
+					data.put("勤務種類", "");
+					data.put("就業時間帯", "");
+					data.put("集計条件以上", "");
+					data.put("以上", "");
+					data.put("集計条件未満", "");
+					data.put("未満","");
+					data.put("対象項目", "");
+					data.put("半日勤務区分", "");
 				}else{
 					data.put("使用区分", UseAtr.Use.nameId);
 
@@ -163,22 +174,22 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 							}
 							data.put("就業時間帯", workingHours);
 						}
-						
-						
 					}
 					
-					if(c.getTotalCondition().getUpperLimitSettingAtr() == UseAtr.Use){
+					if(c.getTotalCondition().getLowerLimitSettingAtr() == UseAtr.Use){
 						data.put("集計条件以上", "○");
 						data.put("以上", c.getTotalCondition().getThresoldLowerLimit()+" 以上");
 					}else{
 						data.put("集計条件以上", "-");
+						data.put("以上", "");
 					}
 					
-					if(c.getTotalCondition().getLowerLimitSettingAtr() == UseAtr.Use){
+					if(c.getTotalCondition().getUpperLimitSettingAtr() == UseAtr.Use){
 						data.put("集計条件未満", "○");
 						data.put("未満", c.getTotalCondition().getThresoldUpperLimit()+" 未満");
 					}else{
 						data.put("集計条件未満", "-");
+						data.put("未満", "");
 					}
 					
 					if(c.getCountAtr() ==CountAtr.HALFDAY){
