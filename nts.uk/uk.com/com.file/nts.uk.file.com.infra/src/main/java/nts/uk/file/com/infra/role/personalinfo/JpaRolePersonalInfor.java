@@ -6,19 +6,14 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.file.com.app.role.personalinfo.RolePersonalInforExportImpl;
 import nts.uk.file.com.app.role.personalinfo.RolePersonalInforRepository;
 import nts.uk.file.com.infra.role.CommonRole;
-import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.math.BigInteger;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +24,7 @@ import java.util.stream.Collectors;
 @Stateless
 public class JpaRolePersonalInfor extends JpaRepository implements RolePersonalInforRepository {
     /*It's a point to start Generate function_no */
-    public static final int ROW_START_FUNCTION_NO = 7;
+    public static final int ROW_START_FUNCTION_NO = 6;
     public static final int TRUE = 1;
     @Override
     public List<MasterData> findAllRolePersonalInfor(int roleType, String cId) {      
@@ -61,8 +56,8 @@ public class JpaRolePersonalInfor extends JpaRepository implements RolePersonalI
                 ") " +
                 ") AS pvt " +
                 "ORDER BY ASSIGN_ATR,ROLE_CD ASC";
-        try (PreparedStatement stmt = this.connection()
-                .prepareStatement(GET_EXPORT_EXCEL)){
+        try (
+                PreparedStatement stmt = this.connection().prepareStatement(GET_EXPORT_EXCEL)) {
             stmt.setString(1,cId);
             stmt.setString(2,String.valueOf(roleType));
             datas.addAll(new NtsResultSet(stmt.executeQuery()).getList(i -> toData(i,listFunctionNo)));
