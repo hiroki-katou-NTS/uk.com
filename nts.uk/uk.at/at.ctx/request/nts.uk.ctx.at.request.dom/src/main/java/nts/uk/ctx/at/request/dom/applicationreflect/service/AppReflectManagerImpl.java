@@ -235,8 +235,8 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				workChange.getWorkTimeCd(), 
 				appInfor.getStartDate().get(),
 				appInfor.getEndDate().get(),
-				null,
-				null);
+				workChange.getWorkTimeStart1(),
+				workChange.getWorkTimeEnd1());
 		
 		 
 		return new WorkChangeCommonReflectPara(workchangeInfor, workChange.getExcludeHolidayAtr());		

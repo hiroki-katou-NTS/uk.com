@@ -8,12 +8,12 @@
 
 <ui:composition template="../../../../master/sidebar.xhtml">
     <ui:define name="htmlHead">
-        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
-        <com:scriptfile set="IGNITE" />
-        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
-        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
-        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web"/>
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web"/>
         <com:ValidatorScript>
 
             nts.uk.ctx.pr.shared.dom.employaverwage.AverageWage
@@ -28,20 +28,23 @@
 
     <ui:define name="content">
         <div id="com-ccg001"></div>
-        <div id="functions-area" >
-            <button id="A1_1" class="proceed"  tabindex="1" style="margin-left: 110px;" data-bind="click: updateStatelmentItemName" >#{i18n.getText('QMM038_2')}</button>
-            <button  id="A1_2" data-bind="enable: false" tabindex="2">#{i18n.getText('QMM038_3')}</button>
+        <div id="functions-area">
+            <button id="A1_1" class="proceed" tabindex="1" style="margin-left: 110px;"
+                    data-bind="click: updateStatementItemName">#{i18n.getText('QMM038_2')}</button>
+            <button id="A1_2" data-bind="enable: false" tabindex="2">#{i18n.getText('QMM038_3')}</button>
         </div>
-        <div id="contents-area" >
+        <div id="contents-area">
             <div style="margin-left: 90px; border: 0.2px solid; border-color: #DCDCDC; width: 300px; padding: 14px;border-style:solid;">
-                <div id="A2_2" data-bind="ntsFormLabel: { constraint: '', required: true }">#{i18n.getText('QMM038_4')}</div>
-                <div id="A2_3" tabindex="3" data-bind="ntsDatePicker: {value: giveCurrTreatYear, dateFormat: 'yearmonth', name: '#[QMM038_4]',required: true}"></div>
-                <button  id="A2_4" class="small"  data-bind="click: findByEmployee" tabindex="4">#{i18n.getText('QMM038_5')}</button>
+                <div id="A2_2"
+                     data-bind="ntsFormLabel: { constraint: '', required: true }">#{i18n.getText('QMM038_4')}</div>
+                <div id="A2_3" tabindex="3"
+                     data-bind="ntsDatePicker: {value: giveCurrTreatYear, dateFormat: 'yearmonth', name: '#[QMM038_4]',required: true}"></div>
+                <button id="A2_4" class="small" data-bind="click: findByEmployee, enable: $root.errors.isEmpty"
+                        tabindex="4">#{i18n.getText('QMM038_5')}</button>
             </div>
-            <div>
-                <ui:include src="../a/contents.xhtml" />
+            <div style="margin: 19px 19px 19px 89px; width: 50px" tabindex="6">
+                <table id="gridStatement"/>
             </div>
-
         </div>
     </ui:define>
 </ui:composition>

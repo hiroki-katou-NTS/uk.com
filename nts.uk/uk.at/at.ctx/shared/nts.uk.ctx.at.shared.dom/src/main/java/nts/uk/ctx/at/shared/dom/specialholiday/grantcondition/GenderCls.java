@@ -13,11 +13,11 @@ public enum GenderCls {
 	/**
 	 * 男性
 	 */
-	MALE(0),
+	MALE(1),
 	/**
 	 * 女性
 	 */
-	FEMALE(1);
+	FEMALE(2);
 	
 	public int value;
 	

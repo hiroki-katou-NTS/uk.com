@@ -26,5 +26,15 @@ public interface AbsenceReruitmentManaAdapter {
 	 * @return
 	 */
 	List<StatusOfHolidayImported> getDataCurrentMonthOfEmployee(String employeeId, YearMonth startMonth, YearMonth endMonth);
+	/**
+	 * @author hoatt
+	 * Doi ung response KDR001
+	 * RequestList260 社員の月毎の確定済み振休を取得する - ver2
+	 * @param employeeId
+	 * @param startMonth
+	 * @param endMonth
+	 * @return
+	 */
+	List<StatusOfHolidayImported> getDataCurrMonOfEmpVer2(String employeeId, YearMonth startMonth, YearMonth endMonth);
 
 }

@@ -127,7 +127,7 @@ public class JpaBreakdownAmountHisRepository extends JpaRepository implements Br
                 .setParameter("employeeId", employeeId)
                 .setParameter("salaryBonusAtr", salaryBonusAtr)
                 .setParameter("lastHistoryId", lastHistoryId)
-                .setParameter("startYearMonth", startYearMonth - 1).executeUpdate();
+                .setParameter("startYearMonth", startYearMonth).executeUpdate();
     }
 
 

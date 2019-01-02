@@ -12,11 +12,11 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
 
         ccgcomponent: GroupOption;
         salaryPerUnitPriceNames: KnockoutObservableArray<IndividualPriceName> = ko.observableArray([]);
-        salaryPerUnitPriceNamesSelectedCode: KnockoutObservable<string> = ko.observable('');
+        salaryPerUnitPriceNamesSelectedCode: KnockoutObservable<string> = ko.observable(null);
 
         workIndividualPricesDisplay: Array<WorkIndividualPrice> = [];
 
-        perUnitPriceName: KnockoutObservable<string> = ko.observable('');
+        perUnitPriceShortName: KnockoutObservable<string> = ko.observable('');
         perUnitPriceCode: KnockoutObservable<string> = ko.observable('');
 
         yearMonthFilter = ko.observable(201811);
@@ -29,30 +29,27 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
             self.salaryPerUnitPriceNamesSelectedCode.subscribe(function (selectcode) {
                 self.workIndividualPricesDisplay = [];
                 errors.clearAll();
-                if (!selectcode)
-                    return;
-                let temp = _.find(self.salaryPerUnitPriceNames(), function (o) {
-                    return o.code == selectcode;
-                });
-                if (temp) {
-                    self.perUnitPriceCode(temp.code);
-                    self.perUnitPriceName(temp.name);
+                if (selectcode) {
+                    let temp = _.find(self.salaryPerUnitPriceNames(), function (o) {
+                        return o.code == selectcode;
+                    });
+                    if (temp) {
+                        self.perUnitPriceCode(temp.code);
+                        self.perUnitPriceShortName(temp.shortName);
+                    }
+                    self.filterData();
                 }
-                // self.filterData();
+
             });
         }
 
         filterData(): void {
             let self = this;
             $('#A4_5').ntsError('check');
-            if (errors.hasError()) {
+            if (!self.listEmployee) {
                 return;
             }
             block.invisible();
-            if (!self.listEmployee) {
-                block.clear();
-                return;
-            }
             let command = {
                 personalUnitPriceCode: self.salaryPerUnitPriceNamesSelectedCode(),
                 employeeIds: self.listEmployee.map(v => v.employeeId),
@@ -62,7 +59,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 self.employeeInfoImports = dataNameAndAmount.employeeInfoImports;
                 let personalAmountData = dataNameAndAmount.workIndividualPrices.map(x => new WorkIndividualPrice(x));
                 for (let personalAmount of personalAmountData) {
-                    let employeeInfo = self.employeeInfoImports.find(x => x.sid === personalAmount.employeeID);
+                    let employeeInfo = _.find(self.employeeInfoImports, x => x.sid === personalAmount.employeeID);
                     personalAmount.employeeCode = employeeInfo.scd;
                     personalAmount.businessName = employeeInfo.businessName;
                 }
@@ -70,11 +67,9 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 self.workIndividualPricesDisplay = personalAmountData;
                 $("#grid").mGrid("destroy");
                 self.loadMGrid();
+            }).always(() => {
                 block.clear();
-            }).fail((err) => {
-                block.clear();
-                dialog.alertError(err.message);
-            });
+            })
         }
 
         loadMGrid() {
@@ -130,7 +125,10 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                     {
                         name: "Sorting",
                         columnSettings: [
-                            {columnKey: "employeeCode", allowSorting: true, type: "String"}
+                            {columnKey: "employeeCode", allowSorting: true, type: "String"},
+                            {columnKey: "businessName", allowSorting: true, type: "String"},
+                            {columnKey: "period", allowSorting: true, type: "String"},
+                            {columnKey: "amount", allowSorting: true, type: "Number"}
                         ]
                     },
                     {
@@ -163,7 +161,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 return;
             }
             service.empSalUnitUpdateAll({
-                payrollInformationCommands: $("#grid").mGrid("dataSource", true)
+                payrollInformationCommands: $("#grid").mGrid("dataSource", false)
             }).done(function () {
                 dialog.info({messageId: "Msg_15"});
             }).always(() => {
@@ -232,7 +230,7 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
 
                 /** Advanced search properties */
                 showEmployment: true,
-                showWorkplace: false,
+                showWorkplace: true,
                 showClassification: false,
                 showJobTitle: false,
                 showWorktype: false,
@@ -241,7 +239,8 @@ module nts.uk.pr.view.qmm042.a.viewmodel {
                 tabindex: 2,
 
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
-                    self.listEmployee = data.listEmployee
+                    self.listEmployee = data.listEmployee;
+                    self.filterData();
                 }
             };
             $('#com-ccg001').ntsGroupComponent(self.ccgcomponent);

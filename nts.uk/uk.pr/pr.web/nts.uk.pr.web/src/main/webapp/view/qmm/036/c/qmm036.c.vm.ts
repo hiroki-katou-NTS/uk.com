@@ -4,6 +4,7 @@ module nts.uk.pr.view.qmm036.c.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
+    import alertError = nts.uk.ui.dialog.alertError;
 
     export class ScreenModel {
         modifyMethod: KnockoutObservable<number> = ko.observable(1);
@@ -84,7 +85,7 @@ module nts.uk.pr.view.qmm036.c.viewmodel {
             let self = this;
             let params = getShared("QMM036_C_PARAMS");
 
-            if (self.yearMonthStart() <= params.lastPeriodStartYm || self.yearMonthStart() > params.period.periodEndYm) {
+            if (((params.period.preHisStartYm != null) && (self.yearMonthStart() <= params.period.preHisStartYm)) || (self.yearMonthStart() > params.period.periodEndYm)) {
                 nts.uk.ui.dialog.info({messageId: "Msg_107"});
                 return;
             }
@@ -109,7 +110,7 @@ module nts.uk.pr.view.qmm036.c.viewmodel {
             };
             service.updateBreakdownAmountHis(ko.toJS(command)).done(() => {
                 dialog.info({messageId: "Msg_15"}).then(() => {
-                    close();
+                    nts.uk.ui.windows.close();
                 });
             }).fail(function (error) {
                 alertError(error);
@@ -121,10 +122,6 @@ module nts.uk.pr.view.qmm036.c.viewmodel {
             let self = this;
             let params = getShared("QMM036_C_PARAMS");
 
-            if (self.yearMonthStart() <= params.lastPeriodStartYm || self.yearMonthStart() > params.period.periodEndYm) {
-                nts.uk.ui.dialog.info({messageId: "Msg_107"});
-                return;
-            }
             let lstPeriod: Array = [];
             let period = {
                 historyId: params.period.historyId,

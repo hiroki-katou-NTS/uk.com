@@ -92,8 +92,9 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 		}
 		
 		/** どちらか一方が 年休 or 特別休暇 の場合 */
-		if (wt.getDailyWork().isHalfDayAnnualOrSpecialHoliday()) {
-			return EventHandleResult.withResult(EventHandleAction.UPDATE, deleteTimeLeave(true, command));
+		if (wt.getDailyWork().isAnnualOrSpecialHoliday()) {
+			return EventHandleResult.onFail();
+			//return EventHandleResult.withResult(EventHandleAction.UPDATE, deleteTimeLeave(true, command));
 		}
 		return EventHandleResult.withResult(EventHandleAction.UPDATE, deleteTimeLeave(false, command));
 	}
@@ -246,14 +247,15 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 	}
 
 	private boolean isRemoveStamp(WorkStamp ass, boolean isSPR) {
-		if(!isSPR && ass.getStampSourceInfo() == StampSourceInfo.SPR){
-			return true;
+		if(isSPR && ass.getStampSourceInfo() == StampSourceInfo.SPR){
+			return false;
 		}
 		
 		return ass.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT ||
 				ass.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION ||
 				ass.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT_APPLICATION_BUTTON || 
-				ass.getStampSourceInfo() == StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO;
+				ass.getStampSourceInfo() == StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO || 
+				ass.getStampSourceInfo() == StampSourceInfo.SPR;
 	}
 
 	private Optional<WorkingConditionItem> getWorkConditionOrDefault(TimeLeaveUpdateByWorkInfoChangeCommand command) {

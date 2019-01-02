@@ -204,6 +204,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 	@Override
 	public void handle(CommandHandlerContext<ScheduleCreatorExecutionCommand> context) {
+		System.out.println("Run batch service !");
 		LoginUserContext loginUserContext = AppContexts.user();
 
 		// get company id

@@ -33,6 +33,8 @@ module nts.uk.pr.view.qmm041.c.viewmodel {
         editHistory() {
             let self = this;
             if (self.modifyMethod() == model.MODIFY_METHOD.UPDATE) {
+                $('.nts-input').trigger('validate');
+                if(nts.uk.ui.errors.hasError()) return;
                 self.updateHistory();
             } else {
                 dialog.confirm({messageId: "Msg_18"}).ifYes(() => {

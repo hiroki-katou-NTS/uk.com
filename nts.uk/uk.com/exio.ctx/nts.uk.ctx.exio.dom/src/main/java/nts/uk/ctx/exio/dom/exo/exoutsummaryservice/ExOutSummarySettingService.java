@@ -49,6 +49,7 @@ public class ExOutSummarySettingService {
 		List<SearchCodeList> searchCodeList;
 		Optional<CtgItemData> ctgItemData;
 		StringBuilder cond = new StringBuilder();
+		DataType dataType = DataType.CHARACTER;
 
 		for (OutCndDetailItem outCndDetailItem : outCndDetailItemList) {
 			searchCodeList = outCndDetailItem.getListSearchCodeList();
@@ -72,6 +73,7 @@ public class ExOutSummarySettingService {
 					cond.append(outCndDetailItem.getSearchNum().get().v());
 					cond.append(outCndDetailItem.getConditionSymbol().nameId);
 				}
+				dataType = DataType.NUMERIC;
 			}
 			// 文字型 CharacterType
 			else if (ctgItemData.get().getDataType() == DataType.CHARACTER) {
@@ -85,6 +87,7 @@ public class ExOutSummarySettingService {
 					cond.append(outCndDetailItem.getSearchChar().get().v());
 					cond.append(outCndDetailItem.getConditionSymbol().nameId);
 				}
+				dataType = DataType.CHARACTER;
 			}
 			// 日付型 DateType
 			else if (ctgItemData.get().getDataType() == DataType.DATE) {
@@ -98,6 +101,7 @@ public class ExOutSummarySettingService {
 					cond.append(outCndDetailItem.getSearchDate().get());
 					cond.append(outCndDetailItem.getConditionSymbol().nameId);
 				}
+				dataType = DataType.DATE;
 			}
 			// 時間型 TimeType
 			else if (ctgItemData.get().getDataType() == DataType.TIME) {
@@ -109,8 +113,10 @@ public class ExOutSummarySettingService {
 							? outCndDetailItem.getSearchTimeEndVal().get() : "");
 				} else if(outCndDetailItem.getSearchTime().isPresent()) {
 					cond.append(outCndDetailItem.getSearchTime().get());
+					cond.append("|");
 					cond.append(outCndDetailItem.getConditionSymbol().nameId);
 				}
+				dataType = DataType.TIME;
 			}
 			// 時刻型 TimeClockType
 			else if (ctgItemData.get().getDataType() == DataType.INS_TIME) {
@@ -122,8 +128,10 @@ public class ExOutSummarySettingService {
 							? outCndDetailItem.getSearchClockEndVal().get() : "");
 				} else if(outCndDetailItem.getSearchClock().isPresent()) {
 					cond.append(outCndDetailItem.getSearchClock().get());
+					cond.append("|");
 					cond.append(outCndDetailItem.getConditionSymbol().nameId);
 				}
+				dataType = DataType.INS_TIME;
 			}
 
 			if (ctgItemData.get().getSearchValueCd().isPresent()
@@ -134,7 +142,7 @@ public class ExOutSummarySettingService {
 				cond.append(outCndDetailItem.getConditionSymbol().nameId);
 			}
 
-			ctgItemDataCustomList.add(new CtgItemDataCustom(outCndDetailItem.getSeriNum(), ctgItemData.get().getItemName().v(), cond.toString()));
+			ctgItemDataCustomList.add(new CtgItemDataCustom(outCndDetailItem.getSeriNum(), ctgItemData.get().getItemName().v(), cond.toString(), dataType));
 		}
 
 		return ctgItemDataCustomList;

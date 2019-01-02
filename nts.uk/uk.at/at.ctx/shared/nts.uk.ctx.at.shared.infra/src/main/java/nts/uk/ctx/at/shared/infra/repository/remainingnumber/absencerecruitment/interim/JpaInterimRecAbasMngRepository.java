@@ -126,10 +126,10 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 				new UseDay(x.useDays),
 				EnumAdaptor.valueOf(x.selectedAtr, SelectedAtr.class));
 	}
-
+	@SneakyThrows
 	@Override
-	public List<InterimRecMng> getRecByIdPeriod(List<String> recId, double unUseDays, DatePeriod dateData) {
-		if(recId.isEmpty()) {
+	public List<InterimRecMng> getRecByIdPeriod(String sid, DatePeriod ymdPeriod, double unUseDays, DatePeriod dateData) {
+		/*if(recId.isEmpty()) {
 			return Collections.emptyList();
 		}
 		List<InterimRecMng> resultList = new ArrayList<>();
@@ -141,7 +141,28 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 								.setParameter("endDate", dateData.end())
 								.getList(c -> toDomainRecMng(c)));
 		});
-		return resultList;
+		return resultList;*/
+		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_REC_MNG a1"
+				+ " INNER JOIN KRCMT_INTERIM_REMAIN_MNG a2 "
+				+ " ON a1.RECRUITMENT_MNG_ID = a2.REMAIN_MNG_ID"
+				+ " WHERE a2.SID = ?"
+				+ " AND a2.REMAIN_TYPE = " + RemainType.PICKINGUP.value
+				+ " AND a2.YMD >= ? and a2.YMD <= ?"
+				+ " AND a1.UNUSED_DAYS > ?"
+				+ " AND a1.EXPIRATION_DAYS >= ? and a1.EXPIRATION_DAYS <= ?"
+				+ " ORDER BY a2.YMD");
+				)
+		{
+			sql.setString(1, sid);
+			sql.setDate(2, Date.valueOf(ymdPeriod.start().localDate()));
+			sql.setDate(3, Date.valueOf(ymdPeriod.end().localDate()));
+			sql.setDouble(4, unUseDays);
+			sql.setDate(5, Date.valueOf(dateData.start().localDate()));
+			sql.setDate(6, Date.valueOf(dateData.end().localDate()));
+			List<InterimRecMng> lstOutput = new NtsResultSet(sql.executeQuery())
+					.getList(x -> toDomain(x));
+			return lstOutput;
+		}
 	}
 
 	@Override
@@ -327,10 +348,10 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	@SneakyThrows
 	@Override
 	public List<InterimRecMng> getRecBySidDatePeriod(String sid, DatePeriod period) {
-		try(PreparedStatement sql = this.connection().prepareStatement("SELECT a1 FROM KRCMT_INTERIM_REC_MNG a1"
+		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_REC_MNG a1"
 				+ " INNER JOIN KRCMT_INTERIM_REMAIN_MNG a2 ON a1.RECRUITMENT_MNG_ID = a2.REMAIN_MNG_ID"
 				+ " WHERE a2.SID = ?"
-				+ " AND  a2.REMAIN_TYPE = " + RemainType.PICKINGUP
+				+ " AND a2.REMAIN_TYPE = " + RemainType.PICKINGUP.value
 				+ " AND a2.YMD >= ? and a2.YMD <= ?"
 				+ " ORDER BY a2.YMD");
 		)
@@ -350,5 +371,31 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 				new OccurrenceDay(x.getBigDecimal("OCCURRENCE_DAYS") == null ? 0 : x.getBigDecimal("OCCURRENCE_DAYS").doubleValue()),
 				x.getEnum("STATUTORY_ATR", StatutoryAtr.class),
 				new UnUsedDay(x.getBigDecimal("UNUSED_DAYS") == null ? 0 : x.getBigDecimal("UNUSED_DAYS").doubleValue()));
+	}
+
+	@SneakyThrows
+	@Override
+	public List<InterimAbsMng> getAbsBySidDatePeriod(String sid, DatePeriod period) {
+		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_ABS_MNG a1"
+				+ " INNER JOIN KRCMT_INTERIM_REMAIN_MNG a2 ON a1.ABSENCE_MNG_ID = a2.REMAIN_MNG_ID"
+				+ " WHERE a2.SID = ?"
+				+ " AND a2.REMAIN_TYPE = " + RemainType.PAUSE.value
+				+ " AND a2.YMD >= ? and a2.YMD <= ?"
+				+ " ORDER BY a2.YMD");
+				)
+		{
+			sql.setString(1, sid);
+			sql.setDate(2, Date.valueOf(period.start().localDate()));
+			sql.setDate(3, Date.valueOf(period.end().localDate()));
+			List<InterimAbsMng> lstOutput = new NtsResultSet(sql.executeQuery())
+					.getList(x -> toDomainAbs(x));
+			return lstOutput;
+		}
+	}
+
+	private InterimAbsMng toDomainAbs(NtsResultRecord x) {
+		return new InterimAbsMng(x.getString("ABSENCE_MNG_ID"), 
+				new RequiredDay(x.getBigDecimal("REQUIRED_DAYS") == null ? 0 : x.getBigDecimal("REQUIRED_DAYS").doubleValue()), 
+				new UnOffsetDay(x.getBigDecimal("UNOFFSET_DAYS") == null ? 0 : x.getBigDecimal("UNOFFSET_DAYS").doubleValue()));
 	}
 }

@@ -16,12 +16,14 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
         empAmountItems: Array<RsdtTaxPayAmountDto> = [];
 
         ccg001ComponentOption: GroupOption = null;
-        baseDate: KnockoutObservable<string> = ko.observable(moment().toISOString());
+        baseDate: string;
         empSearchItems: Array<EmployeeSearchDto>;
 
         residentTaxValidator = new validation.NumberValidator(getText("QMM025_28"), "ResidentTax", {required: true});
 
         employIdLogin: any;
+
+        enableA2_8: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             let self = this;
@@ -72,6 +74,8 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                 showJobTitle: true,
                 showWorktype: true,
                 isMutipleCheck: true,
+                tabindex: 6,
+                showOnStart: true,
 
                 /**
                  * Self-defined function: Return data from CCG001
@@ -79,6 +83,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                  */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
                     self.empSearchItems = data.listEmployee;
+                    self.baseDate = data.baseDate;
                     self.initData();
                 }
             }
@@ -91,7 +96,6 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
             // Start component
             $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);
             self.year(self.formatYear(new Date()));
-            // self.loadGrid();
             self.loadMGrid();
             block.clear();
             dfd.resolve();
@@ -385,6 +389,7 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
         selectEmp(id, value, rowData: RsdtTaxPayAmountDto) {
             let self = this;
             self.setDelete(id, value, rowData.inputAtr);
+            self.enableA2_8(!_.isEmpty(self.getSidSelected()));
         }
 
         selectInputAtr(id, value) {
@@ -452,12 +457,12 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
             let self = this;
             let listSId = _.map(self.empSearchItems, (item: EmployeeSearchDto) => {
                 return item.employeeId;
-            })
+            });
             let param = {
                 listSId: listSId,
-                baseDate: self.baseDate(),
+                baseDate: self.baseDate,
                 year: self.formatYear(self.year())
-            }
+            };
             return param;
         }
 
@@ -468,6 +473,14 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             block.invisible();
+            $("#A2_3").ntsError('check');
+            if (nts.uk.ui.errors.hasError()) {
+                $("#grid").mGrid("destroy");
+                self.empAmountItems = [];
+                self.loadMGrid();
+                block.clear();
+                return;
+            }
             let param = self.createParamGet();
             let getEmpInfoDept = service.getEmpInfoDept(param);
             let getRsdtTaxPayAmount = service.getRsdtTaxPayAmount(param);
@@ -535,18 +548,8 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
         deleteAmount() {
             let self = this;
             block.invisible();
-
-            let empAmountItems: Array<RsdtTaxPayAmountDto> = $("#grid").mGrid("dataSource", true);
-            let listEmpSelected = _.filter(empAmountItems, (item: RsdtTaxPayAmountDto) => {
-                return item.selectedEmp;
-            });
-            let listSId = _.map(listEmpSelected, (item: RsdtTaxPayAmountDto) => {
-                return item.sid;
-            });
-
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-
-                service.deleteTaxPayAmount(new DeleteCommand(listSId, self.formatYear(self.year()))).done(() => {
+                service.deleteTaxPayAmount(new DeleteCommand(self.getSidSelected(), self.formatYear(self.year()))).done(() => {
                     info({messageId: "Msg_16"}).then(() => {
                         self.getEmpAmount();
                     });
@@ -554,11 +557,21 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
                     self.focusA3_1();
                     block.clear();
                 })
-
             }).ifNo(function() {
-                nts.uk.ui.block.clear();
+                block.clear();
                 return false;
             })
+        }
+
+        getSidSelected(): Array<string> {
+            let empAmountItems: Array<RsdtTaxPayAmountDto> = $("#grid").mGrid("dataSource", true);
+            let listEmpSelected = _.filter(empAmountItems, (item: RsdtTaxPayAmountDto) => {
+                return item.selectedEmp;
+            });
+            let listSId = _.map(listEmpSelected, (item: RsdtTaxPayAmountDto) => {
+                return item.sid;
+            });
+            return listSId;
         }
 
         isValidForm() {
@@ -751,34 +764,35 @@ module nts.uk.pr.view.qmm025.a.viewmodel {
         amountDecember: string;//社員住民税納付額情報.月次納付額.12月納付額
 
         constructor(data: RsdtTaxPayAmountDto) {
+            let dataDefault = "0";
             this.sid = data.sid;
-            this.amountJune = isNullOrEmpty(data.amountJune) ? "0" : data.amountJune;
-            this.amountJuly = isNullOrEmpty(data.amountJuly) ? "0" : data.amountJuly;
+            this.amountJune = isNullOrEmpty(data.amountJune) ? dataDefault : data.amountJune;
+            this.amountJuly = isNullOrEmpty(data.amountJuly) ? dataDefault : data.amountJuly;
             this.rsdtTaxPayeeName = data.rsdtTaxPayeeName;
             if (data.inputAtr) {
                 this.inputAtr = ResidentTaxInputAtr.ALL_MONTH;
-                this.amountJanuary = data.amountJanuary;
-                this.amountFebruary = data.amountFebruary;
-                this.amountMarch = data.amountMarch;
-                this.amountApril = data.amountApril;
-                this.amountMay = data.amountMay;
-                this.amountAugust = data.amountAugust;
-                this.amountSeptember = data.amountSeptember;
-                this.amountOctober = data.amountOctober;
-                this.amountNovember = data.amountNovember;
-                this.amountDecember = data.amountDecember;
+                this.amountJanuary = isNullOrEmpty(data.amountJanuary) ? dataDefault : data.amountJanuary;
+                this.amountFebruary = isNullOrEmpty(data.amountFebruary) ? dataDefault : data.amountFebruary;
+                this.amountMarch = isNullOrEmpty(data.amountMarch) ? dataDefault : data.amountMarch;
+                this.amountApril = isNullOrEmpty(data.amountApril) ? dataDefault : data.amountApril;
+                this.amountMay = isNullOrEmpty(data.amountMay) ? dataDefault : data.amountMay;
+                this.amountAugust = isNullOrEmpty(data.amountAugust) ? dataDefault : data.amountAugust;
+                this.amountSeptember = isNullOrEmpty(data.amountSeptember) ? dataDefault : data.amountSeptember;
+                this.amountOctober = isNullOrEmpty(data.amountOctober) ? dataDefault : data.amountOctober;
+                this.amountNovember = isNullOrEmpty(data.amountNovember) ? dataDefault : data.amountNovember;
+                this.amountDecember = isNullOrEmpty(data.amountDecember) ? dataDefault : data.amountDecember;
             } else {
                 this.inputAtr = ResidentTaxInputAtr.NOT_ALL_MONTH;
-                this.amountJanuary = "0";
-                this.amountFebruary = "0";
-                this.amountMarch = "0";
-                this.amountApril = "0";
-                this.amountMay = "0";
-                this.amountAugust = "0";
-                this.amountSeptember = "0";
-                this.amountOctober = "0";
-                this.amountNovember = "0";
-                this.amountDecember = "0";
+                this.amountJanuary = dataDefault;
+                this.amountFebruary = dataDefault;
+                this.amountMarch = dataDefault;
+                this.amountApril = dataDefault;
+                this.amountMay = dataDefault;
+                this.amountAugust = dataDefault;
+                this.amountSeptember = dataDefault;
+                this.amountOctober = dataDefault;
+                this.amountNovember = dataDefault;
+                this.amountDecember = dataDefault;
             }
         }
 
