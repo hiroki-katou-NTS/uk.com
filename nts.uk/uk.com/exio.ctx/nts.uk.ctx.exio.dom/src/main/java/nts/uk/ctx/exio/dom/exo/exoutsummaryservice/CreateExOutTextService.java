@@ -780,7 +780,13 @@ public class CreateExOutTextService extends ExportService<Object> {
 			nullValueReplace = dataFormatSetting.getValueOfNullValueReplace().map(item -> item.v()).orElse("");
 
 			if (isfixedValue == NotUseAtr.USE) {
-				targetValue = fixedValue;
+				if(stringFormat == StringFormat.SINGLE_QUOTATION) {
+					targetValue = stringFormat.character +fixedValue + stringFormat.character;
+				}else if(stringFormat == StringFormat.DOUBLE_QUOTATION) {
+					targetValue = stringFormat.character+ fixedValue +stringFormat.character ;
+				}else{
+					targetValue = fixedValue;
+				}
 				lineDataCSV.put(outputItemCustom.getStandardOutputItem().getOutputItemName().v(), targetValue);
 				index += outputItemCustom.getCtgItemDataList().size();
 				continue;
