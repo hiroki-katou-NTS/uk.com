@@ -386,7 +386,6 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
 
                     service.getInitStatementLayoutHistData(statementCode, histId, startMonth, itemHistoryDivision, layoutPattern).done(function (data: IStatementLayoutHistData) {
                         if(data) {
-                            self.statementLayoutList.removeAll();
                             self.currentHistoryId("");
                             self.statementLayoutHistData(new StatementLayoutHistData(data, true));
                             self.calculatePrintLine();
