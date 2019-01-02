@@ -464,12 +464,11 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 		// サーバ外部出力タイプデータ系
 		if (type == CategorySetting.DATA_TYPE) {
-			ExIoOperationState checkResult = checkInterruptAndIncreaseProCnt(exOutSetting.getProcessingId());
-			if ((checkResult == ExIoOperationState.FAULT_FINISH)
-					|| (checkResult == ExIoOperationState.INTER_FINISH))
-				return new OperationStateResult(checkResult);
-			
 			for (String sid : exOutSetting.getSidList()) {
+				ExIoOperationState checkResult = checkInterruptAndIncreaseProCnt(exOutSetting.getProcessingId());
+				if ((checkResult == ExIoOperationState.FAULT_FINISH)
+						|| (checkResult == ExIoOperationState.INTER_FINISH))
+					return new OperationStateResult(checkResult);
 				try {
 					sqlAndParam = getExOutDataSQL(sid, true, exOutSetting, settingResult);
 					data = exOutCtgRepo.getData(sqlAndParam);
@@ -493,11 +492,6 @@ public class CreateExOutTextService extends ExportService<Object> {
 			// サーバ外部出力タイプマスター系
 		} else {
 			try {
-				ExIoOperationState checkResult = checkInterruptAndIncreaseProCnt(exOutSetting.getProcessingId());
-				if ((checkResult == ExIoOperationState.FAULT_FINISH)
-						|| (checkResult == ExIoOperationState.INTER_FINISH))
-					return new OperationStateResult(checkResult);
-				
 				sqlAndParam = getExOutDataSQL(null, false, exOutSetting, settingResult);
 				data = exOutCtgRepo.getData(sqlAndParam);
 			
@@ -512,6 +506,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 				exOutOpMngRepo.update(exOutOpMng);
 	
 				for (List<String> lineData : data) {
+					ExIoOperationState checkResult = checkInterruptAndIncreaseProCnt(exOutSetting.getProcessingId());
+					if ((checkResult == ExIoOperationState.FAULT_FINISH)
+							|| (checkResult == ExIoOperationState.INTER_FINISH))
+						return new OperationStateResult(checkResult);
 					lineDataResult = fileLineDataCreation(exOutSetting.getProcessingId(), lineData, outputItemCustomList,
 							loginSid, stringFormat,baseDate);
 					stateResult = (String) lineDataResult.get(RESULT_STATE);
