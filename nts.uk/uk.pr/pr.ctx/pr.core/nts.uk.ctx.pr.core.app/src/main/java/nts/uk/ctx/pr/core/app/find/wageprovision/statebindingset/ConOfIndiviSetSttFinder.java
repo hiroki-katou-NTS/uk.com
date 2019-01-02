@@ -93,18 +93,18 @@ public class ConOfIndiviSetSttFinder {
     private static final int FIRST_HISTORY = 0;
 
 
-    public List<ConOfIndiviSetSttDto> indiTiedStatAcquiProcess(int type, List<InformationEmployeeDto> employees, String hisId, GeneralDate baseDate ) {
+    public List<ConOfIndiviSetSttDto> indiTiedStatAcquiProcess(int type, List<InformationEmployeeDto> employees, String hisId, GeneralDate baseDate) {
         String cid = AppContexts.user().companyId();
         List<ConOfIndiviSetSttDto> resulf = new ArrayList<ConOfIndiviSetSttDto>();
         List<String> employeeIds = employees.stream().map(x -> new String(x.getEmployeeId())).collect((Collectors.toList()));
         // <<Public>> 社員の情報を取得する
         List<EmployeeInformationImport> listEmployeeInformationImport = employeeInformationAdapter
-                .getEmployeeInfo(new EmployeeInformationQueryDtoImport(employeeIds , null, true, false, true,
+                .getEmployeeInfo(new EmployeeInformationQueryDtoImport(employeeIds, null, true, false, true,
                         true, false, false));
 
         Optional<StateUseUnitSet> mStateUseUnitSetting = mStateUseUnitSetRepository.getStateUseUnitSettingById(cid);
         List<SalaryClassificationInformation> salaryClassificationInformation = mSalaryClassificationInformationRepository.getAllSalaryClassificationInformation(cid);
-        mDepartment = mDepartmentAdapter.getDepartmentByBaseDate(cid, baseDate,employeeIds);
+        mDepartment = mDepartmentAdapter.getDepartmentByBaseDate(cid, baseDate, employeeIds);
 
         employeeIds.stream().forEach(itemEmployeeId -> {
                     Optional<EmployeeInformationImport> employeeInformationImport = Optional.empty();
@@ -117,28 +117,28 @@ public class ConOfIndiviSetSttFinder {
                             if (stateCorrelationHisIndividual.isPresent() && stateCorrelationHisIndividual.get().getBonusCode().isPresent() && stateCorrelationHisIndividual.get().getSalaryCode().isPresent()) {
                                 Optional<StateCorreHisCom> mSStateCorrelationHisCompany = mStateCorreHisComRepository.getStateCorrelationHisCompanyByDate(cid, baseDate);
                                 /*return for I2_9 and I2_11*/
-                                Optional<StateLinkSetCom> mStateLinkSettingCompany = mStateCorreHisComRepository.getStateLinkSettingCompanyById(cid,mSStateCorrelationHisCompany.get().getHistory().get(0).identifier());
+                                Optional<StateLinkSetCom> mStateLinkSettingCompany = mStateCorreHisComRepository.getStateLinkSettingCompanyById(cid, mSStateCorrelationHisCompany.get().getHistory().get(0).identifier());
                                 /*return for I2_10*/
                                 Optional<StatementLayout> mOptionalStatementLayout = mStatementLayoutRepository.getStatementLayoutById(cid, mStateLinkSettingCompany.get().getSalaryCode().get().v());
                                 return;
                             }
 
                         }
-                        if(mStateUseUnitSetting.get().getMasterUse().value == SettingUseCls.USE.value){
+                        if (mStateUseUnitSetting.get().getMasterUse().value == SettingUseCls.USE.value) {
                             employeeInformationImport = listEmployeeInformationImport.stream().filter(x -> x.getEmployeeId().equals(itemEmployeeId)).findFirst();
-                            stateLinkSettingMaster = getAcquireMasterLinkedStatement(EnumAdaptor.valueOf(type, nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.UsageMaster.class), itemEmployeeId, hisId, baseDate, employeeInformationImport.get(),mDepartment.stream().filter(x -> x.getWorkplaceId().equals(employees.stream().filter(emId -> emId.getEmployeeId().equals(itemEmployeeId)).findFirst().get().getWorkplaceId())).findFirst().toString());
+                            stateLinkSettingMaster = getAcquireMasterLinkedStatement(EnumAdaptor.valueOf(type, nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.UsageMaster.class), itemEmployeeId, hisId, baseDate, employeeInformationImport.get(), mDepartment.stream().filter(x -> x.getWorkplaceId().equals(employees.stream().filter(emId -> emId.getEmployeeId().equals(itemEmployeeId)).findFirst().get().getWorkplaceId())).findFirst().toString());
 
                         }
                     }
                     Optional<StateCorreHisCom> mSStateCorrelationHisCompany = mStateCorreHisComRepository.getStateCorrelationHisCompanyByDate(cid, baseDate);
-                    if(!mSStateCorrelationHisCompany.isPresent()){
-                        return ;
+                    if (!mSStateCorrelationHisCompany.isPresent()) {
+                        return;
                     }
                     /*return for I2_9 and I2_11*/
-                    Optional<StateLinkSetCom> mStateLinkSettingCompany = mStateCorreHisComRepository.getStateLinkSettingCompanyById(cid,mSStateCorrelationHisCompany.get().getHistory().get(0).identifier());
-            if(!mStateLinkSettingCompany.isPresent()){
-                return ;
-            }
+                    Optional<StateLinkSetCom> mStateLinkSettingCompany = mStateCorreHisComRepository.getStateLinkSettingCompanyById(cid, mSStateCorrelationHisCompany.get().getHistory().get(0).identifier());
+                    if (!mStateLinkSettingCompany.isPresent()) {
+                        return;
+                    }
                     /*return for I2_10*/
                     Optional<StatementLayout> mOptionalStatementLayout = mStatementLayoutRepository.getStatementLayoutById(cid, mStateLinkSettingCompany.get().getSalaryCode().get().v());
                     Optional<StateLinkSetMaster> finalStateLinkSettingMaster = stateLinkSettingMaster;
@@ -173,7 +173,7 @@ public class ConOfIndiviSetSttFinder {
                 Optional<StateCorreHisDepar> mStateCorrelationHisDeparment = mStateCorreHisDeparRepository.getStateCorrelationHisDeparmentByDate(cid, baseDate);
                 String historyId = mStateCorrelationHisDeparment.get().getHistory().get(FIRST_HISTORY).identifier();
                 /*ドメインモデル「明細書紐付け設定（マスタ）」を取得する*/ /*return for I2_9 and I2_11 */
-                Optional<StateLinkSetMaster> mStateLinkSettingMaster = mStateCorreHisDeparRepository.getStateLinkSettingMasterById(cid,historyId, dataRequestList.getDepartment().getDepartmentCode());
+                Optional<StateLinkSetMaster> mStateLinkSettingMaster = mStateCorreHisDeparRepository.getStateLinkSettingMasterById(cid, historyId, dataRequestList.getDepartment().getDepartmentCode());
                 if (!mStateLinkSettingMaster.isPresent()) {
                     return mStateLinkSettingMaster;
                 }
@@ -189,8 +189,8 @@ public class ConOfIndiviSetSttFinder {
                     return Optional.empty();
                 }
                 /*ドメインモデル「明細書紐付け設定（マスタ）」を取得する*/
-                Optional<StateLinkSetMaster> mStateLinkSettingMasterVer2 = mStateCorreHisDeparRepository.getStateLinkSettingMasterById(cid,hisId,/* comment vì đợi request list mDepartmentUpper.get().getDepartmentId()*/null);
-                if(!mStateLinkSettingMasterVer2.isPresent()){
+                Optional<StateLinkSetMaster> mStateLinkSettingMasterVer2 = mStateCorreHisDeparRepository.getStateLinkSettingMasterById(cid, hisId,/* comment vì đợi request list mDepartmentUpper.get().getDepartmentId()*/null);
+                if (!mStateLinkSettingMasterVer2.isPresent()) {
                     return Optional.empty();
                 }
                 return mStateLinkSettingMasterVer2;
@@ -198,14 +198,14 @@ public class ConOfIndiviSetSttFinder {
             case EMPLOYEE: {
                 /*Imported(給与)「雇用履歴」を取得する */
                 Optional<EmploymentHisExport> mEmploymentHisExport = mIEmploymentHistoryAdapter.getEmploymentHistory(employeeId, hisId);
-                if(!mEmploymentHisExport.isPresent()){
+                if (!mEmploymentHisExport.isPresent()) {
                     return Optional.empty();
                 }
                 /*ドメインモデル「明細書紐付け履歴（雇用）」を取得する*/
                 Optional<StateCorreHisEm> mStateCorrelationHisEmployee = mStateCorreHisEmRepository.getStateCorrelationHisEmployeeById(cid, hisId);
                 /*ドメインモデル「明細書紐付け設定（マスタ）」を取得する*/
-                Optional<StateLinkSetMaster> mStateLinkSettingMasterVer2 = mStateCorreHisEmRepository.getStateLinkSettingMasterById(cid,hisId, mEmploymentHisExport.get().lstEmpCodeandPeriod.stream().filter(x -> x.getHistoryID().equals(hisId)).findFirst().get().getEmploymentCode());
-                if(!mStateLinkSettingMasterVer2.isPresent()){
+                Optional<StateLinkSetMaster> mStateLinkSettingMasterVer2 = mStateCorreHisEmRepository.getStateLinkSettingMasterById(cid, hisId, mEmploymentHisExport.get().lstEmpCodeandPeriod.stream().filter(x -> x.getHistoryID().equals(hisId)).findFirst().get().getEmploymentCode());
+                if (!mStateLinkSettingMasterVer2.isPresent()) {
                     return Optional.empty();
                 }
                 return mStateLinkSettingMasterVer2;
@@ -216,8 +216,8 @@ public class ConOfIndiviSetSttFinder {
                 /*ドメインモデル「明細書紐付け履歴（分類）」を取得する*/
                 Optional<StateCorreHisCls> mStateCorrelationHisEmployee = mStateCorreHisClsRepository.getStateCorrelationHisClassificationById(cid, hisId);
                 /*ドメインモデル「明細書紐付け設定（マスタ）」を取得する*/
-                Optional<StateLinkSetMaster> mStateLinkSettingMasterVer2 = mStateCorreHisClsRepository.getStateLinkSettingMasterById(cid,hisId, mEmploymentHisExport.get().getClassificationCode());
-                if(!mStateLinkSettingMasterVer2.isPresent()){
+                Optional<StateLinkSetMaster> mStateLinkSettingMasterVer2 = mStateCorreHisClsRepository.getStateLinkSettingMasterById(cid, hisId, mEmploymentHisExport.get().getClassificationCode());
+                if (!mStateLinkSettingMasterVer2.isPresent()) {
                     return Optional.empty();
                 }
                 return mStateLinkSettingMasterVer2;
@@ -231,8 +231,8 @@ public class ConOfIndiviSetSttFinder {
                 /*ドメインモデル「明細書紐付け履歴（職位）」を取得する*/
                 Optional<StateCorreHisPo> mStateCorrelationHisPosition = mStateCorreHisPoRepository.getStateCorrelationHisPositionById(cid, hisId);
 
-                Optional<StateLinkSetMaster> mStateLinkSettingMasterVer2 = mStateCorreHisPoRepository.getStateLinkSettingMasterById(cid,hisId, mJobTitleInfo.get(0).getJobTitleCode());
-                if(!mStateLinkSettingMasterVer2.isPresent()){
+                Optional<StateLinkSetMaster> mStateLinkSettingMasterVer2 = mStateCorreHisPoRepository.getStateLinkSettingMasterById(cid, hisId, mJobTitleInfo.get(0).getJobTitleCode());
+                if (!mStateLinkSettingMasterVer2.isPresent()) {
                     return Optional.empty();
                 }
                 return mStateLinkSettingMasterVer2;
@@ -242,10 +242,10 @@ public class ConOfIndiviSetSttFinder {
                 Optional<EmploySalaryClassHistory> mEmploySalaryClassHistory = mEmploySalaryClassHistoryRepository.getEmploySalaryClassHistoryById(employeeId, hisId);
                 Optional<EmploySalaryCategory> mEmploySalaryCategory = mEmploySalaryCategoryRepository.getEmploySalaryClassHistoryById(mEmploySalaryClassHistory.get().getHistory().get(0).identifier());
                 /*ドメインモデル「明細書紐付け履歴（給与分類）」を取得する*/
-                 Optional<StateCorreHisSala> mStateCorrelationHisSalary = mStateCorreHisSalaRepository.getStateCorrelationHisSalaryByKey(cid, hisId);
+                Optional<StateCorreHisSala> mStateCorrelationHisSalary = mStateCorreHisSalaRepository.getStateCorrelationHisSalaryByKey(cid, hisId);
                 /*ドメインモデル「明細書紐付け設定（マスタ）」を取得する*/
                 Optional<StateLinkSetMaster> mStateLinkSettingMasterVer2 = mStateCorreHisSalaRepository.getStateLinkSettingMasterById(cid, hisId, mEmploySalaryCategory.get().getSalaryClassCode());
-                if(!mStateLinkSettingMasterVer2.isPresent()){
+                if (!mStateLinkSettingMasterVer2.isPresent()) {
                     return Optional.empty();
                 }
                 return mStateLinkSettingMasterVer2;
@@ -254,6 +254,7 @@ public class ConOfIndiviSetSttFinder {
         }
         return Optional.empty();
     }
+
     private String editDepartmentCode(String hierarchyCd) {
         int checkIndex = hierarchyCd.length();
         StringBuilder mStringBuilder = new StringBuilder(hierarchyCd);
