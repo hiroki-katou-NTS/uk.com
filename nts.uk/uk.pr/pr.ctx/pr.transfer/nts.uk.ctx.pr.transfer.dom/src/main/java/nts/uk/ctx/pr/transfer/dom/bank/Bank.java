@@ -3,9 +3,7 @@ package nts.uk.ctx.pr.transfer.dom.bank;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.gul.text.StringUtil;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -40,21 +38,6 @@ public class Bank extends AggregateRoot {
 	 * メモ
 	 */
 	private Optional<Memo> memo;
-
-	/**
-	 * Check validate data
-	 */
-	@Override
-	public void validate() {
-//		super.validate();
-//		if (this.bankCode == null || StringUtil.isNullOrEmpty(this.bankCode.v(), true)) {
-//			throw new BusinessException("ER001");
-//		}
-//
-//		if (this.bankName == null || StringUtil.isNullOrEmpty(this.bankName.v(), true)) {
-//			throw new BusinessException("ER001");
-//		}
-	}
 
 	/**
 	 * 

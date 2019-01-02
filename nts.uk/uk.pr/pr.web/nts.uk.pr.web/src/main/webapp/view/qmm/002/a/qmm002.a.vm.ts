@@ -200,13 +200,13 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
             block.invisible();
             service.getAllBankBranch(_.map(data, b => b.code)).done((branchData: Array<any>) => {
                 self.listBranch(branchData);
+                self.totalBranches(branchData.length);
                 if (_.isEmpty(branchData)) {
                     let displayList = _.map(data, b => {
                         return new Node(b.code, b.code, b.name, []);
                     });
                     self.bankBranchList(displayList);
                 } else {
-                    self.totalBranches(branchData.length);
                     let displayList = _.map(data, b => {
                         let lstBr = _.filter(branchData, br => { return br.bankCode == b.code; }).map(br => { return new Node(br.id, br.code, br.name, [])});
                         return new Node(b.code, b.code, b.name, lstBr);
