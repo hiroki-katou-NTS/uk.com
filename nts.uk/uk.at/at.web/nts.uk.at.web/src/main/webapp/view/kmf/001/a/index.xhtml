@@ -20,7 +20,7 @@
 			<div id="functions-area">
 				<button data-bind="click: openPrioritySettingDialog" class="small" style="margin-left: 125px;">#{i18n.getText('KMF001_13')}</button>
 				<!-- <span style="float: right;">#{i18n.getText('KMF001_14')} </span> -->
-				<button data-bind="click: exportExcel" style="margin-left: 125px;">#{i18n.getText('KMF001_155')}</button>
+				<button data-bind="click: exportExcel, visible:hasPermission()" style="margin-left: 125px;">#{i18n.getText('KMF001_155')}</button>
 
 			</div>
 			<!-- END FUNCTION AREA-->
