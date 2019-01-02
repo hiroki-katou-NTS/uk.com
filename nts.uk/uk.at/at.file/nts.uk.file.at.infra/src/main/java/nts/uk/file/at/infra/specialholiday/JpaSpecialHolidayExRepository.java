@@ -209,7 +209,7 @@ public class JpaSpecialHolidayExRepository extends JpaRepository implements Spec
 			.append("					ORDER BY memp1.CODE")
 			.append("				FOR XML PATH ('')), 1, 1, '') as empName,")
 			.append("			leaRe.AGE_LIMIT, leaRe.AGE_LOWER_LIMIT, leaRe.AGE_HIGHER_LIMIT, leaRe.AGE_CRITERIA_CLS, leaRe.AGE_BASE_DATE,")
-			.append("			ROW_NUMBER() OVER (PARTITION BY sphd.SPHD_CD ORDER BY sphd.SPHD_CD) AS ROW_NUMBER,")
+			.append("			ROW_NUMBER() OVER (PARTITION BY sphd.SPHD_CD ORDER BY sphd.SPHD_CD,graDa.GD_TBL_CD, ely.[NO]) AS ROW_NUMBER,")
 			.append("			ROW_NUMBER() OVER (PARTITION BY sphd.SPHD_CD, graDa.GD_TBL_CD ORDER BY sphd.SPHD_CD,graDa.GD_TBL_CD, ely.[NO]) AS ROW_NUMBER2,")
 			.append("			ROW_NUMBER() OVER (ORDER BY  sphd.SPHD_CD,graDa.GD_TBL_CD, ely.[NO]) AS ROW_INDEX")
 			.append("			FROM KSHST_SPECIAL_HOLIDAY sphd ")
