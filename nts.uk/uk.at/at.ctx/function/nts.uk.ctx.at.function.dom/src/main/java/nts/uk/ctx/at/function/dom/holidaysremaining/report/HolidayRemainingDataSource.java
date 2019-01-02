@@ -22,10 +22,11 @@ public class HolidayRemainingDataSource {
 	private List<String> empIds;
 	private Map<String, HolidaysRemainingEmployee> mapEmployees;
 	private String companyName;
+	private String title;
 
 	public HolidayRemainingDataSource(String startMonth, String endMonth,VariousVacationControl variousVacationControl, int pageBreak,
 			String baseDate, HolidaysRemainingManagement holidaysRemainingManagement, boolean isSameCurrentMonth,
-			List<String> listEmployeeIds, Map<String, HolidaysRemainingEmployee> mapEmployees, String companyName) {
+			List<String> listEmployeeIds, Map<String, HolidaysRemainingEmployee> mapEmployees, String companyName, String title) {
 		super();
 		this.startMonth = GeneralDate.fromString(startMonth, "yyyy/MM/dd");
 		this.endMonth = GeneralDate.fromString(endMonth, "yyyy/MM/dd");
@@ -37,5 +38,6 @@ public class HolidayRemainingDataSource {
 		this.empIds = listEmployeeIds;
 		this.mapEmployees = mapEmployees;
 		this.companyName = companyName;
+		this.title = title;
 	}
 }

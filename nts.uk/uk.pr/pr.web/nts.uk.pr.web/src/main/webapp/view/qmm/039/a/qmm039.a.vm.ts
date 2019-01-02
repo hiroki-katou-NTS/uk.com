@@ -134,7 +134,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                 }
             });
             self.currencyeditor = {
-                value: ko.observable(null),
+                value: ko.observable(0),
                 constraint: '',
                 option: new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
@@ -177,11 +177,11 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
 
                 /** Advanced search properties */
                 showEmployment: true,
-                showWorkplace: false,
+                showWorkplace: true,
                 showClassification: false,
                 showJobTitle: false,
                 showWorktype: false,
-                isMutipleCheck: false,
+                isMutipleCheck: true,
                 showOnStart: true,
                 tabindex: 4,
 
@@ -516,7 +516,7 @@ module nts.uk.pr.view.qmm039.a.viewmodel {
                     self.periodEndYM(nts.uk.time.parseYearMonth(params.periodEndYm).format());
 
                     if (params.takeoverMethod == 1) {
-                        self.currencyeditor.value(null);
+                        self.currencyeditor.value(0);
                     } else {
                         self.currencyeditor.value(self.itemList()[0].amount);
                     }

@@ -40,8 +40,8 @@ public class JpaWorkTypeReportRepository extends JpaRepository implements WorkTy
 			if (entity.worktypeAtr == WorkTypeUnit.OneDay.value) {
 				workTypeSetOneDay = entity.worktypeSetList.get(0);
 			} else {
-				workTypeSetMorning = entity.worktypeSetList.size() > 0 ? entity.worktypeSetList.get(0) : null;
-				workTypeSetAfternoon = entity.worktypeSetList.size() > 1 ? entity.worktypeSetList.get(1) : null;
+				workTypeSetMorning = entity.worktypeSetList.stream().filter(x -> x.kshmtWorkTypeSetPK.workAtr==1).findAny().orElse(null);
+				workTypeSetAfternoon = entity.worktypeSetList.stream().filter(x -> x.kshmtWorkTypeSetPK.workAtr==2).findAny().orElse(null);
 			}
 		}
 
