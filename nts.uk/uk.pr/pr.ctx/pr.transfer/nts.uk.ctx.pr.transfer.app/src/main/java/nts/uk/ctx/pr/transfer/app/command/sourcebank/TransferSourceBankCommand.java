@@ -37,19 +37,24 @@ public class TransferSourceBankCommand {
 
 	public TransferSourceBank toDomain() {
 		List<EntrustorInfor> entrustors = new ArrayList<>();
-		if (this.entrustorInforCode1 != null || this.entrustorInforUse1 != null) {
+		if ((this.entrustorInforCode1 != null && !this.entrustorInforCode1.isEmpty())
+				|| (this.entrustorInforUse1 != null && !this.entrustorInforUse1.isEmpty())) {
 			entrustors.add(new EntrustorInfor(this.entrustorInforCode1, 1, this.entrustorInforUse1));
 		}
-		if (this.entrustorInforCode2 != null || this.entrustorInforUse2 != null) {
+		if ((this.entrustorInforCode2 != null && !this.entrustorInforCode2.isEmpty())
+				|| (this.entrustorInforUse2 != null && !this.entrustorInforUse2.isEmpty())) {
 			entrustors.add(new EntrustorInfor(this.entrustorInforCode2, 2, this.entrustorInforUse2));
 		}
-		if (this.entrustorInforCode3 != null || this.entrustorInforUse3 != null) {
+		if ((this.entrustorInforCode3 != null && !this.entrustorInforCode3.isEmpty())
+				|| (this.entrustorInforUse3 != null && !this.entrustorInforUse3.isEmpty())) {
 			entrustors.add(new EntrustorInfor(this.entrustorInforCode3, 3, this.entrustorInforUse3));
 		}
-		if (this.entrustorInforCode4 != null || this.entrustorInforUse4 != null) {
+		if ((this.entrustorInforCode4 != null && !this.entrustorInforCode4.isEmpty())
+				|| (this.entrustorInforUse4 != null && !this.entrustorInforUse4.isEmpty())) {
 			entrustors.add(new EntrustorInfor(this.entrustorInforCode4, 4, this.entrustorInforUse4));
 		}
-		if (this.entrustorInforCode5 != null || this.entrustorInforUse5 != null) {
+		if ((this.entrustorInforCode5 != null && !this.entrustorInforCode5.isEmpty())
+				|| (this.entrustorInforUse5 != null && !this.entrustorInforUse5.isEmpty())) {
 			entrustors.add(new EntrustorInfor(this.entrustorInforCode5, 5, this.entrustorInforUse5));
 		}
 		return new TransferSourceBank(AppContexts.user().companyId(), this.code, this.name, this.branchId,

@@ -194,6 +194,17 @@ module nts.uk.pr.view.qmm006.a.viewmodel {
         entrustorInforCode5: KnockoutObservable<string> = ko.observable(null);
         entrustorInforUse5: KnockoutObservable<string> = ko.observable(null);
         
+        entrustorInforCode1Required: KnockoutObservable<boolean> = ko.computed(() => {return !_.isEmpty(this.entrustorInforUse1())});
+        entrustorInforUse1Required: KnockoutObservable<boolean> = ko.computed(() => {return !_.isEmpty(this.entrustorInforCode1())});
+        entrustorInforCode2Required: KnockoutObservable<boolean> = ko.computed(() => {return !_.isEmpty(this.entrustorInforUse2())});
+        entrustorInforUse2Required: KnockoutObservable<boolean> = ko.computed(() => {return !_.isEmpty(this.entrustorInforCode2())});
+        entrustorInforCode3Required: KnockoutObservable<boolean> = ko.computed(() => {return !_.isEmpty(this.entrustorInforUse3())});
+        entrustorInforUse3Required: KnockoutObservable<boolean> = ko.computed(() => {return !_.isEmpty(this.entrustorInforCode3())});
+        entrustorInforCode4Required: KnockoutObservable<boolean> = ko.computed(() => {return !_.isEmpty(this.entrustorInforUse4())});
+        entrustorInforUse4Required: KnockoutObservable<boolean> = ko.computed(() => {return !_.isEmpty(this.entrustorInforCode4())});
+        entrustorInforCode5Required: KnockoutObservable<boolean> = ko.computed(() => {return !_.isEmpty(this.entrustorInforUse5())});
+        entrustorInforUse5Required: KnockoutObservable<boolean> = ko.computed(() => {return !_.isEmpty(this.entrustorInforCode5())});
+        
         constructor(data: {
                 code: string, 
                 name: string, 

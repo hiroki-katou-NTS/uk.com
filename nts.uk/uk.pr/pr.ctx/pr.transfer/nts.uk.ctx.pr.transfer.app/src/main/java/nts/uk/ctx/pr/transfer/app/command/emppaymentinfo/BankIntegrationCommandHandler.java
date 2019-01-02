@@ -79,7 +79,7 @@ public class BankIntegrationCommandHandler extends CommandHandler<BankIntegratio
 		// 会社ID = ログイン会社ID
 		// 廃止区分 = 廃止しない
 		List<ProcessInformationImport> listProcInfor = procInfoAdapter
-				.getProcessInformationByDeprecatedCategory(companyId, 1);
+				.getProcessInformationByDeprecatedCategory(companyId, 0);
 
 		// get thang nam xu ly hien tai
 		Set<Integer> setProcCateNo = listProcInfor.stream().map(i -> i.getProcessCateNo()).collect(Collectors.toSet());
