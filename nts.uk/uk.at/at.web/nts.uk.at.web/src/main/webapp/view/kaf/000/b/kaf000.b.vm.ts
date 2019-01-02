@@ -478,7 +478,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                             if (data.autoSendMail) {
                                 appcommon.CommonProcess.displayMailDeleteRs(data);
                             } else {
-                                nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                                shrvm.model.CommonProcess.callCMM045();
                             }
                     });
                 }).fail(function(res: any) {
@@ -517,21 +517,21 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             //if list # null
             if (self.listAppMeta.length == 0) {
                 //nếu list null thì trả về màn hình mẹ
-                nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                shrvm.model.CommonProcess.callCMM045();
             }
 
             if (self.listAppMeta.length == 1) {
-                nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                shrvm.model.CommonProcess.callCMM045();
             }
             //nếu vị trí vừa xóa khác vị trí cuối
             if (index != self.listAppMeta.length) {
                 //gán lại appId mới tại vị trí chính nó
                 //self.btnAfter();
-                nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                shrvm.model.CommonProcess.callCMM045();
             } else {
                 //nếu nó ở vị trí cuối thì lấy appId ở vị trí trước nó
                 //                self.btnBefore();
-                nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                shrvm.model.CommonProcess.callCMM045();
             }
 
         }
@@ -568,7 +568,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
                     nts.uk.ui.block.clear();
                     if (res.messageId === "Msg_198") {
-                        nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                        shrvm.model.CommonProcess.callCMM045();
                     }
                 });
             }
@@ -592,7 +592,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             return listApprover;
         }
 
-
+        callCMM045A(){
+            shrvm.model.CommonProcess.callCMM045();
+        }
     }
 
     export module model {
