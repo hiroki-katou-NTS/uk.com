@@ -90,9 +90,18 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 				if(c.getUseAtr() == UseAtr.NotUse){
 					// neu =0 
 					data.put("使用区分", UseAtr.NotUse.nameId);
-					
+					data.put("名称", "");
+					data.put("略名", "");
+					data.put("集計区分", "");
+					data.put("勤務種類", "");
+					data.put("就業時間帯", "");
+					data.put("集計条件以上", "");
+					data.put("以上", "");
+					data.put("集計条件未満", "");
+					data.put("未満","");
+					data.put("対象項目", "");
+					data.put("半日勤務区分", "");
 				}else{
-					
 					data.put("使用区分", UseAtr.Use.nameId);
 
 					List<String> lista= optTotalTimes.get().getSummaryList().get().getWorkTypeCodes();
@@ -119,56 +128,68 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 					if(CollectionUtil.isEmpty(lst)){
 						data.put("勤務種類","");
 					}else{
-						//sort 
-						lst = lst.stream().sorted(Comparator
-								.comparing(WorkTypeInfor::getWorkTypeCode))
-								.collect(Collectors.toList());
-						
-						//勤務種類
-						String typeOfDuty = "";
-						for (int n = 0; n < lst.size(); n++) {
-							if (n == 0) {
-								typeOfDuty = lst.get(n).getWorkTypeCode() + "" + lst.get(n).getName();
-							} else {
-								typeOfDuty = lst.get(n).getWorkTypeCode() + "" + lst.get(n).getName() + ", "
-									+ typeOfDuty;
+						if(c.getSummaryAtr() == SummaryAtr.WORKINGTIME){
+							data.put("勤務種類","");
+						}else {
+							//sort 
+							lst = lst.stream().sorted(Comparator
+									.comparing(WorkTypeInfor::getWorkTypeCode))
+									.collect(Collectors.toList());
+							
+							//勤務種類
+							String typeOfDuty = "";
+							for (int n = 0; n < lst.size(); n++) {
+								if (n == 0) {
+									typeOfDuty = lst.get(n).getWorkTypeCode() + "" + lst.get(n).getName();
+								} else {
+									typeOfDuty = lst.get(n).getWorkTypeCode() + "" + lst.get(n).getName() + ", "
+										+ typeOfDuty;
+								}
 							}
+							data.put("勤務種類", typeOfDuty);
 						}
-						data.put("勤務種類", typeOfDuty);
+						
 					}
 					
 					
 					if(CollectionUtil.isEmpty(listFindByCodes)){
+						data.put("就業時間帯", "");
 					}else{
-						//sort
-						listFindByCodes = listFindByCodes.stream()
-								.sorted(Comparator.comparing(WorkTimeSetting::getWorktimeCode))
-								.collect(Collectors.toList());
-						//就業時間帯
-						String  workingHours= "";
-						for (int n = 0; n < listFindByCodes.size(); n++) {
-							if (n == 0) {
-								workingHours = listFindByCodes.get(n).getWorktimeCode()+ "" + listFindByCodes.get(n).getWorkTimeDisplayName().getWorkTimeName();
-							} else {
-								workingHours = listFindByCodes.get(n).getWorktimeCode()+ "" + listFindByCodes.get(n).getWorkTimeDisplayName().getWorkTimeName() + ", "
-									+ workingHours;
+						if(c.getSummaryAtr() == SummaryAtr.DUTYTYPE){
+							data.put("就業時間帯", "");
+						}else{
+							//sort
+							listFindByCodes = listFindByCodes.stream()
+									.sorted(Comparator.comparing(WorkTimeSetting::getWorktimeCode))
+									.collect(Collectors.toList());
+							//就業時間帯
+							String  workingHours= "";
+							for (int n = 0; n < listFindByCodes.size(); n++) {
+								if (n == 0) {
+									workingHours = listFindByCodes.get(n).getWorktimeCode()+ "" + listFindByCodes.get(n).getWorkTimeDisplayName().getWorkTimeName();
+								} else {
+									workingHours = listFindByCodes.get(n).getWorktimeCode()+ "" + listFindByCodes.get(n).getWorkTimeDisplayName().getWorkTimeName() + ", "
+										+ workingHours;
+								}
 							}
+							data.put("就業時間帯", workingHours);
 						}
-						data.put("就業時間帯", workingHours);
-					}
-					
-					if(c.getTotalCondition().getUpperLimitSettingAtr() == UseAtr.Use){
-						data.put("集計条件以上", "○");
-						data.put("以上", c.getTotalCondition().getThresoldUpperLimit()+" 以上");
-					}else{
-						data.put("集計条件以上", "-");
 					}
 					
 					if(c.getTotalCondition().getLowerLimitSettingAtr() == UseAtr.Use){
+						data.put("集計条件以上", "○");
+						data.put("以上", c.getTotalCondition().getThresoldLowerLimit()+" 以上");
+					}else{
+						data.put("集計条件以上", "-");
+						data.put("以上", "");
+					}
+					
+					if(c.getTotalCondition().getUpperLimitSettingAtr() == UseAtr.Use){
 						data.put("集計条件未満", "○");
-						data.put("未満", c.getTotalCondition().getThresoldLowerLimit()+" 未満");
+						data.put("未満", c.getTotalCondition().getThresoldUpperLimit()+" 未満");
 					}else{
 						data.put("集計条件未満", "-");
+						data.put("未満", "");
 					}
 					
 					if(c.getCountAtr() ==CountAtr.HALFDAY){
@@ -178,9 +199,10 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 					}
 					
 					if(CollectionUtil.isEmpty(dailyAttendanceItemDomainServiceDtos)){
+						data.put("対象項目", "");
 					}else{
 						dailyAttendanceItemDomainServiceDtos.stream().forEach(m->{
-							data.put("半日勤務区分", m.getAttendanceItemName());
+							data.put("対象項目", m.getAttendanceItemName());
 						});
 					}
 				}
@@ -223,25 +245,25 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 		
 		
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn("No", TextResource.localize("#KMK009_4"),
+		columns.add(new MasterHeaderColumn("No",TextResource.localize("KMK009_4"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("使用区分", TextResource.localize("#KMK009_5"),
+		columns.add(new MasterHeaderColumn("使用区分",TextResource.localize("KMK009_5"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("名称", TextResource.localize("#KMK009_6"),
+		columns.add(new MasterHeaderColumn("名称",TextResource.localize("KMK009_6"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("略名", TextResource.localize("#KMK009_22"),
+		columns.add(new MasterHeaderColumn("略名",TextResource.localize("KMK009_22"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("集計区分", TextResource.localize("#KMK009_14"),
+		columns.add(new MasterHeaderColumn("集計区分",TextResource.localize("KMK009_14"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("勤務種類", TextResource.localize("#KMK009_8"),
+		columns.add(new MasterHeaderColumn("勤務種類",TextResource.localize("KMK009_8"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("就業時間帯", TextResource.localize("#KMK009_9"),
+		columns.add(new MasterHeaderColumn("就業時間帯",TextResource.localize("KMK009_9"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("集計条件以上", TextResource.localize("#KMK009_10")+" "+TextResource.localize("#KMK009_17"),
+		columns.add(new MasterHeaderColumn("集計条件以上",TextResource.localize("KMK009_10")+" "+TextResource.localize("KMK009_17"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("以上", TextResource.localize("#KMK009_17"),
+		columns.add(new MasterHeaderColumn("以上",TextResource.localize("KMK009_17"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("集計条件未満", TextResource.localize("#KMK009_10")+" "+TextResource.localize("#KMK009_20"),
+		columns.add(new MasterHeaderColumn("集計条件未満", TextResource.localize("KMK009_10")+" "+TextResource.localize("KMK009_20"),
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("未満", TextResource.localize("KMK009_20"),
 				ColumnTextAlign.LEFT, "", true));

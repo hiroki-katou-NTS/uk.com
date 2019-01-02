@@ -100,7 +100,7 @@ public class DivergenceExportImpl  implements MasterListData{
 	@Override
 	public List<SheetData> extraSheets(MasterListExportQuery query) {
 		 List<SheetData> sheetDatas = new ArrayList<>();
-		 SheetData divergencetimeData = new SheetData(getDataDevergenceTimeCompany(query), getHeaderColumnsDevergenceTimeCompany(query), null, null,TextResource.localize("KMK011_82"));	 
+		 SheetData divergencetimeData = new SheetData(getDataDevergenceTimeCompany(query), getHeaderColumnsDevergenceTimeCompany(query), null, null,TextResource.localize("KMK011_47")+TextResource.localize("Com_Company"));	 
 		 sheetDatas.add(divergencetimeData);
 		 DivergenceReferenceTimeUsageUnitDto uset=finderTimeUsageUnit.findByCompanyId();
 		 if(uset.getWorkTypeUseSet()){
@@ -246,11 +246,16 @@ public class DivergenceExportImpl  implements MasterListData{
 		String companyId = AppContexts.user().companyId();
 		GeneralDate basedate=query.getBaseDate();
 		// Get list divergence time
+		List<CompanyDivergenceReferenceTimeHistoryDto> listHistory=new ArrayList<>();
 		List<DivergenceTime> listDivTime = this.divTimeRepo.getAllDivTime(companyId).stream().filter(x ->x.getDivTimeUseSet()==DivergenceTimeUseSet.USE).collect(Collectors.toList());
 		listDivTime.sort((DivergenceTime o1,DivergenceTime o2) -> o1.getDivergenceTimeNo()-o2.getDivergenceTimeNo());
 		
-		List<CompanyDivergenceReferenceTimeHistoryDto> listHistory=	this.historyFinder.getAllHistories().stream().filter(x ->x.getEndDate().date().getTime()>=basedate.date().getTime() && 
-				basedate.date().getTime()>=x.getStartDate().date().getTime()).collect(Collectors.toList());;
+		List<CompanyDivergenceReferenceTimeHistoryDto> listHis=	this.historyFinder.getAllHistories();
+		if (!CollectionUtil.isEmpty(listHis)) {
+			listHistory=listHis.stream().filter(x ->x.getEndDate().date().getTime()>=basedate.date().getTime() && 
+					basedate.date().getTime()>=x.getStartDate().date().getTime()).collect(Collectors.toList());
+		}
+				
 		if (!CollectionUtil.isEmpty(listHistory)) {
 			//set basedate
 			for(int i=0;i<listHistory.size();i++){
