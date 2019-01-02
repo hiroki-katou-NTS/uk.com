@@ -3,33 +3,34 @@
  */
 package nts.uk.ctx.pereg.app.command.person.setting.matrix.personinfomatrixitem;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInfoMatrixItem;
 
 /**
  * @author hieult
  *
  */
-@Value
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreatePersonInfoMatrixItemCommand {
-
-	
 	/** 個人情報カテゴリID */
-	private String pInfoCategoryID;
-	
+	public String pInfoCategoryID;
+
 	/** 個人情報項目ID */
-	private String pInfoItemDefiID;
-	
+	public String pInfoItemDefiID;
+
 	/** 列幅 **/
-	private  int columnWidth ;
-	
+	public int columnWidth;
+
 	/** 規定区分 **/
-	private int regulationATR;
-	
-		public PersonInfoMatrixItem toDomain(){
-			return PersonInfoMatrixItem.createFromJavatype(pInfoCategoryID,
-					pInfoItemDefiID,
-					columnWidth,
-					regulationATR);
-		}
+	public int regulationATR;
+
+	public PersonInfoMatrixItem toDomain() {
+		return PersonInfoMatrixItem.createFromJavatype(pInfoCategoryID, pInfoItemDefiID, columnWidth, regulationATR);
+	}
 }

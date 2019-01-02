@@ -24,8 +24,6 @@ public class CreateMatrixDisplaySetCommandHandler extends CommandHandler<CreateM
 	@Override
 	protected void handle(CommandHandlerContext<CreateMatrixDisplaySetCommand> context) {
 		CreateMatrixDisplaySetCommand command = context.getCommand();
-		repo.insert(command.toDomain());
-		
+		repo.insert(command.toDomain());	
 	}
-
 }

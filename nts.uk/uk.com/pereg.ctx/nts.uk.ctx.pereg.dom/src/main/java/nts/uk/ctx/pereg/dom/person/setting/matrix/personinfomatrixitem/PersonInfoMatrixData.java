@@ -20,6 +20,8 @@ public class PersonInfoMatrixData {
 	
 	private String itemCD;
 	
+	private String itemParentCD;
+	
 	private String itemName;
 	
 	private boolean regulationAtr;

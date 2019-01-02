@@ -17,6 +17,7 @@ import nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInf
 import nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInfoMatrixItemRepo;
 import nts.uk.ctx.pereg.infra.entity.person.setting.matrix.personinfomatrixitem.PpestPersonInfoMatrixItem;
 import nts.uk.ctx.pereg.infra.entity.person.setting.matrix.personinfomatrixitem.PpestPersonInfoMatrixItemPK;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author hieult
@@ -30,9 +31,14 @@ public class JpaPersonInfoMatrixItem extends JpaRepository implements PersonInfo
 
 	private static final String SELECT_BY_CATEGORY_ID = "SELECT c FROM PpestPersonInfoMatrixItem c WHERE c.ppestPersonInfoMatrixItemPK.pInfoCategoryID = :pInfoCategoryID";
 
-	private static final String SELECT_DATA_INFO = String.join(" ", "SELECT",
-			"pii.PER_INFO_ITEM_DEFINITION_ID, pii.ITEM_CD, pii.ITEM_NAME, pim.REGULATION_ATR, pio.DISPORDER, pim.COLUMN_WIDTH, pii.REQUIRED_ATR",
+	private static final String SELECT_DATA_INFO = String.join(" ",
+			"SELECT pii.PER_INFO_ITEM_DEFINITION_ID, pii.ITEM_CD, icm.ITEM_PARENT_CD, pii.ITEM_NAME, pim.REGULATION_ATR, pio.DISPORDER, pim.COLUMN_WIDTH, pii.REQUIRED_ATR",
 			"FROM [OOTSUKATEST].[dbo].[PPEMT_PER_INFO_ITEM] pii",
+			"LEFT JOIN [OOTSUKATEST].[dbo].[PPEMT_PER_INFO_CTG] ctg", "ON pii.PER_INFO_CTG_ID = ctg.PER_INFO_CTG_ID",
+			"LEFT JOIN [OOTSUKATEST].[dbo].[PPEMT_PER_INFO_CTG_CM] ctm",
+			"ON ctg.CATEGORY_CD = ctm.CATEGORY_CD AND ctg.CID = ?",
+			"LEFT JOIN [OOTSUKATEST].[dbo].[PPEMT_PER_INFO_ITEM_CM] icm",
+			"ON icm.CATEGORY_CD = ctg.CATEGORY_CD AND icm.ITEM_CD = pii.ITEM_CD",
 			"LEFT JOIN [OOTSUKATEST].[dbo].[PPEST_PERSON_INFO_MATRIX] pim",
 			"ON pii.PER_INFO_ITEM_DEFINITION_ID = pim.PERSON_INFO_ITEM_ID",
 			"AND pii.PER_INFO_CTG_ID = pim.PERSON_INFO_CATEGORY_ID",
@@ -51,12 +57,13 @@ public class JpaPersonInfoMatrixItem extends JpaRepository implements PersonInfo
 
 	@Override
 	public void update(PersonInfoMatrixItem newSetting) {
-
 		PpestPersonInfoMatrixItem newEntity = PpestPersonInfoMatrixItem.toEntity(newSetting);
 		PpestPersonInfoMatrixItem updateEntity = this.queryProxy()
 				.find(newEntity.ppestPersonInfoMatrixItemPK, PpestPersonInfoMatrixItem.class).get();
+		
 		updateEntity.columnWidth = newEntity.columnWidth;
 		updateEntity.regulationATR = newEntity.regulationATR;
+		
 		this.commandProxy().update(updateEntity);
 	}
 
@@ -81,14 +88,22 @@ public class JpaPersonInfoMatrixItem extends JpaRepository implements PersonInfo
 	 * personinfomatrixitem.PersonInfoMatrixItem)
 	 */
 	@Override
-	public void insert(PersonInfoMatrixItem newSetting) {
-		PpestPersonInfoMatrixItem newEntity = PpestPersonInfoMatrixItem.toEntity(newSetting);
-		Optional<PpestPersonInfoMatrixItem> updateEntity = this.queryProxy().find(newEntity.ppestPersonInfoMatrixItemPK,
+	public void save(PersonInfoMatrixItem newSetting) {
+		PpestPersonInfoMatrixItem entity = toEntity(newSetting);
+		PpestPersonInfoMatrixItemPK imiKey = entity.ppestPersonInfoMatrixItemPK;
+
+		Optional<PpestPersonInfoMatrixItem> updateEntity = this.queryProxy().find(imiKey,
 				PpestPersonInfoMatrixItem.class);
+
 		if (!updateEntity.isPresent()) {
-			this.commandProxy().insert(PpestPersonInfoMatrixItem.toEntity(newSetting));
+			commandProxy().insert(entity);
 		} else {
-			this.commandProxy().update(updateEntity);
+			PpestPersonInfoMatrixItem _update = updateEntity.get();
+
+			_update.columnWidth = entity.columnWidth;
+			_update.regulationATR = entity.regulationATR;
+
+			commandProxy().update(_update);
 		}
 	}
 
@@ -100,9 +115,7 @@ public class JpaPersonInfoMatrixItem extends JpaRepository implements PersonInfo
 	 */
 	@Override
 	public void insertAll(List<PersonInfoMatrixItem> listNewSetting) {
-		List<PpestPersonInfoMatrixItem> listEntity = listNewSetting.stream().map(c -> toEntity(c))
-				.collect(Collectors.toList());
-		commandProxy().insertAll(listEntity);
+		listNewSetting.stream().forEach(domain -> save(domain));
 	}
 
 	private PpestPersonInfoMatrixItem toEntity(PersonInfoMatrixItem domain) {
@@ -119,24 +132,27 @@ public class JpaPersonInfoMatrixItem extends JpaRepository implements PersonInfo
 	 */
 	@Override
 	public List<PersonInfoMatrixData> findInfoData(String pInfoCategoryID) {
+		String cid = AppContexts.user().companyId();
 		if (pInfoCategoryID.isEmpty()) {
 			return new ArrayList<>();
 		}
 
 		@SuppressWarnings("unchecked")
 		List<Object[]> result = this.getEntityManager()
-				.createNativeQuery(SELECT_DATA_INFO)
-				.setParameter(1, pInfoCategoryID).getResultList();
+			.createNativeQuery(SELECT_DATA_INFO)
+				.setParameter(1, cid)
+				.setParameter(2, pInfoCategoryID)
+			.getResultList();
 
 		return result.stream().map(m -> new PersonInfoMatrixData(
-					m[0] != null ? (String) m[0] : "", 	// perInfoItemDefID
-					m[1] != null ? (String) m[1] : "", 	// itemCD
-					m[2] != null ? (String) m[2] : "", 	// itemName
-					m[3] != null ? ((BigDecimal) m[3]).intValue() == 1 : false,	// regulationATR
-					m[4] != null ? ((BigDecimal) m[4]).intValue() : 0,	// dispOrder
-					m[5] != null ? ((BigDecimal) m[5]).intValue() : 100, // width
-					m[6] != null ? ((BigDecimal) m[6]).intValue() == 1 : false	//required
-			)).sorted((o1, o2) -> o1.getDispOrder() - o2.getDispOrder())
-			.collect(Collectors.toList());
+				m[0] != null ? (String) m[0] : "", // perInfoItemDefID
+				m[1] != null ? (String) m[1] : "", // itemCD
+				m[2] != null ? (String) m[2] : "", // itemParentCD
+				m[3] != null ? (String) m[3] : "", // itemName
+				m[4] != null ? ((BigDecimal) m[4]).intValue() == 1 : false, // regulationATR
+				m[5] != null ? ((BigDecimal) m[5]).intValue() : 0, // dispOrder
+				m[6] != null ? ((BigDecimal) m[6]).intValue() : 100, // width
+				m[7] != null ? ((BigDecimal) m[7]).intValue() == 1 : false // required
+		)).sorted((o1, o2) -> o1.getDispOrder() - o2.getDispOrder()).collect(Collectors.toList());
 	}
 }

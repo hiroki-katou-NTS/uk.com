@@ -66,7 +66,12 @@ public class GridLayoutWebService extends WebService {
 	@POST
 	@Path("save-setting")
 	public void saveFixedSetting(GridSettingCommand command) {
-		cpimHandler.handle(command.getPersonInfoItems());
-		cmdsHandler.handle(command.getMaxtrixDisplays());
+		if (command.getPersonInfoItems() != null) {
+			cpimHandler.handle(command.getPersonInfoItems());
+		}
+
+		if (command.getMaxtrixDisplays() != null) {
+			cmdsHandler.handle(command.getMaxtrixDisplays());
+		}
 	}
 }

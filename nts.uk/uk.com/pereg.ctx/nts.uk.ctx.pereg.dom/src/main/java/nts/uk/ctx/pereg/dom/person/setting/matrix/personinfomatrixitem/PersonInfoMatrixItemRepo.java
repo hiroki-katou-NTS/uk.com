@@ -18,7 +18,7 @@ public interface PersonInfoMatrixItemRepo {
 
 	List<PersonInfoMatrixItem> findByCategoryID(String pInfoCategoryID);
 
-	void insert(PersonInfoMatrixItem newSetting);
+	void save(PersonInfoMatrixItem newSetting);
 
 	void insertAll(List<PersonInfoMatrixItem> listNewSetting);
 
