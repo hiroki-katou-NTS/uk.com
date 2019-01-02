@@ -15,17 +15,6 @@ module nts.uk.pr.view.qmm038.a {
 
             constructor() {
                 let self = this;
-                nts.uk.pr.view.qmm038.a.service.defaultData().done(function (response) {
-                    if (response[0] != null) {
-                        self.giveCurrTreatYear(response[0].substr(0, 4) + "/" + response[0].substr(4));
-                        if(response[1] != null) {
-                            self.baseDate(response[1]);
-                        }
-                        self.ccg001ComponentOption.baseDate = self.baseDate();
-                    }
-                    $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);
-                    $("#A2_3").focus();
-                });
 
                 // CCG001
                 self.ccg001ComponentOption = <GroupOption>{
@@ -61,7 +50,7 @@ module nts.uk.pr.view.qmm038.a {
                     showClassification: false,
                     showJobTitle: false,
                     showWorktype: false,
-                    isMutipleCheck: false,
+                    isMutipleCheck: true,
                     tabindex: 5,
                     showOnStart: true,
 
@@ -70,9 +59,23 @@ module nts.uk.pr.view.qmm038.a {
                      * @param: data: the data return from CCG001
                      */
                     returnDataFromCcg001: function (data: Ccg001ReturnedData) {
+                        self.employeeIds = data.listEmployee.map(item => item.employeeId);
                         self.findByEmployee();
                     }
                 };
+
+                service.defaultData().done(function (response) {
+                    if (response[0] != null) {
+                        self.giveCurrTreatYear(response[0].substr(0, 4) + "/" + response[0].substr(4));
+                        if(response[1] != null) {
+                            self.baseDate(response[1]);
+                        }
+                        self.ccg001ComponentOption.baseDate = self.baseDate();
+                    }
+                    $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);
+                    self.loadMGrid();
+                    $("#A2_3").focus();
+                });
             }
 
             loadMGrid() {
@@ -156,7 +159,7 @@ module nts.uk.pr.view.qmm038.a {
 
             findByEmployee() {
                 let self = this;
-                nts.uk.ui.errors.clearAll();
+                $('#A2_4').ntsError('check');
                 block.invisible();
                 let command = {
                     employeeIds: self.employeeIds,
@@ -187,7 +190,7 @@ module nts.uk.pr.view.qmm038.a {
                 block.invisible();
                 // update
                 self.dataUpdate = [];
-                _.forEach($("#gridStatement").mGrid("dataSource", true), (item: DataScreen) => {
+                _.forEach($("#gridStatement").mGrid("dataSource", false), (item: DataScreen) => {
                     self.dataUpdate.push(new UpdateEmployee(item.employeeId, item.averageWage));
                 });
                 let command = {
