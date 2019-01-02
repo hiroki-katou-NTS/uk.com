@@ -766,29 +766,29 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     self.workTypeName(childData.selectedWorkTypeName);
                     self.siftCD(childData.selectedWorkTimeCode);
                     self.siftName(childData.selectedWorkTimeName);
-                    self.timeStart1(childData.first.start);
-                    self.timeEnd1(childData.first.end);
-                    self.timeStart2(childData.second.start);
-                    self.timeEnd2(childData.second.end);
+//                    self.timeStart1(childData.first.start);
+//                    self.timeEnd1(childData.first.end);
+//                    self.timeStart2(childData.second.start);
+//                    self.timeEnd2(childData.second.end);
                     let param = { workTypeCD: childData.selectedWorkTypeCode, workTimeCD: childData.selectedWorkTimeCode }
                     service.getBreakTimes(param).done((data) => {
                         self.setTimeZones(data);
                     });
-//                    service.getRecordWork(
-//                        {
-//                            employeeID: self.employeeID(), 
-//                            appDate: nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
-//                            siftCD: self.siftCD(),
-//                            prePostAtr: self.prePostSelected(),
-//                            overtimeHours: ko.toJS(self.breakTimes())
-//                        }
-//                    ).done(data => {
-//                        self.timeStart1(data.startTime1 == null ? null : data.startTime1);
-//                        self.timeEnd1(data.endTime1 == null ? null : data.endTime1);
-//                        self.timeStart2(data.startTime2 == null ? null : data.startTime2);
-//                        self.timeEnd2(data.endTime2 == null ? null : data.endTime2);
-//                        self.convertAppOvertimeReferDto(data);
-//                    });
+                    service.getRecordWork(
+                        {
+                            employeeID: self.employeeID(), 
+                            appDate: nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
+                            siftCD: self.siftCD(),
+                            prePostAtr: self.prePostSelected(),
+                            overtimeHours: ko.toJS(self.breakTimes())
+                        }
+                    ).done(data => {
+                        self.timeStart1(data.startTime1 == null ? null : data.startTime1);
+                        self.timeEnd1(data.endTime1 == null ? null : data.endTime1);
+                        self.timeStart2(data.startTime2 == null ? null : data.startTime2);
+                        self.timeEnd2(data.endTime2 == null ? null : data.endTime2);
+                        self.convertAppOvertimeReferDto(data);
+                    });
                 }
             })
         }
