@@ -261,7 +261,8 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             "  INNER JOIN BPSMT_PERSON p ON p.PID = emp.PID    " +
             "  INNER JOIN KBPMT_BONUS_PAY_SET ps ON ps.BONUS_PAY_SET_CD = s.BONUS_PAY_SET_CD   " +
             "WHERE   " +
-            "  emp.CID = ? AND ps.CID = ?";
+            "  emp.CID = ? AND ps.CID = ?" +
+            "  ORDER BY SCD";
 
     private static final String SQLSetUsedWorkingHours = "SELECT    " +
             "   s.WORKING_CD,    " +

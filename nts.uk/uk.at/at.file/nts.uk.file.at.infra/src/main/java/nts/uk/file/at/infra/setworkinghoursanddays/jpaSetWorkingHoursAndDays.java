@@ -1,5 +1,6 @@
 package nts.uk.file.at.infra.setworkinghoursanddays;
 
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	
 	@PersistenceContext
 	private EntityManager entityManager;
-	private static final String GET_EXPORT_MONTH = "SELECT m.STR_M FROM CBMST_BEGINNING_MONTH m WHERE m.CID = ?cid";
+	private static final String GET_EXPORT_MONTH = "SELECT m.MONTH_STR FROM BCMMT_COMPANY m WHERE m.CID = ?cid";
 	
 	private static final String GET_EXPORT_EXCEL = 
 			" SELECT "
@@ -335,6 +336,18 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 						 +  "			AND KSHST_WKP_NORMAL_SET.WKP_ID IN (SELECT KSHST_WKP_REG_LABOR_TIME.WKP_ID FROM KSHST_WKP_REG_LABOR_TIME WHERE KSHST_WKP_REG_LABOR_TIME.CID = ?) " 
 						 +  "ORDER BY KSHST_WKP_NORMAL_SET.[YEAR] ASC, BSYMT_WORKPLACE_INFO.WKPCD";
 	
+	private static final String GET_USAGE = "SELECT s.IS_EMP, s.IS_WKP, s.IS_EMPT FROM KUWST_USAGE_UNIT_WT_SET s WHERE s.CID = ?cid ";
+	
+	@Override
+	public Object[] getUsage() {
+		String cid = AppContexts.user().companyId();
+		Query usage = entityManager.createNativeQuery(GET_USAGE.toString()).setParameter("cid", cid);
+		List<Object[]> data = usage.getResultList();
+		if (data.size() == 0) {
+			return null;
+		}
+		return data.get(0);
+	}
 	private int month(){
 		String cid = AppContexts.user().companyId();
 		int month = 1;
@@ -1776,5 +1789,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
     		return null;
     	}
     }
+
+	
 	
 }

@@ -13,6 +13,14 @@ module nts.uk.com.view.cps017.a.service {
         removeHistory: "ctx/pereg/person/info/setting/selection/removeHistory",
         reflUnrComp: "ctx/pereg/person/info/setting/selection/reflunrcomp"
     }
+    
+    export function saveAsExcel(languageId: string, date: string): JQueryPromise<any> {
+            let _params = { domainId: "PersonSelectionItem", 
+                        domainType: "CPS017個人情報の選択肢の登録", 
+                        languageId: languageId, 
+                        reportType: 0, baseDate : date };
+            return exportFile('/masterlist/report/print', _params);
+        }
 
     export function getAllSelectionItems() {
         return ajax(paths.getAllSelectionItems);

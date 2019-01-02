@@ -2157,6 +2157,15 @@ module nts.uk.at.view.kmf022 {
                     self.enableE18(data.weight2);
                 }
             }
+
+            private exportExcel(domainId: string, domainType: string) {
+                var self = this;
+                service.exportExcel('ja', domainId, domainType)
+                    .fail(function (res) {
+                        nts.uk.ui.dialog.alertError(res);
+                    });
+            }
+
             initDataG(allData: any): void {
                 let self = this;
                 let data = allData.wdApp;

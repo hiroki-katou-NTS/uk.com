@@ -6,7 +6,6 @@ import nts.uk.file.at.app.export.ot.autocalsetting.wkp.WkpAutoCalSettingReposito
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
-
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,7 +17,6 @@ import java.util.List;
  */
 @Stateless
 public class JpaWkpCalSettingRepository extends JpaRepository implements WkpAutoCalSettingRepository {
-
 	private static final String SELECT_ALL_WORKPLACE_BY_CID ;
 	static {
 		StringBuilder sqlNormal = new StringBuilder();
@@ -91,6 +89,7 @@ public class JpaWkpCalSettingRepository extends JpaRepository implements WkpAuto
 		sqlNormal.append(	"ORDER BY k.WKPCD ");
 		SELECT_ALL_WORKPLACE_BY_CID = sqlNormal.toString();
 }
+
 
 	@Override
 	public List<Object[]> getWorkPlaceSettingToExport(String cid, String baseDate) {
