@@ -34,7 +34,7 @@ module ksm002.b.viewmodel {
             baseDate: ko.observable(new Date()),
             selectedWorkplaceId: this.currentWorkPlace().id,
             alreadySettingList: ko.observableArray([]),
-            systemType : 5
+            systemType : 2
         };
         
         constructor() {

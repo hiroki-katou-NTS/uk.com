@@ -17,8 +17,8 @@ import nts.uk.ctx.at.schedule.app.export.shift.pattern.work.WorkMonthlySettingRe
 @Stateless
 public class JpaWorkMonthlySettingReportRepository extends JpaRepository implements WorkMonthlySettingReportRepository {
 	private static final String GET_WORK_MONTHLY_SET = (new StringBuffer()
-			.append("SELECT a.M_PATTERN_CD as CODE, d.M_PATTERN_NAME as NAME, a.YMD_K as DATE,")
-			.append("CONCAT(a.WORK_TYPE_CD , (CASE WHEN a.WORK_TYPE_CD IS NULL THEN  '' ELSE c.NAME END),")
+			.append("SELECT a.M_PATTERN_CD as CODE, d.M_PATTERN_NAME as NAME, a.YMD_K as DATE")
+			.append(",CONCAT(a.WORK_TYPE_CD , (CASE WHEN a.WORK_TYPE_CD IS NULL THEN  '' ELSE c.NAME END),")
 			.append("(CASE WHEN a.WORKING_CD IS NULL OR a.WORKING_CD = '' THEN  '' ELSE CONCAT(',', a.WORKING_CD) END),")
 			.append("(CASE WHEN a.WORKING_CD IS NULL THEN  '' ELSE b.NAME END)) AS WORK_SET_NAME")
 			.append(" FROM KSCMT_WORK_MONTH_SET a")
@@ -34,8 +34,8 @@ public class JpaWorkMonthlySettingReportRepository extends JpaRepository impleme
 			GeneralDate startDate, GeneralDate endDate) {
 		List<?> data = this.getEntityManager().createNativeQuery(GET_WORK_MONTHLY_SET)
 				.setParameter("companyId", companyId)
-				.setParameter("startYm", startDate)
-				.setParameter("endYm", endDate).getResultList();
+				.setParameter("startYm", startDate.date())
+				.setParameter("endYm", endDate.date()).getResultList();
 
 		List<WorkMonthlySettingReportData> workMonthlySettingReportDatas = data.stream().map(x -> toDomainWorkMonthlySet((Object[])x)).collect(Collectors.toList()); 
 		return Optional.ofNullable(workMonthlySettingReportDatas.stream().collect(Collectors.groupingBy(WorkMonthlySettingReportData::getPattenCode)));

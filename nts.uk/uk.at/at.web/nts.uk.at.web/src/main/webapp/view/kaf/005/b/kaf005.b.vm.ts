@@ -131,6 +131,7 @@ module nts.uk.at.view.kaf005.b {
             heightOvertimeHours: KnockoutObservable<number> = ko.observable(null);
             //画面モード(表示/編集)
             editable: KnockoutObservable<boolean> = ko.observable( true );
+            enableOvertimeInput: KnockoutObservable<boolean> = ko.observable(false);
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
                 super(listAppMetadata, currentApp);
                 var self = this;
@@ -197,6 +198,7 @@ module nts.uk.at.view.kaf005.b {
             initData(data: any) {
                 var self = this;
                 self.version = data.application.version;
+                self.enableOvertimeInput(data.enableOvertimeInput);
                 self.manualSendMailAtr(data.manualSendMailAtr);
                 self.prePostSelected(data.application.prePostAtr);
                 self.displayCaculationTime(data.displayCaculationTime);

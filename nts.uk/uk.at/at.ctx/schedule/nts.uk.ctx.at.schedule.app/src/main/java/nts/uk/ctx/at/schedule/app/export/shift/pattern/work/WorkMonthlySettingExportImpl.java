@@ -125,21 +125,17 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 	 * @param setReportData
 	 */
 	private void putDataToColumnsWorkSet(Map<String, Object> data, WorkMonthlySettingReportData setReportData) {
-		int day = setReportData.getDay();
 		for (int i = 1; i <= 31; i++) {
 			String key = i + "日";
-			if (day == i) {
-				String value = (String) data.get(key);
-				data.put(key, value);
-			}
-
+			data.put(key, setReportData.getWorkSetName());
 		}
 	}
 	
 	@Override
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-
+		columns.add(new MasterHeaderColumn("コード", TextResource.localize("KSM004_98"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("名称", TextResource.localize("KSM004_99"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("年月", TextResource.localize("KSM002_63"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("1日", TextResource.localize("KSM002_64"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("2日", TextResource.localize("KSM002_65"), ColumnTextAlign.LEFT, "", true));

@@ -144,6 +144,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
         targetDate: any = moment(new Date()).format(this.DATE_FORMAT); 
         //画面モード(表示/編集)
         editable: KnockoutObservable<boolean> = ko.observable(true);
+        enableOvertimeInput: KnockoutObservable<boolean> = ko.observable(false);
         constructor(transferData :any) {
             let self = this;
             if(transferData != null){
@@ -331,6 +332,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
         initData(data: any) {
             var self = this;
+            self.enableOvertimeInput(data.enableOvertimeInput);
             self.checkBoxValue(!data.manualSendMailAtr);
             self.enableSendMail(!data.sendMailWhenRegisterFlg);
             self.displayPrePostFlg(data.displayPrePostFlg ? true : false);

@@ -136,6 +136,7 @@ module nts.uk.at.view.kaf010.b {
             allPreAppPanelFlg: KnockoutObservable<boolean> = ko.observable(false);
             //画面モード(表示/編集)
             editable: KnockoutObservable<boolean> = ko.observable(true);
+            enableOvertimeInput: KnockoutObservable<boolean> = ko.observable(false);
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
                 super(listAppMetadata, currentApp);
                 var self = this;
@@ -165,17 +166,17 @@ module nts.uk.at.view.kaf010.b {
                     if(res.messageId == 'Msg_426'){
                        dialog.alertError({messageId : res.messageId}).then(function(){
                             nts.uk.ui.block.clear();
-                           nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                           appcommon.CommonProcess.callCMM045();
                     });
                     }else if(res.messageId == 'Msg_423'){
                         dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
                             .then(function() {
                                 nts.uk.ui.block.clear();
-                                nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                                appcommon.CommonProcess.callCMM045();
                             });
                     }else{ 
                         nts.uk.ui.dialog.alertError(res.message).then(function(){
-                            nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                            appcommon.CommonProcess.callCMM045();
                             nts.uk.ui.block.clear();
                         });
                     }
@@ -196,6 +197,7 @@ module nts.uk.at.view.kaf010.b {
             initData(data: any) {
                 var self = this;
                 self.version = data.application.version;
+                self.enableOvertimeInput(data.enableOvertimeInput);
                 self.manualSendMailAtr(data.manualSendMailAtr);
                 self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
                 self.prePostSelected(data.application.prePostAtr);

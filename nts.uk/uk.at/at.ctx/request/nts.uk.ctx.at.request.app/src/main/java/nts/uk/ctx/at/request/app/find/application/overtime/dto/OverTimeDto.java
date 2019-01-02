@@ -247,6 +247,8 @@ public class OverTimeDto {
 	 */
 	private List<DeductionTimeDto> timezones ;
 	
+	private boolean enableOvertimeInput;
+	
 	public static OverTimeDto fromDomain(AppOverTime appOverTime){
 		return new OverTimeDto(
 				appOverTime.getVersion(),
@@ -305,8 +307,8 @@ public class OverTimeDto {
 				null,
 				null,
 				null,
-				Collections.emptyList()
-				);
+				Collections.emptyList(),
+				false);
 	}
 	
 }
