@@ -1,8 +1,11 @@
 module nts.uk.pr.view.qmm019.a {
+    import StatementLayoutHistData = nts.uk.pr.view.qmm019.a.viewmodel.StatementLayoutHistData;
     __viewContext.ready(function() {
         let screenModel = new viewmodel.ScreenModel();
         __viewContext['screenModel'] = screenModel;
         screenModel.loadListData().done(function() {
+            screenModel.statementLayoutHistData(new StatementLayoutHistData(null, false));
+
             if(screenModel.statementLayoutList().length > 0) {
                 let histLength = screenModel.statementLayoutList()[0].history.length;
                 if(histLength > 0) {
