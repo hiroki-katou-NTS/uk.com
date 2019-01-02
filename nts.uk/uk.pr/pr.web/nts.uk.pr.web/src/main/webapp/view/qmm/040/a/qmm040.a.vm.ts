@@ -3,7 +3,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
     import dialog = nts.uk.ui.dialog;
     import block  = nts.uk.ui.block;
     import validation = nts.uk.ui.validation;
-    import errors  = nts.uk.ui.errors;
+    import errors = nts.uk.ui.errors;
 
     export class ScreenModel {
 
@@ -66,6 +66,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.individualPriceCode(temp.individualPriceCode);
                     self.individualPriceName(temp.individualPriceName);
                 }
+                self.filterData();
             });
         }
 
@@ -76,14 +77,12 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             service.employeeReferenceDate().done(function (data) {
                 if (data) {
                     self.reloadCcg001(data.empExtraRefeDate);
-                    self.yearMonthFilter(data.salCurrProcessDate);
                 }
                 else {
                     self.reloadCcg001(moment(Date.now()).format("YYYY/MM/DD"));
                 }
-                $('#A5_7').focus();
-                // self.filterData();
                 self.loadMGrid();
+                $('#A5_7').focus();
                 block.clear();
                 dfd.resolve(self);
             }).fail((err) => {
@@ -113,7 +112,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 enter: 'right',
                 autoFitWindow: false,
                 hidePrimaryKey: true,
-                errorsOnPage: false,
+                errorsOnPage: true,
                 columns: [
                     {headerText: "id", key: 'historyId', dataType: 'string', hidden: true},
                     // A5_10
@@ -147,7 +146,10 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     {
                         name: "Sorting",
                         columnSettings: [
-                            {columnKey: "employeeCode", allowSorting: true, type: "String"}
+                            {columnKey: "employeeCode", allowSorting: true, type: "String"},
+                            {columnKey: "businessName", allowSorting: true, type: "String"},
+                            {columnKey: "period", allowSorting: true, type: "String"},
+                            {columnKey: "amount", allowSorting: true, type: "Number"}
                         ]
                     },
                     {
@@ -180,8 +182,9 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.cateIndicator(CategoryIndicator.PAYMENT);
                     self.salBonusCate(SalBonusCate.SALARY);
                     $("#sidebar").ntsSideBar("active", param);
+                    self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
-                    self.yearMonthFilter = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
+                    self.filterData();
                     $('#A5_7').focus();
                     break;
                 case 1:
@@ -193,8 +196,9 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.cateIndicator(CategoryIndicator.DEDUCTION);
                     self.salBonusCate(SalBonusCate.SALARY);
                     $("#sidebar").ntsSideBar("active", param);
+                    self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
-                    self.yearMonthFilter = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
+                    self.filterData();
                     $('#A5_7').focus();
                     break;
                 case 2:
@@ -205,11 +209,10 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.salBonusCate(SalBonusCate.BONUSES);
                     self.titleTab(getText('QMM040_5'));
                     self.itemClassification(getText('QMM040_5'));
-                    errors.clearAll();
-                    self.yearMonthFilter = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
                     $("#sidebar").ntsSideBar("active", param);
+                    self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
-                    self.yearMonthFilter = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
+                    self.filterData();
                     $('#A5_7').focus();
                     break;
                 case 3:
@@ -221,8 +224,9 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     self.cateIndicator(CategoryIndicator.DEDUCTION);
                     self.salBonusCate(SalBonusCate.BONUSES);
                     $("#sidebar").ntsSideBar("active", param);
+                    self.yearMonthFilter(parseInt(moment(Date.now()).format("YYYYMM")));
                     errors.clearAll();
-                    self.yearMonthFilter = ko.observable(parseInt(moment(Date.now()).format("YYYYMM")));
+                    self.filterData();
                     $('#A5_7').focus();
                     break;
                 default:
@@ -236,7 +240,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             }
             setTimeout(function () {
                 errors.clearAll();
-            }, 100)
+            }, 350)
         }
 
         public loadSalIndAmountName(cateIndicator: number): void {
@@ -250,9 +254,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     if (data.length > 0) {
                         self.isRegistrable(true);
                         self.salIndAmountNamesSelectedCode(self.salIndAmountNames()[0].individualPriceCode);
-                        self.salIndAmountNamesSelectedCode.valueHasMutated();
-                    }
-                    else {
+                    } else {
                         self.isRegistrable(false);
                         dialog.alertError({messageId: "MsgQ_169"});
                         errors.clearAll();
@@ -271,9 +273,6 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             let self = this;
             self.yearMonthFilter();
             $('#A5_7').ntsError('check');
-            if (errors.hasError()) {
-                return;
-            }
             if (!self.employeeList) return;
             block.invisible();
             service.salIndAmountHisByPeValCode({
@@ -286,7 +285,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 self.employeeInfoImports = dataNameAndAmount.employeeInfoImports;
                 let personalAmountData = dataNameAndAmount.personalAmount.map(x => new PersonalAmount(x));
                 for (let personalAmount of personalAmountData) {
-                    let employeeInfo = self.employeeInfoImports.find(x => x.sid === personalAmount.empId);
+                    let employeeInfo = _.find( self.employeeInfoImports, x => x.sid === personalAmount.empId);
                     personalAmount.employeeCode = employeeInfo.scd;
                     personalAmount.businessName = employeeInfo.businessName;
                 }
@@ -296,6 +295,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 self.loadMGrid();
             }).always(() => {
                 block.clear();
+            }).fail((err) => {
+                console.log(err.message);
             });
         }
 
@@ -306,7 +307,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                 return;
             }
             service.salIndAmountUpdateAll({
-                salIndAmountUpdateCommandList: $("#grid").mGrid("dataSource", true)
+                salIndAmountUpdateCommandList: $("#grid").mGrid("dataSource", false)
             }).done(function () {
                 dialog.info({messageId: "Msg_15"});
             }).always(() => {
@@ -349,7 +350,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
 
                 /** Advanced search properties */
                 showEmployment: true,
-                showWorkplace: false,
+                showWorkplace: true,
                 showClassification: false,
                 showJobTitle: false,
                 showWorktype: false,
@@ -362,7 +363,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     //self.selectedEmployee(data.listEmployee);
                     if (data && data.listEmployee.length > 0) {
                         self.employeeList = data.listEmployee;
-                        console.log(data.listEmployee);
+                        self.filterData();
                     }
                 }
             };

@@ -72,5 +72,6 @@ public interface SyEmploymentPub {
 	 * @return the employment map
 	 */
 	Map<String, String> getEmploymentMapCodeName(String companyId, List<String> empCodes);
-	
+	// RequestList31 - ver2
+	Map<String, SEmpHistExport> findSEmpHistBySidVer2(String companyId, List<String> lstSID, GeneralDate baseDate);
 }

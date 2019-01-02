@@ -25,4 +25,10 @@ public class SalaryPerUnitPriceNameWebService {
     public List<SalaryPerUnitPriceNameDto> getAllSalaryPerUnitPriceNameDto() {
         return salaryPerUnitPriceFinder.getAllSalaryPerUnitPriceName();
     }
+
+    @POST
+    @Path("/getSalaryPerUnitPriceNotAbolition")
+    public List<SalaryPerUnitPriceNameDto> getSalaryPerUnitPriceNotAbolition() {
+        return salaryPerUnitPriceFinder.getSalaryPerUnitPriceNotAbolition();
+    }
 }

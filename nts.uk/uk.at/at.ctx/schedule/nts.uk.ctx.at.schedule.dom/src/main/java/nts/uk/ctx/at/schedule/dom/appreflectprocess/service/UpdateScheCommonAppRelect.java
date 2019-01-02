@@ -11,6 +11,18 @@ public interface UpdateScheCommonAppRelect {
 	 * @param baseDate
 	 */
 	public void updateScheWorkTimeType(String employeeId, GeneralDate baseDate, String workTypeCode, String workTimeCode);
-
-
+	/**
+	 * 勤務種類の反映
+	 * @param sid
+	 * @param baseDate
+	 * @param workTypeCode
+	 */
+	public void updateScheWorkType(String sid, GeneralDate baseDate, String workTypeCode);
+	/**
+	 * 就業時間帯の反映
+	 * @param sid
+	 * @param baseDate
+	 * @param workTimeCode
+	 */
+	public void updateScheWorkTime(String sid, GeneralDate baseDate, String workTimeCode);
 }

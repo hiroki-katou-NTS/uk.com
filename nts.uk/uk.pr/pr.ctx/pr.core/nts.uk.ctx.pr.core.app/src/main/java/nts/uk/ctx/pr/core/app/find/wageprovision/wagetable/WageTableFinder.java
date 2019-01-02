@@ -153,11 +153,9 @@ public class WageTableFinder {
 		Optional<WageTableContent> optContent = wageTableContentRepo.getWageTableContentById(historyId);
 		String cid = AppContexts.user().companyId();
 		Optional<WageTable> domainOtp = wageTableRepo.getWageTableById(cid, wageTableCode);
-		if (optContent.isPresent()) {
-			return new WageTableContentDto(optContent.get(), domainOtp, wageContentCreater);
-		} else {
-			return null;
-		}
+		Optional<ElementRangeSetting> optSetting = elemRangeSetRepo.getElementRangeSettingById(historyId);
+		
+		return new WageTableContentDto(optContent, domainOtp, optSetting, wageContentCreater);
 	}
 
 	public ElementRangeSettingDto getElemRangeSet(String historyId) {

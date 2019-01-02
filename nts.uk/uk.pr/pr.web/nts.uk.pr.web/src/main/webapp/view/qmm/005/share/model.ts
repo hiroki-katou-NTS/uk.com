@@ -231,8 +231,8 @@ module nts.uk.pr.view.qmm005.share.model {
     }
 
     export enum Abolition {
-        ABOLITION = 0,
-        NOT_ABOLITION = 1
+        ABOLITION = 1,
+        NOT_ABOLITION = 0
     }
 
     export function getAbolitionItems(): Array<ItemModel> {

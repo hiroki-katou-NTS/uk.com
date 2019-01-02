@@ -2,18 +2,21 @@ module nts.uk.pr.view.qmm041.share.model {
 
     export interface ISalPerUnitPriceName {
         code: string,
-        name: string
+        name: string,
+        shortName: string
     }
 
 
     export class SalPerUnitPriceName {
         code: string;
         name: string;
+        shortName: string;
 
         constructor(param: ISalPerUnitPriceName) {
             if (param) {
                 this.code = param.code;
                 this.name = param.name;
+                this.shortName = param.shortName;
             }
         }
     }

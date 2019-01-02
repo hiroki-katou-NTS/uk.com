@@ -3,7 +3,7 @@ module nts.uk.pr.view.qmm042.a.service {
 
     let paths: any = {
         updateUnitPrice: "ctx/pr/core/wageprovision/empsalunitprice/updateUnitPrice",
-        salaryPerUnitPriceName: "ctx/pr/core/wageprovision/empsalunitprice/getSalaryPerUnitPriceName",
+        salaryPerUnitPriceName: "ctx/pr/core/wageprovision/empsalunitprice/getSalaryPerUnitPriceNotAbolition",
         employeeReferenceDate: "ctx/pr/core/ws/wageprovision/individualwagecontract/employeeReferenceDate",
         employeeSalaryUnitPriceHistory: "ctx/pr/core/wageprovision/empsalunitprice/getEmployeeSalaryUnitPriceHistory",
     };

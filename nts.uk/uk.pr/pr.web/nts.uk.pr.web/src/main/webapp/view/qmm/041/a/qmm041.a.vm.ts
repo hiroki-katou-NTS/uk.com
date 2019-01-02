@@ -25,7 +25,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
         mode: KnockoutObservable<number> = ko.observable(model.MODE.NORMAL);
         startYearMonth: KnockoutObservable<string> = ko.observable(null);
         endYearMonth: KnockoutObservable<string> = ko.observable(null);
-        personalUnitPriceName: KnockoutObservable<string> = ko.observable(null);
+        personalUnitPriceShortName: KnockoutObservable<string> = ko.observable(null);
         personalUnitPriceCode: KnockoutObservable<string> = ko.observable(null);
         A5_6: KnockoutObservable<string> = ko.observable(null);
 
@@ -83,7 +83,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
 
                 /** Advanced search properties */
                 showEmployment: true,
-                showWorkplace: false,
+                showWorkplace: true,
                 showClassification: false,
                 showJobTitle: false,
                 showWorktype: false,
@@ -183,7 +183,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                 });
                 let historyIndex = self.findHistoryIndex(historyCode);
                 self.personalUnitPriceCode(self.dataSource()[index].code);
-                self.personalUnitPriceName(self.dataSource()[index].name);
+                self.personalUnitPriceShortName(self.dataSource()[index].shortName);
                 self.A5_6(' ～ ');
                 self.endYearMonth(self.formatYM(self.historyList()[historyIndex].endYearMonth));
                 self.startYearMonth(self.formatYM(self.historyList()[historyIndex].startYearMonth));
@@ -193,7 +193,7 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
                 self.isRegistrable(true);
             } else {
                 self.personalUnitPriceCode(null);
-                self.personalUnitPriceName(null);
+                self.personalUnitPriceShortName(null);
                 self.A5_6(null);
                 self.endYearMonth(null);
                 self.startYearMonth(null);
@@ -216,6 +216,10 @@ module nts.uk.pr.view.qmm041.a.viewmodel {
         findHistoryIndex(historyId: string): any {
             let self = this;
             return _.findIndex(self.historyList(), x => historyId === x.historyId);
+        }
+
+        toQmm042() {
+            nts.uk.request.jump("pr", "/view/qmm/042/a/index.xhtml");
         }
 
         startPage(): JQueryPromise<any> {

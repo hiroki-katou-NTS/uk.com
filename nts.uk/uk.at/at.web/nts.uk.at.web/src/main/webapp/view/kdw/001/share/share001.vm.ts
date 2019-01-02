@@ -73,6 +73,9 @@ module nts.uk.at.view.kdw001 {
             summaryClass: number;
             // Screen J
             caseSpecExeContentID: string;
+            //
+            startMonthResult : string;
+            endMonthResult : string;
 
             constructor() {
 
