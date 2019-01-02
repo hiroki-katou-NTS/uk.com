@@ -2,6 +2,8 @@ module nts.uk.at.view.kdw006 {
     export module viewmodel {
         export class ScreenModel {
             constructor(dataShare) {
+                var self = this;
+                self.showExportBtn();
             }
 
             startPage(): JQueryPromise<any> {
@@ -72,17 +74,53 @@ module nts.uk.at.view.kdw006 {
                 let isDaily = false;
                 nts.uk.request.jump("/view/kdw/002/c/index.xhtml", { ShareObject: isDaily });
             }
-            private exportExcel(): void {
+            private exportExcelCommon(): void {
                 var self = this;
                 nts.uk.ui.block.grayout();
                 let langId = "ja";
-                service.saveAsExcel(langId).done(function() {
+                service.saveAsExcelCommon(langId).done(function() {
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 });
          }
+            private exportExcelDaily(): void {
+                var self = this;
+                nts.uk.ui.block.grayout();
+                let langId = "ja";
+                service.saveAsExcelDaily(langId).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+         }
+            private exportExcelMonthly(): void {
+                var self = this;
+                nts.uk.ui.block.grayout();
+                let langId = "ja";
+                service.saveAsExcelMonthly(langId).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+         }
+            showExportBtn() {
+                if (nts.uk.util.isNullOrUndefined(__viewContext.user.role.attendance)
+                    && nts.uk.util.isNullOrUndefined(__viewContext.user.role.payroll)
+                    && nts.uk.util.isNullOrUndefined(__viewContext.user.role.officeHelper)
+                    && nts.uk.util.isNullOrUndefined(__viewContext.user.role.personnel)) {
+                    $("#print-button-common").hide();
+                    $("#print-button-daily").hide();
+                    $("#print-button-monthly").hide();
+                } else {
+                    $("#print-button-common").show();
+                    $("#print-button-daily").show();
+                    $("#print-button-monthly").show();
+                }
+            }
 
         }
     }
