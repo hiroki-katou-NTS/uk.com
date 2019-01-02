@@ -27,7 +27,7 @@ public class JpaRoleEmploymentExport  extends JpaRepository implements RoleEmpEx
         ONLY_MYSELF(3, "Enum_EmployeeReferenceRange_onlyMyself", "自分のみ");*/
     public static final int EmployeeReferenceRange_ONLY_MYSELF = 3;
     /*It's a point to start Generate function_no */
-    public static final int ROW_START_FUNCTION_NO = 7;
+    public static final int ROW_START_FUNCTION_NO = 8;
 
     private MasterData toData(NtsResultSet.NtsResultRecord r, List<Integer> listFunctionNo) {
         Map<String, MasterCellData> data = new HashMap<>();

@@ -28,7 +28,9 @@ import java.util.stream.Collectors;
 
 @Stateless
 public class JpaRolePersonalInfor extends JpaRepository implements RolePersonalInforRepository {
-  
+    /*It's a point to start Generate function_no */
+    public static final int ROW_START_FUNCTION_NO = 7;
+    public static final int TRUE = 1;
     @Override
     public List<MasterData> findAllRolePersonalInfor(int roleType, String cId) {      
         List<MasterData> datas = new ArrayList<>();
@@ -103,7 +105,7 @@ public class JpaRolePersonalInfor extends JpaRepository implements RolePersonalI
         for (int i = 0 ; i < listFunctionNo.size() ; i++){
             data.put(RolePersonalInforExportImpl.FUNCTION_NO_+listFunctionNo.get(i), MasterCellData.builder()
                     .columnId(RolePersonalInforExportImpl.FUNCTION_NO_+listFunctionNo.get(i))
-                    .value(r.getString(i+6).equals("1")? "○" : "-")
+                    .value(r.getString(i+ROW_START_FUNCTION_NO).equals(TRUE+"")? "○" : "-")
                     .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                     .build());
         }

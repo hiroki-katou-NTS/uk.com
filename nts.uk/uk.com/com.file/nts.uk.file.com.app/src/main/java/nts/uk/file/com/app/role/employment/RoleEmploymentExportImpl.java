@@ -45,7 +45,7 @@ public class RoleEmploymentExportImpl implements MasterListData {
                 ColumnTextAlign.LEFT, "", true));
         columns.add(new MasterHeaderColumn(CAS005_127, TextResource.localize("CAS005_127"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(CAS005_128, TextResource.localize("CAS005_127"),
+        columns.add(new MasterHeaderColumn(CAS005_128, TextResource.localize("CAS005_128"),
                 ColumnTextAlign.LEFT, "", true));
         Map<Integer,String>  allFunctionNo = mRoleEmpExportRepository.findAllFunctionNo();
         for(int key : allFunctionNo.keySet()){
