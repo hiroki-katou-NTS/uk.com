@@ -3,13 +3,32 @@
 }
 
 #contents-area .col-50 {
-	width: 49.65%;
+	width: 49%;
 	vertical-align: top; box-sizing : border-box;
 	display: inline-block;
 	box-sizing: border-box;
 }
 
 #contents-area .form-group {
+	display: block;
+	margin-bottom: 10px;
+}
+
+#contents-area .form-group.change-box,
+#contents-area .form-group.radio-wrapper {
+	margin-left: 25px;
+}
+
+#contents-area .form-group.filter-box {
+	margin-left: 50px;
+}
+#contents-area .form-group.change-box>.change-desc,
+#contents-area .form-group.filter-box>.filter-desc {
+	line-height: 32px;
+}
+
+#contents-area .form-group.radio-wrapper>.ntsRadioBox {
+	display: block;
 	margin-bottom: 10px;
 }
 

@@ -52,7 +52,23 @@
                             }"></table>
 				</div>
 				<div class="col-50">
-					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_74')}</div>
+					<div class="form-group" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_74')}</div>
+					<div class="form-group" data-bind="ntsRadioBoxGroup: {
+							options: ko.observableArray([{ id: 'F1_008', name: text('CPS003_76') }, { id: 'F1_009', name: text('CPS003_77', ['対象項目名']) }]),
+							optionsValue: 'id',
+							optionsText: 'name',
+							value: ko.observable('F1_008'),
+							enable: true 
+						}"></div>
+					<div class="form-group filter-box">
+						<input data-bind="ntsTextEditor: { value: ko.observable('') }" />
+						<div class="filter-desc">#{i18n.getText('CPS003_79')}</div>
+					</div>
+					<div class="form-group" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_80')}</div>
+					<div class="form-group change-box">
+						<input data-bind="ntsTextEditor: { value: ko.observable('') }" />
+						<div class="change-desc">#{i18n.getText('CPS003_82')}</div>
+					</div>
 				</div>
 				<div class="caret caret-bottom"></div>
 				<div class="bottom-text">
