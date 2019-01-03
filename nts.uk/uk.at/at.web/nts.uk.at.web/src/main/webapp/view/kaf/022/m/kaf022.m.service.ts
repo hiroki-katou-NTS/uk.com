@@ -6,8 +6,7 @@ module nts.uk.at.view.kmf022.m.service {
         update: "at/request/application/setting/workplace/update",
         remove: "at/request/application/setting/workplace/remove",
         getComConfig: "at/request/application/setting/workplace/get-com",
-        saveComConfig: "at/request/application/setting/workplace/save-com-config",
-        exportExcel: "/masterlist/report/print"
+        saveComConfig: "at/request/application/setting/workplace/save-com-config"
     }
 
     export function getAll(lstWkpId): JQueryPromise<Array<any>> {
@@ -24,8 +23,5 @@ module nts.uk.at.view.kmf022.m.service {
 
     export function getCom() { return ajax(paths.getComConfig) };
     export function saveCom(command) { return ajax(paths.saveComConfig, command) };
-    
-    export function saveAsExcel(languageId: string): JQueryPromise<any> {
-        return nts.uk.request.exportFile(paths.exportExcel, {domainId: "ApprovalFunctionConfig", domainType: "KAF022-計算式の登録", languageId: languageId, reportType: 0});
-    }
+ 
 }

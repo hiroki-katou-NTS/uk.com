@@ -82,6 +82,8 @@
                         <button  id="btn_004" class="button danger separate-button fix-button"
                                 data-bind="click: function(){$parent.viewmodelL.deleteEmploymentSet($parent.viewmodelL);},
                                 enable: $parent.viewmodelL.screenMode() == 1" >#{i18n.getText('KAF022_275')}</button>
+                        <button class="button separate-button fix-button"
+								data-bind="click: function(){$parent.viewmodelA.exportExcel('EmploymentApprovalSetting','KAF022申請の前準備')}" >#{i18n.getText('KAF022_650')}</button>
                     </div>
 				</com:ko-if>
 				<com:ko-if bind="currentTab()==='m'">
@@ -93,7 +95,7 @@
 						<button id="btn_004" class="button danger separate-button fix-button"
 								data-bind="click: $vm.viewmodelM.remove.bind($vm.viewmodelM), enable: !!$vm.viewmodelM.copyAble()" >#{i18n.getText('KAF022_275')}</button>
 						<button class="button separate-button fix-button"
-								data-bind="click: $vm.viewmodelM.exportExcel.bind($vm.viewmodelM)" >#{i18n.getText('KAF022_650')}</button>
+								data-bind="click: function(){$parent.viewmodelA.exportExcel('ApprovalFunctionConfig','KAF022-計算式の登録')}" >#{i18n.getText('KAF022_650')}</button>
 					</div>
 				</com:ko-if>
 			</div>

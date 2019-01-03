@@ -17,7 +17,7 @@ import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
 
 @Stateless
 @DomainID(value ="ApprovalFunctionConfig")
-public class ApprovalFunctionConfigExportImpl implements MasterListData{
+public class ApprovalFunctionConfigExportImpl implements MasterListData {
     
 	@Inject
 	private ApprovalFunctionConfigRepository repository;
@@ -39,7 +39,7 @@ public class ApprovalFunctionConfigExportImpl implements MasterListData{
     public static final String KAF022_649 = "備考";
     
     @Override
-    public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery arg0){
+    public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery arg0) {
         List <MasterHeaderColumn> columns = new ArrayList<>();
         columns.add(new MasterHeaderColumn(KAF022_635, TextResource.localize("KAF022_635"),
                 ColumnTextAlign.LEFT, "", true));
