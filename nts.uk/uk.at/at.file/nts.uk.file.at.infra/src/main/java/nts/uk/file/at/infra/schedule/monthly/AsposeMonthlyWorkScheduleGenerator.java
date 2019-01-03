@@ -709,28 +709,28 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		}).collect(Collectors.toSet());
 		
 		// This employee list with data, find out all other employees who don't have data.
-		List<String> lstEmployeeIdNoData = query.getEmployeeId().stream().filter(x -> !lstEmployeeWithData.contains(x)).collect(Collectors.toList());
-		if (!lstEmployeeIdNoData.isEmpty()) {
-			List<EmployeeDto> lstEmployeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeIdNoData);
-			int numOfChunks = (int)Math.ceil((double)lstEmployeeDto.size() / CHUNK_SIZE_ERROR);
-			int start, length;
-			List<EmployeeDto> lstSplitEmployeeDto;
-			for(int i = 0; i < numOfChunks; i++) {
-				start = i * CHUNK_SIZE_ERROR;
-	            length = Math.min(lstEmployeeDto.size() - start, CHUNK_SIZE_ERROR);
-
-	            lstSplitEmployeeDto = lstEmployeeDto.subList(start, start + length);
-	            
-	            // Convert to json array
-	            JsonArrayBuilder arr = Json.createArrayBuilder();
-	    		
-	    		for (EmployeeDto employee : lstSplitEmployeeDto) {
-	    			arr.add(employee.buildJsonObject());
-	    		}
-	            
-	            setter.setData(DATA_PREFIX + i, arr.build().toString());
-			}
-		}
+//		List<String> lstEmployeeIdNoData = query.getEmployeeId().stream().filter(x -> !lstEmployeeWithData.contains(x)).collect(Collectors.toList());
+//		if (!lstEmployeeIdNoData.isEmpty()) {
+//			List<EmployeeDto> lstEmployeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeIdNoData);
+//			int numOfChunks = (int)Math.ceil((double)lstEmployeeDto.size() / CHUNK_SIZE_ERROR);
+//			int start, length;
+//			List<EmployeeDto> lstSplitEmployeeDto;
+//			for(int i = 0; i < numOfChunks; i++) {
+//				start = i * CHUNK_SIZE_ERROR;
+//	            length = Math.min(lstEmployeeDto.size() - start, CHUNK_SIZE_ERROR);
+//
+//	            lstSplitEmployeeDto = lstEmployeeDto.subList(start, start + length);
+//	            
+//	            // Convert to json array
+//	            JsonArrayBuilder arr = Json.createArrayBuilder();
+//	    		
+//	    		for (EmployeeDto employee : lstSplitEmployeeDto) {
+//	    			arr.add(employee.buildJsonObject());
+//	    		}
+//	            
+//	            setter.setData(DATA_PREFIX + i, arr.build().toString());
+//			}
+//		}
 		
 		// Check lowest level of employee and highest level of output setting, and attendance result count is 0
 		// 階層累計行のみ出力する設定の場合、データ取得件数は0件として扱い、エラーメッセージを表示(#Msg_37#)
