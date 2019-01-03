@@ -19,10 +19,11 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.shared.WeekStart;
-import nts.uk.file.at.app.export.setworkinghoursanddays.CompanyUtils;
-import nts.uk.file.at.app.export.setworkinghoursanddays.EmploymentUtils;
+import nts.uk.file.at.app.export.setworkinghoursanddays.CompanyColumn;
+import nts.uk.file.at.app.export.setworkinghoursanddays.EmployeeColumn;
+import nts.uk.file.at.app.export.setworkinghoursanddays.EmploymentColumn;
 import nts.uk.file.at.app.export.setworkinghoursanddays.SetWorkingHoursAndDaysExRepository;
-import nts.uk.file.at.app.export.setworkinghoursanddays.WorkPlaceUtils;
+import nts.uk.file.at.app.export.setworkinghoursanddays.WorkPlaceColumn;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
@@ -111,7 +112,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					+" KRCST_COM_DEFOR_M_CAL_SET.INCLUDE_EXTRA_OT AS DEFOR_INCLUDE_EXTRA_OT, "
 					+" IIF(KRCST_COM_DEFOR_M_CAL_SET.INCLUDE_EXTRA_AGGR = 1 ,KRCST_COM_DEFOR_M_CAL_SET.INCLUDE_LEGAL_OT, NULL) AS DEFOR_INCLUDE_LEGAL_OT, "
 					+" IIF(KRCST_COM_DEFOR_M_CAL_SET.INCLUDE_EXTRA_AGGR = 1 ,KRCST_COM_DEFOR_M_CAL_SET.INCLUDE_HOLIDAY_OT, NULL) AS DEFOR_INCLUDE_HOLIDAY_OT "
-					+" 	FROM KRCST_COM_DEFOR_M_CAL_SET "
+					+" FROM KRCST_COM_DEFOR_M_CAL_SET "
 					+" 		INNER JOIN KRCST_COM_FLEX_M_CAL_SET ON KRCST_COM_DEFOR_M_CAL_SET.CID = KRCST_COM_FLEX_M_CAL_SET.CID "
 					+" 		INNER JOIN KRCST_COM_REG_M_CAL_SET ON KRCST_COM_DEFOR_M_CAL_SET.CID = KRCST_COM_REG_M_CAL_SET.CID "
 					+" 		INNER JOIN KSHST_COM_TRANS_LAB_TIME ON KRCST_COM_DEFOR_M_CAL_SET.CID = KSHST_COM_TRANS_LAB_TIME.CID "
@@ -124,8 +125,8 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					+" 		INNER JOIN KSHST_COM_DEFOR_LAR_SET ON KRCST_COM_DEFOR_M_CAL_SET.CID = KSHST_COM_DEFOR_LAR_SET.CID "
 					+" 																AND KSHST_COM_DEFOR_LAR_SET.[YEAR] = KSHST_COM_NORMAL_SET.[YEAR] "
 					+" 		INNER JOIN KSHST_FLX_GET_PRWK_TIME ON KRCST_COM_DEFOR_M_CAL_SET.CID = KSHST_FLX_GET_PRWK_TIME.CID "
-					+" 	WHERE KRCST_COM_DEFOR_M_CAL_SET.CID = ? "
-					+" 	ORDER BY KSHST_COM_NORMAL_SET.[YEAR] ";
+					+" WHERE KRCST_COM_DEFOR_M_CAL_SET.CID = ? "
+					+" ORDER BY KSHST_COM_NORMAL_SET.[YEAR] ";
 	
 	private static final String GET_EMPLOYMENT = "SELECT "
 											+" KSHST_EMP_NORMAL_SET.[YEAR], "
@@ -205,20 +206,20 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 											+" IIF(KRCST_EMP_DEFOR_M_CAL_SET.INCLUDE_EXTRA_OT = 1, KRCST_EMP_DEFOR_M_CAL_SET.INCLUDE_HOLIDAY_OT , NUll ) AS DEFOR_INCLUDE_HOLIDAY_OT, "
 											+" IIF(KRCST_EMP_DEFOR_M_CAL_SET.INCLUDE_EXTRA_OT = 1, KRCST_EMP_DEFOR_M_CAL_SET.INCLUDE_HOLIDAY_OT , NUll ) AS DEFOR_INCLUDE_HOLIDAY_OT "
 											+" 	FROM KSHST_EMP_NORMAL_SET "
-												+" 		INNER JOIN KSHST_EMP_FLEX_SET ON KSHST_EMP_NORMAL_SET.CID = KSHST_EMP_FLEX_SET.CID  "
-													+" 		AND KSHST_EMP_NORMAL_SET.EMP_CD = KSHST_EMP_FLEX_SET.EMP_CD "
-													+" 		AND KSHST_EMP_NORMAL_SET.[YEAR] = KSHST_EMP_FLEX_SET.[YEAR] "
-													+" 		AND KSHST_EMP_NORMAL_SET.[YEAR] >= ? "
-													+" 		AND KSHST_EMP_NORMAL_SET.[YEAR] <= ? "
-										    	+" 		INNER JOIN KSHST_EMP_DEFOR_LAR_SET ON KSHST_EMP_NORMAL_SET.CID = KSHST_EMP_DEFOR_LAR_SET.CID "
-													+" 		AND KSHST_EMP_NORMAL_SET.EMP_CD = KSHST_EMP_DEFOR_LAR_SET.EMP_CD "
-													+" 		AND KSHST_EMP_NORMAL_SET.[YEAR] = KSHST_EMP_DEFOR_LAR_SET.[YEAR] "
-												+" 	INNER JOIN KSHST_EMP_TRANS_LAB_TIME ON KSHST_EMP_NORMAL_SET.CID = KSHST_EMP_TRANS_LAB_TIME.CID "
-													+" 		AND KSHST_EMP_NORMAL_SET.EMP_CD = KSHST_EMP_TRANS_LAB_TIME.EMP_CD "
-												+" 	INNER JOIN KSHST_EMP_REG_LABOR_TIME ON KSHST_EMP_NORMAL_SET.CID = KSHST_EMP_REG_LABOR_TIME.CID "
-											    	+" 		AND KSHST_EMP_NORMAL_SET.EMP_CD = KSHST_EMP_REG_LABOR_TIME.EMP_CD "
-												+" 	INNER JOIN KRCST_EMP_DEFOR_M_CAL_SET ON KSHST_EMP_NORMAL_SET.CID = KRCST_EMP_DEFOR_M_CAL_SET.CID "
-													+" 		AND KSHST_EMP_NORMAL_SET.EMP_CD = KRCST_EMP_DEFOR_M_CAL_SET.EMP_CD "
+											+" 		INNER JOIN KSHST_EMP_FLEX_SET ON KSHST_EMP_NORMAL_SET.CID = KSHST_EMP_FLEX_SET.CID  "
+											+" 			AND KSHST_EMP_NORMAL_SET.EMP_CD = KSHST_EMP_FLEX_SET.EMP_CD "
+											+" 			AND KSHST_EMP_NORMAL_SET.[YEAR] = KSHST_EMP_FLEX_SET.[YEAR] "
+											+" 			AND KSHST_EMP_NORMAL_SET.[YEAR] >= ? "
+											+" 			AND KSHST_EMP_NORMAL_SET.[YEAR] <= ? "
+										    +" 		INNER JOIN KSHST_EMP_DEFOR_LAR_SET ON KSHST_EMP_NORMAL_SET.CID = KSHST_EMP_DEFOR_LAR_SET.CID "
+											+" 			AND KSHST_EMP_NORMAL_SET.EMP_CD = KSHST_EMP_DEFOR_LAR_SET.EMP_CD "
+											+" 			AND KSHST_EMP_NORMAL_SET.[YEAR] = KSHST_EMP_DEFOR_LAR_SET.[YEAR] "
+											+" 		INNER JOIN KSHST_EMP_TRANS_LAB_TIME ON KSHST_EMP_NORMAL_SET.CID = KSHST_EMP_TRANS_LAB_TIME.CID "
+											+" 			AND KSHST_EMP_NORMAL_SET.EMP_CD = KSHST_EMP_TRANS_LAB_TIME.EMP_CD "
+											+" 		INNER JOIN KSHST_EMP_REG_LABOR_TIME ON KSHST_EMP_NORMAL_SET.CID = KSHST_EMP_REG_LABOR_TIME.CID "
+											+" 			AND KSHST_EMP_NORMAL_SET.EMP_CD = KSHST_EMP_REG_LABOR_TIME.EMP_CD "
+											+" 		INNER JOIN KRCST_EMP_DEFOR_M_CAL_SET ON KSHST_EMP_NORMAL_SET.CID = KRCST_EMP_DEFOR_M_CAL_SET.CID "
+											+" 			AND KSHST_EMP_NORMAL_SET.EMP_CD = KRCST_EMP_DEFOR_M_CAL_SET.EMP_CD "
 												+" 	INNER JOIN KRCST_EMP_FLEX_M_CAL_SET ON KSHST_EMP_NORMAL_SET.CID = KRCST_EMP_FLEX_M_CAL_SET.CID "
 													+" 		AND KSHST_EMP_NORMAL_SET.EMP_CD = KRCST_EMP_FLEX_M_CAL_SET.EMP_CD "
 												+" 	INNER JOIN KRCST_EMP_REG_M_CAL_SET ON KSHST_EMP_NORMAL_SET.CID = KRCST_EMP_REG_M_CAL_SET.CID "
@@ -336,6 +337,122 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 						 +  "			AND KSHST_WKP_NORMAL_SET.WKP_ID IN (SELECT KSHST_WKP_REG_LABOR_TIME.WKP_ID FROM KSHST_WKP_REG_LABOR_TIME WHERE KSHST_WKP_REG_LABOR_TIME.CID = ?) " 
 						 +  "ORDER BY KSHST_WKP_NORMAL_SET.[YEAR] ASC, BSYMT_WORKPLACE_INFO.WKPCD";
 	
+	private static final String GET_EMPLOYEE = " SELECT  " 
+			 + "KSHST_SHA_NORMAL_SET.[YEAR], " 
+			 + "BSYMT_EMP_DTA_MNG_INFO.SCD, " 
+			 + "BPSMT_PERSON.BUSINESS_NAME, " 
+			 + "KSHST_SHA_NORMAL_SET.JAN_TIME AS S1, " 
+			 + "KSHST_SHA_NORMAL_SET.FEB_TIME AS S2, " 
+			 + "KSHST_SHA_NORMAL_SET.MAR_TIME AS S3, " 
+			 + "KSHST_SHA_NORMAL_SET.APR_TIME AS S4, " 
+			 + "KSHST_SHA_NORMAL_SET.MAY_TIME AS S5, " 
+			 + "KSHST_SHA_NORMAL_SET.JUN_TIME AS S6, " 
+			 + "KSHST_SHA_NORMAL_SET.JUL_TIME AS S7, " 
+			 + "KSHST_SHA_NORMAL_SET.AUG_TIME AS S8, " 
+			 + "KSHST_SHA_NORMAL_SET.SEP_TIME AS S9, " 
+			 + "KSHST_SHA_NORMAL_SET.OCT_TIME AS S10, " 
+			 + "KSHST_SHA_NORMAL_SET.NOV_TIME AS S11, " 
+			 + "KSHST_SHA_NORMAL_SET.DEC_TIME AS S12, " 
+			 + "KSHST_SHA_REG_LABOR_TIME.DAILY_TIME, " 
+			 + "KSHST_SHA_REG_LABOR_TIME.WEEKLY_TIME, " 
+			 + "KSHST_SHA_REG_LABOR_TIME.WEEK_STR, " 
+			 + "KRCST_SHA_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR, " 
+			 + "IIF(KRCST_SHA_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR = 1, KRCST_SHA_REG_M_CAL_SET.INCLUDE_LEGAL_AGGR, NULL) AS INCLUDE_LEGAL_AGGR, " 
+			 + "IIF(KRCST_SHA_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR = 1, KRCST_SHA_REG_M_CAL_SET.INCLUDE_HOLIDAY_AGGR, NULL) AS INCLUDE_HOLIDAY_AGGR, " 
+			 + "KRCST_SHA_REG_M_CAL_SET.INCLUDE_EXTRA_OT, " 
+			 + "IIF(KRCST_SHA_REG_M_CAL_SET.INCLUDE_EXTRA_OT = 1, KRCST_SHA_REG_M_CAL_SET.INCLUDE_LEGAL_OT, NULL) AS INCLUDE_LEGAL_OT, " 
+			 + "IIF(KRCST_SHA_REG_M_CAL_SET.INCLUDE_EXTRA_OT = 1, KRCST_SHA_REG_M_CAL_SET.INCLUDE_HOLIDAY_OT, NULL) AS INCLUDE_HOLIDAY_OT, " 
+			 + "KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.STAT_JAN_TIME, Null) AS F1, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.STAT_FEB_TIME, Null) AS F2, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.STAT_MAR_TIME, Null) AS F3, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.STAT_APR_TIME, Null) AS F4, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.STAT_MAY_TIME, Null) AS F5, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.STAT_JUN_TIME, Null) AS F6, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.STAT_JUL_TIME, Null) AS F7, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.STAT_AUG_TIME, Null) AS F8, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.STAT_SEP_TIME, Null) AS F9, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.STAT_OCT_TIME, Null) AS F10, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.STAT_NOV_TIME, Null) AS F11, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.STAT_DEC_TIME, Null) AS F12, " 
+			 + "KSHST_SHA_FLEX_SET.SPEC_JAN_TIME AS T1, " 
+			 + "KSHST_SHA_FLEX_SET.SPEC_FEB_TIME AS T2, " 
+			 + "KSHST_SHA_FLEX_SET.SPEC_MAR_TIME AS T3, " 
+			 + "KSHST_SHA_FLEX_SET.SPEC_APR_TIME AS T4, " 
+			 + "KSHST_SHA_FLEX_SET.SPEC_MAY_TIME AS T5, " 
+			 + "KSHST_SHA_FLEX_SET.SPEC_JUN_TIME AS T6, " 
+			 + "KSHST_SHA_FLEX_SET.SPEC_JUL_TIME AS T7, " 
+			 + "KSHST_SHA_FLEX_SET.SPEC_AUG_TIME AS T8, " 
+			 + "KSHST_SHA_FLEX_SET.SPEC_SEP_TIME AS T9, " 
+			 + "KSHST_SHA_FLEX_SET.SPEC_OCT_TIME AS T10, " 
+			 + "KSHST_SHA_FLEX_SET.SPEC_NOV_TIME AS T11, " 
+			 + "KSHST_SHA_FLEX_SET.SPEC_DEC_TIME AS T12, " 
+			 + "KRCST_SHA_FLEX_M_CAL_SET.AGGR_METHOD, " 
+			 + "IIF(KRCST_SHA_FLEX_M_CAL_SET.AGGR_METHOD = 0, KRCST_SHA_FLEX_M_CAL_SET.INCLUDE_OT, NULL) AS INCLUDE_OT, " 
+			 + "KRCST_SHA_FLEX_M_CAL_SET.INSUFFIC_SET, " 
+			 + "KSHST_SHA_DEFOR_LAR_SET.JAN_TIME AS M1, " 
+			 + "KSHST_SHA_DEFOR_LAR_SET.FEB_TIME AS M2, " 
+			 + "KSHST_SHA_DEFOR_LAR_SET.MAR_TIME AS M3, " 
+			 + "KSHST_SHA_DEFOR_LAR_SET.APR_TIME AS M4, " 
+			 + "KSHST_SHA_DEFOR_LAR_SET.MAY_TIME AS M5, " 
+			 + "KSHST_SHA_DEFOR_LAR_SET.JUN_TIME AS M6, " 
+			 + "KSHST_SHA_DEFOR_LAR_SET.JUL_TIME AS M7, " 
+			 + "KSHST_SHA_DEFOR_LAR_SET.AUG_TIME AS M8, " 
+			 + "KSHST_SHA_DEFOR_LAR_SET.SEP_TIME AS M9, " 
+			 + "KSHST_SHA_DEFOR_LAR_SET.OCT_TIME AS M10, " 
+			 + "KSHST_SHA_DEFOR_LAR_SET.NOV_TIME AS M11, " 
+			 + "KSHST_SHA_DEFOR_LAR_SET.DEC_TIME AS M12, " 
+			 + "KSHST_SHA_TRANS_LAB_TIME.DAILY_TIME AS TRANS_DAILY_TIME, " 
+			 + "KSHST_SHA_TRANS_LAB_TIME.WEEKLY_TIME AS TRANS_WEEKLY_TIME, " 
+			 + "KSHST_SHA_TRANS_LAB_TIME.WEEK_STR AS TRANS_WEEK_STR, " 
+			 + "KRCST_SHA_DEFOR_M_CAL_SET.STR_MONTH, " 
+			 + "KRCST_SHA_DEFOR_M_CAL_SET.PERIOD, " 
+			 + "KRCST_SHA_DEFOR_M_CAL_SET.REPEAT_ATR, " 
+			 + "KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_EXTRA_AGGR AS DEFOR_INCLUDE_EXTRA_AGGR, " 
+			 + "IIF(KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_EXTRA_AGGR = 1, KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_LEGAL_AGGR, NULl) AS DEFOR_INCLUDE_LEGAL_AGGR, " 
+			 + "IIF(KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_EXTRA_AGGR = 1, KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_HOLIDAY_AGGR, NULl) AS DEFOR_INCLUDE_HOLIDAY_AGGR, " 
+			 + "KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_EXTRA_OT AS DEFOR_INCLUDE_EXTRA_OT, " 
+			 + "IIF(KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_EXTRA_OT = 1, KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_LEGAL_OT, NULl) AS DEFOR_INCLUDE_LEGAL_OT, " 
+			 + "IIF(KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_EXTRA_OT = 1, KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_HOLIDAY_OT, NULl) AS DEFOR_INCLUDE_HOLIDAY_OT " 
+			 + "FROM KSHST_SHA_NORMAL_SET  " 
+			 + "INNER JOIN KSHST_SHA_FLEX_SET ON  " 
+			 + "	KSHST_SHA_NORMAL_SET.CID = KSHST_SHA_FLEX_SET.CID " 
+			 + "	AND KSHST_SHA_NORMAL_SET.[YEAR] >= ? " 
+			 + "	AND KSHST_SHA_NORMAL_SET.[YEAR] <= ? " 
+			 + "	AND KSHST_SHA_NORMAL_SET.[YEAR] = KSHST_SHA_FLEX_SET.[YEAR] " 
+			 + "	AND KSHST_SHA_NORMAL_SET.SID = KSHST_SHA_FLEX_SET.SID " 
+			 + "INNER JOIN KSHST_SHA_DEFOR_LAR_SET ON " 
+			 + "	KSHST_SHA_NORMAL_SET.CID = KSHST_SHA_DEFOR_LAR_SET.CID " 
+			 + "	AND KSHST_SHA_NORMAL_SET.[YEAR] = KSHST_SHA_DEFOR_LAR_SET.[YEAR] " 
+			 + "	AND KSHST_SHA_NORMAL_SET.SID = KSHST_SHA_DEFOR_LAR_SET.SID " 
+			 + "INNER JOIN KSHST_SHA_TRANS_LAB_TIME ON " 
+			 + "	KSHST_SHA_NORMAL_SET.CID = KSHST_SHA_TRANS_LAB_TIME.CID " 
+			 + "	AND KSHST_SHA_NORMAL_SET.SID = KSHST_SHA_TRANS_LAB_TIME.SID " 
+			 + "INNER JOIN KSHST_SHA_REG_LABOR_TIME ON  " 
+			 + "	KSHST_SHA_NORMAL_SET.CID = KSHST_SHA_REG_LABOR_TIME.CID " 
+			 + "	AND KSHST_SHA_NORMAL_SET.SID = KSHST_SHA_REG_LABOR_TIME.SID " 
+			 + "INNER JOIN KRCST_SHA_DEFOR_M_CAL_SET ON " 
+			 + "	KSHST_SHA_NORMAL_SET.CID = KRCST_SHA_DEFOR_M_CAL_SET.CID " 
+			 + "	AND KSHST_SHA_NORMAL_SET.SID = KRCST_SHA_DEFOR_M_CAL_SET.SID " 
+			 + "INNER JOIN KRCST_SHA_FLEX_M_CAL_SET ON  " 
+			 + "	KSHST_SHA_NORMAL_SET.CID = KRCST_SHA_FLEX_M_CAL_SET.CID " 
+			 + "	AND KSHST_SHA_NORMAL_SET.SID = KRCST_SHA_FLEX_M_CAL_SET.SID " 
+			 + "INNER JOIN KRCST_SHA_REG_M_CAL_SET ON  " 
+			 + "	KSHST_SHA_NORMAL_SET.CID = KRCST_SHA_REG_M_CAL_SET.CID " 
+			 + "	AND KSHST_SHA_NORMAL_SET.SID = KRCST_SHA_REG_M_CAL_SET.SID " 
+			 + "INNER JOIN BSYMT_EMP_DTA_MNG_INFO ON " 
+			 + "	KSHST_SHA_NORMAL_SET.CID = BSYMT_EMP_DTA_MNG_INFO.CID " 
+			 + "	AND KSHST_SHA_NORMAL_SET.SID = BSYMT_EMP_DTA_MNG_INFO.SID " 
+			 + "INNER JOIN BPSMT_PERSON ON " 
+			 + "	BSYMT_EMP_DTA_MNG_INFO.PID = BPSMT_PERSON.PID " 
+			 + "INNER JOIN KSHST_FLX_GET_PRWK_TIME ON  " 
+			 + "	KSHST_SHA_NORMAL_SET.CID = KSHST_FLX_GET_PRWK_TIME.CID " 
+			 + "WHERE  KSHST_SHA_NORMAL_SET.CID = ? " 
+			 + "	AND KSHST_SHA_NORMAL_SET.SID IN (SELECT KSHST_SHA_REG_LABOR_TIME.SID  " 
+			 + "									FROM KSHST_SHA_REG_LABOR_TIME  " 
+			 + "									WHERE KSHST_SHA_REG_LABOR_TIME.CID = ?) " 
+			 + "ORDER BY KSHST_SHA_NORMAL_SET.[YEAR], BSYMT_EMP_DTA_MNG_INFO.SCD  " ;
+	
 	private static final String GET_USAGE = "SELECT s.IS_EMP, s.IS_WKP, s.IS_EMPT FROM KUWST_USAGE_UNIT_WT_SET s WHERE s.CID = ?cid ";
 	
 	@Override
@@ -422,7 +539,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 				//R8_21		
 				getAggType(r.getInt("AGGR_METHOD")),
 				//R8_22
-				r.getInt("AGGR_METHOD") != 0 ? getInclude(r.getInt("INCLUDE_OT")) : null,
+				r.getInt("AGGR_METHOD") == 0 ? getInclude(r.getInt("INCLUDE_OT")) : null,
 				//R8_23
 				getShortageTime(r.getInt("INSUFFIC_SET")), 
 				//R8_24 8_25
@@ -608,168 +725,168 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 			String value31, String value32, String value33) {
 		
 		Map<String, MasterCellData> data = new HashMap<>();
-		data.put(CompanyUtils.KMK004_154, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_154)
+		data.put(CompanyColumn.KMK004_154, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_154)
                 .value(value1)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyUtils.KMK004_155, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_155)
+            data.put(CompanyColumn.KMK004_155, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_155)
                 .value(value2)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyUtils.KMK004_156, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_156)
+            data.put(CompanyColumn.KMK004_156, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_156)
                 .value(value3)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyUtils.KMK004_157, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_157)
+            data.put(CompanyColumn.KMK004_157, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_157)
                 .value(value4)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyUtils.KMK004_156_1, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_156_1)
+            data.put(CompanyColumn.KMK004_156_1, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_156_1)
                 .value(value5)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyUtils.KMK004_158, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_158)
+            data.put(CompanyColumn.KMK004_158, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_158)
                 .value(value6)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyUtils.KMK004_159, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_159)
+            data.put(CompanyColumn.KMK004_159, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_159)
                 .value(value7)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyUtils.KMK004_160, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_160)
+            data.put(CompanyColumn.KMK004_160, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_160)
                 .value(value8)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyUtils.KMK004_161, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_161)
+            data.put(CompanyColumn.KMK004_161, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_161)
                 .value(value9)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyUtils.KMK004_162, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_162)
+            data.put(CompanyColumn.KMK004_162, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_162)
                 .value(value10)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyUtils.KMK004_163, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_163)
+            data.put(CompanyColumn.KMK004_163, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_163)
                 .value(value11)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyUtils.KMK004_164, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_164)
+            data.put(CompanyColumn.KMK004_164, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_164)
                 .value(value12)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyUtils.KMK004_165, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_165)
+            data.put(CompanyColumn.KMK004_165, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_165)
                 .value(value13)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyUtils.KMK004_166, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_166)
+            data.put(CompanyColumn.KMK004_166, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_166)
                 .value(value14)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyUtils.KMK004_167, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_167)
+            data.put(CompanyColumn.KMK004_167, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_167)
                 .value(value15)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyUtils.KMK004_156_2, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_156_2)
+            data.put(CompanyColumn.KMK004_156_2, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_156_2)
                 .value(value16)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyUtils.KMK004_168, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_168)
+            data.put(CompanyColumn.KMK004_168, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_168)
                 .value(value17)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyUtils.KMK004_169, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_169)
+            data.put(CompanyColumn.KMK004_169, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_169)
                 .value(value18)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyUtils.KMK004_170, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_170)
+            data.put(CompanyColumn.KMK004_170, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_170)
                 .value(value19)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyUtils.KMK004_171, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_171)
+            data.put(CompanyColumn.KMK004_171, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_171)
                 .value(value20)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyUtils.KMK004_156_3, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_156_3)
+            data.put(CompanyColumn.KMK004_156_3, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_156_3)
                 .value(value21)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyUtils.KMK004_172, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_172)
+            data.put(CompanyColumn.KMK004_172, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_172)
                 .value(value22)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyUtils.KMK004_156_4, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_156_4)
+            data.put(CompanyColumn.KMK004_156_4, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_156_4)
                 .value(value23)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyUtils.KMK004_158_1, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_158_1)
+            data.put(CompanyColumn.KMK004_158_1, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_158_1)
                 .value(value24)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyUtils.KMK004_173, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_173)
+            data.put(CompanyColumn.KMK004_173, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_173)
                 .value(value25)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyUtils.KMK004_174, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_174)
+            data.put(CompanyColumn.KMK004_174, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_174)
                 .value(value26)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(CompanyUtils.KMK004_175, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_175)
+            data.put(CompanyColumn.KMK004_175, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_175)
                 .value(value27)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyUtils.KMK004_159_1, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_159_1)
+            data.put(CompanyColumn.KMK004_159_1, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_159_1)
                 .value(value28)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyUtils.KMK004_160_1, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_160_1)
+            data.put(CompanyColumn.KMK004_160_1, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_160_1)
                 .value(value29)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyUtils.KMK004_161_1, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_161_1)
+            data.put(CompanyColumn.KMK004_161_1, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_161_1)
                 .value(value30)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyUtils.KMK004_162_1, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_162_1)
+            data.put(CompanyColumn.KMK004_162_1, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_162_1)
                 .value(value31)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyUtils.KMK004_163_1, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_163_1)
+            data.put(CompanyColumn.KMK004_163_1, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_163_1)
                 .value(value32)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(CompanyUtils.KMK004_164_1, MasterCellData.builder()
-                .columnId(CompanyUtils.KMK004_164_1)
+            data.put(CompanyColumn.KMK004_164_1, MasterCellData.builder()
+                .columnId(CompanyColumn.KMK004_164_1)
                 .value(value33)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
@@ -837,7 +954,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 				//R12_23
 				getAggType(r.getInt("AGGR_METHOD")),
 				//R12_24
-				r.getInt("AGGR_METHOD") != 0 ? getInclude(r.getInt("INCLUDE_OT")) : null,
+				r.getInt("AGGR_METHOD") == 0 ? getInclude(r.getInt("INCLUDE_OT")) : null,
 				//R12_25
 				getShortageTime(r.getInt("INSUFFIC_SET")), 
 				//R12_26 R12_27
@@ -1029,178 +1146,178 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 			String value31, String value32, String value33, String value34, String value35) {
 		
 		Map<String, MasterCellData> data = new HashMap<>();
-		data.put(EmploymentUtils.KMK004_154, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_154)
+		data.put(EmploymentColumn.KMK004_154, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_154)
                 .value(value1)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(EmploymentUtils.KMK004_185, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_185)
+            data.put(EmploymentColumn.KMK004_185, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_185)
                 .value(value2)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(EmploymentUtils.KMK004_186, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_186)
+            data.put(EmploymentColumn.KMK004_186, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_186)
                 .value(value3)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(EmploymentUtils.KMK004_155, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_155)
+            data.put(EmploymentColumn.KMK004_155, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_155)
                 .value(value4)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(EmploymentUtils.KMK004_156, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_156)
+            data.put(EmploymentColumn.KMK004_156, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_156)
                 .value(value5)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(EmploymentUtils.KMK004_157, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_157)
+            data.put(EmploymentColumn.KMK004_157, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_157)
                 .value(value6)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(EmploymentUtils.KMK004_156_1, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_156_1)
+            data.put(EmploymentColumn.KMK004_156_1, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_156_1)
                 .value(value7)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(EmploymentUtils.KMK004_158, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_158)
+            data.put(EmploymentColumn.KMK004_158, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_158)
                 .value(value8)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(EmploymentUtils.KMK004_159, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_159)
+            data.put(EmploymentColumn.KMK004_159, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_159)
                 .value(value9)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(EmploymentUtils.KMK004_160, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_160)
+            data.put(EmploymentColumn.KMK004_160, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_160)
                 .value(value10)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(EmploymentUtils.KMK004_161, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_161)
+            data.put(EmploymentColumn.KMK004_161, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_161)
                 .value(value11)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(EmploymentUtils.KMK004_162, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_162)
+            data.put(EmploymentColumn.KMK004_162, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_162)
                 .value(value12)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(EmploymentUtils.KMK004_163, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_163)
+            data.put(EmploymentColumn.KMK004_163, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_163)
                 .value(value13)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(EmploymentUtils.KMK004_164, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_164)
+            data.put(EmploymentColumn.KMK004_164, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_164)
                 .value(value14)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(EmploymentUtils.KMK004_165, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_165)
+            data.put(EmploymentColumn.KMK004_165, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_165)
                 .value(value15)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(EmploymentUtils.KMK004_166, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_166)
+            data.put(EmploymentColumn.KMK004_166, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_166)
                 .value(value16)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(EmploymentUtils.KMK004_167, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_167)
+            data.put(EmploymentColumn.KMK004_167, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_167)
                 .value(value17)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(EmploymentUtils.KMK004_156_2, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_156_2)
+            data.put(EmploymentColumn.KMK004_156_2, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_156_2)
                 .value(value18)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(EmploymentUtils.KMK004_168, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_168)
+            data.put(EmploymentColumn.KMK004_168, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_168)
                 .value(value19)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(EmploymentUtils.KMK004_169, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_169)
+            data.put(EmploymentColumn.KMK004_169, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_169)
                 .value(value20)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(EmploymentUtils.KMK004_170, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_170)
+            data.put(EmploymentColumn.KMK004_170, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_170)
                 .value(value21)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(EmploymentUtils.KMK004_171, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_171)
+            data.put(EmploymentColumn.KMK004_171, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_171)
                 .value(value22)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(EmploymentUtils.KMK004_156_3, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_156_3)
+            data.put(EmploymentColumn.KMK004_156_3, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_156_3)
                 .value(value23)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(EmploymentUtils.KMK004_172, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_172)
+            data.put(EmploymentColumn.KMK004_172, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_172)
                 .value(value24)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(EmploymentUtils.KMK004_156_4, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_156_4)
+            data.put(EmploymentColumn.KMK004_156_4, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_156_4)
                 .value(value25)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(EmploymentUtils.KMK004_158_1, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_158_1)
+            data.put(EmploymentColumn.KMK004_158_1, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_158_1)
                 .value(value26)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(EmploymentUtils.KMK004_173, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_173)
+            data.put(EmploymentColumn.KMK004_173, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_173)
                 .value(value27)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(EmploymentUtils.KMK004_174, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_174)
+            data.put(EmploymentColumn.KMK004_174, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_174)
                 .value(value28)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
-            data.put(EmploymentUtils.KMK004_175, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_175)
+            data.put(EmploymentColumn.KMK004_175, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_175)
                 .value(value29)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(EmploymentUtils.KMK004_159_1, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_159_1)
+            data.put(EmploymentColumn.KMK004_159_1, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_159_1)
                 .value(value30)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(EmploymentUtils.KMK004_160_1, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_160_1)
+            data.put(EmploymentColumn.KMK004_160_1, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_160_1)
                 .value(value31)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(EmploymentUtils.KMK004_161_1, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_161_1)
+            data.put(EmploymentColumn.KMK004_161_1, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_161_1)
                 .value(value32)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(EmploymentUtils.KMK004_162_1, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_162_1)
+            data.put(EmploymentColumn.KMK004_162_1, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_162_1)
                 .value(value33)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(EmploymentUtils.KMK004_163_1, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_163_1)
+            data.put(EmploymentColumn.KMK004_163_1, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_163_1)
                 .value(value34)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-            data.put(EmploymentUtils.KMK004_164_1, MasterCellData.builder()
-                .columnId(EmploymentUtils.KMK004_164_1)
+            data.put(EmploymentColumn.KMK004_164_1, MasterCellData.builder()
+                .columnId(EmploymentColumn.KMK004_164_1)
                 .value(value35)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
@@ -1270,7 +1387,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					//R14_23
 					getAggType(r.getInt("AGGR_METHOD")),
 					//R14_24
-					r.getInt("AGGR_METHOD") != 0 ? getInclude(r.getInt("INCLUDE_OT")) : null,
+					r.getInt("AGGR_METHOD") == 0 ? getInclude(r.getInt("INCLUDE_OT")) : null,
 					//14_25
 					getShortageTime(r.getInt("INSUFFIC_SET")),
 					//R14_26 R14_27
@@ -1463,217 +1580,650 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 		
 		Map<String, MasterCellData> data = new HashMap<>();
 		//R14_1
-		data.put(WorkPlaceUtils.KMK004_154, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_154)
+		data.put(WorkPlaceColumn.KMK004_154, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_154)
                 .value(value1)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		//R14_2
-		data.put(WorkPlaceUtils.KMK004_187, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_187)
+		data.put(WorkPlaceColumn.KMK004_187, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_187)
                 .value(value2)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		//R14_3
-		data.put(WorkPlaceUtils.KMK004_188, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_188)
+		data.put(WorkPlaceColumn.KMK004_188, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_188)
                 .value(value3)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		//R14_4
-		data.put(WorkPlaceUtils.KMK004_155, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_155)
+		data.put(WorkPlaceColumn.KMK004_155, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_155)
                 .value(value4)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		//R14_6
-		data.put(WorkPlaceUtils.KMK004_156, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_156)
+		data.put(WorkPlaceColumn.KMK004_156, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_156)
                 .value(value5)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		//R14_9
-		data.put(WorkPlaceUtils.KMK004_157, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_157)
+		data.put(WorkPlaceColumn.KMK004_157, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_157)
                 .value(value6)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		//R14_10
-		data.put(WorkPlaceUtils.KMK004_156_1, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_156_1)
+		data.put(WorkPlaceColumn.KMK004_156_1, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_156_1)
                 .value(value7)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		//R14_11
-		data.put(WorkPlaceUtils.KMK004_158, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_158)
+		data.put(WorkPlaceColumn.KMK004_158, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_158)
                 .value(value8)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		//R14_12
-		data.put(WorkPlaceUtils.KMK004_159, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_159)
+		data.put(WorkPlaceColumn.KMK004_159, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_159)
                 .value(value9)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		//R14_13
-		data.put(WorkPlaceUtils.KMK004_160, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_160)
+		data.put(WorkPlaceColumn.KMK004_160, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_160)
                 .value(value10)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		//R14_14
-		data.put(WorkPlaceUtils.KMK004_161, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_161)
+		data.put(WorkPlaceColumn.KMK004_161, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_161)
                 .value(value11)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		//R14_15
-		data.put(WorkPlaceUtils.KMK004_162, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_162)
+		data.put(WorkPlaceColumn.KMK004_162, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_162)
                 .value(value12)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		//R14_16
-		data.put(WorkPlaceUtils.KMK004_163, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_163)
+		data.put(WorkPlaceColumn.KMK004_163, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_163)
                 .value(value13)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		//R14_17
-		data.put(WorkPlaceUtils.KMK004_164, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_164)
+		data.put(WorkPlaceColumn.KMK004_164, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_164)
                 .value(value14)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		//R14_18
-		data.put(WorkPlaceUtils.KMK004_165, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_165)
+		data.put(WorkPlaceColumn.KMK004_165, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_165)
                 .value(value15)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		//R14_19
-		data.put(WorkPlaceUtils.KMK004_166, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_166)
+		data.put(WorkPlaceColumn.KMK004_166, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_166)
                 .value(value16)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		//R14_21
-		data.put(WorkPlaceUtils.KMK004_167, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_167)
+		data.put(WorkPlaceColumn.KMK004_167, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_167)
                 .value(value17)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		//R14_22
-		data.put(WorkPlaceUtils.KMK004_156_2, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_156_2)
+		data.put(WorkPlaceColumn.KMK004_156_2, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_156_2)
                 .value(value18)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		//R14_23
-		data.put(WorkPlaceUtils.KMK004_168, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_168)
+		data.put(WorkPlaceColumn.KMK004_168, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_168)
                 .value(value19)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		//R14_24
-		data.put(WorkPlaceUtils.KMK004_169, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_169)
+		data.put(WorkPlaceColumn.KMK004_169, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_169)
                 .value(value20)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		//R14_25
-		data.put(WorkPlaceUtils.KMK004_170, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_170)
+		data.put(WorkPlaceColumn.KMK004_170, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_170)
                 .value(value21)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		//R14_26
-		data.put(WorkPlaceUtils.KMK004_171, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_171)
+		data.put(WorkPlaceColumn.KMK004_171, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_171)
                 .value(value22)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		//R14_28
-		data.put(WorkPlaceUtils.KMK004_156_3, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_156_3)
+		data.put(WorkPlaceColumn.KMK004_156_3, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_156_3)
                 .value(value23)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		//R14_31
-		data.put(WorkPlaceUtils.KMK004_172, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_172)
+		data.put(WorkPlaceColumn.KMK004_172, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_172)
                 .value(value24)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		//R14_32
-		data.put(WorkPlaceUtils.KMK004_156_4, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_156_4)
+		data.put(WorkPlaceColumn.KMK004_156_4, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_156_4)
                 .value(value25)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		//R14_33
-		data.put(WorkPlaceUtils.KMK004_158_1, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_158_1)
+		data.put(WorkPlaceColumn.KMK004_158_1, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_158_1)
                 .value(value26)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		//R14_34
-		data.put(WorkPlaceUtils.KMK004_173, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_173)
+		data.put(WorkPlaceColumn.KMK004_173, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_173)
                 .value(value27)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		//R14_36
-		data.put(WorkPlaceUtils.KMK004_174, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_174)
+		data.put(WorkPlaceColumn.KMK004_174, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_174)
                 .value(value28)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		//R14_38
-		data.put(WorkPlaceUtils.KMK004_175, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_175)
+		data.put(WorkPlaceColumn.KMK004_175, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_175)
                 .value(value29)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		//R14_39
-		data.put(WorkPlaceUtils.KMK004_159_1, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_159_1)
+		data.put(WorkPlaceColumn.KMK004_159_1, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_159_1)
                 .value(value30)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		//R14_40
-		data.put(WorkPlaceUtils.KMK004_160_1, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_160_1)
+		data.put(WorkPlaceColumn.KMK004_160_1, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_160_1)
                 .value(value31)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		//R14_41
-		data.put(WorkPlaceUtils.KMK004_161_1, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_161_1)
+		data.put(WorkPlaceColumn.KMK004_161_1, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_161_1)
                 .value(value32)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		//R14_42
-		data.put(WorkPlaceUtils.KMK004_162_1, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_162_1)
+		data.put(WorkPlaceColumn.KMK004_162_1, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_162_1)
                 .value(value33)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		//R14_43
-		data.put(WorkPlaceUtils.KMK004_163_1, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_163_1)
+		data.put(WorkPlaceColumn.KMK004_163_1, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_163_1)
                 .value(value34)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		//R14_44
-		data.put(WorkPlaceUtils.KMK004_164_1, MasterCellData.builder()
-                .columnId(WorkPlaceUtils.KMK004_164_1)
+		data.put(WorkPlaceColumn.KMK004_164_1, MasterCellData.builder()
+                .columnId(WorkPlaceColumn.KMK004_164_1)
                 .value(value35)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		return MasterData.builder().rowData(data).build();
 	}
+
+	@Override
+	public List<MasterData> getEmployeeData(int startDate, int endDate) {
+		String cid = AppContexts.user().companyId();
+		List<MasterData> datas = new ArrayList<>();
+		try (PreparedStatement stmt = this.connection().prepareStatement(GET_EMPLOYEE.toString())) {
+			stmt.setInt(1, startDate);
+			stmt.setInt(2, endDate);
+			stmt.setString(3, cid);
+			stmt.setString(4, cid);
+			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
+			result.forEach(i -> {
+				datas.addAll(buildEmployeeRow(i, this.month()));
+			});
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return datas;
+	}
+	
+	private List<MasterData> buildEmployeeRow(NtsResultRecord r, int month) {
+		List<MasterData> datas = new ArrayList<>();
+			datas.add(buildEmployeeARow(
+				// R10_1
+				r.getString("YEAR"),
+				// R10_2
+				r.getString("SCD"),
+				// R10_3
+				r.getString("BUSINESS_NAME"),
+				// R10_4 R10_5
+				((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"),
+				// R10_6
+				convertTime(r.getInt(("S" + ((month - 1) % 12 + 1)))),
+				// R10_7
+				I18NText.getText("KMK004_177"),
+				// R10_9
+				convertTime(r.getInt("DAILY_TIME")),
+				// R10_11
+				getWeekStart(r.getInt("WEEK_STR")),
+				// R10_12
+				getExtraType(r.getInt("INCLUDE_EXTRA_AGGR")),
+				// R10_13
+				r.getInt("INCLUDE_EXTRA_AGGR") != 0 ? getLegalType(r.getInt("INCLUDE_LEGAL_AGGR")) : null,
+				// R10_14
+				r.getInt("INCLUDE_EXTRA_AGGR") != 0 ? getLegalType(r.getInt("INCLUDE_HOLIDAY_AGGR")) : null,
+				// R10_15
+				getExtraType(r.getInt("INCLUDE_EXTRA_OT")),
+				// R10_16
+				r.getInt("INCLUDE_EXTRA_OT") != 0 ? getLegalType(r.getInt("INCLUDE_LEGAL_OT")) : null,
+				// R10_17
+				r.getInt("INCLUDE_EXTRA_OT") != 0 ? getLegalType(r.getInt("INCLUDE_HOLIDAY_OT")) : null,
+				// R10_18
+				getFlexType(r.getInt("REFERENCE_PRED_TIME")),
+				// R10_19 R10_20
+				((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"),
+				// R10_21
+				r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("F" + ((month - 1) % 12 + 1)))) : null,
+				// R10_22
+				convertTime(r.getInt(("T" + ((month - 1) % 12 + 1)))),
+				// R10_23
+				getAggType(r.getInt("AGGR_METHOD")),
+				// R10_24
+				r.getInt("AGGR_METHOD") == 0 ? getInclude(r.getInt("INCLUDE_OT")) : null,
+				// R10_25
+				getShortageTime(r.getInt("INSUFFIC_SET")),
+				// R10_26 R10_27
+				((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"),
+				// R10_28
+				convertTime(r.getInt(("M" + ((month - 1) % 12 + 1)))),
+				// R10_29
+				I18NText.getText("KMK004_177"),
+				// R10_31
+				convertTime(r.getInt("TRANS_DAILY_TIME")),
+				// R10_33
+				getWeekStart(r.getInt("TRANS_WEEK_STR")),
+				// R10_34 35
+				r.getInt("STR_MONTH") + I18NText.getText("KMK004_179"),
+				// R10_36 37
+				r.getInt("PERIOD") + I18NText.getText("KMK004_180"),
+				// R10_38
+				r.getInt("REPEAT_ATR") == 1 ? "○" : "-",
+				// R14_39
+				getWeeklySurcharge(r.getInt("DEFOR_INCLUDE_EXTRA_AGGR")),
+				// R14_40
+				r.getInt("DEFOR_INCLUDE_EXTRA_AGGR") != 0 ? getLegalType(r.getInt("DEFOR_INCLUDE_LEGAL_AGGR")) : null,
+				// R14_41
+				r.getInt("DEFOR_INCLUDE_EXTRA_AGGR") != 0 ? getLegalType(r.getInt("DEFOR_INCLUDE_HOLIDAY_AGGR")) : null,
+				// R14_42
+				getWeeklySurcharge(r.getInt("DEFOR_INCLUDE_EXTRA_OT")),
+				// R14_43
+				r.getInt("DEFOR_INCLUDE_EXTRA_OT") != 0 ? getLegalType(r.getInt("DEFOR_INCLUDE_LEGAL_OT")) : null,
+				// R14_44
+				r.getInt("DEFOR_INCLUDE_EXTRA_OT") != 0 ? getLegalType(r.getInt("DEFOR_INCLUDE_HOLIDAY_OT")) : null));
+		// buil arow = month + 1
+			datas.add(buildEmployeeARow(
+				// R10_1
+				null,
+				// R10_2
+				null,
+				// R10_3
+				null,
+				// R10_4 R10_5
+				((month - 1) % 12 + 2) + I18NText.getText("KMK004_176"),
+				// R10_6
+				convertTime(r.getInt(("S" + ((month - 1) % 12 + 2)))),
+				// R10_8
+				I18NText.getText("KMK004_178"),
+				// R10_9
+				convertTime(r.getInt("WEEKLY_TIME")),
+				// R10_11
+				null,
+				// R10_12
+				null,
+				// R10_13
+				null,
+				// R10_14
+				null,
+				// R10_15
+				null,
+				// R10_16
+				null,
+				// R10_17
+				null,
+				// R10_18
+				null,
+				// R10_19 R10_20
+				((month - 1) % 12 + 2) + I18NText.getText("KMK004_176"),
+				// R10_21
+				r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("F" + ((month - 1) % 12 + 2)))) : null,
+				// R10_22
+				convertTime(r.getInt(("T" + ((month - 1) % 12 + 2)))),
+				// R10_23
+				null,
+				// R10_24
+				null,
+				// R10_25
+				null,
+				// R10_26 R10_27
+				((month - 1) % 12 + 2) + I18NText.getText("KMK004_176"),
+				// R10_28
+				convertTime(r.getInt(("M" + ((month - 1) % 12 + 2)))),
+				// R10_30
+				I18NText.getText("KMK004_178"),
+				// R10_32
+				convertTime(r.getInt("TRANS_WEEKLY_TIME")),
+				// R10_33
+				null,
+				// R10_34 35
+				null,
+				// R10_36 37
+				null,
+				// R10_38
+				null,
+				// R14_39
+				null,
+				// R14_40
+				null,
+				// R14_41
+				null,
+				// R14_42
+				null,
+				// R14_43
+				null,
+				// R14_44
+				null));
+		// buil month remain
+		for (int i = 1; i < 11; i++) {
+			datas.add(buildEmployeeARow(
+					// R10_1
+					null,
+					// R10_2
+					null,
+					// R10_3
+					null,
+					// R10_4 R10_5
+					((month + i) % 12 + 1) + I18NText.getText("KMK004_176"),
+					// R10_6
+					convertTime(r.getInt(("S" + ((month + i) % 12 + 1)))),
+					// R10_8
+					null,
+					// R10_9
+					null,
+					// R10_11
+					null,
+					// R10_12
+					null,
+					// R10_13
+					null,
+					// R10_14
+					null,
+					// R10_15
+					null,
+					// R10_16
+					null,
+					// R10_17
+					null,
+					// R10_18
+					null,
+					// R10_19 R10_20
+					((month + i) % 12 + 1) + I18NText.getText("KMK004_176"),
+					// R10_21
+					r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("F" + ((month + i) % 12 + 1)))) : null,
+					// R10_22
+					convertTime(r.getInt(("T" + ((month + i) % 12 + 1)))),
+					// R10_23
+					null,
+					// R10_24
+					null,
+					// R10_25
+					null,
+					// R10_26 R10_27
+					((month + i) % 12 + 1) + I18NText.getText("KMK004_176"),
+					// R10_28
+					convertTime(r.getInt(("M" + ((month + i) % 12 + 1)))),
+					// R10_30
+					null,
+					// R10_32
+					null,
+					// R10_33
+					null,
+					// R10_34 35
+					null,
+					// R10_36 37
+					null,
+					// R10_38
+					null,
+					// R14_39
+					null,
+					// R14_40
+					null,
+					// R14_41
+					null,
+					// R14_42
+					null,
+					// R14_43
+					null,
+					// R14_44
+					null));
+		}
+		return datas;
+	}
+	
+	private MasterData buildEmployeeARow(
+			String value1, String value2, String value3, String value4, String value5,
+			String value6, String value7, String value8, String value9, String value10,
+			String value11, String value12, String value13, String value14, String value15,
+			String value16, String value17, String value18, String value19, String value20,
+			String value21, String value22, String value23, String value24, String value25,
+			String value26, String value27, String value28, String value29, String value30,
+			String value31, String value32, String value33, String value34, String value35) {
+		
+		Map<String, MasterCellData> data = new HashMap<>();
+		
+		data.put(EmployeeColumn.KMK004_154, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_154)
+                .value(value1)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(EmployeeColumn.KMK004_183, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_183)
+                .value(value2)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(EmployeeColumn.KMK004_184, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_184)
+                .value(value3)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(EmployeeColumn.KMK004_155, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_155)
+                .value(value4)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(EmployeeColumn.KMK004_156, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_156)
+                .value(value5)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(EmployeeColumn.KMK004_157, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_157)
+                .value(value6)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(EmployeeColumn.KMK004_156_1, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_156_1)
+                .value(value7)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(EmployeeColumn.KMK004_158, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_158)
+                .value(value8)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(EmployeeColumn.KMK004_159, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_159)
+                .value(value9)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(EmployeeColumn.KMK004_160, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_160)
+                .value(value10)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(EmployeeColumn.KMK004_161, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_161)
+                .value(value11)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(EmployeeColumn.KMK004_162, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_162)
+                .value(value12)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(EmployeeColumn.KMK004_163, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_163)
+                .value(value13)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(EmployeeColumn.KMK004_164, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_164)
+                .value(value14)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(EmployeeColumn.KMK004_165, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_165)
+                .value(value15)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(EmployeeColumn.KMK004_166, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_166)
+                .value(value16)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(EmployeeColumn.KMK004_167, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_167)
+                .value(value17)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(EmployeeColumn.KMK004_156_2, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_156_2)
+                .value(value18)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(EmployeeColumn.KMK004_168, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_168)
+                .value(value19)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(EmployeeColumn.KMK004_169, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_169)
+                .value(value20)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(EmployeeColumn.KMK004_170, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_170)
+                .value(value21)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(EmployeeColumn.KMK004_171, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_171)
+                .value(value22)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(EmployeeColumn.KMK004_156_3, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_156_3)
+                .value(value23)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(EmployeeColumn.KMK004_172, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_172)
+                .value(value24)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(EmployeeColumn.KMK004_156_4, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_156_4)
+                .value(value25)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(EmployeeColumn.KMK004_158_1, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_158_1)
+                .value(value26)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(EmployeeColumn.KMK004_173, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_173)
+                .value(value27)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(EmployeeColumn.KMK004_174, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_174)
+                .value(value28)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(EmployeeColumn.KMK004_175, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_175)
+                .value(value29)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(EmployeeColumn.KMK004_159_1, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_159_1)
+                .value(value30)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(EmployeeColumn.KMK004_160_1, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_160_1)
+                .value(value31)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(EmployeeColumn.KMK004_161_1, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_161_1)
+                .value(value32)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(EmployeeColumn.KMK004_162_1, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_162_1)
+                .value(value33)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(EmployeeColumn.KMK004_163_1, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_163_1)
+                .value(value34)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		data.put(EmployeeColumn.KMK004_164_1, MasterCellData.builder()
+                .columnId(EmployeeColumn.KMK004_164_1)
+                .value(value35)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		
+		return MasterData.builder().rowData(data).build();
+	}
+
 
 	private String convertTime(int seconds){
 		return seconds / 60 + ":00";
@@ -1789,7 +2339,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
     		return null;
     	}
     }
-
+	
 	
 	
 }

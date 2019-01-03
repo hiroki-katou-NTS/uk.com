@@ -247,18 +247,13 @@ module nts.uk.at.view.kmk004.a {
                     $('#worktimeYearPicker').focus();
                 });
             }
-            /**
-             * Go to screen m (setting date).
-             */
+           
             saveAsExcel(): void {
                 let self = this;
                 let params = {
                     date: null,
                     mode: 5
                 };
-                let option = {
-                    
-                    };  
                 if (!nts.uk.ui.windows.getShared("CDL028_INPUT")) {
                     nts.uk.ui.windows.setShared("CDL028_INPUT", params);
                 }  
