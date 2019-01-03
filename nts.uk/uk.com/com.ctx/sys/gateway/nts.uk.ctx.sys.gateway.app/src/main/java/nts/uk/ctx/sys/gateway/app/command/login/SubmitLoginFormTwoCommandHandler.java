@@ -138,8 +138,8 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		String programID = AppContexts.programId().substring(0, 6);
 		String screenID = AppContexts.programId().substring(6);
 		SystemSuspendOutput systemSuspendOutput = systemSuspendService.confirmSystemSuspend(
-				contractCode, 
-				companyCode,
+				AppContexts.user().contractCode(), 
+				AppContexts.user().companyCode(),
 				command.isSignOn() ? 1 : 0,
 				programID,
 				screenID);
