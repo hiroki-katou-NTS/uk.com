@@ -122,6 +122,15 @@ module nts.uk.com.view.cps006.a.viewmodel {
                 });
         }
 
+        hasPermission(): boolean {
+            if (__viewContext.user.role.attendance == "null" && __viewContext.user.role.payroll == "null"
+                && __viewContext.user.role.personnel == "null"  && __viewContext.user.role.officeHelper == "null"){
+                return false;
+            }
+
+            return true;
+        }
+
         getDetailCategory(id: string) {
             let self = this;
             service.getDetailCtgInfo(id).done(function(data: any) {
