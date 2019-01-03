@@ -98,23 +98,21 @@
 }
 .search-box-sm {
     margin-left: 40px;
-    width: 88px;
+    width: 150px;
 }
 .formula-button {
     width: 232px;
 }
-.list-box tr td:nth-child(1) {
-    width: 65px;
-}
-#D9_5_grid tr td:nth-child(2) {
+.list-box tr td:nth-child(2) {
     display: inline-block;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     width: 148px;
+}
+.list-box .ui-iggrid .ui-iggrid-tablebody td {
     height: 23px;
 }
-
 textarea {
     resize: none;
     background: transparent;

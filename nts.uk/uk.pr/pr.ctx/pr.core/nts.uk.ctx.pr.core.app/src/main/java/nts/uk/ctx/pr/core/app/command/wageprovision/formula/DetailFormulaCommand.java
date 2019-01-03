@@ -11,5 +11,5 @@ public class DetailFormulaCommand {
     public String formulaContent;
     public List<FormulaReplacedValueCommand> replaceValues;
     public int roundingMethod;
-    public int roundingResult;
+    public int roundingPosition;
 }

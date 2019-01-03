@@ -31,5 +31,4 @@ public class CoefficientItem extends DomainObject {
         this.attendanceItem = attendanceItem == null ? Optional.empty() : Optional.of(new ItemNameCode(attendanceItem));
         this.coefficientClassification = coefficientClassification == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(coefficientClassification, CoefficientClassification.class));
     }
-    
 }

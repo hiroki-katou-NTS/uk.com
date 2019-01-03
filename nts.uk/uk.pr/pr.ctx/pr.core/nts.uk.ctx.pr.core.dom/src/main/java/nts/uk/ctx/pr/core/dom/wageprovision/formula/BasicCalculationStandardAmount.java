@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.formula;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,7 +14,6 @@ import nts.arc.enums.EnumAdaptor;
 /**
 * かんたん計算基準金額項目
 */
-@AllArgsConstructor
 @Getter
 public class BasicCalculationStandardAmount extends DomainObject
 {
@@ -35,8 +35,13 @@ public class BasicCalculationStandardAmount extends DomainObject
     
     public BasicCalculationStandardAmount(int standardAmountClassification, BigDecimal standardFixedValue, List<String> targetItemCodeList) {
         this.standardAmountClassification = EnumAdaptor.valueOf(standardAmountClassification, StandardAmountClassification.class);
-        this.standardFixedValue = standardFixedValue == null ? Optional.empty() : Optional.of(new BasePriceFixedAmount(standardFixedValue));
-        this.targetItemCodeList = targetItemCodeList.stream().map(item -> new TargetItemCode(item)).collect(Collectors.toList());
+        if (!this.standardAmountClassification.equals(StandardAmountClassification.FIXED_AMOUNT)){
+            this.standardFixedValue = Optional.empty();
+            this.targetItemCodeList = targetItemCodeList.stream().map(item -> new TargetItemCode(item)).collect(Collectors.toList());
+        }
+        else {
+            this.targetItemCodeList = Collections.emptyList();
+            this.standardFixedValue = standardFixedValue == null ? Optional.empty() : Optional.of(new BasePriceFixedAmount(standardFixedValue));
+        }
     }
-    
 }

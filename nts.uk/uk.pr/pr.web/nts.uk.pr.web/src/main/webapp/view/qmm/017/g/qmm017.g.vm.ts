@@ -10,7 +10,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
         formulaListItem: any;
         startMonth: any = 999912;
         roundingMethod: number;
-        roundingResult: number;
+        roundingPosition: number;
 
         OPEN_CURLY_BRACKET = '{'; CLOSE_CURLY_BRACKET = '}';
         COMMA_CHAR = ',';
@@ -34,7 +34,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             let params = getShared("QMM017_G_PARAMS");
             self.formulaElement = params.formulaElement;
             self.roundingMethod = params.roundingMethod;
-            self.roundingResult = params.roundingResult;
+            self.roundingPosition = params.roundingPosition;
             self.formulaListItem = params.formulaListItem;
             self.extractFormula(params.formula);
             self.startMonth = params.startMonth;
@@ -112,7 +112,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             if (nts.uk.ui.errors.hasError()) return;
             let self = this;
             let replaceValues = ko.toJS(self.calculationFormulaList);
-            service.calculate({formulaContent: self.formulaContent(), replaceValues: replaceValues, roundingMethod: self.roundingMethod, roundingResult: self.roundingResult}).done(function(result){
+            service.calculate({formulaContent: self.formulaContent(), replaceValues: replaceValues, roundingMethod: self.roundingMethod, roundingPosition: self.roundingPosition}).done(function(result){
                 self.trialCalculationResult(result);
             }).fail(function(err){
                 dialog.alertError(err.errorMessage);

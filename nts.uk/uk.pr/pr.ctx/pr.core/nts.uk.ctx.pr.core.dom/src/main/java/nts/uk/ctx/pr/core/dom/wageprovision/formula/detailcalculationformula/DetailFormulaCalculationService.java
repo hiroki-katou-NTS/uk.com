@@ -195,7 +195,7 @@ public class DetailFormulaCalculationService {
         return elementType + OPEN_CURLY_BRACKET + elementName + CLOSE_CURLY_BRACKET;
     }
 
-    public String calculateDisplayCalculationFormula (int type, String formula, Map<String, String> replaceValues, int roundingMethod, int roundingResult) {
+    public String calculateDisplayCalculationFormula (int type, String formula, Map<String, String> replaceValues, int roundingMethod, int roundingPosition) {
         // type 1: Salary 給与
         // type 2: Bonus 賞与
         // type 3: Trial calculation お試し計算
@@ -206,34 +206,34 @@ public class DetailFormulaCalculationService {
         formula = calculateFunction(formula);
         formula = calculateSuffixFormula(formula) + "";
         if (isNaN(formula)) throw new BusinessException("Msg_235");
-        return roundingResult(Double.parseDouble(formula), roundingMethod, roundingResult);
+        return roundingResult(Double.parseDouble(formula), roundingMethod, roundingPosition);
     }
 
-    private String roundingResult (Double result, int roundingMethod, int roundingResult) {
+    private String roundingResult (Double result, int roundingMethod, int roundingPosition) {
         int roundingValue = 0;
-        if (roundingMethod == RoundingPosition.ONE_YEN.value) roundingValue = 1;
-        if (roundingMethod == RoundingPosition.TEN_YEN.value) roundingValue = 10;
-        if (roundingMethod == RoundingPosition.ONE_HUNDRED_YEN.value) roundingValue = 100;
-        if (roundingMethod == RoundingPosition.ONE_THOUSAND_YEN.value) roundingValue = 1000;
-        if (roundingResult == Rounding.ROUND_UP.value)
-            return Math.ceil(result) * roundingValue + "";
-        if (roundingResult == Rounding.TRUNCATION.value)
-            return Math.floor(result) * roundingValue + "";
-        if (roundingResult == Rounding.DOWN_1_UP_2.value)
+        if (roundingPosition == RoundingPosition.ONE_YEN.value) roundingValue = 1;
+        if (roundingPosition == RoundingPosition.TEN_YEN.value) roundingValue = 10;
+        if (roundingPosition == RoundingPosition.ONE_HUNDRED_YEN.value) roundingValue = 100;
+        if (roundingPosition == RoundingPosition.ONE_THOUSAND_YEN.value) roundingValue = 1000;
+        if (roundingMethod == Rounding.ROUND_UP.value)
+            return Math.ceil(result/roundingValue) * roundingValue + "";
+        if (roundingMethod == Rounding.TRUNCATION.value)
+            return Math.floor(result/roundingValue) * roundingValue + "";
+        if (roundingMethod == Rounding.DOWN_1_UP_2.value)
             return Math.floor(result/roundingValue + 0.9) * roundingValue + "";
-        if (roundingResult == Rounding.DOWN_2_UP_3.value)
+        if (roundingMethod == Rounding.DOWN_2_UP_3.value)
             return Math.floor(result/roundingValue + 0.8) * roundingValue + "";
-        if (roundingResult == Rounding.DOWN_3_UP_4.value)
+        if (roundingMethod == Rounding.DOWN_3_UP_4.value)
             return Math.floor(result/roundingValue + 0.7) * roundingValue + "";
-        if (roundingResult == Rounding.DOWN_4_UP_5.value)
+        if (roundingMethod == Rounding.DOWN_4_UP_5.value)
             return Math.floor(result/roundingValue + 0.6) * roundingValue + "";
-        if (roundingResult == Rounding.DOWN_5_UP_6.value)
+        if (roundingMethod == Rounding.DOWN_5_UP_6.value)
             return Math.floor(result/roundingValue + 0.5) * roundingValue + "";
-        if (roundingResult == Rounding.DOWN_6_UP_7.value)
+        if (roundingMethod == Rounding.DOWN_6_UP_7.value)
             return Math.floor(result/roundingValue + 0.4) * roundingValue + "";
-        if (roundingResult == Rounding.DOWN_7_UP_8.value)
+        if (roundingMethod == Rounding.DOWN_7_UP_8.value)
             return Math.floor(result/roundingValue + 0.3) * roundingValue + "";
-        if (roundingResult == Rounding.DOWN_8_UP_9.value)
+        if (roundingMethod == Rounding.DOWN_8_UP_9.value)
             return Math.floor(result/roundingValue + 0.2) * roundingValue + "";
         return result + "";
     }
@@ -275,7 +275,7 @@ public class DetailFormulaCalculationService {
         return formulaElement;
     }
     private String [] convertToPostfix (String formulaContent) {
-        String regex = "(?<=[＋ー*×÷^()><≦≧＝≠、+-=*/#=≤≥,])|(?=[＋ー*×÷^()><≦≧＝≠、+-=*/#=≤≥,])";
+        String regex = "(?<=[+\\-*/#=≤≥＋ー*×÷^()><≦≧＝≠、,])|(?=[+\\-*/#=≤≥＋ー*×÷^()><≦≧＝≠、,])";
         String [] formulaElements = formulaContent.split(regex);
         Stack<String> postfix = new Stack<>(), operators = new Stack<>();
         String currentElement;
@@ -413,7 +413,7 @@ public class DetailFormulaCalculationService {
     }
 
     private String calculateFunctionCondition (String functionSyntax, String [] functionParameter) {
-        String conditionSeparators = "(?<=[><≦≧＝≠])|(?=[><≦≧＝≠])";
+        String conditionSeparators = "(?<=[><≦≧＝≠≤≥=#])|(?=[><≦≧＝≠≤≥=#])";
         String result1 = functionParameter[1], result2 = functionParameter[2];
         String [] firstParameterData = formatFunctionParameter(functionParameter[0].split(conditionSeparators));
         String conditionResult;

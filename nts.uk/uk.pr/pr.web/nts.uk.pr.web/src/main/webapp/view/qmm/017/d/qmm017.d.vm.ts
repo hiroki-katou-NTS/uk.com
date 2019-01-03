@@ -446,7 +446,9 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             setShared("QMM017_G_PARAMS",
                 {formulaElement: self, formula: self.displayDetailCalculationFormula(),
                     startMonth: __viewContext.screenModel.selectedHistory().startMonth(),
-                    formulaListItem: ko.toJS(self.formulaList())
+                    formulaListItem: ko.toJS(self.formulaList()),
+                    roundingPosition: ko.toJS(__viewContext.screenModel.detailFormulaSetting).roundingPosition,
+                    roundingMethod: ko.toJS(__viewContext.screenModel.detailFormulaSetting).roundingMethod,
                 });
             modal("/view/qmm/017/g/index.xhtml").onClosed(function () {
 
