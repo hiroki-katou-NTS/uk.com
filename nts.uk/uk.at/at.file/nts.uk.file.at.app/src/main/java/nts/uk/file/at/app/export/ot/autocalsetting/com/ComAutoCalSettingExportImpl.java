@@ -1,12 +1,5 @@
 package nts.uk.file.at.app.export.ot.autocalsetting.com;
 
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.stream.Collectors;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.servlet.Registration;
-
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
@@ -18,6 +11,14 @@ import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.*;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Stateless
 @DomainID(value ="AutomaticCalculationSetting")

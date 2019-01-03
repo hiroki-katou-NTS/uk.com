@@ -46,7 +46,7 @@ public class PersonSelectionItemExportImpl implements MasterListData {
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		String contractCd = AppContexts.user().contractCode();
-		String date = query.getOption().toString();
+		String date = query.getBaseDate().toString();
 		List<MasterData> datas = new ArrayList<>();
 		datas = personSelectionItemRepository.getDataExport(contractCd, date);
 		return datas;

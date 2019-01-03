@@ -16,71 +16,77 @@ import java.util.List;
 @Stateless
 public class JpaJobCalSettingRepository extends JpaRepository implements JobAutoCalSettingRepository {
 
-	private static final String SELECT_ALL_POSITION_BY_CID = " SELECT " +
-			"k.LEGAL_OT_TIME_ATR, "+
-			"k.LEGAL_OT_TIME_LIMIT, "+
-			"k.LEGAL_MID_OT_TIME_ATR, "+
-			"k.LEGAL_MID_OT_TIME_LIMIT, "+
-			"k.NORMAL_OT_TIME_ATR, "+
-			"k.NORMAL_OT_TIME_LIMIT, "+
-			"k.NORMAL_MID_OT_TIME_ATR, "+
-			"k.NORMAL_MID_OT_TIME_LIMIT, "+
-			"k.EARLY_OT_TIME_ATR, "+
-			"k.EARLY_OT_TIME_LIMIT, "+
-			"k.EARLY_MID_OT_TIME_ATR, "+
-			"k.EARLY_MID_OT_TIME_LIMIT, "+
-			"k.FLEX_OT_TIME_ATR, "+
-			"k.FLEX_OT_TIME_LIMIT, "+
-			"k.REST_TIME_ATR, "+
-			"k.REST_TIME_LIMIT, "+
-			"k.LATE_NIGHT_TIME_ATR, "+
-			"k.LATE_NIGHT_TIME_LIMIT, "+
-			"k.LEAVE_LATE, "+
-			"k.LEAVE_EARLY, "+
-			"k.RAISING_CALC_ATR, "+
-			"k.SPECIFIC_RAISING_CALC_ATR, "+
-			"k.DIVERGENCE,  "+
-			"k.JOB_CD,  " +
-			"w.JOB_NAME  " +
-			"FROM  (SELECT HIST_ID, JOB_ID, CID "+
-					"FROM BSYMT_JOB_HIST "+
-					"WHERE  END_DATE >= ?baseDate AND CID = ?cid) h "+
-			"INNER JOIN (SELECT JOB_NAME, JOB_ID, HIST_ID, CID "+
-						"FROM BSYMT_JOB_INFO "+
-					") w "+
-				"ON w.HIST_ID = h.HIST_ID AND w.JOB_ID = h.JOB_ID AND w.CID = h.CID "+
-			"RIGHT JOIN (SELECT j.LEGAL_OT_TIME_ATR, "+
-								"j.LEGAL_OT_TIME_LIMIT, "+
-								"j.LEGAL_MID_OT_TIME_ATR, "+
-								"j.LEGAL_MID_OT_TIME_LIMIT, "+
-								"j.NORMAL_OT_TIME_ATR, "+
-								"j.NORMAL_OT_TIME_LIMIT, "+
-								"j.NORMAL_MID_OT_TIME_ATR, "+
-								"j.NORMAL_MID_OT_TIME_LIMIT, "+
-								"j.EARLY_OT_TIME_ATR, "+
-								"j.EARLY_OT_TIME_LIMIT, "+
-								"j.EARLY_MID_OT_TIME_ATR, "+
-								"j.EARLY_MID_OT_TIME_LIMIT, "+
-								"j.FLEX_OT_TIME_ATR, "+
-								"j.FLEX_OT_TIME_LIMIT, "+
-								"j.REST_TIME_ATR, "+
-								"j.REST_TIME_LIMIT, "+
-								"j.LATE_NIGHT_TIME_ATR, "+
-								"j.LATE_NIGHT_TIME_LIMIT, "+
-								"j.LEAVE_LATE, "+
-								"j.LEAVE_EARLY, "+
-								"j.RAISING_CALC_ATR, "+
-								"j.SPECIFIC_RAISING_CALC_ATR, "+
-								"j.DIVERGENCE, "+
-								"i.JOB_CD, "+
-								"i.JOB_ID, "+
-								"i.CID "+
-						"FROM  (SELECT JOB_ID, JOB_CD, CID "+
-								"FROM BSYMT_JOB_INFO " +
-								"WHERE CID = ?cid) i "+
-						"INNER JOIN KSHMT_AUTO_JOB_CAL_SET j ON j.CID = i.CID AND j.JOBID = i.JOB_ID ) k "+
-				"ON w.JOB_ID = k.JOB_ID AND k.CID = w.CID "+
-			"ORDER BY k.JOB_CD ";
+	private static final String SELECT_ALL_POSITION_BY_CID ;
+	static {
+		StringBuilder sqlNormal = new StringBuilder();
+		sqlNormal.append(" SELECT " );
+		sqlNormal.append(	"k.LEGAL_OT_TIME_ATR, ");
+		sqlNormal.append(	"k.LEGAL_OT_TIME_LIMIT, ");
+		sqlNormal.append(	"k.LEGAL_MID_OT_TIME_ATR, ");
+		sqlNormal.append(	"k.LEGAL_MID_OT_TIME_LIMIT, ");
+		sqlNormal.append(	"k.NORMAL_OT_TIME_ATR, ");
+		sqlNormal.append(	"k.NORMAL_OT_TIME_LIMIT, ");
+		sqlNormal.append(	"k.NORMAL_MID_OT_TIME_ATR, ");
+		sqlNormal.append(	"k.NORMAL_MID_OT_TIME_LIMIT, ");
+		sqlNormal.append(	"k.EARLY_OT_TIME_ATR, ");
+		sqlNormal.append(	"k.EARLY_OT_TIME_LIMIT, ");
+		sqlNormal.append(	"k.EARLY_MID_OT_TIME_ATR, ");
+		sqlNormal.append(	"k.EARLY_MID_OT_TIME_LIMIT, ");
+		sqlNormal.append(	"k.FLEX_OT_TIME_ATR, ");
+		sqlNormal.append(	"k.FLEX_OT_TIME_LIMIT, ");
+		sqlNormal.append(	"k.REST_TIME_ATR, ");
+		sqlNormal.append(	"k.REST_TIME_LIMIT, ");
+		sqlNormal.append(	"k.LATE_NIGHT_TIME_ATR, ");
+		sqlNormal.append(	"k.LATE_NIGHT_TIME_LIMIT, ");
+		sqlNormal.append(	"k.LEAVE_LATE, ");
+		sqlNormal.append(	"k.LEAVE_EARLY, ");
+		sqlNormal.append(	"k.RAISING_CALC_ATR, ");
+		sqlNormal.append(	"k.SPECIFIC_RAISING_CALC_ATR, ");
+		sqlNormal.append(	"k.DIVERGENCE,  ");
+		sqlNormal.append(	"k.JOB_CD,  " );
+		sqlNormal.append(	"w.JOB_NAME  " );
+		sqlNormal.append(	"FROM  (SELECT HIST_ID, JOB_ID, CID ");
+		sqlNormal.append(			"FROM BSYMT_JOB_HIST ");
+		sqlNormal.append(			"WHERE  END_DATE >= ?baseDate AND CID = ?cid) h ");
+		sqlNormal.append(	"INNER JOIN (SELECT JOB_NAME, JOB_ID, HIST_ID, CID ");
+		sqlNormal.append(				"FROM BSYMT_JOB_INFO ");
+		sqlNormal.append(			") w ");
+		sqlNormal.append(		"ON w.HIST_ID = h.HIST_ID AND w.JOB_ID = h.JOB_ID AND w.CID = h.CID ");
+		sqlNormal.append(	"RIGHT JOIN (SELECT j.LEGAL_OT_TIME_ATR, ");
+		sqlNormal.append(						"j.LEGAL_OT_TIME_LIMIT, ");
+		sqlNormal.append("j.LEGAL_MID_OT_TIME_ATR, ");
+		sqlNormal.append("j.LEGAL_MID_OT_TIME_LIMIT, ");
+		sqlNormal.append("j.NORMAL_OT_TIME_ATR, ");
+		sqlNormal.append("j.NORMAL_OT_TIME_LIMIT, ");
+		sqlNormal.append("j.NORMAL_MID_OT_TIME_ATR, ");
+		sqlNormal.append("j.NORMAL_MID_OT_TIME_LIMIT, ");
+		sqlNormal.append("j.EARLY_OT_TIME_ATR, ");
+		sqlNormal.append("j.EARLY_OT_TIME_LIMIT, ");
+		sqlNormal.append("j.EARLY_MID_OT_TIME_ATR, ");
+		sqlNormal.append("j.EARLY_MID_OT_TIME_LIMIT, ");
+		sqlNormal.append("j.FLEX_OT_TIME_ATR, ");
+		sqlNormal.append("j.FLEX_OT_TIME_LIMIT, ");
+		sqlNormal.append("j.REST_TIME_ATR, ");
+		sqlNormal.append("j.REST_TIME_LIMIT, ");
+		sqlNormal.append("j.LATE_NIGHT_TIME_ATR, ");
+		sqlNormal.append("j.LATE_NIGHT_TIME_LIMIT, ");
+		sqlNormal.append("j.LEAVE_LATE, ");
+		sqlNormal.append("j.LEAVE_EARLY, ");
+		sqlNormal.append("j.RAISING_CALC_ATR, ");
+		sqlNormal.append("j.SPECIFIC_RAISING_CALC_ATR, ");
+		sqlNormal.append("j.DIVERGENCE, ");
+		sqlNormal.append("i.JOB_CD, ");
+		sqlNormal.append("i.JOB_ID, ");
+		sqlNormal.append("i.CID ");
+		sqlNormal.append("FROM  (SELECT JOB_ID, JOB_CD, CID ");
+		sqlNormal.append(		"FROM BSYMT_JOB_INFO " );
+		sqlNormal.append(		"WHERE CID = ?cid) i ");
+		sqlNormal.append("INNER JOIN KSHMT_AUTO_JOB_CAL_SET j ON j.CID = i.CID AND j.JOBID = i.JOB_ID ) k ");
+		sqlNormal.append("ON w.JOB_ID = k.JOB_ID AND k.CID = w.CID ");
+		sqlNormal.append("ORDER BY k.JOB_CD ");
+		SELECT_ALL_POSITION_BY_CID = sqlNormal.toString();
+	}
+
 
 	@Override
 	public List<Object[]> getPositionSettingToExport(String cid, String baseDate) {

@@ -1,13 +1,13 @@
     // blockui all ajax request on layout
-    $(document)
-        .ajaxStart(() => {
-            $.blockUI({
-                message: null,
-                overlayCSS: { opacity: 0.1 }
-            });
-        }).ajaxStop(() => {
-            $.unblockUI();
-        });
+//    $(document)
+//        .ajaxStart(() => {
+//            $.blockUI({
+//                message: null,
+//                overlayCSS: { opacity: 0.1 }
+//            });
+//        }).ajaxStop(() => {
+//            $.unblockUI();
+//        });
 
 module nts.uk.com.view.cps009.a.viewmodel {
     import error = nts.uk.ui.errors;
@@ -542,7 +542,31 @@ module nts.uk.com.view.cps009.a.viewmodel {
         checkError(itemList: Array<any>) {
 
         }
-
+        
+        /**
+         * export excel
+         */
+        exportExcel() {
+            let self = this;
+            nts.uk.ui.block.grayout();
+            service.saveAsExcel().done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+        }
+        /**
+         * check role
+         */
+        hasPermission(): boolean {
+            if (__viewContext.user.role.attendance == "null" && __viewContext.user.role.payroll == "null"
+                && __viewContext.user.role.personnel == "null"  && __viewContext.user.role.officeHelper == "null"){
+                return false;
+            }
+            
+            return true;
+        }
     }
     export class InitValueSettingDetail {
         settingCode: KnockoutObservable<string>;
@@ -1410,6 +1434,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 });
             }
         }
+        
+        
     }
 
     export interface IPerInfoInitValueSettingDto {

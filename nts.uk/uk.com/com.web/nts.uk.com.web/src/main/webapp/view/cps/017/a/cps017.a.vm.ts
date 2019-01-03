@@ -647,25 +647,48 @@
             return allValid;
         }
         
-        /**
-         * Print file excel
-         */
-        saveAsExcel(): void {
-            let self = this;
-            modal("/view/cps/017/m/index.xhtml").onClosed(function() {
-            });
-        }
+         /*  
+           * Print file excel
+           */
+           private saveAsExcel(): void {
+               let self = this;
+//                modal("/view/cmm/051/m/index.xhtml").onClosed(function() {
+//                });
+               
+               let params = {
+                   date: null,
+                   mode: 1
+               };             
+               if (!nts.uk.ui.windows.getShared("CDL028_INPUT")) {
+                    nts.uk.ui.windows.setShared("CDL028_INPUT", params);
+                }
+               nts.uk.ui.windows.sub.modal("/view/cdl/028/a/index.xhtml").onClosed(function() {
+                   var result = getShared('CDL028_A_PARAMS');
+                   if (result.status) {
+                        nts.uk.ui.block.grayout();
+                        let langId = self.langId();
+                        let date = moment(result.standardDate, "YYYY/MM/DD");
+                        service.saveAsExcel(langId, date).done(function() {
+                            //nts.uk.ui.windows.close();
+                        }).fail(function(error) {
+                            nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                        }).always(function() {
+                            nts.uk.ui.block.clear();
+                        });
+                   }           
+               });
+            }
         
         /**
          * check role
          */
         hasPermission(): boolean {
-            if (__viewContext.user.role.attendance || __viewContext.user.role.payroll 
-                || __viewContext.user.role.personnel  || __viewContext.user.role.officeHelper){
-                return true;
+            if (__viewContext.user.role.attendance == "null" && __viewContext.user.role.payroll == "null"
+                && __viewContext.user.role.personnel == "null"  && __viewContext.user.role.officeHelper == "null"){
+                return false;
             }
             
-            return false;
+            return true;
         }
     }
 

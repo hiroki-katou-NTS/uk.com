@@ -14,12 +14,15 @@ import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
+import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 @Stateless
 public class WorkTimeExportService extends ExportService<String> {
 
+	private static final String COMPANY_ERROR = "Company is not found!!!!";
+	
 	@Inject
 	private WorkTimeReportGenerator reportGenerator;
 
@@ -27,12 +30,14 @@ public class WorkTimeExportService extends ExportService<String> {
 	private WorkTimeReportRepository reportRepository;
 	
 	@Inject
-	private CompanyRepository companyRepository;
+	private CompanyAdapter company;
 
 	@Override
 	protected void handle(ExportServiceContext<String> context) {
-		String cid = AppContexts.user().companyId();
-		String companyName =  cid + " " + companyRepository.find(cid).map(i -> i.getCompanyName().v()).orElse("");
+		LoginUserContext user = AppContexts.user();
+		String cid = user.companyId();
+		String companyName =  user.companyCode() + " " + company.getCurrentCompany()
+				.orElseThrow(() -> new RuntimeException(COMPANY_ERROR)).getCompanyName();
 		String exportTime = GeneralDateTime.now().toString();
 
 		List<Object[]> normal = Collections.synchronizedList(new ArrayList<>());

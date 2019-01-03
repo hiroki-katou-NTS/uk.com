@@ -247,6 +247,13 @@ public class CommonTempHolidays {
         }
         return "";
     }
+    public static String convertToTime(int param){
+        int m = param / 60;
+        int s = param % 60;
+
+        return String.format("%02d:%02d", m, s);
+
+    }
 
 
 }
