@@ -1,10 +1,9 @@
 package nts.uk.file.at.app.export.setworkinghoursanddays;
 
-import javax.ejb.Stateless;
-
-@Stateless
-public class CompanyUtils {
+public class WorkPlaceColumn {
 	public static final String KMK004_154 = "年度";
+	public static final String KMK004_187 = "職場コード";
+	public static final String KMK004_188 = "職場名称";
 	public static final String KMK004_155 = "通常勤務";
 	public static final String KMK004_156 = "法定労働時間";
 	public static final String KMK004_157 = "基本設定(通常勤務)";
@@ -37,5 +36,4 @@ public class CompanyUtils {
 	public static final String KMK004_162_1 = "時間外・36協定の計算で週割増・月割増時間を求めるか_1";
 	public static final String KMK004_163_1 = "時間外・36協定の計算での週割増・月割増の対象法内残業 法内残業_1";
 	public static final String KMK004_164_1 = "時間外・36協定の計算での週割増・月割増の対象法内残業 法外休出_1";
-
 }
