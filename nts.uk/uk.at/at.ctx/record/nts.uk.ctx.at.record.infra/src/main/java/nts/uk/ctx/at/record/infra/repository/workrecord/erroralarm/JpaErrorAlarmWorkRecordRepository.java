@@ -78,7 +78,9 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 
 	@Override
 	public void addErrorAlarmWorkRecord(ErrorAlarmWorkRecord domain, ErrorAlarmCondition conditionDomain) {
-		this.commandProxy().insert(KwrmtErAlWorkRecord.fromDomain(domain, conditionDomain));
+		KwrmtErAlWorkRecord entity = KwrmtErAlWorkRecord.fromDomain(domain, conditionDomain);
+		entity.krcmtErAlCondition.setCompanyId(AppContexts.user().companyId());
+		this.commandProxy().insert(entity);
 	}
 
 	@Override
