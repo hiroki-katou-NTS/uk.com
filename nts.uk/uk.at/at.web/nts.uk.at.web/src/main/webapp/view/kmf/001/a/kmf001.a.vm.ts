@@ -35,6 +35,14 @@ module nts.uk.pr.view.kmf001.a {
                     block.clear();
                 });
             }
+            hasPermission(): boolean {
+            if (__viewContext.user.role.attendance == "null" && __viewContext.user.role.payroll == "null"
+                && __viewContext.user.role.personnel == "null"  && __viewContext.user.role.officeHelper == "null"){
+                    return false;
+                }
+                
+                return true;
+            }
 
             // 優先順位の設定
             public openPrioritySettingDialog(): void {

@@ -381,12 +381,12 @@ module nts.uk.com.view.cas001.a.viewmodel {
          * check role
          */
         hasPermission(): boolean {
-            if (__viewContext.user.role.attendance || __viewContext.user.role.payroll 
-                || __viewContext.user.role.personnel  || __viewContext.user.role.officeHelper){
-                return true;
+            if (__viewContext.user.role.attendance == "null" && __viewContext.user.role.payroll == "null"
+                && __viewContext.user.role.personnel == "null"  && __viewContext.user.role.officeHelper == "null"){
+                return false;
             }
             
-            return false;
+            return true;
         }
     }
     export interface IPersonRole {
