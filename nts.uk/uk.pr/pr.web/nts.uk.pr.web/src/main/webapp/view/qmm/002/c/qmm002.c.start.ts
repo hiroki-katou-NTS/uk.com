@@ -3,6 +3,7 @@ module nts.uk.pr.view.qmm002.c {
             var screenModel = new viewmodel.ScreenModel();
             screenModel.startPage().done(function() {
                 __viewContext.bind(screenModel);
+                $("#treegridbankbranchsource_container").focus();
             });
     });
 }
