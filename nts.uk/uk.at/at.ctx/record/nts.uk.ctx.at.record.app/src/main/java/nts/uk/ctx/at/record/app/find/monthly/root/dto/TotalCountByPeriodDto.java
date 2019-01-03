@@ -31,7 +31,7 @@ public class TotalCountByPeriodDto implements ItemConst {
 	public static TotalCountByPeriodDto from(TotalCountByPeriod domain){
 		TotalCountByPeriodDto dto = new TotalCountByPeriodDto();
 		if (domain != null){
-			ConvertHelper.mapTo(domain.getTotalCountList(), c -> TotalCountDto.from(c.getValue()));
+			dto.setTotalCount(ConvertHelper.mapTo(domain.getTotalCountList(), c -> TotalCountDto.from(c.getValue())));;
 		}
 		return dto;
 	}

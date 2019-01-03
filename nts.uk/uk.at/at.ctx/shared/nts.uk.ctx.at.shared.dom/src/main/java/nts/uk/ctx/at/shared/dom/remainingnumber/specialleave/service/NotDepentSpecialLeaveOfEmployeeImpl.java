@@ -121,7 +121,10 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 					break;
 				}				
 			}
-			loopDate = loopDate.addYears(inteval);
+			if(param.getDatePeriod().end().afterOrEquals(loopDate)) {
+				loopDate = loopDate.addYears(inteval);
+				outputData.setGrantDate(loopDate);	
+			}			
 		}
 		
 		if(!lstGrantDays.isEmpty()) {

@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 /**
  * 流動固定区分
  * @author keisuke_hoshina
- *
  */
 public enum FluidFixedAtr {
 	FluidWork,//流動

@@ -9,6 +9,7 @@ module nts.uk.at.view.kdw003.a.service {
         addAndUpdate: "screen/at/correctionofdailyperformance/addAndUpdate",
         getApplication: "screen/at/correctionofdailyperformance/getApplication",
         addClosure: "screen/at/correctionofdailyperformance/insertClosure",
+        releaseClosure: "screen/at/correctionofdailyperformance/releaseClosure",
         findFlexCheck: "screen/at/correctionofdailyperformance/getFlexCheck",
         loadRow: "screen/at/correctionofdailyperformance/loadRow",
         getNameMonthlyAttItem: "screen/at/correctionofdailyperformance/getNameMonthlyAttItem",
@@ -53,6 +54,10 @@ module nts.uk.at.view.kdw003.a.service {
 
     export function addClosure(param) {
         return nts.uk.request.ajax(paths.addClosure, param);
+    }
+    
+    export function releaseClosure(param) {
+        return nts.uk.request.ajax(paths.releaseClosure, param);
     }
 
     export function findFlexCheck(param) {

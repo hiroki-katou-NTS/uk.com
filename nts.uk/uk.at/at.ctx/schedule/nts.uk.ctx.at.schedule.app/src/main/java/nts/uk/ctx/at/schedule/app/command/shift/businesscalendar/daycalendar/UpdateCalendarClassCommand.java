@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.daycalendar;
 
 import lombok.Data;
-import nts.arc.time.GeneralDate;
+//import nts.arc.time.GeneralDate;
 
 @Data
 public class UpdateCalendarClassCommand {

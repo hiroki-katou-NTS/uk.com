@@ -195,7 +195,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 		}
 
 		List<BsymtAffiWorkplaceHist> resultList = new ArrayList<>();
-		CollectionUtil.split(employeeIds, 1000, subList -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			// Query.
 			resultList.addAll(this.queryProxy().query(SELECT_BY_EMPIDS, BsymtAffiWorkplaceHist.class)
 					.setParameter("employeeIds", subList).setParameter("standDate", date).getList());
@@ -278,7 +278,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 	public List<AffWorkplaceHistory> getWorkplaceHistoryByWkpIdsAndDate(GeneralDate baseDate,
 			List<String> workplaceIds) {
 		List<BsymtAffiWorkplaceHist> resultList = new ArrayList<>();
-		CollectionUtil.split(workplaceIds, 1000, subList -> {
+		CollectionUtil.split(workplaceIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_WKPIDS_BASEDATE, BsymtAffiWorkplaceHist.class)
 					.setParameter("wkpIds", subList).setParameter("standDate", baseDate).getList());
 		});
@@ -310,7 +310,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 	public List<AffWorkplaceHistory> getWorkplaceHistoryByEmpIdsAndDate(GeneralDate baseDate,
 			List<String> employeeIds) {
 		List<BsymtAffiWorkplaceHist> resultList = new ArrayList<>();
-		CollectionUtil.split(employeeIds, 1000, subList -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_EMPID_STANDDATE, BsymtAffiWorkplaceHist.class)
 					.setParameter("employeeIds", subList).setParameter("standDate", baseDate).getList());
 		});
@@ -332,8 +332,8 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 		}
 
 		List<BsymtAffiWorkplaceHist> resultList = new ArrayList<>();
-		CollectionUtil.split(employeeIds, 1000, empSubList -> {
-			CollectionUtil.split(workplaceIds, 1000, wplSubList -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empSubList -> {
+			CollectionUtil.split(workplaceIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, wplSubList -> {
 				resultList.addAll(this.queryProxy()
 						.query(SELECT_BY_LIST_EMPID_BY_LIST_WKPIDS_BASEDATE, BsymtAffiWorkplaceHist.class)
 						.setParameter("employeeIds", employeeIds).setParameter("wkpIds", workplaceIds)
@@ -373,7 +373,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 		// Split query.
 		List<String> resultList = new ArrayList<>();
 
-		CollectionUtil.split(lstWkpId, 1000, (subList) -> {
+		CollectionUtil.split(lstWkpId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_WKPID_PERIOD, String.class)
 					.setParameter("lstWkpId", subList)
 					.setParameter("startDate", startDate)
@@ -393,7 +393,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 	  // Split query.
 	  List<BsymtAffiWorkplaceHist> resultList = new ArrayList<>();
 	  
-	  CollectionUtil.split(listSid, 1000, (subList) -> {
+	  CollectionUtil.split(listSid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 	   resultList.addAll(this.queryProxy().query(SELECT_BY_LISTSID, BsymtAffiWorkplaceHist.class)
 	     .setParameter("listSid", subList).getList());
 	  });

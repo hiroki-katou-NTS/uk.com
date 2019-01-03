@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.schedule.infra.repository.shift.rank.ranksetting;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.rank.ranksetting.RankSet;
 import nts.uk.ctx.at.schedule.dom.shift.rank.ranksetting.RankSetRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.rank.ranksetting.KscstRankSet;
@@ -24,8 +27,13 @@ public class JpaRankSetRepository extends JpaRepository implements RankSetReposi
 
 	@Override
 	public List<RankSet> getListRankSet(List<String> employeeIds) {
-		return this.queryProxy().query(SELECT_BY_LIST_EMPLOYEEID, KscstRankSet.class).setParameter("sIds", employeeIds)
-				.getList(x -> toDomain(x));
+		List<RankSet> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_BY_LIST_EMPLOYEEID, KscstRankSet.class)
+								  .setParameter("sIds", subList)
+								  .getList(x -> toDomain(x)));
+		});
+		return resultList;
 	}
 
 	@Override

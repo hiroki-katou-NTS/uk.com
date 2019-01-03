@@ -20,3 +20,12 @@
 #label-date {
 	margin-left: 10px;
 }
+.form-group div.row :nth-child(0) {
+	margin-top: 55px;
+}
+.form-group div.row :nth-child(1) {
+	margin-top: 35px;
+}
+.form-group div.row :nth-child(2) {
+	margin-top: 20px;
+}

@@ -1,12 +1,15 @@
 package nts.uk.ctx.pereg.infra.repository.person.info.ctg;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
@@ -233,8 +236,12 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	@Override
 	public List<String> getPerInfoCtgIdList(List<String> companyIdList, String categoryCd) {
-		return this.queryProxy().query(SELECT_LIST_CTG_ID_QUERY, String.class)
-				.setParameter("companyIdList", companyIdList).setParameter("categoryCd", categoryCd).getList();
+		List<String> results = new ArrayList<>();
+		CollectionUtil.split(companyIdList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			results.addAll(this.queryProxy().query(SELECT_LIST_CTG_ID_QUERY, String.class)
+				.setParameter("companyIdList", subList).setParameter("categoryCd", categoryCd).getList());
+		});
+		return results;
 	}
 
 	@Override
@@ -572,9 +579,12 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	@Override
 	public List<PersonInfoCategory> getPerCtgByListCtgCd(List<String> ctgCd, String companyId) {
-		List<PersonInfoCategory> lstEntity = this.queryProxy().query(SELECT_CTG_BY_CTGCD, Object[].class)
-				.setParameter("lstCtgCd", ctgCd).setParameter("cid", companyId)
-				.getList(x -> createDomainWithAbolition(x));
+		List<PersonInfoCategory> lstEntity = new ArrayList<>();
+		CollectionUtil.split(ctgCd, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			lstEntity.addAll(this.queryProxy().query(SELECT_CTG_BY_CTGCD, Object[].class)
+				.setParameter("lstCtgCd", subList).setParameter("cid", companyId)
+				.getList(x -> createDomainWithAbolition(x)));
+		});
 		return lstEntity;
 	}
 
@@ -595,8 +605,11 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 
 	@Override
 	public List<String> getAllCtgId(List<String> ctgCd, String companyId) {
-		List<String> ctgIdLst = this.queryProxy().query(SELECT_CTG_ID_BY_CTGCD, String.class)
-				.setParameter("lstCtgCd", ctgCd).setParameter("cid", companyId).getList();
+		List<String> ctgIdLst = new ArrayList<>();
+		CollectionUtil.split(ctgCd, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			ctgIdLst.addAll(this.queryProxy().query(SELECT_CTG_ID_BY_CTGCD, String.class)
+				.setParameter("lstCtgCd", subList).setParameter("cid", companyId).getList());
+		});
 		return ctgIdLst;
 	}
 

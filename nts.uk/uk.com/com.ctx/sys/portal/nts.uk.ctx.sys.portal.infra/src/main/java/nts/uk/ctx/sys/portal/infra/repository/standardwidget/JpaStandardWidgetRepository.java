@@ -1,11 +1,14 @@
 package nts.uk.ctx.sys.portal.infra.repository.standardwidget;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidgetRepository;
 import nts.uk.ctx.sys.portal.infra.entity.standardwidget.SptstStandardWidget;
@@ -63,15 +66,14 @@ public class JpaStandardWidgetRepository extends JpaRepository implements Standa
 
 	@Override
 	public List<StandardWidget> findByTopPagePartId(List<String> toppagePartIDs, String cID) {
-		return this.queryProxy().query(SELECT_IN_BY_TOP_PAGE_PART_ID , Object[].class)
-				.setParameter("toppagePartIDs", toppagePartIDs)
+		List<StandardWidget> resultList = new ArrayList<>();
+		CollectionUtil.split(toppagePartIDs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_IN_BY_TOP_PAGE_PART_ID , Object[].class)
+				.setParameter("toppagePartIDs", subList)
 				.setParameter("cID", cID)
-				.getList(c -> joinObjectToDomain(c));
+				.getList(c -> joinObjectToDomain(c)));
+		});
+		return resultList;
 	}
-
-
-
-	
-
 
 }

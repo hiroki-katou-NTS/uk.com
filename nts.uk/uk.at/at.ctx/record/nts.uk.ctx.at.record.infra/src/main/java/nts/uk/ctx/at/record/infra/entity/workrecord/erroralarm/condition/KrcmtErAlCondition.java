@@ -18,10 +18,12 @@ import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+//import lombok.Setter;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktime.PlanActualWorkTime;
@@ -91,6 +93,9 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlBusinessType> lstBusinessType;
+	
+	@Transient
+	public KrcstErAlBusinessType businessType;
 
 	@Column(name = "FILTER_BY_JOB_TITLE")
 	public int filterByJobTitle;
@@ -98,6 +103,9 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlJobTitle> lstJobTitle;
+	
+	@Transient
+	public KrcstErAlJobTitle jobTitle;
 
 	@Column(name = "FILTER_BY_EMPLOYMENT")
 	public int filterByEmployment;
@@ -105,6 +113,9 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlEmployment> lstEmployment;
+	
+	@Transient
+	public KrcstErAlEmployment employment;
 
 	@Column(name = "FILTER_BY_CLASSIFICATION")
 	public int filterByClassification;
@@ -112,6 +123,9 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlClass> lstClassification;
+	
+	@Transient
+	public KrcstErAlClass classification;
 
 	@Column(name = "WORKTYPE_USE_ATR")
 	public int workTypeUseAtr;
@@ -131,10 +145,16 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlWtActual> lstWtActual;
+	
+	@Transient
+	public KrcstErAlWtActual wtActual;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlWtPlan> lstWtPlan;
+	
+	@Transient
+	public KrcstErAlWtPlan wtPlan;
 
 	@Column(name = "WORKING_HOURS_USE_ATR")
 	public int workingHoursUseAtr;
@@ -154,10 +174,16 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlWhActual> lstWhActual;
+	
+	@Transient
+	public KrcstErAlWhActual whActual;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
 	public List<KrcstErAlWhPlan> lstWhPlan;
+	
+	@Transient
+	public KrcstErAlWhPlan whPlan;
 
 	@Column(name = "OPERATOR_BETWEEN_GROUPS")
 	public int operatorBetweenGroups;
@@ -365,8 +391,8 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 		}
 		int compareAtr = 0;
 		int conditionType = 0;
-		int startValue = 0;
-		int endValue = 0;
+		double startValue = 0;
+		double endValue = 0;
 		KrcstErAlCompareSingle erAlCompareSingle = null;
 		KrcstErAlCompareRange erAlCompareRange = null;
 		KrcstErAlInputCheck erAlInputCheck = null;
@@ -386,6 +412,9 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 			} else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIMES) {
 				startValue = ((CheckedTimesValue) erAlAtdItemCon.getCompareRange().getStartValue()).v();
 				endValue = ((CheckedTimesValue) erAlAtdItemCon.getCompareRange().getEndValue()).v();
+			} else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.DAYS) {
+				startValue = ((CheckedTimesValueDay) erAlAtdItemCon.getCompareRange().getStartValue()).v();
+				endValue = ((CheckedTimesValueDay) erAlAtdItemCon.getCompareRange().getEndValue()).v();
 			}
 			erAlCompareRange = new KrcstErAlCompareRange(
 					new KrcstErAlCompareRangePK(atdItemConditionGroup1, (erAlAtdItemCon.getTargetNO())), compareAtr,
@@ -397,7 +426,7 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 					new KrcstErAlCompareSinglePK(atdItemConditionGroup1, erAlAtdItemCon.getTargetNO()), compareAtr,
 					conditionType);
 			if (erAlAtdItemCon.getCompareSingleValue().getConditionType() == ConditionType.FIXED_VALUE) {
-				int fixedValue = 0;
+				double fixedValue = 0;
 				if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.AMOUNT_VALUE) {
 					fixedValue = ((CheckedAmountValue) erAlAtdItemCon.getCompareSingleValue().getValue()).v();
 				} else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIME_DURATION) {
@@ -406,6 +435,8 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 					fixedValue = ((TimeWithDayAttr) erAlAtdItemCon.getCompareSingleValue().getValue()).v();
 				} else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIMES) {
 					fixedValue = ((CheckedTimesValue) erAlAtdItemCon.getCompareSingleValue().getValue()).v();
+				} else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.DAYS) {
+					fixedValue = ((CheckedTimesValueDay) erAlAtdItemCon.getCompareSingleValue().getValue()).v();
 				}
 				erAlSingleFixed = new KrcstErAlSingleFixed(
 						new KrcstErAlSingleFixedPK(atdItemConditionGroup1, (erAlAtdItemCon.getTargetNO())), fixedValue);

@@ -74,6 +74,7 @@ body {
 #itemRegisterLst {
 	margin-top: 20px;
 	width: 405px;
+	position: absolute;
 }
 
 .caret-background.caret-right:after {
@@ -119,4 +120,9 @@ body {
 	height: 75px;
 	margin-top: 5px;
 	width: 300px;
+}
+
+#item_register_grid_container{
+	position: absolute;
+	z-index: 1;
 }

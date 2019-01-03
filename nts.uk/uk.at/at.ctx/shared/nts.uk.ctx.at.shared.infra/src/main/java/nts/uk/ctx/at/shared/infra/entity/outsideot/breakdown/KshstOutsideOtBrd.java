@@ -7,7 +7,6 @@ package nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -17,11 +16,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance.KshstOutsideOtBrdAten;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KshstOutsideOtBrd.
@@ -31,7 +30,7 @@ import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance.KshstOut
 @Setter
 @Entity
 @Table(name = "KSHST_OUTSIDE_OT_BRD")
-public class KshstOutsideOtBrd implements Serializable {
+public class KshstOutsideOtBrd extends UkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -41,20 +40,14 @@ public class KshstOutsideOtBrd implements Serializable {
     protected KshstOutsideOtBrdPK kshstOutsideOtBrdPK;
     
     /** The name. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "NAME")
     private String name;
     
     /** The use atr. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "USE_ATR")
     private int useAtr;
     
     /** The product number. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "PRODUCT_NUMBER")
     private int productNumber;
     
@@ -70,6 +63,7 @@ public class KshstOutsideOtBrd implements Serializable {
      * Instantiates a new kshst over time brd.
      */
     public KshstOutsideOtBrd() {
+    	super();
     }
 
     /**
@@ -137,12 +131,12 @@ public class KshstOutsideOtBrd implements Serializable {
 		return true;
 	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "entity.KshstOutsideOtBrdPK[ kshstOutsideOtBrdPK=" + kshstOutsideOtBrdPK + " ]";
-    }
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
+	@Override
+	protected Object getKey() {
+		return this.kshstOutsideOtBrdPK;
+	}
     
 }

@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.stamp.card.stampcard;
 
-import static org.junit.Assert.*;
+//import static org.junit.Assert.*;
 
 import org.junit.Test;
 

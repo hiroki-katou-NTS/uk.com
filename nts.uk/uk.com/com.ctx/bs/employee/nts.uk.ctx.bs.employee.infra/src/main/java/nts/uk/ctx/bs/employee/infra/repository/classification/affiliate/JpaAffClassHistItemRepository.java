@@ -106,33 +106,35 @@ public class JpaAffClassHistItemRepository extends JpaRepository implements AffC
 
 		// select root
 		cq.select(root);
+		
+		List<BsymtAffClassHistItem> resultList = new ArrayList<>();
+		
+		CollectionUtil.split(classificationCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
 
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
+			// classification in data classification
+			lstpredicateWhere.add(criteriaBuilder
+					.and(root.get(BsymtAffClassHistItem_.classificationCode)
+							.in(splitData)));
+			
+			// start date <= base date
+			lstpredicateWhere.add(criteriaBuilder
+					.lessThanOrEqualTo(root.get(BsymtAffClassHistItem_.bsymtAffClassHistory)
+							.get(BsymtAffClassHistory_.startDate), baseDate));
 
-		// classification in data classification
-		lstpredicateWhere.add(criteriaBuilder
-				.and(root.get(BsymtAffClassHistItem_.classificationCode)
-						.in(classificationCodes)));
+			// endDate >= base date
+			lstpredicateWhere.add(criteriaBuilder
+					.greaterThanOrEqualTo(root.get(BsymtAffClassHistItem_.bsymtAffClassHistory)
+							.get(BsymtAffClassHistory_.endDate), baseDate));
 
-		// start date <= base date
-		lstpredicateWhere.add(criteriaBuilder
-				.lessThanOrEqualTo(root.get(BsymtAffClassHistItem_.bsymtAffClassHistory)
-						.get(BsymtAffClassHistory_.startDate), baseDate));
+			// set where to SQL
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+			
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
 
-		// endDate >= base date
-		lstpredicateWhere.add(criteriaBuilder
-				.greaterThanOrEqualTo(root.get(BsymtAffClassHistItem_.bsymtAffClassHistory)
-						.get(BsymtAffClassHistory_.endDate), baseDate));
-
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-		// create query
-		TypedQuery<BsymtAffClassHistItem> query = em.createQuery(cq);
-
-		// exclude select
-		return query.getResultList().stream().map(category -> toDomain(category))
+		return resultList.stream().map(category -> toDomain(category))
 				.collect(Collectors.toList());
 	}
 
@@ -167,8 +169,8 @@ public class JpaAffClassHistItemRepository extends JpaRepository implements AffC
 		cq.select(root);
 		
 		List<BsymtAffClassHistItem> resultList = new ArrayList<>();
-		CollectionUtil.split(employeeIds, 1000, subList -> {
-			CollectionUtil.split(classificationCodes, 1000, classSubList -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			CollectionUtil.split(classificationCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, classSubList -> {
 				// add where
 				List<Predicate> lstpredicateWhere = new ArrayList<>();
 
@@ -224,18 +226,16 @@ public class JpaAffClassHistItemRepository extends JpaRepository implements AffC
 			return Collections.emptyList();
 		}
 		
-		List<AffClassHistItem> results = new ArrayList<>();
+		List<BsymtAffClassHistItem> results = new ArrayList<>();
+		
 		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIds -> {
-
-			List<AffClassHistItem> entities = this.queryProxy()
+			results.addAll(this.queryProxy()
 					.query(GET_BY_HISTID_LIST, BsymtAffClassHistItem.class)
 					.setParameter("historyIds", subIds)
-					.getList(ent -> toDomain(ent));
-			
-			results.addAll(entities);
+					.getList());
 		});
 
-		return results;
+		return results.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
 	}
 
 }

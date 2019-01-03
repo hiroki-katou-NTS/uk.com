@@ -59,4 +59,6 @@ public interface NewBeforeRegister_New {
 	 * @param appDate 申請対象日
 	 */
 	public void confirmationCheck(String companyID, String employeeID, GeneralDate appDate);
+	
+	public void confirmCheckOvertime(String companyID, String employeeID, GeneralDate appDate);
 }

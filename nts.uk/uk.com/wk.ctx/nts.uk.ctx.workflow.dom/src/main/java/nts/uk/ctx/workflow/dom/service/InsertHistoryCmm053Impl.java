@@ -48,6 +48,7 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 	private CreateDailyApprover createDailyApprover;
 
 	/**
+	 * 02.履歴追加を登録する
 	 * Add history
 	 * @param command
 	 * @param historyId
@@ -128,12 +129,12 @@ public class InsertHistoryCmm053Impl implements InsertHistoryCmm053Service {
 			GeneralDate systemDate = GeneralDate.today();
 			if(startDate.beforeOrEquals(systemDate)){
 				//指定社員の中間データを作成する（日別）
-				AppRootInstanceContent result =  createDailyApprover.createDailyApprover(dailyApproverId, RecordRootType.CONFIRM_WORK_BY_DAY, startDate);
+				AppRootInstanceContent result =  createDailyApprover.createDailyApprover(employeeId, RecordRootType.CONFIRM_WORK_BY_DAY, startDate, startDate);
 				if(!result.getErrorFlag().equals(ErrorFlag.NO_ERROR)){
 					throw new BusinessException(result.getErrorMsgID());
 				}
 				//指定社員の中間データを作成する（月別）
-				result = createDailyApprover.createDailyApprover(dailyApproverId, RecordRootType.CONFIRM_WORK_BY_MONTH, startDate);
+				result = createDailyApprover.createDailyApprover(employeeId, RecordRootType.CONFIRM_WORK_BY_MONTH, startDate, startDate);
 				if(!result.getErrorFlag().equals(ErrorFlag.NO_ERROR)){
 					throw new BusinessException(result.getErrorMsgID());
 				}

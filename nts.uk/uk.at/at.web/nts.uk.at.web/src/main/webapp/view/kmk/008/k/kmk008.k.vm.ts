@@ -79,6 +79,9 @@ module nts.uk.at.view.kmk008.k {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                $('#txt-year-error-time').trigger("validate");
+                $('#txt-year-alarm-time').trigger("validate");
+                $('#txt-year').trigger("validate");
                 self.listItemDataGrid([]);
                 if (self.isYearMonth) {
                     new service.Service().getDetailYearMonth(self.employeeId).done(data => {
@@ -128,16 +131,23 @@ module nts.uk.at.view.kmk008.k {
                 self.currentSelectItem(new SettingModel(null, self.employeeId));
                 self.currentCodeSelect(null);
                 self.updateEnable(false);
+                $('input.nts-input').trigger("validate");
                 $("#txt-year").focus();
             }
 
             addOrUpdateClick() {
                 let self = this;
-                if (self.isUpdate) {
-                    self.updateData();
-                    return;
-                }
-                self.register();
+                $('input.nts-input').trigger("validate");
+                                
+                setTimeout(() => {
+                    if (!$('.nts-editor').ntsError("hasError")) {
+                        if (self.isUpdate) {
+                            self.updateData();
+                            return;
+                        } else
+                            self.register();
+                    }
+                }, 100);
             }
 
             register() {
@@ -349,14 +359,14 @@ module nts.uk.at.view.kmk008.k {
     }
 
     export class ShowListModel {
-        yearOrYearMonthValue: number;
-        errorOneYearOrYearMonth: number;
-        alarmOneYearOrYearMonth: number;
+        yearOrYearMonthValue: number ;
+        errorOneYearOrYearMonth: number= null;
+        alarmOneYearOrYearMonth: number= null;
         yearOrYearMonthFormat: string;
         constructor(yearOrYearMonthValue: number, errorOneYearOrYearMonth: number, alarmOneYearOrYearMonth: number) {
             this.yearOrYearMonthValue = yearOrYearMonthValue;
-            this.errorOneYearOrYearMonth = errorOneYearOrYearMonth;
-            this.alarmOneYearOrYearMonth = alarmOneYearOrYearMonth;
+            this.errorOneYearOrYearMonth = errorOneYearOrYearMonth || null;
+            this.alarmOneYearOrYearMonth = alarmOneYearOrYearMonth || null;
             this.yearOrYearMonthFormat = yearOrYearMonthValue.toString().length > 4 ? nts.uk.time.parseYearMonth(yearOrYearMonthValue).format() : yearOrYearMonthValue.toString();
         }
     }
@@ -377,29 +387,29 @@ module nts.uk.at.view.kmk008.k {
     export class AddUpdateMonthSettingModel {
         
         employeeId: string = "";
-        yearMonthValue: number = 0;
-        errorOneMonth: number = 0;
-        alarmOneMonth: number = 0;
+        yearMonthValue: number;
+        errorOneMonth: number;
+        alarmOneMonth: number;
         constructor(data: SettingModel) {
             if (!data) return;
             this.employeeId = data.employeeId();
             this.yearMonthValue = Number(data.yearOrYearMonthValue().toString().replace("/", ""));
-            this.errorOneMonth = data.errorOneYearOrYearMonth() || 0;
-            this.alarmOneMonth = data.alarmOneYearOrYearMonth() || 0;
+            this.errorOneMonth = data.errorOneYearOrYearMonth();
+            this.alarmOneMonth = data.alarmOneYearOrYearMonth();
         }
     }
 
     export class AddUpdateYearSettingModel {
         employeeId: string = "";
-        yearValue: number = 0;
-        errorOneYear: number = 0;
-        alarmOneYear: number = 0;
+        yearValue: number;
+        errorOneYear: number;
+        alarmOneYear: number;
         constructor(data: SettingModel) {
             if (!data) return;
             this.employeeId = data.employeeId();
             this.yearValue = Number(data.yearOrYearMonthValue());
-            this.errorOneYear = data.errorOneYearOrYearMonth() || 0;
-            this.alarmOneYear = data.alarmOneYearOrYearMonth() || 0;
+            this.errorOneYear = data.errorOneYearOrYearMonth();
+            this.alarmOneYear = data.alarmOneYearOrYearMonth();
         }
     }
 

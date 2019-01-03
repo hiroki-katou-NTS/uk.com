@@ -23,7 +23,7 @@ public interface AbsenceLeaveReflectService {
 	 * @param workTime
 	 * @return
 	 */
-	public WorkTimeIsRecordReflect checkReflectWorktime(String employeeId, GeneralDate dateData, String workTime);
+	public WorkTimeIsRecordReflect checkReflectWorktime(String employeeId, GeneralDate dateData, String workTime, boolean isChe);
 	/**
 	 * 予定開始終了時刻が反映できるか
 	 * @param employeeId

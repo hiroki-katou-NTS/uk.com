@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 
 /**
  * 開始終了時刻の反映(事前申請)
@@ -21,14 +22,15 @@ public interface StartEndTimeOffReflect {
 	 * @param worktypeCode
 	 * @param isClearAuto
 	 */
-	public void clearAutomaticEmbossing(String employeeId, GeneralDate dateData, String worktypeCode, boolean isClearAuto, Integer timeData);
+	public void clearAutomaticEmbossing(String employeeId, GeneralDate dateData, String worktypeCode, boolean isClearAuto, 
+			OvertimeAppParameter overInfor);
 	/**
 	 * 開始終了時刻の反映(事前)
 	 * @param param
 	 * @param workInfo
 	 * @return
 	 */
-	public void startEndTimeOutput(StartEndTimeRelectCheck param, WorkInfoOfDailyPerformance workInfo);
+	public TimeLeavingOfDailyPerformance startEndTimeOutput(StartEndTimeRelectCheck param, WorkInfoOfDailyPerformance workInfo);
 	/**
 	 * ジャスト遅刻早退により時刻を編集する
 	 * @param startEndTime

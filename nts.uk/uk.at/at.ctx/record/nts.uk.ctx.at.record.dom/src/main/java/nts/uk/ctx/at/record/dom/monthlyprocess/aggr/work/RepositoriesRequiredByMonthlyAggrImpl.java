@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.Getter;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
@@ -93,6 +94,10 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 @Getter
 public class RepositoriesRequiredByMonthlyAggrImpl implements RepositoriesRequiredByMonthlyAggr {
 
+	/** 並列化処理 */
+	@Inject
+	private ManagedParallelWithContext parallel;
+	
 	/** 社員の取得 */
 	@Inject
 	private EmpEmployeeAdapter empEmployee;

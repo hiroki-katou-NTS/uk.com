@@ -12,7 +12,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.paymana.KrcmtSubOfHDManaData;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcmtComDayoffMaData;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -48,7 +47,10 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	private static final String QUERY_BY_SID_HOLIDAY = "SELECT c FROM KrcmtSubOfHDManaData c"
 			+ " WHERE c.sID = :employeeId" + " AND c.unknownDate = :unknownDate" + " AND c.dayOff >= :startDate";
 	private String QUERY_BYSID_DATE = QUERY_BYSID + " AND s.dayOff < :dayOff";
-	
+	private String QUERY_BYSID_UNOFFSET = "SELECT s FROM KrcmtSubOfHDManaData s WHERE  s.cID = :cid "
+			+ " AND s.sID = :sid"
+			+ " AND (s.dayOff < :dayOff OR s.dayOff is null)"
+			+ " AND s.remainDays > :remainDays";
 	@Override
 	public List<SubstitutionOfHDManagementData> getBySidDate(String cid, String sid, GeneralDate ymd) {
 		List<KrcmtSubOfHDManaData> list = this.queryProxy().query(QUERY_BYSID_DATE, KrcmtSubOfHDManaData.class)
@@ -196,6 +198,18 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	@Override
 	public void deleteById(List<String> subOfHDID) {
 		this.commandProxy().removeAll(KrcmtSubOfHDManaData.class, subOfHDID);
+	}
+
+
+	@Override
+	public List<SubstitutionOfHDManagementData> getByYmdUnOffset(String cid, String sid, GeneralDate ymd, double unOffseDays) {
+		List<KrcmtSubOfHDManaData> list = this.queryProxy().query(QUERY_BYSID_UNOFFSET, KrcmtSubOfHDManaData.class)
+				.setParameter("sid", sid)
+				.setParameter("cid", cid)
+				.setParameter("dayOff", ymd)
+				.setParameter("remainDays", unOffseDays)
+				.getList();
+		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
 
 

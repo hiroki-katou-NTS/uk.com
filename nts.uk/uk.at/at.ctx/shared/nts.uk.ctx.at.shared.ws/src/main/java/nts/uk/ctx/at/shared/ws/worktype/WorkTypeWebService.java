@@ -184,7 +184,7 @@ public class WorkTypeWebService extends WebService {
 		List<String> codeList = new ArrayList<>();
 		worktypeCodeList.stream().forEach(item -> {
 			WorkStyle workstyle = this.basicSchedule.checkWorkDay(item);
-			if (workstyleList.contains(workstyle)) {
+			if (workstyleList.contains(workstyle.value)) {
 				codeList.add(item);
 			}
 		});

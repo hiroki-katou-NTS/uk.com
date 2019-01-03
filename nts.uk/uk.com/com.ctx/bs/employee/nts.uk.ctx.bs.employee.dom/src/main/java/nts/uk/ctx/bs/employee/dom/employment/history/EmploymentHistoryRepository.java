@@ -1,10 +1,10 @@
 package nts.uk.ctx.bs.employee.dom.employment.history;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -61,4 +61,23 @@ public interface EmploymentHistoryRepository {
 	
 	// query from RequetsList 264
 	List<EmploymentHistory> getByListSid(List<String> employeeIds  ,  DatePeriod datePeriod);
+	
+	
+	/**
+	 * @author lanlt
+	 * getEmploymentHistoryItem
+	 * @param historyId
+	 * @param employmentCode
+	 * @return
+	 */
+	Optional<EmploymentHistory> getEmploymentHistory(String historyId, String employmentCode);
+	/**
+	 * @author hoatt
+	 * get with employeeId
+	 * startDate <= standardDate <= endDate 
+	 * @param employeeId
+	 * @param standardDate
+	 * @return
+	 */
+	Map<String, DateHistItem> getBySIdAndate(List<String> lstSID, GeneralDate standardDate);
 }

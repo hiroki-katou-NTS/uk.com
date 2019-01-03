@@ -1,8 +1,6 @@
 package nts.uk.ctx.sys.portal.infra.repository.webmenu.webmenulinking;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -41,6 +39,17 @@ public class JpaRoleByRoleTiesRepository extends JpaRepository implements  RoleB
 		Optional<RoleByRoleTies> data = this.queryProxy().query(GET_ROLE_BY_ROLE_TIES_BY_CODE,SacmtRoleByRoleTies.class)
 				.setParameter("roleId", roleId)
 				.getSingle(c->c.toDomain());
+		return data;
+	}
+	
+	@Override
+	public Optional<RoleByRoleTies> getByRoleIdAndCompanyId(String roleId, String companyId) {
+		Optional<RoleByRoleTies> data = this.queryProxy().query(GET_ROLE_BY_ROLE_TIES_BY_CODE 
+				+ "AND (c.companyId = :companyId OR c.companyId = '000000000000-0000')", SacmtRoleByRoleTies.class)
+				.setParameter("roleId", roleId)
+				.setParameter("companyId", companyId)
+				.getSingle(c -> c.toDomain());
+		
 		return data;
 	}
 

@@ -45,32 +45,27 @@ public class BasicScheCorrectCommandHandler extends CommandHandler<BasicScheCorr
 	@Override
 	protected void handle(CommandHandlerContext<BasicScheCorrectCommand> context) {
 		String companyId = AppContexts.user().companyId();
-		DataCorrectionContext.transactionBegun(CorrectionProcessorId.SCHEDULE);
-		
-		// Get all attendanceItemId from domain BasicSchedule
-		List<Integer> attItemIds = new ArrayList<>();
-		for(int i =1; i<=103; i++){
-			attItemIds.add(Integer.valueOf(i));
-		}
-		
-		// Get Name of attendanceItemId
-		List<ScheduleItem> itemIdNameList = this.scheduleItemManagementRepository.findAllScheduleItem(companyId);
-		
-		List<ScheduleItem> newItemIdNameList = itemIdNameList.stream().filter(item -> attItemIds.contains(Integer.valueOf(item.getScheduleItemId()))).collect(Collectors.toList());
-		
-		Map<String, String> itemNameIdMap  = newItemIdNameList.stream().collect(Collectors.toMap(ScheduleItem :: getScheduleItemId, x -> x.getScheduleItemName()));
-		
-		val correctionLogParameter = new BasicScheduleCorrectionParameter(
-				mapToScheduleCorrection(convertToItemValue(context.getCommand().getDomainNew()),
-						convertToItemValue(context.getCommand().getDomainOld()), itemNameIdMap));
-		DataCorrectionContext.setParameter(correctionLogParameter);
-		AttendanceItemIdContainer.getIds(AttendanceItemType.DAILY_ITEM);
-	}
-
-	@Override
-	protected void postHandle(CommandHandlerContext<BasicScheCorrectCommand> context) {
-		super.postHandle(context);
-		DataCorrectionContext.transactionFinishing();
+		DataCorrectionContext.transactional(CorrectionProcessorId.SCHEDULE, () -> {
+			
+			// Get all attendanceItemId from domain BasicSchedule
+			List<Integer> attItemIds = new ArrayList<>();
+			for(int i =1; i<=103; i++){
+				attItemIds.add(Integer.valueOf(i));
+			}
+			
+			// Get Name of attendanceItemId
+			List<ScheduleItem> itemIdNameList = this.scheduleItemManagementRepository.findAllScheduleItem(companyId);
+			
+			List<ScheduleItem> newItemIdNameList = itemIdNameList.stream().filter(item -> attItemIds.contains(Integer.valueOf(item.getScheduleItemId()))).collect(Collectors.toList());
+			
+			Map<String, String> itemNameIdMap  = newItemIdNameList.stream().collect(Collectors.toMap(ScheduleItem :: getScheduleItemId, x -> x.getScheduleItemName()));
+			
+			val correctionLogParameter = new BasicScheduleCorrectionParameter(
+					mapToScheduleCorrection(convertToItemValue(context.getCommand().getDomainNew()),
+							convertToItemValue(context.getCommand().getDomainOld()), itemNameIdMap));
+			DataCorrectionContext.setParameter(correctionLogParameter);
+			AttendanceItemIdContainer.getIds(AttendanceItemType.DAILY_ITEM);
+		});
 	}
 	
 	/**

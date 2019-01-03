@@ -84,7 +84,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
             });
 
             $("#holiday-info_table").ntsFixedTable({ height: 120, width: 600 });
-            $("#holiday-use_table").ntsFixedTable({ height: 224, width: 600 });
+            $("#holiday-use_table").ntsFixedTable({ height: 148, width: 360 });
         }
         start(): JQueryPromise<any> {
             let self = this,
@@ -126,7 +126,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
             if (self.employeeList().length > 1) {
                 return true;
             } else {
-                nts.uk.ui.windows.getSelf().setSize(700, 720);
+                nts.uk.ui.windows.getSelf().$dialog.closest(".ui-dialog").width(700);
                 return false;
             }
         }
@@ -172,21 +172,8 @@ module nts.uk.at.view.kdl020.a.screenModel {
             return formatById("Clock_Short_HM", data);
         }
         genScheduleRecordText(scheduleRecordAtr) {
-            if (scheduleRecordAtr == null) {
-                return '';
-            }
-            if (scheduleRecordAtr == 0) {
-                return '未反映状態'
-            }
-
-            if (scheduleRecordAtr == 1) {
-                return '実績'
-            }
-            if (scheduleRecordAtr == 2) {
-                return 'スケジュール'
-            }
-
-            return '';
+           
+            return CreateAtr[scheduleRecordAtr];
         }
         genAttendanceRate(attendanceRate) {
             if (attendanceRate == null) {
@@ -309,6 +296,14 @@ module nts.uk.at.view.kdl020.a.screenModel {
         numberOfRemainGrantPost: KnockoutObservable<number> = ko.observable(0);
         /* 時間年休上限（付与後））*/
         timeAnnualLeaveWithMinusGrantPost: KnockoutObservable<number> = ko.observable(0);
+        /*年休残数日数 */
+        annualLeaveGrantDay: KnockoutObservable<number> = ko.observable(0);
+        /* 年休残数時間*/
+        annualLeaveGrantTime: KnockoutObservable<number> = ko.observable(null);
+        /* 半休残数回数*/
+        numberOfRemainGrant: KnockoutObservable<number> = ko.observable(null);
+        /* 時間年休上限*/
+        timeAnnualLeaveWithMinusGrant: KnockoutObservable<number> = ko.observable(null);
         /* 出勤率*/
         attendanceRate: KnockoutObservable<number> = ko.observable(0);
         /* 労働日数*/
@@ -326,7 +321,10 @@ module nts.uk.at.view.kdl020.a.screenModel {
                 this.timeAnnualLeaveWithMinusGrantPost(data.timeAnnualLeaveWithMinusGrantPost);
                 this.attendanceRate(data.attendanceRate);
                 this.workingDays(data.workingDays);
-
+                this.annualLeaveGrantDay(data.annualLeaveGrantDay);
+                this.annualLeaveGrantTime(data.annualLeaveGrantTime);
+                this.numberOfRemainGrant(data.numberOfRemainGrant);
+                this.timeAnnualLeaveWithMinusGrant(data.timeAnnualLeaveWithMinusGrant);
             }
         }
     }
@@ -476,6 +474,19 @@ module nts.uk.at.view.kdl020.a.screenModel {
         static Classification = 2;
         static JOB_TITLE = 3;
         static EMPLOYEE = 4;
+    }
+    
+    export enum CreateAtr {
+        /** 予定 */
+        "予定",
+        /** 実績 */
+        "実績",
+        /** 申請(事前) */
+        "申請(事前)",
+        /** 申請(事後) */
+        "申請(事後)",
+        /**フレックス補填   */
+        "フレックス補填"
     }
 
     export interface UnitModel {

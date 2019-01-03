@@ -13,7 +13,7 @@ function initScreen(screenModel: any, listAppMeta: Array<model.ApplicationMetada
         getProgramName("KAF009", "B");
         screenModel = new nts.uk.at.view.kaf009.b.viewmodel.ScreenModel(listAppMeta, currentApp);
     } else if (currentApp.appType == 0) {
-        getProgramName("KAF005", "B");
+//        getProgramName("KAF005", "B");
         screenModel = new nts.uk.at.view.kaf005.b.viewmodel.ScreenModel(listAppMeta, currentApp);
     } else if (currentApp.appType == 2) {
         getProgramName("KAF007", "B");
@@ -31,6 +31,9 @@ function initScreen(screenModel: any, listAppMeta: Array<model.ApplicationMetada
     __viewContext['viewModel'] = screenModel;
     screenModel.start(moment.utc().format("YYYY/MM/DD")).done(function() {
         __viewContext.bind(screenModel);
+        if (currentApp.appType == 10) {
+            $("#fixed-table").ntsFixedTable({ width: 100 });
+        }
     });
 }
 
@@ -60,7 +63,7 @@ function getProgramName(programID: string, screenID: string){
     var namePath = nts.uk.text.format("sys/portal/standardmenu/findProgramName/{0}/{1}", programID, screenID);
     nts.uk.request.ajax("com", namePath).done((value) => {
         if(!nts.uk.util.isNullOrEmpty(value)){
-            $("#pg-name").append(value);      
+            $("#pg-name").text(value);
         }   
     });           
 }

@@ -152,34 +152,35 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	
 	@Override
 	protected String handle(CommandHandlerContext<AddEmployeeCommand> context) {
-		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER, -98);
-		val command = context.getCommand();
-		String employeeId = IdentifierUtil.randomUniqueId();
-		String userId = IdentifierUtil.randomUniqueId();
-		String personId = IdentifierUtil.randomUniqueId();
-		String companyId = AppContexts.user().companyId();
-		String comHistId = IdentifierUtil.randomUniqueId();
-
-		List<ItemsByCategory> inputs = commandFacade.createData(command);
-
-		validateTime(inputs, employeeId, personId);
-		checkRequiredInputs(inputs, employeeId, personId, companyId);
-
-//		FacadeUtils.processHistoryPeriod(inputs, command.getHireDate());
-
-		helper.addBasicData(command,inputs, personId, employeeId, comHistId, companyId);
-		commandFacade.addNewFromInputs(personId, employeeId, comHistId, inputs);
-
-		addNewUser(personId, command, userId);
-
-		addAvatar(personId, command.getAvatarOrgId(), command.getAvatarCropedId());
-
-		updateEmployeeRegHist(companyId, employeeId);
-
-		addInfoBasicToLogCorrection(command, inputs);
-		setParamsForCorrection(command, inputs, employeeId, userId, companyId);
-		DataCorrectionContext.transactionFinishing(-98);
-		return employeeId;
+		
+		return DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, -98, () -> {
+			val command = context.getCommand();
+			String employeeId = IdentifierUtil.randomUniqueId();
+			String userId = IdentifierUtil.randomUniqueId();
+			String personId = IdentifierUtil.randomUniqueId();
+			String companyId = AppContexts.user().companyId();
+			String comHistId = IdentifierUtil.randomUniqueId();
+	
+			List<ItemsByCategory> inputs = commandFacade.createData(command);
+	
+			validateTime(inputs, employeeId, personId);
+			checkRequiredInputs(inputs, employeeId, personId, companyId);
+	
+	//		FacadeUtils.processHistoryPeriod(inputs, command.getHireDate());
+	
+			helper.addBasicData(command,inputs, personId, employeeId, comHistId, companyId);
+			commandFacade.addNewFromInputs(personId, employeeId, comHistId, inputs);
+	
+			addNewUser(personId, command, userId);
+	
+			addAvatar(personId, command.getAvatarOrgId(), command.getAvatarCropedId());
+	
+			updateEmployeeRegHist(companyId, employeeId);
+	
+			addInfoBasicToLogCorrection(command, inputs);
+			setParamsForCorrection(command, inputs, employeeId, userId, companyId);
+			return employeeId;
+		});
 	}
 	
 	private void setParamsForCorrection(AddEmployeeCommand command, List<ItemsByCategory> inputs, String employeeId,
@@ -331,7 +332,7 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 			List<PersonCorrectionItemInfo> lstItemInfo = new ArrayList<>();
 			
 			List<ItemValue> items = input.getItems().stream()
-					.map(c -> {return c.setContentForCPS002(c);})
+//					.map(c -> {return c.setContentForCPS002(c);})
 					.filter(c -> c != null ).collect(Collectors.toList());
 			for (ItemValue item : items) {
 				if (item.itemCode().equals(itemCode)) {

@@ -511,6 +511,8 @@ public class ProgramsManager {
 			"/view/kdw/006/d/index.xhtml");
 	public static final Program KDW006E = new Program(WebAppId.AT, ProgramIdConsts.KDW006E, "KDW006_23",
 			"/view/kdw/006/e/index.xhtml");
+	public static final Program KDW006G = new Program(WebAppId.AT, ProgramIdConsts.KDW006G, "KDW006_71",
+			"/view/kdw/006/g/index.xhtml");
 
 	/**
 	 * KDW009A
@@ -910,7 +912,7 @@ public class ProgramsManager {
 	/**
 	 * KMF004D
 	 */
-	public static final Program KMF004D = new Program(WebAppId.AT, ProgramIdConsts.KMF004D, "KMF004_116",
+	public static final Program KMF004D = new Program(WebAppId.AT, ProgramIdConsts.KMF004D, "KMF004_95",
 			"/view/kmf/004/d/index.xhtml");
 
 	/**
@@ -946,7 +948,7 @@ public class ProgramsManager {
 	/**
 	 * KMF004J
 	 */
-	public static final Program KMF004J = new Program(WebAppId.AT, ProgramIdConsts.KMF004J, "KMF004_145",
+	public static final Program KMF004J = new Program(WebAppId.AT, ProgramIdConsts.KMF004J, "KMF004_98",
 			"/view/kmf/004/j/index.xhtml");
 	
 	/**
@@ -1714,6 +1716,14 @@ public class ProgramsManager {
 	/** KSC001K */
 	public static final Program KSC001K = new Program(WebAppId.AT, ProgramIdConsts.KSC001K, "KSC001_80",
 			"/view/ksc/001/k/index.xhtml");
+	/** KAF000 */
+	public static final Program KAF000B = new Program(WebAppId.AT, ProgramIdConsts.KAF000B, "",
+			"/view/kaf/000/b/index.xhtml");
+	/** KAF001 */
+	public static final Program KAF001A = new Program(WebAppId.AT, ProgramIdConsts.KAF001A, "KAF001_1",
+			"/view/kaf/001/a/index.xhtml");
+	public static final Program KAF001B = new Program(WebAppId.AT, ProgramIdConsts.KAF001B, "KAF001_2",
+			"/view/kaf/001/b/index.xhtml");
 	/** KAF002A */
 	public static final Program KAF002A = new Program(WebAppId.AT, ProgramIdConsts.KAF002A, null,
 			"/view/kaf/002/a/index.xhtml");
@@ -1939,6 +1949,8 @@ public class ProgramsManager {
 	 */
 	public static final Program CMF004A = new Program(WebAppId.COM, ProgramIdConsts.CMF004A, "CMF004_1",
 			"/view/cmf/004/a/index.xhtml");
+	public static final Program CMF004B = new Program(WebAppId.COM, ProgramIdConsts.CMF004B, "CMF004_2",
+			"/view/cmf/004/b/index.xhtml");
 	public static final Program CMF004C = new Program(WebAppId.COM, ProgramIdConsts.CMF004C, "CMF004_3",
 			"/view/cmf/004/c/index.xhtml");
 	public static final Program CMF004D = new Program(WebAppId.COM, ProgramIdConsts.CMF004D, "CMF004_4",
@@ -2160,6 +2172,8 @@ public class ProgramsManager {
 			"/view/kdp/003/b/index.xhtml");
 	public static final Program KDP003C = new Program(WebAppId.AT, ProgramIdConsts.KDP003C, "KDP003_3",
 			"/view/kdp/003/c/index.xhtml");
+	public static final Program CMF007 = new Program(WebAppId.COM, ProgramIdConsts.CMF007, "CMF007_1",
+			"/view/cmf/007/a/index.xhtml");
 	/**
 	 * All programs map.
 	 */
@@ -2214,6 +2228,20 @@ public class ProgramsManager {
 		if (!programsOpt.isPresent())
 			return Optional.empty();
 		return programsOpt.get().stream().filter(a -> programId.equals(a.getPId())).findFirst();
+	}
+	
+	/**
+	 * Finds program by Id.
+	 * 
+	 * @param programId programId
+	 * @return optional program
+	 */
+	public static Optional<Program> findById(String programId) {
+		return Optional.ofNullable(findById(WebAppId.COM, programId).orElseGet(() ->
+			findById(WebAppId.AT, programId).orElseGet(() ->
+				findById(WebAppId.PR, programId).orElse(null)
+			)
+		));
 	}
 
 	/**

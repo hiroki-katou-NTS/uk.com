@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.function.infra.entity.processexecution;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.Column;
@@ -67,6 +69,24 @@ public class KfnmtExecutionTaskLog extends UkJpaEntity implements Serializable{
 		return new KfnmtExecutionTaskLog(
 				new KfnmtExecutionTaskLogPK(companyId, execItemCd, execId, domain.getProcExecTask().value),
 				status);
+	}
+	
+public static List<KfnmtExecutionTaskLog> toEntity(String companyId, String execItemCd, String execId, List<ExecutionTaskLog> domains) {
+	List<KfnmtExecutionTaskLog> datas = new ArrayList<>();
+		for(ExecutionTaskLog executionTaskLog : domains) {
+			Integer status = null;
+			if(executionTaskLog.getStatus()!=null){
+				if(executionTaskLog.getStatus().isPresent()){
+					status =executionTaskLog.getStatus().get().value;
+				}
+			}
+			KfnmtExecutionTaskLog kfnmtExecutionTaskLog = new KfnmtExecutionTaskLog(
+					new KfnmtExecutionTaskLogPK(companyId, execItemCd, execId, executionTaskLog.getProcExecTask().value),
+					status);
+			datas.add(kfnmtExecutionTaskLog);
+		}
+		
+		return datas;
 	}
 	
 	public ExecutionTaskLog toDomain() {

@@ -134,6 +134,7 @@ module nts.uk.at.view.kdw008.a {
                 ]);
                 self.selectedSheetNo = ko.observable(1);
                 self.selectedSheetNo.subscribe((value) => {
+                    nts.uk.ui.errors.clearAll();
                     block.invisible();
                     if (value == 1) {
                         self.enableSheetNo(false);
@@ -305,6 +306,7 @@ module nts.uk.at.view.kdw008.a {
                 let self = this,
                     dfd = $.Deferred();
                 service.getDailyDetail(code, self.selectedSheetNo()).done(data => {
+                    $("#swap-list2-grid2").igGridSelection("clearSelection") ;
                     self.authorityFormatDailyValue.removeAll();
                     self.dailyDataSource.removeAll();
                     self.dailyDataSource(_.cloneDeep(self.dailyAttItems()));
@@ -338,6 +340,7 @@ module nts.uk.at.view.kdw008.a {
                 let self = this,
                     dfd = $.Deferred();
                 service.getMonthlyDetail(code).done(data => {
+                    $("#swap-list3-grid2").igGridSelection("clearSelection") ;
                     self.authorityFormatMonthlyValue.removeAll();
                     self.monthlyDataSource.removeAll();
                     self.monthlyDataSource(_.cloneDeep(self.monthlyAttItems()));
@@ -382,6 +385,7 @@ module nts.uk.at.view.kdw008.a {
 
             getMonthCorrectionDetail(sheetNo: string) {
                 let self = this;
+                $("#swap-list3-grid2").igGridSelection("clearSelection") ;
                 self.selectedSheetName(null);
                 self.monthCorrectionValue.removeAll();
                 self.monthCorrectionDataSource.removeAll();
@@ -495,7 +499,8 @@ module nts.uk.at.view.kdw008.a {
                     confirm({ messageId: "Msg_18" }).ifYes(() => {
                         service.updateMonPfmCorrectionFormat(temp).done(function() {
                             nts.uk.ui.dialog.info({ messageId: "Msg_991" }).then(() => {
-                                self.getListMonPfmCorrectionFormat().done(function(data) {
+                                service.getListMonPfmCorrectionFormat().done(function(data) {
+                                	self.loadData();
                                     self.initSelectedSheetNoHasMutated();
                                 });
                             });

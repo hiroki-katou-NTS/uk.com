@@ -2,7 +2,6 @@ package nts.uk.screen.at.app.dailyperformance.correction.flex.change;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -84,6 +83,8 @@ public class FlexShortageDto {
 			return new MessageError(TextResource.localize("Msg_1175", redConditionMessage), "Msg_1175");
 		case 2:
 			return new MessageError(TextResource.localize("Msg_1291", redConditionMessage), "Msg_1291");
+		case 3:
+			return new MessageError(TextResource.localize("Msg_1448"), "Msg_1448");
 		default:
 			return null;
 		}

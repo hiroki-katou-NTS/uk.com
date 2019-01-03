@@ -12,8 +12,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PerInfoItemDataRepository;
 import nts.uk.ctx.pereg.dom.person.personinfoctgdata.item.PersonInfoItemData;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtg;
@@ -29,11 +31,11 @@ import nts.uk.shr.pereg.app.ItemValueType;
 @Stateless
 public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoItemDataRepository {
 
-	private static final String SELECT_ALL_INFO_ITEM_NO_WHERE = "SELECT id,pi.requiredAtr,pi.itemName,pi.itemCd,ic.pInfoCtgId,pc.categoryCd FROM PpemtPerInfoItemData id"
-			+ " INNER JOIN PpemtPerInfoItem pi"
-			+ " ON id.primaryKey.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
-			+ " INNER JOIN PpemtPerInfoCtgData ic" + " ON id.primaryKey.recordId = ic.recordId"
-			+ " INNER JOIN PpemtPerInfoCtg pc" + " ON ic.pInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId";
+//	private static final String SELECT_ALL_INFO_ITEM_NO_WHERE = "SELECT id,pi.requiredAtr,pi.itemName,pi.itemCd,ic.pInfoCtgId,pc.categoryCd FROM PpemtPerInfoItemData id"
+//			+ " INNER JOIN PpemtPerInfoItem pi"
+//			+ " ON id.primaryKey.perInfoDefId = pi.ppemtPerInfoItemPK.perInfoItemDefId"
+//			+ " INNER JOIN PpemtPerInfoCtgData ic" + " ON id.primaryKey.recordId = ic.recordId"
+//			+ " INNER JOIN PpemtPerInfoCtg pc" + " ON ic.pInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId";
 
 	private static final String GET_BY_RID = "SELECT itemData, itemInfo, infoCtg FROM PpemtPerInfoItemData itemData"
 			+ " INNER JOIN PpemtPerInfoItem itemInfo ON itemData.primaryKey.perInfoDefId = itemInfo.ppemtPerInfoItemPK.perInfoItemDefId"
@@ -135,6 +137,8 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 		case DATE:
 			dateValue = domain.getDataState().getDateValue();
 			break;
+		default:
+			break;
 		}
 		return new PpemtPerInfoItemData(key, domain.getDataState().getDataStateType().value, stringValue, intValue,
 				dateValue);
@@ -154,6 +158,8 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 			break;
 		case DATE:
 			entity.dateVal = domain.getDataState().getDateValue();
+			break;
+		default:
 			break;
 		}
 	}
@@ -223,10 +229,13 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 		if (recordIds.isEmpty()) {
 			return new ArrayList<>();
 		}
-		List<PpemtPerInfoItemData> entities = this.queryProxy()
-				.query(GET_ITEM_DATA_WITH_RECORD_IDS, PpemtPerInfoItemData.class).setParameter("itemDefId", itemDefId)
-				.setParameter("recordIds", recordIds).getList();
-		
+		List<PpemtPerInfoItemData> entities = new ArrayList<>();
+		CollectionUtil.split(recordIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			entities.addAll(this.queryProxy()
+				.query(GET_ITEM_DATA_WITH_RECORD_IDS, PpemtPerInfoItemData.class)
+				.setParameter("itemDefId", itemDefId)
+				.setParameter("recordIds", subList).getList());
+		});
 		return entities.stream().map(ent -> PersonInfoItemData.createFromJavaType(itemDefId, ent.primaryKey.recordId,
 				ent.saveDataAtr, ent.stringVal, ent.intVal, ent.dateVal)).collect(Collectors.toList());
 		
@@ -235,15 +244,14 @@ public class PerInfoItemDataRepoImpl extends JpaRepository implements PerInfoIte
 
 	@Override
 	public boolean hasItemData(List<String> ctgId, String itemCd) {
-		List<Object[]> itemLst = this.queryProxy().query(SEL_ALL_ITEM_BY_CTG_IDS,  Object[].class)
-				.setParameter("perInfoCtgId", ctgId)
+		List<Object[]> itemLst = new ArrayList<>();
+		CollectionUtil.split(ctgId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			itemLst.addAll(this.queryProxy().query(SEL_ALL_ITEM_BY_CTG_IDS,  Object[].class)
+				.setParameter("perInfoCtgId", subList)
 				.setParameter("itemCd", itemCd)
-				.getList();
-		if(itemLst != null && itemLst.size() > 0) {
-			
-			return true;
-		}
-		return false;
+				.getList());
+		});
+		return itemLst.size() > 0;
 	}
 
 }

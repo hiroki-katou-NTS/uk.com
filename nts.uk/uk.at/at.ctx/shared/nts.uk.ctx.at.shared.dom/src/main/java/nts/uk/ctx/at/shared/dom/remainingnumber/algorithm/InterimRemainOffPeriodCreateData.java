@@ -35,4 +35,10 @@ public interface InterimRemainOffPeriodCreateData {
 	 * @return
 	 */
 	public List<EmploymentHolidayMngSetting> lstEmpHolidayMngSetting(String cid, List<AffPeriodEmpCodeImport> lstEmployment);
+	/**
+	 * 指定期間の暫定残数管理データを作成する（差分のみ）
+	 * @param param
+	 * @return
+	 */
+	public Map<GeneralDate, DailyInterimRemainMngData> createInterimRemainByScheRecordApp(InterimRemainCreateDataInputPara param);
 }

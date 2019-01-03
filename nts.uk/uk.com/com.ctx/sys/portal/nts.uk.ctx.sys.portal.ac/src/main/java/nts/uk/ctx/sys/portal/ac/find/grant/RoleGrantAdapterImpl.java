@@ -14,9 +14,11 @@ import nts.uk.ctx.sys.auth.pub.grant.RoleIndividualGrantExportRepo;
 import nts.uk.ctx.sys.auth.pub.grant.RoleSetGrantedPublisher;
 import nts.uk.ctx.sys.auth.pub.role.RoleExport;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
+import nts.uk.ctx.sys.auth.pub.role.RoleWhetherLoginPubExport;
 import nts.uk.ctx.sys.auth.pub.roleset.RoleSetPublisher;
 import nts.uk.ctx.sys.portal.dom.adapter.role.AffJobHistoryDto;
 import nts.uk.ctx.sys.portal.dom.adapter.role.DefaultRoleSetDto;
+import nts.uk.ctx.sys.portal.dom.adapter.role.LoginResponsibleDto;
 import nts.uk.ctx.sys.portal.dom.adapter.role.RoleDto;
 import nts.uk.ctx.sys.portal.dom.adapter.role.RoleGrantAdapter;
 import nts.uk.ctx.sys.portal.dom.adapter.role.RoleSetGrantedJobTitleDetailDto;
@@ -96,5 +98,12 @@ public class RoleGrantAdapterImpl implements RoleGrantAdapter {
 			new RoleSetDto(r.getRoleSetCd(), r.getCompanyId(), r.getRoleSetName(), 
 					r.getApprovalAuthority(), r.getOfficeHelperRoleId(), r.getMyNumberRoleId(), 
 					r.getHRRoleId(), r.getPersonInfRoleId(), r.getEmploymentRoleId(), r.getSalaryRoleId()));
+	}
+	
+	@Override
+	public LoginResponsibleDto getLoginResponsible() {
+		RoleWhetherLoginPubExport pub = roleRepo.getWhetherLoginerCharge();
+		return new LoginResponsibleDto(pub.isEmployeeCharge(), pub.isSalaryProfessional(), 
+				pub.isHumanResOfficer(), pub.isOfficeHelperPersonne(), pub.isPersonalInformation());
 	}
 }

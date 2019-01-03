@@ -40,8 +40,8 @@ module nts.uk.at.view.kaf007.share {
         /**
          * 
          */
-        export function getRecordWorkInfoByDate(appDate: any): JQueryPromise<any> {
-            return ajax("at", paths.getRecordWorkInfoByDate, appDate);
+        export function getRecordWorkInfoByDate(empParam: any): JQueryPromise<any> {
+            return ajax("at", paths.getRecordWorkInfoByDate, empParam);
         }
         
         export function isTimeRequired(workTypeCD: any): JQueryPromise<any> {

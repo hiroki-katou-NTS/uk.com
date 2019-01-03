@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.history.SelectionHistory;
@@ -57,13 +58,21 @@ public class JpaSelectionHistoryRepository extends JpaRepository implements Sele
 	
 	@Override
 	public List<SelectionHistory> getList(String selectionItemId, List<String> companyIds) {
-		List<PpemtHistorySelection> entities = this.queryProxy()
+		List<PpemtHistorySelection> entities = new ArrayList<>();
+		CollectionUtil.split(companyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			entities.addAll(this.queryProxy()
 				.query(SELECT_ALL_HISTORY_COMPANIES, PpemtHistorySelection.class)
-				.setParameter("selectionItemId", selectionItemId).setParameter("companyIds", companyIds).getList();
-
+				.setParameter("selectionItemId", selectionItemId).setParameter("companyIds", subList).getList());
+		});
 		if (entities.isEmpty()) {
-			new ArrayList<>();
+			return new ArrayList<>();
 		}
+		
+		entities.sort((o1, o2) -> {
+			int tmp = o1.companyId.compareTo(o2.companyId);
+			if (tmp != 0) return tmp;
+			return o1.startDate.compareTo(o2.startDate);
+		});
 
 		Map<String, List<PpemtHistorySelection>> companyEntities = entities.stream()
 				.collect(Collectors.groupingBy(x -> x.companyId));

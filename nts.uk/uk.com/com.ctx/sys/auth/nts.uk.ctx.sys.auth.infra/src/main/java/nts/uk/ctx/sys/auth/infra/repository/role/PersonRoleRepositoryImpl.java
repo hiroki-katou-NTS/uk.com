@@ -7,7 +7,9 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.role.personrole.PersonRole;
 import nts.uk.ctx.sys.auth.dom.role.personrole.PersonRoleRepository;
 import nts.uk.ctx.sys.auth.infra.entity.role.SacmtPersonRole;
@@ -51,11 +53,11 @@ public class PersonRoleRepositoryImpl extends JpaRepository implements PersonRol
 	@Override
 	public List<PersonRole> find(List<String> roleIds) {
 		List<PersonRole> result = new ArrayList<>();
-		if(roleIds !=null){
-			List<SacmtPersonRole> entitys = this.queryProxy().query(FIND_BY_LIST_ROLE_ID, SacmtPersonRole.class)
-					.setParameter("roleIds", roleIds ==null ? "": roleIds).getList();
-			if (entitys != null && entitys.size() != 0)
-				result = entitys.stream().map(x -> toDomain(x)).collect(Collectors.toList());
+		if(roleIds != null){
+			CollectionUtil.split(roleIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				result.addAll(this.queryProxy().query(FIND_BY_LIST_ROLE_ID, SacmtPersonRole.class)
+					.setParameter("roleIds", subList).getList().stream().map(x -> toDomain(x)).collect(Collectors.toList()));
+			});
 		}
 		return result;
 	}

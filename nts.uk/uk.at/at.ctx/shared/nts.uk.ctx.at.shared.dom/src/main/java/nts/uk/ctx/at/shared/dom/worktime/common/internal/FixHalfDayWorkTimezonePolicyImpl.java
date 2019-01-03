@@ -43,9 +43,9 @@ public class FixHalfDayWorkTimezonePolicyImpl implements FixHalfDayWorkTimezoneP
 		this.fixedWtzPolicy.validateFixedAndDiff(be, predTime, halfDayWork.getWorkTimezone(),
 				displayMode.getDisplayMode(), halfDayWork.getDayAtr(), isUseHalfDayShift);
 				
-		if (!((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
-				|| (AmPmAtr.PM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
-				|| ((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) || AmPmAtr.PM.equals(halfDayWork.getDayAtr())) && DisplayMode.SIMPLE.equals(displayMode)))) {
+		if (!((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode.getDisplayMode()) && !isUseHalfDayShift)
+				|| (AmPmAtr.PM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode.getDisplayMode()) && !isUseHalfDayShift)
+				|| ((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) || AmPmAtr.PM.equals(halfDayWork.getDayAtr())) && DisplayMode.SIMPLE.equals(displayMode.getDisplayMode())))) {
 			
 			// Msg_755
 			if (!halfDayWork.isInFixedWork()) {
@@ -76,9 +76,9 @@ public class FixHalfDayWorkTimezonePolicyImpl implements FixHalfDayWorkTimezoneP
 		this.fixedWtzPolicy.validateFlex(be, predTime, halfDayWork.getWorkTimezone(), displayMode.getDisplayMode(),
 				halfDayWork.getDayAtr(), isUseHalfDayShift);
 		
-		if (!((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
-				|| (AmPmAtr.PM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode) && !isUseHalfDayShift)
-				|| ((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) || AmPmAtr.PM.equals(halfDayWork.getDayAtr())) && DisplayMode.SIMPLE.equals(displayMode)))) {
+		if (!((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode.getDisplayMode()) && !isUseHalfDayShift)
+				|| (AmPmAtr.PM.equals(halfDayWork.getDayAtr()) && DisplayMode.DETAIL.equals(displayMode.getDisplayMode()) && !isUseHalfDayShift)
+				|| ((AmPmAtr.AM.equals(halfDayWork.getDayAtr()) || AmPmAtr.PM.equals(halfDayWork.getDayAtr())) && DisplayMode.SIMPLE.equals(displayMode.getDisplayMode())))) {
 			
 			// Msg_755
 			if (!halfDayWork.isInFixedWork()) {

@@ -123,6 +123,14 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 isStartup: true,
                 appID: self.appID()
             }).done((data) => {
+                //write log
+                let appType = data.applicationDto.applicationType;
+                if(appType != 0){
+                    let paramLog = {programId: 'KAF000',
+                                    screenId: 'B', 
+                                    queryString: 'apptype='+appType};
+                    service.writeLog(paramLog);
+                }
                 self.inputCommandEvent().version = data.applicationDto.version;
                 self.version = data.applicationDto.version;
                 self.dataApplication(data.applicationDto);
@@ -130,7 +138,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());
                 self.displayReturnReasonPanel(!nts.uk.util.isNullOrEmpty(data.applicationDto.reversionReason));
                 if(self.displayReturnReasonPanel()){
-                    self.reasonApp(data.applicationDto.reversionReason);    
+                    let returnReason = data.applicationDto.reversionReason;
+                    $("#returnReason").html(returnReason.replace(/\n/g,"\<br/>"));
                 }
                 let deadlineMsg = data.outputMessageDeadline;
                 if (!nts.uk.text.isNullOrEmpty(deadlineMsg.message)) {
@@ -346,7 +355,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
                             nts.uk.ui.block.clear();        
                         });
-                    });
+                    }).fail(() => {
+                        self.start(moment.utc().format("YYYY/MM/DD")).done(() => {
+                            nts.uk.ui.block.clear();
+                        });
+                    });;
                 }else{
                     self.start(moment.utc().format("YYYY/MM/DD")).done(()=>{
                             nts.uk.ui.block.clear();        

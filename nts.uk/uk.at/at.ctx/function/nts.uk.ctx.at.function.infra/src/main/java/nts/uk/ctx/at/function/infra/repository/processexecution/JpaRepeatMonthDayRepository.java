@@ -10,7 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.RepeatMonthDayRepository;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.RepeatMonthDaysSelect;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtRepeatMonthDay;
-import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtRepeatMonthDayPK;
+//import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtRepeatMonthDayPK;
 
 @Stateless
 public class JpaRepeatMonthDayRepository extends JpaRepository

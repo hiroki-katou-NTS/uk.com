@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KshstOutsideOtBrdAten.
@@ -21,10 +21,11 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 @Setter
 @Entity
 @Table(name = "KSHST_OUTSIDE_OT_BRD_ATEN")
-public class KshstOutsideOtBrdAten extends JpaEntity implements Serializable {
+public class KshstOutsideOtBrdAten extends UkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
+    
     @EmbeddedId
     protected KshstOutsideOtBrdAtenPK kshstOutsideOtBrdAtenPK;
 
@@ -32,6 +33,7 @@ public class KshstOutsideOtBrdAten extends JpaEntity implements Serializable {
      * Instantiates a new kshst over time brd aten.
      */
     public KshstOutsideOtBrdAten() {
+    	super();
     }
 
     /**
@@ -62,7 +64,6 @@ public class KshstOutsideOtBrdAten extends JpaEntity implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		// not set
 		if (!(object instanceof KshstOutsideOtBrdAten)) {
 			return false;
 		}
@@ -73,15 +74,6 @@ public class KshstOutsideOtBrdAten extends JpaEntity implements Serializable {
 			return false;
 		}
 		return true;
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "entity.KshstOverTimeBrdAten[ kshstOverTimeBrdAtenPK=" + kshstOutsideOtBrdAtenPK
-				+ " ]";
 	}
 
 	/*

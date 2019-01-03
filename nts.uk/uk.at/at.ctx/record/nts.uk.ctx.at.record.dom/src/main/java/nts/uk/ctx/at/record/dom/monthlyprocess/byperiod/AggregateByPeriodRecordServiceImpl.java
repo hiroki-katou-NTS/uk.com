@@ -71,7 +71,7 @@ public class AggregateByPeriodRecordServiceImpl implements AggregateByPeriodReco
 		
 		// 月の計算
 		MonthlyCalculationByPeriod monthlyAggregation = new MonthlyCalculationByPeriod();
-		monthlyAggregation.calculation(aggrPeriod, workingSystem, calcDailys, companySets);
+		monthlyAggregation.calculation(aggrPeriod, workingSystem, calcDailys, companySets, this.repositories);
 		
 		// 縦計
 		VerticalTotalOfMonthly verticalTotal = new VerticalTotalOfMonthly();

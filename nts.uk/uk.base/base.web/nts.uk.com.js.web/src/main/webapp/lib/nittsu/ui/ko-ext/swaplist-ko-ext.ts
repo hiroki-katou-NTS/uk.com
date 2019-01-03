@@ -858,12 +858,20 @@ module nts.uk.ui.koExtentions {
             this.swapParts[1].setDataSource(secondSource);
             value(secondSource);
             
-            let searchResult;
-            if (this.swapParts[forward ? 0 : 1].$listControl.data("filter")) {
-                searchResult = this.swapParts[forward ? 0 : 1].proceedSearch();
+            let searchResult,
+                srcIndex = forward ? 0 : 1,
+                destIndex = forward ? 1 : 0;
+            if (this.swapParts[srcIndex].$searchBox.val() === "") {
+                this.swapParts[srcIndex].$listControl.data("filter", false);
             }
-            if (this.swapParts[forward ? 1 : 0].$listControl.data("filter")) {
-                this.swapParts[forward ? 1 : 0].proceedSearch();
+            if (this.swapParts[destIndex].$searchBox.val() === "") {
+                this.swapParts[destIndex].$listControl.data("filter", false);
+            }
+            if (this.swapParts[srcIndex].$listControl.data("filter")) {
+                searchResult = this.swapParts[srcIndex].proceedSearch();
+            }
+            if (this.swapParts[destIndex].$listControl.data("filter")) {
+                this.swapParts[destIndex].proceedSearch();
             }
             $source.igGridSelection("clearSelection");
             $dest.igGridSelection("clearSelection");

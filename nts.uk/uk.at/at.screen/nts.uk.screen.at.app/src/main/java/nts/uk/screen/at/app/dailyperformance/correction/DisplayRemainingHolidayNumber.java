@@ -62,9 +62,9 @@ public class DisplayRemainingHolidayNumber {
 					.getReferDateAnnualLeaveRemainNumber(employeeId, date);
 			return new YearHolidaySettingDto(output.isYearHolidayManagerFlg(), output.isSuspensionTimeYearFlg(),
 					remainNum.getAnnualLeaveRemainNumberExport() != null
-							? remainNum.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantPreDay() : 0,
+							? remainNum.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay() : 0,
 					remainNum.getAnnualLeaveRemainNumberExport() != null
-							? remainNum.getAnnualLeaveRemainNumberExport().getTimeAnnualLeaveWithMinusGrantPre()
+							? remainNum.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantTime()
 							: 0);
 		} else {
 			return new YearHolidaySettingDto(false, false, null, null);
@@ -77,7 +77,7 @@ public class DisplayRemainingHolidayNumber {
 			// call requestlist201
 			Optional<RsvLeaManagerImport> optOutput = rsvLeaveRemainAdapter.getRsvLeaveManager(employeeId, date);
 			return new ReserveLeaveDto(manageAtr, optOutput.isPresent() && optOutput.get().getReserveLeaveInfo() != null
-					? optOutput.get().getReserveLeaveInfo().getBefRemainDay() : 0);
+					? optOutput.get().getReserveLeaveInfo().getRemainingDays() : 0);
 		} else
 			return new ReserveLeaveDto(false, null);
 	}

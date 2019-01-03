@@ -1686,9 +1686,9 @@ var nts;
                     return this.month;
                 };
                 JapanYearMonth.prototype.toString = function () {
-                    return (this.empire === undefined ? "" : this.empire + " ")
-                        + (this.year === undefined ? "" : this.year + " 年 ")
-                        + (this.month === undefined ? "" : this.month + " 月");
+                    return (this.empire === undefined ? "" : this.empire)
+                        + (this.year === undefined || this.year === "" ? "" : this.year + "年")
+                        + (this.month === undefined || this.month === "" ? "" : this.month + "月");
                 };
                 return JapanYearMonth;
             }());
@@ -1706,6 +1706,9 @@ var nts;
                     return null;
                 }
                 var format = _.filter(defaultInputFormat, function (f) { return (f.match(/\//g) || []).length === seperator; }), formatted = moment.utc(dateString, defaultInputFormat, true), formattedYear = formatted.year();
+                if (onlyYear && dateString.length < 5) {
+                    formattedYear = Number(dateString);
+                }
                 for (var _i = 0, _a = __viewContext.env.japaneseEras; _i < _a.length; _i++) {
                     var i = _a[_i];
                     var startEraYear = moment(i.start).year(), endEraYear = moment(i.end).year();
@@ -1824,7 +1827,7 @@ var nts;
             function formatPattern(date, inputFormat, outputFormat) {
                 outputFormat = uk.text.getISOFormat(outputFormat);
                 var inputFormats = (inputFormat) ? inputFormat : defaultInputFormat;
-                return moment.utc(date, inputFormats).format(outputFormat);
+                return moment(date, inputFormats).format(outputFormat);
             }
             time_1.formatPattern = formatPattern;
             var ParseResult = (function () {
@@ -3809,8 +3812,7 @@ var nts;
                     uk.sessionStorage.getItem(STORAGE_KEY_USED_LOGIN_PAGE).ifPresent(function (path) {
                         window.location.href = path;
                     }).ifEmpty(function () {
-                        //request.jump('/view/ccg/007/a/index.xhtml');
-                        request.jump('com', '/view/ccg/007/b/index.xhtml');
+                        request.jump('com', '/view/ccg/007/d/index.xhtml');
                     });
                 }
                 login.jumpToUsedLoginPage = jumpToUsedLoginPage;
@@ -4209,6 +4211,7 @@ var nts;
                                     $companyName.text(comp.companyName);
                                     $userName.text(personName);
                                     $companyList.css("right", $user.outerWidth() + 30);
+                                    location.reload(true);
                                 });
                             });
                         });
@@ -4225,49 +4228,55 @@ var nts;
                                 // TODO: Jump to personal profile.
                             });
                             $userName = $("<span/>").attr("id", "user-name").text(userName).appendTo($user);
-                            var $userSettings = $("<div/>").addClass("user-settings cf").appendTo($user);
-                            $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
-                            var userOptions = [new MenuItem("個人情報の設定"), new MenuItem("マニュアル"), new MenuItem("ログアウト")];
-                            var $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
-                            _.forEach(userOptions, function (option, i) {
-                                var $li = $("<li class='menu-item'/>").text(option.name);
-                                $userOptions.append($li);
-                                if (i === 0) {
+                            nts.uk.request.ajax(constants.APP_ID, constants.ShowManual).done(function (show) {
+                                var $userSettings = $("<div/>").addClass("user-settings cf").appendTo($user);
+                                $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
+                                var userOptions;
+                                if (show)
+                                    userOptions = [/*new MenuItem("個人情報の設定"),*/ new MenuItem("マニュアル"), new MenuItem("ログアウト")];
+                                else
+                                    userOptions = [/*new MenuItem("個人情報の設定"),*/ new MenuItem("ログアウト")];
+                                var $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
+                                _.forEach(userOptions, function (option, i) {
+                                    var $li = $("<li class='menu-item'/>").text(option.name);
+                                    $userOptions.append($li);
+                                    //                        if (i === 0) {
+                                    //                            $li.on(constants.CLICK, function() {
+                                    //                                // TODO: Jump to personal information settings.
+                                    //                            });
+                                    //                            return;
+                                    //                        }
+                                    if (userOptions.length === 2 && i === 0) {
+                                        $li.on(constants.CLICK, function () {
+                                            // jump to index page of manual
+                                            var path = __viewContext.env.pathToManual.replace("{PGID}", "index");
+                                            window.open(path);
+                                        });
+                                        return;
+                                    }
                                     $li.on(constants.CLICK, function () {
-                                        // TODO: Jump to personal information settings.
-                                    });
-                                    return;
-                                }
-                                if (i === 1) {
-                                    $li.on(constants.CLICK, function () {
-                                        // jump to index page of manual
-                                        var path = __viewContext.env.pathToManual.replace("{PGID}", "index");
-                                        window.open(path);
-                                    });
-                                    return;
-                                }
-                                $li.on(constants.CLICK, function () {
-                                    // TODO: Jump to login screen and request logout to server
-                                    nts.uk.request.ajax(constants.APP_ID, constants.Logout).done(function () {
-                                        nts.uk.cookie.remove("nts.uk.sescon", { path: "/" });
-                                        nts.uk.request.login.jumpToUsedLoginPage();
+                                        // TODO: Jump to login screen and request logout to server
+                                        nts.uk.request.ajax(constants.APP_ID, constants.Logout).done(function () {
+                                            nts.uk.cookie.remove("nts.uk.sescon", { path: "/" });
+                                            nts.uk.request.login.jumpToUsedLoginPage();
+                                        });
                                     });
                                 });
-                            });
-                            $companyList.css("right", $user.outerWidth() + 30);
-                            $userSettings.on(constants.CLICK, function () {
-                                if ($userOptions.css("display") === "none") {
-                                    $userOptions.fadeIn(100);
-                                    return;
-                                }
-                                $userOptions.fadeOut(100);
-                            });
-                            $(document).on(constants.CLICK, function (evt) {
-                                notThen($companySelect, evt.target, function () {
-                                    $companyList.fadeOut(100);
-                                });
-                                notThen($userSettings, evt.target, function () {
+                                $companyList.css("right", $user.outerWidth() + 30);
+                                $userSettings.on(constants.CLICK, function () {
+                                    if ($userOptions.css("display") === "none") {
+                                        $userOptions.fadeIn(100);
+                                        return;
+                                    }
                                     $userOptions.fadeOut(100);
+                                });
+                                $(document).on(constants.CLICK, function (evt) {
+                                    notThen($companySelect, evt.target, function () {
+                                        $companyList.fadeOut(100);
+                                    });
+                                    notThen($userSettings, evt.target, function () {
+                                        $userOptions.fadeOut(100);
+                                    });
                                 });
                             });
                         });
@@ -4310,11 +4319,11 @@ var nts;
                         var $pgArea = $("#pg-area");
                         $("<div/>").attr("id", "pg-name").text(programName).appendTo($pgArea);
                         var $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
-                        var $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
-                        $manualBtn.on(constants.CLICK, function () {
-                            var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
-                            window.open(path);
-                        });
+                        //            let $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
+                        //            $manualBtn.on(constants.CLICK, function() {
+                        //                var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
+                        //                window.open(path);
+                        //            });
                         var $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
                         $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));
                         $tglBtn.on(constants.CLICK, function () {
@@ -4469,6 +4478,7 @@ var nts;
                     constants.Companies = "sys/portal/webmenu/companies";
                     constants.ChangeCompany = "sys/portal/webmenu/changeCompany";
                     constants.UserName = "sys/portal/webmenu/username";
+                    constants.ShowManual = "sys/portal/webmenu/showmanual";
                     constants.Logout = "sys/portal/webmenu/logout";
                     constants.PG = "sys/portal/webmenu/program";
                 })(constants || (constants = {}));
@@ -4487,7 +4497,7 @@ var nts;
             (function (notify) {
                 var error;
                 (function (error) {
-                    ui.documentReady.add(function () {
+                    ui.viewModelApplied.add(function () {
                         var $functionsArea = $('#functions-area');
                         var $functionsAreaBottom = $('#functions-area-bottom');
                         if ($functionsArea.length > 0) {
@@ -5609,6 +5619,9 @@ var nts;
                                 $label.unbind('mouseleave.limitedlabel');
                                 $view_1.remove();
                             });
+                            $label.on('remove', function () {
+                                $view_1.remove();
+                            });
                         }
                     });
                 });
@@ -5629,7 +5642,7 @@ var nts;
                         $div.remove();
                         return width < scrollWidth;
                     }
-                    return $label.outerWidth() < $label[0].scrollWidth;
+                    return $label[0].offsetWidth < $label[0].scrollWidth;
                 }
             })(smallExtensions || (smallExtensions = {}));
             var keyboardStream;
@@ -5752,6 +5765,7 @@ var nts;
                             var showCloseButton = _this.globalContext.dialogCloseButton === true;
                             var width = options.width || _this.globalContext.dialogSize.width;
                             var height = options.height || _this.globalContext.dialogSize.height;
+                            var autoResize = _this.globalContext.autoResize == undefined ? true : _this.globalContext.autoResize;
                             _this.$dialog.data('__size__', { width: width, height: height });
                             width = (window.innerWidth <= width) ? window.innerWidth - 30 : width;
                             height = (window.innerHeight <= height) ? window.innerHeight - 30 : height;
@@ -5821,7 +5835,9 @@ var nts;
                                 _this.parent.globalContext.nts.uk.ui.block.clear();
                             //                    var widget= this.$dialog.dialog("widget");
                             //                    widget.draggable("option","containment",false);
-                            $(window.top).on('resize', function (evt) { return _this.resizeDialog(evt.target, _this.$dialog); });
+                            if (autoResize) {
+                                window.addEventListener('resize', function (evt) { return _this.resizeDialog(evt.target, _this.$dialog); });
+                            }
                         });
                         this.globalContext.location.href = path;
                     };
@@ -15519,7 +15535,7 @@ var nts;
                             // valueKey
                             optionsValue = _.has(accessor, 'optionsValue') ? ko.unwrap(accessor.optionsValue) : null, 
                             // columns
-                            columns = _.has(accessor, 'columns') ? ko.unwrap(accessor.columns) : [{ prop: optionsText }], visibleItemsCount = _.has(accessor, 'visibleItemsCount') ? ko.unwrap(accessor.visibleItemsCount) : 5, dropDownAttachedToBody = _.has(accessor, 'dropDownAttachedToBody') ? ko.unwrap(accessor.dropDownAttachedToBody) : false, $show = $('<div>', {
+                            columns = _.has(accessor, 'columns') ? ko.unwrap(accessor.columns) : [{ prop: optionsText }], visibleItemsCount = _.has(accessor, 'visibleItemsCount') ? ko.unwrap(accessor.visibleItemsCount) : 5, dropDownAttachedToBody = _.has(accessor, 'dropDownAttachedToBody') ? ko.unwrap(accessor.dropDownAttachedToBody) : true, $show = $('<div>', {
                                 'class': 'nts-toggle-dropdown',
                                 'css': {
                                     'color': '#000',
@@ -15590,11 +15606,17 @@ var nts;
                                     $element
                                         .addClass('error')
                                         .ntsError("set", uk.resource.getMessage("FND_E_REQ_SELECT", [data[NAME]]), "FND_E_REQ_SELECT");
+                                    if (accessor.value.addError) {
+                                        accessor.value.addError("FND_E_REQ_SELECT", { MsgId: "FND_E_REQ_SELECT" });
+                                    }
                                 }
                                 else {
                                     $element
                                         .removeClass('error')
                                         .ntsError("clear");
+                                    if (accessor.value.removeError) {
+                                        accessor.value.removeError("FND_E_REQ_SELECT");
+                                    }
                                 }
                             })
                                 .on(KEYDOWN, function (evt, ui) {
@@ -15863,14 +15885,14 @@ var nts;
                                 if (selectFirstIfNull) {
                                     vio = _.head(options);
                                     if (!vio) {
-                                        value = undefined;
+                                        value = null;
                                     }
                                     else {
                                         value = vio[optionsValue];
                                     }
                                 }
                                 else {
-                                    value = undefined;
+                                    value = null;
                                     //save old value
                                     if (!_.isNil(ko.toJS(accessor.value))) {
                                         $element.trigger(CHANGED, [SHOWVALUE, ko.toJS(accessor.value)]);
@@ -16063,6 +16085,10 @@ var nts;
                             //                if(onChanging === true){
                             //                    return;
                             //                }
+                            if ($input.data("change")) {
+                                $input.data("change", false);
+                                return;
+                            }
                             var newText = $input.val();
                             var validator = new ui.validation.TimeValidator(name, constraintName, { required: $input.data("required"),
                                 outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat,
@@ -16071,9 +16097,10 @@ var nts;
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (result.isValid) {
-                                if (!validateMinMax(result.parsedValue)) {
-                                    return;
-                                }
+                                //if(!validateMinMax(result.parsedValue)){
+                                //   return; 
+                                //}
+                                validateMinMax(result.parsedValue);
                                 // Day of Week
                                 if (hasDayofWeek) {
                                     if (uk.util.isNullOrEmpty(result.parsedValue))
@@ -16082,7 +16109,25 @@ var nts;
                                         $label.text("(" + uk.time.formatPattern(newText, "", dayofWeekFormat) + ")");
                                 }
                                 //                    container.data("changed", true);
-                                value(result.parsedValue);
+                                if (typeof result.parsedValue === "string") {
+                                    $input.data("change", true);
+                                    if (_.has(data, "type") && ko.toJS(data.type) === "date") {
+                                        var momentDate = moment(result.parsedValue);
+                                        value(new Date(Date.UTC(momentDate.year(), momentDate.month(), momentDate.date())));
+                                    }
+                                    else {
+                                        value(result.parsedValue);
+                                    }
+                                    $input.data("change", false);
+                                    var dateFormatValue = (value() !== "") ? uk.text.removeFromStart(uk.time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
+                                    if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
+                                        $input.data("change", true);
+                                        $input.datepicker('setDate', new Date(dateFormatValue.replace(/\//g, "-")));
+                                    }
+                                }
+                                else {
+                                    value(result.parsedValue);
+                                }
                                 value.valueWillMutate();
                             }
                             else {
@@ -16222,6 +16267,11 @@ var nts;
                                 // Check equals to avoid multi datepicker with same value
                                 $input.datepicker('setDate', new Date(dateFormatValue.replace(/\//g, "-")));
                                 $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
+                            }
+                            else if (dateFormatValue === "Invalid date" && (typeof value() === "string" || value() instanceof String)) {
+                                $input.val(value());
+                                $label.text("");
+                                $input.trigger("validate");
                             }
                             else {
                                 $input.val("");
@@ -16781,7 +16831,9 @@ var nts;
                                     _self.updateMonthsView.call(_self);
                                 }, 0);
                             }
-                            self.$input.focus();
+                            if (!_.isNil(view) && view !== "") {
+                                self.$input.focus();
+                            }
                         });
                         return self;
                     };
@@ -17103,12 +17155,13 @@ var nts;
                         var autoclose = ko.unwrap(option.autoclose);
                         var show = ko.unwrap(option.show);
                         var isNotFunctionArea = _.isEmpty($('#functions-area')) && _.isEmpty($('#functions-area-bottom'));
+                        var isNotSideBar = _.isEmpty($('#sidebar'));
                         var isFrame = nts.uk.util.isInFrame();
-                        if (isNotFunctionArea && isFrame) {
+                        if (isNotFunctionArea && isNotSideBar && isFrame) {
                             if (!_.isEmpty(errors)) {
                                 var mesArr_1 = [], mesCodeArr_1 = _.map(errors, function (error) { return error.errorCode; });
                                 _.forEach(errors, function (error) {
-                                    mesArr_1.push(error.message);
+                                    mesArr_1.push(error.messageText);
                                     mesCodeArr_1.push(error.errorCode);
                                 });
                                 var totalMes = _.join(_.uniq(mesArr_1), '\n');
@@ -17510,6 +17563,7 @@ var nts;
                                 var result = validator.validate(newText, { isCheckExpression: true });
                                 //$input.ntsError('clear');
                                 if (result.isValid) {
+                                    $input.ntsError('clear');
                                     if (value() === result.parsedValue) {
                                         $input.val(result.parsedValue);
                                     }
@@ -17660,7 +17714,8 @@ var nts;
                                 // Remove separator (comma)
                                 var value = ko.toJS(data.value), numb = Number(value);
                                 if (!_.isNil(value) && _.isNumber(numb) && !_.isNaN(numb) && !_.isEqual(String(value).trim(), '')) {
-                                    $input.val(numb.toLocaleString('ja-JP', { useGrouping: false }));
+                                    var match = String(value).match(/.\d+/g);
+                                    $input.val(numb.toLocaleString('ja-JP', { useGrouping: false, minimumFractionDigits: match.length == 2 ? match[1].length - 1 : 0 }));
                                 }
                                 else {
                                     $input.val(data.value());
@@ -18766,6 +18821,7 @@ var nts;
                         var features = [];
                         features.push({ name: 'Selection', multipleSelection: isMultiSelect });
                         var maxWidthCharacter = 15;
+                        var SCROLL_WIDTH = 20;
                         var gridFeatures = ko.unwrap(data.features);
                         var width = 0;
                         var iggridColumns = [];
@@ -18777,12 +18833,16 @@ var nts;
                         }
                         else {
                             var isHaveKey_1 = false;
-                            iggridColumns = _.map(columns, function (c) {
+                            iggridColumns = _.map(columns, function (c, index, columns) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
-                                c["width"] = c["length"] * maxWidthCharacter + 20;
+                                var columnWidth = c["length"] * maxWidthCharacter + 20;
+                                if (index = columns.length - 1) {
+                                    columnWidth += SCROLL_WIDTH;
+                                }
+                                c["width"] = columnWidth;
                                 c["headerText"] = '';
                                 c["columnCssClass"] = 'nts-column';
-                                width += c["length"] * maxWidthCharacter + 20;
+                                width += columnWidth;
                                 if (optionValue === c["key"]) {
                                     isHaveKey_1 = true;
                                 }
@@ -20402,12 +20462,18 @@ var nts;
                         this.swapParts[0].setDataSource(firstSource);
                         this.swapParts[1].setDataSource(secondSource);
                         value(secondSource);
-                        var searchResult;
-                        if (this.swapParts[forward ? 0 : 1].$listControl.data("filter")) {
-                            searchResult = this.swapParts[forward ? 0 : 1].proceedSearch();
+                        var searchResult, srcIndex = forward ? 0 : 1, destIndex = forward ? 1 : 0;
+                        if (this.swapParts[srcIndex].$searchBox.val() === "") {
+                            this.swapParts[srcIndex].$listControl.data("filter", false);
                         }
-                        if (this.swapParts[forward ? 1 : 0].$listControl.data("filter")) {
-                            this.swapParts[forward ? 1 : 0].proceedSearch();
+                        if (this.swapParts[destIndex].$searchBox.val() === "") {
+                            this.swapParts[destIndex].$listControl.data("filter", false);
+                        }
+                        if (this.swapParts[srcIndex].$listControl.data("filter")) {
+                            searchResult = this.swapParts[srcIndex].proceedSearch();
+                        }
+                        if (this.swapParts[destIndex].$listControl.data("filter")) {
+                            this.swapParts[destIndex].proceedSearch();
                         }
                         $source.igGridSelection("clearSelection");
                         $dest.igGridSelection("clearSelection");
@@ -22093,7 +22159,7 @@ var nts;
                 var BODY_ROW_HEIGHT = 29;
                 var SUM_HEIGHT = 27;
                 var defaultOptions = { columns: [], features: [] };
-                var _scrollWidth, _maxFixedWidth = 0, _maxFreeWidth, _columnsMap = {}, _dataSource, _hasFixed, _validators = {}, _mDesc, _mEditor, _cloud, _hr, _direction, _errors = [], _errorColumns, _errorsOnPage, _$grid, _pk, _pkType, _summaries, _objId, _getObjId, _hasSum, _pageSize, _currentPage, _currentSheet, _start, _end, _headerHeight, _zeroHidden, _paging = false, _sheeting = false, _copie = false, _mafollicle = {}, _vessel = function () { return _mafollicle[_currentPage][_currentSheet]; }, _cstifle = function () { return _mafollicle[SheetDef][_currentSheet].columns; }, _specialColumn = {}, _specialLinkColumn = {}, _histoire = [], _flexFitWidth, _copieer, _collerer, _fixedHiddenColumns = [], _fixedColumns, _selected = {}, _dirties = {}, _headerWrappers, _bodyWrappers, _sumWrappers, _fixedControlMap = {}, _cellStates, _features, _leftAlign, _header, _rid = {}, _remainWidth = 240, _prtDiv = document.createElement("div"), _prtCell = document.createElement("td");
+                var _scrollWidth, _maxFixedWidth = 0, _maxFreeWidth, _columnsMap = {}, _dataSource, _secColumn = {}, _hasFixed, _validators = {}, _mDesc, _mEditor, _cloud, _hr, _direction, _errors = [], _errorColumns, _errorsOnPage, _$grid, _pk, _pkType, _summaries, _objId, _getObjId, _hasSum, _pageSize, _currentPage, _currentSheet, _start, _end, _headerHeight, _zeroHidden, _paging = false, _sheeting = false, _copie = false, _mafollicle = {}, _vessel = function () { return _mafollicle[_currentPage][_currentSheet]; }, _cstifle = function () { return _mafollicle[SheetDef][_currentSheet].columns; }, _specialColumn = {}, _specialLinkColumn = {}, _histoire = [], _flexFitWidth, _copieer, _collerer, _fixedHiddenColumns = [], _hiddenColumns = [], _fixedColumns, _selected = {}, _dirties = {}, _headerWrappers, _bodyWrappers, _sumWrappers, _fixedControlMap = {}, _cellStates, _features, _leftAlign, _header, _rid = {}, _remainWidth = 240, _remainHeight = 190, _prtDiv = document.createElement("div"), _prtCell = document.createElement("td");
                 var MGrid = (function () {
                     function MGrid($container, options) {
                         this.fixedHeader = { containerClass: FIXED };
@@ -22122,6 +22188,7 @@ var nts;
                      */
                     MGrid.prototype.makeDefault = function () {
                         var self = this;
+                        self.$container.tabIndex = -1;
                         self.fixedHeader = _.assignIn(self.fixedHeader, _.cloneDeep(defaultOptions), { ntsControls: self.ntsControls });
                         self.fixedBody = _.assignIn(self.fixedBody, _.cloneDeep(defaultOptions));
                         self.header = _.assignIn(self.header, _.cloneDeep(defaultOptions), { ntsControls: self.ntsControls });
@@ -22132,6 +22199,9 @@ var nts;
                         }
                         if (!_.isNil(self.subWidth)) {
                             _remainWidth = parseFloat(self.subWidth);
+                        }
+                        if (!_.isNil(self.subHeight)) {
+                            _remainHeight = parseFloat(self.subHeight);
                         }
                         _$grid.mGrid({});
                     };
@@ -22169,7 +22239,7 @@ var nts;
                                 _mafollicle[_currentPage] = { dataSource: self.dataSource, origDs: _.cloneDeep(self.dataSource) };
                             }
                             var sheetFt = tn.find(self.features, tn.SHEET);
-                            var savingFt = tn.find(self.features, tn.WIDTH_SAVE);
+                            var headerStyles = void 0, savingFt = tn.find(self.features, tn.WIDTH_SAVE);
                             var sheetDef_1 = {};
                             if (sheetFt) {
                                 _sheeting = true;
@@ -22179,11 +22249,19 @@ var nts;
                                     _.forEach(s.columns, function (c) {
                                         var sc = _.find(self.columns, function (col) {
                                             if (col.group) {
+                                                _.forEach(col.group, function (gc) {
+                                                    if (_.isNil(_secColumn[gc.key])) {
+                                                        _secColumn[gc.key] = gc;
+                                                    }
+                                                });
                                                 return col.group[0].key === c;
                                             }
                                             else
                                                 return col.key === c;
                                         });
+                                        if (sc && !sc.group && !_secColumn[sc.key]) {
+                                            _secColumn[sc.key] = sc;
+                                        }
                                         if (sc)
                                             sheetCols.push(sc);
                                     });
@@ -22217,7 +22295,7 @@ var nts;
                                 self.header.height = self.headerHeight;
                                 self.body.columns = colParts[1];
                                 _hasFixed = true;
-                                var headerStyles = tn.find(self.features, tn.HEADER_STYLE);
+                                headerStyles = tn.find(self.features, tn.HEADER_STYLE);
                                 if (headerStyles) {
                                     var styleParts = _.partition(headerStyles.columns, function (c) {
                                         return _.some(fixedColumns_1, function (f) { return f.columnKey === c.key; });
@@ -22230,14 +22308,25 @@ var nts;
                                 self.header.columns = self.columns;
                                 self.body.columns = self.columns;
                                 kt.turfSurf(self.columns);
+                                colParts = [self.columns];
+                                headerStyles = tn.find(self.features, tn.HEADER_STYLE);
+                                if (headerStyles) {
+                                    self.header.features.push({ name: tn.HEADER_STYLE, columns: headerStyles.columns });
+                                }
                             }
                             var summaries = tn.find(self.features, tn.SUMMARIES);
                             if (summaries) {
                                 _summaries = {};
-                                self.fixedSummaries.columns = colParts[0];
-                                self.fixedSummaries.height = SUM_HEIGHT + "px";
-                                self.summaries.columns = colParts[1];
-                                self.summaries.height = SUM_HEIGHT + "px";
+                                if (colParts.length > 1) {
+                                    self.fixedSummaries.columns = colParts[0];
+                                    self.fixedSummaries.height = SUM_HEIGHT + "px";
+                                    self.summaries.columns = colParts[1];
+                                    self.summaries.height = SUM_HEIGHT + "px";
+                                }
+                                else {
+                                    self.summaries.columns = colParts[0];
+                                    self.summaries.height = SUM_HEIGHT + "px";
+                                }
                                 _.forEach(summaries.columnSettings, function (s) {
                                     var sum = { calculator: s.summaryCalculator, formatter: s.formatter };
                                     if (s.summaryCalculator === "Time") {
@@ -22276,7 +22365,7 @@ var nts;
                         var $frag = document.createDocumentFragment();
                         var freeWrapperWidth;
                         self.headers.forEach(function (headPart, i) {
-                            if (!_.isNil(self.headers[i])) {
+                            if (!_.isNil(self.headers[i]) && headPart.columns.length > 0) {
                                 headPart.overflow = "hidden";
                                 if (headPart.containerClass === FREE) {
                                     freeWrapperWidth = parseFloat(self.width) - _maxFixedWidth;
@@ -22297,7 +22386,8 @@ var nts;
                                     _fixedControlMap = tablePart.controlMap;
                                 }
                                 else {
-                                    $fixedHeaderTbl.style.height = self.headerHeight;
+                                    if ($fixedHeaderTbl)
+                                        $fixedHeaderTbl.style.height = self.headerHeight;
                                     $tbl.style.height = self.headerHeight;
                                     top = (parseFloat(self.headerHeight) + DISTANCE) + "px";
                                     _mafollicle[_currentPage][_currentSheet] = {};
@@ -22318,7 +22408,7 @@ var nts;
                         var bodyHeight = parseFloat(self.height) - parseFloat(self.headerHeight);
                         self.bodies.forEach(function (bodyPart, i) {
                             var $bodyWrapper, alignLeft = 0;
-                            if (!_.isNil(bodyPart)) {
+                            if (!_.isNil(bodyPart) && bodyPart.columns.length > 0) {
                                 bodyPart.rowHeight = BODY_ROW_HEIGHT + "px";
                                 if (bodyPart.containerClass === FIXED) {
                                     bodyPart.height = bodyHeight + "px";
@@ -22336,7 +22426,7 @@ var nts;
                                 if (bodyPart.containerClass === FREE && !_.isNil($bodyWrapper)) {
                                     bodyPart.overflow = "scroll";
                                     tc.syncDoubDirVerticalScrolls(bodyWrappers);
-                                    if (!self.fixedSummaries || !self.fixedSummaries.columns) {
+                                    if (!self.summaries || !self.summaries.columns) {
                                         tc.syncHorizontalScroll(headerWrappers[i], $bodyWrapper);
                                     }
                                     tc.bindVertWheel($bodyWrapper, true);
@@ -22365,11 +22455,13 @@ var nts;
                         }
                         v.construe(self.$container, bodyWrappers, artifactOptions);
                         _bodyWrappers = bodyWrappers;
-                        var dWrapper = _hasFixed ? bodyWrappers[1] : bodyWrapper[0];
+                        var dWrapper = _hasFixed ? bodyWrappers[1] : bodyWrappers[0];
                         _vessel().$bBody = dWrapper.querySelector("tbody");
                         top = parseFloat(self.height) + DISTANCE - scrollWidth - SUM_HEIGHT;
                         ti.calcTotal();
                         [self.fixedSummaries, self.summaries].filter(function (s) { return s && s.columns; }).forEach(function (sumPart, i) {
+                            if (!sumPart.columns || sumPart.columns.length === 0)
+                                return;
                             var alignLeft = i === 0 ? 0 : left;
                             if (sumPart.containerClass === FREE + "-summaries") {
                                 sumPart.width = self.headers[i].width;
@@ -22386,12 +22478,15 @@ var nts;
                             $tr.style.height = "27px";
                             $tbody.appendChild($tr);
                             if (sumPart.containerClass === FREE + "-summaries") {
-                                _.forEach(bodyColGroup[1], function (c) {
+                                _.forEach(bodyColGroup[bodyColGroup.length > 1 ? 1 : 0], function (c) {
                                     var col = c.cloneNode(true);
                                     $colGroup.appendChild(col);
                                     cols.push(col);
                                 });
-                                ptr = painters[1];
+                                if (painters.length > 1)
+                                    ptr = painters[1];
+                                else
+                                    ptr = painters[0];
                                 tc.syncDoubDirHorizontalScrolls([headerWrappers[i], bodyWrappers[i], $sumDiv]);
                                 _mafollicle[SheetDef][_currentSheet].sumColArr = cols;
                             }
@@ -22878,12 +22973,19 @@ var nts;
                             var td = document.createElement("td");
                             $.data(td, lo.VIEW, rowIdx + "-" + key);
                             var tdStyle = "";
-                            tdStyle += "; border-width: 1px; overflow: hidden; white-space: "
-                                + ws + ";"; // position: relative;";
+                            tdStyle += "; border-width: 1px; overflow: hidden; ";
+                            if (self.options.isHeader) {
+                                tdStyle += "word-break: break-all; vertical-align: top;";
+                            }
+                            else {
+                                tdStyle += "white-space: " + ws + ";"; // position: relative;";
+                            }
                             if (!self.visibleColumnsMap[key]) {
                                 tdStyle += "; display: none;";
                                 if (self.$container.classList.contains(FIXED))
                                     _fixedHiddenColumns.push(key);
+                                else
+                                    _hiddenColumns.push(key);
                             }
                             var hStyle;
                             if (self.styles && (hStyle = self.styles[key])) {
@@ -22940,13 +23042,18 @@ var nts;
                             var self = this;
                             var $td = document.createElement("td");
                             $.data($td, lo.VIEW, rowIdx + "-" + cell.key);
-                            var tdStyle = "; border-width: 1px; overflow: hidden; white-space: nowrap; border-collapse: collapse;";
+                            var tdStyle = "; border-width: 1px; overflow: hidden; word-break: break-all; vertical-align: top; border-collapse: collapse;";
                             if (!_.isNil(cell.rowspan) && cell.rowspan > 1)
                                 $td.setAttribute("rowspan", cell.rowspan);
                             if (!_.isNil(cell.colspan) && cell.colspan > 1)
                                 $td.setAttribute("colspan", cell.colspan);
-                            else if (_.isNil(cell.colspan) && !self.visibleColumnsMap[cell.key])
+                            else if (_.isNil(cell.colspan) && !self.visibleColumnsMap[cell.key]) {
                                 tdStyle += "; display: none;";
+                                if (self.options.containerClass === FIXED)
+                                    _fixedHiddenColumns.push(cell.key);
+                                else
+                                    _hiddenColumns.push(cell.key);
+                            }
                             var column = self.columnsMap[cell.key];
                             var hStyle;
                             if (self.styles && ((hStyle = self.styles[cell.key])
@@ -23011,9 +23118,18 @@ var nts;
                         ConcurrentPainter.prototype.cell = function (rData, rowIdx, key, fixed) {
                             var self = this;
                             var cData = rData[key];
-                            var data = cData, columnsMap, visibleColumnsMap;
-                            columnsMap = self.painters[fixed ? 0 : 1].columnsMap;
-                            visibleColumnsMap = self.painters[fixed ? 0 : 1].visibleColumnsMap;
+                            var data = cData, columnsMap, visibleColumnsMap, paint;
+                            if (fixed) {
+                                paint = self.painters[0];
+                            }
+                            else if (self.painters.length > 1) {
+                                paint = self.painters[1];
+                            }
+                            else {
+                                paint = self.painters[0];
+                            }
+                            columnsMap = paint.columnsMap;
+                            visibleColumnsMap = paint.visibleColumnsMap;
                             var column = columnsMap[key];
                             if (_.isNil(column))
                                 return;
@@ -23101,7 +23217,7 @@ var nts;
                                 }
                                 $.data(td, v_1.DATA, data);
                             }
-                            else if (_zeroHidden && ti.isZero(data)) {
+                            else if (_zeroHidden && ti.isZero(data, key)) {
                                 td.textContent = "";
                                 dkn.textBox(key);
                                 var formatted = su.format(column, data);
@@ -23134,32 +23250,43 @@ var nts;
                          */
                         ConcurrentPainter.prototype.row = function (data, config, rowIdx) {
                             var self = this;
-                            var fixedColumns, fixedCount;
-                            if (rowIdx === 0) {
+                            var fixedColumns, fixedCount = 0;
+                            if (rowIdx === 0 && self.painters.length > 1) {
                                 fixedColumns = self.painters[0].columns;
                                 fixedCount = fixedColumns.length;
                             }
-                            var fixedVColumnsMap = self.painters[0].visibleColumnsMap;
-                            var dVColumnsMap = self.painters[1].visibleColumnsMap;
+                            var fixedVColumnsMap, dVColumnsMap, hiddenFixed, hiddenDV;
+                            if (self.painters.length > 1) {
+                                fixedVColumnsMap = self.painters[0].visibleColumnsMap;
+                                hiddenFixed = self.painters[0].hiddenColumnsMap;
+                                dVColumnsMap = self.painters[1].visibleColumnsMap;
+                                hiddenDV = self.painters[1].hiddenColumnsMap;
+                            }
+                            else {
+                                dVColumnsMap = self.painters[0].visibleColumnsMap;
+                                hiddenDV = self.painters[0].hiddenColumnsMap;
+                            }
                             var fixedColIdxes = {}, colIdxes = {}, fixedElements = [], elements = [], fixedTr, tr = self.protoRow.cloneNode(true); //document.createElement("tr");
-                            if (fixedVColumnsMap) {
+                            if (fixedVColumnsMap && _.keys(fixedVColumnsMap).length > 0) {
                                 //                    fixedTr = document.createElement("tr");
                                 fixedTr = self.protoRow.cloneNode(true);
                             }
                             if (config) {
-                                fixedTr.style.height = parseFloat(config.css.height) + "px";
+                                if (fixedTr) {
+                                    fixedTr.style.height = parseFloat(config.css.height) + "px";
+                                }
                                 tr.style.height = parseFloat(config.css.height) + "px";
                             }
                             _.forEach(self.columns, function (key, index) {
                                 var cell;
-                                if (dVColumnsMap[key]) {
+                                if (dVColumnsMap[key] || hiddenDV[key]) {
                                     cell = self.cell(data, rowIdx, key);
                                     tr.appendChild(cell);
                                     elements.push(cell);
                                     if (rowIdx === 0)
                                         colIdxes[key] = index - fixedCount;
                                 }
-                                else {
+                                else if (fixedVColumnsMap[key] || hiddenFixed[key]) {
                                     cell = self.cell(data, rowIdx, key, true);
                                     fixedTr.appendChild(cell);
                                     fixedElements.push(cell);
@@ -23167,14 +23294,16 @@ var nts;
                                         fixedColIdxes[key] = index;
                                 }
                             });
-                            fixedTr.addXEventListener(ssk.MOUSE_OVER, function (evt) {
-                                self.hoover(evt);
-                            });
+                            if (fixedTr) {
+                                fixedTr.addXEventListener(ssk.MOUSE_OVER, function (evt) {
+                                    self.hoover(evt);
+                                });
+                                fixedTr.addXEventListener(ssk.MOUSE_OUT, function (evt) {
+                                    self.hoover(evt, true);
+                                });
+                            }
                             tr.addXEventListener(ssk.MOUSE_OVER, function (evt) {
                                 self.hoover(evt);
-                            });
-                            fixedTr.addXEventListener(ssk.MOUSE_OUT, function (evt) {
-                                self.hoover(evt, true);
                             });
                             tr.addXEventListener(ssk.MOUSE_OUT, function (evt) {
                                 self.hoover(evt, true);
@@ -23327,7 +23456,7 @@ var nts;
                                 }
                                 $.data(td, v_1.DATA, data);
                             }
-                            else if (_zeroHidden && ti.isZero(data)) {
+                            else if (_zeroHidden && ti.isZero(data, key)) {
                                 td.textContent = "";
                                 dkn.textBox(key);
                                 var formatted = su.format(column, data);
@@ -23519,8 +23648,12 @@ var nts;
                     aho.NULL = null;
                     var Platrer = (function () {
                         function Platrer(containers, options) {
-                            this.$fixedContainer = containers[0];
-                            this.$container = containers[1];
+                            if (containers && containers.length > 1) {
+                                this.$fixedContainer = containers[0];
+                                this.$container = containers[1];
+                            }
+                            else
+                                this.$container = containers[0];
                             this.options = options;
                             this.primaryKey = options.primaryKey;
                             this.rowsOfBlock = options.noBlocRangee || 30;
@@ -23734,7 +23867,7 @@ var nts;
                     /**
                      * Bind vertWheel.
                      */
-                    function bindVertWheel($container, showY) {
+                    function bindVertWheel($container, showY, abnorm) {
                         var $_container = $($container);
                         $container.addXEventListener(ssk.MOUSE_WHEEL, function (event) {
                             var delta = event.deltaY;
@@ -23742,7 +23875,22 @@ var nts;
                             var value = $_container.scrollTop();
                             //                $container.stop().animate({ scrollTop: value }, 10);
                             var os = ti.isIE() ? 25 : 50;
+                            if (!abnorm && ((direction < 0 && value === 0)
+                                || (direction > 0 && $container.scrollHeight - value + ti.getScrollWidth() === $_container.height()))) {
+                                var $contents = document.getElementById("contents-area");
+                                if ($contents) {
+                                    $contents.scrollTop += direction * os;
+                                }
+                            }
                             $_container.scrollTop(value + direction * os);
+                            if (_mEditor && _mEditor.type === dkn.COMBOBOX) {
+                                var cbx = dkn.controlType[_mEditor.columnKey];
+                                var $combo = cbx.my.querySelector("." + dkn.CBX_CLS);
+                                if (cbx.dropdown && cbx.dropdown.style.top !== "-99999px") {
+                                    dkn.closeDD(cbx.dropdown);
+                                    $combo.classList.remove(dkn.CBX_ACTIVE_CLS);
+                                }
+                            }
                             event.preventDefault();
                             event.stopImmediatePropagation();
                         });
@@ -23879,8 +24027,12 @@ var nts;
                             this.widths = widths;
                             this.height = height;
                             this.$ownerDoc = this.headerWrappers[0].ownerDocument;
-                            kt._widths._fixed = parseFloat(widths[0]);
-                            kt._widths._unfixed = parseFloat(widths[1]);
+                            if (widths.length > 1) {
+                                kt._widths._fixed = parseFloat(widths[0]);
+                                kt._widths._unfixed = parseFloat(widths[1]);
+                            }
+                            else
+                                kt._widths._unfixed = parseFloat(widths[0]);
                         }
                         /**
                          * Nostal.
@@ -23908,57 +24060,87 @@ var nts;
                          */
                         ColumnAdjuster.prototype.handle = function () {
                             var self = this;
-                            self.$fixedAgency = document.createElement("div");
-                            self.$fixedAgency.className = kt.AGENCY;
-                            self.$fixedAgency.style.cssText = "; position: relative; width: " + self.widths[0];
-                            var $fixedHeaderTable = self.headerWrappers[0].querySelector("table");
-                            $fixedHeaderTable.insertAdjacentElement("beforebegin", self.$fixedAgency);
-                            var left = 0, hiddenCount = 0;
-                            _.forEach(self.headerColGroup[0], function ($targetCol, i) {
-                                if ($targetCol.style.display === "none") {
-                                    hiddenCount++;
-                                    return;
-                                }
-                                var $line = document.createElement("div");
-                                $line.className = kt.FIXED_LINE;
-                                $.data($line, kt.RESIZE_COL, $targetCol);
-                                $.data($line, kt.RESIZE_NO, i - hiddenCount);
-                                self.$fixedAgency.appendChild($line);
-                                left += (i === self.headerColGroup[0].length ? DISTANCE : 0) + parseFloat($targetCol.style.width);
-                                $line.style.left = left + "px";
-                                $line.style.height = self.height;
-                                self.fixedLines.push($line);
-                            });
-                            self.fixedHiddenCount = hiddenCount;
-                            left = 0;
-                            self.$agency = document.createElement("div");
-                            self.$agency.className = kt.AGENCY;
-                            self.$agency.style.cssText = "; position: relative; width: " + self.widths[1];
-                            var $headerTable = self.headerWrappers[1].querySelector("table");
-                            $headerTable.insertAdjacentElement("beforebegin", self.$agency);
-                            hiddenCount = 0;
-                            _.forEach(self.headerColGroup[1], function ($targetCol, i) {
-                                if (i === self.headerColGroup[1].length - 1)
-                                    return;
-                                if ($targetCol.style.display === "none") {
-                                    hiddenCount++;
-                                    return;
-                                }
-                                var $line = document.createElement("div");
-                                $line.className = kt.LINE;
-                                $.data($line, kt.RESIZE_COL, $targetCol);
-                                $.data($line, kt.RESIZE_NO, i - hiddenCount);
-                                self.$agency.appendChild($line);
-                                left += parseFloat($targetCol.style.width);
-                                $line.style.left = left + "px";
-                                $line.style.height = self.height;
-                                self.lines.push($line);
-                            });
-                            self.hiddenCount = hiddenCount;
-                            self.$fixedAgency.removeXEventListener(ssk.MOUSE_DOWN);
-                            self.$fixedAgency.addXEventListener(ssk.MOUSE_DOWN, self.cursorDown.bind(self));
-                            self.$agency.removeXEventListener(ssk.MOUSE_DOWN);
-                            self.$agency.addXEventListener(ssk.MOUSE_DOWN, self.cursorDown.bind(self));
+                            if (self.headerColGroup.length > 1) {
+                                self.$fixedAgency = document.createElement("div");
+                                self.$fixedAgency.className = kt.AGENCY;
+                                self.$fixedAgency.style.cssText = "; position: relative; width: " + self.widths[0];
+                                var $fixedHeaderTable = self.headerWrappers[0].querySelector("table");
+                                $fixedHeaderTable.insertAdjacentElement("beforebegin", self.$fixedAgency);
+                                var left_1 = 0, hiddenCount_1 = 0;
+                                _.forEach(self.headerColGroup[0], function ($targetCol, i) {
+                                    if ($targetCol.style.display === "none") {
+                                        hiddenCount_1++;
+                                        return;
+                                    }
+                                    var $line = document.createElement("div");
+                                    $line.className = kt.FIXED_LINE;
+                                    $.data($line, kt.RESIZE_COL, $targetCol);
+                                    $.data($line, kt.RESIZE_NO, i - hiddenCount_1);
+                                    self.$fixedAgency.appendChild($line);
+                                    left_1 += (i === self.headerColGroup[0].length ? DISTANCE : 0) + parseFloat($targetCol.style.width);
+                                    $line.style.left = left_1 + "px";
+                                    $line.style.height = self.height;
+                                    self.fixedLines.push($line);
+                                });
+                                self.fixedHiddenCount = hiddenCount_1;
+                                left_1 = 0;
+                                self.$agency = document.createElement("div");
+                                self.$agency.className = kt.AGENCY;
+                                self.$agency.style.cssText = "; position: relative; width: " + self.widths[1];
+                                var $headerTable = self.headerWrappers[1].querySelector("table");
+                                $headerTable.insertAdjacentElement("beforebegin", self.$agency);
+                                hiddenCount_1 = 0;
+                                _.forEach(self.headerColGroup[1], function ($targetCol, i) {
+                                    if (i === self.headerColGroup[1].length - 1)
+                                        return;
+                                    if ($targetCol.style.display === "none") {
+                                        hiddenCount_1++;
+                                        return;
+                                    }
+                                    var $line = document.createElement("div");
+                                    $line.className = kt.LINE;
+                                    $.data($line, kt.RESIZE_COL, $targetCol);
+                                    $.data($line, kt.RESIZE_NO, i - hiddenCount_1);
+                                    self.$agency.appendChild($line);
+                                    left_1 += parseFloat($targetCol.style.width);
+                                    $line.style.left = left_1 + "px";
+                                    $line.style.height = self.height;
+                                    self.lines.push($line);
+                                });
+                                self.hiddenCount = hiddenCount_1;
+                                self.$fixedAgency.removeXEventListener(ssk.MOUSE_DOWN);
+                                self.$fixedAgency.addXEventListener(ssk.MOUSE_DOWN, self.cursorDown.bind(self));
+                                self.$agency.removeXEventListener(ssk.MOUSE_DOWN);
+                                self.$agency.addXEventListener(ssk.MOUSE_DOWN, self.cursorDown.bind(self));
+                            }
+                            else {
+                                var left_2 = 0, hiddenCount_2 = 0;
+                                self.$agency = document.createElement("div");
+                                self.$agency.className = kt.AGENCY;
+                                self.$agency.style.cssText = "; position: relative; width: " + self.widths[0];
+                                var $headerTable = self.headerWrappers[0].querySelector("table");
+                                $headerTable.insertAdjacentElement("beforebegin", self.$agency);
+                                _.forEach(self.headerColGroup[0], function ($targetCol, i) {
+                                    if (i === self.headerColGroup[0].length - 1)
+                                        return;
+                                    if ($targetCol.style.display === "none") {
+                                        hiddenCount_2++;
+                                        return;
+                                    }
+                                    var $line = document.createElement("div");
+                                    $line.className = kt.LINE;
+                                    $.data($line, kt.RESIZE_COL, $targetCol);
+                                    $.data($line, kt.RESIZE_NO, i - hiddenCount_2);
+                                    self.$agency.appendChild($line);
+                                    left_2 += parseFloat($targetCol.style.width);
+                                    $line.style.left = left_2 + "px";
+                                    $line.style.height = self.height;
+                                    self.lines.push($line);
+                                });
+                                self.hiddenCount = hiddenCount_2;
+                                self.$agency.removeXEventListener(ssk.MOUSE_DOWN);
+                                self.$agency.addXEventListener(ssk.MOUSE_DOWN, self.cursorDown.bind(self));
+                            }
                         };
                         /**
                          * Cursor down.
@@ -23979,8 +24161,11 @@ var nts;
                                 headerGroup = self.headerColGroup[0];
                                 isFixed = true;
                             }
-                            else {
+                            else if (self.headerColGroup.length > 1) {
                                 headerGroup = self.headerColGroup[1];
+                            }
+                            else {
+                                headerGroup = self.headerColGroup[0];
                             }
                             var breakArea, wrapperLeft, wrapperRight, maxWrapperRight, leftAlign;
                             if (isFixed && self.headerColGroup.length > 1 && gripIndex === self.headerColGroup[0].length - 1) {
@@ -24020,8 +24205,10 @@ var nts;
                             };
                             self.$ownerDoc.addXEventListener(ssk.MOUSE_MOVE, self.unshiftRight ? self.cursorMove.bind(self) : self.cursorMoveShift.bind(self));
                             self.$ownerDoc.addXEventListener(ssk.MOUSE_UP, self.unshiftRight ? self.cursorUp.bind(self) : self.cursorUpShift.bind(self));
-                            if (!trg)
+                            if (!trg) {
                                 event.preventDefault();
+                                event.stopPropagation();
+                            }
                         };
                         /**
                          * Cursor move shift.
@@ -24080,12 +24267,13 @@ var nts;
                                     sumGroup = self.sumColGroup[0];
                             }
                             else {
-                                bodyGroup = self.bodyColGroup[1];
-                                self.bodyWrappers[1].style.maxWidth = (self.actionDetails.widths.maxWrapperRight + distance + ti.getScrollWidth()) + "px";
-                                self.headerWrappers[1].style.maxWidth = (self.actionDetails.widths.maxWrapperRight + distance) + "px";
+                                var i_1 = self.bodyColGroup.length > 1 ? 1 : 0;
+                                bodyGroup = self.bodyColGroup[i_1];
+                                self.bodyWrappers[i_1].style.maxWidth = (self.actionDetails.widths.maxWrapperRight + distance + ti.getScrollWidth()) + "px";
+                                self.headerWrappers[i_1].style.maxWidth = (self.actionDetails.widths.maxWrapperRight + distance) + "px";
                                 if (self.sumWrappers.length > 0) {
-                                    sumGroup = self.sumColGroup[1];
-                                    self.sumWrappers[1].style.maxWidth = (self.actionDetails.widths.maxWrapperRight + distance) + "px";
+                                    sumGroup = self.sumColGroup[i_1];
+                                    self.sumWrappers[i_1].style.maxWidth = (self.actionDetails.widths.maxWrapperRight + distance) + "px";
                                 }
                             }
                             if (self.actionDetails.$leftCol) {
@@ -24115,8 +24303,9 @@ var nts;
                                 }
                                 kt._widths._unfixed = rightAreaWidth;
                             }
+                            var i = self.bodyWrappers.length > 1 ? 1 : 0;
                             if (!self.actionDetails.isFixed && distance < 0) {
-                                var width = parseFloat(self.bodyWrappers[1].style.width), maxWidth = parseFloat(self.bodyWrappers[1].style.maxWidth);
+                                var width = parseFloat(self.bodyWrappers[i].style.width), maxWidth = parseFloat(self.bodyWrappers[i].style.maxWidth);
                                 if (maxWidth < width) {
                                     var pageDiv = _$grid[0].querySelector("." + gp.PAGING_CLS), sheetDiv = _$grid[0].querySelector("." + gp.SHEET_CLS), btw = _maxFixedWidth + maxWidth;
                                     if (pageDiv) {
@@ -24171,9 +24360,15 @@ var nts;
                                 replenLargeur(leftCol, self.actionDetails.changedWidths.left, "reparer");
                             }
                             else {
+                                _.forEach(_hiddenColumns, function (c) {
+                                    var idx = _vessel().desc.colIdxes[c];
+                                    if (parseFloat(idx) <= self.actionDetails.gripIndex) {
+                                        tidx++;
+                                    }
+                                });
                                 _.forEach(_.keys(_vessel().desc.colIdxes), function (k) {
                                     var i = parseFloat(_vessel().desc.colIdxes[k]);
-                                    if (i === self.actionDetails.gripIndex) {
+                                    if (i === tidx) {
                                         leftCol = k;
                                         return false;
                                     }
@@ -24331,9 +24526,15 @@ var nts;
                          * Sync lines.
                          */
                         ColumnAdjuster.prototype.syncLines = function () {
-                            var self = this;
-                            self.$agency.style.width = self.headerWrappers[self.actionDetails.isFixed ? 0 : 1].style.width;
-                            var left = 0, group = self.headerColGroup[self.actionDetails.isFixed ? 0 : 1];
+                            var i, self = this;
+                            if (self.actionDetails.isFixed)
+                                i = 0;
+                            else if (self.headerWrappers.length > 1)
+                                i = 1;
+                            else
+                                i = 0;
+                            self.$agency.style.width = self.headerWrappers[i].style.width;
+                            var left = 0, group = self.headerColGroup[i];
                             _.forEach(group, function ($td, index) {
                                 if ($td.style.display === "none" || (!self.actionDetails.isFixed && index === group.length - 1))
                                     return;
@@ -24430,7 +24631,7 @@ var nts;
                     function screenLargeur(noRowsMin, noRowsMax) {
                         if (!_headerWrappers || _headerWrappers.length === 0)
                             return;
-                        var width, height = window.innerHeight - 190 - parseFloat(_headerHeight), btmw;
+                        var width, height = window.innerHeight - _remainHeight - parseFloat(_headerHeight), btmw;
                         var pageDiv = _$grid[0].querySelector("." + gp.PAGING_CLS);
                         var sheetDiv = _$grid[0].querySelector("." + gp.SHEET_CLS);
                         if (_headerWrappers.length > 1) {
@@ -24500,7 +24701,7 @@ var nts;
                             sheetDiv.style.width = btmw + "px";
                             sheetDiv.style.top = (parseFloat(sheetDiv.style.top) + vari) + "px";
                         }
-                        _bodyWrappers[1].style.height = height + "px";
+                        _bodyWrappers[0].style.height = height + "px";
                     }
                     kt.screenLargeur = screenLargeur;
                     /**
@@ -24724,7 +24925,7 @@ var nts;
                                     _vessel().zeroHidden = val;
                             }
                         },
-                        updatedCells: function () {
+                        updatedCells: function (all) {
                             var arr = [];
                             var toNumber = false, column = _columnsMap[_pk];
                             if ((column && _.toLower(column[0].dataType) === "number")
@@ -24736,6 +24937,20 @@ var nts;
                                     arr.push({ rowId: (toNumber ? parseFloat(r) : r), columnKey: c, value: _dirties[r][c] });
                                 });
                             });
+                            if (all) {
+                                _.forEach(_.keys(_mafollicle[SheetDef]), function (k) {
+                                    if (k === _currentSheet)
+                                        return;
+                                    var maf = _mafollicle[_currentPage][k];
+                                    if (!maf || !maf.dirties)
+                                        return;
+                                    _.forEach(_.keys(maf.dirties), function (r) {
+                                        _.forEach(_.keys(maf.dirties[r]), function (c) {
+                                            arr.push({ rowId: (toNumber ? parseFloat(r) : r), columnKey: c, value: maf.dirties[r][c] });
+                                        });
+                                    });
+                                });
+                            }
                             return arr;
                         },
                         showColumn: function (col) {
@@ -24913,6 +25128,7 @@ var nts;
                                     return;
                                 if (val) {
                                     check.setAttribute("checked", "checked");
+                                    check.checked = true;
                                     var evt = document.createEvent("HTMLEvents");
                                     evt.initEvent("change", false, true);
                                     evt.resetValue = reset;
@@ -24921,6 +25137,7 @@ var nts;
                                 }
                                 else if (!val) {
                                     check.removeAttribute("checked");
+                                    check.checked = false;
                                     var evt = document.createEvent("HTMLEvents");
                                     evt.initEvent("change", false, true);
                                     evt.resetValue = reset;
@@ -24961,6 +25178,17 @@ var nts;
                                 $cell.innerHTML = val;
                                 su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
                                 $.data($cell, v.DATA, val);
+                            }
+                            else {
+                                var cbx = dkn.controlType[key];
+                                if (_.isObject(cbx) && cbx.type === dkn.COMBOBOX) {
+                                    var sel = _.find(cbx.options, function (o) { return o.code === val; });
+                                    if (sel) {
+                                        su.wedgeCell(_$grid[0], { rowIdx: idx, columnKey: key }, val, reset);
+                                        $.data($cell, lo.CBX_SELECTED_TD, val);
+                                        $cell.textContent = sel ? sel.name : "";
+                                    }
+                                }
                             }
                             return idx;
                         },
@@ -25128,6 +25356,7 @@ var nts;
                             _maxFreeWidth = null;
                             _columnsMap = {};
                             _dataSource = null;
+                            _secColumn = {};
                             _hasFixed = null;
                             _validators = {};
                             _mDesc = null;
@@ -25144,6 +25373,7 @@ var nts;
                             _summaries = null;
                             _objId = null;
                             _getObjId = null;
+                            dkn.allCheck = {};
                             _hasSum = null;
                             _pageSize = null;
                             _currentPage = null;
@@ -25159,6 +25389,7 @@ var nts;
                             _specialColumn = {};
                             _specialLinkColumn = {};
                             _fixedHiddenColumns = [];
+                            _hiddenColumns = [];
                             _fixedColumns = null;
                             _selected = {};
                             _dirties = {};
@@ -25192,7 +25423,7 @@ var nts;
                                     if (control !== dkn.TEXTBOX)
                                         return;
                                     var content = $.data(c, v.DATA);
-                                    if (hide && ti.isZero(content)) {
+                                    if (hide && ti.isZero(content, key)) {
                                         c.textContent = "";
                                     }
                                     else if (!hide && c.textContent === "" && content !== "") {
@@ -25280,7 +25511,8 @@ var nts;
                                 $combo.classList.add(dkn.CBX_ACTIVE_CLS);
                                 cType.type = dkn.COMBOBOX;
                             }
-                            else if (control === dkn.FLEX_IMAGE || control === dkn.CHECKBOX) {
+                            else if (control === dkn.FLEX_IMAGE || control === dkn.CHECKBOX
+                                || control === dkn.LINK_LABEL || control === dkn.SWITCH_BUTTONS) {
                                 endEdit($grid);
                             }
                             _mEditor = _.assignIn(coord, cType);
@@ -25402,6 +25634,7 @@ var nts;
                             if (!_copie)
                                 return;
                             if (evt.ctrlKey && evt.keyCode === 86 && _collerer) {
+                                su.afterCollertar = document.activeElement;
                                 _collerer.focus();
                             }
                             else if (evt.ctrlKey && evt.keyCode === 67) {
@@ -25459,7 +25692,7 @@ var nts;
                                 var spl = {}, column_1 = _columnsMap[editor.columnKey];
                                 if (!column_1)
                                     return;
-                                var failed = khl.any({ element: $bCell }), formatted = failed ? inputVal_1 : (_zeroHidden && ti.isZero(inputVal_1) ? "" : format(column_1[0], inputVal_1, spl));
+                                var failed = khl.any({ element: $bCell }), formatted = failed ? inputVal_1 : (_zeroHidden && ti.isZero(inputVal_1, editor.columnKey) ? "" : format(column_1[0], inputVal_1, spl));
                                 $bCell.textContent = formatted;
                                 var disFormat_1 = inputVal_1 === "" || failed ? inputVal_1 : (spl.padded ? formatted : formatSave(column_1[0], inputVal_1));
                                 wedgeCell($grid, editor, disFormat_1);
@@ -25499,6 +25732,9 @@ var nts;
                                 var sCol_1 = _specialColumn[editor.columnKey];
                                 if (sCol_1) {
                                     var cbx = dkn.controlType[sCol_1];
+                                    if (_.toLower(column_1[0].dataType) === "number") {
+                                        inputVal_1 = parseFloat(inputVal_1);
+                                    }
                                     wedgeCell($grid, { rowIdx: editor.rowIdx, columnKey: sCol_1 }, inputVal_1);
                                     var selectedOpt = _.find(cbx.options, function (o) { return o.code === inputVal_1; });
                                     if (!_.isNil(selectedOpt)) {
@@ -25561,6 +25797,10 @@ var nts;
                         var origDs = _mafollicle[_currentPage].origDs;
                         if (!origDs)
                             return;
+                        var column = _columnsMap[coord.columnKey];
+                        if (column && _.toLower(column[0].dataType) === "number") {
+                            cellValue = parseFloat(cellValue);
+                        }
                         if (reset) {
                             origDs[coord.rowIdx][coord.columnKey] = cellValue;
                         }
@@ -25587,8 +25827,8 @@ var nts;
                                 }
                                 sum[sheet].textContent = sum.formatter === "Currency" ? ti.asCurrency(sum[_currentPage]) : sum[_currentPage];
                             }
-                            if (zeroHidden && ti.isZero(origVal)
-                                && (cellValue === "" || _.isNil(cellValue) || ti.isZero(cellValue))) {
+                            if (zeroHidden && ti.isZero(origVal, coord.columnKey)
+                                && (cellValue === "" || _.isNil(cellValue) || ti.isZero(cellValue, coord.columnKey))) {
                                 $cell = lch.cellAt($grid, coord.rowIdx, coord.columnKey, desc);
                                 if (!$cell) {
                                     if (!_.isNil(dirties[id]) && !_.isNil(dirties[id][coord.columnKey])) {
@@ -25688,15 +25928,29 @@ var nts;
                                     t = transe(s, maf.zeroHidden, maf.dirties, maf.desc);
                                     if (!t || !t.c || _.find(_fixedColumns, function (fc) { return fc.key === coord.columnKey; }))
                                         return;
-                                    formatted = !_.isNil(column) ? format(column[0], cellValue) : cellValue;
-                                    t.c.textContent = formatted;
-                                    disFormat = cellValue === "" || _.isNil(column) ? cellValue : formatSave(column[0], cellValue);
-                                    $.data(t.c, v.DATA, disFormat);
+                                    var control = dkn.controlType[coord.columnKey];
+                                    if (control === dkn.LINK_LABEL) {
+                                        var link = t.c.querySelector("a");
+                                        link.innerHTML = cellValue;
+                                    }
+                                    else if (_.isObject(control) && control.type === dkn.COMBOBOX) {
+                                        var sel = _.find(control.options, function (o) { return o.code === cellValue; });
+                                        if (sel) {
+                                            $.data(t.c, lo.CBX_SELECTED_TD, cellValue);
+                                            t.c.textContent = sel.name;
+                                        }
+                                    }
+                                    else {
+                                        formatted = !_.isNil(column) ? format(column[0], cellValue) : cellValue;
+                                        t.c.textContent = formatted;
+                                        disFormat = cellValue === "" || _.isNil(column) ? cellValue : formatSave(column[0], cellValue);
+                                        $.data(t.c, v.DATA, disFormat);
+                                    }
                                     if (t.colour)
                                         t.c.classList.add(t.colour);
                                 }
-                                if (maf && maf.zeroHidden && ti.isZero(origVal)
-                                    && (cellValue === "" || _.isNil(cellValue) || ti.isZero(cellValue))
+                                if (maf && maf.zeroHidden && ti.isZero(origVal, coord.columnKey)
+                                    && (cellValue === "" || _.isNil(cellValue) || ti.isZero(cellValue, coord.columnKey))
                                     && !_.isNil(maf.dirties[id]) && !_.isNil(maf.dirties[id][coord.columnKey])) {
                                     delete maf.dirties[id][coord.columnKey];
                                 }
@@ -25718,13 +25972,9 @@ var nts;
                                 }
                             });
                         };
-                        var column = _columnsMap[coord.columnKey];
                         if (!column) {
                             osht(true);
                             return;
-                        }
-                        if (_.toLower(column[0].dataType) === "number") {
-                            cellValue = parseFloat(cellValue);
                         }
                         res = transe(_currentSheet, _zeroHidden, _dirties, null, true);
                         osht();
@@ -25813,7 +26063,7 @@ var nts;
                                 sum[sht].textContent = sum.formatter === "Currency" ? ti.asCurrency(sum[_currentPage]) : sum[_currentPage];
                             }
                         }
-                        if (_zeroHidden && ti.isZero(origVal)
+                        if (_zeroHidden && ti.isZero(origVal, key)
                             && (value === "" || _.isNil(value) || parseFloat(value) === 0)) {
                             if (ohsht && !_.isNil(ohsht.dirties[id]) && !_.isNil(ohsht.dirties[id][key])) {
                                 delete dirties[id][coord.columnKey];
@@ -25943,11 +26193,21 @@ var nts;
                             var parsed = void 0, constraint = column.constraint;
                             var valueType = constraint.primitiveValue ? ui.validation.getConstraint(constraint.primitiveValue).valueType
                                 : constraint.cDisplayType;
-                            if (!_.isNil(value)
-                                && (valueType === "Time" || valueType === "TimeWithDay" || valueType === "Clock")) {
-                                parsed = uk.time.minutesBased.duration.parseString(value);
-                                if (parsed.success)
-                                    value = parsed.format();
+                            if (!_.isNil(value) && value !== "") {
+                                if (valueType === "Time") {
+                                    parsed = uk.time.minutesBased.duration.parseString(value);
+                                    if (parsed.success)
+                                        value = parsed.format();
+                                }
+                                else if (valueType === "TimeWithDay" || valueType === "Clock") {
+                                    var minutes = uk.time.minutesBased.clock.dayattr.parseString(String(value)).asMinutes;
+                                    if (_.isNil(minutes))
+                                        return value;
+                                    try {
+                                        value = uk.time.minutesBased.clock.dayattr.create(minutes).shortText;
+                                    }
+                                    catch (e) { }
+                                }
                             }
                         }
                         return value;
@@ -25972,6 +26232,14 @@ var nts;
                         else {
                             data = evt.clipboardData.getData("text/plain");
                         }
+                        if (_mEditor && _mEditor.type === dkn.TEXTBOX) {
+                            var $editor = dkn.controlType[dkn.TEXTBOX].my;
+                            var $input = $editor.querySelector("input.medit");
+                            $input.value = data;
+                            return;
+                        }
+                        if (su.afterCollertar)
+                            setTimeout(function () { return su.afterCollertar.focus({ preventScroll: true }); }, 1);
                         var formatted, disFormat, coord = ti.getCellCoord(target), col = _columnsMap[coord.columnKey];
                         var inputRidd = function ($t, rowIdx, columnKey, dFormat) {
                             if ($t.classList.contains(khl.ERROR_CLS))
@@ -26033,6 +26301,15 @@ var nts;
                             if (dkn.controlType[coord.columnKey] !== dkn.TEXTBOX || target.classList.contains(color.Disable)
                                 || !col || col.length === 0)
                                 return;
+                            var validator = _validators[coord.columnKey];
+                            if (validator) {
+                                var result = validator.probe(data);
+                                var cell = { id: _dataSource[coord.rowIdx][_pk], index: coord.rowIdx, columnKey: coord.columnKey, element: target };
+                                khl.clear(cell);
+                                if (!result.isValid) {
+                                    khl.set(cell, result.errorMessage);
+                                }
+                            }
                             formatted = su.format(col[0], data);
                             target.innerHTML = formatted;
                             disFormat = su.formatSave(col[0], data);
@@ -26080,6 +26357,15 @@ var nts;
                                     || !pointCol || pointCol.length === 0) {
                                     return;
                                 }
+                                var validator = _validators[pointCoord.columnKey];
+                                if (validator) {
+                                    var result = validator.probe(c);
+                                    var cell = { id: _dataSource[pointCoord.rowIdx][_pk], index: pointCoord.rowIdx, columnKey: pointCoord.columnKey, element: e };
+                                    khl.clear(cell);
+                                    if (!result.isValid) {
+                                        khl.set(cell, result.errorMessage);
+                                    }
+                                }
                                 formatted = su.format(pointCol[0], c);
                                 e.innerHTML = formatted;
                                 disFormat = su.formatSave(pointCol[0], c);
@@ -26099,7 +26385,7 @@ var nts;
                         var keys = Object.keys(_selected);
                         if (!_selected || keys.length === 0)
                             return;
-                        var coord, key, struct = "", ds = _dataSource, sess;
+                        var coord, key, struct = "", ds = _dataSource, sess, onetar;
                         if (coupe) {
                             sess = { tx: uk.util.randomId(), o: [] };
                         }
@@ -26119,9 +26405,11 @@ var nts;
                                 }
                             }
                             if (_copieer) {
+                                onetar = document.activeElement;
                                 _copieer.value = struct_1;
                                 _copieer.select();
                                 document.execCommand("copy");
+                                onetar.focus({ preventScroll: true });
                             }
                             return;
                         }
@@ -26183,9 +26471,11 @@ var nts;
                             }
                         }
                         if (_copieer) {
+                            onetar = document.activeElement;
                             _copieer.value = struct;
                             _copieer.select();
                             document.execCommand("copy");
+                            onetar.focus({ preventScroll: true });
                         }
                     }
                     su.copieData = copieData;
@@ -26225,7 +26515,7 @@ var nts;
                                 }
                             };
                             sess.o.forEach(function (c) {
-                                var failed, spl = {}, el = lch.cellAt(_$grid[0], c.coord.rowIdx, c.coord.columnKey), column = _columnsMap[c.coord.columnKey], formatted = failed ? c.value : (_zeroHidden && ti.isZero(c.value) ? "" : format(column[0], c.value, spl));
+                                var failed, spl = {}, el = lch.cellAt(_$grid[0], c.coord.rowIdx, c.coord.columnKey), column = _columnsMap[c.coord.columnKey], formatted = failed ? c.value : (_zeroHidden && ti.isZero(c.value, c.coord.columnKey) ? "" : format(column[0], c.value, spl));
                                 var validator = _validators[c.coord.columnKey];
                                 if (validator) {
                                     var result = validator.probe(c.value);
@@ -27245,9 +27535,14 @@ var nts;
                         var isSelecting;
                         $grid.addXEventListener(ssk.MOUSE_DOWN, function (evt) {
                             var $target = evt.target;
-                            isSelecting = true;
                             if (!selector.is($target, ".mcell"))
                                 return;
+                            isSelecting = true;
+                            window.addXEventListener(ssk.MOUSE_UP + ".block", function (evt) {
+                                isSelecting = false;
+                                $grid.onselectstart = null;
+                                window.removeXEventListener(ssk.MOUSE_UP + ".block");
+                            });
                             if (evt.shiftKey) {
                                 selectRange($grid, $target);
                                 $grid.onselectstart = function () {
@@ -27309,7 +27604,34 @@ var nts;
                             return;
                         var coord = ti.getCellCoord($cell);
                         addSelect($grid, coord.rowIdx, coord.columnKey, notLast);
-                        $cell.focus();
+                        if (ti.isChrome() && (!_fixedColumns || !_.some(_fixedColumns, function (c) { return c.key === coord.columnKey; }))) {
+                            if (!_bodyWrappers || _bodyWrappers.length === 0)
+                                return;
+                            $grid.focus({ preventScroll: true });
+                            var wrapper = _bodyWrappers[_bodyWrappers.length > 1 ? 1 : 0];
+                            var offsetLeft = $cell.offsetLeft, left = offsetLeft + $cell.offsetWidth, scrollLeft = wrapper.scrollLeft, width = scrollLeft + parseFloat(wrapper.style.width);
+                            //                let scroll = function() {
+                            //                    wrapper.addXEventListener(ssk.SCROLL_EVT + ".select", e => {
+                            //                        setTimeout(() => {
+                            //                            $cell.focus();
+                            //                        }, 100);
+                            //                        wrapper.removeXEventListener(ssk.SCROLL_EVT + ".select");
+                            //                    });
+                            //                };
+                            if (left > width) {
+                                //                    scroll();
+                                wrapper.scrollLeft += (left - width + 100);
+                            }
+                            else if (offsetLeft < scrollLeft) {
+                                //                    scroll();
+                                wrapper.scrollLeft -= (scrollLeft - offsetLeft + 100);
+                            }
+                            else {
+                                $cell.focus({ preventScroll: true });
+                            }
+                        }
+                        else
+                            $cell.focus();
                     }
                     lch.selectCell = selectCell;
                     /**
@@ -28305,8 +28627,12 @@ var nts;
                         return evt.keyCode === 88;
                     }
                     ti.isCutKey = isCutKey;
-                    function isZero(value) {
-                        return value === "0" || value === "0:00" || value === "00:00";
+                    function isZero(value, name) {
+                        var col = _secColumn[name];
+                        if (col && ((col.constraint && col.constraint.cDisplayType === "TimeWithDay")
+                            || !col.grant))
+                            return false;
+                        return Number(value) === 0 || value === "0:00" || value === "00:00";
                     }
                     ti.isZero = isZero;
                     function isTableCell(obj) {
@@ -28695,6 +29021,32 @@ var nts;
 /// <reference path="ui/ko-ext/charset-setting-ko-ext.ts"/>
 /// <reference path="ui/function-wrap/contextmenu.ts"/>
 /// <reference path="ui/mgrid.ts"/> 
+/// <reference path="../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var action;
+            (function (action) {
+                var content;
+                (function (content) {
+                    ui.documentReady.add(function () {
+                        $('#functions-area').addClass("disappear");
+                        $('#functions-area-bottom').addClass("disappear");
+                        $('#contents-area').addClass("disappear");
+                    });
+                    ui.viewModelApplied.add(function () {
+                        $('#functions-area').removeClass("disappear");
+                        $('#functions-area-bottom').removeClass("disappear");
+                        $('#contents-area').removeClass("disappear");
+                    });
+                })(content || (content = {}));
+            })(action = ui.action || (ui.action = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
 /// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
@@ -29472,7 +29824,7 @@ var nts;
                     $.fn.ntsError = function (action, message, errorCode, businessError) {
                         var $control = $(this);
                         if (action === ui.DATA_HAS_ERROR) {
-                            return _.some($control, function (c) { return hasError($(c)); });
+                            return _.some($control, function (c) { return hasError($(c)); }) || _.some($control.find("*"), function (c) { return hasError($(c)); });
                         }
                         else if (action === ui.DATA_GET_ERROR) {
                             return getErrorByElement($control.first());
@@ -29586,6 +29938,8 @@ var nts;
                                         dfd.resolve(data);
                                     }
                                 }).fail(function (jqXHR, textStatus, errorThrown) {
+                                    // 413はnginxが返す
+                                    // ただ、Wildflyにも最大値が設定されているので注意（こちらはオーバーすると500が返る）
                                     if (jqXHR.status === 413) {
                                         dfd.reject({ message: "ファイルサイズが大きすぎます。", messageId: "0" });
                                     }
@@ -29681,14 +30035,13 @@ var nts;
                             var resizeEvent = function () {
                                 $header.height($headerContainer.height());
                                 if (bodyHeight < $originTable.height()) {
-                                    if (/Edge/.test(navigator.userAgent)) {
-                                        $headerScroll.width(11);
-                                        $bodyContainer.css("padding-right", "12px");
-                                    }
-                                    else {
-                                        $headerScroll.width(16);
-                                        $bodyContainer.css("padding-right", "17px");
-                                    }
+                                    //                        if(/Edge/.test(navigator.userAgent)){
+                                    //                            $headerScroll.width(11);
+                                    //                            $bodyContainer.css("padding-right", "12px");
+                                    //                        }else {
+                                    $headerScroll.width(16);
+                                    $bodyContainer.css("padding-right", "17px");
+                                    //                        }    
                                     $headerScroll.css({ "border-right": "1px #CCC solid", "border-top": "1px #CCC solid", "border-bottom": "1px #CCC solid" });
                                 }
                                 else {
@@ -29827,18 +30180,18 @@ var nts;
                                         selected = oldSelected;
                                     }
                                     if ($grid.data('igGrid')) {
-                                        var $scrollContainer_1 = $grid.igGrid("scrollContainer");
-                                        _.defer(function () {
-                                            if ($scrollContainer_1.length > 0) {
-                                                var firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
-                                                var selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
-                                                $scrollContainer_1.scrollTop(selectRowOffset - firstRowOffset);
-                                            }
-                                            else if (selected && oldSelected) {
-                                                var index = $(selected["element"]).attr("data-row-idx");
-                                                $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
-                                            }
-                                        });
+                                        var $scrollContainer = $grid.igGrid("scrollContainer");
+                                        //                            _.defer(() => {
+                                        if ($scrollContainer.length > 0) {
+                                            var firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
+                                            var selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
+                                            $scrollContainer.scrollTop(selectRowOffset - firstRowOffset);
+                                        }
+                                        else if (selected && oldSelected) {
+                                            var index = $(selected["element"]).attr("data-row-idx");
+                                            $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    
+                                        }
+                                        //                            });
                                     }
                                 });
                             }
@@ -32662,11 +33015,11 @@ var nts;
                                     var rId = rowObj[$grid.igGrid("option", "primaryKey")];
                                     var $gridCell = internal.getCellById($grid, rId, column.key);
                                     if ($gridCell && $($gridCell.children()[0]).children().length === 0) {
-                                        var action = void 0;
+                                        var action_1;
                                         if (column.click && _.isFunction(column.click)) {
-                                            action = function () { return column.click(rowId, column.key); };
+                                            action_1 = function () { return column.click(rowId, column.key); };
                                         }
-                                        $("." + controlCls).append(new Label(action).draw({ text: value }));
+                                        $("." + controlCls).append(new Label(action_1).draw({ text: value }));
                                         var cellElement = {
                                             id: rId,
                                             columnKey: column.key,
@@ -36473,9 +36826,9 @@ var nts;
                                     selectedItems = component_2.ntsTreeDrag("getSelected");
                                     isMulti = component_2.ntsTreeDrag('option', 'isMulti');
                                 }
-                                var srh_1 = $container.data("searchObject");
-                                var result_3 = srh_1.search(searchKey, selectedItems);
-                                if (nts.uk.util.isNullOrEmpty(result_3.options)) {
+                                var srh = $container.data("searchObject");
+                                var result = srh.search(searchKey, selectedItems);
+                                if (nts.uk.util.isNullOrEmpty(result.options)) {
                                     var mes = '';
                                     if (searchMode === "highlight") {
                                         mes = nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT");
@@ -36489,22 +36842,23 @@ var nts;
                                     });
                                     return false;
                                 }
-                                var selectedProperties = _.map(result_3.selectItems, primaryKey);
+                                var selectedProperties = _.map(result.selectItems, primaryKey);
                                 if (targetMode === 'igGrid') {
                                     component_2.ntsGridList("setSelected", selectedProperties);
                                     if (searchMode === "filter") {
-                                        $container.data("filteredSrouce", result_3.options);
+                                        $container.data("filteredSrouce", result.options);
                                         component_2.attr("filtered", "true");
                                         //selected(selectedValue);
                                         //selected.valueHasMutated();
-                                        var source = _.filter(srh_1.getDataSource(), function (item) {
-                                            return _.find(result_3.options, function (itemFilterd) {
-                                                return itemFilterd[primaryKey] === item[primaryKey];
-                                            }) !== undefined || _.find(srh_1.getDataSource(), function (oldItem) {
-                                                return oldItem[primaryKey] === item[primaryKey];
-                                            }) === undefined;
-                                        });
-                                        component_2.igGrid("option", "dataSource", _.cloneDeep(source));
+                                        //                            let source = _.filter(srh.getDataSource(), function (item: any){
+                                        //                                             return _.find(result.options, function (itemFilterd: any){
+                                        //                                            return itemFilterd[primaryKey] === item[primaryKey];        
+                                        //                                                }) !== undefined || _.find(srh.getDataSource(), function (oldItem: any){
+                                        //                                             return oldItem[primaryKey] === item[primaryKey];        
+                                        //                                            }) === undefined;            
+                                        //                            });
+                                        //                            component.igGrid("option", "dataSource", _.cloneDeep(source));
+                                        component_2.igGrid("option", "dataSource", _.cloneDeep(result.options));
                                         component_2.igGrid("dataBind");
                                         //                            if(nts.uk.util.isNullOrEmpty(selectedProperties)){
                                         component_2.trigger("selectionchanged");
@@ -36543,9 +36897,9 @@ var nts;
                         $input.keydown(function (event) {
                             if (event.which == 13) {
                                 event.preventDefault();
-                                var result_4 = nextSearch();
+                                var result_3 = nextSearch();
                                 _.defer(function () {
-                                    if (result_4) {
+                                    if (result_3) {
                                         $input.focus();
                                     }
                                 });
@@ -36843,10 +37197,10 @@ var nts;
                                 }
                             }, rowsRendered: function (evt, ui) {
                                 $treegrid.data("autoExpanding", true);
-                                var holder = $treegrid.data("expand");
-                                _.forEach(holder.nodes, function (node) {
-                                    $treegrid.igTreeGrid("expandRow", node);
-                                });
+                                //                    let holder: koExtentions.ExpandNodeHolder = $treegrid.data("expand");
+                                //                    _.forEach(holder.nodes, function(node: any){
+                                //                        $treegrid.igTreeGrid("expandRow", node); 
+                                //                    });
                                 $treegrid.data("autoExpanding", false);
                             }
                         });
@@ -36874,7 +37228,7 @@ var nts;
                     function selectRows($treegrid, selectedValue) {
                         var dataSource = $treegrid.igTreeGrid('option', 'dataSource');
                         var multiple = !_.isNil(selectedValue) && selectedValue.constructor === Array;
-                        if (!selectedValue) {
+                        if (nts.uk.util.isNullOrUndefined(selectedValue)) {
                             $treegrid.igTreeGridSelection("clearSelection");
                         }
                         else {
@@ -37740,9 +38094,7 @@ var nts;
                      * Init. sssss
                      */
                     NtsDateRangePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var $container = $(element);
-                        var construct = new DateRangeHelper($container);
+                        var data = valueAccessor(), $container = $(element), construct = new DateRangeHelper($container), value = ko.unwrap(data.value);
                         construct.bindInit(data, allBindingsAccessor, viewModel, bindingContext);
                         $container.data("construct", construct);
                         return { 'controlsDescendantBindings': true };
@@ -37751,10 +38103,11 @@ var nts;
                      * Update
                      */
                     NtsDateRangePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var $container = $(element);
-                        var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
-                        var required = ko.unwrap(data.required), construct = $container.data("construct");
+                        var data = valueAccessor(), $container = $(element), enable = data.enable === undefined ? true : ko.unwrap(data.enable), required = ko.unwrap(data.required), construct = $container.data("construct"), value = ko.unwrap(data.value);
+                        if (!nts.uk.util.isNullOrUndefined(value)) {
+                            construct.startValue(nts.uk.util.isNullOrUndefined(value.startDate) ? "" : value.startDate);
+                            construct.endValue(nts.uk.util.isNullOrUndefined(value.endDate) ? "" : value.endDate);
+                        }
                         ko.bindingHandlers["ntsDatePicker"].update(construct.$start[0], function () {
                             return construct.createStartBinding(data);
                         }, allBindingsAccessor, viewModel, bindingContext);
@@ -37781,8 +38134,8 @@ var nts;
                     DateRangeHelper.prototype.bindInit = function (parentBinding, allBindingsAccessor, viewModel, bindingContext) {
                         var self = this;
                         self.value = parentBinding.value;
-                        self.startValue = ko.observable(self.value().startDate);
-                        self.endValue = ko.observable(self.value().endDate);
+                        self.startValue = ko.observable(nts.uk.util.isNullOrUndefined(self.value().startDate) ? "" : self.value().startDate);
+                        self.endValue = ko.observable(nts.uk.util.isNullOrUndefined(self.value().endDate) ? "" : self.value().endDate);
                         self.startValue.subscribe(function (v) {
                             var oldValue = self.value();
                             oldValue.startDate = v;
@@ -37798,7 +38151,7 @@ var nts;
                         self.bindControl(parentBinding, allBindingsAccessor, viewModel, bindingContext);
                     };
                     DateRangeHelper.prototype.bindControl = function (data, allBindingsAccessor, viewModel, bindingContext) {
-                        var self = this, dateType = ko.unwrap(data.type), maxRange = ko.unwrap(data.maxRange), rangeName = ko.unwrap(data.name), startName = ko.unwrap(data.startName), endName = ko.unwrap(data.endName), showNextPrevious = data.showNextPrevious === undefined ? false : ko.unwrap(data.showNextPrevious), jumpUnit = data.jumpUnit === undefined ? false : ko.unwrap(data.jumpUnit), id = nts.uk.util.randomId(), required = ko.unwrap(data.required), tabIndex = nts.uk.util.isNullOrEmpty(self.$container.attr("tabindex")) ? "0" : self.$container.attr("tabindex");
+                        var self = this, dateType = ko.unwrap(data.type), maxRange = ko.unwrap(data.maxRange), rangeName = ko.unwrap(data.name), startName = ko.unwrap(data.startName), endName = ko.unwrap(data.endName), showNextPrevious = data.showNextPrevious === undefined ? false : ko.unwrap(data.showNextPrevious), jumpUnit = data.jumpUnit === undefined ? "month" : ko.unwrap(data.jumpUnit), id = nts.uk.util.randomId(), required = ko.unwrap(data.required), tabIndex = nts.uk.util.isNullOrEmpty(self.$container.attr("tabindex")) ? "0" : self.$container.attr("tabindex");
                         self.maxRange = maxRange;
                         self.$container.data("tabindex", tabIndex);
                         self.$container.removeAttr("tabindex");
@@ -37824,11 +38177,11 @@ var nts;
                         }
                         var $startDateArea = self.$datePickerArea.find(".ntsStartDate");
                         var $endDateArea = self.$datePickerArea.find(".ntsEndDate");
-                        $startDateArea.append("<div id='" + id + "-startInput'  class='ntsDatepicker nts-input ntsStartDatePicker ntsDateRange_Component' />");
-                        $endDateArea.append("<div id='" + id + "-endInput' class='ntsDatepicker nts-input ntsEndDatePicker ntsDateRange_Component' />");
+                        $startDateArea.append("<div id='" + id + "-startInput'  class='ntsDatepicker nts-input ntsStartDatePicker ntsDateRangeComponent ntsDateRange_Component' />");
+                        $endDateArea.append("<div id='" + id + "-endInput' class='ntsDatepicker nts-input ntsEndDatePicker ntsDateRangeComponent ntsDateRange_Component' />");
                         self.$start = $startDateArea.find(".ntsStartDatePicker");
                         self.$end = $endDateArea.find(".ntsEndDatePicker");
-                        var $input = self.$container.find(".input");
+                        var $input = self.$container.find(".nts-input");
                         // Init Datepicker
                         //            $input.datepicker({
                         //                language: 'ja-JP',
@@ -37851,9 +38204,12 @@ var nts;
                             var $target = $(e.target);
                             var newText = $target.val();
                             var oldValue = self.value();
-                            $target.ntsError('clear');
-                            self.$ntsDateRange.ntsError("clear");
-                            self.validateProcess(newText, oldValue);
+                            //                $target.ntsError('clear');
+                            //                self.$ntsDateRange.ntsError("clear");
+                            if (!$target.ntsError('hasError')) {
+                                self.$ntsDateRange.ntsError("clear");
+                                self.validateProcess(newText, oldValue);
+                            }
                         }));
                         self.$container.find(".ntsDateRange_Component").attr("tabindex", tabIndex);
                     };
@@ -37956,24 +38312,26 @@ var nts;
                     DateRangeHelper.prototype.createStartBinding = function (parentBinding, name, format) {
                         var self = this;
                         return { required: parentBinding.required,
-                            name: parentBinding.name,
+                            name: parentBinding.startName ? self.startName : parentBinding.name,
                             value: self.startValue,
                             dateFormat: self.dateFormat,
                             valueFormat: self.dateFormat,
                             enable: parentBinding.enable,
-                            disabled: parentBinding.disabled,
-                            endDate: self.endValue };
+                            disabled: parentBinding.disabled
+                            //,endDate: self.endValue 
+                        };
                     };
                     DateRangeHelper.prototype.createEndBinding = function (parentBinding, name) {
                         var self = this;
                         return { required: parentBinding.required,
-                            name: parentBinding.name,
+                            name: parentBinding.endName ? self.endName : parentBinding.name,
                             value: self.endValue,
                             dateFormat: self.dateFormat,
                             valueFormat: self.dateFormat,
                             enable: parentBinding.enable,
-                            disabled: parentBinding.disabled,
-                            startDate: self.startValue };
+                            disabled: parentBinding.disabled
+                            //,startDate: self.startValue 
+                        };
                     };
                     return DateRangeHelper;
                 }());
@@ -38360,7 +38718,7 @@ var nts;
                         // Container
                         var $container = $(element);
                         var $fileuploadContainer = $("<div class='nts-fileupload-container cf'></div>");
-                        var $fileBrowserButton = $("<button class='browser-button'></button>");
+                        var $fileBrowserButton = $("<button class='browser-button' tabindex='1'></button>");
                         var $fileNameWrap = $("<span class='nts-editor-wrapped ntsControl'/>");
                         var $fileNameInput = $("<input class='nts-editor nts-input' readonly='readonly' tabindex='-1'/>");
                         var $fileNameLabel = $("<span class='filenamelabel hyperlink'></span> ");
@@ -38371,7 +38729,7 @@ var nts;
                         $fileuploadContainer.append($fileNameLabel);
                         $fileuploadContainer.append($fileInput);
                         $fileuploadContainer.appendTo($container);
-                        $fileBrowserButton.attr("tabindex", -1).click(function () {
+                        $fileBrowserButton.click(function () {
                             $fileInput.click();
                         });
                         $fileInput.change(function () {
@@ -38902,7 +39260,13 @@ var nts;
                             event.preventDefault();
                             var files = evt.originalEvent["dataTransfer"].files;
                             if (!nts.uk.util.isNullOrEmpty(files)) {
-                                self.validateFile(files);
+                                var firstImageFile = self.helper.getFirstFile(files);
+                                if (self.validateFile(firstImageFile)) {
+                                    self.assignImageToView(firstImageFile);
+                                }
+                                else {
+                                    self.changeStatus(ImageStatus.FAIL);
+                                }
                             }
                         });
                         this.$previewArea.on('dragenter', function (event) {
@@ -39050,37 +39414,33 @@ var nts;
                                 self.changeStatus(ImageStatus.FAIL);
                                 return;
                             }
-                            if (!self.validateFilesSize(this.files[0])) {
-                                // if file's size > maxSize, remove that file                    
+                            var firstImageFile = self.helper.getFirstFile(this.files);
+                            if (!self.validateFile(firstImageFile)) {
+                                // remove file
                                 $(this).val('');
                                 self.changeStatus(ImageStatus.FAIL);
                                 return;
                             }
-                            self.validateFile(this.files);
+                            self.assignImageToView(firstImageFile);
                         });
                     };
-                    ImageEditorConstructSite.prototype.validateFilesSize = function (file) {
+                    ImageEditorConstructSite.prototype.validateFile = function (firstImageFile) {
                         var self = this;
+                        if (nts.uk.util.isNullOrUndefined(firstImageFile)) {
+                            nts.uk.ui.dialog.alertError({ messageId: self.helper.getMsgIdForUnknownFile(),
+                                messageParams: [self.helper.toStringExtension()] });
+                            return false;
+                        }
                         var MAX_SIZE = self.helper.maxSize;
                         // if MAX_SIZE == undefined => do not check size
                         if (!MAX_SIZE) {
                             return true;
                         }
-                        if (file.size > MAX_SIZE * 1048576) {
+                        if (firstImageFile.size > MAX_SIZE * 1048576) {
                             nts.uk.ui.dialog.alertError({ messageId: 'Msg_70', messageParams: [self.helper.maxSize] });
                             return false;
                         }
                         return true;
-                    };
-                    ImageEditorConstructSite.prototype.validateFile = function (files) {
-                        var self = this;
-                        var firstImageFile = self.helper.getFirstFile(files);
-                        if (!nts.uk.util.isNullOrUndefined(firstImageFile)) {
-                            self.assignImageToView(firstImageFile);
-                        }
-                        else {
-                            nts.uk.ui.dialog.alertError({ messageId: self.helper.getMsgIdForUnknownFile(), messageParams: [self.helper.toStringExtension()] });
-                        }
                     };
                     ImageEditorConstructSite.prototype.assignImageToView = function (file) {
                         var self = this;
@@ -39298,6 +39658,9 @@ var nts;
                         var dataName = ko.unwrap(data.name);
                         var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
                         var required = _.isNil(data.required) ? false : ko.unwrap(data.required);
+                        if (dataName) {
+                            dataName = nts.uk.resource.getControlName(dataName);
+                        }
                         $container.data("tabindex", $container.attr("tabindex") || 0).removeAttr("tabindex");
                         $container.addClass("ntsControl ntsMonthDays_Container");
                         var $control = $('<div>', { class: 'ntsMonthDays' }), $monthPicker = $("<div>", { "class": "ntsMonthPicker ntsComboBox ntsMonthDays_Component", id: nts.uk.util.randomId() }), $dayPicker = $("<div>", { "class": "ntsDayPicker ntsComboBox ntsMonthDays_Component", id: nts.uk.util.randomId() }), $monthLabel = $("<div>", {
@@ -39346,6 +39709,7 @@ var nts;
                         $container.on("validate", function (evt) {
                             if (!$container.is(evt.target))
                                 return;
+                            var required = $container.data("required");
                             if (required && (monthValueAccessor.value() === 0 || _.isNil(monthValueAccessor.value()))) {
                                 $monthPicker.addClass("error").ntsError("set", uk.resource.getMessage("FND_E_REQ_SELECT", [dataName + "の月"]), "FND_E_REQ_SELECT");
                             }
@@ -39368,7 +39732,7 @@ var nts;
                      * Update
                      */
                     NtsMonthDaysBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor(), $container = $(element), value = ko.unwrap(data.value), enable = data.enable === undefined ? true : ko.unwrap(data.enable), $monthPicker = $container.find(".ntsMonthPicker"), $dayPicker = $container.find(".ntsDayPicker"), bindedVal = $container.data("cusVal");
+                        var data = valueAccessor(), $container = $(element), value = ko.unwrap(data.value), enable = data.enable === undefined ? true : ko.unwrap(data.enable), required = _.isNil(data.required) ? false : ko.unwrap(data.required), $monthPicker = $container.find(".ntsMonthPicker"), $dayPicker = $container.find(".ntsDayPicker"), bindedVal = $container.data("cusVal");
                         //            if(enable !== false){
                         //                $monthPicker.igCombo('option', 'disabled', false);
                         //                $dayPicker.igCombo('option', 'disabled', false);    
@@ -39377,6 +39741,7 @@ var nts;
                         //                $monthPicker.igCombo('option', 'disabled', true);
                         //                $dayPicker.igCombo('option', 'disabled', true); 
                         $container.find("input").attr("tabindex", "-1");
+                        $container.data("required", required);
                         ko.bindingHandlers["ntsComboBox"].update($monthPicker[0], function () { return bindedVal.month; }, allBindingsAccessor, viewModel, bindingContext);
                         ko.bindingHandlers["ntsComboBox"].update($dayPicker[0], function () { return bindedVal.day; }, allBindingsAccessor, viewModel, bindingContext);
                     };

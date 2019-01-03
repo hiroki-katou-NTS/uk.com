@@ -8,7 +8,9 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartCode;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
@@ -26,11 +28,8 @@ import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePartPK;
 @Stateless
 public class JpaOptionalWidgetRepository extends JpaRepository implements OptionalWidgetRepository {
 
-	private static final String SELECT_ALL_TOPPAGEPART = "SELECT c FROM CcgmtTopPagePart AS c where c.ccgmtTopPagePartPK.companyID = :companyID ORDER BY c.code";
 	private static final String SELECT_WIDGET_DISPLAY = "SELECT s FROM SptstWidgetDisplay AS s where s.sptstWidgetDisplayPK.companyID = :companyID "
 			+ "AND s.sptstWidgetDisplayPK.topPagePartID =:topPagePartID ";
-	private static final String FIND_BY_CODE = "SELECT c FROM CcgmtTopPagePart AS c where c.ccgmtTopPagePartPK.companyID = :companyID "
-			+ "AND c.code =:code ";
 	private static final String GET_SELECTED_WIDGET = "SELECT c FROM CcgmtTopPagePart AS c where c.ccgmtTopPagePartPK.companyID = :companyID "
 			+ "AND c.code =:code AND c.topPagePartType =:topPagePartType ";
 
@@ -175,10 +174,14 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 		if(listOptionalWidgetID.size()==0) {
 			return Collections.emptyList();
 		}
-		return this.queryProxy().query(SELECT_IN, Object[].class)
-				.setParameter("topPagePartID", listOptionalWidgetID)
+		List<OptionalWidget> results = new ArrayList<>();
+		CollectionUtil.split(listOptionalWidgetID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			results.addAll(this.queryProxy().query(SELECT_IN, Object[].class)
+				.setParameter("topPagePartID", subList)
 				.setParameter("companyID", companyId)
-				.getList(c -> joinObjectToDomain(c));
+				.getList(c -> joinObjectToDomain(c)));
+		});
+		return results;
 	}
 
 	private OptionalWidget joinObjectToDomain(Object[] entity) {

@@ -11,13 +11,16 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 /**
  * The Class CompanyCompensatoryLeave.
  */
+// 振休管理設定
 @Getter
 public class ComSubstVacation extends DomainObject {
 
 	/** The company id. */
+	// 会社ID
 	private String companyId;
 
 	/** The setting. */
+	// 振休取得・使用方法
 	private SubstVacationSetting setting;
 
 	/**

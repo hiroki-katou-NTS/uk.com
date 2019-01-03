@@ -5,6 +5,8 @@
 package nts.uk.ctx.bs.employee.infra.repository.workplace;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,6 +19,7 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -35,9 +38,6 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaBSWorkplaceRepository extends JpaRepository implements WorkplaceRepository {
 
-	/** The Constant MAX_ELEMENTS. */
-	private static final Integer MAX_ELEMENTS = 1000;
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -125,7 +125,7 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
 
 		List<BsymtWorkplaceHist> resultList = new ArrayList<>();
 		
-		CollectionUtil.split(workplaceIds, MAX_ELEMENTS, (subList) -> {
+		CollectionUtil.split(workplaceIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 
 			// add where
 			List<Predicate> predicateList = new ArrayList<>();
@@ -139,9 +139,10 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
 
 			resultList.addAll(em.createQuery(cq).getResultList());
 		});
+		resultList.sort(Comparator.comparing(BsymtWorkplaceHist::getStrD));
 		
 		if (CollectionUtil.isEmpty(resultList)) {
-			return null;
+			return Collections.emptyList();
 		}
 		
 		return workplaceIds.stream().map(wkpId -> {
@@ -310,7 +311,7 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
 
 		List<BsymtWorkplaceHist> resultList = new ArrayList<>();
 
-		CollectionUtil.split(workplaceIds, MAX_ELEMENTS, (subList) -> {
+		CollectionUtil.split(workplaceIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			// add where
 	        List<Predicate> lstpredicateWhere = new ArrayList<>();
 	        lstpredicateWhere.add(criteriaBuilder.equal(
@@ -325,6 +326,7 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
 
 			resultList.addAll(em.createQuery(cq).getResultList());
 		});
+		resultList.sort(Comparator.comparing(BsymtWorkplaceHist::getStrD));
 		
 		List<String> existWkpIds = resultList.stream()
 				.map(item -> item.getBsymtWorkplaceHistPK().getWkpid())
@@ -360,7 +362,7 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
 
 		List<BsymtWorkplaceHist> resultList = new ArrayList<>();
 
-		CollectionUtil.split(workplaceIds, MAX_ELEMENTS, (subList) -> {
+		CollectionUtil.split(workplaceIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			// add where
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
 			lstpredicateWhere.add(root.get(BsymtWorkplaceHist_.bsymtWorkplaceHistPK)
@@ -374,6 +376,7 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
 
 			resultList.addAll(em.createQuery(cq).getResultList());
 		});
+		resultList.sort(Comparator.comparing(BsymtWorkplaceHist::getStrD));
 
 		List<String> existWkpIds = resultList.stream()
 				.map(item -> item.getBsymtWorkplaceHistPK().getWkpid())

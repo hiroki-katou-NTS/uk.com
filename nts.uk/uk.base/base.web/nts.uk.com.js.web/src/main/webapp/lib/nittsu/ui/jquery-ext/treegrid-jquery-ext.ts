@@ -131,10 +131,10 @@ module nts.uk.ui.jqueryExtentions {
                     }
                 }, rowsRendered: function(evt, ui) {
                     $treegrid.data("autoExpanding", true);
-                    let holder: koExtentions.ExpandNodeHolder = $treegrid.data("expand");
-                    _.forEach(holder.nodes, function(node: any){
-                        $treegrid.igTreeGrid("expandRow", node); 
-                    });
+//                    let holder: koExtentions.ExpandNodeHolder = $treegrid.data("expand");
+//                    _.forEach(holder.nodes, function(node: any){
+//                        $treegrid.igTreeGrid("expandRow", node); 
+//                    });
                     
                     $treegrid.data("autoExpanding", false);   
                 }
@@ -168,7 +168,7 @@ module nts.uk.ui.jqueryExtentions {
             let dataSource = $treegrid.igTreeGrid('option', 'dataSource');
             let multiple = !_.isNil(selectedValue) && selectedValue.constructor === Array;
 
-            if (!selectedValue) {
+            if (nts.uk.util.isNullOrUndefined(selectedValue)) {
                 $treegrid.igTreeGridSelection("clearSelection");
             } else {
                 let uiSR =  $treegrid.ntsTreeView('getSelected');

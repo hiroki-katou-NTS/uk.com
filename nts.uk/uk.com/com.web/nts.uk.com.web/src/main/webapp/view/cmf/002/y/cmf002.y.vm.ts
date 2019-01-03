@@ -26,6 +26,7 @@ module nts.uk.com.view.cmf002.y {
             normalCount: KnockoutObservable<number> = ko.observable(0);
             totalCount: KnockoutObservable<number> = ko.observable(0);
             totalErrorCount: KnockoutObservable<number> = ko.observable(0);
+            groupProcessCount: KnockoutObservable<number> = ko.observable(0);
 
             constructor() {
                 let self = this;
@@ -34,11 +35,15 @@ module nts.uk.com.view.cmf002.y {
 
                 self.exterOutExecLog = ko.observable(new ExterOutExecLog('', '', '', 0, 0, '', 0, 0, '', 0, '', '', '', 0, 0, '', '', '', '', '', 0, ''));
 
-                self.totalCount.subscribe(function(value) {
-                    self.normalCount(self.totalCount() - self.totalErrorCount());
-                });
-                self.totalErrorCount.subscribe(function(value) {
-                    self.normalCount(self.totalCount() - self.totalErrorCount());
+//                self.totalCount.subscribe(function(value) {
+//                    self.normalCount(self.totalCount() - self.totalErrorCount());
+//                });
+//                self.totalErrorCount.subscribe(function(value) {
+//                    self.normalCount(self.totalCount() - self.totalErrorCount());
+//                });
+                
+                self.groupProcessCount.subscribe(function(value) {
+                    self.normalCount(self.totalCount() - self.groupProcessCount());
                 });
 
                 self.iErrorContentCSV = ko.observable(new IErrorContentCSV("", self.exterOutExecLog(), self.externalOutLog()));
@@ -64,13 +69,18 @@ module nts.uk.com.view.cmf002.y {
                                 temp.push(new ExternalOutLog(
                                     index.processCount,
                                     index.errorContent,
-                                    index.errorEmployee,
                                     index.errorTargetValue,
+                                    index.errorEmployee,
                                     index.errorItem
                                 ));     
                             });
+                            
+                            for(let i = 0; i<temp.length; i++){
+                                temp[i]['no'] = i;
+                            }
 							self.externalOutLog(temp);
 							self.iErrorContentCSV(new IErrorContentCSV(self.exterOutExecLog().nameSetting, self.exterOutExecLog(), self.externalOutLog()));
+                            self.groupProcessCount(_.size(_.countBy(sortByExternalOutLog, 'processCount')));
                         }
                     }
                 }).fail(function(res: any) {
@@ -80,10 +90,11 @@ module nts.uk.com.view.cmf002.y {
                 });
 
                 this.columnsExternalOutLog = ko.observableArray([
+                    { headerText: '', key: 'no', formatter: _.escape, hidden: true},
                     { headerText: getText('CMF002_336'), key: 'processCount', width: 40, formatter: _.escape},
                     { headerText: getText('CMF002_337'), key: 'errorItem', width: 80, formatter: _.escape },
-                    { headerText: getText('CMF002_338'), key: 'errorTargetValue', width: 120, formatter: _.escape },
-                    { headerText: getText('CMF002_339'), key: 'customerrorContent', width: 300, formatter: _.escapes }
+                    { headerText: getText('CMF002_338'), key: 'errorTargetValue', width: 80, formatter: _.escape },
+                    { headerText: getText('CMF002_339'), key: 'customerrorContent', width: 340, formatter: _.escapes }
                 ]);
                 this.currentCode = ko.observableArray();
             }
@@ -145,7 +156,7 @@ module nts.uk.com.view.cmf002.y {
                 this.errorTargetValue = errorTargetValue ? errorTargetValue : null;
                 this.errorEmployee = errorEmployee ? errorEmployee : null;
                 this.errorItem = errorItem ? errorItem : null;
-                this.customerrorContent = errorContent + "(" + getText('CMF002_356') + errorEmployee + ")";
+                this.customerrorContent = errorContent + "(" + getText('CMF002_356') + errorEmployee + ")";   
             }
         }
 

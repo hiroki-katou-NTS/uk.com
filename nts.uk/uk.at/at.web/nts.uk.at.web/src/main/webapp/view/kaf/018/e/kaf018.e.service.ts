@@ -3,7 +3,7 @@ module nts.uk.at.view.kaf018.e {
     export module service {
         var paths: any = {
             getStatusActivity: "at/record/application/realitystatus/getStatusActivity",
-            checkSendUnconfirmedMail: "at/record/application/realitystatus/checkSendUnconfirmedMail",
+            checkSendUnconfirmedMail: "at/request/application/approvalstatus/checkSendUnConfirMail",
             exeSendUnconfirmedMail: "at/record/application/realitystatus/exeSendUnconfirmedMail",
             getUseSetting: "at/record/application/realitystatus/getUseSetting"
         }

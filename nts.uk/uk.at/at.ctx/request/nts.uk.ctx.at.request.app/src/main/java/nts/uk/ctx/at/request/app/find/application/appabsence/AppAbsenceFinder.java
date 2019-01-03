@@ -51,9 +51,9 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.Colle
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.output.ApprovalRootPattern;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
+//import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+//import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
@@ -101,8 +101,8 @@ public class AppAbsenceFinder {
 	private CollectApprovalRootPatternService colApprRootPatternSv;
 	@Inject
 	private StartupErrorCheckService startupErrorCheckService;
-	@Inject
-	private CollectAchievement collectAchievement;
+//	@Inject
+//	private CollectAchievement collectAchievement;
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	@Inject
@@ -211,8 +211,8 @@ public class AppAbsenceFinder {
 		if (appDate != null) {//ある(có)
 			//アルゴリズム「実績の取得」を実行する(thực hiện xử lý 「実績の取得」)
 			// 13.実績の取得
-			AchievementOutput achievementOutput = collectAchievement.getAchievement(companyID, employeeID,
-					GeneralDate.fromString(appDate, DATE_FORMAT));
+//			AchievementOutput achievementOutput = collectAchievement.getAchievement(companyID, employeeID,
+//					GeneralDate.fromString(appDate, DATE_FORMAT));
 
 		}
 		//アルゴリズム「初期データの取得」を実行する(thực hiện xử lý 「初期データの取得」)
@@ -406,8 +406,10 @@ public class AppAbsenceFinder {
 		//残数取得する
 		List<AppEmploymentSetting> appEmpSetAs = appCommonSet.getAppEmploymentWorkType().stream()
 				.filter(c -> c.getAppType().equals(ApplicationType.ABSENCE_APPLICATION)).collect(Collectors.toList());
+		//Bug#101904
+		//・基準日＝システム日付
 		NumberOfRemainOutput numberRemain = absenseProcess.getNumberOfRemaining(companyID, appAbsence.getApplication().getEmployeeID(),
-				appAbsence.getApplication().getAppDate(), appEmpSetAs);
+				GeneralDate.today(), appEmpSetAs);
 		result.setNumberRemain(numberRemain);
 		return result;
 	}
@@ -727,8 +729,8 @@ public class AppAbsenceFinder {
 		if (result.isChangeWorkHourFlg()) {
 			// 2.就業時間帯を取得する
 			// 1.職場別就業時間帯を取得
-			List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,
-					appCommonSettingOutput.generalDate);
+//			List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,
+//					appCommonSettingOutput.generalDate);
 
 		}
 		return result;

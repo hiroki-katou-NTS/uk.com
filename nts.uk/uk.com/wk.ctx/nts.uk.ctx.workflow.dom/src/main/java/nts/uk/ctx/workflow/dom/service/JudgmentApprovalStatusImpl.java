@@ -12,7 +12,8 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.workflow.dom.agent.Agent;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.PrincipalApprovalFlg;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
@@ -37,6 +38,8 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 	
 	@Inject
 	private CollectApprovalAgentInforService collectApprovalAgentInforService;
+	@Inject
+	private ApprovalSettingRepository repoApprSet;
 
 	@Override
 	public Boolean judgmentTargetPersonIsApprover(String companyID, String rootStateID, String employeeID, Integer rootType) {
@@ -126,6 +129,15 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
 		// 過去フェーズフラグ = false
 		Boolean pastPhaseFlag = false;
+		//hoatt 2018.12.14
+		//EA修正履歴 No.3020
+		//ドメインモデル「承認設定」を取得する
+		Optional<PrincipalApprovalFlg> flg = repoApprSet.getPrincipalByCompanyId(companyID);
+		if((!flg.isPresent() || flg.get().equals(PrincipalApprovalFlg.NOT_PRINCIPAL)) &&
+				approvalRootState.getEmployeeID().equals(AppContexts.user().employeeId())){
+			//本人による承認＝false　＆　申請者＝ログイン社員IDの場合
+			return new ApproverPersonOutput(authorFlag, approvalAtr, expirationAgentFlag);
+		}
 		// ドメインモデル「承認フェーズインスタンス」．順序5～1の順でループする
 		for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
 			// アルゴリズム「承認フェーズ毎の承認者を取得する」を実行する
@@ -251,9 +263,15 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 		
 		// パラメータのループ中のフェーズ番号をチェックする
 		if(approvalRootState.getListApprovalPhaseState().size()==1) {
+			if(approvalRootState.getListApprovalPhaseState().get(0).getApprovalAtr()==ApprovalBehaviorAtr.ORIGINAL_REMAND){
+				return false;
+			}
 			return true;
 		}
 		if(currentPhase.getPhaseOrder()==1){
+			if(currentPhase.getApprovalAtr()==ApprovalBehaviorAtr.ORIGINAL_REMAND){
+				return false;
+			}
 			return true;
 		}
 		ApprovalPhaseState lowestPhase = approvalRootState.getListApprovalPhaseState()

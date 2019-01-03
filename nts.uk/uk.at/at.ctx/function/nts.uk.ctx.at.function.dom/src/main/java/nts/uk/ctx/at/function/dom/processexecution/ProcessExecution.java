@@ -1,13 +1,12 @@
 package nts.uk.ctx.at.function.dom.processexecution;
 
-import java.util.ArrayList;
-import java.util.List;
-
+//import java.util.ArrayList;
+//import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetClassification;
+//import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetClassification;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 
 /**
@@ -80,7 +79,7 @@ public class ProcessExecution extends AggregateRoot {
 
 			//実行設定(B15_2,B15_3)のチェックボックスのうち1つ以上TUREになっていなければならない。
 			if(!execSetting.getDailyPerf().getTargetGroupClassification().isRecreateTransfer()&&//B15_2
-			   !execSetting.getPerSchedule().getTarget().getTargetSetting().isRecreateWorkType()) {//B15_3
+			   !execSetting.getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()) {//B15_3
 				throw new BusinessException("Msg_1391");
 			}
 		}

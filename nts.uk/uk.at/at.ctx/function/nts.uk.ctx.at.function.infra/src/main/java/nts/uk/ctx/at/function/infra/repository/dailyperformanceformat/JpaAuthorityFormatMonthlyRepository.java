@@ -10,7 +10,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFomatMonthly;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatCode;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatMonthlyRepository;
@@ -106,11 +108,14 @@ public class JpaAuthorityFormatMonthlyRepository extends JpaRepository implement
 
 	@Override
 	public void deleteExistData(String companyId, String dailyPerformanceFormatCode,List<Integer> attendanceItemIds) {
-		this.getEntityManager().createQuery(REMOVE_EXIST_DATA)
-			.setParameter("attendanceItemIds", attendanceItemIds)
-			.setParameter("companyId", companyId)
-			.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode)
-			.executeUpdate();
+		CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			this.getEntityManager().createQuery(REMOVE_EXIST_DATA)
+				.setParameter("attendanceItemIds", subList)
+				.setParameter("companyId", companyId)
+				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode)
+				.executeUpdate();
+		});
+		
 	}
 
 	@Override
@@ -158,9 +163,13 @@ public class JpaAuthorityFormatMonthlyRepository extends JpaRepository implement
 	@Override
 	public List<AuthorityFomatMonthly> getListAuthorityFormatDaily(String companyId,
 			Collection<String> listDailyPerformanceFormatCode) {
-		return this.queryProxy().query(FIND_BY_LIST_CODE, KfnmtAuthorityMonthlyItem.class)
+		List<KfnmtAuthorityMonthlyItem> results = new ArrayList<>();
+		CollectionUtil.split(new ArrayList<>(listDailyPerformanceFormatCode), DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			results.addAll(this.queryProxy().query(FIND_BY_LIST_CODE, KfnmtAuthorityMonthlyItem.class)
 				.setParameter("companyId", companyId)
-				.setParameter("listDailyPerformanceFormatCode", listDailyPerformanceFormatCode).getList(f -> toDomain(f));
+				.setParameter("listDailyPerformanceFormatCode", subList).getList());
+		});
+		return results.stream().map(f -> toDomain(f)).collect(Collectors.toList());
 	}
 
 	@Override

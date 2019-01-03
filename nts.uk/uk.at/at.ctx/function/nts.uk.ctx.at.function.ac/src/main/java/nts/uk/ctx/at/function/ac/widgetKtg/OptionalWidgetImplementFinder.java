@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.function.ac.widgetKtg;
 
-import java.math.BigDecimal;
+//import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -222,10 +222,10 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 			annualLeaveRemainNumberImport = new AnnualLeaveRemainingNumberImport(0.0, 0, 0, 0, 0.0, 0, 0, 0, 0.0,0.0);
 		}else {
 			annualLeaveRemainNumberImport = new AnnualLeaveRemainingNumberImport(
-																				remainNumber.getAnnualLeaveGrantPreDay(),
-																				remainNumber.getAnnualLeaveGrantPreTime(),
-																				remainNumber.getNumberOfRemainGrantPre(),
-																				remainNumber.getTimeAnnualLeaveWithMinusGrantPre(),
+																				remainNumber.getAnnualLeaveGrantDay(),
+																				remainNumber.getAnnualLeaveGrantTime(),
+																				remainNumber.getNumberOfRemainGrant(),
+																				remainNumber.getTimeAnnualLeaveWithMinusGrant(),
 																				remainNumber.getAnnualLeaveGrantPostDay(),
 																				remainNumber.getAnnualLeaveGrantPostTime(),
 																				remainNumber.getNumberOfRemainGrantPost(),
@@ -268,14 +268,16 @@ public class OptionalWidgetImplementFinder implements OptionalWidgetAdapter {
 			////付与前残数
 			Double befRemainDay = rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus()
 									.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
+			////積立年休残数
+			Double remainingDays = rsvDate.getRemainingDays().v();
 			//付与後残数
 			Double aftRemainDay = 0.0;
 			if(rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus().getRemainingNumberAfterGrant().isPresent()){
 				aftRemainDay = rsvDate.getReserveLeaveInfo().getRemainingNumber().getReserveLeaveWithMinus().getRemainingNumberAfterGrant().get().getTotalRemainingDays().v();
 			}
-			return new KTGRsvLeaveInfoImport(befRemainDay, aftRemainDay, grantDay);
+			return new KTGRsvLeaveInfoImport(befRemainDay, aftRemainDay, remainingDays, grantDay);
 		}else {
-			return new KTGRsvLeaveInfoImport(0.0, 0.0, null);
+			return new KTGRsvLeaveInfoImport(0.0, 0.0, 0.0, null);
 		}
 	}
 

@@ -18,6 +18,7 @@ import nts.uk.ctx.at.request.pub.spr.export.ApplicationSpr;
 import nts.uk.ctx.bs.employee.pub.spr.EmployeeSprPub;
 import nts.uk.ctx.bs.employee.pub.spr.export.EmpSprExport;
 import nts.uk.ctx.bs.employee.pub.spr.export.PersonInfoSprExport;
+import nts.uk.ctx.workflow.pub.resultrecord.IntermediateDataPub;
 import nts.uk.ctx.workflow.pub.spr.SprApprovalSearchPub;
 import nts.uk.ctx.workflow.pub.spr.export.ApprovalRootStateSprExport;
 import nts.uk.ctx.workflow.pub.spr.export.JudgmentSprExport;
@@ -42,6 +43,9 @@ public class SprApprovalRootImpl implements SprApprovalRootService {
 	
 	@Inject
 	private LoginParamCheck loginParamCheck;
+	
+	@Inject
+	private IntermediateDataPub intermediateDataPub;
 
 	@Override
 	public List<ApprovalRootSpr> getApprovalRoot(String employeeCD, String date) {
@@ -75,7 +79,7 @@ public class SprApprovalRootImpl implements SprApprovalRootService {
 		List<String> empOnAppList = new ArrayList<>();
 		List<String> empOnConfirmList = new ArrayList<>();
 		empOnAppList = this.getAppRootStateIDByType(companyID, approverID, date, 0); 
-		empOnConfirmList = this.getAppRootStateIDByType(companyID, approverID, date, 1); 
+		empOnConfirmList = intermediateDataPub.dailyConfirmSearch(companyID, approverID, date);
 		empOnSettingList.addAll(empOnAppList);
 		empOnSettingList.addAll(empOnConfirmList);
 		empOnSettingList = empOnSettingList.stream().distinct().collect(Collectors.toList());
@@ -98,7 +102,7 @@ public class SprApprovalRootImpl implements SprApprovalRootService {
 			Integer rootType) {
 		List<String> empIDList = new ArrayList<>();
 		// ドメインモデル「承認ルートインスタンス」を取得する
-		List<ApprovalRootStateSprExport> approvalRootStateSprList = sprApprovalSearchPub.getRootStateByDateAndType(date, rootType);
+		List<ApprovalRootStateSprExport> approvalRootStateSprList = sprApprovalSearchPub.getAppByApproverDate(companyID, employeeID, date);
 		approvalRootStateSprList.forEach(x -> {
 			if(rootType==0){
 				// ドメインモデル「申請」を取得する
@@ -126,4 +130,5 @@ public class SprApprovalRootImpl implements SprApprovalRootService {
 		});
 		return empIDList;
 	}
+	
 }

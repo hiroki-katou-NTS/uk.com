@@ -318,7 +318,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.listCheckNeededOfWorkTime(__viewContext.viewModel.viewO.checkNeededOfWorkTimeSetting);
                 self.dataWorkEmpCombine(__viewContext.viewModel.viewO.workEmpCombines);
 
-                self.initCCG001();
                 self.initExTable();
                 dfd.resolve();
             });
@@ -374,8 +373,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }).fail(() => { self.stopRequest(true); });
         }
 
-        initCCG001(): void {
-            let self = this;
+        initCCG001(): JQueryPromise<any>  {
+            let self = this, dfd = $.Deferred();
             // Component option
             self.ccgcomponent = {
                 maxPeriodRange: 'oneMonth',
@@ -411,6 +410,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 showJobTitle: true, // 職位条件
                 showWorktype: true, // 勤種条件
                 isMutipleCheck: true, // 選択モード
+                showOnStart: true,
 
                 /** Return data */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
@@ -433,9 +433,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
             }
             // Start component
-            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(function() {
-                setTimeout(() =>{$("#ccg001-btn-search-drawer").trigger("click");}, 500);
+            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
+                dfd.resolve();
             });
+            
+            return dfd.promise();
         }
 
         /**
@@ -1590,6 +1592,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     });
                 }).fail(function(error: any) {
                     alertError({ messageId: error.messageId });
+                    self.setDatasource().done(function() {
+                        self.updateExTable();
+                    });
                 }).always(() => {
                     self.stopRequest(true);
                 });
@@ -1848,9 +1853,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          * Set error
          */
         addListError(errorsRequest: Array<string>) {
-            var errors = [];
+            let errors = [];
             _.forEach(errorsRequest, function(err) {
-                var errSplits = err.split(",");
+                let errSplits = err.split(",");
                 if (errSplits.length == 1) {
                     errors.push({ message: nts.uk.resource.getMessage(err), messageId: err, supplements: {} });
                 } else {

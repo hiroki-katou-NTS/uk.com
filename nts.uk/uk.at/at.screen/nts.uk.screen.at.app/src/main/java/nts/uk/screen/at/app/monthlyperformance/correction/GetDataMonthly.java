@@ -38,7 +38,14 @@ public class GetDataMonthly {
 	public List<MonthlyModifyResult> call() {
 		if(sids.isEmpty()|| itemIds.isEmpty()) return new ArrayList<>();
 		List<MonthlyModifyResult> results  = monthlyModifyQueryProcessor.initScreen(new MonthlyMultiQuery(sids), itemIds, yearMonth, closureId, closureDate);
-		return results;
+		List<MonthlyModifyResult> resultsToClosureId = new ArrayList<>();
+		for(MonthlyModifyResult monthlyModifyResult : results) {
+			if(monthlyModifyResult.getClosureId() == closureId.value) {
+				resultsToClosureId.add(monthlyModifyResult);
+			}
+		}
+		
+		return resultsToClosureId;
 	}
 
 }

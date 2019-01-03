@@ -6,9 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.auth.dom.adapter.employee.JobTitleAdapter;
 import nts.uk.ctx.sys.auth.dom.employee.dto.EmJobTitleHisImport;
-import nts.uk.ctx.sys.auth.dom.employee.dto.JobTitleValueImport;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleRepository;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPerson;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPersonRepository;
@@ -23,8 +21,8 @@ public class CanApprovalOnBaseDateServiceImpl implements CanApprovalOnBaseDateSe
 	@Inject
 	private RoleSetGrantedPersonRepository roleSetPersonRepo;
 
-	@Inject
-	private JobTitleAdapter jobTitleAdapter;
+//	@Inject
+//	private JobTitleAdapter jobTitleAdapter;
 	
 	@Inject 
 	private EmpInfoAdapter empInfoAdapter;
@@ -45,7 +43,11 @@ public class CanApprovalOnBaseDateServiceImpl implements CanApprovalOnBaseDateSe
 	//		JobTitleValueImport jobTitle = jobTitleAdapter.findJobTitleBySid(employeeID, date);
 			Optional<EmJobTitleHisImport> jobTitle = empInfoAdapter.getTitleHist(employeeID, date);
 			if (!jobTitle.isPresent()){
-				throw new RuntimeException ("Can't find EmJobTitleHisImport");
+				//Muto san
+				//RQL305の「指定社員が基準日に承認権限を持っているかチェックする」
+				//この処理は、outputでbooleanを返しますが、
+				//基準日で職位が取得できない場合、falseを返したいです
+				return false;
 			}
 			Optional<String> roleJobTitle = roleSetGrantedJobTitleRepo.getRoleSetCd(companyId, jobTitle.get().getJobTitleID());
 			if (roleJobTitle.isPresent()) {

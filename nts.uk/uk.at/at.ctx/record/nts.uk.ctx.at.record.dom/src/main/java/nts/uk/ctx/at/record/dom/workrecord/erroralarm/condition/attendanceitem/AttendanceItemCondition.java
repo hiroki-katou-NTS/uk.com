@@ -68,7 +68,7 @@ public class AttendanceItemCondition extends DomainObject {
 	}
 
 	/** 勤怠項目をチェックする */
-	public WorkCheckResult check(Function<List<Integer>, List<Integer>> getValueFromItemIds) {
+	public WorkCheckResult check(Function<List<Integer>, List<Double>> getValueFromItemIds) {
 		WorkCheckResult checkGroup1 = group1.check(getValueFromItemIds);
 		if (!this.isUseGroup2()) {
 			return checkGroup1;

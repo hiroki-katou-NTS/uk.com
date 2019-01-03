@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -79,14 +80,14 @@ public class JpaAttendanceTimeOfAnyPeriod extends JpaRepository implements Atten
 	@Override
 	public List<AttendanceTimeOfAnyPeriod> findBySids(List<String> employeeIds, String frameCode) {
 		
-		List<AttendanceTimeOfAnyPeriod> results = new ArrayList<>();
+		List<KrcdtAnpAttendanceTime> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			results.addAll(this.queryProxy().query(FIND_BY_EMPLOYEES, KrcdtAnpAttendanceTime.class)
 					.setParameter("employeeIds", splitData)
 					.setParameter("frameCode", frameCode)
-					.getList(c -> c.toDomain()));
+					.getList());
 		});
-		return results;
+		return results.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 	
 	/** 登録および更新 */

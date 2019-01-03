@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,7 +8,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
@@ -49,17 +47,22 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 	private SubstitutionOfHDManaDataRepository comfirmAbsMngRepo;
 	@Inject
 	private PayoutSubofHDManaRepository confirmRecAbsRepo;
+	
 	@Override
 	public List<InterimRemainAggregateOutputData> getAbsRecRemainAggregate(String employeeId, GeneralDate baseDate,
 			YearMonth startMonth, YearMonth endMonth) {
-		List<InterimRemainAggregateOutputData> lstOutData = new ArrayList<>();
 		//アルゴリズム「締めと残数算出対象期間を取得する」を実行する
 		ClosureRemainPeriodOutputData closureData = remainManaExport.getClosureRemainPeriod(employeeId, baseDate, startMonth, endMonth);
 		if(closureData == null) {
-			return lstOutData;
+			return new ArrayList<>();
 		}
 		//残数算出対象年月を設定する
-		for(YearMonth ym = closureData.getStartMonth(); closureData.getEndMonth().greaterThanOrEqualTo(ym); ym = ym.addMonths(1)) {
+		List<YearMonth> lstYM = new ArrayList<>();
+		for(YearMonth ym = closureData.getStartMonth(); closureData.getEndMonth().greaterThanOrEqualTo(ym); ym = ym.addMonths(1)){
+			lstYM.add(ym);
+		}
+		List<InterimRemainAggregateOutputData> lstOutData = new ArrayList<>();
+		for(YearMonth ym : lstYM){
 			InterimRemainAggregateOutputData outPutData = new InterimRemainAggregateOutputData(ym, 0, 0, 0, 0, 0);
 			//アルゴリズム「指定年月の締め期間を取得する」を実行する
 			DatePeriod dateData = remainManaExport.getClosureOfMonthDesignation(closureData.getClosure(), ym);
@@ -85,13 +88,10 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 	@Override
 	public double getTotalOccurrentDay(String employeeId, DatePeriod dateData) {
 		//ドメインモデル「暫定振出管理データ」を取得する
-		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(employeeId, dateData, RemainType.PICKINGUP);
 		double outputData = 0;
-		for (InterimRemain data : getRemainBySidPriod) {
-			Optional<InterimRecMng> recData = recAbsRepo.getReruitmentById(data.getRemainManaID());
-			if(recData.isPresent()) {
-				outputData += recData.get().getOccurrenceDays().v();					
-			}
+		List<InterimRecMng> lstRecData = recAbsRepo.getRecBySidDatePeriod(employeeId, dateData);
+		for (InterimRecMng rec : lstRecData) {
+			outputData += rec.getOccurrenceDays().v();
 		}
 		//ドメインモデル「振出管理データ」を取得する
 		List<PayoutManagementData> lstComfirmData = confirmRecMngRepo.getBySidAndDatePeriod(employeeId, dateData);
@@ -104,13 +104,17 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 	@Override
 	public double getUsedDays(String employeeId, DatePeriod dateData) {
 		//ドメインモデル「暫定振休管理データ」を取得する
-		List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(employeeId, dateData, RemainType.PAUSE);
+		//List<InterimRemain> getRemainBySidPriod = remainRepo.getRemainBySidPriod(employeeId, dateData, RemainType.PAUSE);
 		double outputData = 0;
-		for (InterimRemain data : getRemainBySidPriod) {
+/*		for (InterimRemain data : getRemainBySidPriod) {
 			Optional<InterimAbsMng> absData = recAbsRepo.getAbsById(data.getRemainManaID());
 			if(absData.isPresent()) {
 				outputData += absData.get().getRequeiredDays().v();
 			}
+		}*/
+		List<InterimAbsMng> lstAbsData = recAbsRepo.getAbsBySidDatePeriod(employeeId, dateData);
+		for (InterimAbsMng absData : lstAbsData) {
+			outputData += absData.getRequeiredDays().v();
 		}
 		//ドメインモデル「振休管理データ」を取得する
 		List<SubstitutionOfHDManagementData> lstComfirmData = comfirmAbsMngRepo.getBySidAndDatePeriod(employeeId, dateData);
@@ -172,32 +176,22 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 	}
 	@Override
 	public Optional<AbsRecInterimOutputPara> getInterimAbsMng(String sid, DatePeriod dateData) {
-		List<InterimRemain> lstRemain = remainRepo.getRemainBySidPriod(sid, dateData, RemainType.PICKINGUP);
-		if(lstRemain.isEmpty()) {
-			return Optional.empty();
-		}
 		List<InterimAbsMng> lstAbsData = new ArrayList<InterimAbsMng>();
-		List<InterimRecMng> lstRecData = new ArrayList<InterimRecMng>();
 		List<InterimRecAbsMng> lstRecAbsMng = new ArrayList<InterimRecAbsMng>();
 		//ドメインモデル「暫定振出振休紐付け管理」を取得する 振出管理データ IN (暫定振出管理データ.残数管理データID)
-		lstRemain.stream().forEach(x -> {
-			//ドメインモデル「暫定振出管理データ」を取得する
-			Optional<InterimRecMng> optRecMng = recAbsRepo.getReruitmentById(x.getRemainManaID());
-			optRecMng.ifPresent(a -> {
-				lstRecData.add(a);
-				//ドメインモデル「暫定振出振休紐付け管理」を取得する
-				List<InterimRecAbsMng> optRecAbsData = recAbsRepo.getRecOrAbsMng(x.getRemainManaID(), true, DataManagementAtr.INTERIM);
-				optRecAbsData.stream().forEach(y -> {
-					lstRecAbsMng.add(y);
-					//ドメインモデル「暫定振休管理データ」を取得する
-					Optional<InterimAbsMng> optAbsMng = recAbsRepo.getAbsById(y.getAbsenceMngId());
-					if(optAbsMng.isPresent()) {
-						lstAbsData.add(optAbsMng.get());
-					}
-				});	
+		List<InterimRecMng> lstRecData = recAbsRepo.getRecBySidDatePeriod(sid, dateData);
+		for (InterimRecMng x : lstRecData) {
+			//ドメインモデル「暫定振出振休紐付け管理」を取得する
+			lstRecAbsMng = recAbsRepo.getRecOrAbsMng(x.getRecruitmentMngId(), true, DataManagementAtr.INTERIM);
+			lstRecAbsMng.stream().forEach(y -> {
+				//ドメインモデル「暫定振休管理データ」を取得する
+				Optional<InterimAbsMng> optAbsMng = recAbsRepo.getAbsById(y.getAbsenceMngId());
+				if(optAbsMng.isPresent()) {
+					lstAbsData.add(optAbsMng.get());
+				}
 			});
-		});
-		
+		}
+				
 		return Optional.of(new AbsRecInterimOutputPara(lstAbsData, lstRecAbsMng, lstRecData));
 	}
 	@Override
@@ -481,12 +475,12 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 	public double getMonthExtinctionDays(String sid, DatePeriod dateData) {
 		//ドメインモデル「暫定振出管理データ」を取得する
 		DatePeriod dateTmp = new DatePeriod(GeneralDate.min(), dateData.end());
-		List<InterimRemain> lstRemain = remainRepo.getRemainBySidPriod(sid, dateTmp, RemainType.PAUSE);
+		/*List<InterimRemain> lstRemain = remainRepo.getRemainBySidPriod(sid, dateTmp, RemainType.PAUSE);
 		List<String> lstMngId = new ArrayList<>();
 		lstRemain.stream().forEach(x -> {
 			lstMngId.add(x.getRemainManaID());			
-		});
-		List<InterimRecMng> lstInterimRecMng = recAbsRepo.getRecByIdPeriod(lstMngId, 0.0, dateData);
+		});*/
+		List<InterimRecMng> lstInterimRecMng = recAbsRepo.getRecByIdPeriod(sid, dateTmp, 0.0, dateData);
 		double interimUnUseDays = 0;
 		for (InterimRecMng interimRecData : lstInterimRecMng) {
 			interimUnUseDays += interimRecData.getUnUsedDays().v();

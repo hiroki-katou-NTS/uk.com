@@ -45,12 +45,15 @@ module nts.uk.at.view.kmk008.i {
 
             insertAndUpdate() {
                 let self = this;
+                nts.uk.ui.block.invisible();
                 new service.Service().getData().done(data => {
                     if (data && data.agreementOperationSettingDetailDto) {
                         new service.Service().updateData(new OperationSettingModelUpdate(self.operationSetting()));
+                        nts.uk.ui.block.clear();
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     } else {
                         new service.Service().insertData(new OperationSettingModelUpdate(self.operationSetting()));
+                        nts.uk.ui.block.clear();
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     }
                 });

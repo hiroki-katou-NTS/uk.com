@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.monthly;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -117,6 +118,7 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 					.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
 					.getList(c -> toDomain(c)));
 		});
+		results.sort(Comparator.comparing(TimeOfMonthly::getEmployeeId));
 		return results;
 	}
 	
@@ -126,14 +128,22 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 		
 		val yearMonthValues = yearMonths.stream().map(c -> c.v()).collect(Collectors.toList());
 		
-		List<TimeOfMonthly> results = new ArrayList<>();
+		// List<TimeOfMonthly> results = new ArrayList<>();
+		List<KrcdtMonMerge> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {			
 			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_YEARMONTHS, KrcdtMonMerge.class)
 					.setParameter("employeeIds", splitData)
 					.setParameter("yearMonths", yearMonthValues)
-					.getList(c -> toDomain(c)));
+					.getList());
 		});
-		return results;
+		results.sort((o1, o2) -> {
+			int tmp = o1.getKrcdtMonMergePk().getEmployeeId().compareTo(o2.getKrcdtMonMergePk().getEmployeeId());
+			if (tmp != 0) return tmp;
+			tmp = o1.getKrcdtMonMergePk().getYearMonth() - o2.getKrcdtMonMergePk().getYearMonth();
+			if (tmp != 0) return tmp;
+			return o1.getStartYmd().compareTo(o2.getStartYmd());
+		});
+		return results.stream().map(item -> toDomain(item)).collect(Collectors.toList());
 	}
 		
 	/** 検索　（基準日） */

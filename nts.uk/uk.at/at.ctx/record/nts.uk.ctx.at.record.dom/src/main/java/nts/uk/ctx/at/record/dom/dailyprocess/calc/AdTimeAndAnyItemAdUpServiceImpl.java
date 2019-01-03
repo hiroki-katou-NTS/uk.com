@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -13,19 +14,20 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcdureProcess;
+import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcedureFactory;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 日別実績の勤怠時間と任意項目を同時更新し、ストアドを実行するためのサービス
@@ -61,6 +63,9 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 	@Inject
 	private TimeLeavingOfDailyPerformanceRepository timeLeave;
 	
+	@Inject
+	private StoredProcedureFactory dbStoredProcess;
+	
 	@Override
 	public void addAndUpdate(String empId ,GeneralDate ymd,
 							Optional<AttendanceTimeOfDailyPerformance> attendanceTime, Optional<AnyItemValueOfDaily> anyItem) {
@@ -84,9 +89,25 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 	
 	@Override
 	public List<IntegrationOfDaily> addAndUpdate(List<IntegrationOfDaily> daily, Map<WorkTypeCode, WorkType> workTypes) {
-		List<IntegrationOfDaily> processed = storedProcedureProcess.dailyProcessing(daily, workTypes);
 		
-		processed.stream().forEach(d -> {
+		return saveOnly(runStoredProcess(daily, workTypes));
+	}
+	
+	@Override
+	public IntegrationOfDaily addAndUpdate(IntegrationOfDaily daily) {
+		return addAndUpdate(Arrays.asList(daily)).get(0);
+	}
+
+	@Override
+	public List<IntegrationOfDaily> runStoredProcess(List<IntegrationOfDaily> daily) {
+		return runStoredProcess(daily, new HashMap<>());
+	}
+
+	@Override
+	public List<IntegrationOfDaily> saveOnly(List<IntegrationOfDaily> daily) {
+		String comId = AppContexts.user().companyId();
+		
+		daily.stream().forEach(d -> {
 			//勤怠時間更新
 			d.getAttendanceTimeOfDailyPerformance().ifPresent(at -> {
 				attendanceTimeRepository.update(at);
@@ -95,14 +116,16 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 			d.getAnyItemValue().ifPresent(ai -> {
 				anyItemValueOfDailyRepo.persistAndUpdate(ai);
 			});
+			
+			dbStoredProcess.runStoredProcedure(comId, d.getAttendanceTimeOfDailyPerformance(), d.getWorkInformation());
 		});
-		
-		return processed;
+		return daily;
 	}
-	
+
 	@Override
-	public IntegrationOfDaily addAndUpdate(IntegrationOfDaily daily) {
-		return addAndUpdate(Arrays.asList(daily)).get(0);
+	public List<IntegrationOfDaily> runStoredProcess(List<IntegrationOfDaily> daily,
+			Map<WorkTypeCode, WorkType> workTypes) {
+		return storedProcedureProcess.dailyProcessing(daily, workTypes);
 	}
 
 }

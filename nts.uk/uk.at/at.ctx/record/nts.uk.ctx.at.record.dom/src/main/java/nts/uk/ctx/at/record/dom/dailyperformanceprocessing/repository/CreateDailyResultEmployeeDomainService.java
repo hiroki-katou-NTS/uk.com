@@ -24,25 +24,25 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 public interface CreateDailyResultEmployeeDomainService {
 
+	@SuppressWarnings("rawtypes")
 	ProcessState createDailyResultEmployee(AsyncCommandHandlerContext asyncContext, String employeeId,
 			DatePeriod periodTimes, String companyId, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog,
-			boolean reCreateWorkType, EmployeeGeneralInfoImport employeeGeneralInfoImport,
-			Optional<StampReflectionManagement> stampReflectionManagement,
-			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
-			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem,
-			PeriodInMasterList periodInMasterList);
-
-	ProcessState createDailyResultEmployeeNew(AsyncCommandHandlerContext asyncContext,
-			String employeeId, List<GeneralDate> executedDate, String companyId, String empCalAndSumExecLogID,
-			Optional<ExecutionLog> executionLog, boolean reCreateWorkType,
+			boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime,
 			EmployeeGeneralInfoImport employeeGeneralInfoImport,
 			Optional<StampReflectionManagement> stampReflectionManagement,
 			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
+			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem, PeriodInMasterList periodInMasterList);
+
+	@SuppressWarnings("rawtypes")
+	ProcessState createDailyResultEmployeeNew(AsyncCommandHandlerContext asyncContext, String employeeId,
+			GeneralDate executedDate, String companyId, String empCalAndSumExecLogID,
+			Optional<ExecutionLog> executionLog, boolean reCreateWorkType, boolean reCreateWorkPlace,
+			boolean reCreateRestTime, EmployeeGeneralInfoImport employeeGeneralInfoImport,
+			Optional<StampReflectionManagement> stampReflectionManagement,
+			Map<String, Map<String, WorkingConditionItem>> mapWorkingConditionItem,
 			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem,
-			Optional<EmploymentHistoryImported> employmentHisOptional,
-			String employmentCode,
-			PeriodInMasterList periodInMasterList,
-			Optional<ClosureStatusManagement> closureStatusManagement);
+			Optional<EmploymentHistoryImported> employmentHisOptional, String employmentCode,
+			PeriodInMasterList periodInMasterList, Optional<ClosureStatusManagement> closureStatusManagement);
 
 	/**
 	 * create method for kbt002 call
@@ -56,15 +56,16 @@ public interface CreateDailyResultEmployeeDomainService {
 	 * @param reCreateWorkType
 	 * @return
 	 */
+	@SuppressWarnings("rawtypes")
 	ProcessState createDailyResultEmployeeWithNoInfoImport(AsyncCommandHandlerContext asyncContext, String employeeId,
 			DatePeriod periodTimes, String companyId, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog,
-			boolean reCreateWorkType, Optional<StampReflectionManagement> stampReflectionManagement);
-	
+			boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime, Optional<StampReflectionManagement> stampReflectionManagement);
+
+	@SuppressWarnings("rawtypes")
 	ProcessState createDailyResultEmployeeWithNoInfoImportNew(AsyncCommandHandlerContext asyncContext,
-			String employeeId, List<GeneralDate> executeDate, String companyId,
-			String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog, boolean reCreateWorkType,
-			Optional<StampReflectionManagement> stampReflectionManagement, 
-			Optional<EmploymentHistoryImported> employmentHisOptional,
-			String employmentCode);
+			String employeeId, List<GeneralDate> executeDate, String companyId, String empCalAndSumExecLogID,
+			Optional<ExecutionLog> executionLog, boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime,
+			Optional<StampReflectionManagement> stampReflectionManagement,
+			Optional<EmploymentHistoryImported> employmentHisOptional, String employmentCode);
 
 }

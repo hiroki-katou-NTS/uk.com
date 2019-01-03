@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.weekly;
 
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,10 +9,13 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.database.DatabaseProduct;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
@@ -51,7 +55,15 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 	private static final String WHERE_YM = "WHERE a.PK.employeeId = :employeeId "
 			+ "AND a.PK.yearMonth = :yearMonth ";
 
+	private static final String WHERE_SIDS_AND_YM = "WHERE a.PK.employeeId IN :employeeIds "
+			+ "AND a.PK.yearMonth = :yearMonth ";
+
 	private static final String WHERE_CLOSURE = WHERE_YM
+			+ "AND a.PK.closureId = :closureId "
+			+ "AND a.PK.closureDay = :closureDay "
+			+ "AND a.PK.isLastDay = :isLastDay ";
+
+	private static final String WHERE_SIDS_AND_CLOSURE = WHERE_SIDS_AND_YM
 			+ "AND a.PK.closureId = :closureId "
 			+ "AND a.PK.closureDay = :closureDay "
 			+ "AND a.PK.isLastDay = :isLastDay ";
@@ -68,11 +80,11 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 			+ "ORDER BY a.startYmd ";
 
 	private static final String FIND_BY_EMPLOYEES = "SELECT a FROM KrcdtWekAttendanceTime a "
-			+ WHERE_CLOSURE
+			+ WHERE_SIDS_AND_CLOSURE
 			+ "ORDER BY a.startYmd ";
 
 	private static final String FIND_BY_SIDS_AND_YEARMONTHS = "SELECT a FROM KrcdtWekAttendanceTime a "
-			+ WHERE_YM
+			+ WHERE_SIDS_AND_YM
 			+ "ORDER BY a.PK.employeeId, a.PK.yearMonth, a.startYmd ";
 	
 	private static final String FIND_BY_PERIOD = "SELECT a FROM KrcdtWekAttendanceTime a "
@@ -163,10 +175,12 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 		
 		List<AttendanceTimeOfWeekly> results = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_YEARMONTHS, KrcdtWekAttendanceTime.class)
-					.setParameter("employeeIds", splitData)
-					.setParameter("yearMonths", yearMonthValues)
-					.getList(c -> c.toDomain()));
+			CollectionUtil.split(yearMonthValues, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstYearMonth -> {
+				results.addAll(this.queryProxy().query(FIND_BY_SIDS_AND_YEARMONTHS, KrcdtWekAttendanceTime.class)
+						.setParameter("employeeIds", splitData)
+						.setParameter("yearMonths", lstYearMonth)
+						.getList(c -> c.toDomain()));
+			});
 		});
 		return results;
 	}
@@ -183,20 +197,68 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 	}
 	
 	/** 登録および更新 */
+	@SneakyThrows
 	@Override
 	public void persistAndUpdate(AttendanceTimeOfWeekly domain){
+		
+		// 登録・更新を判断
+		boolean isNeedInsert;
+		KrcdtWekAttendanceTime entity;
+		try (PreparedStatement stmt = this.connection().prepareStatement(
+				"select INS_DATE, INS_CCD, INS_SCD, INS_PG from KRCDT_WEK_ATTENDANCE_TIME"
+				// SQLServerの場合は共有ロックがかかってしまい、並列で実行するとここでデッドロックが起きるのでNOLOCKで取得
+				// ダーティリードの可能性があるが許容する（週次テーブルへの更新は月次集計だけなので、恐らく問題になることはない）
+				+ (this.database().is(DatabaseProduct.MSSQLSERVER) ? " with(nolock)" : "")
+				+ " where SID = ?"
+				+ " and YM = ?"
+				+ " and CLOSURE_ID = ?"
+				+ " and CLOSURE_DAY = ?"
+				+ " and IS_LAST_DAY = ?"
+				+ " and WEEK_NO = ?")) {
+			
+			stmt.setString(1, domain.getEmployeeId());
+			stmt.setInt(2, domain.getYearMonth().v());
+			stmt.setInt(3, domain.getClosureId().value);
+			stmt.setInt(4, domain.getClosureDate().getClosureDay().v());
+			stmt.setInt(5, (domain.getClosureDate().getLastDayOfMonth() ? 1 : 0));
+			stmt.setInt(6, domain.getWeekNo());
+			
+			// INS_***の列だけは取得しておく
+			Optional<KrcdtWekAttendanceTime> opt = new NtsResultSet(stmt.executeQuery())
+					.getSingle(r -> {
+						KrcdtWekAttendanceTime e = new KrcdtWekAttendanceTime();
+						e.setInsDate(r.getGeneralDateTime("INS_DATE"));
+						e.setInsCcd(r.getString("INS_CCD"));
+						e.setInsScd(r.getString("INS_SCD"));
+						e.setInsPg(r.getString("INS_PG"));
+						return e;
+					});
+			
+			isNeedInsert = !opt.isPresent();
+			entity = opt.orElseGet(() -> new KrcdtWekAttendanceTime());
+			entity.fromDomainForPersist(domain);
+		}
+		
+		fillEntity(domain, entity);
+		
+		// 登録が必要な時、登録を実行
+		if (isNeedInsert) this.commandProxy().insert(entity);
+		else this.commandProxy().update(entity);
+	}
+	
+	/** 登録 */
+	@Override
+	public void persist(AttendanceTimeOfWeekly domain){
+		
+		KrcdtWekAttendanceTime entity = new KrcdtWekAttendanceTime();
+		entity.fromDomainForPersist(domain);
+		fillEntity(domain, entity);
+		this.commandProxy().insert(entity);
+	}
 
-		// 締め日付
-		val closureDate = domain.getClosureDate();
+	private static void fillEntity(AttendanceTimeOfWeekly domain, KrcdtWekAttendanceTime entity) {
 		
 		// キー
-		val key = new KrcdtWekAttendanceTimePK(
-				domain.getEmployeeId(),
-				domain.getYearMonth().v(),
-				domain.getClosureId().value,
-				closureDate.getClosureDay().v(),
-				(closureDate.getLastDayOfMonth() ? 1 : 0),
-				domain.getWeekNo());
 		val domainKey = new AttendanceTimeOfWeeklyKey(
 				domain.getEmployeeId(),
 				domain.getYearMonth(),
@@ -207,16 +269,6 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 		// 週別の計算
 		val weeklyCalculation = domain.getWeeklyCalculation();
 		
-		// 登録・更新を判断　および　キー値設定
-		boolean isNeedPersist = false;
-		KrcdtWekAttendanceTime entity = this.getEntityManager().find(KrcdtWekAttendanceTime.class, key);
-		if (entity == null){
-			isNeedPersist = true;
-			entity = new KrcdtWekAttendanceTime();
-			entity.fromDomainForPersist(domain);
-		}
-		else entity.fromDomainForUpdate(domain);
-
 		// 集計時間：残業時間：集計残業時間
 		val totalWorkingTime = weeklyCalculation.getTotalWorkingTime();
 		val aggrOverTimeMap = totalWorkingTime.getOverTime().getAggregateOverTimeMap();
@@ -472,9 +524,6 @@ public class JpaAttendanceTimeOfWeekly extends JpaRepository implements Attendan
 				entityAnyItemValueList.add(entityAnyItemValue);
 			}
 		}
-		
-		// 登録が必要な時、登録を実行
-		if (isNeedPersist) this.getEntityManager().persist(entity);
 	}
 	
 	/** 削除 */

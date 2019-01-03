@@ -73,4 +73,13 @@ public interface ComDayOffManaDataRepository {
 	List<CompensatoryDayOffManaData> getByDayOffDatePeriod(String sid, DatePeriod dateData);
 	
 	void deleteById(List<String> comDayOffID);
+	/**
+	 * 
+	 * @param cid
+	 * @param sid
+	 * @param ymd 代休日 < INPUT．集計開始日 OR 代休日がない
+	 * @param unOffset 未相殺日数 > 0 OR 未相殺時間数 > 0
+	 * @return
+	 */
+	List<CompensatoryDayOffManaData> getBySidYmd(String cid, String sid, GeneralDate ymd);
 }

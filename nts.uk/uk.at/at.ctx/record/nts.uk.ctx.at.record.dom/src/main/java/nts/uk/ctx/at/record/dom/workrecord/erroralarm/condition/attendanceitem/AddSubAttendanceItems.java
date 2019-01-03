@@ -24,9 +24,9 @@ public class AddSubAttendanceItems extends DomainObject {
 	// 減算する勤怠項目一覧
 	private List<Integer> substractionAttendanceItems;
 
-	public int calculate(Function<List<Integer>, List<Integer>> getItemValue) {
-		int plus = getItemValue.apply(this.additionAttendanceItems).stream().mapToInt(c -> c == null ? 0 : c).sum();
-		int minus = getItemValue.apply(this.substractionAttendanceItems).stream().mapToInt(c -> c == null ? 0 : c).sum();
+	public double calculate(Function<List<Integer>, List<Double>> getItemValue) {
+		double plus = getItemValue.apply(this.additionAttendanceItems).stream().mapToDouble(c -> c == null ? 0 : c).sum();
+		double minus = getItemValue.apply(this.substractionAttendanceItems).stream().mapToDouble(c -> c == null ? 0 : c).sum();
 		return plus - minus;
 	}
 }

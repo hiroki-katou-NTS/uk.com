@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.app.command.application.holidaywork;
 
 import static java.util.stream.Collectors.groupingBy;
 
-import java.lang.reflect.Array;
+/*import java.lang.reflect.Array;*/
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -207,7 +207,7 @@ public class CheckBeforeRegisterHolidayWork {
 			for(Map.Entry<Integer,TimeWithCalculationImport> entry : dailyAttendanceTimeCaculationImport.getHolidayWorkTime().entrySet()){
 				if(breakTime.getFrameNo() == entry.getKey()){
 					holidayThreeProcess.checkCaculationActualExcess(appRoot.getPrePostAtr().value, ApplicationType.BREAK_TIME_APPLICATION.value, employeeId, holidayWorkDomain.getCompanyID(), appRoot.getAppDate(), breakTime, 
-							holidayWorkDomain.getWorkTimeCode().toString(), entry.getValue().getCalTime(), false);
+							holidayWorkDomain.getWorkTimeCode() == null ? "" : holidayWorkDomain.getWorkTimeCode().toString(), entry.getValue().getCalTime(), false);
 				}
 			}
 		}

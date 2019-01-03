@@ -26,10 +26,12 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageResource;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ErrorPresent;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -41,6 +43,9 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregationEmployeeService {
 
+	/** リポジトリ：就業計算と集計実行ログ */
+	@Inject
+	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
 	/** ドメインサービス：月別実績を集計する */
 	@Inject
 	private AggregateMonthlyRecordService aggregateMonthlyRecordService;
@@ -89,6 +94,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	private UpdateAllDomainMonthService monthService;
 	
 	/** 社員の月別実績を集計する */
+	@SuppressWarnings("rawtypes")
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public ProcessState aggregate(AsyncCommandHandlerContext asyncContext, String companyId, String employeeId,
@@ -117,6 +123,7 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	}
 	
 	/** 社員の月別実績を集計する */
+	@SuppressWarnings("rawtypes")
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public MonthlyAggrEmpServiceValue aggregate(AsyncCommandHandlerContext asyncContext, String companyId, String employeeId,
@@ -176,10 +183,23 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 			//ConcurrentStopwatches.start("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
 			
 			// 中断依頼が出されているかチェックする
-			if (asyncContext.hasBeenRequestedToCancel()) {
-				//asyncContext.finishedAsCancelled();
+//			if (asyncContext.hasBeenRequestedToCancel()) {
+//				status.setState(ProcessState.INTERRUPTION);
+//				return status;
+//			}
+			
+			// 「就業計算と集計実行ログ」を取得し、実行状況を確認する
+			val exeLogOpt = this.empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);
+			if (!exeLogOpt.isPresent()){
 				status.setState(ProcessState.INTERRUPTION);
 				return status;
+			}
+			if (exeLogOpt.get().getExecutionStatus().isPresent()){
+				val executionStatus = exeLogOpt.get().getExecutionStatus().get();
+				if (executionStatus == ExeStateOfCalAndSum.START_INTERRUPTION){
+					status.setState(ProcessState.INTERRUPTION);
+					return status;
+				}
 			}
 			
 			// 処理する期間が締められているかチェックする
@@ -272,10 +292,10 @@ public class MonthlyAggregationEmployeeServiceImpl implements MonthlyAggregation
 	 * @param period2 期間2
 	 * @return true：重複あり、false：重複なし
 	 */
-	private boolean periodCompareEx(DatePeriod period1, DatePeriod period2){
-		
-		if (period1.start().after(period2.end())) return false;
-		if (period1.end().before(period2.start())) return false;
-		return true;
-	}
+//	private boolean periodCompareEx(DatePeriod period1, DatePeriod period2){
+//		
+//		if (period1.start().after(period2.end())) return false;
+//		if (period1.end().before(period2.start())) return false;
+//		return true;
+//	}
 }

@@ -17,6 +17,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
@@ -130,22 +131,25 @@ public class JpaActualLockRepository extends JpaRepository implements ActualLock
 		Root<KrcstActualLock> root = cq.from(KrcstActualLock.class);
 		cq.select(root);
 
-		// Predicate where clause
-		List<Predicate> predicateList = new ArrayList<>();
-		predicateList
-				.add(bd.equal(root.get(KrcstActualLock_.krcstActualLockPK).get(KrcstActualLockPK_.cid), companyId));
-		
-		// in closure id
-		predicateList
-				.add(root.get(KrcstActualLock_.krcstActualLockPK).get(KrcstActualLockPK_.closureId).in(closureIds));
+		List<KrcstActualLock> resultList = new ArrayList<>();
 
-		// Set Where clause to SQL Query
-		cq.where(predicateList.toArray(new Predicate[] {}));
+		CollectionUtil.split(closureIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			// Predicate where clause
+			List<Predicate> predicateList = new ArrayList<>();
+			predicateList
+					.add(bd.equal(root.get(KrcstActualLock_.krcstActualLockPK).get(KrcstActualLockPK_.cid), companyId));
+			
+			// in closure id
+			predicateList
+					.add(root.get(KrcstActualLock_.krcstActualLockPK).get(KrcstActualLockPK_.closureId).in(splitData));
 
-		// Create Query
-		TypedQuery<KrcstActualLock> query = em.createQuery(cq);
+			// Set Where clause to SQL Query
+			cq.where(predicateList.toArray(new Predicate[] {}));
 
-		return query.getResultList().stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
+
+		return resultList.stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 	/*
 	 * (non-Javadoc)

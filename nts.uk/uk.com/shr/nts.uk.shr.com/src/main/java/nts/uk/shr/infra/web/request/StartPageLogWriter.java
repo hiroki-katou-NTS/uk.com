@@ -1,8 +1,8 @@
 package nts.uk.shr.infra.web.request;
 
 import java.io.IOException;
-import java.util.Optional;
-import java.util.function.Function;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 import javax.enterprise.inject.spi.CDI;
@@ -12,28 +12,24 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import nts.arc.time.GeneralDateTime;
-import nts.gul.text.IdentifierUtil;
 import nts.gul.text.StringUtil;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.context.AppContextsConfig;
 import nts.uk.shr.com.context.RequestInfo;
 import nts.uk.shr.com.context.ScreenIdentifier;
-import nts.uk.shr.com.context.loginuser.role.DefaultLoginUserRoles;
-import nts.uk.shr.com.security.audittrail.UserInfoAdaptorForLog;
-import nts.uk.shr.com.security.audittrail.basic.LogBasicInformation;
-import nts.uk.shr.com.security.audittrail.basic.LoginInformation;
-import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
-import nts.uk.shr.com.security.audittrail.start.StartPageLog;
-import nts.uk.shr.com.security.audittrail.start.StartPageLogStorageRepository;
-import nts.uk.shr.infra.application.auth.WindowsAccount;
+import nts.uk.shr.com.program.Program;
+import nts.uk.shr.com.program.ProgramsManager;
 import nts.uk.shr.infra.web.util.FilterConst;
 import nts.uk.shr.infra.web.util.FilterHelper;
+import nts.uk.shr.infra.web.util.StartPageLogService;
 
 public class StartPageLogWriter implements Filter {
 
+	private static final List<Program> DEFAULT_NOT_LOG = Arrays.asList(ProgramsManager.KAF000B, ProgramsManager.CMM045A);
+	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 	}
@@ -41,100 +37,68 @@ public class StartPageLogWriter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		
+
 		writeLog(request);
 		
+		Cookie cookie = new Cookie(FilterConst.JUMP_FROM_MENU, "");
+        cookie.setMaxAge(0);
+        ((HttpServletResponse) response).addCookie(cookie);
+
 		chain.doFilter(request, response);
-	}
-
-	private void writeLog(ServletRequest request) {
-		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		LoginUserContext context = AppContexts.user();
-		RequestInfo requseted = AppContexts.requestedWebApi();
-		WindowsAccount windowsAccount = AppContexts.windowsAccount();
-		String requestPagePath = httpRequest.getRequestURL().toString();
-		
-		boolean isStartFromMenu = isStartFromMenu(httpRequest);
-		
-		ScreenIdentifier targetPg = ScreenIdentifier.create(requestPagePath, httpRequest.getQueryString());
-		
-		if(StringUtil.isNullOrEmpty(targetPg.getProgramId(), true) || FilterHelper.isLoginPage(requestPagePath)){
-			return;
-		}
-		
-		LogBasicInformation basic = new LogBasicInformation(
-				IdentifierUtil.randomUniqueId(), 
-				getValue(context, c -> c.companyId()),
-				UserInfo.employee(
-						getValue(context, c -> c.userId()), 
-						getValue(context, c -> {
-							if(c.employeeId() == null){
-								return c.userId();
-							}
-							return c.employeeId();
-						}),
-						getValue(context, c -> {
-							UserInfoAdaptorForLog userAdapter = CDI.current().select(UserInfoAdaptorForLog.class).get();
-							if(context.isEmployee()){
-								return userAdapter.findByEmployeeId(c.employeeId()).getUserName();
-							}
-							return userAdapter.findByUserId(c.userId()).getUserName();
-						})), 
-				new LoginInformation(
-						getValue(requseted, c -> c.getRequestIpAddress()),
-						getValue(requseted, c -> c.getRequestPcName()), 
-						getValue(windowsAccount, c -> c.getUserName())),
-				GeneralDateTime.now(), 
-				getValue(context, c -> {
-					return getValue(c.roles(), role -> DefaultLoginUserRoles.cloneFrom(role));
-				}), targetPg, Optional.empty());
-		
-		saveLog(initLog(httpRequest, basic, isStartFromMenu));
-	}
-	
-	private boolean isStartFromMenu(HttpServletRequest httpRequest){
-		if(httpRequest.getCookies() == null){
-			return false;
-		}
-		return Stream.of(httpRequest.getCookies()).filter(c -> c.getName().equals(FilterConst.JUMP_FROM_MENU)).findFirst().isPresent();
-	}
-
-	private StartPageLog initLog(HttpServletRequest httpRequest, LogBasicInformation basic, boolean requestedFromMenu) {
-		
-		if(requestedFromMenu){
-			return StartPageLog.specialStarted(basic);
-		}
-		
-		return StartPageLog.pageStarted(getReferered(httpRequest), basic);
 	}
 
 	@Override
 	public void destroy() {
 	}
 
-	private void saveLog(StartPageLog log) {
-		StartPageLogStorageRepository logStorage = CDI.current().select(StartPageLogStorageRepository.class).get();
-		
-		logStorage.save(log);
-	}
+	public void writeLog(ServletRequest request) {
 
-	private ScreenIdentifier getReferered(HttpServletRequest r) {
-		String refereredPath = r.getHeader(FilterConst.REFERED_REQUEST);
-		
-		if(StringUtil.isNullOrEmpty(refereredPath, true)){
-			return null;
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		String requestPagePath = httpRequest.getRequestURL().toString();
+
+		ScreenIdentifier target = ScreenIdentifier.create(requestPagePath, httpRequest.getQueryString());
+
+		boolean isStartFromMenu = isStartFromMenu(httpRequest);
+		if (!isStartFromMenu) {
+			
+			String before = getReferered(httpRequest);
+			if(before != null){
+				String ip = FilterHelper.getClientIp(httpRequest);
+				String pcName = FilterHelper.getPcName(ip);
+				String webApi = FilterHelper.detectWebapi(before);
+
+				AppContextsConfig.setBeforeRequestedWebAPI(new RequestInfo(before, webApi, ip, pcName));
+			}
 		}
-		
-		return ScreenIdentifier.create(refereredPath);
+		String targetPg = target.getProgramId() + target.getScreenId();
+		if (DEFAULT_NOT_LOG.stream().filter(c -> c.getPId().equals(targetPg)).findFirst().isPresent()) {
+			return;
+		}
+
+		StartPageLogService logService = CDI.current().select(StartPageLogService.class).get();
+
+		logService.writeLog(target);
+
 	}
 	
-	private <U, T> T getValue(U source, Function<U, T> getter){
-		if(source != null){
-			return getter.apply(source);
+
+
+	private boolean isStartFromMenu(HttpServletRequest httpRequest) {
+		if (httpRequest.getCookies() == null) {
+			return false;
 		}
-		
-		return null;
+		return Stream.of(httpRequest.getCookies()).filter(c -> c.getName().equals(FilterConst.JUMP_FROM_MENU))
+				.findFirst().isPresent();
+	}
+
+	private String getReferered(HttpServletRequest r) {
+		String refereredPath = r.getHeader(FilterConst.REFERED_REQUEST);
+
+		if (StringUtil.isNullOrEmpty(refereredPath, true)) {
+			return null;
+		}
+
+		return refereredPath;
 	}
 
 }
-

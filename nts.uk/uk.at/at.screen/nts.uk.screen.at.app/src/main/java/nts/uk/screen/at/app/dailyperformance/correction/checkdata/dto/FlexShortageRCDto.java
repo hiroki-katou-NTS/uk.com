@@ -62,6 +62,8 @@ public class FlexShortageRCDto {
 			return new RCMessageErrorDaily(TextResource.localize("Msg_1175", redConditionMessage), "Msg_1175");
 		case 2:
 			return new RCMessageErrorDaily(TextResource.localize("Msg_1291", flexHoliday), "Msg_1291");
+		case 3:
+			return new RCMessageErrorDaily(TextResource.localize("Msg_1448"), "Msg_1448");
 		default:
 			return null;
 		}

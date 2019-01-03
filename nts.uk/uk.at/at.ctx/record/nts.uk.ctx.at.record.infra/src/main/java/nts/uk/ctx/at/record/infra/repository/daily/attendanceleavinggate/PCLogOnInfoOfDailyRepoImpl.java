@@ -31,15 +31,15 @@ import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 @Stateless
 public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOnInfoOfDailyRepo {
 
-	private static final String REMOVE_BY_KEY;
+//	private static final String REMOVE_BY_KEY;
 
 	static {
-		StringBuilder builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDayPcLogonInfo a ");
-		builderString.append("WHERE a.id.sid = :employeeId ");
-		builderString.append("AND a.id.ymd = :ymd ");
-		REMOVE_BY_KEY = builderString.toString();
+//		StringBuilder builderString = new StringBuilder();
+//		builderString.append("DELETE ");
+//		builderString.append("FROM KrcdtDayPcLogonInfo a ");
+//		builderString.append("WHERE a.id.sid = :employeeId ");
+//		builderString.append("AND a.id.ymd = :ymd ");
+//		REMOVE_BY_KEY = builderString.toString();
 	}
 
 	@Override
@@ -56,10 +56,14 @@ public class PCLogOnInfoOfDailyRepoImpl extends JpaRepository implements PCLogOn
 		if (baseDate.isEmpty()) {
 			return Collections.emptyList();
 		}
-		return toList(this.queryProxy()
-				.query("SELECT al FROM KrcdtDayPcLogonInfo al WHERE al.id.sid = :sid AND al.id.ymd IN :ymd",
-						KrcdtDayPcLogonInfo.class)
-				.setParameter("ymd", baseDate).setParameter("sid", employeeId).getList().stream());
+		List<PCLogOnInfoOfDaily> resultList = new ArrayList<>();
+		CollectionUtil.split(baseDate, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(toList(this.queryProxy()
+					.query("SELECT al FROM KrcdtDayPcLogonInfo al WHERE al.id.sid = :sid AND al.id.ymd IN :ymd",
+							KrcdtDayPcLogonInfo.class)
+					.setParameter("ymd", subList).setParameter("sid", employeeId).getList().stream()));
+		});
+		return resultList;
 	}
 
 	@Override

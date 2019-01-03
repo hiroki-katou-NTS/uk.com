@@ -58,6 +58,11 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             self.payDayCalculate = ko.observable("");
             self.count = ko.observable(0);
         }
+        
+        isShowCheckBox() {
+            let self = this;
+            return self.conditionData.useCondition;
+        }
 
         /**
          * Start page.

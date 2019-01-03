@@ -21,7 +21,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
-import nts.uk.ctx.at.record.dom.workrecord.actualsituation.identificationstatus.export.CheckIndentityDayConfirm;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -49,6 +48,9 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSe
 import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
+import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.CheckIndentityMonth;
+import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthParam;
+import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthResult;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexParam;
@@ -79,8 +81,14 @@ public class DPLoadRowProcessor {
     @Inject
 	private DPLock findLock;
     
+//    @Inject
+//	private CheckIndentityDayConfirm checkIndentityDayConfirm;
+    
+//    @Inject
+//	private ClosureService closureService;
+    
     @Inject
-	private CheckIndentityDayConfirm checkIndentityDayConfirm;
+	private CheckIndentityMonth checkIndentityMonth;
     
     @Inject
 	private ClosureService closureService;
@@ -92,7 +100,7 @@ public class DPLoadRowProcessor {
 		Integer mode = param.getMode();
 		Integer displayFormat = param.getDisplayFormat();
 		List<DPDataDto> lstDataTemp = param.getLstData();
-		List<Integer> itemIds = param.getLstAttendanceItem().stream().map(x -> x.getId()).collect(Collectors.toList());
+//		List<Integer> itemIds = param.getLstAttendanceItem().stream().map(x -> x.getId()).collect(Collectors.toList());
 		result.setIdentityProcessDto(param.getIdentityProcess());
 		String NAME_EMPTY = TextResource.localize("KDW003_82");
 		String NAME_NOT_FOUND = TextResource.localize("KDW003_81");
@@ -113,9 +121,23 @@ public class DPLoadRowProcessor {
 			// screenDto.setFlexShortage(null);
 			//}
 			if (emp.equals(sId) && !param.getOnlyLoadMonth()) {
+				//社員に対応する締め期間を取得する
 				DatePeriod period = closureService.findClosurePeriod(emp, dateRange.getEndDate());
-				result.checkShowTighProcess(displayFormat, true,
-						checkIndentityDayConfirm.checkIndentityDay(sId, period.datesBetween()));
+				
+				//パラメータ「日別実績の修正の状態．対象期間．終了日」がパラメータ「締め期間」に含まれているかチェックする
+				if (!period.contains(dateRange.getEndDate())) {
+					result.setIndentityMonthResult(new IndentityMonthResult(false, true, true));
+					//対象日の本人確認が済んでいるかチェックする
+					//screenDto.checkShowTighProcess(displayFormat, true);
+				} else {
+					// checkIndenityMonth
+					result.setIndentityMonthResult(checkIndentityMonth.checkIndenityMonth(
+							new IndentityMonthParam(companyId, sId, GeneralDate.today())));
+					//対象日の本人確認が済んでいるかチェックする
+					result.checkShowTighProcess(displayFormat, true);
+				}
+			}else {
+				result.getIndentityMonthResult().setHideAll(true);
 			}
 		}
 		if(param.getOnlyLoadMonth()){
@@ -154,7 +176,7 @@ public class DPLoadRowProcessor {
 		}).collect(Collectors.toList()));
 		
 		Map<Pair<String, GeneralDate>, DailyRecordDto> mapDtoOld = param.getDailys().stream().collect(Collectors.toMap(x -> Pair.of(x.getEmployeeId(), x.getDate()), x -> x));
-		result.setLstCellStateCalc(itemCalcScreen(mapDtoChange, mapDtoOld, param.getLstData(), param.getLstAttendanceItem().stream().collect(Collectors.toMap(x -> x.getId(), x -> x)), param.getCellEdits()));
+		result.setLstCellStateCalc(itemCalcScreen(mapDtoChange, mapDtoOld, param.getLstData(), param.getLstAttendanceItem().stream().collect(Collectors.toMap(x -> x.getId(), x -> x)), param.getCellEdits()).getLeft());
 		Map<String, DailyModifyResult> resultDailyMap = resultDailys.stream().collect(Collectors
 				.toMap(x -> process.mergeString(x.getEmployeeId(), "|", x.getDate().toString()), Function.identity(), (x, y) -> x));
 		
@@ -174,9 +196,12 @@ public class DPLoadRowProcessor {
 			if (lstError.size() > 0) {
 				// Get list error setting
 				List<DPErrorSettingDto> lstErrorSetting = this.repo
-						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()), true, true, false);
 				// Seperate Error and Alarm
-				result.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
+				if(lstErrorSetting.isEmpty()) {
+					lstError = new ArrayList<>();
+				}
+				result.addErrorToResponseData(lstError, lstErrorSetting, mapDP, false);
 			}
 		}
 		
@@ -270,28 +295,35 @@ public class DPLoadRowProcessor {
 		return result;
 	}
 	
-	public List<DPCellStateDto> itemCalcScreen(Map<Pair<String, GeneralDate>, DailyRecordDto> mapDtoChange, Map<Pair<String, GeneralDate>, DailyRecordDto> mapDtoOld, List<DPDataDto> lstData, Map<Integer, DPAttendanceItem> itemHeaders, List<CellEdit> cellEdits){
+	public Pair<List<DPCellStateDto>, List<DailyModifyResult>> itemCalcScreen(Map<Pair<String, GeneralDate>, DailyRecordDto> mapDtoChange, Map<Pair<String, GeneralDate>, DailyRecordDto> mapDtoOld, List<DPDataDto> lstData, Map<Integer, DPAttendanceItem> itemHeaders, List<CellEdit> cellEdits){
 		List<DPCellStateDto> lstCellCalcAll = new ArrayList<>();
+		List<DailyModifyResult> dailyModifyResult = new ArrayList<>();
 		mapDtoChange.forEach((key, dtoNew) -> {
 			val dtoOld = mapDtoOld.get(key);
-			DailyItemValue dailyItemNew = DailyItemValue.build().createItems(AttendanceItemUtil.toItemValues(dtoNew, itemHeaders.keySet()))
+			DailyItemValue dailyItemNew = DailyItemValue.build().createItems(AttendanceItemUtil.toItemValues(dtoNew, itemHeaders.keySet()).stream().sorted((x, y) -> x.getItemId() - y.getItemId()).collect(Collectors.toList()))
 							.createEmpAndDate(dtoNew.employeeId(), dtoNew.workingDate());
 			
-			DailyItemValue dailyItemOld = DailyItemValue.build().createItems(AttendanceItemUtil.toItemValues(dtoOld, itemHeaders.keySet()))
+			DailyItemValue dailyItemOld = DailyItemValue.build().createItems(AttendanceItemUtil.toItemValues(dtoOld, itemHeaders.keySet()).stream().sorted((x, y) -> x.getItemId() - y.getItemId()).collect(Collectors.toList()))
 					.createEmpAndDate(dtoOld.employeeId(), dtoOld.workingDate());
 			
 			Optional<DPDataDto> data = lstData.stream().filter(x -> x.getDate().equals(key.getRight()) && x.getEmployeeId().equals(key.getLeft())).findFirst();
 			
-		    if(data.isPresent()) lstCellCalcAll.addAll(lstCellCalc(dailyItemOld.getItems(), dailyItemNew.getItems(), itemHeaders, data.get(), cellEdits));
+			if (data.isPresent()) {
+				val resultCompare = lstCellCalc(dailyItemOld.getItems(), dailyItemNew.getItems(), itemHeaders,
+						data.get(), cellEdits);
+				lstCellCalcAll.addAll(resultCompare.getLeft());
+				dailyModifyResult.add(new DailyModifyResult().employeeId(dailyItemNew.getEmployeeId())
+						.workingDate(dailyItemNew.getDate()).items(resultCompare.getRight()));
+			}
 		});
-		return lstCellCalcAll;
+		return Pair.of(lstCellCalcAll, dailyModifyResult);
 	}
 	
-	public List<DPCellStateDto> lstCellCalc(List<ItemValue> itemOlds, List<ItemValue> itemNews, Map<Integer, DPAttendanceItem> itemHeaders, DPDataDto dataSource, List<CellEdit> cellEdits){
+	public Pair<List<DPCellStateDto>, List<ItemValue>>  lstCellCalc(List<ItemValue> itemOlds, List<ItemValue> itemNews, Map<Integer, DPAttendanceItem> itemHeaders, DPDataDto dataSource, List<CellEdit> cellEdits){
 		List<DPCellStateDto> lstCellCalc = new ArrayList<>();
 		itemOlds = itemOlds.stream().sorted((x, y) -> x.getItemId() - y.getItemId()).collect(Collectors.toList());
 		List<ItemValue> itemNewTemps = itemNews.stream().sorted((x, y) -> x.getItemId() - y.getItemId()).collect(Collectors.toList());
-		List<ItemValue> items = itemOlds.stream().filter(x -> !itemNewTemps.contains(x) && !cellEdits.contains(new CellEdit("_"+dataSource.getId(), x.getItemId()))).collect(Collectors.toList());
+		List<ItemValue> items = compareValue(itemNewTemps, itemOlds, itemHeaders).stream().filter(x ->!cellEdits.contains(new CellEdit("_"+dataSource.getId(), x.getItemId()))).collect(Collectors.toList());
 		items.stream().forEach(x ->{
 			val item = itemHeaders.get(x.getItemId());
 			if (item != null && itemHeaders.get(x.getItemId()).getAttendanceAtr() == 4) {
@@ -303,7 +335,31 @@ public class DPLoadRowProcessor {
 				//
 			}
 		});
-		return lstCellCalc;
+		return Pair.of(lstCellCalc, items);
+	}
+	
+	private List<ItemValue> compareValue(List<ItemValue> itemNewTemps, List<ItemValue> itemOlds,
+			Map<Integer, DPAttendanceItem> itemHeaders) {
+		List<ItemValue> result = new ArrayList<>();
+		val mapItemNew = itemNewTemps.stream().collect(Collectors.toMap(x -> x.getItemId(), x -> x));
+		itemOlds.stream().forEach(x -> {
+			val itemNew = mapItemNew.get(x.getItemId());
+			val atr = itemHeaders.get(x.itemId());
+			// TimeWithDay
+			if (atr.isNumber()
+					&& ((itemNew.getValue() == null && x.getValue() != null && Double.parseDouble(x.getValue()) == 0)
+					   || (x.getValue() == null && itemNew.getValue() != null && Double.parseDouble(itemNew.getValue()) == 0) 
+					   || (itemNew.getValue() != null && x.getValue() != null && Double.parseDouble(x.getValue()) == 0 && Double.parseDouble(itemNew.getValue()) == 0))) {
+				itemNew.value(0);
+				x.value(0);
+			}
+            if(x.getValue() != null && itemNew.getValue() != null) {
+            	if(!x.getValue().equals(itemNew.getValue())) result.add(itemNew);
+            }else if (!x.equals(itemNew)) {
+				result.add(itemNew);
+			}
+		});
+		return result;
 	}
 
 }

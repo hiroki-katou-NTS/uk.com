@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -21,13 +22,13 @@ public class ErAlConditionsAttendanceItemTest {
 	@Test
 	public void test() {
 		ErAlConditionsAttendanceItem condition = createCondition(LogicalOperator.OR);
-		assertTrue(condition.check(c -> c) == WorkCheckResult.ERROR);
+		assertTrue(condition.check(c -> c.stream().map(x -> Double.valueOf(x)).collect(Collectors.toList())) == WorkCheckResult.ERROR);
 	}
 	
 	@Test
 	public void test2() {
 		ErAlConditionsAttendanceItem condition = createCondition(LogicalOperator.AND);
-		assertTrue(condition.check(c -> c) != WorkCheckResult.ERROR);
+		assertTrue(condition.check(c -> c.stream().map(x -> Double.valueOf(x)).collect(Collectors.toList())) != WorkCheckResult.ERROR);
 	}
 
 	private ErAlConditionsAttendanceItem createCondition(LogicalOperator logic){

@@ -16,4 +16,16 @@ public class MonthMergeKey {
 	ClosureId closureId;
 	/** 締め日付 */
 	ClosureDate closureDate;
+	
+	public MonthMergeKey(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
+		super();
+		this.employeeId = employeeId;
+		this.yearMonth = yearMonth;
+		this.closureId = closureId;
+		this.closureDate = closureDate;
+	}
+	
+	public MonthMergeKey() {
+		super();
+	}
 }

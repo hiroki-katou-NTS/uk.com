@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
@@ -21,13 +22,14 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.timeseries.WorkTimeOfTi
 import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 時間外超過明細
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class ExcessOutsideWorkDetail {
@@ -86,6 +88,7 @@ public class ExcessOutsideWorkDetail {
 	 * @param regAndIrgTimeOfMonthly 月別実績の通常変形時間
 	 * @param flexTimeOfMonthly 月別実績のフレックス時間
 	 * @param flexAggrSet フレックス時間勤務の月の集計設定
+	 * @param outsideOTBDItems 時間外超過設定：内訳項目一覧（積上番号順）
 	 * @param roundingSet 月別実績の丸め設定
 	 */
 	public void setTotalTimeAfterRound(
@@ -93,12 +96,13 @@ public class ExcessOutsideWorkDetail {
 			RegularAndIrregularTimeOfMonthly regAndIrgTimeOfMonthly,
 			FlexTimeOfMonthly flexTimeOfMonthly,
 			FlexMonthWorkTimeAggrSet flexAggrSet,
+			List<OutsideOTBRDItem> outsideOTBDItems,
 			RoundingSetOfMonthly roundingSet){
 		
 		// 丸め前合計時間にコピーする
 		TotalTimeBeforeRound totalTimeBeforeRound = new TotalTimeBeforeRound();
 		totalTimeBeforeRound.copyValues(aggregateTotalWorkingTime,
-				regAndIrgTimeOfMonthly, flexTimeOfMonthly, flexAggrSet);
+				regAndIrgTimeOfMonthly, flexTimeOfMonthly, flexAggrSet, outsideOTBDItems);
 		
 		// 各合計時間を丸める
 		this.totalTimeAfterRound.setTotalTimeAfterRound(totalTimeBeforeRound, roundingSet);

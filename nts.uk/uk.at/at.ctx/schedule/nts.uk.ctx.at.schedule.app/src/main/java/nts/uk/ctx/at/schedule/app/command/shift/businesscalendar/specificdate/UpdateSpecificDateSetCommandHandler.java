@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.schedule.app.command.shift.businesscalendar.specificdate;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,7 +97,7 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 	 * @param date
 	 * @return
 	 */
-	public static boolean checkHoliday(List<PublicHoliday> lstHoliday, BigDecimal date){
+	public static boolean checkHoliday(List<PublicHoliday> lstHoliday, GeneralDate date){
 		boolean check = false;
 		if(lstHoliday.isEmpty()){
 			return false;
@@ -121,10 +120,7 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 		if(lstHoliday.isEmpty() && !checkDayofWeek(date,dayofWeek)){
 			return false;
 		}
-		String dateStr = String.format("%04d%02d%02d", date.year(), date.month(),date.day());
-		int dateInt = Integer.valueOf(dateStr);
-		BigDecimal dateBigDecimal = BigDecimal.valueOf(dateInt);
-		if(!checkDayofWeek(date,dayofWeek)&&!checkHoliday(lstHoliday,dateBigDecimal)){//not setting
+		if(!checkDayofWeek(date,dayofWeek)&&!checkHoliday(lstHoliday,date)){//not setting
 			return false;
 		}
 		return true;
@@ -170,8 +166,7 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 					
 					for (Integer timeItemId : lstTimeItemId) {
 						for (WorkplaceSpecificDateItem itemAdd : lstAdd) {
-							BigDecimal a2 = BigDecimal.valueOf(timeItemId);
-							if(a2.equals(itemAdd.getSpecificDateItemNo().v())){
+							if(timeItemId.equals(itemAdd.getSpecificDateItemNo().v())){
 								a1.add(itemAdd);
 							}
 						}
@@ -235,8 +230,7 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 					List<CompanySpecificDateItem>	a1 = new ArrayList<>();
 					for (Integer timeItemId : lstTimeItemId) {
 						for (CompanySpecificDateItem itemAdd : lstAdd) {
-							BigDecimal a2 = BigDecimal.valueOf(timeItemId);
-							if(a2.equals(itemAdd.getSpecificDateItemNo().v())){
+							if(timeItemId.equals(itemAdd.getSpecificDateItemNo().v())){
 								a1.add(itemAdd);
 							}
 						}

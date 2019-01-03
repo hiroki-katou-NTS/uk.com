@@ -21,6 +21,12 @@ public interface AdTimeAndAnyItemAdUpService {
 	
 	List<IntegrationOfDaily> addAndUpdate(List<IntegrationOfDaily> daily);
 	
+	List<IntegrationOfDaily> runStoredProcess(List<IntegrationOfDaily> daily, Map<WorkTypeCode, WorkType> workTypes);
+	
+	List<IntegrationOfDaily> runStoredProcess(List<IntegrationOfDaily> daily);
+	
+	List<IntegrationOfDaily> saveOnly(List<IntegrationOfDaily> daily);
+	
 	List<IntegrationOfDaily> addAndUpdate(List<IntegrationOfDaily> daily, Map<WorkTypeCode, WorkType> workTypes);
 	
 	IntegrationOfDaily addAndUpdate(IntegrationOfDaily daily);

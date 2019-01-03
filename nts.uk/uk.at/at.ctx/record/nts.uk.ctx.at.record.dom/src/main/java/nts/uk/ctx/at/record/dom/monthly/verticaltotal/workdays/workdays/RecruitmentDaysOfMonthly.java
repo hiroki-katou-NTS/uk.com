@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
 
 /**
@@ -36,14 +37,30 @@ public class RecruitmentDaysOfMonthly {
 	
 	/**
 	 * 集計
+	 * @param workingSystem 労働制
 	 * @param workTypeDaysCountTable 勤務種類の日数カウント表
+	 * @param isAttendanceDay 出勤しているかどうか
 	 */
-	public void aggregate(WorkTypeDaysCountTable workTypeDaysCountTable){
+	public void aggregate(
+			WorkingSystem workingSystem,
+			WorkTypeDaysCountTable workTypeDaysCountTable,
+			boolean isAttendanceDay){
 
 		if (workTypeDaysCountTable == null) return;
 		
-		// 振出日数に加算する
-		this.days = this.days.addDays(workTypeDaysCountTable.getTransferAttendanceDays().v());
+		// 労働制を取得
+		if (workingSystem == WorkingSystem.EXCLUDED_WORKING_CALCULATE){
+		
+			// 計算対象外の時、無条件で、振出日数に加算する
+			this.days = this.days.addDays(workTypeDaysCountTable.getTransferAttendanceDays().v());
+		}
+		else {
+			
+			// その他労働制の時、出勤している日なら、振出日数に加算する
+			if (isAttendanceDay){
+				this.days = this.days.addDays(workTypeDaysCountTable.getTransferAttendanceDays().v());
+			}
+		}
 	}
 
 	/**

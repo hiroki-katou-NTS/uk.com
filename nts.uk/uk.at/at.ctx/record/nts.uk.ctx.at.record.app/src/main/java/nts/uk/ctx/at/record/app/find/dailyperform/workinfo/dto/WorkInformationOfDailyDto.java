@@ -5,7 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Data;
-import nts.arc.enums.EnumAdaptor;
+import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.Da
 
 /** 日別実績の勤務情報 */
 @Data
+@EqualsAndHashCode(callSuper = false)
 @AttendanceItemRoot(rootName = ItemConst.DAILY_WORK_INFO_NAME)
 public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 
@@ -111,7 +112,8 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 				backStraightAtr == NotUseAttribute.Not_use.value ? NotUseAttribute.Not_use : NotUseAttribute.Use, date, 
 				ConvertHelper.getEnum(dayOfWeek, DayOfWeek.class),
 				ConvertHelper.mapTo(this.getScheduleTimeZone(), 
-						(c) -> new ScheduleTimeSheet(c.getNo(), c.getWorking(), c.getLeave())));
+						(c) -> new ScheduleTimeSheet(c.getNo(), c.getWorking(), c.getLeave()),
+						(c) -> c.getLeave() != null && c.getWorking() != null));
 	}
 	
 	

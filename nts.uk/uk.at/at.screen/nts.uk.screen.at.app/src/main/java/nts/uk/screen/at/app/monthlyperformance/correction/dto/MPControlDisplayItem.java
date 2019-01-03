@@ -11,8 +11,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import lombok.Data;
+import nts.uk.ctx.at.record.dom.daily.dailyperformance.classification.EnumCodeName;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
-import nts.uk.screen.at.app.dailyperformance.correction.datadialog.classification.EnumCodeName;
 
 @Data
 public class MPControlDisplayItem {

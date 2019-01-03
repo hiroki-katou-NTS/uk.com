@@ -23,4 +23,6 @@ public interface RoleGrantAdapter {
 	Optional<DefaultRoleSetDto> getDefaultRoleSet(String companyId);
 	
 	Optional<RoleSetDto> getRoleSet(String companyId, String roleSetCd);
+	
+	LoginResponsibleDto getLoginResponsible();
 }

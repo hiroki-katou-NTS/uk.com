@@ -6,7 +6,9 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppEmpStatusExport;
+import nts.uk.ctx.workflow.pub.resultrecord.export.AppEmpSttMonthExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootInsContentExport;
+import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootSttMonthExport;
 import nts.uk.ctx.workflow.pub.spr.export.AppRootStateStatusSprExport;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -102,7 +104,7 @@ public interface IntermediateDataPub {
 	 * @param recordDate
 	 * @return
 	 */
-	public AppRootInsContentExport createDailyApprover(String employeeID, Integer rootType, GeneralDate recordDate);
+	public AppRootInsContentExport createDailyApprover(String employeeID, Integer rootType, GeneralDate recordDate, GeneralDate closureStartDate);
 	
 	/**
 	 * [No.190-191](中間データ版)承認すべきデータ有無を取得する
@@ -185,7 +187,7 @@ public interface IntermediateDataPub {
 	 * @param period
 	 * @return
 	 */
-	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpPeriodMonth(String employeeID, DatePeriod period);
+	public List<AppRootSttMonthExport> getAppRootStatusByEmpPeriodMonth(String employeeID, DatePeriod period);
 	
 	/**
 	 * RequestList 533
@@ -193,7 +195,7 @@ public interface IntermediateDataPub {
 	 * @param empPerformMonthParamLst
 	 * @return
 	 */
-	public List<AppRootStateStatusSprExport> getAppRootStatusByEmpsMonth(List<EmpPerformMonthParam> empPerformMonthParamLst);
+	public List<AppRootSttMonthExport> getAppRootStatusByEmpsMonth(List<EmpPerformMonthParam> empPerformMonthParamLst);
 	
 	/**
 	 * RequestList 534
@@ -205,7 +207,7 @@ public interface IntermediateDataPub {
 	 * @param baseDate
 	 * @return
 	 */
-	public AppEmpStatusExport getApprovalEmpStatusMonth(String approverID, YearMonth yearMonth, Integer closureID,
+	public AppEmpSttMonthExport getApprovalEmpStatusMonth(String approverID, YearMonth yearMonth, Integer closureID,
 			ClosureDate closureDate, GeneralDate baseDate);
 	
 	/**
@@ -217,4 +219,25 @@ public interface IntermediateDataPub {
 	 * @return
 	 */
 	public boolean isDataExistMonth(String approverID, DatePeriod period, YearMonth yearMonth);
+	
+	/**
+	 * 日別確認済み検索
+	 * @param companyID
+	 * @param approverID
+	 * @param date
+	 * @return
+	 */
+	public List<String> dailyConfirmSearch(String companyID, String approverID, GeneralDate date);
+	
+	/**
+	 * RequestList 538
+	 * [No.538]承認対象者から未承認の承認者リストを取得する（月別）
+	 * @param employeeID
+	 * @param closureID
+	 * @param yearMonth
+	 * @param closureDate
+	 * @param date
+	 * @return
+	 */
+	public ApproverApproveExport getApproverByPeriodMonth(String employeeID, Integer closureID, YearMonth yearMonth, ClosureDate closureDate, GeneralDate date); 
 }

@@ -6,7 +6,9 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartRepository;
 import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePart;
@@ -18,7 +20,6 @@ import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePartPK;
 @Stateless
 public class JpaTopPagePartRepository extends JpaRepository implements TopPagePartRepository {
 
-	private static final String SELECT_SINGLE = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.topPagePartID = :topPagePartID";
 	private static final String SELECT_SINGLE_BY_KEY = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.topPagePartID = :topPagePartID AND c.ccgmtTopPagePartPK.companyID = :cID";
 	private static final String SELECT_BY_COMPANY = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID";
 	private static final String SELECT_BY_TYPE = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID AND c.topPagePartType = :topPagePartType";
@@ -56,10 +57,14 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 
 	@Override
 	public List<TopPagePart> findByTypes(String companyID, List<Integer> topPagePartTypes) {
-		 return this.queryProxy().query(SELECT_BY_TYPES, CcgmtTopPagePart.class)
+		List<TopPagePart> results = new ArrayList<>();
+		CollectionUtil.split(topPagePartTypes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			results.addAll(this.queryProxy().query(SELECT_BY_TYPES, CcgmtTopPagePart.class)
 					.setParameter("companyID", companyID)
-					.setParameter("topPagePartTypes", topPagePartTypes)
-					.getList(c -> toDomain(c));
+					.setParameter("topPagePartTypes", subList)
+					.getList(c -> toDomain(c)));
+		});
+		return results;
 	}
 	
 	@Override
@@ -68,11 +73,17 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 		if(topPagePartTypes.size()==0 || topPagePartIDs.size()==0){
 			return new ArrayList<>();
 		}
-		 return this.queryProxy().query(SELECT_BY_TYPE_AND_IDS, CcgmtTopPagePart.class)
+		List<TopPagePart> results = new ArrayList<>();
+		CollectionUtil.split(topPagePartTypes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstTypes -> {
+			CollectionUtil.split(topPagePartIDs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, lstIDs -> {
+				results.addAll(this.queryProxy().query(SELECT_BY_TYPE_AND_IDS, CcgmtTopPagePart.class)
 					.setParameter("companyID", companyID)
-					.setParameter("topPagePartIDs", topPagePartIDs)
-					.setParameter("topPagePartTypes", topPagePartTypes)
-					.getList(c -> toDomain(c));
+					.setParameter("topPagePartIDs", lstIDs)
+					.setParameter("topPagePartTypes", lstTypes)
+					.getList(c -> toDomain(c)));
+			});
+		});
+		return results;
 	}
 	
 	@Override

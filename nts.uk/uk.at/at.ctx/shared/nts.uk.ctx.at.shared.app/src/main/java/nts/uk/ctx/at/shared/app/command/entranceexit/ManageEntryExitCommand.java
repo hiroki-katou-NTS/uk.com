@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.shared.app.command.entranceexit;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
+//import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.entranceexit.ManageEntryExitGetMemento;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 

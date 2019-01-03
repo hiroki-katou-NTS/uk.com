@@ -20,6 +20,8 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.style.TextStyle;
+import nts.uk.screen.at.app.dailyperformance.correction.error.DCErrorInfomation;
+import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthResult;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthResult;
 
 /**
@@ -55,6 +57,8 @@ public class DailyPerformanceCorrectionDto {
 	private List<DailyPerformanceAuthorityDto> authorityDto;
 
 	private String employmentCode;
+	
+	private Integer closureId;
 
 	// A13_1 コメント
 	private String comment;
@@ -87,7 +91,13 @@ public class DailyPerformanceCorrectionDto {
 	
 	private boolean showTighProcess;
 	
+	private IndentityMonthResult indentityMonthResult;
+	
 	private boolean showErrorDialog;
+	
+	private List<DCMessageError> errors;
+	
+	private int errorInfomation;
 	
 	public DailyPerformanceCorrectionDto() {
 		super();
@@ -102,6 +112,9 @@ public class DailyPerformanceCorrectionDto {
 		this.autBussCode = new HashSet<>();
 		this.showTighProcess = false;
 		this.lstCellStateCalc = new ArrayList<>();
+		this.indentityMonthResult = new IndentityMonthResult(false, false, true);
+		this.errors = new ArrayList<>();
+		this.errorInfomation = DCErrorInfomation.NORMAL.value;
 	}
 
 	/** Check if employeeId is login user */
@@ -204,15 +217,17 @@ public class DailyPerformanceCorrectionDto {
 	}
 	
 	/** Set Error/Alarm text and state for cell */
-	public void addErrorToResponseData(List<DPErrorDto> lstError, List<DPErrorSettingDto> lstErrorSetting, Map<Integer, DPAttendanceItem> mapDP) {
+	public void addErrorToResponseData(List<DPErrorDto> lstError, List<DPErrorSettingDto> lstErrorSetting, Map<Integer, DPAttendanceItem> mapDP, boolean showTextError) {
 		lstError.forEach(error -> {
 			this.lstData.forEach(data -> {
 				if (data.getEmployeeId().equals(error.getEmployeeId())
 						&& data.getDate().equals(error.getProcessingDate())) {
-					String errorType = getErrorType(lstErrorSetting, error);
+					String errorTypeTemp = getErrorType(lstErrorSetting, error, showTextError);
+					String errorType = errorTypeTemp.equals("T") ? "" : errorTypeTemp;
+					if(!errorTypeTemp.equals("")) data.setErrorOther(true);
 					// add error alarm to response data
 					if (!data.getError().isEmpty()) {
-						if (!errorType.equals(data.getError())) {
+						if (!errorType.equals(data.getError()) && !errorType.isEmpty()) {
 							data.setError("ER/AL");
 						}
 					} else {
@@ -220,7 +235,7 @@ public class DailyPerformanceCorrectionDto {
 					}
 					// add error alarm cell state
 					error.getAttendanceItemId().stream().forEach(x ->{
-						setCellStateCheck(data.getId(), x.toString(),
+						if(errorType.contains("ER") || errorType.contains("AL")) setCellStateCheck(data.getId(), x.toString(),
 								errorType.contains("ER") ? "mgrid-error" : "mgrid-alarm", mapDP);
 					});
 				}
@@ -228,13 +243,13 @@ public class DailyPerformanceCorrectionDto {
 		});
 	}
 
-	private String getErrorType(List<DPErrorSettingDto> lstErrorSetting, DPErrorDto error) {
+	private String getErrorType(List<DPErrorSettingDto> lstErrorSetting, DPErrorDto error, boolean showTextError) {
 		DPErrorSettingDto setting = lstErrorSetting.stream()
 				.filter(c -> c.getErrorAlarmCode().equals(error.getErrorCode())).findFirst().orElse(null);
 		if (setting == null) {
 			return "";
 		}
-		return setting.getTypeAtr() == 0 ? "ER" : "AL";
+		return setting.getTypeAtr() == 0 ? "ER" : setting.getTypeAtr() == 2 ? (showTextError ? "T" : "") : "AL";
 	}
 
 	/** Set AlarmCell state for Fixed cell */
@@ -314,7 +329,9 @@ public class DailyPerformanceCorrectionDto {
 
 	}
 
-	public void checkShowTighProcess(int displayMode, boolean userLogin, boolean checkIndentityDay){
-		this.showTighProcess = identityProcessDto.isUseIdentityOfMonth() && displayMode == 0 && userLogin && checkIndentityDay;
+	public void checkShowTighProcess(int displayMode, boolean userLogin){
+		this.showTighProcess = identityProcessDto.isUseIdentityOfMonth() && displayMode == 0 && userLogin && indentityMonthResult.getEnableButton();
+		indentityMonthResult.setShow26(indentityMonthResult.getShow26() && identityProcessDto.isUseIdentityOfMonth() && displayMode == 0 && userLogin);
+		indentityMonthResult.setHideAll(displayMode != 0 || !identityProcessDto.isUseIdentityOfMonth());
 	}
 }

@@ -11,10 +11,10 @@ module nts.uk.ui.koExtentions {
          * Init. sssss 
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            let data = valueAccessor();
-            let $container = $(element);
-                        
-            let construct: DateRangeHelper = new DateRangeHelper($container);
+            let data = valueAccessor(),
+                $container = $(element),
+                construct: DateRangeHelper = new DateRangeHelper($container),
+                value = ko.unwrap(data.value);
             
             construct.bindInit(data, allBindingsAccessor, viewModel, bindingContext);
             
@@ -27,12 +27,17 @@ module nts.uk.ui.koExtentions {
          * Update
          */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            let data = valueAccessor();
-            let $container = $(element);
-            let enable = data.enable === undefined ? true : ko.unwrap(data.enable);
-            let required = ko.unwrap(data.required),
-                construct: DateRangeHelper = $container.data("construct");
+            let data = valueAccessor(),
+                $container = $(element),
+                enable = data.enable === undefined ? true : ko.unwrap(data.enable),
+                required = ko.unwrap(data.required),
+                construct: DateRangeHelper = $container.data("construct"),
+                value = ko.unwrap(data.value);
             
+            if(!nts.uk.util.isNullOrUndefined(value)){
+                construct.startValue(nts.uk.util.isNullOrUndefined(value.startDate) ? "" : value.startDate);
+                construct.endValue(nts.uk.util.isNullOrUndefined(value.endDate) ? "" : value.endDate);    
+            }
             ko.bindingHandlers["ntsDatePicker"].update(construct.$start[0], function() {
                 return construct.createStartBinding(data);
             }, allBindingsAccessor, viewModel, bindingContext);
@@ -76,8 +81,8 @@ module nts.uk.ui.koExtentions {
         public bindInit(parentBinding: any, allBindingsAccessor, viewModel, bindingContext){
             let self = this;
             self.value = parentBinding.value;
-            self.startValue = ko.observable(self.value().startDate);
-            self.endValue = ko.observable(self.value().endDate);
+            self.startValue = ko.observable(nts.uk.util.isNullOrUndefined(self.value().startDate) ? "" : self.value().startDate);
+            self.endValue = ko.observable(nts.uk.util.isNullOrUndefined(self.value().endDate) ? "" : self.value().endDate);
             
             self.startValue.subscribe((v) => {
                 let oldValue = self.value();
@@ -104,7 +109,7 @@ module nts.uk.ui.koExtentions {
             let self = this, dateType = ko.unwrap(data.type), maxRange = ko.unwrap(data.maxRange), rangeName = ko.unwrap(data.name),
                 startName = ko.unwrap(data.startName), endName = ko.unwrap(data.endName), 
                 showNextPrevious = data.showNextPrevious === undefined ? false : ko.unwrap(data.showNextPrevious),
-                jumpUnit = data.jumpUnit === undefined ? false : ko.unwrap(data.jumpUnit),
+                jumpUnit = data.jumpUnit === undefined ? "month" : ko.unwrap(data.jumpUnit),
                 id = nts.uk.util.randomId(), required = ko.unwrap(data.required),
                 tabIndex = nts.uk.util.isNullOrEmpty(self.$container.attr("tabindex")) ? "0" : self.$container.attr("tabindex");
             
@@ -139,11 +144,11 @@ module nts.uk.ui.koExtentions {
             let $startDateArea = self.$datePickerArea.find(".ntsStartDate");
             let $endDateArea = self.$datePickerArea.find(".ntsEndDate");
             
-            $startDateArea.append("<div id='" + id + "-startInput'  class='ntsDatepicker nts-input ntsStartDatePicker ntsDateRange_Component' />");
-            $endDateArea.append("<div id='" + id + "-endInput' class='ntsDatepicker nts-input ntsEndDatePicker ntsDateRange_Component' />");
+            $startDateArea.append("<div id='" + id + "-startInput'  class='ntsDatepicker nts-input ntsStartDatePicker ntsDateRangeComponent ntsDateRange_Component' />");
+            $endDateArea.append("<div id='" + id + "-endInput' class='ntsDatepicker nts-input ntsEndDatePicker ntsDateRangeComponent ntsDateRange_Component' />");
             self.$start = $startDateArea.find(".ntsStartDatePicker");
             self.$end = $endDateArea.find(".ntsEndDatePicker");
-            let $input = self.$container.find(".input");
+            let $input = self.$container.find(".nts-input");
             // Init Datepicker
 //            $input.datepicker({
 //                language: 'ja-JP',
@@ -171,10 +176,12 @@ module nts.uk.ui.koExtentions {
                 var newText = $target.val(); 
                 let oldValue = self.value();
                 
-                $target.ntsError('clear');
-                self.$ntsDateRange.ntsError("clear");
-                
-                self.validateProcess(newText, oldValue);
+//                $target.ntsError('clear');
+//                self.$ntsDateRange.ntsError("clear");
+                if(!$target.ntsError('hasError')){
+                    self.$ntsDateRange.ntsError("clear"); 
+                    self.validateProcess(newText, oldValue);
+                }
             }));
             
             self.$container.find(".ntsDateRange_Component").attr("tabindex", tabIndex);
@@ -283,25 +290,27 @@ module nts.uk.ui.koExtentions {
         public createStartBinding(parentBinding: any, name, format: string): any {
             let self = this;
             return { required: parentBinding.required, 
-                     name: parentBinding.name, 
+                     name: parentBinding.startName ? self.startName : parentBinding.name, 
                      value: self.startValue, 
                      dateFormat: self.dateFormat, 
                      valueFormat: self.dateFormat, 
                      enable: parentBinding.enable, 
-                     disabled: parentBinding.disabled, 
-                     endDate: self.endValue };
+                     disabled: parentBinding.disabled 
+                     //,endDate: self.endValue 
+                   };
         }
         
         public createEndBinding(parentBinding: any, name: string): any {
             let self = this;
             return { required: parentBinding.required, 
-                     name: parentBinding.name, 
+                     name: parentBinding.endName ? self.endName : parentBinding.name, 
                      value: self.endValue, 
                      dateFormat: self.dateFormat, 
                      valueFormat: self.dateFormat, 
                      enable: parentBinding.enable, 
-                     disabled: parentBinding.disabled, 
-                     startDate: self.startValue };
+                     disabled: parentBinding.disabled 
+                     //,startDate: self.startValue 
+                   };
         }
     }
 }

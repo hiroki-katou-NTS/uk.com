@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition;
 
-import java.util.List;
+//import java.util.List;
 import java.util.Map;
 
 import nts.arc.time.YearMonth;
@@ -54,6 +54,6 @@ public interface CheckResultMonthlyPub {
 	 * @param ListAttendanceIds
 	 * @return
 	 */
-	Map<String, Integer> checkPerTimeMonActualResult(YearMonth yearMonth, String employeeID,AttendanceItemConditionPubExport attendanceItemCondition, List<Integer> attendanceIds);
+	Map<String, Integer> checkPerTimeMonActualResult(YearMonth yearMonth, String employeeID,AttendanceItemConditionPubExport attendanceItemCondition);
 
 }

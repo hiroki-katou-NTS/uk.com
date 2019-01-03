@@ -78,12 +78,12 @@ module nts.uk.at.view.kmk013.e {
                 var self = this;
                 var dfd = $.Deferred();
                 $("#fixed-table").ntsFixedTable({ height: 300, width: 560 });
-                self.initData();
-                dfd.resolve();
+                self.initData().done(() => dfd.resolve());
                 return dfd.promise();
             }
-            initData(): void {
+            initData(): JQueryPromise<void> {
                 let self = this;
+                let dfd = $.Deferred<void>();
                 service.getOTCalc().done(data => {
                     if (data.calculationMethod == 0) {
                         self.isVisibleE22(false);
@@ -92,24 +92,21 @@ module nts.uk.at.view.kmk013.e {
                         self.isVisibleE22(true);
                     }
                 });
-                service.getIdMonth().done(arr => {
-                    service.getPossibleItem(arr).done(listName => {
-                        service.findByCompanyId().done(listData => {
-                            _.forEach(listName, (element) => {
-                                let obj: any = _.find(listData, ['timeItemId', element.attendanceItemId.toString()]);
-                                let ur;
-                                if (obj) {
-                                    ur = new UnitRouding(element.attendanceItemId, element.attendanceItemName, obj.unit, obj.rounding, self.itemListRounding());
-                                } else {
-                                    ur = new UnitRouding(element.attendanceItemId, element.attendanceItemName, 0, 0, self.itemListRounding() );
-                                }
+                service.findByCompanyId().done(listData => {
+                    if (!_.isEmpty(listData)) {
+                        service.getPossibleItem(_.map(listData, i => i.timeItemId)).done(attendanceItems => {
+                            _.forEach(attendanceItems, (element) => {
+                                let obj: any = _.find(listData, ['timeItemId', element.attendanceItemId]);
+                                let ur = new UnitRouding(element.attendanceItemId, element.attendanceItemName, obj.unit, obj.rounding, self.itemListRounding());
                                 ur.initRoundingOption(ur.unit(), self);
-                                
                                 self.listData.push(ur);
                             });
                             $('#unit-combo-box').find("input").focus();
+                            dfd.resolve();
                         });
-                    });
+                    } else {
+                        dfd.resolve();
+                    }
                 });
                 service.findExcByCompanyId().done(data => {
                     if (data) {
@@ -117,6 +114,7 @@ module nts.uk.at.view.kmk013.e {
                         self.excRoundingProc(data.roundingProcess);
                     }
                 });
+                return dfd.promise();
             }
             saveData(): void {
                 let self = this;
@@ -157,7 +155,7 @@ module nts.uk.at.view.kmk013.e {
         }
         
         class UnitRoudingClientData {
-            timeItemId: string;
+            timeItemId: number;
             attendanceItemName: string;
             unit: number;
             rounding: number;
@@ -165,18 +163,18 @@ module nts.uk.at.view.kmk013.e {
             constructor(unitRouding: UnitRouding){
                 this.timeItemId = unitRouding.timeItemId;
                 this.attendanceItemName = unitRouding.attendanceItemName;
-                this.unit = unitRouding.unit;
-                this.rounding = unitRouding.rounding;
+                this.unit = unitRouding.unit();
+                this.rounding = unitRouding.rounding();
             }
         }
         
         class UnitRouding {
-            timeItemId: string;
+            timeItemId: number;
             attendanceItemName: string;
             unit: KnockoutObservable<number>;
             rounding: KnockoutObservable<number>;
             list_round: KnockoutObservableArray<any>;
-            constructor(timeItemId: string, attendanceItemName: string, unit: number, rounding: number, list: any) {
+            constructor(timeItemId: number, attendanceItemName: string, unit: number, rounding: number, list: any) {
                 this.timeItemId = timeItemId;
                 this.attendanceItemName = attendanceItemName;
                 this.unit = ko.observable(unit);

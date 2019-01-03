@@ -5,7 +5,7 @@ import nts.arc.primitive.constraint.IntegerRange;
 
 /**
  * 月次任意金額
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @IntegerRange(min = -999999999, max = 999999999)
 public class AnyAmountMonth extends IntegerPrimitiveValue<AnyAmountMonth> {
@@ -27,5 +27,13 @@ public class AnyAmountMonth extends IntegerPrimitiveValue<AnyAmountMonth> {
 	 */
 	public AnyAmountMonth addAmount(Integer amount){
 		return new AnyAmountMonth(this.v() + amount);
+	}
+	
+	@Override
+	protected Integer reviseRawValue(Integer rawValue) {
+		if (rawValue == null) return super.reviseRawValue(rawValue);
+		if (rawValue > 999999999) rawValue = 999999999;
+		if (rawValue < -999999999) rawValue = -999999999;
+		return super.reviseRawValue(rawValue);
 	}
 }

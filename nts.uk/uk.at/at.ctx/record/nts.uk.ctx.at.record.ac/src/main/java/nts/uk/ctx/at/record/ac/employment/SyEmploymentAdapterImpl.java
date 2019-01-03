@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.ac.employment;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -30,6 +32,11 @@ public class SyEmploymentAdapterImpl implements SyEmploymentAdapter {
 				empHist.get().getEmploymentCode(), empHist.get().getEmploymentName(), empHist.get().getPeriod());
 
 		return Optional.of(syEmploymentImport);
+	}
+	
+	@Override
+	public Map<String, String> getEmploymentMapCodeName(String companyId, List<String> empCodes) {
+		return this.syEmploymentPub.getEmploymentMapCodeName(companyId, empCodes);
 	}
 
 }

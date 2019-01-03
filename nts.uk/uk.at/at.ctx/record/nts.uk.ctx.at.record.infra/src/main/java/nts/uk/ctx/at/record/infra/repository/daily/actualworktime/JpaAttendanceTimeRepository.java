@@ -42,11 +42,11 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaAttendanceTimeRepository extends JpaRepository implements AttendanceTimeRepository {
 
-	private static final String REMOVE_BY_EMPLOYEEID_AND_DATE;
+//	private static final String REMOVE_BY_EMPLOYEEID_AND_DATE;
 	
 	private static final String FIND_BY_LABOR_TIME;
 	
-	private static final String FIND_BY_EMPLOYEEID_AND_DATES;
+//	private static final String FIND_BY_EMPLOYEEID_AND_DATES;
 
 //	static {
 //		StringBuilder builderString = new StringBuilder();
@@ -58,11 +58,11 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 //	}
 	static {
 		StringBuilder builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDayTime a ");
-		builderString.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
-		builderString.append("AND a.krcdtDayTimePK.generalDate = :ymd ");
-		REMOVE_BY_EMPLOYEEID_AND_DATE = builderString.toString();
+//		builderString.append("DELETE ");
+//		builderString.append("FROM KrcdtDayTime a ");
+//		builderString.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
+//		builderString.append("AND a.krcdtDayTimePK.generalDate = :ymd ");
+//		REMOVE_BY_EMPLOYEEID_AND_DATE = builderString.toString();
 		
 		builderString = new StringBuilder("SELECT a.schedulePreLaborTime FROM KrcdtDayTime a ");
 //		builderString.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
@@ -73,9 +73,9 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		
 //		builderString.append("WHERE a.krcdtDayAttendanceTimePK.employeeID = :employeeId ");
 //		builderString.append("AND a.krcdtDayAttendanceTimePK.generalDate IN :date");
-		builderString.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
-		builderString.append("AND a.krcdtDayTimePK.generalDate IN :date");
-		FIND_BY_EMPLOYEEID_AND_DATES = builderString.toString();
+//		builderString.append("WHERE a.krcdtDayTimePK.employeeID = :employeeId ");
+//		builderString.append("AND a.krcdtDayTimePK.generalDate IN :date");
+//		FIND_BY_EMPLOYEEID_AND_DATES = builderString.toString();
 	}
 
 	@Override
@@ -190,9 +190,8 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 				if(attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
 
 					/* 早退時間 */
-					try {
-						val statement = this.connection().prepareStatement(
-								"delete from KRCDT_DAY_LEAVEEARLYTIME where SID = ? and YMD = ?");
+					try (val statement = this.connection().prepareStatement(
+								"delete from KRCDT_DAY_LEAVEEARLYTIME where SID = ? and YMD = ?")) {
 						statement.setString(1, attendanceTime.getEmployeeId());
 						statement.setDate(2, Date.valueOf(attendanceTime.getYmd().toLocalDate()));
 						statement.execute();
@@ -206,9 +205,8 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 					}
 						
 					/* 遅刻時間 */
-					try {
-						val statement = this.connection().prepareStatement(
-								"delete from KRCDT_DAY_LATETIME where SID = ? and YMD = ?");
+					try (val statement = this.connection().prepareStatement(
+								"delete from KRCDT_DAY_LATETIME where SID = ? and YMD = ?")) {
 						statement.setString(1, attendanceTime.getEmployeeId());
 						statement.setDate(2, Date.valueOf(attendanceTime.getYmd().toLocalDate()));
 						statement.execute();
@@ -353,7 +351,7 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 		query.append("LEFT JOIN a.krcdtDayOutingTime h ");	
 		query.append("WHERE a.krcdtDayTimePK.employeeID IN :employeeId ");
 		query.append("AND a.krcdtDayTimePK.generalDate IN :date");
-		TypedQueryWrapper<Object[]> tQuery=  this.queryProxy().query(query.toString(), Object[].class);
+		TypedQueryWrapper<Object[]> tQuery = this.queryProxy().query(query.toString(), Object[].class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
 			result.addAll(tQuery.setParameter("employeeId", p.keySet())
 							.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
@@ -405,8 +403,14 @@ public class JpaAttendanceTimeRepository extends JpaRepository implements Attend
 
 	@Override
 	public List<Integer> findAtt(String employeeId, List<GeneralDate> ymd) {
-		return this.queryProxy().query(FIND_BY_LABOR_TIME, Integer.class)
-				.setParameter("employeeId", employeeId).setParameter("date", ymd).getList();
+		List<Integer> resultList = new ArrayList<>();
+		CollectionUtil.split(ymd, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_LABOR_TIME, Integer.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("date", subList)
+				.getList());
+		});
+		return resultList;
 	}
 	
 	@Override

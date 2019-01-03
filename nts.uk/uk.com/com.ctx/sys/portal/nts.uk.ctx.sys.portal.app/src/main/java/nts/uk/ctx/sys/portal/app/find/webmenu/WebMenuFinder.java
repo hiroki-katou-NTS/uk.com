@@ -117,7 +117,6 @@ public class WebMenuFinder {
 	 * @return
 	 */
 	public List<WebMenuDto> findAll() {
-		long start = java.lang.System.currentTimeMillis();
 		String companyId = AppContexts.user().companyId();
 
 		List<WebMenu> webMenuList = webMenuRepository.findAll(companyId);
@@ -171,7 +170,7 @@ public class WebMenuFinder {
 		List<String> roleIds = roleAdapter.getRoleId(userId);
 		List<MenuCodeDto> roleMenuCodes = new ArrayList<>();
 		roleIds.stream().forEach(r -> {
-			roleTiesRepository.getRoleByRoleTiesById(r)
+			roleTiesRepository.getByRoleIdAndCompanyId(r, companyId)
 							.ifPresent(t -> roleMenuCodes.add(new MenuCodeDto(t.getCompanyId(), t.getWebMenuCd().v())));
 		});
 		
@@ -231,6 +230,10 @@ public class WebMenuFinder {
 								&& sm.getClassification() == m.getMenuCls()).findFirst()
 						.orElseThrow(() -> new RuntimeException("Menu not found."));
 				link = getProgramPath(sMenu);
+				
+				if (sMenu.getQueryString() != null) {
+					link += "?" + sMenu.getQueryString();
+				}
 			}
 			
 			List<TitleBarDetailDto> titleBars = m.getTitleMenu().stream().map(t -> {

@@ -73,13 +73,13 @@ module nts.uk.ui.jqueryExtentions {
                 let resizeEvent = function () {
                     $header.height($headerContainer.height());
                     if(bodyHeight < $originTable.height()){
-                        if(/Edge/.test(navigator.userAgent)){
-                            $headerScroll.width(11);
-                            $bodyContainer.css("padding-right", "12px");
-                        }else {
+//                        if(/Edge/.test(navigator.userAgent)){
+//                            $headerScroll.width(11);
+//                            $bodyContainer.css("padding-right", "12px");
+//                        }else {
                             $headerScroll.width(16);
                             $bodyContainer.css("padding-right", "17px");
-                        }    
+//                        }    
                         $headerScroll.css({ "border-right": "1px #CCC solid", "border-top": "1px #CCC solid", "border-bottom": "1px #CCC solid" });    
                     } else {
                         $headerScroll.width(0);

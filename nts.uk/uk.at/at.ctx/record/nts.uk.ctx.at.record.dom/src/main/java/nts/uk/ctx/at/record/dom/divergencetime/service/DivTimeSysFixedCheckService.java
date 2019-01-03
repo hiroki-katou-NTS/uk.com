@@ -742,7 +742,7 @@ public class DivTimeSysFixedCheckService {
 
 	private EmployeeDailyPerError newError(String comId, String empId, GeneralDate tarD, DivergenceCheckResult erAl, String mes) {
 		return new EmployeeDailyPerError(comId, empId, tarD, erAl.errorCode, 
-										Arrays.asList(erAl.displayItem), 
+										erAl.displayItem == null ? new ArrayList<>() : Arrays.asList(erAl.displayItem), 
 										erAl.cancelable ? 1 : 0, mes);
 	}
 	

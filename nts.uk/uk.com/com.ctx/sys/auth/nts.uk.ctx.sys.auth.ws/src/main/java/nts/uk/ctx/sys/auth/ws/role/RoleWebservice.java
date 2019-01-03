@@ -8,10 +8,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
-import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.auth.app.command.person.role.RemovePersonRoleCommand;
@@ -68,7 +68,7 @@ public class RoleWebservice extends WebService {
 	@Path("getrefrangebysystype/{systype}")
 	public int getRefRangeByRoleId(@PathParam("systype") int sysType) {
 		String roleId = this.roleWorkplaceIDFinder.findRoleIdBySystemType(sysType);
-		if (roleId == null) {
+		if (Strings.isBlank(roleId)) {
 			return EmployeeReferenceRange.ONLY_MYSELF.value;
 		}
 		return this.personInforRoleFinder.getRoleByRoleId(roleId).getEmployeeReferenceRange();

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.WorkChangeCommonReflectPara;
 
 @AllArgsConstructor
 @Setter
@@ -23,7 +24,7 @@ public class AppReflectRecordPara {
 	/**
 	 * 勤務変更
 	 */
-	private CommonReflectPara workchangeInfor;
+	private WorkChangeCommonReflectPara workchangeInfor;
 	/**
 	 * 休日出勤申請
 	 */

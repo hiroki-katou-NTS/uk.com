@@ -28,6 +28,8 @@ public interface AffWorkplaceHistoryItemRepository {
 	
 	List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByListEmpIdAndDate(GeneralDate basedate, List<String> employeeId);
 	
+	List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByListEmpIdAndDateV2(GeneralDate basedate, List<String> employeeId);
+	
 	List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByListWkpIdAndDate(GeneralDate basedate, List<String> workplaceId);
 	
 	List<AffWorkplaceHistoryItem> getAffWrkplaHistItemByEmpIdAndDate(GeneralDate basedate, String employeeId);

@@ -26,6 +26,11 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	private static final String QUERY_GET_TEMPORARYABSENCE_BYSID = "SELECT ta FROM BsymtTempAbsHistory ta"
 			+ " WHERE ta.sid = :sid and ta.cid = :cid ORDER BY ta.startDate";
 	
+	private static final String QUERY_GET_TEMPORARYABSENCE_BYSID_AND_CLS = String.join(" ","SELECT ta FROM BsymtTempAbsHistory ta INNER JOIN BsymtTempAbsHisItem item",
+			 "ON  ta.histId = item.histId AND ta.sid = item.sid",
+			 "WHERE ta.sid = :sid AND ta.cid = :cid  AND item.tempAbsFrameNo = 1",
+			 "ORDER BY ta.startDate");
+	
 	private static final String QUERY_GET_TEMPORARYABSENCE_BYSID_DESC = QUERY_GET_TEMPORARYABSENCE_BYSID + " DESC";
 	
 	private static final String GET_BY_SID_DATE = "select h from BsymtTempAbsHistory h"
@@ -36,6 +41,9 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	
 	private static final String GET_LST_SID_BY_LSTSID_DATEPERIOD = "SELECT tah.sid FROM BsymtTempAbsHistory tah" 
 			+ " WHERE tah.sid IN :employeeIds AND tah.startDate <= :endDate AND :startDate <= tah.endDate ";
+	
+	private static final String SELECT_BY_LIST_SID =  "SELECT th.sid FROM BsymtTempAbsHistory th"
+			+ " WHERE th.sid IN :employeeIds ORDER BY th.sid ";
 	
 	/**
 	 * Convert from domain to entity
@@ -159,6 +167,11 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 					.setParameter("endDate", dateperiod.end()).getList();
 			tempAbsHistoryEntities.addAll(lstBsymtAffCompanyHist);
 		});
+		tempAbsHistoryEntities.sort((o1, o2) -> {
+			int tmp = o1.sid.compareTo(o2.sid);
+			if (tmp != 0) return tmp;
+			return o1.startDate.compareTo(o2.startDate);
+		});
 		
 		Map<String, List<BsymtTempAbsHistory>> tempAbsEntityForEmp = tempAbsHistoryEntities.stream()
 				.collect(Collectors.groupingBy(x -> x.sid));
@@ -179,7 +192,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	@Override
 	public List<String> getLstSidByListSidAndDatePeriod(List<String> employeeIds, DatePeriod dateperiod) {
 		List<String> listSid = new ArrayList<>();
-		CollectionUtil.split(employeeIds, 1000, subList -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			listSid.addAll(this.queryProxy().query(GET_LST_SID_BY_LSTSID_DATEPERIOD, String.class)
 					.setParameter("employeeIds", subList)
 					.setParameter("startDate", dateperiod.start())
@@ -192,4 +205,28 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 		return listSid;
 	}
 
+	@Override
+	public List<String> getByListSid(List<String> employeeIds) {
+		List<String> listSid = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			listSid.addAll(this.queryProxy().query(SELECT_BY_LIST_SID, String.class)
+					.setParameter("employeeIds", subList)
+					.getList());
+		});
+		if(listSid.isEmpty()){
+			return Collections.emptyList();
+		}
+		return listSid;
+	}
+	
+	@Override
+	public Optional<TempAbsenceHistory> getBySidAndLeave(String cid, String employeeId) {
+		List<BsymtTempAbsHistory> listHist = this.queryProxy()
+				.query(QUERY_GET_TEMPORARYABSENCE_BYSID_AND_CLS, BsymtTempAbsHistory.class).setParameter("sid", employeeId)
+				.setParameter("cid", cid).getList();
+		if (listHist != null && !listHist.isEmpty()) {
+			return Optional.of(toDomainTemp(listHist));
+		}
+		return Optional.empty();
+	}
 }

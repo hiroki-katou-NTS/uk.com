@@ -45,26 +45,26 @@ public class AddEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapComm
 			EmployeeDataMngInfo emp = employee.get();
 			if (command.isAvatar()) {
 				// start ghi log
-				DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
-
-				this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(emp.getPersonId(), command.getFileId(), TypeFile.AVATAR_FILE.value, null));
-				this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(emp.getPersonId(), command.getFileIdnew(), TypeFile.AVATAR_FILE_NOTCROP.value, null));
-				
-				setParamPersonLog(command);
-				setDataLogCategory(command).forEach(cat -> {
-					DataCorrectionContext.setParameter(cat.getHashID(), cat);
+				DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, () -> {
+	
+					this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(emp.getPersonId(), command.getFileId(), TypeFile.AVATAR_FILE.value, null));
+					this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(emp.getPersonId(), command.getFileIdnew(), TypeFile.AVATAR_FILE_NOTCROP.value, null));
+					
+					setParamPersonLog(command);
+					setDataLogCategory(command).forEach(cat -> {
+						DataCorrectionContext.setParameter(cat.getHashID(), cat);
+					});
 				});
-				DataCorrectionContext.transactionFinishing();
 				
 			}else {
 				// start ghi log
-				DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
-				this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(emp.getPersonId(), command.getFileId(), 1, null));
-				setParamPersonLog(command);
-				setDataLogCategory(command).forEach(cat -> {
-					DataCorrectionContext.setParameter(cat.getHashID(), cat);
+				DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, () -> {
+					this.empFileManagementRepository.insert(PersonFileManagement.createFromJavaType(emp.getPersonId(), command.getFileId(), 1, null));
+					setParamPersonLog(command);
+					setDataLogCategory(command).forEach(cat -> {
+						DataCorrectionContext.setParameter(cat.getHashID(), cat);
+					});
 				});
-				DataCorrectionContext.transactionFinishing();
 				
 			}
 		}
@@ -81,7 +81,7 @@ public class AddEmpAvaOrMapCommandHandler extends CommandHandler<EmpAvaOrMapComm
 		PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(
 				user != null ? user.getUserID() : "",
 				user != null ? user.getEmpID() : "", 
-				user != null ?user.getUserName(): "",
+				user != null ?user.getEmpName(): "",
 				PersonInfoProcessAttr.UPDATE,
 				null);
 		DataCorrectionContext.setParameter(target.getHashID(), target);

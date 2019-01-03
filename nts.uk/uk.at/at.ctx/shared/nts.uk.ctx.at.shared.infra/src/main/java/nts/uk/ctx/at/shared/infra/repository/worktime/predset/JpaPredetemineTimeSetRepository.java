@@ -19,6 +19,7 @@ import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
@@ -36,9 +37,6 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWorkTimeSheetSet_
  */
 @Stateless
 public class JpaPredetemineTimeSetRepository extends JpaRepository implements PredetemineTimeSettingRepository {
-
-	/** The Constant MAX_PARAM_QUERY_IN. */
-	private static final int MAX_PARAM_QUERY_IN = 1000;
 
 	/*
 	 * (non-Javadoc)
@@ -128,16 +126,16 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 		// select root
 		predCquery.select(predRoot);
 
-		List<PredetemineTimeSetting> resultList = new ArrayList<PredetemineTimeSetting>();
+		List<KshmtPredTimeSet> resultList = new ArrayList<>();
 
 		// split list worktimecode
-		CollectionUtil.split(workTimeCodes, MAX_PARAM_QUERY_IN, subList -> {
+		CollectionUtil.split(workTimeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			// add predicates
 			List<Predicate> predTimePredicates = new ArrayList<>();
 			predTimePredicates.add(predCb
 					.equal(predRoot.get(KshmtPredTimeSet_.kshmtPredTimeSetPK).get(KshmtPredTimeSetPK_.cid), companyID));
 			predTimePredicates.add(predRoot.get(KshmtPredTimeSet_.kshmtPredTimeSetPK)
-					.get(KshmtPredTimeSetPK_.worktimeCd).in(workTimeCodes));
+					.get(KshmtPredTimeSetPK_.worktimeCd).in(subList));
 			predTimePredicates.add(predCb.equal(joinRoot.get(KshmtWorkTimeSheetSet_.useAtr), UseAtr.USE.value));
 			predTimePredicates.add(predCb.equal(joinRoot.get(KshmtWorkTimeSheetSet_.startTime), startClock));
 
@@ -145,13 +143,13 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 			predCquery.where(predTimePredicates.toArray(new Predicate[] {}));
 
 			// add all to resultList
-			resultList.addAll(em.createQuery(predCquery).getResultList().stream()
-					.map(entity -> new PredetemineTimeSetting(new JpaPredetemineTimeSettingGetMemento(entity)))
-					.collect(Collectors.toList()));
+			resultList.addAll(em.createQuery(predCquery).getResultList());
 		});
 
 		// get results
-		return resultList;
+		return resultList.stream()
+				.map(entity -> new PredetemineTimeSetting(new JpaPredetemineTimeSettingGetMemento(entity)))
+				.collect(Collectors.toList());
 	}
 
 	/*
@@ -175,16 +173,16 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 		// select root
 		predCquery.select(predRoot);
 
-		List<PredetemineTimeSetting> resultList = new ArrayList<PredetemineTimeSetting>();
+		List<KshmtPredTimeSet> resultList = new ArrayList<>();
 
 		// split list worktimecode
-		CollectionUtil.split(workTimeCodes, MAX_PARAM_QUERY_IN, subList -> {
+		CollectionUtil.split(workTimeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			// add predicates
 			List<Predicate> predTimePredicates = new ArrayList<>();
 			predTimePredicates.add(predCb
 					.equal(predRoot.get(KshmtPredTimeSet_.kshmtPredTimeSetPK).get(KshmtPredTimeSetPK_.cid), companyID));
 			predTimePredicates.add(predRoot.get(KshmtPredTimeSet_.kshmtPredTimeSetPK)
-					.get(KshmtPredTimeSetPK_.worktimeCd).in(workTimeCodes));
+					.get(KshmtPredTimeSetPK_.worktimeCd).in(subList));
 			predTimePredicates.add(predCb.equal(joinRoot.get(KshmtWorkTimeSheetSet_.useAtr), UseAtr.USE.value));
 			predTimePredicates.add(predCb.equal(joinRoot.get(KshmtWorkTimeSheetSet_.endTime), endClock));
 
@@ -192,13 +190,13 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 			predCquery.where(predTimePredicates.toArray(new Predicate[] {}));
 
 			// add all to resultList
-			resultList.addAll(em.createQuery(predCquery).getResultList().stream()
-					.map(entity -> new PredetemineTimeSetting(new JpaPredetemineTimeSettingGetMemento(entity)))
-					.collect(Collectors.toList()));
+			resultList.addAll(em.createQuery(predCquery).getResultList());
 		});
 
 		// get results
-		return resultList;
+		return resultList.stream()
+				.map(entity -> new PredetemineTimeSetting(new JpaPredetemineTimeSettingGetMemento(entity)))
+				.collect(Collectors.toList());
 	}
 
 	/*
@@ -223,14 +221,14 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 		// select root
 		predCquery.select(predRoot);
 
-		List<PredetemineTimeSetting> resultList = new ArrayList<PredetemineTimeSetting>();
+		List<KshmtPredTimeSet> resultList = new ArrayList<>();
 
 		// split list worktimecode
-		CollectionUtil.split(workTimeCodes, MAX_PARAM_QUERY_IN, subList -> {
+		CollectionUtil.split(workTimeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			// add predicates
 			List<Predicate> predTimePredicates = new ArrayList<>();
 			predTimePredicates.add(predRoot.get(KshmtPredTimeSet_.kshmtPredTimeSetPK)
-					.get(KshmtPredTimeSetPK_.worktimeCd).in(workTimeCodes));
+					.get(KshmtPredTimeSetPK_.worktimeCd).in(subList));
 			predTimePredicates.add(predCb
 					.equal(predRoot.get(KshmtPredTimeSet_.kshmtPredTimeSetPK).get(KshmtPredTimeSetPK_.cid), companyID));
 			predTimePredicates.add(predCb.equal(joinRoot.get(KshmtWorkTimeSheetSet_.useAtr), UseAtr.USE.value));
@@ -241,13 +239,13 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 			predCquery.where(predTimePredicates.toArray(new Predicate[] {}));
 
 			// add all to resultList
-			resultList.addAll(em.createQuery(predCquery).getResultList().stream()
-					.map(entity -> new PredetemineTimeSetting(new JpaPredetemineTimeSettingGetMemento(entity)))
-					.collect(Collectors.toList()));
+			resultList.addAll(em.createQuery(predCquery).getResultList());
 		});
 
 		// get results
-		return resultList;
+		return resultList.stream()
+				.map(entity -> new PredetemineTimeSetting(new JpaPredetemineTimeSettingGetMemento(entity)))
+				.collect(Collectors.toList());
 	}
 
 	/*
@@ -293,7 +291,8 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 	 * java.util.List)
 	 */
 	@Override
-	public List<PredetemineTimeSetting> findByCodeList(String companyID, List<String> worktimeCodes) {
+	public List<PredetemineTimeSetting> findByCodeList(String companyID,
+			List<String> worktimeCodes) {
 		if (CollectionUtil.isEmpty(worktimeCodes)) {
 			return Collections.emptyList();
 		}
@@ -308,21 +307,30 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 		// select root
 		predCquery.select(predRoot);
 
-		// add predicates
-		List<Predicate> predTimePredicates = new ArrayList<>();
+		List<KshmtPredTimeSet> result = new ArrayList<>();
 
-		// predTime predicates
-		predTimePredicates.add(predCb
-				.equal(predRoot.get(KshmtPredTimeSet_.kshmtPredTimeSetPK).get(KshmtPredTimeSetPK_.cid), companyID));
-		predTimePredicates.add(predRoot.get(KshmtPredTimeSet_.kshmtPredTimeSetPK).get(KshmtPredTimeSetPK_.worktimeCd)
-				.in(worktimeCodes));
+		// split list worktimecode
+		CollectionUtil.split(worktimeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			// add predicates
+			List<Predicate> predTimePredicates = new ArrayList<>();
 
-		// set condition
-		predCquery.where(predTimePredicates.toArray(new Predicate[] {}));
+			// predTime predicates
+			predTimePredicates.add(predCb.equal(
+					predRoot.get(KshmtPredTimeSet_.kshmtPredTimeSetPK).get(KshmtPredTimeSetPK_.cid),
+					companyID));
+			predTimePredicates.add(predRoot.get(KshmtPredTimeSet_.kshmtPredTimeSetPK)
+					.get(KshmtPredTimeSetPK_.worktimeCd).in(subList));
+
+			// set condition
+			predCquery.where(predTimePredicates.toArray(new Predicate[] {}));
+
+			result.addAll(em.createQuery(predCquery).getResultList());
+		});
 
 		// get results
-		return em.createQuery(predCquery).getResultList().stream()
-				.map(entity -> new PredetemineTimeSetting(new JpaPredetemineTimeSettingGetMemento(entity)))
+		return result.stream()
+				.map(entity -> new PredetemineTimeSetting(
+						new JpaPredetemineTimeSettingGetMemento(entity)))
 				.collect(Collectors.toList());
 	}
 }

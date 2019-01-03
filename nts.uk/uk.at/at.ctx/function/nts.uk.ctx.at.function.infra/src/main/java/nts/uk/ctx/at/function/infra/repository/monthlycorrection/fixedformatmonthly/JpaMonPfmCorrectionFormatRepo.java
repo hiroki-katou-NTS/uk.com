@@ -10,8 +10,9 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.DisplayTimeItem;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonPfmCorrectionFormat;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonPfmCorrectionFormatRepository;
 import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.KfnmtDisplayTimeItemPfm;
@@ -19,7 +20,6 @@ import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.
 import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.KfnmtMonthlyActualResultPrm;
 import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.KfnmtMonthlyActualResultPrmPK;
 import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.KrcmtMonPfmCorrectionFormat;
-import nts.uk.ctx.at.function.infra.entity.monthlycorrection.fixedformatmonthly.KrcmtMonPfmCorrectionFormatPK;
 import nts.uk.shr.com.context.AppContexts;
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -53,17 +53,19 @@ public class JpaMonPfmCorrectionFormatRepo extends JpaRepository implements MonP
 	@Override
 	public List<MonPfmCorrectionFormat> getMonPfmCorrectionFormat(String companyID,
 			List<String> monthlyPfmFormatCodes) {
-		List<MonPfmCorrectionFormat> data = this.queryProxy()
+		List<KrcmtMonPfmCorrectionFormat> resultList = new ArrayList<>();
+		CollectionUtil.split(monthlyPfmFormatCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy()
 				.query(GET_MON_PRM_BY_CODE_LIST, KrcmtMonPfmCorrectionFormat.class).setParameter("companyID", companyID)
-				.setParameter("monthlyPfmFormatCodes", monthlyPfmFormatCodes).getList(c -> c.toDomain());
-		return data;
+				.setParameter("monthlyPfmFormatCodes", subList).getList());
+		});
+		return resultList.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 
 	@Override
 	public void addMonPfmCorrectionFormat(MonPfmCorrectionFormat monPfmCorrectionFormat) {
 		KrcmtMonPfmCorrectionFormat newEntity = KrcmtMonPfmCorrectionFormat.toEntity(monPfmCorrectionFormat);
 		this.commandProxy().insert(newEntity);
-
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -194,10 +196,13 @@ public class JpaMonPfmCorrectionFormatRepo extends JpaRepository implements MonP
 
 	@Override
 	public void updateWidthMonthly(Map<Integer, Integer> lstHeader, List<String> formatCodes) {
-		List<KfnmtDisplayTimeItemPfm> items = this.queryProxy()
+		List<KfnmtDisplayTimeItemPfm> items = new ArrayList<>();
+		CollectionUtil.split(formatCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			items.addAll(this.queryProxy()
 				.query(GET_AUT_MON_FORM_ITEM, KfnmtDisplayTimeItemPfm.class)
 				.setParameter("companyID", AppContexts.user().companyId())
-				.setParameter("monthlyPfmFormatCodes", formatCodes).getList();
+				.setParameter("monthlyPfmFormatCodes", subList).getList());
+		});
 		List<KfnmtDisplayTimeItemPfm> entitys = items.stream()
 				.map(item -> new KfnmtDisplayTimeItemPfm(
 						new KfnmtDisplayTimeItemPfmPK(AppContexts.user().companyId(),

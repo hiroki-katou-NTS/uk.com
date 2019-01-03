@@ -25,7 +25,7 @@
 					data-bind="ntsFormLabel: { required: true }">
 					<label>#{i18n.getText('KMK006_33')}</label>
 				</div>
-				<div tabindex="2" data-bind="ntsDatePicker: {value: inputDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
+				<div id="kmk0006-basedate" tabindex="2" data-bind="ntsDatePicker: {value: inputDate, dateFormat: 'YYYY/MM/DD', required: true}"></div>
 				<button tabindex="2" style="margin-left: 10px" data-bind="click: applyBaseDate">#{i18n.getText('KMK006_34')}</button>
 				
 				<div tabindex="2" style="margin-top: 17px" id="tree-grid"></div>

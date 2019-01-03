@@ -5,6 +5,7 @@ module nts.uk.com.view.ccg026.component {
         export class ComponentModel {
             private componentId: string = nts.uk.util.randomId();
             roleId: KnockoutObservable<string> = ko.observable("");
+            enable: KnockoutObservable<boolean>;
             listPermissions: KnockoutObservableArray<model.FunctionPermission> = ko.observableArray([]);
             
             private defaultSetting: model.ISetting = {
@@ -16,7 +17,7 @@ module nts.uk.com.view.ccg026.component {
             constructor(option: model.IOption) {
                 let self = this;
                 self.setting = $.extend({}, self.defaultSetting, option);
-                
+                self.enable = ko.observable(true);
                 self.roleId("");
                 self.roleId.subscribe((x) => {
                     // reset function avialability 

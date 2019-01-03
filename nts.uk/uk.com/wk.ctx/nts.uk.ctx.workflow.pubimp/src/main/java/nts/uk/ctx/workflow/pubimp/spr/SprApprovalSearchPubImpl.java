@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.pubimp.spr;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -7,10 +8,13 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.agent.Agent;
+import nts.uk.ctx.workflow.dom.agent.AgentRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
 import nts.uk.ctx.workflow.dom.service.JudgmentApprovalStatusService;
 import nts.uk.ctx.workflow.dom.service.output.ApproverPersonOutput;
@@ -22,6 +26,7 @@ import nts.uk.ctx.workflow.pub.spr.export.ApprovalRootStateSprExport;
 import nts.uk.ctx.workflow.pub.spr.export.ApprovalWorkplaceSprExport;
 import nts.uk.ctx.workflow.pub.spr.export.ApproverSprExport;
 import nts.uk.ctx.workflow.pub.spr.export.JudgmentSprExport;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
  * @author Doan Duy Hung
@@ -47,6 +52,9 @@ public class SprApprovalSearchPubImpl implements SprApprovalSearchPub {
 	
 	@Inject
 	private JudgmentApprovalStatusService judgmentApprovalStatusService;
+	
+	@Inject
+	private AgentRepository agentRepository;
 
 	@Override
 	public List<ApprovalComSprExport> getApprovalRootCom(String companyID, GeneralDate date, Integer employmentRootAtr,
@@ -119,9 +127,18 @@ public class SprApprovalSearchPubImpl implements SprApprovalSearchPub {
 	}
 	
 	@Override
-	public List<ApprovalRootStateSprExport> getRootStateByDateAndType(GeneralDate date, Integer rootType) {
-		return approvalRootStateRepository.getRootStateByDateAndType(date, rootType)
-			.stream().map(x -> new ApprovalRootStateSprExport(
+	public List<ApprovalRootStateSprExport> getAppByApproverDate(String companyID, String approverID, GeneralDate date) {
+		List<ApprovalRootState> result =  new ArrayList<>();
+		List<ApprovalRootState> approverLst = approvalRootStateRepository.getByApproverPeriod(companyID, approverID, new DatePeriod(date, date));
+		result.addAll(approverLst);
+		List<Agent> agentInfoOutputs = agentRepository.findByApproverAndDate(companyID, approverID, date, date);
+		agentInfoOutputs.forEach(agent -> {
+			List<ApprovalRootState> approverAgentLst = approvalRootStateRepository.getByApproverAgentPeriod(companyID, approverID, 
+					new DatePeriod(date, date), 
+					new DatePeriod(agent.getStartDate(), agent.getEndDate()));
+			result.addAll(approverAgentLst);
+		});
+		return result.stream().map(x -> new ApprovalRootStateSprExport(
 					x.getRootStateID(), 
 					x.getRootType().value, 
 					x.getHistoryID(), 

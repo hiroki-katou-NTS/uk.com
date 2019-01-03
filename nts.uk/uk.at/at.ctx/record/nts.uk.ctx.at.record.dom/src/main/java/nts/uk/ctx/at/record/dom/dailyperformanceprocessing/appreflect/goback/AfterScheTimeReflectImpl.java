@@ -6,9 +6,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectParameter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
 
 @Stateless
@@ -19,8 +17,6 @@ public class AfterScheTimeReflectImpl implements AfterScheTimeReflect{
 	private ScheTimeReflect scheTimeReflect;
 	@Inject
 	private WorkUpdateService scheUpdateService;
-	@Inject
-	private WorkInformationRepository workRepository;
 	@Override
 	public WorkInfoOfDailyPerformance reflectScheTime(GobackReflectParameter para, boolean timeTypeScheReflect,
 			WorkInfoOfDailyPerformance dailyInfor) {
@@ -58,10 +54,10 @@ public class AfterScheTimeReflectImpl implements AfterScheTimeReflect{
 	@Override
 	public boolean checkScheTimeCanReflect(String workTimeCode, ScheAndRecordSameChangeFlg scheAndRecordSameChange) {
 		//INPUT．予定と実績を同じに変更する区分をチェックする
-		if(scheAndRecordSameChange == ScheAndRecordSameChangeFlg.NOTAUTO) {
+		if(scheAndRecordSameChange == ScheAndRecordSameChangeFlg.DO_NOT_CHANGE_AUTO) {
 			return false;
-		} else if (scheAndRecordSameChange == ScheAndRecordSameChangeFlg.ALWAY
-				|| (scheAndRecordSameChange == ScheAndRecordSameChangeFlg.FLUIDWORK
+		} else if (scheAndRecordSameChange == ScheAndRecordSameChangeFlg.ALWAYS_CHANGE_AUTO
+				|| (scheAndRecordSameChange == ScheAndRecordSameChangeFlg.AUTO_CHANGE_ONLY_WORK
 						&& isFluidWork.checkWorkTimeIsFluidWork(workTimeCode))){
 			return true;
 		} 

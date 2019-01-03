@@ -1,12 +1,15 @@
 package nts.uk.ctx.basic.infra.repository.system.bank.linebank;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.basic.dom.system.bank.linebank.LineBank;
 import nts.uk.ctx.basic.dom.system.bank.linebank.LineBankRepository;
 import nts.uk.ctx.basic.infra.entity.system.bank.linebank.CbkmtLineBank;
@@ -92,10 +95,14 @@ public class JpaLineBankRepository extends JpaRepository implements LineBankRepo
 
 	@Override
 	public List<LineBank> find(String companyCode, List<String> branchIdList) {
-		return this.queryProxy().query(SEL_3, CbkmtLineBank.class)
+		List<LineBank> resultList = new ArrayList<>();
+		CollectionUtil.split(branchIdList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SEL_3, CbkmtLineBank.class)
 				.setParameter("companyCode", companyCode)
-				.setParameter("branchIdList", branchIdList)
-				.getList(x -> toDomain(x));
+				.setParameter("branchIdList", subList)
+				.getList(x -> toDomain(x)));
+		});
+		return resultList;
 	}
 	
 	@Override
@@ -117,11 +124,13 @@ public class JpaLineBankRepository extends JpaRepository implements LineBankRepo
 
 	@Override
 	public void updateByBranch(String companyCode, List<String> oldBranchIdList, String newBranchId) {
-		this.getEntityManager().createQuery(UDP_2)
-			.setParameter("companyCode", companyCode)
-			.setParameter("branchIdList", oldBranchIdList)
-			.setParameter("newBranchId", newBranchId)
-			.executeUpdate();
+		CollectionUtil.split(oldBranchIdList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			this.getEntityManager().createQuery(UDP_2)
+				.setParameter("companyCode", companyCode)
+				.setParameter("branchIdList", subList)
+				.setParameter("newBranchId", newBranchId)
+				.executeUpdate();
+		});
 	}
 	
 	@Override

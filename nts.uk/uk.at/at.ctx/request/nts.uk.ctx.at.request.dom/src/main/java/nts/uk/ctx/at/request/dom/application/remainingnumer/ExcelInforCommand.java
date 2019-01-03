@@ -7,7 +7,9 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumb
 
 @Data
 public class ExcelInforCommand {
-	//氏名(1列目)
+		//社員コード　ASC(0列目) - ver6　追加
+		private String employeeCode;
+		//氏名(1列目)
 		private String name;
 		//入社日(2列目)
 		private String dateStart;
@@ -28,11 +30,12 @@ public class ExcelInforCommand {
 		public ExcelInforCommand(){
 			
 		}
-		public ExcelInforCommand(String name, String dateStart, String dateEnd, String dateOffYear,
+		public ExcelInforCommand(String employeeCode, String name, String dateStart, String dateEnd, String dateOffYear,
 				String dateTargetRemaining, Double dateAnnualRetirement, Double dateAnnualRest,
 				List<NumberOfWorkTypeUsedImport> numberOfWorkTypeUsedImport,
 				List<PlannedVacationListCommand> plannedVacationListCommand) {
 			super();
+			this.employeeCode = employeeCode;
 			this.name = name;
 			this.dateStart = dateStart;
 			this.dateEnd = dateEnd;

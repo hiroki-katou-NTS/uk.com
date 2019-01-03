@@ -21,6 +21,4 @@ public class StatutoryWorkingTime {
 		this.forActualWorkTime = forActualWorkTime;
 		this.forWorkTimeIncludePremium = forWorkTimeIncludePremium;
 	}
-	
-	
 }

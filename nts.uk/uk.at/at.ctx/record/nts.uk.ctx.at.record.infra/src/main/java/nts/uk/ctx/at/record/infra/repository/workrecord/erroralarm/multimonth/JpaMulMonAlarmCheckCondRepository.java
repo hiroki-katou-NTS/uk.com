@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.multimonth;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.MulMonAlarmCheckCondRepository;
@@ -22,13 +25,15 @@ public class JpaMulMonAlarmCheckCondRepository extends JpaRepository implements 
 	
 	@Override
 	public List<MulMonthAlarmCheckCond> getMulMonAlarmsByListID(List<String> listErrorAlarmCheckID) {
-		List<MulMonthAlarmCheckCond> data = new ArrayList<>();
-		CollectionUtil.split(listErrorAlarmCheckID, 1000, subIdList ->{
-			data.addAll(this.queryProxy().query(SELECT_BY_LIST_ID,KrcmtMulMonAlarmCheck.class)
-					.setParameter("listErrorAlarmCheckID", subIdList).getList(c->c.toDomain())
-					);
-		});
-		return data;
+		List<KrcmtMulMonAlarmCheck> data = new ArrayList<>();
+		CollectionUtil.split(listErrorAlarmCheckID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT,
+				subIdList -> {
+					data.addAll(
+							this.queryProxy().query(SELECT_BY_LIST_ID, KrcmtMulMonAlarmCheck.class)
+									.setParameter("listErrorAlarmCheckID", subIdList).getList());
+				});
+		data.sort(Comparator.comparing(KrcmtMulMonAlarmCheck::getInsDate));
+		return data.stream().map(c->c.toDomain()).collect(Collectors.toList());
 	}
 	
 	@Override

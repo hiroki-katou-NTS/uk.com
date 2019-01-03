@@ -87,6 +87,8 @@ public interface AnyItemOfMonthlyRepository {
 	 */
 	List<AnyItemOfMonthly> findBySidsAndMonths(List<String> employeeIds, List<YearMonth> yearMonths);
 	
+	List<AnyItemOfMonthly> findBySidsAndMonthsV2(List<String> employeeIds, List<YearMonth> yearMonths);
+	
 	/**
 	 * 登録および更新
 	 * @param anyItemOfMonthly 月別実績の任意項目

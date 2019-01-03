@@ -12,11 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.paymana.KrcmtPayoutManaData;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcmtComDayoffMaData;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcmtLeaveManaData;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 
@@ -60,6 +56,12 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 			+ " AND c.unknownDate = :unknownDate"
 			+ " AND c.dayOff >= :startDate";
 	private static final String QUERY_BYSID_COND_DATE = QUERY_BYSID_WITH_COND + " AND p.dayOff < :dayOff";
+	private String QUERY_UNUSER_STATE = "SELECT p FROM KrcmtPayoutManaData p "
+			+ " WHERE p.cID = :cid"
+			+ " AND p.sID =:employeeId"
+			+ " AND (p.dayOff < :dayOff OR p.dayOff is null)"
+			+ " AND p.unUsedDays > :unUsedDays"
+			+ " AND p.stateAtr = :stateAtr";
 
 
 	@Override
@@ -237,6 +239,17 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 	@Override
 	public void deleteById(List<String> payoutId) {
 		this.commandProxy().removeAll(KrcmtPayoutManaData.class, payoutId);
+	}
+
+	@Override
+	public List<PayoutManagementData> getByUnUseState(String cid, String sid, GeneralDate ymd, double unUse, DigestionAtr state) {
+		List<KrcmtPayoutManaData> list = this.queryProxy().query(QUERY_UNUSER_STATE, KrcmtPayoutManaData.class)
+				.setParameter("cid", cid)
+				.setParameter("employeeId", sid)
+				.setParameter("dayOff", ymd)
+				.setParameter("unUsedDays", unUse)
+				.setParameter("stateAtr", state.value).getList();
+		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
 
 }

@@ -32,4 +32,8 @@ public class DataWork {
 	 * 選択中の就業時間帯名
 	 */
 	String selectedWorkTimeName;	
+	
+	Integer startTime1;
+	
+	Integer endTime1;
 }

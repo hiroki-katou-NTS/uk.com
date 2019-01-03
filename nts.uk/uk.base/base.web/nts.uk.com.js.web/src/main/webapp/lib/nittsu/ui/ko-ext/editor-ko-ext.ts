@@ -315,6 +315,7 @@ module nts.uk.ui.koExtentions {
                     var result = validator.validate(newText, { isCheckExpression: true });
                     //$input.ntsError('clear');
                     if (result.isValid) {
+                        $input.ntsError('clear')
                         if (value() === result.parsedValue) {
                             $input.val(result.parsedValue);
                         } else {
@@ -474,7 +475,8 @@ module nts.uk.ui.koExtentions {
                         numb = Number(value);
 
                     if (!_.isNil(value) && _.isNumber(numb) && !_.isNaN(numb) && !_.isEqual(String(value).trim(), '')) {
-                        $input.val(numb.toLocaleString('ja-JP', { useGrouping: false }));
+                        let match = String(value).match(/.\d+/g);
+                        $input.val(numb.toLocaleString('ja-JP', { useGrouping: false, minimumFractionDigits: match.length == 2 ? match[1].length - 1 : 0 }));
                     } else {
                         $input.val(data.value());
                     }

@@ -1,8 +1,10 @@
 package nts.uk.ctx.bs.employee.infra.repository.employment.history;
 
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -10,11 +12,14 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.dom.employment.history.DateHistItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist;
@@ -30,13 +35,15 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 
 	private static final String QUERY_BYEMPLOYEEID_DESC = QUERY_BYEMPLOYEEID + " DESC";
 
-	private static final String GET_BY_EMPID_AND_STD = "SELECT h FROM BsymtEmploymentHist h"
-			+ " WHERE h.sid = :sid AND h.strDate <= :stdDate AND h.endDate >= :stdDate";
+//	private static final String GET_BY_EMPID_AND_STD = "SELECT h FROM BsymtEmploymentHist h"
+//			+ " WHERE h.sid = :sid AND h.strDate <= :stdDate AND h.endDate >= :stdDate";
 
 	private static final String SELECT_BY_LISTSID = "SELECT a FROM BsymtEmploymentHist a"
 			+ " INNER JOIN BsymtEmploymentHistItem b on a.hisId = b.hisId" + " WHERE a.sid IN :listSid "
 			+ " AND ( a.strDate <= :end AND a.endDate >= :start ) ";
-
+	private static final String GET_BY_LSTSID_DATE = "SELECT c FROM BsymtEmploymentHist c where c.sid IN :lstSID" 
+			+ " AND c.strDate <= :date and c.endDate >= :date";
+	
 	/**
 	 * Convert from BsymtEmploymentHist to domain EmploymentHistory
 	 * 
@@ -77,8 +84,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 
 	@Override
 	public Optional<DateHistoryItem> getByEmployeeIdAndStandardDate(String employeeId, GeneralDate standardDate) {
-		try {
-			val statement = this.connection().prepareStatement("select * FROM BSYMT_EMPLOYMENT_HIST where SID = ? and START_DATE <= ? and END_DATE >= ?");
+		try (val statement = this.connection().prepareStatement("select * FROM BSYMT_EMPLOYMENT_HIST where SID = ? and START_DATE <= ? and END_DATE >= ?")) {
 			statement.setString(1, employeeId);
 			statement.setDate(2, Date.valueOf(standardDate.localDate()));
 			statement.setDate(3, Date.valueOf(standardDate.localDate()));
@@ -222,7 +228,7 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 		// Split query.
 		List<BsymtEmploymentHist> lstEmpHist = new ArrayList<>();
 
-		CollectionUtil.split(employeeIds, 1000, (subList) -> {
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			lstEmpHist.addAll(this.queryProxy().query(SELECT_BY_LISTSID, BsymtEmploymentHist.class)
 					.setParameter("listSid", subList).setParameter("start", datePeriod.start())
 					.setParameter("end", datePeriod.end()).getList());
@@ -250,4 +256,48 @@ public class JpaEmploymentHistoryRepository extends JpaRepository implements Emp
 
 	}
 
+	@Override
+	@SneakyThrows
+	public Optional<EmploymentHistory> getEmploymentHistory(String historyId, String employmentCode) {
+		try (PreparedStatement statement = this.connection().prepareStatement(
+				"SELECT DISTINCT b.* FROM BSYMT_EMPLOYMENT_HIST a INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM b ON a.HIST_ID = b.HIST_ID"
+						  + " WHERE a.HIST_ID = ? AND  b.EMP_CD = ?")) {
+			statement.setString(1, historyId);
+			statement.setString(2, employmentCode);
+			
+			Optional<BsymtEmploymentHist>  optionData =  new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
+				BsymtEmploymentHist employmentHist = new BsymtEmploymentHist();
+				employmentHist.companyId = rec.getString("CID");
+				employmentHist.sid = rec.getString("SID");
+				employmentHist.hisId = rec.getString("HIST_ID");
+				employmentHist.endDate = rec.getGeneralDate("END_DATE");
+				employmentHist.strDate = rec.getGeneralDate("START_DATE");
+				return employmentHist;
+			});
+			if (optionData.isPresent()) {
+				BsymtEmploymentHist entity = optionData.get();
+				return Optional.of(toDomain(entity));
+			}
+		} catch (SQLException e) {
+		throw new RuntimeException(e);
+	}
+	return Optional.empty();
+	}
+
+	@Override
+	public Map<String, DateHistItem> getBySIdAndate(List<String> lstSID, GeneralDate date) {
+		List<DateHistItem> lst =  this.queryProxy().query(GET_BY_LSTSID_DATE, BsymtEmploymentHist.class)
+				.setParameter("lstSID", lstSID)
+				.setParameter("date", date)
+				.getList(c -> new DateHistItem(c.sid, c.hisId, new DatePeriod(c.strDate, c.endDate)));
+		Map<String, DateHistItem> mapResult = new HashMap<>();
+		for(String sid : lstSID){
+			List<DateHistItem> hist = lst.stream().filter(c -> c.getSid().equals(sid)).collect(Collectors.toList());
+			if(hist.isEmpty()){
+				continue;
+			}
+			mapResult.put(sid, hist.get(0));
+		}
+		return mapResult;
+	}
 }

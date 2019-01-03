@@ -10,5 +10,4 @@ public enum TimeSheetRoundingAtr {
 	PerTimeFrame, //時間帯枠毎に丸める
 	ALL //全体で丸める
 	;
-	
 }

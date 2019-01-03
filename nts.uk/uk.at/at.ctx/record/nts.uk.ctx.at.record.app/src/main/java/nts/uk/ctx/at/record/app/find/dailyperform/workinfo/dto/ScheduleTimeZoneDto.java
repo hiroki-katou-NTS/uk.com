@@ -20,12 +20,12 @@ public class ScheduleTimeZoneDto implements ItemConst {
 	/** 出勤 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = ATTENDANCE)
 	@AttendanceItemValue(type = ValueType.TIME_WITH_DAY)
-	private int working;
+	private Integer working;
 
 	/** 退勤 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = LEAVE)
 	@AttendanceItemValue(type = ValueType.TIME_WITH_DAY)
-	private int leave;
+	private Integer leave;
 
 	@Override
 	protected ScheduleTimeZoneDto clone() {

@@ -7,9 +7,9 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
-import nts.arc.layer.app.command.AsyncCommandHandler;
-import nts.arc.layer.app.command.AsyncCommandHandlerContext;
+//import lombok.val;
+//import nts.arc.layer.app.command.AsyncCommandHandler;
+//import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDateTime;
@@ -25,7 +25,7 @@ import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskSetti
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogHistRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.ExecutionTaskSetting;
-import nts.uk.shr.com.task.schedule.UkJobScheduler;
+//import nts.uk.shr.com.task.schedule.UkJobScheduler;
 @Stateless
 public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecuteCommand> {
 	@Inject
@@ -36,8 +36,8 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
 	private ProcessExecutionLogHistRepository processExecLogHistRepo;
 	@Inject
 	private ExecutionTaskSettingRepository execSettingRepo;
-	@Inject
-	private UkJobScheduler ukJobScheduler;
+//	@Inject
+//	private UkJobScheduler ukJobScheduler;
 	@Override //振り分け処理
 	protected void handle(CommandHandlerContext<ScheduleExecuteCommand> context) {
 		ScheduleExecuteCommand command = context.getCommand();

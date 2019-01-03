@@ -179,26 +179,32 @@ module nts.uk.at.view.kdm002.b {
                                     _.forEach(excelKeyList, extractExcelKey => {
                                         let listData = _.filter(res.taskDatas, x => { return x.excelKey === extractExcelKey; });
                                         if (listData) {
-                                            let exContent;
+                                            let exContent,
+                                                numberOfWorkTypeUsedImport = [],
+                                                plannedVacationListCommand = [];
+                                            
                                             for (let item of listData) {
                                                 let [itemKey, itemKeyValue] = item.key.split(',');
                                                 if (itemKeyValue === 'EXCEL_LIST' && !exContent) {
                                                     exContent = JSON.parse(item.valueAsString);
+                                                    exContent.numberOfWorkTypeUsedImport = numberOfWorkTypeUsedImport;
+                                                    exContent.plannedVacationListCommand = plannedVacationListCommand;
                                                 }
-                                                if (exContent && itemKeyValue === "WORKTYPEUSED") {
-                                                    if (exContent.numberOfWorkTypeUsedImport) {
+                                                if (itemKeyValue === "WORKTYPEUSED") {
+                                                    if (exContent && exContent.numberOfWorkTypeUsedImport) {
                                                         exContent.numberOfWorkTypeUsedImport.push.apply(exContent.numberOfWorkTypeUsedImport, JSON.parse(item.valueAsString));
                                                     } else {
-                                                        exContent.numberOfWorkTypeUsedImport = JSON.parse(item.valueAsString);
+                                                        numberOfWorkTypeUsedImport = JSON.parse(item.valueAsString);
                                                     }
                                                 }
-                                                if (exContent && itemKeyValue === "PLANNEDVACATION") {
-                                                    if (exContent.plannedVacationListCommand) {
+                                                 
+                                                if (itemKeyValue === "PLANNEDVACATION") {
+                                                    if (exContent && exContent.plannedVacationListCommand) {
                                                         exContent.plannedVacationListCommand.push.apply(exContent.plannedVacationListCommand, JSON.parse(item.valueAsString));
                                                     } else {
-                                                        exContent.plannedVacationListCommand = JSON.parse(item.valueAsString);
+                                                        plannedVacationListCommand = JSON.parse(item.valueAsString);
                                                     }
-                                                }
+                                                } 
                                             }
                                             if (exContent) {
                                                 self.excelContent.push(exContent);
@@ -226,8 +232,8 @@ module nts.uk.at.view.kdm002.b {
                                 }
                                 if (self.imErrorLog().length > 0) {
                                     var windowSize = nts.uk.ui.windows.getSelf();
-                                    windowSize.setSize(570, 670);
-                                    windowSize.$dialog.resize();
+                                    windowSize.$dialog.dialog("option", "width", 670);
+                                    windowSize.$dialog.dialog("option", "height", 570);
 
                                     self.isError(true);
                                     self.isComplete(true);

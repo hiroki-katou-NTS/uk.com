@@ -72,7 +72,6 @@ public class GetHeaderOfCPS001Finder {
 	private SyWorkplacePub wkpPublish;
 
 	public EmployeeInfo getEmployeeInfo(String sid) {
-		String companyId = AppContexts.user().companyId();
 		GeneralDate date = GeneralDate.today();
 		String cid = AppContexts.user().companyId();
 		String roleId = AppContexts.user().roles().forPersonalInfo();
@@ -88,13 +87,13 @@ public class GetHeaderOfCPS001Finder {
 			return new EmployeeInfo();
 
 		EmployeeInfo _emp = empInfo.get();
-		Optional<TempAbsenceHistory> tempHist = this.tempHistRepo.getByEmployeeId(cid, sid);
+		Optional<TempAbsenceHistory> tempHist = this.tempHistRepo.getBySidAndLeave(cid, sid);
 
 		if (tempHist.isPresent()) {
 			_emp.setNumberOfTempHist(tempHist.get().items().stream()
 					.filter(f -> f.start().localDate().compareTo(LocalDate.now()) < 0)
 					.map(m -> ChronoUnit.DAYS.between(m.start().localDate(),
-							m.end().localDate().compareTo(LocalDate.now()) < 0 ? m.end().localDate() : LocalDate.now()))
+							m.end().localDate().compareTo(LocalDate.now()) < 0 ? m.end().addDays(1).localDate(): GeneralDate.today().addDays(1).localDate()))
 					.mapToInt(m -> Math.abs(m.intValue())).sum());
 		}
 
@@ -146,8 +145,8 @@ public class GetHeaderOfCPS001Finder {
 					_emp.setNumberOfWork(emp.getLstAffCompanyHistoryItem().stream()
 							.filter(f -> f.start().localDate().compareTo(LocalDate.now()) < 0)
 							.map(m -> ChronoUnit.DAYS.between(m.start().localDate(),
-									m.end().localDate().compareTo(LocalDate.now()) <= 0 ? m.end().localDate()
-											: LocalDate.now()))
+									m.end().localDate().compareTo(LocalDate.now()) <= 0 ? m.end().addDays(1).localDate()
+											: GeneralDate.today().addDays(1).localDate()))
 							.mapToInt(m -> Math.abs(m.intValue())).sum());
 				}
 			}
@@ -156,7 +155,7 @@ public class GetHeaderOfCPS001Finder {
 		if (isPosition) {
 			Optional<AffJobTitleHistoryItem> jobTitleHisItem = this.jobTitleHisRepo.getByEmpIdAndReferDate(sid, date);
 			if (jobTitleHisItem.isPresent()) {
-				Optional<JobTitleInfo> jobInfo = this.jobTitleInfoRepo.find(jobTitleHisItem.get().getJobTitleId(),
+				Optional<JobTitleInfo> jobInfo = this.jobTitleInfoRepo.find(cid, jobTitleHisItem.get().getJobTitleId(),
 						date);
 				if (jobInfo.isPresent()) {
 					_emp.setPosition(jobInfo.get().getJobTitleName().toString());
@@ -169,7 +168,7 @@ public class GetHeaderOfCPS001Finder {
 		}
 
 		if (isEmployeement) {
-			Optional<EmploymentInfo> employment = this.employmentHisItemRepo.getDetailEmploymentHistoryItem(companyId,
+			Optional<EmploymentInfo> employment = this.employmentHisItemRepo.getDetailEmploymentHistoryItem(cid,
 					sid, date);
 			if (employment.isPresent()) {
 				_emp.setContractCodeType(employment.get().getEmploymentName());

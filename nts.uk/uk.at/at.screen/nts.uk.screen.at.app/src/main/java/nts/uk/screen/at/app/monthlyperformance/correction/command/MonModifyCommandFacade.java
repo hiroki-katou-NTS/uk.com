@@ -13,8 +13,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -23,9 +21,12 @@ import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.EmpPerformMonthParamImport;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.RegisterDayApproval;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.algorithm.ParamRegisterConfirmMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.algorithm.RegisterConfirmationMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.algorithm.SelfConfirm;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.screen.at.app.monthlyperformance.audittrail.MonthlyCorrectionLogCommand;
@@ -34,9 +35,9 @@ import nts.uk.screen.at.app.monthlyperformance.correction.dto.EditStateOfMonthly
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPItemCheckBox;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPItemDetail;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPItemParent;
-import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceEmployeeDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 /**
  * 
@@ -78,7 +79,7 @@ public class MonModifyCommandFacade {
 					dataParent.getClosureDate()));
 		});
 		List<MonthlyRecordWorkDto> oldDtos = getDtoFromQuery(listQuery); // lay data truoc khi update de so sanh voi data sau khi update
-		monthModifyCommandFacade.handleUpdate(listQuery);
+		monthModifyCommandFacade.handleUpdate(listQuery,oldDtos);
 
 		// insert edit state
 		dataParent.getMPItemDetails().forEach(item -> {
@@ -115,13 +116,14 @@ public class MonModifyCommandFacade {
 		this.insertApproval(listRegister);
 		
 		// add correction log
-//		ExecutorService executorService = Executors.newFixedThreadPool(1);
-//		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
-//				.build(() -> {
-					List<MonthlyRecordWorkDto> newDtos = getDtoFromQuery(listQuery); // lay lai data sau khi update de so sanh voi data truoc khi update
+		ExecutorService executorService = Executors.newFixedThreadPool(1);
+		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
+				.build(() -> {
+					List<MonthlyRecordWorkDto> newDtos = createDtoNews(listQuery, oldDtos);
+					//List<MonthlyRecordWorkDto> newDtos = getDtoFromQuery(listQuery); // lay lai data sau khi update de so sanh voi data truoc khi update
 					handlerLog.handle(new MonthlyCorrectionLogCommand(oldDtos, newDtos, listQuery, dataParent.getEndDate()));
-//				});
-//		executorService.submit(task);
+				});
+		executorService.submit(task);
 		return Collections.emptyMap();
 	}
 	
@@ -135,7 +137,8 @@ public class MonModifyCommandFacade {
 			selfConfirm.add(new SelfConfirm(x.getEmployeeId(), x.isValue()));
 		});
 		ParamRegisterConfirmMonth param = new ParamRegisterConfirmMonth(ym, selfConfirm,
-				mPItemParent.getClosureId(), closureDate.getLastDayOfMonth() ? ym.lastDateInMonth() : closureDate.getClosureDay(), GeneralDate.today());
+				mPItemParent.getClosureId(), new ClosureDate(closureDate.getClosureDay(),
+						closureDate.getLastDayOfMonth()), GeneralDate.today());
 		
 		registerConfirmationMonth.registerConfirmationMonth(param);
 	}
@@ -178,6 +181,29 @@ public class MonModifyCommandFacade {
 	public void removeMonApproval(List<EmpPerformMonthParamImport> dataCheckApprovals) {
 		if(dataCheckApprovals.isEmpty()) return;
 		registerDayApproval.removeMonApproval(AppContexts.user().employeeId(), dataCheckApprovals);
+	}
+	
+	private List<MonthlyRecordWorkDto> createDtoNews(List<MonthlyModifyQuery> query,List<MonthlyRecordWorkDto> values) {
+		Set<String> emps = new HashSet<>();
+		Set<YearMonth> yearmonth = new HashSet<>();
+		query.stream().forEach(q -> {
+			emps.add(q.getEmployeeId());
+			yearmonth.add(new YearMonth(q.getYearMonth()));
+		});
+		//List<MonthlyRecordWorkDto> oldValues = finder.find(emps, yearmonth);
+		return values.stream().map(v -> {
+			MonthlyModifyQuery q = query.stream().filter(qr -> {
+				return qr.getClosureId() == v.getClosureID() && qr.getEmployeeId().equals(v.getEmployeeId())
+						&& v.yearMonth().compareTo(qr.getYearMonth()) == 0 && v.getClosureDate().equals(qr.getClosureDate());
+			}).findFirst().orElse(null);
+			if(q == null){
+				return null;
+			}
+			IntegrationOfMonthly domain = v.toDomain(v.employeeId(), v.yearMonth(), v.getClosureID(), v.getClosureDate());
+			MonthlyRecordWorkDto dtoNew = MonthlyRecordWorkDto.fromOnlyAttTime(domain);
+			MonthlyRecordWorkDto dto = AttendanceItemUtil.fromItemValues(dtoNew, q.getItems(), AttendanceItemType.MONTHLY_ITEM);
+			return dto;
+		}).filter(v -> v != null).collect(Collectors.toList());
 	}
 	
 }

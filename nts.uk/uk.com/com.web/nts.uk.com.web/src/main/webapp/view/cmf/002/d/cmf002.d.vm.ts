@@ -64,10 +64,10 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     //get data return from server
                     let outputItemList: CtgItemDataCndDetailDto = res;
                     if (res.cndDetai == null) {
-                        self.registerMode = shareModel.SCREEN_MODE.NEW
+                        self.registerMode = shareModel.SCREEN_MODE.NEW;
                         self.cndDetai(new OutCndDetailDto(self.cndSetCd, "", []));
                     } else {
-                        self.registerMode = shareModel.SCREEN_MODE.UPDATE
+                        self.registerMode = shareModel.SCREEN_MODE.UPDATE;
                         self.cndDetai(OutCndDetailDto.fromApp(res.cndDetai));
                     }
                     self.ctgItemDataList(res.ctgItemDataList);
@@ -182,9 +182,10 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             let command: OutCndDetailInfoCommand = new OutCndDetailInfoCommand(OutCndDetailCommand.fromDto(self.cndDetai()),
                 self.standardAtr, self.registerMode);
             service.register(command).done(() => {
+                self.registerMode = shareModel.SCREEN_MODE.UPDATE;
                 info({ messageId: "Msg_15" }).then(() => {
                     self.focusFirstRowD5_2();
-                    $('#D5_2_container').focus();   
+                    $('#D5_2_container').focus();
                 });
             }).fail(res => {
                 alertError(res);
@@ -753,12 +754,6 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             _.each(listSearchCode, item => {
                 let searchCode = _.trim(item);
 
-                // 対象の値の桁数が「検索コード」の桁数より大きい場合
-                if (!self.searchCdValidator.validate(searchCode).isValid) {
-                    self.setError(control, "Msg_1346");
-                    return false;
-                }
-
                 // 検索コードがカテゴリ項目の型と同じ場合
                 switch (self.dataType) {
                     case shareModel.ITEM_TYPE.CHARACTER:
@@ -801,8 +796,14 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                         }
                         this.parsedValSearchCodeList.push(check.parsedValue);
                         break;
+                };
+
+                // 対象の値の桁数が「検索コード」の桁数より大きい場合
+                if (!self.searchCdValidator.validate(searchCode).isValid) {
+                    self.setError(control, "Msg_1346");
+                    return false;
                 }
-            })
+            });
         }
 
         removeValidate() {

@@ -22,9 +22,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+//import lombok.Setter;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
@@ -72,6 +74,9 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
 			@JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", nullable = false),
 			@JoinColumn(name = "ATD_ITEM_CON_NO", referencedColumnName = "ATD_ITEM_CON_NO", nullable = false) })
 	public List<KrcstErAlAtdTarget> lstAtdItemTarget;
+	
+	@Transient
+	public KrcstErAlAtdTarget atdItemTarget;
 
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtErAlAtdItemCon", orphanRemoval=true)
 	public KrcstErAlCompareSingle erAlCompareSingle;
@@ -90,6 +95,9 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
 			@JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", nullable = false),
 			@JoinColumn(name = "ATD_ITEM_CON_NO", referencedColumnName = "ATD_ITEM_CON_NO", nullable = false) })
 	public List<KrcstErAlSingleAtd> erAlSingleAtd;
+	
+	@Transient
+	public KrcstErAlSingleAtd alSingleAtd;
 
 	@ManyToOne
 	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false) })
@@ -185,8 +193,10 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
                 startValue = ((CheckedTimesValue) erAlAtdItemCon.getCompareRange().getStartValue()).v();
                 endValue = ((CheckedTimesValue) erAlAtdItemCon.getCompareRange().getEndValue()).v();
             }else if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.DAYS) {
-                startValue = ((CheckedTimesValueDay) erAlAtdItemCon.getCompareRange().getStartValue()).v();
-                endValue = ((CheckedTimesValueDay) erAlAtdItemCon.getCompareRange().getEndValue()).v();
+               /* startValue = ((CheckedTimesValueDay) erAlAtdItemCon.getCompareRange().getStartValue()).v();
+                endValue = ((CheckedTimesValueDay) erAlAtdItemCon.getCompareRange().getEndValue()).v();*/
+                startValue =Double.valueOf(String.valueOf(erAlAtdItemCon.getCompareRange().getStartValue()))  ;
+                endValue = Double.valueOf(String.valueOf(erAlAtdItemCon.getCompareRange().getEndValue()))  ;
             }
             
             erAlCompareRange = new KrcstErAlCompareRange(
@@ -214,7 +224,8 @@ public class KrcmtErAlAtdItemCon extends UkJpaEntity implements Serializable {
                             ((CheckedTimesValue) erAlAtdItemCon.getCompareSingleValue().getValue()).v();
                 }else if( erAlAtdItemCon.getConditionAtr() == ConditionAtr.DAYS){
                 	fixedValue =
-                           ((CheckedTimesValueDay) erAlAtdItemCon.getCompareSingleValue().getValue()).v();
+                           /*((CheckedTimesValueDay) erAlAtdItemCon.getCompareSingleValue().getValue()).v();*/
+                	Double.valueOf(String.valueOf(erAlAtdItemCon.getCompareSingleValue().getValue()))   ;
                 }
                 erAlSingleFixed = new KrcstErAlSingleFixed(new KrcstErAlSingleFixedPK(atdItemConditionGroup1,
                         erAlAtdItemCon.getTargetNO()), fixedValue);

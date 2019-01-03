@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 
 /**
  * 基準日時点積立年休残数
@@ -24,4 +25,6 @@ public class RsvLeaNumByCriteriaDate {
 	private List<TmpReserveLeaveMngExport> tmpManageList;
 	/** 積立付与年月日 */
 	private Optional<GeneralDate> grantDate;
+	/** 積立年休残日数 */
+	private ReserveLeaveRemainingDayNumber remainingDays;
 }

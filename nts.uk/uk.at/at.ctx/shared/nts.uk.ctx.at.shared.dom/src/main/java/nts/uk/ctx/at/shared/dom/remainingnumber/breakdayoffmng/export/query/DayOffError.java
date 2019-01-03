@@ -16,6 +16,10 @@ public enum DayOffError {
 	/**
 	 * 時間単位代休残数不足エラー
 	 */
-	TIMEERROR(1);
+	TIMEERROR(1),
+	/**
+	 * 相殺できないエラー
+	 */
+	OFFSETNUMBER(2);
 	public final Integer value;
 }

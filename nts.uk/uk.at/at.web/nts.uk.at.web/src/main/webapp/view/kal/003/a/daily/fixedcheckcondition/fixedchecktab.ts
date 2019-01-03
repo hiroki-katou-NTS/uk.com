@@ -11,7 +11,6 @@ module nts.uk.at.view.kal003.a.tab {
 
         constructor(listFixedConditionWorkRecord?: Array<model.FixedConditionWorkRecord>) {
             let self = this;
-            $('.fixedcheckID').addClass("limited-label");
             service.getAllFixedConData().done((data: Array<any>) => {
                 if (data && data.length) {
                     let _list: Array<model.FixedConditionWorkRecord> = _.map(data, acc => {

@@ -25,4 +25,5 @@ public class WwfdtFullJoinState {
 	private GeneralDate approvalDate;
 	private String approvalReason;
 	private String approverChildID;
+	private String companyID;
 }

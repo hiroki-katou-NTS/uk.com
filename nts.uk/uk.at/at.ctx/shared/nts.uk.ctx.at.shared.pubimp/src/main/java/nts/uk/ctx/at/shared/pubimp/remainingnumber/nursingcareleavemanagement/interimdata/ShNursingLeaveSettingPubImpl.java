@@ -25,7 +25,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.LeaveForCareInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
-import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.InterimRemainOfMonthProccess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
@@ -62,9 +61,6 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 	
 	@Inject
 	private ChildTempCareDataRepository childTempCareDataRepository;
-	
-	@Inject
-	private InterimRemainOfMonthProccess interimRemainOfMonthProccess;
 
 	@Override
 	public ChildNursingRemainExport aggrChildNursingRemainPeriod(String companyId, String employeeId, DatePeriod period,
@@ -74,7 +70,7 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 		// get nursingLeaveSetting by companyId,nursingCategory = NURSING_CARE
 		Optional<NursingLeaveSetting> _nursingLeaveSetting = this.findNursingLeaveSetting(companyId,
 				NursingCategory.Nursing);
-		if (!_nursingLeaveSetting.isPresent()) {
+		if (!_nursingLeaveSetting.isPresent() || (_nursingLeaveSetting.isPresent() && !_nursingLeaveSetting.get().isManaged()) || (_nursingLeaveSetting.isPresent() && _nursingLeaveSetting.get().isManaged() && _nursingLeaveSetting.get().getStartMonthDay() == 0)) {
 			childNursingRemainExport.setIsManage(false);
 			return childNursingRemainExport;
 		} else {
@@ -144,7 +140,7 @@ public class ShNursingLeaveSettingPubImpl implements ShNursingLeaveSettingPub {
 		// get nursingLeaveSetting by companyId,nursingCategory = NURSING_CARE
 		Optional<NursingLeaveSetting> _nursingLeaveSetting = this.findNursingLeaveSetting(companyId,
 				NursingCategory.Nursing);
-		if (!_nursingLeaveSetting.isPresent()) {
+		if (!_nursingLeaveSetting.isPresent() || (_nursingLeaveSetting.isPresent() && !_nursingLeaveSetting.get().isManaged())  || (_nursingLeaveSetting.isPresent() && _nursingLeaveSetting.get().isManaged() && _nursingLeaveSetting.get().getStartMonthDay() == 0)) {
 			childNursingRemainExport.setIsManage(false);
 			return childNursingRemainExport;
 		} else {

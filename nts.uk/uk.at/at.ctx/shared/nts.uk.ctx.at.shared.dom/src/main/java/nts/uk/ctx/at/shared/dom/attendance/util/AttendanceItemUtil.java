@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -23,12 +22,11 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 
-import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.reflection.ReflectionUtil;
 import nts.gul.reflection.ReflectionUtil.Condition;
-import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus;
-import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
+//import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus;
+//import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
@@ -231,84 +229,84 @@ public class AttendanceItemUtil implements ItemConst {
 		});
 	}
 	
-	@SuppressWarnings("unchecked")
-	private static <T> List<ItemValue> getItemValues(T attendanceItems, int layoutIdx, String layoutCode, String path,
-														String extraCondition, int index, Map<String, List<ItemValue>> groups) {
-		Map<String, Field> fields = getFieldMap(attendanceItems.getClass(), groups);
-
-		return groups.entrySet().stream().map(c -> {
-
-			Field field = fields.get(c.getKey());
-
-			if (field == null) {
-				return new ArrayList<ItemValue>();
-			}
-
-			AttendanceItemLayout layout = getLayoutAnnotation(field);
-
-			boolean isList = layout.listMaxLength() > DEFAULT_IDX;
-
-			Class<T> className = layout.isOptional() || isList ? getGenericType(field) : (Class<T>) field.getType();
-
-			String pathName = getPath(path, layout, getRootAnnotation(field)),
-					currentLayout = mergeLayout(layoutCode, layout.layout()),
-					exCon = getExCondition(extraCondition, attendanceItems, layout);
-
-			if (isList) {
-
-				List<T> list = getListAndSort(attendanceItems, field, className, layout);
-
-				return mapByPath(c.getValue(),
-						x -> layout.listNoIndex() ? getEValAsIdxPlus(x.path()) : getIdxInText(x.path())
-				).entrySet().stream().map(idx -> {
-
-					boolean isNotHaveData = list.isEmpty() || list.size() < idx.getKey();
-
-					T idxValue = isNotHaveData ? null : getItemWith(list, layout, idx.getKey(), className);
-
-					return getItemValues(fieldValue(className, idxValue), layoutIdx + DEFAULT_NEXT_IDX,
-										layout.listNoIndex() ? currentLayout : currentLayout + idx.getKey(),
-										pathName, exCon, layout.listNoIndex() ? -1 : idx.getKey(),
-										mapByPath(idx.getValue(),
-												id -> getCurrentPath(layoutIdx + DEFAULT_NEXT_IDX, id.path(), false)));
-							}).flatMap(List::stream).collect(Collectors.toList());
-			}
-
-			T value = getOptionalFieldValue(attendanceItems, field, layout.isOptional());
-
-			AttendanceItemValue valueAnno = getItemValueAnnotation(field);
-
-			if (valueAnno == null) {
-				return getItemValues(
-							fieldValue(className, value), layoutIdx + DEFAULT_NEXT_IDX, currentLayout, pathName, exCon, index,
-							mapByPath(c.getValue(), id -> getCurrentPath(layoutIdx + DEFAULT_NEXT_IDX, id.path(), false)));
-			}
-
-			String currentPath = getKey(pathName, EMPTY_STRING, false, index);
-
-			String currentFullPath = getKey(pathName, exCon, index > DEFAULT_IDX, index);
-
-			return filterAndMap(
-					c.getValue(),
-					id -> getTextWithNoCondition(id.path()).equals(currentPath),
-					item -> {
-				
-						if (item.path().equals(currentFullPath)) {
-
-							return item.value(value)
-									.valueType(getItemValueType(attendanceItems, valueAnno))
-									.layout(currentLayout + getTextWithCondition(item.path()))
-									.completed();
-
-						} else {
-							return item.layout(currentLayout + getTextWithCondition(item.path()))
-									.valueType(getItemValueType(attendanceItems, valueAnno))
-									.completed();
-						}
-					});
-		}).flatMap(List::stream).collect(Collectors.toList());
-
-	}
+//	@SuppressWarnings("unchecked")
+//	private static <T> List<ItemValue> getItemValues(T attendanceItems, int layoutIdx, String layoutCode, String path,
+//														String extraCondition, int index, Map<String, List<ItemValue>> groups) {
+//		Map<String, Field> fields = getFieldMap(attendanceItems.getClass(), groups);
+//
+//		return groups.entrySet().stream().map(c -> {
+//
+//			Field field = fields.get(c.getKey());
+//
+//			if (field == null) {
+//				return new ArrayList<ItemValue>();
+//			}
+//
+//			AttendanceItemLayout layout = getLayoutAnnotation(field);
+//
+//			boolean isList = layout.listMaxLength() > DEFAULT_IDX;
+//
+//			Class<T> className = layout.isOptional() || isList ? getGenericType(field) : (Class<T>) field.getType();
+//
+//			String pathName = getPath(path, layout, getRootAnnotation(field)),
+//					currentLayout = mergeLayout(layoutCode, layout.layout()),
+//					exCon = getExCondition(extraCondition, attendanceItems, layout);
+//
+//			if (isList) {
+//
+//				List<T> list = getListAndSort(attendanceItems, field, className, layout);
+//
+//				return mapByPath(c.getValue(),
+//						x -> layout.listNoIndex() ? getEValAsIdxPlus(x.path()) : getIdxInText(x.path())
+//				).entrySet().stream().map(idx -> {
+//
+//					boolean isNotHaveData = list.isEmpty() || list.size() < idx.getKey();
+//
+//					T idxValue = isNotHaveData ? null : getItemWith(list, layout, idx.getKey(), className);
+//
+//					return getItemValues(fieldValue(className, idxValue), layoutIdx + DEFAULT_NEXT_IDX,
+//										layout.listNoIndex() ? currentLayout : currentLayout + idx.getKey(),
+//										pathName, exCon, layout.listNoIndex() ? -1 : idx.getKey(),
+//										mapByPath(idx.getValue(),
+//												id -> getCurrentPath(layoutIdx + DEFAULT_NEXT_IDX, id.path(), false)));
+//							}).flatMap(List::stream).collect(Collectors.toList());
+//			}
+//
+//			T value = getOptionalFieldValue(attendanceItems, field, layout.isOptional());
+//
+//			AttendanceItemValue valueAnno = getItemValueAnnotation(field);
+//
+//			if (valueAnno == null) {
+//				return getItemValues(
+//							fieldValue(className, value), layoutIdx + DEFAULT_NEXT_IDX, currentLayout, pathName, exCon, index,
+//							mapByPath(c.getValue(), id -> getCurrentPath(layoutIdx + DEFAULT_NEXT_IDX, id.path(), false)));
+//			}
+//
+//			String currentPath = getKey(pathName, EMPTY_STRING, false, index);
+//
+//			String currentFullPath = getKey(pathName, exCon, index > DEFAULT_IDX, index);
+//
+//			return filterAndMap(
+//					c.getValue(),
+//					id -> getTextWithNoCondition(id.path()).equals(currentPath),
+//					item -> {
+//				
+//						if (item.path().equals(currentFullPath)) {
+//
+//							return item.value(value)
+//									.valueType(getItemValueType(attendanceItems, valueAnno))
+//									.layout(currentLayout + getTextWithCondition(item.path()))
+//									.completed();
+//
+//						} else {
+//							return item.layout(currentLayout + getTextWithCondition(item.path()))
+//									.valueType(getItemValueType(attendanceItems, valueAnno))
+//									.completed();
+//						}
+//					});
+//		}).flatMap(List::stream).collect(Collectors.toList());
+//
+//	}
 
 	@SuppressWarnings("unchecked")
 	private static <T> T fromItemValues(T attendanceItems, int layoutIdx, String path, int index,
@@ -371,7 +369,7 @@ public class AttendanceItemUtil implements ItemConst {
 
 				correctList(idxField, itemsForIdx, originalIdx,  list);
 
-				ReflectionUtil.setFieldValue(field, attendanceItems, list);
+				setFieldValue(attendanceItems, field, list);
 
 				return;
 			}
@@ -395,9 +393,10 @@ public class AttendanceItemUtil implements ItemConst {
 
 					} else {
 						if(field.getType().isPrimitive() && itemValue.value() == null){
+							ReflectionUtil.setFieldValue(field, attendanceItems, itemValue.valueOrDefault());
 							return;
 						}
-						ReflectionUtil.setFieldValue(field, attendanceItems, itemValue.value());
+						setFieldValue(attendanceItems, field, itemValue.value());
 					}
 				}
 				return;
@@ -411,10 +410,14 @@ public class AttendanceItemUtil implements ItemConst {
 
 			setValueEnumField(layout, className, nVal, c.getValue());
 
-			ReflectionUtil.setFieldValue(field, attendanceItems, layout.isOptional() ? Optional.of(nVal) : nVal);
+			setFieldValue(attendanceItems, field, layout.isOptional() ? Optional.of(nVal) : nVal);
 		});
 
 		return attendanceItems;
+	}
+
+	private static synchronized <T> void setFieldValue(T attendanceItems, Field field, T list) {
+		ReflectionUtil.setFieldValue(field, attendanceItems, list);
 	}
 
 	private static <T> void markHaveData(T attendanceItems) {
@@ -573,7 +576,7 @@ public class AttendanceItemUtil implements ItemConst {
 
 		String enumText = getEnumTextFromList(items);
 
-		ReflectionUtil.setFieldValue(getField(layout.enumField(), className), value,
+		setFieldValue(value, getField(layout.enumField(), className),
 				CACHE_HOLDER.getAndCache(enumText, () -> AttendanceItemIdContainer.getEnumValue(enumText)));
 	}
 
@@ -604,10 +607,10 @@ public class AttendanceItemUtil implements ItemConst {
 		return path.isEmpty() ? layout.jpPropertyName() : StringUtils.join(path, DEFAULT_SEPERATOR, layout.jpPropertyName());
 	}
 
-	private static <T> List<T> filterAndMap(List<T> ids, Predicate<T> filter, Function<T, T> mapper) {
-
-		return ids.stream().filter(filter).map(mapper).collect(Collectors.toList());
-	}
+//	private static <T> List<T> filterAndMap(List<T> ids, Predicate<T> filter, Function<T, T> mapper) {
+//
+//		return ids.stream().filter(filter).map(mapper).collect(Collectors.toList());
+//	}
 
 	private static <T> T getOptionalFieldValue(T attendanceItems, Field field, boolean isOptional) {
 		if (isOptional) {
@@ -626,10 +629,10 @@ public class AttendanceItemUtil implements ItemConst {
 															HashMap::putAll);
 	}
 
-	private static <T> T fieldValue(Class<T> className, T idxValue) {
-
-		return idxValue == null ? ReflectionUtil.newInstance(className) : idxValue;
-	}
+//	private static <T> T fieldValue(Class<T> className, T idxValue) {
+//
+//		return idxValue == null ? ReflectionUtil.newInstance(className) : idxValue;
+//	}
 	
 	private static <T> Map<Integer, T> fieldValue(Class<T> className, Map<Integer, T> idxValue, Map<Integer, T> parent) {
 		
@@ -728,7 +731,7 @@ public class AttendanceItemUtil implements ItemConst {
 
 					T nIns = ReflectionUtil.newInstance(targetClass);
 
-					ReflectionUtil.setFieldValue(enumField, nIns, e);
+					setFieldValue(nIns, enumField, e);
 
 					list.add(nIns);
 				}
@@ -817,7 +820,7 @@ public class AttendanceItemUtil implements ItemConst {
 
 		T newValue = ReflectionUtil.newInstance(targetClass);
 
-		ReflectionUtil.setFieldValue(idxField, newValue, index);
+		setFieldValue(newValue, idxField, index);
 
 		return newValue;
 	}
@@ -999,18 +1002,19 @@ public class AttendanceItemUtil implements ItemConst {
 	}
 	
 	private static class AttendanceItemUtilCacheHolder {
-		private final MasterShareContainer<String> cache;
-		
-		private AttendanceItemUtilCacheHolder(){
-			this.cache = MasterShareBus.open();
-		}
+//		private final MasterShareContainer<String> cache;
+//		
+//		private AttendanceItemUtilCacheHolder(){
+//			this.cache = MasterShareBus.open();
+//		}
 		
 		public static AttendanceItemUtilCacheHolder cacheNow(){
 			return new AttendanceItemUtilCacheHolder();
 		}
 		
 		public <T> T getAndCache(String key, Supplier<T> value) {
-			return cache.getShared(key, value);
+//			return cache.getShared(key, value);
+			return value.get();
 		}
 	}
 

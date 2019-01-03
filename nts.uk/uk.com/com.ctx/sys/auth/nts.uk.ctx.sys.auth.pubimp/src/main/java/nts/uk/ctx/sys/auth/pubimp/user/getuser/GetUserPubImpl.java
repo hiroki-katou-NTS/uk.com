@@ -28,7 +28,7 @@ public class GetUserPubImpl implements GetUserPublish {
 	public List<GetUserDto> getUser(List<String> userIds) {
 		List<User> users = userRepo.getByListUser(userIds);
 		List<String> associatedPersonIdList = users.stream()
-				.filter(x -> x.getAssociatedPersonID().get() != null && !x.getAssociatedPersonID().equals(""))
+				.filter(x -> x.getAssociatedPersonID().get() != null && !x.getAssociatedPersonID().get().equals(""))
 				.map(x -> x.getAssociatedPersonID().get()).collect(Collectors.toList());
 		Map<String, PersonImport> personImportList = personAdapter.findByPersonIds(associatedPersonIdList).stream()
 				.collect(Collectors.toMap(x -> x.getPersonId(), x -> x));

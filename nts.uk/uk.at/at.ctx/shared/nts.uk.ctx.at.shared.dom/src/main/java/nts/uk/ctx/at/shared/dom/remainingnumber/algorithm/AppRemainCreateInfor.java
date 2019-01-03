@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -46,4 +47,8 @@ public class AppRemainCreateInfor {
 	 */
 	private Optional<GeneralDate> startDate;
 	private Optional<GeneralDate> endDate;
+	/**
+	 * 休日申請日
+	 */
+	private List<GeneralDate> lstAppDate;
 }

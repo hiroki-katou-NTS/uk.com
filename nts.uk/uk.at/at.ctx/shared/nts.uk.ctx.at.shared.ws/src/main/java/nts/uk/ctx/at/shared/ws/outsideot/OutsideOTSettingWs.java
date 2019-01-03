@@ -131,6 +131,6 @@ public class OutsideOTSettingWs extends WebService {
 	@POST
 	@Path("findAll/mothItem")
 	public List<Integer> findAllMonthItem() {
-		return this.finder.getDataKMK011();
+		return this.finder.getDataKMK013();
 	}
 }

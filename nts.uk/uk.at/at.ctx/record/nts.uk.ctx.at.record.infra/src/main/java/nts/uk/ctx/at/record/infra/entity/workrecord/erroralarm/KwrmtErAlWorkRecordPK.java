@@ -10,12 +10,14 @@ import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
  * @author hungnm
  *
  */
+@Getter
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor

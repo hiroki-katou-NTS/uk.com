@@ -565,9 +565,12 @@ module nts.uk.com.view.cps005.b {
                 if (currentItemData.currentItemSelected.fixedAtr === ISFIXED.FIXED) {
                     self.decimalPart(data.decimalPart || 0);
                 } else {
-                    self.decimalPart(data.decimalPart == 0 ? 0 : data.decimalPart || data.decimalPart == null ? null : data.decimalPart);
+                    if (data.decimalPart == 0 || data.decimalPart == null) {
+                        self.decimalPart(data.decimalPart == 0 ? 0 : data.decimalPart || data.decimalPart == null ? null : data.decimalPart);
+                    } else {
+                        self.decimalPart(data.decimalPart);
+                    }
                 }
-
                 self.integerPart(data.integerPart || 0);
             }
 

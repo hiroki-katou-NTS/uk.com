@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.totaltimes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +12,13 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
+import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
+import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.attdstatus.AttendanceStatusList;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.workinfo.WorkInfoList;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -26,7 +32,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 日別実績から回数集計結果を取得する
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 public class TotalTimesFromDailyRecord {
 
@@ -38,10 +44,14 @@ public class TotalTimesFromDailyRecord {
 	private WorkInfoList workInfoList;
 	/** 日別実績の勤怠時間リスト */
 	private Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap;
+	/** 日別実績の任意項目リスト */
+	private Map<GeneralDate, AnyItemValueOfDaily> anyItemValueOfDailyMap;
 	/** 勤務種類リスト */
 	private Map<String, WorkType> workTypeMap;
 	/** 勤務種類リポジトリ */
 	private WorkTypeRepository workTypeRepo;
+	/** 任意項目リスト */
+	private Map<Integer, OptionalItem> optionalItemMap;
 
 	/**
 	 * コンストラクタ
@@ -49,26 +59,36 @@ public class TotalTimesFromDailyRecord {
 	 * @param employeeId 社員ID
 	 * @param dailysPeriod 日別実績の期間
 	 * @param attendanceTimeOfDailyRepo 日別実績の勤怠時間リポジトリ
+	 * @param anyItemValueOfDailyRepo 日別実績の任意項目リポジトリ
 	 * @param timeLeavingOfDailyRepo 日別実績の出退勤リポジトリ
 	 * @param workInfoOfDailyRepo 日別実績の勤務情報リポジトリ
 	 * @param workTypeRepo 勤務種類リポジトリ
+	 * @param optionalItemRepo 任意項目リポジトリ
 	 */
 	public TotalTimesFromDailyRecord(
 			String companyId,
 			String employeeId,
 			DatePeriod dailysPeriod,
 			AttendanceTimeRepository attendanceTimeOfDailyRepo,
+			AnyItemValueOfDailyRepo anyItemValueOfDailyRepo,
 			TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyRepo,
 			WorkInformationRepository workInfoOfDailyRepo,
-			WorkTypeRepository workTypeRepo){
+			WorkTypeRepository workTypeRepo,
+			OptionalItemRepository optionalItemRepo){
 
 		this.companyId = companyId;
 		this.attendanceStatusList = new AttendanceStatusList(
 				employeeId, dailysPeriod, attendanceTimeOfDailyRepo, timeLeavingOfDailyRepo);
 		this.workInfoList = new WorkInfoList(employeeId, dailysPeriod, workInfoOfDailyRepo);
 		this.workTypeMap = new HashMap<>();
+		this.optionalItemMap = new HashMap<>();
+		val optionalItemList = optionalItemRepo.findAll(companyId);
+		for (val optionalItem : optionalItemList){
+			this.optionalItemMap.putIfAbsent(optionalItem.getOptionalItemNo().v(), optionalItem);
+		}
 		this.setData(
 				attendanceTimeOfDailyRepo.findByPeriodOrderByYmd(employeeId, dailysPeriod),
+				anyItemValueOfDailyRepo.finds(Arrays.asList(employeeId), dailysPeriod),
 				workTypeRepo);
 	}
 
@@ -77,40 +97,52 @@ public class TotalTimesFromDailyRecord {
 	 * @param companyId 会社ID
 	 * @param dailysPeriod 日別実績の期間
 	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
+	 * @param anyItemValueOfDailyList 日別実績の任意項目リスト
 	 * @param timeLeavingOfDailys 日別実績の出退勤リスト
 	 * @param workInfoOfDailys 日別実績の勤務情報リスト
 	 * @param workTypeMap 勤務種類リスト
 	 * @param workTypeRepo 勤務種類リポジトリ
+	 * @param optionalItemMap 任意項目リスト
 	 */
 	public TotalTimesFromDailyRecord(
 			String companyId,
 			DatePeriod dailysPeriod,
 			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys,
+			List<AnyItemValueOfDaily> anyItemValueOfDailyList,
 			List<TimeLeavingOfDailyPerformance> timeLeavingOfDailys,
 			List<WorkInfoOfDailyPerformance> workInfoOfDailys,
 			Map<String, WorkType> workTypeMap,
-			WorkTypeRepository workTypeRepo){
+			WorkTypeRepository workTypeRepo,
+			Map<Integer, OptionalItem> optionalItemMap){
 		
 		this.companyId = companyId;
 		this.attendanceStatusList = new AttendanceStatusList(attendanceTimeOfDailys, timeLeavingOfDailys);
 		this.workInfoList = new WorkInfoList(workInfoOfDailys);
 		this.workTypeMap = workTypeMap;
-		this.setData(attendanceTimeOfDailys, workTypeRepo);
+		this.optionalItemMap = optionalItemMap;
+		this.setData(attendanceTimeOfDailys, anyItemValueOfDailyList, workTypeRepo);
 	}
 	
 	/**
 	 * データ設定
 	 * @param attendanceTimeOfDailys 日別実績の勤怠時間リスト
+	 * @param anyItemValueOfDailyList 日別実績の任意項目リスト
 	 * @param workTypeRepo 勤務種類リポジトリ
 	 */
 	private void setData(
 			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys,
+			List<AnyItemValueOfDaily> anyItemValueOfDailyList,
 			WorkTypeRepository workTypeRepo){
 		
 		this.attendanceTimeOfDailyMap = new HashMap<>();
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailys){
 			val ymd = attendanceTimeOfDaily.getYmd();
 			this.attendanceTimeOfDailyMap.putIfAbsent(ymd, attendanceTimeOfDaily);
+		}
+		this.anyItemValueOfDailyMap = new HashMap<>();
+		for (val anyItemValueOfDaily : anyItemValueOfDailyList){
+			val ymd = anyItemValueOfDaily.getYmd();
+			this.anyItemValueOfDailyMap.putIfAbsent(ymd, anyItemValueOfDaily);
 		}
 		this.workTypeRepo = workTypeRepo;
 	}
@@ -172,7 +204,7 @@ public class TotalTimesFromDailyRecord {
 			results.put(totalCountNo, new TotalTimesResult());
 		}
 		
-		val dailyConverter = attendanceItemConverter.createDailyConverter();
+		val dailyConverter = attendanceItemConverter.createDailyConverter(this.optionalItemMap);
 		
 		// 「期間」を取得
 		GeneralDate procDate = period.start();
@@ -262,25 +294,41 @@ public class TotalTimesFromDailyRecord {
 					val attendanceTimeOfDaily = this.attendanceTimeOfDailyMap.get(procDate);
 					
 					// 日別実績を回数集計用のクラスに変換
-					val dailyItems = dailyConverter.withAttendanceTime(attendanceTimeOfDaily);
+					DailyRecordToAttendanceItemConverter dailyItems =
+							dailyConverter.withAttendanceTime(attendanceTimeOfDaily);
+					if (this.anyItemValueOfDailyMap.containsKey(procDate)){
+						dailyItems = dailyItems.withAnyItems(this.anyItemValueOfDailyMap.get(procDate));
+					}
 					
 					// 勤務時間の判断
 					val itemValOpt = dailyItems.convert(totalCondition.getAtdItemId());
 					if (!itemValOpt.isPresent()) continue;
-					if (!itemValOpt.get().getValueType().isInteger()) continue;
-					Integer itemVal = itemValOpt.get().value();
-					if (itemVal == null) itemVal = 0;
+					Double itemVal = null;
+					if (itemValOpt.get().getValueType().isInteger()){
+						Integer intItemVal =  itemValOpt.get().value();
+						if (intItemVal != null) itemVal = intItemVal.doubleValue();
+						if (itemVal == null) itemVal = 0.0;
+					}
+					if (itemValOpt.get().getValueType().isDouble()){
+						itemVal = itemValOpt.get().value();
+						if (itemVal == null) itemVal = 0.0;
+					}
+					if (itemVal == null) continue;
 					boolean isTargetValue = true;
 					if (totalCondition.getLowerLimitSettingAtr() == UseAtr.Use){
 						// 下限未満なら、集計しない
 						if (totalCondition.getThresoldLowerLimit() != null){
-							if (itemVal < totalCondition.getThresoldLowerLimit().v()) isTargetValue = false;
+							if (itemVal < totalCondition.getThresoldLowerLimit().v().doubleValue()){
+								isTargetValue = false;
+							}
 						}
 					}
 					if (totalCondition.getUpperLimitSettingAtr() == UseAtr.Use){
 						// 上限以上なら、集計しない
 						if (totalCondition.getThresoldUpperLimit() != null){
-							if (itemVal >= totalCondition.getThresoldUpperLimit().v()) isTargetValue = false;
+							if (itemVal >= totalCondition.getThresoldUpperLimit().v().doubleValue()){
+								isTargetValue = false;
+							}
 						}
 					}
 					if (!isTargetValue) continue;

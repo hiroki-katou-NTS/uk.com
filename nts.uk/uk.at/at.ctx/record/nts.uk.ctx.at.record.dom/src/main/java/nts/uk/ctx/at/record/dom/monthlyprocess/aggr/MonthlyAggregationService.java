@@ -25,6 +25,7 @@ public interface MonthlyAggregationService {
 	 * @param empCalAndSumExecLogID 就業計算と集計実行ログID
 	 * @param executionLog 実行ログ
 	 */
+	@SuppressWarnings("rawtypes")
 	ProcessState manager(AsyncCommandHandlerContext asyncContext,
 			String companyId, List<String> employeeIds, DatePeriod datePeriod,
 			ExecutionAttr executionAttr, String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog);

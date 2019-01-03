@@ -26,3 +26,7 @@ button.nts-switch-button {
 #combo-box.ui-igcombo-wrapper {
 	width: 220px !important;
 }
+
+#contents-area .fixed-flex-layout-right{
+	margin-top: 40px;
+}

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.WorkChangeCommonReflectPara;
 
 /**
  * 勤務実績に反映
@@ -47,7 +48,7 @@ public interface AppReflectProcessRecord {
 	 * @param isPre
 	 * @return
 	 */
-	public boolean workChangeReflectRecord(CommonReflectPara para, boolean isPre);
+	public boolean workChangeReflectRecord(WorkChangeCommonReflectPara para, boolean isPre);
 	/**
 	 * 振休申請
 	 * @param para

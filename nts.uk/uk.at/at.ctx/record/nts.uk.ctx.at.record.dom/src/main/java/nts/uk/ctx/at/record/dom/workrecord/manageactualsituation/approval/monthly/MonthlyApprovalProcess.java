@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.approval.monthly;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
-import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.AppRootSttMonthEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.EmpPerformMonthParamImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.ApprovalStatus;
@@ -21,7 +19,7 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcess;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcessRepository;
 import nts.uk.ctx.at.shared.dom.adapter.dailyperformance.DailyPerformanceAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
-import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
+//import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
@@ -29,8 +27,8 @@ public class MonthlyApprovalProcess {
 	
 	@Inject 
 	ApprovalProcessRepository approvalRepo;
-	@Inject
-	private SharedAffJobtitleHisAdapter affJobTitleAdapter;
+//	@Inject
+//	private SharedAffJobtitleHisAdapter affJobTitleAdapter;
 	@Inject
 	DailyPerformanceAdapter dailyPerformanceAdapter;
 	
@@ -55,7 +53,7 @@ public class MonthlyApprovalProcess {
 		EmpPerformMonthParamImport param = new EmpPerformMonthParamImport(new YearMonth(processDateYM), closureId,
 				new ClosureDate(closureDate.day(), closureDate.day() == closureDate.lastDateInMonth()), closureDate,
 				employeeId);
-		List<ApproveRootStatusForEmpImport> lstApprovalState = this.approvalStatusAdapter.getAppRootStatusByEmpsMonth(Arrays.asList(param));
+		List<AppRootSttMonthEmpImport> lstApprovalState = this.approvalStatusAdapter.getAppRootStatusByEmpsMonth(Arrays.asList(param));
 		if(!CollectionUtil.isEmpty(lstApprovalState) && (lstApprovalState.get(0).getApprovalStatus() == ApprovalStatusForEmployee.APPROVED || lstApprovalState.get(0).getApprovalStatus() == ApprovalStatusForEmployee.DURING_APPROVAL)){
 			return ApprovalStatus.APPROVAL;
 		}

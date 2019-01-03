@@ -1,8 +1,6 @@
 package nts.uk.ctx.workflow.dom.agent.output;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.Value;
 
 /**

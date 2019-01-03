@@ -145,7 +145,9 @@ module nts.uk.at.view.kmk006.a {
                 self.divergenceTime = ko.observable(0);
 
                 self.multiSelectedWorkplaceId = ko.observable('');
+                self.multiSelectedWorkplaceId.extend({ notify: 'always' });
                 self.totalSelectedWorkplaceId = ko.observable('');
+                self.totalSelectedWorkplaceId.extend({ notify: 'always' });
                 self.wkpAlreadySettingList = ko.observableArray([]);
                 self.treeOptionsWkp = {
                     isShowAlreadySet: true,
@@ -207,7 +209,9 @@ module nts.uk.at.view.kmk006.a {
                 self.valueEnumResLatAtr = ko.observable(2);
 
                 self.selectedCode = ko.observable('');
+                self.selectedCode.extend({ notify: 'always' });
                 self.totalSelectedCode = ko.observable('');
+                self.totalSelectedCode.extend({ notify: 'always' });
                 self.selectedCurrentJob = ko.observable('');
                 self.selectedCurrentWkp = ko.observable('');
                 self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
@@ -257,7 +261,7 @@ module nts.uk.at.view.kmk006.a {
                 self.multiSelectedWorkplaceId.subscribe(function(codeChanged) {
                     if ($("#sidebar").ntsSideBar("getCurrent") != SIDEBAR_TAB_INDEX.WORKPLACE) return;
                     self.selectedCurrentWkp(codeChanged);
-                    if(!nts.uk.text.isNullOrEmpty(codeChanged)){                        
+                    if (!_.isEmpty(codeChanged) && !$('#work-place-base-date').ntsError('hasError')) {
                         self.loadWkpAutoCal(codeChanged);
 
                         nts.uk.ui.block.invisible();
@@ -292,7 +296,7 @@ module nts.uk.at.view.kmk006.a {
                 self.totalSelectedWorkplaceId.subscribe(function(codeChanged) {
                     if ($("#sidebar").ntsSideBar("getCurrent") != SIDEBAR_TAB_INDEX.WORKPLACE_JOBTITLE) return;                    
                     self.selectedCurrentWkp(codeChanged);
-                    if(!nts.uk.text.isNullOrEmpty(codeChanged)){
+                    if (!_.isEmpty(codeChanged) && !$('#kmk0006-basedate').ntsError('hasError')) {
                         if(!nts.uk.text.isNullOrEmpty(self.totalSelectedCode())){
                             self.loadWkpJobAutoCal(codeChanged, self.totalSelectedCode());
                             service.getWkpJobAutoCal(codeChanged, self.totalSelectedCode()).done((data) => {
@@ -308,7 +312,7 @@ module nts.uk.at.view.kmk006.a {
                         let wkplId: string = $('#tree-grid').getRowSelected()[0].workplaceId;
                         var params: any = {
                             "workplaceId": wkplId,
-                            "baseDate"   : self.baseDateTreeList()
+                            "baseDate"   : self.inputDate()
                         };
                         service.getDetailWkpl(params).done(function(data: any){
                             nts.uk.ui.block.clear();
@@ -1139,7 +1143,7 @@ module nts.uk.at.view.kmk006.a {
             public onSelectWkpJob(): void {
                 var self = this;
                 self.selectedTab('tab-1');
-
+                self.inputDate(new Date());
                 self.clearAllError();
                 self.baseDateJobListTotal(moment(new Date()).toDate());
                 self.baseDateTreeListTotal(moment(new Date()).toDate());
@@ -1414,7 +1418,7 @@ module nts.uk.at.view.kmk006.a {
                 return dto;
             }
             resetData() {
-                this.flexOtTime.resetData();
+                this.flexOtTime.resetDataNormal();
             }
         }
 
@@ -1444,8 +1448,8 @@ module nts.uk.at.view.kmk006.a {
                 return dto;
             }
             resetData() {
-                this.restTime.resetData();
-                this.lateNightTime.resetData();
+                this.restTime.resetDataNormal();
+                this.lateNightTime.resetDataNormal();
             }
         }
         //        AutoCalFlexOvertimeSettingDto
@@ -1490,12 +1494,12 @@ module nts.uk.at.view.kmk006.a {
                 return dto;
             }
             resetData() {
-                this.earlyOtTime.resetData();
-                this.earlyMidOtTime.resetData();
-                this.normalOtTime.resetData();
-                this.normalMidOtTime.resetData();
-                this.legalOtTime.resetData();
-                this.legalMidOtTime.resetData();
+                this.earlyOtTime.resetDataNormal();
+                this.earlyMidOtTime.resetDataNormal();
+                this.normalOtTime.resetDataNormal();
+                this.normalMidOtTime.resetDataNormal();
+                this.legalOtTime.resetDataNormal();
+                this.legalMidOtTime.resetDataNormal();
             }
         }
         
@@ -1577,6 +1581,11 @@ module nts.uk.at.view.kmk006.a {
             resetData() {
                 this.upLimitOtSet(1);
                 this.calAtr(1);
+            }
+            
+            resetDataNormal() {
+                this.upLimitOtSet(0);
+                this.calAtr(0);
             }
         }
 

@@ -19,7 +19,6 @@ import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.BusinessName;
-import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameGroup;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
@@ -31,10 +30,10 @@ import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
-import nts.uk.shr.com.security.audittrail.correction.content.pereg.TargetDataKey;
-import nts.uk.shr.com.security.audittrail.correction.content.pereg.TargetDataKey.CalendarKeyType;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAttr;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.PersonInfoProcessAttr;
+import nts.uk.shr.com.security.audittrail.correction.content.pereg.TargetDataKey;
+import nts.uk.shr.com.security.audittrail.correction.content.pereg.TargetDataKey.CalendarKeyType;
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
 
 @Stateless
@@ -70,31 +69,31 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 			List<EmployeeDataMngInfo> listEmpData = empDataMngRepo.findByEmployeeId(command.getId());
 			if (!listEmpData.isEmpty()) {
 				
-				DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
-				EmployeeDataMngInfo empInfo = listEmpData.get(0);
-				String  scdBefore = empInfo.getEmployeeCode().toString();
-				
-				empInfo.setEmployeeCode(new EmployeeCode(command.getCode().toString()));
-				empInfo.setDeletedStatus(EmployeeDeletionAttr.NOTDELETED);
-				empInfo.setDeleteDateTemporary(null);
-				empInfo.setRemoveReason(null);
-
-				empDataMngRepo.updateRemoveReason(empInfo);
-
-				// get Person
-				Person person = personRepo.getByPersonId(empInfo.getPersonId()).get();
-				String nameBefore = person.getPersonNameGroup().getBusinessName().v();
-				person.getPersonNameGroup().setBusinessName(new BusinessName(command.getName()));
-				personRepo.update(person);
-				
-				setDataLogPersonCorrection(command);
-				List<PersonCategoryCorrectionLogParameter> ctgs = setDataLogCategory(command, scdBefore, nameBefore);
-				if (!ctgs.isEmpty()) {
-					ctgs.forEach(cat -> {
-						DataCorrectionContext.setParameter(cat.getHashID(), cat);
-					});
-				}
-				DataCorrectionContext.transactionFinishing();
+				DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, () -> {
+					EmployeeDataMngInfo empInfo = listEmpData.get(0);
+					String  scdBefore = empInfo.getEmployeeCode().toString();
+					
+					empInfo.setEmployeeCode(new EmployeeCode(command.getCode().toString()));
+					empInfo.setDeletedStatus(EmployeeDeletionAttr.NOTDELETED);
+					empInfo.setDeleteDateTemporary(null);
+					empInfo.setRemoveReason(null);
+	
+					empDataMngRepo.updateRemoveReason(empInfo);
+	
+					// get Person
+					Person person = personRepo.getByPersonId(empInfo.getPersonId()).get();
+					String nameBefore = person.getPersonNameGroup().getBusinessName().v();
+					person.getPersonNameGroup().setBusinessName(new BusinessName(command.getName()));
+					personRepo.update(person);
+					
+					setDataLogPersonCorrection(command);
+					List<PersonCategoryCorrectionLogParameter> ctgs = setDataLogCategory(command, scdBefore, nameBefore);
+					if (!ctgs.isEmpty()) {
+						ctgs.forEach(cat -> {
+							DataCorrectionContext.setParameter(cat.getHashID(), cat);
+						});
+					}
+				});
 			}
 		}
 	}
@@ -110,7 +109,7 @@ public class RestoreDataEmpCommandHandler extends CommandHandler<EmployeeDeleteT
 		PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(
 				user != null ? user.getUserID() : "",
 				user != null ? user.getEmpID() : "", 
-				user != null ?user.getUserName(): "",
+				user != null ?user.getEmpName(): "",
 			    PersonInfoProcessAttr.RESTORE_LOGICAL_DELETE, null);
 		DataCorrectionContext.setParameter(target.getHashID(), target);
 	}

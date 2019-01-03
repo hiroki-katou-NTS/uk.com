@@ -1,11 +1,15 @@
 package nts.uk.ctx.basic.infra.repository.system.bank.personaccount;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.LongAdder;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonBankAccount;
 import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonBankAccountRepository;
 import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonUseSetting;
@@ -78,8 +82,14 @@ public class JpaPersonBankAccountRepository extends JpaRepository implements Per
 
 	@Override
 	public List<PersonBankAccount> findAllBranch(String companyCode, List<String> branchIdList) {
-		return this.queryProxy().query(SEL_1_1, PbamtPersonBankAccount.class).setParameter("companyCode", companyCode)
-				.setParameter("branchIdList", branchIdList).getList(x -> toDomain(x));
+		List<PersonBankAccount> resultList = new ArrayList<>();
+		CollectionUtil.split(branchIdList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SEL_1_1, PbamtPersonBankAccount.class)
+					.setParameter("companyCode", companyCode)
+					.setParameter("branchIdList", subList)
+					.getList(x -> toDomain(x)));
+		});
+		return resultList;
 	}
 
 	@Override
@@ -117,16 +127,30 @@ public class JpaPersonBankAccountRepository extends JpaRepository implements Per
 
 	@Override
 	public boolean checkExistsBranchAccount(String companyCode, List<String> branchId) {
-		Optional<Long> numberOfPerson = this.queryProxy().query(SEL_1_2, Long.class)
-				.setParameter("companyCode", companyCode).setParameter("branchId", branchId).getSingle();
-		return numberOfPerson.get() > 0;
+		LongAdder counter = new LongAdder();
+		CollectionUtil.split(branchId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			this.queryProxy().query(SEL_1_2, Long.class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("branchId", subList)
+				.getSingle().ifPresent(val -> {
+					if (val > 0) counter.add(1);
+				});
+		});
+		return counter.intValue() > 0;
 	}
 
 	@Override
 	public boolean checkExistsLineBankAccount(String companyCode, List<String> lineBankCode) {
-		Optional<Long> numberOfPerson = this.queryProxy().query(SEL_6_1, Long.class)
-				.setParameter("companyCode", companyCode).setParameter("lineBankCode", lineBankCode).getSingle();
-		return numberOfPerson.get() > 0;
+		LongAdder counter = new LongAdder();
+		CollectionUtil.split(lineBankCode, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			this.queryProxy().query(SEL_6_1, Long.class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("lineBankCode", subList)
+				.getSingle().ifPresent(val -> {
+					if (val > 0) counter.add(1);
+				});
+		});
+		return counter.intValue() > 0;
 	}
 
 	@Override

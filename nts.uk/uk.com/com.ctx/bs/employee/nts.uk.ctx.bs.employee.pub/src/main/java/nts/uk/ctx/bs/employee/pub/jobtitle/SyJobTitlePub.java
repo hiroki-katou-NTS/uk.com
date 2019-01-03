@@ -74,6 +74,7 @@ public interface SyJobTitlePub {
 	 * @return the list EmployeeJobHistExport
 	 */
 	List<EmployeeJobHistExport> findSJobHistByListSId(List<String> employeeIds, GeneralDate baseDate);
+	List<EmployeeJobHistExport> findSJobHistByListSIdV2(List<String> employeeIds, GeneralDate baseDate);
 	
 	/**
 	 * Find by ids.

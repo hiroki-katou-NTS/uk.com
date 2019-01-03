@@ -26,7 +26,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.actuallock.Ac
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.workfixed.WorkFixedAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.workrecord.identificationstatus.IdentificationAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.daycalendar.ObtainDeadlineDateAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
+//import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalStatusForEmployeeImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApproveRootStatusForEmpImPort;
@@ -68,8 +68,8 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 	
-	@Inject
-	private ApprovalRootAdapter approvalRootService;
+//	@Inject
+//	private ApprovalRootAdapter approvalRootService;
 	
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
@@ -354,7 +354,7 @@ public class NewBeforeRegisterImpl_New implements NewBeforeRegister_New {
 		}
 		confirmCheck(appLimitSetting,actualLockImport,appDate,companyID,employeeID,closureEmployment);
 	}
-	private void confirmCheckOvertime(String companyID, String employeeID, GeneralDate appDate){
+	public void confirmCheckOvertime(String companyID, String employeeID, GeneralDate appDate){
 		// アルゴリズム「申請の締め切り期限をチェック」を実施する
 				SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(companyID,
 						employeeID, appDate);

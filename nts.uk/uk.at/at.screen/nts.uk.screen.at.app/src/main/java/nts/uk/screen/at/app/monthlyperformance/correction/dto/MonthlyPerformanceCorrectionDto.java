@@ -108,6 +108,8 @@ public class MonthlyPerformanceCorrectionDto {
 	 */
 	private Integer selectedClosure;
 	
+	private String mess;
+	
 	public MonthlyPerformanceCorrectionDto(){
 		super();
 		this.lstFixedHeader = MPHeaderDto.GenerateFixedHeader();

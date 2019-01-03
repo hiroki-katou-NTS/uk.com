@@ -17,9 +17,10 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
-import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
@@ -69,11 +70,14 @@ public class DailyPerformanceErrorCodeProcessor {
 	@Inject
 	private DailyPerformanceCorrectionProcessor dailyProcessor;
 	
-	@Inject
-	private ApprovalStatusAdapter approvalStatusAdapter;
+//	@Inject
+//	private ApprovalStatusAdapter approvalStatusAdapter;
 	
 	@Inject
 	private DPLock findLock;
+	
+	@Inject
+	private PublicHolidayRepository publicHolidayRepository;
 
 	private static final String LOCK_APPLICATION = "Application";
 	private static final String COLUMN_SUBMITTED = "Submitted";
@@ -84,7 +88,7 @@ public class DailyPerformanceErrorCodeProcessor {
 
 	public DailyPerformanceCorrectionDto generateData(DateRange dateRange,
 			List<DailyPerformanceEmployeeDto> lstEmployee, Integer initScreen, Integer mode, Integer displayFormat,
-			CorrectionOfDailyPerformance correct, List<String> errorCodes, List<String> formatCodes) {
+			CorrectionOfDailyPerformance correct, List<String> errorCodes, List<String> formatCodes, Boolean showLock) {
 		String sId = AppContexts.user().employeeId();
 		String companyId = AppContexts.user().companyId();
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
@@ -180,9 +184,12 @@ public class DailyPerformanceErrorCodeProcessor {
 			if (lstError.size() > 0) {
 				// Get list error setting
 				List<DPErrorSettingDto> lstErrorSetting = this.repo
-						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()), true, true, true);
 				// Seperate Error and Alarm
-				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
+				if(lstErrorSetting.isEmpty()) {
+					lstError = new ArrayList<>();
+				}
+				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP, true);
 			}
 		}
 		screenDto.setLstControlDisplayItem(dPControlDisplayItem);
@@ -196,15 +203,15 @@ public class DailyPerformanceErrorCodeProcessor {
 				dateRange);
 		List<DPDataDto> lstData = new ArrayList<DPDataDto>();
 		// set error, alarm
-		if (screenDto.getLstEmployee().size() > 0) {
-			if (lstError.size() > 0) {
-				// Get list error setting
-				List<DPErrorSettingDto> lstErrorSetting = this.repo
-						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
-				// Seperate Error and Alarm
-				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
-			}
-		}
+//		if (screenDto.getLstEmployee().size() > 0) {
+//			if (lstError.size() > 0) {
+//				// Get list error setting
+//				List<DPErrorSettingDto> lstErrorSetting = this.repo
+//						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()), true, true, false);
+//				// Seperate Error and Alarm
+//				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
+//			}
+//		}
 
 		Set<Integer> types = dPControlDisplayItem.getLstAttendanceItem() == null ? new HashSet<>()
 				: dPControlDisplayItem.getLstAttendanceItem().stream().map(x -> x.getTypeGroup()).filter(x -> x != null)
@@ -232,6 +239,9 @@ public class DailyPerformanceErrorCodeProcessor {
 		});
 		
 		DPLockDto dpLock = findLock.checkLockAll(companyId, listEmployeeId, dateRange, sId, mode, identityProcessDtoOpt, approvalUseSettingDtoOpt);
+		List<GeneralDate> holidayDate = publicHolidayRepository
+				.getpHolidayWhileDate(companyId, dateRange.getStartDate(), dateRange.getEndDate()).stream()
+				.map(x -> x.getDate()).collect(Collectors.toList());
 		
 		Map<String, ItemValue> itemValueMap = new HashMap<>();
 		for (DPDataDto data : screenDto.getLstData()) {
@@ -262,16 +272,34 @@ public class DailyPerformanceErrorCodeProcessor {
 			
 			ApproveRootStatusForEmpDto approvalCheckMonth = dpLock.getLockCheckMonth().get(data.getEmployeeId() + "|" + data.getDate());
 			DailyModifyResult resultOfOneRow = dailyProcessor.getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
-			if (resultOfOneRow != null) {
+			if (resultOfOneRow != null && data.isErrorOther()) {
 				dailyProcessor.lockDataCheckbox(sId, screenDto, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, approveRootStatus, mode, data.isApproval());
 
-				boolean lockDaykWpl = dailyProcessor.checkLockAndSetState(dpLock.getLockDayAndWpl(), data);
-                boolean lockHist = dailyProcessor.lockHist(dpLock.getLockHist(), data);
-                boolean lockApprovalMonth = approvalCheckMonth == null ? false : approvalCheckMonth.isCheckApproval();
-                boolean lockConfirmMonth = dailyProcessor.checkLockConfirmMonth(dpLock.getLockConfirmMonth(), data);
+//				boolean lockDaykWpl = dailyProcessor.checkLockAndSetState(dpLock.getLockDayAndWpl(), data);
+//                boolean lockHist = dailyProcessor.lockHist(dpLock.getLockHist(), data);
+//                boolean lockApprovalMonth = approvalCheckMonth == null ? false : approvalCheckMonth.isCheckApproval();
+//                boolean lockConfirmMonth = dailyProcessor.checkLockConfirmMonth(dpLock.getLockConfirmMonth(), data);
+//                
+//                lockDaykWpl = dailyProcessor.lockAndDisable(screenDto, data, mode, lockDaykWpl, data.isApproval(), lockHist, data.isSign(), lockApprovalMonth, lockConfirmMonth);	
                 
-                lockDaykWpl = dailyProcessor.lockAndDisable(screenDto, data, mode, lockDaykWpl, data.isApproval(), lockHist, data.isSign(), lockApprovalMonth, lockConfirmMonth);	
-                
+                boolean lockDaykWpl = false, lockHist = false, lockApprovalMonth = false, lockConfirmMonth = false;
+				if (showLock == null || showLock) {
+					lockDaykWpl = dailyProcessor.checkLockAndSetState(dpLock.getLockDayAndWpl(), data);
+					lockHist = dailyProcessor.lockHist(dpLock.getLockHist(), data);
+					lockApprovalMonth = approvalCheckMonth == null ? false : approvalCheckMonth.isCheckApproval();
+					lockConfirmMonth = dailyProcessor.checkLockConfirmMonth(dpLock.getLockConfirmMonth(), data);
+					lockDaykWpl = dailyProcessor.lockAndDisable(screenDto, data, mode, lockDaykWpl, data.isApproval(), lockHist,
+							data.isSign(), lockApprovalMonth, lockConfirmMonth);
+				} else {
+					lockDaykWpl = dailyProcessor.lockAndDisable(screenDto, data, mode, lockDaykWpl, false, lockHist,
+							false, lockApprovalMonth, lockConfirmMonth);
+				}
+				
+				//set cell state day
+				//if(!textColorSpr){
+					dailyProcessor.setTextColorDay(screenDto, data.getDate(), "date", data.getId(), holidayDate);
+				//}
+				
 				if (resultOfOneRow != null) {
 					itemValueMap = resultOfOneRow.getItems().stream()
 							.collect(Collectors.toMap(x -> dailyProcessor.mergeString(String.valueOf(x.getItemId()),

@@ -10,10 +10,10 @@ import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 @AllArgsConstructor
 public class WpApproverAsAppOutput {
 	//職場情報
-	WorkplaceImport wpInfor;
+	private WorkplaceImport wpInfor;
 	//Thong tin nhan vien
-	/**
-	 * empployee id
-	 */
-	Map<String, EmployeeApproverAsApplicationOutput> mapEmpRootInfo;
+	/** key: sID, values: lstApp */
+	private Map<String, EmpApproverAsApp> mapEmpRootInfo;
+	//社員の情報一覧
+	private List<EmployeeApproverOutput> lstEmployeeInfo;
 }

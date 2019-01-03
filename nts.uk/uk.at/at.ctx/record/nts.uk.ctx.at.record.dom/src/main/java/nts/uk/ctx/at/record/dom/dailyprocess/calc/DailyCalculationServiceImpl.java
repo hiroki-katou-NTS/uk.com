@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
-import java.util.ArrayList;
-import java.util.Collections;
+//import java.util.ArrayList;
+//import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -57,6 +57,7 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 	 * @param empCalAndSumExecLogID 就業計算と集計実行ログID
 	 * @param executionLog 実行ログ
 	 */
+	@SuppressWarnings("rawtypes")
 	@Override
 	public ProcessState manager(AsyncCommandHandlerContext asyncContext, List<String> employeeIds,
 			DatePeriod datePeriod, ExecutionAttr executionAttr, String empCalAndSumExecLogID,
@@ -98,16 +99,29 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 				dataSetter.updateData("dailyCalculateStatus", ExecutionStatus.INCOMPLETE.nameId);
 			}
 		};
-		this.dailyCalculationEmployeeService.calculate(asyncContext,employeeIds, datePeriod,counter,reCalcAtr,empCalAndSumExecLogID);
+		
+		this.dailyCalculationEmployeeService.calculate(asyncContext,employeeIds, datePeriod, counter, reCalcAtr,empCalAndSumExecLogID);
 		/** end 並列処理、PARALLELSTREAM */
-		
-		if (stateHolder.isInterrupt()) return ProcessState.INTERRUPTION;
-		
+//		
+		// 中断処理　（中断依頼が出されているかチェックする）
+		if (asyncContext.hasBeenRequestedToCancel()) {
+			asyncContext.finishedAsCancelled();
+			updatelog(empCalAndSumExecLogID, executionContent,ExecutionStatus.INCOMPLETE);
+			return ProcessState.INTERRUPTION;
+		}
+
 		// 完了処理
 		updatelog(empCalAndSumExecLogID,executionContent,ExecutionStatus.DONE);
-		//就業計算と集計ログ
-		//this.empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, executionContent.value,
-		//		ExecutionStatus.DONE.value);
+		
+		//全員正常終了の場合
+		if(!stateHolder.isInterrupt()) {
+			val count = stateHolder.count();
+			dataSetter.updateData("dailyCalculateCount", count);
+		}
+		
+		
+
+
 		dataSetter.updateData("dailyCalculateStatus", ExecutionStatus.DONE.nameId);
 		Stopwatches.printAll();
 		Stopwatches.STOPWATCHES.clear();

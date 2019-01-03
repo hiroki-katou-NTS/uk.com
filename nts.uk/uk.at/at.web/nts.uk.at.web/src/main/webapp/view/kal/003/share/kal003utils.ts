@@ -147,7 +147,7 @@ module nts.uk.at.view.kal003.share {
                 checkOperatorType: 0,
                 compareRangeEx: getDefaultCompareRangeImport(),
                 compareSingleValueEx : getDefaultCompareSingleValueImport(),
-                listItemID: [0]
+                listItemID: []
             });
         }
         

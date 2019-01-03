@@ -15,9 +15,7 @@ public enum DeductionClassification {
 	/**
 	 * 計上なしであるか判定する
 	 * @return　計上なしである
-	 * 
 	 */
-	
 	public boolean isNonRecord() {
 		return NON_RECORD.equals(this);
 	}

@@ -20,7 +20,8 @@ public class QueryClosureEmpAdapterImpl extends JpaRepository implements QueryCl
 
 	/** The find by closure id. */
 	private static final String FIND_BY_CLOSURE_ID = "SELECT c FROM KclmtClosureEmployment c"
-			+ " WHERE c.closureId = :closureId";
+			+ " WHERE c.closureId = :closureId"
+			+ " AND c.kclmpClosureEmploymentPK.companyId = :cId";
 
 	/*
 	 * (non-Javadoc)
@@ -29,9 +30,11 @@ public class QueryClosureEmpAdapterImpl extends JpaRepository implements QueryCl
 	 * findListEmpCdByClosureId(int)
 	 */
 	@Override
-	public List<String> findListEmpCdByClosureId(int closureId) {
+	public List<String> findListEmpCdByClosureId(String cId, int closureId) {
 		return this.queryProxy().query(FIND_BY_CLOSURE_ID, KclmtClosureEmployment.class)
-				.setParameter("closureId", closureId).getList(e -> e.kclmpClosureEmploymentPK.employmentCD);
+				.setParameter("closureId", closureId)
+				.setParameter("cId", cId)
+				.getList(e -> e.kclmpClosureEmploymentPK.employmentCD);
 	}
 
 }

@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.log.infra.repository.logbasicinfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,19 +40,24 @@ public class JpaLogBasicInformationRepository extends JpaRepository implements L
 				period.start().day(), 0, 0, 0);
 		GeneralDateTime end = GeneralDateTime.ymdhms(period.end().year(), period.end().month(), period.end().day(), 23,
 				59, 59);*/
+		List<LogBasicInformation> resultList = new ArrayList<>();
 		if (listEmployeeId == null || listEmployeeId.isEmpty()) {
 			String query = "SELECT a FROM SrcdtLogBasicInfo a WHERE a.companyId = :companyId"
 					+ " AND a.modifiedDateTime BETWEEN :startPeriod AND :endPeriod ORDER BY a.modifiedDateTime DESC";
-			return this.queryProxy().query(query, SrcdtLogBasicInfo.class).setParameter("companyId", companyId)
+			resultList.addAll(this.queryProxy().query(query, SrcdtLogBasicInfo.class).setParameter("companyId", companyId)
 					.setParameter("startPeriod", start)
-					.setParameter("endPeriod", end).getList(i -> i.toDomain());
+					.setParameter("endPeriod", end).getList(i -> i.toDomain()));
 		} else {
 			String query = "SELECT a FROM SrcdtLogBasicInfo a WHERE a.companyId = :companyId AND a.employeeId IN :employeeId "
 					+ "AND a.modifiedDateTime BETWEEN :startPeriod AND :endPeriod ORDER BY a.modifiedDateTime DESC";
-			return this.queryProxy().query(query, SrcdtLogBasicInfo.class).setParameter("companyId", companyId)
-					.setParameter("employeeId", listEmployeeId).setParameter("startPeriod", start)
-					.setParameter("endPeriod", end).getList(i -> i.toDomain());
+			CollectionUtil.split(listEmployeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				resultList.addAll(this.queryProxy().query(query, SrcdtLogBasicInfo.class).setParameter("companyId", companyId)
+						.setParameter("employeeId", subList).setParameter("startPeriod", start)
+						.setParameter("endPeriod", end).getList(i -> i.toDomain()));
+			});
+			resultList.sort(Comparator.comparing(LogBasicInformation::getModifiedDateTime));
 		}
+		return resultList;
 	}
 
 	@Override

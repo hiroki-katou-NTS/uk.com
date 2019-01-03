@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform;
 
+import java.util.Map;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -7,6 +9,7 @@ import nts.uk.ctx.at.record.app.find.monthly.MonthlyRecordToAttendanceItemConver
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 
 @Stateless
@@ -18,6 +21,11 @@ public class ConvertFactory implements AttendanceItemConvertFactory {
 	@Override
 	public DailyRecordToAttendanceItemConverter createDailyConverter() {
 		return DailyRecordToAttendanceItemConverterImpl.builder(optionalItem).completed();
+	}
+
+	@Override
+	public DailyRecordToAttendanceItemConverter createDailyConverter(Map<Integer, OptionalItem> optionalItems) {
+		return DailyRecordToAttendanceItemConverterImpl.builder(optionalItems).completed();
 	}
 
 	@Override

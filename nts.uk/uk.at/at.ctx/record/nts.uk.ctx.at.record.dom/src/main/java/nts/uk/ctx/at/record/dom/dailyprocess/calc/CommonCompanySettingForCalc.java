@@ -6,5 +6,10 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
  *
  */
 public interface CommonCompanySettingForCalc {
-	public ManagePerCompanySet getCompanySetting(); 
+	
+	default ManagePerCompanySet getCompanySetting() {
+		return getCompanySetting(CalculateOption.asDefault());
+	}
+	
+	ManagePerCompanySet getCompanySetting(CalculateOption calcOption); 
 }

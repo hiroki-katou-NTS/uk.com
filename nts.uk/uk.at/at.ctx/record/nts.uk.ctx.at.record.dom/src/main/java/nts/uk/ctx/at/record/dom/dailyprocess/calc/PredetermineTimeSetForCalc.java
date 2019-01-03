@@ -87,7 +87,7 @@ public class PredetermineTimeSetForCalc {
 	 * 所定終了時間を所定開始時間と同じ時刻に変更する
 	 */
 	public void endTimeSetStartTime() {
-		val copyTimeSheet = this.getTimeSheets();
+		val copyTimeSheet = new ArrayList<>(this.getTimeSheets());
 		this.timeSheets.clear();
 		for(TimezoneUse timeSheet : copyTimeSheet) {
 			this.timeSheets.add(new TimezoneUse(timeSheet.getStart(),
@@ -169,27 +169,6 @@ public class PredetermineTimeSetForCalc {
 			throw new RuntimeException("unknown workTypeRange");
 		}
 	}
-	
-	/**
-	 * 出勤系などの～～～刑による所定時間の取得
-	 * @param attendanceAtr
-	 * @return
-	 */
-	public AttendanceTime getPredetermineTimeByAttendanceAtr(AttendanceHolidayAttr attendanceAtr) {
-		switch(attendanceAtr) {
-		case FULL_TIME:
-			return additionSet.getPredTime().getOneDay();
-		case MORNING:
-			return additionSet.getPredTime().getMorning();
-		case AFTERNOON:
-			return additionSet.getPredTime().getAfternoon();
-		case HOLIDAY:
-			return new AttendanceTime(0);
-		default:
-				throw new RuntimeException("unknown workTypeRange");
-		}
-	}
-	
 	
 	/**
 	 * 所定時間設定を所定時間設定(計算用)に変換する

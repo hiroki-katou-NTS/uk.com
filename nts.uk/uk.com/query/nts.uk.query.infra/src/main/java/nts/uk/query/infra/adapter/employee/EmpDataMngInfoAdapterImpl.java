@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.infra.entity.employee.mngdata.BsymtEmployeeDataMngInfo;
@@ -61,7 +62,7 @@ public class EmpDataMngInfoAdapterImpl extends JpaRepository implements EmpDataM
 
 		List<BsymtEmployeeDataMngInfo> resultList = new ArrayList<>();
 
-		CollectionUtil.split(pIds, 1000, (subList) -> {
+		CollectionUtil.split(pIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			resultList.addAll(this.queryProxy().query(FIND_NOT_DELETED_BY_PIDS, BsymtEmployeeDataMngInfo.class)
 					.setParameter("cId", comId).setParameter("pIds", subList).getList());
 		});

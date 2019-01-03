@@ -12,7 +12,9 @@ import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkCha
 import nts.uk.ctx.at.request.infra.entity.application.workchange.KrqdtAppWorkChangePk;
 import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 
 @Stateless
 public class JpaAppWorkChangeRepository extends JpaRepository implements IAppWorkChangeRepository
@@ -109,10 +111,14 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements IAppWor
 		if(lstAppId.isEmpty()){
 			return new ArrayList<>();
 		}
-		return this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtAppWorkChange.class)
-				.setParameter("companyID", companyID)
-				.setParameter("lstAppId", lstAppId)
-                .getList(item -> toDomain(item));
+		List<AppWorkChange> resultList = new ArrayList<>();
+		CollectionUtil.split(lstAppId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_LIST_APPID, KrqdtAppWorkChange.class)
+								  .setParameter("companyID", companyID)
+								  .setParameter("lstAppId", subList)
+								  .getList(item -> toDomain(item)));
+		});
+		return resultList;
 	}
 
 }

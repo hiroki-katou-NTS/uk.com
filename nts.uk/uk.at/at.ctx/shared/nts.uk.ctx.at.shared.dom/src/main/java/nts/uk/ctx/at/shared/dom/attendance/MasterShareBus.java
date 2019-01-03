@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.shared.dom.attendance;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
+
+import nts.gul.util.Nullable;
 
 public class MasterShareBus {
 
@@ -16,9 +18,9 @@ public class MasterShareBus {
 
 		public default boolean isShared(U key) { return false; }
 
-		public default <T> T getShared(U key) { return null; }
+		public <T> T getShared(U key);
 
-		public default <T> T getShared(U key, Supplier<T> getData) { return null; }
+		public <T> T getShared(U key, Supplier<T> getData);
 
 		public default void clearAll() {}
 
@@ -27,15 +29,16 @@ public class MasterShareBus {
 
 	private static class ShareContainer<U> implements MasterShareContainer<U> {
 		
-		private Map<U, Object> DATA_CONTAINER;
+		private Map<U, Nullable<Object>> DATA_CONTAINER;
 		
 		private ShareContainer() {
-			DATA_CONTAINER = new HashMap<>();
+			System.out.println("CONSTRUCT ShareContainer");
+			DATA_CONTAINER = new ConcurrentHashMap<>();
 		}
 
 		@Override
 		public void share(U key, Object value) {
-			DATA_CONTAINER.put(key, value);
+			DATA_CONTAINER.put(key, Nullable.of(value));
 		}
 
 		@Override
@@ -46,27 +49,35 @@ public class MasterShareBus {
 		@Override
 		@SuppressWarnings("unchecked")
 		public <T> T getShared(U key) {
-			Object value = DATA_CONTAINER.get(key);
-			return value == null ? null : (T) value;
+			Nullable<Object> value = DATA_CONTAINER.get(key);
+			if (value.isNull()) {
+				System.out.println("DATA_CONAINTER return null: " + key);
+				System.out.println(DATA_CONTAINER.toString());
+			}
+			return value.isNull() ? null : (T) value.get();
 		}
 
 		@Override
 		public <T> T getShared(U key, Supplier<T> getData) {
-			if(isShared(key)){
-				return getShared(key);
+			synchronized(DATA_CONTAINER) {
+				if(isShared(key)){
+					return getShared(key);
+				}
+				T val = getData.get();
+				share(key, val);
+				return val;
 			}
-			T val = getData.get();
-			share(key, val);
-			return val;
 		}
 		
 		@Override
 		public void clearAll() {
+			System.out.println("MasterShareBus.clearAll");
 			DATA_CONTAINER.clear();
 		}
 
 		@Override
 		public void clearShare(U key) {
+			System.out.println("MasterShareBus.clearShare: " + key);
 			DATA_CONTAINER.remove(key);
 		}
 	}

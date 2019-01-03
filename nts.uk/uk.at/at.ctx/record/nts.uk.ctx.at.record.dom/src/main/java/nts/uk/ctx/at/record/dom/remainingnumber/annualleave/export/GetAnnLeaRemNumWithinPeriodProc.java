@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.ConfirmLeavePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggregatePeriodWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveGrantRemaining;
@@ -33,7 +34,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnLeaMaxDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.AttendanceRate;
@@ -41,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerformRepository;
@@ -78,6 +79,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	/** 次回年休付与日を計算 */
 	private CalcNextAnnualLeaveGrantDate calcNextAnnualLeaveGrantDate;
 	/** 月次処理用の暫定残数管理データを作成する */
+	@SuppressWarnings("unused")
 	private InterimRemainOffMonthProcess interimRemOffMonth;
 	/** 暫定年休管理データを作成する */
 	private CreateInterimAnnualMngData createInterimAnnual;
@@ -272,6 +274,10 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		val empBasicInfo = annualLeaveEmpBasicInfoOpt.get();
 		val grantTableCode = empBasicInfo.getGrantRule().getGrantTableCode().v();
 		
+		// 「休暇の集計期間から入社前、退職後を除く」を実行する
+		this.aggrPeriod = ConfirmLeavePeriod.sumPeriod(this.aggrPeriod, employee);
+		if (this.aggrPeriod == null) return Optional.empty();
+		
 		// 年休付与テーブル設定、勤続年数テーブル　取得
 		Optional<GrantHdTblSet> grantHdTblSetOpt = Optional.empty();
 		Optional<List<LengthServiceTbl>> lengthServiceTblsOpt = Optional.empty();
@@ -313,7 +319,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		{
 			// 次回年休付与を計算
 			nextAnnualLeaveGrantList = this.calcNextAnnualLeaveGrantDate.algorithm(
-					companyId, employeeId, Optional.of(aggrPeriod),
+					companyId, employeeId, Optional.of(this.aggrPeriod),
 					Optional.ofNullable(employee), annualLeaveEmpBasicInfoOpt,
 					grantHdTblSetOpt, lengthServiceTblsOpt);
 			
@@ -632,17 +638,17 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			// 月次モード
 			
 			// 月別実績用の暫定残数管理データを作成する
-			val dailyInterimRemainMngDataMap = this.interimRemOffMonth.monthInterimRemainData(
-					this.companyId, this.employeeId, this.aggrPeriod);
+//			val dailyInterimRemainMngDataMap = this.interimRemOffMonth.monthInterimRemainData(
+//					this.companyId, this.employeeId, this.aggrPeriod);
 			
 			// 受け取った「日別暫定管理データ」を年休のみに絞り込む
-			for (val dailyInterimRemainMngData : dailyInterimRemainMngDataMap.values()){
-				if (!dailyInterimRemainMngData.getAnnualHolidayData().isPresent()) continue;
-				if (dailyInterimRemainMngData.getRecAbsData().size() <= 0) continue;
-				val master = dailyInterimRemainMngData.getRecAbsData().get(0);
-				val data = dailyInterimRemainMngData.getAnnualHolidayData().get();
-				results.add(TmpAnnualLeaveMngWork.of(master, data));
-			}
+//			for (val dailyInterimRemainMngData : dailyInterimRemainMngDataMap.values()){
+//				if (!dailyInterimRemainMngData.getAnnualHolidayData().isPresent()) continue;
+//				if (dailyInterimRemainMngData.getRecAbsData().size() <= 0) continue;
+//				val master = dailyInterimRemainMngData.getRecAbsData().get(0);
+//				val data = dailyInterimRemainMngData.getAnnualHolidayData().get();
+//				results.add(TmpAnnualLeaveMngWork.of(master, data));
+//			}
 		}
 		if (this.mode == InterimRemainMngMode.OTHER){
 			// その他モード
@@ -656,21 +662,21 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 				val data = tmpAnnualLeaveMngOpt.get();
 				results.add(TmpAnnualLeaveMngWork.of(master, data));
 			}
-		}
-		
-		// 年休フレックス補填分を暫定年休データに反映する
-		{
-			// 「月別実績の勤怠時間」を取得
-			val attendanceTimes = this.attendanceTimeOfMonthlyRepo.findByPeriodIntoEndYmd(
-					this.employeeId, this.aggrPeriod);
-			for (val attendanceTime : attendanceTimes){
-				
-				// 月別実績の勤怠時間からフレックス補填の暫定年休管理データを作成する
-				val compensFlexWorkOpt = this.createInterimAnnual.ofCompensFlexToWork(
-						attendanceTime, attendanceTime.getDatePeriod().end());
-				
-				// 「暫定年休管理データ」を返す
-				if (compensFlexWorkOpt.isPresent()) results.add(compensFlexWorkOpt.get());
+			
+			// 年休フレックス補填分を暫定年休データに反映する
+			{
+				// 「月別実績の勤怠時間」を取得
+				val attendanceTimes = this.attendanceTimeOfMonthlyRepo.findByPeriodIntoEndYmd(
+						this.employeeId, this.aggrPeriod);
+				for (val attendanceTime : attendanceTimes){
+					
+					// 月別実績の勤怠時間からフレックス補填の暫定年休管理データを作成する
+					val compensFlexWorkOpt = this.createInterimAnnual.ofCompensFlexToWork(
+							attendanceTime, attendanceTime.getDatePeriod().end());
+					
+					// 「暫定年休管理データ」を返す
+					if (compensFlexWorkOpt.isPresent()) results.add(compensFlexWorkOpt.get());
+				}
 			}
 		}
 		

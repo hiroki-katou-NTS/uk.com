@@ -39,7 +39,7 @@ public interface InterimRecAbasMngRepository {
 	 * ・使用期限日≦INPUT.期間.終了年月日
 	 * @return
 	 */
-	List<InterimRecMng> getRecByIdPeriod(List<String> recId, double unUseDays, DatePeriod dateData);
+	List<InterimRecMng> getRecByIdPeriod(String sid, DatePeriod ymdPeriod, double unUseDays, DatePeriod dateData);
 	
 	/**
 	 * ドメインモデル「暫定振出振休紐付け管理」を取得する
@@ -140,5 +140,19 @@ public interface InterimRecAbasMngRepository {
 	 * @return
 	 */
 	List<InterimRecAbsMng> getAbsByIdsMngAtr(List<String> absIds, DataManagementAtr absMngAtr);
+	/**
+	 * get 暫定振出管理データ
+	 * @param sid
+	 * @param period
+	 * @return
+	 */
+	List<InterimRecMng> getRecBySidDatePeriod(String sid, DatePeriod period);
+	/**
+	 * 暫定振休管理データ 
+	 * @param sid
+	 * @param period
+	 * @return
+	 */
+	List<InterimAbsMng> getAbsBySidDatePeriod(String sid, DatePeriod period);
 	
 }

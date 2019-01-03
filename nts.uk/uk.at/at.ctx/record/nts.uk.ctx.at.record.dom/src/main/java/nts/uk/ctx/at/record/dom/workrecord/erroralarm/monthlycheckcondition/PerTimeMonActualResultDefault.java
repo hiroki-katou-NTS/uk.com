@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.adapter.monthly.MonthlyRecordValueImport;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
@@ -62,7 +61,7 @@ public class PerTimeMonActualResultDefault implements PerTimeMonActualResultServ
 		//勤怠項目をチェックする
 		return attendanceItemCondition.check(item->{
 			if (item.isEmpty()) {
-				return item;
+				return new ArrayList<>();
 			}
 			return monthly.convert(item).stream().map(iv -> getValue(iv))
 					.collect(Collectors.toList());
@@ -72,9 +71,10 @@ public class PerTimeMonActualResultDefault implements PerTimeMonActualResultServ
 	//HoiDD No.257
 	@Override
 	public Map<String, Integer> checkPerTimeMonActualResult(YearMonth yearMonth, String employeeID,
-			AttendanceItemCondition attendanceItemCondition, List<Integer> attendanceIds) {
+			AttendanceItemCondition attendanceItemCondition) {
 		Map<String, Integer> results = new HashMap<String,Integer>();
-		List<MonthlyRecordValueImport> monthlyRecords = new ArrayList<>();
+	/*	List<MonthlyRecordValueImport> monthlyRecords = new ArrayList<>();
+		MonthlyRecordValueImports monthlyRecord=null;*/
 		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthlys = new ArrayList<>();
 		List<AnyItemOfMonthly> anyItems = new ArrayList<>();
 		//締めをチェックする
@@ -99,7 +99,7 @@ public class PerTimeMonActualResultDefault implements PerTimeMonActualResultServ
 								anyItem.getYearMonth(),
 								anyItem.getClosureId(),
 								anyItem.getClosureDate());
-						if(anyItemsMap.containsKey(key)){
+						if(anyItemsMap.containsKey(key2)){
 							anyItemsMap.get(key2).add(anyItem);
 						}else {
 							List<AnyItemOfMonthly> anyItemsType = new ArrayList<>();
@@ -110,51 +110,41 @@ public class PerTimeMonActualResultDefault implements PerTimeMonActualResultServ
 					if(anyItemsMap.containsKey(key)){
 						monthly.withAnyItem(anyItemsMap.get(key));
 					}
-				}
-				monthlyRecords.add(MonthlyRecordValueImport.of(yearMonth, attendanceTimeOfMonthly.getClosureId(),
-						attendanceTimeOfMonthly.getClosureDate(), monthly.convert(attendanceIds)));
+				}			
+					boolean check = attendanceItemCondition.check(item->{
+						if (item.isEmpty()) {
+							return new ArrayList<>();
+						}
+						return monthly.convert(item).stream().map(iv -> getValueNew(iv))
+								.collect(Collectors.toList());
+					}) == WorkCheckResult.ERROR;
+					if (check == true) {
+						results.put(employeeID + yearMonth.toString() +  attendanceTimeOfMonthly.getClosureId().toString(),1);
+					}
+				
 				
 			}
 		}
-		//存在しない場合
-		if(CollectionUtil.isEmpty(monthlyRecords)) {
-			return results;
-		}
-		//取得した件数分ループする
-		for (MonthlyRecordValueImport monthlyRecord : monthlyRecords) {
-			//勤怠項目をチェックする
-			boolean check = attendanceItemCondition.check(item->{
-				if (item.isEmpty()) {
-					return item;
-				}
-				return monthlyRecord.getItemValues().stream().map(iv -> getValueNew(iv))
-						.collect(Collectors.toList());
-			}) == WorkCheckResult.ERROR;
-			if (check == true) {
-				results.put(employeeID + yearMonth.toString() +  monthlyRecord.getClosureId().toString(),1);
-			}
-		}
+		
 		return results;
 	}
 	//HoiDD
-	private Integer getValueNew(ItemValue value) {
+	private Double getValueNew(ItemValue value) {
 		if(value.getValueType()==ValueType.DATE){
-			return 0;
+			return 0d;
 		}
 		if (value.value() == null) {
-			return 0;
+			return 0d;
 		}
-		else if (value.getValueType().isDouble()||value.getValueType().isInteger()) {
-			return value.getValueType().isDouble() ? ((Double) value.value()).intValue() : (Integer) value.value();
-		}
-		return 0;
+		
+		return value.getValueType().isDouble() ? ((Double) value.value()) : Double.valueOf((Integer) value.value());
 	}
 	
-	private Integer getValue(ItemValue value) {
+	private Double getValue(ItemValue value) {
 		if (value.value() == null) {
-			return 0;
+			return 0d;
 		}
-		return value.getValueType().isDouble() ? ((Double) value.value()).intValue()
-				: (Integer) value.value();
+		return value.getValueType().isDouble() ? ((Double) value.value())
+				: Double.valueOf((Integer) value.value());
 	}
 }

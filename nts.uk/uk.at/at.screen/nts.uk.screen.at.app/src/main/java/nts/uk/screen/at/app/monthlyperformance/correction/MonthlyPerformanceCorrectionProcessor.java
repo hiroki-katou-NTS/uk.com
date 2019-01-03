@@ -1,8 +1,8 @@
 package nts.uk.screen.at.app.monthlyperformance.correction;
 
 import java.math.BigDecimal;
-import java.text.Format;
-import java.text.SimpleDateFormat;
+//import java.text.Format;
+//import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
+//import nts.arc.task.parallel.ParallelExceptions.Item;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
@@ -36,14 +37,16 @@ import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQue
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryAdapter;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryR;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.AppRootOfEmpMonthImport;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.AppRootSituationMonth;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.AppRootSttMonthEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootOfEmployeeImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootSituation;
-import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootStateStatusImport;
-import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.EmpPerformMonthParamImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByEmpl;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApproverEmployeeState;
+import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ReleasedProprietyDivision;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
@@ -65,7 +68,7 @@ import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+//import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -73,7 +76,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
+//import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ClosureInfoOuput;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ColumnSetting;
@@ -111,8 +114,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 	private IdentityProcessFinder identityProcessFinder;
 	@Inject
 	private EmploymentAdapter employmentAdapter;
-	@Inject
-	private ClosureEmploymentRepository closureEmploymentRepository;
+//	@Inject
+//	private ClosureEmploymentRepository closureEmploymentRepository;
 	@Inject
 	private ShClosurePub shClosurePub;
 
@@ -144,8 +147,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 	@Inject
 	private ApprovalProcessingUseSettingRepository approvalProcessingUseSettingRepo;
 	
-	@Inject
-	private FormatPerformanceRepository formatPerformanceRepo;
+//	@Inject
+//	private FormatPerformanceRepository formatPerformanceRepo;
 	
 	@Inject
 	private ApprovalStatusAdapter approvalStatusAdapter;
@@ -174,7 +177,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 	private static final String STATE_ALARM = "mgrid-alarm";
 	private static final String STATE_SPECIAL = "mgrid-special";
 	private static final String ADD_CHARACTER = "A";
-	private static final String DATE_FORMAT = "yyyy-MM-dd";
+//	private static final String DATE_FORMAT = "yyyy-MM-dd";
 	
 	private final static List<Integer> ITEM_ID_ALL = AttendanceItemIdContainer.getIds(AttendanceItemType.MONTHLY_ITEM)
 			.stream().map(x -> x.getItemId()).collect(Collectors.toList());
@@ -259,7 +262,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 			} else {
 				List<RegulationInfoEmployeeQueryR> regulationRs = regulationInfoEmployeePub.search(
 						createQueryEmployee(new ArrayList<>(), presentClosingPeriodExport.get().getClosureStartDate(),
-								presentClosingPeriodExport.get().getClosureStartDate()));
+								presentClosingPeriodExport.get().getClosureEndDate()));
 
 				List<MonthlyPerformanceEmployeeDto> lstEmployeeDto = regulationRs.stream().map(item -> {
 					return new MonthlyPerformanceEmployeeDto(item.getEmployeeId(), item.getEmployeeCode(),
@@ -278,6 +281,13 @@ public class MonthlyPerformanceCorrectionProcessor {
 					ClosureId.valueOf(closureId), screenDto.getClosureDate().toDomain(), ITEM_ID_ALL,
 					monthlyModifyQueryProcessor).call();
 			
+			// fix bug 
+			if (results.isEmpty()) {
+				String mess = new String("Msg_1450");
+				createFixedHeader(screenDto, yearMonth, closureId, optApprovalProcessingUseSetting.get(),mess);
+				return screenDto;
+			}
+
 			// lay lai employeeID cua nhung nhan vien co du lieu
 			employeeIds = results.stream().map(e -> e.getEmployeeId()).collect(Collectors.toList());
 			
@@ -286,7 +296,14 @@ public class MonthlyPerformanceCorrectionProcessor {
 			if (formatPerformance.isPresent()) {
 				monthlyDisplay.getDisplayFormat(employeeIds, formatPerformance.get().getSettingUnitType(), screenDto);
 			} else {
-				throw new BusinessException("FormatPerformance hasn't data");
+				String mess = new String("Msg_1452");
+				createFixedHeader(screenDto, yearMonth, closureId, optApprovalProcessingUseSetting.get(),mess);
+				return screenDto;
+			}
+			if (screenDto.getParam().getLstAtdItemUnique().isEmpty()){
+				String mess = new String("Msg_1452");
+				createFixedHeader(screenDto, yearMonth, closureId, optApprovalProcessingUseSetting.get(),mess);
+				return screenDto;
 			}
 
 			List<MonthlyPerformaceLockStatus> lstLockStatus = screenDto.getParam().getLstLockStatus();
@@ -305,6 +322,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 			
 			//アルゴリズム「承認モードで起動する」を実行する
 			this.startUpInApprovalMode(optApprovalProcessingUseSetting, formatPerformance,screenDto,yearMonth, companyId);
+			if(screenDto.getMess() != null && !screenDto.getMess().isEmpty()) {
+				return screenDto;
+			}
 		}
 		
 		// set data of lstControlDisplayItem
@@ -329,9 +349,17 @@ public class MonthlyPerformanceCorrectionProcessor {
 	//締め情報の表示
 	private void displayClosureInfo(MonthlyPerformanceCorrectionDto screenDto, String companyId, Integer closureId,
 			Integer processYM){
-		
 		//ドメインモデル「締め」を取得する
-		List<ClosureHistory> lstClosureHistory = this.closureRepository.findByCurrentMonth(companyId, new YearMonth(processYM));
+		//List<ClosureHistory> lstClosureHistory = this.closureRepository.findByCurrentMonth(companyId, new YearMonth(processYM));
+		List<Closure> lstClosure = this.closureRepository.findAllUse(companyId);
+		List<ClosureHistory> lstClosureHistory = new ArrayList<>();
+		lstClosure.forEach(item -> {
+			lstClosureHistory.addAll(item.getClosureHistories().stream().filter(closureItem -> 
+				closureItem.getStartYearMonth().v() <= processYM.intValue() && 
+						closureItem.getEndYearMonth().v() >= processYM.intValue()).collect(Collectors.toList()));
+			
+		});
+		
 		
 		List<ClosureInfoOuput> lstClosureInfoOuput = new ArrayList<>();
 		//取得した実績期間を画面に表示する
@@ -375,8 +403,10 @@ public class MonthlyPerformanceCorrectionProcessor {
 						.getApprovalRootOfEmloyeeNew(screenDto.getSelectedActualTime().getEndDate(), 
 								screenDto.getSelectedActualTime().getEndDate(), AppContexts.user().employeeId(), companyId, Integer.valueOf(2));
 				
-				if (approvalRootOfEmloyee == null) {
-					throw new BusinessException("Msg_916");
+				if (approvalRootOfEmloyee == null || approvalRootOfEmloyee.getApprovalRootSituations().isEmpty()) {
+					String mess = new String("Msg_1451");
+					createFixedHeader(screenDto, yearMonth, screenDto.getSelectedClosure(), approvalProcessingUseSetting,mess);
+					return;
 				}
 
 				// 社員(list)に対応する処理締めを取得する
@@ -392,7 +422,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 					}
 				}
 				if (employeeIds.isEmpty()) {
-					throw new BusinessException("Msg_916");
+					String mess = new String("Msg_1450");
+					createFixedHeader(screenDto, yearMonth, screenDto.getSelectedClosure(), approvalProcessingUseSetting, mess);
+					return;
 				}
 
 				// lay thong tin nhan vien theo empID thu duoc
@@ -423,7 +455,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 					monthlyDisplay.getDisplayFormat(employeeIds, formatPerformance.get().getSettingUnitType(),
 							screenDto);
 				} else {
-					throw new BusinessException("FormatPerformance hasn't data");
+					throw new BusinessException("Msg_1452");
 				}
 
 				List<MonthlyPerformaceLockStatus> lstLockStatus = screenDto.getParam().getLstLockStatus();
@@ -498,8 +530,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 	private List<MonthlyPerformanceAuthorityDto> getAuthority(MonthlyPerformanceCorrectionDto screenDto) {
 		String roleId = AppContexts.user().roles().forAttendance();
 		if (roleId != null) {
-			List<MonthlyPerformanceAuthorityDto> dailyPerformans = dailyPerformanceScreenRepo.findAuthority(roleId,
-					new BigDecimal(1));
+			List<MonthlyPerformanceAuthorityDto> dailyPerformans = dailyPerformanceScreenRepo.findAuthority(roleId, new BigDecimal(1));
 			if (!dailyPerformans.isEmpty()) {
 				return dailyPerformans;
 			}
@@ -541,19 +572,19 @@ public class MonthlyPerformanceCorrectionProcessor {
 	*/
 
 	/** アルゴリズム「対象者を抽出する」を実行する */
-	private List<MonthlyPerformanceEmployeeDto> getListEmployee(String sId, DateRange dateRange) {
-		// アルゴリズム「自職場を取得する」を実行する
-		// List<String> lstJobTitle = this.repo.getListJobTitle(dateRange);
-		// List<String> lstEmployment = this.repo.getListEmployment();
-		/// 対応するドメインモデル「所属職場」を取得する + 対応するドメインモデル「職場」を取得する
-		Map<String, String> lstWorkplace = this.repo.getListWorkplace(sId, dateRange);
-		// List<String> lstClassification = this.repo.getListClassification();
-		// 取得したドメインモデル「所属職場．社員ID」に対応するImported「（就業）社員」を取得する
-		if (lstWorkplace.isEmpty()) {
-			return new ArrayList<>();
-		}
-		return this.repo.getListEmployee(null, null, lstWorkplace, null);
-	}
+//	private List<MonthlyPerformanceEmployeeDto> getListEmployee(String sId, DateRange dateRange) {
+//		// アルゴリズム「自職場を取得する」を実行する
+//		// List<String> lstJobTitle = this.repo.getListJobTitle(dateRange);
+//		// List<String> lstEmployment = this.repo.getListEmployment();
+//		/// 対応するドメインモデル「所属職場」を取得する + 対応するドメインモデル「職場」を取得する
+//		Map<String, String> lstWorkplace = this.repo.getListWorkplace(sId, dateRange);
+//		// List<String> lstClassification = this.repo.getListClassification();
+//		// 取得したドメインモデル「所属職場．社員ID」に対応するImported「（就業）社員」を取得する
+//		if (lstWorkplace.isEmpty()) {
+//			return new ArrayList<>();
+//		}
+//		return this.repo.getListEmployee(null, null, lstWorkplace, null);
+//	}
 
 	/**
 	 * 締め情報の表示
@@ -617,7 +648,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 
 		// アルゴリズム「対象年月に対応する月別実績を取得する」を実行する Lấy monthly result ứng với năm tháng
 		if (param.getLstAtdItemUnique() == null || param.getLstAtdItemUnique().isEmpty()) {
-			throw new BusinessException("Msg_1261");
+			throw new BusinessException("Msg_1450");
 		}
 
 		List<MPSheetDto> lstSheets = param.getSheets().stream().map(c -> {
@@ -697,14 +728,13 @@ public class MonthlyPerformanceCorrectionProcessor {
 		if(screenDto.getIdentityProcess().getUseMonthSelfCK() == 1){
 			// 月の本人確認を取得する
 			listConfirmationMonth = this.confirmationMonthRepository.findBySomeProperty(listEmployeeIds,
-					yearMonth, screenDto.getClosureDate().getLastDayOfMonth()
-							? new YearMonth(yearMonth).lastDateInMonth() : screenDto.getClosureDate().getClosureDay(),
+					yearMonth, screenDto.getClosureDate().getClosureDay(), screenDto.getClosureDate().getLastDayOfMonth(),
 					closureId);
 		}
 		
 		//get data approve
-		List<ApproveRootStatusForEmpImport> approvalByListEmplAndListApprovalRecordDate = null;
-		ApprovalRootOfEmployeeImport approvalRootOfEmloyee = null;
+		List<AppRootSttMonthEmpImport> approvalByListEmplAndListApprovalRecordDate = null;
+		AppRootOfEmpMonthImport approvalRootOfEmloyee = null;
 		if (approvalProcessingUseSetting.getUseMonthApproverConfirm()) { // neu hien thi cot approve
 			if (param.getInitMenuMode() == 0 || param.getInitMenuMode() == 1) { // lay data approve mode normal hoac unlock
 				// *10 request list 533
@@ -765,20 +795,6 @@ public class MonthlyPerformanceCorrectionProcessor {
 			String lockStatus = lockStatusMap.isEmpty() || !lockStatusMap.containsKey(employee.getId()) || param.getInitMenuMode() == 1 ? ""
 					: lockStatusMap.get(employee.getId()).getLockStatusString();
 			
-			// set state approval
-			if (param.getInitMenuMode() == 2) { // mode approve disable cot approve theo data lay duoc tu no.534
-				if(approvalRootOfEmloyee!=null && approvalRootOfEmloyee.getApprovalRootSituations()!=null){
-					for (ApprovalRootSituation approvalRootSituation : approvalRootOfEmloyee.getApprovalRootSituations()) {
-						// 基準社員の承認状況　＝　フェーズ最中　の場合 => unlock
-						if(approvalRootSituation.getTargetID().equals(employeeId) && approvalRootSituation.getApprovalAtr() != ApproverEmployeeState.PHASE_DURING){
-							lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
-							break;
-						}
-					}
-				}
-			} else { // mode khac luon disable cot approve
-				lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
-			}
 			
 			// set dailyConfirm
 			MonthlyPerformaceLockStatus monthlyPerformaceLockStatus = lockStatusMap.get(employeeId);
@@ -810,13 +826,13 @@ public class MonthlyPerformanceCorrectionProcessor {
 				if(param.getInitMenuMode() == 0 || param.getInitMenuMode() == 1){ //lay gia tri checkbox approve mode normal hoac unlock theo no.533
 					//*10 
 					if (approvalByListEmplAndListApprovalRecordDate != null) {
-						for (ApproveRootStatusForEmpImport approvalApprovalRecordDate : approvalByListEmplAndListApprovalRecordDate) {
+						for (AppRootSttMonthEmpImport approvalApprovalRecordDate : approvalByListEmplAndListApprovalRecordDate) {
 							// 承認状況 ＝ 承認済 or 承認中 の場合
 							if (approvalApprovalRecordDate.getEmployeeID().equals(employeeId)
-									&& approvalApprovalRecordDate
+									&& (approvalApprovalRecordDate
 											.getApprovalStatus() == ApprovalStatusForEmployee.DURING_APPROVAL
 									|| approvalApprovalRecordDate
-											.getApprovalStatus() == ApprovalStatusForEmployee.APPROVED) {
+											.getApprovalStatus() == ApprovalStatusForEmployee.APPROVED)) {
 								approve = true;
 								break;
 							}
@@ -825,7 +841,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 				} else if (param.getInitMenuMode() == 2) { //lay gia tri checkbox approve theo ket qua no.534
 					//*8 
 					if(approvalRootOfEmloyee!=null && approvalRootOfEmloyee.getApprovalRootSituations()!=null){
-						for (ApprovalRootSituation approvalRootSituation : approvalRootOfEmloyee.getApprovalRootSituations()) {
+						for (AppRootSituationMonth approvalRootSituation : approvalRootOfEmloyee.getApprovalRootSituations()) {
 							//◆基準社員の承認アクション　＝　承認した　の場合
 							if(approvalRootSituation.getTargetID().equals(employeeId) && approvalRootSituation.getApprovalStatus().getApprovalActionByEmpl() == ApprovalActionByEmpl.APPROVALED){
 								approve = true;
@@ -837,6 +853,25 @@ public class MonthlyPerformanceCorrectionProcessor {
 				}
 			}
 			
+			
+			// set state approval
+			if (param.getInitMenuMode() == 2) { // mode approve disable cot approve theo data lay duoc tu no.534
+				if(approvalRootOfEmloyee!=null && approvalRootOfEmloyee.getApprovalRootSituations()!=null){
+					for (AppRootSituationMonth approvalRootSituation : approvalRootOfEmloyee.getApprovalRootSituations()) {
+						// 基準社員の承認状況　＝　フェーズ最中　の場合 => unlock
+						if(approvalRootSituation.getTargetID().equals(employeeId) && approvalRootSituation.getApprovalAtr() != ApproverEmployeeState.PHASE_DURING && !approve){
+							lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
+							break;
+						}else if(approve && approvalRootSituation.getTargetID().equals(employeeId) && approvalRootSituation.getApprovalStatus().getReleaseDivision() != ReleasedProprietyDivision.NOT_RELEASE && !approve) {
+							lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
+							break;
+						}
+					}
+				}
+			} else { // mode khac luon disable cot approve
+				lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
+			}
+			   
 			MPDataDto mpdata = new MPDataDto(employeeId, lockStatus, "", employee.getCode(), employee.getBusinessName(),
 					employeeId, "", identify, approve, dailyConfirm, "");
 			
@@ -869,8 +904,10 @@ public class MonthlyPerformanceCorrectionProcessor {
 						} else
 							mpdata.addCellData(new MPCellDataDto(attendanceKey,
 									item.getValue() != null ? item.getValue() : "", attendanceAtrAsString, ""));
+						// *3 and *6
 						if (param.getInitMenuMode() == 2) { // mode approve disable neu co bat ki lock nao khac month approve lock
-							if (!StringUtil.isNullOrEmpty(lockStatus, true) && !lockStatus.equals(MonthlyPerformaceLockStatus.LOCK_MONTHLY_APPROVAL))
+							//if (!StringUtil.isNullOrEmpty(lockStatus, true) && !lockStatus.equals(MonthlyPerformaceLockStatus.LOCK_MONTHLY_APPROVAL))
+							if (!StringUtil.isNullOrEmpty(lockStatus, true))
 								cellStatus.add(STATE_DISABLE);
 						} else { // mode khac cu co lock la approve
 							if (!StringUtil.isNullOrEmpty(lockStatus, true))
@@ -977,40 +1014,90 @@ public class MonthlyPerformanceCorrectionProcessor {
 	 * Get List Data include:<br/>
 	 * Employee and Date
 	 **/
-	private List<MPDataDto> getListData(List<MonthlyPerformanceEmployeeDto> listEmployee, DateRange dateRange,
-			Integer displayFormat) {
-		List<MPDataDto> result = new ArrayList<>();
-		if (listEmployee.size() > 0) {
-			List<GeneralDate> lstDate = dateRange.toListDate();
-			int dataId = 0;
-			for (int j = 0; j < listEmployee.size(); j++) {
-				MonthlyPerformanceEmployeeDto employee = listEmployee.get(j);
-				boolean stateLock = false;
-				// set tam dailyConfirm  = "〇"
-				String dailyConfirm = "〇";
-				for (int i = 0; i < lstDate.size(); i++) {
-					String key = displayFormat + "_" + convertFormatString(employee.getId()) + "_"
-							+ convertFormatString(converDateToString(lstDate.get(i))) + "_"
-							+ convertFormatString(converDateToString(lstDate.get(lstDate.size() - 1))) + "_" + dataId;
-					result.add(new MPDataDto(key, "stateLock", "", employee.getCode(), employee.getBusinessName(),
-							employee.getId(), "", stateLock, stateLock, dailyConfirm, ""));
-					dataId++;
-				}
-			}
-		}
-		return result;
-	}
+//	private List<MPDataDto> getListData(List<MonthlyPerformanceEmployeeDto> listEmployee, DateRange dateRange,
+//			Integer displayFormat) {
+//		List<MPDataDto> result = new ArrayList<>();
+//		if (listEmployee.size() > 0) {
+//			List<GeneralDate> lstDate = dateRange.toListDate();
+//			int dataId = 0;
+//			for (int j = 0; j < listEmployee.size(); j++) {
+//				MonthlyPerformanceEmployeeDto employee = listEmployee.get(j);
+//				boolean stateLock = false;
+//				// set tam dailyConfirm  = "〇"
+//				String dailyConfirm = "〇";
+//				for (int i = 0; i < lstDate.size(); i++) {
+//					String key = displayFormat + "_" + convertFormatString(employee.getId()) + "_"
+//							+ convertFormatString(converDateToString(lstDate.get(i))) + "_"
+//							+ convertFormatString(converDateToString(lstDate.get(lstDate.size() - 1))) + "_" + dataId;
+//					result.add(new MPDataDto(key, "stateLock", "", employee.getCode(), employee.getBusinessName(),
+//							employee.getId(), "", stateLock, stateLock, dailyConfirm, ""));
+//					dataId++;
+//				}
+//			}
+//		}
+//		return result;
+//	}
 
-	private String convertFormatString(String data) {
-		return data.replace("-", "_");
-	}
-
-	private String converDateToString(GeneralDate genDate) {
-		Format formatter = new SimpleDateFormat(DATE_FORMAT);
-		return formatter.format(genDate.date());
-	}
+//	private String convertFormatString(String data) {
+//		return data.replace("-", "_");
+//	}
+//
+//	private String converDateToString(GeneralDate genDate) {
+//		Format formatter = new SimpleDateFormat(DATE_FORMAT);
+//		return formatter.format(genDate.date());
+//	}
 
 	private String mergeString(String... x) {
 		return StringUtils.join(x);
 	}
+	private void createFixedHeader(MonthlyPerformanceCorrectionDto screenDto, Integer yearMonth, Integer closureId,
+			ApprovalProcessingUseSetting approvalProcessingUseSetting, String mess) {
+		/**
+		 * Create Grid Sheet DTO
+		 */
+
+		MPControlDisplayItem displayItem = screenDto.getLstControlDisplayItem();
+//		MonthlyPerformanceParam param = screenDto.getParam();
+		// アルゴリズム「対象年月に対応する月別実績を取得する」を実行する Lấy monthly result ứng với năm tháng
+//		if (param.getLstAtdItemUnique() == null || param.getLstAtdItemUnique().isEmpty()) {
+//			throw new BusinessException("Msg_1261");
+//		}
+//
+//		List<MPSheetDto> lstSheets = param.getSheets().stream().map(c -> {
+//			MPSheetDto sh = new MPSheetDto(c.getSheetNo(), c.getSheetName());
+//			for (PAttendanceItem attend : c.getDisplayItems()) {
+//				sh.addColumn(mergeString(ADD_CHARACTER, attend.getId().toString()));
+//			}
+//			return sh;
+//		}).collect(Collectors.toList());
+//		displayItem.createSheets(lstSheets);
+
+		List<MPHeaderDto> lstMPHeaderDto = MPHeaderDto.GenerateFixedHeader();
+		
+		//G7 G8 G9 hidden column identitfy, approval, dailyconfirm
+		for (Iterator<MPHeaderDto> iter = lstMPHeaderDto.listIterator(); iter.hasNext(); ) {
+			MPHeaderDto mpHeaderDto = iter.next();
+			if ("identify".equals(mpHeaderDto.getKey())
+					&& screenDto.getIdentityProcess().getUseMonthSelfCK() == 0) {
+		        iter.remove();
+		        continue;
+		    }
+			if ("approval".equals(mpHeaderDto.getKey())
+					&& approvalProcessingUseSetting.getUseMonthApproverConfirm() == false) {
+				iter.remove();
+				continue;
+			}
+			if ("dailyconfirm".equals(mpHeaderDto.getKey())
+					&& screenDto.getDailySelfChkDispAtr() == 0) {
+		        iter.remove();
+		        continue;
+		    }
+		}
+		List<MPHeaderDto> lstHeader = new ArrayList<>();
+		lstHeader.addAll(lstMPHeaderDto);
+		displayItem.setLstHeader(lstHeader);
+		// Fixed header
+		screenDto.setLstFixedHeader(lstMPHeaderDto);
+		screenDto.setMess(mess);
+		}
 }

@@ -7,8 +7,10 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.Selection;
 import nts.uk.ctx.pereg.dom.person.setting.selectionitem.selection.SelectionRepository;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelection;
@@ -136,8 +138,11 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 		if (histIdList.isEmpty()) {
 			return new ArrayList<>();
 		}
-		List<Selection> selections = this.queryProxy().query(SELECT_ALL_HISTORY_ID_LIST, PpemtSelection.class)
-				.setParameter("histIdList", histIdList).getList(c -> toDomain(c));
+		List<Selection> selections = new ArrayList<>(); 
+		CollectionUtil.split(histIdList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			selections.addAll(this.queryProxy().query(SELECT_ALL_HISTORY_ID_LIST, PpemtSelection.class)
+				.setParameter("histIdList", subList).getList(c -> toDomain(c)));
+		});
 		return selections;
 	}
 

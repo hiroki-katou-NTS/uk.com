@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.monthly.root;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
@@ -22,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 @AttendanceItemRoot(rootName = ItemConst.MONTHLY_REMARKS_NAME, itemType = AttendanceItemType.MONTHLY_ITEM)
 public class MonthlyRemarksDto extends MonthlyItemCommon {
 	
@@ -59,7 +61,6 @@ public class MonthlyRemarksDto extends MonthlyItemCommon {
 	public RemarksMonthlyRecord toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
 		return new RemarksMonthlyRecord(employeeId, ConvertHelper.getEnum(closureID, ClosureId.class), no, ym, 
 										closureDate == null ? null : closureDate.toDomain(),
-										datePeriod == null ? null : datePeriod.toDomain(),		
 										remarks == null ? null : new RecordRemarks(remarks));
 	}
 	@Override
@@ -74,7 +75,6 @@ public class MonthlyRemarksDto extends MonthlyItemCommon {
 			dto.setYm(domain.getRemarksYM());
 			dto.setClosureID(domain.getClosureId().value);
 			dto.setClosureDate(ClosureDateDto.from(domain.getClosureDate()));
-			dto.setDatePeriod(DatePeriodDto.from(domain.getRemarksPeriod()));
 			dto.setRemarks(domain.getRecordRemarks() == null ? null : domain.getRecordRemarks().v());
 			dto.setNo(domain.getRemarksNo());
 			dto.exsistData();
