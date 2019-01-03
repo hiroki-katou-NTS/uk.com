@@ -285,8 +285,8 @@ module nts.uk.com.view.kwr002.b {
                     });
                     data = _.orderBy(data, [item => item.code], ['asc']);
                     self.aRES(data);
-                    let firstData = _.first(data);
-                    self.currentARESCode(firstData.code);
+//                    let firstData = _.first(data);
+                    self.currentARESCode(getShared("currentARESSelectCode"));
                 } else {
                     self.onNew(true);
                 }
