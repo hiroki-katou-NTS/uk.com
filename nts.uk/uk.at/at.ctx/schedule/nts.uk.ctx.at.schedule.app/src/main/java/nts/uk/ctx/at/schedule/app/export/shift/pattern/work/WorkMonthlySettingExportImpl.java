@@ -134,52 +134,118 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 	@Override
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		columns.add(new MasterHeaderColumn("コード", TextResource.localize("KSM004_98"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("名称", TextResource.localize("KSM004_99"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("年月", TextResource.localize("KSM002_63"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("1日", TextResource.localize("KSM002_64"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("2日", TextResource.localize("KSM002_65"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("3日", TextResource.localize("KSM002_66"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("4日", TextResource.localize("KSM002_67"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("5日", TextResource.localize("KSM002_68"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("6日", TextResource.localize("KSM002_69"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("7日", TextResource.localize("KSM002_70"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("8日", TextResource.localize("KSM002_71"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("9日", TextResource.localize("KSM002_72"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("10日", TextResource.localize("KSM002_73"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("11日", TextResource.localize("KSM002_74"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("12日", TextResource.localize("KSM002_75"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("13日", TextResource.localize("KSM002_76"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("14日", TextResource.localize("KSM002_77"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("15日", TextResource.localize("KSM002_78"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("16日", TextResource.localize("KSM002_79"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("17日", TextResource.localize("KSM002_80"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("18日", TextResource.localize("KSM002_81"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("19日", TextResource.localize("KSM002_82"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("20日", TextResource.localize("KSM002_83"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("21日", TextResource.localize("KSM002_84"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("22日", TextResource.localize("KSM002_85"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("23日", TextResource.localize("KSM002_86"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("24日", TextResource.localize("KSM002_87"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("25日", TextResource.localize("KSM002_88"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("26日", TextResource.localize("KSM002_89"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("27日", TextResource.localize("KSM002_90"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("28日", TextResource.localize("KSM002_91"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("29日", TextResource.localize("KSM002_92"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("30日", TextResource.localize("KSM002_93"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("31日", TextResource.localize("KSM002_94"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("コード", TextResource.localize("KSM005_13"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("名称", TextResource.localize("KSM005_14"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("年月", TextResource.localize("KSM005_47"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("1日", TextResource.localize("KSM005_48"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("2日", TextResource.localize("KSM005_49"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("3日", TextResource.localize("KSM005_50"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("4日", TextResource.localize("KSM005_51"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("5日", TextResource.localize("KSM005_52"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("6日", TextResource.localize("KSM005_53"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("7日", TextResource.localize("KSM005_54"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("8日", TextResource.localize("KSM005_55"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("9日", TextResource.localize("KSM005_56"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("10日", TextResource.localize("KSM005_57"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("11日", TextResource.localize("KSM005_58"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("12日", TextResource.localize("KSM005_59"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("13日", TextResource.localize("KSM005_60"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("14日", TextResource.localize("KSM005_61"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("15日", TextResource.localize("KSM005_62"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("16日", TextResource.localize("KSM005_63"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("17日", TextResource.localize("KSM005_64"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("18日", TextResource.localize("KSM005_65"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("19日", TextResource.localize("KSM005_66"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("20日", TextResource.localize("KSM005_67"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("21日", TextResource.localize("KSM005_68"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("22日", TextResource.localize("KSM005_69"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("23日", TextResource.localize("KSM005_70"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("24日", TextResource.localize("KSM005_71"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("25日", TextResource.localize("KSM005_72"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("26日", TextResource.localize("KSM005_73"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("27日", TextResource.localize("KSM005_74"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("28日", TextResource.localize("KSM005_75"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("29日", TextResource.localize("KSM005_76"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("30日", TextResource.localize("KSM005_77"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("31日", TextResource.localize("KSM005_78"), ColumnTextAlign.LEFT, "", true));
 
 		return columns;
 	}
 
 	@Override
 	public String mainSheetName() {
-		return TextResource.localize("Com_Company");
+		return TextResource.localize("KSM005_3");
 	}
 
 	@Override
 	public List<SheetData> extraSheets(MasterListExportQuery query) {
-		return MasterListData.super.extraSheets(query);
+		 List<SheetData> sheetDatas = new ArrayList<>();
+		 SheetData sheetPersionSet = new SheetData(getMasterDatasForPersionSet(query), 
+				 getHeaderColumnsForPersionSet(query),null, null, TextResource.localize("KSM005_6"));
+		 sheetDatas.add(sheetPersionSet);
+		return sheetDatas;
 	}
 	
+	public List<MasterHeaderColumn> getHeaderColumnsForPersionSet(MasterListExportQuery query) {
+		List<MasterHeaderColumn> columns = new ArrayList<>();
+		columns.add(new MasterHeaderColumn("コード", TextResource.localize("KSM005_13"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("名称", TextResource.localize("KSM005_14"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("履歴開始日", TextResource.localize("KSM005_79"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("履歴終了日", TextResource.localize("KSM005_80"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("対象月間パターン", TextResource.localize("KSM005_22"), ColumnTextAlign.LEFT, "", true));
+		return columns;
+	}
+	
+	
+	public List<MasterData> getMasterDatasForPersionSet(MasterListExportQuery query) {
+		String companyId = AppContexts.user().companyId();
+		List<MasterData> datas = new ArrayList<>();
+		Optional<List<PersionalWorkMonthlySettingReportData>> optReportDatas = workMonthlySettingReportRepository
+				.findAllPersionWorkMonthlySet(companyId, query.getBaseDate());
+		if(optReportDatas.isPresent()) {
+			List<PersionalWorkMonthlySettingReportData> reportDatas = optReportDatas.get();
+			reportDatas.stream().sorted(Comparator.comparing(PersionalWorkMonthlySettingReportData::getScd)).forEachOrdered(x -> {
+				datas.add(newPersionSetMasterData(x));
+			});
+		}
+		return datas;
+	}
+	
+	
+	private MasterData newPersionSetMasterData(PersionalWorkMonthlySettingReportData persionalData) {
+		Map<String, Object> data = new HashMap<>();
+		putEmptyToColumPersionSet(data);
+		data.put("コード", persionalData.getScd());
+		data.put("名称", persionalData.getName());
+		data.put("履歴開始日", persionalData.getStartDate());
+		data.put("履歴終了日", persionalData.getEndDate());
+		data.put("対象月間パターン", persionalData.getPatternCode() + persionalData.getPatternName());
+		MasterData masterData = new MasterData(data, null, "");
+		alignDataPersionSet(masterData.getRowData());
+		return masterData;
+	}
+	
+	/**
+	 * 
+	 * @param rowData
+	 */
+	private void alignDataPersionSet(Map<String, MasterCellData> rowData) {
+		rowData.get("コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+		rowData.get("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+		rowData.get("履歴開始日").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+		rowData.get("履歴終了日").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+		rowData.get("対象月間パターン").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+	}
+	
+	/**
+	 * 
+	 * @param data
+	 */
+	private void putEmptyToColumPersionSet(Map<String, Object> data) {
+		data.put("コード", "");
+		data.put("名称", "");
+		data.put("履歴開始日", "");
+		data.put("履歴終了日", "");
+		data.put("対象月間パターン", "");
+	}
 }

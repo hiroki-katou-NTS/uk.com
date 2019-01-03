@@ -14,5 +14,5 @@ import nts.arc.time.GeneralDate;
  */
 public interface WorkMonthlySettingReportRepository {
 	Optional<Map<String, List<WorkMonthlySettingReportData>>> findAllWorkMonthlySet(String companyId, GeneralDate startDate, GeneralDate endDate);
- 
+	Optional<List<PersionalWorkMonthlySettingReportData>> findAllPersionWorkMonthlySet(String companyId, GeneralDate baseDate);
 }
