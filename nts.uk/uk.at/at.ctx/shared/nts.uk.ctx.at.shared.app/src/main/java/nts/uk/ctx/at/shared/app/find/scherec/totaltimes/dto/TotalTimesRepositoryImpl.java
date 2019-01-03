@@ -115,7 +115,10 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 						listCodes.add(n);
 					});
 					
-					List<WorkTypeInfor> lst = workTypeRepository.getPossibleWorkTypeAndOrder(companyId, listWorkTypeCodes);
+					List<WorkTypeInfor> lst = workTypeRepository.getPossibleWorkTypeAndOrder(companyId, listWorkTypeCodes)
+							.stream().sorted(Comparator
+									.comparing(WorkTypeInfor::getWorkTypeCode))
+									.collect(Collectors.toList());
 					
 					List<WorkTimeSetting> listFindByCodes = workTimeSettingRepository.findByCodes(companyId,listCodes);
 					
@@ -131,10 +134,6 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 						if(c.getSummaryAtr() == SummaryAtr.WORKINGTIME){
 							data.put("勤務種類","");
 						}else {
-							//sort 
-							lst = lst.stream().sorted(Comparator
-									.comparing(WorkTypeInfor::getWorkTypeCode))
-									.collect(Collectors.toList());
 							
 							//勤務種類
 							String typeOfDuty = "";
@@ -231,9 +230,9 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 				masterData.cellAt("勤務種類").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				masterData.cellAt("就業時間帯").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				masterData.cellAt("集計条件以上").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt("以上").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("以上").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
 				masterData.cellAt("集計条件未満").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt("未満").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt("未満").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
 				masterData.cellAt("対象項目").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				masterData.cellAt("半日勤務区分").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 
