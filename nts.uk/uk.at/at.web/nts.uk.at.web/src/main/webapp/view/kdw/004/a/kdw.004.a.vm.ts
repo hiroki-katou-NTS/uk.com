@@ -5,7 +5,8 @@ module nts.uk.at.view.kdw004.a.viewmodel {
         Approved = 0,
         UnApproved = 1,
         CannotApproved = 2,
-        Disable = 3
+        Disable = 3,
+        Notthing = 4
     }
 
     let SATURDAY_BACKGROUND_COLOR = "#8BD8FF",
@@ -13,12 +14,14 @@ module nts.uk.at.view.kdw004.a.viewmodel {
         SATURDAY_TEXT_COLOR = "#0031FF",
         SUNDAY_TEXT_COLOR = "#FF0000",
         TEMPLATE_EMPLOYEE_NAME_HEADER = `<a class='limited-label' href='javascript:void(0)' style='width: 200px; text-decoration: underline; cursor: pointer;' data-bind="click: clickNameJumpToKdw003.bind($data, '\${employeeId}')">\${employeeName}</a>`,
-        getTemplateDisplayStt = (headerTxtId, startDate) => `{{if \${${headerTxtId}} == '${ApprovalStatus.Approved}' }}
-            <a class='approved' href='javascript:void(0)' data-bind="click: clickStatusJumpToKdw003.bind($data, '\${employeeId}', '${startDate}')">○</a>
+        getTemplateDisplayStt = (headerTxtId, startDate) => `{{if \${${headerTxtId}} == '${ApprovalStatus.Notthing}' }}
+            <a class='notthing' href='javascript:void(0)' data-bind="click: clickStatusJumpToKdw003.bind($data, '\${employeeId}', '${startDate}')" >本</a>
+            {{elseif \${${headerTxtId}} == '${ApprovalStatus.Approved}' }}
+            <a class='approved' href='javascript:void(0)' data-bind="click: clickStatusJumpToKdw003.bind($data, '\${employeeId}', '${startDate}')">済</a>
             {{elseif \${${headerTxtId}} == '${ApprovalStatus.UnApproved}' }}
-            <a class='unapproved' href='javascript:void(0)' data-bind="click: clickStatusJumpToKdw003.bind($data, '\${employeeId}', '${startDate}')">！</a>
+            <a class='unapproved' href='javascript:void(0)' data-bind="click: clickStatusJumpToKdw003.bind($data, '\${employeeId}', '${startDate}')">未</a>
             {{elseif \${${headerTxtId}} == '${ApprovalStatus.CannotApproved}' }}
-            <a class='cannotApproved' href='javascript:void(0);'>＿</a>
+            <a class='cannotApproved' href='javascript:void(0);'>他</a>
             {{elseif \${${headerTxtId}} != '${ApprovalStatus.Approved}' && \${${headerTxtId}} != '${ApprovalStatus.UnApproved}' && \${${headerTxtId}} != '${ApprovalStatus.CannotApproved}'  }}
             <span class='disable'></span>
             {{/if}}`;
@@ -26,13 +29,14 @@ module nts.uk.at.view.kdw004.a.viewmodel {
     export class ScreenModelKDW004A { 
         legendOptions: any = {
             items: [
-                { className: 'approved-img', labelText: text('KDW004_8') },
-                { className: 'cannotApproved-img', labelText: text('KDW004_9') },
-                { className: 'unapproved-img', labelText: text('KDW004_10') },
-                { className: 'disable-img', labelText: text('KDW004_15') }
-                //{ className: 'nodata-img', labelText: text('KDW004_12') }
+                { className: 'approved-img',legendCellChar: "済", labelText: text('KDW004_8') },
+                { className: 'cannotApproved-img',legendCellChar: "他", labelText: text('KDW004_9') },
+                { className: 'unapproved-img',legendCellChar: "未", labelText: text('KDW004_10') },
+                { className: 'disable-img',legendCellChar: "", labelText: text('KDW004_15') },
+                { className: 'nodata-img', legendCellChar: "本",labelText: text('KDW004_16') }
             ],
-            template: '<div class="#{className}"></div><div class="legend-item-label">#{labelText}</div>'
+            template: '<div class="#{className}">#{legendCellChar}</div><div class="legend-item-label">#{labelText}</div>'
+            //<div class="legend-cell #{legendCellClass}">#{legendCellChar}</div><div class="legend-explain">#{legendExplain}</div>
         };
 
         lstData: Array<any> = [];
