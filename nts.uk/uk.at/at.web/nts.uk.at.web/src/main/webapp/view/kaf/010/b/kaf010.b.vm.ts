@@ -472,9 +472,11 @@ module nts.uk.at.view.kaf010.b {
                     $("#inpEndTime1").trigger("validate");
                     if (!self.validate()) { return; }
                 }
-                if (!self.hasAppTimeBreakTimes()) {
-                    self.setErrorB6_8();
-                }      
+                if(self.enableOvertimeInput()){
+                    if (!self.hasAppTimeBreakTimes()) {
+                        self.setErrorB6_8();
+                    }      
+                }
                 //return if has error
                 if (nts.uk.ui.errors.hasError()){return;}   
                 nts.uk.ui.block.invisible();

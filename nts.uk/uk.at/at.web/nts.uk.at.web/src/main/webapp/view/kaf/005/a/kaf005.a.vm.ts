@@ -627,8 +627,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 $("#inpEndTime1").trigger("validate");
                 if(!self.validate()){return;}
             }
-            if (!self.hasAppTimeOvertimeHours()) {
-                self.setErrorA6_8();
+            if(self.enableOvertimeInput()){
+                if (!self.hasAppTimeOvertimeHours()) {
+                    self.setErrorA6_8();
+                }
             }
             //return if has error
             if (nts.uk.ui.errors.hasError()){return;}              
