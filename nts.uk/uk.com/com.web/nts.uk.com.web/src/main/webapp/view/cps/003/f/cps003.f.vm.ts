@@ -7,8 +7,22 @@ module cps003.f.vm {
     let __viewContext: any = window['__viewContext'] || {};
 
     export class ViewModel {
+        currentItem: ICurrentItem = {
+            id: ko.observable(''),
+            name: ko.observable('')
+        };
+        dataSources: KnockoutObservableArray<any> = ko.observableArray([]);
+
         constructor() {
-            let self = this;
+            let self = this,
+                data: IModelDto = getShared('CPS003F_PARAM') || { id: '' };
+
+            // sample data
+            if (data.id) {
+                service.fetch.setting(data.id).done(resp => {
+                    self.dataSources(_.orderBy(resp.perInfoData, ['dispOrder', 'itemCD']).map(m => ({ id: m.perInfoItemDefID, name: m.itemName })));
+                });
+            }
         }
 
         pushData() {
@@ -23,6 +37,20 @@ module cps003.f.vm {
         }
     }
 
+    export class HtmlElement {
+        element = document.createElement('div');
+        toString() {
+            return this.element;
+        }
+    }
+
+    interface ICurrentItem {
+        id: KnockoutObservable<string>;
+        name: KnockoutObservable<string>;
+        // and more prop
+    }
+
     interface IModelDto {
+        id: string;
     }
 }

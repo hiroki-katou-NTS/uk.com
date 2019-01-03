@@ -220,7 +220,22 @@ module cps003.a.vm {
             });
 
             modal("/view/cps/003/d/index.xhtml").onClosed(() => {
-               console.log(getShared('CPS003D_VALUE'));    
+                console.log(getShared('CPS003D_VALUE'));
+            });
+        }
+
+        settingBatchs() {
+            let self = this,
+                id = self.category.catId(),
+                ctg = _.first(self.category.items(), m => m.id == id);
+
+            setShared('CPS003F_PARAM', {
+                id: id, // sample data
+                // push list ids of item show in grid
+            });
+
+            modal("/view/cps/003/f/index.xhtml").onClosed(() => {
+                console.log(getShared('CPS003F_VALUE'));
             });
         }
     }

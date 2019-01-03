@@ -6,7 +6,6 @@ module cps003.f.service {
     }
 
     export const fetch = {
-        person: (id: string) => ajax(`/ctx/person/${id}`),
-
+        setting: (cid: string) => ajax(`ctx/pereg/grid-layout/get-setting/${cid}`)
     }
 }
