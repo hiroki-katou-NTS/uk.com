@@ -56,19 +56,19 @@ public class SequenceMasterExportImpl implements MasterListData{
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 		
-		columns.add(new MasterHeaderColumn("コード", "コード", ColumnTextAlign.LEFT,
+		columns.add(new MasterHeaderColumn("コード", TextResource.localize("CMM013_10"), ColumnTextAlign.LEFT,
 				"", true));
-		columns.add(new MasterHeaderColumn("職歴開始日","職歴開始日", ColumnTextAlign.LEFT,
+		columns.add(new MasterHeaderColumn("職歴開始日", TextResource.localize("CMM013_63"), ColumnTextAlign.LEFT,
 				"", true));
-		columns.add(new MasterHeaderColumn("職歴終了", "職歴終了", ColumnTextAlign.LEFT,
+		columns.add(new MasterHeaderColumn("職歴終了", TextResource.localize("CMM013_64"), ColumnTextAlign.LEFT,
 				"", true));
-		columns.add(new MasterHeaderColumn("名称", "名称", ColumnTextAlign.LEFT,
+		columns.add(new MasterHeaderColumn("名称", TextResource.localize("CMM013_12"), ColumnTextAlign.LEFT,
 				"", true));
-		columns.add(new MasterHeaderColumn("36協定対象外","36協定対象外", ColumnTextAlign.LEFT,
+		columns.add(new MasterHeaderColumn("36協定対象外", TextResource.localize("CMM013_52"), ColumnTextAlign.LEFT,
 				"", true));
-		columns.add(new MasterHeaderColumn("序列コード", "序列コード", ColumnTextAlign.LEFT,
+		columns.add(new MasterHeaderColumn("序列コード", TextResource.localize("CMM013_14")+" "+TextResource.localize("CMM013_23"), ColumnTextAlign.LEFT,
 				"", true));
-		columns.add(new MasterHeaderColumn("序列名", "序列名", ColumnTextAlign.LEFT,
+		columns.add(new MasterHeaderColumn("序列名", TextResource.localize("CMM013_14")+" "+TextResource.localize("CMM013_24"), ColumnTextAlign.LEFT,
 				"", true));
 		
 		return columns;
@@ -91,7 +91,7 @@ public class SequenceMasterExportImpl implements MasterListData{
 		if(CollectionUtil.isEmpty(listSequenceMaster)){
 			return null;
 		}else{
-			listSequenceMaster.stream().forEach(c ->{
+			listSequenceMaster.stream().sorted(Comparator.comparing(SequenceMaster::getSequenceCode)).forEach(c ->{
 				Map<String, Object> data = new HashMap<>();
 				putEmptyDataTwo(data);
 				data.put("コード", c.getSequenceCode());
@@ -195,91 +195,7 @@ public class SequenceMasterExportImpl implements MasterListData{
 			});
 			
 		}
-		
-				
 
-//		if(CollectionUtil.isEmpty(listFindAll)){
-//			return null;
-//		}else{
-//			listFindAll.stream().forEach(c ->{
-//				Map<String, Object> data = new HashMap<>();
-//				putEmptyDataOne(data);
-//				
-//				
-//				data.put("コード", c.getJobTitleCode());
-//				
-//				
-//				
-//				Optional<JobTitle> findByJobTitleId = jobTitleRepository.findByJobTitleId(companyId, c.getJobTitleId());
-//				
-//				
-//				List<JobTitleHistory> jobTitleHistories = findByJobTitleId.get().getJobTitleHistories();
-//				
-//				if(CollectionUtil.isEmpty(jobTitleHistories)){
-//					datas.add(new MasterData(data, null, ""));
-//				}else{
-//					
-//					for(int i=0; i<jobTitleHistories.size();i++){
-//						
-//						if(i==0){
-//							data.put("コード", c.getJobTitleCode());
-//							data.put("職歴開始日", jobTitleHistories.get(i).span().start());
-//							data.put("職歴終了", jobTitleHistories.get(i).end());
-//							
-//							Optional<JobTitleInfo> findJobTitleInfo  = jobTitleInfoRepository.find(companyId, c.getJobTitleId(),jobTitleHistories.get(i).identifier());
-//							data.put("名称", findJobTitleInfo.get().getJobTitleName());
-//							if(findJobTitleInfo.get().isManager()==false){
-//								data.put("36協定対象外","-");
-//							}else{
-//								data.put("36協定対象外","〇");
-//							}
-//							data.put("序列コード", findJobTitleInfo.get().getSequenceCode());
-//
-//							if(findJobTitleInfo.get().getSequenceCode() == null){
-//								data.put("序列名", "");
-//							}else{
-//								Optional<SequenceMaster> opSequenceMaster = sequenceMasterRepository.findBySequenceCode(companyId,findJobTitleInfo.get().getSequenceCode().toString());
-//								data.put("序列名", opSequenceMaster.get().getSequenceName());
-//							}
-//							
-//							
-//						}else{
-//							data.put("コード", "");
-//							data.put("職歴開始日", jobTitleHistories.get(i).span().start());
-//							data.put("職歴終了", jobTitleHistories.get(i).end());
-//							Optional<JobTitleInfo> findJobTitleInfo  = jobTitleInfoRepository.find(companyId, c.getJobTitleId(),jobTitleHistories.get(i).identifier());
-//							data.put("名称", findJobTitleInfo.get().getJobTitleName());
-//							if(findJobTitleInfo.get().isManager()==false){
-//								data.put("36協定対象外","-");
-//							}else{
-//								data.put("36協定対象外","〇");
-//							}
-//							data.put("序列コード", findJobTitleInfo.get().getSequenceCode());
-//							if(findJobTitleInfo.get().getSequenceCode() == null){
-//								data.put("序列名", "");
-//							}else{
-//								Optional<SequenceMaster> opSequenceMaster = sequenceMasterRepository.findBySequenceCode(companyId,findJobTitleInfo.get().getSequenceCode().toString());
-//								data.put("序列名", opSequenceMaster.get().getSequenceName());
-//							}
-//							
-//						}
-//						MasterData masterData = new MasterData(data, null, "");
-//						masterData.cellAt("コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-//						masterData.cellAt("職歴開始日").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
-//						masterData.cellAt("職歴終了").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
-//						masterData.cellAt("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-//						masterData.cellAt("36協定対象外").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-//						masterData.cellAt("序列コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-//						masterData.cellAt("序列名").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-//						
-//						datas.add(masterData);
-//					}
-//					
-//				}
-//
-//				
-//			});
-//		}
 		return datas;
 	}
 
