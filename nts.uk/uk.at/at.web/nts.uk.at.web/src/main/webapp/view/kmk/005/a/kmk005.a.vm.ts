@@ -32,7 +32,14 @@ module nts.uk.at.view.kmk005.a {
                     nts.uk.ui.block.clear();
                 });
             }
-            
+            hasPermission(): boolean {
+                if (__viewContext.user.role.attendance == "null" && __viewContext.user.role.payroll == "null"
+                    && __viewContext.user.role.personnel == "null"  && __viewContext.user.role.officeHelper == "null"){
+                    return false;
+                }
+                
+                return true;
+            }
             openTimeItem(): void  {
                 nts.uk.ui.windows.sub.modal("/view/kmk/005/b/index.xhtml", {title: "加給項目の設定"});
             }

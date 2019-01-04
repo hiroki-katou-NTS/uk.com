@@ -75,7 +75,7 @@ module nts.uk.com.view.cps009.a.service {
     
     export function saveAsExcel(): JQueryPromise<any> {
         let _params = {domainId: "PerInfoInit", 
-                        domainType: "CPS009個人情報アクセス権限の設定", 
+                        domainType: "CPS009個人情報の初期値登録", 
                         languageId: "ja", reportType: 0};
         return nts.uk.request.exportFile('/masterlist/report/print', _params);
     }

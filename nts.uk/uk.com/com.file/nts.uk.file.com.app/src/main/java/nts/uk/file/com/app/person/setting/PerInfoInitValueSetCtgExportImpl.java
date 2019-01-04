@@ -28,16 +28,16 @@ public class PerInfoInitValueSetCtgExportImpl implements MasterListData {
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 		columns.add(
-				new MasterHeaderColumn(PerInfoInitValueSetCtgUtils.CPS009_77, TextResource.localize("CPS009_77"), ColumnTextAlign.LEFT, "", true));
+				new MasterHeaderColumn(PerInfoInitValueSetCtgUtils.CPS009_41, TextResource.localize("CPS009_41"), ColumnTextAlign.LEFT, "", true));
 		columns.add(
-				new MasterHeaderColumn(PerInfoInitValueSetCtgUtils.CPS009_78, TextResource.localize("CPS009_78"), ColumnTextAlign.LEFT, "", true));
+				new MasterHeaderColumn(PerInfoInitValueSetCtgUtils.CPS009_42, TextResource.localize("CPS009_42"), ColumnTextAlign.LEFT, "", true));
 		columns.add(
-				new MasterHeaderColumn(PerInfoInitValueSetCtgUtils.CPS009_79, TextResource.localize("CPS009_79"), ColumnTextAlign.LEFT, "", true));
+				new MasterHeaderColumn(PerInfoInitValueSetCtgUtils.CPS009_43, TextResource.localize("CPS009_43"), ColumnTextAlign.LEFT, "", true));
 		columns.add(
-				new MasterHeaderColumn(PerInfoInitValueSetCtgUtils.CPS009_81, TextResource.localize("CPS009_81"), ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(PerInfoInitValueSetCtgUtils.CPS009_82, TextResource.localize("CPS009_82"), ColumnTextAlign.LEFT, "",
+				new MasterHeaderColumn(PerInfoInitValueSetCtgUtils.CPS009_44, TextResource.localize("CPS009_44"), ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(PerInfoInitValueSetCtgUtils.CPS009_45, TextResource.localize("CPS009_45"), ColumnTextAlign.LEFT, "",
 				true));
-		columns.add(new MasterHeaderColumn(PerInfoInitValueSetCtgUtils.CPS009_89, TextResource.localize("CPS009_89"), ColumnTextAlign.LEFT, "",
+		columns.add(new MasterHeaderColumn(PerInfoInitValueSetCtgUtils.CPS009_46, TextResource.localize("CPS009_46"), ColumnTextAlign.LEFT, "",
 				true));
 		return columns;
 	}

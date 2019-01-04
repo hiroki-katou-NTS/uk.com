@@ -36,8 +36,10 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("	ELSE ");
 	     exportSQL.append("			IIF((TABLE_RESULT.MASTER_VALUE IS NOT NULL AND RTRIM(TABLE_RESULT.MASTER_VALUE) <> '') OR TABLE_RESULT.EnumName IS NOT NULL,");
 	     exportSQL.append("					CONCAT(TABLE_RESULT.MASTER_VALUE,TABLE_RESULT.EnumName), ");
-	     exportSQL.append("					IIF(TABLE_RESULT.STRING_VAL IS NOT NULL AND RTRIM(TABLE_RESULT.STRING_VAL) <> '', ");
-	     exportSQL.append("						IIF(TABLE_RESULT.SELECTION_ITEM_REF_CODE <> 'M00002' AND TABLE_RESULT.SELECTION_ITEM_REF_CODE <> 'M00005',");
+	     exportSQL.append("					IIF(TABLE_RESULT.REF_METHOD_ATR_VAL = 2, ");
+	     exportSQL.append("						IIF(TABLE_RESULT.SELECTION_ITEM_REF_CODE <> 'M00002' AND TABLE_RESULT.SELECTION_ITEM_REF_CODE <> 'M00005' ");
+	     exportSQL.append("						AND TABLE_RESULT.SELECTION_ITEM_REF_CODE <> 'M00006' AND TABLE_RESULT.SELECTION_ITEM_REF_CODE <> 'M00016'");
+	     exportSQL.append("						AND TABLE_RESULT.SELECTION_ITEM_REF_CODE <> 'M00017' AND TABLE_RESULT.SELECTION_ITEM_REF_TYPE <> 2,");
 	     exportSQL.append(" 						CONCAT(TABLE_RESULT.STRING_VAL, ?MasterUnregisted), ?MasterUnregisted), NULL))");
 	     exportSQL.append(" END C_Value,");
 	     exportSQL.append(" TABLE_RESULT.Align");
@@ -47,6 +49,8 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("  item.ITEM_CD, item.ITEM_NAME,");
 	     exportSQL.append("  itemcm.SELECTION_ITEM_REF_CODE, ");
 	     exportSQL.append("  itemcm.DATA_TYPE,");
+	     exportSQL.append("  initsetitem.REF_METHOD_ATR as REF_METHOD_ATR_VAL,");
+	     exportSQL.append("  itemcm.SELECTION_ITEM_REF_TYPE,");
 	     exportSQL.append("  CASE initsetitem.REF_METHOD_ATR");
 	     exportSQL.append("    WHEN 1 THEN ?Enum_ReferenceMethodType_NOSETTING");
 	     exportSQL.append("    WHEN 2 THEN ?Enum_ReferenceMethodType_FIXEDVALUE");
@@ -70,8 +74,8 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("  CONCAT(RTRIM(job.JOB_CD),IIF (job.END_DATE >= '9999-12-31', job.JOB_NAME, ");
 	     exportSQL.append("      IIF (job.JOB_CD IS NOT NULL,?MasterUnregisted, NULL))),");
 	     // TempAbsence
-		 exportSQL.append("CONCAT(RTRIM(temp.TEMP_ABSENCE_FR_NO), IIF (temp.USE_ATR = 1 ,temp.TEMP_ABSENCE_FR_NAME, ");
-		 exportSQL.append("			IIF(temp.TEMP_ABSENCE_FR_NO IS NOT NULL,?MasterUnregisted,NULL))),");
+		 exportSQL.append("IIF (temp.USE_ATR = 1 ,temp.TEMP_ABSENCE_FR_NAME,  ");
+		 exportSQL.append("			IIF(temp.TEMP_ABSENCE_FR_NO IS NOT NULL,'MasterUnregisted',NULL)) ,");
 		 // BussType
 	     exportSQL.append("  CONCAT(RTRIM(busstype.BUSINESS_TYPE_CD),busstype.BUSINESS_TYPE_NAME),");
 	     // WorkType
@@ -105,9 +109,9 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     // BOnus pay
 	     exportSQL.append("  CONCAT(RTRIM(bonuspay.BONUS_PAY_SET_CD),bonuspay.BONUS_PAY_SET_NAME),");
 	     // Special holiday table set
-	     exportSQL.append("  CONCAT(RTRIM(hdtblset.YEAR_HD_CD),hdtblset.YEAR_HD_NAME),");
+	     exportSQL.append("  hdtblset.YEAR_HD_NAME,");
 	     // Grant day table code
-	     exportSQL.append("  CONCAT(RTRIM(dateset.GD_TBL_CD),dateset.GRANT_NAME),");
+	     exportSQL.append("  dateset.GRANT_NAME,");
 	     //  -- Selection
 	     exportSQL.append("  CONCAT(RTRIM(selection.SELECTION_CD), selection.SELECTION_NAME)) MASTER_VALUE,");
 	     //  -- Code name
@@ -247,26 +251,35 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("    WHEN initsetitem.INT_VAL <0 THEN");
 	     exportSQL.append("     CONCAT('前日',CONVERT(VARCHAR,ABS(CONVERT(INT,initsetitem.INT_VAL))/60),':',");
 	     exportSQL.append("         RIGHT('0'+CONVERT(VARCHAR,ABS(CONVERT(INT,initsetitem.INT_VAL))%60),2))");
-	     exportSQL.append("    WHEN initsetitem.INT_VAL > 28880 THEN");
-	     exportSQL.append("     CONCAT('翌々日',CONVERT(VARCHAR,CONVERT(INT,(initsetitem.INT_VAL-28880))/60),':',");
-	     exportSQL.append("         RIGHT('0'+CONVERT(VARCHAR,CONVERT(INT,(initsetitem.INT_VAL-28880))%60),2))");
-	     exportSQL.append("    WHEN initsetitem.INT_VAL > 1440 THEN");
+	     exportSQL.append("    WHEN initsetitem.INT_VAL >= 2880 THEN");
+	     exportSQL.append("     CONCAT('翌々日',CONVERT(VARCHAR,CONVERT(INT,(initsetitem.INT_VAL-2880))/60),':',");
+	     exportSQL.append("         RIGHT('0'+CONVERT(VARCHAR,CONVERT(INT,(initsetitem.INT_VAL-2880))%60),2))");
+	     exportSQL.append("    WHEN initsetitem.INT_VAL >= 1440 THEN");
 	     exportSQL.append("     CONCAT('翌日',CONVERT(VARCHAR,CONVERT(INT,(initsetitem.INT_VAL-1440))/60),':',");
 	     exportSQL.append("         RIGHT('0'+CONVERT(VARCHAR,CONVERT(INT,(initsetitem.INT_VAL-1440))%60),2))");
 	     exportSQL.append("    ELSE ");
 	     exportSQL.append("     CONCAT('当日',CONVERT(VARCHAR,CONVERT(INT,initsetitem.INT_VAL)/60),':',");
 	     exportSQL.append("         RIGHT('0'+CONVERT(VARCHAR,CONVERT(INT,initsetitem.INT_VAL)%60),2))");
 	     exportSQL.append("    END");
-	     exportSQL.append("   ELSE CAST(initsetitem.INT_VAL as NVARCHAR)");
+	     exportSQL.append("   ELSE CAST(format(convert(decimal(30,8),initsetitem.INT_VAL),'0.#########') as NVARCHAR)");
 	     exportSQL.append("  END INT_VALUE,");
 	     exportSQL.append(" initsetitem.STRING_VAL,");
-	     exportSQL.append("  convert(varchar, initsetitem.DATE_VAL, 111) DATE_VAL, ");
+	     exportSQL.append("CASE itemcm.DATE_ITEM_TYPE");
+	     exportSQL.append("	WHEN 1 THEN");
+		 exportSQL.append(" 	convert(varchar, initsetitem.DATE_VAL, 111) ");
+		 exportSQL.append("	WHEN 2 THEN");
+		 exportSQL.append("		LEFT(convert(varchar, initsetitem.DATE_VAL, 111),7) ");
+		 exportSQL.append("	WHEN 3 THEN");
+		 exportSQL.append("		CONCAT(LEFT(convert(varchar, initsetitem.DATE_VAL, 111),4),'年') ");
+		 exportSQL.append("	ELSE NULL");
+		 exportSQL.append("	END DATE_VAL, ");
 	     exportSQL.append("  CASE ");
 	     exportSQL.append("   WHEN initsetitem.SAVE_DATA_TYPE = '1' THEN 7 ");
 	     exportSQL.append("   WHEN initsetitem.SAVE_DATA_TYPE IN ('2','3') THEN 8");
 	     exportSQL.append("   ELSE 7");
 	     exportSQL.append("  END Align,");
-	     exportSQL.append("  ROW_NUMBER() OVER (PARTITION BY initset.PER_INIT_SET_ID ORDER BY initset.PER_INIT_SET_CD) AS ROW_NUMBER,");
+	     exportSQL.append("  ROW_NUMBER() OVER (PARTITION BY initset.PER_INIT_SET_ID ORDER BY initset.PER_INIT_SET_CD, ");
+	     exportSQL.append("             ctgorder.DISPORDER, itemorder.DISPLAY_ORDER) AS ROW_NUMBER,");
 	     exportSQL.append("  ROW_NUMBER() OVER (PARTITION BY initset.PER_INIT_SET_ID, ctg.PER_INFO_CTG_ID ORDER BY initset.PER_INIT_SET_CD, ");
 	     exportSQL.append("             ctgorder.DISPORDER, itemorder.DISPLAY_ORDER) AS ROW_NUMBER2,");
 	     exportSQL.append("  ROW_NUMBER() OVER (ORDER BY initset.PER_INIT_SET_CD, ctgorder.DISPORDER, itemorder.DISPLAY_ORDER) AS ROW_INDEX");
@@ -293,6 +306,7 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("       AND item.PER_INFO_CTG_ID = itemorder.PER_INFO_CTG_ID");
 	     exportSQL.append("  LEFT JOIN PPEMT_PER_INIT_SET_ITEM initsetitem ON initset.PER_INIT_SET_ID = initsetitem.PER_INIT_SET_ID");
 	     exportSQL.append("       AND initsetitem.PER_INFO_ITEM_DEF_ID = item.PER_INFO_ITEM_DEFINITION_ID");
+	     exportSQL.append("		  AND initsetitem.PER_INFO_CTG_ID = item.PER_INFO_CTG_ID");
 	     // -- DESIGNATED_MASTER");
 	     exportSQL.append("  LEFT JOIN (SELECT wkpt.WKPCD, wkpt.WKP_NAME, wkpt.CID, wkpt.WKPID, wkphist.END_DATE FROM BSYMT_WORKPLACE_INFO wkpt ");
 	     exportSQL.append("       INNER JOIN BSYMT_WORKPLACE_HIST wkphist ON wkpt.CID = wkphist.CID AND wkpt.HIST_ID = wkphist.HIST_ID ");
@@ -378,6 +392,7 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("       AND itemcm.SELECTION_ITEM_REF_CODE = 'M00017' AND ctg.CATEGORY_CD = 'CS00058' AND dateset19.SPHD_CD = 20");
 	     //  -- CODE_NAME");
 	     exportSQL.append("  LEFT JOIN PPEMT_SELECTION selection ON initsetitem.STRING_VAL = selection.SELECTION_ID");
+	     exportSQL.append("  AND itemcm.SELECTION_ITEM_REF_TYPE = 2"); 
 	     exportSQL.append("  WHERE initset.CID = ?CID ");
 	     exportSQL.append(" ) TABLE_RESULT");
 	     exportSQL.append(" ORDER BY TABLE_RESULT.ROW_INDEX");
@@ -479,7 +494,7 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 				.setParameter("personnelUseAtr", personnel)
 				.setParameter("employmentUseAtr", atttendance)
 				.setParameter("CID", AppContexts.user().companyId())
-				.setParameter("MasterUnregisted", PerInfoInitValueSetCtgUtils.MasterUnregisted)
+				.setParameter("MasterUnregisted",I18NText.getText(PerInfoInitValueSetCtgUtils.MasterUnregisted))
 				.setParameter("CONTRACT_CD", AppContexts.user().contractCode());
 
 		@SuppressWarnings("unchecked")
@@ -493,33 +508,33 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 
 	private MasterData toMasterDate(Object[] obj){
 		Map<String, MasterCellData> data = new HashMap<>();
-		data.put(PerInfoInitValueSetCtgUtils.CPS009_77, MasterCellData.builder()
-                .columnId(PerInfoInitValueSetCtgUtils.CPS009_77)
+		data.put(PerInfoInitValueSetCtgUtils.CPS009_41, MasterCellData.builder()
+                .columnId(PerInfoInitValueSetCtgUtils.CPS009_41)
                 .value((String) obj[0])
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-		data.put(PerInfoInitValueSetCtgUtils.CPS009_78, MasterCellData.builder()
-                .columnId(PerInfoInitValueSetCtgUtils.CPS009_78)
+		data.put(PerInfoInitValueSetCtgUtils.CPS009_42, MasterCellData.builder()
+                .columnId(PerInfoInitValueSetCtgUtils.CPS009_42)
                 .value((String) obj[1])
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-		data.put(PerInfoInitValueSetCtgUtils.CPS009_79, MasterCellData.builder()
-                .columnId(PerInfoInitValueSetCtgUtils.CPS009_79)
+		data.put(PerInfoInitValueSetCtgUtils.CPS009_43, MasterCellData.builder()
+                .columnId(PerInfoInitValueSetCtgUtils.CPS009_43)
                 .value((String) obj[2])
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-		data.put(PerInfoInitValueSetCtgUtils.CPS009_81, MasterCellData.builder()
-                .columnId(PerInfoInitValueSetCtgUtils.CPS009_81)
+		data.put(PerInfoInitValueSetCtgUtils.CPS009_44, MasterCellData.builder()
+                .columnId(PerInfoInitValueSetCtgUtils.CPS009_44)
                 .value((String) obj[3])
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-		data.put(PerInfoInitValueSetCtgUtils.CPS009_82, MasterCellData.builder()
-                .columnId(PerInfoInitValueSetCtgUtils.CPS009_82)
+		data.put(PerInfoInitValueSetCtgUtils.CPS009_45, MasterCellData.builder()
+                .columnId(PerInfoInitValueSetCtgUtils.CPS009_45)
                 .value((String) obj[4])
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
-		data.put(PerInfoInitValueSetCtgUtils.CPS009_89, MasterCellData.builder()
-                .columnId(PerInfoInitValueSetCtgUtils.CPS009_89)
+		data.put(PerInfoInitValueSetCtgUtils.CPS009_46, MasterCellData.builder()
+                .columnId(PerInfoInitValueSetCtgUtils.CPS009_46)
                 .value((String) obj[5])
                 .style(MasterCellStyle.build().horizontalAlign(EnumAdaptor.valueOf(Integer.valueOf(obj[6].toString()), ColumnTextAlign.class)))
                 .build());
