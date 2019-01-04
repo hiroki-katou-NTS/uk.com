@@ -13,11 +13,7 @@ public interface StateCorreHisSalaRepository {
 
     Optional<StateCorreHisSala> getStateCorrelationHisSalaryByCid(String cid);
 
-    Optional<StateCorreHisSala> getStateCorrelationHisSalaryByKey(String cid, String hisId);
-
     List<StateLinkSetMaster> getStateLinkSettingMasterByHisId(String cId, String hisId);
-
-    Optional<StateLinkSetMaster> getStateLinkSettingMasterById(String cid, String hisId, String masterCode);
 
     List<StateLinkSetMaster> getStateLinkSetMaster(String cid, GeneralDate date);
 

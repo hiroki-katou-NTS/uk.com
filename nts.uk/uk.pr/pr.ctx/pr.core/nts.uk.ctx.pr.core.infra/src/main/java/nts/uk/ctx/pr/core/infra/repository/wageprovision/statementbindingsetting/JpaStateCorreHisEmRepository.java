@@ -22,21 +22,11 @@ import java.util.stream.Collectors;
 public class JpaStateCorreHisEmRepository extends JpaRepository implements StateCorreHisEmRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateCorHisEmp f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisEmpPk.cid =:cid AND  f.stateCorHisEmpPk.hisId =:hisId ";
     private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisEmpPk.cid =:cid ORDER BY f.endYearMonth DESC";
     private static final String SELECT_BY_HISID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisEmpPk.cid =:cid AND f.stateCorHisEmpPk.hisId =:hisId";
-    private static final String SELECT_BY_CID_HISID_MASTERCODE = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisEmpPk.cid =:cid AND f.stateCorHisEmpPk.hisId =:hisId AND f.stateCorHisEmpPk.masterCode";
     private static final String REMOVE_BY_HISID = "DELETE FROM QpbmtStateCorHisEmp f WHERE f.stateCorHisEmpPk.cid =:cid AND f.stateCorHisEmpPk.hisId =:hisId";
     private static final String UPDATE_BY_HISID = "UPDATE  QpbmtStateCorHisEmp f SET f.startYearMonth = :startYearMonth, f.endYearMonth = :endYearMonth WHERE f.stateCorHisEmpPk.cid =:cid AND f.stateCorHisEmpPk.hisId =:hisId";
     private static final String SELECT_BY_CID_DATE = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisEmpPk.cid =:cid AND f.startYearMonth <= :date AND f.endYearMonth >= :date ";
-    @Override
-    public Optional<StateCorreHisEm> getStateCorrelationHisEmployeeById(String cid, String hisId){
-        List<QpbmtStateCorHisEmp> listStateCorHisEmp = this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtStateCorHisEmp.class)
-                .setParameter("cid", cid)
-                .setParameter("hisId", hisId)
-                .getList();
-        return this.toDomain(listStateCorHisEmp);
-    }
 
     @Override
     public Optional<StateCorreHisEm> getStateCorrelationHisEmployeeById(String cid) {
@@ -56,22 +46,6 @@ public class JpaStateCorreHisEmRepository extends JpaRepository implements State
                 .setParameter("cid",cId)
                 .setParameter("hisId", hisId)
                 .getList(item -> item.toDomain());
-    }
-
-    @Override
-    public Optional<StateLinkSetMaster> getStateLinkSettingMasterById(String cid, String hisId, String masterCode) {
-        Optional<QpbmtStateCorHisEmp> listStateCorHisEmp = this.queryProxy().query(SELECT_BY_CID_HISID_MASTERCODE, QpbmtStateCorHisEmp.class)
-                .setParameter("cid",cid)
-                .setParameter("hisId", hisId)
-                .setParameter("masterCode",masterCode)
-                .getSingle();
-
-        if(!listStateCorHisEmp.isPresent()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(listStateCorHisEmp.get().toDomain());
-
     }
 
     @Override

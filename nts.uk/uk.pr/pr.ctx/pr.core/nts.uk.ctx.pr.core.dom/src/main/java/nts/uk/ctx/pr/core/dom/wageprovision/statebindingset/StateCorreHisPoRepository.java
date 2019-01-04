@@ -11,13 +11,9 @@ import java.util.Optional;
 */
 public interface StateCorreHisPoRepository {
 
-    Optional<StateCorreHisPo> getStateCorrelationHisPositionById(String cid, String hisId);
-
     Optional<StateCorreHisPo> getStateCorrelationHisPositionByCid(String cId);
 
     List<StateLinkSetMaster> getStateLinkSettingMasterByHisId(String cId, String hisId);
-
-    Optional<StateLinkSetMaster> getStateLinkSettingMasterById(String cid, String hisId, String masterCode);
 
     Optional<StateLinkSetDate> getStateLinkSettingDateById(String cId, String hisId);
 

@@ -11,13 +11,9 @@ import java.util.Optional;
 */
 public interface StateCorreHisClsRepository {
 
-    Optional<StateCorreHisCls> getStateCorrelationHisClassificationById(String cid, String hisId);
-
     Optional<StateCorreHisCls> getStateCorrelationHisClassificationByCid(String cid);
 
     List<StateLinkSetMaster> getStateLinkSettingMasterByHisId(String cid, String hisId);
-
-    Optional<StateLinkSetMaster> getStateLinkSettingMasterById(String cid, String hisId, String masterCode);
 
     List<StateLinkSetMaster> getStateLinkSetMaster(String cid, GeneralDate date);
 

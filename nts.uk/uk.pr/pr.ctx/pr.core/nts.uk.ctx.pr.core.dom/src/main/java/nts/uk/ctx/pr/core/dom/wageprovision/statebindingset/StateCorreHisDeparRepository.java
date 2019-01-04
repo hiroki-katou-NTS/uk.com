@@ -13,11 +13,7 @@ public interface StateCorreHisDeparRepository {
 
     Optional<StateCorreHisDepar> getStateCorrelationHisDeparmentById(String cid);
 
-    Optional<StateCorreHisDepar> getStateCorrelationHisDeparmentByDate(String cid, GeneralDate baseDate);
-
     Optional<StateLinkSetDate> getStateLinkSettingDateById(String cId, String hisId);
-
-    Optional<StateLinkSetMaster> getStateLinkSettingMasterById(String cid, String hisId, String masterCode);
 
     List<StateLinkSetMaster> getStateLinkSetMaster(String cid, GeneralDate date);
 

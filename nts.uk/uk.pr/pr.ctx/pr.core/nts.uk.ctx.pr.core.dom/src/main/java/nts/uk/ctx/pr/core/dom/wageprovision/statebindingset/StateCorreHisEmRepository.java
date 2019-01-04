@@ -12,13 +12,9 @@ import java.util.Optional;
 */
 public interface StateCorreHisEmRepository {
 
-    Optional<StateCorreHisEm> getStateCorrelationHisEmployeeById(String cid, String hisId);
-
     Optional<StateCorreHisEm> getStateCorrelationHisEmployeeById(String cid);
 
     List<StateLinkSetMaster> getStateLinkSettingMasterByHisId(String cid, String hisId);
-
-    Optional<StateLinkSetMaster> getStateLinkSettingMasterById(String cid, String hisId, String masterCode);
 
     List<StateLinkSetMaster> getStateLinkSetMaster(String cid, GeneralDate date);
 
