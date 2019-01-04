@@ -46,7 +46,8 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             "   FROM KBPST_BP_TIME_ITEM t1  " +
             "   WHERE CID = ? AND TYPE_ATR = 1 " +
             "   )  tb2  " +
-            " ON tb1.TIME_ITEM_NO = tb2.TIME_ITEM_NO ";
+            " ON tb1.TIME_ITEM_NO = tb2.TIME_ITEM_NO " +
+            " ORDER BY tb1.TIME_ITEM_NO ";
 
     private static final String SQLAutoCalSetting = "SELECT " +
             "   tb1.TIME_ITEM_NAME, " +
