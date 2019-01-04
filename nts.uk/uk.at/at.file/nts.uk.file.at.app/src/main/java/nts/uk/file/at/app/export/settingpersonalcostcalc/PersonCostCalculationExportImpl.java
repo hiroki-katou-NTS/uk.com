@@ -95,6 +95,11 @@ public class PersonCostCalculationExportImpl implements  MasterListData {
 								Map<String, MasterCellData> rowData = masterData.getRowData();
 								rowData.get("有効開始日").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
 								rowData.get("終了日").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+								rowData.get("人件費を計算する際に使用する単価").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+								rowData.get("備考").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+								rowData.get("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+								rowData.get("割増率").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+								rowData.get("人件費計算用時間").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 								datas.add(masterData);
 							}
 							
