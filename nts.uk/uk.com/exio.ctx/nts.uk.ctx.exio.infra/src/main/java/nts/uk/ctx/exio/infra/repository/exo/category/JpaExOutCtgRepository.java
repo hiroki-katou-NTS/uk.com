@@ -81,11 +81,15 @@ public class JpaExOutCtgRepository extends JpaRepository implements ExOutCtgRepo
 		String sql = sqlAndParams.get(SQL);
 		sqlAndParams.remove(SQL);
 		// fixbug 102764
-		Query queryString = getEntityManager().createNativeQuery(sql.replaceAll("@", "?"));
 		for (Entry<String, String> entry : sqlAndParams.entrySet()) {
-			queryString.setParameter(entry.getKey(), entry.getValue());
+			sql = sql.replace("@" + entry.getKey(),"'"+ entry.getValue()+"'");
+			sql = sql.replace("?" + entry.getKey(),"'"+ entry.getValue()+"'");
 		}
-		
+		Query queryString = getEntityManager().createNativeQuery(sql);
+//		for (Entry<String, String> entry : sqlAndParams.entrySet()) {
+//			queryString.setParameter(entry.getKey(), "'"+entry.getValue() +"'");
+//		}
+//		
 		List<Object> data = queryString.getResultList();
 		//List<Object[]> listTemp = (List<Object[]>) queryString.getResultList();
 		
