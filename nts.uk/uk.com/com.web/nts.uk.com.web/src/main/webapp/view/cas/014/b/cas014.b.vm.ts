@@ -8,9 +8,12 @@ module nts.uk.com.view.cas014.b {
     import getShared = nts.uk.ui.windows.getShared;
     import textUK = nts.uk.text;
     import block = nts.uk.ui.block;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     export module viewmodel {
         export class ScreenModel {
-
+            
+            langId: KnockoutObservable<string> = ko.observable('ja');
             roleSetList: KnockoutObservableArray<RoleSet>;
             roleSetPersonList: KnockoutObservableArray<RoleSetPerson>;
             dateValue: KnockoutObservable<any>
@@ -250,8 +253,26 @@ module nts.uk.com.view.cas014.b {
             
             saveAsExcel(): void {
                 let self = this;
-     
-                modal("/view/cas/014/m/index.xhtml").onClosed(function() {
+                let params = {
+                    date: null,
+                    mode: 1
+                };
+                if (!nts.uk.ui.windows.getShared("CDL028_INPUT")) {
+                    nts.uk.ui.windows.setShared("CDL028_INPUT", params);
+                }
+                nts.uk.ui.windows.sub.modal("../../../../../nts.uk.com.web/view/cdl/028/a/index.xhtml").onClosed(function() {
+                    var result = getShared('CDL028_A_PARAMS');
+                    if (result.status) {
+                        nts.uk.ui.block.grayout();
+                        let langId = self.langId();
+                        let date = moment.utc(result.standardDate, "YYYY/MM/DD");
+                        service.saveAsExcel(langId, date).done(function() {
+                        }).fail(function(error) {
+                            nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                        }).always(function() {
+                            nts.uk.ui.block.clear();
+                        });
+                    }
                 });
             }
 

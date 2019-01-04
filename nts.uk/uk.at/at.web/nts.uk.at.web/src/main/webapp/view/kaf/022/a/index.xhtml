@@ -70,7 +70,6 @@
 				<com:ko-if bind="currentTab()==='a'">
 					<!-- A2_1 -->
 					<button class="proceed" data-bind="click: function(){$parent.viewmodelA.save($parent.viewmodelA);}">#{i18n.getText('KMF004_2')}</button>
-					<button tabindex="2" data-bind="click: function(){$parent.viewmodelA.exportExcel('PreparationBeforeApply','KAF022申請の前準備')}">#{i18n.getText('KAF022_650')}</button>
 				</com:ko-if>
 				<com:ko-if bind="currentTab()==='l'">
 					<div class="center-content-kaf022l">
@@ -94,6 +93,7 @@
 								data-bind="click: $vm.viewmodelM.remove.bind($vm.viewmodelM), enable: !!$vm.viewmodelM.copyAble()" >#{i18n.getText('KAF022_275')}</button>
 					</div>
 				</com:ko-if>
+				<button data-bind="click: function(){$parent.viewmodelA.exportExcel('PreparationBeforeApply','KAF022申請の前準備')}">#{i18n.getText('KAF022_650')}</button>
 			</div>
 			<div id="tabpanel-a" role="tabpanel" class="screen-a"
 				data-bind="with: viewmodelA">
