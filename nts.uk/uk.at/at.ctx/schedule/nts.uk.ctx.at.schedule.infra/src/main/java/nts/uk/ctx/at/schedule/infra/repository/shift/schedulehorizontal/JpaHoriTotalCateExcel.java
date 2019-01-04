@@ -22,7 +22,7 @@ public class JpaHoriTotalCateExcel extends JpaRepository implements HoriTotalCat
 				+ "(SELECT e.TOTAL_ITEM_NAME FROM KSCMT_TOTAL_EVAL_ITEM e 	"
 				+ "WHERE e.TOTAL_ITEM_NO = d.TOTAL_ITEM_NO and e.CID = ?companyId) "
 				+ "as itemName, g.TOTAL_TIMES_NAME as totalTimesName , h.YEAR_HD_ATR,h.HAVY_HD_ATR, h.SPHD_ATR, h.HALF_DAY_ATR as halfDay "
-				+ "FROM KSCMT_HORI_TOTAL_CATEGORY c "
+				+ " ,g.TOTAL_TIMES_NO as timesNo FROM KSCMT_HORI_TOTAL_CATEGORY c "
 				+ "JOIN KSCMT_TOTAL_EVAL_ORDER d on d.CID = ?companyId "
 				+ "and d.CATEGORY_CD = c.CATEGORY_CD LEFT JOIN KSCST_HORI_TOTAL_CNT_SET f "
 				+ "on  f.TOTAL_ITEM_NO = d.TOTAL_ITEM_NO and f.CID = ?companyId"
@@ -52,6 +52,10 @@ public class JpaHoriTotalCateExcel extends JpaRepository implements HoriTotalCat
 			String categoryMemo = (String) x[2];
 			
 			Integer itemNo = -1;
+			Integer timesNo = -1;
+			if(x[10]!=null){
+				timesNo = ((BigDecimal) x[10]).intValue();
+			}
 			if(x[3] !=null){
 				itemNo = ((BigDecimal) x[3]).intValue();
 			}
@@ -67,7 +71,7 @@ public class JpaHoriTotalCateExcel extends JpaRepository implements HoriTotalCat
 				if(newItemTotalExcel.getItemNo()==3){
 					newItemTotalExcel.setItemDaySets(genListItemDaySet(x[6],x[7],x[8],x[9]));
 				}
-				newItemTotalExcel.putItemTotalExcel(new ItemCNTSetExcel(totalTimeName));
+				newItemTotalExcel.putItemTotalExcel(new ItemCNTSetExcel(totalTimeName,String.valueOf(timesNo)));
 				horiTotalExel.putItemTotalExcel(newItemTotalExcel);
 				result.put(categoryCode, horiTotalExel);
 			} else {
@@ -77,11 +81,11 @@ public class JpaHoriTotalCateExcel extends JpaRepository implements HoriTotalCat
 					if(newItemTotalExcel.getItemNo()==3){
 						newItemTotalExcel.setItemDaySets(genListItemDaySet(x[6],x[7],x[8],x[9]));
 					}
-					newItemTotalExcel.putItemTotalExcel(new ItemCNTSetExcel(totalTimeName));
+					newItemTotalExcel.putItemTotalExcel(new ItemCNTSetExcel(totalTimeName,String.valueOf(timesNo)));
 					horiTotalExel.putItemTotalExcel(newItemTotalExcel);
 				}
 				else {
-					itemTotalExcel.get().putItemTotalExcel(new ItemCNTSetExcel(totalTimeName));
+					itemTotalExcel.get().putItemTotalExcel(new ItemCNTSetExcel(totalTimeName,String.valueOf(timesNo)));
 					if(itemTotalExcel.get().getItemNo()==3){
 						itemTotalExcel.get().setItemDaySets(genListItemDaySet(x[6],x[7],x[8],x[9]));
 					}
