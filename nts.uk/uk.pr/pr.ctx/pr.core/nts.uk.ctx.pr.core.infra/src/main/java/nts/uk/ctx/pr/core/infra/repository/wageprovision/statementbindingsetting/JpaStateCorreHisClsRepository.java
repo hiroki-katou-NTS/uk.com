@@ -4,6 +4,7 @@ package nts.uk.ctx.pr.core.infra.repository.wageprovision.statementbindingsettin
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisCls;
 import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisClsRepository;
@@ -21,19 +22,10 @@ public class JpaStateCorreHisClsRepository extends JpaRepository implements Stat
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateCorHisClass f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisClassPk.cid =:cid AND  f.stateCorHisClassPk.hisId =:hisId ";
-    private static final String SELECT_BY_CID_HISID_MASTERCODE = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisClassPk.cid =:cid AND  f.stateCorHisClassPk.hisId =:hisId AND f.stateCorHisClassPk.masterCode = :masterCode";
     private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisClassPk.cid =:cid ORDER BY f.startYearMonth";
     private static final String REMOVE_BY_HISID = "DELETE FROM QpbmtStateCorHisClass f WHERE f.stateCorHisClassPk.cid =:cid AND f.stateCorHisClassPk.hisId =:hisId";
     private static final String UPDATE_BY_HISID = "UPDATE  QpbmtStateCorHisClass f SET f.startYearMonth = :startYearMonth, f.endYearMonth = :endYearMonth WHERE f.stateCorHisClassPk.cid =:cid AND f.stateCorHisClassPk.hisId =:hisId";
-    
-    @Override
-    public Optional<StateCorreHisCls> getStateCorrelationHisClassificationById(String cid, String hisId){
-        List<QpbmtStateCorHisClass> listStateCorHisClass = this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtStateCorHisClass.class)
-                .setParameter("cid", cid)
-                .setParameter("hisId", hisId)
-                .getList();
-        return this.toDomain(listStateCorHisClass);
-    }
+    private static final String SELECT_BY_CID_DATE = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisClassPk.cid =:cid AND f.startYearMonth <= :date AND f.endYearMonth >= :date ";
 
     @Override
     public Optional<StateCorreHisCls> getStateCorrelationHisClassificationByCid(String cid){
@@ -57,18 +49,12 @@ public class JpaStateCorreHisClsRepository extends JpaRepository implements Stat
     }
 
     @Override
-    public Optional<StateLinkSetMaster> getStateLinkSettingMasterById(String cid, String hisId, String masterCode) {
-        Optional<QpbmtStateCorHisClass> listStateCorHisClass = this.queryProxy().query(SELECT_BY_CID_HISID_MASTERCODE, QpbmtStateCorHisClass.class)
-                .setParameter("cid",cid)
-                .setParameter("hisId", hisId)
-                .setParameter("masterCode",masterCode)
-                .getSingle();
-
-        if(!listStateCorHisClass.isPresent()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(listStateCorHisClass.get().toDomain());
+    public List<StateLinkSetMaster> getStateLinkSetMaster(String cid, GeneralDate date) {
+        List<QpbmtStateCorHisClass> entitys = this.queryProxy().query(SELECT_BY_CID_DATE, QpbmtStateCorHisClass.class)
+                .setParameter("cid", cid)
+                .setParameter("date", date)
+                .getList();
+        return QpbmtStateCorHisClass.toDomainSetting(entitys);
     }
 
 
@@ -105,4 +91,9 @@ public class JpaStateCorreHisClsRepository extends JpaRepository implements Stat
         if(stateCorHisClass.isEmpty()) return Optional.empty();
         return Optional.of(new StateCorreHisCls(stateCorHisClass.get(0).stateCorHisClassPk.cid,stateCorHisClass.stream().map(item -> new YearMonthHistoryItem(item.stateCorHisClassPk.hisId, new YearMonthPeriod(new YearMonth(item.startYearMonth), new YearMonth(item.endYearMonth)))).collect(Collectors.toList())));
     }
+
+    public static List<StateLinkSetMaster> toDomainSetting(List<QpbmtStateCorHisClass> entitys) {
+        return entitys.stream().map(x -> x.toDomain()).collect(Collectors.toList());
+    }
+
 }

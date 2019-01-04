@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.*;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisPo;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateLinkSetDate;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateLinkSetMaster;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -80,9 +82,9 @@ public class QpbmtStateCorHisPos extends UkJpaEntity implements Serializable {
 
     public StateLinkSetMaster toDomain() {
         return new StateLinkSetMaster(this.stateCorHisPosPk.hisId,
-                new MasterCode(this.stateCorHisPosPk.masterCode),
-                this.salaryCode == null ? null : new StatementCode(this.salaryCode),
-                this.bonusCode == null ? null : new StatementCode(this.bonusCode));
+                this.stateCorHisPosPk.masterCode,
+                this.salaryCode,
+                this.bonusCode);
     }
     public static Optional<StateLinkSetDate> toBaseDate(Object[] resultQuery){
         GeneralDate date = GeneralDate.fromString(resultQuery[1].toString(), "yyyy-MM-dd");
@@ -116,4 +118,9 @@ public class QpbmtStateCorHisPos extends UkJpaEntity implements Serializable {
                 .collect(Collectors.toList());
         return listStateCorHisPos;
     }
+
+    public static List<StateLinkSetMaster> toDomainSetting(List<QpbmtStateCorHisPos> entitys) {
+        return entitys.stream().map(QpbmtStateCorHisPos::toDomain).collect(Collectors.toList());
+    }
+
 }

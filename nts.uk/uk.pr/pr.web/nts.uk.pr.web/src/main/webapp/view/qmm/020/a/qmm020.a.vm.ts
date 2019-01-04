@@ -94,5 +94,10 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
             });
         }
 
+        openScreenI(){
+            let self = __viewContext.viewModel.viewmodelA;
+            modal("/view/qmm/020/i/index.xhtml").onClosed(()=>{
+            });
+        }
     }
 }

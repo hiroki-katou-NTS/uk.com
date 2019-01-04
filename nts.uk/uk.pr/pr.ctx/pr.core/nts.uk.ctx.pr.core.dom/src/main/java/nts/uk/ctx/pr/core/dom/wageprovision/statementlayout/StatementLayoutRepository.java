@@ -10,8 +10,6 @@ public interface StatementLayoutRepository {
 
     List<StatementLayout> getStatement(String cid, int startYearMonth);
 
-    List<StatementLayout> getAllStatementLayout();
-
     List<StatementLayout> getAllStatementLayoutByCid(String cid);
 
     Optional<StatementLayout> getStatementLayoutById(String cid, String statementCd);
