@@ -110,7 +110,7 @@ module nts.uk.pr.view.qmm019.h.viewmodel {
 
             if(!nts.uk.ui.errors.hasError()) {
                 let histIdNew = nts.uk.util.randomId();
-                let startDate = nts.uk.time.formatDate(new Date( self.startDate()), "yyyyMM");
+                let startDate = nts.uk.time.parseYearMonth(self.startDate()).toValue();
                 let command: StatementLayoutCommand = new StatementLayoutCommand(self.isClone(), histIdNew, self.histIdClone(),
                     self.layoutPatternClone(), self.statementCode(), self.statementName(), startDate, self.layoutPatternSelected());
 
