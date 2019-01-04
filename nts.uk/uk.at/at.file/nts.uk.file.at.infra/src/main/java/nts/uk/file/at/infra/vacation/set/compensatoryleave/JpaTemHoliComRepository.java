@@ -180,12 +180,12 @@ public class JpaTemHoliComRepository extends JpaRepository implements TempHoliCo
                 .build());
         data.put(EmployeeSystemImpl.KMF001_214, MasterCellData.builder()
                 .columnId(EmployeeSystemImpl.KMF001_214)
-                .value(value9.getValue())
+                .value(CommonTempHolidays.convertToTime(Integer.valueOf(value9.getValue())))
                 .style(MasterCellStyle.build().horizontalAlign(value9.getPositon()))
                 .build());
         data.put(EmployeeSystemImpl.KMF001_215, MasterCellData.builder()
                 .columnId(EmployeeSystemImpl.KMF001_215)
-                .value(value10.getValue())
+                .value(CommonTempHolidays.convertToTime(Integer.valueOf(value10.getValue())))
                 .style(MasterCellStyle.build().horizontalAlign(value10.getPositon()))
                 .build());
 
@@ -206,12 +206,12 @@ public class JpaTemHoliComRepository extends JpaRepository implements TempHoliCo
                 .build());
         data.put(EmployeeSystemImpl.KMF001_219, MasterCellData.builder()
                 .columnId(EmployeeSystemImpl.KMF001_219)
-                .value(value14.getValue())
+                .value(CommonTempHolidays.convertToTime(Integer.valueOf(value14.getValue())))
                 .style(MasterCellStyle.build().horizontalAlign(value14.getPositon()))
                 .build());
         data.put(EmployeeSystemImpl.KMF001_220, MasterCellData.builder()
                 .columnId(EmployeeSystemImpl.KMF001_220)
-                .value(value15.getValue())
+                .value(CommonTempHolidays.convertToTime(Integer.valueOf(value15.getValue())))
                 .style(MasterCellStyle.build().horizontalAlign(value15.getPositon()))
                 .build());
         data.put(EmployeeSystemImpl.KMF001_221, MasterCellData.builder()
@@ -221,6 +221,7 @@ public class JpaTemHoliComRepository extends JpaRepository implements TempHoliCo
                 .build());
         return MasterData.builder().rowData(data).build();
     }
+
 
 
 

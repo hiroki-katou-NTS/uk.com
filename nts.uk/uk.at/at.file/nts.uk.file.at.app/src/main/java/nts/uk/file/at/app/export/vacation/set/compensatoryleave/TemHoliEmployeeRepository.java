@@ -5,5 +5,5 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import java.util.List;
 
 public interface TemHoliEmployeeRepository {
-    List<MasterData> getAllTemHoliEmployee(String cid);
+    List<MasterData> getTemHoliEmployee(String cid);
 }

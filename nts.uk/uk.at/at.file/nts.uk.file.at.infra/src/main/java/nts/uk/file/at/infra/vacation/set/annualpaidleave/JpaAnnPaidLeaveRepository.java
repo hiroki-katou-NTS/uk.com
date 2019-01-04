@@ -27,7 +27,7 @@ public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidL
 			" mas.HALF_MAX_GRANT_DAY, " +
 			" mas.REMAINING_MAX_DAY, " +
 			" mas.RETENTION_YEAR, " +
-			" mas.REMAINING_MAX_DAY, " +
+			" mas.YEARLY_OF_DAYS, " +
 			" mas.HALF_MANAGE_ATR, " +
 			" mas.HALF_MAX_REFERENCE, " +
 			" mas.HALF_MAX_UNIFORM_COMP, " +
@@ -106,7 +106,7 @@ public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidL
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(I18NText.getText("KMF001_183"), ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(rs.getString("REMAINING_MAX_DAY") + " " + I18NText.getText("KMF001_197"), ColumnTextAlign.RIGHT)));
+					, new DataEachBox(rs.getString("YEARLY_OF_DAYS") + " " + I18NText.getText("KMF001_197"), ColumnTextAlign.RIGHT)));
 			// Row 7
 			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
