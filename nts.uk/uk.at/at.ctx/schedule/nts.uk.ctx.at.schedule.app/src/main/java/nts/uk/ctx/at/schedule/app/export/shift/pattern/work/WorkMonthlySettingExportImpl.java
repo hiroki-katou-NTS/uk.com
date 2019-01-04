@@ -22,6 +22,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 @Stateless
 @DomainID(value = "MonthlyWorkSetting")
@@ -176,12 +177,19 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 	public String mainSheetName() {
 		return TextResource.localize("KSM005_3");
 	}
+	
+	
+
+	@Override
+	public MasterListMode mainSheetMode() {
+		return MasterListMode.FISCAL_YEAR_RANGE;
+	}
 
 	@Override
 	public List<SheetData> extraSheets(MasterListExportQuery query) {
 		 List<SheetData> sheetDatas = new ArrayList<>();
 		 SheetData sheetPersionSet = new SheetData(getMasterDatasForPersionSet(query), 
-				 getHeaderColumnsForPersionSet(query),null, null, TextResource.localize("KSM005_6"));
+				 getHeaderColumnsForPersionSet(query),null, null, TextResource.localize("KSM005_6"), MasterListMode.BASE_DATE);
 		 sheetDatas.add(sheetPersionSet);
 		return sheetDatas;
 	}
