@@ -28,7 +28,8 @@ public class JpaHoriTotalCateExcel extends JpaRepository implements HoriTotalCat
 				+ "on  f.TOTAL_ITEM_NO = d.TOTAL_ITEM_NO and f.CID = ?companyId"
 				+ " and f.CATEGORY_CD = d.CATEGORY_CD "
 				+ "LEFT JOIN KSHST_TOTAL_TIMES g on g.TOTAL_TIMES_NO = f.TOTAL_TIME_NO and g.CID=?companyId "
-				+ "LEFT JOIN KSCST_HORI_CAL_DAYS_SET h on h.TOTAL_ITEM_NO = d.TOTAL_ITEM_NO and h.CID = ?companyId  and h.CATEGORY_CD = d.CATEGORY_CD "
+				+ "LEFT JOIN KSCST_HORI_CAL_DAYS_SET h on h.TOTAL_ITEM_NO = d.TOTAL_ITEM_NO and h.CID = ?companyId  and h.CATEGORY_CD = d.CATEGORY_CD"
+				+ " ORDER BY c.CATEGORY_CD,d.DISPORDER, f.TOTAL_TIME_NO"
 				
 				;
 				
