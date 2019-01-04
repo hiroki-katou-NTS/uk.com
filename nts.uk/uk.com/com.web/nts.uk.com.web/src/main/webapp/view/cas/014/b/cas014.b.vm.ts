@@ -267,7 +267,6 @@ module nts.uk.com.view.cas014.b {
                         let langId = self.langId();
                         let date = moment.utc(result.standardDate, "YYYY/MM/DD");
                         service.saveAsExcel(langId, date).done(function() {
-                            nts.uk.ui.windows.close();
                         }).fail(function(error) {
                             nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                         }).always(function() {
