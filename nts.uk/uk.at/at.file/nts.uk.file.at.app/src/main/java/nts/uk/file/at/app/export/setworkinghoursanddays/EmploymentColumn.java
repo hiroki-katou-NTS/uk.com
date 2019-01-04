@@ -1,6 +1,6 @@
 package nts.uk.file.at.app.export.setworkinghoursanddays;
 
-public class EmploymentUtils {
+public class EmploymentColumn {
 	public static final String KMK004_154 = "年度";
     public static final String KMK004_185 = "{#Com_Employment}コード";
     public static final String KMK004_186 = "{#Com_Employment}名称";

@@ -23,4 +23,5 @@ module nts.uk.at.view.kmf022.m.service {
 
     export function getCom() { return ajax(paths.getComConfig) };
     export function saveCom(command) { return ajax(paths.saveComConfig, command) };
+ 
 }

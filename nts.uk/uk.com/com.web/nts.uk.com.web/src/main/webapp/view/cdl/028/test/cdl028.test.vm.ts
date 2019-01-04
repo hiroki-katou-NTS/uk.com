@@ -23,7 +23,7 @@ module nts.uk.com.view.cdl028.test.viewmodel {
         public openDialog() {
             let params = {
                 date: "2000/01/01",
-                mode: 2
+                mode: 5
             };
 
             nts.uk.ui.windows.setShared("CDL028_INPUT", params);

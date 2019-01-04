@@ -9,6 +9,10 @@ module nts.uk.com.view.cas014.b {
             getEmpInfo: "ctx/sys/auth/grant/rolesetperson/getempinfo/{0}",
             deleteData: "ctx/sys/auth/grant/rolesetperson/delete"
         }
+        
+        export function saveAsExcel(languageId: string, date: string): JQueryPromise<any> {
+                return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "JobInfo", domainType: "CAS014ロールセットの付与", languageId: languageId, reportType: 0, baseDate: date});
+        }
 
         export function getAllRoleSet(): JQueryPromise<any> {
             return ajax("com", paths.getAllRoleSet);
