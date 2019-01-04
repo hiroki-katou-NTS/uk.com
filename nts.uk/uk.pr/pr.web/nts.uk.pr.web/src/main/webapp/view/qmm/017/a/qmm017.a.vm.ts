@@ -287,7 +287,8 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 })
             }
             self.screenMode(model.SCREEN_MODE.NEW);
-            self.selectedTab('tab-1');
+            if (self.selectedTab() == 'tab-1') self.selectedTab.valueHasMutated();
+            else self.selectedTab('tab-1');
         }
 
         changeToUpdateMode() {
