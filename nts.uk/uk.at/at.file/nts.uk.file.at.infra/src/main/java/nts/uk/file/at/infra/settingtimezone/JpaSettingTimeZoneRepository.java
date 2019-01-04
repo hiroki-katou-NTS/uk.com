@@ -122,11 +122,11 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             " CASE WHEN USE_ATR = 1 THEN ROUNDING " +
             " ELSE NULL " +
             " END ROUNDING, " +
-            " CASE WHEN USE_ATR = 1 THEN TIME_ITEM_NAME " +
+            " CASE WHEN USE_ATR = 1 AND TIME_USE_ATR_TAB1 = 1 THEN TIME_ITEM_NAME " +
             " ELSE NULL " +
             " END TIME_ITEM_NAME, " +
             " USE_ATR_TAB2, " +
-            " CASE WHEN USE_ATR_TAB2 = 1 THEN NAME " +
+            " CASE WHEN USE_ATR_TAB2 = 1 AND DATE_USE_ATR = 1 THEN NAME " +
             " ELSE NULL " +
             " END NAME, " +
             " CASE WHEN USE_ATR_TAB2 = 1 THEN START_TIME_TAB2 " +
@@ -142,14 +142,14 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             " ELSE NULL " +
             " END ROUNDING_TAB2, " +
             " " +
-            " CASE WHEN USE_ATR_TAB2 = 1 THEN TIME_ITEM_NAME_TAB2 " +
+            " CASE WHEN USE_ATR_TAB2 = 1 AND TIME_USE_ATR_TAB2 = 1 THEN TIME_ITEM_NAME_TAB2 " +
             " ELSE NULL " +
             " END TIME_ITEM_NAME_TAB2 " +
             "FROM " +
             "  ( " +
             "    SELECT " +
             "    tb1.*, " +
-            "    tb2.TIME_ITEM_NAME, " +
+            "    tb2.TIME_ITEM_NAME, tb2.USE_ATR AS TIME_USE_ATR_TAB1," +
             "    ROW_NUMBER () OVER ( PARTITION BY BONUS_PAY_SET_CD ORDER BY BONUS_PAY_SET_CD, BONUS_PAY_TIMESHEET_NO ) AS     ROW_NUMBER  " +
             "    FROM " +
             "    ( " +
@@ -177,13 +177,13 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             "  LEFT JOIN  " +
             "  ( " +
             "    SELECT " +
-            "      tb1.*, " +
+            "      tb1.*, tb2.USE_ATR AS TIME_USE_ATR_TAB2," +
             "      tb2.TIME_ITEM_NAME AS TIME_ITEM_NAME_TAB2  " +
             "    FROM " +
             "    ( " +
             "      SELECT " +
             "        tb1.*, " +
-            "        tb2.*, " +
+            "        tb2.*, i.USE_ATR AS DATE_USE_ATR," +
             "        i.NAME  " +
             "      FROM " +
             "        (  " +
