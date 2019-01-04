@@ -20,7 +20,7 @@ import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
 public class EmploymentApprovalSettingExportImpl implements MasterListData {
 
 	@Inject
-	private EmploymentApprovalSettingRepository repository;
+	private ApprovalFunctionConfigRepository repository;
 	
 	public static final String KAF022_628 = "コード";
 	public static final String KAF022_629 = "名称";

@@ -285,7 +285,6 @@ module nts.uk.com.view.cas013.a.viewmodel {
                     let langId = self.langId();
                     let date = moment.utc(result.standardDate, "YYYY/MM/DD");
                     new service.Service().saveAsExcel(langId, date).done(function() {
-                        nts.uk.ui.windows.close();
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                     }).always(function() {
