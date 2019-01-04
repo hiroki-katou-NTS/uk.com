@@ -17,7 +17,8 @@ module nts.uk.at.view.kmk011.h {
             return nts.uk.request.ajax("at", path.find);
         }
         export function saveAsExcel(param): JQueryPromise<any> {
-        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Divergence", domainType: "KMK011乖離時間の登録",languageId: 'ja',baseDate:moment.utc(param).format(),mode:1, reportType: 0});
+            console.log('gtcontext:' +__viewContext);
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Divergence", domainType: "KMK011"+__viewContext.program.programName,languageId: 'ja',baseDate:moment.utc(param).format(),mode:1, reportType: 0});
     }
     }
     export module model {
