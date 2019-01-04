@@ -25,7 +25,15 @@ import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceName
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.SimpleWorkTimeSettingDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
+import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.bs.employee.app.find.jobtitle.dto.JobTitleItemDto;
 import nts.uk.ctx.bs.employee.dom.classification.Classification;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
@@ -73,6 +81,13 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 	@Inject
 	private BusinessTypesRepository businessTypesRepository;
 	
+	@Inject
+	private WorkTypeRepository workTypeRepo;
+	
+	@Inject
+	private WorkTimeSettingRepository workTimeSettingRepository;
+
+	
 	public static String value1= "value1";
 	public static String value2= "value2";
 	public static String value3= "value3";
@@ -113,9 +128,7 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 	public static String value38= "value38";
 	public static String value39= "value39";
 	public static String value40= "value40";
-	
-	
-	
+	public static String value41= "value41";
 	
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
@@ -149,11 +162,8 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 
 		//18
 		List<BusinessType> listBusinessType = businessTypesRepository.findAll(companyId);
-
 		Map<BusinessTypeCode , BusinessType> maplistBusinessType = listBusinessType.stream()
 				.collect(Collectors.toMap(BusinessType::getBusinessTypeCode, Function.identity()));
-				
-		
 		if(CollectionUtil.isEmpty(lstDto)){
 			throw new BusinessException("Msg_393");
 		}else{
@@ -210,10 +220,8 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 					data.put(value5, "解除しない");
 					data.put(value6, "");
 				}
-
 				List<Integer> listdaily = new ArrayList<>();
 				listdaily.add(c.getErrorDisplayItem());
-				
 				//7
 				List<AttendanceNameDivergenceDto> dataDailyAttendanceItemIds = companyDailyItemService
 						.getDailyItems(companyId, Optional.empty(), listdaily, Collections.emptyList())
@@ -258,14 +266,12 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 				}else{
 					for(int i=0; i<lst1.size();i++){
 						Optional<Employment> employment = this.employmentRepository.findEmployment(companyId, lst1.get(i));
-						
 						if( i== 0){
 							employmentName  = employment.get().getEmploymentName().v();
 						}else{
 							employmentName = employmentName+", "+employment.get().getEmploymentName().v();
 						}
 					}
-					
 					data.put(value12, employmentName);
 				}
 				//13 filterByClassification 
@@ -287,7 +293,6 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 				}else{
 					for(int i=0;i<lst2.size();i++){
 						Optional<Classification> optClassification = classificationRepository.findClassification(companyId, lst2.get(i));
-						
 						if( i== 0){
 							sValues14  = optClassification.get().getClassificationName().v();
 						}else{
@@ -338,25 +343,150 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 				for(int i=0;i<c.getAlCheckTargetCondition().getLstBusinessType().size();i++){
 					lst4.add(c.getAlCheckTargetCondition().getLstBusinessType().get(i));
 				}
+				
 				String sValue4 = "";
-				String sValue5 = "";
 				if(CollectionUtil.isEmpty(lst4)){
 					data.put(value18, "");
 				}else{
-					for(int i=0;i<lst4.size();i++){
-						Optional<BusinessType>  optiBusinessType = businessTypesRepository.findByCode(companyId,lst4.get(i));
 
-						if( i== 0){
-							sValues14  = optiBusinessType.get().getBusinessTypeName().v();
+					for(int i=0;i<lst4.size();i++){
+						if(i==0){
+							sValue4 = maplistBusinessType.get(new BusinessTypeCode(lst4.get(i))).getBusinessTypeName().v();
 						}else{
-							sValues14 = sValues14+", "+optiBusinessType.get().getBusinessTypeName().v();
+							sValue4 = sValue4 + ", "+maplistBusinessType.get(new BusinessTypeCode(lst4.get(i))).getBusinessTypeName().v();
 						}
 						
 					}
 					data.put(value18, sValue4);
 				}
+				// 19
+				if(c.getWorkTypeCondition().getComparePlanAndActual() == 0){
+					data.put(value19, TextResource.localize("Enum_FilterByCompare_NotCompare"));
+				}else if(c.getWorkTypeCondition().getComparePlanAndActual() == 1){
+					data.put(value19, TextResource.localize("Enum_FilterByCompare_Extract_Same"));
+					//26
+					data.put(value26,"");
+				}else{
+					data.put(value19, TextResource.localize("Enum_FilterByCompare_Extract_Different"));
+				}
+				//20
+				if(c.getWorkTimeCondition().getComparePlanAndActual() ==0){
+					data.put(value20, TextResource.localize("Enum_FilterByCompare_NotCompare"));
+				}else if(c.getWorkTimeCondition().getComparePlanAndActual() ==1){
+					data.put(value20, TextResource.localize("Enum_FilterByCompare_NotCompare"));
+				}else{
+					data.put(value20, TextResource.localize("Enum_FilterByCompare_NotCompare"));
+				}
+				//21 22
+				if(c.getWorkTypeCondition().isPlanFilterAtr() ==false){
+					data.put(value21, "-");
+					data.put(value22, "");
+				}else{
+					data.put(value21, "○");
+					List<WorkTypeInfor> lst22 = this.workTypeRepo.getPossibleWorkTypeAndOrder(companyId, c.getWorkTypeCondition().getPlanLstWorkType());
+					String s22 = "";
+					if(CollectionUtil.isEmpty(lst22)){
+						data.put(value22, "");
+					}else{
+						for(int i=0;i<lst22.size();i++){
+							if(i==0){
+								s22 = lst22.get(i).getWorkTypeCode()+ lst22.get(i).getName();
+							}else{
+								s22 = s22+", "+lst22.get(i).getWorkTypeCode()+ lst22.get(i).getName();
+							}
+						}
+						data.put(value22, s22);
+					}
+				}
+				// 23 24
+				if(c.getWorkTimeCondition().isPlanFilterAtr() ==false){
+					data.put(value23, "-");
+					data.put(value24, "");
+				}else{
+					data.put(value23, "○");
+
+					List<WorkTimeSetting> lstWorktimeSetting = workTimeSettingRepository.findByCompanyId(companyId);
+					List<SimpleWorkTimeSettingDto> lst23= lstWorktimeSetting.stream().map(item -> {
+						return SimpleWorkTimeSettingDto.builder().isAbolish(item.getAbolishAtr() == AbolishAtr.ABOLISH)
+								.worktimeCode(item.getWorktimeCode().v())
+								.workTimeName(item.getWorkTimeDisplayName().getWorkTimeName().v()).build();
+						}).collect(Collectors.toList());
+					
+					String s24 = "";
+					if(CollectionUtil.isEmpty(c.getWorkTimeCondition().getPlanLstWorkTime())){
+						data.put(value24, "");
+					}else{
+						for(int i=0;i<c.getWorkTimeCondition().getPlanLstWorkTime().size();i++){
+							for(int j=0;j<lst23.size();j++){
+								if(c.getWorkTimeCondition().getPlanLstWorkTime().get(i).equals(lst23.get(j).worktimeCode)){
+									s24 = lst23.get(j).worktimeCode+", "+lst23.get(j).workTimeName;
+									
+								}
+							}
+						}
+						data.put(value24, s24);
+					}
+				}
+				
+				//25
+				if(c.getOperatorBetweenPlanActual()==0){
+					data.put(value25, "AND");
+				}else{
+					data.put(value25, "OR");
+				}
+				//26 27
+				if(c.getWorkTypeCondition().getComparePlanAndActual() == 0 || c.getWorkTypeCondition().getComparePlanAndActual() == 2){
+					if(c.getWorkTypeCondition().isActualFilterAtr()== false){
+						data.put(value26, "-");
+						data.put(value27,"");
+					}else{
+						data.put(value26, "○");
+						data.put(value27,"chua lm");
+					}
+				}
+				
+				//28 29
+				
+				if(c.getWorkTimeCondition().getComparePlanAndActual() == 0 || c.getWorkTimeCondition().getComparePlanAndActual() == 2){
+				
+					if(c.getWorkTimeCondition().isActualFilterAtr()== false){
+						data.put(value28, "-");
+						data.put(value29,"");
+					}else{
+						data.put(value28, "○");
+						data.put(value29,"chua lm");
+					}
+				}
+				//30
+				if(c.getOperatorGroup1() ==0){
+					data.put(value30, "AND");
+				}else{
+					data.put(value30, "OR");
+				}
+				// 31 32 33
 				
 
+				if(c.isGroup2UseAtr() ==false){
+					data.put(value34, "-");
+					data.put(value35, "");
+					data.put(value39, "");
+				}else{
+					data.put(value34, "○");
+					if(c.getOperatorGroup2()== 0){
+						data.put(value35, "AND");
+					}else{
+						data.put(value35, "OR");
+					}
+					//36 37 38
+					if(c.getOperatorBetweenGroups() == 0){
+						data.put(value39, "AND");
+					}else{
+						data.put(value39, "OR");
+					}
+				}
+				
+				// 40 41
+				
 				MasterData masterData = new MasterData(data, null, "");
 				masterData.cellAt(value1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				masterData.cellAt(value2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
@@ -376,11 +506,32 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 				masterData.cellAt(value16).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				masterData.cellAt(value17).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				masterData.cellAt(value18).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value19).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value20).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value21).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value22).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value23).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value24).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value25).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value26).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value27).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value28).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value29).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value30).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value31).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value32).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value33).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value34).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value35).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value36).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value37).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value38).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value39).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value40).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value41).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				datas.add(masterData);
 			});
 		}
-		
-		
 		return datas;
 	}
 	private void putEmptyDataOne(Map<String, Object> data) {
@@ -424,14 +575,11 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 		data.put(value38, "");
 		data.put(value39, "");
 		data.put(value40, "");
-
-		
-		
+		data.put(value41, "");
 	}
 	@Override
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
-		
 		columns.add(new MasterHeaderColumn(value1, "コード", ColumnTextAlign.LEFT,
 				"", true));
 		columns.add(new MasterHeaderColumn(value2, "コード", ColumnTextAlign.LEFT,
@@ -512,11 +660,10 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 				"", true));
 		columns.add(new MasterHeaderColumn(value40, "コード", ColumnTextAlign.LEFT,
 				"", true));
-		
+		columns.add(new MasterHeaderColumn(value41, "コード", ColumnTextAlign.LEFT,
+				"", true));
 		return columns;
 	}
-	
-	
 	@Override
 	public String mainSheetName() {
 		return TextResource.localize("KMK009_25");
@@ -527,22 +674,6 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 		List<SheetData> listSheetData = new ArrayList<>();
 		SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("CMM013_54"));
 		listSheetData.add(sheetDataTwo);
-		
-		SheetData sheetDataTwo1 = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, "2");
-		listSheetData.add(sheetDataTwo1);
-		
-		SheetData sheetDataTwo2 = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, "3");
-		listSheetData.add(sheetDataTwo2);
-		SheetData sheetDataTwo3 = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, "4");
-		listSheetData.add(sheetDataTwo3);
-		SheetData sheetDataTwo4 = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, "5");
-		listSheetData.add(sheetDataTwo4);
-		SheetData sheetDataTwo5 = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, "6");
-		listSheetData.add(sheetDataTwo5);
-		
-		
-		
-		
 		return listSheetData;
 	}
 	private List<MasterHeaderColumn> getHeaderColumnTwos(MasterListExportQuery query) {
@@ -556,7 +687,6 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 				"", true));
 		columns.add(new MasterHeaderColumn("申請", "申請", ColumnTextAlign.LEFT,
 				"", true));
-		
 		return columns;
 	}
 	private List<MasterData> getMasterDataTwo(MasterListExportQuery query) {
@@ -572,8 +702,6 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 	    listErrorAlarmWorkRecord = listErrorAlarmWorkRecord.stream().filter(eral -> eral.getCode().v().startsWith("S"))
 	    		.sorted(Comparator.comparing(ErrorAlarmWorkRecord::getCode, Comparator.nullsLast(ErrorAlarmWorkRecordCode::compareTo)))
 				.collect(Collectors.toList());
-	    
-	    
 	    if(CollectionUtil.isEmpty(listErrorAlarmWorkRecord)){
 	    	throw new BusinessException("Msg_393");
 	    }else{
@@ -636,14 +764,8 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 						}
 						
 					}
-					
 					data.put("申請", lstApp);
 				}
-				
-
-	    		
-	    		
-	    		
 	    		MasterData masterData = new MasterData(data, null, "");
 				masterData.cellAt("コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				masterData.cellAt("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
@@ -653,8 +775,6 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 	    	});
 	    	
 	    }
-	    
-		
 		return datas;
 	}
 	private void putEmptyDataTwo(Map<String, Object> data){
