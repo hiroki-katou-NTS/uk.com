@@ -59,7 +59,7 @@ public class JpaChangePerInforDefinitionRepository extends JpaRepository impleme
 								        "(SELECT CATEGORY_NAME, CATEGORY_CD, CID "+
 								        "FROM PPEMT_PER_INFO_CTG "+
 								        "WHERE CID = ?zeroCid) i2 "+
-								        "INNER JOIN PPEMT_PER_INFO_CTG_CM c2 ON i2.CATEGORY_CD = c2.CATEGORY_CD "+
+					
 						        ") n "+
 			        "ON i.CATEGORY_CD = n.CATEGORY_CD "+
 			        "INNER JOIN PPEMT_PER_INFO_ITEM p ON p.PER_INFO_CTG_ID = o.PER_INFO_CTG_ID "+
