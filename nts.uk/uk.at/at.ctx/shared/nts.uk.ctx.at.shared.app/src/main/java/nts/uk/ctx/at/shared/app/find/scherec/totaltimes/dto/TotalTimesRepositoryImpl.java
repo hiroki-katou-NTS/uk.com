@@ -16,6 +16,7 @@ import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.ConditionThresholdLimit;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.CountAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.SummaryAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
@@ -120,7 +121,10 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 									.comparing(WorkTypeInfor::getWorkTypeCode))
 									.collect(Collectors.toList());
 					
-					List<WorkTimeSetting> listFindByCodes = workTimeSettingRepository.findByCodes(companyId,listCodes);
+					List<WorkTimeSetting> listFindByCodes = workTimeSettingRepository.findByCodes(companyId,listCodes)
+							.stream().sorted(Comparator
+									.comparing(WorkTimeSetting::getWorktimeCode))
+									.collect(Collectors.toList());
 					
 					List<Integer> listAtdtemId = new ArrayList<>();
 					listAtdtemId.add(c.getTotalCondition().getAtdItemId());
@@ -134,23 +138,19 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 						if(c.getSummaryAtr() == SummaryAtr.WORKINGTIME){
 							data.put("勤務種類","");
 						}else {
-							
 							//勤務種類
 							String typeOfDuty = "";
 							for (int n = 0; n < lst.size(); n++) {
 								if (n == 0) {
-									typeOfDuty = lst.get(n).getWorkTypeCode() + "" + lst.get(n).getName();
+									typeOfDuty = lst.get(n).getWorkTypeCode() +""+ lst.get(n).getName();
 								} else {
-									typeOfDuty = lst.get(n).getWorkTypeCode() + "" + lst.get(n).getName() + ", "
-										+ typeOfDuty;
+									typeOfDuty += ","+lst.get(n).getWorkTypeCode() + lst.get(n).getName();
 								}
 							}
 							data.put("勤務種類", typeOfDuty);
 						}
 						
 					}
-					
-					
 					if(CollectionUtil.isEmpty(listFindByCodes)){
 						data.put("就業時間帯", "");
 					}else{
@@ -165,10 +165,9 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 							String  workingHours= "";
 							for (int n = 0; n < listFindByCodes.size(); n++) {
 								if (n == 0) {
-									workingHours = listFindByCodes.get(n).getWorktimeCode()+ "" + listFindByCodes.get(n).getWorkTimeDisplayName().getWorkTimeName();
+									workingHours = listFindByCodes.get(n).getWorktimeCode() +""+ listFindByCodes.get(n).getWorkTimeDisplayName().getWorkTimeName();
 								} else {
-									workingHours = listFindByCodes.get(n).getWorktimeCode()+ "" + listFindByCodes.get(n).getWorkTimeDisplayName().getWorkTimeName() + ", "
-										+ workingHours;
+									workingHours += ","+listFindByCodes.get(n).getWorktimeCode() + listFindByCodes.get(n).getWorkTimeDisplayName().getWorkTimeName();
 								}
 							}
 							data.put("就業時間帯", workingHours);
@@ -177,7 +176,15 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 					
 					if(c.getTotalCondition().getLowerLimitSettingAtr() == UseAtr.Use){
 						data.put("集計条件以上", "○");
-						data.put("以上", c.getTotalCondition().getThresoldLowerLimit()+" 以上");
+
+						ConditionThresholdLimit cond = new ConditionThresholdLimit(c.getTotalCondition().getThresoldLowerLimit().valueAsMinutes());
+						String ThresholdLimit = "";
+						if(cond.minute()<10){
+							ThresholdLimit =  cond.hour() +":0"+ cond.minute();
+						}else{
+							ThresholdLimit =  cond.hour() +":"+ cond.minute();
+						}
+						data.put("以上", ThresholdLimit + " 以上");
 					}else{
 						data.put("集計条件以上", "-");
 						data.put("以上", "");
@@ -185,7 +192,14 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 					
 					if(c.getTotalCondition().getUpperLimitSettingAtr() == UseAtr.Use){
 						data.put("集計条件未満", "○");
-						data.put("未満", c.getTotalCondition().getThresoldUpperLimit()+" 未満");
+						ConditionThresholdLimit cond2 = new ConditionThresholdLimit(c.getTotalCondition().getThresoldUpperLimit().valueAsMinutes());
+						String thresoldUpperLimit = "";
+						if(cond2.minute()<10){
+							thresoldUpperLimit =  cond2.hour() +":0"+ cond2.minute();
+						}else{
+							thresoldUpperLimit =  cond2.hour() +":"+ cond2.minute();
+						}
+						data.put("未満",thresoldUpperLimit +" 未満");
 					}else{
 						data.put("集計条件未満", "-");
 						data.put("未満", "");

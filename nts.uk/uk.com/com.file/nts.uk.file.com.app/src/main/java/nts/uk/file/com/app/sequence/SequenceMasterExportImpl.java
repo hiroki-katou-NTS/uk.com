@@ -25,6 +25,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 /**
  * 
@@ -41,16 +42,7 @@ public class SequenceMasterExportImpl implements MasterListData{
 	
 	@Inject
 	private SequenceMasterExportRepository sequenceMasterExportRepository;
-	
-	@Inject
-    private JobTitleInfoRepository jobTitleInfoRepository;
-	
-	
-	@Inject
-    private JobTitleRepository jobTitleRepository;
 
-
-	
 	// One
 	@Override
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
@@ -141,7 +133,7 @@ public class SequenceMasterExportImpl implements MasterListData{
 	@Override
 	public List<SheetData> extraSheets(MasterListExportQuery query){
 		List<SheetData> listSheetData = new ArrayList<>();
-		SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("CMM013_61"));
+		SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("CMM013_61"), MasterListMode.NONE);
 		listSheetData.add(sheetDataTwo);
 		return listSheetData;
 	}
@@ -169,7 +161,7 @@ public class SequenceMasterExportImpl implements MasterListData{
 				if(c.getIsManager() ==0){
 					data.put("36協定対象外","-");
 				}else{
-					data.put("36協定対象外","〇");
+					data.put("36協定対象外","○");
 				}
 				
 				if(c.getSequenceCode() == null ){
@@ -206,6 +198,10 @@ public class SequenceMasterExportImpl implements MasterListData{
 		return TextResource.localize("CMM013_60");
 	}
 	
+	@Override
+	 public MasterListMode mainSheetMode() {
+	  return MasterListMode.BASE_DATE;
+	 }
 
 	
 }
