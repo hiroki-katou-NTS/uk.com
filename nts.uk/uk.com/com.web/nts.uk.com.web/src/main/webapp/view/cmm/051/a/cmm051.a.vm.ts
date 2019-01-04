@@ -370,7 +370,7 @@ module nts.uk.com.view.cmm051.a {
                    if (result.status) {
                         nts.uk.ui.block.grayout();
                         let langId = self.langId();
-                        let date = moment(result.standardDate, "YYYY/MM/DD");
+                        let date = moment.utc(result.standardDate, "YYYY/MM/DD");
                         service.saveAsExcel(langId, date).done(function() {
                             //nts.uk.ui.windows.close();
                         }).fail(function(error) {
@@ -381,6 +381,18 @@ module nts.uk.com.view.cmm051.a {
                    }           
                });
             }
+            
+            /**
+         * check role
+         */
+        hasPermission(): boolean {
+            if (__viewContext.user.role.attendance == "null" && __viewContext.user.role.payroll == "null"
+                && __viewContext.user.role.personnel == "null"  && __viewContext.user.role.officeHelper == "null"){
+                return false;
+            }
+            
+            return true;
+        }
             
         }
         
