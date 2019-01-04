@@ -536,6 +536,29 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             }
             return formula;
         }
+
+        checkConditionOperator (formula) {
+            let self = this, startFunctionIndex, endFunctionIndex, functionsSyntax = [], index;
+            let functionCondition =  self.combineElementTypeAndName(self.FUNCTION, self.CONDITIONAL),
+                functionAnd =  self.combineElementTypeAndName(self.FUNCTION, self.AND),
+                functionOr =  self.combineElementTypeAndName(self.FUNCTION, self.OR);
+
+            while (formula.indexOf(functionCondition) > -1 || formula.indexOf(functionAnd) > -1 || formula.indexOf(functionOr) > -1) {
+                if (formula.indexOf(functionCondition) > -1) {
+                    startFunctionIndex = formula.lastIndexOf(functionCondition);
+                    endFunctionIndex = self.indexOfEndFunction(startFunctionIndex, formula);
+
+                }
+
+                if (endFunctionIndex == -1){
+                    self.setErrorToFormula('MsgQ_233', [formula.substring(startFunctionIndex, formula.substring(startFunctionIndex).indexOf(self.OPEN_BRACKET))]);
+                    break;
+                }
+                self.checkSingleFunctionSyntax(formula.substring(startFunctionIndex, endFunctionIndex + 1));
+                formula = formula.replace(formula.substring(startFunctionIndex, endFunctionIndex + 1),  0 );
+            }
+        }
+
         checkInputContent (formula) {
             let self = this, operand, prevOperand, operands, dotIndex,
                 separators: string = self.separators.join('|'),
@@ -584,6 +607,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         }
         checkFunctionSyntax (formula) {
             let self = this, startFunctionIndex, endFunctionIndex, functionsSyntax = [], index;
+            let formulaForCheckConditionOperator = formula;
             while (formula.indexOf(self.FUNCTION) > -1) {
                 startFunctionIndex = formula.lastIndexOf(self.FUNCTION);
                 endFunctionIndex = self.indexOfEndFunction(startFunctionIndex, formula);
@@ -592,7 +616,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     break;
                 }
                 self.checkSingleFunctionSyntax(formula.substring(startFunctionIndex, endFunctionIndex + 1));
-                formula = formula.replace(formula.substring(startFunctionIndex, endFunctionIndex + 1),  0 );
+                formula = formula.replace(formula.substring(startFunctionIndex, endFunctionIndex + 1),  0);
             }
         }
         checkSingleFunctionSyntax (functionSyntax) {
@@ -607,11 +631,10 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 if (functionParameter.length != 3) {
                     if (functionParameter.length < 3) self.setErrorToFormula('MsgQ_238', [functionName]);
                     else self.setErrorToFormula('MsgQ_239', [functionName]);
-                } else if (functionParameter[0].split(conditionRegex).length > 2) {
-                    // should have a different message, temporary use msg 16
-                    // condition is invalid
-                    self.setErrorToFormula('MsgQ_239', [functionName]);
                 }
+            }
+            if (functionName == self.OR || functionName == self.AND) {
+                let index = 0, parameter;
             }
             if (functionName == self.ROUND_OFF || functionName == self.ROUND_UP || functionName == self.TRUNCATION) {
                 if (functionParameter.length > 1) self.setErrorToFormula('MsgQ_239', [functionName]);
@@ -634,6 +657,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     self.setErrorToFormula('MsgQ_240', [functionName]);
                 }
             }
+            return functionSyntax;
         }
         indexOfEndFunction (startFunctionIndex, formula) {
             let self = this, index, openBracketNum = 0, closeBracketNum = 0, currentChar;

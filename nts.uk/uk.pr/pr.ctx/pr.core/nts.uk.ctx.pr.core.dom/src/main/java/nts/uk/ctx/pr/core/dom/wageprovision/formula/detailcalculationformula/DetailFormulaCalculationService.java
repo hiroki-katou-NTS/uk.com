@@ -205,7 +205,7 @@ public class DetailFormulaCalculationService {
         formula = calculateSystemVariable(type, formula);
         formula = calculateFunction(formula);
         formula = calculateSuffixFormula(formula) + "";
-        if (isNaN(formula)) throw new BusinessException("Msg_235");
+        if (isNaN(formula)) throw new BusinessException("MsgQ_235");
         return roundingResult(Double.parseDouble(formula), roundingMethod, roundingPosition);
     }
 
@@ -317,13 +317,13 @@ public class DetailFormulaCalculationService {
         return 0;
     }
 
-    private Double calculateSuffixFormula (String formulaContent) {
+    private String calculateSuffixFormula (String formulaContent) {
         String currentChar, operand1, operand2;
         Stack<String> operands = new Stack();
         String [] postFix = convertToPostfix(formulaContent);
         for(int index = 0; index < postFix.length; index++){
             currentChar = postFix[index];
-            if (!isNaN(currentChar)) {
+            if (!isComputingOperator(currentChar) && !isConditionOperator(currentChar)) {
                 operands.push(currentChar);
                 continue;
             }
@@ -331,12 +331,7 @@ public class DetailFormulaCalculationService {
             operand2 = operands.pop();
             operands.push(calculateSingleFormula(operand1, operand2, currentChar));
         }
-        try {
-            return Double.parseDouble(operands.pop());
-        } catch (NumberFormatException e) {
-            throw new BusinessException("MsgQ_235");
-        }
-
+        return operands.pop();
     }
 
     private String calculateSingleFunction (String functionSyntax) {
@@ -372,12 +367,17 @@ public class DetailFormulaCalculationService {
                 throw new BusinessException("MsgQ_240", functionName);
             }
         }
-        if (functionName.equals(ROUND_OFF))
-            return Math.round(calculateSuffixFormula(functionParameter[0])) + "";
-        if (functionName.equals(ROUND_UP))
-            return Math.ceil(calculateSuffixFormula(functionParameter[0])) + "";
-        if (functionName.equals(TRUNCATION))
-            return Math.floor(calculateSuffixFormula(functionParameter[0])) +"";
+        try {
+            if (functionName.equals(ROUND_OFF))
+                return Math.round(Double.parseDouble(calculateSuffixFormula(functionParameter[0]))) + "";
+            if (functionName.equals(ROUND_UP))
+                return Math.ceil(Double.parseDouble(calculateSuffixFormula(functionParameter[0]))) + "";
+            if (functionName.equals(TRUNCATION))
+                return Math.floor(Double.parseDouble(calculateSuffixFormula(functionParameter[0]))) + "";
+        } catch (NumberFormatException e) {
+            throw new BusinessException("MsgQ_240", functionName);
+        }
+
         if (functionName.equals(MAX_VALUE))
             return getMaxValue(functionParameter);
         if (functionName.equals(MIN_VALUE))
@@ -388,21 +388,30 @@ public class DetailFormulaCalculationService {
     }
 
     private String [] formatFunctionParameter (String [] functionParameters) {
-        String functionParameter = "";
+        String functionParameter = "", conditionRegex = "(?<=[><≦≧＝≠≤≥=#])|(?=[><≦≧＝≠≤≥=#])";
         for (int i = 0; i < functionParameters.length; i++){
             functionParameter = functionParameters[i];
             if (functionParameter.indexOf("\"") == 0 && functionParameter.lastIndexOf("\"") == functionParameter.length() - 1){
                 functionParameters[i] = functionParameter.substring(1, functionParameter.length() - 1);
+            } else {
+                if (functionParameters[i].split(conditionRegex).length < 2 && !isConditionOperator(functionParameters[i])) {
+                    functionParameters[i] = calculateSuffixFormula(functionParameters[i]) + "";
+                }
             }
         }
         return functionParameters;
     }
 
     private String logicAND (String [] functionParameters) {
+        String result = "TRUE", parameterConditionResult = "FALSE";
         for (int i = 0; i < functionParameters.length ; i++) {
-            if (functionParameters[i].toUpperCase().equals("FALSE")) return "FALSE";
+//            functionParameters[i] = calculateSingleCondition(functionParameters[i])
+            if (functionParameters[i].toUpperCase().equals("FALSE")) result = "FALSE";
+            if (!functionParameters[i].toUpperCase().equals("FALSE") || !functionParameters[i].toUpperCase().equals("TRUE")) {
+//                throw new
+            }
         }
-        return "TRUE";
+        return result;
     }
 
     private String logicOR (String [] functionParameters) {
@@ -419,12 +428,14 @@ public class DetailFormulaCalculationService {
         String conditionResult;
         if (firstParameterData.length == 1) {
             if (!firstParameterData[0].toUpperCase().equals("TRUE") && !firstParameterData[0].toUpperCase().equals("FALSE")) {
-                throw new BusinessException("Msg_328", functionSyntax.substring(0, functionSyntax.indexOf(OPEN_BRACKET)));
+                throw new BusinessException("MsgQ_238", functionSyntax.substring(0, functionSyntax.indexOf(OPEN_BRACKET)));
             } else {
                 conditionResult = firstParameterData[0];
             }
         } else {
-            conditionResult = calculateSingleCondition (firstParameterData [0], firstParameterData [2], firstParameterData [1]);
+            if (isNaN(firstParameterData [0]) || isNaN(firstParameterData [2]))
+                conditionResult = calculateSingleCondition (firstParameterData [0], firstParameterData [2], firstParameterData [1]);
+            else conditionResult = calculateSingleCondition (Double.parseDouble(firstParameterData [0]), Double.parseDouble(firstParameterData [2]), firstParameterData [1]);
         }
         if (conditionResult.toUpperCase().equals("TRUE")) return result1;
         return result2;
@@ -458,7 +469,7 @@ public class DetailFormulaCalculationService {
                 return operand2Value / operand1Value + "";
             if (operator.equals(POW))
                 return Math.pow(operand2Value, operand1Value) + "";
-            return operand1Value + "";
+            throw new RuntimeException("Condition operator can't be use to calculate: " + operand1 + operator + operand2);
         } catch (NumberFormatException e) {
             throw new BusinessException("MsgQ_235");
         }
@@ -483,24 +494,47 @@ public class DetailFormulaCalculationService {
     }
 
     private String getMinValue (String [] values) {
-        Double minValue = Double.MAX_VALUE, valueInDouble;;
-        for (String value: values) {
-            valueInDouble = calculateSuffixFormula(value);
-            if (valueInDouble < minValue) {
-                minValue = valueInDouble;
+        Double minValue = Double.MAX_VALUE, valueInDouble;
+        try {
+            for (String value: values) {
+                valueInDouble = Double.parseDouble(calculateSuffixFormula(value));
+                if (valueInDouble < minValue) {
+                    minValue = valueInDouble;
+                }
             }
+        } catch (NumberFormatException e) {
+            throw new BusinessException("MsgQ_240", combineElementTypeAndName(FUNCTION, MIN_VALUE));
         }
         return minValue + "";
     }
 
     private String getMaxValue (String [] values) {
         Double minValue = Double.MIN_VALUE, valueInDouble;
-        for (String value: values) {
-            valueInDouble = calculateSuffixFormula(value);
-            if (valueInDouble > minValue) {
-                minValue = valueInDouble;
+        try{
+            for (String value: values) {
+                valueInDouble = Double.parseDouble(calculateSuffixFormula(value));
+                if (valueInDouble > minValue) {
+                    minValue = valueInDouble;
+                }
             }
+        } catch (NumberFormatException e) {
+            throw new BusinessException("MsgQ_240", combineElementTypeAndName(FUNCTION, MAX_VALUE));
         }
         return minValue + "";
+    }
+
+    private Boolean isComputingOperator (String operator) {
+        String [] computingOperator = {PLUS, SUBTRACT, MULTIPLICITY, DIVIDE, POW, HALF_SIZE_PLUS, HALF_SIZE_SUBTRACT, PROGRAMING_MULTIPLICITY, PROGRAMING_DIVIDE};
+        for (int i = 0; i < computingOperator.length; i++) {
+            if (computingOperator[i].equals(operator)) return true;
+        }
+        return false;
+    }
+    private Boolean isConditionOperator (String operator) {
+        String [] conditionOperators = {GREATER, LESS, LESS_OR_EQUAL, GREATER_OR_EQUAL, EQUAL, HALF_SIZE_LESS_OR_EQUAL, HALF_SIZE_EQUAL, PROGRAMMING_DIFFERENCE};
+        for (int i = 0; i < conditionOperators.length; i++) {
+            if (conditionOperators[i].equals(operator)) return true;
+        }
+        return false;
     }
 }

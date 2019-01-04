@@ -67,7 +67,7 @@ public class FormulaWebservice extends WebService {
             return new FormulaSettingDto(null, null, null, masterUseList);
         }
         BasicFormulaSettingDto basicFormulaSettingDto = basicFormulaSettingFinder.getBasicFormulaSettingByHistoryID(setting.historyID);
-        masterUseList = basicFormulaSettingDto == null ? Collections.emptyList() : formulaFinder.getMasterUseInfo(basicFormulaSettingDto.getMasterUse());
+        masterUseList = (basicFormulaSettingDto == null || basicFormulaSettingDto.getMasterUse() == null)  ? Collections.emptyList() : formulaFinder.getMasterUseInfo(basicFormulaSettingDto.getMasterUse());
         return new FormulaSettingDto(basicFormulaSettingDto, detailFormulaSettingFinder.getDetailFormulaSettingByHistoryID(setting.historyID), basicCalculationFormulaFinder.getBasicCalculationFormulaByHistoryID(setting.historyID), masterUseList);
     }
 
