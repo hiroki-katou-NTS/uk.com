@@ -428,7 +428,8 @@ public class MonthlyPerformanceReload {
 				}
 			}
 			
-			// set state approval
+			// set state approval 
+			//*7
 			if (param.getInitMenuMode() == 2) { // mode approve disable cot approve theo data lay duoc tu no.534
 				if(approvalRootOfEmloyee!=null && approvalRootOfEmloyee.getApprovalRootSituations()!=null){
 					for (AppRootSituationMonth approvalRootSituation : approvalRootOfEmloyee.getApprovalRootSituations()) {
@@ -438,6 +439,13 @@ public class MonthlyPerformanceReload {
 							break;
 						}else if(approve && approvalRootSituation.getTargetID().equals(employeeId) && approvalRootSituation.getApprovalStatus().getReleaseDivision() != ReleasedProprietyDivision.NOT_RELEASE && !approve) {
 							lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
+							break;
+						}else if( approvalRootSituation.getTargetID().equals(employeeId) && approvalRootSituation.getApprovalAtr() == ApproverEmployeeState.PHASE_DURING && !approve) {
+							if(screenDto.getIdentityProcess().getUseMonthSelfCK() == 1 ) {
+								if(!identify) {
+									lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
+								}
+							}
 							break;
 						}
 					}
