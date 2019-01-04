@@ -19,6 +19,8 @@ public interface StateCorreHisDeparRepository {
 
     Optional<StateLinkSetMaster> getStateLinkSettingMasterById(String cid, String hisId, String masterCode);
 
+    List<StateLinkSetMaster> getStateLinkSetMaster(String cid, GeneralDate date);
+
     void update (String cid, YearMonthHistoryItem history);
 
     void updateAll(String cid, List<StateLinkSetMaster> stateLinkSetMasters, int startYearMonth, int endYearMonth, GeneralDate baseDate);

@@ -29,20 +29,12 @@ public class RegisterHisIndividualCommandHandler extends CommandHandler<StateLin
         StateLinkSetIndivi stateLinkSetIndivi;
         if(command.getMode() == RegisterMode.NEW.value) {
             String hisId = IdentifierUtil.randomUniqueId();
-            stateLinkSetIndivi = new StateLinkSetIndivi(
-                    hisId,
-                    command.getSalary() != null ? new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(command.getSalary()) : null,
-                    command.getBonus() != null ? new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(command.getBonus()) : null
-            );
+            stateLinkSetIndivi = new StateLinkSetIndivi(hisId, command.getSalary(), command.getBonus());
             stateCorreHisIndiviService.addHistoryIndividual(hisId, start, end, stateLinkSetIndivi, command.getEmpId());
         } else {
             String hisId = command.getHisId();
             YearMonthHistoryItem history = new YearMonthHistoryItem(hisId,new YearMonthPeriod(start,end));
-            stateLinkSetIndivi = new StateLinkSetIndivi(
-                    hisId,
-                    command.getSalary() != null ? new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(command.getSalary()) : null,
-                    command.getBonus() != null ? new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(command.getBonus()) : null
-            );
+            stateLinkSetIndivi = new StateLinkSetIndivi(hisId, command.getSalary(), command.getBonus());
             stateCorreHisIndiviService.updateHistoryIndividual(history, stateLinkSetIndivi, command.getEmpId());
         }
     }

@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.infra.repository.wageprovision.statementbindingsettin
 
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisSala;
 import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisSalaRepository;
@@ -24,6 +25,7 @@ public class JpaStateCorreHisSaRepository extends JpaRepository implements State
     private static final String SELECT_BY_CID_HISID_MASTERCODE = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisSalPk.cid =:cid AND f.stateCorHisSalPk.hisId =:hisId AND f.stateCorHisSalPk.masterCode = :masterCode";
     private static final String REMOVE_BY_HISID = "DELETE FROM QpbmtStateCorHisSal f WHERE f.stateCorHisSalPk.cid =:cid AND f.stateCorHisSalPk.hisId =:hisId";
     private static final String UPDATE_BY_HISID = "UPDATE  QpbmtStateCorHisSal f SET f.startYearMonth = :startYearMonth, f.endYearMonth = :endYearMonth WHERE f.stateCorHisSalPk.cid =:cid AND f.stateCorHisSalPk.hisId =:hisId";
+    private static final String SELECT_BY_CID_DATE = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisSalPk.cid =:cid AND f.startYearMonth <= :date AND f.endYearMonth >= :date ";
 
     @Override
     public  Optional<StateCorreHisSala> getStateCorrelationHisSalaryByCid(String cid){
@@ -68,7 +70,16 @@ public class JpaStateCorreHisSaRepository extends JpaRepository implements State
 
         return Optional.of(listStateCorHisSal.get().toDomain());
     }
-    
+
+    @Override
+    public List<StateLinkSetMaster> getStateLinkSetMaster(String cid, GeneralDate date) {
+        List<QpbmtStateCorHisSal> entitys = this.queryProxy().query(SELECT_BY_CID_DATE, QpbmtStateCorHisSal.class)
+                .setParameter("cid", cid)
+                .setParameter("date", date)
+                .getList();
+        return QpbmtStateCorHisSal.toDomainSetting(entitys);
+    }
+
     @Override
     public void update(String cid, YearMonthHistoryItem history) {
         this.getEntityManager().createQuery(UPDATE_BY_HISID)

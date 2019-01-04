@@ -21,6 +21,8 @@ public interface StateCorreHisPoRepository {
 
     Optional<StateLinkSetDate> getStateLinkSettingDateById(String cId, String hisId);
 
+    List<StateLinkSetMaster> getStateLinkSetMaster(String cid, GeneralDate date);
+
     void update (String cid, YearMonthHistoryItem history);
 
     void updateAll(String cid, List<StateLinkSetMaster> stateLinkSetMasters, int startYearMonth, int endYearMonth, GeneralDate baseDate);

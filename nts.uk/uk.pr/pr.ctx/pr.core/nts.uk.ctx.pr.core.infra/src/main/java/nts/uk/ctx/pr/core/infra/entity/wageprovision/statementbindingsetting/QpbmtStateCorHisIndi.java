@@ -2,15 +2,20 @@ package nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisIndivi;
 import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateLinkSetIndivi;
 import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
 * 明細書紐付け履歴（個人）
@@ -67,9 +72,7 @@ public class QpbmtStateCorHisIndi extends UkJpaEntity implements Serializable {
     }
 
     public StateLinkSetIndivi toDomain() {
-        return new StateLinkSetIndivi(this.stateCorHisIndiPk.hisId,
-                this.salaryCode == null ? null : new StatementCode(this.salaryCode),
-                this.bonusCode == null ? null : new StatementCode(this.bonusCode));
+        return new StateLinkSetIndivi(this.stateCorHisIndiPk.hisId, this.salaryCode, this.bonusCode);
     }
     public static QpbmtStateCorHisIndi toEntity(String empID,  YearMonthHistoryItem history, String salaryLayoutCode, String bonusLayoutCode) {
         return new QpbmtStateCorHisIndi(new QpbmtStateCorHisIndiPk(empID, history.identifier()),
@@ -79,4 +82,24 @@ public class QpbmtStateCorHisIndi extends UkJpaEntity implements Serializable {
                 bonusLayoutCode == null? null : bonusLayoutCode);
     }
 
+
+    public static List<StateCorreHisIndivi> toDomainHistory(List<QpbmtStateCorHisIndi> entitys) {
+        List<StateCorreHisIndivi> domains = new ArrayList<>();
+        Map<String, List<QpbmtStateCorHisIndi>> mapEntitys = entitys.stream()
+                .collect(Collectors.groupingBy(i -> i.stateCorHisIndiPk.empId));
+        for (Map.Entry<String, List<QpbmtStateCorHisIndi>> map : mapEntitys.entrySet()) {
+            String sid = map.getKey();
+            List<YearMonthHistoryItem> historyItems = new ArrayList<>();
+            for (QpbmtStateCorHisIndi entity : map.getValue()) {
+                historyItems.add(new YearMonthHistoryItem(entity.stateCorHisIndiPk.hisId,
+                        new YearMonthPeriod(new YearMonth(entity.startYearMonth), new YearMonth(entity.endYearMonth))));
+            }
+            domains.add(new StateCorreHisIndivi(sid, historyItems));
+        }
+        return domains;
+    }
+
+    public static List<StateLinkSetIndivi> toDomainSetting(List<QpbmtStateCorHisIndi> entitys) {
+        return entitys.stream().map(QpbmtStateCorHisIndi::toDomain).collect(Collectors.toList());
+    }
 }

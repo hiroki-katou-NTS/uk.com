@@ -1,8 +1,10 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statebindingset;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.service.StateCorreHisAndLinkSetIndivi;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -14,10 +16,9 @@ public interface StateCorreHisIndiviRepository {
 
     Optional<StateCorreHisIndivi> getStateCorrelationHisIndividualByEmpId(String empId);
 
-    Optional<StateCorreHisIndivi> getStateCorrelationHisIndividualByDate(String empId, GeneralDate date);
-
     Optional<StateLinkSetIndivi> getStateLinkSettingIndividualById(String empId, String hisId);
 
+    StateCorreHisAndLinkSetIndivi getStateCorreHisAndLinkSetIndivi(List<String> empIds, GeneralDate date);
 
     void add(String cid, YearMonthHistoryItem history, String salaryCode, String bonusCode);
 
