@@ -17,8 +17,7 @@ module nts.uk.at.view.kmk011.h {
             return nts.uk.request.ajax("at", path.find);
         }
         export function saveAsExcel(param): JQueryPromise<any> {
-            console.log('gtcontext:' +__viewContext);
-        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Divergence", domainType: "KMK011"+__viewContext.program.programName,languageId: 'ja',baseDate:moment.utc(param).format(),mode:1, reportType: 0});
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Divergence", domainType: "KMK011"+__viewContext.program.programName,languageId: 'ja',baseDate:moment.utc(param).format(), reportType: 0});
     }
     }
     export module model {
