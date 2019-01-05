@@ -51,8 +51,7 @@ public class PersonCostCalculationExportImpl implements  MasterListData {
 	if(!CollectionUtil.isEmpty(listPersonCostCalculationSetting)){
 			for(PersonCostCalculationSettingDto personCostCalculationSettingDto:listPersonCostCalculationSetting){			
 				PersonCostCalculationSettingDto personCostCalculationSetting	=personCostCalculationSettingFinder.findByHistoryID(personCostCalculationSettingDto.getHistoryID());
-				data=putEntryMasterDatas();
-				
+				data=putEntryMasterDatas();				
 				data.put("有効開始日",personCostCalculationSettingDto.getStartDate() !=null? personCostCalculationSettingDto.getStartDate().toString():"");
 				data.put("終了日",personCostCalculationSettingDto.getEndDate() !=null? personCostCalculationSettingDto.getEndDate().toString():"");
 				data.put("人件費を計算する際に使用する単価",!Objects.isNull(personCostCalculationSettingDto.getUnitPrice())==true?getTextResource( personCostCalculationSettingDto.getUnitPrice()):"");
@@ -71,11 +70,9 @@ public class PersonCostCalculationExportImpl implements  MasterListData {
 								List<ShortAttendanceItemDto> listatt=premiumSetDto.getAttendanceItems();
 								List<Integer> litatendenceId=listatt.stream().map(x ->x.getShortAttendanceID()).collect(Collectors.toList());
 								List<AttendanceNamePriniumDto> rs=personCostCalculationSettingFinder.atNames(litatendenceId);
+								rs.sort((AttendanceNamePriniumDto o1,AttendanceNamePriniumDto o2) -> o1.getAttendanceItemDisplayNumber()-o2.getAttendanceItemDisplayNumber());
 								String codeName="";
-								if(!CollectionUtil.isEmpty(rs)){
-									for(AttendanceNamePriniumDto attendanceNamePriniumDto:rs){
-										//String.join(codeName, attendanceNamePriniumDto.getAttendanceItemDisplayNumber(),attendanceNamePriniumDto.getAttendanceItemName());
-									}
+								if(!CollectionUtil.isEmpty(rs)){									
 									codeName=rs.get(0).getAttendanceItemDisplayNumber()+rs.get(0).getAttendanceItemName();
 									for(int i=1;i<rs.size();i++){
 										AttendanceNamePriniumDto attdanceName=rs.get(i);
