@@ -40,7 +40,7 @@ module nts.uk.com.view.cmf002.a.viewmodel {
          */
         importScreen(): void {
             let self = this;
-            jump("/view/cmf/002/o/index.xhtml");
+            jump("/view/cmf/002/o/index.xhtml", {roleAuthority: self.roleAuthority});
         }
 
         /**

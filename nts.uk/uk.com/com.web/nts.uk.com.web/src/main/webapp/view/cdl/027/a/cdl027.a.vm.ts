@@ -165,7 +165,7 @@ module nts.uk.com.view.cdl027.a.viewmodel {
                     {
                         name: 'Paging',
                         type: "local",
-                        pageSize: 15,
+                        pageSize: 100,
                         currentPageIndex: 0,
                         showPageSizeDropDown: true,
                         pageCountLimit: 20

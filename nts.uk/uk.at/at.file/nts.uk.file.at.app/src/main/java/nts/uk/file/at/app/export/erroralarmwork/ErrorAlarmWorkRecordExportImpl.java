@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -17,7 +16,11 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.monthly.CompareOperatorText;
+import nts.uk.ctx.at.record.app.find.dailyperformanceformat.AttendanceItemsFinder;
+import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttdItemDto;
 import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.ErrorAlarmWorkRecordDto;
+import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.ErAlAtdItemConditionDto;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessType;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
@@ -25,19 +28,18 @@ import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceName
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
-import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.SimpleWorkTimeSettingDto;
+import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
+import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeFinder;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
-import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.bs.employee.app.find.jobtitle.dto.JobTitleItemDto;
 import nts.uk.ctx.bs.employee.dom.classification.Classification;
+import nts.uk.ctx.bs.employee.dom.classification.ClassificationCode;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
+import nts.uk.ctx.bs.employee.dom.employment.EmploymentCode;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
@@ -82,11 +84,12 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 	private BusinessTypesRepository businessTypesRepository;
 	
 	@Inject
-	private WorkTypeRepository workTypeRepo;
-	
-	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
-
+//
+    @Inject
+    private WorkTypeFinder find;
+	@Inject
+	private AttendanceItemsFinder attendanceItemsFinder;
 	
 	public static String value1= "value1";
 	public static String value2= "value2";
@@ -164,14 +167,42 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 		List<BusinessType> listBusinessType = businessTypesRepository.findAll(companyId);
 		Map<BusinessTypeCode , BusinessType> maplistBusinessType = listBusinessType.stream()
 				.collect(Collectors.toMap(BusinessType::getBusinessTypeCode, Function.identity()));
+		 //22
+		 List<WorkTypeDto> listWorkTypeDto = find.findByCompanyId() ;
+         Map<String,WorkTypeDto> mapListWorkTypeDto = listWorkTypeDto.stream()
+                       .collect(Collectors.toMap(WorkTypeDto::getWorkTypeCode, Function.identity()));
+         //12
+         List<Employment> listEmp =  employmentRepository.findAll(companyId);
+         Map<EmploymentCode,Employment> mapListEmp = listEmp.stream()
+                 .collect(Collectors.toMap(Employment::getEmploymentCode, Function.identity()));
+         //14
+         List<Classification> listClass = classificationRepository.getAllManagementCategory(companyId);
+         Map<ClassificationCode,Classification> mapListClass = listClass.stream()
+                 .collect(Collectors.toMap(Classification::getClassificationCode, Function.identity()));
+//         //24
+         List<WorkTimeSetting> lstWorktimeSetting = workTimeSettingRepository.findByCompanyId(companyId);  
+         Map<WorkTimeCode,WorkTimeSetting> mapListWorkTime = lstWorktimeSetting.stream()
+                 .collect(Collectors.toMap(WorkTimeSetting::getWorktimeCode, Function.identity()));
+         //>30
+         List<AttdItemDto> listAttItemDto2 = attendanceItemsFinder.findListByAttendanceAtr(2);
+         List<AttdItemDto> listAttItemDto3 = attendanceItemsFinder.findListByAttendanceAtr(3);
+         List<AttdItemDto> listAttItemDto5 = attendanceItemsFinder.findListByAttendanceAtr(5);
+         List<AttdItemDto> listAttItemDto6 = attendanceItemsFinder.findListByAttendanceAtr(6);
+         Map<Integer,AttdItemDto> mapListAttItemDto2 = listAttItemDto2.stream()
+                 .collect(Collectors.toMap(AttdItemDto::getAttendanceItemId, Function.identity()));
+         Map<Integer,AttdItemDto> mapListAttItemDto3 = listAttItemDto3.stream()
+        		 .collect(Collectors.toMap(AttdItemDto::getAttendanceItemId, Function.identity()));
+         Map<Integer,AttdItemDto> mapListAttItemDto5 = listAttItemDto5.stream()
+        		 .collect(Collectors.toMap(AttdItemDto::getAttendanceItemId, Function.identity()));
+         Map<Integer,AttdItemDto> mapListAttItemDto6 = listAttItemDto6.stream()
+        		 .collect(Collectors.toMap(AttdItemDto::getAttendanceItemId, Function.identity()));
+         
 		if(CollectionUtil.isEmpty(lstDto)){
 			throw new BusinessException("Msg_393");
 		}else{
 			lstDto.stream().forEach(c->{
 				Map<String, Object> data = new HashMap<>();
 				putEmptyDataOne(data);
-				
-				String code = c.getCode().substring(0,3);
 				data.put(value1, c.getCode());
 				data.put(value2, c.getName());
 				
@@ -254,25 +285,24 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 					data.put(value11, "○");
 				}
 				//12
-				List<String> lst1 = new ArrayList<>();
-				
-				for(int i=0;i<c.getAlCheckTargetCondition().getLstEmployment().size();i++){
-					lst1.add(c.getAlCheckTargetCondition().getLstEmployment().get(i));
+				List<String> lstEmpCode =c.getAlCheckTargetCondition().getLstEmployment();
+				Collections.sort(lstEmpCode);
+				List<String> codeAndNameEmp = new ArrayList<>();
+				for (String key : lstEmpCode) {
+					EmploymentCode keyEmp = new EmploymentCode(key);
+					Employment emp = mapListEmp.get(keyEmp);
+					if(emp!=null){
+					codeAndNameEmp.add(emp.getEmploymentCode().v()+emp.getEmploymentName().v());
+					}
 				}
 				
-				String employmentName = "";
-				if(CollectionUtil.isEmpty(lst1)){
-					data.put(value12, employmentName);
+				
+				String listStringemp = "";
+				if(CollectionUtil.isEmpty(lstEmpCode)){
+					data.put(value12, listStringemp);
 				}else{
-					for(int i=0; i<lst1.size();i++){
-						Optional<Employment> employment = this.employmentRepository.findEmployment(companyId, lst1.get(i));
-						if( i== 0){
-							employmentName  = employment.get().getEmploymentName().v();
-						}else{
-							employmentName = employmentName+", "+employment.get().getEmploymentName().v();
-						}
-					}
-					data.put(value12, employmentName);
+					listStringemp = String.join(",", codeAndNameEmp);
+					data.put(value12, listStringemp);
 				}
 				//13 filterByClassification 
 				if(c.getAlCheckTargetCondition().isFilterByClassification() == false){
@@ -281,24 +311,17 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 					data.put(value13, "○");
 				}
 				String sValues14 = "";
-				
-				List<String> lst2 = new ArrayList<>();
-				
-				for(int i=0;i<c.getAlCheckTargetCondition().getLstClassification().size();i++){
-					lst2.add(c.getAlCheckTargetCondition().getLstClassification().get(i));
+				List<String> lstClassificationCode= c.getAlCheckTargetCondition().getLstClassification();
+				Collections.sort(lstClassificationCode);
+				List<String> codeAndNameClassification = new ArrayList<>();
+				for (String key : lstClassificationCode) {
+					ClassificationCode keyClass = new ClassificationCode(key);
+					Classification classification = mapListClass.get(keyClass);
+					if(classification!=null)
+						codeAndNameClassification.add(classification.getClassificationCode().v()+classification.getClassificationName().v());
 				}
-				
-				if(CollectionUtil.isEmpty(lst2)){
-					data.put(value14, "");
-				}else{
-					for(int i=0;i<lst2.size();i++){
-						Optional<Classification> optClassification = classificationRepository.findClassification(companyId, lst2.get(i));
-						if( i== 0){
-							sValues14  = optClassification.get().getClassificationName().v();
-						}else{
-							sValues14 = sValues14+", "+optClassification.get().getClassificationName().v();
-						}
-					}
+				if(!CollectionUtil.isEmpty(codeAndNameClassification)){
+					sValues14 = String.join(",", codeAndNameClassification);
 					data.put(value14, sValues14);
 				}
 				
@@ -314,21 +337,19 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 				for(int i=0;i<c.getAlCheckTargetCondition().getLstJobTitle().size();i++){
 					lst3.add(c.getAlCheckTargetCondition().getLstJobTitle().get(i));
 				}
-				
-				String sValue3 = "";
-				if(CollectionUtil.isEmpty(lst3)) {
-					data.put(value16, "");
-				}else{
-					sValue3 = lst3.stream()
-			        .map(x -> {
-						Optional<JobTitleItemDto> dto = Optional.ofNullable(mapListJobs.get(x));
-						if (dto.isPresent()) {
-							return dto.get().getName();
-						}
-						return "";
-					})
-			        .collect( Collectors.joining( "," ));
-					data.put(value16, sValue3);
+				//16
+				String sValues16 = "";
+				List<String> lstJobTitleCode= c.getAlCheckTargetCondition().getLstJobTitle();
+				Collections.sort(lstJobTitleCode);
+				List<String> codeAndNameJobTitle = new ArrayList<>();
+				for (String key : lstJobTitleCode) {
+					JobTitleItemDto jobTitleItemDto= mapListJobs.get(key);
+					if(jobTitleItemDto!=null)
+						codeAndNameJobTitle.add(jobTitleItemDto.getCode()+jobTitleItemDto.getName());
+				}
+				if(!CollectionUtil.isEmpty(codeAndNameJobTitle)){
+					sValues16 = String.join(",", codeAndNameJobTitle);
+					data.put(value16, sValues16);
 				}
 				
 				//17
@@ -337,28 +358,22 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 				}else{
 					data.put(value17, "○");
 				}
-				//
-				List<String> lst4 = new ArrayList<>();
-				
-				for(int i=0;i<c.getAlCheckTargetCondition().getLstBusinessType().size();i++){
-					lst4.add(c.getAlCheckTargetCondition().getLstBusinessType().get(i));
+				//18
+				String sValues18 = "";
+				List<String> lstBusinessTypeCode= c.getAlCheckTargetCondition().getLstBusinessType();
+				Collections.sort(lstBusinessTypeCode);
+				List<String> codeAndBusinessType = new ArrayList<>();
+				for (String key : lstBusinessTypeCode) {
+					BusinessTypeCode keyBz = new BusinessTypeCode(key);
+					BusinessType businessType = maplistBusinessType.get(keyBz);
+					if(businessType!=null)
+						codeAndBusinessType.add(businessType.getBusinessTypeCode().v()+businessType.getBusinessTypeName());
+				}
+				if(!CollectionUtil.isEmpty(codeAndBusinessType)){
+					sValues18 = String.join(",", codeAndBusinessType);
+					data.put(value18, sValues18);
 				}
 				
-				String sValue4 = "";
-				if(CollectionUtil.isEmpty(lst4)){
-					data.put(value18, "");
-				}else{
-
-					for(int i=0;i<lst4.size();i++){
-						if(i==0){
-							sValue4 = maplistBusinessType.get(new BusinessTypeCode(lst4.get(i))).getBusinessTypeName().v();
-						}else{
-							sValue4 = sValue4 + ", "+maplistBusinessType.get(new BusinessTypeCode(lst4.get(i))).getBusinessTypeName().v();
-						}
-						
-					}
-					data.put(value18, sValue4);
-				}
 				// 19
 				if(c.getWorkTypeCondition().getComparePlanAndActual() == 0){
 					data.put(value19, TextResource.localize("Enum_FilterByCompare_NotCompare"));
@@ -383,19 +398,19 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 					data.put(value22, "");
 				}else{
 					data.put(value21, "○");
-					List<WorkTypeInfor> lst22 = this.workTypeRepo.getPossibleWorkTypeAndOrder(companyId, c.getWorkTypeCondition().getPlanLstWorkType());
-					String s22 = "";
-					if(CollectionUtil.isEmpty(lst22)){
-						data.put(value22, "");
-					}else{
-						for(int i=0;i<lst22.size();i++){
-							if(i==0){
-								s22 = lst22.get(i).getWorkTypeCode()+ lst22.get(i).getName();
-							}else{
-								s22 = s22+", "+lst22.get(i).getWorkTypeCode()+ lst22.get(i).getName();
-							}
+					List<String> listWorkTypeCode = c.getWorkTypeCondition().getPlanLstWorkType();
+					String sValues22 = "";
+					Collections.sort(listWorkTypeCode);
+					List<String> codeAndNameWorkType = new ArrayList<>();
+					for (String key : listWorkTypeCode) {
+						WorkTypeDto workTypeDto = mapListWorkTypeDto.get(key);
+						if(workTypeDto!=null){
+							codeAndNameWorkType.add(workTypeDto.getWorkTypeCode()+workTypeDto.getName());
 						}
-						data.put(value22, s22);
+					}
+					if(!CollectionUtil.isEmpty(codeAndNameWorkType)){
+						sValues22 = String.join(",", codeAndNameWorkType);
+						data.put(value22, sValues22);
 					}
 				}
 				// 23 24
@@ -404,28 +419,41 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 					data.put(value24, "");
 				}else{
 					data.put(value23, "○");
-
-					List<WorkTimeSetting> lstWorktimeSetting = workTimeSettingRepository.findByCompanyId(companyId);
-					List<SimpleWorkTimeSettingDto> lst23= lstWorktimeSetting.stream().map(item -> {
-						return SimpleWorkTimeSettingDto.builder().isAbolish(item.getAbolishAtr() == AbolishAtr.ABOLISH)
-								.worktimeCode(item.getWorktimeCode().v())
-								.workTimeName(item.getWorkTimeDisplayName().getWorkTimeName().v()).build();
-						}).collect(Collectors.toList());
-					
-					String s24 = "";
-					if(CollectionUtil.isEmpty(c.getWorkTimeCondition().getPlanLstWorkTime())){
-						data.put(value24, "");
-					}else{
-						for(int i=0;i<c.getWorkTimeCondition().getPlanLstWorkTime().size();i++){
-							for(int j=0;j<lst23.size();j++){
-								if(c.getWorkTimeCondition().getPlanLstWorkTime().get(i).equals(lst23.get(j).worktimeCode)){
-									s24 = lst23.get(j).worktimeCode+", "+lst23.get(j).workTimeName;
-									
-								}
-							}
+					List<String> listWorkTimeCode = c.getWorkTimeCondition().getPlanLstWorkTime();
+					String sValues24 = "";
+					Collections.sort(listWorkTimeCode);
+					List<String> codeAndNameWorkTime = new ArrayList<>();
+					for (String key : listWorkTimeCode) {
+						WorkTimeCode keyWorkTime = new WorkTimeCode(key);
+						WorkTimeSetting workTypeDto = mapListWorkTime.get(keyWorkTime);
+						if(workTypeDto!=null){
+							codeAndNameWorkTime.add(workTypeDto.getWorktimeCode().v()+workTypeDto.getWorkTimeDisplayName().getWorkTimeAbName().v());
 						}
-						data.put(value24, s24);
 					}
+					if(!CollectionUtil.isEmpty(codeAndNameWorkTime)){
+						sValues24 = String.join(",", codeAndNameWorkTime);
+						data.put(value24, sValues24);
+					}
+//					List<SimpleWorkTimeSettingDto> lst23= lstWorktimeSetting.stream().map(item -> {
+//						return SimpleWorkTimeSettingDto.builder().isAbolish(item.getAbolishAtr() == AbolishAtr.ABOLISH)
+//								.worktimeCode(item.getWorktimeCode().v())
+//								.workTimeName(item.getWorkTimeDisplayName().getWorkTimeName().v()).build();
+//						}).collect(Collectors.toList());
+//					
+//					String s24 = "";
+//					if(CollectionUtil.isEmpty(c.getWorkTimeCondition().getPlanLstWorkTime())){
+//						data.put(value24, "");
+//					}else{
+//						for(int i=0;i<c.getWorkTimeCondition().getPlanLstWorkTime().size();i++){
+//							for(int j=0;j<lst23.size();j++){
+//								if(c.getWorkTimeCondition().getPlanLstWorkTime().get(i).equals(lst23.get(j).worktimeCode)){
+//									s24 = lst23.get(j).worktimeCode+","+lst23.get(j).workTimeName;
+//									
+//								}
+//							}
+//						}
+//						data.put(value24, s24);
+//					}
 				}
 				
 				//25
@@ -435,57 +463,335 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 					data.put(value25, "OR");
 				}
 				//26 27
-				if(c.getWorkTypeCondition().getComparePlanAndActual() == 0 || c.getWorkTypeCondition().getComparePlanAndActual() == 2){
-					if(c.getWorkTypeCondition().isActualFilterAtr()== false){
-						data.put(value26, "-");
-						data.put(value27,"");
-					}else{
-						data.put(value26, "○");
-						data.put(value27,"chua lm");
-					}
-				}
+				 if(c.getWorkTypeCondition().getComparePlanAndActual() == 0 || c.getWorkTypeCondition().getComparePlanAndActual() == 2){
+                     if(c.getWorkTypeCondition().isActualFilterAtr()== false){
+                            data.put(value26, "-");
+                            data.put(value27,"");
+                     }else{
+                            //listErrorAlarmWorkRecord;
+                            data.put(value26, "○");
+                            List<String> codeAndNameActualType = new ArrayList<>();
+                            List<String> listActualLstWorkTypeCode = c.getWorkTypeCondition().getActualLstWorkType();
+                            Collections.sort(listActualLstWorkTypeCode);
+                            for (String key : listActualLstWorkTypeCode) {
+                            	WorkTypeDto workTypeDto=  mapListWorkTypeDto.get(key);
+                            	if(workTypeDto!=null){
+                            		codeAndNameActualType.add(workTypeDto.getWorkTypeCode()+workTypeDto.getName());
+                            	}
+                            }
+                            String stringDataColumn27 = String.join(",", codeAndNameActualType);
+                            data.put(value27,stringDataColumn27);
+                     }
+              }
+//              
+//              //28 29
+//              
+              if(c.getWorkTimeCondition().getComparePlanAndActual() == 0 || c.getWorkTimeCondition().getComparePlanAndActual() == 2){
+              
+                     if(c.getWorkTimeCondition().isActualFilterAtr()== false){
+                            data.put(value28, "-");
+                            data.put(value29,"");
+                     }else{
+                            data.put(value28, "○");
+                            List<String> listActualTimeCode = c.getWorkTimeCondition().getActualLstWorkTime();
+                            List<String> codeAndNameActualTime = new ArrayList<>();
+                            Collections.sort(listActualTimeCode);
+                            for (String key : listActualTimeCode) {
+                            	WorkTypeDto workTypeDto=  mapListWorkTypeDto.get(key);
+                            	if(workTypeDto!=null){
+                            		codeAndNameActualTime.add(workTypeDto.getWorkTypeCode()+workTypeDto.getName());
+                            	}
+                            }
+                            String stringDataColumn29 =String.join(",", codeAndNameActualTime);
+                            
+                            data.put(value29,stringDataColumn29);
+                     }
+              }
+              //30
+              if(c.getOperatorGroup1() ==0){
+                     data.put(value30, "AND");
+              }else{
+                     data.put(value30, "OR");
+              }
+              // 31 32 33
+              List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup1 = c.getErAlAtdItemConditionGroup1();
+               if(!CollectionUtil.isEmpty(erAlAtdItemConditionGroup1)){
+                     for(int i = 0 ; i < erAlAtdItemConditionGroup1.size();i++){
+                            ErAlAtdItemConditionDto erro = erAlAtdItemConditionGroup1.get(i);
+                            String alarmDescription = "";
+                            String targetName = "";
+                            String conditonName = "";
+                            String startValue = "";
+                            String endValue = "";
+                            int compare = erro.getCompareOperator();
+                            CompareOperatorText compareOpera = convertCompareType(compare);
+                            int conditionType = erro.getConditionType();
+                            int conditionAtr = erro.getConditionAtr();
+                            Map<Integer,AttdItemDto> mapListAttItemDto = new HashMap<>();
+                         	/** 回数 
+                        	TIMES(0, "Enum_ConditionAtr_Times"),
+                        	時間 
+                        	TIME_DURATION(1, "Enum_ConditionAtr_TimeDuration"),
+                        	 時刻 
+                        	TIME_WITH_DAY(2, "Enum_ConditionAtr_TimeWithDay"),
+                        	金額 
+                            AMOUNT_VALUE(3, "Enum_ConditionAtr_AmountValue"),
+                        	日数
+                        	DAYS(4, "日数");*/
+                            ////////////////////////
+                        	/** 固定値
+                        	FIXED_VALUE(0, "Enum_ConditionType_FixedValue"),
+                        	勤怠項目 
+                        	ATTENDANCE_ITEM(1, "Enum_ConditionType_AttendanceItem"),
+                        	入力チェック 
+                        	INPUT_CHECK(2, "Enum_ConditionType_InputCheck");*/
+                            
+                            switch (conditionAtr) {
+                            case 0:
+                            case 1:
+                            case 3:
+								if(conditionAtr==0){
+									 mapListAttItemDto = mapListAttItemDto2;
+								}
+								if(conditionAtr==1){
+									 mapListAttItemDto = mapListAttItemDto5;
+								}
+								if(conditionAtr==3){
+									 mapListAttItemDto = mapListAttItemDto3;
+								}
+                            	List<Integer> listKeyAdd = erro.getCountableAddAtdItems();
+                            	List<Integer> listKeySub = erro.getCountableSubAtdItems();
+                                List<String> listStringAttNameAdd = new ArrayList<>();
+                                List<String> listStringAttNameSub = new ArrayList<>();
+                                //get list att add
+                                for (Integer attId : listKeyAdd) {
+                                	AttdItemDto attItem = mapListAttItemDto.get(attId);
+                                	if(attItem!=null){
+                                		listStringAttNameAdd.add(attItem.getAttendanceItemName());
+                                	}
+                                }
+                              //get list att sub
+                                for (Integer attId : listKeySub) {
+                                	AttdItemDto attItem = mapListAttItemDto.get(attId);
+                                	if(attItem!=null){
+                                		listStringAttNameSub.add(attItem.getAttendanceItemName());
+                                	}
+                                }
+                                Collections.sort(listStringAttNameAdd);
+                                Collections.sort(listStringAttNameSub);
+                                targetName = String.join(",", listStringAttNameAdd) + String.join(",", listStringAttNameSub);
+								break;
+							case 2:
+								AttdItemDto attItem = mapListAttItemDto6.get(erro.getUncountableAtdItem());
+										if(attItem!=null){
+											targetName =attItem.getAttendanceItemName();
+										}
+								break;
+							default:
+								break;
+							}
+                          
+                            switch (conditionType) {
+                            case 0:
+                                   startValue = erro.getCompareStartValue().toString();
+                                   if (compare <= 5) {
+                                          alarmDescription = targetName+compareOpera.getCompareLeft()+startValue;
+                                   } else {
+	                                    startValue =conditionAtr==0?timeToString(erro.getCompareStartValue().intValueExact()):erro.getCompareStartValue().toString();
+                                          if (compare > 5 && compare <= 7) {
+                                                 alarmDescription = startValue + compareOpera.getCompareLeft()+targetName+compareOpera.getCompareright()+endValue;
+                                          } else {
+                                                 alarmDescription = targetName+compareOpera.getCompareLeft()+startValue+","+endValue+compareOpera.getCompareright()+targetName;
+                                          }
+                                   }
+                                   break;
+                            case 1:
+                            	 String singleAttName = "";
+                            	if(conditionAtr==3){
+                            		AttdItemDto at = mapListAttItemDto.get(erro.getSingleAtdItem());
+                            		if(at!=null){
+                            		 singleAttName= at.getAttendanceItemName();
+                            		}
+                            	}else {
+                            		Map<Integer,AttdItemDto> mapAttDto = mapListAttItemDto3;
+                            		AttdItemDto attItem = mapAttDto.get(erro.getSingleAtdItem());
+                            		if(attItem!=null){
+                            			singleAttName = attItem.getAttendanceItemName();
+                            		}
+								}
+                                   alarmDescription = targetName + compareOpera.getCompareLeft()+singleAttName;
+                                   break;
+                            case 2:
+                                   //Enum : InputCheckCondition
+                                   /** 入力されていない */
+                                   //INPUT_NOT_DONE(0, "Enum_ConditionType_FixedValue"),
+                                   /** 入力されている */
+                                   //INPUT_DONE(1, "Enum_ConditionType_AttendanceItem");
+                                   conditonName = erro.getInputCheckCondition()==0?TextResource.localize("Enum_ConditionType_FixedValue"):
+                                          TextResource.localize("Enum_ConditionType_AttendanceItem");
+                                   alarmDescription = targetName+conditonName;
+                                   break;
+                            default:
+                                   break;
+                            }
+                            if(i==0){
+                                   data.put(value31, alarmDescription);
+                            }
+                            if(i==1){
+                                   data.put(value32,alarmDescription);
+                            }
+                            if(i==2){
+                                   data.put(value33,alarmDescription);
+                            }
+                     }
+              }
+              List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup2 = c.getErAlAtdItemConditionGroup2();
+              //34,35,39
+              if(c.isGroup2UseAtr() ==false){
+                     data.put(value34, "-");
+                     data.put(value35, "");
+                     data.put(value39, "");
+              }else{
+                     data.put(value34, "○");
+                     if(c.getOperatorGroup2()== 0){
+                            data.put(value35, "AND");
+                     }else{
+                            data.put(value35, "OR");
+                     }
+                     //36 37 38
+                     if(!CollectionUtil.isEmpty(erAlAtdItemConditionGroup2)){
+                         for(int i = 0 ; i < erAlAtdItemConditionGroup2.size();i++){
+                                ErAlAtdItemConditionDto erro = erAlAtdItemConditionGroup2.get(i);
+                                String alarmDescription = "";
+                                String targetName = "";
+                                String conditonName = "";
+                                String startValue = "";
+                                String endValue = "";
+                                int compare = erro.getCompareOperator();
+                                CompareOperatorText compareOpera = convertCompareType(compare);
+                                int conditionType = erro.getConditionType();
+                                int conditionAtr = erro.getConditionAtr();
+                                Map<Integer,AttdItemDto> mapListAttItemDto = new HashMap<>();
+                             	/** 回数 
+	                        	TIMES(0, "Enum_ConditionAtr_Times"),
+	                        	時間 
+	                        	TIME_DURATION(1, "Enum_ConditionAtr_TimeDuration"),
+	                        	 時刻 
+	                        	TIME_WITH_DAY(2, "Enum_ConditionAtr_TimeWithDay"),
+	                        	金額 
+	                            AMOUNT_VALUE(3, "Enum_ConditionAtr_AmountValue"),
+	                        	日数
+	                        	DAYS(4, "日数");*/
+                                ////////////////////////
+                            	/** 固定値
+                            	FIXED_VALUE(0, "Enum_ConditionType_FixedValue"),
+                            	勤怠項目 
+                            	ATTENDANCE_ITEM(1, "Enum_ConditionType_AttendanceItem"),
+                            	入力チェック 
+                            	INPUT_CHECK(2, "Enum_ConditionType_InputCheck");*/
+                                switch (conditionAtr) {
+                                case 0:
+                                case 1:
+                                case 3:
+    								if(conditionAtr==0){
+    									 mapListAttItemDto = mapListAttItemDto2;
+    								}
+    								if(conditionAtr==1){
+    									 mapListAttItemDto = mapListAttItemDto5;
+    								}
+    								if(conditionAtr==3){
+    									 mapListAttItemDto = mapListAttItemDto3;
+    								}
+                                	List<Integer> listKeyAdd = erro.getCountableAddAtdItems();
+                                	List<Integer> listKeySub = erro.getCountableSubAtdItems();
+                                    List<String> listStringAttNameAdd = new ArrayList<>();
+                                    List<String> listStringAttNameSub = new ArrayList<>();
+                                    //get list att add
+                                    for (Integer attId : listKeyAdd) {
+                                    	AttdItemDto attItem = mapListAttItemDto.get(attId);
+                                    	if(attItem!=null){
+                                    		listStringAttNameAdd.add(attItem.getAttendanceItemName());
+                                    	}
+                                    }
+                                  //get list att sub
+                                    for (Integer attId : listKeySub) {
+                                    	AttdItemDto attItem = mapListAttItemDto.get(attId);
+                                    	if(attItem!=null){
+                                    		listStringAttNameSub.add(attItem.getAttendanceItemName());
+                                    	}
+                                    }
+                                    Collections.sort(listStringAttNameAdd);
+                                    Collections.sort(listStringAttNameSub);
+                                    targetName = String.join(",", listStringAttNameAdd) + String.join(",", listStringAttNameSub);
+    								break;
+    							case 2:
+    								AttdItemDto attItem = mapListAttItemDto6.get(erro.getUncountableAtdItem());
+    										if(attItem!=null){
+    											targetName =attItem.getAttendanceItemName();
+    										}
+    								break;
+    							default:
+    								break;
+    							}
+                              
+                                switch (conditionType) {
+                                case 0:
+                                	startValue =conditionAtr==0?timeToString(erro.getCompareStartValue().intValueExact()):erro.getCompareStartValue().toString();
+                                       if (compare <= 5) {
+                                              alarmDescription = targetName+compareOpera.getCompareLeft()+startValue;
+                                       } else {
+                                              if (compare > 5 && compare <= 7) {
+                                                     alarmDescription = startValue + compareOpera.getCompareLeft()+targetName+compareOpera.getCompareright()+endValue;
+                                              } else {
+                                                     alarmDescription = targetName+compareOpera.getCompareLeft()+startValue+","+endValue+compareOpera.getCompareright()+targetName;
+                                              }
+                                       }
+                                       break;
+                                case 1:
+                                	 String singleAttName = "";
+                                	if(conditionAtr==3){
+                                		 singleAttName= mapListAttItemDto.get(erro.getSingleAtdItem()).getAttendanceItemName();
+                                	}else {
+                                		Map<Integer,AttdItemDto> mapAttDto = mapListAttItemDto3;
+                                		AttdItemDto attItem = mapAttDto.get(erro.getSingleAtdItem());
+                                		if(attItem!=null){
+                                			singleAttName = attItem.getAttendanceItemName();
+                                		}
+    								}
+                                       alarmDescription = targetName + compareOpera.getCompareLeft()+singleAttName;
+                                       break;
+                                case 2:
+                                       //Enum : InputCheckCondition
+                                       /** 入力されていない */
+                                       //INPUT_NOT_DONE(0, "Enum_ConditionType_FixedValue"),
+                                       /** 入力されている */
+                                       //INPUT_DONE(1, "Enum_ConditionType_AttendanceItem");
+                                       conditonName = erro.getInputCheckCondition()==0?TextResource.localize("Enum_ConditionType_FixedValue"):
+                                              TextResource.localize("Enum_ConditionType_AttendanceItem");
+                                       alarmDescription = targetName+conditonName;
+                                       break;
+                                default:
+                                       break;
+                                }
+                                if(i==0){
+                                       data.put(value36, alarmDescription);
+                                }
+                                if(i==1){
+                                       data.put(value37,alarmDescription);
+                                }
+                                if(i==2){
+                                       data.put(value38,alarmDescription);
+                                }
+                         }
+                     }
+                     if(c.getOperatorBetweenGroups() == 0){
+                            data.put(value39, "AND");
+                     }else{
+                            data.put(value39, "OR");
+                     }
+              }
 				
-				//28 29
-				
-				if(c.getWorkTimeCondition().getComparePlanAndActual() == 0 || c.getWorkTimeCondition().getComparePlanAndActual() == 2){
-				
-					if(c.getWorkTimeCondition().isActualFilterAtr()== false){
-						data.put(value28, "-");
-						data.put(value29,"");
-					}else{
-						data.put(value28, "○");
-						data.put(value29,"chua lm");
-					}
-				}
-				//30
-				if(c.getOperatorGroup1() ==0){
-					data.put(value30, "AND");
-				}else{
-					data.put(value30, "OR");
-				}
-				// 31 32 33
-				
-
-				if(c.isGroup2UseAtr() ==false){
-					data.put(value34, "-");
-					data.put(value35, "");
-					data.put(value39, "");
-				}else{
-					data.put(value34, "○");
-					if(c.getOperatorGroup2()== 0){
-						data.put(value35, "AND");
-					}else{
-						data.put(value35, "OR");
-					}
-					//36 37 38
-					if(c.getOperatorBetweenGroups() == 0){
-						data.put(value39, "AND");
-					}else{
-						data.put(value39, "OR");
-					}
-				}
-				
-				// 40 41
+				// 40 
 				
 				MasterData masterData = new MasterData(data, null, "");
 				masterData.cellAt(value1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
@@ -528,7 +834,6 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 				masterData.cellAt(value38).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				masterData.cellAt(value39).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				masterData.cellAt(value40).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt(value41).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				datas.add(masterData);
 			});
 		}
@@ -575,93 +880,90 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 		data.put(value38, "");
 		data.put(value39, "");
 		data.put(value40, "");
-		data.put(value41, "");
 	}
 	@Override
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 		columns.add(new MasterHeaderColumn(value1, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value2, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value3, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value4, "設定 区分", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value5, "設定 備考入力でエラーを解除する", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value6, "設定 備考NO", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value7, "設定 色表示対象項目", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value8, "設定 メッセージ色", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value9, "設定 表示するメッセージ", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value10, "設定 メッセージを太字にする", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value11, "チェック対象範囲設定 雇用", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value12, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value13, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value14, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value15, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value16, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value17, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value18, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value19, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value20, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value21, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value22, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value23, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value24, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value25, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value26, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value27, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value28, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value29, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value30, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value31, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value32, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value33, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value34, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value35, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value36, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value37, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value38, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value39, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value40, "コード", ColumnTextAlign.LEFT,
-				"", true));
-		columns.add(new MasterHeaderColumn(value41, "コード", ColumnTextAlign.LEFT,
-				"", true));
+                "", true));
+   columns.add(new MasterHeaderColumn(value2, "コード", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value3, "コード", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value4, "設定 区分", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value5, "設定 備考入力でエラーを解除する", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value6, "設定 備考NO", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value7, "設定 色表示対象項目", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value8, "設定 メッセージ色", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value9, "設定 表示するメッセージ", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value10, "設定 メッセージを太字にする", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value11, "チェック対象範囲設定 雇用", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value12, "value12", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value13, "value13", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value14, "value14", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value15, "value15", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value16, "value16", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value17, "value17", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value18, "value18", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value19, "value19", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value20, "value20", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value21, "value21", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value22, "value22", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value23, "value23", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value24, "value24", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value25, "value25", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value26, "value26", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value27, "value27", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value28, "value28", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value29, "value29", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value30, "value30", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value31, "value31", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value32, "value32", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value33, "value33", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value34, "value34", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value35, "value35", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value36, "value36", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value37, "value37", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value38, "value38", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value39, "value39", ColumnTextAlign.LEFT,
+                "", true));
+   columns.add(new MasterHeaderColumn(value40, "value40", ColumnTextAlign.LEFT,
+                "", true));
 		return columns;
 	}
 	@Override
@@ -783,6 +1085,60 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 		data.put("使用区分", "");
 		data.put("申請", "");
 		
+	}
+	private String timeToString(int value) {
+		if (value % 60 < 10) {
+			return String.valueOf(value / 60) + ":0" + String.valueOf(value % 60);
+		}
+		return String.valueOf(value / 60) + ":" + String.valueOf(value % 60);
+	}
+
+	private CompareOperatorText convertCompareType(int compareOperator) {
+		CompareOperatorText compare = new CompareOperatorText();
+		switch (compareOperator) {
+		case 0:/* 等しくない（≠） */
+			compare.setCompareLeft("≠");
+			compare.setCompareright("");
+			break;
+		case 1:/* 等しい（＝） */
+			compare.setCompareLeft("＝");
+			compare.setCompareright("");
+			break;
+		case 2:/* 以下（≦） */
+			compare.setCompareLeft("≦");
+			compare.setCompareright("");
+			break;
+		case 3:/* 以上（≧） */
+			compare.setCompareLeft("≧");
+			compare.setCompareright("");
+			break;
+		case 4:/* より小さい（＜） */
+			compare.setCompareLeft("＜");
+			compare.setCompareright("");
+			break;
+		case 5:/* より大きい（＞） */
+			compare.setCompareLeft("＞");
+			compare.setCompareright("");
+			break;
+		case 6:/* 範囲の間（境界値を含まない）（＜＞） */
+			compare.setCompareLeft("＜");
+			compare.setCompareright("＜");
+			break;
+		case 7:/* 範囲の間（境界値を含む）（≦≧） */
+			compare.setCompareLeft("≦");
+			compare.setCompareright("≦");
+			break;
+		case 8:/* 範囲の外（境界値を含まない）（＞＜） */
+			compare.setCompareLeft("＜");
+			compare.setCompareright("＜");
+			break;
+
+		default:/* 範囲の外（境界値を含む）（≧≦） */
+			compare.setCompareLeft("≦");
+			compare.setCompareright("≦");
+			break;
+		}
+		return compare;
 	}
 
 }

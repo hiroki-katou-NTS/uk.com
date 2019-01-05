@@ -139,7 +139,7 @@ module nts.uk.com.view.kfp001.h.viewmodel {
             this.logId = logId;
             this.code = code;
             this.name = name;
-            this.executionDateTime = moment.utc(execDT).format("YYYY/MM/DD hh:mm:ss");
+            this.executionDateTime = moment.utc(execDT).format("YYYY/MM/DD HH:mm:ss");
             this.executorCode = execCode;
             this.executorName = execName;
             this.start = start;

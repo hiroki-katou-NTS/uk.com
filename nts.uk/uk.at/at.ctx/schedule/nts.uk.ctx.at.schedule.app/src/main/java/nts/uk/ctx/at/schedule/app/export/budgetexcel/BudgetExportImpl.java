@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.app.export.budgetexcel;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,7 @@ public class BudgetExportImpl implements MasterListData {
 		List<MasterData> datas = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
 		List<ExternalBudget> listExternalBudget = budgetExcelRepo.findAll(companyId);
+		listExternalBudget.sort(Comparator.comparing(ExternalBudget::getExternalBudgetCd));
 		if (CollectionUtil.isEmpty(listExternalBudget)) {
 			return null;
 		} else {

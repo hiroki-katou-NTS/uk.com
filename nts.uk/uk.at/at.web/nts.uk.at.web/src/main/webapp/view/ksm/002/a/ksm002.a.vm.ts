@@ -77,9 +77,9 @@ module ksm002.a.viewmodel {
             self.yearMonthPicked.subscribe(function(value) {
                 let arrOptionaDates: Array<OptionalDate> = [];
                 self.getDataToOneMonth(value).done(function(arrOptionaDates) {
-                    self.optionDates(arrOptionaDates);
-                    self.optionDates.valueHasMutated();
                     if (arrOptionaDates.length > 0) {
+                        self.optionDates(arrOptionaDates);
+                        self.optionDates.valueHasMutated();
                         self.isNew(false);
                     } else {
                         self.isNew(true);
@@ -121,13 +121,15 @@ module ksm002.a.viewmodel {
                     self.getDataToOneMonth(self.yearMonthPicked()).done(function(arrOptionaDates) {
                         if (arrOptionaDates.length > 0) {
                             self.optionDates(arrOptionaDates);
+                            self.optionDates.valueHasMutated();
                             self.isNew(false);
                         }
+                        dfd.resolve();
                     })
                 } else {
                     //In Case no Data, openCDialog                    self.openKsm002CDialog();
+                    dfd.resolve();
                 };
-                dfd.resolve();
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                 dfd.reject();

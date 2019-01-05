@@ -513,8 +513,10 @@ module nts.uk.at.view.kaf005.b {
                     $("#inpEndTime1").trigger("validate");
                     if (!self.validate()) { return; }
                 }
-                if (!self.hasAppTimeOvertimeHours()) {
-                    self.setErrorB6_8();
+                if(self.enableOvertimeInput()){
+                    if (!self.hasAppTimeOvertimeHours()) {
+                        self.setErrorB6_8();
+                    }
                 }
                 //return if has error
                 if (nts.uk.ui.errors.hasError()){return;}   

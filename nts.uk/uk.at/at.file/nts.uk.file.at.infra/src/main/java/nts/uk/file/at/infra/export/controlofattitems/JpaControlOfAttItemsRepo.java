@@ -44,11 +44,5 @@ public class JpaControlOfAttItemsRepo extends JpaRepository implements ControlOf
 				new ControlOfAttendanceItemsDtoExcel(id, headerBackground,unitItem );
 		listControl.put(control.getItemDailyID(), control);
 	}
-//	Color myColor = Color.decode(
-//			
-//	
-//
-
-	
 
 }
