@@ -71,7 +71,7 @@ public class MaintenanceExportImpl implements MasterListData {
 		List<MasterData> datas = new ArrayList<>();
 		
 		List<MaintenanceLayoutData> listMaintenanceLayout = maintenanceLayoutExportRepository.getAllMaintenanceLayout(companyId, contractCode,
-				String.valueOf(forAttendance), String.valueOf(forPayroll),String.valueOf(forPersonnel));
+				forAttendance, forPayroll,forPersonnel);
 		
 		if(CollectionUtil.isEmpty(listMaintenanceLayout)){
 			return null;

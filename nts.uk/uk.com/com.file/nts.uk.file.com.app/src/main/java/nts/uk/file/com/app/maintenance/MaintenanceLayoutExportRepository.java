@@ -5,6 +5,6 @@ import java.util.List;
 
 public interface MaintenanceLayoutExportRepository {
 	
-	List<MaintenanceLayoutData> getAllMaintenanceLayout(String companyId, String contractCd, String forAttendance, String forPayroll, String forPersonnel);
+	List<MaintenanceLayoutData> getAllMaintenanceLayout(String companyId, String contractCd, int forAttendance, int forPayroll, int forPersonnel);
 
 }
