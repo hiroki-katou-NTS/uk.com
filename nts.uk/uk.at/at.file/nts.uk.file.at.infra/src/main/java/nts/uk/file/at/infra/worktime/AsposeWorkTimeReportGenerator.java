@@ -2,9 +2,6 @@ package nts.uk.file.at.infra.worktime;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.ejb.Stateless;
 
@@ -52,42 +49,13 @@ public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator im
 			List<Object[]> flowData = dataSource.getWorkTimeFlow();
 			List<Object[]> flexData = dataSource.getWorkTimeFlex();
 
-			ExecutorService executorService = Executors.newFixedThreadPool(3);
-			CountDownLatch countDownLatch = new CountDownLatch(3);
-
-			executorService.submit(() -> {
-				try {
-					printData(normalSheet, companyName, exportTime, normalData, normalSheetName,
-							WORK_TIME_NORMAL_START_INDEX, WORK_TIME_NORMAL_NUM_ROW);
-				} finally {
-					countDownLatch.countDown();
-				}
-			});
-
-			executorService.submit(() -> {
-				try {
-					printData(flowSheet, companyName, exportTime, flowData, flowSheetName, 
-							WORK_TIME_FLOW_START_INDEX, WORK_TIME_FLOW_NUM_ROW);
-				} finally {
-					countDownLatch.countDown();
-				}
-			});
-
-			executorService.submit(() -> {
-				try {
-					printData(flexSheet, companyName, exportTime, flexData, flexSheetName, 
-							WORK_TIME_FLEX_START_INDEX, WORK_TIME_FLEX_NUM_ROW);
-				} finally {
-					countDownLatch.countDown();
-				}
-			});
-
-			try {
-				countDownLatch.await();
-			} finally {
-				executorService.shutdown();
-			}
-
+			printData(normalSheet, companyName, exportTime, normalData, normalSheetName,
+					WORK_TIME_NORMAL_START_INDEX, WORK_TIME_NORMAL_NUM_ROW);
+			printData(flowSheet, companyName, exportTime, flowData, flowSheetName, 
+					WORK_TIME_FLOW_START_INDEX, WORK_TIME_FLOW_NUM_ROW);
+			printData(flexSheet, companyName, exportTime, flexData, flexSheetName, 
+					WORK_TIME_FLEX_START_INDEX, WORK_TIME_FLEX_NUM_ROW);
+			
 			reportContext.processDesigner();
 			reportContext.saveAsExcel(this.createNewFile(generatorContext,
 					REPORT_NAME + "_" + dataSource.getExportTime().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION));
