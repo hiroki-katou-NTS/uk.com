@@ -1920,7 +1920,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     lstEmployee.push(lst);
                     dfd.resolve(lstEmployee);
                 }else if (!_.isEmpty(self.selectedEmployee())) {
-                    //let dfd2 = $.Deferred();
                     service.searchEmployee(self.selectedEmployee()).done(data => {
                         let emp = {
                             id: data.employeeId,

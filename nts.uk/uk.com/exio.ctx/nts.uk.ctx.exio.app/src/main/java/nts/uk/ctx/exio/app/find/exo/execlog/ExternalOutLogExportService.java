@@ -2,13 +2,16 @@ package nts.uk.ctx.exio.app.find.exo.execlog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.exio.app.find.exo.executionlog.ErrorContentDto;
@@ -50,8 +53,9 @@ public class ExternalOutLogExportService extends ExportService<ErrorContentDto> 
 						String.valueOf(lstError.getResultLog().getTotalCount()),
 						lstError.getResultLog().getProcessUnit())
 				));
+		int processCount = Arrays.asList(lstError.getErrorLog()).stream().collect(Collectors.groupingBy(x -> x.getProcessCount())).size();
 		resultLogs.add(new ArrayList<>(Arrays.asList(TextResource.localize("CMF002_332"),
-				String.valueOf(lstError.getResultLog().getTotalCount() - lstError.getResultLog().getTotalErrorCount()) ,
+				String.valueOf(lstError.getResultLog().getTotalCount() - processCount) ,
 				lstError.getResultLog().getProcessUnit())));
 		resultLogs.add(new ArrayList<>(Arrays.asList(TextResource.localize("CMF002_333"), String.valueOf(lstError.getResultLog().getTotalErrorCount())
 				,"件")));
