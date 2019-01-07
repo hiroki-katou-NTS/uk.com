@@ -10,5 +10,7 @@ public enum Sheet {
     OVER_TIME2,
     PAYOUT_APP,
     APPROVAL_LIST,
-    REFLECT_APP
+    REFLECT_APP,
+    EMP_APPROVE,
+    APPROVAL_CONFIG
 }

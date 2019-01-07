@@ -3,7 +3,6 @@ package nts.uk.file.at.app.export.worktype;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppAcceptLimitDay;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.BeforeAddCheckMethod;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplayDivision;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
@@ -15,6 +14,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Stateless
 @DomainID(value ="PreparationBeforeApply")
@@ -48,6 +48,15 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
 
     @Inject
     private PreparationBeforeApplyExport preparationBeforeApply;
+
+    @Inject
+    private ApprovalFunctionConfigExport approvalFunctionConfigExport;
+
+    @Inject
+    private ApprovalFunctionConfigRepository approvalRepository;
+
+    @Inject
+    private EmploymentApprovalSettingExport employmentApprovalSettingExport;
 
 
     @Override
@@ -895,6 +904,12 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
                 break;
             case REFLECT_APP:
                 columns.addAll(preparationBeforeApply.getHeaderColumnsReflectApp());
+            case EMP_APPROVE:
+                columns.addAll(employmentApprovalSettingExport.getHeaderColumnsEmpApprove());
+                break;
+            case APPROVAL_CONFIG:
+                columns.addAll(approvalFunctionConfigExport.getHeaderColumnsApproveConfig());
+                break;
         }
         return columns;
     }
@@ -935,6 +950,12 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
             case REFLECT_APP:
                 datas.addAll(preparationBeforeApply.getDataReflectApp(extraData));
                 break;
+            case EMP_APPROVE:
+                List<Object[]> empApproval = approvalRepository.getAllEmploymentApprovalSetting(companyId);
+                datas.addAll(empApproval.stream().map(e -> employmentApprovalSettingExport.getDataEmploymentApprovalSetting(e)).collect(Collectors.toList()));
+            case APPROVAL_CONFIG:
+                List<Object[]> approvalCongif = approvalRepository.getAllApprovalFunctionConfig(companyId, baseDate);
+                datas.addAll(approvalCongif.stream().map(i -> approvalFunctionConfigExport.getDataApprovalConfig(i)).collect(Collectors.toList()));
         }
         return datas;
     }
