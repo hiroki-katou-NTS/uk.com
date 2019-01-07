@@ -2,20 +2,15 @@ package nts.uk.file.at.infra.worktype;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
-import javax.persistence.Query;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.file.at.app.export.worktype.ApprovalFunctionConfigRepository;
-import nts.uk.file.at.app.export.worktype.EmploymentApprovalSettingExport;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
-import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
-import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
-import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 @Stateless
 public class JpaApprovalFunctionConfigRepository extends JpaRepository implements ApprovalFunctionConfigRepository {
@@ -140,7 +135,7 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("     LEFT JOIN BSYMT_WORKPLACE_INFO WPI ON WP.CID = WPI.CID AND WP.WKP_ID = WPI.WKPID AND WPH.HIST_ID = WPI.HIST_ID ");
 		sql.append("    WHERE ");
 		sql.append("     WP.CID = ?cid) TEMP ");
-		sql.append("     ORDER BY TEMP.NUM_ORDER, TEMP.ROW_NUMBER;");
+		sql.append("     ORDER BY TEMP.CODE, TEMP.NUM_ORDER, TEMP.ROW_NUMBER;");
 		List<Object[]> resultQuery = null;
 		try {
 			resultQuery = (List<Object[]>) getEntityManager().createNativeQuery(sql.toString())
@@ -251,6 +246,7 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("         AND EMP_WT.EMPLOYMENT_CODE = TEMP.CODE ");
 		sql.append("         AND EMP_WT.APP_TYPE = TEMP.APP_TYPE ");
 		sql.append("         AND EMP_WT.HOLIDAY_OR_PAUSE_TYPE = TEMP.HOLIDAY_OR_PAUSE_TYPE ");
+		sql.append("        ORDER BY WT.CID, WT.CD ");
 		sql.append("       FOR XML PATH('')), 1 , 1, '') ");
 		sql.append("       ELSE NULL ");
 		sql.append("     END WORK_TYPE_NAME ");
