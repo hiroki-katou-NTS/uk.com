@@ -25,21 +25,6 @@ public class QpbmtDdtItemDetailSet extends UkJpaEntity implements Serializable
     */
     @EmbeddedId
     public QpbmtDdtItemDetailSetPk ddtItemDetailSetPk;
-
-    /**
-    * 給/**
-     * 会社ID
-     */
-    @Basic(optional = false)
-    @Column(name = "CID")
-    public String cid;
-
-    /**
-     * 項目名コード
-     */
-    @Basic(optional = false)
-    @Column(name = "ITEM_NAME_CD")
-    public String itemNameCd;
     
     /**
     * 合計対象
@@ -58,7 +43,7 @@ public class QpbmtDdtItemDetailSet extends UkJpaEntity implements Serializable
     /**
     * 按分方法
     */
-    @Basic(optional = true)
+    @Basic(optional = false)
     @Column(name = "PROPORTIONAL_METHOD")
     public Integer proportionalMethod;
     
@@ -86,7 +71,7 @@ public class QpbmtDdtItemDetailSet extends UkJpaEntity implements Serializable
     /**
     * 共通金額
     */
-    @Basic(optional = true)
+    @Basic(optional = false)
     @Column(name = "COMMON_AMOUNT")
     public Long commonAmount;
     
@@ -111,22 +96,21 @@ public class QpbmtDdtItemDetailSet extends UkJpaEntity implements Serializable
     }
 
     public DeductionItemDetailSet toDomain(){
-        return  new DeductionItemDetailSet(this.ddtItemDetailSetPk.histId,this.itemNameCd,this.totalObj,this.proportionalAtr,this.proportionalMethod,this.calcMethod,this.calcFormulaCd,this.personAmountCd,this.commonAmount,this.wageTblCd,this.supplyOffset);
+        return  new DeductionItemDetailSet(this.ddtItemDetailSetPk.histId,this.ddtItemDetailSetPk.cid, this.ddtItemDetailSetPk.statementCd, this.ddtItemDetailSetPk.itemNameCd,this.totalObj,this.proportionalAtr,this.proportionalMethod,this.calcMethod,this.calcFormulaCd,this.personAmountCd,this.commonAmount,this.wageTblCd,this.supplyOffset);
     }
 
+    public static QpbmtDdtItemDetailSet toEntity(DeductionItemDetailSet domain){
+        String cid = AppContexts.user().companyId();
 
-    public static QpbmtDdtItemDetailSet toEntity(DeductionItemDetailSet domain, int categoryAtr, int lineNumber, int itemPosition){
         QpbmtDdtItemDetailSet entiy = new QpbmtDdtItemDetailSet();
-        entiy.ddtItemDetailSetPk = new QpbmtDdtItemDetailSetPk(domain.getHistId(), categoryAtr, lineNumber, itemPosition);
-        entiy.cid = AppContexts.user().companyId();
-        entiy.itemNameCd = domain.getSalaryItemId();
+        entiy.ddtItemDetailSetPk = new QpbmtDdtItemDetailSetPk(cid, domain.getStatementCode().v(), domain.getHistId(), domain.getItemNameCd());
         entiy.totalObj = domain.getTotalObj().value;
         entiy.proportionalAtr = domain.getProportionalAtr().value;
-        entiy.proportionalMethod = domain.getProportionalMethod().map(i->i.value).orElse(null);
+        entiy.proportionalMethod = domain.getProportionalMethod().map(i->i.value).orElse(0);
         entiy.calcMethod = domain.getCalcMethod().value;
         entiy.calcFormulaCd = domain.getCalcFormulaCd().map(i->i.v()).orElse(null);
         entiy.personAmountCd = domain.getPersonAmountCd().map(i->i.v()).orElse(null);
-        entiy.commonAmount = domain.getCommonAmount().map(i->i.v()).orElse(null);
+        entiy.commonAmount = domain.getCommonAmount().map(i->i.v()).orElse(0L);
         entiy.wageTblCd = domain.getWageTblCd().map(i->i.v()).orElse(null);
         entiy.supplyOffset = domain.getSupplyOffset().orElse(null);
         return entiy;

@@ -22,6 +22,21 @@ public class QpbmtStateItemRangeSetPk implements Serializable
     private static final long serialVersionUID = 1L;
 
     /**
+     * 給/**
+     * 会社ID
+     */
+    @Basic(optional = false)
+    @Column(name = "CID")
+    public String cid;
+
+    /**
+     * 明細書コード
+     */
+    @Basic(optional = false)
+    @Column(name = "STATEMENT_CD")
+    public String statementCd;
+
+    /**
      * 履歴ID
      */
     @Basic(optional = false)
@@ -36,17 +51,10 @@ public class QpbmtStateItemRangeSetPk implements Serializable
     public int categoryAtr;
 
     /**
-     * 行番号
+     * 給与項目ID
      */
     @Basic(optional = false)
-    @Column(name="LINE_NUM")
-    public int lineNumber;
+    @Column(name = "ITEM_NAME_CD")
+    public String itemNameCd;
 
-    /**
-     * 終了日
-     */
-    @Basic(optional = false)
-    @Column(name = "ITEM_POSITION")
-    public int itemPosition;
-    
 }

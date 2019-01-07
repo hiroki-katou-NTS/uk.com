@@ -25,20 +25,6 @@ public class QpbmtPayItemDetailSet extends UkJpaEntity implements Serializable
     */
     @EmbeddedId
     public QpbmtPayItemDetailSetPk payItemDetailSetPk;
-
-    /**
-     * 会社ID
-     */
-    @Basic(optional = false)
-    @Column(name = "CID")
-    public String cid;
-
-    /**
-     * 項目名コード
-     */
-    @Basic(optional = false)
-    @Column(name = "ITEM_NAME_CD")
-    public String itemNameCd;
     
     /**
     * 合計対象
@@ -57,7 +43,7 @@ public class QpbmtPayItemDetailSet extends UkJpaEntity implements Serializable
     /**
     * 按分方法
     */
-    @Basic(optional = true)
+    @Basic(optional = false)
     @Column(name = "PROPORTIONAL_METHOD")
     public Integer proportionalMethod;
     
@@ -85,7 +71,7 @@ public class QpbmtPayItemDetailSet extends UkJpaEntity implements Serializable
     /**
     * 共通金額
     */
-    @Basic(optional = true)
+    @Basic(optional = false)
     @Column(name = "COMMON_AMOUNT")
     public Long commonAmount;
     
@@ -100,7 +86,7 @@ public class QpbmtPayItemDetailSet extends UkJpaEntity implements Serializable
     * 通勤区分
     */
     @Basic(optional = true)
-    @Column(name = "WORKING_ATR")
+    @Column(name = "COMMUT_ATR")
     public Integer workingAtr;
     
     @Override
@@ -110,22 +96,22 @@ public class QpbmtPayItemDetailSet extends UkJpaEntity implements Serializable
     }
 
     public PaymentItemDetailSet toDomain(){
-        return new PaymentItemDetailSet(this.payItemDetailSetPk.histId,this.itemNameCd,this.totalObj,this.proportionalAtr,this.proportionalMethod,this.calcMethod,this.calcFormulaCd,this.personAmountCd,this.commonAmount,this.wageTblCd,this.workingAtr);
+        return new PaymentItemDetailSet(this.payItemDetailSetPk.histId, this.payItemDetailSetPk.cid, this.payItemDetailSetPk.statementCd, this.payItemDetailSetPk.itemNameCd, this.totalObj,this.proportionalAtr,this.proportionalMethod,this.calcMethod,this.calcFormulaCd,this.personAmountCd,this.commonAmount,this.wageTblCd,this.workingAtr);
     }
 
 
-    public  static QpbmtPayItemDetailSet toEntity(PaymentItemDetailSet domain, int categoryAtr, int lineNumber, int itemPosition){
+    public  static QpbmtPayItemDetailSet toEntity(PaymentItemDetailSet domain){
+        String cid = AppContexts.user().companyId();
+
         QpbmtPayItemDetailSet entity = new QpbmtPayItemDetailSet();
-        entity.payItemDetailSetPk = new QpbmtPayItemDetailSetPk(domain.getHistId(), categoryAtr, lineNumber, itemPosition);
-        entity.cid = AppContexts.user().companyId();
-        entity.itemNameCd = domain.getSalaryItemId();
+        entity.payItemDetailSetPk = new QpbmtPayItemDetailSetPk(cid, domain.getStatementCode().v(), domain.getHistId(), domain.getItemNameCd());
         entity.totalObj = domain.getTotalObj().value;
         entity.proportionalAtr = domain.getProportionalAtr().value;
-        entity.proportionalMethod = domain.getProportionalMethod().map(i->i.value).orElse(null);
+        entity.proportionalMethod = domain.getProportionalMethod().map(i->i.value).orElse(0);
         entity.calcMethod = domain.getCalcMethod().value;
         entity.calcFormulaCd = domain.getCalcFomulaCd().map(i->i.v()).orElse(null);
         entity.personAmountCd = domain.getPersonAmountCd().map(i->i.v()).orElse(null);
-        entity.commonAmount = domain.getCommonAmount().map(i->i.v()).orElse(null);
+        entity.commonAmount = domain.getCommonAmount().map(i->i.v()).orElse(0L);
         entity.wageTblCd = domain.getWageTblCode().map(i->i.v()).orElse(null);
         entity.workingAtr = domain.getWorkingAtr().map(i->i.value).orElse(null);
         return entity;
