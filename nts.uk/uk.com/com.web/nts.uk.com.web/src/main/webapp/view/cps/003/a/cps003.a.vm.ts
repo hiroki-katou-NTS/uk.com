@@ -86,14 +86,20 @@ module cps003.a.vm {
             items: ko.observableArray([])
         };
 
+        settings: ISettingData = {
+            matrixDisplay: ko.observable({}),
+            perInfoData: ko.observableArray([])
+        };
+
         // for employee info.
         employees: KnockoutObservableArray<IEmployee> = ko.observableArray([]);
 
         constructor() {
             let self = this;
-
             cps003.control.selectButton();
             cps003.control.relateButton();
+            self.baseDate(moment().format("YYYY/MM/DD"));
+
             //fetch all category by login 
             service.fetch.category(__viewContext.user.employeeId)
                 .done(data => {
@@ -102,7 +108,23 @@ module cps003.a.vm {
                     self.requestData();
                 });
 
-            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => {
+            self.category.catId.subscribe((cid: string) => {
+                if (cid) {
+                    // fetch all setting
+                    service.fetch.setting(cid).done((data: ISettingData) => {
+                        if (ko.isObservable(self.settings.matrixDisplay)) {
+                            if (_.size(self.settings.matrixDisplay()) == 0) {
+                                self.settings.matrixDisplay(data.matrixDisplay);
+                            }
+                        }
+
+                        if (ko.isObservable(self.settings.perInfoData)) {
+                            self.settings.perInfoData(data.perInfoData);
+                        }
+                    });
+
+                    // fetch data (Manh code)
+                }
             });
             
             self.category.catId.subscribe(id => {
@@ -114,6 +136,8 @@ module cps003.a.vm {
                 self.requestData();
             });
 
+            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => { });
+            //            self.requestData();
         }
 
         start() {
@@ -897,6 +921,36 @@ module cps003.a.vm {
                 };      
             });
         }
+
+        settingColumns() {
+            let self = this,
+                id = self.category.catId(),
+                ctg = _.first(self.category.items(), m => m.id == id);
+
+            setShared('CPS003D_PARAM', {
+                id: id,
+                name: ctg.categoryName
+            });
+
+            modal("/view/cps/003/d/index.xhtml").onClosed(() => {
+                console.log(getShared('CPS003D_VALUE'));
+            });
+        }
+
+        settingBatchs() {
+            let self = this,
+                id = self.category.catId(),
+                ctg = _.first(self.category.items(), m => m.id == id);
+
+            setShared('CPS003F_PARAM', {
+                id: id, // sample data
+                // push list ids of item show in grid
+            });
+
+            modal("/view/cps/003/f/index.xhtml").onClosed(() => {
+                console.log(getShared('CPS003F_VALUE'));
+            });
+        }
     }
 
     interface IEmployee {
@@ -949,9 +1003,9 @@ module cps003.a.vm {
         actionRole: ACTION_ROLE;
         itemCode: string;
         itemParentCode: string;
-        
+
         lstComboBoxValue: any[]; // list data để validate 
-        
+
         recordId: string | null; // id bản ghi trong db
         textValue: string | null; // giá trị hiển thị 
         value: Object | null; // giá trị
@@ -1132,5 +1186,40 @@ module cps003.a.vm {
         AfterZero = 2,
         PreviousSpace = 3,
         AfterSpace = 4
+
+    interface ISettingData {
+        "perInfoData": KnockoutObservableArray<IPersonInfoSetting> | Array<IPersonInfoSetting>;
+        "matrixDisplay": KnockoutObservable<IMatrixDisplay> | IMatrixDisplay;
+    }
+
+    interface IPersonInfoSetting {
+        "perInfoItemDefID": string;
+        "itemCD": string;
+        "itemName": string;
+        "regulationAtr": boolean;
+        "dispOrder": number;
+        "width": number;
+        "required": boolean;
+    }
+
+    interface IMatrixDisplay {
+        "companyID"?: String;
+        "userID"?: String;
+        "cursorDirection": CURSOR_DIRC,
+        "clsATR": IUSE_SETTING;
+        "jobATR": IUSE_SETTING;
+        "workPlaceATR": IUSE_SETTING,
+        "departmentATR": IUSE_SETTING;
+        "employmentATR": IUSE_SETTING;
+    }
+
+    enum IUSE_SETTING {
+        USE = <any>'USE',
+        NOT_USE = <any>'NOT_USE'
+    }
+
+    enum CURSOR_DIRC {
+        VERTICAL = <any>'VERTICAL',
+        HORIZONTAL = <any>'HORIZONTAL'
     }
 }

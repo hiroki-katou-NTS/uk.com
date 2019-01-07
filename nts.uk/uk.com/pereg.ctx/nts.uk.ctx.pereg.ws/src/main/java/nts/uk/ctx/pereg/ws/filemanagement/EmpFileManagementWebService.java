@@ -12,8 +12,6 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.bs.employee.app.find.empfilemanagement.dto.EmployeeFileManagementDto;
 import nts.uk.ctx.pereg.app.command.filemanagement.AddEmpAvaOrMapCommandHandler;
 import nts.uk.ctx.pereg.app.command.filemanagement.AddEmpDocumentFileCommand;
-import nts.uk.ctx.pereg.app.command.filemanagement.CheckFileCommand;
-import nts.uk.ctx.pereg.app.command.filemanagement.CheckFileCommandHandler;
 import nts.uk.ctx.pereg.app.command.filemanagement.EmpAvaOrMapCommand;
 import nts.uk.ctx.pereg.app.command.filemanagement.EmpDocumentFileCommandHandler;
 import nts.uk.ctx.pereg.app.command.filemanagement.RemoveDocumentFileCommand;
@@ -22,7 +20,10 @@ import nts.uk.ctx.pereg.app.command.filemanagement.RemoveEmpAvaOrMapCommandHandl
 import nts.uk.ctx.pereg.app.command.filemanagement.UpdateCtgDocFileCommandHandler;
 import nts.uk.ctx.pereg.app.command.filemanagement.UpdateCtgDocFileDocumentFileCommand;
 import nts.uk.ctx.pereg.app.command.filemanagement.UpdateEmpAvaOrMapCommandHandler;
+import nts.uk.ctx.pereg.app.find.filemanagement.CheckFileFinder;
+import nts.uk.ctx.pereg.app.find.filemanagement.CheckFileParams;
 import nts.uk.ctx.pereg.app.find.filemanagement.EmployeeFileManagementFinder;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmployeeDto;
 
 @Path("basic/organization/empfilemanagement")
 @Produces({ "application/json", "text/plain" })
@@ -50,7 +51,7 @@ public class EmpFileManagementWebService extends WebService {
 	UpdateCtgDocFileCommandHandler updateCtgDocumentFile;
 	
 	@Inject
-	CheckFileCommandHandler checkFileCommandHandler;
+	CheckFileFinder checkFileFinder;
 	/**
 	 * Gets employee file management by employeeId.
 	 *
@@ -119,8 +120,8 @@ public class EmpFileManagementWebService extends WebService {
 	}
 	
 	@POST
-	@Path("command/checkFile")
-	public void checkFile(CheckFileCommand command) {
-		this.checkFileCommandHandler.handle(command);
+	@Path("find/checkFile")
+	public GridEmployeeDto checkFile(CheckFileParams params) {
+		return this.checkFileFinder.processingFile(params);
 	}
 }

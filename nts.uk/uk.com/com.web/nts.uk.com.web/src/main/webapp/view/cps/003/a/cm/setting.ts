@@ -1,11 +1,28 @@
 module nts.custombinding {
-    interface ISetting {
-        typeOfEnter: KnockoutObservable<number>;
-        fixedColumns: KnockoutObservableArray<string>;
+    enum USE_SETTING {
+        USE = <any>'USE',
+        NOT_USE = <any>'NOT_USE'
     }
 
+    enum CURSOR_DIRC {
+        VERTICAL = <any>'VERTICAL',
+        HORIZONTAL = <any>'HORIZONTAL'
+    }
+
+    interface ISetting {
+        "cursorDirection": CURSOR_DIRC | KnockoutObservable<CURSOR_DIRC>;
+        "clsATR": USE_SETTING | KnockoutObservable<USE_SETTING>;
+        "jobATR": USE_SETTING | KnockoutObservable<USE_SETTING>;
+        "workPlaceATR": USE_SETTING | KnockoutObservable<USE_SETTING>;
+        "departmentATR": USE_SETTING | KnockoutObservable<USE_SETTING>;
+        "employmentATR": USE_SETTING | KnockoutObservable<USE_SETTING>;
+    }
+
+    const USE = USE_SETTING.USE,
+        NOT_USE = USE_SETTING.NOT_USE;
+
     export class SettingButtonControl implements KnockoutBindingHandler {
-        init = (element: HTMLElement, valueAccessor: () => ISetting, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => {
+        init = (element: HTMLElement, valueAccessor: () => KnockoutObservable<ISetting>, allBindingsAccessor: () => { settingChange: Function }, viewModel: any, bindingContext: KnockoutBindingContext) => {
             let dialog = document.createElement('div'),
                 dialogHtml = `<style type='text/css' rel='stylesheet'>
                 .cps003.setting-dialog {
@@ -51,10 +68,10 @@ module nts.custombinding {
                     <div data-bind="ntsComboBox: {
                             width: 120,
                             name: i18n('CPS003_25'),
-                            value: typeEnt,
+                            value: cursorDirection,
                             options: ko.observableArray([
-                                { type: 1, name: 'する' },
-                                { type: 0, name: 'しない' }
+                                { type: 'VERTICAL', name: 'する' },
+                                { type: 'HORIZONTAL', name: 'しない' }
                             ]),
                             optionsText: 'name',
                             optionsValue: 'type',
@@ -88,48 +105,38 @@ module nts.custombinding {
                 </div>`,
                 dialogVm = {
                     i18n: nts.uk.resource.getText,
-                    typeEnt: ko.observable(),
+                    cursorDirection: ko.observable(CURSOR_DIRC.HORIZONTAL),
                     fixCols: ko.observableArray([]),
                     pushData: () => {
-                        let access: ISetting = valueAccessor() || {
-                            typeOfEnter: ko.observable(),
-                            fixedColumns: ko.observableArray([])
-                        };
+                        let fixCols: Array<number> = ko.toJS(dialogVm.fixCols) || [],
+                            access: KnockoutObservable<ISetting> = valueAccessor() ||
+                                ko.observable({
+                                    "cursorDirection": CURSOR_DIRC.HORIZONTAL,
+                                    "clsATR": NOT_USE,
+                                    "jobATR": NOT_USE,
+                                    "workPlaceATR": NOT_USE,
+                                    "departmentATR": NOT_USE,
+                                    "employmentATR": NOT_USE,
+                                }), setting: ISetting = {
+                                    cursorDirection: ko.toJS(dialogVm.cursorDirection),
+                                    "clsATR": fixCols.indexOf(7) > -1 ? USE : NOT_USE,
+                                    "jobATR": fixCols.indexOf(5) > -1 ? USE : NOT_USE,
+                                    "workPlaceATR": fixCols.indexOf(4) > -1 ? USE : NOT_USE,
+                                    "departmentATR": fixCols.indexOf(3) > -1 ? USE : NOT_USE,
+                                    "employmentATR": fixCols.indexOf(6) > -1 ? USE : NOT_USE
+                                }, changed = allBindingsAccessor().settingChange;
 
                         // bind data out
-                        if (ko.isObservable(access.typeOfEnter) && ko.isObservable(access.fixedColumns)) {
-                            access.typeOfEnter(dialogVm.typeEnt());
-                            access.fixedColumns(dialogVm.fixCols());
+                        access(setting);
+
+                        if (changed) {
+                            changed.apply(viewModel, [setting]);
                         }
 
                         // hide dialog
                         ko.utils.triggerEvent(element, 'click');
                     }
                 };
-
-            // bind data in
-            ko.computed({
-                read: () => {
-                    let access: ISetting = valueAccessor(),
-                        typeEnt = ko.toJS(access.typeOfEnter),
-                        fixCols = ko.toJS(access.fixedColumns);
-
-                    if (!fixCols) {
-                        fixCols = [1, 2];
-                    }
-
-                    if (fixCols.indexOf(1) == -1) {
-                        fixCols.push(1);
-                    }
-
-                    if (fixCols.indexOf(2) == -1) {
-                        fixCols.push(2);
-                    }
-
-                    dialogVm.typeEnt(typeEnt || 0);
-                    dialogVm.fixCols(fixCols || [1, 2]);
-                }
-            });
 
             // set root class for dialog container
             dialog.className = 'cps003 setting-dialog';
@@ -143,17 +150,37 @@ module nts.custombinding {
                 if (document.body.contains(dialog)) {
                     document.body.removeChild(dialog);
                 } else {
-                    let bound = element.getBoundingClientRect();
+                    let bound = element.getBoundingClientRect(),
+                        access: ISetting = ko.toJS(valueAccessor()) || {
+                            "cursorDirection": CURSOR_DIRC.HORIZONTAL,
+                            "clsATR": NOT_USE,
+                            "jobATR": NOT_USE,
+                            "workPlaceATR": NOT_USE,
+                            "departmentATR": NOT_USE,
+                            "employmentATR": NOT_USE,
+                        }, fixCols: Array<number> = [
+                            1,
+                            2,
+                            access.clsATR == USE ? 7 : -1,
+                            access.jobATR == USE ? 5 : -1,
+                            access.workPlaceATR == USE ? 4 : -1,
+                            access.departmentATR == USE ? 3 : -1,
+                            access.employmentATR == USE ? 6 : -1
+                        ];
 
                     document.body.appendChild(dialog);
                     dialog.style.top = (bound.bottom + 5) + 'px';
                     dialog.style.left = (bound.left + bound.width - dialog.offsetWidth) + 'px';
+
+                    // bind data in
+                    dialogVm.fixCols(fixCols.filter(f => f != -1));
+                    dialogVm.cursorDirection(access.cursorDirection || CURSOR_DIRC.HORIZONTAL);
                 }
             });
 
             // hide dialog
             ko.utils.registerEventHandler(document, 'click', (evt: MouseEvent) => {
-                if (evt.target != element && document.body.contains(dialog)) {
+                if (evt.target != element && document.body.contains(dialog) && !dialog.contains(evt.target)) {
                     let bound = dialog.getBoundingClientRect();
 
                     if (bound.top > evt.pageY || bound.right < evt.pageX || bound.bottom < evt.pageY || bound.left > evt.pageX) {

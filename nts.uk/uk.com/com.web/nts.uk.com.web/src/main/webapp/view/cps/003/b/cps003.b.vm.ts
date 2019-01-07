@@ -35,7 +35,8 @@ module cps003.b.vm {
             }
             service.checkColums(params).done(data =>{
                 console.log(data);    
-            
+            }).fail((res) =>{
+                alertError({ messageId: res.messageId });
             })
         }
 
@@ -50,6 +51,7 @@ module cps003.b.vm {
         systemDate: string;
         mode: number;
         columnChange: Array<string>;
+        sids: Array<string>;
     }
     
     class ModelData{
@@ -58,6 +60,7 @@ module cps003.b.vm {
         systemDate: string;
         mode: KnockoutObservable<number> = ko.observable(1);
         columnChange: Array<string> = [];
+        sids: Array<string>;
         selectedRuleCode : KnockoutObservable<number> = ko.observable(1);
         roundingRules : Array<any> = [
             { value: 1, name: text("CPS003_19") },
@@ -70,6 +73,7 @@ module cps003.b.vm {
             self.systemDate = data.systemDate;
             self.mode = ko.observable(data.mode);
             self.columnChange = data.columnChange;
+            self.sids = data.systemDate;
         }
     }
     

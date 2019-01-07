@@ -18,7 +18,7 @@ import nts.uk.ctx.pereg.app.find.person.setting.matrix.matrixdisplayset.MatrixDi
 import nts.uk.ctx.pereg.app.find.person.setting.matrix.personinfomatrixitem.DisplayItemColumnSetFinder;
 import nts.uk.ctx.pereg.app.find.processor.GridPeregProcessor;
 import nts.uk.ctx.pereg.dom.person.setting.matrix.matrixdisplayset.MatrixDisplaySetting;
-import nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInfoMatrixItem;
+import nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInfoMatrixData;
 import nts.uk.shr.pereg.app.find.PeregGridQuery;
 
 @Path("ctx/pereg/grid-layout")
@@ -57,16 +57,21 @@ public class GridLayoutWebService extends WebService {
 	public Object getFixedSetting(@PathParam("categoryId") String categoryId) {
 		return new Object() {
 			@SuppressWarnings("unused")
-			public final List<PersonInfoMatrixItem> personInfoItems = dicFinder.get(categoryId);
-			@SuppressWarnings("unused")
 			public final MatrixDisplaySetting matrixDisplay = mdsFinder.findByKey().orElse(null);
+			@SuppressWarnings("unused")
+			public final List<PersonInfoMatrixData> perInfoData = dicFinder.getData(categoryId);
 		};
 	}
 
 	@POST
 	@Path("save-setting")
 	public void saveFixedSetting(GridSettingCommand command) {
-		cpimHandler.handle(command.getPersonInfoItems());
-		cmdsHandler.handle(command.getMaxtrixDisplays());
+		if (command.getPersonInfoItems() != null) {
+			cpimHandler.handle(command.getPersonInfoItems());
+		}
+
+		if (command.getMaxtrixDisplays() != null) {
+			cmdsHandler.handle(command.getMaxtrixDisplays());
+		}
 	}
 }

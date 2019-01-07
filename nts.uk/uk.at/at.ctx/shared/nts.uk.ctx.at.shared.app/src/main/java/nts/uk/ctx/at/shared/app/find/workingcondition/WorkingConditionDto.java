@@ -531,11 +531,11 @@ public class WorkingConditionDto extends PeregDomainDto {
 		dto.setVacationAddedTimeAtr(workingConditionItem.getVacationAddedTimeAtr().value);
 
 		workingConditionItem.getHolidayAddTimeSet().ifPresent(hat -> {
-			Optional.of(hat.getOneDay()).ifPresent(od -> dto.setOneDay(od.v()));
+			Optional.ofNullable(hat.getOneDay()).ifPresent(od -> dto.setOneDay(od.v()));
 
-			Optional.of(hat.getMorning()).ifPresent(od -> dto.setMorning(od.v()));
+			Optional.ofNullable(hat.getMorning()).ifPresent(od -> dto.setMorning(od.v()));
 
-			Optional.of(hat.getAfternoon()).ifPresent(od -> dto.setAfternoon(od.v()));
+			Optional.ofNullable(hat.getAfternoon()).ifPresent(od -> dto.setAfternoon(od.v()));
 		});
 
 		dto.setLaborSystem(workingConditionItem.getLaborSystem().value);
@@ -553,7 +553,6 @@ public class WorkingConditionDto extends PeregDomainDto {
 			dto.setReferenceBusinessDayCalendar(wsb.getReferenceBusinessDayCalendar().value);
 		});
 
-		// cần xem lại thuật toán thực thi đoạn mã này
 		switch (scheduleMethod.getBasicCreateMethod()) {
 		case BUSINESS_DAY_CALENDAR:
 			scheduleMethod.getWorkScheduleBusCal().ifPresent(wsb -> {
@@ -566,11 +565,11 @@ public class WorkingConditionDto extends PeregDomainDto {
 			});
 			break;
 		default:
-			if(scheduleMethod.getWorkScheduleBusCal().isPresent()) {
+			if (scheduleMethod.getWorkScheduleBusCal().isPresent()) {
 				dto.setReferenceType(scheduleMethod.getWorkScheduleBusCal().get().getReferenceWorkingHours().value);
-			}else if(scheduleMethod.getMonthlyPatternWorkScheduleCre().isPresent()) {
+			} else if (scheduleMethod.getMonthlyPatternWorkScheduleCre().isPresent()) {
 				dto.setReferenceType(scheduleMethod.getMonthlyPatternWorkScheduleCre().get().getReferenceType().value);
-			}else {
+			} else {
 				dto.setReferenceType(0);
 			}
 			break;
@@ -584,7 +583,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 	}
 
 	private static void setWeekDay(WorkingConditionDto dto, SingleDaySchedule weekDay) {
-		Optional.of(weekDay).ifPresent(wd -> {
+		Optional.ofNullable(weekDay).ifPresent(wd -> {
 			dto.setWeekdayWorkTypeCode(wd.getWorkTypeCode().map(i->i.v()).orElse(null));
 
 			wd.getWorkTimeCode().ifPresent(wt -> dto.setWeekdayWorkTimeCode(wt.v()));
@@ -607,24 +606,26 @@ public class WorkingConditionDto extends PeregDomainDto {
 	}
 
 	private static void setWorkInHoliday(WorkingConditionDto dto, SingleDaySchedule workInHoliday) {
-		dto.setWorkInHolidayWorkTypeCode(workInHoliday.getWorkTypeCode().map(i->i.v()).orElse(null));
-
-		workInHoliday.getWorkTimeCode().ifPresent(wtc -> dto.setWorkInHolidayWorkTimeCode(wtc.v()));
-
-		Optional<TimeZone> timeZone1 = workInHoliday.getWorkingHours().stream()
-				.filter(timeZone -> timeZone.getCnt() == 1).findFirst();
-
-		Optional<TimeZone> timeZone2 = workInHoliday.getWorkingHours().stream()
-				.filter(timeZone -> timeZone.getCnt() == 2).findFirst();
-
-		timeZone1.ifPresent(tz -> {
-			dto.setWorkInHolidayStartTime1(tz.getStart().v());
-			dto.setWorkInHolidayEndTime1(tz.getEnd().v());
-		});
-
-		timeZone2.ifPresent(tz -> {
-			dto.setWorkInHolidayStartTime2(tz.getStart().v());
-			dto.setWorkInHolidayEndTime2(tz.getEnd().v());
+		Optional.ofNullable(workInHoliday).ifPresent(wih -> {				
+			dto.setWorkInHolidayWorkTypeCode(wih.getWorkTypeCode().map(i->i.v()).orElse(""));
+	
+			wih.getWorkTimeCode().ifPresent(wtc -> dto.setWorkInHolidayWorkTimeCode(wtc.v()));
+	
+			Optional<TimeZone> timeZone1 = wih.getWorkingHours().stream()
+					.filter(timeZone -> timeZone.getCnt() == 1).findFirst();
+	
+			Optional<TimeZone> timeZone2 = wih.getWorkingHours().stream()
+					.filter(timeZone -> timeZone.getCnt() == 2).findFirst();
+	
+			timeZone1.ifPresent(tz -> {
+				dto.setWorkInHolidayStartTime1(tz.getStart().v());
+				dto.setWorkInHolidayEndTime1(tz.getEnd().v());
+			});
+	
+			timeZone2.ifPresent(tz -> {
+				dto.setWorkInHolidayStartTime2(tz.getStart().v());
+				dto.setWorkInHolidayEndTime2(tz.getEnd().v());
+			});
 		});
 	}
 

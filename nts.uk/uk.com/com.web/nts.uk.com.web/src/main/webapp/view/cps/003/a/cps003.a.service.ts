@@ -8,14 +8,7 @@ module cps003.a.service {
 
     export const fetch = {
         data: (command: any) => ajax(`ctx/pereg/grid-layout/get-data`, command),
-        setting: () => ajax(`ctx/pereg/grid-layout/get-setting`),
+        setting: (cid: string) => ajax(`ctx/pereg/grid-layout/get-setting/${cid}`), // cid: categoryId
         category: (uid: string) => ajax(`ctx/pereg/employee/category/getall/${uid}`)
     }
-    
-    export interface ISettingCommand {
-    maxtrixDisplays: {
-    };
-    personInfoItems: {
-    };
-}
 }

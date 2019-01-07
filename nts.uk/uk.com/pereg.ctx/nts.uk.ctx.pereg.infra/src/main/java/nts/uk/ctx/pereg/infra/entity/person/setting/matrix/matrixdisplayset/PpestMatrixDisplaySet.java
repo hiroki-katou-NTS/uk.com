@@ -24,55 +24,43 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 public class PpestMatrixDisplaySet extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@EmbeddedId
-    public PpestMatrixDisplaySetPK ppestMatrixDisplaySetPK;
-	
-		 @Column(name = "CURSOR_DIRECTION")
-		    public int cursonDirection;
-		 
-		 @Column(name = "CLS_ATR")
-		    public int clsATR;
-		 
-		 @Column(name = "POSITION_ATR")
-		    public int positionATR;
-		 
-		 @Column(name = "WORK_PLACE_ATR")
-		    public int workPlaceATR;
-		 
-		 @Column(name = "DEPARTMENT_ATR")
-		    public int departmentATR;
-		 
-		 @Column(name = "EMPLOYMENT_ATR")
-		    public int employmentATR;
-	 
+	public PpestMatrixDisplaySetPK ppestMatrixDisplaySetPK;
+
+	@Column(name = "CURSOR_DIRECTION")
+	public int cursonDirection;
+
+	@Column(name = "CLS_ATR")
+	public int clsATR;
+
+	@Column(name = "JOB_ATR")
+	public int jobATR;
+
+	@Column(name = "WKP_ATR")
+	public int workPlaceATR;
+
+	@Column(name = "DEP_ATR")
+	public int departmentATR;
+
+	@Column(name = "EMP_ATR")
+	public int employmentATR;
 
 	@Override
 	protected Object getKey() {
 		return ppestMatrixDisplaySetPK;
 	}
 
-	public MatrixDisplaySetting toDomain(){
-		return MatrixDisplaySetting.createFromJavaType(
-				this.ppestMatrixDisplaySetPK.companyID, 
-				this.ppestMatrixDisplaySetPK.userID, 
-				cursonDirection, 
-				clsATR, 
-				positionATR, 
-				workPlaceATR, 
-				departmentATR, 
+	public MatrixDisplaySetting toDomain() {
+		return MatrixDisplaySetting.createFromJavaType(this.ppestMatrixDisplaySetPK.companyID,
+				this.ppestMatrixDisplaySetPK.userID, cursonDirection, clsATR, jobATR, workPlaceATR, departmentATR,
 				employmentATR);
 	}
-	
-	public static PpestMatrixDisplaySet toEntity(MatrixDisplaySetting setting){
-		return new PpestMatrixDisplaySet(
-				new PpestMatrixDisplaySetPK(setting.getCompanyID() , setting.getUserID()),
-				setting.getCursorDirection().value,
-				setting.getClsATR().value,
-				setting.getPositionATR().value,
-				setting.getWorkPlaceATR().value,
-				setting.getDepartmentATR().value,
-				setting.getEmploymentATR().value);
+
+	public static PpestMatrixDisplaySet toEntity(MatrixDisplaySetting setting) {
+		return new PpestMatrixDisplaySet(new PpestMatrixDisplaySetPK(setting.getCompanyID(), setting.getUserID()),
+				setting.getCursorDirection().value, setting.getClsATR().value, setting.getJobATR().value,
+				setting.getWorkPlaceATR().value, setting.getDepartmentATR().value, setting.getEmploymentATR().value);
 	}
 
 }

@@ -55,7 +55,7 @@
                                     /*{ prop: 'categoryCode', toggle: 'hidden', length: 20 },*/
                                     { prop: 'categoryName', length: 14}
                                 ]}"></div>
-								<button id="column-display" data-bind="text: '#{i18n.getText('CPS003_14')}'"></button>
+								<button id="column-display" data-bind="text: '#{i18n.getText('CPS003_14')}', click: $vm.settingColumns.bind($vm)"></button>
 								<div class="fixed-width margin-left" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_15')}</div>
 								<label id="history-type">#{i18n.getText('A2_007')}</label>
 								<button data-bind="ntsHelpButton: {textId: 'CPS003_16', position: 'right center' }">？</button>
@@ -75,8 +75,8 @@
 						<div class="form-group configs-bar">
 							<button id="emp-redisplay" data-bind="text: '#{i18n.getText('CPS003_21')}', click: redisplayEmp"></button>
 							<button data-bind="ntsHelpButton: {textId: 'CPS003_22', position: 'right center'}">?</button>
-							<button id="batch-change" data-bind="text: '#{i18n.getText('CPS003_23')}'"></button>
-							<button id="settings" data-bind="cps003Setting: { typeOfEnter: ko.observable(0), fixedColumns: ko.observableArray([2,3,4]) }"></button>
+							<button id="batch-change" data-bind="text: '#{i18n.getText('CPS003_23')}', click: $vm.settingBatchs.bind($vm)"></button>
+							<button id="settings" data-bind="cps003Setting: $vm.settings.matrixDisplay"></button>
 							<button id="width-save" data-bind="text: '#{i18n.getText('CPS003_24')}'"></button>
 						</div>
 						<div class="form-group">

@@ -18,16 +18,15 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class MatrixDisplaySetFinder {
-	
+
 	@Inject
 	private MatrixDisplaySettingRepo repo;
-	
-	
-		public Optional<MatrixDisplaySetting> findByKey(){
-			String companyID = AppContexts.user().companyId();
-			String userID = AppContexts.user().userId();
-		    Optional<MatrixDisplaySetting> optData = repo.find(companyID, userID);
-			return optData;
-		}
+
+	public Optional<MatrixDisplaySetting> findByKey() {
+		String companyID = AppContexts.user().companyId();
+		String userID = AppContexts.user().userId();
+		Optional<MatrixDisplaySetting> optData = repo.find(companyID, userID);
+		return optData;
+	}
 
 }

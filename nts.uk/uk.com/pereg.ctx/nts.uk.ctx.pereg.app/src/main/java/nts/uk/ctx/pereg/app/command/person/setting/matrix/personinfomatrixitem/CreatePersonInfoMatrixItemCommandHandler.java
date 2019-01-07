@@ -3,6 +3,9 @@
  */
 package nts.uk.ctx.pereg.app.command.person.setting.matrix.personinfomatrixitem;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -17,17 +20,15 @@ import nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInf
  */
 @Transactional
 @Stateless
-public class CreatePersonInfoMatrixItemCommandHandler extends CommandHandler<CreatePersonInfoMatrixItemCommand> {
+public class CreatePersonInfoMatrixItemCommandHandler extends CommandHandler<List<CreatePersonInfoMatrixItemCommand>> {
 
-	
 	@Inject
 	private PersonInfoMatrixItemRepo repo;
-	
-		@Override
-		protected void handle(CommandHandlerContext<CreatePersonInfoMatrixItemCommand> context) {
-			CreatePersonInfoMatrixItemCommand command = context.getCommand();
-			repo.insert(command.toDomain());
-			
-		}
 
+	@Override
+	protected void handle(CommandHandlerContext<List<CreatePersonInfoMatrixItemCommand>> context) {
+		List<CreatePersonInfoMatrixItemCommand> command = context.getCommand();
+		
+		repo.insertAll(command.stream().map(m -> m.toDomain()).collect(Collectors.toList()));
+	}
 }

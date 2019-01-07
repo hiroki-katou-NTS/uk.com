@@ -19,16 +19,16 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class PpestPersonInfoMatrixItemPK implements Serializable{
- 	
+public class PpestPersonInfoMatrixItemPK implements Serializable {
+
 	private static final long serialVersionUID = 1L;
-	
+
 	@NotNull
 	@Column(name = "PERSON_INFO_CATEGORY_ID")
-    public String pInfoCategoryID;
-	
+	public String pInfoCategoryID;
+
 	@NotNull
 	@Column(name = "PERSON_INFO_ITEM_ID")
- 	public String pInfoDefiID;
-	
+	public String pInfoDefiID;
+
 }

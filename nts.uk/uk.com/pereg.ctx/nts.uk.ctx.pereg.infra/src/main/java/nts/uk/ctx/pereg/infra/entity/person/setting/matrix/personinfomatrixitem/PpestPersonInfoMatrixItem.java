@@ -23,40 +23,32 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "PPEST_PERSON_INFO_MATRIX")
 @NoArgsConstructor
 @AllArgsConstructor
-public class PpestPersonInfoMatrixItem extends UkJpaEntity implements Serializable{
-
+public class PpestPersonInfoMatrixItem extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	public PpestPersonInfoMatrixItemPK ppestPersonInfoMatrixItemPK;
-	 
-		@Column(name = "COLUMN_WIDTH")
-		public int columnWidth;
-		
-		@Column(name = "REGULATION_ATR")
-		
-		
-		public int regulationATR;
-		
+
+	@Column(name = "COLUMN_WIDTH")
+	public int columnWidth;
+
+	@Column(name = "REGULATION_ATR")
+	public int regulationATR;
+
 	@Override
 	protected Object getKey() {
 		return ppestPersonInfoMatrixItemPK;
 	}
 
-	
-	public PersonInfoMatrixItem toDomain(){
-		return PersonInfoMatrixItem.createFromJavatype(
-				this.ppestPersonInfoMatrixItemPK.pInfoCategoryID,
-				this.ppestPersonInfoMatrixItemPK.pInfoDefiID,
-				columnWidth,
-				regulationATR);
+	public PersonInfoMatrixItem toDomain() {
+		return PersonInfoMatrixItem.createFromJavatype(this.ppestPersonInfoMatrixItemPK.pInfoCategoryID,
+				this.ppestPersonInfoMatrixItemPK.pInfoDefiID, columnWidth, regulationATR);
 	}
-	
-	public static PpestPersonInfoMatrixItem toEntity(PersonInfoMatrixItem setting){
+
+	public static PpestPersonInfoMatrixItem toEntity(PersonInfoMatrixItem setting) {
 		return new PpestPersonInfoMatrixItem(
-				 new PpestPersonInfoMatrixItemPK(setting.getPInfoCategoryID() , setting.getPInfoItemDefiID()),
-				 setting.getColumnWidth(),
-				 setting.getRegulationATR().value);
+				new PpestPersonInfoMatrixItemPK(setting.getPInfoCategoryID(), setting.getPInfoItemDefiID()),
+				setting.getColumnWidth(), setting.getRegulationATR().value);
 	}
 }
