@@ -20,6 +20,7 @@
 			<com:scriptfile path="cps003.a.service.js" />
 			<com:scriptfile path="cps003.a.vm.js" />
 			<com:scriptfile path="cps003.a.start.js" />
+			<com:scriptfile path="control.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -72,7 +73,7 @@
 								enable: true }"></div>
 						</div>
 						<div class="form-group configs-bar">
-							<button id="emp-redisplay" data-bind="text: '#{i18n.getText('CPS003_21')}'"></button>
+							<button id="emp-redisplay" data-bind="text: '#{i18n.getText('CPS003_21')}', click: redisplayEmp"></button>
 							<button data-bind="ntsHelpButton: {textId: 'CPS003_22', position: 'right center'}">?</button>
 							<button id="batch-change" data-bind="text: '#{i18n.getText('CPS003_23')}'"></button>
 							<button id="settings" data-bind="cps003Setting: { typeOfEnter: ko.observable(0), fixedColumns: ko.observableArray([2,3,4]) }"></button>
