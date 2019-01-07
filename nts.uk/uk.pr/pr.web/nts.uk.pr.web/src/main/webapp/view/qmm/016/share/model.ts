@@ -130,27 +130,27 @@ module nts.uk.pr.view.qmm016.share.model {
             let imgName = "", elementSettingDisplayText = "";
             switch (elementSetting) {
                 case ELEMENT_SETTING.ONE_DIMENSION: {
-                    imgName = "QMM016_1.png";
+                    imgName = "＃QMM017_1.png";
                     elementSettingDisplayText = getText('QMM016_69');
                     break;
                 }
                 case ELEMENT_SETTING.TWO_DIMENSION: {
-                    imgName = "QMM016_2.png";
+                    imgName = "＃QMM017_2.png";
                     elementSettingDisplayText = getText('QMM016_70');
                     break;
                 }
                 case ELEMENT_SETTING.THREE_DIMENSION: {
-                    imgName = "QMM016_3.png";
+                    imgName = "＃QMM017_3.png";
                     elementSettingDisplayText = getText('QMM016_71');
                     break;
                 }
                 case ELEMENT_SETTING.QUALIFICATION: {
-                    imgName = "QMM016_4.png";
+                    imgName = "＃QMM017_4.png";
                     elementSettingDisplayText = getText('QMM016_72');
                     break;
                 }
                 case ELEMENT_SETTING.FINE_WORK: {
-                    imgName = "QMM016_5.png";
+                    imgName = "＃QMM017_5.png";
                     elementSettingDisplayText = getText('QMM016_73');
                     break;
                 }

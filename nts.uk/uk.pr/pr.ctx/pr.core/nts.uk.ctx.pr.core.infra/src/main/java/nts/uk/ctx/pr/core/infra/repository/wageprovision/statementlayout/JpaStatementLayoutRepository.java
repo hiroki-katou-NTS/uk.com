@@ -41,12 +41,6 @@ public class JpaStatementLayoutRepository extends JpaRepository implements State
     }
 
     @Override
-    public List<StatementLayout> getAllStatementLayout(){
-        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtStatementLayout.class)
-                .getList(item -> item.toDomain());
-    }
-
-    @Override
     public Optional<StatementLayout> getStatementLayoutById(String cid, String statementCd){
         return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtStatementLayout.class)
         .setParameter("cid", cid)

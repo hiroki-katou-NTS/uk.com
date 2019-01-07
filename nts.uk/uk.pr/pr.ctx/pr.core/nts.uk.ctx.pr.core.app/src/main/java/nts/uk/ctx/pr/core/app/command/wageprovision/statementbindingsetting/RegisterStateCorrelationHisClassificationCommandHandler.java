@@ -35,9 +35,9 @@ public class RegisterStateCorrelationHisClassificationCommandHandler extends Com
                 listStateLinkSetMaster = command.getStateLinkSettingMaster().stream().map(i -> {
                     return new StateLinkSetMaster(
                             hisId,
-                            new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.MasterCode(i.getMasterCode()),
-                            i.getSalaryCode() != null ? new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(i.getSalaryCode()) : null,
-                            i.getBonusCode() != null ? new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(i.getBonusCode()) : null);
+                            i.getMasterCode(),
+                            i.getSalaryCode(),
+                            i.getBonusCode());
                             }).collect(Collectors.toList());
             }
             stateCorreHisClsService.addHistoryClassification(hisId, start, end, listStateLinkSetMaster);
@@ -47,9 +47,9 @@ public class RegisterStateCorrelationHisClassificationCommandHandler extends Com
                 listStateLinkSetMaster = command.getStateLinkSettingMaster().stream().map(i -> {
                     return new StateLinkSetMaster(
                             hisId,
-                            new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.MasterCode(i.getMasterCode()),
-                            i.getSalaryCode() != null ? new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(i.getSalaryCode()) : null,
-                            i.getBonusCode() != null ? new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(i.getBonusCode()) : null);
+                            i.getMasterCode(),
+                            i.getSalaryCode(),
+                            i.getBonusCode());
                             }).collect(Collectors.toList());
             }
             stateCorreHisClsService.updateHistoryClassification(hisId, listStateLinkSetMaster,start,end);

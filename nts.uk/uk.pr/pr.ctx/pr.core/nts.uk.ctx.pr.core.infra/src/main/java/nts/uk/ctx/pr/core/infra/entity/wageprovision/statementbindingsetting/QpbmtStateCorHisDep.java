@@ -80,9 +80,9 @@ public class QpbmtStateCorHisDep extends UkJpaEntity implements Serializable
 
     public StateLinkSetMaster toDomain() {
         return new StateLinkSetMaster(this.stateCorHisDepPk.hisId,
-                new MasterCode(this.stateCorHisDepPk.masterCode),
-                this.salaryCode == null ? null : new StatementCode(this.salaryCode),
-                this.bonusCode == null ? null : new StatementCode(this.bonusCode));
+                this.stateCorHisDepPk.masterCode,
+                this.salaryCode,
+                this.bonusCode);
     }
 
     public static List<YearMonthHistoryItem> toDomainYearMonth(List<QpbmtStateCorHisDep> entity){
@@ -126,6 +126,10 @@ public class QpbmtStateCorHisDep extends UkJpaEntity implements Serializable
                 item.getBonusCode().isPresent() ? item.getBonusCode().get().v(): null))
                 .collect(Collectors.toList());
         return listStateCorHisDep;
+    }
+
+    public static List<StateLinkSetMaster> toDomainSetting(List<QpbmtStateCorHisDep> entitys) {
+        return entitys.stream().map(QpbmtStateCorHisDep::toDomain).collect(Collectors.toList());
     }
 
 }
