@@ -225,7 +225,7 @@ public class StatementLayoutService {
 
         PaymentItemDetailSet detail = new PaymentItemDetailSet(histId, cid, statementCode, itemNameCd, PaymentTotalObjAtr.OUTSIDE.value, PaymentProportionalAtr.NOT_PROPORTIONAL.value,
                 null, PaymentCaclMethodAtr.MANUAL_INPUT.value, null, null, null, null, null);
-        SettingByItemCustom item = new SettingByItemCustom(LAST_POSITION, itemNameCd, getShortName(CategoryAtr.PAYMENT_ITEM.value, statementCode), null, detail, null);
+        SettingByItemCustom item = new SettingByItemCustom(LAST_POSITION, itemNameCd, getShortName(CategoryAtr.PAYMENT_ITEM.value, itemNameCd), null, detail, null);
         List<SettingByItem> listSetByItem = new ArrayList<>();
         listSetByItem.add(item);
 
@@ -237,7 +237,7 @@ public class StatementLayoutService {
 
         DeductionItemDetailSet detail = new DeductionItemDetailSet(histId, cid, statementCode, itemNameCd, totalObj, PaymentProportionalAtr.NOT_PROPORTIONAL.value,
                 null, PaymentCaclMethodAtr.MANUAL_INPUT.value, null, null, null, null, null);
-        return new SettingByItemCustom(position, itemNameCd, getShortName(CategoryAtr.DEDUCTION_ITEM.value, statementCode), detail, null, null);
+        return new SettingByItemCustom(position, itemNameCd, getShortName(CategoryAtr.DEDUCTION_ITEM.value, itemNameCd), detail, null, null);
     }
 
     //新規作成時チェック処理
