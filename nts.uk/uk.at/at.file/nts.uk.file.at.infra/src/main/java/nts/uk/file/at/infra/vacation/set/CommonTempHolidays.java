@@ -235,6 +235,18 @@ public class CommonTempHolidays {
         }
         return "";
     }
+    public static String getSettingDistinct(int value){
+        switch (value) {
+            case 0: {
+                return "設定しない";
+            }
+            case 1: {
+                return "設定する";
+            }
+
+        }
+        return "";
+    }
     public static String getEnumTimeAnnualRoundProcesCla(int value){
         switch (value) {
             case 0: {

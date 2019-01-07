@@ -14,10 +14,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 import javax.ejb.Stateless;
 import java.sql.PreparedStatement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Stateless
 public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidLeaveRepository {
@@ -49,19 +46,25 @@ public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidL
 		List<MasterData> datas = new ArrayList<>();
 		try (PreparedStatement stmt = this.connection().prepareStatement(GET_PAID_LEA_EXPORT)) {
 			stmt.setString(1, cid);
-
 			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
 			result.forEach(i -> {
 				datas.addAll(buildMasterListData(i));
 			});
+
 		} catch (Exception e) {
 			throw new RuntimeException(e);
+		}
+		if(datas.isEmpty()){
+			return buildMasterListData();
 		}
 		return datas;
 	}
 
 	private List<MasterData> buildMasterListData(NtsResultSet.NtsResultRecord rs) {
 		List<MasterData> datas = new ArrayList<>();
+		if (rs == null) {
+			return buildMasterListData();
+		}
 		/*※2*/
 		boolean isManager = rs.getString("MANAGE_ATR").equals("1");
 		/*※3*/
@@ -166,101 +169,110 @@ public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidL
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(isTimeManager ? CommonTempHolidays.getEnumTimeAnnualRoundProcesCla(Integer.valueOf(rs.getString("ROUND_PRO_CLA_TAS"))) : null, ColumnTextAlign.LEFT)));
 		} else {
-			// Row 1
-			datas.add(buildARow(new DataEachBox(I18NText.getText("KMF001_176"), ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)));
-			// Row 2
-			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(I18NText.getText("KMF001_177"), ColumnTextAlign.LEFT)
-					, new DataEachBox(I18NText.getText("KMF001_178"), ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)));
-			// Row 3
-			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(I18NText.getText("KMF001_179"), ColumnTextAlign.LEFT)
-					, new DataEachBox(I18NText.getText("KMF001_180"), ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.RIGHT)));
-			// Row 4
-			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(I18NText.getText("KMF001_181"), ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.RIGHT)));
-			// Row 5
-			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(I18NText.getText("KMF001_182"), ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.RIGHT)));
-			// Row 6
-			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(I18NText.getText("KMF001_183"), ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.RIGHT)));
-			// Row 7
-			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(I18NText.getText("KMF001_184"), ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.RIGHT)));
-			// Row 8
-			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(I18NText.getText("KMF001_185"), ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)));
-			// Row 9
-			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(I18NText.getText("KMF001_186"), ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.RIGHT)));
-			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(I18NText.getText("KMF001_187"), ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)));
-			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(I18NText.getText("KMF001_188"), ColumnTextAlign.LEFT)
-					, new DataEachBox(I18NText.getText("KMF001_189"), ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)));
-			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(I18NText.getText("KMF001_190"), ColumnTextAlign.LEFT)
-					, new DataEachBox(I18NText.getText("KMF001_191"), ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)));
-			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(I18NText.getText("KMF001_192"), ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.RIGHT)));
-			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(I18NText.getText("KMF001_193"), ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)));
-			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(I18NText.getText("KMF001_194"), ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)));
-			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(I18NText.getText("KMF001_195"), ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.RIGHT)));
-			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(I18NText.getText("KMF001_196"), ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(null, ColumnTextAlign.LEFT)));
+
+			datas = buildMasterListData();
 		}
+
+		return datas;
+	}
+
+	private List<MasterData> buildMasterListData() {
+		List<MasterData> datas = new ArrayList<>();
+
+		// Row 1
+		datas.add(buildARow(new DataEachBox(I18NText.getText("KMF001_176"), ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)));
+		// Row 2
+		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(I18NText.getText("KMF001_177"), ColumnTextAlign.LEFT)
+				, new DataEachBox(I18NText.getText("KMF001_178"), ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)));
+		// Row 3
+		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(I18NText.getText("KMF001_179"), ColumnTextAlign.LEFT)
+				, new DataEachBox(I18NText.getText("KMF001_180"), ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.RIGHT)));
+		// Row 4
+		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(I18NText.getText("KMF001_181"), ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.RIGHT)));
+		// Row 5
+		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(I18NText.getText("KMF001_182"), ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.RIGHT)));
+		// Row 6
+		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(I18NText.getText("KMF001_183"), ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.RIGHT)));
+		// Row 7
+		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(I18NText.getText("KMF001_184"), ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.RIGHT)));
+		// Row 8
+		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(I18NText.getText("KMF001_185"), ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)));
+		// Row 9
+		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(I18NText.getText("KMF001_186"), ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.RIGHT)));
+		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(I18NText.getText("KMF001_187"), ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)));
+		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(I18NText.getText("KMF001_188"), ColumnTextAlign.LEFT)
+				, new DataEachBox(I18NText.getText("KMF001_189"), ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)));
+		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(I18NText.getText("KMF001_190"), ColumnTextAlign.LEFT)
+				, new DataEachBox(I18NText.getText("KMF001_191"), ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)));
+		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(I18NText.getText("KMF001_192"), ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.RIGHT)));
+		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(I18NText.getText("KMF001_193"), ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)));
+		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(I18NText.getText("KMF001_194"), ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)));
+		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(I18NText.getText("KMF001_195"), ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.RIGHT)));
+		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(I18NText.getText("KMF001_196"), ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)
+				, new DataEachBox(null, ColumnTextAlign.LEFT)));
 
 
 		return datas;

@@ -14,10 +14,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import javax.ejb.Stateless;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static nts.uk.file.at.infra.vacation.set.CommonTempHolidays.*;
 
@@ -38,36 +35,85 @@ public class JpaCom60HourVacaRepository extends JpaRepository implements Com60Ho
         try (PreparedStatement stmt = this.connection().prepareStatement(GET_COM_60HOUR_VACATION)) {
             stmt.setString(1, cid);
             NtsResultSet result = new NtsResultSet(stmt.executeQuery());
-            result.forEach(i->{
+            result.forEach(i -> {
                 datas.addAll(buildMasterListData(i));
             });
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        if(datas.isEmpty()){
+            return buildMasterListData();
+        }
         return datas;
     }
-    private List<MasterData> buildMasterListData(NtsResultSet.NtsResultRecord rs) {
+    private List<MasterData> buildMasterListData() {
         List<MasterData> datas = new ArrayList<>();
-        /*※15*/
-        boolean checkIsManager = rs.getString("IS_MANAGE").equals("1");
-        // Row 1
         datas.add(buildARow(new DataEachBox(I18NText.getText("KMF001_227"),ColumnTextAlign.LEFT)
                 , new DataEachBox(null,ColumnTextAlign.LEFT)
                 , new DataEachBox(null,ColumnTextAlign.LEFT)
-                , new DataEachBox(getTextEnumManageDistinct(Integer.valueOf(rs.getString("IS_MANAGE"))),ColumnTextAlign.LEFT)
+                , new DataEachBox(null,ColumnTextAlign.LEFT)
         ));
         // Row 2
         datas.add(buildARow(new DataEachBox(null,ColumnTextAlign.LEFT)
                 , new DataEachBox(I18NText.getText("KMF001_228"),ColumnTextAlign.LEFT)
                 , new DataEachBox(I18NText.getText("KMF001_229"),ColumnTextAlign.LEFT)
-                ,   new DataEachBox(checkIsManager ?  getTextEnumTimeDigestiveUnit(Integer.valueOf(rs.getString("DIGESTIVE_UNIT"))) : null,ColumnTextAlign.RIGHT)
+                , new DataEachBox(null,ColumnTextAlign.RIGHT)
         ));
         // Row 3
         datas.add(buildARow(new DataEachBox(null,ColumnTextAlign.LEFT)
                 , new DataEachBox(null,ColumnTextAlign.LEFT)
                 , new DataEachBox( I18NText.getText("KMF001_230"),ColumnTextAlign.LEFT)
-                , new DataEachBox(checkIsManager ?  getTextEnumSixtyHourExtra(Integer.valueOf(rs.getString("SIXTY_HOUR_EXTRA"))) : null,ColumnTextAlign.RIGHT)
+                , new DataEachBox(null,ColumnTextAlign.RIGHT)
         ));
+        return datas;
+    }
+
+    private List<MasterData> buildMasterListData(NtsResultSet.NtsResultRecord rs) {
+        List<MasterData> datas = new ArrayList<>();
+            /*※15*/
+            boolean checkIsManager = rs.getString("IS_MANAGE").equals("1");
+           if(checkIsManager){
+               // Row 1
+               datas.add(buildARow(new DataEachBox(I18NText.getText("KMF001_227"),ColumnTextAlign.LEFT)
+                       , new DataEachBox(null,ColumnTextAlign.LEFT)
+                       , new DataEachBox(null,ColumnTextAlign.LEFT)
+                       , new DataEachBox(getTextEnumManageDistinct(Integer.valueOf(rs.getString("IS_MANAGE"))),ColumnTextAlign.LEFT)
+               ));
+               // Row 2
+               datas.add(buildARow(new DataEachBox(null,ColumnTextAlign.LEFT)
+                       , new DataEachBox(I18NText.getText("KMF001_228"),ColumnTextAlign.LEFT)
+                       , new DataEachBox(I18NText.getText("KMF001_229"),ColumnTextAlign.LEFT)
+                       ,   new DataEachBox(checkIsManager ?  getTextEnumTimeDigestiveUnit(Integer.valueOf(rs.getString("DIGESTIVE_UNIT"))) : null,ColumnTextAlign.RIGHT)
+               ));
+               // Row 3
+               datas.add(buildARow(new DataEachBox(null,ColumnTextAlign.LEFT)
+                       , new DataEachBox(null,ColumnTextAlign.LEFT)
+                       , new DataEachBox( I18NText.getText("KMF001_230"),ColumnTextAlign.LEFT)
+                       , new DataEachBox(checkIsManager ?  getTextEnumSixtyHourExtra(Integer.valueOf(rs.getString("SIXTY_HOUR_EXTRA"))) : null,ColumnTextAlign.RIGHT)
+               ));
+           }
+           else {
+               datas.add(buildARow(new DataEachBox(I18NText.getText("KMF001_227"),ColumnTextAlign.LEFT)
+                       , new DataEachBox(null,ColumnTextAlign.LEFT)
+                       , new DataEachBox(null,ColumnTextAlign.LEFT)
+                       , new DataEachBox(getTextEnumManageDistinct(Integer.valueOf(rs.getString("IS_MANAGE"))),ColumnTextAlign.LEFT)
+               ));
+               // Row 2
+               datas.add(buildARow(new DataEachBox(null,ColumnTextAlign.LEFT)
+                       , new DataEachBox(I18NText.getText("KMF001_228"),ColumnTextAlign.LEFT)
+                       , new DataEachBox(I18NText.getText("KMF001_229"),ColumnTextAlign.LEFT)
+                       , new DataEachBox(null,ColumnTextAlign.RIGHT)
+               ));
+               // Row 3
+               datas.add(buildARow(new DataEachBox(null,ColumnTextAlign.LEFT)
+                       , new DataEachBox(null,ColumnTextAlign.LEFT)
+                       , new DataEachBox( I18NText.getText("KMF001_230"),ColumnTextAlign.LEFT)
+                       , new DataEachBox(null,ColumnTextAlign.RIGHT)
+               ));
+           }
+
+
 
 
         return datas;
