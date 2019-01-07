@@ -3,10 +3,8 @@ package nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.MasterCode;
 import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisCls;
 import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateLinkSetMaster;
-import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -72,9 +70,9 @@ public class QpbmtStateCorHisClass extends UkJpaEntity implements Serializable {
 
     public StateLinkSetMaster toDomain() {
         return new StateLinkSetMaster(this.stateCorHisClassPk.hisId,
-                new MasterCode(this.stateCorHisClassPk.masterCode),
-                this.salaryCode == null ? null : new StatementCode(this.salaryCode),
-                this.bonusCode == null ? null : new StatementCode(this.bonusCode));
+                this.stateCorHisClassPk.masterCode,
+                this.salaryCode,
+                this.bonusCode);
     }
 
     public static List<YearMonthHistoryItem> toDomainYearMonth(List<QpbmtStateCorHisClass> entity){
@@ -102,6 +100,10 @@ public class QpbmtStateCorHisClass extends UkJpaEntity implements Serializable {
                 item.getBonusCode().isPresent() ? item.getBonusCode().get().v() : null))
                 .collect(Collectors.toList());
         return listStateCorHisClass;
+    }
+
+    public static List<StateLinkSetMaster> toDomainSetting(List<QpbmtStateCorHisClass> entitys) {
+        return entitys.stream().map(QpbmtStateCorHisClass::toDomain).collect(Collectors.toList());
     }
 
 }

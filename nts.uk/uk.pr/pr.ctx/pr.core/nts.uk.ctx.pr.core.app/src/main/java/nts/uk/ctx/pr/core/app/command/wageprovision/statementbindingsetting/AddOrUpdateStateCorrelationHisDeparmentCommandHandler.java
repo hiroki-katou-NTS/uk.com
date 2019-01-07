@@ -34,9 +34,9 @@ public class AddOrUpdateStateCorrelationHisDeparmentCommandHandler extends Comma
         //convert to domain
         List<StateLinkSetMaster> stateLinkSetMaster = new ArrayList<StateLinkSetMaster>();
         if(listStateLinkSettingMasterCommand.size() > 0){
-            stateLinkSetMaster = listStateLinkSettingMasterCommand.stream().map(item -> new StateLinkSetMaster(item.getHisId(),new MasterCode(item.getMasterCode()),
-                    item.getSalaryCode() == null ? null : new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(item.getSalaryCode()),
-                    item.getBonusCode() == null ? null : new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(item.getBonusCode()))).collect(Collectors.toList());
+            stateLinkSetMaster = listStateLinkSettingMasterCommand.stream().map(item -> new StateLinkSetMaster(item.getHisId(),item.getMasterCode(),
+                    item.getSalaryCode(),
+                    item.getBonusCode())).collect(Collectors.toList());
         }
 
         StateLinkSettingDateCommand stateLinkSettingDateCommand = context.getCommand().getStateLinkSettingDateCommand();
