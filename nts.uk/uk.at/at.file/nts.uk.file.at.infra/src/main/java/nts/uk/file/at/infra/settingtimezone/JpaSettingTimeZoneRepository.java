@@ -123,6 +123,9 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             " CASE WHEN USE_ATR = 1 THEN ROUNDING " +
             " ELSE NULL " +
             " END ROUNDING, " +
+            " CASE WHEN USE_ATR = 1 AND TIME_USE_ATR_TAB1 = 1 THEN TIME_ITEM_ID " +
+            " ELSE NULL " +
+            " END TIME_ITEM_ID, " +
             " CASE WHEN USE_ATR = 1 AND TIME_USE_ATR_TAB1 = 1 THEN TIME_ITEM_NAME " +
             " ELSE NULL " +
             " END TIME_ITEM_NAME, " +
@@ -142,7 +145,9 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             " CASE WHEN USE_ATR_TAB2 = 1 THEN ROUNDING_TAB2 " +
             " ELSE NULL " +
             " END ROUNDING_TAB2, " +
-            " " +
+            " CASE WHEN USE_ATR_TAB2 = 1 AND TIME_USE_ATR_TAB2 = 1 THEN TIME_ITEM_ID_TAB2 " +
+            " ELSE NULL " +
+            " END TIME_ITEM_ID_TAB2, " +
             " CASE WHEN USE_ATR_TAB2 = 1 AND TIME_USE_ATR_TAB2 = 1 THEN TIME_ITEM_NAME_TAB2 " +
             " ELSE NULL " +
             " END TIME_ITEM_NAME_TAB2 " +
@@ -449,7 +454,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_111, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_111)
-                .value(rs.getString("TIME_ITEM_NAME"))
+                .value(rs.getString("TIME_ITEM_NAME") == null && rs.getInt("TIME_ITEM_ID" ) == null ? null : rs.getInt("TIME_ITEM_ID" ) + rs.getString("TIME_ITEM_NAME"))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 
@@ -494,7 +499,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
 
         data.put(SettingTimeZoneUtils.KMK005_118, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_118)
-                .value(rs.getString("TIME_ITEM_NAME_TAB2"))
+                .value(rs.getInt("TIME_ITEM_ID_TAB2") == null && rs.getString("TIME_ITEM_NAME_TAB2") == null ? null : rs.getInt("TIME_ITEM_ID_TAB2") + rs.getString("TIME_ITEM_NAME_TAB2"))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 
@@ -659,7 +664,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
         int m = param / 60;
         int s = param % 60;
 
-        return String.format("%02d:%02d", m, s);
+        return String.format("%d:%02d", m, s);
 
     }
 }
