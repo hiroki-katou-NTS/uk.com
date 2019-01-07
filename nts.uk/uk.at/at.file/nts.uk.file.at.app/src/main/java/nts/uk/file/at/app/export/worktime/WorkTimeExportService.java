@@ -38,14 +38,13 @@ public class WorkTimeExportService extends ExportService<String> {
 		String cid = user.companyId();
 		String companyName =  user.companyCode() + " " + company.getCurrentCompany()
 				.orElseThrow(() -> new RuntimeException(COMPANY_ERROR)).getCompanyName();
-		String exportTime = GeneralDateTime.now().toString();
 
 		List<Object[]> normal = Collections.synchronizedList(new ArrayList<>());
 		List<Object[]> flow = Collections.synchronizedList(new ArrayList<>());
 		List<Object[]> flex = Collections.synchronizedList(new ArrayList<>());
 		ExecutorService executorService = Executors.newFixedThreadPool(3);
 		CountDownLatch countDownLatch = new CountDownLatch(3);
-		AsyncTask taskNormal = AsyncTask.builder().withContexts().keepsTrack(true).threadName(this.getClass().getName())
+		AsyncTask taskNormal = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
 				.build(() -> {
 					try {
 						normal.addAll(reportRepository.findWorkTimeNormal(cid));			
@@ -55,7 +54,7 @@ public class WorkTimeExportService extends ExportService<String> {
 				});
 		executorService.submit(taskNormal);
 
-		AsyncTask taskFlow = AsyncTask.builder().withContexts().keepsTrack(true).threadName(this.getClass().getName())
+		AsyncTask taskFlow = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
 				.build(() -> {
 					try {
 						flow.addAll(reportRepository.findWorkTimeFlow(cid));
@@ -65,7 +64,7 @@ public class WorkTimeExportService extends ExportService<String> {
 				});
 		executorService.submit(taskFlow);
 
-		AsyncTask taskFlex = AsyncTask.builder().withContexts().keepsTrack(true).threadName(this.getClass().getName())
+		AsyncTask taskFlex = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
 				.build(() -> {
 					try {
 						flex.addAll(reportRepository.findWorkTimeFlex(cid));
@@ -77,14 +76,13 @@ public class WorkTimeExportService extends ExportService<String> {
 
 		try {
 			countDownLatch.await();
-			WorkTimeReportDatasource dataSource = new WorkTimeReportDatasource(companyName, exportTime, normal, flow, flex);
-			reportGenerator.generate(context.getGeneratorContext(), dataSource);
 		} catch (InterruptedException ie) {
 			throw new RuntimeException(ie);
 		} finally {
-			// Force shut down executor services.
 			executorService.shutdown();
 		}
+		WorkTimeReportDatasource dataSource = new WorkTimeReportDatasource(companyName, GeneralDateTime.now(), normal, flow, flex);
+		reportGenerator.generate(context.getGeneratorContext(), dataSource);
 	}
 
 }
