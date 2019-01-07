@@ -247,6 +247,7 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<SheetData> extraSheets(MasterListExportQuery query){
         List<SheetData> sheetData = new ArrayList<>();
         if(((Map<String, Boolean>) query.getData()).get("useWkpSet")) {
