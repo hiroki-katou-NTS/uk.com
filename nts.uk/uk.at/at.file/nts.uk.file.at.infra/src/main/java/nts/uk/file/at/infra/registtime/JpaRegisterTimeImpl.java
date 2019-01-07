@@ -751,17 +751,47 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
 		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_1.toString()).setParameter(1, cid);
-		Object[] data = (Object[]) query.getSingleResult();
-		int closeDateAtr = ((BigDecimal)data[1]).intValue();
-		for (int i = 0; i < data.length; i++) {
-			if(closeDateAtr == 0 && i == 2)
-				continue;
-			datas.add(toDataSheet1(data[i],i,closeDateAtr));
+		try {
+			Object[] data = (Object[]) query.getSingleResult();
+			int closeDateAtr = ((BigDecimal)data[1]).intValue();
+			for (int i = 0; i < data.length; i++) {
+				if(closeDateAtr == 0 && i == 2)
+					continue;
+				datas.add(toDataSheet1(data[i],i,closeDateAtr));
+			}
+		} catch (Exception e) {
+			for (int i = 0; i < 5; i++) {
+				datas.add(toDataEmptySheet1(i));
+			}
+			return datas;
 		}
 		return datas;
 	}
 	
-	
+	private MasterData toDataEmptySheet1(int checkRow) {
+		Map<String,MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.KMK008_80, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_80)
+                .value(checkRow == 0 ? RegistTimeColumn.KMK008_82 : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.HEADER_NONE1, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_80)
+                .value(checkRow == 0 ? RegistTimeColumn.KMK008_83 : checkRow == 1 ? RegistTimeColumn.KMK008_84 : checkRow == 2 ? RegistTimeColumn.KMK008_85 : checkRow == 3 ? RegistTimeColumn.KMK008_86 : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.HEADER_NONE2, MasterCellData.builder()
+                .columnId(RegistTimeColumn.HEADER_NONE2)
+                .value(checkRow == 3 ? RegistTimeColumn.KMK008_87 : checkRow == 4 ? RegistTimeColumn.KMK008_88 : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_81, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_81)
+                .value("")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		return MasterData.builder().rowData(data).build();
+	}
 	
 	
 	private MasterData toDataSheet1(Object object,int check,int closeDateAtr) {

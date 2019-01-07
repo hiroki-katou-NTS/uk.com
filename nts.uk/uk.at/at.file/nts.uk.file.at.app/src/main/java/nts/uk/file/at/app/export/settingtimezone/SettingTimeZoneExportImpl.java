@@ -122,7 +122,7 @@ public class SettingTimeZoneExportImpl implements MasterListData {
                 ColumnTextAlign.LEFT, "", true));
         columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_98, TextResource.localize("KMK005_98"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_99, TextResource.localize("KMK005_98"),
+        columns.add(new MasterHeaderColumn(SettingTimeZoneUtils.KMK005_99, TextResource.localize("KMK005_99"),
                 ColumnTextAlign.LEFT, "", true));
         return columns;
     }
