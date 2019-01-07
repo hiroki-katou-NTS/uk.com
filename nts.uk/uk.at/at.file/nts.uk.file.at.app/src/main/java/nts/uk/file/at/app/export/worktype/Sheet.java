@@ -5,5 +5,10 @@ public enum Sheet {
     JOB,
     OVER_TIME,
     HOLIDAY_APP,
-    VACATION_APP
+    WORK_CHANGE,
+    COMMON_APP,
+    OVER_TIME2,
+    PAYOUT_APP,
+    APPROVAL_LIST,
+    REFLECT_APP
 }

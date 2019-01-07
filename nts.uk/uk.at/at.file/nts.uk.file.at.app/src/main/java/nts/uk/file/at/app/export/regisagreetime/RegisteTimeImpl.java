@@ -314,7 +314,8 @@ public class RegisteTimeImpl implements MasterListData {
         /**
          *  sheet 3
          */
-        if(agreementUnitSetting.isPresent() && agreementUnitSetting.get().getEmploymentUseAtr().value == 1) {
+		if (!agreementUnitSetting.isPresent()
+				|| (agreementUnitSetting.isPresent() && agreementUnitSetting.get().getEmploymentUseAtr().value == 1)) {
         	 SheetData sheetData3 = SheetData.builder()
                		 .mainData(this.getMasterDatasSheet3())
                        .mainDataColumns(this.getHeaderColumnsSheet3())
@@ -326,7 +327,8 @@ public class RegisteTimeImpl implements MasterListData {
         /**
          *  sheet 4
          */
-        if (agreementUnitSetting.isPresent() && agreementUnitSetting.get().getWorkPlaceUseAtr().value == 1) {
+        if (!agreementUnitSetting.isPresent()
+				|| (agreementUnitSetting.isPresent() && agreementUnitSetting.get().getWorkPlaceUseAtr().value == 1)) {
         	
 			SheetData sheetData4 = SheetData.builder().mainData(this.getMasterDatasSheet4())
 					.mainDataColumns(this.getHeaderColumnsSheet4()).sheetName(TextResource.localize("KMK008_73"))
@@ -338,7 +340,8 @@ public class RegisteTimeImpl implements MasterListData {
         /**
          *  sheet 5
          */
-		if (agreementUnitSetting.isPresent() && agreementUnitSetting.get().getClassificationUseAtr().value == 1) {
+		if (!agreementUnitSetting.isPresent()
+				|| (agreementUnitSetting.isPresent() && agreementUnitSetting.get().getClassificationUseAtr().value == 1)) {
 			SheetData sheetData5 = SheetData.builder().mainData(this.getMasterDatasSheet5())
 					.mainDataColumns(this.getHeaderColumnsSheet5()).sheetName(TextResource.localize("KMK008_74"))
 					.build();
@@ -357,7 +360,8 @@ public class RegisteTimeImpl implements MasterListData {
         /**
          *  sheet 7
          */
-		if (agreementUnitSetting.isPresent() && agreementUnitSetting.get().getEmploymentUseAtr().value == 1) {
+		if (!agreementUnitSetting.isPresent()
+				|| (agreementUnitSetting.isPresent() && agreementUnitSetting.get().getEmploymentUseAtr().value == 1)) {
 
 			SheetData sheetData7 = SheetData.builder().mainData(this.getMasterDatasSheet7())
 					.mainDataColumns(this.getHeaderColumnsSheet7()).sheetName(TextResource.localize("KMK008_76"))
@@ -368,7 +372,8 @@ public class RegisteTimeImpl implements MasterListData {
 		/**
          *  sheet 8
          */
-        if (agreementUnitSetting.isPresent() && agreementUnitSetting.get().getWorkPlaceUseAtr().value == 1) {	
+        if (!agreementUnitSetting.isPresent()
+				|| (agreementUnitSetting.isPresent() && agreementUnitSetting.get().getWorkPlaceUseAtr().value == 1)) {	
 			SheetData sheetData8 = SheetData.builder().mainData(this.getMasterDatasSheet8())
 					.mainDataColumns(this.getHeaderColumnsSheet8()).sheetName(TextResource.localize("KMK008_77"))
 					.build();
@@ -378,7 +383,8 @@ public class RegisteTimeImpl implements MasterListData {
         /**
          *  sheet 9
          */
-		if (agreementUnitSetting.isPresent() && agreementUnitSetting.get().getClassificationUseAtr().value == 1) {
+		if (!agreementUnitSetting.isPresent()
+				|| (agreementUnitSetting.isPresent() && agreementUnitSetting.get().getClassificationUseAtr().value == 1)) {
 			SheetData sheetData9 = SheetData.builder()
 	          		 .mainData(this.getMasterDatasSheet9())
 	                  .mainDataColumns(this.getHeaderColumnsSheet9())

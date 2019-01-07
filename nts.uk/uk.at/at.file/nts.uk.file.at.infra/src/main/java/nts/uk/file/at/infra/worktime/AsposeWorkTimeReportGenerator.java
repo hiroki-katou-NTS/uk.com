@@ -14,7 +14,6 @@ import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.arc.task.AsyncTask;
 import nts.uk.file.at.app.export.worktime.WorkTimeReportDatasource;
 import nts.uk.file.at.app.export.worktime.WorkTimeReportGenerator;
 import nts.uk.shr.com.i18n.TextResource;
@@ -55,51 +54,37 @@ public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator im
 
 			ExecutorService executorService = Executors.newFixedThreadPool(3);
 			CountDownLatch countDownLatch = new CountDownLatch(3);
-			AsyncTask taskNormal = AsyncTask.builder().withContexts().keepsTrack(false)
-					.threadName(this.getClass().getName()).build(() -> {
-						try {
-							printData(normalSheet, companyName, exportTime, normalData, normalSheetName,
-									WORK_TIME_NORMAL_START_INDEX, WORK_TIME_NORMAL_NUM_ROW);
-						} catch (Exception e) {
-							e.printStackTrace();
-						} finally {
-							countDownLatch.countDown();
-						}
-					});
-			executorService.submit(taskNormal);
 
-			AsyncTask taskFlow = AsyncTask.builder().withContexts().keepsTrack(false)
-					.threadName(this.getClass().getName()).build(() -> {
-						try {
-							printData(flowSheet, companyName, exportTime, flowData, flowSheetName,
-									WORK_TIME_FLOW_START_INDEX, WORK_TIME_FLOW_NUM_ROW);
-						} catch (Exception e) {
-							e.printStackTrace();
-						} finally {
-							countDownLatch.countDown();
-						}
-					});
-			executorService.submit(taskFlow);
+			executorService.submit(() -> {
+				try {
+					printData(normalSheet, companyName, exportTime, normalData, normalSheetName,
+							WORK_TIME_NORMAL_START_INDEX, WORK_TIME_NORMAL_NUM_ROW);
+				} finally {
+					countDownLatch.countDown();
+				}
+			});
 
-			AsyncTask taskFlex = AsyncTask.builder().withContexts().keepsTrack(false)
-					.threadName(this.getClass().getName()).build(() -> {
-						try {
-							printData(flexSheet, companyName, exportTime, flexData, flexSheetName,
-									WORK_TIME_FLEX_START_INDEX, WORK_TIME_FLEX_NUM_ROW);
-						} catch (Exception e) {
-							e.printStackTrace();
-						} finally {
-							countDownLatch.countDown();
-						}
-					});
-			executorService.submit(taskFlex);
+			executorService.submit(() -> {
+				try {
+					printData(flowSheet, companyName, exportTime, flowData, flowSheetName, 
+							WORK_TIME_FLOW_START_INDEX, WORK_TIME_FLOW_NUM_ROW);
+				} finally {
+					countDownLatch.countDown();
+				}
+			});
+
+			executorService.submit(() -> {
+				try {
+					printData(flexSheet, companyName, exportTime, flexData, flexSheetName, 
+							WORK_TIME_FLEX_START_INDEX, WORK_TIME_FLEX_NUM_ROW);
+				} finally {
+					countDownLatch.countDown();
+				}
+			});
 
 			try {
 				countDownLatch.await();
-			} catch (InterruptedException ie) {
-				throw new RuntimeException(ie);
 			} finally {
-				// Force shut down executor services.
 				executorService.shutdown();
 			}
 
@@ -114,28 +99,32 @@ public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator im
 	}
 
 	private void printData(Worksheet worksheet, String companyName, String exportTime, List<Object[]> data,
-			String sheetName, int startIndex, int numRow) throws Exception {
-		worksheet.setName(sheetName);
-		Cells cells = worksheet.getCells();
-		// Header Data
-		cells.get(0, 1).setValue(companyName);
-		cells.get(1, 1).setValue(REPORT_NAME);
-		cells.get(2, 1).setValue(exportTime);
-		cells.get(3, 1).setValue(sheetName);
+			String sheetName, int startIndex, int numRow) {
+		try {
+			worksheet.setName(sheetName);
+			Cells cells = worksheet.getCells();
+			// Header Data
+			cells.get(0, 1).setValue(companyName);
+			cells.get(1, 1).setValue(REPORT_NAME);
+			cells.get(2, 1).setValue(exportTime);
+			cells.get(3, 1).setValue(sheetName);
 
-		// Main Data
-		if (data.size() == 0) {
-			cells.deleteRows(startIndex, numRow);
-			return;
-		}
-		for (int i = 0; i < data.size(); i++) {
-			Object[] dataRow = data.get(i);
-			if (i % numRow == 0 && i + numRow < data.size()) {
-				cells.copyRows(cells, startIndex + i, startIndex + i + numRow, numRow);
+			// Main Data
+			if (data.size() == 0) {
+				cells.deleteRows(startIndex, numRow);
+				return;
 			}
-			for (int j = 0; j < dataRow.length; j++) {
-				cells.get(startIndex + i, j).setValue(Objects.toString(dataRow[j], ""));
+			for (int i = 0; i < data.size(); i++) {
+				Object[] dataRow = data.get(i);
+				if (i % numRow == 0 && i + numRow < data.size()) {
+					cells.copyRows(cells, startIndex + i, startIndex + i + numRow, numRow);
+				}
+				for (int j = 0; j < dataRow.length; j++) {
+					cells.get(startIndex + i, j).setValue(Objects.toString(dataRow[j], ""));
+				}
 			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 }
