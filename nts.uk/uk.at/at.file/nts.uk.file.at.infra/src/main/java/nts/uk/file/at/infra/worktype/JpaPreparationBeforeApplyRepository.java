@@ -13,201 +13,212 @@ import java.util.List;
 
 @Stateless
 public class JpaPreparationBeforeApplyRepository extends JpaRepository implements PreparationBeforeApplyRepository {
-
-	private static final String SELECT_ALL_BY_CID =
-				"SELECT temp.ROW_NUMBER, "+
-						"temp.CLOSURE_ID, "+
-						"temp.CLOSURE_NAME, "+
-						"temp.USE_ATR, "+
-						"temp.DEADLINE_CRITERIA, "+
-						"temp.DEADLINE, "+
-						"temp.BASE_DATE_FLG, "+
-						"temp.APP_CONTENT_CHANGE_FLG, "+
-						"temp.MHI_SUBJECT, "+
-						"temp.MHI_CONTENT, "+
-						"temp.MOI_SUBJECT, "+
-						"temp.MOI_CONTENT, "+
-						"temp.IS_CONCURRENTLY, "+
-						"temp.PRINCIPAL_APPROVAL_FLG, "+
-						"temp.CONTENT, "+
-						"temp.MAIL_TITLE, "+
-						"temp.MAIL_BODY, "+
-						"temp.APP_REASON_DISP_ATR, "+
-						"temp.DISPLAY_PRE_POST_FLG, "+
-						"pas.ROW_NUMBER, "+
-						"pas.APP_TYPE, "+
-						"atd.ROW_NUMBER, "+
-						"atd.OT_RESTRICT_PRE_DAY, "+
-						"atd.RETRICT_PRE_METHOD_CHECK_FLG, "+
-						"atd.PRE_OTWORK_TIME, "+
-						"atd.NORMAL_OT_TIME, "+
-						"atd.RETRICT_PRE_TIMEDAY, "+
-						"atd.APP_TYPE, "+
-						"atd.RETRICT_PRE_USE_FLG, "+
-						"atd.RETRICT_PRE_DAY, "+
-						"atd.RETRICT_POST_ALLOW_FUTURE_FLG, "+
-						"atd.SEND_MAIL_WHEN_REGISTER_FLG, "+
-						"atd.SEND_MAIL_WHEN_APPROVAL_FLG, "+
-						"atd.DISPLAY_REASON_FLG, "+
-						"atd.PRE_POST_CAN_CHANGE_FLG, "+
-						"adn.ROW_NUMBER, "+
-                        "adn.APP_TYPE," +
-						"adn.DISP_NAME, "+
-						"dr.ROW_NUMBER, "+
-						"dr.TYPE_OF_LEAVE_APP, "+
-						"dr.DISPLAY_FIXED_REASON, "+
-						"dr.DISPLAY_APP_REASON, "+
-						"temp.REQUIRE_APP_REASON_FLG," +
-						"temp.APP_OVERTIME_NIGHT_FLG, " +
-						"temp.APP_ACT_CONFIRM_FLG, " +
-						"temp.APP_ACT_MONTH_CONFIRM_FLG, " +
-						"temp.APP_END_WORK_FLG, " +
-						"temp.APP_ACT_LOCK_FLG, " +
-						"temp.MANUAL_SEND_MAIL_ATR "+
-				"FROM "+
-						"(SELECT "+
-					 			"ROW_NUMBER() OVER (ORDER BY clo.CLOSURE_ID ASC) AS ROW_NUMBER, "+
-								"clo.CLOSURE_ID, "+
-								"cloh.CLOSURE_NAME, "+
-								"clo.CID, "+
-								"ad.USE_ATR, "+
-								"ad.DEADLINE_CRITERIA, "+
-								"ad.DEADLINE, "+
-								"asg.BASE_DATE_FLG, "+
-								"asg.APP_CONTENT_CHANGE_FLG, "+
-								"asg.APP_REASON_DISP_ATR, "+
-								"asg.DISPLAY_PRE_POST_FLG, "+
-								"ue.URL_EMBEDDED, "+
-								"mhi.SUBJECT AS MHI_SUBJECT, "+
-								"mhi.CONTENT AS MHI_CONTENT, "+
-								"moi.SUBJECT AS MOI_SUBJECT, "+
-								"moi.CONTENT AS MOI_CONTENT, "+
-								"jas.IS_CONCURRENTLY, "+
-								"was.PRINCIPAL_APPROVAL_FLG, "+
-								"ate.CONTENT, "+
-								"krm.MAIL_TITLE, "+
-						 		"krm.MAIL_BODY, "+
-								"asg.REQUIRE_APP_REASON_FLG, " +
-								"asg.APP_OVERTIME_NIGHT_FLG, " +
-								"asg.APP_ACT_CONFIRM_FLG, " +
-								"asg.APP_ACT_MONTH_CONFIRM_FLG, " +
-								"asg.APP_END_WORK_FLG, " +
-								"asg.APP_ACT_LOCK_FLG, " +
-								"asg.MANUAL_SEND_MAIL_ATR "+
-						"FROM "+
-								"(SELECT "+
-					 					"CLOSURE_ID, "+
-			 							"CID, "+
-			 							"CLOSURE_MONTH "+
-								"FROM KCLMT_CLOSURE "+
-					 			"WHERE CID = ?cid) clo "+
-						"INNER JOIN  KCLMT_CLOSURE_HIST cloh "+
-						"ON clo.CID = cloh.CID AND clo.CLOSURE_ID = cloh.CLOSURE_ID AND clo.CLOSURE_MONTH <= cloh.END_YM "+
-						"AND clo.CLOSURE_MONTH >= cloh.STR_YM "+
-			"FULL JOIN "+
-					"(SELECT CID, USE_ATR, DEADLINE_CRITERIA, DEADLINE, CLOSURE_ID " +
-					 "FROM KRQST_APP_DEADLINE "+
-					" WHERE CID = ?cid) ad "+
-			 "ON clo.CID = ad.CID AND clo.CLOSURE_ID = ad.CLOSURE_ID "+
-			"FULL JOIN "+
-						"(SELECT CID, " +
-								"BASE_DATE_FLG, " +
-								"APP_CONTENT_CHANGE_FLG, " +
-								"APP_REASON_DISP_ATR, " +
-								"DISPLAY_PRE_POST_FLG, " +
-								"REQUIRE_APP_REASON_FLG, " +
-								"APP_OVERTIME_NIGHT_FLG, " +
-								"APP_ACT_CONFIRM_FLG, " +
-								"APP_ACT_MONTH_CONFIRM_FLG, " +
-								"APP_END_WORK_FLG, " +
-								"APP_ACT_LOCK_FLG, " +
-								"MANUAL_SEND_MAIL_ATR "+
-						"FROM KRQST_APPLICATION_SETTING "+
-						" WHERE CID = ?cid) asg "+
-				"ON clo.CID = asg.CID "+
-			"FULL JOIN "+
-						"(SELECT CID, URL_EMBEDDED "+
-						"FROM KRQST_URL_EMBEDDED "+
-					 	"WHERE CID = ?cid) ue "+
-				"ON ue.CID = clo.CID "+
-			"FULL JOIN "+
-						"(SELECT CONTENT, CID "+
-						"FROM KRQMT_APPROVAL_TEMPLATE "+
-						"WHERE CID = ?cid) ate "+
-				"ON ate.CID = clo.CID "+
-			"FULL JOIN "+
-						"(SELECT  SUBJECT, CONTENT, CID "+
-						"FROM KRQMT_MAIL_HD_INSTRUCTION "+
-						"WHERE CID = ?cid) mhi "+
-				"ON mhi.CID = clo.CID "+
-			"FULL JOIN (SELECT SUBJECT, CONTENT, CID "+
-						"FROM KRQMT_MAIL_OT_INSTRUCTION "+
-					    "WHERE CID = ?cid) moi "+
-				"ON moi.CID = clo.CID "+
-
-			"FULL JOIN (SELECT MAIL_TITLE, MAIL_BODY, CID "+
-						"FROM KRQST_REMAND_MAIL "+
-					   	"WHERE CID = ?cid) krm "+
-				"ON krm.CID = clo.CID "+
-			"FULL JOIN "+
-						"(SELECT IS_CONCURRENTLY, CID "+
-						"FROM WWFST_JOB_ASSIGN_SET  "+
-					 	"WHERE CID = ?cid) jas "+
-				"ON jas.CID = clo.CID "+
-			"FULL JOIN "+
-						"(SELECT PRINCIPAL_APPROVAL_FLG, CID "+
-						"FROM WWFST_APPROVAL_SETTING "+
-					 	"WHERE CID = ?cid)was "+
-				"ON was.CID = clo.CID "+
-		") temp "+
-
-	"FULL JOIN "+
-			"(SELECT APP_TYPE, "+
-						"ROW_NUMBER() OVER (ORDER BY APP_TYPE ) AS ROW_NUMBER "+
-			"FROM KRQST_PROXY_APP_SET "+
-			"WHERE  CID = ?cid) pas "+
-		"ON pas.ROW_NUMBER = temp.ROW_NUMBER "+
-	"FULL JOIN "+
-			"(SELECT ROW_NUMBER() OVER (ORDER BY APP_TYPE ) AS ROW_NUMBER, "+
-					"OT_RESTRICT_PRE_DAY, "+
-					"RETRICT_PRE_METHOD_CHECK_FLG, "+
-					"PRE_OTWORK_TIME, "+
-					"NORMAL_OT_TIME, "+
-					"RETRICT_PRE_TIMEDAY, "+
-					"APP_TYPE, "+
-					"RETRICT_PRE_USE_FLG, "+
-					"RETRICT_PRE_DAY, "+
-					"RETRICT_POST_ALLOW_FUTURE_FLG, " +
-					"SEND_MAIL_WHEN_REGISTER_FLG, " +
-					"SEND_MAIL_WHEN_APPROVAL_FLG, " +
-					"DISPLAY_REASON_FLG, " +
-					"PRE_POST_CAN_CHANGE_FLG "+
-			"FROM KRQST_APP_TYPE_DISCRETE "+
-			"WHERE APP_TYPE NOT IN (3, 5, 8, 11, 12, 13, 14) AND  CID = ?cid "+
-			") atd " +
-		"ON temp.ROW_NUMBER = atd.ROW_NUMBER "+
-	"FULL JOIN "+
-			"( SELECT CID, "+
-			 		"APP_TYPE , "+
-			 		"DISP_NAME, "+
-				 	"ROW_NUMBER() OVER (ORDER BY APP_TYPE ) AS ROW_NUMBER "+
-			"FROM KRQMT_APP_DISP_NAME "+
-			"WHERE APP_TYPE != 5  AND APP_TYPE != 12 AND CID = ?cid "+
-			") adn "+
-		"ON adn.ROW_NUMBER = temp.ROW_NUMBER "+
-	"FULL JOIN (SELECT TYPE_OF_LEAVE_APP, "+
-			   			"DISPLAY_FIXED_REASON, "+
-			    		"ROW_NUMBER() OVER (ORDER BY CID ) AS ROW_NUMBER, "+
-						"DISPLAY_APP_REASON "+
-				"FROM KRQST_DISPLAY_REASON "+
-				"WHERE CID = ?cid) dr " +
-		"ON dr.ROW_NUMBER = temp.ROW_NUMBER";
-
+	
 	@Override
 	public List<Object[]> getChangePerInforDefinitionToExport(String cid) {
 		List<Object[]> resultQuery = null;
-        try {
-			resultQuery = (List<Object[]>) this.getEntityManager().createNativeQuery(SELECT_ALL_BY_CID)
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT 	 temp.ROW_NUMBER, ");
+		sql.append("         temp.CLOSURE_ID,");
+		sql.append("         temp.CLOSURE_NAME,");
+		sql.append("         temp.USE_ATR,");
+		sql.append("         temp.DEADLINE_CRITERIA,");
+		sql.append("         temp.DEADLINE,");
+		sql.append("         temp.BASE_DATE_FLG, ");
+		sql.append("         temp.APP_CONTENT_CHANGE_FLG,");
+		sql.append("         temp.MHI_SUBJECT,");
+		sql.append("         temp.MHI_CONTENT,");
+		sql.append("         temp.MOI_SUBJECT,");
+		sql.append("         temp.MOI_CONTENT,");
+		sql.append("         temp.IS_CONCURRENTLY,");
+		sql.append("         temp.PRINCIPAL_APPROVAL_FLG,");
+		sql.append("         temp.CONTENT,");
+		sql.append("         temp.MAIL_TITLE,");
+		sql.append("         temp.MAIL_BODY,");
+		sql.append("         temp.APP_REASON_DISP_ATR,");
+		sql.append("         temp.DISPLAY_PRE_POST_FLG,");
+		sql.append("         pas.ROW_NUMBER,");
+		sql.append("         pas.APP_TYPE,");
+		sql.append("         atd.ROW_NUMBER,");
+		sql.append("         atd.OT_RESTRICT_PRE_DAY,");
+		sql.append("         atd.RETRICT_PRE_METHOD_CHECK_FLG,");
+		sql.append("         atd.PRE_OTWORK_TIME,");
+		sql.append("         atd.NORMAL_OT_TIME,");
+		sql.append("         atd.RETRICT_PRE_TIMEDAY,");
+		sql.append("         atd.APP_TYPE,");
+		sql.append("         atd.RETRICT_PRE_USE_FLG,");
+		sql.append("         atd.RETRICT_PRE_DAY,");
+		sql.append("         atd.RETRICT_POST_ALLOW_FUTURE_FLG,");
+		sql.append("         atd.SEND_MAIL_WHEN_REGISTER_FLG,");
+		sql.append("         atd.SEND_MAIL_WHEN_APPROVAL_FLG,");
+		sql.append("         atd.DISPLAY_REASON_FLG,");
+		sql.append("         atd.PRE_POST_CAN_CHANGE_FLG,");
+		sql.append("         adn.ROW_NUMBER,");
+		sql.append("         adn.APP_TYPE,");
+		sql.append("         adn.DISP_NAME,");
+		sql.append("         dr.ROW_NUMBER,");
+		sql.append("         dr.TYPE_OF_LEAVE_APP,");
+		sql.append("         dr.DISPLAY_FIXED_REASON,");
+		sql.append("         dr.DISPLAY_APP_REASON,");
+		sql.append("         temp.REQUIRE_APP_REASON_FLG,");
+		sql.append("         temp.APP_OVERTIME_NIGHT_FLG,");
+		sql.append("         temp.APP_ACT_CONFIRM_FLG,");
+		sql.append("         temp.APP_ACT_MONTH_CONFIRM_FLG,");
+		sql.append("         temp.APP_END_WORK_FLG,");
+		sql.append("         temp.APP_ACT_LOCK_FLG,");
+		sql.append("         temp.MANUAL_SEND_MAIL_ATR,");
+		sql.append("		 temp.URL_EMBEDDED");
+		sql.append("     FROM  ");
+		sql.append("      (SELECT ");
+		sql.append("          ROW_NUMBER() OVER (ORDER BY clo.CLOSURE_ID ASC) AS ROW_NUMBER,");
+		sql.append("          clo.CLOSURE_ID,  ");
+		sql.append("          cloh.CLOSURE_NAME,");
+		sql.append("          clo.CID,");
+		sql.append("          ad.USE_ATR,");
+		sql.append("          ad.DEADLINE_CRITERIA,");
+		sql.append("          ad.DEADLINE,");
+		sql.append("          asg.BASE_DATE_FLG,");
+		sql.append("          asg.APP_CONTENT_CHANGE_FLG,");
+		sql.append("          asg.APP_REASON_DISP_ATR,");
+		sql.append("          asg.DISPLAY_PRE_POST_FLG,");
+		sql.append("          ue.URL_EMBEDDED,");
+		sql.append("          mhi.SUBJECT AS MHI_SUBJECT,");
+		sql.append("          mhi.CONTENT AS MHI_CONTENT,");
+		sql.append("          moi.SUBJECT AS MOI_SUBJECT,");
+		sql.append("          moi.CONTENT AS MOI_CONTENT,");
+		sql.append("          jas.IS_CONCURRENTLY,");
+		sql.append("          was.PRINCIPAL_APPROVAL_FLG,");
+		sql.append("          ate.CONTENT,");
+		sql.append("          krm.MAIL_TITLE,");
+		sql.append("          krm.MAIL_BODY,");
+		sql.append("          asg.REQUIRE_APP_REASON_FLG,");
+		sql.append("          asg.APP_OVERTIME_NIGHT_FLG,");
+		sql.append("          asg.APP_ACT_CONFIRM_FLG,");
+		sql.append("          asg.APP_ACT_MONTH_CONFIRM_FLG,");
+		sql.append("          asg.APP_END_WORK_FLG,");
+		sql.append("          asg.APP_ACT_LOCK_FLG,");
+		sql.append("          asg.MANUAL_SEND_MAIL_ATR");
+		sql.append("        FROM ");
+		sql.append("          (SELECT ROW_NUMBER() OVER (ORDER BY CLOSURE_ID ASC) AS ROW_NUMBER,");
+		sql.append("           CLOSURE_ID, ");
+		sql.append("           CID, ");
+		sql.append("           CLOSURE_MONTH");
+		sql.append("        FROM KCLMT_CLOSURE ");
+		sql.append("        WHERE CID = ?cid) clo");
+		sql.append("        INNER JOIN  KCLMT_CLOSURE_HIST cloh ");
+		sql.append("             ON clo.CID = cloh.CID ");
+		sql.append("             AND clo.CLOSURE_ID = cloh.CLOSURE_ID ");
+		sql.append("             AND clo.CLOSURE_MONTH <= cloh.END_YM");
+		sql.append("             AND clo.CLOSURE_MONTH >= cloh.STR_YM");
+		sql.append("        FULL JOIN ");
+		sql.append("             (SELECT CID, USE_ATR, DEADLINE_CRITERIA, DEADLINE, CLOSURE_ID");
+		sql.append("             FROM KRQST_APP_DEADLINE ");
+		sql.append("             WHERE CID = ?cid) ad");
+		sql.append("             ON clo.CID = ad.CID AND clo.CLOSURE_ID = ad.CLOSURE_ID");
+		sql.append("        FULL JOIN ");
+		sql.append("             (SELECT ");
+		sql.append("                 ROW_NUMBER() OVER (ORDER BY CID ) AS ROW_NUMBER,");
+		sql.append("                 BASE_DATE_FLG, ");
+		sql.append("                 APP_CONTENT_CHANGE_FLG, ");
+		sql.append("                 APP_REASON_DISP_ATR, ");
+		sql.append("                 DISPLAY_PRE_POST_FLG, ");
+		sql.append("                 REQUIRE_APP_REASON_FLG, ");
+		sql.append("                 APP_OVERTIME_NIGHT_FLG,");
+		sql.append("                 APP_ACT_CONFIRM_FLG,");
+		sql.append("                 APP_ACT_MONTH_CONFIRM_FLG,");
+		sql.append("                 APP_END_WORK_FLG,");
+		sql.append("                 APP_ACT_LOCK_FLG,");
+		sql.append("                 MANUAL_SEND_MAIL_ATR");
+		sql.append("             FROM KRQST_APPLICATION_SETTING ");
+		sql.append("             WHERE CID = ?cid) asg");
+		sql.append("             ON clo.ROW_NUMBER = asg.ROW_NUMBER ");
+		sql.append("        FULL JOIN ");
+		sql.append("             (SELECT ROW_NUMBER() OVER (ORDER BY CID) AS ROW_NUMBER,");
+		sql.append("                 URL_EMBEDDED");
+		sql.append("             FROM KRQST_URL_EMBEDDED ");
+		sql.append("             WHERE CID = ?cid) ue ");
+		sql.append("             ON ue.ROW_NUMBER = clo.ROW_NUMBER");
+		sql.append("        FULL JOIN ");
+		sql.append("             (SELECT ROW_NUMBER() OVER (ORDER BY CID) AS ROW_NUMBER,");
+		sql.append("                 CONTENT");
+		sql.append("             FROM KRQMT_APPROVAL_TEMPLATE ");
+		sql.append("             WHERE CID = ?cid) ate ");
+		sql.append("             ON ate.ROW_NUMBER = clo.ROW_NUMBER");
+		sql.append("        FULL JOIN ");
+		sql.append("             (SELECT ROW_NUMBER() OVER (ORDER BY CID) AS ROW_NUMBER,");
+		sql.append("                 SUBJECT, ");
+		sql.append("                 CONTENT ");
+		sql.append("             FROM KRQMT_MAIL_HD_INSTRUCTION ");
+		sql.append("             WHERE CID = ?cid) mhi ");
+		sql.append("             ON mhi.ROW_NUMBER = clo.ROW_NUMBER");
+		sql.append("        FULL JOIN (SELECT ROW_NUMBER() OVER (ORDER BY CID) AS ROW_NUMBER,");
+		sql.append("                 SUBJECT,");
+		sql.append("                 CONTENT ");
+		sql.append("             FROM KRQMT_MAIL_OT_INSTRUCTION");
+		sql.append("             WHERE CID = ?cid) moi");
+		sql.append("             ON moi.ROW_NUMBER = clo.ROW_NUMBER");
+		sql.append("        FULL JOIN (SELECT ROW_NUMBER() OVER (ORDER BY CID) AS ROW_NUMBER,");
+		sql.append("                 MAIL_TITLE, ");
+		sql.append("                 MAIL_BODY");
+		sql.append("             FROM KRQST_REMAND_MAIL");
+		sql.append("             WHERE CID = ?cid) krm");
+		sql.append("             ON krm.ROW_NUMBER = clo.ROW_NUMBER");
+		sql.append("        FULL JOIN ");
+		sql.append("             (SELECT ROW_NUMBER() OVER (ORDER BY CID) AS ROW_NUMBER,");
+		sql.append("                 IS_CONCURRENTLY");
+		sql.append("             FROM WWFST_JOB_ASSIGN_SET ");
+		sql.append("             WHERE CID = ?cid) jas ");
+		sql.append("             ON jas.ROW_NUMBER = clo.ROW_NUMBER");
+		sql.append("        FULL JOIN ");
+		sql.append("             (SELECT ROW_NUMBER() OVER (ORDER BY CID) AS ROW_NUMBER,");
+		sql.append("                 PRINCIPAL_APPROVAL_FLG");
+		sql.append("             FROM WWFST_APPROVAL_SETTING ");
+		sql.append("             WHERE CID = ?cid)was ");
+		sql.append("             ON was.ROW_NUMBER = clo.ROW_NUMBER   ");
+		sql.append("          ) temp");
+		sql.append("         FULL JOIN ");
+		sql.append("              (SELECT APP_TYPE, ");
+		sql.append("                  ROW_NUMBER() OVER (ORDER BY APP_TYPE ) AS ROW_NUMBER");
+		sql.append("              FROM KRQST_PROXY_APP_SET");
+		sql.append("              WHERE  CID = ?cid) pas ");
+		sql.append("              ON pas.ROW_NUMBER = temp.ROW_NUMBER");
+		sql.append("         FULL JOIN ");
+		sql.append("              (SELECT ROW_NUMBER() OVER (ORDER BY APP_TYPE ) AS ROW_NUMBER,");
+		sql.append("                  OT_RESTRICT_PRE_DAY,");
+		sql.append("                  RETRICT_PRE_METHOD_CHECK_FLG,");
+		sql.append("                  PRE_OTWORK_TIME,");
+		sql.append("                  NORMAL_OT_TIME,");
+		sql.append("                  RETRICT_PRE_TIMEDAY,");
+		sql.append("                  APP_TYPE,");
+		sql.append("                  RETRICT_PRE_USE_FLG,");
+		sql.append("                  RETRICT_PRE_DAY,");
+		sql.append("                  RETRICT_POST_ALLOW_FUTURE_FLG,");
+		sql.append("                  SEND_MAIL_WHEN_REGISTER_FLG,");
+		sql.append("                  SEND_MAIL_WHEN_APPROVAL_FLG,");
+		sql.append("                  DISPLAY_REASON_FLG,");
+		sql.append("                  PRE_POST_CAN_CHANGE_FLG");
+		sql.append("               FROM KRQST_APP_TYPE_DISCRETE");
+		sql.append("               WHERE APP_TYPE NOT IN (3, 5, 8, 11, 12, 13, 14) AND  CID = ?cid");
+		sql.append("              ) atd ON temp.ROW_NUMBER = atd.ROW_NUMBER");
+		sql.append("         FULL JOIN ");
+		sql.append("              ( SELECT CID,");
+		sql.append("                   APP_TYPE ,");
+		sql.append("                   DISP_NAME, ");
+		sql.append("                   ROW_NUMBER() OVER (ORDER BY APP_TYPE ) AS ROW_NUMBER");
+		sql.append("               FROM KRQMT_APP_DISP_NAME");
+		sql.append("               WHERE APP_TYPE != 5  AND APP_TYPE != 12 AND CID = ?cid");
+		sql.append("              ) adn ");
+		sql.append("           ON adn.ROW_NUMBER = temp.ROW_NUMBER");
+		sql.append("         FULL JOIN (SELECT TYPE_OF_LEAVE_APP,");
+		sql.append("               DISPLAY_FIXED_REASON,");
+		sql.append("               ROW_NUMBER() OVER (ORDER BY CID ) AS ROW_NUMBER,");
+		sql.append("               DISPLAY_APP_REASON");
+		sql.append("               FROM KRQST_DISPLAY_REASON ");
+		sql.append("               WHERE CID = ?cid) ");
+		sql.append("               dr ON dr.ROW_NUMBER = temp.ROW_NUMBER");
+
+		try {
+			resultQuery = (List<Object[]>) this.getEntityManager().createNativeQuery(sql.toString())
 					.setParameter("cid", cid)
 					.getResultList();
 		} catch (NoResultException e) {
@@ -219,46 +230,270 @@ public class JpaPreparationBeforeApplyRepository extends JpaRepository implement
 	public List<Object[]> getExtraData(String cid) {
 		List<Object[]> resultQuery = null;
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT aos.WORKTYPE_PERMISSION_FLAG, ");
-		sql.append("aos.FLEX_EXCESS_USE_SET_ATR, ");
-		sql.append("rac.BONUS_TIME_DISPLAY_ATR, ");
-		sql.append("rac.DIVERGENCE_REASON_FORM_ATR, ");
-		sql.append("rac.DIVERGENCE_REASON_INPUT_ATR, ");
-		sql.append("rac.PERFORMANCE_DISPLAY_ATR, ");
-		sql.append("rac.PRE_DISPLAY_ATR, ");
-		sql.append("rac.CAL_OVERTIME_DISPLAY_ATR, ");
-		sql.append("rac.EXTRATIME_DISPLAY_ATR, ");
-		sql.append("rac.PRE_EXCESS_DISPLAY_SETTING, ");
-		sql.append("rac.PERFORMANCE_EXCESS_ATR, ");
-		sql.append("was.OVERRIDE_SET, ");
-		sql.append("rac.EXTRATIME_EXCESS_ATR, ");
-		sql.append("rac.APP_DATE_CONTRADICTION_ATR, ");
-		sql.append("ar.APP_TYPE, ");
-		sql.append("ar.REASON_TEMP, ");
-		sql.append("ar.DEFAULT_FLG ");
-		sql.append("FROM (SELECT ROW_NUMBER() OVER (ORDER BY DISPORDER ASC) AS ROW_NUMBER, ");
-		sql.append("APP_TYPE, ");
-		sql.append("REASON_TEMP, ");
-		sql.append("DEFAULT_FLG ");
-		sql.append("FROM KRQST_APP_REASON ");
-		sql.append("WHERE CID = ?cid) ar ");
-		sql.append("FULL JOIN (SELECT ROW_NUMBER() OVER (ORDER BY CID ASC) AS ROW_NUMBER, ");
-		sql.append("CID, WORKTYPE_PERMISSION_FLAG, FLEX_EXCESS_USE_SET_ATR ");
-		sql.append("FROM KRQST_APP_OVERTIME_SET WHERE CID = ?cid) aos ");
-		sql.append("ON ar.ROW_NUMBER = aos.ROW_NUMBER ");
-		sql.append("FULL JOIN (SELECT ROW_NUMBER() OVER (ORDER BY APP_TYPE ASC) AS ROW_NUMBER, ");
-		sql.append("APP_TYPE, BONUS_TIME_DISPLAY_ATR, DIVERGENCE_REASON_FORM_ATR, DIVERGENCE_REASON_INPUT_ATR, PERFORMANCE_DISPLAY_ATR,PRE_DISPLAY_ATR, ");
-		sql.append("CAL_OVERTIME_DISPLAY_ATR, EXTRATIME_DISPLAY_ATR,PRE_EXCESS_DISPLAY_SETTING, PERFORMANCE_EXCESS_ATR, EXTRATIME_EXCESS_ATR, APP_DATE_CONTRADICTION_ATR ");
-		sql.append("FROM KRQST_OT_REST_APP_COM_SET WHERE CID = ?cid) rac ");
-		sql.append("ON rac.ROW_NUMBER = ar.ROW_NUMBER ");
-		sql.append("FULL JOIN (SELECT ROW_NUMBER() OVER (ORDER BY CID ASC) AS ROW_NUMBER, ");
-		sql.append("OVERRIDE_SET ");
-		sql.append("FROM KRQST_WITHDRAWAL_APP_SET ");
-		sql.append("WHERE CID = ?cid )was ");
-		sql.append("ON was.ROW_NUMBER = ar.ROW_NUMBER ");
-		sql.append("FULL JOIN (SELECT ROW_NUMBER() OVER (ORDER BY CID ASC) AS ROW_NUMBER, INIT_DISPLAY_WORKTIME ");
-		sql.append("FROM KRQST_APP_WORK_CHANGE_SET WHERE CID = ?cid) awc ");
-		sql.append("ON awc.ROW_NUMBER = ar.ROW_NUMBER ");
+		sql.append("SELECT ");
+		sql.append("      aos.WORKTYPE_PERMISSION_FLAG, ");
+		sql.append("      aos.FLEX_EXCESS_USE_SET_ATR,");
+		sql.append("      rac.BONUS_TIME_DISPLAY_ATR,");
+		sql.append("      rac.DIVERGENCE_REASON_FORM_ATR,");
+		sql.append("      rac.DIVERGENCE_REASON_INPUT_ATR,");
+		sql.append("      rac.PERFORMANCE_DISPLAY_ATR,");
+		sql.append("      rac.PRE_DISPLAY_ATR,");
+		sql.append("      rac.CAL_OVERTIME_DISPLAY_ATR,");
+		sql.append("      rac.EXTRATIME_DISPLAY_ATR,");
+		sql.append("      rac.PRE_EXCESS_DISPLAY_SETTING,");
+		sql.append("      rac.PERFORMANCE_EXCESS_ATR,");
+		sql.append("      was.OVERRIDE_SET,");
+		sql.append("      rac.EXTRATIME_EXCESS_ATR,");
+		sql.append("      rac.APP_DATE_CONTRADICTION_ATR,");
+		sql.append("      ar.APP_TYPE,");
+		sql.append("      ar.REASON_TEMP,");
+		sql.append("      ar.DEFAULT_FLG,");
+		sql.append("      hae.WRK_HOURS_USE_ATR,");
+		sql.append("      hae.DISPLAY_UNSELECT,");
+		sql.append("      hae.CHANGE_WRK_HOURS,");
+		sql.append("      hae.USE_TIME_YEAR_HD,");
+		sql.append("      hae.USE_60H_HOLIDAY,");
+		sql.append("      hae.USE_TIME_GENER_HD,");
+		sql.append("      hae.ACTUAL_DISPLAY_ATR,");
+		sql.append("      hae.APPLI_DATE_CONTRA_ATR,");
+		sql.append("      hae.CONCHECK_OUTLEGAL_LAW,");
+		sql.append("      hae.CONCHECK_DATE_RELEASEDATE,");
+		sql.append("      hae.CKUPER_LIMIT_HALFDAY_HD,");
+		sql.append("      hae.REGIS_NUM_YEAR_OFF,");
+		sql.append("      hae.REGIS_SHORT_LOST_HD,");
+		sql.append("      hae.REGIS_SHORT_RESER_YEAR,");
+		sql.append("      hae.REGIS_LACK_PUBLIC_HD,");
+		sql.append("      hae.REGIS_INSUFF_NUMOFREST,");
+		sql.append("      hae.PRIORITY_DIGESTION_ATR,");
+		sql.append("      hae.YEAR_HD_NAME,");
+		sql.append("      hae.OBSTACLE_NAME,");
+		sql.append("      hae.ABSENTEEISM_NAME,");
+		sql.append("      hae.SPECIAL_VACATION_NAME,");
+		sql.append("      hae.YEAR_RESIG_NAME,");
+		sql.append("      hae.HD_NAME,");
+		sql.append("      hae.TIME_DIGEST_NAME,");
+		sql.append("      hae.FURIKYU_NAME,");
+		sql.append("      awc.INIT_DISPLAY_WORKTIME,");
+		sql.append("      awc.WORK_CHANGE_TIME_ATR,");
+		sql.append("      awc.EXCLUDE_HOLIDAY,");
+		sql.append("      awc.COMMENT_CONTENT1,");
+		sql.append("      awc.COMMENT_FONT_COLOR1,");
+		sql.append("      awc.COMMENT_FONT_WEIGHT1,");
+		sql.append("      awc.COMMENT_CONTENT2,");
+		sql.append("      awc.COMMENT_FONT_COLOR2,");
+		sql.append("      awc.COMMENT_FONT_WEIGHT2,");
+		sql.append("      awc.DISPLAY_RESULT_ATR,");
+		sql.append("      gbd.WORK_TYPE,");
+		sql.append("      gbd.WORK_CHANGE_FLG,");
+		sql.append("      gbd.COMMENT_CONTENT1,");
+		sql.append("       gbd.COMMENT_FONT_COLOR1,");
+		sql.append("      gbd.COMMENT_FONT_WEIGHT1,");
+		sql.append("      gbd.COMMENT_CONTENT2,");
+		sql.append("      gbd.COMMENT_FONT_COLOR2,");
+		sql.append("      gbd.COMMENT_FONT_WEIGHT2,");
+		sql.append("      gbd.PERFORMANCE_DISPLAY_ATR,");
+		sql.append("      gbd.CONTRADITION_CHECK_ATR,");
+		sql.append("      gbd.LATE_LEAVE_EARLY_SETTING_ATR,");
+		sql.append("      rac.APP_TYPE,");
+		sql.append("      was.TYPES_OF_PAID_LEAVE,");
+		sql.append("      was.WORK_CHANGE_SET,");
+		sql.append("      was.TIME_INITIAL_DISP,");
+		sql.append("      wrs.CHECK_UPLIMIT_HALFDAY_HD,");
+		sql.append("      was.CHECK_NO_HD_TIME,");
+		sql.append("      was.CALCULATION_STAMP_MISS,");
+		sql.append("      wrs.DEFERRED_WORKTIME_SELECT,");
+		sql.append("      wrs.PERMISSION_DIVISION,");
+		sql.append("      wrs.PICKUP_COMMENT,");
+		sql.append("      wrs.PICKUP_LETTER_COLOR,");
+		sql.append("      wrs.DEFERRED_BOLD,");
+		sql.append("      wrs.DEFERRED_COMMENT,");
+		sql.append("      wrs.DEFERRED_LETTER_COLOR,");
+		sql.append("      wrs.PICKUP_BOLD,");
+		sql.append("      wrs.USE_ATR,");
+		sql.append("      wrs.SIMUL_APPLI_REQUIRE,");
+		sql.append("      wrs.APPLI_DATE_CONTRAC,");
+		sql.append("      wrs.LETTER_SUPER_LEAVE,");
+		sql.append("      acs.SHOW_WKP_NAME_BELONG,");
+		sql.append("      asg.REQUIRE_APP_REASON_FLG,");
+		sql.append("      asg.WARNING_DATE_DISP_ATR,");
+		sql.append("      asg.OT_ADVANCE_DISP_ATR,");
+		sql.append("      asg.HW_ADVANCE_DISP_ATR,");
+		sql.append("      asg.ADVANCE_EXCESS_MESS_DISP_ATR,");
+		sql.append("      asg.OT_ACTUAL_DISP_ATR,");
+		sql.append("      asg.HW_ACTUAL_DISP_ATR,");
+		sql.append("      asg.ACTUAL_EXCESS_MESS_DISP_ATR,");
+		sql.append("      asg.REFLEC_TIMEOF_SCHEDULED,");
+		sql.append("      asg.PRIORITY_TIME_REFLECT_FLG,");
+		sql.append("      asg.ATTENDENT_TIME_REFLECT_FLG,");
+		sql.append("      asg.SCHE_REFLECT_FLG,");
+		sql.append("      asg.CLASSIFY_SCHE_ACHIEVE_SAMEATR,");
+		sql.append("      asg.SCHEDULE_CONFIRM_ATR,");
+		sql.append("      aos.POST_TYPESIFT_REFLECT_FLG,");
+		sql.append("      aos.REST_ATR,");
+		sql.append("      asg.ACHIEVEMENT_CONFIRM_ATR,");
+		sql.append("      aos.PRE_TYPE_SIFT_REFLECT_FLG,");
+		sql.append("      aos.POST_BREAK_REFLECT_FLG,");
+		sql.append("      was.REST_TIME,");
+		sql.append("      was.WORK_TIME,");
+		sql.append("      was.BREAK_TIME,");
+		sql.append("      aos.PRIORITY_STAMP_SET_ATR,");
+		sql.append("      aos.PRE_OVERTIME_REFLECT_FLG,");
+		sql.append("      aos.POST_WORKTIME_REFLECT_FLG");
+		sql.append("   FROM ");
+		sql.append("      (SELECT ROW_NUMBER() OVER (ORDER BY DISPORDER ASC) AS ROW_NUMBER,");
+		sql.append("            APP_TYPE,");
+		sql.append("            REASON_TEMP,");
+		sql.append("            DEFAULT_FLG");
+		sql.append("            FROM KRQST_APP_REASON");
+		sql.append("            WHERE CID = ?cid");
+		sql.append("            ) ar");
+		sql.append("   FULL JOIN          ");
+		sql.append("      (SELECT ROW_NUMBER() OVER (ORDER BY CID ASC) AS ROW_NUMBER,");
+		sql.append("          CID, ");
+		sql.append("          WORKTYPE_PERMISSION_FLAG, ");
+		sql.append("          FLEX_EXCESS_USE_SET_ATR,");
+		sql.append("          POST_TYPESIFT_REFLECT_FLG,");
+		sql.append("          REST_ATR,");
+		sql.append("          PRE_TYPE_SIFT_REFLECT_FLG,");
+		sql.append("          POST_BREAK_REFLECT_FLG,");
+		sql.append("          PRIORITY_STAMP_SET_ATR,");
+		sql.append("          PRE_OVERTIME_REFLECT_FLG,");
+		sql.append("          POST_WORKTIME_REFLECT_FLG");
+		sql.append("      FROM KRQST_APP_OVERTIME_SET ");
+		sql.append("      WHERE CID = ?cid  ");
+		sql.append("      ) aos ");
+		sql.append("     ON ar.ROW_NUMBER = aos.ROW_NUMBER");
+		sql.append("   FULL JOIN (SELECT ROW_NUMBER() OVER (ORDER BY APP_TYPE ASC) AS ROW_NUMBER,");
+		sql.append("            APP_TYPE,");
+		sql.append("            BONUS_TIME_DISPLAY_ATR,");
+		sql.append("            DIVERGENCE_REASON_FORM_ATR,");
+		sql.append("            DIVERGENCE_REASON_INPUT_ATR,");
+		sql.append("            PERFORMANCE_DISPLAY_ATR,");
+		sql.append("            PRE_DISPLAY_ATR,");
+		sql.append("            CAL_OVERTIME_DISPLAY_ATR,");
+		sql.append("            EXTRATIME_DISPLAY_ATR,");
+		sql.append("            PRE_EXCESS_DISPLAY_SETTING,");
+		sql.append("            PERFORMANCE_EXCESS_ATR,");
+		sql.append("            EXTRATIME_EXCESS_ATR,");
+		sql.append("            APP_DATE_CONTRADICTION_ATR");
+		sql.append("        FROM KRQST_OT_REST_APP_COM_SET ");
+		sql.append("        WHERE CID = ?cid   ");
+		sql.append("        ) rac ");
+		sql.append("     ON rac.ROW_NUMBER = ar.ROW_NUMBER ");
+		sql.append("   FULL JOIN (SELECT ROW_NUMBER() OVER (ORDER BY CID ASC) AS ROW_NUMBER,");
+		sql.append("        OVERRIDE_SET,");
+		sql.append("        TYPES_OF_PAID_LEAVE,");
+		sql.append("        WORK_CHANGE_SET,");
+		sql.append("        TIME_INITIAL_DISP,");
+		sql.append("        CHECK_NO_HD_TIME,");
+		sql.append("        CALCULATION_STAMP_MISS,");
+		sql.append("        REST_TIME,");
+		sql.append("        WORK_TIME,");
+		sql.append("        BREAK_TIME");
+		sql.append("        FROM KRQST_WITHDRAWAL_APP_SET ");
+		sql.append("        WHERE CID = ?cid");
+		sql.append("        )was ");
+		sql.append("     ON was.ROW_NUMBER = ar.ROW_NUMBER");
+		sql.append("   FULL JOIN (SELECT ROW_NUMBER() OVER (ORDER BY CID ASC) AS ROW_NUMBER,");
+		sql.append("            INIT_DISPLAY_WORKTIME,");
+		sql.append("            WORK_CHANGE_TIME_ATR,");
+		sql.append("            EXCLUDE_HOLIDAY,");
+		sql.append("            COMMENT_CONTENT1,");
+		sql.append("            COMMENT_FONT_COLOR1,");
+		sql.append("            COMMENT_FONT_WEIGHT1,");
+		sql.append("            COMMENT_CONTENT2,");
+		sql.append("            COMMENT_FONT_COLOR2,");
+		sql.append("            COMMENT_FONT_WEIGHT2,");
+		sql.append("            DISPLAY_RESULT_ATR");
+		sql.append("        FROM KRQST_APP_WORK_CHANGE_SET");
+		sql.append("        WHERE CID = ?cid) awc");
+		sql.append("     ON awc.ROW_NUMBER = ar.ROW_NUMBER");
+		sql.append("   FULL JOIN (SELECT ROW_NUMBER() OVER (ORDER BY CID ASC) AS ROW_NUMBER,");
+		sql.append("        WRK_HOURS_USE_ATR,");
+		sql.append("        DISPLAY_UNSELECT,");
+		sql.append("        CHANGE_WRK_HOURS,");
+		sql.append("        USE_TIME_YEAR_HD,");
+		sql.append("        USE_60H_HOLIDAY,");
+		sql.append("        USE_TIME_GENER_HD,");
+		sql.append("        ACTUAL_DISPLAY_ATR,");
+		sql.append("        APPLI_DATE_CONTRA_ATR,");
+		sql.append("        CONCHECK_OUTLEGAL_LAW,");
+		sql.append("        CONCHECK_DATE_RELEASEDATE,");
+		sql.append("        CKUPER_LIMIT_HALFDAY_HD,");
+		sql.append("        REGIS_NUM_YEAR_OFF,");
+		sql.append("        REGIS_SHORT_LOST_HD,");
+		sql.append("        REGIS_SHORT_RESER_YEAR,");
+		sql.append("        REGIS_LACK_PUBLIC_HD,");
+		sql.append("        REGIS_INSUFF_NUMOFREST,");
+		sql.append("        PRIORITY_DIGESTION_ATR,");
+		sql.append("        YEAR_HD_NAME,");
+		sql.append("        OBSTACLE_NAME,");
+		sql.append("        ABSENTEEISM_NAME,");
+		sql.append("        SPECIAL_VACATION_NAME,");
+		sql.append("        YEAR_RESIG_NAME,");
+		sql.append("        HD_NAME,");
+		sql.append("        TIME_DIGEST_NAME,");
+		sql.append("        FURIKYU_NAME");
+		sql.append("      FROM KRQST_HD_APP_SET");
+		sql.append("      WHERE CID = ?cid");
+		sql.append("        ) hae");
+		sql.append("    ON hae.ROW_NUMBER = ar.ROW_NUMBER");
+		sql.append(" FULL JOIN (SELECT ROW_NUMBER() OVER (ORDER BY CID ASC) AS ROW_NUMBER,");
+		sql.append("          WORK_TYPE,");
+		sql.append("          WORK_CHANGE_FLG,");
+		sql.append("          COMMENT_CONTENT1,");
+		sql.append("          COMMENT_FONT_COLOR1,");
+		sql.append("          COMMENT_FONT_WEIGHT1,");
+		sql.append("          COMMENT_CONTENT2,");
+		sql.append("          COMMENT_FONT_COLOR2,");
+		sql.append("          COMMENT_FONT_WEIGHT2,");
+		sql.append("          PERFORMANCE_DISPLAY_ATR,");
+		sql.append("          CONTRADITION_CHECK_ATR,");
+		sql.append("          LATE_LEAVE_EARLY_SETTING_ATR");
+		sql.append("        FROM KRQST_GO_BACK_DIRECT_SET");
+		sql.append("        WHERE CID = ?cid) gbd");
+		sql.append("     ON gbd.ROW_NUMBER = ar.ROW_NUMBER");
+		sql.append(" FULL JOIN (SELECT ROW_NUMBER() OVER (ORDER BY CID ASC) AS ROW_NUMBER,");
+		sql.append("          CHECK_UPLIMIT_HALFDAY_HD,");
+		sql.append("          DEFERRED_WORKTIME_SELECT,");
+		sql.append("          PERMISSION_DIVISION,");
+		sql.append("          PICKUP_COMMENT,");
+		sql.append("          PICKUP_LETTER_COLOR,");
+		sql.append("          DEFERRED_BOLD,");
+		sql.append("          DEFERRED_COMMENT,");
+		sql.append("          DEFERRED_LETTER_COLOR,");
+		sql.append("          PICKUP_BOLD,");
+		sql.append("          USE_ATR,");
+		sql.append("          SIMUL_APPLI_REQUIRE,");
+		sql.append("          APPLI_DATE_CONTRAC,");
+		sql.append("          LETTER_SUPER_LEAVE");
+		sql.append("       FROM KRQST_WITHDRAWAL_REQ_SET");
+		sql.append("       WHERE CID = ?cid) wrs");
+		sql.append("     ON wrs.ROW_NUMBER = ar.ROW_NUMBER ");
+		sql.append("  FULL JOIN (SELECT ROW_NUMBER() OVER (ORDER BY CID ASC) AS ROW_NUMBER,");
+		sql.append("           SHOW_WKP_NAME_BELONG");
+		sql.append("       FROM KRQST_APP_COMMON_SET");
+		sql.append("       WHERE CID = ?cid) acs");
+		sql.append("     ON acs.ROW_NUMBER = ar.ROW_NUMBER  ");
+		sql.append("  FULL JOIN (SELECT ROW_NUMBER() OVER (ORDER BY CID ASC) AS ROW_NUMBER,");
+		sql.append("           REQUIRE_APP_REASON_FLG,");
+		sql.append("           WARNING_DATE_DISP_ATR,");
+		sql.append("           OT_ADVANCE_DISP_ATR,");
+		sql.append("           HW_ADVANCE_DISP_ATR,");
+		sql.append("           ADVANCE_EXCESS_MESS_DISP_ATR,");
+		sql.append("           OT_ACTUAL_DISP_ATR,");
+		sql.append("           HW_ACTUAL_DISP_ATR,");
+		sql.append("           ACTUAL_EXCESS_MESS_DISP_ATR,");
+		sql.append("           REFLEC_TIMEOF_SCHEDULED,");
+		sql.append("           PRIORITY_TIME_REFLECT_FLG,");
+		sql.append("           ATTENDENT_TIME_REFLECT_FLG,");
+		sql.append("           SCHE_REFLECT_FLG,");
+		sql.append("           CLASSIFY_SCHE_ACHIEVE_SAMEATR,");
+		sql.append("           SCHEDULE_CONFIRM_ATR,");
+		sql.append("           ACHIEVEMENT_CONFIRM_ATR");
+		sql.append("       FROM KRQST_APPLICATION_SETTING");
+		sql.append("       WHERE CID = ?cid) asg");
+		sql.append("     ON asg.ROW_NUMBER = ar.ROW_NUMBER");
 
 		try {
 			resultQuery = (List<Object[]>) this.getEntityManager().createNativeQuery(sql.toString())

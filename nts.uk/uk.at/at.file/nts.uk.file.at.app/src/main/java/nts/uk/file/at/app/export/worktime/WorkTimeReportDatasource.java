@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDateTime;
 
 @Getter
 @Setter
@@ -13,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class WorkTimeReportDatasource {
 	private String companyName;
-	private String exportTime;
+	private GeneralDateTime exportTime;
 	private List<Object[]> workTimeNormal;
 	private List<Object[]> workTimeFlow;
 	private List<Object[]> workTimeFlex;

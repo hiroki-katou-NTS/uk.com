@@ -39,7 +39,8 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("					IIF(TABLE_RESULT.REF_METHOD_ATR_VAL = 2, ");
 	     exportSQL.append("						IIF(TABLE_RESULT.SELECTION_ITEM_REF_CODE <> 'M00002' AND TABLE_RESULT.SELECTION_ITEM_REF_CODE <> 'M00005' ");
 	     exportSQL.append("						AND TABLE_RESULT.SELECTION_ITEM_REF_CODE <> 'M00006' AND TABLE_RESULT.SELECTION_ITEM_REF_CODE <> 'M00016'");
-	     exportSQL.append("						AND TABLE_RESULT.SELECTION_ITEM_REF_CODE <> 'M00017' AND TABLE_RESULT.SELECTION_ITEM_REF_TYPE <> 2,");
+	     exportSQL.append("						AND TABLE_RESULT.SELECTION_ITEM_REF_CODE <> 'M00017' AND TABLE_RESULT.SELECTION_ITEM_REF_TYPE <> 2");
+	     exportSQL.append("						AND TABLE_RESULT.SELECTION_ITEM_REF_TYPE <> 3,");
 	     exportSQL.append(" 						CONCAT(TABLE_RESULT.STRING_VAL, ?MasterUnregisted), ?MasterUnregisted), NULL))");
 	     exportSQL.append(" END C_Value,");
 	     exportSQL.append(" TABLE_RESULT.Align");
