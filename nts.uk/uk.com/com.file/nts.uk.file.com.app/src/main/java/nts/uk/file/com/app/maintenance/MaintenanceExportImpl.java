@@ -182,7 +182,7 @@ public class MaintenanceExportImpl implements MasterListData {
 	@Override
 	public String mainSheetName() {
 		
-		return TextResource.localize("CPS008_46");
+		return TextResource.localize("CPS008_47");
 	}
 	
 
