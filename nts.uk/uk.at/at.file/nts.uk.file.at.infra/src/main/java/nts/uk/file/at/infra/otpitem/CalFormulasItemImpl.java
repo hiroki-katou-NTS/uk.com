@@ -13,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
@@ -79,17 +80,17 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 		+" 				,RESULT_TOTAL.UPPER_RANGE"
 		+" 				,RESULT_TOTAL.LOWER_LIMIT_ATR"
 		+" 				,RESULT_TOTAL.LOWER_RANGE"
-		+" 				,RESULT_TOTAL.SYMBOL"
-		+" 				,RESULT_TOTAL.FORMULA_ATR"
-		+" 				,RESULT_TOTAL.FORMULA_NAME"
-		+" 				,RESULT_TOTAL.CALC_ATR"
-		+" 				,RESULT_TOTAL.DAY_ROUNDING_UNIT"
-		+" 				,RESULT_TOTAL.DAY_ROUNDING"
-		+" 				,RESULT_TOTAL.MON_ROUNDING_UNIT"
-		+" 				,RESULT_TOTAL.MON_ROUNDING"
-		+" 				,RESULT_TOTAL.CALC_ATR_2"
-		+" 				,RESULT_TOTAL.ATTENDANCE_ITEM_NAME"
-		+" 				,RESULT_TOTAL.ATTENDANCE_ITEM_2"
+		+" 				,IIF(RESULT_TOTAL.USAGE_ATR = 1, RESULT_TOTAL.SYMBOL, NULL) AS SYMBOL"
+		+"				,IIF(RESULT_TOTAL.USAGE_ATR = 1, RESULT_TOTAL.FORMULA_ATR, NULL) AS FORMULA_ATR"
+		+"				,IIF(RESULT_TOTAL.USAGE_ATR = 1, RESULT_TOTAL.FORMULA_NAME, NULL) AS FORMULA_NAME"
+		+"				,IIF(RESULT_TOTAL.USAGE_ATR = 1, RESULT_TOTAL.CALC_ATR, NULL) AS CALC_ATR"
+		+"				,IIF(RESULT_TOTAL.USAGE_ATR = 1, RESULT_TOTAL.DAY_ROUNDING_UNIT, NULL) AS DAY_ROUNDING_UNIT"
+		+"				,IIF(RESULT_TOTAL.USAGE_ATR = 1, RESULT_TOTAL.DAY_ROUNDING, NULL) AS DAY_ROUNDING"
+		+"				,IIF(RESULT_TOTAL.USAGE_ATR = 1, RESULT_TOTAL.MON_ROUNDING_UNIT, NULL) AS MON_ROUNDING_UNIT"
+		+"				,IIF(RESULT_TOTAL.USAGE_ATR = 1, RESULT_TOTAL.MON_ROUNDING, NULL) AS MON_ROUNDING"
+		+"				,IIF(RESULT_TOTAL.USAGE_ATR = 1, RESULT_TOTAL.CALC_ATR_2, NULL) AS CALC_ATR_2"
+		+"				,IIF(RESULT_TOTAL.USAGE_ATR = 1, RESULT_TOTAL.ATTENDANCE_ITEM_NAME, NULL) AS ATTENDANCE_ITEM_NAME"
+		+"				,IIF(RESULT_TOTAL.USAGE_ATR = 1, RESULT_TOTAL.ATTENDANCE_ITEM_2, NULL) AS ATTENDANCE_ITEM_2"
 		+" 				, ROW_NUMBER() OVER (PARTITION BY RESULT_TOTAL.OPTIONAL_ITEM_NO ORDER BY RESULT_TOTAL.DISPORDER ASC, RESULT_TOTAL.OPTIONAL_ITEM_NO ASC) AS ROW_NUMBER"
 		+" 	FROM"
 		+" 	(SELECT RESULT_LEFT.OPTIONAL_ITEM_NO"
@@ -249,7 +250,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 		+" 	) AS RESULT_END"
 		+" GROUP BY OPTIONAL_ITEM_NO, SYMBOL, FORMULA_ATR, FORMULA_NAME, CALC_ATR, ATTENDANCE_ITEM_NAME, ATTENDANCE_ITEM_2, UPPER_LIMIT_ATR, UPPER_RANGE, LOWER_LIMIT_ATR, LOWER_RANGE, DAY_ROUNDING_UNIT, DAY_ROUNDING, MON_ROUNDING_UNIT, MON_ROUNDING, UPPER_LIMIT_ATR, CALC_ATR_2, DISPORDER) AS RESULT_RIGHT"
 		+" ON RESULT_LEFT.OPTIONAL_ITEM_NO = RESULT_RIGHT.OPTIONAL_ITEM_NO ) AS RESULT_TOTAL"
-		+" )AS RESULT_FINAL  ORDER BY RESULT_FINAL.OPTIONAL_ITEM_NO ASC ";
+		+" )AS RESULT_FINAL ORDER BY RESULT_FINAL.OPTIONAL_ITEM_NO ASC ";
 
 	@Override
 	public List<MasterData> getDataTableExport(String companyId) {
@@ -267,7 +268,9 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 				if (!Objects.isNull(objects[4])) {
 					optionalItemUse = ((BigDecimal) objects[4]).intValue();
 				}
-				datas.add(dataContentTable(objects, optionalItemAtr, optionalItemUse));
+				if(ObjectUtils.anyNotNull(objects) == true){
+					datas.add(dataContentTable(objects, optionalItemAtr, optionalItemUse));
+				}
 			}
 			return datas;
 	}
@@ -534,15 +537,6 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	}
 
 	private String formatNumber(String number) {
-//		String pathOne = number.substring(0, number.lastIndexOf("."));
-//		String pathTwo = number.substring(number.lastIndexOf(".") + 1);
-//		StringBuilder formatted = new StringBuilder(pathOne);
-//		int idx = formatted.length() - 3;
-//		while (idx > 1) {
-//			formatted.insert(idx, ",");
-//			idx = idx - 3;
-//		}
-//		String output = new StringBuilder(pathOne.length()).append(formatted).append('.').append(pathTwo).toString();
 		double numberParse = Double.parseDouble(number);
         DecimalFormat formatter = new DecimalFormat("#,###.0");
 		return formatter.format(numberParse);
