@@ -29,8 +29,8 @@ public class ItemRangeSetCommand {
     private Integer alarmLoRangeValTime;
     private BigDecimal alarmLoRangeValNum;
 
-    public StatementItemRangeSetting toDomain() {
-        return new StatementItemRangeSetting(this.histId, this.salaryItemId, this.rangeValAttribute, this.errorUpperLimitSetAtr,
+    public StatementItemRangeSetting toDomain(String cid, String statementCode, int categoryAtr) {
+        return new StatementItemRangeSetting(this.histId, cid, statementCode, categoryAtr, this.salaryItemId, this.rangeValAttribute, this.errorUpperLimitSetAtr,
                 this.errorUpRangeValAmount, this.errorUpRangeValTime, this.errorUpRangeValNum, this.errorLowerLimitSetAtr, this.errorLoRangeValAmount,
                 this.errorLoRangeValTime, this.errorLoRangeValNum, this.alarmUpperLimitSetAtr, this.alarmUpRangeValAmount, this.alarmUpRangeValTime,
                 this.alarmUpRangeValNum, this.alarmLowerLimitSetAtr, this.alarmLoRangeValAmount, this.alarmLoRangeValTime, this.alarmLoRangeValNum);

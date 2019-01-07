@@ -14,7 +14,7 @@ public class LineByLineSettingCommand {
     private int lineNumber;
     private List<SettingByItemCommand> listSetByItem;
 
-    public LineByLineSetting toDomain() {
-        return new LineByLineSetting(printSet, lineNumber, listSetByItem.stream().map(i -> i.toDomain()).collect(Collectors.toList()));
+    public LineByLineSetting toDomain(String cid, String statementCode, Integer ctgAtr) {
+        return new LineByLineSetting(printSet, lineNumber, listSetByItem.stream().map(i -> i.toDomain(cid, statementCode, ctgAtr)).collect(Collectors.toList()));
     }
 }

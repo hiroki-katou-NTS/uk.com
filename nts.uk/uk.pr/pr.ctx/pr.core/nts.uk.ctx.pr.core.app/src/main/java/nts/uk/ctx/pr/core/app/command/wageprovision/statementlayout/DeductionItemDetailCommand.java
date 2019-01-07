@@ -19,8 +19,8 @@ public class DeductionItemDetailCommand {
     private String wageTblCd;
     private String supplyOffset;
 
-    public DeductionItemDetailSet toDomain() {
-        return new DeductionItemDetailSet(histId, salaryItemId, totalObj, proportionalAtr, proportionalMethod,
+    public DeductionItemDetailSet toDomain(String cid, String statementCode) {
+        return new DeductionItemDetailSet(histId, cid, statementCode, salaryItemId, totalObj, proportionalAtr, proportionalMethod,
                 calcMethod, calcFormulaCd, personAmountCd, commonAmount, wageTblCd, supplyOffset);
     }
 }

@@ -13,7 +13,7 @@ public class SettingByCtgCommand {
     private Integer ctgAtr;
     private List<LineByLineSettingCommand> listLineByLineSet;
 
-    public SettingByCtg toDomain() {
-        return new SettingByCtg(ctgAtr, listLineByLineSet.stream().map(i -> i.toDomain()).collect(Collectors.toList()));
+    public SettingByCtg toDomain(String cid, String statementCode) {
+        return new SettingByCtg(ctgAtr, listLineByLineSet.stream().map(i -> i.toDomain(cid, statementCode, ctgAtr)).collect(Collectors.toList()));
     }
 }

@@ -74,7 +74,7 @@ public class StatementLayoutService {
 
     //新規作成実行処理
     public void addStatementLayout(int isClone, String histIdNew, String histIdClone, int layoutPatternClone,
-                                   String statementCode, String statementName, int startDate, int layoutPattern) {
+                                   String statementCode, String statementName, int startDate, int layoutPattern, String statementCodeClone) {
         validate(isClone, statementCode, layoutPatternClone, layoutPattern);
 
         String cid = AppContexts.user().companyId();
@@ -86,9 +86,9 @@ public class StatementLayoutService {
 
         Optional<StatementLayoutSet> statementLayoutSet;
         if (isClone == 0) {
-            statementLayoutSet = getNewStatementLayoutSet(histIdNew, layoutPattern);
+            statementLayoutSet = getNewStatementLayoutSet(histIdNew, layoutPattern, statementCode);
         } else {
-            statementLayoutSet = cloneStatementLayoutSet(cid, statementCode, histIdNew, histIdClone, layoutPattern);
+            statementLayoutSet = cloneStatementLayoutSet(cid, statementCodeClone, histIdNew, histIdClone, layoutPattern, statementCode);
         }
 
         if(statementLayoutSet.isPresent()) {
@@ -104,9 +104,9 @@ public class StatementLayoutService {
         Optional<StatementLayoutSet> statementLayoutSet;
 
         if (isClone == 1) {
-            statementLayoutSet = getNewStatementLayoutSet(histIdNew, layoutPattern);
+            statementLayoutSet = getNewStatementLayoutSet(histIdNew, layoutPattern, statementCode);
         } else if(lastHistOptional.isPresent()){
-            statementLayoutSet = cloneStatementLayoutSet(cid, statementCode, histIdNew, lastHistOptional.get().identifier(), layoutPattern);
+            statementLayoutSet = cloneStatementLayoutSet(cid, statementCode, histIdNew, lastHistOptional.get().identifier(), layoutPattern, statementCode);
         } else {
             return Optional.empty();
         }
@@ -120,14 +120,14 @@ public class StatementLayoutService {
     }
 
     //新規に作成の場合
-    private Optional<StatementLayoutSet> getNewStatementLayoutSet(String histIdNew, int layoutPattern) {
+    private Optional<StatementLayoutSet> getNewStatementLayoutSet(String histIdNew, int layoutPattern, String statementCode) {
         List<SettingByCtg> listSettingByCtg = new ArrayList<>();
 
         //支給項目
         List<LineByLineSetting> paymentLineList = new ArrayList<>();
-        paymentLineList.add(getNewLineTypePayment(histIdNew, 1, F001));
-        paymentLineList.add(getNewLineTypePayment(histIdNew, 2, F002));
-        paymentLineList.add(getNewLineTypePayment(histIdNew, 3, F003));
+        paymentLineList.add(getNewLineTypePayment(histIdNew, 1, F001, statementCode));
+        paymentLineList.add(getNewLineTypePayment(histIdNew, 2, F002, statementCode));
+        paymentLineList.add(getNewLineTypePayment(histIdNew, 3, F003, statementCode));
 
         SettingByCtg paymentCtgSetting = new SettingByCtg(CategoryAtr.PAYMENT_ITEM.value, paymentLineList);
         listSettingByCtg.add(paymentCtgSetting);
@@ -136,15 +136,15 @@ public class StatementLayoutService {
         List<LineByLineSetting> deducationLineList = new ArrayList<>();
         List<SettingByItem> itemsInLine1 = new ArrayList<>();
         List<SettingByItem> itemsInLine2 = new ArrayList<>();
-        itemsInLine1.add(getNewItemTypeDeduction(histIdNew, 1, F101, DeductionTotalObjAtr.INSIDE.value));
-        itemsInLine1.add(getNewItemTypeDeduction(histIdNew, 2, F102, DeductionTotalObjAtr.INSIDE.value));
-        itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  3, F103, DeductionTotalObjAtr.INSIDE.value));
-        itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  4, F104, DeductionTotalObjAtr.INSIDE.value));
-        itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  5, F105, DeductionTotalObjAtr.OUTSIDE.value));
-        itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  6, F106, DeductionTotalObjAtr.OUTSIDE.value));
-        itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  7, F107, DeductionTotalObjAtr.INSIDE.value));
-        itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  8, F108, DeductionTotalObjAtr.INSIDE.value));
-        itemsInLine2.add(getNewItemTypeDeduction(histIdNew,  9, F114, DeductionTotalObjAtr.OUTSIDE.value));
+        itemsInLine1.add(getNewItemTypeDeduction(histIdNew, 1, F101, statementCode, DeductionTotalObjAtr.INSIDE.value));
+        itemsInLine1.add(getNewItemTypeDeduction(histIdNew, 2, F102, statementCode, DeductionTotalObjAtr.INSIDE.value));
+        itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  3, F103, statementCode, DeductionTotalObjAtr.INSIDE.value));
+        itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  4, F104, statementCode, DeductionTotalObjAtr.INSIDE.value));
+        itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  5, F105, statementCode, DeductionTotalObjAtr.OUTSIDE.value));
+        itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  6, F106, statementCode, DeductionTotalObjAtr.OUTSIDE.value));
+        itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  7, F107, statementCode, DeductionTotalObjAtr.INSIDE.value));
+        itemsInLine1.add(getNewItemTypeDeduction(histIdNew,  8, F108, statementCode, DeductionTotalObjAtr.INSIDE.value));
+        itemsInLine2.add(getNewItemTypeDeduction(histIdNew,  9, F114, statementCode, DeductionTotalObjAtr.OUTSIDE.value));
 
         LineByLineSetting line1 = new LineByLineSetting(StatementPrintAtr.PRINT.value, 1, itemsInLine1);
         LineByLineSetting line2 = new LineByLineSetting(StatementPrintAtr.PRINT.value, 2, itemsInLine2);
@@ -182,8 +182,8 @@ public class StatementLayoutService {
     }
 
     //既存のレイアウトをコピーする場合
-    private Optional<StatementLayoutSet> cloneStatementLayoutSet(String cid, String code, String histIdNew, String histIdClone, int layoutPattern) {
-        Optional<StatementLayoutSet> cloneStatementLayoutSetOptional = statementLayoutSetRepo.getStatementLayoutSetById(cid, code, histIdClone);
+    private Optional<StatementLayoutSet> cloneStatementLayoutSet(String cid, String statementCodeClone, String histIdNew, String histIdClone, int layoutPattern, String statementCode) {
+        Optional<StatementLayoutSet> cloneStatementLayoutSetOptional = statementLayoutSetRepo.getStatementLayoutSetById(cid, statementCodeClone, histIdClone);
 
         if(cloneStatementLayoutSetOptional.isPresent()) {
             StatementLayoutSet cloneStatementLayoutSet = cloneStatementLayoutSetOptional.get();
@@ -197,10 +197,17 @@ public class StatementLayoutService {
                             SettingByItemCustom settingByItemCustom = (SettingByItemCustom) settingByItem;
                             if(settingByItemCustom.getPaymentItemDetailSet().isPresent()) {
                                 settingByItemCustom.getPaymentItemDetailSet().get().setHistId(histIdNew);
+                                settingByItemCustom.getPaymentItemDetailSet().get().setStatementCode(new StatementCode(statementCode));
                             }
 
                             if(settingByItemCustom.getDeductionItemDetailSet().isPresent()) {
                                 settingByItemCustom.getDeductionItemDetailSet().get().setHistId(histIdNew);
+                                settingByItemCustom.getDeductionItemDetailSet().get().setStatementCode(new StatementCode(statementCode));
+                            }
+
+                            if(settingByItemCustom.getItemRangeSetting().isPresent()) {
+                                settingByItemCustom.getItemRangeSetting().get().setHistId(histIdNew);
+                                settingByItemCustom.getItemRangeSetting().get().setStatementCode(new StatementCode(statementCode));
                             }
                         }
                     }
@@ -213,20 +220,24 @@ public class StatementLayoutService {
         }
     }
 
-    private LineByLineSetting getNewLineTypePayment(String histId, int lineNumber, String statementCode) {
-        PaymentItemDetailSet detail = new PaymentItemDetailSet(histId, statementCode, PaymentTotalObjAtr.OUTSIDE.value, PaymentProportionalAtr.NOT_PROPORTIONAL.value,
+    private LineByLineSetting getNewLineTypePayment(String histId, int lineNumber, String itemNameCd, String statementCode) {
+        String cid = AppContexts.user().companyId();
+
+        PaymentItemDetailSet detail = new PaymentItemDetailSet(histId, cid, statementCode, itemNameCd, PaymentTotalObjAtr.OUTSIDE.value, PaymentProportionalAtr.NOT_PROPORTIONAL.value,
                 null, PaymentCaclMethodAtr.MANUAL_INPUT.value, null, null, null, null, null);
-        SettingByItemCustom item = new SettingByItemCustom(LAST_POSITION, statementCode, getShortName(CategoryAtr.PAYMENT_ITEM.value, statementCode), null, detail, null);
+        SettingByItemCustom item = new SettingByItemCustom(LAST_POSITION, itemNameCd, getShortName(CategoryAtr.PAYMENT_ITEM.value, statementCode), null, detail, null);
         List<SettingByItem> listSetByItem = new ArrayList<>();
         listSetByItem.add(item);
 
         return new LineByLineSetting(StatementPrintAtr.PRINT.value, lineNumber, listSetByItem);
     }
 
-    private SettingByItem getNewItemTypeDeduction(String histId, int position, String statementCode, int totalObj) {
-        DeductionItemDetailSet detail = new DeductionItemDetailSet(histId, statementCode, totalObj, PaymentProportionalAtr.NOT_PROPORTIONAL.value,
+    private SettingByItem getNewItemTypeDeduction(String histId, int position, String itemNameCd, String statementCode, int totalObj) {
+        String cid = AppContexts.user().companyId();
+
+        DeductionItemDetailSet detail = new DeductionItemDetailSet(histId, cid, statementCode, itemNameCd, totalObj, PaymentProportionalAtr.NOT_PROPORTIONAL.value,
                 null, PaymentCaclMethodAtr.MANUAL_INPUT.value, null, null, null, null, null);
-        return new SettingByItemCustom(position, statementCode, getShortName(CategoryAtr.DEDUCTION_ITEM.value, statementCode), detail, null, null);
+        return new SettingByItemCustom(position, itemNameCd, getShortName(CategoryAtr.DEDUCTION_ITEM.value, statementCode), detail, null, null);
     }
 
     //新規作成時チェック処理
