@@ -237,7 +237,7 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("       ELSE NULL ");
 		sql.append("     END HOLIDAY_TYPE_USE_FLG, ");
 		sql.append("     CASE WHEN TEMP.APP_TYPE != 1 OR (TEMP.APP_TYPE = 1 AND TEMP.HOLIDAY_TYPE_USE_FLG = 0) THEN ");
-		sql.append("       STUFF((SELECT ','  WT.CD  WT.NAME ");
+		sql.append("       STUFF((SELECT ',' + WT.CD + WT.NAME ");
 		sql.append("        FROM ");
 		sql.append("         KRQDT_APP_EMPLOY_WORKTYPE EMP_WT LEFT JOIN KSHMT_WORKTYPE WT ");
 		sql.append("          ON EMP_WT.CID = WT.CID ");
