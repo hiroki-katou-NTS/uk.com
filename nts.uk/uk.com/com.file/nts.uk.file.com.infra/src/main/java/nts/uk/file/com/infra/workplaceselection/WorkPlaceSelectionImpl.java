@@ -135,7 +135,7 @@ public class WorkPlaceSelectionImpl implements WorkPlaceSelectionRepository {
             for (int i = 0; i < workPlaceFunction.size(); i++) {
     			data.put(workPlaceFunction.get(i).getFunctionNo().v().toString(), MasterCellData.builder()
     	                .columnId(WorkPlaceSelectionColumn.CMM051_32_2)
-    	                .value(((BigDecimal) object[i + 6]).intValue() == 1 ? "○" : "-")
+    	                .value(object[i + 6] != null ? ((BigDecimal) object[i + 6]).intValue() == 1 ? "○" : "-": "-")
     	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     	                .build());
     		}
