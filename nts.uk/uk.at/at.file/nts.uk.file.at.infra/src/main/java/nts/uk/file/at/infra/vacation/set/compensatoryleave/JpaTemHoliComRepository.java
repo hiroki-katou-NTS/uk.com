@@ -75,7 +75,7 @@ public class JpaTemHoliComRepository extends JpaRepository implements TempHoliCo
         /*※8_01*/
         boolean isUseTypeOS_01 = rs.getString("USE_TYPE_OS1").equals("1");
         /*※9*/
-        boolean isTransferSetAtrOS = rs.getString("TRANSF_TYPE").equals("0");
+        boolean isTransferSetAtrOS = rs.getString("TRANSF_TYPE").equals("1");
         /*※10*/
         boolean isTransferSetAtrOS2 = rs.getString("TRANSF_TYPE_OS1").equals("1");
         /*A15_1*/
@@ -95,21 +95,21 @@ public class JpaTemHoliComRepository extends JpaRepository implements TempHoliCo
         /*A15_8*/
         String occurrenceSetUseType = isManagement && isUseTypeOS ? CommonTempHolidays.getTextEnumSubHolTransferSetAtr(Integer.valueOf(rs.getString("TRANSF_TYPE"))) : null;
         /*A15_9*/
-        String oneDayTime = isManagement && isUseTypeOS && isTransferSetAtrOS ? rs.getString("ONE_DAY_TIME") : null;
+        String oneDayTime = isManagement && isUseTypeOS && !isTransferSetAtrOS ? rs.getString("ONE_DAY_TIME") : null;
         /*A15_10*/
-        String halfDayTime = isManagement && isUseTypeOS && isTransferSetAtrOS ? rs.getString("HALF_DAY_TIME") : null;
+        String halfDayTime = isManagement && isUseTypeOS && !isTransferSetAtrOS ? rs.getString("HALF_DAY_TIME") : null;
         /*A15_11*/
-        String certainTime = isManagement && isUseTypeOS && isTransferSetAtrOS == true ? CommonTempHolidays.convertToTime(Integer.valueOf(rs.getString("CERTAIN_TIME"))) + I18NText.getText("KMF001_222") : null;
+        String certainTime = isManagement && isUseTypeOS && isTransferSetAtrOS ? CommonTempHolidays.convertToTime(Integer.valueOf(rs.getString("CERTAIN_TIME"))) + I18NText.getText("KMF001_222") : null;
         /*A15_12*/
         String occurrTypeVer2 = isManagement ? CommonTempHolidays.checkOcurrType(Integer.valueOf(rs.getString("USE_TYPE_OS1"))) : null;
         /*A15_13*/
         String useType = isManagement && isUseTypeOS_01 ? CommonTempHolidays.getTextEnumSubHolTransferSetAtr(Integer.valueOf(rs.getString("TRANSF_TYPE_OS1"))) : null;
         /*A15_14*/
-        String oneDayTimeV2 = isManagement && isUseTypeOS_01 && isTransferSetAtrOS ? rs.getString("ONE_DAY_TIME_OS1") : null;
+        String oneDayTimeV2 = isManagement && isUseTypeOS_01 && !isTransferSetAtrOS ? rs.getString("ONE_DAY_TIME_OS1") : null;
         /*A15_15*/
-        String halfDayTimeV2 = isManagement && isUseTypeOS_01 && isTransferSetAtrOS ? rs.getString("HALF_DAY_TIME_OS1") : null;
+        String halfDayTimeV2 = isManagement && isUseTypeOS_01 && !isTransferSetAtrOS ? rs.getString("HALF_DAY_TIME_OS1") : null;
         /*A15_16*/
-        String certainTimeV2 = isManagement && isUseTypeOS_01 && isTransferSetAtrOS2 == true ? CommonTempHolidays.convertToTime(Integer.valueOf(rs.getString("CERTAIN_TIME_OS1"))) + I18NText.getText("KMF001_222") : null;
+        String certainTimeV2 = isManagement && isUseTypeOS_01 && isTransferSetAtrOS2  ? CommonTempHolidays.convertToTime(Integer.valueOf(rs.getString("CERTAIN_TIME_OS1"))) + I18NText.getText("KMF001_222") : null;
 
         datas.add(buildARow(
                 new DataEachBox(isManagementOfHolidays,ColumnTextAlign.LEFT)
