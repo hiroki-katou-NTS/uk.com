@@ -198,14 +198,16 @@ public class PeregCommandFacade {
 			
 			target = new PersonCorrectionLogParameter(user.getUserID(), employeeId, user.getEmpName(),
 						PersonInfoProcessAttr.UPDATE, null);
+			// DELETE COMMAND
+			this.delete(inputContainer, ctgCode);
+			
 			// ADD COMMAND
 			recordId = this.add(inputContainer, target, user);
 	
 			// UPDATE COMMAND
 			this.update(inputContainer, target, user);
 	
-			// DELETE COMMAND
-			this.delete(inputContainer, ctgCode);
+
 			
 			return recordId;
 		});

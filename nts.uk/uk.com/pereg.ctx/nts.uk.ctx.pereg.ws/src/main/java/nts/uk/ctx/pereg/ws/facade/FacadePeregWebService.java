@@ -1,6 +1,6 @@
 package nts.uk.ctx.pereg.ws.facade;
 
-import java.util.List;
+import java.util.Collection;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -39,7 +39,7 @@ public class FacadePeregWebService extends WebService {
 	
 	@POST
 	@Path("grid/register")
-	public List<Object> register(GridInputContainer gridInputContainer) {
+	public Collection<?> register(GridInputContainer gridInputContainer) {
 		return gridFacade.registerHandler(gridInputContainer);
 	}
 }
