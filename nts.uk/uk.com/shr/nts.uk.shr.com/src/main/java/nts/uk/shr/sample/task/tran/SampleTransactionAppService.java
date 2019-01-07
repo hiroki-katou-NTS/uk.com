@@ -20,6 +20,7 @@ public class SampleTransactionAppService {
 	@Inject
 	private StoredPackInfoRepository testRepo2;
 	
+	@SuppressWarnings("deprecation")
 	public void test() {
 		
 		this.testRepo.insertTaskData("1", new AsyncTaskData("X", "XYZ"));

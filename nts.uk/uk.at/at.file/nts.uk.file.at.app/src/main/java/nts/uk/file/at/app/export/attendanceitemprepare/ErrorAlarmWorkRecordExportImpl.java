@@ -1,4 +1,4 @@
-package nts.uk.file.at.app.export.erroralarmwork;
+package nts.uk.file.at.app.export.attendanceitemprepare;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -90,7 +90,7 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
     private WorkTypeFinder find;
 	@Inject
 	private AttendanceItemsFinder attendanceItemsFinder;
-	
+
 	public static String value1= "value1";
 	public static String value2= "value2";
 	public static String value3= "value3";
@@ -196,7 +196,34 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
         		 .collect(Collectors.toMap(AttdItemDto::getAttendanceItemId, Function.identity()));
          Map<Integer,AttdItemDto> mapListAttItemDto6 = listAttItemDto6.stream()
         		 .collect(Collectors.toMap(AttdItemDto::getAttendanceItemId, Function.identity()));
-         
+         //40
+     	/** { code: 0, name: "残業申請（早出）" },
+         { code: 1, name: "残業申請（通常）" },
+         { code: 2, name: "残業申請（早出・通常）" },
+         { code: 3, name: "休暇申請" },
+         { code: 4, name: "勤務変更申請" },
+//         { code: 5, name: "出張申請" },
+         { code: 6, name: "直行直帰申請" },
+         { code: 7, name: "休出時間申請" },
+//         { code: 8, name: "打刻申請（外出許可）" },
+//         { code: 9, name: "打刻申請（出退勤漏れ）" },
+//         { code: 10, name: "打刻申請（打刻取消）" },
+//         { code: 11, name: "打刻申請（レコーダイメージ）" },
+//         { code: 12, name: "打刻申請（その他）" },
+//         { code: 13, name: "時間年休申請" },
+//         { code: 14, name: "遅刻早退取消申請" },
+         { code: 15, name: "振休振出申請" },
+         */
+    	
+         Map<Integer,String> mapApplicationType = new HashMap<>();
+     		mapApplicationType.put(0, "残業申請（早出）");
+     		mapApplicationType.put(1, "残業申請（通常）");
+     		mapApplicationType.put(2, "残業申請（早出・通常）");
+     		mapApplicationType.put(3, "休暇申請");
+     		mapApplicationType.put(4, "勤務変更申請");
+     		mapApplicationType.put(6, "直行直帰申請");
+     		mapApplicationType.put(7, "打刻申請（外出許可）");
+     		mapApplicationType.put(15, "振休振出申請");
 		if(CollectionUtil.isEmpty(lstDto)){
 			throw new BusinessException("Msg_393");
 		}else{
@@ -513,7 +540,7 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
               }else{
                      data.put(value30, "OR");
               }
-              // 31 32 33
+              //31 32 33
               List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup1 = c.getErAlAtdItemConditionGroup1();
                if(!CollectionUtil.isEmpty(erAlAtdItemConditionGroup1)){
                      for(int i = 0 ; i < erAlAtdItemConditionGroup1.size();i++){
@@ -579,7 +606,9 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
                                 }
                                 Collections.sort(listStringAttNameAdd);
                                 Collections.sort(listStringAttNameSub);
-                                targetName = String.join(",", listStringAttNameAdd) + String.join(",", listStringAttNameSub);
+                                String subString = String.join("-", listStringAttNameSub);
+                                boolean checkEmptyString = subString.isEmpty()&&subString!=null;
+                                targetName = checkEmptyString?String.join("+", listStringAttNameAdd):String.join("+", listStringAttNameAdd) +"-"+subString;
 								break;
 							case 2:
 								AttdItemDto attItem = mapListAttItemDto6.get(erro.getUncountableAtdItem());
@@ -590,49 +619,49 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 							default:
 								break;
 							}
-                          
-                            switch (conditionType) {
-                            case 0:
-                                   startValue = erro.getCompareStartValue().toString();
-                                   if (compare <= 5) {
-                                          alarmDescription = targetName+compareOpera.getCompareLeft()+startValue;
-                                   } else {
-	                                    startValue =conditionAtr==0?timeToString(erro.getCompareStartValue().intValueExact()):erro.getCompareStartValue().toString();
-                                          if (compare > 5 && compare <= 7) {
-                                                 alarmDescription = startValue + compareOpera.getCompareLeft()+targetName+compareOpera.getCompareright()+endValue;
-                                          } else {
-                                                 alarmDescription = targetName+compareOpera.getCompareLeft()+startValue+","+endValue+compareOpera.getCompareright()+targetName;
-                                          }
-                                   }
-                                   break;
-                            case 1:
-                            	 String singleAttName = "";
-                            	if(conditionAtr==3){
-                            		AttdItemDto at = mapListAttItemDto.get(erro.getSingleAtdItem());
-                            		if(at!=null){
-                            		 singleAttName= at.getAttendanceItemName();
-                            		}
-                            	}else {
-                            		Map<Integer,AttdItemDto> mapAttDto = mapListAttItemDto3;
-                            		AttdItemDto attItem = mapAttDto.get(erro.getSingleAtdItem());
-                            		if(attItem!=null){
-                            			singleAttName = attItem.getAttendanceItemName();
-                            		}
-								}
-                                   alarmDescription = targetName + compareOpera.getCompareLeft()+singleAttName;
-                                   break;
-                            case 2:
-                                   //Enum : InputCheckCondition
-                                   /** 入力されていない */
-                                   //INPUT_NOT_DONE(0, "Enum_ConditionType_FixedValue"),
-                                   /** 入力されている */
-                                   //INPUT_DONE(1, "Enum_ConditionType_AttendanceItem");
-                                   conditonName = erro.getInputCheckCondition()==0?TextResource.localize("Enum_ConditionType_FixedValue"):
-                                          TextResource.localize("Enum_ConditionType_AttendanceItem");
-                                   alarmDescription = targetName+conditonName;
-                                   break;
-                            default:
-                                   break;
+                            if(targetName!=null&&!targetName.isEmpty()){
+	                            switch (conditionType) {
+	                            case 0:
+	                                   startValue = erro.getCompareStartValue().toString();
+	                                   if (compare <= 5) {
+	                                          alarmDescription = targetName+compareOpera.getCompareLeft()+startValue;
+	                                   } else {
+		                                    startValue =conditionAtr==0?timeToString(erro.getCompareStartValue().intValueExact()):erro.getCompareStartValue().toString();
+	                                          if (compare > 5 && compare <= 7) {
+	                                                 alarmDescription = startValue + compareOpera.getCompareLeft()+targetName+compareOpera.getCompareright()+endValue;
+	                                          } else {
+	                                                 alarmDescription = targetName+compareOpera.getCompareLeft()+startValue+","+endValue+compareOpera.getCompareright()+targetName;
+	                                          }
+	                                   }
+	                                   break;
+	                            case 1:
+	                            	 String singleAttName = "";
+	                            	if(conditionAtr==3){
+	                            		AttdItemDto at = mapListAttItemDto.get(erro.getSingleAtdItem());
+	                            		if(at!=null){
+	                            		 singleAttName= at.getAttendanceItemName();
+	                            		}
+	                            	}else {
+	                            		AttdItemDto attItem = mapListAttItemDto.get(erro.getSingleAtdItem());
+	                            		if(attItem!=null){
+	                            			singleAttName = attItem.getAttendanceItemName();
+	                            		}
+									}
+	                                   alarmDescription = targetName + compareOpera.getCompareLeft()+singleAttName;
+	                                   break;
+	                            case 2:
+	                                   //Enum : InputCheckCondition
+	                                   /** 入力されていない */
+	                                   //INPUT_NOT_DONE(0, "Enum_ConditionType_FixedValue"),
+	                                   /** 入力されている */
+	                                   //INPUT_DONE(1, "Enum_ConditionType_AttendanceItem");
+	                                   conditonName = erro.getInputCheckCondition()==0?TextResource.localize("Enum_ConditionType_FixedValue"):
+	                                          TextResource.localize("Enum_ConditionType_AttendanceItem");
+	                                   alarmDescription = targetName+conditonName;
+	                                   break;
+	                            default:
+	                                   break;
+	                            }
                             }
                             if(i==0){
                                    data.put(value31, alarmDescription);
@@ -722,7 +751,9 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
                                     }
                                     Collections.sort(listStringAttNameAdd);
                                     Collections.sort(listStringAttNameSub);
-                                    targetName = String.join(",", listStringAttNameAdd) + String.join(",", listStringAttNameSub);
+                                    String subString = String.join("-", listStringAttNameSub);
+                                    boolean checkEmptyString = subString.isEmpty()&&subString!=null;
+                                    targetName = checkEmptyString?String.join("+", listStringAttNameAdd):String.join("+", listStringAttNameAdd) +"-"+subString;
     								break;
     							case 2:
     								AttdItemDto attItem = mapListAttItemDto6.get(erro.getUncountableAtdItem());
@@ -733,45 +764,45 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
     							default:
     								break;
     							}
-                              
-                                switch (conditionType) {
-                                case 0:
-                                	startValue =conditionAtr==0?timeToString(erro.getCompareStartValue().intValueExact()):erro.getCompareStartValue().toString();
-                                       if (compare <= 5) {
-                                              alarmDescription = targetName+compareOpera.getCompareLeft()+startValue;
-                                       } else {
-                                              if (compare > 5 && compare <= 7) {
-                                                     alarmDescription = startValue + compareOpera.getCompareLeft()+targetName+compareOpera.getCompareright()+endValue;
-                                              } else {
-                                                     alarmDescription = targetName+compareOpera.getCompareLeft()+startValue+","+endValue+compareOpera.getCompareright()+targetName;
-                                              }
-                                       }
-                                       break;
-                                case 1:
-                                	 String singleAttName = "";
-                                	if(conditionAtr==3){
-                                		 singleAttName= mapListAttItemDto.get(erro.getSingleAtdItem()).getAttendanceItemName();
-                                	}else {
-                                		Map<Integer,AttdItemDto> mapAttDto = mapListAttItemDto3;
-                                		AttdItemDto attItem = mapAttDto.get(erro.getSingleAtdItem());
-                                		if(attItem!=null){
-                                			singleAttName = attItem.getAttendanceItemName();
-                                		}
-    								}
-                                       alarmDescription = targetName + compareOpera.getCompareLeft()+singleAttName;
-                                       break;
-                                case 2:
-                                       //Enum : InputCheckCondition
-                                       /** 入力されていない */
-                                       //INPUT_NOT_DONE(0, "Enum_ConditionType_FixedValue"),
-                                       /** 入力されている */
-                                       //INPUT_DONE(1, "Enum_ConditionType_AttendanceItem");
-                                       conditonName = erro.getInputCheckCondition()==0?TextResource.localize("Enum_ConditionType_FixedValue"):
-                                              TextResource.localize("Enum_ConditionType_AttendanceItem");
-                                       alarmDescription = targetName+conditonName;
-                                       break;
-                                default:
-                                       break;
+                                if(targetName!=null&&!targetName.isEmpty()){
+                                	switch (conditionType) {
+		                                case 0:
+		                                	startValue =conditionAtr==0?timeToString(erro.getCompareStartValue().intValueExact()):erro.getCompareStartValue().toString();
+		                                       if (compare <= 5) {
+		                                              alarmDescription = targetName+compareOpera.getCompareLeft()+startValue;
+		                                       } else {
+		                                              if (compare > 5 && compare <= 7) {
+		                                                     alarmDescription = startValue + compareOpera.getCompareLeft()+targetName+compareOpera.getCompareright()+endValue;
+		                                              } else {
+		                                                     alarmDescription = targetName+compareOpera.getCompareLeft()+startValue+","+endValue+compareOpera.getCompareright()+targetName;
+		                                              }
+		                                       }
+		                                       break;
+		                                case 1:
+		                                	 String singleAttName = "";
+		                                	if(conditionAtr==3){
+		                                		 singleAttName= mapListAttItemDto.get(erro.getSingleAtdItem()).getAttendanceItemName();
+		                                	}else {
+		                                		AttdItemDto attItem = mapListAttItemDto.get(erro.getSingleAtdItem());
+		                                		if(attItem!=null){
+		                                			singleAttName = attItem.getAttendanceItemName();
+		                                		}
+		    								}
+		                                       alarmDescription = targetName + compareOpera.getCompareLeft()+singleAttName;
+		                                       break;
+		                                case 2:
+		                                       //Enum : InputCheckCondition
+		                                       /** 入力されていない */
+		                                       //INPUT_NOT_DONE(0, "Enum_ConditionType_FixedValue"),
+		                                       /** 入力されている */
+		                                       //INPUT_DONE(1, "Enum_ConditionType_AttendanceItem");
+		                                       conditonName = erro.getInputCheckCondition()==0?TextResource.localize("Enum_ConditionType_FixedValue"):
+		                                              TextResource.localize("Enum_ConditionType_AttendanceItem");
+		                                       alarmDescription = targetName+conditonName;
+		                                       break;
+		                                default:
+		                                       break;
+	                                }
                                 }
                                 if(i==0){
                                        data.put(value36, alarmDescription);
@@ -792,6 +823,19 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
               }
 				
 				// 40 
+				List<Integer> lstApplicationTypeCode = c.getLstApplicationTypeCode();
+				List<String> listStrApp = new ArrayList<>();
+				if(!CollectionUtil.isEmpty(lstApplicationTypeCode)){
+					for (Integer key : lstApplicationTypeCode) {
+						String strAppType = mapApplicationType.get(key);
+						if(strAppType!=null){
+							listStrApp.add(strAppType);
+						}
+					}
+				}
+				if(!CollectionUtil.isEmpty(listStrApp)){
+					data.put(value40, String.join(",", listStrApp));
+				}
 				
 				MasterData masterData = new MasterData(data, null, "");
 				masterData.cellAt(value1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
@@ -1047,21 +1091,21 @@ public class ErrorAlarmWorkRecordExportImpl implements MasterListData{
 							}
 						}else{
 							if(listApplication.get(i).intValue()==0){
-								lstApp =lstApp+ " ,"+listApplication.get(i).intValue()+"残業申請（早出）";
+								lstApp =lstApp+ ","+listApplication.get(i).intValue()+"残業申請（早出）";
 							}else if(listApplication.get(i).intValue()==1){
-								lstApp =lstApp+ " ,"+listApplication.get(i).intValue()+"残業申請（通常）";
+								lstApp =lstApp+ ","+listApplication.get(i).intValue()+"残業申請（通常）";
 							}else if(listApplication.get(i).intValue()==2){
-								lstApp =lstApp+" ,"+ listApplication.get(i).intValue()+"残業申請（早出・通常）";
+								lstApp =lstApp+","+ listApplication.get(i).intValue()+"残業申請（早出・通常）";
 							}else if(listApplication.get(i).intValue()==3){
-								lstApp =lstApp+" ,"+ listApplication.get(i).intValue()+"休暇申請";
+								lstApp =lstApp+","+ listApplication.get(i).intValue()+"休暇申請";
 							}else if(listApplication.get(i).intValue()==4){
-								lstApp =lstApp+ " ,"+listApplication.get(i).intValue()+"勤務変更申請";
+								lstApp =lstApp+ ","+listApplication.get(i).intValue()+"勤務変更申請";
 							}else if(listApplication.get(i).intValue()==6){
-								lstApp = lstApp+" ,"+listApplication.get(i).intValue()+"直行直帰申請";
+								lstApp = lstApp+","+listApplication.get(i).intValue()+"直行直帰申請";
 							}else if(listApplication.get(i).intValue()==7){
-								lstApp =lstApp+ " ,"+listApplication.get(i).intValue()+"休出時間申請";
+								lstApp =lstApp+ ","+listApplication.get(i).intValue()+"休出時間申請";
 							}else if(listApplication.get(i).intValue()==15){
-								lstApp =lstApp+ " ,"+listApplication.get(i).intValue()+"振休振出申請";
+								lstApp =lstApp+ ","+listApplication.get(i).intValue()+"振休振出申請";
 							}
 						}
 						
