@@ -1068,6 +1068,8 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
             case PAYOUT_APP: return TextResource.localize("KAF022_581");
             case APPROVAL_LIST: return TextResource.localize("KAF022_586");
             case REFLECT_APP: return TextResource.localize("KAF022_601");
+            case EMP_APPROVE: return TextResource.localize("KAF022_627");
+            case APPROVAL_CONFIG: return TextResource.localize("KAF022_634");
         }
         return "";
     }
