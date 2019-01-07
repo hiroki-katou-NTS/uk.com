@@ -111,7 +111,7 @@ public class AbsenceLeaveReflectScheImpl implements AbsenceLeaveReflectSche{
 			Optional<BasicSchedule> optBasicSche = basicScheRepo.find(employeeId, baseDate);
 			//ドメインモデル「勤務予定基本情報」．就業時間帯をチェックする
 			if(optBasicSche.isPresent()
-					|| optBasicSche.get().getWorkTimeCode() != null) {
+					&& optBasicSche.get().getWorkTimeCode() != null) {
 				BasicSchedule basicSche = optBasicSche.get();
 				//dataOutput.setReflect(true);
 				dataOutput.setWorkTimeCode(basicSche.getWorkTimeCode());
