@@ -16,9 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static nts.uk.file.at.infra.vacation.set.CommonTempHolidays.getTextEnumApplyPermission;
-import static nts.uk.file.at.infra.vacation.set.CommonTempHolidays.getTextEnumExpirationTime;
-import static nts.uk.file.at.infra.vacation.set.CommonTempHolidays.getTextEnumManageDistinct;
+import static nts.uk.file.at.infra.vacation.set.CommonTempHolidays.*;
 @Stateless
 public class JpaEmpSubstVacaRepository extends JpaRepository implements EmpSubstVacaRepository {
     private static final String GET_EM_SUBST_VACATION =
@@ -29,9 +27,9 @@ public class JpaEmpSubstVacaRepository extends JpaRepository implements EmpSubst
                     " SV.EXPIRATION_DATE_SET, " +
                     " SV.ALLOW_PREPAID_LEAVE " +
                     "            FROM ( " +
-                    "                    SELECT BSYMT_EMPLOYMENT.CID,BSYMT_EMPLOYMENT.CODE,BSYMT_EMPLOYMENT.NAME " +
-                    "                    FROM BSYMT_EMPLOYMENT " +
-                    "                    WHERE BSYMT_EMPLOYMENT.CID= ? " +
+                    "                    SELECT BE.CID,BE.CODE,BE.NAME " +
+                    "                    FROM BSYMT_EMPLOYMENT  BE" +
+                    "                    WHERE BE.CID= ? " +
                     "                    ) as EM " +
                     "            INNER JOIN KSVST_EMP_SUBST_VACATION SV ON EM.CODE = SV.EMPCD AND SV.CID = EM.CID " +
                     "            ORDER BY EM.CODE ASC";
