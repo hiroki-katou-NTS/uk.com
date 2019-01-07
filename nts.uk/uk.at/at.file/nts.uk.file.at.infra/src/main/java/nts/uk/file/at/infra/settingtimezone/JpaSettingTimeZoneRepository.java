@@ -123,6 +123,9 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             " CASE WHEN USE_ATR = 1 THEN ROUNDING " +
             " ELSE NULL " +
             " END ROUNDING, " +
+            " CASE WHEN USE_ATR = 1 AND TIME_USE_ATR_TAB1 = 1 THEN TIME_ITEM_ID " +
+            " ELSE NULL " +
+            " END TIME_ITEM_ID, " +
             " CASE WHEN USE_ATR = 1 AND TIME_USE_ATR_TAB1 = 1 THEN TIME_ITEM_NAME " +
             " ELSE NULL " +
             " END TIME_ITEM_NAME, " +
@@ -142,7 +145,9 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             " CASE WHEN USE_ATR_TAB2 = 1 THEN ROUNDING_TAB2 " +
             " ELSE NULL " +
             " END ROUNDING_TAB2, " +
-            " " +
+            " CASE WHEN USE_ATR_TAB2 = 1 AND TIME_USE_ATR_TAB2 = 1 THEN TIME_ITEM_ID_TAB2 " +
+            " ELSE NULL " +
+            " END TIME_ITEM_ID_TAB2, " +
             " CASE WHEN USE_ATR_TAB2 = 1 AND TIME_USE_ATR_TAB2 = 1 THEN TIME_ITEM_NAME_TAB2 " +
             " ELSE NULL " +
             " END TIME_ITEM_NAME_TAB2 " +
@@ -226,7 +231,8 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             "  wp.WKPCD,  " +
             "  wp.WKP_NAME,  " +
             "  s.BONUS_PAY_SET_CD,  " +
-            "  s.BONUS_PAY_SET_NAME  " +
+            "  s.BONUS_PAY_SET_NAME,  " +
+            "  wph.END_DATE " +
             "  FROM  " +
             "  BSYMT_WORKPLACE_INFO wp  " +
             "  INNER JOIN KBPST_WP_BP_SET wps ON wp.CID = wps.CID   " +
@@ -427,7 +433,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
         data.put(SettingTimeZoneUtils.KMK005_135, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_135)
                 .value(rs.getInt("BONUS_PAY_TIMESHEET_NO"))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 
         data.put(SettingTimeZoneUtils.KMK005_108, MasterCellData.builder()
@@ -449,7 +455,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_111, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_111)
-                .value(rs.getString("TIME_ITEM_NAME"))
+                .value(rs.getString("TIME_ITEM_NAME") == null && rs.getInt("TIME_ITEM_ID" ) == null ? null : rs.getInt("TIME_ITEM_ID" ) + rs.getString("TIME_ITEM_NAME"))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 
@@ -457,7 +463,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
         data.put(SettingTimeZoneUtils.KMK005_112, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_112)
                 .value(rs.getInt("UNIT") == null ? null : EnumAdaptor.valueOf(rs.getInt("UNIT"),Unit.class).nameId)
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 
         data.put(SettingTimeZoneUtils.KMK005_113, MasterCellData.builder()
@@ -494,14 +500,14 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
 
         data.put(SettingTimeZoneUtils.KMK005_118, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_118)
-                .value(rs.getString("TIME_ITEM_NAME_TAB2"))
+                .value(rs.getInt("TIME_ITEM_ID_TAB2") == null && rs.getString("TIME_ITEM_NAME_TAB2") == null ? null : rs.getInt("TIME_ITEM_ID_TAB2") + rs.getString("TIME_ITEM_NAME_TAB2"))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 
         data.put(SettingTimeZoneUtils.KMK005_119, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_119)
                 .value(rs.getInt("UNIT_TAB2") == null ? null : EnumAdaptor.valueOf(rs.getInt("UNIT_TAB2"),Unit.class).nameId)
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 
 
@@ -570,7 +576,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_122, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_122)
-                .value(rs.getString("WKP_NAME"))
+                .value(rs.getString("END_DATE").equals("9999-12-31 00:00:00.0000000") ? rs.getString("WKP_NAME") : "マスタ未登録")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_106, MasterCellData.builder()
@@ -659,7 +665,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
         int m = param / 60;
         int s = param % 60;
 
-        return String.format("%02d:%02d", m, s);
+        return String.format("%d:%02d", m, s);
 
     }
 }
