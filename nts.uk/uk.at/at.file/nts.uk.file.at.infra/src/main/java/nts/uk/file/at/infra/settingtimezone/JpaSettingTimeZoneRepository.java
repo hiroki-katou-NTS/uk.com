@@ -433,7 +433,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
         data.put(SettingTimeZoneUtils.KMK005_135, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_135)
                 .value(rs.getInt("BONUS_PAY_TIMESHEET_NO"))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 
         data.put(SettingTimeZoneUtils.KMK005_108, MasterCellData.builder()
@@ -463,7 +463,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
         data.put(SettingTimeZoneUtils.KMK005_112, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_112)
                 .value(rs.getInt("UNIT") == null ? null : EnumAdaptor.valueOf(rs.getInt("UNIT"),Unit.class).nameId)
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 
         data.put(SettingTimeZoneUtils.KMK005_113, MasterCellData.builder()
@@ -507,7 +507,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
         data.put(SettingTimeZoneUtils.KMK005_119, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_119)
                 .value(rs.getInt("UNIT_TAB2") == null ? null : EnumAdaptor.valueOf(rs.getInt("UNIT_TAB2"),Unit.class).nameId)
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 
 
