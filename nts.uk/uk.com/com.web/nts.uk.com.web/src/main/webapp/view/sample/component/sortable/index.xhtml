@@ -44,10 +44,8 @@
 										data-bind="click: $parent.removeItem.bind($parent, $data)">✖</span>
 								</div>
 							</div>
-							<p>Dropable: <span data-bind="text: !drop()"></span></p>
 							<p>
 								<button data-bind="click: addItem">Add new</button>
-								<button data-bind="click: toggleDrop">Toggle drop</button>
 							</p>
 						</div>
 						<div class="drag-panel">
@@ -112,6 +110,12 @@
 											<td>allowDrop <br /> <i>(optional)</i></td>
 											<td><b>Type:</b> boolean<i> | default: true</i><br />
 											 specify whether this container should be a target for drops. This can be a static value, observable, or a function that is passed the observableArray as its first argument. If a function is specified, then it will be executed in a computed observable, so it will run again whenever any dependencies are updated. This option can be passed in the binding or configured globally by setting ko.bindingHandlers.ntsSortable.allowDrop
+											 </td>
+										</tr>
+										<tr>
+											<td>connectClass <br /> <i>(optional)</i></td>
+											<td><b>Type:</b> string<br />
+												specify the class that should be used to indicate a droppable target. This value can be passed in the binding.
 											 </td>
 										</tr>
 										<tr>

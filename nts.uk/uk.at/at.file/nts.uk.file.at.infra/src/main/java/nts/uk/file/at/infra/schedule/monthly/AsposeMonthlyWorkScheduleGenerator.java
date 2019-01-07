@@ -1865,7 +1865,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				        }
 				        currentRow += dataRowCount;
 					} else {
-						levelIterator.next();
+						if (levelIterator != null && levelIterator.hasNext()) {
+							levelIterator.next();
+						}
 					}
 				} while (levelIterator != null && levelIterator.hasNext());
 			}

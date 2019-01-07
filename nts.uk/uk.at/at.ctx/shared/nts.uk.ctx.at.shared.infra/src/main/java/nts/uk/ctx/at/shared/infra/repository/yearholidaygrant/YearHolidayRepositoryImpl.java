@@ -1,17 +1,13 @@
 package nts.uk.ctx.at.shared.infra.repository.yearholidaygrant;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantCondition;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTbl;
