@@ -231,7 +231,8 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             "  wp.WKPCD,  " +
             "  wp.WKP_NAME,  " +
             "  s.BONUS_PAY_SET_CD,  " +
-            "  s.BONUS_PAY_SET_NAME  " +
+            "  s.BONUS_PAY_SET_NAME,  " +
+            "  wph.END_DATE " +
             "  FROM  " +
             "  BSYMT_WORKPLACE_INFO wp  " +
             "  INNER JOIN KBPST_WP_BP_SET wps ON wp.CID = wps.CID   " +
@@ -575,7 +576,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_122, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_122)
-                .value(rs.getString("WKP_NAME"))
+                .value(rs.getString("END_DATE").equals("9999-12-31 00:00:00.0000000") ? rs.getString("WKP_NAME") : "マスタ未登録")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_106, MasterCellData.builder()
