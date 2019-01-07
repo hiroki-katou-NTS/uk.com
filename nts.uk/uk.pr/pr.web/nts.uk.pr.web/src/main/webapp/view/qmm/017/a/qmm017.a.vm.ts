@@ -348,7 +348,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 self.selectedTab.valueHasMutated();
             }).fail(function (err) {
                 block.clear();
-                dialog.alertError(err.message);
+                dialog.alertError({messageId: err.messageId});
             })
         }
 

@@ -102,7 +102,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                 self.extractInputParameter(formula);
             }).fail(function (err) {
                 block.clear();
-                dialog.alertError(err.errorMessage);
+                dialog.alertError({messageId: err.messageId});
             })
         }
 
@@ -115,7 +115,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             service.calculate({formulaContent: self.formulaContent(), replaceValues: replaceValues, roundingMethod: self.roundingMethod, roundingPosition: self.roundingPosition}).done(function(result){
                 self.trialCalculationResult(result);
             }).fail(function(err){
-                dialog.alertError(err.errorMessage);
+                dialog.alertError({messageId: err.messageId, message: err.message});
             })
         }
         //

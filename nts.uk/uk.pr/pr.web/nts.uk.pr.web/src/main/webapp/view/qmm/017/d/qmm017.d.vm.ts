@@ -72,6 +72,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
 
         operators: Array<any>
         separators: Array<any>;
+        conditionSeparators: Array<any>;
         // for build formula
         acceptPrefix: Array<any>;
         acceptFunctionPostfix: Array<any>;
@@ -144,7 +145,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     self.combineFormulaElement();
                     block.clear();
                 }).fail(function (err) {
-                    dialog.alertError(err.errorMessage);
+                    dialog.alertError({messageId: err.messageId});
                 })
             }
         }
@@ -160,6 +161,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             self.separators = ['\\\＋', 'ー', '\\×', '÷', '\\^', '\\\(', '\\\)', '\\>', '\\<', '\\\≦', '\\\≧', '\\\＝', '\\\≠', '\\\,',
                 '\\+', '\\-', '\\*', '\\/', '\\\≤', '\\\≥', '\\\=', '\\\#', '\\\、'
             ];
+            self.conditionSeparators = ['\\\<', '>', '\\\≧', '\\\≦', '\\\＝', '\\\≠', '\\\≤', '\\\≥', '\\\=', '\\\#'];
             self.acceptPrefix = [self.PAYMENT, self.DEDUCTION, self.ATTENDANCE, self.COMPANY_UNIT_PRICE, self.INDIVIDUAL_UNIT_PRICE, self.FUNCTION, self.VARIABLE, self.PERSON, self.FORMULA, self.WAGE_TABLE];
             self.acceptFunctionPostfix = [self.CONDITIONAL, self.AND, self.OR, self.ROUND_OFF, self.TRUNCATION, self.ROUND_UP, self.MAX_VALUE, self.MIN_VALUE, self.NUM_OF_FAMILY_MEMBER, self.YEAR_MONTH, self.YEAR_EXTRACTION, self.MONTH_EXTRACTION];
             self.acceptVariablePostfix = [self.SYSTEM_YM_DATE, self.SYSTEM_Y_DATE, self.SYSTEM_YMD_DATE, self.PROCESSING_YEAR_MONTH, self.PROCESSING_YEAR, self.REFERENCE_TIME, self.STANDARD_DAY, self.WORKDAY];
@@ -314,7 +316,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             }).fail(function(err) {
                 dfd.reject();
                 block.clear();
-                dialog.alertError(err.message);
+                dialog.alertError({messageId: err.messageId});
             });
             return dfd.promise();
         }
@@ -346,7 +348,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             }).fail(function(err) {
                 dfd.reject();
                 block.clear();
-                dialog.alertError(err.message);
+                dialog.alertError({messageId: err.messageId});
             });
             return dfd.promise();
         }
@@ -481,6 +483,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             self.checkBracket (formula);
             self.checkInputContent(formula);
             self.checkFunctionSyntax(formula);
+            self.checkConditionOperator(formula);
         }
         checkOperatorAndDivideZero (formula) {
             let self = this, regex = new RegExp('([' + self.separators.join('|') + '])');
@@ -542,20 +545,18 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             let functionCondition =  self.combineElementTypeAndName(self.FUNCTION, self.CONDITIONAL),
                 functionAnd =  self.combineElementTypeAndName(self.FUNCTION, self.AND),
                 functionOr =  self.combineElementTypeAndName(self.FUNCTION, self.OR);
+            let conditionRegex = new RegExp(self.conditionSeparators.join('|'));
 
             while (formula.indexOf(functionCondition) > -1 || formula.indexOf(functionAnd) > -1 || formula.indexOf(functionOr) > -1) {
                 if (formula.indexOf(functionCondition) > -1) {
                     startFunctionIndex = formula.lastIndexOf(functionCondition);
                     endFunctionIndex = self.indexOfEndFunction(startFunctionIndex, formula);
-
                 }
-
-                if (endFunctionIndex == -1){
-                    self.setErrorToFormula('MsgQ_233', [formula.substring(startFunctionIndex, formula.substring(startFunctionIndex).indexOf(self.OPEN_BRACKET))]);
-                    break;
-                }
-                self.checkSingleFunctionSyntax(formula.substring(startFunctionIndex, endFunctionIndex + 1));
+                if (endFunctionIndex == -1) break;
                 formula = formula.replace(formula.substring(startFunctionIndex, endFunctionIndex + 1),  0 );
+            }
+            if (formula.split(conditionRegex).length > 1) {
+                self.setErrorToFormula('Condition operator can not be use outside of logic function', []);
             }
         }
 
@@ -620,40 +621,49 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             }
         }
         checkSingleFunctionSyntax (functionSyntax) {
-            let self = this, conditionRegex = new RegExp(['\\\<', '>', '\\\≧', '\\\≦', '\\\＝', '\\\≠', '\\\≤', '\\\≥', '\\\=', '\\\#'].join('|'));
+            let self = this, conditionRegex = new RegExp(self.conditionSeparators.join('|'));
             let functionName = functionSyntax.substring(functionSyntax.indexOf(self.OPEN_CURLY_BRACKET) + 1, functionSyntax.indexOf(self.CLOSE_CURLY_BRACKET)),
-                functionParameter = functionSyntax.substring(functionSyntax.indexOf(self.OPEN_BRACKET) + 1, functionSyntax.lastIndexOf(self.CLOSE_BRACKET)).split(new RegExp(self.COMMA_CHAR + '|' + self.HALF_SIZE_COMMA_CHAR)).filter(item => item.length).map(item => item.trim());
-            if (functionParameter.length == 0) {
+                functionParameters = functionSyntax.substring(functionSyntax.indexOf(self.OPEN_BRACKET) + 1, functionSyntax.lastIndexOf(self.CLOSE_BRACKET)).split(new RegExp(self.COMMA_CHAR + '|' + self.HALF_SIZE_COMMA_CHAR)).filter(item => item.length).map(item => item.trim());
+            if (functionParameters.length == 0) {
                 self.setErrorToFormula('MsgQ_238', [functionName]);
                 return;
             }
             if (functionName == self.CONDITIONAL){
-                if (functionParameter.length != 3) {
-                    if (functionParameter.length < 3) self.setErrorToFormula('MsgQ_238', [functionName]);
+                if (functionParameters.length != 3) {
+                    if (functionParameters.length < 3) self.setErrorToFormula('MsgQ_238', [functionName]);
                     else self.setErrorToFormula('MsgQ_239', [functionName]);
+                } else {
+                    if (functionParameters[0] != "TRUE" && functionParameters[0] != "FALSE" && functionParameters[0].split(conditionRegex).length != 2) {
+                        self.setErrorToFormula('Parameter of {0} can not become boolean value', [functionName]);
+                    }
                 }
             }
             if (functionName == self.OR || functionName == self.AND) {
-                let index = 0, parameter;
+                functionParameters.forEach(function(functionParameter) {
+                    if (functionParameter != "TRUE" && functionParameter != "FALSE" && functionParameter.split(conditionRegex).length != 2) {
+                        self.setErrorToFormula('Parameter of {0} can not become boolean value', [functionName]);
+                    }
+                })
+
             }
             if (functionName == self.ROUND_OFF || functionName == self.ROUND_UP || functionName == self.TRUNCATION) {
-                if (functionParameter.length > 1) self.setErrorToFormula('MsgQ_239', [functionName]);
-                if (!self.checkNumberDataType(functionParameter)){
+                if (functionParameters.length > 1) self.setErrorToFormula('MsgQ_239', [functionName]);
+                if (!self.checkNumberDataType(functionParameters)){
                     self.setErrorToFormula('MsgQ_240', [functionName]);
                 }
             }
             if (functionName == self.YEAR_MONTH) {
-                if (functionParameter.length != 2) {
-                    if (functionParameter.length < 2) self.setErrorToFormula('MsgQ_238', [functionName]);
+                if (functionParameters.length != 2) {
+                    if (functionParameters.length < 2) self.setErrorToFormula('MsgQ_238', [functionName]);
                     else self.setErrorToFormula('MsgQ_239', [functionName]);
-                } else if (!self.checkDateDataType(functionParameter[0])){
+                } else if (!self.checkDateDataType(functionParameters[0])){
                     self.setErrorToFormula('MsgQ_240', [functionName]);
                 }
             }
             if (functionName == self.YEAR_EXTRACTION || functionName == self.MONTH_EXTRACTION) {
-                if (functionParameter.length > 1) {
+                if (functionParameters.length > 1) {
                     self.setErrorToFormula('MsgQ_239', [functionName]);
-                } else if (!self.checkDateDataType(functionParameter[0])){
+                } else if (!self.checkDateDataType(functionParameters[0])){
                     self.setErrorToFormula('MsgQ_240', [functionName]);
                 }
             }

@@ -403,57 +403,68 @@ public class DetailFormulaCalculationService {
     }
 
     private String logicAND (String [] functionParameters) {
-        String result = "TRUE", parameterConditionResult = "FALSE";
+        String result = "TRUE";
         for (int i = 0; i < functionParameters.length ; i++) {
-//            functionParameters[i] = calculateSingleCondition(functionParameters[i])
+            functionParameters[i] = calculateSingleCondition(functionParameters[i], true, combineElementTypeAndName(FUNCTION, AND));
             if (functionParameters[i].toUpperCase().equals("FALSE")) result = "FALSE";
-            if (!functionParameters[i].toUpperCase().equals("FALSE") || !functionParameters[i].toUpperCase().equals("TRUE")) {
-//                throw new
-            }
         }
         return result;
     }
 
     private String logicOR (String [] functionParameters) {
+        String result = "FALSE";
         for (int i = 0; i < functionParameters.length ; i++) {
-            if (functionParameters[i].toUpperCase().equals("TRUE")) return "TRUE";
+            functionParameters[i] = calculateSingleCondition(functionParameters[i], true, combineElementTypeAndName(FUNCTION, AND));
+            if (functionParameters[i].toUpperCase().equals("TRUE")) result = "TRUE";
         }
-        return "FALSE";
+        return result;
     }
 
     private String calculateFunctionCondition (String functionSyntax, String [] functionParameter) {
-        String conditionSeparators = "(?<=[><≦≧＝≠≤≥=#])|(?=[><≦≧＝≠≤≥=#])";
-        String result1 = functionParameter[1], result2 = functionParameter[2];
-        String [] firstParameterData = formatFunctionParameter(functionParameter[0].split(conditionSeparators));
-        String conditionResult;
-        if (firstParameterData.length == 1) {
-            if (!firstParameterData[0].toUpperCase().equals("TRUE") && !firstParameterData[0].toUpperCase().equals("FALSE")) {
-                throw new BusinessException("MsgQ_238", functionSyntax.substring(0, functionSyntax.indexOf(OPEN_BRACKET)));
-            } else {
-                conditionResult = firstParameterData[0];
-            }
-        } else {
-            if (isNaN(firstParameterData [0]) || isNaN(firstParameterData [2]))
-                conditionResult = calculateSingleCondition (firstParameterData [0], firstParameterData [2], firstParameterData [1]);
-            else conditionResult = calculateSingleCondition (Double.parseDouble(firstParameterData [0]), Double.parseDouble(firstParameterData [2]), firstParameterData [1]);
+        String functionName = functionSyntax.substring(0, functionSyntax.indexOf(OPEN_BRACKET));
+        if (functionParameter.length !=3 ) {
+            if (functionParameter.length < 3) throw new BusinessException("MsgQ_238", functionName);
+            throw new BusinessException("MsgQ_239", functionName);
         }
+        String result1 = calculateSingleCondition(functionParameter[1], false, functionName),
+                result2 = calculateSingleCondition(functionParameter[2], false, functionName);
+        String conditionResult = calculateSingleCondition(functionParameter[0], true, functionName);
         if (conditionResult.toUpperCase().equals("TRUE")) return result1;
         return result2;
     }
-    private String calculateSingleCondition (Comparable operand1, Comparable operand2, String operator) {
-        if (operator.equals(GREATER) )
-            return operand1.compareTo(operand2) > 0 ? "TRUE" : "FALSE";
-        if (operator.equals(LESS))
-            return operand1.compareTo(operand2) < 0 ? "TRUE" : "FALSE";
-        if (operator.equals(GREATER_OR_EQUAL) || operator.equals(HALF_SIZE_GREATER_OR_EQUAL))
-            return operand1.compareTo(operand2) >= 0 ? "TRUE" : "FALSE";
-        if (operator.equals(LESS_OR_EQUAL) || operator.equals(HALF_SIZE_LESS_OR_EQUAL))
-            return operand1.compareTo(operand2) <= 0 ? "TRUE" : "FALSE";
-        if (operator.equals(EQUAL) || operator.equals(HALF_SIZE_EQUAL))
-            return operand1.compareTo(operand2) == 0 ? "TRUE" : "FALSE";
-        if (operator.equals(DIFFERENCE) || operator.equals(PROGRAMMING_DIFFERENCE))
-            return operand1.compareTo(operand2) != 0 ? "TRUE" : "FALSE";
-        return "FALSE";
+    private String calculateSingleCondition (String conditionFormula, Boolean mustBeBoolean, String functionName) {
+        String conditionSeparators = "(?<=[><≦≧＝≠≤≥=#])|(?=[><≦≧＝≠≤≥=#])";
+        String [] conditionParameters = conditionFormula.split(conditionSeparators);
+        if (conditionParameters.length == 1) {
+            if (!conditionParameters[0].toUpperCase().equals("TRUE") && !conditionParameters[0].toUpperCase().equals("FALSE") && mustBeBoolean) {
+                throw new RuntimeException("Parameter of " + functionName + "can not become boolean value");
+            }
+            return conditionParameters[0];
+        } else {
+            if (conditionParameters.length !=3 ) {
+                throw new RuntimeException("Parameter of " + functionName + "can not become boolean value");
+            }
+            Comparable operand1 = conditionParameters[0], operand2 = conditionParameters[2];
+            String operator = conditionParameters[1];
+            if (!isNaN(conditionParameters[0]) && !isNaN(conditionParameters [2])) {
+                operand1 = Double.parseDouble(conditionParameters [0]);
+                operand2 = Double.parseDouble(conditionParameters [2]);
+            }
+            if (operator.equals(GREATER) )
+                return operand1.compareTo(operand2) > 0 ? "TRUE" : "FALSE";
+            if (operator.equals(LESS))
+                return operand1.compareTo(operand2) < 0 ? "TRUE" : "FALSE";
+            if (operator.equals(GREATER_OR_EQUAL) || operator.equals(HALF_SIZE_GREATER_OR_EQUAL))
+                return operand1.compareTo(operand2) >= 0 ? "TRUE" : "FALSE";
+            if (operator.equals(LESS_OR_EQUAL) || operator.equals(HALF_SIZE_LESS_OR_EQUAL))
+                return operand1.compareTo(operand2) <= 0 ? "TRUE" : "FALSE";
+            if (operator.equals(EQUAL) || operator.equals(HALF_SIZE_EQUAL))
+                return operand1.compareTo(operand2) == 0 ? "TRUE" : "FALSE";
+            if (operator.equals(DIFFERENCE) || operator.equals(PROGRAMMING_DIFFERENCE))
+                return operand1.compareTo(operand2) != 0 ? "TRUE" : "FALSE";
+            if (mustBeBoolean) throw new RuntimeException("Parameter of " + functionName + "can not become boolean value");
+        }
+        return conditionFormula;
     }
     private String calculateSingleFormula (String operand1, String operand2, String operator) {
         try {
