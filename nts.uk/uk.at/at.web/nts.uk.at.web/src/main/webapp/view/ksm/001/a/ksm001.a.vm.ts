@@ -82,7 +82,18 @@ module nts.uk.at.view.ksm001.a {
                         });
                    }
                 }
-
+            }
+            
+            /**
+             * check role
+             */
+            hasPermission(): boolean {
+                if (__viewContext.user.role.attendance == "null" && __viewContext.user.role.payroll == "null"
+                    && __viewContext.user.role.personnel == "null"  && __viewContext.user.role.officeHelper == "null"){
+                    return false;
+                }
+                
+                return true;
             }
             
             constructor() {

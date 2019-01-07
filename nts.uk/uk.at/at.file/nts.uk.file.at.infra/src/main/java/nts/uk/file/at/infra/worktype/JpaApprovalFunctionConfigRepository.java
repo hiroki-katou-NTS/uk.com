@@ -11,6 +11,7 @@ import javax.persistence.Query;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.file.at.app.export.worktype.ApprovalFunctionConfigExportImpl;
 import nts.uk.file.at.app.export.worktype.ApprovalFunctionConfigRepository;
+import nts.uk.file.at.app.export.worktype.EmploymentApprovalSettingExportImpl;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
@@ -137,6 +138,71 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 			+ "WHERE "
 			+ "	WP.CID = ?cid) TEMP "
 			+ "	ORDER BY TEMP.NUM_ORDER, TEMP.ROW_NUMBER";
+	
+	private static final String SELECT_EMPLOYMENT_APPROVAL_SETTING = "SELECT "
+			+ "	CASE WHEN MIN(ROW_NUM) = 1 THEN TEMP.CODE ELSE NULL END EMPLOYMENT_CODE, "
+			+ "	CASE WHEN MIN(ROW_NUM) = 1 THEN TEMP.NAME ELSE NULL END EMPLOYMENT_NAME, "
+			+ "	CASE WHEN TEMP.APP_TYPE = 0 THEN ?appType0 "
+			+ "		 WHEN TEMP.APP_TYPE = 1 THEN ?appType1 "
+			+ "		 WHEN TEMP.APP_TYPE = 2 THEN ?appType2 "
+			+ "		 WHEN TEMP.APP_TYPE = 3 THEN ?appType3 "
+			+ "		 WHEN TEMP.APP_TYPE = 4 THEN ?appType4 "
+			+ "		 WHEN TEMP.APP_TYPE = 6 THEN ?appType6 "
+			+ "		 WHEN TEMP.APP_TYPE = 7 THEN ?appType7 "
+			+ "		 WHEN TEMP.APP_TYPE = 8 THEN ?appType8 "
+			+ "		 WHEN TEMP.APP_TYPE = 9 THEN ?appType9 "
+			+ "		 WHEN TEMP.APP_TYPE = 10 THEN ?appType10 "
+			+ "		 WHEN TEMP.APP_TYPE = 11 THEN ?appType11 "
+			+ "		 WHEN TEMP.APP_TYPE = 14 THEN ?appType14 "
+			+ "		 ELSE NULL "
+			+ "	END APP_TYPE, "
+			+ "	CASE WHEN TEMP.APP_TYPE = 1 AND TEMP.HOLIDAY_OR_PAUSE_TYPE = 0 THEN ?pauseType0 "
+			+ "		 WHEN TEMP.APP_TYPE = 1 AND TEMP.HOLIDAY_OR_PAUSE_TYPE = 1 THEN ?pauseType1 "
+			+ "		 WHEN TEMP.APP_TYPE = 1 AND TEMP.HOLIDAY_OR_PAUSE_TYPE = 2 THEN ?pauseType2 "
+			+ "		 WHEN TEMP.APP_TYPE = 1 AND TEMP.HOLIDAY_OR_PAUSE_TYPE = 3 THEN ?pauseType3 "
+			+ "		 WHEN TEMP.APP_TYPE = 1 AND TEMP.HOLIDAY_OR_PAUSE_TYPE = 4 THEN ?pauseType4 "
+			+ "		 WHEN TEMP.APP_TYPE = 1 AND TEMP.HOLIDAY_OR_PAUSE_TYPE = 5 THEN ?pauseType5 "
+			+ "		 WHEN TEMP.APP_TYPE = 1 AND TEMP.HOLIDAY_OR_PAUSE_TYPE = 6 THEN ?pauseType6 "
+			+ "		 WHEN TEMP.APP_TYPE = 1 AND TEMP.HOLIDAY_OR_PAUSE_TYPE = 7 THEN ?pauseType7 "
+			+ "		 WHEN TEMP.APP_TYPE = 10 AND TEMP.HOLIDAY_OR_PAUSE_TYPE = 0 THEN ?holidayType0 "
+			+ "		 WHEN TEMP.APP_TYPE = 10 AND TEMP.HOLIDAY_OR_PAUSE_TYPE = 1 THEN ?holidayType1 "
+			+ "		 ELSE NULL "
+			+ "	END HOLIDAY_OR_PAUSE_TYPE, "
+			+ "	CASE WHEN TEMP.APP_TYPE = 1 AND TEMP.HOLIDAY_TYPE_USE_FLG = 0 THEN ?holidayTypeNotUseText "
+			+ "		 WHEN TEMP.APP_TYPE = 1 AND TEMP.HOLIDAY_TYPE_USE_FLG = 1 THEN ?holidayTypeUseText "
+			+ "		 ELSE NULL "
+			+ "	END HOLIDAY_TYPE_USE_FLG, "
+			+ "	CASE WHEN TEMP.APP_TYPE != 1 OR (TEMP.APP_TYPE = 1 AND TEMP.HOLIDAY_TYPE_USE_FLG = 0) THEN "
+			+ "			STUFF((SELECT ',' + WT.CD + WT.NAME "
+			+ "				FROM "
+			+ "					KRQDT_APP_EMPLOY_WORKTYPE EMP_WT LEFT JOIN KSHMT_WORKTYPE WT "
+			+ "						ON EMP_WT.CID = WT.CID "
+			+ "						AND EMP_WT.WORK_TYPE_CODE = WT.CD "
+			+ "				WHERE EMP_WT.CID = TEMP.CID "
+			+ "					AND EMP_WT.EMPLOYMENT_CODE = TEMP.CODE "
+			+ "					AND EMP_WT.APP_TYPE = TEMP.APP_TYPE "
+			+ "					AND EMP_WT.HOLIDAY_OR_PAUSE_TYPE = TEMP.HOLIDAY_OR_PAUSE_TYPE "
+			+ "			FOR XML PATH('')), 1 , 1, '') "
+			+ "		 ELSE NULL "
+			+ "	END WORK_TYPE_NAME "
+			+ "FROM "
+			+ "	(SELECT "
+			+ "		EMP.CID, "
+			+ "		EMP.CODE, "
+			+ "		EMP.NAME, "
+			+ "		EMP_SET.APP_TYPE, "
+			+ "		EMP_SET.HOLIDAY_OR_PAUSE_TYPE, "
+			+ "		EMP_SET.HOLIDAY_TYPE_USE_FLG, "
+			+ "		ROW_NUMBER() OVER (PARTITION BY EMP.CID, EMP.CODE ORDER BY EMP.CID, EMP.CODE, EMP_SET.APP_TYPE, EMP_SET.HOLIDAY_OR_PAUSE_TYPE) AS ROW_NUM "
+			+ "	FROM "
+			+ "		BSYMT_EMPLOYMENT EMP "
+			+ "		LEFT JOIN KRQST_APP_EMPLOYMENT_SET EMP_SET "
+			+ "			ON EMP.CID = EMP_SET.CID "
+			+ "			AND EMP.CODE = EMP_SET.EMPLOYMENT_CODE "
+			+ "	WHERE "
+			+ "		EMP.CID = ?cid AND EMP_SET.DISPLAY_FLAG = 1) TEMP "
+			+ "GROUP BY TEMP.CID, TEMP.CODE, TEMP.NAME, TEMP.APP_TYPE, TEMP.HOLIDAY_OR_PAUSE_TYPE, TEMP.HOLIDAY_TYPE_USE_FLG "
+			+ "ORDER BY TEMP.CODE, TEMP.APP_TYPE, TEMP.HOLIDAY_OR_PAUSE_TYPE";
 
 	@Override
 	public List<MasterData> getAllApprovalFunctionConfig(String cid) {
@@ -182,12 +248,12 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		List<Object[]> resultQuery = queryString.getResultList();
 		List<MasterData> result = new ArrayList<MasterData>();
 		for (Object[] obj : resultQuery) {
-			result.add(toData(obj));
+			result.add(toDataApprovalFunctionConfig(obj));
 		}
 		return result;
 	}
 
-	private MasterData toData(Object[] r) {
+	private MasterData toDataApprovalFunctionConfig(Object[] r) {
 		Map<String, MasterCellData> data = new HashMap<>();
 		data.put(ApprovalFunctionConfigExportImpl.KAF022_635,
 				MasterCellData.builder().columnId(ApprovalFunctionConfigExportImpl.KAF022_635).value(r[0])
@@ -237,4 +303,62 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		return MasterData.builder().rowData(data).build();
 	}
 
+	@Override
+	public List<MasterData> getAllEmploymentApprovalSetting(String cid) {
+		Query queryString = getEntityManager().createNativeQuery(SELECT_EMPLOYMENT_APPROVAL_SETTING)
+				.setParameter("cid", cid)
+				.setParameter("appType0", TextResource.localize("KAF022_3"))
+				.setParameter("appType1", TextResource.localize("KAF022_4"))
+				.setParameter("appType2", TextResource.localize("KAF022_5"))
+				.setParameter("appType3", TextResource.localize("KAF022_6"))
+				.setParameter("appType4", TextResource.localize("KAF022_7"))
+				.setParameter("appType6", TextResource.localize("KAF022_8"))
+				.setParameter("appType7", TextResource.localize("KAF022_11"))
+				.setParameter("appType8", TextResource.localize("KAF022_9"))
+				.setParameter("appType9", TextResource.localize("KAF022_286"))
+				.setParameter("appType10", TextResource.localize("KAF022_12"))
+				.setParameter("appType14", TextResource.localize("KAF022_13"))
+				.setParameter("pauseType0", TextResource.localize("KAF022_47"))
+				.setParameter("pauseType1", TextResource.localize("KAF022_48"))
+				.setParameter("pauseType2", TextResource.localize("KAF022_49"))
+				.setParameter("pauseType3", TextResource.localize("KAF022_50"))
+				.setParameter("pauseType4", TextResource.localize("KAF022_51"))
+				.setParameter("pauseType5", TextResource.localize("KAF022_52"))
+				.setParameter("pauseType6", TextResource.localize("KAF022_53"))
+				.setParameter("pauseType7", TextResource.localize("KAF022_54"))
+				.setParameter("holidayType0", TextResource.localize("KAF022_279"))
+				.setParameter("holidayType1", TextResource.localize("KAF022_54"))
+				.setParameter("holidayTypeUseText", "○")
+				.setParameter("holidayTypeNotUseText", "-");
+		List<Object[]> resultQuery = queryString.getResultList();
+		List<MasterData> result = new ArrayList<MasterData>();
+		for (Object[] obj : resultQuery) {
+			result.add(toDataEmploymentApprovalSetting(obj));
+		}
+		return result;
+	}
+
+	private MasterData toDataEmploymentApprovalSetting(Object[] r) {
+		Map<String, MasterCellData> data = new HashMap<>();
+		data.put(EmploymentApprovalSettingExportImpl.KAF022_628,
+				MasterCellData.builder().columnId(EmploymentApprovalSettingExportImpl.KAF022_628).value(r[0])
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmploymentApprovalSettingExportImpl.KAF022_629,
+				MasterCellData.builder().columnId(EmploymentApprovalSettingExportImpl.KAF022_629).value(r[1])
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmploymentApprovalSettingExportImpl.KAF022_630,
+				MasterCellData.builder().columnId(EmploymentApprovalSettingExportImpl.KAF022_630).value(r[2])
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmploymentApprovalSettingExportImpl.KAF022_631,
+				MasterCellData.builder().columnId(EmploymentApprovalSettingExportImpl.KAF022_631).value(r[3])
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmploymentApprovalSettingExportImpl.KAF022_632,
+				MasterCellData.builder().columnId(EmploymentApprovalSettingExportImpl.KAF022_632).value(r[4])
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		data.put(EmploymentApprovalSettingExportImpl.KAF022_633,
+				MasterCellData.builder().columnId(EmploymentApprovalSettingExportImpl.KAF022_633).value(r[5])
+						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+		
+		return MasterData.builder().rowData(data).build();
+	}
 }

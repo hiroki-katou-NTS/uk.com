@@ -70,7 +70,6 @@
 				<com:ko-if bind="currentTab()==='a'">
 					<!-- A2_1 -->
 					<button class="proceed" data-bind="click: function(){$parent.viewmodelA.save($parent.viewmodelA);}">#{i18n.getText('KMF004_2')}</button>
-					<button tabindex="2" data-bind="click: function(){$parent.viewmodelA.exportExcel('PreparationBeforeApply','KAF022申請の前準備')}">#{i18n.getText('KAF022_650')}</button>
 				</com:ko-if>
 				<com:ko-if bind="currentTab()==='l'">
 					<div class="center-content-kaf022l">
@@ -82,8 +81,6 @@
                         <button  id="btn_004" class="button danger separate-button fix-button"
                                 data-bind="click: function(){$parent.viewmodelL.deleteEmploymentSet($parent.viewmodelL);},
                                 enable: $parent.viewmodelL.screenMode() == 1" >#{i18n.getText('KAF022_275')}</button>
-                        <button class="button separate-button fix-button"
-								data-bind="click: function(){$parent.viewmodelA.exportExcel('EmploymentApprovalSetting','KAF022申請の前準備')}" >#{i18n.getText('KAF022_650')}</button>
                     </div>
 				</com:ko-if>
 				<com:ko-if bind="currentTab()==='m'">
@@ -94,10 +91,9 @@
 								data-bind="click: $vm.viewmodelM.openDialogCopy.bind($vm.viewmodelM), enable: !!$vm.viewmodelM.copyAble()">#{i18n.getText('KAF022_274')}</button>
 						<button id="btn_004" class="button danger separate-button fix-button"
 								data-bind="click: $vm.viewmodelM.remove.bind($vm.viewmodelM), enable: !!$vm.viewmodelM.copyAble()" >#{i18n.getText('KAF022_275')}</button>
-						<button class="button separate-button fix-button"
-								data-bind="click: function(){$parent.viewmodelA.exportExcel('ApprovalFunctionConfig','KAF022-計算式の登録')}" >#{i18n.getText('KAF022_650')}</button>
 					</div>
 				</com:ko-if>
+				<button data-bind="click: function(){$parent.viewmodelA.exportExcel('PreparationBeforeApply','KAF022申請の前準備')}">#{i18n.getText('KAF022_650')}</button>
 			</div>
 			<div id="tabpanel-a" role="tabpanel" class="screen-a"
 				data-bind="with: viewmodelA">

@@ -483,9 +483,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 			stmt.setInt(2, endDate);
 			stmt.setString(3, cid);
 			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
-			
+			int month = this.month();
 			result.forEach(i -> {
-				datas.addAll(buildCompanyRow(i, this.month()));
+				datas.addAll(buildCompanyRow(i, month));
 			});
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -570,7 +570,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 		//Arow month + 1
 		datas.add(buildARow(
 				//R8_1
-				"",
+				null,
 				//R8_2 R8_3
 				((month - 1) % 12 + 2) + I18NText.getText("KMK004_176"), 
 				//R8_4
@@ -640,7 +640,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 		for(int i = 1 ; i < 11; i++){
 			datas.add(buildARow(
 					//R8_1
-					"",
+					null,
 					//R8_2 R8_3
 					((month + i) % 12 + 1) + I18NText.getText("KMK004_176"), 
 					//R8_4
@@ -896,8 +896,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 			stmt.setInt(2, endDate);
 			stmt.setString(3, cid);
 			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
+			int month = this.month();
 			result.forEach(i -> {
-				datas.addAll(buildEmploymentRow(i, this.month()));
+				datas.addAll(buildEmploymentRow(i, month));
 			});
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -1328,8 +1329,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 			stmt.setInt(2, endDate);
 			stmt.setString(3, cid);
 			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
+			int month = this.month();
 			result.forEach(i -> {
-				datas.addAll(buildWorkPlaceRow(i, this.month()));
+				datas.addAll(buildWorkPlaceRow(i, month));
 			});
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -1794,8 +1796,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 			stmt.setInt(2, endDate);
 			stmt.setString(3, cid);
 			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
+			int month = this.month();
 			result.forEach(i -> {
-				datas.addAll(buildEmployeeRow(i, this.month()));
+				datas.addAll(buildEmployeeRow(i, month));
 			});
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -2216,10 +2219,6 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 		return MasterData.builder().rowData(data).build();
 	}
 
-
-	/*private String convertTime(int seconds){
-		return seconds / 60 + ":00";
-	}*/
 	private String convertTime(int pTime) {
 		return String.format("%02d:%02d", pTime / 60, pTime % 60);
 	}

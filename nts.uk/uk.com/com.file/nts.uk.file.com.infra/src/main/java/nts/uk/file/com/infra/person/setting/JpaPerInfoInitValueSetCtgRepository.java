@@ -283,7 +283,9 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("  ROW_NUMBER() OVER (PARTITION BY initset.PER_INIT_SET_ID, ctg.PER_INFO_CTG_ID ORDER BY initset.PER_INIT_SET_CD, ");
 	     exportSQL.append("             ctgorder.DISPORDER, itemorder.DISPLAY_ORDER) AS ROW_NUMBER2,");
 	     exportSQL.append("  ROW_NUMBER() OVER (ORDER BY initset.PER_INIT_SET_CD, ctgorder.DISPORDER, itemorder.DISPLAY_ORDER) AS ROW_INDEX");
-	     exportSQL.append("  FROM PPEMT_PER_INIT_SET initset");
+	     exportSQL.append("  FROM ");
+		exportSQL.append("	(SELECT initsett.PER_INIT_SET_ID, initsett.PER_INIT_SET_CD, initsett.PER_INIT_SET_NAME, initsett.CID ");
+		exportSQL.append("			FROM PPEMT_PER_INIT_SET initsett WHERE initsett.CID = ?CID ) initset");
 	     exportSQL.append("  INNER JOIN PPEMT_PER_INIT_SET_CTG initctg ON initset.PER_INIT_SET_ID = initctg.PER_INIT_SET_ID");
 	     exportSQL.append("  INNER JOIN PPEMT_PER_INFO_CTG ctg ON ctg.PER_INFO_CTG_ID = initctg.PER_INFO_CTG_ID ");
 	     exportSQL.append("       AND initset.CID = ctg.CID AND ctg.ABOLITION_ATR = 0 ");
