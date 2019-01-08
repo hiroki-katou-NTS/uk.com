@@ -139,7 +139,7 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		List<Object[]> resultQuery = null;
 		try {
 			resultQuery = (List<Object[]>) getEntityManager().createNativeQuery(sql.toString())
-				.setParameter("companyText", TextResource.localize("KAF022_649"))
+				.setParameter("companyText", TextResource.localize("Com_Company"))
 				.setParameter("cid", cid)
 				.setParameter("masterUnregistered", TextResource.localize("Enum_MasterUnregistered"))
 				.setParameter("appType0", TextResource.localize("KAF022_3"))
