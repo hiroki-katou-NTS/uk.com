@@ -2,7 +2,9 @@ package nts.uk.file.com.app.person.info.category;
 
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.system.config.InstalledProduct;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.*;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
@@ -146,7 +148,28 @@ public class ChangePerInforDefinitionExportImpl implements MasterListData{
         String companyId = AppContexts.user().companyId();
         String conTracCd = companyId.substring(0, 12);
         String companyIdRoot = AppContexts.user().zeroCompanyIdInContract();
-        List<Object[]> perInforDef = perInforDefinition.getChangePerInforDefinitionToExport(companyId, conTracCd, companyIdRoot);
+
+        int payroll = NotUseAtr.NOT_USE.value;
+        int personnel = NotUseAtr.NOT_USE.value;
+        int atttendance = NotUseAtr.NOT_USE.value;
+        List<InstalledProduct> installProduct = AppContexts.system().getInstalledProducts();
+        for (InstalledProduct productType : installProduct) {
+            switch (productType.getProductType()) {
+                case ATTENDANCE:
+                    atttendance = NotUseAtr.USE.value;
+                    break;
+                case PAYROLL:
+                    payroll = NotUseAtr.USE.value;
+                    break;
+                case PERSONNEL:
+                    personnel = NotUseAtr.USE.value;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        List<Object[]> perInforDef = perInforDefinition.getChangePerInforDefinitionToExport(companyId, conTracCd, companyIdRoot,payroll, personnel, atttendance);
         return perInforDef.stream().map(i -> this.putData(i)).collect(Collectors.toList());
     }
 
