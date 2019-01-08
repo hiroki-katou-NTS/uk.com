@@ -100,7 +100,7 @@ public interface InterimRemainOffDateCreateData {
 	 * @param dayoffChange
 	 * @return
 	 */
-	TranferTimeInfor calDayoffTranferTime(String cid, CreateAtr createAtr,String workTimeCode, Integer timeSetting, DayoffChangeAtr dayoffChange);
+	TranferTimeInfor calDayoffTranferTime(String cid, TranferTimeInfor timeInfor, String workTimeCode, DayoffChangeAtr dayoffChange);
 	/**
 	 * 最新の勤務種類変更を伴う申請から残数作成元情報を設定する
 	 * @param appInfor

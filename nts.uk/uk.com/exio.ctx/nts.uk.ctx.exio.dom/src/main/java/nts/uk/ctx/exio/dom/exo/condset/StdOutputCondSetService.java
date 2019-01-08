@@ -14,6 +14,7 @@ import nts.arc.error.BusinessException;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
 import nts.uk.ctx.exio.dom.exo.category.ExOutCtgRepository;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExOutSetting;
+import nts.uk.ctx.exio.dom.exo.commonalgorithm.AcquisitionExternalOutputCategory;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.RegisterMode;
 import nts.uk.ctx.exio.dom.exo.commonalgorithm.RegistrationCondDetails;
 import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.AwDataFormatSetting;
@@ -59,6 +60,9 @@ public class StdOutputCondSetService {
 
 	@Inject
 	private ExOutCtgRepository mExOutCtgRepository;
+	
+	@Inject
+	private AcquisitionExternalOutputCategory acquisitionExternalOutputCategory;
 
 	// Screen T
 	public Map<String, String> excuteCopy(String copyDestinationCode, String destinationName, String conditionSetCd,
@@ -296,8 +300,12 @@ public class StdOutputCondSetService {
 	}
 
 	// 起動する
-	public List<StdOutputCondSet> getListStandardOutputItem(String cndSetCd) {
+	//外部出力取得設定一覧項目あり
+	public List<StdOutputCondSet> getListStandardOutputItem(String cndSetCd,String roleId) {
+		List<String> listRoleId = new ArrayList<>();
+		listRoleId.add(roleId);
 		List<StdOutputCondSet> data = mAcquisitionExOutSetting.getExOutSetting("", StandardAtr.STANDARD, cndSetCd);
+		List<ExOutCtg> listExOutCtg =acquisitionExternalOutputCategory.getExternalOutputCategoryList(listRoleId);
 		List<StdOutputCondSet> arrTemp = new ArrayList<StdOutputCondSet>();
 		String userID = AppContexts.user().userId();
 		List<StandardOutputItem> listStandarOutItem = new ArrayList<StandardOutputItem>();
@@ -305,10 +313,19 @@ public class StdOutputCondSetService {
 			throw new BusinessException("Msg_754");
 		}
 		for (StdOutputCondSet temp : data) {
-			listStandarOutItem = mAcquisitionExOutSetting.getExOutItemList(temp.getConditionSetCode().toString(),
-					userID, "", StandardAtr.STANDARD, true);
-			if (!listStandarOutItem.isEmpty()) {
-				arrTemp.add(temp);
+			boolean checkId =  false;
+			for(ExOutCtg exOutCtg :listExOutCtg) {
+				if(temp.getCategoryId().equals(exOutCtg.getCategoryId())) {
+					checkId = true;
+					break;
+				}
+			}
+			if(checkId) {
+				listStandarOutItem = mAcquisitionExOutSetting.getExOutItemList(temp.getConditionSetCode().toString(),
+						userID, "", StandardAtr.STANDARD, true);
+				if (!listStandarOutItem.isEmpty()) {
+					arrTemp.add(temp);
+				}
 			}
 		}
 		if (arrTemp.isEmpty()) {

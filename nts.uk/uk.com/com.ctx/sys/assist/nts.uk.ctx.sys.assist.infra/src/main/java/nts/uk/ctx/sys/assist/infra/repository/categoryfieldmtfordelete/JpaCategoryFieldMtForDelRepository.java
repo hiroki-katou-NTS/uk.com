@@ -10,11 +10,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMt;
-import nts.uk.ctx.sys.assist.dom.categoryfieldmt.CategoryFieldMtRepository;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmtfordelete.CategoryFieldMtForDelRepository;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmtfordelete.CategoryFieldMtForDelete;
-import nts.uk.ctx.sys.assist.infra.entity.categoryfieldmt.SspmtCategoryFieldMt;
 import nts.uk.ctx.sys.assist.infra.entity.categoryfieldmtfordelete.SspmtCategoryFieldMtForDelete;
 
 @Stateless
