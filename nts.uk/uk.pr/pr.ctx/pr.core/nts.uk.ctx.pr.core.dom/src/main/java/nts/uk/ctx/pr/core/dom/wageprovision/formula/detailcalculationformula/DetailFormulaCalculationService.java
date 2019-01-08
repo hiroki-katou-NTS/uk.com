@@ -483,8 +483,11 @@ public class DetailFormulaCalculationService {
                 return operand2Value - operand1Value + "";
             if (operator.equals(MULTIPLICITY) || operator.equals(PROGRAMING_MULTIPLICITY))
                 return operand2Value * operand1Value + "";
-            if (operator.equals(DIVIDE) || operator.equals(PROGRAMING_DIVIDE))
+            if (operator.equals(DIVIDE) || operator.equals(PROGRAMING_DIVIDE)){
+                if (operand1Value == 0) throw new BusinessException("MsgQ_234");
                 return operand2Value / operand1Value + "";
+            }
+
             if (operator.equals(POW))
                 return Math.pow(operand2Value, operand1Value) + "";
             throw new RuntimeException("Condition operator can't be use to calculate: " + operand1 + operator + operand2);

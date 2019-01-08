@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = {width: 695, height: 545};</script>
+        <script>var dialogSize = {width: 705, height: 545};</script>
         <com:scriptfile set="IGNITE"/>
         <com:scriptfile path="../share/model.js"/>
         <com:scriptfile path="qmm017.g.service.js"/>
@@ -22,7 +22,7 @@
                     <div style="width: 130px; margin-top: 20px; display: inline-block;"
                          data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM017_142')}</div>
                 </div>
-                <div style="min-width: 650px; margin-top: 10px;">
+                <div style="min-width: 680px; margin-top: 10px;">
                     <div style = "display: inline-block; vertical-align: middle">
                         <div id ="G1_2_container" tabindex = "1">
                             <table id="G1_2">
@@ -51,6 +51,7 @@
                                                 width: '90px',
 				                                decimallength: 2
                                             },
+                                            name: 'お試し計算値',
                                             required: true}"
                                         />
                                     </td>
@@ -75,11 +76,11 @@
                     <div style="width: 130px; display: inline-block;" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM017_45')}
                     </div>
                 </div>
-                    <hr style = "margin-right: 32px;"></hr>
+                    <hr style = "margin-right: 23px;"></hr>
                 <div style="margin-top: 10px; min-width: 550px;">
                     <div style="margin-top: 10px; min-width: 550px">
                         <div>
-                        <textarea id = "G1_12" tabindex = "3" style = "height: 100px; width: 625px;" data-bind="ntsMultilineEditor: {
+                        <textarea id = "G1_12" tabindex = "3" style = "height: 100px; width: 640px;" data-bind="ntsMultilineEditor: {
                             value: formulaContent,
                             readonly: true}"/>
                         </div>
