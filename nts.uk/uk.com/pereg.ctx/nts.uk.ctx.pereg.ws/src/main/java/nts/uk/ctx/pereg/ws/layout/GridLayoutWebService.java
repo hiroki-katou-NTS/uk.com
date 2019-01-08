@@ -43,7 +43,7 @@ public class GridLayoutWebService extends WebService {
 	@POST
 	@Path("get-data")
 	public GridEmployeeDto get(PeregGridQuery query) {
-		return gridProcessor.getGridLaoyout(query);
+		return gridProcessor.getGridLayout(query);
 	}
 
 	@POST

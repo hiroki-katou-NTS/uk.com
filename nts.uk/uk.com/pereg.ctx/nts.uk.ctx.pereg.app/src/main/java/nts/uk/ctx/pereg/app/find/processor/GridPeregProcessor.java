@@ -60,7 +60,7 @@ public class GridPeregProcessor {
 	@Inject
 	private EmployeeDataMngInfoRepository employeeMngRepo;
 
-	public GridEmployeeDto getGridLaoyout(PeregGridQuery query) {
+	public GridEmployeeDto getGridLayout(PeregGridQuery query) {
 		// app context
 		LoginUserContext loginUser = AppContexts.user();
 		String contractCode = loginUser.contractCode();
