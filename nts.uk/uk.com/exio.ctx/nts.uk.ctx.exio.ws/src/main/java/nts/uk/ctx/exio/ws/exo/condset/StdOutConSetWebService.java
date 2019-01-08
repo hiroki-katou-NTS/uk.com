@@ -89,7 +89,7 @@ public class StdOutConSetWebService extends WebService {
 	@POST
 	@Path("getCondSet")
 	public List<StdOutputCondSetDto> getCondSet(StdOutputCondParam param) {
-		return stdOutputCondSetFinder.getConditionSetting(param.getModeScreen(),param.getCndSetCd());
+		return stdOutputCondSetFinder.getConditionSetting(param.getModeScreen(),param.getCndSetCd(),param.getRoleId());
 		
 	}
 	@POST

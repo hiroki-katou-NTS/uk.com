@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.service;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.adapter.query.classification.ClassificationImport;
 import nts.uk.ctx.pr.core.dom.adapter.query.department.DepartmentImport;
 import nts.uk.ctx.pr.core.dom.adapter.query.employee.EmployeeInfoAverAdapter;
@@ -13,6 +14,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayoutRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
+import nts.uk.shr.com.i18n.TextResource;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -45,9 +47,9 @@ public class ConfirmPersonSetStatusService {
     /**
      * 個人紐付け明細書取得処理
      */
-    public List<ConfirmPersonSetStatusDto> getStatementLinkPerson(List<String> empIds,
-                                                                  GeneralDate baseDate, UsageMaster type) {
+    public List<ConfirmPersonSetStatusDto> getStatementLinkPerson(List<String> empIds, GeneralDate baseDate) {
         String cid = AppContexts.user().companyId();
+        YearMonth yearMonth = baseDate.yearMonth();
         List<ConfirmPersonSetStatusDto> result = new ArrayList();
 
         // ドメインモデル「明細書利用単位設定」を取得する
@@ -57,7 +59,7 @@ public class ConfirmPersonSetStatusService {
         }
         StateUseUnitSet stateUseUnitSet = stateUseUnitSetOtp.get();
 
-        StateCorreHisAndLinkSetIndivi stateHistAndLinkSet = stateCorreHistIndiviRepo.getStateCorreHisAndLinkSetIndivi(empIds, baseDate);
+        StateCorreHisAndLinkSetIndivi stateHistAndLinkSet = stateCorreHistIndiviRepo.getStateCorreHisAndLinkSetIndivi(empIds, yearMonth);
         // ドメインモデル「明細書紐付け履歴（個人）」を取得する
         Map<String, List<YearMonthHistoryItem>> stateCorreHisIndiviMap = stateHistAndLinkSet.getHistorys()
                 .stream().collect(Collectors.toMap(StateCorreHisIndivi::getEmpID, StateCorreHisIndivi::items));
@@ -73,31 +75,31 @@ public class ConfirmPersonSetStatusService {
 
         // ドメインモデル「明細書紐付け履歴（部門）」を取得する
         // ドメインモデル「明細書紐付け設定（マスタ）」を取得する
-        Map<String, StateLinkSetMaster> stateLinkSetMasterDepMap = stateCorreHisDeparRepo.getStateLinkSetMaster(cid, baseDate)
+        Map<String, StateLinkSetMaster> stateLinkSetMasterDepMap = stateCorreHisDeparRepo.getStateLinkSetMaster(cid, yearMonth)
                 .stream().collect(Collectors.toMap(x -> x.getMasterCode().v(), x -> x));
 
         // ドメインモデル「明細書紐付け履歴（雇用）」を取得する
         // ドメインモデル「明細書紐付け設定（マスタ）」を取得する
-        Map<String, StateLinkSetMaster> stateLinkSetMasterEmpMap = stateCorreHisEmRepo.getStateLinkSetMaster(cid, baseDate)
+        Map<String, StateLinkSetMaster> stateLinkSetMasterEmpMap = stateCorreHisEmRepo.getStateLinkSetMaster(cid, yearMonth)
                 .stream().collect(Collectors.toMap(x -> x.getMasterCode().v(), x -> x));
 
         // ドメインモデル「明細書紐付け履歴（分類）」を取得する
         // ドメインモデル「明細書紐付け設定（マスタ）」を取得する
-        Map<String, StateLinkSetMaster> stateLinkSetMasterClsMap = stateCorreHisClsRepo.getStateLinkSetMaster(cid, baseDate)
+        Map<String, StateLinkSetMaster> stateLinkSetMasterClsMap = stateCorreHisClsRepo.getStateLinkSetMaster(cid, yearMonth)
                 .stream().collect(Collectors.toMap(x -> x.getMasterCode().v(), x -> x));
 
         // ドメインモデル「明細書紐付け履歴（職位）」を取得する
         // ドメインモデル「明細書紐付け設定（マスタ）」を取得する
-        Map<String, StateLinkSetMaster> stateLinkSetMasterPosMap = stateCorreHisPoRepo.getStateLinkSetMaster(cid, baseDate)
+        Map<String, StateLinkSetMaster> stateLinkSetMasterPosMap = stateCorreHisPoRepo.getStateLinkSetMaster(cid, yearMonth)
                 .stream().collect(Collectors.toMap(x -> x.getMasterCode().v(), x -> x));
 
         // ドメインモデル「明細書紐付け履歴（給与分類）」を取得する
         // ドメインモデル「明細書紐付け設定（マスタ）」を取得する
-        Map<String, StateLinkSetMaster> stateLinkSetMasterSalMap = stateCorreHisSalaRepo.getStateLinkSetMaster(cid, baseDate)
+        Map<String, StateLinkSetMaster> stateLinkSetMasterSalMap = stateCorreHisSalaRepo.getStateLinkSetMaster(cid, yearMonth)
                 .stream().collect(Collectors.toMap(x -> x.getMasterCode().v(), x -> x));
 
         // ドメインモデル「明細書紐付け履歴（会社）」を取得する
-        Optional<StateCorreHisCom> stateCorreHisComOpt = stateCorreHisComRepo.getStateCorrelationHisCompanyByDate(cid, baseDate);
+        Optional<StateCorreHisCom> stateCorreHisComOpt = stateCorreHisComRepo.getStateCorrelationHisCompanyByDate(cid, yearMonth);
         // ドメインモデル「明細書紐付け設定（会社）」を取得する
         Optional<StateLinkSetCom> stateLinkSetCom = Optional.empty();
         if (stateCorreHisComOpt.isPresent()) {
@@ -122,29 +124,24 @@ public class ConfirmPersonSetStatusService {
                     String histId = stateCorreHisIndiviMap.get(sid).get(0).identifier();
                     // ドメインモデル「明細書紐付け設定（個人）」を取得する
                     StateLinkSetIndivi stateLinkSetIndivi = stateLinkSetIndiviMap.get(histId);
-                    Optional<StatementCode> salaryCode = stateLinkSetIndivi.getSalaryCode();
-                    Optional<StatementCode> bonusCode = stateLinkSetIndivi.getBonusCode();
-                    // 取得したドメインモデル「明細書紐付け設定（個人）」をチェックする
-                    if (salaryCode.isPresent() && bonusCode.isPresent()) {
-                        this.setSalaryBonus(personSet, salaryCode.get().v(), bonusCode.get().v(), statementLayoutMap);
-                        continue;
-                    }
+                    this.setSalaryBonus(personSet, stateLinkSetIndivi.getSalaryCode(), stateLinkSetIndivi.getBonusCode(),
+                            statementLayoutMap);
                 }
+                result.add(personSet);
+                continue;
             }
             if (SettingUseCls.USE.equals(stateUseUnitSet.getMasterUse())) {
                 // マスタ紐付け明細書取得
-                this.setLinkMaster(personSet, type, empInfoMap.get(sid),
+                this.setLinkMaster(personSet, stateUseUnitSet.getUsageMaster(), empInfoMap.get(sid),
                         stateLinkSetMasterDepMap, stateLinkSetMasterEmpMap, stateLinkSetMasterClsMap,
                         stateLinkSetMasterPosMap, stateLinkSetMasterSalMap, statementLayoutMap);
+                result.add(personSet);
+                continue;
             }
 
-            if (personSet.getSalaryCode() == null || personSet.getBonusCode() == null) {
-                if (stateLinkSetCom.isPresent()) {
-                    StateLinkSetCom com = stateLinkSetCom.get();
-                    Optional<StatementCode> salaryCode = com.getSalaryCode();
-                    Optional<StatementCode> bonusCode = com.getBonusCode();
-                    this.setSalaryBonus(personSet, salaryCode.get().v(), bonusCode.get().v(), statementLayoutMap);
-                }
+            if (stateLinkSetCom.isPresent()) {
+                StateLinkSetCom com = stateLinkSetCom.get();
+                this.setSalaryBonus(personSet, com.getSalaryCode(), com.getBonusCode(), statementLayoutMap);
             }
             result.add(personSet);
         }
@@ -152,17 +149,21 @@ public class ConfirmPersonSetStatusService {
         return result;
     }
 
-    private void setSalaryBonus(ConfirmPersonSetStatusDto personSet, String salaryCode, String bonusCode,
-                                Map<String, StatementLayout> statementLayoutMap) {
-        personSet.setSalaryCode(salaryCode);
-        personSet.setSalaryName(this.getSttLayoutName(salaryCode, statementLayoutMap));
-        personSet.setBonusCode(bonusCode);
-        personSet.setBonusName(this.getSttLayoutName(bonusCode, statementLayoutMap));
+    private void setSalaryBonus(ConfirmPersonSetStatusDto personSet, Optional<StatementCode> salaryCode,
+                                Optional<StatementCode> bonusCode, Map<String, StatementLayout> statementLayoutMap) {
+        if (salaryCode.isPresent()) {
+            personSet.setSalaryCode(salaryCode.get().v());
+            personSet.setSalaryName(this.getSttLayoutName(salaryCode.get().v(), statementLayoutMap));
+        }
+        if (bonusCode.isPresent()) {
+            personSet.setBonusCode(bonusCode.get().v());
+            personSet.setBonusName(this.getSttLayoutName(bonusCode.get().v(), statementLayoutMap));
+        }
     }
 
     private String getSttLayoutName(String code, Map<String, StatementLayout> statementLayoutMap) {
         if (statementLayoutMap.containsKey(code)) {
-            return statementLayoutMap.get(code).getStatementCode().v();
+            return statementLayoutMap.get(code).getStatementName().v();
         }
         return "";
     }
@@ -170,14 +171,15 @@ public class ConfirmPersonSetStatusService {
     /**
      * マスタ紐付け明細書取得
      */
-    private void setLinkMaster(ConfirmPersonSetStatusDto personSet, UsageMaster type, EmployeeInformationImport empInfo,
+    private void setLinkMaster(ConfirmPersonSetStatusDto personSet, Optional<UsageMaster> type, EmployeeInformationImport empInfo,
                                Map<String, StateLinkSetMaster> masterDepMap, Map<String, StateLinkSetMaster> masterEmpMap,
                                Map<String, StateLinkSetMaster> masterClsMap, Map<String, StateLinkSetMaster> masterPosMap,
                                Map<String, StateLinkSetMaster> masterSalMap, Map<String, StatementLayout> statementLayoutMap) {
+        if (!type.isPresent()) return;
         String masterCode = null;
         String masterName = null;
         StateLinkSetMaster master = null;
-        switch (type) {
+        switch (type.get()) {
             case DEPARMENT:
                 // TODO 部門紐付け明細書取得
                 DepartmentImport depImport = empInfo.getDepartment();
@@ -185,7 +187,7 @@ public class ConfirmPersonSetStatusService {
                 masterCode = depImport.getDepartmentCode();
                 masterName = depImport.getDepartmentName();
                 if (masterDepMap.containsKey(masterCode)) {
-                    master = masterEmpMap.get(masterCode);
+                    master = masterDepMap.get(masterCode);
                 }
                 break;
             case EMPLOYEE:
@@ -203,7 +205,7 @@ public class ConfirmPersonSetStatusService {
                 masterCode = clsImport.getClassificationCode();
                 masterName = clsImport.getClassificationName();
                 if (masterClsMap.containsKey(masterCode)) {
-                    master = masterEmpMap.get(masterCode);
+                    master = masterClsMap.get(masterCode);
                 }
                 break;
             case POSITION:
@@ -212,7 +214,7 @@ public class ConfirmPersonSetStatusService {
                 masterCode = posImport.getPositionCode();
                 masterName = posImport.getPositionName();
                 if (masterPosMap.containsKey(masterCode)) {
-                    master = masterEmpMap.get(masterCode);
+                    master = masterPosMap.get(masterCode);
                 }
                 break;
             case SALARY:
@@ -223,14 +225,10 @@ public class ConfirmPersonSetStatusService {
                 break;
         }
         if (master != null) {
-            Optional<StatementCode> salaryCode = master.getSalaryCode();
-            Optional<StatementCode> bonusCode = master.getBonusCode();
-            if (salaryCode.isPresent() && bonusCode.isPresent()) {
-                this.setSalaryBonus(personSet, salaryCode.get().v(), bonusCode.get().v(), statementLayoutMap);
-            }
+            this.setSalaryBonus(personSet, master.getSalaryCode(), master.getBonusCode(), statementLayoutMap);
         }
+        personSet.setSettingCtg(TextResource.localize(type.get().nameId));
         personSet.setMasterCode(masterCode);
         personSet.setMasterName(masterName);
     }
-
 }

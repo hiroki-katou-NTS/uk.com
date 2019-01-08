@@ -99,6 +99,11 @@ module nts.uk.at.view.kmk009.a {
         export function findAllAttendanceItem(): JQueryPromise<model.DailyAttendanceItemDto[]> {
             return nts.uk.request.ajax('at', paths.findAllAttendanceItem);
         }
+        
+        //saveAsExcel
+        export function saveAsExcel(languageId: string): JQueryPromise<any> {
+            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "TotalTimes", languageId: languageId, domainType: "KMK009"+nts.uk.resource.getText('KMK009_25'), reportType: 0});
+        }
 
 
         export module model {
