@@ -531,8 +531,8 @@ module nts.uk.at.view.kwr001.a {
                                     }
                                 });
                                 // Show error in msg_1344
-                                if (self.errorLogs().length > 0)
-                                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
+//                                if (self.errorLogs().length > 0)
+//                                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
                                 if (self.errorLogsNoWorkplace().length > 0)
                                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1396", message: message("Msg_1396") + employeeStr, messageParams: [self.errorLogs().length]});
                             }).fail(function(error){
@@ -595,8 +595,8 @@ module nts.uk.at.view.kwr001.a {
                                     }
                                 });
                                 // Show error in msg_1344
-                                if (self.errorLogs().length > 0)
-                                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
+//                                if (self.errorLogs().length > 0)
+//                                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
                                 if (self.errorLogsNoWorkplace().length > 0)
                                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1396", message: message("Msg_1396") + employeeStr, messageParams: [self.errorLogs().length]});
                             }).fail(function(error){
