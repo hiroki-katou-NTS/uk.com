@@ -8,7 +8,6 @@ import java.util.List;
 
 @Data
 public class ConOfIndiviSttWebParam {
-    private int type;
     private List<String> empIds ;
     private GeneralDate baseDate;
 }
