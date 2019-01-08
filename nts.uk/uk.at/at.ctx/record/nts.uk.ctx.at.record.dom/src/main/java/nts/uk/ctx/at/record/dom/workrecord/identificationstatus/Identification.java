@@ -12,13 +12,13 @@ import nts.arc.time.GeneralDate;
  */
 @Getter
 public class Identification extends AggregateRoot {
-	
+	/**会社ID*/
 	private String companyID;
-	
+	/**社員ID*/
 	private String employeeId;
-	
+	/**年月日*/
 	private GeneralDate processingYmd;
-	
+	/**本人確認日*/
 	private GeneralDate indentificationYmd;
 
 	public Identification(String companyID, String employeeId, GeneralDate processingYmd,

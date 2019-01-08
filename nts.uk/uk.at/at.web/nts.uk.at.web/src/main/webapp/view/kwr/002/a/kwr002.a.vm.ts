@@ -436,6 +436,7 @@ module nts.uk.com.view.kwr002.a {
                 var self = this;
                 var dfd = $.Deferred();
                 blockUI.invisible();
+                setShared("currentARESSelectCode",self.selectedCode());
                 nts.uk.ui.windows.sub.modal("/view/kwr/002/b/index.xhtml").onClosed(function() {
 
                     service.getAllAttendanceRecExpSet().done(function(listAttendance: Array<AttendanceRecordExportSettingDto>) {

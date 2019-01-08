@@ -12,6 +12,7 @@ import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecif
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.workplace.KsmmtWpSpecDateSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.specificdayset.workplace.KsmmtWpSpecDateSetPK;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaWorkplaceSpecificDateRepository extends JpaRepository implements WorkplaceSpecificDateRepository {
@@ -24,8 +25,9 @@ public class JpaWorkplaceSpecificDateRepository extends JpaRepository implements
 
 	// get List With Name of Specific
 	private static final String GET_BY_USE_WITH_NAME = "SELECT p.name,p.useAtr, s FROM KsmmtWpSpecDateSet s"
-			+ " INNER JOIN KsmstSpecificDateItem p ON s.ksmmtWpSpecDateSetPK.specificDateItemNo = p.ksmstSpecificDateItemPK.itemNo "
+			+ " LEFT JOIN KsmstSpecificDateItem p ON s.ksmmtWpSpecDateSetPK.specificDateItemNo = p.ksmstSpecificDateItemPK.itemNo "
 			+ " WHERE s.ksmmtWpSpecDateSetPK.workplaceId = :workplaceId"
+			+ " AND p.ksmstSpecificDateItemPK.companyId = :companyID"
 			+ " AND s.ksmmtWpSpecDateSetPK.specificDate >= :startYm"
 			+ " AND s.ksmmtWpSpecDateSetPK.specificDate <= :endYm";
 	
@@ -52,8 +54,10 @@ public class JpaWorkplaceSpecificDateRepository extends JpaRepository implements
 	// WITH name
 	@Override
 	public List<WorkplaceSpecificDateItem> getWpSpecByDateWithName(String workplaceId, GeneralDate startDate, GeneralDate endDate) {
+		String companyID = AppContexts.user().companyId();
 		return this.queryProxy().query(GET_BY_USE_WITH_NAME, Object[].class)
 				.setParameter("workplaceId", workplaceId)
+				.setParameter("companyID", companyID)
 				.setParameter("startYm", startDate)
 				.setParameter("endYm", endDate)
 				.getList(x -> toDomainWithName(x));
