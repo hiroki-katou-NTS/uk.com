@@ -38,9 +38,9 @@ public class DailyPatternExportImpl implements MasterListData {
         columns.add(
                 new MasterHeaderColumn(KSM003_40, TextResource.localize("KSM003_40"), ColumnTextAlign.LEFT, "", true));
         columns.add(
-                new MasterHeaderColumn(KSM003_41, TextResource.localize("KSM003_41"), ColumnTextAlign.RIGHT, "",true));
+                new MasterHeaderColumn(KSM003_41, TextResource.localize("KSM003_41"), ColumnTextAlign.LEFT, "",true));
         columns.add(
-                new MasterHeaderColumn(KSM003_42, TextResource.localize("KSM003_42"), ColumnTextAlign.RIGHT, "",true));
+                new MasterHeaderColumn(KSM003_42, TextResource.localize("KSM003_42"), ColumnTextAlign.LEFT, "",true));
 
         return columns;
     }

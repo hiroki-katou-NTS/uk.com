@@ -29,6 +29,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
         cntSetAll: KnockoutObservableArray<any>;
         constructor() {
             let self = this;
+            self.showExportBtn();
             self.gridListColumns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KML004_6"), key: 'categoryCode', width: 50 },
                 { headerText: nts.uk.resource.getText("KML004_7"), key: 'categoryName', width: 250, formatter: _.escape }
@@ -410,8 +411,30 @@ module nts.uk.at.view.kml004.a.viewmodel {
                 self.openDDialog(id);
             }
         }
+        private exportExcel(): void {
+            var self = this;
+            nts.uk.ui.block.grayout();
+            let langId = "ja";
+            service.saveAsExcel(langId).done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+         }
+        showExportBtn() {
+            if (nts.uk.util.isNullOrUndefined(__viewContext.user.role.attendance)
+                && nts.uk.util.isNullOrUndefined(__viewContext.user.role.payroll)
+                && nts.uk.util.isNullOrUndefined(__viewContext.user.role.officeHelper)
+                && nts.uk.util.isNullOrUndefined(__viewContext.user.role.personnel)) {
+                $("#print-button").hide();
+            } else {
+                $("#print-button").show();
+            }
+        }
     }
 
+ 
     export interface ITotalCategory {
         categoryCode: string;
         categoryName: string;
