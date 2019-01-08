@@ -112,7 +112,10 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     // Special holiday table set
 	     exportSQL.append("  hdtblset.YEAR_HD_NAME,");
 	     // Grant day table code
-	     exportSQL.append("  dateset.GRANT_NAME,");
+	     exportSQL.append("  CONCAT(dateset.GRANT_NAME,dateset1.GRANT_NAME,dateset2.GRANT_NAME,dateset3.GRANT_NAME,dateset4.GRANT_NAME,");
+	     exportSQL.append("  	dateset5.GRANT_NAME,dateset6.GRANT_NAME,dateset7.GRANT_NAME,dateset8.GRANT_NAME,dateset9.GRANT_NAME,");
+	     exportSQL.append("  	dateset10.GRANT_NAME,dateset11.GRANT_NAME,dateset12.GRANT_NAME,dateset13.GRANT_NAME,dateset14.GRANT_NAME,");
+	     exportSQL.append("  	dateset15.GRANT_NAME,dateset16.GRANT_NAME,dateset17.GRANT_NAME,dateset18.GRANT_NAME,dateset19.GRANT_NAME),");
 	     //  -- Selection
 	     exportSQL.append("  CONCAT(RTRIM(selection.SELECTION_CD), selection.SELECTION_NAME)) MASTER_VALUE,");
 	     //  -- Code name
@@ -326,7 +329,7 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("  LEFT JOIN BSYMT_CLASSIFICATION cls ON initsetitem.STRING_VAL = cls.CLSCD AND initset.CID = cls.CID ");
 	     exportSQL.append("       AND itemcm.SELECTION_ITEM_REF_CODE = 'M00004'");
 	     exportSQL.append("  LEFT JOIN (SELECT jobt.JOB_CD, jobt.JOB_NAME, jobt.CID, jobt.JOB_ID, jobhist.END_DATE FROM BSYMT_JOB_INFO jobt");
-	     exportSQL.append("  LEFT JOIN BSYMT_JOB_HIST jobhist ON jobt.CID = jobhist.CID AND jobt.HIST_ID = jobhist.HIST_ID ");
+	     exportSQL.append("  INNER JOIN BSYMT_JOB_HIST jobhist ON jobt.CID = jobhist.CID AND jobt.HIST_ID = jobhist.HIST_ID ");
 	     exportSQL.append("       AND jobhist.END_DATE = (SELECT MAX(END_DATE) FROM BSYMT_JOB_HIST jobhistory where jobt.CID = jobhistory.CID ");
 	     exportSQL.append("       AND jobhistory.JOB_ID = jobt.JOB_ID )) job ");
 	     exportSQL.append("     ON initsetitem.STRING_VAL = job.JOB_ID AND initset.CID  = job.CID ");
