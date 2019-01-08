@@ -144,7 +144,7 @@ public class JpaPersonInfoMatrixItem extends JpaRepository implements PersonInfo
 				.setParameter(2, pInfoCategoryID)
 			.getResultList();
 
-		return result.stream().map(m -> new PersonInfoMatrixData(
+		List<PersonInfoMatrixData> returnData = result.stream().map(m -> new PersonInfoMatrixData(
 				m[0] != null ? (String) m[0] : "", // perInfoItemDefID
 				m[1] != null ? (String) m[1] : "", // itemCD
 				m[2] != null ? (String) m[2] : "", // itemParentCD
@@ -154,5 +154,51 @@ public class JpaPersonInfoMatrixItem extends JpaRepository implements PersonInfo
 				m[6] != null ? ((BigDecimal) m[6]).intValue() : 100, // width
 				m[7] != null ? ((BigDecimal) m[7]).intValue() == 1 : false // required
 		)).sorted((o1, o2) -> o1.getDispOrder() - o2.getDispOrder()).collect(Collectors.toList());
+		
+		return updateRegular(returnData);
+	}
+	
+	/**
+	 * Update regular (first load) for all required item
+	 * @param items
+	 * @return
+	 */
+	private List<PersonInfoMatrixData> updateRegular(List<PersonInfoMatrixData> items) {
+		items.stream().forEach(f -> {
+			if (!f.isRegulationAtr()) {
+				if (!f.getItemParentCD().isEmpty()) {
+					f.setRegulationAtr(getRegular(items, f.getItemParentCD()));
+				} else {
+					f.setRegulationAtr(f.isRequired());
+				}
+			}
+		});
+
+		return items;
+	}
+
+	/**
+	 * get RegularAtr from parent or grandParent;
+	 * @param items
+	 * @param itemCode
+	 * @return
+	 */
+	private boolean getRegular(List<PersonInfoMatrixData> items, String itemCode) {
+		Optional<PersonInfoMatrixData> item = items.stream()
+				.filter(f -> f.getItemCD().equals(itemCode) || f.getItemParentCD().equals(itemCode)).findFirst();
+
+		if (item.isPresent()) {
+			PersonInfoMatrixData _item = item.get();
+			
+			if(_item.isRequired()) {
+				return true;
+			} else if (_item.getItemParentCD().equals(itemCode)) {
+				return getRegular(items, _item.getItemParentCD());
+			} else {
+				return _item.isRegulationAtr();
+			}
+		}
+
+		return false;
 	}
 }
