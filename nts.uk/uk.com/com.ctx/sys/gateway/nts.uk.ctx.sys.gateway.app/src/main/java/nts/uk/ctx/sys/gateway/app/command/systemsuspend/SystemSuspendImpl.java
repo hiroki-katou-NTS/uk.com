@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.gateway.app.command.systemsuspend;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -10,6 +12,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginRecordRegistService;
 import nts.uk.ctx.sys.gateway.app.command.login.dto.LoginRecordInput;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.service.CollectCompanyList;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompany;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompanyRepository;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopModeType;
@@ -33,6 +36,8 @@ public class SystemSuspendImpl implements SystemSuspendService {
 	
 	@Inject
 	private LoginRecordRegistService loginRecordRegistService;
+	@Inject
+	private CollectCompanyList colComList;
 
 	@Override
 	public SystemSuspendOutput confirmSystemSuspend(String contractCD, String companyCD, int loginMethod, String programID, String screenID) {
@@ -105,6 +110,41 @@ public class SystemSuspendImpl implements SystemSuspendService {
 		} 
 		// 「利用停止しない」を返す
 		return new UsageStopOutput(false, StopModeType.ADMIN_MODE, "");
+	}
+
+	/**
+	 * システム利用停止の確認_ログイン前
+	 */
+	@Override
+	public SystemSuspendOutput confirmSystemSuspend_BefLog(String contractCD, String companyCD, int loginMethod,
+			String programID, String screenID) {
+		// 「利用停止するしない」をチェックする
+		UsageStopOutput usageStopOutput = this.checkUsageStop(contractCD, companyCD);
+		if(!usageStopOutput.isUsageStop()){//利用停止しないの場合
+			return new SystemSuspendOutput(false, "", "");
+		}
+		//利用停止するの場合
+		String companyIdNew = contractCD + "-" + companyCD;
+		//利用停止のチェック
+		List<String> lstFil = colComList.checkStopUse(contractCD, Arrays.asList(companyIdNew), AppContexts.user().userId());
+		if(!lstFil.isEmpty()){
+			return new SystemSuspendOutput(false, "Msg_1475", "");
+		}
+		//エラーメッセージダイアログを表示して、処理をエラー状態とする
+		String msg = usageStopOutput.getStopMessage();
+		// アルゴリズム「ログイン記録」を実行する１
+		loginRecordRegistService.loginRecord(
+				new LoginRecordInput(
+						programID, 
+						screenID, 
+						"", 
+						1, 
+						loginMethod, 
+						"", 
+						"システム利用停止状態", 
+						null), 
+				companyIdNew);
+		return new SystemSuspendOutput(true, "", msg);
 	}
 	
 }
