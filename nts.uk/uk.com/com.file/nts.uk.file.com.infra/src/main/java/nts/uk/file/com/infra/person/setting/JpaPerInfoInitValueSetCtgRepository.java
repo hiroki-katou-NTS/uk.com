@@ -326,7 +326,7 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("  LEFT JOIN BSYMT_CLASSIFICATION cls ON initsetitem.STRING_VAL = cls.CLSCD AND initset.CID = cls.CID ");
 	     exportSQL.append("       AND itemcm.SELECTION_ITEM_REF_CODE = 'M00004'");
 	     exportSQL.append("  LEFT JOIN (SELECT jobt.JOB_CD, jobt.JOB_NAME, jobt.CID, jobt.JOB_ID, jobhist.END_DATE FROM BSYMT_JOB_INFO jobt");
-	     exportSQL.append("  LEFT JOIN BSYMT_JOB_HIST jobhist ON jobt.CID = jobhist.CID AND jobt.HIST_ID = jobhist.HIST_ID ");
+	     exportSQL.append("  INNER JOIN BSYMT_JOB_HIST jobhist ON jobt.CID = jobhist.CID AND jobt.HIST_ID = jobhist.HIST_ID ");
 	     exportSQL.append("       AND jobhist.END_DATE = (SELECT MAX(END_DATE) FROM BSYMT_JOB_HIST jobhistory where jobt.CID = jobhistory.CID ");
 	     exportSQL.append("       AND jobhistory.JOB_ID = jobt.JOB_ID )) job ");
 	     exportSQL.append("     ON initsetitem.STRING_VAL = job.JOB_ID AND initset.CID  = job.CID ");
