@@ -113,6 +113,10 @@
 .list-box .ui-iggrid .ui-iggrid-tablebody td {
     height: 23px;
 }
+.display-notes {
+    word-break: break-all;
+    max-height: 275px;
+}
 textarea {
     resize: none;
     background: transparent;
