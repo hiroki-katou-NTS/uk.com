@@ -51,6 +51,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 @Stateless
 @DomainID(value = "Divergence")
@@ -96,15 +97,24 @@ public class DivergenceExportImpl  implements MasterListData{
 	public String mainSheetName() {
 		return TextResource.localize("KMK011_42");
 	}
+	
+	
+
+	@Override
+	public MasterListMode mainSheetMode() {
+		return MasterListMode.NONE;
+	}
+
+
 
 	@Override
 	public List<SheetData> extraSheets(MasterListExportQuery query) {
 		 List<SheetData> sheetDatas = new ArrayList<>();
-		 SheetData divergencetimeData = new SheetData(getDataDevergenceTimeCompany(query), getHeaderColumnsDevergenceTimeCompany(query), null, null,TextResource.localize("KMK011_47")+TextResource.localize("Com_Company"));	 
+		 SheetData divergencetimeData = new SheetData(getDataDevergenceTimeCompany(query), getHeaderColumnsDevergenceTimeCompany(query), null, null,TextResource.localize("KMK011_47")+TextResource.localize("Com_Company"),MasterListMode.BASE_DATE);	 
 		 sheetDatas.add(divergencetimeData);
 		 DivergenceReferenceTimeUsageUnitDto uset=finderTimeUsageUnit.findByCompanyId();
 		 if(uset.getWorkTypeUseSet()){
-			 SheetData divergenceworktypeData = new SheetData(getDataDevergenceTimeWorktype(query), getHeaderColumnsDevergenceTimeWorktype(query), null, null,TextResource.localize("KMK011_83"));
+			 SheetData divergenceworktypeData = new SheetData(getDataDevergenceTimeWorktype(query), getHeaderColumnsDevergenceTimeWorktype(query), null, null,TextResource.localize("KMK011_83"),MasterListMode.BASE_DATE);
 			 sheetDatas.add(divergenceworktypeData);
 		 }
 		
