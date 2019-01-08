@@ -332,7 +332,7 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("     ON initsetitem.STRING_VAL = job.JOB_ID AND initset.CID  = job.CID ");
 	     exportSQL.append("       AND itemcm.SELECTION_ITEM_REF_CODE = 'M00005'");
 	     exportSQL.append("  LEFT JOIN BSYST_TEMP_ABSENCE_FRAME temp ON initsetitem.STRING_VAL = CAST(temp.TEMP_ABSENCE_FR_NO AS NVARCHAR) ");
-	     exportSQL.append("       AND initset.CID= emp.CID AND itemcm.SELECTION_ITEM_REF_CODE = 'M00006'");
+	     exportSQL.append("       AND initset.CID= temp.CID AND itemcm.SELECTION_ITEM_REF_CODE = 'M00006'");
 	     exportSQL.append("  LEFT JOIN KRCMT_BUSINESS_TYPE busstype ON initsetitem.STRING_VAL = busstype.BUSINESS_TYPE_CD AND initset.CID= busstype.CID ");
 	     exportSQL.append("       AND itemcm.SELECTION_ITEM_REF_CODE = 'M00007'");
 	     // 廃止されていない勤務種類をすべて取得する
