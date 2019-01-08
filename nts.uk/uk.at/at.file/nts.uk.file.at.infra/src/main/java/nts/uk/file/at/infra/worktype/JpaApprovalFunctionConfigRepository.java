@@ -35,8 +35,8 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("       WHEN TEMP.APP_TYPE = 14 THEN ?appType14 ");
 		sql.append("       ELSE NULL ");
 		sql.append("     END, ");
-		sql.append("     CASE WHEN TEMP.USE_ATR = 0 THEN ?useText ");
-		sql.append("       WHEN TEMP.USE_ATR = 1 THEN ?notUseText ");
+		sql.append("     CASE WHEN TEMP.USE_ATR = 0 THEN ?notUseText ");
+		sql.append("       WHEN TEMP.USE_ATR = 1 THEN ?useText ");
 		sql.append("       ELSE NULL ");
 		sql.append("     END, ");
 		sql.append("     CASE WHEN (TEMP.APP_TYPE != 0 AND TEMP.APP_TYPE != 6) OR TEMP.USE_ATR != 1 THEN NULL ");
