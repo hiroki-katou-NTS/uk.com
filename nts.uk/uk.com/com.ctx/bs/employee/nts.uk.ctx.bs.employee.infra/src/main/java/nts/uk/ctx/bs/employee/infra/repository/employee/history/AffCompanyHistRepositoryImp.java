@@ -1,11 +1,9 @@
 package nts.uk.ctx.bs.employee.infra.repository.employee.history;
 
-import java.lang.reflect.Array;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,7 +26,6 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHist;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHistPk;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyInfo;

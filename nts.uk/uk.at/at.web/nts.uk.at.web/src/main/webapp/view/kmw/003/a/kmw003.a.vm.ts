@@ -26,6 +26,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         headerColors: KnockoutObservableArray<any> = ko.observableArray([]);
         textColors: KnockoutObservableArray<any> = ko.observableArray([]);
         legendOptions: any;
+        
         //grid user setting
         cursorMoveDirections: KnockoutObservableArray<any> = ko.observableArray([
             { code: 0, name: "縦" },
@@ -106,8 +107,11 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         isStartScreen: KnockoutObservable<any> = ko.observable(true);
         noCheckColumn: KnockoutObservable<any> = ko.observable(false);
 
-        constructor() {
+        isCache : false;
+        isStarted: false;
+        constructor(value:boolean) {
             let self = this;
+            self.isCache = value;
             self.yearMonth = ko.observable(Number(moment(new Date()).format("YYYYMM")));
             self.initLegendButton();
             //self.initActualTime();
@@ -362,6 +366,14 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.monthlyParam().actualTime.endDate = moment.utc(self.monthlyParam().actualTime.endDate, "YYYY/MM/DD").toISOString();
             }
             self.noCheckColumn(false);
+            let checkLoadKdw: boolean = localStorage.getItem('isKmw');
+            nts.uk.characteristics.restore("cacheKMW003").done(function (cacheData) { 
+            if(cacheData != undefined && self.isCache == true && cacheData.yearMonth !=0 && checkLoadKdw){
+                self.monthlyParam(cacheData);
+            }
+            localStorage.removeItem('isKmw');
+            __viewContext.transferred.value = false;
+            nts.uk.characteristics.save("cacheKMW003",self.monthlyParam());
             service.startScreen(self.monthlyParam()).done((data) => {
                 if (data.selectedClosure) {
                     let closureInfoArray = []
@@ -374,6 +386,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.dataAll(data);
                 self.monthlyParam(data.param);
                 self.dataBackup = _.cloneDeep(data);
+                
                 self.itemValueAll(data.itemValues);
                 self.receiveData(data);
                 self.createSumColumn(data);
@@ -459,6 +472,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                         dfd.reject();
                     }
                 }
+            });
             });
             return dfd.promise();
         }
@@ -1594,6 +1608,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             let self = this;
             let errorParam = { initMode: 1, selectedItems: self.selectedErrorCodes() };
             nts.uk.ui.windows.setShared("KDW003D_ErrorParam", errorParam);
+            nts.uk.characteristics.save("cacheKMW003",self.dataAll());
             nts.uk.ui.windows.sub.modal("/view/kdw/003/d/index.xhtml").onClosed(() => {
                 debugger;
                 let errorCodes: any = nts.uk.ui.windows.getShared("KDW003D_Output");

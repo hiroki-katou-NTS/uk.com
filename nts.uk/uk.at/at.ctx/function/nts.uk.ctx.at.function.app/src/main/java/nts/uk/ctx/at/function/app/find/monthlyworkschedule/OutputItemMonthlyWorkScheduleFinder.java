@@ -26,6 +26,7 @@ import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
+import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.DisplayTimeItem;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonPfmCorrectionFormat;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonPfmCorrectionFormatRepository;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyRecordWorkType;
@@ -316,6 +317,10 @@ public class OutputItemMonthlyWorkScheduleFinder {
 			}
 		}
 
+		// sort list display item by display order
+		sheetNo1.setListDisplayTimeItem(sheetNo1.getListDisplayTimeItem().stream()
+				.sorted(Comparator.comparing(DisplayTimeItem::getDisplayOrder)).collect(Collectors.toList()));
+		
 		if (sheetNo1.getListDisplayTimeItem().size() <= LIMIT_DISPLAY_ITEMS) {
 			return sheetNo1.getListDisplayTimeItem().stream().map(item -> new DisplayTimeItemDto(item.getItemDaily(),
 					item.getDisplayOrder(), item.getColumnWidthTable())).collect(Collectors.toList());

@@ -147,6 +147,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
         targetDate: any = moment(new Date()).format(this.DATE_FORMAT);
         //画面モード(表示/編集)
         editable: KnockoutObservable<boolean> = ko.observable(true);
+        enableOvertimeInput: KnockoutObservable<boolean> = ko.observable(false);
         constructor(transferData :any) {
             let self = this;  
             if(transferData != null){
@@ -273,6 +274,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
         initData(data: any) {
             var self = this;
+            self.enableOvertimeInput(data.enableOvertimeInput);
             self.checkBoxValue(data.manualSendMailAtr);
             self.enableSendMail(!data.sendMailWhenRegisterFlg);
             self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
@@ -427,9 +429,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                 $("#inpEndTime1").trigger("validate");
                 if(!self.validate()){return;}
             }
-            if (!self.hasAppTimeBreakTimes()) {
-                self.setErrorA6_8();
-            }            
+            if(self.enableOvertimeInput()){
+                if (!self.hasAppTimeBreakTimes()) {
+                    self.setErrorA6_8();
+                }      
+            }      
             //return if has error
             if (nts.uk.ui.errors.hasError()){return;}   
             
@@ -766,29 +770,29 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     self.workTypeName(childData.selectedWorkTypeName);
                     self.siftCD(childData.selectedWorkTimeCode);
                     self.siftName(childData.selectedWorkTimeName);
-                    self.timeStart1(childData.first.start);
-                    self.timeEnd1(childData.first.end);
-                    self.timeStart2(childData.second.start);
-                    self.timeEnd2(childData.second.end);
+//                    self.timeStart1(childData.first.start);
+//                    self.timeEnd1(childData.first.end);
+//                    self.timeStart2(childData.second.start);
+//                    self.timeEnd2(childData.second.end);
                     let param = { workTypeCD: childData.selectedWorkTypeCode, workTimeCD: childData.selectedWorkTimeCode }
                     service.getBreakTimes(param).done((data) => {
                         self.setTimeZones(data);
                     });
-//                    service.getRecordWork(
-//                        {
-//                            employeeID: self.employeeID(), 
-//                            appDate: nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
-//                            siftCD: self.siftCD(),
-//                            prePostAtr: self.prePostSelected(),
-//                            overtimeHours: ko.toJS(self.breakTimes())
-//                        }
-//                    ).done(data => {
-//                        self.timeStart1(data.startTime1 == null ? null : data.startTime1);
-//                        self.timeEnd1(data.endTime1 == null ? null : data.endTime1);
-//                        self.timeStart2(data.startTime2 == null ? null : data.startTime2);
-//                        self.timeEnd2(data.endTime2 == null ? null : data.endTime2);
-//                        self.convertAppOvertimeReferDto(data);
-//                    });
+                    service.getRecordWork(
+                        {
+                            employeeID: self.employeeID(), 
+                            appDate: nts.uk.util.isNullOrEmpty(self.appDate()) ? null : moment(self.appDate()).format(self.DATE_FORMAT),
+                            siftCD: self.siftCD(),
+                            prePostAtr: self.prePostSelected(),
+                            overtimeHours: ko.toJS(self.breakTimes())
+                        }
+                    ).done(data => {
+                        self.timeStart1(data.startTime1 == null ? null : data.startTime1);
+                        self.timeEnd1(data.endTime1 == null ? null : data.endTime1);
+                        self.timeStart2(data.startTime2 == null ? null : data.startTime2);
+                        self.timeEnd2(data.endTime2 == null ? null : data.endTime2);
+                        self.convertAppOvertimeReferDto(data);
+                    });
                 }
             })
         }
