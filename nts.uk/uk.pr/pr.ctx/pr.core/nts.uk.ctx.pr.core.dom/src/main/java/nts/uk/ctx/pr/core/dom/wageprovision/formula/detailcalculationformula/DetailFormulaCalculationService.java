@@ -397,7 +397,8 @@ public class DetailFormulaCalculationService {
     private String [] formatFunctionParameter (String [] functionParameters) {
         String functionParameter = "", conditionRegex = "(?<=[><≦≧＝≠≤≥=#])|(?=[><≦≧＝≠≤≥=#])";
         for (int i = 0; i < functionParameters.length; i++){
-            functionParameter = functionParameters[i].trim();
+            functionParameters[i] = functionParameters[i].trim();
+            functionParameter = functionParameters[i];
             if (functionParameter.indexOf("\"") == 0 && functionParameter.lastIndexOf("\"") == functionParameter.length() - 1){
                 functionParameters[i] = functionParameter.substring(1, functionParameter.length() - 1);
             } else {
