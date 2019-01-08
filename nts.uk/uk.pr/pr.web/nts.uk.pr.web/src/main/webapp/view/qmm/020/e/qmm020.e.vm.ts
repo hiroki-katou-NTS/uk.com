@@ -238,7 +238,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                 modeScreen: model.MODE_SCREEN.CLASSIFICATION,
                 isFirst: index === 0 && self.listStateCorrelationHisClassification().length > 1 ? true : false
             });
-            modal("/view/qmm/011/k/index.xhtml").onClosed(function() {
+            modal("/view/qmm/020/k/index.xhtml").onClosed(function() {
                 let params = getShared(model.PARAMETERS_SCREEN_K.OUTPUT);
                 if(params && params.modeEditHistory == 1) {
                     self.initScreen(self.hisIdSelected());
