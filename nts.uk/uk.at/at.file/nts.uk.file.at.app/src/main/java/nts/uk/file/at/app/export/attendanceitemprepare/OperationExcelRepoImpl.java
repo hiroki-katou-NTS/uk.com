@@ -190,7 +190,7 @@ public class OperationExcelRepoImpl implements MasterListData {
 				putDataEmptySetOperationRestriction(dataChild);
 
 			} else {
-				data.put("値", "－");
+				data.put("値", "-");
 			}
 			datas.add(alignMasterDataSheetRestriction(data));
 			putDataEmptySetOperationRestriction(data);
@@ -210,7 +210,7 @@ public class OperationExcelRepoImpl implements MasterListData {
 						datas.add(alignMasterDataSheetRestriction(dataChild));
 						putDataEmptySetOperationRestriction(dataChild);
 					} else {
-						data.put("値", "－");
+						data.put("値", "-");
 					}
 
 				}
@@ -222,7 +222,7 @@ public class OperationExcelRepoImpl implements MasterListData {
 					if (daiPerformanceFunOpt.get().getDisp36Atr() == 1) {
 						data.put("値", "○");
 					} else {
-						data.put("値", "－");
+						data.put("値", "-");
 					}
 				}
 				// flexDispAtr
@@ -230,7 +230,7 @@ public class OperationExcelRepoImpl implements MasterListData {
 					if (daiPerformanceFunOpt.get().getFlexDispAtr() == 1) {
 						data.put("値", "○");
 					} else {
-						data.put("値", "－");
+						data.put("値", "-");
 					}
 				}
 				// manualFixAutoSetAtr
@@ -238,7 +238,7 @@ public class OperationExcelRepoImpl implements MasterListData {
 					if (daiPerformanceFunOpt.get().getManualFixAutoSetAtr() == 1) {
 						data.put("値", "○");
 					} else {
-						data.put("値", "－");
+						data.put("値", "-");
 					}
 				}
 
@@ -247,7 +247,7 @@ public class OperationExcelRepoImpl implements MasterListData {
 					if (daiPerformanceFunOpt.get().getClearManuAtr() == 1) {
 						data.put("値", "○");
 					} else {
-						data.put("値", "－");
+						data.put("値", "-");
 					}
 				}
 				// checkErrRefDisp
@@ -255,7 +255,7 @@ public class OperationExcelRepoImpl implements MasterListData {
 					if (daiPerformanceFunOpt.get().getCheckErrRefDisp() == 1) {
 						data.put("値", "○");
 					} else {
-						data.put("値", "－");
+						data.put("値", "-");
 					}
 				}
 			}
@@ -284,7 +284,7 @@ public class OperationExcelRepoImpl implements MasterListData {
 		if (monPerformanceFunOpt.get().getDailySelfChkDispAtr() == 1) {
 			data.put("値", "○");
 		} else {
-			data.put("値", "－");
+			data.put("値", "-");
 		}
 		datas.add(alignMasterDataSheetRestriction(data));
 		putDataEmptySetOperationRestriction(data);
@@ -292,7 +292,7 @@ public class OperationExcelRepoImpl implements MasterListData {
 		if (identityProcessOpt.get().getUseMonthSelfCK() == 1) {
 			data.put("値", "○");
 		} else {
-			data.put("値", "－");
+			data.put("値", "-");
 		}
 		datas.add(alignMasterDataSheetRestriction(data));
 		putDataEmptySetOperationRestriction(data);
@@ -300,7 +300,7 @@ public class OperationExcelRepoImpl implements MasterListData {
 		if (approvalProcessOpt.get().getUseMonthBossChk() == 1) {
 			data.put("値", "○");
 		} else {
-			data.put("値", "－");
+			data.put("値", "-");
 		}
 		datas.add(alignMasterDataSheetRestriction(data));
 		putDataEmptySetOperationRestriction(data);
@@ -404,36 +404,36 @@ public class OperationExcelRepoImpl implements MasterListData {
 	private void putDataEmptyRole(Map<String, Object> data) {
 		data.put("コード", "");
 		data.put("名称", "");
-		data.put("日別実績の登録", "－");
-		data.put("日別実績の保存" , "－");
-		data.put("日別実績の計算" , "－");
-		data.put("日別実績の再計算" , "－");
-		data.put("日別実績の表示項目の選択" , "－");
-		data.put("日別実績の抽出条件の選択" , "－");
-		data.put("日別実績の印刷" , "－");
-		data.put("本人締め処理" , "－");
-		data.put("エラー参照", "－");
-		data.put("打刻参照", "－");
-		data.put("就業確定", "－");
-		data.put("月別実績の登録", "－");
-		data.put("月別実績の保存", "－");
-		data.put("月別実績の表示項目の選択", "－");
-		data.put("月別実績の抽出条件の選択", "－");
-		data.put("月別実績の印刷", "－");
-		data.put("列幅の保存", "－");
-		data.put("修正履歴参照", "－");
-		data.put("一括本人確認", "－");
-		data.put("一括承認", "－");
-		data.put("年休参照", "－");
-		data.put("積立年休参照", "－");
-		data.put("代休参照", "－");
-		data.put("振休参照", "－");
-		data.put("60H超休参照", "－");
-		data.put("ロックされた実績の操作", "－");
-		data.put("ロック状態でも処理可能（日別実績の作成）", "－");
-		data.put("ロック状態でも処理可能（日別実績の計算）", "－");
-		data.put("ロック状態でも処理可能（承認結果の反映）", "－");
-		data.put("ロック状態でも処理可能（月別実績の集計）", "－");
+		data.put("日別実績の登録", "-");
+		data.put("日別実績の保存" , "-");
+		data.put("日別実績の計算" , "-");
+		data.put("日別実績の再計算" , "-");
+		data.put("日別実績の表示項目の選択" , "-");
+		data.put("日別実績の抽出条件の選択" , "-");
+		data.put("日別実績の印刷" , "-");
+		data.put("本人締め処理" , "-");
+		data.put("エラー参照", "-");
+		data.put("打刻参照", "-");
+		data.put("就業確定", "-");
+		data.put("月別実績の登録", "-");
+		data.put("月別実績の保存", "-");
+		data.put("月別実績の表示項目の選択", "-");
+		data.put("月別実績の抽出条件の選択", "-");
+		data.put("月別実績の印刷", "-");
+		data.put("列幅の保存", "-");
+		data.put("修正履歴参照", "-");
+		data.put("一括本人確認", "-");
+		data.put("一括承認", "-");
+		data.put("年休参照", "-");
+		data.put("積立年休参照", "-");
+		data.put("代休参照", "-");
+		data.put("振休参照", "-");
+		data.put("60H超休参照", "-");
+		data.put("ロックされた実績の操作", "-");
+		data.put("ロック状態でも処理可能（日別実績の作成）", "-");
+		data.put("ロック状態でも処理可能（日別実績の計算）", "-");
+		data.put("ロック状態でも処理可能（承認結果の反映）", "-");
+		data.put("ロック状態でも処理可能（月別実績の集計）", "-");
 	}
 	private MasterData alignMasterDataSheetRole(Map<String, Object> data) {
 		MasterData masterData = new MasterData(data, null, "");

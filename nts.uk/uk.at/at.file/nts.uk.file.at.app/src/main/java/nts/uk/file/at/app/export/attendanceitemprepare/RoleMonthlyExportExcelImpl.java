@@ -247,16 +247,16 @@ public class RoleMonthlyExportExcelImpl implements MasterListData {
 				if(attItemAuthor.isYouCanChangeIt()){
 					data.put("本人修正設定", "○" );
 				}else {
-					data.put("本人修正設定", "－" );
+					data.put("本人修正設定", "-" );
 				}
 				if(attItemAuthor.isCanBeChangedByOthers()){
 					data.put("本人以外修正設定", "○" );
 				}else {
-					data.put("本人以外修正設定", "－" );
+					data.put("本人以外修正設定", "-" );
 				}
 			}
 		}else {
-			data.put("利用区分", "－");
+			data.put("利用区分", "-");
 		}
 		
 	}
