@@ -384,7 +384,6 @@ module nts.uk.pr.view.qmm017.share.model {
             new EnumModel(FUNCTION_LIST.ROUND_UP, getText('Enum_FunctionList_ROUND_UP')),
             new EnumModel(FUNCTION_LIST.MAX_VALUE, getText('Enum_FunctionList_MAX_VALUE')),
             new EnumModel(FUNCTION_LIST.MIN_VALUE, getText('Enum_FunctionList_MIN_VALUE')),
-            new EnumModel(FUNCTION_LIST.NUMBER_OF_FAMILY_MEMBER, getText('Enum_FunctionList_NUMBER_OF_FALIMY_MEMBER')),
             new EnumModel(FUNCTION_LIST.ADDITIONAL_YEARMONTH, getText('Enum_FunctionList_ADDITIONAL_YEARMONTH')),
             new EnumModel(FUNCTION_LIST.YEAR_EXTRACTION, getText('Enum_FunctionList_YEAR_EXTRACTION')),
             new EnumModel(FUNCTION_LIST.MONTH_EXTRACTION, getText('Enum_FunctionList_MONTH_EXTRACTION'))
@@ -402,7 +401,6 @@ module nts.uk.pr.view.qmm017.share.model {
                 new EnumModel(FUNCTION_LIST.ROUND_UP, getText('Enum_FunctionList_ROUND_UP')),
                 new EnumModel(FUNCTION_LIST.MAX_VALUE, getText('Enum_FunctionList_MAX_VALUE')),
                 new EnumModel(FUNCTION_LIST.MIN_VALUE, getText('Enum_FunctionList_MIN_VALUE')),
-                new EnumModel(FUNCTION_LIST.NUMBER_OF_FAMILY_MEMBER, getText('Enum_FunctionList_NUMBER_OF_FALIMY_MEMBER')),
                 new EnumModel(FUNCTION_LIST.ADDITIONAL_YEARMONTH, getText('Enum_FunctionList_ADDITIONAL_YEARMONTH')),
                 new EnumModel(FUNCTION_LIST.YEAR_EXTRACTION, getText('Enum_FunctionList_YEAR_EXTRACTION')),
                 new EnumModel(FUNCTION_LIST.MONTH_EXTRACTION, getText('Enum_FunctionList_MONTH_EXTRACTION'))
@@ -455,9 +453,7 @@ module nts.uk.pr.view.qmm017.share.model {
             new EnumModel(SYSTEM_VARIABLE_LIST.SYSTEM_YM_DATE, getText('Enum_SystemVariableList_SYSTEM_YM_DATE')),
             new EnumModel(SYSTEM_VARIABLE_LIST.PROCESSING_YEAR_MONTH, getText('Enum_SystemVariableList_PROCESSING_YEAR_MONTH')),
             new EnumModel(SYSTEM_VARIABLE_LIST.PROCESSING_YEAR, getText('Enum_SystemVariableList_PROCESSING_YEAR')),
-            new EnumModel(SYSTEM_VARIABLE_LIST.REFERENCE_TIME, getText('Enum_SystemVariableList_REFERENCE_TIME')),
-            new EnumModel(SYSTEM_VARIABLE_LIST.STANDARD_DAY, getText('Enum_SystemVariableList_STANDARD_DAY')),
-            new EnumModel(SYSTEM_VARIABLE_LIST.WORKDAY, getText('Enum_SystemVariableList_WORKDAY'))
+            new EnumModel(SYSTEM_VARIABLE_LIST.REFERENCE_TIME, getText('Enum_SystemVariableList_REFERENCE_TIME'))
         ];
     }
 

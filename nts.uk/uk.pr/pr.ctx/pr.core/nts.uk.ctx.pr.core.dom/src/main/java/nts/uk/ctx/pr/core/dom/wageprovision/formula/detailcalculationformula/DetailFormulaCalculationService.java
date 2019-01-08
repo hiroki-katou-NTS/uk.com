@@ -210,31 +210,37 @@ public class DetailFormulaCalculationService {
     }
 
     private String roundingResult (Double result, int roundingMethod, int roundingPosition) {
+        Boolean isNegativeNumber = false;
+        if (result < 0) {
+            isNegativeNumber = true;
+            result = result * -1;
+        }
         int roundingValue = 0;
         if (roundingPosition == RoundingPosition.ONE_YEN.value) roundingValue = 1;
         if (roundingPosition == RoundingPosition.TEN_YEN.value) roundingValue = 10;
         if (roundingPosition == RoundingPosition.ONE_HUNDRED_YEN.value) roundingValue = 100;
         if (roundingPosition == RoundingPosition.ONE_THOUSAND_YEN.value) roundingValue = 1000;
         if (roundingMethod == Rounding.ROUND_UP.value)
-            return Math.ceil(result/roundingValue) * roundingValue + "";
+            result = Math.ceil(result/roundingValue) * roundingValue;
         if (roundingMethod == Rounding.TRUNCATION.value)
-            return Math.floor(result/roundingValue) * roundingValue + "";
+            result = Math.floor(result/roundingValue) * roundingValue;
         if (roundingMethod == Rounding.DOWN_1_UP_2.value)
-            return Math.floor(result/roundingValue + 0.9) * roundingValue + "";
+            result = Math.floor(result/roundingValue + 0.9) * roundingValue;
         if (roundingMethod == Rounding.DOWN_2_UP_3.value)
-            return Math.floor(result/roundingValue + 0.8) * roundingValue + "";
+            result = Math.floor(result/roundingValue + 0.8) * roundingValue;
         if (roundingMethod == Rounding.DOWN_3_UP_4.value)
-            return Math.floor(result/roundingValue + 0.7) * roundingValue + "";
+            result = Math.floor(result/roundingValue + 0.7) * roundingValue;
         if (roundingMethod == Rounding.DOWN_4_UP_5.value)
-            return Math.floor(result/roundingValue + 0.6) * roundingValue + "";
+            result = Math.floor(result/roundingValue + 0.6) * roundingValue;
         if (roundingMethod == Rounding.DOWN_5_UP_6.value)
-            return Math.floor(result/roundingValue + 0.5) * roundingValue + "";
+            result = Math.floor(result/roundingValue + 0.5) * roundingValue;
         if (roundingMethod == Rounding.DOWN_6_UP_7.value)
-            return Math.floor(result/roundingValue + 0.4) * roundingValue + "";
+            result = Math.floor(result/roundingValue + 0.4) * roundingValue;
         if (roundingMethod == Rounding.DOWN_7_UP_8.value)
-            return Math.floor(result/roundingValue + 0.3) * roundingValue + "";
+            result = Math.floor(result/roundingValue + 0.3) * roundingValue;
         if (roundingMethod == Rounding.DOWN_8_UP_9.value)
-            return Math.floor(result/roundingValue + 0.2) * roundingValue + "";
+            result = Math.floor(result/roundingValue + 0.2) * roundingValue;
+        if (isNegativeNumber) result = result * -1;
         return result + "";
     }
 

@@ -792,10 +792,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     let displayText = $('#auto-complete-container option:selected').text();
                     if (displayText.indexOf("    ") > -1 ) displayText = displayText.split("    ")[1];
                     $("#auto-complete-container").hide();
-                    if (displayText)
-                        setTimeout(function(){
-                            self.addToFormulaFromHintBox(displayText + self.CLOSE_CURLY_BRACKET);
-                        }, 300)
+                    self.addToFormulaFromHintBox(displayText + self.CLOSE_CURLY_BRACKET);
                 }
             });
             $("#D3_5").on("keydown", function(event){
@@ -804,10 +801,11 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     if (event.keyCode == 38) $('#auto-complete-container option:selected').prev().prop('selected', true);
                     return event.preventDefault();
                 }
+                if (event.keyCode == 27) $("#auto-complete-container").hide();
             });
 
             // show hint box if selection change ?
-            $("#D3_5").on('keyup',(event) => {
+            $("#D3_5").on('input',(event) => {
                 let self = this, target = event.target, start = target.selectionStart, end = target.selectionEnd,
                     keyCode = event.keyCode, currentRow, autoCompleteData = [];
                 if (keyCode != 38 && keyCode != 40 && keyCode !=13) {
@@ -830,7 +828,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 }
             });
             $('body').on('click', function(event){
-                if (event.target.id != "D3_5") $("#auto-complete-container").hide();
+                $("#auto-complete-container").hide();
             })
         }
         insertString(original, sub, position) {
@@ -940,10 +938,12 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         addToFormulaFromHintBox (formulaToAdd: string) {
             let self = this, calculationFormulaItem:any = $('#D3_5')[0];
             let startSelection = calculationFormulaItem.value.substring(0, calculationFormulaItem.selectionStart).lastIndexOf(self.OPEN_CURLY_BRACKET);
-            self.displayDetailCalculationFormula(calculationFormulaItem.value.substring(0, startSelection + 1) + formulaToAdd + calculationFormulaItem.value.substring(calculationFormulaItem.selectionStart));
-            let newStartSelection = startSelection + formulaToAdd.length +1;
-            $('#D3_5').focus();
-            calculationFormulaItem.setSelectionRange(newStartSelection, newStartSelection);
+            setTimeout(function(){
+                $('#D3_5').val(calculationFormulaItem.value.substring(0, startSelection + 1) + formulaToAdd + calculationFormulaItem.value.substring(calculationFormulaItem.selectionStart));
+                let newStartSelection = startSelection + formulaToAdd.length +1;
+                $('#D3_5').focus();
+                calculationFormulaItem.setSelectionRange(newStartSelection, newStartSelection);
+            }, 50);
         }
     }
 }

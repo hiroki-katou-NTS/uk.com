@@ -111,7 +111,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                     } else itemToBeFocus = '#D1_4';
                 } else if (self.screenMode() != model.SCREEN_MODE.NEW){ itemToBeFocus = '#A3_4'};
                 setTimeout (function(){
-                    $(itemToBeFocus).focus();
+                    if (itemToBeFocus) $(itemToBeFocus).focus();
                 }, 50);
             });
             self.screenDSelectedTab.subscribe(newTab => {
@@ -280,14 +280,19 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             self.selectedFormula(new model.Formula(null));
             self.basicFormulaSetting(new model.BasicFormulaSetting(null));
             self.selectedHistory(new model.GenericHistoryYearMonthPeriod(null));
-            nts.uk.ui.errors.clearAll();
-            $('#A3_3').focus();
             if (self.screenMode()!= model.SCREEN_MODE.NEW) {
                 self.getListFormula(null).done(function () {
                 })
             }
             self.screenMode(model.SCREEN_MODE.NEW);
-            if (self.selectedTab() == 'tab-1') self.selectedTab.valueHasMutated();
+            if (self.selectedTab() == 'tab-1'){
+                setTimeout(function(){
+                    $('#A3_3').focus();
+                    setTimeout(function(){
+                        nts.uk.ui.errors.clearAll();
+                    }, 100)
+                }, 100)
+            }
             else self.selectedTab('tab-1');
         }
 

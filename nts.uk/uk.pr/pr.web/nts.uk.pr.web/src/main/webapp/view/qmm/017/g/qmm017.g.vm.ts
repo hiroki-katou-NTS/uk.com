@@ -25,7 +25,9 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
         SYSTEM_YMD_DATE = 'システム日付（年月日）'; SYSTEM_YM_DATE = 'システム日付（年月）'; SYSTEM_Y_DATE = 'システム日付（年）'; PROCESSING_YEAR_MONTH = '処理年月';
         PROCESSING_YEAR = '処理年'; REFERENCE_TIME = '基準時間'; STANDARD_DAY = '基準日数'; WORKDAY = '要勤務日数';
 
-        separators = ['\\\＋', 'ー', '\\×', '÷', '\\^', '\\\(', '\\\)', '\\>', '\\<', '\\\≦', '\\\≧', '\\\＝', '\\\≠', '\\\,'].join("|");
+        separators = ['\\\＋', 'ー', '\\×', '÷', '\\^', '\\\(', '\\\)', '\\>', '\\<', '\\\≦', '\\\≧', '\\\＝', '\\\≠', '\\\,',
+            '\\+', '\\-', '\\*', '\\/', '\\\≤', '\\\≥', '\\\=', '\\\#', '\\\、'
+        ].join("|");
 
         processYearMonthAndReferenceTime: any;
         constructor() {

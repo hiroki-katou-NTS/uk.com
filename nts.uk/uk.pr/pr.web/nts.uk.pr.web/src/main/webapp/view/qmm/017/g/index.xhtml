@@ -24,7 +24,7 @@
                 </div>
                 <div style="min-width: 650px; margin-top: 10px;">
                     <div style = "display: inline-block; vertical-align: middle">
-                        <div id ="G1_2_container" tabindex = "0">
+                        <div id ="G1_2_container" tabindex = "1">
                             <table id="G1_2">
                                 <colgroup>
                                     <col width="150px"/>
@@ -40,7 +40,10 @@
                                 </thead>
                                 <tbody data-bind="foreach: calculationFormulaList">
                                 <tr>
-                                    <td data-bind="text: formulaItem"></td>
+                                    <td>
+                                        <div class = "limited-label"  data-bind="text: formulaItem">
+                                        </div>
+                                    </td>
                                     <td>
                                         <input data-bind="ntsNumberEditor: {
                                             value: trialCalculationValue,
@@ -57,7 +60,7 @@
                         </div>
                     </div>
                     <div style = "display:inline-block; vertical-align: middle; margin-left: 25px;">
-                        <button data-bind = "click: calculateInServer" style = "height: 80px; width: 80px;">#{i18n.getText('QMM017_53')}</button>
+                        <button tabindex = "2" data-bind = "click: calculateInServer" style = "height: 80px; width: 80px;">#{i18n.getText('QMM017_53')}</button>
                     </div>
                     <div class="large-right-caret-container" style="display: inline-block; margin-left: 10px;">
                         <span class="caret-right outline large-right-caret"></span>
@@ -76,16 +79,16 @@
                 <div style="margin-top: 10px; min-width: 550px;">
                     <div style="margin-top: 10px; min-width: 550px">
                         <div>
-                        <textarea style = "height: 100px; width: 625px;" data-bind="ntsMultilineEditor: {
+                        <textarea id = "G1_12" tabindex = "3" style = "height: 100px; width: 625px;" data-bind="ntsMultilineEditor: {
                             value: formulaContent,
-                            enable: false}"/>
+                            readonly: true}"/>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div id="functions-area-bottom">
-            <button data-bind="click: closeDialog">#{i18n.getText('QMM017_146')}</button>
+            <button tabindex="4" data-bind="click: closeDialog">#{i18n.getText('QMM017_146')}</button>
         </div>
     </ui:define>
 
