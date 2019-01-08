@@ -397,7 +397,7 @@ public class DetailFormulaCalculationService {
     private String [] formatFunctionParameter (String [] functionParameters) {
         String functionParameter = "", conditionRegex = "(?<=[><≦≧＝≠≤≥=#])|(?=[><≦≧＝≠≤≥=#])";
         for (int i = 0; i < functionParameters.length; i++){
-            functionParameter = functionParameters[i];
+            functionParameter = functionParameters[i].trim();
             if (functionParameter.indexOf("\"") == 0 && functionParameter.lastIndexOf("\"") == functionParameter.length() - 1){
                 functionParameters[i] = functionParameter.substring(1, functionParameter.length() - 1);
             } else {
@@ -441,10 +441,11 @@ public class DetailFormulaCalculationService {
     }
     private String calculateSingleCondition (String conditionFormula, Boolean mustBeBoolean, String functionName) {
         String conditionSeparators = "(?<=[><≦≧＝≠≤≥=#])|(?=[><≦≧＝≠≤≥=#])";
-        String [] conditionParameters = conditionFormula.split(conditionSeparators);
+        String [] conditionParameters = formatFunctionParameter(conditionFormula.split(conditionSeparators));
         if (conditionParameters.length == 1) {
-            if (!conditionParameters[0].toUpperCase().equals("TRUE") && !conditionParameters[0].toUpperCase().equals("FALSE") && mustBeBoolean) {
-                throw new RuntimeException("Parameter of " + functionName + "can not become boolean value");
+            if (!conditionParameters[0].toUpperCase().equals("0") && !conditionParameters[0].toUpperCase().equals("1") &&
+                !conditionParameters[0].toUpperCase().equals("TRUE") && !conditionParameters[0].toUpperCase().equals("FALSE") && mustBeBoolean) {
+                    throw new RuntimeException("Parameter of " + functionName + "can not become boolean value");
             }
             return conditionParameters[0];
         } else {

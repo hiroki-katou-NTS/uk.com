@@ -631,18 +631,27 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 return;
             }
             if (functionName == self.CONDITIONAL){
+                functionParameters.forEach(function(functionParameter){
+                    if (functionParameter)
+                        functionParameter.split(conditionRegex).forEach(function(item) {
+                            self.checkBracket(item);
+                        })
+                })
                 if (functionParameters.length != 3) {
                     if (functionParameters.length < 3) self.setErrorToFormula('MsgQ_238', [functionName]);
                     else self.setErrorToFormula('MsgQ_239', [functionName]);
                 } else {
-                    if (functionParameters[0] != "TRUE" && functionParameters[0] != "FALSE" && functionParameters[0].split(conditionRegex).length != 2) {
+                    if (functionParameters[0] !=0 && functionParameters[0] != 1 && functionParameters[0] != '"TRUE"' && functionParameters[0] != '"FALSE"' && functionParameters[0].split(conditionRegex).length != 2) {
                         self.setErrorToFormula('Parameter of {0} can not become boolean value', [functionName]);
                     }
                 }
             }
             if (functionName == self.OR || functionName == self.AND) {
                 functionParameters.forEach(function(functionParameter) {
-                    if (functionParameter != "TRUE" && functionParameter != "FALSE" && functionParameter.split(conditionRegex).length != 2) {
+                    functionParameter.split(conditionRegex).forEach(function(item) {
+                        self.checkBracket(item);
+                    })
+                    if (functionParameter !=0 && functionParameter != 1 && functionParameter != '"TRUE"' && functionParameter != '"FALSE"' && functionParameter.split(conditionRegex).length != 2) {
                         self.setErrorToFormula('Parameter of {0} can not become boolean value', [functionName]);
                     }
                 })
@@ -700,7 +709,11 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             return true;
         }
         setErrorToFormula (messageId: string, messageParams: Array) {
-            $('#D3_5').ntsError('set', {messageId: messageId, messageParams: messageParams});
+            let isHasUniqueMessage = false;
+            if (messageId == "MsgQ_231") {
+                isHasUniqueMessage = _.some(nts.uk.ui.errors.getErrorList(), {errorCode: 'MsgQ_231'})
+            }
+            if (!isHasUniqueMessage) $('#D3_5').ntsError('set', {messageId: messageId, messageParams: messageParams});
         }
 
         extractFormulaElement () {
