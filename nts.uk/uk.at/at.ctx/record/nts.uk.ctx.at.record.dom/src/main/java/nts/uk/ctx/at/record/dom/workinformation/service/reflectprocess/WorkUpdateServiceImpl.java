@@ -597,10 +597,10 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			WorkStamp stampTmp = null;
 			if(optStamp.isPresent()) {
 				WorkStamp stamp = optStamp.get();
-				stampTmp = new WorkStamp(stamp.getAfterRoundingTime(),
+				stampTmp = new WorkStamp(data.getStartTime() != null ? new TimeWithDayAttr(data.getStartTime()) : null,
 						data.getStartTime() != null ? new TimeWithDayAttr(data.getStartTime()) : null,
 						stamp.getLocationCode().isPresent() ? stamp.getLocationCode().get() : null,
-						stamp.getStampSourceInfo());
+								StampSourceInfo.GO_STRAIGHT_APPLICATION);
 				
 			} else {
 				if(data.getStartTime() != null) {
@@ -622,10 +622,10 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			WorkStamp stampTmp = null;
 			if(optStamp.isPresent()) {				
 				WorkStamp stamp = optStamp.get();
-				stampTmp = new WorkStamp(stamp.getAfterRoundingTime(),
+				stampTmp = new WorkStamp(data.getEndTime() != null ? new TimeWithDayAttr(data.getEndTime()) : null,
 						data.getEndTime() != null ? new TimeWithDayAttr(data.getEndTime()) : null,
 						stamp.getLocationCode().isPresent() ? stamp.getLocationCode().get() : null,
-						stamp.getStampSourceInfo());
+								StampSourceInfo.GO_STRAIGHT_APPLICATION);
 			} else {
 				if(data.getEndTime() != null) {
 					stampTmp = new WorkStamp(new TimeWithDayAttr(data.getEndTime()),
@@ -864,10 +864,10 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			Optional<WorkStamp> optStamp = timeAttendanceStart.getStamp();
 			if(optStamp.isPresent()) {
 				WorkStamp stamp = optStamp.get();
-				WorkStamp stampTmp = new WorkStamp(stamp.getAfterRoundingTime(),
+				WorkStamp stampTmp = new WorkStamp(new TimeWithDayAttr(data.getStartTime()),
 						new TimeWithDayAttr(data.getStartTime()),
 						stamp.getLocationCode().isPresent() ? stamp.getLocationCode().get() : null,
-						stamp.getStampSourceInfo());
+								StampSourceInfo.GO_STRAIGHT_APPLICATION);
 				TimeActualStamp timeActualStam = new TimeActualStamp(timeAttendanceStart.getActualStamp().isPresent() ? timeAttendanceStart.getActualStamp().get() : null,
 						stampTmp,
 						timeAttendanceStart.getNumberOfReflectionStamp());
@@ -879,10 +879,10 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 			Optional<WorkStamp> optStamp = timeAttendanceEnd.getStamp();
 			if(optStamp.isPresent()) {				
 				WorkStamp stamp = optStamp.get();
-				WorkStamp stampTmp = new WorkStamp(stamp.getAfterRoundingTime(),
+				WorkStamp stampTmp = new WorkStamp(new TimeWithDayAttr(data.getStartTime()),
 						new TimeWithDayAttr(data.getEndTime()),
 						stamp.getLocationCode().isPresent() ? stamp.getLocationCode().get() : null,
-						stamp.getStampSourceInfo());
+								StampSourceInfo.GO_STRAIGHT_APPLICATION);
 				TimeActualStamp timeActualStam = new TimeActualStamp(timeAttendanceEnd.getActualStamp().isPresent() ? timeAttendanceEnd.getActualStamp().get() : null,
 						stampTmp,
 						timeAttendanceEnd.getNumberOfReflectionStamp());

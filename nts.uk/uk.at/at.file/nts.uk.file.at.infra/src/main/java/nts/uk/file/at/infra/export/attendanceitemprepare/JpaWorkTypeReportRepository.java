@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
-import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkType;
+import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkTypeOneToOne;
 import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkTypeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktype.language.KshmtWorkTypeLanguage;
 import nts.uk.file.at.app.export.worktype.WorkTypeReportData;
@@ -22,16 +22,16 @@ import nts.uk.file.at.app.export.worktype.WorkTypeReportRepository;
 @Stateless
 public class JpaWorkTypeReportRepository extends JpaRepository implements WorkTypeReportRepository {
 
-	private String WORK_TYPE_SELECT_ALL = "SELECT c FROM KshmtWorkType c"
+	private String WORK_TYPE_SELECT_ALL = "SELECT c FROM KshmtWorkTypeOneToOne c"
 			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId";
 
 	@Override
 	public List<WorkTypeReportData> findAllWorkType(String companyId, String langId) {
-		return this.queryProxy().query(WORK_TYPE_SELECT_ALL, KshmtWorkType.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(WORK_TYPE_SELECT_ALL, KshmtWorkTypeOneToOne.class).setParameter("companyId", companyId)
 				.getList(x -> toReportData(x,langId));
 	}
 
-	private WorkTypeReportData toReportData(KshmtWorkType entity,String langId) {
+	private WorkTypeReportData toReportData(KshmtWorkTypeOneToOne entity,String langId) {
 
 		KshmtWorkTypeSet workTypeSetOneDay = new KshmtWorkTypeSet();
 		KshmtWorkTypeSet workTypeSetMorning = new KshmtWorkTypeSet();
