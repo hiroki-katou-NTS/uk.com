@@ -23,7 +23,7 @@ public class JpaStateCorreHisIndiviRepository extends JpaRepository implements S
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateCorHisIndi f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisIndiPk.empId =:empId AND  f.stateCorHisIndiPk.hisId =:hisId ";
     private static final String SELECT_BY_KEYS_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisIndiPk.empId IN :empIds " +
-            " AND f.startYearMonth <= :date AND f.endYearMonth >= :date ";
+            " AND f.startYearMonth <= :yearMonth AND f.endYearMonth >= :yearMonth ";
     private static final String SELECT_BY_EMP_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisIndiPk.empId =:empId  ORDER BY f.startYearMonth DESC";
     private static final String UPDATE_BY_HISID = "UPDATE QpbmtStateCorHisIndi f SET f.startYearMonth = :startYearMonth, f.endYearMonth = :endYearMonth WHERE f.stateCorHisIndiPk.empId =:empId AND f.stateCorHisIndiPk.hisId =:hisId";
 
@@ -55,12 +55,12 @@ public class JpaStateCorreHisIndiviRepository extends JpaRepository implements S
     }
 
     @Override
-    public StateCorreHisAndLinkSetIndivi getStateCorreHisAndLinkSetIndivi(List<String> empIds, GeneralDate date) {
+    public StateCorreHisAndLinkSetIndivi getStateCorreHisAndLinkSetIndivi(List<String> empIds, YearMonth yearMonth) {
         StateCorreHisAndLinkSetIndivi result = new StateCorreHisAndLinkSetIndivi(Collections.emptyList(), Collections.emptyList());
         if (empIds == null || empIds.isEmpty()) return result;
         List<QpbmtStateCorHisIndi> entitys = this.queryProxy().query(SELECT_BY_KEYS_STRING, QpbmtStateCorHisIndi.class)
                 .setParameter("empIds", empIds)
-                .setParameter("date", date)
+                .setParameter("yearMonth", yearMonth.v())
                 .getList();
         result.setHistorys(QpbmtStateCorHisIndi.toDomainHistory(entitys));
         result.setSettings(QpbmtStateCorHisIndi.toDomainSetting(entitys));

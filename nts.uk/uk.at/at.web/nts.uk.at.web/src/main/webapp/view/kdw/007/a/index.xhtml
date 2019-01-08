@@ -33,6 +33,7 @@
 					<button tabindex="1" data-bind="click: setNewMode">#{i18n.getText('KDW007_2')}</button>
 					<button id="register-button" class="proceed" tabindex="2"  data-bind="click: update, enable: $root.errors.isEmpty">#{i18n.getText('KDW007_3')}</button>
 					<button id = "delete-button" class="danger" tabindex="3" data-bind="click: remove, enable: !isNewMode() &amp;&amp; showTypeAtr() != 1 ">#{i18n.getText('KDW007_4')}</button>
+					<button id="print-button" data-bind="click: exportExcel">#{i18n.getText('KMK007_4')}</button> 	
 				</div>
 				<div id="contents-area" class="fixed-flex-layout">
 					<div class="fixed-flex-layout-left">

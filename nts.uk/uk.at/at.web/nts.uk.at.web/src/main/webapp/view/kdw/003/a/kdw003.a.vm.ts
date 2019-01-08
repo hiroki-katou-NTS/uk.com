@@ -1920,7 +1920,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     lstEmployee.push(lst);
                     dfd.resolve(lstEmployee);
                 }
-                else if (self.selectedEmployee() != undefined) {
+                else if (self.selectedEmployee() != undefined && self.selectedEmployee() != null && self.selectedEmployee() != "") {
                     //let dfd2 = $.Deferred();
                     service.searchEmployee(self.selectedEmployee()).done(data => {
                         let emp = {
@@ -3806,8 +3806,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         navigateView() {
             //
             var self = this;
+            let isKmwCall = false;
+            if(self.shareObject().transitionDesScreen.indexOf("kmw") >0){
+                isKmwCall = true;
+                localStorage.setItem('isKmw', true);
+            }
             let path: any = _.isEmpty(self.shareObject()) ? "" : self.shareObject().transitionDesScreen;
-            nts.uk.request.jump("at", path);
+            nts.uk.request.jump("at", path,isKmwCall);
         }
 
         openKDL020Dialog() {

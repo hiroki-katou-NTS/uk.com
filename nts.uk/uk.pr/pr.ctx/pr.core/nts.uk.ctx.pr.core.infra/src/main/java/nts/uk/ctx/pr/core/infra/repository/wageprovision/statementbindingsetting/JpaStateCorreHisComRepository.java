@@ -23,7 +23,7 @@ public class JpaStateCorreHisComRepository extends JpaRepository implements Stat
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateCorHisCom f";
     private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisComPk.cid =:cid ORDER BY f.endYearMonth DESC";
     private static final String SELECT_BY_HISID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisComPk.cid =:cid AND f.stateCorHisComPk.hisId =:hisId";
-    private static final String SELECT_BY_DATE = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisComPk.cid =:cid AND f.startYearMonth <=:basedate AND f.endYearMonth >=:basedate";
+    private static final String SELECT_BY_YM = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisComPk.cid =:cid AND f.startYearMonth <=:yearMonth AND f.endYearMonth >=:yearMonth";
     private static final String UPDATE_BY_HISID = "UPDATE QpbmtStateCorHisCom f SET f.startYearMonth = :startYearMonth, f.endYearMonth = :endYearMonth WHERE f.stateCorHisComPk.cid =:cid AND f.stateCorHisComPk.hisId =:hisId";
 
     @Override
@@ -43,10 +43,10 @@ public class JpaStateCorreHisComRepository extends JpaRepository implements Stat
     }
 
     @Override
-    public Optional<StateCorreHisCom> getStateCorrelationHisCompanyByDate(String cid, GeneralDate baseDate) {
-        List<QpbmtStateCorHisCom> listStateCorHisCom = this.queryProxy().query(SELECT_BY_DATE, QpbmtStateCorHisCom.class)
+    public Optional<StateCorreHisCom> getStateCorrelationHisCompanyByDate(String cid, YearMonth yearMonth) {
+        List<QpbmtStateCorHisCom> listStateCorHisCom = this.queryProxy().query(SELECT_BY_YM, QpbmtStateCorHisCom.class)
                 .setParameter("cid", cid)
-                .setParameter("basedate", baseDate.yearMonth())
+                .setParameter("yearMonth", yearMonth.v())
                 .getList();
         return this.toDomain(listStateCorHisCom);
     }

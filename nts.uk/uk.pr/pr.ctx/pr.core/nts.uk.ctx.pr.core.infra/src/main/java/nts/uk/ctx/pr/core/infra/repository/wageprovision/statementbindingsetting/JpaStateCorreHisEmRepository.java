@@ -26,7 +26,7 @@ public class JpaStateCorreHisEmRepository extends JpaRepository implements State
     private static final String SELECT_BY_HISID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisEmpPk.cid =:cid AND f.stateCorHisEmpPk.hisId =:hisId";
     private static final String REMOVE_BY_HISID = "DELETE FROM QpbmtStateCorHisEmp f WHERE f.stateCorHisEmpPk.cid =:cid AND f.stateCorHisEmpPk.hisId =:hisId";
     private static final String UPDATE_BY_HISID = "UPDATE  QpbmtStateCorHisEmp f SET f.startYearMonth = :startYearMonth, f.endYearMonth = :endYearMonth WHERE f.stateCorHisEmpPk.cid =:cid AND f.stateCorHisEmpPk.hisId =:hisId";
-    private static final String SELECT_BY_CID_DATE = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisEmpPk.cid =:cid AND f.startYearMonth <= :date AND f.endYearMonth >= :date ";
+    private static final String SELECT_BY_CID_YM = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisEmpPk.cid =:cid AND f.startYearMonth <= :yearMonth AND f.endYearMonth >= :yearMonth ";
 
     @Override
     public Optional<StateCorreHisEm> getStateCorrelationHisEmployeeById(String cid) {
@@ -49,10 +49,10 @@ public class JpaStateCorreHisEmRepository extends JpaRepository implements State
     }
 
     @Override
-    public List<StateLinkSetMaster> getStateLinkSetMaster(String cid, GeneralDate date) {
-        List<QpbmtStateCorHisEmp> entitys = this.queryProxy().query(SELECT_BY_CID_DATE, QpbmtStateCorHisEmp.class)
+    public List<StateLinkSetMaster> getStateLinkSetMaster(String cid, YearMonth yearMonth) {
+        List<QpbmtStateCorHisEmp> entitys = this.queryProxy().query(SELECT_BY_CID_YM, QpbmtStateCorHisEmp.class)
                 .setParameter("cid", cid)
-                .setParameter("date", date)
+                .setParameter("yearMonth", yearMonth.v())
                 .getList();
         return QpbmtStateCorHisEmp.toDomainSetting(entitys);
     }

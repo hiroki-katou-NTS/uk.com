@@ -70,15 +70,9 @@ module nts.uk.at.view.kaf011.a.screenModel {
             let self = this;
 
             self.appComSelectedCode.subscribe((newCode) => {
-                if (newCode == 0) { return; };
-                if (newCode == 1) {
-                    $("#absDatePicker").ntsError("clear");
-                }
-                if (newCode == 2) {
-                    $("#recDatePicker").ntsError("clear");
-                    $("#recTime1Start ,#recTime1End").ntsError("clear");
-                }
-
+                
+                setTimeout(()=>self.clearTextboxError(), 100);
+                
             });
             self.appReasons.subscribe((appReasons) => {
                 if (appReasons) {
@@ -117,6 +111,11 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 }
 
             });
+        }
+        
+        clearTextboxError() {
+            nts.uk.ui.errors.clearAll();
+            return;
         }
         enablePrepost() {
             let self = this;

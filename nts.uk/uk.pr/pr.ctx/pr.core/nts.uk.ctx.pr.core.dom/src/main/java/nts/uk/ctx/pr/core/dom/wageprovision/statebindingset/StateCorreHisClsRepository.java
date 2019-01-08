@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.statebindingset;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public interface StateCorreHisClsRepository {
 
     List<StateLinkSetMaster> getStateLinkSettingMasterByHisId(String cid, String hisId);
 
-    List<StateLinkSetMaster> getStateLinkSetMaster(String cid, GeneralDate date);
+    List<StateLinkSetMaster> getStateLinkSetMaster(String cid, YearMonth yearMonth);
 
     void update (String cid, YearMonthHistoryItem history);
 

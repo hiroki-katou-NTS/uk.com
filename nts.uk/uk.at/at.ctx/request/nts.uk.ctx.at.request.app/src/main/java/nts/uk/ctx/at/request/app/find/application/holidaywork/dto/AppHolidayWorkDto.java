@@ -238,6 +238,8 @@ public class AppHolidayWorkDto {
 	
 	private List<DeductionTimeDto> timeZones;
 	
+	private boolean enableOvertimeInput;
+	
 	public static AppHolidayWorkDto fromDomain(AppHolidayWork appHolidayWork){
 		return new AppHolidayWorkDto(
 				appHolidayWork.getVersion(),
@@ -289,7 +291,8 @@ public class AppHolidayWorkDto {
 				null,
 				null, 
 				null,
-				Collections.emptyList());
+				Collections.emptyList(),
+				false);
 	}
 	
 }

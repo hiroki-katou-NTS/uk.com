@@ -14,6 +14,7 @@ module nts.uk.com.view.cmm014.a {
             
             constructor() {
                 var self = this;
+                self.showExportBtn();
                 self.isUpdateMode = ko.observable(false);
                 self.enableDelete = ko.observable(true);
                 self.classificationModel = ko.observable(new ClassificationModel);
@@ -222,6 +223,30 @@ module nts.uk.com.view.cmm014.a {
                 $('#memo').ntsError('clear');
                 // Clear error inputs
                 $('.nts-input').ntsError('clear');
+            }
+            
+            
+            //exportExcel
+            private exportExcel(): void {
+                var self = this;
+                nts.uk.ui.block.grayout();
+                let langId = "ja";
+                service.saveAsExcel(langId).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
+            showExportBtn() {
+                if (nts.uk.util.isNullOrUndefined(__viewContext.user.role.attendance)
+                    && nts.uk.util.isNullOrUndefined(__viewContext.user.role.payroll)
+                    && nts.uk.util.isNullOrUndefined(__viewContext.user.role.officeHelper)
+                    && nts.uk.util.isNullOrUndefined(__viewContext.user.role.personnel)) {
+                    $("#print-button").hide();
+                } else {
+                    $("#print-button").show();
+                }
             }
 
         }
