@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.app.export.horitotalcategory;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +54,7 @@ public class HoriTotalCategoryExportImpl implements MasterListData {
 		
 		String companyId = AppContexts.user().companyId();
 		List<HoriTotalExel> listHoriTotalExel = horiTotalCategoryExcelRepo.getAll(companyId);
+		listHoriTotalExel.sort(Comparator.comparing(HoriTotalExel::getCode));
 		List<MasterData> datas = new ArrayList<>();
 		if (CollectionUtil.isEmpty(listHoriTotalExel)) {
 			return null;
