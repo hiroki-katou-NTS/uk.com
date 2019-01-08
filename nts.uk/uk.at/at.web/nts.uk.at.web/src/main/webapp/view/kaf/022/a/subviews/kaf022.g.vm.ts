@@ -14,10 +14,10 @@ ko.components.register('kaf022-g', {
                     { code: 1, name: text('KAF022_200') },
                     { code: 0, name: text('KAF022_201') }
                 ]),
-                itemListG8: ko.observableArray([
-                    { code: 0, name: text('KAF022_439') },
-                    { code: 1, name: text('KAF022_392') }
-                ]),
+//                itemListG8: ko.observableArray([
+//                    { code: 0, name: text('KAF022_439') },
+//                    { code: 1, name: text('KAF022_392') }
+//                ]),
                 itemListG10: ko.observableArray([
                     { code: 1, name: text('KAF022_36') },
                     { code: 0, name: text('KAF022_37') }
@@ -105,20 +105,20 @@ ko.components.register('kaf022-g', {
                             enable: true}">
                         </div>
                     </td>               
-                </tr>
-                <tr>
-                    <td class="color-header" id="g7" data-bind="text: text('KAF022_186')"></td>
-                    <td>
-                        <div class = "blockrowg6" id="g8" tabindex="1" data-bind="ntsRadioBoxGroup: {
-                            options: $gv.itemListG8,
-                            optionsValue: 'code',
-                            optionsText: 'name',
-                            value: $gv.selectedIdG8,
-                            enable: true}">
-                        </div>
-                    </td> 
-                </tr>
-                <tr>
+                </tr>`+
+//                <tr>
+//                    <td class="color-header" id="g7" data-bind="text: text('KAF022_186')"></td>
+//                    <td>
+//                        <div class = "blockrowg6" id="g8" tabindex="1" data-bind="ntsRadioBoxGroup: {
+//                            options: $gv.itemListG8,
+//                            optionsValue: 'code',
+//                            optionsText: 'name',
+//                            value: $gv.selectedIdG8,
+//                            enable: true}">
+//                        </div>
+//                    </td> 
+//                </tr>
+                `<tr>
                     <td class="color-header" id="g9" data-bind="text: text('KAF022_427')"></td>
                     <td>
                         <div class="blockrow" id="g10" tabindex="1" data-bind="ntsRadioBoxGroup: {

@@ -21,7 +21,7 @@ public class DeductionItemDetailDto {
 
     public DeductionItemDetailDto(DeductionItemDetailSet domain) {
         this.histId = domain.getHistId();
-        this.salaryItemId = domain.getSalaryItemId();
+        this.salaryItemId = domain.getItemNameCd();
         this.totalObj = domain.getTotalObj().value;
         this.proportionalAtr = domain.getProportionalAtr().value;
         this.proportionalMethod = domain.getProportionalMethod().map(i -> i.value).orElse(null);

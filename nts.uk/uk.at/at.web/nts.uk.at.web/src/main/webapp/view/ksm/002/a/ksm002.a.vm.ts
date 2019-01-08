@@ -77,9 +77,9 @@ module ksm002.a.viewmodel {
             self.yearMonthPicked.subscribe(function(value) {
                 let arrOptionaDates: Array<OptionalDate> = [];
                 self.getDataToOneMonth(value).done(function(arrOptionaDates) {
-                    self.optionDates(arrOptionaDates);
-                    self.optionDates.valueHasMutated();
                     if (arrOptionaDates.length > 0) {
+                        self.optionDates(arrOptionaDates);
+                        self.optionDates.valueHasMutated();
                         self.isNew(false);
                     } else {
                         self.isNew(true);
@@ -96,6 +96,7 @@ module ksm002.a.viewmodel {
             var dfd = $.Deferred<any>();
             let isUse: number = 1;
             let arrOptionaDates: Array<OptionalDate> = [];
+            self.showExportBtn();
             service.getSpecificDateByIsUse(isUse).done(function(lstSpecifiDate: any) {
                 if (lstSpecifiDate.length > 0) {
                     //getAll SpecDate
@@ -120,18 +121,31 @@ module ksm002.a.viewmodel {
                     self.getDataToOneMonth(self.yearMonthPicked()).done(function(arrOptionaDates) {
                         if (arrOptionaDates.length > 0) {
                             self.optionDates(arrOptionaDates);
+                            self.optionDates.valueHasMutated();
                             self.isNew(false);
                         }
+                        dfd.resolve();
                     })
                 } else {
                     //In Case no Data, openCDialog                    self.openKsm002CDialog();
+                    dfd.resolve();
                 };
-                dfd.resolve();
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
                 dfd.reject();
             });
             return dfd.promise();
+        }
+        
+        showExportBtn() {
+            if (nts.uk.util.isNullOrUndefined(__viewContext.user.role.attendance)
+                && nts.uk.util.isNullOrUndefined(__viewContext.user.role.payroll)
+                && nts.uk.util.isNullOrUndefined(__viewContext.user.role.officeHelper)
+                && nts.uk.util.isNullOrUndefined(__viewContext.user.role.personnel)) {
+                $("#print-button_1").hide();
+            } else {
+                $("#print-button_1").show();
+            }
         }
 
         /**
@@ -436,6 +450,41 @@ module ksm002.a.viewmodel {
                 if (param !== undefined) {
                     self.setSpecificItemToSelectedDate(param);
                 };
+            });
+        }
+        
+         /**
+         * closeDialog
+         */
+        public opencdl028Dialog() {
+            var self = this;
+            let params = {
+                date: moment(new Date()).toDate(),
+                mode: 2 //YEAR_PERIOD_FINANCE
+            };
+
+            nts.uk.ui.windows.setShared("CDL028_INPUT", params);
+
+            nts.uk.ui.windows.sub.modal("com", "/view/cdl/028/a/index.xhtml").onClosed(function() {
+                var params = nts.uk.ui.windows.getShared("CDL028_A_PARAMS");
+                if (params.status) {
+                    self.exportExcel(params.mode, params.startDateFiscalYear, params.endDateFiscalYear);
+                 }
+            });
+
+        }
+        
+        /**
+         * Print file excel
+         */
+        exportExcel(mode: string, startDate: string, endDate: string) : void {
+            var self = this;
+            nts.uk.ui.block.grayout();
+            service.saveAsExcel(mode, startDate, endDate).done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
             });
         }
     }

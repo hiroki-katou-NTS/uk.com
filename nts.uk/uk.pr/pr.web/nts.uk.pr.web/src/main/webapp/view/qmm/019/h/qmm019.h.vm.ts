@@ -110,9 +110,9 @@ module nts.uk.pr.view.qmm019.h.viewmodel {
 
             if(!nts.uk.ui.errors.hasError()) {
                 let histIdNew = nts.uk.util.randomId();
-                let startDate = nts.uk.time.formatDate(new Date( self.startDate()), "yyyyMM");
+                let startDate = nts.uk.time.parseYearMonth(self.startDate()).toValue();
                 let command: StatementLayoutCommand = new StatementLayoutCommand(self.isClone(), histIdNew, self.histIdClone(),
-                    self.layoutPatternClone(), self.statementCode(), self.statementName(), startDate, self.layoutPatternSelected());
+                    self.layoutPatternClone(), self.statementCode(), self.statementName(), startDate, self.layoutPatternSelected(), self.statementLayoutCodeSelected());
 
                 block.invisible();
                 service.addStatementLayout(command).done(() => {
@@ -149,9 +149,10 @@ module nts.uk.pr.view.qmm019.h.viewmodel {
         statementName: string;
         startDate: number;
         layoutPattern: number;
+        statementCodeClone: string;
 
         constructor(isClone: number, histIdNew: string, histIdClone: string, layoutPatternClone: number,
-                    statementCode: string, statementName: string, startDate: number, layoutPattern: number) {
+                    statementCode: string, statementName: string, startDate: number, layoutPattern: number, statementCodeClone: string) {
             this.isClone = isClone;
             this.histIdNew = histIdNew;
             this.histIdClone = histIdClone;
@@ -160,6 +161,7 @@ module nts.uk.pr.view.qmm019.h.viewmodel {
             this.statementName = statementName;
             this.startDate = startDate;
             this.layoutPattern = layoutPattern;
+            this.statementCodeClone = statementCodeClone;
         }
     }
 }

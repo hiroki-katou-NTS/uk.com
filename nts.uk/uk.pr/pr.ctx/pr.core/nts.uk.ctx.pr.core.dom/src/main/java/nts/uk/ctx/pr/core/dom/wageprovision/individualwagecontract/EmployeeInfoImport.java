@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * dto by RequestList 228
+ * service by RequestList 228
  *
  */
 @NoArgsConstructor

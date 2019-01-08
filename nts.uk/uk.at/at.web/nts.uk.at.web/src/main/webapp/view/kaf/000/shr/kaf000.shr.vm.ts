@@ -330,19 +330,19 @@ module nts.uk.at.view.kaf000.shr{
                 if(!nts.uk.util.isNullOrEmpty(autoSuccessMail)&&!nts.uk.util.isNullOrEmpty(autoFailMail)){
                     nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [autoSuccessMail] }).then(() => {
                         nts.uk.ui.dialog.info({ messageId: 'Msg_768', messageParams: [autoFailMail] }).then(() => {
-                            nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                            this.callCMM045();
                         });
                     });        
                 } else if(!nts.uk.util.isNullOrEmpty(autoSuccessMail)&&nts.uk.util.isNullOrEmpty(autoFailMail)){
                     nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [autoSuccessMail] }).then(() => {
-                        nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                        this.callCMM045();
                     });    
                 } else if(nts.uk.util.isNullOrEmpty(autoSuccessMail)&&!nts.uk.util.isNullOrEmpty(autoFailMail)){
                     nts.uk.ui.dialog.info({ messageId: 'Msg_768', messageParams: [autoFailMail] }).then(() => {
-                        nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                        this.callCMM045();
                     });    
                 } else {
-                    nts.uk.request.jump("/view/cmm/045/a/index.xhtml");        
+                    this.callCMM045();       
                 }
             }
             
@@ -410,6 +410,16 @@ module nts.uk.at.view.kaf000.shr{
                 nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
                     location.reload();
                 });    
+            }
+            public static callCMM045(){
+                nts.uk.characteristics.restore("AppListExtractCondition").done((obj) => {
+                    let paramUrl = 0;
+                    if (obj !== undefined && obj !== null){
+                        paramUrl = obj.appListAtr;
+                    }
+                    nts.uk.localStorage.setItem('UKProgramParam', 'a=' + paramUrl);
+                    nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                });
             }
         }
         

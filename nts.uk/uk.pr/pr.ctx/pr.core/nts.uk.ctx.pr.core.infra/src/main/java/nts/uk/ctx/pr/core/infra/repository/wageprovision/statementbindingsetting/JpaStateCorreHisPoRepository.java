@@ -21,21 +21,11 @@ public class JpaStateCorreHisPoRepository extends JpaRepository implements State
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateCorHisPos f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisPosPk.cid =:cid AND  f.stateCorHisPosPk.hisId =:hisId ";
-    private static final String SELECT_BY_CID_HISID_MASTERCODE = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisPosPk.cid =:cid AND  f.stateCorHisPosPk.hisId =:hisId AND f.stateCorHisPosPk.masterCode = :masterCode";
     private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisPosPk.cid =:cid ORDER BY f.startYearMonth DESC";
     private static final String SELECT_BASE_DATE = "SELECT TOP (1) HIS_ID, MASTER_BASE_DATE  FROM QPBMT_STATE_COR_HIS_POS WHERE  CID = ?cid AND  HIS_ID = ?hisId ";
     private static final String REMOVE_BY_HISID = "DELETE FROM QpbmtStateCorHisPos f WHERE f.stateCorHisPosPk.cid =:cid AND f.stateCorHisPosPk.hisId =:hisId";
     private static final String UPDATE_BY_HISID = "UPDATE  QpbmtStateCorHisPos f SET f.startYearMonth = :startYearMonth, f.endYearMonth = :endYearMonth WHERE f.stateCorHisPosPk.cid =:cid AND f.stateCorHisPosPk.hisId =:hisId";
-
-    @Override
-    public Optional<StateCorreHisPo> getStateCorrelationHisPositionById(String cid, String hisId){
-        List<QpbmtStateCorHisPos> listStateCorHisPos = this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtStateCorHisPos.class)
-                .setParameter("cid", cid)
-                .setParameter("hisId", hisId)
-                .getList();
-
-        return this.toDomain(listStateCorHisPos);
-    }
+    private static final String SELECT_BY_CID_YM = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisPosPk.cid =:cid AND f.startYearMonth <= :yearMonth AND f.endYearMonth >= :yearMonth ";
 
     @Override
     public Optional<StateCorreHisPo> getStateCorrelationHisPositionByCid(String cid){
@@ -57,22 +47,6 @@ public class JpaStateCorreHisPoRepository extends JpaRepository implements State
                 .getList(item -> item.toDomain());
     }
 
-
-    @Override
-    public Optional<StateLinkSetMaster> getStateLinkSettingMasterById(String cid, String hisId, String masterCode) {
-        Optional<QpbmtStateCorHisPos> listStateCorHisPos = this.queryProxy().query(SELECT_BY_CID_HISID_MASTERCODE, QpbmtStateCorHisPos.class)
-                .setParameter("cid",cid)
-                .setParameter("hisId", hisId)
-                .setParameter("masterCode",masterCode)
-                .getSingle();
-
-        if(!listStateCorHisPos.isPresent()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(listStateCorHisPos.get().toDomain());
-    }
-    
     @Override
     public Optional<StateLinkSetDate> getStateLinkSettingDateById(String cId, String hisId) {
         Object[] resultQuery = null;
@@ -81,6 +55,15 @@ public class JpaStateCorreHisPoRepository extends JpaRepository implements State
                 .setParameter("hisId", hisId)
                 .getSingleResult();
         return QpbmtStateCorHisPos.toBaseDate(resultQuery);
+    }
+
+    @Override
+    public List<StateLinkSetMaster> getStateLinkSetMaster(String cid, YearMonth yearMonth) {
+        List<QpbmtStateCorHisPos> entitys = this.queryProxy().query(SELECT_BY_CID_YM, QpbmtStateCorHisPos.class)
+                .setParameter("cid", cid)
+                .setParameter("yearMonth", yearMonth.v())
+                .getList();
+        return QpbmtStateCorHisPos.toDomainSetting(entitys);
     }
 
     @Override

@@ -38,28 +38,29 @@ public class QpbmtSettingByItem {
 
     @OneToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumns({
+            @JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
+            @JoinColumn(name="STATEMENT_CD", referencedColumnName="STATEMENT_CD", insertable = false, updatable = false),
             @JoinColumn(name="HIST_ID", referencedColumnName="HIST_ID", insertable = false, updatable = false),
-            @JoinColumn(name="CTG_ATR", referencedColumnName="CTG_ATR", insertable = false, updatable = false),
-            @JoinColumn(name="LINE_NUM", referencedColumnName="LINE_NUM", insertable = false, updatable = false),
-            @JoinColumn(name="ITEM_POSITION", referencedColumnName="ITEM_POSITION", insertable = false, updatable = false)
+            @JoinColumn(name="ITEM_NAME_CD", referencedColumnName="ITEM_NAME_CD", insertable = false, updatable = false)
     })
     public QpbmtPayItemDetailSet payItemDetailSet;
 
     @OneToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumns({
+            @JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
+            @JoinColumn(name="STATEMENT_CD", referencedColumnName="STATEMENT_CD", insertable = false, updatable = false),
             @JoinColumn(name="HIST_ID", referencedColumnName="HIST_ID", insertable = false, updatable = false),
-            @JoinColumn(name="CTG_ATR", referencedColumnName="CTG_ATR", insertable = false, updatable = false),
-            @JoinColumn(name="LINE_NUM", referencedColumnName="LINE_NUM", insertable = false, updatable = false),
-            @JoinColumn(name="ITEM_POSITION", referencedColumnName="ITEM_POSITION", insertable = false, updatable = false)
+            @JoinColumn(name="ITEM_NAME_CD", referencedColumnName="ITEM_NAME_CD", insertable = false, updatable = false)
     })
     public QpbmtDdtItemDetailSet ddtItemDetailSet;
 
     @OneToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumns({
+            @JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
+            @JoinColumn(name="STATEMENT_CD", referencedColumnName="STATEMENT_CD", insertable = false, updatable = false),
             @JoinColumn(name="HIST_ID", referencedColumnName="HIST_ID", insertable = false, updatable = false),
-            @JoinColumn(name="CTG_ATR", referencedColumnName="CTG_ATR", insertable = false, updatable = false),
-            @JoinColumn(name="LINE_NUM", referencedColumnName="LINE_NUM", insertable = false, updatable = false),
-            @JoinColumn(name="ITEM_POSITION", referencedColumnName="ITEM_POSITION", insertable = false, updatable = false)
+            @JoinColumn(name="ITEM_NAME_CD", referencedColumnName="ITEM_NAME_CD", insertable = false, updatable = false),
+            @JoinColumn(name="CTG_ATR", referencedColumnName="CTG_ATR", insertable = false, updatable = false)
     })
     public QpbmtStateItemRangeSet itemRangeSet;
 
@@ -79,9 +80,9 @@ public class QpbmtSettingByItem {
 
         if(settingByItem instanceof SettingByItemCustom) {
             SettingByItemCustom settingByItemCustom = (SettingByItemCustom) settingByItem;
-            payItemDetailSet = settingByItemCustom.getPaymentItemDetailSet().map(i -> QpbmtPayItemDetailSet.toEntity(i, categoryAtr, lineNumber, settingByItem.getItemPosition())).orElse(null);
-            ddtItemDetailSet = settingByItemCustom.getDeductionItemDetailSet().map(i -> QpbmtDdtItemDetailSet.toEntity(i, categoryAtr, lineNumber, settingByItem.getItemPosition())).orElse(null);
-            itemRangeSet = settingByItemCustom.getItemRangeSetting().map(i -> QpbmtStateItemRangeSet.toEntity(i, categoryAtr, lineNumber, settingByItem.getItemPosition())).orElse(null);
+            payItemDetailSet = settingByItemCustom.getPaymentItemDetailSet().map(i -> QpbmtPayItemDetailSet.toEntity(i)).orElse(null);
+            ddtItemDetailSet = settingByItemCustom.getDeductionItemDetailSet().map(i -> QpbmtDdtItemDetailSet.toEntity(i)).orElse(null);
+            itemRangeSet = settingByItemCustom.getItemRangeSetting().map(i -> QpbmtStateItemRangeSet.toEntity(i)).orElse(null);
         }
 
         return new QpbmtSettingByItem(settingByItemPk, settingByItem.getItemId(), null, payItemDetailSet, ddtItemDetailSet, itemRangeSet);

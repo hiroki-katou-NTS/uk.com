@@ -1,7 +1,11 @@
 module nts.uk.at.view.kmw003.a {
     let __viewContext: any = window["__viewContext"] || {};
     __viewContext.ready(function() {
-        let screenModel = __viewContext.vm = new nts.uk.at.view.kmw003.a.viewmodel.ScreenModel();
+        let value = __viewContext.transferred.value;
+        if(value == undefined || value == null){
+           value = false; 
+        }
+        let screenModel = __viewContext.vm = new nts.uk.at.view.kmw003.a.viewmodel.ScreenModel(value);
         // set pg-name if pg-name = ''
         if ($("#pg-name").text() == '') $("#pg-name").text("KMW003A " + nts.uk.resource.getText("KMW003_1"));
         screenModel.startPage().done(() => {

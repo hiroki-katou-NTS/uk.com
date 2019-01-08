@@ -14,7 +14,7 @@ public class StatementLayoutSetCommand {
     private Integer layoutPattern;
     private List<SettingByCtgCommand> listSettingByCtg;
 
-    public StatementLayoutSet toDomain() {
-        return new StatementLayoutSet(histId, layoutPattern, listSettingByCtg.stream().map(i -> i.toDomain()).collect(Collectors.toList()));
+    public StatementLayoutSet toDomain(String cid, String statementCode) {
+        return new StatementLayoutSet(histId, layoutPattern, listSettingByCtg.stream().map(i -> i.toDomain(cid, statementCode)).collect(Collectors.toList()));
     }
 }

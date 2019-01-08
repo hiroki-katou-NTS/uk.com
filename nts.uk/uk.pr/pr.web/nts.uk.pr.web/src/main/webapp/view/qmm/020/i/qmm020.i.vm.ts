@@ -1,23 +1,15 @@
 module nts.uk.pr.view.qmm020.i.viewmodel {
     import dialog = nts.uk.ui.dialog;
-    import getShared = nts.uk.ui.windows.getShared;
-    import model = qmm020.share.model;
 
     export class ScreenModel {
         //_______CCG001____
         ccgcomponent: any;
-        showinfoSelectedEmployee: KnockoutObservable<boolean>;
         baseDate: KnockoutObservable<Date>;
-        selectedEmployee: KnockoutObservableArray<any>;
-        workplaceId: KnockoutObservable<string> = ko.observable("");
-        employeeId: KnockoutObservable<string> = ko.observable("");
-        listConfirmOfIndividualSetStt :  KnockoutObservableArray<ConfirmOfIndividualSetSttDto> = ko.observableArray([]);
+        listEmp: KnockoutObservableArray<ConfirmPersonSetStatusDto> = ko.observableArray([]);
 
         constructor() {
             let self = this;
             //_____CCG001________
-            self.selectedEmployee = ko.observableArray([]);
-            self.showinfoSelectedEmployee = ko.observable(false);
             self.ccgcomponent = {
 
                 showEmployeeSelection: false, // 検索タイプ
@@ -56,20 +48,17 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
                  */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
                     let self = this;
-                    let params = getShared(model.PARAMETERS_SCREEN_I.INPUT);
-                    if (params == null || params == undefined)
-                        return;
+                    let empIds = _.map(data.listEmployee, (item: EmployeeSearchDto) => {
+                        return item.employeeId;
+                    });
                     let dataInput: any = {
-                        type: params.modeScreen,
-                        employeeIds: data.listEmployee,
-                        hisId: params.hisId,
+                        empIds: empIds,
                         baseDate: data.baseDate
                     };
-                    nts.uk.com.view.qmm020.i.service.acquiProcess(dataInput).done((resulf : Array<ConfirmOfIndividualSetSttDto>) => {
-                        this.listConfirmOfIndividualSetStt(resulf);
+                    service.getStatementLinkPerson(dataInput).done((resulf: Array<ConfirmPersonSetStatusDto>) => {
+                        self.listEmp(resulf);
                     }).fail((err) => {
-                        if (err)
-                            dialog.alertError(err);
+                        dialog.alertError(err);
                     });
 
                 }
@@ -84,7 +73,7 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
 
     }
 
-    export interface Ccg001ReturnedData {
+    interface Ccg001ReturnedData {
         baseDate: string; // 基準日
         closureId?: number; // 締めID
         periodStart: string; // 対象期間（開始)
@@ -92,71 +81,50 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
         listEmployee: Array<EmployeeSearchDto>; // 検索結果
     }
 
-    export interface EmployeeSearchDto {
+    interface EmployeeSearchDto {
         employeeId: string;
         employeeCode: string;
         employeeName: string;
         workplaceId: string;
         workplaceName: string;
     }
-    export interface ConfirmOfIndividualSetSttDto {
-    /**
-     * 給与明細書
-     */
 
-    salaryCode :string;
+    interface ConfirmPersonSetStatusDto {
+        sid: string;
 
-    /**
-     * 給与明細書
-     */
-    salaryCodeMaster :string;
-    /**
-     * 給与明細書
-     */
-    salaryCodeIndividual :string;
-    /**
-     * 賞与明細書
-     */
-    bonusCodeCompany :string;
-    /**
-     * 賞与明細書
-     */
-    bonusCodeMaster :string;
-    /**
-     * 賞与明細書
-     */
-    bonusCodeIndividual :string;
-    /**
-     * 明細書名称
-     */
-    statementName :string;
+        /**
+         * 給与明細書コード
+         */
+        salaryCode: string;
 
-    /**
-     * マスタコード
-     */
-    masterCode :string;
-    /**
-     * 雇用名称
-     */
-    employmentName :string;
-    /**
-     * 部門名称
-     */
-    departmentName :string;
-    /**
-     * 分類名称
-     */
-    classificationName :string;
-    /**
-     * 職位名称
-     */
-    positionName :string;
-    /**
-     * 給与分類名称
-     */
-    salaryClassificationName :string;
-}
+        /**
+         * 給与明細書名称
+         */
+        salaryName: string;
 
+        /**
+         * 賞与明細書コード
+         */
+        bonusCode: string;
 
+        /**
+         * 賞与明細書名称
+         */
+        bonusName: string;
 
+        /**
+         * 適用設定区分
+         */
+        settingCtg: string;
+
+        /**
+         * 適用マスタコード
+         */
+        masterCode: string;
+
+        /**
+         * 適用マスタ名称
+         */
+        masterName: string;
+    }
 }

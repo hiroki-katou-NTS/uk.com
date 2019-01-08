@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.infra.repository.wageprovision.statementbindingsettin
 
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisSala;
 import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisSalaRepository;
@@ -21,9 +22,9 @@ public class JpaStateCorreHisSaRepository extends JpaRepository implements State
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateCorHisSal f";
     private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisSalPk.cid =:cid ORDER BY f.startYearMonth DESC";
     private static final String SELECT_BY_KEY = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisSalPk.cid =:cid AND f.stateCorHisSalPk.hisId =:hisId";
-    private static final String SELECT_BY_CID_HISID_MASTERCODE = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisSalPk.cid =:cid AND f.stateCorHisSalPk.hisId =:hisId AND f.stateCorHisSalPk.masterCode = :masterCode";
     private static final String REMOVE_BY_HISID = "DELETE FROM QpbmtStateCorHisSal f WHERE f.stateCorHisSalPk.cid =:cid AND f.stateCorHisSalPk.hisId =:hisId";
     private static final String UPDATE_BY_HISID = "UPDATE  QpbmtStateCorHisSal f SET f.startYearMonth = :startYearMonth, f.endYearMonth = :endYearMonth WHERE f.stateCorHisSalPk.cid =:cid AND f.stateCorHisSalPk.hisId =:hisId";
+    private static final String SELECT_BY_CID_YM = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisSalPk.cid =:cid AND f.startYearMonth <= :yearMonth AND f.endYearMonth >= :yearMonth ";
 
     @Override
     public  Optional<StateCorreHisSala> getStateCorrelationHisSalaryByCid(String cid){
@@ -38,15 +39,6 @@ public class JpaStateCorreHisSaRepository extends JpaRepository implements State
     }
 
     @Override
-    public Optional<StateCorreHisSala> getStateCorrelationHisSalaryByKey(String cid, String hisId) {
-        List<QpbmtStateCorHisSal> listStateCorHisSal = this.queryProxy().query(SELECT_BY_KEY, QpbmtStateCorHisSal.class)
-                .setParameter("cid", cid)
-                .setParameter("hisId", hisId)
-                .getList();
-        return this.toDomain(listStateCorHisSal);
-    }
-
-    @Override
     public List<StateLinkSetMaster> getStateLinkSettingMasterByHisId(String cId, String hisId) {
         return this.queryProxy().query(SELECT_BY_KEY, QpbmtStateCorHisSal.class)
                 .setParameter("cid",cId)
@@ -55,20 +47,14 @@ public class JpaStateCorreHisSaRepository extends JpaRepository implements State
     }
 
     @Override
-    public Optional<StateLinkSetMaster> getStateLinkSettingMasterById(String cid, String hisId, String masterCode) {
-        Optional<QpbmtStateCorHisSal> listStateCorHisSal = this.queryProxy().query(SELECT_BY_CID_HISID_MASTERCODE, QpbmtStateCorHisSal.class)
-                .setParameter("cid",cid)
-                .setParameter("hisId", hisId)
-                .setParameter("masterCode",masterCode)
-                .getSingle();
-
-        if(!listStateCorHisSal.isPresent()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(listStateCorHisSal.get().toDomain());
+    public List<StateLinkSetMaster> getStateLinkSetMaster(String cid, YearMonth yearMonth) {
+        List<QpbmtStateCorHisSal> entitys = this.queryProxy().query(SELECT_BY_CID_YM, QpbmtStateCorHisSal.class)
+                .setParameter("cid", cid)
+                .setParameter("yearMonth", yearMonth.v())
+                .getList();
+        return QpbmtStateCorHisSal.toDomainSetting(entitys);
     }
-    
+
     @Override
     public void update(String cid, YearMonthHistoryItem history) {
         this.getEntityManager().createQuery(UPDATE_BY_HISID)

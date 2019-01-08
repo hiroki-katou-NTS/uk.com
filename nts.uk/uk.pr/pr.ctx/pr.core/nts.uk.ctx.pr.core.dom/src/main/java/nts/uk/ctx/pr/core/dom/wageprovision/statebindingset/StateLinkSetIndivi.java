@@ -25,11 +25,10 @@ public class StateLinkSetIndivi extends AggregateRoot {
     * 賞与明細書
     */
     private Optional<StatementCode> bonusCode;
-    
-    public StateLinkSetIndivi(String hisId, StatementCode salary, StatementCode bonus) {
+
+    public StateLinkSetIndivi(String hisId, String salary, String bonus) {
         this.historyID = hisId;
-        this.salaryCode = Optional.ofNullable(salary);
-        this.bonusCode = Optional.ofNullable(bonus);
+        this.salaryCode = salary == null ? Optional.empty() : Optional.ofNullable(new StatementCode(salary));
+        this.bonusCode = bonus == null ? Optional.empty() : Optional.ofNullable(new StatementCode(bonus));
     }
-    
 }

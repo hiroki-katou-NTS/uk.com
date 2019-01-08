@@ -14,4 +14,5 @@ public class StatementLayoutCommand {
     String statementName;
     int startDate;
     int layoutPattern;
+    String statementCodeClone;
 }

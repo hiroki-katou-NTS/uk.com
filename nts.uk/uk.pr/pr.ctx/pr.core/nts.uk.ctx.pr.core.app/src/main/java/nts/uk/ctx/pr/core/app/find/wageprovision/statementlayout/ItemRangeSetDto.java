@@ -31,7 +31,7 @@ public class ItemRangeSetDto {
 
     ItemRangeSetDto (StatementItemRangeSetting domain) {
         this.histId =domain.getHistId();
-        this.salaryItemId = domain.getSalaryItemId();
+        this.salaryItemId = domain.getItemNameCd();
         this.rangeValAttribute = domain.getRangeValAttribute().value;
         this.errorUpperLimitSetAtr = domain.getErrorRangeSet().getErrorUpperLimitSetting().getErrorUpperLimitSettingAtr().value;
         this.errorUpRangeValAmount = domain.getErrorRangeSet().getErrorUpperLimitSetting().getErrorUpperRangeValueAmount().map(i->i.v()).orElse(null);

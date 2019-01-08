@@ -3,14 +3,17 @@ package nts.uk.ctx.pr.core.infra.repository.wageprovision.statementbindingsettin
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisEm;
 import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisEmRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateLinkSetMaster;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.service.StateCorreHisEmAndLinkSetMaster;
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.statementbindingsetting.QpbmtStateCorHisEmp;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,21 +22,11 @@ import java.util.stream.Collectors;
 public class JpaStateCorreHisEmRepository extends JpaRepository implements StateCorreHisEmRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateCorHisEmp f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisEmpPk.cid =:cid AND  f.stateCorHisEmpPk.hisId =:hisId ";
     private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisEmpPk.cid =:cid ORDER BY f.endYearMonth DESC";
     private static final String SELECT_BY_HISID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisEmpPk.cid =:cid AND f.stateCorHisEmpPk.hisId =:hisId";
-    private static final String SELECT_BY_CID_HISID_MASTERCODE = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisEmpPk.cid =:cid AND f.stateCorHisEmpPk.hisId =:hisId AND f.stateCorHisEmpPk.masterCode";
     private static final String REMOVE_BY_HISID = "DELETE FROM QpbmtStateCorHisEmp f WHERE f.stateCorHisEmpPk.cid =:cid AND f.stateCorHisEmpPk.hisId =:hisId";
     private static final String UPDATE_BY_HISID = "UPDATE  QpbmtStateCorHisEmp f SET f.startYearMonth = :startYearMonth, f.endYearMonth = :endYearMonth WHERE f.stateCorHisEmpPk.cid =:cid AND f.stateCorHisEmpPk.hisId =:hisId";
-
-    @Override
-    public Optional<StateCorreHisEm> getStateCorrelationHisEmployeeById(String cid, String hisId){
-        List<QpbmtStateCorHisEmp> listStateCorHisEmp = this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtStateCorHisEmp.class)
-                .setParameter("cid", cid)
-                .setParameter("hisId", hisId)
-                .getList();
-        return this.toDomain(listStateCorHisEmp);
-    }
+    private static final String SELECT_BY_CID_YM = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisEmpPk.cid =:cid AND f.startYearMonth <= :yearMonth AND f.endYearMonth >= :yearMonth ";
 
     @Override
     public Optional<StateCorreHisEm> getStateCorrelationHisEmployeeById(String cid) {
@@ -56,19 +49,12 @@ public class JpaStateCorreHisEmRepository extends JpaRepository implements State
     }
 
     @Override
-    public Optional<StateLinkSetMaster> getStateLinkSettingMasterById(String cid, String hisId, String masterCode) {
-        Optional<QpbmtStateCorHisEmp> listStateCorHisEmp = this.queryProxy().query(SELECT_BY_CID_HISID_MASTERCODE, QpbmtStateCorHisEmp.class)
-                .setParameter("cid",cid)
-                .setParameter("hisId", hisId)
-                .setParameter("masterCode",masterCode)
-                .getSingle();
-
-        if(!listStateCorHisEmp.isPresent()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(listStateCorHisEmp.get().toDomain());
-
+    public List<StateLinkSetMaster> getStateLinkSetMaster(String cid, YearMonth yearMonth) {
+        List<QpbmtStateCorHisEmp> entitys = this.queryProxy().query(SELECT_BY_CID_YM, QpbmtStateCorHisEmp.class)
+                .setParameter("cid", cid)
+                .setParameter("yearMonth", yearMonth.v())
+                .getList();
+        return QpbmtStateCorHisEmp.toDomainSetting(entitys);
     }
 
     @Override
