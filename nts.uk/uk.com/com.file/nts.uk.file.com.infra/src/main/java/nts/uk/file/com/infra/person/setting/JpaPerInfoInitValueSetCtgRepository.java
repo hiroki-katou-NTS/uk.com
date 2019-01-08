@@ -262,7 +262,12 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("     CONCAT('当日',CONVERT(VARCHAR,CONVERT(INT,initsetitem.INT_VAL)/60),':',");
 	     exportSQL.append("         RIGHT('0'+CONVERT(VARCHAR,CONVERT(INT,initsetitem.INT_VAL)%60),2))");
 	     exportSQL.append("    END");
-	     exportSQL.append("   ELSE CAST(format(convert(decimal(30,8),initsetitem.INT_VAL),'0.#########') as NVARCHAR)");
+	     exportSQL.append("   ELSE");
+	     exportSQL.append("		CASE WHEN itemcm.NUMERIC_ITEM_DECIMAL_PART IS NOT NULL THEN");
+		 exportSQL.append("			LTRIM(STR(initsetitem.INT_VAL, 30,CAST(itemcm.NUMERIC_ITEM_DECIMAL_PART as Integer)))");
+		 exportSQL.append("		ELSE ");
+		 exportSQL.append("			CAST( format(convert(decimal(30,8),initsetitem.INT_VAL),'0.#########') as NVARCHAR)");
+		 exportSQL.append("		END");
 	     exportSQL.append("  END INT_VALUE,");
 	     exportSQL.append(" initsetitem.STRING_VAL,");
 	     exportSQL.append("CASE itemcm.DATE_ITEM_TYPE");
@@ -396,7 +401,6 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     //  -- CODE_NAME");
 	     exportSQL.append("  LEFT JOIN PPEMT_SELECTION selection ON initsetitem.STRING_VAL = selection.SELECTION_ID");
 	     exportSQL.append("  AND itemcm.SELECTION_ITEM_REF_TYPE = 2"); 
-	     exportSQL.append("  WHERE initset.CID = ?CID ");
 	     exportSQL.append(" ) TABLE_RESULT");
 	     exportSQL.append(" ORDER BY TABLE_RESULT.ROW_INDEX");
 

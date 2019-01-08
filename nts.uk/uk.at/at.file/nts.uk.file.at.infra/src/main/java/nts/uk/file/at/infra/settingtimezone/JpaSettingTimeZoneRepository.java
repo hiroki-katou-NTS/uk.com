@@ -576,7 +576,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_122, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_122)
-                .value(rs.getString("END_DATE").equals("9999-12-31 00:00:00.0000000") ? rs.getString("WKP_NAME") : "マスタ未登録")
+                .value(rs.getDate("END_DATE").toString().equals("9999-12-31") ? rs.getString("WKP_NAME") : "マスタ未登録")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_106, MasterCellData.builder()
