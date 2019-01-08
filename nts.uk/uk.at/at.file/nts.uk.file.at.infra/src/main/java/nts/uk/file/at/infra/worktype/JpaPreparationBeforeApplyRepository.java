@@ -530,7 +530,7 @@ public class JpaPreparationBeforeApplyRepository extends JpaRepository implement
 		selectJob.append("INNER JOIN (SELECT JOB_NAME, JOB_ID, HIST_ID, CID  ");
 		selectJob.append("FROM BSYMT_JOB_INFO ) w  ");
 		selectJob.append("ON w.HIST_ID = h.HIST_ID AND w.JOB_ID = h.JOB_ID AND w.CID = h.CID ");
-		selectJob.append("RIGHT JOIN (SELECT i.JOB_CD, i.JOB_ID, i.CID, j.SEARCH_SET_FLG ");
+		selectJob.append("RIGHT JOIN (SELECT DISTINCT i.JOB_CD, i.JOB_ID, i.CID, j.SEARCH_SET_FLG ");
 		selectJob.append("FROM (SELECT JOB_ID, JOB_CD, CID ");
 		selectJob.append("FROM BSYMT_JOB_INFO WHERE CID = ?cid) i ");
 		selectJob.append("INNER JOIN WWFST_JOBTITLE_SEARCH_SET j ON j.CID = i.CID AND j.JOB_ID = i.JOB_ID ) k ");
