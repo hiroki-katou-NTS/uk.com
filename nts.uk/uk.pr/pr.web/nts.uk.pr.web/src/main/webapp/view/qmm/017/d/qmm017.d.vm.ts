@@ -151,12 +151,12 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         }
         initFormulaComponent () {
             let self = this;
-            self.operators = [self.PLUS, self.SUBTRACT, self.MULTIPLICITY, self.DIVIDE, self.POW,
-                self.OPEN_BRACKET, self.CLOSE_BRACKET, self.LESS, self.GREATER, self.LESS_OR_EQUAL,
-                self.GREATER_OR_EQUAL, self.EQUAL, self.DIFFERENCE,
-                self.HALF_SIZE_PLUS, self.HALF_SIZE_SUBTRACT, self.HALF_SIZE_LESS_OR_EQUAL,
-                self.HALF_SIZE_GREATER_OR_EQUAL, self.HALF_SIZE_EQUAL, self.PROGRAMING_MULTIPLICITY,
-                self.PROGRAMING_DIVIDE, self.PROGRAMMING_DIFFERENCE
+            self.operators = [self.OPEN_BRACKET, self.CLOSE_BRACKET, self.PLUS, self.HALF_SIZE_PLUS,
+                self.SUBTRACT, self.HALF_SIZE_SUBTRACT, self.MULTIPLICITY, self.PROGRAMING_MULTIPLICITY,
+                self.DIVIDE, self.PROGRAMING_DIVIDE, self.POW, self.LESS, self.GREATER,
+                self.LESS_OR_EQUAL, self.GREATER_OR_EQUAL, self.EQUAL, self.DIFFERENCE,
+                self.HALF_SIZE_LESS_OR_EQUAL, self.HALF_SIZE_GREATER_OR_EQUAL, self.HALF_SIZE_EQUAL,
+                self.PROGRAMMING_DIFFERENCE, self.COMMA_CHAR, self.HALF_SIZE_COMMA_CHAR
             ];
             self.separators = ['\\\＋', 'ー', '\\×', '÷', '\\^', '\\\(', '\\\)', '\\>', '\\<', '\\\≦', '\\\≧', '\\\＝', '\\\≠', '\\\,',
                 '\\+', '\\-', '\\*', '\\/', '\\\≤', '\\\≥', '\\\=', '\\\#', '\\\、'
@@ -489,6 +489,8 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             let self = this, regex = new RegExp('([' + self.separators.join('|') + '])');
             let formulaElements:any = formula.split(regex).filter(item => {return item && item.length}), elementType, elementName, detailFormula, calculationFormulaTransfer;
             let self = this, index = 0, currentChar, nextChar, nextElement, operators = self.operators;
+            if (self.operators.indexOf(formulaElements[0]) > 5) self.setErrorToFormula('Formula cannot start with {0}', [formulaElements[0]]);
+            if (formulaElements[formulaElements.length-1] && self.operators.indexOf(formulaElements[formulaElements.length-1]) > 1) self.setErrorToFormula('Formula cannot end with {0}', [formulaElements[formulaElements.length-1]]);
             for(index = 0 ; index < formulaElements.length; index ++){
                 currentChar = formulaElements[index];
                 if (operators.indexOf(currentChar)>-1){
@@ -777,6 +779,10 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         combineElementTypeAndName (elementType, elementName) {
             let self = this;
             return elementType + self.OPEN_CURLY_BRACKET + elementName + self.CLOSE_CURLY_BRACKET;
+        }
+        isOperator (operator) {
+            let self = this;
+            return operator == self.PLUS
         }
         showHintBox () {
             let self = this;

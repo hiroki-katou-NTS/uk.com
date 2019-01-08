@@ -288,9 +288,19 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             if (self.selectedTab() == 'tab-1'){
                 setTimeout(function(){
                     $('#A3_3').focus();
+                    // for ie
+                    setTimeout(function(){
+                        nts.uk.ui.errors.clearAll();
+                    }, 50)
                     setTimeout(function(){
                         nts.uk.ui.errors.clearAll();
                     }, 100)
+                    setTimeout(function(){
+                        nts.uk.ui.errors.clearAll();
+                    }, 200)
+                    setTimeout(function(){
+                        nts.uk.ui.errors.clearAll();
+                    }, 300)
                 }, 100)
             }
             else self.selectedTab('tab-1');

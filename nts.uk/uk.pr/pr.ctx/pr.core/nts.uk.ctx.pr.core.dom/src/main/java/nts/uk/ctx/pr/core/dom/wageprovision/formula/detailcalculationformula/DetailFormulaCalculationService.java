@@ -333,8 +333,9 @@ public class DetailFormulaCalculationService {
                 operands.push(currentChar);
                 continue;
             }
-            operand1 = operands.pop();
-            operand2 = operands.pop();
+            operand1 = operand2 = "0";
+            if (!operands.isEmpty()) operand1 = operands.pop();
+            if (!operands.isEmpty()) operand2 = operands.pop();
             operands.push(calculateSingleFormula(operand1, operand2, currentChar));
         }
         return operands.pop();
@@ -507,7 +508,12 @@ public class DetailFormulaCalculationService {
         return -1;
     }
     private Boolean isNaN (String number) {
-        return !number.matches("-?\\d+(\\.\\d+)?");
+        try {
+            Double.parseDouble(number);
+        } catch (NumberFormatException e) {
+            return true;
+        }
+        return false;
     }
 
     private String getMinValue (String [] values) {
