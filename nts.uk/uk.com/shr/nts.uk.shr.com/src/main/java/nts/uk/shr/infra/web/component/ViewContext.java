@@ -102,10 +102,7 @@ public class ViewContext extends UIComponentBase {
 		String qs = queryString == null ? "" : queryString;
 		ScreenIdentifier target = ScreenIdentifier.create(requestedPath, queryString);
 		ShareStandardMenuAdapter sMenu = CDI.current().select(ShareStandardMenuAdapter.class).get();
-		return sMenu.getProgramName(AppContexts.user().companyId(), target.getScreenId(), target.getProgramId(), qs)
-					.orElseGet(() -> {
-						return sMenu.getProgramName(DefaultSettingKeys.COMPANY_ID, target.getScreenId(), target.getProgramId(), qs).orElse(null);
-					});
+		return sMenu.getProgramName(AppContexts.user().companyId(), target.getScreenId(), target.getProgramId(), qs).orElse(null);
 	}
 	
 	private String formatValue(String value){
