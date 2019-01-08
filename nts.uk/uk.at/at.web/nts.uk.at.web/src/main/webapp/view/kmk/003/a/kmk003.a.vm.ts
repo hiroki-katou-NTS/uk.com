@@ -802,7 +802,7 @@ module nts.uk.at.view.kmk003.a {
                 nts.uk.ui.block.grayout();
                 service.saveAsExcel().done(function() {
                 }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    nts.uk.ui.dialog.alertError(error);
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 });

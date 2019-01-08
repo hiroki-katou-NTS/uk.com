@@ -55,7 +55,7 @@ public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator im
 					WORK_TIME_FLOW_START_INDEX, WORK_TIME_FLOW_NUM_ROW);
 			printData(flexSheet, companyName, exportTime, flexData, flexSheetName, 
 					WORK_TIME_FLEX_START_INDEX, WORK_TIME_FLEX_NUM_ROW);
-			
+			worksheets.setActiveSheetIndex(0);
 			reportContext.processDesigner();
 			reportContext.saveAsExcel(this.createNewFile(generatorContext,
 					REPORT_NAME + "_" + dataSource.getExportTime().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION));
