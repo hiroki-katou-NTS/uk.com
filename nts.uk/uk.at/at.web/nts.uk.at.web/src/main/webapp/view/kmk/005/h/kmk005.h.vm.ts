@@ -23,7 +23,8 @@ module nts.uk.at.view.kmk005.h {
                 isShowSelectButton: false,
                 baseDate: ko.observable(new Date()),
                 selectedWorkplaceId: undefined,
-                alreadySettingList: ko.observableArray([])
+                alreadySettingList: ko.observableArray([]),                
+                systemType: 2
             };
 
             model: KnockoutObservable<BonusPaySetting> = ko.observable(new BonusPaySetting({ id: '', name: '' }));
@@ -33,35 +34,71 @@ module nts.uk.at.view.kmk005.h {
                     model = self.model();
 
                 $.extend(tree, {
-                    selectedWorkplaceId: model.wid
+                    selectedWorkplaceId: self.model().wid
                 });
 
                 tree.alreadySettingList.removeAll();
 
-                model.wid.subscribe(x => {
-                    let data: Array<any> = flat($('#tree-grid')['getDataList'](), 'childs'),
-                        item = _.find(data, m => m.workplaceId == x);
+//                self.model().wid.subscribe(wild => {
+//                    let data: Array<any> = flat(_.isFunction($('#tree-grid')['getDataList']) ? $('#tree-grid')['getDataList']() : [] || [], 'childs'),
+//                        item = _.find(data, m => m.workplaceId == wild);
+//
+//                    if (item) {
+//                        self.model().wname(item.name);
+//                    } else {
+//                        self.model().wname(getText("KDL007_6"));
+//                    }
+//
+//                    service.getSetting(wild).done(x => {
+//                        if (x) {
+//                            self.model().id(x.bonusPaySettingCode);
+//                            service.getName(x.bonusPaySettingCode).done(m => {
+//                                if (m) {
+//                                    self.model().name(m.name)
+//                                } else {
+//                                    self.model().id('');
+//                                    self.model().name(getText("KDL007_6"));
+//                                }
+//                            }).fail(x => alert(x));
+//                        } else {
+//                            self.model().id('');
+//                            self.model().name(getText("KDL007_6"));
+//                        }
+//
+//                    }).fail(x => alert(x));
+//
+//                });
+//
+//                // call start after tree-grid initial
+//                $('#tree-grid')['ntsTreeComponent'](self.treeGrid).done(() => { self.start(); });
+            }
+            
+            loadFirst(){
+                var self = this;
+                 self.model().wid.subscribe(wild => {
+                    let data: Array<any> = flat(_.isFunction($('#tree-grid')['getDataList']) ? $('#tree-grid')['getDataList']() : [] || [], 'childs'),
+                        item = _.find(data, m => m.workplaceId == wild);
 
                     if (item) {
-                        model.wname(item.name);
+                        self.model().wname(item.name);
                     } else {
-                        model.wname(getText("KDL007_6"));
+                        self.model().wname(getText("KDL007_6"));
                     }
 
-                    service.getSetting(x).done(x => {
+                    service.getSetting(wild).done(x => {
                         if (x) {
-                            model.id(x.bonusPaySettingCode);
+                            self.model().id(x.bonusPaySettingCode);
                             service.getName(x.bonusPaySettingCode).done(m => {
                                 if (m) {
-                                    model.name(m.name)
+                                    self.model().name(m.name)
                                 } else {
-                                    model.id('');
-                                    model.name(getText("KDL007_6"));
+                                    self.model().id('');
+                                    self.model().name(getText("KDL007_6"));
                                 }
                             }).fail(x => alert(x));
                         } else {
-                            model.id('');
-                            model.name(getText("KDL007_6"));
+                            self.model().id('');
+                            self.model().name(getText("KDL007_6"));
                         }
 
                     }).fail(x => alert(x));

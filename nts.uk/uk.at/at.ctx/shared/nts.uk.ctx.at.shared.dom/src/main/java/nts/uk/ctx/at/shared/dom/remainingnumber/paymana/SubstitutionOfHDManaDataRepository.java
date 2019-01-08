@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
+//import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface SubstitutionOfHDManaDataRepository {
@@ -61,4 +61,13 @@ public interface SubstitutionOfHDManaDataRepository {
 	List<SubstitutionOfHDManagementData> getByHoliday(String sid, Boolean unknownDate, DatePeriod dayoffDate);
 	
 	void deleteById(List<String> subOfHDID);
+	/**
+	 * 
+	 * @param cid
+	 * @param sid
+	 * @param ymd 振休日<INPUT．集計開始日
+	 * @param unOffseDays 未相殺日数>0
+	 * @return
+	 */
+	List<SubstitutionOfHDManagementData> getByYmdUnOffset(String cid, String sid, GeneralDate ymd, double unOffseDays);
 }

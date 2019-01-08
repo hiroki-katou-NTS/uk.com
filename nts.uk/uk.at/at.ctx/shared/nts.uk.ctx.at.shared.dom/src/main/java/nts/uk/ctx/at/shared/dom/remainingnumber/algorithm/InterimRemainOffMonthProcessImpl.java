@@ -25,7 +25,7 @@ public class InterimRemainOffMonthProcessImpl implements InterimRemainOffMonthPr
 	@Inject
 	private ComSubstVacationRepository subRepos;
 	@Inject
-	private CompensLeaveComSetRepository leaveSetRepos;
+	private CompensLeaveComSetRepository leaveSetRepos;	
 	@Override
 	public Map<GeneralDate, DailyInterimRemainMngData> monthInterimRemainData(String cid, String sid, DatePeriod dateData) {
 		//(Imported)「残数作成元情報(実績)」を取得する
@@ -37,8 +37,6 @@ public class InterimRemainOffMonthProcessImpl implements InterimRemainOffMonthPr
 		CompensatoryLeaveComSetting leaveComSetting = leaveSetRepos.find(cid);
 		CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(cid, comSetting, leaveComSetting);
 		Map<GeneralDate, DailyInterimRemainMngData> mapDataOutput = periodCreateData.createInterimRemainDataMng(inputPara, comHolidaySetting);
-		
 		return mapDataOutput;
 	}
-
 }

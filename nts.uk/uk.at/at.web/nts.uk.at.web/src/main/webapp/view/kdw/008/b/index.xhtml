@@ -42,7 +42,7 @@
 									height: 370,
 									dataSource: businessTypeList,
 									primaryKey: 'businessTypeCode',
-									columns: columns1,
+									columns: columnsBusinessType,
 									multiple: false,
 									value: selectedCode}">
 							</table>
@@ -51,7 +51,7 @@
 							<div>
 								<span id="label2" class="label">#{i18n.getText('KDW008_7')}</span>
 								<span id="label3" class="label"
-									data-bind="text: currentBusinessTypeCode"></span> <span
+									data-bind="text: selectedCode"></span> <span
 									id="label4" class="label">#{i18n.getText('KDW008_8')}</span> <span
 									id="label5" class="label"
 									data-bind="text: currentBusinessTypeName"></span>
@@ -86,7 +86,7 @@
 											height: 371,
 											dataSource: dailyDataSource,
 											primaryKey: 'attendanceItemId',
-											columns: columns2,
+											columns: columns1,
 											value: businessTypeFormatDailyValue,
 											searchMode: 'filter',
 											searchCriterion: ['attendanceItemName','attendanceItemDisplayNumber'],
@@ -112,10 +112,10 @@
 										data-bind="ntsSwapList: {
 											showSearchBox: { showLeft : true, showRight: true},
 											height: 456,
-											dataSource: listMonthlyAttdItem,
+											dataSource: monthlyDataSource,
 											primaryKey: 'attendanceItemId',
-											columns: columns3,
-											value: valuesMonthly,
+											columns: columns2,
+											value: businessTypeFormatMonthlyValue,
 											searchMode: 'filter',
 											searchCriterion: ['attendanceItemName','attendanceItemDisplayNumber'],
 											draggable: true,
@@ -127,7 +127,7 @@
 										}"></div>
 									<div id="up-down"
 										data-bind="ntsUpDown: {
-													targetSource: valuesMonthly,
+													targetSource: businessTypeFormatMonthlyValue,
 													primaryKey: 'attendanceItemId',
 													comId: '#swap-list',
 													type: 'swap',
@@ -159,10 +159,10 @@
 										data-bind="ntsSwapList: {
 											showSearchBox: { showLeft : true, showRight: true},
 											height: 406,
-											dataSource: listMonthlyAttdItem,
+											dataSource: monthlyCorrectedDataSource,
 											primaryKey: 'attendanceItemId',
-											columns: columns5,
-											value: valuesMonth,
+											columns: columns3,
+											value: monthlyCorrected,
 											searchMode: 'filter',
 											searchCriterion: ['attendanceItemName','attendanceItemDisplayNumber'],
 											draggable: true,
@@ -174,7 +174,7 @@
 										}"></div>
 									<div id="up-down"
 										data-bind="ntsUpDown: {
-													targetSource: valuesMonth,
+													targetSource: monthlyCorrected,
 													primaryKey: 'attendanceItemId',
 													comId: '#swap-list3',
 													type: 'swap',

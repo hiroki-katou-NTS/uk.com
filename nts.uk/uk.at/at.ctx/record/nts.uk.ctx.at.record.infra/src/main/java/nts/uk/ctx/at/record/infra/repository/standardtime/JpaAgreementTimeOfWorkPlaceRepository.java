@@ -1,13 +1,16 @@
 package nts.uk.ctx.at.record.infra.repository.standardtime;
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfWorkPlace;
 import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfWorkPlaceRepository;
@@ -19,8 +22,8 @@ public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository impleme
 
 	private static final String DELETE_BY_ONE_KEY;
 
-	private static final String FIND_BY_KEY;
-	
+//	private static final String FIND_BY_KEY;
+
 	private static final String FIND_WORKPLACE_SETTING;
 
 	static {
@@ -31,12 +34,12 @@ public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository impleme
 		builderString.append("AND a.laborSystemAtr = :laborSystemAtr ");
 		DELETE_BY_ONE_KEY = builderString.toString();
 
-		builderString = new StringBuilder();
-		builderString.append("SELECT a ");
-		builderString.append("FROM KmkmtAgeementTimeWorkPlace a ");
-		builderString.append("WHERE a.kmkmtAgeementTimeWorkPlacePK.workPlaceId = :workPlaceId ");
-		builderString.append("AND a.laborSystemAtr = :laborSystemAtr ");
-		FIND_BY_KEY = builderString.toString();
+//		builderString = new StringBuilder();
+//		builderString.append("SELECT a ");
+//		builderString.append("FROM KmkmtAgeementTimeWorkPlace a ");
+//		builderString.append("WHERE a.kmkmtAgeementTimeWorkPlacePK.workPlaceId = :workPlaceId ");
+//		builderString.append("AND a.laborSystemAtr = :laborSystemAtr ");
+//		FIND_BY_KEY = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
@@ -60,15 +63,29 @@ public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository impleme
 	@Override
 	public List<String> findWorkPlaceSetting(LaborSystemtAtr laborSystemAtr) {
 		return this.queryProxy().query(FIND_WORKPLACE_SETTING, KmkmtAgeementTimeWorkPlace.class)
-				.setParameter("laborSystemAtr", laborSystemAtr.value).getList(f -> f.kmkmtAgeementTimeWorkPlacePK.workPlaceId);
+				.setParameter("laborSystemAtr", laborSystemAtr.value)
+				.getList(f -> f.kmkmtAgeementTimeWorkPlacePK.workPlaceId);
 	}
 
 	@Override
+	@SneakyThrows
 	public Optional<String> find(String workplaceId, LaborSystemtAtr laborSystemAtr) {
-		return this.queryProxy().query(FIND_BY_KEY, KmkmtAgeementTimeWorkPlace.class)
-				.setParameter("workPlaceId", workplaceId)
-				.setParameter("laborSystemAtr", laborSystemAtr.value)
-				.getSingle(f -> f.kmkmtAgeementTimeWorkPlacePK.basicSettingId);
+
+		try (PreparedStatement statement = this.connection().prepareStatement(
+				" select * from KMKMT_AGREEMENTTIME_WPL " + " where WKPCD = ? " + " and LABOR_SYSTEM_ATR = ? ")) {
+
+			statement.setString(1, workplaceId);
+			statement.setBigDecimal(2, new BigDecimal(laborSystemAtr.value));
+
+			return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
+				return rec.getString("BASIC_SETTING_ID");
+			});
+		}
+		// return this.queryProxy().query(FIND_BY_KEY,
+		// KmkmtAgeementTimeWorkPlace.class)
+		// .setParameter("workPlaceId", workplaceId)
+		// .setParameter("laborSystemAtr", laborSystemAtr.value)
+		// .getSingle(f -> f.kmkmtAgeementTimeWorkPlacePK.basicSettingId);
 	}
 
 	private KmkmtAgeementTimeWorkPlace toEntity(AgreementTimeOfWorkPlace agreementTimeOfWorkPlace) {
@@ -82,11 +99,11 @@ public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository impleme
 		return entity;
 	}
 
-	private static AgreementTimeOfWorkPlace toDomain(KmkmtAgeementTimeWorkPlace kmkmtAgeementTimeWorkPlace) {
-		AgreementTimeOfWorkPlace agreementTimeOfWorkPlace = AgreementTimeOfWorkPlace.createJavaType(
-				kmkmtAgeementTimeWorkPlace.kmkmtAgeementTimeWorkPlacePK.workPlaceId,
-				kmkmtAgeementTimeWorkPlace.kmkmtAgeementTimeWorkPlacePK.basicSettingId,
-				kmkmtAgeementTimeWorkPlace.laborSystemAtr);
-		return agreementTimeOfWorkPlace;
-	}
+//	private static AgreementTimeOfWorkPlace toDomain(KmkmtAgeementTimeWorkPlace kmkmtAgeementTimeWorkPlace) {
+//		AgreementTimeOfWorkPlace agreementTimeOfWorkPlace = AgreementTimeOfWorkPlace.createJavaType(
+//				kmkmtAgeementTimeWorkPlace.kmkmtAgeementTimeWorkPlacePK.workPlaceId,
+//				kmkmtAgeementTimeWorkPlace.kmkmtAgeementTimeWorkPlacePK.basicSettingId,
+//				kmkmtAgeementTimeWorkPlace.laborSystemAtr);
+//		return agreementTimeOfWorkPlace;
+//	}
 }

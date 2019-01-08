@@ -1,13 +1,16 @@
 package nts.uk.ctx.at.shared.infra.repository.bonuspay;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstBonusPayTimeItem;
@@ -152,16 +155,26 @@ public class JpaBPTimeItemRepository extends JpaRepository implements BPTimeItem
 
 	@Override
 	public List<BonusPayTimeItem> getListBonusPayTimeItemName(String companyId, List<Integer> timeItemNos) {
-		return this.queryProxy().query(SELECT_BP_TIME_ITEM_NAME, KbpstBonusPayTimeItem.class)
-				.setParameter("companyId", companyId).setParameter("timeItemNos", timeItemNos)
-				.getList(f -> toBonusPayTimeItemDomain(f));
+		List<BonusPayTimeItem> resultList = new ArrayList<>();
+		CollectionUtil.split(timeItemNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_BP_TIME_ITEM_NAME, KbpstBonusPayTimeItem.class)
+				.setParameter("companyId", companyId)
+				.setParameter("timeItemNos", subList)
+				.getList(f -> toBonusPayTimeItemDomain(f)));
+		});
+		return resultList;
 	}
 
 	@Override
 	public List<BonusPayTimeItem> getListSpecialBonusPayTimeItemName(String companyId, List<Integer> timeItemNos) {
-		return this.queryProxy().query(SELECT_SPEC_BP_TIME_ITEM_NAME, KbpstBonusPayTimeItem.class)
-				.setParameter("companyId", companyId).setParameter("timeItemNos", timeItemNos)
-				.getList(f -> toBonusPayTimeItemDomain(f));
+		List<BonusPayTimeItem> resultList = new ArrayList<>();
+		CollectionUtil.split(timeItemNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SELECT_SPEC_BP_TIME_ITEM_NAME, KbpstBonusPayTimeItem.class)
+					.setParameter("companyId", companyId)
+					.setParameter("timeItemNos", subList)
+					.getList(f -> toBonusPayTimeItemDomain(f)));
+		});
+		return resultList;
 	}
 
 }

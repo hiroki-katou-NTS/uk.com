@@ -86,15 +86,12 @@ public class JpaTempAbsenceFrameRespository extends JpaRepository
 		// add where
 		List<Predicate> lstPredicateWhere = new ArrayList<>();
 		lstPredicateWhere
-		.add(criteriaBuilder.equal(root.get(BsystTempAbsenceFrame_.bsystTempAbsenceFramePK)
-				.get(BsystTempAbsenceFramePK_.cid), cId));
-
-		lstPredicateWhere
-		.add(criteriaBuilder.equal(root.get(BsystTempAbsenceFrame_.bsystTempAbsenceFramePK)
+			.add(criteriaBuilder.equal(root.get(BsystTempAbsenceFrame_.bsystTempAbsenceFramePK)
 				.get(BsystTempAbsenceFramePK_.cid), cId));
 		
-		lstPredicateWhere.add(root.get(BsystTempAbsenceFrame_.bsystTempAbsenceFramePK)
-				.get(BsystTempAbsenceFramePK_.tempAbsenceFrNo).in(tempAbsenceFrameNo));
+		lstPredicateWhere
+			.add(criteriaBuilder.equal(root.get(BsystTempAbsenceFrame_.bsystTempAbsenceFramePK)
+				.get(BsystTempAbsenceFramePK_.tempAbsenceFrNo), tempAbsenceFrameNo));
 
 		cq.where(lstPredicateWhere.toArray(new Predicate[] {}));
 

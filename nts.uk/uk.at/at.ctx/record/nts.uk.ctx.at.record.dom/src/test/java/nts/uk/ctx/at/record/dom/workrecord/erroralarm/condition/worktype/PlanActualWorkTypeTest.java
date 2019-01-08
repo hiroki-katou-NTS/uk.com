@@ -13,6 +13,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.enums.NotUseAttribute;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -27,7 +28,7 @@ public class PlanActualWorkTypeTest {
 		target.chooseOperator(LogicalOperator.AND.value);
 		WorkInfoOfDailyPerformance info = createWorkInfo();
 
-		boolean actual = target.checkWorkType(info);
+		boolean actual = target.checkWorkType(info) == WorkCheckResult.ERROR;
 		assertThat(actual, is(true));
 
 	}
@@ -40,7 +41,7 @@ public class PlanActualWorkTypeTest {
 		target.chooseOperator(LogicalOperator.AND.value);
 		WorkInfoOfDailyPerformance info = createWorkInfo();
 
-		boolean actual = target.checkWorkType(info);
+		boolean actual = target.checkWorkType(info) == WorkCheckResult.ERROR;
 		assertThat(actual, is(false));
 
 	}
@@ -53,7 +54,7 @@ public class PlanActualWorkTypeTest {
 		target.chooseOperator(LogicalOperator.AND.value);
 		WorkInfoOfDailyPerformance info = createWorkInfo();
 
-		boolean actual = target.checkWorkType(info);
+		boolean actual = target.checkWorkType(info) == WorkCheckResult.ERROR;
 		assertThat(actual, is(false));
 
 	}
@@ -66,7 +67,7 @@ public class PlanActualWorkTypeTest {
 		target.chooseOperator(LogicalOperator.AND.value);
 		WorkInfoOfDailyPerformance info = createWorkInfo();
 
-		boolean actual = target.checkWorkType(info);
+		boolean actual = target.checkWorkType(info) == WorkCheckResult.ERROR;
 		assertThat(actual, is(false));
 
 	}
@@ -79,7 +80,7 @@ public class PlanActualWorkTypeTest {
 		target.chooseOperator(LogicalOperator.AND.value);
 		WorkInfoOfDailyPerformance info = createWorkInfo();
 
-		boolean actual = target.checkWorkType(info);
+		boolean actual = target.checkWorkType(info) == WorkCheckResult.ERROR;
 		assertThat(actual, is(false));
 
 	}
@@ -92,7 +93,7 @@ public class PlanActualWorkTypeTest {
 		target.chooseOperator(LogicalOperator.AND.value);
 		WorkInfoOfDailyPerformance info = createWorkInfo();
 
-		boolean actual = target.checkWorkType(info);
+		boolean actual = target.checkWorkType(info) == WorkCheckResult.ERROR;
 		assertThat(actual, is(false));
 
 	}
@@ -105,7 +106,7 @@ public class PlanActualWorkTypeTest {
 		target.chooseOperator(LogicalOperator.OR.value);
 		WorkInfoOfDailyPerformance info = createWorkInfo();
 
-		boolean actual = target.checkWorkType(info);
+		boolean actual = target.checkWorkType(info) == WorkCheckResult.ERROR;
 		assertThat(actual, is(false));
 
 	}
@@ -118,7 +119,7 @@ public class PlanActualWorkTypeTest {
 		target.chooseOperator(LogicalOperator.OR.value);
 		WorkInfoOfDailyPerformance info = createWorkInfo();
 
-		boolean actual = target.checkWorkType(info);
+		boolean actual = target.checkWorkType(info) == WorkCheckResult.ERROR;
 		assertThat(actual, is(true));
 
 	}
@@ -131,7 +132,7 @@ public class PlanActualWorkTypeTest {
 		target.chooseOperator(LogicalOperator.OR.value);
 		WorkInfoOfDailyPerformance info = createWorkInfo();
 
-		boolean actual = target.checkWorkType(info);
+		boolean actual = target.checkWorkType(info) == WorkCheckResult.ERROR;
 		assertThat(actual, is(true));
 
 	}
@@ -144,7 +145,7 @@ public class PlanActualWorkTypeTest {
 		target.chooseOperator(LogicalOperator.OR.value);
 		WorkInfoOfDailyPerformance info = createWorkInfo();
 
-		boolean actual = target.checkWorkType(info);
+		boolean actual = target.checkWorkType(info) == WorkCheckResult.ERROR;
 		assertThat(actual, is(true));
 
 	}

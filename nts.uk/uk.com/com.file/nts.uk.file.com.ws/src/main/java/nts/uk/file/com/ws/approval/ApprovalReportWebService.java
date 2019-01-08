@@ -14,33 +14,34 @@ import nts.uk.file.com.app.company.approval.MasterApproverRootExportService;
 import nts.uk.file.com.app.company.approval.MasterApproverRootQuery;
 
 @Path("approval/report")
-@Produces("application/json") 
+@Produces("application/json")
 public class ApprovalReportWebService {
 
-	@Inject
-	private EmployeeUnregisterOutputExportService reportService;
-	@Inject
-	private MasterApproverRootExportService masterService;
-	@Inject
-	private EmployeeApproverExportService employeeService;
-	@POST
-	@Path("employeeUnregister")
-	public ExportServiceResult generate(GeneralDate query) {
+    @Inject
+    private EmployeeUnregisterOutputExportService reportService;
+    @Inject
+    private MasterApproverRootExportService masterService;
+    @Inject
+    private EmployeeApproverExportService employeeService;
 
-		return this.reportService.start(query);
-	}
-	
-	@POST
-	@Path("masterData")
-	public ExportServiceResult generate(MasterApproverRootQuery query) {
+    @POST
+    @Path("employeeUnregister")
+    public ExportServiceResult generate(GeneralDate query) {
 
-		return this.masterService.start(query);
-	}
-	
-	@POST
-	@Path("employee")
-	public ExportServiceResult generate(EmployeeApproverRootQuery query) {
+        return this.reportService.start(query);
+    }
 
-		return this.employeeService.start(query);
-	}
+    @POST
+    @Path("masterData")
+    public ExportServiceResult generate(MasterApproverRootQuery query) {
+
+        return this.masterService.start(query);
+    }
+
+    @POST
+    @Path("employee")
+    public ExportServiceResult generate(EmployeeApproverRootQuery query) {
+
+        return this.employeeService.start(query);
+    }
 }

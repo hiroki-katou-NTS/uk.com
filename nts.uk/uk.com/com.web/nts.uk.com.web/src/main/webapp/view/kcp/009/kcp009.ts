@@ -19,6 +19,7 @@ module kcp009.viewmodel {
         isActiveNextBtn: KnockoutObservable<boolean>;
         isActivePersonalProfile: KnockoutObservable<boolean>;
         keySearch: KnockoutObservable<string>;
+        baseDate: KnockoutObservable<Date>;
         isDisplay: KnockoutObservable<boolean>;
         isShowEmpList: KnockoutObservable<boolean>;
         tabIndex: number;
@@ -34,9 +35,10 @@ module kcp009.viewmodel {
             self.empDisplayCode = ko.observable(null);
             self.empBusinessName = ko.observable(null);
             self.organizationDesignation = ko.observable(null);
-            self.organizationName = ko.observable(null);
+            self.organizationName = ko.observable('');
 
             self.keySearch = ko.observable("");
+            self.baseDate = ko.observable(null);
             self.isDisplay = ko.observable(true);
             self.isShowEmpList = ko.observable(false);
             self.componentWrapperId = nts.uk.util.randomId();
@@ -54,6 +56,9 @@ module kcp009.viewmodel {
             self.tabIndex = data.tabIndex;
             // System Reference Type
             self.systemType = data.systemReference;
+            if(data.baseDate) {
+                self.baseDate = data.baseDate;
+            }
             if (data.employeeInputList().length > 1) {
                 data.employeeInputList().sort(function(left, right) {
                     return left.code == right.code ?
@@ -62,19 +67,31 @@ module kcp009.viewmodel {
             }
             if (data.employeeInputList().length > 0) {
                 self.empList(data.employeeInputList());
+                //input.初期選択社員IDに値がない場合
+                if (_.isNil(data.selectedItem) || _.isNil(data.selectedItem())) {
+                    if (_.isNil(data.selectedItem)) {
+                        self.selectedItem = ko.observable(null);
+                    }
+                    else {
+                        self.selectedItem = data.selectedItem;
+                    }
+                    // Set SelectedItem: First Item
+                    let codeEmp = _.find(data.employeeInputList(), f => f.id == __viewContext.user.employeeId);
+                    if (codeEmp) {//社員リストにログイン社員が含まれる
+                        self.selectedItem(__viewContext.user.employeeId);
+                    } else {//社員リストにログイン社員が含まれない
+                        self.selectedItem(data.employeeInputList().length > 0 ? data.employeeInputList()[0].id : null);
+                    }
+                }
+                else {//input.初期選択社員IDに値がある場合
+                    self.selectedItem = data.selectedItem;
+                }
             } else {
                 // message 184
                 nts.uk.ui.dialog.info({ messageId: "Msg_184" });
             }
-            self.selectedItem = data.selectedItem;
             
-            // Set SelectedItem: First Item
-            let codeEmp = _.find(data.employeeInputList(), f => f.id == __viewContext.user.employeeId);
-            if (codeEmp) {
-                self.selectedItem(__viewContext.user.employeeId);
-            } else {
-                self.selectedItem(data.employeeInputList().length > 0 ? data.employeeInputList()[0].id : null);
-            }
+            
 
             // Initial Binding from Selected Item
             self.bindEmployee(self.selectedItem());
@@ -276,7 +293,7 @@ module kcp009.viewmodel {
                     break;
             }
             // Search
-            service.searchEmployee(self.keySearch(), system).done(function(employee: service.model.EmployeeSearchData) {
+            service.searchEmployee(self.keySearch(), system, self.baseDate()).done(function(employee: service.model.EmployeeSearchData) {
                 // find Exist Employee in List
                 let existItem = self.empList().filter((item) => {
                     return item.code == employee.employeeCode;
@@ -286,19 +303,24 @@ module kcp009.viewmodel {
                     // Set Selected Item
                     self.selectedItem(existItem.id);
                     self.empDisplayCode(existItem.code);
-                    self.empBusinessName(existItem.businessName);
+//                    self.empBusinessName(existItem.businessName);
                     // Set OrganizationName
+//                    self.organizationName((self.systemType == SystemType.EMPLOYMENT) ?
+//                        existItem.workplaceName : existItem.depName);
+                    self.empBusinessName(employee.businessName);
                     self.organizationName((self.systemType == SystemType.EMPLOYMENT) ?
-                        existItem.workplaceName : existItem.depName);
+                        employee.wkpDisplayName : employee.deptDisplayName);
+                    
                 } else {
                     let newEmpList: Array<EmployeeModel> = [];
-                    newEmpList.push({ id: employee.employeeId, code: employee.employeeCode, businessName: employee.businessName });
+                    newEmpList.push({ id: employee.employeeId, code: employee.employeeCode, businessName: employee.businessName, workplaceName: employee.wkpDisplayName, depName: employee.deptDisplayName });
                     self.empList(newEmpList);
                     // Set Selected Item
                     self.selectedItem(employee.employeeId);
                     self.empDisplayCode(employee.employeeCode);
                     self.empBusinessName(employee.businessName);
-                    self.organizationName(employee.orgName);
+                    self.organizationName((self.systemType == SystemType.EMPLOYMENT) ?
+                        employee.wkpDisplayName : employee.deptDisplayName);
                 }
 
             }).fail(function(res) {
@@ -339,8 +361,9 @@ module kcp009.viewmodel {
         isDisplayOrganizationName: boolean;
         employeeInputList: KnockoutObservableArray<EmployeeModel>;
         targetBtnText: string;
-        selectedItem: KnockoutObservable<string>;
+        selectedItem?: KnockoutObservable<string>;
         tabIndex: number;
+        baseDate?: KnockoutObservable<Date>;
     }
 
     /**
@@ -372,8 +395,8 @@ module kcp009.viewmodel {
             searchEmployee: 'screen/com/kcp009/employeesearch',
         }
 
-        export function searchEmployee(employeeCode: string, system: string): JQueryPromise<model.EmployeeSearchData> {
-            return nts.uk.request.ajax('com', paths.searchEmployee, { employeeCode: employeeCode , system: system});
+        export function searchEmployee(employeeCode: string, system: string, baseDate?: Date): JQueryPromise<model.EmployeeSearchData> {
+            return nts.uk.request.ajax('com', paths.searchEmployee, { employeeCode: employeeCode , system: system, baseDate: baseDate});
         }
 
         /**
@@ -384,7 +407,8 @@ module kcp009.viewmodel {
                 employeeId: string;
                 employeeCode: string;
                 businessName: string;
-                orgName: string
+                wkpDisplayName: string;
+                deptDisplayName: string;
             }
         }
     }

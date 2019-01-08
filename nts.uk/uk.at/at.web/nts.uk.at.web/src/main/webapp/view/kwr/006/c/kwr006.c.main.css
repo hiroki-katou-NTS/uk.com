@@ -36,9 +36,6 @@
 	margin-right: 8%;
 }
 
-.C6 {
-	margin-left: 5%;
-}
 
 .move-button {
 	margin: 10px !important;
@@ -46,7 +43,7 @@
 
 #swap-list_container {
 	display: inline-block;
-	width: 97%;
+	width: 89%;
 }
 
 #up-down {

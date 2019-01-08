@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.ClassifyScheAchieveAtr;
 @AllArgsConstructor
 @Setter
 @Getter
@@ -23,7 +24,7 @@ public class HolidayWorkReflectPara {
 	/**
 	 * 予定と実績を同じに変更する区分
 	 */
-	private ScheAndRecordSameChangeFlg scheAndRecordSameChangeFlg;
+	private ClassifyScheAchieveAtr scheAndRecordSameChangeFlg;
 	/**
 	 * 予定反映区分
 	 * True: する

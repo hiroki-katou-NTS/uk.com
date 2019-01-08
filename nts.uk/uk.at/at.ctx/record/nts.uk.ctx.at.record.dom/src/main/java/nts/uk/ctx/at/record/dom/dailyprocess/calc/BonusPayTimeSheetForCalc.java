@@ -4,17 +4,17 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+//import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheetForCalc;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.RaisingSalaryTimeItemNo;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+//import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
+//import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -27,6 +27,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class BonusPayTimeSheetForCalc extends CalculationTimeSheet{
 
 	//sheet id
+	//加給時間項目No
 	private RaisingSalaryTimeItemNo raiseSalaryTimeItemNo;
 	
 	/**
@@ -75,13 +76,6 @@ public class BonusPayTimeSheetForCalc extends CalculationTimeSheet{
 											Collections.emptyList(),
 											Optional.empty(),
 											this.raiseSalaryTimeItemNo);
-	}
-	
-	public AttendanceTime testSAIKI(DeductionAtr dedAtr,ConditionAtr conditionAtr) {
-		//自分が持つ集計対象の時間帯の合計
-		val includeForcsValue = super.forcs(conditionAtr, dedAtr);
-		//自分自身が集計対象外の場合、自分自身が持つ集計対象の時間帯の合計時間のみを返す
-		return includeForcsValue;
 	}
 
 	public Optional<BonusPayTimeSheetForCalc> createDuplicateRange(TimeSpanForCalc timeSpan) {

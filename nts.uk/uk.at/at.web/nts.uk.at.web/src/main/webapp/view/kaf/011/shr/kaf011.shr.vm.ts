@@ -166,8 +166,7 @@ module nts.uk.at.view.kaf011.shr {
                     let comItems;
                     if (this.simulAppliReq() == 1) {
                         comItems = [
-                            { code: 0, text: text('KAF011_19') },
-                            { code: 2, text: text('KAF011_21') },
+                            { code: 0, text: text('KAF011_19') }
                         ]
 
                     } else {
@@ -445,7 +444,8 @@ module nts.uk.at.view.kaf011.shr {
                     reason: vm.reason(),
                     appReasonSelectedID: vm.appReasonSelectedID(),
                     absApp: ko.mapping.toJS(vm.absWk()),
-                    version: vm.version
+                    version: vm.version,
+                    employeeID : vm.employeeID()
                 }, true);
 
                 nts.uk.ui.windows.sub.modal('/view/kaf/011/c/index.xhtml').onClosed(function(): any {

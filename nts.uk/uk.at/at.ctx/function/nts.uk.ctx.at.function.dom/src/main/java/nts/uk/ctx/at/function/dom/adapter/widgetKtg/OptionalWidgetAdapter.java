@@ -56,4 +56,8 @@ public interface OptionalWidgetAdapter {
 	
 	/**get request list 201*/
 	KTGRsvLeaveInfoImport getNumberOfReservedYearsRemain(String employeeId, GeneralDate date);
+	
+	/**get request list 467
+	 * @return 0(労働日数-WORKING_DAY), 1(出勤率-ATTENDENCE_RATE), 3(The annual holiday grant table setting is not done.)*/
+	int getGrantHdTblSet(String companyId, String employeeId); 
 }

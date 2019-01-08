@@ -44,9 +44,9 @@
 							<table tabindex="5" id="single-list"
 								data-bind="ntsGridList: {								
 									height: 255,
-									dataSource: listDataCommom,
-									primaryKey: primaryKey,
-									columns: columnsCommom,
+									dataSource: formatCodeItems,
+									primaryKey: 'formatCode',
+									columns: columnsFormatCodde,
 									multiple: false,
 									value: selectedCode
 								}">
@@ -106,7 +106,7 @@
 												height: 400,
 												dataSource: dailyDataSource,
 												primaryKey: 'attendanceItemId',
-												columns: columns2,
+												columns: columns1,
 												value: authorityFormatDailyValue,
 												searchMode: 'filter',
 												searchCriterion: ['attendanceItemName','attendanceItemDisplayNumber'],
@@ -132,10 +132,10 @@
 											data-bind="ntsSwapList: {
 												showSearchBox: { showLeft : true, showRight: true},
 												height: 456,
-												dataSource: listMonthlyAttdItem,
+												dataSource: monthlyDataSource,
 												primaryKey: 'attendanceItemId',
-												columns: columns3,
-												value: valuesMonthly,
+												columns: columns2,
+												value: authorityFormatMonthlyValue,
 												searchMode: 'filter',
 												searchCriterion: ['attendanceItemName','attendanceItemDisplayNumber'],
 												draggable: true,
@@ -148,7 +148,7 @@
 										</div>
 										<div tabindex="11" id="up-down"
 											data-bind="ntsUpDown: {
-													targetSource: valuesMonthly,
+													targetSource: authorityFormatMonthlyValue,
 													primaryKey: 'attendanceItemId',
 													comId: '#swap-list',
 													type: 'swap',
@@ -182,10 +182,10 @@
 												data-bind="ntsSwapList: {
 													showSearchBox: { showLeft : true, showRight: true},
 													height: 396,
-													dataSource: listMonthlyAttdItem,
+													dataSource: monthCorrectionDataSource,
 													primaryKey: 'attendanceItemId',
-													columns: columns5,
-													value: valuesMonthlyTab3,
+													columns: columns3,
+													value: monthCorrectionValue,
 													searchMode: 'filter',
 													searchCriterion: ['attendanceItemName','attendanceItemDisplayNumber'],
 													draggable: true,
@@ -199,7 +199,7 @@
 										</div>
 										<div tabindex="13" id="up-down"
 											data-bind="ntsUpDown: {
-													targetSource: valuesMonthlyTab3,
+													targetSource: monthCorrectionValue,
 													primaryKey: 'attendanceItemId',
 													comId: '#swap-list3',
 													type: 'swap',

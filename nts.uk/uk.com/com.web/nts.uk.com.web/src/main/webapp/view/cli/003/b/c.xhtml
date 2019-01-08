@@ -16,13 +16,13 @@
 					<div id="C1_4" tabindex="1">
 					  <com:ko-if bind="checkFormatDate()=== '1'">	
 						<div id="daterangepicker" class="validate_form"
-							data-bind="ntsDateRangePicker: { required: required, enable: enable,
+							data-bind="ntsDateRangePicker: { required: required, enable: enableTagetDate,
 							  showNextPrevious: false, value: dateValue,startName: startDateNameOperator, endName:endDateNameOperator, maxRange: 'oneYear'}">
 						</div>
 					</com:ko-if>
 					 <com:ko-if bind="checkFormatDate()=== '2'">	
 						<div id="daterangepicker" class="validate_form"
-							data-bind="ntsDateRangePicker: { required: required, enable: enable,type: 'yearmonth',
+							data-bind="ntsDateRangePicker: { required: required, enable: enableTagetDate,type: 'yearmonth',
 							  showNextPrevious: false, value: dateValue,startName: startDateNameOperator, endName:endDateNameOperator, maxRange: 'oneYear'}">
 						</div>
 					</com:ko-if>

@@ -292,7 +292,7 @@ module nts.uk.at.view.kdw003.b {
                 self.employeeCode = model.employeeCode;
                 self.employeeName = model.employeeName;
                 self.submitedName = model.submitedName;
-                if (model.date != "") {
+                if (model.date != "" && model.date != null) {
                     if (moment(model.date, "YYYY/MM/DD").day() == 6) {
                         self.date = '<span style="color: #4F81BD">' + moment(model.date, 'YYYY/MM/DD').format('YYYY/MM/DD(ddd)') + '</span>';
                     } else if (moment(model.date, "YYYY/MM/DD").day() == 0) {

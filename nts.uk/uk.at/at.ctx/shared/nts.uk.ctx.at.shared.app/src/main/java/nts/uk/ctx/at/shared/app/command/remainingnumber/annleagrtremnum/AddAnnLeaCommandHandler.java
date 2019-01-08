@@ -27,7 +27,18 @@ public class AddAnnLeaCommandHandler extends CommandHandlerWithResult<AnnLeaGran
 		// 付与日＞使用期限の場合はエラー #Msg_1023
 		if (command.getGrantDate().compareTo(command.getDeadline()) > 0){
 			throw new BusinessException("Msg_1023");
+			
 		}
+		/**
+		 * update tài liệu 
+		 * #設計修正　2018/10/17　渡邉
+		 * ユニーク制約を追加
+         * EA修正履歴NO.2840
+		 */
+		if (!annLeaRepo.checkConditionUniqueForAdd(command.getEmployeeId(), command.getGrantDate()).isEmpty()) {
+			throw new BusinessException("Msg_1456");
+		}
+		
 		String annLeavId = IdentifierUtil.randomUniqueId();
 		
 		AnnualLeaveGrantRemainingData data = AnnualLeaveGrantRemainingData.createFromJavaType(annLeavId, cid, command.getEmployeeId(), 

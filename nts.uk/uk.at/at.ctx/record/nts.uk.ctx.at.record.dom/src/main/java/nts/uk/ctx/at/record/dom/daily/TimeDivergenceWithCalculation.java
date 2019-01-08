@@ -11,9 +11,12 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  */
 @Getter
 public class TimeDivergenceWithCalculation {
+	//時間
 	@Setter
 	private AttendanceTime time;
+	//計算時間
 	private AttendanceTime calcTime;
+	//乖離時間
 	private AttendanceTime divergenceTime;
 	
 	

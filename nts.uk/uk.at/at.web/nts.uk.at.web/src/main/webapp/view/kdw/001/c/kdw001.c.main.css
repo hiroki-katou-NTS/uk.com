@@ -3,14 +3,13 @@
 	height: 36px;
 	width: 111px;
 	margin-left: 502px;
-    margin-top: 10px;
+    margin-top: 4px;
 }
 
 #kcp005{
-	height: 355px;
 	width: 562px;
     margin-left: 105px;
-    margin-top: 7px;
+    margin-top: 2px;
 }
 
 #panel11{
@@ -26,9 +25,7 @@
 #formLabe12{
 	float: left;
 }
-#component-items-list{
-	    margin-top: -25px;
-}
+
 #contents-area{
 	overflow-y: hidden;
 	overflow-x: hidden;

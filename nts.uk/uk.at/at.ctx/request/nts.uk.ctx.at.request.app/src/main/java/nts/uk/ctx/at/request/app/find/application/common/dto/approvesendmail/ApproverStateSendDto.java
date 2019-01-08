@@ -15,4 +15,6 @@ public class ApproverStateSendDto {
 	private String representerName;
 	
 	private String approverMail;
+	
+	private String agentMail;
 }

@@ -6,7 +6,9 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * @author hungnm
@@ -30,11 +32,21 @@ public class WorkTypeCondition extends DomainObject {
 	}
 
 	/** 勤務種類をチェックする */
-	public boolean checkWorkType(WorkInfoOfDailyPerformance workInfo) {
-		return false;
+	public WorkCheckResult checkWorkType(WorkInfoOfDailyPerformance workInfo) {
+		return WorkCheckResult.NOT_CHECK;
 	}
 	
 	public boolean isUse() {
 		return this.useAtr;
+	}
+	
+	public void clearDuplicate() { }
+	
+	public void addWorkType(WorkTypeCode plan, WorkTypeCode actual){ }
+	
+	public void setupWorkType(boolean usePlan, boolean useActual){ }
+	
+	public WorkTypeCondition chooseOperator(Integer operator) {
+		return this;
 	}
 }

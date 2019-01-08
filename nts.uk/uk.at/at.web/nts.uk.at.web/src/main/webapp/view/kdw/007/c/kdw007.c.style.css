@@ -19,4 +19,35 @@
 .control-button-wrap{
 	margin-left: 22px !important;
 }
+#all-list td[role="gridcell"] {
+	white-space: nowrap;
+}
 
+#container_permision_grid .ui-tooltip {
+	border: none;
+	background: none;
+	box-shadow: none;
+	width: auto !important;
+	max-width: 800px !important;
+}
+
+#container_permision_grid .ui-tooltip .ui-tooltip-content {
+	white-space: nowrap;
+	background: #ffc;
+	border: solid 1px #b85;
+	padding: 5px;
+	width: auto !important;
+	max-width: 800px !important;
+} 
+#add-sub-list_horizontalScrollContainer {
+	overflow: hidden !important; 
+}
+
+#add-sub-list_displayContainer {
+	min-height: 210.6px !important;
+	
+} 
+
+#add-sub-list_scrollContainer {
+	min-height: 212.6px !important;
+}

@@ -53,7 +53,7 @@ public class CreateTempAnnLeaMngProc {
 	/** 期間 */
 	private DatePeriod period;
 	/** モード */
-	private TempAnnualLeaveMngMode mode;
+	private InterimRemainMngMode mode;
 	
 	/** 月別集計で必要な会社別設定 */
 	private MonAggrCompanySettings companySets;
@@ -123,7 +123,7 @@ public class CreateTempAnnLeaMngProc {
 			String companyId,
 			String employeeId,
 			DatePeriod period,
-			TempAnnualLeaveMngMode mode) {
+			InterimRemainMngMode mode) {
 
 		return this.algorithm(companyId, employeeId, period, mode, Optional.empty(), Optional.empty());
 	}
@@ -142,7 +142,7 @@ public class CreateTempAnnLeaMngProc {
 			String companyId,
 			String employeeId,
 			DatePeriod period,
-			TempAnnualLeaveMngMode mode,
+			InterimRemainMngMode mode,
 			Optional<MonAggrCompanySettings> companySets,
 			Optional<MonthlyCalculatingDailys> monthlyCalcDailys) {
 		
@@ -180,7 +180,7 @@ public class CreateTempAnnLeaMngProc {
 		this.createTempManagementData();
 		
 		//　「モード」をチェック
-		if (mode == TempAnnualLeaveMngMode.OTHER){
+		if (mode == InterimRemainMngMode.OTHER){
 
 			// 「暫定年休管理データ」をDELETEする
 			this.tempAnnualLeaveMngRepo.removeByPeriod(employeeId, period);
@@ -219,7 +219,7 @@ public class CreateTempAnnLeaMngProc {
 		}
 		
 		// 「モード」をチェックする
-		if (this.mode == TempAnnualLeaveMngMode.OTHER){
+		if (this.mode == InterimRemainMngMode.OTHER){
 
 			// 社員．期間に未反映の申請を取得する　→　取得した「申請」を返す
 			//*****（未）　RequestList依頼待ち。requestコンテキストの処理を呼んで、データを貰う。

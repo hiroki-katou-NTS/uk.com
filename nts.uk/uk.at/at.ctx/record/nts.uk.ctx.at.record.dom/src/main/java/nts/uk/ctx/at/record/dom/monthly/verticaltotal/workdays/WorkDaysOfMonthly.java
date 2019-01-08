@@ -198,7 +198,7 @@ public class WorkDaysOfMonthly {
 		this.leave.aggregate(workTypeDaysCountTable);
 		
 		// 振出日数の集計
-		this.recruitmentDays.aggregate(workTypeDaysCountTable);
+		this.recruitmentDays.aggregate(workingSystem, workTypeDaysCountTable, isAttendanceDay);
 		
 		// 特別休暇日数の集計
 		this.specialVacationDays.aggregate(workingSystem, workType, workTypeDaysCountTable, isAttendanceDay);
@@ -216,7 +216,7 @@ public class WorkDaysOfMonthly {
 		this.workDays.sum(target.workDays);
 		this.holidayDays.sum(target.holidayDays);
 		this.specificDays.sum(target.specificDays);
-		this.holidayDays.sum(target.holidayDays);
+		this.holidayWorkDays.sum(target.holidayWorkDays);
 		this.payDays.sum(target.payDays);
 		this.workTimes.sum(target.workTimes);
 		this.twoTimesWorkTimes.sum(target.twoTimesWorkTimes);

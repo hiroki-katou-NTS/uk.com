@@ -1,12 +1,13 @@
 package nts.uk.screen.at.app.dailyperformance.correction.checkdata;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -16,6 +17,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
+import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckService;
 import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.result.ContinuousHolidayCheckResult;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
@@ -24,7 +26,12 @@ import nts.uk.ctx.at.record.dom.monthly.erroralarm.ErrorType;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveError;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveError;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMnt;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMntRepository;
@@ -55,6 +62,12 @@ public class ValidatorDataDailyRes {
 	
 	@Inject
 	private SpecialHolidayRepository specialHolidayRepository;
+	
+	@Inject
+	private EmployeeDailyPerErrorRepository employeeErrorRepo;
+	
+	@Inject
+	private ErrorAlarmWorkRecordRepository errorAlarmWRRepo;
 
 	private static final Integer[] CHILD_CARE = { 759, 760, 761, 762 };
 	private static final Integer[] CARE = { 763, 764, 765, 766 };
@@ -62,7 +75,7 @@ public class ValidatorDataDailyRes {
 			177, 175, 183, 181, 189, 187, 195, 193, 199, 201, 205, 207, 211, 213, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
 			17, 18, 19, 20, 21, 22, 23, 24, 25, 26 };
 
-	static final Map<Integer, Integer> INPUT_CHECK_MAP = IntStream.range(0, INPUT_CHECK.length).boxed()
+	public static final Map<Integer, Integer> INPUT_CHECK_MAP = IntStream.range(0, INPUT_CHECK.length).boxed()
 			.collect(Collectors.toMap(x -> INPUT_CHECK[x], x -> x % 2 == 0 ? INPUT_CHECK[x + 1] : INPUT_CHECK[x - 1]));
 
 	private static final Integer[] DEVIATION_REASON = { 436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456,
@@ -185,17 +198,34 @@ public class ValidatorDataDailyRes {
 	}
 
 	public List<DPItemValue> checkContinuousHolidays(String employeeId, DateRange date) {
+		
+		return checkContinuousHolidays(employeeId, date, new ArrayList<>());
+	}
+	
+	public List<DPItemValue> checkContinuousHolidays(String employeeId, DateRange date, List<WorkInfoOfDailyPerformance> workInfos) {
+		List<DPItemValue> r = new ArrayList<>();
+		
+		employeeErrorRepo.removeContinuosErrorIn(employeeId, new DatePeriod(date.getStartDate(), date.getEndDate()), ErAlWorkRecordCheckService.CONTINUOUS_CHECK_CODE);
+		
 		ContinuousHolidayCheckResult result = erAlWorkRecordCheckService.checkContinuousHolidays(employeeId,
-				new DatePeriod(date.getStartDate(), date.getEndDate()));
+				new DatePeriod(date.getStartDate(), date.getEndDate()), workInfos);
 		if (result == null)
-			return Collections.emptyList();
+			return r;
+		
 		Map<GeneralDate, Integer> resultMap = result.getCheckResult();
+		
 		if (!resultMap.isEmpty()) {
-			return resultMap.entrySet().stream().map(x -> new DPItemValue("勤務種類", employeeId, x.getKey(), 0,
-					String.valueOf(x.getValue()), result.message())).collect(Collectors.toList());
-		} else {
-			return Collections.emptyList();
-		}
+			
+			String compID = AppContexts.user().companyId();
+			
+			resultMap.entrySet().stream().forEach(x -> {
+				employeeErrorRepo.insert(new EmployeeDailyPerError(compID, employeeId, x.getKey(), 
+						ErAlWorkRecordCheckService.CONTINUOUS_CHECK_CODE, Arrays.asList(28), 0, result.message()));
+				r.add(new DPItemValue("勤務種類", employeeId, x.getKey(), 0, String.valueOf(x.getValue()), result.message()));
+			});
+		} 
+
+		return r;
 	}
 
 	// 乖離理由が選択、入力されているかチェックする
@@ -211,18 +241,18 @@ public class ValidatorDataDailyRes {
 		// });
 	}
 
-	public List<DPItemValue> checkInput28And1(List<DPItemValue> items, List<DailyModifyResult> itemValues) {
+	public List<DPItemValue> checkInput28And1(List<DPItemValue> itemChanges, List<DailyModifyResult> allItemValues) {
 		List<DPItemValue> result = new ArrayList<>();
-		result = checkInputItem28(items, itemValues);
-		result.addAll(checkInputItem1(items, itemValues));
+		result = checkInputItem28(itemChanges, allItemValues);
+		result.addAll(checkInputItem1(itemChanges, allItemValues));
 		return result;
 	}
 
-	public List<DPItemValue> checkInputItem28(List<DPItemValue> items, List<DailyModifyResult> itemValueAlls) {
+	public List<DPItemValue> checkInputItem28(List<DPItemValue> itemChanges, List<DailyModifyResult> itemValueAlls) {
 		List<DPItemValue> result = new ArrayList<>();
 		DPItemValue valueTemp;
-		Optional<DPItemValue> item28 = items.stream().filter(x -> x.getItemId() == 28).findFirst();
-		Optional<DPItemValue> item29 = items.stream().filter(x -> x.getItemId() == 29).findFirst();
+		Optional<DPItemValue> item28 = itemChanges.stream().filter(x -> x.getItemId() == 28).findFirst();
+		Optional<DPItemValue> item29 = itemChanges.stream().filter(x -> x.getItemId() == 29).findFirst();
 		if (!item28.isPresent() && !item29.isPresent()) {
 			return result;
 		}
@@ -353,9 +383,13 @@ public class ValidatorDataDailyRes {
 			List<EmployeeDailyPerError> employeeError = d.getEmployeeError();
 			for (EmployeeDailyPerError err : employeeError) {
 				if (err != null && err.getErrorAlarmWorkRecordCode().v().startsWith("D") && err.getErrorAlarmMessage().isPresent() && err.getErrorAlarmMessage().get().v().equals(TextResource.localize("Msg_1298"))) {
-					divergenceErrors.addAll(err.getAttendanceItemList().stream()
-							.map(itemId -> new DPItemValue("", err.getEmployeeID(), err.getDate(), itemId))
-							.collect(Collectors.toList()));
+					if(err.getAttendanceItemList().isEmpty()){
+						divergenceErrors.add(new DPItemValue("", err.getEmployeeID(), err.getDate(), 0));
+					} else {
+						divergenceErrors.addAll(err.getAttendanceItemList().stream()
+								.map(itemId -> new DPItemValue("", err.getEmployeeID(), err.getDate(), itemId))
+								.collect(Collectors.toList()));
+					}
 				}
 			}
 		}
@@ -408,7 +442,7 @@ public class ValidatorDataDailyRes {
 					.filter(x -> x.getErrorType().value != ErrorType.FLEX.value && x.getErrorType().value != ErrorType.FLEX_SUPP.value).collect(Collectors.toList());
 			val listNo = lstEmpError.stream().filter(x -> x.getErrorType().value == ErrorType.SPECIAL_REMAIN_HOLIDAY_NUMBER.value).map(x -> x.getNo()).collect(Collectors.toList());
 			
-			Map<Integer, SpecialHoliday> sHolidayMap = listNo.isEmpty() ? new HashMap<>() : specialHolidayRepository.findByListCode(companyId, listNo)
+			Map<Integer, SpecialHoliday> sHolidayMap = listNo.isEmpty() ? new HashMap<>() : specialHolidayRepository.findByCompanyIdNoMaster(companyId, listNo)
 					.stream().filter(x -> x.getSpecialHolidayCode() != null)
 					.collect(Collectors.toMap(x -> x.getSpecialHolidayCode().v(), x -> x));
 			
@@ -431,8 +465,70 @@ public class ValidatorDataDailyRes {
 		}
 		return resultError;
 	}
+	
+	// check error month(残数系のエラーチェック) update
+	public Map<Integer, List<DPItemValue>> errorMonthNew(List<EmployeeMonthlyPerError> monthErrors) {
+		Map<Integer, List<DPItemValue>> resultError = new HashMap<>();
+		String companyId = AppContexts.user().companyId();
+		List<DPItemValue> items = new ArrayList<>();
+		items.addAll(getErrorMonthAll(companyId, monthErrors, true));
+		if (!items.isEmpty()) {
+			resultError.put(TypeError.ERROR_MONTH.value, items);
+			return resultError;
+		}
+		return resultError;
+	}
 
-	private List<String> createMessageError(EmployeeMonthlyPerError errorEmployeeMonth) {
+	public List<DPItemValue> getErrorMonthAll(String companyId, List<EmployeeMonthlyPerError> monthErrors, boolean flexSup){
+		List<DPItemValue> items = new ArrayList<>();
+		// not flex
+		val lstEmpError = flexSup ?  monthErrors.stream()
+				.filter(x -> x.getErrorType().value != ErrorType.FLEX.value && x.getErrorType().value != ErrorType.FLEX_SUPP.value).collect(Collectors.toList()) : 
+				monthErrors.stream()
+				.filter(x -> x.getErrorType().value != ErrorType.FLEX.value).collect(Collectors.toList());
+		val listNo = lstEmpError.stream().filter(x -> x.getErrorType().value == ErrorType.SPECIAL_REMAIN_HOLIDAY_NUMBER.value).map(x -> x.getNo()).collect(Collectors.toList());
+		
+		Map<Integer, SpecialHoliday> sHolidayMap = listNo.isEmpty() ? new HashMap<>() : specialHolidayRepository.findByCompanyIdNoMaster(companyId, listNo)
+				.stream().filter(x -> x.getSpecialHolidayCode() != null)
+				.collect(Collectors.toMap(x -> x.getSpecialHolidayCode().v(), x -> x));
+		
+		lstEmpError.stream().forEach(error -> {
+			createMessageError(error).stream().forEach(message -> {
+				if(message.equals("Msg_1414")){
+					val sh = sHolidayMap.get(error.getNo());
+					message =  TextResource.localize(message, sh == null ? "" : sh.getSpecialHolidayName().v());
+				}else{
+					message = TextResource.localize(message);
+				}
+				items.add(new DPItemValue(error.getEmployeeID(), message));
+			});
+		});
+		return items;
+	}
+	/**
+	 * 乖離エラー発生時の本人確認解除
+	 */
+	public List<DPItemValue> releaseDivergence(List<IntegrationOfDaily> dailyResults) {
+		// 乖離エラーのチェック
+		List<DPItemValue> divergenceErrors = new ArrayList<>();
+		for (IntegrationOfDaily d : dailyResults) {
+			List<EmployeeDailyPerError> employeeError = d.getEmployeeError();
+			for (EmployeeDailyPerError err : employeeError) {
+				if (err != null && err.getErrorAlarmWorkRecordCode().v().startsWith("D") && (!err.getErrorAlarmMessage().isPresent() || !err.getErrorAlarmMessage().get().v().equals(TextResource.localize("Msg_1298")))) {
+					if(err.getAttendanceItemList().isEmpty()){
+						divergenceErrors.add(new DPItemValue("", err.getEmployeeID(), err.getDate(), 0));
+					} else {
+						divergenceErrors.addAll(err.getAttendanceItemList().stream()
+								.map(itemId -> new DPItemValue("", err.getEmployeeID(), err.getDate(), itemId))
+								.collect(Collectors.toList()));
+					}
+				}
+			}
+		}
+		return divergenceErrors;
+	}
+	
+	public List<String> createMessageError(EmployeeMonthlyPerError errorEmployeeMonth) {
 		List<String> messageIds = new ArrayList<>();
 		ErrorType errroType = errorEmployeeMonth.getErrorType();
 		// 年休: 年休エラー
@@ -487,5 +583,67 @@ public class ValidatorDataDailyRes {
 		}
 
 	}
+	
+	// 備考で日次エラー解除
+	public List<IntegrationOfDaily> removeErrorRemarkAll(String companyId, List<IntegrationOfDaily> domainDailyNews, List<DailyRecordDto> dtoNews) {
+		Set<String> errors = domainDailyNews.stream().flatMap(x -> x.getEmployeeError().stream())
+				.map(x -> x.getErrorAlarmWorkRecordCode().v()).collect(Collectors.toSet());
+		if (errors.isEmpty())
+			return new ArrayList<>();
+		List<ErrorAlarmWorkRecord> errorAlarms = errorAlarmWRRepo.getListErAlByListCodeRemark(companyId, errors);
+		for (IntegrationOfDaily domain : domainDailyNews) {
+			val dtoCorrespon = dtoNews.stream().filter(x -> x.getEmployeeId().equals(domain.getWorkInformation().getEmployeeId()) && x.getDate().equals(domain.getWorkInformation().getYmd())).findFirst().orElse(null);
+			val error = domain.getEmployeeError().stream().filter(x -> {
+				val errorSelect = errorAlarms.stream()
+						.filter(y -> x.getErrorAlarmWorkRecordCode().v().equals(y.getCode().v())).findFirst()
+						.orElse(null);
+				if (errorSelect != null && dtoCorrespon != null) {
+					ItemValue itemValue = AttendanceItemUtil.toItemValues(dtoCorrespon, Arrays.asList(errorSelect.getRemarkColumnNo())).stream().findFirst().orElse(null);
+					val item = x.getAttendanceItemList().stream().filter(z -> !(z.intValue() == errorSelect.getErrorDisplayItem() && itemValue != null && itemValue.getValue() != null && !itemValue.getValue().equals("")))
+							.collect(Collectors.toList());
+					if(item.isEmpty()) {
+						return false;
+					}else {
+						x.setAttendanceItemList(item);
+						return true;
+					}
+				}else {
+					return true;
+				}
+			}).collect(Collectors.toList());
+			domain.setEmployeeError(error);
+		}
+		return domainDailyNews;
+	}
 
+	// 備考で日次エラー解除
+	public List<EmployeeDailyPerError> removeErrorRemark(String companyId, List<EmployeeDailyPerError> lstError, List<DailyRecordDto> dtoNews) {
+		Set<String> errors = lstError.stream().map(x -> x.getErrorAlarmWorkRecordCode().v())
+				.collect(Collectors.toSet());
+		if (errors.isEmpty())
+			return new ArrayList<>();
+		List<ErrorAlarmWorkRecord> errorAlarms = errorAlarmWRRepo.getListErAlByListCodeRemark(companyId, errors);
+		lstError = lstError.stream().filter(x -> {
+			val errorSelect = errorAlarms.stream()
+					.filter(y -> x.getErrorAlarmWorkRecordCode().v().equals(y.getCode().v())).findFirst()
+					.orElse(null);
+			if (errorSelect != null) {
+				val dtoCorrespon = dtoNews.stream().filter(k -> k.getEmployeeId().equals(x.getEmployeeID()) && k.getDate().equals(x.getDate())).findFirst().orElse(null);
+				if(dtoCorrespon == null) return true;
+				ItemValue itemValue = AttendanceItemUtil.toItemValues(dtoCorrespon, Arrays.asList(errorSelect.getRemarkColumnNo())).stream().findFirst().orElse(null);
+				val item = x.getAttendanceItemList().stream().filter(z -> !(z.intValue() == errorSelect.getErrorDisplayItem() && itemValue != null && itemValue.getValue() != null && !itemValue.getValue().equals("")))
+						.collect(Collectors.toList());
+				if(item.isEmpty()) {
+					return false;
+				}else {
+					x.setAttendanceItemList(item);
+					return true;
+				}
+			}else {
+				return true;
+			}
+		}).collect(Collectors.toList());
+		return lstError;
+	}
+    
 }

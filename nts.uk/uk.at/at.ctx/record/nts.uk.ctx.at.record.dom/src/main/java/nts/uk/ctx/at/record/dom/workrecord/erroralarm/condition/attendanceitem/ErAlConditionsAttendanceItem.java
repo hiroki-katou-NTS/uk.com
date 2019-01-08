@@ -12,6 +12,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
 
 /**
@@ -78,21 +79,29 @@ public class ErAlConditionsAttendanceItem extends DomainObject {
 		this.atdItemConGroupId = atdItemConGroupId;
 	}
 
-	public boolean check(Function<List<Integer>, List<Integer>> getValueFromItemIds) {
+	public WorkCheckResult check(Function<List<Integer>, List<Double>> getValueFromItemIds) {
 		if(isNotUseAll()){
-			return false;
+			return WorkCheckResult.NOT_CHECK;
 		}
 		switch (this.conditionOperator) {
 		case AND:
-			return checkStream(getValueFromItemIds).allMatch(r -> r);
+			return evaluate(checkStream(getValueFromItemIds).allMatch(r -> r));
 		case OR:
-			return checkStream(getValueFromItemIds).anyMatch(r -> r);
+			return evaluate(checkStream(getValueFromItemIds).anyMatch(r -> r));
 		default:
 			throw new RuntimeException("invalid conditionOperator: " + conditionOperator);
 		}
 	}
+	
+	private WorkCheckResult evaluate(boolean flag){
+		if(flag){
+			return WorkCheckResult.ERROR;
+		}
+		
+		return WorkCheckResult.NOT_ERROR;
+	}
 
-	private Stream<Boolean> checkStream(Function<List<Integer>, List<Integer>> getValueFromItemIds) {
+	private Stream<Boolean> checkStream(Function<List<Integer>, List<Double>> getValueFromItemIds) {
 		return lstErAlAtdItemCon.stream().filter(aic -> aic.isUse()).map(aic -> {
 			return aic.checkTarget(getValueFromItemIds);
 		});

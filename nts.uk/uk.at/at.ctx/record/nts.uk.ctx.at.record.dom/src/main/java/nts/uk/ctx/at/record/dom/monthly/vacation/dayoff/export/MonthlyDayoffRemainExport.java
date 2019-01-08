@@ -6,8 +6,11 @@ package nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.export;
  */
 
 import java.util.List;
+import java.util.Map;
 
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
+import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 public interface MonthlyDayoffRemainExport {
 	/**
@@ -18,5 +21,15 @@ public interface MonthlyDayoffRemainExport {
 	 * @return
 	 */
 	public List<DayoffCurrentMonthOfEmployee> lstDayoffCurrentMonthOfEmployee(String employeeId, YearMonth startMonth, YearMonth endMonth);
+	/**
+	 * @author hoatt
+	 * Doi ung response KDR001
+	 * RequesList259 社員の月毎の確定済み代休を取得する - ver2
+	 * @param employeeId 社員ID
+	 * @param startMonth 年月期間
+	 * @param endMonth
+	 * @return
+	 */
+	public List<DayoffCurrentMonthOfEmployee> lstDayoffCurrentMonthOfEmpVer2(String employeeId, YearMonthPeriod period, Map<YearMonth, List<RemainMerge>> mapRemainMer);
 
 }

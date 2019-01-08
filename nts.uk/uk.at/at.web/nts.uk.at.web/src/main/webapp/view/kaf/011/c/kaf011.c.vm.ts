@@ -64,14 +64,16 @@ module nts.uk.at.view.kaf011.c.screenModel {
             block.invisible();
             var self = this,
                 dfd = $.Deferred(),
+                param = getShared('KAF_011_PARAMS'),
                 startParam = {
-                    sID: null,
+                    sID: param.employeeID,
                     appDate: self.appDate(),
                     uiType: 0
-                };
+                }
+                ;
 
-            service.start_c(startParam).done((data: common.IHolidayShipment) => {
-                self.setDataFromStart(data);
+                service.start_c(startParam).done((data: common.IHolidayShipment) => {
+                    self.setDataFromStart(data, param);
             }).fail((error) => {
                 alError({ messageId: error.messageId, messageParams: error.parameterIds });
             }).always(() => {
@@ -92,8 +94,9 @@ module nts.uk.at.view.kaf011.c.screenModel {
                         appReasonText: self.appReasonSelectedID(),
                         applicationReason: self.reason(),
                         prePostAtr: self.prePostSelectedCode(),
-                        enteredPersonSID: self.employeeID(),
+                        employeeID: self.employeeID(),
                         appVersion: self.version(),
+                        remainDays: null
                     }
                 }, selectedReason = self.appReasonSelectedID() ? _.find(self.appReasons(), { 'reasonID': self.appReasonSelectedID() }) : null;
             saveCmd.absCmd.changeWorkHoursType = saveCmd.absCmd.changeWorkHoursType ? 1 : 0;
@@ -235,9 +238,9 @@ module nts.uk.at.view.kaf011.c.screenModel {
             return appReason;
         }
 
-        setDataFromStart(data: common.IHolidayShipment) {
+        setDataFromStart(data: common.IHolidayShipment,param) {
             let self = this,
-                param = getShared('KAF_011_PARAMS');
+               
 
 
             if (data) {

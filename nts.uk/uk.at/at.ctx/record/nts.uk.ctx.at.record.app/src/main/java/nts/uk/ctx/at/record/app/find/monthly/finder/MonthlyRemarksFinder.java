@@ -15,8 +15,8 @@ import nts.uk.ctx.at.record.dom.monthly.remarks.RemarksMonthlyRecordRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.MonthlyFinderFacade;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -29,7 +29,7 @@ public class MonthlyRemarksFinder extends MonthlyFinderFacade {
 	@SuppressWarnings("unchecked")
 	public MonthlyRemarksDto find(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
-		return MonthlyRemarksDto.from(this.repo.find(employeeId, yearMonth, closureId, closureDate).orElse(null));
+		return MonthlyRemarksDto.from(this.repo.find(employeeId, closureId, null, yearMonth, closureDate).orElse(null));
 	}
 	
 	@Override
@@ -37,7 +37,7 @@ public class MonthlyRemarksFinder extends MonthlyFinderFacade {
 	public List<MonthlyRemarksDto> finds(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
 		return repo.findByYearMonthOrderByStartYmd(employeeId, yearMonth).stream()
-				.filter(c -> c.getClosuteId() == closureId && c.getClosureDate().getLastDayOfMonth() == closureDate.getLastDayOfMonth()
+				.filter(c -> c.getClosureId() == closureId && c.getClosureDate().getLastDayOfMonth() == closureDate.getLastDayOfMonth()
 							&& c.getClosureDate().getClosureDay() == closureDate.getClosureDay())
 				.map(c -> MonthlyRemarksDto.from(c)).collect(Collectors.toList());
 	}

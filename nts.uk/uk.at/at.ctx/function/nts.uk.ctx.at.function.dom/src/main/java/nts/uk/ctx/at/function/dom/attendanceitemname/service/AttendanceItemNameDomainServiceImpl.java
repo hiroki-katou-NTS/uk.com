@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.attendanceitemname.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -23,7 +24,12 @@ public class AttendanceItemNameDomainServiceImpl implements AttendanceItemNameDo
 	public List<AttendanceItemName> getNameOfAttendanceItem(List<Integer> dailyAttendanceItemIds,
 			int typeOfAttendanceItem) {
 		return attendanceItemNameService.getNameOfAttendanceItem(dailyAttendanceItemIds,
-				EnumAdaptor.valueOf(typeOfAttendanceItem, TypeOfItem.class));
+				EnumAdaptor.valueOf(typeOfAttendanceItem, TypeOfItem.class)).stream().map(x -> {
+					AttendanceItemName dto = new AttendanceItemName(x.getAttendanceItemId(), x.getAttendanceItemName(),
+							x.getAttendanceItemDisplayNumber(), x.getUserCanUpdateAtr(), x.getNameLineFeedPosition(),
+							x.getTypeOfAttendanceItem(), x.getFrameCategory());
+					return dto;
+				}).collect(Collectors.toList());
 	}
 
 }

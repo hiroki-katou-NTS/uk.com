@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
-import nts.uk.ctx.at.record.dom.stamp.GoOutReason;
+//import nts.uk.ctx.at.record.dom.stamp.GoOutReason;
 
 /**
  * 条件
@@ -9,6 +9,7 @@ import nts.uk.ctx.at.record.dom.stamp.GoOutReason;
  *
  */
 public enum ConditionAtr {
+	//休憩
 	BREAK,
 	//私用
 	PrivateGoOut,
@@ -18,7 +19,9 @@ public enum ConditionAtr {
 	CompesationGoOut,
 	//組合
 	UnionGoOut,
+	//育児
 	Child,
+	//介護
 	Care;
 	
 	/**

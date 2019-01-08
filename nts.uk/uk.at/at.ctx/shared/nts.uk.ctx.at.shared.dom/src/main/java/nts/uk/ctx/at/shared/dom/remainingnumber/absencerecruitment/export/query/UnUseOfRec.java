@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
 @Getter
 @Setter
@@ -44,4 +43,8 @@ public class UnUseOfRec {
 	private DigestionAtr digestionAtr;
 	/**	消滅日 */
 	private Optional<GeneralDate> disappearanceDate;
+	/**
+	 * 使用開始日
+	 */
+	private Optional<GeneralDate> startDate;
 }

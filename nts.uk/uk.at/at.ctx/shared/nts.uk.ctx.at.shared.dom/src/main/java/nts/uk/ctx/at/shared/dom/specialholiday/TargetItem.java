@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.specialholiday;
 
+import java.util.Collections;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -24,5 +25,13 @@ public class TargetItem {
 
 	public static TargetItem createFromJavaType(List<Integer> absenceFrameNo, List<Integer> frameNo) {
 		return new TargetItem(absenceFrameNo, frameNo);
+	}
+	
+	public List<Integer> getFrameNo() {
+		return frameNo != null ? frameNo : Collections.emptyList();
+	}
+	
+	public List<Integer> getAbsenceFrameNo() {
+		return absenceFrameNo != null ? absenceFrameNo : Collections.emptyList();
 	}
 }

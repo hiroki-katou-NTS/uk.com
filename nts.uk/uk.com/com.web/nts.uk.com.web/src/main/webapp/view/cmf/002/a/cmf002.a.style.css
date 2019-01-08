@@ -1,27 +1,5 @@
-.image-left{
-	float: left;
-	margin-right: 20px;
-}
-.image-right{
-	float: right;
-	margin-right: 20px;
-}
-
-.clear {
-	clear: both;
-}
-
-.button-image {
-	margin-left: 100px;
-	margin-right: 100px;	
-}
-
-.title {
-	margin: 10px;
-}
-
 .title-left {
-	margin-left: 150px;
+	margin-left: 20px;
 	vertical-align: 20px;
 }
 
@@ -32,33 +10,37 @@
 	float: right;	
 }
 
+.image-left{
+	float: left;
+	margin-right: 20px;
+}
+.clear {
+	clear: both;
+}
+
 .import-creation {
 	background-image: url("../resource/外部出力A1.jpg");
 	background-size: 100%;
 	height: 254px;
-	width: 257px;
+	width: 264px;
 	background-repeat: no-repeat;
-	margin-left: 50px;
+	margin-left: 20px;
 }
 
 .setting-creation {
 	background-image: url("../resource/外部出力A2.jpg");
 	background-size: 100%;
 	height: 254px;
-	width: 264px;
+	width: 274px;
 	background-repeat: no-repeat;
-	margin-left: 50px;
+	margin-left: 20px;
 }
 
 .history-reference {
 	background-image: url("../resource/外部出力A3.jpg");
 	background-size: 100%;
-	width: 286px;
-	height: 109px;
+	width: 320px;
+	height: 110px;
 	background-repeat: no-repeat;
-	margin-right: 50px;
-}
-
-.clear {
-	clear: both;
+	margin-left: 20px;
 }

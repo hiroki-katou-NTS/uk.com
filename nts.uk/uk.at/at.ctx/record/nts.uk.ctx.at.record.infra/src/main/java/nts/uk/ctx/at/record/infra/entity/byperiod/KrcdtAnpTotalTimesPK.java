@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * プライマリキー：回数集計
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Embeddable
 @EqualsAndHashCode
@@ -23,7 +23,7 @@ public class KrcdtAnpTotalTimesPK implements Serializable {
 
 	/** 社員ID */
 	@Column(name = "SID")
-	public String employeeID;
+	public String employeeId;
 	/** 任意集計枠コード */
 	@Column(name = "FRAME_CODE")
 	public String frameCode;

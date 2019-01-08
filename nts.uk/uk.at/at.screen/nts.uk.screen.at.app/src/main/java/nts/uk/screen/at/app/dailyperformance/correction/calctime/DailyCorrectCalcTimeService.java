@@ -45,10 +45,11 @@ public class DailyCorrectCalcTimeService {
 	
 	@Inject
 	private ValidatorDataDailyRes validatorDataDaily;
+	
 
 	public DCCalcTime calcTime(List<DailyRecordDto> dailyEdits, List<DPItemValue> itemEdits) {
-
-	DCCalcTime calcTime = new DCCalcTime();
+		
+	    DCCalcTime calcTime = new DCCalcTime();
         
 		DPItemValue itemEditCalc = itemEdits.stream().filter(x -> !x.getColumnKey().equals("USE")).findFirst().get();
 		getWplPosId(itemEdits);
@@ -58,19 +59,20 @@ public class DailyCorrectCalcTimeService {
 
 		val itemValues = itemEdits.stream().map(x -> new ItemValue(x.getValue(), x.getValueType() == null ? ValueType.UNKNOWN : ValueType.valueOf(x.getValueType()),
 				x.getLayoutCode(), x.getItemId())).collect(Collectors.toList());
-		val itemBase =  new ItemValue(itemEditCalc.getValue(), ValueType.valueOf(itemEditCalc.getValueType()),
-				itemEditCalc.getLayoutCode(), itemEditCalc.getItemId());
+//		val itemBase =  new ItemValue(itemEditCalc.getValue(), ValueType.valueOf(itemEditCalc.getValueType()),
+//				itemEditCalc.getLayoutCode(), itemEditCalc.getItemId());
 		
 		addEditState(dtoEdit, itemEdits);
 		
 		DailyModifyRCResult updated = DailyModifyRCResult.builder().employeeId(itemEditCalc.getEmployeeId())
 				.workingDate(itemEditCalc.getDate()).items(itemValues).completed();
 
-		checkInput28And1(dtoEdit, itemEditCalc);
+		checkInput28And1(dtoEdit, itemEdits);
 		
 		String companyId = AppContexts.user().companyId();
 		
-		AttendanceItemUtil.fromItemValues(dtoEdit, Arrays.asList(itemBase));
+//		AttendanceItemUtil.fromItemValues(dtoEdit, Arrays.asList(itemBase));
+		AttendanceItemUtil.fromItemValues(dtoEdit, itemValues);
 
 		EventCorrectResult result = dailyCorrectEventServiceCenter.correctRunTime(dtoEdit, updated, companyId);
 		List<ItemValue> items = result.getCorrectedItemsWithStrict();
@@ -87,7 +89,6 @@ public class DailyCorrectCalcTimeService {
 		calcTime.setCellEdits(items.stream().map(x -> new DCCellEdit(itemEditCalc.getRowId(), "A" + x.getItemId(),
 				convertData(x.getValueType().value, x.getValue()))).collect(Collectors.toList()));
 		calcTime.setDailyEdits(dailyEditsResult);
-
 		return calcTime;
 	}
 	
@@ -156,10 +157,10 @@ public class DailyCorrectCalcTimeService {
 		}).collect(Collectors.toList());
 	}
 	
-	private void checkInput28And1(DailyRecordDto dailyEdit, DPItemValue itemEditCalc) {
+	private void checkInput28And1(DailyRecordDto dailyEdit, List<DPItemValue> itemEditCalc) {
 		DailyModifyResult updated = DailyModifyResult.builder().employeeId(dailyEdit.getEmployeeId())
 				.workingDate(dailyEdit.getDate()).items(AttendanceItemUtil.toItemValues(dailyEdit)).completed();
-		List<DPItemValue> resultError = validatorDataDaily.checkInput28And1(Arrays.asList(itemEditCalc),
+		List<DPItemValue> resultError = validatorDataDaily.checkInput28And1(itemEditCalc,
 				Arrays.asList(updated));
 		if (!resultError.isEmpty())
 			throw new BusinessException(resultError.get(0).getMessage());

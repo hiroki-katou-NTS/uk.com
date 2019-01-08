@@ -18,7 +18,7 @@ module cps001.a.vm {
     import vc = nts.layout.validation;
     import permision = service.getCurrentEmpPermision;
 
-    const DEF_AVATAR = 'images/avatar.png',
+    const DEF_AVATAR = 'images/avatar.svg',
         __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
         unblock = window["nts"]["uk"]["ui"]["block"]["clear"],
@@ -82,9 +82,11 @@ module cps001.a.vm {
             personId: ko.observable(''),
             employeeId: ko.observable(''),
             employeeIds: ko.observableArray([]),
-            employees: ko.observableArray([])
+            employees: ko.observableArray([]),
+            hireDate: ko.observable('')
         };
 
+        
         saveAble: KnockoutObservable<boolean> = ko.observable(false);
 
         // resource id for title in category mode
@@ -106,6 +108,7 @@ module cps001.a.vm {
                 params: IParam = getShared("CPS001A_PARAMS") || { employeeId: undefined };
 
             employee.employeeId.subscribe(id => {
+                self.layout.listItemCls.removeAll();
                 self.block();
             });
 
@@ -118,16 +121,17 @@ module cps001.a.vm {
             });
 
             setInterval(() => {
-                let aut = _(self.layout.listItemCls())
-                    .map((m: any) => m.items || undefined)
-                    .filter(x => !!x)
-                    .flatten() // flat set item
-                    .flatten() // flat list item
-                    .map((m: any) => !ko.toJS(m.readonly))
-                    .filter(x => !!x)
-                    .value();
+                let id = ko.toJS(self.employee.employeeId),
+                    aut = _(self.layout.listItemCls())
+                        .map((m: any) => m.items || undefined)
+                        .filter(x => !!x)
+                        .flatten() // flat set item
+                        .flatten() // flat list item
+                        .map((m: any) => !ko.toJS(m.readonly))
+                        .filter(x => !!x)
+                        .value();
 
-                self.saveAble(!!aut.length && !hasError());
+                self.saveAble(!!aut.length && !hasError() && !!id);
             }, 0);
 
             // check quyen có thể delete employee ở đăng ký thông tin cá nhân
@@ -257,7 +261,7 @@ module cps001.a.vm {
                         let index = _.findLastIndex(lstCardNumber, function(o) { return o == mes.parameterIds[0]; });
                         $($('[data-code = IS00779]')[index]).ntsError('set', { messageId: "Msg_346" });
                     } else {
-                        alert(mes.message);
+                        alert(mes);
                     }
 
                 });
@@ -282,9 +286,14 @@ module cps001.a.vm {
                     categoryId: evt.id,
                     categoryCode: evt.ccode,
                     standardDate: undefined,
-                    personId: ko.toJS(__viewContext.viewModel.employee.personId),
-                    employeeId: ko.toJS(__viewContext.viewModel.employee.employeeId)
+                    personId: ko.toJS(self.employee.personId),
+                    employeeId: ko.toJS(self.employee.employeeId)
                 };
+
+                if (!query.employeeId) {
+                    self.layout.listItemCls.removeAll();
+                    return;
+                }
 
                 if (evt.ctype) {
                     switch (evt.ctype) {
@@ -413,8 +422,13 @@ module cps001.a.vm {
                         query: ILayoutQuery = {
                             layoutId: id,
                             browsingEmpId: ko.toJS(__viewContext.viewModel.employee.employeeId),
-                            standardDate: ddate
+                            standardDate: !_.isNaN(ddate.getTime()) ? ddate : moment.utc().toDate()
                         };
+                    
+                    if (!query.browsingEmpId) {
+                        self.listItemCls.removeAll();
+                        return;
+                    }
 
                     service.getCurrentLayout(query).done((data: any) => {
                         if (data) {

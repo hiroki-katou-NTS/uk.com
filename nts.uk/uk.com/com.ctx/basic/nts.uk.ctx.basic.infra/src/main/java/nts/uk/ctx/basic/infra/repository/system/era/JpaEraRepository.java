@@ -12,9 +12,6 @@ import nts.uk.ctx.basic.dom.system.era.Era;
 import nts.uk.ctx.basic.dom.system.era.EraRepository;
 import nts.uk.ctx.basic.infra.entity.system.era.CmnmtEra;
 import nts.uk.ctx.basic.infra.entity.system.era.CmnmtEraPk;
-import nts.uk.shr.com.time.japanese.JapaneseEraName;
-import nts.uk.shr.com.time.japanese.JapaneseEras;
-import nts.uk.shr.com.time.japanese.JapaneseErasAdapter;
 
 @Stateless
 public class JpaEraRepository extends JpaRepository implements EraRepository {

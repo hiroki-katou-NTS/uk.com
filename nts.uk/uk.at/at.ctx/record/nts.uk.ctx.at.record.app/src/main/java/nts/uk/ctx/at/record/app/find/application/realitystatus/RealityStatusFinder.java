@@ -15,7 +15,7 @@ import nts.uk.ctx.at.record.dom.application.realitystatus.enums.ApprovalStatusMa
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.DailyConfirmOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.EmpPerformanceOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.ErrorStatusOutput;
-import nts.uk.ctx.at.record.dom.application.realitystatus.output.StatusWkpActivityOutput;
+import nts.uk.ctx.at.record.dom.application.realitystatus.output.SttWkpActivityOutputFull;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.UseSetingOutput;
 import nts.uk.ctx.at.record.dom.application.realitystatus.output.WkpIdMailCheckOutput;
 import nts.uk.shr.com.context.AppContexts;
@@ -28,10 +28,10 @@ public class RealityStatusFinder {
 	@Inject
 	RealityStatusService realityStatusService;
 
-	public List<StatusWkpActivityOutput> getStatusWkpActivity(RealityStatusActivityParam wkpInfoDto) {
+	public SttWkpActivityOutputFull getStatusWkpActivity(RealityStatusActivityParam wkpInfoDto) {
 		// アルゴリズム「承認状況職場実績起動」を実行する
 		return realityStatusService.getStatusWkpActivity(wkpInfoDto.getListWorkplaceId(), wkpInfoDto.getStartDate(),
-				wkpInfoDto.getEndDate(), wkpInfoDto.getListEmpCd(), wkpInfoDto.isConfirmData());
+				wkpInfoDto.getEndDate(), wkpInfoDto.getListEmpCd(), wkpInfoDto.isConfirmData(), wkpInfoDto.getClosureID());
 	}
 
 	public void checkSendUnconfirmedMail(List<WkpIdMailCheckParam> listWkp) {
@@ -44,7 +44,7 @@ public class RealityStatusFinder {
 		// アルゴリズム「承認状況未確認メール送信実行」を実行する
 		SendMailResultImport result = realityStatusService.exeSendUnconfirmMail(
 				EnumAdaptor.valueOf(dto.getType(), ApprovalStatusMailType.class), listWkp, dto.getStartDate(),
-				dto.getEndDate(), dto.getListEmpCd());
+				dto.getEndDate(), dto.getListEmpCd(), dto.getClosureID());
 		return new SendMailResultDto(result.isOK(), result.getListError());
 	}
 
@@ -65,7 +65,7 @@ public class RealityStatusFinder {
 
 	public List<EmpPerformanceDto> getEmpPerformance(EmpPerformanceParam dto) {
 		List<EmpPerformanceOutput> listEmpPerformance = realityStatusService.getAcquisitionWkpEmpPerformance(
-				dto.getWkpId(), dto.getStartDate(), dto.getEndDate(), dto.getListEmpCd());
+				dto.getWkpId(), dto.getStartDate(), dto.getEndDate(), dto.getListEmpCd(), dto.getClosureID());
 		return this.convertEmpPerformanceDto(listEmpPerformance);
 	}
 

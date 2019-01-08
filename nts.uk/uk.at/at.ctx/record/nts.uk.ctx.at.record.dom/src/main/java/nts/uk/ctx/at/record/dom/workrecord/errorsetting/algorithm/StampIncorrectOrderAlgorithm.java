@@ -29,9 +29,9 @@ public class StampIncorrectOrderAlgorithm {
 
 	public EmployeeDailyPerError stampIncorrectOrder(String companyID, String employeeID, GeneralDate processingDate,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
-		
+
 		EmployeeDailyPerError employeeDailyPerError = null;
-		
+
 		List<Integer> attendanceItemIds = new ArrayList<>();
 
 		// TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance =
@@ -39,22 +39,23 @@ public class StampIncorrectOrderAlgorithm {
 		// .findByKey(employeeID, processingDate).get();
 
 		if (timeLeavingOfDailyPerformance != null && !timeLeavingOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
-			
-			if (timeLeavingOfDailyPerformance.getTimeLeavingWorks().size() >= 2
-								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp().isPresent()
-								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp().get().getStamp().isPresent()
-								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null
-								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().isPresent()
-								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().get().getStamp().isPresent()
-								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().get().getStamp().get().getTimeWithDay() != null
-								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().isPresent()
-								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().get().getStamp().isPresent()
-								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null
-								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp().isPresent()
-								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp().get().getStamp().isPresent()
-								&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp().get().getStamp().get().getTimeWithDay() != null) {
+
+//			if (timeLeavingOfDailyPerformance.getTimeLeavingWorks().size() >= 2
+//					&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp().isPresent()
+//					&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp().get().getStamp().isPresent()
+//					&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null
+//					&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().isPresent()
+//					&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().get().getStamp().isPresent()
+//					&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().get().getStamp().get().getTimeWithDay() != null
+//					&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().isPresent()
+//					&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().get().getStamp().isPresent()
+//					&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null
+//					&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp().isPresent()
+//					&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp().get().getStamp().isPresent()
+//					&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp().get().getStamp().get().getTimeWithDay() != null) {
 				// ペアの逆転がないか確認する
-				List<OutPutProcess> pairOutPutList = checkPairReversed(timeLeavingOfDailyPerformance.getTimeLeavingWorks());
+				List<OutPutProcess> pairOutPutList = checkPairReversed(
+						timeLeavingOfDailyPerformance.getTimeLeavingWorks());
 				if (pairOutPutList.stream().anyMatch(item -> item == OutPutProcess.HAS_ERROR)) {
 					if (pairOutPutList.get(0).value == 1) {
 						attendanceItemIds.add(31);
@@ -64,7 +65,19 @@ public class StampIncorrectOrderAlgorithm {
 						attendanceItemIds.add(44);
 					}
 				} else {
-					if (timeLeavingOfDailyPerformance.getTimeLeavingWorks().size() >= 2) {
+					if (timeLeavingOfDailyPerformance.getTimeLeavingWorks().size() >= 2
+							&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp().isPresent()
+							&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp().get().getStamp().isPresent()
+							&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null
+							&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().isPresent()
+							&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().get().getStamp().isPresent()
+							&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getLeaveStamp().get().getStamp().get().getTimeWithDay() != null
+							&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().isPresent()
+							&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().get().getStamp().isPresent()
+							&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null
+							&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp().isPresent()
+							&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp().get().getStamp().isPresent()
+							&& timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getLeaveStamp().get().getStamp().get().getTimeWithDay() != null) {
 						if (timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(0).getWorkNo()
 								.lessThan(timeLeavingOfDailyPerformance.getTimeLeavingWorks().get(1).getWorkNo())) {
 							attendanceItemIds.add(31);
@@ -84,9 +97,8 @@ public class StampIncorrectOrderAlgorithm {
 							TimeWithDayAttr stampStartTimeSecondTime = timeLeavingOfDailyPerformance
 									.getTimeLeavingWorks().get(1).getAttendanceStamp().get().getStamp().get()
 									.getTimeWithDay();
-							TimeWithDayAttr endStartTimeSecondTime = timeLeavingOfDailyPerformance
-									.getTimeLeavingWorks().get(1).getLeaveStamp().get().getStamp().get()
-									.getTimeWithDay();
+							TimeWithDayAttr endStartTimeSecondTime = timeLeavingOfDailyPerformance.getTimeLeavingWorks()
+									.get(1).getLeaveStamp().get().getStamp().get().getTimeWithDay();
 							TimeSpanForCalc timeSpanSecondTime = new TimeSpanForCalc(endStartTimeSecondTime,
 									stampStartTimeSecondTime);
 
@@ -104,14 +116,13 @@ public class StampIncorrectOrderAlgorithm {
 						}
 					}
 				}
-			}				
-		}
+			}
+//		}
 		if (!attendanceItemIds.isEmpty()) {
-			employeeDailyPerError = new EmployeeDailyPerError(companyID,
-					employeeID, processingDate, new ErrorAlarmWorkRecordCode("S004"),
-					attendanceItemIds);
+			employeeDailyPerError = new EmployeeDailyPerError(companyID, employeeID, processingDate,
+					new ErrorAlarmWorkRecordCode("S004"), attendanceItemIds);
 		}
-		
+
 		return employeeDailyPerError;
 	}
 
@@ -120,12 +131,18 @@ public class StampIncorrectOrderAlgorithm {
 		OutPutProcess pairOutPut = OutPutProcess.HAS_ERROR;
 
 		for (TimeLeavingWork timeLeavingWorking : timeLeavingWorks) {
-			if (timeLeavingWorking.getLeaveStamp().get().getStamp().get().getTimeWithDay()
-					.greaterThanOrEqualTo(timeLeavingWorking.getAttendanceStamp().get().getStamp().get()
-							.getTimeWithDay())) {
-				pairOutPut = OutPutProcess.NO_ERROR;
+			if (timeLeavingWorking.getLeaveStamp().isPresent()
+					&& timeLeavingWorking.getLeaveStamp().get().getStamp().isPresent()
+					&& timeLeavingWorking.getLeaveStamp().get().getStamp().get().getTimeWithDay() != null
+					&& timeLeavingWorking.getAttendanceStamp().isPresent()
+					&& timeLeavingWorking.getAttendanceStamp().get().getStamp().isPresent()
+					&& timeLeavingWorking.getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null) {
+				if (timeLeavingWorking.getLeaveStamp().get().getStamp().get().getTimeWithDay().greaterThanOrEqualTo(
+						timeLeavingWorking.getAttendanceStamp().get().getStamp().get().getTimeWithDay())) {
+					pairOutPut = OutPutProcess.NO_ERROR;
+				}
+				outPutProcessList.add(pairOutPut);
 			}
-			outPutProcessList.add(pairOutPut);
 		}
 
 		return outPutProcessList;

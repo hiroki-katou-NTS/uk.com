@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
@@ -28,6 +29,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.IdentityProcessUseSetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
+import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.CheckIndentityMonth;
+import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthParam;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
@@ -44,6 +47,9 @@ public class DPDisplayLockProcessor {
 
 	@Inject
 	private DPLock findLock;
+	
+	@Inject
+	private CheckIndentityMonth checkIndentityMonth;
 
 	public DailyPerformanceCorrectionDto processDisplayLock(DPDisplayLockParam param) {
 		DailyPerformanceCorrectionDto result = new DailyPerformanceCorrectionDto();
@@ -79,9 +85,12 @@ public class DPDisplayLockProcessor {
 			if (lstError.size() > 0) {
 				// Get list error setting
 				List<DPErrorSettingDto> lstErrorSetting = this.repo.getErrorSetting(companyId,
-						lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+						lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()), true, true, false);
 				// Seperate Error and Alarm
-				result.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
+				if(lstErrorSetting.isEmpty()) {
+					lstError = new ArrayList<>();
+				}
+				result.addErrorToResponseData(lstError, lstErrorSetting, mapDP, false);
 			}
 		}
 
@@ -95,8 +104,22 @@ public class DPDisplayLockProcessor {
 		DPLockDto dpLock = findLock.checkLockAll(companyId, listEmployeeId, dateRange, sId, mode, identityProcessDtoOpt,
 				approvalUseSettingDtoOpt);
 		Map<String, Boolean> disableSignMap = new HashMap<>();
+		process.getApplication(listEmployeeId, dateRange, disableSignMap);
 		List<WorkInfoOfDailyPerformanceDto> workInfoOfDaily = repo.getListWorkInfoOfDailyPerformance(listEmployeeId,
 				dateRange);
+		
+		if (displayFormat == 0) {
+			// フレックス情報を表示する
+			if (listEmployeeId.get(0).equals(sId)) {
+				//checkIndenityMonth
+				result.setIndentityMonthResult(checkIndentityMonth.checkIndenityMonth(new IndentityMonthParam(companyId, sId, GeneralDate.today())));
+				//対象日の本人確認が済んでいるかチェックする
+				result.checkShowTighProcess(displayFormat, true);
+			}else {
+				result.getIndentityMonthResult().setHideAll(true);
+			}
+			// screenDto.setFlexShortage(null);
+		}
 		
 		for (DPDataDto data : result.getLstData()) {
 			data.resetData();

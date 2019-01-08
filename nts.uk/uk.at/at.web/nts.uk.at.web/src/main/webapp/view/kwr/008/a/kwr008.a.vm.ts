@@ -26,6 +26,7 @@ module nts.uk.at.view.kwr008.a {
             periodEndDate: KnockoutObservable<moment.Moment>;
             baseDate: KnockoutObservable<moment.Moment>;
             selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
+            
             showEmployment: KnockoutObservable<boolean>; // 雇用条件
             showWorkplace: KnockoutObservable<boolean>; // 職場条件
             showClassification: KnockoutObservable<boolean>; // 分類条件
@@ -51,7 +52,7 @@ module nts.uk.at.view.kwr008.a {
             alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
             ccgcomponentPerson: GroupOption;
 
-            isEmployeeCharge: KnockoutObservable<boolean> =  ko.observableArray(false);
+            isEmployeeCharge: KnockoutObservable<boolean> = ko.observableArray(false);
             // date
             date: KnockoutObservable<string>;
             maxDaysCumulationByEmp: KnockoutObservable<number>;
@@ -112,7 +113,7 @@ module nts.uk.at.view.kwr008.a {
                         self.showClosure(true);
                     }
                 });
-                
+
                 self.printFormat.subscribe(item => {
                     nts.uk.ui.errors.clearAll();
                 });
@@ -146,7 +147,12 @@ module nts.uk.at.view.kwr008.a {
                     data.startYearMonth = self.dateValue().startDate;
                     data.endYearMonth = self.dateValue().endDate;
                 } else {
-                    data.fiscalYear = self.fiscalYear();
+                    let year = self.fiscalYear();
+                    if (year.match(/\d{4}/)) {
+                        data.fiscalYear = year;
+                    } else {
+                        data.fiscalYear = moment.utc(year).get('year');
+                    }
                 }
                 data.setItemsOutputCd = self.selectedOutputItem();
                 data.breakPage = self.selectedBreakPage().toString();
@@ -236,10 +242,19 @@ module nts.uk.at.view.kwr008.a {
                 self.showClassification = ko.observable(true); // 分類条件
                 self.showJobTitle = ko.observable(true); // 職位条件
                 self.showWorktype = ko.observable(true); // 勤種条件
+                
+                // update task : #102968
+                /**
+                 * ・在職区分：TRUE
+                                           ・休職区分：TRUE
+                                           ・休業区分：TRUE
+                                           ・退職区分：FALSE
+                 */
                 self.inService = ko.observable(true); // 在職区分
                 self.leaveOfAbsence = ko.observable(true); // 休職区分
                 self.closed = ko.observable(true); // 休業区分
                 self.retirement = ko.observable(false); // 退職区分
+                
                 self.systemType = ko.observable(2); //ok -
                 self.showClosure = ko.observable(false); // 就業締め日利用
                 self.showBaseDate = ko.observable(true); // 基準日利用
@@ -371,7 +386,7 @@ module nts.uk.at.view.kwr008.a {
                 let self = this;
                 if (self.printFormat() == 0) {
                     $('#period .ntsDatepicker').trigger('validate');
-                }else{
+                } else {
                     $('#A9_2').trigger('validate');
                 }
                 $('#outputItem').trigger('validate');
@@ -409,7 +424,8 @@ module nts.uk.at.view.kwr008.a {
                     maxWidth: 550,
                     maxRows: 15
                 };
-                self.selectedEmployeeCode(dataList);
+                var empCodeList = dataList.map((employee) => employee.employeeCode );
+                self.selectedEmployeeCode(empCodeList);
             }
 
             /**

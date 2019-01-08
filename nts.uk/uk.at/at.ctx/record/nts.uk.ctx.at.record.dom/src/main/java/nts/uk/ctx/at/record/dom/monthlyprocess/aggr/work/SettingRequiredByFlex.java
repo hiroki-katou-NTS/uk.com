@@ -45,6 +45,9 @@ public class SettingRequiredByFlex {
 	/** 月間所定労働時間 */
 	@Setter
 	private AttendanceTimeMonth prescribedWorkingTimeMonth;
+	/** 翌月繰越可能時間 */
+	@Setter
+	private AttendanceTimeMonth canNextCarryforwardTimeMonth;
 	/** 休出枠の役割 */
 	private Map<Integer, RoleOfOpenPeriod> roleHolidayWorkFrameMap;
 
@@ -61,6 +64,7 @@ public class SettingRequiredByFlex {
 		this.holidayAdditionMap = new HashMap<>();
 		this.statutoryWorkingTimeMonth = new AttendanceTimeMonth(0);
 		this.prescribedWorkingTimeMonth = new AttendanceTimeMonth(0);
+		this.canNextCarryforwardTimeMonth = new AttendanceTimeMonth(0);
 		this.roleHolidayWorkFrameMap = new HashMap<>();
 	}
 }

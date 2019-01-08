@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.schedule.dom.shift.specificdayset.service;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+//import java.math.BigDecimal;
+//import java.util.ArrayList;
+//import java.util.Collections;
+//import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -32,7 +32,7 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.UseSet;
 @Stateless
 public class CalendarInformationServiceImpl implements ICalendarInformationService {
 	
-	private static final String DATE_FORMAT = "yyyy/MM/dd";
+//	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	@Inject
 	private CalendarCompanyRepository calendarCompanyRepository;

@@ -1,7 +1,6 @@
 package nts.uk.ctx.workflow.dom.service.resultrecord;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +8,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -165,7 +166,7 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 				}
 				AppFrameConfirm appFrameConfirm = opAppFrameConfirm.get();
 				// 指定する承認者が承認を行った承認者かチェックする
-				if(appFrameConfirm.getApproverID().orElse(null).equals(approverID) || appFrameConfirm.getRepresenterID().orElse(null).equals(approverID)){
+				if(appFrameConfirm.getApproverID().orElse("").equals(approverID) || appFrameConfirm.getRepresenterID().orElse("").equals(approverID)){
 					// ループする枠番のドメインモデル「承認済承認者」を削除する
 					appPhaseConfirm.getListAppFrame().remove(appFrameConfirm);
 					cleanComplete = true;
@@ -220,8 +221,8 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 			if(opAppFrameConfirm.isPresent()){
 				AppFrameConfirm appFrameConfirm = opAppFrameConfirm.get();
 				frame.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
-				frame.setApproverID(appFrameConfirm.getApproverID().orElse(null));
-				frame.setRepresenterID(appFrameConfirm.getRepresenterID().orElse(null));
+				frame.setApproverID(appFrameConfirm.getApproverID().orElse(""));
+				frame.setRepresenterID(appFrameConfirm.getRepresenterID().orElse(""));
 				frame.setApprovalDate(appFrameConfirm.getApprovalDate());
 			}
 		});
@@ -249,7 +250,8 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 		if(approvalPhaseState.getApprovalForm()==ApprovalForm.EVERYONE_APPROVED){
 			// 指定する社員が承認を行った承認者かチェックする
 			Optional<ApprovalFrame> opApprovalFrame = approvalPhaseState.getListApprovalFrame().stream()
-					.filter(frame -> frame.getApproverID().equals(employeeID) || frame.getRepresenterID().equals(employeeID)).findAny();
+					.filter(frame -> (Strings.isNotBlank(frame.getApproverID())&&frame.getApproverID().equals(employeeID)) || 
+							(Strings.isNotBlank(frame.getRepresenterID())&&frame.getRepresenterID().equals(employeeID))).findAny();
 			if(opApprovalFrame.isPresent()){
 				// 解除できるフラグ = true
 				canCancel = true;

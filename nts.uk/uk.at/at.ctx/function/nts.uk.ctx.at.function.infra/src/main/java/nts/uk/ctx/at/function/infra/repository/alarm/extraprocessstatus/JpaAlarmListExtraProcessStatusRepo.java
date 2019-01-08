@@ -12,7 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatus;
 import nts.uk.ctx.at.function.dom.alarm.extraprocessstatus.AlarmListExtraProcessStatusRepository;
 import nts.uk.ctx.at.function.infra.entity.alarm.extraprocessstatus.KfnmtAlarmListExtraProcessStatus;
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements AlarmListExtraProcessStatusRepository {
 
@@ -54,7 +54,7 @@ public class JpaAlarmListExtraProcessStatusRepo extends JpaRepository implements
 				.getSingle(c -> c.toDomain());
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public String addAlListExtaProcess(AlarmListExtraProcessStatus alarmListExtraProcessStatus) {
 		this.commandProxy().insert(KfnmtAlarmListExtraProcessStatus.toEntity( alarmListExtraProcessStatus));

@@ -110,7 +110,9 @@ module nts.uk.at.view.kal001.a.model {
                 maxRows  : 22
             };
             self.empCount = ko.observable(0);
-            
+            self.currentAlarmCode.subscribe((newCode) => {
+                errors.clearAll();
+            });
                    
         }
 
@@ -153,7 +155,7 @@ module nts.uk.at.view.kal001.a.model {
             let self = this;
             
             self.currentAlarmCode.subscribe((newCode)=>{
-                    $(".nts-input").ntsError("clear");
+                    $(".nts-combobox").ntsError("clear");
                     service.getCheckConditionTime(newCode).done((checkTimeData)=>{
                         self.periodByCategory(_.map((checkTimeData), (item) =>{
                             return new PeriodByCategory(item);
@@ -267,11 +269,13 @@ module nts.uk.at.view.kal001.a.model {
         year:  KnockoutObservable<number> = ko.observable(1999);
         visible: KnockoutObservable<boolean>;
         id : number;
+        period36Agreement : number;
         
         constructor(dto:  service.CheckConditionTimeDto){
             let self = this;
             this.category = dto.category;
             this.categoryName = dto.categoryName;
+            this.period36Agreement = dto.period36Agreement;
             
             if(dto.category==2 || dto.category==5){
                 this.dateValue= ko.observable(new DateValue(dto.startDate, dto.endDate) );
@@ -451,6 +455,7 @@ module nts.uk.at.view.kal001.a.model {
         year:  number = 1999;
         visible: boolean;
         id : number;
+        period36Agreement : number;
            constructor(dto:  PeriodByCategory){
             let self = this;
             this.category = dto.category;
@@ -461,6 +466,7 @@ module nts.uk.at.view.kal001.a.model {
             this.required = dto.required();
             this.visible = dto.visible();
             this.year = dto.year();
+            this.period36Agreement = dto.period36Agreement;
           }
       }
 }

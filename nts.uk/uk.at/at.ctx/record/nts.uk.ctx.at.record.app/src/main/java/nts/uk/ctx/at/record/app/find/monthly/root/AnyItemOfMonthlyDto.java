@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.dailyperform.optionalitem.dto.OptionalItemValueDto;
@@ -16,7 +17,6 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
@@ -25,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の任意項目 */
@@ -121,7 +122,7 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, AnyItemOfMonthly c) {
 		OptionalItem optItem = master == null ? null : master.get(c.getAnyItemId());
 		OptionalItemAtr attr = null;
-		if(optItem != null && optItem.getPerformanceAtr() == PerformanceAtr.MONTHLY_PERFORMANCE){
+		if(optItem != null){
 			attr = optItem.getOptionalItemAtr();
 		}
 		return attr;

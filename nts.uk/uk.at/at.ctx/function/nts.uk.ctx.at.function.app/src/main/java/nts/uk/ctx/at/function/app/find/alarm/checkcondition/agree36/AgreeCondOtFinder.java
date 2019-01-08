@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.function.app.find.alarm.checkcondition.agree36;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
-
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeCondOtRepository;
+//import javax.inject.Inject;
+//
+//import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeCondOtRepository;
 
 /**
  * 
@@ -12,8 +12,8 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeCondOtRepos
  */
 @Stateless
 public class AgreeCondOtFinder {
-	@Inject
-	private IAgreeCondOtRepository condOtRep;
+//	@Inject
+//	private IAgreeCondOtRepository condOtRep;
 	
 //	public List<AgreeCondOtDto> finder(){
 //		List<AgreeCondOt> result = condOtRep.findAll();

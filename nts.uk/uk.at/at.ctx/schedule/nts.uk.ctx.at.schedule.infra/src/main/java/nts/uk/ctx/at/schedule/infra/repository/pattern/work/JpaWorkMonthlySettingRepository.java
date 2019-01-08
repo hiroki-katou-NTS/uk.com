@@ -19,6 +19,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -209,36 +210,37 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 
 		// select root
 		cq.select(root);
-
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-
-		// equal company id
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.cid),
-				companyId));
-
-		// equal monthly pattern code
-		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK)
-				.get(KscmtWorkMonthSetPK_.mPatternCd), monthlyPatternCode));
-
-		// in base date data list
-		lstpredicateWhere.add(criteriaBuilder.and(root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK)
-				.get(KscmtWorkMonthSetPK_.ymdK).in(workMonthlySettings.stream()
-						.map(setting -> setting.getYmdk()).collect(Collectors.toList()))));
 		
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		List<KscmtWorkMonthSet> resultList = new ArrayList<>();
+		List<GeneralDate> collect = workMonthlySettings.stream().map(setting -> setting.getYmdk()).collect(Collectors.toList());
+		
+		CollectionUtil.split(collect, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+			// equal company id
+			lstpredicateWhere.add(criteriaBuilder.equal(
+					root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.cid),
+					companyId));
+			
+			// equal monthly pattern code
+			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK)
+					.get(KscmtWorkMonthSetPK_.mPatternCd), monthlyPatternCode));
+			// in base date data list
+			lstpredicateWhere.add(criteriaBuilder.and(root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK)
+					.get(KscmtWorkMonthSetPK_.ymdK).in(splitData)));
+			
+			// set where to SQL
+			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+			
+			// order by ymdk id asc
+			cq.orderBy(criteriaBuilder.asc(
+					root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdK)));
+			
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
 
-		// order by ymdk id asc
-		cq.orderBy(criteriaBuilder.asc(
-				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdK)));
-
-		// create query
-		TypedQuery<KscmtWorkMonthSet> query = em.createQuery(cq);
-
-		// exclude select
-		return query.getResultList();
+		
+		return resultList;
 	}
 
 
@@ -270,35 +272,35 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 
 		// select root
 		cq.select(root);
-
-		// add where
-		List<Predicate> lstpredicateWhere = new ArrayList<>();
-
-		// equal company id
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.cid),
-				companyId));
-
-		// equal monthly pattern code
-		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK)
-				.get(KscmtWorkMonthSetPK_.mPatternCd), monthlyPatternCode));
-
-		// in base date data list
-		lstpredicateWhere.add(criteriaBuilder.and(root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK)
-				.get(KscmtWorkMonthSetPK_.ymdK).in(baseDates)));
 		
-		// set where to SQL
-		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-		// order by ymdk id asc
-		cq.orderBy(criteriaBuilder.asc(
-				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdK)));
-
-		// create query
-		TypedQuery<KscmtWorkMonthSet> query = em.createQuery(cq);
+		List<KscmtWorkMonthSet> resultList = new ArrayList<>();
+		CollectionUtil.split(baseDates, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			// add where
+			List<Predicate> lstpredicateWhere = new ArrayList<>();
+			// equal company id
+			lstpredicateWhere.add(criteriaBuilder.equal(
+			        root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.cid),
+					companyId));
+			
+			// equal monthly pattern code
+			lstpredicateWhere.add(criteriaBuilder.equal(root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK)
+					.get(KscmtWorkMonthSetPK_.mPatternCd), monthlyPatternCode));
+			// in base date data list
+			lstpredicateWhere.add(criteriaBuilder.and(root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK)
+					.get(KscmtWorkMonthSetPK_.ymdK).in(splitData)));
+			
+			// set where to SQL
+		   cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+			
+			// order by ymdk id asc
+		   cq.orderBy(criteriaBuilder.asc(
+					root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdK)));
+			
+			resultList.addAll(em.createQuery(cq).getResultList());
+		});
 
 		// exclude select
-		return query.getResultList().stream().map(entity -> this.toDomain(entity))
+		return resultList.stream().map(entity -> this.toDomain(entity))
 				.collect(Collectors.toList());
 	}
 

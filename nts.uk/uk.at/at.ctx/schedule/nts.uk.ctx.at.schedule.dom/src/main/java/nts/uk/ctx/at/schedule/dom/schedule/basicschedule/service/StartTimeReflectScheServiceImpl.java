@@ -40,7 +40,8 @@ public class StartTimeReflectScheServiceImpl implements StartEndTimeReflectScheS
 		WorkScheduleTimeZone timeZoneData = null;
 		if(workScheduleTimeZones.isEmpty()) {
 			if(timeDto.isUpdateStart() && timeDto.isUpdateEnd()) {
-				timeZoneData = new WorkScheduleTimeZone(1, new TimeWithDayAttr(timeDto.getStartTime()), new TimeWithDayAttr(timeDto.getEndTime()), BounceAtr.DIRECT_BOUNCE);
+				timeZoneData = new WorkScheduleTimeZone(1, new TimeWithDayAttr(timeDto.getStartTime() == null ? 0 : timeDto.getStartTime()),
+						new TimeWithDayAttr(timeDto.getEndTime()== null ? 0 : timeDto.getEndTime()), BounceAtr.DIRECT_BOUNCE);
 				List<WorkScheduleTimeZone> lstTimeZoneData = new ArrayList<>();
 				lstTimeZoneData.add(timeZoneData);
 				basicScheByDate.setWorkScheduleTimeZones(lstTimeZoneData);

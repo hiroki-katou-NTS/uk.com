@@ -24,7 +24,7 @@ public class JpaFlexOffdayFlowRestTzSetMemento implements FlowRestTimezoneSetMem
 	private KshmtFlexHaRtSet entity;
 	
 	/** The entity flow rests. */
-	private List<KshmtFlexOdRestSet> entityFlowRests;
+	 List<KshmtFlexOdRestSet> entityFlowRests;
 	
 
 	/**

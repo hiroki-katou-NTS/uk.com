@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.sys
 import java.util.Optional;
 
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.checkprincipalunconfirm.ValueExtractAlarmWR;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * 5:36協定のチェック

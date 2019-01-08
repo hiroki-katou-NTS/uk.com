@@ -35,7 +35,7 @@
 						<th class="tbl-th">#{i18n.getText('CCG018_12')}</th>
 					</tr>
 				</thead>
-				<tbody id="width-tbody" data-bind="foreach: items">
+				<tbody data-bind="foreach: items, style: {'width': isVisible()=== true? '939px':'733px'}">
 					<tr>
 						<td class="tbl-td" data-bind="text: code"></td>
 						<td class="tbl-td" data-bind="text: name"></td>

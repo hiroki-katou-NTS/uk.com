@@ -59,4 +59,11 @@ public class EmployeeImport {
 		this.companyId = companyId;
 		this.personalId = personalId;
 	}
+	public EmployeeImport(String companyId, String personalId, String employeeId, String employeeCode ,  String personalName) {
+		this.companyId = companyId;
+		this.personalId = personalId;
+		this.employeeId = employeeId;
+		this.employeeCode = employeeCode;
+		this.personalName = personalName;
+	}
 }

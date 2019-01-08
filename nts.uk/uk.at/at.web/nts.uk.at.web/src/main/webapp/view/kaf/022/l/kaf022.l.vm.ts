@@ -734,9 +734,9 @@ module nts.uk.at.view.kmf022.l.viewmodel {
                 }
                 else if(itemSet.optionName() == "【振休】"){
                     let absenceKAF022 = {
-                        oneDayAtr: 7,
-                        morningAtr: 7,
-                        afternoonAtr: 7,
+                        oneDayAtr: 8,
+                        morningAtr: 8,
+                        afternoonAtr: 8,
                     }
                     self.findAbsenceKaf022(absenceKAF022).done(() => {
                         workTypeCodes = [];

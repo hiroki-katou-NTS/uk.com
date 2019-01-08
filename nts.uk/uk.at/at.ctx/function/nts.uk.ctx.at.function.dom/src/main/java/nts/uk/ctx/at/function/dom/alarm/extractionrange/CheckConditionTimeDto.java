@@ -12,6 +12,7 @@ public class CheckConditionTimeDto {
 	private String startMonth;
 	private String endMonth;
 	private Integer year;
+	private int period36Agreement ;
 	public CheckConditionTimeDto(int category, String categoryName, String startDate, String endDate, String startMonth,
 			String endMonth) {
 		super();
@@ -38,8 +39,5 @@ public class CheckConditionTimeDto {
 		this.startMonth = startMonth;
 		this.endMonth = endMonth;
 		this.year = year;
-	}
-
-	
-	
+	}	
 }

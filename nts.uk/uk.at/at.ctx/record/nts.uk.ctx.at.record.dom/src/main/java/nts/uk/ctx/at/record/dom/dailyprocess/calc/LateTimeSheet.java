@@ -12,10 +12,10 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTime
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
+//import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
-import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
-import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
+//import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
+//import nts.uk.ctx.at.shared.dom.worktime.common.GraceTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
@@ -33,14 +33,20 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class LateTimeSheet{
 	
 	// 遅刻していない場合はempty
+	//計上用時間帯
 	private Optional<LateLeaveEarlyTimeSheet> forRecordTimeSheet;
 	
+	//控除用時間帯
 	private Optional<LateLeaveEarlyTimeSheet> forDeducationTimeSheet;
 	
-	//今は一時的にint型で作成しているが、本来はworkNo型
+	//勤務No
 	private int workNo;
 	
+	//相殺時間
 	private Optional<DeductionOffSetTime> OffsetTime;
+	
+	//コアなしフレックス遅刻時間
+	private Optional<AttendanceTime> noCoreFlexLateTime = Optional.empty();
 	
 	
 	public LateTimeSheet(
@@ -180,7 +186,7 @@ public class LateTimeSheet{
 //		AttendanceTime lateTime = instance.isPresent()?instance.get().calcTotalTime():new AttendanceTime(0);
 		//遅刻時間帯を再度補正
 		if(instance.isPresent()) {
-			instance = Optional.of(instance.get().collectionAgainOfLate(instance.get()));
+			instance = Optional.of(instance.get().collectionAgainOfLate(instance.get(),breakTimeList));
 		}
 		return instance;
 	}
@@ -235,7 +241,7 @@ public class LateTimeSheet{
 					dpCopyRec.add(tc);
 				});
 				
-				DeductionTimeSheet reNewdeductionTimeSheet = new DeductionTimeSheet(dpCopyDed,dpCopyRec);
+				DeductionTimeSheet reNewdeductionTimeSheet = new DeductionTimeSheet(dpCopyDed,dpCopyRec,deductionTimeSheet.getBreakTimeOfDailyList(),deductionTimeSheet.getDailyGoOutSheet(),deductionTimeSheet.getShortTimeSheets());
 				//大塚モードか判断_現状は常に大塚モード
 				if(true) {
 					//区分が休憩の時間帯を一旦削除

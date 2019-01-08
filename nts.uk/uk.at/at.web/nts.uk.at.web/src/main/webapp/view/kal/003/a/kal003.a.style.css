@@ -102,3 +102,31 @@ div .tab-content-5 .nts-fixed-table .nts-fixed-body-container{
 #div-fixed-table .nts-fixed-table.cf .nts-fixed-body-container.ui-iggrid .nts-fixed-body-wrapper{
 	height: 256px ! important ;
 }
+#check-condition-table_category9{
+	box-sizing: border-box;
+}
+#multiple-months-content #div_table_check_conditions .nts-fixed-table .nts-fixed-body-container{
+	box-sizing: border-box;
+}
+#multiple-months-content #div_table_check_conditions .nts-fixed-table.cf .scroll-header.nts-fixed-header{
+	    display: none;
+}
+#check-condition-table{
+	box-sizing: border-box;
+}
+#daily-content #div_table_check_conditions .nts-fixed-table .nts-fixed-body-container{
+	box-sizing: border-box;
+}
+#daily-content #div_table_check_conditions .nts-fixed-table.cf .scroll-header.nts-fixed-header{
+	    display: none;
+}
+#fixed-table2{
+	 box-sizing: border-box;
+}
+
+#category7 .nts-fixed-table .nts-fixed-body-container{
+	box-sizing: border-box;
+}
+#category7 .nts-fixed-table.cf .scroll-header.nts-fixed-header{
+	    display: none;
+}

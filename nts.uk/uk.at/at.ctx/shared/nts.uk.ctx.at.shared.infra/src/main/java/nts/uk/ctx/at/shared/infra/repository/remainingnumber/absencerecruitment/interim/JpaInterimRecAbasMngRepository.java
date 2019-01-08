@@ -1,20 +1,30 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber.absencerecruitment.interim;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
+//import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.SelectedAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
@@ -30,6 +40,7 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaInterimRecAbasMngRepository extends JpaRepository implements InterimRecAbasMngRepository{
 
+	
 	private static final String QUERY_REC_BY_ID = "SELECT c FROM KrcmtInterimRecAbs c"
 			+ " WHERE c.recAbsPk.recruitmentMngId = :remainID"
 			+ " AND c.recruitmentMngAtr = :mngAtr";
@@ -115,18 +126,43 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 				new UseDay(x.useDays),
 				EnumAdaptor.valueOf(x.selectedAtr, SelectedAtr.class));
 	}
-
+	@SneakyThrows
 	@Override
-	public List<InterimRecMng> getRecByIdPeriod(List<String> recId, double unUseDays, DatePeriod dateData) {
-		if(recId.isEmpty()) {
+	public List<InterimRecMng> getRecByIdPeriod(String sid, DatePeriod ymdPeriod, double unUseDays, DatePeriod dateData) {
+		/*if(recId.isEmpty()) {
 			return Collections.emptyList();
 		}
-		return this.queryProxy().query(QUERY_REC_BY_DATEPERIOD, KrcmtInterimRecMng.class)
-				.setParameter("mngIds", recId)
-				.setParameter("unUsedDays", unUseDays)
-				.setParameter("startDate", dateData.start())
-				.setParameter("endDate", dateData.end())
-				.getList(c -> toDomainRecMng(c));
+		List<InterimRecMng> resultList = new ArrayList<>();
+		CollectionUtil.split(recId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(QUERY_REC_BY_DATEPERIOD, KrcmtInterimRecMng.class)
+								.setParameter("mngIds", subList)
+								.setParameter("unUsedDays", unUseDays)
+								.setParameter("startDate", dateData.start())
+								.setParameter("endDate", dateData.end())
+								.getList(c -> toDomainRecMng(c)));
+		});
+		return resultList;*/
+		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_REC_MNG a1"
+				+ " INNER JOIN KRCMT_INTERIM_REMAIN_MNG a2 "
+				+ " ON a1.RECRUITMENT_MNG_ID = a2.REMAIN_MNG_ID"
+				+ " WHERE a2.SID = ?"
+				+ " AND a2.REMAIN_TYPE = " + RemainType.PICKINGUP.value
+				+ " AND a2.YMD >= ? and a2.YMD <= ?"
+				+ " AND a1.UNUSED_DAYS > ?"
+				+ " AND a1.EXPIRATION_DAYS >= ? and a1.EXPIRATION_DAYS <= ?"
+				+ " ORDER BY a2.YMD");
+				)
+		{
+			sql.setString(1, sid);
+			sql.setDate(2, Date.valueOf(ymdPeriod.start().localDate()));
+			sql.setDate(3, Date.valueOf(ymdPeriod.end().localDate()));
+			sql.setDouble(4, unUseDays);
+			sql.setDate(5, Date.valueOf(dateData.start().localDate()));
+			sql.setDate(6, Date.valueOf(dateData.end().localDate()));
+			List<InterimRecMng> lstOutput = new NtsResultSet(sql.executeQuery())
+					.getList(x -> toDomain(x));
+			return lstOutput;
+		}
 	}
 
 	@Override
@@ -163,7 +199,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			entity.unUsedDays = domain.getUnUsedDays().v();
 			this.commandProxy().update(entity);
 		}
-		//this.getEntityManager().flush();
+		this.getEntityManager().flush();
 	}
 	
 	@Override
@@ -186,7 +222,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			entity.unOffsetDay = domain.getUnOffsetDays().v();
 			this.commandProxy().update(entity);
 		}
-		//this.getEntityManager().flush();
+		this.getEntityManager().flush();
 	}
 	
 	@Override
@@ -215,7 +251,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			entity.selectedAtr = domain.getSelectedAtr().value;
 			this.commandProxy().update(entity);
 		}
-		//this.getEntityManager().flush();
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -265,17 +301,24 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 
 	@Override
 	public List<InterimRecAbsMng> getRecByIdsMngAtr(List<String> recIds, DataManagementAtr recMngAtr) {
-		return this.queryProxy().query(QUERY_REC_BY_IDS_ATR, KrcmtInterimRecAbs.class)
-				.setParameter("recruitmentMngId", recIds)
-				.setParameter("recruitmentMngAtr", recMngAtr.value)
-				.getList(x -> toDomainRecAbs(x));
+		List<InterimRecAbsMng> resultList = new ArrayList<>();
+		CollectionUtil.split(recIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(QUERY_REC_BY_IDS_ATR, KrcmtInterimRecAbs.class)
+								.setParameter("recruitmentMngId", subList)
+								.setParameter("recruitmentMngAtr", recMngAtr.value)
+								.getList(x -> toDomainRecAbs(x)));
+		});
+		return resultList;
 	}
 
 	@Override
 	public void deleteInterimRecMng(List<String> listRecMngId) {
 		if(!listRecMngId.isEmpty()) {
 			String sql = "delete  from KrcmtInterimRecMng a where a.recruitmentMngId IN :listRecMngId";
-			this.getEntityManager().createQuery(sql).setParameter("listRecMngId", listRecMngId).executeUpdate();
+			CollectionUtil.split(listRecMngId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				this.getEntityManager().createQuery(sql).setParameter("listRecMngId", subList).executeUpdate();
+			});
+			this.getEntityManager().flush();
 		}
 	}
 
@@ -283,15 +326,76 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	public void deleteInterimAbsMng(List<String> listAbsMngId) {
 		if(!listAbsMngId.isEmpty()) {
 			String sql = "delete  from KrcmtInterimAbsMng a where a.absenceMngId IN :listAbsMngId";
-			this.getEntityManager().createQuery(sql).setParameter("listAbsMngId", listAbsMngId).executeUpdate();
+			CollectionUtil.split(listAbsMngId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				this.getEntityManager().createQuery(sql).setParameter("listAbsMngId", subList).executeUpdate();
+			});
+			this.getEntityManager().flush();
 		}
 	}
 
 	@Override
 	public List<InterimRecAbsMng> getAbsByIdsMngAtr(List<String> absIds, DataManagementAtr absMngAtr) {
-		return this.queryProxy().query(QUERY_ABS_BY_IDS_ATR, KrcmtInterimRecAbs.class)
-				.setParameter("absenceMngIds", absIds)
-				.setParameter("absenceMngAtr", absMngAtr.value)
-				.getList(x -> toDomainRecAbs(x));
+		List<InterimRecAbsMng> resultList = new ArrayList<>();
+		CollectionUtil.split(absIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(QUERY_ABS_BY_IDS_ATR, KrcmtInterimRecAbs.class)
+								.setParameter("absenceMngIds", subList)
+								.setParameter("absenceMngAtr", absMngAtr.value)
+								.getList(x -> toDomainRecAbs(x)));
+		});
+		return resultList;
+	}
+
+	@SneakyThrows
+	@Override
+	public List<InterimRecMng> getRecBySidDatePeriod(String sid, DatePeriod period) {
+		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_REC_MNG a1"
+				+ " INNER JOIN KRCMT_INTERIM_REMAIN_MNG a2 ON a1.RECRUITMENT_MNG_ID = a2.REMAIN_MNG_ID"
+				+ " WHERE a2.SID = ?"
+				+ " AND a2.REMAIN_TYPE = " + RemainType.PICKINGUP.value
+				+ " AND a2.YMD >= ? and a2.YMD <= ?"
+				+ " ORDER BY a2.YMD");
+		)
+		{
+			sql.setString(1, sid);
+			sql.setDate(2, Date.valueOf(period.start().localDate()));
+			sql.setDate(3, Date.valueOf(period.end().localDate()));
+			List<InterimRecMng> lstOutput = new NtsResultSet(sql.executeQuery())
+					.getList(x -> toDomain(x));
+			return lstOutput;
+		}
+	}
+
+	private InterimRecMng toDomain(NtsResultRecord x) {		
+		return new InterimRecMng(x.getString("RECRUITMENT_MNG_ID"),
+				x.getGeneralDate("EXPIRATION_DAYS"),
+				new OccurrenceDay(x.getBigDecimal("OCCURRENCE_DAYS") == null ? 0 : x.getBigDecimal("OCCURRENCE_DAYS").doubleValue()),
+				x.getEnum("STATUTORY_ATR", StatutoryAtr.class),
+				new UnUsedDay(x.getBigDecimal("UNUSED_DAYS") == null ? 0 : x.getBigDecimal("UNUSED_DAYS").doubleValue()));
+	}
+
+	@SneakyThrows
+	@Override
+	public List<InterimAbsMng> getAbsBySidDatePeriod(String sid, DatePeriod period) {
+		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_ABS_MNG a1"
+				+ " INNER JOIN KRCMT_INTERIM_REMAIN_MNG a2 ON a1.ABSENCE_MNG_ID = a2.REMAIN_MNG_ID"
+				+ " WHERE a2.SID = ?"
+				+ " AND a2.REMAIN_TYPE = " + RemainType.PAUSE.value
+				+ " AND a2.YMD >= ? and a2.YMD <= ?"
+				+ " ORDER BY a2.YMD");
+				)
+		{
+			sql.setString(1, sid);
+			sql.setDate(2, Date.valueOf(period.start().localDate()));
+			sql.setDate(3, Date.valueOf(period.end().localDate()));
+			List<InterimAbsMng> lstOutput = new NtsResultSet(sql.executeQuery())
+					.getList(x -> toDomainAbs(x));
+			return lstOutput;
+		}
+	}
+
+	private InterimAbsMng toDomainAbs(NtsResultRecord x) {
+		return new InterimAbsMng(x.getString("ABSENCE_MNG_ID"), 
+				new RequiredDay(x.getBigDecimal("REQUIRED_DAYS") == null ? 0 : x.getBigDecimal("REQUIRED_DAYS").doubleValue()), 
+				new UnOffsetDay(x.getBigDecimal("UNOFFSET_DAYS") == null ? 0 : x.getBigDecimal("UNOFFSET_DAYS").doubleValue()));
 	}
 }

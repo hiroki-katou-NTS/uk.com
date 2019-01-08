@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 815,
-					height : 710
+					width : 850,
+					height : 750
 				};
 			</script>
 			<!-- <com:scriptfile set="IGNITE" /> -->
@@ -20,8 +20,11 @@
 			<com:scriptfile path="cmm001.e.start.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="content-area" class="contents-area fixed-flex-layout"
+			<div id="contents-area" class="contents-area fixed-flex-layout"
 				style="display: block;">
+				<div style="padding-top: 20px; padding-left: 20px;">
+					<p data-bind="text : comName"/>
+				</div>
 				<div style="padding-top: 20px; padding-left: 20px;">
 					<label>#{i18n.getText('CMM001_41')}</label>
 				</div>

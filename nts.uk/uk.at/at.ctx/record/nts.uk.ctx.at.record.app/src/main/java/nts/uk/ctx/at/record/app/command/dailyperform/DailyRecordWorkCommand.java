@@ -162,7 +162,7 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		this.workInfo.setRecords(fullDto.getWorkInfo());
 		this.calcAttr.setRecords(fullDto.getCalcAttr());
 		this.affiliationInfo.setRecords(fullDto.getAffiliationInfo());
-		this.errors.setRecords(fullDto.getErrors());
+		fullDto.getErrors().stream().forEach(c -> this.errors.setRecords(c));
 		this.outingTime.setRecords(fullDto.getOutingTime().orElse(null));
 		this.businessType.setRecords(fullDto.getBusinessType().orElse(null));
 		fullDto.getBreakTime().stream().forEach(c -> this.breakTime.setRecords(c));
@@ -286,7 +286,7 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 										this.getAffiliationInfo().toDomain(),
 										this.getBusinessType().toDomain(), 
 										this.getPcLogInfo().toDomain(), 
-										new ArrayList<>(), 
+										this.getErrors().toDomain(), 
 										this.getOutingTime().toDomain(), 
 										this.getBreakTime().toDomain(), 
 										this.getAttendanceTime().toDomain(), 

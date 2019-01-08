@@ -1,12 +1,15 @@
 package nts.uk.ctx.bs.person.infra.repository.person.contact;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.person.dom.person.contact.EmergencyContact;
 import nts.uk.ctx.bs.person.dom.person.contact.PersonContact;
 import nts.uk.ctx.bs.person.dom.person.contact.PersonContactRepository;
@@ -130,8 +133,11 @@ public class JpaPersonContactRepository extends JpaRepository implements PersonC
 
 	@Override
 	public List<PersonContact> getByPersonIdList(List<String> personIds) {
-		List<BpsmtPersonContact> entities = this.queryProxy().query(GET_BY_LIST, BpsmtPersonContact.class)
-				.setParameter("personIdList", personIds).getList();
+		List<BpsmtPersonContact> entities = new ArrayList<>();
+		CollectionUtil.split(personIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			entities.addAll(this.queryProxy().query(GET_BY_LIST, BpsmtPersonContact.class)
+				.setParameter("personIdList", subList).getList());
+		});
 		return entities.stream().map(ent -> toDomain(ent)).collect(Collectors.toList());
 	}
 

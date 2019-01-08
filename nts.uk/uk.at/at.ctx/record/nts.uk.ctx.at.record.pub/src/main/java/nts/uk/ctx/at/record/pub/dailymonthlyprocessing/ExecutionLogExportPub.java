@@ -23,4 +23,6 @@ public interface ExecutionLogExportPub {
 	 * @param processStatus
 	 */
 	void updateLogInfo(String employeeID, String empCalAndSumExecLogId, int executionContent, int state);
+	
+	void updateLogInfo(String empCalAndSumExecLogID, int executionContent, int processStatus);
 }

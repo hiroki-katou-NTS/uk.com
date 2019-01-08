@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -29,6 +30,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * @author shuichu_ishida
  */
 @Getter
+@Setter
+@NoArgsConstructor
 public class MonAggrEmployeeSettings {
 
 	/** 社員ID */
@@ -104,10 +107,12 @@ public class MonAggrEmployeeSettings {
 			return domain;
 		}
 		
-		// 取得用期間の確認　（前月最終週分の過去6日を配慮）
+		// 取得用期間の確認　（過去1ヶ月、未来1ヶ月を配慮）
 		GeneralDate findStart = GeneralDate.min();
-		if (period.start().after(GeneralDate.min().addDays(6))) findStart = period.start().addDays(-6);
-		DatePeriod findPeriod = new DatePeriod(findStart, period.end());
+		if (period.start().after(GeneralDate.min().addMonths(1))) findStart = period.start().addMonths(-1);
+		GeneralDate findEnd = GeneralDate.max();
+		if (period.end().before(GeneralDate.max().addMonths(-1))) findEnd = period.end().addMonths(1);
+		DatePeriod findPeriod = new DatePeriod(findStart, findEnd);
 		
 		// 所属雇用履歴
 		GeneralDate empCriteria = findPeriod.start();

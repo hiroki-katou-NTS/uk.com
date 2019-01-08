@@ -68,9 +68,9 @@ public class PerInfoCtgWebservice extends WebService {
 	}
 	
 	@POST
-	@Path("findby/companyv2")
-	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompanyv2() {
-		return perInfoCtgFinder.getAllPerInfoCtgByCompanyv3();
+	@Path("findby/companyv2/{isCps007}")
+	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompanyv2(@PathParam("isCps007") boolean isCps007) {
+		return perInfoCtgFinder.getAllPerInfoCtgByCompanyv3(isCps007);
 	}
 	
 	

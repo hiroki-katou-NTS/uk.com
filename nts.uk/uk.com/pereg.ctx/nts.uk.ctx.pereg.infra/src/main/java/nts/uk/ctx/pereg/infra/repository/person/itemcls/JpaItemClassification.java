@@ -1,6 +1,7 @@
 package nts.uk.ctx.pereg.infra.repository.person.itemcls;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +9,9 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.dom.person.layout.classification.ILayoutPersonInfoClsRepository;
 import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutPersonInfoClassification;
 import nts.uk.ctx.pereg.dom.person.layout.classification.LayoutPersonInfoClassificationWithCtgCd;
@@ -62,11 +65,14 @@ public class JpaItemClassification extends JpaRepository implements ILayoutPerso
 		if (layoutIdList.isEmpty()) {
 			return new HashMap<>();
 		}
-		List<LayoutPersonInfoClassification> resultList = this.queryProxy()
+		List<LayoutPersonInfoClassification> resultList = new ArrayList<>();
+		CollectionUtil.split(layoutIdList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy()
 				.query(GET_ALL_ITEM_CLASS_LAYOUTID_LIST, PpemtLayoutItemCls.class)
-				.setParameter("layoutIdList", layoutIdList).getList().stream().map(ent -> toDomain(ent))
-				.collect(Collectors.toList());
-
+				.setParameter("layoutIdList", subList).getList().stream().map(ent -> toDomain(ent))
+				.collect(Collectors.toList()));
+		});
+		resultList.sort(Comparator.comparing(LayoutPersonInfoClassification::getDispOrder));
 		return resultList.stream().collect(Collectors.groupingBy(LayoutPersonInfoClassification::getLayoutID));
 	}
 

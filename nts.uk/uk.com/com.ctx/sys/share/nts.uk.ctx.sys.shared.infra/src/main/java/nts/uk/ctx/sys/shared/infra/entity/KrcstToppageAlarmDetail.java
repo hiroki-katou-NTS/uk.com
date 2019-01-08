@@ -8,14 +8,15 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "KRCST_TOPPAGEALARM_DETAIL")
+@NoArgsConstructor
 public class KrcstToppageAlarmDetail extends UkJpaEntity implements Serializable {
 
 	/**
@@ -35,7 +36,16 @@ public class KrcstToppageAlarmDetail extends UkJpaEntity implements Serializable
 	
 	@Override
 	protected Object getKey() {
-		return null;
+		return krcstToppageAlarmDetailPK;
 	}
 
+	public KrcstToppageAlarmDetail(KrcstToppageAlarmDetailPK krcstToppageAlarmDetailPK, String errorMessage,
+			String targerEmployee) {
+		super();
+		this.krcstToppageAlarmDetailPK = krcstToppageAlarmDetailPK;
+		this.errorMessage = errorMessage;
+		this.targerEmployee = targerEmployee;
+	}
+
+	
 }

@@ -158,6 +158,9 @@ public interface ItemConst extends Cloneable {
 	
 	public final String MONTHLY_CHILD_CARE_HD_REMAIN_CODE = LAYOUT_K;
 	public final String MONTHLY_CHILD_CARE_HD_REMAIN_NAME = "子の看護月別残数データ";
+	
+	public final String AGREEMENT_TIME_OF_MANAGE_PERIOD_CODE = LAYOUT_L;
+	public final String AGREEMENT_TIME_OF_MANAGE_PERIOD_NAME = "管理期間の36協定時間";
 
 	public final String OPTIONAL_ITEM_VALUE = "任意項目値";
 	
@@ -288,4 +291,5 @@ public interface ItemConst extends Cloneable {
 	public final String TWO_TIMES = "二回";
 	public final String CLOSURE_STATE = "締め処理状態";
 	public final String OCCURRENCE = "発生";
+	public final String BREAK_DOWN = "内訳";
 }

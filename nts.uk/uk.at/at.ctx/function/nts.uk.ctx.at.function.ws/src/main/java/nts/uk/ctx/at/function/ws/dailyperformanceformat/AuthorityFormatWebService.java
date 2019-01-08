@@ -20,7 +20,8 @@ import nts.uk.ctx.at.function.app.command.dailyperformanceformat.UpdateAutDaiFor
 import nts.uk.ctx.at.function.app.command.dailyperformanceformat.UpdateAuthorityDailyFormatCommand;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.DailyPerformanceAuthorityFinder;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.DailyPerformanceCodeFinder;
-import nts.uk.ctx.at.function.app.find.dailyperformanceformat.dto.DailyAttendanceItemAuthorityDto;
+import nts.uk.ctx.at.function.app.find.dailyperformanceformat.dto.DailyAttendanceAuthorityDailyDto;
+import nts.uk.ctx.at.function.app.find.dailyperformanceformat.dto.DailyAttendanceAuthorityDetailDto;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.dto.DailyPerformanceCodeDto;
 
 @Path("at/function/dailyperformanceformat")
@@ -77,11 +78,18 @@ public class AuthorityFormatWebService extends WebService {
 	}
 
 	@POST
-	@Path("getAuthorityDailyFormat/{dailyPerformanceFormatCode}/{sheetNo}")
-	public DailyAttendanceItemAuthorityDto getDetail(@PathParam("dailyPerformanceFormatCode") String dailyPerformanceFormatCode,@PathParam("sheetNo") BigDecimal sheetNo) {
-		return this.dailyPerformanceAuthorityFinder.findAll(dailyPerformanceFormatCode,sheetNo);
+	@Path("getAuthorityDailyFormat/{formatCode}/{sheetNo}")
+	public DailyAttendanceAuthorityDailyDto getAuthorityDailyFormat(@PathParam("formatCode") String formatCode,
+			@PathParam("sheetNo") BigDecimal sheetNo) {
+		return this.dailyPerformanceAuthorityFinder.findAllDaily(formatCode, sheetNo);
 	}
-	
+
+	@POST
+	@Path("getAuthorityMonthlyFormat/{formatCode}")
+	public List<DailyAttendanceAuthorityDetailDto> getAuthorityMonthlyFormat(@PathParam("formatCode") String formatCode) {
+		return this.dailyPerformanceAuthorityFinder.findAllMonthly(formatCode);
+	}
+
 	@POST
 	@Path("getAuthorityDailyFormatCode")
 	public List<DailyPerformanceCodeDto> getListCode() {

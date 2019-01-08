@@ -34,9 +34,12 @@
 	width: 110px;
 }
 
-.contents-area-b .bottom-row .label-name {
+.contents-area-b .bottom-row .label-name{
 	display: inline-block;
 	padding-left: 10px;
-	width: 20px;
+	width: 120px;
 	white-space: nowrap;
+}
+.container-b{
+	width: 1300px;
 }

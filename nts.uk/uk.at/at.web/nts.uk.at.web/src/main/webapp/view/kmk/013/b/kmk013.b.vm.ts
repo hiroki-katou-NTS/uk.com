@@ -1,4 +1,7 @@
 module nts.uk.at.view.kmk013.b {
+    
+    import blockUI = nts.uk.ui.block;
+    
     export module viewmodel {
         export class ScreenModel {
             itemsB23: KnockoutObservableArray<any>;
@@ -146,9 +149,12 @@ module nts.uk.at.view.kmk013.b {
             conditionDisplay26: KnockoutObservable<boolean>;
             
             isLoadAfterGetData: KnockoutObservable<boolean>;
+            initFlagDone: KnockoutObservable<boolean>;
             
             constructor() {
                 var self = this;
+                
+                self.initFlagDone = ko.observable(false);
                 
                 self.isLoadAfterGetData = ko.observable(true);
                 
@@ -365,7 +371,7 @@ module nts.uk.at.view.kmk013.b {
                         self.enableB8_20(false);
                         self.enableB8_21(false);
                         self.enableB8_23(false);
-                        if (self.selectedValueB8_5() == true) {
+                        if (self.selectedValueB8_5() == true && self.initFlagDone()) {
                             nts.uk.ui.dialog.info({ messageId: "Msg_826" }).then(() => {
                             });
                         }
@@ -592,7 +598,7 @@ module nts.uk.at.view.kmk013.b {
                         if(self.enableB215()==true){
                             self.enableB217(true);
                         }
-                        if (self.selectedB23() == 1 && self.selectedB29() == 1) {
+                        if (self.selectedB23() == 0 && self.selectedB29() == 0) {
                             $('.input-time').ntsError('check');                            
                         }
                     }
@@ -620,7 +626,7 @@ module nts.uk.at.view.kmk013.b {
                 });
                 self.selectedValueB515.subscribe((newValue) => {
                     if (newValue == 0) {
-                        if (self.selectedValueB54() == 1) {
+                        if (self.selectedValueB54() == 1 && self.initFlagDone()) {
                             nts.uk.ui.dialog.info({ messageId: "Msg_826" }).then(() => {
                                 self.selectedValueB54(0);
                                 self.enableB515(false);
@@ -714,7 +720,7 @@ module nts.uk.at.view.kmk013.b {
                 });
                 self.selectedValueB612.subscribe((newValue) => {
                     if (newValue == 0) {
-                        if (self.selectedValueB64() == 1) {
+                        if (self.selectedValueB64() == 1 && self.initFlagDone()) {
                             nts.uk.ui.dialog.info({ messageId: "Msg_826" }).then(() => {
                                 self.selectedValueB64(0);
                                 self.enableB612(false);
@@ -838,7 +844,7 @@ module nts.uk.at.view.kmk013.b {
                 });
                 self.selectedValueB715.subscribe((newValue) => {
                     if (newValue == 0) {
-                        if (self.selectedValueB74() == 1) {
+                        if (self.selectedValueB74() == 1 && self.initFlagDone()) {
                             nts.uk.ui.dialog.info({ messageId: "Msg_826" }).then(() => {
                                 self.selectedValueB74(0);
                                 self.enableB715(false);
@@ -909,6 +915,7 @@ module nts.uk.at.view.kmk013.b {
                 });
                 
                 self.changeTabPanel();
+                
             }
             
             changeTabPanel(): void {
@@ -943,12 +950,15 @@ module nts.uk.at.view.kmk013.b {
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-                self.initData();
-                $( "#b23" ).focus();
-                dfd.resolve();
+                self.initData().done(() => {
+                    $( "#b23" ).focus();
+                    dfd.resolve(); 
+                });
                 return dfd.promise();
             }
-            initData(): void {
+            
+            initData(): JQueryPromise<any> {
+                var dfd = $.Deferred();
                 let self = this;
                 self.isLoadAfterGetData(true);
                 $.when(service.findByCompanyId(), service.getDomainSet()).done(function(data, dataDomainSet){
@@ -1191,7 +1201,10 @@ module nts.uk.at.view.kmk013.b {
                     
                     self.notifyVarKnockoutchange();
                     self.isLoadAfterGetData(false);
-                });    
+                    self.initFlagDone(true);
+                    dfd.resolve();
+                });
+                return dfd.promise();
             }
             
             notifyVarKnockoutchange(): void {
@@ -1217,6 +1230,8 @@ module nts.uk.at.view.kmk013.b {
                 if (nts.uk.ui.errors.hasError()) {
                     return;
                 }
+                
+                blockUI.grayout();
 
                 obj.referActualWorkHours = self.selectedB23();
                 obj.notReferringAch = self.oldData().notReferringAch;
@@ -1449,9 +1464,10 @@ module nts.uk.at.view.kmk013.b {
                     self.initData();
                     nts.uk.ui.dialog.info({messageId: 'Msg_15'});
                     $( "#b23" ).focus();
-                }
-                ).fail((error) => {
+                }).fail((error) => {
                    nts.uk.ui.dialog.alertError(error);
+                }).always(() => {
+                    blockUI.clear();
                 });
             }
         }

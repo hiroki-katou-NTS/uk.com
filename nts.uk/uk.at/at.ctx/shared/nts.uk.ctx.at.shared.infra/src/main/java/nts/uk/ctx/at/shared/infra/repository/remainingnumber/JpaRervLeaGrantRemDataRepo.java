@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.RervLeaGrantRemDataRepository;
@@ -22,6 +21,8 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 	private static final String QUERY_WITH_EMP_ID_NOT_EXP = "SELECT a FROM KrcmtReverseLeaRemain a WHERE a.sid = :employeeId AND a.expStatus = 1 ORDER BY a.grantDate desc";
 	
 	private static final String DELETE_AFTER_QUERY = "DELETE FROM KrcmtReverseLeaRemain a WHERE a.sid = :employeeId and a.grantDate > :startDate";
+	
+	private static final String SEL_REM_BY_SID_AND_GRANT_DATE = "SELECT a FROM KrcmtReverseLeaRemain a WHERE a.sid = :employeeId AND a.grantDate = :grantDate AND a.rvsLeaId !=:rvsLeaId";
 
 	@Override
 	public List<ReserveLeaveGrantRemainingData> find(String employeeId, String cId) {
@@ -108,5 +109,18 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 	public void deleteAfterDate(String employeeId, GeneralDate date) {
 		this.getEntityManager().createQuery(DELETE_AFTER_QUERY).setParameter("employeeId", employeeId)
 				.setParameter("startDate", date);
+	}
+
+	@Override
+	public boolean checkValidateGrantDay(String sid, String rvsLeaId, GeneralDate grantDate) {
+		//SEL_REM_BY_SID_AND_GRANT_DATE 	
+		List<KrcmtReverseLeaRemain> remainData = this.queryProxy().query(SEL_REM_BY_SID_AND_GRANT_DATE, KrcmtReverseLeaRemain.class).setParameter("employeeId", sid)
+		.setParameter("grantDate", grantDate)
+		.setParameter("rvsLeaId", rvsLeaId)
+		.getList();
+		if(remainData.size() > 0) {
+			return true;
+		}
+		return false;
 	}
 }

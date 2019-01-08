@@ -1,7 +1,7 @@
 .left-content-kaf006 {
 	margin-top: 10px;
 	float: left;
-	width: 830px;
+	width: 1000px;
 }
 
 .right-contents-kaf006 {
@@ -151,8 +151,10 @@ div.form-label.broken {
 	width: 145px;
 }
 #numberOfRemaining1{
-	margin-left: 190px;
+/* 	margin-left: 190px; */
 	margin-bottom: -45px;
+	float:right;
+	margin-right: 35px;
 }
 #numberOfRemaining2{
 	margin-left: 90px;

@@ -4,7 +4,7 @@ import java.util.List;
 
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.AttendanceItemLinking;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
-import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 
 public interface AttendanceItemNameService {
 	/**
@@ -13,8 +13,10 @@ public interface AttendanceItemNameService {
 	 * @param type 勤怠項目の種類
 	 * @return
 	 */
-	List<AttendanceItemName> getNameOfAttendanceItem(List<Integer> attendanceItemIds, TypeOfItem type);
-	
-	List<AttendanceItemName> getNameOfAttendanceItem(List<AttendanceItemName> attendanceItems,
+	List<AttItemName> getNameOfAttendanceItem(List<Integer> attendanceItemIds, TypeOfItem type);
+
+	List<AttItemName> getNameOfAttendanceItem(TypeOfItem type, List<AttItemName> attendanceItems);
+
+	List<AttItemName> getNameOfAttendanceItem(List<AttItemName> attendanceItems,
 			List<AttendanceItemLinking> attendanceItemAndFrameNos);
 }

@@ -6,8 +6,8 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
  *
  */
 public enum AcquisitionConditionsAtr {
-	All,
-	ForDeduction;
+	All,         //全て
+	ForDeduction;//控除のみ
 	
 	/**
 	 * 控除用か判定する

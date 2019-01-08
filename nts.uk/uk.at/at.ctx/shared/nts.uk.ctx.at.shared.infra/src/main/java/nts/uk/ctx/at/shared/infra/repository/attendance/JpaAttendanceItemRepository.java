@@ -1,12 +1,16 @@
 package nts.uk.ctx.at.shared.infra.repository.attendance;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.attendance.AttendanceItem;
 import nts.uk.ctx.at.shared.dom.attendance.AttendanceItemRepository;
 import nts.uk.ctx.at.shared.infra.entity.attendance.KmnmtAttendanceItem;
@@ -40,9 +44,13 @@ public class JpaAttendanceItemRepository extends JpaRepository implements Attend
 
 	@Override
 	public List<AttendanceItem> getPossibleAttendanceItems(String companyId, List<Integer> lstPossible) {
-		return this.queryProxy().query(SELECT_POSSIBLE_ITEM, KmnmtAttendanceItem.class)
-				.setParameter("companyId", companyId).setParameter("listPossibleItem", lstPossible)
-				.getList(c -> toDomain(c));
+		List<KmnmtAttendanceItem> entities = new ArrayList<>();
+		CollectionUtil.split(lstPossible, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			entities.addAll(this.queryProxy().query(SELECT_POSSIBLE_ITEM, KmnmtAttendanceItem.class)
+				.setParameter("companyId", companyId).setParameter("listPossibleItem", subList)
+				.getList());
+		});
+		return entities.stream().map(c -> toDomain(c)).collect(Collectors.toList());
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.shared.app.command.workrule.workuse;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
+//import lombok.Builder;
 import lombok.Data;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
 

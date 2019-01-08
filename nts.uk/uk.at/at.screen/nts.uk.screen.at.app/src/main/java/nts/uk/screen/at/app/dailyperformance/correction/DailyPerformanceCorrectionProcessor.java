@@ -4,8 +4,6 @@
 package nts.uk.screen.at.app.dailyperformance.correction;
 
 import java.math.BigDecimal;
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,8 +16,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -33,7 +29,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
-import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
@@ -49,10 +44,10 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByE
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApproverEmployeeState;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ReleasedProprietyDivision;
+import nts.uk.ctx.at.record.dom.daily.dailyperformance.classification.EnumCodeName;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
-import nts.uk.ctx.at.record.dom.workrecord.actualsituation.identificationstatus.export.CheckIndentityDayConfirm;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.YourselfConfirmError;
 import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
@@ -63,6 +58,7 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationExportDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListForScreen;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
@@ -78,10 +74,10 @@ import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQueryProcessor;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
+import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataDailyRes;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.CodeNameType;
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
-import nts.uk.screen.at.app.dailyperformance.correction.datadialog.classification.EnumCodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ActualLockDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalUseSettingDto;
@@ -92,6 +88,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.ChangeSPR;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ClosureDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ColumnSetting;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.CorrectionOfDailyPerformance;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DCMessageError;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItemControl;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPBusinessTypeControl;
@@ -101,6 +98,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPDataDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPErrorSettingDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPHeaderDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPSheetDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DailyPerformanceEmployeeDto;
@@ -121,15 +119,19 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerfo
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHistItemAtScreen;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.primitive.PrimitiveValueDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
+import nts.uk.screen.at.app.dailyperformance.correction.error.DCErrorInfomation;
 import nts.uk.screen.at.app.dailyperformance.correction.error.ShowDialogError;
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
+import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.CheckIndentityMonth;
+import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthParam;
+import nts.uk.screen.at.app.dailyperformance.correction.identitymonth.IndentityMonthResult;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.ClosureSidDto;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.ConfirmationMonthDto;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLock;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.DPLockDto;
+import nts.uk.screen.at.app.dailyperformance.correction.month.ErrorMonthProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexParam;
 import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindAllEmployee;
@@ -190,17 +192,23 @@ public class DailyPerformanceCorrectionProcessor {
 	@Inject
 	private DPLock findLock;
 	
-	@Inject
-	private CheckIndentityDayConfirm checkIndentityDayConfirm;
+//	@Inject
+//	private CheckIndentityDayConfirm checkIndentityDayConfirm;
 	
 	@Inject
 	private ShowDialogError showDialogError;
 	
-	@Inject
-	private DisplayRemainingHolidayNumber remainHolidayService;
-	
 	@Resource
 	private ManagedExecutorService executorService;
+	
+	@Inject
+	private CheckIndentityMonth checkIndentityMonth;
+	
+	@Inject
+	private ErrorMonthProcessor errorMonthProcessor;
+	
+	@Inject
+	private PublicHolidayRepository publicHolidayRepository;
 	
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
@@ -246,6 +254,7 @@ public class DailyPerformanceCorrectionProcessor {
 		String NAME_EMPTY = TextResource.localize("KDW003_82");
 		String NAME_NOT_FOUND = TextResource.localize("KDW003_81");
 		String companyId = AppContexts.user().companyId();
+		Boolean needSortEmp = Boolean.FALSE;
 		
 		//起動に必要な情報の取得(Lấy các thông tin cần thiết cho khởi động)
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
@@ -257,7 +266,7 @@ public class DailyPerformanceCorrectionProcessor {
 				: new IdentityProcessUseSetDto(false, false, null));
 		Optional<ApprovalUseSettingDto> approvalUseSettingDtoOpt = repo.findApprovalUseSettingDto(companyId);	
 		
-		setHideCheckbok(screenDto, identityProcessDtoOpt, approvalUseSettingDtoOpt, companyId, mode);
+		setHideCheckbox(screenDto, identityProcessDtoOpt, approvalUseSettingDtoOpt, companyId, mode);
 		
 		// アルゴリズム「休暇の管理状況をチェックする」を実行する | Get holiday setting data --休暇の管理状況をチェックする
 		getHolidaySettingData(screenDto);
@@ -282,6 +291,7 @@ public class DailyPerformanceCorrectionProcessor {
 		DateRange datePeriodResult = dateRange;
 		if(initScreen == 0 && objectShare != null && objectShare.getDisplayFormat() == 1){
 			dateRange = new DateRange(objectShare.getDateTarget(), objectShare.getDateTarget());
+			datePeriodResult = dateRange;
 		}else if(displayFormat == 1 && !dateRange.getStartDate().equals(dateRange.getEndDate())){
 			dateRange = new DateRange(dateRange.getStartDate(), dateRange.getStartDate());
 		}
@@ -292,10 +302,13 @@ public class DailyPerformanceCorrectionProcessor {
 			val employeeIds = objectShare == null
 					? lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList())
 					: objectShare.getLstEmployeeShare();
-			changeEmployeeIds = changeListEmployeeId(employeeIds, screenDto.getDateRange(), mode, objectShare != null);
+			if(employeeIds.isEmpty()) needSortEmp = true;
+			changeEmployeeIds = changeListEmployeeId(employeeIds, screenDto.getDateRange(), mode, objectShare != null, screenDto.getClosureId(), screenDto);
 		} else {
 			changeEmployeeIds = lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
 		}
+		
+		List<String> employeeIdsOri = changeEmployeeIds;
 		
 		//if(changeEmployeeIds.isEmpty()) return screenDto;
 		// アルゴリズム「通常モードで起動する」を実行する
@@ -373,6 +386,17 @@ public class DailyPerformanceCorrectionProcessor {
 			screenDto.setLstData(screenDto.getLstData().stream()
 					.filter(x -> listEmployeeError.containsKey(x.getEmployeeId())).collect(Collectors.toList()));
 		}
+		
+		List<DPDataDto> listData = new ArrayList<>();
+		for (String employeeId : employeeIdsOri) {
+			screenDto.getLstData().stream().forEach(item -> {
+				if(item.getEmployeeId().equals(employeeId)){
+					listData.add(item);
+				}				
+			});
+			
+		}
+		screenDto.setLstData(needSortEmp ? listData.stream().sorted((x, y) ->x.getEmployeeCode().compareTo(y.getEmployeeCode())).collect(Collectors.toList()) : listData);
 
 		// アルゴリズム「社員に対応する処理締めを取得する」を実行する | Execute "Acquire Process Tightening
 		// Corresponding to Employees"--
@@ -395,6 +419,10 @@ public class DailyPerformanceCorrectionProcessor {
 		
 		//get itemId
 		DisplayItem disItem = getDisplayItems(correct, formatCodes, companyId, screenDto, listEmployeeId, showButton, dailyPerformanceDto);
+		if(disItem == null || !disItem.getErrors().isEmpty()) {
+			if(disItem != null) screenDto.setErrors(disItem.getErrors());
+			return screenDto;
+		}
 		screenDto.setAutBussCode(disItem.getAutBussCode());
 		//get item Name
 		DPControlDisplayItem dPControlDisplayItem = this.getItemIdNames(disItem, showButton);
@@ -418,8 +446,21 @@ public class DailyPerformanceCorrectionProcessor {
 							if (emp.get(0).equals(sId)) {
 								//社員に対応する締め期間を取得する
 								DatePeriod period = closureService.findClosurePeriod(emp.get(0), dateRangeTemp.getEndDate());
-								//対象日の本人確認が済んでいるかチェックする
-								screenDto.checkShowTighProcess(displayFormat, true, checkIndentityDayConfirm.checkIndentityDay(sId, period.datesBetween()));
+								
+								//パラメータ「日別実績の修正の状態．対象期間．終了日」がパラメータ「締め期間」に含まれているかチェックする
+								if (!period.contains(dateRangeTemp.getEndDate())) {
+									screenDto.setIndentityMonthResult(new IndentityMonthResult(false, true, true));
+									//対象日の本人確認が済んでいるかチェックする
+									//screenDto.checkShowTighProcess(displayFormat, true);
+								} else {
+									// checkIndenityMonth
+									screenDto.setIndentityMonthResult(checkIndentityMonth.checkIndenityMonth(
+											new IndentityMonthParam(companyId, sId, GeneralDate.today())));
+									//対象日の本人確認が済んでいるかチェックする
+									screenDto.checkShowTighProcess(displayFormat, true);
+								}
+							}else {
+								screenDto.getIndentityMonthResult().setHideAll(true);
 							}
 							// screenDto.setFlexShortage(null);
 						}
@@ -447,7 +488,7 @@ public class DailyPerformanceCorrectionProcessor {
 		results = resultPair.getLeft();
 		screenDto.setDomainOld(resultPair.getRight());
 		screenDto.getItemValues().addAll(results.isEmpty() ? new ArrayList<>() : results.get(0).getItems());
-		screenDto.getItemValues().stream().sorted((x, y) -> x.getItemId() - y.getItemId());
+//		List<ItemValue> dataValue = screenDto.getItemValues().stream().sorted((x, y) -> x.getItemId() - y.getItemId()).collect(Collectors.toList());
 		Map<String, DailyModifyResult> resultDailyMap = results.stream().collect(Collectors
 				.toMap(x -> mergeString(x.getEmployeeId(), "|", x.getDate().toString()), Function.identity(), (x, y) -> x));
 		
@@ -465,10 +506,13 @@ public class DailyPerformanceCorrectionProcessor {
 				// Get list error setting
 				long timeT = System.currentTimeMillis();
 				List<DPErrorSettingDto> lstErrorSetting = this.repo
-						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+						.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()), true, true, false);
 				// Seperate Error and Alarm
+				if(lstErrorSetting.isEmpty()) {
+					lstError = new ArrayList<>();
+				}
 				System.out.println("time load Error: "+ (System.currentTimeMillis() - timeT));
-				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP);
+				screenDto.addErrorToResponseData(lstError, lstErrorSetting, mapDP, false);
 			}
 		}
 
@@ -525,6 +569,9 @@ public class DailyPerformanceCorrectionProcessor {
 						.collect(Collectors.toMap(x -> mergeString(x.getCode(), "|", x.getId()), x -> x))
 				: Collections.emptyMap();
 						//get status check box 
+		List<GeneralDate> holidayDate = publicHolidayRepository
+				.getpHolidayWhileDate(companyId, dateRange.getStartDate(), dateRange.getEndDate()).stream()
+				.map(x -> x.getDate()).collect(Collectors.toList());
 		for (DPDataDto data : screenDto.getLstData()) {
 			boolean textColorSpr = false;
 			data.setEmploymentCode(screenDto.getEmploymentCode());
@@ -582,7 +629,7 @@ public class DailyPerformanceCorrectionProcessor {
 				}
 				//set cell state day
 				if(!textColorSpr){
-					setTextColorDay(screenDto, data.getDate(), "date", data.getId());
+					setTextColorDay(screenDto, data.getDate(), "date", data.getId(), holidayDate);
 				}
 				itemValueMap = resultOfOneRow.getItems().stream()
 						.collect(Collectors.toMap(x -> mergeString(String.valueOf(x.getItemId()), "|",
@@ -639,11 +686,7 @@ public class DailyPerformanceCorrectionProcessor {
 			
 			if (lockConfirmMonth) {
 				setStateLock(data, DPText.LOCK_CONFIRM_MONTH);
-				if(mode == ScreenMode.APPROVAL.value) {
-					lock = lock && false;
-				}else {
-					lock = true;
-				}
+				if(mode != ScreenMode.APPROVAL.value) lock = true;
 				
 			}
 			
@@ -660,8 +703,7 @@ public class DailyPerformanceCorrectionProcessor {
 			if (lockSign) {
 				setStateLock(data, DPText.LOCK_CHECK_SIGN);
 				//lockCell(screenDto, data, false);
-				if(mode == ScreenMode.APPROVAL.value) lock = lock && false;
-				else lock = true;
+				if(mode != ScreenMode.APPROVAL.value)  lock = true;
 			}
 			
 			if (lockHist) {
@@ -749,7 +791,7 @@ public class DailyPerformanceCorrectionProcessor {
 							screenDto.setCellSate(data.getId(), nameColKey, DPText.STATE_DISABLE);
 						}
 						cellDatas.add(new DPCellDataDto(noColKey, Integer.parseInt(value), attendanceAtrAsString, DPText.TYPE_LABEL));
-						cellDatas.add(new DPCellDataDto(nameColKey, value, attendanceAtrAsString, DPText.TYPE_LINK));
+						cellDatas.add(new DPCellDataDto(nameColKey, Integer.parseInt(value), attendanceAtrAsString, DPText.TYPE_LINK));
 						cellEditColor(screenDto, data.getId(), nameColKey, cellEdit);
 						cellEditColor(screenDto, data.getId(), noColKey, cellEdit);
 					}
@@ -1044,7 +1086,7 @@ public class DailyPerformanceCorrectionProcessor {
 		return StringUtils.join(x);
 	}
 
-	public void setHideCheckbok(DailyPerformanceCorrectionDto screenDto, Optional<IdentityProcessUseSetDto> indentity, Optional<ApprovalUseSettingDto> approval, String companyId, int mode) {
+	public void setHideCheckbox(DailyPerformanceCorrectionDto screenDto, Optional<IdentityProcessUseSetDto> indentity, Optional<ApprovalUseSettingDto> approval, String companyId, int mode) {
 			screenDto.setShowPrincipal(indentity.isPresent() && indentity.get().isUseConfirmByYourself());
 			screenDto.setShowSupervisor(approval.isPresent() && approval.get().getUseDayApproverConfirm());
 	}
@@ -1111,10 +1153,9 @@ public class DailyPerformanceCorrectionProcessor {
 		else return true;
 	}
 	
-	public String getEmploymentCode(String companyId, DateRange dateRange, String sId) {
-		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(companyId, sId, dateRange);
-		String employmentCode = employment == null ? "" : employment.getEmploymentCode();
-		return employmentCode;
+	public String getEmploymentCode(String companyId, GeneralDate date, String sId) {
+		AffEmploymentHistoryDto employment = repo.getAffEmploymentHistory(companyId, sId, date);
+		return employment == null ? "" : employment.getEmploymentCode();
 	}
 
 	public List<DailyPerformanceAuthorityDto> getAuthority(DailyPerformanceCorrectionDto screenDto) {
@@ -1186,7 +1227,7 @@ public class DailyPerformanceCorrectionProcessor {
 			// 対応するドメインモデル「勤務実績のエラーアラーム」をすべて取得する
 			// Get list error setting
 			List<DPErrorSettingDto> lstErrorSetting = this.repo
-					.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+					.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()), true, true, false);
 			// convert to list error reference
 			//IntStream.range(0, lstError.size()).forEach(id -> {
 			int rowId = 0;
@@ -1200,7 +1241,9 @@ public class DailyPerformanceCorrectionProcessor {
 								// -> {
 								lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(rowId), value.getEmployeeId(),
 										"", "", value.getProcessingDate(), value.getErrorCode(),
-										value.getErrorAlarmMessage() == null ? (errorSetting.getMessageDisplay() == null ? "" : errorSetting.getMessageDisplay())
+										value.getErrorAlarmMessage() == null
+												? (errorSetting.getMessageDisplay() == null ? ""
+														: errorSetting.getMessageDisplay())
 												: value.getErrorAlarmMessage(),
 										lstError.get(id).getAttendanceItemId().get(x), "", errorSetting.isBoldAtr(),
 										errorSetting.getMessageColor(),
@@ -1214,7 +1257,15 @@ public class DailyPerformanceCorrectionProcessor {
 						} else {
 							lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(rowId), value.getEmployeeId(),
 									value.getProcessingDate(), value.getErrorCode(),
-									value.getErrorAlarmMessage() == null ? (errorSetting.getMessageDisplay() == null ? "" : errorSetting.getMessageDisplay()) : value.getErrorAlarmMessage()));
+									value.getErrorAlarmMessage() == null ? (errorSetting.getMessageDisplay() == null ? "" : errorSetting.getMessageDisplay()) : value.getErrorAlarmMessage(),
+									errorSetting.isBoldAtr(),
+									errorSetting.getMessageColor(),
+									appMapDateSid
+											.containsKey(value.getEmployeeId() + "|" + value.getProcessingDate())
+													? appMapDateSid.get(
+															value.getEmployeeId() + "|" + value.getProcessingDate())
+													: ""));
+							rowId++;
 						}
 					}
 				}
@@ -1225,9 +1276,17 @@ public class DailyPerformanceCorrectionProcessor {
 			Map<Integer, String> lstAttendanceItem = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(new ArrayList<>(itemIds))
 					.stream().collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
 							x -> x.getAttendanceItemName())); // 9s
+			
+			List<DPItemValue> dpItems = errorMonthProcessor.getErrorMonth(lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toSet()), dateRange);
+			for(DPItemValue value : dpItems) {
+				lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(rowId), value.getEmployeeId(),
+						value.getDate(), "", value.getMessage()));
+				rowId++;
+			}
+			
 			// add employee code & name
 			for (ErrorReferenceDto errorRefer : lstErrorRefer) {
-				String name = lstAttendanceItem.get(errorRefer.getItemId());
+				String name = errorRefer == null ? null : lstAttendanceItem.get(errorRefer.getItemId());
 				errorRefer.setItemName(name == null ? "" : name);
 				for (DailyPerformanceEmployeeDto employee : lstEmployee) {
 					if (errorRefer.getEmployeeId().equals(employee.getId())) {
@@ -1329,12 +1388,18 @@ public class DailyPerformanceCorrectionProcessor {
 				// アルゴリズム「社員の勤務種別に対応する表示項目を取得する」を実行する
 				/// アルゴリズム「社員の勤務種別をすべて取得する」を実行する
 				List<String> lstBusinessTypeCode = this.repo.getListBusinessType(lstEmployeeId, dateRange);
-				if(lstBusinessTypeCode.isEmpty()){
-					BundledBusinessException bundleExeption = BundledBusinessException.newInstance();
-					screenDto.getLstData().stream().filter(DailyModifyResCommandFacade.distinctByKey(x -> x.getEmployeeId())).forEach(x ->{
-						bundleExeption.addMessage(new BusinessException("Msg_1403", x.getEmployeeCode() + " " + x.getEmployeeName()));
-					});
-					throw bundleExeption;
+				if (lstBusinessTypeCode.isEmpty()) {
+					List<DCMessageError> errors = new ArrayList<>();
+					DCMessageError bundleExeption = new DCMessageError();
+					bundleExeption.setMessageId("Msg_1403");
+					screenDto.getLstData().stream()
+							.filter(DailyModifyResCommandFacade.distinctByKey(x -> x.getEmployeeId())).forEach(x -> {
+								bundleExeption.setMessage(TextResource.localize("Msg_1403", x.getEmployeeCode() + " " + x.getEmployeeName()));
+								errors.add(bundleExeption);
+							});
+					// throw bundleExeption;
+					result.setErrors(errors);
+					return result;
 				}
 				
 				result.setAutBussCode(new HashSet<>(lstBusinessTypeCode));
@@ -1358,6 +1423,10 @@ public class DailyPerformanceCorrectionProcessor {
 			if (lstFormat.size() > 0) {
 				lstDPBusinessTypeControl = this.repo.getListBusinessTypeControl(companyId, authorityDailyID,
 						lstAtdItemUnique, true);
+				if(lstDPBusinessTypeControl.isEmpty()) {
+					screenDto.setErrorInfomation(DCErrorInfomation.ITEM_HIDE_ALL.value);
+					return null;
+				}
 			}
 			Map<Integer, String> itemHide = lstDPBusinessTypeControl.stream().filter(x -> x.isUseAtr()).collect(Collectors.toMap(DPBusinessTypeControl :: getAttendanceItemId, x -> "", (x, y) -> x));
 
@@ -1389,7 +1458,17 @@ public class DailyPerformanceCorrectionProcessor {
 		List<Integer> lstAtdItemUnique = disItem.getLstAtdItemUnique();
 		List<FormatDPCorrectionDto> lstFormat = disItem.getLstFormat();
 		if (!lstAtdItemUnique.isEmpty()) {
-			Map<Integer, String> itemName = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(lstAtdItemUnique)
+			Set<Integer> lstGroupInput = new HashSet<>();
+			lstAtdItemUnique.stream().forEach(x -> {
+				val item = ValidatorDataDailyRes.INPUT_CHECK_MAP.get(x.intValue());
+				if(item != null) {
+					lstGroupInput.add(item);
+					lstGroupInput.add(x);
+				}else{
+					lstGroupInput.add(x);
+				}
+			});
+			Map<Integer, String> itemName = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(new ArrayList<>(lstGroupInput))
 					.stream().collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
 							x -> x.getAttendanceItemName())); // 9s
 			lstAttendanceItem = lstAtdItemUnique.isEmpty() ? Collections.emptyList()
@@ -1397,6 +1476,7 @@ public class DailyPerformanceCorrectionProcessor {
 						x.setName(itemName.get(x.getId()));
 						return x;
 					}).collect(Collectors.toList());
+			result.setItemInputName(itemName);
 		}
 		
 		//set item atr from optional
@@ -1414,10 +1494,12 @@ public class DailyPerformanceCorrectionProcessor {
 		lstFormat = lstFormat.stream().distinct().filter(x -> mapDP.containsKey(x.getAttendanceItemId())).collect(Collectors.toList());
 		result.addColumnsToSheet(lstFormat, mapDP, showButton);
 		List<DPHeaderDto> lstHeader = new ArrayList<>();
+		Map<Integer, DPAttendanceItemControl> mapAttendanceItemControl = this.repo
+				.getListAttendanceItemControl(companyId, lstAtdItemUnique).stream().collect(Collectors.toMap(x -> x.getAttendanceItemId(), x -> x));
 		for (FormatDPCorrectionDto dto : lstFormat) {
 			lstHeader.add(DPHeaderDto.createSimpleHeader(companyId,
 					mergeString(DPText.ADD_CHARACTER, String.valueOf(dto.getAttendanceItemId())),
-					(dto.getColumnWidth()== null || dto.getColumnWidth() == 0) ? "100px" : String.valueOf(dto.getColumnWidth()) + DPText.PX, mapDP));
+					(dto.getColumnWidth()== null || dto.getColumnWidth() == 0) ? "100px" : String.valueOf(dto.getColumnWidth()) + DPText.PX, mapDP, mapAttendanceItemControl));
 		}
 		
 		lstHeader.add(DPHeaderDto.addHeaderSubmitted());
@@ -1456,11 +1538,9 @@ public class DailyPerformanceCorrectionProcessor {
 			// set text to header
 			result.setHeaderText(lstAttendanceItem);
 			// set color to header
-			List<DPAttendanceItemControl> lstAttendanceItemControl = this.repo
-					.getListAttendanceItemControl(lstAtdItemUnique);
 			result.setLstAttendanceItem(lstAttendanceItem);
 			result.getLstAttendanceItem().stream().forEach(c -> c.setName(""));
-			result.setHeaderColor(lstAttendanceItemControl);
+			//result.setHeaderColor(lstAttendanceItemControl);
 		} else {
 			result.setLstAttendanceItem(lstAttendanceItem);
 		}
@@ -1468,6 +1548,8 @@ public class DailyPerformanceCorrectionProcessor {
 		result.setComboItemCalc(EnumCodeName.getCalcHours());
 		result.setComboItemDoWork(EnumCodeName.getDowork());
 		result.setComboItemReason(EnumCodeName.getReasonGoOut());
+		result.setComboItemCalcCompact(EnumCodeName.getCalcCompact());
+		result.setComboTimeLimit(EnumCodeName.getComboTimeLimit());
 		result.setItemIds(lstAtdItemUnique);
 		return result;
 	}
@@ -1480,10 +1562,10 @@ public class DailyPerformanceCorrectionProcessor {
 				OptionalItemAtr atr = optionalItemAtr.get(itemNo);
 				if(atr != null && atr.value == OptionalItemAtr.TIME.value){
 					item.setAttendanceAtr(DailyAttendanceAtr.Time.value);
-					item.setPrimitive(PrimitiveValueDaily.AttendanceTimeOfExistMinus.value);
+					//item.setPrimitive(PrimitiveValueDaily.AttendanceTimeOfExistMinus.value);
 				}else if(atr != null && atr.value == OptionalItemAtr.NUMBER.value){
 					item.setAttendanceAtr(DailyAttendanceAtr.NumberOfTime.value);
-					item.setPrimitive(PrimitiveValueDaily.BreakTimeGoOutTimes.value);
+					//item.setPrimitive(PrimitiveValueDaily.BreakTimeGoOutTimes.value);
 				}else if(atr != null && atr.value == OptionalItemAtr.AMOUNT.value){
 					item.setAttendanceAtr(DailyAttendanceAtr.AmountOfMoney.value);
 				}
@@ -1521,17 +1603,33 @@ public class DailyPerformanceCorrectionProcessor {
 ////		dailyPerformanceCorrectionDto.setCom60HVacationDto(this.repo.getCom60HVacationDto());
 	}
 	
-	public List<String> changeListEmployeeId(List<String> employeeIds, DateRange range, int mode, boolean isTranfer) {
+	public List<String> changeListEmployeeId(List<String> employeeIds, DateRange range, int mode, boolean isTranfer, Integer closureId, DailyPerformanceCorrectionDto screenDto) {
 		// 社員一覧を変更する
 		String companyId = AppContexts.user().companyId();
 		String employeeIdLogin = AppContexts.user().employeeId();
 		List<String> lstEmployeeId = new ArrayList<>();
 		if (mode == ScreenMode.NORMAL.value) {
-			if(employeeIds.isEmpty()){
-				 //List<RegulationInfoEmployeeQueryR> regulationRs= regulationInfoEmployeePub.search(createQueryEmployee(new ArrayList<>(), range.getStartDate(), range.getEndDate()));
-				 List<String> listEmp =  repo.getListEmpInDepartment(employeeIdLogin, new DateRange(range.getStartDate(), range.getEndDate()));
-				 lstEmployeeId = narrowEmployeeAdapter.findByEmpId(listEmp, 3);
-			}else{
+			if (employeeIds.isEmpty()) {
+				// List<RegulationInfoEmployeeQueryR> regulationRs=
+				// regulationInfoEmployeePub.search(createQueryEmployee(new ArrayList<>(),
+				// range.getStartDate(), range.getEndDate()));
+				//社員と同じ職場の社員を取得する
+				List<String> listEmp = repo.getListEmpInDepartment(employeeIdLogin,
+						new DateRange(range.getStartDate(), range.getEndDate()));
+				//社員一覧を特定の会社に在籍している社員に絞り込む
+				listEmp = repo.getAffCompanyHistorySidDate(companyId, listEmp,
+						new DateRange(range.getStartDate(), range.getEndDate()));
+				
+				lstEmployeeId = narrowEmployeeAdapter.findByEmpId(listEmp, 3);
+				if (closureId != null) {
+					Map<String, String> employmentWithSidMap = repo.getAllEmployment(companyId, lstEmployeeId,
+							new DateRange(range.getEndDate(), range.getEndDate()));
+					List<ClosureDto> closureDtos = repo.getClosureId(employmentWithSidMap, range.getEndDate());
+					lstEmployeeId = closureDtos.stream()
+							.filter(x -> x.getClosureId().intValue() == closureId.intValue()).map(x -> x.getSid())
+							.collect(Collectors.toSet()).stream().collect(Collectors.toList());
+				}
+			} else {
 				// No 338
 				// RoleType 3:就業 EMPLOYMENT
 				if(!isTranfer)lstEmployeeId = narrowEmployeeAdapter.findByEmpId(employeeIds, 3);
@@ -1551,7 +1649,8 @@ public class DailyPerformanceCorrectionProcessor {
 				lstEmployeeId = employeeIds.stream().filter(x -> emloyeeIdAppMap.containsKey(x)).collect(Collectors.toList());
 			}			
 			if(lstEmployeeId.isEmpty()){
-				throw new BusinessException("Msg_916");
+				//throw new BusinessException("Msg_916");
+				screenDto.setErrorInfomation(DCErrorInfomation.APPROVAL_NOT_EMP.value);
 			}
 			return lstEmployeeId;
 		}
@@ -1659,7 +1758,7 @@ public class DailyPerformanceCorrectionProcessor {
 	public DateRange changeDateRange(DateRange dateRange, ObjectShare objectShare, String companyId, String sId, DailyPerformanceCorrectionDto screenDto){
 		
 		if (dateRange != null){
-			screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRange, sId));
+			screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRange.getEndDate(), sId));
 			return dateRange;
 		}
 
@@ -1669,7 +1768,7 @@ public class DailyPerformanceCorrectionProcessor {
 		if (isObjectShare && objectShare.getInitClock() == null) {
 			// get employmentCode
 			dateRange = new DateRange(objectShare.getStartDate(), objectShare.getEndDate());
-			screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRange, sId));
+			screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRange.getEndDate(), sId));
 			return dateRange;
 		} else {
 
@@ -1678,11 +1777,12 @@ public class DailyPerformanceCorrectionProcessor {
 				dateRefer = objectShare.getEndDate();
 			}
             
-			screenDto.setEmploymentCode( getEmploymentCode(companyId, new DateRange(null, dateRefer), sId));
+			screenDto.setEmploymentCode( getEmploymentCode(companyId, dateRefer, sId));
 			Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
 					.findByEmploymentCD(companyId, screenDto.getEmploymentCode());
 
 			if (closureEmploymentOptional.isPresent()) {
+				screenDto.setClosureId(closureEmploymentOptional.get().getClosureId());
 				Optional<PresentClosingPeriodExport> closingPeriod = (isObjectShare
 						&& objectShare.getInitClock() != null)
 								? shClosurePub.find(companyId, closureEmploymentOptional.get().getClosureId(),
@@ -1700,11 +1800,13 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 	}
 	
-	public void setTextColorDay(DailyPerformanceCorrectionDto screenDto, GeneralDate date, String columnKey, String rowId){
-		     // Sunday
-		if(date.dayOfWeek() == 7){
+	public void setTextColorDay(DailyPerformanceCorrectionDto screenDto, GeneralDate date, String columnKey, String rowId, List<GeneralDate> holidayDates){
+		
+		boolean isHoliday = holidayDates.contains(date);
+		if (isHoliday || date.dayOfWeek() == 7) {
+			// Sunday
 			screenDto.setCellSate(rowId, columnKey, DPText.COLOR_SUN);
-		}else if(date.dayOfWeek() == 6){
+		} else if (date.dayOfWeek() == 6) {
 			// Saturday
 			screenDto.setCellSate(rowId, columnKey, DPText.COLOR_SAT);
 		}

@@ -7,6 +7,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
@@ -79,10 +80,19 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 		}*/
 		
 		// 暫定データの登録
+		List<GeneralDate> lstDate = new ArrayList<>();
+		if(application.getStartDate().isPresent() && application.getEndDate().isPresent()) {
+			GeneralDate startDate = application.getStartDate().get();
+			GeneralDate endDate = application.getEndDate().get();
+			for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
+				lstDate.add(loopDate);
+			}	
+		}
+		
 		interimRemainDataMngRegisterDateChange.registerDateChange(
 				companyID, 
 				application.getEmployeeID(), 
-				Arrays.asList(application.getAppDate()));
+				lstDate.isEmpty() ? Arrays.asList(application.getAppDate()) : lstDate);
 		return new ProcessDeleteResult(
 				new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID,""),
 				appType);

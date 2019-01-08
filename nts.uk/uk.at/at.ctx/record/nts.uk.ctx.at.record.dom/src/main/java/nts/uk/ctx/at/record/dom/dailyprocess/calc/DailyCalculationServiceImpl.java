@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
-import java.util.ArrayList;
-import java.util.Collections;
+//import java.util.ArrayList;
+//import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -9,34 +9,28 @@ import java.util.concurrent.BlockingQueue;
 import java.util.function.Consumer;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
-import nts.arc.task.parallel.ParallelWithContext;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
-import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ErrorPresent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * ドメインサービス：日別計算
  * @author shuichi_ishida
  */
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class DailyCalculationServiceImpl implements DailyCalculationService {
 
@@ -63,6 +57,7 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 	 * @param empCalAndSumExecLogID 就業計算と集計実行ログID
 	 * @param executionLog 実行ログ
 	 */
+	@SuppressWarnings("rawtypes")
 	@Override
 	public ProcessState manager(AsyncCommandHandlerContext asyncContext, List<String> employeeIds,
 			DatePeriod datePeriod, ExecutionAttr executionAttr, String empCalAndSumExecLogID,
@@ -85,13 +80,8 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 		// 実行種別　取得　（通常、再実行）
 		ExecutionType reCalcAtr = executionLog.get().getDailyCalSetInfo().get().getExecutionType();
 		// ログ情報更新（実行ログ）　→　処理中
-		this.executionLogRepository.updateLogInfo(empCalAndSumExecLogID, executionContent.value,
-				ExecutionStatus.PROCESSING.value);
+		updatelog(empCalAndSumExecLogID, executionContent,ExecutionStatus.PROCESSING);
 		
-		
-		
-		// 社員分ループ
-
 		/** start 並列処理、PARALLELSTREAM */
 		StateHolder stateHolder = new StateHolder(employeeIds.size());
 		// 社員の日別実績を計算
@@ -109,21 +99,44 @@ public class DailyCalculationServiceImpl implements DailyCalculationService {
 				dataSetter.updateData("dailyCalculateStatus", ExecutionStatus.INCOMPLETE.nameId);
 			}
 		};
-		this.dailyCalculationEmployeeService.calculate(asyncContext,employeeIds, datePeriod,counter,reCalcAtr,empCalAndSumExecLogID);
+		
+		this.dailyCalculationEmployeeService.calculate(asyncContext,employeeIds, datePeriod, counter, reCalcAtr,empCalAndSumExecLogID);
 		/** end 並列処理、PARALLELSTREAM */
-		
-		if (stateHolder.isInterrupt()) return ProcessState.INTERRUPTION;
-		
+//		
+		// 中断処理　（中断依頼が出されているかチェックする）
+		if (asyncContext.hasBeenRequestedToCancel()) {
+			asyncContext.finishedAsCancelled();
+			updatelog(empCalAndSumExecLogID, executionContent,ExecutionStatus.INCOMPLETE);
+			return ProcessState.INTERRUPTION;
+		}
+
 		// 完了処理
-		//実行ログ
-		this.executionLogRepository.updateLogInfo(empCalAndSumExecLogID, executionContent.value,ExecutionStatus.DONE.value);
-		//就業計算と集計ログ
-		//this.empCalAndSumExeLogRepository.updateLogInfo(empCalAndSumExecLogID, executionContent.value,
-		//		ExecutionStatus.DONE.value);
+		updatelog(empCalAndSumExecLogID,executionContent,ExecutionStatus.DONE);
+		
+		//全員正常終了の場合
+		if(!stateHolder.isInterrupt()) {
+			val count = stateHolder.count();
+			dataSetter.updateData("dailyCalculateCount", count);
+		}
+		
+		
+
+
 		dataSetter.updateData("dailyCalculateStatus", ExecutionStatus.DONE.nameId);
 		Stopwatches.printAll();
 		Stopwatches.STOPWATCHES.clear();
 		return ProcessState.SUCCESS;
+	}
+	
+	/**
+	 * 実行ログの更新(transaction管理のため別メソッド実装)
+	 * @param empCalAndSumExecLogID 実行ログID
+	 * @param executionContent 設定情報（日別計算を実行するか）
+	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	private void updatelog(String empCalAndSumExecLogID, ExecutionContent executionContent,ExecutionStatus state) {
+		//実行ログ
+		this.executionLogRepository.updateLogInfo(empCalAndSumExecLogID, executionContent.value,state.value);		
 	}
 	
 	class StateHolder {

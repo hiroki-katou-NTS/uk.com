@@ -188,7 +188,8 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                     multiSelectedWorkplaceId: self.multiSelectedWorkplaceId(),
                     selectedValue: self.selectedValue(),
                     isConfirmData: self.isDailyComfirm()
-                }
+                },
+                closureID: self.selectTarget()
             };
             if (self.multiSelectedWorkplaceId().length == 0) {
                 error({ messageId: 'Msg_786' });

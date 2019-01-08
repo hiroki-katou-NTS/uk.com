@@ -222,7 +222,7 @@ module nts.uk.com.view.cmf005.b.viewmodel {
             //E   
             this.columnEmployees = ko.observableArray([
                 { headerText: getText('CMF005_56'), key: 'code', width: 150 },
-                { headerText: getText('CMF005_57'), key: 'name', width: 200 }
+                { headerText: getText('CMF005_57'), key: 'name', width: 250 }
             ]);
             self.delId = ko.observable("");
 

@@ -57,7 +57,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkPlaceH
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+//import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
@@ -76,9 +76,9 @@ import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
+//import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
+//import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
@@ -143,11 +143,11 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		Optional<ApprovalFunctionSetting> appFuncSet = null;
 		appFuncSet = repoRequestWkp.getFunctionSetting(companyId, wkpID, appType);
 		//対象が存在しない場合 - TH doi tuong k ton tai
-		if(!appFuncSet.isPresent() || appFuncSet.get().getInstructionUseSetting().getInstructionAtr().equals(UseAtr.NOTUSE)){
+		if(!appFuncSet.isPresent() || appFuncSet.get().getInstructionUseSetting().getInstructionUseDivision().equals(UseAtr.NOTUSE)){
 			//ドメイン「会社別申請承認設定」を取得する-(lấy dữ liệu domain Application approval setting by company)
 			appFuncSet = repoRequestCompany.getFunctionSetting(companyId, appType);
 		}
-		if(!appFuncSet.isPresent()|| appFuncSet.get().getInstructionUseSetting().getInstructionAtr().equals(UseAtr.NOTUSE)){
+		if(!appFuncSet.isPresent()|| appFuncSet.get().getInstructionUseSetting().getInstructionUseDivision().equals(UseAtr.NOTUSE)){
 			return false;
 		}
 		//申請承認機能設定.残業申請の事前必須設定
@@ -183,13 +183,16 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		ListApplicantOutput checkMySelf = this.getListApplicantForListApp(param);
 		//ドメインモデル「申請」を取得する-(Lấy dữ liệu domain Application) - get List Application By SID
 		List<Application_New> lstApp = new ArrayList<>();
-		if(checkMySelf.isMySelf()){//【自分の申請＝Trueの場合】
+//		2018/11/02　EA2892(#102518)
+//		・社員指定ができるため代行申請分の表示は不要
+//		「自分の申請」に関する条件も不要
+//		if(checkMySelf.isMySelf()){//【自分の申請＝Trueの場合】
 			//・申請者ID＝社員ID（リスト）　　または　入力者ID＝社員ID（リスト）
-			lstApp = repoApp.getByListSID(companyId, checkMySelf.getLstSID(), param.getStartDate(), param.getEndDate());
-		}else{
+//			lstApp = repoApp.getByListSID(companyId, checkMySelf.getLstSID(), param.getStartDate(), param.getEndDate());
+//		}else{
 			//・申請者ID＝社員ID（リスト）
 			lstApp = repoApp.getByListApplicant(companyId, checkMySelf.getLstSID(), param.getStartDate(), param.getEndDate());
-		}
+//		}
 		List<Application_New> lstOverTime = lstApp.stream().filter(c -> c.isAppOverTime()).collect(Collectors.toList());
 		List<Application_New> lstGoBack = lstApp.stream().filter(d -> d.isAppGoBack()).collect(Collectors.toList());
 		List<Application_New> lstHdWork = lstApp.stream().filter(d -> d.isAppHdWork()).collect(Collectors.toList());
@@ -708,14 +711,14 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				if(displaySet.getOtActualDisAtr().equals(DisplayAtr.DISPLAY)){//表示する
 					//アルゴリズム「申請一覧リスト取得実績残業申請」を実行する-(5.2)
 					List<OverTimeFrame> time = appOtPost.getLstFrame();
-					OverTimeFrame frameRestTime = this.findRestTime(time);
-					Integer restStart = null;
-					Integer restEnd = null;
-					if(frameRestTime != null){
-						restStart = frameRestTime.getStartTime();
-						restEnd = frameRestTime.getEndTime();
+					List<OverTimeFrame> lstFrameRestTime = this.findRestTime(time);
+					List<Integer> lstRestStart = new ArrayList<>();
+					List<Integer> lstRestEnd = new ArrayList<>();
+					for (OverTimeFrame restTime : lstFrameRestTime) {
+						lstRestStart.add(restTime.getStartTime());
+						lstRestEnd.add(restTime.getEndTime());
 					}
-					TimeResultOutput result = this.getAppListAchievementOverTime(sID, appDate, time, restStart, restEnd);
+					TimeResultOutput result = this.getAppListAchievementOverTime(sID, appDate, time, lstRestStart, lstRestEnd);
 					if(result.isCheckColor()){
 						if(this.checkExistColor(lstColorTime, appID)){
 							checkColor.setColorAtr(2);
@@ -817,13 +820,14 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		// TODO Auto-generated method stub
 		return new AppListAtrOutput(appStatus.getLstAppFull(), appStatus.getCount(), lstColorTime, lstAppGroup);
 	}
-	private OverTimeFrame findRestTime(List<OverTimeFrame> lstFrame){
+	private List<OverTimeFrame> findRestTime(List<OverTimeFrame> lstFrame){
+		List<OverTimeFrame> lstRestTime = new ArrayList<>();
 		for (OverTimeFrame frame : lstFrame) {
 			if(frame.getAttendanceType() == 0){//休出時間 - RESTTIME
-				return frame;
+				lstRestTime.add(frame);
 			}
 		}
-		return null;
+		return lstRestTime;
 	}
 	/**
 	 * 5.1 - 申請一覧リスト取得実績休出申請
@@ -869,10 +873,12 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * 5.2 - 申請一覧リスト取得実績残業申請
 	 */
 	@Override
-	public TimeResultOutput getAppListAchievementOverTime(String sID, GeneralDate date, List<OverTimeFrame> time, Integer restStart, Integer restEnd) {
+	public TimeResultOutput getAppListAchievementOverTime(String sID, GeneralDate date, List<OverTimeFrame> time, 
+			List<Integer> lstRestStart, List<Integer> lstRestEnd) {
 		//Imported(申請承認)「勤務実績」を取得する - req #5
 		RecordWorkInfoImport record = recordWkpInfoAdapter.getRecordWorkInfo(sID, date);
-		DailyAttendanceTimeCaculationImport cal = calTime.getCalculation(sID, date, record.getWorkTypeCode(), record.getWorkTimeCode(),record.getAttendanceStampTimeFirst(), record.getLeaveStampTimeFirst(), restStart, restEnd);
+		DailyAttendanceTimeCaculationImport cal = calTime.getCalculation(sID, date, record.getWorkTypeCode(), record.getWorkTimeCode(),
+				record.getAttendanceStampTimeFirst(), record.getLeaveStampTimeFirst(), lstRestStart, lstRestEnd);
 		//Imported(申請承認)「計算残業時間」を取得する - req #23
 		boolean checkColor = false;
 		List<OverTimeFrame> lstFrameResult = new ArrayList<>();
@@ -969,11 +975,12 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		//打刻申請.打刻申請モード-(Check 打刻申請モード)
 		//get domain 打刻申請
 		AppStamp stamp = repoAppStamp.findByAppID(companyID, application.getAppID());
-		if(!stamp.equals(StampRequestMode.STAMP_CANCEL)){
+		if(!stamp.getStampRequestMode().equals(StampRequestMode.STAMP_CANCEL)){
 			return null;
 		}
 		//アルゴリズム「実績の取得」を実行する - 13/KAF
-		AchievementOutput achievement = collectAchievement.getAchievement(companyID, applicantID, application.getAppDate());
+		//AchievementOutput achievement = 
+				collectAchievement.getAchievement(companyID, applicantID, application.getAppDate());
 		//アルゴリズム「勤務実績の取得」を実行する
 		// TODO Auto-generated method stub
 		return false;
@@ -990,7 +997,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			
 		}
 		//休暇申請の場合
-		String relationshipCd = "";
+		//String relationshipCd = "";
 		// TODO Auto-generated method stub
 		//imported(就業.Shared)「続柄」を取得する
 //		Optional<Relationship> relShip = repoRelationship.findByCode(companyID, relationshipCd);
@@ -1247,33 +1254,33 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * @param lstClosureHist
 	 * @return
 	 */
-	private Closure findHistMin(List<Closure> lstClosure){
-		lstClosure.sort((hist1, hist2)
-				-> hist1.getClosureHistories().get(0).getClosureDate().getClosureDay().compareTo(hist2.getClosureHistories().get(0).getClosureDate().getClosureDay()));
-		Closure histMin = null;
-		for (Closure closure : lstClosure) {
-			if(closure.getClosureHistories().get(0).getClosureDate().getLastDayOfMonth() != true){
-				histMin = closure;
-				break;
-			}
-		}
-		return histMin == null? lstClosure.get(0) : histMin;
-	}
+//	private Closure findHistMin(List<Closure> lstClosure){
+//		lstClosure.sort((hist1, hist2)
+//				-> hist1.getClosureHistories().get(0).getClosureDate().getClosureDay().compareTo(hist2.getClosureHistories().get(0).getClosureDate().getClosureDay()));
+//		Closure histMin = null;
+//		for (Closure closure : lstClosure) {
+//			if(closure.getClosureHistories().get(0).getClosureDate().getLastDayOfMonth() != true){
+//				histMin = closure;
+//				break;
+//			}
+//		}
+//		return histMin == null? lstClosure.get(0) : histMin;
+//	}
 	/**
 	 * find closure history by period
 	 * @param closureHistories
 	 * @param closureMonth
 	 * @return
 	 */
-	private ClosureHistory findHistClosure(List<ClosureHistory> closureHistories, CurrentMonth closureMonth){
-		for (ClosureHistory closureHist : closureHistories) {
-			if(closureHist.getStartYearMonth().lessThanOrEqualTo(closureMonth.getProcessingYm()) &&
-					closureHist.getEndYearMonth().greaterThanOrEqualTo(closureMonth.getProcessingYm())){
-				return closureHist;
-			}
-		}
-		return null;
-	}
+//	private ClosureHistory findHistClosure(List<ClosureHistory> closureHistories, CurrentMonth closureMonth){
+//		for (ClosureHistory closureHist : closureHistories) {
+//			if(closureHist.getStartYearMonth().lessThanOrEqualTo(closureMonth.getProcessingYm()) &&
+//					closureHist.getEndYearMonth().greaterThanOrEqualTo(closureMonth.getProcessingYm())){
+//				return closureHist;
+//			}
+//		}
+//		return null;
+//	}
 	/**
 	 * merge App And Phase
 	 * @param lstApp
@@ -1777,23 +1784,23 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		return null;
 	}
-	private List<AppCompltLeaveFull> getListCompltDetail(List<Application_New> lstComplt, String companyId){
-		List<AppCompltLeaveFull> lstCompltFull = new ArrayList<>();
-		for (Application_New app : lstComplt) {
-			AppCompltLeaveFull complt = null;
-			//アルゴリズム「申請一覧リスト取得振休振出」を実行する-(get List App Complement Leave): 6 - 申請一覧リスト取得振休振出
-			AppCompltLeaveSyncOutput sync = this.getListAppComplementLeave(app, companyId);
-			if(!sync.isSync()){//TH k co don lien ket
-				//lay thong tin chi tiet
-				complt = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType());
-			}else{//TH co don lien ket
-				//lay thong tin chi tiet
-				complt = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType());
-			}
-			lstCompltFull.add(complt);
-		}
-		return null;
-	}
+//	private List<AppCompltLeaveFull> getListCompltDetail(List<Application_New> lstComplt, String companyId){
+//		List<AppCompltLeaveFull> lstCompltFull = new ArrayList<>();
+//		for (Application_New app : lstComplt) {
+//			AppCompltLeaveFull complt = null;
+//			//アルゴリズム「申請一覧リスト取得振休振出」を実行する-(get List App Complement Leave): 6 - 申請一覧リスト取得振休振出
+//			AppCompltLeaveSyncOutput sync = this.getListAppComplementLeave(app, companyId);
+//			if(!sync.isSync()){//TH k co don lien ket
+//				//lay thong tin chi tiet
+//				complt = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType());
+//			}else{//TH co don lien ket
+//				//lay thong tin chi tiet
+//				complt = repoAppDetail.getAppCompltLeaveInfo(companyId, app.getAppID(), sync.getType());
+//			}
+//			lstCompltFull.add(complt);
+//		}
+//		return null;
+//	}
 	private CheckExitSync checkExitSync(List<Application_New> lstCompltLeave, String appId){
 		for (Application_New app : lstCompltLeave) {
 			if(app.getAppID().equals(appId)){

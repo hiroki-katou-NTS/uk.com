@@ -34,9 +34,17 @@
 											data-bind="text: ko.pureComputed(function(){
 												if($data.approvalAtrName() !='未承認'){
 													if($data.approverName().length > 0){
-														return $data.approverName(); 	
+														if($data.approverMail().length > 0){
+															return $data.approverName() + '(@)';
+														} else {
+															return $data.approverName();
+														}
 													} else {
-														return $data.representerName();
+														if($data.representerMail().length > 0){
+															return $data.representerName() + '(@)';
+														} else {
+															return $data.representerName();
+														}
 													}
 												} else {
 													var s = '';
@@ -45,8 +53,15 @@
 															s = s + ',';
 														}
 														s = s + data.approverName();
+														if(data.approverMail().length > 0){
+															s = s + '(@)';
+														}
 														if(data.representerName().length > 0){
-															s = s + '(' + data.representerName() + ')';
+															if(data.representerMail().length > 0){
+																s = s + '(' + data.representerName() + '(@))';
+															} else {
+																s = s + '(' + data.representerName() + ')';
+															}
 														}	
 													});
 													return s;

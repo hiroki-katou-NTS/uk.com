@@ -36,13 +36,16 @@ module cps002.i.vm {
             let self = this,
                 dImageId = getShared("CPS002A"),
                 dataShare = getShared("imageId");
-debugger;
             if (dImageId != "" && dImageId != undefined) {
                 self.imageId().defaultImgId = dImageId;
-                $(".ntsCheckBox-label input:checkbox").prop('checked', false);
-                $(".ntsCheckBox-label input:checkbox").trigger("change");
+                //$(".ntsCheckBox-label input:checkbox").prop('checked', false);
+                //$(".ntsCheckBox-label input:checkbox").trigger("change");
+                $('input[type=checkbox]').prop('checked', false);
+                $(".comfirm-checkbox").hide();
                 self.getImage();
                 $("#test").bind("imgloaded", function(evt, query?: SrcChangeQuery) {
+                    $(".checkbox-holder").show();
+                    $('input[type=checkbox]').prop('checked', true);
                     if (!self.isInit) {
                         self.isChange(true);
                         return;

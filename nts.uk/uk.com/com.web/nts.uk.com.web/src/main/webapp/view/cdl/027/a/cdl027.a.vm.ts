@@ -55,7 +55,7 @@ module nts.uk.com.view.cdl027.a.viewmodel {
 
         startPage(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            block.invisible();
+            block.grayout();
             service.getLogInfor(self.formatParams()).done((result: Array<any>) => {
                 if (result && result.length) {
                     for (var i = 0; i < result.length; i++) {
@@ -84,7 +84,7 @@ module nts.uk.com.view.cdl027.a.viewmodel {
         private exportCsv(): void {
             let self = this, l = self.items().length;
             if (l > 0) {
-                block.invisible();
+                block.grayout();
                 service.exportCsv(self.formatParams()).always(() => {
                     block.clear();
                 });
@@ -165,7 +165,7 @@ module nts.uk.com.view.cdl027.a.viewmodel {
                     {
                         name: 'Paging',
                         type: "local",
-                        pageSize: 15,
+                        pageSize: 100,
                         currentPageIndex: 0,
                         showPageSizeDropDown: true,
                         pageCountLimit: 20
@@ -184,6 +184,9 @@ module nts.uk.com.view.cdl027.a.viewmodel {
                         columnSettings: [
                             { columnKey: "arrow", allowResizing: false }
                         ],
+                    },
+                    {
+                        name: "Tooltips"
                     }
                 ]
             });

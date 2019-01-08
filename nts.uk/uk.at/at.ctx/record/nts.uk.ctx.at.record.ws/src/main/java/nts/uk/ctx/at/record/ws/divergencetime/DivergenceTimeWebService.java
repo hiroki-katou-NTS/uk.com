@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.ws.divergencetime;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -148,13 +149,17 @@ public class DivergenceTimeWebService extends WebService {
 	@POST
 	@Path("AttendanceDivergenceName")
 	public List<AttendanceNameDivergenceDto> getAtName(List<Integer> dailyAttendanceItemIds) {
-		return this.getItemSet.getAtName(dailyAttendanceItemIds);
+		return this.getItemSet.getAtName(dailyAttendanceItemIds).stream()
+				.sorted((o1, o2) -> o1.getAttendanceItemDisplayNumber() - o2.getAttendanceItemDisplayNumber())
+				.collect(Collectors.toList());
 	}
 	
 	@POST
 	@Path("getMonthlyAttendanceDivergenceName")
 	public List<AttendanceNameDivergenceDto> getMonthlyAttendanceDivergenceName(List<Integer> monthlyAttendanceItemIds) {
-		return this.getItemSet.getMonthlyAtName(monthlyAttendanceItemIds);
+		return this.getItemSet.getMonthlyAtName(monthlyAttendanceItemIds).stream()
+				.sorted((o1, o2) -> o1.getAttendanceItemDisplayNumber() - o2.getAttendanceItemDisplayNumber())
+				.collect(Collectors.toList());
 	}
 
 }

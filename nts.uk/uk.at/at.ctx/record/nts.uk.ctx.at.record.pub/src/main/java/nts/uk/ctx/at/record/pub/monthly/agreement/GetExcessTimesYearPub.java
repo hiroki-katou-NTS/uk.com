@@ -5,7 +5,7 @@ import nts.uk.ctx.at.shared.dom.common.Year;
 
 /**
  * 年間超過回数の取得
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 public interface GetExcessTimesYearPub {
 

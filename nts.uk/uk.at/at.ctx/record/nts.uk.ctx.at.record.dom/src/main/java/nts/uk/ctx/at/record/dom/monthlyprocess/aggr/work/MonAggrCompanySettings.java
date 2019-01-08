@@ -10,6 +10,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -36,12 +38,15 @@ import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriod;
@@ -60,6 +65,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  * 月別集計で必要な会社別設定
  * @author shuichu_ishida
  */
+@Setter
+@NoArgsConstructor
 public class MonAggrCompanySettings {
 
 	/** 会社ID */
@@ -141,6 +148,9 @@ public class MonAggrCompanySettings {
 	/** 丸め設定 */
 	@Getter
 	private RoundingSetOfMonthly roundingSet;
+	/** 回数集計 */
+	@Getter
+	private CopyOnWriteArrayList<TotalTimes> totalTimesList;
 	/** 月別実績の給与項目カウント */
 	@Getter
 	private PayItemCountOfMonthly payItemCount;
@@ -174,6 +184,12 @@ public class MonAggrCompanySettings {
 	/** 雇用積立年休設定 */
 	@Getter
 	private ConcurrentHashMap<String, EmptYearlyRetentionSetting> emptYearlyRetentionSetMap;
+	/** 振休管理設定 */
+	@Getter
+	private Optional<ComSubstVacation> absSettingOpt;
+	/** 代休管理設定 */
+	@Getter
+	private CompensatoryLeaveComSetting dayOffSetting;
 	/** 実績ロック */
 	private ConcurrentMap<Integer, ActualLock> actualLockMap;
 	/** 日別実績の運用開始設定 */
@@ -207,6 +223,7 @@ public class MonAggrCompanySettings {
 		this.flexShortageLimitOpt = Optional.empty();
 		this.outsideOTBDItems = new CopyOnWriteArrayList<>();
 		this.outsideOTOverTimes = new CopyOnWriteArrayList<>();
+		this.totalTimesList = new CopyOnWriteArrayList<>();
 		this.agreementOperationSet = Optional.empty();
 		this.optionalItemMap = new ConcurrentHashMap<>();
 		this.empConditionMap = new ConcurrentHashMap<>();
@@ -215,6 +232,8 @@ public class MonAggrCompanySettings {
 		this.lengthServiceTblListMap = new ConcurrentHashMap<>();
 		this.retentionYearlySet = Optional.empty();
 		this.emptYearlyRetentionSetMap = new ConcurrentHashMap<>();
+		this.absSettingOpt = Optional.empty();
+		this.dayOffSetting = null;
 		this.actualLockMap = new ConcurrentHashMap<>();
 		this.operationStartSet = Optional.empty();
 		this.errorInfos = new ConcurrentHashMap<>();
@@ -279,6 +298,12 @@ public class MonAggrCompanySettings {
 			val employmentCode = emptYearlyRetentionSet.getEmploymentCode();
 			domain.emptYearlyRetentionSetMap.put(employmentCode, emptYearlyRetentionSet);
 		}
+		
+		// 振休管理設定
+		domain.absSettingOpt = repositories.getSubstVacationMng().findById(companyId);
+		
+		// 代休管理設定
+		domain.dayOffSetting = repositories.getCompensLeaveMng().find(companyId);
 		
 		// 実績ロック
 		val actualLocks = repositories.getActualLock().findAll(companyId);
@@ -462,6 +487,12 @@ public class MonAggrCompanySettings {
 		}
 		else {
 			this.errorInfos.put("013", new ErrMessageContent(TextResource.localize("Msg_1239")));
+		}
+		
+		// 回数集計
+		this.totalTimesList.addAll(repositories.getTotalTimes().getAllTotalTimes(companyId));
+		if (this.totalTimesList.size() <= 0){
+			this.errorInfos.put("020", new ErrMessageContent(TextResource.localize("Msg_1416")));
 		}
 		
 		// 36協定運用設定を取得

@@ -7,8 +7,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingImport;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
@@ -34,6 +36,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
@@ -67,12 +70,12 @@ public class ActualWorkingTimeOfDaily {
 	// private SubHolOccurrenceInfo subHolOccurrenceInfo;
 
 	// 乖離時間
+	@Setter
 	private DivergenceTimeOfDaily divTime;
 
 	/**
 	 * Constructor
 	 */
-
 	private ActualWorkingTimeOfDaily(AttendanceTime constraintDiffTime, ConstraintTime constraintTime,
 			AttendanceTime timeDiff, TotalWorkingTime totalWorkingTime, DivergenceTimeOfDaily divTime,
 			PremiumTimeOfDailyPerformance premiumTime) {
@@ -119,6 +122,7 @@ public class ActualWorkingTimeOfDaily {
     
 	/**
 	 * 日別実績の実働時間の計算
+	 * @param workScheduleTime 
 	 * @param breakTimeCount 
 	 * @param schePreTimeSet 
 	 * @param schePreTimeSet 
@@ -139,7 +143,7 @@ public class ActualWorkingTimeOfDaily {
 			   List<DivergenceTime> divergenceTimeList, 
 			   WorkingConditionItem conditionItem,
 			   Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-			   DeductLeaveEarly leaveLateSet) {
+			   DeductLeaveEarly leaveLateSet, WorkScheduleTimeOfDaily workScheduleTime) {
 
 		
 		/* 総労働時間の計算 */
@@ -159,12 +163,16 @@ public class ActualWorkingTimeOfDaily {
 		/*大塚残業*/
 		TotalWorkingTime calcResultOotsuka = calcOotsuka(recordClass,
 														 totalWorkingTime,
-														 workType);
+														 workType,
+														 workScheduleTime.getRecordPrescribedLaborTime());
 		
 		/*大塚モードの計算（欠勤控除時間）*/
 		//1日出勤系の場合は処理を呼ばないように作成が必要
 		if(workType.getDailyWork().decisionNeedPredTime() != AttendanceHolidayAttr.FULL_TIME && recordClass.getCalculatable()) {
-			calcResultOotsuka = calcResultOotsuka.reCalcLateLeave(recordClass.getWorkTimezoneCommonSet().get().getHolidayCalculation());
+			calcResultOotsuka = calcResultOotsuka.reCalcLateLeave(recordClass.getWorkTimezoneCommonSet(),
+																  recordClass.getFixRestTimeSetting(),
+																  recordClass.getFixWoSetting(),
+																  recordClass.getIntegrationOfDaily().getAttendanceLeave());
 		}
 		
 		/*拘束差異時間*/
@@ -177,13 +185,14 @@ public class ActualWorkingTimeOfDaily {
 		/* 割増時間の計算 */
 		val premiumTime = new PremiumTimeOfDailyPerformance(Collections.emptyList());
 		/* 乖離時間の計算 */
-		val divergenceTimeOfDaily = createDivergenceTimeOfDaily(
-													   forCalcDivergenceDto,
-													   divergenceTimeList,
-													   recordClass.getIntegrationOfDaily().getCalAttr(),
-													   recordClass.getFixRestTimeSetting(),
-													   calcResultOotsuka
-													   );
+//		val divergenceTimeOfDaily = createDivergenceTimeOfDaily(
+//													   forCalcDivergenceDto,
+//													   divergenceTimeList,
+//													   recordClass.getIntegrationOfDaily().getCalAttr(),
+//													   recordClass.getFixRestTimeSetting(),
+//													   calcResultOotsuka
+//													   );
+//		DivergenceTimeOfDaily divergenceTimeOfDaily = new DivergenceTimeOfDaily(Collections.emptyList());
 		
 		/*返値*/
 		return new ActualWorkingTimeOfDaily(
@@ -191,7 +200,7 @@ public class ActualWorkingTimeOfDaily {
 				constraintTime,
 				timeDifferenceWorkingHours,
 				calcResultOotsuka,
-				divergenceTimeOfDaily,
+				new DivergenceTimeOfDaily(new ArrayList<>()),
 				premiumTime
 				);
 		
@@ -311,17 +320,43 @@ public class ActualWorkingTimeOfDaily {
 	 * @param dailyUnit 
 	 * @param timeLeavingOfDailyPerformance 
 	 * @param workType 
+	 * @param attendanceTime 
 	 * @return
 	 */
 	private static TotalWorkingTime calcOotsuka(ManageReGetClass recordClass, 
 									TotalWorkingTime totalWorkingTime,
-									WorkType workType
+									WorkType workType, 
+									AttendanceTime acutualPredTime
 									) {
 		if(!recordClass.getCalculatable() || recordClass.getIntegrationOfDaily().getAttendanceLeave() == null || !recordClass.getIntegrationOfDaily().getAttendanceLeave().isPresent()) return totalWorkingTime;
 		if((recordClass.getPersonalInfo().getWorkingSystem().isRegularWork() || recordClass.getPersonalInfo().getWorkingSystem().isVariableWorkingTimeWork())&&recordClass.getOotsukaFixedWorkSet().isPresent()&& !workType.getDailyWork().isHolidayWork()) {
 			//休憩未取得時間の計算
-			AttendanceTime unUseBreakTime = recordClass.getPersonalInfo().getWorkingSystem().isRegularWork()?totalWorkingTime.getBreakTimeOfDaily().calcUnUseBrekeTime(recordClass.getFixRestTimeSetting().get(),recordClass.getIntegrationOfDaily().getAttendanceLeave().get()):new AttendanceTime(0);
+			AttendanceTime unUseBreakTime =
+					recordClass.getPersonalInfo().getWorkingSystem().isRegularWork() ?
+							totalWorkingTime.getBreakTimeOfDaily().calcUnUseBrekeTime(
+									recordClass.getFixRestTimeSetting().get(),
+									recordClass.getFixWoSetting(),
+									recordClass.getIntegrationOfDaily().getAttendanceLeave().get()) 
+							: new AttendanceTime(0);
 			unUseBreakTime = unUseBreakTime.greaterThan(0)?unUseBreakTime:new AttendanceTime(0);
+			//所てない休憩未取得時間を算出する際に使用する所定時間に加算する時間(就業時間帯マスタに設定されている所定内の休憩時間の合計)
+			int withinBreakTime = 0;
+			//就業時間帯に設定されている休憩のループ
+			for(DeductionTime breakTImeSheet : recordClass.getFixRestTimeSetting().get().getLstTimezone()) {
+				//就業時間帯に設定されている勤務時間帯のstream
+				withinBreakTime += recordClass.getFixWoSetting().stream().filter(tc -> tc.getTimezone().isOverlap(breakTImeSheet))
+													  .map(tt -> tt.getTimezone().getDuplicatedWith(breakTImeSheet.timeSpan()).get().lengthAsMinutes())
+													  .collect(Collectors.summingInt(ts -> ts));
+					
+				
+			}
+			//所定内休憩未取得時間の計算
+			AttendanceTime unUseWithinBreakTime = totalWorkingTime.getWithinStatutoryTimeOfDaily().calcUnUseWithinBreakTime(unUseBreakTime,acutualPredTime,new AttendanceTime(withinBreakTime));
+			//所定外休憩未取得時間
+			AttendanceTime unUseExcessBreakTime = unUseBreakTime.minusMinutes(unUseWithinBreakTime.valueAsMinutes());
+			
+									
+			
 			//日別実績の総労働からとってくる
 			AttendanceTime vacationAddTime = totalWorkingTime.getVacationAddTime();
 			//残業時間
@@ -329,14 +364,15 @@ public class ActualWorkingTimeOfDaily {
 				//休憩未取得時間から残業時間計算
 				totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().calcOotsukaOverTime(
 						totalWorkingTime.getWithinStatutoryTimeOfDaily().getActualWorkTime(),
-						unUseBreakTime,
+						unUseExcessBreakTime,
 						vacationAddTime,/*休暇加算時間*/
 						recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getpredetermineTime(workType.getDailyWork()),
 						recordClass.getOotsukaFixedWorkSet(),
 						recordClass.getIntegrationOfDaily().getCalAttr().getOvertimeSetting(),
 						recordClass.getDailyUnit(),
 						recordClass.getFixRestTimeSetting(),
-						recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet()
+						recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet(),
+						recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc()
 						);
 				
 			}
@@ -347,7 +383,8 @@ public class ActualWorkingTimeOfDaily {
 			   && recordClass.getOotsukaFixedWorkSet().get().getOverTimeCalcNoBreak() != null
 			   && recordClass.getOotsukaFixedWorkSet().get().getOverTimeCalcNoBreak().getCalcMethod() != null
 			   && !recordClass.getOotsukaFixedWorkSet().get().getOverTimeCalcNoBreak().getCalcMethod().isCalcAsWorking() ) {
-				totalWorkingTime.getWithinStatutoryTimeOfDaily().workTimeMinusUnUseBreakTimeForOotsuka(unUseBreakTime);
+				//totalWorkingTime.getWithinStatutoryTimeOfDaily().workTimeMinusUnUseBreakTimeForOotsuka(unUseBreakTime);
+				totalWorkingTime.getWithinStatutoryTimeOfDaily().workTimeMinusUnUseBreakTimeForOotsuka(unUseExcessBreakTime);
 			}
 			
 			//休暇加算を残業として計算する場合、ロジックの関係上、就業時間計算時に休暇加算が合算されてしまう
@@ -424,11 +461,11 @@ public class ActualWorkingTimeOfDaily {
 		Optional<BreakTimeSheet> breakTimeSheet = breakList.stream().filter(tc -> tc.getBreakFrameNo().v() == 2).findFirst();
 		if(!breakTimeSheet.isPresent()) return 0;
 		//出退勤取得
-		TimeSpanForCalc attendanceLeave = new TimeSpanForCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0));
+		//TimeSpanForCalc attendanceLeave = new TimeSpanForCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0));
 		if(integrationOfDailyInDto.getAttendanceLeave().isPresent()) {
 			val attendanceTimeByWorkNo = integrationOfDailyInDto.getAttendanceLeave().get().getAttendanceLeavingWork(1);
 			if(attendanceTimeByWorkNo.isPresent()) {
-				attendanceLeave = attendanceTimeByWorkNo.get().getTimespan();
+			//	attendanceLeave = attendanceTimeByWorkNo.get().getTimespan();
 			}
 		}
 		//実働時間 > 8:00 && 残業合計(振替残業含む)>0

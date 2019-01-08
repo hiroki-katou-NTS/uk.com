@@ -16,6 +16,10 @@ public class FullJoinAppRootConfirm {
 	private String employeeID;
 	private GeneralDate recordDate;
 	private Integer rootType;
+	private Integer yearMonth;
+	private Integer closureID;
+	private Integer closureDay;
+	private Integer lastDayFlg;
 	private Integer phaseOrder;
 	private Integer appPhaseAtr;
 	private Integer frameOrder;

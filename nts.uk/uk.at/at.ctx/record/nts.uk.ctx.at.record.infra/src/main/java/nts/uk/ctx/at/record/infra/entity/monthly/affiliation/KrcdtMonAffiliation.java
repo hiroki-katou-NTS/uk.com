@@ -17,8 +17,8 @@ import nts.uk.ctx.at.record.dom.monthly.affiliation.AggregateAffiliationInfo;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

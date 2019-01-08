@@ -171,10 +171,10 @@ div.form-label.broken {
 .kaf010_overtimeAgreement_header {
 	background-color: #CFF1A5;
 	text-align: center;
-	height: 25px;
+	height: 20px;
 }
 #kaf010_overtimeAgreement_table td, #kaf010_overtimeAgreement_table th {
-	height: 25px;	
+	height: 20px;	
 	text-align: center;
 	border: 1px solid #CCC;
 }

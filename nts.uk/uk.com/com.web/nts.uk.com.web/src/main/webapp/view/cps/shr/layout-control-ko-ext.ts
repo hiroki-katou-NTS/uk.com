@@ -89,7 +89,6 @@ module nts.custombinding {
                 }
 
                 if (!element) {
-                    console.log('disposed');
                     clearInterval(inter);
                 }
             }, 100);
@@ -98,9 +97,6 @@ module nts.custombinding {
 
     export class LayoutControl implements KnockoutBindingHandler {
         private style = `<style type="text/css" rel="stylesheet" id="layout_style">
-                    html {
-                        -ms-overflow-y: hidden;
-                    }
                     .layout-control.dragable{
                         width: 1245px;
                     }
@@ -988,6 +984,7 @@ module nts.custombinding {
                         <div data-bind="ntsDatePicker: {
                                 name: itemName,
                                 value: value,
+                                type: 'date',
                                 startDate: startDate,
                                 endDate: endDate,
                                 constraint: constraint || nameid,
@@ -1015,6 +1012,7 @@ module nts.custombinding {
                             <div data-bind="ntsDatePicker: {
                                     name: itemName,
                                     value: value,
+                                    type: 'date',
                                     startDate: startDate,
                                     endDate: endDate,
                                     constraint: constraint || nameid,
@@ -1038,6 +1036,7 @@ module nts.custombinding {
                             <div data-bind="ntsDatePicker: {
                                     name: itemName,
                                     value: value,
+                                    type: 'date',
                                     startDate: startDate,
                                     endDate: endDate,
                                     constraint: constraint || nameid,
@@ -1099,6 +1098,16 @@ module nts.custombinding {
                                 }, hasFocus: hasFocus" />
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SELECTION -->
+                        <!-- ko if: location.href.indexOf('cps/007') > -1 || location.href.indexOf('cps/008') > -1 -->
+                        <div style="width: 200px;" class="ui-igcombo-wrapper ui-igCombo-disabled ui-state-disabled ntsControl">
+                            <div class="ui-igcombo ui-widget ui-state-default ui-corner-all ui-unselectable" unselectable="on" style="overflow: hidden; position: relative;">
+                                <div class="ui-igcombo-button ui-state-default ui-unselectable ui-igcombo-button-ltr ui-corner-right" style="float: none; width: 100%; border: 0px; padding: 0px; position: absolute; box-sizing: border-box; background-color: transparent;">
+                                    <div class="ui-igcombo-buttonicon" style="right: 0px; font-size: 0.85rem; top: 0px; bottom: 0px; display: block; background-color: rgb(236, 236, 236); width: 30px; text-align: center; line-height: 30px; margin: 0px; border-left: 1px solid rgb(204, 204, 204);">▼</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /ko -->
+                        <!-- ko if: location.href.indexOf('cps/001') > -1 || location.href.indexOf('cps/002') > -1 -->
                         <div data-bind="ntsComboBox: {
                                     width: '200px',
                                     name: itemName,
@@ -1123,6 +1132,7 @@ module nts.custombinding {
                                     'data-required': required,
                                     'data-defv': defValue
                                 }, hasFocus: hasFocus", style='width: 200px; min-width: 200px; max-width: 580px;'></div>
+                        <!-- /ko -->
                         <!-- /ko -->
                         <!-- ko if: item.dataTypeValue == ITEM_TYPE.SEL_RADIO -->
                             <div data-bind="ntsRadioBoxGroup: {
@@ -1235,7 +1245,7 @@ module nts.custombinding {
 
         private services = {
             getCat: (cid) => ajax(`ctx/pereg/person/info/category/find/companyby/${cid}`),
-            getCats: () => ajax(`ctx/pereg/person/info/category/findby/companyv2`),
+            getCats: () => ajax(`ctx/pereg/person/info/category/findby/companyv2/${location.href.indexOf('cps/007') > -1}`),
             getGroups: () => ajax(`ctx/pereg/person/groupitem/getAll`),
             getItemByCat: (cid) => ajax(`ctx/pereg/person/info/ctgItem/layout/findby/categoryId/${cid}`),
             getItemByGroup: (gid) => ajax(`ctx/pereg/person/groupitem/getAllItemDf/${gid}`),
@@ -1599,6 +1609,7 @@ module nts.custombinding {
                                         break;
                                     case ITEM_STRING_TYPE.CARDNO:
                                         constraint.itemCode = 'StampNumber';
+                                        constraint.charType = 'AnyHalfWidth';
                                         constraint.stringExpression = /^[a-zA-Z0-9\s"#$%&(~|{}\[\]@:`*+?;\\/_\-><)]{1,20}$/;
                                         break;
                                     case ITEM_STRING_TYPE.EMPLOYEE_CODE:
@@ -1620,6 +1631,7 @@ module nts.custombinding {
                                 }
                                 break;
                             case ITEM_SINGLE_TYPE.NUMERIC:
+                            case ITEM_SINGLE_TYPE.NUMBERIC_BUTTON:
                                 constraint.charType = 'Numeric';
                                 if (dts.decimalPart == 0) {
                                     constraint.valueType = "Integer";
@@ -1661,9 +1673,6 @@ module nts.custombinding {
                                 break;
                             case ITEM_SINGLE_TYPE.RELATE_CATEGORY:
                                 constraint.valueType = "RELATE_CATEGORY";
-                                break;
-                            case ITEM_SINGLE_TYPE.NUMBERIC_BUTTON:
-                                constraint.valueType = "NUMBERIC_BUTTON";
                                 break;
                             case ITEM_SINGLE_TYPE.READONLY_BUTTON:
                                 constraint.valueType = "READONLY_BUTTON";
@@ -1919,6 +1928,17 @@ module nts.custombinding {
 
                     def.defValue = ko.toJS(def.value);
 
+                    ko.computed({
+                        read: () => {
+                            let editable = ko.toJS(def.editable);
+
+                            if (!editable && $('#' + def.nameid).ntsError('hasError')) {
+                                $('#' + def.nameid).trigger('change');
+                            }
+                        },
+                        disposeWhen: () => !def.value
+                    });
+
                     if (def.item && [ITEM_SINGLE_TYPE.SELECTION, ITEM_SINGLE_TYPE.SEL_RADIO, ITEM_SINGLE_TYPE.SEL_BUTTON].indexOf(def.item.dataTypeValue) > -1) {
                         let fl = true,
                             val = ko.toJS(def.value),
@@ -1941,7 +1961,19 @@ module nts.custombinding {
                                         def.textValue(selected.optionText);
                                     } else {
                                         def.value(undefined);
-                                        def.textValue(text('CPS001_107'));
+                                        switch (def.item.referenceType) {
+                                            case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
+                                                if (cbv.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)) {
+                                                    def.textValue(text('CPS001_107'));
+                                                } else {
+                                                    def.textValue(`${cbv}　${text('CPS001_107')}`);
+                                                }
+                                                break;
+                                            case ITEM_SELECT_TYPE.CODE_NAME:
+                                            case ITEM_SELECT_TYPE.ENUM:
+                                                def.textValue(text('CPS001_107'));
+                                                break;
+                                        }
                                     }
                                 } else {
                                     def.textValue('');
@@ -2251,6 +2283,7 @@ module nts.custombinding {
                                         [
                                             ITEM_SINGLE_TYPE.STRING,
                                             ITEM_SINGLE_TYPE.NUMERIC,
+                                            ITEM_SINGLE_TYPE.NUMBERIC_BUTTON,
                                             ITEM_SINGLE_TYPE.TIME,
                                             ITEM_SINGLE_TYPE.TIMEPOINT
                                         ].indexOf((x.item || {}).dataTypeValue) > -1 &&
@@ -2326,6 +2359,17 @@ module nts.custombinding {
                                         textValue: ko.observable(c.textValue),
                                         value: ko.observable(undefined),
                                         defValue: undefined
+                                    });
+
+                                    ko.computed({
+                                        read: () => {
+                                            let editable = ko.toJS(_r.editable);
+
+                                            if (!editable && $('#' + _r.nameid).ntsError('hasError')) {
+                                                $('#' + _r.nameid).trigger('change');
+                                            }
+                                        },
+                                        disposeWhen: () => !_r.value
                                     });
 
                                     _r.value.subscribe(v => {
@@ -2556,9 +2600,12 @@ module nts.custombinding {
                     x.dispOrder = i + 1;
                     x.layoutID = random();
 
+                    if (!_.has(x, '$show') || !ko.isObservable(x.$show)) {
+                        x.$show = ko.observable(true);
+                    }
+
                     if ((!_.has(x, "items") || !x.items)) {
                         if (x.layoutItemType != IT_CLA_TYPE.SPER) {
-                            x.$show = ko.observable(true);
                             x.items = [];
 
                             if (_.has(x, "listItemDf")) {
@@ -2922,7 +2969,8 @@ module nts.custombinding {
                                                     $.when.apply($, dfds).then(function() {
                                                         let args = _.flatten(arguments),
                                                             items = _(args)
-                                                                .filter(x => !!x)
+                                                                .filter(x => !!x && x.itemTypeState.itemType == ITEM_TYPE.SINGLE)
+                                                                .uniqBy((x: IItemDefinition) => x.id)
                                                                 .map((x: IItemDefinition) => {
                                                                     if (ids.indexOf(x.id) > -1) {
                                                                         x.dispOrder = (ids.indexOf(x.id) + 1) * 1000;

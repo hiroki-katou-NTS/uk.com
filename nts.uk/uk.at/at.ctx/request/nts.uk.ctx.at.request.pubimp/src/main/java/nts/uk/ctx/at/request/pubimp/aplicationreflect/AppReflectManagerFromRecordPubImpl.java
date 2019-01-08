@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.pubimp.aplicationreflect;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
@@ -14,10 +16,17 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
 public class AppReflectManagerFromRecordPubImpl implements AppReflectManagerFromRecordPub{
 	@Inject
 	private AppReflectManagerFromRecord appReflectService;
+	@SuppressWarnings("rawtypes")
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public ProcessStateReflectExport applicationRellect(String workId, DatePeriod workDate,
 			AsyncCommandHandlerContext asyncContext) {
 		ProcessStateReflect outPut = appReflectService.applicationRellect(workId, workDate, asyncContext);
+		return EnumAdaptor.valueOf(outPut.value, ProcessStateReflectExport.class);
+	}
+	@Override
+	public ProcessStateReflectExport reflectAppOfEmployeeTotal(String workId, String sid, DatePeriod datePeriod) {
+		ProcessStateReflect outPut = appReflectService.reflectAppOfEmployeeTotal(workId, sid, datePeriod);
 		return EnumAdaptor.valueOf(outPut.value, ProcessStateReflectExport.class);
 	}
 

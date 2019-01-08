@@ -82,9 +82,9 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 				WkTimeCommand wkTime1 = appCmd.getWkTime1();
 				absApp.setWorkTime1(new AbsenceLeaveWorkingHour(new WorkTime(wkTime1.getStartTime()),
 						new WorkTime(wkTime1.getEndTime())));
-				WkTimeCommand wkTime2 = appCmd.getWkTime2();
-				absApp.setWorkTime2(new AbsenceLeaveWorkingHour(new WorkTime(wkTime2.getStartTime()),
-						new WorkTime(wkTime2.getEndTime())));
+//				WkTimeCommand wkTime2 = appCmd.getWkTime2();
+//				absApp.setWorkTime2(new AbsenceLeaveWorkingHour(new WorkTime(wkTime2.getStartTime()),
+//						new WorkTime(wkTime2.getEndTime())));
 				absApp.setWorkTypeCD(new WorkTypeCode(appCmd.getWkTypeCD()));
 				absApp.setChangeWorkHoursType(EnumAdaptor.valueOf(appCmd.getChangeWorkHoursType(), NotUseAtr.class));
 				this.absRepo.update(absApp);
@@ -120,11 +120,11 @@ public class UpdateHolidayShipmentCommandHandler extends CommandHandler<SaveHoli
 						EnumAdaptor.valueOf(wkTime1.getStartType(), NotUseAtr.class),
 						new WorkTime(wkTime1.getEndTime()),
 						EnumAdaptor.valueOf(wkTime1.getEndType(), NotUseAtr.class)));
-				WkTimeCommand wkTime2 = appCmd.getWkTime2();
-				recApp.setWorkTime2(new RecruitmentWorkingHour(new WorkTime(wkTime2.getStartTime()),
-						EnumAdaptor.valueOf(wkTime2.getStartType(), NotUseAtr.class),
-						new WorkTime(wkTime2.getEndTime()),
-						EnumAdaptor.valueOf(wkTime2.getEndType(), NotUseAtr.class)));
+//				WkTimeCommand wkTime2 = appCmd.getWkTime2();
+//				recApp.setWorkTime2(new RecruitmentWorkingHour(new WorkTime(wkTime2.getStartTime()),
+//						EnumAdaptor.valueOf(wkTime2.getStartType(), NotUseAtr.class),
+//						new WorkTime(wkTime2.getEndTime()),
+//						EnumAdaptor.valueOf(wkTime2.getEndType(), NotUseAtr.class)));
 				recApp.setWorkTypeCD(new WorkTypeCode(appCmd.getWkTypeCD()));
 				this.recRepo.update(recApp);
 

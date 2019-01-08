@@ -1,15 +1,17 @@
 package nts.uk.ctx.at.function.app.find.processexecution.dto;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.persistence.Column;
+//import javax.persistence.Column;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
-import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.TargetGroupClassification;
+//import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.TargetGroupClassification;
+import nts.uk.shr.com.time.calendar.MonthDay;
 
 @Data
 @AllArgsConstructor
@@ -93,6 +95,20 @@ public class ProcessExecutionDto {
 	
 	private String alarmCode;
 	
+	private Boolean mailPrincipal;
+	
+	private Boolean mailAdministrator;
+	
+	/* 指定年 */
+	private Integer designatedYear;
+	
+	/* 指定開始月日 */
+	private Integer startMonthDay;
+	
+	/* 指定終了月日*/
+	private Integer endMonthDay;
+
+	
 	public ProcessExecutionDto() {
 		super();
 	}
@@ -126,7 +142,16 @@ public class ProcessExecutionDto {
 				domain.getExecSetting().getAppRouteUpdateMonthly().value==1?true:false,
 				domain.getProcessExecType().value,
 				domain.getExecSetting().getAlarmExtraction().isAlarmAtr(),
-				!domain.getExecSetting().getAlarmExtraction().getAlarmCode().isPresent()?null:domain.getExecSetting().getAlarmExtraction().getAlarmCode().get().v()
+				!domain.getExecSetting().getAlarmExtraction().getAlarmCode().isPresent()?null:domain.getExecSetting().getAlarmExtraction().getAlarmCode().get().v(),
+				!domain.getExecSetting().getAlarmExtraction().getMailPrincipal().isPresent()?null:domain.getExecSetting().getAlarmExtraction().getMailPrincipal().get().booleanValue(),
+				!domain.getExecSetting().getAlarmExtraction().getMailAdministrator().isPresent()?null:domain.getExecSetting().getAlarmExtraction().getMailAdministrator().get().booleanValue(),
+				!domain.getExecSetting().getPerSchedule().getPeriod().getDesignatedYear().isPresent()?null:domain.getExecSetting().getPerSchedule().getPeriod().getDesignatedYear().get().value,
+				!domain.getExecSetting().getPerSchedule().getPeriod().getStartMonthDay().isPresent()?null: getValueMonthDay(domain.getExecSetting().getPerSchedule().getPeriod().getStartMonthDay().get()),
+				!domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().isPresent()?null: getValueMonthDay(domain.getExecSetting().getPerSchedule().getPeriod().getEndMonthDay().get())
 				);
+	}
+	
+	private static Integer getValueMonthDay(MonthDay monthDay) {
+		return monthDay.getDay() + monthDay.getMonth()*100;
 	}
 }

@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add;
 
-import java.math.BigDecimal;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 

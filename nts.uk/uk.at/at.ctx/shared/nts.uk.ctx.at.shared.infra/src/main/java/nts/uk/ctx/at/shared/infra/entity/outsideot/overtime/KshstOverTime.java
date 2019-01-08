@@ -6,16 +6,14 @@ package nts.uk.ctx.at.shared.infra.entity.outsideot.overtime;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KshstOverTime.
@@ -24,7 +22,7 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 @Setter
 @Entity
 @Table(name = "KSHST_OVER_TIME")
-public class KshstOverTime extends JpaEntity implements Serializable {
+public class KshstOverTime extends UkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -34,26 +32,18 @@ public class KshstOverTime extends JpaEntity implements Serializable {
     protected KshstOverTimePK kshstOverTimePK;
     
     /** The is 60 h super hd. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "IS_60H_SUPER_HD")
     private int is60hSuperHd;
     
     /** The use atr. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "USE_ATR")
     private int useAtr;
     
     /** The name. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "NAME")
     private String name;
     
     /** The over time. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "OVER_TIME")
     private int overTime;
 
@@ -61,6 +51,7 @@ public class KshstOverTime extends JpaEntity implements Serializable {
      * Instantiates a new kshst over time.
      */
     public KshstOverTime() {
+    	super();
     }
 
     /**
@@ -99,14 +90,6 @@ public class KshstOverTime extends JpaEntity implements Serializable {
 		}
 		return true;
 	}
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "entity.KshstOverTime[ kshstOverTimePK=" + kshstOverTimePK + " ]";
-    }
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()

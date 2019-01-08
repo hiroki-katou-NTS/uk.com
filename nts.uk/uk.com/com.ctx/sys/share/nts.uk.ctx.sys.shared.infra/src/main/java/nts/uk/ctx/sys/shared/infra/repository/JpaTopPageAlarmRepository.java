@@ -13,6 +13,7 @@ import nts.uk.ctx.sys.shared.dom.toppagealarm.TopPageAlarmDetail;
 import nts.uk.ctx.sys.shared.dom.toppagealarm.TopPageAlarmRepository;
 import nts.uk.ctx.sys.shared.infra.entity.KrcstToppageAlarm;
 import nts.uk.ctx.sys.shared.infra.entity.KrcstToppageAlarmDetail;
+import nts.uk.ctx.sys.shared.infra.entity.KrcstToppageAlarmDetailPK;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaTopPageAlarmRepository extends JpaRepository implements TopPageAlarmRepository{
@@ -37,15 +38,15 @@ public class JpaTopPageAlarmRepository extends JpaRepository implements TopPageA
 	}
 	
 	// convert from domain to entity, this function created for request list No.477
-	private KrcstToppageAlarm toEntity(String executionLogId, String managerId){
+	private KrcstToppageAlarm toEntity(String executionLogId, String managerId, int executionContent, int isCancelled, int existenceError){
 		val entity = new KrcstToppageAlarm();
 		entity.executionLogId = executionLogId;
 		entity.companyId = AppContexts.user().companyId();
-		entity.executionContent = 1;
-		entity.existenceError = 0;
-		entity.finishDateTime = GeneralDateTime.now();
-		entity.isCancelled = 0;
 		entity.managerId = managerId;
+		entity.executionContent = executionContent;
+		entity.existenceError = existenceError;
+		entity.finishDateTime = GeneralDateTime.now();
+		entity.isCancelled = isCancelled;
 		entity.rogerFlag = 0;
 		return entity;
 	}
@@ -59,11 +60,18 @@ public class JpaTopPageAlarmRepository extends JpaRepository implements TopPageA
 	
 	// convert from domain to entity, this function created for request list No.477
 	private KrcstToppageAlarmDetail toEntityDetail(TopPageAlarmDetail domainDetail){
-		val entityDetail = new KrcstToppageAlarmDetail();
-		entityDetail.errorMessage = domainDetail.getErrorMessage().v();
-		entityDetail.targerEmployee = domainDetail.getTargerEmployee();
-		entityDetail.krcstToppageAlarmDetailPK.executionLogId = domainDetail.getExecutionLogId();
-		entityDetail.krcstToppageAlarmDetailPK.serialNo = domainDetail.getSerialNo().v();
+		KrcstToppageAlarmDetail entityDetail = new KrcstToppageAlarmDetail(
+				new KrcstToppageAlarmDetailPK(
+						domainDetail.getExecutionLogId(),
+						domainDetail.getSerialNo().v()
+						),
+				domainDetail.getErrorMessage().v(),
+				domainDetail.getTargerEmployee()
+				);
+//		entityDetail.errorMessage = domainDetail.getErrorMessage().v();
+//		entityDetail.targerEmployee = domainDetail.getTargerEmployee();
+//		entityDetail.krcstToppageAlarmDetailPK.executionLogId = domainDetail.getExecutionLogId();
+//		entityDetail.krcstToppageAlarmDetailPK.serialNo = domainDetail.getSerialNo().v();
 		return entityDetail;
 	}
 	
@@ -122,8 +130,8 @@ public class JpaTopPageAlarmRepository extends JpaRepository implements TopPageA
 
 	// function insert for request list 477
 	@Override
-	public void insertTopPage(String executionLogId, String managerId) {
-		KrcstToppageAlarm entity = toEntity(executionLogId, managerId);
+	public void insertTopPage(String executionLogId, String managerId, int executionContent, int isCancelled, int existenceError) {
+		KrcstToppageAlarm entity = toEntity(executionLogId, managerId, executionContent, isCancelled, existenceError);
 		this.commandProxy().insert(entity);
 	}
 

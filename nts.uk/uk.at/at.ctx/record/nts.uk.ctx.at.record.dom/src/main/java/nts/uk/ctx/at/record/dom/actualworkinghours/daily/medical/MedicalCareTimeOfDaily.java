@@ -28,5 +28,9 @@ public class MedicalCareTimeOfDaily {
 		this.deductionTime = deductionTime;
 		this.workTime = workTime;
 	}
+	
+	public static MedicalCareTimeOfDaily defaultValue(){
+		return new MedicalCareTimeOfDaily(WorkTimeNightShift.DAY_SHIFT, new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0));
+	}
 
 }

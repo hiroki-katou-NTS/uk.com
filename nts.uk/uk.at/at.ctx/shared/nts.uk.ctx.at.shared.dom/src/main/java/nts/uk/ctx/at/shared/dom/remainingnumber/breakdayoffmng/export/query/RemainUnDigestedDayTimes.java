@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,4 +23,6 @@ public class RemainUnDigestedDayTimes {
 	private int unDigestedTimes;
 	/**	未消化日数 ||  代休使用時間(Optional)*/
 	private double unDigestedDays;
+	
+	private boolean errors;
 }

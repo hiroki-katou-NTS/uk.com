@@ -43,6 +43,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             self.selectedEmployee = ko.observableArray([]);
             self.showinfoSelectedEmployee = ko.observable(false);
             self.ccgcomponent = {
+                
                 /** Common properties */
                 systemType: 2,
                 showEmployeeSelection: true,
@@ -59,9 +60,12 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                 periodStartDate: moment().toISOString(),
                 periodEndDate: moment().toISOString(),
                 inService: true,
-                leaveOfAbsence: true,
-                closed: true,
-                retirement: true,
+                //休職区分
+                leaveOfAbsence: false,
+                //休業区分
+                closed: false,
+                //退職区分
+                retirement: false,
 
                 /** Quick search tab options */
                 showAllReferableEmployee: true,
@@ -113,6 +117,9 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                     if (!self.isInitdailyApproval && value.length == 6) {
                         self.getEmployeeByCode(value, APPROVER_TYPE.DAILY_APPROVER);
                     }
+                } else {
+                    self.settingManager().dailyApproverId("");  
+                    self.settingManager().dailyApprovalName("");
                 }
                 self.isInitdailyApproval = false;
             });
@@ -121,7 +128,6 @@ module nts.uk.com.view.cmm053.a.viewmodel {
         start(): JQueryPromise<any> {
             let self = this;
             var dfd = $.Deferred();
-
             service.getInfoEmLogin().done(function(employeeInfo) {
                 service.getWpName().done(function(wpName) {
                     self.employeeInputList.push(new EmployeeKcp009(employeeInfo.sid,
@@ -142,6 +148,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             }
             _.defer(() => {nts.uk.ui.errors.clearAll()});
             self.settingManager().employeeId(self.selectedItem());
+            var dfd = $.Deferred();
             service.getSettingManager(self.selectedItem()).done(result => {
                 if (result) {
                     self.isInitDepartment = true;
@@ -165,7 +172,9 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                         $('#A2_7').focus();
                     }
                 }
+                dfd.resolve();
             });
+            return dfd.promise();
         }
 
         //新規する
@@ -183,7 +192,6 @@ module nts.uk.com.view.cmm053.a.viewmodel {
             let self = this;
             $('.nts-input').trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
-                block.invisible();
                 let startDate = new Date(self.settingManager().startDate());
                 let closingStartDate = new Date(self.settingManager().closingStartDate());
                 //開始日＜締めの開始日
@@ -191,7 +199,6 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                     closingStartDate = nts.uk.time.formatDate(closingStartDate, 'yyyy/MM/dd');
                     //エラーメッセージ（Msg_1072）
                     dialog.alertError({ messageId: "Msg_1072", messageParams: [closingStartDate] });
-                    block.clear();
                 } else {
                     //入力承認者の承認権限をチェックする
                     if (!self.settingManager().hasAuthority()) {
@@ -202,21 +209,23 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                         let command = ko.toJS(self.settingManager());
                         command.startDate = moment.utc(self.settingManager().startDate(), "YYYY/MM/DD").toISOString();
                         command.endDate = moment.utc(self.settingManager().endDate(), "YYYY/MM/DD").toISOString();
+                        //ドメインモデル「承認設定」．本人による承認をチェックする
+                        self.checkApprovalSetting(command).done(() => {
+                            if (self.screenMode() == EXECUTE_MODE.NEW_MODE) {
+                                self.callInsertHistoryService(command);
+                                return;
+                            }
 
-                        if (self.screenMode() == EXECUTE_MODE.NEW_MODE) {
-                            self.callInsertHistoryService(command);
-                            return;
-                        }
+                            if (self.screenMode() == EXECUTE_MODE.UPDATE_MODE && self.settingManager().hasHistory()) {
+                                self.callUpdateHistoryService(command);
+                                return;
+                            }
 
-                        if (self.screenMode() == EXECUTE_MODE.UPDATE_MODE && self.settingManager().hasHistory()) {
-                            self.callUpdateHistoryService(command);
-                            return;
-                        }
-
-                        if (self.screenMode() == EXECUTE_MODE.UPDATE_MODE && !self.settingManager().hasHistory()) {
-                            self.callInsertHistoryService(command);
-                            return;
-                        }
+                            if (self.screenMode() == EXECUTE_MODE.UPDATE_MODE && !self.settingManager().hasHistory()) {
+                                self.callInsertHistoryService(command);
+                                return;
+                            }
+                        });
                     }
                 }
             }
@@ -228,6 +237,22 @@ module nts.uk.com.view.cmm053.a.viewmodel {
         checkInputApproverAuthority(employeeCode: any){
             let self = this;
             self.getEmployeeByCode(employeeCode, APPROVER_TYPE.DEPARTMENT_APPROVER);
+        }
+        
+        checkApprovalSetting(command): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            block.invisible();
+            service.checkApprovalSetting(command).done(() => {
+                 block.clear();
+                dfd.resolve();
+            }).fail(error => {
+                dialog.alertError({ messageId: error.messageId });
+                 block.clear();
+                dfd.rejected();
+                })
+
+            return dfd.promise();
         }
 
         //削除する
@@ -256,10 +281,14 @@ module nts.uk.com.view.cmm053.a.viewmodel {
 
         callInsertHistoryService(command) {
             let self = this;
+            block.invisible();
             service.insertHistoryByManagerSetting(command).done(result => {
                 //情報メッセージMsg_15
                 dialog.info({ messageId: "Msg_15" }).then(() => {
-                    self.initScreen();
+                    self.initScreen().done(()=>{
+                        self.isInitDepartment = false;
+                        self.isInitdailyApproval = false;    
+                    });
                 });
             }).fail(error => {
                 dialog.alertError({ messageId: error.messageId });
@@ -270,10 +299,14 @@ module nts.uk.com.view.cmm053.a.viewmodel {
 
         callUpdateHistoryService(command) {
             let self = this;
+            block.invisible();
             service.updateHistoryByManagerSetting(command).done(result => {
                 //情報メッセージMsg_15
                 dialog.info({ messageId: "Msg_15" }).then(() => {
-                    self.initScreen();
+                    self.initScreen().done(() => {
+                        self.isInitDepartment = false;
+                        self.isInitdailyApproval = false;
+                    });
                 });
             }).fail(error => {
                 dialog.alertError({ messageId: error.messageId });
@@ -311,6 +344,7 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                         self.settingManager().dailyApproverId(result.employeeID);
                     }
                 }
+                block.clear();
             }).fail(error => {
                 if (approverType == APPROVER_TYPE.DEPARTMENT_APPROVER) {
                     self.settingManager().departmentName('');
@@ -319,7 +353,6 @@ module nts.uk.com.view.cmm053.a.viewmodel {
                     self.settingManager().dailyApprovalName('');
                     $('#A2_10').ntsError('set', { messageId: error.messageId});
                 }
-            }).always(() => {
                 block.clear();
             });
         }

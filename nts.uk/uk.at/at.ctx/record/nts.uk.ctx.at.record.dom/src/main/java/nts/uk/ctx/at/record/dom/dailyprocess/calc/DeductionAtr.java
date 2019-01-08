@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 public enum DeductionAtr {
-	Deduction,
-	Appropriate;
+	Deduction,  //控除
+	Appropriate;//計上
 	
 	/**
 	 * 控除用であるか判定する

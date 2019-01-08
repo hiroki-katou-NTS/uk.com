@@ -3,6 +3,8 @@ package nts.uk.ctx.at.request.dom.application.overtime;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.util.Strings;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -102,8 +104,8 @@ public class AppOverTime extends AggregateRoot{
 		this.companyID = companyID;
 		this.appID = appID;
 		this.overTimeAtr = EnumAdaptor.valueOf(overTimeAtr, OverTimeAtr.class);
-		this.workTypeCode = workTypeCode == null ? null : new WorkTypeCode(workTypeCode);
-		this.siftCode = siftCode == null ? null : new WorkTimeCode(siftCode);
+		this.workTypeCode = Strings.isBlank(workTypeCode) ? null : new WorkTypeCode(workTypeCode);
+		this.siftCode = Strings.isBlank(siftCode) ? null : new WorkTimeCode(siftCode);
 		this.workClockFrom1 = workClockFrom1;
 		this.workClockTo1 = workClockTo1;
 		this.workClockFrom2 = workClockFrom2;

@@ -18,9 +18,11 @@ module nts.uk.com.view.ccg018.c.viewmodel {
         }
 
         startPage(): JQueryPromise<any> {
+            nts.uk.ui.block.grayout;
             var self = this;
             var dfd = $.Deferred();
             dfd.resolve();
+            nts.uk.ui.block.clear();
             return dfd.promise();
         }
 

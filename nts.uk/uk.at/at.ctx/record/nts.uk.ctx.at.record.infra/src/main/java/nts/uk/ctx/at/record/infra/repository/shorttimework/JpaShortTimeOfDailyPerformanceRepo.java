@@ -23,27 +23,27 @@ import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.record.dom.shorttimework.enums.ChildCareAttribute;
 import nts.uk.ctx.at.record.dom.shorttimework.primitivevalue.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDaiBreakTime;
+//import nts.uk.ctx.at.record.infra.entity.breakorgoout.KrcdtDaiBreakTime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTimePK;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements ShortTimeOfDailyPerformanceRepository {
 
-	private static final String REMOVE_BY_EMPLOYEEID_AND_DATE;
-
-	static {
-		StringBuilder builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDaiShortWorkTime a ");
-		builderString.append("WHERE a.krcdtDaiShortWorkTimePK.sid = :employeeId ");
-		builderString.append("AND a.krcdtDaiShortWorkTimePK.ymd = :ymd ");
-		REMOVE_BY_EMPLOYEEID_AND_DATE = builderString.toString();
-	}
+//	private static final String REMOVE_BY_EMPLOYEEID_AND_DATE;
+//
+//	static {
+//		StringBuilder builderString = new StringBuilder();
+//		builderString.append("DELETE ");
+//		builderString.append("FROM KrcdtDaiShortWorkTime a ");
+//		builderString.append("WHERE a.krcdtDaiShortWorkTimePK.sid = :employeeId ");
+//		builderString.append("AND a.krcdtDaiShortWorkTimePK.ymd = :ymd ");
+//		REMOVE_BY_EMPLOYEEID_AND_DATE = builderString.toString();
+//	}
 
 	@Override
 	public Optional<ShortTimeOfDailyPerformance> find(String employeeId, GeneralDate ymd) {
@@ -70,8 +70,7 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 					.map(c -> newEntities(shortWork.getEmployeeId(), shortWork.getYmd(), c)).collect(Collectors.toList());
 			List<KrcdtDaiShortWorkTime> krcdtShortTimes = findEntities(shortWork.getEmployeeId(), shortWork.getYmd()).getList();
 			List<KrcdtDaiShortWorkTime> toRemove = krcdtShortTimes.stream()
-					.filter(c -> !all.stream().filter(tu -> tu.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo == c.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo
-																&& tu.childCareAtr == c.childCareAtr)
+					.filter(c -> !all.stream().filter(tu -> tu.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo == c.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo)
 										.findFirst().isPresent())
 					.collect(Collectors.toList());
 			
@@ -133,7 +132,7 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 		return result;
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Override
 	public void deleteByEmployeeIdAndDate(String employeeId, GeneralDate ymd) {
 		

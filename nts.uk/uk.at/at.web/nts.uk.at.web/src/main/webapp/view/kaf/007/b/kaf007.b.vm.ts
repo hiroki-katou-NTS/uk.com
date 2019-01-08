@@ -47,6 +47,9 @@ module nts.uk.at.view.kaf007.b {
             appChangeSetting: KnockoutObservable<common.AppWorkChangeSetting> = ko.observable(new common.AppWorkChangeSetting());
             targetDate: any = moment(new Date()).format("YYYY/MM/DD");
             requiredCheckTime: KnockoutObservable<boolean> = ko.observable(this.isWorkChange() && true);
+            timeRequired: KnockoutObservable<boolean> = ko.observable(false);
+            //screen B default hidden
+            showExcludeHoliday: KnockoutObservable<boolean> = ko.observable(false);
             constructor( listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata ) {
                 super( listAppMetadata, currentApp );
                 let self = this;
@@ -96,7 +99,7 @@ module nts.uk.at.view.kaf007.b {
                         self.requiredReason( settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true : false );
                         //A8 勤務時間２ ※A7
                         //共通設定.複数回勤務
-                        // self.isMultipleTime( settingData.multipleTime );
+                         self.isMultipleTime( settingData.multipleTime );
                         //勤務変更申請基本データ（更新）
                         service.getWorkchangeByAppID( self.appID() ).done( function( detailData: any ) {
                             //workChangeDto
@@ -122,14 +125,18 @@ module nts.uk.at.view.kaf007.b {
                             ko.mapping.fromJS( detailData.applicationDto, {}, self.appWorkChange().application );
                             //setting reason content
                             self.multilContent( self.appWorkChange().application().applicationReason() );
-                            self.workTypeCodes = detailData.workTypeCodes;
-                            self.workTimeCodes = detailData.workTimeCodes;
+                            self.workTypeCodes = detailData.dataWorkDto.workTypeCodes;
+                            self.workTimeCodes = detailData.dataWorkDto.workTimeCodes;
                             self.requiredCheckTime(self.isWorkChange() && detailData.timeRequired);
+                            self.timeRequired(detailData.timeRequired);
                             //画面モード(表示/編集)
                             //self.editable = ko.observable(detailData.OutMode == 0 ? true: false);                            
                             
                             //実績の内容
-                            service.getRecordWorkInfoByDate(moment(self.appWorkChange().application().applicationDate()).format(self.dateFormat)).done((recordWorkInfo) => {
+                            service.getRecordWorkInfoByDate({
+                                appDate : moment(self.appWorkChange().application().applicationDate()).format(self.dateFormat),
+                                employeeID : self.appWorkChange().application().applicantSID()
+                            }).done((recordWorkInfo) => {
                                 //Binding data
                                 ko.mapping.fromJS( recordWorkInfo, {}, self.recordWorkInfo );
                                  //Focus process
@@ -172,18 +179,25 @@ module nts.uk.at.view.kaf007.b {
                 return dfd.promise();
             }
             
-            showReasonText(){
-            let self =this;
-                if (self.screenModeNew()) {
-                return self.displayAppReasonContentFlg();
-            } else {
-                return self.displayAppReasonContentFlg() != 0 || self.typicalReasonDisplayFlg() != 0;
-            }    
+            enableTime() {
+                let self = this;
+                let result = self.editable() && self.requiredCheckTime();
+                return result;
             }
-            showRightContent(){
-        let self =this;
-         return   self.appChangeSetting().displayResultAtr()==1 && self.appWorkChange().application().prePostAtr() == 1   ; 
-        }
+            
+            showReasonText() {
+                let self = this;
+                if (self.screenModeNew()) {
+                    return self.displayAppReasonContentFlg();
+                } else {
+                    return self.displayAppReasonContentFlg() != 0 || self.typicalReasonDisplayFlg() != 0;
+                }
+            }
+            
+            showRightContent() {
+                let self = this;
+                return self.appChangeSetting().displayResultAtr() == 1 && self.appWorkChange().application().prePostAtr() == 1;
+            }
 
             /**
              * 「登録」ボタンをクリックする
@@ -357,17 +371,10 @@ module nts.uk.at.view.kaf007.b {
                 } );
             }
             public convertIntToTime( data: any ): string {
-                let hourMinute: string = "";
-                if ( data == -1 || data === "" ) {
-                    return null;
-                } else if ( data == 0 ) {
-                    hourMinute = "";
-                } else if ( data != null ) {
-                    let hour = Math.floor( data / 60 );
-                    let minutes = Math.floor( data % 60 );
-                    hourMinute = ( hour < 10 ? ( "0" + hour ) : hour ) + ":" + ( minutes < 10 ? ( "0" + minutes ) : minutes );
+                if(nts.uk.util.isNullOrUndefined(data)||nts.uk.util.isNullOrEmpty(data)){
+                    return null;   
                 }
-                return hourMinute;
+                return nts.uk.time.format.byId("ClockDay_Short_HM", data);
             } 
             /**
              * 「勤務就業選択」ボタンをクリックする
@@ -395,7 +402,11 @@ module nts.uk.at.view.kaf007.b {
                         workChange.workTimeCd(childData.selectedWorkTimeCode);
                         workChange.workTimeName(childData.selectedWorkTimeName);
                         service.isTimeRequired( workChange.workTypeCd()).done((rs) =>{
-                            self.requiredCheckTime(self.isWorkChange() && rs);    
+                            self.requiredCheckTime(self.isWorkChange() && rs);
+                            if(self.requiredCheckTime()){
+                                workChange.workTimeStart1(childData.first.start);
+                                workChange.workTimeEnd1(childData.first.end); 
+                            }    
                         });
                     }
                     //フォーカス制御

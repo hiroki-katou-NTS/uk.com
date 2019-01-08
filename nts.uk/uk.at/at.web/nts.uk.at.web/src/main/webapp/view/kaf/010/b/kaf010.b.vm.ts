@@ -136,6 +136,7 @@ module nts.uk.at.view.kaf010.b {
             allPreAppPanelFlg: KnockoutObservable<boolean> = ko.observable(false);
             //画面モード(表示/編集)
             editable: KnockoutObservable<boolean> = ko.observable(true);
+            enableOvertimeInput: KnockoutObservable<boolean> = ko.observable(false);
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
                 super(listAppMetadata, currentApp);
                 var self = this;
@@ -152,7 +153,6 @@ module nts.uk.at.view.kaf010.b {
             }
             
             startPage(appID: string): JQueryPromise<any> {
-                nts.uk.ui.block.invisible();
                 var self = this;
                 var dfd = $.Deferred();
                 service.findByAppID(appID).done((data) => { 
@@ -166,17 +166,17 @@ module nts.uk.at.view.kaf010.b {
                     if(res.messageId == 'Msg_426'){
                        dialog.alertError({messageId : res.messageId}).then(function(){
                             nts.uk.ui.block.clear();
-                           nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                           appcommon.CommonProcess.callCMM045();
                     });
                     }else if(res.messageId == 'Msg_423'){
                         dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
                             .then(function() {
                                 nts.uk.ui.block.clear();
-                                nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                                appcommon.CommonProcess.callCMM045();
                             });
                     }else{ 
                         nts.uk.ui.dialog.alertError(res.message).then(function(){
-                            nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                            appcommon.CommonProcess.callCMM045();
                             nts.uk.ui.block.clear();
                         });
                     }
@@ -197,6 +197,7 @@ module nts.uk.at.view.kaf010.b {
             initData(data: any) {
                 var self = this;
                 self.version = data.application.version;
+                self.enableOvertimeInput(data.enableOvertimeInput);
                 self.manualSendMailAtr(data.manualSendMailAtr);
                 self.displayPrePostFlg(data.displayPrePostFlg ? true : false);
                 self.prePostSelected(data.application.prePostAtr);
@@ -461,14 +462,21 @@ module nts.uk.at.view.kaf010.b {
                 let self = this,
                 appReason: string,
                 divergenceReason: string;
+                if(self.displayCaculationTime()){
+                    if(!appcommon.CommonProcess.checkWorkTypeWorkTime(self.workTypeCd(), self.siftCD(), "kaf010-workType-workTime-div")){
+                        return;    
+                    }
+                }
                 if (self.displayCaculationTime()) {
                     $("#inpStartTime1").trigger("validate");
                     $("#inpEndTime1").trigger("validate");
                     if (!self.validate()) { return; }
                 }
-                if (!self.hasAppTimeBreakTimes()) {
-                    self.setErrorB6_8();
-                }      
+                if(self.enableOvertimeInput()){
+                    if (!self.hasAppTimeBreakTimes()) {
+                        self.setErrorB6_8();
+                    }      
+                }
                 //return if has error
                 if (nts.uk.ui.errors.hasError()){return;}   
                 nts.uk.ui.block.invisible();
@@ -631,6 +639,8 @@ module nts.uk.at.view.kaf010.b {
                 }, true);
     
                 nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
+                    $("#kaf010-workType-workTime-div").ntsError('clear');
+                    $("#kaf010-workType-workTime-div").css("border","none");
                     //view all code of selected item 
                     var childData = nts.uk.ui.windows.getShared('childData');
                     if (childData) {
@@ -644,6 +654,10 @@ module nts.uk.at.view.kaf010.b {
                         self.timeEnd1(childData.first.end);
                         self.timeStart2(childData.second.start);
                         self.timeEnd2(childData.second.end);
+                        let param = { workTypeCD: childData.selectedWorkTypeCode, workTimeCD: childData.selectedWorkTimeCode }
+                        service.getBreakTimes(param).done((data) => {
+                            self.setTimeZones(data);
+                        });
                         //                    service.getRecordWork(
                         //                        {
                         //                            employeeID: self.employeeID(), 
@@ -665,6 +679,25 @@ module nts.uk.at.view.kaf010.b {
             /**
              * Jump to CMM018 Screen
              */
+            setTimeZones(timeZones) {
+                let self = this;
+                if (timeZones) {
+                    let times = [];
+                    for (let i = 1; i < 11; i++) {
+                        times.push(new common.OverTimeInput("", "", 0, "", i, 0, i, self.getStartTime(timeZones[i - 1]), self.getEndTime(timeZones[i - 1]), null, ""));
+                    }
+                    self.restTime(times);
+                }
+            }
+
+            getStartTime(data) {
+                return data ? data.start : null;
+            }
+
+            getEndTime(data) {
+                return data ? data.end : null;
+            }
+            
             openCMM018() {
                 let self = this;
                 nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", { screen: 'Application', employeeId: self.employeeID() });
@@ -727,6 +760,24 @@ module nts.uk.at.view.kaf010.b {
             CaculationTime(){
                     let self = this;
                     let dfd = $.Deferred();
+                
+                    if (nts.uk.util.isNullOrEmpty(self.appDate())) {
+                        dialog.alertError({ messageId: "Msg_959" });
+                        return;
+                    }
+                    $(".breakTimesCheck").ntsError('clear');
+                    $("#inpStartTime1").trigger("validate");
+                    $("#inpEndTime1").trigger("validate");
+                    //return if has error
+                    if (nts.uk.ui.errors.hasError()) { return; }
+                    if (!self.validateTime(self.timeStart1(), self.timeEnd1(), '#inpStartTime1')) {
+                        return;
+                    }
+                    if (!nts.uk.util.isNullOrEmpty(self.timeStart2())) {
+                        if (!self.validateTime(self.timeStart2(), self.timeEnd2(), '#inpStartTime2')) {
+                            return;
+                        };
+                    }
                     let param : any ={
                         breakTimes: _.map(ko.toJS(self.breakTimes()), item => {return self.initCalculateData(item);}),
                         //bonusTimes: _.map(ko.toJS(self.bonusTimes()), item => {return self.initCalculateData(item);}),
@@ -735,8 +786,8 @@ module nts.uk.at.view.kaf010.b {
                         siftCD: self.siftCD(),
                         workTypeCode: self.workTypeCd(),
                         inputDate: self.inputDate(),
-                        startTimeRest: nts.uk.util.isNullOrEmpty(self.restTime()) ? null : self.restTime()[0].startTime(),
-                        endTimeRest: nts.uk.util.isNullOrEmpty(self.restTime()) ? null : self.restTime()[0].endTime(),
+                        startTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(), function (x) { return x.startTime(); }),
+                        endTimeRests: nts.uk.util.isNullOrEmpty(self.restTime()) ? [] : _.map(self.restTime(), function (x) { return x.endTime(); }),
                         startTime: nts.uk.util.isNullOrEmpty(self.timeStart1()) ? null : self.timeStart1(),
                         endTime: nts.uk.util.isNullOrEmpty(self.timeEnd1()) ? null : self.timeEnd1(),
                         employeeID: self.employeeID()
@@ -752,6 +803,7 @@ module nts.uk.at.view.kaf010.b {
                             workClockTo2: self.timeEnd2(),
                             breakTimes:  ko.toJS(self.breakTimes())
                         }
+                    
                     nts.uk.ui.block.invisible();
                     service.getCaculationResult(param).done(function(data){
                            

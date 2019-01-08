@@ -60,13 +60,6 @@ module cps001.d.vm {
                     if (!self.isInit) {
                         self.isChange(true);
                         unblock();
-                        // check size if req
-                        
-                       /*  if (query.size > 10485760) { // 10485760 = 10MB
-                            self.hasError = true;
-                            alertError({ messageId: "Msg_77" });
-                        } */
-                        
                         return;
                     }
                     self.isInit = false;

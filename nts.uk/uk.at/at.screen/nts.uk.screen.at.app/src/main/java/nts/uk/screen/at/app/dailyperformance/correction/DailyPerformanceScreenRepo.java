@@ -41,6 +41,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkFixedDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHistItemAtScreen;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.month.AttendenceTimeMonthDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.reasondiscrepancy.ReasonCodeName;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInfoOfDailyPerformanceDetailDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
@@ -125,7 +126,7 @@ public interface DailyPerformanceScreenRepo {
 	List<DPAttendanceItem> getListAttendanceItem(List<Integer> lstAttendanceItem);
 
 	/** Get list attendance item control */
-	List<DPAttendanceItemControl> getListAttendanceItemControl(List<Integer> lstAttendanceItem);
+	List<DPAttendanceItemControl> getListAttendanceItemControl(String companyId, List<Integer> lstAttendanceItem);
 
 	/** Get list daily performance error */
 	List<DPErrorDto> getListDPError(DateRange dateRange, List<String> lstEmployee);
@@ -134,12 +135,12 @@ public interface DailyPerformanceScreenRepo {
 	List<DPErrorDto> getListDPError(DateRange dateRange, List<String> lstEmployee, List<String>errorCodes);
 	
 	/** Get error settings */
-	List<DPErrorSettingDto> getErrorSetting(String companyId, List<String> listErrorCode);
+	List<DPErrorSettingDto> getErrorSetting(String companyId, List<String> listErrorCode, boolean showError, boolean showAlarm, boolean showOther);
 	
 	/** Get list sheet */
 	List<DPSheetDto> getFormatSheets(List<String> lstBusinessType);
 	
-	AffEmploymentHistoryDto getAffEmploymentHistory(String comapnyId, String employeeId, DateRange dateRange);
+	AffEmploymentHistoryDto getAffEmploymentHistory(String comapnyId, String employeeId, GeneralDate dateRange);
 	
 	EmploymentDto findEmployment(String companyId, String employmentCode);
 	
@@ -216,6 +217,8 @@ public interface DailyPerformanceScreenRepo {
 	
 	Map<String, List<AffComHistItemAtScreen>>getAffCompanyHistoryOfEmployee(String cid, List<String> employeeIds);
 	
+	List<String>getAffCompanyHistorySidDate(String cid, List<String> employeeIds, DateRange range);
+	
 	String findWorkConditionLastest(List<String> hists, String employeeId);
 	
 	List<DateRange> getWorkConditionFlexDatePeriod(String employeeId, DatePeriod date); 
@@ -233,4 +236,8 @@ public interface DailyPerformanceScreenRepo {
 	List<ClosureDto> getAllClosureDto(String companyId, List<String> employeeIds, DateRange dateRange);
 	
 	List<ConfirmationMonthDto> confirmationMonth(String companyId, Map<String, Integer> sidClosureId);
+	
+	List<AttendenceTimeMonthDto> findAttendenceTimeMonth(List<String> sids, DateRange dateRange);
+	
+	boolean isErAl(String companyId, List<String> errorCode);
 }

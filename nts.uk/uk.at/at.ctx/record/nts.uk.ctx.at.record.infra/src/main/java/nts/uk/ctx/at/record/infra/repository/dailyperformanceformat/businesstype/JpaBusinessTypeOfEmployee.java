@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.record.infra.repository.dailyperformanceformat.businesstype;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployee;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeOfEmployeeRepository;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.businesstype.KrcmtBusinessTypeOfEmployee;
@@ -54,8 +57,13 @@ public class JpaBusinessTypeOfEmployee extends JpaRepository
 
 	@Override
 	public List<BusinessTypeOfEmployee> findAllByListCode(List<String> businessTypeCodes) {
-		return this.queryProxy().query(FIND_BY_LIST_CODE, KrcmtBusinessTypeOfEmployee.class)
-				.setParameter("businessTypeCodes", businessTypeCodes).getList(entity -> toDomain(entity));
+		List<BusinessTypeOfEmployee> resultList = new ArrayList<>();
+		CollectionUtil.split(businessTypeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_LIST_CODE, KrcmtBusinessTypeOfEmployee.class)
+				.setParameter("businessTypeCodes", subList)
+				.getList(entity -> toDomain(entity)));
+		});
+		return resultList;
 	}
 
 	@Override
@@ -125,9 +133,15 @@ public class JpaBusinessTypeOfEmployee extends JpaRepository
 
 	@Override
 	public List<BusinessTypeOfEmployee> findAllByEmpAndDate(List<String> employeeIds, DatePeriod date) {
-		return this.queryProxy().query(SEL_BUSINESS_TYPE, KrcmtBusinessTypeOfEmployee.class)
-				.setParameter("lstSid", employeeIds).setParameter("endYmd", date.end())
-				.setParameter("startYmd", date.start()).getList(entity -> toDomain(entity));
+		List<BusinessTypeOfEmployee> resultList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(SEL_BUSINESS_TYPE, KrcmtBusinessTypeOfEmployee.class)
+					.setParameter("lstSid", subList)
+					.setParameter("endYmd", date.end())
+					.setParameter("startYmd", date.start())
+					.getList(entity -> toDomain(entity)));
+		});
+		return resultList;
 	}
 
 }

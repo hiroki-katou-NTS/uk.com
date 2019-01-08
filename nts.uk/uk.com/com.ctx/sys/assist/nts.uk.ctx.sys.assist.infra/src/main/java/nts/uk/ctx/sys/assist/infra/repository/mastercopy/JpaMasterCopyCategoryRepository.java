@@ -15,7 +15,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategory;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryGetMemento;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryRepository;
-import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategorySetMemento;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyCategory;
 
 /**
@@ -69,22 +68,6 @@ public class JpaMasterCopyCategoryRepository extends JpaRepository implements Ma
 	private MasterCopyCategory toDomain(SspmtMastercopyCategory entity) {
 		MasterCopyCategoryGetMemento memento = new JpaMasterCopyCategoryGetMemento(entity);
 		return new MasterCopyCategory(memento);
-	}
-
-	/**
-	 * To entity.
-	 *
-	 * @param domain the domain
-	 * @return the sspmt mastercopy category
-	 */
-	private SspmtMastercopyCategory toEntity(MasterCopyCategory domain) {
-		SspmtMastercopyCategory entity = this.queryProxy().find(domain.getCategoryNo(), SspmtMastercopyCategory.class)
-				.orElse(new SspmtMastercopyCategory());
-
-		MasterCopyCategorySetMemento memento = new JpaMasterCopyCategorySetMemento(entity);
-		domain.saveToMemento(memento);
-
-		return entity;
 	}
 
 }

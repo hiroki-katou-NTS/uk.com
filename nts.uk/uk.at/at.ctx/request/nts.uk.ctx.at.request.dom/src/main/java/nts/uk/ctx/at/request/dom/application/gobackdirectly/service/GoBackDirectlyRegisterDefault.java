@@ -1,8 +1,9 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
-
-import java.util.Arrays;
-import java.util.List;
+/*
 import java.util.Optional;
+import java.util.List;
+import java.util.Optional;*/
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +22,8 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.ba
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
@@ -30,11 +33,12 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDire
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.WorkChangeFlg;
-import nts.uk.ctx.at.request.dom.setting.workplace.SettingFlg;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -66,12 +70,44 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	@Inject
 	ScBasicScheduleAdapter scBasicScheduleAdapter;
 	
+	@Inject
+	private WorkTimeSettingService workTimeSettingService;
+	
+	@Inject
+	private CollectAchievement collectAchievement;
+	
 	/**
 	 * 
 	 */
 	@Override
 	public ProcessResult register(GoBackDirectly goBackDirectly, Application_New application) {
 		String employeeID = application.getEmployeeID();
+		String workTimeCD = "";
+		String workTypeCD = "";
+		// ドメインモデル「直行直帰申請共通設定」．勤務の変更をチェックする
+		GoBackDirectlyCommonSetting setting = goBackDirectCommonSetRepo.findByCompanyID(application.getCompanyID()).get();
+		if(setting.getWorkChangeFlg()==WorkChangeFlg.DECIDECHANGE){
+			workTimeCD = goBackDirectly.getWorkTypeCD().map(x -> x.v()).orElse("");
+			workTypeCD = goBackDirectly.getSiftCD().map(x -> x.v()).orElse("");
+		} else {
+			// 実績の取得
+			AchievementOutput achievementOutput = collectAchievement.getAchievement(application.getCompanyID(), application.getEmployeeID(), application.getAppDate());
+			workTimeCD = achievementOutput.getWorkTime().getWorkTimeCD();
+			workTypeCD = achievementOutput.getWorkType().getWorkTypeCode();
+		}
+		// 所定時間帯を取得する
+		PredetermineTimeSetForCalc predetermineTimeSetForCalc = workTimeSettingService.getPredeterminedTimezone(application.getCompanyID(), workTimeCD, workTypeCD, null); 
+		Optional<TimezoneUse> opTimezoneUse = predetermineTimeSetForCalc.getTimezones().stream().filter(x -> x.getWorkNo() == 1).findAny();
+		// 勤務開始1に時刻が入力されたか
+		if(!goBackDirectly.getWorkTimeStart1().isPresent()){
+			// 勤務開始1に(勤務NO=1)の「計算用所定時間設定」．時間帯．開始を入れる
+			goBackDirectly.setWorkTimeStart1(opTimezoneUse.map(x -> new WorkTimeGoBack(x.getStart().v())));
+		}
+		// 勤務終了1に時刻が入力されたか
+		if(!goBackDirectly.getWorkTimeEnd1().isPresent()){
+			// 勤務終了1に(勤務NO=1)の「計算用所定時間設定」．時間帯．終了を入れる
+			goBackDirectly.setWorkTimeEnd1(opTimezoneUse.map(x -> new WorkTimeGoBack(x.getEnd().v())));
+		}
 		//アルゴリズム「直行直帰登録」を実行する		
 		goBackDirectRepo.insert(goBackDirectly);
 		appRepo.insert(application);

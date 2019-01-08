@@ -26,6 +26,8 @@ public class DisplayItem {
 	
 	private Set<String> autBussCode;
 	
+	private List<DCMessageError> errors;
+	
 	public DisplayItem(){
 		this.formatCode = new HashSet<>();
 		this.lstFormat = new ArrayList<>();
@@ -33,5 +35,6 @@ public class DisplayItem {
 		this.lstAtdItemUnique = new ArrayList<>();
 		this.lstBusinessTypeCode = new ArrayList<>();
 		this.autBussCode = new HashSet<>();
+		this.errors = new ArrayList<>();
 	}
 }

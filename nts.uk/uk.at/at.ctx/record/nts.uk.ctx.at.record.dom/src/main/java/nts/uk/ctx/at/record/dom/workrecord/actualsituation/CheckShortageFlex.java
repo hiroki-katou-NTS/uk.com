@@ -12,9 +12,9 @@ import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
 import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
 import nts.uk.ctx.at.record.dom.adapter.company.SyCompanyRecordAdapter;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.approvalsituationmanagement.approvaldaily.CheckApprovalDayComplete;
-import nts.uk.ctx.at.record.dom.workrecord.actualsituation.approvalsituationmanagement.approvaldaily.CheckApprovalTargetMonth;
+//import nts.uk.ctx.at.record.dom.workrecord.actualsituation.approvalsituationmanagement.approvaldaily.CheckApprovalTargetMonth;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.identificationstatus.export.CheckIndentityDayConfirm;
-import nts.uk.ctx.at.record.dom.workrecord.actualsituation.identificationstatus.export.CheckIndentityMonthConfirm;
+//import nts.uk.ctx.at.record.dom.workrecord.actualsituation.identificationstatus.export.CheckIndentityMonthConfirm;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.param.ApprovalDayComplete;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
@@ -43,11 +43,11 @@ public class CheckShortageFlex {
 	@Inject
 	private CheckIndentityDayConfirm checkIndentityDayConfirm;
 	
-	@Inject
-	private CheckApprovalTargetMonth checkApprovalTargetMonth;
-	
-	@Inject
-	private CheckIndentityMonthConfirm checkIndentityMonthConfirm;
+//	@Inject
+//	private CheckApprovalTargetMonth checkApprovalTargetMonth;
+//	
+//	@Inject
+//	private CheckIndentityMonthConfirm checkIndentityMonthConfirm;
 	
 	/** The employment adapter. */
 	@Inject
@@ -117,8 +117,7 @@ public class CheckShortageFlex {
 		CurrentMonth currentMonth = closure.get().getClosureMonth();
 		
 		// 当月の期間を算出する.
-		return this.closureService.getClosurePeriod(
-				closure.get().getClosureId().value, currentMonth.getProcessingYm());
+		return this.closureService.getClosurePeriod(closure.get(), currentMonth.getProcessingYm());
 	}
 	
 	/**

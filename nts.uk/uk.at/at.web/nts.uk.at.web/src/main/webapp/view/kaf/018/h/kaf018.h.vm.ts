@@ -38,6 +38,7 @@ module nts.uk.at.view.kaf018.h.viewmodel {
 
             self.selectedTab.subscribe((newValue) => {
                 let mailType = 0;
+                nts.uk.ui.errors.clearAll();
                 switch (newValue) {
                     case 'tab-1':
                         self.screenEditMode(self.appApprovalUnapproved.editMode());
@@ -198,6 +199,7 @@ module nts.uk.at.view.kaf018.h.viewmodel {
          */
         sendTestMail() {
             var self = this;
+            if (nts.uk.ui.errors.hasError()) { return; }
             block.invisible();
             // アルゴリズム「承認状況メールテスト送信」を実行する
             service.confirmSenderMail().done(function(data: any) {

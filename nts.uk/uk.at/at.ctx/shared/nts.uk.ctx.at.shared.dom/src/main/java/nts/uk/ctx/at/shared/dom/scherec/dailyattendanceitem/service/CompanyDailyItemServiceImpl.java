@@ -16,11 +16,13 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItemA
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DisplayAndInputControl;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AtItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemAuthority;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemNameImport;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.TypeOfItemImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
+//import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.TypeOfItemImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttdItemAuthRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
+//import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.DisplayAndInputMonthly;
+//import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyItemControlByAuthority;
 
 @Stateless
 public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {
@@ -35,7 +37,7 @@ public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {
 	private AtItemNameAdapter atItemNameAdapter;
 
 	@Override
-	public List<AttItemNameImport> getDailyItems(String cid, Optional<String> authorityId,
+	public List<AttItemName> getDailyItems(String cid, Optional<String> authorityId,
 			List<Integer> attendanceItemIds, List<DailyAttendanceAtr> itemAtrs) {
 		attendanceItemIds = attendanceItemIds == null ? Collections.emptyList() : attendanceItemIds;
 		itemAtrs = itemAtrs == null ? Collections.emptyList() : itemAtrs;
@@ -68,16 +70,40 @@ public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {
 			return Collections.emptyList();
 		}
 		// 勤怠項目に対応する名称を生成する
-		List<AttItemNameImport> dailyAttItem = atItemNameAdapter.getNameOfAttendanceItem(
-				dailyItem.stream().map(x -> x.getAttendanceItemId()).collect(Collectors.toList()),
-				TypeOfItemImport.Daily);
-		for (AttItemNameImport att : dailyAttItem) {
+		List<AttItemName> dailyAttItem = atItemNameAdapter.getNameOfDailyAttendanceItem(dailyItem);
+		for (AttItemName att : dailyAttItem) {
 			int id = att.getAttendanceItemId();
 			if (authorityMap.containsKey(id)) {
 				att.setAuthority(authorityMap.get(id));
 			}
 		}
 		return dailyAttItem;
+	}
+
+	@Override
+	public List<AttItemName> getDailyItemsNew(String cid, Optional<String> authorityId) {
+		List<AttItemName> listAttItemName = new ArrayList<>();
+		if (authorityId.isPresent()) {
+			Optional<DailyAttendanceItemAuthority> itemAuthority = dailyAttdItemAuthRepository
+					.getDailyAttdItem(cid, authorityId.get());
+			if (!itemAuthority.isPresent()) {
+				return Collections.emptyList();
+			}
+			for(DisplayAndInputControl displayAndInputDaily : itemAuthority.get().getListDisplayAndInputControl()) {
+				AttItemName attItemName = new AttItemName();
+				attItemName.setAttendanceItemId(displayAndInputDaily.getItemDailyID());
+				AttItemAuthority auth = new AttItemAuthority();
+				auth.setToUse(displayAndInputDaily.isToUse());
+				auth.setYouCanChangeIt(displayAndInputDaily.getInputControl().isYouCanChangeIt());
+				auth.setCanBeChangedByOthers(displayAndInputDaily.getInputControl().isCanBeChangedByOthers());
+				attItemName.setAuthority(auth);
+				
+				listAttItemName.add(attItemName);
+			}
+			return listAttItemName;
+
+		}
+		return Collections.emptyList();
 	}
 
 }

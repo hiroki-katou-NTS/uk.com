@@ -44,4 +44,18 @@ public class AttendanceItemPubImp implements AttendanceItemLinkingPub {
 				.collect(Collectors.toList());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.function.pub.attendanceItemAndFrameLinking.
+	 * AttendanceItemLinkingPub#findByFrameNos(java.util.List)
+	 */
+	@Override
+	public List<AttendanceItemLinkingDto> findByFrameNos(List<Integer> frameNos, int typeOfItem, int frameCategory) {
+		return this.attendanceItemLinkingRepository.findByFrameNos(frameNos, typeOfItem, frameCategory).stream()
+				.map(item -> new AttendanceItemLinkingDto(item.getAttendanceItemId(), item.getFrameNo().v(),
+						item.getFrameCategory().value))
+				.collect(Collectors.toList());
+	}
+
 }

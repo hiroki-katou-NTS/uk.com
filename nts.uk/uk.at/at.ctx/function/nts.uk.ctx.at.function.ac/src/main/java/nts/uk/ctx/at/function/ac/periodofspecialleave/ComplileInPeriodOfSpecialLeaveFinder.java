@@ -37,10 +37,14 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 		InPeriodOfSpecialLeave specialLeave = specialLeaveManagementService.complileInPeriodOfSpecialLeave(param);
 		if (specialLeave == null)
 			return null;
-		return new SpecialVacationImported(specialLeave.getRemainDays().getGrantDetailBefore().getGrantDays(), 0.0,
+		return new SpecialVacationImported(
+				specialLeave.getRemainDays().getGrantDetailBefore().getGrantDays(), 
+				0.0,
 				specialLeave.getRemainDays().getGrantDetailAfter().isPresent()
-						? specialLeave.getRemainDays().getGrantDetailAfter().get().getUseDays() : 0.0,
-				specialLeave.getRemainDays().getGrantDetailBefore().getRemainDays(), 0.0, 0.0, 0.0, 0.0);
+						? specialLeave.getRemainDays().getGrantDetailAfter().get().getUseDays() : specialLeave.getRemainDays().getGrantDetailBefore().getUseDays(),
+				specialLeave.getRemainDays().getGrantDetailAfter().isPresent()
+						? specialLeave.getRemainDays().getGrantDetailAfter().get().getRemainDays(): specialLeave.getRemainDays().getGrantDetailBefore().getRemainDays(), 
+				0.0, 0.0, 0.0, 0.0);
 	}
 
 	@Override
@@ -61,4 +65,46 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 		return lstSpecialHoliday;
 	}
 
+	@Override
+	public List<SpecialHolidayImported> getSpeHoliOfConfirmedMonthly(String sid, YearMonth startMonth,
+			YearMonth endMonth, List<Integer> listSpeCode) {
+		
+		// requestList263 with speCode
+				List<SpecialHolidayRemainDataOutput> lstSpeHoliOfConfirmedMonthly = specialHolidayRemainDataSevice
+						.getSpeHoliOfPeriodAndCodes(sid, startMonth, endMonth, listSpeCode);
+
+				if (lstSpeHoliOfConfirmedMonthly == null)
+					return null;
+				List<SpecialHolidayImported> lstSpecialHoliday = new ArrayList<>();
+				lstSpeHoliOfConfirmedMonthly.forEach(item -> {
+					SpecialHolidayImported specialHoliday = new SpecialHolidayImported(item.getYm(), item.getUseDays(),
+							item.getUseTimes(), item.getRemainDays(), item.getRemainTimes());
+					lstSpecialHoliday.add(specialHoliday);
+				});
+				return lstSpecialHoliday;
+	}
+	/**
+	 * @author hoatt
+	 * Doi ung response KDR001
+	 * RequestList263 ver2
+	 * @param sid
+	 * @param startMonth
+	 * @param endMonth
+	 * @return
+	 */
+	@Override
+	public List<SpecialHolidayImported> getSpeHdOfConfMonVer2(String sid, YearMonth startMonth, YearMonth endMonth) {
+//		List<SpecialHolidayRemainDataOutput> lstSpeHdOfConfMonthly = specialHolidayRemainDataSevice
+//				.getSpeHdOfConfMonVer2(sid, startMonth, endMonth);
+//		if (lstSpeHdOfConfMonthly == null)
+//			return null;
+		List<SpecialHolidayImported> lstSpecHd = new ArrayList<>();
+//		lstSpeHdOfConfMonthly.forEach(item -> {
+//			SpecialHolidayImported specialHoliday = new SpecialHolidayImported(item.getYm(), item.getUseDays(),
+//					item.getUseTimes(), item.getRemainDays(), item.getRemainTimes());
+//			lstSpecHd.add(specialHoliday);
+//		});
+		return lstSpecHd;
+	}
+	
 }

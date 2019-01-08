@@ -18,4 +18,11 @@ public class LimitWeek extends TimeDurationPrimitiveValue<LimitWeek> {
 
 	private static final long serialVersionUID = 1L;
 
+	@Override
+	protected Integer reviseRawValue(Integer rawValue) {
+		if (rawValue == null) return super.reviseRawValue(0);
+		if (rawValue > 168 * 60) rawValue = 168 * 60;
+		if (rawValue < 0) rawValue = 0;
+		return super.reviseRawValue(rawValue);
+	}
 }

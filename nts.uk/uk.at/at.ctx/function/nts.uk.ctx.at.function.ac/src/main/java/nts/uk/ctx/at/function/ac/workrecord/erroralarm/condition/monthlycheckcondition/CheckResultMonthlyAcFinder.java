@@ -29,7 +29,7 @@ import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcond
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.CheckResultMonthlyPub;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.SpecHolidayCheckConPubEx;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 @Stateless
@@ -159,8 +159,8 @@ public class CheckResultMonthlyAcFinder implements CheckResultMonthlyAdapter {
 	}	
 	//HoiDD No.257
 	@Override
-	public Map<String, Integer> checkPerTimeMonActualResult(YearMonth yearMonth, String employeeID, AttendanceItemConAdapterDto attendanceItemCondition,List<Integer> attendanceIds) {
+	public Map<String, Integer> checkPerTimeMonActualResult(YearMonth yearMonth, String employeeID, AttendanceItemConAdapterDto attendanceItemCondition) {
 		return checkResultMonthlyPub.checkPerTimeMonActualResult(yearMonth, employeeID, 
-				convertToAttendanceItemCon(attendanceItemCondition), attendanceIds);
+				convertToAttendanceItemCon(attendanceItemCondition));
 	}
 }

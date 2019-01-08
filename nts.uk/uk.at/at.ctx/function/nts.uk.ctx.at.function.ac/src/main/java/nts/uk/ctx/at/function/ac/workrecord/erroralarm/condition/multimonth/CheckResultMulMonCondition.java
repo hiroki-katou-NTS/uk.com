@@ -47,7 +47,7 @@ public class CheckResultMulMonCondition implements CheckActualResultMulMonth{
 				itemValues.addAll(result.getItemValues());
 				check = mulMonthCheckCond.getErAlAttendanceItemCondition().checkTarget(item->{
 						if (item.isEmpty()) {
-							return item;
+							return new ArrayList<>();
 						}
 						return itemValues.stream().map(iv -> getValue(iv))
 								.collect(Collectors.toList());
@@ -77,7 +77,7 @@ public class CheckResultMulMonCondition implements CheckActualResultMulMonth{
 					 checkPerMonth = mulMonthCheckCondContinue.getErAlAttendanceItemCondition()
 							.checkTarget(item -> {
 								if (item.isEmpty()) {
-									return item;
+									return new ArrayList<>();
 								}
 								return result.getItemValues().stream().map(iv -> getValue(iv))
 										.collect(Collectors.toList());
@@ -110,7 +110,7 @@ public class CheckResultMulMonCondition implements CheckActualResultMulMonth{
 				boolean checkPerMonth = false;
 				checkPerMonth = mulMonthCheckCondCosp.getErAlAttendanceItemCondition().checkTarget(item->{
 						if (item.isEmpty()) {
-							return item;
+							return new ArrayList<>();
 						}
 						return result.getItemValues().stream().map(iv -> getValue(iv))
 								.collect(Collectors.toList());
@@ -200,17 +200,17 @@ public class CheckResultMulMonCondition implements CheckActualResultMulMonth{
 		return atdItemConDomain;
 	}
 	
-	private Integer getValue(ItemValue value) {
+	private Double getValue(ItemValue value) {
 		if(value.getValueType()==ValueType.DATE){
-			return 0;
+			return 0d;
 		}
 		if (value.value() == null) {
-			return 0;
+			return 0d;
 		}
 		else if (value.getValueType().isDouble()||value.getValueType().isInteger()) {
-			return value.getValueType().isDouble() ? ((Double) value.value()).intValue() : (Integer) value.value();
+			return value.getValueType().isDouble() ? ((Double) value.value()) : Double.valueOf((Integer) value.value());
 		}
-		return 0;
+		return 0d;
 	}
 	
 	private boolean checkFixedValue(Integer target,SingleValueCompareType compareType, Integer compare) {

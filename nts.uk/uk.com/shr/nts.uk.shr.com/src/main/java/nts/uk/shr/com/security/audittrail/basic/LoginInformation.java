@@ -3,7 +3,6 @@ package nts.uk.shr.com.security.audittrail.basic;
 import java.util.Optional;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.uk.shr.com.context.AppContexts;
 

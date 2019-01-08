@@ -12,9 +12,10 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDail
  */
 @Getter
 public class CalcStatus {
-	
+	//中断、正常終了のステータス
 	private ProcessState processState;
 	
+	//実績
 	private List<IntegrationOfDaily> integrationOfDailyList;
 
 	/**

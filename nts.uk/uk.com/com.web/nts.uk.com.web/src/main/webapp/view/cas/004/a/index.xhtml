@@ -37,23 +37,23 @@
 				<!-- A2 -->
 				<div class="fixed-flex-layout-left"
 					style="margin: 0px; margin-right: 35px;">
-					<div style="margin: 10px"
-						data-bind="ntsPanel: {direction: 'right',width: '405px', height: '415px', showIcon: true}">
+					<div style="margin: 10px;"
+						data-bind="ntsPanel: {direction: 'right',width: '415px', height: '425px', showIcon: true}">
 						<!-- A2_002 -->
-						<div style="float: left"
+						<div style="display:flex; width: 410px; align-items: center;">
+						<div 
 							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_6')}</div>
 						<!-- A2_003 -->
-						<div id="companies-cbbx" tabindex="4" style="float: left"
+						<div id="companies-cbbx" tabindex="4" style="width: 100%"
 							data-bind="ntsComboBox: {
 										options: comList,
 										optionsValue: 'companyCode',
 										optionsText: 'companyName',
 										value: companyCode,
 										visibleItemsCount: 10,
-										width: 350,
-										selectFirstIfNull: true,}"></div>
-						<div style="padding-left: 50px">
-							<div tabindex="5" style="width: 350px; margin-top: 40px;"
+										selectFirstIfNull: true,}"></div></div>
+						<div style="padding-left: 60px;">
+							<div tabindex="5" style="width: 350px; margin-top: 10px;"
 								data-bind="ntsSearchBox:
 		                    	       {targetKey: 'loginID',
 		                    	        comId: 'single-user-list',
@@ -91,8 +91,8 @@
 						<tr>
 							<td>
 								<!-- A3_001 -->
-								<div
-									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_13')}</div>
+								<div 
+									data-bind="ntsFormLabel: {required: true, constraint: 'LoginID'}">#{i18n.getText('CAS004_13')}</div>
 							</td>
 							<td>
 								<!-- A3_002 --> <input id="login-id" tabindex="7" class="input-lead"
@@ -110,7 +110,7 @@
 							<td>
 								<!-- A3_005 -->
 								<div
-									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_14')}</div>
+									data-bind="ntsFormLabel: {required: true, constraint: 'UserName'}">#{i18n.getText('CAS004_14')}</div>
 							</td>
 							<td>
 								<!-- A3_006 --> <input id="username-input" tabindex="9" class="input-lead"
@@ -121,7 +121,7 @@
 							<td style="padding-top: 25px;">
 								<!-- A3_007 -->
 								<div
-									data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS004_17')}</div>
+									data-bind="ntsFormLabel: {required: false, constraint: 'MailAddress'}">#{i18n.getText('CAS004_17')}</div>
 							</td>
 							<td colspan="2" style="padding-top: 25px;">
 								<!-- A3_008  --> <input id="mailaddress-input" tabindex="10" class="input-email"
@@ -132,7 +132,7 @@
 							<td>
 								<!-- A3_009 -->
 								<div
-									data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_18')}</div>
+									data-bind="ntsFormLabel: {required: true, constraint: 'RawPassword'}">#{i18n.getText('CAS004_18')}</div>
 							</td>
 							<td>
 								<!-- A3_010 --> <input tabindex="11" class="input-lead"

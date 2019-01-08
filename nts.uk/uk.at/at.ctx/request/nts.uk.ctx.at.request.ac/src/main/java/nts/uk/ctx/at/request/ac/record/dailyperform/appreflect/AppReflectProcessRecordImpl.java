@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ReasonNotReflectPubRecor
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ReflectRecordAtr;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ReflectedStatePubRecord;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ScheAndRecordSameChangePubFlg;
+import nts.uk.ctx.at.record.pub.dailyperform.appreflect.WorkChangeCommonReflectPubPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.ChangeAppGobackPubAtr;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.GobackAppPubParameter;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.GobackReflectPubParameter;
@@ -29,6 +30,7 @@ import nts.uk.ctx.at.record.pub.dailyperform.appreflect.overtime.PreOvertimePubP
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.CommonReflectPara;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.DisabledSegment_New;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.WorkChangeCommonReflectPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.AppReflectProcessRecord;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.GobackReflectPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.HolidayWorkReflectPara;
@@ -53,7 +55,8 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 				AppCommonPara para = new AppCommonPara(appInfor.getCompanyID(), 
 						appInfor.getEmployeeID(),
 						loopDate, 
-						settingData.isPresent() ? EnumAdaptor.valueOf(settingData.get().getAppReflectAfterConfirm().getAchievementConfirmedAtr().value, ReflectRecordAtr.class) 
+						settingData.isPresent() ?
+								EnumAdaptor.valueOf(settingData.get().getAppReflectAfterConfirm().getAchievementConfirmedAtr().value, ReflectRecordAtr.class) 
 								: ReflectRecordAtr.NOT_RFFLECT_CANNOT_REF,
 						appInfor.getReflectionInformation().getForcedReflectionReal() == DisabledSegment_New.TODO ? true : false,
 						EnumAdaptor.valueOf(appInfor.getReflectionInformation().getStateReflectionReal().value, ReflectedStatePubRecord.class),
@@ -168,8 +171,8 @@ public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 	}
 
 	@Override
-	public boolean workChangeReflectRecord(CommonReflectPara para, boolean isPre) {		
-		return recordPub.workChangeReflect(this.toPubPara(para), isPre);		
+	public boolean workChangeReflectRecord(WorkChangeCommonReflectPara para, boolean isPre) {		
+		return recordPub.workChangeReflect(new WorkChangeCommonReflectPubPara(this.toPubPara(para.getCommonPara()), para.getExcludeHolidayAtr()), isPre);		
 	}
 	
 	private CommonReflectPubParameter toPubPara(CommonReflectPara para) {

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * プライマリキー：任意期間別実績の勤怠時間
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Embeddable
 @EqualsAndHashCode

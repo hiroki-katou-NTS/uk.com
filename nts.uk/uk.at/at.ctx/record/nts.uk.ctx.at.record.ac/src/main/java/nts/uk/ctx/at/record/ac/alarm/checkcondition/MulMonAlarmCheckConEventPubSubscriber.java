@@ -35,6 +35,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceI
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValueDay;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
@@ -75,19 +76,23 @@ public class MulMonAlarmCheckConEventPubSubscriber implements DomainEventSubscri
 				
 				if (typeCheckItem == TypeCheckWorkRecordMultipleMonth.TIME.value 
 						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.TIMES.value 
-						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.AMOUNT.value ) {
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.AMOUNT.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.DAYS.value) {
 					addMulMonthCheckCond(createMulMonthCheckCond(mulMonCheckCondDto));
 				} else if (typeCheckItem == TypeCheckWorkRecordMultipleMonth.AVERAGE_TIME.value  
 						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.AVERAGE_TIMES.value 
-						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.AVERAGE_AMOUNT.value ) {
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.AVERAGE_AMOUNT.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.AVERAGE_DAYS.value) {
 					addMulMonthCheckCondAvg(createMulMonthCheckCondAvg(mulMonCheckCondDto));
 				} else if (typeCheckItem == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIME.value
 						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIMES.value
-						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_AMOUNT.value) {
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_AMOUNT.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_DAYS.value) {
 					addMulMonthCheckCondCont(createMulMonthCheckCondCont(mulMonCheckCondDto));
 				} else if (typeCheckItem == TypeCheckWorkRecordMultipleMonth.NUMBER_TIME.value
 						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.NUMBER_TIMES.value
-						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.NUMBER_AMOUNT.value) {
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.NUMBER_AMOUNT.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.NUMBER_DAYS.value) {
 					addMulMonthCheckCondCosp(createMulMonthCheckCondCosp(mulMonCheckCondDto));
 				} 
 
@@ -126,28 +131,32 @@ public class MulMonAlarmCheckConEventPubSubscriber implements DomainEventSubscri
 				
 				if (typeCheckItem == TypeCheckWorkRecordMultipleMonth.TIME.value  
 						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.TIMES.value
-						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.AMOUNT.value) {
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.AMOUNT.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.DAYS.value) {
 					removeMulMonthCheckCondAvg(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondCont(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondCosp(mulMonCheckCondDto.getErrorAlarmCheckID());
 					updateMulMonthCheckCond(createMulMonthCheckCond(mulMonCheckCondDto));
 				} else if (typeCheckItem == TypeCheckWorkRecordMultipleMonth.AVERAGE_TIME.value 
 						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.AVERAGE_TIMES.value
-						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.AVERAGE_AMOUNT.value) {
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.AVERAGE_AMOUNT.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.AVERAGE_DAYS.value) {
 					removeMulMonthCheckCond(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondCont(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondCosp(mulMonCheckCondDto.getErrorAlarmCheckID());
 					updateMulMonthCheckCondAvg(createMulMonthCheckCondAvg(mulMonCheckCondDto));
 				} else if (typeCheckItem == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIME.value
 						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIMES.value
-						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_AMOUNT.value) {
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_AMOUNT.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_DAYS.value) {
 					removeMulMonthCheckCond(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondAvg(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondCosp(mulMonCheckCondDto.getErrorAlarmCheckID());
 					updateMulMonthCheckCondCont(createMulMonthCheckCondCont(mulMonCheckCondDto));
 				} else if (typeCheckItem == TypeCheckWorkRecordMultipleMonth.NUMBER_TIME.value
 						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.NUMBER_TIMES.value
-						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.NUMBER_AMOUNT.value) {
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.NUMBER_AMOUNT.value
+						|| typeCheckItem == TypeCheckWorkRecordMultipleMonth.NUMBER_DAYS.value) {
 					removeMulMonthCheckCond(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondAvg(mulMonCheckCondDto.getErrorAlarmCheckID());
 					removeMulMonthCheckCondCont(mulMonCheckCondDto.getErrorAlarmCheckID());
@@ -212,47 +221,52 @@ public class MulMonAlarmCheckConEventPubSubscriber implements DomainEventSubscri
 		int conditionAtr = atdItemCon.getConditionAtr();
 		if (conditionType == ConditionType.FIXED_VALUE.value 
 				|| conditionType == ConditionType.ATTENDANCE_ITEM.value ) {
-			if (atdItemCon.getCompareStartValue() != null && atdItemCon.getCompareEndValue() != null) {
-				if (compareOperator > SingleValueCompareType.LESS_OR_EQUAL.value) {
+				if (compareOperator > SingleValueCompareType.GREATER_THAN.value) {
 
 					if (conditionAtr == ConditionAtr.AMOUNT_VALUE.value) {
 						atdItemConDomain.setCompareRange(compareOperator,
-								(V) new CheckedAmountValue(atdItemCon.getCompareStartValue().intValue()),
-								(V) new CheckedAmountValue(atdItemCon.getCompareEndValue().intValue()));
+								atdItemCon.getCompareStartValue() != null ? (V) new CheckedAmountValue(atdItemCon.getCompareStartValue().intValue()) : (V) new CheckedAmountValue(0),
+								atdItemCon.getCompareEndValue() != null ? (V) new CheckedAmountValue(atdItemCon.getCompareEndValue().intValue()) : (V) new CheckedAmountValue(0));
 					} else if (conditionAtr == ConditionAtr.TIME_DURATION.value) {
 						atdItemConDomain.setCompareRange(compareOperator,
-								(V) new CheckedTimeDuration(atdItemCon.getCompareStartValue().intValue()),
-								(V) new CheckedTimeDuration(atdItemCon.getCompareEndValue().intValue()));
+								atdItemCon.getCompareStartValue() != null ? (V) new CheckedTimeDuration(atdItemCon.getCompareStartValue().intValue()) : (V) new CheckedTimeDuration(0),
+								atdItemCon.getCompareEndValue() != null ? (V) new CheckedTimeDuration(atdItemCon.getCompareEndValue().intValue()) : (V) new CheckedTimeDuration(0));
 					} else if (conditionAtr == ConditionAtr.TIME_WITH_DAY.value) {
 						atdItemConDomain.setCompareRange(compareOperator,
-								(V) new TimeWithDayAttr(atdItemCon.getCompareStartValue().intValue()),
-								(V) new TimeWithDayAttr(atdItemCon.getCompareEndValue().intValue()));
+						atdItemCon.getCompareStartValue() != null ? (V) new TimeWithDayAttr(atdItemCon.getCompareStartValue().intValue()) : (V) new TimeWithDayAttr(0),
+						atdItemCon.getCompareEndValue() != null ? (V) new TimeWithDayAttr(atdItemCon.getCompareEndValue().intValue()) : (V) new TimeWithDayAttr(0));
 					} else if (conditionAtr == ConditionAtr.TIMES.value) {
 						atdItemConDomain.setCompareRange(compareOperator,
-								(V) new CheckedTimesValue(atdItemCon.getCompareStartValue().intValue()),
-								(V) new CheckedTimesValue(atdItemCon.getCompareEndValue().intValue()));
+								atdItemCon.getCompareStartValue() != null ? (V) new CheckedTimesValue(atdItemCon.getCompareStartValue().intValue()) : (V) new CheckedTimesValue(0),
+								atdItemCon.getCompareEndValue() != null ? (V) new CheckedTimesValue(atdItemCon.getCompareEndValue().intValue()) : (V) new CheckedTimesValue(0));
+					}else  if(conditionAtr == ConditionAtr.DAYS.value){
+						atdItemConDomain.setCompareRange(compareOperator,
+								atdItemCon.getCompareStartValue() != null ? (V) new CheckedTimesValueDay(atdItemCon.getCompareStartValue().doubleValue()) : (V) new CheckedTimesValueDay((double) 0),
+								atdItemCon.getCompareEndValue() != null ? (V) new CheckedTimesValueDay(atdItemCon.getCompareEndValue().doubleValue()) : (V) new CheckedTimesValueDay((double) 0));
 					}
 				} else {
 					if (conditionType == ConditionType.FIXED_VALUE.value) {
 						if (conditionAtr == ConditionAtr.AMOUNT_VALUE.value) {
 							atdItemConDomain.setCompareSingleValue(compareOperator, conditionType,
-									(V) new CheckedAmountValue(atdItemCon.getCompareStartValue().intValue()));
+									atdItemCon.getCompareStartValue() != null ? (V) new CheckedAmountValue(atdItemCon.getCompareStartValue().intValue()) : (V) new CheckedAmountValue(0));
 						} else if (conditionAtr == ConditionAtr.TIME_DURATION.value) {
 							atdItemConDomain.setCompareSingleValue(compareOperator, conditionType,
-									(V) new CheckedTimeDuration(atdItemCon.getCompareStartValue().intValue()));
+							atdItemCon.getCompareStartValue() != null ? (V) new CheckedTimeDuration(atdItemCon.getCompareStartValue().intValue()) : (V) new CheckedTimeDuration(0));
 						} else if (conditionAtr == ConditionAtr.TIME_WITH_DAY.value) {
 							atdItemConDomain.setCompareSingleValue(compareOperator, conditionType,
-									(V) new TimeWithDayAttr(atdItemCon.getCompareStartValue().intValue()));
+									atdItemCon.getCompareStartValue() != null ? (V) new TimeWithDayAttr(atdItemCon.getCompareStartValue().intValue()) : (V) new TimeWithDayAttr(0));
 						} else if (conditionAtr == ConditionAtr.TIMES.value) {
 							atdItemConDomain.setCompareSingleValue(compareOperator, conditionType,
-									(V) new CheckedTimesValue(atdItemCon.getCompareStartValue().intValue()));
+									atdItemCon.getCompareStartValue() != null ? (V) new CheckedTimesValue(atdItemCon.getCompareStartValue().intValue()) : (V) new CheckedTimesValue(0));
+						}else  if(conditionAtr == ConditionAtr.DAYS.value){
+							atdItemConDomain.setCompareSingleValue(compareOperator, conditionType,
+									atdItemCon.getCompareStartValue() != null ? (V) new CheckedTimesValueDay(atdItemCon.getCompareStartValue().doubleValue()) : (V) new CheckedTimesValueDay((double) 0));
 						}
 					} else {
 						atdItemConDomain.setCompareSingleValue(compareOperator, conditionType,
 								(V) new AttendanceItemId(atdItemCon.getSingleAtdItem()));
 					}
 				}
-			}
 		} else {
 			atdItemConDomain.setInputCheck(atdItemCon.getInputCheckCondition().intValue());
 		}

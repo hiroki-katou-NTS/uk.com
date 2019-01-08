@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
+//import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeDto;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessType;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;

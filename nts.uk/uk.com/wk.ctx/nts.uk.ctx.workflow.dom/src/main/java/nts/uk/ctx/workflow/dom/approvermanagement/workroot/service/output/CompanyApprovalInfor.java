@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.shr.com.company.CompanyInfor;
 @Data
 @AllArgsConstructor

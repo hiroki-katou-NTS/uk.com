@@ -5,7 +5,9 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantYearHolidayRepository;
 import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstGrantHdTbl;
@@ -96,11 +98,14 @@ public class JpaGrantYearHolidayRepository extends JpaRepository implements Gran
 	
 	@Override
 	public void remove(String companyId, String yearHolidayCode, List<Integer> conditionNos) {
-		this.getEntityManager().createQuery(DELETE_ALL_BY_CONDITIONS)
-			.setParameter("companyId", companyId)
-			.setParameter("yearHolidayCode", yearHolidayCode)
-			.setParameter("conditionNos", conditionNos)
-			.executeUpdate();
+		CollectionUtil.split(conditionNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			this.getEntityManager().createQuery(DELETE_ALL_BY_CONDITIONS)
+				.setParameter("companyId", companyId)
+				.setParameter("yearHolidayCode", yearHolidayCode)
+				.setParameter("conditionNos", subList)
+				.executeUpdate();
+		});
+		this.getEntityManager().flush();
 	}
 		
 	/**
@@ -153,11 +158,14 @@ public class JpaGrantYearHolidayRepository extends JpaRepository implements Gran
 
 	@Override
 	public void removeByGrantNums(String companyId, String yearHolidayCode, List<Integer> grantNums) {
-		this.getEntityManager().createQuery(DELETE_BY_GRANTNUMS)
-			.setParameter("companyId", companyId)
-			.setParameter("grantNums", grantNums)
-			.setParameter("yearHolidayCode", yearHolidayCode)			
-			.executeUpdate();
+		CollectionUtil.split(grantNums, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			this.getEntityManager().createQuery(DELETE_BY_GRANTNUMS)
+				.setParameter("companyId", companyId)
+				.setParameter("grantNums", subList)
+				.setParameter("yearHolidayCode", yearHolidayCode)			
+				.executeUpdate();
+		});
+		this.getEntityManager().flush();
 	}
 
 }

@@ -64,8 +64,8 @@ public class OvertimeWebService extends WebService{
 				param.getWorkTypeCode(),
 				param.getStartTime(),
 				param.getEndTime(),
-				param.getStartTimeRest(),
-				param.getEndTimeRest(),
+				param.getStartTimeRests(),
+				param.getEndTimeRests(),
 				param.getOvertimeAtr());
 	}
 	@POST
@@ -74,8 +74,8 @@ public class OvertimeWebService extends WebService{
 		return this.checkConvertPrePost.convertPrePost(param.getPrePostAtr(),param.getAppDate(),param.getSiftCD(),param.getOvertimeHours(),param.getWorkTypeCode(),
 				param.getStartTime(),
 				param.getEndTime(),
-				param.getStartTimeRest(),
-				param.getEndTimeRest());
+				param.getStartTimeRests(),
+				param.getEndTimeRests());
 	}
 	@POST
 	@Path("getCaculationResult")
@@ -83,8 +83,8 @@ public class OvertimeWebService extends WebService{
 		return this.overtimeFinder.getCaculationValue(param.getOvertimeHours(),param.getBonusTimes(),param.getPrePostAtr(), param.getAppDate(),param.getSiftCD(),param.getWorkTypeCode(),
 				param.getStartTime(),
 				param.getEndTime(),
-				param.getStartTimeRest(),
-				param.getEndTimeRest());
+				param.getStartTimeRests(),
+				param.getEndTimeRests());
 	}
 	
 	@POST
@@ -120,7 +120,7 @@ public class OvertimeWebService extends WebService{
 	@Path("getRecordWork")
 	public RecordWorkDto getRecordWork(RecordWorkParam param) {
 		return this.overtimeFinder.getRecordWork(param.employeeID, param.appDate, param.siftCD,param.prePostAtr,param.getOvertimeHours(),param.getWorkTypeCode(),
-				param.getStartTimeRest(),
-				param.getEndTimeRest());
+				param.getStartTimeRests(),
+				param.getEndTimeRests());
 	}
 }

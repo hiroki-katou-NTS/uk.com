@@ -5,7 +5,7 @@ import nts.arc.primitive.constraint.HalfIntegerRange;
 
 /**
  * 年間日数
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @HalfIntegerRange(min = 0, max = 366.0)
 public class YearlyDays extends HalfIntegerPrimitiveValue<YearlyDays> {
@@ -27,5 +27,13 @@ public class YearlyDays extends HalfIntegerPrimitiveValue<YearlyDays> {
 	 */
 	public YearlyDays addDays(Double days){
 		return new YearlyDays(this.v() + days);
+	}
+	
+	@Override
+	protected Double reviseRawValue(Double rawValue) {
+		if (rawValue == null) return super.reviseRawValue(rawValue);
+		if (rawValue > 366.0) rawValue = 366.0;
+		if (rawValue < 0.0) rawValue = 0.0;
+		return super.reviseRawValue(rawValue);
 	}
 }

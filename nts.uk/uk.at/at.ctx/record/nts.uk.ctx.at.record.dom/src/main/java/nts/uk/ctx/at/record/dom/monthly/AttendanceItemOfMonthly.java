@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.monthly;
 
 /**
  * 月別実績の勤怠項目
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 public enum AttendanceItemOfMonthly {
 	
@@ -11,6 +11,10 @@ public enum AttendanceItemOfMonthly {
 	/** 月割増合計時間 */
 	MONTHLY_TOTAL_PREMIUM_TIME(6),
 	
+	/** フレックス法定内時間 */
+	FLEX_LEGAL_TIME(15),
+	/** フレックス法定外時間 */
+	FLEX_ILLEGAL_TIME(16),
 	/** フレックス超過時間 */
 	FLEX_EXCESS_TIME(17),
 	

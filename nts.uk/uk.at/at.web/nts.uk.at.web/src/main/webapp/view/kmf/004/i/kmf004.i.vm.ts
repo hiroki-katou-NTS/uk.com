@@ -29,9 +29,10 @@ module nts.uk.at.view.kmf004.i.viewmodel {
         currentFrameCd: KnockoutObservable<number> = ko.observable(null);
         tabs = ko.observableArray([
             //I6_2
-            { id: 'tab-1', title: getText('KMF004_74'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-            //I6_3
-            { id: 'tab-2', title: getText('KMF004_13'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
+            { id: 'tab-1', title: getText('KMF004_74'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) }
+//            ,
+//            //I6_3
+//            { id: 'tab-2', title: getText('KMF004_13'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
         ]);
         selectedTab = ko.observable('tab-1');
         limits = ko.observableArray([
@@ -42,9 +43,9 @@ module nts.uk.at.view.kmf004.i.viewmodel {
         ]);
         genderLst = ko.observableArray([
             //I10_3
-            { code: 0, name: getText('KMF004_55') },
+            { code: 1, name: getText('KMF004_55') },
             //I10_4
-            { code: 1, name: getText('KMF004_56') }
+            { code: 2, name: getText('KMF004_56') }
         ]);
 
         ageStandardlst = ko.observableArray([
@@ -178,7 +179,7 @@ module nts.uk.at.view.kmf004.i.viewmodel {
         genderRestrict: KnockoutObservable<boolean> = ko.observable(false);
         restrictEmployment: KnockoutObservable<boolean> = ko.observable(false);
         restrictClassification: KnockoutObservable<boolean> = ko.observable(false);
-        gender: KnockoutObservable<number> = ko.observable(0);
+        gender: KnockoutObservable<number> = ko.observable(1);
         ageRange: KnockoutObservable<AgeRange> = ko.observable(new AgeRange());
         ageStandard: KnockoutObservable<number> = ko.observable(1);
         ageStandardBaseDate: KnockoutObservable<string> = ko.observable("");

@@ -3,6 +3,8 @@ package nts.uk.ctx.at.request.dom.application.holidayworktime;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.util.Strings;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -90,8 +92,8 @@ public class AppHolidayWork extends AggregateRoot{
 						int holidayShiftNight){
 		this.companyID = companyID;
 		this.appID = appID;
-		this.workTypeCode = workTypeCode == null ? null : new WorkTypeCode(workTypeCode);
-		this.workTimeCode = workTypeCode == null ? null : new WorkTimeCode(workTimeCode);
+		this.workTypeCode = Strings.isBlank(workTypeCode) ? null : new WorkTypeCode(workTypeCode);
+		this.workTimeCode = Strings.isBlank(workTimeCode) ? null : new WorkTimeCode(workTimeCode);
 		this.workClock1 = HolidayWorkClock.validateTime(workClockStart1, workClockEnd1,goAtr1,backAtr1);
 		this.workClock2 = HolidayWorkClock.validateTime(workClockStart2, workClockEnd2,goAtr2,backAtr2);
 		this.divergenceReason = divergenceReason;

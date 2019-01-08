@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * @author hungnm
@@ -46,7 +48,8 @@ public class PlanActualWorkType extends WorkTypeCondition {
 	 *             0: AND 1: OR
 	 * @return itself
 	 */
-	public PlanActualWorkType chooseOperator(int operator) {
+	@Override
+	public PlanActualWorkType chooseOperator(Integer operator) {
 		this.operatorBetweenPlanActual = EnumAdaptor.valueOf(operator, LogicalOperator.class);
 		return this;
 	}
@@ -63,6 +66,32 @@ public class PlanActualWorkType extends WorkTypeCondition {
 		return this;
 	}
 
+	@Override
+	public void clearDuplicate() {
+		if(this.workTypePlan != null){
+			this.workTypePlan.clearDuplicate();
+		}
+		if(this.workTypeActual != null){
+			this.workTypeActual.clearDuplicate();
+		}
+	}
+
+	@Override
+	public void addWorkType(WorkTypeCode plan, WorkTypeCode actual){ 
+		if (this.workTypePlan != null && plan != null) {
+			this.workTypePlan.getLstWorkType().add(plan);
+		}
+		if (this.workTypeActual != null && actual != null) {
+			this.workTypeActual.getLstWorkType().add(actual);
+		}
+	}
+
+	@Override
+	public void setupWorkType(boolean usePlan, boolean useActual){
+		this.workTypePlan = TargetWorkType.createFromJavaType(usePlan, new ArrayList<>());
+		this.workTypeActual = TargetWorkType.createFromJavaType(useActual, new ArrayList<>());
+	}
+
 	/**
 	 * Set WorkType actual
 	 * 
@@ -76,10 +105,13 @@ public class PlanActualWorkType extends WorkTypeCondition {
 	}
 
 	@Override
-	public boolean checkWorkType(WorkInfoOfDailyPerformance workInfo) {
+	public WorkCheckResult checkWorkType(WorkInfoOfDailyPerformance workInfo) {
+		WorkCheckResult compareTypeError = WorkCheckResult.NOT_CHECK;
 		if(this.getComparePlanAndActual() == FilterByCompare.EXTRACT_DIFFERENT){
 			if(workInfo.getRecordInfo().getWorkTypeCode().equals(workInfo.getScheduleInfo().getWorkTypeCode())){
-				return true;
+				compareTypeError = WorkCheckResult.NOT_ERROR;
+			} else {
+				compareTypeError = WorkCheckResult.ERROR;
 			}
 		}
 		
@@ -98,19 +130,37 @@ public class PlanActualWorkType extends WorkTypeCondition {
 			}
 		}
 		
-		return comparePlanAndActual(planCheck, actualCheck, this.operatorBetweenPlanActual == LogicalOperator.AND);
+		return comparePlanAndActual(compareTypeError, 
+									comparePlanAndActual(planCheck, actualCheck, this.operatorBetweenPlanActual == LogicalOperator.AND), true);
 	}
 	
-	private boolean comparePlanAndActual(WorkCheckResult plan, WorkCheckResult actual, boolean same){
+	private WorkCheckResult comparePlanAndActual(WorkCheckResult plan, WorkCheckResult actual, boolean same){
+		if(plan == WorkCheckResult.NOT_CHECK && actual == WorkCheckResult.NOT_CHECK){
+			return WorkCheckResult.NOT_CHECK;
+		}
+		
 		if(plan == WorkCheckResult.NOT_CHECK) {
-			return WorkCheckResult.ERROR == actual;
+			if(WorkCheckResult.ERROR == actual){
+				return WorkCheckResult.ERROR;
+			}
+			return WorkCheckResult.NOT_ERROR;
 		}
 		if(actual == WorkCheckResult.NOT_CHECK) {
-			return WorkCheckResult.ERROR == plan;
+			if(WorkCheckResult.ERROR == plan){
+				return WorkCheckResult.ERROR;
+			}
+			return WorkCheckResult.NOT_ERROR;
 		}
 		if(same){
-			return WorkCheckResult.ERROR == actual && WorkCheckResult.ERROR == plan;
+			if(WorkCheckResult.ERROR == actual && WorkCheckResult.ERROR == plan){
+				return WorkCheckResult.ERROR;
+			}
+			return WorkCheckResult.NOT_ERROR;
 		}
-		return WorkCheckResult.ERROR == actual || WorkCheckResult.ERROR == plan;
+
+		if(WorkCheckResult.ERROR == actual || WorkCheckResult.ERROR == plan){
+			return WorkCheckResult.ERROR;
+		}
+		return WorkCheckResult.NOT_ERROR;
 	}
 }

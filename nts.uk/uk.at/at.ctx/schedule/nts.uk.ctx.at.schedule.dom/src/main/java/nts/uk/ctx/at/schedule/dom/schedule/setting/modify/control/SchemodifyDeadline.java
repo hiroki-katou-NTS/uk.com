@@ -25,10 +25,6 @@ public class SchemodifyDeadline {
 	/** 修正期限*/
 	private CorrectDeadline correctDeadline;
 	
-
-	
-	
-	
 	public static SchemodifyDeadline createFromJavaType(String companyId, String roleId, int useCls, Integer correctDeadline){
 		return new SchemodifyDeadline(companyId, roleId, EnumAdaptor.valueOf(useCls, UseAtr.class), new CorrectDeadline(correctDeadline));
 	}

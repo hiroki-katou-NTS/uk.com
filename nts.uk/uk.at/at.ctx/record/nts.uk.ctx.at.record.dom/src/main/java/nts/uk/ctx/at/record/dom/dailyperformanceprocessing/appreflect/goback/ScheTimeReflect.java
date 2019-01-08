@@ -1,7 +1,10 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.goback;
 
+import java.util.Optional;
+
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 
 /**
  * 事前申請の処理: 予定時刻の反映
@@ -37,7 +40,7 @@ public interface ScheTimeReflect {
 	 * 時刻の反映
 	 * @param para
 	 */
-	public void reflectTime(GobackReflectParameter para, boolean workTypeTimeReflect);
+	public Optional<TimeLeavingOfDailyPerformance> reflectTime(GobackReflectParameter para, boolean workTypeTimeReflect);
 	/**
 	 * 1.出勤時刻を反映できるか
 	 * 2.退勤時刻を反映できるか

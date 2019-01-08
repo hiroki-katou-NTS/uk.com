@@ -53,4 +53,10 @@ public class JpaAppForSpecLeaveRepository extends JpaRepository implements AppFo
 	public void updateSpecHd(AppForSpecLeave specHd) {
 		this.commandProxy().update(toEntity(specHd));
 	}
+
+	@Override
+	public void deleteSpecHd(AppForSpecLeave specHd) {
+		KrqdtAppForSpecLeavePK key = new KrqdtAppForSpecLeavePK(AppContexts.user().companyId(), specHd.getAppID());
+		this.commandProxy().remove(KrqdtAppForSpecLeave.class, key);
+	}
 }

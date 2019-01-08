@@ -11,8 +11,10 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  */
 @Getter
 public class TimeWithCalculation {
+	//時間
 	@Setter
 	private AttendanceTime time;
+	//計算時間
 	private AttendanceTime calcTime;
 	
 	private TimeWithCalculation(AttendanceTime time,AttendanceTime calcTime) {

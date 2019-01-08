@@ -6,7 +6,7 @@ import nts.arc.time.GeneralDate;
 
 /**
  * 基準日時点の積立年休残数を取得する
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 public interface GetRsvLeaNumCriteriaDate {
 

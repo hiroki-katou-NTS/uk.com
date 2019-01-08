@@ -95,10 +95,6 @@ table.contents-data td.numbers {
 	width: 47px;
 }
 
-table.contents-data td.pay-day-cal {
-	width: 219px;
-}
-
 table.contents-data td.input-units {
 	width: 69px;
 }
@@ -124,4 +120,69 @@ table.contents-data tbody {
 
 input.days-input.nts-editor.nts-input {
 	width: 35px !important;
+}
+@CHARSET "UTF-8";
+
+.ui-widget-header {
+	background: #c7f391 !important;
+}
+
+td.ui-widget-header {
+    text-align: center;
+}
+
+.top-tbl tr {
+	height: 10px;
+}
+
+.nts-fixed-table {
+	padding-top: 25px;
+}
+
+#contents-area {
+	padding: 17px 32px;
+	height: auto !important;
+}
+
+.cal-panel {
+	float: right;
+}
+
+.btn-cal {
+	width: 80px;
+    height: 36px;
+}
+
+.panel.panel-frame {
+	width: 300px;
+    float: right;
+    margin: -85px 0px;
+}
+
+.cal-value {
+	width: 85px;
+}
+
+.contents-header td {
+    border: 1px solid #CCC;
+    text-align: center;
+    height: 20px;
+    padding: 5px 3px;
+}
+
+.bound {
+	height: 62px;
+	z-index: -999999;
+}
+
+span.nts-editor-wrapped.ntsControl.symbol.symbol-right {
+    width: auto !important;
+}
+
+td.numbers {
+	text-align: center;
+}
+
+td.input-units {
+	text-align: center;
 }

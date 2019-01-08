@@ -1,6 +1,6 @@
 module nts.uk.at.view.ksu001.a.service {
-    var paths: any = {
-        getDataBasicSchedule: "screen/at/schedule/basicschedule/getDataBasicSchedule",
+    let paths: any = {
+        getDataBasicSchedule: "screen/at/schedule/basicschedule/getBasicScheduleWithJDBC",
         getDataWorkScheduleState: "screen/at/schedule/basicschedule/getDataWorkScheduleState",
         registerData: "at/schedule/basicschedule/register",
         getShiftCondition: "at/schedule/shift/shiftCondition/shiftCondition/getAllShiftCondition",

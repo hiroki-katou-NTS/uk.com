@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.adapter.workflow;
 import java.util.List;
 import java.util.Map;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
@@ -10,6 +11,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApprovedImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverPersonImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRemandImport;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public interface ApprovalRootStateAdapter {
 	/**
@@ -21,7 +23,8 @@ public interface ApprovalRootStateAdapter {
 	 * @param rootType
 	 * @return
 	 */
-	public List<ApproveRootStatusForEmpImPort> getApprovalByEmplAndDate(GeneralDate startDate, GeneralDate endDate, String employeeID,String companyID,Integer rootType);
+	public List<ApproveRootStatusForEmpImPort> getApprovalByEmplAndDate(GeneralDate startDate, GeneralDate endDate, String employeeID,String companyID,Integer rootType)
+		throws BusinessException;
 	
 	public Map<String,List<ApprovalPhaseStateImport_New>> getApprovalRootContents(List<String> appIDs,String companyID);
 	
@@ -91,4 +94,13 @@ public interface ApprovalRootStateAdapter {
 	public List<ApproverRemandImport> getListApproverRemand(String appID);
 	
 	public Boolean isApproveApprovalPhaseStateComplete(String companyID, String rootStateID, Integer phaseNumber);
+	
+	/**
+	 * RequestList 532
+	 * [No.532](中間データ版)承認対象者と期間から承認状況を取得する（月別）
+	 * @param employeeID
+	 * @param period
+	 * @return
+	 */
+	public List<ApproveRootStatusForEmpImPort> getAppRootStatusByEmpPeriodMonth(String employeeID, DatePeriod period);
 }

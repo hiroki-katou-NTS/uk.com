@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.monthlyperformance.correction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+//import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -25,11 +26,14 @@ import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.Mont
 import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.MonthlyRecordWorkTypeDto;
 import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.MonthlyRecordWorkTypeFinder;
 import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.SheetCorrectedMonthlyDto;
+import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.BusinessTypeSortedMon;
+import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.BusinessTypeSortedMonRepository;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.ColumnWidtgByMonthly;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.ColumnWidtgByMonthlyRepository;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.ColumnWidthOfDisplayItem;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.InitialDisplayMonthly;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.InitialDisplayMonthlyRepository;
+import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.OrderReferWorkType;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
@@ -50,16 +54,15 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthFinder;
 import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.AttendanceItemNameAdapter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
-import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTime;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.ActualTimeState;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.CorrectionOfMonthlyPerformance;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyAttendanceItemDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceCorrectionDto;
+import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceEmployeeDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerformaceLockStatus;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerformanceParam;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.PAttendanceItem;
@@ -91,6 +94,9 @@ public class MonthlyPerformanceDisplay {
 	/** 勤務種別の月別実績の修正のフォーマット */
 	@Inject
 	MonthlyRecordWorkTypeFinder monthlyRecordWorkTypeFinder;
+	
+	@Inject
+	BusinessTypeSortedMonRepository businessTypeSortedMonRepository;
 	// @Inject
 	// private AttendanceItemLinkingRepository attendanceItemLinkingRepository;
 	/**
@@ -131,7 +137,7 @@ public class MonthlyPerformanceDisplay {
 			getDisplayItemBussiness(cId, lstEmployeeIds, dateRange, param, screenDto);
 		}
 		Set<Integer> kintaiIDList = new HashSet<>();
-		if (param.getSheets() == null || param.getSheets().isEmpty()) {
+		if (CollectionUtil.isEmpty(param.getSheets())) {
 			throw new BusinessException("Msg_1261");
 		}
 		param.getSheets().forEach(item -> {
@@ -276,8 +282,11 @@ public class MonthlyPerformanceDisplay {
 		// 補足資料A_7参照
 		// Merge sheet
 		Set<Integer> sheetNos = new HashSet<>();
+		List<Integer> sheetNosNotSet = new ArrayList<>();
 		lstMPformats.forEach(format -> {
 			sheetNos.addAll(format.getDisplayItem().getListSheetCorrectedMonthly().stream()
+					.map(sheet -> sheet.getSheetNo()).collect(Collectors.toSet()));
+			sheetNosNotSet.addAll(format.getDisplayItem().getListSheetCorrectedMonthly().stream()
 					.map(sheet -> sheet.getSheetNo()).collect(Collectors.toSet()));
 		});
 		// Merge Attendance Item in sheet
@@ -288,7 +297,7 @@ public class MonthlyPerformanceDisplay {
 				SheetCorrectedMonthlyDto sheetDto = format.getDisplayItem().getListSheetCorrectedMonthly().stream()
 						.filter(item -> item.getSheetNo() == sheet).findAny().orElse(null);
 				if (sheetDto != null) {
-					pSheet.setSheetName(sheetDto.getSheetName());
+					pSheet.setSheetName(sheetNosNotSet.size() > sheetNos.size() ? Integer.toString(sheetDto.getSheetNo()) : sheetDto.getSheetName());
 					sheetDto.getListDisplayTimeItem().sort((t1, t2) -> t1.getDisplayOrder() - t2.getDisplayOrder());
 					displayItems.addAll(sheetDto.getListDisplayTimeItem().stream().map(
 							x -> new PAttendanceItem(x.getItemDaily(), x.getDisplayOrder(), x.getColumnWidthTable()))
@@ -325,15 +334,26 @@ public class MonthlyPerformanceDisplay {
 		if (lstBusinessTypeCode.size() == 0) {
 			// エラーメッセージ（#Msg_1403）を表示する(hiển thị error message （#Msg_1403）)
 			BundledBusinessException bundleExeption = BundledBusinessException.newInstance();
-			screenDto.getLstEmployee().stream().forEach(x ->{
-				bundleExeption.addMessage(new BusinessException("Msg_1403", x.getCode() + " " + x.getBusinessName()));
-			});
+			for(String emp : lstEmployeeId ) {
+				for(MonthlyPerformanceEmployeeDto dto  :screenDto.getLstEmployee()) {
+					if(emp.equals(dto.getId())) {
+						bundleExeption.addMessage(new BusinessException("Msg_1403", dto.getCode() + " " + dto.getBusinessName()));
+						break;
+					}
+				}
+			}
+//			screenDto.getLstEmployee().stream().forEach(x ->{
+//				bundleExeption.addMessage(new BusinessException("Msg_1403", x.getCode() + " " + x.getBusinessName()));
+//			});
 			throw bundleExeption;
 		}
 		param.setFormatCodes(lstBusinessTypeCode);
 		// 対応するドメインモデル「勤務種別の月別実績の修正のフォーマット」を取得する
 		List<MonthlyRecordWorkTypeDto> monthlyRecordWorkTypeDtos = monthlyRecordWorkTypeFinder
 				.getMonthlyRecordWorkTypeByListCode(cId, lstBusinessTypeCode);
+		if(CollectionUtil.isEmpty(monthlyRecordWorkTypeDtos)){
+			throw new BusinessException("Msg_1402");
+		}
 
 		Optional<ColumnWidtgByMonthly> columnWidtgByMonthly = columnWidtgByMonthlyRepository.getColumnWidtgByMonthly(cId);
 		// 取得した「勤務種別の月別実績の修正のフォーマット」に表示するすべての項目の列幅があるかチェックする
@@ -371,8 +391,11 @@ public class MonthlyPerformanceDisplay {
 		// 補足資料A_7参照
 		// Merge sheet
 		Set<Integer> sheetNos = new HashSet<>();
+		List<Integer> sheetNosNotSet = new ArrayList<>();
 		monthlyRecordWorkTypeDtos.forEach(format -> {
 			sheetNos.addAll(format.getDisplayItem().getListSheetCorrectedMonthly().stream()
+					.map(sheet -> sheet.getSheetNo()).collect(Collectors.toSet()));
+			sheetNosNotSet.addAll(format.getDisplayItem().getListSheetCorrectedMonthly().stream()
 					.map(sheet -> sheet.getSheetNo()).collect(Collectors.toSet()));
 		});
 		// Merge Attendance Item in sheet
@@ -384,13 +407,13 @@ public class MonthlyPerformanceDisplay {
 				SheetCorrectedMonthlyDto sheetDto = format.getDisplayItem().getListSheetCorrectedMonthly().stream()
 						.filter(item -> item.getSheetNo() == sheet).findAny().orElse(null);
 				if (sheetDto != null) {
-					pSheet.setSheetName(sheetDto.getSheetName());
+					pSheet.setSheetName(sheetNosNotSet.size() > sheetNos.size() ? Integer.toString(sheetDto.getSheetNo()) : sheetDto.getSheetName());
 					sheetDto.getListDisplayTimeItem().sort((t1, t2) -> t1.getDisplayOrder() - t2.getDisplayOrder());
 
 					displayItemsTmp.addAll(sheetDto.getListDisplayTimeItem().stream().map(
 							x -> new PAttendanceItem(x.getItemDaily(), x.getDisplayOrder(), x.getColumnWidthTable()))
 							.collect(Collectors.toList()));
-					// displayItems.stream().sorted(Comparator.comparing(PAttendanceItem::getDisplayOrder).reversed());
+//					displayItemsTmp.stream().sorted(Comparator.comparing(PAttendanceItem::getDisplayOrder).reversed());
 				}
 			});
 			// xoa nhung column trung nhau
@@ -399,8 +422,46 @@ public class MonthlyPerformanceDisplay {
 			pSheet.setDisplayItems(displayItems);
 			resultSheets.add(pSheet);
 		}
+		List<Integer> attItemIds = new ArrayList<>();
+		if (lstBusinessTypeCode.size() > 1) {
+			Optional<BusinessTypeSortedMon> businessTypeSorted = this.businessTypeSortedMonRepository.getOrderReferWorkType(cId);
+			if (businessTypeSorted.isPresent()) {
+				List<OrderReferWorkType> listOrderReferWorkType = businessTypeSorted.get().getListOrderReferWorkType();
+				List<OrderReferWorkType> listOrderReferWorkTypeNew = listOrderReferWorkType.stream().sorted((t1, t2) -> t1.getOrder() - t2.getOrder()).collect(Collectors.toList());
+				for (OrderReferWorkType item : listOrderReferWorkTypeNew){
+					attItemIds.add(item.getAttendanceItemID());
+				}
+			}
+		} else {
+			for(MonthlyRecordWorkTypeDto dto : monthlyRecordWorkTypeDtos){
+				MonthlyActualResultsDto result = dto.getDisplayItem();
+				List<SheetCorrectedMonthlyDto> listSheetCorrectedMonthly = result.getListSheetCorrectedMonthly();
+				for (SheetCorrectedMonthlyDto monthlyDto : listSheetCorrectedMonthly){
+					List<DisplayTimeItemDto> listDisplayTimeItem = monthlyDto.getListDisplayTimeItem();
+					List<Integer> itemDailyList = listDisplayTimeItem.stream().map(item -> item.getItemDaily()).collect(Collectors.toList());
+					attItemIds.addAll(itemDailyList);
+				}
+			}
+		}
+
+		List<Integer> attItemIdsNew = attItemIds.stream().distinct().collect(Collectors.toList());
+		
+		List<PSheet> resultSheetsNew = new ArrayList<>();
+
+		for (PSheet pSheet : resultSheets){
+			List<PAttendanceItem> displayItems = new ArrayList<>();
+			for(int attItemId : attItemIdsNew){
+				Optional<PAttendanceItem> optionalPSheet = pSheet.getDisplayItems().stream().filter(item -> item.getId().equals(attItemId)).findFirst();
+				if(optionalPSheet.isPresent()){
+					displayItems.add(optionalPSheet.get());
+				};
+			}
+			PSheet pSheetNew = new PSheet(pSheet.getSheetNo(), pSheet.getSheetName(), displayItems);
+			resultSheetsNew.add(pSheetNew);
+		}
+		
 		// 表示する項目一覧
-		param.setSheets(resultSheets);
+		param.setSheets(resultSheetsNew);
 	}
 
 	/**
@@ -409,23 +470,23 @@ public class MonthlyPerformanceDisplay {
 	 * @param cId
 	 * @return 表示する項目一覧
 	 */
-	private List<MonPfmCorrectionFormatDto> getColumnWidtgByMonthly(String cId) {
-		List<MonPfmCorrectionFormatDto> lstMPformats = new ArrayList<>();
-		Optional<ColumnWidtgByMonthly> columnWidtgByMonthly = columnWidtgByMonthlyRepository
-				.getColumnWidtgByMonthly(cId);
-		if (columnWidtgByMonthly.isPresent()) {
-			List<DisplayTimeItemDto> dispItems = columnWidtgByMonthly.get().getListColumnWidthOfDisplayItem().stream()
-					.map(item -> {
-						return new DisplayTimeItemDto(0, item.getAttdanceItemID(), item.getColumnWidthTable());
-					}).collect(Collectors.toList());
-			SheetCorrectedMonthlyDto sheet = new SheetCorrectedMonthlyDto(1, Strings.EMPTY, dispItems);
-			MonthlyActualResultsDto resultDto = new MonthlyActualResultsDto(Arrays.asList(sheet));
-			MonPfmCorrectionFormatDto formatDto = new MonPfmCorrectionFormatDto(
-					columnWidtgByMonthly.get().getCompanyID(), Strings.EMPTY, Strings.EMPTY, resultDto);
-			lstMPformats = Arrays.asList(formatDto);
-		}
-		return lstMPformats;
-	}
+//	private List<MonPfmCorrectionFormatDto> getColumnWidtgByMonthly(String cId) {
+//		List<MonPfmCorrectionFormatDto> lstMPformats = new ArrayList<>();
+//		Optional<ColumnWidtgByMonthly> columnWidtgByMonthly = columnWidtgByMonthlyRepository
+//				.getColumnWidtgByMonthly(cId);
+//		if (columnWidtgByMonthly.isPresent()) {
+//			List<DisplayTimeItemDto> dispItems = columnWidtgByMonthly.get().getListColumnWidthOfDisplayItem().stream()
+//					.map(item -> {
+//						return new DisplayTimeItemDto(0, item.getAttdanceItemID(), item.getColumnWidthTable());
+//					}).collect(Collectors.toList());
+//			SheetCorrectedMonthlyDto sheet = new SheetCorrectedMonthlyDto(1, Strings.EMPTY, dispItems);
+//			MonthlyActualResultsDto resultDto = new MonthlyActualResultsDto(Arrays.asList(sheet));
+//			MonPfmCorrectionFormatDto formatDto = new MonPfmCorrectionFormatDto(
+//					columnWidtgByMonthly.get().getCompanyID(), Strings.EMPTY, Strings.EMPTY, resultDto);
+//			lstMPformats = Arrays.asList(formatDto);
+//		}
+//		return lstMPformats;
+//	}
 
 	/**
 	 * ロック状態をチェックする
@@ -477,14 +538,12 @@ public class MonthlyPerformanceDisplay {
 		List<SharedAffJobTitleHisImport> listShareAff = affJobTitleAdapter.findAffJobTitleHisByListSid(empIds, closureTime.end());
 		
 		Optional<IdentityProcess> identityOp = identityProcessRepo.getIdentityProcessById(cid);
-		boolean checkIdentityOp = false;
+		boolean checkIdentityOp = true;
 		//対応するドメインモデル「本人確認処理の利用設定」を取得する
-		if(!identityOp.isPresent()) {
-			checkIdentityOp = true;
-		}else {
+		if(identityOp.isPresent()) {
 			//取得したドメインモデル「本人確認処理の利用設定．日の本人確認を利用する」チェックする
-			if(identityOp.get().getUseDailySelfCk() == 0){
-				checkIdentityOp = true;
+			if(identityOp.get().getUseDailySelfCk() != 0){
+				checkIdentityOp = false;
 			}
 		}
 		
@@ -514,6 +573,7 @@ public class MonthlyPerformanceDisplay {
 			// 月の実績の状況を取得する
 			AcquireActualStatus param = new AcquireActualStatus(cid, affWorkplaceImport.getEmployeeId(), processDateYM,
 					closureId, closureTime.end(), closureTime, affWorkplaceImport.getWorkplaceId());
+			/** TODO: */
 			MonthlyActualSituationOutput monthlymonthlyActualStatusOutput = monthlyActualStatus
 					.getMonthlyActualSituationStatus(param,approvalProcOp,listShareAff,checkIdentityOp,listIdenByEmpID,checkExistRecordErrorListDate);
 			// Output「月の実績の状況」を元に「ロック状態一覧」をセットする

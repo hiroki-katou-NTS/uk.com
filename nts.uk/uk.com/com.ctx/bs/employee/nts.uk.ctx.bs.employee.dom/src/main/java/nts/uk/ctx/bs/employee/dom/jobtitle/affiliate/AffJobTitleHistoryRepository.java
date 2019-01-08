@@ -60,6 +60,8 @@ public interface AffJobTitleHistoryRepository {
 	
 	List<AffJobTitleHistory> getListByListHidSid(List<String> hid, List<String> sid);
 	
+	List<AffJobTitleHistory> getListByListHidSid(List<String> sid, GeneralDate targetDate);
+	
 	/**
 	 * Search job title history.
 	 *
@@ -93,7 +95,7 @@ public interface AffJobTitleHistoryRepository {
 	 * @return
 	 * @author yennth
 	 */
-	Optional<AffJobTitleHistory> getListEmployee(GeneralDate baseDate);
+	Optional<AffJobTitleHistory> getListEmployee(GeneralDate baseDate, String cid);
 	
 	Optional<SingleHistoryItem> getSingleHistoryItem(String employeeId, GeneralDate baseDate);
 	

@@ -103,4 +103,5 @@ public interface WorkTimeSettingRepository {
 	 * @return the optional
 	 */
 	public Optional<WorkTimeSetting> findByCodeAndAbolishCondition(String companyId, String workTimeCode,AbolishAtr abolishAtr);
+	
 }

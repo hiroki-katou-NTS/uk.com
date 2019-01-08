@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+//import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
-import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 期限情報
@@ -19,7 +20,8 @@ import nts.uk.shr.com.time.calendar.period.DatePeriod;
  */
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class GrantPeriodic extends DomainObject {
 	/** 会社ID */
 	private String companyId;
@@ -31,7 +33,7 @@ public class GrantPeriodic extends DomainObject {
 	private TimeLimitSpecification timeSpecifyMethod;
 	
 	/** 使用可能期間 */
-	private DatePeriod availabilityPeriod;
+	private AvailabilityPeriod availabilityPeriod;
 	
 	/** 有効期限 */
 	private SpecialVacationDeadline expirationDate;
@@ -71,7 +73,7 @@ public class GrantPeriodic extends DomainObject {
 	 * @param limitCarryoverDays
 	 * @return
 	 */
-	public static GrantPeriodic createFromJavaType(String companyId, int specialHolidayCode, int timeSpecifyMethod, DatePeriod availabilityPeriod, 
+	public static GrantPeriodic createFromJavaType(String companyId, int specialHolidayCode, int timeSpecifyMethod, AvailabilityPeriod availabilityPeriod, 
 			SpecialVacationDeadline expirationDate, int limitCarryoverDays) {
 		return new GrantPeriodic(companyId, 
 				new SpecialHolidayCode(specialHolidayCode),

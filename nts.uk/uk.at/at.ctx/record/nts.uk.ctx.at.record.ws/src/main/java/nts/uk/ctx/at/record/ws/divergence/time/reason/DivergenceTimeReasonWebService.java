@@ -14,7 +14,7 @@ import nts.uk.ctx.at.record.app.command.divergence.time.reason.DivergenceReasonS
 import nts.uk.ctx.at.record.app.command.divergence.time.reason.DivergenceReasonSelectDeleteCommandHandler;
 import nts.uk.ctx.at.record.app.command.divergence.time.reason.DivergenceReasonSelectSaveCommand;
 import nts.uk.ctx.at.record.app.command.divergence.time.reason.DivergenceReasonSelectSaveCommandHandler;
-import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceReasonInputMethodFinder;
+//import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceReasonInputMethodFinder;
 import nts.uk.ctx.at.record.app.find.divergence.time.reason.DivergenceReasonSelectDto;
 import nts.uk.ctx.at.record.app.find.divergence.time.reason.DivergenceReasonSelectFinder;
 
@@ -41,8 +41,8 @@ public class DivergenceTimeReasonWebService extends WebService {
 	@Inject
 	private DivergenceReasonSelectDeleteCommandHandler divReasonSelectDeleteCommandHandler;
 	
-	@Inject
-	private DivergenceReasonInputMethodFinder finderDivergenceReasonInput;
+//	@Inject
+//	private DivergenceReasonInputMethodFinder finderDivergenceReasonInput;
 	 
 
 	/**

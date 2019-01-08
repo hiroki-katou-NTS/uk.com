@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 /**
  * 月別実績の36協定時間
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 public class AgreementTimeOfMonthly {
@@ -33,6 +33,10 @@ public class AgreementTimeOfMonthly {
 	private Optional<LimitOneMonth> exceptionLimitAlarmTime;
 	/** 状態 */
 	private AgreementTimeStatusOfMonthly status;
+
+	/** 確定情報用エラーメッセージ */
+	@Setter
+	private String confirmedErrorMessage;
 	
 	/**
 	 * コンストラクタ
@@ -45,6 +49,8 @@ public class AgreementTimeOfMonthly {
 		this.exceptionLimitErrorTime = Optional.empty();
 		this.exceptionLimitAlarmTime = Optional.empty();
 		this.status = AgreementTimeStatusOfMonthly.NORMAL;
+		
+		this.confirmedErrorMessage = null;
 	}
 	
 	/**	

@@ -46,6 +46,8 @@ public class WorkTypeExportImpl implements MasterListData {
 
 	@Inject
 	private SpecialHolidayFrameRepository specialHolidayFrameRepository;
+	
+	private static final String hyphen = "-";
 
 	@Override
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery arg0) {
@@ -242,7 +244,7 @@ public class WorkTypeExportImpl implements MasterListData {
 	}
 
 	/**
-	 * change true false -> "○" "ー"
+	 * change true false -> "○" "-"
 	 * @param check
 	 * @return
 	 */
@@ -254,7 +256,7 @@ public class WorkTypeExportImpl implements MasterListData {
 		if (check == 1) {
 			return "○";
 		}
-		return "ー";	
+		return hyphen;	
 	}
 
 	/**
@@ -264,8 +266,8 @@ public class WorkTypeExportImpl implements MasterListData {
 	 */
 	private static void workTypeSetOneDayPrint(Map<String, Object> data, WorkTypeReportData datareport) {
 		if (datareport.getWorkAtr() == WorkTypeUnit.OneDay) {
-			data.put("午前", "ー");
-			data.put("午後", "ー");
+			data.put("午前", hyphen);
+			data.put("午後", hyphen);
 			data.put("1日の日勤・夜勤時間を求める", checkButtonCheck(datareport.getOneDayDayNightTimeAsk()));
 			data.put("1日の出勤時刻を直行とする", checkButtonCheck(datareport.getOneDayAttendanceTime()));
 			data.put("1日の退勤時刻を直帰とする", checkButtonCheck(datareport.getOneDayTimeLeaveWork()));
@@ -273,11 +275,11 @@ public class WorkTypeExportImpl implements MasterListData {
 			data.put("1日の代休を発生させる", checkButtonCheck(datareport.getOneDayGenSubHodiday()));
 		} else {
 			data.put("１日の休日区分", "");
-			data.put("1日の日勤・夜勤時間を求める", "ー");
-			data.put("1日の出勤時刻を直行とする", "ー");
-			data.put("1日の退勤時刻を直帰とする", "ー");
-			data.put("1日の公休を消化する", "ー");
-			data.put("1日の代休を発生させる", "ー");
+			data.put("1日の日勤・夜勤時間を求める", hyphen);
+			data.put("1日の出勤時刻を直行とする", hyphen);
+			data.put("1日の退勤時刻を直帰とする", hyphen);
+			data.put("1日の公休を消化する", hyphen);
+			data.put("1日の代休を発生させる", hyphen);
 			data.put("1日の欠勤の集計枠", "");
 			data.put("1日の特別休暇の集計枠", "");
 			data.put("1日の休業区分", "");
@@ -291,23 +293,23 @@ public class WorkTypeExportImpl implements MasterListData {
 	 */
 	private static void workTypeSetHalfDayPrint(Map<String, Object> data, WorkTypeReportData datareport) {
 		if (datareport.getWorkAtr() == WorkTypeUnit.OneDay) {
-			data.put("午前の日勤・夜勤時間を求める", "ー");
-			data.put("午前の出勤時刻を直行とする", "ー");
-			data.put("午前の退勤時刻を直帰とする", "ー");
-			data.put("午前の休日日数を数える", "ー");
-			data.put("午前の公休を消化する", "ー");
-			data.put("午前の代休を発生させる", "ー");
+			data.put("午前の日勤・夜勤時間を求める", hyphen);
+			data.put("午前の出勤時刻を直行とする", hyphen);
+			data.put("午前の退勤時刻を直帰とする", hyphen);
+			data.put("午前の休日日数を数える", hyphen);
+			data.put("午前の公休を消化する", hyphen);
+			data.put("午前の代休を発生させる", hyphen);
 			data.put("午前の欠勤の集計枠", "");
-			data.put("午後の日勤・夜勤時間を求める", "ー");
-			data.put("午後の出勤時刻を直行とする", "ー");
-			data.put("午後の退勤時刻を直帰とする", "ー");
-			data.put("午後の休日日数を数える", "ー");
-			data.put("午後の公休を消化する", "ー");
-			data.put("午後の代休を発生させる", "ー");
+			data.put("午後の日勤・夜勤時間を求める", hyphen);
+			data.put("午後の出勤時刻を直行とする", hyphen);
+			data.put("午後の退勤時刻を直帰とする", hyphen);
+			data.put("午後の休日日数を数える", hyphen);
+			data.put("午後の公休を消化する", hyphen);
+			data.put("午後の代休を発生させる", hyphen);
 			data.put("午前の欠勤の集計枠", "");
 			data.put("午前の特別休暇の集計枠", "");
 		} else {
-			data.put("1日", "ー");
+			data.put("1日", hyphen);
 			data.put("午前の日勤・夜勤時間を求める", checkButtonCheck(datareport.getMorningDayNightTimeAsk()));
 			data.put("午前の出勤時刻を直行とする", checkButtonCheck(datareport.getMorningAttendanceTime()));
 			data.put("午前の退勤時刻を直帰とする", checkButtonCheck(datareport.getMorningTimeLeaveWork()));

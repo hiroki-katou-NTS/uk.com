@@ -1,12 +1,15 @@
 package nts.uk.ctx.at.shared.infra.repository.worktype.specialholidayframe;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrame;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrameRepository;
 import nts.uk.ctx.at.shared.infra.entity.worktype.specialholidayframe.KshmtSpecialHolidayFrame;
@@ -17,7 +20,7 @@ public class JpaSpecialHolidayFrameRepository extends JpaRepository implements S
 	
 	private static final String SEL_1 = "SELECT a FROM KshmtSpecialHolidayFrame a  WHERE a.kshmtSpecialHolidayFramePK.companyId = :companyId AND a.abolishAtr = :abolishAtr ";
 	private static final String GET_ALL = "SELECT a FROM KshmtSpecialHolidayFrame a  WHERE a.kshmtSpecialHolidayFramePK.companyId = :companyId ";
-	private static final String GET_ALL_BY_LIST_FRAME_NO  =GET_ALL
+	private static final String GET_ALL_BY_LIST_FRAME_NO = GET_ALL
 			+ " AND a.kshmtSpecialHolidayFramePK.specialHdFrameNo IN :frameNos ";
 	private static SpecialHolidayFrame toDomain(KshmtSpecialHolidayFrame entity) {
 		SpecialHolidayFrame domain = SpecialHolidayFrame.createSimpleFromJavaType(entity.kshmtSpecialHolidayFramePK.companyId,
@@ -83,9 +86,13 @@ public class JpaSpecialHolidayFrameRepository extends JpaRepository implements S
 	public List<SpecialHolidayFrame> findHolidayFrameByListFrame(String companyId, List<Integer> frameNos) {
 		if(frameNos.isEmpty())
 			return Collections.emptyList();
-		return this.queryProxy().query(GET_ALL_BY_LIST_FRAME_NO, KshmtSpecialHolidayFrame.class)
-				.setParameter("companyId", companyId)
-				.setParameter("frameNos", frameNos)
-				.getList(x -> convertToDoma(x));
+		List<SpecialHolidayFrame> resultList = new ArrayList<>();
+		CollectionUtil.split(frameNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(GET_ALL_BY_LIST_FRAME_NO, KshmtSpecialHolidayFrame.class)
+								.setParameter("companyId", companyId)
+								.setParameter("frameNos", subList)
+								.getList(x -> convertToDoma(x)));
+		});
+		return resultList;
 	}
 }

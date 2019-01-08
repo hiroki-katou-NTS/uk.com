@@ -4,8 +4,6 @@
 
 #contents-area {
 	padding: 25px;
-	height: initial !important;
-	height: auto !important;
 }
 
 #contents-area>.left-area, #contents-area>.right-area {

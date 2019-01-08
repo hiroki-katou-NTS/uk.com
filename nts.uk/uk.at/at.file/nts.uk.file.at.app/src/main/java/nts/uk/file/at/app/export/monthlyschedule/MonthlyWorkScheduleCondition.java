@@ -5,7 +5,6 @@
 package nts.uk.file.at.app.export.monthlyschedule;
 
 import lombok.Data;
-import nts.uk.file.at.app.export.dailyschedule.PageBreakIndicator;
 import nts.uk.file.at.app.export.dailyschedule.WorkScheduleSettingTotalOutput;
 
 /**
@@ -41,5 +40,23 @@ public class MonthlyWorkScheduleCondition {
 	/** The total output setting. */
 	// 月別勤務表用明細・合計出力設定
 	private WorkScheduleSettingTotalOutput totalOutputSetting;
+	
+	/**
+	 * Checks if is show workplace.
+	 *
+	 * @return the boolean
+	 */
+	public Boolean isShowWorkplace() {
+		return this.totalOutputSetting.isDetails() || this.totalOutputSetting.isWorkplaceTotal()
+				|| this.totalOutputSetting.isCumulativeWorkplace();
+	}
 
+	/**
+	 * Checks if is show personal.
+	 *
+	 * @return the boolean
+	 */
+	public Boolean isShowPersonal() {
+		return this.totalOutputSetting.isDetails() || this.totalOutputSetting.isPersonalTotal();
+	}
 }

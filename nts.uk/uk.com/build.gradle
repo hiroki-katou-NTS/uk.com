@@ -75,6 +75,7 @@ subprojects {
 		':query:nts.uk.query.pub:upver',
 		':wk.ctx:nts.uk.ctx.workflow.app:upver',
 		':wk.ctx:nts.uk.ctx.workflow.pub:upver',
+		':pereg.ctx:nts.uk.ctx.pereg.pub:upver',
 		':com.ctx:bs:company:nts.uk.ctx.bs.company.dom:upver',
 		':com.ctx:bs:company:nts.uk.ctx.bs.company.infra:upver',
 		':com.ctx:bs:company:nts.uk.ctx.bs.company.pub:upver',
@@ -85,19 +86,7 @@ subprojects {
 		':com.ctx:bs:person:nts.uk.ctx.bs.person.dom:upver',
 		':com.ctx:bs:person:nts.uk.ctx.bs.person.infra:upver',
 		':com.ctx:bs:person:nts.uk.ctx.bs.person.pub:upver',
-		':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub:upver',
-		':com.ctx:sys:portal:nts.uk.ctx.sys.portal.pub:upver'
-	]) { }
-
-	task uppub (dependsOn: [
-		':shr:nts.uk.shr.com:upver',
-		':shr:nts.uk.shr.find:upver',
-		':query:nts.uk.query.pub:upver',
-		':wk.ctx:nts.uk.ctx.workflow.pub:upver',
-		':pereg.ctx:nts.uk.ctx.pereg.pub:upver',
-		':com.ctx:bs:company:nts.uk.ctx.bs.company.pub:upver',
-		':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub:upver',
-		':com.ctx:bs:person:nts.uk.ctx.bs.person.pub:upver',
+		':com.ctx:sys:share:nts.uk.ctx.sys.shared.pub:upver',
 		':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub:upver',
 		':com.ctx:sys:portal:nts.uk.ctx.sys.portal.pub:upver',
 		':com.ctx:sys:assist:nts.uk.ctx.sys.assist.pub:upver',
@@ -156,6 +145,9 @@ subprojects {
 		// Concurrency Utilities for Java EE
 		compile group: 'javax.enterprise.concurrent', name: 'javax.enterprise.concurrent-api', version: '1.0'
 		
+		// https://mvnrepository.com/artifact/jcifs/jcifs
+		compile group: 'jcifs', name: 'jcifs', version: '1.3.17'
+		
 		// JPA
 		compile group: 'org.eclipse.persistence', name: 'javax.persistence', version: '2.1.1'
 		compile group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.6.4'
@@ -187,6 +179,10 @@ subprojects {
 		
 		// https://mvnrepository.com/artifact/org.quartz-scheduler/quartz
 		compile group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.0'
+		
+		// HttpClient
+		compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.5'
+		compile group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.9'
 		
 		// For Login feature.
 		// https://mvnrepository.com/artifact/com.github.dblock.waffle/waffle-jna
@@ -490,6 +486,7 @@ project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.ac') {
 		compile project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pub')
 		compile project (':com.ctx:bs:company:nts.uk.ctx.bs.company.pub')
 		compile project(':com.ctx:sys:log:nts.uk.ctx.sys.log.pub')
+		compile project(':com.ctx:sys:env:nts.uk.ctx.sys.env.pub')
 		
 		compile project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
 		compile project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.app')
@@ -1013,6 +1010,9 @@ project (':com.web:nts.uk.com.web') {
 		// https://mvnrepository.com/artifact/net.lingala.zip4j/zip4j
 		runtime group: 'net.lingala.zip4j', name: 'zip4j', version: '1.3.2'
 		
+		// https://mvnrepository.com/artifact/jcifs/jcifs
+		runtime group: 'jcifs', name: 'jcifs', version: '1.3.17'
+		
 		// Java Mail
 		runtime group: 'javax.mail', name: 'mail', version: '1.4.7'
 		
@@ -1057,6 +1057,8 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
 		runtime project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.infra')
 		runtime project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.ws')
+		runtime project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.pub')
+		runtime project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.pubimp')
 
 		runtime project (':com.ctx:bs:company:nts.uk.ctx.bs.company.ac')
 		runtime project (':com.ctx:bs:company:nts.uk.ctx.bs.company.app')
@@ -1319,6 +1321,7 @@ project (':pereg.ctx:nts.uk.ctx.pereg.app') {
 		compile project (':com.ctx:basic:nts.uk.ctx.basic.dom')
 		compile project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.app')
 		compile project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
+		compile project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
 		compile project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.app')
 		compile project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
 		compile project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.app')

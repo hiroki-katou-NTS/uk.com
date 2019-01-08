@@ -33,4 +33,26 @@ public interface RoundingSetOfMonthlyRepository {
 	 * @param companyId 会社ID
 	 */
 	void remove(String companyId);
+	
+	/**
+	 * 検索.
+	 *
+	 * @param companyId 会社ID
+	 * @return 月別実績の丸め設定
+	 */
+	Optional<TimeRoundingOfExcessOutsideTime> findExcout(String companyId);
+
+	/**
+	 * 登録および更新.
+	 *
+	 * @param roundingSetOfMonthly 月別実績の丸め設定
+	 */
+	void persistAndUpdate(TimeRoundingOfExcessOutsideTime roundingSetOfMonthly);
+	
+	/**
+	 * 削除.
+	 *
+	 * @param companyId 会社ID
+	 */
+	void removeExcout(String companyId);
 }

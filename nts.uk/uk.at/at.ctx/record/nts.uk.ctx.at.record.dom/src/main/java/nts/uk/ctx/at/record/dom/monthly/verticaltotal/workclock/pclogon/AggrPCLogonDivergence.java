@@ -65,7 +65,7 @@ public class AggrPCLogonDivergence {
 			this.totalTime = this.totalTime.addMinutes(stayingTime.getBeforePCLogOnTime().v());
 			
 			// 日数を集計する
-			if (stayingTime.getStayingTime().v() > 0) this.days = this.days.addDays(1.0);
+			if (stayingTime.getBeforePCLogOnTime().v() > 0) this.days = this.days.addDays(1.0);
 		}
 		else {
 			
@@ -73,7 +73,7 @@ public class AggrPCLogonDivergence {
 			this.totalTime = this.totalTime.addMinutes(stayingTime.getAfterPCLogOffTime().v());
 			
 			// 日数を集計する
-			if (stayingTime.getStayingTime().v() > 0) this.days = this.days.addDays(1.0);
+			if (stayingTime.getAfterPCLogOffTime().v() > 0) this.days = this.days.addDays(1.0);
 		}
 		
 		// 平均時間を計算する

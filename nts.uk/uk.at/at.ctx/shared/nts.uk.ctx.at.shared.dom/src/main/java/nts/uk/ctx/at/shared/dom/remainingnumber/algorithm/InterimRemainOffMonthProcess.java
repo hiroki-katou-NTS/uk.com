@@ -14,4 +14,5 @@ public interface InterimRemainOffMonthProcess {
 	 * @return
 	 */
 	public Map<GeneralDate, DailyInterimRemainMngData> monthInterimRemainData(String cid, String sid, DatePeriod dateData);
+	
 }

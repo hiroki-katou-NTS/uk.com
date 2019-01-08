@@ -45,18 +45,16 @@ module nts.uk.at.view.ksu001.o.viewmodel {
             self.time1 = ko.observable('');
             self.time2 = ko.observable('');
             
-             self.selectedWorkTypeCode.subscribe((newValue) => {
-                 self.listCheckNeededOfWorkTime = __viewContext.viewModel.viewA.listCheckNeededOfWorkTime();
-
-                 let stateWorkTypeCode = _.find(self.listCheckNeededOfWorkTime, ['workTypeCode', newValue]);
-                 // if workTypeCode is not required(= 2) worktime is needless, something relate to workTime will be disable
-                 if (stateWorkTypeCode && stateWorkTypeCode.state == 2) {
-                     self.isEnableButton(false);
-                     self.isEnableClearSearchButton(false);
-                     self.selectedWorkTimeCode(self.nashi);
-                 } else {
-                     self.isEnableButton(true);
-                 }
+            self.selectedWorkTypeCode.subscribe((newValue) => {
+                let stateWorkTypeCode = _.find(self.checkNeededOfWorkTimeSetting, ['workTypeCode', newValue]);
+                // if workTypeCode is not required(= 2) worktime is needless, something relate to workTime will be disable
+                if (stateWorkTypeCode && stateWorkTypeCode.state == 2) {
+                    self.isEnableButton(false);
+                    self.isEnableClearSearchButton(false);
+                    self.selectedWorkTimeCode(self.nashi);
+                } else {
+                    self.isEnableButton(true);
+                }
             });
 
             //get name of workType and workTime
@@ -216,10 +214,10 @@ module nts.uk.at.view.ksu001.o.viewmodel {
                 self.endDateScreenA = data.endDate;
                 //set data for listWorkType
                 self.listWorkType(data.listWorkType);
-                self.selectedWorkTypeCode(self.listWorkType()[0].workTypeCode);
                 self.checkStateWorkTypeCode = data.checkStateWorkTypeCode;
                 self.checkNeededOfWorkTimeSetting = data.checkNeededOfWorkTimeSetting;
                 self.workEmpCombines = data.workEmpCombines;
+                self.selectedWorkTypeCode(self.listWorkType()[0].workTypeCode);
                 self.listTimeZoneForSearch = data.listWorkTime;
                 //set data for listWorkTime
                 //                self.listWorkTime.push(new ksu001.common.viewmodel.WorkTime({

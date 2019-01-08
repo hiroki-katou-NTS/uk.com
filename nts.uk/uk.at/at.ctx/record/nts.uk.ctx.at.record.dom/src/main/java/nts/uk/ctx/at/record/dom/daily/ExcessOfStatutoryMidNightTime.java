@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.daily;
 import java.util.Optional;
 
 import lombok.Getter;
-import lombok.Value;
+//import lombok.Value;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.overtimework.OverTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -15,7 +15,9 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  */
 @Getter
 public class ExcessOfStatutoryMidNightTime {
+	//時間
 	private TimeDivergenceWithCalculation time;
+	//事前時間
 	private AttendanceTime beforeApplicationTime;
 	
 	public ExcessOfStatutoryMidNightTime(TimeDivergenceWithCalculation time, AttendanceTime beforeApplicationTime) {

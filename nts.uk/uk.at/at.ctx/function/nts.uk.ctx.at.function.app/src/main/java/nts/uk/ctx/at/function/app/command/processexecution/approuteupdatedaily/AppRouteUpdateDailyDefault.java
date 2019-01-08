@@ -89,7 +89,7 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 		for(Closure closure : listClosure) {
 			/**締め開始日を取得する*/
 			PresentClosingPeriodFunImport closureData =  funClosureAdapter.getClosureById(procExec.getCompanyId(), closure.getClosureId().value).get();
-			GeneralDate startDate = GeneralDate.today();
+			GeneralDate startDate = GeneralDate.today().addDays(-1);
 			if(procExec.getProcessExecType() == ProcessExecType.RE_CREATE){
 				startDate = closureData.getClosureStartDate();
 			}
@@ -137,10 +137,10 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 				regulationInfoEmployeeAdapterImport.setPeriodEnd(GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"));
 				// 在職者を含める → TRUE
 				regulationInfoEmployeeAdapterImport.setIncludeIncumbents(true);
-				// 休職者を含める → FALSE
-				regulationInfoEmployeeAdapterImport.setIncludeWorkersOnLeave(false);
-				// 休業者を含める → FALSE
-				regulationInfoEmployeeAdapterImport.setIncludeOccupancy(false);
+				// 休職者を含める → TRUE(EA: 101326)
+				regulationInfoEmployeeAdapterImport.setIncludeWorkersOnLeave(true);
+				// 休業者を含める → TRUE(EA: 101326)
+				regulationInfoEmployeeAdapterImport.setIncludeOccupancy(true);
 				// 出向に来ている社員を含める → TRUE
 				regulationInfoEmployeeAdapterImport.setIncludeAreOnLoan(true);
 				// 出向に行っている社員を含める → FALSE
@@ -195,10 +195,10 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 				regulationInfoEmployeeAdapterImport.setPeriodEnd(GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"));
 				// 在職者を含める → TRUE
 				regulationInfoEmployeeAdapterImport.setIncludeIncumbents(true);
-				// 休職者を含める → FALSE
-				regulationInfoEmployeeAdapterImport.setIncludeWorkersOnLeave(false);
-				// 休業者を含める → FALSE
-				regulationInfoEmployeeAdapterImport.setIncludeOccupancy(false);
+				// 休職者を含める → TRUE(EA: 101326)
+				regulationInfoEmployeeAdapterImport.setIncludeWorkersOnLeave(true);
+				// 休業者を含める → TRUE(EA: 101326)
+				regulationInfoEmployeeAdapterImport.setIncludeOccupancy(true);
 				// 出向に来ている社員を含める → TRUE
 				regulationInfoEmployeeAdapterImport.setIncludeAreOnLoan(true);
 				// 出向に行っている社員を含める → FALSE
@@ -254,7 +254,7 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 			if(procExec.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().isPresent())
 				createNewEmp = procExec.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().get().value;
 			boolean check = createperApprovalDailyAdapter.createperApprovalDaily(procExec.getCompanyId(), procExecLog.getExecId(),
-					listEmployeeID, procExec.getProcessExecType().value, createNewEmp, closureData.getClosureStartDate());
+					listEmployeeID, procExec.getProcessExecType().value, createNewEmp, closureData.getClosureStartDate(),closureData.getClosureEndDate());
 			listCheckCreateApp.add(new CheckCreateperApprovalClosure(closure.getClosureId().value,check));
 		}
 		

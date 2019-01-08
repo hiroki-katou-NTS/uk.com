@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.ac.employment;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -17,7 +19,6 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmpCdNameImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
-import nts.uk.ctx.bs.employee.pub.employment.AffPeriodEmpCdHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.EmpCdNameExport;
 import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
@@ -70,6 +71,24 @@ public class ShareEmploymentAdapterImpl implements ShareEmploymentAdapter{
 				
 		return lstEmpHist;
 	}
-	
+
+	@Override
+	public Map<String, BsEmploymentHistoryImport> findEmpHistoryVer2(String companyId, List<String> lstSID,
+			GeneralDate baseDate) {
+		Map<String, SEmpHistExport> lar = employment.findSEmpHistBySidVer2(companyId, lstSID, baseDate);
+		Map<String, BsEmploymentHistoryImport> mapResult = new HashMap<>();
+		for (String sid : lstSID) {
+			if(lar.containsKey(sid)){
+				continue;
+			}
+			SEmpHistExport empHist = lar.get(sid);
+			if(empHist == null){
+				continue;
+			}
+			mapResult.put(sid, new BsEmploymentHistoryImport(empHist.getEmployeeId(), empHist.getEmploymentCode(),
+					empHist.getEmploymentName(), empHist.getPeriod()));
+		}		
+		return mapResult;
+	}
 	
 }

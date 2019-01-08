@@ -2,9 +2,11 @@ package nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.adapter.employment.EmploymentHistAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -61,16 +63,43 @@ public class CalcPeriodForAggregateProc {
 		// 締められていない期間の締めIDを取得
 		this.getClosureIdOfNotClosurePeriod(companyId, employeeId);
 
+		// 締めID履歴の先頭の開始日と「集計終了日」を比較　→　検索終了日
+		GeneralDate findEnd = aggrEnd;	// 検索終了日
+		if (!this.closureIdHistories.isEmpty()){
+			GeneralDate checkStart = this.closureIdHistories.get(0).getPeriod().start();
+			if (checkStart.after(aggrEnd)) findEnd = checkStart;
+		}
+		
 		for (val closureIdHistory: this.closureIdHistories){
 			
 			// 締めID履歴の期間内で締め処理期間を作成
-			this.createAggrPeriodEachActualClosureWithinHistories(companyId, closureIdHistory, aggrEnd.addMonths(1));
+			this.createAggrPeriodEachActualClosureWithinHistories(companyId, closureIdHistory, findEnd.addMonths(1));
 		}
 		
 		for (val aggrPeriod : this.aggrPeriods){
 			
 			// 締め処理期間を作成
 			this.createClosurePeriod(aggrPeriod, aggrEnd);
+		}
+		
+		if (!this.closurePeriods.isEmpty()){
+
+			// 締め処理期間の先頭の年月を取得
+			YearMonth firstYm = this.closurePeriods.get(0).getYearMonth();
+			
+			// 締め処理期間から、集計終了日以降の「締め処理期間」を削除
+			ListIterator<ClosurePeriod> itrClosurePeriods = this.closurePeriods.listIterator();
+			while (itrClosurePeriods.hasNext()){
+				ClosurePeriod target = itrClosurePeriods.next();
+				if (!target.getYearMonth().equals(firstYm)){
+					if (target.getAggrPeriods().isEmpty()){
+						itrClosurePeriods.remove();
+					}
+					else if (target.getAggrPeriods().get(0).getPeriod().start().after(aggrEnd)){
+						itrClosurePeriods.remove();
+					}
+				}
+			}
 		}
 		
 		return this.closurePeriods;
@@ -201,9 +230,6 @@ public class CalcPeriodForAggregateProc {
 			
 			// 既存の締め処理期間に追加するかチェック
 			if (lastPeriod.getYearMonth().equals(aggrPeriod.getYearMonth()) &&
-				lastPeriod.getClosureId().value == aggrPeriod.getClosureId().value &&
-				lastPeriod.getClosureDate().getClosureDay().equals(aggrPeriod.getClosureDate().getClosureDay()) &&
-				lastPeriod.getClosureDate().getLastDayOfMonth() == aggrPeriod.getClosureDate().getLastDayOfMonth() &&
 				lastPeriod.getClosureYmd().afterOrEquals(aggrPeriod.getOriginalClosurePeriod().end())){
 				
 				// 末尾の締め処理期間に実締め毎集計期間を追加
@@ -211,9 +237,6 @@ public class CalcPeriodForAggregateProc {
 				return;
 			}
 		}
-		
-		// 集計終了日を過ぎた期間かチェック
-		if (aggrPeriod.getPeriod().start().after(aggrEnd)) return;
 		
 		// 締め処理期間を新規作成し、リストに追加
 		this.closurePeriods.add(ClosurePeriod.of(aggrPeriod));

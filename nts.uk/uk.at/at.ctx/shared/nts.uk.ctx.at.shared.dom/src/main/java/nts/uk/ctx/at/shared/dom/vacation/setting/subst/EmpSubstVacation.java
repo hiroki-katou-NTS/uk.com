@@ -10,16 +10,20 @@ import nts.arc.layer.dom.DomainObject;
 /**
  * The Class EmpSubstVacation.
  */
+// 雇用振休管理設定
 @Getter
 public class EmpSubstVacation extends DomainObject {
 
 	/** The company id. */
+	// 会社ID
 	private String companyId;
 
 	/** The emp contract type code. */
+	// 雇用区分コード
 	private String empContractTypeCode;
 
 	/** The setting. */
+	// 振休取得・使用方法
 	private SubstVacationSetting setting;
 
 	/**

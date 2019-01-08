@@ -23,4 +23,5 @@ public class EmployeeInfo {
 	private GeneralDate birthday;
 	private int numberOfWork;
 	private int numberOfTempHist;
+	private String hireDate;
 }

@@ -50,6 +50,8 @@ module nts.uk.at.view.kdw001 {
             lstEmployeeID: Array<string>;
             periodStartDate: string;
             periodEndDate: string;
+             // 当月
+            processingMonth: string;
             // Screen B
             dailyCreation: boolean;
             creationType: number;
@@ -71,6 +73,9 @@ module nts.uk.at.view.kdw001 {
             summaryClass: number;
             // Screen J
             caseSpecExeContentID: string;
+            //
+            startMonthResult : string;
+            endMonthResult : string;
 
             constructor() {
 
@@ -85,6 +90,7 @@ module nts.uk.at.view.kdw001 {
                 this.lstEmployeeID = params.lstEmployeeID;
                 this.periodStartDate = params.periodStartDate;
                 this.periodEndDate = params.periodEndDate;
+                this.processingMonth = params.processingMonth;
             }
 
             setParamsScreenB(params: paramScreenB): void {
@@ -165,6 +171,7 @@ module nts.uk.at.view.kdw001 {
             periodStartDate: string;
             /** 対象期間終了日 */
             periodEndDate: string;
+            processingMonth : string;
         }
 
         export interface paramScreenJ {

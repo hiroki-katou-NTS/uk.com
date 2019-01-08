@@ -6,20 +6,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.at.auth.dom.adapter.AuthWorkPlaceAdapter;
-import nts.uk.ctx.at.auth.dom.adapter.WorkplaceInfoImport;
-import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
-import nts.uk.ctx.at.function.dom.alarm.alarmlist.AlarmExtraValueWkReDto;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AgreementTimeDetail;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.GetAgreementTime;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.auth.dom.adapter.AuthWorkPlaceAdapter;
+import nts.uk.ctx.at.auth.dom.adapter.WorkplaceInfoImport;
+import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AgreementTimeDetail;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.GetAgreementTime;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -34,10 +31,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
-import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.screen.at.app.ktgwidget.find.dto.AgreementTimeList36;
 import nts.uk.screen.at.app.ktgwidget.find.dto.AgreementTimeOfMonthlyDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OvertimeHours;
@@ -135,15 +130,14 @@ public class KTG027QueryProcessor {
 		if (listClosureEmployment == null || listClosureEmployment.isEmpty()) {
 			throw new BusinessException("Msg_1136");
 		}
-		
-		List<String> listEmploymentCD = listClosureEmployment.stream().map(c -> c.getEmploymentCD()).collect(Collectors.toList());
-		// (Lấy target) Lấy request list 335
-		
 		List<AgreementTimeList36> data = new ArrayList<>();
-		// for (DatePeriod datePeriod : listDatePeriod) {
 		
+		// (Lấy target) Lấy request list 335
+		List<String> listEmploymentCD = listClosureEmployment.stream().map(c -> c.getEmploymentCD()).collect(Collectors.toList());
+		//Dòng code bị comment là code gốc của RQ 335
 		//List<String> listEmpID = empEmployeeAdapter.getListEmpByWkpAndEmpt(listWorkPlaceID, listEmploymentCD, datePeriod.get());
 		List<String> listEmpID = getListEmpByWkpAndEmpt(listWorkPlaceID, listEmploymentCD, datePeriod.get());
+		
 		if (listEmpID == null || listEmpID.isEmpty() ) {
 			throw new BusinessException("Msg_1137");
 		}
@@ -164,6 +158,12 @@ public class KTG027QueryProcessor {
 		
 		if (listAgreementTimeDetail.isEmpty()) {
 			throw new BusinessException("Msg_1138");
+		}
+		
+		for (AgreementTimeDetail agreementTimeDetail : listAgreementTimeDetail){
+			if (agreementTimeDetail.getErrorMessage().isPresent()){
+				throw new BusinessException("Msg_1138");
+			}
 		}
 		
 		// (Set thông tin công việc ngoài giờ đã lấy)
@@ -262,22 +262,30 @@ public class KTG027QueryProcessor {
 		// List sid from List<AffCompanyHistByEmployee>
 		List<String> lstSidFromAffComHist = lstAffComHistByEmp.stream().map(m -> m.getSId())
 				.collect(Collectors.toList());
+		
+		// (Lấy danh sách sid từ domain 「休職休業履歴」) 		
+		List<String> lstSidAbsHist_NoCheckDate = tempAbsHistRepository.getByListSid(lstSidFromAffComHist);
+		
+		// List sid tồn tại ở lstId nhưng không tồn tại ở list sid
+		List<String> result = lstSidFromAffComHist.stream().filter(i -> !lstSidAbsHist_NoCheckDate.contains(i))
+				.collect(Collectors.toList());
 
 		// lây list TempAbsenceHistory từ list sid và dateperiod
-		List<TempAbsenceHistory> lstTempAbsenceHistory = tempAbsHistRepository.getByListSid(lstSidFromAffComHist,
+		List<TempAbsenceHistory> lstTempAbsenceHistory = tempAbsHistRepository.getByListSid(lstSidAbsHist_NoCheckDate,
 				dateperiod);
 
 		// List sid from List<TempAbsenceHistory>
 		List<String> lstSidFromTempAbsHis = lstTempAbsenceHistory.stream().map(m -> m.getEmployeeId())
 				.collect(Collectors.toList());
 
-		// List sid tồn tại ở lstId nhưng không tồn tại ở list sid
-		List<String> result = lstSidFromAffComHist.stream().filter(i -> !lstSidFromTempAbsHis.contains(i))
-				.collect(Collectors.toList());
+		if(!lstSidFromTempAbsHis.isEmpty()) {
+			result.addAll(lstSidFromTempAbsHis);
+		}
+		
 		if (result.isEmpty()) {
 			return Collections.emptyList();
 		}
-
+		
 		return result;
 	}
 	public List<AffCompanyHistByEmployee> getAffCompanyHistByEmployee(List<AffCompanyHist> lstAffComHist) {

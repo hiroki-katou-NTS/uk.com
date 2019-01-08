@@ -7,13 +7,7 @@ import java.util.Optional;
  * @author LamDT
  */
 public interface TopPagePartRepository {
-	/**
-	 * Find a TopPagePart
-	 *
-	 * @param topPagePartID
-	 * @return Optional TopPagePart
-	 */
-	Optional<TopPagePart> find(String topPagePartID);
+	
 	/**
 	 * @param cID
 	 * @param topPagePartID

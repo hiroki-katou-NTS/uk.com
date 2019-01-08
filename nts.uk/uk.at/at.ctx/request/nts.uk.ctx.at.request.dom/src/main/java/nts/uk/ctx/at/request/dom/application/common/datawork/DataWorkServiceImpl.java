@@ -20,12 +20,15 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlg
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
+//import nts.uk.ctx.at.shared.dom.personallaborcondition.PersonalLaborConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
 @Stateless
@@ -38,10 +41,12 @@ public class DataWorkServiceImpl implements IDataWorkService {
 	private OtherCommonAlgorithm otherCommonAlgorithm;
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
-	@Inject
-	private PersonalLaborConditionRepository personalLaborConditionRepository;
+//	@Inject
+//	private PersonalLaborConditionRepository personalLaborConditionRepository;
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
 
 	@Override
 	public DataWork getDataWork(String companyId, String sId, GeneralDate appDate,
@@ -167,12 +172,18 @@ public class DataWorkServiceImpl implements IDataWorkService {
 			}
 		} else {
 			// ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードを選択する
-			Optional<WorkType> workType = workTypeRepository.findByPK(companyId,
-					personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().toString());
-			selectedData.setSelectedWorkTypeCd(
-					personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTypeCode().map(item ->item.v()).orElse(null));
-			if (workType.isPresent()) {
-				selectedData.setSelectedWorkTypeName(workType.get().getName().v());
+			
+			Optional<WorkTypeCode> wkTypeOpt = personalLablorCodition.get().getWorkCategory().getWeekdayTime()
+					.getWorkTypeCode();
+			if (wkTypeOpt.isPresent()) {
+				String wkTypeCd = wkTypeOpt.get().v();
+				
+				Optional<WorkType> workType = workTypeRepository.findByPK(companyId,wkTypeCd);
+				
+				selectedData.setSelectedWorkTypeCd(wkTypeCd);
+				if (workType.isPresent()) {
+					selectedData.setSelectedWorkTypeName(workType.get().getName().v());
+				}
 			}
 			// ドメインモデル「個人勤務日区分別勤務」．平日時．就業時間帯コードを選択する
 			WorkTimeSetting workTime = workTimeSettingRepository.findByCode(companyId,
@@ -182,6 +193,13 @@ public class DataWorkServiceImpl implements IDataWorkService {
 					});
 			selectedData.setSelectedWorkTimeCd(workTime.getWorktimeCode().toString());
 			selectedData.setSelectedWorkTimeName(workTime.getWorkTimeDisplayName().getWorkTimeName().v());
+		}
+		// ドメイン「所定時間設定」.「所定時間帯設定」「時間帯(使用区分付き)」の開始時刻、終了時刻を取得する
+		Optional<PredetemineTimeSetting> opPredetemineTimeSetting = 
+				predetemineTimeSettingRepository.findByWorkTimeCode(companyId, selectedData.getSelectedWorkTimeCd());
+		if(opPredetemineTimeSetting.isPresent()){
+			selectedData.setStartTime1(opPredetemineTimeSetting.get().getPrescribedTimezoneSetting().getLstTimezone().get(0).getStart().v());
+			selectedData.setEndTime1(opPredetemineTimeSetting.get().getPrescribedTimezoneSetting().getLstTimezone().get(0).getEnd().v());
 		}
 	}
 

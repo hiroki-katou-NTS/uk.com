@@ -134,6 +134,7 @@ public class JDBCUtil {
 	}
 	
 	private static String toInsertWithCommonField(String insertQuery, List<FieldWithValue> defaultValues){
+		StringBuilder builder = new StringBuilder(insertQuery);
 		List<String> fields = new ArrayList<>();
 		List<String> values = new ArrayList<>();
 		defaultValues.forEach(fv -> {
@@ -144,18 +145,12 @@ public class JDBCUtil {
 		String fieldInQ = StringUtils.join(fields.toArray(), ", ");
 		String valueInQ = StringUtils.join(values.toArray(), ", ");
 		
-		List<String> splitted = new ArrayList<>(Arrays.asList(split(Pattern.quote(OPEN_KOMA), insertQuery)));
+		int firstKoma = builder.indexOf(OPEN_KOMA);
+		int second = builder.indexOf(OPEN_KOMA, firstKoma + 1);
+		builder.insert(second + 1, valueInQ + ", ");
+		builder.insert(firstKoma + 1,  fieldInQ + ", ");
 		
-		splitted.add(1, ", ");
-		splitted.add(1, fieldInQ);
-		splitted.add(1, OPEN_KOMA);
-		
-		int listCurrentLength = splitted.size();
-		splitted.add(listCurrentLength - 1, ",");
-		splitted.add(listCurrentLength - 1, valueInQ);
-		splitted.add(listCurrentLength - 1, OPEN_KOMA);
-		
-		return StringUtils.join(splitted.toArray(), "");
+		return builder.toString();
 	}
 	
 	private static String toUpdateWithCommonField(String updateQuery, List<FieldWithValue> defaultValues){

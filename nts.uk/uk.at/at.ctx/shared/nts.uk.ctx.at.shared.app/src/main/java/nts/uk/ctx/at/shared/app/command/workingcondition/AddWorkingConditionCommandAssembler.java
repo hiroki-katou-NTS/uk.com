@@ -168,15 +168,13 @@ public class AddWorkingConditionCommandAssembler {
 		// WorkScheduleBusCal - 営業日カレンダーによる勤務予定作成
 		WorkScheduleBusCal busCal = new WorkScheduleBusCal(
 				command.getReferenceBusinessDayCalendar() != null
-						? EnumAdaptor.valueOf(command.getReferenceBusinessDayCalendar().intValue() ,
-						WorkScheduleMasterReferenceAtr.class) : null,
-						command.getReferenceBasicWork() != null ? EnumAdaptor.valueOf(command.getReferenceBasicWork().intValue(),
-						WorkScheduleMasterReferenceAtr.class) : null,command.getReferenceType() != null ? EnumAdaptor.valueOf(command.getReferenceType().intValue(),
-						TimeZoneScheduledMasterAtr.class) : null);
+						? EnumAdaptor.valueOf(command.getReferenceBusinessDayCalendar().intValue(),WorkScheduleMasterReferenceAtr.class) : EnumAdaptor.valueOf(0,WorkScheduleMasterReferenceAtr.class),
+						command.getReferenceBasicWork() != null ? EnumAdaptor.valueOf(command.getReferenceBasicWork().intValue(),WorkScheduleMasterReferenceAtr.class) : EnumAdaptor.valueOf(0,WorkScheduleMasterReferenceAtr.class),
+						command.getReferenceType() != null ? EnumAdaptor.valueOf(command.getReferenceType().intValue(),TimeZoneScheduledMasterAtr.class) : EnumAdaptor.valueOf(0,TimeZoneScheduledMasterAtr.class));
 		// MonthlyPatternWorkScheduleCre
 		MonthlyPatternWorkScheduleCre monthlySchedule = new MonthlyPatternWorkScheduleCre(
-				command.getReferenceType().intValue());
-		ScheduleMethod scheduleMethod = new ScheduleMethod(command.getBasicCreateMethod().intValue(), busCal,
+				command.getReferenceType() == null ? 0 : command.getReferenceType().intValue());
+		ScheduleMethod scheduleMethod = new ScheduleMethod(command.getBasicCreateMethod() == null ? 0 :command.getBasicCreateMethod().intValue(), busCal,
 				monthlySchedule);
 		WorkingConditionItem workingCond = new WorkingConditionItem(histId,
 				// Default value is Use する

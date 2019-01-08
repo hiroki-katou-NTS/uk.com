@@ -26,5 +26,14 @@ public interface MonthlyDayoffRemainAdapter {
 	 * @return
 	 */
 	public List<CurrentHolidayImported> getInterimRemainAggregate(String employeeId, GeneralDate baseDate, YearMonth startMonth, YearMonth endMonth);
-
+	/**
+	 * @author hoatt
+	 * Doi ung response KDR001
+	 * RequesList259 社員の月毎の確定済み代休を取得する - ver2
+	 * @param employeeId 社員ID
+	 * @param startMonth 年月期間
+	 * @param endMonth
+	 * @return
+	 */
+	public List<StatusHolidayImported> lstDayoffCurrentMonthOfEmpVer2(String employeeId, YearMonth startMonth, YearMonth endMonth);
 }

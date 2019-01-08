@@ -1,4 +1,4 @@
-﻿/// <reference path="../../reference.ts"/>
+/// <reference path="../../reference.ts"/>
 
 module nts.uk.ui.koExtentions {
     import validation = nts.uk.ui.validation;
@@ -951,11 +951,18 @@ module nts.uk.ui.koExtentions {
     
         var handlesEnterKey = (typeof data.enterkey === "function");
         var onEnterKey = handlesEnterKey ? data.enterkey : $.noop;
+        
         if (handlesEnterKey) {
             $input.addClass("enterkey")
                 .onkey("down", uk.KeyCodes.Enter, e => {
+                
+                    if($(".blockUI").length <= 0){
+                        return; 
+                    }
+                
                     $input.change();
                     onEnterKey.call(ko.dataFor(e.target), e);
+                    
                 });
         }
     }

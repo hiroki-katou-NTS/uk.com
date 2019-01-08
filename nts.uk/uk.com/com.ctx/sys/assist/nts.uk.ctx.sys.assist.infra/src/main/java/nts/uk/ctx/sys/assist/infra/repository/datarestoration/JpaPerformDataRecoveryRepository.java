@@ -16,6 +16,7 @@ import javax.transaction.Transactional.TxType;
 
 import org.apache.commons.lang3.StringUtils;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.assist.dom.category.StorageRangeSaved;
@@ -279,6 +280,20 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 		listItems.stream().forEach(x -> {
 			tableList.add(fromDomain(x));
 		});
+		
+		// fix bug #102589 start
+		List<TableList> lstTableListDuplicate = new ArrayList<>();
+		Map<String, List<TableList>> map = tableList.stream().collect(Collectors.groupingBy(TableList::getCategoryId));
+		map.forEach((k, v) -> {
+			if (v.size() > 1) {
+				lstTableListDuplicate.addAll(v.stream().filter(x -> x.getStorageRangeSaved() == StorageRangeSaved.EARCH_EMP).collect(Collectors.toList()));
+			}
+		});
+		
+		if(!lstTableListDuplicate.isEmpty()){
+			tableList.removeAll(lstTableListDuplicate);
+		}// end
+		
 		return tableList;
 	}
 
@@ -324,7 +339,7 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId)
 				.setParameter("employeeIdList", employeeIdList).executeUpdate();*/
 		
-		CollectionUtil.split(employeeIdList, 1000, subEmployeeIdList -> {
+		CollectionUtil.split(employeeIdList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subEmployeeIdList -> {
 			this.getEntityManager().createQuery(DELETE_BY_LIST_ID_EMPLOYEE, SspmtTarget.class)
 			.setParameter("dataRecoveryProcessId", dataRecoveryProcessId)
 			.setParameter("employeeIdList", subEmployeeIdList).executeUpdate();
@@ -342,17 +357,17 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 
 	@Override
 	public void updateCategorySelect(int selectionTarget, String dataRecoveryProcessId, List<String> listCheckCate) {
-		// TODO Auto-generated method stub UPDATE_BY_LIST_CATEGORY_ID
-		this.getEntityManager().createQuery(UPDATE_BY_LIST_CATEGORY_ID, SspmtTarget.class)
+		CollectionUtil.split(listCheckCate, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			this.getEntityManager().createQuery(UPDATE_BY_LIST_CATEGORY_ID, SspmtTarget.class)
 				.setParameter("selectionTarget", selectionTarget)
 				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId)
-				.setParameter("listCheckCate", listCheckCate).executeUpdate();
+				.setParameter("listCheckCate", subList).executeUpdate();
+		});
 	}
 
 	@Override
 	public void updateCategorySelectByDateFromTo(String startOfPeriod, String endOfPeriod, String dataRecoveryProcessId,
 			String checkCate) {
-		// TODO Auto-generated method stub
 		this.getEntityManager().createQuery(UPDATE_DATE_FROM_TO_BY_LIST_CATEGORY_ID, SspmtTarget.class)
 				.setParameter("startOfPeriod", startOfPeriod).setParameter("endOfPeriod", endOfPeriod)
 				.setParameter("dataRecoveryProcessId", dataRecoveryProcessId).setParameter("checkCate", checkCate)

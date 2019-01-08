@@ -16,7 +16,7 @@ public class RecruitmentAppCommand {
 	private String appDate;
 	private String wkTypeCD;
 	private WkTimeCommand wkTime1;
-	private WkTimeCommand wkTime2;
+	//private WkTimeCommand wkTime2;
 	private String appID;
 	private String wkTimeCD;
 	private List<SubTargetDigestionCmd> subTargetDigestions;

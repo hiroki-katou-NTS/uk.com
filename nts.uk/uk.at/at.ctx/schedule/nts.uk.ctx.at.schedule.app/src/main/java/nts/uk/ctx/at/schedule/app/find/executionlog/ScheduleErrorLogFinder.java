@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.app.find.executionlog;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -39,10 +40,17 @@ public class ScheduleErrorLogFinder {
 		if (lstError == null) {
 			return Collections.emptyList();
 		}
+		List<String> sIds = lstError.stream().map(x-> x.getEmployeeId()).distinct().collect(Collectors.toList());
+		List<EmployeeDto> employees = employeeAdapter.findByEmployeeIds(sIds);
+		
 		return lstError.stream().map(item -> {
 			ScheduleErrorLogDto dto = new ScheduleErrorLogDto();
 			item.saveToMemento(dto);
-			EmployeeDto employee = employeeAdapter.findByEmployeeId(dto.getEmployeeId());
+			Optional<EmployeeDto> optEmployee =  employees.stream().filter(x -> x.getEmployeeId().equals(dto.getEmployeeId())).findFirst();
+			if(!optEmployee.isPresent()){
+				return dto;
+			}
+			EmployeeDto employee =  optEmployee.get();
 			dto.setEmployeeCode(employee.getEmployeeCode());
 			dto.setEmployeeName(employee.getEmployeeName());
 			return dto;

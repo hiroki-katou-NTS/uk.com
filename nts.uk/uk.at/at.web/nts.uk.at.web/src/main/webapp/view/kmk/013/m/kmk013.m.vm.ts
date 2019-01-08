@@ -1,4 +1,7 @@
 module nts.uk.at.view.kmk013.m {
+    
+    import blockUI = nts.uk.ui.block;
+    
     export module viewmodel {
         export class ScreenModel {
             // Item M2_2
@@ -69,7 +72,8 @@ module nts.uk.at.view.kmk013.m {
             
             saveData(): void {
                 var self = this;
-                let data = {};
+                let data: any = {};
+                blockUI.grayout();
                 data.constraintCalcMethod = self.calcMethodChoice();
                 data.upperLimitSet = self.upperLimitChoice();
                 data.substituteHoliday = self.vacationOrder().substitute;
@@ -83,7 +87,7 @@ module nts.uk.at.view.kmk013.m {
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
                 }).always(() => {
-                    nts.uk.ui.block.clear();
+                    blockUI.clear();
                 });
             }
         }

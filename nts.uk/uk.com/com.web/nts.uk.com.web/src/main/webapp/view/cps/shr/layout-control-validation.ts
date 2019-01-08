@@ -200,7 +200,7 @@ module nts.layout {
     }
 
     const fetch = {
-        get_cats: () => ajax(`ctx/pereg/person/info/category/findby/companyv2`),
+        get_cats: (isCps007: boolean) => ajax(`ctx/pereg/person/info/category/findby/companyv2/${isCps007}`),
         get_stc_setting: () => ajax('at', `record/stamp/stampcardedit/find`),
         get_cb_data: (param: IComboParam) => ajax(`ctx/pereg/person/common/getFlexComboBox`, param),
         check_start_end: (param: ICheckParam) => ajax(`ctx/pereg/person/common/checkStartEnd`, param),
@@ -213,7 +213,8 @@ module nts.layout {
         check_remain_days: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainDays/${sid}`),
         check_remain_left: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainLeft/${sid}`),
         perm: (rid, cid) => ajax(`ctx/pereg/roles/auth/category/find/${rid}/${cid}`),
-        get_sphd_nextGrantDate: (param: ISpeacialParam) => ajax('com', `ctx/pereg/layout/getSPHolidayGrantDate`, param)
+        get_sphd_nextGrantDate: (param: ISpeacialParam) => ajax('com', `ctx/pereg/layout/getSPHolidayGrantDate`, param),
+        checkFunctionNo: () => ajax(`ctx/pereg/functions/auth/find-with-role-person-info`)
     }
 
     export class validation {
@@ -933,7 +934,7 @@ module nts.layout {
                                 if (timeClick - safeClick <= 500) {
                                     return;
                                 }
-
+                                setShared("KDL002_isShowNoSelectRow", workType.data.required == true? false:true);
                                 setShared("KDL002_Multiple", false, true);
                                 setShared('kdl002isSelection', false, true);
                                 setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
@@ -989,6 +990,7 @@ module nts.layout {
                                         }
                                     });
                                 } else {
+                                    setShared("KDL002_isShowNoSelectRow", workType.data.required == true? false: true);
                                     setShared("KDL002_Multiple", false, true);
                                     setShared('kdl002isSelection', true, true);
                                     setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
@@ -1356,55 +1358,148 @@ module nts.layout {
                 CS00017_IS00085: IFindData = finder.find('CS00017', 'IS00085'),
                 CS00020_IS00130: IFindData = finder.find('CS00020', 'IS00130'),
                 CS00020_IS00131: IFindData = finder.find('CS00020', 'IS00131'),
-                initCDL008Data = (data: IItemData) => {
+                CS00020_IS00119: IFindData = finder.find('CS00020', 'IS00119'),
+                CS00070_IS00781: IFindData = finder.find('CS00070', 'IS00781'),
+                workingCondInfo: Array<IWorkingConditionInfo> = [{
+                    category: 'CS00020',
+                    workTypeCode: 'IS00130',
+                    workTypeTime: 'IS00131'
+                }, {
+                        category: 'CS00020',
+                        workTypeCode: 'IS00139',
+                        workTypeTime: 'IS00140'
+                    }, {
+                        category: 'CS00020',
+                        workTypeCode: 'IS00157',
+                        workTypeTime: 'IS00158'
+                    }, {
+                        category: 'CS00020',
+                        workTypeCode: 'IS00166',
+                        workTypeTime: 'IS00167'
+                    }, {
+                        category: 'CS00020',
+                        workTypeCode: 'IS00175',
+                        workTypeTime: 'IS00176'
+                    }, {
+                        category: 'CS00020',
+                        workTypeCode: 'IS00148',
+                        workTypeTime: 'IS00149'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00193',
+                        workTypeTime: 'IS00194'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00202',
+                        workTypeTime: 'IS00203'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00211',
+                        workTypeTime: 'IS00212'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00220',
+                        workTypeTime: 'IS00221'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00229',
+                        workTypeTime: 'IS00230'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00238',
+                        workTypeTime: 'IS00239'
+                    }, {
+                        category: 'CS00070',
+                        workTypeCode: 'IS00184',
+                        workTypeTime: 'IS00185'
+                    }
+                ],
+                initCDL008Data = (data: IItemData): JQueryPromise<any>   => {
+                    let dfd = $.Deferred();
                     if (location.href.indexOf('/view/cps/002') > -1) {
-                        setShared('inputCDL008', {
-                            selectedCodes: [ko.toJS(data.value)],
-                            baseDate: ko.toJS((__viewContext || {
+                        let baseDateParam = ko.toJS((__viewContext || {
                                 viewModel: {
                                     currentEmployee: {
                                         hireDate: new Date()
                                     }
                                 }
-                            }).viewModel.currentEmployee).hireDate,
-                            isMultiple: false,
-                            selectedSystemType: 5,
-                            isrestrictionOfReferenceRange: false,
-                            showNoSelection: !data.required
-                        }, true);
+                            }).viewModel.currentEmployee).hireDate;
+                        
+                        if (__viewContext.viewModel.wrkPlaceStartDate()) {
+                            baseDateParam = __viewContext.viewModel.wrkPlaceStartDate();
+                        }
+                        
+                        if (!!CS00017_IS00082) {
+                            let startValue = CS00017_IS00082.data.value();
+                            baseDateParam = startValue;
+                        }
+                        if (_.isNil(baseDateParam) || !moment.utc(baseDateParam, "YYYYMMDD").isValid()) {
+                            setShared('inputCDL008', null);
+                        } else {
+                            fetch.checkFunctionNo().done(role => {
+                                setShared('inputCDL008', {
+                                    selectedCodes: [ko.toJS(data.value)],
+                                    baseDate: ko.toJS(moment.utc(baseDateParam, "YYYYMMDD").toDate()),
+                                    isMultiple: false,
+                                    selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
+                                    isrestrictionOfReferenceRange: role.available,
+                                    showNoSelection: !data.required,
+                                    isShowBaseDate: false
+                                }, true);
+                                dfd.resolve();
+                            });
+                        }
                     } else if (location.href.indexOf('/view/cps/001') > -1) {
                         if (!!CS00017_IS00082) {
                             let v = CS00017_IS00082.data.value();
 
                             if (!_.isNil(v) && moment.utc(v, "YYYYMMDD").isValid()) {
-                                setShared('inputCDL008', {
-                                    selectedCodes: [data.value],
-                                    baseDate: ko.toJS(moment.utc(v, "YYYYMMDD").toDate()),
-                                    isMultiple: false,
-                                    selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
-                                    isrestrictionOfReferenceRange: false,
-                                    showNoSelection: !data.required,
-                                    isShowBaseDate: false
-                                }, true);
+                                fetch.checkFunctionNo().done(role => {
+                                    setShared('inputCDL008', {
+                                        selectedCodes: [data.value],
+                                        baseDate: ko.toJS(moment.utc(v, "YYYYMMDD").toDate()),
+                                        isMultiple: false,
+                                        selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
+                                        isrestrictionOfReferenceRange: role.available,
+                                        showNoSelection: !data.required,
+                                        isShowBaseDate: false
+                                    }, true);
+                                    dfd.resolve();
+                                });
                             } else {
                                 setShared('inputCDL008', null);
                             }
                         } else {
                             if (__viewContext.viewModel.layout.mode() == 'layout') {
-                                setShared('inputCDL008', {
-                                    selectedCodes: [data.value],
-                                    baseDate: ko.toJS(moment.utc(__viewContext.viewModel.layout.standardDate(), 'YYYYMMDD').toDate()),
-                                    isMultiple: false,
-                                    selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
-                                    isrestrictionOfReferenceRange: false,
-                                    showNoSelection: !data.required,
-                                    isShowBaseDate: false
-                                }, true);
+                                fetch.checkFunctionNo().done(role => {
+                                    setShared('inputCDL008', {
+                                        selectedCodes: [data.value],
+                                        baseDate: ko.toJS(moment.utc(__viewContext.viewModel.layout.standardDate(), 'YYYYMMDD').toDate()),
+                                        isMultiple: false,
+                                        selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
+                                        isrestrictionOfReferenceRange: role.available,
+                                        showNoSelection: !data.required,
+                                        isShowBaseDate: false
+                                    }, true);
+                                    dfd.resolve();
+                                });
                             } else {
-                                setShared('inputCDL008', null);
+                                fetch.checkFunctionNo().done(role => {
+                                    setShared('inputCDL008', {
+                                        selectedCodes: [data.value],
+                                        baseDate: ko.toJS(moment.utc(__viewContext.viewModel.employee.hireDate(), 'YYYYMMDD').toDate()),
+                                        isMultiple: false,
+                                        selectedSystemType: 1, // 1 : 個人情報 , 2 : 就業 , 3 :給与 , 4 :人事 ,  5 : 管理者
+                                        isrestrictionOfReferenceRange: role.available,
+                                        showNoSelection: !data.required,
+                                        isShowBaseDate: false
+                                    }, true);
+                                    dfd.resolve();
+                                });
                             }
                         }
                     }
+                    return dfd.promise();
                 };
 
             if (CS00016_IS00077 && CS00016_IS00079) {
@@ -1431,7 +1526,8 @@ module nts.layout {
                         masterType: comboData.item.masterType,
                         employeeId: empId,
                         cps002: false,
-                        workplaceId: undefined
+                        workplaceId: undefined,
+                        baseDate: undefined
                     }).done((cbx: Array<IComboboxItem>) => {
                         CS00016_IS00079.data.lstComboBoxValue(cbx);
                     });
@@ -1462,7 +1558,8 @@ module nts.layout {
                         masterType: comboData.item.masterType,
                         employeeId: empId,
                         cps002: false,
-                        workplaceId: undefined
+                        workplaceId: undefined,
+                        baseDate: undefined
                     }).done((cbx: Array<IComboboxItem>) => {
                         CS00017_IS00084.data.lstComboBoxValue(cbx);
                         CS00017_IS00084.data.value.valueHasMutated();
@@ -1494,7 +1591,8 @@ module nts.layout {
                         masterType: comboData.item.masterType,
                         employeeId: empId,
                         cps002: false,
-                        workplaceId: undefined
+                        workplaceId: undefined,
+                        baseDate: undefined
                     }).done((cbx: Array<IComboboxItem>) => {
                         CS00017_IS00085.data.lstComboBoxValue(cbx);
                         CS00017_IS00085.data.value.valueHasMutated();
@@ -1515,22 +1613,22 @@ module nts.layout {
                             return;
                         }
 
-                        initCDL008Data(ko.toJS(CS00017_IS00084.data));
+                        initCDL008Data(ko.toJS(CS00017_IS00084.data)).done(() => {
+                            if (!!getShared('inputCDL008')) {
+                                modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                                    // Check is cancel.
+                                    if (getShared('CDL008Cancel')) {
+                                        return;
+                                    }
 
-                        if (!!getShared('inputCDL008')) {
-                            modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
-                                // Check is cancel.
-                                if (getShared('CDL008Cancel')) {
-                                    return;
-                                }
-
-                                //view all code of selected item
-                                let output = getShared('outputCDL008');
-                                if (!_.isNil(output)) {
-                                    CS00017_IS00084.data.value(output);
-                                }
-                            });
-                        }
+                                    //view all code of selected item
+                                    let output = getShared('outputCDL008');
+                                    if (!_.isNil(output)) {
+                                        CS00017_IS00084.data.value(output);
+                                    }
+                                });
+                            }
+                        });
                     });
             }
 
@@ -1547,61 +1645,104 @@ module nts.layout {
                             return;
                         }
 
-                        initCDL008Data(ko.toJS(CS00017_IS00085.data));
+                        initCDL008Data(ko.toJS(CS00017_IS00085.data)).done(() => {
+                            if (!!getShared('inputCDL008')) {
+                                modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                                    // Check is cancel.
+                                    if (getShared('CDL008Cancel')) {
+                                        return;
+                                    }
 
-                        if (!!getShared('inputCDL008')) {
-                            modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
-                                // Check is cancel.
-                                if (getShared('CDL008Cancel')) {
-                                    return;
-                                }
+                                    //view all code of selected item
+                                    let output = getShared('outputCDL008');
+                                    if (!_.isNil(output)) {
+                                        CS00017_IS00085.data.value(output);
+                                    }
+                                });
+                            }
+                        });
+                    });
+            }
+            let getComboData = () => {
+                
+                let startDate = CS00020_IS00119 ? CS00020_IS00119.data.value() : undefined,
+                    wokPlace = CS00017_IS00084 ? CS00017_IS00084.data.value() : undefined,
+                    empId = ko.toJS((((__viewContext || {}).viewModel || {}).employee || {}).employeeId),
+                    realBaseDate = undefined;
 
-                                //view all code of selected item
-                                let output = getShared('outputCDL008');
-                                if (!_.isNil(output)) {
-                                    CS00017_IS00085.data.value(output);
-                                }
-                            });
+                    if (!(startDate && !(startDate instanceof Date) && moment.utc(startDate, _.indexOf(startDate, "Z") > -1 ? "YYYY-MM-DD" : "YYYY/MM/DD").isValid() && !!(ko.toJS(startDate) || '').match(/((19|[2-9][0-9])\d{2})(-|\/)(\d{2}|\d{1})(-|\/)(\d{2}|\d{1})/))) {
+                        return;
+                    }
+                
+                    if (!startDate){
+                        startDate = CS00070_IS00781 ? CS00070_IS00781.data.value() : undefined;
+                    }
+                
+                    if (!startDate && location.href.indexOf('/view/cps/002') > -1) {
+                        startDate = __viewContext.viewModel.currentEmployee().hireDate();
+                    }
+                    if (location.href.indexOf('/view/cps/001') > -1 && __viewContext.viewModel.layout.mode() == 'layout') {
+                        realBaseDate = __viewContext.viewModel.layout.standardDate()
+                    }
+                 
+                    _(workingCondInfo).each(ctgInfo => {
+                        
+                        let workTypeCd: IFindData = finder.find(ctgInfo.category, ctgInfo.workTypeCode),
+                            workTypeTime: IFindData = finder.find(ctgInfo.category, ctgInfo.workTypeTime);
+                        
+                        if (workTypeCd) {
+                            let comboData = ko.toJS(workTypeCd.data);
+
+                            fetch.get_cb_data({
+                                comboBoxType: comboData.item.referenceType,
+                                categoryId: comboData.categoryId,
+                                required: comboData.required,
+                                standardDate: startDate,
+                                typeCode: undefined,
+                                masterType: comboData.item.masterType,
+                                employeeId: empId,
+                                cps002: true,
+                                workplaceId: wokPlace,
+                                baseDate: moment.utc(realBaseDate).toDate()
+                            }).done(data => {
+                                workTypeCd.data.lstComboBoxValue(data);
+                            });;
+                        }
+                        
+                        if (workTypeTime) {
+                            let comboData = ko.toJS(workTypeTime.data);
+                            fetch.get_cb_data({
+                                comboBoxType: comboData.item.referenceType,
+                                categoryId: comboData.categoryId,
+                                required: comboData.required,
+                                standardDate: startDate,
+                                typeCode: undefined,
+                                masterType: comboData.item.masterType,
+                                employeeId: empId,
+                                cps002: true,
+                                workplaceId: wokPlace,
+                                baseDate: moment.utc(realBaseDate).toDate()
+                            }).done(data => {
+                                workTypeTime.data.lstComboBoxValue(data);
+                            });;
                         }
                     });
             }
-
             if (CS00017_IS00084 && (CS00020_IS00130 || CS00020_IS00131)) {
                 CS00017_IS00084.data.value.subscribe(wc => {
-                    if (CS00020_IS00130) {
-                        let comboData = ko.toJS(CS00020_IS00130.data);
+                    getComboData();
 
-                        fetch.get_cb_data({
-                            comboBoxType: comboData.item.referenceType,
-                            categoryId: comboData.categoryId,
-                            required: comboData.required,
-                            standardDate: undefined,
-                            typeCode: undefined,
-                            masterType: comboData.item.masterType,
-                            employeeId: undefined,
-                            cps002: true,
-                            workplaceId: CS00017_IS00084.data.value()
-                        }).done(data => {
-                            CS00020_IS00130.data.lstComboBoxValue(data);
-                        });;
-                    }
-                    if (CS00020_IS00131) {
-                        let comboData = ko.toJS(CS00020_IS00131.data);
-
-                        fetch.get_cb_data({
-                            comboBoxType: comboData.item.referenceType,
-                            categoryId: comboData.categoryId,
-                            required: comboData.required,
-                            standardDate: undefined,
-                            typeCode: undefined,
-                            masterType: comboData.item.masterType,
-                            employeeId: undefined,
-                            cps002: true,
-                            workplaceId: CS00017_IS00084.data.value()
-                        }).done(data => {
-                            CS00020_IS00131.data.lstComboBoxValue(data);
-                        });;
-                    }
+                });
+            }
+            
+            if (CS00020_IS00119) {
+                CS00020_IS00119.data.value.subscribe(x => {
+                    getComboData();
+                });
+            }
+            if (CS00070_IS00781) {
+                CS00070_IS00781.data.value.subscribe(x => {
+                    getComboData();
                 });
             }
         }
@@ -1650,14 +1791,37 @@ module nts.layout {
                         || moment.utc(x).diff(moment.utc('9999/12/31'), 'days', true) > 0) {
                         return;
                     }
-
+                    
                     if (location.href.indexOf('/view/cps/002') > -1) {
                         hireDate = __viewContext.viewModel.currentEmployee().hireDate();
                         startWork = CS00020_IS00119 ? ko.toJS(CS00020_IS00119.data.value) : hireDate;
                         endWork = '9999/12/31';
                         conTime = CS00020_IS00253 ? ko.toJS(CS00020_IS00253.data.value) : 0;
                     }
+                    
+                     let conTimePrimi = CS00020_IS00253 ? __viewContext.primitiveValueConstraints[CS00020_IS00253.data.constraint] : null;
+                    // Value is not match with primitive
+                    if ((conTime && isNaN(conTime) || (conTime && (conTime < conTimePrimi.min || conTime > conTimePrimi.max)))) {
+                        return;
+                    }
 
+                    // If input date out of range
+                    if (hireDate && (!moment.utc(hireDate)._isValid || moment.utc(hireDate).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                        || moment.utc(hireDate).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
+                        return;
+                    }
+                    
+                    // If input date out of range
+                    if (startWork && (!moment.utc(startWork)._isValid || moment.utc(startWork).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                        || moment.utc(startWork).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
+                        return;
+                    }
+                    
+                    if (endWork && (!moment.utc(endWork)._isValid || moment.utc(endWork).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                        || moment.utc(endWork).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
+                        return;
+                    }
+                    
                     fetch.get_ro_data({
                         employeeId: employeeId,
                         standardDate: moment.utc(standardDate).format('YYYY/MM/DD'),
@@ -1994,6 +2158,16 @@ module nts.layout {
                                 || (grantDays && isNaN(grantDays) || (grantDays && (grantDays < consGrantDays.min || grantDays > consGrantDays.max)))) {
                                 return;
                             }
+                            
+                            if (hireDate && (!moment.utc(hireDate)._isValid || moment.utc(hireDate).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                                    || moment.utc(hireDate).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
+                                    return;
+                            }
+                            
+                            if (yearRefDates && (!moment.utc(yearRefDates)._isValid || moment.utc(yearRefDates).diff(moment.utc('1900/01/01'), 'days', true) < 0
+                                    || moment.utc(yearRefDates).diff(moment.utc('9999/12/31'), 'days', true)) > 0) {
+                                    return;
+                            }
 
                             if (location.href.indexOf('/view/cps/002') > -1) {
                                 hireDate = __viewContext.viewModel.currentEmployee().hireDate();
@@ -2272,7 +2446,7 @@ module nts.layout {
 
 
             if (CS00070IS00781) {
-                fetch.get_cats().done(cats => {
+                fetch.get_cats(false).done(cats => {
                     let cat = _(cats.categoryList).find(c => _.isEqual(c.categoryCode, 'CS00020')) || {};
                     // update categoryName
                     CS00070IS00781.data.resourceParams([cat.categoryName]);
@@ -2411,6 +2585,7 @@ module nts.layout {
         employeeId: string;
         cps002?: boolean;
         workplaceId: string;
+        baseDate: Date;
     }
 
     interface INextTimeParam {
@@ -2500,7 +2675,12 @@ module nts.layout {
         method: EDIT_METHOD;
         digitsNumber: number;
     }
-
+    
+    interface IWorkingConditionInfo {
+        category: string;
+        workTypeCode: string;
+        workTypeTime: string;
+    }
     enum EDIT_METHOD {
         PreviousZero = 1,
         AfterZero = 2,

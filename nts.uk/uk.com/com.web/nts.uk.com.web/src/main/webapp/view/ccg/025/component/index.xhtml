@@ -11,8 +11,8 @@
 		<table id="multi-list"
 			data-bind="attr: {tabindex: setting.tabindex}, ntsGridList: {
 					height: 320,
-					options: listRole ,
-					optionsValue: 'roleId',
+					dataSource: listRole ,
+					primaryKey: 'roleId',
 					columns: columns,
 					multiple: setting.multiple,
 					value: currentCode,

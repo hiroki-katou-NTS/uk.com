@@ -52,7 +52,7 @@ public class LoginRecordRegistService {
 	 *
 	 * @param param the param
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void callLoginRecord(ParamLoginRecord param) {
 		// set input
 		String programId = AppContexts.programId().substring(0, 6);
@@ -95,7 +95,7 @@ public class LoginRecordRegistService {
 	 * @param companyId
 	 *            the company id
 	 */
-	protected void loginRecord(LoginRecordInput infor, String companyId) {
+	public void loginRecord(LoginRecordInput infor, String companyId) {
 		// 基盤(KIBAN)よりログイン者の基本情報を取得する (Acquire the basic information of
 		// the login from the from KIBAN)
 		LoginInformation loginInformation = new LoginInformation(

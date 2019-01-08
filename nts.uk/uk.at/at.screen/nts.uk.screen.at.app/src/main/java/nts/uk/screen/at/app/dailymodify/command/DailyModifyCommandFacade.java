@@ -21,7 +21,6 @@ import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.ParamIdentityConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.RegisterIdentityConfirmDay;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.algorithm.SelfConfirmDay;
@@ -99,7 +98,8 @@ public class DailyModifyCommandFacade {
 	
 	private List<DailyRecordWorkCommand> createCommands(List<DailyModifyQuery> query, String sID) {
 		Map<Integer, OptionalItemAtr> optionalMaster = optionalMasterRepo
-				.findOptionalTypeBy(AppContexts.user().companyId(), PerformanceAtr.DAILY_PERFORMANCE);
+				.findAll(AppContexts.user().companyId())
+				.stream().collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c.getOptionalItemAtr()));
 		List<DailyRecordDto> oldValues = finder.find(query.stream()
 									.collect(Collectors.groupingBy(c -> c.getEmployeeId(), 
 												Collectors.collectingAndThen(Collectors.toList(), 

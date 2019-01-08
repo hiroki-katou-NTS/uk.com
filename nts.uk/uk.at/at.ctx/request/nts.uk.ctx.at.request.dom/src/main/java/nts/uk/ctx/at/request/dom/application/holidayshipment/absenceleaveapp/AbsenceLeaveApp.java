@@ -53,4 +53,13 @@ public class AbsenceLeaveApp extends AggregateRoot {
 	 */
 	private List<SubDigestion> subDigestions;
 
+	public Integer getStime1(){
+		if(this.WorkTime1 == null){
+			return null;
+		}
+		if(this.WorkTime1.getStartTime() == null){
+			return null;
+		}
+		return this.WorkTime1.getStartTime().v();
+	}
 }

@@ -1,12 +1,12 @@
 package nts.uk.ctx.at.record.dom.daily.midnight;
 
 import lombok.Getter;
-import lombok.Value;
+//import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
+//import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 
 /**
  * 所定内深夜時間
@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
  */
 @Getter
 public class WithinStatutoryMidNightTime {
+	//時間
 	private TimeDivergenceWithCalculation time; 
 	
 	public WithinStatutoryMidNightTime(TimeDivergenceWithCalculation time) {

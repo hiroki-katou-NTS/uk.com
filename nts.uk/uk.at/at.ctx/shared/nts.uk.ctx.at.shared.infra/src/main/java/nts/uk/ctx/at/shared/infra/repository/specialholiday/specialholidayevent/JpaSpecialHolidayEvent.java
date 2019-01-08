@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.specialholiday.specialholidayevent;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -7,16 +8,17 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeLimit;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeRange;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.GenderCls;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.AgeStandardType;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.ClassificationList;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.EmploymentList;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.FixedDayGrant;
-import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.GenderAtr;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.MaxNumberDayType;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEvent;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolidayEventRepository;
@@ -85,8 +87,14 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 		if (CollectionUtil.isEmpty(sHsNos)) {
 			return Collections.emptyList();
 		}
-		return this.queryProxy().query(FIND_BY_NO_LIST_QUERY, KshstSpecialHolidayEvent.class)
-				.setParameter("companyId", companyId).setParameter("SHENos", sHsNos).getList(c -> toDomain(c));
+		List<SpecialHolidayEvent> resultList = new ArrayList<>();
+		CollectionUtil.split(sHsNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_NO_LIST_QUERY, KshstSpecialHolidayEvent.class)
+								.setParameter("companyId", companyId)
+								.setParameter("SHENos", subList)
+								.getList(c -> toDomain(c)));
+		});
+		return resultList;
 	}
 
 	@Override
@@ -105,7 +113,7 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 				EnumAdaptor.valueOf(entity.genderRestrict, UseAtr.class),
 				EnumAdaptor.valueOf(entity.restrictEmployment, UseAtr.class),
 				EnumAdaptor.valueOf(entity.restrictClassification, UseAtr.class),
-				EnumAdaptor.valueOf(entity.gender, GenderAtr.class),
+				EnumAdaptor.valueOf(entity.gender, GenderCls.class),
 				createAgeRange(entity.ageRangeLowerLimit, entity.ageRangeHigherLimit),
 				EnumAdaptor.valueOf(entity.ageStandard, AgeStandardType.class), entity.ageStandardBaseDate,
 				new Memo(entity.memo), getClsList(entity.pk.companyId, entity.pk.specialHolidayEventNo),

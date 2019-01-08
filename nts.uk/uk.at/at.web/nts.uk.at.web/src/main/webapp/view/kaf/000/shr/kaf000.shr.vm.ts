@@ -247,6 +247,23 @@ module nts.uk.at.view.kaf000.shr{
         }
         
         export class CommonProcess {
+            public static checkWorkTypeWorkTime(workTypeCD: string, workTimeCD: string, itemID: string): boolean{
+                let itemTarget = "#"+itemID;
+                let workTypeCDFlg = nts.uk.util.isNullOrUndefined(workTypeCD)||nts.uk.util.isNullOrEmpty(workTypeCD);
+                let workTimeCDFlg = nts.uk.util.isNullOrUndefined(workTimeCD)||nts.uk.util.isNullOrEmpty(workTimeCD);
+                if(workTypeCDFlg){
+                    $(itemTarget).ntsError('set', '勤務種類を選択ください');   
+                    $(itemTarget).css("border","1px solid red");
+                    return false;         
+                }
+                if(workTimeCDFlg){
+                    $(itemTarget).ntsError('set', '就業時間を選択ください');   
+                    $(itemTarget).css("border","1px solid red");
+                    return false;    
+                }        
+                return true;
+            }
+            
             public static getComboBoxReason(selectID: string, listID: Array<string>, displaySet: boolean): string{
                 if(!displaySet){
                     return "";    
@@ -313,19 +330,19 @@ module nts.uk.at.view.kaf000.shr{
                 if(!nts.uk.util.isNullOrEmpty(autoSuccessMail)&&!nts.uk.util.isNullOrEmpty(autoFailMail)){
                     nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [autoSuccessMail] }).then(() => {
                         nts.uk.ui.dialog.info({ messageId: 'Msg_768', messageParams: [autoFailMail] }).then(() => {
-                            nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                            this.callCMM045();
                         });
                     });        
                 } else if(!nts.uk.util.isNullOrEmpty(autoSuccessMail)&&nts.uk.util.isNullOrEmpty(autoFailMail)){
                     nts.uk.ui.dialog.info({ messageId: 'Msg_392', messageParams: [autoSuccessMail] }).then(() => {
-                        nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                        this.callCMM045();
                     });    
                 } else if(nts.uk.util.isNullOrEmpty(autoSuccessMail)&&!nts.uk.util.isNullOrEmpty(autoFailMail)){
                     nts.uk.ui.dialog.info({ messageId: 'Msg_768', messageParams: [autoFailMail] }).then(() => {
-                        nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                        this.callCMM045();
                     });    
                 } else {
-                    nts.uk.request.jump("/view/cmm/045/a/index.xhtml");        
+                    this.callCMM045();       
                 }
             }
             
@@ -394,6 +411,16 @@ module nts.uk.at.view.kaf000.shr{
                     location.reload();
                 });    
             }
+            public static callCMM045(){
+                nts.uk.characteristics.restore("AppListExtractCondition").done((obj) => {
+                    let paramUrl = 0;
+                    if (obj !== undefined && obj !== null){
+                        paramUrl = obj.appListAtr;
+                    }
+                    nts.uk.localStorage.setItem('UKProgramParam', 'a=' + paramUrl);
+                    nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                });
+            }
         }
         
         interface ProcessResult {
@@ -403,6 +430,5 @@ module nts.uk.at.view.kaf000.shr{
             autoFailMail: Array<string>,
             appID: string    
         }
-        
     }
 }

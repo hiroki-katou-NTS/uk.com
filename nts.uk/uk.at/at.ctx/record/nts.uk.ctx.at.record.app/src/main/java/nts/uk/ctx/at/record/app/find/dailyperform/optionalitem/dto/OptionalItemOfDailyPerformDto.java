@@ -6,18 +6,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.Data;
-import nts.arc.layer.ws.json.serializer.GeneralDateDeserializer;
-import nts.arc.layer.ws.json.serializer.GeneralDateSerializer;
+import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValue;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -25,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 @AttendanceItemRoot(rootName = ItemConst.DAILY_OPTIONAL_ITEM_NAME)
 public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 
@@ -124,7 +122,7 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, AnyItemValue c) {
 		OptionalItem optItem = master == null ? null : master.get(c.getItemNo().v());
 		OptionalItemAtr attr = null;
-		if(optItem != null && optItem.getPerformanceAtr() == PerformanceAtr.DAILY_PERFORMANCE){
+		if(optItem != null){
 			attr = optItem.getOptionalItemAtr();
 		}
 		return attr;
@@ -137,7 +135,7 @@ public class OptionalItemOfDailyPerformDto extends AttendanceItemCommon {
 	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, OptionalItemValueDto c) {
 		OptionalItem optItem = master == null ? null : master.get(c.getNo());
 		OptionalItemAtr attr = null;
-		if(optItem != null && optItem.getPerformanceAtr() == PerformanceAtr.DAILY_PERFORMANCE){
+		if(optItem != null){
 			attr = optItem.getOptionalItemAtr();
 		}
 		return attr;

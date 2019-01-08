@@ -12,13 +12,13 @@ import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 @Data
 @AllArgsConstructor
 public class MonthlyPerformaceLockStatus {
-	static String LOCK_MONTHLY_PAST = "pastPerformaceLock";
-	static String LOCK_EMPLOYEE_CONFIRM = "EmploymentConfirmWorkplace";
-	static String LOCK_MONTHLY_APPROVAL = "monthlyResultApprova";
-	static String LOCK_MONTHLY_RESULT = "monthlyResultLock";
-	static String LOCK_MONTHLY_RESULT_CONFIRM = "monthlyResultConfirm";
-	static String LOCK_MONTHLY_LACK = "monthlyResultLack";
-	static String LOCK_MONTHLY_ERROR = "monthlyResultError";
+	public static String LOCK_MONTHLY_PAST = "pastPerformaceLock";
+	public static String LOCK_EMPLOYEE_CONFIRM = "EmploymentConfirmWorkplace";
+	public static String LOCK_MONTHLY_APPROVAL = "monthlyResultApprova";
+	public static String LOCK_MONTHLY_RESULT = "monthlyResultLock";
+	public static String LOCK_MONTHLY_RESULT_CONFIRM = "monthlyResultConfirm";
+	public static String LOCK_MONTHLY_LACK = "monthlyResultLack";
+	public static String LOCK_MONTHLY_ERROR = "monthlyResultError";
 	/**
 	 * 社員: 社員ID
 	 */

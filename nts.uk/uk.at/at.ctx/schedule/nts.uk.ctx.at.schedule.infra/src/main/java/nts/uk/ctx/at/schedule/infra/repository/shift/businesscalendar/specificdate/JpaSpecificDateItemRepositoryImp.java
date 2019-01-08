@@ -6,7 +6,9 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.item.SpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.repository.SpecificDateItemRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.specificdate.KsmstSpecificDateItem;
@@ -96,10 +98,14 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
 	 */
 	@Override
 	public List<SpecificDateItem> getSpecifiDateByListCode(String companyId, List<Integer> lstSpecificDateItem) {
-		return this.queryProxy().query(GET_BY_LIST_CODE, KsmstSpecificDateItem.class)
-				.setParameter("companyId", companyId)
-				.setParameter("lstSpecificDateItem", lstSpecificDateItem)
-				.getList(c->toBonusPaySettingDomain(c));
+		List<SpecificDateItem> resultList = new ArrayList<>();
+		CollectionUtil.split(lstSpecificDateItem, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(GET_BY_LIST_CODE, KsmstSpecificDateItem.class)
+								  .setParameter("companyId", companyId)
+								  .setParameter("lstSpecificDateItem", subList)
+								  .getList(c->toBonusPaySettingDomain(c)));
+		});
+		return resultList;
 	}
 
 }

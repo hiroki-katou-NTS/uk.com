@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.app.find.specialholiday;
 
+import java.util.Collections;
 import java.util.List;
 
 import lombok.Value;
@@ -22,5 +23,13 @@ public class TargetItemDto {
 				targetItem.getAbsenceFrameNo(),
 				targetItem.getFrameNo()
 		);
+	}
+	
+	public List<Integer> getFrameNo() {
+		return frameNo != null ? frameNo : Collections.emptyList();
+	}
+	
+	public List<Integer> getAbsenceFrameNo() {
+		return absenceFrameNo != null ? absenceFrameNo : Collections.emptyList();
 	}
 }

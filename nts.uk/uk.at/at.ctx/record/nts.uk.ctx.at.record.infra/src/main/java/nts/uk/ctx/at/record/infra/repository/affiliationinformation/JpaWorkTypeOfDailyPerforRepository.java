@@ -27,15 +27,15 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 
 	private static final String FIND_BY_KEY;
 
-	private static final String REMOVE_BY_KEY;
+//	private static final String REMOVE_BY_KEY;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDaiWorkType a ");
-		builderString.append("WHERE a.krcdtDaiWorkTypePK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtDaiWorkTypePK.ymd = :ymd ");
-		REMOVE_BY_KEY = builderString.toString();
+//		builderString.append("DELETE ");
+//		builderString.append("FROM KrcdtDaiWorkType a ");
+//		builderString.append("WHERE a.krcdtDaiWorkTypePK.employeeId = :employeeId ");
+//		builderString.append("AND a.krcdtDaiWorkTypePK.ymd = :ymd ");
+//		REMOVE_BY_KEY = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
@@ -71,7 +71,7 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 					+ workTypeOfDailyPerformance.getEmployeeId() + "' , '" + workTypeOfDailyPerformance.getDate() + "' , '"
 					+ workTypeOfDailyPerformance.getWorkTypeCode().v() + "' )";
 			Statement statementI = con.createStatement();
-			statementI.executeUpdate(insertTableSQL);
+			statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -122,21 +122,21 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 
 	@Override
 	public List<WorkTypeOfDailyPerformance> finds(List<String> employeeId, DatePeriod baseDate) {
-		List<WorkTypeOfDailyPerformance> result = new ArrayList<>();
+		List<KrcdtDaiWorkType> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder("SELECT af FROM KrcdtDaiWorkType af ");
 		query.append("WHERE af.krcdtDaiWorkTypePK.employeeId IN :employeeId ");
 		query.append("AND af.krcdtDaiWorkTypePK.ymd <= :end AND af.krcdtDaiWorkTypePK.ymd >= :start");
 		TypedQueryWrapper<KrcdtDaiWorkType> tQuery = this.queryProxy().query(query.toString(), KrcdtDaiWorkType.class);
 		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
 			result.addAll(tQuery.setParameter("employeeId", empIds).setParameter("start", baseDate.start())
-					.setParameter("end", baseDate.end()).getList(af -> af.toDomain()));
+					.setParameter("end", baseDate.end()).getList());
 		});
-		return result;
+		return result.stream().map(af -> af.toDomain()).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<WorkTypeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
-		List<WorkTypeOfDailyPerformance> result = new ArrayList<>();
+		List<KrcdtDaiWorkType> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder("SELECT af FROM KrcdtDaiWorkType af ");
 		query.append("WHERE af.krcdtDaiWorkTypePK.employeeId IN :employeeId ");
 		query.append("AND af.krcdtDaiWorkTypePK.ymd IN :date");
@@ -146,9 +146,9 @@ public class JpaWorkTypeOfDailyPerforRepository extends JpaRepository implements
 					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
 					.getList().stream()
 					.filter(c -> p.get(c.krcdtDaiWorkTypePK.employeeId).contains(c.krcdtDaiWorkTypePK.ymd))
-					.map(af -> af.toDomain()).collect(Collectors.toList()));
+					.collect(Collectors.toList()));
 		});
-		return result;
+		return result.stream().map(af -> af.toDomain()).collect(Collectors.toList());
 	}
 
 }

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.workrule.closure;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -26,7 +27,7 @@ public class ClosurePeriod {
 	 */
 	public ClosurePeriod(){
 		this.closureId = ClosureId.RegularEmployee;
-		this.closureDate = new ClosureDate(0, true);
+		this.closureDate = new ClosureDate(1, true);
 		this.yearMonth = YearMonth.of(GeneralDate.today().year(), GeneralDate.today().month());
 		this.period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 	}

@@ -14,6 +14,7 @@ module nts.uk.com.view.cmm018.m {
             }
             
             printExcel(){
+                if (nts.uk.ui.errors.hasError()) { return; }
                 var self = this;
                 //会社別、職場別、個人別のチェック状態をチェックする(kiểm tra trạng thái check của 会社別、職場別、個人別)
                 //１件もチェック入れていない場合(không check cái nào)

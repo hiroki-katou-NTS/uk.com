@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 
@@ -116,17 +117,28 @@ public class BreakTimeOfDaily {
 									  withinDedTime,
 									  excessDedTime);
 	}
+	
 	/**
 	 * 休憩未使用時間の計算
-	 * @param timeLeavingOfDailyPerformance 
+	 * @param fixRestTimezoneSet 固定勤務の休憩時間帯
+	 * @param fixWoSetting 就業時間の時間帯設定（固定勤務）
+	 * @param timeLeavingOfDailyPerformance 日別実績の出退勤 
 	 * @return 休憩未使用時間
 	 */
-	public AttendanceTime calcUnUseBrekeTime(FixRestTimezoneSet fixRestTimezoneSet, TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
+	public AttendanceTime calcUnUseBrekeTime(
+			FixRestTimezoneSet fixRestTimezoneSet,
+			List<EmTimeZoneSet> fixWoSetting,
+			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
+		
 		//実績の休憩時間を取得
 		val recordTotalTime = this.getToRecordTotalTime().getWithinStatutoryTotalTime();
-		
+		//出退勤リスト取得
 		val timeSpans = timeLeavingOfDailyPerformance.getTimeLeavingWorks().stream().map(tc -> tc.getTimespan()).collect(Collectors.toList());
-		val totalBreakTime = fixRestTimezoneSet.calcTotalTimeDuplicatedAttLeave(timeSpans);
+		//就業時間帯の時間帯取得
+		val workSpans = fixWoSetting.stream().map(tc -> tc.getTimezone().getTimeSpan()).collect(Collectors.toList());
+		//出退勤、就業時間帯の時間帯、休憩時間帯から就業時間帯の休憩時間を算出する
+		val totalBreakTime = fixRestTimezoneSet.calcTotalTimeDuplicatedAttLeave(timeSpans, workSpans);
+		
 		return totalBreakTime.minusMinutes(recordTotalTime.getCalcTime().valueAsMinutes());
 	}
 	

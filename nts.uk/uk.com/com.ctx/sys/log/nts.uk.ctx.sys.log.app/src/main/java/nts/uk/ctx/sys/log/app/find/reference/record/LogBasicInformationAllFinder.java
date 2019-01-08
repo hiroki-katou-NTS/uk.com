@@ -312,7 +312,7 @@ public class LogBasicInformationAllFinder {
 			case UPDATE_PERSION_INFO:
 				
 				List<PersonInfoCorrectionLog> listPersonInfoCorrectionLog = this.iPersonInfoCorrectionLogRepository
-				.findByTargetAndDate(listOperationId, logParams.getListTagetEmployeeId(), datePeriodTaget);
+				.findByTargetAndDate(listOperationId, logParams.getListTagetEmployeeId());
 				if (!CollectionUtil.isEmpty(listPersonInfoCorrectionLog)) {
 					// Get list employee code
 					List<String> employeePerSonIds = new ArrayList<>();

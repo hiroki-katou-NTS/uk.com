@@ -105,9 +105,9 @@ public class AgreementDomainServiceImpl implements AgreementDomainService {
 		if (agreementUnitSet.getWorkPlaceUseAtr() == UseClassificationAtr.USE){
 			
 			// 職場36協定時間を取得する
-			val affWorkplaceOpt = this.affWorkplaceAdapter.findBySid(employeeId, criteriaDate);
-			if (affWorkplaceOpt.isPresent()){
-				val workplaceId = affWorkplaceOpt.get().getWorkplaceId();
+			val workplaceIds = this.affWorkplaceAdapter.findAffiliatedWorkPlaceIdsToRoot(
+					companyId, employeeId, criteriaDate);
+			for (String workplaceId : workplaceIds){
 				val basicSettingIdOpt = this.agreementTimeWorkPlaceRepository.find(workplaceId, laborSystemAtr);
 				if (basicSettingIdOpt.isPresent()){
 					val basicAgreementSetOpt = this.basicAgreementSetRepository.find(basicSettingIdOpt.get());

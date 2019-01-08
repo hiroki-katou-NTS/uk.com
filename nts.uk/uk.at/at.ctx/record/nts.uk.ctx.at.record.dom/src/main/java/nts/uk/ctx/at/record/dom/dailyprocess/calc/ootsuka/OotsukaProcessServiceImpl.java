@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import lombok.val;
 import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
@@ -35,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 
 	@Override
@@ -172,9 +175,10 @@ public class OotsukaProcessServiceImpl implements OotsukaProcessService{
 	private boolean decisionAbleCalc(WorkType workType,Optional<FixedWorkCalcSetting> calcMethodOfFixWork, HolidayCalculation holidayCalculation) {
 		//休暇時の計算を取得
 		if(workType != null && holidayCalculation.getIsCalculate().isUse()) {//calcMethodOfFixWork.isPresent()) {
-			return workType.getDailyWork().isOneOrHalfAnnualHoliday()
-					|| workType.getDailyWork().isOneOrHalfDaySpecHoliday()
-					|| workType.getDailyWork().isOneOrHalfDayYearlyReserved();
+//			return workType.getDailyWork().isOneOrHalfAnnualHoliday()
+//					|| workType.getDailyWork().isOneOrHalfDaySpecHoliday()
+//					|| workType.getDailyWork().isOneOrHalfDayYearlyReserved();
+			return workType.getDailyWork().decisionNeedPredTime().isHoliday();
 		}
 		//しない
 		else {

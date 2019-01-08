@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
+//import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -131,20 +131,31 @@ public class TimeLeavingWork extends DomainObject{
 	public boolean checkLeakageStamp() {
 		//出勤時刻が無い
 		if( this.getAttendanceStamp() == null
-			&& !this.getAttendanceStamp().isPresent()
-			&& this.getAttendanceStamp().get().getStamp() == null
-			&& !this.getAttendanceStamp().get().getStamp().isPresent()
-			&& this.getAttendanceStamp().get().getStamp().get().getTimeWithDay() == null) {
+			|| !this.getAttendanceStamp().isPresent()
+			|| this.getAttendanceStamp().get().getStamp() == null
+			|| !this.getAttendanceStamp().get().getStamp().isPresent()
+			|| this.getAttendanceStamp().get().getStamp().get().getTimeWithDay() == null) {
 			return false;
 		}
 		if(this.getLeaveStamp() == null
-				&& !this.getLeaveStamp().isPresent()
-				&& this.getLeaveStamp().get().getStamp() == null
-				&& !this.getLeaveStamp().get().getStamp().isPresent()
-				&& this.getLeaveStamp().get().getStamp().get().getTimeWithDay() == null) {
+				|| !this.getLeaveStamp().isPresent()
+				|| this.getLeaveStamp().get().getStamp() == null
+				|| !this.getLeaveStamp().get().getStamp().isPresent()
+				|| this.getLeaveStamp().get().getStamp().get().getTimeWithDay() == null) {
 			return false;
 		}
 		return true;
+	}
+	
+	/**
+	 * 打刻順序不正であるかチェックする
+	 * @return　順序不正である
+	 */
+	public boolean isReverseOrder() {
+		if(this.getTimespan().getStart().greaterThan(this.getTimespan().getEnd())) {
+			return true;
+		}
+		return false;
 	}
 	
 }

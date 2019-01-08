@@ -24,5 +24,8 @@ public class ReflectParameter {
 	 * 就業時間帯コード
 	 */
 	private String workTypeCode;
-	
+	/**
+	 * 勤務変更の申請場合　True
+	 */
+	private boolean workChange = false;
 }

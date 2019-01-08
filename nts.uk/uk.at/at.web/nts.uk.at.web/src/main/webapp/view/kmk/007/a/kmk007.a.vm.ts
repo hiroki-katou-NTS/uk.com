@@ -127,7 +127,11 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 new ItemModel(1, nts.uk.resource.getText('Enum_CloseAtr_POSTPARTUM'), 0),
                 new ItemModel(2, nts.uk.resource.getText('Enum_CloseAtr_CHILD_CARE'), 0),
                 new ItemModel(3, nts.uk.resource.getText('Enum_CloseAtr_CARE'), 0),
-                new ItemModel(4, nts.uk.resource.getText('Enum_CloseAtr_INJURY_OR_ILLNESS'), 0)
+                new ItemModel(4, nts.uk.resource.getText('Enum_CloseAtr_INJURY_OR_ILLNESS'), 0),
+                new ItemModel(5, nts.uk.resource.getText('Enum_CloseAtr_OPTIONAL_LEAVE_1'), 0),
+                new ItemModel(6, nts.uk.resource.getText('Enum_CloseAtr_OPTIONAL_LEAVE_2'), 0),
+                new ItemModel(7, nts.uk.resource.getText('Enum_CloseAtr_OPTIONAL_LEAVE_3'), 0),
+                new ItemModel(8, nts.uk.resource.getText('Enum_CloseAtr_OPTIONAL_LEAVE_4'), 0)
             ]);
 
             //出勤率の計算方法

@@ -4,19 +4,19 @@ import lombok.Data;
 
 @Data
 public class DailyAttendanceItem {
-	
+
 	private int attendanceItemId;
 
 	private String attendanceItemName;
 
 	private int attendanceItemDisplayNumber;
-	
-	private int typeOfAttendanceItem;
-	
-	private int frameCategory;
+
+	private Integer typeOfAttendanceItem;
+
+	private Integer frameCategory;
 
 	public DailyAttendanceItem() {
 		super();
-	}	
+	}
 
 }

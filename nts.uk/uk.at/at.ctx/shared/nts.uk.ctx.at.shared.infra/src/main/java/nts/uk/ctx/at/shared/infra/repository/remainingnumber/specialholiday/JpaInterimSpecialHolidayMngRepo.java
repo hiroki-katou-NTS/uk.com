@@ -49,7 +49,7 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 			entity.useTimes = domain.getUseTimes().isPresent() ? domain.getUseTimes().get().v() : 0;
 			this.commandProxy().update(entity);
 		}
-		
+		this.getEntityManager().flush();
 	}
 	@Override
 	public void deleteSpecialHoliday(String specialId) {

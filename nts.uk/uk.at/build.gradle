@@ -159,6 +159,10 @@ subprojects {
 		// https://mvnrepository.com/artifact/org.quartz-scheduler/quartz
 		compile group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.0'
 		
+		// HttpClient
+		compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.5'
+		compile group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.9'
+		
         compile group: 'nts.gul', name: 'nts.gul', version: version
         compile group: 'nts.arc', name: 'nts.arc', version: version
 		
@@ -380,7 +384,8 @@ project (':at.ctx:function:nts.uk.ctx.at.function.ac') {
 		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
 		compile(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.pub', version: version)
 		compile(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pub', version: version)
-		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.pub', version: version)
+		compile(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.pub', version: version)
+		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: version)
 	}
 }
 
@@ -636,6 +641,7 @@ project (':at.web:nts.uk.at.web') {
 		
 		// for SMTP authentications
 		runtime group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.4_mail', version: '1.8.4'
+		runtime group: 'jcifs', name: 'jcifs', version: '1.3.17'
 		
 		runtime project (':at.ctx:at.auth:nts.uk.ctx.at.auth.ac')
 		runtime project (':at.ctx:at.auth:nts.uk.ctx.at.auth.app')

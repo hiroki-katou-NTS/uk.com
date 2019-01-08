@@ -85,8 +85,13 @@ module nts.uk.at.view.ktg028.a.viewmodel {
                     self.texteditorA3_2.value(currentItem.topPageCode);
                     self.texteditorA4_2.value(currentItem.topPageName);
                     self.texteditorA5_4.value(currentItem.height());
-                    self.currentCodeList_A7([]);
-                    let listType = _.map(currentItem.listType(), function(x){ return x.toString();});
+                    let listType = []
+                    for(let x of _.orderBy(currentItem.listType())){
+                        //remove 「子の看護休残数」 và 「看護休残数」,計画年休残数
+                        if(x != 22 && x != 23 && x != 18){
+                            listType.push(x.toString());
+                        }    
+                    }
                     self.currentCodeList_A7(listType);
                     $("#name").focus();
                 } else {
@@ -104,10 +109,15 @@ module nts.uk.at.view.ktg028.a.viewmodel {
         public startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            var listWidgets = __viewContext.enums.WidgetDisplayItemType;
+            var listWidgets = _.remove(__viewContext.enums.WidgetDisplayItemType, function(n){
+                //remove 「子の看護休残数」 và 「看護休残数」, 計画年休残数
+                return (n.value != 22 && n.value != 23 && n.value != 18); 
+                });
+            var widgets = []; 
             listWidgets.forEach(function (value) {
-              self.items_A7.push(new ItemEnum(value.value.toString(),value.name));
+                widgets.push(new ItemEnum(value.value.toString(),value.name));
             });
+            self.items_A7(widgets);
             self.findAll().done(() => {
                 if (self.items_A2().length > 0) {
                     self.currentCode_A2(self.items_A2()[0].topPageCode);
@@ -124,11 +134,12 @@ module nts.uk.at.view.ktg028.a.viewmodel {
             block.invisible();
             service.findAll().done((data: any) => {
                 self.allData = _.sortBy(data, 'topPageCode');
-                self.items_A2([]);
+                let items = []
                 _.forEach(self.allData, (element, index) => {
-                    self.items_A2.push(new ItemA2(parseInt(index)+1, element.topPagePartID, element.topPageCode, element.topPageName
+                    items.push(new ItemA2(parseInt(index)+1, element.topPagePartID, element.topPageCode, element.topPageName
                         , element.width, element.height, _.map(_.filter(element.displayItemTypes, ['notUseAtr', 1]), 'displayItemType')));
                 });
+                self.items_A2(items);
                 dfd.resolve();
             }).always(function(){
                 block.clear();
@@ -174,6 +185,7 @@ module nts.uk.at.view.ktg028.a.viewmodel {
                         });
                     }
                 }));
+                displayItemTypes.push({'displayItemType': '18', 'notUseAtr': 0},{'displayItemType': '22', 'notUseAtr': 0},{'displayItemType': '23', 'notUseAtr': 0});
                 if (optionalWidget) {
                     let data: any = {};
                     data.topPagePartID = optionalWidget.topPagePartID;

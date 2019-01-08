@@ -3,13 +3,13 @@ package nts.uk.ctx.pereg.infra.repository.person.info.ctg;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCtgByCompanyRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
@@ -17,7 +17,6 @@ import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCtgOrder;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtg;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgOrder;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgPK;
-import nts.uk.ctx.pereg.infra.entity.person.info.item.PpemtPerInfoItemOrder;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -106,7 +105,6 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 		} catch (Exception e) {
 			throw e;
 		}
-
 	}
 
 	/*
@@ -141,9 +139,7 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 	
 	@Override
 	public void updatePerCtgOrder(List<PersonInfoCtgOrder> domainList) {
-		List<PpemtPerInfoCtgOrder> orderEntities = domainList.stream().map(domain -> toEntityCategoryOrder(domain))
-				.collect(Collectors.toList());
-		this.commandProxy().updateAll(orderEntities);
+		this.commandProxy().updateAll(domainList.stream().map(domain -> toEntityCategoryOrder(domain)).collect(Collectors.toList()));
 	}
 
 	@Override
@@ -189,20 +185,27 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 		if (categoryIds == null || categoryIds.isEmpty()) {
 			categoryIds = Arrays.asList(IdentifierUtil.randomUniqueId());
 		}
+		
+		CollectionUtil.split(categoryIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, _catIds -> {
+			this.queryProxy().query(SELECT_CTG_ORDER_BY_IDS, Object[].class).setParameter("cid", companyId)
+					.setParameter("ctgIds", _catIds).getList().stream().forEach(ctg -> {
+						ctgs.putIfAbsent(ctg[0].toString(), ctg[1] == null ? -1 : new Integer(ctg[1].toString()));
+					});
 
-		if (itemDefinitionIds == null || itemDefinitionIds.isEmpty()) {
-			itemDefinitionIds = Arrays.asList(IdentifierUtil.randomUniqueId());
-		}
-
-		this.queryProxy().query(SELECT_CTG_ORDER_BY_IDS, Object[].class).setParameter("cid", companyId)
-				.setParameter("ctgIds", categoryIds).getList().stream().forEach(ctg -> {
-					ctgs.putIfAbsent(ctg[0].toString(), ctg[1] == null ? -1 : new Integer(ctg[1].toString()));
+			if (!CollectionUtil.isEmpty(itemDefinitionIds)) {
+				CollectionUtil.split(itemDefinitionIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, _itemIds -> {
+					this.queryProxy().query(SELECT_ITEMS_ORDER_BY_IDS, Object[].class).setParameter("ctgIds", _catIds)
+							.setParameter("itIds", _itemIds).getList().forEach(it -> {
+								items.putIfAbsent(it[0].toString(), it[1] == null ? -1 : new Integer(it[1].toString()));
+							});
 				});
-
-		this.queryProxy().query(SELECT_ITEMS_ORDER_BY_IDS, Object[].class).setParameter("ctgIds", categoryIds)
-				.setParameter("itIds", itemDefinitionIds).getList().forEach(it -> {
-					items.putIfAbsent(it[0].toString(), it[1] == null ? -1 : new Integer(it[1].toString()));
-				});
+			} else {
+				this.queryProxy().query(SELECT_ITEMS_ORDER_BY_IDS, Object[].class).setParameter("ctgIds", _catIds)
+						.setParameter("itIds", Arrays.asList(IdentifierUtil.randomUniqueId())).getList().forEach(it -> {
+							items.putIfAbsent(it[0].toString(), it[1] == null ? -1 : new Integer(it[1].toString()));
+						});
+			}
+		});
 
 		return new HashMap<Integer, HashMap<String, Integer>>() {
 			private static final long serialVersionUID = 1L;

@@ -75,7 +75,7 @@ module nts.uk.at.view.kwr001.a {
             enableByOutputFormat: KnockoutObservable<boolean>;
             enableBtnConfigure: KnockoutObservable<boolean>;
             enableConfigErrCode: KnockoutObservable<boolean>;
-            isAuthority: KnockoutObservable<boolean>;
+            isEmployeeCharge: KnockoutObservable<boolean>;
             
             taskId: KnockoutObservable<string>;
             errorLogs : KnockoutObservableArray<EmployeeError>;
@@ -84,7 +84,7 @@ module nts.uk.at.view.kwr001.a {
             constructor() {
                 let self = this;
                 
-                self.isAuthority = ko.observable(true);
+                self.isEmployeeCharge = ko.observable(true);
                 self.enableConfigErrCode = ko.observable(true);
                 self.enableByOutputFormat = ko.observable(true);
                 self.enableBtnConfigure = ko.observable(true);
@@ -134,6 +134,10 @@ module nts.uk.at.view.kwr001.a {
                     self.datepickerValue().endDate = value;   
                     self.datepickerValue.valueHasMutated();      
                 });
+                
+                self.datepickerValue.subscribe((value) => {
+//                    console.log(value);
+                })
                 // end set variable for datepicker A1_6
                 
                 self.taskId = ko.observable('');
@@ -147,16 +151,17 @@ module nts.uk.at.view.kwr001.a {
                     showEmployeeSelection: false,
                     showQuickSearchTab: true,
                     showAdvancedSearchTab: true,
-                    showBaseDate: true,
-                    showClosure: false,
-                    showAllClosure: false,
-                    showPeriod: false,
+                    showBaseDate: false,
+                    showClosure: true,
+                    showAllClosure: true,
+                    showPeriod: true,
                     periodFormatYM: false,
                     
                     /** Required parameter */
                     baseDate: moment().toISOString(),
-                    periodStartDate: moment().toISOString(),
-                    periodEndDate: moment().toISOString(),
+//                    periodStartDate: moment().toISOString(),
+//                    periodEndDate: moment().toISOString(),
+                    dateRangePickerValue: self.datepickerValue,
                     inService: true,
                     leaveOfAbsence: true,
                     closed: true,
@@ -181,6 +186,11 @@ module nts.uk.at.view.kwr001.a {
                     * @param: data: the data return from CCG001
                     */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                        //画面項目「A1_7」「A1_8」を更新する
+                        self.datepickerValue().startDate = moment(data.periodStart).format("YYYY/MM/DD");
+                        self.datepickerValue().endDate = moment(data.periodEnd).format("YYYY/MM/DD");
+                        self.datepickerValue.valueHasMutated();
+                        
                         self.employeeList.removeAll();
                         var employeeSearchs: UnitModel[] = [];
                         _.forEach(data.listEmployee, function(value) {
@@ -188,12 +198,12 @@ module nts.uk.at.view.kwr001.a {
                                 id: value.employeeId,
                                 code: value.employeeCode,
                                 name: value.employeeName,
+                                workplaceName: value.workplaceName
                             };
-                            if (!_.isEmpty(value.workplaceId) && !_.isNil(value.workplaceId)) {
+//                            if (!_.isEmpty(value.workplaceId) && !_.isNil(value.workplaceId)) {
                                 employeeSearchs.push(employee);    
-                            }
+//                            }
                         });
-                        self.ccg001ComponentOption.baseDate = data.baseDate;
                         self.employeeList(employeeSearchs);
                     }
                 }
@@ -243,7 +253,7 @@ module nts.uk.at.view.kwr001.a {
                 })
                 self.selectedCodeA13_1.valueHasMutated();
                 
-                self.isAuthority.subscribe(function(value) {
+                self.isEmployeeCharge.subscribe(function(value) {
                     self.enableBtnConfigure(value);
                 })
                 
@@ -254,7 +264,7 @@ module nts.uk.at.view.kwr001.a {
                 self.isDialog = ko.observable(true);
                 self.isShowNoSelectRow = ko.observable(false);
                 self.isMultiSelect = ko.observable(true);
-                self.isShowWorkPlaceName = ko.observable(false);
+                self.isShowWorkPlaceName = ko.observable(true);
                 self.isShowSelectAllButton = ko.observable(false);
                 self.employeeList = ko.observableArray<UnitModel>([]);
                 self.listComponentOption = {
@@ -262,13 +272,14 @@ module nts.uk.at.view.kwr001.a {
                     isMultiSelect: self.isMultiSelect(),
                     listType: ListType.EMPLOYEE,
                     employeeInputList: self.employeeList,
-                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    selectType: SelectType.SELECT_ALL,
                     selectedCode: self.multiSelectedCode,
                     isDialog: self.isDialog(),
                     isShowNoSelectRow: self.isShowNoSelectRow(),
                     alreadySettingList: self.alreadySettingList,
                     isShowWorkPlaceName: self.isShowWorkPlaceName(),
                     isShowSelectAllButton: self.isShowSelectAllButton(),
+                    isSelectAllAfterReload: true,
                     tabindex: 5,
                     maxRows: 17
                 };
@@ -283,8 +294,8 @@ module nts.uk.at.view.kwr001.a {
                     let isExist = !(_.isUndefined(dataCharacteristic) || _.isNull(dataCharacteristic));
                     self.getDataStartPageService(isExist).done(function(dataService: any) {
                         
-                        self.itemListCodeTemplate(dataService.lstOutputItemDailyWorkSchedule);
-                        self.isAuthority(dataService.existAuthority);
+                        self.itemListCodeTemplate(_.sortBy(dataService.lstOutputItemDailyWorkSchedule,(item:any) => item.code));
+                        self.isEmployeeCharge(dataService.employeeCharge);
                         switch(dataService.strReturn) {
                             // return screen A, show data from characteristic
                             case SHOW_CHARACTERISTIC:
@@ -293,12 +304,12 @@ module nts.uk.at.view.kwr001.a {
                             // return screen A, don't have data characteristic
                             case STRING_EMPTY:
                                 break;
-                            case OPEN_SCREEN_C:
-                                self.openScreenC();
-                                break;
-                            case "Msg_1348":
-                                nts.uk.ui.dialog.alertError({ messageId: "Msg_1348"});
-                                break;
+//                            case OPEN_SCREEN_C:
+//                                self.openScreenC();
+//                                break;
+//                            case "Msg_1348":
+//                                nts.uk.ui.dialog.alertError({ messageId: "Msg_1348"});
+//                                break;
                             default:
                                 break;
                         }
@@ -366,6 +377,10 @@ module nts.uk.at.view.kwr001.a {
             // run after create success html 
             public executeBindingComponent(): void {
                 let self = this;
+                //re-set value of component
+                //対象期間：画面項目「A1_7とA1_8」にセットされている期間
+                self.ccg001ComponentOption.periodStartDate =  self.datepickerValue().startDate;
+                self.ccg001ComponentOption.periodEndDate =  self.datepickerValue().endDate;
                 
                 // start component CCG001
                 // start component KCP005
@@ -420,7 +435,7 @@ module nts.uk.at.view.kwr001.a {
                     $.when(self.getDataCharateristic()).done(function(dataCharacteristic: any) {
                         let isExist = !(_.isUndefined(dataCharacteristic) || _.isNull(dataCharacteristic));
                         self.getDataStartPageService(isExist).done(function(dataService: any) {                       
-                            self.itemListCodeTemplate(dataService.lstOutputItemDailyWorkSchedule);
+                            self.itemListCodeTemplate(_.sortBy(dataService.lstOutputItemDailyWorkSchedule,(item:any) => item.code));
                             if (_.isEmpty(dataService.lstOutputItemDailyWorkSchedule)) {
                                 self.selectedCodeA7_3('');
                             } else {
@@ -516,8 +531,8 @@ module nts.uk.at.view.kwr001.a {
                                     }
                                 });
                                 // Show error in msg_1344
-                                if (self.errorLogs().length > 0)
-                                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
+//                                if (self.errorLogs().length > 0)
+//                                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
                                 if (self.errorLogsNoWorkplace().length > 0)
                                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1396", message: message("Msg_1396") + employeeStr, messageParams: [self.errorLogs().length]});
                             }).fail(function(error){
@@ -580,8 +595,8 @@ module nts.uk.at.view.kwr001.a {
                                     }
                                 });
                                 // Show error in msg_1344
-                                if (self.errorLogs().length > 0)
-                                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
+//                                if (self.errorLogs().length > 0)
+//                                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
                                 if (self.errorLogsNoWorkplace().length > 0)
                                     nts.uk.ui.dialog.alertError({ messageId: "Msg_1396", message: message("Msg_1396") + employeeStr, messageParams: [self.errorLogs().length]});
                             }).fail(function(error){
@@ -596,6 +611,11 @@ module nts.uk.at.view.kwr001.a {
             
             private validateMinimumOneChecked(): boolean {
                 let self = this;
+                
+                $('#combo-box').ntsError('check');
+                if (nts.uk.ui.errors.hasError()) {
+                    return false;
+                }
                 
                 if (self.selectedDataOutputType() == 0) {
                     if (!self.checkedA10_2() && !self.checkedA10_3() && !self.checkedA10_4() 
@@ -792,7 +812,7 @@ module nts.uk.at.view.kwr001.a {
             isInDialog?: boolean;
         
             /** Required parameter */
-            baseDate?: string; // 基準日
+            baseDate?: any; // 基準日
             periodStartDate?: string; // 対象期間開始日
             periodEndDate?: string; // 対象期間終了日
             inService: boolean; // 在職区分

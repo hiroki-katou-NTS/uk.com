@@ -1,29 +1,32 @@
 package nts.uk.ctx.at.request.app.command.application.workchange;
 
-import java.util.Optional;
+/*import java.util.ArrayList;
+import nts.uk.ctx.at.shared.dom.worktype.algorithm.SpecHdFrameForWkTypeSetService;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
+import nts.gul.text.StringUtil;
+import nts.gul.collection.CollectionUtil;*/
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import org.apache.logging.log4j.util.Strings;
-
-import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.arc.time.GeneralDateTime;
+import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
-import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.IFactoryApplication;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 @Stateless
 @Transactional
@@ -34,6 +37,12 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 	private IWorkChangeRegisterService workChangeRegisterService;
 	@Inject
 	private IFactoryApplication IfacApp;
+//	@Inject
+//	private CollectAchievement collectAchievement;
+//	@Inject
+//	private SpecHdFrameForWkTypeSetService specHdWkpTypeSv;
+	@Inject 
+	private OtherCommonAlgorithm  otherCommonAlgorithm;
 	
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<AddAppWorkChangeCommand> context) {
@@ -71,7 +80,47 @@ public class AddAppWorkChangeCommandHandler extends CommandHandlerWithResult<Add
 				workChangeCommand.getWorkTimeEnd2(),
 				workChangeCommand.getGoWorkAtr2(), 
 				workChangeCommand.getBackHomeAtr2());
-
+		
+		//1日休日のチェック
+		checkHoliday(companyId,applicantSID,addCommand);
+		//ドメインモデル「勤務変更申請設定」の新規登録をする
 		return workChangeRegisterService.registerData(workChangeDomain, app);
+	}
+
+	
+	/**
+	 * 1日休日のチェック
+	 * @param applicantSID 
+	 * @param SID
+	 * @param AddAppWorkChangeCommand
+	 */
+	private void checkHoliday(String companyId, String applicantSID, AddAppWorkChangeCommand addCommand) {
+		boolean isCheck = addCommand.getWorkChange().getExcludeHolidayAtr() == 1;
+		// INPUT．休日除くチェック区分をチェックする
+		if (isCheck) {
+			//申請期間から休日の申請日を取得する
+			GeneralDate startDate = addCommand.getApplication().getStartDate();
+
+			GeneralDate endDate = addCommand.getApplication().getEndDate();
+			
+			List<GeneralDate> dateClears = otherCommonAlgorithm.lstDateNotHoliday(companyId, applicantSID,
+					new DatePeriod(startDate, endDate));
+
+			
+			int totalDate = startDate.daysTo(endDate) + 1;
+
+			if (dateClears.size() == totalDate) {
+				//日付一覧(output)の件数 > 0
+				String dateListString = "";
+
+				for (int i = 0; i < dateClears.size(); i++) {
+					if (dateListString != "") {
+						dateListString += "、";
+					}
+					dateListString += dateClears.get(i).toString("yyyy/MM/dd");
+				}
+				throw new BusinessException("Msg_1459",dateListString);
+			}
+		}
 	}
 }

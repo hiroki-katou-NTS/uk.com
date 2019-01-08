@@ -27,11 +27,16 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -72,6 +77,10 @@ public class WorkTimeSettingServiceImpl implements WorkTimeSettingService {
 	@Inject
 	private DiffTimeCorrectionService diffTimeCorrectionService;
 
+	/** The work type repo. */
+	@Inject
+	private WorkTypeRepository workTypeRepo;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -104,6 +113,45 @@ public class WorkTimeSettingServiceImpl implements WorkTimeSettingService {
 
 		return this.getFromFlex(companyId, workTimeCode);
 
+	}
+
+	// 所定時間帯を取得する
+	public PredetermineTimeSetForCalc getPredeterminedTimezone(String companyId, String workTimeCd, String workTypeCd,
+			Integer workNo) {
+		PredetemineTimeSetting predTime = this.predetemineTimeRepo.findByWorkTimeCode(companyId, workTimeCd).get();
+		PrescribedTimezoneSetting presTime = predTime.getPrescribedTimezoneSetting();
+		WorkType workType = this.workTypeRepo.findByPK(companyId, workTypeCd).get();
+
+		List<TimezoneUse> timeZones = new ArrayList<>();
+		if (workNo != null) {
+			timeZones.add(presTime.getMatchWorkNoTimeSheet(workNo));
+		} else {
+			timeZones.addAll(presTime.getLstTimezone());
+		}
+
+		// Update timezone
+		AttendanceHolidayAttr attdAtr = workType.getDailyWork().decisionNeedPredTime();
+		if (attdAtr == AttendanceHolidayAttr.MORNING) {
+			timeZones.forEach(timeZone -> {
+				timeZone.setEnd(presTime.getMorningEndTime());
+			});
+		} else if (attdAtr == AttendanceHolidayAttr.AFTERNOON) {
+			timeZones.forEach(timeZone -> {
+				timeZone.setStart(presTime.getAfternoonStartTime());
+			});
+		}
+
+		PredetermineTimeSetForCalc rs = new PredetermineTimeSetForCalc();
+		rs.setTimezones(timeZones);
+		rs.setPredTime(predTime.getPredTime());
+		rs.setMorningEndTime(presTime.getMorningEndTime());
+		rs.setAfternoonStartTime(presTime.getAfternoonStartTime());
+		rs.setNightShift(predTime.isNightShift());
+		rs.setPredTimeIncludeOvertime(predTime.isPredetermine());
+		rs.setStartDateClock(predTime.getStartDateClock());
+		rs.setOneDayCalRange(predTime.getRangeTimeDay());
+
+		return rs;
 	}
 
 	/**

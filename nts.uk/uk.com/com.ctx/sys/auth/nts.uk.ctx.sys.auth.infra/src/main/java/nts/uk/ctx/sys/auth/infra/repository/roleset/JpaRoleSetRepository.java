@@ -12,7 +12,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.roleset.ApprovalAuthority;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
@@ -194,9 +196,13 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 
 	@Override
 	public List<RoleSet> findByCIDAndEmpRoleLst(String companyID, List<String> empRoleLst) {
-		return this.queryProxy().query(FIND_BY_CID_ROLES ,SacmtRoleSet.class)
+		List<RoleSet> resultList = new ArrayList<>();
+		CollectionUtil.split(empRoleLst, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			resultList.addAll(this.queryProxy().query(FIND_BY_CID_ROLES ,SacmtRoleSet.class)
 				.setParameter("companyID", companyID)
-				.setParameter("empRoleLst", empRoleLst)
-				.getList(c -> toDomain(c));
+				.setParameter("empRoleLst", subList)
+				.getList(c -> toDomain(c)));
+		});
+		return resultList;
 	}
 }

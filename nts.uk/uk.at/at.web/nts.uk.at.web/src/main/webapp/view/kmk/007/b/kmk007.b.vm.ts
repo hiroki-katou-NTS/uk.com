@@ -83,7 +83,8 @@ module nts.uk.at.view.kmk007.b.viewmodel {
             
             if(self.frameId() == Cls_Of_Duty.SpecialHolidayFrame){
                 service.getAllSpecialHolidayFrame().done(function(data) {
-                    _.forEach(data, function(item) {
+                    let sortData1 = _.sortBy(data, [function(o) { return o.specialHdFrameNo; }]);
+                    _.forEach(sortData1, function(item) {
                         self.items.push(new ItemModel(item.specialHdFrameNo, item.specialHdFrameName, item.deprecateSpecialHd));
                     });
                     
@@ -93,7 +94,8 @@ module nts.uk.at.view.kmk007.b.viewmodel {
                 });
             } else if(self.frameId() == Cls_Of_Duty.AbsenceFrame){
                 service.getAllAbsenceFrame().done(function(data) {
-                    _.forEach(data, function(item) {
+                    let sortData2 = _.sortBy(data, [function(o) { return o.absenceFrameNo; }]);
+                    _.forEach(sortData2, function(item) {
                         self.items.push(new ItemModel(item.absenceFrameNo, item.absenceFrameName, item.deprecateAbsence));
                     });
                     

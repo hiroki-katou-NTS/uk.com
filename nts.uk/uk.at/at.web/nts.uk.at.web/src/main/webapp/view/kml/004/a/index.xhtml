@@ -38,6 +38,7 @@
 						data-bind="click: remove, enable: lstCate().length >0 &amp; !checkUpdate()">#{i18n.getText('KML004_3')}</button>
 					<!-- A1_4 -->
 					<button tabindex="4" id="Close_BTN" data-bind="click: closeDialog">#{i18n.getText('KML004_4')}</button>
+					<button id="print-button" tabindex="10" data-bind="click: exportExcel">#{i18n.getText('KML004_54')}</button>
 				</div>
 			</div>
 			<div id="contents-area">
@@ -90,11 +91,9 @@
 							data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KML004_13')}</div>
 						<!-- A6_1 -->
 						<div id="lb_swap_right"
-							style="margin-top: 5px; margin-left: 307px"
+							style="margin-top: 5px; margin-left: 224px;"
 							data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KML004_16')}</div>
 						<!-- A5_3 disableMoveButton-->
-
-
 
 						<div id="swap-list" tabindex="9"
 							data-bind="ntsSwapList: {

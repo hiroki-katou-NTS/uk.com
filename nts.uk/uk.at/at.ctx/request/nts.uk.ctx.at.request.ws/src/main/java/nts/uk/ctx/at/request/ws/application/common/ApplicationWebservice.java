@@ -10,7 +10,6 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.common.ReflectAplicationCommmandHandler;
 import nts.uk.ctx.at.request.app.command.application.common.RemandApplicationHandler;
-import nts.uk.ctx.at.request.app.command.application.common.RemandCommand;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationApproveHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCancelHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCommonCmd;
@@ -35,11 +34,14 @@ import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationSendDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ClosureParam;
 import nts.uk.ctx.at.request.app.find.application.common.dto.InputCommonData;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
-import nts.uk.ctx.at.request.app.find.application.requestofearch.OutputMessageDeadline;
 import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDeadlineDto;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InputGetDetailCheck;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.RemandCommand;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.shr.com.context.ScreenIdentifier;
+import nts.uk.shr.infra.web.util.StartPageLogService;
 
 @Path("at/request/application")
 @Produces("application/json")
@@ -82,6 +84,8 @@ public class ApplicationWebservice extends WebService {
 
 	@Inject
 	private ReflectAplicationCommmandHandler relect;
+	@Inject
+	private StartPageLogService writeLogSv;
 	
 	/**
 	 * approve application
@@ -228,6 +232,12 @@ public class ApplicationWebservice extends WebService {
 				overtimeAtr);
 	}
 	
+	@POST
+	@Path("getDetailRealData")
+	public AchievementOutput getDetailRealData(String appID){
+		return finderApp.getDetailRealData(appID);
+	}
+	
 	/**
 	 * @author yennth
 	 * @param closureId
@@ -254,6 +264,10 @@ public class ApplicationWebservice extends WebService {
 	public void reflectApp(List<String> command){
 		relect.handle(command);
 	}
-
+	@POST
+	@Path("write-log")
+	public void writeLog(ParamWriteLog paramLog){
+		writeLogSv.writeLog(new ScreenIdentifier(paramLog.getProgramId(), paramLog.getScreenId(), paramLog.getQueryString()));
+	}
 }
 

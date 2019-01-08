@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.infra.entity.employment.history.BsymtEmploymentHist;
@@ -45,7 +46,7 @@ public class EmploymentHistoryAdapterImpl extends JpaRepository implements Emplo
 		List<String> listEmployeeIds = new ArrayList<>();
 
 		// Split query.
-		CollectionUtil.split(empCds, 1000, (subList) -> {
+		CollectionUtil.split(empCds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
 			listEmployeeIds.addAll(this.queryProxy().query(FIND_BY_EMPCDS_AND_PERIOD, BsymtEmploymentHist.class)
 					.setParameter("empCds", subList)
 					.setParameter("startDate", period.start())

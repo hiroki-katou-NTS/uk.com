@@ -22,7 +22,6 @@ import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleCopyCommand;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
-import nts.uk.ctx.at.function.dom.attendancetype.ScreenUseAtr;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.repository.DailyAttendanceItemNameDomainService;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityDailyPerformanceFormat;
@@ -42,10 +41,8 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatDailyRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
+//import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -62,8 +59,8 @@ public class OutputItemDailyWorkScheduleFinder {
 	@Inject
 	private AttendanceTypeRepository attendanceTypeRepository;
 	
-	@Inject
-	private OptionalItemRepository optionalItemRepository;
+//	@Inject
+//	private OptionalItemRepository optionalItemRepository;
 	
 	@Inject
 	private BusinessTypesRepository businessTypesRepository;
@@ -82,6 +79,9 @@ public class OutputItemDailyWorkScheduleFinder {
 	
 	@Inject
 	private DailyAttendanceItemNameDomainService dailyAttendanceItemNameDomainService;
+	
+	@Inject
+	private CompanyDailyItemService companyDailyItemService;
 	
 	// Input of algorithm when use enum ScreenUseAtr: 勤怠項目を利用する画面
 	private static final int DAILY_WORK_SCHEDULE = 19;
@@ -105,7 +105,6 @@ public class OutputItemDailyWorkScheduleFinder {
 	
 	private static final String AUTHORITY_DEFINE = "権限";
 	private static final String BUSINESS_TYPE_DEFINE = "勤務種別";
-	
 	/**
 	 * Find by cid.
 	 *
@@ -119,65 +118,24 @@ public class OutputItemDailyWorkScheduleFinder {
 		// 対応するドメインモデル「画面で利用できる勤怠項目一覧」を取得する (get domain model đối ứng 「画面で利用できる勤怠項目一覧」 )
 		List<AttendanceType> lstAttendanceType = attendanceTypeRepository.getItemByScreenUseAtr(companyID, DAILY_WORK_SCHEDULE);
 		
-		// Get domain 任意項目
-		List<OptionalItem> lstOptionalItem = optionalItemRepository.findAll(companyID);
+		List<Integer> lstAttendanceID = lstAttendanceType.stream().map(domain -> domain.getAttendanceItemId()).collect(Collectors.toList());
+ 		
+		List<DailyAttendanceItemDto> lstDailyAtdItemDto = companyDailyItemService.getDailyItems(companyID, Optional.empty(), lstAttendanceID, new ArrayList<>()).stream()
+																.map(dto -> { 
+																	DailyAttendanceItemDto dtoClientReturn = new DailyAttendanceItemDto();
+																	dtoClientReturn.setCode(dto.getAttendanceItemDisplayNumber());
+																	dtoClientReturn.setId(dto.getAttendanceItemId());
+																	dtoClientReturn.setName(dto.getAttendanceItemName());
+																	return dtoClientReturn;
+																})
+																.sorted(Comparator.comparing(DailyAttendanceItemDto::getCode))
+																.collect(Collectors.toList()); 
 		
-		Set<Integer> setScreenUseAtr = lstAttendanceType.stream().map(domain -> domain.getScreenUseAtr().value).collect(Collectors.toSet());
-		
-		List<OptionalItem> lstAttendanceTypeFilter = lstOptionalItem.stream()
-																	.filter(domainOptionItem -> {
-																			// 実績区分　=　日別実績 
-																			if (domainOptionItem.getPerformanceAtr().value != PerformanceAtr.DAILY_PERFORMANCE.value) {
-																				return false;
-																			}
-																		
-																			// 出勤簿時間　=　時間
-																			if (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.TIME.value && setScreenUseAtr.contains(ScreenUseAtr.WORK_TIME.value)) {
-																				return true;
-																			}
-																			// 出勤簿回数　=　回数
-																			if (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.NUMBER.value && setScreenUseAtr.contains(ScreenUseAtr.ATTENDANCE_TIMES.value)) {
-																				return true;
-																			}
-																			// 出勤簿金額　=　金額
-																			if (domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.AMOUNT.value && setScreenUseAtr.contains(ScreenUseAtr.TOTAL_COMMUTING_AMOUNT.value)) {
-																				return true;
-																			}
-																			// 日別勤務表　=　時間or回数or金額
-																			if ((domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.TIME.value
-																					|| domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.NUMBER.value 
-																					|| domainOptionItem.getOptionalItemAtr().value == OptionalItemAtr.AMOUNT.value)
-																				&& setScreenUseAtr.contains(ScreenUseAtr.DAILY_WORK_SCHEDULE.value)) {
-																				return true;
-																			}
-																			return false;})
-																	.map(domainOptionItem -> domainOptionItem)
-																	.distinct()
-																	.collect(Collectors.toList());
-		// End algorithm 画面で利用できる任意項目を含めた勤怠項目一覧を取得する
-		
-		// get list attendanceId of OptionalItem 任意項目. according file 日次項目一覧.xls参照
-		List<Integer> lstAttendanceID = lstAttendanceTypeFilter.stream()
-				.map(domain -> domain.getOptionalItemNo().v() + 640)
-				.collect(Collectors.toList());
-		
-		// get list attendanceId of AttendanceType 画面で利用できる勤怠項目一覧
-		List<Integer> lstAttendanceID2 = lstAttendanceType.stream()
-				.map(domain -> domain.getAttendanceItemId())
-				.collect(Collectors.toList());
-		lstAttendanceID.addAll(lstAttendanceID2);
 		
 		// ドメインモデル「日次の勤怠項目」をすべて取得する(Acquire all domain model "daily attendance items")
 		// アルゴリズム「勤怠項目に対応する名称を生成する」
 		if (!lstAttendanceID.isEmpty()) {
-			mapDtoReturn.put("dailyAttendanceItem", dailyAttendanceItemNameDomainService.getNameOfDailyAttendanceItem(lstAttendanceID).stream()
-					.map(domain -> {
-						DailyAttendanceItemDto dto = new DailyAttendanceItemDto();
-						dto.setCode(domain.getAttendanceItemDisplayNumber());
-						dto.setName(domain.getAttendanceItemName());
-						dto.setId(domain.getAttendanceItemId());
-						return dto;
-					}).sorted(Comparator.comparing(DailyAttendanceItemDto::getCode)).collect(Collectors.toList()));
+			mapDtoReturn.put("dailyAttendanceItem", lstDailyAtdItemDto);
 		} else {
 			mapDtoReturn.put("dailyAttendanceItem", Collections.emptyList());
 		}		
@@ -264,7 +222,7 @@ public class OutputItemDailyWorkScheduleFinder {
 	}
 	
 	// algorithm for screen D: copy
-	public List<DataInforReturnDto> executeCopy(String codeCopy, String codeSourceSerivce, List<OutputItemDailyWorkScheduleCopyCommand> lstCommandCopy) {
+	public DataReturnDto executeCopy(String codeCopy, String codeSourceSerivce) {
 		String companyId = AppContexts.user().companyId();
 		
 		// get domain 日別勤務表の出力項目
@@ -273,19 +231,21 @@ public class OutputItemDailyWorkScheduleFinder {
 		if (optOutputItemDailyWorkSchedule.isPresent()) {
 			throw new BusinessException("Msg_3");
 		} else {
-			List<DataInforReturnDto> lstData = getDomConvertDailyWork(companyId, codeSourceSerivce, lstCommandCopy);
-			if (lstData.isEmpty()) {
+			DataReturnDto dataReturnDto = getDomConvertDailyWork(companyId, codeSourceSerivce);
+			//List<DataInforReturnDto> lstData = getDomConvertDailyWork(companyId, codeSourceSerivce);
+			if (dataReturnDto.getDataInforReturnDtos().isEmpty()) {
 				throw new BusinessException("Msg_1411");
 			} 
-			return lstData;
+			return dataReturnDto;
 		}
 	}
 	
 	// アルゴリズム「日別勤務表用フォーマットをコンバートする」を実行する(Execute algorithm "Convert daily work table format")
-	private List<DataInforReturnDto> getDomConvertDailyWork(String companyId, String codeSourceSerivce, List<OutputItemDailyWorkScheduleCopyCommand> lstCommandCopy) {
+	private DataReturnDto getDomConvertDailyWork(String companyId, String codeSourceSerivce) {
 		// Get domain 実績修正画面で利用するフォーマット from request list 402
 		Optional<FormatPerformanceImport> optFormatPerformanceImport = formatPerformanceAdapter.getFormatPerformance(companyId);
 		
+		DataReturnDto dataReturnDto = new DataReturnDto();
 		List<DataInforReturnDto> lstDataReturn = new ArrayList<>();
 		
 		if (optFormatPerformanceImport.isPresent()) {
@@ -322,22 +282,51 @@ public class OutputItemDailyWorkScheduleFinder {
 			}
 		}
 		
+		// get list data was showed in kwr001
+		List<AttendanceType> lstAttendanceType = attendanceTypeRepository.getItemByScreenUseAtr(companyId, DAILY_WORK_SCHEDULE);
+		List<Integer> lstAttendanceID = lstAttendanceType.stream().map(domain -> domain.getAttendanceItemId()).collect(Collectors.toList());
+		
+		List<OutputItemDailyWorkScheduleCopyCommand> lstCommandCopy = companyDailyItemService.getDailyItems(companyId, Optional.empty(), lstAttendanceID, new ArrayList<>()).stream()
+												.map(dto -> { 
+													OutputItemDailyWorkScheduleCopyCommand dtoClientReturn = new OutputItemDailyWorkScheduleCopyCommand();
+													dtoClientReturn.setCode(String.valueOf(dto.getAttendanceItemDisplayNumber()));
+													dtoClientReturn.setId(dto.getAttendanceItemId());
+													dtoClientReturn.setName(dto.getAttendanceItemName());
+													return dtoClientReturn;
+												}).collect(Collectors.toList());
+		
+		
 		Map<Integer, String> mapIdName =  lstCommandCopy.stream()
 				.collect(Collectors.toMap(OutputItemDailyWorkScheduleCopyCommand::getId, 
 										  OutputItemDailyWorkScheduleCopyCommand::getName));
+		// compare data return from kdw008 to kwr001
+		// if item of kwr008 exist in kwr001, it will be save
+		int sizeData = lstDataReturn.size();
 		lstDataReturn = lstDataReturn.stream()
 				.filter(domain -> mapIdName.containsKey(domain.getId()))
 				.map(domain -> {
-					domain.setName(mapIdName.get(domain.getCode()));
+					domain.setName(mapIdName.get(domain.getId()));
 					return domain;
 				}).collect(Collectors.toList());
 		
+		if(sizeData !=lstDataReturn.size()){
+			List<String> lstMsgErr = new ArrayList<String>();
+			lstMsgErr.add("Msg_1476");
+			dataReturnDto.setMsgErr(lstMsgErr);
+		}
 		// 1Sheet目の表示項目を返り値とする (Coi hạng mục hiển thj của sheet đầu tiên là giá trị trả về)
+		
+		dataReturnDto.setDataInforReturnDtos(lstDataReturn);
+		
+		
 		if (lstDataReturn.size() <= 48) {
-			return lstDataReturn;
+			return dataReturnDto;
 		}
 		else { // 1Sheet目の表示項目の先頭48項目までを返り値とする(Lấy 48 hạng mục đầu trong sheet đầu tiên làm giá trị trả về)
-			return lstDataReturn.stream().limit(48).collect(Collectors.toList());
+			List<DataInforReturnDto> lstDto = dataReturnDto.getDataInforReturnDtos().stream().limit(48)
+					.collect(Collectors.toList());
+			dataReturnDto.setDataInforReturnDtos(lstDto);
+			return dataReturnDto;
 		}
 	}
 	

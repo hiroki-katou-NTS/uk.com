@@ -75,6 +75,7 @@ div.form-label.broken {
 .workSelect{
     height: 70px;
     margin-left: 45px;
+    margin-top: 10px;
 }
 .panel.panel-gray-bg {
 	float: right;
@@ -165,10 +166,10 @@ div.form-label.broken {
 .kaf005_overtimeAgreement_header {
 	background-color: #CFF1A5;
 	text-align: center;
-	height: 25px;
+	height: 20px;
 }
 #kaf005_overtimeAgreement_table td, #kaf005_overtimeAgreement_table th {
-	height: 25px;	
+	height: 20px;	
 	text-align: center;
 	border: 1px solid #CCC;
 }

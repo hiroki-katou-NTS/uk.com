@@ -11,5 +11,6 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 public class ErrorAlarmListCommand {
 	private List<EmployeeSearchDto> listEmployee;
 	private String alarmCode;
-	private List<PeriodByAlarmCategory> listPeriodByCategory;	
+	private List<PeriodByAlarmCategory> listPeriodByCategory;
+	private String statusProcessId;
 }

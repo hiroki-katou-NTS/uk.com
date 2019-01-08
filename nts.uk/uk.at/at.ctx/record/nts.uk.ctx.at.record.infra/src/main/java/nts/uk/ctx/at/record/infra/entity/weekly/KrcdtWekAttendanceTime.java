@@ -19,8 +19,6 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.byperiod.AnyItemByPeriod;
 import nts.uk.ctx.at.record.dom.byperiod.ExcessOutsideByPeriod;
 import nts.uk.ctx.at.record.dom.byperiod.FlexTimeByPeriod;
-import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
-import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.record.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
@@ -85,12 +83,14 @@ import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekA
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekAggrGoout;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekAggrPremTime;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekMedicalTime;
+import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
+import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -714,7 +714,7 @@ public class KrcdtWekAttendanceTime extends UkJpaEntity implements Serializable 
 						new AttendanceTimeMonth(this.vtAttendanceLeaveGateAfterLeaveWorkTime),
 						new AttendanceTimeMonth(this.vtAttendanceLeaveGateStayingTime),
 						new AttendanceTimeMonth(this.vtAttendanceLeaveGateUnemployedTime)),
-				BudgetTimeVarienceOfMonthly.of(new AttendanceTimeMonth(this.vtBudgetVarienceTime)),
+				BudgetTimeVarienceOfMonthly.of(new AttendanceTimeMonthWithMinus(this.vtBudgetVarienceTime)),
 				DivergenceTimeOfMonthly.of(
 						this.krcdtWekAggrDivgTime.stream().map(c -> c.toDomain()).collect(Collectors.toList())),
 				this.krcdtWekMedicalTime.stream().map(c -> c.toDomain()).collect(Collectors.toList()));

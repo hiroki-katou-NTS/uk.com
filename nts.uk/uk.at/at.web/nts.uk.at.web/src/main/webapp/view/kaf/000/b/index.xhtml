@@ -14,6 +14,7 @@
 				nts.uk.ctx.at.request.dom.application.ApproverReason
 				nts.uk.ctx.at.request.dom.application.stamp.TimeDayClock
 				nts.uk.ctx.at.request.dom.application.overtime.primitivevalue.OvertimeAppPrimitiveTime
+				nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.RelationshipReasonPrimitive
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../../../kdl/034/a/kdl034.a.vm.js" />
@@ -78,7 +79,7 @@
 					<!-- B1_1 -->
 					<div style="display: inline-block;" data-bind="if: displayGoback">
 						<a class="goback link-button"
-							data-bind="ntsLinkButton: { jump: '../../../cmm/045/a/index.xhtml'}">#{i18n.getText('KAF000_14')}</a>
+							data-bind="click: callCMM045A">#{i18n.getText('KAF000_14')}</a>
 					</div>
 					<!-- B1_2 -->
 					<button class="kaf000-function-btn"
@@ -121,14 +122,6 @@
 								<label>【否認】</label>
 							</div>
 						</div>
-						<!-- B1_6 -->
-						<div class="controlButtonCell_kaf000"
-							data-bind="if: displayRemandButton">
-							<button class="kaf000-function-btn"
-								data-bind="click: btnRemand, 
-										enable: enableRemandButton() &amp;&amp; $root.errors.isEmpty()
-										   ">#{i18n.getText('KAF000_17')}</button>
-						</div>
 						<!-- B1_7 -->
 						<div class="controlButtonCell_kaf000"
 							data-bind="if: displayReleaseButton">
@@ -136,6 +129,14 @@
 								data-bind="click: btnRelease, 
 										enable: enableReleaseButton() &amp;&amp; $root.errors.isEmpty()
 										">#{i18n.getText('KAF000_18')}</button>
+						</div>
+						<!-- B1_6 -->
+						<div class="controlButtonCell_kaf000"
+							data-bind="if: displayRemandButton">
+							<button class="kaf000-function-btn"
+								data-bind="click: btnRemand, 
+										enable: enableRemandButton() &amp;&amp; $root.errors.isEmpty()
+										   ">#{i18n.getText('KAF000_17')}</button>
 						</div>
 					</div>
 					<div class="kaf000-function-div-update">
@@ -169,7 +170,7 @@
 								data-bind="click: btnDelete, enable : enableDeleteButton() &amp;&amp; $root.errors.isEmpty()">#{i18n.getText('KAF000_23')}</button>
 						</div>
 					</div>
-					<div class="kaf000-function-div-cancel">
+					<div class="kaf000-function-div-cancel" data-bind="if: false">
 						<!-- B1_13 -->
 						<div class="controlButtonCell_kaf000"
 							data-bind="if: displayCancelButton">
@@ -207,7 +208,7 @@
 					<!-- row2 -->
 					<div id="message-area" style="margin-top: 16px;">
 						<!-- B3_1 -->
-						<div class="message-td" data-bind="text : reasonApp"></div> 
+						<div class="message-td" id="returnReason"></div> 
 					</div>
 				</div>
 

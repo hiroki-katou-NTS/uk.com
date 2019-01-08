@@ -28,17 +28,17 @@ import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		implements AffiliationInforOfDailyPerforRepository {
 
-	private static final String REMOVE_BY_EMPLOYEE;
+//	private static final String REMOVE_BY_EMPLOYEE;
 
 	private static final String FIND_BY_KEY;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
-		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDaiAffiliationInf a ");
-		builderString.append("WHERE a.krcdtDaiAffiliationInfPK.employeeId = :employeeId ");
-		builderString.append("AND a.krcdtDaiAffiliationInfPK.ymd = :ymd ");
-		REMOVE_BY_EMPLOYEE = builderString.toString();
+//		builderString.append("DELETE ");
+//		builderString.append("FROM KrcdtDaiAffiliationInf a ");
+//		builderString.append("WHERE a.krcdtDaiAffiliationInfPK.employeeId = :employeeId ");
+//		builderString.append("AND a.krcdtDaiAffiliationInfPK.ymd = :ymd ");
+//		REMOVE_BY_EMPLOYEE = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
@@ -85,6 +85,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private KrcdtDaiAffiliationInf toEntity(AffiliationInforOfDailyPerfor affiliationInforOfDailyPerfor) {
 		val entity = new KrcdtDaiAffiliationInf();
 
@@ -147,7 +148,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 
 	@Override
 	public List<AffiliationInforOfDailyPerfor> finds(List<String> employeeId, DatePeriod ymd) {
-		List<AffiliationInforOfDailyPerfor> result = new ArrayList<>();
+		List<KrcdtDaiAffiliationInf> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder("SELECT af FROM KrcdtDaiAffiliationInf af ");
 		query.append("WHERE af.krcdtDaiAffiliationInfPK.employeeId IN :employeeId ");
 		query.append("AND af.krcdtDaiAffiliationInfPK.ymd <= :end AND af.krcdtDaiAffiliationInfPK.ymd >= :start");
@@ -155,14 +156,14 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 				KrcdtDaiAffiliationInf.class);
 		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
 			result.addAll(tQuery.setParameter("employeeId", empIds).setParameter("start", ymd.start())
-					.setParameter("end", ymd.end()).getList(af -> af.toDomain()));
+					.setParameter("end", ymd.end()).getList());
 		});
-		return result;
+		return result.stream().map(af -> af.toDomain()).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<AffiliationInforOfDailyPerfor> finds(Map<String, List<GeneralDate>> param) {
-		List<AffiliationInforOfDailyPerfor> result = new ArrayList<>();
+		List<KrcdtDaiAffiliationInf> result = new ArrayList<>();
 		StringBuilder query = new StringBuilder("SELECT af FROM KrcdtDaiAffiliationInf af ");
 		query.append("WHERE af.krcdtDaiAffiliationInfPK.employeeId IN :employeeId ");
 		query.append("AND af.krcdtDaiAffiliationInfPK.ymd IN :date");
@@ -173,8 +174,8 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
 					.getList().stream()
 					.filter(c -> p.get(c.krcdtDaiAffiliationInfPK.employeeId).contains(c.krcdtDaiAffiliationInfPK.ymd))
-					.map(af -> af.toDomain()).collect(Collectors.toList()));
+					.collect(Collectors.toList()));
 		});
-		return result;
+		return result.stream().map(af -> af.toDomain()).collect(Collectors.toList());
 	}
 }

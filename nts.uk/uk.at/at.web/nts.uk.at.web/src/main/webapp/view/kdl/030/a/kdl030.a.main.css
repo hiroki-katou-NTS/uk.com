@@ -51,6 +51,10 @@
 .rowPer{
 	height: 30px !important;
 }
+.rowPerName{
+	height: 25px !important;
+	padding-top: 5px;
+}
 .rowBorder{
 	border-bottom: 1px solid black;
 }

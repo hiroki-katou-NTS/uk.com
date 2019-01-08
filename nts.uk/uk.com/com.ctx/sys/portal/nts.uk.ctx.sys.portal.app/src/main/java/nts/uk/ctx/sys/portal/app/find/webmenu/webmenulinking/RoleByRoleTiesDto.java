@@ -3,7 +3,6 @@ package nts.uk.ctx.sys.portal.app.find.webmenu.webmenulinking;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuCode;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleByRoleTies;
 
 @Getter

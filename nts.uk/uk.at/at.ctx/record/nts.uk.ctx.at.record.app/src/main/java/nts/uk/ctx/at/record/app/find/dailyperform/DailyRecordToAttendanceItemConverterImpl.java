@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.dailyperform;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -39,6 +40,9 @@ import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+//import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -47,14 +51,18 @@ import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.shr.com.context.AppContexts;
 
 //@Stateless
 public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAttendanceItemConverter {
 
 	private final DailyRecordDto dailyRecord;
-
-	private DailyRecordToAttendanceItemConverterImpl() {
-		dailyRecord = new DailyRecordDto();
+	
+	private final Map<Integer, OptionalItem> optionalItems;
+	
+	private DailyRecordToAttendanceItemConverterImpl(Map<Integer, OptionalItem> optionalItems) {
+		this.dailyRecord = new DailyRecordDto();
+		this.optionalItems = optionalItems;
 	}
 
 	@Override
@@ -93,7 +101,7 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 		this.withAffiliationInfo(domain.getAffiliationInfor());
 		this.withBusinessType(domain.getBusinessType().orElse(null));
 		if(domain.getEmployeeError() != null && !domain.getEmployeeError().isEmpty()) {
-			this.withEmployeeErrors(domain.getEmployeeError().get(0));
+			this.withEmployeeErrors(domain.getEmployeeError());
 		}
 		this.withOutingTime(domain.getOutingTime().orElse(null));
 		this.withBreakTime(domain.getBreakTime());
@@ -107,12 +115,19 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 		this.withEditStates(domain.getEditState());
 		this.withTemporaryTime(domain.getTempTime().orElse(null));
 		this.withPCLogInfo(domain.getPcLogOnInfo().orElse(null));
-//		this.withRemarks(domain.get)
+		this.withRemarks(domain.getRemarks());
 		return this;
 	}
 	
-	public static DailyRecordToAttendanceItemConverter builder() {
-		return new DailyRecordToAttendanceItemConverterImpl();
+	public static DailyRecordToAttendanceItemConverter builder(OptionalItemRepository optionalItem) {
+		String compId = AppContexts.user().companyId();
+		return new DailyRecordToAttendanceItemConverterImpl(
+				optionalItem.findAll(compId).stream()
+					.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c)));
+	}
+	
+	public static DailyRecordToAttendanceItemConverter builder(Map<Integer, OptionalItem> optionalItems) {
+		return new DailyRecordToAttendanceItemConverterImpl(optionalItems);
 	}
 
 	public DailyRecordToAttendanceItemConverter withWorkInfo(WorkInfoOfDailyPerformance domain) {
@@ -135,8 +150,8 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 		return this;
 	}
 
-	public DailyRecordToAttendanceItemConverter withEmployeeErrors(EmployeeDailyPerError domain) {
-		this.dailyRecord.withErrors(EmployeeDailyPerErrorDto.getDto(domain));
+	public DailyRecordToAttendanceItemConverter withEmployeeErrors(List<EmployeeDailyPerError> domain) {
+		this.dailyRecord.withErrors(domain.stream().map(x -> EmployeeDailyPerErrorDto.getDto(x)).collect(Collectors.toList()));
 		return this;
 	}
 
@@ -186,7 +201,7 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 	}
 
 	public DailyRecordToAttendanceItemConverter withAnyItems(AnyItemValueOfDaily domain) {
-		this.dailyRecord.optionalItems(OptionalItemOfDailyPerformDto.getDto(domain));
+		this.dailyRecord.optionalItems(OptionalItemOfDailyPerformDto.getDto(domain, this.optionalItems));
 		return this;
 	}
 

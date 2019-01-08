@@ -27,8 +27,8 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * 戻り値：ドメインサービス：月別実績を集計する．集計処理
@@ -117,6 +117,19 @@ public class AggregateMonthlyRecordValue {
 	 */
 	public boolean existErrorResource(String resourceId){
 		return this.errorInfos.containsKey(resourceId);
+	}
+	
+	/**
+	 * 最大の週Noを確認する
+	 * @return 最大の週No
+	 */
+	public int getMaxWeekNo(){
+		int maxNo = 0;
+		for (val attendanceTimeWeek : this.attendanceTimeWeeks){
+			int weekNo = attendanceTimeWeek.getWeekNo();
+			if (maxNo < weekNo) maxNo = weekNo;
+		}
+		return maxNo;
 	}
 	
 	/**

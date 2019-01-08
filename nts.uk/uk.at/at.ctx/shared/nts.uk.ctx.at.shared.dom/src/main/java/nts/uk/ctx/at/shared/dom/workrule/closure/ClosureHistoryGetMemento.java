@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.workrule.closure;
 
 import nts.arc.time.YearMonth;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * The Interface ClosureHistoryGetMemento.

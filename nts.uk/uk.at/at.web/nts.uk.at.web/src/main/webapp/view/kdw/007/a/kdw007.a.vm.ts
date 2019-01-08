@@ -186,9 +186,12 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             if (self.screenMode() == ScreenMode.Daily) {
                 self.reSetData(self.selectedErrorAlarm(), foundItem);
             } else if (self.screenMode() == ScreenMode.Monthly) {
+                block.invisible();
                 self.reSetData(self.selectedErrorAlarm(), foundItem);
                 service.findMonthlyCondition(foundItem.errorAlarmCheckID, foundItem.code).done((data) => {
                     self.resetMonthlyConditon(self.selectedErrorAlarm(), data);
+                }).always(() => {
+                    block.clear();
                 });
             }
             self.selectedTab('tab-1');
@@ -298,6 +301,14 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     param.erAlAtdItemConditionGroup1.forEach((conditionParam) => {
                         if (conditionParam.targetNO == condition.targetNO()) {
                             condition.setData(conditionParam.targetNO, conditionParam);
+                            condition.inputCheckCondition(conditionParam.inputCheckCondition);
+                            if(conditionParam.conditionType == 2){
+                                if(condition.inputCheckCondition() == 0){
+                                    condition.displayLeftCompare(nts.uk.resource.getText("KDW007_108"));
+                                }else{
+                                    condition.displayLeftCompare(nts.uk.resource.getText("KDW007_107"));
+                                }    
+                            }
                         }
                     });
                 } else {
@@ -309,6 +320,14 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     param.erAlAtdItemConditionGroup2.forEach((conditionParam) => {
                         if (conditionParam.targetNO == condition.targetNO()) {
                             condition.setData(conditionParam.targetNO, conditionParam);
+                            condition.inputCheckCondition(conditionParam.inputCheckCondition);
+                            if(conditionParam.conditionType == 2){
+                                if(condition.inputCheckCondition() == 0){
+                                    condition.displayLeftCompare(nts.uk.resource.getText("KDW007_108"));
+                                }else{
+                                    condition.displayLeftCompare(nts.uk.resource.getText("KDW007_107"));
+                                }    
+                            }
                         }
                     });
                 } else {
@@ -359,6 +378,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
         updateTab() {
             let self = this;
+            self.tabs()[0].visible(false);
             self.tabs()[1].visible(false);
             self.tabs()[2].visible(false);
             self.tabs()[3].visible(false);
@@ -372,7 +392,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             
             $(".need-check").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
-                var data = ko.mapping.toJS(self.selectedErrorAlarm());
+                let data = ko.mapping.toJS(self.selectedErrorAlarm());
                 data.boldAtr = data.boldAtr ? 1 : 0;
                 data.alCheckTargetCondition.filterByBusinessType = data.alCheckTargetCondition.filterByBusinessType ? 1 : 0;
                 data.alCheckTargetCondition.filterByEmployment = data.alCheckTargetCondition.filterByEmployment ? 1 : 0;
@@ -537,7 +557,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
         openSelectAtdItemColorDialog() {
             let self = this;
             //Open dialog KDL021
+            nts.uk.ui.block.invisible();
             service.getAllAttendanceItem().done((lstItem) => {
+                nts.uk.ui.block.clear();
                 let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
                 nts.uk.ui.windows.setShared('Multiple', false);
                 // example wait
@@ -561,6 +583,8 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 isMultiple: true,
                 selectedCodes: self.selectedErrorAlarm().alCheckTargetCondition.lstEmployment(),
                 showNoSelection: false,
+                isShowWorkClosure: false
+
             }, true);
 
             nts.uk.ui.windows.sub.modal("com", "/view/cdl/002/a/index.xhtml").onClosed(function() {
@@ -679,6 +703,18 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             });
         }
         /* End Tab 4 */
+        
+        private exportExcel(): void {
+            var self = this;
+            nts.uk.ui.block.grayout();
+            let langId = "ja";
+            service.saveAsExcel(langId).done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+        }
     }
 
     export class ErrorAlarmWorkRecord {
@@ -1230,7 +1266,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.singleAtdItem = param ? ko.observable(param.singleAtdItem) : ko.observable(null);
             self.compareStartValue = param ? ko.observable(param.compareStartValue) : ko.observable(null);
             self.compareEndValue = param ? ko.observable(param.compareEndValue) : ko.observable(null);
-            self.compareOperator = param ? ko.observable(param.compareOperator) : ko.observable(0);
+            self.compareOperator = param ? ko.observable(param.compareOperator) : ko.observable(1);
             self.inputCheckCondition = param && param.inputCheckCondition ? ko.observable(param.inputCheckCondition) : ko.observable(0);
             self.displayLeftCompare = ko.observable("");
             self.displayLeftOperator = ko.observable("");
@@ -1260,13 +1296,13 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.displayLeftOperator("");
             self.displayRightOperator("");
             switch (self.compareOperator()) {
-                case 0:
+                case 1:
                     self.displayLeftOperator("＝");
                     break;
-                case 1:
+                case 0:
                     self.displayLeftOperator("≠");
                     break;
-                case 2:
+                case 5:
                     self.displayLeftOperator("＞");
                     break;
                 case 3:
@@ -1275,7 +1311,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 case 4:
                     self.displayLeftOperator("＜");
                     break;
-                case 5:
+                case 2:
                     self.displayLeftOperator("≦");
                     break;
                 case 6:
@@ -1314,7 +1350,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                     if (self.conditionType() === 0) {
                         // If is compare with a fixed value
                         let rawValue = self.compareStartValue();
-                        let textDisplayLeftCompare = (conditionAtr === 0 || conditionAtr === 3 || conditionAtr === 4) ? rawValue.toString() : nts.uk.time.parseTime(parseInt(rawValue.toString()), true).format();
+                        let textDisplayLeftCompare = rawValue == null ? "" : (conditionAtr === 0 || conditionAtr === 3 || conditionAtr === 4) ? rawValue.toString() : nts.uk.time.parseTime(parseInt(rawValue.toString()), true).format();
                         self.displayLeftCompare(textDisplayLeftCompare);
                         self.displayRightCompare("");
                     } else {
@@ -1421,9 +1457,9 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             self.countableSubAtdItems(param && param.countableSubAtdItems ? param.countableSubAtdItems : []);
             self.conditionType(param ? param.conditionType : 0);
             self.singleAtdItem(param ? param.singleAtdItem : null);
-            self.compareStartValue(param && nts.uk.ntsNumber.isNumber(param.compareStartValue, false) ? param.compareStartValue : null);
-            self.compareEndValue(param && nts.uk.ntsNumber.isNumber(param.compareEndValue, false) ? param.compareEndValue : null);
-            self.compareOperator(param ? param.compareOperator : 0);
+            self.compareStartValue(param && nts.uk.ntsNumber.isNumber(param.compareStartValue, true) ? param.compareStartValue : null);
+            self.compareEndValue(param && nts.uk.ntsNumber.isNumber(param.compareEndValue, true) ? param.compareEndValue : null);
+            self.compareOperator(param ? param.compareOperator : 1);
             self.setTextDisplay();
         }
     }

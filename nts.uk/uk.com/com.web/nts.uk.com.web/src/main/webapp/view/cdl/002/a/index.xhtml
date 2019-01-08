@@ -14,6 +14,7 @@
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="cdl002.a.main.css" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="cdl002.a.start.js" />
 			<com:scriptfile path="cdl002.a.vm.js" />
@@ -21,8 +22,10 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div>#{i18n.getText('CDL002_1')}</div>
-				<div id="emp-component" tabindex="-1"></div>
+				<div class="employeeContent" tabindex="-1">
+					<div class="lableCDL">#{i18n.getText('CDL002_1')}</div>
+					<div id="emp-component" tabindex="-1"></div>
+				</div>
 			</div>
 			<div id="ruled-line" style="border: 1px solid;"></div>
 			<div id="functions-area-bottom">

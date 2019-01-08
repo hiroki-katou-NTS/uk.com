@@ -48,7 +48,7 @@ public interface DailyRecordToAttendanceItemConverter {
 	
 	DailyRecordToAttendanceItemConverter withAffiliationInfo(AffiliationInforOfDailyPerfor domain);
 
-	DailyRecordToAttendanceItemConverter withEmployeeErrors(EmployeeDailyPerError domain);
+	DailyRecordToAttendanceItemConverter withEmployeeErrors(List<EmployeeDailyPerError> domain);
 
 	DailyRecordToAttendanceItemConverter withOutingTime(OutingTimeOfDailyPerformance domain);
 

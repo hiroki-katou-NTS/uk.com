@@ -577,8 +577,8 @@ module nts.uk.at.view.kmk003.a {
                 self.mainSettingModel.save()
                     .done(() => {
                         // recheck abolish condition of list worktime
-                        self.workTimeSettingLoader.isAbolish(self.mainSettingModel.workTimeSetting.isAbolish());
-
+                        // self.workTimeSettingLoader.isAbolish(self.mainSettingModel.workTimeSetting.isAbolish());
+                        self.workTimeSettingLoader.isAbolish(true);
                         // reload
                         self.reloadAfterSave();
                         self.isClickSave(false);

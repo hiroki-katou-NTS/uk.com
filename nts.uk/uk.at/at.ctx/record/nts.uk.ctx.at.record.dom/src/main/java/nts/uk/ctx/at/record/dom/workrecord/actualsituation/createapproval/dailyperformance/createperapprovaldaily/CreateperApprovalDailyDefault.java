@@ -30,7 +30,7 @@ public class CreateperApprovalDailyDefault implements CreateperApprovalDailyServ
 
 	@Override
 	public boolean createperApprovalDaily(String companyId, String executionId, List<String> employeeIDs,
-			int processExecType, Integer createNewEmp, GeneralDate startDateClosure) {
+			int processExecType, Integer createNewEmp, GeneralDate startDateClosure,GeneralDate endDateClosure) {
 		/** パラメータ.実行種別をチェック */
 		// 通常実行の場合 : processExecType = 0(通常実行)
 		if (!employeeIDs.isEmpty()) {
@@ -55,12 +55,14 @@ public class CreateperApprovalDailyDefault implements CreateperApprovalDailyServ
 						}
 						// 年月日 ← 取得した「所属会社履歴（社員別）.所属期間.開始日」
 						if (checkAffComHist) {
-							ymd = affComHist.getLstAffComHistItem().get(0).getDatePeriod().start();
+							if(!affComHist.getLstAffComHistItem().isEmpty()) {
+								ymd = affComHist.getLstAffComHistItem().get(0).getDatePeriod().start();
+							}
 						}
 					}
 					/** アルゴリズム「指定社員の中間データを作成する」を実行する */
 					AppRootInsContentFnImport appRootInsContentFnImport = createDailyApproverAdapter
-							.createDailyApprover(employeeID, 1, ymd);
+							.createDailyApprover(employeeID, 1, ymd,startDateClosure);
 
 					boolean flagError = appRootInsContentFnImport.getErrorFlag().intValue() == 1 ? true : false;
 					String errorMessage = appRootInsContentFnImport.getErrorMsgID();
@@ -78,7 +80,7 @@ public class CreateperApprovalDailyDefault implements CreateperApprovalDailyServ
 				for (String employeeID : employeeIDs) {
 					/** アルゴリズム「指定社員の中間データを作成する」を実行する */
 					AppRootInsContentFnImport appRootInsContentFnImport = createDailyApproverAdapter
-							.createDailyApprover(employeeID, 1, startDateClosure);
+							.createDailyApprover(employeeID, 1,endDateClosure, startDateClosure);
 
 					boolean flagError = appRootInsContentFnImport.getErrorFlag().intValue() == 1 ? true : false;
 					String errorMessage = appRootInsContentFnImport.getErrorMsgID();

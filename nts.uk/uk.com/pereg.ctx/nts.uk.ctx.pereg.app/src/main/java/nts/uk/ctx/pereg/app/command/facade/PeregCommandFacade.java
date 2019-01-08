@@ -181,54 +181,57 @@ public class PeregCommandFacade {
 	}
 	
 	public Object registerHandler(PeregInputContainer inputContainer) {
-		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER, -99);
 		
-		String recordId = null;
-		PersonCorrectionLogParameter target  = null;
-		List<DateRangeDto> ctgCode = ctgRepo.dateRangeCode();
-		String employeeId = inputContainer.getEmployeeId();
-		// get user info
-		UserAuthDto user = new UserAuthDto("", "", "", employeeId, "", "");
-		List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(employeeId));
+		String recId = DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, -99, () -> {
 		
-		if (userAuth.size() > 0) {
-			user = userAuth.get(0);
-		}
+			String recordId = null;
+			PersonCorrectionLogParameter target  = null;
+			List<DateRangeDto> ctgCode = ctgRepo.dateRangeCode();
+			String employeeId = inputContainer.getEmployeeId();
+			// get user info
+			UserAuthDto user = new UserAuthDto("", "", "", employeeId, "", "");
+			List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(employeeId));
+			
+			if (userAuth.size() > 0) {
+				user = userAuth.get(0);
+			}
+			
+			target = new PersonCorrectionLogParameter(user.getUserID(), employeeId, user.getEmpName(),
+						PersonInfoProcessAttr.UPDATE, null);
+			// ADD COMMAND
+			recordId = this.add(inputContainer, target, user);
+	
+			// UPDATE COMMAND
+			this.update(inputContainer, target, user);
+	
+			// DELETE COMMAND
+			this.delete(inputContainer, ctgCode);
+			
+			return recordId;
+		});
 		
-		target = new PersonCorrectionLogParameter(user.getUserID(), employeeId, user.getUserName(),
-					PersonInfoProcessAttr.UPDATE, null);
-		// ADD COMMAND
-		recordId = this.add(inputContainer, target, user);
-
-		// UPDATE COMMAND
-		this.update(inputContainer, target, user);
-
-		// DELETE COMMAND
-		this.delete(inputContainer, ctgCode);
-
-		DataCorrectionContext.transactionFinishing(-99);
 		
-		return new Object[] { recordId };
+		return new Object[] { recId };
 	}
 	
 	public void deleteHandler(PeregDeleteCommand command) {
-		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER, -88);
-
-		List<DateRangeDto> ctgCode = ctgRepo.dateRangeCode();
-		List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(command.getEmployeeId()));
-		UserAuthDto user = new UserAuthDto("", "", "", command.getEmployeeId(), "", "");
-
-		if (userAuth.size() > 0) {
-			user = userAuth.get(0);
-		}
-
-		PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(user.getUserID(), command.getEmployeeId(),
-				user.getUserName(), PersonInfoProcessAttr.UPDATE, null);
-		
-		DataCorrectionContext.setParameter(target.getHashID(), target);
-
-		this.delete(command, ctgCode);
-		DataCorrectionContext.transactionFinishing(-88);
+		DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, -88, () -> {
+	
+			List<DateRangeDto> ctgCode = ctgRepo.dateRangeCode();
+			List<UserAuthDto> userAuth = this.userFinder.getByListEmp(Arrays.asList(command.getEmployeeId()));
+			UserAuthDto user = new UserAuthDto("", "", "", command.getEmployeeId(), "", "");
+	
+			if (userAuth.size() > 0) {
+				user = userAuth.get(0);
+			}
+	
+			PersonCorrectionLogParameter target = new PersonCorrectionLogParameter(user.getUserID(), command.getEmployeeId(),
+					user.getEmpName(), PersonInfoProcessAttr.UPDATE, null);
+			
+			DataCorrectionContext.setParameter(target.getHashID(), target);
+	
+			this.delete(command, ctgCode);
+		});
 	}
 
 	/**
@@ -258,14 +261,14 @@ public class PeregCommandFacade {
 
 		// Getall items by category id
 		Map<String, List<ItemBasicInfo>> itemByCtgId = perInfoItemDefRepositoty
-				.getItemCDByListCategoryIdWithoutAbolition(container.getInputs().stream()
+				.getItemCDByListCategoryIdWithAbolition(container.getInputs().stream()
 						.map(ItemsByCategory::getCategoryId).distinct().collect(Collectors.toList()),
 						AppContexts.user().contractCode());
 		
 		// Filter required item
 		Map<String, List<ItemBasicInfo>> requiredItemByCtgId = itemByCtgId.entrySet().stream()
 				.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().stream()
-						.filter(info -> info.getRequiredAtr() == 1).collect(Collectors.toList())));
+						.filter(info -> info.getRequiredAtr() == 1 && info.getAbolitionAtr() == 0).collect(Collectors.toList())));
 		
 		// Check is enough item to regist
 		// Item missing
@@ -298,10 +301,10 @@ public class PeregCommandFacade {
 
 		if (isCps002 == false) {
 			if (addInputs.size() > 0) {
-				DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
-				updateInputForAdd(addInputs);
-				setParamsForCPS001(employeeId, personId, PersonInfoProcessAttr.ADD, addInputs, target);
-				DataCorrectionContext.transactionFinishing();
+				DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, () -> {
+					updateInputForAdd(addInputs);
+					setParamsForCPS001(employeeId, personId, PersonInfoProcessAttr.ADD, addInputs, target);
+				});
 			}
 		}
 
@@ -345,9 +348,9 @@ public class PeregCommandFacade {
 				.filter(p -> !StringUtils.isEmpty(p.getRecordId())).collect(Collectors.toList());
 
 		if (updateInputs != null && !updateInputs.isEmpty()) {
-			DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
-			setParamsForCPS001(container.getEmployeeId(), container.getPersonId(), PersonInfoProcessAttr.UPDATE, updateInputs, target);
-			DataCorrectionContext.transactionFinishing();
+			DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, () -> {
+				setParamsForCPS001(container.getEmployeeId(), container.getPersonId(), PersonInfoProcessAttr.UPDATE, updateInputs, target);
+			});
 			updateInputCategories(container, updateInputs);
 		}
 
@@ -457,7 +460,7 @@ public class PeregCommandFacade {
 					case CONTINUOUS_HISTORY_FOR_ENDDATE:
 					case DUPLICATEHISTORY:
 					case NODUPLICATEHISTORY:
-						if(specialItemCode.contains(item.itemCode()) || item.itemCode().equals(dateRange.getStartDateCode())) {
+						if(specialItemCode.contains(item.itemCode()) || (isHistory == true && item.itemCode().equals(dateRange.getStartDateCode()))) {
 							stringKey = item.valueAfter();
 						}
 						if(ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE
@@ -466,8 +469,8 @@ public class PeregCommandFacade {
 							boolean isContinuousHistory = ctgType == CategoryType.CONTINUOUSHISTORY;
 							if(historyLst.size() == 1) {
 								if (item.itemCode().equals(dateRange.getEndDateCode())) {
-									item.setValueAfter(isContinuousHistory? valueEndate: item.valueAfter());
-									item.setContentAfter(isContinuousHistory ? valueEndate: item.contentAfter());
+									item.setValueAfter((isContinuousHistory && !input.getCategoryCd().equals(category21)) == true ? valueEndate: item.valueAfter());
+									item.setContentAfter((isContinuousHistory && !input.getCategoryCd().equals(category21))== true? valueEndate: item.valueAfter());
 								}
 								
 							}else {									
@@ -481,8 +484,8 @@ public class PeregCommandFacade {
 											info = InfoOperateAttr.ADD_HISTORY;
 											//nếu thêm lịch sử thì endCode sẽ có giá trị 9999/12/31
 											if (item.itemCode().equals(dateRange.getEndDateCode())) {
-												item.setValueAfter(isContinuousHistory && !category21.equals("CS00021")? valueEndate: item.valueAfter());
-												item.setContentAfter(isContinuousHistory && !category21.equals("CS00021")? valueEndate: item.contentAfter());
+												item.setValueAfter((isContinuousHistory && !input.getCategoryCd().equals("CS00021")) == true? valueEndate: item.valueAfter());
+												item.setContentAfter((isContinuousHistory && !input.getCategoryCd().equals("CS00021")) == true? valueEndate: item.contentAfter());
 											}else {
 												if(ctgType == CategoryType.CONTINUOUSHISTORY || ctgType == CategoryType.CONTINUOUS_HISTORY_FOR_ENDDATE) {
 													if(item.itemCode().equals(dateRange.getStartDateCode())) {
@@ -527,7 +530,8 @@ public class PeregCommandFacade {
 					if (ItemValue.filterItem(item) != null) {
 						input.getItems().stream().forEach(c ->{
 							if(item.itemCode().equals(c.itemCode())) {
-								lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(item));
+								ItemValue convertItem = ItemValue.setContentForCPS001(item);
+								lstItemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(convertItem));
 							}
 						});
 						
@@ -586,7 +590,7 @@ public class PeregCommandFacade {
 				ctgTarget = new PersonCategoryCorrectionLogParameter(input.getCategoryId(), input.getCategoryName(), 
 						infoOperateAttr, lstItemInfo,
 						new TargetDataKey(CalendarKeyType.NONE, null,
-						code.equals(specialItemCode.get(0)) == true  || code.equals(specialItemCode.get(1)) == true? stringKey : code), Optional.ofNullable(reviseInfo));
+						code == null? null: (code.equals(specialItemCode.get(0)) == true  || code.equals(specialItemCode.get(1)) == true? stringKey : code)), Optional.ofNullable(reviseInfo));
 			}
 			return ctgTarget;
 
@@ -698,108 +702,109 @@ public class PeregCommandFacade {
 	 */
 	@Transactional
 	private void delete(PeregDeleteCommand command, List<DateRangeDto> ctgCode) {
-		DataCorrectionContext.transactionBegun(CorrectionProcessorId.PEREG_REGISTER);
-		
-		List<ItemValue> fullItems = itemDefFinder.getFullListItemDef(PeregQuery.createQueryCategory(
-				command.getRecordId(), command.getCategoryCode(), command.getEmployeeId(), command.getPersonId()));
-
-		List<String> visibleItemCodes = command.getInputs().stream().map(ItemValue::itemCode)
-				.collect(Collectors.toList());
-
-		List<ItemValue> mergerItem = fullItems.stream().filter(i -> {
-			return i.itemCode().indexOf("O") == -1 && !visibleItemCodes.contains(i.itemCode());
-		}).collect(Collectors.toList());
-		
-		mergerItem.addAll(command.getInputs());
-
-		/*
-		 * SINGLEINFO(1), MULTIINFO(2), CONTINUOUSHISTORY(3), NODUPLICATEHISTORY(4),
-		 * DUPLICATEHISTORY(5), CONTINUOUS_HISTORY_FOR_ENDDATE(6);
-		 */
-		TargetDataKey dKey = TargetDataKey.of("");
-		List<PersonCorrectionItemInfo> itemInfo = new ArrayList<PersonCorrectionItemInfo>();
-		Optional<ReviseInfo> rInfo = Optional.ofNullable(null);
-		switch (command.getCategoryType()) {
-		case 2:
-			Optional<ItemValue> itemValue = mergerItem.stream().findFirst();
-
-			if (itemValue.isPresent()) {
-				ItemValue _itemValue = itemValue.get();
-				String valueAfter = Optional.ofNullable(_itemValue.valueAfter()).orElse(""),
-						viewAfter = Optional.ofNullable(_itemValue.contentAfter()).orElse("");
-
-				if (!valueAfter.trim().isEmpty()) {
-					_itemValue.setValueAfter(null);
-				}
-
-				if (!viewAfter.trim().isEmpty()) {
-					_itemValue.setContentAfter(null);
-				}
-
-				dKey = TargetDataKey.of(_itemValue.valueBefore());
-				itemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(_itemValue));
-			}			
-			break;
-		case 3:
-		case 4:
-		case 5:
-		case 6:
-			Optional<DateRangeDto> ddto = ctgCode.stream().filter(f -> f.getCtgCode().equals(command.getCategoryCode()))
-					.findFirst();
-
-			if (ddto.isPresent()) {
-				Optional<ItemValue> startDate = mergerItem.stream()
-						.filter(f -> f.itemCode().equals(ddto.get().getStartDateCode())).findFirst();
-				Optional<ItemValue> endDate = mergerItem.stream()
-						.filter(f -> f.itemCode().equals(ddto.get().getEndDateCode())).findFirst();
-
-				if (startDate.isPresent()) {
-					ItemValue _startDate = startDate.get();
-					String valueAfter = Optional.ofNullable(_startDate.valueAfter()).orElse(""),
-							viewAfter = Optional.ofNullable(_startDate.contentAfter()).orElse("");
-					
-					if(!valueAfter.trim().isEmpty()) {
-						_startDate.setValueAfter(null);
+		DataCorrectionContext.transactional(CorrectionProcessorId.PEREG_REGISTER, () -> {
+			
+			List<ItemValue> fullItems = itemDefFinder.getFullListItemDef(PeregQuery.createQueryCategory(
+					command.getRecordId(), command.getCategoryCode(), command.getEmployeeId(), command.getPersonId()));
+	
+			List<String> visibleItemCodes = command.getInputs().stream().map(ItemValue::itemCode)
+					.collect(Collectors.toList());
+	
+			List<ItemValue> mergerItem = fullItems.stream().filter(i -> {
+				return i.itemCode().indexOf("O") == -1 && !visibleItemCodes.contains(i.itemCode());
+			}).collect(Collectors.toList());
+			
+			mergerItem.addAll(command.getInputs());
+	
+			/*
+			 * SINGLEINFO(1), MULTIINFO(2), CONTINUOUSHISTORY(3), NODUPLICATEHISTORY(4),
+			 * DUPLICATEHISTORY(5), CONTINUOUS_HISTORY_FOR_ENDDATE(6);
+			 */
+			TargetDataKey dKey = TargetDataKey.of("");
+			List<PersonCorrectionItemInfo> itemInfo = new ArrayList<PersonCorrectionItemInfo>();
+			Optional<ReviseInfo> rInfo = Optional.ofNullable(null);
+			switch (command.getCategoryType()) {
+			case 2:
+				Optional<ItemValue> itemValue = mergerItem.stream().findFirst();
+	
+				if (itemValue.isPresent()) {
+					ItemValue _itemValue = itemValue.get();
+					String valueAfter = Optional.ofNullable(_itemValue.valueAfter()).orElse(""),
+							viewAfter = Optional.ofNullable(_itemValue.contentAfter()).orElse("");
+	
+					if (!valueAfter.trim().isEmpty()) {
+						_itemValue.setValueAfter(null);
 					}
-
-					if(!viewAfter.trim().isEmpty()) {
-						_startDate.setContentAfter(null);
+	
+					if (!viewAfter.trim().isEmpty()) {
+						_itemValue.setContentAfter(null);
+					}
+	
+					dKey = TargetDataKey.of(_itemValue.valueBefore());
+					itemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(_itemValue));
+				}			
+				break;
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+				Optional<DateRangeDto> ddto = ctgCode.stream().filter(f -> f.getCtgCode().equals(command.getCategoryCode()))
+						.findFirst();
+	
+				if (ddto.isPresent()) {
+					Optional<ItemValue> startDate = mergerItem.stream()
+							.filter(f -> f.itemCode().equals(ddto.get().getStartDateCode())).findFirst();
+					Optional<ItemValue> endDate = mergerItem.stream()
+							.filter(f -> f.itemCode().equals(ddto.get().getEndDateCode())).findFirst();
+	
+					if (startDate.isPresent()) {
+						ItemValue _startDate = startDate.get();
+						String valueAfter = Optional.ofNullable(_startDate.valueAfter()).orElse(""),
+								viewAfter = Optional.ofNullable(_startDate.contentAfter()).orElse("");
+						
+						if(!valueAfter.trim().isEmpty()) {
+							_startDate.setValueAfter(null);
+						}
+	
+						if(!viewAfter.trim().isEmpty()) {
+							_startDate.setContentAfter(null);
+						}
+						
+						dKey = TargetDataKey.of(GeneralDate.fromString(_startDate.valueBefore(), "yyyy/MM/dd"));
+						itemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(_startDate));
+					}
+	
+					int ctype = command.getCategoryType();
+					// save revise for continue, noduplicate history
+					if ((ctype == 3 || ctype == 6) && endDate.isPresent()) {
+						ItemValue _endDate = endDate.get();
+						rInfo = startDate.map(m -> {
+							GeneralDate date = GeneralDate.fromString(m.valueBefore(), "yyyy/MM/dd").addDays(-1);
+							return new ReviseInfo(_endDate.itemName(), ctype == 3? Optional.ofNullable(GeneralDate.fromString(valueEndate, "yyyy/MM/dd")): Optional.ofNullable(date), Optional.empty(),
+									Optional.empty());
+						});
 					}
 					
-					dKey = TargetDataKey.of(GeneralDate.fromString(_startDate.valueBefore(), "yyyy/MM/dd"));
-					itemInfo.add(PersonCorrectionItemInfo.createItemInfoToItemLog(_startDate));
+					
 				}
-
-				int ctype = command.getCategoryType();
-				// save revise for continue, noduplicate history
-				if ((ctype == 3 || ctype == 6) && endDate.isPresent()) {
-					ItemValue _endDate = endDate.get();
-					rInfo = startDate.map(m -> {
-						GeneralDate date = GeneralDate.fromString(m.valueBefore(), "yyyy/MM/dd").addDays(-1);
-						return new ReviseInfo(_endDate.itemName(), Optional.ofNullable(date), Optional.empty(),
-								Optional.empty());
-					});
-				}
+				break;
 			}
-			break;
-		}
-
-		// Add category correction data
-		PersonCategoryCorrectionLogParameter ctgTarget = new PersonCategoryCorrectionLogParameter(
-				command.getCategoryId(), command.getCategoryName(), InfoOperateAttr.deleteOf(command.getCategoryType()),
-				itemInfo, dKey, rInfo);
-
-		DataCorrectionContext.setParameter(ctgTarget.getHashID(), ctgTarget);
-
-		val handler = this.deleteHandlers.get(command.getCategoryCode());
-		if (handler != null) {
-			handler.handlePeregCommand(command);
-		}
-
-		val commandForUserDef = new PeregUserDefDeleteCommand(command);
-		this.userDefDelete.handle(commandForUserDef);
-
-		DataCorrectionContext.transactionFinishing();
+	
+			// Add category correction data
+			PersonCategoryCorrectionLogParameter ctgTarget = new PersonCategoryCorrectionLogParameter(
+					command.getCategoryId(), command.getCategoryName(), InfoOperateAttr.deleteOf(command.getCategoryType()),
+					itemInfo, dKey, rInfo);
+	
+			DataCorrectionContext.setParameter(ctgTarget.getHashID(), ctgTarget);
+	
+			val handler = this.deleteHandlers.get(command.getCategoryCode());
+			if (handler != null) {
+				handler.handlePeregCommand(command);
+			}
+	
+			val commandForUserDef = new PeregUserDefDeleteCommand(command);
+			this.userDefDelete.handle(commandForUserDef);
+		});
 	}
 
 }

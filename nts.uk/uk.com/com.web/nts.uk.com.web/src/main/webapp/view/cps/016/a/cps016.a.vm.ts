@@ -63,13 +63,13 @@ module nts.uk.com.view.cps016.a.viewmodel {
         //開�
         start(): JQueryPromise<any> {
             let self = this;
-            let groupCompanyAdmin = __viewContext.user.role.groupCompanyAdmin;
+            let groupCompanyAdmin = __viewContext.user.role.groupCompanyAdmin,
+                systemAdmin = __viewContext.user.role.systemAdmin;
             
-            if (groupCompanyAdmin === 'null') {
+            if (groupCompanyAdmin === 'null' && systemAdmin === 'null') {
                 alertError({ messageId: "Msg_1103" }).then(() => {
                     uk.request.jumpToTopPage();
                 });
-
             } else {
                 let dfd = $.Deferred();
 
@@ -173,23 +173,19 @@ module nts.uk.com.view.cps016.a.viewmodel {
             service.addDataSelectionItem(command).done(function(selectId:any) {
                 //画面頛�「選択雮名称一覧�選択雮名称一覧」を登録する
                 self.getAllSelectionItems().done(() => {
-                    self.perInfoSelectionItem().selectionItemId(selectId);
- 
                     //「CPS017_個人惱の選択肢の登録」をモーダルダイアログで起動す�
-                    setTimeout(() => {
-                        confirm({ messageId: "Msg_456" }).ifYes(() => {
-                            let params = {
-                                isDialog: true,
-                                selectionItemId: ko.toJS(self.perInfoSelectionItem().selectionItemId)
-                            }
-                            setShared('CPS017_PARAMS', params);
-                            modal('/view/cps/017/a/index.xhtml', { title: '', height: 750, width: 1260 }).onClosed(function(): any {
-                            });
-
-                        }).then(() => {
-                            $("#selectionItemName").focus();
-                        })
-                    }, 1);
+                    confirm({ messageId: "Msg_456" }).ifYes(() => {
+                        self.perInfoSelectionItem().selectionItemId(selectId);
+                        let params = {
+                            isDialog: true,
+                            selectionItemId: ko.toJS(self.perInfoSelectionItem().selectionItemId)
+                        }
+                        setShared('CPS017_PARAMS', params);
+                        modal('/view/cps/017/a/index.xhtml', { title: '', height: 750, width: 1260 }).onClosed(function(): any {
+                        });
+                    }).then(() => {
+                        self.perInfoSelectionItem().selectionItemId(selectId);
+                    });
                 });
             }).fail(error => {
                 alertError({ messageId: "Msg_513" });

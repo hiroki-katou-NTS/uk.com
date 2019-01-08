@@ -19,9 +19,15 @@ public interface AdTimeAndAnyItemAdUpService {
 
 	void addAndUpdate(String empId, GeneralDate ymd, Optional<AttendanceTimeOfDailyPerformance> attendanceTime,Optional<AnyItemValueOfDaily> anyItem);
 	
-	void addAndUpdate(List<IntegrationOfDaily> daily);
+	List<IntegrationOfDaily> addAndUpdate(List<IntegrationOfDaily> daily);
 	
-	void addAndUpdate(List<IntegrationOfDaily> daily, Map<WorkTypeCode, WorkType> workTypes);
+	List<IntegrationOfDaily> runStoredProcess(List<IntegrationOfDaily> daily, Map<WorkTypeCode, WorkType> workTypes);
 	
-	void addAndUpdate(IntegrationOfDaily daily);
+	List<IntegrationOfDaily> runStoredProcess(List<IntegrationOfDaily> daily);
+	
+	List<IntegrationOfDaily> saveOnly(List<IntegrationOfDaily> daily);
+	
+	List<IntegrationOfDaily> addAndUpdate(List<IntegrationOfDaily> daily, Map<WorkTypeCode, WorkType> workTypes);
+	
+	IntegrationOfDaily addAndUpdate(IntegrationOfDaily daily);
 }

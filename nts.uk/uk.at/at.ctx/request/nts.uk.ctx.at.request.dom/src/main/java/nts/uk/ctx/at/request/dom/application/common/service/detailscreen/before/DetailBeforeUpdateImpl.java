@@ -21,12 +21,22 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 
 	public void processBeforeDetailScreenRegistration(String companyID, String employeeID, GeneralDate appDate,
 			int employeeRouteAtr, String appID, PrePostAtr postAtr, Long version) {
-
+		
 		// 選択した勤務種類の矛盾チェック(check sự mâu thuẫn của worktype đã chọn)
 		// selectedWorkTypeConflictCheck();
-
-		// アルゴリズム「確定チェック」を実施する(thực hiện xử lý 「確定チェック」)
-		newBeforeRegister.confirmationCheck(companyID, employeeID, appDate);
+		
+		Application_New application = applicationRepository.findByID(companyID, appID).get();
+		GeneralDate startDate = application.getAppDate();
+		GeneralDate endDate = application.getAppDate();
+		// 申請する開始日～申請する終了日までループする
+		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
+			if(application.getPrePostAtr().equals(PrePostAtr.PREDICT) && application.isAppOverTime()){
+				newBeforeRegister.confirmCheckOvertime(application.getCompanyID(), application.getEmployeeID(), loopDate);
+			}else{
+				// アルゴリズム「確定チェック」を実施する
+				newBeforeRegister.confirmationCheck(application.getCompanyID(), application.getEmployeeID(), loopDate);
+			}
+		}
 
 		exclusiveCheck(companyID, appID, version);
 	}
@@ -56,8 +66,19 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 		// 選択した勤務種類の矛盾チェック(check sự mâu thuẫn của worktype đã chọn)
 		// selectedWorkTypeConflictCheck();
 
-		// アルゴリズム「確定チェック」を実施する(thực hiện xử lý 「確定チェック」)
-		newBeforeRegister.confirmationCheck(companyID, employeeID, appDate);
+		Application_New application = applicationRepository.findByID(companyID, appID).get();
+		GeneralDate startDate = application.getAppDate();
+		GeneralDate endDate = application.getAppDate();
+		// 申請する開始日～申請する終了日までループする
+		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
+			if(loopDate.equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr.PREDICT) && application.isAppOverTime()){
+				newBeforeRegister.confirmCheckOvertime(application.getCompanyID(), application.getEmployeeID(), loopDate);
+			}else{
+				// アルゴリズム「確定チェック」を実施する
+				newBeforeRegister.confirmationCheck(application.getCompanyID(), application.getEmployeeID(), loopDate);
+			}
+		}
+		
 		// アルゴリズム「排他チェック」を実行する(thực hiện xử lý 「排他チェック」)
 		return exclusiveCheckErr(companyID, appID, version);
 	}

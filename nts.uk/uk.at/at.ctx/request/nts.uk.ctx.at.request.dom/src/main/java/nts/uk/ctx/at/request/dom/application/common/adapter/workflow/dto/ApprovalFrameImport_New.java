@@ -25,9 +25,13 @@ public class ApprovalFrameImport_New {
 	
 	private String approverName;
 	
+	private String approverMail;
+	
 	private String representerID;
 	
 	private String representerName;
+	
+	private String representerMail;
 	
 	private String approvalReason;
 	

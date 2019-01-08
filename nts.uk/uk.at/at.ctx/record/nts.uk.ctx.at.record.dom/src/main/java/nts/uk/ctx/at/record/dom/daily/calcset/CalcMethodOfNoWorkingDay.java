@@ -6,8 +6,8 @@ package nts.uk.ctx.at.record.dom.daily.calcset;
  *
  */
 public enum CalcMethodOfNoWorkingDay {
-	isCalculateFlexTime,
-	isNotCalculateFlexTime;
+	isCalculateFlexTime,    //フレックス時間を計算する
+	isNotCalculateFlexTime; //フレックス時間を計算しない
 	
 	/**
 	 * フレックス時間を計算するか判定する

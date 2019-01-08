@@ -32,6 +32,6 @@ public class HalfDayAnnualLeaveDto implements ItemConst {
 	public HalfDayAnnualLeave toDomain() {
 		return HalfDayAnnualLeave.of(
 							remainingNum == null ? new HalfDayAnnLeaRemainingNum() : remainingNum.toRemainingNumDomain(),
-							usedNum == null ? new HalfDayAnnLeaUsedNum() : remainingNum.toUsedNumDomain());
+							usedNum == null ? new HalfDayAnnLeaUsedNum() : usedNum.toUsedNumDomain());
 	}
 }

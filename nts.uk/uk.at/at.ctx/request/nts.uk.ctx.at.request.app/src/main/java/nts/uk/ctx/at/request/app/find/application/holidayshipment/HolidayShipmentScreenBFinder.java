@@ -1,11 +1,15 @@
 package nts.uk.ctx.at.request.app.find.application.holidayshipment;
 
+/*import java.util.Collections;
+import nts.arc.error.BusinessException;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;*/
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeSetDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto_New;
@@ -34,6 +38,7 @@ import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -60,6 +65,8 @@ public class HolidayShipmentScreenBFinder {
 	private EmployeeRequestAdapter empAdaptor;
 	@Inject
 	private RequestSettingRepository reqSetRepo;
+	@Inject
+	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
 
 	private static final ApplicationType APP_TYPE = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
@@ -71,14 +78,13 @@ public class HolidayShipmentScreenBFinder {
 	public HolidayShipmentDto findByID(String applicationID) {
 		HolidayShipmentDto screenInfo = new HolidayShipmentDto();
 		String companyID = AppContexts.user().companyId();
-		String employeeID = AppContexts.user().employeeId();
-		screenInfo.setEmployeeID(employeeID);
+		String enteredEmployeeID = AppContexts.user().employeeId();
 		boolean isRecAppID = isRecAppID(applicationID, screenInfo);
 		// 1-1.新規画面起動前申請共通設定を取得する
 		int rootAtr = 1;
 
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet
-				.prelaunchAppCommonSetService(companyID, employeeID, rootAtr, APP_TYPE, GeneralDate.today());
+				.prelaunchAppCommonSetService(companyID, enteredEmployeeID, rootAtr, APP_TYPE, GeneralDate.today());
 
 		screenInfo.setApplicationSetting(ApplicationSettingDto.convertToDto(appCommonSettingOutput.applicationSetting));
 
@@ -90,6 +96,10 @@ public class HolidayShipmentScreenBFinder {
 			Application_New appOutput = appOutputOpt.get();
 
 			setEmployeeDisplayText(appOutput, screenInfo);
+			
+			String employeeID = appOutput.getEmployeeID();
+			screenInfo.setEmployeeID(employeeID);
+			
 
 			screenInfo.setApplication(ApplicationDto_New.fromDomain(appOutput));
 
@@ -140,7 +150,9 @@ public class HolidayShipmentScreenBFinder {
 				// アルゴリズム「振休振出申請起動時の共通処理」を実行する
 				aFinder.commonProcessAtStartup(companyID, employeeID, refDate, recAppDate, recWorkTypeCD, recWorkTimeCD,
 						absAppDate, absWorkTypeCD, absWorkTimeCD, screenInfo, appCommonSettingOutput);
-
+				//[No.506]振休残数を取得する
+				double absRecMng = absRertMngInPeriod.getAbsRecMngRemain(employeeID, GeneralDate.today());
+				screenInfo.setAbsRecMng(absRecMng);
 			}
 		}
 
@@ -206,9 +218,6 @@ public class HolidayShipmentScreenBFinder {
 
 				setRecApp(recAppOpt.get(), screenInfo);
 
-			} else {
-
-				throw new BusinessException("");
 			}
 
 		}

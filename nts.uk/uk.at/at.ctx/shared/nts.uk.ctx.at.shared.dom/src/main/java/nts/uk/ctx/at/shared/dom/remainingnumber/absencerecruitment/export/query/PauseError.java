@@ -12,6 +12,10 @@ public enum PauseError {
 	/**
 	 * 振休残数不足エラー
 	 */
-	PAUSEREMAINNUMBER(0);
+	PAUSEREMAINNUMBER(0),
+	/**
+	 * 相殺できないエラー
+	 */
+	OFFSETNUMBER(1);
 	public final Integer value;
 }

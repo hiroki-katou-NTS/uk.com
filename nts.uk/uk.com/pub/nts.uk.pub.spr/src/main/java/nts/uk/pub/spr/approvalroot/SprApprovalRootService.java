@@ -43,4 +43,5 @@ public interface SprApprovalRootService {
 	 * @return
 	 */
 	public List<String> getAppRootStateIDByType(String companyID, String employeeID, GeneralDate date, Integer rootType);
+	
 }

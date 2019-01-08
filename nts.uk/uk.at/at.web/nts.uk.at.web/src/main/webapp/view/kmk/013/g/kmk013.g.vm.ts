@@ -1,4 +1,7 @@
 module nts.uk.at.view.kmk013.g {
+    
+    import blockUI = nts.uk.ui.block;
+    
     export module viewmodel {
         export class ScreenModel {
             flexSettingOpt: KnockoutObservableArray<ItemModel>;
@@ -56,11 +59,13 @@ module nts.uk.at.view.kmk013.g {
             }
             
             saveData(): void {
-                let dataRegAgg = {};
-                let dataRegFlexWork = {};
-                let dataRegTempWork = {};
-                let dataRegWorkMulti = {};
+                let dataRegAgg: any = {};
+                let dataRegFlexWork: any = {};
+                let dataRegTempWork: any = {};
+                let dataRegWorkMulti: any = {};
                 let self = this;
+                
+                blockUI.grayout();
                 
                 // Packing data
                 dataRegFlexWork.managingFlexWork = self.flexSetting();
@@ -69,16 +74,14 @@ module nts.uk.at.view.kmk013.g {
                 dataRegWorkMulti.useAtr = self.multipleWorkSet();
                 
                 // Register to DB
-                service.regAgg(dataRegAgg).done(function() {});
-                service.regFlexWorkSet(dataRegFlexWork).done(function() {});
-                service.regTempWork(dataRegTempWork).done(function() {});
-                service.regWorkMulti(dataRegWorkMulti).done(function() {});
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                    $('#flex-radio').focus();
-                });
+                $.when(service.regAgg(dataRegAgg), service.regFlexWorkSet(dataRegFlexWork),
+                       service.regTempWork(dataRegTempWork), service.regWorkMulti(dataRegWorkMulti)).done(() => {
+                    blockUI.clear();
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                        $('#flex-radio').focus(); 
+                    });    
+                })
             }
-            
-            
         }
         
         // Class ItemModel

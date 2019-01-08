@@ -24,7 +24,6 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureClassification;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
@@ -33,6 +32,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.time.calendar.Day;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
@@ -201,7 +201,7 @@ public class DefaultClosureServiceImpl implements ClosureService {
 
 		ClosureHistory closureHistory = optClosureHistory.get();
 
-		ClosureDay closureDay = closureHistory.getClosureDate().getClosureDay();
+		Day closureDay = closureHistory.getClosureDate().getClosureDay();
 
 		Boolean isLastDayOfMonth = closureHistory.getClosureDate().getLastDayOfMonth();
 

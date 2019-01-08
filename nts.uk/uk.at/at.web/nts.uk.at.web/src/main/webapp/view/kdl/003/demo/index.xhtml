@@ -16,74 +16,108 @@
 			<com:scriptfile path="kdl003.parent.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="functions-area" style="padding-top: 30px !important;">
-				<button class="large" data-bind="click: OpenDialog003" >KDL003</button>
-			</div>
 			<div id="contents-area">
-			<table>
-				<tr>
-					<td>選択可能な勤務種類コード:</td>
-					<td><input data-bind="ntsTextEditor: {
-						value: canSelectWorkTypeCodes,
-						required: false,
-						enable: true,
-						readonly: false}" /></td>
-				</tr>
-				<tr>
-					<td>選択中の勤務種類コード:</td>
-					<td><input data-bind="ntsTextEditor: {
-						value: selectWorkTypeCode,
-						required: false,
-						enable: true,
-						readonly: false}" /></td>
-				</tr>
-				<tr>
-					<td>選択可能な就業時間帯コード:</td>
-					<td><input data-bind="ntsTextEditor: {
-						value: canSelectSiftCodes,
-						required: false,
-						enable: true,
-						readonly: false}" /></td>
-				</tr>
-				<tr>
-					<td>選択中の就業時間帯コード:</td>
-					<td><input data-bind="ntsTextEditor: {
-						value: selectSiftCode,
-						required: false,
-						enable: true,
-						readonly: false}" /></td>
-				</tr>
-				<tr>
-					<td>Show なし:</td>
-					<td><div data-bind="ntsCheckBox:{checked: showNone}"></div></td>
-				</tr>
-			</table>
-					
-				<br/>
-				<div style="font-weight: bold">Returned Data:</div>
-				<div> Selected Work Type Code:</div>
-				<span data-bind="text: childSelectWorkTypeCode"></span>
-				
-				<div> Selected Work Type Name:</div>
-				<span data-bind="text: childSelectWorkTypeName"></span>
-				
-				<div> Selected Work Time Code:</div>
-				<span data-bind="text: childSelectSiftCode"></span>
-				
-				<div> Selected Work Time Name:</div>
-				<span data-bind="text: childSelectSiftName"></span>
-				
-				<div> First Start Time Zone:</div>
-				<span data-bind="text: firstStartTime"></span>
-				
-				<div> First End Time Zone:</div>
-				<span data-bind="text: firstEndTime"></span>
-				
-				<div> Second Start Time Zone:</div>
-				<span data-bind="text: secondStartTime"></span>
-				
-				<div> Second End Time Zone:</div>
-				<span data-bind="text: secondEndTime"></span>
+
+				<div id="content" class="cf">
+					<h1>KDL003 勤務就業ダイアログ Working Duty Dialog</h1>
+					<hr />
+					<h2>Overview</h2>
+
+					<h4 style="margin-top: 30px; margin-bottom: 10px; font-size: 17px">Parameters:</h4>
+					<table>
+						<col width="200"></col>
+						<col width="200"></col>
+						<tr>
+							<td>選択可能な勤務種類コード:</td>
+							<td><input
+								data-bind="ntsTextEditor: {
+							value: canSelectWorkTypeCodes,
+							required: false,
+							enable: true,
+							readonly: false}" /></td>
+						</tr>
+						<tr>
+							<td>選択中の勤務種類コード:</td>
+							<td><input
+								data-bind="ntsTextEditor: {
+							value: selectWorkTypeCode,
+							required: false,
+							enable: true,
+							readonly: false}" /></td>
+						</tr>
+
+						<tr>
+							<td>選択可能な就業時間帯コード:</td>
+							<td><input
+								data-bind="ntsTextEditor: {
+							value: canSelectSiftCodes,
+							required: false,
+							enable: true,
+							readonly: false}" />
+							</td>
+						</tr>
+
+						<tr>
+							<td>選択中の就業時間帯コード:</td>
+							<td><input
+								data-bind="ntsTextEditor: {
+							value: selectSiftCode,
+							required: false,
+							enable: true,
+							readonly: false}" />
+							</td>
+						</tr>
+						<tr>
+							<td>Show なし:</td>
+							<td><div data-bind="ntsCheckBox:{checked: showNone}"></div>
+							</td>
+						</tr>
+					</table>
+					<br />
+
+					<button style="margin-top: 10px;" data-bind="click: OpenDialog003">Open
+						KDL003 dialog</button>
+					<br />
+					<br />
+					<div style="font-weight: bold">Returned Data:</div>
+
+					<table>
+						<col width="200"></col>
+						<col width="200"></col>
+						<tr>
+							<td>Selected Work Type Code:</td>
+							<td><span data-bind="text: childSelectWorkTypeCode"></span></td>
+						</tr>
+						<tr>
+							<td>Selected Work Type Name:</td>
+							<td><span data-bind="text: childSelectWorkTypeName"></span></td>
+						</tr>
+						<tr>
+							<td>Selected Work Time Code:</td>
+							<td><span data-bind="text: childSelectSiftCode"></span></td>
+						</tr>
+						<tr>
+							<td>Selected Work Time Name:</td>
+							<td><span data-bind="text: childSelectSiftName"></span></td>
+						</tr>
+						<tr>
+							<td>First Start Time Zone:</td>
+							<td><span data-bind="text: firstStartTime"></span></td>
+						</tr>
+						<tr>
+							<td>First End Time Zone:</td>
+							<td><span data-bind="text: firstEndTime"></span></td>
+						</tr>
+						<tr>
+							<td>Second Start Time Zone:</td>
+							<td><span data-bind="text: secondStartTime"></span></td>
+						</tr>
+						<tr>
+							<td>Second End Time Zone:</td>
+							<td><span data-bind="text: secondEndTime"></span></td>
+						</tr>
+					</table>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

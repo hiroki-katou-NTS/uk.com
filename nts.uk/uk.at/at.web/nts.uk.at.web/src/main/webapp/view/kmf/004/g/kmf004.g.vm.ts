@@ -23,7 +23,10 @@ module nts.uk.at.view.kmf004.g.viewmodel {
             {
                 //G2_5
                 headerText: nts.uk.resource.getText("KMF004_73"), key: 'setting', width: 80,
-                template: '{{if ${setting} == "true"}} <i data-bind=\'ntsIcon: { no: 78 }\'></i>{{else }}  {{/if}}'
+                //I2_6
+                template: '{{if ${setting} == "true"}}<div style=\' height:100%;\'> <i  data-bind=\'ntsIcon: { no: 78 }\'></i> </div>{{else }}  {{/if}}',
+
+                columnCssClass:'nowrap'
             }]);
         // selected code 
         selectedCode: KnockoutObservable<string> = ko.observable("");

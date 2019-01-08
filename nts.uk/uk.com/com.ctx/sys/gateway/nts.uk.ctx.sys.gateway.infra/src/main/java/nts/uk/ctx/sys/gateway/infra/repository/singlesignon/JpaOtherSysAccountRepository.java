@@ -19,6 +19,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccount;
@@ -196,7 +197,7 @@ public class JpaOtherSysAccountRepository extends JpaRepository implements Other
 		// Split user id list.
 		List<SgwmtOtherSysAcc> resultList = new ArrayList<>();
 
-		CollectionUtil.split(listUserId, 1000, subList -> {
+		CollectionUtil.split(listUserId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			resultList.addAll(this.queryProxy().query(GET_BY_LIST_USERIDS, SgwmtOtherSysAcc.class)
 					.setParameter("lstUserId", subList).getList());
 		});

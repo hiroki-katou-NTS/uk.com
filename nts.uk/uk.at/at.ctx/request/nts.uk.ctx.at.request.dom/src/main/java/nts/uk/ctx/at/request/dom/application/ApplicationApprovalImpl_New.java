@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
@@ -18,6 +19,9 @@ import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRe
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -62,12 +66,19 @@ public class ApplicationApprovalImpl_New implements ApplicationApprovalService_N
 	private AppAbsenceRepository appAbsenceRepository;
 	@Inject
 	private BrkOffSupChangeMngRepository brkOffSupChangeMngRepository;
+	
+	@Inject
+	private ApplicationSettingRepository applicationSettingRepository;
 
 	@Override
 	public void insert(Application_New application) {
+		String companyID = AppContexts.user().companyId();
 		applicationRepository.insert(application);
+		BaseDateFlg baseDateFlg = applicationSettingRepository.getApplicationSettingByComID(companyID)
+				.map(x -> x.getBaseDateFlg()).orElse(BaseDateFlg.SYSTEM_DATE);
+		GeneralDate targetDate = baseDateFlg.equals(BaseDateFlg.SYSTEM_DATE) ? GeneralDate.today() : application.getAppDate();
 		approvalRootStateAdapter.insertByAppType(application.getCompanyID(), application.getEmployeeID(),
-				application.getAppType().value, application.getAppDate(), application.getAppID());
+				application.getAppType().value, targetDate, application.getAppID());
 	}
 
 	@Override

@@ -32,6 +32,8 @@
 				<button class="danger" id="btnDelete"
 					data-bind="click: deleteEmployment, enable: enableDelete()"
 					tabindex="4">#{i18n.getText('CMM008_4')}</button>
+ 				<button  tabindex="5" id="print-button" data-bind="click: exportExcel">#{i18n.getText('KMK007_4')}</button> 
+					
 			</div>
 			
 			<div id="contents-area" class="fixed-flex-layout">
@@ -88,8 +90,8 @@
 								<label>#{i18n.getText('CMM008_10')}</label>
 							</div>
 							<div class="fixed-flex-layout-right">
-								<textarea id="memo" style="overflow-y: auto;" tabindex="10"
-									data-bind="ntsMultilineEditor: { value: memo, name: '#[CMM008_10]', constraint: 'Memo', option: { width: '290px', height: '150px'}}" />
+								<textarea id="memo" style="overflow-y: auto;width: 446px;height: 180px;" tabindex="10"
+									data-bind="ntsMultilineEditor: { value: memo, name: '#[CMM008_10]', constraint: 'Memo'}" />
 							</div>
 						</div>
 						

@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 
 /**
  * 積立年休付与残数データ
- * @author shuichu_ishida
+ * @author shuichi_ishida
  */
 @Getter
 @AllArgsConstructor

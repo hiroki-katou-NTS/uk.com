@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.record.infra.repository.optitem.applicable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,6 +17,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
@@ -103,6 +105,11 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 	 */
 	@Override
 	public List<EmpCondition> findAll(String companyId, List<Integer> optionalItemNoList) {
+		
+		if(CollectionUtil.isEmpty(optionalItemNoList)) {
+			return Collections.emptyList();
+		}
+		
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
@@ -116,7 +123,7 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 		Root<KrcstApplEmpCon> root = cq.from(KrcstApplEmpCon.class);
 
 		List<KrcstApplEmpCon> result = new ArrayList<>();
-		CollectionUtil.split(optionalItemNoList, 1000, subList -> {
+		CollectionUtil.split(optionalItemNoList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			List<Predicate> predicateList = new ArrayList<Predicate>();
 
 			// Add where condition
