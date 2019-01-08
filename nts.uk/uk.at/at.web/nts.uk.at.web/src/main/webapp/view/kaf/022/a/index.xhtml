@@ -93,7 +93,7 @@
 								data-bind="click: $vm.viewmodelM.remove.bind($vm.viewmodelM), enable: !!$vm.viewmodelM.copyAble()" >#{i18n.getText('KAF022_275')}</button>
 					</div>
 				</com:ko-if>
-				<button data-bind="click: function(){$parent.viewmodelA.exportExcel('EmploymentApprovalSetting','KAF022申請の前準備')}, visible: $parent.viewmodelA.hasPermission()">#{i18n.getText('KAF022_650')}</button>
+				<button data-bind="click: function(){$parent.viewmodelA.exportExcel('PreparationBeforeApply','KAF022申請の前準備')}, visible: $parent.viewmodelA.hasPermission()">#{i18n.getText('KAF022_650')}</button>
 			</div>
 			<div id="tabpanel-a" role="tabpanel" class="screen-a"
 				data-bind="with: viewmodelA">

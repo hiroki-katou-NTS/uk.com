@@ -40,10 +40,10 @@ public class PersonRoleExportImpl implements MasterListData {
 		columns.add(
 				new MasterHeaderColumn(PersonRoleColumn.CAS001_81, TextResource.localize("CAS001_80"), ColumnTextAlign.LEFT, "", true));
 		//A7_5
-		columns.add(new MasterHeaderColumn(PersonRoleColumn.CAS001_82, TextResource.localize("CAS001_82"), ColumnTextAlign.LEFT, "",
+		columns.add(new MasterHeaderColumn(PersonRoleColumn.CAS001_82, TextResource.localize("CAS001_81"), ColumnTextAlign.LEFT, "",
 				true));
 		//A7_6
-		columns.add(new MasterHeaderColumn(PersonRoleColumn.CAS001_89, TextResource.localize("CAS001_89"), ColumnTextAlign.LEFT, "",
+		columns.add(new MasterHeaderColumn(PersonRoleColumn.CAS001_89, TextResource.localize("CAS001_82"), ColumnTextAlign.LEFT, "",
 				true));
 		//A7_7
 		columns.add(new MasterHeaderColumn(PersonRoleColumn.CAS001_83, TextResource.localize("CAS001_83"), ColumnTextAlign.LEFT, "",
@@ -55,41 +55,41 @@ public class PersonRoleExportImpl implements MasterListData {
 		columns.add(new MasterHeaderColumn(PersonRoleColumn.CAS001_85, TextResource.localize("CAS001_85"), ColumnTextAlign.LEFT, "",
 				true));
 		//A7_10
-		columns.add(new MasterHeaderColumn(PersonRoleColumn.CAS001_90, TextResource.localize("CAS001_90"), ColumnTextAlign.LEFT, "",
+		columns.add(new MasterHeaderColumn(PersonRoleColumn.CAS001_90, TextResource.localize("CAS001_86"), ColumnTextAlign.LEFT, "",
 				true));
 		//A7_11
 		columns.add(
-				new MasterHeaderColumn(PersonRoleColumn.CAS001_91, TextResource.localize("CAS001_91"), ColumnTextAlign.LEFT, "", true));
+				new MasterHeaderColumn(PersonRoleColumn.CAS001_91, TextResource.localize("CAS001_87"), ColumnTextAlign.LEFT, "", true));
 		//A7_12
 		columns.add(
-				new MasterHeaderColumn(PersonRoleColumn.CAS001_86, TextResource.localize("CAS001_86"), ColumnTextAlign.LEFT, "", true));
+				new MasterHeaderColumn(PersonRoleColumn.CAS001_86, TextResource.localize("CAS001_88"), ColumnTextAlign.LEFT, "", true));
 		//A7_13
-		columns.add(new MasterHeaderColumn(PersonRoleColumn.CAS001_87, TextResource.localize("CAS001_87"), ColumnTextAlign.LEFT, "",
+		columns.add(new MasterHeaderColumn(PersonRoleColumn.CAS001_87, TextResource.localize("CAS001_89"), ColumnTextAlign.LEFT, "",
 				true));
 		//A7_14
-		columns.add(new MasterHeaderColumn(PersonRoleColumn.CAS001_88, TextResource.localize("CAS001_88"), ColumnTextAlign.LEFT, "",
+		columns.add(new MasterHeaderColumn(PersonRoleColumn.CAS001_88, TextResource.localize("CAS001_90"), ColumnTextAlign.LEFT, "",
 				true));
 		//A7_15
-		columns.add(new MasterHeaderColumn(PersonRoleColumn.CAS001_92, TextResource.localize("CAS001_92"), ColumnTextAlign.LEFT, "",
+		columns.add(new MasterHeaderColumn(PersonRoleColumn.CAS001_92, TextResource.localize("CAS001_91"), ColumnTextAlign.LEFT, "",
 				true));
 		//A7_16
-		columns.add(new MasterHeaderColumn(PersonRoleColumn.CAS001_93, TextResource.localize("CAS001_93"), ColumnTextAlign.LEFT, "",
+		columns.add(new MasterHeaderColumn(PersonRoleColumn.CAS001_93, TextResource.localize("CAS001_92"), ColumnTextAlign.LEFT, "",
 				true));
 		//A7_17
-		columns.add(new MasterHeaderColumn(PersonRoleColumn.CAS001_94, TextResource.localize("CAS001_94"), ColumnTextAlign.LEFT, "",
+		columns.add(new MasterHeaderColumn(PersonRoleColumn.CAS001_94, TextResource.localize("CAS001_93"), ColumnTextAlign.LEFT, "",
 				true));
 		//A7_18
 		columns.add(
-				new MasterHeaderColumn(PersonRoleColumn.CAS001_95, TextResource.localize("CAS001_95"), ColumnTextAlign.LEFT, "", true));
+				new MasterHeaderColumn(PersonRoleColumn.CAS001_95, TextResource.localize("CAS001_94"), ColumnTextAlign.LEFT, "", true));
 		//A7_19
 		columns.add(
-				new MasterHeaderColumn(PersonRoleColumn.CAS001_97, TextResource.localize("CAS001_97"), ColumnTextAlign.LEFT, "", true));
+				new MasterHeaderColumn(PersonRoleColumn.CAS001_97, TextResource.localize("CAS001_95"), ColumnTextAlign.LEFT, "", true));
 		//A7_20
-		columns.add(new MasterHeaderColumn(PersonRoleColumn.CAS001_98, TextResource.localize("CAS001_98"), ColumnTextAlign.LEFT, "",
+		columns.add(new MasterHeaderColumn(PersonRoleColumn.CAS001_98, TextResource.localize("CAS001_96"), ColumnTextAlign.LEFT, "",
 				true));
 		//A7_21
 		columns.add(
-				new MasterHeaderColumn(PersonRoleColumn.CAS001_99, TextResource.localize("CAS001_99"), ColumnTextAlign.LEFT, "", true));
+				new MasterHeaderColumn(PersonRoleColumn.CAS001_99, TextResource.localize("CAS001_97"), ColumnTextAlign.LEFT, "", true));
 		/*columns.add(
 				new MasterHeaderColumn(PersonRoleColumn.CAS001_98, TextResource.localize("CAS001_98"), ColumnTextAlign.LEFT, "", true));
 		columns.add(

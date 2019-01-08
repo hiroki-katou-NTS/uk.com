@@ -43,6 +43,7 @@ public class WorkPlaceSelectionImpl implements WorkPlaceSelectionRepository {
 			+" 	,RESULT.BUSINESS_NAME"
 			+" 	,RESULT.START_DATE"
 			+" 	,RESULT.END_DATE"
+			+"  ,RESULT.HIERARCHY_CD"
 			+" 	,%s"
 			+" FROM"
 			+" 	(SELECT"
@@ -51,17 +52,17 @@ public class WorkPlaceSelectionImpl implements WorkPlaceSelectionRepository {
 			+" 		, SCD"
 			+" 		, BUSINESS_NAME "
 			+" 		, START_DATE"
-			+" 		, END_DATE "
+			+" 		, END_DATE, HIERARCHY_CD "
 			+" 		, %s"
-			+" 		, ROW_NUMBER () OVER ( PARTITION BY WKPCD, WKP_NAME ORDER BY WKPCD, SCD  ASC ) AS ROW_NUMBER"
+			+" 		, ROW_NUMBER () OVER ( PARTITION BY WKPCD, WKP_NAME ORDER BY HIERARCHY_CD, SCD  ASC ) AS ROW_NUMBER"
 			+" 	FROM ("
 			+" 					SELECT wm.WKPCD "
 			+" 					,CASE	"
-			+" 						WHEN"
+			+" 						WHEN" 
 			+" 								bwh.END_DATE = CONVERT ( DATETIME, '9999-12-31T00:00:00.000Z', 127 ) THEN"
 			+" 								wm.WKP_NAME ELSE 'マスタ未登録' "
 			+" 							END WKP_NAME "
-			+" 						, edm.SCD , ps.BUSINESS_NAME , wi.START_DATE, wi.END_DATE , AVAILABILITY, wkf.FUNCTION_NO					"
+			+" 						, edm.SCD , ps.BUSINESS_NAME , wi.START_DATE, wi.END_DATE , AVAILABILITY, wci.HIERARCHY_CD, wkf.FUNCTION_NO					"
 			+" 					FROM "
 			+" 						BSYMT_WORKPLACE_INFO wm "
 			+" 						INNER JOIN SACMT_WORKPLACE_MANAGER wi ON wm.WKPID = wi.WKP_ID AND wm.CID = ?cid"
@@ -70,6 +71,7 @@ public class WorkPlaceSelectionImpl implements WorkPlaceSelectionRepository {
 			+" 						INNER JOIN KASMT_WORKPLACE_AUTHORITY kwa ON wi.WKP_MANAGER_ID = kwa.ROLE_ID AND wm.CID = kwa.CID"
 			+" 						INNER JOIN KASMT_WORPLACE_FUNCTION wkf on wkf.FUNCTION_NO = kwa.FUNCTION_NO"
 			+" 						INNER JOIN BSYMT_WORKPLACE_HIST bwh ON wm.CID = bwh.CID AND wm.WKPID = bwh.WKPID AND wm.HIST_ID = bwh.HIST_ID"
+			+"						INNER JOIN BSYMT_WKP_CONFIG_INFO wci ON wci.WKPID = wi.WKP_ID"
 			+" 						WHERE "
 			+" 						wi.START_DATE <=  ?baseDate AND"
 			+" 						wi.END_DATE   >=  ?baseDate "
@@ -77,7 +79,7 @@ public class WorkPlaceSelectionImpl implements WorkPlaceSelectionRepository {
 			+" 				AS sourceTable PIVOT ("
 			+" 			MAX(AVAILABILITY)"
 			+" 			FOR [FUNCTION_NO] IN (%s)"
-			+" 	) AS pvt ) AS RESULT";
+			+" 	) AS pvt ) AS RESULT ORDER BY RESULT.HIERARCHY_CD";
 
 	@Override 
 	public List<MasterData> getDataExport(String companyId, List<WorkPlaceFunction> workPlaceFunction, String baseDate) {
@@ -135,7 +137,7 @@ public class WorkPlaceSelectionImpl implements WorkPlaceSelectionRepository {
             for (int i = 0; i < workPlaceFunction.size(); i++) {
     			data.put(workPlaceFunction.get(i).getFunctionNo().v().toString(), MasterCellData.builder()
     	                .columnId(WorkPlaceSelectionColumn.CMM051_32_2)
-    	                .value(((BigDecimal) object[i + 6]).intValue() == 1 ? "○" : "-")
+    	                .value(((BigDecimal) object[i + 7]).intValue() == 1 ? "○" : "-")
     	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     	                .build());
     		}

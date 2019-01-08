@@ -78,7 +78,7 @@ public class JpaJobCalSettingRepository extends JpaRepository implements JobAuto
 		sqlNormal.append("i.JOB_CD, ");
 		sqlNormal.append("i.JOB_ID, ");
 		sqlNormal.append("i.CID ");
-		sqlNormal.append("FROM  (SELECT JOB_ID, JOB_CD, CID ");
+		sqlNormal.append("FROM  (SELECT DISTINCT JOB_ID, JOB_CD, CID ");
 		sqlNormal.append(		"FROM BSYMT_JOB_INFO " );
 		sqlNormal.append(		"WHERE CID = ?cid) i ");
 		sqlNormal.append("INNER JOIN KSHMT_AUTO_JOB_CAL_SET j ON j.CID = i.CID AND j.JOBID = i.JOB_ID ) k ");

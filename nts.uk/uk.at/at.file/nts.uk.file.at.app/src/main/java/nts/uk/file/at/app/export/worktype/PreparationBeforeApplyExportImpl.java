@@ -827,7 +827,13 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
             return ((BigDecimal)obj[32]).intValue() == 1 ? "○" : "-";
         }
         if(i == 4 && obj[18] != null ) {
-            return ((BigDecimal)obj[18]).intValue() == 1 ? "○" : "-";
+            if( ((BigDecimal)obj[18]).intValue() == 2 ) {
+                return TextResource.localize("Enum_PrePostInitialAtr_NO_CHOISE");
+            }
+            if( ((BigDecimal)obj[18]).intValue() == 1) {
+                return TextResource.localize("Enum_PrePostInitialAtr_POST");
+            }
+            return TextResource.localize("Enum_PrePostInitialAtr_PRE");
         }
         if(i == 5 && obj[34] != null ) {
             return ((BigDecimal)obj[34]).intValue() == 1 ? "○" : "-";
@@ -904,6 +910,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
                 break;
             case REFLECT_APP:
                 columns.addAll(preparationBeforeApply.getHeaderColumnsReflectApp());
+                break;
             case EMP_APPROVE:
                 columns.addAll(employmentApprovalSettingExport.getHeaderColumnsEmpApprove());
                 break;
@@ -953,9 +960,11 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
             case EMP_APPROVE:
                 List<Object[]> empApproval = approvalRepository.getAllEmploymentApprovalSetting(companyId);
                 datas.addAll(empApproval.stream().map(e -> employmentApprovalSettingExport.getDataEmploymentApprovalSetting(e)).collect(Collectors.toList()));
+                break;
             case APPROVAL_CONFIG:
                 List<Object[]> approvalCongif = approvalRepository.getAllApprovalFunctionConfig(companyId, baseDate);
                 datas.addAll(approvalCongif.stream().map(i -> approvalFunctionConfigExport.getDataApprovalConfig(i)).collect(Collectors.toList()));
+                break;
         }
         return datas;
     }
