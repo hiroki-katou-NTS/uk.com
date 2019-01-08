@@ -170,7 +170,7 @@ public class ComboBoxRetrieveFactory {
 
 	private static final String JP_SPACE = "　";
 
-	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto, String employeeId,
+	public List<ComboBoxObject> getComboBox(SelectionItemDto selectionItemDto, String employeeId,
 			GeneralDate standardDate, boolean isRequired, PersonEmployeeType perEmplType, boolean isDataType6, String categoryCode, String workplaceId, boolean isCps009) {
 
 		if (standardDate == null) {
@@ -460,7 +460,7 @@ public class ComboBoxRetrieveFactory {
 	}
 
 
-	public <E extends Enum<?>> List<ComboBoxObject> getComboBox(ReferenceTypes referenceType, String referenceCode,
+	public List<ComboBoxObject> getComboBox(ReferenceTypes referenceType, String referenceCode,
 			GeneralDate standardDate, String employeeId, String workplaceId, boolean isRequired,
 			PersonEmployeeType perEmplType, boolean isDataType6, String categoryCode, GeneralDate realBaseDate,  boolean isCps009) {
 
