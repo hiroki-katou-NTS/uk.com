@@ -22,7 +22,7 @@ public class ErrorWarningEmployeeInfo {
 	//対象者社員CD
 	private String employeeCd;
 	//対象者氏名
-	private String employeeName;
+	private String employeeName;	
 	//エラー情報一覧
 	private List<ErrorWarningInfoOfRowOrder> errorLst;
 

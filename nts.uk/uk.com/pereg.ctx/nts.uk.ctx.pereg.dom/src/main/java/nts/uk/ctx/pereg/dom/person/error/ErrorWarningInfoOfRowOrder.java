@@ -15,14 +15,15 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ErrorWarningInfoOfRowOrder {
+	//項目名
+	private String itemName;
+	//区分
+	private ErrorType errorType;
 	//行番号
 	private int rowOrder;
 	//メッセージ
 	private String message;
-	//区分
-	private ErrorType errorType;
-	//項目名
-	private String itemName;
+
 	
 
 }

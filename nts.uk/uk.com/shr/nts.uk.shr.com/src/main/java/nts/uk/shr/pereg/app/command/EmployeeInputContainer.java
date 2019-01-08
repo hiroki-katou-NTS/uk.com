@@ -10,9 +10,16 @@ import lombok.Setter;
 @Getter
 @Setter
 public class EmployeeInputContainer {
-	private String personId;
 	
+	private String personId;
+	//対象者
 	private String employeeId;
-
+	//対象者社員CD
+	private String employeeCd;
+	//対象者氏名
+	private String employeeName;
+	
+	private int order;
+	//item lst
 	private ItemsByCategory input; 
 }
