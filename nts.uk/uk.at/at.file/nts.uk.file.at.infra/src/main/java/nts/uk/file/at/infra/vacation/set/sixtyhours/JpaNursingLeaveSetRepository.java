@@ -233,38 +233,37 @@ public class JpaNursingLeaveSetRepository extends JpaRepository implements Nursi
                     , new DataEachBox( /*A24_3*/I18NText.getText("KMF001_231"), ColumnTextAlign.LEFT)
                     , new DataEachBox(/*A24_5*/ I18NText.getText("KMF001_233"), ColumnTextAlign.LEFT)
                     , new DataEachBox(/*A24_6*/ I18NText.getText("KMF001_234"), ColumnTextAlign.LEFT)
-                    , /*A25_2*/null));
+                    , /*A25_2*/new DataEachBox(null, ColumnTextAlign.LEFT)));
             // Row 3
             datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
-
                     , new DataEachBox(/*A24_7*/I18NText.getText("KMF001_235"), ColumnTextAlign.LEFT)
-                    , /*A25_3*/null));
+                    , /*A25_3*/new DataEachBox(null, ColumnTextAlign.LEFT)));
             // Row 4
             datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(/*24_8*/I18NText.getText("KMF001_236"), ColumnTextAlign.LEFT)
                     , new DataEachBox(/*24_9*/I18NText.getText("KMF001_237"), ColumnTextAlign.LEFT)
-                    , /*25_4*/null));
+                    , /*25_4*/new DataEachBox(null, ColumnTextAlign.LEFT)));
             // Row 5
             datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(/*24_10*/I18NText.getText("KMF001_238"), ColumnTextAlign.LEFT)
-                    ,/*25_5*/ null));
+                    ,/*25_5*/ new DataEachBox(null, ColumnTextAlign.LEFT)));
             // Row 6
             datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(/*24_11*/I18NText.getText("KMF001_239"), ColumnTextAlign.LEFT)
                     , new DataEachBox(/*24_12*/I18NText.getText("KMF001_240"), ColumnTextAlign.LEFT)
-                    ,/*25_6*/ null));
+                    ,/*25_6*/ new DataEachBox(null, ColumnTextAlign.LEFT)));
             // Row 7
             datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(/*24_13*/ I18NText.getText("KMF001_241"), ColumnTextAlign.LEFT)
-                    ,/*25_7*/ null));
+                    ,/*25_7*/ new DataEachBox(null, ColumnTextAlign.LEFT)));
         }
 
 
@@ -273,8 +272,8 @@ public class JpaNursingLeaveSetRepository extends JpaRepository implements Nursi
                 , new DataEachBox(null, ColumnTextAlign.LEFT)
                 , new DataEachBox(null, ColumnTextAlign.LEFT)
                 , new DataEachBox(null, ColumnTextAlign.LEFT)
-                , new DataEachBox( /*A25_8*/getTextEnumManageDistinct(Integer.valueOf(rs.getString("MANAGE_ATR_LV2"))), ColumnTextAlign.LEFT
-                )));
+                , new DataEachBox( /*A25_8*/getTextEnumManageDistinct(Integer.valueOf(rs.getString("MANAGE_ATR_LV2"))), ColumnTextAlign.LEFT)
+        ));
         if (checkIsManagerLv2) {
             // Row 9
             datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
@@ -316,46 +315,50 @@ public class JpaNursingLeaveSetRepository extends JpaRepository implements Nursi
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(/*24_24*/I18NText.getText("KMF001_241"), ColumnTextAlign.LEFT)
-                    , new DataEachBox( /*25_14*/ rs.getString("NAME_AF1"), ColumnTextAlign.LEFT
-                    )));
+                    , new DataEachBox( /*25_14*/ rs.getString("NAME_AF1"), ColumnTextAlign.LEFT)
+            ));
         } else {
             // Row 9
             datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox( /*24_15*/I18NText.getText("KMF001_243"), ColumnTextAlign.LEFT)
                     , new DataEachBox(/*24_16*/I18NText.getText("KMF001_233"), ColumnTextAlign.LEFT)
                     , new DataEachBox( /*24_17*/I18NText.getText("KMF001_234"), ColumnTextAlign.LEFT)
-                    ,/*25_9*/ null)
+                    ,/*25_9*/ new DataEachBox(null, ColumnTextAlign.LEFT))
             );
             // Row 10
             datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(/*24_18*/I18NText.getText("KMF001_235"), ColumnTextAlign.LEFT)
-                    ,/*25_10*/null));
+                    ,/*25_10*/new DataEachBox(null, ColumnTextAlign.LEFT)
+            ));
             // Row 11
             datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox( /*24_19*/I18NText.getText("KMF001_236"), ColumnTextAlign.LEFT)
                     , new DataEachBox(/*24_20*/I18NText.getText("KMF001_244"), ColumnTextAlign.LEFT)
-                    , /*25_11*/null));
+                    , /*25_11*/new DataEachBox(null, ColumnTextAlign.LEFT)
+            ));
             // Row 12
             datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(/*24_21*/I18NText.getText("KMF001_245"), ColumnTextAlign.LEFT)
-                    ,/*25_12*/null));
+                    ,/*25_12*/new DataEachBox(null, ColumnTextAlign.LEFT)
+            ));
             // Row 13
             datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox( /*24_22*/I18NText.getText("KMF001_239"), ColumnTextAlign.LEFT)
                     , new DataEachBox( /*24_23*/ I18NText.getText("KMF001_240"), ColumnTextAlign.LEFT)
-                    ,/*25_13*/ null));
+                    ,/*25_13*/ new DataEachBox(null, ColumnTextAlign.LEFT)
+            ));
             // Row 14
             datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox( /*24_24*/I18NText.getText("KMF001_241"), ColumnTextAlign.LEFT)
-                    ,/*25_14*/ null)
+                    ,/*25_14*/ new DataEachBox(null, ColumnTextAlign.LEFT))
             );
         }
 
