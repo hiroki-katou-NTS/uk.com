@@ -116,6 +116,7 @@
 .display-notes {
     word-break: break-all;
     max-height: 275px;
+    overflow: auto;
 }
 textarea {
     resize: none;
