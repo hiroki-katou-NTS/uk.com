@@ -127,10 +127,18 @@ public class JpaWorkMonthlySettingReportRepository extends JpaRepository impleme
 		//a.SCD, b.BUSINESS_NAME, c.START_DATE, c.END_DATE, d.MONTHLY_PATTERN, e.M_PATTERN_NAME
 		String scd = (String) object[0];
 		String name = (String) object[1];
-		String startTimeStamp = ((Timestamp)object[2]).toString();
-		GeneralDate startDate = GeneralDate.fromString(startTimeStamp, "yyyy-MM-dd hh:mm:ss.s");
-		String endTimeStamp = ((Timestamp)object[3]).toString();
-		GeneralDate endDate = GeneralDate.fromString(endTimeStamp, "yyyy-MM-dd hh:mm:ss.s");
+		GeneralDate startDate = null;
+		if (object[2] != null) {
+			String startTimeStamp = ((Timestamp)object[2]).toString();
+			startDate = GeneralDate.fromString(startTimeStamp, "yyyy-MM-dd hh:mm:ss.s");
+		}
+		
+		GeneralDate endDate = null;
+		if (object[3] != null) {
+			String endTimeStamp = ((Timestamp)object[3]).toString();
+			endDate = GeneralDate.fromString(endTimeStamp, "yyyy-MM-dd hh:mm:ss.s");
+		}
+		
 		String patternCode = (String) object[4];
 		String patternName = (String) object[5];
 		
