@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
@@ -46,5 +47,9 @@ public interface MasterListData {
 	
 	default public List<SheetData> extraSheets(MasterListExportQuery query){
 		return Collections.emptyList();
+	}
+	
+	default public DomainID getBoundedDomainId(){
+		return this.getClass().getAnnotation(DomainID.class);
 	}
 }

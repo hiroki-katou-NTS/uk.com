@@ -310,14 +310,25 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 				.getList().isEmpty();
 	}
 
+
+	
+	@Override
+	public Optional<String> getProgramName(String comId, String screenId, String programId, String queryString){
+		return find(comId, programId, screenId, queryString).map(c -> c.displayName);
+	}
+
 	@Override
 	public Optional<StandardMenu> getPgName(String companyId, String programId, String screenId, String queryString) {
+		return find(companyId, programId, screenId, queryString).map(c -> toDomain(c));
+	}
+	
+	private Optional<CcgstStandardMenu> find(String companyId, String programId, String screenId, String queryString) {
 		return this.queryProxy().query(GET_PG_BYQRY, CcgstStandardMenu.class)
 				.setParameter("companyId", companyId)
 				.setParameter("programId", programId)
 				.setParameter("screenId", screenId)
 				.setParameter("queryString", queryString)
-				.getSingle(c -> toDomain(c));
+				.getSingle();
 	}
 
 	private static final String GET_MAX_ORDER = "SELECT MAX(t.displayOrder) FROM CcgstStandardMenu t "
