@@ -32,9 +32,9 @@
                                             name: '#QMM020_14',
                                             height: 250,
                                             dataSource: listStateCorrelationHisClassification,
-                                            primaryKey: 'code',
+                                            primaryKey: 'hisId',
                                             columns: [
-                                                        { headerText: '', key: 'code', width: 100, hidden: true },
+                                                        { headerText: '', key: 'hisId', width: 100, hidden: true },
                                                         { headerText: '', key: 'name', width: 150, hidden: true },
                                                         { headerText: '', key: 'display', width: 180},
                                                     ],
@@ -50,8 +50,8 @@
             </div>
 
             <div>
-                <div style="width: 260px" data-bind="ntsSearchBox: {targetKey: 'masterCode', comId: 'multi-list',
-	items: listStateLinkSettingMaster, selectedKey: 'masterCode', fields: ['categoryName', 'masterCode'], mode: 'igGrid'}" />
+                <div style="width: 260px" data-bind="ntsSearchBox: {searchMode: 'highlight', targetKey: 'masterCode', comId: 'E3_1',
+	items: listStateLinkSettingMaster, selectedKey: 'masterCode', selected: currentCode, fields: ['categoryName', 'masterCode'], mode: 'igGrid'}" />
 
                 <table id="E3_1" ></table>
 
