@@ -203,7 +203,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
                     .build());
             dataA7.put(COLUMN_NO_HEADER_1, MasterCellData.builder()
                     .columnId(COLUMN_NO_HEADER_1)
-                    .value(i == 0 ? EnumAdaptor.valueOf(((BigDecimal) export[20]).intValue(), ApplicationType.class).nameId : "")
+                    .value(i == 0 ? EnumAdaptor.valueOf(((BigDecimal) export[26]).intValue(), ApplicationType.class).nameId : "")
                     .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                     .build());
             dataA7.put(COLUMN_NO_HEADER_2, MasterCellData.builder()
@@ -549,7 +549,9 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
                     value.append(",");
                 }
         });
-        value.deleteCharAt(value.length() -1);
+        if(value.length() != 0) {
+            value.deleteCharAt(value.length() - 1);
+        }
         return value.toString();
     }
 
@@ -709,21 +711,21 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
 
     private String getTextA9(int i){
         if(i == 0 ) {
-            return TextResource.localize("KAF022_471");
+            return TextResource.localize("KAF022_486");
         }
         if(i == 1) {
-            return TextResource.localize("KAF022_473");
+            return TextResource.localize("KAF022_487");
         }
         if(i == 2) {
-            return TextResource.localize("KAF022_474");
+            return TextResource.localize("KAF022_488");
         }
         if(i == 3) {
-            return TextResource.localize("KAF022_475");
+            return TextResource.localize("KAF022_489");
         }
         if(i == 4) {
-            return TextResource.localize("KAF022_467");
+            return TextResource.localize("KAF022_490");
         }
-        return TextResource.localize("KAF022_476");
+        return TextResource.localize("KAF022_491");
     }
 
     private String getValueA9(int i, Object[] obj){

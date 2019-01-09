@@ -7,7 +7,8 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.enterprise.inject.spi.CDI;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -37,7 +38,6 @@ import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
-import nts.uk.shr.infra.file.report.masterlist.annotation.NamedAnnotation;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
@@ -116,13 +116,17 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 	@Inject
 	private CompanyAdapter company;
 
+	@Inject
+	@Any
+	private Instance<MasterListData> dataSources;
+	
 	@Override
 	public void generate(FileGeneratorContext generatorContext, MasterListExportQuery query) {
 		val reportContext = this.createEmptyContext(REPORT_ID);
 
 		val workbook = reportContext.getWorkbook();
 		
-		MasterListData domainData = CDI.current().select(MasterListData.class, new NamedAnnotation(query.getDomainId())).get();
+		MasterListData domainData = getSourceByDomain(query.getDomainId());
 		
 		List<SheetData> subSheets = domainData.extraSheets(query);
 
@@ -154,6 +158,16 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 			break;
 		}
 
+	}
+	
+	private MasterListData getSourceByDomain (String domainID) {
+		for (MasterListData ml : dataSources) {
+			if (domainID.equals(ml.getBoundedDomainId().value())) {
+				return ml;
+			}
+		}
+		
+		throw new RuntimeException("不正なDomainID");
 	}
 
 	@SneakyThrows

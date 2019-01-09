@@ -1,10 +1,12 @@
 package nts.uk.file.at.app.export.shift.businesscalendar.daycalendar;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.i18n.TextResource;
 
 @Getter
+@Setter
 public class WorkplaceCalendarReportData {
 	
 	private String workplaceId;
@@ -17,6 +19,8 @@ public class WorkplaceCalendarReportData {
 	
 	private String workplaceCode;
 	private String workplaceName;
+	
+	private String hierarchyCode;
 	
 
 	public WorkplaceCalendarReportData(String workplaceId, GeneralDate date, int workingDayAtr, String workplaceCode, String workplaceName) {

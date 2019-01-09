@@ -81,5 +81,6 @@
 }
 
 #contents-area > div:nth-child(2) {
-	margin-top: 25px
+	/* margin-top: 25px */
+	margin-top: 0px;
 }
