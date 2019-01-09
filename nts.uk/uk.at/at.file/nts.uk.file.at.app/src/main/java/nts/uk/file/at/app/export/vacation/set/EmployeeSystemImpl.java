@@ -68,6 +68,11 @@ public class EmployeeSystemImpl implements MasterListData {
     /*-----*/
     public static final String KMF001_203 = "出勤日数として加算";
 
+
+    public static final String IS_MANAGE = "管理する";
+
+
+
     @Inject
     private AcquisitionRuleExportRepository mAcquisitionRuleExportRepository;
     @Inject
@@ -284,7 +289,7 @@ public class EmployeeSystemImpl implements MasterListData {
                 .build();
 
         sheetDatas.add(sheetData2);
-        if (listAllRetenYearlySet.get(0).getRowData().get(EmployeeSystemImpl.KMF001_200).getValue().equals("管理する")) {
+        if (listAllRetenYearlySet.get(0).getRowData().get(EmployeeSystemImpl.KMF001_200).getValue().equals(IS_MANAGE)) {
             SheetData sheetData3 = SheetData.builder()
                     .mainData(mEmplYearlyRetenSetRepository.getAllEmplYearlyRetenSet(companyId))
                     .mainDataColumns(getHeaderColumns(EmployeeSystem.STEADY_EMPLOYMENT))
