@@ -25,8 +25,8 @@ module nts.uk.pr.view.qmm017.share.model {
 
     export function getFormulaSettingMethodEnumModel () {
         return [
-            new EnumModel(FORMULA_SETTING_METHOD.BASIC_SETTING, getText('Enum_FormulaSettingMethod_DETAIL_SETTING')),
-            new EnumModel(FORMULA_SETTING_METHOD.DETAIL_SETTING, getText('Enum_FormulaSettingMethod_BASIC_SETTING'))
+            new EnumModel(FORMULA_SETTING_METHOD.BASIC_SETTING, getText('Enum_FormulaSettingMethod_BASIC_SETTING')),
+            new EnumModel(FORMULA_SETTING_METHOD.DETAIL_SETTING, getText('Enum_FormulaSettingMethod_DETAIL_SETTING'))
         ];
     }
 

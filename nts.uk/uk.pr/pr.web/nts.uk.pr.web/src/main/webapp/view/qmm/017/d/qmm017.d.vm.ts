@@ -235,7 +235,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             let self = this;
             self.formulaSelectedSystemVariableClassificationValue.subscribe(newValue => {
                 if (newValue || !newValue && newValue === 0) {
-                    let embeddableFormulaList: any = __viewContext.screenModel.formulaList().filter(function(formula){ return formula.settingMethod == model.FORMULA_SETTING_METHOD.DETAIL_SETTING && formula.formulaCode != self.selectedFormula().formulaCode});
+                    let embeddableFormulaList: any = __viewContext.screenModel.formulaList().filter(function(formula){ return formula.settingMethod == model.FORMULA_SETTING_METHOD.DETAIL_SETTING && formula.formulaCode != self.selectedFormula().formulaCode()});
                     this.formulaList(embeddableFormulaList);
                     if (embeddableFormulaList.length > 0 ) self.selectedFormulaCode(embeddableFormulaList[0].formulaCode);
                 } else {
@@ -489,7 +489,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             let self = this, regex = new RegExp('([' + self.separators.join('|') + '])');
             let formulaElements:any = formula.split(regex).filter(item => {return item && item.length}), elementType, elementName, detailFormula, calculationFormulaTransfer;
             let self = this, index = 0, currentChar, nextChar, nextElement, operators = self.operators;
-            if (self.operators.indexOf(formulaElements[0]) > 5) self.setErrorToFormula('Formula cannot start with {0}', [formulaElements[0]]);
+            if (self.operators.indexOf(formulaElements[0]) > 1) self.setErrorToFormula('Formula cannot start with {0}', [formulaElements[0]]);
             if (formulaElements[formulaElements.length-1] && self.operators.indexOf(formulaElements[formulaElements.length-1]) > 1) self.setErrorToFormula('Formula cannot end with {0}', [formulaElements[formulaElements.length-1]]);
             for(index = 0 ; index < formulaElements.length; index ++){
                 currentChar = formulaElements[index];
