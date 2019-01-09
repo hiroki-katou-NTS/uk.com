@@ -41,13 +41,14 @@ module nts.uk.pr.view.qmm017.f.viewmodel {
                 data = data.map(item => {return {code: item.itemNameCd, name: item.name}})
                 self.targetItemCodeListItem(data);
                 $('#item_container').focus();
+                dfd.resolve();
                 block.clear();
             }).fail(function(err) {
                 block.clear();
+                dfd.reject();
                 dialog.alertError(err.message);
             });
             let self = this, dfd = $.Deferred();
-            dfd.resolve();
             return dfd.promise();
         }
         decideChangeItemList() {

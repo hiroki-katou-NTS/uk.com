@@ -16,7 +16,7 @@
         <com:scriptfile path="qmm017.f.start.js" />
     </ui:define>
     <ui:define name="content">
-        <div class="contents-area">
+        <div id="contents-area">
             <div style="margin-left: 20px;">
                 <!--E1-1; E1_2; E1_13-->
                 <div class="dialog-first-element">
@@ -24,6 +24,7 @@
                 </div>
                 <div style = "margin-top: 10px;">
                     <!--mix of 3 case-->
+                    <label>getText(')</label>
                     <table tabindex="1" id ="item"
                            data-bind="ntsGridList: {
                             rows: 15,
