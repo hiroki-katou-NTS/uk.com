@@ -163,7 +163,6 @@ public class YearHolidayRepositoryImpl implements MasterListData{
                         data.put("付与回 10", i+1);
                         
                         if(listFindByCode.size()==0 || listYearHoliday.size()== 0){
-
                         }else{
                         	LengthServiceTbl dataFindByCode = listFindByCode.get(i);
                             data.put("勤続年数年 11", dataFindByCode.getYear()+"年");
@@ -186,21 +185,26 @@ public class YearHolidayRepositoryImpl implements MasterListData{
                     		
                     		// kiem tra cot thu 3 co check hay ko? 
                     		if(c.getUseSimultaneousGrant() == UseSimultaneousGrant.NOT_USE){
-                    			data.put("基準日 16", "");
+                    			if(listFindByCode.get(i).getStandGrantDay() == GrantReferenceDate.HIRE_DATE){
+                					data.put("基準日 16", "入社日 ");
+                				}else{
+                					data.put("基準日 16", "年休付与基準日 ");                    				
+                				}
+                    			data.put("一斉付与 17", "");
+                    			
                     			// neu check thu kt dk 16, 17 , 18
                     		}else{
                     			if(listFindByCode.get(i).getAllowStatus() == GrantSimultaneity.NOT_USE){
-                    			
                     				if(listFindByCode.get(i).getStandGrantDay() == GrantReferenceDate.HIRE_DATE){
                     					data.put("基準日 16", "入社日 ");
                     				}else{
                     					data.put("基準日 16", "年休付与基準日 ");                    				
                     				}
-                    				data.put("一斉付与 17", "-");
                     				
+                    				data.put("一斉付与 17", "○");
                     			}else{
                     				data.put("基準日 16", "");
-                                    data.put("一斉付与 17", "○");
+                    				data.put("一斉付与 17", "-");
                     			}
                     		}
                         }
@@ -426,37 +430,46 @@ public class YearHolidayRepositoryImpl implements MasterListData{
         							data.put("半休上限回数 15","");
         						}
         						
-                               
-                               // kiem tra cot thu 3 co check hay ko?
-                               if (c.getUseSimultaneousGrant() == UseSimultaneousGrant.NOT_USE) {
-                                     data.put("一斉付与 17", "");
-                                     // neu check thu kt dk 16, 17 , 18
-                               } else {
-                                     if (listFindByCode.get(i).getAllowStatus() == GrantSimultaneity.NOT_USE) {
-                                            data.put("一斉付与 17", "-");
-                               if(listFindByCode.get(i).getStandGrantDay() == GrantReferenceDate.HIRE_DATE){
-                                     data.put("基準日 16", "入社日 ");
-                               }else{
-                                     data.put("基準日 16", "年休付与基準日 ");                                               
-                               }
-                                     } else {
-                                    	 data.put("基準日 16", "");
-                                         data.put("一斉付与 17", "○");
-                                     }
-                               }
+        						
+        						// kiem tra cot thu 3 co check hay ko? 
+                        		if(c.getUseSimultaneousGrant() == UseSimultaneousGrant.NOT_USE){
+                        			if(listFindByCode.get(i).getStandGrantDay() == GrantReferenceDate.HIRE_DATE){
+                    					data.put("基準日 16", "入社日 ");
+                    				}else{
+                    					data.put("基準日 16", "年休付与基準日 ");                    				
+                    				}
+                        			data.put("一斉付与 17", "");
+                        			// neu check thu kt dk 16, 17 , 18
+                        		}else{
+                        			if(listFindByCode.get(i).getAllowStatus() == GrantSimultaneity.NOT_USE){
+                        				if(listFindByCode.get(i).getStandGrantDay() == GrantReferenceDate.HIRE_DATE){
+                        					data.put("基準日 16", "入社日 ");
+                        				}else{
+                        					data.put("基準日 16", "年休付与基準日 ");                    				
+                        				}
+                        				
+                        				data.put("一斉付与 17", "○");
+                        			}else{
+                        				data.put("基準日 16", "");
+                        				data.put("一斉付与 17", "-");
+                        			}
+                        		}
                         } else {
                                data.put("勤続年数年 11", "");
                                data.put("勤続年数月 12", "");
                                data.put("付与日数 13", "");
                                data.put("時間年休上限日数 14", "");
                                data.put("半休上限回数 15", "");
-                               
                                data.put("基準日 16", "");
-                               if (c.getUseSimultaneousGrant() == UseSimultaneousGrant.NOT_USE) {
-                                     data.put("一斉付与 17", "");
-                               }else{
-                                     data.put("一斉付与 17", "○");
-                               }
+                               data.put("一斉付与 17", "");
+//                               if (c.getUseSimultaneousGrant() == UseSimultaneousGrant.NOT_USE) {
+//                                     data.put("一斉付与 17", "");
+//                               }else{
+//                                     data.put("一斉付与 17", "○");
+//                               }
+                               
+                               
+                               
                         }
                         
                         data.put("基準設定２ 18", "");
