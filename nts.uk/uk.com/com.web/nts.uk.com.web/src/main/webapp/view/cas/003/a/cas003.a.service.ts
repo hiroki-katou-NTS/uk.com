@@ -20,7 +20,7 @@ module nts.uk.com.view.cas003.a {
         }
                 //ExportExcel
         export function saveAsExcel(languageId: string): JQueryPromise<any> {
-        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "SecuritySetting", domainType: "CAS003"+nts.uk.resource.getText("CAS003_39"), languageId: languageId, reportType: 0});
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "SecuritySetting", domainType: "CAS003"+__viewContext.program.programName, languageId: languageId, reportType: 0});
         }
         
     }
