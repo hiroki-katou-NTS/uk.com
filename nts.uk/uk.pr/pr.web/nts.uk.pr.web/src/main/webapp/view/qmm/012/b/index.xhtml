@@ -163,6 +163,14 @@
                                  data-bind="ntsFormLabel: {required: true }">#{i18n.getText('QMM012_27')}</div>
                             <label data-bind="text: statementItem().categoryName"></label>
                         </div>
+                        <div class="valign-center control-group">
+                            <!-- 統合コード -->
+                            <div id="B3_8"
+                                 data-bind="ntsFormLabel: {}">#{i18n.getText('QMM012_36')}</div>
+                            <!-- 統合コード参照ボタン -->
+                            <button id="B3_9" tabindex="15" class="outputExcelBtn small"
+                                    data-bind="enable: false">#{i18n.getText('QMM012_37')}</button>
+                        </div>
                         <hr style="margin-bottom: 20px;"/>
                         <div class="screenCDEFG">
                             <!-- CategoryAtr is DEDUCTION_ITEM  -->
