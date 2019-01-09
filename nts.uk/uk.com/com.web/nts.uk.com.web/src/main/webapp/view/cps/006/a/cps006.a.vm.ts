@@ -116,9 +116,12 @@ module nts.uk.com.view.cps006.a.viewmodel {
 
         private exportExcel(domainId: string, domainType: string) {
             var self = this;
+            nts.uk.ui.block.grayout();
             service.exportExcel(self.langId(), domainId, domainType)
-                .fail(function (res) {
+                .fail(function(res) {
                     nts.uk.ui.dialog.alertError(res);
+                }).always(function() {
+                    nts.uk.ui.block.clear();
                 });
         }
         
