@@ -1,17 +1,19 @@
 module nts.uk.pr.view.qmm020.i.viewmodel {
+    import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
+    import getText = nts.uk.resource.getText;
+    import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
 
     export class ScreenModel {
         //_______CCG001____
         ccgcomponent: any;
         baseDate: KnockoutObservable<Date>;
-        listEmp: KnockoutObservableArray<ConfirmPersonSetStatusDto> = ko.observableArray([]);
+        listEmp: KnockoutObservableArray<ConfirmPersonSetStatus> = ko.observableArray([]);
 
         constructor() {
             let self = this;
             //_____CCG001________
             self.ccgcomponent = {
-
                 showEmployeeSelection: false, // 検索タイプ
                 systemType: 2, // システム区分 - 就業
                 showQuickSearchTab: true, // クイック検索
@@ -47,7 +49,7 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
                  * Define how to use this list employee by yourself in the function's body.
                  */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
-                    let self = this;
+                    block.invisible();
                     let empIds = _.map(data.listEmployee, (item: EmployeeSearchDto) => {
                         return item.employeeId;
                     });
@@ -55,16 +57,66 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
                         empIds: empIds,
                         baseDate: data.baseDate
                     };
-                    service.getStatementLinkPerson(dataInput).done((resulf: Array<ConfirmPersonSetStatusDto>) => {
-                        self.listEmp(resulf);
+                    service.getStatementLinkPerson(dataInput).done((res: Array<IConfirmPersonSetStatus>) => {
+                        self.listEmp(ConfirmPersonSetStatus.fromApp(data.listEmployee, res));
+                        $("#grid").ntsGrid("destroy");
+                        self.loadGrid();
                     }).fail((err) => {
                         dialog.alertError(err);
+                    }).always(() => {
+                        block.clear();
                     });
-
                 }
             };
-            $('#com-ccg001').ntsGroupComponent(self.ccgcomponent); // '#com-ccg-001' is the component container's id
-            $("#fixed-table").ntsFixedTable({height: 430, width: 880});
+        }
+
+        startPage(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            $('#com-ccg001').ntsGroupComponent(self.ccgcomponent);
+            self.loadGrid();
+            dfd.resolve();
+            return dfd.promise();
+        }
+
+        loadGrid() {
+            let self = this;
+            $("#grid").ntsGrid({
+                width: '1000px',
+                height: '400px',
+                dataSource: self.listEmp(),
+                primaryKey: 'empId',
+                virtualization: true,
+                virtualizationMode: 'continuous',
+                columns: [
+                    {headerText: '', key: 'empId', dataType: 'string', hidden: true},
+                    {headerText: getText("QMM020_26"), key: 'empCd', dataType: 'string', width: '120px'},
+                    {headerText: getText("QMM020_50"), key: 'empName', dataType: 'string', width: '200px'},
+                    {headerText: getText("QMM020_20"), key: 'salary', dataType: 'string', width: '200px',},
+                    {headerText: getText("QMM020_22"), key: 'bonus', dataType: 'string', width: '200px'},
+                    {headerText: getText("QMM020_51"), key: 'master', dataType: 'string', width: '280px'}
+                ],
+                features: [
+                    {
+                        name: 'Selection',
+                        mode: 'row',
+                        multipleSelection: false
+                    },
+                    {
+                        name: "Resizing",
+                        deferredResizing: false,
+                        allowDoubleClickToResize: true,
+                        columnSettings: [
+                            {columnKey: "empCd", minimumWidth: 100},
+                            {columnKey: "empName", minimumWidth: 150}
+                        ]
+                    },
+                    {
+                        name: "Sorting",
+                        type: "local"
+                    }
+                ],
+            });
         }
 
         cancel() {
@@ -89,7 +141,7 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
         workplaceName: string;
     }
 
-    interface ConfirmPersonSetStatusDto {
+    interface IConfirmPersonSetStatus {
         sid: string;
 
         /**
@@ -115,7 +167,7 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
         /**
          * 適用設定区分
          */
-        settingCtg: string;
+        settingCtg: number;
 
         /**
          * 適用マスタコード
@@ -126,5 +178,76 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
          * 適用マスタ名称
          */
         masterName: string;
+    }
+
+    class ConfirmPersonSetStatus {
+        empId: string;
+        empCd: string;
+        empName: string;
+        salary: string;
+        bonus: string;
+        master: string;
+
+        constructor(emp: EmployeeSearchDto, data: IConfirmPersonSetStatus) {
+            this.empId = emp.employeeId;
+            this.empCd = emp.employeeCode;
+            this.empName = emp.employeeName;
+            this.salary = isNullOrUndefined(data.salaryCode) ? "未設定" : data.salaryCode + "　" + data.salaryName;
+            this.bonus = isNullOrUndefined(data.bonusCode) ? "未設定" : data.bonusCode + "　" + data.bonusName;
+            this.master = getSettingClsText(data.settingCtg);
+            if (data.settingCtg != SettingCls.PERSON && data.settingCtg != SettingCls.COMPANY) {
+                this.master += "　" + "(" + data.masterCode + "　" + data.masterName + ")"
+            }
+        }
+
+        static fromApp(listEmployee: Array<EmployeeSearchDto>, items: Array<IConfirmPersonSetStatus>) {
+            let result: Array<ConfirmPersonSetStatus> = [];
+            _.each(listEmployee, (emp: EmployeeSearchDto) => {
+                let data = _.find(items, (item: IConfirmPersonSetStatus) => {
+                    return item.sid == emp.employeeId;
+                });
+                let dto = new ConfirmPersonSetStatus(emp, data);
+                result.push(dto)
+            });
+            return result;
+        }
+    }
+
+    enum SettingCls {
+        // 個人
+        PERSON = 0,
+        // 雇用
+        EMPLOYEE = 1,
+        // 部門
+        DEPARMENT = 2,
+        // 分類
+        CLASSIFICATION = 3,
+        // 職位
+        POSITION = 4,
+        // 給与分類
+        SALARY = 5,
+        // 会社
+        COMPANY = 6,
+    }
+
+    function getSettingClsText(e: SettingCls) {
+        switch (e) {
+            case SettingCls.PERSON:
+                return getText("QMM020_11");
+            case SettingCls.EMPLOYEE:
+                return getText("QMM020_6");
+            case SettingCls.DEPARMENT:
+                return getText("QMM020_7");
+            case SettingCls.CLASSIFICATION:
+                return getText("QMM020_8");
+            case SettingCls.POSITION:
+                return getText("QMM020_9");
+            case SettingCls.SALARY:
+                return getText("QMM020_10");
+            case SettingCls.COMPANY:
+                return getText("QMM020_5");
+            default:
+                return "";
+        }
     }
 }

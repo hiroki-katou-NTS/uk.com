@@ -7,7 +7,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ConfirmPersonSetStatusDto {
+public class ConfirmPersonSetStatus {
 
     private String sid;
 
@@ -34,7 +34,7 @@ public class ConfirmPersonSetStatusDto {
     /**
      * 適用設定区分
      */
-    private String settingCtg;
+    private Integer settingCtg;
 
     /**
      * 適用マスタコード
