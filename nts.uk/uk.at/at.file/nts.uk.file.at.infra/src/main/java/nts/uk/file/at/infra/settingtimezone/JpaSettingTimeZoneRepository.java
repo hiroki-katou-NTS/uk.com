@@ -233,10 +233,12 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             "  s.BONUS_PAY_SET_CD,  " +
             "  s.BONUS_PAY_SET_NAME,  " +
             "  wph.END_DATE " +
-            "  FROM  " +
-            "  BSYMT_WORKPLACE_INFO wp  " +
-            "  INNER JOIN KBPST_WP_BP_SET wps ON wp.CID = wps.CID   " +
-            "  AND wp.WKPID = wps.WKPID  " +
+            " FROM " +
+            " BSYMT_WKP_CONFIG_INFO i " +
+            " INNER JOIN KBPST_WP_BP_SET wps " +
+            " ON i.CID = wps.CID AND i.WKPID = wps.WKPID " +
+            " INNER JOIN BSYMT_WORKPLACE_INFO wp " +
+            " ON wp.CID = wps.CID AND wp.WKPID = wps.WKPID " +
             "  INNER JOIN   " +
             "  (  " +
             "    SELECT H.CID, H.HIST_ID, H.WKPID, H.START_DATE, H.END_DATE  " +
@@ -255,7 +257,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             "  AND s.BONUS_PAY_SET_CD = wps.BONUS_PAY_SET_CD   " +
             "  WHERE  " +
             "  wp.CID = ?  " +
-            " ORDER BY wp.WKPCD";
+            " ORDER BY i.HIERARCHY_CD";
 
     private static final String SQLSetEmployees = "SELECT   " +
             "  emp.SCD,   " +
