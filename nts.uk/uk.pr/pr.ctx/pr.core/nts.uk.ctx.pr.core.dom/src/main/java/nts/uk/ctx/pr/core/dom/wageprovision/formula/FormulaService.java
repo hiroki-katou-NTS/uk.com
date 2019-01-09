@@ -141,7 +141,7 @@ public class FormulaService {
         currProcessDateRepository.getCurrProcessDateByIdAndProcessCateNo(AppContexts.user().companyId(), 1).ifPresent(processDate -> {
             processYMAndReferTime.put("processYearMonth", processDate.getGiveCurrTreatYear().v().toString());
             setDaySupportRepository.getSetDaySupportByIdAndProcessDate(AppContexts.user().companyId(), 1, processDate.getGiveCurrTreatYear().v()).ifPresent(setDaySupport -> {
-                processYMAndReferTime.put("referenceDate", setDaySupport.getEmpExtraRefeDate().toString("YYYY/MM/DD"));
+                processYMAndReferTime.put("referenceDate", setDaySupport.getEmpExtraRefeDate().toString());
             });
         });
         return processYMAndReferTime;
