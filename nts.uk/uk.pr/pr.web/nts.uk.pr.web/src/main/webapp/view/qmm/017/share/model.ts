@@ -368,10 +368,11 @@ module nts.uk.pr.view.qmm017.share.model {
         ROUND_UP = 5,
         MAX_VALUE = 6,
         MIN_VALUE = 7,
-        NUMBER_OF_FAMILY_MEMBER = 8,
-        ADDITIONAL_YEARMONTH = 9,
-        YEAR_EXTRACTION = 10,
-        MONTH_EXTRACTION = 11
+        // pending, remove out of list
+        NUMBER_OF_FAMILY_MEMBER = 11,
+        ADDITIONAL_YEARMONTH = 8,
+        YEAR_EXTRACTION = 9,
+        MONTH_EXTRACTION = 10
     }
 
     export function getFunctionListEnumModel () {
