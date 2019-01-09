@@ -221,19 +221,14 @@ public class DayCalendarExportImpl implements MasterListData {
 
 	private void putDataToColumnsCompany(Map<String, Object> data, CompanyCalendarReportData setReportData) {
 		int day = setReportData.getDay();
-		for (int i = 1; i <= 31; i++) {
-			String key = i + "日";
-			if (day == i) {
-				String value = (String) data.get(key);
-				if (value != null && !value.isEmpty()) {
-					value += "," + setReportData.getWorkingDayAtrName();
-				}
-				else if (value != null && value.isEmpty()){
-					value += setReportData.getWorkingDayAtrName();
-				}
-				data.put(key, value);
-			}
+		String key = day + "日";
+		String value = (String) data.get(key);
+		if (value != null && !value.isEmpty()) {
+			value += "," + setReportData.getWorkingDayAtrName();
+		} else if (value != null && value.isEmpty()) {
+			value += setReportData.getWorkingDayAtrName();
 		}
+		data.put(key, value);
 	}
 	
 	/**
@@ -406,20 +401,14 @@ public class DayCalendarExportImpl implements MasterListData {
 	 */
 	private void putDataToColumnsWorkplace(Map<String, Object> data, WorkplaceCalendarReportData setReportData) {
 		int day = setReportData.getDay();
-		for (int i = 1; i <= 31; i++) {
-			String key = i + "日";
-			if (day == i) {
-				String value = (String) data.get(key);
-				if (value != null && !value.isEmpty()) {
-					value += "," + setReportData.getWorkingDayAtrName();
-				}
-				else if (value != null && value.isEmpty()){
-					value += setReportData.getWorkingDayAtrName();
-				}
-				data.put(key, value);
-			}
-
+		String key = day + "日";
+		String value = (String) data.get(key);
+		if (value != null && !value.isEmpty()) {
+			value += "," + setReportData.getWorkingDayAtrName();
+		} else if (value != null && value.isEmpty()) {
+			value += setReportData.getWorkingDayAtrName();
 		}
+		data.put(key, value);
 	}
 	
 	
@@ -533,19 +522,14 @@ public class DayCalendarExportImpl implements MasterListData {
 	 */
 	private void putDataToColumnsClass(Map<String, Object> data, ClassCalendarReportData setReportData) {
 		int day = setReportData.getDay();
-		for (int i = 1; i <= 31; i++) {
-			String key = i + "日";
-			if (day == i) {
-				String value = (String) data.get(key);
-				if (value != null && !value.isEmpty()) {
-					value += "," + setReportData.getWorkingDayAtrName();
-				}
-				else if (value != null && value.isEmpty()){
-					value += setReportData.getWorkingDayAtrName();
-				}
-				data.put(key, value);
-			}
+		String key = day + "日";
 
+		String value = (String) data.get(key);
+		if (value != null && !value.isEmpty()) {
+			value += "," + setReportData.getWorkingDayAtrName();
+		} else if (value != null && value.isEmpty()) {
+			value += setReportData.getWorkingDayAtrName();
 		}
+		data.put(key, value);
 	}
 }
