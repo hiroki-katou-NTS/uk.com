@@ -1186,7 +1186,8 @@ module cps003.a.vm {
         AfterZero = 2,
         PreviousSpace = 3,
         AfterSpace = 4
-
+    }
+    
     interface ISettingData {
         "perInfoData": KnockoutObservableArray<IPersonInfoSetting> | Array<IPersonInfoSetting>;
         "matrixDisplay": KnockoutObservable<IMatrixDisplay> | IMatrixDisplay;
