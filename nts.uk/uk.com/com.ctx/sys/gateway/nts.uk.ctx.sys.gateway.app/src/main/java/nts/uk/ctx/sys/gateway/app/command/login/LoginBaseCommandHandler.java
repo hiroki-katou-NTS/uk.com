@@ -585,7 +585,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 				hostname);
 
 		if (!opWindowAccount.isPresent()) {
-			String remarkText = hostname + " " + username + " " + TextResource.localize("Msg_876");
+			String remarkText = hostname + "\\" + username + " " + TextResource.localize("Msg_876");
 			ParamLoginRecord param = new ParamLoginRecord(" ", LoginMethod.SINGLE_SIGN_ON.value, LoginStatus.Fail.value,
 					remarkText, null);
 
