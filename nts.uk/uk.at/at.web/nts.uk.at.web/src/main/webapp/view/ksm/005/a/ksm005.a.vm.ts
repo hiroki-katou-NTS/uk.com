@@ -45,7 +45,7 @@ module nts.uk.at.view.ksm005.a {
                 var self = this;
                 let params = {
                     date: moment(new Date()).toDate(),
-                    mode: 2 //YEAR_PERIOD_FINANCE
+                    mode: 3 //ALL
                 };
     
                 nts.uk.ui.windows.setShared("CDL028_INPUT", params);
@@ -53,7 +53,7 @@ module nts.uk.at.view.ksm005.a {
                 nts.uk.ui.windows.sub.modal("com", "/view/cdl/028/a/index.xhtml").onClosed(function() {
                     var params = nts.uk.ui.windows.getShared("CDL028_A_PARAMS");
                     if (params.status) {
-                        self.exportExcel(params.mode, params.startDateFiscalYear, params.endDateFiscalYear);
+                        self.exportExcel(params.mode,params.standardDate, params.startDateFiscalYear, params.endDateFiscalYear);
                      }
                 });
             }                                                           

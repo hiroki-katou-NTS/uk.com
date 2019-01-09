@@ -239,7 +239,7 @@ public class SpecificdaySetExportImpl implements MasterListData {
 				.findAllSpecificdaySetWorkplace(companyId, query.getStartDate(), query.getEndDate());
 
 		WkpConfigInfoFindObject wkpConfigInfoFindObject = new WkpConfigInfoFindObject();
-		wkpConfigInfoFindObject.setSystemType(5);
+		wkpConfigInfoFindObject.setSystemType(2);
 		wkpConfigInfoFindObject.setBaseDate(GeneralDate.ymd(9999, 12, 31));
 		wkpConfigInfoFindObject.setRestrictionOfReferenceRange(true);
 		List<WorkplaceHierarchyDto> workplaceHierarchyDtos = spreadOutWorkplaceInfos(workplaceConfigInfoFinder.findAllByBaseDate(wkpConfigInfoFindObject));
@@ -248,7 +248,6 @@ public class SpecificdaySetExportImpl implements MasterListData {
 		
 		if (mapSetReportDatas.isPresent()) {
 			mapSetReportDatas.get().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEachOrdered(x -> {
-				System.out.println("Key: " + x.getKey());
 				Optional<List<WorkplaceHierarchyDto>> workplaceHierarchyListByCode = Optional.ofNullable(mapWorkPlace.get(x.getKey()));
 				Optional<WorkplaceHierarchyDto> workplaceHierarchyDto = Optional.empty();
 				if (workplaceHierarchyListByCode.isPresent()) {
@@ -309,11 +308,8 @@ public class SpecificdaySetExportImpl implements MasterListData {
 				if (workplaceHierarchyDto.isPresent()) {
 					data.put("コード", workplaceHierarchyDto.get().getCode());
 					data.put("名称", workplaceHierarchyDto.get().getName());
-					System.out.println("code, name: " + workplaceHierarchyDto.get().getCode() + "," + workplaceHierarchyDto.get().getName());
 				}
-				else {
-					System.out.println("code, name is empty");
-				}
+				else {}
 			}
 			data.put("年月", yearMonth.substring(0, 4) + "/" + yearMonth.substring(4, yearMonth.length()));
 			

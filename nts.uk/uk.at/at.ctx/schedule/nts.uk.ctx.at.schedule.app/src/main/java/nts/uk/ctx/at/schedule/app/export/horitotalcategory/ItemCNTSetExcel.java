@@ -9,10 +9,6 @@ import lombok.Setter;
 public class ItemCNTSetExcel {
 	private String nameItemSet;
 	private String codeItemSet;
-	public ItemCNTSetExcel(String nameItemSet) {
-		super();
-		this.nameItemSet = nameItemSet;
-	}
 	
 	
 }
