@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset;
 
+import nts.uk.ctx.pr.core.dom.adapter.employee.classification.SysClassificationAdapter;
 import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisCls;
 import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisClsRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementlayout.StatementLayout;
@@ -24,6 +25,9 @@ public class StateCorreHisClsFinder {
     @Inject
     private StatementLayoutRepository statementLayoutFinder;
 
+    @Inject
+    private SysClassificationAdapter classificationAdapter;
+
     public List<StateCorreHisClsDto> getStateCorrelationHisClassificationByCid(){
         String cId = AppContexts.user().companyId();
         StateCorreHisCls hisClassification = classificationFinder.getStateCorrelationHisClassificationByCid(cId)
@@ -39,5 +43,8 @@ public class StateCorreHisClsFinder {
                 .collect(Collectors.toList());
     }
 
-
+    public List<ClassificationImportDto> getAllClassificationByCid() {
+        String cid = AppContexts.user().companyId();
+        return classificationAdapter.getClassificationByCompanyId(cid).stream().map(i -> new ClassificationImportDto(i)).collect(Collectors.toList());
+    }
 }
