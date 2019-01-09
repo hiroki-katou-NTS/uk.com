@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -65,7 +66,7 @@ public class ReflUnrCompCommandHandler extends CommandHandler<ReflUnrCompCommand
 		Map<String, List<SelectionItemOrder>> histIdSelectionOrderMap = selectOrderRepo.getByHistIdList(loginHistoryIds)
 				.stream().collect(Collectors.groupingBy(SelectionItemOrder::getHistId));
 
-		List<String> companyIdList = companyRepo.acquireAllCompany();
+		List<String> companyIdList = companyRepo.acquireAllCompany().stream().filter(c -> !(c.equals(loginCompanyId))).collect(Collectors.toList());
 
 		// remove
 		selectionHistService.removeHistoryOfCompanies(selectionItemId, companyIdList);
