@@ -25,7 +25,7 @@ module nts.uk.com.view.cmm014.a.service {
 
     //saveAsExcel
     export function saveAsExcel(languageId: string): JQueryPromise<any> {
-        return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "Classification", languageId: languageId, domainType: "CMM014"+nts.uk.resource.getText("CMM014_9"), reportType: 0 });
+        return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "Classification", languageId: languageId, domainType: "CMM014"+__viewContext.program.programName, reportType: 0 });
     }
 
     /**

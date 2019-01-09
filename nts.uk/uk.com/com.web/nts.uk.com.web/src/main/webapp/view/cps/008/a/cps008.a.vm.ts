@@ -53,6 +53,7 @@ module cps008.a.viewmodel {
                     self.enaBtnDel(false);
                 }
             });
+            self.showExportBtn();
         }
 
         start(code?: string): JQueryPromise<any> {
@@ -231,6 +232,31 @@ module cps008.a.viewmodel {
                     layout.action(LAYOUT_ACTION.UPDATE);
                 }
             });
+        }
+        
+        private exportExcel(): void {
+            
+                var self = this;
+                nts.uk.ui.block.grayout();
+                let langId = "ja";
+                service.saveAsExcel(langId).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
+        
+        
+        showExportBtn() {
+            if (nts.uk.util.isNullOrUndefined(__viewContext.user.role.attendance)
+                && nts.uk.util.isNullOrUndefined(__viewContext.user.role.payroll)
+                && nts.uk.util.isNullOrUndefined(__viewContext.user.role.officeHelper)
+                && nts.uk.util.isNullOrUndefined(__viewContext.user.role.personnel)) {
+                $("#print-button").hide();
+            } else {
+                $("#print-button").show();
+            }
         }
     }
 
