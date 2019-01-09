@@ -232,9 +232,13 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 		String cid = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
 		Query query = entityManager.createNativeQuery(GET_EXPORT_EXCEL.toString()).setParameter("cid", cid);
-		Object[] data = (Object[]) query.getSingleResult();
-		for (int i = 0; i < data.length; i++) {
-			datas.add(dataContent(data[i],i));
+		try {
+			Object[] data = (Object[]) query.getSingleResult();
+			for (int i = 0; i < data.length; i++) {
+				datas.add(dataContent(data[i], i));
+			}
+		} catch (Exception e) {
+			return datas;
 		}
 		return datas;
 	}

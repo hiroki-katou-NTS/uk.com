@@ -2159,11 +2159,14 @@ module nts.uk.at.view.kmf022 {
             }
 
             private exportExcel(domainId: string, domainType: string) {
-                var self = this;
-                service.exportExcel('ja', domainId, domainType)
-                    .fail(function (res) {
-                        nts.uk.ui.dialog.alertError(res);
-                    });
+                let self = this;
+                nts.uk.ui.block.grayout();
+                service.exportExcel('ja', domainId, domainType).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
             }
 
             initDataG(allData: any): void {

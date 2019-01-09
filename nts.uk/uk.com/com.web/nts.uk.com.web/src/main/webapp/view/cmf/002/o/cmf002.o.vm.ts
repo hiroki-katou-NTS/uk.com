@@ -55,6 +55,8 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         mode :KnockoutObservable<number> = ko.observable(MODE.NEW);
 
         isLoadScreenQ: boolean = false;
+        
+        roleAuthority: any;
 
         constructor() {
             var self = this;
@@ -73,6 +75,9 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             self.alreadySettingPersonal = ko.observableArray([]);
             self.baseDate = ko.observable(new Date());
             self.selectedEmployee = ko.observableArray([]);
+            
+            self.roleAuthority = getShared("CMF002O_PARAMS"); 
+            
             //set up kcp005
             let self = this;
             self.baseDate = ko.observable(new Date());
@@ -138,7 +143,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             block.invisible();
             let self = this;
             $('.content.clearfix .body').attr('style', '');
-            service.getConditionSetting(new ParamToScreenP("","")).done(res => {
+            service.getConditionSetting(new ParamToScreenP("","",self.roleAuthority.empRole[0])).done(res => {
                 {
                     let dataCndSetCd: Array<StdOutputCondSetDto> = res;
                     self.loadListCondition(dataCndSetCd);
@@ -429,9 +434,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
     class ParamToScreenP {
         modeScreen: string;
         cndSetCd: string;
-        constructor(modeScreen: string, cndSetCd: string) {
+        roleId : string;
+        constructor(modeScreen: string, cndSetCd: string,roleId : string) {
             this.modeScreen = modeScreen;
             this.cndSetCd = cndSetCd;
+            this.roleId = roleId;
         }
 
     }

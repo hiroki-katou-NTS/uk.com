@@ -213,7 +213,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 			+ " 		WHERE"
 			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	)"
+			+ " 	),"
+			+ " qq.HIERARCHY_CD"
 			+ " FROM"
 			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
 			+ " JOIN KMKMT_AGREEMENTTIME_WPL bb "
@@ -221,7 +222,11 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " JOIN BSYMT_WORKPLACE_INFO kk "
 			+ " ON bb.WKPCD = kk.WKPID"
 			+ " JOIN BSYMT_WORKPLACE_HIST ee "
-			+ " ON kk.HIST_ID = ee.HIST_ID"
+			+ " ON kk.HIST_ID = ee.HIST_ID "
+			+ " JOIN BSYMT_WKP_CONFIG hh "
+			+ "	ON hh.CID = ee.CID AND hh.END_DATE = '9999-12-31 00:00:00' "
+			+ " JOIN BSYMT_WKP_CONFIG_INFO qq "
+			+ " ON qq.WKPID = kk.WKPID AND hh.HIST_ID = qq.HIST_ID "
 			+ " WHERE"
 			+ " 	 bb.LABOR_SYSTEM_ATR = 0 AND kk.CID = ?cid"
 			+ " )"
@@ -233,7 +238,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 			 s.ERROR_THREE_MONTH,s.ALARM_THREE_MONTH,s.LIMIT_THREE_MONTH,"
 			+ " 			 s.ERROR_YEARLY,s.ALARM_YEARLY,s.LIMIT_YEARLY"
 			+ "   FROM summary s"
-			+ "  WHERE s.rk = 1 ";
+			+ "  WHERE s.rk = 1 "
+			+ "	 ORDER BY s.HIERARCHY_CD";
 
 	
 	
@@ -476,7 +482,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 			+ " 		WHERE"
 			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " 	)"
+			+ " 	), "
+			+ "		qq.HIERARCHY_CD"
 			+ " FROM"
 			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
 			+ " JOIN KMKMT_AGREEMENTTIME_WPL bb "
@@ -484,7 +491,11 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " JOIN BSYMT_WORKPLACE_INFO kk "
 			+ " ON bb.WKPCD = kk.WKPID"
 			+ " JOIN BSYMT_WORKPLACE_HIST ee "
-			+ " ON kk.HIST_ID = ee.HIST_ID"
+			+ " ON kk.HIST_ID = ee.HIST_ID "
+			+ "	JOIN BSYMT_WKP_CONFIG hh "
+			+ "	ON hh.CID = ee.CID AND hh.END_DATE = '9999-12-31 00:00:00' "
+			+ "	JOIN BSYMT_WKP_CONFIG_INFO qq "
+			+ " ON qq.WKPID = kk.WKPID AND hh.HIST_ID = qq.HIST_ID "
 			+ " WHERE"
 			+ " 	 bb.LABOR_SYSTEM_ATR = 1 AND kk.CID = ?cid"
 			+ " )"
@@ -496,7 +507,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 			 s.ERROR_THREE_MONTH,s.ALARM_THREE_MONTH,s.LIMIT_THREE_MONTH,"
 			+ " 			 s.ERROR_YEARLY,s.ALARM_YEARLY,s.LIMIT_YEARLY"
 			+ "   FROM summary s"
-			+ "  WHERE s.rk = 1 ";
+			+ "  WHERE s.rk = 1 "
+			+ "	 ORDER BY s.HIERARCHY_CD";
 
 	
 	
@@ -736,11 +748,11 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+" 		JOIN BSYMT_EMP_DTA_MNG_INFO cc ON aa.SID = cc.SID"
 			+" 		JOIN BPSMT_PERSON dd ON cc.PID = dd.PID"
 			+" 		WHERE"
-			+" 			bb.Y_K >= 2014"
-			+" 		AND bb.Y_K <= 2018"
-			+" 		AND aa.YM_K >= 201801"
-			+" 		AND aa.YM_K <= 201808"
-			+" 		AND cc.CID = '000000000000-0001'"
+			+" 			bb.Y_K >= ?startY"
+			+" 		AND bb.Y_K <= ?endY"
+			+" 		AND aa.YM_K >= ?startYM"
+			+" 		AND aa.YM_K <= ?endYM"
+			+" 		AND cc.CID = ?cid"
 			+" 	) kk"
 			+" ORDER BY"
 			+" 	kk.SCD, kk.YM_K DESC,kk.Y_K DESC";
@@ -751,17 +763,47 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
 		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_1.toString()).setParameter(1, cid);
-		Object[] data = (Object[]) query.getSingleResult();
-		int closeDateAtr = ((BigDecimal)data[1]).intValue();
-		for (int i = 0; i < data.length; i++) {
-			if(closeDateAtr == 0 && i == 2)
-				continue;
-			datas.add(toDataSheet1(data[i],i,closeDateAtr));
+		try {
+			Object[] data = (Object[]) query.getSingleResult();
+			int closeDateAtr = ((BigDecimal)data[1]).intValue();
+			for (int i = 0; i < data.length; i++) {
+				if(closeDateAtr == 0 && i == 2)
+					continue;
+				datas.add(toDataSheet1(data[i],i,closeDateAtr));
+			}
+		} catch (Exception e) {
+			for (int i = 0; i < 5; i++) {
+				datas.add(toDataEmptySheet1(i));
+			}
+			return datas;
 		}
 		return datas;
 	}
 	
-	
+	private MasterData toDataEmptySheet1(int checkRow) {
+		Map<String,MasterCellData> data = new HashMap<>();
+		data.put(RegistTimeColumn.KMK008_80, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_80)
+                .value(checkRow == 0 ? RegistTimeColumn.KMK008_82 : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.HEADER_NONE1, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_80)
+                .value(checkRow == 0 ? RegistTimeColumn.KMK008_83 : checkRow == 1 ? RegistTimeColumn.KMK008_84 : checkRow == 2 ? RegistTimeColumn.KMK008_85 : checkRow == 3 ? RegistTimeColumn.KMK008_86 : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.HEADER_NONE2, MasterCellData.builder()
+                .columnId(RegistTimeColumn.HEADER_NONE2)
+                .value(checkRow == 3 ? RegistTimeColumn.KMK008_87 : checkRow == 4 ? RegistTimeColumn.KMK008_88 : "")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+		data.put(RegistTimeColumn.KMK008_81, MasterCellData.builder()
+                .columnId(RegistTimeColumn.KMK008_81)
+                .value("")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+		return MasterData.builder().rowData(data).build();
+	}
 	
 	
 	private MasterData toDataSheet1(Object object,int check,int closeDateAtr) {

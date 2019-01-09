@@ -667,7 +667,7 @@
                    if (result.status) {
                         nts.uk.ui.block.grayout();
                         let langId = self.langId();
-                        let date = moment(result.standardDate, "YYYY/MM/DD");
+                        let date = moment.utc(result.standardDate, "YYYY/MM/DD");
                         service.saveAsExcel(langId, date).done(function() {
                             //nts.uk.ui.windows.close();
                         }).fail(function(error) {

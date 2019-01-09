@@ -82,7 +82,18 @@ module nts.uk.at.view.ksm001.a {
                         });
                    }
                 }
-
+            }
+            
+            /**
+             * check role
+             */
+            hasPermission(): boolean {
+                if (__viewContext.user.role.attendance == "null" && __viewContext.user.role.payroll == "null"
+                    && __viewContext.user.role.personnel == "null"  && __viewContext.user.role.officeHelper == "null"){
+                    return false;
+                }
+                
+                return true;
             }
             
             constructor() {
@@ -715,7 +726,6 @@ module nts.uk.at.view.ksm001.a {
                     estimateNumberOfDay: self.employmentEstablishmentModel.estimateDaysModel.toDto(),
                     employmentCode: self.selectedEmploymentCode()
                 };
-
                 service.saveEmploymentEstablishment(self.employmentEstablishmentModel.selectedYear(), dto).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                         self.updateEmploymentEstimateSetting(self.employmentEstablishmentModel.selectedYear());
@@ -1049,8 +1059,9 @@ module nts.uk.at.view.ksm001.a {
                 for (var item of this.monthlyEstimates) {
                     monthlyEstimateTime.push(item.toDto());
                 }
+                var sortMonth = _.sortBy(monthlyEstimateTime, item=>item.month);
                 var dto: EstablishmentTimeDto = {
-                    monthlyEstimates: monthlyEstimateTime,
+                    monthlyEstimates: sortMonth,
                     yearlyEstimate: this.yearlyEstimate.toDto()
                 };
                 return dto;
@@ -1090,8 +1101,9 @@ module nts.uk.at.view.ksm001.a {
                 for (var item of this.monthlyEstimates) {
                     monthlyEstimatePrice.push(item.toDto());
                 }
+                var sortMonth = _.sortBy(monthlyEstimatePrice, item => item.month);
                 var dto: EstablishmentPriceDto = {
-                    monthlyEstimates: monthlyEstimatePrice,
+                    monthlyEstimates: sortMonth,
                     yearlyEstimate: this.yearlyEstimate.toDto()
                 };
                 return dto;
@@ -1132,8 +1144,9 @@ module nts.uk.at.view.ksm001.a {
                 for (var item of this.monthlyEstimates) {
                     monthlyEstimateDays.push(item.toDto());
                 }
+                var sortMonth = _.sortBy(monthlyEstimateDays, item=>item.month);
                 var dto: EstablishmentDaysDto = {
-                    monthlyEstimates: monthlyEstimateDays,
+                    monthlyEstimates: sortMonth,
                     yearlyEstimate: this.yearlyEstimate.toDto()
                 };
                 return dto;

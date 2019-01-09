@@ -1,5 +1,5 @@
 module nts.uk.com.view.cmm014.a.service {
-        
+
     /**
      *  Service paths
      */
@@ -23,25 +23,30 @@ module nts.uk.com.view.cmm014.a.service {
         return nts.uk.request.ajax(servicePath.saveClassification, classification);
     }
 
+    //saveAsExcel
+    export function saveAsExcel(languageId: string): JQueryPromise<any> {
+        return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "Classification", languageId: languageId, domainType: "CMM014"+__viewContext.program.programName, reportType: 0 });
+    }
+
     /**
     * remove Classification
     */
-    export function removeClassification(params: any): JQueryPromise<any> {    
+    export function removeClassification(params: any): JQueryPromise<any> {
         return nts.uk.request.ajax(servicePath.removeClassification, params);
-    }  
-    
+    }
+
     export module model {
-        
+
         export class ClassificationFindDto {
             code: string;
             name: string;
             memo: string;
-            
+
             constructor(code?: string, name?: string, memo?: string) {
                 this.code = code;
                 this.name = name;
                 this.memo = memo;
             }
         }
-    }    
+    }
 }

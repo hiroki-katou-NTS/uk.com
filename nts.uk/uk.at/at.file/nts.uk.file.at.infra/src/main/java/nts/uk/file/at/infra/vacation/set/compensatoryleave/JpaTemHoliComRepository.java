@@ -75,7 +75,7 @@ public class JpaTemHoliComRepository extends JpaRepository implements TempHoliCo
         /*※8_01*/
         boolean isUseTypeOS_01 = rs.getString("USE_TYPE_OS1").equals("1");
         /*※9*/
-        boolean isTransferSetAtrOS = rs.getString("TRANSF_TYPE").equals("0");
+        boolean isTransferSetAtrOS = rs.getString("TRANSF_TYPE").equals("1");
         /*※10*/
         boolean isTransferSetAtrOS2 = rs.getString("TRANSF_TYPE_OS1").equals("1");
         /*A15_1*/
@@ -95,21 +95,21 @@ public class JpaTemHoliComRepository extends JpaRepository implements TempHoliCo
         /*A15_8*/
         String occurrenceSetUseType = isManagement && isUseTypeOS ? CommonTempHolidays.getTextEnumSubHolTransferSetAtr(Integer.valueOf(rs.getString("TRANSF_TYPE"))) : null;
         /*A15_9*/
-        String oneDayTime = isManagement && isUseTypeOS && isTransferSetAtrOS ? rs.getString("ONE_DAY_TIME") : null;
+        String oneDayTime = isManagement && isUseTypeOS && !isTransferSetAtrOS ? rs.getString("ONE_DAY_TIME") : null;
         /*A15_10*/
-        String halfDayTime = isManagement && isUseTypeOS && isTransferSetAtrOS ? rs.getString("HALF_DAY_TIME") : null;
+        String halfDayTime = isManagement && isUseTypeOS && !isTransferSetAtrOS ? rs.getString("HALF_DAY_TIME") : null;
         /*A15_11*/
-        String certainTime = isManagement && isUseTypeOS && isTransferSetAtrOS2 == false ? rs.getString("CERTAIN_TIME") + I18NText.getText("KMF001_222") : null;
+        String certainTime = isManagement && isUseTypeOS && isTransferSetAtrOS ? CommonTempHolidays.convertToTime(Integer.valueOf(rs.getString("CERTAIN_TIME"))) + I18NText.getText("KMF001_222") : null;
         /*A15_12*/
         String occurrTypeVer2 = isManagement ? CommonTempHolidays.checkOcurrType(Integer.valueOf(rs.getString("USE_TYPE_OS1"))) : null;
         /*A15_13*/
         String useType = isManagement && isUseTypeOS_01 ? CommonTempHolidays.getTextEnumSubHolTransferSetAtr(Integer.valueOf(rs.getString("TRANSF_TYPE_OS1"))) : null;
         /*A15_14*/
-        String oneDayTimeV2 = isManagement && isUseTypeOS_01 && isTransferSetAtrOS ? rs.getString("ONE_DAY_TIME_OS1") : null;
+        String oneDayTimeV2 = isManagement && isUseTypeOS_01 && !isTransferSetAtrOS ? rs.getString("ONE_DAY_TIME_OS1") : null;
         /*A15_15*/
-        String halfDayTimeV2 = isManagement && isUseTypeOS_01 && isTransferSetAtrOS ? rs.getString("HALF_DAY_TIME_OS1") : null;
+        String halfDayTimeV2 = isManagement && isUseTypeOS_01 && !isTransferSetAtrOS ? rs.getString("HALF_DAY_TIME_OS1") : null;
         /*A15_16*/
-        String certainTimeV2 = isManagement && isUseTypeOS_01 && isTransferSetAtrOS2 == false ? rs.getString("CERTAIN_TIME_OS1") + I18NText.getText("KMF001_222") : null;
+        String certainTimeV2 = isManagement && isUseTypeOS_01 && isTransferSetAtrOS2  ? CommonTempHolidays.convertToTime(Integer.valueOf(rs.getString("CERTAIN_TIME_OS1"))) + I18NText.getText("KMF001_222") : null;
 
         datas.add(buildARow(
                 new DataEachBox(isManagementOfHolidays,ColumnTextAlign.LEFT)
@@ -180,12 +180,12 @@ public class JpaTemHoliComRepository extends JpaRepository implements TempHoliCo
                 .build());
         data.put(EmployeeSystemImpl.KMF001_214, MasterCellData.builder()
                 .columnId(EmployeeSystemImpl.KMF001_214)
-                .value(value9.getValue())
+                .value(value9.getValue() != null ? CommonTempHolidays.convertToTime(Integer.valueOf(value9.getValue())) : null)
                 .style(MasterCellStyle.build().horizontalAlign(value9.getPositon()))
                 .build());
         data.put(EmployeeSystemImpl.KMF001_215, MasterCellData.builder()
                 .columnId(EmployeeSystemImpl.KMF001_215)
-                .value(value10.getValue())
+                .value(value10.getValue() != null ? CommonTempHolidays.convertToTime(Integer.valueOf(value10.getValue())) : null)
                 .style(MasterCellStyle.build().horizontalAlign(value10.getPositon()))
                 .build());
 
@@ -206,12 +206,12 @@ public class JpaTemHoliComRepository extends JpaRepository implements TempHoliCo
                 .build());
         data.put(EmployeeSystemImpl.KMF001_219, MasterCellData.builder()
                 .columnId(EmployeeSystemImpl.KMF001_219)
-                .value(value14.getValue())
+                .value(value14.getValue() != null ? CommonTempHolidays.convertToTime(Integer.valueOf(value14.getValue())) : null)
                 .style(MasterCellStyle.build().horizontalAlign(value14.getPositon()))
                 .build());
         data.put(EmployeeSystemImpl.KMF001_220, MasterCellData.builder()
                 .columnId(EmployeeSystemImpl.KMF001_220)
-                .value(value15.getValue())
+                .value(value15.getValue() != null ? CommonTempHolidays.convertToTime(Integer.valueOf(value15.getValue())) : null)
                 .style(MasterCellStyle.build().horizontalAlign(value15.getPositon()))
                 .build());
         data.put(EmployeeSystemImpl.KMF001_221, MasterCellData.builder()
@@ -221,6 +221,7 @@ public class JpaTemHoliComRepository extends JpaRepository implements TempHoliCo
                 .build());
         return MasterData.builder().rowData(data).build();
     }
+
 
 
 

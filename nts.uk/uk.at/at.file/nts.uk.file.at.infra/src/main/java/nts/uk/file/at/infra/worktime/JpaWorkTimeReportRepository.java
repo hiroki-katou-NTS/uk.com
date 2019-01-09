@@ -3006,7 +3006,8 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlex.append(" 		CONCAT(CAST(PRED_TIME_SET.START_DATE_CLOCK AS INTEGER)/60, ':',");
 		sqlFlex.append(" 			FORMAT(CAST(PRED_TIME_SET.START_DATE_CLOCK AS INTEGER)%60,'0#')), NULL),");
 		// R3_72 所定設定.1日の範囲時間.時間
-		sqlFlex.append(" 	IIF(TEMP.ROW_ID = 1, PRED_TIME_SET.RANGE_TIME_DAY, NULL),");
+		sqlFlex.append(" 	IIF(TEMP.ROW_ID = 1 AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND PRED_TIME_SET.RANGE_TIME_DAY IS NOT NULL, ");
+		sqlFlex.append(" 		CAST(PRED_TIME_SET.RANGE_TIME_DAY AS INTEGER)/60, NULL),");
 		// R3_73 所定設定.1日の範囲時間.夜勤シフト
 		sqlFlex.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode THEN NULL");
 		sqlFlex.append(" 		 WHEN TEMP.ROW_ID = 1 AND PRED_TIME_SET.NIGHT_SHIFT_ATR = ?isTrue THEN ?isNightShiftText");

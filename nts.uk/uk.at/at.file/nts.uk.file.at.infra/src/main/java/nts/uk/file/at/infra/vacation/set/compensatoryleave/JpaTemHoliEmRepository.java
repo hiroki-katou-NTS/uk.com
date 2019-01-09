@@ -41,7 +41,7 @@ public class JpaTemHoliEmRepository extends JpaRepository implements TemHoliEmpl
 
 
     @Override
-    public List<MasterData> getAllTemHoliEmployee(String cid) {
+    public List<MasterData> getTemHoliEmployee(String cid) {
         List<MasterData> datas = new ArrayList<>();
         try (PreparedStatement stmt = this.connection().prepareStatement(GET_TEM_HOLIDAYS_EMPLOYEE)) {
             stmt.setString(1, cid);

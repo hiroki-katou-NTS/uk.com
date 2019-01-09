@@ -39,7 +39,8 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("					IIF(TABLE_RESULT.REF_METHOD_ATR_VAL = 2, ");
 	     exportSQL.append("						IIF(TABLE_RESULT.SELECTION_ITEM_REF_CODE <> 'M00002' AND TABLE_RESULT.SELECTION_ITEM_REF_CODE <> 'M00005' ");
 	     exportSQL.append("						AND TABLE_RESULT.SELECTION_ITEM_REF_CODE <> 'M00006' AND TABLE_RESULT.SELECTION_ITEM_REF_CODE <> 'M00016'");
-	     exportSQL.append("						AND TABLE_RESULT.SELECTION_ITEM_REF_CODE <> 'M00017' AND TABLE_RESULT.SELECTION_ITEM_REF_TYPE <> 2,");
+	     exportSQL.append("						AND TABLE_RESULT.SELECTION_ITEM_REF_CODE <> 'M00017' AND TABLE_RESULT.SELECTION_ITEM_REF_TYPE <> 2");
+	     exportSQL.append("						AND TABLE_RESULT.SELECTION_ITEM_REF_TYPE <> 3,");
 	     exportSQL.append(" 						CONCAT(TABLE_RESULT.STRING_VAL, ?MasterUnregisted), ?MasterUnregisted), NULL))");
 	     exportSQL.append(" END C_Value,");
 	     exportSQL.append(" TABLE_RESULT.Align");
@@ -111,7 +112,10 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     // Special holiday table set
 	     exportSQL.append("  hdtblset.YEAR_HD_NAME,");
 	     // Grant day table code
-	     exportSQL.append("  dateset.GRANT_NAME,");
+	     exportSQL.append("  CONCAT(dateset.GRANT_NAME,dateset1.GRANT_NAME,dateset2.GRANT_NAME,dateset3.GRANT_NAME,dateset4.GRANT_NAME,");
+	     exportSQL.append("  	dateset5.GRANT_NAME,dateset6.GRANT_NAME,dateset7.GRANT_NAME,dateset8.GRANT_NAME,dateset9.GRANT_NAME,");
+	     exportSQL.append("  	dateset10.GRANT_NAME,dateset11.GRANT_NAME,dateset12.GRANT_NAME,dateset13.GRANT_NAME,dateset14.GRANT_NAME,");
+	     exportSQL.append("  	dateset15.GRANT_NAME,dateset16.GRANT_NAME,dateset17.GRANT_NAME,dateset18.GRANT_NAME,dateset19.GRANT_NAME),");
 	     //  -- Selection
 	     exportSQL.append("  CONCAT(RTRIM(selection.SELECTION_CD), selection.SELECTION_NAME)) MASTER_VALUE,");
 	     //  -- Code name
@@ -261,7 +265,12 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("     CONCAT('当日',CONVERT(VARCHAR,CONVERT(INT,initsetitem.INT_VAL)/60),':',");
 	     exportSQL.append("         RIGHT('0'+CONVERT(VARCHAR,CONVERT(INT,initsetitem.INT_VAL)%60),2))");
 	     exportSQL.append("    END");
-	     exportSQL.append("   ELSE CAST(format(convert(decimal(30,8),initsetitem.INT_VAL),'0.#########') as NVARCHAR)");
+	     exportSQL.append("   ELSE");
+	     exportSQL.append("		CASE WHEN itemcm.NUMERIC_ITEM_DECIMAL_PART IS NOT NULL THEN");
+		 exportSQL.append("			LTRIM(STR(initsetitem.INT_VAL, 30,CAST(itemcm.NUMERIC_ITEM_DECIMAL_PART as Integer)))");
+		 exportSQL.append("		ELSE ");
+		 exportSQL.append("			CAST( format(convert(decimal(30,8),initsetitem.INT_VAL),'0.#########') as NVARCHAR)");
+		 exportSQL.append("		END");
 	     exportSQL.append("  END INT_VALUE,");
 	     exportSQL.append(" initsetitem.STRING_VAL,");
 	     exportSQL.append("CASE itemcm.DATE_ITEM_TYPE");
@@ -283,7 +292,9 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("  ROW_NUMBER() OVER (PARTITION BY initset.PER_INIT_SET_ID, ctg.PER_INFO_CTG_ID ORDER BY initset.PER_INIT_SET_CD, ");
 	     exportSQL.append("             ctgorder.DISPORDER, itemorder.DISPLAY_ORDER) AS ROW_NUMBER2,");
 	     exportSQL.append("  ROW_NUMBER() OVER (ORDER BY initset.PER_INIT_SET_CD, ctgorder.DISPORDER, itemorder.DISPLAY_ORDER) AS ROW_INDEX");
-	     exportSQL.append("  FROM PPEMT_PER_INIT_SET initset");
+	     exportSQL.append("  FROM ");
+		exportSQL.append("	(SELECT initsett.PER_INIT_SET_ID, initsett.PER_INIT_SET_CD, initsett.PER_INIT_SET_NAME, initsett.CID ");
+		exportSQL.append("			FROM PPEMT_PER_INIT_SET initsett WHERE initsett.CID = ?CID ) initset");
 	     exportSQL.append("  INNER JOIN PPEMT_PER_INIT_SET_CTG initctg ON initset.PER_INIT_SET_ID = initctg.PER_INIT_SET_ID");
 	     exportSQL.append("  INNER JOIN PPEMT_PER_INFO_CTG ctg ON ctg.PER_INFO_CTG_ID = initctg.PER_INFO_CTG_ID ");
 	     exportSQL.append("       AND initset.CID = ctg.CID AND ctg.ABOLITION_ATR = 0 ");
@@ -318,13 +329,13 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("  LEFT JOIN BSYMT_CLASSIFICATION cls ON initsetitem.STRING_VAL = cls.CLSCD AND initset.CID = cls.CID ");
 	     exportSQL.append("       AND itemcm.SELECTION_ITEM_REF_CODE = 'M00004'");
 	     exportSQL.append("  LEFT JOIN (SELECT jobt.JOB_CD, jobt.JOB_NAME, jobt.CID, jobt.JOB_ID, jobhist.END_DATE FROM BSYMT_JOB_INFO jobt");
-	     exportSQL.append("  LEFT JOIN BSYMT_JOB_HIST jobhist ON jobt.CID = jobhist.CID AND jobt.HIST_ID = jobhist.HIST_ID ");
+	     exportSQL.append("  INNER JOIN BSYMT_JOB_HIST jobhist ON jobt.CID = jobhist.CID AND jobt.HIST_ID = jobhist.HIST_ID ");
 	     exportSQL.append("       AND jobhist.END_DATE = (SELECT MAX(END_DATE) FROM BSYMT_JOB_HIST jobhistory where jobt.CID = jobhistory.CID ");
 	     exportSQL.append("       AND jobhistory.JOB_ID = jobt.JOB_ID )) job ");
 	     exportSQL.append("     ON initsetitem.STRING_VAL = job.JOB_ID AND initset.CID  = job.CID ");
 	     exportSQL.append("       AND itemcm.SELECTION_ITEM_REF_CODE = 'M00005'");
 	     exportSQL.append("  LEFT JOIN BSYST_TEMP_ABSENCE_FRAME temp ON initsetitem.STRING_VAL = CAST(temp.TEMP_ABSENCE_FR_NO AS NVARCHAR) ");
-	     exportSQL.append("       AND initset.CID= emp.CID AND itemcm.SELECTION_ITEM_REF_CODE = 'M00006'");
+	     exportSQL.append("       AND initset.CID= temp.CID AND itemcm.SELECTION_ITEM_REF_CODE = 'M00006'");
 	     exportSQL.append("  LEFT JOIN KRCMT_BUSINESS_TYPE busstype ON initsetitem.STRING_VAL = busstype.BUSINESS_TYPE_CD AND initset.CID= busstype.CID ");
 	     exportSQL.append("       AND itemcm.SELECTION_ITEM_REF_CODE = 'M00007'");
 	     // 廃止されていない勤務種類をすべて取得する
@@ -393,7 +404,6 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     //  -- CODE_NAME");
 	     exportSQL.append("  LEFT JOIN PPEMT_SELECTION selection ON initsetitem.STRING_VAL = selection.SELECTION_ID");
 	     exportSQL.append("  AND itemcm.SELECTION_ITEM_REF_TYPE = 2"); 
-	     exportSQL.append("  WHERE initset.CID = ?CID ");
 	     exportSQL.append(" ) TABLE_RESULT");
 	     exportSQL.append(" ORDER BY TABLE_RESULT.ROW_INDEX");
 

@@ -2,7 +2,9 @@ package nts.uk.file.com.app.person.info.category;
 
 import nts.uk.ctx.pereg.dom.person.info.category.CategoryType;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.system.config.InstalledProduct;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.*;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -94,14 +97,21 @@ public class ChangePerInforDefinitionExportImpl implements MasterListData{
                 .value(obj[5])
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
+            
+            String required = Objects.isNull(obj[6]) ? null : 
+            		((BigDecimal)obj[6]).intValue() == 0 ? TextResource.localize("CPS006_26") : 
+            				TextResource.localize("CPS006_27") ;
             data.put(CPS006_80, MasterCellData.builder()
                 .columnId(CPS006_80)
-                .value(((BigDecimal)obj[6]).intValue() == 0 ? TextResource.localize("CPS006_26") : TextResource.localize("CPS006_27") )
+                .value(required)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
+            
+            String abolition =  Objects.isNull(obj[7]) ? null:
+            						((BigDecimal)obj[7]).intValue() == 1 ? "○" : "" ;
             data.put(CPS006_81, MasterCellData.builder()
                 .columnId(CPS006_81)
-                .value(((BigDecimal)obj[7]).intValue() == 1 ? "○" : "" )
+                .value(abolition)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         return MasterData.builder().rowData(data).build();
@@ -146,7 +156,28 @@ public class ChangePerInforDefinitionExportImpl implements MasterListData{
         String companyId = AppContexts.user().companyId();
         String conTracCd = companyId.substring(0, 12);
         String companyIdRoot = AppContexts.user().zeroCompanyIdInContract();
-        List<Object[]> perInforDef = perInforDefinition.getChangePerInforDefinitionToExport(companyId, conTracCd, companyIdRoot);
+
+        int payroll = NotUseAtr.NOT_USE.value;
+        int personnel = NotUseAtr.NOT_USE.value;
+        int atttendance = NotUseAtr.NOT_USE.value;
+        List<InstalledProduct> installProduct = AppContexts.system().getInstalledProducts();
+        for (InstalledProduct productType : installProduct) {
+            switch (productType.getProductType()) {
+                case ATTENDANCE:
+                    atttendance = NotUseAtr.USE.value;
+                    break;
+                case PAYROLL:
+                    payroll = NotUseAtr.USE.value;
+                    break;
+                case PERSONNEL:
+                    personnel = NotUseAtr.USE.value;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        List<Object[]> perInforDef = perInforDefinition.getChangePerInforDefinitionToExport(companyId, conTracCd, companyIdRoot,payroll, personnel, atttendance);
         return perInforDef.stream().map(i -> this.putData(i)).collect(Collectors.toList());
     }
 

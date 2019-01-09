@@ -51,4 +51,8 @@ module cmm001.a.service {
     export function getAllMasterCopyCategory() {
         return nts.uk.request.ajax(paths.getAllMasterCopyCategory);
     }
+    //saveAsExcel
+        export function saveAsExcel(languageId: string): JQueryPromise<any> {
+            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Company", languageId: languageId, domainType: "CMM001"+ __viewContext.program.programName, reportType: 0});
+        }
 }

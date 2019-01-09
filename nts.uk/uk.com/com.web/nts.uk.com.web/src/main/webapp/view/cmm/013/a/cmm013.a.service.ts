@@ -56,6 +56,17 @@ module nts.uk.com.view.cmm013.a {
             return nts.uk.request.ajax(servicePath.findAllSequenceMaster);
         }
         
+        
+        export function saveAsExcel(mode: string, baseDate: string): JQueryPromise<any> {
+            return nts.uk.request.exportFile('/masterlist/report/print',
+                {
+                    domainId: 'Sequence', domainType: 'CMM013' + __viewContext.program.programName,
+                    languageId: 'ja', reportType: 0, 
+                    baseDate: moment.utc(baseDate).format()
+                   
+                });
+        }
+        
         /**
          * Model namespace.
          */
