@@ -61,7 +61,7 @@ module nts.uk.com.view.cmm013.a {
             return nts.uk.request.exportFile('/masterlist/report/print',
                 {
                     domainId: 'Sequence', domainType: 'CMM013' + __viewContext.program.programName,
-                    languageId: 'ja', reportType: 0, mode: mode,
+                    languageId: 'ja', reportType: 0, 
                     baseDate: moment.utc(baseDate).format()
                    
                 });
