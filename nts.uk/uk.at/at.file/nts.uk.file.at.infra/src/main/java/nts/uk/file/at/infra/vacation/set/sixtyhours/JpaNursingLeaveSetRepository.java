@@ -190,14 +190,14 @@ public class JpaNursingLeaveSetRepository extends JpaRepository implements Nursi
                     ,new DataEachBox( /*A24_3*/I18NText.getText("KMF001_231"), ColumnTextAlign.LEFT)
                     ,new DataEachBox(/*A24_5*/ I18NText.getText("KMF001_233"), ColumnTextAlign.LEFT)
                     ,new DataEachBox(/*A24_6*/ I18NText.getText("KMF001_234"), ColumnTextAlign.LEFT)
-                    , /*A25_2*/new DataEachBox(rs.getString("STR_MD") +/*25_15*/I18NText.getText("KMF001_246"), ColumnTextAlign.RIGHT)
+                    , /*A25_2*/new DataEachBox(convertToMonth(rs.getString("STR_MD")) +/*25_15*/I18NText.getText("KMF001_246"), ColumnTextAlign.RIGHT)
             ));
             // Row 3
             datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(/*A24_7*/I18NText.getText("KMF001_235"), ColumnTextAlign.LEFT)
-                    , new DataEachBox(/*A25_3*/rs.getString("STR_MD") +/*A25_16*/I18NText.getText("KMF001_197"), ColumnTextAlign.RIGHT)
+                    , new DataEachBox(/*A25_3*/convertToDays(rs.getString("STR_MD")) +/*A25_16*/I18NText.getText("KMF001_197"), ColumnTextAlign.RIGHT)
             ));
             // Row 4
             datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
@@ -280,14 +280,14 @@ public class JpaNursingLeaveSetRepository extends JpaRepository implements Nursi
                     , new DataEachBox( /*24_15*/I18NText.getText("KMF001_243"), ColumnTextAlign.LEFT)
                     , new DataEachBox(/*24_16*/I18NText.getText("KMF001_233"), ColumnTextAlign.LEFT)
                     , new DataEachBox(/*24_17*/I18NText.getText("KMF001_234"), ColumnTextAlign.LEFT)
-                    , new DataEachBox(/*25_9*/ rs.getString("STR_MD_LV2") +/*25_15*/I18NText.getText("KMF001_246"), ColumnTextAlign.RIGHT)
+                    , new DataEachBox(/*25_9*/ convertToMonth(rs.getString("STR_MD_LV2")) +/*25_15*/I18NText.getText("KMF001_246"), ColumnTextAlign.RIGHT)
             ));
             // Row 10
             datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(/*24_18*/I18NText.getText("KMF001_235"), ColumnTextAlign.LEFT)
-                    , new DataEachBox(/*25_10*/ rs.getString("STR_MD_LV2") +/*A25_16*/I18NText.getText("KMF001_197"), ColumnTextAlign.RIGHT)
+                    , new DataEachBox(/*25_10*/ convertToDays(rs.getString("STR_MD_LV2")) +/*A25_16*/I18NText.getText("KMF001_197"), ColumnTextAlign.RIGHT)
             ));
             // Row 11
             datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
@@ -397,6 +397,12 @@ public class JpaNursingLeaveSetRepository extends JpaRepository implements Nursi
                 .build());
 
         return MasterData.builder().rowData(data).build();
+    }
+    private String convertToMonth(String value){
+        return (Integer.parseInt(value)/100)+"";
+    }
+    private String convertToDays(String value){
+        return (Integer.parseInt(value)%100)+"";
     }
 
 }
