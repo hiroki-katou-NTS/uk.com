@@ -83,8 +83,8 @@ public class StdOutputCondSetFinder {
 		return StdOutItemDto.fromDomain(stdOutItemOpt.get(), ctgItemDataRepository.getAllCtgItemData());
 	}
 
-	public List<StdOutputCondSetDto> getConditionSetting(String modeScreen, String cndSetCd) {
-		return mStdOutputCondSetService.getListStandardOutputItem(cndSetCd).stream()
+	public List<StdOutputCondSetDto> getConditionSetting(String modeScreen, String cndSetCd,String roleId) {
+		return mStdOutputCondSetService.getListStandardOutputItem(cndSetCd,roleId).stream()
 				.map(item -> StdOutputCondSetDto.fromDomain(item)).collect(Collectors.toList());
 	}
 

@@ -19,7 +19,9 @@ module nts.uk.at.view.kmk005 {
                 new TabModel({ id: 'I', name: getText('Com_Person') }),
                 new TabModel({ id: 'K', name: getText('KMK005_44') }),
             ]);
-
+            showH: KnockoutObservable<boolean> = ko.observable(false);
+            showI: KnockoutObservable<boolean> = ko.observable(false);
+            showK: KnockoutObservable<boolean> = ko.observable(false);
             constructor() {
                 let self = this,
                     tabs = self.tabs();
@@ -65,17 +67,27 @@ module nts.uk.at.view.kmk005 {
                         }
                         break;
                     case 'H':
-                        if (!!view.viewmodelH && typeof view.viewmodelH.start == 'function') {
+                        if (!self.showH()) {
+                            self.showH(true);
+                            view.viewmodelH.loadFirst();
+                        } else if (!!view.viewmodelH && typeof view.viewmodelH.start == 'function') {
                             view.viewmodelH.start();
                         }
                         break;
                     case 'I':
-                        if (!!view.viewmodelI && typeof view.viewmodelI.start == 'function') {
+                        if (!self.showI()) {
+                            self.showI(true);
+                            view.viewmodelI.loadFirst();
+                        } else if (!!view.viewmodelI && typeof view.viewmodelI.start == 'function') {
                             view.viewmodelI.start();
                         }
+
                         break;
                     case 'K':
-                        if (!!view.viewmodelK && typeof view.viewmodelK.start == 'function') {
+                        if (!self.showK()) {
+                            self.showK(true);
+                            view.viewmodelK.loadFirst();
+                        } else if (!!view.viewmodelK && typeof view.viewmodelK.start == 'function') {
                             view.viewmodelK.start();
                         }
                         break;

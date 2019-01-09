@@ -4,6 +4,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.data.*;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 
 import javax.ejb.Stateless;
 import java.math.BigDecimal;
@@ -114,7 +115,7 @@ public class PreparationBeforeApplyExport {
                         .build());
                 data.put(KAF022_518, MasterCellData.builder()
                         .columnId(KAF022_518)
-                        .value(EnumAdaptor.valueOf(((BigDecimal)j[2]).intValue(), NotUseAtr.class).nameId)
+                        .value(((BigDecimal)j[2]).intValue() == 1 ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82"))
                         .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                         .build());
                 datas.add(MasterData.builder().rowData(data).build());
@@ -311,7 +312,7 @@ public class PreparationBeforeApplyExport {
     public List<MasterData> getDataOverTime2(List<Object[]> obj) {
         List<MasterData> datas = new ArrayList<>();
         obj.forEach(ot -> {
-            if (ot[64] != null && ((BigDecimal) ot[64]).intValue() == 6) {
+            if (ot[63] != null && ((BigDecimal) ot[63]).intValue() == 6) {
                 for (int i = 0; i < SIZE_OVER_TIME2; i++) {
                     Map<String, MasterCellData> data = new HashMap<>();
                     data.put(KAF022_454, MasterCellData.builder()
@@ -326,7 +327,7 @@ public class PreparationBeforeApplyExport {
                             .build());
                     data.put(KAF022_455, MasterCellData.builder()
                             .columnId(KAF022_455)
-                            .value(this.getValueOT2(i, ot))
+                            .value(this.getValueOT2(i, obj.get(0)))
                             .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                             .build());
                     datas.add(MasterData.builder().rowData(data).build());
@@ -843,11 +844,11 @@ public class PreparationBeforeApplyExport {
                 case 5:
                     return TextResource.localize("KAF022_570");
                 case 8:
-                    return TextResource.localize("KAF022_569");
+                    return TextResource.localize("KAF022_527");
                 case 9:
-                    return TextResource.localize("KAF022_570");
+                    return TextResource.localize("KAF022_536");
                 case 10:
-                    return TextResource.localize("KAF022_568");
+                    return TextResource.localize("KAF022_574");
             }
         }
 
@@ -1108,23 +1109,23 @@ public class PreparationBeforeApplyExport {
                 case 4:
                     return TextResource.localize("KAF022_525");
                 case 5:
-                    return TextResource.localize("KAF022_526");
-                case 6:
                     return TextResource.localize("KAF022_527");
-                case 7:
+                case 6:
                     return TextResource.localize("KAF022_528");
-                case 8:
+                case 7:
                     return TextResource.localize("KAF022_529");
-                case 9:
+                case 8:
                     return TextResource.localize("KAF022_530");
-                case 10:
-                    return TextResource.localize("KAF022_531");
-                case 11:
+                case 9:
                     return TextResource.localize("KAF022_532");
-                case 12:
+                case 10:
                     return TextResource.localize("KAF022_533");
-                case 13:
+                case 11:
                     return TextResource.localize("KAF022_534");
+                case 12:
+                    return TextResource.localize("KAF022_535");
+                case 13:
+                    return TextResource.localize("KAF022_536");
             }
         }
         if (column == 0) {
@@ -1145,10 +1146,10 @@ public class PreparationBeforeApplyExport {
             case 0:
                 return ((BigDecimal)obj[0]).intValue() == 1 ? TextResource.localize("KAF022_389") : TextResource.localize("KAF022_390");
             case 1:
-                if(((BigDecimal)obj[0]).intValue() == 2 ) {
+                if(((BigDecimal)obj[1]).intValue() == 2 ) {
                     return TextResource.localize("KAF022_137");
                 }
-                return ((BigDecimal)obj[0]).intValue() == 1 ? TextResource.localize("KAF022_136") : TextResource.localize("KAF022_37");
+                return ((BigDecimal)obj[1]).intValue() == 1 ? TextResource.localize("KAF022_136") : TextResource.localize("KAF022_37");
             case 2:
                 return ((BigDecimal)obj[2]).intValue() == 1 ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
             case 3:

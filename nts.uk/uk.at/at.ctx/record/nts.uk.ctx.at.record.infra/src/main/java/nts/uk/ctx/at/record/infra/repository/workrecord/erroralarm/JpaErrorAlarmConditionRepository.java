@@ -28,7 +28,9 @@ public class JpaErrorAlarmConditionRepository extends JpaRepository implements E
 	
 	@Override
 	public void addErrorAlarmCondition(ErrorAlarmCondition conditionDomain) {
-		this.commandProxy().insert(KrcmtErAlCondition.fromDomain(conditionDomain));
+		KrcmtErAlCondition entity = KrcmtErAlCondition.fromDomain(conditionDomain);
+		entity.setCompanyId(AppContexts.user().companyId());
+		this.commandProxy().insert(entity);
 	}
 
 	@Override

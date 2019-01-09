@@ -621,30 +621,30 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			WorkplaceHierarchy code = lstWorkplaceConfigInfo.stream().filter(x -> StringUtils.equalsIgnoreCase(x.getLstWkpHierarchy().get(0).getWorkplaceId(), workplaceImport.getWorkplaceId())).findFirst().get().getLstWkpHierarchy().get(0);
 			return code.getHierarchyCode().v();
 		}).collect(Collectors.toSet());
-		
-		// This employee list with data, find out all other employees who don't have data.
-		List<String> lstEmployeeIdNoData = query.getEmployeeId().stream().filter(x -> !lstEmployeeWithData.contains(x)).collect(Collectors.toList());
-		if (!lstEmployeeIdNoData.isEmpty()) {
-			List<EmployeeDto> lstEmployeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeIdNoData);
-			int numOfChunks = (int)Math.ceil((double)lstEmployeeDto.size() / LIMIT_DATA_PACK);
-			int start, length;
-			List<EmployeeDto> lstSplitEmployeeDto;
-			for(int i = 0; i < numOfChunks; i++) {
-				start = i * LIMIT_DATA_PACK;
-	            length = Math.min(lstEmployeeDto.size() - start, LIMIT_DATA_PACK);
-
-	            lstSplitEmployeeDto = lstEmployeeDto.subList(start, start + length);
-	            
-	            // Convert to json array
-	            JsonArrayBuilder arr = Json.createArrayBuilder();
-	    		
-	    		for (EmployeeDto employee : lstSplitEmployeeDto) {
-	    			arr.add(employee.buildJsonObject());
-	    		}
-	            
-	            setter.setData(DATA_PREFIX + i, arr.build().toString());
-			}
-		}
+//#102989 - ea_3011 && ea_3012
+//		// This employee list with data, find out all other employees who don't have data.
+//		List<String> lstEmployeeIdNoData = query.getEmployeeId().stream().filter(x -> !lstEmployeeWithData.contains(x)).collect(Collectors.toList());
+//		if (!lstEmployeeIdNoData.isEmpty()) {
+//			List<EmployeeDto> lstEmployeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeIdNoData);
+//			int numOfChunks = (int)Math.ceil((double)lstEmployeeDto.size() / LIMIT_DATA_PACK);
+//			int start, length;
+//			List<EmployeeDto> lstSplitEmployeeDto;
+//			for(int i = 0; i < numOfChunks; i++) {
+//				start = i * LIMIT_DATA_PACK;
+//	            length = Math.min(lstEmployeeDto.size() - start, LIMIT_DATA_PACK);
+//
+//	            lstSplitEmployeeDto = lstEmployeeDto.subList(start, start + length);
+//	            
+//	            // Convert to json array
+//	            JsonArrayBuilder arr = Json.createArrayBuilder();
+//	    		
+//	    		for (EmployeeDto employee : lstSplitEmployeeDto) {
+//	    			arr.add(employee.buildJsonObject());
+//	    		}
+//	            
+//	            setter.setData(DATA_PREFIX + i, arr.build().toString());
+//			}
+//		}
 		
 		
 		// Check lowest level of employee and highest level of output setting, and attendance result count is 0
