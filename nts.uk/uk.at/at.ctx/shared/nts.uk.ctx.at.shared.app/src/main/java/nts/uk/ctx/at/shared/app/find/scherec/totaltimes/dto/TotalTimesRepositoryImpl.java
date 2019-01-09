@@ -283,7 +283,7 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("対象項目", TextResource.localize("KMK009_23"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("半日勤務区分", TextResource.localize("KMK009_11"),
+		columns.add(new MasterHeaderColumn("半日勤務区分", TextResource.localize("KMK009_11")+" "+TextResource.localize("KMK009_27"),
 				ColumnTextAlign.LEFT, "", true));
 		return columns;
 	}
