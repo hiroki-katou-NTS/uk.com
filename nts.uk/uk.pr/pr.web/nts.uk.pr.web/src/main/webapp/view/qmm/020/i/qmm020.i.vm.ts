@@ -16,7 +16,7 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
             self.ccgcomponent = {
                 showEmployeeSelection: false, // 検索タイプ
                 systemType: 2, // システム区分 - 就業
-                showQuickSearchTab: true, // クイック検索
+                showQuickSearchTab: false, // クイック検索
                 showAdvancedSearchTab: true, // 詳細検索
                 showBaseDate: false, // 基準日利用
                 showClosure: false, // 就業締め日利用
@@ -44,6 +44,7 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
                 showJobTitle: true, // 職位条件
                 showWorktype: true, // 勤種条件
                 isMutipleCheck: true,
+                tabindex: 1,
                 /**
                  * @param dataList: list employee returned from component.
                  * Define how to use this list employee by yourself in the function's body.
@@ -61,6 +62,7 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
                         self.listEmp(ConfirmPersonSetStatus.fromApp(data.listEmployee, res));
                         $("#grid").ntsGrid("destroy");
                         self.loadGrid();
+                        $("#grid").focus();
                     }).fail((err) => {
                         dialog.alertError(err);
                     }).always(() => {
@@ -86,6 +88,7 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
                 height: '400px',
                 dataSource: self.listEmp(),
                 primaryKey: 'empId',
+                rowVirtualization: true,
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 columns: [
@@ -105,11 +108,7 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
                     {
                         name: "Resizing",
                         deferredResizing: false,
-                        allowDoubleClickToResize: true,
-                        columnSettings: [
-                            {columnKey: "empCd", minimumWidth: 100},
-                            {columnKey: "empName", minimumWidth: 150}
-                        ]
+                        allowDoubleClickToResize: true
                     },
                     {
                         name: "Sorting",
@@ -196,7 +195,9 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
             this.bonus = isNullOrUndefined(data.bonusCode) ? "未設定" : data.bonusCode + "　" + data.bonusName;
             this.master = getSettingClsText(data.settingCtg);
             if (data.settingCtg != SettingCls.PERSON && data.settingCtg != SettingCls.COMPANY) {
-                this.master += "　" + "(" + data.masterCode + "　" + data.masterName + ")"
+                if (!isNullOrUndefined(data.masterCode)) {
+                    this.master += "　" + "(" + data.masterCode + "　" + data.masterName + ")"
+                }
             }
         }
 
