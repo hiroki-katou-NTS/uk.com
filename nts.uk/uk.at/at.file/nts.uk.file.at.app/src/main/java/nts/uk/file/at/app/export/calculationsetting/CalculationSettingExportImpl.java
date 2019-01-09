@@ -354,6 +354,48 @@ public class CalculationSettingExportImpl implements MasterListData {
 			getAlignsheet2(rowData13);
 			datas.add(masterData13);
 			
+			//
+			if(!Objects.isNull(holidayAddtionDto.getRegularWork()) && holidayAddtionDto.getRegularWork().getCalcActualOperationPre()==1){
+				Map<String, Object> line14 = new HashMap<>();
+				line14.put(column1Sheet2,"");
+				line14.put(column2Sheet2,"");
+				line14.put(column3Sheet2,TextResource.localize("KMK013_33"));
+				line14.put(column4Sheet2,"");
+				if(!Objects.isNull(holidayAddtionDto.getRegularWork()) && !Objects.isNull(holidayAddtionDto.getRegularWork().getAdditionTimePre())
+						&& holidayAddtionDto.getRegularWork().getAdditionTimePre()==1){
+					line14.put(column5Sheet2,select);
+				}else{
+					line14.put(column5Sheet2,unselect);
+				}
+				MasterData masterData14 = new MasterData(line14, null, "");
+				Map<String, MasterCellData> rowData14 = masterData14.getRowData();
+				getAlignsheet2(rowData14);
+				datas.add(masterData14);
+				//
+				Map<String, Object> line15 = new HashMap<>();
+				line15.put(column1Sheet2,"");
+				line15.put(column2Sheet2,"");
+				line15.put(column3Sheet2,"");
+				
+				line15.put(column4Sheet2,TextResource.localize("KMK013_34"));
+				if(!Objects.isNull(holidayAddtionDto.getRegularWork()) && !Objects.isNull(holidayAddtionDto.getRegularWork().getDeformatExcValuePre())
+						&& holidayAddtionDto.getRegularWork().getDeformatExcValuePre()==1){
+					line15.put(column5Sheet2,TextResource.localize("KMK013_37"));
+				}else{
+					line15.put(column5Sheet2,TextResource.localize("KMK013_36"));
+				}
+				MasterData masterData15 = new MasterData(line15, null, "");
+				Map<String, MasterCellData> rowData15 = masterData15.getRowData();
+				getAlignsheet2(rowData15);
+				datas.add(masterData15);
+				
+				
+			}else{
+				
+			}
+			
+			
+			
 			
 		}
 	

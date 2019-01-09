@@ -89,7 +89,7 @@ module nts.uk.at.view.kdw006 {
                 var self = this;
                 nts.uk.ui.block.grayout();
                 let langId = "ja";
-                service.saveAsExcelDaily(langId).done(function() {
+                 service.saveAsExcelCommon(langId).done(function() {
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                 }).always(function() {
@@ -100,7 +100,7 @@ module nts.uk.at.view.kdw006 {
                 var self = this;
                 nts.uk.ui.block.grayout();
                 let langId = "ja";
-                service.saveAsExcelMonthly(langId).done(function() {
+                 service.saveAsExcelCommon(langId).done(function() {
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                 }).always(function() {

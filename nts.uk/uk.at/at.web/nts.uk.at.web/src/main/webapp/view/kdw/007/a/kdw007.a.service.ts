@@ -92,8 +92,4 @@ module nts.uk.at.view.kdw007.a.service {
         return nts.uk.request.ajax("at",paths.removeMonthlyCondition, code);
     }
     
-    export function saveAsExcel(languageId: string): JQueryPromise<any> {
-        return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "ErrorAlarmWorkRecord", languageId: languageId, domainType: "KDW007"+nts.uk.resource.getText("KMF003_1"), reportType: 0 });
-    }
-
 }

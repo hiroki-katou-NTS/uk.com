@@ -18,9 +18,9 @@ import nts.uk.ctx.at.schedule.app.export.shift.pattern.work.WorkMonthlySettingRe
 public class JpaWorkMonthlySettingReportRepository extends JpaRepository implements WorkMonthlySettingReportRepository {
 	private static final String GET_WORK_MONTHLY_SET = (new StringBuffer()
 			.append("SELECT a.M_PATTERN_CD as CODE, d.M_PATTERN_NAME as NAME, a.YMD_K as DATE")
-			.append(",CONCAT(a.WORK_TYPE_CD , (CASE WHEN a.WORK_TYPE_CD IS NULL THEN  '' ELSE c.NAME END),")
+			.append(",CONCAT(a.WORK_TYPE_CD , (CASE WHEN a.WORK_TYPE_CD IS NULL THEN  'マスタ未登録' ELSE c.NAME END),")
 			.append("(CASE WHEN a.WORKING_CD IS NULL OR a.WORKING_CD = '' THEN  '' ELSE CONCAT(',', a.WORKING_CD) END),")
-			.append("(CASE WHEN a.WORKING_CD IS NULL THEN  '' ELSE b.NAME END)) AS WORK_SET_NAME")
+			.append("(CASE WHEN a.WORKING_CD IS NULL THEN  'マスタ未登録' ELSE b.NAME END)) AS WORK_SET_NAME")
 			.append(" FROM KSCMT_WORK_MONTH_SET a")
 			.append(" LEFT OUTER JOIN KSHMT_WORK_TIME_SET b ON (a.WORKING_CD IS NOT NULL) AND b.CID = a.CID AND b.WORKTIME_CD =  a.WORKING_CD")
 			.append(" INNER JOIN KSHMT_WORKTYPE c ON c.CID = a.CID AND c.CD = a.WORK_TYPE_CD")
@@ -30,7 +30,7 @@ public class JpaWorkMonthlySettingReportRepository extends JpaRepository impleme
 			.toString();
 	
 	private static final String GET_PERSION_WORK_MONTH_SET = (new StringBuffer()
-			.append("SELECT a.SCD, b.BUSINESS_NAME, c.START_DATE, c.END_DATE, ISNULL(d.MONTHLY_PATTERN, '') as MONTHLY_PATTERN, ISNULL(e.M_PATTERN_NAME, '') as M_PATTERN_NAME")
+			.append("SELECT a.SCD, b.BUSINESS_NAME, c.START_DATE, c.END_DATE, ISNULL(d.MONTHLY_PATTERN, '') as MONTHLY_PATTERN, ISNULL(e.M_PATTERN_NAME, 'マスタ未登録') as M_PATTERN_NAME")
 			.append(" FROM BSYMT_EMP_DTA_MNG_INFO a")
 			.append(" INNER JOIN BPSMT_PERSON b on a.PID = b.PID")
 			.append(" INNER JOIN KSHMT_WORKING_COND c on c.SID = a.SID and c.START_DATE <= ?baseDate and c.END_DATE >= ?baseDate")

@@ -234,7 +234,9 @@ public class SpecificdaySetExportImpl implements MasterListData {
 	private List<MasterData> getMasterDatasForWorkplace(MasterListExportQuery query) {
 		String companyId = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
-//		Period period = specificdaySetReportRepository.getBaseDateByCompany(companyId, query.getStartDate(), query.getEndDate());
+		// Period period =
+		// specificdaySetReportRepository.getBaseDateByCompany(companyId,
+		// query.getStartDate(), query.getEndDate());
 		Optional<Map<String, List<SpecificdaySetWorkplaceReportData>>> mapSetReportDatas = specificdaySetReportRepository
 				.findAllSpecificdaySetWorkplace(companyId, query.getStartDate(), query.getEndDate());
 
@@ -242,29 +244,56 @@ public class SpecificdaySetExportImpl implements MasterListData {
 		wkpConfigInfoFindObject.setSystemType(2);
 		wkpConfigInfoFindObject.setBaseDate(GeneralDate.ymd(9999, 12, 31));
 		wkpConfigInfoFindObject.setRestrictionOfReferenceRange(true);
-		List<WorkplaceHierarchyDto> workplaceHierarchyDtos = spreadOutWorkplaceInfos(workplaceConfigInfoFinder.findAllByBaseDate(wkpConfigInfoFindObject));
-		Map<String, List<WorkplaceHierarchyDto>> mapWorkPlace = workplaceHierarchyDtos.stream().filter(x -> x.getCode() != null && x.getName() != null)
+		List<WorkplaceHierarchyDto> workplaceHierarchyDtos = spreadOutWorkplaceInfos(
+				workplaceConfigInfoFinder.findAllByBaseDate(wkpConfigInfoFindObject));
+
+		Map<String, List<WorkplaceHierarchyDto>> mapWorkPlace = workplaceHierarchyDtos.stream()
+				.filter(x -> x.getCode() != null && x.getName() != null)
 				.collect(Collectors.groupingBy(WorkplaceHierarchyDto::getCode));
-		
+
 		if (mapSetReportDatas.isPresent()) {
-			mapSetReportDatas.get().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEachOrdered(x -> {
-				Optional<List<WorkplaceHierarchyDto>> workplaceHierarchyListByCode = Optional.ofNullable(mapWorkPlace.get(x.getKey()));
+			workplaceHierarchyDtos.forEach(dto -> {
+				String workplaceCode = dto.getCode();
+				Optional<List<SpecificdaySetWorkplaceReportData>> dataByCode = Optional
+						.ofNullable(mapSetReportDatas.get().get(workplaceCode));
+				if (dataByCode.isPresent()) {
+					dataByCode.get().stream().forEach(x -> {
+						x.setHierarchyCode(dto.getHierarchyCode());
+					});
+				}
+			});
+
+			mapSetReportDatas.get().entrySet().stream().sorted((e1, e2) -> {
+				List<SpecificdaySetWorkplaceReportData> list1 = e1.getValue();
+				List<SpecificdaySetWorkplaceReportData> list2 = e2.getValue();
+				if (!CollectionUtil.isEmpty(list1) && !CollectionUtil.isEmpty(list2) 
+						&& list1.get(0).getHierarchyCode() != null && list2.get(0).getHierarchyCode() != null)
+					return list1.get(0).getHierarchyCode().compareTo(list2.get(0).getHierarchyCode());
+				else
+					return 0;
+			}).forEachOrdered(x -> {
+				Optional<List<WorkplaceHierarchyDto>> workplaceHierarchyListByCode = Optional
+						.ofNullable(mapWorkPlace.get(x.getKey()));
 				Optional<WorkplaceHierarchyDto> workplaceHierarchyDto = Optional.empty();
 				if (workplaceHierarchyListByCode.isPresent()) {
 					workplaceHierarchyDto = Optional.ofNullable(workplaceHierarchyListByCode.get().get(0));
-				}
-				
-				Optional<List<SpecificdaySetWorkplaceReportData>> listDataPerOneWp = Optional.ofNullable(x.getValue());
-				if (listDataPerOneWp.isPresent()) {
-					Map<String, List<SpecificdaySetWorkplaceReportData>> mapDataByYearMonth = 
-					listDataPerOneWp.get().stream().collect(Collectors.groupingBy(SpecificdaySetWorkplaceReportData::getYearMonth));
-					List<String> yearMonthKeys = mapDataByYearMonth.keySet().stream().sorted().collect(Collectors.toList());
-					for(int i = 0; i < yearMonthKeys.size(); i++) {
-						String yearMonth = yearMonthKeys.get(i);
-						List<SpecificdaySetWorkplaceReportData> listDataPerOneRow = mapDataByYearMonth.get(yearMonth);
-						Optional<MasterData> row = newWorkplaceMasterData(i, yearMonth, Optional.ofNullable(listDataPerOneRow), workplaceHierarchyDto);
-						if (row.isPresent()) {
-							datas.add(row.get());
+					Optional<List<SpecificdaySetWorkplaceReportData>> listDataPerOneWp = Optional
+							.ofNullable(x.getValue());
+					if (listDataPerOneWp.isPresent()) {
+						Map<String, List<SpecificdaySetWorkplaceReportData>> mapDataByYearMonth = listDataPerOneWp.get()
+								.stream()
+								.collect(Collectors.groupingBy(SpecificdaySetWorkplaceReportData::getYearMonth));
+						List<String> yearMonthKeys = mapDataByYearMonth.keySet().stream().sorted()
+								.collect(Collectors.toList());
+						for (int i = 0; i < yearMonthKeys.size(); i++) {
+							String yearMonth = yearMonthKeys.get(i);
+							List<SpecificdaySetWorkplaceReportData> listDataPerOneRow = mapDataByYearMonth
+									.get(yearMonth);
+							Optional<MasterData> row = newWorkplaceMasterData(i, yearMonth,
+									Optional.ofNullable(listDataPerOneRow), workplaceHierarchyDto);
+							if (row.isPresent()) {
+								datas.add(row.get());
+							}
 						}
 					}
 				}
@@ -309,7 +338,10 @@ public class SpecificdaySetExportImpl implements MasterListData {
 					data.put("コード", workplaceHierarchyDto.get().getCode());
 					data.put("名称", workplaceHierarchyDto.get().getName());
 				}
-				else {}
+				else {
+					data.put("コード", specificdaySetReportDatas.get().get(0).getWorkplaceCode());
+					data.put("名称", "マスタ未登録");
+				}
 			}
 			data.put("年月", yearMonth.substring(0, 4) + "/" + yearMonth.substring(4, yearMonth.length()));
 			

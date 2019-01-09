@@ -37,6 +37,6 @@ module nts.uk.at.view.kml004.a.service {
         return nts.uk.request.ajax(paths.remove, command);    
     }
     export function saveAsExcel(languageId: string): JQueryPromise<any> {
-        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Schedule", domainType: "KML004スケジュール横計の設定", languageId: languageId, reportType: 0});
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Schedule", domainType: "KML004"+__viewContext.program.programName, languageId: languageId, reportType: 0});
     }
 }
