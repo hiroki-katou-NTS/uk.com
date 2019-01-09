@@ -122,6 +122,7 @@ module cmm001.a {
                     self.currentCompanyCode(self.sel001Data()[0].companyCode);
                 }
             });
+            self.showExportBtn();
         }
 
         /** start page */
@@ -388,6 +389,31 @@ module cmm001.a {
             nts.uk.ui.windows.setShared('companyName', self.currentCompany().companyName());
             nts.uk.ui.windows.sub.modal('/view/cmm/001/e/index.xhtml', {title: '',}).onClosed(function (): any {
             })
+        }
+        
+        private exportExcel(): void {
+            
+                var self = this;
+                nts.uk.ui.block.grayout();
+                let langId = "ja";
+                service.saveAsExcel(langId).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
+        
+        
+        showExportBtn() {
+            if (nts.uk.util.isNullOrUndefined(__viewContext.user.role.attendance)
+                && nts.uk.util.isNullOrUndefined(__viewContext.user.role.payroll)
+                && nts.uk.util.isNullOrUndefined(__viewContext.user.role.officeHelper)
+                && nts.uk.util.isNullOrUndefined(__viewContext.user.role.personnel)) {
+                $("#print-button").hide();
+            } else {
+                $("#print-button").show();
+            }
         }
     }
     class CompanyModel {

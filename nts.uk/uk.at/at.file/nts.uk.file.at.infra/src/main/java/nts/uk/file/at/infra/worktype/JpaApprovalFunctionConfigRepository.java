@@ -35,8 +35,8 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("       WHEN TEMP.APP_TYPE = 14 THEN ?appType14 ");
 		sql.append("       ELSE NULL ");
 		sql.append("     END, ");
-		sql.append("     CASE WHEN TEMP.USE_ATR = 0 THEN ?useText ");
-		sql.append("       WHEN TEMP.USE_ATR = 1 THEN ?notUseText ");
+		sql.append("     CASE WHEN TEMP.USE_ATR = 0 THEN ?notUseText ");
+		sql.append("       WHEN TEMP.USE_ATR = 1 THEN ?useText ");
 		sql.append("       ELSE NULL ");
 		sql.append("     END, ");
 		sql.append("     CASE WHEN (TEMP.APP_TYPE != 0 AND TEMP.APP_TYPE != 6) OR TEMP.USE_ATR != 1 THEN NULL ");
@@ -139,7 +139,7 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		List<Object[]> resultQuery = null;
 		try {
 			resultQuery = (List<Object[]>) getEntityManager().createNativeQuery(sql.toString())
-				.setParameter("companyText", TextResource.localize("KAF022_649"))
+				.setParameter("companyText", TextResource.localize("Com_Company"))
 				.setParameter("cid", cid)
 				.setParameter("masterUnregistered", TextResource.localize("Enum_MasterUnregistered"))
 				.setParameter("appType0", TextResource.localize("KAF022_3"))
@@ -159,8 +159,8 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 				.setParameter("notRequiredInstruction", "-")
 				.setParameter("notPrerequisiteUseAtrText", TextResource.localize("KAF022_291"))
 				.setParameter("prerequisiteUseAtrText", TextResource.localize("KAF022_292"))
-				.setParameter("timeCalUseText", TextResource.localize("KAF022_295"))
-				.setParameter("timeCalNotUseText", TextResource.localize("KAF022_296"))
+				.setParameter("timeCalUseText", TextResource.localize("KAF022_296"))
+				.setParameter("timeCalNotUseText", TextResource.localize("KAF022_295"))
 				.setParameter("breakInputfieldDisp", "○")
 				.setParameter("breakInputfieldNotDisp", "-")
 				.setParameter("gooutTimeBeginDisp", "○")
