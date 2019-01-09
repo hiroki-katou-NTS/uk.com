@@ -452,7 +452,6 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
                                               .collect(Collectors.toList());
                             }
                             List<String> codeAndNameDaily = new ArrayList<>();
-//                            AttItemName attenNameDaily = new AttItemName();
                             String duplicateStringName = "";
                             for (Integer key : keyDaily) {
                                 AttItemName attenNameDaily =!CollectionUtil.isEmpty(listBzDailyExcel)? mapAttNameDailys.get(key):null;
