@@ -41,7 +41,6 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             self.extractFormula(params.formula);
             self.startMonth = params.startMonth;
             $('#G1_2').ntsFixedTable({height: 184});
-            $('#G1_2_container').focus();
         }
         extractFormula (formula) {
             let self = this, separators = self.separators;
@@ -102,6 +101,7 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
                 })
                 self.formulaContent(formula);
                 self.extractInputParameter(formula);
+                $('#G1_2_container').focus();
             }).fail(function (err) {
                 block.clear();
                 dialog.alertError({messageId: err.messageId});
@@ -113,10 +113,13 @@ module nts.uk.pr.view.qmm017.g.viewmodel {
             $('.nts-input').trigger("validate");
             if (nts.uk.ui.errors.hasError()) return;
             let self = this;
+            block.invisible();
             let replaceValues = ko.toJS(self.calculationFormulaList);
             service.calculate({formulaContent: self.formulaContent(), replaceValues: replaceValues, roundingMethod: self.roundingMethod, roundingPosition: self.roundingPosition}).done(function(result){
                 self.trialCalculationResult(result);
+                block.clear();
             }).fail(function(err){
+                block.clear();
                 dialog.alertError({messageId: err.messageId, message: err.message});
             })
         }

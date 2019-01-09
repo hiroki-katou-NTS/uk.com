@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 400, height: 600 };</script>
+        <script>var dialogSize = { width: 395, height: 600 };</script>
         <com:scriptfile set="IGNITE" />
         <com:scriptfile path="../share/model.js" />
         <com:scriptfile path="qmm017.f.service.js" />
@@ -24,7 +24,6 @@
                 </div>
                 <div style = "margin-top: 10px;">
                     <!--mix of 3 case-->
-                    <label>getText(')</label>
                     <table tabindex="1" id ="item"
                            data-bind="ntsGridList: {
                             rows: 15,
