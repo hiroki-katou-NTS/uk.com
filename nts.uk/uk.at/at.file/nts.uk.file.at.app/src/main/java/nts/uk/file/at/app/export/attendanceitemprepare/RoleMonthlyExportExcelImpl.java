@@ -180,7 +180,7 @@ public class RoleMonthlyExportExcelImpl  {
         } else {
             listEmployeeRoleDto.stream().forEach(c -> {
                 List<AttItemName> attItemNamesAuthSet = authSeting.get(c.getRoleId());
-                Map<Integer, AttItemName> result =
+                Map<Integer, AttItemName> mapListItemNameAuthSet =
                         attItemNamesAuthSet.stream().collect(Collectors.toMap(AttItemName::getAttendanceItemId,
                                                                   Function.identity()));
                 attItemNamesAuthSet.sort(Comparator.comparing(AttItemName::getAttendanceItemDisplayNumber));
@@ -197,7 +197,7 @@ public class RoleMonthlyExportExcelImpl  {
                         data.put("コード2", attItemName.getAttendanceItemDisplayNumber());
                         data.put("項目", attItemName.getAttendanceItemName());
                         //putAthSeting
-                        AttItemAuthority attItemAuthor = result.get(attItemName.getAttendanceItemId()).getAuthority();
+                        AttItemAuthority attItemAuthor = mapListItemNameAuthSet.get(attItemName.getAttendanceItemId()).getAuthority();
                         putAuthor(data,attItemAuthor,attItemName.getUserCanUpdateAtr());
                         alignMasterDataSheetRoleDaily(data);
                         datas.add(alignMasterDataSheetRoleDaily(data));
@@ -207,8 +207,8 @@ public class RoleMonthlyExportExcelImpl  {
                         data.put("コード2", attItemName.getAttendanceItemDisplayNumber());
                         data.put("項目", attItemName.getAttendanceItemName());
                         //putAthSeting
-                        if(result.get(attItemName.getAttendanceItemId())!=null  ){
-                            AttItemAuthority attItemAuthor = result.get(attItemName.getAttendanceItemId()).getAuthority();
+                        if(mapListItemNameAuthSet.get(attItemName.getAttendanceItemId())!=null  ){
+                            AttItemAuthority attItemAuthor = mapListItemNameAuthSet.get(attItemName.getAttendanceItemId()).getAuthority();
                             putAuthor(data,attItemAuthor,attItemName.getUserCanUpdateAtr());
                         }
                         datas.add(alignMasterDataSheetRoleDaily(data));
@@ -220,8 +220,8 @@ public class RoleMonthlyExportExcelImpl  {
                             dataChild.put("コード2", attItemName.getAttendanceItemDisplayNumber());
                             dataChild.put("項目", attItemName.getAttendanceItemName());
                             //putAthSeting
-                            if(result.get(attItemName.getAttendanceItemId())!=null){
-                                AttItemAuthority attItemAuthor = result.get(attItemName.getAttendanceItemId()).getAuthority();
+                            if(mapListItemNameAuthSet.get(attItemName.getAttendanceItemId())!=null){
+                                AttItemAuthority attItemAuthor = mapListItemNameAuthSet.get(attItemName.getAttendanceItemId()).getAuthority();
                                 putAuthor(dataChild,attItemAuthor,attItemName.getUserCanUpdateAtr());
                             }
                             datas.add(alignMasterDataSheetRoleDaily(dataChild));
