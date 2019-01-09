@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.core.ws.wageprovision.statebindingsetting;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.service.ConfirmPersonSetStatusDto;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.service.ConfirmPersonSetStatus;
 import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.service.ConfirmPersonSetStatusService;
 
 import javax.inject.Inject;
@@ -18,7 +18,7 @@ public class ConOfIndiviSttWebService extends WebService {
 
     @POST
     @Path("getStatementLinkPerson")
-    public List<ConfirmPersonSetStatusDto> getStatementLinkPerson(ConOfIndiviSttWebParam params) {
+    public List<ConfirmPersonSetStatus> getStatementLinkPerson(ConOfIndiviSttWebParam params) {
         return confirmPersonSetStatusService.getStatementLinkPerson(params.getEmpIds(), params.getBaseDate());
     }
 }
