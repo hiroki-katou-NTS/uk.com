@@ -25,6 +25,7 @@ module nts.uk.com.view.cas003.a {
 
             constructor() {
                 var self = this;
+                self. showExportBtn();
                 self.simpleValue = ko.observable("");
                 self.lowestDigits = ko.observable(null);
                 self.alphabetDigit = ko.observable(null);
@@ -83,7 +84,28 @@ module nts.uk.com.view.cas003.a {
 
 
 
-
+            exportExcel(): void {
+                var self = this;
+                nts.uk.ui.block.grayout();
+                let langId = "ja";
+                service.saveAsExcel(langId).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+             }
+            showExportBtn() {
+                if (nts.uk.util.isNullOrUndefined(__viewContext.user.role.attendance)
+                    && nts.uk.util.isNullOrUndefined(__viewContext.user.role.payroll)
+                    && nts.uk.util.isNullOrUndefined(__viewContext.user.role.officeHelper)
+                    && nts.uk.util.isNullOrUndefined(__viewContext.user.role.personnel)) {
+                    $("#print-button").hide();
+                } else {
+                    $("#print-button").show();
+                }
+            }
+            
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
@@ -166,6 +188,7 @@ module nts.uk.com.view.cas003.a {
                 }).always(()=> blockUI.clear());
 
             }
+
 
         }
 
