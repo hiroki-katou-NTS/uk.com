@@ -18,9 +18,7 @@ import nts.uk.ctx.at.schedule.app.export.shift.pattern.work.WorkMonthlySettingRe
 public class JpaWorkMonthlySettingReportRepository extends JpaRepository implements WorkMonthlySettingReportRepository {
 	private static final String GET_WORK_MONTHLY_SET = (new StringBuffer()
 			.append("SELECT a.M_PATTERN_CD as CODE, d.M_PATTERN_NAME as NAME, a.YMD_K as DATE")
-			.append(",CONCAT(a.WORK_TYPE_CD , (CASE WHEN a.WORK_TYPE_CD IS NULL THEN  'マスタ未登録' ELSE c.NAME END),")
-			.append("(CASE WHEN a.WORKING_CD IS NULL OR a.WORKING_CD = '' THEN  '' ELSE CONCAT(',', a.WORKING_CD) END),")
-			.append("(CASE WHEN a.WORKING_CD IS NULL THEN  'マスタ未登録' ELSE b.NAME END)) AS WORK_SET_NAME")
+			.append(", a.WORK_TYPE_CD, a.WORKING_CD, c.NAME as WORK_TYPE_NAME, b.NAME as WORK_TIME_NAME")
 			.append(" FROM KSCMT_WORK_MONTH_SET a")
 			.append(" LEFT OUTER JOIN KSHMT_WORK_TIME_SET b ON (a.WORKING_CD IS NOT NULL) AND b.CID = a.CID AND b.WORKTIME_CD =  a.WORKING_CD")
 			.append(" INNER JOIN KSHMT_WORKTYPE c ON c.CID = a.CID AND c.CD = a.WORK_TYPE_CD")
@@ -52,14 +50,33 @@ public class JpaWorkMonthlySettingReportRepository extends JpaRepository impleme
 	}
 	
 	private static WorkMonthlySettingReportData toDomainWorkMonthlySet(Object[] object) {
+		//a.WORK_TYPE_CD, a.WORKING_CD, c.NAME as WORK_TYPE_NAME, b.NAME as WORK_TIME_NAME
 		String pattenCode = (String) object[0];
 		String patternName = (String) object[1];
 		String timeStamp = ((Timestamp)object[2]).toString();
 		GeneralDate date = GeneralDate.fromString(timeStamp, "yyyy-MM-dd hh:mm:ss.s");
-		String workSetName = (String) object[3];
+		StringBuffer workSetName = new StringBuffer();
+		
+		String workTypeCD = (String) object[3];
+		String workingCD = (String) object[4];
+		String workingTypeName = (String) object[5];
+		String workTimeName = (String) object[6];
+		if (workTypeCD != null) {
+			workSetName.append(workTypeCD);
+			workSetName.append(workingTypeName);
+			if (workingCD != null) {
+				workSetName.append("," + workingCD);
+				if (workTimeName != null) {
+					workSetName.append(workTimeName);
+				}
+				else {
+					workSetName.append("マスタ未登録");
+				}
+			}
+		}
 		
 		WorkMonthlySettingReportData domain = WorkMonthlySettingReportData.createFromJavaType(
-				pattenCode, patternName, date, workSetName);
+				pattenCode, patternName, date, workSetName.toString());
 		return domain;
 	}
 	
