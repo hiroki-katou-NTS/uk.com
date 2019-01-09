@@ -9,6 +9,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantCondition;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
@@ -49,7 +51,11 @@ public class YearHolidayRepositoryImpl implements MasterListData{
 	
 	@Inject
 	private GrantYearHolidayRepository grantYearHolidayRepository;
-
+	
+	@Inject
+	private AnnualPaidLeaveSettingRepository annualRep;
+	
+	
 	
 	List<GrantHdTbl> listYearHoliday = new ArrayList<>();
 	List<GrantHdTbl> listYearHoliday2 = new ArrayList<>();
@@ -65,6 +71,8 @@ public class YearHolidayRepositoryImpl implements MasterListData{
 		List<MasterData> datas = new ArrayList<>();
 		
 		List<GrantHdTblSet> listFindAll = yearHolidayRepo.findAll(companyId);
+		
+		CheckAnnualKMF003ExportDto checkDto= findByCom();
 		
 		if(CollectionUtil.isEmpty(listFindAll)) {
 			return  null;
@@ -100,6 +108,7 @@ public class YearHolidayRepositoryImpl implements MasterListData{
 				int listGrantCondition5 = listGrantConditionCha.get(4).getConditionNo();
 				listYearHoliday5 = grantYearHolidayRepository
 					.findByCode(companyId,listGrantCondition5, dataYearHolidayCode);
+			
 				
 				for(int i=0 ; i<20; i++){
 					if(i==0){
@@ -154,32 +163,48 @@ public class YearHolidayRepositoryImpl implements MasterListData{
                         data.put("付与回 10", i+1);
                         
                         if(listFindByCode.size()==0 || listYearHoliday.size()== 0){
-
                         }else{
                         	LengthServiceTbl dataFindByCode = listFindByCode.get(i);
                             data.put("勤続年数年 11", dataFindByCode.getYear()+"年");
                         	data.put("勤続年数月 12", dataFindByCode.getMonth()+"ヶ月");
      						data.put("付与日数 13", listYearHoliday.get(0).getGrantDays()+"日");
-     						data.put("時間年休上限日数 14",listYearHoliday.get(i).getLimitDayYear().get()+ "日");
-                    		data.put("半休上限回数 15", listYearHoliday.get(i).getLimitTimeHd().get()+"回");
+     						
+     						if(checkDto1(checkDto.maxManageType, checkDto.maxReference ,checkDto.timeManageType) == true){
+     							data.put("時間年休上限日数 14",listYearHoliday.get(i).getLimitTimeHd().get()+ "日");
+     						}else{
+     							data.put("時間年休上限日数 14","");
+     						}
+     						
+     						if(checkDto2(checkDto.manageType,checkDto.reference) == true){
+     							data.put("半休上限回数 15", listYearHoliday.get(i).getLimitDayYear().get()+"回");
+     						}else{
+     							data.put("半休上限回数 15","");
+     						}
+     						
+                    		
                     		
                     		// kiem tra cot thu 3 co check hay ko? 
                     		if(c.getUseSimultaneousGrant() == UseSimultaneousGrant.NOT_USE){
-                    			data.put("基準日 16", "年末年始およびベンチマーク日付 ");
+                    			if(listFindByCode.get(i).getStandGrantDay() == GrantReferenceDate.HIRE_DATE){
+                					data.put("基準日 16", "入社日 ");
+                				}else{
+                					data.put("基準日 16", "年休付与基準日 ");                    				
+                				}
+                    			data.put("一斉付与 17", "");
+                    			
                     			// neu check thu kt dk 16, 17 , 18
                     		}else{
                     			if(listFindByCode.get(i).getAllowStatus() == GrantSimultaneity.NOT_USE){
-                    			
                     				if(listFindByCode.get(i).getStandGrantDay() == GrantReferenceDate.HIRE_DATE){
                     					data.put("基準日 16", "入社日 ");
                     				}else{
                     					data.put("基準日 16", "年休付与基準日 ");                    				
                     				}
-                    				data.put("一斉付与 17", "-");
                     				
+                    				data.put("一斉付与 17", "○");
                     			}else{
-                    				data.put("基準日 16", "年末年始およびベンチマーク日付 ");
-                                    data.put("一斉付与 17", "○");
+                    				data.put("基準日 16", "");
+                    				data.put("一斉付与 17", "-");
                     			}
                     		}
                         }
@@ -208,11 +233,26 @@ public class YearHolidayRepositoryImpl implements MasterListData{
                     		//22
                     		if(listYearHoliday2.size() !=0){
                     			LengthServiceTbl dataFindByCode = listFindByCode.get(i);
-                    			data.put("勤続年数年 22",dataFindByCode.getYear()+"年");
-                        		data.put("勤続年数月 23",dataFindByCode.getMonth()+"ヶ月");
+                    			
+                    			//code  enable: false
+//                    			data.put("勤続年数年 22",dataFindByCode.getYear()+"年");
+//                        		data.put("勤続年数月 23",dataFindByCode.getMonth()+"ヶ月");
+                        		
+                        		data.put("勤続年数年 22", "");
+                        		data.put("勤続年数月 23", "");
                         		data.put("付与日数 24", listYearHoliday2.get(i).getGrantDays()+"日");
-                        		data.put("時間年休上限日数 25", listYearHoliday2.get(i).getLimitDayYear().get()+ "日");
-                        		data.put("半休上限回数 26", listYearHoliday2.get(i).getLimitTimeHd().get()+"回");
+                        		
+                        		if(checkDto1(checkDto.maxManageType, checkDto.maxReference ,checkDto.timeManageType) == true){
+                        			data.put("時間年休上限日数 25", listYearHoliday2.get(i).getLimitTimeHd().get()+ "日");
+         						}else{
+         							data.put("時間年休上限日数 25", "");
+         						}
+         						
+         						if(checkDto2(checkDto.manageType,checkDto.reference) == true){
+         							data.put("半休上限回数 26", listYearHoliday2.get(i).getLimitDayYear().get()+"回");
+         						}else{
+         							data.put("半休上限回数 26", "");
+         						}
                     		}
                     		
                     	}
@@ -237,11 +277,24 @@ public class YearHolidayRepositoryImpl implements MasterListData{
                         	if(listYearHoliday3.size() !=0){
                         		data.put("付与回 30", i+1);
                         		LengthServiceTbl dataFindByCode = listFindByCode.get(i);
-                    			data.put("勤続年数年 31",dataFindByCode.getYear()+"年");
-                        		data.put("勤続年数月 32",dataFindByCode.getMonth()+"ヶ月");
+//                    			data.put("勤続年数年 31",dataFindByCode.getYear()+"年");
+//                        		data.put("勤続年数月 32",dataFindByCode.getMonth()+"ヶ月");
+                        		
+                    			data.put("勤続年数年 31","");
+                        		data.put("勤続年数月 32","");
                         		data.put("付与日数 33", listYearHoliday3.get(i).getGrantDays()+"日");
-                        		data.put("時間年休上限日数 34", listYearHoliday3.get(i).getLimitDayYear().get()+ "日");
-                        		data.put("半休上限回数 35", listYearHoliday3.get(i).getLimitTimeHd().get()+"回");
+                        		
+                        		if(checkDto1(checkDto.maxManageType, checkDto.maxReference ,checkDto.timeManageType) == true){
+                        			data.put("時間年休上限日数 34",listYearHoliday3.get(i).getLimitTimeHd().get() + "日");
+         						}else{
+         							data.put("時間年休上限日数 34", "");
+         						}
+         						
+         						if(checkDto2(checkDto.manageType,checkDto.reference) == true){
+         							data.put("半休上限回数 35", listYearHoliday3.get(i).getLimitDayYear().get()+"回");
+         						}else{
+         							data.put("半休上限回数 35", "");
+         						}
                         	}
                         	
                         }
@@ -274,12 +327,25 @@ public class YearHolidayRepositoryImpl implements MasterListData{
                         	if(listYearHoliday4.size() !=0){
                         		data.put("付与回 39", i+1);
                         		LengthServiceTbl dataFindByCode = listFindByCode.get(i);
-                        		data.put("勤続年数年 40", dataFindByCode.getYear()+"年");
-                        		data.put("勤続年数月 41", dataFindByCode.getMonth()+"ヶ月");
-                        		data.put("付与日数  42", listYearHoliday4.get(i).getGrantDays()+"日");
-                        		data.put("時間年休上限日数 43", listYearHoliday4.get(i).getLimitDayYear().get()+ "日");
-                        		data.put("半休上限回数  44", listYearHoliday4.get(i).getLimitTimeHd().get()+"回");
+//                        		data.put("勤続年数年 40", dataFindByCode.getYear()+"年");
+//                        		data.put("勤続年数月 41", dataFindByCode.getMonth()+"ヶ月");
                         		
+                        		data.put("勤続年数年 40", "");
+                        		data.put("勤続年数月 41", "");
+                        		
+                        		data.put("付与日数  42", listYearHoliday4.get(i).getGrantDays()+"日");
+                        		
+                        		if(checkDto1(checkDto.maxManageType, checkDto.maxReference ,checkDto.timeManageType) == true){
+                        			data.put("時間年休上限日数 43", listYearHoliday4.get(i).getLimitTimeHd().get()+ "日");
+         						}else{
+         							data.put("時間年休上限日数 43", "");
+         						}
+         						
+         						if(checkDto2(checkDto.manageType,checkDto.reference) == true){
+         							data.put("半休上限回数  44", listYearHoliday4.get(i).getLimitDayYear().get()+"回");
+         						}else{
+         							data.put("半休上限回数  44", "");
+         						}
                         	}
                         	
                         }
@@ -312,12 +378,23 @@ public class YearHolidayRepositoryImpl implements MasterListData{
                         	if(listYearHoliday5.size() !=0){
                         		data.put("付与回 48", i+1);
                         		LengthServiceTbl dataFindByCode = listFindByCode.get(i);
-                        		data.put("勤続年数年 49", dataFindByCode.getYear()+"年");
-                        		data.put("勤続年数月  50", dataFindByCode.getMonth()+"ヶ月");
+//                        		data.put("勤続年数年 49", dataFindByCode.getYear()+"年");
+//                        		data.put("勤続年数月  50", dataFindByCode.getMonth()+"ヶ月");
+                        		data.put("勤続年数年 49", "");
+                        		data.put("勤続年数月  50", "");
                         		data.put("付与日数 51", listYearHoliday5.get(i).getGrantDays()+"日");
-                        		data.put("時間年休上限日数 52", listYearHoliday5.get(i).getLimitDayYear().get()+ "日");
-                        		data.put("半休上限回数 53", listYearHoliday5.get(i).getLimitTimeHd().get()+"回");
                         		
+                        		if(checkDto1(checkDto.maxManageType, checkDto.maxReference ,checkDto.timeManageType) == true){
+                        			data.put("時間年休上限日数 52",listYearHoliday5.get(i).getLimitTimeHd().get()+ "日");
+         						}else{
+         							data.put("時間年休上限日数 52", "");
+         						}
+         						
+         						if(checkDto2(checkDto.manageType,checkDto.reference) == true){
+         							data.put("半休上限回数 53", listYearHoliday5.get(i).getLimitDayYear().get()+"回");
+         						}else{
+         							data.put("半休上限回数 53", "");
+         						}
                         	}
                         }
                         
@@ -340,39 +417,59 @@ public class YearHolidayRepositoryImpl implements MasterListData{
                                data.put("勤続年数年 11", dataFindByCode.getYear() + "年");
                                data.put("勤続年数月 12", dataFindByCode.getMonth() + "ヶ月");
                                data.put("付与日数 13", listYearHoliday.get(i).getGrantDays() + "日");
-                               data.put("時間年休上限日数 14", listYearHoliday.get(i).getLimitDayYear().get() + "日");
-                               data.put("半休上限回数 15", listYearHoliday.get(i).getLimitTimeHd().get() + "回");
-                               
-                               // kiem tra cot thu 3 co check hay ko?
-                               if (c.getUseSimultaneousGrant() == UseSimultaneousGrant.NOT_USE) {
-                                     data.put("一斉付与 17", "");
-                                     // neu check thu kt dk 16, 17 , 18
-                               } else {
-                                     if (listFindByCode.get(i).getAllowStatus() == GrantSimultaneity.NOT_USE) {
-                                            data.put("一斉付与 17", "-");
-                               if(listFindByCode.get(i).getStandGrantDay() == GrantReferenceDate.HIRE_DATE){
-                                     data.put("基準日 16", "入社日 ");
-                               }else{
-                                     data.put("基準日 16", "年休付与基準日 ");                                               
-                               }
-                                     } else {
-                                            data.put("基準日 16", "年末年始およびベンチマーク日付 ");
-                                            data.put("一斉付与 17", "○");
-                                     }
-                               }
+                        		
+                               if(checkDto1(checkDto.maxManageType, checkDto.maxReference ,checkDto.timeManageType) == true){
+        							data.put("時間年休上限日数 14",listYearHoliday.get(i).getLimitTimeHd().get()+ "日");
+        						}else{
+        							data.put("時間年休上限日数 14","");
+        						}
+        						
+        						if(checkDto2(checkDto.manageType,checkDto.reference) == true){
+        							data.put("半休上限回数 15", listYearHoliday.get(i).getLimitDayYear().get()+"回");
+        						}else{
+        							data.put("半休上限回数 15","");
+        						}
+        						
+        						
+        						// kiem tra cot thu 3 co check hay ko? 
+                        		if(c.getUseSimultaneousGrant() == UseSimultaneousGrant.NOT_USE){
+                        			if(listFindByCode.get(i).getStandGrantDay() == GrantReferenceDate.HIRE_DATE){
+                    					data.put("基準日 16", "入社日 ");
+                    				}else{
+                    					data.put("基準日 16", "年休付与基準日 ");                    				
+                    				}
+                        			data.put("一斉付与 17", "");
+                        			// neu check thu kt dk 16, 17 , 18
+                        		}else{
+                        			if(listFindByCode.get(i).getAllowStatus() == GrantSimultaneity.NOT_USE){
+                        				if(listFindByCode.get(i).getStandGrantDay() == GrantReferenceDate.HIRE_DATE){
+                        					data.put("基準日 16", "入社日 ");
+                        				}else{
+                        					data.put("基準日 16", "年休付与基準日 ");                    				
+                        				}
+                        				
+                        				data.put("一斉付与 17", "○");
+                        			}else{
+                        				data.put("基準日 16", "");
+                        				data.put("一斉付与 17", "-");
+                        			}
+                        		}
                         } else {
                                data.put("勤続年数年 11", "");
                                data.put("勤続年数月 12", "");
                                data.put("付与日数 13", "");
                                data.put("時間年休上限日数 14", "");
                                data.put("半休上限回数 15", "");
+                               data.put("基準日 16", "");
+                               data.put("一斉付与 17", "");
+//                               if (c.getUseSimultaneousGrant() == UseSimultaneousGrant.NOT_USE) {
+//                                     data.put("一斉付与 17", "");
+//                               }else{
+//                                     data.put("一斉付与 17", "○");
+//                               }
                                
-                               data.put("基準日 16", "年末年始およびベンチマーク日付");
-                               if (c.getUseSimultaneousGrant() == UseSimultaneousGrant.NOT_USE) {
-                                     data.put("一斉付与 17", "");
-                               }else{
-                                     data.put("一斉付与 17", "○");
-                               }
+                               
+                               
                         }
                         
                         data.put("基準設定２ 18", "");
@@ -383,11 +480,24 @@ public class YearHolidayRepositoryImpl implements MasterListData{
 							if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.USE){
 								data.put("付与回 21", i + 1);
 								LengthServiceTbl dataFindByCode = listFindByCode.get(i);
-                    			data.put("勤続年数年 22",dataFindByCode.getYear()+"年");
-                        		data.put("勤続年数月 23",dataFindByCode.getMonth()+"ヶ月");
+//                    			data.put("勤続年数年 22",dataFindByCode.getYear()+"年");
+//                        		data.put("勤続年数月 23",dataFindByCode.getMonth()+"ヶ月");
+								data.put("勤続年数年 22", "");
+                        		data.put("勤続年数月 23", "");
 								data.put("付与日数 24", listYearHoliday2.get(i).getGrantDays() + "日");
-								data.put("時間年休上限日数 25", listYearHoliday2.get(i).getLimitDayYear().get() + "日");
-								data.put("半休上限回数 26", listYearHoliday2.get(i).getLimitTimeHd().get() + "回");
+								
+								
+								if(checkDto1(checkDto.maxManageType, checkDto.maxReference ,checkDto.timeManageType) == true){
+                        			data.put("時間年休上限日数 25", listYearHoliday2.get(i).getLimitTimeHd().get()+ "日");
+         						}else{
+         							data.put("時間年休上限日数 25", "");
+         						}
+         						
+         						if(checkDto2(checkDto.manageType,checkDto.reference) == true){
+         							data.put("半休上限回数 26", listYearHoliday2.get(i).getLimitDayYear().get()+"回");
+         						}else{
+         							data.put("半休上限回数 26", "");
+         						}
 							}
                         }else{
                             data.put("付与回 21", "");
@@ -406,11 +516,23 @@ public class YearHolidayRepositoryImpl implements MasterListData{
 							if(c.getGrantConditions().get(2).getUseConditionAtr() == UseConditionAtr.USE){
 								data.put("付与回 30", i+1);
 								LengthServiceTbl dataFindByCode = listFindByCode.get(i);
-                    			data.put("勤続年数年 31",dataFindByCode.getYear()+"年");
-                        		data.put("勤続年数月 32",dataFindByCode.getMonth()+"ヶ月");
+//                    			data.put("勤続年数年 31",dataFindByCode.getYear()+"年");
+//                        		data.put("勤続年数月 32",dataFindByCode.getMonth()+"ヶ月");
+								data.put("勤続年数年 31","");
+                        		data.put("勤続年数月 32","");
                         		data.put("付与日数 33", listYearHoliday3.get(i).getGrantDays()+"日");
-                        		data.put("時間年休上限日数 34", listYearHoliday3.get(i).getLimitDayYear().get()+ "日");
-                        		data.put("半休上限回数 35", listYearHoliday3.get(i).getLimitTimeHd().get()+"回");
+                        		
+                        		if(checkDto1(checkDto.maxManageType, checkDto.maxReference ,checkDto.timeManageType) == true){
+                        			data.put("時間年休上限日数 34",listYearHoliday3.get(i).getLimitTimeHd().get() + "日");
+         						}else{
+         							data.put("時間年休上限日数 34", "");
+         						}
+         						
+         						if(checkDto2(checkDto.manageType,checkDto.reference) == true){
+         							data.put("半休上限回数 35", listYearHoliday3.get(i).getLimitDayYear().get()+"回");
+         						}else{
+         							data.put("半休上限回数 35", "");
+         						}
 							}
                 		}else{
                 			data.put("付与回 30", "");
@@ -431,8 +553,18 @@ public class YearHolidayRepositoryImpl implements MasterListData{
                     			data.put("勤続年数年 40",dataFindByCode.getYear()+"年");
                         		data.put("勤続年数月 41",dataFindByCode.getMonth()+"ヶ月");
                         		data.put("付与日数  42", listYearHoliday4.get(i).getGrantDays()+"日");
-                        		data.put("時間年休上限日数 43", listYearHoliday4.get(i).getLimitDayYear().get()+ "日");
-                        		data.put("半休上限回数  44", listYearHoliday4.get(i).getLimitTimeHd().get()+"回");
+                        		
+                        		if(checkDto1(checkDto.maxManageType, checkDto.maxReference ,checkDto.timeManageType) == true){
+                        			data.put("時間年休上限日数 43", listYearHoliday4.get(i).getLimitTimeHd().get()+ "日");
+         						}else{
+         							data.put("時間年休上限日数 43", "");
+         						}
+         						
+         						if(checkDto2(checkDto.manageType,checkDto.reference) == true){
+         							data.put("半休上限回数  44", listYearHoliday4.get(i).getLimitDayYear().get()+"回");
+         						}else{
+         							data.put("半休上限回数  44", "");
+         						}
 							}
                 		}else{
                 			data.put("付与回 39", "");
@@ -451,11 +583,24 @@ public class YearHolidayRepositoryImpl implements MasterListData{
 							if(c.getGrantConditions().get(4).getUseConditionAtr() == UseConditionAtr.USE){
                         		data.put("付与回 48", i+1);
                         		LengthServiceTbl dataFindByCode = listFindByCode.get(i);
-                        		data.put("勤続年数年 49", dataFindByCode.getYear()+"年");
-                        		data.put("勤続年数月  50", dataFindByCode.getMonth()+"ヶ月");
+//                        		data.put("勤続年数年 49", dataFindByCode.getYear()+"年");
+//                        		data.put("勤続年数月  50", dataFindByCode.getMonth()+"ヶ月");
+                        		
+                        		data.put("勤続年数年 49", "");
+                        		data.put("勤続年数月  50", "");
                         		data.put("付与日数 51", listYearHoliday5.get(i).getGrantDays()+"日");
-                        		data.put("時間年休上限日数 52", listYearHoliday5.get(i).getLimitDayYear().get()+ "日");
-                        		data.put("半休上限回数 53", listYearHoliday5.get(i).getLimitTimeHd().get()+"回");
+                        		
+                        		if(checkDto1(checkDto.maxManageType, checkDto.maxReference ,checkDto.timeManageType) == true){
+                        			data.put("時間年休上限日数 52",listYearHoliday5.get(i).getLimitTimeHd().get()+ "日");
+         						}else{
+         							data.put("時間年休上限日数 52", "");
+         						}
+         						
+         						if(checkDto2(checkDto.manageType,checkDto.reference) == true){
+         							data.put("半休上限回数 53", listYearHoliday5.get(i).getLimitDayYear().get()+"回");
+         						}else{
+         							data.put("半休上限回数 53", "");
+         						}
 							}
                 		}else{
                 			data.put("付与回 48", "");
@@ -711,7 +856,44 @@ public class YearHolidayRepositoryImpl implements MasterListData{
 		// TODO Auto-generated method stub
 		return TextResource.localize("KMF003_75");
 	}
-
+	
+	public CheckAnnualKMF003ExportDto findByCom(){
+		String companyId = AppContexts.user().companyId();
+		AnnualPaidLeaveSetting paidLeaveSetting = this.annualRep.findByCompanyId(companyId);
+        if (paidLeaveSetting == null) {
+            return null;
+        }
+        return this.toDto(paidLeaveSetting);
+	} 
+	
+	private CheckAnnualKMF003ExportDto toDto(AnnualPaidLeaveSetting setting){
+		CheckAnnualKMF003ExportDto dto = new CheckAnnualKMF003ExportDto();
+		// check time
+		dto.setManageType(setting.getManageAnnualSetting().getHalfDayManage().manageType.value);
+		// check year
+		dto.setMaxManageType(setting.getTimeSetting().getMaxYearDayLeave().manageType.value);
+		// check year
+		dto.setMaxReference(setting.getTimeSetting().getMaxYearDayLeave().reference.value);
+		// check time
+		dto.setReference(setting.getManageAnnualSetting().getHalfDayManage().reference.value);
+		// check year
+		dto.setTimeManageType(setting.getTimeSetting().getTimeManageType().value);
+		return dto;
+	}
+	
+	private boolean checkDto2(int manageType, int reference){
+		
+		if(manageType == 1 && reference == 1) {
+            return true;
+        }
+		return false;
+	}
+	private boolean checkDto1(int maxManageType ,int maxReference , int timeManageType){
+		if(maxManageType == 1 && maxReference == 1 && timeManageType == 1) {
+            return true;
+        }
+		return false;
+	}
 	
 	
 	

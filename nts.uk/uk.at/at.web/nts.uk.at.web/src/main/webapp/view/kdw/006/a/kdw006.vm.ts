@@ -3,7 +3,6 @@ module nts.uk.at.view.kdw006 {
         export class ScreenModel {
             constructor(dataShare) {
                 var self = this;
-                self.showExportBtn();
             }
 
             startPage(): JQueryPromise<any> {
@@ -107,20 +106,6 @@ module nts.uk.at.view.kdw006 {
                     nts.uk.ui.block.clear();
                 });
          }
-            showExportBtn() {
-                if (nts.uk.util.isNullOrUndefined(__viewContext.user.role.attendance)
-                    && nts.uk.util.isNullOrUndefined(__viewContext.user.role.payroll)
-                    && nts.uk.util.isNullOrUndefined(__viewContext.user.role.officeHelper)
-                    && nts.uk.util.isNullOrUndefined(__viewContext.user.role.personnel)) {
-                    $("#print-button-common").hide();
-                    $("#print-button-daily").hide();
-                    $("#print-button-monthly").hide();
-                } else {
-                    $("#print-button-common").show();
-                    $("#print-button-daily").show();
-                    $("#print-button-monthly").show();
-                }
-            }
 
         }
     }
