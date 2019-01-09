@@ -4,11 +4,11 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppAcceptLimitDay;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.BeforeAddCheckMethod;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.*;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -122,7 +122,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
             Map<String, MasterCellData> dataA5 = new HashMap<>();
             dataA5.put(KAF022_454, MasterCellData.builder()
                     .columnId(KAF022_454)
-                    .value(((Long) export[0]).intValue() == 1 && i == 0 ? TextResource.localize("KAF022_460") : "")
+                    .value( i == 0 ? TextResource.localize("KAF022_460") : "")
                     .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                     .build());
             dataA5.put(COLUMN_NO_HEADER_1, MasterCellData.builder()
@@ -203,7 +203,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
                     .build());
             dataA7.put(COLUMN_NO_HEADER_1, MasterCellData.builder()
                     .columnId(COLUMN_NO_HEADER_1)
-                    .value(i == 0 ? EnumAdaptor.valueOf(((BigDecimal) export[20]).intValue(), ApplicationType.class).nameId : "")
+                    .value(i == 0 ? EnumAdaptor.valueOf(((BigDecimal) export[26]).intValue(), ApplicationType.class).nameId : "")
                     .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                     .build());
             dataA7.put(COLUMN_NO_HEADER_2, MasterCellData.builder()
@@ -247,12 +247,12 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
                     .build());
             dataA7.put(COLUMN_NO_HEADER_2, MasterCellData.builder()
                     .columnId(COLUMN_NO_HEADER_2)
-                    .value(i == 0 ? TextResource.localize("KAF022_467") : "")
+                    .value(getTextA7Bottom(i,0))
                     .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                     .build());
             dataA7.put(COLUMN_NO_HEADER_3, MasterCellData.builder()
                     .columnId(COLUMN_NO_HEADER_3)
-                    .value(i== 0 ? TextResource.localize("KAF022_467") : "")
+                    .value(getTextA7Bottom(i,1))
                     .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                     .build());
             dataA7.put(COLUMN_NO_HEADER_4, MasterCellData.builder()
@@ -327,7 +327,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
                     .build());
             dataA8Center.put(COLUMN_NO_HEADER_2, MasterCellData.builder()
                     .columnId(COLUMN_NO_HEADER_2)
-                    .value(i == 0 ? EnumAdaptor.valueOf( ((BigDecimal)export[39]).intValue(), HolidayAppType.class).name : "")
+                    .value(i == 0 ? TextResource.localize(EnumAdaptor.valueOf( ((BigDecimal)export[39]).intValue(), HolidayAppType.class).name) : "")
                     .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                     .build());
             dataA8Center.put(COLUMN_NO_HEADER_3, MasterCellData.builder()
@@ -495,7 +495,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
                 .build());
         dataA12.put(KAF022_455, MasterCellData.builder()
                 .columnId(KAF022_455)
-                .value(TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) export[12]).intValue(), NotUseAtr.class).nameId))
+                .value(((BigDecimal) export[12]).intValue() == 1 ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82"))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         datasA12.add(MasterData.builder().rowData(dataA12).build());
@@ -549,7 +549,9 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
                     value.append(",");
                 }
         });
-        value.deleteCharAt(value.length() -1);
+        if(value.length() != 0) {
+            value.deleteCharAt(value.length() - 1);
+        }
         return value.toString();
     }
 
@@ -573,10 +575,13 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
         if(i == 1) {
             return ((BigDecimal)obj[3]).intValue() == 1 ? "○" : "";
         }
-        if(i == 2) {
+        if(i == 2 && ((BigDecimal)obj[3]).intValue() == 1) {
             return ((BigDecimal) obj[4]).intValue() == 0 ? TextResource.localize("KAF022_321") : TextResource.localize("KAF022_322");
         }
-        return getTextDeadLine(((BigDecimal) obj[5]).intValue());
+        if(i == 3 && ((BigDecimal)obj[3]).intValue() == 1) {
+            return getTextDeadLine(((BigDecimal) obj[5]).intValue());
+        }
+        return "";
     }
     
     private String getTextDeadLine(int value){
@@ -657,6 +662,25 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
         return "";
     }
 
+    private String getTextA7Bottom(int i, int column){
+        if(i == 0 && column == 0) {
+            return TextResource.localize("KAF022_467");
+        }
+        if(i == 2 && column == 0) {
+            return TextResource.localize("KAF022_476");
+        }
+        if(i == 0 && column == 1) {
+            return TextResource.localize("KAF022_468");
+        }
+        if(i == 2 && column == 1) {
+            return TextResource.localize("KAF022_477");
+        }
+        if(i == 4 && column == 1) {
+            return TextResource.localize("KAF022_474");
+        }
+        return "";
+    }
+
     private String getTextA8Top(int i, int type){
         if(i == 0 && type == 0) {
             return TextResource.localize("KAF022_478");
@@ -687,21 +711,21 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
 
     private String getTextA9(int i){
         if(i == 0 ) {
-            return TextResource.localize("KAF022_471");
+            return TextResource.localize("KAF022_486");
         }
         if(i == 1) {
-            return TextResource.localize("KAF022_473");
+            return TextResource.localize("KAF022_487");
         }
         if(i == 2) {
-            return TextResource.localize("KAF022_474");
+            return TextResource.localize("KAF022_488");
         }
         if(i == 3) {
-            return TextResource.localize("KAF022_475");
+            return TextResource.localize("KAF022_489");
         }
         if(i == 4) {
-            return TextResource.localize("KAF022_467");
+            return TextResource.localize("KAF022_490");
         }
-        return TextResource.localize("KAF022_476");
+        return TextResource.localize("KAF022_491");
     }
 
     private String getValueA9(int i, Object[] obj){
@@ -781,7 +805,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
 
         }
         if(i == 7 && obj[49] != null) {
-            return obj[49].toString();
+            return ((BigDecimal)obj[49]).intValue() == 1 ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
 
         }
         return "";
@@ -795,16 +819,16 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
         if(i == 1 && obj[23] != null ) {
             return EnumAdaptor.valueOf(((BigDecimal) obj[23]).intValue(), BeforeAddCheckMethod.class).name;
         }
-        if(i == 2 && obj[29] != null ) {
+        if(i == 2 && obj[29] != null && ((BigDecimal) obj[23]).intValue() == 1) {
             return EnumAdaptor.valueOf(((BigDecimal) obj[29]).intValue(), AppAcceptLimitDay.class).name + TextResource.localize("KAF022_510");
         }
-        if(i == 3 && obj[24] != null ) {
+        if(i == 3 && obj[24] != null && ((BigDecimal) obj[23]).intValue() == 0) {
             return obj[24].toString() + TextResource.localize("KAF022_510");
         }
-        if(i == 4 && obj[25] != null ) {
+        if(i == 4 && obj[25] != null && ((BigDecimal) obj[23]).intValue() == 0) {
             return obj[25].toString() + TextResource.localize("KAF022_510");
         }
-        if(i == 5 && obj[26] != null ) {
+        if(i == 5 && obj[26] != null && ((BigDecimal) obj[23]).intValue() == 0) {
             return obj[26].toString() + TextResource.localize("KAF022_510");
         }
         if(i == 6 && obj[30] != null) {
@@ -841,8 +865,8 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
         return "";
     }
     private String getValueA8Center(int i, Object[] obj){
-        if(i == 0 && obj[42] != null ) {
-            return ((BigDecimal)obj[42]).intValue() == 1 ? "○" : "-";
+        if(i == 0 && obj[40] != null ) {
+            return ((BigDecimal)obj[40]).intValue() == 1 ? "○" : "-";
         }
         if(i == 1 && obj[41] != null ) {
             return ((BigDecimal)obj[41]).intValue() == 1 ? "○" : "-";
@@ -859,7 +883,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
             return ((BigDecimal)obj[18]).intValue() == 1 ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
         }
         if(i == 1 && obj[48] != null) {
-            return TextResource.localize(EnumAdaptor.valueOf(((BigDecimal)obj[48]).intValue(), NotUseAtr.class).nameId);
+            return ((BigDecimal)obj[18]).intValue() == 1 ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82");
         }
 
         return "";
@@ -872,7 +896,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
         if(i== 1 && obj[29] != null) {
             return EnumAdaptor.valueOf(((BigDecimal) obj[29]).intValue(), AppAcceptLimitDay.class).name + TextResource.localize("KAF022_510");
         }
-        if(i == 0 && obj[30] != null) {
+        if(i == 2 && obj[30] != null) {
             return ((BigDecimal)obj[30]).intValue() == 1 ? "○" : "-";
         }
         return "";
@@ -992,9 +1016,9 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
         preparationBefore.forEach(item->{
             if(item[0] != null) {
                 datasA4.addAll(this.putDatasA4(item));
-            }
-            if(item[6] != null && ((Long)item[0]).intValue() == 1) {
-                datasA5.addAll(this.putDatasA5(item));
+                if (item[6] != null && ((Long)item[0]).intValue() == 1 ){
+                    datasA5.addAll(this.putDatasA5(item));
+                }
             }
             if(item[35] != null) {
                 datasA6.addAll(this.putDatasA6(item));
@@ -1015,10 +1039,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
             if(item[38] != null) {
                 datasA8Center.addAll(this.putDatasA8Center(item));
             }
-            if(item[6] != null) {
-                datasA9.addAll(this.putDatasA9(item));
-            }
-            if(item[6] != null) {
+            if(item[6] != null && ((Long)item[21]).intValue() == 1) {
                 datasA9.addAll(this.putDatasA9(item));
                 datasA10.addAll(this.putDatasA10(item));
             }

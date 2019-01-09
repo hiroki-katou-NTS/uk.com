@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -96,14 +97,21 @@ public class ChangePerInforDefinitionExportImpl implements MasterListData{
                 .value(obj[5])
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
+            
+            String required = Objects.isNull(obj[6]) ? null : 
+            		((BigDecimal)obj[6]).intValue() == 0 ? TextResource.localize("CPS006_26") : 
+            				TextResource.localize("CPS006_27") ;
             data.put(CPS006_80, MasterCellData.builder()
                 .columnId(CPS006_80)
-                .value(((BigDecimal)obj[6]).intValue() == 0 ? TextResource.localize("CPS006_26") : TextResource.localize("CPS006_27") )
+                .value(required)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
+            
+            String abolition =  Objects.isNull(obj[7]) ? null:
+            						((BigDecimal)obj[7]).intValue() == 1 ? "○" : "" ;
             data.put(CPS006_81, MasterCellData.builder()
                 .columnId(CPS006_81)
-                .value(((BigDecimal)obj[7]).intValue() == 1 ? "○" : "" )
+                .value(abolition)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         return MasterData.builder().rowData(data).build();

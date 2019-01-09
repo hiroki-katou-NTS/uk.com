@@ -213,7 +213,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 			+ " 		WHERE"
 			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
-			+ " 	)"
+			+ " 	),"
+			+ " qq.HIERARCHY_CD"
 			+ " FROM"
 			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
 			+ " JOIN KMKMT_AGREEMENTTIME_WPL bb "
@@ -221,7 +222,11 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " JOIN BSYMT_WORKPLACE_INFO kk "
 			+ " ON bb.WKPCD = kk.WKPID"
 			+ " JOIN BSYMT_WORKPLACE_HIST ee "
-			+ " ON kk.HIST_ID = ee.HIST_ID"
+			+ " ON kk.HIST_ID = ee.HIST_ID "
+			+ " JOIN BSYMT_WKP_CONFIG hh "
+			+ "	ON hh.CID = ee.CID AND hh.END_DATE = '9999-12-31 00:00:00' "
+			+ " JOIN BSYMT_WKP_CONFIG_INFO qq "
+			+ " ON qq.WKPID = kk.WKPID AND hh.HIST_ID = qq.HIST_ID "
 			+ " WHERE"
 			+ " 	 bb.LABOR_SYSTEM_ATR = 0 AND kk.CID = ?cid"
 			+ " )"
@@ -233,7 +238,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 			 s.ERROR_THREE_MONTH,s.ALARM_THREE_MONTH,s.LIMIT_THREE_MONTH,"
 			+ " 			 s.ERROR_YEARLY,s.ALARM_YEARLY,s.LIMIT_YEARLY"
 			+ "   FROM summary s"
-			+ "  WHERE s.rk = 1 ";
+			+ "  WHERE s.rk = 1 "
+			+ "	 ORDER BY s.HIERARCHY_CD";
 
 	
 	
@@ -476,7 +482,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 			+ " 		WHERE"
 			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
-			+ " 	)"
+			+ " 	), "
+			+ "		qq.HIERARCHY_CD"
 			+ " FROM"
 			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
 			+ " JOIN KMKMT_AGREEMENTTIME_WPL bb "
@@ -484,7 +491,11 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " JOIN BSYMT_WORKPLACE_INFO kk "
 			+ " ON bb.WKPCD = kk.WKPID"
 			+ " JOIN BSYMT_WORKPLACE_HIST ee "
-			+ " ON kk.HIST_ID = ee.HIST_ID"
+			+ " ON kk.HIST_ID = ee.HIST_ID "
+			+ "	JOIN BSYMT_WKP_CONFIG hh "
+			+ "	ON hh.CID = ee.CID AND hh.END_DATE = '9999-12-31 00:00:00' "
+			+ "	JOIN BSYMT_WKP_CONFIG_INFO qq "
+			+ " ON qq.WKPID = kk.WKPID AND hh.HIST_ID = qq.HIST_ID "
 			+ " WHERE"
 			+ " 	 bb.LABOR_SYSTEM_ATR = 1 AND kk.CID = ?cid"
 			+ " )"
@@ -496,7 +507,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 			 s.ERROR_THREE_MONTH,s.ALARM_THREE_MONTH,s.LIMIT_THREE_MONTH,"
 			+ " 			 s.ERROR_YEARLY,s.ALARM_YEARLY,s.LIMIT_YEARLY"
 			+ "   FROM summary s"
-			+ "  WHERE s.rk = 1 ";
+			+ "  WHERE s.rk = 1 "
+			+ "	 ORDER BY s.HIERARCHY_CD";
 
 	
 	
@@ -736,11 +748,11 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+" 		JOIN BSYMT_EMP_DTA_MNG_INFO cc ON aa.SID = cc.SID"
 			+" 		JOIN BPSMT_PERSON dd ON cc.PID = dd.PID"
 			+" 		WHERE"
-			+" 			bb.Y_K >= 2014"
-			+" 		AND bb.Y_K <= 2018"
-			+" 		AND aa.YM_K >= 201801"
-			+" 		AND aa.YM_K <= 201808"
-			+" 		AND cc.CID = '000000000000-0001'"
+			+" 			bb.Y_K >= ?startY"
+			+" 		AND bb.Y_K <= ?endY"
+			+" 		AND aa.YM_K >= ?startYM"
+			+" 		AND aa.YM_K <= ?endYM"
+			+" 		AND cc.CID = ?cid"
 			+" 	) kk"
 			+" ORDER BY"
 			+" 	kk.SCD, kk.YM_K DESC,kk.Y_K DESC";
