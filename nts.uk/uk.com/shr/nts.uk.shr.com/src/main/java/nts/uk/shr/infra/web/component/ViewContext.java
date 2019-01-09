@@ -144,7 +144,7 @@ public class ViewContext extends UIComponentBase {
 	}
 	
 	private void writeSelectedLanguage (SelectedLanguage language, StringBuilder builder) {
-		builder.append("selectedLanguage: { ");
+		builder.append(", selectedLanguage: { ");
 		if(language != null){
 			builder.append("basicLanguageId: " + formatValue(language.basicLanguageId()));
 			builder.append(", personNameLanguageId: " + formatValue(language.personNameLanguageId()));
