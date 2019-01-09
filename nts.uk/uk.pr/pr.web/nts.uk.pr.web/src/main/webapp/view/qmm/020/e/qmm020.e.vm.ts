@@ -131,7 +131,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
 
             let data: any = {
                 stateLinkSettingMaster: self.listStateLinkSettingMaster(),
-                isNewMode: self.mode(),
+                Mode: self.mode(),
                 hisId: self.hisIdSelected(),
                 startYearMonth: self.startYearMonth(),
                 endYearMonth:  self.endYearMonth()
