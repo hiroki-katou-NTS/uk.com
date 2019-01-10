@@ -229,6 +229,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         public create(): void {
             let self = this;
 
+            nts.uk.ui.errors.clearAll();
             nts.uk.ui.windows.sub.modal('../h/index.xhtml').onClosed(() => {
                 let params = getShared("QMM019_H_TO_A_PARAMS");
                 let histID = params.histID;
@@ -259,6 +260,10 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
 
         public createIfEmpty(): void {
             let self = this;
+
+            setTimeout(function() {
+                nts.uk.ui.errors.clearAll();
+            }, 2000);
 
             nts.uk.ui.windows.sub.modal('../h/index.xhtml').onClosed(() => {
                 let params = getShared("QMM019_H_TO_A_PARAMS");
