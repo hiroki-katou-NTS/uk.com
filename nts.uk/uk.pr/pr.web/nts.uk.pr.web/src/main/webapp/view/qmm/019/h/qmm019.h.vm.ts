@@ -123,13 +123,14 @@ module nts.uk.pr.view.qmm019.h.viewmodel {
                 }).fail(err => {
                     block.clear();
 
-                    if(err.messageId == "Msg_3") {
-                        $("#H1_10").ntsError('set', { messageId: "Msg_3" });
-                        $("#H1_10").focus();
-                    } else if(err.messageId == "MsgQ_33") {
-                        $("#grid").ntsError('set', { messageId: "MsgQ_33" });
-                        $("#grid").focus();
-                    }
+                    // if(err.messageId == "Msg_3") {
+                    //     $("#H1_10").ntsError('set', { messageId: "Msg_3" });
+                    //     $("#H1_10").focus();
+                    // } else if(err.messageId == "MsgQ_33") {
+                    //     $("#grid").ntsError('set', { messageId: "MsgQ_33" });
+                    //     $("#grid").focus();
+                    // }
+                    nts.uk.ui.dialog.alertError({ messageId: err.messageId });
                 });
             }
         }

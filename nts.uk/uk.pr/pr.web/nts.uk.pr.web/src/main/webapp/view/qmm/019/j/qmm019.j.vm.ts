@@ -44,14 +44,11 @@ module nts.uk.pr.view.qmm019.j.viewmodel {
 
         decide(){
             let self = this;
-            nts.uk.ui.errors.clearAll();
 
             let messageId = validateLayout(self.layoutPattern, self.totalLine, self.ctgAtr, self.printLineInCtg, self.noPrintLineInCtg, self.printSet());
             if(messageId != null) {
-                $('#J1_2').ntsError('set', { messageId: messageId });
-            }
-
-            if(!nts.uk.ui.errors.hasError()) {
+                nts.uk.ui.dialog.alertError({ messageId: messageId });
+            } else {
                 setShared("QMM019_J_TO_A_PARAMS", {isRegistered: true, printSet: self.printSet()});
                 nts.uk.ui.windows.close();
             }
