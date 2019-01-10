@@ -129,7 +129,10 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             " CASE WHEN USE_ATR = 1 AND TIME_USE_ATR_TAB1 = 1 THEN TIME_ITEM_NAME " +
             " ELSE NULL " +
             " END TIME_ITEM_NAME, " +
-            " USE_ATR_TAB2, " +
+            " USE_ATR_TAB2,  " +
+            " CASE WHEN USE_ATR_TAB2 = 1 AND DATE_USE_ATR = 1 THEN SPECIAL_DATE_ITEM_NO " +
+            " ELSE NULL " +
+            " END SPECIAL_DATE_ITEM_NO, " +
             " CASE WHEN USE_ATR_TAB2 = 1 AND DATE_USE_ATR = 1 THEN NAME " +
             " ELSE NULL " +
             " END NAME, " +
@@ -227,7 +230,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             "  BONUS_PAY_SET_CD, " +
             "  BONUS_PAY_TIMESHEET_NO_TAB2";
 
-    private static final String SQLSetSubUseWorkPlace = "SELECT  " +
+    /*private static final String SQLSetSubUseWorkPlace = "SELECT  " +
             "  wp.WKPCD,  " +
             "  wp.WKP_NAME,  " +
             "  s.BONUS_PAY_SET_CD,  " +
@@ -257,7 +260,46 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             "  AND s.BONUS_PAY_SET_CD = wps.BONUS_PAY_SET_CD   " +
             "  WHERE  " +
             "  wp.CID = ?  " +
-            " ORDER BY i.HIERARCHY_CD";
+            " ORDER BY i.HIERARCHY_CD"; */
+
+    private static final String SQLSetSubUseWorkPlace = "SELECT  " +
+            "  temp1.*,  " +
+            "  wci.HIERARCHY_CD,  " +
+            "  bps.BONUS_PAY_SET_CD,  " +
+            "  bps.BONUS_PAY_SET_NAME   " +
+            "FROM  " +
+            "  (  " +
+            "  SELECT  " +
+            "    wi.CID,  " +
+            "    wi.WKPCD,  " +
+            "    wi.WKP_NAME,  " +
+            "    wh.START_DATE,  " +
+            "    wh.END_DATE,  " +
+            "    wi.HIST_ID,  " +
+            "    wi.WKPID,  " +
+            "    wc.HIST_ID AS HIST_ID_CONFIG,  " +
+            "    wbs.BONUS_PAY_SET_CD   " +
+            "  FROM  " +
+            "    KBPST_WP_BP_SET wbs  " +
+            "    INNER JOIN BSYMT_WORKPLACE_INFO wi ON wbs.WKPID = wi.WKPID  " +
+            "    INNER JOIN BSYMT_WORKPLACE_HIST wh ON wi.HIST_ID = wh.HIST_ID   " +
+            "    AND wi.WKPID = wh.WKPID   " +
+            "    AND wi.CID = wh.CID   " +
+            "    AND wh.END_DATE = ( SELECT MAX ( END_DATE ) FROM BSYMT_WORKPLACE_HIST wht WHERE wi.CID = wht.CID AND wi.WKPID = wht.WKPID )  " +
+            "    INNER JOIN BSYMT_WKP_CONFIG wc ON wc.CID = wi.CID   " +
+            "    AND wc.END_DATE = '9999-12-31 00:00:00'   " +
+            "  WHERE  " +
+            "    wbs.CID = ?   " +
+            "  ) temp1  " +
+            "  INNER JOIN BSYMT_WKP_CONFIG_INFO wci ON wci.WKPID = temp1.WKPID   " +
+            "  AND wci.CID = temp1.CID  " +
+            "  INNER JOIN KBPMT_BONUS_PAY_SET bps ON bps.BONUS_PAY_SET_CD = temp1.BONUS_PAY_SET_CD   " +
+            "WHERE  " +
+            "  wci.CID = ?   " +
+            "  AND bps.CID = ?   " +
+            "  AND temp1.HIST_ID_CONFIG = wci.HIST_ID   " +
+            "ORDER BY  " +
+            "  wci.HIERARCHY_CD";
 
     private static final String SQLSetEmployees = "SELECT   " +
             "  emp.SCD,   " +
@@ -344,6 +386,8 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
         List<MasterData> datas = new ArrayList<>();
         try(PreparedStatement stmt = this.connection().prepareStatement(SQLSetSubUseWorkPlace)){
             stmt.setString(1,companyId);
+            stmt.setString(2,companyId);
+            stmt.setString(3,companyId);
             datas = new NtsResultSet(stmt.executeQuery()).getList(x -> toMasterDataOfSetSubUseWorkPlace(x));
         }
         return datas;
@@ -484,7 +528,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
 
         data.put(SettingTimeZoneUtils.KMK005_115, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_115)
-                .value(rs.getString("NAME"))
+                .value(rs.getInt("SPECIAL_DATE_ITEM_NO") == null && rs.getString("NAME") == null ? null : rs.getInt("SPECIAL_DATE_ITEM_NO") + rs.getString("NAME"))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 
