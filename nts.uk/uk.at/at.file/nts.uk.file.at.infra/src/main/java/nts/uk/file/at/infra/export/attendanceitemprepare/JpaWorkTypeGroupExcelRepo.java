@@ -25,13 +25,13 @@ public class JpaWorkTypeGroupExcelRepo extends JpaRepository implements WorkType
 			+ "from KRCMT_WORKTYPE_CHANGEABLE a "
 			+ "left join KSHMT_WORKTYPE b on a.WORKTYPE_CODE = b.CD and a.CID=b.CID "
 			+ "where a.CID='000000000000-0000' and a.EMP_CODE='0'  ";
-	List<WorkTypeDtoExcel> resultDefault ;
+	
 	@Override
 	public Map<String, Map<Integer, List<WorkTypeDtoExcel>>> getAllWorkType() {
 		//get data default 
 		List<?> dataDefault = this.getEntityManager().createNativeQuery(SELECT_ALL_DEFAULT_WORKTPYE)
 				.setParameter("companyId", AppContexts.user().companyId()).getResultList();
-		resultDefault = new ArrayList<>();
+		List<WorkTypeDtoExcel> resultDefault = new ArrayList<>();
 		dataDefault.stream().forEach(x -> {
 			putRowToResultDefault(resultDefault, (Object[])x);
 		});
@@ -40,7 +40,7 @@ public class JpaWorkTypeGroupExcelRepo extends JpaRepository implements WorkType
 				.setParameter("companyId", AppContexts.user().companyId()).getResultList();
 		List<WorkTypeDtoExcel> result = new ArrayList<>();
 		data.stream().forEach(x -> {
-			putRowToResult(result, (Object[])x);
+			putRowToResult(result, (Object[])x,resultDefault);
 		});
 		
 		Map<String, Map<Integer, List<WorkTypeDtoExcel>>> map = result.stream()
@@ -61,7 +61,7 @@ public class JpaWorkTypeGroupExcelRepo extends JpaRepository implements WorkType
 		resultDefault.add(workTypeDtoExcel);
 		
 	}
-	private void putRowToResult(List<WorkTypeDtoExcel> result, Object[] x) {
+	private void putRowToResult(List<WorkTypeDtoExcel> result, Object[] x, List<WorkTypeDtoExcel> resultDefault) {
 		String codeEmp = (String)x[0];
 		String nameEmp = (String)x[1];
 		int groupNo = -1;
