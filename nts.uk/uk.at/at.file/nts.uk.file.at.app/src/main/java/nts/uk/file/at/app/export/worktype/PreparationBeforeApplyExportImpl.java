@@ -160,7 +160,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
         EnumSet.allOf(ApplicationType.class)
                 .forEach(i -> {
                     String appName = getValueA6(i, export);
-                    if (!("".equals(appName))) {
+                    if (appName != null) {
                         Map<String, MasterCellData> dataA6 = new HashMap<>();
                         dataA6.put(KAF022_454, MasterCellData.builder()
                                 .columnId(KAF022_454)
@@ -209,7 +209,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
                     .build());
             dataA7.put(COLUMN_NO_HEADER_1, MasterCellData.builder()
                     .columnId(COLUMN_NO_HEADER_1)
-                    .value(i == 0 ? EnumAdaptor.valueOf(((BigDecimal) export[26]).intValue(), ApplicationType.class).nameId : "")
+                    .value(i == 0 ? EnumAdaptor.valueOf(((BigDecimal) export[27]).intValue(), ApplicationType.class).nameId : "")
                     .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                     .build());
             dataA7.put(COLUMN_NO_HEADER_2, MasterCellData.builder()
@@ -562,11 +562,11 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
     }
 
     private String getValueA6(ApplicationType appType, List<Object[]> obj){
-         Optional<Object[]> temp = obj.stream().filter(i -> appType.value == ((BigDecimal) i[36]).intValue()).findFirst();
+         Optional<Object[]> temp = obj.stream().filter(i -> i[36] != null ? appType.value == ((BigDecimal) i[36]).intValue() : appType.value == -1).findFirst();
          if(temp.isPresent()) {
-             return temp.get()[37].toString();
+             return temp.get()[37] != null ? temp.get()[37].toString() : "";
          }
-        return "";
+        return null;
     }
 
     private boolean getTextA6(ApplicationType appType){
