@@ -126,10 +126,8 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 	 * @param setReportData
 	 */
 	private void putDataToColumnsWorkSet(Map<String, Object> data, WorkMonthlySettingReportData setReportData) {
-		for (int i = 1; i <= 31; i++) {
-			String key = i + "日";
-			data.put(key, setReportData.getWorkSetName());
-		}
+		String key = setReportData.getDay() + "日";
+		data.put(key, setReportData.getWorkSetName());
 	}
 	
 	@Override

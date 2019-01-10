@@ -19,10 +19,8 @@ public class JpaBusinessDailyRepo extends JpaRepository implements BusinessDaily
 	private static final String GET_ALL_BY_COMPANY = "select a.BUSINESS_TYPE_CD, a.ATTENDANCE_ITEM_ID, a.SHEET_NO, b.SHEET_NAME "
 			+ "from KRCMT_BUS_DAILY_ITEM a "
 			+ "join KRCMT_BUS_FORM_SHEET b "
-			+ "on a.BUSINESS_TYPE_CD=b.BUSINESS_TYPE_CD and a.SHEET_NO=b.SHEET_NO where a.CID=?companyId "
+			+ "on a.BUSINESS_TYPE_CD=b.BUSINESS_TYPE_CD and a.SHEET_NO=b.SHEET_NO  and a.CID = b.CID where a.CID=?companyId "
 			+ "";
-	String tempCode = "";
-//	List<BusinessDailyExcel> list = new ArrayList<>();
 	@Override
 	public Map<String, Map<Integer, List<BusinessDailyExcel>>> getAllByComp(String companyId) {
 		List<?> data = this.getEntityManager().createNativeQuery(GET_ALL_BY_COMPANY)
@@ -35,11 +33,9 @@ public class JpaBusinessDailyRepo extends JpaRepository implements BusinessDaily
 		listBusiness = list.stream().collect(Collectors.groupingBy(BusinessDailyExcel::getCode));
 		Map<String, Map<Integer, List<BusinessDailyExcel>>> result = new HashMap<>();
 		List<String> listkeyBzDailyByCode = new ArrayList<String>(listBusiness.keySet());
-//		Collections.sort(listkeyBzDailyByCode);
 		for (String string : listkeyBzDailyByCode) {
 			List<BusinessDailyExcel> listBzDailyBySheetNo = listBusiness.get(string);
 			Map<Integer, List<BusinessDailyExcel>> mapListBzDailyBySheetNo = listBzDailyBySheetNo.stream().collect(Collectors.groupingBy(BusinessDailyExcel::getSheetNo));
-//			List<Integer> listkeyBzDailyBySheetNo = new ArrayList<Integer>(mapListBzDailyBySheetNo.keySet());
 			result.put(string, mapListBzDailyBySheetNo);
 		}
 		return result;

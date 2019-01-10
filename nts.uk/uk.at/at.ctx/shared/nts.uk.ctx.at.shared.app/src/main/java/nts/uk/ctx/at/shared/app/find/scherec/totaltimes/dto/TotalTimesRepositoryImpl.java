@@ -179,7 +179,7 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 						}else{
 							ThresholdLimit =  cond.hour() +":"+ cond.minute();
 						}
-						data.put("以上", ThresholdLimit + " 以上");
+						data.put("以上", ThresholdLimit + "以上");
 					}else{
 						data.put("集計条件以上", "-");
 						data.put("以上", "");
@@ -194,7 +194,7 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 						}else{
 							thresoldUpperLimit =  cond2.hour() +":"+ cond2.minute();
 						}
-						data.put("未満",thresoldUpperLimit +" 未満");
+						data.put("未満",thresoldUpperLimit +"未満");
 					}else{
 						data.put("集計条件未満", "-");
 						data.put("未満", "");
@@ -217,17 +217,18 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 							});
 						}
 					}
+					data.put("名称", c.getTotalTimesName());
+					data.put("略名", c.getTotalTimesABName());
 					
-				}
-				data.put("名称", c.getTotalTimesName());
-				data.put("略名", c.getTotalTimesABName());
-				
-				if(c.getSummaryAtr() == SummaryAtr.DUTYTYPE){
-					data.put("集計区分", SummaryAtr.DUTYTYPE.nameId);
-				}else if(c.getSummaryAtr() == SummaryAtr.WORKINGTIME){
-					data.put("集計区分", SummaryAtr.WORKINGTIME.nameId);
-				}else{
-					data.put("集計区分", SummaryAtr.COMBINATION.nameId);
+					
+					
+					if(c.getSummaryAtr() == SummaryAtr.DUTYTYPE){
+						data.put("集計区分", SummaryAtr.DUTYTYPE.nameId);
+					}else if(c.getSummaryAtr() == SummaryAtr.WORKINGTIME){
+						data.put("集計区分", SummaryAtr.WORKINGTIME.nameId);
+					}else{
+						data.put("集計区分", SummaryAtr.COMBINATION.nameId);
+					}
 				}
 				
 				MasterData masterData = new MasterData(data, null, "");
@@ -282,7 +283,7 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("対象項目", TextResource.localize("KMK009_23"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("半日勤務区分", TextResource.localize("KMK009_11"),
+		columns.add(new MasterHeaderColumn("半日勤務区分", TextResource.localize("KMK009_11")+" "+TextResource.localize("KMK009_27"),
 				ColumnTextAlign.LEFT, "", true));
 		return columns;
 	}
