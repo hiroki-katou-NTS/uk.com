@@ -61,10 +61,10 @@ module nts.uk.at.view.ksm005.a {
             /**
              * Print file excel
              */
-            exportExcel(mode: string, startDate: string, endDate: string) : void {
+            exportExcel(mode: string, baseDate: string, startDate: string, endDate: string) : void {
                 var self = this;
                 nts.uk.ui.block.grayout();
-                service.saveAsExcel(mode, startDate, endDate).done(function() {
+                service.saveAsExcel(mode, baseDate, startDate, endDate).done(function() {
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                 }).always(function() {
