@@ -542,7 +542,7 @@ module nts.uk.pr.view.qmm019.share.model {
             }) : [];
 
             this.historyId = params ? params.statementCode : null;
-            this.nodeText = params ? params.statementCode + " " + params.statementName : null;
+            this.nodeText = params ? params.statementCode + " " + _.escape(params.statementName) : null;
         }
     }
 

@@ -52,7 +52,6 @@ module nts.uk.pr.view.qmm019.k.viewmodel {
 
         decide(){
             let self = this;
-            nts.uk.ui.errors.clearAll();
 
             if(self.printSet() == self.oldPrintSet) {
                 setShared("QMM019_K_TO_A_PARAMS", {isRegistered: false});
@@ -61,13 +60,14 @@ module nts.uk.pr.view.qmm019.k.viewmodel {
                 if(self.printSet() != 2) {
                     let messageId = validateLayout(self.layoutPattern, self.totalLine, self.ctgAtr, self.printLineInCtg, self.noPrintLineInCtg, self.printSet());
                     if(messageId != null) {
-                        $('#K1_2').ntsError('set', { messageId: messageId });
+                        nts.uk.ui.dialog.alertError({ messageId: messageId });
                     } else if((self.printSet() == 1) && ((self.ctgAtr == CategoryAtr.PAYMENT_ITEM) || (self.ctgAtr == CategoryAtr.DEDUCTION_ITEM)) && self.haveItemBreakdownInsite) {
                         nts.uk.ui.dialog.info({ messageId: "QMsg_" });
+                    } else {
+                        setShared("QMM019_K_TO_A_PARAMS", {isRegistered: true, printSet: self.printSet()});
+                        nts.uk.ui.windows.close();
                     }
-                }
-
-                if(!nts.uk.ui.errors.hasError()) {
+                } else {
                     setShared("QMM019_K_TO_A_PARAMS", {isRegistered: true, printSet: self.printSet()});
                     nts.uk.ui.windows.close();
                 }
