@@ -20,10 +20,10 @@ public class JpaWorkTypeGroupExcelRepo extends JpaRepository implements WorkType
 			+ "FROM BSYMT_EMPLOYMENT  a "
 			+ "left join KRCMT_WORKTYPE_CHANGEABLE b on a.CODE = b.EMP_CODE and a.CID=b.CID "
 			+ "left join KSHMT_WORKTYPE c on b.WORKTYPE_CODE = c.CD and b.CID=c.CID "
-			+ "where a.CID=?companyId and a.CID=?companyId";
+			+ "where a.CID=?companyId ";
 	private static final String SELECT_ALL_DEFAULT_WORKTPYE = "select a.WORKTYPE_GROUP_NO, a.WORKTYPE_GROUP_NAME, b.NAME "
 			+ "from KRCMT_WORKTYPE_CHANGEABLE a "
-			+ "left join KSHMT_WORKTYPE b on a.WORKTYPE_CODE = b.CD and b.CID=?companyId "
+			+ "left join KSHMT_WORKTYPE b on a.WORKTYPE_CODE = b.CD and a.CID=b.CID "
 			+ "where a.CID='000000000000-0000' and a.EMP_CODE='0'  ";
 	List<WorkTypeDtoExcel> resultDefault ;
 	@Override
