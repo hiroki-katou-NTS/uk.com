@@ -50,12 +50,12 @@ module nts.uk.com.view.kwr002.a {
             constructor() {
                 let self = this;
                 self.comboboxName = nts.uk.resource.getText("KWR002_19");
-                let currentDate = self.getCurrentDay(new Date());
+                //let currentDate = self.getCurrentDay(new Date());
                 self.enable = ko.observable(true);
                 self.permission = ko.observable(true);
                 self.startDateString = ko.observable("");
                 self.endDateString = ko.observable("");
-                self.dateValue = ko.observable({ startDate: currentDate, endDate: currentDate });
+                self.dateValue = ko.observable("");
                 self.exportDto = ko.observable<ExportDto>();
                 self.listEmployee = ko.observableArray<Employee>([]);
                 self.startDateString.subscribe(function(value) {
@@ -101,8 +101,8 @@ module nts.uk.com.view.kwr002.a {
 
                 self.ccgcomponent = {
 
-                    /** Common properties */
                     tabindex: -1,
+                    /** Common properties */
                     systemType: 1, // システム区分
                     showEmployeeSelection: false, // 検索タイプ
                     showQuickSearchTab: true, // クイック検索
@@ -115,8 +115,9 @@ module nts.uk.com.view.kwr002.a {
 
                     /** Required parameter */
                     baseDate: self.baseDate().toISOString(), // 基準日
-                    periodStartDate: self.dateValue().startDate, // 対象期間開始日
-                    periodEndDate: self.dateValue().endDate, // 対象期間終了日
+//                    periodStartDate: self.dateValue().startDate, // 対象期間開始日
+//                    periodEndDate: self.dateValue().endDate, // 対象期間終了日
+                    dateRangePickerValue: self.dateValue,
                     inService: true, // 在職区分
                     leaveOfAbsence: true, // 休職区分
                     closed: true, // 休業区分
@@ -203,7 +204,19 @@ module nts.uk.com.view.kwr002.a {
                     }
 
                     dfd.resolve();
-                })
+                });
+                service.getClosureMonth().done(function(dto) {
+                    const startMonth = dto.currentMonth;
+                    const endMonth = dto.currentMonth;
+                    const parsedStart = startMonth.slice(0, 4) + '/' + startMonth.slice(4);
+                    const parsedEnd = endMonth.slice(0, 4) + '/' + endMonth.slice(4);
+                    self.dateValue({
+                        startDate : parsedStart,
+                        endDate : parsedEnd
+                    })
+                    self.dateValue.valueHasMutated();
+                });
+
                 blockUI.clear();
                 return dfd.promise();
             }
@@ -423,6 +436,7 @@ module nts.uk.com.view.kwr002.a {
                 var self = this;
                 var dfd = $.Deferred();
                 blockUI.invisible();
+                setShared("currentARESSelectCode",self.selectedCode());
                 nts.uk.ui.windows.sub.modal("/view/kwr/002/b/index.xhtml").onClosed(function() {
 
                     service.getAllAttendanceRecExpSet().done(function(listAttendance: Array<AttendanceRecordExportSettingDto>) {

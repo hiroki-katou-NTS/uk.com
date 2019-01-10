@@ -37,7 +37,7 @@ public interface CalculateDailyRecordServiceCenter{//
 	public List<IntegrationOfDaily> errorCheck(List<IntegrationOfDaily> integrationList);
 
 	//計算(更新処理自動実行用)
-	public CalcStatus calculateForclosure(List<IntegrationOfDaily> integrationOfDaily,ManagePerCompanySet companySet, List<ClosureStatusManagement> closureList);
+	public ManageProcessAndCalcStateResult calculateForclosure(List<IntegrationOfDaily> integrationOfDaily,ManagePerCompanySet companySet, List<ClosureStatusManagement> closureList);
 
 	//計算(スケジュールからの窓口)
 	List<IntegrationOfDaily> calculateForSchedule(CalculateOption calcOption,List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet);

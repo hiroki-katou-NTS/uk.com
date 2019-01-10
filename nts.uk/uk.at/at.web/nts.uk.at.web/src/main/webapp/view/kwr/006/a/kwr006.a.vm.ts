@@ -149,8 +149,9 @@ module nts.uk.at.view.kwr006.a {
 
                     /** Required parameter */
                     baseDate: moment().toISOString(),
-                    periodStartDate: moment().toISOString(),
-                    periodEndDate: moment().toISOString(),
+//                    periodStartDate: moment().toISOString(),
+//                    periodEndDate: moment().toISOString(),
+                    dateRangePickerValue: self.datepickerValue,
                     inService: true,
                     leaveOfAbsence: true,
                     closed: true,
@@ -272,8 +273,8 @@ module nts.uk.at.view.kwr006.a {
                             }
                         });
                         // Show error in msg_1344
-                        if (self.errorLogs().length > 0)
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
+//                        if (self.errorLogs().length > 0)
+//                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
                         if (self.errorLogsNoWorkplace().length > 0)
                             nts.uk.ui.dialog.alertError({ messageId: "Msg_1396", message: message("Msg_1396") + employeeStr, messageParams: [self.errorLogs().length]});
                     }).fail(function (error) {
@@ -326,9 +327,9 @@ module nts.uk.at.view.kwr006.a {
                                 });
                             }
                         });
-                        // Show error in msg_1344
-                        if (self.errorLogs().length > 0)
-                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
+//                        // Show error in msg_1344
+//                        if (self.errorLogs().length > 0)
+//                            nts.uk.ui.dialog.alertError({ messageId: "Msg_1344", message: message("Msg_1344") + employeeStr, messageParams: [self.errorLogs().length]});
                         if (self.errorLogsNoWorkplace().length > 0)
                             nts.uk.ui.dialog.alertError({ messageId: "Msg_1396", message: message("Msg_1396") + employeeStr, messageParams: [self.errorLogs().length]});
                     }).fail(function (error) {
