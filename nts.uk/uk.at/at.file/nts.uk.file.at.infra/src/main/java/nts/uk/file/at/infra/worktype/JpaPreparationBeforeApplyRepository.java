@@ -67,7 +67,8 @@ public class JpaPreparationBeforeApplyRepository extends JpaRepository implement
 		sql.append("           asg.APP_END_WORK_FLG,");
 		sql.append("           asg.APP_ACT_LOCK_FLG,");
 		sql.append("           asg.MANUAL_SEND_MAIL_ATR,");
-		sql.append("     temp.URL_EMBEDDED");
+		sql.append("     		temp.URL_EMBEDDED,");
+		sql.append("			asg.PRE_POST_INIT_ATR");
 		sql.append("       FROM  ");
 		sql.append("        (SELECT ");
 		sql.append("            ROW_NUMBER() OVER (ORDER BY clo.CLOSURE_ID ASC) AS ROW_NUMBER,");
@@ -196,7 +197,8 @@ public class JpaPreparationBeforeApplyRepository extends JpaRepository implement
 		sql.append("           SEND_MAIL_WHEN_REGISTER_FLG,");
 		sql.append("           SEND_MAIL_WHEN_APPROVAL_FLG,");
 		sql.append("           DISPLAY_REASON_FLG,");
-		sql.append("           PRE_POST_CAN_CHANGE_FLG");
+		sql.append("           PRE_POST_CAN_CHANGE_FLG,");
+		sql.append("		   PRE_POST_INIT_ATR");
 		sql.append("        FROM");
 		sql.append("           (SELECT ");
 		sql.append("               CID,");
@@ -227,7 +229,8 @@ public class JpaPreparationBeforeApplyRepository extends JpaRepository implement
 		sql.append("                    SEND_MAIL_WHEN_REGISTER_FLG,");
 		sql.append("                    SEND_MAIL_WHEN_APPROVAL_FLG,");
 		sql.append("                    DISPLAY_REASON_FLG,");
-		sql.append("                    PRE_POST_CAN_CHANGE_FLG");
+		sql.append("                    PRE_POST_CAN_CHANGE_FLG,");
+		sql.append("					PRE_POST_INIT_ATR");
 		sql.append("                FROM KRQST_APP_TYPE_DISCRETE");
 		sql.append("                WHERE APP_TYPE NOT IN (3, 5, 8, 11, 12, 13, 14) AND  CID = ?cid");
 		sql.append("                ) ad ON ag.CID = ad.CID ) asg");
