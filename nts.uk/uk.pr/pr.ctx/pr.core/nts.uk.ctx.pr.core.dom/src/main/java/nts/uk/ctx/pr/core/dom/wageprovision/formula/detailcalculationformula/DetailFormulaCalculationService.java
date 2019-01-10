@@ -252,21 +252,21 @@ public class DetailFormulaCalculationService {
         while (formulaElement.indexOf(VARIABLE) > -1) {
             startFunctionIndex = formulaElement.lastIndexOf(VARIABLE);
             endFunctionIndex = formulaElement.substring(startFunctionIndex).indexOf(CLOSE_CURLY_BRACKET) + 1;
-            systemVariable = formulaElement.substring(startFunctionIndex, endFunctionIndex);
+            systemVariable = formulaElement.substring(startFunctionIndex, startFunctionIndex + endFunctionIndex);
             systemVariableResult = getSystemValueBySystemVariable(systemVariable, processYearMonthAndReferenceTime);
-            formulaElement = formulaElement.replaceAll(systemVariable,  systemVariableResult);
+            formulaElement = formulaElement.replace(systemVariable,  systemVariableResult);
         }
         return formulaElement;
     }
 
     private String getSystemValueBySystemVariable (String systemVariable, Map<String, String> processYearMonthAndReferenceTime) {
         String functionName = systemVariable.substring(systemVariable.indexOf(OPEN_CURLY_BRACKET) + 1, systemVariable.indexOf(CLOSE_CURLY_BRACKET));
-        if (functionName.equals(SYSTEM_YMD_DATE)) return GeneralDate.today().toString();
-        if (functionName.equals(SYSTEM_Y_DATE)) return GeneralDate.today().toString().format("YYYY");
-        if (functionName.equals(SYSTEM_YM_DATE)) return GeneralDate.today().toString().format("YYYY/MM");
-        if (functionName.equals(PROCESSING_YEAR)) return processYearMonthAndReferenceTime.get("processYearMonth");
-        if (functionName.equals(PROCESSING_YEAR_MONTH)) return processYearMonthAndReferenceTime.get("processYearMonth");
-        if (functionName.equals(REFERENCE_TIME)) return processYearMonthAndReferenceTime.get("referenceDate");
+        if (functionName.equals(SYSTEM_YMD_DATE)) return  "\"" + GeneralDate.today().toString() + "\"";
+        if (functionName.equals(SYSTEM_Y_DATE)) return "\"" + GeneralDate.today().toString("YYYY") + "\"";
+        if (functionName.equals(SYSTEM_YM_DATE)) return "\"" + GeneralDate.today().toString("YYYY/MM") + "\"";
+        if (functionName.equals(PROCESSING_YEAR)) return "\"" + processYearMonthAndReferenceTime.get("processYearMonth") + "\"";
+        if (functionName.equals(PROCESSING_YEAR_MONTH)) return "\"" + processYearMonthAndReferenceTime.get("processYearMonth") + "\"";
+        if (functionName.equals(REFERENCE_TIME)) return "\"" + processYearMonthAndReferenceTime.get("referenceDate") + "\"";
         throw new BusinessException("MsgQ_233", systemVariable);
     }
     private String calculateFunction (String formulaElement) {

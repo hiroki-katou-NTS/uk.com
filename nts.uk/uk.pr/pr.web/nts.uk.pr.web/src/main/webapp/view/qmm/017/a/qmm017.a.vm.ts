@@ -357,7 +357,8 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 if (withSetting) {
                     self.basicFormulaSetting(new model.BasicFormulaSetting(data.basicFormulaSettingDto));
                     self.detailFormulaSetting(new model.DetailFormulaSetting(data.detailFormulaSettingDto));
-                    self.screenDViewModel.getFormulaElements(history.startMonth);
+                    if (self.selectedFormula().settingMethod() == model.FORMULA_SETTING_METHOD.DETAIL_SETTING)
+                        self.screenDViewModel.getFormulaElements(history.startMonth);
                 }
                 self.mapListCalculationToMasterUseItem(data.masterUseDto, data.basicCalculationFormulaDto);
                 self.selectedTab.valueHasMutated();

@@ -438,8 +438,8 @@ module nts.uk.pr.view.qmm017.share.model {
 
     export enum SYSTEM_VARIABLE_LIST {
         SYSTEM_YMD_DATE = 0,
-        SYSTEM_YM_DATE = 1,
-        SYSTEM_Y_DATE = 2,
+        SYSTEM_YM_DATE = 2,
+        SYSTEM_Y_DATE = 1,
         PROCESSING_YEAR_MONTH = 3,
         PROCESSING_YEAR = 4,
         REFERENCE_TIME = 5,

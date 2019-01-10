@@ -415,11 +415,11 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             self.addToFormulaByPosition(appendFormula);
         }
         addFunctionItem () {
-            let self = this, selectedFunctionItem:any = self.functionListItem()[self.selectedFunctionListValue()];
+            let self = this, selectedFunctionItem:any = _.find(self.functionListItem(), {value: Number(self.selectedFunctionListValue())});
             self.addToFormulaByPosition(self.combineElementTypeAndName(self.FUNCTION, selectedFunctionItem.name));
         }
         addVariableItem () {
-            let self = this, selectedSystemVariableItem:any = self.systemVariableListItem()[self.selectedSystemVariableListValue()];
+            let self = this, selectedSystemVariableItem:any = _.find(self.systemVariableListItem(), {value: Number(self.selectedSystemVariableListValue())});
             self.addToFormulaByPosition(self.combineElementTypeAndName(self.VARIABLE, selectedSystemVariableItem.name));
         }
         addFormulaItem () {
@@ -761,7 +761,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             self.displayDetailCalculationFormula(displayFormula);
         }
         convertToDisplayContent (formulaElement) {
-            let self = this, elementType = formulaElement.substring(0, 6);
+            let self = this, elementType = formulaElement.substring(0, 6), selectedItem;
             let elementCode = formulaElement.substring(6, formulaElement.length);
             if (!elementCode) return formulaElement;
             let calculationFormulaTransfer
@@ -770,24 +770,45 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 return calculationFormulaTransfer.displayContent;
             }
             calculationFormulaTransfer = self.calculationFormulaDictionary.filter(item => {return item.registerContent.startsWith(elementType)}) [0];
-            if (elementType.startsWith("0000_0"))
-                return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, _.find(self.paymentItemList, {code: elementCode}).name);
-            if (elementType.startsWith("0001_0"))
-                return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, _.find(self.deductionItemList, {code: elementCode}).name);
-            if (elementType.startsWith("0002_0"))
-                return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, _.find(self.attendanceItemList, {code: elementCode}).name);
-            if (elementType.startsWith("U000_0"))
-                return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, _.find(self.companyUnitPriceList, {code: elementCode}).name);
-            if (elementType.startsWith("U001_0"))
-                return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, _.find(self.individualUnitPriceList, {code: elementCode}).name);
+            if (elementType.startsWith("0000_0")) {
+                selectedItem =  _.find(self.paymentItemList, {code: elementCode});
+                if (!selectedItem) this.setErrorToFormula(calculationFormulaTransfer.displayContent + " with code " + elementCode + " has been deleted. Formula will be clear", []);
+                else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
+            }
+
+            if (elementType.startsWith("0001_0")) {
+                selectedItem =  _.find(self.deductionItemList, {code: elementCode});
+                if (!selectedItem) this.setErrorToFormula(calculationFormulaTransfer.displayContent + " with code " + elementCode + " has been deleted. Formula will be clear", []);
+                else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
+            }
+            if (elementType.startsWith("0002_0")) {
+                selectedItem = _.find(self.attendanceItemList, {code: elementCode});
+                if (!selectedItem) this.setErrorToFormula(calculationFormulaTransfer.displayContent + " with code " + elementCode + " has been deleted. Formula will be clear", []);
+                else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
+            }
+            if (elementType.startsWith("U000_0")) {
+                selectedItem = _.find(self.companyUnitPriceList, {code: elementCode});
+                if (!selectedItem) this.setErrorToFormula(calculationFormulaTransfer.displayContent + " with code " + elementCode + " has been deleted. Formula will be clear", []);
+                else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
+            }
+            if (elementType.startsWith("U001_0")) {
+                selectedItem =_.find(self.individualUnitPriceList, {code: elementCode});
+                if (!selectedItem) this.setErrorToFormula(calculationFormulaTransfer.displayContent + " with code " + elementCode + " has been deleted. Formula will be clear", []);
+                else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
+            }
             if (elementType.startsWith("calc")) {
                 elementCode = formulaElement.substring(7, formulaElement.length);
-                return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, _.find(ko.toJS(self.formulaList), {formulaCode: elementCode}).formulaName);
+                selectedItem = _.find(ko.toJS(self.formulaList), {formulaCode: elementCode});
+                if (!selectedItem) this.setErrorToFormula(calculationFormulaTransfer.displayContent + " with code " + elementCode + " has been deleted. Formula will be clear", []);
+                else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.formulaName);
             }
             if (elementType.startsWith("wage")) {
                 elementCode = formulaElement.substring(7, formulaElement.length);
-                return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent,  _.find(ko.toJS(self.wageTableList), {code: elementCode}).name);
+                selectedItem = _.find(ko.toJS(self.wageTableList), {code: elementCode});
+                if (!selectedItem) this.setErrorToFormula(calculationFormulaTransfer.displayContent + " with code " + elementCode + " has been deleted. Formula will be clear", []);
+                else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
             }
+            return "";
         }
         combineElementTypeAndName (elementType, elementName) {
             let self = this;
