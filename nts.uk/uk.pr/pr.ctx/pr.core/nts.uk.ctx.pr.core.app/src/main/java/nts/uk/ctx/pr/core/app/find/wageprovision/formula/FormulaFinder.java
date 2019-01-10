@@ -81,7 +81,7 @@ public class FormulaFinder {
         formulaElements.put("attendanceItem", statementItemDataFinder.getAllStatementItemData(CategoryAtr.ATTEND_ITEM.value, false).stream().map(item -> new FormulaElementDto(item.getItemNameCd(), item.getName())).collect(Collectors.toList()));
         formulaElements.put("companyUnitPriceItem", payrollUnitPriceFinder.getPayrollUnitPriceByYearMonth(yearMonth).stream().map(item -> new FormulaElementDto(item.getCode(), item.getName())).collect(Collectors.toList()));
         formulaElements.put("individualUnitPriceItem", this.salaryPerUnitPriceFinder.getAllSalaryPerUnitPriceName().stream().filter(item -> item.getAbolition() == 0).map(item -> new FormulaElementDto(item.getCode(), item.getName())).collect(Collectors.toList()));
-        formulaElements.put("wageTableItem", wageTableRepository.getAllWageTable(AppContexts.user().companyId()).stream().map(item -> new FormulaElementDto(item.getWageTableCode().v(), item.getWageTableName().v(), item.getRemarkInformation().map(PrimitiveValueBase::v).orElse(null))).collect(Collectors.toList()));
+        formulaElements.put("wageTableItem", wageTableRepository.getWageTableByYearMonth(AppContexts.user().companyId(), yearMonth).stream().map(item -> new FormulaElementDto(item.getWageTableCode().v(), item.getWageTableName().v(), item.getRemarkInformation().map(PrimitiveValueBase::v).orElse(null))).collect(Collectors.toList()));
         return formulaElements;
     }
 

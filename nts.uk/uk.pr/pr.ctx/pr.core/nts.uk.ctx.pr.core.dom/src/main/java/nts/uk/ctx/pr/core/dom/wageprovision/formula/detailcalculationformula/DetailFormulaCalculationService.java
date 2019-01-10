@@ -133,7 +133,7 @@ public class DetailFormulaCalculationService {
         Map<String, String> attendanceItem = statementItemRepository.getItemCustomByCategoryAndDeprecated(cid, CategoryAtr.ATTEND_ITEM.value, false).stream().collect(Collectors.toMap(StatementItemCustom::getItemNameCd, StatementItemCustom::getName));
         Map<String, String> companyUnitPriceItem = payrollUnitPriceRepository.getPayrollUnitPriceByYearMonth(yearMonth).stream().collect(Collectors.toMap(item -> item.getCode().v(), item -> item.getName().v()));
         Map<String, String> individualUnitPriceItem = salaryPerUnitPriceRepository.getAllAbolitionSalaryPerUnitPrice();
-        Map<String, String> wageTableItem = wageTableRepository.getAllWageTable(cid).stream().collect(Collectors.toMap(element -> element.getWageTableCode().v(), element -> element.getWageTableName().v()));
+        Map<String, String> wageTableItem = wageTableRepository.getWageTableByYearMonth(cid, yearMonth).stream().collect(Collectors.toMap(element -> element.getWageTableCode().v(), element -> element.getWageTableName().v()));
         for (String formulaElement: formulaElements) {
             displayContent = convertToDisplayContent(formulaElement, paymentItem, deductionItem, attendanceItem, companyUnitPriceItem, individualUnitPriceItem, wageTableItem, yearMonth);
             displayFormula += displayContent;
