@@ -1,10 +1,9 @@
 package nts.uk.file.at.app.export.worktype;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.data.*;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 
 import javax.ejb.Stateless;
 import java.math.BigDecimal;
@@ -258,8 +257,7 @@ public class PreparationBeforeApplyExport {
             data.put(KAF022_455, MasterCellData.builder()
                     .columnId(KAF022_455)
                     .value(this.getValueCommon(i, obj.get(0)))
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                    .style(MasterCellStyle.build().backgroundColor(getColorCommon(i, obj.get(0))))
+                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT).backgroundColor(getColorCommon(i, obj.get(0))))
                     .build());
             datas.add(MasterData.builder().rowData(data).build());
         }
@@ -374,7 +372,7 @@ public class PreparationBeforeApplyExport {
     private String getValueReflectApp(int line, Object[] obj){
         switch (line) {
             case 0:
-                return ((BigDecimal)obj[66]).intValue() == 1 ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
+                return ((BigDecimal)obj[94]).intValue() == 1 ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
             case 1:
                 if(((BigDecimal)obj[95]).intValue() == 2 ) {
                     return TextResource.localize("KAF022_408");
@@ -397,9 +395,9 @@ public class PreparationBeforeApplyExport {
             case 6:
                 return ((BigDecimal)obj[97]).intValue() == 1 ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
             case 7:
-                return ((BigDecimal)obj[101]).intValue() == 1 ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
+                return ((BigDecimal)obj[107]).intValue() == 1 ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
             case 8:
-                return ((BigDecimal)obj[90]).intValue() == 1 ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
+                return ((BigDecimal)obj[101]).intValue() == 1 ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
             case 9:
                 return ((BigDecimal)obj[98]).intValue() == 0 ? TextResource.localize("Enum_BreakReflect_REFLEC_SHIFT_BREAK") : TextResource.localize("Enum_BreakReflect_REFLEC_GO_OUT");
             case 10:
@@ -411,11 +409,11 @@ public class PreparationBeforeApplyExport {
             case 13:
                 return ((BigDecimal)obj[93]).intValue() == 1 ? TextResource.localize("KAF022_396") : TextResource.localize("KAF022_141");
             case 14:
-                return ((BigDecimal)obj[93]).intValue() == 1 ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
+                return ((BigDecimal)obj[102]).intValue() == 1 ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
             case 15:
-                return ((BigDecimal)obj[93]).intValue() == 1 ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
+                return ((BigDecimal)obj[103]).intValue() == 1 ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
             case 16:
-                return ((BigDecimal)obj[93]).intValue() == 1 ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
+                return ((BigDecimal)obj[104]).intValue() == 1 ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
         }
         return "";
     }
