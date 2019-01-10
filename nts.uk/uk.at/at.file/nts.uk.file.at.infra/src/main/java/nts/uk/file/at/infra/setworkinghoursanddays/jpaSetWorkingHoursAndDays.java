@@ -329,11 +329,15 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 						 +  "	INNER JOIN BSYMT_WORKPLACE_INFO ON KSHST_WKP_NORMAL_SET.CID = BSYMT_WORKPLACE_INFO.CID " 
 						 +  "		AND KSHST_WKP_NORMAL_SET.WKP_ID = BSYMT_WORKPLACE_INFO.WKPID " 
 						 +  "	INNER JOIN BSYMT_WORKPLACE_HIST ON KSHST_WKP_NORMAL_SET.CID = BSYMT_WORKPLACE_HIST.CID " 
-						 +  "		AND BSYMT_WORKPLACE_INFO.WKPID = KSHST_WKP_NORMAL_SET.WKP_ID " 
+						 +  "		AND BSYMT_WORKPLACE_INFO.WKPID = BSYMT_WORKPLACE_HIST.WKPID " 
 						 +  "		AND BSYMT_WORKPLACE_INFO.HIST_ID = BSYMT_WORKPLACE_HIST.HIST_ID " 
 						 +  "	INNER JOIN KSHST_FLX_GET_PRWK_TIME ON KSHST_WKP_NORMAL_SET.CID = KSHST_FLX_GET_PRWK_TIME.CID " 
+						 +  "   INNER JOIN BSYMT_WKP_CONFIG ON KSHST_WKP_NORMAL_SET.CID = BSYMT_WKP_CONFIG.CID "
+						 +  "   	AND BSYMT_WKP_CONFIG.END_DATE = '9999-12-31 00:00:00' "
+						 +  "   INNER JOIN BSYMT_WKP_CONFIG_INFO ON BSYMT_WKP_CONFIG.HIST_ID = BSYMT_WKP_CONFIG_INFO.HIST_ID "
+						 +	"  	    AND BSYMT_WKP_CONFIG_INFO.WKPID = BSYMT_WORKPLACE_HIST.WKPID "		
 						 +  "WHERE KSHST_WKP_NORMAL_SET.CID = ?  " 
-						 +  "ORDER BY KSHST_WKP_NORMAL_SET.[YEAR] ASC, BSYMT_WORKPLACE_INFO.WKPCD";
+						 +  "ORDER BY KSHST_WKP_NORMAL_SET.[YEAR] ASC, BSYMT_WKP_CONFIG_INFO.HIERARCHY_CD ";
 	
 	private static final String GET_EMPLOYEE = " SELECT  " 
 			 + "KSHST_SHA_NORMAL_SET.[YEAR], " 
@@ -2220,7 +2224,8 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	}
 
 	private String convertTime(int pTime) {
-		return String.format("%02d:%02d", pTime / 60, pTime % 60);
+		String time =  String.format("%d:%02d", pTime / 60, pTime % 60);
+		return time;
 	}
 	
 	private String getWeekStart(int weekStart) {

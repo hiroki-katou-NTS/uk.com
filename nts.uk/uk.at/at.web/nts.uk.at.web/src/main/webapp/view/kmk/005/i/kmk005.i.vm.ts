@@ -114,6 +114,11 @@ module nts.uk.at.view.kmk005.i {
                     selectedCode: model.ecd
                 });
 
+            }
+            
+            loadFirst() {
+                let self = this,
+                    model = self.model();
                 model.ecd.subscribe(x => {
                     let emps = self.kcpcompoment.employeeInputList(),
                         item = _.find(emps, e => e.code == x);

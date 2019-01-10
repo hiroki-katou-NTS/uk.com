@@ -577,8 +577,8 @@ module nts.uk.at.view.kmk003.a {
                 self.mainSettingModel.save()
                     .done(() => {
                         // recheck abolish condition of list worktime
-                        self.workTimeSettingLoader.isAbolish(self.mainSettingModel.workTimeSetting.isAbolish());
-
+                        // self.workTimeSettingLoader.isAbolish(self.mainSettingModel.workTimeSetting.isAbolish());
+                        self.workTimeSettingLoader.isAbolish(true);
                         // reload
                         self.reloadAfterSave();
                         self.isClickSave(false);
@@ -802,21 +802,10 @@ module nts.uk.at.view.kmk003.a {
                 nts.uk.ui.block.grayout();
                 service.saveAsExcel().done(function() {
                 }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    nts.uk.ui.dialog.alertError(error);
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 });
-            }
-            /**
-             * check role
-             */
-            hasPermission(): boolean {
-                if (__viewContext.user.role.attendance == "null" && __viewContext.user.role.payroll == "null"
-                    && __viewContext.user.role.personnel == "null"  && __viewContext.user.role.officeHelper == "null"){
-                    return false;
-                }
-                
-                return true;
             }
             //end view model
             

@@ -149,17 +149,6 @@ module cas009.a.viewmodel {
                 block.clear();
             });
         }
-        /**
-         * check role
-         */
-        hasPermission(): boolean {
-            if (__viewContext.user.role.attendance == "null" && __viewContext.user.role.payroll == "null"
-                && __viewContext.user.role.personnel == "null"  && __viewContext.user.role.officeHelper == "null"){
-                return false;
-            }
-            
-            return true;
-        }
         // Kinh dị:
         // Tạo 2 danh sách để lưu 1 giá trị.
         getListRole() {

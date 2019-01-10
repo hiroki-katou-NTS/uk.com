@@ -55,7 +55,7 @@ public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator im
 					WORK_TIME_FLOW_START_INDEX, WORK_TIME_FLOW_NUM_ROW);
 			printData(flexSheet, companyName, exportTime, flexData, flexSheetName, 
 					WORK_TIME_FLEX_START_INDEX, WORK_TIME_FLEX_NUM_ROW);
-			
+			worksheets.setActiveSheetIndex(0);
 			reportContext.processDesigner();
 			reportContext.saveAsExcel(this.createNewFile(generatorContext,
 					REPORT_NAME + "_" + dataSource.getExportTime().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION));
@@ -78,10 +78,6 @@ public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator im
 			cells.get(3, 1).setValue(sheetName);
 
 			// Main Data
-			if (data.size() == 0) {
-				cells.deleteRows(startIndex, numRow);
-				return;
-			}
 			for (int i = 0; i < data.size(); i++) {
 				Object[] dataRow = data.get(i);
 				if (i % numRow == 0 && i + numRow < data.size()) {
@@ -91,6 +87,7 @@ public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator im
 					cells.get(startIndex + i, j).setValue(Objects.toString(dataRow[j], ""));
 				}
 			}
+			cells.deleteRows(startIndex + data.size(), numRow);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
