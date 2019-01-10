@@ -2224,7 +2224,8 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	}
 
 	private String convertTime(int pTime) {
-		return String.format("%02d:%02d", pTime / 60, pTime % 60);
+		String time =  String.format("%d:%02d", pTime / 60, pTime % 60);
+		return time;
 	}
 	
 	private String getWeekStart(int weekStart) {

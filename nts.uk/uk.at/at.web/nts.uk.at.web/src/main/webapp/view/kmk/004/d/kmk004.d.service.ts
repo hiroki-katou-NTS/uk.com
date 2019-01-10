@@ -14,7 +14,7 @@ module nts.uk.at.view.kmk004.d {
         }
 
         export function saveAsExcel(languageId: string, startDate: any, endDate: any): JQueryPromise<any> {
-            return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "SetWorkingHoursAndDays", domainType: "KMK004労働時間と日数の設定", languageId: languageId, reportType: 0, startDate: startDate, endDate: endDate });
+            return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "SetWorkingHoursAndDays", domainType: "KMK004労働時間と日数の設定", languageId: languageId, reportType: 0, mode: 2, startDate: startDate, endDate: endDate });
         }
 
 
