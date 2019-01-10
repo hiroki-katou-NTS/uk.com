@@ -179,58 +179,62 @@ public class PreparationBeforeApplyExport {
 
     public List<MasterData> getDataHoliDayApp(List<Object[]> obj) {
         List<MasterData> datas = new ArrayList<>();
-        for (int i = 0; i < SIZE_HOLIDAY_APP; i++) {
-            Map<String, MasterCellData> data = new HashMap<>();
-            data.put(KAF022_454, MasterCellData.builder()
-                    .columnId(KAF022_454)
-                    .value(this.getTextHolidayApp(i, 0))
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                    .build());
-            data.put(COLUMN_NO_HEADER_1, MasterCellData.builder()
-                    .columnId(COLUMN_NO_HEADER_1)
-                    .value(this.getTextHolidayApp(i, 1))
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                    .build());
-            data.put(COLUMN_NO_HEADER_2, MasterCellData.builder()
-                    .columnId(COLUMN_NO_HEADER_2)
-                    .value(this.getTextHolidayApp(i, 2))
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                    .build());
-            data.put(KAF022_455, MasterCellData.builder()
-                    .columnId(KAF022_455)
-                    .value(this.getValueHolidayApp(i, obj.get(0)))
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                    .build());
-            datas.add(MasterData.builder().rowData(data).build());
+        if(obj.get(0)[17] != null) {
+            for (int i = 0; i < SIZE_HOLIDAY_APP; i++) {
+                Map<String, MasterCellData> data = new HashMap<>();
+                data.put(KAF022_454, MasterCellData.builder()
+                        .columnId(KAF022_454)
+                        .value(this.getTextHolidayApp(i, 0))
+                        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                        .build());
+                data.put(COLUMN_NO_HEADER_1, MasterCellData.builder()
+                        .columnId(COLUMN_NO_HEADER_1)
+                        .value(this.getTextHolidayApp(i, 1))
+                        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                        .build());
+                data.put(COLUMN_NO_HEADER_2, MasterCellData.builder()
+                        .columnId(COLUMN_NO_HEADER_2)
+                        .value(this.getTextHolidayApp(i, 2))
+                        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                        .build());
+                data.put(KAF022_455, MasterCellData.builder()
+                        .columnId(KAF022_455)
+                        .value(this.getValueHolidayApp(i, obj.get(0)))
+                        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                        .build());
+                datas.add(MasterData.builder().rowData(data).build());
+            }
         }
         return datas;
     }
 
     public List<MasterData> getDataWorkChange(List<Object[]> obj) {
         List<MasterData> datas = new ArrayList<>();
-        for (int i = 0; i < SIZE_WORK_APP; i++) {
-            Map<String, MasterCellData> data = new HashMap<>();
-            data.put(KAF022_454, MasterCellData.builder()
-                    .columnId(KAF022_454)
-                    .value(this.getTextWorkChange(i, 0))
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                    .build());
-            data.put(COLUMN_NO_HEADER_1, MasterCellData.builder()
-                    .columnId(COLUMN_NO_HEADER_1)
-                    .value(this.getTextWorkChange(i, 1))
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                    .build());
-            data.put(COLUMN_NO_HEADER_2, MasterCellData.builder()
-                    .columnId(COLUMN_NO_HEADER_2)
-                    .value(this.getTextWorkChange(i, 2))
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                    .build());
-            data.put(KAF022_455, MasterCellData.builder()
-                    .columnId(KAF022_455)
-                    .value(this.getValueWorkChange(i, obj.get(0)))
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT).backgroundColor(getColorWorkChange(i, obj.get(0))))
-                    .build());
-            datas.add(MasterData.builder().rowData(data).build());
+        if(obj.get(0)[42] != null) {
+            for (int i = 0; i < SIZE_WORK_APP; i++) {
+                Map<String, MasterCellData> data = new HashMap<>();
+                data.put(KAF022_454, MasterCellData.builder()
+                        .columnId(KAF022_454)
+                        .value(this.getTextWorkChange(i, 0))
+                        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                        .build());
+                data.put(COLUMN_NO_HEADER_1, MasterCellData.builder()
+                        .columnId(COLUMN_NO_HEADER_1)
+                        .value(this.getTextWorkChange(i, 1))
+                        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                        .build());
+                data.put(COLUMN_NO_HEADER_2, MasterCellData.builder()
+                        .columnId(COLUMN_NO_HEADER_2)
+                        .value(this.getTextWorkChange(i, 2))
+                        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                        .build());
+                data.put(KAF022_455, MasterCellData.builder()
+                        .columnId(KAF022_455)
+                        .value(this.getValueWorkChange(i, obj.get(0)))
+                        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT).backgroundColor(getColorWorkChange(i, obj.get(0))))
+                        .build());
+                datas.add(MasterData.builder().rowData(data).build());
+            }
         }
         return datas;
     }
@@ -269,26 +273,26 @@ public class PreparationBeforeApplyExport {
             case 0:
                 return ((BigDecimal)obj[52]).intValue() == 1 ? TextResource.localize("KAF022_196")  : TextResource.localize("KAF022_195");
             case 1:
-                if(((BigDecimal)obj[53]).intValue() == 3) {
+                if(((BigDecimal)obj[53]).intValue() == 1) {
                     return TextResource.localize("KAF022_198");
                 }
-                if(((BigDecimal)obj[53]).intValue() == 2) {
+                if(((BigDecimal)obj[53]).intValue() == 0) {
                     return TextResource.localize("KAF022_199");
                 }
-                if(((BigDecimal)obj[53]).intValue() == 1) {
+                if(((BigDecimal)obj[53]).intValue() == 3) {
                     return TextResource.localize("KAF022_200");
                 }
                 return TextResource.localize("KAF022_201");
             case 2:
-                return obj[54].toString();
+                return obj[54] != null ? obj[54].toString() : "";
             case 3:
-                return obj[55].toString();
+                return obj[55] != null ? obj[55].toString() : "";
             case 4:
                 return ((BigDecimal)obj[56]).intValue() == 1 ? "○" : "-";
             case 5:
-                return obj[57].toString();
+                return obj[57] != null ? obj[57].toString() : "";
             case 6:
-                return obj[58].toString();
+                return obj[58] != null ? obj[58].toString() : "";
             case 7:
                 return ((BigDecimal)obj[59]).intValue() == 1 ? "○" : "-";
             case 8:
@@ -325,7 +329,7 @@ public class PreparationBeforeApplyExport {
                             .build());
                     data.put(KAF022_455, MasterCellData.builder()
                             .columnId(KAF022_455)
-                            .value(this.getValueOT2(i, obj.get(0)))
+                            .value(this.getValueOT2(i, ot, obj.get(0)))
                             .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                             .build());
                     datas.add(MasterData.builder().rowData(data).build());
@@ -401,7 +405,7 @@ public class PreparationBeforeApplyExport {
             case 9:
                 return ((BigDecimal)obj[98]).intValue() == 0 ? TextResource.localize("Enum_BreakReflect_REFLEC_SHIFT_BREAK") : TextResource.localize("Enum_BreakReflect_REFLEC_GO_OUT");
             case 10:
-                return ((BigDecimal)obj[43]).intValue() == 1 ? TextResource.localize("KAF022_416") : TextResource.localize("KAF022_409");
+                return ((BigDecimal)obj[108]).intValue() == 1 ? TextResource.localize("KAF022_416") : TextResource.localize("KAF022_409");
             case 11:
                 return ((BigDecimal)obj[91]).intValue() == 1 ? TextResource.localize("KAF022_414") : TextResource.localize("KAF022_85");
             case 12:
@@ -409,11 +413,17 @@ public class PreparationBeforeApplyExport {
             case 13:
                 return ((BigDecimal)obj[93]).intValue() == 1 ? TextResource.localize("KAF022_396") : TextResource.localize("KAF022_141");
             case 14:
-                return ((BigDecimal)obj[102]).intValue() == 1 ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
+                if(obj[102] != null) {
+                    return ((BigDecimal) obj[102]).intValue() == 1 ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
+                }
             case 15:
-                return ((BigDecimal)obj[103]).intValue() == 1 ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
+                if(obj[103] != null) {
+                    return ((BigDecimal) obj[103]).intValue() == 1 ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
+                }
             case 16:
-                return ((BigDecimal)obj[104]).intValue() == 1 ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
+                if(obj[104] != null) {
+                    return ((BigDecimal) obj[104]).intValue() == 1 ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
+                }
         }
         return "";
     }
@@ -519,7 +529,9 @@ public class PreparationBeforeApplyExport {
     private String getValueApproveList(int line, Object[] obj){
         switch (line) {
             case 0:
-                return ((BigDecimal)obj[82]).intValue() == 1 ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82");
+                if(obj[82] != null) {
+                    return ((BigDecimal) obj[82]).intValue() == 1 ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82");
+                }
             case 1:
                 return ((BigDecimal)obj[83]).intValue() == 1 ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
             case 2:
@@ -585,29 +597,31 @@ public class PreparationBeforeApplyExport {
 
     public List<MasterData> getDataPayout(List<Object[]> obj) {
         List<MasterData> datas = new ArrayList<>();
-        for (int i = 0; i < SIZE_PAYOUT_APP; i++) {
-            Map<String, MasterCellData> data = new HashMap<>();
-            data.put(KAF022_454, MasterCellData.builder()
-                    .columnId(KAF022_454)
-                    .value(this.getTextPayout(i, 0))
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                    .build());
-            data.put(COLUMN_NO_HEADER_1, MasterCellData.builder()
-                    .columnId(KAF022_513)
-                    .value(this.getTextPayout(i, 1))
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                    .build());
-            data.put(COLUMN_NO_HEADER_2, MasterCellData.builder()
-                    .columnId(KAF022_513)
-                    .value(this.getTextPayout(i, 2))
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                    .build());
-            data.put(KAF022_455, MasterCellData.builder()
-                    .columnId(KAF022_455)
-                    .value(this.getValuePayout(i, obj.get(0)))
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT).backgroundColor(getColorPayout(i, obj.get(0))))
-                    .build());
-            datas.add(MasterData.builder().rowData(data).build());
+        if(obj.get(0)[70] != null) {
+            for (int i = 0; i < SIZE_PAYOUT_APP; i++) {
+                Map<String, MasterCellData> data = new HashMap<>();
+                data.put(KAF022_454, MasterCellData.builder()
+                        .columnId(KAF022_454)
+                        .value(this.getTextPayout(i, 0))
+                        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                        .build());
+                data.put(COLUMN_NO_HEADER_1, MasterCellData.builder()
+                        .columnId(KAF022_513)
+                        .value(this.getTextPayout(i, 1))
+                        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                        .build());
+                data.put(COLUMN_NO_HEADER_2, MasterCellData.builder()
+                        .columnId(KAF022_513)
+                        .value(this.getTextPayout(i, 2))
+                        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                        .build());
+                data.put(KAF022_455, MasterCellData.builder()
+                        .columnId(KAF022_455)
+                        .value(this.getValuePayout(i, obj.get(0)))
+                        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT).backgroundColor(getColorPayout(i, obj.get(0))))
+                        .build());
+                datas.add(MasterData.builder().rowData(data).build());
+            }
         }
         return datas;
     }
@@ -709,23 +723,23 @@ public class PreparationBeforeApplyExport {
         return "";
     }
 
-    private String getValueOT2(int line, Object[] obj){
+    private String getValueOT2(int line, Object[] obj, Object[] firstObject){
         switch (line) {
             case 0:
-                return ((BigDecimal)obj[64]).intValue() == 1 ? TextResource.localize("KAF022_222") : TextResource.localize("KAF022_221");
+                return ((BigDecimal)firstObject[64]).intValue() == 1 ? TextResource.localize("KAF022_222") : TextResource.localize("KAF022_221");
             case 1:
-                if(((BigDecimal)obj[65]).intValue() == 3) {
+                if(((BigDecimal)firstObject[65]).intValue() == 3) {
                     return TextResource.localize("KAF022_198");
                 }
-                if(((BigDecimal)obj[65]).intValue() == 2) {
+                if(((BigDecimal)firstObject[65]).intValue() == 2) {
                     return TextResource.localize("KAF022_199");
                 }
-                if(((BigDecimal)obj[65]).intValue() == 1) {
+                if(((BigDecimal)firstObject[65]).intValue() == 1) {
                     return TextResource.localize("KAF022_200");
                 }
                 return TextResource.localize("KAF022_201");
             case 2:
-                return ((BigDecimal)obj[66]).intValue() == 1 ? TextResource.localize("KAF022_392") : TextResource.localize("KAF022_439");
+                return ((BigDecimal)firstObject[66]).intValue() == 1 ? TextResource.localize("KAF022_392") : TextResource.localize("KAF022_439");
             case 3:
                 return ((BigDecimal)obj[2]).intValue() == 1 ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
             case 4:
@@ -737,13 +751,13 @@ public class PreparationBeforeApplyExport {
             case 7:
                 return ((BigDecimal)obj[6]).intValue() == 1 ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
             case 8:
-                return ((BigDecimal)obj[6]).intValue() == 1 ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
+                return ((BigDecimal)obj[7]).intValue() == 1 ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
             case 9:
-                return ((BigDecimal)obj[6]).intValue() == 1 ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
+                return ((BigDecimal)obj[8]).intValue() == 1 ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
             case 10:
-                return ((BigDecimal)obj[68]).intValue() == 1 ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
+                return ((BigDecimal)firstObject[68]).intValue() == 1 ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
             case 11:
-                return ((BigDecimal)obj[69]).intValue() == 1 ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
+                return ((BigDecimal)firstObject[69]).intValue() == 1 ? TextResource.localize("KAF022_173") : TextResource.localize("KAF022_175");
             case 12:
                 return ((BigDecimal)obj[9]).intValue() == 1 ? TextResource.localize("KAF022_174") : TextResource.localize("KAF022_173");
             case 13:
@@ -752,7 +766,7 @@ public class PreparationBeforeApplyExport {
                 }
                 return ((BigDecimal)obj[10]).intValue() == 1 ? TextResource.localize("KAF022_174") : TextResource.localize("KAF022_173");
             case 14:
-                return ((BigDecimal)obj[11]).intValue() == 0 ? TextResource.localize("KAF022_139") : TextResource.localize("KAF022_140");
+                return ((BigDecimal)firstObject[11]).intValue() == 0 ? TextResource.localize("KAF022_139") : TextResource.localize("KAF022_140");
             case 15:
                 return ((BigDecimal)obj[12]).intValue() == 1 ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
             case 16:
@@ -761,7 +775,7 @@ public class PreparationBeforeApplyExport {
             }
                 return ((BigDecimal)obj[13]).intValue() == 1 ? TextResource.localize("KAF022_174") : TextResource.localize("KAF022_173");
             case 17:
-                return ((BigDecimal)obj[67]).intValue() == 1 ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
+                return ((BigDecimal)firstObject[67]).intValue() == 1 ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
         }
         return "";
     }
@@ -906,9 +920,6 @@ public class PreparationBeforeApplyExport {
     }
 
     private String getValueWorkChange(int line, Object[] obj){
-        if(obj[42] == null) {
-            return "";
-        }
         switch (line) {
             case 0:
                 return ((BigDecimal)obj[42]).intValue() == 1 ? TextResource.localize("KAF022_392") : TextResource.localize("KAF022_391");
@@ -1177,7 +1188,10 @@ public class PreparationBeforeApplyExport {
             case 12:
                 return ((BigDecimal)obj[105]).intValue() == 1 ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
             case 13:
-                if(((BigDecimal)obj[10]).intValue() == 2 ) {
+                if(obj[24] == null) {
+                    return "";
+                }
+                if( ((BigDecimal)obj[24]).intValue() == 2 ) {
                     return TextResource.localize("KAF022_175");
                 }
                 return ((BigDecimal)obj[24]).intValue() == 1 ? TextResource.localize("KAF022_174") : TextResource.localize("KAF022_173");

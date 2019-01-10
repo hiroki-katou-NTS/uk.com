@@ -100,7 +100,7 @@ public class JpaPreparationBeforeApplyRepository extends JpaRepository implement
 		sql.append("               AND clo.CLOSURE_ID = cloh.CLOSURE_ID ");
 		sql.append("               AND clo.CLOSURE_MONTH <= cloh.END_YM");
 		sql.append("               AND clo.CLOSURE_MONTH >= cloh.STR_YM");
-		sql.append("          FULL JOIN ");
+		sql.append("          INNER JOIN ");
 		sql.append("               (SELECT CID, USE_ATR, DEADLINE_CRITERIA, DEADLINE, CLOSURE_ID");
 		sql.append("               FROM KRQST_APP_DEADLINE ");
 		sql.append("               WHERE CID = ?cid) ad");
@@ -357,7 +357,8 @@ public class JpaPreparationBeforeApplyRepository extends JpaRepository implement
 		sql.append("      was.BREAK_TIME,");
 		sql.append("      aos.PRIORITY_STAMP_SET_ATR,");
 		sql.append("      aos.PRE_OVERTIME_REFLECT_FLG,");
-		sql.append("      aos.POST_WORKTIME_REFLECT_FLG");
+		sql.append("      aos.POST_WORKTIME_REFLECT_FLG,");
+		sql.append("	  gbd.WORK_CHANGE_TIME_ATR");
 		sql.append("   FROM ");
 		sql.append("      (SELECT ROW_NUMBER() OVER (ORDER BY DISPORDER ASC) AS ROW_NUMBER,");
 		sql.append("            APP_TYPE,");
@@ -468,7 +469,8 @@ public class JpaPreparationBeforeApplyRepository extends JpaRepository implement
 		sql.append("          COMMENT_FONT_WEIGHT2,");
 		sql.append("          PERFORMANCE_DISPLAY_ATR,");
 		sql.append("          CONTRADITION_CHECK_ATR,");
-		sql.append("          LATE_LEAVE_EARLY_SETTING_ATR");
+		sql.append("          LATE_LEAVE_EARLY_SETTING_ATR,");
+		sql.append("		  WORK_CHANGE_TIME_ATR");
 		sql.append("        FROM KRQST_GO_BACK_DIRECT_SET");
 		sql.append("        WHERE CID = ?cid) gbd");
 		sql.append("     ON gbd.ROW_NUMBER = ar.ROW_NUMBER");

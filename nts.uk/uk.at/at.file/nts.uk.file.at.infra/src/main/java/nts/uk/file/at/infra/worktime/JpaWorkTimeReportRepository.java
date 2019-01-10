@@ -49,7 +49,7 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 	private static final String SELECT_WORK_TIME_FLEX;
 	static {
 		StringBuilder sqlNormal = new StringBuilder();
-		sqlNormal.append("SELECT");
+		sqlNormal.append(" SELECT");
 		// R1_59 コード
 		sqlNormal.append(" 	IIF(TEMP.ROW_ID = 1, WORK_TIME_SET.WORKTIME_CD, NULL),");
 		// R1_60 名称
@@ -173,15 +173,15 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlNormal.append(" 			FORMAT(CAST(PRED_TIME_SET.WORK_ADD_AFTERNOON AS INTEGER)%60,'0#')), NULL),");
 		// R1_86 勤務時間帯.1日勤務用.開始時間
 		sqlNormal.append(" 	IIF(WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork,");
-		sqlNormal.append(" 		IIF(FIXED_WORK_TIME_SET1.TIME_STR IS NOT NULL, CONCAT(CAST(FIXED_WORK_TIME_SET1.TIME_STR AS INTEGER)/60, ':',");
+		sqlNormal.append(" 		IIF(WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FIXED_WORK_TIME_SET1.TIME_STR IS NOT NULL, CONCAT(CAST(FIXED_WORK_TIME_SET1.TIME_STR AS INTEGER)/60, ':',");
 		sqlNormal.append(" 			FORMAT(CAST(FIXED_WORK_TIME_SET1.TIME_STR AS INTEGER)%60,'0#')), NULL),");
-		sqlNormal.append(" 		IIF(DT_WORK_TIME_SET1.TIME_STR IS NOT NULL, CONCAT(CAST(DT_WORK_TIME_SET1.TIME_STR AS INTEGER)/60, ':',");
+		sqlNormal.append(" 		IIF(WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND DT_WORK_TIME_SET1.TIME_STR IS NOT NULL, CONCAT(CAST(DT_WORK_TIME_SET1.TIME_STR AS INTEGER)/60, ':',");
 		sqlNormal.append(" 			FORMAT(CAST(DT_WORK_TIME_SET1.TIME_STR AS INTEGER)%60,'0#')), NULL)),");
 		// R1_87 勤務時間帯.1日勤務用.終了時間
 		sqlNormal.append(" 	IIF(WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork,");
-		sqlNormal.append(" 		IIF(FIXED_WORK_TIME_SET1.TIME_END IS NOT NULL, CONCAT(CAST(FIXED_WORK_TIME_SET1.TIME_END AS INTEGER)/60, ':',");
+		sqlNormal.append(" 		IIF(WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FIXED_WORK_TIME_SET1.TIME_END IS NOT NULL, CONCAT(CAST(FIXED_WORK_TIME_SET1.TIME_END AS INTEGER)/60, ':',");
 		sqlNormal.append(" 			FORMAT(CAST(FIXED_WORK_TIME_SET1.TIME_END AS INTEGER)%60,'0#')), NULL),");
-		sqlNormal.append(" 		IIF(DT_WORK_TIME_SET1.TIME_END IS NOT NULL, CONCAT(CAST(DT_WORK_TIME_SET1.TIME_END AS INTEGER)/60, ':',");
+		sqlNormal.append(" 		IIF(WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND DT_WORK_TIME_SET1.TIME_END IS NOT NULL, CONCAT(CAST(DT_WORK_TIME_SET1.TIME_END AS INTEGER)/60, ':',");
 		sqlNormal.append(" 			FORMAT(CAST(DT_WORK_TIME_SET1.TIME_END AS INTEGER)%60,'0#')), NULL)),");
 		// R1_88 勤務時間帯.1日勤務用.丸め
 		sqlNormal.append(" 	IIF(WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork,");
@@ -376,20 +376,20 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlNormal.append(" 		END),");
 		// R1_103 残業時間帯.1日勤務用.残業枠
 		sqlNormal.append(" 	CASE WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork ");
-		sqlNormal.append(" 			THEN FIXED_OT_TIME_SET1.OT_FRAME_NO");
+		sqlNormal.append(" 			THEN FIXED_OT_FRAME1.OT_FR_NAME");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?difftimeWork ");
-		sqlNormal.append(" 			THEN DT_OT_TIME_SET1.OT_FRAME_NO");
+		sqlNormal.append(" 			THEN DT_OT_FRAME1.OT_FR_NAME");
 		sqlNormal.append(" 		 ELSE NULL");
 		sqlNormal.append(" 	END,");
 		// R1_104 残業時間帯.1日勤務用.早出
 		sqlNormal.append(" 	CASE WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork AND FIXED_OT_TIME_SET1.TREAT_EARLY_OT_WORK = ?isTrue");
-		sqlNormal.append(" 			THEN ?isUseText");
+		sqlNormal.append(" 			THEN ?treatEarlyOtWork");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork AND FIXED_OT_TIME_SET1.TREAT_EARLY_OT_WORK = ?isFalse");
-		sqlNormal.append(" 			THEN ?isNotUseText");
+		sqlNormal.append(" 			THEN ?notTreatEarlyOtWork");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?difftimeWork AND DT_OT_TIME_SET1.TREAT_EARLY_OT_WORK = ?isTrue");
-		sqlNormal.append(" 			THEN ?isUseText");
+		sqlNormal.append(" 			THEN ?treatEarlyOtWork");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?difftimeWork AND DT_OT_TIME_SET1.TREAT_EARLY_OT_WORK = ?isFalse");
-		sqlNormal.append(" 			THEN ?isNotUseText");
+		sqlNormal.append(" 			THEN ?notTreatEarlyOtWork");
 		sqlNormal.append(" 		 ELSE NULL");
 		sqlNormal.append(" 	END,");
 		// R1_237 残業時間帯.1日勤務用.固定
@@ -401,9 +401,9 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlNormal.append(" 	END,");
 		// R1_105 残業時間帯.1日勤務用.法定内残業枠
 		sqlNormal.append(" 	CASE WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork AND FIXED_WORK_SET.LEGAL_OT_SET = ?isLegalOtSet ");
-		sqlNormal.append(" 			AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN FIXED_OT_TIME_SET1.LEGAL_OT_FRAME_NO");
+		sqlNormal.append(" 			AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN FIXED_LEGAL_OT_FRAME1.OT_FR_NAME");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?difftimeWork AND DIFF_TIME_WORK_SET.OT_SET = ?isLegalOtSet ");
-		sqlNormal.append(" 			AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN DT_OT_TIME_SET1.LEGAL_OT_FRAME_NO");
+		sqlNormal.append(" 			AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN DT_LEGAL_OT_FRAME1.OT_FR_NAME");
 		sqlNormal.append(" 		 ELSE NULL");
 		sqlNormal.append(" 	END,");
 		// R1_106 残業時間帯.1日勤務用.積残順序
@@ -467,20 +467,20 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlNormal.append(" 		END),");
 		// R1_111 残業時間帯.午前勤務用.残業枠
 		sqlNormal.append(" 	CASE WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork AND FIXED_WORK_SET.USE_HALF_DAY = ?isTrue ");
-		sqlNormal.append(" 			AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN FIXED_OT_TIME_SET2.OT_FRAME_NO");
+		sqlNormal.append(" 			AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN FIXED_OT_FRAME2.OT_FR_NAME");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?difftimeWork AND DIFF_TIME_WORK_SET.USE_HALF_DAY = ?isTrue ");
-		sqlNormal.append(" 			AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN DT_OT_TIME_SET2.OT_FRAME_NO");
+		sqlNormal.append(" 			AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN DT_OT_FRAME1.OT_FR_NAME");
 		sqlNormal.append(" 		 ELSE NULL");
 		sqlNormal.append(" 	END,");
 		// R1_112 残業時間帯.午前勤務用.早出
 		sqlNormal.append(" 	CASE WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork AND FIXED_OT_TIME_SET2.TREAT_EARLY_OT_WORK = ?isTrue ");
-		sqlNormal.append(" 			AND FIXED_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN ?isUseText");
+		sqlNormal.append(" 			AND FIXED_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN ?treatEarlyOtWork");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork AND FIXED_OT_TIME_SET2.TREAT_EARLY_OT_WORK = ?isFalse ");
-		sqlNormal.append(" 			AND FIXED_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN ?isNotUseText");
+		sqlNormal.append(" 			AND FIXED_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN ?notTreatEarlyOtWork");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?difftimeWork AND DT_OT_TIME_SET2.TREAT_EARLY_OT_WORK = ?isTrue ");
-		sqlNormal.append(" 			AND DIFF_TIME_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN ?isUseText");
+		sqlNormal.append(" 			AND DIFF_TIME_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN ?treatEarlyOtWork");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?difftimeWork AND DT_OT_TIME_SET2.TREAT_EARLY_OT_WORK = ?isFalse ");
-		sqlNormal.append(" 			AND DIFF_TIME_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN ?isNotUseText");
+		sqlNormal.append(" 			AND DIFF_TIME_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN ?notTreatEarlyOtWork");
 		sqlNormal.append(" 		 ELSE NULL");
 		sqlNormal.append(" 	END,");
 		// R1_238 残業時間帯.午前勤務用.固定
@@ -494,9 +494,9 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlNormal.append(" 	END,");
 		// R1_113 残業時間帯.午前勤務用.法定内残業枠
 		sqlNormal.append(" 	CASE WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork AND FIXED_WORK_SET.LEGAL_OT_SET = ?isLegalOtSet AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode ");
-		sqlNormal.append(" 			AND FIXED_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN FIXED_OT_TIME_SET2.LEGAL_OT_FRAME_NO");
+		sqlNormal.append(" 			AND FIXED_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN FIXED_LEGAL_OT_FRAME2.OT_FR_NAME");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?difftimeWork AND DIFF_TIME_WORK_SET.OT_SET = ?isLegalOtSet AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode ");
-		sqlNormal.append(" 			AND DIFF_TIME_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN DT_OT_TIME_SET2.LEGAL_OT_FRAME_NO");
+		sqlNormal.append(" 			AND DIFF_TIME_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN DT_LEGAL_OT_FRAME2.OT_FR_NAME");
 		sqlNormal.append(" 		 ELSE NULL");
 		sqlNormal.append(" 	END,");
 		// R1_114 残業時間帯.午前勤務用.積残順序
@@ -556,20 +556,20 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlNormal.append(" 		END),");
 		// R1_119 残業時間帯.午後勤務用.残業枠
 		sqlNormal.append(" 	CASE WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork AND FIXED_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode");
-		sqlNormal.append(" 			THEN FIXED_OT_TIME_SET3.OT_FRAME_NO");
+		sqlNormal.append(" 			THEN FIXED_OT_FRAME3.OT_FR_NAME");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?difftimeWork AND DIFF_TIME_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode");
-		sqlNormal.append(" 			THEN DT_OT_TIME_SET3.OT_FRAME_NO");
+		sqlNormal.append(" 			THEN DT_OT_FRAME3.OT_FR_NAME");
 		sqlNormal.append(" 		 ELSE NULL");
 		sqlNormal.append(" 	END,");
 		// R1_120 残業時間帯.午後勤務用.早出
 		sqlNormal.append(" 	CASE WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork AND FIXED_OT_TIME_SET3.TREAT_EARLY_OT_WORK = ?isTrue AND FIXED_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode");
-		sqlNormal.append(" 			THEN ?isUseText");
+		sqlNormal.append(" 			THEN ?treatEarlyOtWork");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork AND FIXED_OT_TIME_SET3.TREAT_EARLY_OT_WORK = ?isFalse AND FIXED_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode");
-		sqlNormal.append(" 			THEN ?isNotUseText");
+		sqlNormal.append(" 			THEN ?notTreatEarlyOtWork");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?difftimeWork AND DT_OT_TIME_SET3.TREAT_EARLY_OT_WORK = ?isTrue AND DIFF_TIME_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode");
-		sqlNormal.append(" 			THEN ?isUseText");
+		sqlNormal.append(" 			THEN ?treatEarlyOtWork");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?difftimeWork AND DT_OT_TIME_SET3.TREAT_EARLY_OT_WORK = ?isFalse AND DIFF_TIME_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode");
-		sqlNormal.append(" 			THEN ?isNotUseText");
+		sqlNormal.append(" 			THEN ?notTreatEarlyOtWork");
 		sqlNormal.append(" 		 ELSE NULL");
 		sqlNormal.append(" 	END,");
 		// R1_239 残業時間帯.午後勤務用.固定
@@ -583,9 +583,9 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlNormal.append(" 	END,");
 		// R1_121 残業時間帯.午後勤務用.法定内残業枠
 		sqlNormal.append(" 	CASE WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork AND FIXED_WORK_SET.LEGAL_OT_SET = ?isLegalOtSet AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode ");
-		sqlNormal.append(" 			AND FIXED_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN FIXED_OT_TIME_SET3.LEGAL_OT_FRAME_NO");
+		sqlNormal.append(" 			AND FIXED_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN FIXED_LEGAL_OT_FRAME3.OT_FR_NAME");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?difftimeWork AND DIFF_TIME_WORK_SET.OT_SET = ?isLegalOtSet AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode ");
-		sqlNormal.append(" 			AND DIFF_TIME_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN DT_OT_TIME_SET3.LEGAL_OT_FRAME_NO");
+		sqlNormal.append(" 			AND DIFF_TIME_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN DT_LEGAL_OT_FRAME3.OT_FR_NAME");
 		sqlNormal.append(" 		 ELSE NULL");
 		sqlNormal.append(" 	END,");
 		// R1_122 残業時間帯.午後勤務用.積残順序
@@ -891,11 +891,11 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlNormal.append(" 		IIF(DIFF_TIME_HOL_SET.TIME_END IS NOT NULL, CONCAT(CAST(DIFF_TIME_HOL_SET.TIME_END AS INTEGER)/60, ':',");
 		sqlNormal.append(" 			FORMAT(CAST(DIFF_TIME_HOL_SET.TIME_END AS INTEGER)%60,'0#')), NULL)),");
 		// R1_155 休出時間帯.法定内休出枠
-		sqlNormal.append(" 	IIF(WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork, FIXED_HOL_TIME_SET.HOL_FRAME_NO, DIFF_TIME_HOL_SET.HOL_FRAME_NO),");
+		sqlNormal.append(" 	IIF(WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork, FIXED_HOL_FRAME.WDO_FR_NAME, DT_HOL_FRAME.WDO_FR_NAME),");
 		// R1_156 休出時間帯.法定外休出枠
-		sqlNormal.append(" 	IIF(WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork, FIXED_HOL_TIME_SET.OUT_HOL_FRAME_NO, DIFF_TIME_HOL_SET.OUT_HOL_FRAME_NO),");
+		sqlNormal.append(" 	IIF(WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork, FIXED_OUT_HOL_FRAME.WDO_FR_NAME, DT_OUT_HOL_FRAME.WDO_FR_NAME),");
 		// R1_157 休出時間帯.法定外休出枠（祝日）
-		sqlNormal.append(" 	IIF(WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork, FIXED_HOL_TIME_SET.PUB_HOL_FRAME_NO, DIFF_TIME_HOL_SET.PUB_HOL_FRAME_NO),");
+		sqlNormal.append(" 	IIF(WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork, FIXED_PUB_HOL_FRAME.WDO_FR_NAME, DT_PUB_HOL_FRAME.WDO_FR_NAME),");
 		// R1_158 休出時間帯.丸め
 		sqlNormal.append(" 	IIF(WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork,");
 		sqlNormal.append(" 		CASE WHEN FIXED_HOL_TIME_SET.UNIT = ?roundingTime1Min THEN ?roundingTime1MinText");
@@ -1483,9 +1483,9 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlNormal.append(" 	END,");
 		// R1_231 その他.休暇加算時間を加算する場合に就業時間として加算するか.残業枠
 		sqlNormal.append(" 	CASE WHEN TEMP.ROW_ID = 1 AND WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork ");
-		sqlNormal.append(" 			AND FIXED_WORK_SET.EXCEEDED_PRED_CALC_METHOD = ?calcMethodExceededPredAddVacationOvertime THEN FIXED_WORK_SET.EXCEEDED_PRED_OT_FRAME_NO");
+		sqlNormal.append(" 			AND FIXED_WORK_SET.EXCEEDED_PRED_CALC_METHOD = ?calcMethodExceededPredAddVacationOvertime THEN FIXED_EXCEEDED_PRED_OT_FRAME.OT_FR_NAME");
 		sqlNormal.append(" 		 WHEN TEMP.ROW_ID = 1 AND WORK_TIME_SET.WORKTIME_SET_METHOD = ?difftimeWork ");
-		sqlNormal.append(" 			AND DIFF_TIME_WORK_SET.EXCEEDED_PRED_CALC_METHOD = ?calcMethodExceededPredAddVacationOvertime THEN DIFF_TIME_WORK_SET.EXCEEDED_PRED_OT_FRAME_NO");
+		sqlNormal.append(" 			AND DIFF_TIME_WORK_SET.EXCEEDED_PRED_CALC_METHOD = ?calcMethodExceededPredAddVacationOvertime THEN DT_EXCEEDED_PRED_OT_FRAME.OT_FR_NAME");
 		sqlNormal.append(" 		 ELSE NULL");
 		sqlNormal.append(" 	END,");
 		// R1_58 その他.休憩未取得時に就業時間として計算するか
@@ -1501,16 +1501,16 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlNormal.append(" 	END,");
 		// R1_232 その他.休憩未取得時に就業時間として計算するか.法定内残業枠
 		sqlNormal.append(" 	CASE WHEN TEMP.ROW_ID = 1 AND WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork ");
-		sqlNormal.append(" 			AND FIXED_WORK_SET.OT_CALC_METHOD = ?calcMethodNoBreakOvertime THEN FIXED_WORK_SET.OT_IN_LAW");
+		sqlNormal.append(" 			AND FIXED_WORK_SET.OT_CALC_METHOD = ?calcMethodNoBreakOvertime THEN FIXED_OT_IN_LAW_FRAME.OT_FR_NAME");
 		sqlNormal.append(" 		 WHEN TEMP.ROW_ID = 1 AND WORK_TIME_SET.WORKTIME_SET_METHOD = ?difftimeWork ");
-		sqlNormal.append(" 			AND DIFF_TIME_WORK_SET.OT_CALC_METHOD = ?calcMethodNoBreakOvertime THEN DIFF_TIME_WORK_SET.OT_IN_LAW");
+		sqlNormal.append(" 			AND DIFF_TIME_WORK_SET.OT_CALC_METHOD = ?calcMethodNoBreakOvertime THEN DT_OT_IN_LAW_FRAME.OT_FR_NAME");
 		sqlNormal.append(" 		 ELSE NULL");
 		sqlNormal.append(" 	END,");
 		// R1_233 その他.休憩未取得時に就業時間として計算するか.法定外残業枠
 		sqlNormal.append(" 	CASE WHEN TEMP.ROW_ID = 1 AND WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork ");
-		sqlNormal.append(" 			AND FIXED_WORK_SET.OT_CALC_METHOD = ?calcMethodNoBreakOvertime THEN FIXED_WORK_SET.OT_NOT_IN_LAW");
+		sqlNormal.append(" 			AND FIXED_WORK_SET.OT_CALC_METHOD = ?calcMethodNoBreakOvertime THEN FIXED_OT_NOT_IN_LAW_FRAME.OT_FR_NAME");
 		sqlNormal.append(" 		 WHEN TEMP.ROW_ID = 1 AND WORK_TIME_SET.WORKTIME_SET_METHOD = ?difftimeWork ");
-		sqlNormal.append(" 			AND DIFF_TIME_WORK_SET.OT_CALC_METHOD = ?calcMethodNoBreakOvertime THEN DIFF_TIME_WORK_SET.OT_NOT_IN_LAW");
+		sqlNormal.append(" 			AND DIFF_TIME_WORK_SET.OT_CALC_METHOD = ?calcMethodNoBreakOvertime THEN DT_OT_NOT_IN_LAW_FRAME.OT_FR_NAME");
 		sqlNormal.append(" 		 ELSE NULL");
 		sqlNormal.append(" 	END");
 		sqlNormal.append(" FROM");
@@ -1527,9 +1527,27 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlNormal.append(" 	LEFT JOIN KSHMT_FIXED_WORK_SET FIXED_WORK_SET");
 		sqlNormal.append(" 		ON WORK_TIME_SET.CID = FIXED_WORK_SET.CID");
 		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = FIXED_WORK_SET.WORKTIME_CD");
+		sqlNormal.append(" 	LEFT JOIN KSHST_OVERTIME_FRAME FIXED_EXCEEDED_PRED_OT_FRAME");
+		sqlNormal.append(" 		ON FIXED_WORK_SET.CID = FIXED_EXCEEDED_PRED_OT_FRAME.CID");
+		sqlNormal.append(" 		AND FIXED_WORK_SET.EXCEEDED_PRED_OT_FRAME_NO = FIXED_EXCEEDED_PRED_OT_FRAME.OT_FR_NO");
+		sqlNormal.append(" 	LEFT JOIN KSHST_OVERTIME_FRAME FIXED_OT_IN_LAW_FRAME");
+		sqlNormal.append(" 		ON FIXED_WORK_SET.CID = FIXED_OT_IN_LAW_FRAME.CID");
+		sqlNormal.append(" 		AND FIXED_WORK_SET.OT_IN_LAW = FIXED_OT_IN_LAW_FRAME.OT_FR_NO");
+		sqlNormal.append(" 	LEFT JOIN KSHST_OVERTIME_FRAME FIXED_OT_NOT_IN_LAW_FRAME");
+		sqlNormal.append(" 		ON FIXED_WORK_SET.CID = FIXED_OT_NOT_IN_LAW_FRAME.CID");
+		sqlNormal.append(" 		AND FIXED_WORK_SET.OT_NOT_IN_LAW = FIXED_OT_NOT_IN_LAW_FRAME.OT_FR_NO");
 		sqlNormal.append(" 	LEFT JOIN KSHMT_DIFF_TIME_WORK_SET DIFF_TIME_WORK_SET");
 		sqlNormal.append(" 		ON WORK_TIME_SET.CID = DIFF_TIME_WORK_SET.CID");
 		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = DIFF_TIME_WORK_SET.WORKTIME_CD");
+		sqlNormal.append(" 	LEFT JOIN KSHST_OVERTIME_FRAME DT_EXCEEDED_PRED_OT_FRAME");
+		sqlNormal.append(" 		ON DIFF_TIME_WORK_SET.CID = DT_EXCEEDED_PRED_OT_FRAME.CID");
+		sqlNormal.append(" 		AND DIFF_TIME_WORK_SET.EXCEEDED_PRED_OT_FRAME_NO = DT_EXCEEDED_PRED_OT_FRAME.OT_FR_NO");
+		sqlNormal.append(" 	LEFT JOIN KSHST_OVERTIME_FRAME DT_OT_IN_LAW_FRAME");
+		sqlNormal.append(" 		ON DIFF_TIME_WORK_SET.CID = DT_OT_IN_LAW_FRAME.CID");
+		sqlNormal.append(" 		AND DIFF_TIME_WORK_SET.OT_IN_LAW = DT_OT_IN_LAW_FRAME.OT_FR_NO");
+		sqlNormal.append(" 	LEFT JOIN KSHST_OVERTIME_FRAME DT_OT_NOT_IN_LAW_FRAME");
+		sqlNormal.append(" 		ON DIFF_TIME_WORK_SET.CID = DT_OT_NOT_IN_LAW_FRAME.CID");
+		sqlNormal.append(" 		AND DIFF_TIME_WORK_SET.OT_NOT_IN_LAW = DT_OT_NOT_IN_LAW_FRAME.OT_FR_NO");
 		sqlNormal.append(" 	LEFT JOIN KSHMT_PRED_TIME_SET PRED_TIME_SET");
 		sqlNormal.append(" 		ON WORK_TIME_SET.CID = PRED_TIME_SET.CID");
 		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = PRED_TIME_SET.WORKTIME_CD");
@@ -1576,31 +1594,67 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = FIXED_OT_TIME_SET1.WORKTIME_CD");
 		sqlNormal.append(" 		AND TEMP.ROW_ID = FIXED_OT_TIME_SET1.WORKTIME_NO");
 		sqlNormal.append(" 		AND FIXED_OT_TIME_SET1.AM_PM_ATR = ?amPmAtrOneDay");
+		sqlNormal.append(" 	LEFT JOIN KSHST_OVERTIME_FRAME FIXED_OT_FRAME1");
+		sqlNormal.append(" 		ON FIXED_OT_TIME_SET1.CID = FIXED_OT_FRAME1.CID");
+		sqlNormal.append(" 		AND FIXED_OT_TIME_SET1.OT_FRAME_NO = FIXED_OT_FRAME1.OT_FR_NO");
+		sqlNormal.append(" 	LEFT JOIN KSHST_OVERTIME_FRAME FIXED_LEGAL_OT_FRAME1");
+		sqlNormal.append(" 		ON FIXED_OT_TIME_SET1.CID = FIXED_LEGAL_OT_FRAME1.CID");
+		sqlNormal.append(" 		AND FIXED_OT_TIME_SET1.LEGAL_OT_FRAME_NO = FIXED_LEGAL_OT_FRAME1.OT_FR_NO");
 		sqlNormal.append(" 	LEFT JOIN KSHMT_FIXED_OT_TIME_SET FIXED_OT_TIME_SET2");
 		sqlNormal.append(" 		ON WORK_TIME_SET.CID = FIXED_OT_TIME_SET2.CID");
 		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = FIXED_OT_TIME_SET2.WORKTIME_CD");
 		sqlNormal.append(" 		AND TEMP.ROW_ID = FIXED_OT_TIME_SET2.WORKTIME_NO");
 		sqlNormal.append(" 		AND FIXED_OT_TIME_SET2.AM_PM_ATR = ?amPmAtrAm");
+		sqlNormal.append(" 	LEFT JOIN KSHST_OVERTIME_FRAME FIXED_OT_FRAME2");
+		sqlNormal.append(" 		ON FIXED_OT_TIME_SET2.CID = FIXED_OT_FRAME2.CID");
+		sqlNormal.append(" 		AND FIXED_OT_TIME_SET2.OT_FRAME_NO = FIXED_OT_FRAME2.OT_FR_NO");
+		sqlNormal.append(" 	LEFT JOIN KSHST_OVERTIME_FRAME FIXED_LEGAL_OT_FRAME2");
+		sqlNormal.append(" 		ON FIXED_OT_TIME_SET2.CID = FIXED_LEGAL_OT_FRAME2.CID");
+		sqlNormal.append(" 		AND FIXED_OT_TIME_SET2.LEGAL_OT_FRAME_NO = FIXED_LEGAL_OT_FRAME2.OT_FR_NO");
 		sqlNormal.append(" 	LEFT JOIN KSHMT_FIXED_OT_TIME_SET FIXED_OT_TIME_SET3");
 		sqlNormal.append(" 		ON WORK_TIME_SET.CID = FIXED_OT_TIME_SET3.CID");
 		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = FIXED_OT_TIME_SET3.WORKTIME_CD");
 		sqlNormal.append(" 		AND TEMP.ROW_ID = FIXED_OT_TIME_SET3.WORKTIME_NO");
 		sqlNormal.append(" 		AND FIXED_OT_TIME_SET3.AM_PM_ATR = ?amPmAtrPm");
+		sqlNormal.append(" 	LEFT JOIN KSHST_OVERTIME_FRAME FIXED_OT_FRAME3");
+		sqlNormal.append(" 		ON FIXED_OT_TIME_SET3.CID = FIXED_OT_FRAME3.CID");
+		sqlNormal.append(" 		AND FIXED_OT_TIME_SET3.OT_FRAME_NO = FIXED_OT_FRAME3.OT_FR_NO");
+		sqlNormal.append(" 	LEFT JOIN KSHST_OVERTIME_FRAME FIXED_LEGAL_OT_FRAME3");
+		sqlNormal.append(" 		ON FIXED_OT_TIME_SET3.CID = FIXED_LEGAL_OT_FRAME3.CID");
+		sqlNormal.append(" 		AND FIXED_OT_TIME_SET3.LEGAL_OT_FRAME_NO = FIXED_LEGAL_OT_FRAME3.OT_FR_NO");
 		sqlNormal.append(" 	LEFT JOIN KSHMT_DT_OT_TIME_SET DT_OT_TIME_SET1");
 		sqlNormal.append(" 		ON WORK_TIME_SET.CID = DT_OT_TIME_SET1.CID");
 		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = DT_OT_TIME_SET1.WORKTIME_CD");
 		sqlNormal.append(" 		AND TEMP.ROW_ID = DT_OT_TIME_SET1.WORK_TIME_NO");
 		sqlNormal.append(" 		AND DT_OT_TIME_SET1.AM_PM_ATR = ?amPmAtrOneDay");
+		sqlNormal.append(" 	LEFT JOIN KSHST_OVERTIME_FRAME DT_OT_FRAME1");
+		sqlNormal.append(" 		ON DT_OT_TIME_SET1.CID = DT_OT_FRAME1.CID");
+		sqlNormal.append(" 		AND DT_OT_TIME_SET1.OT_FRAME_NO = DT_OT_FRAME1.OT_FR_NO");
+		sqlNormal.append(" 	LEFT JOIN KSHST_OVERTIME_FRAME DT_LEGAL_OT_FRAME1");
+		sqlNormal.append(" 		ON DT_OT_TIME_SET1.CID = DT_LEGAL_OT_FRAME1.CID");
+		sqlNormal.append(" 		AND DT_OT_TIME_SET1.LEGAL_OT_FRAME_NO = DT_LEGAL_OT_FRAME1.OT_FR_NO");
 		sqlNormal.append(" 	LEFT JOIN KSHMT_DT_OT_TIME_SET DT_OT_TIME_SET2");
 		sqlNormal.append(" 		ON WORK_TIME_SET.CID = DT_OT_TIME_SET2.CID");
 		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = DT_OT_TIME_SET2.WORKTIME_CD");
 		sqlNormal.append(" 		AND TEMP.ROW_ID = DT_OT_TIME_SET2.WORK_TIME_NO");
 		sqlNormal.append(" 		AND DT_OT_TIME_SET2.AM_PM_ATR = ?amPmAtrAm");
+		sqlNormal.append(" 	LEFT JOIN KSHST_OVERTIME_FRAME DT_OT_FRAME2");
+		sqlNormal.append(" 		ON DT_OT_TIME_SET2.CID = DT_OT_FRAME2.CID");
+		sqlNormal.append(" 		AND DT_OT_TIME_SET2.OT_FRAME_NO = DT_OT_FRAME2.OT_FR_NO");
+		sqlNormal.append(" 	LEFT JOIN KSHST_OVERTIME_FRAME DT_LEGAL_OT_FRAME2");
+		sqlNormal.append(" 		ON DT_OT_TIME_SET2.CID = DT_LEGAL_OT_FRAME2.CID");
+		sqlNormal.append(" 		AND DT_OT_TIME_SET2.LEGAL_OT_FRAME_NO = DT_LEGAL_OT_FRAME2.OT_FR_NO");
 		sqlNormal.append(" 	LEFT JOIN KSHMT_DT_OT_TIME_SET DT_OT_TIME_SET3");
 		sqlNormal.append(" 		ON WORK_TIME_SET.CID = DT_OT_TIME_SET3.CID");
 		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = DT_OT_TIME_SET3.WORKTIME_CD");
 		sqlNormal.append(" 		AND TEMP.ROW_ID = DT_OT_TIME_SET3.WORK_TIME_NO");
 		sqlNormal.append(" 		AND DT_OT_TIME_SET3.AM_PM_ATR = ?amPmAtrPm");
+		sqlNormal.append(" 	LEFT JOIN KSHST_OVERTIME_FRAME DT_OT_FRAME3");
+		sqlNormal.append(" 		ON DT_OT_TIME_SET3.CID = DT_OT_FRAME3.CID");
+		sqlNormal.append(" 		AND DT_OT_TIME_SET3.OT_FRAME_NO = DT_OT_FRAME3.OT_FR_NO");
+		sqlNormal.append(" 	LEFT JOIN KSHST_OVERTIME_FRAME DT_LEGAL_OT_FRAME3");
+		sqlNormal.append(" 		ON DT_OT_TIME_SET3.CID = DT_LEGAL_OT_FRAME3.CID");
+		sqlNormal.append(" 		AND DT_OT_TIME_SET3.LEGAL_OT_FRAME_NO = DT_LEGAL_OT_FRAME3.OT_FR_NO");
 		sqlNormal.append(" 	JOIN KSHMT_PIORITY_SET PIORITY_SET1");
 		sqlNormal.append(" 		ON WORK_TIME_SET.CID = PIORITY_SET1.CID");
 		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = PIORITY_SET1.WORKTIME_CD");
@@ -1642,45 +1696,45 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = ROUNDING_SET4.WORKTIME_CD");
 		sqlNormal.append(" 		AND ROUNDING_SET4.ATR = ?superiorityTurnBack");
 		sqlNormal.append(" 	LEFT JOIN KSHMT_FIXED_STAMP_REFLECT FIXED_STAMP_REFLECT1");
-		sqlNormal.append(" 		 ON WORK_TIME_SET.CID = FIXED_STAMP_REFLECT1.CID");
-		sqlNormal.append(" 		 AND WORK_TIME_SET.WORKTIME_CD = FIXED_STAMP_REFLECT1.WORKTIME_CD");
-		sqlNormal.append(" 		 AND FIXED_STAMP_REFLECT1.WORK_NO = ?workNoOne");
-		sqlNormal.append(" 		 AND FIXED_STAMP_REFLECT1.ATR = ?goLeavingWorkAtrGoWork");
+		sqlNormal.append(" 		ON WORK_TIME_SET.CID = FIXED_STAMP_REFLECT1.CID");
+		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = FIXED_STAMP_REFLECT1.WORKTIME_CD");
+		sqlNormal.append(" 		AND FIXED_STAMP_REFLECT1.WORK_NO = ?workNoOne");
+		sqlNormal.append(" 		AND FIXED_STAMP_REFLECT1.ATR = ?goLeavingWorkAtrGoWork");
 		sqlNormal.append(" 	LEFT JOIN KSHMT_FIXED_STAMP_REFLECT FIXED_STAMP_REFLECT2");
-		sqlNormal.append(" 		 ON WORK_TIME_SET.CID = FIXED_STAMP_REFLECT2.CID");
-		sqlNormal.append(" 		 AND WORK_TIME_SET.WORKTIME_CD = FIXED_STAMP_REFLECT2.WORKTIME_CD");
-		sqlNormal.append(" 		 AND FIXED_STAMP_REFLECT2.WORK_NO = ?workNoOne");
-		sqlNormal.append(" 		 AND FIXED_STAMP_REFLECT2.ATR = ?goLeavingWorkAtrLeaveWork");
+		sqlNormal.append(" 		ON WORK_TIME_SET.CID = FIXED_STAMP_REFLECT2.CID");
+		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = FIXED_STAMP_REFLECT2.WORKTIME_CD");
+		sqlNormal.append(" 		AND FIXED_STAMP_REFLECT2.WORK_NO = ?workNoOne");
+		sqlNormal.append(" 		AND FIXED_STAMP_REFLECT2.ATR = ?goLeavingWorkAtrLeaveWork");
 		sqlNormal.append(" 	LEFT JOIN KSHMT_FIXED_STAMP_REFLECT FIXED_STAMP_REFLECT3");
-		sqlNormal.append(" 		 ON WORK_TIME_SET.CID = FIXED_STAMP_REFLECT3.CID");
-		sqlNormal.append(" 		 AND WORK_TIME_SET.WORKTIME_CD = FIXED_STAMP_REFLECT3.WORKTIME_CD");
-		sqlNormal.append(" 		 AND FIXED_STAMP_REFLECT3.WORK_NO = ?workNoTwo");
-		sqlNormal.append(" 		 AND FIXED_STAMP_REFLECT3.ATR = ?goLeavingWorkAtrGoWork");
+		sqlNormal.append(" 		ON WORK_TIME_SET.CID = FIXED_STAMP_REFLECT3.CID");
+		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = FIXED_STAMP_REFLECT3.WORKTIME_CD");
+		sqlNormal.append(" 		AND FIXED_STAMP_REFLECT3.WORK_NO = ?workNoTwo");
+		sqlNormal.append(" 		AND FIXED_STAMP_REFLECT3.ATR = ?goLeavingWorkAtrGoWork");
 		sqlNormal.append(" 	LEFT JOIN KSHMT_FIXED_STAMP_REFLECT FIXED_STAMP_REFLECT4");
-		sqlNormal.append(" 		 ON WORK_TIME_SET.CID = FIXED_STAMP_REFLECT4.CID");
-		sqlNormal.append(" 		 AND WORK_TIME_SET.WORKTIME_CD = FIXED_STAMP_REFLECT4.WORKTIME_CD");
-		sqlNormal.append(" 		 AND FIXED_STAMP_REFLECT4.WORK_NO = ?workNoTwo");
-		sqlNormal.append(" 		 AND FIXED_STAMP_REFLECT4.ATR = ?goLeavingWorkAtrLeaveWork");
+		sqlNormal.append(" 		ON WORK_TIME_SET.CID = FIXED_STAMP_REFLECT4.CID");
+		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = FIXED_STAMP_REFLECT4.WORKTIME_CD");
+		sqlNormal.append(" 		AND FIXED_STAMP_REFLECT4.WORK_NO = ?workNoTwo");
+		sqlNormal.append(" 		AND FIXED_STAMP_REFLECT4.ATR = ?goLeavingWorkAtrLeaveWork");
 		sqlNormal.append(" 	LEFT JOIN KSHMT_DT_STAMP_REFLECT DT_STAMP_REFLECT1");
-		sqlNormal.append(" 		 ON WORK_TIME_SET.CID = DT_STAMP_REFLECT1.CID");
-		sqlNormal.append(" 		 AND WORK_TIME_SET.WORKTIME_CD = DT_STAMP_REFLECT1.WORKTIME_CD");
-		sqlNormal.append(" 		 AND DT_STAMP_REFLECT1.WORK_NO = ?workNoOne");
-		sqlNormal.append(" 		 AND DT_STAMP_REFLECT1.ATR = ?goLeavingWorkAtrGoWork");
+		sqlNormal.append(" 		ON WORK_TIME_SET.CID = DT_STAMP_REFLECT1.CID");
+		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = DT_STAMP_REFLECT1.WORKTIME_CD");
+		sqlNormal.append(" 		AND DT_STAMP_REFLECT1.WORK_NO = ?workNoOne");
+		sqlNormal.append(" 		AND DT_STAMP_REFLECT1.ATR = ?goLeavingWorkAtrGoWork");
 		sqlNormal.append(" 	LEFT JOIN KSHMT_DT_STAMP_REFLECT DT_STAMP_REFLECT2");
-		sqlNormal.append(" 		 ON WORK_TIME_SET.CID = DT_STAMP_REFLECT2.CID");
-		sqlNormal.append(" 		 AND WORK_TIME_SET.WORKTIME_CD = DT_STAMP_REFLECT2.WORKTIME_CD");
-		sqlNormal.append(" 		 AND DT_STAMP_REFLECT2.WORK_NO = ?workNoOne");
-		sqlNormal.append(" 		 AND DT_STAMP_REFLECT2.ATR = ?goLeavingWorkAtrLeaveWork");
+		sqlNormal.append(" 		ON WORK_TIME_SET.CID = DT_STAMP_REFLECT2.CID");
+		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = DT_STAMP_REFLECT2.WORKTIME_CD");
+		sqlNormal.append(" 		AND DT_STAMP_REFLECT2.WORK_NO = ?workNoOne");
+		sqlNormal.append(" 		AND DT_STAMP_REFLECT2.ATR = ?goLeavingWorkAtrLeaveWork");
 		sqlNormal.append(" 	LEFT JOIN KSHMT_DT_STAMP_REFLECT DT_STAMP_REFLECT3");
-		sqlNormal.append(" 		 ON WORK_TIME_SET.CID = DT_STAMP_REFLECT3.CID");
-		sqlNormal.append(" 		 AND WORK_TIME_SET.WORKTIME_CD = DT_STAMP_REFLECT3.WORKTIME_CD");
-		sqlNormal.append(" 		 AND DT_STAMP_REFLECT3.WORK_NO = ?workNoTwo");
-		sqlNormal.append(" 		 AND DT_STAMP_REFLECT3.ATR = ?goLeavingWorkAtrGoWork");
+		sqlNormal.append(" 		ON WORK_TIME_SET.CID = DT_STAMP_REFLECT3.CID");
+		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = DT_STAMP_REFLECT3.WORKTIME_CD");
+		sqlNormal.append(" 		AND DT_STAMP_REFLECT3.WORK_NO = ?workNoTwo");
+		sqlNormal.append(" 		AND DT_STAMP_REFLECT3.ATR = ?goLeavingWorkAtrGoWork");
 		sqlNormal.append(" 	LEFT JOIN KSHMT_DT_STAMP_REFLECT DT_STAMP_REFLECT4");
-		sqlNormal.append(" 		 ON WORK_TIME_SET.CID = DT_STAMP_REFLECT4.CID");
-		sqlNormal.append(" 		 AND WORK_TIME_SET.WORKTIME_CD = DT_STAMP_REFLECT4.WORKTIME_CD");
-		sqlNormal.append(" 		 AND DT_STAMP_REFLECT4.WORK_NO = ?workNoTwo");
-		sqlNormal.append(" 		 AND DT_STAMP_REFLECT4.ATR = ?goLeavingWorkAtrLeaveWork");
+		sqlNormal.append(" 		ON WORK_TIME_SET.CID = DT_STAMP_REFLECT4.CID");
+		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = DT_STAMP_REFLECT4.WORKTIME_CD");
+		sqlNormal.append(" 		AND DT_STAMP_REFLECT4.WORK_NO = ?workNoTwo");
+		sqlNormal.append(" 		AND DT_STAMP_REFLECT4.ATR = ?goLeavingWorkAtrLeaveWork");
 		sqlNormal.append(" 	LEFT JOIN KSHMT_FIXED_HALF_REST_SET FIXED_HALF_REST_SET1");
 		sqlNormal.append(" 		ON WORK_TIME_SET.CID = FIXED_HALF_REST_SET1.CID");
 		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = FIXED_HALF_REST_SET1.WORKTIME_CD");
@@ -1715,10 +1769,28 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlNormal.append(" 		ON WORK_TIME_SET.CID = FIXED_HOL_TIME_SET.CID");
 		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = FIXED_HOL_TIME_SET.WORKTIME_CD");
 		sqlNormal.append(" 		AND TEMP.ROW_ID = FIXED_HOL_TIME_SET.WORKTIME_NO");
+		sqlNormal.append(" 	LEFT JOIN KSHST_WORKDAYOFF_FRAME FIXED_HOL_FRAME");
+		sqlNormal.append(" 		ON FIXED_HOL_TIME_SET.CID = FIXED_HOL_FRAME.CID");
+		sqlNormal.append(" 		AND FIXED_HOL_TIME_SET.HOL_FRAME_NO = FIXED_HOL_FRAME.WDO_FR_NO");
+		sqlNormal.append(" 	LEFT JOIN KSHST_WORKDAYOFF_FRAME FIXED_OUT_HOL_FRAME");
+		sqlNormal.append(" 		ON FIXED_HOL_TIME_SET.CID = FIXED_OUT_HOL_FRAME.CID");
+		sqlNormal.append(" 		AND FIXED_HOL_TIME_SET.OUT_HOL_FRAME_NO = FIXED_OUT_HOL_FRAME.WDO_FR_NO");
+		sqlNormal.append(" 	LEFT JOIN KSHST_WORKDAYOFF_FRAME FIXED_PUB_HOL_FRAME");
+		sqlNormal.append(" 		ON FIXED_HOL_TIME_SET.CID = FIXED_PUB_HOL_FRAME.CID");
+		sqlNormal.append(" 		AND FIXED_HOL_TIME_SET.PUB_HOL_FRAME_NO = FIXED_PUB_HOL_FRAME.WDO_FR_NO");
 		sqlNormal.append(" 	LEFT JOIN KSHMT_DIFF_TIME_HOL_SET DIFF_TIME_HOL_SET");
 		sqlNormal.append(" 		ON WORK_TIME_SET.CID = DIFF_TIME_HOL_SET.CID");
 		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = DIFF_TIME_HOL_SET.WORKTIME_CD");
 		sqlNormal.append(" 		AND TEMP.ROW_ID = DIFF_TIME_HOL_SET.WORK_TIME_NO");
+		sqlNormal.append(" 	LEFT JOIN KSHST_WORKDAYOFF_FRAME DT_HOL_FRAME");
+		sqlNormal.append(" 		ON DIFF_TIME_HOL_SET.CID = DT_HOL_FRAME.CID");
+		sqlNormal.append(" 		AND DIFF_TIME_HOL_SET.HOL_FRAME_NO = DT_HOL_FRAME.WDO_FR_NO");
+		sqlNormal.append(" 	LEFT JOIN KSHST_WORKDAYOFF_FRAME DT_OUT_HOL_FRAME");
+		sqlNormal.append(" 		ON DIFF_TIME_HOL_SET.CID = DT_OUT_HOL_FRAME.CID");
+		sqlNormal.append(" 		AND DIFF_TIME_HOL_SET.OUT_HOL_FRAME_NO = DT_OUT_HOL_FRAME.WDO_FR_NO");
+		sqlNormal.append(" 	LEFT JOIN KSHST_WORKDAYOFF_FRAME DT_PUB_HOL_FRAME");
+		sqlNormal.append(" 		ON DIFF_TIME_HOL_SET.CID = DT_PUB_HOL_FRAME.CID");
+		sqlNormal.append(" 		AND DIFF_TIME_HOL_SET.PUB_HOL_FRAME_NO = DT_PUB_HOL_FRAME.WDO_FR_NO");
 		sqlNormal.append(" 	LEFT JOIN KSHMT_FIXED_HOL_REST_SET FIXED_HOL_REST_SET");
 		sqlNormal.append(" 		ON WORK_TIME_SET.CID = FIXED_HOL_REST_SET.CID");
 		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = FIXED_HOL_REST_SET.WORKTIME_CD");
@@ -1775,12 +1847,12 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlNormal.append(" 		ON WORK_TIME_SET.CID = MEDICAL_TIME_SET2.CID");
 		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = MEDICAL_TIME_SET2.WORKTIME_CD");
 		sqlNormal.append(" 		AND MEDICAL_TIME_SET2.WORK_SYS_ATR = ?workSystemAtrNightShift");
-		sqlNormal.append(" 	ORDER BY WORK_TIME_SET.WORKTIME_CD, TEMP.ROW_ID;");
+		sqlNormal.append(" ORDER BY WORK_TIME_SET.WORKTIME_CD, TEMP.ROW_ID;");
 
 		SELECT_WORK_TIME_NORMAL = sqlNormal.toString();
 
 		StringBuilder sqlFlow = new StringBuilder();
-		sqlFlow.append("SELECT");
+		sqlFlow.append(" SELECT");
 		// R2_51 コード
 		sqlFlow.append(" 	IIF(TEMP.ROW_ID = 1, WORK_TIME_SET.WORKTIME_CD, NULL),");
 		// R2_52 名称
@@ -1943,9 +2015,9 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlow.append(" 		 ELSE NULL");
 		sqlFlow.append(" 	END,");
 		// R2_86 残業時間帯.残業枠
-		sqlFlow.append(" 	OT_TIME_ZONE.OT_FRAME_NO,");
+		sqlFlow.append(" 	FLOW_OT_FRAME.OT_FR_NAME,");
 		// R2_87 残業時間帯.法定内残業枠
-		sqlFlow.append(" 	IIF(WORKTIME_DISP_MODE.DISP_MODE = ?detailMode, OT_TIME_ZONE.IN_LEGAL_OT_FRAME_NO, NULL),");
+		sqlFlow.append(" 	IIF(WORKTIME_DISP_MODE.DISP_MODE = ?detailMode, FLOW_LEGAL_OT_FRAME.OT_FR_NAME, NULL),");
 		// R2_88 残業時間帯.積残順序
 		sqlFlow.append(" 	IIF(WORKTIME_DISP_MODE.DISP_MODE = ?detailMode, OT_TIME_ZONE.SETTLEMENT_ORDER, NULL),");
 		// R2_89 打刻時間帯.優先設定.出勤
@@ -2216,11 +2288,11 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlow.append(" 		CONCAT(CAST(FWORK_HOLIDAY_TIME.PASSAGE_TIME AS INTEGER)/60, ':',");
 		sqlFlow.append(" 			FORMAT(CAST(FWORK_HOLIDAY_TIME.PASSAGE_TIME AS INTEGER)%60,'0#')), NULL),");
 		// R2_130 休出時間帯.法定内休出枠
-		sqlFlow.append(" 	FWORK_HOLIDAY_TIME.INLEGAL_BREAK_REST_TIME,");
+		sqlFlow.append(" 	INLEGAL_BREAK_REST_TIME_FRAME.WDO_FR_NAME,");
 		// R2_131 休出時間帯.法定外休出枠
-		sqlFlow.append(" 	FWORK_HOLIDAY_TIME.OUT_LEGALB_REAK_REST_TIME,");
+		sqlFlow.append(" 	OUT_LEGALB_REAK_REST_TIME_FRAME.WDO_FR_NAME,");
 		// R2_132 休出時間帯.法定外休出枠（祝日）
-		sqlFlow.append(" 	FWORK_HOLIDAY_TIME.OUT_LEGAL_PUBHOL_REST_TIME,");
+		sqlFlow.append(" 	OUT_LEGAL_PUBHOL_REST_TIME_FRAME.WDO_FR_NAME,");
 		// R2_133 休出時間帯.丸め
 		sqlFlow.append(" 	CASE WHEN FWORK_HOLIDAY_TIME.UNIT = ?roundingTime1Min THEN ?roundingTime1MinText");
 		sqlFlow.append(" 		 WHEN FWORK_HOLIDAY_TIME.UNIT = ?roundingTime5Min THEN ?roundingTime5MinText");
@@ -2829,6 +2901,12 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlow.append(" 		ON WORK_TIME_SET.CID = OT_TIME_ZONE.CID");
 		sqlFlow.append(" 		AND WORK_TIME_SET.WORKTIME_CD = OT_TIME_ZONE.WORKTIME_CD");
 		sqlFlow.append(" 		AND TEMP.ROW_ID = OT_TIME_ZONE.WORKTIME_NO");
+		sqlFlow.append(" 	LEFT JOIN KSHST_OVERTIME_FRAME FLOW_OT_FRAME");
+		sqlFlow.append(" 		ON OT_TIME_ZONE.CID = FLOW_OT_FRAME.CID");
+		sqlFlow.append(" 		AND OT_TIME_ZONE.OT_FRAME_NO = FLOW_OT_FRAME.OT_FR_NO");
+		sqlFlow.append(" 	LEFT JOIN KSHST_OVERTIME_FRAME FLOW_LEGAL_OT_FRAME");
+		sqlFlow.append(" 		ON OT_TIME_ZONE.CID = FLOW_LEGAL_OT_FRAME.CID");
+		sqlFlow.append(" 		AND OT_TIME_ZONE.IN_LEGAL_OT_FRAME_NO = FLOW_LEGAL_OT_FRAME.OT_FR_NO");
 		sqlFlow.append(" 	JOIN KSHMT_PIORITY_SET PIORITY_SET1");
 		sqlFlow.append(" 		ON WORK_TIME_SET.CID = PIORITY_SET1.CID");
 		sqlFlow.append(" 		AND WORK_TIME_SET.WORKTIME_CD = PIORITY_SET1.WORKTIME_CD");
@@ -2870,26 +2948,26 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlow.append(" 		AND WORK_TIME_SET.WORKTIME_CD = ROUNDING_SET4.WORKTIME_CD");
 		sqlFlow.append(" 		AND ROUNDING_SET4.ATR = ?superiorityTurnBack");
 		sqlFlow.append(" 	LEFT JOIN KSHMT_FLOW_STAMP_REFLECT STAMP_REFLECT1");
-		sqlFlow.append(" 		 ON WORK_TIME_SET.CID = STAMP_REFLECT1.CID");
-		sqlFlow.append(" 		 AND WORK_TIME_SET.WORKTIME_CD = STAMP_REFLECT1.WORKTIME_CD");
-		sqlFlow.append(" 		 AND STAMP_REFLECT1.WORK_NO = ?workNoOne");
-		sqlFlow.append(" 		 AND STAMP_REFLECT1.ATTEND_ATR = ?goLeavingWorkAtrGoWork");
+		sqlFlow.append(" 		ON WORK_TIME_SET.CID = STAMP_REFLECT1.CID");
+		sqlFlow.append(" 		AND WORK_TIME_SET.WORKTIME_CD = STAMP_REFLECT1.WORKTIME_CD");
+		sqlFlow.append(" 		AND STAMP_REFLECT1.WORK_NO = ?workNoOne");
+		sqlFlow.append(" 		AND STAMP_REFLECT1.ATTEND_ATR = ?goLeavingWorkAtrGoWork");
 		sqlFlow.append(" 	LEFT JOIN KSHMT_FLOW_STAMP_REFLECT STAMP_REFLECT2");
-		sqlFlow.append(" 		 ON WORK_TIME_SET.CID = STAMP_REFLECT2.CID");
-		sqlFlow.append(" 		 AND WORK_TIME_SET.WORKTIME_CD = STAMP_REFLECT2.WORKTIME_CD");
-		sqlFlow.append(" 		 AND STAMP_REFLECT2.WORK_NO = ?workNoOne");
-		sqlFlow.append(" 		 AND STAMP_REFLECT2.ATTEND_ATR = ?goLeavingWorkAtrLeaveWork");
+		sqlFlow.append(" 		ON WORK_TIME_SET.CID = STAMP_REFLECT2.CID");
+		sqlFlow.append(" 		AND WORK_TIME_SET.WORKTIME_CD = STAMP_REFLECT2.WORKTIME_CD");
+		sqlFlow.append(" 		AND STAMP_REFLECT2.WORK_NO = ?workNoOne");
+		sqlFlow.append(" 		AND STAMP_REFLECT2.ATTEND_ATR = ?goLeavingWorkAtrLeaveWork");
 		sqlFlow.append(" 	LEFT JOIN KSHMT_FSTAMP_REFLECT_TIME FSTAMP_REFLECT_TIME");
-		sqlFlow.append(" 		 ON WORK_TIME_SET.CID = FSTAMP_REFLECT_TIME.CID");
-		sqlFlow.append(" 		 AND WORK_TIME_SET.WORKTIME_CD = FSTAMP_REFLECT_TIME.WORKTIME_CD");
+		sqlFlow.append(" 		ON WORK_TIME_SET.CID = FSTAMP_REFLECT_TIME.CID");
+		sqlFlow.append(" 		AND WORK_TIME_SET.WORKTIME_CD = FSTAMP_REFLECT_TIME.WORKTIME_CD");
 		sqlFlow.append(" 	LEFT JOIN KSHMT_FLOW_RT_SET FLOW_RT_SET1");
-		sqlFlow.append(" 		 ON WORK_TIME_SET.CID = FLOW_RT_SET1.CID");
-		sqlFlow.append(" 		 AND WORK_TIME_SET.WORKTIME_CD = FLOW_RT_SET1.WORKTIME_CD");
-		sqlFlow.append(" 		 AND FLOW_RT_SET1.RESTTIME_ATR = ?resttimeAtrOffDay");
+		sqlFlow.append(" 		ON WORK_TIME_SET.CID = FLOW_RT_SET1.CID");
+		sqlFlow.append(" 		AND WORK_TIME_SET.WORKTIME_CD = FLOW_RT_SET1.WORKTIME_CD");
+		sqlFlow.append(" 		AND FLOW_RT_SET1.RESTTIME_ATR = ?resttimeAtrOffDay");
 		sqlFlow.append(" 	LEFT JOIN KSHMT_FLOW_RT_SET FLOW_RT_SET2");
-		sqlFlow.append(" 		 ON WORK_TIME_SET.CID = FLOW_RT_SET2.CID");
-		sqlFlow.append(" 		 AND WORK_TIME_SET.WORKTIME_CD = FLOW_RT_SET2.WORKTIME_CD");
-		sqlFlow.append(" 		 AND FLOW_RT_SET2.RESTTIME_ATR = ?resttimeAtrHalfDay");
+		sqlFlow.append(" 		ON WORK_TIME_SET.CID = FLOW_RT_SET2.CID");
+		sqlFlow.append(" 		AND WORK_TIME_SET.WORKTIME_CD = FLOW_RT_SET2.WORKTIME_CD");
+		sqlFlow.append(" 		AND FLOW_RT_SET2.RESTTIME_ATR = ?resttimeAtrHalfDay");
 		sqlFlow.append(" 	LEFT JOIN KSHMT_FLOW_FIXED_RT_SET FLOW_FIXED_RT_SET1");
 		sqlFlow.append(" 		ON WORK_TIME_SET.CID = FLOW_FIXED_RT_SET1.CID");
 		sqlFlow.append(" 		AND WORK_TIME_SET.WORKTIME_CD = FLOW_FIXED_RT_SET1.WORKTIME_CD");
@@ -2911,12 +2989,21 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlow.append(" 		AND TEMP.ROW_ID = FLOW_FLOW_RT_SET2.PERIOD_NO");
 		sqlFlow.append(" 		AND FLOW_FLOW_RT_SET2.RESTTIME_ATR = ?resttimeAtrHalfDay");
 		sqlFlow.append(" 	LEFT JOIN KSHMT_FLOW_REST_SET FLOW_REST_SET");
-		sqlFlow.append(" 		 ON WORK_TIME_SET.CID = FLOW_REST_SET.CID");
-		sqlFlow.append(" 		 AND WORK_TIME_SET.WORKTIME_CD = FLOW_REST_SET.WORKTIME_CD");
+		sqlFlow.append(" 		ON WORK_TIME_SET.CID = FLOW_REST_SET.CID");
+		sqlFlow.append(" 		AND WORK_TIME_SET.WORKTIME_CD = FLOW_REST_SET.WORKTIME_CD");
 		sqlFlow.append(" 	LEFT JOIN KSHMT_FWORK_HOLIDAY_TIME FWORK_HOLIDAY_TIME");
 		sqlFlow.append(" 		ON WORK_TIME_SET.CID = FWORK_HOLIDAY_TIME.CID");
 		sqlFlow.append(" 		AND WORK_TIME_SET.WORKTIME_CD = FWORK_HOLIDAY_TIME.WORKTIME_CD");
 		sqlFlow.append(" 		AND TEMP.ROW_ID = FWORK_HOLIDAY_TIME.WORKTIME_NO");
+		sqlFlow.append(" 	LEFT JOIN KSHST_WORKDAYOFF_FRAME INLEGAL_BREAK_REST_TIME_FRAME");
+		sqlFlow.append(" 		ON FWORK_HOLIDAY_TIME.CID = INLEGAL_BREAK_REST_TIME_FRAME.CID");
+		sqlFlow.append(" 		AND FWORK_HOLIDAY_TIME.INLEGAL_BREAK_REST_TIME = INLEGAL_BREAK_REST_TIME_FRAME.WDO_FR_NO");
+		sqlFlow.append(" 	LEFT JOIN KSHST_WORKDAYOFF_FRAME OUT_LEGALB_REAK_REST_TIME_FRAME");
+		sqlFlow.append(" 		ON FWORK_HOLIDAY_TIME.CID = OUT_LEGALB_REAK_REST_TIME_FRAME.CID");
+		sqlFlow.append(" 		AND FWORK_HOLIDAY_TIME.OUT_LEGALB_REAK_REST_TIME = OUT_LEGALB_REAK_REST_TIME_FRAME.WDO_FR_NO");
+		sqlFlow.append(" 	LEFT JOIN KSHST_WORKDAYOFF_FRAME OUT_LEGAL_PUBHOL_REST_TIME_FRAME");
+		sqlFlow.append(" 		ON FWORK_HOLIDAY_TIME.CID = OUT_LEGAL_PUBHOL_REST_TIME_FRAME.CID");
+		sqlFlow.append(" 		AND FWORK_HOLIDAY_TIME.OUT_LEGAL_PUBHOL_REST_TIME = OUT_LEGAL_PUBHOL_REST_TIME_FRAME.WDO_FR_NO");
 		sqlFlow.append(" 	JOIN KSHMT_WORKTIME_GO_OUT_SET WORKTIME_GO_OUT_SET");
 		sqlFlow.append(" 		ON WORK_TIME_SET.CID = WORKTIME_GO_OUT_SET.CID");
 		sqlFlow.append(" 		AND WORK_TIME_SET.WORKTIME_CD = WORKTIME_GO_OUT_SET.WORKTIME_CD");
@@ -2962,12 +3049,12 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlow.append(" 		ON WORK_TIME_SET.CID = MEDICAL_TIME_SET2.CID");
 		sqlFlow.append(" 		AND WORK_TIME_SET.WORKTIME_CD = MEDICAL_TIME_SET2.WORKTIME_CD");
 		sqlFlow.append(" 		AND MEDICAL_TIME_SET2.WORK_SYS_ATR = ?workSystemAtrNightShift");
-		sqlFlow.append(" 	ORDER BY WORK_TIME_SET.WORKTIME_CD, TEMP.ROW_ID;");
+		sqlFlow.append(" ORDER BY WORK_TIME_SET.WORKTIME_CD, TEMP.ROW_ID;");
 		
 		SELECT_WORK_TIME_FLOW = sqlFlow.toString();
 
 		StringBuilder sqlFlex = new StringBuilder();
-		sqlFlex.append("SELECT");
+		sqlFlex.append(" SELECT");
 		// R3_61 コード
 		sqlFlex.append(" 	IIF(TEMP.ROW_ID = 1, WORK_TIME_SET.WORKTIME_CD, NULL),");
 		// R3_62 名称
@@ -3186,9 +3273,14 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlex.append(" 		 ELSE NULL");
 		sqlFlex.append(" 	END,");
 		// R3_104 残業時間帯.1日勤務用.残業枠
-		sqlFlex.append(" 	FLEX_OT_TIME_SET1.OT_FRAME_NO,");
+		sqlFlex.append(" 	FLEX_OT_FRAME1.OT_FR_NAME,");
 		// R3_105 残業時間帯.1日勤務用.早出
-		sqlFlex.append(" 	FLEX_OT_TIME_SET1.TREAT_EARLY_OT_WORK,");
+		sqlFlex.append(" 	CASE WHEN FLEX_OT_TIME_SET1.TREAT_EARLY_OT_WORK = ?isTrue");
+		sqlFlex.append(" 			THEN ?treatEarlyOtWork");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET1.TREAT_EARLY_OT_WORK = ?isFalse");
+		sqlFlex.append(" 			THEN ?notTreatEarlyOtWork");
+		sqlFlex.append(" 		 ELSE NULL");
+		sqlFlex.append(" 	END,");
 		// R3_106 残業時間帯.午前勤務用.開始時間
 		sqlFlex.append(" 	IIF(FLEX_OT_TIME_SET2.TIME_STR IS NOT NULL AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isTrue, ");
 		sqlFlex.append(" 		CONCAT(CAST(FLEX_OT_TIME_SET2.TIME_STR AS INTEGER)/60, ':',");
@@ -3219,12 +3311,14 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlex.append(" 	END,");
 		// R3_110 残業時間帯.午前勤務用.残業枠
 		sqlFlex.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isTrue");
-		sqlFlex.append(" 			THEN FLEX_OT_TIME_SET2.OT_FRAME_NO");
+		sqlFlex.append(" 			THEN FLEX_OT_FRAME2.OT_FR_NAME");
 		sqlFlex.append(" 		 ELSE NULL");
 		sqlFlex.append(" 	END,");
 		// R3_111 残業時間帯.午前勤務用.早出
-		sqlFlex.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isTrue");
-		sqlFlex.append(" 			THEN FLEX_OT_TIME_SET2.TREAT_EARLY_OT_WORK");
+		sqlFlex.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isTrue AND FLEX_OT_TIME_SET2.TREAT_EARLY_OT_WORK = ?isTrue");
+		sqlFlex.append(" 			THEN ?treatEarlyOtWork");
+		sqlFlex.append(" 		 WHEN WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isTrue AND FLEX_OT_TIME_SET2.TREAT_EARLY_OT_WORK = ?isFalse");
+		sqlFlex.append(" 			THEN ?notTreatEarlyOtWork");
 		sqlFlex.append(" 		 ELSE NULL");
 		sqlFlex.append(" 	END,");
 		// R3_112 残業時間帯.午後勤務用.開始時間
@@ -3257,12 +3351,14 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlex.append(" 	END,");
 		// R3_116 残業時間帯.午後勤務用.残業枠
 		sqlFlex.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isTrue");
-		sqlFlex.append(" 			THEN FLEX_OT_TIME_SET3.OT_FRAME_NO");
+		sqlFlex.append(" 			THEN FLEX_OT_FRAME3.OT_FR_NAME");
 		sqlFlex.append(" 		 ELSE NULL");
 		sqlFlex.append(" 	END,");
 		// R3_117 残業時間帯.午後勤務用.早出
-		sqlFlex.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isTrue");
-		sqlFlex.append(" 			THEN FLEX_OT_TIME_SET3.TREAT_EARLY_OT_WORK");
+		sqlFlex.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isTrue AND FLEX_OT_TIME_SET3.TREAT_EARLY_OT_WORK = ?isTrue");
+		sqlFlex.append(" 			THEN ?treatEarlyOtWork");
+		sqlFlex.append(" 		 WHEN WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isTrue AND FLEX_OT_TIME_SET3.TREAT_EARLY_OT_WORK = ?isFalse");
+		sqlFlex.append(" 			THEN ?notTreatEarlyOtWork");
 		sqlFlex.append(" 		 ELSE NULL");
 		sqlFlex.append(" 	END,");
 		// R3_118 打刻時間帯.優先設定.出勤
@@ -3321,11 +3417,11 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlex.append(" 		 ELSE NULL");
 		sqlFlex.append(" 	END,");
 		// R3_124 打刻詳細設定.出勤反映時間帯.開始時刻
-		sqlFlex.append(" 	IIF(TEMP.ROW_ID = 1 AND FLEX_STAMP_REFLECT1.START_TIME IS NOT NULL, ");
+		sqlFlex.append(" 	IIF(TEMP.ROW_ID = 1 AND FLEX_STAMP_REFLECT1.START_TIME IS NOT NULL AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode, ");
 		sqlFlex.append(" 		CONCAT(CAST(FLEX_STAMP_REFLECT1.START_TIME AS INTEGER)/60, ':',");
 		sqlFlex.append(" 			FORMAT(CAST(FLEX_STAMP_REFLECT1.START_TIME AS INTEGER)%60,'0#')), NULL),");
 		// R3_125 打刻詳細設定.出勤反映時間帯.終了時刻
-		sqlFlex.append(" 	IIF(TEMP.ROW_ID = 1 AND FLEX_STAMP_REFLECT1.END_TIME IS NOT NULL, ");
+		sqlFlex.append(" 	IIF(TEMP.ROW_ID = 1 AND FLEX_STAMP_REFLECT1.END_TIME IS NOT NULL AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode, ");
 		sqlFlex.append(" 		CONCAT(CAST(FLEX_STAMP_REFLECT1.END_TIME AS INTEGER)/60, ':',");
 		sqlFlex.append(" 			FORMAT(CAST(FLEX_STAMP_REFLECT1.END_TIME AS INTEGER)%60,'0#')), NULL),");
 		// R3_126 打刻詳細設定.出勤反映時間帯.2勤務目の開始（1勤務目の退勤から分けられる時間）
@@ -3592,11 +3688,11 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlex.append(" 		CONCAT(CAST(FLEX_HOL_SET.TIME_END AS INTEGER)/60, ':',");
 		sqlFlex.append(" 			FORMAT(CAST(FLEX_HOL_SET.TIME_END AS INTEGER)%60,'0#')), NULL),");
 		// R3_171 休出時間帯.法定内休出枠
-		sqlFlex.append(" 	FLEX_HOL_SET.HOL_FRAME_NO,");
+		sqlFlex.append(" 	FLEX_HOL_FRAME.WDO_FR_NAME,");
 		// R3_172 休出時間帯.法定外休出枠
-		sqlFlex.append(" 	FLEX_HOL_SET.OUT_HOL_FRAME_NO,");
+		sqlFlex.append(" 	FLEX_OUT_HOL_FRAME.WDO_FR_NAME,");
 		// R3_173 休出時間帯.法定外休出枠（祝日）
-		sqlFlex.append(" 	FLEX_HOL_SET.PUB_HOL_FRAME_NO,");
+		sqlFlex.append(" 	FLEX_PUB_HOL_FRAME.WDO_FR_NAME,");
 		// R3_174 休出時間帯.丸め
 		sqlFlex.append(" 	CASE WHEN FLEX_HOL_SET.UNIT = ?roundingTime1Min THEN ?roundingTime1MinText");
 		sqlFlex.append(" 		 WHEN FLEX_HOL_SET.UNIT = ?roundingTime5Min THEN ?roundingTime5MinText");
@@ -4180,7 +4276,7 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlex.append(" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_COMMON_SET.HD_CAL_IS_CALCULATE = ?isFalse THEN ?isNotUseText");
 		sqlFlex.append(" 		 ELSE NULL");
 		sqlFlex.append(" 	END ");
-		sqlFlex.append("  FROM");
+		sqlFlex.append(" FROM");
 		sqlFlex.append(" 	(SELECT CID, WORKTIME_CD, NAME, ABNAME, SYMBOL, ABOLITION_ATR, DAILY_WORK_ATR, WORKTIME_SET_METHOD, NOTE, MEMO");
 		sqlFlex.append(" 		FROM KSHMT_WORK_TIME_SET WORK_TIME_SET");
 		sqlFlex.append(" 		WHERE CID = ?companyId AND DAILY_WORK_ATR = ?flexWork) WORK_TIME_SET");
@@ -4233,16 +4329,25 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlex.append(" 		AND WORK_TIME_SET.WORKTIME_CD = FLEX_OT_TIME_SET1.WORKTIME_CD");
 		sqlFlex.append(" 		AND TEMP.ROW_ID = FLEX_OT_TIME_SET1.WORKTIME_NO");
 		sqlFlex.append(" 		AND FLEX_OT_TIME_SET1.AM_PM_ATR = ?amPmAtrOneDay");
+		sqlFlex.append(" 	LEFT JOIN KSHST_OVERTIME_FRAME FLEX_OT_FRAME1");
+		sqlFlex.append(" 		ON FLEX_OT_TIME_SET1.CID = FLEX_OT_FRAME1.CID");
+		sqlFlex.append(" 		AND FLEX_OT_TIME_SET1.OT_FRAME_NO = FLEX_OT_FRAME1.OT_FR_NO");
 		sqlFlex.append(" 	LEFT JOIN KSHMT_FLEX_OT_TIME_SET FLEX_OT_TIME_SET2");
 		sqlFlex.append(" 		ON WORK_TIME_SET.CID = FLEX_OT_TIME_SET2.CID");
 		sqlFlex.append(" 		AND WORK_TIME_SET.WORKTIME_CD = FLEX_OT_TIME_SET2.WORKTIME_CD");
 		sqlFlex.append(" 		AND TEMP.ROW_ID = FLEX_OT_TIME_SET2.WORKTIME_NO");
 		sqlFlex.append(" 		AND FLEX_OT_TIME_SET2.AM_PM_ATR = ?amPmAtrAm");
+		sqlFlex.append(" 	LEFT JOIN KSHST_OVERTIME_FRAME FLEX_OT_FRAME2");
+		sqlFlex.append(" 		ON FLEX_OT_TIME_SET2.CID = FLEX_OT_FRAME2.CID");
+		sqlFlex.append(" 		AND FLEX_OT_TIME_SET2.OT_FRAME_NO = FLEX_OT_FRAME2.OT_FR_NO");
 		sqlFlex.append(" 	LEFT JOIN KSHMT_FLEX_OT_TIME_SET FLEX_OT_TIME_SET3");
 		sqlFlex.append(" 		ON WORK_TIME_SET.CID = FLEX_OT_TIME_SET3.CID");
 		sqlFlex.append(" 		AND WORK_TIME_SET.WORKTIME_CD = FLEX_OT_TIME_SET3.WORKTIME_CD");
 		sqlFlex.append(" 		AND TEMP.ROW_ID = FLEX_OT_TIME_SET3.WORKTIME_NO");
 		sqlFlex.append(" 		AND FLEX_OT_TIME_SET3.AM_PM_ATR = ?amPmAtrPm");
+		sqlFlex.append(" 	LEFT JOIN KSHST_OVERTIME_FRAME FLEX_OT_FRAME3");
+		sqlFlex.append(" 		ON FLEX_OT_TIME_SET3.CID = FLEX_OT_FRAME3.CID");
+		sqlFlex.append(" 		AND FLEX_OT_TIME_SET3.OT_FRAME_NO = FLEX_OT_FRAME3.OT_FR_NO");
 		sqlFlex.append(" 	JOIN KSHMT_PIORITY_SET PIORITY_SET1");
 		sqlFlex.append(" 		ON WORK_TIME_SET.CID = PIORITY_SET1.CID");
 		sqlFlex.append(" 		AND WORK_TIME_SET.WORKTIME_CD = PIORITY_SET1.WORKTIME_CD");
@@ -4343,6 +4448,15 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlex.append(" 		ON WORK_TIME_SET.CID = FLEX_HOL_SET.CID");
 		sqlFlex.append(" 		AND WORK_TIME_SET.WORKTIME_CD = FLEX_HOL_SET.WORKTIME_CD");
 		sqlFlex.append(" 		AND TEMP.ROW_ID = FLEX_HOL_SET.WORKTIME_NO");
+		sqlFlex.append(" 	LEFT JOIN KSHST_WORKDAYOFF_FRAME FLEX_HOL_FRAME");
+		sqlFlex.append(" 		ON FLEX_HOL_SET.CID = FLEX_HOL_FRAME.CID");
+		sqlFlex.append(" 		AND FLEX_HOL_SET.HOL_FRAME_NO = FLEX_HOL_FRAME.WDO_FR_NO");
+		sqlFlex.append(" 	LEFT JOIN KSHST_WORKDAYOFF_FRAME FLEX_OUT_HOL_FRAME");
+		sqlFlex.append(" 		ON FLEX_HOL_SET.CID = FLEX_OUT_HOL_FRAME.CID");
+		sqlFlex.append(" 		AND FLEX_HOL_SET.OUT_HOL_FRAME_NO = FLEX_OUT_HOL_FRAME.WDO_FR_NO");
+		sqlFlex.append(" 	LEFT JOIN KSHST_WORKDAYOFF_FRAME FLEX_PUB_HOL_FRAME");
+		sqlFlex.append(" 		ON FLEX_HOL_SET.CID = FLEX_PUB_HOL_FRAME.CID");
+		sqlFlex.append(" 		AND FLEX_HOL_SET.PUB_HOL_FRAME_NO = FLEX_PUB_HOL_FRAME.WDO_FR_NO");
 		sqlFlex.append(" 	LEFT JOIN KSHMT_FLEX_OD_FIX_REST FLEX_OD_FIX_REST");
 		sqlFlex.append(" 		ON WORK_TIME_SET.CID = FLEX_OD_FIX_REST.CID");
 		sqlFlex.append(" 		AND WORK_TIME_SET.WORKTIME_CD = FLEX_OD_FIX_REST.WORKTIME_CD");
@@ -4399,7 +4513,7 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlex.append(" 		ON WORK_TIME_SET.CID = MEDICAL_TIME_SET2.CID");
 		sqlFlex.append(" 		AND WORK_TIME_SET.WORKTIME_CD = MEDICAL_TIME_SET2.WORKTIME_CD");
 		sqlFlex.append(" 		AND MEDICAL_TIME_SET2.WORK_SYS_ATR = ?workSystemAtrNightShift");
-		sqlFlex.append(" 	ORDER BY WORK_TIME_SET.WORKTIME_CD, TEMP.ROW_ID;");
+		sqlFlex.append(" ORDER BY WORK_TIME_SET.WORKTIME_CD, TEMP.ROW_ID;");
 
 		SELECT_WORK_TIME_FLEX = sqlFlex.toString();
 	}
@@ -4451,6 +4565,8 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 				.setParameter("roundingUp", Rounding.ROUNDING_UP.value)
 				.setParameter("roundingDownText", TextResource.localize("Enum_Rounding_Down"))
 				.setParameter("roundingUpText", TextResource.localize("Enum_Rounding_Up"))
+				.setParameter("treatEarlyOtWork", "○")
+				.setParameter("notTreatEarlyOtWork", "-")
 				.setParameter("isLegalOtSet", LegalOTSetting.LEGAL_INTERNAL_TIME.value)
 				.setParameter("isNotLegalOtSet", LegalOTSetting.OUTSIDE_LEGAL_TIME.value)
 				.setParameter("isUseText", TextResource.localize("KMK003_142"))
@@ -4575,7 +4691,7 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 				.setParameter("roundingDown", Rounding.ROUNDING_DOWN.value)
 				.setParameter("roundingUp", Rounding.ROUNDING_UP.value)	
 				.setParameter("roundingDownText", TextResource.localize("Enum_Rounding_Down"))
-				.setParameter("roundingUpText", TextResource.localize("Enum_Rounding_Up"))
+				.setParameter("roundingUpText", TextResource.localize("Enum_Rounding_Up"))	
 				.setParameter("restCalcMethodReferMaster", FlowFixedRestCalcMethod.REFER_MASTER.value)
 				.setParameter("restCalcMethodReferSchedule", FlowFixedRestCalcMethod.REFER_SCHEDULE.value)
 				.setParameter("restCalcMethodWithoutRefer", FlowFixedRestCalcMethod.STAMP_WHITOUT_REFER.value)
@@ -4757,6 +4873,8 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 				.setParameter("roundingUp", Rounding.ROUNDING_UP.value)	
 				.setParameter("roundingDownText", TextResource.localize("Enum_Rounding_Down"))
 				.setParameter("roundingUpText", TextResource.localize("Enum_Rounding_Up"))
+				.setParameter("treatEarlyOtWork", "○")
+				.setParameter("notTreatEarlyOtWork", "-")
 				.setParameter("isUseText", TextResource.localize("KMK003_142"))
 				.setParameter("isNotUseText", TextResource.localize("KMK003_143"))
 				.setParameter("isUseRestAfterSetText", "○")
