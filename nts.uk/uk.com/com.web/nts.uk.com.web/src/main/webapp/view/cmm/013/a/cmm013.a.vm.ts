@@ -98,7 +98,6 @@ module nts.uk.com.view.cmm013.a {
                 _self.enable_button_update_history = ko.observable(null);
                 _self.enable_button_delete_history = ko.observable(null);
                 _self.enable_input_job_title_code = ko.observable(null);
-                _self.showExportBtn();
             }
 
             /**
@@ -549,16 +548,7 @@ module nts.uk.com.view.cmm013.a {
             }
             
             
-            showExportBtn() {
-                if (nts.uk.util.isNullOrUndefined(__viewContext.user.role.attendance)
-                    && nts.uk.util.isNullOrUndefined(__viewContext.user.role.payroll)
-                    && nts.uk.util.isNullOrUndefined(__viewContext.user.role.officeHelper)
-                    && nts.uk.util.isNullOrUndefined(__viewContext.user.role.personnel)) {
-                    $("#print-button").hide();
-                } else {
-                    $("#print-button").show();
-                }
-            }
+
         }
 
         /**
