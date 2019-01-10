@@ -34,12 +34,12 @@ public class JpaChangePerInforDefinitionRepository extends JpaRepository impleme
 	     exportSQL.append("          n.CATEGORY_NAME as NAME_CTG_DEFAULT, ");
 	     exportSQL.append("          c.CATEGORY_TYPE, ");
 	     exportSQL.append("        c.CONTRACT_CD,");
-	     exportSQL.append("          p.ITEM_NAME, ");
+	     exportSQL.append("          item.ITEM_NAME, ");
 	     exportSQL.append("               ni.ITEM_NAME as NAME_ITEM_DEFAULT, ");
 	     exportSQL.append("        ni.ITEM_CD,");
 	     exportSQL.append("        ni.CATEGORY_CD,");
-	     exportSQL.append("          p.REQUIRED_ATR, ");
-	     exportSQL.append("          p.ABOLITION_ATR as ABOLITION_ATR1, ");
+	     exportSQL.append("          item.REQUIRED_ATR, ");
+	     exportSQL.append("          item.ABOLITION_ATR as ABOLITION_ATR1, ");
 	     exportSQL.append("       o.DISPORDER,");
 	     exportSQL.append("       ITEM_DISPORDER");
 	     exportSQL.append("            FROM (  ");
@@ -73,7 +73,14 @@ public class JpaChangePerInforDefinitionRepository extends JpaRepository impleme
 	     exportSQL.append("                 WHERE CID = ?zeroCid) i2 ");
 	     exportSQL.append("               ) n ");
 	     exportSQL.append("            ON i.CATEGORY_CD = n.CATEGORY_CD ");
-	     exportSQL.append("            LEFT JOIN PPEMT_PER_INFO_ITEM p ON p.PER_INFO_CTG_ID = o.PER_INFO_CTG_ID ");
+	     exportSQL.append(" LEFT JOIN (SELECT p.ITEM_CD, p.ITEM_NAME, p.REQUIRED_ATR, p.ABOLITION_ATR, p.PER_INFO_CTG_ID, ctg.CID");
+	     exportSQL.append("			FROM PPEMT_PER_INFO_ITEM p ");
+	     exportSQL.append("			INNER JOIN PPEMT_PER_INFO_CTG ctg ");
+	     exportSQL.append("				ON p.PER_INFO_CTG_ID = ctg.PER_INFO_CTG_ID");
+	     exportSQL.append("			INNER JOIN PPEMT_PER_INFO_ITEM_CM icm");
+	     exportSQL.append("				ON p.ITEM_CD = icm.ITEM_CD AND icm.CONTRACT_CD = ?contracCd");
+	     exportSQL.append("					AND icm.CATEGORY_CD = ctg.CATEGORY_CD AND icm.ITEM_PARENT_CD IS NULL");
+	     exportSQL.append("	) item ON item.PER_INFO_CTG_ID = o.PER_INFO_CTG_ID AND item.CID = i.CID");
 	     exportSQL.append("                     LEFT JOIN  (SELECT ITEM_NAME, ");
 	     exportSQL.append("                                             ITEM_CD, ");
 	     exportSQL.append("                                             CATEGORY_CD,");
@@ -88,9 +95,8 @@ public class JpaChangePerInforDefinitionRepository extends JpaRepository impleme
 	     exportSQL.append("                                     INNER JOIN PPEMT_PER_INFO_ITEM q ON q.PER_INFO_CTG_ID = k.PER_INFO_CTG_ID ");
 	     exportSQL.append("                   INNER JOIN PPEMT_PER_INFO_ITEM_ORDER io ON q.PER_INFO_ITEM_DEFINITION_ID = io.PER_INFO_ITEM_DEFINITION_ID");
 	     exportSQL.append("                   ) ni  ");
-	     exportSQL.append("                     ON  ni.ITEM_CD = p.ITEM_CD AND ni.CATEGORY_CD = i.CATEGORY_CD ");
+	     exportSQL.append("                     ON  ni.ITEM_CD = item.ITEM_CD AND ni.CATEGORY_CD = i.CATEGORY_CD ");
 	     exportSQL.append("                 )temp");
-	     exportSQL.append("         LEFT JOIN PPEMT_PER_INFO_ITEM_CM icm ON icm.CONTRACT_CD = temp.CONTRACT_CD AND icm.ITEM_CD =  temp.ITEM_CD AND icm.CATEGORY_CD = temp.CATEGORY_CD WHERE ITEM_PARENT_CD IS NULL");
 	     exportSQL.append("    ORDER BY  temp.DISPORDER, temp.ITEM_DISPORDER;");
 
 	     GET_PER_INFOR_DEFINITION = exportSQL.toString();
