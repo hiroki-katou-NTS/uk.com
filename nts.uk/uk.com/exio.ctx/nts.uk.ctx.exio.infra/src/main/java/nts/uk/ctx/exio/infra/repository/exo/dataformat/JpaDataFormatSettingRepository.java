@@ -185,7 +185,7 @@ public class JpaDataFormatSettingRepository extends JpaRepository implements Dat
 	public Optional<NumberDataFmSet> getNumberDataFmSetById(String cId) {
 		val entity = this.queryProxy().find(new OiomtNumberDataFmSetPk(cId), OiomtNumberDataFmSet.class);
 		if (entity.isPresent()) {
-			Optional.of(entity.get().toDomain());
+			return Optional.of(entity.get().toDomain());
 		}
 		return Optional.empty();
 	}

@@ -21,7 +21,7 @@ public interface WorkTimeTypeScheReflect {
 	 * @param para
 	 * @return
 	 */
-	public boolean checkReflectWorkTimeType(GobackReflectParameter para);
+	public boolean checkReflectWorkTimeType(GobackReflectParameter para, WorkInfoOfDailyPerformance dailyInfor);
 	/**
 	 * 振出・休出時反映する区分をチェックする
 	 * @param employeeId
@@ -29,7 +29,7 @@ public interface WorkTimeTypeScheReflect {
 	 * @param isOutResReflectAtr 振出・休出時反映する区分をチェックする
 	 * @return
 	 */
-	public boolean checkScheAndRecordSamseChange(String employeeId, GeneralDate dateData, boolean isOutResReflectAtr);
+	public boolean checkScheAndRecordSamseChange(String employeeId, GeneralDate dateData, boolean isOutResReflectAtr, WorkInfoOfDailyPerformance dailyInfor);
 	/**
 	 * 勤種・就時の反映
 	 * @param para

@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.recruitment;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,8 +110,7 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 			////終了時刻の反映
 			TimeReflectPara startTimeData = new TimeReflectPara(param.getEmployeeId(), param.getBaseDate(), justLateEarly.getStart1(), 
 					justLateEarly.getEnd1(), 1, isStartTime, isEndTime);
-			dailyPerformance =  workUpdate.updateRecordStartEndTimeReflectRecruitment(startTimeData, 
-					daily.getAttendanceLeave().get());
+			dailyPerformance =  workUpdate.updateRecordStartEndTimeReflectRecruitment(startTimeData);
 			daily.setAttendanceLeave(Optional.of(dailyPerformance));
 			
 		}		
@@ -161,7 +159,7 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 	@Override
 	public boolean checkReflectRecordStartEndTime(String workTypeCode, Integer frameNo,
 			boolean isAttendence, String employeeId, GeneralDate baseDate) {
-		Optional<TimeLeavingOfDailyPerformance> optTimeLeaving = timeLeavingOfDailyRepos.findByKey(employeeId, baseDate);
+		/*Optional<TimeLeavingOfDailyPerformance> optTimeLeaving = timeLeavingOfDailyRepos.findByKey(employeeId, baseDate);
 		//出勤時刻を取得する
 		//打刻元情報を取得する		
 		if(!optTimeLeaving.isPresent()) {
@@ -209,7 +207,8 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 				|| actualStamp.getStampSourceInfo() == StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO) {
 			return true;
 		}
-		return false;
+		return false;*/
+		return true;
 	}
 
 }

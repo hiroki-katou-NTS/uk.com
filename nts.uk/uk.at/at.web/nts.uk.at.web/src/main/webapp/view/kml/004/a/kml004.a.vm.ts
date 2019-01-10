@@ -410,8 +410,20 @@ module nts.uk.at.view.kml004.a.viewmodel {
                 self.openDDialog(id);
             }
         }
+        private exportExcel(): void {
+            var self = this;
+            nts.uk.ui.block.grayout();
+            let langId = "ja";
+            service.saveAsExcel(langId).done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+         }
     }
 
+ 
     export interface ITotalCategory {
         categoryCode: string;
         categoryName: string;

@@ -32,7 +32,13 @@ div[class='ui-widget-header ui-helper-reset'] {
 	margin: -2px;
 	display: block;
 	height: 100%;
-	font-weight: bold;
+	text-align: center !IMPORTANT;
+}
+
+.notthing {
+	margin: -2px;
+	display: block;
+	height: 100%;
 	text-align: center !IMPORTANT;
 }
 
@@ -44,7 +50,7 @@ div[class='ui-widget-header ui-helper-reset'] {
 }
 
 .disable {
-	background-color: #DDDDD2;
+	background-color: #a9a9a9;
 	margin: -2px;
 	display: block;
 	height: 100%;
@@ -69,30 +75,40 @@ div[class='ui-widget-header ui-helper-reset'] {
 }
 
 .approved-img {
-	background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACYAAAApCAYAAABZa1t7AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGXSURBVFhH7ZcxcoMwEEUNd8gVaCBd4AZ07ujBPbeIG+4RYt+ClIGj2JfY/JWdCRAx2sXJDIWK17DS8iSEZnfXXQ70cd0eXkyLF9PixbSsFxsKao4RJekTBcFuAj/bH3NqB8s8IXqxIae6Yhm8/DWjpi+Ic4xpe4yBdBxCssKYFYI6sXNEzyEL5fQmmNddbrsa85yTfcwScjFIhXhB/WmJOej6jBLsnkZOJjZkZqfWSH1zk0OO3h6fIxArqM50q12iO0UUpJnoGLjF8AmDF1kyN1hkikWebbEpTrGmkiUSwwstc/P3WuN3HGI57XEtSM+FCJzXJIioeUiMk+BMtI4kOvhzuhfrxX7wYlr+QmyzfyXY6D0Gtnrza5I5USxSIAaUlYEVnC1NhSITA6YyWCtnpLDr75bYAmIxhuV457iCbS3x39z7Ap6jkGJUYkzH9Xw5qvnRlMzHtNwXGKEdxSX3BdO4BLWYAXM6NCGmnsdlOe+S+JnpkiC0Kj9YJzaC59uwjdXwsNh/4cW0eDEtXkyLF9OyUbEDfQHlie3C3snpHgAAAABJRU5ErkJggg==');
+	/* background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACYAAAApCAYAAABZa1t7AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGXSURBVFhH7ZcxcoMwEEUNd8gVaCBd4AZ07ujBPbeIG+4RYt+ClIGj2JfY/JWdCRAx2sXJDIWK17DS8iSEZnfXXQ70cd0eXkyLF9PixbSsFxsKao4RJekTBcFuAj/bH3NqB8s8IXqxIae6Yhm8/DWjpi+Ic4xpe4yBdBxCssKYFYI6sXNEzyEL5fQmmNddbrsa85yTfcwScjFIhXhB/WmJOej6jBLsnkZOJjZkZqfWSH1zk0OO3h6fIxArqM50q12iO0UUpJnoGLjF8AmDF1kyN1hkikWebbEpTrGmkiUSwwstc/P3WuN3HGI57XEtSM+FCJzXJIioeUiMk+BMtI4kOvhzuhfrxX7wYlr+QmyzfyXY6D0Gtnrza5I5USxSIAaUlYEVnC1NhSITA6YyWCtnpLDr75bYAmIxhuV457iCbS3x39z7Ap6jkGJUYkzH9Xw5qvnRlMzHtNwXGKEdxSX3BdO4BLWYAXM6NCGmnsdlOe+S+JnpkiC0Kj9YJzaC59uwjdXwsNh/4cW0eDEtXkyLF9OyUbEDfQHlie3C3snpHgAAAABJRU5ErkJggg=='); */
 	background-size: cover;
 	width: 18px;
 	height: 18px;
 	display: inline-block;
     vertical-align: middle;
+    background: #BFEA60;
+    border: 1px solid gray;
+    text-align: center;
 }
 
 .unapproved-img {
-	background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAkCAYAAADsHujfAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACLSURBVFhH7dbLDYAgEEVRsCy1HrUbbUaKwV54YmSB4wo/yYS8m8yKmDkLSTBQEiEyQmQVQJYeaCxgs5l9OizvOcSNcXn83GSjBrKGdFgeIbLnkG05f1B9kBbwhGiAwGmFDEAgRAVkAzoVkNixOJ8XvYN8WAUQN90fRnwGEHIpLuX1/TFCZITICLkG7L05cWRw57WkAAAAAElFTkSuQmCC');
-	background-size: cover;
+	/* background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAkCAYAAADsHujfAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACLSURBVFhH7dbLDYAgEEVRsCy1HrUbbUaKwV54YmSB4wo/yYS8m8yKmDkLSTBQEiEyQmQVQJYeaCxgs5l9OizvOcSNcXn83GSjBrKGdFgeIbLnkG05f1B9kBbwhGiAwGmFDEAgRAVkAzoVkNixOJ8XvYN8WAUQN90fRnwGEHIpLuX1/TFCZITICLkG7L05cWRw57WkAAAAAElFTkSuQmCC');
+	background-size: cover; */
 	width: 18px;
 	height: 18px;
 	display: inline-block;
     vertical-align: middle;
+    color: #ff0000; 
+    background: #ffffff; 
+    border: 1px solid gray;
+    text-align: center;
 }
 
 .cannotApproved-img {
-	background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACUAAAAjCAYAAAATx8MeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABeSURBVFhH7dIxDsAgDMXQkPufmVSITmWop4jBT/pbJDwQdSGjKKMooyijKKMooyijKKMooyijKKMooyijqCMqM2uM0bo55/v6dkSto4ho3W/UOujelx+dMoq6MKrqAegoe5AUCsWiAAAAAElFTkSuQmCC');
-	background-size: cover;
+	/* background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACUAAAAjCAYAAAATx8MeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABeSURBVFhH7dIxDsAgDMXQkPufmVSITmWop4jBT/pbJDwQdSGjKKMooyijKKMooyijKKMooyijKKMooyijqCMqM2uM0bo55/v6dkSto4ho3W/UOujelx+dMoq6MKrqAegoe5AUCsWiAAAAAElFTkSuQmCC');
+	background-size: cover; */
 	width: 18px;
 	height: 18px;
 	display: inline-block;
     vertical-align: middle;
+    background: #ffffff;
+    border: 1px solid gray;
+    text-align: center;
 }
 
 .disable-img {
@@ -100,14 +116,17 @@ div[class='ui-widget-header ui-helper-reset'] {
 	height: 18px;
 	display: inline-block;
     vertical-align: middle;
-    background-color: #DDDDD2;
+    background: #a9a9a9;
+    border: 1px solid gray;
+    text-align: center;
 }
 
 .nodata-img {
-	width: 16px;
-	height: 16px;
+	width: 18px;
+	height: 18px;
 	display: inline-block;
     vertical-align: middle;
-    background-color: white;
     border: 1px solid gray;
+    background: #ffffff;
+    text-align: center;
 }

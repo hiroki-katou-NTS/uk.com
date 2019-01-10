@@ -52,7 +52,7 @@ __viewContext.ready(function() {
             initScreen(screenModel, listAppMeta, currentApp);
         }).fail((res) =>{
             nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
-                          nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+                 model.CommonProcess.callCMM045();
             });
         });
     }

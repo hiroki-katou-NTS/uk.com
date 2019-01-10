@@ -8,6 +8,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
+    const textLink =  nts.uk.resource.getText("CMF002_235");
     export class ScreenModel {
         //wizard
         stepList: Array<NtsWizardStep> = [];
@@ -54,6 +55,8 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         mode :KnockoutObservable<number> = ko.observable(MODE.NEW);
 
         isLoadScreenQ: boolean = false;
+        
+        roleAuthority: any;
 
         constructor() {
             var self = this;
@@ -72,6 +75,9 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             self.alreadySettingPersonal = ko.observableArray([]);
             self.baseDate = ko.observable(new Date());
             self.selectedEmployee = ko.observableArray([]);
+            
+            self.roleAuthority = getShared("CMF002O_PARAMS"); 
+            
             //set up kcp005
             let self = this;
             self.baseDate = ko.observable(new Date());
@@ -136,11 +142,12 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         selectStandardMode() {
             block.invisible();
             let self = this;
-            service.getConditionSetting(new ParamToScreenP("","")).done(res => {
+            $('.content.clearfix .body').attr('style', '');
+            service.getConditionSetting(new ParamToScreenP("","",self.roleAuthority.empRole[0])).done(res => {
                 {
                     let dataCndSetCd: Array<StdOutputCondSetDto> = res;
                     self.loadListCondition(dataCndSetCd);
-                    $('#ex_output_wizard').ntsWizard("next");
+                    $('#ex_output_wizard').ntsWizard("next");        
                     $("#grd_Condition_container").focus();
 
                     block.clear();
@@ -158,19 +165,26 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         next() {
             let self = this;
+//            if($('.body.current').attr('id') == 'ex_output_wizard-p-1' ){
+//                $('.content.clearfix .body').attr('style', '');
+//            }
             $('#ex_output_wizard').ntsWizard("next");
         }
         previous() {
             $('#component-items-list').ntsError('clear');
+//            if($('.body.current').attr('id') == 'ex_output_wizard-p-1' ){
+//                $('.content.clearfix .body').attr('style', '');
+//            }
             $('#ex_output_wizard').ntsWizard("prev");
         }
 
         todoScreenQ() {
             let self = this;
+            $('.content.clearfix .body').attr('style', '');
             let isNextGetData: boolean = moment.utc(self.periodDateValue().startDate, "YYYY/MM/DD").diff(moment.utc(self.periodDateValue().endDate, "YYYY/MM/DD")) > 0;
 
             if (isNextGetData) {
-                $('#P6_1').ntsError('set', {messageId: "Msg_662"});
+                alertError({messageId: "Msg_662"});
                 return;
             }else{
                 $('#P6_1').ntsError('clear');
@@ -235,8 +249,8 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             // 外部出力実行社員選択チェック
             self.dataEmployeeId = self.findListId(self.selectedCode());
             if (self.dataEmployeeId.length == 0) {
-                // alertError({ messageId: 'Msg_657'});
-                $('#component-items-list').ntsError('set', {messageId:"Msg_657"});
+                alertError({ messageId: 'Msg_657'});
+                //$('#component-items-list').ntsError('set', {messageId:"Msg_657"});
             }
             else {
                 self.next();
@@ -247,7 +261,10 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         initScreenR() {
             let self = this;
             service.getExOutSummarySetting(self.selectedConditionCd()).done(res => {
-                self.listOutputCondition(res.ctgItemDataCustomList);
+                self.listOutputCondition(_.map(res.ctgItemDataCustomList, (itemData) =>{
+                    itemData.conditions = self.formatData(itemData.conditions, itemData.dataType);
+                    return itemData;
+                }));
                 self.listOutputItem(res.ctdOutItemCustomList);
 
                 $(".createExOutText").focus();
@@ -257,6 +274,22 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         }
 
+        formatData(data: string, typeData: number): string {
+            let self = this;
+            if(_.isEmpty(data)) return data;
+            if(typeData == model.ITEM_TYPE.INS_TIME || typeData == model.ITEM_TYPE.TIME){
+                let typeFormat = typeData == model.ITEM_TYPE.INS_TIME ? "Clock_Short_HM" : "Time_Short_HM"
+                if(data.indexOf(textLink) != -1){
+                    return nts.uk.time.format.byId(typeFormat, Number(data.split(textLink)[0])) + textLink + nts.uk.time.format.byId(typeFormat, Number(data.split(textLink)[1]))
+                }else{
+                    return nts.uk.time.format.byId(typeFormat, Number(data.split("|")[0]))+ data.split("|")[1];
+                }
+            }else{
+                return data;
+            }
+            return "";
+        }
+        
         createExOutText() {
             block.invisible();
 
@@ -307,11 +340,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
         loadScreenQ() {
             let self = this;
-
-            if(self.isLoadScreenQ){
-                return;    
-            }
-            self.isLoadScreenQ = true;
+//          fix bug 102743
+//            if(self.isLoadScreenQ){
+//                return;    
+//            }
+//            self.isLoadScreenQ = true;
 
             $("#component-items-list").focus();
             self.startDate(self.periodDateValue().startDate);
@@ -401,9 +434,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
     class ParamToScreenP {
         modeScreen: string;
         cndSetCd: string;
-        constructor(modeScreen: string, cndSetCd: string) {
+        roleId : string;
+        constructor(modeScreen: string, cndSetCd: string,roleId : string) {
             this.modeScreen = modeScreen;
             this.cndSetCd = cndSetCd;
+            this.roleId = roleId;
         }
 
     }

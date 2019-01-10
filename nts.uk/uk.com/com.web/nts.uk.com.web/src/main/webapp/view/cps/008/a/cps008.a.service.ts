@@ -26,6 +26,11 @@ module cps008.a.service {
         return ajax(paths.saveData, data);
     }
 
+    
+    //saveAsExcel
+        export function saveAsExcel(languageId: string): JQueryPromise<any> {
+            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Maintenance", languageId: languageId, domainType: "CPS008"+ __viewContext.program.programName, reportType: 0});
+        }
 
 
 }

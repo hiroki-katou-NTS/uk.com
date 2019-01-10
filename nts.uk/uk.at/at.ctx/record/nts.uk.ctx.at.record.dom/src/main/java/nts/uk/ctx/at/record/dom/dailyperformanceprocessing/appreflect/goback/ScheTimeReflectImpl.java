@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
@@ -22,13 +23,17 @@ import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySet;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -45,7 +50,19 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 	@Inject
 	private WorkTimeIsFluidWork workTimeisFluidWork;
 	@Inject
-	private FlexWorkSettingRepository flexWorkRepository;
+	private WorkTimeSettingRepository workTimeSetting;
+	/*フレックス勤務設定*/
+	@Inject
+	private FlexWorkSettingRepository flexWorkSettingRepository;
+	/*固定勤務設定*/
+	@Inject
+	private FixedWorkSettingRepository fixedWorkSettingRepository;
+	/*流動勤務設定*/
+	@Inject
+	private FlowWorkSettingRepository flowWorkSettingRepository;
+	/*時差勤務設定*/
+	@Inject
+	private DiffTimeWorkSettingRepository diffTimeWorkSettingRepository;
 	@Override
 	public WorkInfoOfDailyPerformance reflectScheTime(GobackReflectParameter para, boolean timeTypeScheReflect,
 			WorkInfoOfDailyPerformance dailyInfor) {
@@ -152,11 +169,6 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 	}
 	@Override
 	public Optional<TimeLeavingOfDailyPerformance> reflectTime(GobackReflectParameter para, boolean workTypeTimeReflect) {
-		Optional<TimeLeavingOfDailyPerformance> optTimeLeaving = timeLeavingOfDaily.findByKey(para.getEmployeeId(), para.getDateData());
-		if(!optTimeLeaving.isPresent()) {
-			return Optional.empty();
-		}
-		TimeLeavingOfDailyPerformance timeDaily = optTimeLeaving.get(); 
 		String tmpWorkTimeCode;
 		//INPUT．勤種・就時の反映できるフラグをチェックする
 		if(workTypeTimeReflect) {
@@ -165,7 +177,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 			//ドメインモデル「日別実績の勤務情報」を取得する
 			Optional<WorkInfoOfDailyPerformance> optWorkData = workInfor.find(para.getEmployeeId(), para.getDateData());
 			if(!optWorkData.isPresent()) {
-				return optTimeLeaving;
+				return Optional.empty();
 			} 
 			WorkInfoOfDailyPerformance workData = optWorkData.get();
 			tmpWorkTimeCode = workData.getRecordInfo().getWorkTimeCode() == null ? null : workData.getRecordInfo().getWorkTimeCode().v();
@@ -181,7 +193,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 		//終了時刻の反映
 		Integer endTime1 = isEnd1 ? this.justTimeLateLeave(tmpWorkTimeCode, para.getGobackData().getEndTime1(), 1, false) : null;		
 		TimeReflectPara timePara1 = new TimeReflectPara(para.getEmployeeId(), para.getDateData(), startTime1, endTime1, 1, isStart1, isEnd1);
-		timeDaily = scheUpdateService.updateRecordStartEndTimeReflect(timePara1, timeDaily);		
+		TimeLeavingOfDailyPerformance timeDaily = scheUpdateService.updateRecordStartEndTimeReflect(timePara1);		
 		/*//出勤時刻２を反映できるか
 		boolean startTime2 = this.checkAttendenceReflect(para, 2, true);
 		//ジャスト遅刻により時刻を編集する
@@ -197,7 +209,7 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 	@Override
 	public boolean checkAttendenceReflect(GobackReflectParameter para, Integer frameNo, boolean isPre) {
 		//INPUT．打刻優先区分をチェックする
-		if(para.getPriorStampAtr() == PriorStampAtr.GOBACKPRIOR) {
+		if(para.getPriorStampAtr() == PriorStampAtr.APP_TIME) {
 			//INPUT．申請する時刻に値があるかチェックする
 			if(isPre && frameNo == 1 && para.getGobackData().getStartTime1() != null && para.getGobackData().getStartTime1() > 0
 					|| isPre && frameNo == 2 && para.getGobackData().getStartTime2() != null && para.getGobackData().getStartTime2() > 0
@@ -238,29 +250,28 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 			if(!optActualStamp.isPresent()) {
 				return true;		
 			} 
-			WorkStamp actualStamp = optActualStamp.get();
+			/*WorkStamp actualStamp = optActualStamp.get();
 			//ドメインモデル「勤怠打刻」．打刻元情報が「打刻自動セット(個人情報)、直行直帰」
 			if(actualStamp.getStampSourceInfo() == StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO
 					|| actualStamp.getStampSourceInfo() == StampSourceInfo.GO_STRAIGHT) {
 				return true;
-			}
+			}*/
 		}
 		
-		return false;
+		//return false;
+		return true;
 		
 	}
 	@Override
 	public Integer justTimeLateLeave(String workTimeCode, Integer timeData, Integer frameNo, boolean isPre) {
 		String companyId = AppContexts.user().companyId();
-		
-		//時間丁度の打刻は遅刻・早退とするをチェックする		
-		Optional<FlexWorkSetting> optFlexWorkSetting = flexWorkRepository.find(companyId, workTimeCode);
-		if(!optFlexWorkSetting.isPresent()) {
+		Optional<WorkTimezoneCommonSet> optWorkTimeSetting = this.getWorkTimezoneCommonSet(companyId, workTimeCode);
+		if(!optWorkTimeSetting.isPresent()) {
 			return timeData;
-		}
-		FlexWorkSetting flexWorkSetting = optFlexWorkSetting.get();
-		WorkTimezoneCommonSet commonSetting = flexWorkSetting.getCommonSetting();
-		WorkTimezoneLateEarlySet lateEarlySet = commonSetting.getLateEarlySet();
+		}		
+		//時間丁度の打刻は遅刻・早退とするをチェックする		
+		WorkTimezoneCommonSet worktimeSet = optWorkTimeSetting.get();
+		WorkTimezoneLateEarlySet lateEarlySet = worktimeSet.getLateEarlySet();
 		List<OtherEmTimezoneLateEarlySet> lstOtherClassSets = lateEarlySet.getOtherClassSets();
 		if(lstOtherClassSets.isEmpty()) {
 			return timeData;
@@ -307,5 +318,51 @@ public class ScheTimeReflectImpl implements ScheTimeReflect{
 		
 		return false;
 	}
-
+	/**
+	 * 就業時間帯の共通設定を取得する
+	 * @return
+	 */
+	private Optional<WorkTimezoneCommonSet> getWorkTimezoneCommonSet(String companyId, String workTimeCd) {
+		Optional<WorkTimeSetting> optWorktimeSetting = workTimeSetting.findByCode(companyId, workTimeCd);
+		if(!optWorktimeSetting.isPresent()) {
+			return Optional.empty();
+		}
+		/* 勤務種類の取得 */
+		WorkTimeSetting workTime = optWorktimeSetting.get();
+		if (workTime.getWorkTimeDivision().getWorkTimeDailyAtr().isFlex()) {
+			val flexWorkSetOpt = flexWorkSettingRepository.find(companyId, workTimeCd);
+			if(flexWorkSetOpt.isPresent()) {
+				return Optional.of(flexWorkSetOpt.get().getCommonSetting());
+			}
+		}else{
+		
+			switch (workTime.getWorkTimeDivision().getWorkTimeMethodSet()) {
+			case FIXED_WORK:
+				/* 固定 */
+				val fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, workTimeCd);
+				if(fixedWorkSetting.isPresent()) {
+					return Optional.of(fixedWorkSetting.get().getCommonSetting());
+				}
+			break;
+			case FLOW_WORK:
+				/* 流動勤務 */
+				val flowWorkSetOpt = flowWorkSettingRepository.find(companyId, workTimeCd);
+				if(flowWorkSetOpt.isPresent()) {
+					return Optional.of(flowWorkSetOpt.get().getCommonSetting());
+				}
+				break;
+			case DIFFTIME_WORK:
+				/* 時差勤務 */
+				val diffWorkSetOpt = diffTimeWorkSettingRepository.find(companyId, workTimeCd);
+				if(diffWorkSetOpt.isPresent()) {
+					return Optional.of(diffWorkSetOpt.get().getCommonSet());
+				}
+				break;
+			default:
+				throw new RuntimeException(
+						"unknown workTimeMethodSet" + workTime.getWorkTimeDivision().getWorkTimeMethodSet());
+			}
+		}
+		return Optional.empty();
+	}
 }

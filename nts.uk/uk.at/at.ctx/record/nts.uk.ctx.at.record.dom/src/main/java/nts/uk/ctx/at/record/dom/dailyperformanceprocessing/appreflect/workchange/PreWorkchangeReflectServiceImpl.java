@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.workchange;
 
-import java.util.ArrayList;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
@@ -10,6 +8,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonRefl
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 
@@ -40,7 +39,17 @@ public class PreWorkchangeReflectServiceImpl implements PreWorkchangeReflectServ
 				
 				//予定勤種就時の反映
 				dailyInfor = commonService.reflectScheWorkTimeWorkType(workchangePara, isPre, dailyInfor);
-				
+				TimeReflectPara timeReflect =  new TimeReflectPara(param.getCommon().getEmployeeId(),
+						loopDate,
+						param.getCommon().getStartTime(),
+						param.getCommon().getEndTime(),
+						1, true, true);
+				//TODO 予定開始終了時刻の反映
+				if(param.getCommon().getStartTime() != null 
+						&& param.getCommon().getEndTime() != null) {
+					
+					dailyInfor = workTimeUpdate.updateScheStartEndTime(timeReflect, dailyInfor);	
+				}
 				ReflectParameter reflectPara = new ReflectParameter(workchangePara.getEmployeeId(),
 						loopDate,
 						workchangePara.getWorkTimeCode(),
@@ -48,6 +57,11 @@ public class PreWorkchangeReflectServiceImpl implements PreWorkchangeReflectServ
 						true);
 				//勤種・就時の反映
 				dailyInfor = workTimeUpdate.updateWorkTimeType(reflectPara, false, dailyInfor);
+				//TODO 開始終了時刻の反映
+				if(param.getCommon().getStartTime() != null 
+						&& param.getCommon().getEndTime() != null) {
+					workTimeUpdate.updateRecordStartEndTimeReflect(timeReflect);
+				}
 				//日別実績の勤務情報  変更
 				workRepository.updateByKeyFlush(dailyInfor);
 				commonService.calculateOfAppReflect(null, workchangePara.getEmployeeId(), loopDate);

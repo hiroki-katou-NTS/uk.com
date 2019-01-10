@@ -703,6 +703,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             });
         }
         /* End Tab 4 */
+        
     }
 
     export class ErrorAlarmWorkRecord {
