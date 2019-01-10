@@ -116,19 +116,20 @@ public class SecuritypolicyExcelImpl implements MasterListData{
 				putDataCustom(datas,"",TextResource.localize("CAS003_26"),"","",0);
 			}else {
 				putDataCustom(datas,TextResource.localize("CAS003_3"),"","","○",0);
-				putDataCustom(datas,"",TextResource.localize("CAS003_4"),"",String.valueOf(passPolicy.lowestDigits)+"桁",1);
+				String digit = TextResource.localize("CAS003_58");
+				putDataCustom(datas,"",TextResource.localize("CAS003_4"),"",String.valueOf(passPolicy.lowestDigits)+digit,1);
 				/**put row 3*/
-				putDataCustom(datas,"",TextResource.localize("CAS003_6"),TextResource.localize("CAS003_7"),String.valueOf(passPolicy.alphabetDigit)+"桁",1);
+				putDataCustom(datas,"",TextResource.localize("CAS003_6"),TextResource.localize("CAS003_7"),String.valueOf(passPolicy.alphabetDigit)+digit,1);
 				/**put row 4*/
-				putDataCustom(datas,"","",TextResource.localize("CAS003_10"),String.valueOf(passPolicy.numberOfDigits)+"桁",1);
+				putDataCustom(datas,"","",TextResource.localize("CAS003_10"),String.valueOf(passPolicy.numberOfDigits)+digit,1);
 				/**put row 5*/
-				putDataCustom(datas,"","",TextResource.localize("CAS003_13"),String.valueOf(passPolicy.symbolCharacters)+"桁",1);
+				putDataCustom(datas,"","",TextResource.localize("CAS003_13"),String.valueOf(passPolicy.symbolCharacters)+digit,1);
 				/**put row 6*/
-				putDataCustom(datas,"",TextResource.localize("CAS003_16"),"",String.valueOf(passPolicy.historyCount)+"回",1);
+				putDataCustom(datas,"",TextResource.localize("CAS003_16"),"",String.valueOf(passPolicy.historyCount)+TextResource.localize("CAS003_59"),1);//CAS003_59
 				/**put row 7*/
-				putDataCustom(datas,"",TextResource.localize("CAS003_19"),"",String.valueOf(passPolicy.validityPeriod)+"日",1);
+				putDataCustom(datas,"",TextResource.localize("CAS003_19"),"",String.valueOf(passPolicy.validityPeriod)+TextResource.localize("CAS003_60"),1);//CAS003_60
 				/**put row 8*/
-				putDataCustom(datas,"",TextResource.localize("CAS003_22"),"",String.valueOf(passPolicy.notificationPasswordChange)+"日前",1);
+				putDataCustom(datas,"",TextResource.localize("CAS003_22"),"",String.valueOf(passPolicy.notificationPasswordChange)+TextResource.localize("CAS003_61"),1);//CAS003_61
 				/**put row 9*/
 				putDataCustom(datas,"",TextResource.localize("CAS003_25"),"",passPolicy.initialPasswordChange?"○":"-",0);
 				/**put row 10*/
@@ -140,7 +141,7 @@ public class SecuritypolicyExcelImpl implements MasterListData{
 			if(acountPolicy.isUse){
 				putDataCustom(datas,TextResource.localize("CAS003_27"),"","","○",0);
 				putDataCustom(datas,"",TextResource.localize("CAS003_28"),TextResource.localize("CAS003_29"),timeToString(acountPolicy.lockInterval),1);
-				putDataCustom(datas,"","",TextResource.localize("CAS003_30"),acountPolicy.errorCount+"回",1);
+				putDataCustom(datas,"","",TextResource.localize("CAS003_30"),acountPolicy.errorCount+TextResource.localize("CAS003_59"),1);
 				putDataCustom(datas,"",TextResource.localize("CAS003_32"),"",acountPolicy.getLockOutMessage(),0);
 			}else {
 				putDataCustom(datas,TextResource.localize("CAS003_27"),"","","-",0);
