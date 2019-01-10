@@ -585,13 +585,13 @@ module nts.uk.com.view.cps005.b {
 
                     writeConstraint("NumericItemMin", {
                         mantissaMaxLength: !decimalPart ? 0 : decimalPart,
-                        min: Number(!numericItemMinus ? maxValue * (-1) : 0),
-                        max: _.min([Number(numericItemMax), Number(maxValue)])
+                        min: Number(!!numericItemMinus ? maxValue * (-1) : 0),
+                        max: _.isNil(numericItemMax) ? Number(maxValue) : _.min([Number(numericItemMax), Number(maxValue)])
                     });
 
                     writeConstraint("NumericItemMax", {
                         mantissaMaxLength: !decimalPart ? 0 : decimalPart,
-                        min: Number(numericItemMin) && Number(numericItemMin) < Number(maxValue) ? Number(numericItemMin) : (!numericItemMinus ? Number(maxValue) * (-1) : 0),
+                        min: Number(numericItemMin) && Number(numericItemMin) < Number(maxValue) ? Number(numericItemMin) : (!!numericItemMinus ? Number(maxValue) * (-1) : 0),
                         max: Number(maxValue)
                     });
                 }

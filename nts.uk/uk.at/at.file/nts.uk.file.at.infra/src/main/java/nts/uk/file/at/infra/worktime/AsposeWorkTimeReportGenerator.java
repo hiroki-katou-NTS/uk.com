@@ -78,10 +78,6 @@ public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator im
 			cells.get(3, 1).setValue(sheetName);
 
 			// Main Data
-			if (data.size() == 0) {
-				cells.deleteRows(startIndex, numRow);
-				return;
-			}
 			for (int i = 0; i < data.size(); i++) {
 				Object[] dataRow = data.get(i);
 				if (i % numRow == 0 && i + numRow < data.size()) {
@@ -91,6 +87,7 @@ public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator im
 					cells.get(startIndex + i, j).setValue(Objects.toString(dataRow[j], ""));
 				}
 			}
+			cells.deleteRows(startIndex + data.size(), numRow);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
