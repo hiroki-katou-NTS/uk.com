@@ -2,7 +2,10 @@ package nts.uk.file.at.infra.shift.estimate;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -38,7 +41,7 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 			+" 		,eas.SPHD_ATR "
 			+" 		,eas.HALF_DAY_ATR"
 			+" 		,STUFF(( SELECT "
-			+" 					', '+kpi.PREMIUM_NAME "
+			+" 					','+kpi.PREMIUM_NAME "
 			+" 				 FROM KSCST_EST_AGGREGATE_SET eas "
 			+" 					INNER JOIN KSCST_PER_COST_EXTRA_ITEM cei ON eas.CID = cei.CID "
 			+" 					INNER JOIN 	KMNMT_PREMIUM_ITEM kpi ON eas.CID = kpi.CID AND cei.PREMIUM_NO = kpi.PREMIUM_NO "
@@ -48,7 +51,7 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 			+" 	INNER JOIN KMNMT_PREMIUM_ITEM kpi ON eas.CID = kpi.CID AND cei.PREMIUM_NO = kpi.PREMIUM_NO AND kpi.USE_ATR= 1 "
 			+" WHERE eas.CID = ?cid"
 			+" 	GROUP BY eas.YEAR_HD_ATR ,eas.HAVY_HD_ATR ,eas.SPHD_ATR ,eas.HALF_DAY_ATR";
-	
+
 	private static final String GET_EXPORT_EXCEL_SHEET_TWO = "SELECT"
 			+" ecs.TIME_Y_DISP"
 			+" ,ecs.TIME_M_DISP"
@@ -676,8 +679,11 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 
 	private String formatPrice(String price) {
 		double amountParse = Double.parseDouble(price);
-		String prices = DecimalFormat.getCurrencyInstance(Locale.JAPAN).format(amountParse);
-		return prices;
+		DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat.getCurrencyInstance(Locale.JAPAN);
+		DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance(Locale.JAPAN);
+		dfs.setCurrencySymbol("¥");
+		decimalFormat.setDecimalFormatSymbols(dfs);
+		return decimalFormat.format(amountParse);
 	}
 	
 	private String getHeader(int rowNumber) {
