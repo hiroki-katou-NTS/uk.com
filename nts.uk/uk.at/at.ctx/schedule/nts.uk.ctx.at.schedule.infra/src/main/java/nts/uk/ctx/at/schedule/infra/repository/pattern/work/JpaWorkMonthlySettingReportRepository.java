@@ -28,13 +28,44 @@ public class JpaWorkMonthlySettingReportRepository extends JpaRepository impleme
 			.toString();
 	
 	private static final String GET_PERSION_WORK_MONTH_SET = (new StringBuffer()
-			.append("SELECT a.SCD, b.BUSINESS_NAME, c.START_DATE, c.END_DATE, ISNULL(d.MONTHLY_PATTERN, '') as MONTHLY_PATTERN, ISNULL(e.M_PATTERN_NAME, 'マスタ未登録') as M_PATTERN_NAME")
-			.append(" FROM BSYMT_EMP_DTA_MNG_INFO a")
-			.append(" INNER JOIN BPSMT_PERSON b on a.PID = b.PID")
-			.append(" INNER JOIN KSHMT_WORKING_COND c on c.SID = a.SID and c.START_DATE <= ?baseDate and c.END_DATE >= ?baseDate")
-			.append(" INNER JOIN KSHMT_WORKING_COND_ITEM d on c.HIST_ID = d.HIST_ID")
-			.append(" LEFT OUTER JOIN KSCMT_MONTH_PATTERN e on e.M_PATTERN_CD = d.MONTHLY_PATTERN and a.CID = e.CID")
-			.append(" WHERE a.CID = ?companyId ")
+			.append("SELECT DISTINCT a.SCD, a.BUSINESS_NAME,")
+			.append(" c.START_DATE, c.END_DATE, ISNULL(d.MONTHLY_PATTERN, '') as MONTHLY_PATTERN, ISNULL(e.M_PATTERN_NAME, 'マスタ未登録') as M_PATTERN_NAME")
+			.append(" FROM EMPLOYEE_DATA_VIEW a")
+			.append(" LEFT JOIN KSHMT_WORKING_COND c ON c.SID = a.SID ")
+			.append(" AND c.START_DATE <= ?baseDate AND c.END_DATE >= ?baseDate AND c.CID = a.CID")
+			.append(" LEFT JOIN KSHMT_WORKING_COND_ITEM d ON c.HIST_ID = d.HIST_ID AND c.SID = d.SID")
+			.append(" LEFT JOIN KSCMT_MONTH_PATTERN e ON e.M_PATTERN_CD = d.MONTHLY_PATTERN AND a.CID = e.CID")
+			.append(" LEFT JOIN KSHMT_SCHEDULE_METHOD f ON f.HIST_ID = c.HIST_ID AND c.SID = f.SID")
+			.append(" WHERE a.CID = ?companyId AND a.DEL_STATUS_ATR = 0")
+			.append(" AND a.EMPLOYMENT_STR_DATE <= ?baseDate AND a.EMPLOYMENT_END_DATE >= ?baseDate")
+			.append(" AND a.WPL_STR_DATE <= ?baseDate AND a.WPL_END_DATE >= ?baseDate")
+			.append(" AND a.WPL_INFO_STR_DATE <= ?baseDate AND a.WPL_INFO_END_DATE >= ?baseDate")
+			.append(" AND a.WKP_CONF_STR_DT <= ?baseDate AND a.WKP_CONF_END_DT >= ?baseDate")
+			.append(" AND a.CLASS_STR_DATE <= ?baseDate AND a.CLASS_END_DATE >= ?baseDate")
+			.append(" AND a.JOB_STR_DATE <= ?baseDate AND a.JOB_END_DATE >= ?baseDate")
+			.append(" AND a.JOB_INFO_STR_DATE <= ?baseDate AND a.JOB_INFO_END_DATE >= ?baseDate")
+			.append(" AND (")
+			//includeIncumbents
+			.append(" (")
+			//isWorking
+			.append(" ((a.TEMP_ABS_FRAME_NO IS NULL AND a.ABS_STR_DATE IS NULL) OR (a.ABS_STR_DATE > ?baseDate) ")
+			.append(" OR (a.ABS_END_DATE < ?baseDate))")
+			//isInCompany")
+			.append(" AND NOT(a.COM_STR_DATE >?baseDate OR a.COM_END_DATE < ?baseDate ))")
+			.append(" OR ")
+			//workerOnLeave
+			.append(" ((NOT (a.COM_STR_DATE >?baseDate OR a.COM_END_DATE < ?baseDate )")
+			.append(" AND NOT ((a.TEMP_ABS_FRAME_NO IS NULL AND a.ABS_STR_DATE IS NULL) OR (a.ABS_STR_DATE > ?baseDate) OR (a.ABS_END_DATE < ?baseDate))")
+			.append(" AND a.TEMP_ABS_FRAME_NO = 1))")
+			.append(" OR ")
+			//occupancy
+			.append(" (NOT(a.COM_STR_DATE >?baseDate OR a.COM_END_DATE < ?baseDate ) ")
+			.append(" AND NOT ((a.TEMP_ABS_FRAME_NO IS NULL AND a.ABS_STR_DATE IS NULL) OR (a.ABS_STR_DATE > ?baseDate) OR (a.ABS_END_DATE < ?baseDate))")
+			.append(" AND a.TEMP_ABS_FRAME_NO <> 1)")
+			.append(" OR ")
+			//retire
+			.append(" (a.COM_END_DATE >= '1900-01-01 00:00:00' AND a.COM_END_DATE <= '9999-12-31 00:00:00' AND a.COM_END_DATE != '9999-12-31 00:00:00'))")
+			.append(" AND (f.BASIC_CREATE_METHOD IS NULL OR f.BASIC_CREATE_METHOD = 1)")
 			.append(" ORDER BY a.SCD")).toString();
 
 	@Override
@@ -96,10 +127,18 @@ public class JpaWorkMonthlySettingReportRepository extends JpaRepository impleme
 		//a.SCD, b.BUSINESS_NAME, c.START_DATE, c.END_DATE, d.MONTHLY_PATTERN, e.M_PATTERN_NAME
 		String scd = (String) object[0];
 		String name = (String) object[1];
-		String startTimeStamp = ((Timestamp)object[2]).toString();
-		GeneralDate startDate = GeneralDate.fromString(startTimeStamp, "yyyy-MM-dd hh:mm:ss.s");
-		String endTimeStamp = ((Timestamp)object[3]).toString();
-		GeneralDate endDate = GeneralDate.fromString(endTimeStamp, "yyyy-MM-dd hh:mm:ss.s");
+		GeneralDate startDate = null;
+		if (object[2] != null) {
+			String startTimeStamp = ((Timestamp)object[2]).toString();
+			startDate = GeneralDate.fromString(startTimeStamp, "yyyy-MM-dd hh:mm:ss.s");
+		}
+		
+		GeneralDate endDate = null;
+		if (object[3] != null) {
+			String endTimeStamp = ((Timestamp)object[3]).toString();
+			endDate = GeneralDate.fromString(endTimeStamp, "yyyy-MM-dd hh:mm:ss.s");
+		}
+		
 		String patternCode = (String) object[4];
 		String patternName = (String) object[5];
 		
