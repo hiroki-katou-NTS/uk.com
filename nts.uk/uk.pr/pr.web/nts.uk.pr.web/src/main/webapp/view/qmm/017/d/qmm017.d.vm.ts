@@ -234,8 +234,13 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         changeDataByFormula () {
             let self = this;
             self.formulaSelectedSystemVariableClassificationValue.subscribe(newValue => {
+                let selectedFormulaCode = __viewContext.screenModel.selectedFormula().formulaCode(), selectedYearMonth = __viewContext.screenModel.selectedHistory().startMonth();
                 if (newValue || !newValue && newValue === 0) {
-                    let embeddableFormulaList: any = __viewContext.screenModel.formulaList().filter(function(formula){ return formula.settingMethod == model.FORMULA_SETTING_METHOD.DETAIL_SETTING && formula.formulaCode != self.selectedFormula().formulaCode()});
+                    let embeddableFormulaList: any = ko.toJS(__viewContext.screenModel.formulaList).filter(function(formula){
+                        return formula.settingMethod == model.FORMULA_SETTING_METHOD.DETAIL_SETTING && formula.formulaCode != selectedFormulaCode && formula.history.some(function(item){
+                            return item.startMonth <= selectedYearMonth && item.endMonth >= selectedYearMonth;
+                        })
+                    });
                     this.formulaList(embeddableFormulaList);
                     if (embeddableFormulaList.length > 0 ) self.selectedFormulaCode(embeddableFormulaList[0].formulaCode);
                 } else {
