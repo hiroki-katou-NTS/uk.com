@@ -211,10 +211,6 @@ module nts.uk.pr.view.qmm020.c.viewmodel {
         loadGrid(){
             let self = this;
             block.invisible();
-            if($("#grid2").length > 0){
-                $("#grid2").remove();
-                $("#C2_3").after('<table id="grid2"></table>');
-            }
             $("#grid2").ntsGrid({
                 height: '311px',
                 dataSource: self.items(),
