@@ -4,100 +4,168 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import getShared = nts.uk.ui.windows.getShared;
     import model = qmm020.share.model;
+    import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
+
     export class ScreenModel {
         masterUse: KnockoutObservable<number> = ko.observable();
         individualUse: KnockoutObservable<number> = ko.observable();
         usageMaster: KnockoutObservable<number> = ko.observable();
-        constructor(){
+
+        constructor() {
 
         }
 
-        startPage (): JQueryPromise<any>{
+        startPage(): JQueryPromise<any> {
             block.invisible();
             let self = this;
             let dfd = $.Deferred();
-            service.getStateUseUnitSettingById().done((data:any)=>{
-                if(data){
+            service.getStateUseUnitSettingById().done((data: any) => {
+                if (data) {
                     self.masterUse(data.masterUse);
                     self.individualUse(data.individualUse);
                     self.usageMaster(data.usageMaster);
+                    self.activeSideBar(data);
                 }
-                dfd.resolve(data);
-            }).fail((err)=>{
+                dfd.resolve();
+            }).fail((err) => {
                 dfd.reject();
                 if (err)
                     dialog.alertError(err);
-            }).always(()=>{
+            }).always(() => {
                 block.clear();
             });
             return dfd.promise();
         }
 
-        eventClick(data){
-            $(".tab-2-sidebar").click(function() {
-                if(data.masterUse === 1 && data.usageMaster === 0){
-                    __viewContext.viewModel.viewmodelC.startPage().done(function() {
-                        nts.uk.ui.errors.clearAll();
-                        if(__viewContext.viewModel.viewmodelC.mode()  === model.MODE.NO_REGIS){
-                            __viewContext.viewModel.viewmodelC.enableEditHisButton(false);
-                            __viewContext.viewModel.viewmodelC.enableAddHisButton(true);
-                            __viewContext.viewModel.viewmodelC.enableRegisterButton(false);
-                        }else{
-                            __viewContext.viewModel.viewmodelC.enableEditHisButton(true);
-                            __viewContext.viewModel.viewmodelC.enableAddHisButton(true);
-                            __viewContext.viewModel.viewmodelC.enableRegisterButton(true);
-                        }
-                        __viewContext.viewModel.viewmodelC.newHistoryId(null);
-                        $("#C1_5").focus();
-                    });
-                }else if(data.masterUse === 1 && data.usageMaster === 1){
-                    __viewContext.viewModel.viewmodelD.startPage().done(function() {
-                        nts.uk.ui.errors.clearAll();
-                        __viewContext.viewModel.viewmodelD.enableEditHisButton(true);
-                        __viewContext.viewModel.viewmodelD.enableAddHisButton(true);
-                    });
-                }else if(data.masterUse === 1 && data.usageMaster === 2){
-                    __viewContext.viewModel.viewmodelE.initScreen(null);
-                }else if(data.masterUse === 1 && data.usageMaster === 3){
-                    __viewContext.viewModel.viewmodelF.initScreen(null);
-                }else if(data.masterUse === 1 && data.usageMaster === 4){
-                    __viewContext.viewModel.viewmodelG.initScreen(null);
+        activeSideBar(setting) {
+            if (setting.masterUse == 1) {
+                if (setting.usageMaster == 0) {
+                    $("#sidebar").ntsSideBar("show", 1);
+                } else {
+                    $("#sidebar").ntsSideBar("hide", 1);
                 }
-            });
-
+                if (setting.usageMaster == 1) {
+                    $("#sidebar").ntsSideBar("show", 2);
+                } else {
+                    $("#sidebar").ntsSideBar("hide", 2);
+                }
+                if (setting.usageMaster == 2) {
+                    $("#sidebar").ntsSideBar("show", 3);
+                } else {
+                    $("#sidebar").ntsSideBar("hide", 3);
+                }
+                if (setting.usageMaster == 3) {
+                    $("#sidebar").ntsSideBar("show", 4);
+                } else {
+                    $("#sidebar").ntsSideBar("hide", 4);
+                }
+                if (setting.usageMaster == 4) {
+                    $("#sidebar").ntsSideBar("show", 5);
+                } else {
+                    $("#sidebar").ntsSideBar("hide", 5);
+                }
+            } else {
+                $("#sidebar").ntsSideBar("hide", 1);
+                $("#sidebar").ntsSideBar("hide", 2);
+                $("#sidebar").ntsSideBar("hide", 3);
+                $("#sidebar").ntsSideBar("hide", 4);
+                $("#sidebar").ntsSideBar("hide", 5);
+            }
+            if (setting.individualUse == 1) {
+                $("#sidebar").ntsSideBar("show", 6);
+            } else {
+                $("#sidebar").ntsSideBar("hide", 6);
+            }
         }
 
-        openScreenL(){
+        openScreenL() {
             let self = __viewContext.viewModel.viewmodelA;
-            let isClick = false;
-            modal("/view/qmm/020/l/index.xhtml").onClosed(()=>{
+            modal("/view/qmm/020/l/index.xhtml").onClosed(() => {
                 let params = getShared(model.PARAMETERS_SCREEN_L.OUTPUT);
-                service.getStateUseUnitSettingById().done((data:any)=>{
-                    if($(".tab-2-sidebar")[0].className.indexOf('active') > 0){
-                        isClick = true;
-                    }
-                    if(data){
+                if (isNullOrUndefined(params)) return;
+                if (!params.isSubmit) return;
+                block.invisible();
+                service.getStateUseUnitSettingById().done((data: any) => {
+                    if (data) {
                         self.masterUse(data.masterUse);
                         self.individualUse(data.individualUse);
                         self.usageMaster(data.usageMaster);
+                        self.activeSideBar(data);
                     }
-                    self.eventClick(data);
-                }).fail((err)=>{
+                }).fail((err) => {
                     if (err)
                         dialog.alertError(err);
-                }).always(()=>{
-                    if(isClick){
-                        $(".tab-2-sidebar").click();
-                    }
+                }).always(() => {
                     block.clear();
                 });
             });
         }
 
-        openScreenI(){
+        openScreenI() {
             let self = __viewContext.viewModel.viewmodelA;
-            modal("/view/qmm/020/i/index.xhtml").onClosed(()=>{
+            modal("/view/qmm/020/i/index.xhtml").onClosed(() => {
             });
         }
+
+        onSelectTabB() {
+            __viewContext.viewModel.viewmodelB.startPage().done(function () {
+                nts.uk.ui.errors.clearAll();
+                if (__viewContext.viewModel.viewmodelB.mode() === model.MODE.NO_REGIS) {
+                    __viewContext.viewModel.viewmodelB.enableEditHisButton(false);
+                    __viewContext.viewModel.viewmodelB.enableAddHisButton(true);
+                    __viewContext.viewModel.viewmodelB.enableRegisterButton(false);
+                    __viewContext.viewModel.viewmodelB.openScreenJ();
+                } else {
+                    __viewContext.viewModel.viewmodelB.enableEditHisButton(true);
+                    __viewContext.viewModel.viewmodelB.enableAddHisButton(true);
+                    __viewContext.viewModel.viewmodelB.enableRegisterButton(true);
+                }
+                __viewContext.viewModel.viewmodelB.newHistoryId(null);
+                $("#B1_5").focus();
+            });
+        };
+
+        onSelectTabC() {
+            __viewContext.viewModel.viewmodelC.startPage().done(function () {
+                nts.uk.ui.errors.clearAll();
+                if (__viewContext.viewModel.viewmodelC.mode() === model.MODE.NO_REGIS) {
+                    __viewContext.viewModel.viewmodelC.enableEditHisButton(false);
+                    __viewContext.viewModel.viewmodelC.enableAddHisButton(true);
+                    __viewContext.viewModel.viewmodelC.enableRegisterButton(false);
+                } else {
+                    __viewContext.viewModel.viewmodelC.enableEditHisButton(true);
+                    __viewContext.viewModel.viewmodelC.enableAddHisButton(true);
+                    __viewContext.viewModel.viewmodelC.enableRegisterButton(true);
+                }
+                __viewContext.viewModel.viewmodelC.newHistoryId(null);
+                $("#C1_5").focus();
+            });
+        };
+
+        onSelectTabD() {
+            __viewContext.viewModel.viewmodelD.startPage().done(function () {
+                nts.uk.ui.errors.clearAll();
+                __viewContext.viewModel.viewmodelD.enableEditHisButton(true);
+                __viewContext.viewModel.viewmodelD.enableAddHisButton(true);
+            });
+        };
+
+        onSelectTabE() {
+            __viewContext.viewModel.viewmodelE.initScreen(null);
+        };
+
+        onSelectTabF() {
+            __viewContext.viewModel.viewmodelF.initScreen(null);
+        };
+
+        onSelectTabG() {
+            __viewContext.viewModel.viewmodelG.initScreen(null);
+        };
+
+        onSelectTabH() {
+            __viewContext.viewModel.viewmodelH.initScreen().done(() => {
+                __viewContext.viewModel.viewmodelH.loadCCG001();
+            });
+        };
     }
 }

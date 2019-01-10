@@ -112,8 +112,7 @@ module nts.uk.pr.view.qmm019.c.viewmodel {
                     }).fail(err => {
                         block.clear();
 
-                        $('#C1_12').ntsError('set', { messageId: err.messageId });
-                        $("#C1_12").focus();
+                        nts.uk.ui.dialog.alertError({ messageId: err.messageId });
                     })
                 }
             }
