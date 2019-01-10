@@ -173,15 +173,15 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlNormal.append(" 			FORMAT(CAST(PRED_TIME_SET.WORK_ADD_AFTERNOON AS INTEGER)%60,'0#')), NULL),");
 		// R1_86 勤務時間帯.1日勤務用.開始時間
 		sqlNormal.append(" 	IIF(WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork,");
-		sqlNormal.append(" 		IIF(FIXED_WORK_TIME_SET1.TIME_STR IS NOT NULL, CONCAT(CAST(FIXED_WORK_TIME_SET1.TIME_STR AS INTEGER)/60, ':',");
+		sqlNormal.append(" 		IIF(WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FIXED_WORK_TIME_SET1.TIME_STR IS NOT NULL, CONCAT(CAST(FIXED_WORK_TIME_SET1.TIME_STR AS INTEGER)/60, ':',");
 		sqlNormal.append(" 			FORMAT(CAST(FIXED_WORK_TIME_SET1.TIME_STR AS INTEGER)%60,'0#')), NULL),");
-		sqlNormal.append(" 		IIF(DT_WORK_TIME_SET1.TIME_STR IS NOT NULL, CONCAT(CAST(DT_WORK_TIME_SET1.TIME_STR AS INTEGER)/60, ':',");
+		sqlNormal.append(" 		IIF(WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND DT_WORK_TIME_SET1.TIME_STR IS NOT NULL, CONCAT(CAST(DT_WORK_TIME_SET1.TIME_STR AS INTEGER)/60, ':',");
 		sqlNormal.append(" 			FORMAT(CAST(DT_WORK_TIME_SET1.TIME_STR AS INTEGER)%60,'0#')), NULL)),");
 		// R1_87 勤務時間帯.1日勤務用.終了時間
 		sqlNormal.append(" 	IIF(WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork,");
-		sqlNormal.append(" 		IIF(FIXED_WORK_TIME_SET1.TIME_END IS NOT NULL, CONCAT(CAST(FIXED_WORK_TIME_SET1.TIME_END AS INTEGER)/60, ':',");
+		sqlNormal.append(" 		IIF(WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FIXED_WORK_TIME_SET1.TIME_END IS NOT NULL, CONCAT(CAST(FIXED_WORK_TIME_SET1.TIME_END AS INTEGER)/60, ':',");
 		sqlNormal.append(" 			FORMAT(CAST(FIXED_WORK_TIME_SET1.TIME_END AS INTEGER)%60,'0#')), NULL),");
-		sqlNormal.append(" 		IIF(DT_WORK_TIME_SET1.TIME_END IS NOT NULL, CONCAT(CAST(DT_WORK_TIME_SET1.TIME_END AS INTEGER)/60, ':',");
+		sqlNormal.append(" 		IIF(WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND DT_WORK_TIME_SET1.TIME_END IS NOT NULL, CONCAT(CAST(DT_WORK_TIME_SET1.TIME_END AS INTEGER)/60, ':',");
 		sqlNormal.append(" 			FORMAT(CAST(DT_WORK_TIME_SET1.TIME_END AS INTEGER)%60,'0#')), NULL)),");
 		// R1_88 勤務時間帯.1日勤務用.丸め
 		sqlNormal.append(" 	IIF(WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork,");
@@ -3417,11 +3417,11 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlex.append(" 		 ELSE NULL");
 		sqlFlex.append(" 	END,");
 		// R3_124 打刻詳細設定.出勤反映時間帯.開始時刻
-		sqlFlex.append(" 	IIF(TEMP.ROW_ID = 1 AND FLEX_STAMP_REFLECT1.START_TIME IS NOT NULL, ");
+		sqlFlex.append(" 	IIF(TEMP.ROW_ID = 1 AND FLEX_STAMP_REFLECT1.START_TIME IS NOT NULL AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode, ");
 		sqlFlex.append(" 		CONCAT(CAST(FLEX_STAMP_REFLECT1.START_TIME AS INTEGER)/60, ':',");
 		sqlFlex.append(" 			FORMAT(CAST(FLEX_STAMP_REFLECT1.START_TIME AS INTEGER)%60,'0#')), NULL),");
 		// R3_125 打刻詳細設定.出勤反映時間帯.終了時刻
-		sqlFlex.append(" 	IIF(TEMP.ROW_ID = 1 AND FLEX_STAMP_REFLECT1.END_TIME IS NOT NULL, ");
+		sqlFlex.append(" 	IIF(TEMP.ROW_ID = 1 AND FLEX_STAMP_REFLECT1.END_TIME IS NOT NULL AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode, ");
 		sqlFlex.append(" 		CONCAT(CAST(FLEX_STAMP_REFLECT1.END_TIME AS INTEGER)/60, ':',");
 		sqlFlex.append(" 			FORMAT(CAST(FLEX_STAMP_REFLECT1.END_TIME AS INTEGER)%60,'0#')), NULL),");
 		// R3_126 打刻詳細設定.出勤反映時間帯.2勤務目の開始（1勤務目の退勤から分けられる時間）
