@@ -129,7 +129,10 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             " CASE WHEN USE_ATR = 1 AND TIME_USE_ATR_TAB1 = 1 THEN TIME_ITEM_NAME " +
             " ELSE NULL " +
             " END TIME_ITEM_NAME, " +
-            " USE_ATR_TAB2, " +
+            " USE_ATR_TAB2,  " +
+            " CASE WHEN USE_ATR_TAB2 = 1 AND DATE_USE_ATR = 1 THEN SPECIAL_DATE_ITEM_NO " +
+            " ELSE NULL " +
+            " END SPECIAL_DATE_ITEM_NO, " +
             " CASE WHEN USE_ATR_TAB2 = 1 AND DATE_USE_ATR = 1 THEN NAME " +
             " ELSE NULL " +
             " END NAME, " +
@@ -525,7 +528,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
 
         data.put(SettingTimeZoneUtils.KMK005_115, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_115)
-                .value(rs.getString("NAME"))
+                .value(rs.getInt("SPECIAL_DATE_ITEM_NO") == null && rs.getString("NAME") == null ? null : rs.getInt("SPECIAL_DATE_ITEM_NO") + rs.getString("NAME"))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 
