@@ -29,7 +29,7 @@ public class JpaWageTableRepository extends JpaRepository implements WageTableRe
 
 	@Override
 	public List<WageTable> getWageTableByYearMonth(String companyId, int yearMonth) {
-		String query = "SELECT a FROM QpbmtWageTable a JOIN QpbmtWageTableHistory f ON a.pk.companyId = f.pk.companyId AND a.pk.code = b.pk.code WHERE f.companyId =:cid AND" +
+		String query = "SELECT a FROM QpbmtWageTable a JOIN QpbmtWageTableHistory f ON a.pk.companyId = f.companyId AND a.pk.code = f.code WHERE f.companyId =:cid AND " +
 				"f.startYm <= :yearMonth AND f.endYm >= :yearMonth  ORDER BY a.pk.code";
 		return this.queryProxy().query(query, QpbmtWageTable.class).setParameter("cid", companyId).setParameter("yearMonth", yearMonth).getList(i -> i.toDomain());
 	}
