@@ -383,13 +383,13 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlNormal.append(" 	END,");
 		// R1_104 残業時間帯.1日勤務用.早出
 		sqlNormal.append(" 	CASE WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork AND FIXED_OT_TIME_SET1.TREAT_EARLY_OT_WORK = ?isTrue");
-		sqlNormal.append(" 			THEN ?isUseText");
+		sqlNormal.append(" 			THEN ?treatEarlyOtWork");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork AND FIXED_OT_TIME_SET1.TREAT_EARLY_OT_WORK = ?isFalse");
-		sqlNormal.append(" 			THEN ?isNotUseText");
+		sqlNormal.append(" 			THEN ?notTreatEarlyOtWork");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?difftimeWork AND DT_OT_TIME_SET1.TREAT_EARLY_OT_WORK = ?isTrue");
-		sqlNormal.append(" 			THEN ?isUseText");
+		sqlNormal.append(" 			THEN ?treatEarlyOtWork");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?difftimeWork AND DT_OT_TIME_SET1.TREAT_EARLY_OT_WORK = ?isFalse");
-		sqlNormal.append(" 			THEN ?isNotUseText");
+		sqlNormal.append(" 			THEN ?notTreatEarlyOtWork");
 		sqlNormal.append(" 		 ELSE NULL");
 		sqlNormal.append(" 	END,");
 		// R1_237 残業時間帯.1日勤務用.固定
@@ -474,13 +474,13 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlNormal.append(" 	END,");
 		// R1_112 残業時間帯.午前勤務用.早出
 		sqlNormal.append(" 	CASE WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork AND FIXED_OT_TIME_SET2.TREAT_EARLY_OT_WORK = ?isTrue ");
-		sqlNormal.append(" 			AND FIXED_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN ?isUseText");
+		sqlNormal.append(" 			AND FIXED_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN ?treatEarlyOtWork");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork AND FIXED_OT_TIME_SET2.TREAT_EARLY_OT_WORK = ?isFalse ");
-		sqlNormal.append(" 			AND FIXED_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN ?isNotUseText");
+		sqlNormal.append(" 			AND FIXED_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN ?notTreatEarlyOtWork");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?difftimeWork AND DT_OT_TIME_SET2.TREAT_EARLY_OT_WORK = ?isTrue ");
-		sqlNormal.append(" 			AND DIFF_TIME_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN ?isUseText");
+		sqlNormal.append(" 			AND DIFF_TIME_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN ?treatEarlyOtWork");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?difftimeWork AND DT_OT_TIME_SET2.TREAT_EARLY_OT_WORK = ?isFalse ");
-		sqlNormal.append(" 			AND DIFF_TIME_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN ?isNotUseText");
+		sqlNormal.append(" 			AND DIFF_TIME_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN ?notTreatEarlyOtWork");
 		sqlNormal.append(" 		 ELSE NULL");
 		sqlNormal.append(" 	END,");
 		// R1_238 残業時間帯.午前勤務用.固定
@@ -563,13 +563,13 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlNormal.append(" 	END,");
 		// R1_120 残業時間帯.午後勤務用.早出
 		sqlNormal.append(" 	CASE WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork AND FIXED_OT_TIME_SET3.TREAT_EARLY_OT_WORK = ?isTrue AND FIXED_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode");
-		sqlNormal.append(" 			THEN ?isUseText");
+		sqlNormal.append(" 			THEN ?treatEarlyOtWork");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork AND FIXED_OT_TIME_SET3.TREAT_EARLY_OT_WORK = ?isFalse AND FIXED_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode");
-		sqlNormal.append(" 			THEN ?isNotUseText");
+		sqlNormal.append(" 			THEN ?notTreatEarlyOtWork");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?difftimeWork AND DT_OT_TIME_SET3.TREAT_EARLY_OT_WORK = ?isTrue AND DIFF_TIME_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode");
-		sqlNormal.append(" 			THEN ?isUseText");
+		sqlNormal.append(" 			THEN ?treatEarlyOtWork");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?difftimeWork AND DT_OT_TIME_SET3.TREAT_EARLY_OT_WORK = ?isFalse AND DIFF_TIME_WORK_SET.USE_HALF_DAY = ?isTrue AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode");
-		sqlNormal.append(" 			THEN ?isNotUseText");
+		sqlNormal.append(" 			THEN ?notTreatEarlyOtWork");
 		sqlNormal.append(" 		 ELSE NULL");
 		sqlNormal.append(" 	END,");
 		// R1_239 残業時間帯.午後勤務用.固定
@@ -3275,7 +3275,12 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		// R3_104 残業時間帯.1日勤務用.残業枠
 		sqlFlex.append(" 	FLEX_OT_FRAME1.OT_FR_NAME,");
 		// R3_105 残業時間帯.1日勤務用.早出
-		sqlFlex.append(" 	FLEX_OT_TIME_SET1.TREAT_EARLY_OT_WORK,");
+		sqlFlex.append(" 	CASE WHEN FLEX_OT_TIME_SET1.TREAT_EARLY_OT_WORK = ?isTrue");
+		sqlFlex.append(" 			THEN ?treatEarlyOtWork");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET1.TREAT_EARLY_OT_WORK = ?isFalse");
+		sqlFlex.append(" 			THEN ?notTreatEarlyOtWork");
+		sqlFlex.append(" 		 ELSE NULL");
+		sqlFlex.append(" 	END,");
 		// R3_106 残業時間帯.午前勤務用.開始時間
 		sqlFlex.append(" 	IIF(FLEX_OT_TIME_SET2.TIME_STR IS NOT NULL AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isTrue, ");
 		sqlFlex.append(" 		CONCAT(CAST(FLEX_OT_TIME_SET2.TIME_STR AS INTEGER)/60, ':',");
@@ -3310,8 +3315,10 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlex.append(" 		 ELSE NULL");
 		sqlFlex.append(" 	END,");
 		// R3_111 残業時間帯.午前勤務用.早出
-		sqlFlex.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isTrue");
-		sqlFlex.append(" 			THEN FLEX_OT_TIME_SET2.TREAT_EARLY_OT_WORK");
+		sqlFlex.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isTrue AND FLEX_OT_TIME_SET2.TREAT_EARLY_OT_WORK = ?isTrue");
+		sqlFlex.append(" 			THEN ?treatEarlyOtWork");
+		sqlFlex.append(" 		 WHEN WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isTrue AND FLEX_OT_TIME_SET2.TREAT_EARLY_OT_WORK = ?isFalse");
+		sqlFlex.append(" 			THEN ?notTreatEarlyOtWork");
 		sqlFlex.append(" 		 ELSE NULL");
 		sqlFlex.append(" 	END,");
 		// R3_112 残業時間帯.午後勤務用.開始時間
@@ -3348,8 +3355,10 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlex.append(" 		 ELSE NULL");
 		sqlFlex.append(" 	END,");
 		// R3_117 残業時間帯.午後勤務用.早出
-		sqlFlex.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isTrue");
-		sqlFlex.append(" 			THEN FLEX_OT_TIME_SET3.TREAT_EARLY_OT_WORK");
+		sqlFlex.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isTrue AND FLEX_OT_TIME_SET3.TREAT_EARLY_OT_WORK = ?isTrue");
+		sqlFlex.append(" 			THEN ?treatEarlyOtWork");
+		sqlFlex.append(" 		 WHEN WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isTrue AND FLEX_OT_TIME_SET3.TREAT_EARLY_OT_WORK = ?isFalse");
+		sqlFlex.append(" 			THEN ?notTreatEarlyOtWork");
 		sqlFlex.append(" 		 ELSE NULL");
 		sqlFlex.append(" 	END,");
 		// R3_118 打刻時間帯.優先設定.出勤
@@ -4556,6 +4565,8 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 				.setParameter("roundingUp", Rounding.ROUNDING_UP.value)
 				.setParameter("roundingDownText", TextResource.localize("Enum_Rounding_Down"))
 				.setParameter("roundingUpText", TextResource.localize("Enum_Rounding_Up"))
+				.setParameter("treatEarlyOtWork", "○")
+				.setParameter("notTreatEarlyOtWork", "-")
 				.setParameter("isLegalOtSet", LegalOTSetting.LEGAL_INTERNAL_TIME.value)
 				.setParameter("isNotLegalOtSet", LegalOTSetting.OUTSIDE_LEGAL_TIME.value)
 				.setParameter("isUseText", TextResource.localize("KMK003_142"))
@@ -4680,7 +4691,7 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 				.setParameter("roundingDown", Rounding.ROUNDING_DOWN.value)
 				.setParameter("roundingUp", Rounding.ROUNDING_UP.value)	
 				.setParameter("roundingDownText", TextResource.localize("Enum_Rounding_Down"))
-				.setParameter("roundingUpText", TextResource.localize("Enum_Rounding_Up"))
+				.setParameter("roundingUpText", TextResource.localize("Enum_Rounding_Up"))	
 				.setParameter("restCalcMethodReferMaster", FlowFixedRestCalcMethod.REFER_MASTER.value)
 				.setParameter("restCalcMethodReferSchedule", FlowFixedRestCalcMethod.REFER_SCHEDULE.value)
 				.setParameter("restCalcMethodWithoutRefer", FlowFixedRestCalcMethod.STAMP_WHITOUT_REFER.value)
@@ -4862,6 +4873,8 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 				.setParameter("roundingUp", Rounding.ROUNDING_UP.value)	
 				.setParameter("roundingDownText", TextResource.localize("Enum_Rounding_Down"))
 				.setParameter("roundingUpText", TextResource.localize("Enum_Rounding_Up"))
+				.setParameter("treatEarlyOtWork", "○")
+				.setParameter("notTreatEarlyOtWork", "-")
 				.setParameter("isUseText", TextResource.localize("KMK003_142"))
 				.setParameter("isNotUseText", TextResource.localize("KMK003_143"))
 				.setParameter("isUseRestAfterSetText", "○")
