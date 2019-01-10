@@ -359,19 +359,19 @@ public class YearHolidayRepositoryImpl implements MasterListData{
                         }else{
                         	data.put("基準設定５ 45", "○");
                         	if(c.getCalculationMethod().value == 0){//%
-                    			data.put("基準設定下限４ 37", c.getGrantConditions().get(4).getConditionValue()+" %");
+                    			data.put("基準設定下限５ 46", c.getGrantConditions().get(4).getConditionValue()+" %");
                     			if(c.getGrantConditions().get(3).getConditionValue().v() == 0){
-                    				data.put("上限４ 38", c.getGrantConditions().get(3).getConditionValue().v()+"%");
+                    				data.put("上限５ 47", c.getGrantConditions().get(3).getConditionValue().v()+"%");
                     			}else{
-                    				data.put("上限４ 38", c.getGrantConditions().get(3).getConditionValue().v()-1+"%");
+                    				data.put("上限５ 47", c.getGrantConditions().get(3).getConditionValue().v()-1+"%");
                     			}
                     			
                     		}else{
-                    			data.put("基準設定下限４ 37", c.getGrantConditions().get(4).getConditionValue()+" 日");
+                    			data.put("基準設定下限５ 46", c.getGrantConditions().get(4).getConditionValue()+" 日");
                     			if(c.getGrantConditions().get(3).getConditionValue().v() ==0){
-                    				data.put("上限４ 38", c.getGrantConditions().get(3).getConditionValue().v()+"日");
+                    				data.put("上限５ 47", c.getGrantConditions().get(3).getConditionValue().v()+"日");
                     			}else{
-                    				data.put("上限４ 38", c.getGrantConditions().get(3).getConditionValue().v()-1+"日");
+                    				data.put("上限５ 47", c.getGrantConditions().get(3).getConditionValue().v()-1+"日");
                     			}
                     		}
                         	
