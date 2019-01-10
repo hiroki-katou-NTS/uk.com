@@ -701,9 +701,9 @@ public class YearHolidayRepositoryImpl implements MasterListData{
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("付与回 10",TextResource.localize("KMF003_12"),//B2_12
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("勤続年数年 11", TextResource.localize("KMF003_48")+ ""+TextResource.localize("KMF003_41"),// B2_14 + B2_5
+		columns.add(new MasterHeaderColumn("勤続年数年 11", TextResource.localize("KMF003_80"),// B2_14 + B2_5
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("勤続年数月 12",TextResource.localize("KMF003_48")+" "+TextResource.localize("KMF003_42"),// B2_14 + B2_6
+		columns.add(new MasterHeaderColumn("勤続年数月 12",TextResource.localize("KMF003_81"),// B2_14 + B2_6
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("付与日数 13", TextResource.localize("KMF003_43"),//B2_7
 				ColumnTextAlign.LEFT, "", true));
@@ -723,9 +723,9 @@ public class YearHolidayRepositoryImpl implements MasterListData{
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("付与回 21", TextResource.localize("KMF003_12"),//B2_12
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("勤続年数年 22",TextResource.localize("KMF003_48")+ ""+TextResource.localize("KMF003_41"),// B2_14 + B2_5
+		columns.add(new MasterHeaderColumn("勤続年数年 22",TextResource.localize("KMF003_80"),// B2_14 + B2_5
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("勤続年数月 23", TextResource.localize("KMF003_48")+" "+TextResource.localize("KMF003_42"),// B2_14 + B2_6
+		columns.add(new MasterHeaderColumn("勤続年数月 23", TextResource.localize("KMF003_81"),// B2_14 + B2_6
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("付与日数 24",  TextResource.localize("KMF003_43"),//B2_7
 				ColumnTextAlign.LEFT, "", true));
@@ -741,9 +741,9 @@ public class YearHolidayRepositoryImpl implements MasterListData{
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("付与回 30",TextResource.localize("KMF003_12"),//B2_12
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("勤続年数年 31",TextResource.localize("KMF003_48")+ ""+TextResource.localize("KMF003_41"),// B2_14 + B2_5
+		columns.add(new MasterHeaderColumn("勤続年数年 31",TextResource.localize("KMF003_80"),// B2_14 + B2_5
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("勤続年数月 32",TextResource.localize("KMF003_48")+" "+TextResource.localize("KMF003_42"),// B2_14 + B2_6
+		columns.add(new MasterHeaderColumn("勤続年数月 32",TextResource.localize("KMF003_81"),// B2_14 + B2_6
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("付与日数 33", TextResource.localize("KMF003_43"),//B2_7
 				ColumnTextAlign.LEFT, "", true));
@@ -759,9 +759,9 @@ public class YearHolidayRepositoryImpl implements MasterListData{
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("付与回 39", TextResource.localize("KMF003_12"),//B2_12
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("勤続年数年 40", TextResource.localize("KMF003_48")+ ""+TextResource.localize("KMF003_41"),// B2_14 + B2_5
+		columns.add(new MasterHeaderColumn("勤続年数年 40", TextResource.localize("KMF003_80"),// B2_14 + B2_5
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("勤続年数月 41", TextResource.localize("KMF003_48")+" "+TextResource.localize("KMF003_42"),// B2_14 + B2_6
+		columns.add(new MasterHeaderColumn("勤続年数月 41", TextResource.localize("KMF003_81"),// B2_14 + B2_6
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("付与日数  42", TextResource.localize("KMF003_43"),//B2_7
 				ColumnTextAlign.LEFT, "", true));
@@ -777,9 +777,9 @@ public class YearHolidayRepositoryImpl implements MasterListData{
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("付与回 48", TextResource.localize("KMF003_12"),//B2_12
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("勤続年数年 49", TextResource.localize("KMF003_48")+ ""+TextResource.localize("KMF003_41"),// B2_14 + B2_5
+		columns.add(new MasterHeaderColumn("勤続年数年 49", TextResource.localize("KMF003_80"),// B2_14 + B2_5
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("勤続年数月  50", TextResource.localize("KMF003_48")+" "+TextResource.localize("KMF003_42"),// B2_14 + B2_6
+		columns.add(new MasterHeaderColumn("勤続年数月  50", TextResource.localize("KMF003_81"),// B2_14 + B2_6
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("付与日数 51", TextResource.localize("KMF003_43"),//B2_7
 				ColumnTextAlign.LEFT, "", true));
