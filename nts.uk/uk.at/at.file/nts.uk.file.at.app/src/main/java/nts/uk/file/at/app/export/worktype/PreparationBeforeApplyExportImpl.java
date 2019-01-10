@@ -751,7 +751,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
             return ((BigDecimal)obj[42]).intValue() == 1 ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
         }
         if(i == 1 && obj[43] != null) {
-            return ((BigDecimal)obj[42]).intValue() == 1 ? TextResource.localize("KAF022_437") : TextResource.localize("KAF022_438");
+            return ((BigDecimal)obj[43]).intValue() == 1 ? TextResource.localize("KAF022_437") : TextResource.localize("KAF022_438");
         }
         if(i == 2 && obj[44] != null) {
             return ((BigDecimal)obj[44]).intValue() == 1 ? TextResource.localize("KAF022_437") : TextResource.localize("KAF022_438");
