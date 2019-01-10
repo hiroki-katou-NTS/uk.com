@@ -510,6 +510,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             let basicCalculationFormulaList = self.basicCalculationFormulaList();
             basicCalculationFormulaList = basicCalculationFormulaList.map(item => item['calculationFormulaClassification'](model.CALCULATION_FORMULA_CLS.FORMULA));
             self.basicCalculationFormulaList(basicCalculationFormulaList);
+            $('#C3_1 .nts-input').ntsError('clear');
         }
 
         setAllFixedValue () {
@@ -517,7 +518,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
             let basicCalculationFormulaList = self.basicCalculationFormulaList();
             basicCalculationFormulaList = basicCalculationFormulaList.map(item => item['calculationFormulaClassification'](model.CALCULATION_FORMULA_CLS.FIXED_VALUE));
             self.basicCalculationFormulaList(basicCalculationFormulaList);
-
+            $('#C3_1 .nts-input').ntsError('clear');
         }
 
         initScreenDTabData () {
