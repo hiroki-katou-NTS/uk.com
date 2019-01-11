@@ -12,6 +12,7 @@ module nts.uk.pr.view.qmm003.b.viewmodel {
         headers: any;
         listRegions: Array<any> = constants.listRegions;
         listPrefectures: Array<any>;
+        enable: any;
 
         constructor() {
             let self = this;
@@ -19,6 +20,9 @@ module nts.uk.pr.view.qmm003.b.viewmodel {
             self.selectedCode = ko.observable("");
             self.headers = ko.observableArray([getText("QMM003_9")]);
             self.listPrefectures = constants.listPrefectures;
+            self.enable = ko.computed(() => {
+                return self.selectedCode().length > 0 && self.selectedCode().indexOf("_") != 0;
+            }, this);
         }
         
         startPage(): JQueryPromise<any> {
