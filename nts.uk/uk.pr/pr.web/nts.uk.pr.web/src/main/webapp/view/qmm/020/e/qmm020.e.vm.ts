@@ -21,6 +21,9 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
         endYearMonth: KnockoutObservable<number> = ko.observable(999912);
         startLastYearMonth: KnockoutObservable<number> = ko.observable(0);
         index: KnockoutObservable<number> = ko.observable(0);
+        classificationList: Array<IClassificationImportDto>;
+        listStateLinkSettingMasterInit: Array<model.StateLinkSettingMaster>;
+        currentCode: KnockoutObservable<string> = ko.observable(null);
 
         constructor() {
             let self = this;
@@ -29,8 +32,12 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                 let self = this;
                 self.index(self.getIndex(data));
                 if (data != '') {
-                    if (self.transferMethod() == model.TRANSFER_MOTHOD.TRANSFER && self.hisIdSelected() == HIS_ID_TEMP) {
-                        self.getStateLinkSettingMaster(self.listStateCorrelationHisClassification()[FIRST + 1].hisId, self.listStateCorrelationHisClassification()[FIRST + 1].startYearMonth);
+                    if (self.hisIdSelected() == HIS_ID_TEMP) {
+                        if(self.transferMethod() == model.TRANSFER_MOTHOD.TRANSFER) {
+                            self.getStateLinkSettingMaster(self.listStateCorrelationHisClassification()[FIRST + 1].hisId, self.listStateCorrelationHisClassification()[FIRST + 1].startYearMonth);
+                        } else {
+                            self.initStateLinkSettingMaster();
+                        }
                     } else {
                         self.getStateLinkSettingMaster(data, self.listStateCorrelationHisClassification()[self.index()].startYearMonth);
                         self.startYearMonth(self.listStateCorrelationHisClassification()[self.index()].startYearMonth);
@@ -61,7 +68,8 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
             $("#E3_1").ntsGrid({
                 height: '311px',
                 dataSource: self.listStateLinkSettingMaster(),
-                primaryKey: 'id',
+                selected: self.currentCode(),
+                primaryKey: 'masterCode',
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 columns: [
@@ -108,6 +116,11 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
             }).always(() => {
                 block.clear();
             });
+
+            service.getAllClassificationByCid().done((classificationList: Array<IClassificationImportDto>) => {
+                self.classificationList = classificationList;
+                self.listStateLinkSettingMasterInit = classificationList.map((value: IClassificationImportDto) => new model.StateLinkSettingMaster(value.classificationCode, value.classificationName));
+            });
         }
 
         registerClassification(){
@@ -117,8 +130,8 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
             }
 
             let data: any = {
-                listStateLinkSettingMaster: self.listStateLinkSettingMaster(),
-                isNewMode: self.mode(),
+                stateLinkSettingMaster: self.listStateLinkSettingMaster(),
+                Mode: self.mode(),
                 hisId: self.hisIdSelected(),
                 startYearMonth: self.startYearMonth(),
                 endYearMonth:  self.endYearMonth()
@@ -145,6 +158,13 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
             let self = this;
             service.getStateLinkMasterClassification(hisId, startYearMonth).done((stateLinkSettingMaster: Array<model.StateLinkSettingMaster>) => {
                 if (stateLinkSettingMaster && stateLinkSettingMaster.length > 0) {
+                    for(let item: model.StateLinkSettingMaster of stateLinkSettingMaster) {
+                        let classificationImport = _.filter(self.classificationList, function(o) {
+                            return item.masterCode == o.classificationCode;
+                        });
+
+                        if(classificationImport.length > 0) item.categoryName = classificationImport[0].classificationName;
+                    }
                     self.listStateLinkSettingMaster(model.convertToDisplay(stateLinkSettingMaster));
                     self.mode(model.MODE.UPDATE);
                 }
@@ -155,6 +175,14 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
             }).always(() => {
                 block.clear();
             });
+        }
+
+        initStateLinkSettingMaster() {
+            let self = this;
+
+            self.mode(model.MODE.NEW);
+            self.listStateLinkSettingMaster(self.listStateLinkSettingMasterInit);
+            self.loadGird();
         }
 
         updateLinkSettingMaster(statementCode :string, statementName: string, position: number, code: number ){
@@ -207,8 +235,10 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                 let params = getShared(model.PARAMETERS_SCREEN_J.OUTPUT);
                 if (params) {
                     self.transferMethod(params.transferMethod);
-                    self.listStateCorrelationHisClassification.unshift(self.createStateCorrelationHisClassification(params.start, params.end));
+                    self.listStateCorrelationHisClassification.unshift(self.createStateCorrelationHisClassification(params.start, 999912));
                     self.hisIdSelected(HIS_ID_TEMP);
+                    self.startYearMonth(params.start);
+                    self.endYearMonth(999912);
                 }
 
             });
@@ -238,7 +268,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                 modeScreen: model.MODE_SCREEN.CLASSIFICATION,
                 isFirst: index === 0 && self.listStateCorrelationHisClassification().length > 1 ? true : false
             });
-            modal("/view/qmm/011/k/index.xhtml").onClosed(function() {
+            modal("/view/qmm/020/k/index.xhtml").onClosed(function() {
                 let params = getShared(model.PARAMETERS_SCREEN_K.OUTPUT);
                 if(params && params.modeEditHistory == 1) {
                     self.initScreen(self.hisIdSelected());
@@ -290,6 +320,11 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
 
     }
 
+    interface IClassificationImportDto {
+        classificationCode: string;
+        classificationName: string;
+    }
+
     export class StateCorrelationHisClassification {
         hisId: string;
         startYearMonth: number;
@@ -309,7 +344,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                     dto.display = getText('QMM020_16', [model.convertMonthYearToString(item.startYearMonth),model.convertMonthYearToString(item.endYearMonth)]);
                     listClassification.push(dto);
                 });
-                return listClassification;
+                return _.orderBy(listClassification, ['startYearMonth'],['desc']);;
         }
     }
 

@@ -4,6 +4,7 @@ package nts.uk.ctx.pr.core.ws.wageprovision.statebindingsetting;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.RegisterStateCorrelationHisClassificationCommandHandler;
 import nts.uk.ctx.pr.core.app.command.wageprovision.statementbindingsetting.StateCorrelationHisClassificationCommand;
+import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.ClassificationImportDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateCorreHisClsDto;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateCorreHisClsFinder;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.StateLinkSetMasterDto;
@@ -43,5 +44,10 @@ public class StateLinkClsWebService extends WebService {
         return stateLinkSettingClaficationFinder.getStateLinkSettingMaster(hisId, start);
     }
 
+    @POST
+    @Path("getAllClassificationByCid")
+    public List<ClassificationImportDto> getAllClassificationByCid() {
+        return stateLinkSettingClaficationFinder.getAllClassificationByCid();
+    }
 
 }

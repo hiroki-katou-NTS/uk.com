@@ -8,6 +8,10 @@ import nts.uk.ctx.pr.core.infra.entity.wageprovision.processdatecls.QpbmtEmpTied
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.processdatecls.QpbmtEmpTiedProYearPk;
 
 import javax.ejb.Stateless;
+
+import lombok.val;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -63,5 +67,16 @@ public class JpaEmpTiedProYearRepository extends JpaRepository implements EmpTie
                 .setParameter("cid", cid)
                 .setParameter("processCateNo", processCateNo).executeUpdate();
     }
+
+	@Override
+	public List<EmpTiedProYear> getEmpTiedProYearById(String cid, List<Integer> processCateNo) {
+		List<EmpTiedProYear> result = new ArrayList<>();
+		for (Integer procNo : processCateNo) {
+			val data = this.getEmpTiedProYearById(cid, procNo);
+			if (data.isPresent())
+				result.add(data.get());
+		}
+		return result;
+	}
 
 }

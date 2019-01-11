@@ -27,6 +27,7 @@ public class StateCorreHisClsService {
             hisClassification = itemtoBeAdded.get();
         }
         hisClassification.add(yearMonthItem);
+        stateCorreHisClsRepository.addAll(cId, stateLinkSetMaster, yearMonthItem.start().v(), yearMonthItem.end().v());
         this.updateItemBefore(hisClassification, yearMonthItem, cId);
     }
 

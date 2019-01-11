@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.transfer.dom.rsdttaxpayee;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.transfer.dom.bank.AccountNumber;
 import nts.uk.shr.com.primitive.Memo;
@@ -56,6 +57,7 @@ public class ResidentTaxPayee extends AggregateRoot {
     /**
      * 報告先コード
      */
+    @Setter
     private Optional<ResidentTaxPayeeCode> reportCd;
 
     /**
@@ -74,13 +76,13 @@ public class ResidentTaxPayee extends AggregateRoot {
         this.cid = cid;
         this.code = new ResidentTaxPayeeCode(code);
         this.name = new ResidentTaxPayeeName(name);
-        this.kanaName = kanaName == null ? Optional.empty() : Optional.of(new ResidentTaxPayeeKanaName(kanaName));
+        this.kanaName = kanaName == null || kanaName.isEmpty() ? Optional.empty() : Optional.of(new ResidentTaxPayeeKanaName(kanaName));
         this.compileStation = new CompileStation(compileStationName, compileStationZipCd);
-        this.note = note == null ? Optional.empty() : Optional.of(new Memo(note));
-        this.subscriberName = subcriberName == null ? Optional.empty() : Optional.of(new ResidentTaxPayeeSubscriberName(subcriberName));
-        this.accountNumber = accountNum == null ? Optional.empty() : Optional.of(new AccountNumber(accountNum));
-        this.reportCd = reportCd == null ? Optional.empty() : Optional.of(new ResidentTaxPayeeCode(reportCd));
-        this.designationNum = designationNum == null ? Optional.empty() : Optional.of(new ResidentTaxPayeeDesignationNum(designationNum));
+        this.note = note == null || note.isEmpty() ? Optional.empty() : Optional.of(new Memo(note));
+        this.subscriberName = subcriberName == null || subcriberName.isEmpty() ? Optional.empty() : Optional.of(new ResidentTaxPayeeSubscriberName(subcriberName));
+        this.accountNumber = accountNum == null || accountNum.isEmpty() ? Optional.empty() : Optional.of(new AccountNumber(accountNum));
+        this.reportCd = reportCd == null || reportCd.isEmpty() ? Optional.empty() : Optional.of(new ResidentTaxPayeeCode(reportCd));
+        this.designationNum = designationNum == null || designationNum.isEmpty() ? Optional.empty() : Optional.of(new ResidentTaxPayeeDesignationNum(designationNum));
         this.prefectures = prefectures;
     }
 }

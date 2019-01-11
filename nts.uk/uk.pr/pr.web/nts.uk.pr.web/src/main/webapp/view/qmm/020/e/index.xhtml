@@ -1,11 +1,11 @@
 <div>
     <div class="sidebar-content-header" style = "min-width: 1000px;">
-            <span class="title">#{i18n.getText('QMM020_5')}</span>
+            <span class="title">#{i18n.getText('QMM020_8')}</span>
             <button id="A1_1" tabindex="1" class="proceed"
                     data-bind="click: registerClassification, enable: !enableRegis() &amp;&amp; $root.errors.isEmpty ">#{i18n.getText('QMM020_1')}</button>
 
             <button id="A1_2" tabindex="2"
-                    data-bind="enable: $root.errors.isEmpty">#{i18n.getText('QMM020_2')}</button>
+                    data-bind="click: $vm.viewmodelA.openScreenI, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_2')}</button>
 
 
             <button id="A1_3" tabindex="3"
@@ -30,11 +30,11 @@
                 <div style="margin-top: 10px">
                     <table  id="E1_5"  data-bind="ntsGridList: {
                                             name: '#QMM020_14',
-                                            height: 250,
+                                            rows:10,
                                             dataSource: listStateCorrelationHisClassification,
-                                            primaryKey: 'code',
+                                            primaryKey: 'hisId',
                                             columns: [
-                                                        { headerText: '', key: 'code', width: 100, hidden: true },
+                                                        { headerText: '', key: 'hisId', width: 100, hidden: true },
                                                         { headerText: '', key: 'name', width: 150, hidden: true },
                                                         { headerText: '', key: 'display', width: 180},
                                                     ],
@@ -50,8 +50,8 @@
             </div>
 
             <div>
-                <div style="width: 260px" data-bind="ntsSearchBox: {targetKey: 'masterCode', comId: 'multi-list',
-	items: listStateLinkSettingMaster, selectedKey: 'masterCode', fields: ['categoryName', 'masterCode'], mode: 'igGrid'}" />
+                <div style="width: 260px" data-bind="ntsSearchBox: {searchMode: 'highlight', targetKey: 'masterCode', comId: 'E3_1',
+	items: listStateLinkSettingMaster, selectedKey: 'masterCode', selected: currentCode, fields: ['categoryName', 'masterCode'], mode: 'igGrid'}" />
 
                 <table id="E3_1" ></table>
 

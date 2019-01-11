@@ -1,6 +1,10 @@
-module nts.uk.com.view.qmm020.i {
-    __viewContext.ready(function() {
-        var screenModel = new nts.uk.pr.view.qmm020.i.viewmodel.ScreenModel();
-        __viewContext.bind(screenModel);
+module nts.uk.pr.view.qmm020.i {
+    nts.uk.ui.block.invisible();
+    __viewContext.ready(function () {
+        let screenModel = new viewmodel.ScreenModel();
+        screenModel.startPage().done(function () {
+            __viewContext.bind(screenModel);
+            nts.uk.ui.block.clear();
+        });
     });
 }
