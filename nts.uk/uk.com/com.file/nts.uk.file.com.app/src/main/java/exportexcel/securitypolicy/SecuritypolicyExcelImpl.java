@@ -23,6 +23,11 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+/**
+ * 
+ * @author Hoidd
+ *
+ */
 @Stateless
 @DomainID(value = "SecuritySetting")
 public class SecuritypolicyExcelImpl implements MasterListData{
@@ -89,6 +94,7 @@ public class SecuritypolicyExcelImpl implements MasterListData{
 		PasswordPolicyDtoExcel passPolicy = getPasswordPolicy(); 
 		List<MasterData> datas = new ArrayList<>();
 			/**put password policy*/
+		if(passPolicy!=null){
 			if(passPolicy.isUse==false){
 				putDataCustom(datas,TextResource.localize("CAS003_3"),"","","-",0);
 				putDataCustom(datas,"",TextResource.localize("CAS003_4"),"","",1);
@@ -128,7 +134,9 @@ public class SecuritypolicyExcelImpl implements MasterListData{
 				/**put row 10*/
 				putDataCustom(datas,"",TextResource.localize("CAS003_26"),"",passPolicy.loginCheck?"○":"-",0);
 			}
+		}
 			/**put account policy*/
+		if(acountPolicy!=null){
 			if(acountPolicy.isUse){
 				putDataCustom(datas,TextResource.localize("CAS003_27"),"","","○",0);
 				putDataCustom(datas,"",TextResource.localize("CAS003_28"),TextResource.localize("CAS003_29"),timeToString(acountPolicy.lockInterval),1);
@@ -140,6 +148,7 @@ public class SecuritypolicyExcelImpl implements MasterListData{
 				putDataCustom(datas,"","",TextResource.localize("CAS003_30"),"",0);
 				putDataCustom(datas,"",TextResource.localize("CAS003_32"),"","",0);
 			}
+		}
 		return datas;			
 		}
 	

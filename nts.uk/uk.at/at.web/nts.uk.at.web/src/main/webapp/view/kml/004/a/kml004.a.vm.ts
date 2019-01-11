@@ -29,7 +29,6 @@ module nts.uk.at.view.kml004.a.viewmodel {
         cntSetAll: KnockoutObservableArray<any>;
         constructor() {
             let self = this;
-            self.showExportBtn();
             self.gridListColumns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KML004_6"), key: 'categoryCode', width: 50 },
                 { headerText: nts.uk.resource.getText("KML004_7"), key: 'categoryName', width: 250, formatter: _.escape }
@@ -422,16 +421,6 @@ module nts.uk.at.view.kml004.a.viewmodel {
                 nts.uk.ui.block.clear();
             });
          }
-        showExportBtn() {
-            if (nts.uk.util.isNullOrUndefined(__viewContext.user.role.attendance)
-                && nts.uk.util.isNullOrUndefined(__viewContext.user.role.payroll)
-                && nts.uk.util.isNullOrUndefined(__viewContext.user.role.officeHelper)
-                && nts.uk.util.isNullOrUndefined(__viewContext.user.role.personnel)) {
-                $("#print-button").hide();
-            } else {
-                $("#print-button").show();
-            }
-        }
     }
 
  
