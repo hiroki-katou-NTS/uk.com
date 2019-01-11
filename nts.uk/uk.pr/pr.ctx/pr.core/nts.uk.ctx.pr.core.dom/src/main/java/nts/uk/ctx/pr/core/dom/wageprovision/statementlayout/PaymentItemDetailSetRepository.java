@@ -11,8 +11,6 @@ public interface PaymentItemDetailSetRepository
 
     List<PaymentItemDetailSet> getAllPaymentItemDetailSet();
 
-    Optional<PaymentItemDetailSet> getPaymentItemDetailSetById(String histId);
-
     void add(PaymentItemDetailSet domain);
 
     void update(PaymentItemDetailSet domain);

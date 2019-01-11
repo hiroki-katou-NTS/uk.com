@@ -11,8 +11,6 @@ public interface StatementItemRangeSettingRepository
 
     List<StatementItemRangeSetting> getAllStatementItemRangeSetting();
 
-    Optional<StatementItemRangeSetting> getStatementItemRangeSettingById(String histId);
-
     void add(StatementItemRangeSetting domain);
 
     void update(StatementItemRangeSetting domain);

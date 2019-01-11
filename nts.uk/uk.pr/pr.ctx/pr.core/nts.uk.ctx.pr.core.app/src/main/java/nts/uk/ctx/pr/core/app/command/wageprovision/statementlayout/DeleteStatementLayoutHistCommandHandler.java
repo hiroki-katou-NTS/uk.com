@@ -36,9 +36,6 @@ public class DeleteStatementLayoutHistCommandHandler extends CommandHandler<Stat
         String historyId = command.getHistoryId();
 
         statementLayoutSetRepository.remove(historyId);
-        paymentItemDetailSetRepository.remove(historyId);
-        deductionItemDetailSetRepository.remove(historyId);
-        //statementItemRangeSettingRepository.remove(historyId);
 
         StatementLayoutHist statementLayoutHist = statementLayoutHistRepository.getLayoutHistByCidAndCode(cid, code);
         if(statementLayoutHist.getHistory().size() > 1) {

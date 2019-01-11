@@ -28,7 +28,7 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
             " WHERE f.statementLayoutHistPk.cid = :cid AND f.statementLayoutHistPk.statementCd IN :statementCds " +
             " AND f.startYearMonth <= :yearMonth AND f.endYearMonth >= :yearMonth";
     private static final String SELECT_BY_ID = SELECT_ALL_QUERY_STRING +
-            " WHERE f.statementLayoutHistPk.histId = :histId ";
+            " WHERE f.statementLayoutHistPk.histId = :histId AND f.statementLayoutHistPk.cid = :cid AND f.statementLayoutHistPk.statementCd = :statementCd";
     private static final String SELECT_BY_CID_AND_CODE_AND_AFTER_DATE = SELECT_BY_CID_AND_CODE +
             " AND f.startYearMonth >= :startYearMonth ";
     private static final String SELECT_LATEST_BY_CID_AND_CODE = SELECT_BY_CID_AND_CODE +
@@ -46,8 +46,10 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
     }
 
     @Override
-    public Optional<YearMonthHistoryItem> getStatementLayoutHistById(String histId) {
+    public Optional<YearMonthHistoryItem> getStatementLayoutHistById(String cid, String statementCd, String histId) {
         return this.queryProxy().query(SELECT_BY_ID, QpbmtStatementLayoutHist.class)
+                .setParameter("cid", cid)
+                .setParameter("statementCd", statementCd)
                 .setParameter("histId", histId)
                 .getSingle(c -> toYearMonthDomain(c));
     }
@@ -59,11 +61,6 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
                 .setParameter("cid", cid)
                 .getList());
         return statementLayoutHist;
-    }
-
-    @Override
-    public Optional<StatementLayoutHist> getStatementLayoutHistById(String cid, int specCd, String histId) {
-        return Optional.empty();
     }
 
     @Override
@@ -118,6 +115,8 @@ public class JpaStatementLayoutHistRepository extends JpaRepository implements S
     @Override
     public void update(String cid, String code, YearMonthHistoryItem domain) {
         Optional<QpbmtStatementLayoutHist> statementLayoutHistEntity = this.queryProxy().query(SELECT_BY_ID, QpbmtStatementLayoutHist.class)
+                .setParameter("cid", cid)
+                .setParameter("statementCd", code)
                 .setParameter("histId", domain.identifier())
                 .getSingle();
         if (statementLayoutHistEntity.isPresent()) {

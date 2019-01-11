@@ -37,7 +37,7 @@ public class StatementLayoutHistFinder {
         String cid = AppContexts.user().companyId();
 
         Optional<StatementLayout> statementLayout = statementLayoutRepo.getStatementLayoutById(cid, code);
-        Optional<YearMonthHistoryItem> yearMonthHistoryItem = statementLayoutHistRepo.getStatementLayoutHistById(histId);
+        Optional<YearMonthHistoryItem> yearMonthHistoryItem = statementLayoutHistRepo.getStatementLayoutHistById(cid, code, histId);
         List<YearMonthHistoryItem> yearMonthHistoryItemList = new ArrayList<>();
         yearMonthHistoryItem.ifPresent(i -> yearMonthHistoryItemList.add(i));
 
@@ -48,7 +48,7 @@ public class StatementLayoutHistFinder {
         String cid = AppContexts.user().companyId();
 
         Optional<StatementLayout> statementLayoutOptional = statementLayoutRepo.getStatementLayoutById(cid, code);
-        Optional<YearMonthHistoryItem> yearMonthHistoryItemOptional = statementLayoutHistRepo.getStatementLayoutHistById(histId);
+        Optional<YearMonthHistoryItem> yearMonthHistoryItemOptional = statementLayoutHistRepo.getStatementLayoutHistById(cid, code, histId);
         Optional<StatementLayoutSet> statementLayoutSetOptional = statementLayoutSetRepo.getStatementLayoutSetById(cid, code, histId);
 
         if (statementLayoutOptional.isPresent() && yearMonthHistoryItemOptional.isPresent() && statementLayoutSetOptional.isPresent()) {

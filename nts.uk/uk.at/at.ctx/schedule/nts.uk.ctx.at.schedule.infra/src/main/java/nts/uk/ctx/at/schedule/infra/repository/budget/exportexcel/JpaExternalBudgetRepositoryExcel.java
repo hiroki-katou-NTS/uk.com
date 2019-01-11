@@ -8,7 +8,11 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.app.export.budgetexcel.BudgetExcelRepo;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.KscstExternalBudget;
-
+/**
+ * 
+ * @author Hoidd
+ *
+ */
 @Stateless
 public class JpaExternalBudgetRepositoryExcel extends JpaRepository implements BudgetExcelRepo {
 

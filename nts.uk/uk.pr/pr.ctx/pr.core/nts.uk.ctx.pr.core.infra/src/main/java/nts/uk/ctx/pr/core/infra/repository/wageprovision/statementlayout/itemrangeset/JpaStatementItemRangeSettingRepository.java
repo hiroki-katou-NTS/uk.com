@@ -17,19 +17,11 @@ public class JpaStatementItemRangeSettingRepository extends JpaRepository implem
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateItemRangeSet f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateItemRangeSetPk.histId =:histId ";
 
     @Override
     public List<StatementItemRangeSetting> getAllStatementItemRangeSetting(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtStateItemRangeSet.class)
                 .getList(item -> item.toDomain());
-    }
-
-    @Override
-    public Optional<StatementItemRangeSetting> getStatementItemRangeSettingById(String histId){
-        return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtStateItemRangeSet.class)
-        .setParameter("histId", histId)
-        .getSingle(c->c.toDomain());
     }
 
     @Override

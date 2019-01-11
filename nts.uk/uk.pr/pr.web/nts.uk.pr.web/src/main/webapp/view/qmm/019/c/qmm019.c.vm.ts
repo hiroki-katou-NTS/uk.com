@@ -48,7 +48,9 @@ module nts.uk.pr.view.qmm019.c.viewmodel {
                 dfd = $.Deferred();
             block.invisible();
 
-            service.getStatementLayoutAndHistById(self.statementCode(), self.histId()).done(function(data: IStatementLayout) {
+            $.when(service.getStatementLayoutAndHistById(self.statementCode(), self.histId()),
+                    service.getStatementLayoutAndLastHist(self.statementCode())).done
+                    (function(data: IStatementLayout, lastHist: IStatementLayout) {
                 if(data) {
                     self.statementName(data.statementName);
 
@@ -58,14 +60,12 @@ module nts.uk.pr.view.qmm019.c.viewmodel {
                         self.newStartMonth(data.history[0].startMonth);
                         self.endMonthNumber = data.history[0].endMonth;
 
-                        service.getStatementLayoutAndLastHist(self.statementCode()).done(function(lastHist: IStatementLayout) {
-                            if ((lastHist.history.length > 0) && (lastHist.history[0].historyId == data.history[0].historyId)) {
-                                self.isLastHistory(true);
-                            } else {
-                                self.isLastHistory(false);
-                                self.itemHistoryEdit(1);
-                            }
-                        })
+                        if ((lastHist.history.length > 0) && (lastHist.history[0].historyId == data.history[0].historyId)) {
+                            self.isLastHistory(true);
+                        } else {
+                            self.isLastHistory(false);
+                            self.itemHistoryEdit(1);
+                        }
                     }
                 }
 

@@ -33045,8 +33045,11 @@ var nts;
                         if ($grid.igGridSelection('option', 'multipleSelection')) {
                             // for performance when select all
                             var baseID = _.map($grid.igGrid("option").dataSource, $grid.igGrid("option", "primaryKey"));
-                            if (_.difference(baseID, baseID).length == 0) {
-                                $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']").click();
+                            if (_.isEqual(selectedId, baseID)) {
+                                var chk = $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
+                                if (chk[0].getAttribute("data-chk") == "off") {
+                                    chk.click();
+                                }
                             }
                             else {
                                 selectedId.forEach(function (id) { return $grid.igGridSelection('selectRowById', id); });

@@ -38,7 +38,7 @@ module nts.uk.at.view.kml001.a {
                     ko.observable(''),
                     ko.observable('')
                 ]);
-                self.showExportBtn();
+               
             }
             
             /**

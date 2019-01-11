@@ -58,15 +58,20 @@ module nts.uk.com.view.cmm013.a {
         
         
         export function saveAsExcel(mode: string, baseDate: string): JQueryPromise<any> {
+            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+            let programName = program[1] != null ? program[1] : "";
             return nts.uk.request.exportFile('/masterlist/report/print',
                 {
-                    domainId: 'Sequence', domainType: 'CMM013' + nts.uk.resource.getText("CMM013_53"),
-                    languageId: 'ja', reportType: 0, mode: mode,
+                    domainId: 'Sequence', 
+                    domainType: 'CMM013' + programName,
+                    languageId: 'ja', reportType: 0, 
                     baseDate: moment.utc(baseDate).format()
                    
                 });
         }
         
+ 
+
         /**
          * Model namespace.
          */
