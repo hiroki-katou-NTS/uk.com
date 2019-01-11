@@ -287,8 +287,11 @@ public class DetailFormulaCalculationService {
         Stack<String> postfix = new Stack<>(), operators = new Stack<>();
         String currentElement;
         for(int index = 0; index < formulaElements.length; index++){
-            currentElement = formulaElements[index];
-            if (!isNaN(currentElement)) {
+            currentElement = formulaElements[index].trim();
+            if (currentElement.indexOf("\"") == 0 && currentElement.lastIndexOf("\"") == currentElement.length() - 1){
+                currentElement = currentElement.substring(1, currentElement.length() - 1);
+            }
+            if (!isComputingOperator(currentElement) && !isConditionOperator(currentElement)) {
                 postfix.push(currentElement);
                 continue;
             }
@@ -562,7 +565,7 @@ public class DetailFormulaCalculationService {
     }
 
     private Boolean isComputingOperator (String operator) {
-        String [] computingOperator = {PLUS, SUBTRACT, MULTIPLICITY, DIVIDE, POW, HALF_SIZE_PLUS, HALF_SIZE_SUBTRACT, PROGRAMING_MULTIPLICITY, PROGRAMING_DIVIDE};
+        String [] computingOperator = {OPEN_BRACKET, CLOSE_BRACKET, PLUS, SUBTRACT, MULTIPLICITY, DIVIDE, POW, HALF_SIZE_PLUS, HALF_SIZE_SUBTRACT, PROGRAMING_MULTIPLICITY, PROGRAMING_DIVIDE};
         for (int i = 0; i < computingOperator.length; i++) {
             if (computingOperator[i].equals(operator)) return true;
         }
