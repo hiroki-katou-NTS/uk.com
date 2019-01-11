@@ -149,6 +149,8 @@
                                                     data-bind="enable: !hasFixed(), click: editLine"></button>
                                             <div class="item-sort" data-bind="ntsSortable: {
                                                                         data: listSetByItem,
+                                                                        allowDrop: ko.observable('true'),
+                                                                        connectClass: 'item-sort',
                                                                         beforeMove: preventStopSort}">
                                                 <div class="item limited-label" data-bind="
                                                                     text: shortName,
@@ -183,6 +185,8 @@
                                                     data-bind="enable: !hasFixed(), click: editLine"></button>
                                             <div class="item-sort" data-bind="ntsSortable: {
                                                                         data: listSetByItem,
+                                                                        allowDrop: ko.observable('true'),
+                                                                        connectClass: 'item-sort',
                                                                         beforeMove: preventStopSort }">
                                                 <div class="item limited-label" data-bind="
                                                                     text: shortName,
@@ -221,6 +225,8 @@
                                                         data-bind="enable: true, click: editLine"></button>
                                                 <div class="item-sort" data-bind="ntsSortable: {
                                                                             data: listSetByItem,
+                                                                            allowDrop: ko.observable('true'),
+                                                                            connectClass: 'item-sort',
                                                                             beforeMove: preventStopSort }">
                                                     <div class="item limited-label" tabindex="20" data-bind="
                                                                         text: shortName,
@@ -263,6 +269,8 @@
                                                         data-bind="enable: true, click: editLine"></button>
                                                 <div class="item-sort" data-bind="ntsSortable: {
                                                                             data: listSetByItem,
+                                                                            allowDrop: ko.observable('true'),
+                                                                            connectClass: 'item-sort',
                                                                             beforeMove: preventStopSort }">
                                                     <div class="item limited-label" tabindex="25" data-bind="
                                                                         text: shortName,

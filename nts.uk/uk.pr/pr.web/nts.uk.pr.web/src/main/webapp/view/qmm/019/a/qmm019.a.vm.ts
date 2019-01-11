@@ -693,7 +693,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 listFullItem = data.listSetByItem;
             } else {
                 self.printSet = ko.observable(newPrintSet);
-                self.lineNumber = ko.observable(self.parent.listLineByLineSet().length);
+                self.lineNumber = ko.observable(self.parent.listLineByLineSet().length + 1);
                 listFullItem = [];
             }
 
@@ -782,7 +782,6 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
             let dragItem: SettingByItem = data.item;
             let listItemSource: Array<SettingByItem> = data.sourceParent();
             let listItemTarget: Array<SettingByItem> = data.targetParent();
-            console.log(data);
             let checkCategory = dragItem.parent.parent.ctgAtr != listItemTarget[0].parent.parent.ctgAtr;
             let checkPrintLine = dragItem.parent.printSet() != listItemTarget[0].parent.printSet();
             let checkDragToOtherLine = dragItem.parent.lineNumber() != listItemTarget[0].parent.lineNumber();
@@ -790,11 +789,11 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
             if(checkCategory || checkPrintLine) {
                 data.cancelDrop = true;
             } else if(checkDragToOtherLine) {
-                let targetItem = listItemTarget[data.targetIndex];
+                let targetIndex = data.targetIndex;
+                if(targetIndex == 9) targetIndex = 8;
+                let targetItem = listItemTarget[targetIndex];
                 let category: SettingByCtg = dragItem.parent.parent;
                 let categoryIndex = category.ctgAtr;
-                let sourceIndex = data.sourceIndex;
-                let targetIndex= data.targetIndex;
                 let targetLineIndex: number;
                 let sourceLineIndex: number;
 
@@ -808,14 +807,28 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                     }
                 }
 
-                data.targetParent().splice(targetIndex, 1);
-                data.sourceParent().add(targetItem);
-
                 data.cancelDrop = true;
 
-                //let currentCategory: SettingByCtg = __viewContext['screenModel'].statementLayoutHistData().statementLayoutSet().listSettingByCtg()[categoryIndex];
-                //currentCategory.listLineByLineSet()[sourceLineIndex].listSetByItem()[data.sourceIndex] = targetItem;
-                //currentCategory.listLineByLineSet()[targetLineIndex].listSetByItem()[data.targetIndex] = dragItem;
+                setTimeout(function() {
+                    let sourceItem = __viewContext['screenModel'].statementLayoutHistData().statementLayoutSet().
+                    listSettingByCtg()[categoryIndex].listLineByLineSet()[sourceLineIndex].listSetByItem()[data.sourceIndex];
+                    let targetItem = __viewContext['screenModel'].statementLayoutHistData().statementLayoutSet().
+                    listSettingByCtg()[categoryIndex].listLineByLineSet()[targetLineIndex].listSetByItem()[targetIndex];
+
+                    let temp = sourceItem.parent;
+                    sourceItem.parent = targetItem.parent;
+                    targetItem.parent = temp;
+
+                    __viewContext['screenModel'].statementLayoutHistData().statementLayoutSet().listSettingByCtg()[categoryIndex].
+                    listLineByLineSet()[sourceLineIndex].listSetByItem()[data.sourceIndex] = targetItem;
+                    __viewContext['screenModel'].statementLayoutHistData().statementLayoutSet().listSettingByCtg()[categoryIndex].
+                    listLineByLineSet()[targetLineIndex].listSetByItem()[targetIndex] = sourceItem;
+
+                    __viewContext['screenModel'].statementLayoutHistData().statementLayoutSet().listSettingByCtg()[categoryIndex].
+                    listLineByLineSet()[targetLineIndex].listSetByItem.valueHasMutated();
+                    __viewContext['screenModel'].statementLayoutHistData().statementLayoutSet().listSettingByCtg()[categoryIndex].
+                    listLineByLineSet()[sourceLineIndex].listSetByItem.valueHasMutated();
+                }, 50);
             }
 
             $(".limited-label-view").remove();
