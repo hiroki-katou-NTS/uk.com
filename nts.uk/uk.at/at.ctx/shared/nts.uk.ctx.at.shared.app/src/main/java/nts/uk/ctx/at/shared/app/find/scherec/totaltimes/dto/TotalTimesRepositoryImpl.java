@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.ConditionThresholdLimit;
@@ -136,10 +137,18 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 							//勤務種類
 							String typeOfDuty = "";
 							for (int n = 0; n < lst.size(); n++) {
+								
+								
+								
+								String workTypeName = (String)lst.get(n).getName();
+								if (!StringUtil.isNullOrEmpty(lst.get(n).getWorkTypeCode(), true) && StringUtil.isNullOrEmpty(lst.get(n).getName(), true)) {
+									workTypeName = TextResource.localize("KSM006_13");
+								}
+								
 								if (n == 0) {
-									typeOfDuty = lst.get(n).getWorkTypeCode() +""+ lst.get(n).getName();
+									typeOfDuty = lst.get(n).getWorkTypeCode() +""+ workTypeName;
 								} else {
-									typeOfDuty += ","+lst.get(n).getWorkTypeCode() + lst.get(n).getName();
+									typeOfDuty += ","+lst.get(n).getWorkTypeCode() + workTypeName;
 								}
 							}
 							data.put("勤務種類", typeOfDuty);
@@ -156,13 +165,21 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 							listFindByCodes = listFindByCodes.stream()
 									.sorted(Comparator.comparing(WorkTimeSetting::getWorktimeCode))
 									.collect(Collectors.toList());
+
 							//就業時間帯
 							String  workingHours= "";
 							for (int n = 0; n < listFindByCodes.size(); n++) {
+								
+								
+								String workTimeName = String.valueOf(listFindByCodes.get(n).getWorkTimeDisplayName().getWorkTimeName());
+								if (!StringUtil.isNullOrEmpty(String.valueOf(listFindByCodes.get(n).getWorktimeCode()), true) && StringUtil.isNullOrEmpty(workTimeName, true)) {
+									workTimeName = TextResource.localize("KSM006_13");
+								}
+								
 								if (n == 0) {
-									workingHours = listFindByCodes.get(n).getWorktimeCode() +""+ listFindByCodes.get(n).getWorkTimeDisplayName().getWorkTimeName();
+									workingHours = listFindByCodes.get(n).getWorktimeCode() +""+ workTimeName;
 								} else {
-									workingHours += ","+listFindByCodes.get(n).getWorktimeCode() + listFindByCodes.get(n).getWorkTimeDisplayName().getWorkTimeName();
+									workingHours += ","+listFindByCodes.get(n).getWorktimeCode() + workTimeName;
 								}
 							}
 							data.put("就業時間帯", workingHours);
