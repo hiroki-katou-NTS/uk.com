@@ -84,7 +84,7 @@ public class PersonRoleImpl implements PersonRoleRepository {
 			+ " 		 TBL.OTHER_PERSON_AUTH_TYPE,"
 			+ " 		 TBL.SELF_AUTH_TYPE,"
 			+ " 		 TBL.IsItemConfig,"
-			+ " 			"
+			+ " 			TBL.ASSIGN_ATR,"
 			+ " 			ROW_NUMBER () OVER ("
 			+ " 				PARTITION BY TBL.ROLE_CD,"
 			+ " 				TBL.ROLE_NAME,"
@@ -563,14 +563,15 @@ public class PersonRoleImpl implements PersonRoleRepository {
 			+ " 		(select count(*) from PPEMT_PERSON_ITEM_AUTH ia where ia.PER_INFO_CTG_ID=c.PER_INFO_CTG_ID and ia.ROLE_ID=xx.ROLE_ID) as count_ia,"
 			+ " 		CASE WHEN ctgau.PER_INFO_ITEM_DEF_ID IS NOT NULL  THEN 'True' ELSE 'False' END AS IsItemConfig,"
 			+ " 		co.DISPORDER,"
-			+ "			io.DISPORDER as orEnd "
+			+ "			io.DISPORDER as orEnd,"
+			+ "			x.ASSIGN_ATR "
 			+ " 		FROM PPEMT_PER_INFO_CTG c "
 			+ " 		INNER JOIN PPEMT_PER_INFO_CTG_CM cm"
 			+ " 		ON c.CATEGORY_CD = cm.CATEGORY_CD AND c.CID = ?1 AND c.ABOLITION_ATR = 0"
 			+ " 		AND cm.CONTRACT_CD = ?2 "
 			+ " 		INNER JOIN PPEMT_PER_INFO_CTG_ORDER co"
 			+ " 		ON c.PER_INFO_CTG_ID = co.PER_INFO_CTG_ID"
-			+ " 		Cross JOIN (SELECT DISTINCT pp.ROLE_ID,r.ROLE_CD, r.ROLE_NAME FROM PPEMT_PERSON_CTG_AUTH pp JOIN PPEMT_PER_INFO_CTG c on pp.PER_INFO_CTG_ID = c.PER_INFO_CTG_ID JOIN SACMT_ROLE r on pp.ROLE_ID = r.ROLE_ID  WHERE c.CID = ?3 AND r.ROLE_TYPE = ?4) x"
+			+ " 		Cross JOIN (SELECT DISTINCT pp.ROLE_ID,r.ROLE_CD, r.ROLE_NAME,r.ASSIGN_ATR FROM PPEMT_PERSON_CTG_AUTH pp JOIN PPEMT_PER_INFO_CTG c on pp.PER_INFO_CTG_ID = c.PER_INFO_CTG_ID JOIN SACMT_ROLE r on pp.ROLE_ID = r.ROLE_ID  WHERE c.CID = ?3 AND r.ROLE_TYPE = ?4) x"
 			+ " 		LEFT JOIN PPEMT_PERSON_CTG_AUTH xx On c.PER_INFO_CTG_ID = xx.PER_INFO_CTG_ID AND xx.ROLE_ID = x.ROLE_ID"
 			+ " 		"
 			+ " 		INNER JOIN PPEMT_PER_INFO_ITEM item ON c.PER_INFO_CTG_ID = item.PER_INFO_CTG_ID AND item.ABOLITION_ATR = 0"
@@ -581,7 +582,7 @@ public class PersonRoleImpl implements PersonRoleRepository {
 			+ " 		 ((cm.SALARY_USE_ATR = 1 AND ?6 = 1) OR (cm.PERSONNEL_USE_ATR = 1 AND ?7 = 1) OR (cm.EMPLOYMENT_USE_ATR = 1 AND ?8 = 1)) OR (?9 =  0 AND  ?10 = 0 AND ?11 = 0) "
 			+ " 			"
 			+ " 	) TBL WHERE TBL.count_i <= TBL.count_ia "
-			+ " 	) TH ORDER BY TH.ROLE_CD,TH.DISPORDER";
+			+ " 	) TH ORDER BY TH.ASSIGN_ATR,TH.ROLE_CD,TH.DISPORDER";
 			
 			
 	
