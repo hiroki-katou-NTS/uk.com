@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.dom.emprsdttaxinfo;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -17,6 +18,7 @@ public class PayeeInfo extends AggregateRoot {
     /**
      * 住民税納付先
      */
+    @Setter
     private ResidentTaxPayeeCode residentTaxPayeeCd;
 
     public PayeeInfo(String histId, String residentTaxPayeeCd) {

@@ -1,11 +1,9 @@
-module nts.uk.com.view.qmm020.i {
-    export module service {
-        var paths = {
-            acquiProcess: "core/wageprovision/statementbindingsetting/indiTiedStatAcquiProcess"
-        };
-        export function acquiProcess(data: any): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.acquiProcess,data);
-        }
+module nts.uk.pr.view.qmm020.i.service {
+    let paths = {
+        getStatementLinkPerson: "core/wageprovision/statementbindingsetting/getStatementLinkPerson"
+    };
 
+    export function getStatementLinkPerson(data: any): JQueryPromise<any> {
+        return nts.uk.request.ajax(paths.getStatementLinkPerson, data);
     }
 }

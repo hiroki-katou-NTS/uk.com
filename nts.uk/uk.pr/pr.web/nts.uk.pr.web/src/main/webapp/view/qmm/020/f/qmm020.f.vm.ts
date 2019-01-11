@@ -49,10 +49,6 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
 
         loadGird() {
             let self = this;
-            if($("#F3_1").length > 0){
-                $("#F3_1").remove();
-                $("#F2_5").after('<table id="F3_1"></table>');
-            }
             $("#F3_1").ntsGrid({
                 height: '311px',
                 dataSource: self.listStateLinkSettingMaster(),

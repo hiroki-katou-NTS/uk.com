@@ -1,10 +1,8 @@
 package nts.uk.ctx.pr.core.ws.wageprovision.statebindingsetting;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.ConOfIndiviSetSttDto;
-import nts.uk.ctx.pr.core.app.find.wageprovision.statebindingset.ConOfIndiviSetSttFinder;
-import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.ConfirmOfIndividualSetSttParams;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.service.ConfirmPersonSetStatus;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.service.ConfirmPersonSetStatusService;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -15,14 +13,12 @@ import java.util.List;
 @Path("core/wageprovision/statementbindingsetting")
 @Produces("application/json")
 public class ConOfIndiviSttWebService extends WebService {
-
     @Inject
-    private ConOfIndiviSetSttFinder mConOfIndiviSetSttFinder;
-    @POST
-    @Path("indiTiedStatAcquiProcess")
-    public List<ConOfIndiviSetSttDto> indiTiedStatAcquiProcess(ConfirmOfIndividualSetSttParams params){
-        String cid = AppContexts.user().companyId();
-        return mConOfIndiviSetSttFinder.indiTiedStatAcquiProcess(params.getType(),params.getEmployeeIds(),params.getHisId(),params.getBaseDate());
+    private ConfirmPersonSetStatusService confirmPersonSetStatusService;
 
+    @POST
+    @Path("getStatementLinkPerson")
+    public List<ConfirmPersonSetStatus> getStatementLinkPerson(ConOfIndiviSttWebParam params) {
+        return confirmPersonSetStatusService.getStatementLinkPerson(params.getEmpIds(), params.getBaseDate());
     }
 }

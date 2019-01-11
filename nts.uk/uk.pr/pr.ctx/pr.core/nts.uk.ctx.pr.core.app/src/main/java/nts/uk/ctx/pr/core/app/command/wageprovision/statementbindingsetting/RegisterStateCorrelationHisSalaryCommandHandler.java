@@ -31,17 +31,17 @@ public class RegisterStateCorrelationHisSalaryCommandHandler extends CommandHand
             String hisId = IdentifierUtil.randomUniqueId();
             List<StateLinkSetMaster> listStateLinkSetMaster = command.getStateLinkSettingMaster().stream().map(i -> new StateLinkSetMaster(
                     hisId,
-                    new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.MasterCode(i.getMasterCode()),
-                    i.getSalaryCode() != null ? new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(i.getSalaryCode()) : null,
-                    i.getBonusCode() != null ? new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(i.getBonusCode()) : null)).collect(Collectors.toList());
+                    i.getMasterCode(),
+                    i.getSalaryCode(),
+                    i.getBonusCode())).collect(Collectors.toList());
             stateCorreHisSalaService.addHistorySalary(hisId, start, end, listStateLinkSetMaster);
         } else {
             String hisId = command.getHisId();
             List<StateLinkSetMaster> listStateLinkSetMaster = command.getStateLinkSettingMaster().stream().map(i -> new StateLinkSetMaster(
                     hisId,
-                    new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.MasterCode(i.getMasterCode()),
-                    i.getSalaryCode() != null ? new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(i.getSalaryCode()) : null,
-                    i.getBonusCode() != null ? new nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StatementCode(i.getBonusCode()) : null)).collect(Collectors.toList());
+                    i.getMasterCode(),
+                    i.getSalaryCode(),
+                    i.getBonusCode())).collect(Collectors.toList());
             stateCorreHisSalaService.updateHistorySalary(hisId, start, end, listStateLinkSetMaster);
         }
     

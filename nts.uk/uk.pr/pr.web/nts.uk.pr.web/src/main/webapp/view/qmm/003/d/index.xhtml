@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 450, height: 650 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../share/constants.js"/>
+			<com:scriptfile path="qmm003.d.service.js" />
+			<com:scriptfile path="qmm003.d.vm.js" />
+			<com:scriptfile path="qmm003.d.start.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area" style="padding: 15px 25px">
+				<div class="valign-center control-group">
+					<!-- D1_1 -->
+					<span class="label">#{i18n.getText('QMM003_27')}</span>
+				</div>
+				<div class="valign-center control-group">
+					<!-- D1_2 -->
+					<span class="label">#{i18n.getText('QMM003_28')}</span>
+				</div>
+				<div class="valign-center control-group" style="width: 400px">
+					<!-- D1_3 -->
+					<i class="icon icon-searchbox pull-left" style="margin: 0px !important; position: relative !important"></i>
+					<!-- D1_4 -->
+					<div tabindex="1" style="width: 350px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
+						targetKey: 'code', mode:'igTree', comId:'D2_1', items: items2, 
+						selected: selectedCodes, selectedKey: 'code', childField: 'children', fields: ['name', 'code']}" />
+				</div>
+				<!-- D2_1 -->
+				<table id="D2_1" tabindex="2"
+					data-bind="ntsTreeGridView:{
+						width: 400,
+						rows: 15,
+						name: '#[QMM003_8]',
+						dataSource: items2,
+						selectedValues: selectedCodes,
+						headers: headers,
+						primaryKey: 'code',
+						childDataKey: 'children',
+						primaryText: 'nodeText',
+						multiple: true,
+						enable: true,
+						initialExpandDepth: 1,
+						showCheckBox: true}"></table>
+			</div>
+			<div id="functions-area-bottom">
+				<!-- D3_1 -->
+				<button tabindex="3" class="x-large danger" data-bind="enable: selectedCodes().length > 0, click: deleteList, timeClick: 500">#{i18n.getText('QMM003_6')}</button>
+				<!-- D3_2 -->
+				<button tabindex="4" data-bind="click: cancel, timeClick: 500">#{i18n.getText('QMM003_25')}</button>
+			</div>
+			<style>
+				#D2_1_container{clear: both}
+			</style>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

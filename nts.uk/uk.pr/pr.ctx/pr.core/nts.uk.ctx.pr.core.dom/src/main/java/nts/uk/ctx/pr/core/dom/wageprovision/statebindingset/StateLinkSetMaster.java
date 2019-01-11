@@ -29,12 +29,12 @@ public class StateLinkSetMaster extends AggregateRoot {
     * 賞与明細書
     */
     private Optional<StatementCode> bonusCode;
-    
-    public StateLinkSetMaster(String hisId, MasterCode masterCode, StatementCode salary, StatementCode bonus) {
-        this.salaryCode = Optional.ofNullable(salary);
-        this.bonusCode = Optional.ofNullable(bonus);
+
+    public StateLinkSetMaster(String hisId, String masterCode, String salary, String bonus) {
+        this.salaryCode = salary == null ? Optional.empty() : Optional.of(new StatementCode(salary));
+        this.bonusCode = bonus == null ? Optional.empty() : Optional.of(new StatementCode(bonus));
         this.historyID = hisId;
-        this.masterCode = masterCode;
+        this.masterCode = new MasterCode(masterCode);
     }
     
 }

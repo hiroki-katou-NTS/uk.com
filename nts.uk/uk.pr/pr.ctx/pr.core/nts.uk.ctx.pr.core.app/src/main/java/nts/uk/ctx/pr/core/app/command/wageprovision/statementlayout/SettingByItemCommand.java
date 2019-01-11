@@ -14,10 +14,10 @@ public class SettingByItemCommand {
     private DeductionItemDetailCommand deductionItemDetailSet;
     private ItemRangeSetCommand itemRangeSet;
 
-    public SettingByItemCustom toDomain() {
+    public SettingByItemCustom toDomain(String cid, String statementCode, Integer ctgAtr) {
         return new SettingByItemCustom(itemPosition, itemId, shortName,
-                deductionItemDetailSet == null ? null : deductionItemDetailSet.toDomain(),
-                paymentItemDetailSet == null ? null : paymentItemDetailSet.toDomain(),
-                itemRangeSet == null ? null : itemRangeSet.toDomain());
+                deductionItemDetailSet == null ? null : deductionItemDetailSet.toDomain(cid, statementCode),
+                paymentItemDetailSet == null ? null : paymentItemDetailSet.toDomain(cid, statementCode),
+                itemRangeSet == null ? null : itemRangeSet.toDomain(cid, statementCode, ctgAtr));
     }
 }

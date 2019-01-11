@@ -55,7 +55,6 @@ module nts.uk.pr.view.qmm019.l.viewmodel {
 
         decide(){
             let self = this;
-            nts.uk.ui.errors.clearAll();
 
             if(self.printSet() != 2) {
                 let messageId;
@@ -67,11 +66,12 @@ module nts.uk.pr.view.qmm019.l.viewmodel {
                 }
 
                 if(messageId != null) {
-                    $('#L1_2').ntsError('set', { messageId: messageId });
+                    nts.uk.ui.dialog.alertError({ messageId: messageId });
+                } else {
+                    setShared("QMM019_L_TO_A_PARAMS", {isRegistered: true, printSet: self.printSet()});
+                    nts.uk.ui.windows.close();
                 }
-            }
-
-            if(!nts.uk.ui.errors.hasError()) {
+            } else {
                 setShared("QMM019_L_TO_A_PARAMS", {isRegistered: true, printSet: self.printSet()});
                 nts.uk.ui.windows.close();
             }

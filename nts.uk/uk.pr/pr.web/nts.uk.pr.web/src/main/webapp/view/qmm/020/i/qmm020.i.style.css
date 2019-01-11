@@ -1,0 +1,27 @@
+#screen-content {
+    margin-left: 100px;
+}
+
+.table {
+    width: 1000px;
+}
+
+.table .cell:nth-child(1) {
+    width: 500px;
+}
+
+.table .cell:nth-child(2) {
+    width: 40px;
+}
+
+.table .cell:nth-child(3) {
+    width: 300px;
+}
+
+.table .cell:nth-child(4) {
+    width: 110px;
+}
+
+.table .cell:nth-child(5) {
+    width: 50px;
+}

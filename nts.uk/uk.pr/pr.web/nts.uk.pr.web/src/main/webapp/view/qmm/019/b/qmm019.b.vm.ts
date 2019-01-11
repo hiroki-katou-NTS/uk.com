@@ -97,7 +97,7 @@ module nts.uk.pr.view.qmm019.b.viewmodel {
             if(!nts.uk.ui.errors.hasError()) {
                 service.getHistByCidAndCodeAndAfterDate(self.statementCode(), self.startMonth()).done(function (yearMonthHistory: Array<YearMonthHistory>) {
                     if((yearMonthHistory != null) && (yearMonthHistory.length > 0)) {
-                        $('#B1_6').ntsError('set', {messageId: "Msg_79"});
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_79" });
                     } else {
                         setShared("QMM019_B_TO_A_PARAMS", {
                                                               isRegistered: true,

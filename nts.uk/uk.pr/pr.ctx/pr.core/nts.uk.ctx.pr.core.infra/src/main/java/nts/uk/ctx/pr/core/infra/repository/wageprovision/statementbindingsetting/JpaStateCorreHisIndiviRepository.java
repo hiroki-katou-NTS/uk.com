@@ -4,6 +4,7 @@ package nts.uk.ctx.pr.core.infra.repository.wageprovision.statementbindingsettin
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.service.StateCorreHisAndLinkSetIndivi;
 import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisIndivi;
 import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateCorreHisIndiviRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.statebindingset.StateLinkSetIndivi;
@@ -13,8 +14,7 @@ import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 
 import javax.ejb.Stateless;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -22,6 +22,8 @@ public class JpaStateCorreHisIndiviRepository extends JpaRepository implements S
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtStateCorHisIndi f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisIndiPk.empId =:empId AND  f.stateCorHisIndiPk.hisId =:hisId ";
+    private static final String SELECT_BY_KEYS_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisIndiPk.empId IN :empIds " +
+            " AND f.startYearMonth <= :yearMonth AND f.endYearMonth >= :yearMonth ";
     private static final String SELECT_BY_EMP_ID = SELECT_ALL_QUERY_STRING + " WHERE  f.stateCorHisIndiPk.empId =:empId  ORDER BY f.startYearMonth DESC";
     private static final String UPDATE_BY_HISID = "UPDATE QpbmtStateCorHisIndi f SET f.startYearMonth = :startYearMonth, f.endYearMonth = :endYearMonth WHERE f.stateCorHisIndiPk.empId =:empId AND f.stateCorHisIndiPk.hisId =:hisId";
 
@@ -53,14 +55,17 @@ public class JpaStateCorreHisIndiviRepository extends JpaRepository implements S
     }
 
     @Override
-    public Optional<StateCorreHisIndivi> getStateCorrelationHisIndividualByDate(String empId, GeneralDate date) {
-        List<QpbmtStateCorHisIndi> listStateCorHisIndi = this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtStateCorHisIndi.class)
-                .setParameter("empId", empId)
-                .setParameter("date", date)
+    public StateCorreHisAndLinkSetIndivi getStateCorreHisAndLinkSetIndivi(List<String> empIds, YearMonth yearMonth) {
+        StateCorreHisAndLinkSetIndivi result = new StateCorreHisAndLinkSetIndivi(Collections.emptyList(), Collections.emptyList());
+        if (empIds == null || empIds.isEmpty()) return result;
+        List<QpbmtStateCorHisIndi> entitys = this.queryProxy().query(SELECT_BY_KEYS_STRING, QpbmtStateCorHisIndi.class)
+                .setParameter("empIds", empIds)
+                .setParameter("yearMonth", yearMonth.v())
                 .getList();
-        return this.toDomain(listStateCorHisIndi);
+        result.setHistorys(QpbmtStateCorHisIndi.toDomainHistory(entitys));
+        result.setSettings(QpbmtStateCorHisIndi.toDomainSetting(entitys));
+        return result;
     }
-
 
     @Override
     public void add(String cid, YearMonthHistoryItem history, String salaryCode, String bonusCode){

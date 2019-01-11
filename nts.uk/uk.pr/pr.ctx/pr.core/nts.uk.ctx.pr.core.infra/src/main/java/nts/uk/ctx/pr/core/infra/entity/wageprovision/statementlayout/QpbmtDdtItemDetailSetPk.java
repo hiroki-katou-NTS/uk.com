@@ -22,30 +22,31 @@ public class QpbmtDdtItemDetailSetPk implements Serializable
     private static final long serialVersionUID = 1L;
 
     /**
-    * 履歴ID
-    */
+     * 会社ID
+     */
+    @Basic(optional = false)
+    @Column(name = "CID")
+    public String cid;
+
+    /**
+     * 明細書コード
+     */
+    @Basic(optional = false)
+    @Column(name = "STATEMENT_CD")
+    public String statementCd;
+
+    /**
+     * 履歴ID
+     */
     @Basic(optional = false)
     @Column(name = "HIST_ID")
     public String histId;
 
     /**
-     * カテゴリ区分
+     * 項目名コード
      */
     @Basic(optional = false)
-    @Column(name="CTG_ATR")
-    public int categoryAtr;
+    @Column(name = "ITEM_NAME_CD")
+    public String itemNameCd;
 
-    /**
-     * 行番号
-     */
-    @Basic(optional = false)
-    @Column(name="LINE_NUM")
-    public int lineNumber;
-
-    /**
-     * 終了日
-     */
-    @Basic(optional = false)
-    @Column(name = "ITEM_POSITION")
-    public int itemPosition;
 }

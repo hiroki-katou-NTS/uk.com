@@ -28,8 +28,9 @@ module nts.uk.pr.view.qmm020.share.model {
         salaryName: string;
         displayE3_4: string;
         displayE3_5: string;
-        constructor() {
-
+        constructor(masterCode: string, categoryName: string) {
+            this.masterCode = masterCode;
+            this.categoryName = categoryName;
         }
 
     }
@@ -48,7 +49,7 @@ module nts.uk.pr.view.qmm020.share.model {
     export function convertToDisplay(item){
         let listStateLinkSettingMaster = [];
         _.each(item, (item,key) => {
-            let dto: StateLinkSettingMaster = new StateLinkSettingMaster();
+            let dto: StateLinkSettingMaster = new StateLinkSettingMaster("", "");
             dto.hisId = item.hisId;
             dto.id = key;
             dto.masterCode = item.masterCode;

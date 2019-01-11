@@ -214,10 +214,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
 
             service.getAllStatementLayoutAndHist().done(function(data: Array<IStatementLayout>) {
                 let statementLayoutList = data.map(x => new StatementLayout(x));
-
                 self.statementLayoutList(statementLayoutList);
-                self.currentHistoryId(null);
-                self.statementLayoutHistData(new StatementLayoutHistData(null, false));
 
                 block.clear();
                 dfd.resolve();
@@ -232,6 +229,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         public create(): void {
             let self = this;
 
+            nts.uk.ui.errors.clearAll();
             nts.uk.ui.windows.sub.modal('../h/index.xhtml').onClosed(() => {
                 let params = getShared("QMM019_H_TO_A_PARAMS");
                 let histID = params.histID;
@@ -262,6 +260,10 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
 
         public createIfEmpty(): void {
             let self = this;
+
+            setTimeout(function() {
+                nts.uk.ui.errors.clearAll();
+            }, 2000);
 
             nts.uk.ui.windows.sub.modal('../h/index.xhtml').onClosed(() => {
                 let params = getShared("QMM019_H_TO_A_PARAMS");
@@ -386,7 +388,6 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
 
                     service.getInitStatementLayoutHistData(statementCode, histId, startMonth, itemHistoryDivision, layoutPattern).done(function (data: IStatementLayoutHistData) {
                         if(data) {
-                            self.statementLayoutList.removeAll();
                             self.currentHistoryId("");
                             self.statementLayoutHistData(new StatementLayoutHistData(data, true));
                             self.calculatePrintLine();
@@ -456,7 +457,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
         }
     }
 
-    class StatementLayoutHistData {
+    export class StatementLayoutHistData {
         statementCode: string;
         statementName: KnockoutObservable<string>;
         historyId: string;
