@@ -18,11 +18,15 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.function.app.find.annualworkschedule.PeriodDto;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
+import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.DisplayTimeItem;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonPfmCorrectionFormat;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonPfmCorrectionFormatRepository;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.MonthlyRecordWorkType;
@@ -35,7 +39,10 @@ import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkSched
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessType;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
+import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -75,6 +82,12 @@ public class OutputItemMonthlyWorkScheduleFinder {
 	@Inject
 	private CompanyMonthlyItemService companyMonthlyItemService;
 
+	@Inject
+	private ClosureEmploymentService closureEmploymentService;
+	
+	@Inject
+	private ClosureService closureService;
+	
 	/** The Constant AUTHORITY. */
 	// SettingUnitType.AUTHORITY.value
 	private static final int AUTHORITY = 0;
@@ -93,7 +106,7 @@ public class OutputItemMonthlyWorkScheduleFinder {
 	private static final int SHEET_NO_1 = 1;
 
 	/** The Constant LIMIT_DISPLAY_ITEMS. */
-	private static final int LIMIT_DISPLAY_ITEMS = 39;
+	private static final int LIMIT_DISPLAY_ITEMS = 48;
 
 	/**
 	 * Find employment authority.
@@ -234,8 +247,9 @@ public class OutputItemMonthlyWorkScheduleFinder {
 	}
 
 	// algorithm for screen D: copy
-	public List<DisplayTimeItemDto> executeCopy(String codeCopy, String codeSourceSerivce) {
+	public MonthlyReturnItemDto executeCopy(String codeCopy, String codeSourceSerivce) {
 		String companyId = AppContexts.user().companyId();
+		MonthlyReturnItemDto returnDto = new MonthlyReturnItemDto();
 
 		// get domain 月別勤務表の出力項目
 		Optional<OutputItemMonthlyWorkSchedule> optOutputItemMonthlyWorkSchedule = outputItemMonthlyWorkScheduleRepository
@@ -244,7 +258,24 @@ public class OutputItemMonthlyWorkScheduleFinder {
 		if (optOutputItemMonthlyWorkSchedule.isPresent()) {
 			throw new BusinessException("Msg_3");
 		} else {
-			return getDomConvertMonthlyWork(companyId, codeSourceSerivce);
+			List<DisplayTimeItemDto> dtos = getDomConvertMonthlyWork(companyId, codeSourceSerivce);
+			returnDto.setLstDisplayTimeItem(dtos);
+
+			Map<String, Object> kwr006Lst = this.findByCid();
+			@SuppressWarnings("unchecked")
+			Map<Integer, String> mapCodeNameAttendance = convertListToMapAttendanceItem(
+					(List<MonthlyAttendanceItemDto>)kwr006Lst.get("monthlyAttendanceItem"));
+			//Get size of list item of kdw008 in kwr006 
+			List<DisplayTimeItemDto> newDtos = dtos.stream().filter(item -> mapCodeNameAttendance.containsKey(item.getItemDaily())).map(domain -> {
+				return domain;
+			}).collect(Collectors.toList());
+			//compare if kdw008(right) and kwr006(left) doesn't equals
+			if (newDtos.size() != dtos.size()) {
+				List<String> lstMsgErr = new ArrayList<>();
+				lstMsgErr.add("Msg_1476");
+				returnDto.setErrorList(lstMsgErr);
+			}
+			return returnDto;
 		}
 	}
 
@@ -286,6 +317,10 @@ public class OutputItemMonthlyWorkScheduleFinder {
 			}
 		}
 
+		// sort list display item by display order
+		sheetNo1.setListDisplayTimeItem(sheetNo1.getListDisplayTimeItem().stream()
+				.sorted(Comparator.comparing(DisplayTimeItem::getDisplayOrder)).collect(Collectors.toList()));
+		
 		if (sheetNo1.getListDisplayTimeItem().size() <= LIMIT_DISPLAY_ITEMS) {
 			return sheetNo1.getListDisplayTimeItem().stream().map(item -> new DisplayTimeItemDto(item.getItemDaily(),
 					item.getDisplayOrder(), item.getColumnWidthTable())).collect(Collectors.toList());
@@ -318,5 +353,18 @@ public class OutputItemMonthlyWorkScheduleFinder {
 	private Map<Integer, String> convertListToMapAttendanceItem(List<MonthlyAttendanceItemDto> lst) {
 		return lst.stream()
 				.collect(Collectors.toMap(MonthlyAttendanceItemDto::getId, MonthlyAttendanceItemDto::getName));
+	}
+
+	public PeriodDto getPeriod() {
+		// 社員に対応する処理締めを取得する
+		Optional<Closure> closureOtp = closureEmploymentService.findClosureByEmployee(AppContexts.user().employeeId(),
+				GeneralDate.today());
+		if (!closureOtp.isPresent()) {
+			throw new BusinessException("Msg_1134");
+		} else {
+			Closure closure = closureOtp.get();
+			YearMonth date = closure.getClosureMonth().getProcessingYm();
+			return new PeriodDto(date.toString(), date.toString());
+		}
 	}
 }

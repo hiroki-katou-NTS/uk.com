@@ -74,7 +74,11 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 					true);
 			daily = scheWork.updateScheStartEndTimeHoliday(timeData, daily);
 			workRepository.updateByKeyFlush(daily.getWorkInformation());
-			
+			//開始時刻と終了時刻の反映
+			if(holidayWorkPara.getHolidayWorkPara().getStartTime() != null
+					&& holidayWorkPara.getHolidayWorkPara().getEndTime() != null) {
+				workUpdate.updateRecordStartEndTimeReflect(timeData);
+			}
 			//事前休出時間の反映
 			daily = holidayWorkProcess.reflectWorkTimeFrame(holidayWorkPara.getEmployeeId(), 
 					holidayWorkPara.getBaseDate(), 

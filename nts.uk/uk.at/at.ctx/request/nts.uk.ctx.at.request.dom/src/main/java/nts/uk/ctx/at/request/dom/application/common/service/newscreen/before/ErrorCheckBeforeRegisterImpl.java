@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
@@ -251,7 +253,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		Optional<AppOvertimeDetail> appOvertimeDetailOpt = appOvertimeDetailRepository
 				.getAppOvertimeDetailById(companyId, appId);
 		// ３６時間の上限チェック(照会)
-		List<AppTimeItem> appTimeItems = overTimeInput.stream().map(x -> {
+		List<AppTimeItem> appTimeItems = CollectionUtil.isEmpty(overTimeInput) ? Collections.emptyList() : overTimeInput.stream().map(x -> {
 			return new AppTimeItem(x.getApplicationTimeValue(), x.getFrameNo());
 		}).collect(Collectors.toList());
 		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkUpdate(companyId, appOvertimeDetailOpt,
@@ -311,7 +313,7 @@ public class ErrorCheckBeforeRegisterImpl implements IErrorCheckBeforeRegister {
 		Optional<AppOvertimeDetail> appOvertimeDetailOpt = appOvertimeDetailRepository
 				.getAppOvertimeDetailById(companyId, appId);
 		// ３６時間の上限チェック(照会)
-		List<AppTimeItem> appTimeItems = holidayWorkInputs.stream().map(x -> {
+		List<AppTimeItem> appTimeItems = CollectionUtil.isEmpty(holidayWorkInputs) ? Collections.emptyList() : holidayWorkInputs.stream().map(x -> {
 			return new AppTimeItem(x.getApplicationTime().v(), x.getFrameNo());
 		}).collect(Collectors.toList());
 		Time36UpperLimitCheckResult result = time36UpperLimitCheck.checkUpdate(companyId, appOvertimeDetailOpt, employeeId,

@@ -47,18 +47,23 @@ public class BreakDayOffManagementQueryImpl implements BreakDayOffManagementQuer
 	private ComDayOffManaDataRepository leaveDayOffRepo;
 	@Inject
 	private LeaveComDayOffManaRepository typingConfirmMng;
+	
 	@Override
 	public List<InterimRemainAggregateOutputData> getInterimRemainAggregate(String employeeId, GeneralDate baseDate,
 			YearMonth startMonth, YearMonth endMonth) {
-		List<InterimRemainAggregateOutputData> lstData = new ArrayList<>();
+		
 		//アルゴリズム「締めと残数算出対象期間を取得する」を実行する
 		ClosureRemainPeriodOutputData closureData = remainManaExport.getClosureRemainPeriod(employeeId, baseDate, startMonth, endMonth);
 		if(closureData == null) {
-			return lstData;
+			return new ArrayList<>();
 		}
 		//残数算出対象年月を設定する
-		
-		for(YearMonth ym = closureData.getStartMonth(); closureData.getEndMonth().greaterThanOrEqualTo(ym); ym = ym.addMonths(1)) {
+		List<YearMonth> lstYM = new ArrayList<>();
+		for(YearMonth ym = closureData.getStartMonth(); closureData.getEndMonth().greaterThanOrEqualTo(ym); ym = ym.addMonths(1)){
+			lstYM.add(ym);
+		}
+		List<InterimRemainAggregateOutputData> lstData = new ArrayList<>();
+		for(YearMonth ym : lstYM){
 			InterimRemainAggregateOutputData outPutData = new InterimRemainAggregateOutputData(ym, 0, 0, 0, 0, 0);
 			//アルゴリズム「指定年月の締め期間を取得する」を実行する
 			DatePeriod dateData = remainManaExport.getClosureOfMonthDesignation(closureData.getClosure(), ym);

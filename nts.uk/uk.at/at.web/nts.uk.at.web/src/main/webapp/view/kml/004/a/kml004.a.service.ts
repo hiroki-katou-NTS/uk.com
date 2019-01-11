@@ -36,4 +36,7 @@ module nts.uk.at.view.kml004.a.service {
     export function remove(command: any): JQueryPromise<void>{
         return nts.uk.request.ajax(paths.remove, command);    
     }
+    export function saveAsExcel(languageId: string): JQueryPromise<any> {
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Schedule", domainType:__viewContext.program.programName==null?"KML004":"KML004"+__viewContext.program.programName, languageId: languageId, reportType: 0});
+    }
 }

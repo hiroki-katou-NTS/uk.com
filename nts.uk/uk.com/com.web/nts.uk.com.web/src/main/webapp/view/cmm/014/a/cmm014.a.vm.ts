@@ -223,6 +223,21 @@ module nts.uk.com.view.cmm014.a {
                 // Clear error inputs
                 $('.nts-input').ntsError('clear');
             }
+            
+            
+            //exportExcel
+            private exportExcel(): void {
+                var self = this;
+                nts.uk.ui.block.grayout();
+                let langId = "ja";
+                service.saveAsExcel(langId).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
+
 
         }
 

@@ -403,6 +403,8 @@ public class ScheCreExeWorkTypeHandler {
 			// マスタ参照区分に従う、個人勤務日別
 			workTypeCd = this.convertWorktypeCodeByWorkingStatus(command, masterCache.getMapEmploymentStatus(), masterCache.getListWorkingConItem());
 		}
+		
+		if(workTypeCd == null) return Optional.empty();
 
 		// get work type by code
 		// EA No2019

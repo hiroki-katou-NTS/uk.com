@@ -5,6 +5,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.CommonReflectParamSche;
+import nts.uk.ctx.at.schedule.dom.appreflectprocess.service.UpdateScheCommonAppRelect;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.service.StartEndTimeReflectScheService;
@@ -19,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 @Stateless
 public class ForleaveReflectScheImpl implements ForleaveReflectSche{
 	@Inject
-	private BasicScheduleRepository basicSche;
+	private UpdateScheCommonAppRelect updateRelect;
 	@Inject
 	private WorkScheduleStateRepository workScheReposi;
 	@Inject
@@ -44,14 +45,7 @@ public class ForleaveReflectScheImpl implements ForleaveReflectSche{
 				}
 				//勤種の反映
 				//勤務種類を反映する
-				//ドメインモデル「勤務予定基本情報」を取得する			
-				basicSche.changeWorkTypeTime(reflectParam.getEmployeeId(), loopDate, reflectParam.getWorktypeCode(), reflectParam.getWorkTimeCode());
-				//勤務種類の編集状態を更新する
-				WorkScheduleState scheData = new WorkScheduleState(ScheduleEditState.REFLECT_APPLICATION,
-						1,
-						loopDate,
-						reflectParam.getEmployeeId());
-				workScheReposi.updateOrInsert(scheData);
+				updateRelect.updateScheWorkType(reflectParam.getEmployeeId(), loopDate, reflectParam.getWorktypeCode());
 				//時刻の反映
 				this.reflectTime(reflectParam.getEmployeeId(), loopDate, reflectParam.getWorktypeCode(), reflectParam.getStartTime(), reflectParam.getEndTime());
 			}

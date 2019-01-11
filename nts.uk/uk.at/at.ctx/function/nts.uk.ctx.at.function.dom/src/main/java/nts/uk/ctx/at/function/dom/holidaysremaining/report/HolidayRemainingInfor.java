@@ -7,6 +7,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaGrantNumberImported;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveOfThisMonthImported;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.AnnLeaveUsageStatusOfThisMonthImported;
@@ -53,7 +54,7 @@ public class HolidayRemainingInfor {
 	private List<StatusOfHolidayImported> listStatusOfHoliday;
 	// RequestList273
 	private Map<Integer, SpecialVacationImported> mapSpecialVacation;
-    private Map<Integer, SpecialVacationImported> mapSPVaCrurrentMonth;
+    private Map<YearMonth, Map<Integer, SpecialVacationImported>> mapSPVaCrurrentMonth;
 
 	// RequestList263
 	private Map<Integer, List<SpecialHolidayImported>> mapListSpecialHoliday;
@@ -69,8 +70,8 @@ public class HolidayRemainingInfor {
 			List<RsvLeaUsedCurrentMonImported> listRsvLeaUsedCurrentMon,
 			List<CurrentHolidayImported> listCurrentHoliday, List<StatusHolidayImported> listStatusHoliday,
 			List<CurrentHolidayRemainImported> listCurrentHolidayRemain,
-			List<StatusOfHolidayImported> listStatusOfHoliday, Map<Integer, SpecialVacationImported> mapSpecialVacation,Map<Integer,
-            SpecialVacationImported> mapSPVaCrurrentMonth,
+			List<StatusOfHolidayImported> listStatusOfHoliday, Map<Integer, SpecialVacationImported> mapSpecialVacation, 
+			Map<YearMonth, Map<Integer, SpecialVacationImported>> mapSPVaCrurrentMonth,
 			Map<Integer, List<SpecialHolidayImported>> mapListSpecialHoliday,
 			ChildNursingLeaveCurrentSituationImported childNursingLeave,
 			NursingLeaveCurrentSituationImported nursingLeave) {
@@ -93,4 +94,6 @@ public class HolidayRemainingInfor {
 		this.childNursingLeave = childNursingLeave;
 		this.nursingLeave = nursingLeave;
 	}
+	
+	
 }

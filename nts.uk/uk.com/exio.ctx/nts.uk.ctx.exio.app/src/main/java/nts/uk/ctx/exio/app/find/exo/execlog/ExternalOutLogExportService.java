@@ -2,13 +2,16 @@ package nts.uk.ctx.exio.app.find.exo.execlog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.exio.app.find.exo.executionlog.ErrorContentDto;
@@ -26,10 +29,9 @@ public class ExternalOutLogExportService extends ExportService<ErrorContentDto> 
 	protected void handle(ExportServiceContext<ErrorContentDto> context) {
 		
 		/** The Constant LST_NAME_ID. */
-		List<String> listNameIdHead = Arrays.asList( 
-								 "",TextResource.localize("CMF002_336"), TextResource.localize("CMF002_337"),
+		List<String> listNameIdHead = Arrays.asList(TextResource.localize("CMF002_336"), TextResource.localize("CMF002_337"),
 									TextResource.localize("CMF002_338"),TextResource.localize("CMF002_339"));
-		
+			
 		ErrorContentDto lstError = context.getQuery();
 		if (lstError == null) {
 			return;
@@ -46,21 +48,28 @@ public class ExternalOutLogExportService extends ExportService<ErrorContentDto> 
 		resultLogs.add(new ArrayList<>(Arrays.asList(TextResource.localize("CMF002_329"),
 				lstError.getResultLog().getProcessStartDateTime().toString())));
 		resultLogs.add(new ArrayList<>(
-				Arrays.asList(TextResource.localize("CMF002_331"), lstError.getResultLog().getTotalCount() + "")));
+				Arrays.asList(
+						TextResource.localize("CMF002_331"), 
+						String.valueOf(lstError.getResultLog().getTotalCount()),
+						lstError.getResultLog().getProcessUnit())
+				));
+		int processCount = Arrays.asList(lstError.getErrorLog()).stream().collect(Collectors.groupingBy(x -> x.getProcessCount())).size();
 		resultLogs.add(new ArrayList<>(Arrays.asList(TextResource.localize("CMF002_332"),
-				lstError.getResultLog().getTotalCount() - lstError.getResultLog().getTotalErrorCount() + "")));
-		resultLogs.add(new ArrayList<>(Arrays.asList(TextResource.localize("CMF002_333"), lstError.getResultLog().getTotalErrorCount() + "")));
+				String.valueOf(lstError.getResultLog().getTotalCount() - processCount) ,
+				lstError.getResultLog().getProcessUnit())));
+		resultLogs.add(new ArrayList<>(Arrays.asList(TextResource.localize("CMF002_333"), String.valueOf(lstError.getResultLog().getTotalErrorCount())
+				,"件")));
 
 		if (lstError.getErrorLog() != null) { 
 			for (int i=0; i< lstError.getErrorLog().length; i++) {
 				ExternalOutLogDto errorContentList = lstError.getErrorLog()[i];
 				Map<String, Object> errorItem = new HashMap<>();
-				errorItem.put(header.get(0), i);
-				errorItem.put(header.get(1), errorContentList.getProcessCount());
-				errorItem.put(header.get(2), errorContentList.getErrorItem());
-				errorItem.put(header.get(3), errorContentList.getErrorTargetValue());
-				errorItem.put(header.get(4), errorContentList.getErrorContent() + "(" + TextResource.localize("CMF002_356")
-				+ errorContentList.getErrorEmployee() + ")");
+				//errorItem.put(header.get(0), i);
+				errorItem.put(header.get(0), errorContentList.getProcessCount());
+				errorItem.put(header.get(1), errorContentList.getErrorItem());
+				errorItem.put(header.get(2), errorContentList.getErrorTargetValue());
+				String str = errorContentList.getErrorEmployee() != null ? "(" + TextResource.localize("CMF002_356") + errorContentList.getErrorEmployee() + ")" : "";
+				errorItem.put(header.get(3), errorContentList.getErrorContent() + str);
 				dataSource.add(errorItem);
 			}
 		}

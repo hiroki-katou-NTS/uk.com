@@ -60,13 +60,14 @@ public class JpaMatrixDisplaySetRepo extends JpaRepository implements MatrixDisp
 	@Override
 	public void insert(MatrixDisplaySetting newSetting) {
 		PpestMatrixDisplaySet newEntity = PpestMatrixDisplaySet.toEntity(newSetting);
+		
 		Optional<PpestMatrixDisplaySet> updateEntity = this.queryProxy().find(newEntity.ppestMatrixDisplaySetPK,
 				PpestMatrixDisplaySet.class);
-		if (!updateEntity.isPresent()) {
-			this.commandProxy().insert(PpestMatrixDisplaySet.toEntity(newSetting));
-			this.getEntityManager().flush();
+		
+		if (updateEntity.isPresent()) {
+			this.update(newSetting);
 		} else {
-			this.commandProxy().update(updateEntity);
+			this.commandProxy().insert(PpestMatrixDisplaySet.toEntity(newSetting));
 		}
 	}
 
@@ -80,6 +81,7 @@ public class JpaMatrixDisplaySetRepo extends JpaRepository implements MatrixDisp
 	public void insertAll(List<MatrixDisplaySetting> listSetting) {
 		List<PpestMatrixDisplaySet> listEntity = listSetting.stream().map(c -> toEntity(c))
 				.collect(Collectors.toList());
+		
 		commandProxy().insertAll(listEntity);
 	}
 

@@ -32,8 +32,7 @@ public interface AbsenceReflectService {
 	 * @param baseDate
 	 * @param workTypeCode
 	 */
-	public TimeLeavingOfDailyPerformance reflectRecordStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode, 
-			TimeLeavingOfDailyPerformance timeDaily);
+	public TimeLeavingOfDailyPerformance reflectRecordStartEndTime(String employeeId, GeneralDate baseDate, String workTypeCode);
 	/**
 	 * 開始終了時刻をクリアするかチェックする
 	 * @param workTypeCode

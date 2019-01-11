@@ -68,7 +68,7 @@ public class CheckFileFinder {
 			// data file
 			NtsExcelImport excelReader = NtsExcelReader.read(inputStream);
 			// header
-			List<nts.gul.excel.ExcelHeader> header = excelReader.headers(); 
+			List<nts.gul.excel.NtsExcelHeader> header = excelReader.headers(); 
 			List<NtsExcelRow> rows = excelReader.rows();
 			List<String> fixedCol = fixedColums();
 			
@@ -95,7 +95,7 @@ public class CheckFileFinder {
 	}
 	
 	// get ColumnsFixed
-	private List<String> getColumsChange(List<nts.gul.excel.ExcelHeader> header) throws Exception{
+	private List<String> getColumsChange(List<nts.gul.excel.NtsExcelHeader> header) throws Exception{
 		List<String> colChange = new ArrayList<>();
 		header.stream().forEach(c ->{
 			NtsExcelCell mainCells = c.getMain();
@@ -113,7 +113,7 @@ public class CheckFileFinder {
 		
 		rows.stream().forEach(c ->{
 			List<NtsExcelCell> cells = c.cells();
-			nts.gul.excel.ExcelHeader header = cells.get(0).getHeader();
+			nts.gul.excel.NtsExcelHeader header = cells.get(0).getHeader();
 			String nameCol = header.getMain().getValue().toString();
 			if(nameCol.equals(TextResource.localize("CPS003_28"))) {
 				String employeeCode = cells.get(0).getValue().toString();

@@ -22,6 +22,7 @@ import nts.uk.ctx.exio.app.find.exo.condset.CondSetDto;
 import nts.uk.ctx.exio.app.find.exo.condset.StdOutputCondSetDto;
 import nts.uk.ctx.exio.app.find.exo.condset.StdOutputCondSetFinder;
 import nts.uk.ctx.exio.app.find.exo.item.StdOutItemDto;
+import nts.uk.ctx.exio.app.find.exo.menu.RoleAuthorityDto;
 import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondParam;
 
 @Path("exio/exo/condset")
@@ -55,8 +56,8 @@ public class StdOutConSetWebService extends WebService {
 	
 	@POST
 	@Path("getCndSet")
-	public List<CondSetDto> getCndSet() {
-		return stdOutputCondSetFinder.getCndSet();
+	public List<CondSetDto> getCndSet(RoleAuthorityDto param) {
+		return stdOutputCondSetFinder.getCndSet(param);
 	}
 
 	@POST
@@ -88,7 +89,7 @@ public class StdOutConSetWebService extends WebService {
 	@POST
 	@Path("getCondSet")
 	public List<StdOutputCondSetDto> getCondSet(StdOutputCondParam param) {
-		return stdOutputCondSetFinder.getConditionSetting(param.getModeScreen(),param.getCndSetCd());
+		return stdOutputCondSetFinder.getConditionSetting(param.getModeScreen(),param.getCndSetCd(),param.getRoleId());
 		
 	}
 	@POST

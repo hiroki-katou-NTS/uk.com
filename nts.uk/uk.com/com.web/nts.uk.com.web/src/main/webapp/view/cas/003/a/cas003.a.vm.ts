@@ -83,7 +83,18 @@ module nts.uk.com.view.cas003.a {
 
 
 
-
+            exportExcel(): void {
+                var self = this;
+                nts.uk.ui.block.grayout();
+                let langId = "ja";
+                service.saveAsExcel(langId).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+             }
+            
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
@@ -166,6 +177,7 @@ module nts.uk.com.view.cas003.a {
                 }).always(()=> blockUI.clear());
 
             }
+
 
         }
 

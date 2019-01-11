@@ -3,8 +3,8 @@ package nts.uk.ctx.exio.infra.repository.exo.category;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -80,18 +80,27 @@ public class JpaExOutCtgRepository extends JpaRepository implements ExOutCtgRepo
 	public List<List<String>> getData(Map<String, String> sqlAndParams) {
 		String sql = sqlAndParams.get(SQL);
 		sqlAndParams.remove(SQL);
-		
-		Query queryString = getEntityManager().createNativeQuery(sql);
+		// fixbug 102764
 		for (Entry<String, String> entry : sqlAndParams.entrySet()) {
-			queryString.setParameter(entry.getKey(), entry.getValue());
+			sql = sql.replace("@" + entry.getKey(),"'"+ entry.getValue()+"'");
+			sql = sql.replace("?" + entry.getKey(),"'"+ entry.getValue()+"'");
 		}
+		Query queryString = getEntityManager().createNativeQuery(sql);
+//		for (Entry<String, String> entry : sqlAndParams.entrySet()) {
+//			queryString.setParameter(entry.getKey(), "'"+entry.getValue() +"'");
+//		}
+//		
+		List<Object> data = queryString.getResultList();
+		//List<Object[]> listTemp = (List<Object[]>) queryString.getResultList();
 		
-		List<Object[]> listTemp = (List<Object[]>) queryString.getResultList();
-		
-		return listTemp.stream().map(objects -> {
+		return data.stream().map(objects -> {
 			List<String> record = new ArrayList<String>();
-			for (Object field : objects) {
-				record.add(field != null ? String.valueOf(field) : "");
+			if(objects instanceof Object[]) {
+				for (Object field : (Object[])objects) {
+					record.add(field != null ? String.valueOf(field) : "");
+				}
+			}else {
+				record.add(objects != null ? String.valueOf(objects) : "");
 			}
 			return record;
 		}).collect(Collectors.toList());

@@ -326,6 +326,7 @@ public class AppOvertimeFinder {
 				1, EnumAdaptor.valueOf(ApplicationType.OVER_TIME_APPLICATION.value, ApplicationType.class), appOverTime.getApplication().getAppDate());
 		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
 		if(approvalFunctionSetting != null){
+			overTimeDto.setEnableOvertimeInput(approvalFunctionSetting.getApplicationDetailSetting().get().getTimeInputUse().value==1?true:false);
 			// 時刻計算利用チェック
 			if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
 				overTimeDto.setDisplayCaculationTime(true);
@@ -825,6 +826,7 @@ public class AppOvertimeFinder {
 		//String workplaceID = employeeAdapter.getWorkplaceId(companyID, employeeID, GeneralDate.today());
 		ApprovalFunctionSetting approvalFunctionSetting = appCommonSettingOutput.approvalFunctionSetting;
 		if(approvalFunctionSetting != null){
+			result.setEnableOvertimeInput(approvalFunctionSetting.getApplicationDetailSetting().get().getTimeInputUse().value==1?true:false);
 			// 時刻計算利用チェック
 			if (approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE)) {
 				result.setDisplayCaculationTime(true);
@@ -1071,8 +1073,8 @@ public class AppOvertimeFinder {
 					result.getWorkType().getWorkTypeCode(),
 					result.getWorkClockFrom1(),
 					result.getWorkClockTo1(),
-					null,
-					null));
+					result.getTimezones().stream().map(x -> x.getStart()).collect(Collectors.toList()),
+					result.getTimezones().stream().map(x -> x.getEnd()).collect(Collectors.toList())));
 			result.setResultCaculationTimeFlg(true);
 			
 		}

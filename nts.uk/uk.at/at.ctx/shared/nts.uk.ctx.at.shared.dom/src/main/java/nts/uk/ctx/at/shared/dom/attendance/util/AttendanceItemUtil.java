@@ -451,7 +451,6 @@ public class AttendanceItemUtil implements ItemConst {
 												HashMap::putAll);
 	}
 
-	@SuppressWarnings("unchecked")
 	private static <T> Field getIdxField(AttendanceItemLayout layout, Class<T> className, boolean listNoIdx) {
 		
 		return CACHE_HOLDER.getAndCache(StringUtils.join("IDX2FIELD_", className.hashCode()), () -> {
@@ -760,7 +759,6 @@ public class AttendanceItemUtil implements ItemConst {
 				.collect(Collectors.toSet());
 	}
 
-	@SuppressWarnings("unchecked")
 	private static <T> List<T> processAndSort(List<T> list, int max, Class<T> targetClass, String idxFieldName) {
 
 		Field idxField = CACHE_HOLDER.getAndCache(StringUtils.join("IDXFIELD_", targetClass.hashCode()), () -> getField(idxFieldName, targetClass));
@@ -871,21 +869,18 @@ public class AttendanceItemUtil implements ItemConst {
 		
 	}
 
-	@SuppressWarnings("unchecked")
 	private static AttendanceItemLayout getLayoutAnnotation(Field field) {
 
 		return CACHE_HOLDER.getAndCache(StringUtils.join("LAYOUT_ANNOTATION_", field.hashCode()), 
 				() -> field.getAnnotation(AttendanceItemLayout.class));
 	}
 
-	@SuppressWarnings("unchecked")
 	private static AttendanceItemValue getItemValueAnnotation(Field field) {
 
 		return CACHE_HOLDER.getAndCache(StringUtils.join("VALUE_ANNOTATION_", field.hashCode()), 
 				() -> field.getAnnotation(AttendanceItemValue.class));
 	}
 
-	@SuppressWarnings("unchecked")
 	private static AttendanceItemRoot getRootAnnotation(Field field) {
 
 		return CACHE_HOLDER.getAndCache(StringUtils.join("ROOT_ANNOTATION_", field.hashCode()), 
@@ -946,7 +941,6 @@ public class AttendanceItemUtil implements ItemConst {
 		return StringUtils.join(currentLayout, DEFAULT_LAYOUT_SEPERATOR, fieldLayout);
 	}
 
-	@SuppressWarnings("unchecked")
 	private static <T> String getExCondition(String exConditionParam, T object, AttendanceItemLayout layout) {
 		
 		String exCondition = exConditionParam == null ? EMPTY_STRING : exConditionParam;
@@ -972,7 +966,6 @@ public class AttendanceItemUtil implements ItemConst {
 		 								getExCondition(exCondition.get(c.getKey()), c.getValue(), layout)));
 	}
 
-	@SuppressWarnings("unchecked")
 	private static <T> String getExConditionField(T object, AttendanceItemLayout layout) {
 		return CACHE_HOLDER.getAndCache(StringUtils.join("EXFIELD_", object.getClass().hashCode()), () -> {
 			if (!layout.needCheckIDWithMethod().isEmpty()) {

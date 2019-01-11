@@ -132,11 +132,19 @@ module nts.uk.ui.menu {
                 let $compItem = $("<li class='menu-item company-item'/>").text(comp.companyName).appendTo($companyList);
                 $compItem.on(constants.CLICK, function() {
                     nts.uk.request.ajax(constants.APP_ID, constants.ChangeCompany, comp.companyId)
-                    .done(function(personName) {
+                    .done(function(data) {
                         $companyName.text(comp.companyName);
-                        $userName.text(personName);
+                        $userName.text(data.personName);
                         $companyList.css("right", $user.outerWidth() + 30);
-                        location.reload(true);
+                        if (!nts.uk.util.isNullOrEmpty(data.msgResult)) {
+                            nts.uk.ui.dialog.info({ messageId: data.msgResult }).then(() => {
+                                location.reload(true);
+                            });
+                        } else {
+                            location.reload(true);
+                        }
+                    }).fail(function(msg) {
+                        nts.uk.ui.dialog.alertError(msg.messageId);
                     });
                 });
             });

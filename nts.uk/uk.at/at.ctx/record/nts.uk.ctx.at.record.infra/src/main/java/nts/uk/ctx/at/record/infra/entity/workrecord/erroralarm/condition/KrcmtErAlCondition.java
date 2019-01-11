@@ -60,6 +60,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.worktim
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.worktype.KrcstErAlWtActual;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.worktype.KrcstErAlWtPlan;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.worktype.KrcstErAlWtPlanActualPK;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -210,6 +211,9 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 	@OneToOne(mappedBy = "krcmtErAlCondition")
 	public KwrmtErAlWorkRecord kwrmtErAlWorkRecord;
 
+	@Column(name = "CID",nullable = false,updatable = false)
+	public String companyId;
+	
 	@Override
 	protected Object getKey() {
 		return this.eralCheckId;
@@ -603,5 +607,9 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 			}
 		}
 		return atdItemConDomain;
+	}
+
+	public void setCompanyId(String companyId) {
+		this.companyId = companyId;
 	}
 }

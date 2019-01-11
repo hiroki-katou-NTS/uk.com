@@ -5506,6 +5506,31 @@ div .ex-area-line.x-stay {
   height: 92px;
 }
 
+/* line 6, ../sass/frame/_header.scss */
+#operation-info {
+	position: absolute;
+	top: 61px;
+	width: 200px; 
+	overflow: hidden; 
+	line-height: 30px;
+	height: 30px;
+	background-color: orange;
+}
+
+/* line 15, ../sass/frame/_header.scss */
+#operation-info div {
+  display: block;
+  width: fit-content;
+  height: 30px;
+  position: absolute;
+  overflow: hidden;
+}
+
+/* line 23, ../sass/frame/_header.scss */
+#operation-info label:last-child {
+	margin-left: 150px;
+}
+
 /* line 1, ../sass/frame/_functions.scss */
 #functions-area {
   height: 40px;

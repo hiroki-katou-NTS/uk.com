@@ -126,15 +126,26 @@ module nts.custombinding {
                                     "employmentATR": fixCols.indexOf(6) > -1 ? USE : NOT_USE
                                 }, changed = allBindingsAccessor().settingChange;
 
-                        // bind data out
-                        access(setting);
+                        cps003.a.service.push.setting({
+                            maxtrixDisplays: {
+                                cursorDirection: setting.cursorDirection == CURSOR_DIRC.HORIZONTAL ? 1 : 0,
+                                clsATR: setting.clsATR == USE_SETTING.USE ? 1 : 0,
+                                positionATR: setting.jobATR == USE_SETTING.USE ? 1 : 0,
+                                workPlaceATR: setting.workPlaceATR == USE_SETTING.USE ? 1 : 0,
+                                departmentATR: setting.departmentATR == USE_SETTING.USE ? 1 : 0,
+                                employmentATR: setting.employmentATR == USE_SETTING.USE ? 1 : 0,
+                            }
+                        }).done(() => {
+                            // bind data out
+                            access(setting);
 
-                        if (changed) {
-                            changed.apply(viewModel, [setting]);
-                        }
+                            if (changed) {
+                                changed.apply(viewModel, [setting]);
+                            }
 
-                        // hide dialog
-                        ko.utils.triggerEvent(element, 'click');
+                            // hide dialog
+                            ko.utils.triggerEvent(element, 'click');
+                        });
                     }
                 };
 

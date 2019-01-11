@@ -6,8 +6,8 @@ module nts.uk.com.view.cmm008.a {
         var paths = {
             findEmployment: 'bs/employee/employment/findByCode',
             saveEmployment: 'bs/employee/employment/save',
-            removeEmployment: 'bs/employee/employment/remove'
-            
+            removeEmployment: 'bs/employee/employment/remove',
+  
         };
 
         /**
@@ -29,6 +29,12 @@ module nts.uk.com.view.cmm008.a {
          */
         export function removeEmployment(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.removeEmployment, command);
+        }
+        
+        
+        //saveAsExcel
+        export function saveAsExcel(languageId: string): JQueryPromise<any> {
+            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Employment", languageId: languageId, domainType: "CMM008"+__viewContext.program.programName, reportType: 0});
         }
         
         /**
