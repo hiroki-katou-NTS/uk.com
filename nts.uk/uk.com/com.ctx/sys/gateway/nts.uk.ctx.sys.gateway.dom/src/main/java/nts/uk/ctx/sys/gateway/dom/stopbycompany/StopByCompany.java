@@ -11,7 +11,7 @@ import nts.arc.layer.dom.AggregateRoot;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-//会社単位の利用停止の設定
+// 会社単位の利用停止の設定
 public class StopByCompany extends AggregateRoot {
 
 	/** 契約コード */
@@ -20,21 +20,22 @@ public class StopByCompany extends AggregateRoot {
 	/** 会社コード */
 	private String companyCd;
 
-	/** 利用停止モード */
-	private UsageStopModeType usageStopMode;
-
-	/** 利用停止のメッセージ */
-	private String usageStopMessage;
-
 	/** システム利用状態 */
 	private SystemStatusType systemStatus;
 
-	/** 停止予告のメッセージ */
-	private String stopMessage;
+	/** 利用停止のメッセージ */
+	private StopMessage stopMessage;
 
-	public static StopByCompany createFromJavaType(String contractCd, String companyCd, Integer usageStopMode,
-			String usageStopMessage, int systemStatus, String stopMessage) {
-		return new StopByCompany(contractCd, companyCd, EnumAdaptor.valueOf(usageStopMode, UsageStopModeType.class),
-				usageStopMessage, EnumAdaptor.valueOf(systemStatus, SystemStatusType.class), stopMessage);
+	/** 利用停止モード */
+	private StopModeType stopMode;
+
+	/** 停止予告のメッセージ */
+	private StopMessage usageStopMessage;
+
+	public static StopByCompany createFromJavaType(String contractCd, String companyCd, Integer systemStatus,
+			String stopMessage, Integer usageStopMode, String usageStopMessage) {
+		return new StopByCompany(contractCd, companyCd, EnumAdaptor.valueOf(systemStatus, SystemStatusType.class),
+				new StopMessage(stopMessage), EnumAdaptor.valueOf(usageStopMode, StopModeType.class),
+				new StopMessage(usageStopMessage));
 	}
 }

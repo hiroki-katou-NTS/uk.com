@@ -20,7 +20,7 @@ public class JpaWkpCalSettingRepository extends JpaRepository implements WkpAuto
 	private static final String SELECT_ALL_WORKPLACE_BY_CID ;
 	static {
 		StringBuilder sqlNormal = new StringBuilder();
-
+		sqlNormal.append(" SELECT * FROM ( ");
 		sqlNormal.append("SELECT " );
 		sqlNormal.append(	"k.LEGAL_OT_TIME_ATR, ");
 		sqlNormal.append(	"k.LEGAL_OT_TIME_LIMIT, ");
@@ -46,8 +46,10 @@ public class JpaWkpCalSettingRepository extends JpaRepository implements WkpAuto
 		sqlNormal.append(	"k.SPECIFIC_RAISING_CALC_ATR, ");
 		sqlNormal.append(	"k.DIVERGENCE,  ");
 		sqlNormal.append(	"k.WKPCD, " );
-		sqlNormal.append(	"w.WKP_NAME " );
-		sqlNormal.append(    "FROM (SELECT HIST_ID, WKPID, CID " );
+		sqlNormal.append(	"w.WKP_NAME, " );
+        sqlNormal.append(   "k.WKPID, ");
+        sqlNormal.append(   "wc.* ");
+		sqlNormal.append(   "FROM (SELECT HIST_ID, WKPID, CID " );
 		sqlNormal.append(			"FROM BSYMT_WORKPLACE_HIST ");
 		sqlNormal.append(			"WHERE END_DATE >= ?baseDate AND CID = ?cid " );
 		sqlNormal.append(			") h " );
@@ -86,7 +88,14 @@ public class JpaWkpCalSettingRepository extends JpaRepository implements WkpAuto
 		sqlNormal.append(					   "WHERE CID = ?cid) i ");
 		sqlNormal.append(				"INNER JOIN KSHMT_AUTO_WKP_CAL_SET a ON a.CID = i.CID AND a.WKPID = i.WKPID) k ");
 		sqlNormal.append(					"ON w.WKPID = k.WKPID AND w.CID = k.CID ");
-		sqlNormal.append(	"ORDER BY k.WKPCD ");
+		sqlNormal.append(				"INNER JOIN BSYMT_WKP_CONFIG wc ");
+		sqlNormal.append(               "ON wc.CID = k.CID AND wc.END_DATE = '9999-12-31 00:00:00' ");
+		sqlNormal.append(				"WHERE wc.CID = ?cid ) temp ");
+		sqlNormal.append(				"INNER JOIN BSYMT_WKP_CONFIG_INFO wci ");
+		sqlNormal.append(				"ON wci.WKPID = temp.WKPID ");
+		sqlNormal.append(				"AND wci.CID = temp.CID ");
+		sqlNormal.append(				"WHERE wci.CID = ?cid AND temp.HIST_ID = wci.HIST_ID ");
+		sqlNormal.append(	"ORDER BY wci.HIERARCHY_CD ");
 		SELECT_ALL_WORKPLACE_BY_CID = sqlNormal.toString();
 }
 

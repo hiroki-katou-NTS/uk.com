@@ -14,7 +14,7 @@ module nts.uk.com.view.cmm008.a {
             
             constructor() {
                 var self = this;
-                 self.showExportBtn();
+
                 self.isUpdateMode = ko.observable(false);
                 self.enableDelete = ko.observable(true);
                 self.employmentModel = ko.observable(new EmploymentModel);
@@ -244,17 +244,7 @@ module nts.uk.com.view.cmm008.a {
                     nts.uk.ui.block.clear();
                 });
             }
-            
-            showExportBtn() {
-                if (nts.uk.util.isNullOrUndefined(__viewContext.user.role.attendance)
-                    && nts.uk.util.isNullOrUndefined(__viewContext.user.role.payroll)
-                    && nts.uk.util.isNullOrUndefined(__viewContext.user.role.officeHelper)
-                    && nts.uk.util.isNullOrUndefined(__viewContext.user.role.personnel)) {
-                    $("#print-button").hide();
-                } else {
-                    $("#print-button").show();
-                }
-            }
+
 
         }
 
