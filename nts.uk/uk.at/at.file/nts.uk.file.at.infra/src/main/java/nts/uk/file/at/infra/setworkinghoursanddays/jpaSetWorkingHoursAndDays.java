@@ -61,30 +61,30 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 											+" IIF (KRCST_COM_REG_M_CAL_SET.INCLUDE_EXTRA_OT = 1, KRCST_COM_REG_M_CAL_SET.INCLUDE_LEGAL_OT , NUll) AS INCLUDE_LEGAL_OT, "
 											+" IIF (KRCST_COM_REG_M_CAL_SET.INCLUDE_EXTRA_OT = 1, KRCST_COM_REG_M_CAL_SET.INCLUDE_HOLIDAY_OT , NUll) AS INCLUDE_HOLIDAY_OT, "
 											+" KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME, "
-											+" IIF (KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_COM_FLEX_SET.STAT_JAN_TIME , NUll) AS F1, "
-											+" IIF (KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_COM_FLEX_SET.STAT_FEB_TIME , NUll) AS F2, "
-											+" IIF (KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_COM_FLEX_SET.STAT_MAR_TIME , NUll) AS F3, "
-											+" IIF (KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_COM_FLEX_SET.STAT_APR_TIME , NUll) AS F4, "
-											+" IIF (KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_COM_FLEX_SET.STAT_MAY_TIME , NUll) AS F5, "
-											+" IIF (KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_COM_FLEX_SET.STAT_JUN_TIME , NUll) AS F6, "
-											+" IIF (KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_COM_FLEX_SET.STAT_JUL_TIME , NUll) AS F7, "
-											+" IIF (KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_COM_FLEX_SET.STAT_AUG_TIME , NUll) AS F8, "
-											+" IIF (KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_COM_FLEX_SET.STAT_SEP_TIME , NUll) AS F9, "
-											+" IIF (KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_COM_FLEX_SET.STAT_OCT_TIME , NUll) AS F10, "
-											+" IIF (KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_COM_FLEX_SET.STAT_NOV_TIME , NUll) AS F11, "
-											+" IIF (KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_COM_FLEX_SET.STAT_DEC_TIME , NUll) AS F12, "
-											+" KSHST_COM_FLEX_SET.SPEC_JAN_TIME AS SPEC_T1, "
-											+" KSHST_COM_FLEX_SET.SPEC_FEB_TIME AS SPEC_T2, "
-											+" KSHST_COM_FLEX_SET.SPEC_MAR_TIME AS SPEC_T3, "
-											+" KSHST_COM_FLEX_SET.SPEC_APR_TIME AS SPEC_T4, "
-											+" KSHST_COM_FLEX_SET.SPEC_MAY_TIME AS SPEC_T5, "
-											+" KSHST_COM_FLEX_SET.SPEC_JUN_TIME AS SPEC_T6, "
-											+" KSHST_COM_FLEX_SET.SPEC_JUL_TIME AS SPEC_T7, "
-											+" KSHST_COM_FLEX_SET.SPEC_AUG_TIME AS SPEC_T8, "
-											+" KSHST_COM_FLEX_SET.SPEC_SEP_TIME AS SPEC_T9, "
-											+" KSHST_COM_FLEX_SET.SPEC_OCT_TIME AS SPEC_T10, "
-											+" KSHST_COM_FLEX_SET.SPEC_NOV_TIME AS SPEC_T11, "
-											+" KSHST_COM_FLEX_SET.SPEC_DEC_TIME AS SPEC_T12, "
+											+" KSHST_COM_FLEX_SET.STAT_JAN_TIME AS F1, "
+											+" KSHST_COM_FLEX_SET.STAT_FEB_TIME AS F2, "
+											+" KSHST_COM_FLEX_SET.STAT_MAR_TIME AS F3, "
+											+" KSHST_COM_FLEX_SET.STAT_APR_TIME AS F4, "
+											+" KSHST_COM_FLEX_SET.STAT_MAY_TIME AS F5, "
+											+" KSHST_COM_FLEX_SET.STAT_JUN_TIME AS F6, "
+											+" KSHST_COM_FLEX_SET.STAT_JUL_TIME AS F7, "
+											+" KSHST_COM_FLEX_SET.STAT_AUG_TIME AS F8, "
+											+" KSHST_COM_FLEX_SET.STAT_SEP_TIME AS F9, "
+											+" KSHST_COM_FLEX_SET.STAT_OCT_TIME AS F10, "
+											+" KSHST_COM_FLEX_SET.STAT_NOV_TIME AS F11, "
+											+" KSHST_COM_FLEX_SET.STAT_DEC_TIME AS F12, "
+											+" IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_COM_FLEX_SET.SPEC_JAN_TIME, NULL) AS SPEC_T1, "
+											+" IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_COM_FLEX_SET.SPEC_FEB_TIME, NULL) AS SPEC_T2, "
+											+" IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_COM_FLEX_SET.SPEC_MAR_TIME, NULL) AS SPEC_T3, "
+											+" IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_COM_FLEX_SET.SPEC_APR_TIME, NULL) AS SPEC_T4, "
+											+" IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_COM_FLEX_SET.SPEC_MAY_TIME, NULL) AS SPEC_T5, "
+											+" IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_COM_FLEX_SET.SPEC_JUN_TIME, NULL) AS SPEC_T6, "
+											+" IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_COM_FLEX_SET.SPEC_JUL_TIME, NULL) AS SPEC_T7, "
+											+" IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_COM_FLEX_SET.SPEC_AUG_TIME, NULL) AS SPEC_T8, "
+											+" IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_COM_FLEX_SET.SPEC_SEP_TIME, NULL) AS SPEC_T9, "
+											+" IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_COM_FLEX_SET.SPEC_OCT_TIME, NULL) AS SPEC_T10, "
+											+" IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_COM_FLEX_SET.SPEC_NOV_TIME, NULL) AS SPEC_T11, "
+											+" IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_COM_FLEX_SET.SPEC_DEC_TIME, NULL) AS SPEC_T12, "
 											+" KRCST_COM_FLEX_M_CAL_SET.AGGR_METHOD, "
 											+" IIF (KRCST_COM_FLEX_M_CAL_SET.AGGR_METHOD = 0, KRCST_COM_FLEX_M_CAL_SET.INCLUDE_OT, NULL) AS INCLUDE_OT, "
 											+" KRCST_COM_FLEX_M_CAL_SET.INSUFFIC_SET, "
@@ -154,30 +154,30 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 											+" IIF (KRCST_EMP_REG_M_CAL_SET.INCLUDE_EXTRA_OT = 1, KRCST_EMP_REG_M_CAL_SET.INCLUDE_LEGAL_OT , NUll) AS INCLUDE_LEGAL_OT, "
 											+" IIF (KRCST_EMP_REG_M_CAL_SET.INCLUDE_EXTRA_OT = 1, KRCST_EMP_REG_M_CAL_SET.INCLUDE_HOLIDAY_OT , NUll) AS INCLUDE_HOLIDAY_OT, "
 											+ "KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME, "
-											+" IIF (KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_EMP_FLEX_SET.STAT_JAN_TIME , NULL) AS S1, "
-											+" IIF (KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_EMP_FLEX_SET.STAT_FEB_TIME , NULL) AS S2, "
-											+" IIF (KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_EMP_FLEX_SET.STAT_MAR_TIME , NULL) AS S3, "
-											+" IIF (KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_EMP_FLEX_SET.STAT_APR_TIME , NULL) AS S4, "
-											+" IIF (KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_EMP_FLEX_SET.STAT_MAY_TIME , NULL) AS S5, "
-											+" IIF (KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_EMP_FLEX_SET.STAT_JUN_TIME , NULL) AS S6, "
-											+" IIF (KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_EMP_FLEX_SET.STAT_JUL_TIME , NULL) AS S7, "
-											+" IIF (KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_EMP_FLEX_SET.STAT_AUG_TIME , NULL) AS S8, "
-											+" IIF (KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_EMP_FLEX_SET.STAT_SEP_TIME , NULL) AS S9, "
-											+" IIF (KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_EMP_FLEX_SET.STAT_OCT_TIME , NULL) AS S10, "
-											+" IIF (KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_EMP_FLEX_SET.STAT_NOV_TIME , NULL) AS S11, "
-											+" IIF (KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_EMP_FLEX_SET.STAT_DEC_TIME , NULL) AS S12, "
-											+" KSHST_EMP_FLEX_SET.SPEC_JAN_TIME AS F1, "
-											+" KSHST_EMP_FLEX_SET.SPEC_FEB_TIME AS F2, "
-											+" KSHST_EMP_FLEX_SET.SPEC_MAR_TIME AS F3, "
-											+" KSHST_EMP_FLEX_SET.SPEC_APR_TIME AS F4, "
-											+" KSHST_EMP_FLEX_SET.SPEC_MAY_TIME AS F5, "
-											+" KSHST_EMP_FLEX_SET.SPEC_JUN_TIME AS F6, "
-											+" KSHST_EMP_FLEX_SET.SPEC_JUL_TIME AS F7, "
-											+" KSHST_EMP_FLEX_SET.SPEC_AUG_TIME AS F8, "
-											+" KSHST_EMP_FLEX_SET.SPEC_SEP_TIME AS F9, "
-											+" KSHST_EMP_FLEX_SET.SPEC_OCT_TIME AS F10, "
-											+" KSHST_EMP_FLEX_SET.SPEC_NOV_TIME AS F11, "
-											+" KSHST_EMP_FLEX_SET.SPEC_DEC_TIME AS F12, "
+											+" KSHST_EMP_FLEX_SET.STAT_JAN_TIME AS S1, "
+											+" KSHST_EMP_FLEX_SET.STAT_FEB_TIME AS S2, "
+											+" KSHST_EMP_FLEX_SET.STAT_MAR_TIME AS S3, "
+											+" KSHST_EMP_FLEX_SET.STAT_APR_TIME AS S4, "
+											+" KSHST_EMP_FLEX_SET.STAT_MAY_TIME AS S5, "
+											+" KSHST_EMP_FLEX_SET.STAT_JUN_TIME AS S6, "
+											+" KSHST_EMP_FLEX_SET.STAT_JUL_TIME AS S7, "
+											+" KSHST_EMP_FLEX_SET.STAT_AUG_TIME AS S8, "
+											+" KSHST_EMP_FLEX_SET.STAT_SEP_TIME AS S9, "
+											+" KSHST_EMP_FLEX_SET.STAT_OCT_TIME AS S10, "
+											+" KSHST_EMP_FLEX_SET.STAT_NOV_TIME AS S11, "
+											+" KSHST_EMP_FLEX_SET.STAT_DEC_TIME AS S12, "
+											+" IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_EMP_FLEX_SET.SPEC_JAN_TIME, NULL) AS F1, "
+											+" IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_EMP_FLEX_SET.SPEC_FEB_TIME, NULL) AS F2, "
+											+" IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_EMP_FLEX_SET.SPEC_MAR_TIME, NULL) AS F3, "
+											+" IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_EMP_FLEX_SET.SPEC_APR_TIME, NULL) AS F4, "
+											+" IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_EMP_FLEX_SET.SPEC_MAY_TIME, NULL) AS F5, "
+											+" IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_EMP_FLEX_SET.SPEC_JUN_TIME, NULL) AS F6, "
+											+" IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_EMP_FLEX_SET.SPEC_JUL_TIME, NULL) AS F7, "
+											+" IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_EMP_FLEX_SET.SPEC_AUG_TIME, NULL) AS F8, "
+											+" IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_EMP_FLEX_SET.SPEC_SEP_TIME, NULL) AS F9, "
+											+" IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_EMP_FLEX_SET.SPEC_OCT_TIME, NULL) AS F10, "
+											+" IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_EMP_FLEX_SET.SPEC_NOV_TIME, NULL) AS F11, "
+											+" IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_EMP_FLEX_SET.SPEC_DEC_TIME, NULL) AS F12, "
 											+" KRCST_EMP_FLEX_M_CAL_SET.AGGR_METHOD, "
 											+" IIF( KRCST_EMP_FLEX_M_CAL_SET.AGGR_METHOD = 0, KRCST_EMP_FLEX_M_CAL_SET.INCLUDE_OT , NULL ) AS INCLUDE_OT, "
 											+" KRCST_EMP_FLEX_M_CAL_SET.INSUFFIC_SET, "
@@ -230,7 +230,8 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 											+" WHERE KSHST_EMP_NORMAL_SET.CID = ?  "
 											+" ORDER BY KSHST_EMP_NORMAL_SET.[YEAR], KSHST_EMP_NORMAL_SET.EMP_CD ";
 	
-	private static final String GET_WORKPLACE = "SELECT " 
+	private static final String GET_WORKPLACE = "SELECT * FROM ("
+						 +  "SELECT ROW_NUMBER() OVER(PARTITION BY BSYMT_WORKPLACE_INFO.WKPCD ORDER BY BSYMT_WORKPLACE_HIST.END_DATE DESC) AS rk, BSYMT_WKP_CONFIG_INFO.HIERARCHY_CD, "
 						 +  "KSHST_WKP_NORMAL_SET.[YEAR], " 
 						 +  "BSYMT_WORKPLACE_INFO.WKPCD, " 
 						 +  "IIF(BSYMT_WORKPLACE_HIST.END_DATE = CONVERT(DATETIME, '9999-12-31 00:00:00', 120), BSYMT_WORKPLACE_INFO.WKP_NAME , 'マスタ未登録') AS WKP_NAME, " 
@@ -256,30 +257,30 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 						 +  "IIF (KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_OT != 0, KRCST_WKP_REG_M_CAL_SET.INCLUDE_LEGAL_OT, NULL) AS INCLUDE_LEGAL_OT, " 
 						 +  "IIF (KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_OT != 0, KRCST_WKP_REG_M_CAL_SET.INCLUDE_HOLIDAY_OT, NULL) AS INCLUDE_HOLIDAY_OT, " 
 						 +  "KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME, " 
-						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.STAT_JAN_TIME, NULL) AS S1, " 
-						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.STAT_FEB_TIME, NULL) AS S2, " 
-						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.STAT_MAR_TIME, NULL) AS S3, " 
-						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.STAT_APR_TIME, NULL) AS S4, " 
-						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.STAT_MAY_TIME, NULL) AS S5, " 
-						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.STAT_JUN_TIME, NULL) AS S6, " 
-						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.STAT_JUL_TIME, NULL) AS S7, " 
-						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.STAT_AUG_TIME, NULL) AS S8, " 
-						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.STAT_SEP_TIME, NULL) AS S9, " 
-						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.STAT_OCT_TIME, NULL) AS S10, " 
-						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.STAT_NOV_TIME, NULL) AS S11, " 
-						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.STAT_DEC_TIME, NULL) AS S12, " 
-						 +  "KSHST_WKP_FLEX_SET.SPEC_JAN_TIME AS M1, " 
-						 +  "KSHST_WKP_FLEX_SET.SPEC_FEB_TIME AS M2, " 
-						 +  "KSHST_WKP_FLEX_SET.SPEC_MAR_TIME AS M3, " 
-						 +  "KSHST_WKP_FLEX_SET.SPEC_APR_TIME AS M4, " 
-						 +  "KSHST_WKP_FLEX_SET.SPEC_MAY_TIME AS M5, " 
-						 +  "KSHST_WKP_FLEX_SET.SPEC_JUN_TIME AS M6, " 
-						 +  "KSHST_WKP_FLEX_SET.SPEC_JUL_TIME AS M7, " 
-						 +  "KSHST_WKP_FLEX_SET.SPEC_AUG_TIME AS M8, " 
-						 +  "KSHST_WKP_FLEX_SET.SPEC_SEP_TIME AS M9, " 
-						 +  "KSHST_WKP_FLEX_SET.SPEC_OCT_TIME AS M10, " 
-						 +  "KSHST_WKP_FLEX_SET.SPEC_NOV_TIME AS M11, " 
-						 +  "KSHST_WKP_FLEX_SET.SPEC_DEC_TIME AS M12, " 
+						 +  "KSHST_WKP_FLEX_SET.STAT_JAN_TIME AS S1, " 
+						 +  "KSHST_WKP_FLEX_SET.STAT_FEB_TIME AS S2, " 
+						 +  "KSHST_WKP_FLEX_SET.STAT_MAR_TIME AS S3, " 
+						 +  "KSHST_WKP_FLEX_SET.STAT_APR_TIME AS S4, " 
+						 +  "KSHST_WKP_FLEX_SET.STAT_MAY_TIME AS S5, " 
+						 +  "KSHST_WKP_FLEX_SET.STAT_JUN_TIME AS S6, " 
+						 +  "KSHST_WKP_FLEX_SET.STAT_JUL_TIME AS S7, " 
+						 +  "KSHST_WKP_FLEX_SET.STAT_AUG_TIME AS S8, " 
+						 +  "KSHST_WKP_FLEX_SET.STAT_SEP_TIME AS S9, " 
+						 +  "KSHST_WKP_FLEX_SET.STAT_OCT_TIME AS S10, " 
+						 +  "KSHST_WKP_FLEX_SET.STAT_NOV_TIME AS S11, " 
+						 +  "KSHST_WKP_FLEX_SET.STAT_DEC_TIME AS S12, " 
+						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_JAN_TIME, NULL) AS M1, " 
+						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_FEB_TIME, NULL) AS M2, " 
+						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_MAR_TIME, NULL) AS M3, " 
+						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_APR_TIME, NULL) AS M4, " 
+						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_MAY_TIME, NULL) AS M5, " 
+						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_JUN_TIME, NULL) AS M6, " 
+						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_JUL_TIME, NULL) AS M7, " 
+						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_AUG_TIME, NULL) AS M8, " 
+						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_SEP_TIME, NULL) AS M9, " 
+						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_OCT_TIME, NULL) AS M10, " 
+						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_NOV_TIME, NULL) AS M11, " 
+						 +  "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_WKP_FLEX_SET.SPEC_DEC_TIME, NULL) AS M12, " 
 						 +  "KRCST_WKP_FLEX_M_CAL_SET.AGGR_METHOD, " 
 						 +  "IIF(KRCST_WKP_FLEX_M_CAL_SET.AGGR_METHOD = 0, KRCST_WKP_FLEX_M_CAL_SET.INCLUDE_OT, NULL) AS INCLUDE_OT, " 
 						 +  "KRCST_WKP_FLEX_M_CAL_SET.INSUFFIC_SET, " 
@@ -336,8 +337,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 						 +  "   	AND BSYMT_WKP_CONFIG.END_DATE = '9999-12-31 00:00:00' "
 						 +  "   INNER JOIN BSYMT_WKP_CONFIG_INFO ON BSYMT_WKP_CONFIG.HIST_ID = BSYMT_WKP_CONFIG_INFO.HIST_ID "
 						 +	"  	    AND BSYMT_WKP_CONFIG_INFO.WKPID = BSYMT_WORKPLACE_HIST.WKPID "		
-						 +  "WHERE KSHST_WKP_NORMAL_SET.CID = ?  " 
-						 +  "ORDER BY KSHST_WKP_NORMAL_SET.[YEAR] ASC, BSYMT_WKP_CONFIG_INFO.HIERARCHY_CD ";
+						 +  "WHERE KSHST_WKP_NORMAL_SET.CID = ?  "
+						 +	") TBL "
+						 +  "WHERE rk = 1 ORDER BY TBL.[YEAR] ASC, TBL.HIERARCHY_CD";
 	
 	private static final String GET_EMPLOYEE = " SELECT  " 
 			 + "KSHST_SHA_NORMAL_SET.[YEAR], " 
@@ -365,30 +367,30 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 			 + "IIF(KRCST_SHA_REG_M_CAL_SET.INCLUDE_EXTRA_OT = 1, KRCST_SHA_REG_M_CAL_SET.INCLUDE_LEGAL_OT, NULL) AS INCLUDE_LEGAL_OT, " 
 			 + "IIF(KRCST_SHA_REG_M_CAL_SET.INCLUDE_EXTRA_OT = 1, KRCST_SHA_REG_M_CAL_SET.INCLUDE_HOLIDAY_OT, NULL) AS INCLUDE_HOLIDAY_OT, " 
 			 + "KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME, " 
-			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.STAT_JAN_TIME, Null) AS F1, " 
-			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.STAT_FEB_TIME, Null) AS F2, " 
-			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.STAT_MAR_TIME, Null) AS F3, " 
-			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.STAT_APR_TIME, Null) AS F4, " 
-			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.STAT_MAY_TIME, Null) AS F5, " 
-			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.STAT_JUN_TIME, Null) AS F6, " 
-			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.STAT_JUL_TIME, Null) AS F7, " 
-			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.STAT_AUG_TIME, Null) AS F8, " 
-			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.STAT_SEP_TIME, Null) AS F9, " 
-			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.STAT_OCT_TIME, Null) AS F10, " 
-			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.STAT_NOV_TIME, Null) AS F11, " 
-			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.STAT_DEC_TIME, Null) AS F12, " 
-			 + "KSHST_SHA_FLEX_SET.SPEC_JAN_TIME AS T1, " 
-			 + "KSHST_SHA_FLEX_SET.SPEC_FEB_TIME AS T2, " 
-			 + "KSHST_SHA_FLEX_SET.SPEC_MAR_TIME AS T3, " 
-			 + "KSHST_SHA_FLEX_SET.SPEC_APR_TIME AS T4, " 
-			 + "KSHST_SHA_FLEX_SET.SPEC_MAY_TIME AS T5, " 
-			 + "KSHST_SHA_FLEX_SET.SPEC_JUN_TIME AS T6, " 
-			 + "KSHST_SHA_FLEX_SET.SPEC_JUL_TIME AS T7, " 
-			 + "KSHST_SHA_FLEX_SET.SPEC_AUG_TIME AS T8, " 
-			 + "KSHST_SHA_FLEX_SET.SPEC_SEP_TIME AS T9, " 
-			 + "KSHST_SHA_FLEX_SET.SPEC_OCT_TIME AS T10, " 
-			 + "KSHST_SHA_FLEX_SET.SPEC_NOV_TIME AS T11, " 
-			 + "KSHST_SHA_FLEX_SET.SPEC_DEC_TIME AS T12, " 
+			 + "KSHST_SHA_FLEX_SET.STAT_JAN_TIME AS F1, " 
+			 + "KSHST_SHA_FLEX_SET.STAT_FEB_TIME AS F2, " 
+			 + "KSHST_SHA_FLEX_SET.STAT_MAR_TIME AS F3, " 
+			 + "KSHST_SHA_FLEX_SET.STAT_APR_TIME AS F4, " 
+			 + "KSHST_SHA_FLEX_SET.STAT_MAY_TIME AS F5, " 
+			 + "KSHST_SHA_FLEX_SET.STAT_JUN_TIME AS F6, " 
+			 + "KSHST_SHA_FLEX_SET.STAT_JUL_TIME AS F7, " 
+			 + "KSHST_SHA_FLEX_SET.STAT_AUG_TIME AS F8, " 
+			 + "KSHST_SHA_FLEX_SET.STAT_SEP_TIME AS F9, " 
+			 + "KSHST_SHA_FLEX_SET.STAT_OCT_TIME AS F10, " 
+			 + "KSHST_SHA_FLEX_SET.STAT_NOV_TIME AS F11, " 
+			 + "KSHST_SHA_FLEX_SET.STAT_DEC_TIME AS F12, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.SPEC_JAN_TIME, NULL) AS T1, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.SPEC_FEB_TIME, NULL) AS T2, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.SPEC_MAR_TIME, NULL) AS T3, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.SPEC_APR_TIME, NULL) AS T4, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.SPEC_MAY_TIME, NULL) AS T5, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.SPEC_JUN_TIME, NULL) AS T6, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.SPEC_JUL_TIME, NULL) AS T7, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.SPEC_AUG_TIME, NULL) AS T8, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.SPEC_SEP_TIME, NULL) AS T9, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.SPEC_OCT_TIME, NULL) AS T10, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.SPEC_NOV_TIME, NULL) AS T11, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.SPEC_DEC_TIME, NULL) AS T12, " 
 			 + "KRCST_SHA_FLEX_M_CAL_SET.AGGR_METHOD, " 
 			 + "IIF(KRCST_SHA_FLEX_M_CAL_SET.AGGR_METHOD = 0, KRCST_SHA_FLEX_M_CAL_SET.INCLUDE_OT, NULL) AS INCLUDE_OT, " 
 			 + "KRCST_SHA_FLEX_M_CAL_SET.INSUFFIC_SET, " 
@@ -532,9 +534,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 				//R8_17 R8_18
 				((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"),
 				//R8_19
-				r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("F"+ ((month - 1) % 12 + 1)))) : null,
+				r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("SPEC_T"+ ((month - 1) % 12 + 1)))) : null,
 				//R8_20
-				convertTime(r.getInt(("SPEC_T"+ ((month - 1) % 12 + 1)))),
+				convertTime(r.getInt(("F"+ ((month - 1) % 12 + 1)))),
 				//R8_21		
 				getAggType(r.getInt("AGGR_METHOD")),
 				//R8_22
@@ -602,9 +604,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 				//R8_17 R8_18
 				((month - 1) % 12 + 2) + I18NText.getText("KMK004_176"),
 				//R8_19
-				r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("F"+ ((month - 1) % 12 + 2)))) : null,
+				r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("SPEC_T"+ ((month - 1) % 12 + 2)))) : null,
 				//R8_20
-				convertTime(r.getInt(("SPEC_T"+ ((month - 1) % 12 + 2)))),
+				convertTime(r.getInt(("F"+ ((month - 1) % 12 + 2)))),
 				//R8_21		
 				null,
 				//R8_22
@@ -672,9 +674,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					//R8_17 R8_18
 					(month + i) % 12 + 1 + I18NText.getText("KMK004_176"),
 					//R8_19
-					r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("F"+ ((month + i) % 12 + 1)))) : null,
+					r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("SPEC_T"+ ((month + i) % 12 + 1)))) : null,
 					//R8_20
-					convertTime(r.getInt(("SPEC_T"+ ((month + i) % 12 + 1)))),
+					convertTime(r.getInt(("F"+ ((month + i) % 12 + 1)))),
 					//R8_21		
 					null,
 					//R8_22
@@ -947,9 +949,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 				//R12_19 R12_20
 				((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"),
 				//R12_21
-				r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("S"+ ((month - 1) % 12 + 1)))) : null,
+				r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("F"+ ((month - 1) % 12 + 1)))) : null,
 				//R12_22
-				convertTime(r.getInt(("F"+ ((month - 1) % 12 + 1)))),
+				convertTime(r.getInt(("S"+ ((month - 1) % 12 + 1)))),
 				//R12_23
 				getAggType(r.getInt("AGGR_METHOD")),
 				//R12_24
@@ -1020,9 +1022,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 				//R12_19 R12_20
 				((month - 1) % 12 + 2) + I18NText.getText("KMK004_176"),
 				//R12_21
-				r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("S"+ ((month - 1) % 12 + 2)))) : null,
+				r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("F"+ ((month - 1) % 12 + 2)))) : null,
 				//R12_22
-				convertTime(r.getInt(("F"+ ((month - 1) % 12 + 2)))),
+				convertTime(r.getInt(("S"+ ((month - 1) % 12 + 2)))),
 				//R12_23
 				null,
 				//R12_24
@@ -1093,9 +1095,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					//R12_19 R12_20
 					((month + i) % 12 + 1) + I18NText.getText("KMK004_176"),
 					//R12_21
-					r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("S"+ ((month + i) % 12 + 1)))) : null,
+					r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("F"+ ((month + i) % 12 + 1)))) : null,
 					//R12_22
-					convertTime(r.getInt(("F"+ ((month + i) % 12 + 1)))),
+					convertTime(r.getInt(("S"+ ((month + i) % 12 + 1)))),
 					//R12_23
 					null,
 					//R12_24
@@ -1380,9 +1382,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					//R14_19 R14_20
 					((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"),
 					//R14_21
-					r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("S"+ ((month - 1) % 12 + 1)))) : null,
+					r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("M"+ ((month - 1) % 12 + 1)))) : null,
 					//R14_22
-					convertTime(r.getInt(("M"+ ((month - 1) % 12 + 1)))),
+					convertTime(r.getInt(("S"+ ((month - 1) % 12 + 1)))),
 					//R14_23
 					getAggType(r.getInt("AGGR_METHOD")),
 					//R14_24
@@ -1452,9 +1454,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					//R14_19 R14_20
 					((month - 1) % 12 + 2) + I18NText.getText("KMK004_176"),
 					//R14_21
-					r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("S"+ ((month - 1) % 12 + 2)))) : null,
+					r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("M"+ ((month - 1) % 12 + 2)))) : null,
 					//R14_22
-					convertTime(r.getInt(("M"+ ((month - 1) % 12 + 2)))),
+					convertTime(r.getInt(("S"+ ((month - 1) % 12 + 2)))),
 					//R14_23
 					null,
 					//R14_24
@@ -1525,9 +1527,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 						//R14_19 R14_20
 						((month + i) % 12 + 1) + I18NText.getText("KMK004_176"),
 						//R14_21
-						r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("S"+ ((month + i) % 12 + 1)))) : null,
+						r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("M"+ ((month + i) % 12 + 1)))) : null,
 						//R14_22
-						convertTime(r.getInt(("M"+ ((month + i) % 12 + 1)))),
+						convertTime(r.getInt(("S"+ ((month + i) % 12 + 1)))),
 						//R14_23
 						null,
 						//R14_24
@@ -1847,9 +1849,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 				// R10_19 R10_20
 				((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"),
 				// R10_21
-				r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("F" + ((month - 1) % 12 + 1)))) : null,
+				r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("T" + ((month - 1) % 12 + 1)))) : null,
 				// R10_22
-				convertTime(r.getInt(("T" + ((month - 1) % 12 + 1)))),
+				convertTime(r.getInt(("F" + ((month - 1) % 12 + 1)))),
 				// R10_23
 				getAggType(r.getInt("AGGR_METHOD")),
 				// R10_24
@@ -1919,9 +1921,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 				// R10_19 R10_20
 				((month - 1) % 12 + 2) + I18NText.getText("KMK004_176"),
 				// R10_21
-				r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("F" + ((month - 1) % 12 + 2)))) : null,
+				r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("T" + ((month - 1) % 12 + 2)))) : null,
 				// R10_22
-				convertTime(r.getInt(("T" + ((month - 1) % 12 + 2)))),
+				convertTime(r.getInt(("F" + ((month - 1) % 12 + 2)))),
 				// R10_23
 				null,
 				// R10_24
@@ -1992,9 +1994,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					// R10_19 R10_20
 					((month + i) % 12 + 1) + I18NText.getText("KMK004_176"),
 					// R10_21
-					r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("F" + ((month + i) % 12 + 1)))) : null,
+					r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("T" + ((month + i) % 12 + 1)))) : null,
 					// R10_22
-					convertTime(r.getInt(("T" + ((month + i) % 12 + 1)))),
+					convertTime(r.getInt(("F" + ((month + i) % 12 + 1)))),
 					// R10_23
 					null,
 					// R10_24
@@ -2265,9 +2267,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	public static String getExtraType(int value){
     	switch (value){
     	case 0:
-    		return TextResource.localize("KMK004_58");
-    	case 1:
     		return TextResource.localize("KMK004_59");
+    	case 1:
+    		return TextResource.localize("KMK004_58");
     	default: 
     		return null;
     	}
@@ -2331,9 +2333,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	public static String getWeeklySurcharge(int value){
     	switch (value){
     	case 0:
-    		return TextResource.localize("KMK004_58");
-    	case 1:
     		return TextResource.localize("KMK004_59");
+    	case 1:
+    		return TextResource.localize("KMK004_58");
     	default: 
     		return null;
     	}

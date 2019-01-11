@@ -111,7 +111,7 @@ public class DivergenceExportImpl  implements MasterListData{
 	@Override
 	public List<SheetData> extraSheets(MasterListExportQuery query) {
 		 List<SheetData> sheetDatas = new ArrayList<>();
-		 SheetData divergencetimeData = new SheetData(getDataDevergenceTimeCompany(query), getHeaderColumnsDevergenceTimeCompany(query), null, null,TextResource.localize("KMK011_47")+TextResource.localize("Com_Company"),MasterListMode.BASE_DATE);	 
+		 SheetData divergencetimeData = new SheetData(getDataDevergenceTimeCompany(query), getHeaderColumnsDevergenceTimeCompany(query), null, null,TextResource.localize("KMK011_47")+" "+TextResource.localize("Com_Company"),MasterListMode.BASE_DATE);	 
 		 sheetDatas.add(divergencetimeData);
 		 DivergenceReferenceTimeUsageUnitDto uset=finderTimeUsageUnit.findByCompanyId();
 		 if(uset.getWorkTypeUseSet()){
