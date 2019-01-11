@@ -29,7 +29,7 @@ module cps008.a.service {
     
     //saveAsExcel
         export function saveAsExcel(languageId: string): JQueryPromise<any> {
-            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Maintenance", languageId: languageId, domainType: "CPS008"+ nts.uk.resource.getText("CPS008_1"), reportType: 0});
+            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Maintenance", languageId: languageId, domainType: "CPS008"+ __viewContext.program.programName, reportType: 0});
         }
 
 

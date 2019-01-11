@@ -37,10 +37,10 @@ public class OperationExcelRepoImpl implements MasterListData {
 
     @Inject
     OperationExcelRepo operationExcelRepo;
+    
     @Inject
     RoleDailyExportExcelImpl roleDailyExportExcelImpl;
 
-    
     @Inject
     RoleMonthlyExportExcelImpl roleMonthlyExportExcelImpl;
 
