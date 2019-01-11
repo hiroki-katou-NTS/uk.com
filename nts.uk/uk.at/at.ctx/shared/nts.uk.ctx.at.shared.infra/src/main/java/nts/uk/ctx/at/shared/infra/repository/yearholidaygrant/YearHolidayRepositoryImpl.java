@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.validation.constraints.Size;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
@@ -106,9 +107,28 @@ public class YearHolidayRepositoryImpl implements MasterListData{
 				int listGrantCondition5 = listGrantConditionCha.get(4).getConditionNo();
 				listYearHoliday5 = grantYearHolidayRepository
 					.findByCode(companyId,listGrantCondition5, dataYearHolidayCode);
+				
+				
+				
+				
+				int ArrYearHoliday[] = new int []{listYearHoliday.size(), 
+				                              listYearHoliday2.size(),
+				                              listYearHoliday3.size(), 
+				                              listYearHoliday4.size(),
+				                              listYearHoliday5.size()};
+				int maxYearHoliday =  ArrYearHoliday[0];
+				for(int i=0; i<ArrYearHoliday.length;i++){
+					if(ArrYearHoliday[i]>maxYearHoliday){
+						maxYearHoliday = ArrYearHoliday[i];
+					}
+				}
+				
+				
+				
+				
 			
 				
-				for(int i=0 ; i<20; i++){
+				for(int i=0 ; i<maxYearHoliday; i++){
 					if(i==0){
 						data.put("コード", c.getYearHolidayCode());
                         data.put("名称", c.getYearHolidayName());
