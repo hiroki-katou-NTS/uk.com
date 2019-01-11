@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 400, height: 600 };</script>
+        <script>var dialogSize = { width: 395, height: 600 };</script>
         <com:scriptfile set="IGNITE" />
         <com:scriptfile path="../share/model.js" />
         <com:scriptfile path="qmm017.f.service.js" />
@@ -16,11 +16,11 @@
         <com:scriptfile path="qmm017.f.start.js" />
     </ui:define>
     <ui:define name="content">
-        <div class="contents-area">
+        <div id="contents-area">
             <div style="margin-left: 20px;">
                 <!--E1-1; E1_2; E1_13-->
                 <div class="dialog-first-element">
-                    <div style = "width: 350px;">#{i18n.getText('QMM017_126')}</div>
+                    <div style = "width: 350px; font-size: 1.5rem;" data-bind = "text: standardAmountType"></div>
                 </div>
                 <div style = "margin-top: 10px;">
                     <!--mix of 3 case-->

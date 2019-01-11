@@ -39,14 +39,14 @@
                                 <i class="search-icon"></i>
                                 <div class = "search-box-sm" data-bind="ntsSearchBox: {
                                     searchMode: 'highlight',
-                                    targetKey: 'itemNameCd',
+                                    targetKey: 'code',
                                     comId: 'D2_5',
                                     items: statementItemList,
                                     selectedKey: 'code',
                                     fields: ['code', 'name'],
                                     mode: 'listbox'}"></div>
                             </div>
-                            <div id="D2_5" data-bind="ntsListBox: {
+                            <div class ="list-box" id="D2_5" data-bind="ntsListBox: {
                             options: statementItemList,
                             optionsValue: 'code',
                             optionsText: 'name',
@@ -61,13 +61,13 @@
                             </div>
                             <div>
                                 <button data-bind = "click: addStatementItem, enable: selectedStatementItemCode()"
-                                        class="formula-button caret-bottom large-caret">#{i18n.getText('QMM016_50')}</button>
+                                        class="formula-button caret-bottom large-caret">#{i18n.getText('QMM017_50')}</button>
                             </div>
                         </div>
                         <div class="panel panel-gray-bg tab-panel-col-3">
                             <div style="margin-top:5px;">#{i18n.getText('QMM017_49')}</div>
-                            <hr style="margin-top:15px;"></hr>
-                            <div data-bind="text: displayItemNote"></div>
+                            <hr></hr>
+                            <div class ="display-notes" data-bind="text: displayItemNote"></div>
                         </div>
                     </div>
                 </div>
@@ -101,7 +101,7 @@
                                     fields: ['code', 'name'],
                                     mode: 'listbox'}"></div>
                             </div>
-                            <div id="D5_5" data-bind="ntsListBox: {
+                            <div class ="list-box" id="D5_5" data-bind="ntsListBox: {
                             options: unitPriceItemList,
                             optionsValue: 'code',
                             optionsText: 'name',
@@ -116,13 +116,13 @@
                             </div>
                             <div>
                                 <button data-bind = "click: addUnitPriceItem, enable: selectedUnitPriceItemCode()"
-                                        class="formula-button caret-bottom large-caret">#{i18n.getText('QMM016_50')}</button>
+                                        class="formula-button caret-bottom large-caret">#{i18n.getText('QMM017_50')}</button>
                             </div>
                         </div>
                         <div class="panel panel-gray-bg tab-panel-col-3">
                             <div style="margin-top:5px;">#{i18n.getText('QMM017_49')}</div>
-                            <hr style="margin-top:15px;"></hr>
-                            <div data-bind="text: displayUnitPriceItemNote"></div>
+                            <hr></hr>
+                            <div class ="display-notes" data-bind="text: displayUnitPriceItemNote"></div>
                         </div>
                     </div>
                 </div>
@@ -170,14 +170,14 @@
                             ]}">
                             </div>
                             <div>
-                                <button data-bind = "click: addFunctionItem, enable: selectedFunctionListValue() != null"
-                                        class="formula-button caret-bottom large-caret">#{i18n.getText('QMM016_50')}</button>
+                                <button data-bind = "click: addFunctionItem, enable: selectedFunctionListValue() || (!selectedFunctionListValue() &amp;&amp; selectedFunctionListValue() === 0)"
+                                        class="formula-button caret-bottom large-caret">#{i18n.getText('QMM017_50')}</button>
                             </div>
                         </div>
                         <div class="panel panel-gray-bg tab-panel-col-3">
                             <div style="margin-top:5px;">#{i18n.getText('QMM017_49')}</div>
-                            <hr style="margin-top:15px;"></hr>
-                            <div data-bind="text: displayFunctionNote"></div>
+                            <hr></hr>
+                            <div class ="display-notes" data-bind="text: displayFunctionNote"></div>
                         </div>
                     </div>
                 </div>
@@ -225,14 +225,14 @@
                             ]}">
                             </div>
                             <div>
-                                <button data-bind = "click: addVariableItem, enable: selectedSystemVariableListValue() != null"
-                                        class="formula-button caret-bottom large-caret">#{i18n.getText('QMM016_50')}</button>
+                                <button data-bind = "click: addVariableItem, enable: selectedSystemVariableListValue() || !selectedSystemVariableListValue() &amp;&amp; selectedSystemVariableListValue() === 0"
+                                        class="formula-button caret-bottom large-caret">#{i18n.getText('QMM017_50')}</button>
                             </div>
                         </div>
                         <div class="panel panel-gray-bg tab-panel-col-3">
                             <div style="margin-top:5px;">#{i18n.getText('QMM017_49')}</div>
-                            <hr style="margin-top:15px;"></hr>
-                            <div data-bind="text: displayVariableNote"></div>
+                            <hr></hr>
+                            <div class ="display-notes" data-bind="text: displayVariableNote"></div>
                         </div>
                     </div>
                 </div>
@@ -242,11 +242,11 @@
                 <div class="tab-content-6">
                     <div class="tab-panel-row">
                         <div class="tab-panel-col-1" id="D9_1" data-bind="ntsListBox: {
-                        options: systemVariableClassificationItem,
+                        options: formulaSystemVariableClassificationItem,
                         optionsValue: 'value',
                         optionsText: 'name',
                         multiple: false,
-                        value: selectedSystemVariableClassificationValue,
+                        value: formulaSelectedSystemVariableClassificationValue,
                         enable: true,
                         rows: 8,
                         columns: [
@@ -269,7 +269,7 @@
                                 fields: ['formulaCode', 'formulaName'],
                                 mode: 'listbox'}"></div>
                             </div>
-                            <div id="D9_5" data-bind="ntsListBox: {
+                            <div class ="list-box" id="D9_5" data-bind="ntsListBox: {
                             options: formulaList,
                             optionsValue: 'formulaCode',
                             optionsText: 'formulaName',
@@ -279,12 +279,12 @@
                             rows: 8,
                             columns: [
                                 { key: 'formulaCode', length: 2 },
-                                { key: 'formulaName', length: 8 }
+                                { key: 'formulaName', length: 8}
                             ]}">
                             </div>
                             <div>
                                 <button data-bind = "click: addFormulaItem, enable: selectedFormulaCode()"
-                                        class="formula-button caret-bottom large-caret">#{i18n.getText('QMM016_50')}</button>
+                                        class="formula-button caret-bottom large-caret">#{i18n.getText('QMM017_50')}</button>
                             </div>
                         </div>
                         <div>
@@ -295,11 +295,11 @@
                 <div class="tab-content-7">
                     <div class="tab-panel-row">
                         <div class="tab-panel-col-1" id="D10_1" data-bind="ntsListBox: {
-                        options: systemVariableClassificationItem,
+                        options: wageSystemVariableClassificationItem,
                         optionsValue: 'value',
                         optionsText: 'name',
                         multiple: false,
-                        value: selectedSystemVariableClassificationValue,
+                        value: wageSelectedSystemVariableClassificationValue,
                         enable: true,
                         rows: 8,
                         columns: [
@@ -323,7 +323,7 @@
                                     mode: 'listbox'}">
                                 </div>
                             </div>
-                            <div id="D10_5" data-bind="ntsListBox: {
+                            <div class ="list-box" id="D10_5" data-bind="ntsListBox: {
                             options: wageTableList,
                             optionsValue: 'code',
                             optionsText: 'name',
@@ -338,13 +338,13 @@
                             </div>
                             <div>
                                 <button data-bind = "click: addWageTableItem, enable: selectedWageTableCode()"
-                                        class="formula-button caret-bottom large-caret">#{i18n.getText('QMM016_50')}</button>
+                                        class="formula-button caret-bottom large-caret">#{i18n.getText('QMM017_50')}</button>
                             </div>
                         </div>
                         <div class="panel panel-gray-bg tab-panel-col-3">
                             <div style="margin-top:5px;">#{i18n.getText('QMM017_49')}</div>
-                            <hr style="margin-top:15px;"></hr>
-                            <div data-bind="text: selectedWageTable().remarkInformation"></div>
+                            <hr></hr>
+                            <div class ="display-notes" data-bind="text: selectedWageTable().remarkInformation"></div>
                         </div>
                     </div>
                 </div>
@@ -389,9 +389,17 @@
                             <button data-action = "NOT_EQUAL" data-bind = "click: addSymbol">#{i18n.getText('QMM017_75')}</button>
                         </div>
                     </div>
+
                     <div style="display: inline-block">
-                        <textarea id = "D3_5" style = "height: 215px; width: 458px;" data-bind="ntsMultilineEditor: {
+                        <div id="auto-complete">
+                            <select style = "display: none; width: 150px;" size="5" id="auto-complete-container" data-bind="options: autoComplete, optionsText: 'displayText', value: autoSelected">
+                            </select>
+                        </div>
+                        <div id="input-content-area" data-bind="html: divValue"></div>
+                        <div id="input-area">
+                            <textarea id = "D3_5" style = "position: relative; height: 215px; width: 458px;" data-bind="ntsMultilineEditor: {
                                 value: displayDetailCalculationFormula}" />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -404,7 +412,7 @@
                     name: '#[QMM017_55]',
                     options: referenceMonthItem,
                     optionsValue: 'value',
-                    visibleItemsCount: 5,
+                    visibleItemsCount: 13,
                     value: referenceMonth,
                     optionsText: 'name',
                     enable: true,

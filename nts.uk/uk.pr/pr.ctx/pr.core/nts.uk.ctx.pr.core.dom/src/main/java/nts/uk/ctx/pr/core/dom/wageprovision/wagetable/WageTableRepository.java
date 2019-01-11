@@ -9,6 +9,8 @@ import java.util.Optional;
 public interface WageTableRepository {
 
 	public List<WageTable> getAllWageTable(String companyId);
+
+	public List<WageTable> getWageTableByYearMonth(String companyId, int yearMonth);
 	
 	public List<WageTable> getWageTableByCodes(String cid, List<String> wageTableCodes);
 

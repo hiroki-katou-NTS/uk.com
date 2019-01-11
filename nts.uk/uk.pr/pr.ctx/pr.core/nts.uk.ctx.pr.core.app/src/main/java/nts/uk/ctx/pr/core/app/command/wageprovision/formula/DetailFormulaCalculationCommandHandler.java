@@ -1,27 +1,25 @@
 package nts.uk.ctx.pr.core.app.command.wageprovision.formula;
-
-//import com.aspose.cells.Workbook;
-//import com.aspose.cells.Worksheet;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.uk.ctx.pr.core.dom.wageprovision.formula.detailcalculationformula.DetailFormulaCalculationService;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Stateless
 public class DetailFormulaCalculationCommandHandler extends CommandHandlerWithResult<DetailFormulaCommand, String> {
 
+    private static final String
+            OPEN_CURLY_BRACKET = "{", CLOSE_CURLY_BRACKET = "}";
 
+    @Inject
+    private DetailFormulaCalculationService detailFormulaCalculationService;
 
     @Override
     protected String handle(CommandHandlerContext<DetailFormulaCommand> context) {
-        String formulaContent = context.getCommand().getFormulaContent();
-        for(FormulaDictionary item : FormulaDictionary.values()){
-            formulaContent = formulaContent.replaceAll(item.jpName, item.excelName);
-        }
-//        Workbook workbook = new Workbook();
-//        Worksheet virtualWorksheet = workbook.getWorksheets().get(0);
-//        Object o = virtualWorksheet.calculateFormula(formulaContent);
-//        return o.toString();
-        return null;
+        Map<String, String> replaceValues = context.getCommand().getReplaceValues().stream().collect(Collectors.toMap(item -> item.formulaItem, item -> item.trialCalculationValue));
+        return detailFormulaCalculationService.calculateDisplayCalculationFormula(2, context.getCommand().getFormulaContent(), replaceValues, context.getCommand().getRoundingMethod(), context.getCommand().getRoundingPosition());
     }
 }

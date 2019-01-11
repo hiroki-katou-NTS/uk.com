@@ -8,4 +8,10 @@ import lombok.Data;
 public class FormulaElementDto {
     public String code;
     public String name;
+    public String remarkInformation;
+
+    public FormulaElementDto (String code, String name) {
+        this.code = code;
+        this.name = name;
+    }
 }

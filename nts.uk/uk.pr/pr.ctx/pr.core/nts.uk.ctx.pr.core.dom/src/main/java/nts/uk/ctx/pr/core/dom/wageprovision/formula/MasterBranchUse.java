@@ -1,14 +1,15 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.formula;
 
 
+import nts.arc.i18n.I18NText;
+
 /**
 * マスタ分岐利用
 */
-public enum MasterBranchUse
-{
+public enum MasterBranchUse {
     
-    NOT_USE(0, "利用しない"),
-    USE(1, "利用する");
+    NOT_USE(0, I18NText.getText("Enum_NestedUseCls_NOT_USE")),
+    USE(1, I18NText.getText("Enum_NestedUseCls_USE"));
     
     /** The value. */
     public final int value;

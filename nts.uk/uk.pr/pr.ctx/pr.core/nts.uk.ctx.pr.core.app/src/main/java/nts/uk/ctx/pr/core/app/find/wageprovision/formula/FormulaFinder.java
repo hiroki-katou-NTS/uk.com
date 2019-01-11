@@ -1,4 +1,5 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.formula;
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceFinder;
 import nts.uk.ctx.pr.core.app.find.wageprovision.companyuniformamount.PayrollUnitPriceHistoryFinder;
 import nts.uk.ctx.pr.core.app.find.wageprovision.statementitem.StatementItemDataFinder;
@@ -17,6 +18,8 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.FormulaService;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.MasterUseDto;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
+import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -43,7 +46,7 @@ public class FormulaFinder {
     private SalaryPerUnitPriceFinder salaryPerUnitPriceFinder;
 
     @Inject
-    private WageTableFinder wageTableFinder;
+    private WageTableRepository wageTableRepository;
 
     public List<FormulaDto> getAllFormula() {
         return formulaRepository.getAllFormula().stream().map(FormulaDto::fromDomainToDto).collect(Collectors.toList());
@@ -78,9 +81,12 @@ public class FormulaFinder {
         formulaElements.put("attendanceItem", statementItemDataFinder.getAllStatementItemData(CategoryAtr.ATTEND_ITEM.value, false).stream().map(item -> new FormulaElementDto(item.getItemNameCd(), item.getName())).collect(Collectors.toList()));
         formulaElements.put("companyUnitPriceItem", payrollUnitPriceFinder.getPayrollUnitPriceByYearMonth(yearMonth).stream().map(item -> new FormulaElementDto(item.getCode(), item.getName())).collect(Collectors.toList()));
         formulaElements.put("individualUnitPriceItem", this.salaryPerUnitPriceFinder.getAllSalaryPerUnitPriceName().stream().filter(item -> item.getAbolition() == 0).map(item -> new FormulaElementDto(item.getCode(), item.getName())).collect(Collectors.toList()));
-        formulaElements.put("wageTableItem", wageTableFinder.getAll().stream().map(item -> new FormulaElementDto(item.getWageTableCode(), item.getWageTableName())).collect(Collectors.toList()));
+        formulaElements.put("wageTableItem", wageTableRepository.getWageTableByYearMonth(AppContexts.user().companyId(), yearMonth).stream().map(item -> new FormulaElementDto(item.getWageTableCode().v(), item.getWageTableName().v(), item.getRemarkInformation().map(PrimitiveValueBase::v).orElse(null))).collect(Collectors.toList()));
         return formulaElements;
     }
 
+    public Map<String, String> getProcessYearMonthAndReferenceTime () {
+        return formulaService.getProcessYearMonthAndReferenceTime();
+    }
 }
 
