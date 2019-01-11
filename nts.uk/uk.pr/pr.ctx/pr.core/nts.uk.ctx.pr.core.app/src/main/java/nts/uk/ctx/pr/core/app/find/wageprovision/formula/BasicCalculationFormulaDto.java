@@ -32,15 +32,15 @@ public class BasicCalculationFormulaDto {
     private BigDecimal standardFixedValue;
     private List<String> targetItemCodeList = new ArrayList<>();
     private String attendanceItem;
-    private int coefficientClassification;
+    private Integer coefficientClassification;
     private BigDecimal coefficientFixedValue;
-    private int formulaType;
-    private int roundingResult;
-    private int adjustmentClassification;
-    private int baseItemClassification;
+    private Integer formulaType;
+    private Integer roundingResult;
+    private Integer adjustmentClassification;
+    private Integer baseItemClassification;
     private BigDecimal baseItemFixedValue;
     private Integer premiumRate;
-    private int roundingMethod;
+    private Integer roundingMethod;
     
     
     public static BasicCalculationFormulaDto fromDomainToDto(BasicCalculationFormula domain){
@@ -53,6 +53,7 @@ public class BasicCalculationFormulaDto {
         BasicCalculationForm basicCalculationForm = domain.getBasicCalculationForm().get();
         dto.standardAmountClassification = basicCalculationForm.getBasicCalculationStandardAmount().getStandardAmountClassification().value;
         dto.standardFixedValue = basicCalculationForm.getBasicCalculationStandardAmount().getStandardFixedValue().map(PrimitiveValueBase::v).orElse(null);
+        dto.targetItemCodeList = basicCalculationForm.getBasicCalculationStandardAmount().getTargetItemCodeList().stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
         dto.attendanceItem = basicCalculationForm.getBasicCalculationFactorClassification().getCoefficientItem().getAttendanceItem().map(PrimitiveValueBase::v).orElse(null);
         dto.coefficientClassification = basicCalculationForm.getBasicCalculationFactorClassification().getCoefficientItem().getCoefficientClassification().map(i -> i.value).orElse(null);
         dto.coefficientFixedValue = basicCalculationForm.getBasicCalculationFactorClassification().getCoefficientFixedValue().map(PrimitiveValueBase::v).orElse(null);
@@ -65,7 +66,6 @@ public class BasicCalculationFormulaDto {
         BasicCalculationItemCategory basicCalculationItemCategory = basicCalculationForm.getBasicCalculationItemCategory().get();
         dto.baseItemClassification = basicCalculationItemCategory.getBaseItemClassification().value;
         dto.baseItemFixedValue = basicCalculationItemCategory.getBaseItemFixedValue().map(PrimitiveValueBase::v).orElse(null);
-        dto.targetItemCodeList = basicCalculationForm.getBasicCalculationStandardAmount().getTargetItemCodeList().stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
         return dto;
     }
     

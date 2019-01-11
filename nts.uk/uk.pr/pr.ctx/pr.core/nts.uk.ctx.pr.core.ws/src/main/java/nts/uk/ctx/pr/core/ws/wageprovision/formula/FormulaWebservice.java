@@ -35,6 +35,9 @@ public class FormulaWebservice extends WebService {
     private AddFormulaCommandHandler addFormulaCommandHandler;
 
     @Inject
+    private UpdateFormulaCommandHandler updateFormulaCommandHandler;
+
+    @Inject
     private UpdateFormulaSettingCommandHandler updateFormulaSettingCommandHandler;
 
     @Inject
@@ -60,11 +63,11 @@ public class FormulaWebservice extends WebService {
     public FormulaSettingDto getFormulaSettingByHistoryID(FormulaSearchDto setting) {
         List<MasterUseDto> masterUseList = Collections.emptyList();
         if (!setting.withSetting){
-            masterUseList = formulaFinder.getMasterUseInfo(setting.masterUse);
+            if (null != setting.masterUse ) masterUseList = formulaFinder.getMasterUseInfo(setting.masterUse);
             return new FormulaSettingDto(null, null, null, masterUseList);
         }
         BasicFormulaSettingDto basicFormulaSettingDto = basicFormulaSettingFinder.getBasicFormulaSettingByHistoryID(setting.historyID);
-        masterUseList = basicFormulaSettingDto == null ? Collections.emptyList() : formulaFinder.getMasterUseInfo(basicFormulaSettingDto.getMasterUse());
+        masterUseList = (basicFormulaSettingDto == null || basicFormulaSettingDto.getMasterUse() == null)  ? Collections.emptyList() : formulaFinder.getMasterUseInfo(basicFormulaSettingDto.getMasterUse());
         return new FormulaSettingDto(basicFormulaSettingDto, detailFormulaSettingFinder.getDetailFormulaSettingByHistoryID(setting.historyID), basicCalculationFormulaFinder.getBasicCalculationFormulaByHistoryID(setting.historyID), masterUseList);
     }
 
@@ -73,6 +76,12 @@ public class FormulaWebservice extends WebService {
     public void addFormula(FormulaCommand command) {
         command.updateHistoryIdentifier();
         addFormulaCommandHandler.handle(command);
+    }
+
+    @POST
+    @Path("updateFormula")
+    public void updateFormula(FormulaCommand command) {
+        updateFormulaCommandHandler.handle(command);
     }
 
     @POST
@@ -114,8 +123,14 @@ public class FormulaWebservice extends WebService {
     }
 
     @POST
-    @Path("calculation")
-    public String calculation(DetailFormulaCommand command) {
+    @Path("getEmbeddedFormulaDisplayContent")
+    public Map<String, String> convertToDisplayContent(DetailFormulaConverterDto dto) {
+        return detailFormulaSettingFinder.getEmbeddedFormulaContent(dto);
+    }
+
+    @POST
+    @Path("calculate")
+    public String calculate(DetailFormulaCommand command) {
         return detailFormulaCalculationCommandHandler.handle(command);
     }
 }

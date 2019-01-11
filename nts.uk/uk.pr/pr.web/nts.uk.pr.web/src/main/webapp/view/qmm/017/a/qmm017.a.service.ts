@@ -6,6 +6,7 @@ module nts.uk.pr.view.qmm017.a.service {
         getAllFormula: parentPath + "/getAllFormula",
         getFormulaSettingByHistoryID: parentPath + "/getFormulaSettingByHistoryID",
         addFormula: parentPath + "/addFormula",
+        updateFormula: parentPath + "/updateFormula",
         addFormulaHistory: parentPath + "/addFormulaHistory",
         updateFormulaSetting: parentPath + "/updateFormulaSetting",
         getMasterUseInfo: parentPath + "/getMasterUseInfo/{0}",
@@ -29,6 +30,10 @@ module nts.uk.pr.view.qmm017.a.service {
 
     export function addFormula(command): JQueryPromise<any> {
         return ajax(paths.addFormula, command);
+    }
+
+    export function updateFormula(command): JQueryPromise<any> {
+        return ajax(paths.updateFormula, command);
     }
 
     export function addFormulaHistory(command): JQueryPromise<any> {

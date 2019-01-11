@@ -1,7 +1,9 @@
 package nts.uk.ctx.pr.core.infra.repository.wageprovision.unitpricename;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -18,7 +20,8 @@ public class JpaSalaryPerUnitPriceRepository extends JpaRepository implements Sa
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtPerUnitPrice f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.perUnitPricePk.cid =:cid AND  f.perUnitPricePk.code =:code ";
-    private static final String SELECT_ALL_IN_COMPANY = SELECT_ALL_QUERY_STRING + " WHERE  f.perUnitPricePk.cid =:cid ORDER BY f.perUnitPricePk.code";
+    private static final String SELECT_ALL_IN_COMPANY = SELECT_ALL_QUERY_STRING + " WHERE  f.perUnitPricePk.cid =:cid AND f.abolition = 0 ORDER BY f.perUnitPricePk.code";
+    private static final String SELECT_ABOLITION_ITEM_IN_COMPANY = SELECT_ALL_QUERY_STRING + " WHERE  f.perUnitPricePk.cid =:cid AND f.abolition = 0 ORDER BY f.perUnitPricePk.code";
     private static final String SELECT_ALL_NOT_ABOLITION = SELECT_ALL_QUERY_STRING + " WHERE  f.perUnitPricePk.cid =:cid AND f.abolition = 0 ORDER BY f.perUnitPricePk.code";
 
     @Override
@@ -30,6 +33,12 @@ public class JpaSalaryPerUnitPriceRepository extends JpaRepository implements Sa
     }
 
     @Override
+    public Map<String, String> getAllAbolitionSalaryPerUnitPrice() {
+        String cid = AppContexts.user().companyId();
+        return this.queryProxy().query(SELECT_ABOLITION_ITEM_IN_COMPANY, QpbmtPerUnitPrice.class)
+                .setParameter("cid", cid)
+                .getList().stream().collect(Collectors.toMap(item -> item.perUnitPricePk.code, item -> item.name));
+    }
     public List<SalaryPerUnitPrice> getSalaryPerUnitPriceNotAbolition(){
         String cid = AppContexts.user().companyId();
         return this.queryProxy().query(SELECT_ALL_NOT_ABOLITION, QpbmtPerUnitPrice.class)

@@ -29,7 +29,6 @@ module nts.uk.pr.view.qmm017.h.viewmodel {
                 if (history && history.length > 0) {
                     let lastHistory = history[0].startMonth;
                     displayLastHistory = nts.uk.time.formatYearMonth(lastHistory);
-                    self.displayStartJapanYearMonth(history.displayJapanStartYearMonth);
                     self.lastHistory = lastHistory;
                     self.startMonth(lastHistory);
                 }
@@ -42,6 +41,9 @@ module nts.uk.pr.view.qmm017.h.viewmodel {
                     self.takeoverMethod(0);
                 }
                 self.takeoverItem.push(new model.EnumModel(model.TAKEOVER_METHOD.FROM_BEGINNING, getText('QMM008_201')));
+                self.displayStartJapanYearMonth = ko.computed(function(){
+                    return self.startMonth() ? nts.uk.time.yearmonthInJapanEmpire(self.startMonth()).toString().split(' ').join(''): "";
+                })
             }
             block.clear();
             setTimeout(function(){$('#H1_6').focus()}, 100);

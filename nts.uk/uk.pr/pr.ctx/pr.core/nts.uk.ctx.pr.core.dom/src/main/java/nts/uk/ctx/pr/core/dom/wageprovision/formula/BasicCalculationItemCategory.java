@@ -14,7 +14,6 @@ import nts.arc.enums.EnumAdaptor;
 /**
 * かんたん計算基底項目区分
 */
-@AllArgsConstructor
 @Getter
 public class BasicCalculationItemCategory extends DomainObject
 {
@@ -31,7 +30,9 @@ public class BasicCalculationItemCategory extends DomainObject
     
     public BasicCalculationItemCategory(int baseItemClassification, BigDecimal baseItemFixedValue) {
         this.baseItemClassification = EnumAdaptor.valueOf(baseItemClassification, BaseItemClassification.class);
-        this.baseItemFixedValue = baseItemFixedValue == null ? Optional.empty() : Optional.of(new BaseItemFixedValue(baseItemFixedValue));
+        if (!this.baseItemClassification.equals(BaseItemClassification.FIXED_VALUE)) this.baseItemFixedValue = Optional.empty();
+        else
+            this.baseItemFixedValue = baseItemFixedValue == null ? Optional.empty() : Optional.of(new BaseItemFixedValue(baseItemFixedValue));
     }
     
 }

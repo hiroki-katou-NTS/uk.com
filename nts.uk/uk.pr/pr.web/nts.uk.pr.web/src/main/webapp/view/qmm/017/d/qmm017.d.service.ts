@@ -14,7 +14,7 @@ module nts.uk.pr.view.qmm017.d.service {
         getUnitPriceDataByCode: "ctx/pr/core/wageprovision/unitpricename/getUnitPriceDataByCode/{0}",
         getAllUnitPriceName: "ctx/pr/core/wageprovision/unitpricename/getAllUnitPriceName/{0}",
         // tab 7
-        getAllWageTable: "ctx/pr/core/wageprovision/wagetable/get-all-wagetable"
+        getWageTableInfo: "ctx/pr/core/wageprovision/wagetable/get-wagetable-by-code/{0}",
     }
 
     export function getStatementItemData(categoryAtr: number, itemNameCd: string): JQueryPromise<any> {
@@ -55,12 +55,13 @@ module nts.uk.pr.view.qmm017.d.service {
         return this.getUnitPriceDataByCode(code);
     }
 
-    export function getAllWageTable() : JQueryPromise<any> {
-        return ajax(paths.getAllWageTable);
-    }
-
     export function getFormulaElements (yearMonth: number) : JQueryPromise<any> {
         let _path = nts.uk.text.format(paths.getFormulaElements, yearMonth);
+        return nts.uk.request.ajax("pr", _path);
+    }
+
+    export function getWageTableInfo (wageTableCode) : JQueryPromise<any> {
+        let _path = nts.uk.text.format(paths.getWageTableInfo, wageTableCode);
         return nts.uk.request.ajax("pr", _path);
     }
 }

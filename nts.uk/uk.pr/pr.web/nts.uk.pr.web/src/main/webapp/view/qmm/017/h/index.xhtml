@@ -15,9 +15,9 @@
         <com:scriptfile path="qmm017.h.start.js" />
     </ui:define>
     <ui:define name="content">
-        <div class="contents-area" style="margin-left: 20px;">
-            <div class="label dialog-title">#{i18n.getText('QMM017_174')}</div>
-            <div style="margin-top: 20px; min-width: 550px">
+        <div id="contents-area" style="margin-left: 20px;">
+            <div class="label dialog-title">#{i18n.getText('QMM017_147')}</div>
+            <div style="margin-top: 20px; min-width: 520px">
                 <div style="width: 130px; display: inline-block;"
                      data-bind="ntsFormLabel: {required: false}">#{i18n.getText('QMM017_8')}</div>
                 <div style="display: inline-block;"
@@ -25,7 +25,7 @@
                 <span style="margin-left: 20px; width: 270px; vertical-align: text-bottom " class = "limited-label"
                       data-bind="text: formulaName"></span>
             </div>
-            <div style="margin-top: 20px; min-width: 550px">
+            <div style="margin-top: 20px; min-width: 520px">
                 <div style="width: 130px;"
                      data-bind="ntsFormLabel: {required: true}">#{i18n.getText('QMM017_12')}</div>
                 <div id ="H1_6"
@@ -38,12 +38,11 @@
 							enable: true}"
                      tabindex="1" />
                 <div style = "display: inline-block" data-bind = "text: displayStartJapanYearMonth"></div>
-                <div style="width: 100px; margin-left: 10px; display: inline-block;">#{i18n.getText('QMM016_76')}</div>
             </div>
-            <div style="margin-top: 20px; min-width: 550px">
+            <div style="margin-top: 20px; min-width: 520px">
                 <div style="width: 130px;"
                      data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_151')}</div>
-                <div style = "width: 280px;display: inline-flex">
+                <div style = "width: 280px;display: inline-flex; vertical-align: text-top">
                     <div tabindex = "2" id = "H1_9"
                          data-bind="ntsRadioBoxGroup: {
 										value: takeoverMethod,
@@ -53,12 +52,12 @@
 										optionsText: 'name'}"></div>
                 </div>
             </div>
-            <div style="margin-top: 20px; min-width: 550px">
+            <div style="margin-top: 20px; min-width: 520px">
                 <div style="width: 130px; margin-left: 150px;"
                      data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_17')}</div>
                 <div style = "display: inline-block" data-bind = "text: displaySettingMethod"></div>
             </div>
-            <div data-bind="if: settingMethod() == 0" style="margin-top: 20px; min-width: 550px">
+            <div data-bind="if: settingMethod() == 0" style="margin-top: 20px; min-width: 520px">
                 <div style="width: 130px; margin-left: 180px;"
                      data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_21')}</div>
                 <div style="margin-left: 200px;" tabindex="3" class="cf" data-bind="ntsSwitchButton: {
@@ -67,24 +66,26 @@
                     optionsValue: 'value',
                     optionsText: 'name',
                     value: masterBranchUse,
+                    enable: takeoverMethod () == 1,
                     required: true}">
                 </div>
             </div>
-            <div data-bind="if: settingMethod() == 0" style="margin-top: 20px; min-width: 550px">
+            <div data-bind="if: settingMethod() == 0" style="margin-top: 20px; min-width: 520px">
                 <div style="width: 130px; margin-left: 180px;"
                      data-bind="ntsFormLabel: { required: true }">#{i18n.getText('QMM017_23')}</div>
                 <div style="vertical-align: middle" tabindex="4" data-bind="ntsComboBox: {
                         name: '#[QMM016_6]',
                         options: masterUseItem,
                         optionsValue: 'value',
-                        visibleItemsCount: 5,
+                        visibleItemsCount: 6,
                         value: masterUse,
                         optionsText: 'name',
+                        enable: takeoverMethod () == 1,
                         required: true,
                         columns: [
                             { prop: 'fix_length', length: 0 },
                             { prop: 'name', length: 10 },
-                        ]}, visible: masterBranchUse() == 0">
+                        ]}, visible: masterBranchUse() == 1">
                 </div>
             </div>
         </div>

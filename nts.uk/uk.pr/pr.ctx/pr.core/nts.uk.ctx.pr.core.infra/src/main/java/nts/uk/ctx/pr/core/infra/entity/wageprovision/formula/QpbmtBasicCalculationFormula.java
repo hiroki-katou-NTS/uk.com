@@ -56,7 +56,7 @@ public class QpbmtBasicCalculationFormula extends UkJpaEntity implements Seriali
      */
     @Basic(optional = false)
     @Column(name = "STANDARD_AMOUNT_CLS")
-    public int standardAmountCls;
+    public Integer standardAmountCls;
 
     /**
      * 基準金額固定値

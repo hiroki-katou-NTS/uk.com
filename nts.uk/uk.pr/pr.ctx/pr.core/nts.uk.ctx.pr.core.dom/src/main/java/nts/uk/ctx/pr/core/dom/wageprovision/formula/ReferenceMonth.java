@@ -1,24 +1,26 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.formula;
 
 
+import nts.arc.i18n.I18NText;
+
 /**
 * 参照月
 */
 public enum ReferenceMonth {
     
-    CURRENT_MONTH(0, "当月"),
-    TWO_MONTH_AGO(2, "２ヶ月前"),
-    THREE_MONTH_AGO(3, "３ヶ月前"),
-    FOUR_MONTH_AGO(4, "４ヶ月前"),
-    FIVE_MONTH_AGO(5, "５ヶ月前"),
-    SIX_MONTH_AGO(6, "６ヶ月前"),
-    SEVEN_MONTH_AGO(7, "７ヶ月前"),
-    EIGHT_MONTH_AGO(8, "８ヶ月前"),
-    NINE_MONTH_AGO(9, "９ヶ月前"),
-    ONE_MONTH_AGO(1, "１ヶ月前"),
-    TEN_MONTH_AGO(10, "１０ヶ月前"),
-    ELEVEN_MONTH_AGO(11, "１１ヶ月前"),
-    TWELVE_MONTH_AGO(12, "１２ヶ月前");
+    CURRENT_MONTH(0, I18NText.getText("Enum_ReferenceMonth_CURRENT_MONTH")),
+    ONE_MONTH_AGO(1, I18NText.getText("Enum_ReferenceMonth_ONE_MONTH_AGO")),
+    TWO_MONTH_AGO(2, I18NText.getText("Enum_ReferenceMonth_TWO_MONTH_AGO")),
+    THREE_MONTH_AGO(3, I18NText.getText("Enum_ReferenceMonth_THREE_MONTH_AGO")),
+    FOUR_MONTH_AGO(4, I18NText.getText("Enum_ReferenceMonth_FOUR_MONTH_AGO")),
+    FIVE_MONTH_AGO(5, I18NText.getText("Enum_ReferenceMonth_FIVE_MONTH_AGO")),
+    SIX_MONTH_AGO(6, I18NText.getText("Enum_ReferenceMonth_SIX_MONTH_AGO")),
+    SEVEN_MONTH_AGO(7, I18NText.getText("Enum_ReferenceMonth_SEVEN_MONTH_AGO")),
+    EIGHT_MONTH_AGO(8, I18NText.getText("Enum_ReferenceMonth_EIGHT_MONTH_AGO")),
+    NINE_MONTH_AGO(9, I18NText.getText("Enum_ReferenceMonth_NINE_MONTH_AGO")),
+    TEN_MONTH_AGO(10, I18NText.getText("Enum_ReferenceMonth_TEN_MONTH_AGO")),
+    ELEVEN_MONTH_AGO(11, I18NText.getText("Enum_ReferenceMonth_ELEVEN_MONTH_AGO")),
+    TWELVE_MONTH_AGO(12, I18NText.getText("Enum_ReferenceMonth_TWELVE_MONTH_AGO"));
     
     /** The value. */
     public final int value;

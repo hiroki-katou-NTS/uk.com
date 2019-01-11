@@ -12,14 +12,11 @@ import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.CurrProcessDateReposi
 import nts.uk.ctx.pr.core.dom.wageprovision.processdatecls.SetDaySupportRepository;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
-import nts.arc.time.YearMonth;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -65,6 +62,10 @@ public class FormulaService {
         if (formula.getSettingMethod() == FormulaSettingMethod.BASIC_SETTING) basicFormulaSettingRepository.add(basicFormulaSetting);
     }
 
+    public void updateFormula (Formula formula) {
+        formulaRepository.update(formula);
+    }
+
     public void removeFormula (String formulaCode) {
         formulaRepository.removeByFormulaCode(formulaCode);
         detailFormulaSettingRepository.removeByFormulaCode(formulaCode);
@@ -73,6 +74,7 @@ public class FormulaService {
     }
 
     public void updateFormulaSetting (Formula formula, BasicFormulaSetting basicFormulaSetting, DetailFormulaSetting detailFormulaSetting, List<BasicCalculationFormula> basicCalculationFormula) {
+        formulaRepository.update(formula);
         basicCalculationFormulaRepository.upsertAll(basicFormulaSetting.getHistoryID(), basicCalculationFormula);
         if (formula.getSettingMethod() == FormulaSettingMethod.DETAIL_SETTING) detailFormulaSettingRepository.upsert(detailFormulaSetting);
         else basicFormulaSettingRepository.upsert(basicFormulaSetting);
@@ -132,7 +134,20 @@ public class FormulaService {
         return formulaRepository.getFormulaByCodes(cid, formulaCodes);
     }
 
-    public GeneralDate getBaseDate () {
+    public Map<String, String> getProcessYearMonthAndReferenceTime () {
+        Map<String, String> processYMAndReferTime = new HashMap<>();
+        processYMAndReferTime.put("processYearMonth", GeneralDate.today().toString("YYYY/MM"));
+        processYMAndReferTime.put("referenceDate", GeneralDate.today().toString());
+        currProcessDateRepository.getCurrProcessDateByIdAndProcessCateNo(AppContexts.user().companyId(), 1).ifPresent(processDate -> {
+            processYMAndReferTime.put("processYearMonth", processDate.getGiveCurrTreatYear().year() + "/" + String.format("%02d", processDate.getGiveCurrTreatYear().month()));
+            setDaySupportRepository.getSetDaySupportByIdAndProcessDate(AppContexts.user().companyId(), 1, processDate.getGiveCurrTreatYear().v()).ifPresent(setDaySupport -> {
+                processYMAndReferTime.put("referenceDate", setDaySupport.getEmpExtraRefeDate().toString());
+            });
+        });
+        return processYMAndReferTime;
+    }
+
+    public GeneralDate getReferenceDate() {
         /*【条件】
         会社ID＝ログイン会社
         処理日区分NO＝1 */
@@ -147,7 +162,7 @@ public class FormulaService {
 
     public List<MasterUseDto> getMasterUseInfo (int masterUseClassification) {
         MasterUse masterUse = EnumAdaptor.valueOf(masterUseClassification, MasterUse.class);
-        GeneralDate baseDate = this.getBaseDate();
+        GeneralDate baseDate = this.getReferenceDate();
         switch (masterUse) {
             case EMPLOYMENT: {
                 return sysEmploymentAdapter.findAll(AppContexts.user().companyId()).stream().map(
