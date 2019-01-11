@@ -2311,9 +2311,9 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	public static String getInclude(int value){
     	switch (value){
     	case 0:
-    		return TextResource.localize("KMK004_72");
-    	case 1:
     		return TextResource.localize("KMK004_73");
+    	case 1:
+    		return TextResource.localize("KMK004_72");
     	default: 
     		return null;
     	}
