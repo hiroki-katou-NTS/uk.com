@@ -7,4 +7,7 @@ import java.util.List;
 public interface EmployeeResidentTaxPayeeInfoAdapter {
 
     List<EmployeeResidentTaxPayeeInfoImport> getEmpRsdtTaxPayeeInfo(List<String> listSId, YearMonth periodYM);
+    
+    List<EmployeeResidentTaxPayeeInfoImport> getEmpRsdtTaxPayeeInfo(List<String> listSId);
+    
 }

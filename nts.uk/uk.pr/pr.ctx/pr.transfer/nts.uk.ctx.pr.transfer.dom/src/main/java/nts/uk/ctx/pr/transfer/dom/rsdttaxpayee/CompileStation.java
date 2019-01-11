@@ -24,8 +24,8 @@ public class CompileStation extends DomainObject {
 
     public CompileStation(String name, String zipCode)
     {
-        this.name = name == null ? Optional.empty() : Optional.of(new CompileStationName(name));
-        this.zipCode = zipCode == null ? Optional.empty() : Optional.of(new PostCode(zipCode));
+        this.name = name == null || name.isEmpty() ? Optional.empty() : Optional.of(new CompileStationName(name));
+        this.zipCode = zipCode == null || zipCode.isEmpty() ? Optional.empty() : Optional.of(new PostCode(zipCode));
     }
 
 }
