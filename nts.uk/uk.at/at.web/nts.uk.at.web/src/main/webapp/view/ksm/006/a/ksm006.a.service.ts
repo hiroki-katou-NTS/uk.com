@@ -116,6 +116,12 @@ module nts.uk.at.view.ksm006.a {
         export function findWorktimeCodeList(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.findWorktimeCodeList);
         }
+        
+        export function saveAsExcel(): JQueryPromise<any> {
+            return nts.uk.request.exportFile('/masterlist/report/print', 
+                {domainId: 'BasicWorkrRegister', domainType: 'KSM006' + __viewContext.program.programName, 
+                languageId: 'ja', reportType: 0});
+        }
 
         /**
         * Model namespace.

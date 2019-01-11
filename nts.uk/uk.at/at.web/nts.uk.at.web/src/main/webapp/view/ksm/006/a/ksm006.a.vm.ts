@@ -781,6 +781,20 @@ module nts.uk.at.view.ksm006.a {
                 dto.basicWorkSetting = basicWorkSettingArray;
                 return dto;
             }
+            
+             /**
+             * Print file excel
+             */
+            exportExcel() : void {
+                var self = this;
+                nts.uk.ui.block.grayout();
+                service.saveAsExcel().done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
         }
 
 
@@ -858,6 +872,7 @@ module nts.uk.at.view.ksm006.a {
                     });
                 blockUI.clear();
             }
+            
         }
         /**
              * Class WorkStyle
