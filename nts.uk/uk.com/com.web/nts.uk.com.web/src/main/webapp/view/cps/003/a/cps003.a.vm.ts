@@ -75,6 +75,8 @@ module cps003.a.vm {
         dataTypes: any = {};
 
         baseDate: KnockoutObservable<Date> = ko.observable();
+        histType: KnockoutObservable<string> = ko.observable();
+        updateMode: KnockoutObservable<number> = ko.observable(1);
 
         category: {
             catId: KnockoutObservable<string>;
@@ -105,13 +107,43 @@ module cps003.a.vm {
                 .done(data => {
                     self.category.items(data);
                     self.baseDate(moment.utc().toISOString());
-                    self.requestData();
                 });
+            
+            self.baseDate.subscribe(date => {
+                if (self.category.catId() !== "" && !_.isNil(self.category.catId())) {
+                    self.requestData();
+                }
+            });
 
             self.category.catId.subscribe((cid: string) => {
                 if (cid) {
+                    let cate = _.find(self.category.items(), c => c.id === self.category.catId());
+                    if (cate) {
+                        self.category.catCode(cate.categoryCode);
+                        switch (cate.categoryType) {
+                            case IT_CAT_TYPE.SINGLE:
+                                self.histType(nts.uk.resource.getText("CPS003_108"));
+                                break;
+                            case IT_CAT_TYPE.MULTI:
+                                self.histType(nts.uk.resource.getText("CPS003_109"));
+                                break;
+                            case IT_CAT_TYPE.CONTINU:
+                            case IT_CAT_TYPE.CONTINUWED:
+                                self.histType(nts.uk.resource.getText("CPS003_110"));
+                                break;
+                            case IT_CAT_TYPE.NODUPLICATE:
+                                self.histType(nts.uk.resource.getText("CPS003_111"));
+                                break;
+                            case IT_CAT_TYPE.DUPLICATE:
+                                self.histType(nts.uk.resource.getText("CPS003_112"));
+                                break;
+                        }
+                    }
+                    
                     // fetch all setting
                     service.fetch.setting(cid).done((data: ISettingData) => {
+                        self.requestData(data);
+                        
                         if (ko.isObservable(self.settings.matrixDisplay)) {
                             if (_.size(self.settings.matrixDisplay()) == 0) {
                                 self.settings.matrixDisplay(data.matrixDisplay);
@@ -122,22 +154,29 @@ module cps003.a.vm {
                             self.settings.perInfoData(data.perInfoData);
                         }
                     });
-
-                    // fetch data (Manh code)
                 }
-            });
-            
-            self.category.catId.subscribe(id => {
-                if (_.isNil(id) || id === "") return;
-                let cate = _.find(self.category.items(), c => c.id === self.category.catId());
-                if (cate) {
-                    self.category.catCode(cate.categoryCode);
-                }
-                self.requestData();
             });
 
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(() => { });
-            //            self.requestData();
+            
+            self.settings.matrixDisplay.subscribe(matrix => {
+                let $grid = $("#grid");
+                if (!$grid.data("mGrid")) return;
+                $grid.mGrid("directEnter", matrix && matrix.cursorDirection == CURSOR_DIRC.VERTICAL ? "below" : "right");
+                $grid.mGrid(!matrix || matrix.clsATR === IUSE_SETTING.NOT_USE ? "hideColumn" : "showColumn", "className");
+                $grid.mGrid(!matrix || matrix.jobATR === IUSE_SETTING.NOT_USE ? "hideColumn" : "showColumn", "positionName");
+                $grid.mGrid(!matrix || matrix.workPlaceATR === IUSE_SETTING.NOT_USE ? "hideColumn" : "showColumn", "workplaceName");
+                $grid.mGrid(!matrix || matrix.departmentATR === IUSE_SETTING.NOT_USE ? "hideColumn" : "showColumn", "deptName");
+                $grid.mGrid(!matrix || matrix.employmentATR === IUSE_SETTING.NOT_USE ? "hideColumn" : "showColumn", "employmentName");
+            });
+            
+            self.updateMode.subscribe(mode => {
+                let $grid = $("#grid");
+                if (!$grid.data("mGrid")) return;
+                if (mode === 1) {
+                    $grid.mGrid("removeInsertions");
+                }
+            });
         }
 
         start() {
@@ -172,6 +211,11 @@ module cps003.a.vm {
                 unblock();
                 alert(mes.message);
             });
+        }
+        
+        checkError() {
+            let self = this;
+            $("#grid").mGrid("validate");
         }
 
         openBDialog() {
@@ -215,7 +259,7 @@ module cps003.a.vm {
             }).create();
         }
 
-        requestData() {
+        requestData(settingData: ISettingData) {
             // { categoryId: 'COM1_00000000000000000000000_CS00020', lstEmployee: [], standardDate: '2818/01/01' };
             let self = this;
             block();
@@ -227,8 +271,9 @@ module cps003.a.vm {
             }
             
             nts.uk.request.ajax('com', 'ctx/pereg/grid-layout/get-data', param).done(data => {
-                self.convertData(data).done(() => {
+                self.convertData(data, settingData).done(() => {
                     self.loadGrid();
+                    self.settings.matrixDisplay.valueHasMutated();
                     self.disableCS00035();
                     unblock();
                 });
@@ -241,16 +286,16 @@ module cps003.a.vm {
             let $grid = $("#grid");
             _.forEach(self.gridOptions.dataSource, s => {
                 cps003.control.fetch.check_remain_days(s.employeeId).done(x => {
-                    $grid.mGrid(x ? "enableNtsControlAt" : "disableNtsControlAt", s.id, "IS00366");
+                    $grid.mGrid(x ? "enableNtsControlAt" : "disableNtsControlAt", s.id, "IS00366", null, true);
                 });
                 
                 cps003.control.fetch.check_remain_left(s.employeeId).done(x => {
-                    $grid.mGrid(x ? "enableNtsControlAt": "disableNtsControlAt", s.id, "IS00368");
+                    $grid.mGrid(x ? "enableNtsControlAt": "disableNtsControlAt", s.id, "IS00368", null, true);
                 });
             });
         }
 
-        convertData(data: IRequestData) {
+        convertData(data: IRequestData, gridSettings: ISettingData) {
             let self = this, dfd = $.Deferred();
             if (data.headDatas) {
                 data.headDatas.sort((a, b) => {
@@ -265,29 +310,41 @@ module cps003.a.vm {
                     return a.itemOrder - b.itemOrder;
                 });
                 
-                let item, control, parent = {};
+                let item, control, parent = {}, sort;
                 self.dataTypes = {};
                 self.gridOptions.columns = [
                     { headerText: "", key: "rowNumber", dataType: "number", width: "30px" },
                     { headerText: "登録対象", key: "register", dataType: "boolean", width: "30px", ntsControl: "RegCheckBox", bound: true },
-                    { headerText: "印刷対象", key: "print", dataType: "boolean", width: "30px", ntsControl: "PrintCheckBox", bound: true },
+//                    { headerText: "印刷対象", key: "print", dataType: "boolean", width: "30px", ntsControl: "PrintCheckBox", bound: true },
                     { headerText: "表示制御", key: "showControl", dataType: "string", width: "40px", ntsControl: "ImageShow" },
-                    { headerText: "社員CD", key: "employeeCode", dataType: "string", width: "40px", ntsControl: "Label" },
-                    { headerText: "氏名", key: "employeeName", dataType: "string", width: "40px", ntsControl: "Label" },
+                    { headerText: "社員CD", key: "employeeCode", dataType: "string", width: "100px", ntsControl: "Label" },
+                    { headerText: "氏名", key: "employeeName", dataType: "string", width: "100px", ntsControl: "Label" },
                     { headerText: "行の追加", key: "rowAdd", dataType: "string", width: "40px", ntsControl: "RowAdd" },
-                    { headerText: "部門", key: "deptName", dataType: "string", width: "40px", ntsControl: "Label" },
-                    { headerText: "職場", key: "workplaceName", dataType: "string", width: "40px", ntsControl: "Label" },
-                    { headerText: "職位", key: "positionName", dataType: "string", width: "40px", ntsControl: "Label" },
-                    { headerText: "雇用", key: "employmentName", dataType: "string", width: "40px", ntsControl: "Label" },
-                    { headerText: "分類", key: "className", dataType: "string", width: "40px", ntsControl: "Label" } 
+                    { headerText: "部門", key: "deptName", dataType: "string", width: "100px", ntsControl: "Label", hidden: true },
+                    { headerText: "職場", key: "workplaceName", dataType: "string", width: "100px", ntsControl: "Label", hidden: true },
+                    { headerText: "職位", key: "positionName", dataType: "string", width: "100px", ntsControl: "Label", hidden: true },
+                    { headerText: "雇用", key: "employmentName", dataType: "string", width: "100px", ntsControl: "Label", hidden: true },
+                    { headerText: "分類", key: "className", dataType: "string", width: "100px", ntsControl: "Label", hidden: true } 
                 ];
                 
                 self.gridOptions.ntsControls = [
                     { name: 'RegCheckBox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                    { name: 'PrintCheckBox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
+//                    { name: 'PrintCheckBox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                     { name: "ImageShow", source: "hidden-button", controlType: "Image" },
-                    { name: "RowAdd", source: "plus-button", controlType: "Image", copy: true }];
-                let headerStyles = { name: "HeaderStyles", columns: [] };
+                    { name: "RowAdd", source: "plus-button", cssClass: "blue-color", controlType: "Image", copy: true }];
+                let headerStyles = { name: "HeaderStyles", columns: [] },
+                    columnSettings = _.cloneDeep(self.settings.perInfoData()),
+                    sorting = { name: "Sorting", columnSettings: [
+                        { columnKey: "rowNumber", allowSorting: true, type: "Number" },
+                        { columnKey: "employeeCode", allowSorting: true },
+                        { columnKey: "employeeName", allowSorting: true },
+                        { columnKey: "deptName", allowSorting: true },
+                        { columnKey: "workplaceName", allowSorting: true },
+                        { columnKey: "positionName", allowSorting: true },
+                        { columnKey: "employmentName", allowSorting: true },
+                        { columnKey: "className", allowSorting: true }
+                    ]};
+                
                 _.forEach(data.headDatas, (d: IDataHead) => {
                     let controlType = d.itemTypeState.dataTypeState;
                     if (controlType) {
@@ -301,10 +358,22 @@ module cps003.a.vm {
                             parent[d.itemCode] = name;
                         }
                         
-                        item = { headerText: name, itemId: d.itemId, key: d.itemCode, required: d.required, parentCode: d.itemParentCode, dataType: "string", width: "100px", perInfoTypeState: controlType };
+                        let colSetting = _.remove(columnSettings, s => s.itemCD === d.itemCode);
+                        item = { headerText: name, itemId: d.itemId, key: d.itemCode, required: d.required, parentCode: d.itemParentCode, dataType: "string", width: colSetting.length > 0 ? colSetting[0].width + "px" : "100px", perInfoTypeState: controlType };
+                        if (gridSettings) {
+                             colSetting = [ _.find(gridSettings.perInfoData, itemInfo => itemInfo.itemCD === d.itemCode) ];
+                        }
+                        if (colSetting.length > 0 && colSetting[0]) {
+                            item.hidden = !colSetting[0].regulationAtr;        
+                        }
+                        
                         controlType.required = d.required;
-                        control = self.getControlType(controlType, item);
+                        sort = {};
+                        control = self.getControlType(controlType, item, sort);
                         self.gridOptions.columns.push(item);
+                        if (sort.columnKey) {
+                            sorting.columnSettings.push(sort);
+                        }
                         
                         if (control) {
                             self.gridOptions.ntsControls.push(control);
@@ -358,6 +427,7 @@ module cps003.a.vm {
                 
                 self.gridOptions.features.push(columnFixing);
                 self.gridOptions.features.push(headerStyles);
+                self.gridOptions.features.push(sorting);
             }
             
             if (data.bodyDatas) {
@@ -807,7 +877,7 @@ module cps003.a.vm {
             }
         }
         
-        getControlType(controlType: IItemDefinitionData, item: any) {
+        getControlType(controlType: IItemDefinitionData, item: any, sort: any) {
             if (_.isNil(controlType)) return;
             let self = this, control, name;
             self.dataTypes[item.key] = { cls: controlType };
@@ -818,23 +888,33 @@ module cps003.a.vm {
             }
             switch (controlType.dataTypeValue) {
                 case ITEM_SINGLE_TYPE.STRING:
+                    sort.columnKey = item.key;
+                    sort.allowSorting = true;
                     break;
                 case ITEM_SINGLE_TYPE.NUMERIC:
+                    item.dataType = "number";
                     let timeNumber = cps003.control.NUMBER[self.category.catCode() + "_" + item.key];
                     if (timeNumber) item.inputProcess = timeNumber;
+                    sort.columnKey = item.key;
+                    sort.allowSorting = true;
+                    sort.type = "Number";
                     break;
                 case ITEM_SINGLE_TYPE.DATE:
                     item.columnCssClass = "halign-right";
+                    sort.columnKey = item.key;
+                    sort.allowSorting = true;
                     if (controlType.dateItemType === DateType.YEARMONTHDAY) {
                         name = "DatePickerYMD" + item.key;
                         item.constraint.type = "ymd";
                         control = { name: name, format: "ymd", controlType: "DatePicker" };
+                        sort.type = "FullDate";
                         let dp = cps003.control.DATE_TIME[self.category.catCode() + "_" + item.key];
                         if (dp) control.inputProcess = dp;
                     } else if (controlType.dateItemType === DateType.YEARMONTH) {
                         name = "DatePickerYM" + item.key;
                         item.constraint.type = "ym";
                         control = { name: name, format: "ym", controlType: "DatePicker" };
+                        sort.type = "YearMonth";
                     } else {
                         name = "DatePickerY" + item.key;
                         item.constraint.type = "y";
@@ -847,11 +927,17 @@ module cps003.a.vm {
                     item.columnCssClass = "halign-right";
                     timeNumber = cps003.control.NUMBER[self.category.catCode() + "_" + item.key];
                     if (timeNumber) item.inputProcess = timeNumber;
+                    sort.columnKey = item.key;
+                    sort.allowSorting = true;
+                    sort.type = "Time";
                     break;    
                 case ITEM_SINGLE_TYPE.TIMEPOINT:
                     item.columnCssClass = "halign-right";
                     timeNumber = cps003.control.NUMBER[self.category.catCode() + "_" + item.key];
                     if (timeNumber) item.inputProcess = timeNumber;
+                    sort.columnKey = item.key;
+                    sort.allowSorting = true;
+                    sort.type = "Time";
                     break;
                 case ITEM_SINGLE_TYPE.SELECTION:
                 case ITEM_SINGLE_TYPE.SEL_RADIO:
@@ -865,6 +951,8 @@ module cps003.a.vm {
                     
                     self.dataTypes[item.key].specs = control;
                     item.ntsControl = name; 
+                    sort.columnKey = item.key;
+                    sort.allowSorting = true;
                     break;
                 case ITEM_SINGLE_TYPE.SEL_BUTTON:
                     name = "ReferButton" + item.key;
@@ -874,9 +962,13 @@ module cps003.a.vm {
                     control.click = selectBtn && selectBtn.bind(null, item.required);
                     self.dataTypes[item.key].specs = control;
                     item.ntsControl = name;
+                    sort.columnKey = item.key;
+                    sort.allowSorting = true;
                     break;
                 case ITEM_SINGLE_TYPE.READONLY:
                     item.ntsControl = "Label";
+                    sort.columnKey = item.key;
+                    sort.allowSorting = true;
                     break;
                 case ITEM_SINGLE_TYPE.RELATE_CATEGORY:
                     name = "RelateButton" + item.key;
@@ -884,8 +976,11 @@ module cps003.a.vm {
                     let selectBtn = cps003.control.RELATE_BUTTON[self.category.catCode() + "_" + item.key];
                     control.click = selectBtn && selectBtn.bind(null);
                     item.ntsControl = name;
+                    sort.columnKey = item.key;
+                    sort.allowSorting = true;
                     break;
                 case ITEM_SINGLE_TYPE.NUMBERIC_BUTTON:
+                    item.dataType = "number";
                     break;
                 case ITEM_SINGLE_TYPE.READONLY_BUTTON:
                     break;
@@ -933,7 +1028,24 @@ module cps003.a.vm {
             });
 
             modal("/view/cps/003/d/index.xhtml").onClosed(() => {
-                console.log(getShared('CPS003D_VALUE'));
+                let $grid = $("#grid"), columns = getShared('CPS003D_VALUE');
+                if (!columns) return;
+                
+                _.forEach(self.settings.perInfoData(), (itemInfo: IPersonInfoSetting) => {
+                    if (_.find(columns, itemId => itemId === itemInfo.perInfoItemDefID)) {
+                        $grid.mGrid("showColumn", itemInfo.itemCD, true);
+                    } else $grid.mGrid("hideColumn", itemInfo.itemCD, true);
+                });
+                
+                service.fetch.setting(self.category.catId()).done((data: ISettingData) => {
+                    if (ko.isObservable(self.settings.matrixDisplay)) {
+                        self.settings.matrixDisplay(data.matrixDisplay);
+                    }    
+                    
+                    if (ko.isObservable(self.settings.perInfoData)) {
+                        self.settings.perInfoData(data.perInfoData);
+                    }
+                });
             });
         }
 
@@ -945,6 +1057,7 @@ module cps003.a.vm {
             setShared('CPS003F_PARAM', {
                 id: id, // sample data
                 // push list ids of item show in grid
+                itemsDefIds: []
             });
 
             modal("/view/cps/003/f/index.xhtml").onClosed(() => {
@@ -1186,6 +1299,7 @@ module cps003.a.vm {
         AfterZero = 2,
         PreviousSpace = 3,
         AfterSpace = 4
+    }
 
     interface ISettingData {
         "perInfoData": KnockoutObservableArray<IPersonInfoSetting> | Array<IPersonInfoSetting>;
@@ -1221,5 +1335,14 @@ module cps003.a.vm {
     enum CURSOR_DIRC {
         VERTICAL = <any>'VERTICAL',
         HORIZONTAL = <any>'HORIZONTAL'
+    }
+    
+    export enum IT_CAT_TYPE {
+        SINGLE = 1, // Single info
+        MULTI = 2, // Multi info
+        CONTINU = 3, // Continuos history
+        NODUPLICATE = 4, //No duplicate history
+        DUPLICATE = 5, // Duplicate history,
+        CONTINUWED = 6 // Continuos history with end date
     }
 }

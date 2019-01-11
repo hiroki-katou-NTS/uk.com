@@ -26,7 +26,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button type="button" class="proceed" data-bind="" tabindex="1">#{i18n.getText('CPS003_7')}</button>
-				<button type="button" data-bind="" tabindex="2">#{i18n.getText('CPS003_8')}</button>
+				<button type="button" data-bind="click: $vm.checkError" tabindex="2">#{i18n.getText('CPS003_8')}</button>
 				<button type="button" class="danger" data-bind="" tabindex="3">#{i18n.getText('CPS003_9')}</button>
 				<button type="button" data-bind="click: openBDialog" tabindex="3">#{i18n.getText('CPS003_10')}</button>
 			</div>
@@ -57,7 +57,7 @@
                                 ]}"></div>
 								<button id="column-display" data-bind="text: '#{i18n.getText('CPS003_14')}', click: $vm.settingColumns.bind($vm)"></button>
 								<div class="fixed-width margin-left" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_15')}</div>
-								<label id="history-type">#{i18n.getText('A2_007')}</label>
+								<label id="history-type" data-bind="text: $vm.histType"></label>
 								<button data-bind="ntsHelpButton: {textId: 'CPS003_16', position: 'right center' }">？</button>
 						</div>
 						<div class="form-group margin-left">
@@ -68,7 +68,7 @@
 								options: [{id: 1, name: '#{i18n.getText('CPS003_19')}'}, {id: 2, name: '#{i18n.getText('CPS003_20')}'}],
 								optionsValue: 'id',
 								optionsText: 'name',
-								value: ko.observable(1),
+								value: $vm.updateMode,
 								required: true,
 								enable: true }"></div>
 						</div>
