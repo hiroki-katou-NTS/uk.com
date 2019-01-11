@@ -62,7 +62,8 @@ public class ItemTotalExcel {
 			return stringList;
 		}
 		List<String> listString = itemSets.stream()
-		        .map(developer -> new String(developer.getNameItemSet()))
+		        .map(developer -> new String(!developer.getCodeItemSet().equals("-1")?
+		        		developer.getCodeItemSet()+developer.getNameItemSet():""))
 		        .collect(Collectors.toList());
 		for(int i =  listString.size()-1 ; i >=0;i--) {
 			if(listString.get(i).equals("")){

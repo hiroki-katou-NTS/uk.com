@@ -1,4 +1,5 @@
 module nts.uk.at.view.kmk013.a {
+//   import service = nts.uk.at.view.kmk013.a.service;
     export module viewmodel {
         export class ScreenModel {
             
@@ -62,6 +63,20 @@ module nts.uk.at.view.kmk013.a {
             openDialogN(): void  {
                 nts.uk.request.jump("/view/kmk/013/n/index.xhtml");
             }
+            
+             public exportExcel(): void {
+                var self = this;
+                nts.uk.ui.block.grayout();
+
+                service.saveAsExcel().done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
+            
+           
         }
     }
 }

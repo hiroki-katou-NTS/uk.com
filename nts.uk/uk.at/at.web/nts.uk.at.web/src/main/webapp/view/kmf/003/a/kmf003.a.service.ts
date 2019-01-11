@@ -56,9 +56,13 @@ module nts.uk.at.view.kmf003.a.service {
         return nts.uk.request.ajax(path, {yearHolidayCode: yearHolidayCode});
     } 
     //saveAsExcel
-    export function saveAsExcel(languageId: string): JQueryPromise<any> {
-        return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "YearHoliday", languageId: languageId, domainType: "KMF003"+nts.uk.resource.getText("KMF003_1"), reportType: 0 });
-    }
+
+    
+     export function saveAsExcel(languageId: String): JQueryPromise<any> {
+            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+            let programName = program[1]!=null?program[1]:"";
+            return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "YearHoliday", domainType: "KMF003" + programName, languageId: languageId, reportType: 0 });
+        }
 
     export interface YearHolidayGrantDto {
         yearHolidayCode: string,

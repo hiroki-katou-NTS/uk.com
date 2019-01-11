@@ -101,10 +101,14 @@ module nts.uk.at.view.kmk009.a {
         }
         
         //saveAsExcel
-        export function saveAsExcel(languageId: string): JQueryPromise<any> {
-            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "TotalTimes", languageId: languageId, domainType: "KMK009"+nts.uk.resource.getText('KMK009_25'), reportType: 0});
-        }
 
+
+        
+        export function saveAsExcel(languageId: String): JQueryPromise<any> {
+            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+            let programName = program[1]!=null?program[1]:"";
+            return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "TotalTimes", domainType: "KMK009" + programName, languageId: languageId, reportType: 0 });
+        }
 
         export module model {
             

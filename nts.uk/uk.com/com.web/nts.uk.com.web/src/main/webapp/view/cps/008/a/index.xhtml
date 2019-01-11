@@ -29,8 +29,13 @@
 					data-bind="click: copyDataLayout, enable: enaBtnCoppy()">#{i18n.getText('CPS008_5')}</button>
 				<button id="A_BTN_DELETE" class="danger"
 					data-bind="click: removeDataLayout, enable: enaBtnDel()">#{i18n.getText('CPS008_6')}</button>
+					
+				<button id="print-button" data-bind="click: exportExcel">#{i18n.getText('KMK007_4')}</button> 
+				
 				<a class="goout" id="A_BTN_JUMP"
 					data-bind="ntsLinkButton:  { jump: '../../007/a/index.xhtml' }">#{i18n.getText('CPS008_7')}</a>
+					
+				 
 			</div>
 			<div id="contents-area">
 				<div id="left-content"
