@@ -4,16 +4,22 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import javax.ejb.Stateless;
 
 import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
+import com.aspose.cells.CellArea;
 import com.aspose.cells.CellBorderType;
+import com.aspose.cells.Cells;
 import com.aspose.cells.Color;
 import com.aspose.cells.HorizontalPageBreakCollection;
+import com.aspose.cells.ImageOrPrintOptions;
 import com.aspose.cells.PageSetup;
+import com.aspose.cells.PrintingPageType;
 import com.aspose.cells.Range;
+import com.aspose.cells.Row;
 import com.aspose.cells.Style;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
@@ -85,6 +91,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			}
 			PageSetup pageSetup = ws.getPageSetup();
 			pageSetup.setZoom(pageScale);
+            pageSetup.setPrintArea("A1:W");
 
 			// delete superfluous rows
 			Range empRange = wsc.getRangeByName("employeeRange");
@@ -110,7 +117,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			RangeCustom newRange = new RangeCustom(empRange, 0);
 			int offset = 0, sumRowCount = workplaceRange.getRowCount();
 			boolean nextWorkplace;
-			for (String empId : empIds) {
+			for (String empId : empIds) {				
 				EmployeeData emp = dataSource.getEmployees().get(empId);
 				nextWorkplace = !workplaceCd.equals(emp.getEmployeeInfo().getWorkplaceCode());
 
@@ -129,8 +136,8 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 						dataSource.isOutNumExceedTime36Agr());
 				if (isNewPage) {
 					pageBreaks.add(newRange.range.getFirstRow());
-					sumRowCount = newRange.range.getRowCount(); // reset sum row
-																// count
+					sumRowCount = newRange.range.getRowCount(); // reset sum row count
+					
 				}
 				offset = newRange.offset;
 			}
@@ -250,6 +257,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 				range.cell("numExceedTime", rowOffset, 0).putValue(data.formatMonthsExceeded());
 				range.cell("numRemainingTime", rowOffset, 0).putValue(data.formatMonthsRemaining());
 			}
+			
 			range.cell("period1st", rowOffset, 0).putValue(data.formatMonthPeriod1st());
 			this.setCellStyle(range.cell("period1st", rowOffset, 0), data.getColorPeriodMonth1st());
 			range.cell("period2nd", rowOffset, 0).putValue(data.formatMonthPeriod2nd());
@@ -262,6 +270,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			this.setCellStyle(range.cell("period5th", rowOffset, 0), data.getColorPeriodMonth5th());
 			range.cell("period6th", rowOffset, 0).putValue(data.formatMonthPeriod6th());
 			this.setCellStyle(range.cell("period6th", rowOffset, 0), data.getColorPeriodMonth6th());
+			
 			if (is7Group) {
 				range.cell("period7th", rowOffset, 0).putValue(data.formatMonthPeriod7th());
 				this.setCellStyle(range.cell("period7th", rowOffset, 0), data.getColorPeriodMonth7th());

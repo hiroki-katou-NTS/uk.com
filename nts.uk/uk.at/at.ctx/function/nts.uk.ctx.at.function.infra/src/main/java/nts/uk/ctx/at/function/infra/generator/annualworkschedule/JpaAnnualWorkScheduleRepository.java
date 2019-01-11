@@ -332,6 +332,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 						outputAgreementTime36.get(), fiscalYear, startYm, isOutNumExceed, periodAtr, monthLimit,
 						exportData.getHeader() == null ? new ArrayList<>()
 								: (exportData.getHeader().getMonthPeriodLabels()== null? new ArrayList<>(): exportData.getHeader().getMonthPeriodLabels())));
+
 			}
 			empData.setAnnualWorkSchedule(annualWorkScheduleData);
 		});
@@ -357,8 +358,9 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	 */
 	private Map<String, AnnualWorkScheduleData> create36AgreementTime(String cid, YearMonthPeriod yearMonthPeriod,
 			String employeeId, ItemOutTblBook outputAgreementTime36, Year fiscalYear, YearMonth startYm, boolean isOutNumExceed,
-			PeriodAtrOfAgreement periodAtr, Integer monthLimit) {
+			PeriodAtrOfAgreement periodAtr, Integer monthLimit, List<String> header) {
 		GeneralDate criteria = GeneralDate.ymd(fiscalYear.v(), 12, 31);
+		
 		Month startMonth = new Month(startYm.getMonth().getValue());
 		// RequestList453
 		// 36協定時間を取得する
@@ -389,7 +391,7 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 		// アルゴリズム「月平均の算出」を実行する
 		data.put(outputAgreementTime36.getCd().v(),
 				AnnualWorkScheduleData.fromAgreementTimeList(outputAgreementTime36, listAgreementTimeByMonth,
-						listAgreementTimeByYear, listExcesMonths, startYm, monthsExceeded, monthLimit)
+						listAgreementTimeByYear, listExcesMonths, startYm, monthsExceeded, monthLimit, periodAtr, header)
 						.calc(false));
 		return data;
 	}
