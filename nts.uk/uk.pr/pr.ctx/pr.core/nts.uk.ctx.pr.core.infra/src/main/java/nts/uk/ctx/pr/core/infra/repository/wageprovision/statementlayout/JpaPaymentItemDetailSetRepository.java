@@ -15,19 +15,11 @@ public class JpaPaymentItemDetailSetRepository extends JpaRepository implements 
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtPayItemDetailSet f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.payItemDetailSetPk.histId =:histId ";
 
     @Override
     public List<PaymentItemDetailSet> getAllPaymentItemDetailSet(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtPayItemDetailSet.class)
                 .getList(item -> item.toDomain());
-    }
-
-    @Override
-    public Optional<PaymentItemDetailSet> getPaymentItemDetailSetById(String histId){
-        return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtPayItemDetailSet.class)
-        .setParameter("histId", histId)
-        .getSingle(c->c.toDomain());
     }
 
     @Override

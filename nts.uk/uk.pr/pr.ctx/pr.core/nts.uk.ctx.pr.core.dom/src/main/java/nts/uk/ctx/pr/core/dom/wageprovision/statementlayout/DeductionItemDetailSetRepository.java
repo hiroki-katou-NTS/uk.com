@@ -11,8 +11,6 @@ public interface DeductionItemDetailSetRepository
 
     List<DeductionItemDetailSet> getAllDeductionItemDetailSet();
 
-    Optional<DeductionItemDetailSet> getDeductionItemDetailSetById(String histId);
-
     void add(DeductionItemDetailSet domain);
 
     void update(DeductionItemDetailSet domain);

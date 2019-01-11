@@ -15,19 +15,11 @@ public class JpaDeductionItemDetailSetRepository extends JpaRepository implement
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtDdtItemDetailSet f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.ddtItemDetailSetPk.histId =:histId ";
 
     @Override
     public List<DeductionItemDetailSet> getAllDeductionItemDetailSet(){
         return this.queryProxy().query(SELECT_ALL_QUERY_STRING, QpbmtDdtItemDetailSet.class)
                 .getList(item -> item.toDomain());
-    }
-
-    @Override
-    public Optional<DeductionItemDetailSet> getDeductionItemDetailSetById(String histId){
-        return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtDdtItemDetailSet.class)
-        .setParameter("histId", histId)
-        .getSingle(c->c.toDomain());
     }
 
     @Override
