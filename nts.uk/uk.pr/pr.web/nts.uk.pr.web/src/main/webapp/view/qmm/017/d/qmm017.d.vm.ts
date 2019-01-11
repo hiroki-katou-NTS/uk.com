@@ -614,8 +614,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
 
         }
         checkFunctionSyntax (formula) {
-            let self = this, startFunctionIndex, endFunctionIndex, functionsSyntax = [], index;
-            let formulaForCheckConditionOperator = formula;
+            let self = this, startFunctionIndex, endFunctionIndex, replaceValue;
             while (formula.indexOf(self.FUNCTION) > -1) {
                 startFunctionIndex = formula.lastIndexOf(self.FUNCTION);
                 endFunctionIndex = self.indexOfEndFunction(startFunctionIndex, formula);
@@ -623,8 +622,8 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     self.setErrorToFormula('MsgQ_233', [formula.substring(startFunctionIndex, formula.substring(startFunctionIndex).indexOf(self.OPEN_BRACKET))]);
                     break;
                 }
-                self.checkSingleFunctionSyntax(formula.substring(startFunctionIndex, endFunctionIndex + 1));
-                formula = formula.replace(formula.substring(startFunctionIndex, endFunctionIndex + 1),  0);
+                replaceValue = self.checkSingleFunctionSyntax(formula.substring(startFunctionIndex, endFunctionIndex + 1));
+                formula = formula.replace(formula.substring(startFunctionIndex, endFunctionIndex + 1),  replaceValue);
             }
         }
         checkSingleFunctionSyntax (functionSyntax) {
@@ -633,7 +632,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 functionParameters = functionSyntax.substring(functionSyntax.indexOf(self.OPEN_BRACKET) + 1, functionSyntax.lastIndexOf(self.CLOSE_BRACKET)).split(new RegExp(self.COMMA_CHAR + '|' + self.HALF_SIZE_COMMA_CHAR)).filter(item => item.length).map(item => item.trim());
             if (functionParameters.length == 0) {
                 self.setErrorToFormula('MsgQ_238', [functionName]);
-                return;
+                return "";
             }
             if (functionName == self.CONDITIONAL){
                 functionParameters.forEach(function(functionParameter){
@@ -646,20 +645,22 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     if (functionParameters.length < 3) self.setErrorToFormula('MsgQ_238', [functionName]);
                     else self.setErrorToFormula('MsgQ_239', [functionName]);
                 } else {
-                    if (functionParameters[0] !=0 && functionParameters[0] != 1 && functionParameters[0] != '"TRUE"' && functionParameters[0] != '"FALSE"' && functionParameters[0].split(conditionRegex).length != 2) {
+                    if (functionParameters[0] != '"TRUE"' && functionParameters[0] != '"FALSE"' && functionParameters[0].split(conditionRegex).length != 2) {
                         self.setErrorToFormula('Parameter of {0} can not become boolean value', [functionName]);
                     }
                 }
+                return 0;
             }
             if (functionName == self.OR || functionName == self.AND) {
                 functionParameters.forEach(function(functionParameter) {
                     functionParameter.split(conditionRegex).forEach(function(item) {
                         self.checkBracket(item);
                     })
-                    if (functionParameter !=0 && functionParameter != 1 && functionParameter != '"TRUE"' && functionParameter != '"FALSE"' && functionParameter.split(conditionRegex).length != 2) {
+                    if (functionParameter != '"TRUE"' && functionParameter != '"FALSE"' && functionParameter.split(conditionRegex).length != 2) {
                         self.setErrorToFormula('Parameter of {0} can not become boolean value', [functionName]);
                     }
                 })
+                return '"TRUE"';
 
             }
             if (functionName == self.ROUND_OFF || functionName == self.ROUND_UP || functionName == self.TRUNCATION) {
@@ -667,6 +668,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 if (!self.checkNumberDataType(functionParameters)){
                     self.setErrorToFormula('MsgQ_240', [functionName]);
                 }
+                return 0;
             }
             if (functionName == self.YEAR_MONTH) {
                 if (functionParameters.length != 2) {
@@ -675,6 +677,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 } else if (!self.checkDateDataType(functionParameters[0])){
                     self.setErrorToFormula('MsgQ_240', [functionName]);
                 }
+                return '"' + moment().format("YYYY/MM/DD") + '"';
             }
             if (functionName == self.YEAR_EXTRACTION || functionName == self.MONTH_EXTRACTION) {
                 if (functionParameters.length > 1) {
@@ -682,6 +685,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 } else if (!self.checkDateDataType(functionParameters[0])){
                     self.setErrorToFormula('MsgQ_240', [functionName]);
                 }
+                return 0;
             }
             return functionSyntax;
         }

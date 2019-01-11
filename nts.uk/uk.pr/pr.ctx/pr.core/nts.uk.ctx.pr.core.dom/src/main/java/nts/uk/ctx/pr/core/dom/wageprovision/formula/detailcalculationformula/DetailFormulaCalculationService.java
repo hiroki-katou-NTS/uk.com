@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.formula.detailcalculationformula;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wageprovision.companyuniformamount.PayrollUnitPriceRepository;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.*;
 import nts.uk.ctx.pr.core.dom.wageprovision.statementitem.CategoryAtr;
@@ -349,9 +350,14 @@ public class DetailFormulaCalculationService {
         if (functionName.equals(YEAR_MONTH)) {
             try {
                 Integer additionalMonth = Integer.parseInt(functionParameter[1]);
-                return GeneralDate.fromString(functionParameter[0], "yyyy/MM/dd").addMonths(additionalMonth).toString();
+                return "\"" + GeneralDate.fromString(functionParameter[0], "yyyy/MM/dd").addMonths(additionalMonth).toString() + "\"";
             } catch (DateTimeParseException | NumberFormatException e ) {
-                throw new BusinessException("MsgQ_240", functionName);
+                try {
+                    Integer additionalMonth = Integer.parseInt(functionParameter[1]);
+                    return "\"" + new YearMonth(Integer.parseInt(functionParameter[0].replace("/", "").trim())).addMonths(additionalMonth).toString() + "\"";
+                } catch (DateTimeParseException | NumberFormatException e1 ) {
+                    throw new BusinessException("MsgQ_240", functionName);
+                }
             }
         }
         if (functionName.equals(AND)) {
@@ -364,7 +370,11 @@ public class DetailFormulaCalculationService {
             try {
                 return GeneralDate.fromString(functionParameter[0], "yyyy/MM/dd").year() + "";
             } catch (DateTimeParseException | NumberFormatException e ) {
-                throw new BusinessException("MsgQ_240", functionName);
+                try {
+                    return new YearMonth(Integer.parseInt(functionParameter[0].replace("/", "").trim())).year() + "";
+                } catch (DateTimeParseException | NumberFormatException e1 ) {
+                    throw new BusinessException("MsgQ_240", functionName);
+                }
             }
         }
         if (functionName.equals(MONTH_EXTRACTION)){
@@ -399,7 +409,7 @@ public class DetailFormulaCalculationService {
         for (int i = 0; i < functionParameters.length; i++){
             functionParameters[i] = functionParameters[i].trim();
             functionParameter = functionParameters[i];
-            if (functionParameter.indexOf("\"") == 0 && functionParameter.lastIndexOf("\"") == functionParameter.length() - 1){
+            if (functionParameter.split(conditionRegex).length < 2 && functionParameter.indexOf("\"") == 0 && functionParameter.lastIndexOf("\"") == functionParameter.length() - 1){
                 functionParameters[i] = functionParameter.substring(1, functionParameter.length() - 1);
             } else {
                 if (functionParameters[i].split(conditionRegex).length < 2 && !isConditionOperator(functionParameters[i])) {
