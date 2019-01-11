@@ -34,14 +34,14 @@ module nts.uk.pr.view.qmm003.a.viewmodel {
             self.selectedResidentTaxPayee = ko.observable(new ResidentTaxPayee(null));
             self.selectedCode.subscribe(val => {
                 nts.uk.ui.errors.clearAll();
-                if (val.length < 3) { //select parent node
-                    self.setData(null);
+                if (_.isEmpty(val) || val.indexOf("_") == 0) { //select parent node
+                    self.selectedResidentTaxPayee().setData(null);
                     self.updateMode(false);
                     $("#A3_2").focus();
                 } else {
                     block.invisible();
                     service.getResidentTaxPayee(val).done(data => {
-                        self.setData(data);
+                        self.selectedResidentTaxPayee().setData(data);
                         self.updateMode(true);
                         $("#A3_3").focus();
                     }).fail(error => {
@@ -65,7 +65,7 @@ module nts.uk.pr.view.qmm003.a.viewmodel {
                     let prefectures = self.listPrefectures.filter(pr => {return pr.region == r.code});
                     let prefectureNodes = [];
                     prefectures.forEach(pr => {
-                        let prefectureNode = new Node(pr.code < 10 ? "0" + pr.code : "" + pr.code, pr.name, [], 1);
+                        let prefectureNode = new Node(pr.code < 10 ? "_0" + pr.code : "_" + pr.code, pr.name, [], 1);
                         if (data.length > 0) {
                             let residentTaxPayees = data.filter(d => {return d.prefectures == pr.code});
                             let residentNodes = _.map(residentTaxPayees, rs => {
@@ -153,24 +153,6 @@ module nts.uk.pr.view.qmm003.a.viewmodel {
             });
         }
         
-        openDialogQmm003b() {
-            let self = this;
-            modal("/view/qmm/003/b/index.xhtml").onClosed(() => {
-                let code: string = getShared("QMM003BResult");
-                if (code && code.length > 3) {
-                    block.invisible()
-                    service.getResidentTaxPayeeZero(code).done(data => {
-                        self.setData(data);
-                        $("#A3_3").focus();
-                    }).fail(error => {
-                        alertError(error);
-                    }).always(() => {
-                        block.clear();
-                    });
-                }
-            });
-        }
-        
         openDialogQmm003d() {
             let self = this;
             modal("/view/qmm/003/d/index.xhtml").onClosed(() => {
@@ -191,22 +173,6 @@ module nts.uk.pr.view.qmm003.a.viewmodel {
             modal("/view/qmm/003/e/index.xhtml").onClosed(() => {
                 self.selectedCode.valueHasMutated();
             });
-        }
-        
-        setData(data: any) {
-            let self = this;
-            self.selectedResidentTaxPayee().code(data == null ? null : data.code);
-            self.selectedResidentTaxPayee().name(data == null ? null : data.name);
-            self.selectedResidentTaxPayee().kanaName(data == null ? null : data.kanaName);
-            self.selectedResidentTaxPayee().prefectures(data == null ? null : data.prefectures);
-            self.selectedResidentTaxPayee().reportCd(data == null ? null : data.reportCd);
-            self.selectedResidentTaxPayee().accountNumber(data == null ? null : data.accountNumber);
-            self.selectedResidentTaxPayee().subscriberName(data == null ? null : data.subscriberName);
-            self.selectedResidentTaxPayee().designationNum(data == null ? null : data.designationNum);
-            self.selectedResidentTaxPayee().postCode(data == null ? null : data.postCode);
-            self.selectedResidentTaxPayee().compileStationName(data == null ? null : data.compileStationName);
-            self.selectedResidentTaxPayee().memo(data == null ? null : data.memo);
-            self.selectedResidentTaxPayee().reportName(data == null ? null : data.reportName);
         }
         
         setSelectedCode(value: string) {
@@ -230,7 +196,7 @@ module nts.uk.pr.view.qmm003.a.viewmodel {
             let self = this;
             self.code = code;
             self.name = name;
-            self.nodeText = level == 2 ? self.code + ' ' + self.name : self.name;
+            self.nodeText = level == 2 ? _.escape(self.code + ' ' + self.name) : _.escape(self.name);
             self.children = children;
             if (level != null) self.level = level;
         }
@@ -275,6 +241,41 @@ module nts.uk.pr.view.qmm003.a.viewmodel {
                     self.reportName(selected.name);
                 }
             });
+        }
+        
+        openDialogQmm003b() {
+            let self = this;
+            modal("/view/qmm/003/b/index.xhtml").onClosed(() => {
+                let code: string = getShared("QMM003BResult");
+                if (code && code.length > 3) {
+                    block.invisible()
+                    service.getResidentTaxPayeeZero(code).done(data => {
+                        self.setData(data);
+                        $("#A3_3").focus();
+                        nts.uk.ui.errors.clearAll();
+                    }).fail(error => {
+                        alertError(error);
+                    }).always(() => {
+                        block.clear();
+                    });
+                }
+            });
+        }
+        
+        setData(data: any) {
+            let self = this;
+            self.code(data == null ? null : data.code);
+            self.name(data == null ? null : data.name);
+            self.kanaName(data == null ? null : data.kanaName);
+            self.prefectures(data == null ? null : data.prefectures);
+            self.reportCd(data == null ? null : data.reportCd);
+            self.accountNumber(data == null ? null : data.accountNumber);
+            self.subscriberName(data == null ? null : data.subscriberName);
+            self.designationNum(data == null ? null : data.designationNum);
+            self.postCode(data == null ? null : data.postCode);
+            self.compileStationName(data == null ? null : data.compileStationName);
+            self.memo(data == null ? null : data.memo);
+            self.reportName(data == null ? null : data.reportName);
         }
         
     }

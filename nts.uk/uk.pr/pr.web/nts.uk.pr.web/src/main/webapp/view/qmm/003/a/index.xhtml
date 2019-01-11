@@ -26,7 +26,7 @@
 	    <ui:define name="content">
 	        <div id="functions-area">
 	            <!-- A1_1 -->
-	            <button tabindex="1" data-bind="click: createNew, timeClick: 500">#{i18n.getText('QMM003_1')}</button>
+	            <button tabindex="1" data-bind="click: createNew, timeClick: 500, enable: updateMode()">#{i18n.getText('QMM003_1')}</button>
 	            <!-- A1_2 -->
 	            <button tabindex="2" class="proceed" data-bind="enable: $root.errors.isEmpty, click: register, timeClick: 500">#{i18n.getText('QMM003_2')}</button>
 	            <!-- A1_3 -->
@@ -69,7 +69,6 @@
 								primaryText: 'nodeText',
 								multiple: false,
 								enable: true,
-								initialExpandDepth: 1,
 								showCheckBox: false}"></table>
 						<!-- A2_9 -->
 						<div class="label" data-bind="text: dispTotalRtp" style="padding-top: 10px; text-align: right"></div>
@@ -92,7 +91,7 @@
 							constraint: 'ResidentTaxPayeeName',
 							required: true}" />
 						<!-- A3_4 -->
-						<button tabindex="12" data-bind="enable: $vm.updateMode() == false, click: $vm.openDialogQmm003b">#{i18n.getText('QMM003_13')}</button>
+						<button tabindex="12" class="small" data-bind="enable: $vm.updateMode() == false, click: openDialogQmm003b">#{i18n.getText('QMM003_13')}</button>
 					</div>
 					<div class="valign-center control-group">
 						<!-- A3_5 -->
@@ -127,7 +126,7 @@
 						<!-- A3_11 -->
 						<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('QMM003_16')}</div>
 						<!-- A3_12 -->
-						<button tabindex="15" data-bind="click: openDialogQmm003c, timeClick: 500">#{i18n.getText('QMM003_13')}</button>
+						<button tabindex="15" class="small" data-bind="click: openDialogQmm003c, timeClick: 500">#{i18n.getText('QMM003_13')}</button>
 						<!-- A3_13 -->
 						<span class="label" data-bind="text: reportCd" style="padding-left: 20px"></span>
 						<!-- A3_14 -->
@@ -201,6 +200,7 @@
 			<style>
 				.form-label{width: 185px}
 				div.valign-center.control-group { width: 610px }
+				div.valign-top.control-group { width: 610px }
 			</style>
 	    </ui:define>
 	</ui:composition>

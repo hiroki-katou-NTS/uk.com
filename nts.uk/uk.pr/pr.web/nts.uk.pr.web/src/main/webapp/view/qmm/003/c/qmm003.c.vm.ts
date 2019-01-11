@@ -33,7 +33,7 @@ module nts.uk.pr.view.qmm003.c.viewmodel {
                     let prefectures = self.listPrefectures.filter(pr => {return pr.region == r.code});
                     let prefectureNodes = [];
                     prefectures.forEach(pr => {
-                        let prefectureNode = new Node(pr.code < 10 ? "0" + pr.code : "" + pr.code, pr.name, [], 1);
+                        let prefectureNode = new Node(pr.code < 10 ? "_0" + pr.code : "_" + pr.code, pr.name, [], 1);
                         if (data.length > 0) {
                             let residentTaxPayees = data.filter(d => {return d.prefectures == pr.code});
                             let residentNodes = _.map(residentTaxPayees, rs => {
@@ -85,7 +85,7 @@ module nts.uk.pr.view.qmm003.c.viewmodel {
             let self = this;
             self.code = code;
             self.name = name;
-            self.nodeText = level == 2 ? self.code + ' ' + self.name : self.name;
+            self.nodeText = level == 2 ? _.escape(self.code + ' ' + self.name) : _.escape(self.name);
             self.children = children;
             if (level != null) self.level = level;
         }

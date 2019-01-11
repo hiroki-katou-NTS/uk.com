@@ -11,7 +11,7 @@ module nts.uk.pr.view.qmm003.e.viewmodel {
         
         source: KnockoutObservableArray<any>;
         destination: KnockoutObservableArray<any>;
-        sourceSelectedCode: KnockoutObservable<string>;
+        sourceSelectedCodes: KnockoutObservableArray<string>;
         selectedCode: KnockoutObservable<string>;
         headers: any;
         listRegions: Array<any> = constants.listRegions;
@@ -24,7 +24,7 @@ module nts.uk.pr.view.qmm003.e.viewmodel {
             let self = this;
             self.source = ko.observableArray([]);
             self.destination = ko.observableArray([]);
-            self.sourceSelectedCode = ko.observable("");
+            self.sourceSelectedCodes = ko.observableArray([]);
             self.selectedCode = ko.observable("");
             self.headers = ko.observableArray([getText("QMM003_9")]);
             self.listPrefectures = constants.listPrefectures;
@@ -44,7 +44,7 @@ module nts.uk.pr.view.qmm003.e.viewmodel {
                     let prefectures = self.listPrefectures.filter(pr => {return pr.region == r.code});
                     let prefectureNodes = [];
                     prefectures.forEach(pr => {
-                        let prefectureNode = new Node(pr.code < 10 ? "0" + pr.code : "" + pr.code, pr.name, [], 1);
+                        let prefectureNode = new Node(pr.code < 10 ? "_0" + pr.code : "_" + pr.code, pr.name, [], 1);
                         if (data.length > 0) {
                             let residentTaxPayees = data.filter(d => {return d.prefectures == pr.code});
                             let residentNodes = _.map(residentTaxPayees, rs => {
@@ -78,7 +78,29 @@ module nts.uk.pr.view.qmm003.e.viewmodel {
             $(".nts-input").filter(":enabled").trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
                 block.invisible();
-                let command = { sourceCode: self.sourceSelectedCode(), 
+                let sourceBranchIds = [];
+                self.sourceSelectedCodes().forEach(nodeId => {
+                    if (nodeId.indexOf("_") == 0) {
+                        let node = _.find(self.listRsdTaxPayeeNodes, n => n.code == nodeId);
+                        if (node) {
+                            if (node.level == 1) {
+                                node.children.forEach(c => {
+                                    sourceBranchIds.push(c.code);
+                                });
+                            } else {
+                                node.children.forEach(c => {
+                                    c.children.forEach(r => {
+                                        sourceBranchIds.push(r.code);
+                                    });
+                                });
+                            }
+                        }
+                    }                       
+                    else {
+                        sourceBranchIds.push(nodeId);
+                    }
+                });
+                let command = { sourceCode: sourceBranchIds, 
                                 destinationCode: self.selectedCode(), 
                                 targetYm: self.targetYm() };
                 service.integration(command).done(() => {
@@ -106,7 +128,7 @@ module nts.uk.pr.view.qmm003.e.viewmodel {
             let self = this;
             self.code = code;
             self.name = name;
-            self.nodeText = level == 2 ? self.code + ' ' + self.name : self.name;
+            self.nodeText = level == 2 ? _.escape(self.code + ' ' + self.name) : _.escape(self.name);
             self.children = children;
             if (level != null) self.level = level;
         }

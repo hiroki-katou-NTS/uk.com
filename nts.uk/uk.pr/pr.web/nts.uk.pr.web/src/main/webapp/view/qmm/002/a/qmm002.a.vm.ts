@@ -30,7 +30,6 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
             self.bankBranchList = ko.observableArray([]);
             self.selectedCode = ko.observable(null);
             self.selectedCode.subscribe((val: string) => {
-                nts.uk.ui.errors.clearAll();
                 if (_.isEmpty(val)) {
                     self.selectedBankBranch(new BankBranch("", self.selectedBank().code(), "", "", "", ""));
                     self.updateMode(false);
@@ -57,6 +56,9 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
                         $("#A3_9").focus();
                     }
                 }
+                _.defer(() => {
+                    nts.uk.ui.errors.clearAll();
+                });
             });
             self.totalBranches.subscribe(val => {
                 self.totalBranchesDisplay(getText("QMM002_12", [val]));

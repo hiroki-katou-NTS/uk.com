@@ -48,7 +48,7 @@
 								<!-- E2_3 -->
 								<div tabindex="2" style="width: 350px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
 									targetKey: 'code', mode:'igTree', comId:'treegridsource', items: source, 
-									selected: sourceSelectedCode, selectedKey: 'code', childField: 'children', fields: ['name', 'code']}" />
+									selected: sourceSelectedCodes, selectedKey: 'code', childField: 'children', fields: ['name', 'code']}" />
 							</div>
 							<!-- E2_4 -->
 							<table id="treegridsource" tabindex="3"
@@ -57,15 +57,15 @@
 									rows: 13,
 									name: '#[QMM003_32]',
 									dataSource: source,
-									value: sourceSelectedCode,
+									selectedValues: sourceSelectedCodes,
 									headers: headers,
 									primaryKey: 'code',
 									childDataKey: 'children',
 									primaryText: 'nodeText',
-									multiple: false,
+									multiple: true,
 									enable: true,
 									initialExpandDepth: 1,
-									showCheckBox: false}"></table>
+									showCheckBox: true}"></table>
 						</div>
 						<div id="midsec" style="float: left; width: 65px">
 							<!-- E1_5 -->
@@ -109,7 +109,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!-- E4_1 -->
-				<button tabindex="6" class="x-large proceed" data-bind="click: execute, enable: sourceSelectedCode().length > 2 &amp;&amp; selectedCode().length > 2 &amp;&amp; $root.errors.isEmpty, timeClick: 500">#{i18n.getText('QMM003_35')}</button>
+				<button tabindex="6" class="x-large proceed" data-bind="click: execute, enable: sourceSelectedCodes().length > 0 &amp;&amp; selectedCode().length > 2 &amp;&amp; $root.errors.isEmpty, timeClick: 500">#{i18n.getText('QMM003_35')}</button>
 				<!-- E4_2 -->
 				<button tabindex="7" data-bind="click: close, timeClick: 500">#{i18n.getText('QMM003_25')}</button>
 			</div>

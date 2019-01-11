@@ -45,11 +45,10 @@ public class ResidentTaxPayeeIntegrationCommandHandler extends CommandHandler<Rt
 	@Override
 	protected void handle(CommandHandlerContext<RtpIntegrationCommand> context) {
 		String companyId = AppContexts.user().companyId();
-		String sourceCode = context.getCommand().getSourceCode();
+		List<String> sourceCode = context.getCommand().getSourceCode();
 		String destinationCode = context.getCommand().getDestinationCode();
 
-		List<ResidentTaxPayee> listRsdtTax = residentTaxRepo.getListResidentTaxPayee(companyId,
-				Arrays.asList(sourceCode));
+		List<ResidentTaxPayee> listRsdtTax = residentTaxRepo.getListResidentTaxPayee(companyId, sourceCode);
 		for (ResidentTaxPayee taxPayee : listRsdtTax) {
 			taxPayee.setReportCd(Optional.of(new ResidentTaxPayeeCode(destinationCode)));
 			residentTaxRepo.update(taxPayee);

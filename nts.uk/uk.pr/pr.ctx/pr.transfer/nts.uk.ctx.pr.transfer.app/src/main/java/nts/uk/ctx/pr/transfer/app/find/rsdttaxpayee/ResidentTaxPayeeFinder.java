@@ -79,19 +79,21 @@ public class ResidentTaxPayeeFinder {
 		for (String reportCode : setCodes) {
 			if (rsdtTaxPayeeRepo.getResidentTaxPayeeWithReportCd(companyId, reportCode).isEmpty()) {
 				Optional<CurrProcessYmImport> optCurProcYm = currProcYmAdapter.getCurrentSalaryProcessYm(companyId, 1);
-				List<String> listHistId = new ArrayList<>();
-				List<EmployeeResidentTaxPayeeInfoImport> listEmpRsdtTaxPayeeInfo = empRsdtTaxPayeeInfoAdapter
-						.getEmpRsdtTaxPayeeInfo(Arrays.asList(AppContexts.user().employeeId()),
-								optCurProcYm.get().getCurrentYm());
-				for (EmployeeResidentTaxPayeeInfoImport taxPayee : listEmpRsdtTaxPayeeInfo) {
-					for (YearMonthHistoryItem histItem : taxPayee.getHistoryItems()) {
-						listHistId.add(histItem.identifier());
+				if (optCurProcYm.isPresent()) {
+					List<EmployeeResidentTaxPayeeInfoImport> listEmpRsdtTaxPayeeInfo = empRsdtTaxPayeeInfoAdapter
+							.getEmpRsdtTaxPayeeInfo(Arrays.asList(AppContexts.user().employeeId()),
+									optCurProcYm.get().getCurrentYm());
+					List<String> listHistId = new ArrayList<>();
+					for (EmployeeResidentTaxPayeeInfoImport taxPayee : listEmpRsdtTaxPayeeInfo) {
+						for (YearMonthHistoryItem histItem : taxPayee.getHistoryItems()) {
+							listHistId.add(histItem.identifier());
+						}
 					}
+					List<String> listRsdtTaxPayeeCd = payeeInfoAdapter.getListPayeeInfo(listHistId).stream()
+							.map(x -> x.getResidentTaxPayeeCd()).collect(Collectors.toList());
+					if (listRsdtTaxPayeeCd.contains(reportCode))
+						throw new BusinessException("Msg_17", "QMM003_18");
 				}
-				List<String> listRsdtTaxPayeeCd = payeeInfoAdapter.getListPayeeInfo(listHistId).stream()
-						.map(x -> x.getResidentTaxPayeeCd()).collect(Collectors.toList());
-				if (listRsdtTaxPayeeCd.contains(reportCode))
-					throw new BusinessException("Msg_17", "QMM003_18");
 			} else {
 				throw new BusinessException("Msg_17", "QMM003_16");
 			}
