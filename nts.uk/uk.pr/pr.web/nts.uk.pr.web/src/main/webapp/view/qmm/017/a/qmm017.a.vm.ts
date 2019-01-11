@@ -74,7 +74,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
 
         initComponents () {
             $('#C2_1').ntsFixedTable({});
-            $('#C3_1').ntsFixedTable({});
+            $('#C3_1').ntsFixedTable({height: 370});
         }
 
         initTabPanel() {
