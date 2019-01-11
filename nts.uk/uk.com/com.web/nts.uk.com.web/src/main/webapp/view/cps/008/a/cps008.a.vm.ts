@@ -232,6 +232,21 @@ module cps008.a.viewmodel {
                 }
             });
         }
+        
+        private exportExcel(): void {
+            
+                var self = this;
+                nts.uk.ui.block.grayout();
+                let langId = "ja";
+                service.saveAsExcel(langId).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
+        
+        
     }
 
     interface IItemClassification {

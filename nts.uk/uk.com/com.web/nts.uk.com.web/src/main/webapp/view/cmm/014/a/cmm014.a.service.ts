@@ -24,9 +24,12 @@ module nts.uk.com.view.cmm014.a.service {
     }
 
     //saveAsExcel
-    export function saveAsExcel(languageId: string): JQueryPromise<any> {
-        return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "Classification", languageId: languageId, domainType: "CMM014"+nts.uk.resource.getText("CMM014_9"), reportType: 0 });
-    }
+    
+    export function saveAsExcel(languageId: String): JQueryPromise<any> {
+            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+            let programName = program[1]!=null?program[1]:"";
+            return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "Classification", domainType: "CMM014" + programName, languageId: languageId, reportType: 0 });
+   }
 
     /**
     * remove Classification

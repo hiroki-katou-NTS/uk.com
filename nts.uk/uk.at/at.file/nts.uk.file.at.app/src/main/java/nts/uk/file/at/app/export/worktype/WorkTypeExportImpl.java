@@ -144,9 +144,17 @@ public class WorkTypeExportImpl implements MasterListData {
 
 		List<MasterData> datas = new ArrayList<>();
 		List<WorkTypeReportData> listWorkTypeReport = workTypeReportRepository.findAllWorkType(companyId, languageId);
-		listWorkTypeReport = listWorkTypeReport.stream().sorted(
-				Comparator.comparing(WorkTypeReportData::getDispOrder, Comparator.nullsLast(Integer::compareTo)))
+		List<WorkTypeReportData> dispOrderList = listWorkTypeReport
+				.stream().filter(x -> x.getDispOrder() != null).sorted(Comparator
+						.comparing(WorkTypeReportData::getDispOrder))
 				.collect(Collectors.toList());
+		
+		List<WorkTypeReportData> dispOrderNullLst =  listWorkTypeReport.stream().filter(x->x.getDispOrder() == null).sorted(Comparator
+				.comparing(WorkTypeReportData::getWorkTypeCode)).collect(Collectors.toList());
+		dispOrderList.addAll(dispOrderNullLst);
+		
+		listWorkTypeReport = dispOrderList;
+		
 		if (CollectionUtil.isEmpty(listWorkTypeReport)) {
 			throw new BusinessException("Msg_393");
 		} else {
