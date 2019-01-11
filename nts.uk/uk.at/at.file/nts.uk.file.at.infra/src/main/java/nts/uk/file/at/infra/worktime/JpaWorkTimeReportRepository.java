@@ -1306,7 +1306,10 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		// R1_206 加給.コード
 		sqlNormal.append(" 	IIF(TEMP.ROW_ID = 1, WORKTIME_COMMON_SET.RAISING_SALARY_SET, NULL),");
 		// R1_207 加給.名称
-		sqlNormal.append(" 	IIF(TEMP.ROW_ID = 1, BONUS_PAY_SET.BONUS_PAY_SET_NAME, NULL),");
+		sqlNormal.append(" 	CASE WHEN TEMP.ROW_ID = 1 AND BONUS_PAY_SET.BONUS_PAY_SET_CD IS NOT NULL THEN BONUS_PAY_SET.BONUS_PAY_SET_NAME");
+		sqlNormal.append(" 		 WHEN TEMP.ROW_ID = 1 AND BONUS_PAY_SET.BONUS_PAY_SET_CD IS NULL THEN ?masterUnregistered");
+		sqlNormal.append(" 		 ELSE NULL");
+		sqlNormal.append(" 	END,");
 		// R1_47 代休.休日出勤
 		sqlNormal.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode THEN NULL");
 		sqlNormal.append(" 		 WHEN TEMP.ROW_ID = 1 AND SUBSTITUTION_SET2.USE_ATR = ?isTrue THEN ?isUseSubstitutionText");
@@ -2705,7 +2708,10 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		// R2_186 加給.コード
 		sqlFlow.append(" 	IIF(TEMP.ROW_ID = 1, WORKTIME_COMMON_SET.RAISING_SALARY_SET, NULL),");
 		// R2_187 加給.名称
-		sqlFlow.append(" 	IIF(TEMP.ROW_ID = 1, BONUS_PAY_SET.BONUS_PAY_SET_NAME, NULL),");
+		sqlFlow.append(" 	CASE WHEN TEMP.ROW_ID = 1 AND BONUS_PAY_SET.BONUS_PAY_SET_CD IS NOT NULL THEN BONUS_PAY_SET.BONUS_PAY_SET_NAME");
+		sqlFlow.append(" 		 WHEN TEMP.ROW_ID = 1 AND BONUS_PAY_SET.BONUS_PAY_SET_CD IS NULL THEN ?masterUnregistered");
+		sqlFlow.append(" 		 ELSE NULL");
+		sqlFlow.append(" 	END,");
 		// R2_41 代休.休日出勤
 		sqlFlow.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode THEN NULL");
 		sqlFlow.append(" 		 WHEN TEMP.ROW_ID = 1 AND SUBSTITUTION_SET2.USE_ATR = ?isTrue THEN ?isUseSubstitutionText");
@@ -4112,7 +4118,10 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		// R3_228 加給.コード
 		sqlFlex.append(" 	IIF(TEMP.ROW_ID = 1, WORKTIME_COMMON_SET.RAISING_SALARY_SET, NULL),");
 		// R3_229 加給.名称
-		sqlFlex.append(" 	IIF(TEMP.ROW_ID = 1, BONUS_PAY_SET.BONUS_PAY_SET_NAME, NULL),");
+		sqlFlex.append(" 	CASE WHEN TEMP.ROW_ID = 1 AND BONUS_PAY_SET.BONUS_PAY_SET_CD IS NOT NULL THEN BONUS_PAY_SET.BONUS_PAY_SET_NAME");
+		sqlFlex.append(" 		 WHEN TEMP.ROW_ID = 1 AND BONUS_PAY_SET.BONUS_PAY_SET_CD IS NULL THEN ?masterUnregistered");
+		sqlFlex.append(" 		 ELSE NULL");
+		sqlFlex.append(" 	END,");
 		// R3_230 代休.休日出勤
 		sqlFlex.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode THEN NULL");
 		sqlFlex.append(" 		 WHEN TEMP.ROW_ID = 1 AND SUBSTITUTION_SET2.USE_ATR = ?isTrue THEN ?isUseSubstitutionText");
@@ -4644,7 +4653,8 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 				.setParameter("workSystemAtrDayShift", WorkSystemAtr.DAY_SHIFT.value)
 				.setParameter("workSystemAtrNightShift", WorkSystemAtr.NIGHT_SHIFT.value)
 				.setParameter("workNoOne", 1)
-				.setParameter("workNoTwo", 2);
+				.setParameter("workNoTwo", 2)
+				.setParameter("masterUnregistered", TextResource.localize("Enum_MasterUnregistered"));
 		return queryString.getResultList();
 	}
 
@@ -4794,7 +4804,8 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 				.setParameter("workSystemAtrNightShift", WorkSystemAtr.NIGHT_SHIFT.value)
 				.setParameter("resttimeAtrOffDay", ResttimeAtr.OFF_DAY.value)
 				.setParameter("resttimeAtrHalfDay", ResttimeAtr.HALF_DAY.value)
-				.setParameter("workNoOne", 1);
+				.setParameter("workNoOne", 1)
+				.setParameter("masterUnregistered", TextResource.localize("Enum_MasterUnregistered"));
 		return queryString.getResultList();
 	}
 
@@ -4940,7 +4951,8 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 				.setParameter("workSystemAtrNightShift", WorkSystemAtr.NIGHT_SHIFT.value)
 				.setParameter("resttimeAtrHalfDay", ResttimeAtr.HALF_DAY.value)
 				.setParameter("workNoOne", 1)
-				.setParameter("workNoTwo", 2);
+				.setParameter("workNoTwo", 2)
+				.setParameter("masterUnregistered", TextResource.localize("Enum_MasterUnregistered"));
 		return queryString.getResultList();
 	}
 
