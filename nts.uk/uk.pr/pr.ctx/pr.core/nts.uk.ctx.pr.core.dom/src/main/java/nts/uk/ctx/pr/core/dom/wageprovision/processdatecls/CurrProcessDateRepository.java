@@ -12,6 +12,8 @@ public interface CurrProcessDateRepository
     List<CurrProcessDate> getAllCurrProcessDate();
 
     List<CurrProcessDate> getCurrProcessDateById(String cid, int processCateNo);
+    
+    Optional<CurrProcessDate> getCurrProcessDateByKey(String cid, int processCateNo);
 
     Optional<CurrProcessDate> getCurrProcessDateByIdAndProcessCateNo(String cid, int processCateNo);
 

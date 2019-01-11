@@ -17,5 +17,9 @@ public interface ResidentTaxPayeeRepository {
     void update(ResidentTaxPayee domain);
 
     void remove(String cid, String code);
+    
+    List<ResidentTaxPayee> getAllResidentTaxPayee(String companyId);
 
+    List<ResidentTaxPayee> getResidentTaxPayeeWithReportCd(String cid, String reportCode);
+    
 }

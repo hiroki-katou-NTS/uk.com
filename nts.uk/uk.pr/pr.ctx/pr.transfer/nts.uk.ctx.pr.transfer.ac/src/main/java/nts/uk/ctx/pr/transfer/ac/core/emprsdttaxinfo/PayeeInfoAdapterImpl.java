@@ -23,4 +23,10 @@ public class PayeeInfoAdapterImpl implements PayeeInfoAdapter {
             return imp;
         }).collect(Collectors.toList());
     }
+
+	@Override
+	public void updateResidentTaxPayeeCode(String historyId, String code) {
+		payeeInfoPub.updateResidentTaxPayeeCode(historyId, code);
+	}
+	
 }
