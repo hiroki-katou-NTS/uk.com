@@ -76,7 +76,7 @@
 							</div>
 						</div>
 					</div>
-					<hr style="clear: both"></hr>
+					<hr style="min-width: 655px; clear: both"></hr>
 					<div data-bind="with: selectedBankBranch">
 						<div class="branch-info valign-center control-group">
 							<div data-bind="ntsFormLabel: {  required: true, constraint: ['BankBranchCode', 'BankBranchName'] }">#{i18n.getText('QMM002_16')}</div>
@@ -100,7 +100,7 @@
 								required: false}" />
 						</div>
 					</div>
-					<hr/>
+					<hr style="min-width: 655px;"/>
 					<div data-bind="with: selectedBankBranch">
 						<div class="valign-top control-group">
 							<div data-bind="ntsFormLabel: { constraint: 'Memo' }">#{i18n.getText('QMM002_14')}</div>

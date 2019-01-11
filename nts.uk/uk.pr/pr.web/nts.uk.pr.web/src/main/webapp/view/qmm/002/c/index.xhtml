@@ -25,57 +25,59 @@
 						<span class="label">#{i18n.getText('QMM002_25')}</span><br/>
 						<span class="label">#{i18n.getText('QMM002_26')}</span><br/>
 					</div>
-					<div id="source" style="display: inline-block">
-						<div class="valign-center control-group">
-							<span class="label">#{i18n.getText('QMM002_27')}</span>
+					<div class="cf">
+						<div id="source" style="float: left">
+							<div class="valign-center control-group">
+								<span class="label">#{i18n.getText('QMM002_27')}</span>
+							</div>
+							<div class="valign-center control-group">
+								<i class="icon icon-searchbox pull-left" style="margin: 0px !important; position: relative !important"></i>
+								<div tabindex="3" style="width: 350px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
+									targetKey: 'id', mode:'igTree', comId:'treegridbankbranchsource', items: sourceBankBranchList, 
+									selected: selectedSourceBranchCodes, selectedKey: 'id', childField: 'children', fields: ['name', 'code']}" />
+							</div>
+							<table id="treegridbankbranchsource" tabindex="4"
+								data-bind="ntsTreeGridView:{
+									width: 400,
+									rows: 15,
+									dataSource: sourceBankBranchList,
+									selectedValues: selectedSourceBranchCodes,
+									headers: headers,
+									primaryKey: 'id',
+									childDataKey: 'children',
+									primaryText: 'nodeText',
+									multiple: true,
+									enable: true,
+									showCheckBox: true}"></table>
 						</div>
-						<div class="valign-center control-group">
-							<i class="icon icon-searchbox pull-left" style="margin: 0px !important; position: relative !important"></i>
-							<div tabindex="3" style="width: 350px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
-								targetKey: 'id', mode:'igTree', comId:'treegridbankbranchsource', items: sourceBankBranchList, 
-								selected: selectedSourceBranchCodes, selectedKey: 'id', childField: 'children', fields: ['name', 'code']}" />
+						<div id="midsec" style="float: left; width: 65px">
+							<hr width="1" size="430"/>
+							<span class="caret-right caret-inline"></span>
 						</div>
-						<table id="treegridbankbranchsource" tabindex="4"
-							data-bind="ntsTreeGridView:{
-								width: 400,
-								rows: 15,
-								dataSource: sourceBankBranchList,
-								selectedValues: selectedSourceBranchCodes,
-								headers: headers,
-								primaryKey: 'id',
-								childDataKey: 'children',
-								primaryText: 'nodeText',
-								multiple: true,
-								enable: true,
-								showCheckBox: true}"></table>
-					</div>
-					<div id="midsec" style="display: inline-block; width: 65px">
-						<hr width="1" size="430"/>
-						<span class="caret-right caret-inline"></span>
-					</div>
-					<div id="destination" style="display: inline-block">
-						<div class="valign-center control-group">
-							<span class="label">#{i18n.getText('QMM002_29')}</span>
+						<div id="destination" style="float: left">
+							<div class="valign-center control-group">
+								<span class="label">#{i18n.getText('QMM002_29')}</span>
+							</div>
+							<div class="valign-center control-group">
+								<i class="icon icon-searchbox pull-left" style="margin: 0px !important; position: relative !important"></i>
+								<div tabindex="5" style="width: 350px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
+									targetKey: 'id', mode:'igTree', comId:'treegridbankbranchdestination', items: desBankBranchList, 
+									selected: selectedDesBranchCode, selectedKey: 'id', childField: 'children', fields: ['name', 'code']}" />
+							</div>
+							<table id="treegridbankbranchdestination" tabindex="6"
+								data-bind="ntsTreeGridView:{
+									width: 400,
+									rows: 15,
+									dataSource: desBankBranchList,
+									value: selectedDesBranchCode,
+									headers: headers,
+									primaryKey: 'id',
+									childDataKey: 'children',
+									primaryText: 'nodeText',
+									multiple: false,
+									enable: true,
+									showCheckBox: false}"></table>
 						</div>
-						<div class="valign-center control-group">
-							<i class="icon icon-searchbox pull-left" style="margin: 0px !important; position: relative !important"></i>
-							<div tabindex="5" style="width: 350px; padding-left: 8px" class="pull-left" data-bind="ntsSearchBox: {
-								targetKey: 'id', mode:'igTree', comId:'treegridbankbranchdestination', items: desBankBranchList, 
-								selected: selectedDesBranchCode, selectedKey: 'id', childField: 'children', fields: ['name', 'code']}" />
-						</div>
-						<table id="treegridbankbranchdestination" tabindex="6"
-							data-bind="ntsTreeGridView:{
-								width: 400,
-								rows: 15,
-								dataSource: desBankBranchList,
-								value: selectedDesBranchCode,
-								headers: headers,
-								primaryKey: 'id',
-								childDataKey: 'children',
-								primaryText: 'nodeText',
-								multiple: false,
-								enable: true,
-								showCheckBox: false}"></table>
 					</div>
 				</div>
 			</div>
