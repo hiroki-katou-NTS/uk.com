@@ -386,6 +386,7 @@ public class DayCalendarExportImpl implements MasterListData {
 	private void putEmptyToColumWorkplace(Map<String, Object> data) {
 		data.put("コード", "");
 		data.put("名称", "");
+		data.put("年月", "");
 		for (int i = 1; i <= 31; i++) {
 			String key = i + "日";
 			data.put(key, "");
@@ -507,6 +508,7 @@ public class DayCalendarExportImpl implements MasterListData {
 	private void putEmptyToColumClass(Map<String, Object> data) {
 		data.put("コード", "");
 		data.put("名称", "");
+		data.put("年月", "");
 		for (int i = 1; i <= 31; i++) {
 			String key = i + "日";
 			data.put(key, "");
