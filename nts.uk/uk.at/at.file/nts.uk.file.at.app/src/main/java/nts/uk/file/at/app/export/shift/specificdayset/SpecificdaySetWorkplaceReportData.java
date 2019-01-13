@@ -1,6 +1,7 @@
 package nts.uk.file.at.app.export.shift.specificdayset;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.SpecificDateItemNo;
@@ -8,6 +9,7 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class SpecificdaySetWorkplaceReportData {
 	public SpecificdaySetWorkplaceReportData(String workplaceId, GeneralDate specificDate,
 			SpecificDateItemNo specificDateItemNo, SpecificName specificDateItemName, String workplaceCode,
