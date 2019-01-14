@@ -1,10 +1,17 @@
 package nts.uk.ctx.sys.gateway.app.find.system;
 
+<<<<<<< HEAD
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendOutput;
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendService;
+
+import java.util.Optional;
+
+import javax.ejb.Stateless;
+
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.operation.SystemOperationSetting;
 import nts.uk.shr.com.operation.SystemOperationSetting.SystemOperationMode;
 import nts.uk.shr.com.operation.SystemOperationSetting.SystemStopMode;
@@ -17,13 +24,14 @@ public class SystemOperationSettingAdapterImpl implements SystemOperationSetting
 
 	@Inject
 	private SystemSuspendService sysSuspendSv;
+
 	@Override
 	public SystemOperationSetting getSetting() {
 		
 		/** IF STOP ALL SYSTEM */
 		/** IF BEFORE STOP ALL SYSTEM AND COMPANY IS NOT STOP */
 		if(true){
-			return SystemOperationSetting.setting(SystemStopType.ALL_SYSTEM, SystemOperationMode.STOP, SystemStopMode.ADMIN_MODE, "test 1", "test 1"); 
+			return SystemOperationSetting.setting(SystemStopType.ALL_SYSTEM, SystemOperationMode.STOP, SystemStopMode.ADMIN_MODE, "test1", "test1"); 
 		}
 		
 		/** IF STOP COMPANY */
@@ -32,9 +40,12 @@ public class SystemOperationSettingAdapterImpl implements SystemOperationSetting
 	}
 
 	@Override
+	public Optional<String> stopUseConfirm() {
+		// TODO: implement checking if the user can login
+		return Optional.empty();
+	}
+	@Override
 	public SystemSuspendOut stopUseConfirm(String contractCD, String companyCD, int loginMethod, String programID, String screenID) {
 		SystemSuspendOutput sys = sysSuspendSv.confirmSystemSuspend(contractCD, companyCD, loginMethod, programID, screenID);
 		return new SystemSuspendOut(sys.isError(), sys.getMsgID(), sys.getMsgContent());
-	}
-
 }

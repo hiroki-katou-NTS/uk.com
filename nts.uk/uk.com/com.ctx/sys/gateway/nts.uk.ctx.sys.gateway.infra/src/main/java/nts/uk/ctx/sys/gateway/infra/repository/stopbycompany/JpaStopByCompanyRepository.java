@@ -18,12 +18,15 @@ public class JpaStopByCompanyRepository extends JpaRepository implements StopByC
 
 	private static final String FIND_BY_CONTRACTCD_AND_STATE = "SELECT s FROM SgwdtStopByCompany s WHERE s.pk.contractCd=:contractCd AND s.systemStatus=:systemStatus";
 
+<<<<<<< HEAD
 	private static final String GET_LST_BY_CONTRACTCD = "SELECT c FROM SgwdtStopByCompany c"
 			+ " WHERE c.pk.contractCd = :contractCd";
 	private static final String FIND_BY_CD_STATUS = "SELECT c FROM SgwdtStopByCompany c"
 			+ " WHERE c.pk.contractCd = :contractCd"
 			+ " AND c.systemStatus = :systemStatus";
 	
+=======
+>>>>>>> delivery/release_user
 	@Override
 	public void insert(StopByCompany domain) {
 		this.commandProxy().insert(toEntity(domain));
@@ -57,6 +60,7 @@ public class JpaStopByCompanyRepository extends JpaRepository implements StopByC
 				.setParameter("contractCd", contractCd).setParameter("systemStatus", systemStatus)
 				.getList(x -> toDomain(x));
 	}
+<<<<<<< HEAD
 	/**
 	 * @author hoatt
 	 * get 会社単位の利用停止
@@ -76,4 +80,7 @@ public class JpaStopByCompanyRepository extends JpaRepository implements StopByC
 				.setParameter("systemStatus", systemStatus)
 				.getList(c -> toDomain(c));
 	}
+=======
+
+>>>>>>> delivery/release_user
 }

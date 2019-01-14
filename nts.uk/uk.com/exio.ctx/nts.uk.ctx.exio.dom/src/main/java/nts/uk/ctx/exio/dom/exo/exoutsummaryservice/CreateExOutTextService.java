@@ -349,6 +349,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 			exOutOpMng.setTotalProCnt(exOutSetting.getSidList().size());
 		} else {
 			exOutOpMng.setProUnit(I18NText.getText("CMF002_528"));
+			exOutOpMng.setProCnt(0);
+			exOutOpMng.setTotalProCnt(exOutSetting.getSidList().size());
 		}
 
 		exOutOpMngRepo.update(exOutOpMng);
@@ -408,7 +410,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		ExterOutExecLog exterOutExecLog = exterOutExecLogOptional.get();
 		exterOutExecLog.setProcessEndDateTime(Optional.of(GeneralDateTime.now()));
 		exterOutExecLog.setFileId(Optional.ofNullable(fileId));
-		exterOutExecLog.setFileName(Optional.of(new UploadFileName(fileName)));
+		exterOutExecLog.setFileName(statusEnd == ResultStatus.INTERRUPTION ? Optional.of(new UploadFileName("")) : Optional.of(new UploadFileName(fileName)));
 		exterOutExecLog.setTotalCount(exOutOpMng.get().getProCnt());
 		exterOutExecLog.setTotalErrorCount(exOutOpMng.get().getErrCnt());
 		exterOutExecLog.setProcessUnit(Optional.of(exOutOpMng.get().getProUnit()));
@@ -467,7 +469,6 @@ public class CreateExOutTextService extends ExportService<Object> {
 				if ((checkResult == ExIoOperationState.FAULT_FINISH)
 						|| (checkResult == ExIoOperationState.INTER_FINISH))
 					return new OperationStateResult(checkResult);
-
 				try {
 					sqlAndParam = getExOutDataSQL(sid, true, exOutSetting, settingResult);
 					data = exOutCtgRepo.getData(sqlAndParam);
@@ -482,8 +483,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-					
-					createOutputLogError(exOutSetting.getProcessingId(), "Sql Exception", null, sid, null);
+					String str = e.getMessage();
+					str.indexOf("Internal Exception");
+					str.indexOf("Error Code");
+					createOutputLogError(exOutSetting.getProcessingId(), str.substring(str.indexOf("Internal Exception"), str.indexOf("Error Code")-2).trim().split(":")[2], null, sid, null);
 				}
 			}
 			// サーバ外部出力タイプマスター系
@@ -506,8 +509,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 					ExIoOperationState checkResult = checkInterruptAndIncreaseProCnt(exOutSetting.getProcessingId());
 					if ((checkResult == ExIoOperationState.FAULT_FINISH)
 							|| (checkResult == ExIoOperationState.INTER_FINISH))
-						return new OperationStateResult(checkResult);;
-	
+						return new OperationStateResult(checkResult);
 					lineDataResult = fileLineDataCreation(exOutSetting.getProcessingId(), lineData, outputItemCustomList,
 							loginSid, stringFormat,baseDate);
 					stateResult = (String) lineDataResult.get(RESULT_STATE);
@@ -517,8 +519,10 @@ public class CreateExOutTextService extends ExportService<Object> {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				
-				return new OperationStateResult(ExIoOperationState.FAULT_FINISH);
+				String str = e.getMessage();
+				str.indexOf("Internal Exception");
+				str.indexOf("Error Code");
+				createOutputLogError(exOutSetting.getProcessingId(), str.substring(str.indexOf("Internal Exception"), str.indexOf("Error Code")-2).trim().split(":")[2], null, null, null);
 			}
 		}
 
@@ -778,7 +782,13 @@ public class CreateExOutTextService extends ExportService<Object> {
 			nullValueReplace = dataFormatSetting.getValueOfNullValueReplace().map(item -> item.v()).orElse("");
 
 			if (isfixedValue == NotUseAtr.USE) {
-				targetValue = fixedValue;
+				if(stringFormat == StringFormat.SINGLE_QUOTATION) {
+					targetValue = stringFormat.character +fixedValue + stringFormat.character;
+				}else if(stringFormat == StringFormat.DOUBLE_QUOTATION) {
+					targetValue = stringFormat.character+ fixedValue +stringFormat.character ;
+				}else{
+					targetValue = fixedValue;
+				}
 				lineDataCSV.put(outputItemCustom.getStandardOutputItem().getOutputItemName().v(), targetValue);
 				index += outputItemCustom.getCtgItemDataList().size();
 				continue;
@@ -790,6 +800,13 @@ public class CreateExOutTextService extends ExportService<Object> {
 			useNullValue = fileItemDataCreationResult.get(USE_NULL_VALUE);
 
 			if (useNullValue == USE_NULL_VALUE_ON || StringUtils.isEmpty(targetValue)) {
+				if(outputItemCustom.getStandardOutputItem().getItemType() != ItemType.NUMERIC) {
+					if(stringFormat == StringFormat.SINGLE_QUOTATION) {
+						targetValue = stringFormat.character +stringFormat.character + stringFormat.character;
+					}else if(stringFormat == StringFormat.DOUBLE_QUOTATION) {
+						targetValue = stringFormat.character +stringFormat.character ;
+					}
+				}
 				lineDataCSV.put(outputItemCustom.getStandardOutputItem().getOutputItemName().v(), targetValue);
 				index += outputItemCustom.getCtgItemDataList().size();
 				continue;
@@ -827,6 +844,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		return result;
 	}
 
+	//サーバ外部出力ログエラー作成
 	private void createOutputLogError(String processingId, String errorContent, String targetValue, String sid,
 			String errorItem) {
 		String employeeCode = null;
@@ -930,11 +948,26 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 	private void createWhereCondition(StringBuilder temp, String table, String key, String operation, String value) {
 		temp.append(AND_COND);
-		temp.append(table);
-		temp.append(DOT);
-		temp.append(key);
-		temp.append(operation);
-		temp.append(value);
+		if(ConditionSymbol.IS_NOT.operator.equals(operation)) {
+			temp.append("(");
+			temp.append(table);
+			temp.append(DOT);
+			temp.append(key);
+			temp.append(operation);
+			temp.append(value);
+			
+			temp.append(" OR ");
+			temp.append(table);
+			temp.append(DOT);
+			temp.append(key);
+			temp.append(" IS NULL ) ");
+		}else {
+			temp.append(table);
+			temp.append(DOT);
+			temp.append(key);
+			temp.append(operation);
+			temp.append(value);
+		}
 	}
 	
 	private void createWhereCondition(StringBuilder temp, String key, String operation, String value) {
@@ -1480,8 +1513,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 				&& (setting.getTimeSeletion() == HourMinuteClassification.HOUR_AND_MINUTE)
 				&& (setting.getNextDayOutputMethod() == NextDayOutputMethod.OUT_PUT_24HOUR)) {
 			//decimaValue.subtract(new BigDecimal(24.00));
-			decimaValue = decimaValue.subtract(new BigDecimal(24.00));
-			targetValue = "翌日" + decimaValue.toString();
+			targetValue = decimaValue.subtract(new BigDecimal(24.00)).toString();
+			
 		}
 
 		if ((decimaValue.doubleValue() < 0)
@@ -1490,8 +1523,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 				decimaValue = new BigDecimal(0.00);
 				targetValue = decimaValue.toString() + ":00";
 			} else if (setting.getPrevDayOutputMethod() == PreviousDayOutputMethod.FORMAT24HOUR) {
-				decimaValue = decimaValue.add(new BigDecimal(24.00));
-				targetValue = "前日" + decimaValue.toString();
+				targetValue = decimaValue.add(new BigDecimal(24.00)).toString();
 			}
 		}
 		
@@ -1547,13 +1579,29 @@ public class CreateExOutTextService extends ExportService<Object> {
 				
 				StringBuilder japaneseDate = new StringBuilder(japaneseEraName.getName());
 				if(formatDate == DateOutputFormat.JJYY_MM_DD){
-				japaneseDate.append((date.year() - japaneseEraName.startDate().year() + 1) + SLASH);		
-				japaneseDate.append(date.month() + SLASH);
-				japaneseDate.append(date.day());
+				japaneseDate.append((date.year() - japaneseEraName.startDate().year() + 1) + SLASH);
+				if (date.month() < 10) {
+					japaneseDate.append("0" + date.month() + SLASH);
+				}else{
+					japaneseDate.append(date.month() + SLASH);
+				}
+				if (date.day() < 10) {
+					japaneseDate.append("0" + date.day());
+				}else{
+					japaneseDate.append(date.day());
+				}
 				} else if(formatDate == DateOutputFormat.JJYYMMDD){
-					japaneseDate.append((date.year() - japaneseEraName.startDate().year() + 1) );		
-					japaneseDate.append(date.month() );
-					japaneseDate.append(date.day());	
+					japaneseDate.append((date.year() - japaneseEraName.startDate().year() + 1) );
+					if (date.month() < 10) {
+					japaneseDate.append("0" + date.month());
+					} else {
+						japaneseDate.append(date.month());
+					}
+					if (date.day() < 10) {
+						japaneseDate.append("0" + date.day());
+					}else {
+					japaneseDate.append(date.day());
+					}
 				}
 				
 				targetValue = japaneseDate.toString();

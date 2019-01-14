@@ -712,22 +712,18 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 					// I1_3 代休_使用数_日数
 					cells.get(firstRow, 6).setValue(currentHolidayItem.getMonthUse());
 					if (isRemainingChargeSubstitute) {
-						if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getSubstituteHoliday()
-								.isOutputItemSubstitute()) {
-							// I1_4 代休_残数_日数
-							cells.get(firstRow, 7).setValue(currentHolidayItem.getMonthEndRemain());
-							if (currentHolidayItem.getMonthEndRemain() < 0) {
-								setForegroundRed(cells.get(firstRow, 7));
-							}
+						// I1_4 代休_残数_日数
+						cells.get(firstRow, 7).setValue(currentHolidayItem.getMonthEndRemain());
+						if (currentHolidayItem.getMonthEndRemain() < 0) {
+							setForegroundRed(cells.get(firstRow, 7));
 						}
 					}
 					if (isRepresentSubstitute) {
-						if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getSubstituteHoliday()
-								.isRepresentSubstitute()) {
 							// I1_5 代休_未消化_日数
-							cells.get(firstRow, 8).setValue(currentHolidayItem.getMonthExtinction());
-							setForegroundRed(cells.get(firstRow, 8));
-						}
+							if (currentHolidayItem.getMonthExtinction() != null
+									&& currentHolidayItem.getMonthExtinction().intValue() > 0) {
+								setForegroundRed(cells.get(firstRow, 8));
+							}
 					}
 				}
 			}
@@ -892,20 +888,17 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 					// J1_3 振休_使用数
 					cells.get(firstRow, 6).setValue(holidayRemainItem.getMonthUse());
 					if (isNumberRemainingPause) {
-						if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getPause()
-								.isNumberRemainingPause()) {
-							// J1_4 振休_残数
-							cells.get(firstRow, 7).setValue(holidayRemainItem.getMonthEndRemain());
-							if (holidayRemainItem.getMonthEndRemain() < 0) {
-								setForegroundRed(cells.get(firstRow, 7));
-							}
+						// J1_4 振休_残数
+						cells.get(firstRow, 7).setValue(holidayRemainItem.getMonthEndRemain());
+						if (holidayRemainItem.getMonthEndRemain() < 0) {
+							setForegroundRed(cells.get(firstRow, 7));
 						}
 					}
 					if (isUndigestedPause) {
-						if (dataSource.getHolidaysRemainingManagement().getListItemsOutput().getPause()
-								.isUndigestedPause()) {
-							// J1_5 振休_未消化
-							cells.get(firstRow, 8).setValue(holidayRemainItem.getMonthExtinction());
+						// J1_5 振休_未消化
+						cells.get(firstRow, 8).setValue(holidayRemainItem.getMonthExtinction());
+						if (holidayRemainItem.getMonthExtinction() != null
+								&& holidayRemainItem.getMonthExtinction().intValue() > 0) {
 							setForegroundRed(cells.get(firstRow, 8));
 						}
 					}
@@ -1334,9 +1327,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 		pageSetup.setFirstPageNumber(1);
 		pageSetup.setPrintArea("A1:N");
 		//ý 1 của bug #102883  事象(1)
-		pageSetup.setHeader(0, "&9&\"MS ゴシック\" "+ dataSource.getCompanyName());
-		pageSetup.setHeader(1, "&16&\"MS ゴシック\" "+ dataSource.getTitle());
+		pageSetup.setHeader(0, "&9&\"MS ゴシック\""+ dataSource.getCompanyName());
+		pageSetup.setHeader(1, "&16&\"MS ゴシック\""+ dataSource.getTitle());
 		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm", Locale.JAPAN);
-		pageSetup.setHeader(2, "&9&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
+		pageSetup.setHeader(2, "&9&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P");
 	}
 }

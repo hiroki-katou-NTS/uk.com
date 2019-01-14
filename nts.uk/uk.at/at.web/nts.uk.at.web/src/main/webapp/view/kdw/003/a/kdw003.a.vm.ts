@@ -302,7 +302,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             });
             if (dataShare != undefined) {
                 self.shareObject().mapDataShare(dataShare.initParam, dataShare.extractionParam, dataShare.dataSPR);
-                self.showDateRange(self.shareObject().changePeriodAtr);
+                self.showDateRange(_.isEmpty(self.shareObject().changePeriodAtr) ? true : self.shareObject().changePeriodAtr);
                 self.transitionDesScreen = _.isEmpty(self.shareObject().transitionDesScreen) ? false : true;
             }
 
@@ -1288,6 +1288,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     dataParent["dateRange"] = dataSource.length > 0 ? { startDate: dataSource[0].dateDetail, endDate: dataSource[dataSource.length - 1].dateDetail } : null;
                 }
                 dataParent["monthValue"] = self.valueUpdateMonth;
+            }else{
+                 dataParent["dateRange"] = {
+                    startDate: moment(self.dateRanger().startDate).toISOString(),
+                    endDate: moment(self.dateRanger().endDate).toISOString()
+                }
             }
             self.removeErrorRefer();
             let dfd = $.Deferred();
@@ -1915,7 +1920,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     lstEmployee.push(lst);
                     dfd.resolve(lstEmployee);
                 }
-                else if (self.selectedEmployee() != undefined) {
+                else if (self.selectedEmployee() != undefined && self.selectedEmployee() != null && self.selectedEmployee() != "") {
                     //let dfd2 = $.Deferred();
                     service.searchEmployee(self.selectedEmployee()).done(data => {
                         let emp = {
@@ -1963,6 +1968,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 //set = false de co the jump den ham subscribe
                 self.isVisibleMIGrid(false);
             }
+            self.flagCalculation = false;
             self.reloadScreen();
         }
 
@@ -2169,6 +2175,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 //  let errorCodes =["0001","0002","003"];     
                 let errorParam = { initMode: 0, selectedItems: [] };
                 setShared("KDW003D_ErrorParam", errorParam);
+                self.flagCalculation = false;
                 modal("/view/kdw/003/d/index.xhtml").onClosed(() => {
                     nts.uk.ui.block.clear();
                     let errorCodes = nts.uk.ui.windows.getShared('KDW003D_Output');
@@ -2182,7 +2189,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             displayFormat: self.displayFormat(),
                             mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
                             errorCodes: errorCodes,
-                            formatCodes: self.formatCodes()
+                            formatCodes: self.formatCodes(),
+                            showLock: self.showLock()
                         };
                         nts.uk.ui.block.invisible();
                         nts.uk.ui.block.grayout();
@@ -2210,6 +2218,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var self = this;
             if (!self.hasEmployee || self.hasErrorBuss) return;
             if (!nts.uk.ui.errors.hasError()) {
+                self.flagCalculation = false;
                 setShared("selectedPerfFmtCodeList", self.formatCodes());
                 modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
                     var dataTemp = nts.uk.ui.windows.getShared('KDW003C_Output');
@@ -3800,8 +3809,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         navigateView() {
             //
             var self = this;
+            let isKmwCall = false;
+            if(self.shareObject().transitionDesScreen.indexOf("kmw") >0){
+                isKmwCall = true;
+                localStorage.setItem('isKmw', true);
+            }
             let path: any = _.isEmpty(self.shareObject()) ? "" : self.shareObject().transitionDesScreen;
-            nts.uk.request.jump("at", path);
+            nts.uk.request.jump("at", path,isKmwCall);
         }
 
         openKDL020Dialog() {

@@ -9,6 +9,7 @@ public interface StopBySystemRepository {
 	public void update(StopBySystem domain);
 
 	public Optional<StopBySystem> findByKey(String contractCd);
+<<<<<<< HEAD
 	 /**
 	  * ドメインモデル「システム全体の利用停止」を取得する
 	  * @param 契約コード contractCd
@@ -16,4 +17,6 @@ public interface StopBySystemRepository {
 	  * @return
 	  */
 	public Optional<StopBySystem>findByCdStatus(String contractCd, int stopMode);
+=======
+>>>>>>> delivery/release_user
 }

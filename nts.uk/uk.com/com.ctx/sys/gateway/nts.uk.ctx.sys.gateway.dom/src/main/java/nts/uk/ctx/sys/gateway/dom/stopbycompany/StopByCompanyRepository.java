@@ -12,6 +12,7 @@ public interface StopByCompanyRepository {
 	public Optional<StopByCompany> findByKey(String contractCd, String companyCd);
 
 	public List<StopByCompany> findByContractCodeAndState(String contractCd, int value);
+<<<<<<< HEAD
 	/**
 	 * @author hoatt
 	 * get 会社単位の利用停止
@@ -26,4 +27,6 @@ public interface StopByCompanyRepository {
 	  * @return
 	  */
 	public List<StopByCompany>findByCdStatus(String contractCd, int stopMode);
+=======
+>>>>>>> delivery/release_user
 }

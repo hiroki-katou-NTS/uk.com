@@ -66,6 +66,8 @@ public class ProgramIdConsts {
 
 	public static final String CDL022A = "CDL022A";
 
+	public static final String CDL028A = "CDL028A";
+
 	public static final String CPS007A = "CPS007A";
 	public static final String CPS007B = "CPS007B";
 

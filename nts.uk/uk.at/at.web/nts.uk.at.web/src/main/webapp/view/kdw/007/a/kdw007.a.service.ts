@@ -91,5 +91,5 @@ module nts.uk.at.view.kdw007.a.service {
     export function removeMonthlyCondition(code) {
         return nts.uk.request.ajax("at",paths.removeMonthlyCondition, code);
     }
-
+    
 }

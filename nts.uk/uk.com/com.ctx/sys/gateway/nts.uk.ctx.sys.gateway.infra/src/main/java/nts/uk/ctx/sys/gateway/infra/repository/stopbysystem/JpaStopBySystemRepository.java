@@ -13,9 +13,13 @@ import nts.uk.ctx.sys.gateway.infra.entity.stopbysystem.SgwdtStopBySystem;
 public class JpaStopBySystemRepository extends JpaRepository implements StopBySystemRepository {
 
 	private static final String FIND_BY_KEY = "SELECT s FROM SgwdtStopBySystem s WHERE s.contractCd=:contractCd";
+<<<<<<< HEAD
 	private static final String FIND_BY_CD_STATUS = "SELECT c FROM SgwdtStopBySystem c"
 			+ " WHERE c.contractCd = :contractCd"
 			+ " AND c.systemStatus = :systemStatus";
+=======
+
+>>>>>>> delivery/release_user
 	@Override
 	public void insert(StopBySystem domain) {
 		this.commandProxy().insert(toEntity(domain));
@@ -44,6 +48,7 @@ public class JpaStopBySystemRepository extends JpaRepository implements StopBySy
 				entity.stopMode, entity.usageStopMessage);
 	}
 
+<<<<<<< HEAD
 	@Override
 	public Optional<StopBySystem> findByCdStatus(String contractCd, int systemStatus) {
 		return this.queryProxy().query(FIND_BY_CD_STATUS, SgwdtStopBySystem.class)
@@ -52,4 +57,6 @@ public class JpaStopBySystemRepository extends JpaRepository implements StopBySy
 				.getSingle(c -> toDomain(c));
 	}
 
+=======
+>>>>>>> delivery/release_user
 }

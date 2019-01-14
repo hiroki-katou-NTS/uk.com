@@ -2,6 +2,7 @@ module nts.uk.at.view.kdw006 {
     export module viewmodel {
         export class ScreenModel {
             constructor(dataShare) {
+                var self = this;
             }
 
             startPage(): JQueryPromise<any> {
@@ -72,6 +73,39 @@ module nts.uk.at.view.kdw006 {
                 let isDaily = false;
                 nts.uk.request.jump("/view/kdw/002/c/index.xhtml", { ShareObject: isDaily });
             }
+            private exportExcelCommon(): void {
+                var self = this;
+                nts.uk.ui.block.grayout();
+                let langId = "ja";
+                service.saveAsExcelCommon(langId).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+         }
+            private exportExcelDaily(): void {
+                var self = this;
+                nts.uk.ui.block.grayout();
+                let langId = "ja";
+                 service.saveAsExcelCommon(langId).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+         }
+            private exportExcelMonthly(): void {
+                var self = this;
+                nts.uk.ui.block.grayout();
+                let langId = "ja";
+                 service.saveAsExcelCommon(langId).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+         }
 
         }
     }
