@@ -469,7 +469,7 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlNormal.append(" 	CASE WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork AND FIXED_WORK_SET.USE_HALF_DAY = ?isTrue ");
 		sqlNormal.append(" 			AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN FIXED_OT_FRAME2.OT_FR_NAME");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?difftimeWork AND DIFF_TIME_WORK_SET.USE_HALF_DAY = ?isTrue ");
-		sqlNormal.append(" 			AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN DT_OT_FRAME1.OT_FR_NAME");
+		sqlNormal.append(" 			AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN DT_OT_FRAME2.OT_FR_NAME");
 		sqlNormal.append(" 		 ELSE NULL");
 		sqlNormal.append(" 	END,");
 		// R1_112 残業時間帯.午前勤務用.早出
