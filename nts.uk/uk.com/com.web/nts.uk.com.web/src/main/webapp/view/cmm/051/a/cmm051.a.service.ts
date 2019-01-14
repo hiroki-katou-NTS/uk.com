@@ -11,7 +11,7 @@ module nts.uk.com.view.cmm051.a {
             let _params = { domainId: "WorkPlaceSelection", 
                         domainType: "CMM051職場管理者の登録", 
                         languageId: languageId, 
-                        reportType: 0, baseDate : date };
+                        reportType: 0,mode : 1 , baseDate : date };
             return nts.uk.request.exportFile('/masterlist/report/print', _params);           
         }
 
