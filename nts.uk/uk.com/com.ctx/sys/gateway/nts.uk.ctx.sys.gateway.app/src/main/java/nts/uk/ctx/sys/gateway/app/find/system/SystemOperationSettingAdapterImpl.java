@@ -1,17 +1,11 @@
 package nts.uk.ctx.sys.gateway.app.find.system;
 
-<<<<<<< HEAD
+import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendOutput;
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendService;
-
-import java.util.Optional;
-
-import javax.ejb.Stateless;
-
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.operation.SystemOperationSetting;
 import nts.uk.shr.com.operation.SystemOperationSetting.SystemOperationMode;
 import nts.uk.shr.com.operation.SystemOperationSetting.SystemStopMode;
@@ -48,4 +42,5 @@ public class SystemOperationSettingAdapterImpl implements SystemOperationSetting
 	public SystemSuspendOut stopUseConfirm(String contractCD, String companyCD, int loginMethod, String programID, String screenID) {
 		SystemSuspendOutput sys = sysSuspendSv.confirmSystemSuspend(contractCD, companyCD, loginMethod, programID, screenID);
 		return new SystemSuspendOut(sys.isError(), sys.getMsgID(), sys.getMsgContent());
+	}
 }
