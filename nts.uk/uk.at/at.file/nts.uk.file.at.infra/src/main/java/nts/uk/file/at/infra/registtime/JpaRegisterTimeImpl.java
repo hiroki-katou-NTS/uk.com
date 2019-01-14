@@ -11,11 +11,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateAtr;
 import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateType;
 import nts.uk.ctx.at.record.dom.standardtime.enums.StartingMonthType;
@@ -875,11 +872,10 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	}
 	
 	private String formatTime(int source) {
-		int regularized = Math.abs(source);
-		int hourPart = (regularized / 60);
-		int minutePart = regularized % 60;
-		String resultString = StringUtils.join(StringUtil.padLeft(String.valueOf(hourPart), 2, '0'),":", StringUtil.padLeft(String.valueOf(minutePart), 2, '0'));
-		return resultString;
+		int hourPart = (source / 60);
+		int minutePart = source % 60;
+		String result = String.format("%d:%02d", hourPart, minutePart);
+		return result;
 	}
 
 	@Override
