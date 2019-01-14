@@ -14,9 +14,10 @@ import nts.uk.ctx.sys.portal.dom.adapter.company.CompanyAdapter;
 import nts.uk.ctx.sys.portal.dom.adapter.company.CompanyDto;
 import nts.uk.ctx.sys.portal.dom.adapter.employee.EmployeeAdapter;
 import nts.uk.ctx.sys.portal.dom.adapter.employee.ShortEmployeeDto;
-import nts.uk.ctx.sys.portal.dom.adapter.person.PersonInfoAdapter;
 import nts.uk.ctx.sys.portal.dom.adapter.role.RoleGrantAdapter;
 import nts.uk.ctx.sys.portal.dom.adapter.roleset.RoleSetDto;
+import nts.uk.ctx.sys.portal.dom.adapter.user.UserAdapter;
+import nts.uk.ctx.sys.portal.dom.adapter.user.UserDto;
 import nts.uk.ctx.sys.portal.dom.permissionmenu.RoleType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -41,7 +42,7 @@ public class ChangeCompanyCommandHandler extends CommandHandlerWithResult<Change
 	private CompanyAdapter companyAdapter;
 	
 	@Inject
-	private PersonInfoAdapter personInfoAdapter;
+	private UserAdapter userAdapter;
 	
 	@Inject
 	private RoleSetPortalFinder roleSetFinder;
@@ -49,14 +50,16 @@ public class ChangeCompanyCommandHandler extends CommandHandlerWithResult<Change
 	@Inject
 	private SystemOperationSettingAdapter sysOpSetAdapter;
 	
-	
+	/**
+	 * CCG020_メニュー.会社を切替える
+	 */
 	@Override
 	protected String handle(CommandHandlerContext<ChangeCompanyCommand> context) {
 		String msgResult = "";
 		ChangeCompanyCommand command = context.getCommand();
 		LoginUserContext userCtx = AppContexts.user();
 		String companyCD = command.getCompanyId().substring(13, 17);
-		SystemSuspendOut sys = sysOpSetAdapter.stopUseConfirm(userCtx.contractCode(), companyCD, 0, AppContexts.programId(), command.getScreenID());
+		SystemSuspendOut sys = sysOpSetAdapter.stopUseConfirm_loginBf(userCtx.contractCode(), companyCD, 0, AppContexts.programId(), command.getScreenID());
 		if(sys.isError()){//TH error
 			//TH display msg content
 			throw new BusinessException(sys.getMsgContent());
@@ -69,12 +72,14 @@ public class ChangeCompanyCommandHandler extends CommandHandlerWithResult<Change
 		if (emp.isPresent()) {
 			ShortEmployeeDto empDto = emp.get();
 			contextManager.changeCompany(userCtx.userId(), userCtx.personId(), userCtx.contractCode(),
-					empDto.getCompanyId(), companyOpt.map(c -> c.getCompanyCode()).orElse(null), empDto.getEmployeeId(), empDto.getEmployeeCode());
+					empDto.getCompanyId(), companyOpt.map(c -> c.getCompanyCode()).orElse(null), 
+					empDto.getEmployeeId(), empDto.getEmployeeCode(), true);
 		} else {
 			contextManager.changeCompany(userCtx.userId(), userCtx.personId(), userCtx.contractCode(), 
-					command.getCompanyId(), companyOpt.map(c -> c.getCompanyCode()).orElse(null), userCtx.employeeId(), userCtx.employeeCode());
+					command.getCompanyId(), companyOpt.map(c -> c.getCompanyCode()).orElse(null), null, null, false);
 		}
-		command.setPersonName(personInfoAdapter.getBusinessName(userCtx.employeeId()));
+		Optional<UserDto> userInfo = userAdapter.getUserInfo(userCtx.userId());
+		userInfo.ifPresent(c -> command.setPersonName(c.getUserName()));
 		
 		RoleIdSetter roleSetter = contextManager.roleIdSetter();
 		getRole(userCtx.userId(), command.getCompanyId(), RoleType.EMPLOYMENT).ifPresent(r -> roleSetter.forAttendance(r));

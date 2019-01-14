@@ -119,7 +119,7 @@ public class LoginRecordRegistService {
 				userInfor = this.userInfoAdaptorForLog.findByEmployeeIdAndCompanyId(user.employeeId(), user.companyId());
 			} else {
 				UserInfo u = this.userInfoAdaptorForLog.findByUserId(user.userId());
-				userInfor = new UserInfo(u.getUserId(), user.employeeId() == null? " " : user.employeeId(), u.getUserName());
+				userInfor = new UserInfo(u.getUserId(), user.employeeId(), u.getUserName());
 			}
 		} else {
 			if (infor.employeeId != null) {
