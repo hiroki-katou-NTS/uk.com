@@ -14,6 +14,7 @@ module nts.uk.at.view.kmk008.a {
                                                                                domainType: "３６協定時間の登録", 
                                                                                languageId: languageId, 
                                                                                reportType: 0,
+                                                                               mode : 2,
                                                                                startDate: startDate,
                                                                                endDate: endDate  });
             }
