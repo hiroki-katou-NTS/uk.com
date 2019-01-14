@@ -59,7 +59,6 @@ public class OperationExcelRepoImpl implements MasterListData {
         sheetDatas.add(sheetWorkplaceData);
         sheetDatas.add(sheetRole);
         sheetDatas.addAll(roleDailyExportExcelImpl.extraSheets(query));
-        sheetDatas.addAll(roleMonthlyExportExcelImpl.extraSheets(query));
         return sheetDatas;
     }
 
@@ -383,23 +382,27 @@ public class OperationExcelRepoImpl implements MasterListData {
             datas.add(alignMasterDataSheetRole(data));
             putDataEmptyRole(data);
         }
+        boolean checkAvailable = false;
         for (int i = 0 ; i < listRoleExport.size(); i ++) {
             RoleExport roleExport = listRoleExport.get(i);
-            if(i==0){
-                putDataEmptyRole(data);
-            }
-
             if(i>0 && !roleExport.getCodeRole().equals(listRoleExport.get(i-1).getCodeRole())){
-                data.put("コード", roleExport.getCodeRole());
-                data.put("名称", roleExport.getNameRole());
-                datas.add(alignMasterDataSheetRole(data));
-                data = new HashMap<>();
-                putDataEmptyRole(data);
+            	datas.add(alignMasterDataSheetRole(data));
+            	checkAvailable = false;
+            }
+            if(checkAvailable == false){
+            	data = new HashMap<>();
+            	putDataEmptyRole(data);
+            	 data.put("コード", roleExport.getCodeRole());
+                 data.put("名称", roleExport.getNameRole());
+                 checkAvailable=true;
             }
             if(roleExport.getAvailability()==1){
                 data.put(roleExport.getDescription(),"○");
             }
-
+            if(i==(listRoleExport.size()-1)){
+            	datas.add(alignMasterDataSheetRole(data));
+            	checkAvailable = false;
+            }
         }
         return datas;
     }
