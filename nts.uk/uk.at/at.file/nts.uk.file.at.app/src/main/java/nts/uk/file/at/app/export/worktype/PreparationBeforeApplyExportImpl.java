@@ -1,6 +1,7 @@
 package nts.uk.file.at.app.export.worktype;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppAcceptLimitDay;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.BeforeAddCheckMethod;
 import nts.uk.shr.com.context.AppContexts;
@@ -8,7 +9,6 @@ import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.*;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -316,43 +316,47 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
     }
 
 
-
-    private  List<MasterData> putDatasA8Center(Object[] export ) {
+    private List<MasterData> putDatasA8Center(List<Object[]> export) {
         List<MasterData> datasA8Center = new ArrayList<>();
-        for(int i = 0; i< ROW_SIZE_A8_CENTER; i++) {
-            Map<String, MasterCellData> dataA8Center = new HashMap<>();
-            dataA8Center.put(KAF022_454, MasterCellData.builder()
-                    .columnId(KAF022_454)
-                    .value("")
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                    .build());
-            dataA8Center.put(COLUMN_NO_HEADER_1, MasterCellData.builder()
-                    .columnId(COLUMN_NO_HEADER_1)
-                    .value("")
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                    .build());
-            dataA8Center.put(COLUMN_NO_HEADER_2, MasterCellData.builder()
-                    .columnId(COLUMN_NO_HEADER_2)
-                    .value(i == 0 ? TextResource.localize(EnumAdaptor.valueOf( ((BigDecimal)export[39]).intValue(), HolidayAppType.class).name) : "")
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                    .build());
-            dataA8Center.put(COLUMN_NO_HEADER_3, MasterCellData.builder()
-                    .columnId(COLUMN_NO_HEADER_3)
-                    .value(i == 0 ? TextResource.localize(KAF022_478) : TextResource.localize(KAF022_479))
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                    .build());
-            dataA8Center.put(COLUMN_NO_HEADER_4, MasterCellData.builder()
-                    .columnId(COLUMN_NO_HEADER_4)
-                    .value(TextResource.localize(KAF022_468))
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                    .build());
-            dataA8Center.put(KAF022_455, MasterCellData.builder()
-                    .columnId(KAF022_455)
-                    .value(getValueA8Center(i, export))
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                    .build());
-            datasA8Center.add(MasterData.builder().rowData(dataA8Center).build());
-        }
+        EnumSet.allOf(HolidayAppType.class).forEach(item -> {
+            Object[] obj = getDataA8Center(export, item);
+            if(obj != null) {
+                for (int i = 0; i < ROW_SIZE_A8_CENTER; i++) {
+                    Map<String, MasterCellData> dataA8Center = new HashMap<>();
+                    dataA8Center.put(KAF022_454, MasterCellData.builder()
+                            .columnId(KAF022_454)
+                            .value("")
+                            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                            .build());
+                    dataA8Center.put(COLUMN_NO_HEADER_1, MasterCellData.builder()
+                            .columnId(COLUMN_NO_HEADER_1)
+                            .value("")
+                            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                            .build());
+                    dataA8Center.put(COLUMN_NO_HEADER_2, MasterCellData.builder()
+                            .columnId(COLUMN_NO_HEADER_2)
+                            .value(i == 0 ? TextResource.localize(item.name) : "")
+                            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                            .build());
+                    dataA8Center.put(COLUMN_NO_HEADER_3, MasterCellData.builder()
+                            .columnId(COLUMN_NO_HEADER_3)
+                            .value(i == 0 ? TextResource.localize(KAF022_478) : TextResource.localize(KAF022_479))
+                            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                            .build());
+                    dataA8Center.put(COLUMN_NO_HEADER_4, MasterCellData.builder()
+                            .columnId(COLUMN_NO_HEADER_4)
+                            .value(TextResource.localize(KAF022_468))
+                            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                            .build());
+                    dataA8Center.put(KAF022_455, MasterCellData.builder()
+                            .columnId(KAF022_455)
+                            .value(getValueA8Center(i, obj))
+                            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                            .build());
+                    datasA8Center.add(MasterData.builder().rowData(dataA8Center).build());
+                }
+            }
+        });
         return datasA8Center;
     }
 
@@ -882,11 +886,19 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
         }
         return "";
     }
-    private String getValueA8Center(int i, Object[] obj){
-        if(i == 0 && obj[40] != null ) {
+    private Object[] getDataA8Center(List<Object[]> obj, HolidayAppType holidayType){
+        Optional<Object[]> temp = obj.stream().filter(item -> item[39] != null ? holidayType.value == ((BigDecimal) item[39]).intValue() : holidayType.value == -1).findFirst();
+        if(temp.isPresent()) {
+            return temp.get();
+        }
+        return null;
+    }
+
+    private String getValueA8Center(int line, Object obj[]){
+        if(line == 0) {
             return ((BigDecimal)obj[40]).intValue() == 1 ? "○" : "-";
         }
-        if(i == 1 && obj[41] != null ) {
+        if(line == 1) {
             return ((BigDecimal)obj[41]).intValue() == 1 ? "○" : "-";
         }
         return "";
@@ -1051,9 +1063,6 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
                     datasA8Bottom.addAll(this.putDatasA8(item));
                 }
             }
-            if(item[38] != null) {
-                datasA8Center.addAll(this.putDatasA8Center(item));
-            }
             if(item[6] != null && ((Long)item[21]).intValue() == 1) {
                 datasA9.addAll(this.putDatasA9(item));
                 datasA10.addAll(this.putDatasA10(item));
@@ -1066,6 +1075,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
             }
 
         });
+        datasA8Center.addAll(this.putDatasA8Center(preparationBefore));
         datasA6.addAll(this.putDatasA6(preparationBefore));
         datasA11.addAll(this.putDatasA11(preparationBefore));
         datas.addAll(datasA4);
