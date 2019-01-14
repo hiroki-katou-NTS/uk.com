@@ -782,17 +782,17 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_80, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_80)
                 .value(checkRow == 0 ? RegistTimeColumn.KMK008_82 : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.HEADER_NONE1, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_80)
                 .value(checkRow == 0 ? RegistTimeColumn.KMK008_83 : checkRow == 1 ? RegistTimeColumn.KMK008_84 : checkRow == 2 ? RegistTimeColumn.KMK008_85 : checkRow == 3 ? RegistTimeColumn.KMK008_86 : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.HEADER_NONE2, MasterCellData.builder()
                 .columnId(RegistTimeColumn.HEADER_NONE2)
                 .value(checkRow == 3 ? RegistTimeColumn.KMK008_87 : checkRow == 4 ? RegistTimeColumn.KMK008_88 : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_81, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_81)
@@ -808,22 +808,22 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_80, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_80)
                 .value(check == 0 ? RegistTimeColumn.KMK008_82 : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.HEADER_NONE1, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_80)
                 .value(check == 0 ? RegistTimeColumn.KMK008_83 : check == 1 ? RegistTimeColumn.KMK008_84 : check == 3 ? RegistTimeColumn.KMK008_85 : check == 4 ? RegistTimeColumn.KMK008_86 : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.HEADER_NONE2, MasterCellData.builder()
                 .columnId(RegistTimeColumn.HEADER_NONE2)
                 .value(check == 4 ? RegistTimeColumn.KMK008_87 : check == 5 ? RegistTimeColumn.KMK008_88 : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_81, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_81)
                 .value(getValue(((BigDecimal)object).intValue(),check,closeDateAtr))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .style(MasterCellStyle.build().horizontalAlign(check == 0 || check == 2 || check == 3 ? ColumnTextAlign.RIGHT : ColumnTextAlign.LEFT))
                 .build());
 		return MasterData.builder().rowData(data).build();
 	}
@@ -907,7 +907,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_89)
                 .value(getColumnOneSheet2(rownum))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_90)
@@ -992,7 +992,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_89)
                 .value(getColumnOneSheet2(rownum))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		 data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
 	                .columnId(RegistTimeColumn.KMK008_90)
@@ -1046,7 +1046,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_89)
                 .value(getColumnOneSheet2(rownum))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		 data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
 	                .columnId(RegistTimeColumn.KMK008_90)
@@ -1101,7 +1101,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_89)
                 .value(getColumnOneSheet2(rownum))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_90)
@@ -1150,7 +1150,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_89)
                 .value(getColumnOneSheet2(rownum))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_90)
@@ -1206,7 +1206,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_89)
                 .value(getColumnOneSheet2(rownum))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		 data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
 	                .columnId(RegistTimeColumn.KMK008_90)
@@ -1260,7 +1260,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_89)
                 .value(getColumnOneSheet2(rownum))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		 data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
 	                .columnId(RegistTimeColumn.KMK008_90)
@@ -1313,7 +1313,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_89)
                 .value(getColumnOneSheet2(rownum))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_90)
