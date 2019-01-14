@@ -39,8 +39,8 @@ public class SystemOperationSettingAdapterImpl implements SystemOperationSetting
 		return Optional.empty();
 	}
 	@Override
-	public SystemSuspendOut stopUseConfirm(String contractCD, String companyCD, int loginMethod, String programID, String screenID) {
-		SystemSuspendOutput sys = sysSuspendSv.confirmSystemSuspend(contractCD, companyCD, loginMethod, programID, screenID);
+	public SystemSuspendOut stopUseConfirm_loginBf(String contractCD, String companyCD, int loginMethod, String programID, String screenID) {
+		SystemSuspendOutput sys = sysSuspendSv.confirmSystemSuspend_BefLog(contractCD, companyCD, loginMethod, programID, screenID);
 		return new SystemSuspendOut(sys.isError(), sys.getMsgID(), sys.getMsgContent());
 	}
 }
