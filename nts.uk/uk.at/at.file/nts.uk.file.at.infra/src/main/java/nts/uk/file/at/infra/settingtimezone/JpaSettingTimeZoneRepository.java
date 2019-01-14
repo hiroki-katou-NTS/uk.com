@@ -575,17 +575,17 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_100, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_100)
-                .value(rs.getInt("WORKING_TIMESHEET_ATR") == null ? null : rs.getInt("WORKING_TIMESHEET_ATR") == 0 ? TextResource.localize("KMK005_54") : TextResource.localize("KMK005_55"))
+                .value(rs.getInt("WORKING_TIMESHEET_ATR") == null ? null : rs.getInt("WORKING_TIMESHEET_ATR") == 0 ? TextResource.localize("KMK005_55") : TextResource.localize("KMK005_54"))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_101, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_101)
-                .value(rs.getInt("OVERTIME_TIMESHEET_ATR") == null ? null : rs.getInt("OVERTIME_TIMESHEET_ATR") == 0 ? TextResource.localize("KMK005_54") : rs.getInt("OVERTIME_TIMESHEET_ATR") == 1 ? TextResource.localize("KMK005_55") : TextResource.localize("KMK005_56"))
+                .value(rs.getInt("OVERTIME_TIMESHEET_ATR") == null ? null : rs.getInt("OVERTIME_TIMESHEET_ATR") == 0 ? TextResource.localize("KMK005_55") : rs.getInt("OVERTIME_TIMESHEET_ATR") == 1 ? TextResource.localize("KMK005_54") : TextResource.localize("KMK005_56"))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_102, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_102)
-                .value(rs.getInt("HOLIDAY_TIMESHEET_ATR") == null ? null : rs.getInt("HOLIDAY_TIMESHEET_ATR") == 0 ? TextResource.localize("KMK005_54") : rs.getInt("OVERTIME_TIMESHEET_ATR") == 1 ? TextResource.localize("KMK005_55") : TextResource.localize("KMK005_57"))
+                .value(rs.getInt("HOLIDAY_TIMESHEET_ATR") == null ? null : rs.getInt("HOLIDAY_TIMESHEET_ATR") == 0 ? TextResource.localize("KMK005_55") : rs.getInt("HOLIDAY_TIMESHEET_ATR") == 1 ? TextResource.localize("KMK005_54") : TextResource.localize("KMK005_57"))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_99, MasterCellData.builder()
@@ -596,17 +596,17 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
 
         data.put(SettingTimeZoneUtils.KMK005_103, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_103)
-                .value(rs.getInt("WORKING_TIMESHEET_ATR_TAB2") == null ? null : rs.getInt("WORKING_TIMESHEET_ATR_TAB2") == 0 ? TextResource.localize("KMK005_54") : TextResource.localize("KMK005_55"))
+                .value(rs.getInt("WORKING_TIMESHEET_ATR_TAB2") == null ? null : rs.getInt("WORKING_TIMESHEET_ATR_TAB2") == 0 ? TextResource.localize("KMK005_55") : TextResource.localize("KMK005_54"))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_104, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_104)
-                .value(rs.getInt("OVERTIME_TIMESHEET_ATR_TAB2") == null ? null : rs.getInt("OVERTIME_TIMESHEET_ATR_TAB2") == 0 ? TextResource.localize("KMK005_54") : rs.getInt("OVERTIME_TIMESHEET_ATR_TAB2") == 1 ? TextResource.localize("KMK005_55") : TextResource.localize("KMK005_56"))
+                .value(rs.getInt("OVERTIME_TIMESHEET_ATR_TAB2") == null ? null : rs.getInt("OVERTIME_TIMESHEET_ATR_TAB2") == 0 ? TextResource.localize("KMK005_55") : rs.getInt("OVERTIME_TIMESHEET_ATR_TAB2") == 1 ? TextResource.localize("KMK005_54") : TextResource.localize("KMK005_56"))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_105, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_105)
-                .value(rs.getInt("HOLIDAY_TIMESHEET_ATR_TAB2") == null ? null : rs.getInt("HOLIDAY_TIMESHEET_ATR_TAB2") == 0 ? TextResource.localize("KMK005_54") : rs.getInt("HOLIDAY_TIMESHEET_ATR_TAB2") == 1 ? TextResource.localize("KMK005_55") : TextResource.localize("KMK005_57"))
+                .value(rs.getInt("HOLIDAY_TIMESHEET_ATR_TAB2") == null ? null : rs.getInt("HOLIDAY_TIMESHEET_ATR_TAB2") == 0 ? TextResource.localize("KMK005_55") : rs.getInt("HOLIDAY_TIMESHEET_ATR_TAB2") == 1 ? TextResource.localize("KMK005_54") : TextResource.localize("KMK005_57"))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 
