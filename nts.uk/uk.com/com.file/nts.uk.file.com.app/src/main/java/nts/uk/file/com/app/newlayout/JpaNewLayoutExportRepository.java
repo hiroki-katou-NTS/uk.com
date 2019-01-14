@@ -20,6 +20,7 @@ public class JpaNewLayoutExportRepository extends JpaRepository implements NewLa
 				.append(" AND (a.CATEGORY_CD != 'CS00001' OR  (a.CATEGORY_CD = 'CS00001' And d.ITEM_CD != 'IS00001'))")
 				.append(" AND (a.CATEGORY_CD != 'CS00002' OR  (a.CATEGORY_CD = 'CS00002' And d.ITEM_CD != 'IS00003'))")
 				.append(" AND (a.CATEGORY_CD != 'CS00003' OR  (a.CATEGORY_CD = 'CS00003' And d.ITEM_CD != 'IS00020'))")
+				.append(" AND a.CATEGORY_CD != 'CS00069'")
 				.append(" INNER JOIN PPEMT_PER_INFO_CTG e ON e.PER_INFO_CTG_ID = d.PER_INFO_CTG_ID")
 				.append(" INNER JOIN PPEMT_PER_INFO_ITEM_CM f ON f.CATEGORY_CD = e.CATEGORY_CD AND f.ITEM_CD = d.ITEM_CD")
 				.append(" INNER JOIN PPEMT_PER_INFO_ITEM_ORDER g ON g.PER_INFO_ITEM_DEFINITION_ID = d.PER_INFO_ITEM_DEFINITION_ID")
@@ -43,7 +44,7 @@ public class JpaNewLayoutExportRepository extends JpaRepository implements NewLa
 				.append(forPersonnel)
 				.append(" = 0 AND ")
 				.append(forAttendance)
-				.append(" = 0)  ORDER BY c.DISPORDER ASC")
+				.append(" = 0)  ORDER BY c.DISPORDER ASC, g.DISPORDER ASC")
 				).toString();
 		
 		List<?> data = this.getEntityManager()
