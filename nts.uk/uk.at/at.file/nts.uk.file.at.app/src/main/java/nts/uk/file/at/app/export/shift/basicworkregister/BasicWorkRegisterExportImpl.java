@@ -162,43 +162,31 @@ public class BasicWorkRegisterExportImpl implements MasterListData {
 				workplaceConfigInfoFinder.findAllByBaseDate(wkpConfigInfoFindObject));
 
 		if (!CollectionUtil.isEmpty(workplaceHierarchyDtos)) {
-			workplaceHierarchyDtos.stream().collect(Collectors.groupingBy(WorkplaceHierarchyDto::getCode)).entrySet()
-					.stream().sorted((e1, e2) -> {
-						List<WorkplaceHierarchyDto> list1 = e1.getValue();
-						List<WorkplaceHierarchyDto> list2 = e2.getValue();
-						if (!CollectionUtil.isEmpty(list1) && !CollectionUtil.isEmpty(list2)
-								&& list1.get(0).getHierarchyCode() != null && list2.get(0).getHierarchyCode() != null)
-							return list1.get(0).getHierarchyCode().compareTo(list2.get(0).getHierarchyCode());
-						else if (!CollectionUtil.isEmpty(list1) && list1.get(0).getHierarchyCode() != null
-								&& CollectionUtil.isEmpty(list2))
-							return -1;
-						else if (CollectionUtil.isEmpty(list1) && !CollectionUtil.isEmpty(list2)
-								&& list2.get(0).getHierarchyCode() != null)
-							return 1;
-						else
-							return 0;
-					}).forEachOrdered(dto -> {
+			workplaceHierarchyDtos.stream().collect(Collectors.groupingBy(WorkplaceHierarchyDto::getHierarchyCode))
+					.entrySet().stream().sorted(Map.Entry.comparingByKey()).forEachOrdered(dto -> {
 						List<WorkplaceHierarchyDto> wpHierarchyDtoSameWpIDs = dto.getValue();
-						WorkplaceHierarchyDto firstObj = wpHierarchyDtoSameWpIDs.get(0);
-						String workPlaceId = firstObj.getWorkplaceId();
-						Optional<List<WorkplaceBasicWorkData>> dataByCode = mapWorkplaceBasicWorkDatas.isPresent() ? Optional
-								.ofNullable(mapWorkplaceBasicWorkDatas.get().get(workPlaceId)) : Optional.empty();
-						if (dataByCode.isPresent()) {
-							dataByCode.get().stream().forEach(x -> {
-								x.setWorkplaceCode(firstObj.getCode());
-								x.setWorkplaceName(firstObj.getName());
-								x.setHierarchyCode(firstObj.getHierarchyCode());
-							});
+						wpHierarchyDtoSameWpIDs.forEach(wpHierarchyDto -> {
+							String workPlaceId = wpHierarchyDto.getWorkplaceId();
+							Optional<List<WorkplaceBasicWorkData>> dataByCode = mapWorkplaceBasicWorkDatas.isPresent()
+									? Optional.ofNullable(mapWorkplaceBasicWorkDatas.get().get(workPlaceId))
+									: Optional.empty();
+							if (dataByCode.isPresent()) {
+								dataByCode.get().stream().forEach(x -> {
+									x.setWorkplaceCode(wpHierarchyDto.getCode());
+									x.setWorkplaceName(wpHierarchyDto.getName());
+									x.setHierarchyCode(wpHierarchyDto.getHierarchyCode());
+								});
 
-							datas.add(newWorkplaceMasterData(dataByCode.get()));
-						} else {
-							List<WorkplaceBasicWorkData> workDatas = new ArrayList<>();
-							WorkplaceBasicWorkData workData = new WorkplaceBasicWorkData();
-							workData.setWorkplaceCode(firstObj.getCode());
-							workData.setWorkplaceName(firstObj.getName());
-							workDatas.add(workData);
-							datas.add(newWorkplaceMasterData(workDatas));
-						}
+								datas.add(newWorkplaceMasterData(dataByCode.get()));
+							} else {
+								List<WorkplaceBasicWorkData> workDatas = new ArrayList<>();
+								WorkplaceBasicWorkData workData = new WorkplaceBasicWorkData();
+								workData.setWorkplaceCode(wpHierarchyDto.getCode());
+								workData.setWorkplaceName(wpHierarchyDto.getName());
+								workDatas.add(workData);
+								datas.add(newWorkplaceMasterData(workDatas));
+							}
+						});
 					});
 		}
 //		}
