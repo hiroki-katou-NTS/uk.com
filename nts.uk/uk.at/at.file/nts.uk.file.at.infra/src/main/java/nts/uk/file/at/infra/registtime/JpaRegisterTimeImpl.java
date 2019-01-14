@@ -308,7 +308,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " bb.CLSCD = kk.CLSCD AND bb.LABOR_SYSTEM_ATR = 0 "
 			+ "WHERE "
 			+ "	bb.CID = ?cid "
-			+ "AND kk.CID = ?cid";
+			+ "AND kk.CID = ?cid"
+			+ " ORDER BY kk.CLSCD";
 	
 	private static final String SQL_EXPORT_SHEET_6 = "SELECT aa.ERROR_WEEK,aa.ALARM_WEEK,aa.LIMIT_WEEK, "
 			+ "aa.ERROR_TWO_WEEKS,aa.ALARM_TWO_WEEKS,aa.LIMIT_TWO_WEEKS, "
@@ -577,7 +578,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " bb.CLSCD = kk.CLSCD AND bb.LABOR_SYSTEM_ATR = 1 "
 			+ "WHERE "
 			+ "	bb.CID = ?cid "
-			+ "AND kk.CID = ?cid";
+			+ "AND kk.CID = ?cid"
+			+ " ORDER BY kk.CLSCD";
 	
 	private static final String SQL_EXPORT_SHEET_10 = " SELECT"
 			+" 	CASE"
