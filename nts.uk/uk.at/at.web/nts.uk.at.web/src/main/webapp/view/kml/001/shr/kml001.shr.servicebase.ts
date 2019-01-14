@@ -49,7 +49,9 @@ module nts.uk.at.view.kml001.shr {
             return nts.uk.request.ajax(paths.getAttendanceItemByType);
         }
         export function saveAsExcel(param): JQueryPromise<any> {
-        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "PersonCostCalculation", domainType: "KML001"+__viewContext.program.programName,languageId: 'ja',baseDate:moment.utc(param).format() 
+          let program= nts.uk.ui._viewModel.kiban.programName().split(" ");
+          let programName = program[1]!=null?program[1]:"";
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "PersonCostCalculation", domainType: "KML001"+programName,languageId: 'ja',baseDate:moment.utc(param).format() 
         ,mode:1 , reportType: 0});
     }
     } 

@@ -1188,13 +1188,13 @@ public class PreparationBeforeApplyExport {
             case 12:
                 return ((BigDecimal)obj[105]).intValue() == 1 ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
             case 13:
-                if(obj[24] == null) {
+                if(obj[13] == null) {
                     return "";
                 }
-                if( ((BigDecimal)obj[24]).intValue() == 2 ) {
+                if( ((BigDecimal)obj[13]).intValue() == 2 ) {
                     return TextResource.localize("KAF022_175");
                 }
-                return ((BigDecimal)obj[24]).intValue() == 1 ? TextResource.localize("KAF022_174") : TextResource.localize("KAF022_173");
+                return ((BigDecimal)obj[13]).intValue() == 1 ? TextResource.localize("KAF022_174") : TextResource.localize("KAF022_173");
         }
         return "";
     }
