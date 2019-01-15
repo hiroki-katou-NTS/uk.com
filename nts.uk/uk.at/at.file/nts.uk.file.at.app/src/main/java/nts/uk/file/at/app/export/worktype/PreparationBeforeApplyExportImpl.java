@@ -1,6 +1,7 @@
 package nts.uk.file.at.app.export.worktype;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.AppAcceptLimitDay;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.BeforeAddCheckMethod;
 import nts.uk.shr.com.context.AppContexts;
@@ -8,7 +9,6 @@ import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.*;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -155,40 +155,46 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
         return datasA5;
     }
 
-    private  List<MasterData> putDatasA6(Object[] export ) {
+    private  List<MasterData> putDatasA6(List<Object[]> export ) {
         List<MasterData> datasA6 = new ArrayList<>();
-        Map<String, MasterCellData> dataA6 = new HashMap<>();
-        dataA6.put(KAF022_454, MasterCellData.builder()
-                .columnId(KAF022_454)
-                .value(((Long) export[35]).intValue() == 1 ? TextResource.localize("KAF022_464") : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-        dataA6.put(COLUMN_NO_HEADER_1, MasterCellData.builder()
-                .columnId(COLUMN_NO_HEADER_1)
-                .value(((Long) export[35]).intValue() == 1 ? TextResource.localize("KAF022_465") : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-        dataA6.put(COLUMN_NO_HEADER_2, MasterCellData.builder()
-                .columnId(COLUMN_NO_HEADER_2)
-                .value(EnumAdaptor.valueOf(((BigDecimal) export[36]).intValue(), ApplicationType.class).nameId)
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-        dataA6.put(COLUMN_NO_HEADER_3, MasterCellData.builder()
-                .columnId(COLUMN_NO_HEADER_3)
-                .value("")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-        dataA6.put(COLUMN_NO_HEADER_4, MasterCellData.builder()
-                .columnId(COLUMN_NO_HEADER_3)
-                .value("")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-        dataA6.put(KAF022_455, MasterCellData.builder()
-                .columnId(KAF022_455)
-                .value(export[37])
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                .build());
-        datasA6.add(MasterData.builder().rowData(dataA6).build());
+        EnumSet.allOf(ApplicationType.class)
+                .forEach(i -> {
+                    String appName = getValueA6(i, export);
+                    if (appName != null) {
+                        Map<String, MasterCellData> dataA6 = new HashMap<>();
+                        dataA6.put(KAF022_454, MasterCellData.builder()
+                                .columnId(KAF022_454)
+                                .value(getTextA6(i) ? TextResource.localize("KAF022_464") : "")
+                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                .build());
+                        dataA6.put(COLUMN_NO_HEADER_1, MasterCellData.builder()
+                                .columnId(COLUMN_NO_HEADER_1)
+                                .value(getTextA6(i) ? TextResource.localize("KAF022_465") : "")
+                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                .build());
+                        dataA6.put(COLUMN_NO_HEADER_2, MasterCellData.builder()
+                                .columnId(COLUMN_NO_HEADER_2)
+                                .value(i.nameId)
+                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                .build());
+                        dataA6.put(COLUMN_NO_HEADER_3, MasterCellData.builder()
+                                .columnId(COLUMN_NO_HEADER_3)
+                                .value("")
+                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                .build());
+                        dataA6.put(COLUMN_NO_HEADER_4, MasterCellData.builder()
+                                .columnId(COLUMN_NO_HEADER_3)
+                                .value("")
+                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                .build());
+                        dataA6.put(KAF022_455, MasterCellData.builder()
+                                .columnId(KAF022_455)
+                                .value(appName)
+                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                .build());
+                        datasA6.add(MasterData.builder().rowData(dataA6).build());
+                    }
+                });
         return datasA6;
     }
 
@@ -203,7 +209,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
                     .build());
             dataA7.put(COLUMN_NO_HEADER_1, MasterCellData.builder()
                     .columnId(COLUMN_NO_HEADER_1)
-                    .value(i == 0 ? EnumAdaptor.valueOf(((BigDecimal) export[26]).intValue(), ApplicationType.class).nameId : "")
+                    .value(i == 0 ? EnumAdaptor.valueOf(((BigDecimal) export[27]).intValue(), ApplicationType.class).nameId : "")
                     .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                     .build());
             dataA7.put(COLUMN_NO_HEADER_2, MasterCellData.builder()
@@ -257,7 +263,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
                     .build());
             dataA7.put(COLUMN_NO_HEADER_4, MasterCellData.builder()
                     .columnId(COLUMN_NO_HEADER_4)
-                    .value(i == 1 ? TextResource.localize("KAF022_468") : "")
+                    .value(i == 1 ? TextResource.localize("KAF022_470") : "")
                     .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                     .build());
             dataA7.put(KAF022_455, MasterCellData.builder()
@@ -310,43 +316,47 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
     }
 
 
-
-    private  List<MasterData> putDatasA8Center(Object[] export ) {
+    private List<MasterData> putDatasA8Center(List<Object[]> export) {
         List<MasterData> datasA8Center = new ArrayList<>();
-        for(int i = 0; i< ROW_SIZE_A8_CENTER; i++) {
-            Map<String, MasterCellData> dataA8Center = new HashMap<>();
-            dataA8Center.put(KAF022_454, MasterCellData.builder()
-                    .columnId(KAF022_454)
-                    .value("")
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                    .build());
-            dataA8Center.put(COLUMN_NO_HEADER_1, MasterCellData.builder()
-                    .columnId(COLUMN_NO_HEADER_1)
-                    .value("")
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                    .build());
-            dataA8Center.put(COLUMN_NO_HEADER_2, MasterCellData.builder()
-                    .columnId(COLUMN_NO_HEADER_2)
-                    .value(i == 0 ? TextResource.localize(EnumAdaptor.valueOf( ((BigDecimal)export[39]).intValue(), HolidayAppType.class).name) : "")
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                    .build());
-            dataA8Center.put(COLUMN_NO_HEADER_3, MasterCellData.builder()
-                    .columnId(COLUMN_NO_HEADER_3)
-                    .value(i == 0 ? TextResource.localize(KAF022_478) : TextResource.localize(KAF022_479))
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                    .build());
-            dataA8Center.put(COLUMN_NO_HEADER_4, MasterCellData.builder()
-                    .columnId(COLUMN_NO_HEADER_4)
-                    .value(TextResource.localize(KAF022_468))
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                    .build());
-            dataA8Center.put(KAF022_455, MasterCellData.builder()
-                    .columnId(KAF022_455)
-                    .value(getValueA8Center(i, export))
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                    .build());
-            datasA8Center.add(MasterData.builder().rowData(dataA8Center).build());
-        }
+        EnumSet.allOf(HolidayAppType.class).forEach(item -> {
+            Object[] obj = getDataA8Center(export, item);
+            if(obj != null) {
+                for (int i = 0; i < ROW_SIZE_A8_CENTER; i++) {
+                    Map<String, MasterCellData> dataA8Center = new HashMap<>();
+                    dataA8Center.put(KAF022_454, MasterCellData.builder()
+                            .columnId(KAF022_454)
+                            .value("")
+                            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                            .build());
+                    dataA8Center.put(COLUMN_NO_HEADER_1, MasterCellData.builder()
+                            .columnId(COLUMN_NO_HEADER_1)
+                            .value("")
+                            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                            .build());
+                    dataA8Center.put(COLUMN_NO_HEADER_2, MasterCellData.builder()
+                            .columnId(COLUMN_NO_HEADER_2)
+                            .value(i == 0 ? TextResource.localize(item.name) : "")
+                            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                            .build());
+                    dataA8Center.put(COLUMN_NO_HEADER_3, MasterCellData.builder()
+                            .columnId(COLUMN_NO_HEADER_3)
+                            .value(i == 0 ? TextResource.localize(KAF022_478) : TextResource.localize(KAF022_479))
+                            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                            .build());
+                    dataA8Center.put(COLUMN_NO_HEADER_4, MasterCellData.builder()
+                            .columnId(COLUMN_NO_HEADER_4)
+                            .value(TextResource.localize(KAF022_468))
+                            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                            .build());
+                    dataA8Center.put(KAF022_455, MasterCellData.builder()
+                            .columnId(KAF022_455)
+                            .value(getValueA8Center(i, obj))
+                            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                            .build());
+                    datasA8Center.add(MasterData.builder().rowData(dataA8Center).build());
+                }
+            }
+        });
         return datasA8Center;
     }
 
@@ -555,15 +565,27 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
         return value.toString();
     }
 
+    private String getValueA6(ApplicationType appType, List<Object[]> obj){
+         Optional<Object[]> temp = obj.stream().filter(i -> i[36] != null ? appType.value == ((BigDecimal) i[36]).intValue() : appType.value == -1).findFirst();
+         if(temp.isPresent()) {
+             return temp.get()[37] != null ? temp.get()[37].toString() : "";
+         }
+        return null;
+    }
+
+    private boolean getTextA6(ApplicationType appType){
+        return (appType == ApplicationType.OVER_TIME_APPLICATION);
+    }
+
     private String getTextA4(int i){
         if(i == 0) {
-            return KAF022_456;
+            return TextResource.localize("KAF022_457");
         }
         if(i == 1) {
-            return KAF022_458;
+            return TextResource.localize("KAF022_458");
         }
         if(i == 2) {
-            return KAF022_459;
+            return TextResource.localize("KAF022_459");
         }
         return "";
     }
@@ -573,10 +595,10 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
             return obj[1].toString();
         }
         if(i == 1) {
-            return ((BigDecimal)obj[3]).intValue() == 1 ? "○" : "";
+            return ((BigDecimal)obj[3]).intValue() == 1 ? "○" : "-";
         }
         if(i == 2 && ((BigDecimal)obj[3]).intValue() == 1) {
-            return ((BigDecimal) obj[4]).intValue() == 0 ? TextResource.localize("KAF022_321") : TextResource.localize("KAF022_322");
+            return ((BigDecimal) obj[4]).intValue() == 0 ? TextResource.localize("KAF022_321") + TextResource.localize("KAF022_508") : TextResource.localize("KAF022_322") + TextResource.localize("KAF022_508");
         }
         if(i == 3 && ((BigDecimal)obj[3]).intValue() == 1) {
             return getTextDeadLine(((BigDecimal) obj[5]).intValue());
@@ -585,9 +607,6 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
     }
     
     private String getTextDeadLine(int value){
-        if(value == 0 ) {
-            return TextResource.localize("KAF022_321");
-        }
         int text = 323 + value;
         String resource = "KAF022_" + text;
         return TextResource.localize(resource) + TextResource.localize("KAF022_509");
@@ -733,7 +752,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
             return ((BigDecimal)obj[42]).intValue() == 1 ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
         }
         if(i == 1 && obj[43] != null) {
-            return ((BigDecimal)obj[42]).intValue() == 1 ? TextResource.localize("KAF022_437") : TextResource.localize("KAF022_438");
+            return ((BigDecimal)obj[43]).intValue() == 1 ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
         }
         if(i == 2 && obj[44] != null) {
             return ((BigDecimal)obj[44]).intValue() == 1 ? TextResource.localize("KAF022_437") : TextResource.localize("KAF022_438");
@@ -850,11 +869,11 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
         if(i == 3 && obj[32] != null ) {
             return ((BigDecimal)obj[32]).intValue() == 1 ? "○" : "-";
         }
-        if(i == 4 && obj[18] != null ) {
-            if( ((BigDecimal)obj[18]).intValue() == 2 ) {
+        if(i == 4 && obj[50] != null ) {
+            if( ((BigDecimal)obj[50]).intValue() == 2 ) {
                 return TextResource.localize("Enum_PrePostInitialAtr_NO_CHOISE");
             }
-            if( ((BigDecimal)obj[18]).intValue() == 1) {
+            if( ((BigDecimal)obj[50]).intValue() == 1) {
                 return TextResource.localize("Enum_PrePostInitialAtr_POST");
             }
             return TextResource.localize("Enum_PrePostInitialAtr_PRE");
@@ -864,11 +883,19 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
         }
         return "";
     }
-    private String getValueA8Center(int i, Object[] obj){
-        if(i == 0 && obj[40] != null ) {
+    private Object[] getDataA8Center(List<Object[]> obj, HolidayAppType holidayType){
+        Optional<Object[]> temp = obj.stream().filter(item -> item[39] != null ? holidayType.value == ((BigDecimal) item[39]).intValue() : holidayType.value == -1).findFirst();
+        if(temp.isPresent()) {
+            return temp.get();
+        }
+        return null;
+    }
+
+    private String getValueA8Center(int line, Object obj[]){
+        if(line == 0) {
             return ((BigDecimal)obj[40]).intValue() == 1 ? "○" : "-";
         }
-        if(i == 1 && obj[41] != null ) {
+        if(line == 1) {
             return ((BigDecimal)obj[41]).intValue() == 1 ? "○" : "-";
         }
         return "";
@@ -883,7 +910,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
             return ((BigDecimal)obj[18]).intValue() == 1 ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
         }
         if(i == 1 && obj[48] != null) {
-            return ((BigDecimal)obj[18]).intValue() == 1 ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82");
+            return ((BigDecimal)obj[48]).intValue() == 1 ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82");
         }
 
         return "";
@@ -1020,13 +1047,10 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
                     datasA5.addAll(this.putDatasA5(item));
                 }
             }
-            if(item[35] != null) {
-                datasA6.addAll(this.putDatasA6(item));
-            }
-            if(item[21] != null && ((BigDecimal)item[27]).intValue() == 0) {
+            if(item[21] != null && item[27] != null && ((BigDecimal)item[27]).intValue() == 0) {
                 datasA7.addAll(this.putDatasA7(item));
             }
-            if(item[21] != null && ((BigDecimal)item[27]).intValue() != 0) {
+            if(item[21] != null && item[27] != null && ((BigDecimal)item[27]).intValue() != 0) {
                 datasA7Bottom.addAll(this.putDatasA7Bottom(item));
             }
             if(item[27] != null) {
@@ -1035,9 +1059,6 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
                 } else {
                     datasA8Bottom.addAll(this.putDatasA8(item));
                 }
-            }
-            if(item[38] != null) {
-                datasA8Center.addAll(this.putDatasA8Center(item));
             }
             if(item[6] != null && ((Long)item[21]).intValue() == 1) {
                 datasA9.addAll(this.putDatasA9(item));
@@ -1051,6 +1072,8 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
             }
 
         });
+        datasA8Center.addAll(this.putDatasA8Center(preparationBefore));
+        datasA6.addAll(this.putDatasA6(preparationBefore));
         datasA11.addAll(this.putDatasA11(preparationBefore));
         datas.addAll(datasA4);
         datas.addAll(datasA5);

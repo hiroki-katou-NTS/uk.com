@@ -2,10 +2,14 @@ package nts.uk.file.at.app.export.shift.estimate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.schedule.dom.shift.estimate.usagesetting.UsageSetting;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.usagesetting.UsageSettingRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
@@ -21,7 +25,9 @@ public class ShiftEstimateExportImpl implements MasterListData {
 
 	@Inject
 	private ShiftEstimateRepository repository;
-
+	@Inject
+	private UsageSettingRepository commonGuidelineSettingRepo;
+	
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 		columns.add(new MasterHeaderColumn(ShiftEstimateColumn.KSM001_101, TextResource.localize("KSM001_101"),
@@ -220,11 +226,19 @@ public class ShiftEstimateExportImpl implements MasterListData {
 
 		SheetData sheetData5 = SheetData.builder().mainData(this.getMasterDatasFive(startDate, endDate))
 				.mainDataColumns(this.getHeaderColumnsFive()).sheetName(TextResource.localize("KSM001_100")).build();
-
+		
+		Optional<UsageSetting> optUsageSetting = this.commonGuidelineSettingRepo
+				.findByCompanyId(AppContexts.user().companyId());
+		
+		
 		sheetDatas.add(sheetData2);
 		sheetDatas.add(sheetData3);
-		sheetDatas.add(sheetData4);
-		sheetDatas.add(sheetData5);
+		if(optUsageSetting.isPresent()){
+			int flagEmployment = optUsageSetting.get().getEmploymentSetting().value;
+			int flagPersonal = optUsageSetting.get().getPersonalSetting().value;
+			if(flagEmployment == 1){sheetDatas.add(sheetData4);}
+			if(flagPersonal == 1){sheetDatas.add(sheetData5);}
+		}
 		return sheetDatas;
 	}
 

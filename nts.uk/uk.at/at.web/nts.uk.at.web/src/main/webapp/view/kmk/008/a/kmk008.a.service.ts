@@ -11,7 +11,7 @@ module nts.uk.at.view.kmk008.a {
              }
             export function saveAsExcel(languageId: string, startDate: any, endDate: any): JQueryPromise<any> {
                 return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "RegisterTime",    
-                                                                               domainType: "３６協定時間の登録", 
+                                                                               domainType: "KMK008３６協定時間の登録", 
                                                                                languageId: languageId, 
                                                                                reportType: 0,
                                                                                startDate: startDate,

@@ -8,13 +8,52 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DaiPerformanceFun;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.IdentityProcess;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.MonPerformanceFun;
-
+/**
+ * 
+ * @author Hoidd 2
+ *
+ */
 public interface OperationExcelRepo {
-	Optional<DaiPerformanceFun> getDaiPerformanceFunById(String cid);
-	Optional<MonPerformanceFun> getMonPerformanceFunById(String cid);
-	Optional<FormatPerformance> getFormatPerformanceById(String cid);
-	Optional<IdentityProcess> getIdentityProcessById(String cid);
-	Optional<ApprovalProcess> getApprovalProcessById(String cid);
+	/**
+	 * 
+	 * @param companyId
+	 * @return
+	 */
+	Optional<DaiPerformanceFun> getDaiPerformanceFunById(String companyId);
+	/**
+	 * 
+	 * @param companyId
+	 * @return
+	 */
+	Optional<MonPerformanceFun> getMonPerformanceFunById(String companyId);
+	/**
+	 * 
+	 * @param companyId
+	 * @return
+	 */
+	Optional<FormatPerformance> getFormatPerformanceById(String companyId);
+	/**
+	 * 
+	 * @param companyId
+	 * @return
+	 */
+	Optional<IdentityProcess> getIdentityProcessById(String companyId);
+	/**
+	 * 
+	 * @param companyId
+	 * @return
+	 */
+	Optional<ApprovalProcess> getApprovalProcessById(String companyId);
+	/**
+	 * 
+	 * @param companyId
+	 * @return
+	 */
 	List<ApplicationCallExport> findByCom(String companyId);
+	/**
+	 * 
+	 * @param companyId
+	 * @return
+	 */
 	List<RoleExport> findRole(String companyId);
 }

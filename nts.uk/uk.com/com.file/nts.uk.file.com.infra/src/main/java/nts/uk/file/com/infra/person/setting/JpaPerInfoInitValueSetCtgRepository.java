@@ -65,14 +65,14 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("  END REF_METHOD_ATR,");
 	     exportSQL.append(" CONCAT(");
 	     // Workplace
-	     exportSQL.append("  CONCAT(RTRIM(wkp.WKPCD),IIF (wkp.END_DATE >= '9999-12-31', wkp.WKP_NAME, ");
+	     exportSQL.append("  CONCAT(RTRIM(wkp.WKPCD),IIF (wkp.END_DATE >= CONVERT(datetime, '9999-12-31'), wkp.WKP_NAME, ");
 	     exportSQL.append("      IIF (wkp.WKPCD IS NOT NULL,?MasterUnregisted, NULL))),");
 	     // Employment
 	     exportSQL.append("  CONCAT(RTRIM(emp.CODE), emp.NAME), ");
 	     // Classification
 	     exportSQL.append("  CONCAT(RTRIM(cls.CLSCD), cls.CLSNAME), ");
 	     // Job title
-	     exportSQL.append("  CONCAT(RTRIM(job.JOB_CD),IIF (job.END_DATE >= '9999-12-31', job.JOB_NAME, ");
+	     exportSQL.append("  CONCAT(RTRIM(job.JOB_CD),IIF (job.END_DATE >= CONVERT(datetime, '9999-12-31'), job.JOB_NAME, ");
 	     exportSQL.append("      IIF (job.JOB_CD IS NOT NULL,?MasterUnregisted, NULL))),");
 	     // TempAbsence
 		 exportSQL.append("IIF (temp.USE_ATR = 1 ,temp.TEMP_ABSENCE_FR_NAME,  ");
@@ -288,10 +288,10 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("   ELSE 7");
 	     exportSQL.append("  END Align,");
 	     exportSQL.append("  ROW_NUMBER() OVER (PARTITION BY initset.PER_INIT_SET_ID ORDER BY initset.PER_INIT_SET_CD, ");
-	     exportSQL.append("             ctgorder.DISPORDER, itemorder.DISPLAY_ORDER) AS ROW_NUMBER,");
+	     exportSQL.append("             ctgorder.DISPORDER, itemorder.DISPORDER) AS ROW_NUMBER,");
 	     exportSQL.append("  ROW_NUMBER() OVER (PARTITION BY initset.PER_INIT_SET_ID, ctg.PER_INFO_CTG_ID ORDER BY initset.PER_INIT_SET_CD, ");
-	     exportSQL.append("             ctgorder.DISPORDER, itemorder.DISPLAY_ORDER) AS ROW_NUMBER2,");
-	     exportSQL.append("  ROW_NUMBER() OVER (ORDER BY initset.PER_INIT_SET_CD, ctgorder.DISPORDER, itemorder.DISPLAY_ORDER) AS ROW_INDEX");
+	     exportSQL.append("             ctgorder.DISPORDER, itemorder.DISPORDER) AS ROW_NUMBER2,");
+	     exportSQL.append("  ROW_NUMBER() OVER (ORDER BY initset.PER_INIT_SET_CD, ctgorder.DISPORDER, itemorder.DISPORDER) AS ROW_INDEX");
 	     exportSQL.append("  FROM ");
 		exportSQL.append("	(SELECT initsett.PER_INIT_SET_ID, initsett.PER_INIT_SET_CD, initsett.PER_INIT_SET_NAME, initsett.CID ");
 		exportSQL.append("			FROM PPEMT_PER_INIT_SET initsett WHERE initsett.CID = ?CID ) initset");

@@ -48,8 +48,6 @@ public class JobInfoImpl extends JpaRepository implements JobInfoRepository {
 			+			" INNER JOIN SACMT_ROLESET_JOB_DETAIL d ON s.ROLE_SET_CD = d.ROLESET_CD AND info.JOB_ID = d.JOB_ID"
 			+			" INNER JOIN SACMT_ROLESET_JOB job ON info.CID = job.CID"
 			+		" WHERE info.CID = ?"
-			+			" AND his.START_DATE <= CONVERT(DATETIME, ?, 102) "
-			+			" AND his.END_DATE >= CONVERT(DATETIME, ?, 102)"
 			+ 		") TBL ";
 	
 	

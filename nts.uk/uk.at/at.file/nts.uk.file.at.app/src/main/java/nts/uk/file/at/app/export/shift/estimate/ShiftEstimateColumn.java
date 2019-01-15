@@ -113,5 +113,5 @@ public final class ShiftEstimateColumn {
 	
 	
 	/** Common **/
-	public static final String KSM001_196 = "￥";
+	public static final String KSM001_196 = "¥";
 }

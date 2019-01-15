@@ -6,8 +6,7 @@ module nts.uk.at.view.kmk011.a {
 
         export class ScreenModel {
             constructor() {
-                var self = this;
-                self.showExportBtn();
+                var self = this; 
             }
 
             /**

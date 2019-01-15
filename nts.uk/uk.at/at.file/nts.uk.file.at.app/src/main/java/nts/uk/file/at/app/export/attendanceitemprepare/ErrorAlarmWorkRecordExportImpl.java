@@ -7,11 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import nts.arc.error.BusinessException;
+
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.daily.dailyaggregationprocess.LogicalOperator;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.monthly.CompareOperatorText;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.AttendanceItemsFinder;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttdItemDto;
@@ -22,6 +25,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTy
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmClassification;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeFinder;
@@ -39,6 +43,7 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
@@ -116,7 +121,6 @@ public class ErrorAlarmWorkRecordExportImpl {
        public static String value38= "value38";
        public static String value39= "value39";
        public static String value40= "value40";
-       public static String value41= "value41";
        
        public List<MasterData> getMasterDatas(MasterListExportQuery query) {
               
@@ -212,41 +216,35 @@ public class ErrorAlarmWorkRecordExportImpl {
               mapApplicationType.put(7, "打刻申請（外出許可）");
               mapApplicationType.put(15, "振休振出申請");
               if(CollectionUtil.isEmpty(lstDto)){
-                     throw new BusinessException("Msg_393");
+                     return null;
               }else{
                      lstDto.stream().forEach(c->{
                            Map<String, Object> data = new HashMap<>();
                            putEmptyDataOne(data);
                            data.put(value1, c.getCode());
                            data.put(value2, c.getName());
-                           
+                           //SAU PHAI SUA THEO TEXTRS
                            if(c.getUseAtr()==1){
                                   data.put(value3, "使用する");
                            }else{
                                   data.put(value3, "使用しない");
                            }
-                           
-                           if(c.getTypeAtr() == 0){
-                                  data.put(value4, "エラー");
-                           }else if(c.getTypeAtr() == 1){
-                                  data.put(value4, "アラーム");
-                           }else{
-                                  data.put(value4, "その他");
+                                  data.put(value4, TextResource.localize(EnumAdaptor.valueOf(c.getTypeAtr(), ErrorAlarmClassification.class).nameId));
                                   data.put(value5, "");
                                   data.put(value6, "");
                                   data.put(value7, "");
                                   data.put(value8, "");
                                   data.put(value9, "");
                                   data.put(value10, "");
-                           }
+                           
                            //5,6
                            if(c.getRemarkCancelErrorInput() == 1){
-                                  data.put(value5, "解除する");
+                                  data.put(value5, TextResource.localize(EnumAdaptor.valueOf(c.getRemarkCancelErrorInput(), NotUseAtr.class).nameId));
                                   AttdItemDto attItemDto = mapListDivergenName.get(c.getRemarkColumnNo());
                                   data.put(value6, attItemDto!=null?attItemDto.getAttendanceItemName():"");
                                   
                            }else{
-                                  data.put(value5, "解除しない");
+                        	   	data.put(value5, TextResource.localize(EnumAdaptor.valueOf(c.getRemarkCancelErrorInput(), NotUseAtr.class).nameId));
                                   data.put(value6, "");
                            }
                            //7
@@ -357,22 +355,64 @@ public class ErrorAlarmWorkRecordExportImpl {
                            }
                            
                            // 19
-                           if(c.getWorkTypeCondition().getComparePlanAndActual() == 0){
-                                  data.put(value19, TextResource.localize("Enum_FilterByCompare_NotCompare"));
-                           }else if(c.getWorkTypeCondition().getComparePlanAndActual() == 1){
+                           if(c.getWorkTypeCondition().getComparePlanAndActual() == 1){
                                   data.put(value19, TextResource.localize("Enum_FilterByCompare_Extract_Same"));
-                                  //26
+                                  
                                   data.put(value26,"");
                            }else{
-                                  data.put(value19, TextResource.localize("Enum_FilterByCompare_Extract_Different"));
+                        	   if(c.getWorkTypeCondition().getComparePlanAndActual() == 0){
+                                   data.put(value19, TextResource.localize("Enum_FilterByCompare_NotCompare"));
+                        	   }else {
+                        		   data.put(value19, TextResource.localize("Enum_FilterByCompare_Extract_Different"));
+                        	   } 
+                        	 //26,27
+                               if(c.getWorkTypeCondition().isActualFilterAtr()== false){
+                                   data.put(value26, "-");
+                                   data.put(value27,"");
+                               }else{
+                                   //listErrorAlarmWorkRecord;
+                                   data.put(value26, "○");
+                                   List<String> codeAndNameActualType = new ArrayList<>();
+                                   List<String> listActualLstWorkTypeCode = c.getWorkTypeCondition().getActualLstWorkType();
+                                   Collections.sort(listActualLstWorkTypeCode);
+                                   for (String key : listActualLstWorkTypeCode) {
+                                         WorkTypeDto workTypeDto=  mapListWorkTypeDto.get(key);
+                                         if(workTypeDto!=null){
+                                                codeAndNameActualType.add(workTypeDto.getWorkTypeCode()+workTypeDto.getName());
+                                         }
+                                   }
+                                   String stringDataColumn27 = String.join(",", codeAndNameActualType);
+                                   data.put(value27,stringDataColumn27);
+                               }
                            }
                            //20
-                           if(c.getWorkTimeCondition().getComparePlanAndActual() ==0){
-                                  data.put(value20, TextResource.localize("Enum_FilterByCompare_NotCompare"));
-                           }else if(c.getWorkTimeCondition().getComparePlanAndActual() ==1){
+                            if(c.getWorkTimeCondition().getComparePlanAndActual() ==1){
                                   data.put(value20, TextResource.localize("Enum_FilterByCompare_NotCompare"));
                            }else{
+                        	   if(c.getWorkTimeCondition().getComparePlanAndActual() ==0){
+                                   data.put(value20, TextResource.localize("Enum_FilterByCompare_NotCompare"));
+                        	   }else{
                                   data.put(value20, TextResource.localize("Enum_FilterByCompare_NotCompare"));
+                        	   }
+                        	   //28,29
+                               if(c.getWorkTimeCondition().isActualFilterAtr()== false){
+                                   data.put(value28, "-");
+                                   data.put(value29,"");
+                               }else{
+                                   data.put(value28, "○");
+                                   List<String> listActualTimeCode = c.getWorkTimeCondition().getActualLstWorkTime();
+                                   List<String> codeAndNameActualTime = new ArrayList<>();
+                                   Collections.sort(listActualTimeCode);
+                                   for (String key : listActualTimeCode) {
+                                         WorkTypeDto workTypeDto=  mapListWorkTypeDto.get(key);
+                                         if(workTypeDto!=null){
+                                                codeAndNameActualTime.add(workTypeDto.getWorkTypeCode()+workTypeDto.getName());
+                                         }
+                                   }
+                                   String stringDataColumn29 =String.join(",", codeAndNameActualTime);
+                                  
+                                   data.put(value29,stringDataColumn29);
+                               }
                            }
                            //21 22
                            if(c.getWorkTypeCondition().isPlanFilterAtr() ==false){
@@ -418,186 +458,143 @@ public class ErrorAlarmWorkRecordExportImpl {
                                   }
                            }
                            
-                           //25
-                           if(c.getOperatorBetweenPlanActual()==0){
-                                  data.put(value25, "AND");
-                           }else{
-                                  data.put(value25, "OR");
-                           }
-                           //26 27
-                            if(c.getWorkTypeCondition().getComparePlanAndActual() == 0 || c.getWorkTypeCondition().getComparePlanAndActual() == 2){
-                     if(c.getWorkTypeCondition().isActualFilterAtr()== false){
-                            data.put(value26, "-");
-                            data.put(value27,"");
-                     }else{
-                            //listErrorAlarmWorkRecord;
-                            data.put(value26, "○");
-                            List<String> codeAndNameActualType = new ArrayList<>();
-                            List<String> listActualLstWorkTypeCode = c.getWorkTypeCondition().getActualLstWorkType();
-                            Collections.sort(listActualLstWorkTypeCode);
-                            for (String key : listActualLstWorkTypeCode) {
-                                  WorkTypeDto workTypeDto=  mapListWorkTypeDto.get(key);
-                                  if(workTypeDto!=null){
-                                         codeAndNameActualType.add(workTypeDto.getWorkTypeCode()+workTypeDto.getName());
-                                  }
-                            }
-                            String stringDataColumn27 = String.join(",", codeAndNameActualType);
-                            data.put(value27,stringDataColumn27);
-                     }
-              }
-//             
-//              //28 29
-//             
-              if(c.getWorkTimeCondition().getComparePlanAndActual() == 0 || c.getWorkTimeCondition().getComparePlanAndActual() == 2){
-             
-                     if(c.getWorkTimeCondition().isActualFilterAtr()== false){
-                            data.put(value28, "-");
-                            data.put(value29,"");
-                     }else{
-                            data.put(value28, "○");
-                            List<String> listActualTimeCode = c.getWorkTimeCondition().getActualLstWorkTime();
-                            List<String> codeAndNameActualTime = new ArrayList<>();
-                            Collections.sort(listActualTimeCode);
-                            for (String key : listActualTimeCode) {
-                                  WorkTypeDto workTypeDto=  mapListWorkTypeDto.get(key);
-                                  if(workTypeDto!=null){
-                                         codeAndNameActualTime.add(workTypeDto.getWorkTypeCode()+workTypeDto.getName());
-                                  }
-                            }
-                            String stringDataColumn29 =String.join(",", codeAndNameActualTime);
-                           
-                            data.put(value29,stringDataColumn29);
-                     }
-              }
-              //30
-              if(c.getOperatorGroup1() ==0){
-                     data.put(value30, "AND");
-              }else{
-                     data.put(value30, "OR");
-              }
-              //31 32 33
-              List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup1 = c.getErAlAtdItemConditionGroup1();
-               if(!CollectionUtil.isEmpty(erAlAtdItemConditionGroup1)){
-                     for(int i = 0 ; i < erAlAtdItemConditionGroup1.size();i++){
-                            ErAlAtdItemConditionDto erro = erAlAtdItemConditionGroup1.get(i);
-                            String alarmDescription = "";
-                            String targetName = "";
-                            String conditonName = "";
-                            String startValue = "";
-                            String endValue = "";
-                            int compare = erro.getCompareOperator();
-                            CompareOperatorText compareOpera = convertCompareType(compare);
-                            int conditionType = erro.getConditionType();
-                            int conditionAtr = erro.getConditionAtr();
-                            Map<Integer,AttdItemDto> mapListAttItemDto = new HashMap<>();
-                           /** 回数
-                           TIMES(0, "Enum_ConditionAtr_Times"),
-                           時間
-                           TIME_DURATION(1, "Enum_ConditionAtr_TimeDuration"),
-                            時刻
-                           TIME_WITH_DAY(2, "Enum_ConditionAtr_TimeWithDay"),
-                           金額
-                            AMOUNT_VALUE(3, "Enum_ConditionAtr_AmountValue"),
-                           日数
-                           DAYS(4, "日数");*/
-                            ////////////////////////
-                           /** 固定値
-                           FIXED_VALUE(0, "Enum_ConditionType_FixedValue"),
-                           勤怠項目
-                           ATTENDANCE_ITEM(1, "Enum_ConditionType_AttendanceItem"),
-                           入力チェック
-                           INPUT_CHECK(2, "Enum_ConditionType_InputCheck");*/
-                           
-                            switch (conditionAtr) {
-                            case 0:
-                            case 1:
-                            case 3:
-                                                       if(conditionAtr==0){
-                                                               mapListAttItemDto = mapListAttItemDto2;
-                                                       }
-                                                       if(conditionAtr==1){
-                                                               mapListAttItemDto = mapListAttItemDto5;
-                                                       }
-                                                       if(conditionAtr==3){
-                                                               mapListAttItemDto = mapListAttItemDto3;
-                                                       }
-                                  List<Integer> listKeyAdd = erro.getCountableAddAtdItems();
-                                  List<Integer> listKeySub = erro.getCountableSubAtdItems();
-                                List<String> listStringAttNameAdd = new ArrayList<>();
-                                List<String> listStringAttNameSub = new ArrayList<>();
-                                //get list att add
-                                for (Integer attId : listKeyAdd) {
-                                  AttdItemDto attItem = mapListAttItemDto.get(attId);
-                                  if(attItem!=null){
-                                         listStringAttNameAdd.add(attItem.getAttendanceItemName());
-                                  }
-                                }
-                              //get list att sub
-                                for (Integer attId : listKeySub) {
-                                  AttdItemDto attItem = mapListAttItemDto.get(attId);
-                                  if(attItem!=null){
-                                         listStringAttNameSub.add(attItem.getAttendanceItemName());
-                                  }
-                                }
-                                Collections.sort(listStringAttNameAdd);
-                                Collections.sort(listStringAttNameSub);
-                                String subString = String.join("-", listStringAttNameSub);
-                                boolean checkEmptyString = subString.isEmpty()&&subString!=null;
-                                targetName = checkEmptyString?String.join("+", listStringAttNameAdd):String.join("+", listStringAttNameAdd) +"-"+subString;
-                                                       break;
-                                                case 2:
-                                                       AttdItemDto attItem = mapListAttItemDto6.get(erro.getUncountableAtdItem());
-                                                                     if(attItem!=null){
-                                                                            targetName =attItem.getAttendanceItemName();
-                                                                     }
-                                                       break;
-                                                default:
-                                                       break;
-                                                }
-                            if(targetName!=null&&!targetName.isEmpty()){
-                                   switch (conditionType) {
-                                   case 0:
-                                          startValue = erro.getCompareStartValue().toString();
-                                          if (compare <= 5) {
-                                                 alarmDescription = targetName+compareOpera.getCompareLeft()+startValue;
-                                          } else {
-                                                  startValue =conditionAtr==0?timeToString(erro.getCompareStartValue().intValueExact()):erro.getCompareStartValue().toString();
-                                                 if (compare > 5 && compare <= 7) {
-                                                        alarmDescription = startValue + compareOpera.getCompareLeft()+targetName+compareOpera.getCompareright()+endValue;
-                                                 } else {
-                                                        alarmDescription = targetName+compareOpera.getCompareLeft()+startValue+","+endValue+compareOpera.getCompareright()+targetName;
-                                                 }
-                                          }
-                                          break;
-                                   case 1:
-                                          String singleAttName = "";
-                                         if(conditionAtr==3){
-                                                AttdItemDto at = mapListAttItemDto.get(erro.getSingleAtdItem());
-                                                if(at!=null){
-                                                 singleAttName= at.getAttendanceItemName();
-                                                }
-                                         }else {
-                                                AttdItemDto attItem = mapListAttItemDto.get(erro.getSingleAtdItem());
-                                                if(attItem!=null){
-                                                       singleAttName = attItem.getAttendanceItemName();
-                                                }
-                                                              }
-                                          alarmDescription = targetName + compareOpera.getCompareLeft()+singleAttName;
-                                          break;
-                                   case 2:
-                                          //Enum : InputCheckCondition
-                                          /** 入力されていない */
-                                          //INPUT_NOT_DONE(0, "Enum_ConditionType_FixedValue"),
-                                          /** 入力されている */
-                                          //INPUT_DONE(1, "Enum_ConditionType_AttendanceItem");
-                                          conditonName = erro.getInputCheckCondition()==0?TextResource.localize("Enum_ConditionType_FixedValue"):
-                                                 TextResource.localize("Enum_ConditionType_AttendanceItem");
-                                          alarmDescription = targetName+conditonName;
-                                          break;
-                                   default:
-                                          break;
-                                   }
-                            }
+				// 25
+				data.put(value25, TextResource
+						.localize(EnumAdaptor.valueOf(c.getOperatorBetweenPlanActual(), LogicalOperator.class).nameId));
+				// 30
+				data.put(value30, TextResource
+						.localize(EnumAdaptor.valueOf(c.getOperatorGroup1(), LogicalOperator.class).nameId));
+				//31 32 33
+				List<ErAlAtdItemConditionDto> erAlAtdItemConditionGroup1 = c.getErAlAtdItemConditionGroup1();
+				if (!CollectionUtil.isEmpty(erAlAtdItemConditionGroup1)) {
+					for (int i = 0; i < erAlAtdItemConditionGroup1.size(); i++) {
+						ErAlAtdItemConditionDto erro = erAlAtdItemConditionGroup1.get(i);
+						String alarmDescription = "";
+						String targetName = "";
+						String conditonName = "";
+						String startValue = "";
+						String endValue = "";
+						int compare = erro.getCompareOperator();
+						CompareOperatorText compareOpera = convertCompareType(compare);
+						int conditionType = erro.getConditionType();
+						int conditionAtr = erro.getConditionAtr();
+						Map<Integer, AttdItemDto> mapListAttItemDto = new HashMap<>();
+						/**
+						 * 回数 TIMES(0, "Enum_ConditionAtr_Times"), 時間
+						 * TIME_DURATION(1, "Enum_ConditionAtr_TimeDuration"),
+						 * 時刻 TIME_WITH_DAY(2, "Enum_ConditionAtr_TimeWithDay"),
+						 * 金額 AMOUNT_VALUE(3, "Enum_ConditionAtr_AmountValue"),
+						 * 日数 DAYS(4, "日数");
+						 */
+						////////////////////////
+						/**
+						 * 固定値 FIXED_VALUE(0, "Enum_ConditionType_FixedValue"),
+						 * 勤怠項目 ATTENDANCE_ITEM(1,
+						 * "Enum_ConditionType_AttendanceItem"), 入力チェック
+						 * INPUT_CHECK(2, "Enum_ConditionType_InputCheck");
+						 */
+
+						switch (conditionAtr) {
+						case 0:
+						case 1:
+						case 3:
+							if (conditionAtr == 0) {
+								mapListAttItemDto = mapListAttItemDto2;
+							}
+							if (conditionAtr == 1) {
+								mapListAttItemDto = mapListAttItemDto5;
+							}
+							if (conditionAtr == 3) {
+								mapListAttItemDto = mapListAttItemDto3;
+							}
+							
+							List<Integer> listKeyAdd = erro.getCountableAddAtdItems();
+							List<Integer> listKeySub = erro.getCountableSubAtdItems();
+							List<String> listStringAttNameAdd = new ArrayList<>();
+							List<String> listStringAttNameSub = new ArrayList<>();
+							// get list att add
+							if(!CollectionUtil.isEmpty(listKeyAdd)){
+								for (Integer attId : listKeyAdd) {
+									AttdItemDto attItem = mapListAttItemDto.get(attId);
+									if (attItem != null) {
+										listStringAttNameAdd.add(attItem.getAttendanceItemName());
+									}
+								}
+							}
+							// get list att sub
+							if(!CollectionUtil.isEmpty(listKeySub)){
+								for (Integer attId : listKeySub) {
+									AttdItemDto attItem = mapListAttItemDto.get(attId);
+									if (attItem != null) {
+										listStringAttNameSub.add(attItem.getAttendanceItemName());
+									}
+								}
+							}
+							Collections.sort(listStringAttNameAdd);
+							Collections.sort(listStringAttNameSub);
+							String subString = String.join("-", listStringAttNameSub);
+							boolean checkEmptyString = subString.isEmpty() && subString != null;
+							targetName = checkEmptyString ? String.join("+", listStringAttNameAdd)
+									: String.join("+", listStringAttNameAdd) + "-" + subString;
+							break;
+						case 2:
+							AttdItemDto attItem = mapListAttItemDto6.get(erro.getUncountableAtdItem());
+							if (attItem != null) {
+								targetName = attItem.getAttendanceItemName();
+							}
+							break;
+						default:
+							break;
+						}
+						if (targetName != null && !targetName.isEmpty()) {
+							switch (conditionType) {
+							case 0:
+								startValue = convertValueTimeAndString(erro.getCompareStartValue().intValueExact(),conditionAtr);
+								if (compare <= 5) {
+									alarmDescription = targetName + compareOpera.getCompareLeft() + startValue;
+								} else {
+									endValue = convertValueTimeAndString(erro.getCompareEndValue().intValueExact(),conditionAtr);
+									if (compare > 5 && compare <= 7) {
+										alarmDescription = startValue + compareOpera.getCompareLeft() + targetName
+												+ compareOpera.getCompareright() + endValue;
+									} else {
+										alarmDescription = targetName + compareOpera.getCompareLeft() + startValue + ","
+												+ endValue + compareOpera.getCompareright() + targetName;
+									}
+								}
+								break;
+							case 1:
+								String singleAttName = "";
+								if (conditionAtr == 3) {
+									AttdItemDto at = mapListAttItemDto.get(erro.getSingleAtdItem());
+									if (at != null) {
+										singleAttName = at.getAttendanceItemName();
+									}
+								} else {
+									AttdItemDto attItem = mapListAttItemDto.get(erro.getSingleAtdItem());
+									if (attItem != null) {
+										singleAttName = attItem.getAttendanceItemName();
+									}
+								}
+								alarmDescription = targetName + compareOpera.getCompareLeft() + singleAttName;
+								break;
+							case 2:
+								// Enum : InputCheckCondition
+								/** 入力されていない */
+								// INPUT_NOT_DONE(0,
+								// "Enum_ConditionType_FixedValue"),
+								/** 入力されている */
+								// INPUT_DONE(1,
+								// "Enum_ConditionType_AttendanceItem");
+								conditonName = erro.getInputCheckCondition() == 0
+										? TextResource.localize("Enum_ConditionType_FixedValue")
+										: TextResource.localize("Enum_ConditionType_AttendanceItem");
+								alarmDescription = targetName + conditonName;
+								break;
+							default:
+								break;
+							}
+						}
                             if(i==0){
                                    data.put(value31, alarmDescription);
                             }
@@ -617,145 +614,147 @@ public class ErrorAlarmWorkRecordExportImpl {
                      data.put(value39, "");
               }else{
                      data.put(value34, "○");
-                     if(c.getOperatorGroup2()== 0){
-                            data.put(value35, "AND");
-                     }else{
-                            data.put(value35, "OR");
-                     }
+                     data.put(value35, TextResource
+            						.localize(EnumAdaptor.valueOf(c.getOperatorGroup2(), LogicalOperator.class).nameId)); 
                      //36 37 38
-                     if(!CollectionUtil.isEmpty(erAlAtdItemConditionGroup2)){
-                         for(int i = 0 ; i < erAlAtdItemConditionGroup2.size();i++){
-                                ErAlAtdItemConditionDto erro = erAlAtdItemConditionGroup2.get(i);
-                                String alarmDescription = "";
-                                String targetName = "";
-                                String conditonName = "";
-                                String startValue = "";
-                                String endValue = "";
-                                int compare = erro.getCompareOperator();
-                                CompareOperatorText compareOpera = convertCompareType(compare);
-                                int conditionType = erro.getConditionType();
-                                int conditionAtr = erro.getConditionAtr();
-                                Map<Integer,AttdItemDto> mapListAttItemDto = new HashMap<>();
-                                  /** 回数
-                                  TIMES(0, "Enum_ConditionAtr_Times"),
-                                  時間
-                                  TIME_DURATION(1, "Enum_ConditionAtr_TimeDuration"),
-                                   時刻
-                                  TIME_WITH_DAY(2, "Enum_ConditionAtr_TimeWithDay"),
-                                  金額
-                                   AMOUNT_VALUE(3, "Enum_ConditionAtr_AmountValue"),
-                                  日数
-                                  DAYS(4, "日数");*/
-                                ////////////////////////
-                                  /** 固定値
-                                  FIXED_VALUE(0, "Enum_ConditionType_FixedValue"),
-                                  勤怠項目
-                                  ATTENDANCE_ITEM(1, "Enum_ConditionType_AttendanceItem"),
-                                  入力チェック
-                                  INPUT_CHECK(2, "Enum_ConditionType_InputCheck");*/
-                                switch (conditionAtr) {
-                                case 0:
-                                case 1:
-                                case 3:
-                                                       if(conditionAtr==0){
-                                                               mapListAttItemDto = mapListAttItemDto2;
-                                                       }
-                                                       if(conditionAtr==1){
-                                                               mapListAttItemDto = mapListAttItemDto5;
-                                                       }
-                                                       if(conditionAtr==3){
-                                                               mapListAttItemDto = mapListAttItemDto3;
-                                                       }
-                                  List<Integer> listKeyAdd = erro.getCountableAddAtdItems();
-                                  List<Integer> listKeySub = erro.getCountableSubAtdItems();
-                                    List<String> listStringAttNameAdd = new ArrayList<>();
-                                    List<String> listStringAttNameSub = new ArrayList<>();
-                                    //get list att add
-                                    for (Integer attId : listKeyAdd) {
-                                         AttdItemDto attItem = mapListAttItemDto.get(attId);
-                                         if(attItem!=null){
-                                                listStringAttNameAdd.add(attItem.getAttendanceItemName());
-                                         }
-                                    }
-                                  //get list att sub
-                                    for (Integer attId : listKeySub) {
-                                         AttdItemDto attItem = mapListAttItemDto.get(attId);
-                                         if(attItem!=null){
-                                                listStringAttNameSub.add(attItem.getAttendanceItemName());
-                                         }
-                                    }
-                                    Collections.sort(listStringAttNameAdd);
-                                    Collections.sort(listStringAttNameSub);
-                                    String subString = String.join("-", listStringAttNameSub);
-                                    boolean checkEmptyString = subString.isEmpty()&&subString!=null;
-                                    targetName = checkEmptyString?String.join("+", listStringAttNameAdd):String.join("+", listStringAttNameAdd) +"-"+subString;
-                                                       break;
-                                                case 2:
-                                                       AttdItemDto attItem = mapListAttItemDto6.get(erro.getUncountableAtdItem());
-                                                                     if(attItem!=null){
-                                                                            targetName =attItem.getAttendanceItemName();
-                                                                     }
-                                                       break;
-                                                default:
-                                                       break;
-                                                }
-                                if(targetName!=null&&!targetName.isEmpty()){
-                                  switch (conditionType) {
-                                              case 0:
-                                                startValue =conditionAtr==0?timeToString(erro.getCompareStartValue().intValueExact()):erro.getCompareStartValue().toString();
-                                                     if (compare <= 5) {
-                                                            alarmDescription = targetName+compareOpera.getCompareLeft()+startValue;
-                                                     } else {
-                                                            if (compare > 5 && compare <= 7) {
-                                                                   alarmDescription = startValue + compareOpera.getCompareLeft()+targetName+compareOpera.getCompareright()+endValue;
-                                                            } else {
-                                                                   alarmDescription = targetName+compareOpera.getCompareLeft()+startValue+","+endValue+compareOpera.getCompareright()+targetName;
-                                                            }
-                                                     }
-                                                     break;
-                                              case 1:
-                                                 String singleAttName = "";
-                                                if(conditionAtr==3){
-                                                        singleAttName= mapListAttItemDto.get(erro.getSingleAtdItem()).getAttendanceItemName();
-                                                }else {
-                                                       AttdItemDto attItem = mapListAttItemDto.get(erro.getSingleAtdItem());
-                                                       if(attItem!=null){
-                                                              singleAttName = attItem.getAttendanceItemName();
-                                                       }
-                                                                     }
-                                                     alarmDescription = targetName + compareOpera.getCompareLeft()+singleAttName;
-                                                     break;
-                                              case 2:
-                                                     //Enum : InputCheckCondition
-                                                     /** 入力されていない */
-                                                     //INPUT_NOT_DONE(0, "Enum_ConditionType_FixedValue"),
-                                                     /** 入力されている */
-                                                     //INPUT_DONE(1, "Enum_ConditionType_AttendanceItem");
-                                                     conditonName = erro.getInputCheckCondition()==0?TextResource.localize("Enum_ConditionType_FixedValue"):
-                                                            TextResource.localize("Enum_ConditionType_AttendanceItem");
-                                                     alarmDescription = targetName+conditonName;
-                                                     break;
-                                              default:
-                                                     break;
-                                       }
-                                }
-                                if(i==0){
-                                       data.put(value36, alarmDescription);
-                                }
-                                if(i==1){
-                                       data.put(value37,alarmDescription);
-                                }
-                                if(i==2){
-                                       data.put(value38,alarmDescription);
-                                }
-                         }
-                     }
-                     if(c.getOperatorBetweenGroups() == 0){
-                            data.put(value39, "AND");
-                     }else{
-                            data.put(value39, "OR");
-                     }
-              }
+					if (!CollectionUtil.isEmpty(erAlAtdItemConditionGroup2)) {
+						for (int i = 0; i < erAlAtdItemConditionGroup2.size(); i++) {
+							ErAlAtdItemConditionDto erro = erAlAtdItemConditionGroup2.get(i);
+							String alarmDescription = "";
+							String targetName = "";
+							String conditonName = "";
+							String startValue = "";
+							String endValue = "";
+							int compare = erro.getCompareOperator();
+							CompareOperatorText compareOpera = convertCompareType(compare);
+							int conditionType = erro.getConditionType();
+							int conditionAtr = erro.getConditionAtr();
+							Map<Integer, AttdItemDto> mapListAttItemDto = new HashMap<>();
+							/**
+							 * 回数 TIMES(0, "Enum_ConditionAtr_Times"), 時間
+							 * TIME_DURATION(1,
+							 * "Enum_ConditionAtr_TimeDuration"), 時刻
+							 * TIME_WITH_DAY(2,
+							 * "Enum_ConditionAtr_TimeWithDay"), 金額
+							 * AMOUNT_VALUE(3, "Enum_ConditionAtr_AmountValue"),
+							 * 日数 DAYS(4, "日数");
+							 */
+							////////////////////////
+							/**
+							 * 固定値 FIXED_VALUE(0,
+							 * "Enum_ConditionType_FixedValue"), 勤怠項目
+							 * ATTENDANCE_ITEM(1,
+							 * "Enum_ConditionType_AttendanceItem"), 入力チェック
+							 * INPUT_CHECK(2, "Enum_ConditionType_InputCheck");
+							 */
+							switch (conditionAtr) {
+							case 0:
+							case 1:
+							case 3:
+								if (conditionAtr == 0) {
+									mapListAttItemDto = mapListAttItemDto2;
+								}
+								if (conditionAtr == 1) {
+									mapListAttItemDto = mapListAttItemDto5;
+								}
+								if (conditionAtr == 3) {
+									mapListAttItemDto = mapListAttItemDto3;
+								}
+								List<Integer> listKeyAdd = erro.getCountableAddAtdItems();
+								List<Integer> listKeySub = erro.getCountableSubAtdItems();
+								List<String> listStringAttNameAdd = new ArrayList<>();
+								List<String> listStringAttNameSub = new ArrayList<>();
+								// get list att add
+								for (Integer attId : listKeyAdd) {
+									AttdItemDto attItem = mapListAttItemDto.get(attId);
+									if (attItem != null) {
+										listStringAttNameAdd.add(attItem.getAttendanceItemName());
+									}
+								}
+								// get list att sub
+								for (Integer attId : listKeySub) {
+									AttdItemDto attItem = mapListAttItemDto.get(attId);
+									if (attItem != null) {
+										listStringAttNameSub.add(attItem.getAttendanceItemName());
+									}
+								}
+								Collections.sort(listStringAttNameAdd);
+								Collections.sort(listStringAttNameSub);
+								String subString = String.join("-", listStringAttNameSub);
+								boolean checkEmptyString = subString.isEmpty() && subString != null;
+								targetName = checkEmptyString ? String.join("+", listStringAttNameAdd)
+										: String.join("+", listStringAttNameAdd) + "-" + subString;
+								break;
+							case 2:
+								AttdItemDto attItem = mapListAttItemDto6.get(erro.getUncountableAtdItem());
+								if (attItem != null) {
+									targetName = attItem.getAttendanceItemName();
+								}
+								break;
+							default:
+								break;
+							}
+							if (targetName != null && !targetName.isEmpty()) {
+								switch (conditionType) {
+								case 0:
+									startValue = convertValueTimeAndString(erro.getCompareStartValue().intValueExact(),conditionAtr);
+									if (compare <= 5) {
+										alarmDescription = targetName + compareOpera.getCompareLeft() + startValue;
+									} else {
+										endValue = convertValueTimeAndString(erro.getCompareEndValue().intValueExact(),conditionAtr);
+										if (compare > 5 && compare <= 7) {
+											alarmDescription = startValue + compareOpera.getCompareLeft() + targetName
+													+ compareOpera.getCompareright() + endValue;
+										} else {
+											alarmDescription = targetName + compareOpera.getCompareLeft() + startValue
+													+ "," + endValue + compareOpera.getCompareright() + targetName;
+										}
+									}
+									break;
+								case 1:
+									String singleAttName = "";
+									if (conditionAtr == 3) {
+										singleAttName = mapListAttItemDto.get(erro.getSingleAtdItem())
+												.getAttendanceItemName();
+									} else {
+										AttdItemDto attItem = mapListAttItemDto.get(erro.getSingleAtdItem());
+										if (attItem != null) {
+											singleAttName = attItem.getAttendanceItemName();
+										}
+									}
+									alarmDescription = targetName + compareOpera.getCompareLeft() + singleAttName;
+									break;
+								case 2:
+									// Enum : InputCheckCondition
+									/** 入力されていない */
+									// INPUT_NOT_DONE(0,
+									// "Enum_ConditionType_FixedValue"),
+									/** 入力されている */
+									// INPUT_DONE(1,
+									// "Enum_ConditionType_AttendanceItem");
+									conditonName = erro.getInputCheckCondition() == 0
+											? TextResource.localize("Enum_ConditionType_FixedValue")
+											: TextResource.localize("Enum_ConditionType_AttendanceItem");
+									alarmDescription = targetName + conditonName;
+									break;
+								default:
+									break;
+								}
+							}
+							if (i == 0) {
+								data.put(value36, alarmDescription);
+							}
+							if (i == 1) {
+								data.put(value37, alarmDescription);
+							}
+							if (i == 2) {
+								data.put(value38, alarmDescription);
+							}
+						}
+					}
+						data.put(value39, TextResource
+        						.localize(EnumAdaptor.valueOf(c.getOperatorBetweenGroups(), LogicalOperator.class).nameId)); 
+				}
                            
                            // 40
                            List<Integer> lstApplicationTypeCode = c.getLstApplicationTypeCode();
@@ -818,7 +817,7 @@ public class ErrorAlarmWorkRecordExportImpl {
               }
               return datas;
        }
-       private void putEmptyDataOne(Map<String, Object> data) {
+	private void putEmptyDataOne(Map<String, Object> data) {
               data.put(value1, "");
               data.put(value2, "");
               data.put(value3, "");
@@ -1052,6 +1051,7 @@ public class ErrorAlarmWorkRecordExportImpl {
            }
               return datas;
        }
+       
        private void putEmptyDataTwo(Map<String, Object> data){
               data.put("コード", "");
               data.put("名称", "");
@@ -1064,6 +1064,12 @@ public class ErrorAlarmWorkRecordExportImpl {
                      return String.valueOf(value / 60) + ":0" + String.valueOf(value % 60);
               }
               return String.valueOf(value / 60) + ":" + String.valueOf(value % 60);
+       }
+       private String convertValueTimeAndString(int intValueExact, int conditionAtr) {
+    	   if(conditionAtr==1||conditionAtr==2){
+    		   return timeToString(intValueExact);
+    	   }
+    	   return String.valueOf(intValueExact);
        }
        private CompareOperatorText convertCompareType(int compareOperator) {
               CompareOperatorText compare = new CompareOperatorText();
@@ -1111,4 +1117,5 @@ public class ErrorAlarmWorkRecordExportImpl {
               }
               return compare;
        }
+       
 }
