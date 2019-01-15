@@ -11,7 +11,7 @@ import java.util.Optional;
  * The Interface WkpJobAutoCalSettingRepository.
  */
 public interface WkpJobAutoCalSettingRepository {
-	
+
 	/**
 	 * Update.
 	 *
