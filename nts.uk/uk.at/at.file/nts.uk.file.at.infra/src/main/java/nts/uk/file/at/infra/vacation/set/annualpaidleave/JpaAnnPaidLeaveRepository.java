@@ -39,6 +39,7 @@ public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidL
 			"FROM (SELECT MANAGE_ATR,PRIORITY_TYPE,CID FROM KALMT_ANNUAL_PAID_LEAVE WHERE KALMT_ANNUAL_PAID_LEAVE.CID = ? )  as pl " +
 			"INNER JOIN KMAMT_MNG_ANNUAL_SET mas on pl.CID = mas.CID " +
 			"INNER JOIN KTVMT_TIME_ANNUAL_SET tas on mas.CID = tas.CID ";
+	private static final int NOT_MANAGER = 0;
 
 	@Override
 	public List<MasterData> getAnPaidLea(String cid) {
@@ -167,7 +168,7 @@ public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidL
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(I18NText.getText("KMF001_196"), ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
-					, new DataEachBox(isTimeManager ? CommonTempHolidays.getEnumTimeAnnualRoundProcesCla(Integer.valueOf(rs.getString("ROUND_PRO_CLA_TAS"))) : null, ColumnTextAlign.LEFT)));
+					, new DataEachBox(isTimeManager && isTimeMaxDay ? CommonTempHolidays.getEnumTimeAnnualRoundProcesCla(Integer.valueOf(rs.getString("ROUND_PRO_CLA_TAS"))) : null, ColumnTextAlign.LEFT)));
 		} else {
 
 			datas = buildMasterListData();
@@ -184,7 +185,7 @@ public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidL
 				, new DataEachBox(null, ColumnTextAlign.LEFT)
 				, new DataEachBox(null, ColumnTextAlign.LEFT)
 				, new DataEachBox(null, ColumnTextAlign.LEFT)
-				, new DataEachBox(null, ColumnTextAlign.LEFT)));
+				, new DataEachBox(CommonTempHolidays.getTextEnumManageDistinct(NOT_MANAGER), ColumnTextAlign.LEFT)));
 		// Row 2
 		datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
 				, new DataEachBox(I18NText.getText("KMF001_177"), ColumnTextAlign.LEFT)
