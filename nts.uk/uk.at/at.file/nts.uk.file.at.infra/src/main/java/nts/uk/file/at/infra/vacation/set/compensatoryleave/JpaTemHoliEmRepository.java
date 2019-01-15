@@ -59,8 +59,7 @@ public class JpaTemHoliEmRepository extends JpaRepository implements TemHoliEmpl
         List<MasterData> datas = new ArrayList<>();
         /*※11*/
         boolean checkManagerAtr = rs.getString("MANAGE_ATR").equals("1");
-        /*※12*/
-        boolean checkManagerAtrTe = rs.getString("MANAGE_ATR_TE").equals("1");
+
         datas.add(buildARow(
                 rs.getString("CODE"),
                 rs.getString("NAME"),
@@ -68,7 +67,7 @@ public class JpaTemHoliEmRepository extends JpaRepository implements TemHoliEmpl
                 checkManagerAtr ? CommonTempHolidays.getTextEnumExpirationTime(Integer.valueOf(rs.getString("EXP_TIME"))) : null,
                 checkManagerAtr ? CommonTempHolidays.getTextEnumApplyPermission(Integer.valueOf(rs.getString("PREEMP_PERMIT_ATR"))): null,
                 checkManagerAtr ? CommonTempHolidays.getTextEnumManageDistinct((Integer.valueOf(rs.getString("MANAGE_ATR_TE")))) : null,
-                checkManagerAtr && checkManagerAtrTe ?CommonTempHolidays.getTextEnumTimeDigestiveUnit(Integer.valueOf( rs.getString("DIGESTIVE_UNIT"))) : null
+                checkManagerAtr ? CommonTempHolidays.getTextEnumTimeDigestiveUnit(Integer.valueOf(rs.getString("DIGESTIVE_UNIT"))) : null
                 ));
         return datas;
     }
