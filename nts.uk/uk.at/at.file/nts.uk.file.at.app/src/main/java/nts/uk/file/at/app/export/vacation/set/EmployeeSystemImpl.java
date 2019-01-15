@@ -281,6 +281,7 @@ public class EmployeeSystemImpl implements MasterListData {
                 .mainDataColumns(getHeaderColumns(EmployeeSystem.ANNUAL_HOLIDAYS))
                 .sheetName(getSheetName(EmployeeSystem.ANNUAL_HOLIDAYS))
                 .build();
+        
         List<MasterData> listAllRetenYearlySet = mRetenYearlySetRepository.getAllRetenYearlySet(companyId);
         sheetDatas.add(sheetData1);
         SheetData sheetData2 = SheetData.builder()
@@ -288,9 +289,9 @@ public class EmployeeSystemImpl implements MasterListData {
                 .mainDataColumns(getHeaderColumns(EmployeeSystem.CROWDED_COMPANY))
                 .sheetName(getSheetName(EmployeeSystem.CROWDED_COMPANY))
                 .build();
-
         sheetDatas.add(sheetData2);
-        if (listAllRetenYearlySet.get(0).getRowData().get(EmployeeSystemImpl.KMF001_200).getValue().equals(IS_MANAGE)) {
+
+        if (listAllRetenYearlySet.get(0).getRowData().get(EmployeeSystemImpl.KMF001_200).getValue()!= null) {
             SheetData sheetData3 = SheetData.builder()
                     .mainData(mEmplYearlyRetenSetRepository.getAllEmplYearlyRetenSet(companyId))
                     .mainDataColumns(getHeaderColumns(EmployeeSystem.STEADY_EMPLOYMENT))
@@ -298,12 +299,14 @@ public class EmployeeSystemImpl implements MasterListData {
                     .build();
             sheetDatas.add(sheetData3);
         }
+
         List<MasterData> listAllTemHoliCompany = mTempHoliComImplRepository.getAllTemHoliCompany(companyId);
         SheetData sheetData4 = SheetData.builder()
                 .mainData(listAllTemHoliCompany)
                 .mainDataColumns(getHeaderColumns(EmployeeSystem.OFFTIME_COMPANY))
                 .sheetName(getSheetName(EmployeeSystem.OFFTIME_COMPANY))
                 .build();
+
         if (listAllTemHoliCompany.get(0).getRowData().get(EmployeeSystemImpl.KMF001_206).getValue().equals(IS_MANAGE_OF_HOLIDAYS)) {
             SheetData sheetData5 = SheetData.builder()
                     .mainData(mTemHoliEmployeeRepository.getTemHoliEmployee(companyId))
@@ -312,29 +315,37 @@ public class EmployeeSystemImpl implements MasterListData {
                     .build();
             sheetDatas.add(sheetData5);
         }
+
+        List<MasterData> listAllComSubstVacation = mComSubstVacatRepository.getAllComSubstVacation(companyId);
         SheetData sheetData6 = SheetData.builder()
-                .mainData(mComSubstVacatRepository.getAllComSubstVacation(companyId))
+                .mainData(listAllComSubstVacation)
                 .mainDataColumns(getHeaderColumns(EmployeeSystem.SHUTDOWM_COMPANY))
                 .sheetName(getSheetName(EmployeeSystem.SHUTDOWM_COMPANY))
                 .build();
-        SheetData sheetData7 = SheetData.builder()
-                .mainData(mEmpSubstVacaRepository.getAllEmpSubstVacation(companyId))
-                .mainDataColumns(getHeaderColumns(EmployeeSystem.PAID_WORK))
-                .sheetName(getSheetName(EmployeeSystem.PAID_WORK))
-                .build();
+
+        if(listAllComSubstVacation.get(0).getRowData().get(EmployeeSystemImpl.KMF001_224).getValue().equals(IS_MANAGE)){
+            SheetData sheetData7 = SheetData.builder()
+                    .mainData(mEmpSubstVacaRepository.getAllEmpSubstVacation(companyId))
+                    .mainDataColumns(getHeaderColumns(EmployeeSystem.PAID_WORK))
+                    .sheetName(getSheetName(EmployeeSystem.PAID_WORK))
+                    .build();
+            sheetDatas.add(sheetData7);
+        }
+
         SheetData sheetData8 = SheetData.builder()
                 .mainData(mCom60HourVacaRepository.getAllCom60HourVacation(companyId))
                 .mainDataColumns(getHeaderColumns(EmployeeSystem.SIXTY_HOURS))
                 .sheetName(getSheetName(EmployeeSystem.SIXTY_HOURS))
                 .build();
+
         SheetData sheetData9 = SheetData.builder()
                 .mainData(mNursingLeaveSetRepository.getAllNursingLeaveSetting(companyId))
                 .mainDataColumns(getHeaderColumns(EmployeeSystem.NURSING_CARE))
                 .sheetName(getSheetName(EmployeeSystem.NURSING_CARE))
                 .build();
+
         sheetDatas.add(sheetData4);
         sheetDatas.add(sheetData6);
-        sheetDatas.add(sheetData7);
         sheetDatas.add(sheetData8);
         sheetDatas.add(sheetData9);
 

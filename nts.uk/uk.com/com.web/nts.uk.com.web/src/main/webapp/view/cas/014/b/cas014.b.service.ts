@@ -11,7 +11,7 @@ module nts.uk.com.view.cas014.b {
         }
         
         export function saveAsExcel(languageId: string, date: string): JQueryPromise<any> {
-                return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "JobInfo", domainType: "CAS014ロールセットの付与", languageId: languageId, reportType: 0, mode : 1, baseDate: date});
+                return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "JobInfo", domainType: "CAS014ロールセットの付与", languageId: languageId, reportType: 0, baseDate: date});
         }
 
         export function getAllRoleSet(): JQueryPromise<any> {
