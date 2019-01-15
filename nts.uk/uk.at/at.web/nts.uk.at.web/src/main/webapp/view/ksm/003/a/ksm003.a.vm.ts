@@ -145,27 +145,31 @@ module nts.uk.at.view.ksm003.a {
                 //bind item code name
                 self.mainModel().patternCode(dataRes.patternCode);
                 self.mainModel().patternName(dataRes.patternName);
-                for (let i = 0; i <= 9; i++) {
-                    if (lstVal[i]) {
-                        //set display order
-                        self.mainModel().dailyPatternVals()[i].dispOrder = i;
-                        //set day
-                        self.mainModel().dailyPatternVals()[i].days(lstVal[i].days);
-                        let workTimeCode = lstVal[i].workingHoursCd;
-                        let workTypeCode = lstVal[i].workTypeSetCd;
-                        // add workTypeName to List
-                        if (workTypeCode && workTypeCode != '') {
-                            self.mainModel().dailyPatternVals()[i].workTypeSetCd(workTypeCode);
-                            let workTypeName = _.find(lstWorkType, (i) => { return i.workTypeCode == workTypeCode }).name;
-                            self.mainModel().dailyPatternVals()[i].setWorkTypeName(workTypeName);
-                        }
-                        // add workHoursName to List
-                        if (workTimeCode && workTimeCode != '') {
-                            self.mainModel().dailyPatternVals()[i].workingHoursCd(workTimeCode);
-                            let workTimeName = _.find(lstWorkTime, (i) => { return i.code == workTimeCode }).name;
-                            self.mainModel().dailyPatternVals()[i].setWorkTimeName(workTimeName);
+                for (let k = 0; k < lstVal.length; k++) {
+                    for (let i = 0; i <= 9; i++) {
+                        if (lstVal[k].dispOrder == i) {
+                            //set display order
+                            //                        self.mainModel().dailyPatternVals()[k].dispOrder = i;
+                            //set day
+                            self.mainModel().dailyPatternVals()[i].days(lstVal[k].days);
+                            let workTimeCode = lstVal[k].workingHoursCd;
+                            let workTypeCode = lstVal[k].workTypeSetCd;
+                            // add workTypeName to List
+                            if (workTypeCode && workTypeCode != '') {
+                                self.mainModel().dailyPatternVals()[i].workTypeSetCd(workTypeCode);
+                                let workTypeName = _.find(lstWorkType, (i) => { return i.workTypeCode == workTypeCode }).name;
+                                self.mainModel().dailyPatternVals()[i].setWorkTypeName(workTypeName);
+                            }
+                            // add workHoursName to List
+                            if (workTimeCode && workTimeCode != '') {
+                                self.mainModel().dailyPatternVals()[i].workingHoursCd(workTimeCode);
+                                let workTimeName = _.find(lstWorkTime, (i) => { return i.code == workTimeCode }).name;
+                                self.mainModel().dailyPatternVals()[i].setWorkTimeName(workTimeName);
+                            }
+                            break;
                         }
                     }
+
                 }
             }
             // save Daily Pattern in database
@@ -340,12 +344,12 @@ module nts.uk.at.view.ksm003.a {
             public toDto(): DailyPatternDetailDto {
                 let lstVal: Array<DailyPatternValDto> = this.dailyPatternVals().map((item, index) => {
                     if (item.workTypeSetCd() || item.workingHoursCd() || item.days()) {
-                        return item.toDto(index);
+                        return item.toDto();
                     }
                 }).filter(function(el) {
                     return el != null;
                 });
-                return new DailyPatternDetailDto(nts.uk.text.padLeft(this.patternCode(), '0', 2), this.patternName(), _.sortBy(lstVal, o => o.dispOrder));
+                return new DailyPatternDetailDto(nts.uk.text.padLeft(this.patternCode(), '0', 2), this.patternName(), lstVal);
             }
 
             public resetModel() {
@@ -399,10 +403,7 @@ module nts.uk.at.view.ksm003.a {
                 this.workingInfo(this.workingHoursCd() + ' ' + workTimeName);
             }
 
-            public toDto(orderNumber: number): DailyPatternValDto {
-                if (!this.dispOrder) {
-                    this.dispOrder = orderNumber;
-                }
+            public toDto(): DailyPatternValDto {
                 return new DailyPatternValDto(this.dispOrder, this.workTypeSetCd(), this.workingHoursCd(), this.days());
             }
 
