@@ -722,7 +722,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
         if((i == 0 && type == 1) || (i == 1 && type == 1)) {
             return TextResource.localize("KAF022_468");
         }
-        if((i == 2 && type == 1) || (i == 3 && type == 1) || (i == 4 && type == 1)) {
+        if((i == 2 && type == 1) || (i == 3 && type == 1) || (i == 5 && type == 1)) {
             return TextResource.localize("KAF022_481");
         }
         return "";
@@ -817,7 +817,6 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
         }
         if(i == 5 && obj[15] != null) {
             return obj[15].toString();
-
         }
         if(i == 6 && obj[16] != null) {
             return obj[16].toString();
@@ -857,11 +856,11 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
     }
 
     private String getValueA8Top(int i, Object[] obj){
-        if(i == 0 && obj[33] != null ) {
-            return ((BigDecimal)obj[33]).intValue() == 1 ? "○" : "-";
+        if(i == 0 && obj[51] != null ) {
+            return ((BigDecimal)obj[51]).intValue() == 1 ? "○" : "-";
         }
-        if(i == 1 && obj[17] != null ) {
-            return ((BigDecimal)obj[17]).intValue() == 1 ? "○" : "-";
+        if(i == 1 && obj[33] != null ) {
+            return ((BigDecimal)obj[33]).intValue() == 1 ? "○" : "-";
         }
         if(i == 2 && obj[31] != null ) {
             return ((BigDecimal)obj[31]).intValue() == 1 ? "○" : "-";
@@ -1067,10 +1066,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
             if(item[12] != null) {
                 datasA12.addAll(this.putDatasA12(item));
             }
-            if(item[8] != null) {
-                datasA13.addAll(this.putDatasA13(item));
-            }
-
+            datasA13.addAll(this.putDatasA13(item));
         });
         datasA8Center.addAll(this.putDatasA8Center(preparationBefore));
         datasA6.addAll(this.putDatasA6(preparationBefore));

@@ -44,47 +44,56 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("       WHEN TEMP.REQUIRED_INSTRUCTION_FLG = 1 THEN ?requiredInstruction ");
 		sql.append("       ELSE NULL ");
 		sql.append("     END REQUIRED_INSTRUCTION_FLG, ");
-		sql.append("     CASE WHEN TEMP.APP_TYPE = 0 AND TEMP.OT_APP_SETTING_FLG = 0 THEN ?notPrerequisiteUseAtrText ");
+		sql.append("     CASE WHEN TEMP.USE_ATR != 1 THEN NULL ");
+		sql.append("       WHEN TEMP.APP_TYPE = 0 AND TEMP.OT_APP_SETTING_FLG = 0 THEN ?notPrerequisiteUseAtrText ");
 		sql.append("       WHEN TEMP.APP_TYPE = 0 AND TEMP.OT_APP_SETTING_FLG = 1 THEN ?prerequisiteUseAtrText ");
 		sql.append("       WHEN TEMP.APP_TYPE = 6 AND TEMP.PREREQUISITE_FORPAUSE_FLG = 0 THEN ?notPrerequisiteUseAtrText ");
 		sql.append("       WHEN TEMP.APP_TYPE = 6 AND TEMP.PREREQUISITE_FORPAUSE_FLG = 1 THEN ?prerequisiteUseAtrText ");
 		sql.append("       ELSE NULL ");
 		sql.append("     END OT_APP_SETTING_FLG, ");
-		sql.append("     CASE WHEN TEMP.APP_TYPE != 0 AND TEMP.APP_TYPE != 6 AND TEMP.APP_TYPE != 8 THEN NULL ");
+		sql.append("     CASE WHEN TEMP.USE_ATR != 1 THEN NULL ");
+		sql.append("       WHEN TEMP.APP_TYPE != 0 AND TEMP.APP_TYPE != 6 AND TEMP.APP_TYPE != 8 THEN NULL ");
 		sql.append("       WHEN TEMP.TIME_CAL_USE_ATR = 0 THEN ?timeCalNotUseText ");
 		sql.append("       WHEN TEMP.TIME_CAL_USE_ATR = 1 THEN ?timeCalUseText ");
 		sql.append("       ELSE NULL ");
 		sql.append("     END TIME_CAL_USE_ATR, ");
-		sql.append("     CASE WHEN (TEMP.APP_TYPE != 0 AND TEMP.APP_TYPE != 6) OR TEMP.TIME_CAL_USE_ATR != 1 THEN NULL ");
+		sql.append("     CASE WHEN TEMP.USE_ATR != 1 THEN NULL ");
+		sql.append("       WHEN (TEMP.APP_TYPE != 0 AND TEMP.APP_TYPE != 6) OR TEMP.TIME_CAL_USE_ATR != 1 THEN NULL ");
 		sql.append("       WHEN TEMP.BREAK_INPUTFIELD_DIS_FLG = 0 THEN ?breakInputfieldNotDisp ");
 		sql.append("       WHEN TEMP.BREAK_INPUTFIELD_DIS_FLG = 1 THEN ?breakInputfieldDisp ");
 		sql.append("       ELSE NULL ");
 		sql.append("     END BREAK_INPUTFIELD_DIS_FLG, ");
-		sql.append("     CASE WHEN (TEMP.APP_TYPE != 0 AND TEMP.APP_TYPE != 6) OR TEMP.TIME_CAL_USE_ATR != 1 THEN NULL ");
+		sql.append("     CASE WHEN TEMP.USE_ATR != 1 THEN NULL ");
+		sql.append("       WHEN (TEMP.APP_TYPE != 0 AND TEMP.APP_TYPE != 6) OR TEMP.TIME_CAL_USE_ATR != 1 THEN NULL ");
 		sql.append("       WHEN TEMP.GOOUT_TIME_BEGIN_DIS_FLG = 0 THEN ?gooutTimeBeginNotDisp ");
 		sql.append("       WHEN TEMP.GOOUT_TIME_BEGIN_DIS_FLG = 1 THEN ?gooutTimeBeginDisp ");
 		sql.append("       ELSE NULL ");
 		sql.append("     END GOOUT_TIME_BEGIN_DIS_FLG, ");
-		sql.append("     CASE WHEN (TEMP.APP_TYPE != 0 AND TEMP.APP_TYPE != 6) OR TEMP.TIME_CAL_USE_ATR != 1 THEN NULL ");
+		sql.append("     CASE WHEN TEMP.USE_ATR != 1 THEN NULL ");
+		sql.append("       WHEN (TEMP.APP_TYPE != 0 AND TEMP.APP_TYPE != 6) OR TEMP.TIME_CAL_USE_ATR != 1 THEN NULL ");
 		sql.append("       WHEN TEMP.ATWORK_TIME_BEGIN_DIS_FLG = 0 THEN ?atWorkAtr0 ");
 		sql.append("       WHEN TEMP.ATWORK_TIME_BEGIN_DIS_FLG = 1 THEN ?atWorkAtr1 ");
 		sql.append("       WHEN TEMP.ATWORK_TIME_BEGIN_DIS_FLG = 2 THEN ?atWorkAtr2 ");
 		sql.append("       WHEN TEMP.ATWORK_TIME_BEGIN_DIS_FLG = 3 THEN ?atWorkAtr3 ");
 		sql.append("       ELSE NULL ");
 		sql.append("     END ATWORK_TIME_BEGIN_DIS_FLG, ");
-		sql.append("     CASE WHEN TEMP.APP_TYPE = 0 AND TEMP.TIME_INPUT_USE_ATR = 0 THEN ?notOvertimeHoursText ");
+		sql.append("     CASE WHEN TEMP.USE_ATR != 1 THEN NULL ");
+		sql.append("       WHEN TEMP.APP_TYPE = 0 AND TEMP.TIME_INPUT_USE_ATR = 0 THEN ?notOvertimeHoursText ");
 		sql.append("       WHEN TEMP.APP_TYPE = 0 AND TEMP.TIME_INPUT_USE_ATR = 1 THEN ?overtimeHoursText ");
 		sql.append("       ELSE NULL ");
 		sql.append("     END OVERTIME_HOURS, ");
-		sql.append("     CASE WHEN TEMP.APP_TYPE = 6 AND TEMP.TIME_INPUT_USE_ATR = 0 THEN ?notbreakTimeText ");
+		sql.append("     CASE WHEN TEMP.USE_ATR != 1 THEN NULL ");
+		sql.append("       WHEN TEMP.APP_TYPE = 6 AND TEMP.TIME_INPUT_USE_ATR = 0 THEN ?notbreakTimeText ");
 		sql.append("       WHEN TEMP.APP_TYPE = 6 AND TEMP.TIME_INPUT_USE_ATR = 1 THEN ?breakTimeText ");
 		sql.append("       ELSE NULL ");
 		sql.append("     END REST_TIME, ");
-		sql.append("     CASE WHEN TEMP.APP_TYPE = 9 AND TEMP.LATE_OR_LEAVE_APP_CANCEL_FLG = 0 THEN ?notLateOrLeaveAppCancelText ");
+		sql.append("     CASE WHEN TEMP.USE_ATR != 1 THEN NULL ");
+		sql.append("       WHEN TEMP.APP_TYPE = 9 AND TEMP.LATE_OR_LEAVE_APP_CANCEL_FLG = 0 THEN ?notLateOrLeaveAppCancelText ");
 		sql.append("       WHEN TEMP.APP_TYPE = 9 AND TEMP.LATE_OR_LEAVE_APP_CANCEL_FLG = 1 THEN ?lateOrLeaveAppCancelText ");
 		sql.append("       ELSE NULL ");
 		sql.append("     END LATE_OR_LEAVE_APP_CANCEL_FLG, ");
-		sql.append("     CASE WHEN TEMP.APP_TYPE = 9 AND TEMP.LATE_OR_LEAVE_APP_SETTING_FLG = 0 THEN ?notLateOrLeaveAppSettingText ");
+		sql.append("     CASE WHEN TEMP.USE_ATR != 1 THEN NULL ");
+		sql.append("       WHEN TEMP.APP_TYPE = 9 AND TEMP.LATE_OR_LEAVE_APP_SETTING_FLG = 0 THEN ?notLateOrLeaveAppSettingText ");
 		sql.append("       WHEN TEMP.APP_TYPE = 9 AND TEMP.LATE_OR_LEAVE_APP_SETTING_FLG = 1 THEN ?lateOrLeaveAppSettingText ");
 		sql.append("       ELSE NULL ");
 		sql.append("     END LATE_OR_LEAVE_APP_SETTING_FLG, ");
@@ -107,7 +116,7 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("     LATE_OR_LEAVE_APP_SETTING_FLG, ");
 		sql.append("     MEMO,  ");
 		sql.append("     0 AS NUM_ORDER,  ");
-		sql.append("     ROW_NUMBER() OVER (PARTITION BY CID ORDER BY CID, APP_TYPE) AS ROW_NUMBER  ");
+		sql.append("     CASE WHEN APP_TYPE = 7 THEN 10 WHEN APP_TYPE = 8 THEN 8 WHEN APP_TYPE = 9 THEN 9 ELSE APP_TYPE + 1 END AS ROW_NUMBER  ");
 		sql.append("    FROM KRQST_COM_APP_CF_DETAIL ");
 		sql.append("    WHERE CID = ?cid ");
 		sql.append("    UNION ALL ");
@@ -130,12 +139,15 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("     WP.NUM_ORDER, ");
 		sql.append("     WP.ROW_NUMBER ");
 		sql.append("    FROM ");
-		sql.append("     (SELECT *, ROW_NUMBER() OVER (PARTITION BY CID ORDER BY CID, WKP_ID, APP_TYPE) AS NUM_ORDER, ROW_NUMBER() OVER (PARTITION BY CID, WKP_ID ORDER BY CID, WKP_ID, APP_TYPE) AS ROW_NUMBER FROM KRQST_WP_APP_CF_DETAIL) WP  ");
+		sql.append("     (SELECT *, ROW_NUMBER() OVER (PARTITION BY CID ORDER BY CID, WKP_ID, DISPLAY_ORDER) AS NUM_ORDER, ");
+		sql.append("     ROW_NUMBER() OVER (PARTITION BY CID, WKP_ID ORDER BY CID, WKP_ID, DISPLAY_ORDER) AS ROW_NUMBER ");
+		sql.append("     FROM (SELECT *, CASE WHEN APP_TYPE = 7 THEN 9 WHEN APP_TYPE = 8 THEN 7 WHEN APP_TYPE = 9 THEN 8 ELSE APP_TYPE END DISPLAY_ORDER FROM KRQST_WP_APP_CF_DETAIL) WP_APP_CF_DETAIL) WP ");
 		sql.append("     LEFT JOIN BSYMT_WORKPLACE_HIST WPH ON WP.CID = WPH.CID AND WP.WKP_ID = WPH.WKPID AND WPH.END_DATE = ?baseDate ");
 		sql.append("     LEFT JOIN BSYMT_WORKPLACE_INFO WPI ON WP.CID = WPI.CID AND WP.WKP_ID = WPI.WKPID AND WPH.HIST_ID = WPI.HIST_ID ");
 		sql.append("    WHERE ");
 		sql.append("     WP.CID = ?cid) TEMP ");
 		sql.append("     ORDER BY TEMP.CODE, TEMP.NUM_ORDER, TEMP.ROW_NUMBER;");
+		
 		List<Object[]> resultQuery = null;
 		try {
 			resultQuery = (List<Object[]>) getEntityManager().createNativeQuery(sql.toString())
@@ -258,7 +270,8 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("      EMP_SET.APP_TYPE, ");
 		sql.append("      EMP_SET.HOLIDAY_OR_PAUSE_TYPE, ");
 		sql.append("      EMP_SET.HOLIDAY_TYPE_USE_FLG, ");
-		sql.append("      ROW_NUMBER() OVER (PARTITION BY EMP.CID, EMP.CODE ORDER BY EMP.CID, EMP.CODE, EMP_SET.APP_TYPE, EMP_SET.HOLIDAY_OR_PAUSE_TYPE) AS ROW_NUM ");
+		sql.append("      ROW_NUMBER() OVER (PARTITION BY EMP.CID, EMP.CODE ORDER BY EMP.CID, EMP.CODE, EMP_SET.APP_TYPE, EMP_SET.HOLIDAY_OR_PAUSE_TYPE) AS ROW_NUM, ");
+		sql.append("      CASE WHEN EMP_SET.APP_TYPE = 10 THEN 1 - EMP_SET.HOLIDAY_OR_PAUSE_TYPE  ELSE EMP_SET.HOLIDAY_OR_PAUSE_TYPE END DISPLAY_ORDER ");
 		sql.append("     FROM ");
 		sql.append("      BSYMT_EMPLOYMENT EMP ");
 		sql.append("      LEFT JOIN KRQST_APP_EMPLOYMENT_SET EMP_SET ");
@@ -266,8 +279,8 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("       AND EMP.CODE = EMP_SET.EMPLOYMENT_CODE ");
 		sql.append("     WHERE ");
 		sql.append("      EMP.CID = ?cid AND EMP_SET.DISPLAY_FLAG = 1) TEMP ");
-		sql.append("    GROUP BY TEMP.CID, TEMP.CODE, TEMP.NAME, TEMP.APP_TYPE, TEMP.HOLIDAY_OR_PAUSE_TYPE, TEMP.HOLIDAY_TYPE_USE_FLG ");
-		sql.append("    ORDER BY TEMP.CODE, TEMP.APP_TYPE, TEMP.HOLIDAY_OR_PAUSE_TYPE;");
+		sql.append("    GROUP BY TEMP.CID, TEMP.CODE, TEMP.NAME, TEMP.APP_TYPE, TEMP.HOLIDAY_OR_PAUSE_TYPE, TEMP.HOLIDAY_TYPE_USE_FLG, TEMP.DISPLAY_ORDER ");
+		sql.append("    ORDER BY TEMP.CODE, TEMP.APP_TYPE, TEMP.DISPLAY_ORDER;");
 		List<Object[]> resultQuery = null;
 		try {
 			resultQuery = getEntityManager().createNativeQuery(sql.toString())
@@ -291,8 +304,8 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 					.setParameter("pauseType5", TextResource.localize("KAF022_52"))
 					.setParameter("pauseType6", TextResource.localize("KAF022_53"))
 					.setParameter("pauseType7", TextResource.localize("KAF022_54"))
-					.setParameter("holidayType0", TextResource.localize("KAF022_279"))
-					.setParameter("holidayType1", TextResource.localize("KAF022_54"))
+					.setParameter("holidayType1", TextResource.localize("KAF022_279"))
+					.setParameter("holidayType0", TextResource.localize("KAF022_54"))
 					.setParameter("holidayTypeUseText", "○")
 					.setParameter("holidayTypeNotUseText", "-")
 					.getResultList();
