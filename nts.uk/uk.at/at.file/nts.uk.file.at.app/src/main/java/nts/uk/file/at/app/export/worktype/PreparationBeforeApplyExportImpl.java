@@ -857,11 +857,11 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
     }
 
     private String getValueA8Top(int i, Object[] obj){
-        if(i == 0 && obj[33] != null ) {
-            return ((BigDecimal)obj[33]).intValue() == 1 ? "○" : "-";
+        if(i == 0 && obj[51] != null ) {
+            return ((BigDecimal)obj[51]).intValue() == 1 ? "○" : "-";
         }
-        if(i == 1 && obj[17] != null ) {
-            return ((BigDecimal)obj[17]).intValue() == 1 ? "○" : "-";
+        if(i == 1 && obj[33] != null ) {
+            return ((BigDecimal)obj[33]).intValue() == 1 ? "○" : "-";
         }
         if(i == 2 && obj[31] != null ) {
             return ((BigDecimal)obj[31]).intValue() == 1 ? "○" : "-";
