@@ -1066,7 +1066,9 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
             if(item[12] != null) {
                 datasA12.addAll(this.putDatasA12(item));
             }
-            datasA13.addAll(this.putDatasA13(item));
+            if(item[49] != null){
+                datasA13.addAll(this.putDatasA13(item));
+            }
         });
         datasA8Center.addAll(this.putDatasA8Center(preparationBefore));
         datasA6.addAll(this.putDatasA6(preparationBefore));
