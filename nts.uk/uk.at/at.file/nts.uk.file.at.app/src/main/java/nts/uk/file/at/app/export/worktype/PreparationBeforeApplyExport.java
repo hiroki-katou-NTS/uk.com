@@ -130,7 +130,7 @@ public class PreparationBeforeApplyExport {
             if(r[14] != null) {
                 data.put(KAF022_512, MasterCellData.builder()
                         .columnId(KAF022_512)
-                        .value(EnumAdaptor.valueOf(((BigDecimal) r[14]).intValue(), ApplicationType.class).nameId)
+                        .value(r[14] == null ? "" : EnumAdaptor.valueOf(((BigDecimal) r[14]).intValue(), ApplicationType.class).nameId)
                         .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                         .build());
                 data.put(KAF022_513, MasterCellData.builder()
