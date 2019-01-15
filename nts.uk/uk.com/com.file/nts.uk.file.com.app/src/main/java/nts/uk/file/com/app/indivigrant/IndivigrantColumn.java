@@ -1,4 +1,4 @@
-package nts.uk.file.com.app.Indivigrant;
+package nts.uk.file.com.app.indivigrant;
 
 public class IndivigrantColumn {
 	//R7_1
