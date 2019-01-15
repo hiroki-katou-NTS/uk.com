@@ -1836,7 +1836,9 @@ public class ProgramsManager {
 	public static final Program CMM020A = new Program(WebAppId.COM, ProgramIdConsts.CMM020A, "CMM020_9",
 			"/view/cmm/020/a/index.xhtml");
 	/** CCG018 */
-
+	/** CCG022 */
+	public static final Program CCG022A = new Program(WebAppId.COM, ProgramIdConsts.CCG022A, "CCG022_1",
+			"/view/ccg/022/a/index.xhtml");
 	/** KAL001 */
 	public static final Program KAL001A = new Program(WebAppId.AT, ProgramIdConsts.KAL001A, "KAL001_1",
 			"/view/kal/001/a/index.xhtml");

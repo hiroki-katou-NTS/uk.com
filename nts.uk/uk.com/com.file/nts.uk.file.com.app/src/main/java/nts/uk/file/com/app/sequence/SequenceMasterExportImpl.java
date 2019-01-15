@@ -170,7 +170,12 @@ public class SequenceMasterExportImpl implements MasterListData{
 				}else{
 					data.put("序列コード", c.getSequenceCode());
 					Optional<SequenceMaster> opfindBySequenceCode = sequenceMasterRepository.findBySequenceCode(companyId, c.getSequenceCode());
-					data.put("序列名", opfindBySequenceCode.get().getSequenceName());
+					
+					if(opfindBySequenceCode.isPresent()){
+						data.put("序列名", opfindBySequenceCode.get().getSequenceName());
+					}else{
+						data.put("序列名","");
+					}
 				}
 				
 

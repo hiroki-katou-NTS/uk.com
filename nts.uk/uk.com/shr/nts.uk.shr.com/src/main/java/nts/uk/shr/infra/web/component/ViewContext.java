@@ -10,14 +10,12 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.servlet.http.HttpServletRequest;
 
+import nts.uk.shr.com.i18n.TextResource;
 import nts.arc.system.ServerSystemProperties;
-import nts.uk.shr.com.constants.DefaultSettingKeys;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-import nts.uk.shr.com.context.ScreenIdentifier;
 import nts.uk.shr.com.context.loginuser.SelectedLanguage;
 import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
-import nts.uk.shr.com.menu.ShareStandardMenuAdapter;
 import nts.uk.shr.com.operation.SystemOperationSetting;
 import nts.uk.shr.com.operation.SystemOperationSettingAdapter;
 import nts.uk.shr.com.program.ProgramsManager;
@@ -80,7 +78,8 @@ public class ViewContext extends UIComponentBase {
 		ProgramsManager.find(webApi, requestedPath).ifPresent(pr -> {
 			builder.append("webapi: " + formatValue(pr.getAppId().name));
 			builder.append(", programId: " + formatValue(pr.getPId()));
-			builder.append(", programName: " + formatValue(getPgName(applicationContextPath + requestedPath, queryString)));
+			String programName = TextResource.localize(pr.getPName());
+			builder.append(", programName: " + formatValue(programName));
 			builder.append(", path: " + formatValue(pr.getPPath()));
 			if (queryString != null) {
 				builder.append(", queryString: " + formatValue(queryString));
@@ -96,13 +95,6 @@ public class ViewContext extends UIComponentBase {
 		builder.append("isDebugMode: " + ServerSystemProperties.isDebugMode() + ",");
 
 		rw.write("program: {" + builder.toString() + "}");
-	}
-
-	private String getPgName(String requestedPath, String queryString) {
-		String qs = queryString == null ? "" : queryString;
-		ScreenIdentifier target = ScreenIdentifier.create(requestedPath, queryString);
-		ShareStandardMenuAdapter sMenu = CDI.current().select(ShareStandardMenuAdapter.class).get();
-		return sMenu.getProgramName(AppContexts.user().companyId(), target.getScreenId(), target.getProgramId(), qs).orElse(null);
 	}
 
 	private String formatValue(String value){
