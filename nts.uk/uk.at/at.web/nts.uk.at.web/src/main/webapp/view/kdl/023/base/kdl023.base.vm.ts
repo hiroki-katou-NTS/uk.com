@@ -57,7 +57,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             self.isOutOfCalendarRange = ko.observable(false);
             self.buttonReflectPatternText = ko.observable('');
             self.isDataEmpty = false;
-
+            self.calendarStartDate = moment();
             // Calendar component
             self.yearMonthPicked = ko.observable(parseInt(moment().format('YYYYMM'))); // default: current system date.
             self.cssRangerYM = {
