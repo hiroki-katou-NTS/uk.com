@@ -1186,7 +1186,7 @@ public class PreparationBeforeApplyExport {
             case 11:
                 return ((BigDecimal)obj[13]).intValue() == 0 ? TextResource.localize("KAF022_139") : TextResource.localize("KAF022_140");
             case 12:
-                return ((BigDecimal)obj[105]).intValue() == 1 ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
+                return ((BigDecimal)obj[12]).intValue() == 1 ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
             case 13:
                 if(obj[13] == null) {
                     return "";
