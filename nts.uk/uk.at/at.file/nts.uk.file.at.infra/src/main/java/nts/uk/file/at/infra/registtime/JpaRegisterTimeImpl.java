@@ -11,11 +11,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateAtr;
 import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateType;
 import nts.uk.ctx.at.record.dom.standardtime.enums.StartingMonthType;
@@ -132,6 +129,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	
 	private static final String SQL_EXPORT_SHEET_4 = " WITH summary AS ("
 			+ " SELECT "
+			+ "		ee.END_DATE,"
 			+ " 	kk.WKPCD,"
 			+ " 	kk.WKP_NAME,"
 			+ " 	ROW_NUMBER() OVER("
@@ -230,7 +228,12 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " WHERE"
 			+ " 	 bb.LABOR_SYSTEM_ATR = 0 AND kk.CID = ?cid"
 			+ " )"
-			+ " SELECT s.WKPCD,s.WKP_NAME,s.ERROR_WEEK,s.ALARM_WEEK,s.LIMIT_WEEK,"
+			+ " SELECT s.WKPCD,"
+			+ " CASE s.END_DATE"
+			+ " When '9999-12-31 00:00:00' then s.WKP_NAME "
+			+ " ELSE 'マスタ未登録' "
+			+ " END as WKP_NAME,"
+			+ " s.ERROR_WEEK,s.ALARM_WEEK,s.LIMIT_WEEK,"
 			+ " 			 s.ERROR_TWO_WEEKS,s.ALARM_TWO_WEEKS,s.LIMIT_TWO_WEEKS,"
 			+ " 			 s.ERROR_FOUR_WEEKS,s.ALARM_FOUR_WEEKS,s.LIMIT_FOUR_WEEKS,"
 			+ " 			 s.ERROR_ONE_MONTH,s.ALARM_ONE_MONTH,s.LIMIT_ONE_MONTH,"
@@ -311,7 +314,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " bb.CLSCD = kk.CLSCD AND bb.LABOR_SYSTEM_ATR = 0 "
 			+ "WHERE "
 			+ "	bb.CID = ?cid "
-			+ "AND kk.CID = ?cid";
+			+ "AND kk.CID = ?cid"
+			+ " ORDER BY kk.CLSCD";
 	
 	private static final String SQL_EXPORT_SHEET_6 = "SELECT aa.ERROR_WEEK,aa.ALARM_WEEK,aa.LIMIT_WEEK, "
 			+ "aa.ERROR_TWO_WEEKS,aa.ALARM_TWO_WEEKS,aa.LIMIT_TWO_WEEKS, "
@@ -401,6 +405,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	
 	private static final String SQL_EXPORT_SHEET_8 =  " WITH summary AS ("
 			+ " SELECT "
+			+ "     ee.END_DATE,"
 			+ " 	kk.WKPCD,"
 			+ " 	kk.WKP_NAME,"
 			+ " 	ROW_NUMBER() OVER("
@@ -499,7 +504,12 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " WHERE"
 			+ " 	 bb.LABOR_SYSTEM_ATR = 1 AND kk.CID = ?cid"
 			+ " )"
-			+ " SELECT s.WKPCD,s.WKP_NAME,s.ERROR_WEEK,s.ALARM_WEEK,s.LIMIT_WEEK,"
+			+ " SELECT s.WKPCD,"
+			+ "	CASE s.END_DATE "
+			+ " When '9999-12-31 00:00:00' then s.WKP_NAME "
+			+ " ELSE 'マスタ未登録' "
+			+ " END as WKP_NAME,"
+			+ "				s.ERROR_WEEK,s.ALARM_WEEK,s.LIMIT_WEEK,"
 			+ " 			 s.ERROR_TWO_WEEKS,s.ALARM_TWO_WEEKS,s.LIMIT_TWO_WEEKS,"
 			+ " 			 s.ERROR_FOUR_WEEKS,s.ALARM_FOUR_WEEKS,s.LIMIT_FOUR_WEEKS,"
 			+ " 			 s.ERROR_ONE_MONTH,s.ALARM_ONE_MONTH,s.LIMIT_ONE_MONTH,"
@@ -580,7 +590,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " bb.CLSCD = kk.CLSCD AND bb.LABOR_SYSTEM_ATR = 1 "
 			+ "WHERE "
 			+ "	bb.CID = ?cid "
-			+ "AND kk.CID = ?cid";
+			+ "AND kk.CID = ?cid"
+			+ " ORDER BY kk.CLSCD";
 	
 	private static final String SQL_EXPORT_SHEET_10 = " SELECT"
 			+" 	CASE"
@@ -785,17 +796,17 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_80, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_80)
                 .value(checkRow == 0 ? RegistTimeColumn.KMK008_82 : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.HEADER_NONE1, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_80)
                 .value(checkRow == 0 ? RegistTimeColumn.KMK008_83 : checkRow == 1 ? RegistTimeColumn.KMK008_84 : checkRow == 2 ? RegistTimeColumn.KMK008_85 : checkRow == 3 ? RegistTimeColumn.KMK008_86 : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.HEADER_NONE2, MasterCellData.builder()
                 .columnId(RegistTimeColumn.HEADER_NONE2)
                 .value(checkRow == 3 ? RegistTimeColumn.KMK008_87 : checkRow == 4 ? RegistTimeColumn.KMK008_88 : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_81, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_81)
@@ -811,22 +822,22 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_80, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_80)
                 .value(check == 0 ? RegistTimeColumn.KMK008_82 : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.HEADER_NONE1, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_80)
                 .value(check == 0 ? RegistTimeColumn.KMK008_83 : check == 1 ? RegistTimeColumn.KMK008_84 : check == 3 ? RegistTimeColumn.KMK008_85 : check == 4 ? RegistTimeColumn.KMK008_86 : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.HEADER_NONE2, MasterCellData.builder()
                 .columnId(RegistTimeColumn.HEADER_NONE2)
                 .value(check == 4 ? RegistTimeColumn.KMK008_87 : check == 5 ? RegistTimeColumn.KMK008_88 : "")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_81, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_81)
                 .value(getValue(((BigDecimal)object).intValue(),check,closeDateAtr))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .style(MasterCellStyle.build().horizontalAlign(check == 0 || check == 2 || check == 3 ? ColumnTextAlign.RIGHT : ColumnTextAlign.LEFT))
                 .build());
 		return MasterData.builder().rowData(data).build();
 	}
@@ -875,11 +886,10 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	}
 	
 	private String formatTime(int source) {
-		int regularized = Math.abs(source);
-		int hourPart = (regularized / 60);
-		int minutePart = regularized % 60;
-		String resultString = StringUtils.join(StringUtil.padLeft(String.valueOf(hourPart), 2, '0'),":", StringUtil.padLeft(String.valueOf(minutePart), 2, '0'));
-		return resultString;
+		int hourPart = (source / 60);
+		int minutePart = source % 60;
+		String result = String.format("%d:%02d", hourPart, minutePart);
+		return result;
 	}
 
 	@Override
@@ -911,7 +921,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_89)
                 .value(getColumnOneSheet2(rownum))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_90)
@@ -996,7 +1006,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_89)
                 .value(getColumnOneSheet2(rownum))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		 data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
 	                .columnId(RegistTimeColumn.KMK008_90)
@@ -1050,7 +1060,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_89)
                 .value(getColumnOneSheet2(rownum))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		 data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
 	                .columnId(RegistTimeColumn.KMK008_90)
@@ -1105,7 +1115,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_89)
                 .value(getColumnOneSheet2(rownum))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_90)
@@ -1154,7 +1164,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_89)
                 .value(getColumnOneSheet2(rownum))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_90)
@@ -1210,7 +1220,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_89)
                 .value(getColumnOneSheet2(rownum))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		 data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
 	                .columnId(RegistTimeColumn.KMK008_90)
@@ -1264,7 +1274,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_89)
                 .value(getColumnOneSheet2(rownum))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		 data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
 	                .columnId(RegistTimeColumn.KMK008_90)
@@ -1317,7 +1327,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_89)
                 .value(getColumnOneSheet2(rownum))
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_90, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_90)

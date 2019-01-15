@@ -90,10 +90,6 @@ public class PersonRoleExportImpl implements MasterListData {
 		//A7_21
 		columns.add(
 				new MasterHeaderColumn(PersonRoleColumn.CAS001_99, TextResource.localize("CAS001_97"), ColumnTextAlign.LEFT, "", true));
-		/*columns.add(
-				new MasterHeaderColumn(PersonRoleColumn.CAS001_98, TextResource.localize("CAS001_98"), ColumnTextAlign.LEFT, "", true));
-		columns.add(
-				new MasterHeaderColumn(PersonRoleColumn.CAS001_99, TextResource.localize("CAS001_99"), ColumnTextAlign.LEFT, "", true));*/
 		return columns;
 	}
 

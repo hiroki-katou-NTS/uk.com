@@ -263,7 +263,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
                     .build());
             dataA7.put(COLUMN_NO_HEADER_4, MasterCellData.builder()
                     .columnId(COLUMN_NO_HEADER_4)
-                    .value(i == 1 ? TextResource.localize("KAF022_468") : "")
+                    .value(i == 1 ? TextResource.localize("KAF022_470") : "")
                     .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                     .build());
             dataA7.put(KAF022_455, MasterCellData.builder()
@@ -579,13 +579,13 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
 
     private String getTextA4(int i){
         if(i == 0) {
-            return KAF022_456;
+            return TextResource.localize("KAF022_457");
         }
         if(i == 1) {
-            return KAF022_458;
+            return TextResource.localize("KAF022_458");
         }
         if(i == 2) {
-            return KAF022_459;
+            return TextResource.localize("KAF022_459");
         }
         return "";
     }
@@ -595,10 +595,10 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
             return obj[1].toString();
         }
         if(i == 1) {
-            return ((BigDecimal)obj[3]).intValue() == 1 ? "○" : "";
+            return ((BigDecimal)obj[3]).intValue() == 1 ? "○" : "-";
         }
         if(i == 2 && ((BigDecimal)obj[3]).intValue() == 1) {
-            return ((BigDecimal) obj[4]).intValue() == 0 ? TextResource.localize("KAF022_321") : TextResource.localize("KAF022_322");
+            return ((BigDecimal) obj[4]).intValue() == 0 ? TextResource.localize("KAF022_321") + TextResource.localize("KAF022_508") : TextResource.localize("KAF022_322") + TextResource.localize("KAF022_508");
         }
         if(i == 3 && ((BigDecimal)obj[3]).intValue() == 1) {
             return getTextDeadLine(((BigDecimal) obj[5]).intValue());
@@ -607,9 +607,6 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
     }
     
     private String getTextDeadLine(int value){
-        if(value == 0 ) {
-            return TextResource.localize("KAF022_321");
-        }
         int text = 323 + value;
         String resource = "KAF022_" + text;
         return TextResource.localize(resource) + TextResource.localize("KAF022_509");
