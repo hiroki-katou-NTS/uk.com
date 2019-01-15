@@ -79,7 +79,7 @@ module nts.uk.at.view.ksm004.a {
             isShowDatepicker: boolean = false;
             constructor() {
                 var self = this;
-                self.showExportBtn();
+//                self.showExportBtn();
                 self.yearMonthPicked.subscribe(value => {
                     if (!nts.uk.util.isNullOrEmpty(value)) {
                         if ($("#yearMonthPicker1").ntsError("hasError")) {

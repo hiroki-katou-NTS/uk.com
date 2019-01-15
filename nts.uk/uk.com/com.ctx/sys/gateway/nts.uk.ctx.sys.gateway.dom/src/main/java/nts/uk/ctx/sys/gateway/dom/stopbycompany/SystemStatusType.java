@@ -4,14 +4,19 @@ package nts.uk.ctx.sys.gateway.dom.stopbycompany;
  * @author sonnlb
  */
 public enum SystemStatusType {
+	
 	/**
-	 * 担当者モード
+	 * 業務運用中
 	 */
-	PERSON_MODE(1),
+	RUNNING(0),
 	/**
-	 * 管理者モード
+	 * 利用停止前段階
 	 */
-	ADMIN_MODE(2);
+	IN_PROGRESS(1),
+	/**
+	 * 利用停止中
+	 */
+	STOP(2);
 
 	public final int value;
 

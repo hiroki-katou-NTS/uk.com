@@ -15,6 +15,11 @@ import nts.uk.ctx.at.schedule.app.export.horitotalcategory.HoriTotalExel;
 import nts.uk.ctx.at.schedule.app.export.horitotalcategory.ItemCNTSetExcel;
 import nts.uk.ctx.at.schedule.app.export.horitotalcategory.ItemTotalExcel;
 import nts.uk.shr.com.i18n.TextResource;
+/**
+ * 
+ * @author hoidd
+ *
+ */
 @Stateless
 public class JpaHoriTotalCateExcel extends JpaRepository implements HoriTotalCategoryExcelRepo {
 
@@ -23,7 +28,7 @@ public class JpaHoriTotalCateExcel extends JpaRepository implements HoriTotalCat
 				+ "WHERE e.TOTAL_ITEM_NO = d.TOTAL_ITEM_NO and e.CID = ?companyId) "
 				+ "as itemName, g.TOTAL_TIMES_NAME as totalTimesName , h.YEAR_HD_ATR,h.HAVY_HD_ATR, h.SPHD_ATR, h.HALF_DAY_ATR as halfDay "
 				+ " ,g.TOTAL_TIMES_NO as timesNo FROM KSCMT_HORI_TOTAL_CATEGORY c "
-				+ "JOIN KSCMT_TOTAL_EVAL_ORDER d on d.CID = ?companyId "
+				+ "JOIN KSCMT_TOTAL_EVAL_ORDER d on d.CID = ?companyId  and c.CID=?companyId "
 				+ "and d.CATEGORY_CD = c.CATEGORY_CD LEFT JOIN KSCST_HORI_TOTAL_CNT_SET f "
 				+ "on  f.TOTAL_ITEM_NO = d.TOTAL_ITEM_NO and f.CID = ?companyId"
 				+ " and f.CATEGORY_CD = d.CATEGORY_CD "

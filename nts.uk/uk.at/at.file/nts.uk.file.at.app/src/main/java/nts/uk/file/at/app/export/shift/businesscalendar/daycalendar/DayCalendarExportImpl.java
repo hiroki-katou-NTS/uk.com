@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -221,19 +222,14 @@ public class DayCalendarExportImpl implements MasterListData {
 
 	private void putDataToColumnsCompany(Map<String, Object> data, CompanyCalendarReportData setReportData) {
 		int day = setReportData.getDay();
-		for (int i = 1; i <= 31; i++) {
-			String key = i + "日";
-			if (day == i) {
-				String value = (String) data.get(key);
-				if (value != null && !value.isEmpty()) {
-					value += "," + setReportData.getWorkingDayAtrName();
-				}
-				else if (value != null && value.isEmpty()){
-					value += setReportData.getWorkingDayAtrName();
-				}
-				data.put(key, value);
-			}
+		String key = day + "日";
+		String value = (String) data.get(key);
+		if (value != null && !value.isEmpty()) {
+			value += "," + setReportData.getWorkingDayAtrName();
+		} else if (value != null && value.isEmpty()) {
+			value += setReportData.getWorkingDayAtrName();
 		}
+		data.put(key, value);
 	}
 	
 	/**
@@ -279,38 +275,62 @@ public class DayCalendarExportImpl implements MasterListData {
 				.findCalendarWorkplaceByDate(companyId, query.getStartDate(), query.getEndDate());
 		
 		WkpConfigInfoFindObject wkpConfigInfoFindObject = new WkpConfigInfoFindObject();
-		wkpConfigInfoFindObject.setSystemType(5);
+		wkpConfigInfoFindObject.setSystemType(2);
 		wkpConfigInfoFindObject.setBaseDate(GeneralDate.ymd(9999, 12, 31));
 		wkpConfigInfoFindObject.setRestrictionOfReferenceRange(true);
 		List<WorkplaceHierarchyDto> workplaceHierarchyDtos = spreadOutWorkplaceInfos(workplaceConfigInfoFinder.findAllByBaseDate(wkpConfigInfoFindObject));
-		Map<String, List<WorkplaceHierarchyDto>> mapWorkPlace = workplaceHierarchyDtos.stream().filter(x -> x.getCode() != null && x.getName() != null)
-				.collect(Collectors.groupingBy(WorkplaceHierarchyDto::getCode));
 		
-		if (mapSetReportDatas.isPresent()) {
-			mapSetReportDatas.get().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEachOrdered(x -> {
-				Optional<List<WorkplaceHierarchyDto>> workplaceHierarchyListByCode = Optional.ofNullable(mapWorkPlace.get(x.getKey()));
-				Optional<WorkplaceHierarchyDto> workplaceHierarchyDto = Optional.empty();
-				if (workplaceHierarchyListByCode.isPresent()) {
-					workplaceHierarchyDto = Optional.ofNullable(workplaceHierarchyListByCode.get().get(0));
-				}
-				Optional<List<WorkplaceCalendarReportData>> listDataPerOneWp = Optional.ofNullable(x.getValue());
-				if (listDataPerOneWp.isPresent()) {
-					Map<String, List<WorkplaceCalendarReportData>> mapDataByYearMonth = 
-					listDataPerOneWp.get().stream().collect(Collectors.groupingBy(WorkplaceCalendarReportData::getYearMonth));
-					List<String> yearMonthKeys = mapDataByYearMonth.keySet().stream().sorted().collect(Collectors.toList());
-					for(int i = 0; i < yearMonthKeys.size(); i++) {
-						String yearMonth = yearMonthKeys.get(i);
-						List<WorkplaceCalendarReportData> listDataPerOneRow = mapDataByYearMonth.get(yearMonth);
-						Optional<MasterData> row = newWorkplaceMasterData(i, yearMonth, Optional.ofNullable(listDataPerOneRow), workplaceHierarchyDto);
-						if (row.isPresent()) {
-							datas.add(row.get());
+		if (!CollectionUtil.isEmpty(workplaceHierarchyDtos)) {
+			workplaceHierarchyDtos.stream().collect(Collectors.groupingBy(WorkplaceHierarchyDto::getCode)).entrySet()
+					.stream().sorted((e1, e2) -> {
+						List<WorkplaceHierarchyDto> list1 = e1.getValue();
+						List<WorkplaceHierarchyDto> list2 = e2.getValue();
+						if (!CollectionUtil.isEmpty(list1) && !CollectionUtil.isEmpty(list2)
+								&& list1.get(0).getHierarchyCode() != null && list2.get(0).getHierarchyCode() != null)
+							return list1.get(0).getHierarchyCode().compareTo(list2.get(0).getHierarchyCode());
+						else if (!CollectionUtil.isEmpty(list1) && list1.get(0).getHierarchyCode() != null
+								&& CollectionUtil.isEmpty(list2))
+							return -1;
+						else if (CollectionUtil.isEmpty(list1) && !CollectionUtil.isEmpty(list2)
+								&& list2.get(0).getHierarchyCode() != null)
+							return 1;
+						else
+							return 0;
+					}).forEachOrdered(dto -> {
+						List<WorkplaceHierarchyDto> wpHierarchyDtoSameWpIDs = dto.getValue();
+						WorkplaceHierarchyDto firstObj = wpHierarchyDtoSameWpIDs.get(0);
+						String workplaceCode = firstObj.getCode();
+						Optional<List<WorkplaceCalendarReportData>> dataByCode = mapSetReportDatas.isPresent()
+								? Optional.ofNullable(mapSetReportDatas.get().get(workplaceCode)) : Optional.empty();
+						if (dataByCode.isPresent()) {
+							dataByCode.get().stream().forEach(x -> {
+								x.setWorkplaceCode(firstObj.getCode());
+								x.setWorkplaceName(firstObj.getName());
+								x.setHierarchyCode(firstObj.getHierarchyCode());
+							});
+							Map<String, List<WorkplaceCalendarReportData>> mapDataByYearMonth = dataByCode.get()
+									.stream()
+									.collect(Collectors.groupingBy(WorkplaceCalendarReportData::getYearMonth));
+							AtomicInteger index = new AtomicInteger(0);
+							mapDataByYearMonth.keySet().stream().sorted().collect(Collectors.toList()).stream()
+									.forEach(yearMonth -> {
+										List<WorkplaceCalendarReportData> listDataPerOneRow = mapDataByYearMonth
+												.get(yearMonth);
+										datas.add(newWorkplaceMasterData(index.get(), Optional.of(yearMonth),
+												Optional.ofNullable(listDataPerOneRow)));
+										index.getAndIncrement();
+									});
+						} else {
+							List<WorkplaceCalendarReportData> workDatas = new ArrayList<>();
+							WorkplaceCalendarReportData workData = new WorkplaceCalendarReportData();
+							workData.setWorkplaceCode(firstObj.getCode());
+							workData.setWorkplaceName(firstObj.getName());
+							workDatas.add(workData);
+							datas.add(newWorkplaceMasterData(0, Optional.empty(), Optional.of(workDatas)));
 						}
-					}
-				}
-			});
+					});
 
 		}
-
 		return datas;
 	}
 	
@@ -320,30 +340,29 @@ public class DayCalendarExportImpl implements MasterListData {
 	 * @param specificdaySetReportDatas
 	 * @return
 	 */
-	private Optional<MasterData> newWorkplaceMasterData(Integer index, String yearMonth,
-			Optional<List<WorkplaceCalendarReportData>> specificdaySetReportDatas, Optional<WorkplaceHierarchyDto> workplaceHierarchyDto) {
+	private MasterData newWorkplaceMasterData(Integer index, Optional<String> yearMonth,
+			Optional<List<WorkplaceCalendarReportData>> woOptional) {
 		Map<String, Object> data = new HashMap<>();
-		if (specificdaySetReportDatas.isPresent()) {
-			//put empty to columns
-			putEmptyToColumWorkplace(data);
-			if (index == 0) {
-				if (workplaceHierarchyDto.isPresent()) {
-					data.put("コード", workplaceHierarchyDto.get().getCode());
-					data.put("名称", workplaceHierarchyDto.get().getName());
-				}
-			}
-			data.put("年月", yearMonth.substring(0, 4) + "/" + yearMonth.substring(4, yearMonth.length()));
-			
-			specificdaySetReportDatas.get().stream().sorted(Comparator.comparing(WorkplaceCalendarReportData::getDay))
+
+		// put empty to columns
+		putEmptyToColumWorkplace(data);
+		if (index == 0) {
+			data.put("コード", woOptional.get().get(0).getWorkplaceCode());
+			data.put("名称", woOptional.get().get(0).getWorkplaceName());
+		}
+		if (woOptional.isPresent() && yearMonth.isPresent()) {
+			data.put("年月",
+					yearMonth.get().substring(0, 4) + "/" + yearMonth.get().substring(4, yearMonth.get().length()));
+
+			woOptional.get().stream().sorted(Comparator.comparing(WorkplaceCalendarReportData::getDay))
 					.forEachOrdered(x -> {
 						putDataToColumnsWorkplace(data, x);
 					});
-
-			MasterData masterData = new MasterData(data, null, "");
-			alignDataWorkspace(masterData.getRowData());
-			return Optional.of(masterData);
 		}
-		return Optional.empty();
+
+		MasterData masterData = new MasterData(data, null, "");
+		alignDataWorkspace(masterData.getRowData());
+		return masterData;
 	}
 	
 	/**
@@ -367,6 +386,7 @@ public class DayCalendarExportImpl implements MasterListData {
 	private void putEmptyToColumWorkplace(Map<String, Object> data) {
 		data.put("コード", "");
 		data.put("名称", "");
+		data.put("年月", "");
 		for (int i = 1; i <= 31; i++) {
 			String key = i + "日";
 			data.put(key, "");
@@ -380,20 +400,14 @@ public class DayCalendarExportImpl implements MasterListData {
 	 */
 	private void putDataToColumnsWorkplace(Map<String, Object> data, WorkplaceCalendarReportData setReportData) {
 		int day = setReportData.getDay();
-		for (int i = 1; i <= 31; i++) {
-			String key = i + "日";
-			if (day == i) {
-				String value = (String) data.get(key);
-				if (value != null && !value.isEmpty()) {
-					value += "," + setReportData.getWorkingDayAtrName();
-				}
-				else if (value != null && value.isEmpty()){
-					value += setReportData.getWorkingDayAtrName();
-				}
-				data.put(key, value);
-			}
-
+		String key = day + "日";
+		String value = (String) data.get(key);
+		if (value != null && !value.isEmpty()) {
+			value += "," + setReportData.getWorkingDayAtrName();
+		} else if (value != null && value.isEmpty()) {
+			value += setReportData.getWorkingDayAtrName();
 		}
+		data.put(key, value);
 	}
 	
 	
@@ -494,6 +508,7 @@ public class DayCalendarExportImpl implements MasterListData {
 	private void putEmptyToColumClass(Map<String, Object> data) {
 		data.put("コード", "");
 		data.put("名称", "");
+		data.put("年月", "");
 		for (int i = 1; i <= 31; i++) {
 			String key = i + "日";
 			data.put(key, "");
@@ -507,19 +522,14 @@ public class DayCalendarExportImpl implements MasterListData {
 	 */
 	private void putDataToColumnsClass(Map<String, Object> data, ClassCalendarReportData setReportData) {
 		int day = setReportData.getDay();
-		for (int i = 1; i <= 31; i++) {
-			String key = i + "日";
-			if (day == i) {
-				String value = (String) data.get(key);
-				if (value != null && !value.isEmpty()) {
-					value += "," + setReportData.getWorkingDayAtrName();
-				}
-				else if (value != null && value.isEmpty()){
-					value += setReportData.getWorkingDayAtrName();
-				}
-				data.put(key, value);
-			}
+		String key = day + "日";
 
+		String value = (String) data.get(key);
+		if (value != null && !value.isEmpty()) {
+			value += "," + setReportData.getWorkingDayAtrName();
+		} else if (value != null && value.isEmpty()) {
+			value += setReportData.getWorkingDayAtrName();
 		}
+		data.put(key, value);
 	}
 }

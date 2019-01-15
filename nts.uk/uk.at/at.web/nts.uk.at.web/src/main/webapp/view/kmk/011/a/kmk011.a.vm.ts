@@ -6,8 +6,7 @@ module nts.uk.at.view.kmk011.a {
 
         export class ScreenModel {
             constructor() {
-                var self = this;
-                self.showExportBtn();
+                var self = this; 
             }
 
             /**
@@ -64,10 +63,10 @@ module nts.uk.at.view.kmk011.a {
             }
             
              showExportBtn() {
-                    if ( __viewContext.user.role.attendance=="null"
-                            && __viewContext.user.role.payroll=="null"
-                            && __viewContext.user.role.officeHelper=="null"
-                            && __viewContext.user.role.personnel=="null") {
+                    if (nts.uk.util.isNullOrUndefined(__viewContext.user.role.attendance)
+                            && nts.uk.util.isNullOrUndefined(__viewContext.user.role.payroll)
+                            && nts.uk.util.isNullOrUndefined(__viewContext.user.role.officeHelper)
+                            && nts.uk.util.isNullOrUndefined(__viewContext.user.role.personnel)) {
                     $("#print-button").hide();
                     } else {
                     $("#print-button").show();

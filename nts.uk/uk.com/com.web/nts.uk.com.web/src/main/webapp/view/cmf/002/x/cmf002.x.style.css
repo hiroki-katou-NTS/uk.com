@@ -40,7 +40,7 @@
 }
 
 #execHistGrid tr {
-	height: 10px;\
+	height: 10px;
 	white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -50,4 +50,8 @@
 	white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+#execHistGrid tbody tr {
+	height: 29px;
 }
