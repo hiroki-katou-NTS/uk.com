@@ -775,7 +775,7 @@ public class PreparationBeforeApplyExport {
             }
                 return ((BigDecimal)obj[13]).intValue() == 1 ? TextResource.localize("KAF022_174") : TextResource.localize("KAF022_173");
             case 17:
-                return ((BigDecimal)firstObject[67]).intValue() == 1 ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
+                return ((BigDecimal)firstObject[109]).intValue() == 1 ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
         }
         return "";
     }
