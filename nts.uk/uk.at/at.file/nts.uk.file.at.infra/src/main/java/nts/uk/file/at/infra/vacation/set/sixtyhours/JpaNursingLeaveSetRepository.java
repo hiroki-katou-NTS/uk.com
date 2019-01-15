@@ -78,7 +78,7 @@ public class JpaNursingLeaveSetRepository extends JpaRepository implements Nursi
     private List<MasterData> buildMasterListData() {
         List<MasterData> datas = new ArrayList<>();
         // Row 1
-        datas.add(buildARow(new DataEachBox(/*A24_4*/I18NText.getText("KMF001_232"), ColumnTextAlign.LEFT)
+        datas.add(buildARow(new DataEachBox(/*A24_4*/I18NText.getText("KMF001_231"), ColumnTextAlign.LEFT)
                 , new DataEachBox(null, ColumnTextAlign.LEFT)
                 , new DataEachBox(null, ColumnTextAlign.LEFT)
                 , new DataEachBox(null, ColumnTextAlign.LEFT)
@@ -86,7 +86,7 @@ public class JpaNursingLeaveSetRepository extends JpaRepository implements Nursi
         ));
         // Row 2 validated by 16
         datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
-                , new DataEachBox( /*A24_3*/I18NText.getText("KMF001_231"), ColumnTextAlign.LEFT)
+                , new DataEachBox( /*A24_3*/I18NText.getText("KMF001_232"), ColumnTextAlign.LEFT)
                 , new DataEachBox(/*A24_5*/ I18NText.getText("KMF001_233"), ColumnTextAlign.LEFT)
                 , new DataEachBox(/*A24_6*/ I18NText.getText("KMF001_234"), ColumnTextAlign.LEFT)
                 , /*A25_2*/new DataEachBox(null, ColumnTextAlign.LEFT)
@@ -178,7 +178,7 @@ public class JpaNursingLeaveSetRepository extends JpaRepository implements Nursi
         boolean checkIsManagerLv2 = rs.getString("NURSING_TYPE_LV2").equals("1") && rs.getString("MANAGE_ATR_LV2").equals("1");
 
         // Row 1
-        datas.add(buildARow(new DataEachBox(/*A24_4*/I18NText.getText("KMF001_232"), ColumnTextAlign.LEFT)
+        datas.add(buildARow(new DataEachBox(/*A24_4*/I18NText.getText("KMF001_231"), ColumnTextAlign.LEFT)
                 , new DataEachBox(null, ColumnTextAlign.LEFT)
                 , new DataEachBox(null, ColumnTextAlign.LEFT)
                 , new DataEachBox(null, ColumnTextAlign.LEFT)
@@ -187,7 +187,7 @@ public class JpaNursingLeaveSetRepository extends JpaRepository implements Nursi
         if (checkIsManager) {
             // Row 2 validated by 16
             datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
-                    ,new DataEachBox( /*A24_3*/I18NText.getText("KMF001_231"), ColumnTextAlign.LEFT)
+                    ,new DataEachBox( /*A24_3*/I18NText.getText("KMF001_232"), ColumnTextAlign.LEFT)
                     ,new DataEachBox(/*A24_5*/ I18NText.getText("KMF001_233"), ColumnTextAlign.LEFT)
                     ,new DataEachBox(/*A24_6*/ I18NText.getText("KMF001_234"), ColumnTextAlign.LEFT)
                     , /*A25_2*/new DataEachBox(convertToMonth(rs.getString("STR_MD")) +/*25_15*/I18NText.getText("KMF001_246"), ColumnTextAlign.RIGHT)
@@ -218,19 +218,19 @@ public class JpaNursingLeaveSetRepository extends JpaRepository implements Nursi
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(/*24_11*/I18NText.getText("KMF001_239"), ColumnTextAlign.LEFT)
                     , new DataEachBox(/*24_12*/I18NText.getText("KMF001_240"), ColumnTextAlign.LEFT)
-                    , new DataEachBox(/*25_6*/ rs.getString("NAME_SF1"), ColumnTextAlign.LEFT)
+                    , new DataEachBox(/*25_6*/ rs.getString("NAME_SF1") == null ? "なし " : rs.getString("NAME_SF1"), ColumnTextAlign.LEFT)
             ));
             // Row 7
             datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(/*24_13*/ I18NText.getText("KMF001_241"), ColumnTextAlign.LEFT)
-                    , new DataEachBox(/*25_7*/ rs.getString("NAME_AF1"), ColumnTextAlign.LEFT))
+                    , new DataEachBox(/*25_7*/ rs.getString("NAME_AF1") == null ? "なし " : rs.getString("NAME_AF1"), ColumnTextAlign.LEFT))
             );
         } else {
             // Row 2 validated by 16
             datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
-                    , new DataEachBox( /*A24_3*/I18NText.getText("KMF001_231"), ColumnTextAlign.LEFT)
+                    , new DataEachBox( /*A24_3*/I18NText.getText("KMF001_232"), ColumnTextAlign.LEFT)
                     , new DataEachBox(/*A24_5*/ I18NText.getText("KMF001_233"), ColumnTextAlign.LEFT)
                     , new DataEachBox(/*A24_6*/ I18NText.getText("KMF001_234"), ColumnTextAlign.LEFT)
                     , /*A25_2*/new DataEachBox(null, ColumnTextAlign.LEFT)));
@@ -308,14 +308,14 @@ public class JpaNursingLeaveSetRepository extends JpaRepository implements Nursi
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(/*24_22*/I18NText.getText("KMF001_239"), ColumnTextAlign.LEFT)
                     , new DataEachBox(/*24_23*/ I18NText.getText("KMF001_240"), ColumnTextAlign.LEFT)
-                    , new DataEachBox(/*25_13*/ rs.getString("NAME"), ColumnTextAlign.LEFT)
+                    , new DataEachBox(/*25_13*/ rs.getString("NAME") == null ? "なし " : rs.getString("NAME"), ColumnTextAlign.LEFT)
             ));
             // Row 14
             datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(null, ColumnTextAlign.LEFT)
                     , new DataEachBox(/*24_24*/I18NText.getText("KMF001_241"), ColumnTextAlign.LEFT)
-                    , new DataEachBox( /*25_14*/ rs.getString("NAME_AF"), ColumnTextAlign.LEFT)
+                    , new DataEachBox( /*25_14*/ rs.getString("NAME_AF") == null ? "なし " : rs.getString("NAME_AF"), ColumnTextAlign.LEFT)
             ));
         } else {
             // Row 9

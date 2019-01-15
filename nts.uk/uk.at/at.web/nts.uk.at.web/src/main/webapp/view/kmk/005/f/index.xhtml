@@ -49,7 +49,7 @@
 										optionsValue: 'code',
 										columns: ko.observableArray([
 							                { headerText: 'コード', key: 'code', width: 55 },
-							                { headerText: '名称', key: 'name', width: 125 }
+							                { headerText: '名称', key: 'name', width: 125, formatter: _.escape }
 							            ]),
 										multiple: false,
 										value: currentBPSetCode

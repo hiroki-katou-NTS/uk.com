@@ -127,7 +127,7 @@ public class PreparationBeforeApplyExport {
         List<MasterData> datas = new ArrayList<>();
         obj.forEach(r -> {
             Map<String, MasterCellData> data = new HashMap<>();
-            if(r[16] != null) {
+            if(r[15] != null) {
                 data.put(KAF022_512, MasterCellData.builder()
                         .columnId(KAF022_512)
                         .value(r[14] == null ? "" : EnumAdaptor.valueOf(((BigDecimal) r[14]).intValue(), ApplicationType.class).nameId)
@@ -299,14 +299,14 @@ public class PreparationBeforeApplyExport {
                 return ((BigDecimal)obj[60]).intValue() == 1 ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
             case 9:
                 if(((BigDecimal)obj[61]).intValue() == 2 ) {
-                    return TextResource.localize("KAF022_175");
+                    return TextResource.localize("KAF022_174");
                 }
-                return ((BigDecimal)obj[61]).intValue() == 1 ? TextResource.localize("KAF022_174") : TextResource.localize("KAF022_173");
+                return ((BigDecimal)obj[61]).intValue() == 1 ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
             case 10:
                 if(((BigDecimal)obj[62]).intValue() == 2 ) {
-                    return TextResource.localize("KAF022_175");
+                    return TextResource.localize("KAF022_174");
                 }
-                return ((BigDecimal)obj[62]).intValue() == 1 ? TextResource.localize("KAF022_174") : TextResource.localize("KAF022_173");
+                return ((BigDecimal)obj[62]).intValue() == 1 ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
         }
         return "";
     }

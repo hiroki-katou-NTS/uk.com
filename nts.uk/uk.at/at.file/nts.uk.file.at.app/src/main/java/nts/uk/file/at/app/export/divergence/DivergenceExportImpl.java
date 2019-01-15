@@ -357,7 +357,7 @@ public class DivergenceExportImpl  implements MasterListData{
 	private List<MasterHeaderColumn> getHeaderColumnsDevergenceTimeWorktype (MasterListExportQuery query){
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 		columns.add(new MasterHeaderColumn("コード", "コード", ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn("勤務種類", "勤務種類", ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn("勤務種別", "勤務種別", ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("開始日", "開始日", ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("終了日", "終了日", ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("NO", "NO", ColumnTextAlign.LEFT, "", true));
@@ -387,7 +387,7 @@ public class DivergenceExportImpl  implements MasterListData{
 				data=putEntryDevergenceTimeWorkTypeDatas();
 				BusinessTypeDto businessTypeDto=listBusinesType.get(i);
 				data.put("コード",businessTypeDto.getBusinessTypeCode());
-				data.put("勤務種類",businessTypeDto.getBusinessTypeName());
+				data.put("勤務種別",businessTypeDto.getBusinessTypeName());
 				boolean checkShowTypecode=true;
 				List<WorkTypeDivergenceReferenceTimeHistoryDto> listHiswork=this.historyFinderwroktype.getAllHistories(businessTypeDto.getBusinessTypeCode());
 				List<WorkTypeDivergenceReferenceTimeHistoryDto> listwork= new ArrayList<>();		
@@ -420,7 +420,7 @@ public class DivergenceExportImpl  implements MasterListData{
 													){												
 													if(checkShowTypecode==false){
 														data.put("コード","");
-														data.put("勤務種類","");
+														data.put("勤務種別","");
 													}
 													checkShowTypecode=false;
 													if(checkShowStardEnDate==false){
@@ -459,7 +459,7 @@ public class DivergenceExportImpl  implements MasterListData{
 													Map<String, MasterCellData> rowData = masterData.getRowData();
 													//set align
 													rowData.get("コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-													rowData.get("勤務種類").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));	
+													rowData.get("勤務種別").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));	
 													rowData.get("開始日").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
 													rowData.get("終了日").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
 													rowData.get("NO").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
@@ -488,7 +488,7 @@ public class DivergenceExportImpl  implements MasterListData{
 	private Map<String, Object> putEntryDevergenceTimeWorkTypeDatas (){
 	    Map<String, Object> data = new HashMap<>();
 	   			data.put("コード","");
-				data.put("勤務種類","");
+				data.put("勤務種別","");
 				data.put("開始日", "");
 				data.put("終了日","");
 				data.put("NO", "");
