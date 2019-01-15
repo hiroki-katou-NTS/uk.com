@@ -1,10 +1,8 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.recruitment;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -24,14 +22,7 @@ import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationReposi
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
-import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
-import nts.uk.ctx.at.shared.dom.worktype.service.AttendanceOfficeAtr;
-import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 
 @Stateless
 public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectRecordService {
@@ -43,10 +34,6 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 	private StartEndTimeOffReflect startEndTimeOffReflect;
 	@Inject
 	private PreHolidayWorktimeReflectService holidayWorktimeService;
-	@Inject
-	private WorkTypeIsClosedService workTypeService;
-	@Inject
-	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyRepos;
 	@Inject
 	private WorkInformationRepository workRepository;
 	@Inject
@@ -138,7 +125,7 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 		worktimeFrame.put(9, 0);
 		worktimeFrame.put(10, 0);
 		
-		daily = workUpdate.updateWorkTimeFrame(employeeId, baseDate, worktimeFrame, false, daily);
+		daily = workUpdate.updateWorkTimeFrame(employeeId, baseDate, worktimeFrame, false, daily, true);
 		//振替時間(休出)の反映
 		Map<Integer, Integer> tranferTimeFrame = new HashMap<>();
 		tranferTimeFrame.put(1, 0);
@@ -159,7 +146,7 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 	@Override
 	public boolean checkReflectRecordStartEndTime(String workTypeCode, Integer frameNo,
 			boolean isAttendence, String employeeId, GeneralDate baseDate) {
-		Optional<TimeLeavingOfDailyPerformance> optTimeLeaving = timeLeavingOfDailyRepos.findByKey(employeeId, baseDate);
+		/*Optional<TimeLeavingOfDailyPerformance> optTimeLeaving = timeLeavingOfDailyRepos.findByKey(employeeId, baseDate);
 		//出勤時刻を取得する
 		//打刻元情報を取得する		
 		if(!optTimeLeaving.isPresent()) {
@@ -207,7 +194,8 @@ public class RecruitmentRelectRecordServiceImpl implements RecruitmentRelectReco
 				|| actualStamp.getStampSourceInfo() == StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO) {
 			return true;
 		}
-		return false;
+		return false;*/
+		return true;
 	}
 
 }

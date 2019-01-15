@@ -175,6 +175,12 @@ public class ProgramsManager {
 	 */
 	public static final Program CDL022A = new Program(WebAppId.COM, ProgramIdConsts.CDL022A, "CDL022_1",
 			"/view/cdl/022/a/index.xhtml");
+
+	/**
+	 * CDL028A
+	 */
+	public static final Program CDL028A = new Program(WebAppId.COM, ProgramIdConsts.CDL028A, "CDL028_1",
+			"/view/cdl/028/a/index.xhtml");
 	/**
 	 * CPS007A
 	 */
@@ -1788,7 +1794,9 @@ public class ProgramsManager {
 	public static final Program CMM020A = new Program(WebAppId.COM, ProgramIdConsts.CMM020A, "CMM020_9",
 			"/view/cmm/020/a/index.xhtml");
 	/** CCG018 */
-
+	/** CCG022 */
+	public static final Program CCG022A = new Program(WebAppId.COM, ProgramIdConsts.CCG022A, "CCG022_1",
+			"/view/ccg/022/a/index.xhtml");
 	/** KAL001 */
 	public static final Program KAL001A = new Program(WebAppId.AT, ProgramIdConsts.KAL001A, "KAL001_1",
 			"/view/kal/001/a/index.xhtml");

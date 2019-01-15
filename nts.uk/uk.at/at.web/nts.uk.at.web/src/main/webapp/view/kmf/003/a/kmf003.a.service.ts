@@ -55,7 +55,15 @@ module nts.uk.at.view.kmf003.a.service {
         var path = nts.uk.text.format(servicePath.deleteYearHolidayGrant);
         return nts.uk.request.ajax(path, {yearHolidayCode: yearHolidayCode});
     } 
+    //saveAsExcel
+
     
+     export function saveAsExcel(languageId: String): JQueryPromise<any> {
+            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+            let programName = program[1]!=null?program[1]:"";
+            return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "YearHoliday", domainType: "KMF003" + programName, languageId: languageId, reportType: 0 });
+        }
+
     export interface YearHolidayGrantDto {
         yearHolidayCode: string,
         yearHolidayName: string,
