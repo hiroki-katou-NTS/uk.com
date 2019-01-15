@@ -722,7 +722,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
         if((i == 0 && type == 1) || (i == 1 && type == 1)) {
             return TextResource.localize("KAF022_468");
         }
-        if((i == 2 && type == 1) || (i == 3 && type == 1) || (i == 4 && type == 1)) {
+        if((i == 2 && type == 1) || (i == 3 && type == 1) || (i == 5 && type == 1)) {
             return TextResource.localize("KAF022_481");
         }
         return "";
@@ -817,7 +817,6 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
         }
         if(i == 5 && obj[15] != null) {
             return obj[15].toString();
-
         }
         if(i == 6 && obj[16] != null) {
             return obj[16].toString();
