@@ -376,7 +376,7 @@ public class JpaPreparationBeforeApplyRepository extends JpaRepository implement
 		sql.append("            DEFAULT_FLG,");
 		sql.append("            DISPORDER");
 		sql.append("            FROM KRQST_APP_REASON");
-		sql.append("            WHERE CID = ?cid");
+		sql.append("            WHERE CID = ?cid AND (APP_TYPE IN ( 0, 1, 2, 4, 6, 10)");
 		sql.append("            ) r");
 		sql.append("            ) ar");
 		sql.append("   FULL JOIN          ");
