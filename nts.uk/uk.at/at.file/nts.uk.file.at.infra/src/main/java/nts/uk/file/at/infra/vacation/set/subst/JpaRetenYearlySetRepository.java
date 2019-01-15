@@ -3,7 +3,6 @@ package nts.uk.file.at.infra.vacation.set.subst;
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.uk.file.at.app.export.vacation.set.EmployeeSystem;
 import nts.uk.file.at.app.export.vacation.set.EmployeeSystemImpl;
 import nts.uk.file.at.app.export.vacation.set.subst.RetenYearlySetRepository;
 import nts.uk.file.at.infra.vacation.set.CommonTempHolidays;
@@ -23,12 +22,14 @@ import java.util.Map;
 public class JpaRetenYearlySetRepository extends JpaRepository implements RetenYearlySetRepository {
 
     private static final String GET_RENTEN_YEARLY_SETTING =
-            "SELECT RY.MANAGEMENT_YEARLY_ATR," +
+            "SELECT PL.MANAGE_ATR," +
+                    "RY.MANAGEMENT_YEARLY_ATR," +
                     "RY.NUMBER_OF_YEAR," +
                     "RY.MAX_NUMBER_OF_DAYS," +
                     "RY.LEAVE_AS_WORK_DAYS "
-                    + "FROM KMFMT_RETENTION_YEARLY RY "
-                    + "WHERE RY.CID = ?";
+                    + "FROM KMFMT_RETENTION_YEARLY RY,KALMT_ANNUAL_PAID_LEAVE PL "
+                    + "WHERE RY.CID = ? AND PL.CID = RY.CID";
+    private static final String NOT_MANAGER ="0";
 
 
 
@@ -37,14 +38,20 @@ public class JpaRetenYearlySetRepository extends JpaRepository implements RetenY
         List<MasterData> datas = new ArrayList<>();
         String sql = String.format(GET_RENTEN_YEARLY_SETTING);
         try(PreparedStatement stmt = this.connection().prepareStatement(sql)) {
-            stmt.setString(1,cid);
+            stmt.setString(
+                    1, cid);
                 datas = new NtsResultSet(stmt.executeQuery())
-                    .getList(x -> buildARow(
-                            CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(x.getString("MANAGEMENT_YEARLY_ATR")))
-                            ,x.getString("NUMBER_OF_YEAR")+I18NText.getText("KMF001_198")
-                            ,x.getString("MAX_NUMBER_OF_DAYS")+I18NText.getText("KMF001_197")
-                            ,CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(x.getString("LEAVE_AS_WORK_DAYS")))
-                    ));
+                        .getList(x -> {
+                            if (x.getString("MANAGE_ATR").equals(NOT_MANAGER)) {
+                                return buildARow();
+                            }
+                            return buildARow(
+                                    CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(x.getString("MANAGEMENT_YEARLY_ATR")))
+                                    , x.getString("NUMBER_OF_YEAR") + I18NText.getText("KMF001_198")
+                                    , x.getString("MAX_NUMBER_OF_DAYS") + I18NText.getText("KMF001_197")
+                                    , CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(x.getString("LEAVE_AS_WORK_DAYS")))
+                            );
+                        });
 
         }catch(Exception e) {
             throw new RuntimeException(e);
@@ -73,6 +80,33 @@ public class JpaRetenYearlySetRepository extends JpaRepository implements RetenY
         data.put(EmployeeSystemImpl.KMF001_203, MasterCellData.builder()
                 .columnId(EmployeeSystemImpl.KMF001_203)
                 .value(value4)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+
+        return MasterData.builder().rowData(data).build();
+    }
+
+    private MasterData buildARow() {
+        Map<String, MasterCellData> data = new HashMap<>();
+
+        data.put(EmployeeSystemImpl.KMF001_200, MasterCellData.builder()
+                .columnId(EmployeeSystemImpl.KMF001_200)
+                .value(CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(NOT_MANAGER)))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .build());
+        data.put(EmployeeSystemImpl.KMF001_201, MasterCellData.builder()
+                .columnId(EmployeeSystemImpl.KMF001_201)
+                .value(null)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+        data.put(EmployeeSystemImpl.KMF001_202, MasterCellData.builder()
+                .columnId(EmployeeSystemImpl.KMF001_202)
+                .value(null)
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
+                .build());
+        data.put(EmployeeSystemImpl.KMF001_203, MasterCellData.builder()
+                .columnId(EmployeeSystemImpl.KMF001_203)
+                .value(null)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 
