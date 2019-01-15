@@ -469,7 +469,7 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlNormal.append(" 	CASE WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?fixedWork AND FIXED_WORK_SET.USE_HALF_DAY = ?isTrue ");
 		sqlNormal.append(" 			AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN FIXED_OT_FRAME2.OT_FR_NAME");
 		sqlNormal.append(" 		 WHEN WORK_TIME_SET.WORKTIME_SET_METHOD = ?difftimeWork AND DIFF_TIME_WORK_SET.USE_HALF_DAY = ?isTrue ");
-		sqlNormal.append(" 			AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN DT_OT_FRAME1.OT_FR_NAME");
+		sqlNormal.append(" 			AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode THEN DT_OT_FRAME2.OT_FR_NAME");
 		sqlNormal.append(" 		 ELSE NULL");
 		sqlNormal.append(" 	END,");
 		// R1_112 残業時間帯.午前勤務用.早出
@@ -1307,7 +1307,7 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlNormal.append(" 	IIF(TEMP.ROW_ID = 1, WORKTIME_COMMON_SET.RAISING_SALARY_SET, NULL),");
 		// R1_207 加給.名称
 		sqlNormal.append(" 	CASE WHEN TEMP.ROW_ID = 1 AND BONUS_PAY_SET.BONUS_PAY_SET_CD IS NOT NULL THEN BONUS_PAY_SET.BONUS_PAY_SET_NAME");
-		sqlNormal.append(" 		 WHEN TEMP.ROW_ID = 1 AND BONUS_PAY_SET.BONUS_PAY_SET_CD IS NULL THEN ?masterUnregistered");
+		sqlNormal.append(" 		 WHEN TEMP.ROW_ID = 1 AND BONUS_PAY_SET.BONUS_PAY_SET_CD IS NULL AND WORKTIME_COMMON_SET.RAISING_SALARY_SET IS NOT NULL AND WORKTIME_COMMON_SET.RAISING_SALARY_SET != '   ' THEN ?masterUnregistered");
 		sqlNormal.append(" 		 ELSE NULL");
 		sqlNormal.append(" 	END,");
 		// R1_47 代休.休日出勤
@@ -1828,7 +1828,7 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlNormal.append(" 	JOIN KSHMT_LATE_EARLY_SET LATE_EARLY_SET");
 		sqlNormal.append(" 		ON WORK_TIME_SET.CID = LATE_EARLY_SET.CID");
 		sqlNormal.append(" 		AND WORK_TIME_SET.WORKTIME_CD = LATE_EARLY_SET.WORKTIME_CD");
-		sqlNormal.append(" 		LEFT JOIN KBPMT_BONUS_PAY_SET BONUS_PAY_SET");
+		sqlNormal.append(" 	LEFT JOIN KBPMT_BONUS_PAY_SET BONUS_PAY_SET");
 		sqlNormal.append(" 		ON WORK_TIME_SET.CID = BONUS_PAY_SET.CID");
 		sqlNormal.append(" 		AND WORKTIME_COMMON_SET.RAISING_SALARY_SET = BONUS_PAY_SET.BONUS_PAY_SET_CD");
 		sqlNormal.append(" 	JOIN KSHMT_SUBSTITUTION_SET SUBSTITUTION_SET1");
@@ -2709,7 +2709,7 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlow.append(" 	IIF(TEMP.ROW_ID = 1, WORKTIME_COMMON_SET.RAISING_SALARY_SET, NULL),");
 		// R2_187 加給.名称
 		sqlFlow.append(" 	CASE WHEN TEMP.ROW_ID = 1 AND BONUS_PAY_SET.BONUS_PAY_SET_CD IS NOT NULL THEN BONUS_PAY_SET.BONUS_PAY_SET_NAME");
-		sqlFlow.append(" 		 WHEN TEMP.ROW_ID = 1 AND BONUS_PAY_SET.BONUS_PAY_SET_CD IS NULL THEN ?masterUnregistered");
+		sqlFlow.append(" 		 WHEN TEMP.ROW_ID = 1 AND BONUS_PAY_SET.BONUS_PAY_SET_CD IS NULL AND WORKTIME_COMMON_SET.RAISING_SALARY_SET IS NOT NULL AND WORKTIME_COMMON_SET.RAISING_SALARY_SET != '   ' THEN ?masterUnregistered");
 		sqlFlow.append(" 		 ELSE NULL");
 		sqlFlow.append(" 	END,");
 		// R2_41 代休.休日出勤
@@ -4119,7 +4119,7 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlex.append(" 	IIF(TEMP.ROW_ID = 1, WORKTIME_COMMON_SET.RAISING_SALARY_SET, NULL),");
 		// R3_229 加給.名称
 		sqlFlex.append(" 	CASE WHEN TEMP.ROW_ID = 1 AND BONUS_PAY_SET.BONUS_PAY_SET_CD IS NOT NULL THEN BONUS_PAY_SET.BONUS_PAY_SET_NAME");
-		sqlFlex.append(" 		 WHEN TEMP.ROW_ID = 1 AND BONUS_PAY_SET.BONUS_PAY_SET_CD IS NULL THEN ?masterUnregistered");
+		sqlFlex.append(" 		 WHEN TEMP.ROW_ID = 1 AND BONUS_PAY_SET.BONUS_PAY_SET_CD IS NULL AND WORKTIME_COMMON_SET.RAISING_SALARY_SET IS NOT NULL AND WORKTIME_COMMON_SET.RAISING_SALARY_SET != '   ' THEN ?masterUnregistered");
 		sqlFlex.append(" 		 ELSE NULL");
 		sqlFlex.append(" 	END,");
 		// R3_230 代休.休日出勤

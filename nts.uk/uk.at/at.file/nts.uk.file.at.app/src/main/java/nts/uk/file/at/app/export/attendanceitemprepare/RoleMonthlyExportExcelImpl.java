@@ -24,14 +24,10 @@ import nts.uk.ctx.at.function.app.find.monthlycorrection.fixedformatmonthly.Shee
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.BusinessTypesFinder;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeDto;
 import nts.uk.ctx.at.record.app.find.workrecord.authfuncrest.EmployeeRoleDto;
-import nts.uk.ctx.at.record.app.find.workrecord.authfuncrest.EmploymentRoleFinder;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatMonthly;
-import nts.uk.ctx.at.shared.app.find.scherec.attitem.AttItemFinder;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AtItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemAuthority;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.TypeOfItemImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TimeInputUnit;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
@@ -50,12 +46,7 @@ public class RoleMonthlyExportExcelImpl  {
 
     //sheet1
     @Inject
-    private AtItemNameAdapter atItemNameAdapter;
-    @Inject
-    private EmploymentRoleFinder employmentRoleFinder;
-    @Inject
-    private AttItemFinder attfinder; //sheet 2 dung chung
-    
+    private AttItemNameByAuth attItemNameByAuth;
     //sheet 2
     @Inject
     private ControlOfAttMonthlyRepoExcel controlOfItemlExcel;
@@ -67,79 +58,60 @@ public class RoleMonthlyExportExcelImpl  {
     //sheet 4
     @Inject
     private BusinessTypeSortedMonFinder businessFinder;
-    //sheet 1
-    List<EmployeeRoleDto> listEmployeeRoleDto ;
-    List<AttItemName> listAttItemNameNoAuth;
-    List<AttItemName> listAttItemNameWithAuth;
-    //sheet 2
-    Map<String,List<AttItemName>> authSeting = new HashMap<>();
-    Map<Integer, ControlOfAttMonthlyDtoExcel> listConItem = new HashMap<>();
-    //sheet 3
-    List<BusinessTypeFormatMonthly> listBusinessMonthly;
-    List<BusinessTypeDto> listBzMonthly = new ArrayList<>();
-    Map<Integer, AttItemName> mapAttNameMonthlys = new HashMap<>();
-    List<MonthlyRecordWorkTypeDto> listMonthlyRecord = new ArrayList<>();
-    Map<String, MonthlyRecordWorkTypeDto> mapListRecordMonthly = new HashMap<>();
-    //sheet 4
-    List<MonthlyRecordWorkTypeDto> listMonthly ;
-    List<OrderReferWorkTypeDto> listOrderReferWorkType = new ArrayList<>();
-    String companyId = "";
+   
 
-    public List<SheetData> extraSheets(MasterListExportQuery query) {
-        initSheet1();
-        initSheet2();
-        initSheet3();
-        initSheet4();
+    public List<SheetData> extraSheets(MasterListExportQuery query, List<EmployeeRoleDto> listEmployeeRoleDto, Map<Integer, AttItemName> mapAttNameMonthlys, List<AttItemName> listAttItemNameNoAuth) {
+    	//sheet 1
+        String companyId = AppContexts.user().companyId();
+        Map<String, List<AttItemName>> authSeting = new HashMap<>();
+        authSeting.putAll(attItemNameByAuth.getAllMonthlyByComp(companyId));
+    	Map<Integer, ControlOfAttMonthlyDtoExcel> listConItem = new HashMap<>();
+        //sheet 3
+        List<BusinessTypeDto> listBzMonthly = new ArrayList<>();
+//     
+        List<MonthlyRecordWorkTypeDto> listMonthlyRecord = new ArrayList<>();
+        Map<String, MonthlyRecordWorkTypeDto> mapListRecordMonthly = new HashMap<>();
+        //sheet 4
+        List<OrderReferWorkTypeDto> listOrderReferWorkType = new ArrayList<>();
+//        initSheet1(listAttItemNameNoAuth,mapAttNameMonthlys);
+        initSheet2(listConItem,companyId);
+        initSheet3(listBzMonthly,listMonthlyRecord,mapListRecordMonthly);
+        initSheet4(listOrderReferWorkType);
         // add the work place sheet
         List<SheetData> sheetDatas = new ArrayList<>();
-        SheetData sheet1 = new SheetData(getMasterDatas(query),
+        SheetData sheet1 = new SheetData(getMasterDatas(query,listEmployeeRoleDto,authSeting,listAttItemNameNoAuth),
                 getHeaderColumns(query), null, null, TextResource.localize("KDW006_30"));
         sheetDatas.add(sheet1);
-        SheetData sheet2 = new SheetData(getMasterDatasSheet2(query),
+        SheetData sheet2 = new SheetData(getMasterDatasSheet2(query,listAttItemNameNoAuth,listConItem,mapListRecordMonthly),
                 getHeaderColumnsSheet2(query), null, null, TextResource.localize("KDW006_31"));
         sheetDatas.add(sheet2);
-        SheetData sheet3 = new SheetData(getMasterDatasSheet3(query),
+        SheetData sheet3 = new SheetData(getMasterDatasSheet3(query,listBzMonthly,mapListRecordMonthly,mapAttNameMonthlys),
                 getHeaderColumnsSheet3(query), null, null, TextResource.localize("KDW006_32"));
         sheetDatas.add(sheet3);
-        SheetData sheet4 = new SheetData(getMasterDatasSheet4(query),
+        SheetData sheet4 = new SheetData(getMasterDatasSheet4(query,listOrderReferWorkType,mapAttNameMonthlys),
                 getHeaderColumnsSheet4(query), null, null, TextResource.localize("KDW006_33"));
         sheetDatas.add(sheet4);
         return sheetDatas;
     }
 
 
-    private void initSheet4() {
+    private void initSheet4(List<OrderReferWorkTypeDto> listOrderReferWorkType) {
         BusinessTypeSortedMonDto bzTypeSortMon =  businessFinder.getBusinessTypeSortedMon();
         if(bzTypeSortMon!=null){
-            listOrderReferWorkType = bzTypeSortMon.getListOrderReferWorkType();
+            listOrderReferWorkType.addAll(bzTypeSortMon.getListOrderReferWorkType());
             listOrderReferWorkType.sort(Comparator.comparing(OrderReferWorkTypeDto::getAttendanceItemID));
         }
     }
 
-    private void initSheet3() {
-        listBzMonthly = findAll.findAll();
-        listMonthlyRecord = fiderRecordMonthly.getListMonthlyRecordWorkType();
-        mapListRecordMonthly =
-                listMonthlyRecord.stream().collect(Collectors.toMap(MonthlyRecordWorkTypeDto::getBusinessTypeCode,
-                Function.identity()));
+    private void initSheet3(List<BusinessTypeDto> listBzMonthly, List<MonthlyRecordWorkTypeDto> listMonthlyRecord, Map<String, MonthlyRecordWorkTypeDto> mapListRecordMonthly) {
+        listBzMonthly.addAll(findAll.findAll());
+        listMonthlyRecord.addAll(fiderRecordMonthly.getListMonthlyRecordWorkType());
+        mapListRecordMonthly.putAll(listMonthlyRecord.stream().collect(Collectors.toMap(MonthlyRecordWorkTypeDto::getBusinessTypeCode,
+                Function.identity())));
     }
 
-    private void initSheet2() {
-         listConItem = controlOfItemlExcel.getAllByCompanyId(companyId);
-    }
-
-    private void initSheet1() {
-        listEmployeeRoleDto =  employmentRoleFinder.findEmploymentRoles();
-        listEmployeeRoleDto.sort(Comparator.comparing(EmployeeRoleDto::getRoleCode));
-        listAttItemNameNoAuth = atItemNameAdapter.getNameOfAttdItemByType(EnumAdaptor.valueOf(2, TypeOfItemImport.class));//sheet 2,3 dung chung
-        listAttItemNameNoAuth.sort(Comparator.comparing(AttItemName::getAttendanceItemDisplayNumber));
-        mapAttNameMonthlys = listAttItemNameNoAuth.stream().collect(Collectors.toMap(AttItemName::getAttendanceItemId,
-                Function.identity()));
-        for (EmployeeRoleDto employeeRoleDto : listEmployeeRoleDto) {
-            listAttItemNameWithAuth = attfinder.getMonthlyAttItemById(employeeRoleDto.getRoleId());
-            authSeting.put(employeeRoleDto.getRoleId(), listAttItemNameWithAuth);
-        }
-
+    private void initSheet2(Map<Integer, ControlOfAttMonthlyDtoExcel> listConItem, String companyId) {
+         listConItem.putAll(controlOfItemlExcel.getAllByCompanyId(companyId));
     }
 
     public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
@@ -162,13 +134,16 @@ public class RoleMonthlyExportExcelImpl  {
         return columns;
     }
     
-    public List<MasterData> getMasterDatas(MasterListExportQuery query) {
+    public List<MasterData> getMasterDatas(MasterListExportQuery query, List<EmployeeRoleDto> listEmployeeRoleDto, Map<String, List<AttItemName>> authSeting, List<AttItemName> listAttItemNameNoAuth) {
         List<MasterData> datas = new ArrayList<>();
         if (CollectionUtil.isEmpty(listEmployeeRoleDto)) {
             return null;
         } else {
             listEmployeeRoleDto.stream().forEach(c -> {
                 List<AttItemName> attItemNamesAuthSet = authSeting.get(c.getRoleId());
+                if(CollectionUtil.isEmpty(attItemNamesAuthSet)){
+                	return;
+                }
                 Map<Integer, AttItemName> mapListItemNameAuthSet =
                         attItemNamesAuthSet.stream().collect(Collectors.toMap(AttItemName::getAttendanceItemId,
                                                                   Function.identity()));
@@ -279,7 +254,7 @@ public class RoleMonthlyExportExcelImpl  {
         return columns;
     }
     
-    public List<MasterData> getMasterDatasSheet2(MasterListExportQuery query) {
+    public List<MasterData> getMasterDatasSheet2(MasterListExportQuery query, List<AttItemName> listAttItemNameNoAuth, Map<Integer, ControlOfAttMonthlyDtoExcel> listConItem, Map<String, MonthlyRecordWorkTypeDto> mapListRecordMonthly) {
         List<MasterData> datas = new ArrayList<>();
         if (CollectionUtil.isEmpty(listAttItemNameNoAuth)) {
             return null;
@@ -349,7 +324,7 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
         return columns;
     }
     
-    public List<MasterData> getMasterDatasSheet3(MasterListExportQuery query) {
+    public List<MasterData> getMasterDatasSheet3(MasterListExportQuery query, List<BusinessTypeDto> listBzMonthly, Map<String, MonthlyRecordWorkTypeDto> mapListRecordMonthly, Map<Integer, AttItemName> mapAttNameMonthlys) {
         
         List<MasterData> datas = new ArrayList<>();
         if (CollectionUtil.isEmpty(listBzMonthly)) {
@@ -447,7 +422,7 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
         return columns;
     }
 
-    public List<MasterData> getMasterDatasSheet4(MasterListExportQuery query) {
+    public List<MasterData> getMasterDatasSheet4(MasterListExportQuery query, List<OrderReferWorkTypeDto> listOrderReferWorkType, Map<Integer, AttItemName> mapAttNameMonthlys) {
         
         List<MasterData> datas = new ArrayList<>();
         if (CollectionUtil.isEmpty(listOrderReferWorkType)) {

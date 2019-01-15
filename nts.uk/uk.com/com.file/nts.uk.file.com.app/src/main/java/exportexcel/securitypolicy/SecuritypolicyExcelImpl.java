@@ -135,6 +135,25 @@ public class SecuritypolicyExcelImpl implements MasterListData{
 				/**put row 10*/
 				putDataCustom(datas,"",TextResource.localize("CAS003_26"),"",passPolicy.loginCheck?"○":"-",0);
 			}
+		}else {
+			putDataCustom(datas,TextResource.localize("CAS003_3"),"","","",0);
+			putDataCustom(datas,"",TextResource.localize("CAS003_4"),"","",1);
+			/**put row 3*/
+			putDataCustom(datas,"",TextResource.localize("CAS003_6"),TextResource.localize("CAS003_7"),"",1);
+			/**put row 4*/
+			putDataCustom(datas,"","",TextResource.localize("CAS003_10"),"",1);
+			/**put row 5*/
+			putDataCustom(datas,"","",TextResource.localize("CAS003_13"),"",1);
+			/**put row 6*/
+			putDataCustom(datas,"",TextResource.localize("CAS003_16"),"","",1);
+			/**put row 7*/
+			putDataCustom(datas,"",TextResource.localize("CAS003_19"),"","",1);
+			/**put row 8*/
+			putDataCustom(datas,"",TextResource.localize("CAS003_22"),"","",1);
+			/**put row 9*/
+			putDataCustom(datas,"",TextResource.localize("CAS003_25"),"","",0);
+			/**put row 10*/
+			putDataCustom(datas,"",TextResource.localize("CAS003_26"),"","",0);
 		}
 			/**put account policy*/
 		if(acountPolicy!=null){
@@ -149,6 +168,11 @@ public class SecuritypolicyExcelImpl implements MasterListData{
 				putDataCustom(datas,"","",TextResource.localize("CAS003_30"),"",0);
 				putDataCustom(datas,"",TextResource.localize("CAS003_32"),"","",0);
 			}
+		}else {
+			putDataCustom(datas,TextResource.localize("CAS003_27"),"","","",0);
+			putDataCustom(datas,"",TextResource.localize("CAS003_28"),TextResource.localize("CAS003_29"),"",0);
+			putDataCustom(datas,"","",TextResource.localize("CAS003_30"),"",0);
+			putDataCustom(datas,"",TextResource.localize("CAS003_32"),"","",0);
 		}
 		return datas;			
 		}

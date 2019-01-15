@@ -19,6 +19,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 @Stateless
 @DomainID("RegisterTime")
@@ -117,9 +118,9 @@ public class RegisteTimeImpl implements MasterListData {
 	 */
 	public List<MasterHeaderColumn> getHeaderColumnsSheet4() {
 		 List <MasterHeaderColumn> columns = new ArrayList<>();
-		 columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_102, TextResource.localize("KMK008_100"),
+		 columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_102, TextResource.localize("KMK008_102"),
 	                ColumnTextAlign.LEFT, "", true));
-	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_103,TextResource.localize("KMK008_101"),
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_103,TextResource.localize("KMK008_103"),
 	                ColumnTextAlign.LEFT, "", true));
 	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_89, TextResource.localize("KMK008_89"),
 	                ColumnTextAlign.LEFT, "", true));
@@ -217,9 +218,9 @@ public class RegisteTimeImpl implements MasterListData {
 	 */
 	public List<MasterHeaderColumn> getHeaderColumnsSheet8() {
 		 List <MasterHeaderColumn> columns = new ArrayList<>();
-		 columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_102, TextResource.localize("KMK008_100"),
+		 columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_102, TextResource.localize("KMK008_102"),
 	                ColumnTextAlign.LEFT, "", true));
-	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_103,TextResource.localize("KMK008_101"),
+	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_103,TextResource.localize("KMK008_103"),
 	                ColumnTextAlign.LEFT, "", true));
 	        columns.add(new MasterHeaderColumn(RegistTimeColumn.KMK008_89, TextResource.localize("KMK008_89"),
 	                ColumnTextAlign.LEFT, "", true));
@@ -397,6 +398,7 @@ public class RegisteTimeImpl implements MasterListData {
          		 .mainData(this.getMasterDatasSheet10(startDate, endDate))
                  .mainDataColumns(this.getHeaderColumnsSheet10())
                  .sheetName(TextResource.localize("KMK008_79"))
+                 .mode(MasterListMode.FISCAL_YEAR_RANGE)
                  .build();
        sheetDatas.add(sheetData10);
 		
