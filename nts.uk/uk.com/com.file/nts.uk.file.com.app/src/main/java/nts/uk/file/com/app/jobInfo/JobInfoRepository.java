@@ -1,4 +1,4 @@
-package nts.uk.file.com.app.JobInfo;
+package nts.uk.file.com.app.jobInfo;
 
 import java.util.List;
 
