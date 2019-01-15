@@ -299,14 +299,14 @@ public class PreparationBeforeApplyExport {
                 return ((BigDecimal)obj[60]).intValue() == 1 ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
             case 9:
                 if(((BigDecimal)obj[61]).intValue() == 2 ) {
-                    return TextResource.localize("KAF022_175");
+                    return TextResource.localize("KAF022_174");
                 }
-                return ((BigDecimal)obj[61]).intValue() == 1 ? TextResource.localize("KAF022_174") : TextResource.localize("KAF022_173");
+                return ((BigDecimal)obj[61]).intValue() == 1 ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
             case 10:
                 if(((BigDecimal)obj[62]).intValue() == 2 ) {
-                    return TextResource.localize("KAF022_175");
+                    return TextResource.localize("KAF022_174");
                 }
-                return ((BigDecimal)obj[62]).intValue() == 1 ? TextResource.localize("KAF022_174") : TextResource.localize("KAF022_173");
+                return ((BigDecimal)obj[62]).intValue() == 1 ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
         }
         return "";
     }
