@@ -133,7 +133,7 @@ public class GridPeregProcessor {
 		return geDto;
 	}
 
-	private List<PerInfoItemDefForLayoutDto> getPerItemDefForLayout(PersonInfoCategory category, String contractCode,
+	public List<PerInfoItemDefForLayoutDto> getPerItemDefForLayout(PersonInfoCategory category, String contractCode,
 			String roleId) {
 
 		// get per info item def with order

@@ -27,6 +27,7 @@ module cps003.b.vm {
                 params = {
                     fileId: self.currentFile().fileId(),
                     fileName: self.currentFile().filename(),
+                    categoryId: self.currentMode().categoryId,
                     columnChange:  self.currentMode().columnChange     
                 };
             
