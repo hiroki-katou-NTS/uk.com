@@ -126,13 +126,35 @@ public class MenuSettingImpl implements MasterListData {
 				List<MenuBar> listMenuBars = menu.getMenuBars();
 				listMenuBars = listMenuBars.stream().sorted((object1, object2) -> object1.getDisplayOrder().compareTo(object2.getDisplayOrder())).collect(Collectors.toList());
 				// loop menu bar 
-				for (MenuBar bar : listMenuBars) {
-					AtomicInteger rowBar = new AtomicInteger(0); 
-					datas.addAll(createMasterDateForRow(menu, bar, rowMenu, rowBar, companyId, listStandardMenus, maxTitle));
-				};
+				if (listMenuBars.isEmpty()){
+					// create empty row with only webmenu
+					datas.add(createEmptyRow(menu, maxTitle));
+				} else {
+					for (MenuBar bar : listMenuBars) {
+						AtomicInteger rowBar = new AtomicInteger(0); 
+						datas.addAll(createMasterDateForRow(menu, bar, rowMenu, rowBar, companyId, listStandardMenus, maxTitle));
+					};
+				}
 			};
 		}
 		return datas;
+	}
+	
+	public MasterData createEmptyRow(WebMenu webMenu, int maxColumn) {
+		Map<String, Object> data = new HashMap<>();
+		putEmptyData(data, maxColumn); 
+		
+		// display menu level 1 - webMenu
+		data.put("コード", webMenu.getWebMenuCode());
+		data.put("名称", webMenu.getWebMenuName());
+		
+		MasterData masterData = new MasterData(data, null, "");
+		
+		// set cell align
+		masterData.cellAt("コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+		masterData.cellAt("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+
+		return masterData;
 	}
 	
 	/**
