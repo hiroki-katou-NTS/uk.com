@@ -568,7 +568,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
     private String getValueA6(ApplicationType appType, List<Object[]> obj){
          Optional<Object[]> temp = obj.stream().filter(i -> i[36] != null ? appType.value == ((BigDecimal) i[36]).intValue() : appType.value == -1).findFirst();
          if(temp.isPresent()) {
-             return temp.get()[37] != null ? temp.get()[37].toString() + TextResource.localize("KAF022_650") : "";
+             return temp.get()[37] != null ? temp.get()[37].toString() + TextResource.localize("KAF022_653") : "";
          }
         return null;
     }
