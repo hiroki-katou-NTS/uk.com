@@ -599,17 +599,17 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 	ROW_NUMBER () OVER (" 
 			+ "  				PARTITION BY AA.SCD" 
 			+ "  				ORDER BY" 
-			+ "  					CASE WHEN AA.YM_K IS NULL THEN 1 ELSE 0 END" 
-			+ " 					,CASE WHEN AA.Y_K IS NULL THEN 1 ELSE 0 END " 
+			+ "  					 AA.YM_K" 
+			+ " 					,AA.Y_K  " 
 			+ "  			) AS rk" 
 			+ "  FROM" 
 			+ " (" 
 			+ " SELECT Case When SCD_1 is NULL THEN SCD_2 ELSE SCD_1 END SCD," 
 			+ " 			 Case When BUSINESS_NAME_1 is NULL THEN BUSINESS_NAME_2 ELSE BUSINESS_NAME_1 END BUSINESS_NAME ," 
-			+ " 			 YM_K," 
+			+ " 			 Case When YM_K is NULL THEN '999912' ELSE YM_K END YM_K," 
 			+ " 			 ERROR_ONE_MONTH," 
 			+ " 			 ALARM_ONE_MONTH," 
-			+ " 			 Y_K," 
+			+ " 			 Case When Y_K is NULL THEN '9999' ELSE Y_K END Y_K," 
 			+ " 			 ERROR_YEARLY," 
 			+ " 			 ALARM_YEARLY" 
 			+ "  FROM" 
@@ -661,8 +661,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " ON A.SCD_1 = B.SCD_2 AND A.ROW_NUMBER1 = B.ROW_NUMBER2" 
 			+ " ) AA" 
 			+ " ORDER BY AA.SCD, " 
-			+ " CASE WHEN AA.YM_K IS NULL THEN 1 ELSE 0 END" 
-			+ " ,CASE WHEN AA.Y_K IS NULL THEN 1 ELSE 0 END";
+			+ " AA.YM_K  " 
+			+ " ,AA.Y_K ";
 	
 	
 	@Override
@@ -1284,7 +1284,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		
 		data.put(RegistTimeColumn.KMK008_109, MasterCellData.builder()
 			        .columnId(RegistTimeColumn.KMK008_109)
-			        .value(objects[2] != null  ?  ((BigDecimal)objects[2]).toString().substring(0, 4) + "/" + ((BigDecimal)objects[2]).toString().substring(4, ((BigDecimal)objects[2]).toString().length()) : "")
+			        .value(  objects[2].toString().equals("999912") ? "" : objects[2] != null  ?  ((BigDecimal)objects[2]).toString().substring(0, 4) + "/" + ((BigDecimal)objects[2]).toString().substring(4, ((BigDecimal)objects[2]).toString().length()) : "")
 			        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 			        .build());
 		
@@ -1302,7 +1302,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		
 		data.put(RegistTimeColumn.KMK008_112, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_112)
-                .value(objects[5])
+                .value(objects[5].toString().equals("9999") ? "" : objects[5])
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_113, MasterCellData.builder()

@@ -47,8 +47,7 @@ public class JobInfoImpl extends JpaRepository implements JobInfoRepository {
 			+			" INNER JOIN SACMT_ROLE_SET s ON info.CID = s.CID"
 			+			" INNER JOIN SACMT_ROLESET_JOB_DETAIL d ON s.ROLE_SET_CD = d.ROLESET_CD AND info.JOB_ID = d.JOB_ID"
 			+			" INNER JOIN SACMT_ROLESET_JOB job ON info.CID = job.CID"
-			+		" WHERE info.CID = ?"
-			+ 		") TBL ";
+			+	" WHERE info.CID = ? ) TBL ";
 	
 	
 	private static final String GET_EXPORT_DATA = 
@@ -69,21 +68,18 @@ public class JobInfoImpl extends JpaRepository implements JobInfoRepository {
 			+			" FROM SACMT_ROLESET_PERSON per"
 			+				" INNER JOIN SACMT_ROLE_SET rs ON rs.CID = per.CID AND rs.ROLE_SET_CD = per.ROLESET_CD" 
 			+				" INNER JOIN BSYMT_EMP_DTA_MNG_INFO em ON per.SID = em.SID"
-			+				" INNER JOIN BSYMT_AFF_COM_HIST aff ON per.SID = aff.SID" 
+			+		 		" INNER JOIN BSYMT_AFF_COM_HIST aff ON per.SID = aff.SID" 
 			+				" INNER JOIN BPSMT_PERSON p ON aff.PID = p.PID "
-			+			" WHERE per.CID = ?"
+			+	" WHERE per.CID = ?"
 			+		 " AND per.START_DATE <= CONVERT(DATETIME, ?, 102) "
-		    +		 " AND per.END_DATE >= CONVERT(DATETIME, ?, 102)"
-			+ 		") TBL";
+		    +		 " AND per.END_DATE >= CONVERT(DATETIME, ?, 102) ) TBL";
 	
 	@Override
-	public List<MasterData> getDataRoleSetPosExport(String date) {
+	public List<MasterData> getDataRoleSetPosExport() {
 		String cid = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
 		try (PreparedStatement stmt = this.connection().prepareStatement(GET_EXPORT_EXCEL.toString())){
 			stmt.setString(1, cid);
-			stmt.setString(2, date);
-			stmt.setString(3, date);
 			datas.addAll(new NtsResultSet(stmt.executeQuery()).getList(i->buildMasterListData(i)));
 		} catch (SQLException e) {
 			e.printStackTrace();
