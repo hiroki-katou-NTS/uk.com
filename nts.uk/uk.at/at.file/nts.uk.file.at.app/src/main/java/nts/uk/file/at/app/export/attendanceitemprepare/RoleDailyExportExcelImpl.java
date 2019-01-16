@@ -120,23 +120,22 @@ public class RoleDailyExportExcelImpl {
         // add the work place sheet
         List<SheetData> sheetDatas = new ArrayList<>();
         SheetData sheet1 = new SheetData(getMasterDatas(query,listEmployeeRoleDto,authSeting,listAttItemNameNoAuth),
-                getHeaderColumns(query), null, null, TextResource.localize("KDW006_14"));
+                getHeaderColumns(query), null, null, TextResource.localize("KDW006_138"));
         SheetData sheet2 = new SheetData(getMasterDatasSheet2(query,listAttItemNameNoAuth,listConItem),
-                getHeaderColumnsSheet2(query), null, null, TextResource.localize("KDW006_15"));
-        
+                getHeaderColumnsSheet2(query), null, null, TextResource.localize("KDW006_139"));
         SheetData sheet3 = new SheetData(getMasterDatasSheet3(query,listBusinessType,mapMonthlyBz,
         		mapAttNameMonthlys,maplistBzDaily,mapAttNameDailys),
-                getHeaderColumnsSheet3(query), null, null, TextResource.localize("KDW006_18"));
+                getHeaderColumnsSheet3(query), null, null, TextResource.localize("KDW006_142"));
         SheetData sheet5 = new SheetData(getMasterDatasSheet5(query,listBzTypeSort),
-                getHeaderColumnsSheet5(query), null, null, TextResource.localize("KDW006_19"));
+                getHeaderColumnsSheet5(query), null, null, TextResource.localize("KDW006_143"));
         SheetData sheet6 = new SheetData(getMasterDatasSheet6(query,mapTypeByEmpAndGroup,headerSheet6),
-                getHeaderColumnsSheet6(query,headerSheet6), null, null, TextResource.localize("KDW006_20"));
+                getHeaderColumnsSheet6(query,headerSheet6), null, null, TextResource.localize("KDW006_144"));
 
         sheetDatas.add(sheet1);
         sheetDatas.add(sheet2);
+        sheetDatas.addAll(errorAlarmWorkRecordExportImpl.extraSheets(query));
         sheetDatas.add(sheet3);
         sheetDatas.add(sheet5);
-        sheetDatas.addAll(errorAlarmWorkRecordExportImpl.extraSheets(query));
         sheetDatas.add(sheet6);
         sheetDatas.addAll(roleMonthlyExportExcelImpl.extraSheets(query,listEmployeeRoleDto,mapAttNameMonthlys,listAttItemNameMonthly));
 
@@ -160,6 +159,8 @@ public class RoleDailyExportExcelImpl {
     private void initSheet3(List<BusinessTypeDto> listBusinessType, List<BusinessTypeFormatMonthly> listBusinessMonthly, Map<BusinessTypeCode, List<BusinessTypeFormatMonthly>> mapMonthlyBz, List<AttItemName> listAttItemNameMonthly, Map<Integer, AttItemName> mapAttNameMonthlys, Map<String, Map<Integer, List<BusinessDailyExcel>>> maplistBzDaily, Map<Integer, AttItemName> mapAttNameDailys, List<AttItemName> listAttItemNameNoAuth, String companyId) {
         listBusinessType.addAll(findAll.findAll()); //
         listBusinessMonthly.addAll(finAllMonthly.getMonthlyDetailByCompanyId(companyId));
+        listBusinessMonthly.sort(Comparator.comparing(BusinessTypeFormatMonthly::getBusinessTypeCode));
+        listBusinessType.sort(Comparator.comparing(BusinessTypeDto::getBusinessTypeCode));
         mapMonthlyBz.putAll(listBusinessMonthly.stream().collect(
                   Collectors.groupingBy(BusinessTypeFormatMonthly::getBusinessTypeCode)
                 ));
@@ -198,19 +199,19 @@ public class RoleDailyExportExcelImpl {
     public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
         
         List<MasterHeaderColumn> columns = new ArrayList<>();
-        columns.add(new MasterHeaderColumn("コード", TextResource.localize("KML004_9"),
+        columns.add(new MasterHeaderColumn("コード", TextResource.localize("KDW006_106"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("名称", TextResource.localize("KML004_10"),
+        columns.add(new MasterHeaderColumn("名称", TextResource.localize("KDW006_107"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("コード2", TextResource.localize("KML004_11"),
+        columns.add(new MasterHeaderColumn("コード2", TextResource.localize("KDW006_106"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("項目", TextResource.localize("KML004_16"),
+        columns.add(new MasterHeaderColumn("項目", TextResource.localize("KDW006_88"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("利用区分", TextResource.localize("KML004_53"),
+        columns.add(new MasterHeaderColumn("利用区分", TextResource.localize("KDW006_149"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("本人修正設定", TextResource.localize("KML004_53"),
+        columns.add(new MasterHeaderColumn("本人修正設定", TextResource.localize("KDW006_150"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("本人以外修正設定", TextResource.localize("KML004_53"),
+        columns.add(new MasterHeaderColumn("本人以外修正設定", TextResource.localize("KDW006_151"),
                 ColumnTextAlign.LEFT, "", true));
         return columns;
     }
@@ -328,13 +329,13 @@ public class RoleDailyExportExcelImpl {
     public List<MasterHeaderColumn> getHeaderColumnsSheet2(MasterListExportQuery query) {
         
         List<MasterHeaderColumn> columns = new ArrayList<>();
-        columns.add(new MasterHeaderColumn("コード", TextResource.localize("KML004_9"),
+        columns.add(new MasterHeaderColumn("コード", TextResource.localize("KDW006_106"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("項目", TextResource.localize("KML004_10"),
+        columns.add(new MasterHeaderColumn("項目", TextResource.localize("KDW006_88"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("ヘッダー色", TextResource.localize("KML004_11"),
+        columns.add(new MasterHeaderColumn("ヘッダー色", TextResource.localize("KDW006_152"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("丸め単位", TextResource.localize("KML004_16"),
+        columns.add(new MasterHeaderColumn("丸め単位", TextResource.localize("KDW006_153"),
                 ColumnTextAlign.LEFT, "", true));
         return columns;
     }
@@ -398,17 +399,17 @@ public class RoleDailyExportExcelImpl {
 public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery query) {
         
         List<MasterHeaderColumn> columns = new ArrayList<>();
-        columns.add(new MasterHeaderColumn("コード", TextResource.localize("KML004_9"),
+        columns.add(new MasterHeaderColumn("コード", TextResource.localize("KDW006_106"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("名称", TextResource.localize("KML004_10"),
+        columns.add(new MasterHeaderColumn("名称", TextResource.localize("KDW006_107"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("日次項目 Sheet選択", TextResource.localize("KML004_11"),
+        columns.add(new MasterHeaderColumn("日次項目 Sheet選択", TextResource.localize("KDW006_187"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("日次項目 名称", TextResource.localize("KML004_16"),
+        columns.add(new MasterHeaderColumn("日次項目 名称", TextResource.localize("KDW006_188"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("日次項目 項目", TextResource.localize("KML004_16"),
+        columns.add(new MasterHeaderColumn("日次項目 項目", TextResource.localize("KDW006_189"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("月次項目", TextResource.localize("KML004_16"),
+        columns.add(new MasterHeaderColumn("月次項目", TextResource.localize("KDW006_190"),
                 ColumnTextAlign.LEFT, "", true));
         return columns;
     }
@@ -508,8 +509,6 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
                     datas.add(alignMasterDataSheet3(data));
                 }
                 
-                
-                
             });
         }
         return datas;
@@ -536,11 +535,11 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
 public List<MasterHeaderColumn> getHeaderColumnsSheet5(MasterListExportQuery query) {
         
         List<MasterHeaderColumn> columns = new ArrayList<>();
-        columns.add(new MasterHeaderColumn("コード", TextResource.localize("KML004_9"),
+        columns.add(new MasterHeaderColumn("コード", TextResource.localize("KDW006_106"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("名称", TextResource.localize("KML004_10"),
+        columns.add(new MasterHeaderColumn("名称", TextResource.localize("KDW006_90"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("順", TextResource.localize("KML004_11"),
+        columns.add(new MasterHeaderColumn("順", TextResource.localize("KDW006_191"),
                 ColumnTextAlign.LEFT, "", true));
         return columns;
     }
@@ -606,9 +605,10 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet5(MasterListExportQuery que
                 Collections.sort(listGroupNo);
                 for (Integer GroupNo : listGroupNo) {
                     List<WorkTypeDtoExcel> groupWorkType = mapbyGroupNo.get(GroupNo);
+                    groupWorkType.sort(Comparator.comparing(WorkTypeDtoExcel::getCodeEmp));
                     if(!CollectionUtil.isEmpty(groupWorkType)){
                         List<String> listString = groupWorkType.stream()
-                                .map(developer -> new String(developer.getWorkTypeName()==null?"":developer.getWorkTypeName()))
+                                .map(developer -> new String(developer.getWorkTypeName()==null?"":developer.getCodeEmp()+developer.getWorkTypeName()))
                                 .collect(Collectors.toList());
                         Set<String> setListString = new HashSet<String>(listString);
                         String listWorkTypeName = setListString.stream().collect(Collectors.joining(","));
@@ -671,24 +671,24 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet5(MasterListExportQuery que
         return masterData;
     }
     private List<String> addTextHeader() {
-	  	String column1   = "コード";
-	    String column2 = "名称";
-	    String column3 = "1出勤から変更可能な勤務種類初期値";
-	    String column4 = "2法定内休日から変更可能な勤務種類初期値";
-	    String column5 = "3法定外休日から変更可能な勤務種類初期値";
-	    String column6 = "4法定外休日(祝)から変更可能な勤務種類初期値";
-	    String column7 = "5項目名称";
-	    String column8 = "5選択内容";
-	    String column9 = "6項目名称";
-	    String column10 = "6選択内容";
-	    String column11 = "7項目名称";
-	    String column12 = "7選択内容";
-	    String column13 = "8項目名称";
-	    String column14 = "8選択内容";
-	    String column15 = "9項目名称";
-	    String column16 = "9選択内容";
-	    String column17 = "10項目名称";
-	    String column18 = "10選択内容";
+	  	String column1 = TextResource.localize("KDW006_106");
+	    String column2 = TextResource.localize("KDW006_90");
+	    String column3 = TextResource.localize("KDW006_192");
+	    String column4 = TextResource.localize("KDW006_193");
+	    String column5 = TextResource.localize("KDW006_194");
+	    String column6 = TextResource.localize("KDW006_195");
+	    String column7 = TextResource.localize("KDW006_196");
+	    String column8 = TextResource.localize("KDW006_197");
+	    String column9 = TextResource.localize("KDW006_198");
+	    String column10 = TextResource.localize("KDW006_199"); 
+	    String column11 = TextResource.localize("KDW006_200");
+	    String column12 = TextResource.localize("KDW006_201");
+	    String column13 = TextResource.localize("KDW006_202");
+	    String column14 = TextResource.localize("KDW006_203");
+	    String column15 = TextResource.localize("KDW006_204");
+	    String column16 = TextResource.localize("KDW006_205");
+	    String column17 = TextResource.localize("KDW006_206");
+	    String column18 = TextResource.localize("KDW006_207");
 		return Arrays.asList(column1,column2,column3,column4,column5,column6,column7,column8,column9,column10,column11,column12,column13,column14,column15,column16,column17,column18);
 	}
 }
