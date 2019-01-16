@@ -766,7 +766,7 @@ public class PreparationBeforeApplyExport {
                 }
                 return ((BigDecimal)obj[10]).intValue() == 1 ? TextResource.localize("KAF022_174") : TextResource.localize("KAF022_173");
             case 14:
-                return ((BigDecimal)firstObject[105]).intValue() == 0 ? TextResource.localize("KAF022_139") : TextResource.localize("KAF022_140");
+                return ((BigDecimal)firstObject[11]).intValue() == 0 ? TextResource.localize("KAF022_139") : TextResource.localize("KAF022_140");
             case 15:
                 return ((BigDecimal)obj[12]).intValue() == 1 ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
             case 16:
@@ -1184,7 +1184,7 @@ public class PreparationBeforeApplyExport {
                 }
                 return ((BigDecimal)obj[10]).intValue() == 1 ? TextResource.localize("KAF022_174") : TextResource.localize("KAF022_173");
             case 11:
-                return ((BigDecimal)obj[13]).intValue() == 0 ? TextResource.localize("KAF022_139") : TextResource.localize("KAF022_140");
+                return ((BigDecimal)obj[105]).intValue() == 1 ? TextResource.localize("KAF022_139") : TextResource.localize("KAF022_140");
             case 12:
                 return ((BigDecimal)obj[12]).intValue() == 1 ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
             case 13:
