@@ -52,7 +52,7 @@ public class SpecificdaySetExportImpl implements MasterListData {
 		List<SheetData> sheetDatas = new ArrayList<>();
 		// add the work place sheet
 		SheetData sheetWorkplaceData = new SheetData(getMasterDatasForWorkplace(query),
-				getHeaderColumnsForWorkplace(query), null, null, TextResource.localize("Com_Workplace"));
+				getHeaderColumnsForWorkplace(query), null, null, TextResource.localize("KSM002_99"));
 		sheetDatas.add(sheetWorkplaceData);
 		return sheetDatas;
 	}
@@ -123,7 +123,7 @@ public class SpecificdaySetExportImpl implements MasterListData {
 
 	@Override
 	public String mainSheetName() {
-		return TextResource.localize("Com_Company");
+		return TextResource.localize("KSM002_98");
 	}
 
 	private Optional<MasterData> newCompanyMasterData(String yearMonth,
@@ -248,6 +248,8 @@ public class SpecificdaySetExportImpl implements MasterListData {
 						List<WorkplaceHierarchyDto> wpHierarchyDtoSameWpIDs = dto.getValue();
 						wpHierarchyDtoSameWpIDs.forEach(wpHierarchyDto -> {
 							String workplaceCode = wpHierarchyDto.getCode();
+							System.out.println("Workplace code: " + workplaceCode + ", workplace name: " + wpHierarchyDto.getName()
+									+ ", hierarchy code: " + wpHierarchyDto.getHierarchyCode());
 
 							Optional<List<SpecificdaySetWorkplaceReportData>> dataByCode = mapSetReportDatas.isPresent()
 									? Optional.ofNullable(mapSetReportDatas.get().get(workplaceCode))
@@ -272,12 +274,12 @@ public class SpecificdaySetExportImpl implements MasterListData {
 
 										});
 							} else {
-								List<SpecificdaySetWorkplaceReportData> workDatas = new ArrayList<>();
-								SpecificdaySetWorkplaceReportData workData = new SpecificdaySetWorkplaceReportData();
-								workData.setWorkplaceCode(wpHierarchyDto.getCode());
-								workData.setWorkplaceName(wpHierarchyDto.getName());
-								workDatas.add(workData);
-								datas.add(newWorkplaceMasterData(0, Optional.empty(), Optional.of(workDatas)));
+//								List<SpecificdaySetWorkplaceReportData> workDatas = new ArrayList<>();
+//								SpecificdaySetWorkplaceReportData workData = new SpecificdaySetWorkplaceReportData();
+//								workData.setWorkplaceCode(wpHierarchyDto.getCode());
+//								workData.setWorkplaceName(wpHierarchyDto.getName());
+//								workDatas.add(workData);
+//								datas.add(newWorkplaceMasterData(0, Optional.empty(), Optional.of(workDatas)));
 							}
 						});
 					});

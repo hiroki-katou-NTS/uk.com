@@ -80,16 +80,16 @@ public class RoleMonthlyExportExcelImpl  {
         // add the work place sheet
         List<SheetData> sheetDatas = new ArrayList<>();
         SheetData sheet1 = new SheetData(getMasterDatas(query,listEmployeeRoleDto,authSeting,listAttItemNameNoAuth),
-                getHeaderColumns(query), null, null, TextResource.localize("KDW006_30"));
+                getHeaderColumns(query), null, null, TextResource.localize("KDW006_145"));
         sheetDatas.add(sheet1);
         SheetData sheet2 = new SheetData(getMasterDatasSheet2(query,listAttItemNameNoAuth,listConItem,mapListRecordMonthly),
-                getHeaderColumnsSheet2(query), null, null, TextResource.localize("KDW006_31"));
+                getHeaderColumnsSheet2(query), null, null, TextResource.localize("KDW006_146"));
         sheetDatas.add(sheet2);
         SheetData sheet3 = new SheetData(getMasterDatasSheet3(query,listBzMonthly,mapListRecordMonthly,mapAttNameMonthlys),
-                getHeaderColumnsSheet3(query), null, null, TextResource.localize("KDW006_32"));
+                getHeaderColumnsSheet3(query), null, null, TextResource.localize("KDW006_147"));
         sheetDatas.add(sheet3);
         SheetData sheet4 = new SheetData(getMasterDatasSheet4(query,listOrderReferWorkType,mapAttNameMonthlys),
-                getHeaderColumnsSheet4(query), null, null, TextResource.localize("KDW006_33"));
+                getHeaderColumnsSheet4(query), null, null, TextResource.localize("KDW006_148"));
         sheetDatas.add(sheet4);
         return sheetDatas;
     }
@@ -117,19 +117,19 @@ public class RoleMonthlyExportExcelImpl  {
     public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
         
         List<MasterHeaderColumn> columns = new ArrayList<>();
-        columns.add(new MasterHeaderColumn("コード", TextResource.localize("KML004_9"),
+        columns.add(new MasterHeaderColumn("コード", TextResource.localize("KDW006_106"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("名称", TextResource.localize("KML004_10"),
+        columns.add(new MasterHeaderColumn("名称", TextResource.localize("KDW006_90"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("コード2", TextResource.localize("KML004_11"),
+        columns.add(new MasterHeaderColumn("コード2", TextResource.localize("KDW006_106"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("項目", TextResource.localize("KML004_16"),
+        columns.add(new MasterHeaderColumn("項目", TextResource.localize("KDW006_88"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("利用区分", TextResource.localize("KML004_53"),
+        columns.add(new MasterHeaderColumn("利用区分", TextResource.localize("KDW006_149"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("本人修正設定", TextResource.localize("KML004_53"),
+        columns.add(new MasterHeaderColumn("本人修正設定", TextResource.localize("KDW006_150"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("本人以外修正設定", TextResource.localize("KML004_53"),
+        columns.add(new MasterHeaderColumn("本人以外修正設定", TextResource.localize("KDW006_151"),
                 ColumnTextAlign.LEFT, "", true));
         return columns;
     }
@@ -243,13 +243,13 @@ public class RoleMonthlyExportExcelImpl  {
     public List<MasterHeaderColumn> getHeaderColumnsSheet2(MasterListExportQuery query) {
         
         List<MasterHeaderColumn> columns = new ArrayList<>();
-        columns.add(new MasterHeaderColumn("コード", TextResource.localize("KML004_9"),
+        columns.add(new MasterHeaderColumn("コード", TextResource.localize("KDW006_106"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("項目", TextResource.localize("KML004_10"),
+        columns.add(new MasterHeaderColumn("項目", TextResource.localize("KDW006_88"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("ヘッダー色", TextResource.localize("KML004_11"),
+        columns.add(new MasterHeaderColumn("ヘッダー色", TextResource.localize("KDW006_152"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("丸め単位", TextResource.localize("KML004_16"),
+        columns.add(new MasterHeaderColumn("丸め単位", TextResource.localize("KDW006_153"),
                 ColumnTextAlign.LEFT, "", true));
         return columns;
     }
@@ -268,7 +268,7 @@ public class RoleMonthlyExportExcelImpl  {
                 data.put("項目", c.getAttendanceItemName());
                 if(controlItem!=null){
                     if(controlItem.getHeaderBgColorOfMonthlyPer()!=null){
-                        data.put("ヘッダー色", controlItem.getHeaderBgColorOfMonthlyPer());
+                        data.put("ヘッダー色", controlItem.getHeaderBgColorOfMonthlyPer().replace("#", ""));
                     }
                     TimeInputUnit timeInputUnit = EnumAdaptor.valueOf(controlItem.getInputUnitOfTimeItem()==null?0:controlItem.getInputUnitOfTimeItem(), TimeInputUnit.class);
                     data.put("丸め単位", timeInputUnit.nameId);
@@ -311,15 +311,15 @@ public class RoleMonthlyExportExcelImpl  {
 public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery query) {
         
         List<MasterHeaderColumn> columns = new ArrayList<>();
-        columns.add(new MasterHeaderColumn("コード", TextResource.localize("KML004_9"),
+        columns.add(new MasterHeaderColumn("コード", TextResource.localize("KDW006_106"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("名称", TextResource.localize("KML004_10"),
+        columns.add(new MasterHeaderColumn("名称", TextResource.localize("KDW006_90"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("Sheet選択", TextResource.localize("KML004_11"),
+        columns.add(new MasterHeaderColumn("Sheet選択", TextResource.localize("KDW006_208"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("名称SheetName", TextResource.localize("KML004_16"),
+        columns.add(new MasterHeaderColumn("名称SheetName", TextResource.localize("KDW006_90"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("月次項目 項目", TextResource.localize("KML004_16"),
+        columns.add(new MasterHeaderColumn("月次項目 項目", TextResource.localize("KDW006_209"),
                 ColumnTextAlign.LEFT, "", true));
         return columns;
     }
