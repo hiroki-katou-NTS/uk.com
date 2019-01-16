@@ -11,10 +11,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.PerEmpData;
+import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.CodeName;
@@ -23,10 +25,16 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpHead;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmployeeDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmployeeInfoDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
+import nts.uk.ctx.pereg.app.find.person.category.PerInfoCategoryFinder;
+import nts.uk.ctx.pereg.app.find.person.category.PerInfoCtgFullDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefFinder;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutFinder;
+import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.SingleItemDto;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
+import nts.uk.ctx.pereg.dom.person.info.category.PersonEmployeeType;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
@@ -34,6 +42,8 @@ import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.pereg.app.ComboBoxObject;
+import nts.uk.shr.pereg.app.find.GridComboBoxSettingQuery;
 import nts.uk.shr.pereg.app.find.PeregGridQuery;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 
@@ -59,6 +69,15 @@ public class GridPeregProcessor {
 
 	@Inject
 	private EmployeeDataMngInfoRepository employeeMngRepo;
+	
+	@Inject
+	private ComboBoxRetrieveFactory cbxFactory;
+	
+	@Inject
+	private PerInfoItemDefFinder itemFinder;
+	
+	@Inject 
+	private PerInfoCategoryFinder ctgFinder;
 
 	public GridEmployeeDto getGridLayout(PeregGridQuery query) {
 		// app context
@@ -173,5 +192,26 @@ public class GridPeregProcessor {
 		}
 
 		return lstReturn;
+	}    
+	
+	/**
+	 * Get list option for dropdownlist in CPS003F
+	 * @return
+	 */
+	public List<ComboBoxObject> getComboBox(GridComboBoxSettingQuery query) {
+
+		PerInfoItemDefDto item = itemFinder.getPerInfoItemDefByIdForLayout(query.getItemId());
+		PerInfoCtgFullDto ctgItem = ctgFinder.getPerInfoCtg(item.getPerInfoCtgId());
+
+		try {
+			SingleItemDto sidto = (SingleItemDto) item.getItemTypeState();
+			SelectionItemDto slidto = (SelectionItemDto) sidto.getDataTypeState();
+
+			return cbxFactory.getComboBox(slidto, null, query.getBaseDate(), true,
+					EnumAdaptor.valueOf(ctgItem.getPersonEmployeeType(), PersonEmployeeType.class), false,
+					ctgItem.getCategoryCode(), null, true);
+		} catch (Exception ex) {
+			return Arrays.asList();
+		}
 	}
 }
