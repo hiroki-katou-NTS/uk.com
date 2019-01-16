@@ -20,8 +20,7 @@ module nts.uk.at.view.ksm001.a {
                 domainId: "ShiftEstimate",
                 domainType: "KSM001目安時間・金額の登録",
                 languageId: languageId,
-                reportType: 0,
-                mode: 2,
+                reportType: 0,              
                 startDate: startDate,
                 endDate: endDate
             };
