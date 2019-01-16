@@ -49,9 +49,9 @@ public class BasicWorkRegisterExportImpl implements MasterListData {
 	 public List<SheetData> extraSheets(MasterListExportQuery query) {
 		 List<SheetData> sheetDatas = new ArrayList<>();
 		 SheetData sheetWorkplaceData = new SheetData(getMasterDatasWorkplace(query), getHeaderColumnsWorkspace(query),
-				 null, null, TextResource.localize("Com_Workplace"));
+				 null, null, TextResource.localize("KSM006_25"));
 		 SheetData sheetClassData = new SheetData(getMasterDatasForClass(query), getHeaderColumnsForClass(query),
-				 null, null, TextResource.localize("Com_Class"));
+				 null, null, TextResource.localize("KSM006_26"));
 		 sheetDatas.add(sheetWorkplaceData);
 		 sheetDatas.add(sheetClassData);
 		 return sheetDatas;
@@ -59,7 +59,7 @@ public class BasicWorkRegisterExportImpl implements MasterListData {
 	 
 	@Override
 	public String mainSheetName() {
-		return TextResource.localize("Com_Company");
+		return TextResource.localize("KSM006_24");
 	}
 
 	@Override
@@ -179,12 +179,12 @@ public class BasicWorkRegisterExportImpl implements MasterListData {
 
 								datas.add(newWorkplaceMasterData(dataByCode.get()));
 							} else {
-								List<WorkplaceBasicWorkData> workDatas = new ArrayList<>();
-								WorkplaceBasicWorkData workData = new WorkplaceBasicWorkData();
-								workData.setWorkplaceCode(wpHierarchyDto.getCode());
-								workData.setWorkplaceName(wpHierarchyDto.getName());
-								workDatas.add(workData);
-								datas.add(newWorkplaceMasterData(workDatas));
+//								List<WorkplaceBasicWorkData> workDatas = new ArrayList<>();
+//								WorkplaceBasicWorkData workData = new WorkplaceBasicWorkData();
+//								workData.setWorkplaceCode(wpHierarchyDto.getCode());
+//								workData.setWorkplaceName(wpHierarchyDto.getName());
+//								workDatas.add(workData);
+//								datas.add(newWorkplaceMasterData(workDatas));
 							}
 						});
 					});

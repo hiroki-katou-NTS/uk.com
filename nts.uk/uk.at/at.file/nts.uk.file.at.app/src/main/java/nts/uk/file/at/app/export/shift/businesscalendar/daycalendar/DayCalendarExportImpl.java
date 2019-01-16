@@ -60,11 +60,11 @@ public class DayCalendarExportImpl implements MasterListData {
 //		 period = dayCalendarReportRepository.getBaseDateByCompany(companyId, query.getStartDate(), query.getEndDate());
 		 List<SheetData> sheetDatas = new ArrayList<>();
 		 //add the work place sheet
-		 SheetData sheetCompanyData = new SheetData(getMasterDatasCompany(query), getHeaderColumnsCompany(query),null, null, TextResource.localize("Com_Company"));
+		 SheetData sheetCompanyData = new SheetData(getMasterDatasCompany(query), getHeaderColumnsCompany(query),null, null, TextResource.localize("KSM004_101"));
 		 SheetData sheetWorkplaceData = new SheetData(getMasterDatasForWorkplace(query), 
-				 getHeaderColumnsForWorkplace(query),null, null, TextResource.localize("Com_Workplace"));
+				 getHeaderColumnsForWorkplace(query),null, null, TextResource.localize("KSM004_102"));
 		 SheetData sheetClassData = new SheetData(getMasterDatasForClass(query), 
-				 getHeaderColumnsForClass(query),null, null, TextResource.localize("Com_Class"));
+				 getHeaderColumnsForClass(query),null, null, TextResource.localize("KSM004_103"));
 		 sheetDatas.add(sheetCompanyData);
 		 sheetDatas.add(sheetWorkplaceData);
 		 sheetDatas.add(sheetClassData);
@@ -308,12 +308,12 @@ public class DayCalendarExportImpl implements MasterListData {
 											index.getAndIncrement();
 										});
 							} else {
-								List<WorkplaceCalendarReportData> workDatas = new ArrayList<>();
-								WorkplaceCalendarReportData workData = new WorkplaceCalendarReportData();
-								workData.setWorkplaceCode(wpHierarchyDto.getCode());
-								workData.setWorkplaceName(wpHierarchyDto.getName());
-								workDatas.add(workData);
-								datas.add(newWorkplaceMasterData(0, Optional.empty(), Optional.of(workDatas)));
+//								List<WorkplaceCalendarReportData> workDatas = new ArrayList<>();
+//								WorkplaceCalendarReportData workData = new WorkplaceCalendarReportData();
+//								workData.setWorkplaceCode(wpHierarchyDto.getCode());
+//								workData.setWorkplaceName(wpHierarchyDto.getName());
+//								workDatas.add(workData);
+//								datas.add(newWorkplaceMasterData(0, Optional.empty(), Optional.of(workDatas)));
 							}
 						});
 					});
