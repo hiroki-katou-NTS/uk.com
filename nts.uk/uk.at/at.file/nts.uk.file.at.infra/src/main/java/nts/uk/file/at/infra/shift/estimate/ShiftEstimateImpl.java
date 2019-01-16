@@ -270,9 +270,9 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 		if (rowNumber < 5) {
 			data.put(ShiftEstimateColumn.KSM001_113, MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_113)
-					.value(dataFromDB != null ? dataFromDB.get(rowNumber)[13] : "")
+					.value(!dataFromDB.isEmpty() ? dataFromDB.get(rowNumber)[13] : "")
 					.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-					.style(MasterCellStyle.build().backgroundColor(dataFromDB != null ? dataFromDB.get(rowNumber)[13].toString() : ""))
+					.style(MasterCellStyle.build().backgroundColor(!dataFromDB.isEmpty() ? dataFromDB.get(rowNumber)[13].toString() : ""))
 					//.style(MasterCellStyle.build().backgroundColor(dataFromDB.get(rowNumber)[13].toString()))
 					.build());
 		} else {
@@ -280,7 +280,7 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 			// EstimatedCondition enum
 			data.put(ShiftEstimateColumn.KSM001_113,
 					MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_113)
-							.value(dataFromDB != null ? (rowNumber == 17
+							.value(!dataFromDB.isEmpty() ? (rowNumber == 17
 									? EnumAdaptor.valueOf(((BigDecimal) dataFromDB.get(0)[rowNumber - 5]).intValue(),
 											EstComparisonAtr.class).description
 									: EnumAdaptor.valueOf(((BigDecimal) dataFromDB.get(0)[rowNumber - 5]).intValue(),
