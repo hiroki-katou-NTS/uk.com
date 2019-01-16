@@ -14,8 +14,8 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.gul.excel.ExcelFileTypeException;
-import nts.gul.excel.ExcelHeader;
 import nts.gul.excel.NtsExcelCell;
+import nts.gul.excel.NtsExcelHeader;
 import nts.gul.excel.NtsExcelImport;
 import nts.gul.excel.NtsExcelReader;
 import nts.gul.excel.NtsExcelRow;
@@ -88,7 +88,7 @@ public class CheckFileFinder {
 			// data file
 			NtsExcelImport excelReader = NtsExcelReader.read(inputStream);
 			// header
-			List<ExcelHeader> header = excelReader.headers(); 
+			List<NtsExcelHeader> header = excelReader.headers(); 
 			List<NtsExcelRow> rows = excelReader.rows();
 			List<String> fixedCol = fixedColums(cid, userId);
 			
@@ -117,7 +117,7 @@ public class CheckFileFinder {
 	}
 	
 	// get ColumnsFixed
-	private List<String> getColumsChange(List<ExcelHeader> header) throws Exception{
+	private List<String> getColumsChange(List<NtsExcelHeader> header) throws Exception{
 		List<String> colChange = new ArrayList<>();
 		header.stream().forEach(c ->{
 			NtsExcelCell mainCells = c.getMain();
@@ -135,7 +135,7 @@ public class CheckFileFinder {
 		//アルゴリズム「受入社員情報取得処理」を実行する
 		rows.stream().forEach(c ->{
 			List<NtsExcelCell> cells = c.cells();
-			ExcelHeader header = cells.get(0).getHeader();
+			NtsExcelHeader header = cells.get(0).getHeader();
 			String nameCol = header.getMain().getValue().toString();
 			//Excelファイルから、「社員コード」列を取得する
 			if(nameCol.equals(TextResource.localize("CPS003_28"))) {
