@@ -17,6 +17,7 @@ import nts.uk.ctx.sys.auth.infra.entity.role.SacmtPersonRole;
 @Stateless
 public class PersonRoleRepositoryImpl extends JpaRepository implements PersonRoleRepository {
 
+	
 	/**
 	 * JPQL: find (without where)
 	 */
@@ -85,4 +86,6 @@ public class PersonRoleRepositoryImpl extends JpaRepository implements PersonRol
 		entity.setReferFutureDate(personRole.getReferFutureDate());
 		return entity;
 	}
+
+	
 }

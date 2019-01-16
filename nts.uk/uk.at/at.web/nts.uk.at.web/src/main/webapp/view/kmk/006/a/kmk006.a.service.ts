@@ -1,5 +1,6 @@
 module nts.uk.at.view.kmk006.a {
     export module service {
+        import exportFile = nts.uk.request.exportFile;
         var paths = {
             
             // Get enum list
@@ -32,7 +33,12 @@ module nts.uk.at.view.kmk006.a {
             deleteWkpJobAutoCal: "ctx/at/shared/ot/autocal/wkpjob/delete",
             
             //get detail wkpl
-            detailWkpl: "bs/employee/workplace/info/findDetail"
+            detailWkpl: "bs/employee/workplace/info/findDetail",
+
+        }
+
+        export function exportExcel(languageId: string, domainId, domainType: string, unit: any, baseDate: any): JQueryPromise<any> {
+            return exportFile('/masterlist/report/print', { domainId: domainId, domainType: domainType, languageId: languageId, reportType: 0, data: unit, startDate: baseDate });
         }
         
         export function getDetailWkpl(obj: any): JQueryPromise<any> {
