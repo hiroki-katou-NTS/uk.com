@@ -14,4 +14,11 @@ module cas009.a {
             check: (roleId: string) => ajax('com', 'ctx/com/screen/person/role/check', roleId)
         },
     };
+    export function exportExcel(): JQueryPromise<any> {
+        let _params = { domainId: "RolePersonalInfor", 
+                        domainType: "CAS009ロールの登録（個人情報）", 
+                        languageId: "ja", 
+                        reportType: 0};
+        return nts.uk.request.exportFile('/masterlist/report/print', _params);
+    }
 }

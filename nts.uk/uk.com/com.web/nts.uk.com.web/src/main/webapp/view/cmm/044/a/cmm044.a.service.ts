@@ -6,7 +6,8 @@ module cmm044.a.service {
         deleteAgent: "workflow/agent/delete/",
         addAgent: "workflow/agent/add/",
         updateAgent: "workflow/agent/update/",
-        searchEmployeeByLogin: "basic/organization/employee/onlyemployee"
+        searchEmployeeByLogin: "basic/organization/employee/onlyemployee",
+
     }
 
     export function findAgent(parameter: any): JQueryPromise<viewmodel.model.AgentDto> {
@@ -35,5 +36,9 @@ module cmm044.a.service {
     
      export function findEmployeeName(sId: String): JQueryPromise<any> {
         return nts.uk.request.ajax('com', paths.findEmployeeName, sId);
+    }
+
+    export function exportExcel(listEmployee: any): JQueryPromise<any> {
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "SubscribeRegis", domainType: 'CMM044代行者の登録', languageId: 'ja', reportType: 0,data: listEmployee});
     }
 }

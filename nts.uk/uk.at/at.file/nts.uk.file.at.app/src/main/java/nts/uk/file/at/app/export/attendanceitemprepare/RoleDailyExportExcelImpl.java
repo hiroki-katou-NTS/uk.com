@@ -161,7 +161,7 @@ public class RoleDailyExportExcelImpl {
         listBusinessType.addAll(findAll.findAll()); //
         listBusinessMonthly.addAll(finAllMonthly.getMonthlyDetailByCompanyId(companyId));
         mapMonthlyBz.putAll(listBusinessMonthly.stream().collect(
-                  Collectors.groupingBy(BusinessTypeFormatMonthly::getBusinessTypeCode, HashMap::new, Collectors.toCollection(ArrayList::new))
+                  Collectors.groupingBy(BusinessTypeFormatMonthly::getBusinessTypeCode)
                 ));
         listAttItemNameMonthly.addAll(atItemNameAdapter.getNameOfAttdItemByType(EnumAdaptor.valueOf(2, TypeOfItemImport.class)));
         listAttItemNameMonthly.sort(Comparator.comparing(AttItemName::getAttendanceItemDisplayNumber));

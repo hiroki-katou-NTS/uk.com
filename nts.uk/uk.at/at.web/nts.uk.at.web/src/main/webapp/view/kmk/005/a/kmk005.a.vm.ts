@@ -20,7 +20,19 @@ module nts.uk.at.view.kmk005.a {
                 
                 return dfd.promise();
             }
-            
+
+            exportExcel(){
+                nts.uk.ui.block.invisible();
+                service.exportExcel().done(function() {
+
+                }).fail(function(error) {
+                    if(error)
+                        nts.uk.ui.dialog.alertError(error.message);
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
+
             openTimeItem(): void  {
                 nts.uk.ui.windows.sub.modal("/view/kmk/005/b/index.xhtml", {title: "加給項目の設定"});
             }
