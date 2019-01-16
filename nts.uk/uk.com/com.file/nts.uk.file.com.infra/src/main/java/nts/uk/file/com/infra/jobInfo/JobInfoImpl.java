@@ -1,4 +1,4 @@
-package nts.uk.file.com.infra.JobInfo;
+package nts.uk.file.com.infra.jobInfo;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;

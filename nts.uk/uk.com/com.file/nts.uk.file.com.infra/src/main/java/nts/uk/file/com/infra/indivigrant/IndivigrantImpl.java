@@ -1,4 +1,4 @@
-package nts.uk.file.com.infra.Indivigrant;
+package nts.uk.file.com.infra.indivigrant;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
