@@ -281,9 +281,9 @@ public class EmployeeSystemImpl implements MasterListData {
                 .mainDataColumns(getHeaderColumns(EmployeeSystem.ANNUAL_HOLIDAYS))
                 .sheetName(getSheetName(EmployeeSystem.ANNUAL_HOLIDAYS))
                 .build();
-        
-        List<MasterData> listAllRetenYearlySet = mRetenYearlySetRepository.getAllRetenYearlySet(companyId);
         sheetDatas.add(sheetData1);
+
+        List<MasterData> listAllRetenYearlySet = mRetenYearlySetRepository.getAllRetenYearlySet(companyId);
         SheetData sheetData2 = SheetData.builder()
                 .mainData(listAllRetenYearlySet)
                 .mainDataColumns(getHeaderColumns(EmployeeSystem.CROWDED_COMPANY))
@@ -306,6 +306,7 @@ public class EmployeeSystemImpl implements MasterListData {
                 .mainDataColumns(getHeaderColumns(EmployeeSystem.OFFTIME_COMPANY))
                 .sheetName(getSheetName(EmployeeSystem.OFFTIME_COMPANY))
                 .build();
+        sheetDatas.add(sheetData4);
 
         if (listAllTemHoliCompany.get(0).getRowData().get(EmployeeSystemImpl.KMF001_206).getValue().equals(IS_MANAGE_OF_HOLIDAYS)) {
             SheetData sheetData5 = SheetData.builder()
@@ -322,6 +323,7 @@ public class EmployeeSystemImpl implements MasterListData {
                 .mainDataColumns(getHeaderColumns(EmployeeSystem.SHUTDOWM_COMPANY))
                 .sheetName(getSheetName(EmployeeSystem.SHUTDOWM_COMPANY))
                 .build();
+        sheetDatas.add(sheetData6);
 
         if(listAllComSubstVacation.get(0).getRowData().get(EmployeeSystemImpl.KMF001_224).getValue().equals(IS_MANAGE)){
             SheetData sheetData7 = SheetData.builder()
@@ -337,16 +339,13 @@ public class EmployeeSystemImpl implements MasterListData {
                 .mainDataColumns(getHeaderColumns(EmployeeSystem.SIXTY_HOURS))
                 .sheetName(getSheetName(EmployeeSystem.SIXTY_HOURS))
                 .build();
+        sheetDatas.add(sheetData8);
 
         SheetData sheetData9 = SheetData.builder()
                 .mainData(mNursingLeaveSetRepository.getAllNursingLeaveSetting(companyId))
                 .mainDataColumns(getHeaderColumns(EmployeeSystem.NURSING_CARE))
                 .sheetName(getSheetName(EmployeeSystem.NURSING_CARE))
                 .build();
-
-        sheetDatas.add(sheetData4);
-        sheetDatas.add(sheetData6);
-        sheetDatas.add(sheetData8);
         sheetDatas.add(sheetData9);
 
         return sheetDatas;
