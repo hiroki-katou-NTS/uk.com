@@ -78,6 +78,21 @@ module nts.uk.at.view.ksm011 {
                         break;
                 }
             }
+            
+            /**
+             * Export excel
+             */
+            private exportExcel(): void {
+                var self = this;
+                nts.uk.ui.block.grayout();
+                let langId = "ja";
+                a.service.saveAsExcel(langId).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
         }
 
         interface ITabModel {
