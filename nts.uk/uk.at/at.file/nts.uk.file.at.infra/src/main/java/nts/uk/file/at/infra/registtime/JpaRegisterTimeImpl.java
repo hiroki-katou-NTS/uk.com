@@ -33,6 +33,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	@PersistenceContext
 	private EntityManager entityManager;
 	
+	private static final String END_MONTH = "12";
+	
 	private static final String SQL_EXPORT_SHEET_1 = "SELECT "
 			+ "STARTING_MONTH_TYPE,"
 			+ "CLOSING_DATE_ATR,"
@@ -1253,6 +1255,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		String endYM = endDate.yearMonth().toString();
 		int startY = startDate.year();
 		int endY = endDate.year();
+		if(!endYM.substring(2, endYM.length()).equals(END_MONTH))
+			endY = endY-1;
 		String cid = AppContexts.user().companyId();
 		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_10.toString()).
 				setParameter("cid", cid).
