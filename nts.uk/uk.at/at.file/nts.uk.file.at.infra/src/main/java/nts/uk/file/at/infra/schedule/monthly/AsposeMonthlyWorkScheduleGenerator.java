@@ -1389,6 +1389,16 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			while (iteratorEmployee.hasNext()) {
 				EmployeeReportData employeeReportData = iteratorEmployee.next();
 				
+				// Calculate used row for workplace, employee, 1st record
+				int usedRow = 0;
+				if (condition.isShowWorkplace()) usedRow++;
+				if (condition.isShowPersonal()) usedRow++;
+				if (totalOutput.isDetails() && !employeeReportData.getLstDetailedMonthlyPerformance().isEmpty()) usedRow += dataRowCount;
+				if (rowPageTracker.checkRemainingRowSufficient(usedRow) < 0) {
+					sheet.getHorizontalPageBreaks().add(currentRow);
+					rowPageTracker.resetRemainingRow();
+				}
+				
 				if (condition.isShowWorkplace()) {
 					Range workplaceRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_WORKPLACE_ROW);
 					Range workplaceRange = cells.createRange(currentRow, 0, 1, DATA_COLUMN_INDEX[5]);
