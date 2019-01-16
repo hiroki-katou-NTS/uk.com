@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -31,6 +32,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	
 	@PersistenceContext
 	private EntityManager entityManager;
+	
+	private static final String END_MONTH = "12";
 	
 	private static final String SQL_EXPORT_SHEET_1 = "SELECT "
 			+ "STARTING_MONTH_TYPE,"
@@ -125,10 +128,12 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "kk.CODE = bb.EMP_CTG_CODE "
 			+ "WHERE "
 			+ "	bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0 "
-			+ "AND kk.CID = ?cid";
+			+ "AND kk.CID = ?cid"
+			+ " ORDER BY kk.CODE";
 	
 	private static final String SQL_EXPORT_SHEET_4 = " WITH summary AS ("
 			+ " SELECT "
+			+ "		ee.END_DATE,"
 			+ " 	kk.WKPCD,"
 			+ " 	kk.WKP_NAME,"
 			+ " 	ROW_NUMBER() OVER("
@@ -227,7 +232,12 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " WHERE"
 			+ " 	 bb.LABOR_SYSTEM_ATR = 0 AND kk.CID = ?cid"
 			+ " )"
-			+ " SELECT s.WKPCD,s.WKP_NAME,s.ERROR_WEEK,s.ALARM_WEEK,s.LIMIT_WEEK,"
+			+ " SELECT s.WKPCD,"
+			+ " CASE s.END_DATE"
+			+ " When '9999-12-31 00:00:00' then s.WKP_NAME "
+			+ " ELSE 'マスタ未登録' "
+			+ " END as WKP_NAME,"
+			+ " s.ERROR_WEEK,s.ALARM_WEEK,s.LIMIT_WEEK,"
 			+ " 			 s.ERROR_TWO_WEEKS,s.ALARM_TWO_WEEKS,s.LIMIT_TWO_WEEKS,"
 			+ " 			 s.ERROR_FOUR_WEEKS,s.ALARM_FOUR_WEEKS,s.LIMIT_FOUR_WEEKS,"
 			+ " 			 s.ERROR_ONE_MONTH,s.ALARM_ONE_MONTH,s.LIMIT_ONE_MONTH,"
@@ -394,11 +404,13 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "kk.CODE = bb.EMP_CTG_CODE "
 			+ "WHERE "
 			+ "	bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1 "
-			+ "AND kk.CID = ?cid";
+			+ "AND kk.CID = ?cid "
+			+ " ORDER BY kk.CODE";
 	
 	
 	private static final String SQL_EXPORT_SHEET_8 =  " WITH summary AS ("
 			+ " SELECT "
+			+ "     ee.END_DATE,"
 			+ " 	kk.WKPCD,"
 			+ " 	kk.WKP_NAME,"
 			+ " 	ROW_NUMBER() OVER("
@@ -497,7 +509,12 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " WHERE"
 			+ " 	 bb.LABOR_SYSTEM_ATR = 1 AND kk.CID = ?cid"
 			+ " )"
-			+ " SELECT s.WKPCD,s.WKP_NAME,s.ERROR_WEEK,s.ALARM_WEEK,s.LIMIT_WEEK,"
+			+ " SELECT s.WKPCD,"
+			+ "	CASE s.END_DATE "
+			+ " When '9999-12-31 00:00:00' then s.WKP_NAME "
+			+ " ELSE 'マスタ未登録' "
+			+ " END as WKP_NAME,"
+			+ "				s.ERROR_WEEK,s.ALARM_WEEK,s.LIMIT_WEEK,"
 			+ " 			 s.ERROR_TWO_WEEKS,s.ALARM_TWO_WEEKS,s.LIMIT_TWO_WEEKS,"
 			+ " 			 s.ERROR_FOUR_WEEKS,s.ALARM_FOUR_WEEKS,s.LIMIT_FOUR_WEEKS,"
 			+ " 			 s.ERROR_ONE_MONTH,s.ALARM_ONE_MONTH,s.LIMIT_ONE_MONTH,"
@@ -581,180 +598,75 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "AND kk.CID = ?cid"
 			+ " ORDER BY kk.CLSCD";
 	
-	private static final String SQL_EXPORT_SHEET_10 = " SELECT"
-			+" 	CASE"
-			+" WHEN kk.ROW_NUMBER1 = 1 THEN"
-			+" 	kk.SCD"
-			+" ELSE"
-			+" 	NULL"
-			+" END SCD,"
-			+"  CASE"
-			+" WHEN kk.ROW_NUMBER2 = 1 THEN"
-			+" 	kk.BUSINESS_NAME"
-			+" ELSE"
-			+" 	NULL"
-			+" END BUSINESS_NAME,"
-			+"  CASE"
-			+" WHEN kk.ROW_NUMBER3 = 1 THEN"
-			+" 	kk.YM_K"
-			+" ELSE"
-			+" 	NULL"
-			+" END YM_K,"
-			+"  CASE"
-			+" WHEN kk.ROW_NUMBER4 = 1 THEN"
-			+" 	kk.ERROR_ONE_MONTH"
-			+" ELSE"
-			+" 	NULL"
-			+" END ERROR_ONE_MONTH,"
-			+"  CASE"
-			+" WHEN kk.ROW_NUMBER5 = 1 THEN"
-			+" 	kk.ALARM_ONE_MONTH"
-			+" ELSE"
-			+" 	NULL"
-			+" END ALARM_ONE_MONTH,"
-			+"  CASE"
-			+" WHEN kk.ROW_NUMBER6 = 1 THEN"
-			+" 	kk.Y_K"
-			+" ELSE"
-			+" 	NULL"
-			+" END Y_K,"
-			+"  CASE"
-			+" WHEN kk.ROW_NUMBER7 = 1 THEN"
-			+" 	kk.ERROR_YEARLY"
-			+" ELSE"
-			+" 	NULL"
-			+" END ERROR_YEARLY,"
-			+"  CASE"
-			+" WHEN kk.ROW_NUMBER8 = 1 THEN"
-			+" 	kk.ALARM_YEARLY"
-			+" ELSE"
-			+" 	NULL"
-			+" END ALARM_YEARLY"
-			+" FROM"
-			+" 	("
-			+" 		SELECT"
-			+" 			cc.SCD,"
-			+" 			dd.BUSINESS_NAME,"
-			+" 			aa.YM_K,"
-			+" 			aa.ERROR_ONE_MONTH,"
-			+" 			aa.ALARM_ONE_MONTH,"
-			+" 			bb.Y_K,"
-			+" 			bb.ERROR_YEARLY,"
-			+" 			bb.ALARM_YEARLY,"
-			+" 			ROW_NUMBER () OVER ("
-			+" 				PARTITION BY cc.SCD,"
-			+" 					dd.BUSINESS_NAME,"
-			+" 					aa.YM_K ,"
-			+" 					aa.ERROR_ONE_MONTH,"
-			+" 					aa.ALARM_ONE_MONTH,"
-			+" 					bb.Y_K ,"
-			+" 					bb.ERROR_YEARLY,"
-			+" 					bb.ALARM_YEARLY"
-			+" 				ORDER BY"
-			+" 					cc.SCD,"
-			+" 					dd.BUSINESS_NAME,"
-			+" 					aa.YM_K DESC,"
-			+" 					aa.ERROR_ONE_MONTH,"
-			+" 					aa.ALARM_ONE_MONTH,"
-			+" 					bb.Y_K DESC,"
-			+" 					bb.ERROR_YEARLY,"
-			+" 					bb.ALARM_YEARLY"
-			+" 			) AS ROW_NUMBER8,"
-			+" 			ROW_NUMBER () OVER ("
-			+" 				PARTITION BY cc.SCD,"
-			+" 					dd.BUSINESS_NAME,"
-			+" 					aa.YM_K ,"
-			+" 					aa.ERROR_ONE_MONTH,"
-			+" 					aa.ALARM_ONE_MONTH,"
-			+" 					bb.Y_K ,"
-			+" 					bb.ERROR_YEARLY"
-			+" 				ORDER BY"
-			+" 					cc.SCD,"
-			+" 					dd.BUSINESS_NAME,"
-			+" 					aa.YM_K DESC,"
-			+" 					aa.ERROR_ONE_MONTH,"
-			+" 					aa.ALARM_ONE_MONTH,"
-			+" 					bb.Y_K DESC,"
-			+" 					bb.ERROR_YEARLY"
-			+" 			) AS ROW_NUMBER7,"
-			+" 			ROW_NUMBER () OVER ("
-			+" 				PARTITION BY cc.SCD,"
-			+" 					dd.BUSINESS_NAME,"
-			+" 					aa.YM_K ,"
-			+" 					aa.ERROR_ONE_MONTH,"
-			+" 					aa.ALARM_ONE_MONTH,"
-			+" 					bb.Y_K"
-			+" 				ORDER BY"
-			+" 					cc.SCD,"
-			+" 					dd.BUSINESS_NAME,"
-			+" 					aa.YM_K DESC,"
-			+" 					aa.ERROR_ONE_MONTH,"
-			+" 					aa.ALARM_ONE_MONTH,"
-			+" 					bb.Y_K DESC"
-			+" 			) AS ROW_NUMBER6,"
-			+" 			ROW_NUMBER () OVER ("
-			+" 				PARTITION BY cc.SCD,"
-			+" 					dd.BUSINESS_NAME,"
-			+" 					aa.YM_K ,"
-			+" 					aa.ERROR_ONE_MONTH,"
-			+" 					aa.ALARM_ONE_MONTH"
-			+" 				ORDER BY"
-			+" 					cc.SCD,"
-			+" 					dd.BUSINESS_NAME,"
-			+" 					aa.YM_K DESC,"
-			+" 					aa.ERROR_ONE_MONTH,"
-			+" 					aa.ALARM_ONE_MONTH,"
-			+" 					bb.Y_K DESC"
-			+" 			) AS ROW_NUMBER5,"
-			+" 			ROW_NUMBER () OVER ("
-			+" 				PARTITION BY cc.SCD,"
-			+" 					dd.BUSINESS_NAME,"
-			+" 					aa.YM_K,"
-			+" 					aa.ERROR_ONE_MONTH"
-			+" 				ORDER BY"
-			+" 					cc.SCD,"
-			+" 					dd.BUSINESS_NAME,"
-			+" 					aa.YM_K DESC,"
-			+" 					aa.ERROR_ONE_MONTH,"
-			+" 					bb.Y_K DESC"
-			+" 			) AS ROW_NUMBER4,"
-			+" 			ROW_NUMBER () OVER ("
-			+" 				PARTITION BY cc.SCD,"
-			+" 					dd.BUSINESS_NAME,"
-			+" 					aa.YM_K"
-			+" 				ORDER BY"
-			+" 					cc.SCD,"
-			+" 					dd.BUSINESS_NAME,"
-			+" 					aa.YM_K DESC,"
-			+" 					bb.Y_K DESC"
-			+" 			) AS ROW_NUMBER3,"
-			+" 			ROW_NUMBER () OVER ("
-			+" 				PARTITION BY cc.SCD,dd.BUSINESS_NAME"
-			+" 				ORDER BY"
-			+" 					cc.SCD,"
-			+" 					dd.BUSINESS_NAME,"
-			+" 					aa.YM_K DESC,bb.Y_K DESC"
-			+" 			) AS ROW_NUMBER2,"
-			+" 			ROW_NUMBER () OVER ("
-			+" 				PARTITION BY cc.SCD"
-			+" 				ORDER BY"
-			+" 					cc.SCD,"
-			+" 					aa.YM_K DESC,bb.Y_K DESC"
-			+" 			) AS ROW_NUMBER1"
-			+" 		FROM"
-			+" 			KMKMT_AGREEMENT_MONTH_SET aa"
-			+" 		JOIN KMKMT_AGREEMENT_YEAR_SET bb ON aa.SID = bb.SID"
-			+" 		JOIN BSYMT_EMP_DTA_MNG_INFO cc ON aa.SID = cc.SID"
-			+" 		JOIN BPSMT_PERSON dd ON cc.PID = dd.PID"
-			+" 		WHERE"
-			+" 			bb.Y_K >= ?startY"
-			+" 		AND bb.Y_K <= ?endY"
-			+" 		AND aa.YM_K >= ?startYM"
-			+" 		AND aa.YM_K <= ?endYM"
-			+" 		AND cc.CID = ?cid"
-			+" 	) kk"
-			+" ORDER BY"
-			+" 	kk.SCD, kk.YM_K DESC,kk.Y_K DESC";
+	
+	private static final String SQL_EXPORT_SHEET_10 =  " SELECT *," 
+			+ " 	ROW_NUMBER () OVER (" 
+			+ "  				PARTITION BY AA.SCD" 
+			+ "  				ORDER BY" 
+			+ "  					 AA.YM_K" 
+			+ " 					,AA.Y_K  " 
+			+ "  			) AS rk" 
+			+ "  FROM" 
+			+ " (" 
+			+ " SELECT Case When SCD_1 is NULL THEN SCD_2 ELSE SCD_1 END SCD," 
+			+ " 			 Case When BUSINESS_NAME_1 is NULL THEN BUSINESS_NAME_2 ELSE BUSINESS_NAME_1 END BUSINESS_NAME ," 
+			+ " 			 Case When YM_K is NULL THEN '999912' ELSE YM_K END YM_K," 
+			+ " 			 ERROR_ONE_MONTH," 
+			+ " 			 ALARM_ONE_MONTH," 
+			+ " 			 Case When Y_K is NULL THEN '9999' ELSE Y_K END Y_K," 
+			+ " 			 ERROR_YEARLY," 
+			+ " 			 ALARM_YEARLY" 
+			+ "  FROM" 
+			+ " (SELECT " 
+			+ " 			cc.SCD as SCD_1," 
+			+ "  			dd.BUSINESS_NAME as BUSINESS_NAME_1," 
+			+ "  			aa.YM_K," 
+			+ "  			aa.ERROR_ONE_MONTH," 
+			+ "  			aa.ALARM_ONE_MONTH," 
+			+ " 			ROW_NUMBER () OVER (" 
+			+ "  				PARTITION BY cc.SCD" 
+			+ "  				ORDER BY" 
+			+ "  					cc.SCD," 
+			+ "  					aa.YM_K " 
+			+ "  			) AS ROW_NUMBER1" 
+			+ " 	FROM" 
+			+ "  			KMKMT_AGREEMENT_MONTH_SET aa" 
+			+ "  		JOIN BSYMT_EMP_DTA_MNG_INFO cc ON aa.SID = cc.SID" 
+			+ "  		JOIN BPSMT_PERSON dd ON cc.PID = dd.PID" 
+			+ "  		WHERE" 
+			+ "  		aa.YM_K >= ?startYM" 
+			+ "  		AND aa.YM_K <= ?endYM" 
+			+ "  		AND cc.CID = ?cid) A" 
+			+ " " 
+			+ " FULL JOIN" 
+			+ " " 
+			+ " (SELECT" 
+			+ " 			cc.SCD as SCD_2," 
+			+ "  			dd.BUSINESS_NAME as BUSINESS_NAME_2," 
+			+ "  			bb.Y_K," 
+			+ "  			bb.ERROR_YEARLY," 
+			+ "  			bb.ALARM_YEARLY," 
+			+ " 			ROW_NUMBER () OVER (" 
+			+ "  				PARTITION BY cc.SCD" 
+			+ "  				ORDER BY" 
+			+ "  					cc.SCD," 
+			+ " 					bb.Y_K " 
+			+ "  			) AS ROW_NUMBER2" 
+			+ " FROM" 
+			+ "  		KMKMT_AGREEMENT_YEAR_SET bb " 
+			+ "  		JOIN BSYMT_EMP_DTA_MNG_INFO cc ON bb.SID = cc.SID" 
+			+ "  		JOIN BPSMT_PERSON dd ON cc.PID = dd.PID" 
+			+ "  		WHERE" 
+			+ "  			bb.Y_K >= ?startY" 
+			+ "  		AND bb.Y_K <= ?endY" 
+			+ "  		AND cc.CID = ?cid" 
+			+ " ) B" 
+			+ " " 
+			+ " ON A.SCD_1 = B.SCD_2 AND A.ROW_NUMBER1 = B.ROW_NUMBER2" 
+			+ " ) AA" 
+			+ " ORDER BY AA.SCD, " 
+			+ " AA.YM_K  " 
+			+ " ,AA.Y_K ";
 	
 	
 	@Override
@@ -1345,9 +1257,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		String endYM = endDate.yearMonth().toString();
 		int startY = startDate.year();
 		int endY = endDate.year();
-		String checkYM = "";
-		String checkY = "";
-		Boolean checkValue = false;
+		if(!endYM.substring(2, endYM.length()).equals(END_MONTH))
+			endY = endY-1;
 		String cid = AppContexts.user().companyId();
 		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_10.toString()).
 				setParameter("cid", cid).
@@ -1357,63 +1268,57 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 				setParameter("endYM", endYM);
 		@SuppressWarnings("unchecked")
 		List<Object[]> data =  query.getResultList();
-		for (Object[] objects : data) {
-			if(objects[1] != null) {
-				checkYM = ((BigDecimal)objects[2]).toString();
-				checkY = ((BigDecimal)objects[5]).toString();
-				checkValue = true;
-			} else {
-				checkValue = false;
-			}
-			datas.add(toDataSheet10(objects,checkYM,checkY,checkValue));
+		for (int i = 0; i < data.size(); i++) {
+				datas.add(toDataSheet10(data.get(i)));
 		}
 		return datas;
 	}
+
 	
-	private MasterData toDataSheet10(Object[] objects,String checkYM,String checkY,Boolean checkValue) {
+	private MasterData toDataSheet10(Object[] objects) {
 		Map<String,MasterCellData> data = new HashMap<>();
 		data.put(RegistTimeColumn.KMK008_106, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_106)
-                .value(objects[0])
+                .value(Integer.valueOf(objects[8].toString()) == 1 ? objects[0] : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_107, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_107)
-                .value(objects[1])
+                .value(Integer.valueOf(objects[8].toString()) == 1 ? objects[1] : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		
 		data.put(RegistTimeColumn.KMK008_109, MasterCellData.builder()
 			        .columnId(RegistTimeColumn.KMK008_109)
-			        .value(objects[2] != null  ? checkValue || !checkYM.equals(((BigDecimal)objects[2]).toString()) ? ((BigDecimal)objects[2]).toString().substring(0, 4) + "/" + ((BigDecimal)objects[2]).toString().substring(4, ((BigDecimal)objects[2]).toString().length()) : "" :"")
+			        .value(  objects[2].toString().equals("999912") ? "" : objects[2] != null  ?  ((BigDecimal)objects[2]).toString().substring(0, 4) + "/" + ((BigDecimal)objects[2]).toString().substring(4, ((BigDecimal)objects[2]).toString().length()) : "")
 			        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 			        .build());
 		
 		data.put(RegistTimeColumn.KMK008_110, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_110)
-                .value(objects[3] != null  ? checkValue || !checkYM.equals(((BigDecimal)objects[2]).toString()) ?  formatTime(((BigDecimal)objects[3]).intValue()) : "" : "")
+                .value(objects[3] != null  ? formatTime(((BigDecimal)objects[3]).intValue()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_111, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_111)
-                .value(objects[4] != null ?  checkValue || !checkYM.equals(((BigDecimal)objects[2]).toString()) ? formatTime(((BigDecimal)objects[4]).intValue()) : "":"")
+                .value(objects[4] != null ? formatTime(((BigDecimal)objects[4]).intValue()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		
 		
 		data.put(RegistTimeColumn.KMK008_112, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_112)
-                .value(checkValue || !checkY.equals(((BigDecimal)objects[5]).toString()) ? objects[5] : "")
+                .value(objects[5].toString().equals("9999") ? "" : objects[5])
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_113, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_113)
-                .value(objects[6] != null  ? checkValue || !checkY.equals(((BigDecimal)objects[5]).toString()) ? formatTime(((BigDecimal)objects[6]).intValue()) : "" : "")
+                .value(objects[6] != null  ? formatTime(((BigDecimal)objects[6]).intValue()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_114, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_114)
-                .value(objects[7] != null  ? checkValue || !checkY.equals(((BigDecimal)objects[5]).toString()) ? formatTime(((BigDecimal)objects[7]).intValue()) : "" :"")
+                .value(objects[7] != null  ? formatTime(((BigDecimal)objects[7]).intValue()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		

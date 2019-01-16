@@ -1,74 +1,71 @@
 package nts.uk.file.at.infra.vacation.set;
 
-import nts.arc.i18n.I18NText;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RoundProcessingClassification;
-import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
-import java.util.List;
+import nts.arc.i18n.I18NText;
 
 public class CommonTempHolidays {
     public static String getTextEnumExpirationTime(int value) {
         switch (value) {
             case 0: {
-                return "当月";
+                return I18NText.getText("Enum_ExpirationTime_THIS_MONTH");
             }
             case 1: {
-                return "常に繰越";
+                return I18NText.getText("Enum_ExpirationTime_UNLIMITED");
             }
             case 2: {
-                return "年度末クリア";
+                return I18NText.getText("Enum_ExpirationTime_END_OF_YEAR");
             }
             case 3: {
-                return "1ヶ月";
+                return I18NText.getText("Enum_ExpirationTime_ONE_MONTH");
             }
             case 4: {
-                return "2ヶ月";
+                return I18NText.getText("Enum_ExpirationTime_TWO_MONTH");
             }
             case 5: {
-                return "3ヶ月";
+                return I18NText.getText("Enum_ExpirationTime_THREE_MONTH");
             }
             case 6: {
-                return "4ヶ月";
+                return I18NText.getText("Enum_ExpirationTime_FOUR_MONTH");
             }
             case 7: {
-                return "5ヶ月";
+                return I18NText.getText("Enum_ExpirationTime_FIVE_MONTH");
             }
             case 8: {
-                return "6ヶ月";
+                return I18NText.getText("Enum_ExpirationTime_SIX_MONTH");
             }
             case 9: {
-                return "7ヶ月";
+                return I18NText.getText("Enum_ExpirationTime_SEVEN_MONTH");
             }
             case 10: {
-                return "8ヶ月";
+                return I18NText.getText("Enum_ExpirationTime_EIGHT_MONTH");
             }
             case 11: {
-                return "9ヶ月";
+                return I18NText.getText("Enum_ExpirationTime_NINE_MONTH");
             }
             case 12: {
-                return "10ヶ月";
+                return I18NText.getText("Enum_ExpirationTime_TEN_MONTH");
             }
             case 13: {
-                return "11ヶ月";
+                return I18NText.getText("Enum_ExpirationTime_ELEVEN_MONTH");
             }
             case 14: {
-                return "1年";
+                return I18NText.getText("Enum_ExpirationTime_ONE_YEAR");
             }
 
         }
-        return null;
+        return "";
     }
 
     public static String getTextEnumApplyPermission(int value) {
         switch (value) {
             case 0: {
-                return "許可しない";
+                return I18NText.getText("Enum_ApplyPermission_NOT_ALLOW");
             }
             case 1: {
-                return "許可する";
+                return I18NText.getText("Enum_ApplyPermission_ALLOW");
             }
         }
-        return null;
+        return "";
     }
 
     public static String getTextEnumDeadlCheckMonth(int value) {
@@ -92,27 +89,27 @@ public class CommonTempHolidays {
                 return I18NText.getText("Enum_DeadlCheckMonth_SIX_MONTH");
             }
         }
-        return null;
+        return "";
     }
     public static String getTextEnumTimeDigestiveUnit(int value) {
         switch (value) {
             case 0: {
-                return "1分";
+                return I18NText.getText("Enum_TimeDigestiveUnit_OneMinute");
             }
             case 1: {
-                return "15分";
+                return I18NText.getText("Enum_TimeDigestiveUnit_FifteenMinute");
             }
             case 2: {
-                return "30分";
+                return I18NText.getText("Enum_TimeDigestiveUnit_ThirtyMinute");
             }
             case 3: {
-                return "1時間";
+                return I18NText.getText("Enum_TimeDigestiveUnit_OneHour");
             }
             case 4: {
-                return "2時間";
+                return I18NText.getText("Enum_TimeDigestiveUnit_TwoHour");
             }
         }
-        return null;
+        return "";
 
     }
     public static String getTextEnumSubHolTransferSetAtr(int value) {
@@ -121,90 +118,87 @@ public class CommonTempHolidays {
                 return I18NText.getText("Enum_SubHolTransferSetAtr_specifiedTimeSubHol");
             }
             case 1: {
-                return  I18NText.getText("Enum_SubHolTransferSetAtr_certainTimeExcSubHol");
+                return I18NText.getText("Enum_SubHolTransferSetAtr_certainTimeExcSubHol");
             }
-
         }
-        return null;
+        return "";
 
     }
     public static String checkOcurrType(int value){
         switch (value) {
             case 0: {
-                return "-";
+                return I18NText.getText("-");
             }
             case 1: {
-                return "○";
+                return I18NText.getText("○");
             }
 
         }
-        return null;
+        return "";
     }
     public static String getTextEnumManageDistinct(int value){
         switch (value) {
             case 0: {
-                return "管理しない";
+                return I18NText.getText("Enum_ManageDistinct_NO");
             }
             case 1: {
-                return "管理する";
+                return I18NText.getText("Enum_ManageDistinct_YES");
             }
 
         }
-        return null;
+        return "";
     }
     public static String getTextEnumSixtyHourExtra(int value){
         switch (value) {
             case 0: {
-                return "常に繰越";
+                return I18NText.getText("Enum_SixtyHourExtra_ALLWAYS");
             }
             case 1: {
-                return "1ヶ月";
+                return I18NText.getText("Enum_SixtyHourExtra_ONE_MONTH");
             }
             case 2: {
-                return "2ヶ月";
+                return I18NText.getText("Enum_SixtyHourExtra_TWO_MONTH");
             }
             case 3: {
-                return "3ヶ月";
+                return I18NText.getText("Enum_SixtyHourExtra_THREE_MONTH");
             }
             case 4: {
-                return "4ヶ月";
+                return I18NText.getText("Enum_SixtyHourExtra_FOUR_MONTH");
             }
             case 5: {
-                return "5ヶ月";
+                return I18NText.getText("Enum_SixtyHourExtra_FIVE_MONTH");
             }
             case 6: {
-                return "6ヶ月";
+                return I18NText.getText("Enum_SixtyHourExtra_SIX_MONTH");
             }
             case 7: {
-                return "7ヶ月";
+                return I18NText.getText("Enum_SixtyHourExtra_SEVEN_MONTH");
             }
             case 8: {
-                return "8ヶ月";
+                return I18NText.getText("Enum_SixtyHourExtra_EIGHT_MONTH");
             }
             case 9: {
-                return "9ヶ月";
+                return I18NText.getText("Enum_SixtyHourExtra_NINE_MONTH");
             }
             case 10: {
-                return "10ヶ月";
+                return I18NText.getText("Enum_SixtyHourExtra_TEN_MONTH");
             }
             case 11: {
-                return "11ヶ月";
+                return I18NText.getText("Enum_SixtyHourExtra_ELEVEN_MONTH");
             }
             case 12: {
-                return "12ヶ月";
+                return I18NText.getText("Enum_SixtyHourExtra_TWELVE_MONTH");
             }
-
-
         }
-        return null;
+        return "";
     }
     public static String getEnumMaxDayReference(int value){
         switch (value) {
             case 0: {
-                return "会社一律";
+                return I18NText.getText("Enum_MaxDayReference_CompanyUniform");
             }
             case 1: {
-                return "年休付与テーブルを参照";
+                return I18NText.getText("Enum_MaxDayReference_ReferAnnualGrantTable");
             }
         }
         return "";
@@ -226,10 +220,10 @@ public class CommonTempHolidays {
     public static String getEnumAnnualPriority(int value){
         switch (value) {
             case 0: {
-                return "当年付与分から消化する";
+                return I18NText.getText("Enum_AnnualPriority_FIFO");
             }
             case 1: {
-                return "繰越分から消化する";
+                return I18NText.getText("Enum_AnnualPriority_LIFO");
             }
 
         }
@@ -238,10 +232,10 @@ public class CommonTempHolidays {
     public static String getSettingDistinct(int value){
         switch (value) {
             case 0: {
-                return "設定しない";
+                return I18NText.getText("Enum_SettingDistinct_NO");
             }
             case 1: {
-                return "設定する";
+                return I18NText.getText("Enum_SettingDistinct_YES");
             }
 
         }
@@ -250,10 +244,10 @@ public class CommonTempHolidays {
     public static String getEnumTimeAnnualRoundProcesCla(int value){
         switch (value) {
             case 0: {
-                return "1日に切り上げる";
+                return I18NText.getText("Enum_TimeAnnualRoundProcesCla_TruncateOnDay0");
             }
             case 1: {
-                return "0日に切り捨てる";
+                return I18NText.getText("Enum_TimeAnnualRoundProcesCla_RoundUpToTheDay");
             }
 
         }
