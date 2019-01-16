@@ -116,8 +116,8 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("     LATE_OR_LEAVE_APP_SETTING_FLG, ");
 		sql.append("     MEMO,  ");
 		sql.append("     0 AS NUM_ORDER,  ");
-		sql.append("     CASE WHEN APP_TYPE = 7 THEN 10 WHEN APP_TYPE = 8 THEN 8 WHEN APP_TYPE = 9 THEN 9 ELSE APP_TYPE + 1 END AS ROW_NUMBER  ");
-		sql.append("    FROM KRQST_COM_APP_CF_DETAIL ");
+		sql.append("     ROW_NUMBER() OVER (PARTITION BY CID ORDER BY CID, DISPLAY_ORDER) AS ROW_NUMBER  ");
+		sql.append("    FROM (SELECT *, CASE WHEN APP_TYPE = 7 THEN 9 WHEN APP_TYPE = 8 THEN 7 WHEN APP_TYPE = 9 THEN 8 ELSE APP_TYPE END AS DISPLAY_ORDER FROM KRQST_COM_APP_CF_DETAIL) COM_APP");
 		sql.append("    WHERE CID = ?cid ");
 		sql.append("    UNION ALL ");
 		sql.append("    SELECT ");
@@ -216,8 +216,8 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 	public List<Object[]> getAllEmploymentApprovalSetting(String cid) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT ");
-		sql.append("     CASE WHEN MIN(ROW_NUM) = 1 THEN TEMP.CODE ELSE NULL END EMPLOYMENT_CODE, ");
-		sql.append("     CASE WHEN MIN(ROW_NUM) = 1 THEN TEMP.NAME ELSE NULL END EMPLOYMENT_NAME, ");
+		sql.append("     CASE WHEN ROW_NUM = 1 THEN TEMP.CODE ELSE NULL END EMPLOYMENT_CODE, ");
+		sql.append("     CASE WHEN ROW_NUM = 1 THEN TEMP.NAME ELSE NULL END EMPLOYMENT_NAME, ");
 		sql.append("     CASE WHEN TEMP.APP_TYPE = 0 THEN ?appType0 ");
 		sql.append("       WHEN TEMP.APP_TYPE = 1 THEN ?appType1 ");
 		sql.append("       WHEN TEMP.APP_TYPE = 2 THEN ?appType2 ");
@@ -249,7 +249,7 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("       ELSE NULL ");
 		sql.append("     END HOLIDAY_TYPE_USE_FLG, ");
 		sql.append("     CASE WHEN TEMP.APP_TYPE != 1 OR (TEMP.APP_TYPE = 1 AND TEMP.HOLIDAY_TYPE_USE_FLG = 0) THEN ");
-		sql.append("       STUFF((SELECT ',' + WT.CD + WT.NAME ");
+		sql.append("       STUFF((SELECT ',' + EMP_WT.WORK_TYPE_CODE + IIF(WT.CD IS NOT NULL, WT.NAME, 'マスタ未登録') ");
 		sql.append("        FROM ");
 		sql.append("         KRQDT_APP_EMPLOY_WORKTYPE EMP_WT LEFT JOIN KSHMT_WORKTYPE WT ");
 		sql.append("          ON EMP_WT.CID = WT.CID ");
@@ -258,7 +258,7 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("         AND EMP_WT.EMPLOYMENT_CODE = TEMP.CODE ");
 		sql.append("         AND EMP_WT.APP_TYPE = TEMP.APP_TYPE ");
 		sql.append("         AND EMP_WT.HOLIDAY_OR_PAUSE_TYPE = TEMP.HOLIDAY_OR_PAUSE_TYPE ");
-		sql.append("        ORDER BY WT.CID, WT.CD ");
+		sql.append("        ORDER BY EMP_WT.CID, EMP_WT.WORK_TYPE_CODE ");
 		sql.append("       FOR XML PATH('')), 1 , 1, '') ");
 		sql.append("       ELSE NULL ");
 		sql.append("     END WORK_TYPE_NAME ");
@@ -270,17 +270,16 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("      EMP_SET.APP_TYPE, ");
 		sql.append("      EMP_SET.HOLIDAY_OR_PAUSE_TYPE, ");
 		sql.append("      EMP_SET.HOLIDAY_TYPE_USE_FLG, ");
-		sql.append("      ROW_NUMBER() OVER (PARTITION BY EMP.CID, EMP.CODE ORDER BY EMP.CID, EMP.CODE, EMP_SET.APP_TYPE, EMP_SET.HOLIDAY_OR_PAUSE_TYPE) AS ROW_NUM, ");
-		sql.append("      CASE WHEN EMP_SET.APP_TYPE = 10 THEN 1 - EMP_SET.HOLIDAY_OR_PAUSE_TYPE  ELSE EMP_SET.HOLIDAY_OR_PAUSE_TYPE END DISPLAY_ORDER ");
+		sql.append("      ROW_NUMBER() OVER (PARTITION BY EMP.CID, EMP.CODE ORDER BY EMP.CID, EMP.CODE, EMP_SET.APP_TYPE, EMP_SET.DISPLAY_ORDER) AS ROW_NUM ");
 		sql.append("     FROM ");
 		sql.append("      BSYMT_EMPLOYMENT EMP ");
-		sql.append("      LEFT JOIN KRQST_APP_EMPLOYMENT_SET EMP_SET ");
+		sql.append("      LEFT JOIN (SELECT *, CASE WHEN APP_TYPE = 10 THEN 1 - HOLIDAY_OR_PAUSE_TYPE  ELSE HOLIDAY_OR_PAUSE_TYPE END DISPLAY_ORDER FROM KRQST_APP_EMPLOYMENT_SET) EMP_SET ");
 		sql.append("       ON EMP.CID = EMP_SET.CID ");
 		sql.append("       AND EMP.CODE = EMP_SET.EMPLOYMENT_CODE ");
 		sql.append("     WHERE ");
 		sql.append("      EMP.CID = ?cid AND EMP_SET.DISPLAY_FLAG = 1) TEMP ");
-		sql.append("    GROUP BY TEMP.CID, TEMP.CODE, TEMP.NAME, TEMP.APP_TYPE, TEMP.HOLIDAY_OR_PAUSE_TYPE, TEMP.HOLIDAY_TYPE_USE_FLG, TEMP.DISPLAY_ORDER ");
-		sql.append("    ORDER BY TEMP.CODE, TEMP.APP_TYPE, TEMP.DISPLAY_ORDER;");
+		sql.append("    GROUP BY TEMP.CID, TEMP.CODE, TEMP.NAME, TEMP.APP_TYPE, TEMP.HOLIDAY_OR_PAUSE_TYPE, TEMP.HOLIDAY_TYPE_USE_FLG, TEMP.ROW_NUM ");
+		sql.append("    ORDER BY TEMP.CODE, TEMP.APP_TYPE, TEMP.ROW_NUM;");
 		List<Object[]> resultQuery = null;
 		try {
 			resultQuery = getEntityManager().createNativeQuery(sql.toString())

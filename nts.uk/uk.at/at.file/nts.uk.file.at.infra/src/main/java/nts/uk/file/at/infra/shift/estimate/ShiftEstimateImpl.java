@@ -143,15 +143,16 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 		String cid = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
 		Query query = entityManager.createNativeQuery(GET_EXPORT_EXCEL.toString()).setParameter("cid", cid);
-		
+		Object[] data = null;
 		try {
-			Object[] data = (Object[]) query.getSingleResult();
-
+			data = (Object[]) query.getSingleResult();
 			for (int i = 0; i < data.length; i++) {
 				datas.add(dataContent(data[i], i));
 			}
-
 		} catch (Exception e) {
+			for (int i = 0; i < 5; i++) {
+				datas.add(dataContent(data,i));
+			}
 			return datas;
 		}
 		return datas;
@@ -179,8 +180,8 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 		data.put(ShiftEstimateColumn.KSM001_102,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_102)
-						.value((rowNumber < 4 ? ((BigDecimal) object).intValue() == 1 ? "○" : "-"
-								: rowNumber == 4 ? (String) object : ""))
+						.value(object!= null ?  ((rowNumber < 4 ? ((BigDecimal) object).intValue() == 1 ? "○" : "-"
+								: rowNumber == 4 ? (String) object : "")) : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 		return MasterData.builder().rowData(data).build();
 	}
