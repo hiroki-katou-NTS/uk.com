@@ -8,14 +8,9 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordService;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-
 
 @Stateless
 public class AfterOvertimeReflectServiceImpl implements AfterOvertimeReflectService {
@@ -27,12 +22,6 @@ public class AfterOvertimeReflectServiceImpl implements AfterOvertimeReflectServ
 	private WorkInformationRepository workRepository;
 	@Inject
 	private WorkUpdateService scheWorkUpdate;
-	@Inject
-	private PreOvertimeReflectService preOvertimeService;
-	@Inject
-	private CalculateDailyRecordService calculate;
-	@Inject
-	private AdTimeAndAnyItemAdUpService timeAndAnyItemUpService;
 	@Inject
 	private AttendanceTimeRepository attendanceTime;
 	@Inject

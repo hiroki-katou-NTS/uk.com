@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -26,6 +28,7 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentInfo;
+import nts.uk.ctx.bs.employee.dom.employment.EmpmInfo;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItem;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryOfEmployee;
@@ -70,6 +73,17 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 			+ " INNER JOIN  BsymtEmploymentHist eh on eh.hisId = ehi.hisId " 
 			+ " WHERE ehi.empCode IN :employmentCodes AND eh.strDate <= :endDate AND :startDate <= eh.endDate"
 			+ " AND eh.companyId = :companyId";
+	//hoatt
+	private static final String GET_BY_LSTSID_DATE = "SELECT h.sid, a.bsymtEmploymentPK.code, a.name"
+			+ " FROM BsymtEmployment a"
+			+ " INNER JOIN BsymtEmploymentHist h"
+			+ " ON a.bsymtEmploymentPK.cid = h.companyId"
+			+ " INNER JOIN BsymtEmploymentHistItem i"
+			+ " ON h.hisId = i.hisId AND h.sid = i.sid"
+			+ " AND a.bsymtEmploymentPK.code = i.empCode"
+			+ " WHERE a.bsymtEmploymentPK.cid = :companyId"
+			+ " AND h.sid IN :lstSID"
+			+ " AND h.strDate <= :date AND h.endDate >= :date";
 	
 	@Override
 	public Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String companyId, String sid, GeneralDate date) {
@@ -543,5 +557,23 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		
 		return listHistItem.stream().map(item -> toDomain(item))
 				.collect(Collectors.toList());
+	}
+	//key: sid, value: EmploymentInfo
+	@Override
+	public Map<String, EmpmInfo> getLstDetailEmpHistItem(String companyId, List<String> lstSID, GeneralDate date) {
+		List<EmpmInfo> lst =  this.queryProxy().query(GET_BY_LSTSID_DATE, Object[].class)
+			.setParameter("companyId", companyId)
+			.setParameter("lstSID", lstSID)
+			.setParameter("date", date)
+			.getList(c -> new EmpmInfo(c[0].toString(), c[1].toString(), c[2].toString()));
+		Map<String, EmpmInfo> mapResult = new HashMap<>();
+		for(String sid : lstSID){
+			List<EmpmInfo> empInfo = lst.stream().filter(c -> c.getSid().equals(c)).collect(Collectors.toList());
+			if(empInfo.isEmpty()){
+				continue;
+			}
+			mapResult.put(sid, empInfo.get(0));
+		}
+		return mapResult;
 	}
 }

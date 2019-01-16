@@ -15,6 +15,10 @@ module nts.uk.at.view.kmk004.b {
     
         }
         
+        export function saveAsExcel(languageId: string, startDate : any, endDate: any): JQueryPromise<any> {
+                return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "SetWorkingHoursAndDays", domainType: "KMK004労働時間と日数の設定", languageId: languageId, reportType: 0, mode: 2, startDate: startDate, endDate: endDate});
+        }
+        
         export function removeEmployeeSetting(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.removeEmployeeSetting, command);
         }

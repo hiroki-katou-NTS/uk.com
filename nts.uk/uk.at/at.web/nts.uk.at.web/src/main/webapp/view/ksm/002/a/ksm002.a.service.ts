@@ -1,6 +1,7 @@
 module ksm002.a.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
+    import getText = nts.uk.resource.getText;
     var paths = {
         getAllSpecDate: "at/schedule/shift/businesscalendar/specificdate/getallspecificdate",
         getSpecDateByIsUse: "at/schedule/shift/businesscalendar/specificdate/getspecificdatebyuse/{0}",
@@ -63,6 +64,17 @@ module ksm002.a.service {
      */
     export function deleteComSpecificDate(command): JQueryPromise<any> {
         return ajax(paths.deleteComSpecDate, command);
+    }
+    
+    
+    export function saveAsExcel(mode: string, startDate: string, endDate: string): JQueryPromise<any> {
+        let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+        let programName = program[1] != null ? program[1] : "";
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: 'SpecificdaySet', 
+            domainType: 'KSM002' + programName, 
+            languageId: 'ja', reportType: 0, mode: mode, 
+            startDate : moment.utc(startDate).format(), 
+            endDate : moment.utc(endDate).format()});
     }
 
 }

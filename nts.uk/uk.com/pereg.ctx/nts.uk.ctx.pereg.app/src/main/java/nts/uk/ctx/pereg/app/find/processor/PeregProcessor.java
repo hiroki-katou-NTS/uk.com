@@ -39,6 +39,7 @@ import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 import nts.uk.shr.pereg.app.find.dto.OptionalItemDataDto;
 import nts.uk.shr.pereg.app.find.dto.PeregDto;
 
@@ -144,7 +145,24 @@ public class PeregProcessor {
 		return new EmpMaintLayoutDto(classItemList);
 
 	}
-
+	//DTO CPS 003
+	public List<EmpMaintLayoutDto> getCategoryDetailByListEmp(PeregQueryByListEmp query) {
+		// app context
+		LoginUserContext loginUser = AppContexts.user();
+		String contractCode = loginUser.contractCode();
+		String loginEmpId = loginUser.employeeId();
+		String roleId = loginUser.roles().forPersonalInfo();
+		String categoryId = query.getCategoryId();
+		// get category
+		PersonInfoCategory perInfoCtg = perInfoCtgRepositoty.getPerInfoCategory(categoryId, contractCode).get();
+		// get PerInfoItemDefForLayoutDto
+		// Check xem list nhan vien co quyen Auth hay khong 
+		
+		
+		return null;
+	}
+	
+	
 	private List<LayoutPersonInfoClsDto> getDataClassItemList(PeregQuery query, PersonInfoCategory perInfoCtg,
 			List<PerInfoItemDefForLayoutDto> lstPerInfoItemDef) {
 		
@@ -304,5 +322,28 @@ public class PeregProcessor {
 
 		return lstReturn;
 	}
-
+	
+	//get PerItemDefForLayout theo list Emp cho CPS 003
+	private List<PerInfoItemDefForLayoutDto> getPerItemDefForLayoutByListEmp(PersonInfoCategory category, String contractCode,
+			String roleId, List<String> employeeId, List<Boolean> isSelf) {
+		// get per info item def with order
+		List<PersonInfoItemDefinition> fullItemDefinitionList = perItemRepo
+				.getAllItemDefByCategoryId(category.getPersonInfoCategoryId(), contractCode);
+		List<PersonInfoItemDefinition> parentItemDefinitionList = fullItemDefinitionList.stream()
+				.filter(item -> item.haveNotParentCode()).collect(Collectors.toList());
+		List<PerInfoItemDefForLayoutDto> lstReturn = new ArrayList<>();
+		Map<String, PersonInfoItemAuth> mapItemAuth = itemAuthRepo
+				.getAllItemAuth(roleId, category.getPersonInfoCategoryId()).stream()
+				.collect(Collectors.toMap(e -> e.getPersonItemDefId(), e -> e));
+		for (int i = 0; i < parentItemDefinitionList.size(); i++) {
+			PersonInfoItemDefinition itemDefinition = parentItemDefinitionList.get(i);
+			// check authority
+			PersonInfoItemAuth personInfoItemAuth = mapItemAuth.get(itemDefinition.getPerInfoItemDefId());
+			if (personInfoItemAuth == null) {
+				continue;
+			}
+			
+		}		
+		return null;
+	}
 }

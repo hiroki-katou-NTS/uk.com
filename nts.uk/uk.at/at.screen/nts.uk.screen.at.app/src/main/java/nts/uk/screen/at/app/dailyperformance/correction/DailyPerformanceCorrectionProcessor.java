@@ -55,9 +55,11 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.request.app.find.application.applicationlist.AppGroupExportDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationExportDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListForScreen;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
@@ -205,6 +207,9 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	@Inject
 	private ErrorMonthProcessor errorMonthProcessor;
+	
+	@Inject
+	private PublicHolidayRepository publicHolidayRepository;
 	
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
@@ -438,13 +443,14 @@ public class DailyPerformanceCorrectionProcessor {
 							if (!emp.isEmpty())
 								screenDto.setMonthResult(monthFlexProcessor
 										.getDPMonthFlex(new DPMonthFlexParam(companyId, emp.get(0), dateRangeTemp.getEndDate(),
-												screenDto.getEmploymentCode(), dailyPerformanceDto, disItem.getAutBussCode())));
+												emp.get(0).equals(sId) ? screenDto.getEmploymentCode() : this.getEmploymentCode(companyId, dateRangeTemp.getEndDate(), emp.get(0)), 
+												dailyPerformanceDto, disItem.getAutBussCode())));
 							if (emp.get(0).equals(sId)) {
 								//社員に対応する締め期間を取得する
 								DatePeriod period = closureService.findClosurePeriod(emp.get(0), dateRangeTemp.getEndDate());
 								
 								//パラメータ「日別実績の修正の状態．対象期間．終了日」がパラメータ「締め期間」に含まれているかチェックする
-								if (!period.contains(dateRangeTemp.getEndDate())) {
+								if (period == null || !period.contains(dateRangeTemp.getEndDate())) {
 									screenDto.setIndentityMonthResult(new IndentityMonthResult(false, true, true));
 									//対象日の本人確認が済んでいるかチェックする
 									//screenDto.checkShowTighProcess(displayFormat, true);
@@ -456,7 +462,7 @@ public class DailyPerformanceCorrectionProcessor {
 									screenDto.checkShowTighProcess(displayFormat, true);
 								}
 							}else {
-								screenDto.getIndentityMonthResult().setHideAll(false);
+								screenDto.getIndentityMonthResult().setHideAll(true);
 							}
 							// screenDto.setFlexShortage(null);
 						}
@@ -565,6 +571,9 @@ public class DailyPerformanceCorrectionProcessor {
 						.collect(Collectors.toMap(x -> mergeString(x.getCode(), "|", x.getId()), x -> x))
 				: Collections.emptyMap();
 						//get status check box 
+		List<GeneralDate> holidayDate = publicHolidayRepository
+				.getpHolidayWhileDate(companyId, dateRange.getStartDate(), dateRange.getEndDate()).stream()
+				.map(x -> x.getDate()).collect(Collectors.toList());
 		for (DPDataDto data : screenDto.getLstData()) {
 			boolean textColorSpr = false;
 			data.setEmploymentCode(screenDto.getEmploymentCode());
@@ -589,6 +598,7 @@ public class DailyPerformanceCorrectionProcessor {
 				screenDto.setCellSate(data.getId(), DPText.LOCK_SIGN, DPText.STATE_DISABLE);
 			}
 			
+			
 			ApproveRootStatusForEmpDto approveRootStatus =  dpLock.getLockCheckApprovalDay().get(data.getEmployeeId() + "|" + data.getDate());
 		//	if(mode == ScreenMode.APPROVAL.value){
 			data.setApproval(approveRootStatus == null ? false : approveRootStatus.isCheckApproval());
@@ -597,7 +607,7 @@ public class DailyPerformanceCorrectionProcessor {
 		//	}
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
 			if (resultOfOneRow != null && (displayFormat == 2 ? !data.getError().equals("") : true)) {
-				lockDataCheckbox(sId, screenDto, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, approveRootStatus, mode, data.isApproval());
+				lockDataCheckbox(sId, screenDto, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, approveRootStatus, mode, data.isApproval(), data.isSign());
 				boolean lockDaykWpl = false, lockHist = false, lockApprovalMonth = false, lockConfirmMonth = false;
 				if (showLock == null || showLock) {
 					lockDaykWpl = checkLockAndSetState(dpLock.getLockDayAndWpl(), data);
@@ -622,7 +632,7 @@ public class DailyPerformanceCorrectionProcessor {
 				}
 				//set cell state day
 				if(!textColorSpr){
-					setTextColorDay(screenDto, data.getDate(), "date", data.getId());
+					setTextColorDay(screenDto, data.getDate(), "date", data.getId(), holidayDate);
 				}
 				itemValueMap = resultOfOneRow.getItems().stream()
 						.collect(Collectors.toMap(x -> mergeString(String.valueOf(x.getItemId()), "|",
@@ -705,7 +715,7 @@ public class DailyPerformanceCorrectionProcessor {
 				lock = true;
 			}
 			
-			if ((lockConfirmMonth || lockApproval || lockSign) && !(lockApprovalMonth || lockHist || lockDaykWpl))
+			if ((lockConfirmMonth || lockSign) && !(lockApprovalMonth || lockHist || lockDaykWpl || lockApproval))
 				lockCell(screenDto, data, false);
 			else
 				lockCell(screenDto, data, true);
@@ -948,17 +958,25 @@ public class DailyPerformanceCorrectionProcessor {
     public Map<String,  String> getApplication(List<String> listEmployeeId, DateRange dateRange, Map<String, Boolean> disableSignMap){
 		// No 20 get submitted application
 		Map<String, String> appMapDateSid = new HashMap<>();
-		List<ApplicationExportDto> appplication = listEmployeeId.isEmpty() ? Collections.emptyList()
+		//requestlist26
+		List<ApplicationExportDto> appplicationDisable = listEmployeeId.isEmpty() ? Collections.emptyList()
 				: applicationListFinder.getApplicationBySID(listEmployeeId, dateRange.getStartDate(),
 						dateRange.getEndDate());
-		appplication.forEach(x -> {
+		//requestlist542
+		List<AppGroupExportDto> appplicationName = listEmployeeId.isEmpty() ? Collections.emptyList()
+				: applicationListFinder.getApplicationGroupBySID(listEmployeeId, dateRange.getStartDate(),
+						dateRange.getEndDate());
+		appplicationName.forEach(x -> {
 			String key = x.getEmployeeID() + "|" + x.getAppDate();
 			if (appMapDateSid.containsKey(key)) {
 				appMapDateSid.put(key, appMapDateSid.get(key) + "  " + x.getAppTypeName());
 			} else {
 				appMapDateSid.put(key, x.getAppTypeName());
 			}
-			
+		});
+		
+		appplicationDisable.forEach(x -> {
+			String key = x.getEmployeeID() + "|" + x.getAppDate();
 			if (disableSignMap != null) {
 				boolean disable = (x.getReflectState() == ReflectedState_New.NOTREFLECTED.value
 						|| x.getReflectState() == ReflectedState_New.REMAND.value)
@@ -978,7 +996,8 @@ public class DailyPerformanceCorrectionProcessor {
 	}
 
 	public void lockDataCheckbox(String sId, DailyPerformanceCorrectionDto screenDto, 
-			DPDataDto data, Optional<IdentityProcessUseSetDto> identityProcessUseSetDto, Optional<ApprovalUseSettingDto> approvalUseSettingDto, ApproveRootStatusForEmpDto approveRootStatus, int mode, boolean checkApproval) {
+			DPDataDto data, Optional<IdentityProcessUseSetDto> identityProcessUseSetDto, Optional<ApprovalUseSettingDto> approvalUseSettingDto, ApproveRootStatusForEmpDto approveRootStatus,
+			int mode, boolean checkApproval, boolean sign) {
 		// disable, enable check sign no 10
 		if (!sId.equals(data.getEmployeeId())) {
 			screenDto.setCellSate(data.getId(), DPText.LOCK_SIGN, DPText.STATE_DISABLE);
@@ -1023,8 +1042,12 @@ public class DailyPerformanceCorrectionProcessor {
 			if (approveRootStatus == null)
 				return;
 			if (approveRootStatus.getApproverEmployeeState() != null
-					&& approveRootStatus.getApproverEmployeeState() != ApproverEmployeeState.PHASE_DURING && !checkApproval) {
-				screenDto.setCellSate(data.getId(), DPText.LOCK_APPROVAL, DPText.STATE_DISABLE);
+					&& !checkApproval) {
+				if(approveRootStatus.getApproverEmployeeState() != ApproverEmployeeState.PHASE_DURING) {
+					screenDto.setCellSate(data.getId(), DPText.LOCK_APPROVAL, DPText.STATE_DISABLE);
+				}else if(identityProcessUseSetDto.isPresent() && identityProcessUseSetDto.get().isUseConfirmByYourself() && !sign) {
+					screenDto.setCellSate(data.getId(), DPText.LOCK_APPROVAL, DPText.STATE_DISABLE);
+				}
 			}else if(approveRootStatus.getApprovalStatus() != null
 					&& approveRootStatus.getApprovalStatus().value == ReleasedProprietyDivision.NOT_RELEASE.value && checkApproval){
 				screenDto.setCellSate(data.getId(), DPText.LOCK_APPROVAL, DPText.STATE_DISABLE);
@@ -1216,6 +1239,7 @@ public class DailyPerformanceCorrectionProcessor {
 		List<DPErrorDto> lstError = this.repo.getListDPError(dateRange,
 				lstEmployee.stream().map(e -> e.getId()).collect(Collectors.toList()));
 		Map<String, String> appMapDateSid = getApplication(new ArrayList<>(lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toSet())), dateRange, null);
+		int rowId = 0;
 		if (lstError.size() > 0) {
 			// 対応するドメインモデル「勤務実績のエラーアラーム」をすべて取得する
 			// Get list error setting
@@ -1223,7 +1247,6 @@ public class DailyPerformanceCorrectionProcessor {
 					.getErrorSetting(companyId, lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()), true, true, false);
 			// convert to list error reference
 			//IntStream.range(0, lstError.size()).forEach(id -> {
-			int rowId = 0;
 			for (int id = 0; id < lstError.size(); id++) {
 				for (DPErrorSettingDto errorSetting : lstErrorSetting) {
 					if (lstError.get(id).getErrorCode().equals(errorSetting.getErrorAlarmCode())) {
@@ -1234,7 +1257,9 @@ public class DailyPerformanceCorrectionProcessor {
 								// -> {
 								lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(rowId), value.getEmployeeId(),
 										"", "", value.getProcessingDate(), value.getErrorCode(),
-										value.getErrorAlarmMessage() == null ? (errorSetting.getMessageDisplay() == null ? "" : errorSetting.getMessageDisplay())
+										value.getErrorAlarmMessage() == null
+												? (errorSetting.getMessageDisplay() == null ? ""
+														: errorSetting.getMessageDisplay())
 												: value.getErrorAlarmMessage(),
 										lstError.get(id).getAttendanceItemId().get(x), "", errorSetting.isBoldAtr(),
 										errorSetting.getMessageColor(),
@@ -1248,12 +1273,20 @@ public class DailyPerformanceCorrectionProcessor {
 						} else {
 							lstErrorRefer.add(new ErrorReferenceDto(String.valueOf(rowId), value.getEmployeeId(),
 									value.getProcessingDate(), value.getErrorCode(),
-									value.getErrorAlarmMessage() == null ? (errorSetting.getMessageDisplay() == null ? "" : errorSetting.getMessageDisplay()) : value.getErrorAlarmMessage()));
+									value.getErrorAlarmMessage() == null ? (errorSetting.getMessageDisplay() == null ? "" : errorSetting.getMessageDisplay()) : value.getErrorAlarmMessage(),
+									errorSetting.isBoldAtr(),
+									errorSetting.getMessageColor(),
+									appMapDateSid
+											.containsKey(value.getEmployeeId() + "|" + value.getProcessingDate())
+													? appMapDateSid.get(
+															value.getEmployeeId() + "|" + value.getProcessingDate())
+													: ""));
 							rowId++;
 						}
 					}
 				}
 			}
+		}
 			// get list item to add item name
 			Set<Integer> itemIds = lstError.stream().flatMap(x -> x.getAttendanceItemId().stream()).collect(Collectors.toSet());
 			
@@ -1279,7 +1312,6 @@ public class DailyPerformanceCorrectionProcessor {
 					}
 				}
 			}
-		}
 		return lstErrorRefer;
 	}
 
@@ -1784,11 +1816,13 @@ public class DailyPerformanceCorrectionProcessor {
 		}
 	}
 	
-	public void setTextColorDay(DailyPerformanceCorrectionDto screenDto, GeneralDate date, String columnKey, String rowId){
-		     // Sunday
-		if(date.dayOfWeek() == 7){
+	public void setTextColorDay(DailyPerformanceCorrectionDto screenDto, GeneralDate date, String columnKey, String rowId, List<GeneralDate> holidayDates){
+		
+		boolean isHoliday = holidayDates.contains(date);
+		if (isHoliday || date.dayOfWeek() == 7) {
+			// Sunday
 			screenDto.setCellSate(rowId, columnKey, DPText.COLOR_SUN);
-		}else if(date.dayOfWeek() == 6){
+		} else if (date.dayOfWeek() == 6) {
 			// Saturday
 			screenDto.setCellSate(rowId, columnKey, DPText.COLOR_SAT);
 		}

@@ -132,13 +132,30 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 		this.errorAlarmCheckID = errorAlarmCheckID;
 	}
 	
-	public void clearDuplicate(){
+	public ErrorAlarmWorkRecord  cleanData() {
 		if(this.lstApplication != null){
 			this.lstApplication = this.lstApplication.stream().distinct().collect(Collectors.toList());
 		}
-		if(this.errorAlarmCondition != null){
+		
+		if(this.errorAlarmCondition != null && !this.fixedAtr){
+			if(this.errorAlarmCondition.getAtdItemCondition().getGroup1() != null){
+				this.errorAlarmCondition.getAtdItemCondition().getGroup1().getLstErAlAtdItemCon().stream().forEach(ea -> {
+					ea.updateCode(this.getCode());
+				});
+			}
+			if(this.errorAlarmCondition.getAtdItemCondition().getGroup2() != null){
+				this.errorAlarmCondition.getAtdItemCondition().getGroup2().getLstErAlAtdItemCon().stream().forEach(ea -> {
+					ea.updateCode(this.getCode());
+				});
+			}
 			this.errorAlarmCondition.clearDuplicate();
 		}
+		
+		return this;
+	}
+	
+	public void setCompanyId(String companyId) {
+		this.companyId = companyId;
 	}
 	
 

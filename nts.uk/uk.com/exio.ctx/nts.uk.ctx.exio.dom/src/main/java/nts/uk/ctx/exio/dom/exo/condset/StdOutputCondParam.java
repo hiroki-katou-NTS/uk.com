@@ -6,4 +6,5 @@ import lombok.Data;
 public class StdOutputCondParam {
 	 private String modeScreen;
 	 private String cndSetCd;
+	 private String roleId;
 }

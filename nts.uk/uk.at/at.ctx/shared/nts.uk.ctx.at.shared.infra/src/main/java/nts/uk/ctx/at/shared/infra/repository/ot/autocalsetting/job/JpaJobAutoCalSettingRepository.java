@@ -29,6 +29,7 @@ import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.job.KshmtAutoJobCalSe
  */
 @Stateless
 public class JpaJobAutoCalSettingRepository extends JpaRepository implements JobAutoCalSettingRepository {
+
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.JobAutoCalSettingRepository#update(nts.uk.ctx.at.schedule.dom.shift.autocalsetting.JobAutoCalSetting)

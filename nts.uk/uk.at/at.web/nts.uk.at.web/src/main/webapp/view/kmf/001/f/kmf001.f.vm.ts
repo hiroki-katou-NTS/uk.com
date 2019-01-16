@@ -595,6 +595,7 @@ module nts.uk.pr.view.kmf001.f {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
                 }
             }
+
             
             //recall validate for company
             private reCallValidate(): JQueryPromise<void> {

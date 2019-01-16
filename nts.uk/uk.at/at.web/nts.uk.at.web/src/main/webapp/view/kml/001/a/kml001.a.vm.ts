@@ -14,6 +14,7 @@ module nts.uk.at.view.kml001.a {
             viewAttendanceItems: KnockoutObservableArray<KnockoutObservable<string>>;
             textKML001_40 = nts.uk.resource.getText("KML001_40");
             isLastItem: KnockoutObservable<Boolean> = ko.observable(false);
+            standardDate: KnockoutObservable<string> =ko.observable(null);
             constructor() {
                 $('#formula-child-1').html(nts.uk.resource.getText('KML001_7').replace(/\n/g,'<br/>'));
                 var self = this;
@@ -37,6 +38,7 @@ module nts.uk.at.view.kml001.a {
                     ko.observable(''),
                     ko.observable('')
                 ]);
+               
             }
             
             /**
@@ -594,6 +596,48 @@ module nts.uk.at.view.kml001.a {
                 $("#memo").attr('tabindex', 8);
                 $("#premium-set-tbl > tbody > tr > td:NTH-CHILD(2) input").each(function (i) { $(this).attr('tabindex', i*2 + 9); });
                 $("#premium-set-tbl > tbody > tr > td:NTH-CHILD(3) button").each(function (i) { $(this).attr('tabindex', i*2 + 10); });    
+            }
+            
+            showExportBtn() {
+                    if (nts.uk.util.isNullOrUndefined(__viewContext.user.role.attendance)
+                            && nts.uk.util.isNullOrUndefined(__viewContext.user.role.payroll)
+                            && nts.uk.util.isNullOrUndefined(__viewContext.user.role.officeHelper)
+                            && nts.uk.util.isNullOrUndefined(__viewContext.user.role.personnel)) {
+                    $("#print-button").hide();
+                    } else {
+                    $("#print-button").show();
+                    }
+                    }
+          
+           /**
+         * closeDialog
+         */
+        public opencdl028Dialog() {
+            var self = this;
+            let params = {
+            //    date: moment(new Date()).toDate(),
+                mode: 1 //basedate
+            };
+            nts.uk.ui.windows.setShared("CDL028_INPUT", params);
+            nts.uk.ui.windows.sub.modal("com", "/view/cdl/028/a/index.xhtml").onClosed(function() {
+                var params = nts.uk.ui.windows.getShared("CDL028_A_PARAMS");
+                if (!nts.uk.util.isNullOrUndefined(params) && !nts.uk.util.isNullOrUndefined(params.standardDate)) {                 
+                    self.exportExcel(params.standardDate);
+                 }
+            });
+
+        }  
+            
+        public exportExcel(param): void {
+                var self = this;
+                nts.uk.ui.block.grayout();          
+                servicebase.saveAsExcel(param).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+                                        
             }
         }
     }

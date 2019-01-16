@@ -1,6 +1,7 @@
 package nts.uk.ctx.pereg.app.find.person.category;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,6 +32,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.system.config.InstalledProduct;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 import nts.uk.shr.pereg.app.find.PeregQuery;
+import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 
 @Stateless
 public class PerInfoCategoryFinder {
@@ -171,7 +173,7 @@ public class PerInfoCategoryFinder {
 			}
 		}
 	}
-
+	//
 	// vinhpx: end
 
 	public PerInfoCtgFullDto getPerInfoCtg(String perInfoCtgId) {

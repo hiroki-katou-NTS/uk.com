@@ -116,7 +116,7 @@ public class DPDisplayLockProcessor {
 				//対象日の本人確認が済んでいるかチェックする
 				result.checkShowTighProcess(displayFormat, true);
 			}else {
-				result.getIndentityMonthResult().setHideAll(false);
+				result.getIndentityMonthResult().setHideAll(true);
 			}
 			// screenDto.setFlexShortage(null);
 		}
@@ -140,7 +140,7 @@ public class DPDisplayLockProcessor {
 					.get(data.getEmployeeId() + "|" + data.getDate());
 
 			process.lockDataCheckbox(sId, result, data, identityProcessDtoOpt, approvalUseSettingDtoOpt,
-					approveRootStatus, mode, data.isApproval());
+					approveRootStatus, mode, data.isApproval(), data.isSign());
 			boolean lockDaykWpl = false, lockHist = false, lockApprovalMonth = false, lockConfirmMonth = false;
 			if (param.isShowLock()) {
 				lockDaykWpl = process.checkLockAndSetState(dpLock.getLockDayAndWpl(), data);

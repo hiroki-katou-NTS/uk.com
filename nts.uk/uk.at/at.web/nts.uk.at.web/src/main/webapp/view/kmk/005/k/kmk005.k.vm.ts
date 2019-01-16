@@ -40,7 +40,11 @@ module nts.uk.at.view.kmk005.k {
                     })
                 });
 
+            }
 
+            loadFirst() {
+                let self = this,
+                    model = self.model();
                 model.wtc.subscribe(v => {
                     let data = self.workTimeList(),
                         row = _.find(data, x => x.code == v);
@@ -75,7 +79,7 @@ module nts.uk.at.view.kmk005.k {
 
                 self.start();
             }
-
+            
             start() {
                 let self = this,
                     model = self.model(),

@@ -89,3 +89,7 @@
 td.required {
 	background-color: #FAC002 !important;
 }
+
+tr.blue-color {
+	color: blue;
+}

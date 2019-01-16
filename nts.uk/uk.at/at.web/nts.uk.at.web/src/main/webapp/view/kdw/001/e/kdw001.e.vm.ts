@@ -81,6 +81,12 @@ module nts.uk.at.view.kdw001.e.viewmodel {
         monthlyAggregateEndTime : KnockoutObservable<string> = ko.observable("");
         employeeIDS : KnockoutObservableArray<any> = ko.observableArray([]);
 
+        textHearderDisposalDay : KnockoutObservable<string> = ko.observable("");
+        //
+        startMonthResult : KnockoutObservable<string> = ko.observable("");
+        endMonthResult :  KnockoutObservable<string> = ko.observable("");
+        disableMonthResult :KnockoutObservable<boolean> = ko.observable(false);
+        disableDayResult :KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             var self = this;
             self.elapseTime.start();
@@ -88,19 +94,27 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             self.numberEmployee(0);
 
             self.closureId(1);
-
+            
+            
             self.columns = ko.observableArray([
                 { headerText: getText('KDW001_33'), key: 'personCode', width: 110 },
                 { headerText: getText('KDW001_35'), key: 'personName', width: 150 },
-                { headerText: getText('KDW001_36'), key: 'disposalDay', width: 150 },
+                { headerText: self.textHearderDisposalDay(), key: 'disposalDay', width: 150 },
                 { headerText: getText('KDW001_37'), key: 'messageError', class: "limited-label", width: 290 },
-                { headerText: '', key: 'id', width: 1, hidden: true },
+                { headerText: '', key: 'id', width: 1, hidden: true }, 
             ]);
 
             self.selectedExeContent.subscribe((value) => {
                 if(value != undefined && value.length == undefined) {
+                    if(self.selectedExeContent() == 3){
+                       self.textHearderDisposalDay(getText('KDW001_116'));
+                    }else{
+                        self.textHearderDisposalDay(getText('KDW001_36'));
+                    }
+                    $('#single-list_disposalDay .ui-iggrid-headertext').text(self.textHearderDisposalDay());
                     self.getLogData();    
                 }
+                
             });
             
             self.employeeIDS.subscribe(value => {
@@ -118,10 +132,13 @@ module nts.uk.at.view.kdw001.e.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             var params: shareModel.executionProcessingCommand = nts.uk.ui.windows.getShared("KDWL001E");
+            self.startMonthResult(params.startMonthResult);
+            self.endMonthResult(params.endMonthResult);
             self.startPeriod(params.periodStartDate);
             self.endPeriod(params.periodEndDate);
             self.numberEmployee(params.lstEmployeeID.length);
             self.closureId(params.closureID);
+            
 
             $('#closeDialogButton').focus();
             service.insertData(params).done((res: shareModel.AddEmpCalSumAndTargetCommandResult) => {
@@ -150,8 +167,30 @@ module nts.uk.at.view.kdw001.e.viewmodel {
                     });
                     self.visibleMonthly(true);
                 }
-
+                
                 self.contents = res.enumComboBox;
+                self.disableDayResult(false);
+                self.disableMonthResult(false);
+                for(let i =0;i<self.contents.length;i++){
+                   if(self.contents[i].value ==0 || self.contents[i].value ==1 ||self.contents[i].value ==2){
+                       self.disableDayResult(true);
+                   }else if(self.contents[i].value ==3){
+                       self.disableMonthResult(true);
+                   } 
+                }
+                if(self.contents[0].value == 3){
+                   self.textHearderDisposalDay(getText('KDW001_116')); 
+                }else{
+                    self.textHearderDisposalDay(getText('KDW001_36')); 
+                }
+                self.columns([
+                    { headerText: getText('KDW001_33'), key: 'personCode', width: 110 },
+                    { headerText: getText('KDW001_35'), key: 'personName', width: 150 },
+                    { headerText: self.textHearderDisposalDay(), key: 'disposalDay', width: 150 },
+                    { headerText: getText('KDW001_37'), key: 'messageError', class: "limited-label", width: 290 },
+                    { headerText: '', key: 'id', width: 1, hidden: true }, 
+                ]);
+                $('#single-list_disposalDay .ui-iggrid-headertext').text(self.textHearderDisposalDay());
                 //self.executionContents(res.enumComboBox);
                 self.startTime(moment.utc(res.startTime).format("YYYY/MM/DD HH:mm:ss"));
                 self.startAsyncTask(res.empCalAndSumExecLogID);

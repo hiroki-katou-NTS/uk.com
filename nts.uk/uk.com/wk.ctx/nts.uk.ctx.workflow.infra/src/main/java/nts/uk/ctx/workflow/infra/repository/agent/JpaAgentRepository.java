@@ -1,11 +1,8 @@
 package nts.uk.ctx.workflow.infra.repository.agent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import javax.ejb.Stateless;
-
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
@@ -38,6 +35,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	private static final String SELECT_AGENT_BY_TYPE4;
 	
 	private static final String SELECT_AGENT_BY_SID_DATE;
+
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
@@ -143,6 +141,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString.append(" AND e.startDate <= :startDate");
 		builderString.append(" AND e.endDate >= :endDate");
 		SELECT_AGENT_BY_SID_DATE = builderString.toString();
+
 		}
 	
 		

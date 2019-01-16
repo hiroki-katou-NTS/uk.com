@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationReposi
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.TimeReflectPara;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 
 @Stateless
 public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeReflectService{
@@ -74,7 +75,12 @@ public class PreHolidayWorktimeReflectServiceImpl implements PreHolidayWorktimeR
 					true);
 			daily = scheWork.updateScheStartEndTimeHoliday(timeData, daily);
 			workRepository.updateByKeyFlush(daily.getWorkInformation());
-			
+			//開始時刻と終了時刻の反映
+			if(holidayWorkPara.getHolidayWorkPara().getStartTime() != null
+					&& holidayWorkPara.getHolidayWorkPara().getEndTime() != null) {
+				TimeLeavingOfDailyPerformance timeLeaving = workUpdate.updateRecordStartEndTimeReflect(timeData);
+				daily.setAttendanceLeave(Optional.of(timeLeaving));
+			}
 			//事前休出時間の反映
 			daily = holidayWorkProcess.reflectWorkTimeFrame(holidayWorkPara.getEmployeeId(), 
 					holidayWorkPara.getBaseDate(), 

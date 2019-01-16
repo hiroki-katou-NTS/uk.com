@@ -22,6 +22,8 @@
 				<button id="register" class="proceed" tabindex="1"
 					data-bind="click: registerCategoryInfo, enable: $root.errors.isEmpty() &amp; categoryList().length > 0">#{i18n.getText('CPS006_1')}</button>
 				<button id="sort" tabindex="2" data-bind="click: openCDL022Modal, enable:categoryList().length > 0">#{i18n.getText('CPS006_2')}</button>
+				<button tabindex="2" data-bind="click: function(){exportExcel('ChangePerInforDefinitionExport','CPS006個人情報定義の変更')}">#{i18n.getText('CPS006_71')}</button>
+
 				<div class='float-right'>
 					<a class='goout'
 						data-bind="ntsLinkButton: { jump: '/view/cps/005/a/index.xhtml'  }"

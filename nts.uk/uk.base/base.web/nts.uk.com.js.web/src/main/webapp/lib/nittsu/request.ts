@@ -280,6 +280,10 @@ module nts.uk.request {
                 case 401:
                     handle401(xhr);
                     break;
+                case 403:
+                    handle403(xhr);
+                    break;    
+                   
                 default:
                     handleUnknownError(xhr, status, error);
                     break;
@@ -291,6 +295,10 @@ module nts.uk.request {
             
             // res.sessionTimeout || res.csrfError
             specials.errorPages.sessionTimeout();
+        }
+        
+        function handle403(xhr) {
+            specials.errorPages.stopUse();
         }
         
         function handleUnknownError(xhr, status, error) {
@@ -345,6 +353,36 @@ module nts.uk.request {
 
         return dfd.promise();
     }
+        
+    export function exportLog(data: any): JQueryPromise<any> {
+        let dfd = $.Deferred();
+
+        request.ajax("logcollector/extract", data).done((res: any) => {
+                if (res.failed || res.status == "ABORTED") {
+                    dfd.reject(res.error);
+                }
+            
+                let taskId = res.id;
+                deferred.repeat(conf => conf.task(() => {
+                    return nts.uk.request.asyncTask.getInfo(taskId).done(function(res: any) {
+                        if (res.succeeded) {
+                            setTimeout(() => {
+                                specials.donwloadFile(taskId);    
+                                dfd.resolve(null); 
+                            }, 100);
+                        } else {
+                            if(res.failed){
+                               dfd.reject(res); 
+                            }    
+                        }
+                    });    
+                }).while(info => info.pending || info.running).pause(1000));
+            }).fail((res: any) => {
+                dfd.reject(res);
+            });
+
+        return dfd.promise();
+    }
     
     export function downloadFileWithTask(taskId: string, data?: any, options?: any) {
         let dfd = $.Deferred();
@@ -355,7 +393,7 @@ module nts.uk.request {
                     setTimeout(function(){ 
                      checkTask();       
                     }, 1000)
-                } if (res.failed || res.status == "ABORTED") { 
+                } else if (res.failed || res.status == "ABORTED") { 
                         dfd.reject(res.error);
                 } else {
                     specials.donwloadFile(res.id);
@@ -465,6 +503,10 @@ module nts.uk.request {
             
             export function sessionTimeout() {
                 jump('com', '/view/common/error/sessiontimeout/index.xhtml');
+            }
+            
+            export function stopUse() {
+                jump('com', '/view/common/error/stopuse/index.xhtml');
             }
             
         }

@@ -83,7 +83,6 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             var self = this;
             //Enable or disable for setting form
             self.conditionSettingForm();
-            
             //Bind data to from when user select item on grid
             self.singleSelectedCode.subscribe(function(value) {
                 // clear all error
@@ -1376,6 +1375,18 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             self.limitedValue03(self.useCls03() ? (result03 <= 0 ? "" : result03.toString()) : "");
             self.limitedValue04(self.useCls04() ? (result04 <= 0 ? "" : result04.toString()) : "");
             self.limitedValue05(self.useCls05() ? (result05 <= 0 ? "" : result05.toString()) : "");
+        }
+        
+        private exportExcel(): void {
+            var self = this;
+            nts.uk.ui.block.grayout();
+            let langId = "ja";
+            service.saveAsExcel(langId).done(function() {
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
         }
     }
     

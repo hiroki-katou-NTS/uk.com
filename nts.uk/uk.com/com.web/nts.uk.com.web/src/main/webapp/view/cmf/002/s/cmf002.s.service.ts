@@ -5,6 +5,7 @@ module nts.uk.com.view.cmf002.s {
         var paths = {
             findExOutOpMng: "exio/exo/execlog/findExOutOpMng/{0}",
             deleteexOutOpMng: "exio/exo/execlog/deleteexOutOpMng",
+            updateexOutOpMng: "exio/exo/execlog/updateexOutOpMng",
             getExterOutExecLog: "exio/exo/execlog/getExterOutExecLog/{0}",
             updateFileSize: "exio/exo/execlog/updateFileSize/{0}/{1}"
         }  
@@ -16,6 +17,10 @@ module nts.uk.com.view.cmf002.s {
         
         export function deleteexOutOpMng(command: any): JQueryPromise<any> {
             return ajax("com", paths.deleteexOutOpMng, command);
+        }
+        
+        export function updateexOutOpMng(command: any): JQueryPromise<any> {
+            return ajax("com", paths.updateexOutOpMng, command);
         }
         
         export function getExterOutExecLog(storeProcessingId: string): JQueryPromise<any> {

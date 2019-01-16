@@ -78,7 +78,10 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 
 	@Override
 	public void addErrorAlarmWorkRecord(ErrorAlarmWorkRecord domain, ErrorAlarmCondition conditionDomain) {
-		this.commandProxy().insert(KwrmtErAlWorkRecord.fromDomain(domain, conditionDomain));
+		domain.setCompanyId(AppContexts.user().companyId());
+		KwrmtErAlWorkRecord entity = KwrmtErAlWorkRecord.fromDomain(domain, conditionDomain);
+		entity.krcmtErAlCondition.setCompanyId(AppContexts.user().companyId());
+		this.commandProxy().insert(entity);
 	}
 
 	@Override
@@ -221,7 +224,7 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 						workTypePlan = rs.getString("wtPlanCD"), workTypeActual = rs.getString("wtActualCD"),
 						workTimePlan = rs.getString("whPlanWtCD"), workTimeActual = rs.getString("whActualWtCD");
 				
-				Integer appTypeCode = rs.getInt("APP_TYPE_CD"); 
+				Integer fixedAtr = rs.getInt("FIXED_ATR"), appTypeCode = rs.getInt("APP_TYPE_CD"); 
 				
 				if(group1Id != null) {
 					conG1.put(group1Id, eralID);
@@ -234,7 +237,7 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 					String erAlCode = rs.getString("ERROR_ALARM_CD"), erAlName = rs.getString("ERROR_ALARM_NAME"),
 							mesColor = rs.getString("MESSAGE_COLOR"), mesDisplay = rs.getString("MESSAGE_DISPLAY");
 					
-					Integer fixedAtr = rs.getInt("FIXED_ATR"), remarkCanRemove = rs.getInt("REMARK_CANCEL_ERR_INP"),
+					Integer remarkCanRemove = rs.getInt("REMARK_CANCEL_ERR_INP"),
 							remarkNo = rs.getInt("REMARK_COLUMN_NO"), erAlAtr = rs.getInt("ERAL_ATR"), boldAtr = rs.getInt("BOLD_ATR"),
 							cancelableAtr =  rs.getInt("CANCELABLE_ATR"), displayItem = rs.getInt("ERROR_DISPLAY_ITEM"),
 							continuousAtr = rs.getInt("CONTINUOUS_PERIOD"), filterByBusinessType = rs.getInt("FILTER_BY_BUSINESS_TYPE"),
@@ -252,51 +255,55 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 					ErrorAlarmCondition condition = new ErrorAlarmCondition(eralID, mesDisplay);
 					condition.setContinuousPeriod(continuousAtr != null ? continuousAtr : 0);
 					
-					// Set AlCheckTargetCondition
-					condition.createAlCheckTargetCondition(filterByBusinessType == 1, filterByJob == 1, filterByEmployment == 1, 
-															filterByClassification == 1, new ArrayList<>(), 
-															new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-					
-					// Set WorkTypeCondition
-					condition.createWorkTypeCondition(useWorkType == 1, wtComAtr == null ? 0 : wtComAtr);
-					condition.setWorkType(useWorkTypePlan != null && useWorkTypePlan == 1, useWorkTypeActual != null && useWorkTypeActual == 1);
-					condition.chooseWorkTypeOperator(workTypeOperator);
-					
-					// Set WorkTimeCondtion
-					condition.createWorkTimeCondition(useWorkTime == 1, whComAtr == null ? 0 : whComAtr);
-					condition.setWorkTime(useWorkTimePlan != null && useWorkTimePlan == 1, useWorkTimeActual != null && useWorkTimeActual == 1);
-					condition.chooseWorkTimeOperator(workTimeOperator);
-					
-					condition.createAttendanceItemCondition(groupOperator, useGroup2 == 1 ? true : false);
-					
+					if(fixedAtr != 1){
+						// Set AlCheckTargetCondition
+						condition.createAlCheckTargetCondition(filterByBusinessType == 1, filterByJob == 1, filterByEmployment == 1, 
+																filterByClassification == 1, new ArrayList<>(), 
+																new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+						
+						// Set WorkTypeCondition
+						condition.createWorkTypeCondition(useWorkType == 1, wtComAtr == null ? 0 : wtComAtr);
+						condition.setWorkType(useWorkTypePlan != null && useWorkTypePlan == 1, useWorkTypeActual != null && useWorkTypeActual == 1);
+						condition.chooseWorkTypeOperator(workTypeOperator);
+						
+						// Set WorkTimeCondtion
+						condition.createWorkTimeCondition(useWorkTime == 1, whComAtr == null ? 0 : whComAtr);
+						condition.setWorkTime(useWorkTimePlan != null && useWorkTimePlan == 1, useWorkTimeActual != null && useWorkTimeActual == 1);
+						condition.chooseWorkTimeOperator(workTimeOperator);
+						
+						condition.createAttendanceItemCondition(groupOperator, useGroup2 == 1 ? true : false);
+
+					}					
 					eral.setErrorAlarmCondition(condition);
 					eRecord.put(eralID, eral);
 				} 
 				
-				if(appTypeCode != null){
-					eral.getLstApplication().add(appTypeCode);
-				}
-				
-				if(businessTypeCode != null){
-					eral.getErrorAlarmCondition().getCheckTargetCondtion().getLstBusinessTypeCode().add(new BusinessTypeCode(businessTypeCode));
-				}
-				
-				if(jobId != null){
-					eral.getErrorAlarmCondition().getCheckTargetCondtion().getLstJobTitleId().add(jobId);
-				}
-				
-				if(employmentCode != null){
-					eral.getErrorAlarmCondition().getCheckTargetCondtion().getLstEmploymentCode().add(new EmploymentCode(employmentCode));
-				}
-				if(classificationCode != null){
-					eral.getErrorAlarmCondition().getCheckTargetCondtion().getLstClassificationCode().add(new ClassificationCode(classificationCode));
-				}
+				if(fixedAtr != 1){
+					if(appTypeCode != null){
+						eral.getLstApplication().add(appTypeCode);
+					}
+					
+					if(businessTypeCode != null){
+						eral.getErrorAlarmCondition().getCheckTargetCondtion().getLstBusinessTypeCode().add(new BusinessTypeCode(businessTypeCode));
+					}
+					
+					if(jobId != null){
+						eral.getErrorAlarmCondition().getCheckTargetCondtion().getLstJobTitleId().add(jobId);
+					}
+					
+					if(employmentCode != null){
+						eral.getErrorAlarmCondition().getCheckTargetCondtion().getLstEmploymentCode().add(new EmploymentCode(employmentCode));
+					}
+					if(classificationCode != null){
+						eral.getErrorAlarmCondition().getCheckTargetCondtion().getLstClassificationCode().add(new ClassificationCode(classificationCode));
+					}
 
-				eral.getErrorAlarmCondition().getWorkTypeCondition().addWorkType(workTypePlan == null ? null : new WorkTypeCode(workTypePlan), 
-																				workTypeActual == null ? null : new WorkTypeCode(workTypeActual));
-				
-				eral.getErrorAlarmCondition().getWorkTimeCondition().addWorkTime(workTimePlan == null ? null : new WorkTimeCode(workTimePlan), 
-						workTimeActual == null ? null : new WorkTimeCode(workTimeActual));
+					eral.getErrorAlarmCondition().getWorkTypeCondition().addWorkType(workTypePlan == null ? null : new WorkTypeCode(workTypePlan), 
+																					workTypeActual == null ? null : new WorkTypeCode(workTypeActual));
+					
+					eral.getErrorAlarmCondition().getWorkTimeCondition().addWorkTime(workTimePlan == null ? null : new WorkTimeCode(workTimePlan), 
+							workTimeActual == null ? null : new WorkTimeCode(workTimeActual));
+				}
 				
 				return null;
 			});
@@ -305,19 +312,7 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 		getConditionGroupV2(conG1, conG2, eRecord, companyId);
 
 		return eRecord.entrySet().stream().map(c -> {
-			ErrorAlarmWorkRecord eaRecord = c.getValue();
-			if(eaRecord.getErrorAlarmCondition().getAtdItemCondition().getGroup1() != null){
-				eaRecord.getErrorAlarmCondition().getAtdItemCondition().getGroup1().getLstErAlAtdItemCon().stream().forEach(ea -> {
-					ea.updateCode(eaRecord.getCode());
-				});
-			}
-			if(eaRecord.getErrorAlarmCondition().getAtdItemCondition().getGroup2() != null){
-				eaRecord.getErrorAlarmCondition().getAtdItemCondition().getGroup2().getLstErAlAtdItemCon().stream().forEach(ea -> {
-					ea.updateCode(eaRecord.getCode());
-				});
-			}
-			eaRecord.clearDuplicate();
-			return eaRecord;
+			return c.getValue().cleanData();
 		}).collect(Collectors.toList());
 	}
 

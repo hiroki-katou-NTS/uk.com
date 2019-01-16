@@ -12,5 +12,8 @@ module nts.uk.at.view.kmk005.a {
         export function checkInit(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.checkInit);
         }
+        export function exportExcel(): JQueryPromise<any> {
+            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: 'SettingTimeZone', domainType: 'KMK005加給時間帯の登録', languageId: 'ja', reportType: 0});
+        }
     }
 }

@@ -35,9 +35,11 @@ public interface WorkUpdateService {
 	 * 開始時刻の反映, 終了時刻を反映
 	 * @param data
 	 */
-	public TimeLeavingOfDailyPerformance updateRecordStartEndTimeReflect(TimeReflectPara data, TimeLeavingOfDailyPerformance timeDaily);
+	public TimeLeavingOfDailyPerformance updateRecordStartEndTimeReflect(TimeReflectPara data);
 	
-	public TimeLeavingOfDailyPerformance updateRecordStartEndTimeReflectRecruitment(TimeReflectPara data, TimeLeavingOfDailyPerformance timeLeavingOfDailyData);
+	public void updateTimeNotReflect(String employeeId, GeneralDate dateData);
+	
+	public TimeLeavingOfDailyPerformance updateRecordStartEndTimeReflectRecruitment(TimeReflectPara data);
 	/**
 	 * 残業時間の反映
 	 * @param employeeId
@@ -86,8 +88,10 @@ public interface WorkUpdateService {
 	 * @param dateData
 	 * @param worktimeFrame
 	 * @param isPre
+	 * @param isRec: True: 振出申請、False：　休日出勤申請 fix bug 103077
 	 */
-	public IntegrationOfDaily updateWorkTimeFrame(String employeeId, GeneralDate dateData, Map<Integer, Integer> worktimeFrame, boolean isPre, IntegrationOfDaily dailyData);
+	public IntegrationOfDaily updateWorkTimeFrame(String employeeId, GeneralDate dateData, Map<Integer, Integer> worktimeFrame, 
+			boolean isPre, IntegrationOfDaily dailyData, boolean isRec);
 	/**
 	 * 就時の反映
 	 * @param employeeId

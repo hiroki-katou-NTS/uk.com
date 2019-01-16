@@ -195,6 +195,9 @@ public class AppHolidayWorkFinder {
 			}
 			result.setEmployeeName(employeeName);
 		
+		if(appCommonSettingOutput.getApprovalFunctionSetting()!=null){
+			result.setEnableOvertimeInput(appCommonSettingOutput.getApprovalFunctionSetting().getApplicationDetailSetting().get().getTimeInputUse().value==1?true:false);
+		}
 		return result;
 	}
 	/**
@@ -369,6 +372,7 @@ public class AppHolidayWorkFinder {
 		String workTypeCD = "";
 		String workTimeCD = "";
 		if(approvalFunctionSetting != null){
+			appHolidayWorkDto.setEnableOvertimeInput(appCommonSettingOutput.getApprovalFunctionSetting().getApplicationDetailSetting().get().getTimeInputUse().value==1?true:false);
 			appHolidayWorkDto.setDisplayCaculationTime(approvalFunctionSetting.getApplicationDetailSetting().get().getTimeCalUse().equals(UseAtr.USE));
 		}
 			// 時刻計算利用チェック

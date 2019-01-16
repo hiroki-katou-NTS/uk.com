@@ -1,5 +1,7 @@
 module nts.uk.com.view.cas012.a.viewmodel {
     import block = nts.uk.ui.block;
+    import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
 
     export class ScreenModel {
 
@@ -80,8 +82,35 @@ module nts.uk.com.view.cas012.a.viewmodel {
             });
         }
 
+
+        private exportExcel(): void {
+            let self = this;
+            let params: any = {
+                date: null,
+                mode: 1
+            };
+
+            setShared("CDL028_INPUT", params);
+
+            nts.uk.ui.windows.sub.modal("/view/cdl/028/a/index.xhtml").onClosed(function() {
+                var result = getShared('CDL028_A_PARAMS');
+                if (result.status) {
+                    nts.uk.ui.block.grayout();
+                    let date = moment(result.standardDate, "YYYY/MM/DD");
+                    service.exportExcel(date).done(function() {
+
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                    }).always(function() {
+                        nts.uk.ui.block.clear();
+                    });
+                }
+            });
+
+        }
+
         openCAS012_B() {
-            let self = this
+            let self = this;
             nts.uk.ui.windows.sub.modal("/view/cas/012/b/index.xhtml").onClosed(() => {
                 let data = nts.uk.ui.windows.getShared("UserInfo");
                 if (data !== undefined) {

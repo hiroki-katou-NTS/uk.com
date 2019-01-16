@@ -6,7 +6,8 @@ module nts.uk.com.view.cas001.a.service {
         getCategoryAuth: "/ctx/pereg/roles/auth/category/find/{0}/{1}",
         getPersonRoleItemList: "/ctx/pereg/roles/auth/item/findAllItem/{0}/{1}",
         savePersonRole: "/ctx/pereg/roles/auth/save",
-        getAllItemIdRequired: "ctx/pereg/person/info/ctgItem/layout/findAll/required"
+        getAllItemIdRequired: "ctx/pereg/person/info/ctgItem/layout/findAll/required",
+        saveAsExcel: "file/at/personrole/saveAsExcel"
     }
     
     export function getCategoryRoleList(roleID) {
@@ -28,6 +29,12 @@ module nts.uk.com.view.cas001.a.service {
 
     export function getAllItemIdRequired(){
        return ajax(paths.getAllItemIdRequired);
+    }
+    export function saveAsExcel(languageId: string): JQueryPromise<any> {
+        let _params = {domainId: "PersonRole", 
+                        domainType: "CAS001個人情報アクセス権限の設定", 
+                        languageId: languageId, reportType: 0};
+        return nts.uk.request.exportFile('/masterlist/report/print', _params);
     }
 
 }

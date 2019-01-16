@@ -53,4 +53,16 @@ public class WorkScheduleOutputCondition  {
 		}).collect(Collectors.toList())));
 		return condition;
 	}
+	
+	/**
+	 * Checks if is show workplace.
+	 * 
+	 * @return	boolean 
+	 */
+	public Boolean isShowWorkplace(){
+		return this.settingDetailTotalOutput.isDetails() || this.settingDetailTotalOutput.isWorkplaceTotal() || this.settingDetailTotalOutput.isCumulativeWorkplace();
+	}
+	public Boolean isShowPeronal(){
+		return this.settingDetailTotalOutput.isDetails() || this.settingDetailTotalOutput.isPersonalTotal();
+	}
 }
