@@ -64,7 +64,7 @@ public class SelectionItemExportImp implements MasterListData {
 		List<MasterData> datas = new ArrayList<>();
 		List<SelectionItemReportData> selectionItemReportDats = iPerInfoSelectionItemRepository.findByContractCd(contractCode);
 		if(CollectionUtil.isEmpty(selectionItemReportDats)) {
-			throw new BusinessException("Msg_1480");
+			return datas;
 		} else {
 			selectionItemReportDats.stream().forEach(x -> {
 				datas.add(toData(x));

@@ -105,9 +105,9 @@ public class JpaTemHoliComRepository extends JpaRepository implements TempHoliCo
         /*A15_13*/
         String useType = isManagement && isUseTypeOS_01 ? CommonTempHolidays.getTextEnumSubHolTransferSetAtr(Integer.valueOf(rs.getString("TRANSF_TYPE_OS1"))) : null;
         /*A15_14*/
-        String oneDayTimeV2 = isManagement && isUseTypeOS_01 && !isTransferSetAtrOS ? rs.getString("ONE_DAY_TIME_OS1") : null;
+        String oneDayTimeV2 = isManagement && isUseTypeOS_01 && !isTransferSetAtrOS2 ? rs.getString("ONE_DAY_TIME_OS1") : null;
         /*A15_15*/
-        String halfDayTimeV2 = isManagement && isUseTypeOS_01 && !isTransferSetAtrOS ? rs.getString("HALF_DAY_TIME_OS1") : null;
+        String halfDayTimeV2 = isManagement && isUseTypeOS_01 && !isTransferSetAtrOS2 ? rs.getString("HALF_DAY_TIME_OS1") : null;
         /*A15_16*/
         String certainTimeV2 = isManagement && isUseTypeOS_01 && isTransferSetAtrOS2  ? CommonTempHolidays.convertToTime(Integer.valueOf(rs.getString("CERTAIN_TIME_OS1"))) + I18NText.getText("KMF001_222") : null;
 
@@ -135,8 +135,6 @@ public class JpaTemHoliComRepository extends JpaRepository implements TempHoliCo
 
     private MasterData buildARow(DataEachBox value1, DataEachBox value2, DataEachBox value3, DataEachBox value4, DataEachBox value5, DataEachBox value6, DataEachBox value7, DataEachBox value8, DataEachBox value9, DataEachBox value10, DataEachBox value11, DataEachBox value12, DataEachBox value13, DataEachBox value14, DataEachBox value15, DataEachBox value16) {
         Map<String, MasterCellData> data = new HashMap<>();
-
-
         data.put(EmployeeSystemImpl.KMF001_206, MasterCellData.builder()
                 .columnId(EmployeeSystemImpl.KMF001_206)
                 .value(value1.getValue())
