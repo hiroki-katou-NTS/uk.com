@@ -102,6 +102,7 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("    (SELECT  ");
 		sql.append("     NULL AS CODE, ");
 		sql.append("     ?companyText AS NAME, ");
+		sql.append("     NULL AS HIERARCHY_CD, ");
 		sql.append("     APP_TYPE, ");
 		sql.append("     USE_ATR, ");
 		sql.append("     REQUIRED_INSTRUCTION_FLG, ");
@@ -123,6 +124,7 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("    SELECT ");
 		sql.append("     ISNULL(WPI.WKPCD, ?masterUnregistered) AS CODE, ");
 		sql.append("     ISNULL(WPI.WKP_NAME, ?masterUnregistered) AS NAME, ");
+		sql.append("     WP_CONFIG.HIERARCHY_CD, ");
 		sql.append("     WP.APP_TYPE, ");
 		sql.append("     WP.USE_ATR, ");
 		sql.append("     WP.REQUIRED_INSTRUCTION_FLG, ");
@@ -144,9 +146,10 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("     FROM (SELECT *, CASE WHEN APP_TYPE = 7 THEN 9 WHEN APP_TYPE = 8 THEN 7 WHEN APP_TYPE = 9 THEN 8 ELSE APP_TYPE END DISPLAY_ORDER FROM KRQST_WP_APP_CF_DETAIL) WP_APP_CF_DETAIL) WP ");
 		sql.append("     LEFT JOIN BSYMT_WORKPLACE_HIST WPH ON WP.CID = WPH.CID AND WP.WKP_ID = WPH.WKPID AND WPH.END_DATE = ?baseDate ");
 		sql.append("     LEFT JOIN BSYMT_WORKPLACE_INFO WPI ON WP.CID = WPI.CID AND WP.WKP_ID = WPI.WKPID AND WPH.HIST_ID = WPI.HIST_ID ");
+		sql.append("     LEFT JOIN (SELECT WCI.CID, WCI.WKPID, WCI.HIERARCHY_CD  FROM BSYMT_WKP_CONFIG_INFO WCI JOIN BSYMT_WKP_CONFIG WC ON WCI.CID = WC.CID AND WCI.HIST_ID = WC.HIST_ID AND WC.END_DATE = ?baseDate AND WCI.CID = ?cid) WP_CONFIG ON WP.CID = WP_CONFIG.CID AND WP.WKP_ID = WP_CONFIG.WKPID ");
 		sql.append("    WHERE ");
 		sql.append("     WP.CID = ?cid) TEMP ");
-		sql.append("     ORDER BY TEMP.CODE, TEMP.NUM_ORDER, TEMP.ROW_NUMBER;");
+		sql.append("     ORDER BY TEMP.HIERARCHY_CD, TEMP.NUM_ORDER, TEMP.ROW_NUMBER;");
 		
 		List<Object[]> resultQuery = null;
 		try {
