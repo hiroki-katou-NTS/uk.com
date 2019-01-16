@@ -128,7 +128,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "kk.CODE = bb.EMP_CTG_CODE "
 			+ "WHERE "
 			+ "	bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0 "
-			+ "AND kk.CID = ?cid";
+			+ "AND kk.CID = ?cid"
+			+ " ORDER BY kk.CODE";
 	
 	private static final String SQL_EXPORT_SHEET_4 = " WITH summary AS ("
 			+ " SELECT "
@@ -403,7 +404,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "kk.CODE = bb.EMP_CTG_CODE "
 			+ "WHERE "
 			+ "	bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1 "
-			+ "AND kk.CID = ?cid";
+			+ "AND kk.CID = ?cid "
+			+ " ORDER BY kk.CODE";
 	
 	
 	private static final String SQL_EXPORT_SHEET_8 =  " WITH summary AS ("
