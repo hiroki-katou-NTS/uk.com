@@ -3179,21 +3179,19 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlex.append(" 		CONCAT(CAST(FLEX_WORK_TIME_SET1.TIME_END AS INTEGER)/60, ':',");
 		sqlFlex.append(" 			FORMAT(CAST(FLEX_WORK_TIME_SET1.TIME_END AS INTEGER)%60,'0#')), NULL),");
 		// R3_90 勤務時間帯.1日勤務用.丸め
-		sqlFlex.append(" 	IIF(TEMP.ROW_ID = 1, ");
-		sqlFlex.append(" 		CASE WHEN FLEX_WORK_TIME_SET1.UNIT = ?roundingTime1Min THEN ?roundingTime1MinText");
-		sqlFlex.append(" 			 WHEN FLEX_WORK_TIME_SET1.UNIT = ?roundingTime5Min THEN ?roundingTime5MinText");
-		sqlFlex.append(" 			 WHEN FLEX_WORK_TIME_SET1.UNIT = ?roundingTime6Min THEN ?roundingTime6MinText");
-		sqlFlex.append(" 			 WHEN FLEX_WORK_TIME_SET1.UNIT = ?roundingTime10Min THEN ?roundingTime10MinText");
-		sqlFlex.append(" 			 WHEN FLEX_WORK_TIME_SET1.UNIT = ?roundingTime15Min THEN ?roundingTime15MinText");
-		sqlFlex.append(" 			 WHEN FLEX_WORK_TIME_SET1.UNIT = ?roundingTime20Min THEN ?roundingTime20MinText");
-		sqlFlex.append(" 			 WHEN FLEX_WORK_TIME_SET1.UNIT = ?roundingTime30Min THEN ?roundingTime30MinText");
-		sqlFlex.append(" 			 WHEN FLEX_WORK_TIME_SET1.UNIT = ?roundingTime60Min THEN ?roundingTime60MinText");
-		sqlFlex.append(" 			 ELSE NULL");
-		sqlFlex.append(" 		END,");
-		sqlFlex.append(" 		NULL),");
+		sqlFlex.append(" 	CASE WHEN FLEX_WORK_TIME_SET1.UNIT = ?roundingTime1Min THEN ?roundingTime1MinText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET1.UNIT = ?roundingTime5Min THEN ?roundingTime5MinText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET1.UNIT = ?roundingTime6Min THEN ?roundingTime6MinText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET1.UNIT = ?roundingTime10Min THEN ?roundingTime10MinText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET1.UNIT = ?roundingTime15Min THEN ?roundingTime15MinText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET1.UNIT = ?roundingTime20Min THEN ?roundingTime20MinText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET1.UNIT = ?roundingTime30Min THEN ?roundingTime30MinText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET1.UNIT = ?roundingTime60Min THEN ?roundingTime60MinText");
+		sqlFlex.append(" 		 ELSE NULL");
+		sqlFlex.append(" 	END,");
 		// R3_91 勤務時間帯.1日勤務用.端数
-		sqlFlex.append(" 	CASE WHEN TEMP.ROW_ID = 1 AND FLEX_WORK_TIME_SET1.ROUNDING = ?roundingDown THEN ?roundingDownText");
-		sqlFlex.append(" 		 WHEN TEMP.ROW_ID = 1 AND FLEX_WORK_TIME_SET1.ROUNDING = ?roundingUp THEN ?roundingUpText");
+		sqlFlex.append(" 	CASE WHEN FLEX_WORK_TIME_SET1.ROUNDING = ?roundingDown THEN ?roundingDownText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET1.ROUNDING = ?roundingUp THEN ?roundingUpText");
 		sqlFlex.append(" 		 ELSE NULL");
 		sqlFlex.append(" 	END,");
 		// R3_92 勤務時間帯.午前勤務用.開始時間
@@ -3205,23 +3203,21 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlex.append(" 		CONCAT(CAST(FLEX_WORK_TIME_SET2.TIME_END AS INTEGER)/60, ':',");
 		sqlFlex.append(" 			FORMAT(CAST(FLEX_WORK_TIME_SET2.TIME_END AS INTEGER)%60,'0#')), NULL),");
 		// R3_94 勤務時間帯.午前勤務用.丸め
-		sqlFlex.append(" 	IIF(TEMP.ROW_ID = 1, ");
-		sqlFlex.append(" 		CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode OR FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isFalse THEN NULL");
-		sqlFlex.append(" 			 WHEN FLEX_WORK_TIME_SET2.UNIT = ?roundingTime1Min THEN ?roundingTime1MinText");
-		sqlFlex.append(" 			 WHEN FLEX_WORK_TIME_SET2.UNIT = ?roundingTime5Min THEN ?roundingTime5MinText");
-		sqlFlex.append(" 			 WHEN FLEX_WORK_TIME_SET2.UNIT = ?roundingTime6Min THEN ?roundingTime6MinText");
-		sqlFlex.append(" 			 WHEN FLEX_WORK_TIME_SET2.UNIT = ?roundingTime10Min THEN ?roundingTime10MinText");
-		sqlFlex.append(" 			 WHEN FLEX_WORK_TIME_SET2.UNIT = ?roundingTime15Min THEN ?roundingTime15MinText");
-		sqlFlex.append(" 			 WHEN FLEX_WORK_TIME_SET2.UNIT = ?roundingTime20Min THEN ?roundingTime20MinText");
-		sqlFlex.append(" 			 WHEN FLEX_WORK_TIME_SET2.UNIT = ?roundingTime30Min THEN ?roundingTime30MinText");
-		sqlFlex.append(" 			 WHEN FLEX_WORK_TIME_SET2.UNIT = ?roundingTime60Min THEN ?roundingTime60MinText");
-		sqlFlex.append(" 			 ELSE NULL");
-		sqlFlex.append(" 		END,");
-		sqlFlex.append(" 		NULL),");
+		sqlFlex.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode OR FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isFalse THEN NULL");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET2.UNIT = ?roundingTime1Min THEN ?roundingTime1MinText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET2.UNIT = ?roundingTime5Min THEN ?roundingTime5MinText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET2.UNIT = ?roundingTime6Min THEN ?roundingTime6MinText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET2.UNIT = ?roundingTime10Min THEN ?roundingTime10MinText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET2.UNIT = ?roundingTime15Min THEN ?roundingTime15MinText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET2.UNIT = ?roundingTime20Min THEN ?roundingTime20MinText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET2.UNIT = ?roundingTime30Min THEN ?roundingTime30MinText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET2.UNIT = ?roundingTime60Min THEN ?roundingTime60MinText");
+		sqlFlex.append(" 		 ELSE NULL");
+		sqlFlex.append(" 	END,");
 		// R3_95 勤務時間帯.午前勤務用.端数
 		sqlFlex.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode OR FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isFalse THEN NULL");
-		sqlFlex.append(" 		 WHEN TEMP.ROW_ID = 1 AND FLEX_WORK_TIME_SET2.ROUNDING = ?roundingDown THEN ?roundingDownText");
-		sqlFlex.append(" 		 WHEN TEMP.ROW_ID = 1 AND FLEX_WORK_TIME_SET2.ROUNDING = ?roundingUp THEN ?roundingUpText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET2.ROUNDING = ?roundingDown THEN ?roundingDownText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET2.ROUNDING = ?roundingUp THEN ?roundingUpText");
 		sqlFlex.append(" 		 ELSE NULL");
 		sqlFlex.append(" 	END,");
 		// R3_96 勤務時間帯.午後勤務用.開始時間
@@ -3233,23 +3229,21 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlex.append(" 		CONCAT(CAST(FLEX_WORK_TIME_SET3.TIME_END AS INTEGER)/60, ':',");
 		sqlFlex.append(" 			FORMAT(CAST(FLEX_WORK_TIME_SET3.TIME_END AS INTEGER)%60,'0#')), NULL),");
 		// R3_98 勤務時間帯.午後勤務用.丸め
-		sqlFlex.append(" 	IIF(TEMP.ROW_ID = 1, ");
-		sqlFlex.append(" 		CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode OR FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isFalse THEN NULL");
-		sqlFlex.append(" 			 WHEN FLEX_WORK_TIME_SET3.UNIT = ?roundingTime1Min THEN ?roundingTime1MinText");
-		sqlFlex.append(" 			 WHEN FLEX_WORK_TIME_SET3.UNIT = ?roundingTime5Min THEN ?roundingTime5MinText");
-		sqlFlex.append(" 			 WHEN FLEX_WORK_TIME_SET3.UNIT = ?roundingTime6Min THEN ?roundingTime6MinText");
-		sqlFlex.append(" 			 WHEN FLEX_WORK_TIME_SET3.UNIT = ?roundingTime10Min THEN ?roundingTime10MinText");
-		sqlFlex.append(" 			 WHEN FLEX_WORK_TIME_SET3.UNIT = ?roundingTime15Min THEN ?roundingTime15MinText");
-		sqlFlex.append(" 			 WHEN FLEX_WORK_TIME_SET3.UNIT = ?roundingTime20Min THEN ?roundingTime20MinText");
-		sqlFlex.append(" 			 WHEN FLEX_WORK_TIME_SET3.UNIT = ?roundingTime30Min THEN ?roundingTime30MinText");
-		sqlFlex.append(" 			 WHEN FLEX_WORK_TIME_SET3.UNIT = ?roundingTime60Min THEN ?roundingTime60MinText");
-		sqlFlex.append(" 			 ELSE NULL");
-		sqlFlex.append(" 		END,");
-		sqlFlex.append(" 		NULL),");
+		sqlFlex.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode OR FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isFalse THEN NULL");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET3.UNIT = ?roundingTime1Min THEN ?roundingTime1MinText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET3.UNIT = ?roundingTime5Min THEN ?roundingTime5MinText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET3.UNIT = ?roundingTime6Min THEN ?roundingTime6MinText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET3.UNIT = ?roundingTime10Min THEN ?roundingTime10MinText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET3.UNIT = ?roundingTime15Min THEN ?roundingTime15MinText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET3.UNIT = ?roundingTime20Min THEN ?roundingTime20MinText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET3.UNIT = ?roundingTime30Min THEN ?roundingTime30MinText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET3.UNIT = ?roundingTime60Min THEN ?roundingTime60MinText");
+		sqlFlex.append(" 		 ELSE NULL");
+		sqlFlex.append(" 	END,");
 		// R3_99 勤務時間帯.午後勤務用.端数
 		sqlFlex.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode OR FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isFalse THEN NULL");
-		sqlFlex.append(" 		 WHEN TEMP.ROW_ID = 1 AND FLEX_WORK_TIME_SET3.ROUNDING = ?roundingDown THEN ?roundingDownText");
-		sqlFlex.append(" 		 WHEN TEMP.ROW_ID = 1 AND FLEX_WORK_TIME_SET3.ROUNDING = ?roundingUp THEN ?roundingUpText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET3.ROUNDING = ?roundingDown THEN ?roundingDownText");
+		sqlFlex.append(" 		 WHEN FLEX_WORK_TIME_SET3.ROUNDING = ?roundingUp THEN ?roundingUpText");
 		sqlFlex.append(" 		 ELSE NULL");
 		sqlFlex.append(" 	END,");
 		// R3_100 残業時間帯.1日勤務用.開始時間
@@ -3261,21 +3255,19 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlex.append(" 		CONCAT(CAST(FLEX_OT_TIME_SET1.TIME_END AS INTEGER)/60, ':',");
 		sqlFlex.append(" 			FORMAT(CAST(FLEX_OT_TIME_SET1.TIME_END AS INTEGER)%60,'0#')), NULL),");
 		// R3_102 残業時間帯.1日勤務用.丸め
-		sqlFlex.append(" 	IIF(TEMP.ROW_ID = 1, ");
-		sqlFlex.append(" 		CASE WHEN FLEX_OT_TIME_SET1.UNIT = ?roundingTime1Min THEN ?roundingTime1MinText");
-		sqlFlex.append(" 			 WHEN FLEX_OT_TIME_SET1.UNIT = ?roundingTime5Min THEN ?roundingTime5MinText");
-		sqlFlex.append(" 			 WHEN FLEX_OT_TIME_SET1.UNIT = ?roundingTime6Min THEN ?roundingTime6MinText");
-		sqlFlex.append(" 			 WHEN FLEX_OT_TIME_SET1.UNIT = ?roundingTime10Min THEN ?roundingTime10MinText");
-		sqlFlex.append(" 			 WHEN FLEX_OT_TIME_SET1.UNIT = ?roundingTime15Min THEN ?roundingTime15MinText");
-		sqlFlex.append(" 			 WHEN FLEX_OT_TIME_SET1.UNIT = ?roundingTime20Min THEN ?roundingTime20MinText");
-		sqlFlex.append(" 			 WHEN FLEX_OT_TIME_SET1.UNIT = ?roundingTime30Min THEN ?roundingTime30MinText");
-		sqlFlex.append(" 			 WHEN FLEX_OT_TIME_SET1.UNIT = ?roundingTime60Min THEN ?roundingTime60MinText");
-		sqlFlex.append(" 			 ELSE NULL");
-		sqlFlex.append(" 		END,");
-		sqlFlex.append(" 		NULL),");
+		sqlFlex.append(" 	CASE WHEN FLEX_OT_TIME_SET1.UNIT = ?roundingTime1Min THEN ?roundingTime1MinText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET1.UNIT = ?roundingTime5Min THEN ?roundingTime5MinText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET1.UNIT = ?roundingTime6Min THEN ?roundingTime6MinText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET1.UNIT = ?roundingTime10Min THEN ?roundingTime10MinText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET1.UNIT = ?roundingTime15Min THEN ?roundingTime15MinText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET1.UNIT = ?roundingTime20Min THEN ?roundingTime20MinText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET1.UNIT = ?roundingTime30Min THEN ?roundingTime30MinText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET1.UNIT = ?roundingTime60Min THEN ?roundingTime60MinText");
+		sqlFlex.append(" 		 ELSE NULL");
+		sqlFlex.append(" 	END,");
 		// R3_103 残業時間帯.1日勤務用.端数
-		sqlFlex.append(" 	CASE WHEN TEMP.ROW_ID = 1 AND FLEX_OT_TIME_SET1.ROUNDING = ?roundingDown THEN ?roundingDownText");
-		sqlFlex.append(" 		 WHEN TEMP.ROW_ID = 1 AND FLEX_OT_TIME_SET1.ROUNDING = ?roundingUp THEN ?roundingUpText");
+		sqlFlex.append(" 	CASE WHEN FLEX_OT_TIME_SET1.ROUNDING = ?roundingDown THEN ?roundingDownText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET1.ROUNDING = ?roundingUp THEN ?roundingUpText");
 		sqlFlex.append(" 		 ELSE NULL");
 		sqlFlex.append(" 	END,");
 		// R3_104 残業時間帯.1日勤務用.残業枠
@@ -3296,23 +3288,21 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlex.append(" 		CONCAT(CAST(FLEX_OT_TIME_SET2.TIME_END AS INTEGER)/60, ':',");
 		sqlFlex.append(" 			FORMAT(CAST(FLEX_OT_TIME_SET2.TIME_END AS INTEGER)%60,'0#')), NULL),");
 		// R3_108 残業時間帯.午前勤務用.丸め
-		sqlFlex.append(" 	IIF(TEMP.ROW_ID = 1, ");
-		sqlFlex.append(" 		CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode OR FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isFalse THEN NULL");
-		sqlFlex.append(" 			 WHEN FLEX_OT_TIME_SET2.UNIT = ?roundingTime1Min THEN ?roundingTime1MinText");
-		sqlFlex.append(" 			 WHEN FLEX_OT_TIME_SET2.UNIT = ?roundingTime5Min THEN ?roundingTime5MinText");
-		sqlFlex.append(" 			 WHEN FLEX_OT_TIME_SET2.UNIT = ?roundingTime6Min THEN ?roundingTime6MinText");
-		sqlFlex.append(" 			 WHEN FLEX_OT_TIME_SET2.UNIT = ?roundingTime10Min THEN ?roundingTime10MinText");
-		sqlFlex.append(" 			 WHEN FLEX_OT_TIME_SET2.UNIT = ?roundingTime15Min THEN ?roundingTime15MinText");
-		sqlFlex.append(" 			 WHEN FLEX_OT_TIME_SET2.UNIT = ?roundingTime20Min THEN ?roundingTime20MinText");
-		sqlFlex.append(" 			 WHEN FLEX_OT_TIME_SET2.UNIT = ?roundingTime30Min THEN ?roundingTime30MinText");
-		sqlFlex.append(" 			 WHEN FLEX_OT_TIME_SET2.UNIT = ?roundingTime60Min THEN ?roundingTime60MinText");
-		sqlFlex.append(" 			 ELSE NULL");
-		sqlFlex.append(" 		END,");
-		sqlFlex.append(" 		NULL),");
+		sqlFlex.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode OR FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isFalse THEN NULL");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET2.UNIT = ?roundingTime1Min THEN ?roundingTime1MinText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET2.UNIT = ?roundingTime5Min THEN ?roundingTime5MinText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET2.UNIT = ?roundingTime6Min THEN ?roundingTime6MinText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET2.UNIT = ?roundingTime10Min THEN ?roundingTime10MinText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET2.UNIT = ?roundingTime15Min THEN ?roundingTime15MinText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET2.UNIT = ?roundingTime20Min THEN ?roundingTime20MinText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET2.UNIT = ?roundingTime30Min THEN ?roundingTime30MinText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET2.UNIT = ?roundingTime60Min THEN ?roundingTime60MinText");
+		sqlFlex.append(" 		 ELSE NULL");
+		sqlFlex.append(" 	END,");
 		// R3_109 残業時間帯.午前勤務用.端数
 		sqlFlex.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode OR FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isFalse THEN NULL");
-		sqlFlex.append(" 		 WHEN TEMP.ROW_ID = 1 AND FLEX_OT_TIME_SET2.ROUNDING = ?roundingDown THEN ?roundingDownText");
-		sqlFlex.append(" 		 WHEN TEMP.ROW_ID = 1 AND FLEX_OT_TIME_SET2.ROUNDING = ?roundingUp THEN ?roundingUpText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET2.ROUNDING = ?roundingDown THEN ?roundingDownText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET2.ROUNDING = ?roundingUp THEN ?roundingUpText");
 		sqlFlex.append(" 		 ELSE NULL");
 		sqlFlex.append(" 	END,");
 		// R3_110 残業時間帯.午前勤務用.残業枠
@@ -3336,23 +3326,21 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlex.append(" 		CONCAT(CAST(FLEX_OT_TIME_SET3.TIME_END AS INTEGER)/60, ':',");
 		sqlFlex.append(" 			FORMAT(CAST(FLEX_OT_TIME_SET3.TIME_END AS INTEGER)%60,'0#')), NULL),");
 		// R3_114 残業時間帯.午後勤務用.丸め
-		sqlFlex.append(" 	IIF(TEMP.ROW_ID = 1, ");
-		sqlFlex.append(" 		CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode OR FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isFalse THEN NULL");
-		sqlFlex.append(" 			 WHEN FLEX_OT_TIME_SET3.UNIT = ?roundingTime1Min THEN ?roundingTime1MinText");
-		sqlFlex.append(" 			 WHEN FLEX_OT_TIME_SET3.UNIT = ?roundingTime5Min THEN ?roundingTime5MinText");
-		sqlFlex.append(" 			 WHEN FLEX_OT_TIME_SET3.UNIT = ?roundingTime6Min THEN ?roundingTime6MinText");
-		sqlFlex.append(" 			 WHEN FLEX_OT_TIME_SET3.UNIT = ?roundingTime10Min THEN ?roundingTime10MinText");
-		sqlFlex.append(" 			 WHEN FLEX_OT_TIME_SET3.UNIT = ?roundingTime15Min THEN ?roundingTime15MinText");
-		sqlFlex.append(" 			 WHEN FLEX_OT_TIME_SET3.UNIT = ?roundingTime20Min THEN ?roundingTime20MinText");
-		sqlFlex.append(" 			 WHEN FLEX_OT_TIME_SET3.UNIT = ?roundingTime30Min THEN ?roundingTime30MinText");
-		sqlFlex.append(" 			 WHEN FLEX_OT_TIME_SET3.UNIT = ?roundingTime60Min THEN ?roundingTime60MinText");
-		sqlFlex.append(" 			 ELSE NULL");
-		sqlFlex.append(" 		END,");
-		sqlFlex.append(" 		NULL),");
+		sqlFlex.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode OR FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isFalse THEN NULL");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET3.UNIT = ?roundingTime1Min THEN ?roundingTime1MinText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET3.UNIT = ?roundingTime5Min THEN ?roundingTime5MinText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET3.UNIT = ?roundingTime6Min THEN ?roundingTime6MinText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET3.UNIT = ?roundingTime10Min THEN ?roundingTime10MinText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET3.UNIT = ?roundingTime15Min THEN ?roundingTime15MinText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET3.UNIT = ?roundingTime20Min THEN ?roundingTime20MinText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET3.UNIT = ?roundingTime30Min THEN ?roundingTime30MinText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET3.UNIT = ?roundingTime60Min THEN ?roundingTime60MinText");
+		sqlFlex.append(" 		 ELSE NULL");
+		sqlFlex.append(" 	END,");
 		// R3_115 残業時間帯.午後勤務用.端数
 		sqlFlex.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode OR FLEX_WORK_SET.USE_HALFDAY_SHIFT = ?isFalse THEN NULL");
-		sqlFlex.append(" 		 WHEN TEMP.ROW_ID = 1 AND FLEX_OT_TIME_SET3.ROUNDING = ?roundingDown THEN ?roundingDownText");
-		sqlFlex.append(" 		 WHEN TEMP.ROW_ID = 1 AND FLEX_OT_TIME_SET3.ROUNDING = ?roundingUp THEN ?roundingUpText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET3.ROUNDING = ?roundingDown THEN ?roundingDownText");
+		sqlFlex.append(" 		 WHEN FLEX_OT_TIME_SET3.ROUNDING = ?roundingUp THEN ?roundingUpText");
 		sqlFlex.append(" 		 ELSE NULL");
 		sqlFlex.append(" 	END,");
 		// R3_116 残業時間帯.午後勤務用.残業枠
