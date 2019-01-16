@@ -361,7 +361,8 @@ public class JpaPreparationBeforeApplyRepository extends JpaRepository implement
 		sql.append("      aos.PRIORITY_STAMP_SET_ATR,");
 		sql.append("      aos.PRE_OVERTIME_REFLECT_FLG,");
 		sql.append("      aos.POST_WORKTIME_REFLECT_FLG,");
-		sql.append("	  gbd.WORK_CHANGE_TIME_ATR");
+		sql.append("	  gbd.WORK_CHANGE_TIME_ATR,");
+		sql.append("	  was.CHECK_OUTSIDE_LEGAL");
 		sql.append("   FROM (");
 		sql.append("      SELECT    ");
 		sql.append("            ROW_NUMBER() OVER ( ORDER BY APP_TYPE, DISPORDER ASC) AS ROW_NUMBER,");
@@ -375,7 +376,7 @@ public class JpaPreparationBeforeApplyRepository extends JpaRepository implement
 		sql.append("            DEFAULT_FLG,");
 		sql.append("            DISPORDER");
 		sql.append("            FROM KRQST_APP_REASON");
-		sql.append("            WHERE CID = ?cid");
+		sql.append("            WHERE CID = ?cid AND APP_TYPE IN ( 0, 1, 2, 4, 6, 10)");
 		sql.append("            ) r");
 		sql.append("            ) ar");
 		sql.append("   FULL JOIN          ");
@@ -420,7 +421,8 @@ public class JpaPreparationBeforeApplyRepository extends JpaRepository implement
 		sql.append("        CALCULATION_STAMP_MISS,");
 		sql.append("        REST_TIME,");
 		sql.append("        WORK_TIME,");
-		sql.append("        BREAK_TIME");
+		sql.append("        BREAK_TIME,");
+		sql.append("		CHECK_OUTSIDE_LEGAL");
 		sql.append("        FROM KRQST_WITHDRAWAL_APP_SET ");
 		sql.append("        WHERE CID = ?cid");
 		sql.append("        )was ");

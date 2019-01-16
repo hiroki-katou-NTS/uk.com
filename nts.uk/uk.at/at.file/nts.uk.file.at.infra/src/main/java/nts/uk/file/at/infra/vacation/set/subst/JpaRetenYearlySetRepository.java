@@ -91,7 +91,7 @@ public class JpaRetenYearlySetRepository extends JpaRepository implements RetenY
 
         data.put(EmployeeSystemImpl.KMF001_200, MasterCellData.builder()
                 .columnId(EmployeeSystemImpl.KMF001_200)
-                .value(CommonTempHolidays.getTextEnumManageDistinct(Integer.valueOf(NOT_MANAGER)))
+                .value(null)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(EmployeeSystemImpl.KMF001_201, MasterCellData.builder()
