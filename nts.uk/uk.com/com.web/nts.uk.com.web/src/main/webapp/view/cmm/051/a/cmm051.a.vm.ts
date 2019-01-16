@@ -10,6 +10,7 @@ module nts.uk.com.view.cmm051.a {
         import model = nts.uk.com.view.ccg026.component.model;
         
         export class ScreenModel {
+            langId: KnockoutObservable<string> = ko.observable('ja');
             // KCP010
             kcp010Model : kcp010.viewmodel.ScreenModel;
             listComponentOption: ComponentOption;
@@ -195,7 +196,7 @@ module nts.uk.com.view.cmm051.a {
                 let command: any = self.toJsonObject();
 
                 nts.uk.ui.block.grayout();
-                
+               
                 // insert or update workplace
                 service.saveWkpManager(ko.toJS(command)).done(function(savedWkpMngId) {
                     nts.uk.ui.block.clear();
@@ -349,6 +350,39 @@ module nts.uk.com.view.cmm051.a {
 
                 return command;
             }
+            /*  
+           * Print file excel
+           */
+           private saveAsExcel(): void {
+               let self = this;
+//                modal("/view/cmm/051/m/index.xhtml").onClosed(function() {
+//                });
+               
+               let params = {
+                   date: null,
+                   mode: 1
+               };             
+               if (!nts.uk.ui.windows.getShared("CDL028_INPUT")) {
+                    nts.uk.ui.windows.setShared("CDL028_INPUT", params);
+                }
+               nts.uk.ui.windows.sub.modal("/view/cdl/028/a/index.xhtml").onClosed(function() {
+                   var result = getShared('CDL028_A_PARAMS');
+                   if (result.status) {
+                        nts.uk.ui.block.grayout();
+                        let langId = self.langId();
+                        let date = moment.utc(result.standardDate, "YYYY/MM/DD");
+                        service.saveAsExcel(langId, date).done(function() {
+                            //nts.uk.ui.windows.close();
+                        }).fail(function(error) {
+                            nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                        }).always(function() {
+                            nts.uk.ui.block.clear();
+                        });
+                   }           
+               });
+            }
+            
+            
         }
         
         /**

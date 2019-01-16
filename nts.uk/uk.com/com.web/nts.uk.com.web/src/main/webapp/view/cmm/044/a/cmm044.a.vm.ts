@@ -10,7 +10,8 @@ module cmm044.a.viewmodel {
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
 
     export class ScreenModel {
-        // THU NGHIEM KCP_009 
+        // THU NGHIEM KCP_009
+        listEmployee: KnockoutObservableArray<any> = ko.observableArray();
         employeeInputList: KnockoutObservableArray<PersonModel>;
         systemReference: KnockoutObservable<number>;
         isDisplayOrganizationName: KnockoutObservable<boolean>;
@@ -200,6 +201,7 @@ module cmm044.a.viewmodel {
                 service.searchEmployeeByLogin(self.baseDate()).done(data => {
                     if (data.length > 0) {
                         self.searchEmployee(data);
+                        self.listEmployee(data);
                     }
 
                     //                    self.initKCP009();
@@ -443,6 +445,20 @@ module cmm044.a.viewmodel {
             });
 
         }
+
+        exportExcel(){
+            let self = this;
+            nts.uk.ui.block.invisible();
+            service.exportExcel(self.listEmployee()).done(function() {
+
+            }).fail(function(error) {
+                if(error)
+                    nts.uk.ui.dialog.alertError(error.message);
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+        }
+
         openCDL021(tab: number, empId: string) {
             let self = this;
             nts.uk.ui.block.invisible();
@@ -543,6 +559,7 @@ module cmm044.a.viewmodel {
                 /** Return data */
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                     self.searchEmployee(data.listEmployee);
+                    self.listEmployee(data.listEmployee);
                 }
             }
             // Start component
@@ -721,5 +738,7 @@ module cmm044.a.viewmodel {
                 this.requestId = requestId;
             }
         }
+
+
     }
 }

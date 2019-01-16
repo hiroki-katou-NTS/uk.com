@@ -27,6 +27,7 @@ public interface JobAutoCalSettingRepository {
 	 */
     void add(JobAutoCalSetting jobAutoCalSetting);
 
+
 	/**
 	 * Gets the job auto cal setting.
 	 *

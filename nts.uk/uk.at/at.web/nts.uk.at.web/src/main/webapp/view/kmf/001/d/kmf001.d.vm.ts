@@ -1,11 +1,11 @@
 module nts.uk.pr.view.kmf001.d {
     
-    import UpperLimitSettingFindDto = service.model.UpperLimitSettingFindDto;
-    import RetentionYearlyFindDto = service.model.RetentionYearlyFindDto;
-    import RetentionYearlyDto = service.model.RetentionYearlyDto;
-    import UpperLimitSettingDto = service.model.UpperLimitSettingDto;
-    import EmploymentSettingDto = service.model.EmploymentSettingDto;
-    import EmploymentSettingFindDto = service.model.EmploymentSettingFindDto;
+    import UpperLimitSettingFindDto = nts.uk.pr.view.kmf001.d.service.model.UpperLimitSettingFindDto;
+    import RetentionYearlyFindDto = nts.uk.pr.view.kmf001.d.service.model.RetentionYearlyFindDto;
+    import RetentionYearlyDto = nts.uk.pr.view.kmf001.d.service.model.RetentionYearlyDto;
+    import UpperLimitSettingDto = nts.uk.pr.view.kmf001.d.service.model.UpperLimitSettingDto;
+    import EmploymentSettingDto = nts.uk.pr.view.kmf001.d.service.model.EmploymentSettingDto;
+    import EmploymentSettingFindDto = nts.uk.pr.view.kmf001.d.service.model.EmploymentSettingFindDto;
     
     
     export module viewmodel {

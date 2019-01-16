@@ -1,5 +1,5 @@
 module nts.uk.at.view.ksm001.a {
-
+    import modal = nts.uk.ui.windows.sub.modal;
     import EstimateTimeDto = service.model.EstimateTimeDto;
     import EstimatePriceDto = service.model.EstimatePriceDto;
     import EstimateDaysDto = service.model.EstimateDaysDto;
@@ -14,6 +14,9 @@ module nts.uk.at.view.ksm001.a {
     export module viewmodel {
 
         export class ScreenModel {
+            langId: KnockoutObservable<string> = ko.observable('ja');
+            date: KnockoutObservable<Date> = ko.observable(moment(new Date()).toDate());
+            
             // Common
             usageSettingModel: UsageSettingModel;
             lstTargetYear: KnockoutObservableArray<any>;
@@ -51,7 +54,36 @@ module nts.uk.at.view.ksm001.a {
             alreadySettingEmployment: KnockoutObservableArray<UnitAlreadySettingModel>;
             employmentList: KnockoutObservableArray<UnitModel>;
 
-
+            /**
+            * Print file excel
+            */
+            saveAsExcel(): void {
+                let self = this;
+                let params = {
+                   date: null,
+                   mode: 5
+               };
+                
+                nts.uk.ui.windows.setShared("CDL028_INPUT", params);
+                nts.uk.ui.windows.sub.modal('com', '/view/cdl/028/a/index.xhtml').onClosed(() => {
+                    var result = nts.uk.ui.windows.getShared('CDL028_A_PARAMS');
+                   if (result.status) {
+                        nts.uk.ui.block.grayout();
+                        let langId = self.langId();
+                         
+                       let startDate = moment.utc(result.startDateFiscalYear, "YYYY/MM/DD");
+                        let endDate = moment.utc(result.endDateFiscalYear, "YYYY/MM/DD");
+                        service.saveAsExcel(langId, startDate, endDate).done(function() {
+                            //nts.uk.ui.windows.close();
+                        }).fail(function(error) {
+                            nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                        }).always(function() {
+                            nts.uk.ui.block.clear();
+                        });
+                   }
+                }
+            }
+            
             constructor() {
                 var self = this;
 
