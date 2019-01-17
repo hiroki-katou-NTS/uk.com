@@ -838,7 +838,9 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
             return ((BigDecimal)obj[28]).intValue() == 1 ? "○" : "-";
         }
         if(i == 1 && obj[23] != null) {
-            return ((BigDecimal)obj[28]).intValue() == 1 ? EnumAdaptor.valueOf(((BigDecimal) obj[23]).intValue(), BeforeAddCheckMethod.class).name : "";
+            if (((BigDecimal) obj[28]).intValue() == 1) {
+                return (((BigDecimal) obj[23]).intValue() == 1) ? TextResource.localize("KAF022_63") : TextResource.localize("KAF022_66");
+            }
         }
         if(i == 2 && obj[29] != null) {
             return ((BigDecimal)obj[28]).intValue() == 1 ? EnumAdaptor.valueOf(((BigDecimal) obj[29]).intValue(), AppAcceptLimitDay.class).name + TextResource.localize("KAF022_510") : "";

@@ -15,8 +15,10 @@ module nts.uk.com.view.cps017.a.service {
     }
     
     export function saveAsExcel(languageId: string, date: string): JQueryPromise<any> {
+        let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+        let programName = program[1]!=null?program[1]:"";
             let _params = { domainId: "PersonSelectionItem", 
-                        domainType: "CPS017個人情報の選択肢の登録", 
+                        domainType: "CPS017"+programName, 
                         languageId: languageId, 
                         reportType: 0, mode: 1, baseDate : date };
             return exportFile('/masterlist/report/print', _params);
