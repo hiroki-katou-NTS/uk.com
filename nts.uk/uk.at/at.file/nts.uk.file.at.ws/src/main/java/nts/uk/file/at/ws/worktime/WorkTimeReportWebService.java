@@ -3,6 +3,7 @@ package nts.uk.file.at.ws.worktime;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
@@ -16,9 +17,9 @@ public class WorkTimeReportWebService {
 	private WorkTimeExportService exportService;
 	
 	@POST
-	@Path("export")
-	public ExportServiceResult generate(String query) {
+	@Path("export/{programName}")
+	public ExportServiceResult generate(@PathParam("programName") String programName) {
 
-		return this.exportService.start(query);
+		return this.exportService.start(programName);
 	}
 }
