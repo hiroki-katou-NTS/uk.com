@@ -7,7 +7,9 @@ module nts.uk.com.view.cas014.a {
             registerData: "ctx/sys/auth/grant/rolesetjob/register"
         }
         export function saveAsExcel(languageId: string, date: string): JQueryPromise<any> {
-                return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "JobInfo", domainType: "CAS014ロールセットの付与", languageId: languageId, reportType: 0, baseDate: date});
+            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+            let programName = program[1]!=null?program[1]:"";   
+            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "JobInfo", domainType: "CAS014"+programName, languageId: languageId, reportType: 0, baseDate: date});
         }
 
         export function getAllData(refDate: any): JQueryPromise<any> {

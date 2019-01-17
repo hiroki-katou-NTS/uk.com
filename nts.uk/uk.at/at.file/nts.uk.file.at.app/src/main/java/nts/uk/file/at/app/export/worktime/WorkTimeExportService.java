@@ -34,6 +34,7 @@ public class WorkTimeExportService extends ExportService<String> {
 	@Override
 	protected void handle(ExportServiceContext<String> context) {
 		LoginUserContext user = AppContexts.user();
+		String programName = context.getQuery();
 		String cid = user.companyId();
 		String companyName = user.companyCode() + " "
 				+ company.getCurrentCompany().orElseThrow(() -> new RuntimeException(COMPANY_ERROR)).getCompanyName();
@@ -75,7 +76,7 @@ public class WorkTimeExportService extends ExportService<String> {
 		} finally {
 			executorService.shutdown();
 		}
-		val dataSource = new WorkTimeReportDatasource(companyName, GeneralDateTime.now(), normal, flow, flex);
+		val dataSource = new WorkTimeReportDatasource(programName, companyName, GeneralDateTime.now(), normal, flow, flex);
 		reportGenerator.generate(context.getGeneratorContext(), dataSource);
 	}
 
