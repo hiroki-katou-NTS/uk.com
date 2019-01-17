@@ -195,7 +195,10 @@ public class OperationExcelRepoImpl implements MasterListData {
                 datas.add(alignMasterDataSheetRestriction(data));
                 putDataEmptySetOperationRestriction(data);
             }
-        }
+        }else {
+        	datas.add(alignMasterDataSheetRestriction(data));
+        	putDataEmptySetOperationRestriction(data);
+		}
 
         // next row
         for (int i = 1; i < listOption.size(); i++) {
@@ -217,7 +220,10 @@ public class OperationExcelRepoImpl implements MasterListData {
                         putDataEmptySetOperationRestriction(data);
                     }
 
-                }
+                }else {
+                	datas.add(alignMasterDataSheetRestriction(data));
+                	putDataEmptySetOperationRestriction(data);
+				}
                
             }
             if (daiPerformanceFunOpt.isPresent()) {
@@ -285,26 +291,32 @@ public class OperationExcelRepoImpl implements MasterListData {
         // put monthly
         data.put("項目", TextResource.localize("KDW006_222"));
         data.put("option", TextResource.localize("KDW006_223"));
-        if (monPerformanceFunOpt.get().getDailySelfChkDispAtr() == 1) {
-            data.put("値", "○");
-        } else {
-            data.put("値", "-");
+        if(monPerformanceFunOpt.isPresent()){
+	        if (monPerformanceFunOpt.get().getDailySelfChkDispAtr() == 1) {
+	            data.put("値", "○");
+	        } else {
+	            data.put("値", "-");
+	        }
         }
         datas.add(alignMasterDataSheetRestriction(data));
         putDataEmptySetOperationRestriction(data);
         data.put("option", TextResource.localize("KDW006_224"));
-        if (identityProcessOpt.get().getUseMonthSelfCK() == 1) {
-            data.put("値", "○");
-        } else {
-            data.put("値", "-");
+        if (identityProcessOpt.isPresent()){
+	        if (identityProcessOpt.get().getUseMonthSelfCK() == 1) {
+	            data.put("値", "○");
+	        } else {
+	            data.put("値", "-");
+	        }
         }
         datas.add(alignMasterDataSheetRestriction(data));
         putDataEmptySetOperationRestriction(data);
         data.put("option", TextResource.localize("KDW006_215"));
-        if (approvalProcessOpt.get().getUseMonthBossChk() == 1) {
-            data.put("値", "○");
-        } else {
-            data.put("値", "-");
+        if (approvalProcessOpt.isPresent()){
+	        if (approvalProcessOpt.get().getUseMonthBossChk() == 1) {
+	            data.put("値", "○");
+	        } else {
+	            data.put("値", "-");
+	        }
         }
         datas.add(alignMasterDataSheetRestriction(data));
         putDataEmptySetOperationRestriction(data);
@@ -374,6 +386,9 @@ public class OperationExcelRepoImpl implements MasterListData {
     	
         List<MasterData> datas = new ArrayList<>();
         List<RoleExport> listRoleExport = operationExcelRepo.findRole(companyId);
+        if(CollectionUtil.isEmpty(listRoleExport)){
+        	return null;
+        }
         Map<String,Object> data = new HashMap<>();
         if(listRoleExport.size()==1){
             RoleExport roleExport = listRoleExport.get(0);
