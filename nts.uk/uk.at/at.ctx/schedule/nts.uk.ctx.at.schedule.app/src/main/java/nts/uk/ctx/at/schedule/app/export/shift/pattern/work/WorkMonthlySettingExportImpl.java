@@ -195,7 +195,9 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 
 		 //TODO temp
 		GeneralDate endDate = query.getEndDate();
-		query.setEndDate(endDate.addYears(-1));
+		if (endDate.month() != 12) {
+			query.setEndDate(endDate.addYears(-1));
+		}
 		return columns;
 	}
 
