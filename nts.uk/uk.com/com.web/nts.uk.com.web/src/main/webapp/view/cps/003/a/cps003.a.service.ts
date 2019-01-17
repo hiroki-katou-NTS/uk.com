@@ -3,7 +3,8 @@ module cps003.a.service {
 
     export const push = {
         data: (command: any) => ajax(`ctx/pereg/grid-layout/save-data`, command),
-        setting: (command: any) => ajax(`ctx/pereg/grid-layout/save-setting`, command)
+        setting: (command: any) => ajax(`ctx/pereg/grid-layout/save-setting`, command),
+        register: (command: any) => ajax(`facade/pereg/grid/register`, command)
     }
 
     export const fetch = {
