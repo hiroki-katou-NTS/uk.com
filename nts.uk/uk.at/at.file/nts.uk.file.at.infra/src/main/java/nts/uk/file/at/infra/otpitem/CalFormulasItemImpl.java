@@ -137,7 +137,7 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 +"					,oi.EMP_CONDITION_ATR"
 +"					,IIF(oi.EMP_CONDITION_ATR = 1,STUFF(("
 +"		 			SELECT"
-+"					IIF(oi.EMP_CONDITION_ATR = 1,', ' + ec.EMP_CD + emp.NAME, NULL)"
++"					IIF(oi.EMP_CONDITION_ATR = 1,',' + ec.EMP_CD + emp.NAME, NULL)"
 +"		 			FROM"
 +"				KRCST_OPTIONAL_ITEM oi"
 +"				LEFT JOIN KRCST_APPL_EMP_CON ec ON oi.OPTIONAL_ITEM_NO = ec.OPTIONAL_ITEM_NO"
