@@ -267,7 +267,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
             dataA7.put(KAF022_455, MasterCellData.builder()
                     .columnId(KAF022_455)
                     .value(getValueA7Bottom(i, export))
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                    .style(MasterCellStyle.build().horizontalAlign(i == 1 ? ColumnTextAlign.RIGHT : ColumnTextAlign.LEFT))
                     .build());
             datasA7.add(MasterData.builder().rowData(dataA7).build());
         }
