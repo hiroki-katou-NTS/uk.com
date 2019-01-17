@@ -161,36 +161,56 @@ public class BasicWorkRegisterExportImpl implements MasterListData {
 		List<WorkplaceHierarchyDto> workplaceHierarchyDtos = spreadOutWorkplaceInfos(
 				workplaceConfigInfoFinder.findAllByBaseDate(wkpConfigInfoFindObject));
 
-		if (!CollectionUtil.isEmpty(workplaceHierarchyDtos)) {
-			workplaceHierarchyDtos.stream().collect(Collectors.groupingBy(WorkplaceHierarchyDto::getHierarchyCode))
-					.entrySet().stream().sorted(Map.Entry.comparingByKey()).forEachOrdered(dto -> {
-						List<WorkplaceHierarchyDto> wpHierarchyDtoSameWpIDs = dto.getValue();
-						wpHierarchyDtoSameWpIDs.forEach(wpHierarchyDto -> {
-							String workPlaceId = wpHierarchyDto.getWorkplaceId();
-							Optional<List<WorkplaceBasicWorkData>> dataByCode = mapWorkplaceBasicWorkDatas.isPresent()
-									? Optional.ofNullable(mapWorkplaceBasicWorkDatas.get().get(workPlaceId))
-									: Optional.empty();
-							if (dataByCode.isPresent()) {
-								dataByCode.get().stream().forEach(x -> {
-									x.setWorkplaceCode(wpHierarchyDto.getCode());
-									x.setWorkplaceName(wpHierarchyDto.getName());
-									x.setHierarchyCode(wpHierarchyDto.getHierarchyCode());
-								});
-
-								datas.add(newWorkplaceMasterData(dataByCode.get()));
-							} else {
-//								List<WorkplaceBasicWorkData> workDatas = new ArrayList<>();
-//								WorkplaceBasicWorkData workData = new WorkplaceBasicWorkData();
-//								workData.setWorkplaceCode(wpHierarchyDto.getCode());
-//								workData.setWorkplaceName(wpHierarchyDto.getName());
-//								workDatas.add(workData);
-//								datas.add(newWorkplaceMasterData(workDatas));
-							}
-						});
-					});
-		}
-//		}
 		
+		if (mapWorkplaceBasicWorkDatas.isPresent()) {
+			//put hierarchy code to data
+			if (!CollectionUtil.isEmpty(workplaceHierarchyDtos)) {
+				workplaceHierarchyDtos.forEach(x -> {
+					String wpId = x.getWorkplaceId();
+					String hierarchyCode = x.getHierarchyCode();
+					String code = x.getCode();
+					String name = x.getName();
+
+					Optional<List<WorkplaceBasicWorkData>> dataByWpId = mapWorkplaceBasicWorkDatas.isPresent()
+							? Optional.ofNullable(mapWorkplaceBasicWorkDatas.get().get(wpId)) : Optional.empty();
+
+					if (dataByWpId.isPresent()) {
+						dataByWpId.get().forEach(y -> {
+							y.setHierarchyCode(Optional.of(hierarchyCode));
+							y.setWorkplaceCode(Optional.of(code));
+							y.setWorkplaceName(Optional.of(name));
+						});
+					}
+				});
+			}
+			
+			//sort by hierarchy code
+			mapWorkplaceBasicWorkDatas.get().entrySet().stream().sorted((e1, e2) -> {
+				List<WorkplaceBasicWorkData> list1 = e1.getValue();
+				List<WorkplaceBasicWorkData> list2 = e2.getValue();
+				if (!CollectionUtil.isEmpty(list1) && !CollectionUtil.isEmpty(list2)
+						&& list1.get(0).getHierarchyCode().isPresent() && list2.get(0).getHierarchyCode().isPresent())
+					return list1.get(0).getHierarchyCode().get().compareTo(list2.get(0).getHierarchyCode().get());
+				else if (!CollectionUtil.isEmpty(list1) && list1.get(0).getHierarchyCode().isPresent()
+						&& CollectionUtil.isEmpty(list2))
+					return 1;
+				else if (CollectionUtil.isEmpty(list1) && !CollectionUtil.isEmpty(list2)
+						&& list2.get(0).getHierarchyCode().isPresent())
+					return -1;
+				else
+					return 0;
+			}).forEachOrdered(dto -> {
+				List<WorkplaceBasicWorkData> dataByCode = dto.getValue();
+				if (!CollectionUtil.isEmpty(dataByCode)) {
+					WorkplaceBasicWorkData firstObject = dataByCode.get(0);
+					if (firstObject.getHierarchyCode().isPresent() || (!firstObject.getHierarchyCode().isPresent()
+							&& !firstObject.getWorkplaceCode().isPresent())) {
+						datas.add(newWorkplaceMasterData(dataByCode));
+					}
+				}
+			});
+			
+		}
 		return datas;
 	}
 	
@@ -216,8 +236,15 @@ public class BasicWorkRegisterExportImpl implements MasterListData {
 		Map<String, Object> data = new HashMap<>();
 		putEmptyToColumsWorkplace(data);
 		
-		data.put("コード", workplaceBasicWorkDatas.get(0).getWorkplaceCode());
-		data.put("名称", workplaceBasicWorkDatas.get(0).getWorkplaceName());
+		WorkplaceBasicWorkData firstObject = workplaceBasicWorkDatas.get(0);
+		if (firstObject.getWorkplaceCode().isPresent()) {
+			data.put("コード", workplaceBasicWorkDatas.get(0).getWorkplaceCode());
+			data.put("名称", workplaceBasicWorkDatas.get(0).getWorkplaceName());
+		}
+		else {
+			data.put("コード", "");
+			data.put("名称", TextResource.localize("KSM006_13"));
+		}
 		if (!CollectionUtil.isEmpty(workplaceBasicWorkDatas)) {
 			workplaceBasicWorkDatas.stream().forEach(x->{
 					Optional<Integer> workDayAtr = Optional.ofNullable(x.getWorkDayAtr());

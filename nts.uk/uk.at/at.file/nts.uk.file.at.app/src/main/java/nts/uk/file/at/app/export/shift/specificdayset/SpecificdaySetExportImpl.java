@@ -54,6 +54,7 @@ public class SpecificdaySetExportImpl implements MasterListData {
 		SheetData sheetWorkplaceData = new SheetData(getMasterDatasForWorkplace(query),
 				getHeaderColumnsForWorkplace(query), null, null, TextResource.localize("KSM002_99"));
 		sheetDatas.add(sheetWorkplaceData);
+		
 		return sheetDatas;
 	}
 
@@ -94,6 +95,9 @@ public class SpecificdaySetExportImpl implements MasterListData {
 		columns.add(new MasterHeaderColumn("30日", TextResource.localize("KSM002_93"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("31日", TextResource.localize("KSM002_94"), ColumnTextAlign.LEFT, "", true));
 
+		//TODO temp
+		GeneralDate endDate = query.getEndDate();
+		query.setEndDate(endDate.addYears(-1));
 		return columns;
 	}
 
@@ -242,48 +246,65 @@ public class SpecificdaySetExportImpl implements MasterListData {
 		List<WorkplaceHierarchyDto> workplaceHierarchyDtos = spreadOutWorkplaceInfos(
 				workplaceConfigInfoFinder.findAllByBaseDate(wkpConfigInfoFindObject));
 
-		if (!CollectionUtil.isEmpty(workplaceHierarchyDtos)) {
-			workplaceHierarchyDtos.stream().collect(Collectors.groupingBy(WorkplaceHierarchyDto::getHierarchyCode))
-					.entrySet().stream().sorted(Map.Entry.comparingByKey()).forEachOrdered(dto -> {
-						List<WorkplaceHierarchyDto> wpHierarchyDtoSameWpIDs = dto.getValue();
-						wpHierarchyDtoSameWpIDs.forEach(wpHierarchyDto -> {
-							String workplaceCode = wpHierarchyDto.getCode();
-							System.out.println("Workplace code: " + workplaceCode + ", workplace name: " + wpHierarchyDto.getName()
-									+ ", hierarchy code: " + wpHierarchyDto.getHierarchyCode());
+		if (mapSetReportDatas.isPresent()) {
+			//put hierarchy code to data
+			if (!CollectionUtil.isEmpty(workplaceHierarchyDtos)) {
+				workplaceHierarchyDtos.forEach(x -> {
+					String wpId = x.getWorkplaceId();
+					String hierarchyCode = x.getHierarchyCode();
+					String code = x.getCode();
+					String name = x.getName();
 
-							Optional<List<SpecificdaySetWorkplaceReportData>> dataByCode = mapSetReportDatas.isPresent()
-									? Optional.ofNullable(mapSetReportDatas.get().get(workplaceCode))
-									: Optional.empty();
-							if (dataByCode.isPresent() && !CollectionUtil.isEmpty(dataByCode.get())) {
-								dataByCode.get().stream().forEach(x -> {
-									x.setWorkplaceCode(wpHierarchyDto.getCode());
-									x.setWorkplaceName(wpHierarchyDto.getName());
-									x.setHierarchyCode(wpHierarchyDto.getHierarchyCode());
-								});
-								Map<String, List<SpecificdaySetWorkplaceReportData>> mapDataByYearMonth = dataByCode
-										.get().stream().collect(
-												Collectors.groupingBy(SpecificdaySetWorkplaceReportData::getYearMonth));
-								AtomicInteger index = new AtomicInteger(0);
-								mapDataByYearMonth.keySet().stream().sorted().collect(Collectors.toList()).stream()
-										.forEach(yearMonth -> {
-											List<SpecificdaySetWorkplaceReportData> listDataPerOneRow = mapDataByYearMonth
-													.get(yearMonth);
-											datas.add(newWorkplaceMasterData(index.get(), Optional.of(yearMonth),
-													Optional.ofNullable(listDataPerOneRow)));
-											index.getAndIncrement();
+					Optional<List<SpecificdaySetWorkplaceReportData>> dataByWpId = mapSetReportDatas.isPresent()
+							? Optional.ofNullable(mapSetReportDatas.get().get(wpId)) : Optional.empty();
 
-										});
-							} else {
-//								List<SpecificdaySetWorkplaceReportData> workDatas = new ArrayList<>();
-//								SpecificdaySetWorkplaceReportData workData = new SpecificdaySetWorkplaceReportData();
-//								workData.setWorkplaceCode(wpHierarchyDto.getCode());
-//								workData.setWorkplaceName(wpHierarchyDto.getName());
-//								workDatas.add(workData);
-//								datas.add(newWorkplaceMasterData(0, Optional.empty(), Optional.of(workDatas)));
-							}
+					if (dataByWpId.isPresent()) {
+						dataByWpId.get().forEach(y -> {
+							y.setHierarchyCode(Optional.of(hierarchyCode));
+							y.setWorkplaceCode(Optional.of(code));
+							y.setWorkplaceName(Optional.of(name));
 						});
-					});
+					}
+				});
+			}
+			
+			//sort by hierarchy code
+			mapSetReportDatas.get().entrySet().stream().sorted((e1, e2) -> {
+				List<SpecificdaySetWorkplaceReportData> list1 = e1.getValue();
+				List<SpecificdaySetWorkplaceReportData> list2 = e2.getValue();
+				if (!CollectionUtil.isEmpty(list1) && !CollectionUtil.isEmpty(list2)
+						&& list1.get(0).getHierarchyCode().isPresent() && list2.get(0).getHierarchyCode().isPresent())
+					return list1.get(0).getHierarchyCode().get().compareTo(list2.get(0).getHierarchyCode().get());
+				else if (!CollectionUtil.isEmpty(list1) && list1.get(0).getHierarchyCode().isPresent()
+						&& CollectionUtil.isEmpty(list2))
+					return 1;
+				else if (CollectionUtil.isEmpty(list1) && !CollectionUtil.isEmpty(list2)
+						&& list2.get(0).getHierarchyCode().isPresent())
+					return -1;
+				else
+					return 0;
+			}).forEachOrdered(dto -> {
+				//export 
+				List<SpecificdaySetWorkplaceReportData> dataByCode = dto.getValue();
+				if (!CollectionUtil.isEmpty(dataByCode)) {
+					SpecificdaySetWorkplaceReportData firstObject = dataByCode.get(0);
+					if (firstObject.getHierarchyCode().isPresent() || (!firstObject.getHierarchyCode().isPresent()
+							&& !firstObject.getWorkplaceCode().isPresent())) {
+						Map<String, List<SpecificdaySetWorkplaceReportData>> mapDataByYearMonth = dataByCode.stream()
+								.collect(Collectors.groupingBy(SpecificdaySetWorkplaceReportData::getYearMonth));
+						AtomicInteger index = new AtomicInteger(0);
+						mapDataByYearMonth.keySet().stream().sorted().collect(Collectors.toList()).stream()
+								.forEach(yearMonth -> {
+									List<SpecificdaySetWorkplaceReportData> listDataPerOneRow = mapDataByYearMonth
+											.get(yearMonth);
+									datas.add(newWorkplaceMasterData(index.get(), Optional.of(yearMonth),
+											Optional.ofNullable(listDataPerOneRow)));
+									index.getAndIncrement();
 
+								});
+					}
+				}
+			});
 		}
 
 		return datas;
@@ -320,8 +341,15 @@ public class SpecificdaySetExportImpl implements MasterListData {
 		// put empty to columns
 		putEmptyToColumWorkplace(data);
 		if (index == 0) {
-			data.put("コード", specificdaySetReportDatas.get().get(0).getWorkplaceCode());
-			data.put("名称", specificdaySetReportDatas.get().get(0).getWorkplaceName());
+			SpecificdaySetWorkplaceReportData firstObject = specificdaySetReportDatas.get().get(0);
+			if (firstObject.getWorkplaceCode().isPresent()) {
+				data.put("コード", firstObject.getWorkplaceCode().get());
+				data.put("名称", firstObject.getWorkplaceName().get());
+			}
+			else {
+				data.put("コード", "");
+				data.put("名称", TextResource.localize("KSM002_100"));
+			}
 		}
 
 		if (specificdaySetReportDatas.isPresent() && yearMonth.isPresent()) {

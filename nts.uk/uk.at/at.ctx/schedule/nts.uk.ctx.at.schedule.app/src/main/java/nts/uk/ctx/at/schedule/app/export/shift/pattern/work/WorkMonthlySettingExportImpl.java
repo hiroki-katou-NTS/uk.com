@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
@@ -192,11 +193,15 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 		columns.add(new MasterHeaderColumn("30日", TextResource.localize("KSM005_77"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("31日", TextResource.localize("KSM005_78"), ColumnTextAlign.LEFT, "", true));
 
+		 //TODO temp
+		GeneralDate endDate = query.getEndDate();
+		query.setEndDate(endDate.addYears(-1));
 		return columns;
 	}
 
 	@Override
 	public String mainSheetName() {
+		
 		return TextResource.localize("KSM005_3");
 	}
 	
@@ -213,6 +218,7 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 		 SheetData sheetPersionSet = new SheetData(getMasterDatasForPersionSet(query), 
 				 getHeaderColumnsForPersionSet(query),null, null, TextResource.localize("KSM005_6"), MasterListMode.BASE_DATE);
 		 sheetDatas.add(sheetPersionSet);
+		 
 		return sheetDatas;
 	}
 	
