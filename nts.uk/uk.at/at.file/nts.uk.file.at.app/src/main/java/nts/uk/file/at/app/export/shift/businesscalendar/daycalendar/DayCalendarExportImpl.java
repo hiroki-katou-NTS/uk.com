@@ -73,6 +73,7 @@ public class DayCalendarExportImpl implements MasterListData {
 	 
 	@Override
 	public String mainSheetName() {
+		 
 		return TextResource.localize("KSM004_56");
 	}
 
@@ -81,6 +82,9 @@ public class DayCalendarExportImpl implements MasterListData {
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 		columns.add(new MasterHeaderColumn("年月日", TextResource.localize("KSM004_23"), ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn("祝日名称", TextResource.localize("KSM004_24"), ColumnTextAlign.LEFT, "", true));
+		//TODO temp
+		GeneralDate endDate = query.getEndDate();
+		query.setEndDate(endDate.addYears(-1));
 		return columns;
 	}
 	
@@ -280,45 +284,67 @@ public class DayCalendarExportImpl implements MasterListData {
 		wkpConfigInfoFindObject.setRestrictionOfReferenceRange(true);
 		List<WorkplaceHierarchyDto> workplaceHierarchyDtos = spreadOutWorkplaceInfos(workplaceConfigInfoFinder.findAllByBaseDate(wkpConfigInfoFindObject));
 		
-		if (!CollectionUtil.isEmpty(workplaceHierarchyDtos)) {
-			workplaceHierarchyDtos.stream().collect(Collectors.groupingBy(WorkplaceHierarchyDto::getHierarchyCode))
-					.entrySet().stream().sorted(Map.Entry.comparingByKey()).forEachOrdered(dto -> {
-						List<WorkplaceHierarchyDto> wpHierarchyDtoSameWpIDs = dto.getValue();
-						wpHierarchyDtoSameWpIDs.forEach(wpHierarchyDto -> {
-							String workplaceCode = wpHierarchyDto.getCode();
-							Optional<List<WorkplaceCalendarReportData>> dataByCode = mapSetReportDatas.isPresent()
-									? Optional.ofNullable(mapSetReportDatas.get().get(workplaceCode))
-									: Optional.empty();
-							if (dataByCode.isPresent()) {
-								dataByCode.get().stream().forEach(x -> {
-									x.setWorkplaceCode(wpHierarchyDto.getCode());
-									x.setWorkplaceName(wpHierarchyDto.getName());
-									x.setHierarchyCode(wpHierarchyDto.getHierarchyCode());
-								});
-								Map<String, List<WorkplaceCalendarReportData>> mapDataByYearMonth = dataByCode.get()
-										.stream()
-										.collect(Collectors.groupingBy(WorkplaceCalendarReportData::getYearMonth));
-								AtomicInteger index = new AtomicInteger(0);
-								mapDataByYearMonth.keySet().stream().sorted().collect(Collectors.toList()).stream()
-										.forEach(yearMonth -> {
-											List<WorkplaceCalendarReportData> listDataPerOneRow = mapDataByYearMonth
-													.get(yearMonth);
-											datas.add(newWorkplaceMasterData(index.get(), Optional.of(yearMonth),
-													Optional.ofNullable(listDataPerOneRow)));
-											index.getAndIncrement();
-										});
-							} else {
-//								List<WorkplaceCalendarReportData> workDatas = new ArrayList<>();
-//								WorkplaceCalendarReportData workData = new WorkplaceCalendarReportData();
-//								workData.setWorkplaceCode(wpHierarchyDto.getCode());
-//								workData.setWorkplaceName(wpHierarchyDto.getName());
-//								workDatas.add(workData);
-//								datas.add(newWorkplaceMasterData(0, Optional.empty(), Optional.of(workDatas)));
-							}
-						});
-					});
+		
+		if (mapSetReportDatas.isPresent()) {
+			//put hierarchy code to data
+			if (!CollectionUtil.isEmpty(workplaceHierarchyDtos)) {
+				workplaceHierarchyDtos.forEach(x -> {
+					String wpId = x.getWorkplaceId();
+					String hierarchyCode = x.getHierarchyCode();
+					String code = x.getCode();
+					String name = x.getName();
 
+					Optional<List<WorkplaceCalendarReportData>> dataByWpId = mapSetReportDatas.isPresent()
+							? Optional.ofNullable(mapSetReportDatas.get().get(wpId)) : Optional.empty();
+
+					if (dataByWpId.isPresent()) {
+						dataByWpId.get().forEach(y -> {
+							y.setHierarchyCode(Optional.of(hierarchyCode));
+							y.setWorkplaceCode(Optional.of(code));
+							y.setWorkplaceName(Optional.of(name));
+						});
+					}
+				});
+			}
+			
+			//sort by hierarchy code
+			mapSetReportDatas.get().entrySet().stream().sorted((e1, e2) -> {
+				List<WorkplaceCalendarReportData> list1 = e1.getValue();
+				List<WorkplaceCalendarReportData> list2 = e2.getValue();
+				if (!CollectionUtil.isEmpty(list1) && !CollectionUtil.isEmpty(list2)
+						&& list1.get(0).getHierarchyCode().isPresent() && list2.get(0).getHierarchyCode().isPresent())
+					return list1.get(0).getHierarchyCode().get().compareTo(list2.get(0).getHierarchyCode().get());
+				else if (!CollectionUtil.isEmpty(list1) && list1.get(0).getHierarchyCode().isPresent()
+						&& CollectionUtil.isEmpty(list2))
+					return 1;
+				else if (CollectionUtil.isEmpty(list1) && !CollectionUtil.isEmpty(list2)
+						&& list2.get(0).getHierarchyCode().isPresent())
+					return -1;
+				else
+					return 0;
+			}).forEachOrdered(dto -> {
+				List<WorkplaceCalendarReportData> dataByCode = dto.getValue();
+				if (!CollectionUtil.isEmpty(dataByCode)) {
+					WorkplaceCalendarReportData firstObject = dataByCode.get(0);
+					if (firstObject.getHierarchyCode().isPresent() || (!firstObject.getHierarchyCode().isPresent()
+							&& !firstObject.getWorkplaceCode().isPresent())) {
+						Map<String, List<WorkplaceCalendarReportData>> mapDataByYearMonth = dataByCode
+								.stream()
+								.collect(Collectors.groupingBy(WorkplaceCalendarReportData::getYearMonth));
+						AtomicInteger index = new AtomicInteger(0);
+						mapDataByYearMonth.keySet().stream().sorted().collect(Collectors.toList()).stream()
+								.forEach(yearMonth -> {
+									List<WorkplaceCalendarReportData> listDataPerOneRow = mapDataByYearMonth
+											.get(yearMonth);
+									datas.add(newWorkplaceMasterData(index.get(), Optional.of(yearMonth),
+											Optional.ofNullable(listDataPerOneRow)));
+									index.getAndIncrement();
+								});
+					}
+				}
+			});
 		}
+		
 		return datas;
 	}
 	
@@ -335,8 +361,15 @@ public class DayCalendarExportImpl implements MasterListData {
 		// put empty to columns
 		putEmptyToColumWorkplace(data);
 		if (index == 0) {
-			data.put("コード", woOptional.get().get(0).getWorkplaceCode());
-			data.put("名称", woOptional.get().get(0).getWorkplaceName());
+			WorkplaceCalendarReportData firstObject = woOptional.get().get(0);
+			if (firstObject.getWorkplaceCode().isPresent()) {
+				data.put("コード", firstObject.getWorkplaceCode().get());
+				data.put("名称", firstObject.getWorkplaceName().get());
+			}
+			else {
+				data.put("コード", "");
+				data.put("名称", TextResource.localize("KSM004_104"));
+			}
 		}
 		if (woOptional.isPresent() && yearMonth.isPresent()) {
 			data.put("年月",

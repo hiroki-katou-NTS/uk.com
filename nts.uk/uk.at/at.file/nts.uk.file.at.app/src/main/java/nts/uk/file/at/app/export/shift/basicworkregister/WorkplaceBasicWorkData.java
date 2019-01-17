@@ -1,5 +1,7 @@
 package nts.uk.file.at.app.export.shift.basicworkregister;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,10 +16,10 @@ public class WorkplaceBasicWorkData {
 	private String workTypeName;
 	private String workTimeCD;
 	private String workTimeName;
-	private String workplaceCode;
-	private String workplaceName;
+	private Optional<String> workplaceCode;
+	private Optional<String> workplaceName;
 	
-	private String hierarchyCode;
+	private Optional<String> hierarchyCode;
 	
 	public static WorkplaceBasicWorkData createFromJavaType(String workplaceId,int workDayAtr, 
 			String workTypeCD, String workTypeName, String workTimeCD, String workTimeName){
@@ -34,5 +36,9 @@ public class WorkplaceBasicWorkData {
 		this.workTypeName = workTypeName;
 		this.workTimeCD = workTimeCD;
 		this.workTimeName = workTimeName;
+		
+		this.workplaceCode = Optional.empty();
+		this.workplaceName = Optional.empty();
+		this.hierarchyCode = Optional.empty();
 	}
 }
