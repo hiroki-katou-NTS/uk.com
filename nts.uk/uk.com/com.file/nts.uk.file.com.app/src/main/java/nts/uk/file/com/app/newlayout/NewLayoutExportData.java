@@ -12,16 +12,14 @@ import nts.arc.layer.dom.AggregateRoot;
 @AllArgsConstructor
 public class NewLayoutExportData extends AggregateRoot {
 	
-	private String categoryCd;
-	private String categoryName;
-	private String perInfoCtgId;
-	private String itemCd;
-	private String itemName;
 	private int dispoder;
+	private String categoryName;
+	private String itemName;
+	
 	
 
-	public static NewLayoutExportData createFromJavaType(String categoryCd, String categoryName, String perInfoCtgId, String itemCd, String itemName, int dispoder) {
-		return new NewLayoutExportData(categoryCd,categoryName,perInfoCtgId,itemCd,itemName, dispoder);
+	public static NewLayoutExportData createFromJavaType(int dispoder,String categoryName,String itemName) {
+		return new NewLayoutExportData(dispoder, categoryName,itemName);
 	}
 
 }
