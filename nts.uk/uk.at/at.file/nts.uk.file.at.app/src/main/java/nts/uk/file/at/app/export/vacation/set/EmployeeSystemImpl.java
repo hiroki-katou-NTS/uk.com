@@ -291,7 +291,7 @@ public class EmployeeSystemImpl implements MasterListData {
                 .build();
         sheetDatas.add(sheetData2);
 
-        if (listAllRetenYearlySet.get(0).getRowData().get(EmployeeSystemImpl.KMF001_200).getValue()!= null) {
+        if (listAllRetenYearlySet.get(0).getRowData().get(EmployeeSystemImpl.KMF001_200).getValue() != null && listAllRetenYearlySet.get(0).getRowData().get(EmployeeSystemImpl.KMF001_200).getValue().equals(IS_MANAGE)) {
             SheetData sheetData3 = SheetData.builder()
                     .mainData(mEmplYearlyRetenSetRepository.getAllEmplYearlyRetenSet(companyId))
                     .mainDataColumns(getHeaderColumns(EmployeeSystem.STEADY_EMPLOYMENT))
