@@ -51,7 +51,6 @@ module nts.uk.pr.view.kmf001.c {
         export function findSetting(): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.findSetting);
         }
-        
         /**
         * Model namespace.
         */

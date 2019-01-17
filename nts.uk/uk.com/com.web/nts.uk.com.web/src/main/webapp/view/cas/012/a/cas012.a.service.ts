@@ -31,4 +31,15 @@ module nts.uk.com.view.cas012.a.service {
         return nts.uk.request.ajax("com", paths.deleteRoleIndividual, roleIndividual);
     }
 
+    export function exportExcel(date: string): JQueryPromise<any> {
+        let _params = {domainId: "GrantAdminRole",
+            domainType: "CAS012ロールの付与（システム管理者）",
+            languageId: 'ja',
+            reportType: 0,
+            mode: 1,
+            baseDate: date
+        };
+        return nts.uk.request.exportFile('/masterlist/report/print', _params);
+    }
+
 }

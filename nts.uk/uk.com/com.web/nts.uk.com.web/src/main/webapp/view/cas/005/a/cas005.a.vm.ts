@@ -330,6 +330,18 @@ module nts.uk.com.view.cas005.a {
             }//end start page
 
             /**
+             * export excel
+             */
+            exportExcel(){
+                nts.uk.com.view.cas005.a.service.exportExcel().done(function(data) {
+
+                }).fail(function(res: any) {
+                    nts.uk.ui.dialog.alertError(res).then(function() { nts.uk.ui.block.clear(); });
+                }).always(()=>{
+                    block.clear();
+                });
+            }
+            /**
              * get data
              */
 
@@ -369,7 +381,7 @@ module nts.uk.com.view.cas005.a {
                 let self = this;
                 let dfd = $.Deferred();
                 block.invisible();
-                service.getAllWorkPlaceFunction().done(function(data) {
+                nts.uk.com.view.cas005.a.service.getAllWorkPlaceFunction().done(function(data) {
                     self.listWorkPlaceFunction(data);
                     dfd.resolve(data);
                 }).fail(function(res: any) {

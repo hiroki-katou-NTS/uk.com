@@ -52,10 +52,10 @@ public class OperationExcelRepoImpl implements MasterListData {
         // add the work place sheet
         //Sheet 2  共通_機能制限
         SheetData sheetWorkplaceData = new SheetData(getMasterDatasSheetRestriction(query),
-                getHeaderColumnsSheetRestriction(query), null, null,TextResource.localize("KDW006_91") );//TextResource.localize("KDW006_91")
+                getHeaderColumnsSheetRestriction(query), null, null,TextResource.localize("KDW006_91") );
         //Sheet 3 共通_権限別機能制限
         SheetData sheetRole = new SheetData(getMasterDatasSheetRoled(query),
-                getHeaderColumnsSheetRole(query), null, null,TextResource.localize("KDW006_105"));// TextResource.localize("KDW006_105")
+                getHeaderColumnsSheetRole(query), null, null,TextResource.localize("KDW006_105"));
         sheetDatas.add(sheetWorkplaceData);
         sheetDatas.add(sheetRole);
         sheetDatas.addAll(roleDailyExportExcelImpl.extraSheets(query));
@@ -83,7 +83,7 @@ public class OperationExcelRepoImpl implements MasterListData {
         Map<String, Object> data = new HashMap<>();
         putDataEmptySetOperation(data);
         // put first row
-        data.put("項目", TextResource.localize("KDW006_27"));
+        data.put("項目", TextResource.localize("KDW006_210"));
         data.put("comment", "");
         if (formatPerformance.isPresent()) {
                 data.put("値", TextResource.localize(
@@ -91,8 +91,8 @@ public class OperationExcelRepoImpl implements MasterListData {
         }
         datas.add(alignMasterData(data));
         // next row
-        data.put("項目", TextResource.localize("KDW006_28"));
-        data.put("comment", TextResource.localize("KDW006_62"));
+        data.put("項目", TextResource.localize("KDW006_211"));
+        data.put("comment", TextResource.localize("KDW006_212"));
         if (daiPerformanceFunOpt.isPresent()) {
             if (daiPerformanceFunOpt.get().getComment() != null) {
                 data.put("値", daiPerformanceFunOpt.get().getComment());
@@ -101,7 +101,7 @@ public class OperationExcelRepoImpl implements MasterListData {
         datas.add(alignMasterData(data));
         // next row
         data.put("項目", "");
-        data.put("comment", TextResource.localize("KDW006_63"));
+        data.put("comment", TextResource.localize("KDW006_213"));
         if (monPerformanceFunOpt.isPresent()) {
             if (monPerformanceFunOpt.get().getComment() != null) {
                 data.put("値", monPerformanceFunOpt.get().getComment());
@@ -148,13 +148,13 @@ public class OperationExcelRepoImpl implements MasterListData {
     }
 
     public List<MasterData> getMasterDatasSheetRestriction(MasterListExportQuery query) {
-        String useDailySelf = TextResource.localize("KDW006_36");
-        String useDailyBoss = TextResource.localize("KDW006_37");
-        String disp36Atr = TextResource.localize("KDW006_65");
-        String flexDispAtr = TextResource.localize("KDW006_66");
-        String manualFixAutoSetAtr = TextResource.localize("KDW006_68");
-        String clearManuAtr = TextResource.localize("KDW006_70");
-        String checkErrRefDisp = TextResource.localize("KDW006_84");
+        String useDailySelf = TextResource.localize("KDW006_224");
+        String useDailyBoss = TextResource.localize("KDW006_215");
+        String disp36Atr = TextResource.localize("KDW006_216");
+        String flexDispAtr = TextResource.localize("KDW006_97");
+        String manualFixAutoSetAtr = TextResource.localize("KDW006_98");
+        String clearManuAtr = TextResource.localize("KDW006_219");
+        String checkErrRefDisp = TextResource.localize("KDW006_220");
     	String companyId = AppContexts.user().companyId();
     	
     	Optional<DaiPerformanceFun> daiPerformanceFunOpt = operationExcelRepo.getDaiPerformanceFunById(companyId);
@@ -169,7 +169,7 @@ public class OperationExcelRepoImpl implements MasterListData {
         putDataEmptySetOperationRestriction(data);
         putDataEmptySetOperationRestriction(dataChild);
         // put dayli
-        data.put("項目", TextResource.localize("KDW006_35"));
+        
         List<String> listOption = new ArrayList<>();
         listOption.add(useDailySelf);
         listOption.add(useDailyBoss);
@@ -178,7 +178,7 @@ public class OperationExcelRepoImpl implements MasterListData {
         listOption.add(manualFixAutoSetAtr);
         listOption.add(clearManuAtr);
         listOption.add(checkErrRefDisp);
-
+        data.put("項目", TextResource.localize("KDW006_214"));
         data.put("option", listOption.get(0));
         if (identityProcessOpt.isPresent()) {
             // useDailySelfCk
@@ -186,15 +186,19 @@ public class OperationExcelRepoImpl implements MasterListData {
                 data.put("値", "○");
                 dataChild.put("値", TextResource.localize(
                         "Enum_YourselfConfirmError_" + identityProcessOpt.get().getYourselfConfirmError().name()));
+                datas.add(alignMasterDataSheetRestriction(data));
                 datas.add(alignMasterDataSheetRestriction(dataChild));
                 putDataEmptySetOperationRestriction(dataChild);
-
+                putDataEmptySetOperationRestriction(data);
             } else {
                 data.put("値", "-");
+                datas.add(alignMasterDataSheetRestriction(data));
+                putDataEmptySetOperationRestriction(data);
             }
-            datas.add(alignMasterDataSheetRestriction(data));
-            putDataEmptySetOperationRestriction(data);
-        }
+        }else {
+        	datas.add(alignMasterDataSheetRestriction(data));
+        	putDataEmptySetOperationRestriction(data);
+		}
 
         // next row
         for (int i = 1; i < listOption.size(); i++) {
@@ -207,14 +211,20 @@ public class OperationExcelRepoImpl implements MasterListData {
                         data.put("値", "○");
                         dataChild.put("値", TextResource.localize("Enum_YourselfConfirmError_"
                                 + approvalProcessOpt.get().getSupervisorConfirmError().name()));
+                        datas.add(alignMasterDataSheetRestriction(data));
                         datas.add(alignMasterDataSheetRestriction(dataChild));
                         putDataEmptySetOperationRestriction(dataChild);
                     } else {
                         data.put("値", "-");
+                        datas.add(alignMasterDataSheetRestriction(data));
+                        putDataEmptySetOperationRestriction(data);
                     }
 
-                }
-                datas.add(alignMasterDataSheetRestriction(data));
+                }else {
+                	datas.add(alignMasterDataSheetRestriction(data));
+                	putDataEmptySetOperationRestriction(data);
+				}
+               
             }
             if (daiPerformanceFunOpt.isPresent()) {
                 // disp36Atr
@@ -275,32 +285,38 @@ public class OperationExcelRepoImpl implements MasterListData {
             appTypes = String.join(",", listAppType);
         }
         data.put("値",appTypes);
-        data.put("display",  TextResource.localize("KDW006_77"));
+        data.put("display",  TextResource.localize("KDW006_221"));
         datas.add(alignMasterDataSheetRestriction(data));
         putDataEmptySetOperationRestriction(data);
         // put monthly
-        data.put("項目", TextResource.localize("KDW006_60"));
-        data.put("option", TextResource.localize("KDW006_61"));
-        if (monPerformanceFunOpt.get().getDailySelfChkDispAtr() == 1) {
-            data.put("値", "○");
-        } else {
-            data.put("値", "-");
+        data.put("項目", TextResource.localize("KDW006_222"));
+        data.put("option", TextResource.localize("KDW006_223"));
+        if(monPerformanceFunOpt.isPresent()){
+	        if (monPerformanceFunOpt.get().getDailySelfChkDispAtr() == 1) {
+	            data.put("値", "○");
+	        } else {
+	            data.put("値", "-");
+	        }
         }
         datas.add(alignMasterDataSheetRestriction(data));
         putDataEmptySetOperationRestriction(data);
-        data.put("option", TextResource.localize("KDW006_36"));
-        if (identityProcessOpt.get().getUseMonthSelfCK() == 1) {
-            data.put("値", "○");
-        } else {
-            data.put("値", "-");
+        data.put("option", TextResource.localize("KDW006_224"));
+        if (identityProcessOpt.isPresent()){
+	        if (identityProcessOpt.get().getUseMonthSelfCK() == 1) {
+	            data.put("値", "○");
+	        } else {
+	            data.put("値", "-");
+	        }
         }
         datas.add(alignMasterDataSheetRestriction(data));
         putDataEmptySetOperationRestriction(data);
-        data.put("option", TextResource.localize("KDW006_37"));
-        if (approvalProcessOpt.get().getUseMonthBossChk() == 1) {
-            data.put("値", "○");
-        } else {
-            data.put("値", "-");
+        data.put("option", TextResource.localize("KDW006_215"));
+        if (approvalProcessOpt.isPresent()){
+	        if (approvalProcessOpt.get().getUseMonthBossChk() == 1) {
+	            data.put("値", "○");
+	        } else {
+	            data.put("値", "-");
+	        }
         }
         datas.add(alignMasterDataSheetRestriction(data));
         putDataEmptySetOperationRestriction(data);
@@ -370,6 +386,9 @@ public class OperationExcelRepoImpl implements MasterListData {
     	
         List<MasterData> datas = new ArrayList<>();
         List<RoleExport> listRoleExport = operationExcelRepo.findRole(companyId);
+        if(CollectionUtil.isEmpty(listRoleExport)){
+        	return null;
+        }
         Map<String,Object> data = new HashMap<>();
         if(listRoleExport.size()==1){
             RoleExport roleExport = listRoleExport.get(0);

@@ -24515,7 +24515,7 @@ var nts;
                         return GroupHeaderPainter;
                     }(Conditional));
                     v_1.GroupHeaderPainter = GroupHeaderPainter;
-                    var ConcurrentPainter = (function () {
+                    var ConcurrentPainter = /** @class */ (function () {
                         function ConcurrentPainter(ui) {
                             this.columns = [];
                             this.revive();

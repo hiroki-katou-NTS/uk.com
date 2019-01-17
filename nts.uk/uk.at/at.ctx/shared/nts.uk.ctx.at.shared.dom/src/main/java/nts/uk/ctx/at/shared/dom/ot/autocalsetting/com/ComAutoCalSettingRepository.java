@@ -26,4 +26,11 @@ public interface ComAutoCalSettingRepository {
 	 */
     Optional<ComAutoCalSetting> getAllComAutoCalSetting(String companyId);
 
+	/**
+	 * Gets the all com auto cal setting to export.
+	 *
+	 * @param cId the company id
+	 * @return the all com auto cal setting
+	 */
+
 }

@@ -2019,7 +2019,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		List<MonthlyPersonalPerformanceData> employeeReportData = rootWorkplace.getLstDailyPersonalData();
 		if (employeeReportData != null && !employeeReportData.isEmpty()) {
 			rowPageTracker.useOneRowAndCheckResetRemainingRow(sheet, currentRow);
-			if (condition.getTotalOutputSetting().isWorkplaceTotal()
+			if (condition.getTotalOutputSetting().isDetails() || condition.getTotalOutputSetting().isWorkplaceTotal()
 					|| condition.getTotalOutputSetting().isCumulativeWorkplace()) {
 				// B4_1
 				Cell workplaceTagCell = cells.get(currentRow, 0);

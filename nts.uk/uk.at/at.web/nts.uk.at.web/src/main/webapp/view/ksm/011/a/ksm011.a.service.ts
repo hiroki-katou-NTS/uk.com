@@ -83,4 +83,11 @@ module nts.uk.at.view.ksm011.a.service {
     export interface ScheFuncCondDto {
         conditionNo: number,
     }
+    
+    /**
+    * saveAsExcel
+    **/
+    export function saveAsExcel(languageId: string): JQueryPromise<any> {
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "ScheFuncControl", languageId: languageId, domainType: "KSM011スケジュール前準備", reportType: 0});
+    }
 }

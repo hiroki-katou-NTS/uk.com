@@ -1,6 +1,7 @@
 module nts.uk.com.view.cps017.a.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
+    import exportFile = nts.uk.request.exportFile;
     var paths = {
         getAllSelectionItems: "ctx/pereg/person/info/setting/selection/findAll/true",
         getPerInfoSelectionItem: "ctx/pereg/person/info/setting/selection/findItem/{0}",
@@ -12,6 +13,14 @@ module nts.uk.com.view.cps017.a.service {
         removeHistory: "ctx/pereg/person/info/setting/selection/removeHistory",
         reflUnrComp: "ctx/pereg/person/info/setting/selection/reflunrcomp"
     }
+    
+    export function saveAsExcel(languageId: string, date: string): JQueryPromise<any> {
+            let _params = { domainId: "PersonSelectionItem", 
+                        domainType: "CPS017個人情報の選択肢の登録", 
+                        languageId: languageId, 
+                        reportType: 0, mode: 1, baseDate : date };
+            return exportFile('/masterlist/report/print', _params);
+        }
 
     export function getAllSelectionItems() {
         return ajax(paths.getAllSelectionItems);
@@ -26,7 +35,7 @@ module nts.uk.com.view.cps017.a.service {
         let _path = format(paths.getAllPerInfoHistorySelection, selectedId);
         return nts.uk.request.ajax("com", _path);
     }
-    
+
     export function getAllOrderItemSelection(histId: string) {
         let _path = format(paths.getAllOrderItemSelection, histId);
         return nts.uk.request.ajax("com", _path);
@@ -51,10 +60,11 @@ module nts.uk.com.view.cps017.a.service {
     export function removeHistory(command) {
         return ajax(paths.removeHistory, command);
     }
-    
+
     // Phan anh den cty:
     export function reflUnrComp(command) {
         return ajax(paths.reflUnrComp, command);
     }
+
 }
 

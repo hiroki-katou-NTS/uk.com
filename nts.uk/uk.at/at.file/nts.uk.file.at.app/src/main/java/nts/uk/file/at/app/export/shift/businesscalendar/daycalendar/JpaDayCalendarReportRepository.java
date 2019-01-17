@@ -13,6 +13,8 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class JpaDayCalendarReportRepository extends JpaRepository implements DayCalendarReportRepository{
@@ -34,7 +36,7 @@ public class JpaDayCalendarReportRepository extends JpaRepository implements Day
 	private static final String GET_CLASS_CALENDAR_BY_DATE = "SELECT"
 			+ " w.CLSNAME, s.CLSCD, s.YMD_K, s.WORKING_DAY_ATR "
 			+ "	FROM KSMMT_CALENDAR_CLASS s"
-			+ " INNER JOIN BSYMT_CLASSIFICATION w ON w.CID = s.CID "
+			+ " LEFT JOIN BSYMT_CLASSIFICATION w ON w.CID = s.CID "
 			+ "	and w.CLSCD = s.CLSCD"
 			+ " WHERE s.YMD_K >= ?startYm"
 			+ " AND s.YMD_K <= ?endYm"
@@ -130,6 +132,10 @@ public class JpaDayCalendarReportRepository extends JpaRepository implements Day
 	private static ClassCalendarReportData toDomainWithClass(Object[] entity) {
 		//w.CLSNAME, s.CLSCD, s.YMD_K, s.WORKING_DAY_ATR
 		String className = (String) entity[0];
+		if (StringUtil.isNullOrEmpty(className, true)) {
+			className = TextResource.localize("KSM004_104");
+		}
+		
 		String classCode = (String) entity[1];
 		Timestamp timeStamp = (Timestamp)entity[2];
 		GeneralDate date = GeneralDate.legacyDate(new Date(timeStamp.getTime()));
