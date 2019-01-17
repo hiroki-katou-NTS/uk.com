@@ -53,8 +53,10 @@ module nts.uk.com.view.cas005.a {
             return nts.uk.request.ajax("at",paths.getEmploymentRoleById+"/"+roleId);    
         }
         export function exportExcel(): JQueryPromise<any> {
+            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+            let domainType = program[1] != null ? "CAS005" + program[1] : "";
             let _params = { domainId: "RoleEmployment", 
-                        domainType: "CAS005ロールの登録（就業）", 
+                        domainType: domainType,
                         languageId: "ja", 
                         reportType: 0};
             return nts.uk.request.exportFile('/masterlist/report/print',_params);
