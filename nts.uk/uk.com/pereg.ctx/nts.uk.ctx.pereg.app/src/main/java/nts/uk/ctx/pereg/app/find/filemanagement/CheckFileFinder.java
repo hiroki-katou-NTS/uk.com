@@ -26,6 +26,7 @@ import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpHead;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmployeeDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmployeeInfoDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
 import nts.uk.ctx.pereg.app.find.processor.GridPeregProcessor;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCtgByCompanyRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
@@ -57,6 +58,7 @@ public class CheckFileFinder {
 	@Inject
 	private RoleRepository roleRepo;
 	
+	@Inject
 	private GridPeregProcessor gridProcesor;
 	
 	@Inject 
@@ -97,9 +99,8 @@ public class CheckFileFinder {
 			
 			this.getEmployeeIds(rows);
 			
-			GridEmployeeDto dto = this.getGridInfo(excelReader, colums);
-			dto.setCategoryId(params.getCategoryId());
-			GridEmployeeDto z  = this.getGridLayout(dto);
+//			GridEmployeeDto dto = this.getGridInfo(excelReader, colums); 
+			GridEmployeeDto z  = this.getHeaderData(params.getCategoryId(), colums, colums);
 			//remove những cột cố định
 			colums.removeAll(fixedCol);
 			
@@ -109,7 +110,7 @@ public class CheckFileFinder {
 				throw new Exception("Msg_723");
 			}
 			
-			return dto;
+			return null;
 		} catch (ExcelFileTypeException e1) {
 			e1.printStackTrace();
 		}
@@ -167,36 +168,7 @@ public class CheckFileFinder {
 		}
 		 return new ArrayList<>();
 	}
-	
-	private GridEmployeeDto getGridInfo(NtsExcelImport excelReader, List<String> headerDatas) {
-		// get setting display 固定列
-		List<GridEmpHead> headDatas = new ArrayList<>();
-		headerDatas.stream().forEach(c ->{
-			GridEmpHead gridEmpHead = new GridEmpHead();
-			gridEmpHead.setItemName(c);
-			headDatas.add(gridEmpHead);
-		});
-		/* lien quan den bodyData*/
-		List<GridEmployeeInfoDto> bodyDatas = new ArrayList<>();
-		List<NtsExcelRow> rows = excelReader.rows();
-		rows.stream().forEach( row ->{
-			CodeName codeName = new CodeName();
-			List<NtsExcelCell> cells = row.cells();		
-			
-			List<GridEmpBody> items = new ArrayList<>();
-			GridEmployeeInfoDto dto = new GridEmployeeInfoDto();
-			
-			cells.stream().forEach( cell -> {
-					GridEmpBody empBody = new GridEmpBody();
-					empBody.setValue(cell.getValue()==null? null: cell.getValue().toString());
-					items.add(empBody);
-			});
-			dto.setItems(items);
-			dto.setEmployee(codeName);
-			bodyDatas.add(dto);
-		});
-		return new GridEmployeeDto("", null, headDatas, bodyDatas);
-	}
+
 	
 	private List<String> fixedColums(String cid, String userId){
 		
@@ -237,18 +209,25 @@ public class CheckFileFinder {
 	 * getGridLayout
 	 * @return
 	 */
-	public GridEmployeeDto getGridLayout(GridEmployeeDto dto) {
+	public GridEmployeeDto getHeaderData(String  categoryId, List<String> columItemChangeExel, List<String> columNotChangeExcel) {
 		LoginUserContext loginUser = AppContexts.user();
 		String cid = loginUser.companyId();
 		String userId = loginUser.userId();
 		String contractCd = loginUser.contractCode();
 		String roleId = loginUser.roles().forPersonalInfo();
-		Optional<PersonInfoCategory> ctgOptional =  this.ctgRepo.getDetailCategoryInfo(cid, dto.getCategoryId(), contractCd);
 		List<GridEmpHead> headerReal = new ArrayList<>();
-		List<String> itemNameLst =  new ArrayList<>();
+
+		
+		Optional<PersonInfoCategory> ctgOptional =  this.ctgRepo.getDetailCategoryInfo(cid, categoryId, contractCd);
+		
+		List<String> columNotChange =  this.fixedColums(cid, userId);
+		
+		
 		if(!ctgOptional.isPresent()) return null;
+		
 		// map PersonInfoItemDefinition → GridEmpHead
-		List<GridEmpHead> headers = this.gridProcesor.getPerItemDefForLayout(ctgOptional.get(), contractCd, roleId).stream()
+		 List<PerInfoItemDefForLayoutDto> i = this.gridProcesor.getPerItemDefForLayout(ctgOptional.get(), contractCd, roleId);
+		 List<GridEmpHead> headers = i.stream()
 				.map(m -> new GridEmpHead(m.getId(), m.getDispOrder(), m.getItemCode(), m.getItemParentCode(),
 						m.getItemName(), m.getItemTypeState(), m.getIsRequired() == 1, m.getResourceId(),
 						m.getLstChildItemDef().stream()
@@ -261,20 +240,62 @@ public class CheckFileFinder {
 				.collect(Collectors.toList());
 		
 		
-		List<PersonInfoMatrixData> itemData = matrixItemRepo.findInfoData(ctgOptional.get().getPersonInfoCategoryId());
+		List<PersonInfoMatrixData> itemData = matrixItemRepo.findInfoData(ctgOptional.get().getPersonInfoCategoryId())
+				.stream().filter(c -> c.isRegulationAtr() == true).collect(Collectors.toList());
+		
 		itemData.stream().forEach(c ->{
 			headers.stream().forEach(item ->{
-				if((c.isRegulationAtr() == true && c.getPerInfoItemDefID().equals(item.getItemId()))) {
+				if((c.getPerInfoItemDefID().equals(item.getItemId()))) {
 					headerReal.add(item);
-					itemNameLst.add(item.getItemName());
 				}
 			});
+		});
+		
+		headerReal.stream().forEach(header ->{
+			columItemChangeExel.forEach(itemName ->{
+				
+				
+			});
+			
 		});
 		
 		
 		
 		
+		
+		
+		
+		
 		return null;
+	}
+	
+	
+	private GridEmployeeDto getGridInfo(NtsExcelImport excelReader, List<GridEmpHead> headerReal, List<String> columFixed) {
+		/* lien quan den bodyData*/
+		List<GridEmployeeInfoDto> bodyDatas = new ArrayList<>();
+		List<NtsExcelRow> rows = excelReader.rows();
+		rows.stream().forEach( row ->{
+			List<NtsExcelCell> cells = row.cells();		
+			List<GridEmpBody> items = new ArrayList<>();
+			GridEmployeeInfoDto dto = new GridEmployeeInfoDto();
+			
+			cells.stream().forEach( cell -> {
+				// lấy dữ liệu của itemName
+				headerReal.stream().forEach(item ->{
+					if(item.getItemName().equals(cell.getHeader().getMain().getValue())){
+						GridEmpBody empBody = new GridEmpBody();
+						empBody.setValue(cell.getValue()==null? null: cell.getValue().toString());
+						items.add(empBody);
+					}
+				});
+				
+				// lấy thông tin department
+				
+			});
+			dto.setItems(items);
+			bodyDatas.add(dto);
+		});
+		return new GridEmployeeDto("", null, headerReal, bodyDatas);
 	}
 	
 	
