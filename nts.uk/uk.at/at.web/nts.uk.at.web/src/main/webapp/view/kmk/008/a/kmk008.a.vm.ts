@@ -19,7 +19,7 @@ module nts.uk.at.view.kmk008.a {
                 let self = this;
                 let params = {
                    date: null,
-                   mode: 5
+                   mode: 2
                  };
                 
                 nts.uk.ui.windows.setShared("CDL028_INPUT", params);

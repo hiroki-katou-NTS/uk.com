@@ -1196,8 +1196,10 @@ module nts.uk.at.view.kmk006.a {
                 });
             }
 
-            private exportExcel(domainId: string, domainType: string) {
+            private exportExcel(domainId: string) {
                 var self = this;
+                let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+                let domainType = program[1] != null ? "KMK006" + program[1] : "";
                 let baseDate: any = moment.utc(self.baseDateTreeList(), 'YYYY/MM/DD').toISOString();
                 let useUnit: any = self.useUnitAutoCalSettingModel();
                 service.exportExcel(self.langId(), domainId, domainType, useUnit, baseDate)

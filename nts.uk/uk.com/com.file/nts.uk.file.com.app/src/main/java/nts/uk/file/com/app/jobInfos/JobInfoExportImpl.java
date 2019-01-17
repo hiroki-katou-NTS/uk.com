@@ -1,4 +1,4 @@
-package nts.uk.file.com.app.JobInfo;
+package nts.uk.file.com.app.jobInfos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +14,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
 
 @Stateless
 @DomainID("JobInfo")
@@ -66,8 +67,7 @@ public class JobInfoExportImpl implements MasterListData{
 	
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		List<MasterData> datas = new ArrayList<>();
-		String baseDate =  query.getBaseDate().toString();
-		datas = repository.getDataRoleSetPosExport(baseDate);
+		datas = repository.getDataRoleSetPosExport();
 		return datas;
 	}
 	
@@ -87,6 +87,7 @@ public class JobInfoExportImpl implements MasterListData{
                 .mainData(this.getMasterDatasRoleSetEmp(query))
                 .mainDataColumns(this.getHeaderColumnsRoleSetEmp())
                 .sheetName(TextResource.localize("CAS014_52"))
+                .mode(MasterListMode.BASE_DATE)
                 .build();
 
         sheetDatas.add(sheetData);

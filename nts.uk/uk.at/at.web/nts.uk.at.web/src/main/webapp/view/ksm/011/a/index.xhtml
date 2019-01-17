@@ -70,21 +70,21 @@
 					<button>#{i18n.getText('KSM011_81')}</button>
 				</com:ko-if>
 				
-				<button id="A_BTN_001" data-bind="click: exportExcel">#{i18n.getText('KMK007_4')}</button>
+				<button id="A_BTN_001" tabindex="3" data-bind="click: exportExcel">#{i18n.getText('KSM011_136')}</button>
 			</div>
 			
 			<div id="tabpanel-a" role="tabpanel" class="screen-a" data-bind="with: viewmodelA">
 				<div class="contents-area-a cf">
 					<table class="link-control">
 						<tr>
-							<td><a tabindex="3" href="#control-01" class="hyperlink hyperlink-disable">#{i18n.getText('KSM011_76')}</a></td>
-							<td><a tabindex="4" href="#control-02" class="hyperlink">#{i18n.getText('KSM011_16')}</a></td>
-							<td><a tabindex="5" href="#control-03" class="hyperlink">#{i18n.getText('KSM011_20')}</a></td>
-							<td><a tabindex="6" href="#control-04" class="hyperlink">#{i18n.getText('KSM011_23')}</a></td>
-							<td><a tabindex="7" href="#control-05" class="hyperlink">#{i18n.getText('KSM011_27')}</a></td>
-							<td><a tabindex="8" href="#control-06" class="hyperlink">#{i18n.getText('KSM011_34')}</a></td>
-							<td><a tabindex="9" href="#control-07" class="hyperlink">#{i18n.getText('KSM011_38')}</a></td>
-							<td><a tabindex="10" href="#control-08" class="hyperlink">#{i18n.getText('KSM011_48')}</a></td>
+							<td><a tabindex="4" href="#control-01" class="hyperlink hyperlink-disable">#{i18n.getText('KSM011_76')}</a></td>
+							<td><a tabindex="5" href="#control-02" class="hyperlink">#{i18n.getText('KSM011_16')}</a></td>
+							<td><a tabindex="6" href="#control-03" class="hyperlink">#{i18n.getText('KSM011_20')}</a></td>
+							<td><a tabindex="7" href="#control-04" class="hyperlink">#{i18n.getText('KSM011_23')}</a></td>
+							<td><a tabindex="8" href="#control-05" class="hyperlink">#{i18n.getText('KSM011_27')}</a></td>
+							<td><a tabindex="9" href="#control-06" class="hyperlink">#{i18n.getText('KSM011_34')}</a></td>
+							<td><a tabindex="10" href="#control-07" class="hyperlink">#{i18n.getText('KSM011_38')}</a></td>
+							<td><a tabindex="11" href="#control-08" class="hyperlink">#{i18n.getText('KSM011_48')}</a></td>
 						</tr>
 					</table>
 					
@@ -95,7 +95,7 @@
 							<table class="basic-items">
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_7')}</div></td>
-									<td><div tabindex="11" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="12" class="cf" data-bind="ntsSwitchButton: {
 												options: alarmCheckAtr,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -105,7 +105,7 @@
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_10')}</div></td>
-									<td><div tabindex="12" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="13" class="cf" data-bind="ntsSwitchButton: {
 												options: confirmedAtr,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -115,7 +115,7 @@
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_11')}</div></td>
-									<td><div tabindex="13" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="14" class="cf" data-bind="ntsSwitchButton: {
 												options: publicAtr,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -125,7 +125,7 @@
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_12')}</div></td>
-									<td><div tabindex="14" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="15" class="cf" data-bind="ntsSwitchButton: {
 												options: outputAtr,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -135,7 +135,7 @@
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_13')}</div></td>
-									<td><div tabindex="15" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="16" class="cf" data-bind="ntsSwitchButton: {
 												options: workDevision,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -145,7 +145,7 @@
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_14')}</div></td>
-									<td><div tabindex="16" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="17" class="cf" data-bind="ntsSwitchButton: {
 												options: teamDivision,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -155,7 +155,7 @@
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_15')}</div></td>
-									<td><div tabindex="17" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="18" class="cf" data-bind="ntsSwitchButton: {
 												options: rankAtr,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -165,7 +165,7 @@
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_80')}</div></td>
-									<td><div id="x" tabindex="18" class="cbx-days" data-bind="ntsComboBox: {
+									<td><div id="x" tabindex="19" class="cbx-days" data-bind="ntsComboBox: {
 											options: dayOfWeek,
 											optionsValue: 'code',
 											value: selectedDay,
@@ -185,7 +185,7 @@
 							<table class="type-items">
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_17')}</div></td>
-									<td><div tabindex="19" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="20" class="cf" data-bind="ntsSwitchButton: {
 												options: shortNameDisp,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -195,7 +195,7 @@
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_18')}</div></td>
-									<td><div tabindex="20" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="21" class="cf" data-bind="ntsSwitchButton: {
 												options: timeDisp,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -205,7 +205,7 @@
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_19')}</div></td>
-									<td><div tabindex="21" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="22" class="cf" data-bind="ntsSwitchButton: {
 												options: symbols,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -222,7 +222,7 @@
 							<table class="period-items">
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_21')}</div></td>
-									<td><div tabindex="22" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="23" class="cf" data-bind="ntsSwitchButton: {
 												options: dispOn28th,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -232,7 +232,7 @@
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_22')}</div></td>
-									<td><div tabindex="23" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="24" class="cf" data-bind="ntsSwitchButton: {
 												options: endDateIndication,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -249,7 +249,7 @@
 							<table class="activation-items">
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_24')}</div></td>
-									<td><div tabindex="24" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="25" class="cf" data-bind="ntsSwitchButton: {
 												options: individualDisp,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -259,7 +259,7 @@
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_25')}</div></td>
-									<td><div tabindex="25" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="26" class="cf" data-bind="ntsSwitchButton: {
 												options: dispByDate,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -269,7 +269,7 @@
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_26')}</div></td>
-									<td><div tabindex="26" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="27" class="cf" data-bind="ntsSwitchButton: {
 												options: indicationByShift,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -286,7 +286,7 @@
 							<table class="time-items">
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_28')}</div></td>
-									<td><div tabindex="27" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="28" class="cf" data-bind="ntsSwitchButton: {
 												options: regularWork,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -296,7 +296,7 @@
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_31')}</div></td>
-									<td><div tabindex="28" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="29" class="cf" data-bind="ntsSwitchButton: {
 												options: fluidWork,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -306,7 +306,7 @@
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_32')}</div></td>
-									<td><div tabindex="29" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="30" class="cf" data-bind="ntsSwitchButton: {
 												options: workForFlex,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -316,7 +316,7 @@
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_33')}</div></td>
-									<td><div tabindex="30" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="31" class="cf" data-bind="ntsSwitchButton: {
 												options: overtime,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -333,7 +333,7 @@
 							<table class="creation-items">
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_35')}</div></td>
-									<td><div tabindex="31" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="32" class="cf" data-bind="ntsSwitchButton: {
 												options: generalCreated,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -343,7 +343,7 @@
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_36')}</div></td>
-									<td><div tabindex="32" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="33" class="cf" data-bind="ntsSwitchButton: {
 												options: simulation,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -353,7 +353,7 @@
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_37')}</div></td>
-									<td><div tabindex="33" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="34" class="cf" data-bind="ntsSwitchButton: {
 												options: capture,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -370,7 +370,7 @@
 							<table class="complete-method-items">
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_39')}</div></td>
-									<td><div tabindex="34" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="35" class="cf" data-bind="ntsSwitchButton: {
 												options: completeFunc,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -380,7 +380,7 @@
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_40')}</div></td>
-									<td><div tabindex="35" data-bind="ntsRadioBoxGroup: {
+									<td><div tabindex="36" data-bind="ntsRadioBoxGroup: {
 												options: optionComplete,
 												optionsValue: 'id',
 												optionsText: 'name',
@@ -393,7 +393,7 @@
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KSM011_7')}</div></td>
-									<td><div tabindex="36" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="37" class="cf" data-bind="ntsSwitchButton: {
 												options: alarmCheck,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -403,7 +403,7 @@
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KSM011_77')}</div></td>
-									<td><div tabindex="37" data-bind="ntsRadioBoxGroup: {
+									<td><div tabindex="38" data-bind="ntsRadioBoxGroup: {
 												options: alarmMethod,
 												optionsValue: 'id',
 												optionsText: 'name',
@@ -414,13 +414,13 @@
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KSM011_44')}</div></td>
 									<td>
-										<button tabindex="38" data-bind="click: openEDialog, enable: openEDialogEnable">#{i18n.getText('KSM011_45')}</button>
+										<button tabindex="39" data-bind="click: openEDialog, enable: openEDialogEnable">#{i18n.getText('KSM011_45')}</button>
 										<input class="txtcondition" data-bind="ntsTextEditor: { value: conditionList, enable: conditionListEnable, readonly: true }" />
 									</td>
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KSM011_46')}</div></td>
-									<td><div tabindex="39" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="40" class="cf" data-bind="ntsSwitchButton: {
 												options: unhooking,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -430,7 +430,7 @@
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KSM011_47')}</div></td>
-									<td><div tabindex="40" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="41" class="cf" data-bind="ntsSwitchButton: {
 												options: confirm,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -447,7 +447,7 @@
 							<table class="search-control-items">
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_49')}</div></td>
-									<td><div tabindex="41" class="cf" data-bind="ntsSwitchButton: {
+									<td><div tabindex="42" class="cf" data-bind="ntsSwitchButton: {
 												options: searchMethod,
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -457,7 +457,7 @@
 								</tr>
 								<tr>
 									<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM011_50')}</div></td>
-									<td><div tabindex="42" data-bind="ntsRadioBoxGroup: {
+									<td><div tabindex="43" data-bind="ntsRadioBoxGroup: {
 												options: retrievalMethod,
 												optionsValue: 'id',
 												optionsText: 'name',

@@ -55,6 +55,8 @@ module ccg013.a.service {
     * saveAsExcel
     **/
     export function saveAsExcel(languageId: string): JQueryPromise<any> {
-        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "MenuSetting", languageId: languageId, domainType: "CCG013Webメニューの設定", reportType: 0});
+        let program= nts.uk.ui._viewModel.kiban.programName().split(" ");          
+        let programName = program[1]!=null?program[1]:"";  
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "MenuSetting", domainType: "CCG013"+programName,languageId: 'ja', reportType: 0});    
     }
 }

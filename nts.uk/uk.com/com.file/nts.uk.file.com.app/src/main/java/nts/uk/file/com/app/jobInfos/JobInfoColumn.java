@@ -1,4 +1,4 @@
-package nts.uk.file.com.app.JobInfo;
+package nts.uk.file.com.app.jobInfos;
 
 public class JobInfoColumn {
 	// R7_1

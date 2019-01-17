@@ -78,27 +78,17 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 				
 				Map<String, Object> data = new HashMap<>();
 				
-				putEmptyData(data);		
+					
 				
-				data.put("No", c.getTotalCountNo());
 				Optional<TotalTimes> optTotalTimes = this.totalTimesRepository.getTotalTimesDetail(companyId,
 						c.getTotalCountNo());
 
 				if(c.getUseAtr() == UseAtr.NotUse){
 					// neu =0 
-					data.put("使用区分", UseAtr.NotUse.nameId);
-					data.put("名称", "");
-					data.put("略名", "");
-					data.put("集計区分", "");
-					data.put("勤務種類", "");
-					data.put("就業時間帯", "");
-					data.put("集計条件以上", "");
-					data.put("以上", "");
-					data.put("集計条件未満", "");
-					data.put("未満","");
-					data.put("対象項目", "");
-					data.put("半日勤務区分", "");
+					// khong in ra
 				}else{
+					putEmptyData(data);	
+					data.put("No", c.getTotalCountNo());
 					data.put("使用区分", UseAtr.Use.nameId);
 
 					List<String> lista= optTotalTimes.get().getSummaryList().get().getWorkTypeCodes();
@@ -236,9 +226,6 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 					}
 					data.put("名称", c.getTotalTimesName());
 					data.put("略名", c.getTotalTimesABName());
-					
-					
-					
 					if(c.getSummaryAtr() == SummaryAtr.DUTYTYPE){
 						data.put("集計区分", SummaryAtr.DUTYTYPE.nameId);
 					}else if(c.getSummaryAtr() == SummaryAtr.WORKINGTIME){
@@ -246,25 +233,23 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 					}else{
 						data.put("集計区分", SummaryAtr.COMBINATION.nameId);
 					}
+					
+					MasterData masterData = new MasterData(data, null, "");
+					masterData.cellAt("No").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("使用区分").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("略名").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("集計区分").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("勤務種類").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("就業時間帯").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("集計条件以上").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("以上").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					masterData.cellAt("集計条件未満").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("未満").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					masterData.cellAt("対象項目").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("半日勤務区分").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					datas.add(masterData);
 				}
-				
-				MasterData masterData = new MasterData(data, null, "");
-				masterData.cellAt("No").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt("使用区分").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt("略名").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt("集計区分").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt("勤務種類").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt("就業時間帯").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt("集計条件以上").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt("以上").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
-				masterData.cellAt("集計条件未満").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt("未満").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
-				masterData.cellAt("対象項目").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt("半日勤務区分").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-
-				
-				datas.add(masterData);
 			});	
 		}
 		return datas;

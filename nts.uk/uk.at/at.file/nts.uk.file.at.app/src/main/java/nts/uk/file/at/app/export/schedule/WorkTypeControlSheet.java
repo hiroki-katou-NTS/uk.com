@@ -187,8 +187,9 @@ public class WorkTypeControlSheet extends JpaRepository{
 						}
 					}
 				}
+			} else {
+				value = TextResource.localize("KSM011_75");
 			}
-			
 		}
 		return value;
 	}

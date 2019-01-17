@@ -1,4 +1,4 @@
-package nts.uk.file.com.app.Indivigrant;
+package nts.uk.file.com.app.indivigrants;
 
 import java.util.ArrayList;
 import java.util.List;

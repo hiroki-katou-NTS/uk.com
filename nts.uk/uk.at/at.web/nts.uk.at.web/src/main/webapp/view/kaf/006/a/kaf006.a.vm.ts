@@ -671,7 +671,9 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 $("#relaCD-combo").trigger("validate");
             }
             $("#hdType").trigger('validate');
-            $("#workTypes").trigger('validate');
+            if(self.holidayTypeCode() != undefined && self.holidayTypeCode() != null){
+                $("#workTypes").trigger('validate');
+            }
             if (!self.validate()) { return; }
             if (nts.uk.ui.errors.hasError()) { return; }
             nts.uk.ui.block.invisible();

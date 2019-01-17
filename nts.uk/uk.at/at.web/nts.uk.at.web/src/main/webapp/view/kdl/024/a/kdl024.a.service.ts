@@ -55,8 +55,7 @@ module kdl024.a.service {
     }
     //ExportExcel
     export function saveAsExcel(languageId: String): JQueryPromise<any> {
-        let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-        let programName = program[1]!=null?program[1]:"";
+        let programName = __viewContext.program.programName==null?"":__viewContext.program.programName;
         return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "Budget", domainType: "KDL024" + programName, languageId: languageId, reportType: 0 });
     }
 }
