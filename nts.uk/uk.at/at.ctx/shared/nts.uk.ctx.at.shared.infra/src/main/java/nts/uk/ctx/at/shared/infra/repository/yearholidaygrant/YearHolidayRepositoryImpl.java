@@ -165,7 +165,7 @@ public class YearHolidayRepositoryImpl implements MasterListData{
                        }else{
                               data.put("基準設定下限 8", c.getGrantConditions().get(0).getConditionValue()+""+TextResource.localize("KMF003_77"));
                        }
-                       data.put("上限 9", "366日"); 
+                       data.put("上限 9", "366.0日"); 
                     }
                     
                     if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
@@ -356,7 +356,7 @@ public class YearHolidayRepositoryImpl implements MasterListData{
 	                           }else{
 	                                  data.put("基準設定下限 8", c.getGrantConditions().get(0).getConditionValue()+""+TextResource.localize("KMF003_77"));
 	                           }
-	                           data.put("上限 9", "366日"); 
+	                           data.put("上限 9", "366.0日"); 
 	                        }
 	                        
 	                        data.put("付与回 10", i+1);
@@ -642,7 +642,7 @@ public class YearHolidayRepositoryImpl implements MasterListData{
 	                        if (i < listFindByCode.size()) {
 	                               LengthServiceTbl dataFindByCode = listFindByCode.get(i);
 	                               data.put("勤続年数年 11", dataFindByCode.getYear() + TextResource.localize("KMF003_41"));
-	                               data.put("勤続年数月 12", dataFindByCode.getMonth() + TextResource.localize("KMF003_78"));
+	                               data.put("勤続年数月 12", dataFindByCode.getMonth() + TextResource.localize("KMF003_76"));
 	                               data.put("付与日数 13", listYearHoliday.get(i).getGrantDays()+""+TextResource.localize("KMF003_77"));
 	                        		
 	                               if(checkDto1(checkDto.maxManageType, checkDto.maxReference ,checkDto.timeManageType) == true){
