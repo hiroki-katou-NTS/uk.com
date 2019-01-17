@@ -21,7 +21,6 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator implements WorkTimeReportGenerator {
 
 	private static final String TEMPLATE_FILE = "report/KMK003.xlsx";
-	private static final String REPORT_NAME = "KMK003就業時間帯の登録";
 	private static final String REPORT_FILE_EXTENSION = ".xlsx";
 	private static final int WORK_TIME_NORMAL_START_INDEX = 10;
 	private static final int WORK_TIME_FLOW_START_INDEX = 10;
@@ -36,7 +35,8 @@ public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator im
 		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
 			Workbook workbook = reportContext.getWorkbook();
 			WorksheetCollection worksheets = workbook.getWorksheets();
-
+			
+			String programName =  dataSource.getProgramName();
 			String companyName = dataSource.getCompanyName();
 			String exportTime = dataSource.getExportTime().toString();
 			Worksheet normalSheet = worksheets.get(0);
@@ -49,16 +49,16 @@ public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator im
 			List<Object[]> flowData = dataSource.getWorkTimeFlow();
 			List<Object[]> flexData = dataSource.getWorkTimeFlex();
 
-			printData(normalSheet, companyName, exportTime, normalData, normalSheetName,
+			printData(normalSheet, programName, companyName, exportTime, normalData, normalSheetName,
 					WORK_TIME_NORMAL_START_INDEX, WORK_TIME_NORMAL_NUM_ROW);
-			printData(flowSheet, companyName, exportTime, flowData, flowSheetName, 
+			printData(flowSheet, programName, companyName, exportTime, flowData, flowSheetName, 
 					WORK_TIME_FLOW_START_INDEX, WORK_TIME_FLOW_NUM_ROW);
-			printData(flexSheet, companyName, exportTime, flexData, flexSheetName, 
+			printData(flexSheet, programName, companyName, exportTime, flexData, flexSheetName, 
 					WORK_TIME_FLEX_START_INDEX, WORK_TIME_FLEX_NUM_ROW);
 			worksheets.setActiveSheetIndex(0);
 			reportContext.processDesigner();
 			reportContext.saveAsExcel(this.createNewFile(generatorContext,
-					REPORT_NAME + "_" + dataSource.getExportTime().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION));
+					programName + "_" + dataSource.getExportTime().toString("yyyyMMddHHmmss") + REPORT_FILE_EXTENSION));
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -66,14 +66,14 @@ public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator im
 
 	}
 
-	private void printData(Worksheet worksheet, String companyName, String exportTime, List<Object[]> data,
+	private void printData(Worksheet worksheet, String programId, String companyName, String exportTime, List<Object[]> data,
 			String sheetName, int startIndex, int numRow) {
 		try {
 			worksheet.setName(sheetName);
 			Cells cells = worksheet.getCells();
 			// Header Data
 			cells.get(0, 1).setValue(companyName);
-			cells.get(1, 1).setValue(REPORT_NAME);
+			cells.get(1, 1).setValue(programId);
 			cells.get(2, 1).setValue(exportTime);
 			cells.get(3, 1).setValue(sheetName);
 

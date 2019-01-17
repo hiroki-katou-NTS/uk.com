@@ -1,4 +1,4 @@
-package nts.uk.file.com.infra.indivigrant;
+package nts.uk.file.com.infra.indivigrants;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -19,8 +19,8 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
-import nts.uk.file.com.app.indivigrant.IndivigrantColumn;
-import nts.uk.file.com.app.indivigrant.IndivigrantRepository;
+import nts.uk.file.com.app.indivigrants.IndivigrantColumn;
+import nts.uk.file.com.app.indivigrants.IndivigrantRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;

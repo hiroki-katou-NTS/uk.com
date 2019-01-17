@@ -1,4 +1,4 @@
-package nts.uk.file.com.infra.jobInfo;
+package nts.uk.file.com.infra.jobInfos;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -16,8 +16,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
-import nts.uk.file.com.app.jobInfo.JobInfoColumn;
-import nts.uk.file.com.app.jobInfo.JobInfoRepository;
+import nts.uk.file.com.app.jobInfos.JobInfoColumn;
+import nts.uk.file.com.app.jobInfos.JobInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
