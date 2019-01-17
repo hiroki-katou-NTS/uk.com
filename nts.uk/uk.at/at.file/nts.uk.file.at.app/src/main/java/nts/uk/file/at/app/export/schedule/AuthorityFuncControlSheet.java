@@ -157,7 +157,7 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 	 * @param listColumnNames
 	 * @return
 	 */
-	public List<MasterHeaderColumn> getHeaderColumns(int columnNum, List<String> listColumnNames) {
+	private List<MasterHeaderColumn> getHeaderColumns(int columnNum, List<String> listColumnNames) {
 		
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 		columns.add(new MasterHeaderColumn("コード", TextResource.localize("KSM011_133"), ColumnTextAlign.LEFT, "", true));
@@ -176,7 +176,7 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 	 * @param listColumnNames
 	 * @return
 	 */
-	public List<MasterData> getMasterDatas(int columnNum, List<Map<String, Object>> listRoleAndData, ScheduleDescriptionDto scheduleDescriptionDto, List<String> listColumnNames) {
+	private List<MasterData> getMasterDatas(int columnNum, List<Map<String, Object>> listRoleAndData, ScheduleDescriptionDto scheduleDescriptionDto, List<String> listColumnNames) {
 	
 		List<MasterData> datas = new ArrayList<>();
 		if (CollectionUtil.isEmpty(listRoleAndData)) {
@@ -184,10 +184,35 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 		} else {
 			// loop listSacmtRoles 
 			listRoleAndData.stream().forEach(mapItem -> {
-					datas.add(createRow(mapItem, scheduleDescriptionDto, listColumnNames));
+					PermissonDto permissonDto = (PermissonDto) mapItem.get("data");
+					if (!checkDataRowEmpty(permissonDto)) {
+						datas.add(createRow(mapItem, scheduleDescriptionDto, listColumnNames));
+					}
 			});
 		}
 		return datas;
+	}
+	
+	private boolean checkDataRowEmpty(PermissonDto permissonDto) {
+		if (!permissonDto.getCommonAuthor().isEmpty()) {
+			return false;
+		}
+		if (!permissonDto.getPersAuthority().isEmpty()) {
+			return false;
+		}
+		if (!permissonDto.getDateAuthority().isEmpty()) {
+			return false;
+		}
+		if (!permissonDto.getShiftPermisson().isEmpty()) {
+			return false;
+		}
+		if (!permissonDto.getPerWorkplace().isEmpty()) {
+			return false;
+		}
+		if (!permissonDto.getSchemodifyDeadline().isEmpty()) {
+			return false;
+		}
+		return true;
 	}
 	
 	/**
@@ -195,7 +220,7 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 	 * @param companyId
 	 * @return
 	 */
-	public List<SacmtRoleData> findRoles(String companyId) {
+	private List<SacmtRoleData> findRoles(String companyId) {
 		
 		List<?> data = this.getEntityManager().createNativeQuery(GET_BY_ROLE_TYPE)
 				.setParameter("companyId", companyId).getResultList();
