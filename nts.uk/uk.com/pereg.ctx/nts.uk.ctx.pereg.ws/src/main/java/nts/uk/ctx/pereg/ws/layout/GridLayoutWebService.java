@@ -19,6 +19,7 @@ import nts.uk.ctx.pereg.app.find.person.setting.matrix.personinfomatrixitem.Disp
 import nts.uk.ctx.pereg.app.find.processor.GridPeregProcessor;
 import nts.uk.ctx.pereg.dom.person.setting.matrix.matrixdisplayset.MatrixDisplaySetting;
 import nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInfoMatrixData;
+import nts.uk.shr.pereg.app.find.GridComboBoxSettingQuery;
 import nts.uk.shr.pereg.app.find.PeregGridQuery;
 
 @Path("ctx/pereg/grid-layout")
@@ -73,5 +74,11 @@ public class GridLayoutWebService extends WebService {
 		if (command.getMaxtrixDisplays() != null) {
 			cmdsHandler.handle(command.getMaxtrixDisplays());
 		}
+	}
+	
+	@POST
+	@Path("get-combobox/data")
+	public Object getComboboxData(GridComboBoxSettingQuery query) {
+		return gridProcessor.getComboBox(query);
 	}
 }

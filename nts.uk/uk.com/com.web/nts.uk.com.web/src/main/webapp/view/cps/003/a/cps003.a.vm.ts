@@ -289,6 +289,7 @@ module cps003.a.vm {
 
         openBDialog() {
             let self = this,
+                category = _.find(self.category.items(), x =>{ if(x.id == self.category.catId()){ return x;}})
                 params = {
                     systemDate: moment(self.baseDate()).format("YYYY/MM/DD"),
                     categoryId: self.category.catId(),
