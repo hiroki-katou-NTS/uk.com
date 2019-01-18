@@ -2160,8 +2160,9 @@ module nts.uk.at.view.kmf022 {
 
             private exportExcel(domainId: string) {
                 nts.uk.ui.block.grayout();
-                let programName = "KAF022申請の前準備";
-                service.exportExcel('ja', domainId, programName).done(function() {
+                let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+                let domainType = program[1] != null ? "KAF022" + program[1] : "";
+                service.exportExcel('ja', domainId, domainType).done(function() {
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
                 }).always(function() {
