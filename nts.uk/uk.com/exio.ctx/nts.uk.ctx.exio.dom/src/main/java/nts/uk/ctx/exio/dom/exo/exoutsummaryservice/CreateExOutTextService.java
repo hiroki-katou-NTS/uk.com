@@ -783,7 +783,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 
 			if (isfixedValue == NotUseAtr.USE) {
 				if(stringFormat == StringFormat.SINGLE_QUOTATION) {
-					targetValue = stringFormat.character +fixedValue + stringFormat.character;
+					targetValue = stringFormat.character + stringFormat.character +fixedValue + stringFormat.character;
 				}else if(stringFormat == StringFormat.DOUBLE_QUOTATION) {
 					targetValue = stringFormat.character+ fixedValue +stringFormat.character ;
 				}else{

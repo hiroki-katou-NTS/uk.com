@@ -45,6 +45,7 @@ public class MenuSettingImpl implements MasterListData {
 	private StandardMenuRepository standardMenuRepository; 
 	
 	private static final String commonTitle = TextResource.localize("CCG013_128").concat(" ");
+	private static final String separatorLine = TextResource.localize("CCG013_135");
 	
 	/** 
 	 * get header columns text
@@ -140,6 +141,12 @@ public class MenuSettingImpl implements MasterListData {
 		return datas;
 	}
 	
+	/**
+	 * create empty row with only webmenu
+	 * @param webMenu
+	 * @param maxColumn
+	 * @return
+	 */
 	public MasterData createEmptyRow(WebMenu webMenu, int maxColumn) {
 		Map<String, Object> data = new HashMap<>();
 		putEmptyData(data, maxColumn); 
@@ -247,7 +254,11 @@ public class MenuSettingImpl implements MasterListData {
 	public String getTreeMenuName(TreeMenu treeMenu, List<StandardMenu> listStandardMenus){
 		for (StandardMenu menu : listStandardMenus) {
 			if (treeMenu.getCode().equals(menu.getCode()) && treeMenu.getClassification().equals(menu.getClassification()) && treeMenu.getSystem().equals(menu.getSystem())) {
-				return menu.getDisplayName().v();
+				String displayName = menu.getDisplayName().v();
+				if (displayName != null){
+					if (displayName.equals(TextResource.localize("CCG013_134"))) return separatorLine;
+				}
+				return displayName;
 			}
 		}
 		return null;

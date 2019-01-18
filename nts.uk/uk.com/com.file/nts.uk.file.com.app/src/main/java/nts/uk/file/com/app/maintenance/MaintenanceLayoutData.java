@@ -15,13 +15,8 @@ public class MaintenanceLayoutData extends AggregateRoot {
 
 	private String layoutCd;
 	private String layoutName;
-	private String itemName;
 	private String categoryName;
-
-	public static MaintenanceLayoutData createFromJavaType(String layoutCd, String layoutName,
-			String categoryName, String itemName) {
-		return new MaintenanceLayoutData(layoutCd, layoutName,categoryName,itemName);
-	}
-
+	private String itemName;
+	
 }
 
