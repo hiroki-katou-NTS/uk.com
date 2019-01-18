@@ -21,18 +21,19 @@ import java.util.Map;
 @Stateless
 public class JpaEmYearRetenSetRepository  extends JpaRepository implements EmplYearlyRetenSetRepository {
     private static final String GET_EMPLOY_YEARLY_RETEN =
-            "SELECT ctr.EMP_CTR_CD ," +
-                    "em.NAME," +
-                    "ctr.MANAGEMENT_CTR_ATR," +
-                    "ctr.NUMBER_OF_YEAR," +
-                    "ctr.MAX_NUMBER_OF_DAYS " +
-                    "FROM (" +
-                    "SELECT BSYMT_EMPLOYMENT.CID,BSYMT_EMPLOYMENT.CODE,BSYMT_EMPLOYMENT.NAME " +
-                    "FROM BSYMT_EMPLOYMENT " +
-                    "WHERE BSYMT_EMPLOYMENT.CID= ? " +
-                    ") as em " +
-                    "INNER JOIN KMFMT_RETENTION_EMP_CTR ctr ON em.CODE = ctr.EMP_CTR_CD AND ctr.CID = em.CID " +
-                    "ORDER BY em.CODE ASC";
+            "SELECT EC.EMP_CTR_CD , " +
+                    "EM.NAME, " +
+                    "EC.MANAGEMENT_CTR_ATR, " +
+                    "EC.NUMBER_OF_YEAR, " +
+                    "EC.MAX_NUMBER_OF_DAYS  " +
+                    "                    FROM ( " +
+                    "                    SELECT BSYMT_EMPLOYMENT.CID,BSYMT_EMPLOYMENT.CODE,BSYMT_EMPLOYMENT.NAME  " +
+                    "                    FROM BSYMT_EMPLOYMENT  " +
+                    "                    WHERE BSYMT_EMPLOYMENT.CID= ?  " +
+                    "                    ) as  EM " +
+                    "RIGHT JOIN (SELECT * FROM KMFMT_RETENTION_EMP_CTR CTR WHERE CTR.CID = ? ) as EC ON EC.EMP_CTR_CD = EM.CODE" +
+                    "" +
+                    "                    ORDER BY EC.EMP_CTR_CD ASC;";
 
 
     @Override
@@ -40,6 +41,7 @@ public class JpaEmYearRetenSetRepository  extends JpaRepository implements EmplY
         List<MasterData> datas = new ArrayList<>();
         try (PreparedStatement stmt = this.connection().prepareStatement(GET_EMPLOY_YEARLY_RETEN)) {
             stmt.setString(1, cid);
+            stmt.setString(2, cid);
             datas = new NtsResultSet(stmt.executeQuery())
                     .getList(x -> buildARow(
                             x.getString("EMP_CTR_CD")
@@ -64,7 +66,7 @@ public class JpaEmYearRetenSetRepository  extends JpaRepository implements EmplY
                 .build());
         data.put(EmployeeSystemImpl.KMF001_205, MasterCellData.builder()
                 .columnId(EmployeeSystemImpl.KMF001_205)
-                .value(value2)
+                .value(value2 == null? "マスタ未登録" :value2)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(EmployeeSystemImpl.KMF001_200, MasterCellData.builder()

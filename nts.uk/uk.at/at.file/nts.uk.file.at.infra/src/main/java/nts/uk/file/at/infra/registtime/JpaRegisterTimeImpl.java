@@ -62,7 +62,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
 			+ "WHERE bb.CID = ?1 and bb.LABOR_SYSTEM_ATR = 0";
 	
-	private static final String SQL_EXPORT_SHEET_3 = " SELECT"
+	private static final String SQL_EXPORT_SHEET_3 = " SELECT "
 			+ " 	bb.EMP_CTG_CODE,"
 			+ " 	Case When kk.NAME is NULL THEN 'マスタ未登録' ELSE kk.NAME END NAME,"
 			+ " 	aa.ERROR_WEEK,"
@@ -667,7 +667,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " JOIN KMKMT_AGREEMENTTIME_CLASS bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 			+ " Left JOIN BSYMT_CLASSIFICATION kk ON bb.CLSCD = kk.CLSCD AND kk.CID = ?cid "
 			+ " WHERE"
-			+ " 	bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0 "
+			+ " 	bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1 "
 			+ " ORDER BY bb.CLSCD";
 	
 	
