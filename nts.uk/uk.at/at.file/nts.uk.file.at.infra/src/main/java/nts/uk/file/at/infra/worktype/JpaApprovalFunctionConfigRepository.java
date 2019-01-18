@@ -149,7 +149,7 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("     LEFT JOIN (SELECT WCI.CID, WCI.WKPID, WCI.HIERARCHY_CD FROM BSYMT_WKP_CONFIG_INFO WCI JOIN (SELECT CID, HIST_ID, ROW_NUMBER() OVER(PARTITION BY CID ORDER BY END_DATE DESC) AS RN FROM BSYMT_WKP_CONFIG) WC ON WCI.CID = WC.CID AND WCI.HIST_ID = WC.HIST_ID AND WC.RN = 1) WP_CONFIG ON WP.CID = WP_CONFIG.CID AND WP.WKP_ID = WP_CONFIG.WKPID ");
 		sql.append("    WHERE ");
 		sql.append("     WP.CID = ?cid) TEMP ");
-		sql.append("     ORDER BY TEMP.HIERARCHY_CD, TEMP.NUM_ORDER, TEMP.ROW_NUMBER;");
+		sql.append("     ORDER BY TEMP.HIERARCHY_CD, TEMP.CODE, TEMP.NUM_ORDER, TEMP.ROW_NUMBER;");
 		
 		List<Object[]> resultQuery = null;
 		try {
