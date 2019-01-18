@@ -1238,5 +1238,29 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	/**
+	 * Query get nameItem for CPS003F
+	 */
+	@Override
+	public Map<String, String> getNamesByCodes(List<String> itemCodes) {
+		Map<String, String> mapValues = new HashMap<String, String>();
+		String NATIV_SQL = String.join(" ", "SELECT DISTINCT it.ITEM_CD, it.ITEM_NAME",
+				"FROM [dbo].[PPEMT_PER_INFO_ITEM] it",
+				"LEFT JOIN [dbo].[PPEMT_PER_INFO_CTG] ctg", 
+				"ON it.PER_INFO_CTG_ID = ctg.PER_INFO_CTG_ID",
+				"WHERE ctg.CID = '{cid}' AND it.ITEM_CD LIKE 'IS%' AND ITEM_CD IN ('{iids}')"); //IS00020', 'IS00279', 'IS00253
+		
+		NATIV_SQL = NATIV_SQL.replaceAll("\\{cid\\}", AppContexts.user().companyId()).replaceAll("\\{iids\\}", String.join("','", itemCodes));
+		
+		@SuppressWarnings("unchecked")
+		List<Object[]> result = getEntityManager().createNativeQuery(NATIV_SQL).getResultList();
+		
+		result.forEach(f -> {
+			mapValues.put(f[0].toString(), f[1].toString());
+		});
+		
+		return mapValues;
+	}
 }
 

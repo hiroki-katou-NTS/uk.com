@@ -157,4 +157,6 @@ public interface PerInfoItemDefRepositoty {
 			String contractCd);
 
 	List<PersonInfoItemDefinition> findByIDandIsAbolition(String perInfoCtgId , int abolitionAtr );
+	
+	Map<String, String> getNamesByCodes(List<String> itemCodes);
 }
