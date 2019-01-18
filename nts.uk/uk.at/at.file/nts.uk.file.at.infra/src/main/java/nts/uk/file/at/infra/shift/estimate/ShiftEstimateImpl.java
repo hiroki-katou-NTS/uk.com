@@ -396,7 +396,7 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 		Map<String, MasterCellData> data = new HashMap<>();
 		data.put(ShiftEstimateColumn.KSM001_158,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_158)
-						.value(object[0] != null ? (BigDecimal) object[0] : "")
+						.value(object[0] != null ? (String) object[0] : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_159,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_159)
