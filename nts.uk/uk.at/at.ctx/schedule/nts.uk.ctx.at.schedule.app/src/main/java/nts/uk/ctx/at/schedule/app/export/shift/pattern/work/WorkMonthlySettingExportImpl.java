@@ -60,8 +60,7 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 						}
 					}
 					else {
-						
-						datas.add(newWSWithCodeNameMasterData(listDataPerOneWp.get().get(0)));
+//						datas.add(newWSWithCodeNameMasterData(listDataPerOneWp.get().get(0)));
 					}
 				}
 			});
@@ -70,18 +69,18 @@ public class WorkMonthlySettingExportImpl implements MasterListData {
 		return datas;
 	}
 	
-	private MasterData newWSWithCodeNameMasterData(WorkMonthlySettingReportData setWorkplaceReportData) {
-		
-		Map<String, Object> data = new HashMap<>();
-		// put empty to columns
-		putEmptyToColumWorkSet(data);
-		data.put("コード", setWorkplaceReportData.getPattenCode());
-		data.put("名称", setWorkplaceReportData.getPatternName());
-
-		MasterData masterData = new MasterData(data, null, "");
-		alignDataWorkSet(masterData.getRowData());
-		return masterData;
-	}
+//	private MasterData newWSWithCodeNameMasterData(WorkMonthlySettingReportData setWorkplaceReportData) {
+//		
+//		Map<String, Object> data = new HashMap<>();
+//		// put empty to columns
+//		putEmptyToColumWorkSet(data);
+//		data.put("コード", setWorkplaceReportData.getPattenCode());
+//		data.put("名称", setWorkplaceReportData.getPatternName());
+//
+//		MasterData masterData = new MasterData(data, null, "");
+//		alignDataWorkSet(masterData.getRowData());
+//		return masterData;
+//	}
 
 	/**
 	 * create row data for WorkPlace sheet
