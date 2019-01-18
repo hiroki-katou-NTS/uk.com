@@ -1,6 +1,6 @@
 package nts.uk.file.com.app.selectionitem;
 
-public class SelectionItemColumn {
+public final class SelectionItemColumn {
     public static String CPS016_27 = "名称";
     public static String CPS016_28 = "コード型";
     public static String CPS016_29 = "コード桁数";
