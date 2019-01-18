@@ -129,8 +129,7 @@ public class DivergenceExportImpl  implements MasterListData{
 		// Get company id
 		String companyId = AppContexts.user().companyId();
 		// Get list divergence time
-		List<DivergenceTime> listDivTime = this.divTimeRepo.getAllDivTime(companyId);
-		listDivTime.stream().filter(x->x.getDivTimeUseSet()==DivergenceTimeUseSet.USE).collect(Collectors.toList());
+		List<DivergenceTime> listDivTime = this.divTimeRepo.getAllDivTime(companyId).stream().filter(x ->x.getDivTimeUseSet()==DivergenceTimeUseSet.USE).collect(Collectors.toList());
 		listDivTime.sort((DivergenceTime o1,DivergenceTime o2) -> o1.getDivergenceTimeNo()-o2.getDivergenceTimeNo());
 		// Check list empty
 		if (listDivTime.isEmpty()) {
