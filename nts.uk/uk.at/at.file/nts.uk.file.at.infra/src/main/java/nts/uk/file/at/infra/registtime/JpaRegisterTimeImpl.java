@@ -64,7 +64,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	
 	private static final String SQL_EXPORT_SHEET_3 = "SELECT "
 			+ "bb.EMP_CTG_CODE,"
-			+ "kk.NAME,"
+			/*+ "kk.NAME,"*/
+			+ "Case When kk.NAME is NULL THEN 'マスタ未登録' ELSE kk.NAME END NAME,"
 			+ "aa.ERROR_WEEK,"
 			+ "aa.ALARM_WEEK,"
 			+ "LIMIT_WEEK = ("
@@ -254,7 +255,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	
 	private static final String SQL_EXPORT_SHEET_5 = "SELECT "
 			+ "bb.CLSCD,"
-			+ "kk.CLSNAME,"
+			+ "Case When kk.CLSNAME is NULL THEN 'マスタ未登録' ELSE kk.CLSNAME END CLSNAME,"
 			+ "aa.ERROR_WEEK,"
 			+ "aa.ALARM_WEEK,"
 			+ "LIMIT_WEEK = ("
@@ -340,7 +341,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	
 	private static final String SQL_EXPORT_SHEET_7 = "SELECT "
 			+ "bb.EMP_CTG_CODE,"
-			+ "kk.NAME,"
+			+ "Case When kk.NAME is NULL THEN 'マスタ未登録' ELSE kk.NAME END NAME,"
 			+ "aa.ERROR_WEEK,"
 			+ "aa.ALARM_WEEK,"
 			+ "LIMIT_WEEK = ("
@@ -531,7 +532,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	
 	private static final String SQL_EXPORT_SHEET_9 = "SELECT "
 			+ "bb.CLSCD,"
-			+ "kk.CLSNAME,"
+			+ "Case When kk.CLSNAME is NULL THEN 'マスタ未登録' ELSE kk.CLSNAME END CLSNAME,"
 			+ "aa.ERROR_WEEK,"
 			+ "aa.ALARM_WEEK,"
 			+ "LIMIT_WEEK = ("
@@ -902,7 +903,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
                 .build());
 		data.put(RegistTimeColumn.KMK008_101, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_101)
-                .value(rownum == 0 ? objects[1] == null ? NAME_MASTER : objects[1] : "")
+                .value(rownum == 0 ? objects[1] : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
@@ -1011,7 +1012,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
                 .build());
 		data.put(RegistTimeColumn.KMK008_105, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_105)
-                .value(rownum == 0 ? objects[1] == null ? NAME_MASTER : objects[1] : "")
+                .value(rownum == 0 ? objects[1] : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
@@ -1116,7 +1117,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
                 .build());
 		data.put(RegistTimeColumn.KMK008_101, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_101)
-                .value(rownum == 0 ? objects[1] == null ? NAME_MASTER : "" : "")
+                .value(rownum == 0 ? objects[1] : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
@@ -1223,7 +1224,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
                 .build());
 		data.put(RegistTimeColumn.KMK008_105, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_105)
-                .value(rownum == 0 ? objects[1] == null ? NAME_MASTER : objects[1] : "")
+                .value(rownum == 0 ?  objects[1] : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
