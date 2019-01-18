@@ -13,6 +13,7 @@ import nts.arc.time.GeneralDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkTimeReportDatasource {
+	private String programName;
 	private String companyName;
 	private GeneralDateTime exportTime;
 	private List<Object[]> workTimeNormal;

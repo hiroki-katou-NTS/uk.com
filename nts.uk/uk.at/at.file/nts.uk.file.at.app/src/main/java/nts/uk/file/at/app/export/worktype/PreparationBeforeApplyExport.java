@@ -630,7 +630,7 @@ public class PreparationBeforeApplyExport {
         switch (line) {
             case 0:
                 if(((BigDecimal)obj[70]).intValue() == 2 ) {
-                    return TextResource.localize("KAF022_171");
+                    return TextResource.localize("KAF022_270");
                 }
                 return ((BigDecimal)obj[70]).intValue() == 1 ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
             case 1:
