@@ -8,8 +8,10 @@ module nts.uk.com.view.cmm051.a {
         }
         
         export function saveAsExcel(languageId: string, date: string): JQueryPromise<any> {
+            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+            let programName = program[1]!=null?program[1]:""; 
             let _params = { domainId: "WorkPlaceSelection", 
-                        domainType: "CMM051職場管理者の登録", 
+                        domainType: "CMM051"+programName, 
                         languageId: languageId, 
                         reportType: 0,mode : 1 , baseDate : date };
             return nts.uk.request.exportFile('/masterlist/report/print', _params);           
