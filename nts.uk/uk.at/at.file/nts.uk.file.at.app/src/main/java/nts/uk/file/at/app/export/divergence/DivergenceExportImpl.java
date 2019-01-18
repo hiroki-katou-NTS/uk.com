@@ -129,7 +129,7 @@ public class DivergenceExportImpl  implements MasterListData{
 		// Get company id
 		String companyId = AppContexts.user().companyId();
 		// Get list divergence time
-		List<DivergenceTime> listDivTime = this.divTimeRepo.getAllDivTime(companyId);
+		List<DivergenceTime> listDivTime = this.divTimeRepo.getAllDivTime(companyId).stream().filter(x ->x.getDivTimeUseSet()==DivergenceTimeUseSet.USE).collect(Collectors.toList());
 		listDivTime.sort((DivergenceTime o1,DivergenceTime o2) -> o1.getDivergenceTimeNo()-o2.getDivergenceTimeNo());
 		// Check list empty
 		if (listDivTime.isEmpty()) {
@@ -140,7 +140,7 @@ public class DivergenceExportImpl  implements MasterListData{
 		    data.put("No", divergenceTime.getDivergenceTimeNo());
 			data.put("名称",  divergenceTime.getDivTimeName().v());
 			data.put("使用区分", getDivergenceTimeUseSet(divergenceTime.getDivTimeUseSet().value));
-			if(divergenceTime.getDivTimeUseSet()==DivergenceTimeUseSet.USE){
+			//if(divergenceTime.getDivTimeUseSet()==DivergenceTimeUseSet.USE){
 				DivergenceTimeInputMethodDto resultDivergenceInfo = this.divTimeInputmethodFinder.getDivTimeInputMethodInfo(divergenceTime.getDivergenceTimeNo());
 				data.put("乖離の種類", divergenceTime.getDivType().display);
 				List<AttendanceNameDivergenceDto> rsattendanceName = atName.getDailyAttendanceItemName(divergenceTime.getTargetItems());
@@ -182,7 +182,7 @@ public class DivergenceExportImpl  implements MasterListData{
 				}
 					
 				
-			}
+		//	}
 			MasterData masterData = new MasterData(data, null, "");
 			Map<String, MasterCellData> rowData = masterData.getRowData();
 			rowData.get("No").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));

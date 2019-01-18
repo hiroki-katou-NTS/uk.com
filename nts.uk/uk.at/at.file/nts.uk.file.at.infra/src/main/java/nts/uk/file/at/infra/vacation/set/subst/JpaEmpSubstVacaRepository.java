@@ -20,19 +20,19 @@ import static nts.uk.file.at.infra.vacation.set.CommonTempHolidays.*;
 @Stateless
 public class JpaEmpSubstVacaRepository extends JpaRepository implements EmpSubstVacaRepository {
     private static final String GET_EM_SUBST_VACATION =
-            "SELECT " +
-                    " SV.EMPCD, " +
-                    " EM.NAME, " +
-                    " SV.IS_MANAGE, " +
-                    " SV.EXPIRATION_DATE_SET, " +
-                    " SV.ALLOW_PREPAID_LEAVE " +
-                    "            FROM ( " +
-                    "                    SELECT BE.CID,BE.CODE,BE.NAME " +
-                    "                    FROM BSYMT_EMPLOYMENT  BE" +
-                    "                    WHERE BE.CID= ? " +
-                    "                    ) as EM " +
-                    "            INNER JOIN KSVST_EMP_SUBST_VACATION SV ON EM.CODE = SV.EMPCD AND SV.CID = EM.CID " +
-                    "            ORDER BY EM.CODE ASC";
+            "SELECT  " +
+                    "                     SV.EMPCD,  " +
+                    "                     EM.NAME,  " +
+                    "                     SV.IS_MANAGE,  " +
+                    "                     SV.EXPIRATION_DATE_SET,  " +
+                    "                     SV.ALLOW_PREPAID_LEAVE  " +
+                    "                                FROM (  " +
+                    "                                        SELECT BE.CID,BE.CODE,BE.NAME  " +
+                    "                                        FROM BSYMT_EMPLOYMENT  BE " +
+                    "                                        WHERE BE.CID= ?  " +
+                    "                                        ) as EM  " +
+                    "                                RIGHT JOIN (SELECT * FROM KSVST_EMP_SUBST_VACATION SV WHERE SV.CID = ? ) as SV ON EM.CODE = SV.EMPCD AND SV.CID = EM.CID  " +
+                    "                                ORDER BY SV.EMPCD ASC;";
 
 
     @Override
@@ -40,6 +40,7 @@ public class JpaEmpSubstVacaRepository extends JpaRepository implements EmpSubst
         List<MasterData> datas = new ArrayList<>();
         try (PreparedStatement stmt = this.connection().prepareStatement(GET_EM_SUBST_VACATION)) {
             stmt.setString(1, cid);
+            stmt.setString(2, cid);
             NtsResultSet result = new NtsResultSet(stmt.executeQuery());
             result.forEach(i->{
                 datas.addAll(buildMasterListData(i));
@@ -75,7 +76,7 @@ public class JpaEmpSubstVacaRepository extends JpaRepository implements EmpSubst
                 .build());
         data.put(EmployeeSystemImpl.KMF001_205, MasterCellData.builder()
                 .columnId(EmployeeSystemImpl.KMF001_205)
-                .value(value2)
+                .value(value2 == null ? "マスタ未登録" : value2)
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(EmployeeSystemImpl.KMF001_224, MasterCellData.builder()

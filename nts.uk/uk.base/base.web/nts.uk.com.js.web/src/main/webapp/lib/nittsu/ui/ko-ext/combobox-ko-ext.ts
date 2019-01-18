@@ -262,45 +262,47 @@ module nts.uk.ui.koExtentions {
                     },
                     dropDownClosed: (evt, ui) => {
                         let data = $element.data(DATA);
+                        
+                        if(data) {                            
+                            // check flag changed for validate
+                            $element.trigger(CHANGED, [CHANGED, true]);
 
-                        // check flag changed for validate
-                        $element.trigger(CHANGED, [CHANGED, true]);
+                            let sto = setTimeout(() => {
+                                let data = $element.data(DATA);
 
-                        let sto = setTimeout(() => {
-                            let data = $element.data(DATA);
+                                // select first if !select and !editable
+                                if (!data[EDITABLE] && _.isNil(data[VALUE])) {
+                                    $element.trigger(CHANGED, [VALUE, $element.igCombo('value')]);
+                                    //reload data
+                                    data = $element.data(DATA);
+                                }
 
-                            // select first if !select and !editable
-                            if (!data[EDITABLE] && _.isNil(data[VALUE])) {
-                                $element.trigger(CHANGED, [VALUE, $element.igCombo('value')]);
-                                //reload data
-                                data = $element.data(DATA);
-                            }
+                                // not match any filter value
+                                if (_.isArray(data[VALUE]) && !_.size(data[VALUE])) {
+                                    $element.trigger(CHANGED, [VALUE, ko.toJS(accessor.value)]);
+                                    //reload data
+                                    data = $element.data(DATA);
+                                }
 
-                            // not match any filter value
-                            if (_.isArray(data[VALUE]) && !_.size(data[VALUE])) {
-                                $element.trigger(CHANGED, [VALUE, ko.toJS(accessor.value)]);
-                                //reload data
-                                data = $element.data(DATA);
-                            }
+                                // set value on select
+                                accessor.value(data[VALUE]);
 
-                            // set value on select
-                            accessor.value(data[VALUE]);
+                                // validate if required
+                                $element
+                                    .trigger(VALIDATE, [true])
+                                    .trigger(SHOWVALUE);
 
-                            // validate if required
-                            $element
-                                .trigger(VALIDATE, [true])
-                                .trigger(SHOWVALUE);
+                                clearTimeout(sto);
+                            }, 10);
 
-                            clearTimeout(sto);
-                        }, 10);
+                            if (data[ENABLE]) {
+                                let f = $(':focus');
 
-                        if (data[ENABLE]) {
-                            let f = $(':focus');
-
-                            if (f.hasClass('ui-igcombo-field')
-                                || !(f.is('input') || f.is('select') || f.is('textarea') || f.is('a') || f.is('button'))
-                                || ((f.is('p') || f.is('div') || f.is('span') || f.is('table') || f.is('ul') || f.is('li') || f.is('tr')) && _.isNil(f.attr('tabindex')))) {
-                                $element.focus();
+                                if (f.hasClass('ui-igcombo-field')
+                                    || !(f.is('input') || f.is('select') || f.is('textarea') || f.is('a') || f.is('button'))
+                                    || ((f.is('p') || f.is('div') || f.is('span') || f.is('table') || f.is('ul') || f.is('li') || f.is('tr')) && _.isNil(f.attr('tabindex')))) {
+                                    $element.focus();
+                                }
                             }
                         }
                     },
