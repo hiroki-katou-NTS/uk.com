@@ -1,4 +1,4 @@
-package nts.uk.file.com.app.jobInfo;
+package nts.uk.file.com.app.jobInfos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,8 +67,7 @@ public class JobInfoExportImpl implements MasterListData{
 	
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		List<MasterData> datas = new ArrayList<>();
-		String baseDate =  query.getBaseDate().toString();
-		datas = repository.getDataRoleSetPosExport(baseDate);
+		datas = repository.getDataRoleSetPosExport();
 		return datas;
 	}
 	

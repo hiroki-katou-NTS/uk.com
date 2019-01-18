@@ -8,9 +8,11 @@ module nts.uk.pr.view.kmf001.a {
         };
         //export excel
         export function exportExcel(): JQueryPromise<any> {
+            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+            let domainType = program[1] != null ? "KMF001" + program[1] : "";
             let _params = {
                 domainId: "EmployeeSystem",
-                domainType: "KMF001休暇の設定",
+                domainType: domainType,
                 languageId: "ja",
                 reportType: 0
             };

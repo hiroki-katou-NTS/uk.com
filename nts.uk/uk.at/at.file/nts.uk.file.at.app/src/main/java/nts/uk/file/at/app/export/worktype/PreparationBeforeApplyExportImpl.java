@@ -6,6 +6,7 @@ import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.appt
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.BeforeAddCheckMethod;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
+
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.*;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
@@ -27,9 +28,6 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
     private static final String COLUMN_NO_HEADER_4 = "COLUMN_NO_HEADER_4";
     private static final String KAF022_454 = "項目";
     private static final String KAF022_455 = "値";
-    private static final String KAF022_456 = "申請締切設定";
-    private static final String KAF022_458 = "利用";
-    private static final String KAF022_459 = "基準日から期限までの日数";
     private static final String KAF022_468 = "利用する";
     private static final String KAF022_478 = "定型理由の表示";
     private static final String KAF022_479 = "申請理由の表示";
@@ -109,7 +107,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
             dataA4.put(KAF022_455, MasterCellData.builder()
                     .columnId(KAF022_455)
                     .value(getValueA4(i, export))
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                    .style(MasterCellStyle.build().horizontalAlign(getColumnTextAlignA4(i)))
                     .build());
           datasA4.add(MasterData.builder().rowData(dataA4).build());
         }
@@ -230,7 +228,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
             dataA7.put(KAF022_455, MasterCellData.builder()
                     .columnId(KAF022_455)
                     .value(getValueA7Top(i, export))
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                    .style(MasterCellStyle.build().horizontalAlign(getColumnTextAlign(i)))
                     .build());
             datasA7.add(MasterData.builder().rowData(dataA7).build());
         }
@@ -269,7 +267,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
             dataA7.put(KAF022_455, MasterCellData.builder()
                     .columnId(KAF022_455)
                     .value(getValueA7Bottom(i, export))
-                    .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                    .style(MasterCellStyle.build().horizontalAlign(i == 1 ? ColumnTextAlign.RIGHT : ColumnTextAlign.LEFT))
                     .build());
             datasA7.add(MasterData.builder().rowData(dataA7).build());
         }
@@ -568,7 +566,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
     private String getValueA6(ApplicationType appType, List<Object[]> obj){
          Optional<Object[]> temp = obj.stream().filter(i -> i[36] != null ? appType.value == ((BigDecimal) i[36]).intValue() : appType.value == -1).findFirst();
          if(temp.isPresent()) {
-             return temp.get()[37] != null ? temp.get()[37].toString() + TextResource.localize("KAF022_650") : "";
+             return temp.get()[37] != null ? temp.get()[37].toString() + TextResource.localize("KAF022_653") : "";
          }
         return null;
     }
@@ -604,6 +602,13 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
             return getTextDeadLine(((BigDecimal) obj[5]).intValue());
         }
         return "";
+    }
+
+    private ColumnTextAlign getColumnTextAlignA4(int line){
+        if(line == 3) {
+            return ColumnTextAlign.RIGHT;
+        }
+        return ColumnTextAlign.LEFT;
     }
     
     private String getTextDeadLine(int value){
@@ -824,35 +829,48 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
         }
         if(i == 7 && obj[49] != null) {
             return ((BigDecimal)obj[49]).intValue() == 1 ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
-
         }
         return "";
     }
 
+    private ColumnTextAlign getColumnTextAlign(int line){
+        if(line == 2 || line == 3 || line == 4 || line == 5) {
+            return ColumnTextAlign.RIGHT;
+        }
+        return ColumnTextAlign.LEFT;
+    }
 
     private String getValueA7Top(int i, Object[] obj){
         if(i == 0 && obj[28] != null ) {
             return ((BigDecimal)obj[28]).intValue() == 1 ? "○" : "-";
         }
-        if(i == 1 && obj[23] != null) {
-            return ((BigDecimal)obj[28]).intValue() == 1 ? EnumAdaptor.valueOf(((BigDecimal) obj[23]).intValue(), BeforeAddCheckMethod.class).name : "";
+        if(i == 1 && obj[23] != null ) {
+            if (((BigDecimal) obj[28]).intValue() == 1) {
+                return (((BigDecimal) obj[23]).intValue() == 1) ? TextResource.localize("KAF022_63") : TextResource.localize("KAF022_66");
+            }
         }
         if(i == 2 && obj[29] != null && ((BigDecimal) obj[23]).intValue() == 1) {
             return ((BigDecimal)obj[28]).intValue() == 1 ? EnumAdaptor.valueOf(((BigDecimal) obj[29]).intValue(), AppAcceptLimitDay.class).name + TextResource.localize("KAF022_510") : "";
         }
         if(i == 3 && obj[24] != null && ((BigDecimal) obj[23]).intValue() == 0) {
-            return ((BigDecimal)obj[28]).intValue() == 1 ? obj[24].toString() + TextResource.localize("KAF022_510") : "";
+            return ((BigDecimal)obj[28]).intValue() == 1 ? convertToTime(((BigDecimal) obj[24]).intValue()) + TextResource.localize("KAF022_510") : "";
         }
         if(i == 4 && obj[25] != null && ((BigDecimal) obj[23]).intValue() == 0) {
-            return ((BigDecimal)obj[28]).intValue() == 1 ? obj[25].toString() : "";
+            return ((BigDecimal)obj[28]).intValue() == 1 ? convertToTime(((BigDecimal)obj[25]).intValue()) : "";
         }
         if(i == 5 && obj[26] != null && ((BigDecimal) obj[23]).intValue() == 0) {
-            return ((BigDecimal)obj[28]).intValue() == 1 ? obj[26].toString() : "";
+            return ((BigDecimal)obj[28]).intValue() == 1 ? convertToTime(((BigDecimal) obj[26]).intValue()) : "";
         }
         if(i == 6 && obj[30] != null) {
             return ((BigDecimal)obj[30]).intValue() == 1 ? "○" : "-";
         }
         return "";
+    }
+
+    private String convertToTime(int param){
+        int m = param / 60;
+        int s = param % 60;
+        return String.format("%02d:%02d", m, s);
     }
 
     private String getValueA8Top(int i, Object[] obj){

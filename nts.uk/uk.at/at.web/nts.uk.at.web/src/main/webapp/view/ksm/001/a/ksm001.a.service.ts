@@ -16,12 +16,13 @@ module nts.uk.at.view.ksm001.a {
         }
 
         export function saveAsExcel(languageId: string, startDate: any, endDate: any): JQueryPromise<any> {
+            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+            let programName = program[1]!=null?program[1]:"";
             let _params = {
                 domainId: "ShiftEstimate",
-                domainType: "KSM001目安時間・金額の登録",
+                domainType: "KSM001"+programName,
                 languageId: languageId,
-                reportType: 0,
-                mode: 2,
+                reportType: 0,              
                 startDate: startDate,
                 endDate: endDate
             };

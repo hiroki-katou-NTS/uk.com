@@ -183,7 +183,7 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
                         Map<String, MasterCellData> data = new HashMap<>();
                         data.put(KMK006_71, MasterCellData.builder()
                                 .columnId(KMK006_71)
-                                .value(w[23])
+                                .value(w[23] == null ? NO_REGIS : w[24])
                                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                                 .build());
 
@@ -202,7 +202,7 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
                         Map<String, MasterCellData> data = new HashMap<String, MasterCellData>();
                         data.put(KMK006_73, MasterCellData.builder()
                                 .columnId(KMK006_73)
-                                .value(j[23])
+                                .value(j[23] == null ? NO_REGIS : j[23])
                                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                                 .build());
                         data.put(KMK006_74, MasterCellData.builder()
@@ -220,17 +220,17 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
                         Map<String, MasterCellData> data = new HashMap<>();
                         data.put(KMK006_71, MasterCellData.builder()
                                 .columnId(KMK006_71)
-                                .value(wj[23])
+                                .value(getWorkPlaceCode(wj))
                                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                                 .build());
                         data.put(KMK006_72, MasterCellData.builder()
                                 .columnId(KMK006_72)
-                                .value(wj[24] == null ? NO_REGIS : wj[24])
+                                .value(getWorkPlaceName(wj))
                                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                                 .build());
                         data.put(KMK006_73, MasterCellData.builder()
                                 .columnId(KMK006_73)
-                                .value(wj[25])
+                                .value(wj[25] == null ? NO_REGIS : wj[25])
                                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                                 .build());
                         data.put(KMK006_74, MasterCellData.builder()
@@ -244,6 +244,25 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
                     break;
             }
             return datas;
+    }
+
+    private String getWorkPlaceCode(Object[] obj){
+        if(obj[23] == null) {
+            return NO_REGIS;
+        }
+        if("-".equals(obj[23].toString())) {
+            return "";
+        }
+        return obj[23].toString();
+    }
+    private String getWorkPlaceName(Object[] obj){
+        if(obj[24] == null) {
+            return NO_REGIS;
+        }
+        if("-".equals(obj[24].toString())) {
+            return "";
+        }
+        return obj[24].toString();
     }
 
     @Override

@@ -102,6 +102,7 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("    (SELECT  ");
 		sql.append("     NULL AS CODE, ");
 		sql.append("     ?companyText AS NAME, ");
+		sql.append("     NULL AS HIERARCHY_CD, ");
 		sql.append("     APP_TYPE, ");
 		sql.append("     USE_ATR, ");
 		sql.append("     REQUIRED_INSTRUCTION_FLG, ");
@@ -121,8 +122,9 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("    WHERE CID = ?cid ");
 		sql.append("    UNION ALL ");
 		sql.append("    SELECT ");
-		sql.append("     ISNULL(WPI.WKPCD, ?masterUnregistered) AS CODE, ");
-		sql.append("     ISNULL(WPI.WKP_NAME, ?masterUnregistered) AS NAME, ");
+		sql.append("     IIF(WPI.WKPCD IS NOT NULL, WPI.WKPCD, ?masterUnregistered) AS CODE, ");
+		sql.append("     IIF(WPH.END_DATE = ?baseDate AND WPI.WKP_NAME IS NOT NULL, WPI.WKP_NAME, ?masterUnregistered) AS NAME, ");
+		sql.append("     ISNULL(WP_CONFIG.HIERARCHY_CD, '999999999999999999999999999999') AS HIERARCHY_CD, ");
 		sql.append("     WP.APP_TYPE, ");
 		sql.append("     WP.USE_ATR, ");
 		sql.append("     WP.REQUIRED_INSTRUCTION_FLG, ");
@@ -142,11 +144,12 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("     (SELECT *, ROW_NUMBER() OVER (PARTITION BY CID ORDER BY CID, WKP_ID, DISPLAY_ORDER) AS NUM_ORDER, ");
 		sql.append("     ROW_NUMBER() OVER (PARTITION BY CID, WKP_ID ORDER BY CID, WKP_ID, DISPLAY_ORDER) AS ROW_NUMBER ");
 		sql.append("     FROM (SELECT *, CASE WHEN APP_TYPE = 7 THEN 9 WHEN APP_TYPE = 8 THEN 7 WHEN APP_TYPE = 9 THEN 8 ELSE APP_TYPE END DISPLAY_ORDER FROM KRQST_WP_APP_CF_DETAIL) WP_APP_CF_DETAIL) WP ");
-		sql.append("     LEFT JOIN BSYMT_WORKPLACE_HIST WPH ON WP.CID = WPH.CID AND WP.WKP_ID = WPH.WKPID AND WPH.END_DATE = ?baseDate ");
+		sql.append("     LEFT JOIN (SELECT CID, WKPID, HIST_ID, END_DATE, ROW_NUMBER() OVER(PARTITION BY CID, WKPID ORDER BY END_DATE DESC) AS RN FROM BSYMT_WORKPLACE_HIST) WPH ON WP.CID = WPH.CID AND WP.WKP_ID = WPH.WKPID AND WPH.RN = 1 ");
 		sql.append("     LEFT JOIN BSYMT_WORKPLACE_INFO WPI ON WP.CID = WPI.CID AND WP.WKP_ID = WPI.WKPID AND WPH.HIST_ID = WPI.HIST_ID ");
+		sql.append("     LEFT JOIN (SELECT WCI.CID, WCI.WKPID, WCI.HIERARCHY_CD FROM BSYMT_WKP_CONFIG_INFO WCI JOIN (SELECT CID, HIST_ID, ROW_NUMBER() OVER(PARTITION BY CID ORDER BY END_DATE DESC) AS RN FROM BSYMT_WKP_CONFIG) WC ON WCI.CID = WC.CID AND WCI.HIST_ID = WC.HIST_ID AND WC.RN = 1) WP_CONFIG ON WP.CID = WP_CONFIG.CID AND WP.WKP_ID = WP_CONFIG.WKPID ");
 		sql.append("    WHERE ");
 		sql.append("     WP.CID = ?cid) TEMP ");
-		sql.append("     ORDER BY TEMP.CODE, TEMP.NUM_ORDER, TEMP.ROW_NUMBER;");
+		sql.append("     ORDER BY TEMP.HIERARCHY_CD, TEMP.CODE, TEMP.NUM_ORDER, TEMP.ROW_NUMBER;");
 		
 		List<Object[]> resultQuery = null;
 		try {
@@ -249,7 +252,7 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("       ELSE NULL ");
 		sql.append("     END HOLIDAY_TYPE_USE_FLG, ");
 		sql.append("     CASE WHEN TEMP.APP_TYPE != 1 OR (TEMP.APP_TYPE = 1 AND TEMP.HOLIDAY_TYPE_USE_FLG = 0) THEN ");
-		sql.append("       STUFF((SELECT ',' + EMP_WT.WORK_TYPE_CODE + IIF(WT.CD IS NOT NULL, WT.NAME, 'マスタ未登録') ");
+		sql.append("       STUFF((SELECT ',' + EMP_WT.WORK_TYPE_CODE + IIF(WT.CD IS NOT NULL, WT.NAME, ?masterUnregistered) ");
 		sql.append("        FROM ");
 		sql.append("         KRQDT_APP_EMPLOY_WORKTYPE EMP_WT LEFT JOIN KSHMT_WORKTYPE WT ");
 		sql.append("          ON EMP_WT.CID = WT.CID ");
@@ -264,20 +267,20 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("     END WORK_TYPE_NAME ");
 		sql.append("    FROM ");
 		sql.append("     (SELECT ");
-		sql.append("      EMP.CID, ");
-		sql.append("      EMP.CODE, ");
-		sql.append("      EMP.NAME, ");
+		sql.append("      EMP_SET.CID, ");
+		sql.append("      EMP_SET.EMPLOYMENT_CODE CODE, ");
+		sql.append("      IIF(EMP.CODE IS NOT NULL, EMP.NAME, ?masterUnregistered) NAME, ");
 		sql.append("      EMP_SET.APP_TYPE, ");
 		sql.append("      EMP_SET.HOLIDAY_OR_PAUSE_TYPE, ");
 		sql.append("      EMP_SET.HOLIDAY_TYPE_USE_FLG, ");
-		sql.append("      ROW_NUMBER() OVER (PARTITION BY EMP.CID, EMP.CODE ORDER BY EMP.CID, EMP.CODE, EMP_SET.APP_TYPE, EMP_SET.DISPLAY_ORDER) AS ROW_NUM ");
+		sql.append("      ROW_NUMBER() OVER (PARTITION BY EMP_SET.CID, EMP_SET.EMPLOYMENT_CODE ORDER BY EMP_SET.CID, EMP_SET.EMPLOYMENT_CODE, EMP_SET.APP_TYPE, EMP_SET.DISPLAY_ORDER) AS ROW_NUM ");
 		sql.append("     FROM ");
 		sql.append("      BSYMT_EMPLOYMENT EMP ");
-		sql.append("      LEFT JOIN (SELECT *, CASE WHEN APP_TYPE = 10 THEN 1 - HOLIDAY_OR_PAUSE_TYPE  ELSE HOLIDAY_OR_PAUSE_TYPE END DISPLAY_ORDER FROM KRQST_APP_EMPLOYMENT_SET) EMP_SET ");
+		sql.append("      RIGHT JOIN (SELECT *, CASE WHEN APP_TYPE = 10 THEN 1 - HOLIDAY_OR_PAUSE_TYPE  ELSE HOLIDAY_OR_PAUSE_TYPE END DISPLAY_ORDER FROM KRQST_APP_EMPLOYMENT_SET) EMP_SET ");
 		sql.append("       ON EMP.CID = EMP_SET.CID ");
 		sql.append("       AND EMP.CODE = EMP_SET.EMPLOYMENT_CODE ");
 		sql.append("     WHERE ");
-		sql.append("      EMP.CID = ?cid AND EMP_SET.DISPLAY_FLAG = 1) TEMP ");
+		sql.append("      EMP_SET.CID = ?cid AND EMP_SET.DISPLAY_FLAG = 1) TEMP ");
 		sql.append("    GROUP BY TEMP.CID, TEMP.CODE, TEMP.NAME, TEMP.APP_TYPE, TEMP.HOLIDAY_OR_PAUSE_TYPE, TEMP.HOLIDAY_TYPE_USE_FLG, TEMP.ROW_NUM ");
 		sql.append("    ORDER BY TEMP.CODE, TEMP.APP_TYPE, TEMP.ROW_NUM;");
 		List<Object[]> resultQuery = null;
@@ -307,6 +310,7 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 					.setParameter("holidayType0", TextResource.localize("KAF022_54"))
 					.setParameter("holidayTypeUseText", "○")
 					.setParameter("holidayTypeNotUseText", "-")
+					.setParameter("masterUnregistered", TextResource.localize("Enum_MasterUnregistered"))
 					.getResultList();
 		} catch (NoResultException e) {
 			return Collections.emptyList();
