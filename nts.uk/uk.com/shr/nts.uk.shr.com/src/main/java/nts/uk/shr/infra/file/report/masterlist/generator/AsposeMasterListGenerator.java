@@ -55,6 +55,8 @@ import nts.uk.shr.infra.file.report.masterlist.webservice.ReportType;
 public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implements MasterListReportGenerator {
 
 	private static final String YEAR_FORMAT = "yyyy年";
+	
+	private static final String FISCAL_YEAR_FORMAT = "yyyy年度";
 
 	public static final int DEFAULT_FONT_SIZE = 10;
 
@@ -288,9 +290,22 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		if (mode == MasterListMode.FISCAL_YEAR_RANGE || mode == MasterListMode.YEAR_RANGE
 				|| mode == MasterListMode.ALL) {
 			int positonToPlus = mode == MasterListMode.ALL ? 5 : 4;
-			GeneralDate toProcessEndDate = mode == MasterListMode.YEAR_RANGE ? endDate : endDate.addYears(-1);
-			String range = checkAndformatDate(startDate, YEAR_FORMAT) + FROM_TO
-					+ checkAndformatDate(toProcessEndDate, YEAR_FORMAT);
+			String dateFormat;
+			GeneralDate toProcessEndDate;
+			if(mode == MasterListMode.YEAR_RANGE) {
+				toProcessEndDate = endDate;
+				dateFormat = YEAR_FORMAT;
+			} else {
+				dateFormat = FISCAL_YEAR_FORMAT;
+				if(endDate.month() == 12){
+					toProcessEndDate = endDate;
+				} else {
+					toProcessEndDate = endDate.addYears(-1);
+				}
+			}
+			
+			String range = checkAndformatDate(startDate, dateFormat) + FROM_TO
+					+ checkAndformatDate(toProcessEndDate, dateFormat);
 
 			processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW + positonToPlus, isCsv,
 					TextResource.localize(FISCAL_YEAR), range);
