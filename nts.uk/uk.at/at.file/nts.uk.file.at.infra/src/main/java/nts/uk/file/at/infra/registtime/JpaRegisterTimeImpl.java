@@ -35,6 +35,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	
 	private static final String END_MONTH = "12";
 	
+	private static final String NAME_MASTER = "マスタ未登録";
+	
 	private static final String SQL_EXPORT_SHEET_1 = "SELECT "
 			+ "STARTING_MONTH_TYPE,"
 			+ "CLOSING_DATE_ATR,"
@@ -61,7 +63,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "WHERE bb.CID = ?1 and bb.LABOR_SYSTEM_ATR = 0";
 	
 	private static final String SQL_EXPORT_SHEET_3 = "SELECT "
-			+ "kk.CODE,"
+			+ "bb.EMP_CTG_CODE,"
 			+ "kk.NAME,"
 			+ "aa.ERROR_WEEK,"
 			+ "aa.ALARM_WEEK,"
@@ -124,12 +126,12 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "FROM "
 			+ "KMKMT_BASIC_AGREEMENT_SET aa "
 			+ "JOIN KMKMT_AGREEMENTTIME_EMP bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
-			+ "JOIN BSYMT_EMPLOYMENT kk ON "
-			+ "kk.CODE = bb.EMP_CTG_CODE "
+			+ "LEFT JOIN BSYMT_EMPLOYMENT kk ON "
+			+ "kk.CODE = bb.EMP_CTG_CODE AND kk.CID = ?cid"
 			+ "WHERE "
 			+ "	bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0 "
 			+ "AND kk.CID = ?cid"
-			+ " ORDER BY kk.CODE";
+			+ " ORDER BY  bb.EMP_CTG_CODE";
 	
 	private static final String SQL_EXPORT_SHEET_4 = " WITH summary AS ("
 			+ " SELECT "
@@ -246,12 +248,12 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 			 s.ERROR_YEARLY,s.ALARM_YEARLY,s.LIMIT_YEARLY"
 			+ "   FROM summary s"
 			+ "  WHERE s.rk = 1 "
-			+ "	 ORDER BY s.HIERARCHY_CD";
+			+ "	 ORDER BY  s.HIERARCHY_CD  ";
 
 	
 	
 	private static final String SQL_EXPORT_SHEET_5 = "SELECT "
-			+ "kk.CLSCD,"
+			+ "bb.CLSCD,"
 			+ "kk.CLSNAME,"
 			+ "aa.ERROR_WEEK,"
 			+ "aa.ALARM_WEEK,"
@@ -314,12 +316,12 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "FROM "
 			+ "KMKMT_BASIC_AGREEMENT_SET aa "
 			+ "JOIN KMKMT_AGREEMENTTIME_CLASS bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
-			+ "JOIN BSYMT_CLASSIFICATION kk ON "
-			+ " bb.CLSCD = kk.CLSCD AND bb.LABOR_SYSTEM_ATR = 0 "
+			+ "Left JOIN BSYMT_CLASSIFICATION kk ON "
+			+ " bb.CLSCD = kk.CLSCD AND  kk.CID = ?cid "
 			+ "WHERE "
 			+ "	bb.CID = ?cid "
-			+ "AND kk.CID = ?cid"
-			+ " ORDER BY kk.CLSCD";
+			+ "AND bb.LABOR_SYSTEM_ATR = 0 "
+			+ " ORDER BY bb.CLSCD";
 	
 	private static final String SQL_EXPORT_SHEET_6 = "SELECT aa.ERROR_WEEK,aa.ALARM_WEEK,aa.LIMIT_WEEK, "
 			+ "aa.ERROR_TWO_WEEKS,aa.ALARM_TWO_WEEKS,aa.LIMIT_TWO_WEEKS, "
@@ -337,7 +339,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	
 	
 	private static final String SQL_EXPORT_SHEET_7 = "SELECT "
-			+ "kk.CODE,"
+			+ "bb.EMP_CTG_CODE,"
 			+ "kk.NAME,"
 			+ "aa.ERROR_WEEK,"
 			+ "aa.ALARM_WEEK,"
@@ -400,12 +402,12 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "FROM "
 			+ "KMKMT_BASIC_AGREEMENT_SET aa "
 			+ "JOIN KMKMT_AGREEMENTTIME_EMP bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
-			+ "JOIN BSYMT_EMPLOYMENT kk ON "
-			+ "kk.CODE = bb.EMP_CTG_CODE "
+			+ "LEFT JOIN BSYMT_EMPLOYMENT kk ON "
+			+ "kk.CODE = bb.EMP_CTG_CODE AND kk.CID = ?cid"
 			+ "WHERE "
 			+ "	bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1 "
 			+ "AND kk.CID = ?cid "
-			+ " ORDER BY kk.CODE";
+			+ " ORDER BY bb.EMP_CTG_CODE";
 	
 	
 	private static final String SQL_EXPORT_SHEET_8 =  " WITH summary AS ("
@@ -528,7 +530,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	
 	
 	private static final String SQL_EXPORT_SHEET_9 = "SELECT "
-			+ "kk.CLSCD,"
+			+ "bb.CLSCD,"
 			+ "kk.CLSNAME,"
 			+ "aa.ERROR_WEEK,"
 			+ "aa.ALARM_WEEK,"
@@ -592,11 +594,11 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "KMKMT_BASIC_AGREEMENT_SET aa "
 			+ "JOIN KMKMT_AGREEMENTTIME_CLASS bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
 			+ "JOIN BSYMT_CLASSIFICATION kk ON "
-			+ " bb.CLSCD = kk.CLSCD AND bb.LABOR_SYSTEM_ATR = 1 "
+			+ " bb.CLSCD = kk.CLSCD AND kk.CID = ?cid "
 			+ "WHERE "
 			+ "	bb.CID = ?cid "
-			+ "AND kk.CID = ?cid"
-			+ " ORDER BY kk.CLSCD";
+			+ "AND bb.LABOR_SYSTEM_ATR = 1 "
+			+ " ORDER BY bb.CLSCD";
 	
 	
 	private static final String SQL_EXPORT_SHEET_10 =  " SELECT *," 
@@ -900,7 +902,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
                 .build());
 		data.put(RegistTimeColumn.KMK008_101, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_101)
-                .value(rownum == 0 ? objects[1] : "")
+                .value(rownum == 0 ? objects[1] == null ? NAME_MASTER : objects[1] : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
@@ -1009,7 +1011,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
                 .build());
 		data.put(RegistTimeColumn.KMK008_105, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_105)
-                .value(rownum == 0 ? objects[1] : "")
+                .value(rownum == 0 ? objects[1] == null ? NAME_MASTER : objects[1] : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
@@ -1114,7 +1116,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
                 .build());
 		data.put(RegistTimeColumn.KMK008_101, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_101)
-                .value(rownum == 0 ? objects[1] : "")
+                .value(rownum == 0 ? objects[1] == null ? NAME_MASTER : "" : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
@@ -1221,7 +1223,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
                 .build());
 		data.put(RegistTimeColumn.KMK008_105, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_105)
-                .value(rownum == 0 ? objects[1] : "")
+                .value(rownum == 0 ? objects[1] == null ? NAME_MASTER : objects[1] : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_89, MasterCellData.builder()
