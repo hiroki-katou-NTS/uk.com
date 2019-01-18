@@ -80,9 +80,9 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 			+ " ) AS TABLE_RESULT  ";
 
 	private static final String GET_EXPORT_EXCEL_SHEET_FOUR = "SELECT"
-			+" 		CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.CODE ELSE NULL END CODE "
-			+" 		,CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.NAME ELSE NULL END NAME"
-			+" 		,CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.YEAR_TIME ELSE NULL END YEAR_TIME"
+			+" 		CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.YEAR_TIME ELSE NULL END YEAR_TIME"
+			+" 		,CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.CODE ELSE NULL END CODE "
+			+" 		,CASE WHEN TABLE_RESULT.ROW_NUMBER = 1 THEN TABLE_RESULT.NAME ELSE NULL END NAME"			
 			+" 		,TABLE_RESULT.MONTH_TIME"
 			+" 		,TABLE_RESULT.EST_CONDITION_1ST_TIME"
 			+" 		,TABLE_RESULT.EST_CONDITION_2ND_TIME"
@@ -396,7 +396,7 @@ public class ShiftEstimateImpl extends JpaRepository implements ShiftEstimateRep
 		Map<String, MasterCellData> data = new HashMap<>();
 		data.put(ShiftEstimateColumn.KSM001_158,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_158)
-						.value(object[0] != null ? (String) object[0] : "")
+						.value(object[0] != null ? (BigDecimal) object[0] : "")
 						.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(ShiftEstimateColumn.KSM001_159,
 				MasterCellData.builder().columnId(ShiftEstimateColumn.KSM001_159)
