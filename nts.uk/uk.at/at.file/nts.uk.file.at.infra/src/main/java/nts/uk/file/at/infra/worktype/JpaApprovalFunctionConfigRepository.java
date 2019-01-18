@@ -252,7 +252,7 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("       ELSE NULL ");
 		sql.append("     END HOLIDAY_TYPE_USE_FLG, ");
 		sql.append("     CASE WHEN TEMP.APP_TYPE != 1 OR (TEMP.APP_TYPE = 1 AND TEMP.HOLIDAY_TYPE_USE_FLG = 0) THEN ");
-		sql.append("       STUFF((SELECT ',' + EMP_WT.WORK_TYPE_CODE + IIF(WT.CD IS NOT NULL, WT.NAME, 'マスタ未登録') ");
+		sql.append("       STUFF((SELECT ',' + EMP_WT.WORK_TYPE_CODE + IIF(WT.CD IS NOT NULL, WT.NAME, ?masterUnregistered) ");
 		sql.append("        FROM ");
 		sql.append("         KRQDT_APP_EMPLOY_WORKTYPE EMP_WT LEFT JOIN KSHMT_WORKTYPE WT ");
 		sql.append("          ON EMP_WT.CID = WT.CID ");
@@ -267,20 +267,20 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 		sql.append("     END WORK_TYPE_NAME ");
 		sql.append("    FROM ");
 		sql.append("     (SELECT ");
-		sql.append("      EMP.CID, ");
-		sql.append("      EMP.CODE, ");
-		sql.append("      EMP.NAME, ");
+		sql.append("      EMP_SET.CID, ");
+		sql.append("      EMP_SET.EMPLOYMENT_CODE CODE, ");
+		sql.append("      IIF(EMP.CODE IS NOT NULL, EMP.NAME, ?masterUnregistered) NAME, ");
 		sql.append("      EMP_SET.APP_TYPE, ");
 		sql.append("      EMP_SET.HOLIDAY_OR_PAUSE_TYPE, ");
 		sql.append("      EMP_SET.HOLIDAY_TYPE_USE_FLG, ");
-		sql.append("      ROW_NUMBER() OVER (PARTITION BY EMP.CID, EMP.CODE ORDER BY EMP.CID, EMP.CODE, EMP_SET.APP_TYPE, EMP_SET.DISPLAY_ORDER) AS ROW_NUM ");
+		sql.append("      ROW_NUMBER() OVER (PARTITION BY EMP_SET.CID, EMP_SET.EMPLOYMENT_CODE ORDER BY EMP_SET.CID, EMP_SET.EMPLOYMENT_CODE, EMP_SET.APP_TYPE, EMP_SET.DISPLAY_ORDER) AS ROW_NUM ");
 		sql.append("     FROM ");
 		sql.append("      BSYMT_EMPLOYMENT EMP ");
-		sql.append("      LEFT JOIN (SELECT *, CASE WHEN APP_TYPE = 10 THEN 1 - HOLIDAY_OR_PAUSE_TYPE  ELSE HOLIDAY_OR_PAUSE_TYPE END DISPLAY_ORDER FROM KRQST_APP_EMPLOYMENT_SET) EMP_SET ");
+		sql.append("      RIGHT JOIN (SELECT *, CASE WHEN APP_TYPE = 10 THEN 1 - HOLIDAY_OR_PAUSE_TYPE  ELSE HOLIDAY_OR_PAUSE_TYPE END DISPLAY_ORDER FROM KRQST_APP_EMPLOYMENT_SET) EMP_SET ");
 		sql.append("       ON EMP.CID = EMP_SET.CID ");
 		sql.append("       AND EMP.CODE = EMP_SET.EMPLOYMENT_CODE ");
 		sql.append("     WHERE ");
-		sql.append("      EMP.CID = ?cid AND EMP_SET.DISPLAY_FLAG = 1) TEMP ");
+		sql.append("      EMP_SET.CID = ?cid AND EMP_SET.DISPLAY_FLAG = 1) TEMP ");
 		sql.append("    GROUP BY TEMP.CID, TEMP.CODE, TEMP.NAME, TEMP.APP_TYPE, TEMP.HOLIDAY_OR_PAUSE_TYPE, TEMP.HOLIDAY_TYPE_USE_FLG, TEMP.ROW_NUM ");
 		sql.append("    ORDER BY TEMP.CODE, TEMP.APP_TYPE, TEMP.ROW_NUM;");
 		List<Object[]> resultQuery = null;
@@ -310,6 +310,7 @@ public class JpaApprovalFunctionConfigRepository extends JpaRepository implement
 					.setParameter("holidayType0", TextResource.localize("KAF022_54"))
 					.setParameter("holidayTypeUseText", "○")
 					.setParameter("holidayTypeNotUseText", "-")
+					.setParameter("masterUnregistered", TextResource.localize("Enum_MasterUnregistered"))
 					.getResultList();
 		} catch (NoResultException e) {
 			return Collections.emptyList();
