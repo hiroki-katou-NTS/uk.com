@@ -419,18 +419,18 @@ public class YearHolidayRepositoryImpl implements MasterListData{
 	                    	}else{
 	                    		data.put("基準設定２ 18", "○");
 	                    		if(c.getCalculationMethod().value == 0){//%
-	                    			data.put("基準設定下限２ 19", c.getGrantConditions().get(1).getConditionValue()+""+TextResource.localize("KMF003_79"));
-	                    			data.put("上限２ 20", c.getGrantConditions().get(0).getConditionValue().v()-1+""+TextResource.localize("KMF003_79"));
+	                    			data.put("基準設定下限２ 19", c.getGrantConditions().get(1).getConditionValue().v().intValue()+""+TextResource.localize("KMF003_79"));
+	                    			data.put("上限２ 20", c.getGrantConditions().get(0).getConditionValue().v().intValue()-1+""+TextResource.localize("KMF003_79"));
 	                    		}else{
 	                    			data.put("基準設定下限２ 19", c.getGrantConditions().get(1).getConditionValue()+""+TextResource.localize("KMF003_77"));
 	                    			data.put("上限２ 20", c.getGrantConditions().get(0).getConditionValue().v()-1+""+TextResource.localize("KMF003_77"));
 	                    		}
-	                    		// 21
-	                            data.put("付与回 21", i+1);
+	                    		
 	                    		//22
 	                    		if(listYearHoliday2.size() !=0){
 //	                    			LengthServiceTbl dataFindByCode = listFindByCode.get(i);
-	                    			
+	                    			// 21
+		                            data.put("付与回 21", i+1);
 	                    			//code  enable: false
 //	                    			data.put("勤続年数年 22",dataFindByCode.getYear()+"年");
 //	                        		data.put("勤続年数月 23",dataFindByCode.getMonth()+"ヶ月");
@@ -463,11 +463,11 @@ public class YearHolidayRepositoryImpl implements MasterListData{
 	                        }else{
 	                        	data.put("基準設定３ 27", "○");
 	                        	if(c.getCalculationMethod().value == 0){//%
-	                    			data.put("基準設定下限３ 28", c.getGrantConditions().get(2).getConditionValue()+""+TextResource.localize("KMF003_79"));
+	                    			data.put("基準設定下限３ 28", c.getGrantConditions().get(2).getConditionValue().v().intValue()+""+TextResource.localize("KMF003_79"));
 	                    			if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
-	                    				data.put("上限３ 29", c.getGrantConditions().get(0).getConditionValue().v()-1+""+TextResource.localize("KMF003_79"));
+	                    				data.put("上限３ 29", c.getGrantConditions().get(0).getConditionValue().v().intValue()-1+""+TextResource.localize("KMF003_79"));
 	                    			}else{
-	                    				data.put("上限３ 29", c.getGrantConditions().get(1).getConditionValue().v()-1+""+TextResource.localize("KMF003_79"));
+	                    				data.put("上限３ 29", c.getGrantConditions().get(1).getConditionValue().v().intValue()-1+""+TextResource.localize("KMF003_79"));
 	                    			}
 	                    			
 	                    		}else{
@@ -514,15 +514,15 @@ public class YearHolidayRepositoryImpl implements MasterListData{
 	                        }else{
 	                        	data.put("基準設定４ 36", "○");
 	                        	if(c.getCalculationMethod().value == 0){//%
-	                        		data.put("基準設定下限４ 37", c.getGrantConditions().get(3).getConditionValue()+""+TextResource.localize("KMF003_79"));
+	                        		data.put("基準設定下限４ 37", c.getGrantConditions().get(3).getConditionValue().v().intValue()+""+TextResource.localize("KMF003_79"));
 	                        		if(c.getGrantConditions().get(2).getUseConditionAtr() == UseConditionAtr.NOT_USE){
 	                        			if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
-	                        				data.put("上限４ 38", c.getGrantConditions().get(0).getConditionValue().v()-1+""+TextResource.localize("KMF003_79"));
+	                        				data.put("上限４ 38", c.getGrantConditions().get(0).getConditionValue().v().intValue()-1+""+TextResource.localize("KMF003_79"));
 	                        			}else{
-	                        				data.put("上限４ 38", c.getGrantConditions().get(1).getConditionValue().v()-1+""+TextResource.localize("KMF003_79"));
+	                        				data.put("上限４ 38", c.getGrantConditions().get(1).getConditionValue().v().intValue()-1+""+TextResource.localize("KMF003_79"));
 	                        			}
 	                        		}else{
-	                        			data.put("上限４ 38", c.getGrantConditions().get(2).getConditionValue().v()-1+""+TextResource.localize("KMF003_79"));
+	                        			data.put("上限４ 38", c.getGrantConditions().get(2).getConditionValue().v().intValue()-1+""+TextResource.localize("KMF003_79"));
 	                        		}
 	                        	}else{
 	                        		data.put("基準設定下限４ 37", c.getGrantConditions().get(3).getConditionValue()+""+TextResource.localize("KMF003_77"));
@@ -571,19 +571,19 @@ public class YearHolidayRepositoryImpl implements MasterListData{
 	                        }else{
 	                        	data.put("基準設定５ 45", "○");
 	                        	if(c.getCalculationMethod().value == 0){//%
-	                    			data.put("基準設定下限５ 46", c.getGrantConditions().get(4).getConditionValue()+""+TextResource.localize("KMF003_79"));
+	                    			data.put("基準設定下限５ 46", c.getGrantConditions().get(4).getConditionValue().v().intValue()+""+TextResource.localize("KMF003_79"));
 	                    			if(c.getGrantConditions().get(3).getUseConditionAtr() == UseConditionAtr.NOT_USE){
 	                    				if(c.getGrantConditions().get(2).getUseConditionAtr() == UseConditionAtr.NOT_USE){
 	                    					if(c.getGrantConditions().get(1).getUseConditionAtr() == UseConditionAtr.NOT_USE){
-	                    						data.put("上限５ 47", c.getGrantConditions().get(0).getConditionValue().v()-1+""+TextResource.localize("KMF003_79"));
+	                    						data.put("上限５ 47", c.getGrantConditions().get(0).getConditionValue().v().intValue()-1+""+TextResource.localize("KMF003_79"));
 	                    					}else{
-	                    						data.put("上限５ 47", c.getGrantConditions().get(1).getConditionValue().v()-1+""+TextResource.localize("KMF003_79"));
+	                    						data.put("上限５ 47", c.getGrantConditions().get(1).getConditionValue().v().intValue()-1+""+TextResource.localize("KMF003_79"));
 	                    					}
 	                    				}else{
-	                    					data.put("上限５ 47", c.getGrantConditions().get(2).getConditionValue().v()-1+""+TextResource.localize("KMF003_79"));
+	                    					data.put("上限５ 47", c.getGrantConditions().get(2).getConditionValue().v().intValue()-1+""+TextResource.localize("KMF003_79"));
 	                    				}
 	                    			}else{
-	                    				data.put("上限５ 47", c.getGrantConditions().get(3).getConditionValue().v()-1+""+TextResource.localize("KMF003_79"));
+	                    				data.put("上限５ 47", c.getGrantConditions().get(3).getConditionValue().v().intValue()-1+""+TextResource.localize("KMF003_79"));
 	                    			}
 	                    			
 	                    		}else{
