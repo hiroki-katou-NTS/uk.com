@@ -425,12 +425,12 @@ public class YearHolidayRepositoryImpl implements MasterListData{
 	                    			data.put("基準設定下限２ 19", c.getGrantConditions().get(1).getConditionValue()+""+TextResource.localize("KMF003_77"));
 	                    			data.put("上限２ 20", c.getGrantConditions().get(0).getConditionValue().v()-1+""+TextResource.localize("KMF003_77"));
 	                    		}
-	                    		// 21
-	                            data.put("付与回 21", i+1);
+	                    		
 	                    		//22
 	                    		if(listYearHoliday2.size() !=0){
 //	                    			LengthServiceTbl dataFindByCode = listFindByCode.get(i);
-	                    			
+	                    			// 21
+		                            data.put("付与回 21", i+1);
 	                    			//code  enable: false
 //	                    			data.put("勤続年数年 22",dataFindByCode.getYear()+"年");
 //	                        		data.put("勤続年数月 23",dataFindByCode.getMonth()+"ヶ月");
