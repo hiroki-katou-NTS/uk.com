@@ -1,11 +1,13 @@
 package nts.uk.file.at.app.export.calculationsetting;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -14,10 +16,16 @@ import nts.uk.ctx.at.record.app.find.calculationsetting.StampReflectionManagemen
 import nts.uk.ctx.at.record.app.find.calculationsetting.StampReflectionManagementFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.midnight.MidnightTimeSheetDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.midnight.MidnightTimeSheetFinder;
+import nts.uk.ctx.at.record.app.find.monthly.vtotalmethod.PayItemCountOfMonthlyDto;
+import nts.uk.ctx.at.record.app.find.monthly.vtotalmethod.PayItemCountOfMonthlyFinder;
+import nts.uk.ctx.at.record.app.find.monthly.vtotalmethod.VerticalTotalMethodOfMonthlyDto;
+import nts.uk.ctx.at.record.app.find.monthly.vtotalmethod.VerticalTotalMethodOfMonthlyFinder;
 import nts.uk.ctx.at.record.app.find.workrecord.goout.OutManageDto;
 import nts.uk.ctx.at.record.app.find.workrecord.goout.OutManageFinder;
 import nts.uk.ctx.at.record.app.find.workrecord.temporarywork.ManageWorkTemporaryDto;
 import nts.uk.ctx.at.record.app.find.workrecord.temporarywork.ManageWorkTemporaryFinder;
+import nts.uk.ctx.at.record.app.find.workrule.specific.SpecificWorkRuleDto;
+import nts.uk.ctx.at.record.app.find.workrule.specific.SpecificWorkRuleFinder;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.HolidayAddtionDto;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.HolidayAddtionFinder;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.flex.FlexSetDto;
@@ -38,6 +46,7 @@ import nts.uk.ctx.at.shared.app.find.workrecord.monthlyresults.roleopenperiod.Ro
 import nts.uk.ctx.at.shared.app.find.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodFinder;
 import nts.uk.ctx.at.shared.app.find.workrule.func.SelectFunctionDto;
 import nts.uk.ctx.at.shared.app.find.workrule.func.SelectFunctionFinder;
+import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeFinder;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
@@ -59,6 +68,7 @@ import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkMntSetRepository;
 import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkSet;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
 @Stateless
 @DomainID(value = "CalculationSetting")
 public class CalculationSettingExportImpl implements MasterListData {
@@ -98,7 +108,14 @@ public class CalculationSettingExportImpl implements MasterListData {
 	private OvertimeWorkFrameFinder overtimeWorkFrameFinder;
 	@Inject
 	private RoleOfOpenPeriodFinder roleOfOpenPeriodFinder;
-
+	@Inject
+	SpecificWorkRuleFinder specificWorkRuleFinder;
+	@Inject
+	VerticalTotalMethodOfMonthlyFinder verticalTotalMethodOfMonthlyFinder;
+	@Inject
+	PayItemCountOfMonthlyFinder payItemCountOfMonthlyFinder;
+	@Inject
+	private WorkTypeFinder workTypeFinder;
 	
 	private static final String select = "○";
 	private static final String unselect = "-";
@@ -135,6 +152,15 @@ public class CalculationSettingExportImpl implements MasterListData {
 	private static final String column1Sheet8="1";
 	private static final String column2Sheet8="2";
 	private static final String column3Sheet8="3";
+	
+	private static final String column1Sheet9="1";
+	private static final String column2Sheet9="2";
+	private static final String column3Sheet9="3";
+	private static final String column4Sheet9="4";
+	// sheet11
+	private static final String column1Sheet11="1";
+	private static final String column2Sheet11="2";
+	private static final String column3Sheet11="3";
 	
 	public  SelectFunctionDto getFucntionDto(){
 			SelectFunctionDto selectFunctionDto=finder.findAllSetting();
@@ -174,7 +200,18 @@ public class CalculationSettingExportImpl implements MasterListData {
 		  // sheet8 
 		  SheetData dataStatutorySettings= new SheetData(getDataStatutorySettings(query), getHeaderColumnsStatutorySettings(query), null,null,TextResource.localize("KMK013_435"));
 			 sheetDatas.add(dataStatutorySettings);
-		
+		// sheet9 
+			 
+			 SheetData dataCalculationProjectInherentSetting= new SheetData(getDataCalculationProjectInherentSetting(query),
+					 getHeaderColumnsCalculationProjectInherentSetting(query), null,null,TextResource.localize("KMK013_437"));
+			 sheetDatas.add(dataCalculationProjectInherentSetting);
+		// sheet 10
+		// sheet 11	 
+			 SheetData dataSettingOfverticalmonthly= new SheetData(getDataSettingOfverticalmonthly(query),
+					 getHeaderColumnsSettingOfverticalmonthly(query), null,null,TextResource.localize("KMK013_439"));
+			 sheetDatas.add(dataSettingOfverticalmonthly);
+		// sheet 12	 
+			 
 		return sheetDatas;
 	}
 	
@@ -1664,6 +1701,8 @@ private void getAlignRightsheet4(Map<String, MasterCellData> rowData){
 	
 }
 
+
+
 private  String getInitValueReasonGoOut( int attr){
 	String value="";
 	switch (attr) {
@@ -1945,16 +1984,15 @@ private List<MasterHeaderColumn> getHeaderColumnsStatutorySettings (MasterListEx
 private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
 	List<MasterData> datas = new ArrayList<>();
 	List<RoleOvertimeWorkDto>  rs=roleOvertimeWorkFinder.findData();
-	List<OvertimeWorkFrameFindDto> rsName= overtimeWorkFrameFinder.findAll();
+	List<OvertimeWorkFrameFindDto> rsName= overtimeWorkFrameFinder.findAll().stream().filter(x->x.getUseAtr()==1).collect(Collectors.toList());
+	rsName.sort((OvertimeWorkFrameFindDto o1,OvertimeWorkFrameFindDto o2) -> o1.getOvertimeWorkFrNo()-o2.getOvertimeWorkFrNo());
 	// tab2
-	List<WorkdayoffFrameFindDto> rsworkday= workdayoffFrameFinder.findAll();
-	List<RoleOfOpenPeriodDto> listRoleOpen=	roleOfOpenPeriodFinder.findData();
+	List<WorkdayoffFrameFindDto> rsworkday= workdayoffFrameFinder.findAll().stream().filter(x->x.getUseAtr()==1).collect(Collectors.toList());
+	rsworkday.sort((WorkdayoffFrameFindDto o1,WorkdayoffFrameFindDto o2) -> o1.getWorkdayoffFrNo()-o2.getWorkdayoffFrNo());
+	List<RoleOfOpenPeriodDto> listRoleOpen=	roleOfOpenPeriodFinder.findData();	
+	if(!CollectionUtil.isEmpty(rs) && !CollectionUtil.isEmpty(rsName) && rs.size()>=rsName.size()){
 	
-	String tab1=TextResource.localize("KMK013_383");
-	String tab2=TextResource.localize("KMK013_384");
-	if(!CollectionUtil.isEmpty(rs) && !CollectionUtil.isEmpty(rsName) && rs.size()==rsName.size()){
-	
-			 for( int i=0;i<rs.size(); i++){
+			 for( int i=0;i<rsName.size(); i++){
 				RoleOvertimeWorkDto roleOvertimeWorkDto=rs.get(i);
 				 if(i==0){
 					 Map<String, Object> data = new HashMap<>();
@@ -1978,7 +2016,7 @@ private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
 				
 			}
 		 //
-			 if(!CollectionUtil.isEmpty(rsworkday) && !CollectionUtil.isEmpty(listRoleOpen) && listRoleOpen.size()==rsworkday.size() ){
+			 if(!CollectionUtil.isEmpty(rsworkday) && !CollectionUtil.isEmpty(listRoleOpen) && listRoleOpen.size()>=rsworkday.size() ){
 				 
 				 for( int i=0;i<rsworkday.size(); i++){
 					 WorkdayoffFrameFindDto workdayoffFrameFindDto=rsworkday.get(i);
@@ -2007,12 +2045,11 @@ private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
 			 }
 		
 	}
-	
-	
-	
-	
+			
 	return datas;
 }
+
+
 	public String getNameRoleOTWork(int attr) {
 		
 		RoleOvertimeWorkEnum roleOvertimeWorkEnum = RoleOvertimeWorkEnum.valueOf(attr);
@@ -2047,6 +2084,206 @@ private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
 	// end sheet 8
 
 
+    // star sheet 9
+    private List<MasterHeaderColumn> getHeaderColumnsCalculationProjectInherentSetting (MasterListExportQuery query){
+    	
+    	List<MasterHeaderColumn> columns = new ArrayList<>();
+    	columns.add(new MasterHeaderColumn(column1Sheet9,TextResource.localize("KMK013_351"),ColumnTextAlign.LEFT, "", true));				
+    	columns.add(new MasterHeaderColumn(column2Sheet9,TextResource.localize("KMK013_356"),ColumnTextAlign.LEFT, "", true));
+    	columns.add(new MasterHeaderColumn(column3Sheet9,TextResource.localize("KMK013_361"),ColumnTextAlign.LEFT, "", true));
+    	columns.add(new MasterHeaderColumn(column4Sheet9,"名称",ColumnTextAlign.LEFT, "", true));	
+    	return columns;
+    }
+    
+    private List<MasterData> getDataCalculationProjectInherentSetting(MasterListExportQuery query){
+    	List<MasterData> datas = new ArrayList<>();
+    	SpecificWorkRuleDto pecificWorkRuleDto =specificWorkRuleFinder.findSpecificWorkRule();
+    	Integer listrs []={pecificWorkRuleDto.getSpecialHoliday(),pecificWorkRuleDto.getSixtyHourVacation(),pecificWorkRuleDto.getSubstituteHoliday(),pecificWorkRuleDto.getAnnualHoliday()};
+    	List<Integer> listValue=Arrays.asList(listrs).stream().sorted((o1, o2) -> o1.compareTo(o2)).collect(Collectors.toList());
+  //  	listValue.forEach(x ->System.out.println("gt: " +x));
+    	for( int i=0;i<=3;i++){
+    		if(i==0){
+    			 Map<String, Object> data = new HashMap<>();
+        		 data.put(column1Sheet9,getNameUpperLimitSet(pecificWorkRuleDto.getUpperLimitSet()));
+        		 data.put(column2Sheet9,getNameConstraintCalcMethod(pecificWorkRuleDto.getConstraintCalcMethod()));
+        		 data.put(column3Sheet9, listValue.get(i)+1);
+        		 data.put(column4Sheet9,getNamePriority(i,pecificWorkRuleDto));
+        		 MasterData masterData = new MasterData(data, null, "");
+					Map<String, MasterCellData> rowData = masterData.getRowData();
+					getAlignsheet9(rowData);
+					datas.add(masterData);
+    		}else{
+    			 Map<String, Object> data = new HashMap<>();
+        		 data.put(column1Sheet9,"");
+        		 data.put(column2Sheet9,"");
+        		 data.put(column3Sheet9, listValue.get(i)+1);
+        		 data.put(column4Sheet9,getNamePriority(i,pecificWorkRuleDto));
+        		 MasterData masterData = new MasterData(data, null, "");
+					Map<String, MasterCellData> rowData = masterData.getRowData();
+					getAlignsheet9(rowData);
+					datas.add(masterData);
+    			
+    		}
+    		
+    		 
+    	}   
+		return datas;
+    	
+    }
+    
+    public String getNameConstraintCalcMethod(int att){
+    	String name="";
+    	switch (att) {
+		case 0:
+			name=TextResource.localize("KMK013_360");
+			break;
+		case 1:
+			name=TextResource.localize("KMK013_358");
+			break;
+		case 2:
+			name=TextResource.localize("KMK013_359");
+			break;	
+		default:
+			break;
+		}
+		return name;
+    }
+    public String getNameUpperLimitSet(int att){
+    	String name="";
+    	switch (att) {
+		case 0:
+			name=TextResource.localize("KMK013_353");
+			break;
+		case 1:
+			name=TextResource.localize("KMK013_354");
+			break;
+		case 2:
+			name=TextResource.localize("KMK013_355");
+			break;	
+		default:
+			break;
+		}
+		return name;
+    }
+    
+    public String getNamePriority(int att, SpecificWorkRuleDto pecificWorkRuleDto  ){
+    	String name="";
+
+    		if(pecificWorkRuleDto.getSubstituteHoliday()==att){
+    			name=TextResource.localize("KMK013_376");
+    		}else if(pecificWorkRuleDto.getSixtyHourVacation()==att){
+    			name=TextResource.localize("KMK013_377");
+    		}else if(pecificWorkRuleDto.getAnnualHoliday()==att){
+    			name=TextResource.localize("KMK013_378");
+    		}else if(pecificWorkRuleDto.getSpecialHoliday()==att){
+    			name=TextResource.localize("KMK013_379");
+    		}
+    	
+    	
+		return name;
+    }
+    
+    private void getAlignsheet9(Map<String, MasterCellData> rowData){
+    	rowData.get(column1Sheet9).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+    	rowData.get(column2Sheet9).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+    	rowData.get(column3Sheet9).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+    	rowData.get(column4Sheet9).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+    	
+    }
+   
+    
+    // end sheet 9
+    
+    //start sheet 10
+    // end sheet 10
+    // star sheet 11
+    private List<MasterHeaderColumn> getHeaderColumnsSettingOfverticalmonthly (MasterListExportQuery query){
+    	
+    	List<MasterHeaderColumn> columns = new ArrayList<>();
+    	columns.add(new MasterHeaderColumn(column1Sheet11,TextResource.localize("KMK013_445"),ColumnTextAlign.LEFT, "", true));				
+    	columns.add(new MasterHeaderColumn(column2Sheet11,"",ColumnTextAlign.CENTER, "", true));
+    	columns.add(new MasterHeaderColumn(column3Sheet11,TextResource.localize("KMK013_446"),ColumnTextAlign.LEFT, "", true));	
+    	return columns;
+
+    }
+    private List<MasterData> getDataSettingOfverticalmonthly(MasterListExportQuery query){
+    	List<MasterData> datas = new ArrayList<>();
+    	VerticalTotalMethodOfMonthlyDto verticalTotalMethodOfMonthlyDto=verticalTotalMethodOfMonthlyFinder.findSetting();
+    	if(!Objects.isNull(verticalTotalMethodOfMonthlyDto)){
+    		 Map<String, Object> data1 = new HashMap<>();
+    		 data1.put(column1Sheet11,TextResource.localize("KMK013_309"));
+    		 data1.put(column2Sheet11,TextResource.localize("KMK013_310"));
+    		 if(verticalTotalMethodOfMonthlyDto.getAttendanceItemCountingMethod()==1){
+    			 data1.put(column3Sheet11,TextResource.localize("KMK013_312"));
+    		 }else{
+    			 data1.put(column3Sheet11,TextResource.localize("KMK013_311"));
+    		 }
+    		
+    		 MasterData masterData1 = new MasterData(data1, null, "");
+    		 Map<String, MasterCellData> rowData1 = masterData1.getRowData();
+    		 getAlignsheet11(rowData1);
+    		 datas.add(masterData1);
+    	}
+    	
+		 //
+    	PayItemCountOfMonthlyDto payItemCountOfMonthlyDto =payItemCountOfMonthlyFinder.findSetting();
+    	if(!Objects.isNull(payItemCountOfMonthlyDto) && !CollectionUtil.isEmpty(payItemCountOfMonthlyDto.getPayAbsenceDays()) ){
+    		List<WorkTypeInfor> listAbs=workTypeFinder.getPossibleWorkType(payItemCountOfMonthlyDto.getPayAbsenceDays());
+    		 Map<String, Object> data2 = new HashMap<>();
+    		 data2.put(column1Sheet11,TextResource.localize("KMK013_335"));
+    		 data2.put(column2Sheet11,TextResource.localize("KMK013_336"));
+    		 data2.put(column3Sheet11,"");
+    		 if(!CollectionUtil.isEmpty(listAbs)){
+    			 String codeNameAbs=listAbs.get(0).getWorkTypeCode()+listAbs.get(0).getName();
+    			 for( int i=1;i<listAbs.size();i++){
+    				 codeNameAbs=codeNameAbs+","+listAbs.get(i).getWorkTypeCode()+listAbs.get(i).getName();
+    			 }
+    			 data2.put(column3Sheet11,codeNameAbs);
+    		 }    	   		
+    		 MasterData masterData2 = new MasterData(data2, null, "");
+    		 Map<String, MasterCellData> rowData2 = masterData2.getRowData();
+    		 getAlignsheet11(rowData2);
+    		 datas.add(masterData2);
+    	}
+    //	
+    	
+    	if(!Objects.isNull(payItemCountOfMonthlyDto) && !CollectionUtil.isEmpty(payItemCountOfMonthlyDto.getPayAttendanceDays())){
+    		List<WorkTypeInfor> listAtt=workTypeFinder.getPossibleWorkType(payItemCountOfMonthlyDto.getPayAttendanceDays());
+    		 Map<String, Object> data3 = new HashMap<>();
+    		 data3.put(column1Sheet11,"");
+    		 data3.put(column2Sheet11,TextResource.localize("KMK013_338"));
+    		 data3.put(column3Sheet11,"");
+    		 if(!CollectionUtil.isEmpty(listAtt)){
+    			 String codeNameAtt=listAtt.get(0).getWorkTypeCode()+listAtt.get(0).getName();
+    			 for( int i=1;i<listAtt.size();i++){
+    				 codeNameAtt=codeNameAtt+","+listAtt.get(i).getWorkTypeCode()+listAtt.get(i).getName();
+    			 }
+    			 data3.put(column3Sheet11,codeNameAtt);
+    		 }    	   	
+    		
+    		 MasterData masterData3 = new MasterData(data3, null, "");
+    		 Map<String, MasterCellData> rowData3 = masterData3.getRowData();
+    		 getAlignsheet11(rowData3);
+    		 datas.add(masterData3);
+    	}
+		
+		 
+    	
+		return datas;
+    }
+    
+	private void getAlignsheet11(Map<String, MasterCellData> rowData){
+		rowData.get(column1Sheet11).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+		rowData.get(column2Sheet11).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+		rowData.get(column3Sheet11).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+		
+	
+		
+	}
+    // end sheet 11
+    // sart sheet 12
+    // end sheet12
+    
 	private void getAlignsheet2(Map<String, MasterCellData> rowData){
 		rowData.get(column1Sheet2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 		rowData.get(column2Sheet2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
