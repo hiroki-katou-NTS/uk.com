@@ -23,6 +23,8 @@ public class NewLayoutExportImpl implements MasterListData{
 	
 	public static String value1= "value1";
 	public static String value2= "value2";
+	public static String value3= "value3";
+	
 	
 	@Inject
 	private NewLayoutExportRepository newLayoutExportRepository;
@@ -45,28 +47,64 @@ public class NewLayoutExportImpl implements MasterListData{
 				putEmptyData(data);
 				String cateName = listNewLayout.get(i).getCategoryName();
 				String itemName = listNewLayout.get(i).getItemName();
+				String itemParentCD = listNewLayout.get(i).getItemParentCD();
+				String itemNameC = listNewLayout.get(i).getItemNameC();
 
 				if (cateName == null) {
 					data.put(value1, "----------");
 					data.put(value2, "----------");
+					data.put(value3, "----------");
 				} else {
 					if (i == 0) {
 						data.put(value1, cateName);
 						data.put(value2, itemName);
+						data.put(value3, "");
 					} else {
 						if (listNewLayout.get(i).getCategoryName().equals(listNewLayout.get(i - 1).getCategoryName())) {
 							data.put(value1, "");
-							data.put(value2, itemName);
+							
+							if(itemParentCD ==null){
+								data.put(value2, itemName);
+								data.put(value3, "");
+							}else{
+								data.put(value2, "");
+								data.put(value3, itemNameC);
+							}
 						} else {
 							data.put(value1, cateName);
-							data.put(value2, itemName);
+							if(itemParentCD ==null){
+								data.put(value2, itemName);
+								data.put(value3, "");
+							}else{
+								data.put(value2, "");
+								data.put(value3, itemNameC);
+							}
+							
 						}
 					}
 				}
+//				if (cateName == null) {
+//					data.put(value1, "----------");
+//					data.put(value2, "----------");
+//				} else {
+//					if (i == 0) {
+//						data.put(value1, cateName);
+//						data.put(value2, itemName);
+//					} else {
+//						if (listNewLayout.get(i).getCategoryName().equals(listNewLayout.get(i - 1).getCategoryName())) {
+//							data.put(value1, "");
+//							data.put(value2, itemName);
+//						} else {
+//							data.put(value1, cateName);
+//							data.put(value2, itemName);
+//						}
+//					}
+//				}
 
 				MasterData masterData = new MasterData(data, null, "");
 				masterData.cellAt(value1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				masterData.cellAt(value2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value3).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				datas.add(masterData);
 			}
 		}
@@ -82,6 +120,8 @@ public class NewLayoutExportImpl implements MasterListData{
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(value2, TextResource.localize("CPS007_23"),
 				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(value3, TextResource.localize(" "),
+				ColumnTextAlign.LEFT, "", true));
 		
 		return columns;
 	}
@@ -89,6 +129,7 @@ public class NewLayoutExportImpl implements MasterListData{
 	private void putEmptyData (Map<String, Object> data){
 		data.put(value1, "");
 		data.put(value2, "");
+		data.put(value3, "");
 	}
 	
 	@Override

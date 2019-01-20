@@ -12,7 +12,7 @@ public class JpaNewLayoutExportRepository extends JpaRepository implements NewLa
 	@Override
 	public List<NewLayoutExportData> getAllMaintenanceLayout(String companyId, String contractCd) {
 		String GET_CPS007 = (new StringBuffer()
-				.append("SELECT a.DISPORDER, d.CATEGORY_NAME, c.ITEM_NAME FROM  PPEMT_NEW_LAYOUT g")
+				.append("SELECT a.DISPORDER, d.CATEGORY_NAME, c.ITEM_NAME,c.ITEM_NAME, e.ITEM_PARENT_CD, e.DATA_TYPE  FROM  PPEMT_NEW_LAYOUT g")
 				.append(" LEFT JOIN  PPEMT_LAYOUT_ITEM_CLS a ON g.LAYOUT_ID = a.LAYOUT_ID")
 				.append(" LEFT JOIN PPEMT_LAYOUT_ITEM_CLS_DF b ON b.LAYOUT_ID = g.LAYOUT_ID and b.LAYOUT_DISPORDER = a.DISPORDER ")
 				.append(" LEFT JOIN PPEMT_PER_INFO_ITEM c ON c.PER_INFO_ITEM_DEFINITION_ID = b.PER_INFO_ITEM_DEF_ID and c.PER_INFO_CTG_ID = a.PER_INFO_CATEGORY_ID AND c.ABOLITION_ATR = 0 ")
@@ -23,10 +23,10 @@ public class JpaNewLayoutExportRepository extends JpaRepository implements NewLa
 				.append(" AND f.PER_INFO_CTG_ID = c.PER_INFO_CTG_ID ")
 				.append(" WHERE g.CID = '")
 				.append(companyId)
-				.append("' AND (e.ITEM_PARENT_CD IS NULL OR e.ITEM_PARENT_CD = '')")
-				.append(" AND ((b.LAYOUT_DISPORDER IS NOT NULL AND d.PER_INFO_CTG_ID IS NOT NULL ")
+//				.append("' AND (e.ITEM_PARENT_CD IS NULL OR e.ITEM_PARENT_CD = '')")
+				.append("' AND ((b.LAYOUT_DISPORDER IS NOT NULL AND d.PER_INFO_CTG_ID IS NOT NULL ")
 				.append(" AND c.PER_INFO_ITEM_DEFINITION_ID IS NOT NULL)  OR (b.LAYOUT_DISPORDER IS NULL AND a.LAYOUT_ITEM_TYPE = 2))")
-				.append(" ORDER BY a.DISPORDER ASC")
+				.append(" ORDER BY a.DISPORDER ASC, b.DISPORDER asc")
 				).toString();
 		
 		List<?> data = this.getEntityManager()
@@ -34,10 +34,20 @@ public class JpaNewLayoutExportRepository extends JpaRepository implements NewLa
 		return  data.stream().map(x -> toDomainWorkMonthlySet((Object[])x)).collect(Collectors.toList()); 
 	}
 	private static NewLayoutExportData toDomainWorkMonthlySet(Object[] object) {
-		int  dispoder = ((BigDecimal)  object[0]).intValue();
+		int dispoder = ((BigDecimal)  object[0]).intValue();
 		String categoryName= (String) object[1];
 		String itemName= (String) object[2];
-		NewLayoutExportData newLayoutExportData = NewLayoutExportData.createFromJavaType( dispoder, categoryName, itemName);
+		String itemNameC= (String) object[3];
+		String itemParentCD = (String) object[4];
+		int dataType;
+		if(((BigDecimal)  object[5]) ==null){
+			dataType =0;
+		}else{
+			dataType =((BigDecimal)  object[5]).intValue();
+		}
+		
+		
+		NewLayoutExportData newLayoutExportData = NewLayoutExportData.createFromJavaType(dispoder, categoryName,itemName, itemNameC , itemParentCD,dataType);
 		return newLayoutExportData;
 		
 	}
