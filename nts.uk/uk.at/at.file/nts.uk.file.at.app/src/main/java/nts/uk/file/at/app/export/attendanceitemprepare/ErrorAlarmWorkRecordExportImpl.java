@@ -188,9 +188,9 @@ public class ErrorAlarmWorkRecordExportImpl {
                            data.put(header.get(2), c.getName());
                            //SAU PHAI SUA THEO TEXTRS
                            if(c.getUseAtr()==1){
-                                  data.put(header.get(3), "使用する");
+                                  data.put(header.get(3), TextResource.localize("KDW006_185"));
                            }else{
-                                  data.put(header.get(3), "使用しない");
+                                  data.put(header.get(3), TextResource.localize("KDW006_186"));
                            }
                                   data.put(header.get(4), TextResource.localize(EnumAdaptor.valueOf(c.getTypeAtr(), ErrorAlarmClassification.class).nameId));
                            //5,6
@@ -344,12 +344,12 @@ public class ErrorAlarmWorkRecordExportImpl {
                            }
                            //20
                             if(c.getWorkTimeCondition().getComparePlanAndActual() ==1){
-                                  data.put(header.get(20), TextResource.localize("Enum_FilterByCompare_NotCompare"));
+                                  data.put(header.get(20), TextResource.localize("Enum_FilterByCompare_Extract_Same"));
                            }else{
                         	   if(c.getWorkTimeCondition().getComparePlanAndActual() ==0){
                                    data.put(header.get(20), TextResource.localize("Enum_FilterByCompare_NotCompare"));
                         	   }else{
-                                  data.put(header.get(20), TextResource.localize("Enum_FilterByCompare_NotCompare"));
+                                  data.put(header.get(20), TextResource.localize("Enum_FilterByCompare_Extract_Different"));
                         	   }
                         	   //28,29
                                if(c.getWorkTimeCondition().isActualFilterAtr()== false){
