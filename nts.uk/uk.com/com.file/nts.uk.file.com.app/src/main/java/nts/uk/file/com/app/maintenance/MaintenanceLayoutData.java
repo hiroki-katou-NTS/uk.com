@@ -17,6 +17,9 @@ public class MaintenanceLayoutData extends AggregateRoot {
 	private String layoutName;
 	private String categoryName;
 	private String itemName;
+	private String itemNameC;
+	private String itemParentCD;
+	private int dataType;
 	
 }
 

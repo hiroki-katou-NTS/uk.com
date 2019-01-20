@@ -41,6 +41,7 @@ public class MaintenanceExportImpl implements MasterListData {
 	public static String value2= "value2";
 	public static String value3= "value3";
 	public static String value4= "value4";
+	public static String value5= "value5";
 	
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
@@ -65,6 +66,8 @@ public class MaintenanceExportImpl implements MasterListData {
 				String layoutNameM = listMaintenanceLayout.get(i).getLayoutName();
 				String categoryNameM = listMaintenanceLayout.get(i).getCategoryName();
 				String itemNameM = listMaintenanceLayout.get(i).getItemName();
+				String itemNameC = listMaintenanceLayout.get(i).getItemNameC();
+				String itemParentCD = listMaintenanceLayout.get(i).getItemParentCD();
 				
 				if(i==0){
 					data.put(value1, layoutCdM);
@@ -72,9 +75,11 @@ public class MaintenanceExportImpl implements MasterListData {
 					if(categoryNameM == null){
 						data.put(value3, "----------");
 						data.put(value4, "----------");
+						data.put(value5, "----------");
 					}else{
 						data.put(value3, categoryNameM);
 						data.put(value4, itemNameM);
+						data.put(value5, "");
 					}
 				}else{
 					if(layoutCdM.equals(listMaintenanceLayout.get(i-1).getLayoutCd())){
@@ -83,28 +88,35 @@ public class MaintenanceExportImpl implements MasterListData {
 						if(categoryNameM == null){
 							data.put(value3, "----------");
 							data.put(value4, "----------");
+							data.put(value5, "----------");
 						}else{
 							if(categoryNameM.equals(listMaintenanceLayout.get(i-1).getCategoryName())){
 								data.put(value3, "");
+								if(itemParentCD ==null){
+									data.put(value4, itemNameM);
+									data.put(value5, "");
+								}else{
+									data.put(value4, "");
+									data.put(value5, itemNameC);
+								}
 							}else{
 								data.put(value3, categoryNameM);
+								if(itemParentCD ==null){
+									data.put(value4, itemNameM);
+									data.put(value5, "");
+								}else{
+									data.put(value4, "");
+									data.put(value5, itemNameC);
+								}
 							}
-							data.put(value4, itemNameM);
 						}
 					}else{
 						data.put(value1, layoutCdM);
 						data.put(value2, layoutNameM);
-						if(categoryNameM == null){
-							data.put(value3, "----------");
-							data.put(value4, "----------");
-						}else{
-							if(categoryNameM.equals(listMaintenanceLayout.get(i-1).getCategoryName())){
-								data.put(value3, "");
-							}else{
-								data.put(value3, categoryNameM);
-							}
-							data.put(value4, itemNameM);
-						}
+						data.put(value3, "");
+						data.put(value4, "");
+						data.put(value5, "");
+						
 						
 					}
 				}
@@ -113,6 +125,7 @@ public class MaintenanceExportImpl implements MasterListData {
 				masterData.cellAt(value2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				masterData.cellAt(value3).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				masterData.cellAt(value4).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value5).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 				datas.add(masterData);
 			}
 		}
@@ -131,6 +144,8 @@ public class MaintenanceExportImpl implements MasterListData {
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(value4, TextResource.localize("CPS008_19"),
 				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(value5, TextResource.localize(""),
+				ColumnTextAlign.LEFT, "", true));
 		
 		return columns;
 	}
@@ -140,6 +155,7 @@ public class MaintenanceExportImpl implements MasterListData {
 		data.put(value2, "");
 		data.put(value3, "");
 		data.put(value4, "");
+		data.put(value5, "");
 	}
 	
 	@Override

@@ -26,7 +26,7 @@ public class JpaNewLayoutExportRepository extends JpaRepository implements NewLa
 //				.append("' AND (e.ITEM_PARENT_CD IS NULL OR e.ITEM_PARENT_CD = '')")
 				.append("' AND ((b.LAYOUT_DISPORDER IS NOT NULL AND d.PER_INFO_CTG_ID IS NOT NULL ")
 				.append(" AND c.PER_INFO_ITEM_DEFINITION_ID IS NOT NULL)  OR (b.LAYOUT_DISPORDER IS NULL AND a.LAYOUT_ITEM_TYPE = 2))")
-				.append(" ORDER BY a.DISPORDER ASC, b.DISPORDER asc")
+				.append(" ORDER BY a.DISPORDER ASC, b.DISPORDER ASC")
 				).toString();
 		
 		List<?> data = this.getEntityManager()
