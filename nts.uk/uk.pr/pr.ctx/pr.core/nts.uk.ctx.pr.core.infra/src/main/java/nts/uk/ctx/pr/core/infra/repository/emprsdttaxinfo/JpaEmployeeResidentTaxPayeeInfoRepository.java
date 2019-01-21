@@ -4,12 +4,13 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.emprsdttaxinfo.EmployeeResidentTaxPayeeInfo;
 import nts.uk.ctx.pr.core.dom.emprsdttaxinfo.EmployeeResidentTaxPayeeInfoRepository;
+import nts.uk.ctx.pr.core.dom.emprsdttaxinfo.PayeeInfo;
 import nts.uk.ctx.pr.core.infra.entity.emprsdttaxinfo.QpbmtEmpRsdtTaxPayee;
-import nts.uk.ctx.pr.core.infra.entity.emprsdttaxinfo.QpbmtEmpRsdtTaxPayeePk;
 
 import javax.ejb.Stateless;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Stateless
 public class JpaEmployeeResidentTaxPayeeInfoRepository extends JpaRepository
@@ -18,6 +19,10 @@ public class JpaEmployeeResidentTaxPayeeInfoRepository extends JpaRepository
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtEmpRsdtTaxPayee f";
 	private static final String SELECT_BY_SID = SELECT_ALL_QUERY_STRING + " WHERE  f.empRsdtTaxPayeePk.sid IN :listSId "
 			+ " AND  f.startYM <= :periodYM AND f.endYM >= :periodYM ";
+	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
+			+ " WHERE  f.empRsdtTaxPayeePk.histId =:histId ";
+	private static final String SELECT_BY_LIST_KEY_STRING = SELECT_ALL_QUERY_STRING
+			+ " WHERE  f.empRsdtTaxPayeePk.histId IN :listHistId ";
 
 	@Override
 	public List<EmployeeResidentTaxPayeeInfo> getEmpRsdtTaxPayeeInfo(List<String> listSId, YearMonth periodYM) {
@@ -28,26 +33,26 @@ public class JpaEmployeeResidentTaxPayeeInfoRepository extends JpaRepository
 	}
 
 	@Override
-	public void add(List<EmployeeResidentTaxPayeeInfo> domains) {
-		this.commandProxy().insertAll(QpbmtEmpRsdtTaxPayee.toEntity(domains));
-	}
-
-	@Override
-	public void update(List<EmployeeResidentTaxPayeeInfo> domains) {
-		this.commandProxy().updateAll(QpbmtEmpRsdtTaxPayee.toEntity(domains));
-	}
-
-	@Override
-	public void remove(String sid, String histId) {
-		this.commandProxy().remove(QpbmtEmpRsdtTaxPayee.class, new QpbmtEmpRsdtTaxPayeePk(sid, histId));
-	}
-
-	@Override
 	public List<EmployeeResidentTaxPayeeInfo> getEmpRsdtTaxPayeeInfo(List<String> listSId) {
 		if (listSId == null || listSId.isEmpty())
 			return Collections.emptyList();
 		String query = SELECT_ALL_QUERY_STRING + " WHERE  f.empRsdtTaxPayeePk.sid IN :listSId";
 		return QpbmtEmpRsdtTaxPayee.toDomain(
 				this.queryProxy().query(query, QpbmtEmpRsdtTaxPayee.class).setParameter("listSId", listSId).getList());
+	}
+
+	@Override
+	public Optional<PayeeInfo> getPayeeInfoById(String histId) {
+		return this.queryProxy().query(SELECT_BY_KEY_STRING, QpbmtEmpRsdtTaxPayee.class)
+				.setParameter("histId", histId)
+				.getSingle(QpbmtEmpRsdtTaxPayee::toPayeeInfo);
+	}
+
+	@Override
+	public List<PayeeInfo> getListPayeeInfo(List<String> listHistId) {
+		if (listHistId == null || listHistId.isEmpty()) return Collections.emptyList();
+		return this.queryProxy().query(SELECT_BY_LIST_KEY_STRING, QpbmtEmpRsdtTaxPayee.class)
+				.setParameter("listHistId", listHistId)
+				.getList(QpbmtEmpRsdtTaxPayee::toPayeeInfo);
 	}
 }
