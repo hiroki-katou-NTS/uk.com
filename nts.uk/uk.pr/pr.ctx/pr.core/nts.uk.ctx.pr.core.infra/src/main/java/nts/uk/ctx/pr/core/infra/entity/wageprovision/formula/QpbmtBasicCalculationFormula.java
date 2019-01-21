@@ -142,9 +142,9 @@ public class QpbmtBasicCalculationFormula extends UkJpaEntity implements Seriali
         return basicCalFormPk;
     }
 
-    public static QpbmtBasicCalculationFormula toEntity(String formulaCode, BasicCalculationFormula domain) {
+    public static QpbmtBasicCalculationFormula toEntity(BasicCalculationFormula domain) {
         QpbmtBasicCalculationFormula entity = new QpbmtBasicCalculationFormula();
-        entity.basicCalFormPk =new QpbmtBasicCalculationFormulaPk(AppContexts.user().companyId(), formulaCode, domain.getHistoryID(), domain.getMasterUseCode().v());
+        entity.basicCalFormPk =new QpbmtBasicCalculationFormulaPk(AppContexts.user().companyId(), domain.getFormulaCode().v(), domain.getHistoryID(), domain.getMasterUseCode().v());
         entity.calculationFormulaCls = domain.getCalculationFormulaClassification().value;
         entity.basicCalculationFormula = domain.getBasicCalculationFormula().map(PrimitiveValueBase::v).orElse(null);
         if (!domain.getBasicCalculationForm().isPresent()) return entity;

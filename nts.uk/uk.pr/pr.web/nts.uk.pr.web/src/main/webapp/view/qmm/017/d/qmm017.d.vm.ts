@@ -817,7 +817,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 if (!selectedItem) this.setErrorToFormula(calculationFormulaTransfer.displayContent + " with code " + elementCode + " has been deleted. Formula will be clear", []);
                 else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
             }
-            return "";
+            return formulaElement;
         }
         combineElementTypeAndName (elementType, elementName) {
             let self = this;

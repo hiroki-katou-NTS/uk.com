@@ -54,10 +54,10 @@ public class QpbmtBasicFormulaSetting extends UkJpaEntity implements Serializabl
     }
 
     public BasicFormulaSetting toDomain() {
-        return new BasicFormulaSetting(this.basicFormulaSetPk.historyID, this.masterBranchUse, this.masterUse);
+        return new BasicFormulaSetting(this.basicFormulaSetPk.formulaCode, this.basicFormulaSetPk.historyID, this.masterBranchUse, this.masterUse);
     }
-    public static QpbmtBasicFormulaSetting toEntity(String formulaCode, BasicFormulaSetting domain) {
-        QpbmtBasicFormulaSetting entity = new QpbmtBasicFormulaSetting(new QpbmtBasicFormulaSettingPk(AppContexts.user().companyId(), formulaCode, domain.getHistoryID()), domain.getMasterBranchUse().value, domain.getMasterUse().map(i->i.value).orElse(null));
+    public static QpbmtBasicFormulaSetting toEntity(BasicFormulaSetting domain) {
+        QpbmtBasicFormulaSetting entity = new QpbmtBasicFormulaSetting(new QpbmtBasicFormulaSettingPk(AppContexts.user().companyId(), domain.getFormulaCode().v(), domain.getHistoryID()), domain.getMasterBranchUse().value, domain.getMasterUse().map(i->i.value).orElse(null));
         if (entity.masterBranchUse == 0) entity.masterUse = null;
         return entity;
     }

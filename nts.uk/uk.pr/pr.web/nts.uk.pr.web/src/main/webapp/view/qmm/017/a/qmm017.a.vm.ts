@@ -133,7 +133,22 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
 
         register () {
             let self = this;
-            let command = ko.toJS(self.selectedFormula);
+            self.validateError();
+            if (nts.uk.ui.errors.hasError()) return;
+            let command = self.combineData();
+            if (self.screenMode() == model.SCREEN_MODE.NEW) {
+                self.addFormula(command);
+            } else if (self.screenMode() == model.SCREEN_MODE.UPDATE) {
+                self.updateFormulaSetting(command);
+            } else if (self.screenMode() == model.SCREEN_MODE.ADD_HISTORY){
+                self.addFormulaHistory(command)
+            } else {
+                self.updateFormula(command);
+            }
+        }
+
+        validateError () {
+            let self = this;
             nts.uk.ui.errors.clearAll();
             if (self.screenMode() == model.SCREEN_MODE.NEW || self.screenMode() == model.SCREEN_MODE.UPDATE_FORMULA ){
                 $('.tab-content-1 .nts-input').filter(':enabled').trigger("validate");
@@ -147,7 +162,11 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                     self.screenDViewModel.validateSyntax();
                 }
             }
-            if (nts.uk.ui.errors.hasError()) return;
+        }
+
+        combineData () {
+            let self = this;
+            let command = ko.toJS(self.selectedFormula);
             let formulaSettingCommand = {
                 basicFormulaSettingCommand: ko.toJS(self.basicFormulaSetting),
                 detailFormulaSettingCommand: ko.toJS(self.detailFormulaSetting),
@@ -170,15 +189,12 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 formulaSettingCommand.yearMonth.historyID = nts.uk.util.randomId();
             }
             command.formulaSettingCommand = formulaSettingCommand;
-            if (self.screenMode() == model.SCREEN_MODE.NEW) {
-                self.addFormula(command);
-            } else if (self.screenMode() == model.SCREEN_MODE.UPDATE) {
-                self.updateFormulaSetting(command);
-            } else if (self.screenMode() == model.SCREEN_MODE.ADD_HISTORY){
-                self.addFormulaHistory(command)
-            } else {
-                self.updateFormula(command);
-            }
+            return self.formatData(command);
+        }
+        formatData (command) {
+            command.formulaSettingCommand.basicFormulaSettingCommand.formulaCode = command.formulaCode;
+            command.formulaSettingCommand.detailFormulaSettingCommand.formulaCode = command.formulaCode;
+            return command;
         }
 
         addFormula (command) {

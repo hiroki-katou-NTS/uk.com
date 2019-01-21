@@ -45,8 +45,8 @@ public class QpbmtBasicCalculationStandardAmount extends UkJpaEntity implements 
     }
 
 
-    public static List<QpbmtBasicCalculationStandardAmount> toEntity(String formulaCode, BasicCalculationFormula domain) {
+    public static List<QpbmtBasicCalculationStandardAmount> toEntity(BasicCalculationFormula domain) {
         if (!domain.getBasicCalculationForm().isPresent()) return Collections.emptyList();
-        return domain.getBasicCalculationForm().get().getBasicCalculationStandardAmount().getTargetItemCodeList().stream().map(item -> new QpbmtBasicCalculationStandardAmount(new QpbmtBasicCalculationStandardAmountPk(AppContexts.user().companyId(), formulaCode, domain.getHistoryID(), domain.getMasterUseCode().v(), item.v()))).collect(Collectors.toList());
+        return domain.getBasicCalculationForm().get().getBasicCalculationStandardAmount().getTargetItemCodeList().stream().map(item -> new QpbmtBasicCalculationStandardAmount(new QpbmtBasicCalculationStandardAmountPk(AppContexts.user().companyId(), domain.getFormulaCode().v(), domain.getHistoryID(), domain.getMasterUseCode().v(), item.v()))).collect(Collectors.toList());
     }
 }

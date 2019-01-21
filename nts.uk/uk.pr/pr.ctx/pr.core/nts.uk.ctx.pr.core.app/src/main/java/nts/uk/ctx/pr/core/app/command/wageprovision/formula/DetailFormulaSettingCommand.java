@@ -12,8 +12,12 @@ import java.util.stream.Collectors;
 */
 @AllArgsConstructor
 @Data
-public class DetailFormulaSettingCommand
-{
+public class DetailFormulaSettingCommand {
+
+    /**
+     * 計算式コード
+     */
+    public String formulaCode;
 
     /**
      * 履歴ID
@@ -42,7 +46,7 @@ public class DetailFormulaSettingCommand
 
 
     public DetailFormulaSetting fromCommandToDomain (){
-        return new DetailFormulaSetting(historyID, referenceMonth, detailCalculationFormula.stream().map(DetailCalculationFormulaCommand::fromCommandToDomain).collect(Collectors.toList()), roundingMethod, roundingPosition);
+        return new DetailFormulaSetting(formulaCode, historyID, referenceMonth, detailCalculationFormula.stream().map(DetailCalculationFormulaCommand::fromCommandToDomain).collect(Collectors.toList()), roundingMethod, roundingPosition);
     }
     
 }

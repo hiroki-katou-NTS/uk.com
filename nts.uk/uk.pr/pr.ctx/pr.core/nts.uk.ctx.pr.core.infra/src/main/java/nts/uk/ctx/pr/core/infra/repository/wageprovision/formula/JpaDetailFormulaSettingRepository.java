@@ -32,10 +32,10 @@ public class JpaDetailFormulaSettingRepository extends JpaRepository implements 
     }
 
     @Override
-    public void upsert(String formulaCode, DetailFormulaSetting domain){
+    public void upsert(DetailFormulaSetting domain){
         this.removeByHistory(domain.getHistoryId());
-        this.commandProxy().insert(QpbmtDetailFormulaSetting.toEntity(formulaCode, domain));
-        this.commandProxy().insertAll(QpbmtDetailCalculationFormula.toEntity(formulaCode, domain));
+        this.commandProxy().insert(QpbmtDetailFormulaSetting.toEntity(domain.getFormulaCode().v(), domain));
+        this.commandProxy().insertAll(QpbmtDetailCalculationFormula.toEntity(domain));
     }
 
     @Override

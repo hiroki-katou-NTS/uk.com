@@ -12,7 +12,7 @@ public interface DetailFormulaSettingRepository {
 
     Optional<DetailFormulaSetting> getDetailFormulaSettingById(String historyID);
 
-    void upsert(String formulaCode, DetailFormulaSetting domain);
+    void upsert(DetailFormulaSetting domain);
 
     void removeByHistory(String historyID);
 

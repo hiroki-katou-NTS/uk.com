@@ -66,7 +66,7 @@ public class QpbmtDetailFormulaSetting extends UkJpaEntity implements Serializab
     }
 
     public static Optional<DetailFormulaSetting> toDomain(QpbmtDetailFormulaSetting detailFormulaSet, List<QpbmtDetailCalculationFormula> detailCalculationFormula) {
-        return Optional.of(new DetailFormulaSetting(detailFormulaSet.detailFormulaSetPk.historyID, detailFormulaSet.referenceMonth, detailCalculationFormula.stream().map(entity -> new DetailCalculationFormula(entity.detailCalculationFormulaPk.elementOrder, entity.formulaElement)).collect(Collectors.toList()), detailFormulaSet.roundingMethod, detailFormulaSet.roundingPosition));
+        return Optional.of(new DetailFormulaSetting(detailFormulaSet.detailFormulaSetPk.formulaCode, detailFormulaSet.detailFormulaSetPk.historyID, detailFormulaSet.referenceMonth, detailCalculationFormula.stream().map(entity -> new DetailCalculationFormula(entity.detailCalculationFormulaPk.elementOrder, entity.formulaElement)).collect(Collectors.toList()), detailFormulaSet.roundingMethod, detailFormulaSet.roundingPosition));
     }
 
     public static QpbmtDetailFormulaSetting toEntity(String formulaCode, DetailFormulaSetting domain) {

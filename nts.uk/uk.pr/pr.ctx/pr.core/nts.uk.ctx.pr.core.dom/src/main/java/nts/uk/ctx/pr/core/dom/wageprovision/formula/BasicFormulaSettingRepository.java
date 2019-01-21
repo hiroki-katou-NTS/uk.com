@@ -10,9 +10,9 @@ public interface BasicFormulaSettingRepository {
 
     Optional<BasicFormulaSetting> getBasicFormulaSettingById(String historyID);
 
-    void add(String formulaCode, BasicFormulaSetting domain);
+    void add(BasicFormulaSetting domain);
 
-    void upsert(String formulaCode, BasicFormulaSetting domain);
+    void upsert(BasicFormulaSetting domain);
 
     void removeByHistory(String historyID);
 

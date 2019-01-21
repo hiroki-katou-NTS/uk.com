@@ -14,8 +14,7 @@ import nts.uk.ctx.pr.core.infra.entity.wageprovision.formula.QpbmtBasicCalculati
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.formula.QpbmtBasicCalculationStandardAmount;
 
 @Stateless
-public class JpaBasicCalculationFormulaRepository extends JpaRepository implements BasicCalculationFormulaRepository
-{
+public class JpaBasicCalculationFormulaRepository extends JpaRepository implements BasicCalculationFormulaRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtBasicCalculationFormula f";
     private static final String SELECT_BY_HISTORY = SELECT_ALL_QUERY_STRING + " WHERE f.basicCalFormPk.historyID =:historyID ";
@@ -55,7 +54,7 @@ public class JpaBasicCalculationFormulaRepository extends JpaRepository implemen
     public BasicCalculationFormula toBasicCalculationFormula (QpbmtBasicCalculationFormula basicCalculationForm, List<QpbmtBasicCalculationStandardAmount> basicCalculationStandardAmount) {
         BasicCalculationForm domain = null;
         if (basicCalculationForm.calculationFormulaCls == CalculationFormulaClassification.FORMULA.value && basicCalculationForm.formulaType !=null) domain = this.toBasicCalculationForm(basicCalculationForm, basicCalculationStandardAmount);
-        return new BasicCalculationFormula(basicCalculationForm.basicCalFormPk.historyID, basicCalculationForm.basicCalFormPk.masterUseCode, basicCalculationForm.calculationFormulaCls, basicCalculationForm.basicCalculationFormula, domain);
+        return new BasicCalculationFormula(basicCalculationForm.basicCalFormPk.formulaCode, basicCalculationForm.basicCalFormPk.historyID, basicCalculationForm.basicCalFormPk.masterUseCode, basicCalculationForm.calculationFormulaCls, basicCalculationForm.basicCalculationFormula, domain);
     }
 
     public BasicCalculationForm toBasicCalculationForm (QpbmtBasicCalculationFormula basicCalculationForm, List<QpbmtBasicCalculationStandardAmount> basicCalculationStandardAmount) {
@@ -81,8 +80,8 @@ public class JpaBasicCalculationFormulaRepository extends JpaRepository implemen
     public void upsertAll(String formulaCode, String historyID, List<BasicCalculationFormula> domains){
         this.removeByHistory(historyID);
         domains.forEach(domain -> {
-            this.commandProxy().insert(QpbmtBasicCalculationFormula.toEntity(formulaCode, domain));
-            this.commandProxy().insertAll(QpbmtBasicCalculationStandardAmount.toEntity(formulaCode, domain));
+            this.commandProxy().insert(QpbmtBasicCalculationFormula.toEntity(domain));
+            this.commandProxy().insertAll(QpbmtBasicCalculationStandardAmount.toEntity(domain));
         });
     }
 

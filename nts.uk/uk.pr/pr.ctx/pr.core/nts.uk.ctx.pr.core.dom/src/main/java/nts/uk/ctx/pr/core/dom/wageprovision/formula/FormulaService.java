@@ -59,7 +59,7 @@ public class FormulaService {
         if (formulaRepository.getFormulaById(formula.getFormulaCode().v()).isPresent()) throw new BusinessException("Msg_3");
         formulaRepository.add(formula);
         formulaRepository.insertFormulaHistory(formula.getFormulaCode().v(), yearMonthHistoryItem);
-        if (formula.getSettingMethod() == FormulaSettingMethod.BASIC_SETTING) basicFormulaSettingRepository.add(formula.getFormulaCode().v(), basicFormulaSetting);
+        if (formula.getSettingMethod() == FormulaSettingMethod.BASIC_SETTING) basicFormulaSettingRepository.add(basicFormulaSetting);
     }
 
     public void updateFormula (Formula formula) {
@@ -69,8 +69,8 @@ public class FormulaService {
     public void updateFormulaSetting (Formula formula, BasicFormulaSetting basicFormulaSetting, DetailFormulaSetting detailFormulaSetting, List<BasicCalculationFormula> basicCalculationFormula) {
         formulaRepository.update(formula);
         basicCalculationFormulaRepository.upsertAll(formula.getFormulaCode().v(), basicFormulaSetting.getHistoryID(), basicCalculationFormula);
-        if (formula.getSettingMethod() == FormulaSettingMethod.DETAIL_SETTING) detailFormulaSettingRepository.upsert(formula.getFormulaCode().v(), detailFormulaSetting);
-        else basicFormulaSettingRepository.upsert(formula.getFormulaCode().v(), basicFormulaSetting);
+        if (formula.getSettingMethod() == FormulaSettingMethod.DETAIL_SETTING) detailFormulaSettingRepository.upsert(detailFormulaSetting);
+        else basicFormulaSettingRepository.upsert(basicFormulaSetting);
     }
     public void addFormulaHistory (Formula formula, BasicFormulaSetting basicFormulaSetting, DetailFormulaSetting detailFormulaSetting, List<BasicCalculationFormula> basicCalculationFormula, YearMonthHistoryItem yearMonthHistoryItem) {
         String formulaCode = formula.getFormulaCode().v();
