@@ -35,7 +35,8 @@ module cps003.b.vm {
                 alertError("Msg_722");   
             }
             service.checkColums(params).done(data =>{
-                console.log(data);    
+                setShared('CPS003C_VALUE', data);
+                close();
             }).fail((res) =>{
                 alertError({ messageId: res.messageId });
             })
@@ -46,6 +47,7 @@ module cps003.b.vm {
         }
     }
 
+    
     interface IModelDto {
         categoryId: string;
         categoryName: string;
@@ -62,10 +64,10 @@ module cps003.b.vm {
         mode: KnockoutObservable<number> = ko.observable(1);
         columnChange: Array<string> = [];
         sids: Array<string>;
-        selectedRuleCode : KnockoutObservable<number> = ko.observable(1);
+        mode : KnockoutObservable<number> = ko.observable(1);
         roundingRules : Array<any> = [
-            { value: 1, name: text("CPS003_19") },
-            { value: 2, name: text("CPS003_20") },
+            { id: 1, name: text("CPS003_19") },
+            { id: 2, name: text("CPS003_20") },
         ];
         constructor(data: IModelDto) {
             let self = this;

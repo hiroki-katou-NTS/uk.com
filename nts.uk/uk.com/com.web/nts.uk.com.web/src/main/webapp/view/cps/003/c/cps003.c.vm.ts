@@ -5,6 +5,7 @@ module nts.uk.com.view.cps003.c.viewmodel {
     import info = nts.uk.ui.dialog.info;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     import textUK = nts.uk.text;
     import block = nts.uk.ui.block;
     export class ScreenModel {
@@ -16,7 +17,9 @@ module nts.uk.com.view.cps003.c.viewmodel {
         }
 
         start() {
-            let self = this;
+            let self = this,
+                param = getShared("CPS003D_VALUE");
+            console.log(param);
         }
         
         register() {
