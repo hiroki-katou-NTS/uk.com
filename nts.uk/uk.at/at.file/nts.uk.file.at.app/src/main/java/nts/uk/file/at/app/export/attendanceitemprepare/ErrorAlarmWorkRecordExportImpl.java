@@ -343,7 +343,7 @@ public class ErrorAlarmWorkRecordExportImpl {
                                }
                            }
                            //20
-                            if(c.getWorkTimeCondition().getComparePlanAndActual() ==1){
+                            if(c.getWorkTypeCondition().getComparePlanAndActual() ==1){
                                   data.put(header.get(20), TextResource.localize("Enum_FilterByCompare_Extract_Same"));
                            }else{
                         	   if(c.getWorkTimeCondition().getComparePlanAndActual() ==0){

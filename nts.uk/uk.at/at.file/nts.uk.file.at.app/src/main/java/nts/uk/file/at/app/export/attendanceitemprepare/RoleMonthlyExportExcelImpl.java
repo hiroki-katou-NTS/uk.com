@@ -91,9 +91,12 @@ public class RoleMonthlyExportExcelImpl  {
         SheetData sheet3 = new SheetData(getMasterDatasSheet3(query,listBzMonthly,mapListRecordMonthly,mapAttNameMonthlys,companyId,mode),
                 getHeaderColumnsSheet3(query,mode), null, null, TextResource.localize("KDW006_147"));
         sheetDatas.add(sheet3);
-        SheetData sheet4 = new SheetData(getMasterDatasSheet4(query,listOrderReferWorkType,mapAttNameMonthlys),
-                getHeaderColumnsSheet4(query), null, null, TextResource.localize("KDW006_148"));
-        sheetDatas.add(sheet4);
+        if(mode==1){
+        	 SheetData sheet4 = new SheetData(getMasterDatasSheet4(query,listOrderReferWorkType,mapAttNameMonthlys),
+                     getHeaderColumnsSheet4(query), null, null, TextResource.localize("KDW006_148"));
+             sheetDatas.add(sheet4);
+        }
+       
         return sheetDatas;
     }
 
@@ -346,6 +349,7 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
 	                if(montlhyRecord!=null &&montlhyRecord.getDisplayItem()!=null){
 	                    MonthlyActualResultsDto monActualResult = montlhyRecord.getDisplayItem();
 	                    List<SheetCorrectedMonthlyDto> listSheetCorrectedMonthly = monActualResult.getListSheetCorrectedMonthly();
+	                    listSheetCorrectedMonthly.sort(Comparator.comparing(SheetCorrectedMonthlyDto::getSheetNo));
 	                    int check = 0;
 	                    if(!CollectionUtil.isEmpty(listSheetCorrectedMonthly)){
 	                        for(int i = 0 ; i < listSheetCorrectedMonthly.size() ; i++) {
@@ -489,11 +493,11 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
     public List<MasterHeaderColumn> getHeaderColumnsSheet4(MasterListExportQuery query) {
         
         List<MasterHeaderColumn> columns = new ArrayList<>();
-        columns.add(new MasterHeaderColumn("コード", TextResource.localize("KML004_9"),
+        columns.add(new MasterHeaderColumn("コード", TextResource.localize("KDW006_106"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("名称", TextResource.localize("KML004_10"),
+        columns.add(new MasterHeaderColumn("名称", TextResource.localize("KDW006_90"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("順", TextResource.localize("KML004_11"),
+        columns.add(new MasterHeaderColumn("順", TextResource.localize("KDW006_191"),
                 ColumnTextAlign.LEFT, "", true));
         return columns;
     }
