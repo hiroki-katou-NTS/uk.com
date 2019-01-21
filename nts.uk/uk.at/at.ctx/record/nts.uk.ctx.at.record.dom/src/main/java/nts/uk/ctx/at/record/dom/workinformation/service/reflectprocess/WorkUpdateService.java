@@ -1,8 +1,7 @@
 package nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.OverTimeRecordAtr;
@@ -88,8 +87,10 @@ public interface WorkUpdateService {
 	 * @param dateData
 	 * @param worktimeFrame
 	 * @param isPre
+	 * @param isRec: True: 振出申請、False：　休日出勤申請 fix bug 103077
 	 */
-	public IntegrationOfDaily updateWorkTimeFrame(String employeeId, GeneralDate dateData, Map<Integer, Integer> worktimeFrame, boolean isPre, IntegrationOfDaily dailyData);
+	public IntegrationOfDaily updateWorkTimeFrame(String employeeId, GeneralDate dateData, Map<Integer, Integer> worktimeFrame, 
+			boolean isPre, IntegrationOfDaily dailyData, boolean isRec);
 	/**
 	 * 就時の反映
 	 * @param employeeId
@@ -115,4 +116,34 @@ public interface WorkUpdateService {
 	 * @param overTimeAtr
 	 */
 	public void reflectReason(String sid, GeneralDate appDate, String appReason, OverTimeRecordAtr overTimeAtr);
+	/**
+	 * 事前残業の勤務項目
+	 * @return
+	 */
+	public List<Integer> lstPreOvertimeItem();
+	/**
+	 * 事前休日出勤時間の項目ID
+	 * @return
+	 */
+	List<Integer> lstPreWorktimeFrameItem();
+	/**
+	 * 事後休日出勤時間帯の項目ID
+	 * @return
+	 */
+	List<Integer> lstAfterWorktimeFrameItem();
+	/**
+	 * 振替時間の項目ID
+	 * @return
+	 */
+	List<Integer> lstTranfertimeFrameItem();
+	/**
+	 * 事後残業の勤務項目
+	 * @return
+	 */
+	List<Integer> lstAfterOvertimeItem();
+	/**
+	 * 残業枠時間．振替時間
+	 * @return
+	 */
+	List<Integer> lstTransferTimeOtItem();
 }

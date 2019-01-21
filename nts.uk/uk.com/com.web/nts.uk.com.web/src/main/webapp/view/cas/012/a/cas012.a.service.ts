@@ -31,4 +31,17 @@ module nts.uk.com.view.cas012.a.service {
         return nts.uk.request.ajax("com", paths.deleteRoleIndividual, roleIndividual);
     }
 
+    export function exportExcel(date: string): JQueryPromise<any> {
+        let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+        let domainType = program[1] != null ? "CAS012" + program[1] : "";
+        let _params = {domainId: "GrantAdminRole",
+            domainType: domainType,
+            languageId: 'ja',
+            reportType: 0,
+            mode: 1,
+            baseDate: date
+        };
+        return nts.uk.request.exportFile('/masterlist/report/print', _params);
+    }
+
 }

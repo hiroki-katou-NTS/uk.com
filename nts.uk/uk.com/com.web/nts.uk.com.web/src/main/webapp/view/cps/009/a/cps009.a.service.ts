@@ -72,5 +72,14 @@ module nts.uk.com.view.cps009.a.service {
     export function checkFunctionNo() {
         return ajax(paths.checkFunctionNo);
     }
+    
+    export function saveAsExcel(): JQueryPromise<any> {
+        let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+        let domainType = program[1] != null ? "CPS009" + program[1] : "";
+        let _params = {domainId: "PerInfoInit", 
+                        domainType: domainType,
+                        languageId: "ja", reportType: 0};
+        return nts.uk.request.exportFile('/masterlist/report/print', _params);
+    }
 
 }

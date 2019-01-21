@@ -1,5 +1,5 @@
 module nts.uk.at.view.ksm001.a {
-
+    import modal = nts.uk.ui.windows.sub.modal;
     import EstimateTimeDto = service.model.EstimateTimeDto;
     import EstimatePriceDto = service.model.EstimatePriceDto;
     import EstimateDaysDto = service.model.EstimateDaysDto;
@@ -14,6 +14,9 @@ module nts.uk.at.view.ksm001.a {
     export module viewmodel {
 
         export class ScreenModel {
+            langId: KnockoutObservable<string> = ko.observable('ja');
+            date: KnockoutObservable<Date> = ko.observable(moment(new Date()).toDate());
+            
             // Common
             usageSettingModel: UsageSettingModel;
             lstTargetYear: KnockoutObservableArray<any>;
@@ -51,7 +54,36 @@ module nts.uk.at.view.ksm001.a {
             alreadySettingEmployment: KnockoutObservableArray<UnitAlreadySettingModel>;
             employmentList: KnockoutObservableArray<UnitModel>;
 
-
+            /**
+            * Print file excel
+            */
+            saveAsExcel(): void {
+                let self = this;
+                let params = {
+                   date: null,
+                   mode: 5
+               };
+                
+                nts.uk.ui.windows.setShared("CDL028_INPUT", params);
+                nts.uk.ui.windows.sub.modal('com', '/view/cdl/028/a/index.xhtml').onClosed(() => {
+                    var result = nts.uk.ui.windows.getShared('CDL028_A_PARAMS');
+                   if (result.status) {
+                        nts.uk.ui.block.grayout();
+                        let langId = self.langId();
+                         
+                       let startDate = moment.utc(result.startDateFiscalYear, "YYYY/MM/DD");
+                        let endDate = moment.utc(result.endDateFiscalYear, "YYYY/MM/DD");
+                        service.saveAsExcel(langId, startDate, endDate).done(function() {
+                            //nts.uk.ui.windows.close();
+                        }).fail(function(error) {
+                            nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+                        }).always(function() {
+                            nts.uk.ui.block.clear();
+                        });
+                   }
+                }
+            }
+            
             constructor() {
                 var self = this;
 
@@ -682,7 +714,6 @@ module nts.uk.at.view.ksm001.a {
                     estimateNumberOfDay: self.employmentEstablishmentModel.estimateDaysModel.toDto(),
                     employmentCode: self.selectedEmploymentCode()
                 };
-
                 service.saveEmploymentEstablishment(self.employmentEstablishmentModel.selectedYear(), dto).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                         self.updateEmploymentEstimateSetting(self.employmentEstablishmentModel.selectedYear());
@@ -1016,8 +1047,9 @@ module nts.uk.at.view.ksm001.a {
                 for (var item of this.monthlyEstimates) {
                     monthlyEstimateTime.push(item.toDto());
                 }
+                var sortMonth = _.sortBy(monthlyEstimateTime, item=>item.month);
                 var dto: EstablishmentTimeDto = {
-                    monthlyEstimates: monthlyEstimateTime,
+                    monthlyEstimates: sortMonth,
                     yearlyEstimate: this.yearlyEstimate.toDto()
                 };
                 return dto;
@@ -1057,8 +1089,9 @@ module nts.uk.at.view.ksm001.a {
                 for (var item of this.monthlyEstimates) {
                     monthlyEstimatePrice.push(item.toDto());
                 }
+                var sortMonth = _.sortBy(monthlyEstimatePrice, item => item.month);
                 var dto: EstablishmentPriceDto = {
-                    monthlyEstimates: monthlyEstimatePrice,
+                    monthlyEstimates: sortMonth,
                     yearlyEstimate: this.yearlyEstimate.toDto()
                 };
                 return dto;
@@ -1099,8 +1132,9 @@ module nts.uk.at.view.ksm001.a {
                 for (var item of this.monthlyEstimates) {
                     monthlyEstimateDays.push(item.toDto());
                 }
+                var sortMonth = _.sortBy(monthlyEstimateDays, item=>item.month);
                 var dto: EstablishmentDaysDto = {
-                    monthlyEstimates: monthlyEstimateDays,
+                    monthlyEstimates: sortMonth,
                     yearlyEstimate: this.yearlyEstimate.toDto()
                 };
                 return dto;

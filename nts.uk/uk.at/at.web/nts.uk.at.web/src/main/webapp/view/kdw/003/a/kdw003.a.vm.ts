@@ -808,7 +808,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         processFlex(data, showListError): JQueryPromise<any> {
             let dfd = $.Deferred(),
                 self = this;
-            if (self.displayFormat() === 0) {
+            if (self.displayFormat() === 0 && !_.isEmpty(self.selectedEmployee())) {
                 self.loadRemainNumberTable();
             }
             let monthResult = data.monthResult;
@@ -1722,6 +1722,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 $("#btnVacationRemaining").show();
                 $('#numberHoliday').show();
                 $('#fixed-table').show();
+                $('#content-all-grid').attr('style', 'top: 15px !IMPORTANT ; position: relative; clear: both');
                 //  $("#content-grid").attr('style', 'top: 244px !IMPORTANT');
             } else if (self.displayFormat() == 1) {
                 $("#daterangepicker").css("display", "none");
@@ -1731,6 +1732,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 $('#numberHoliday').hide();
                 $('#fixed-table').hide();
                 $('#flex').hide();
+                $('#content-all-grid').attr('style', 'top: 0px !IMPORTANT ; position: relative; clear: both');
                 // $("#content-grid").attr('style', 'top: 225px !IMPORTANT');
             } else {
                 $("#daterangepicker").css("display", "block");
@@ -1740,6 +1742,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 $('#numberHoliday').hide();
                 $('#fixed-table').hide();
                 $('#flex').hide();
+                $('#content-all-grid').attr('style', 'top: 0px !IMPORTANT ; position: relative; clear: both');
                 // $("#content-grid").attr('style', 'top: 180px !IMPORTANT');
             }
         }
@@ -1919,8 +1922,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (lst != undefined) {
                     lstEmployee.push(lst);
                     dfd.resolve(lstEmployee);
-                }
-                else if (self.selectedEmployee() != undefined && self.selectedEmployee() != null && self.selectedEmployee() != "") {
+                }else if (!_.isEmpty(self.selectedEmployee())) {
                     //let dfd2 = $.Deferred();
                     service.searchEmployee(self.selectedEmployee()).done(data => {
                         let emp = {
@@ -1938,6 +1940,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         //  dfd2.resolve();
                     });
                     // dfd2.promise();
+                }else{
+                    self.lstEmployee(lstEmployee);
+                    dfd.resolve(lstEmployee);
                 }
             } else {
                 lstEmployee = self.lstEmployee();
@@ -1968,6 +1973,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 //set = false de co the jump den ham subscribe
                 self.isVisibleMIGrid(false);
             }
+            self.flagCalculation = false;
+            self.listErrorMonth = [];
             self.reloadScreen();
         }
 
@@ -2174,6 +2181,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 //  let errorCodes =["0001","0002","003"];     
                 let errorParam = { initMode: 0, selectedItems: [] };
                 setShared("KDW003D_ErrorParam", errorParam);
+                self.flagCalculation = false;
                 modal("/view/kdw/003/d/index.xhtml").onClosed(() => {
                     nts.uk.ui.block.clear();
                     let errorCodes = nts.uk.ui.windows.getShared('KDW003D_Output');
@@ -2216,6 +2224,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var self = this;
             if (!self.hasEmployee || self.hasErrorBuss) return;
             if (!nts.uk.ui.errors.hasError()) {
+                self.flagCalculation = false;
                 setShared("selectedPerfFmtCodeList", self.formatCodes());
                 modal("/view/kdw/003/c/index.xhtml").onClosed(() => {
                     var dataTemp = nts.uk.ui.windows.getShared('KDW003C_Output');

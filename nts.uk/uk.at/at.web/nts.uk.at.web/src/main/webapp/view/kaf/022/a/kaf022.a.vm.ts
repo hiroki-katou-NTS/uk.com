@@ -2157,6 +2157,19 @@ module nts.uk.at.view.kmf022 {
                     self.enableE18(data.weight2);
                 }
             }
+
+            private exportExcel(domainId: string) {
+                nts.uk.ui.block.grayout();
+                let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+                let domainType = program[1] != null ? "KAF022" + program[1] : "";
+                service.exportExcel('ja', domainId, domainType).done(function() {
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+            }
+
             initDataG(allData: any): void {
                 let self = this;
                 let data = allData.wdApp;
@@ -2564,10 +2577,10 @@ module nts.uk.at.view.kmf022 {
                     useAtr: self.selectedIdK15(),
                     checkUpLimitHalfDayHD: self.selectedIdK16(),
                     deferredComment: self.texteditorK17.value(),
-                    deferredLettleColor: self.valueK18(),
+                    deferredLettleColor: self.valueK18() == null ? '' : self.valueK18(),
                     deferredBold: self.enableK19() ? 1 : 0,
                     pickUpComment: self.texteditorK20.value(),
-                    pickUpLettleColor: self.valueK23(),
+                    pickUpLettleColor: self.valueK23() == null ? '' : self.valueK23(),
                     pickUpBold: self.enableK24() ? 1 : 0,
                     permissionDivision: self.selectedIdK21(),
                     appliDateContrac: self.selectedIdK22(),

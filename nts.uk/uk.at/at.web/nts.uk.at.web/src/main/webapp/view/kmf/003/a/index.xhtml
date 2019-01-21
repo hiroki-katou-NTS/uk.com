@@ -32,7 +32,7 @@
 					data-bind="click: addFunction, enable: $root.errors.isEmpty">#{i18n.getText('KMF003_4')}</button>
 				<button id="A_BTN_003" data-bind="click: deleteFunction, enable: !editMode()"
 					class="danger">#{i18n.getText('KMF003_6')}</button>
-				<button  tabindex="5" id="print-button" data-bind="click: exportExcel">#{i18n.getText('KMK007_4')}</button> 	
+				<button id="print-button" data-bind="click: exportExcel">#{i18n.getText('KMK007_4')}</button> 	
 				
 			</div>
 			<!-- END FUNCTION AREA-->
@@ -80,7 +80,7 @@
 										<div class="a5">
 											<label class="a5_1">#{i18n.getText('KMF003_15')}</label>
 											<div id="monthdays" class="a5_2"
-												data-bind="ntsMonthDays: {value: grantDate, enable: enableGrantDate}" />
+												data-bind="ntsMonthDays: {value: grantDate, enable: enableGrantDate,required:enableGrantDate}" />
 										</div>
 									</div>
 								</td>

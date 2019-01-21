@@ -26,7 +26,11 @@ import nts.uk.file.at.app.export.attendanceitemprepare.ApplicationCallExport;
 import nts.uk.file.at.app.export.attendanceitemprepare.ApplicationTypeExport;
 import nts.uk.file.at.app.export.attendanceitemprepare.OperationExcelRepo;
 import nts.uk.file.at.app.export.attendanceitemprepare.RoleExport;
-
+/**
+ * 
+ * @author Hoidd 2
+ *
+ */
 @Stateless
 public class JpaOperationRepository extends JpaRepository implements OperationExcelRepo
 {
@@ -47,41 +51,43 @@ public class JpaOperationRepository extends JpaRepository implements OperationEx
     private static final String SELECT_BY_COM_APPLICATIONCALL = "SELECT c.APPLICATION_TYPE FROM KFNMT_APPLICATION_CALL c where c.CID=?cid";
 	//Rold
     private static final String SELECT_ALL_ROLD = "SELECT a.ROLE_CD as codeRole,a.ROLE_NAME as nameRole,c.DESCRIPTION_OF_FUNCTION as description ,c.DISPLAY_NAME_OF_FUNCTION as displayName, b.AVAILABILITY as availability "
-    											+ "from SACMT_ROLE  a left join KRCMT_DAI_PERFORMANCE_AUT b "
-    											+ "on a.ROLE_ID=b.ROLE_ID "
+    											+ "from KACMT_EMPLOYMENT_ROLE x "
+    											+ "left join SACMT_ROLE  a on x.ROLE_ID=a.ROLE_ID and x.CID = a.CID "
+    											+ "left join KRCMT_DAI_PERFORMANCE_AUT b "
+    											+ "on a.ROLE_ID=b.ROLE_ID and a.CID = b.CID "
     											+ "left join KRCMT_DAI_PERFORMANCE_FUN c "
     											+ "on b.FUNCTION_NO=c.FUNCTION_NO "
     											+ "where a.CID=?cid ORDER BY a.ROLE_CD ";
 	
     @Override
-    public Optional<FormatPerformance> getFormatPerformanceById(String cid){
+    public Optional<FormatPerformance> getFormatPerformanceById(String companyId){
         return this.queryProxy().query(SELECT_BY_KEY_STRING_FORMAT, KrcmtFormatPerformance.class)
-        .setParameter("cid", cid)
+        .setParameter("cid", companyId)
         .getSingle(c->c.toDomain());
     }
   
     @Override
-    public Optional<DaiPerformanceFun> getDaiPerformanceFunById(String cid){
+    public Optional<DaiPerformanceFun> getDaiPerformanceFunById(String companyId){
         return this.queryProxy().query(SELECT_BY_KEY_STRING_DAILY, KrcmtDaiPerformEdFun.class)
-        .setParameter("cid", cid)
+        .setParameter("cid", companyId)
         .getSingle(c->c.toDomain());
     }
 
 
     @Override
-    public Optional<MonPerformanceFun> getMonPerformanceFunById(String cid){
+    public Optional<MonPerformanceFun> getMonPerformanceFunById(String companyId){
         return this.queryProxy().query(SELECT_BY_KEY_STRING_MONTHLY, KrcmtMonPerformanceFun.class)
-        .setParameter("cid", cid)
+        .setParameter("cid", companyId)
         .getSingle(c->c.toDomain());
     }
     
     @Override
     @SneakyThrows
-    public Optional<IdentityProcess> getIdentityProcessById(String cid){
+    public Optional<IdentityProcess> getIdentityProcessById(String companyId){
     	try (PreparedStatement statement = this.connection().prepareStatement("SELECT * from KRCMT_SELF_CHECK_SET h WHERE h.CID = ?")) {
-			statement.setString(1, cid);
+			statement.setString(1, companyId);
 			return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
-				return new IdentityProcess(cid, rec.getInt("USE_DAILY_SELF_CHECK"), 
+				return new IdentityProcess(companyId, rec.getInt("USE_DAILY_SELF_CHECK"), 
 		        		rec.getInt("USE_MONTHLY_SELF_CHECK"),
 		        		rec.getInt("YOURSELF_CONFIRM_ERROR") == null ? null : EnumAdaptor.valueOf(rec.getInt("YOURSELF_CONFIRM_ERROR"), YourselfConfirmError.class));
 			});
@@ -89,11 +95,11 @@ public class JpaOperationRepository extends JpaRepository implements OperationEx
     }
     @Override
     @SneakyThrows
-    public Optional<ApprovalProcess> getApprovalProcessById(String cid){
+    public Optional<ApprovalProcess> getApprovalProcessById(String companyId){
     	try (PreparedStatement statement = this.connection().prepareStatement("SELECT * from KRCMT_BOSS_CHECK_SET h WHERE h.CID = ?")) {
-			statement.setString(1, cid);
+			statement.setString(1, companyId);
 			return new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
-				return new ApprovalProcess(cid, rec.getString("JOB_TITLE_NOT_BOSS_CHECK"), 
+				return new ApprovalProcess(companyId, rec.getString("JOB_TITLE_NOT_BOSS_CHECK"), 
 		        		rec.getInt("USE_DAILY_BOSS_CHECK"), rec.getInt("USE_MONTHLY_BOSS_CHECK"), 
 		        		rec.getInt("SUPERVISOR_CONFIRM_ERROR") == null ? null : EnumAdaptor.valueOf(rec.getInt("SUPERVISOR_CONFIRM_ERROR"), YourselfConfirmError.class));
 			});
@@ -130,15 +136,15 @@ public class JpaOperationRepository extends JpaRepository implements OperationEx
 	}
 
 	private void convertToRoleExport(List<RoleExport> result, Object[] x) {
-		
-		try{
-			test++;
+		 String codeRole = (x[0]!=null)?(String) x[0]:null;
+		 String nameRole = (x[1]!=null)?(String) x[1]:null;
+		 String displayName = (x[2]!=null)?(String) x[2]:null;
+		 String description = (x[3]!=null)?(String) x[3]:null;
+		 int availability = (x[4]!=null)?((BigDecimal) x[4]).intValue():-1;
 		RoleExport reExport = 
-				new RoleExport((String) x[0],(String) x[1],(String) x[2],(String) x[3],x[4]!=null?((BigDecimal) x[4]).intValue():null);
+				new RoleExport(codeRole, nameRole, displayName, description, availability);
 		result.add(reExport);
-		}catch (Exception e) {
-			System.out.println(test);
-		}
+
 	}
 
 }
