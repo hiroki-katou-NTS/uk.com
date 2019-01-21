@@ -16,6 +16,11 @@ import nts.uk.ctx.at.record.app.find.calculationsetting.StampReflectionManagemen
 import nts.uk.ctx.at.record.app.find.calculationsetting.StampReflectionManagementFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.midnight.MidnightTimeSheetDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.midnight.MidnightTimeSheetFinder;
+import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemSetFinder;
+import nts.uk.ctx.at.record.app.find.holiday.roundingmonth.RoundingMonthDto;
+import nts.uk.ctx.at.record.app.find.holiday.roundingmonth.RoundingMonthFinder;
+import nts.uk.ctx.at.record.app.find.holiday.roundingmonth.TimeRoundingOfExcessOutsideTimeDto;
+import nts.uk.ctx.at.record.app.find.holiday.roundingmonth.TimeRoundingOfExcessOutsideTimeFinder;
 import nts.uk.ctx.at.record.app.find.monthly.vtotalmethod.PayItemCountOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.vtotalmethod.PayItemCountOfMonthlyFinder;
 import nts.uk.ctx.at.record.app.find.monthly.vtotalmethod.VerticalTotalMethodOfMonthlyDto;
@@ -26,6 +31,8 @@ import nts.uk.ctx.at.record.app.find.workrecord.temporarywork.ManageWorkTemporar
 import nts.uk.ctx.at.record.app.find.workrecord.temporarywork.ManageWorkTemporaryFinder;
 import nts.uk.ctx.at.record.app.find.workrule.specific.SpecificWorkRuleDto;
 import nts.uk.ctx.at.record.app.find.workrule.specific.SpecificWorkRuleFinder;
+import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceDto;
+import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingProcessOfExcessOutsideTime;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.HolidayAddtionDto;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.HolidayAddtionFinder;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.flex.FlexSetDto;
@@ -48,6 +55,7 @@ import nts.uk.ctx.at.shared.app.find.workrule.func.SelectFunctionDto;
 import nts.uk.ctx.at.shared.app.find.workrule.func.SelectFunctionFinder;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeFinder;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
@@ -59,6 +67,8 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkEnum;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodEnum;
@@ -68,6 +78,7 @@ import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkMntSetRepository;
 import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkSet;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageRepository;
+import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTimeUnit;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
 @Stateless
 @DomainID(value = "CalculationSetting")
@@ -116,6 +127,15 @@ public class CalculationSettingExportImpl implements MasterListData {
 	PayItemCountOfMonthlyFinder payItemCountOfMonthlyFinder;
 	@Inject
 	private WorkTypeFinder workTypeFinder;
+	@Inject
+	private RoundingMonthFinder roundingMonthFinder;
+	@Inject
+	private DivergenceItemSetFinder divergenceItemSetFinder;
+	
+	@Inject
+	private OutsideOtSetRepository outsideOtSetRepositoryFinder;
+	@Inject
+	private TimeRoundingOfExcessOutsideTimeFinder timeRoundingOfExcessOutsideTimeFinder;
 	
 	private static final String select = "○";
 	private static final String unselect = "-";
@@ -161,6 +181,10 @@ public class CalculationSettingExportImpl implements MasterListData {
 	private static final String column1Sheet11="1";
 	private static final String column2Sheet11="2";
 	private static final String column3Sheet11="3";
+	//
+	private static final String column1Sheet12="1";
+	private static final String column2Sheet12="2";
+	private static final String column3Sheet12="3";
 	
 	public  SelectFunctionDto getFucntionDto(){
 			SelectFunctionDto selectFunctionDto=finder.findAllSetting();
@@ -210,8 +234,10 @@ public class CalculationSettingExportImpl implements MasterListData {
 			 SheetData dataSettingOfverticalmonthly= new SheetData(getDataSettingOfverticalmonthly(query),
 					 getHeaderColumnsSettingOfverticalmonthly(query), null,null,TextResource.localize("KMK013_439"));
 			 sheetDatas.add(dataSettingOfverticalmonthly);
-		// sheet 12	 
-			 
+		// sheet 12	  
+			 SheetData dataRoundingSettingOfMonthly= new SheetData(getDataRoundingSettingOfMonthly(query),
+					 getHeaderColumnsRoundingSettingOfMonthly(query), null,null,TextResource.localize("KMK013_440"));
+			 sheetDatas.add(dataRoundingSettingOfMonthly);
 		return sheetDatas;
 	}
 	
@@ -2282,6 +2308,130 @@ private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
 	}
     // end sheet 11
     // sart sheet 12
+    private List<MasterHeaderColumn> getHeaderColumnsRoundingSettingOfMonthly (MasterListExportQuery query){
+    	
+    	List<MasterHeaderColumn> columns = new ArrayList<>();
+    	columns.add(new MasterHeaderColumn(column1Sheet12,TextResource.localize("KMK013_447"),ColumnTextAlign.LEFT, "", true));				
+    	columns.add(new MasterHeaderColumn(column2Sheet12,TextResource.localize("KMK013_448"),ColumnTextAlign.LEFT, "", true));
+    	columns.add(new MasterHeaderColumn(column3Sheet12,TextResource.localize("KMK013_449"),ColumnTextAlign.LEFT, "", true));	
+    	return columns;
+
+    }
+    private List<MasterData> getDataRoundingSettingOfMonthly(MasterListExportQuery query){
+    	LoginUserContext loginUserContext = AppContexts.user();
+		// get company id
+		String companyId = loginUserContext.companyId();
+    	List<MasterData> datas = new ArrayList<>();
+    	List<RoundingMonthDto>  rs=	roundingMonthFinder.findAllRounding();
+    	Map<Integer, RoundingMonthDto> map= new HashMap<>();
+    	for(RoundingMonthDto roundingMonthDto:rs){
+    		map.put(roundingMonthDto.getTimeItemId(), roundingMonthDto);
+    	}
+    	if(!CollectionUtil.isEmpty(rs)){    		
+        	List<Integer>  listAttendaneId=rs.stream().map(x  ->x.getTimeItemId()).collect(Collectors.toList());
+        	 List<AttendanceNameDivergenceDto> listattName=divergenceItemSetFinder.getMonthlyAtName(listAttendaneId).stream().sorted((o1, o2) -> o1.getAttendanceItemDisplayNumber() - o2.getAttendanceItemDisplayNumber())
+    		.collect(Collectors.toList());
+        	 for( int i=0;i<listattName.size();i++){
+        		 AttendanceNameDivergenceDto attendanceNameDivergenceDto=listattName.get(i);
+        		 RoundingMonthDto roundingMonth= map.get(attendanceNameDivergenceDto.getAttendanceItemId());
+        		 Map<String, Object> data = new HashMap<>();
+        		 data.put(column1Sheet12,attendanceNameDivergenceDto.getAttendanceItemName());
+        		 data.put(column2Sheet12,getNameEnumRoundingUnit(roundingMonth.getUnit()));
+        		 data.put(column3Sheet12,getNameEnumRounding(roundingMonth.getRounding()));
+        		 MasterData masterData = new MasterData(data, null, "");
+        		 Map<String, MasterCellData> rowData = masterData.getRowData();
+        		 getAlignsheet12(rowData);
+        		 datas.add(masterData);
+        		 
+        		 
+        	 }
+    		
+    	}
+    	Optional<OutsideOtSetDto> oprs=outsideOtSetRepositoryFinder.findById(companyId);
+    	if(oprs.isPresent()){
+    		OutsideOtSetDto outsideOtSetDto=oprs.get();
+    		if(outsideOtSetDto.getCalculationMethod()==1){
+    			TimeRoundingOfExcessOutsideTimeDto timeRoundingOfExcessOutsideTimeDto=timeRoundingOfExcessOutsideTimeFinder.findTimeRounding();
+    			if(!Objects.isNull(timeRoundingOfExcessOutsideTimeDto)){
+    				 Map<String, Object> data1 = new HashMap<>();
+        			 data1.put(column1Sheet12,TextResource.localize("KMK013_274"));
+        			 data1.put(column2Sheet12,getNameEnumRoundingUnit(timeRoundingOfExcessOutsideTimeDto.getRoundingUnit()));
+        			 data1.put(column3Sheet12,getNameEnumProcessOfExcessOutsideTime(timeRoundingOfExcessOutsideTimeDto.getRoundingProcess()));
+            		 MasterData masterData1 = new MasterData(data1, null, "");
+            		 Map<String, MasterCellData> rowData1 = masterData1.getRowData();
+            		 getAlignsheet12(rowData1);
+            		 datas.add(masterData1);
+    			}
+    			
+    		}
+    	}
+    	
+		return datas;
+    }
+    
+	private void getAlignsheet12(Map<String, MasterCellData> rowData){
+		rowData.get(column1Sheet12).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+		rowData.get(column2Sheet12).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+		rowData.get(column3Sheet12).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+		
+	
+		
+	}
+	
+	public String getNameEnumRoundingUnit( int att){
+		
+		Unit roundingTimeUnit=Unit.valueOf(att);
+		switch (roundingTimeUnit) {
+		case ROUNDING_TIME_1MIN:
+			return TextResource.localize("Enum_RoundingTime_1Min");
+		case ROUNDING_TIME_5MIN:
+			return TextResource.localize("Enum_RoundingTime_5Min");
+		case ROUNDING_TIME_6MIN:
+			return TextResource.localize("Enum_RoundingTime_6Min");	
+		case ROUNDING_TIME_10MIN:
+			return TextResource.localize("Enum_RoundingTime_10Min");	
+		case ROUNDING_TIME_15MIN:
+			return TextResource.localize("Enum_RoundingTime_15Min");	
+		case ROUNDING_TIME_20MIN:
+			return TextResource.localize("Enum_RoundingTime_20Min");	
+		case ROUNDING_TIME_30MIN:
+			return TextResource.localize("Enum_RoundingTime_30Min");				
+		case ROUNDING_TIME_60MIN:
+			return TextResource.localize("Enum_RoundingTime_60Min");	
+		default:
+			return "";
+		}
+	}
+	
+	public String getNameEnumRounding(int attr) {
+		Rounding rounding=Rounding.valueOf(attr);
+		switch (rounding) {
+		case ROUNDING_DOWN:
+			return TextResource.localize("Enum_Rounding_Down");
+		case ROUNDING_UP:
+			return TextResource.localize("Enum_Rounding_Up");
+		case ROUNDING_DOWN_OVER:
+			return TextResource.localize("Enum_Rounding_Down_Over");	
+		default:
+			return "";
+		}
+	}
+	
+	public String getNameEnumProcessOfExcessOutsideTime(int attr) {
+	
+		switch (attr) {
+		case 0:
+			return TextResource.localize("Enum_Exc_Rounding_Down");
+		case 1:
+			return TextResource.localize("Enum_Exc_Rounding_Up");
+		case 2:
+			return TextResource.localize("Enum_Exc_Follow_Element");	
+		default:
+			return "";
+		}
+	}
+	
+
     // end sheet12
     
 	private void getAlignsheet2(Map<String, MasterCellData> rowData){
