@@ -138,8 +138,7 @@ public class RoleDailyExportExcelImpl {
         SheetData sheet3 = new SheetData(getMasterDatasSheet3(query,listBusinessType,mapMonthlyBz,
         		mapAttNameMonthlys,maplistBzDaily,mapAttNameDailys,companyId,mapAttNameMonthlys,mode),
                 getHeaderColumnsSheet3(query,mode), null, null, TextResource.localize("KDW006_142"));
-        SheetData sheet5 = new SheetData(getMasterDatasSheet5(query,listBzTypeSort),
-                getHeaderColumnsSheet5(query), null, null, TextResource.localize("KDW006_143"));
+
         SheetData sheet6 = new SheetData(getMasterDatasSheet6(query,mapTypeByEmpAndGroup,headerSheet6),
                 getHeaderColumnsSheet6(query,headerSheet6), null, null, TextResource.localize("KDW006_144"));
 
@@ -147,7 +146,11 @@ public class RoleDailyExportExcelImpl {
         sheetDatas.add(sheet2);
         sheetDatas.addAll(errorAlarmWorkRecordExportImpl.extraSheets(query));
         sheetDatas.add(sheet3);
-        sheetDatas.add(sheet5);
+        if(mode==1){
+        	SheetData sheet5 = new SheetData(getMasterDatasSheet5(query,listBzTypeSort),
+        			getHeaderColumnsSheet5(query), null, null, TextResource.localize("KDW006_143"));
+        	sheetDatas.add(sheet5);
+        }
         sheetDatas.add(sheet6);
         sheetDatas.addAll(roleMonthlyExportExcelImpl.extraSheets(query,listEmployeeRoleDto,mapAttNameMonthlys,listAttItemNameMonthly,mode));
 
