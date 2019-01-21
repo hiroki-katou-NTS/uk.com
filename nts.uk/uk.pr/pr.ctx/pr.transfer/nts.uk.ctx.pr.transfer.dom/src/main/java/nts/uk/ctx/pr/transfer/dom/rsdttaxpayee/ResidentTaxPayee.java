@@ -35,14 +35,14 @@ public class ResidentTaxPayee extends AggregateRoot {
     private Optional<ResidentTaxPayeeKanaName> kanaName;
 
     /**
+     * 都道府県
+     */
+    private int prefectures;
+
+    /**
      * とりまとめ局
      */
     private CompileStation compileStation;
-
-    /**
-     * メモ
-     */
-    private Optional<Memo> note;
 
     /**
      * 加入者名
@@ -66,23 +66,29 @@ public class ResidentTaxPayee extends AggregateRoot {
     private Optional<ResidentTaxPayeeDesignationNum> designationNum;
 
     /**
-     * 都道府県
+     * 報告先指定番号
      */
-    private int prefectures;
+    private Optional<ResidentTaxPayeeDesignationNum> reportNum;
 
-    public ResidentTaxPayee(String cid, String code, String name, String kanaName, String compileStationName,
-                            String compileStationZipCd, String note, String subcriberName, String accountNum,
-                            String reportCd, String designationNum, int prefectures) {
+    /**
+     * メモ
+     */
+    private Optional<Memo> note;
+
+    public ResidentTaxPayee(String cid, String code, String name, String kanaName, int prefectures, String compileStationName,
+                            String compileStationZipCd, String subcriberName, String accountNum,
+                            String reportCd, String designationNum, String reportNum, String note) {
         this.cid = cid;
         this.code = new ResidentTaxPayeeCode(code);
         this.name = new ResidentTaxPayeeName(name);
         this.kanaName = kanaName == null || kanaName.isEmpty() ? Optional.empty() : Optional.of(new ResidentTaxPayeeKanaName(kanaName));
+        this.prefectures = prefectures;
         this.compileStation = new CompileStation(compileStationName, compileStationZipCd);
-        this.note = note == null || note.isEmpty() ? Optional.empty() : Optional.of(new Memo(note));
         this.subscriberName = subcriberName == null || subcriberName.isEmpty() ? Optional.empty() : Optional.of(new ResidentTaxPayeeSubscriberName(subcriberName));
         this.accountNumber = accountNum == null || accountNum.isEmpty() ? Optional.empty() : Optional.of(new AccountNumber(accountNum));
         this.reportCd = reportCd == null || reportCd.isEmpty() ? Optional.empty() : Optional.of(new ResidentTaxPayeeCode(reportCd));
         this.designationNum = designationNum == null || designationNum.isEmpty() ? Optional.empty() : Optional.of(new ResidentTaxPayeeDesignationNum(designationNum));
-        this.prefectures = prefectures;
+        this.reportNum = reportNum == null || reportNum.isEmpty() ? Optional.empty() : Optional.of(new ResidentTaxPayeeDesignationNum(reportNum));
+        this.note = note == null || note.isEmpty() ? Optional.empty() : Optional.of(new Memo(note));
     }
 }
