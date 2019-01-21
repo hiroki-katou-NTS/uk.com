@@ -5,8 +5,8 @@ module nts.uk.at.view.ksm003.a {
             addPattCalender: "ctx/at/schedule/shift/pattern/daily/save",
             getPatternValByPatternCd: "ctx/at/schedule/shift/pattern/daily/find",
             deleteDailyPattern: "ctx/at/schedule/shift/pattern/daily/delete",
-            findByIdWorkType: "at/share/worktype/findById",
-            findByIdWorkTime: "at/shared/worktimesetting/findById"
+            findWorkTypeByCodes: "at/share/worktype/findNotDeprecatedByListCode",
+            findWorkTimeByCodes: "at/shared/worktimesetting/findByCodes"
 
         }
 
@@ -42,16 +42,24 @@ module nts.uk.at.view.ksm003.a {
         /**
          * findByIdWorkTime
         */
-        export function findByIdWorkTime(workTimeCode: string): JQueryPromise<model.WorkTimeDto> {
-            return nts.uk.request.ajax("at", paths.findByIdWorkTime + '/' + workTimeCode);
+        export function findWorkTimes(workTimeCodes: Array<string>): JQueryPromise<Array<model.WorkTimeDto>> {
+            return nts.uk.request.ajax("at", paths.findWorkTimeByCodes, workTimeCodes);
         }
 
 
         /**
          * findByIdWorkType
         */
-        export function findByIdWorkType(workTypeCode: string): JQueryPromise<model.WorkTypeDto> {
-            return nts.uk.request.ajax("at", paths.findByIdWorkType + '/' + workTypeCode);
+        export function findWorkTypes(workTypeCodes: Array<string>): JQueryPromise<Array<model.WorkTypeDto>> {
+            return nts.uk.request.ajax("at", paths.findWorkTypeByCodes, workTypeCodes);
+        }
+        /**
+         * Export File Excel
+         */
+        export function exportExcel(): JQueryPromise<any> {
+            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+            let domainType = program[1] != null ? "KSM003" + program[1] : "";
+            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "RegisterPattern", domainType: domainType, languageId: 'ja', reportType: 0});
         }
 
         export module model {

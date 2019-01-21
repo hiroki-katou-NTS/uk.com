@@ -48,17 +48,19 @@ module CPS009Constraint {
                     }
                     break;
                 case ITEM_SINGLE_TYPE.NUMERIC:
+                case ITEM_SINGLE_TYPE.NUMBERIC_BUTTON:
                     if (dts.numberDecimalPart == 0) {
                         constraint.valueType = "Integer";
                     } else {
                         constraint.valueType = "Decimal";
                         constraint.mantissaMaxLength = dts.numberDecimalPart;
                     }
+                    
                     let max = (Math.pow(10, dts.numberIntegerPart) - Math.pow(10, -(dts.numberDecimalPart || 0)));
-
                     constraint.charType = 'Numeric';
                     constraint.max = dts.numericItemMax || max;
-                    constraint.min = dts.numericItemMin || -max;
+                    constraint.min = dts.numericItemMin || (!!dts.numberItemMinus ? -max : 0);
+                        
                     if(["CS00035","CS00036"].indexOf(data.ctgCode) > -1 && itemSpecial.indexOf(dts.itemCode) > -1){
                         constraint.valueType = "HalfInt";
                     }
@@ -122,7 +124,13 @@ module CPS009Constraint {
         DATE = 3,
         TIME = 4,
         TIMEPOINT = 5,
-        SELECTION = 6
+        SELECTION = 6,
+        SEL_RADIO = 7,
+        SEL_BUTTON = 8,
+        READONLY = 9,
+        RELATE_CATEGORY = 10,
+        NUMBERIC_BUTTON = 11,
+        READONLY_BUTTON = 12
     }
 
     // define ITEM_STRING_DATA_TYPE

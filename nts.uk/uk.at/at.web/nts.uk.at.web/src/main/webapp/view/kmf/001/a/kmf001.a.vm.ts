@@ -9,6 +9,7 @@ module nts.uk.pr.view.kmf001.a {
                 var self = this;
             }
 
+
             /**
              * Start page.
              */
@@ -20,6 +21,19 @@ module nts.uk.pr.view.kmf001.a {
                 dfd.resolve();
 
                 return dfd.promise();
+            }
+
+            // Export Excel
+            public exportExcel(){
+                nts.uk.pr.view.kmf001.a.service.exportExcel().done(function (data) {
+
+                }).fail(function (res: any) {
+                    nts.uk.ui.dialog.alertError(res).then(function () {
+                        nts.uk.ui.block.clear();
+                    });
+                }).always(() => {
+                    block.clear();
+                });
             }
 
             // 優先順位の設定

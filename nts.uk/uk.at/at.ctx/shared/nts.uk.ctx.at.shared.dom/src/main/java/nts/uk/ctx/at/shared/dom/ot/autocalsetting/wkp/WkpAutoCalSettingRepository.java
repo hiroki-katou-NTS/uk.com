@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -11,7 +12,7 @@ import java.util.Optional;
  * The Interface WkpAutoCalSettingRepository.
  */
 public interface WkpAutoCalSettingRepository {
-	
+
 	/**
 	 * Update.
 	 *

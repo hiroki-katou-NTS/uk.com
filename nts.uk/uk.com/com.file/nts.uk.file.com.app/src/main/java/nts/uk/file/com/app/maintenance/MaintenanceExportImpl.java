@@ -41,120 +41,96 @@ public class MaintenanceExportImpl implements MasterListData {
 	public static String value2= "value2";
 	public static String value3= "value3";
 	public static String value4= "value4";
+	public static String value5= "value5";
 	
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		String companyId = AppContexts.user().companyId();
 		String contractCode = AppContexts.user().contractCode();
 
-		int forAttendance = NotUseAtr.NOT_USE.value;
-		int forPayroll = NotUseAtr.NOT_USE.value;
-		int forPersonnel = NotUseAtr.NOT_USE.value;
-		List<InstalledProduct> installProduct = AppContexts.system().getInstalledProducts();
-		for (InstalledProduct productType : installProduct) {
-			switch (productType.getProductType()) {
-			case ATTENDANCE:
-				forAttendance = NotUseAtr.USE.value;
-				break;
-			case PAYROLL:
-				forPayroll = NotUseAtr.USE.value;
-				break;
-			case PERSONNEL:
-				forPersonnel = NotUseAtr.USE.value;
-				break;
-			default:
-				break;
-			}
-		}
-		
+
 		
 		List<MasterData> datas = new ArrayList<>();
 		
-		List<MaintenanceLayoutData> listMaintenanceLayout = maintenanceLayoutExportRepository.getAllMaintenanceLayout(companyId, contractCode,
-				forAttendance, forPayroll,forPersonnel);
+		List<MaintenanceLayoutData> listMaintenanceLayout = maintenanceLayoutExportRepository.getAllMaintenanceLayout(companyId, contractCode);
 		
 		if(CollectionUtil.isEmpty(listMaintenanceLayout)){
 			return null;
 		}else{
 			//map layoutCD
-			Map<String, List<MaintenanceLayoutData>> mapData = 
-						listMaintenanceLayout.stream().collect(Collectors.groupingBy(MaintenanceLayoutData::getLayoutCd));
-
-			mapData.entrySet().stream().sorted(Map.Entry.comparingByKey()).forEachOrdered(c->{
-				List<MaintenanceLayoutData> itemsForLayout = c.getValue();
-				//each layout code
-				AtomicInteger rowlayout = new AtomicInteger(0); 
-				if (itemsForLayout.size() > 1) {
-					itemsForLayout.stream().filter(x -> x.getCategoryName() != null).collect(Collectors.groupingBy(MaintenanceLayoutData::getCategoryName))
-							.entrySet().stream().forEach(x -> {
-								AtomicInteger rowCategory = new AtomicInteger(0);
-								// each category
-								x.getValue().stream().forEach(y -> {
-									datas.add(createMasterDateForRow(y, rowlayout, rowCategory));
-								});
-							});
-				}
-				else {
-					if(itemsForLayout.size() ==1){
-						MaintenanceLayoutData maintenanceLayoutData = itemsForLayout.get(0);
-						Map<String, Object> data = new HashMap<>();
-						putEmptyData(data);
-						
-							data.put(value1, maintenanceLayoutData.getLayoutCd());
-							data.put(value2, maintenanceLayoutData.getLayoutName());
-						
-						
-						if (maintenanceLayoutData.getCategoryName() != null) {
-							data.put(value3, maintenanceLayoutData.getCategoryName());
-							data.put(value4, maintenanceLayoutData.getItemName());
-						}
-						
-						
-						
-						MasterData masterData = new MasterData(data, null, "");
-						masterData.cellAt(value1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-						masterData.cellAt(value2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-						masterData.cellAt(value3).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-						masterData.cellAt(value4).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-						
-						datas.add(masterData);
-					}
-					
-					
-				}
+			for (int i = 0; i < listMaintenanceLayout.size(); i++) { 
+				Map<String, Object> data = new HashMap<>();
+				putEmptyData(data);
 				
-			});
-			
+				String layoutCdM = listMaintenanceLayout.get(i).getLayoutCd();
+				String layoutNameM = listMaintenanceLayout.get(i).getLayoutName();
+				String categoryNameM = listMaintenanceLayout.get(i).getCategoryName();
+				String itemNameM = listMaintenanceLayout.get(i).getItemName();
+				String itemNameC = listMaintenanceLayout.get(i).getItemNameC();
+				String itemParentCD = listMaintenanceLayout.get(i).getItemParentCD();
+				
+				if(i==0){
+					data.put(value1, layoutCdM);
+					data.put(value2, layoutNameM);
+					if(categoryNameM == null){
+						data.put(value3, "----------");
+						data.put(value4, "----------");
+						data.put(value5, "----------");
+					}else{
+						data.put(value3, categoryNameM);
+						data.put(value4, itemNameM);
+						data.put(value5, "");
+					}
+				}else{
+					if(layoutCdM.equals(listMaintenanceLayout.get(i-1).getLayoutCd())){
+						data.put(value1, "");
+						data.put(value2, "");
+						if(categoryNameM == null){
+							data.put(value3, "----------");
+							data.put(value4, "----------");
+							data.put(value5, "----------");
+						}else{
+							if(categoryNameM.equals(listMaintenanceLayout.get(i-1).getCategoryName())){
+								data.put(value3, "");
+								if(itemParentCD ==null){
+									data.put(value4, itemNameM);
+									data.put(value5, "");
+								}else{
+									data.put(value4, "");
+									data.put(value5, itemNameC);
+								}
+							}else{
+								data.put(value3, categoryNameM);
+								if(itemParentCD ==null){
+									data.put(value4, itemNameM);
+									data.put(value5, "");
+								}else{
+									data.put(value4, "");
+									data.put(value5, itemNameC);
+								}
+							}
+						}
+					}else{
+						data.put(value1, layoutCdM);
+						data.put(value2, layoutNameM);
+						data.put(value3, "");
+						data.put(value4, "");
+						data.put(value5, "");
+						
+						
+					}
+				}
+				MasterData masterData = new MasterData(data, null, "");
+				masterData.cellAt(value1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value3).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value4).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(value5).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				datas.add(masterData);
+			}
 		}
 		return datas;
 	}
-	
-	private MasterData createMasterDateForRow(MaintenanceLayoutData row, AtomicInteger rowlayout, AtomicInteger rowCategory) {
-		Map<String, Object> data = new HashMap<>();
-		putEmptyData(data);
-		if(rowlayout.get() == 0) {
-			data.put(value1, row.getLayoutCd());
-			data.put(value2, row.getLayoutName());
-		}
-		
-		if (rowCategory.get() == 0) {
-			data.put(value3, row.getCategoryName());
-		}
-		
-		data.put(value4, row.getItemName());
-		
-		MasterData masterData = new MasterData(data, null, "");
-		masterData.cellAt(value1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-		masterData.cellAt(value2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-		masterData.cellAt(value3).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-		masterData.cellAt(value4).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-		
-		rowlayout.getAndIncrement();
-		rowCategory.getAndIncrement();
-		
-		return masterData;
-	}
-	
 
 	@Override
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
@@ -168,6 +144,8 @@ public class MaintenanceExportImpl implements MasterListData {
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(value4, TextResource.localize("CPS008_19"),
 				ColumnTextAlign.LEFT, "", true));
+		columns.add(new MasterHeaderColumn(value5, TextResource.localize(""),
+				ColumnTextAlign.LEFT, "", true));
 		
 		return columns;
 	}
@@ -177,6 +155,7 @@ public class MaintenanceExportImpl implements MasterListData {
 		data.put(value2, "");
 		data.put(value3, "");
 		data.put(value4, "");
+		data.put(value5, "");
 	}
 	
 	@Override

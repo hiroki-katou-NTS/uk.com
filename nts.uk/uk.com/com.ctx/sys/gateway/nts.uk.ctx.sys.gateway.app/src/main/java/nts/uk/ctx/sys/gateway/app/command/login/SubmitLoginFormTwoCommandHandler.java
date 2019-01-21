@@ -102,13 +102,14 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			this.checkEmployeeDelStatus(em.getEmployeeId(), false);
 			
 			// Get User by PersonalId
-			user = this.getUser(em.getPersonalId(), companyId);
+			user = this.getUser(em.getPersonalId(), companyId,employeeCode);
 			
 			// check password
 			String msgErrorId = this.compareHashPassword(user, oldPassword);
 			if (msgErrorId != null){
-				ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
-						TextResource.localize(msgErrorId), em.getEmployeeId());
+				String remarkText = companyId + " " + employeeCode + " " + TextResource.localize(msgErrorId);
+				ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value,
+						LoginStatus.Fail.value, remarkText, em.getEmployeeId());
 				
 				// アルゴリズム「ログイン記録」を実行する１
 				this.service.callLoginRecord(param);
@@ -116,7 +117,7 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			} 
 			
 			// check time limit
-			this.checkLimitTime(user, companyId);
+			this.checkLimitTime(user, companyId,employeeCode);
 			employeeId = em.getEmployeeId();
 		}
 		
@@ -239,8 +240,9 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		if (em.isPresent()) {
 			return em.get();
 		} else {
-			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
-					TextResource.localize("Msg_301"), null);
+			String remarkText = companyId + " " + employeeCode + " " + TextResource.localize("Msg_301");
+			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value,
+					LoginStatus.Fail.value, remarkText, null);
 			
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
@@ -254,14 +256,15 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 	 * @param personalId the personal id
 	 * @return the user
 	 */
-	private UserImportNew getUser(String personalId, String companyId) {
+	private UserImportNew getUser(String personalId, String companyId,String employeeCode) {
 		Optional<UserImportNew> user = userAdapter.findUserByAssociateId(personalId);
 		if (user.isPresent()) {
 			return user.get();
 		} else {
-			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
-					TextResource.localize("Msg_301"), null);
-			
+			String remarkText = companyId + " " + employeeCode + " " + TextResource.localize("Msg_301");
+			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value,
+					LoginStatus.Fail.value, remarkText, null);
+
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);
 			throw new BusinessException("Msg_301");
@@ -273,10 +276,11 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 	 *
 	 * @param user the user
 	 */
-	private void checkLimitTime(UserImportNew user, String companyId) {
+	private void checkLimitTime(UserImportNew user, String companyId,String employeeCode) {
 		if (user.getExpirationDate().before(GeneralDate.today())) {
-			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Fail.value,
-					TextResource.localize("Msg_316"), null);
+			String remarkText = companyId + " " + employeeCode + " " + TextResource.localize("Msg_316");
+			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value,
+					LoginStatus.Fail.value, remarkText, null);
 			
 			// アルゴリズム「ログイン記録」を実行する１
 			this.service.callLoginRecord(param);

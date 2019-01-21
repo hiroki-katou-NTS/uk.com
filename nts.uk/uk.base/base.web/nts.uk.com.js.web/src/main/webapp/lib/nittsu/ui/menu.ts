@@ -223,6 +223,9 @@ module nts.uk.ui.menu {
      * Get program.
      */
     function getProgram() {
+            
+        initPgArea();
+        
         nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function(pg: any) {
             let programName = "";
             let queryString = __viewContext.program.queryString;
@@ -249,24 +252,32 @@ module nts.uk.ui.menu {
             }
                 
             // show program name on title of browser
-            ui.viewModelBuilt.add(() => {
+            if(_.isNil(ui._viewModel)) {
+                ui.viewModelBuilt.add(() => {
+                    ui._viewModel.kiban.programName(programName);
+                });       
+            } else {
                 ui._viewModel.kiban.programName(programName);
-            });
+            }
             
-            let $pgArea = $("#pg-area");
-            $("<div/>").attr("id", "pg-name").text(programName).appendTo($pgArea);
-            let $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
+            $("#pg-name").text(programName);
+        });
+    }
+    
+    function initPgArea(){
+        let $pgArea = $("#pg-area");
+        $("<div/>").attr("id", "pg-name").appendTo($pgArea);
+        let $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
 //            let $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
 //            $manualBtn.on(constants.CLICK, function() {
 //                var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
 //                window.open(path);
 //            });
             
-            let $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
-            $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));
-            $tglBtn.on(constants.CLICK, function() {
-                // TODO
-            });
+        let $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
+        $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));
+        $tglBtn.on(constants.CLICK, function() {
+            // TODO
         });
     }
     
