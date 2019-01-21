@@ -16,6 +16,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.formula.BasicCalculationFormula;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.core.dom.wageprovision.formula.BasicCalculationItemCategory;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -39,7 +40,7 @@ public class QpbmtBasicCalculationFormula extends UkJpaEntity implements Seriali
     * 固定/計算式/既定区分
     */
     @Basic(optional = false)
-    @Column(name = "CALCULATION_FORMULA_CLS")
+    @Column(name = "CALCULATION_FORMULA_ATR")
     public int calculationFormulaCls;
     
 
@@ -55,7 +56,7 @@ public class QpbmtBasicCalculationFormula extends UkJpaEntity implements Seriali
      * 基準金額区分
      */
     @Basic(optional = false)
-    @Column(name = "STANDARD_AMOUNT_CLS")
+    @Column(name = "STANDARD_AMOUNT_ATR")
     public Integer standardAmountCls;
 
     /**
@@ -76,7 +77,7 @@ public class QpbmtBasicCalculationFormula extends UkJpaEntity implements Seriali
     * 係数区分（固定項目）
     */
     @Basic(optional = true)
-    @Column(name = "COEFFICIENT_CLS")
+    @Column(name = "COEFFICIENT_ATR")
     public Integer coefficientCls;
     
     /**
@@ -104,14 +105,14 @@ public class QpbmtBasicCalculationFormula extends UkJpaEntity implements Seriali
     * 調整区分
     */
     @Basic(optional = true)
-    @Column(name = "ADJUSTMENT_CLS")
+    @Column(name = "ADJUSTMENT_ATR")
     public Integer adjustmentCls;
     
     /**
     * 基底項目区分
     */
     @Basic(optional = true)
-    @Column(name = "BASE_ITEM_CLS")
+    @Column(name = "BASE_ITEM_ATR")
     public Integer baseItemCls;
     
     /**
@@ -125,7 +126,7 @@ public class QpbmtBasicCalculationFormula extends UkJpaEntity implements Seriali
     * 割増率
     */
     @Basic(optional = true)
-    @Column(name = "PREMIUM_RATE")
+    @Column(name = "EXTRA_RATE")
     public Integer premiumRate;
     
     /**
@@ -141,9 +142,9 @@ public class QpbmtBasicCalculationFormula extends UkJpaEntity implements Seriali
         return basicCalFormPk;
     }
 
-    public static QpbmtBasicCalculationFormula toEntity(BasicCalculationFormula domain) {
+    public static QpbmtBasicCalculationFormula toEntity(String formulaCode, BasicCalculationFormula domain) {
         QpbmtBasicCalculationFormula entity = new QpbmtBasicCalculationFormula();
-        entity.basicCalFormPk =new QpbmtBasicCalculationFormulaPk(domain.getHistoryID(), domain.getMasterUseCode().v());
+        entity.basicCalFormPk =new QpbmtBasicCalculationFormulaPk(AppContexts.user().companyId(), formulaCode, domain.getHistoryID(), domain.getMasterUseCode().v());
         entity.calculationFormulaCls = domain.getCalculationFormulaClassification().value;
         entity.basicCalculationFormula = domain.getBasicCalculationFormula().map(PrimitiveValueBase::v).orElse(null);
         if (!domain.getBasicCalculationForm().isPresent()) return entity;

@@ -19,6 +19,7 @@ import nts.uk.ctx.pr.core.dom.wageprovision.formula.BasicCalculationFormula;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -44,8 +45,8 @@ public class QpbmtBasicCalculationStandardAmount extends UkJpaEntity implements 
     }
 
 
-    public static List<QpbmtBasicCalculationStandardAmount> toEntity(BasicCalculationFormula domain) {
+    public static List<QpbmtBasicCalculationStandardAmount> toEntity(String formulaCode, BasicCalculationFormula domain) {
         if (!domain.getBasicCalculationForm().isPresent()) return Collections.emptyList();
-        return domain.getBasicCalculationForm().get().getBasicCalculationStandardAmount().getTargetItemCodeList().stream().map(item -> new QpbmtBasicCalculationStandardAmount(new QpbmtBasicCalculationStandardAmountPk(domain.getHistoryID(), domain.getMasterUseCode().v(), item.v()))).collect(Collectors.toList());
+        return domain.getBasicCalculationForm().get().getBasicCalculationStandardAmount().getTargetItemCodeList().stream().map(item -> new QpbmtBasicCalculationStandardAmount(new QpbmtBasicCalculationStandardAmountPk(AppContexts.user().companyId(), formulaCode, domain.getHistoryID(), domain.getMasterUseCode().v(), item.v()))).collect(Collectors.toList());
     }
 }

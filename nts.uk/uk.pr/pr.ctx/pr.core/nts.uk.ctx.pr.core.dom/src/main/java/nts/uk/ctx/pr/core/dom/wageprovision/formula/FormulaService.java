@@ -59,25 +59,18 @@ public class FormulaService {
         if (formulaRepository.getFormulaById(formula.getFormulaCode().v()).isPresent()) throw new BusinessException("Msg_3");
         formulaRepository.add(formula);
         formulaRepository.insertFormulaHistory(formula.getFormulaCode().v(), yearMonthHistoryItem);
-        if (formula.getSettingMethod() == FormulaSettingMethod.BASIC_SETTING) basicFormulaSettingRepository.add(basicFormulaSetting);
+        if (formula.getSettingMethod() == FormulaSettingMethod.BASIC_SETTING) basicFormulaSettingRepository.add(formula.getFormulaCode().v(), basicFormulaSetting);
     }
 
     public void updateFormula (Formula formula) {
         formulaRepository.update(formula);
     }
 
-    public void removeFormula (String formulaCode) {
-        formulaRepository.removeByFormulaCode(formulaCode);
-        detailFormulaSettingRepository.removeByFormulaCode(formulaCode);
-        basicCalculationFormulaRepository.removeByFormulaCode(formulaCode);
-        basicFormulaSettingRepository.removeByFormulaCode(formulaCode);
-    }
-
     public void updateFormulaSetting (Formula formula, BasicFormulaSetting basicFormulaSetting, DetailFormulaSetting detailFormulaSetting, List<BasicCalculationFormula> basicCalculationFormula) {
         formulaRepository.update(formula);
-        basicCalculationFormulaRepository.upsertAll(basicFormulaSetting.getHistoryID(), basicCalculationFormula);
-        if (formula.getSettingMethod() == FormulaSettingMethod.DETAIL_SETTING) detailFormulaSettingRepository.upsert(detailFormulaSetting);
-        else basicFormulaSettingRepository.upsert(basicFormulaSetting);
+        basicCalculationFormulaRepository.upsertAll(formula.getFormulaCode().v(), basicFormulaSetting.getHistoryID(), basicCalculationFormula);
+        if (formula.getSettingMethod() == FormulaSettingMethod.DETAIL_SETTING) detailFormulaSettingRepository.upsert(formula.getFormulaCode().v(), detailFormulaSetting);
+        else basicFormulaSettingRepository.upsert(formula.getFormulaCode().v(), basicFormulaSetting);
     }
     public void addFormulaHistory (Formula formula, BasicFormulaSetting basicFormulaSetting, DetailFormulaSetting detailFormulaSetting, List<BasicCalculationFormula> basicCalculationFormula, YearMonthHistoryItem yearMonthHistoryItem) {
         String formulaCode = formula.getFormulaCode().v();

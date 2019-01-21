@@ -16,8 +16,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QpbmtFormulaHistoryPk implements Serializable
-{
+public class QpbmtFormulaHistoryPk implements Serializable {
     private static final long serialVersionUID = 1L;
     
     /**
@@ -31,14 +30,14 @@ public class QpbmtFormulaHistoryPk implements Serializable
     * 計算式コード
     */
     @Basic(optional = false)
-    @Column(name = "FORMULA_CODE")
+    @Column(name = "FORMULA_CD")
     public String formulaCode;
     
     /**
     * 履歴ID
     */
     @Basic(optional = false)
-    @Column(name = "HISTORY_ID")
+    @Column(name = "HIST_ID")
     public String historyID;
     
 }

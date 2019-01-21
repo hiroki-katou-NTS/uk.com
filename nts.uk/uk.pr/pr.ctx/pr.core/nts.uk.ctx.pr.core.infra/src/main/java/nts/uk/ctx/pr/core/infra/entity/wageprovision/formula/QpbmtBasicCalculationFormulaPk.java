@@ -17,15 +17,28 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QpbmtBasicCalculationFormulaPk implements Serializable
-{
+public class QpbmtBasicCalculationFormulaPk implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 会社ID
+     */
+    @Basic(optional = false)
+    @Column(name = "CID")
+    public String cid;
+
+    /**
+     * 計算式コード
+     */
+    @Basic(optional = false)
+    @Column(name = "FORMULA_CD")
+    public String formulaCode;
 
     /**
     * 履歴ID
     */
     @Basic(optional = false)
-    @Column(name = "HISTORY_ID")
+    @Column(name = "HIST_ID")
     public String historyID;
 
     /**
