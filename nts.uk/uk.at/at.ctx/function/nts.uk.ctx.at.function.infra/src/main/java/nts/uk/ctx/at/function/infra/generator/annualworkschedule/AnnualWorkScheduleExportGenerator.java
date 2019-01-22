@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.function.infra.generator.annualworkschedule;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import javax.ejb.Stateless;
 
@@ -85,7 +87,8 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			}
 			PageSetup pageSetup = ws.getPageSetup();
 			pageSetup.setZoom(pageScale);
-
+			pageSetup.setPrintArea("A1:W");
+			
 			// delete superfluous rows
 			Range empRange = wsc.getRangeByName("employeeRange");
 			int rowPerEmp = dataSource.getExportItems().size();
@@ -110,7 +113,9 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			RangeCustom newRange = new RangeCustom(empRange, 0);
 			int offset = 0, sumRowCount = workplaceRange.getRowCount();
 			boolean nextWorkplace;
-			for (String empId : empIds) {
+			
+			for (String empId: empIds ) {
+				
 				EmployeeData emp = dataSource.getEmployees().get(empId);
 				nextWorkplace = !workplaceCd.equals(emp.getEmployeeInfo().getWorkplaceCode());
 
@@ -125,19 +130,18 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 				// break page and print
 				boolean isNewPage = sumRowCount > rowsPerPage
 						|| (nextWorkplace && PageBreakIndicator.WORK_PLACE.equals(dataSource.getPageBreak()));
-				print(wsc, newRange, emp, isNewPage || nextWorkplace, is7Group, itemBooks,
-						dataSource.isOutNumExceedTime36Agr());
+				print(wsc, newRange, emp, isNewPage || nextWorkplace, is7Group, itemBooks, dataSource.isOutNumExceedTime36Agr());
 				if (isNewPage) {
 					pageBreaks.add(newRange.range.getFirstRow());
-					sumRowCount = newRange.range.getRowCount(); // reset sum row
-																// count
+					sumRowCount = newRange.range.getRowCount(); // reset sum row count
+					
 				}
 				offset = newRange.offset;
 			}
 
 			print(wsc, new RangeCustom(empRange, 0), firstEmp, true, is7Group, itemBooks,
 					dataSource.isOutNumExceedTime36Agr());
-
+			
 			reportContext.processDesigner();
 			reportContext.saveAsExcel(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
 		} catch (Exception e) {
@@ -250,6 +254,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 				range.cell("numExceedTime", rowOffset, 0).putValue(data.formatMonthsExceeded());
 				range.cell("numRemainingTime", rowOffset, 0).putValue(data.formatMonthsRemaining());
 			}
+		
 			range.cell("period1st", rowOffset, 0).putValue(data.formatMonthPeriod1st());
 			this.setCellStyle(range.cell("period1st", rowOffset, 0), data.getColorPeriodMonth1st());
 			range.cell("period2nd", rowOffset, 0).putValue(data.formatMonthPeriod2nd());
@@ -261,7 +266,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			range.cell("period5th", rowOffset, 0).putValue(data.formatMonthPeriod5th());
 			this.setCellStyle(range.cell("period5th", rowOffset, 0), data.getColorPeriodMonth5th());
 			range.cell("period6th", rowOffset, 0).putValue(data.formatMonthPeriod6th());
-			this.setCellStyle(range.cell("period6th", rowOffset, 0), data.getColorPeriodMonth6th());
+			this.setCellStyle(range.cell("period6th", rowOffset, 0), data.getColorPeriodMonth6th());			
 			if (is7Group) {
 				range.cell("period7th", rowOffset, 0).putValue(data.formatMonthPeriod7th());
 				this.setCellStyle(range.cell("period7th", rowOffset, 0), data.getColorPeriodMonth7th());
@@ -269,6 +274,7 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			rowOffset++;
 		}
 	}
+
 
 	private RangeCustom copyRangeDown(Range range, int extra) throws Exception {
 		Range newRange = range.getWorksheet().getCells().createRange(range.getFirstRow() + range.getRowCount() + extra,

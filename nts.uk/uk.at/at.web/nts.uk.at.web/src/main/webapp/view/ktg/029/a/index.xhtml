@@ -139,9 +139,9 @@
 						</td>
 					</tr>
 				</table>
-				<table class="widget-table">
-					<tr data-bind="with: dataRecord()">
-						<td class="tab" data-bind="visible: ($parent.displayPresenceDailyPer &amp;&amp; presenceDailyPer)">
+				<table class="widget-table" data-bind="with: dataRecord()">
+					<tr data-bind="visible: ($parent.displayPresenceDailyPer &amp;&amp; presenceDailyPer)">
+						<td class="tab" >
 							<div data-bind="ntsCheckBox: { checked: $parent.checked }">#{i18n.getText('KTG029_61')}</div>
 						</td>
 					</tr>

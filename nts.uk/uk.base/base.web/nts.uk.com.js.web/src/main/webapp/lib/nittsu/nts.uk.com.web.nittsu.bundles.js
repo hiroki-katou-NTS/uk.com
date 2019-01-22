@@ -1,7 +1,10 @@
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -4335,6 +4338,7 @@ var nts;
                  * Get program.
                  */
                 function getProgram() {
+                    initPgArea();
                     nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function (pg) {
                         var programName = "";
                         var queryString = __viewContext.program.queryString;
@@ -4361,22 +4365,30 @@ var nts;
                             programName = pg[0].name;
                         }
                         // show program name on title of browser
-                        ui.viewModelBuilt.add(function () {
+                        if (_.isNil(ui._viewModel)) {
+                            ui.viewModelBuilt.add(function () {
+                                ui._viewModel.kiban.programName(programName);
+                            });
+                        }
+                        else {
                             ui._viewModel.kiban.programName(programName);
-                        });
-                        var $pgArea = $("#pg-area");
-                        $("<div/>").attr("id", "pg-name").text(programName).appendTo($pgArea);
-                        var $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
-                        //            let $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
-                        //            $manualBtn.on(constants.CLICK, function() {
-                        //                var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
-                        //                window.open(path);
-                        //            });
-                        var $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
-                        $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));
-                        $tglBtn.on(constants.CLICK, function () {
-                            // TODO
-                        });
+                        }
+                        $("#pg-name").text(programName);
+                    });
+                }
+                function initPgArea() {
+                    var $pgArea = $("#pg-area");
+                    $("<div/>").attr("id", "pg-name").appendTo($pgArea);
+                    var $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
+                    //            let $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
+                    //            $manualBtn.on(constants.CLICK, function() {
+                    //                var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
+                    //                window.open(path);
+                    //            });
+                    var $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
+                    $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));
+                    $tglBtn.on(constants.CLICK, function () {
+                        // TODO
                     });
                 }
                 /**
@@ -33069,17 +33081,7 @@ var nts;
                     function setSelected($grid, selectedId) {
                         deselectAll($grid);
                         if ($grid.igGridSelection('option', 'multipleSelection')) {
-                            // for performance when select all
-                            var baseID = _.map($grid.igGrid("option").dataSource, $grid.igGrid("option", "primaryKey"));
-                            if (_.isEqual(selectedId, baseID)) {
-                                var chk = $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
-                                if (chk[0].getAttribute("data-chk") == "off") {
-                                    chk.click();
-                                }
-                            }
-                            else {
-                                selectedId.forEach(function (id) { return $grid.igGridSelection('selectRowById', id); });
-                            }
+                            selectedId.forEach(function (id) { return $grid.igGridSelection('selectRowById', id); });
                         }
                         else {
                             $grid.igGridSelection('selectRowById', selectedId);
