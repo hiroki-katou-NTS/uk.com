@@ -98,8 +98,6 @@ module nts.uk.ui {
                 }
             });
             
-            let onSamplePage = nts.uk.request.location.current.rawUrl.indexOf("/view/sample") >= 0;
-            
             // Menu
             if ($(document).find("#header").length > 0) {
                 menu.request();
