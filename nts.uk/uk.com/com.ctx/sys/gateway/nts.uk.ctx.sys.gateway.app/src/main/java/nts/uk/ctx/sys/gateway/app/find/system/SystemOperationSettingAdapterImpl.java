@@ -58,7 +58,7 @@ public class SystemOperationSettingAdapterImpl implements SystemOperationSetting
 					comSet.getStopMessage() == null ? "" : comSet.getStopMessage().v(),
 					comSet.getUsageStopMessage() == null ? "" : comSet.getUsageStopMessage().v()); 
 		}
-		return new SystemOperationSetting();
+		return SystemOperationSetting.setting(SystemStopType.ALL_SYSTEM, SystemOperationMode.RUNNING, SystemStopMode.ADMIN_MODE, null, null);
 	}
 
 	@Override
