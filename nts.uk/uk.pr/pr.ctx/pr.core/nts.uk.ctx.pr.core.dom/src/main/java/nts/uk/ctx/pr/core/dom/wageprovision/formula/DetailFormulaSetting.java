@@ -13,9 +13,20 @@ import javax.xml.soap.Detail;
 */
 @Getter
 public class DetailFormulaSetting extends AggregateRoot {
+
+    /**
+     * 会社ID
+     */
+    private String companyId;
+
+    /**
+     * 計算式コード
+     */
+    private FormulaCode formulaCode;
     /**
      * 履歴ID
      */
+
     private String historyId;
 
     /**
@@ -42,7 +53,8 @@ public class DetailFormulaSetting extends AggregateRoot {
     
 
     
-    public DetailFormulaSetting( String historyId, int referenceMonth, List<DetailCalculationFormula> detailCalculationFormula, int roundingMethod, int roundingPosition) {
+    public DetailFormulaSetting(String formulaCode, String historyId, int referenceMonth, List<DetailCalculationFormula> detailCalculationFormula, int roundingMethod, int roundingPosition) {
+        this.formulaCode = new FormulaCode(formulaCode);
         this.roundingMethod = EnumAdaptor.valueOf(roundingMethod, Rounding.class);
         this.roundingPosition = EnumAdaptor.valueOf(roundingPosition, RoundingPosition.class);
         this.referenceMonth = EnumAdaptor.valueOf(referenceMonth, ReferenceMonth.class);

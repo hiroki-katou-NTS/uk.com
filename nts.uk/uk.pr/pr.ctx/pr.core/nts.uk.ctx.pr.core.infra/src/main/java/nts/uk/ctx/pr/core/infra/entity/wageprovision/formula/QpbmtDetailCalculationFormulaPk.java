@@ -1,23 +1,18 @@
 package nts.uk.ctx.pr.core.infra.entity.wageprovision.formula;
 
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-/**
-* かんたん計算式設定: 主キー情報
-*/
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QpbmtBasicFormulaSettingPk implements Serializable {
+public class QpbmtDetailCalculationFormulaPk {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -35,10 +30,17 @@ public class QpbmtBasicFormulaSettingPk implements Serializable {
     public String formulaCode;
 
     /**
-    * 履歴ID
-    */
+     * 履歴ID
+     */
     @Basic(optional = false)
     @Column(name = "HIST_ID")
     public String historyID;
-    
+
+    /**
+     * 構成順
+     */
+    @Basic(optional = false)
+    @Column(name = "ELEMENT_ORDER")
+    public int elementOrder;
+
 }

@@ -14,7 +14,16 @@ import nts.arc.enums.EnumAdaptor;
 */
 @Getter
 public class BasicFormulaSetting extends AggregateRoot {
-    
+
+    /**
+     * 会社ID
+     */
+    private String companyId;
+
+    /**
+     * 計算式コード
+     */
+    private FormulaCode formulaCode;
     /**
     * 使用マスタ
     */
@@ -30,7 +39,8 @@ public class BasicFormulaSetting extends AggregateRoot {
     */
     private String historyID;
     
-    public BasicFormulaSetting(String historyID, int masterBranchUse, Integer masterUse) {
+    public BasicFormulaSetting(String formulaCode, String historyID, int masterBranchUse, Integer masterUse) {
+        this.formulaCode = new FormulaCode(formulaCode);
         this.masterUse = masterUse == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(masterUse, MasterUse.class));
         this.masterBranchUse = EnumAdaptor.valueOf(masterBranchUse, MasterBranchUse.class);
         this.historyID = historyID;

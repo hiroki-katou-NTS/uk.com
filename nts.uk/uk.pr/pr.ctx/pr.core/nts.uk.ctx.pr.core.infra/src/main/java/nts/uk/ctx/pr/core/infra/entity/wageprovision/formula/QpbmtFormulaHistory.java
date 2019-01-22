@@ -30,7 +30,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QPBMT_SAL_FORMULA_HISTORY")
+@Table(name = "QPBMT_FORMULA_HISTORY")
 public class QpbmtFormulaHistory extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -45,14 +45,14 @@ public class QpbmtFormulaHistory extends UkJpaEntity implements Serializable
      * 会社ID
      */
     @Basic(optional = false)
-    @Column(name = "START_MONTH")
+    @Column(name = "START_YM")
     public int startMonth;
 
     /**
      * 計算式コード
      */
     @Basic(optional = false)
-    @Column(name = "END_MONTH")
+    @Column(name = "END_YM")
     public int endMonth;
 
     @Override

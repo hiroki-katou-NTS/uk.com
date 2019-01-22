@@ -32,7 +32,7 @@ public class QpbmtFormulaPk implements Serializable
      * 計算式コード
      */
     @Basic(optional = false)
-    @Column(name = "FORMULA_CODE")
+    @Column(name = "FORMULA_CD")
     public String formulaCode;
     
 }

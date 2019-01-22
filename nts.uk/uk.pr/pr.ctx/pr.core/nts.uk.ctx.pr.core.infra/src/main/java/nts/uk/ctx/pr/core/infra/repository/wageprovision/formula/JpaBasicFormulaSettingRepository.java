@@ -22,10 +22,6 @@ public class JpaBasicFormulaSettingRepository extends JpaRepository implements B
     private static final String REMOVE_BY_HISTORY = "DELETE FROM QpbmtBasicFormulaSetting f WHERE f.basicFormulaSetPk.historyID =:historyID ";
     private static final String REMOVE_BY_FORMULA_CODE = "DELETE FROM QpbmtBasicFormulaSetting f WHERE f.basicFormulaSetPk.formulaCode =:formulaCode ";
 
-    @Override
-    public List<BasicFormulaSetting> getAllBasicFormulaSetting(){
-        return Collections.emptyList();
-    }
 
     @Override
     public Optional<BasicFormulaSetting> getBasicFormulaSettingById(String historyID){
@@ -46,22 +42,7 @@ public class JpaBasicFormulaSettingRepository extends JpaRepository implements B
     }
 
     @Override
-    public void update(BasicFormulaSetting domain){
-        this.commandProxy().update(QpbmtBasicFormulaSetting.toEntity(domain));
-    }
-
-    @Override
-    public void remove(BasicFormulaSetting domain){
-        this.commandProxy().remove(QpbmtBasicFormulaSetting.toEntity(domain));
-    }
-
-    @Override
     public void removeByHistory(String historyID) {
         this.getEntityManager().createQuery(REMOVE_BY_HISTORY).setParameter("historyID", historyID).executeUpdate();
-    }
-
-    @Override
-    public void removeByFormulaCode(String formulaCode) {
-        this.getEntityManager().createQuery(REMOVE_BY_FORMULA_CODE).setParameter("formulaCode", formulaCode).executeUpdate();
     }
 }

@@ -66,16 +66,9 @@ public class FormulaService {
         formulaRepository.update(formula);
     }
 
-    public void removeFormula (String formulaCode) {
-        formulaRepository.removeByFormulaCode(formulaCode);
-        detailFormulaSettingRepository.removeByFormulaCode(formulaCode);
-        basicCalculationFormulaRepository.removeByFormulaCode(formulaCode);
-        basicFormulaSettingRepository.removeByFormulaCode(formulaCode);
-    }
-
     public void updateFormulaSetting (Formula formula, BasicFormulaSetting basicFormulaSetting, DetailFormulaSetting detailFormulaSetting, List<BasicCalculationFormula> basicCalculationFormula) {
         formulaRepository.update(formula);
-        basicCalculationFormulaRepository.upsertAll(basicFormulaSetting.getHistoryID(), basicCalculationFormula);
+        basicCalculationFormulaRepository.upsertAll(formula.getFormulaCode().v(), basicFormulaSetting.getHistoryID(), basicCalculationFormula);
         if (formula.getSettingMethod() == FormulaSettingMethod.DETAIL_SETTING) detailFormulaSettingRepository.upsert(detailFormulaSetting);
         else basicFormulaSettingRepository.upsert(basicFormulaSetting);
     }
