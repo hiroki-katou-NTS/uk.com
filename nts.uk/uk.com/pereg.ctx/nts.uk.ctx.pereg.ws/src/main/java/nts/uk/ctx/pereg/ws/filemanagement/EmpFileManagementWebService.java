@@ -23,7 +23,7 @@ import nts.uk.ctx.pereg.app.command.filemanagement.UpdateEmpAvaOrMapCommandHandl
 import nts.uk.ctx.pereg.app.find.filemanagement.CheckFileFinder;
 import nts.uk.ctx.pereg.app.find.filemanagement.CheckFileParams;
 import nts.uk.ctx.pereg.app.find.filemanagement.EmployeeFileManagementFinder;
-import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmployeeDto;
+import nts.uk.ctx.pereg.app.find.filemanagement.GridDto;
 
 @Path("basic/organization/empfilemanagement")
 @Produces({ "application/json", "text/plain" })
@@ -121,7 +121,7 @@ public class EmpFileManagementWebService extends WebService {
 	
 	@POST
 	@Path("find/checkFile")
-	public GridEmployeeDto checkFile(CheckFileParams params) {
+	public GridDto checkFile(CheckFileParams params) {
 		return this.checkFileFinder.processingFile(params);
 	}
 }

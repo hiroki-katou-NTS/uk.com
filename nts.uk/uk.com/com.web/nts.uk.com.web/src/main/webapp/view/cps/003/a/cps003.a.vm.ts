@@ -389,8 +389,9 @@ module cps003.a.vm {
             setShared("CPS003G_PARAM", { baseDate: self.baseDate(), updateMode: self.updateMode(), catId: self.category.catId(), cate: self.category.cate() });
 
             modal("/view/cps/003/b/index.xhtml").onClosed(() => {
+                let valueC = getShared('CPS003C_VALUE');
+                setShared('CPS003D_VALUE', valueC);
                 modal("/view/cps/003/c/index.xhtml").onClosed(() => {
-                    
                 });
             });
         }

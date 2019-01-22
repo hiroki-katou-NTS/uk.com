@@ -32,7 +32,8 @@ module nts.uk.com.view.cps003.c.viewmodel {
         start() {
             let self = this;
             
-            let param = getShared("CPS003G_PARAM");
+            let param = getShared("CPS003G_PARAM"), paramD = getShared("CPS003D_VALUE");
+            
             self.baseDate(param.baseDate);
             self.updateMode(param.updateMode);
             self.category.catId(param.catId);
