@@ -1,68 +1,40 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:com="http://xmlns.jcp.org/jsf/component"
->
-<body>
-<ui:composition template="/master/dialog.xhtml">
-    <ui:define name="htmlHead">
-        <script>
-            var dialogSize = {
-                width: 1120,
-                height: 600
-            };
-        </script>
-        <!--<com:ValidatorScript>-->
 
-        <!--</com:ValidatorScript>-->
-        <com:scriptfile set="IGNITE"/>
-        <com:scriptfile path="../share/model.js"/>
-        <com:stylefile path="qmm020.i.style.css"/>
-        <com:scriptfile path="qmm020.i.service.js"/>
-        <com:scriptfile path="qmm020.i.vm.js"/>
-        <com:scriptfile path="qmm020.i.start.js"/>
-        <!--include ccg001-->
-        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web"/>
-        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
-        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
-        <com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web"/>
-        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web"/>
-    </ui:define>
-    <ui:define name="content">
-        <div id="contents-area">
-            <div id="com-ccg001"/>
-            <div id="screen-content">
+<div>
+    <div class="sidebar-content-header" style = "min-width: 800px;">
+        <span class = "title" style="margin-left: 4px;">#{i18n.getText('QMM020_2')}</span>
+    </div>
+    <div style="margin-top: 15px;margin-bottom: 20px; min-width: 1000px;" class="contents" >
+            <div id="com-ccg001_2"> </div>
+            <div id="fixed-flex-layout-right" style="margin-left: 90px; ">
                 <div class="table">
-                    <div class="cell">
+                    <div class="cell valign-center">
                         <!--I1_2-->
                         <div data-bind="ntsFormLabel: {}">#{i18n.getText('QMM020_47')}</div>
                     </div>
-                    <div class="cell">
+                    <div class="cell valign-center">
                         <!--I1_3-->
+                        <img src="../resources/QMM020_03.png"></img>
                     </div>
-                    <div class="cell">
+                    <div class="cell valign-center">
                         <!--I1_4-->
                         <div class="label">#{i18n.getText('QMM020_48')}</div>
                     </div>
-                    <div class="cell">
+                    <div class="cell valign-center">
                         <!--I1_5-->
                         <div class="label">#{i18n.getText('QMM020_12')}</div>
                     </div>
-                    <div class="cell">
+                    <div class="cell valign-center">
                         <!--I1_6-->
-                        <button data-bind="ntsHelpButton: {image: 'helpcps0092.png',position: 'bottom right', enable: true }">？</button>
+                        <button data-bind="ntsHelpButton: {image: '../resources/QMM020_01.png',position: 'bottom right', enable: true }">？</button>
                     </div>
                 </div>
                 <hr/>
-                <table id="grid" tabindex="2"/>
+                <table id="grid" tabindex="2" />
             </div>
         </div>
-        <div id="functions-area-bottom">
-            <button tabindex="3"
-                    data-bind="click: cancel, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_52')}</button>
-        </div>
-    </ui:define>
-</ui:composition>
-</body>
-</html>
+    <div id="functions-area-bottom" style=" margin-top: 25px; width: 1145px;height:45px;">
+        <button tabindex="3"
+                data-bind="click: cancel, enable: $root.errors.isEmpty">#{i18n.getText('QMM020_52')}</button>
+    </div>
+
+</div>

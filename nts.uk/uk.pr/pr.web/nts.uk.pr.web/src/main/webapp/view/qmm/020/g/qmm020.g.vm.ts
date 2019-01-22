@@ -23,6 +23,9 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
             let self = this;
             self.hisIdSelected.subscribe((data) => {
                 error.clearAll();
+                if(data == null) {
+                    return;
+                }
                 let self = this;
                 self.index(self.getIndex(data));
                 if (data != '') {
@@ -74,8 +77,8 @@ module nts.uk.pr.view.qmm020.g.viewmodel {
                 if (listStateCorrelationHisSalary && listStateCorrelationHisSalary.length > 0) {
                     self.listStateCorrelationHisSalary(StateCorrelationHisSalary.convertToDisplay(listStateCorrelationHisSalary));
                     if (hisId == null) {
+                        self.hisIdSelected(null);
                         self.index(FIRST);
-                        self.hisIdSelected(self.listStateCorrelationHisSalary()[FIRST].hisId);
                     }
                     self.hisIdSelected(self.listStateCorrelationHisSalary()[self.getIndex(hisId)].hisId);
                 } else {
