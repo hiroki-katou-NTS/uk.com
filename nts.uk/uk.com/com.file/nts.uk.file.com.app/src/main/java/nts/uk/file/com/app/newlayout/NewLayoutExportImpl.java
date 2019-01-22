@@ -41,10 +41,6 @@ public class NewLayoutExportImpl implements MasterListData{
 		List<MasterData> datas = new ArrayList<>();
 		List<NewLayoutExportData> listNewLayout = newLayoutExportRepository.getAllMaintenanceLayout(companyId, contractCode);
 		
-		
-		
-		
-		
 
 		if (CollectionUtil.isEmpty(listNewLayout)) {
 			return null;
@@ -53,7 +49,7 @@ public class NewLayoutExportImpl implements MasterListData{
 				// 5:時刻(TimePoint)
 				if(listNewLayout.get(i).getDataType()!=DataTypeValue.TIMEPOINT.value){
 					// 3:日付(Date)
-					if(listNewLayout.get(i).getDataType()!=DataTypeValue.DATE.value){
+					if(listNewLayout.get(i).getDataType()!=DataTypeValue.DATE.value && listNewLayout.get(i).getDataType()!=DataTypeValue.SELECTION_RADIO.value){
 						listNewLayoutS.add(listNewLayout.get(i));
 					}else{
 						if(listNewLayout.get(i).getItemParentCD()==null){
