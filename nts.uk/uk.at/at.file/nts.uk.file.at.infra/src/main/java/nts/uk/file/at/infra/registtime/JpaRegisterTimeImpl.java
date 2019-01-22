@@ -1329,7 +1329,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		String endYM = endDate.yearMonth().toString();
 		int startY = startDate.year();
 		int endY = endDate.year();
-		if(!endYM.substring(2, endYM.length()).equals(END_MONTH))
+		if(!endYM.substring(4, endYM.length()).equals(END_MONTH))
 			endY = endY-1;
 		String cid = AppContexts.user().companyId();
 		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_10.toString()).
