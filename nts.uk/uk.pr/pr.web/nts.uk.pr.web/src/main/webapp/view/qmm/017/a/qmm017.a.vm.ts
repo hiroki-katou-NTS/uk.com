@@ -494,7 +494,6 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
 
         doMasterConfiguration () {
             let self = this;
-
             setShared("QMM017_E_PARAMS", {yearMonth: ko.toJS(self.selectedHistory), basicCalculationFormula: ko.toJS(self.masterBasicCalculationFormula), originalScreen: 'B'});
             modal("/view/qmm/017/e/index.xhtml").onClosed(function () {
                 let params = getShared("QMM017_E_RES_PARAMS");
@@ -502,14 +501,13 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                     params.basicCalculationFormula.calculationFormulaClassification = model.CALCULATION_FORMULA_CLS.FORMULA;
                     self.masterBasicCalculationFormula(new model.BasicCalculationFormula(params.basicCalculationFormula));
                 }
-
+                $('.master-config-button').focus();
             });
 
         };
         // screen C
         doConfiguration (index) {
             let self = this;
-
             setShared("QMM017_E_PARAMS", {yearMonth: ko.toJS(self.selectedHistory), masterBasicCalculationFormula: ko.toJS(self.masterBasicCalculationFormula), basicCalculationFormula: ko.toJS(self.basicCalculationFormulaList)[index], originalScreen: 'C'});
             modal("/view/qmm/017/e/index.xhtml").onClosed(function () {
                 let params = getShared("QMM017_E_RES_PARAMS");
@@ -517,7 +515,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                     let newModel: any = new model.BasicCalculationFormula(params.basicCalculationFormula);
                     self.basicCalculationFormulaList.replace(self.basicCalculationFormulaList()[index], newModel);
                 }
-
+                $('#C3_1 tr').eq(index).find('button.small').focus();
             });
         };
         setAllCalculationFormula () {
