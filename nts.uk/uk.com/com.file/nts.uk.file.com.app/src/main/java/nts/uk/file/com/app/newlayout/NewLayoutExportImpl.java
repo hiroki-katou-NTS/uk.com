@@ -52,7 +52,14 @@ public class NewLayoutExportImpl implements MasterListData{
 			for (int i = 0; i < listNewLayout.size(); i++) {
 				// 5:時刻(TimePoint)
 				if(listNewLayout.get(i).getDataType()!=DataTypeValue.TIMEPOINT.value){
-					listNewLayoutS.add(listNewLayout.get(i));
+					// 3:日付(Date)
+					if(listNewLayout.get(i).getDataType()!=DataTypeValue.DATE.value){
+						listNewLayoutS.add(listNewLayout.get(i));
+					}else{
+						if(listNewLayout.get(i).getItemParentCD()==null){
+							listNewLayoutS.add(listNewLayout.get(i));
+						}
+					}
 				}
 			}
 			for (int i = 0; i < listNewLayoutS.size(); i++) {
@@ -97,23 +104,7 @@ public class NewLayoutExportImpl implements MasterListData{
 						}
 					}
 				}
-//				if (cateName == null) {
-//					data.put(value1, "----------");
-//					data.put(value2, "----------");
-//				} else {
-//					if (i == 0) {
-//						data.put(value1, cateName);
-//						data.put(value2, itemName);
-//					} else {
-//						if (listNewLayout.get(i).getCategoryName().equals(listNewLayout.get(i - 1).getCategoryName())) {
-//							data.put(value1, "");
-//							data.put(value2, itemName);
-//						} else {
-//							data.put(value1, cateName);
-//							data.put(value2, itemName);
-//						}
-//					}
-//				}
+
 
 				MasterData masterData = new MasterData(data, null, "");
 				masterData.cellAt(value1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));

@@ -62,7 +62,15 @@ public class MaintenanceExportImpl implements MasterListData {
 			for (int i = 0; i < listMaintenanceLayout.size(); i++) {
 				// 5:時刻(TimePoint)
 				if(listMaintenanceLayout.get(i).getDataType()!=DataTypeValue.TIMEPOINT.value){
-					listMaintenanceLayoutS.add(listMaintenanceLayout.get(i));
+					// 3:日付(Date)
+					if(listMaintenanceLayout.get(i).getDataType()!=DataTypeValue.DATE.value){
+						listMaintenanceLayoutS.add(listMaintenanceLayout.get(i));
+					}else{
+						if(listMaintenanceLayout.get(i).getItemParentCD()==null){
+							listMaintenanceLayoutS.add(listMaintenanceLayout.get(i));
+						}
+					}
+					
 				}
 			}
 			
