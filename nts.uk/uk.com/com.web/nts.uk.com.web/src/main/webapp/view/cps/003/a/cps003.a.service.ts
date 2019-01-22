@@ -10,6 +10,7 @@ module cps003.a.service {
     export const fetch = {
         data: (command: any) => ajax(`ctx/pereg/grid-layout/get-data`, command),
         setting: (cid: string) => ajax(`ctx/pereg/grid-layout/get-setting/${cid}`), // cid: categoryId
-        category: (uid: string) => ajax(`ctx/pereg/employee/category/getall/${uid}`)
+        category: (uid: string) => ajax(`ctx/pereg/employee/category/getall/${uid}`),
+        permission: (roleId: string, catId: string) => ajax(`ctx/pereg/roles/auth/category/find/${roleId}/${catId}`)
     }
 }

@@ -23,7 +23,7 @@
 }
 
 .data-layout .form-group.margin-left {
-	margin-left: 35px;
+	margin-left: 20px;
 }
 
 .data-layout .form-group:not(.margin-left) .fixed-width {
@@ -61,7 +61,7 @@
 
 .data-layout .form-group #settings {
 	float: right;
-	margin-right: 100px;
+	margin-right: 30px;
 	width: 30px;
 	background-image: url(icons/setting.png);
     background-repeat: no-repeat;
@@ -73,8 +73,15 @@
 }
 
 .data-layout .form-group.configs-bar {
-	padding-left: 125px;
+	padding-left: 100px;
 	margin-bottom: 0px;
+}
+
+.grid-setting {
+	border: 1px solid #B1B1B1;
+	border-radius: 3px;
+	padding: 10px;
+	margin-right: 30px;
 }
 
 .data-layout .layout-multi-control {

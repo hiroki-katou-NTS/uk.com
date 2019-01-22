@@ -5,6 +5,7 @@ module cps003.a.vm {
     import format = nts.uk.text.format;
     import confirm = nts.uk.ui.dialog.confirm;
     import modal = nts.uk.ui.windows.sub.modal;
+    import modeless = nts.uk.ui.windows.sub.modeless;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import showDialog = nts.uk.ui.dialog;
@@ -164,6 +165,11 @@ module cps003.a.vm {
                             self.settings.perInfoData(data.perInfoData);
                         }
                     });
+                    
+                    let roleId = __viewContext.user.role.personalInfo;
+                    service.fetch.permission(roleId, cid).done(permission => {
+                        console.log(permission);
+                    });
                 }
             });
 
@@ -184,7 +190,14 @@ module cps003.a.vm {
                 let $grid = $("#grid");
                 if (!$grid.data("mGrid")) return;
                 if (mode === 1) {
-                    $grid.mGrid("removeInsertions");
+                    let insertions = $grid.mGrid("insertions");
+                    if (insertions.length > 0) {
+                        confirm({ messageId: "Msg_1468" }).ifYes(() => {
+                            $grid.mGrid("removeInsertions");
+                        }).ifCancel(() => {
+                            self.updateMode(2);
+                        });
+                    }
                 }
             });
         }
@@ -224,7 +237,7 @@ module cps003.a.vm {
         }
         
         register() {
-            let self = this,
+            let self = this, $grid = $("#grid"),
                 command, employees = [], recId = {};
             
             if (hasError()) {
@@ -232,59 +245,132 @@ module cps003.a.vm {
                 return;
             }
             
-            let itemErrors = $("#grid").mGrid("errors");
-            if (itemErrors && itemErrors.length > 0) {
-                // TODO: Show dialog
-                return;
-            }
-            
-            block();
-            _.forEach($("#grid").mGrid("dataSource"), d => recId[d.id] = d);
-            let cateName, cateType, regId = {};
-            if (self.category.cate()) {
-                cateName = self.category.cate().categoryName;
-                cateType = self.category.cate().categoryType;
-            }
-            
-            _.forEach($("#grid").mGrid("updatedCells"), item => {
-                if (item.columnKey === "register") return;
-                let recData: Record = recId[item.rowId];
-                let regEmp = regId[recData.id];
-                if (!regEmp) {
-                    regEmp = { personId: recData.personId, employeeId: recData.employeeId, employeeCd: recData.employeeCode, employeeName: recData.employeeName, order: recData.rowNumber };
-                    regEmp.input = { categoryId: self.category.catId(), categoryCd: self.category.catCode(), categoryName: cateName, categoryType: cateType, recordId: recData instanceof Record ? recData.id : null, delete: false, items: [] };
-                    regId[recData.id] = regEmp;
+            confirm({ messageId: self.updateMode() === 1 ? "Msg_749" : "Msg_748" }).ifYes(() => {
+                let itemErrors = $grid.mGrid("errors");
+                if (itemErrors && itemErrors.length > 0) {
+                    modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
+                    
+                    });
+                    
+                    return;
                 }
                 
-                let col = _.find(self.gridOptions.columns, column => column.key === item.columnKey);
-                if (col) {
-                    let val = item.value;
-                    if (item.value instanceof Date) {
-                        val = moment(item.value).format("YYYY/MM/DD");
+                block();
+                _.forEach($grid.mGrid("dataSource"), d => recId[d.id] = d);
+                let cateName, cateType, regId = {};
+                if (self.category.cate()) {
+                    cateName = self.category.cate().categoryName;
+                    cateType = self.category.cate().categoryType;
+                }
+                
+                let updates = $grid.mGrid("updatedCells");
+                if (self.updateMode() === 2) {
+                    let dataSource = $grid.mGrid("dataSource");
+                    _.forEach($grid.mGrid("insertions"), i => {
+                        _.forEach(self.settings.perInfoData(), (pInfo: IPersonInfoSetting) => {
+                            let rec = dataSource[i];
+                            if (pInfo.regulationAtr && rec) {
+                                updates.push({ rowId: rec.id, columnKey: pInfo.itemCD, value: rec[pInfo.itemCD] }); 
+                            }
+                        });
+                    });
+                }
+                
+                _.forEach(updates, item => {
+                    if (item.columnKey === "register") return;
+                    let recData: Record = recId[item.rowId];
+                    let regEmp = regId[recData.id];
+                    if (!regEmp) {
+                        regEmp = { personId: recData.personId, employeeId: recData.employeeId, employeeCd: recData.employeeCode, employeeName: recData.employeeName, order: recData.rowNumber };
+                        regEmp.input = { categoryId: self.category.catId(), categoryCd: self.category.catCode(), categoryName: cateName, categoryType: cateType, recordId: recData instanceof Record ? recData.id : null, delete: false, items: [] };
+                        regId[recData.id] = regEmp;
+                        employees.push(regEmp);
                     }
                     
-                    regEmp.input.items.push({ definitionId: col.itemId, itemCode: col.key, itemName: col.itemName, value: val, text: val, defValue: val, defText: val, type: col.perInfoTypeState.dataTypeValue, logType: col.perInfoTypeState.dataTypeValue });
+                    let col = _.find(self.gridOptions.columns, column => column.key === item.columnKey);
+                    if (col) {
+                        let val = item.value;
+                        if (item.value instanceof Date) {
+                            val = moment(item.value).format("YYYY/MM/DD");
+                        }
+                        
+                        regEmp.input.items.push({ definitionId: col.itemId, itemCode: col.key, itemName: col.itemName, value: val, text: val, defValue: val, defText: val, type: self.convertType(col.perInfoTypeState, val), logType: col.perInfoTypeState.dataTypeValue });
+                    }
+                });
+                
+                if (employees.length === 0) {
+                    unblock();
+                    return;
                 }
                 
-                employees.push(regEmp);
-            });
-            
-            command = { baseDate: self.baseDate(), editMode: self.updateMode(), employees: employees };
-            service.push.register(command).done((errorList) => {
-                info({ messageId: "Msg_15" }).then(() => {
+                command = { baseDate: self.baseDate(), editMode: self.updateMode(), employees: employees };
+                service.push.register(command).done((errorList) => {
+                    if (!errorList || errorList.length === 0) {
+                        info({ messageId: "Msg_15" }).then(() => {
+                            unblock();
+                            self.requestData();
+                        });
+                    } else {
+                        let errLst = _.map(errorList, e => e);
+                        setShared("CPS003G_ERROR_LIST", errLst);
+                        modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
+                            
+                        });
+                    }
+                }).fail((res) => {
                     unblock();
-                    
+                    alert(res.message);
                 });
-            }).fail((res) => {
-                unblock();
-                alert(res.message);
+            }).ifNo(() => {
+                
             });
-            
+        }
+        
+        convertType(perInfoTypeState: any, value: any) {
+            if (!perInfoTypeState) return 1;
+            switch (perInfoTypeState.dataTypeValue) {
+                case ITEM_SINGLE_TYPE.STRING:
+                    return 1;
+                case ITEM_SINGLE_TYPE.NUMERIC:
+                case ITEM_SINGLE_TYPE.TIME:
+                case ITEM_SINGLE_TYPE.TIMEPOINT:
+                    return 2;
+                case ITEM_SINGLE_TYPE.DATE:
+                    return 3;
+                case ITEM_SINGLE_TYPE.SELECTION:
+                case ITEM_SINGLE_TYPE.SEL_RADIO:
+                case ITEM_SINGLE_TYPE.SEL_BUTTON:
+                    switch (perInfoTypeState.referenceType) {
+                        case ITEM_SELECT_TYPE.ENUM:
+                            return 2;
+                        case ITEM_SELECT_TYPE.CODE_NAME:
+                            return 1;
+                        case ITEM_SELECT_TYPE.DESIGNATED_MASTER:
+                            if (_.isNil(value) || isNaN(Number(value))) return 1;
+                            return 2;
+                    }
+                case ITEM_SINGLE_TYPE.READONLY:
+                case ITEM_SINGLE_TYPE.RELATE_CATEGORY:
+                case ITEM_SINGLE_TYPE.READONLY_BUTTON:
+                    return null;
+                case ITEM_SINGLE_TYPE.NUMBERIC_BUTTON:
+                    return 2;
+            }
         }
         
         checkError() {
-            let self = this;
-            $("#grid").mGrid("validate");
+            let self = this, $grid = $("#grid");
+            $grid.mGrid("validate");
+            let errors = $grid.mGrid("errors");
+            if (errors.length === 0) {
+                nts.uk.ui.dialog.info({ messageId: "Msg_1463" });
+                return;
+            }
+            
+            setShared("CPS003G_ERROR_LIST", _.map(errors, err => { return { empCd: err.employeeCode, empName: err.employeeName, no: err.rowNumber, itemName: err.columnName, message: err.message }; }));
+            modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
+                
+            });
         }
 
         openBDialog() {
@@ -300,6 +386,7 @@ module cps003.a.vm {
                 };
 
             setShared('CPS003B_VALUE', params);
+            setShared("CPS003G_PARAM", { baseDate: self.baseDate(), updateMode: self.updateMode(), catId: self.category.catId(), cate: self.category.cate() });
 
             modal("/view/cps/003/b/index.xhtml").onClosed(() => {
                 modal("/view/cps/003/c/index.xhtml").onClosed(() => {
@@ -327,6 +414,16 @@ module cps003.a.vm {
                     cps003.a.service.push.setting({
                         personInfoItems: items
                     });
+                    
+                    service.fetch.setting(self.category.catId()).done((data: ISettingData) => {
+                        if (ko.isObservable(self.settings.matrixDisplay)) {
+                            self.settings.matrixDisplay(data.matrixDisplay);
+                        }    
+                        
+                        if (ko.isObservable(self.settings.perInfoData)) {
+                            self.settings.perInfoData(data.perInfoData);
+                        }
+                    });
                 }
             });
         }
@@ -346,7 +443,7 @@ module cps003.a.vm {
                 virtualizationMode: "continuous",
                 enter: "right",
                 autoFitWindow: true,
-                errorColumns: [],
+                errorColumns: [ "employeeCode", "employeeName", "rowNumber" ],
                 idGen: (id) => id + "_" + nts.uk.util.randomId(),
                 columns: self.gridOptions.columns,
                 features: self.gridOptions.features,
@@ -418,7 +515,7 @@ module cps003.a.vm {
                     { headerText: nts.uk.resource.getText("CPS003_114"), key: "showControl", dataType: "string", width: "40px", ntsControl: "ImageShow" },
                     { headerText: nts.uk.resource.getText("CPS003_28"), key: "employeeCode", dataType: "string", width: "100px", ntsControl: "Label" },
                     { headerText: nts.uk.resource.getText("CPS003_29"), key: "employeeName", dataType: "string", width: "100px", ntsControl: "Label" },
-                    { headerText: nts.uk.resource.getText("CPS003_130"), key: "rowAdd", dataType: "string", width: "40px", ntsControl: "RowAdd" },
+                    { headerText: nts.uk.resource.getText("CPS003_130"), key: "rowAdd", dataType: "string", width: "40px", ntsControl: "RowAdd", hidden: self.category.cate().categoryType !== IT_CAT_TYPE.DUPLICATE },
                     { headerText: nts.uk.resource.getText("CPS003_30"), key: "deptName", dataType: "string", width: "100px", ntsControl: "Label", hidden: !gridSettings || !gridSettings.matrixDisplay || gridSettings.matrixDisplay.departmentATR === IUSE_SETTING.NOT_USE },
                     { headerText: nts.uk.resource.getText("CPS003_31"), key: "workplaceName", dataType: "string", width: "100px", ntsControl: "Label", hidden: !gridSettings || !gridSettings.matrixDisplay || gridSettings.matrixDisplay.workPlaceATR === IUSE_SETTING.NOT_USE },
                     { headerText: nts.uk.resource.getText("CPS003_32"), key: "positionName", dataType: "string", width: "100px", ntsControl: "Label", hidden: !gridSettings || !gridSettings.matrixDisplay || gridSettings.matrixDisplay.jobATR === IUSE_SETTING.NOT_USE },

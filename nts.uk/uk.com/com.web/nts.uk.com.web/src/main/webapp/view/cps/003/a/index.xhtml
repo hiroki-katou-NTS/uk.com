@@ -60,24 +60,26 @@
 								<label id="history-type" data-bind="text: $vm.histType"></label>
 								<button data-bind="ntsHelpButton: {textId: 'CPS003_16', position: 'right center' }">？</button>
 						</div>
-						<div class="form-group margin-left">
-							<div class="fixed-width" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_17')}</div>
-							<button data-bind="ntsHelpButton: {textId: 'CPS003_18', position: 'right center'}">?</button>
-							<div class="cf" data-bind="ntsSwitchButton: {
-								name: 'A2_012',
-								options: [{id: 1, name: '#{i18n.getText('CPS003_19')}'}, {id: 2, name: '#{i18n.getText('CPS003_20')}'}],
-								optionsValue: 'id',
-								optionsText: 'name',
-								value: $vm.updateMode,
-								required: true,
-								enable: true }"></div>
-						</div>
-						<div class="form-group configs-bar">
-							<button id="emp-redisplay" data-bind="text: '#{i18n.getText('CPS003_21')}', click: redisplayEmp"></button>
-							<button data-bind="ntsHelpButton: {textId: 'CPS003_22', position: 'right center'}">?</button>
-							<button id="batch-change" data-bind="text: '#{i18n.getText('CPS003_23')}', click: $vm.settingBatchs.bind($vm)"></button>
-							<button id="settings" data-bind="cps003Setting: $vm.settings.matrixDisplay"></button>
-							<button id="width-save" data-bind="text: '#{i18n.getText('CPS003_24')}', click: $vm.saveWidth"></button>
+						<div class="grid-setting">
+							<div class="form-group margin-left">
+								<div class="fixed-width" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_17')}</div>
+								<button data-bind="ntsHelpButton: {textId: 'CPS003_18', position: 'right center'}">?</button>
+								<div class="cf" data-bind="ntsSwitchButton: {
+									name: 'A2_012',
+									options: [{id: 1, name: '#{i18n.getText('CPS003_19')}'}, {id: 2, name: '#{i18n.getText('CPS003_20')}'}],
+									optionsValue: 'id',
+									optionsText: 'name',
+									value: $vm.updateMode,
+									required: true,
+									enable: true }"></div>
+							</div>
+							<div class="form-group configs-bar">
+								<button id="emp-redisplay" data-bind="text: '#{i18n.getText('CPS003_21')}', click: redisplayEmp"></button>
+								<button data-bind="ntsHelpButton: {textId: 'CPS003_22', position: 'right center'}">?</button>
+								<button id="batch-change" data-bind="text: '#{i18n.getText('CPS003_23')}', click: $vm.settingBatchs.bind($vm)"></button>
+								<button id="settings" data-bind="cps003Setting: $vm.settings.matrixDisplay"></button>
+								<button id="width-save" data-bind="text: '#{i18n.getText('CPS003_24')}', click: $vm.saveWidth"></button>
+							</div>
 						</div>
 						<div class="form-group">
 							<div id="grid"></div>
