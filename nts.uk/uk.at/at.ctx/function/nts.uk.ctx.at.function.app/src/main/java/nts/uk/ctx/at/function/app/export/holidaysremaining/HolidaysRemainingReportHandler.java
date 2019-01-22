@@ -69,6 +69,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.Brea
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -127,6 +128,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 	private AbsenceReruitmentMngInPeriodQuery absenceReruitmentMngInPeriodQuery;
 	@Inject
 	private BreakDayOffMngInPeriodQuery breakDayOffMngInPeriodQuery;
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepository;
 
 	@Override
 	protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
@@ -196,9 +199,10 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 			if (varVacaCtr.isPauseItemHolidaySetting() == false) {
 				hdManagement.getListItemsOutput().getPause().setPauseItem(false);
 			}
-			
 			List<Integer> checkItem = hdManagement.getListItemsOutput().getSpecialHoliday();
-			if(checkItem.isEmpty()){
+			boolean listSpecialHoliday = varVacaCtr.getListSpecialHoliday().containsAll(checkItem);
+			
+			if(!listSpecialHoliday == true){
 				hdManagement.getListItemsOutput().setSpecialHoliday(new ArrayList<>());
 			}
 			if (!hdManagement.getListItemsOutput().getAnnualHoliday().isYearlyHoliday() 
@@ -463,7 +467,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 					employeeId, closureInforOpt.get().getPeriod(), false, baseDate, sphdCode, false);
 			mapSpecVaca.put(sphdCode, specialVacationImported);
 
-			// Call RequestList263 ver2 - hoatt
+			// Call RequestList263 ver2 - 
+
 			if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
 				List<SpecialHolidayImported> specialHolidayList = specialLeaveAdapter.getSpeHoliOfConfirmedMonthly(
 						employeeId, startDate.yearMonth(), currentMonth.previousMonth(), Arrays.asList(sphdCode));
