@@ -65,7 +65,6 @@ public class StatementLayoutService {
         List<String> itemNameCdFixedList = fixedItemClassificationListRepo
                 .getFixedItemClassificationListBySpecOutPutCls(SpecificationOutputCls.DO_NOT_OUTPUT.value)
                 .stream().map(x -> x.getItemNameCd().v()).collect(Collectors.toList());
-        // TODO #125441
         // ドメインモデル「明細書項目」を取得する
         // ドメインモデル「明細書項目名称」を取得する
         return statementItemRepo.getItemCustomByCtgAndExcludeCodes(cid, categoryAtr, Abolition.NOT_ABOLISH.value,

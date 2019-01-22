@@ -101,12 +101,6 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
             });
         }
 
-        openScreenI() {
-            let self = __viewContext.viewModel.viewmodelA;
-            modal("/view/qmm/020/i/index.xhtml").onClosed(() => {
-            });
-        }
-
         onSelectTabB() {
             __viewContext.viewModel.viewmodelB.startPage().done(function () {
                 nts.uk.ui.errors.clearAll();
@@ -152,6 +146,12 @@ module nts.uk.pr.view.qmm020.a.viewmodel {
 
         onSelectTabE() {
             __viewContext.viewModel.viewmodelE.initScreen(null);
+        };
+
+        onSelectTabI(){
+            __viewContext.viewModel.viewmodelI.initScreen().done(() => {
+                __viewContext.viewModel.viewmodelI.loadCCg001();
+            });
         };
 
         onSelectTabF() {

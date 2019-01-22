@@ -11,8 +11,20 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
         listEmp: KnockoutObservableArray<ConfirmPersonSetStatus> = ko.observableArray([]);
 
         constructor() {
-            let self = this;
+
+        }
+
+        initScreen(): JQueryPromise<any> {
+            let self = this,
+            dfd = $.Deferred();
+            self.loadGrid();
+            dfd.resolve();
+            return dfd.promise();
+        }
+
+        loadCCg001(){
             //_____CCG001________
+            let self = this;
             self.ccgcomponent = {
                 showEmployeeSelection: false, // 検索タイプ
                 systemType: 2, // システム区分 - 就業
@@ -69,23 +81,15 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
                         block.clear();
                     });
                 }
-            };
-        }
-
-        startPage(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred();
-            $('#com-ccg001').ntsGroupComponent(self.ccgcomponent);
-            self.loadGrid();
-            dfd.resolve();
-            return dfd.promise();
+            }
+            $('#com-ccg001_2').ntsGroupComponent(self.ccgcomponent);
         }
 
         loadGrid() {
             let self = this;
             $("#grid").ntsGrid({
                 width: '1000px',
-                height: '400px',
+                height: '380px',
                 dataSource: self.listEmp(),
                 primaryKey: 'empId',
                 rowVirtualization: true,
@@ -191,8 +195,8 @@ module nts.uk.pr.view.qmm020.i.viewmodel {
             this.empId = emp.employeeId;
             this.empCd = emp.employeeCode;
             this.empName = emp.employeeName;
-            this.salary = isNullOrUndefined(data.salaryCode) ? "未設定" : data.salaryCode + "　" + data.salaryName;
-            this.bonus = isNullOrUndefined(data.bonusCode) ? "未設定" : data.bonusCode + "　" + data.bonusName;
+            this.salary = isNullOrUndefined(data.salaryCode) ? getText('QMM020_82') : data.salaryCode + "　" + data.salaryName;
+            this.bonus = isNullOrUndefined(data.bonusCode) ? getText('QMM020_82') : data.bonusCode + "　" + data.bonusName;
             this.master = getSettingClsText(data.settingCtg);
             if (data.settingCtg != SettingCls.PERSON && data.settingCtg != SettingCls.COMPANY) {
                 if (!isNullOrUndefined(data.masterCode)) {
