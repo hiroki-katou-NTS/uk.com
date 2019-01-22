@@ -198,7 +198,7 @@ public class MaintenanceExportImpl implements MasterListData {
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(value4, TextResource.localize("CPS008_19"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(value5, TextResource.localize(""),
+		columns.add(new MasterHeaderColumn(value5, TextResource.localize("CPS008_51"),
 				ColumnTextAlign.LEFT, "", true));
 		
 		return columns;

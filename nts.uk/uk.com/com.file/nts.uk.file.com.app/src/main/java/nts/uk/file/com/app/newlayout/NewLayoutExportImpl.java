@@ -134,7 +134,7 @@ public class NewLayoutExportImpl implements MasterListData{
 				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(value2, TextResource.localize("CPS007_23"),
 				ColumnTextAlign.LEFT, "", true));
-		columns.add(new MasterHeaderColumn(value3, TextResource.localize("個人情報項目詳細"),
+		columns.add(new MasterHeaderColumn(value3, TextResource.localize("CPS007_26"),
 				ColumnTextAlign.LEFT, "", true));
 		
 		return columns;
