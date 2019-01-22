@@ -94,7 +94,10 @@ public class ErrorAlarmWorkRecordExportImpl {
           String companyId = loginUserContext.companyId();
           
           List<MasterData> datas = new ArrayList<>();
-          List<ErrorAlarmWorkRecord> listErrorAlarmWorkRecord = repository.getListErrorAlarmWorkRecord(companyId, 0);// fixedAtr":1
+          List<ErrorAlarmWorkRecord> listErrorAlarmWorkRecord = repository.getListErrorAlarmWorkRecord(companyId, 0)
+        		  .stream().filter(eral -> eral.getCode().v().startsWith("U"))
+                  .collect(Collectors.toList());// fixedAtr":1
+
           //7
 //        List<Integer> lista = new ArrayList<>(Arrays.asList(833, 834, 835, 836, 837));
          List<AttdItemDto> listDivergenName = attendanceItemsFinder.findAll();
@@ -149,6 +152,7 @@ public class ErrorAlarmWorkRecordExportImpl {
                       .map(eral -> ErrorAlarmWorkRecordDto.fromDomain(eral, eral.getErrorAlarmCondition()))
                        .sorted(Comparator.comparing(ErrorAlarmWorkRecordDto::getCode))
                       .collect(Collectors.toList());
+
 
          //40
        /** { code: 0, name: "残業申請（早出）" },

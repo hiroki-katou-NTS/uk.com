@@ -282,6 +282,9 @@ public class RoleMonthlyExportExcelImpl  {
                     data.put("ヘッダー色", "");
                     data.put("丸め単位", TimeInputUnit.TIME_INPUT_1Min.nameId);
                 }
+                if(c.getTypeOfAttendanceItem()==null||c.getTypeOfAttendanceItem()!=1){
+                	data.put("丸め単位","");
+                }
                 datas.add(alignMasterDataSheet2(data));
                 
             });
