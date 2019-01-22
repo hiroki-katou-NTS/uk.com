@@ -98,7 +98,7 @@
 }
 .search-box-sm input {
     margin-left: 40px;
-    width: 120px;
+    width: 120px !important;
 }
 .formula-button {
     width: 232px;

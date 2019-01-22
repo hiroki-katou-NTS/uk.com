@@ -127,8 +127,8 @@ module nts.uk.pr.view.qmm017.share.model {
 
     export function getMasterBranchUseEnumModel () {
         return [
-            new EnumModel(MASTER_BRANCH_USE.NOT_USE, getText('Enum_NestedUseCls_NOT_USE')),
-            new EnumModel(MASTER_BRANCH_USE.USE, getText('Enum_NestedUseCls_USE'))
+            new EnumModel(MASTER_BRANCH_USE.NOT_USE, getText('Enum_MasterBranchUse_NOT_USE')),
+            new EnumModel(MASTER_BRANCH_USE.USE, getText('Enum_MasterBranchUse_USE'))
         ];
     }
 
