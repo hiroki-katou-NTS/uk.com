@@ -171,7 +171,8 @@ public class RoleDailyExportExcelImpl {
     }
 
 
-    private void initSheet3(List<BusinessTypeDto> listBusinessType, List<BusinessTypeFormatMonthly> listBusinessMonthly, Map<BusinessTypeCode, List<BusinessTypeFormatMonthly>> mapMonthlyBz, List<AttItemName> listAttItemNameMonthly, Map<Integer, AttItemName> mapAttNameMonthlys, Map<String, Map<Integer, List<BusinessDailyExcel>>> maplistBzDaily, Map<Integer, AttItemName> mapAttNameDailys, List<AttItemName> listAttItemNameNoAuth, String companyId) {
+    private void initSheet3(List<BusinessTypeDto> listBusinessType, List<BusinessTypeFormatMonthly> listBusinessMonthly, Map<BusinessTypeCode, 
+    		List<BusinessTypeFormatMonthly>> mapMonthlyBz, List<AttItemName> listAttItemNameMonthly, Map<Integer, AttItemName> mapAttNameMonthlys, Map<String, Map<Integer, List<BusinessDailyExcel>>> maplistBzDaily, Map<Integer, AttItemName> mapAttNameDailys, List<AttItemName> listAttItemNameNoAuth, String companyId) {
         listBusinessType.addAll(findAll.findAll()); //
         listBusinessMonthly.addAll(finAllMonthly.getMonthlyDetailByCompanyId(companyId));
         listBusinessMonthly.sort(Comparator.comparing(BusinessTypeFormatMonthly::getBusinessTypeCode));
@@ -368,11 +369,14 @@ public class RoleDailyExportExcelImpl {
                      if(color!=null){
                     	 data.put("ヘッダー色", color.replace("#", ""));
                      }
-                    TimeInputUnit timeInputUnit = EnumAdaptor.valueOf(controlItem.getInputUnitOfTimeItem()==null?0:controlItem.getInputUnitOfTimeItem(), TimeInputUnit.class);
-                    data.put("丸め単位", timeInputUnit.nameId);
-                }else{
-                    data.put("ヘッダー色", "");
-                    data.put("丸め単位", TimeInputUnit.TIME_INPUT_1Min.nameId);
+	                    TimeInputUnit timeInputUnit = EnumAdaptor.valueOf(controlItem.getInputUnitOfTimeItem()==null?0:controlItem.getInputUnitOfTimeItem(), TimeInputUnit.class);
+	                    data.put("丸め単位", timeInputUnit.nameId);
+	                }else{
+	                    data.put("ヘッダー色", "");
+	                    data.put("丸め単位", TimeInputUnit.TIME_INPUT_1Min.nameId);
+	                }
+                if(c.getTypeOfAttendanceItem()==null||c.getTypeOfAttendanceItem()!=5){
+                	data.put("丸め単位","");
                 }
                 datas.add(alignMasterDataSheet2(data));
                 
@@ -725,7 +729,8 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet5(MasterListExportQuery que
                     groupWorkType.sort(Comparator.comparing(WorkTypeDtoExcel::getWorkTypeCode));
                     if(!CollectionUtil.isEmpty(groupWorkType)){
                         List<String> listString = groupWorkType.stream()
-                                .map(developer -> new String(developer.getWorkTypeCode()==null?"":developer.getWorkTypeCode()+(developer.getWorkTypeName()==null?"":developer.getWorkTypeName())))
+                                .map(developer -> new String(developer.getWorkTypeCode()==null?"":developer.getWorkTypeCode()+
+                                		(developer.getWorkTypeName()==null?TextResource.localize("KDW006_226"):developer.getWorkTypeName())))
                                 .collect(Collectors.toList());
                         String listWorkTypeName = "";
                         if(!CollectionUtil.isEmpty(listString)){
