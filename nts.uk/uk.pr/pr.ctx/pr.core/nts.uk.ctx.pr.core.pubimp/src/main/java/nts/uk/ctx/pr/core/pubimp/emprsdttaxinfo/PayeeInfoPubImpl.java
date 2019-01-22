@@ -29,13 +29,8 @@ public class PayeeInfoPubImpl implements PayeeInfoPub {
 
 	@Override
 	public void updateResidentTaxPayeeCode(String historyId, String rsdtTaxPayeeCode) {
-		Optional<PayeeInfo> optPayeeInfo = empRsdtTaxPayeeInfoRepo.getPayeeInfoById(historyId);
-		if (optPayeeInfo.isPresent()) {
-			PayeeInfo payeeInfo = optPayeeInfo.get();
-			payeeInfo.setResidentTaxPayeeCd(new ResidentTaxPayeeCode(rsdtTaxPayeeCode));
-			// TODO #126763
-			//payeeInfoRepo.update(payeeInfo);
-		}
+        PayeeInfo payeeInfo = new PayeeInfo(historyId, rsdtTaxPayeeCode);
+        empRsdtTaxPayeeInfoRepo.updatePayeeInfo(payeeInfo);
 	}
 	
 }

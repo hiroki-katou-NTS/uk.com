@@ -14,7 +14,8 @@ public interface EmployeeResidentTaxPayeeInfoRepository {
     
     List<EmployeeResidentTaxPayeeInfo> getEmpRsdtTaxPayeeInfo(List<String> listSId);
 
-    Optional<PayeeInfo> getPayeeInfoById(String histId);
-
     List<PayeeInfo> getListPayeeInfo(List<String> listHistId);
+
+    void updatePayeeInfo(PayeeInfo payeeInfo);
+
 }
