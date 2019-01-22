@@ -12,6 +12,8 @@ import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.NotUseAtr;
+import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
+import nts.uk.file.com.app.newlayout.NewLayoutExportData;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.system.config.InstalledProduct;
@@ -48,7 +50,7 @@ public class MaintenanceExportImpl implements MasterListData {
 		String companyId = AppContexts.user().companyId();
 		String contractCode = AppContexts.user().contractCode();
 
-
+		List<MaintenanceLayoutData> listMaintenanceLayoutS = new ArrayList<>();
 		
 		List<MasterData> datas = new ArrayList<>();
 		
@@ -57,17 +59,24 @@ public class MaintenanceExportImpl implements MasterListData {
 		if(CollectionUtil.isEmpty(listMaintenanceLayout)){
 			return null;
 		}else{
+			for (int i = 0; i < listMaintenanceLayout.size(); i++) {
+				// 5:時刻(TimePoint)
+				if(listMaintenanceLayout.get(i).getDataType()!=DataTypeValue.TIMEPOINT.value){
+					listMaintenanceLayoutS.add(listMaintenanceLayout.get(i));
+				}
+			}
+			
 			//map layoutCD
-			for (int i = 0; i < listMaintenanceLayout.size(); i++) { 
+			for (int i = 0; i < listMaintenanceLayoutS.size(); i++) { 
 				Map<String, Object> data = new HashMap<>();
 				putEmptyData(data);
 				
-				String layoutCdM = listMaintenanceLayout.get(i).getLayoutCd();
-				String layoutNameM = listMaintenanceLayout.get(i).getLayoutName();
-				String categoryNameM = listMaintenanceLayout.get(i).getCategoryName();
-				String itemNameM = listMaintenanceLayout.get(i).getItemName();
-				String itemNameC = listMaintenanceLayout.get(i).getItemNameC();
-				String itemParentCD = listMaintenanceLayout.get(i).getItemParentCD();
+				String layoutCdM = listMaintenanceLayoutS.get(i).getLayoutCd();
+				String layoutNameM = listMaintenanceLayoutS.get(i).getLayoutName();
+				String categoryNameM = listMaintenanceLayoutS.get(i).getCategoryName();
+				String itemNameM = listMaintenanceLayoutS.get(i).getItemName();
+				String itemNameC = listMaintenanceLayoutS.get(i).getItemNameC();
+				String itemParentCD = listMaintenanceLayoutS.get(i).getItemParentCD();
 				
 				if(i==0){
 					data.put(value1, layoutCdM);
@@ -82,7 +91,7 @@ public class MaintenanceExportImpl implements MasterListData {
 						data.put(value5, "");
 					}
 				}else{
-					if(layoutCdM.equals(listMaintenanceLayout.get(i-1).getLayoutCd())){
+					if(layoutCdM.equals(listMaintenanceLayoutS.get(i-1).getLayoutCd())){
 						data.put(value1, "");
 						data.put(value2, "");
 						if(categoryNameM == null){
@@ -90,21 +99,21 @@ public class MaintenanceExportImpl implements MasterListData {
 							data.put(value4, "----------");
 							data.put(value5, "----------");
 						}else{
-							if(categoryNameM.equals(listMaintenanceLayout.get(i-1).getCategoryName())){
+							if (categoryNameM.equals(listMaintenanceLayoutS.get(i - 1).getCategoryName())) {
 								data.put(value3, "");
-								if(itemParentCD ==null){
+								if (itemParentCD == null) {
 									data.put(value4, itemNameM);
 									data.put(value5, "");
-								}else{
+								} else {
 									data.put(value4, "");
 									data.put(value5, itemNameC);
 								}
-							}else{
+							} else {
 								data.put(value3, categoryNameM);
-								if(itemParentCD ==null){
+								if (itemParentCD == null) {
 									data.put(value4, itemNameM);
 									data.put(value5, "");
-								}else{
+								} else {
 									data.put(value4, "");
 									data.put(value5, itemNameC);
 								}
@@ -113,12 +122,57 @@ public class MaintenanceExportImpl implements MasterListData {
 					}else{
 						data.put(value1, layoutCdM);
 						data.put(value2, layoutNameM);
-						data.put(value3, "");
-						data.put(value4, "");
-						data.put(value5, "");
-						
-						
+						if(categoryNameM == null){
+							data.put(value3, "----------");
+							data.put(value4, "----------");
+							data.put(value5, "----------");
+						}else{
+							data.put(value3, categoryNameM);
+							data.put(value4, itemNameM);
+							data.put(value5, "");
+						}
 					}
+					
+					
+					
+					
+//					if(layoutCdM.equals(listMaintenanceLayoutS.get(i-1).getLayoutCd())){
+//						data.put(value1, "");
+//						data.put(value2, "");
+//						if(categoryNameM == null){
+//							data.put(value3, "----------");
+//							data.put(value4, "----------");
+//							data.put(value5, "----------");
+//						}else{
+//							if(categoryNameM.equals(listMaintenanceLayoutS.get(i-1).getCategoryName())){
+//								data.put(value3, "");
+//								if(itemParentCD ==null){
+//									data.put(value4, itemNameM);
+//									data.put(value5, "");
+//								}else{
+//									data.put(value4, "");
+//									data.put(value5, itemNameC);
+//								}
+//							}else{
+//								data.put(value3, categoryNameM);
+//								if(itemParentCD ==null){
+//									data.put(value4, itemNameM);
+//									data.put(value5, "");
+//								}else{
+//									data.put(value4, "");
+//									data.put(value5, itemNameC);
+//								}
+//							}
+//						}
+//					}else{
+//						data.put(value1, layoutCdM);
+//						data.put(value2, layoutNameM);
+//						data.put(value3, categoryNameM);
+//						data.put(value4, "");
+//						data.put(value5, "");
+//						
+//						
+//					}
 				}
 				MasterData masterData = new MasterData(data, null, "");
 				masterData.cellAt(value1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
