@@ -32,7 +32,6 @@ import nts.uk.ctx.at.record.app.find.workrecord.temporarywork.ManageWorkTemporar
 import nts.uk.ctx.at.record.app.find.workrule.specific.SpecificWorkRuleDto;
 import nts.uk.ctx.at.record.app.find.workrule.specific.SpecificWorkRuleFinder;
 import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceDto;
-import nts.uk.ctx.at.record.dom.monthly.roundingset.RoundingProcessOfExcessOutsideTime;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.HolidayAddtionDto;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.HolidayAddtionFinder;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.flex.FlexSetDto;
@@ -45,6 +44,8 @@ import nts.uk.ctx.at.shared.app.find.entranceexit.ManageEntryExitDto;
 import nts.uk.ctx.at.shared.app.find.entranceexit.ManageEntryExitFinder;
 import nts.uk.ctx.at.shared.app.find.ot.frame.OvertimeWorkFrameFindDto;
 import nts.uk.ctx.at.shared.app.find.ot.frame.OvertimeWorkFrameFinder;
+import nts.uk.ctx.at.shared.app.find.ot.zerotime.ZeroTimeDto;
+import nts.uk.ctx.at.shared.app.find.ot.zerotime.ZeroTimeFinder;
 import nts.uk.ctx.at.shared.app.find.workdayoff.frame.WorkdayoffFrameFindDto;
 import nts.uk.ctx.at.shared.app.find.workdayoff.frame.WorkdayoffFrameFinder;
 import nts.uk.ctx.at.shared.app.find.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkDto;
@@ -78,7 +79,6 @@ import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkMntSetRepository;
 import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkSet;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageRepository;
-import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTimeUnit;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
 @Stateless
 @DomainID(value = "CalculationSetting")
@@ -135,7 +135,9 @@ public class CalculationSettingExportImpl implements MasterListData {
 	@Inject
 	private OutsideOtSetRepository outsideOtSetRepositoryFinder;
 	@Inject
-	private TimeRoundingOfExcessOutsideTimeFinder timeRoundingOfExcessOutsideTimeFinder;
+	private TimeRoundingOfExcessOutsideTimeFinder timeRoundingOfExcessOutsideTimeFinder;	
+	@Inject
+	private ZeroTimeFinder zeroTimeFinder;
 	
 	private static final String select = "○";
 	private static final String unselect = "-";
@@ -185,6 +187,32 @@ public class CalculationSettingExportImpl implements MasterListData {
 	private static final String column1Sheet12="1";
 	private static final String column2Sheet12="2";
 	private static final String column3Sheet12="3";
+	//
+	private static final String column1Sheet10="c1";
+	private static final String column2Sheet10="c2";
+	private static final String column3Sheet10="c3";
+	private static final String column4Sheet10="c4";
+	private static final String column5Sheet10="c5";
+	private static final String column6Sheet10="c6";
+	private static final String column7Sheet10="c7";
+	private static final String column8Sheet10="c8";
+	private static final String column09Sheet10="c09";
+	private static final String column10Sheet10="c10";
+	private static final String column11Sheet10="c11";
+	private static final String column12Sheet10="c12";
+	private static final String column13Sheet10="c13";
+	private static final String column14Sheet10="c14";
+	private static final String column15Sheet10="c15";
+	private static final String column16Sheet10="c16";
+	private static final String column17Sheet10="c17";
+	private static final String column18Sheet10="c18";
+	private static final String column19Sheet10="c19";
+	private static final String column20Sheet10="c20";
+	private static final String column21Sheet10="c21";
+	private static final String column22Sheet10="c22";
+	private static final String column23Sheet10="c23";
+	
+
 	
 	public  SelectFunctionDto getFucntionDto(){
 			SelectFunctionDto selectFunctionDto=finder.findAllSetting();
@@ -229,7 +257,11 @@ public class CalculationSettingExportImpl implements MasterListData {
 			 SheetData dataCalculationProjectInherentSetting= new SheetData(getDataCalculationProjectInherentSetting(query),
 					 getHeaderColumnsCalculationProjectInherentSetting(query), null,null,TextResource.localize("KMK013_437"));
 			 sheetDatas.add(dataCalculationProjectInherentSetting);
-		// sheet 10
+		// sheet 10 
+			 
+			 SheetData dataZerotimeCrossingcalculationSettin= new SheetData(getDataZerotimeCrossingcalculationSetting(query),
+					 getHeaderColumnsZerotimeCrossingcalculationSetting(query), null,null,TextResource.localize("KMK013_438"));
+			 sheetDatas.add(dataZerotimeCrossingcalculationSettin);
 		// sheet 11	 
 			 SheetData dataSettingOfverticalmonthly= new SheetData(getDataSettingOfverticalmonthly(query),
 					 getHeaderColumnsSettingOfverticalmonthly(query), null,null,TextResource.localize("KMK013_439"));
@@ -2220,8 +2252,7 @@ private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
     
     // end sheet 9
     
-    //start sheet 10
-    // end sheet 10
+   
     // star sheet 11
     private List<MasterHeaderColumn> getHeaderColumnsSettingOfverticalmonthly (MasterListExportQuery query){
     	
@@ -2433,6 +2464,140 @@ private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
 	
 
     // end sheet12
+	
+	
+	 //start sheet 10
+	  private List<MasterHeaderColumn> getHeaderColumnsZerotimeCrossingcalculationSetting (MasterListExportQuery query){
+	    	
+	    	List<MasterHeaderColumn> columns = new ArrayList<>();
+	    	columns.add(new MasterHeaderColumn(column1Sheet10,TextResource.localize("KMK013_89"),ColumnTextAlign.LEFT, "", true));				
+	    	columns.add(new MasterHeaderColumn(column2Sheet10,"",ColumnTextAlign.LEFT, "", true));
+	    	columns.add(new MasterHeaderColumn(column3Sheet10,TextResource.localize("KMK013_500"),ColumnTextAlign.LEFT, "", true));
+	    	columns.add(new MasterHeaderColumn(column4Sheet10,TextResource.localize("KMK013_501"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column5Sheet10,TextResource.localize("KMK013_502"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column6Sheet10,TextResource.localize("KMK013_503"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column7Sheet10,TextResource.localize("KMK013_504"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column8Sheet10,TextResource.localize("KMK013_505"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column09Sheet10,TextResource.localize("KMK013_506"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column10Sheet10,TextResource.localize("KMK013_507"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column11Sheet10,TextResource.localize("KMK013_509"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column12Sheet10,TextResource.localize("KMK013_510"),ColumnTextAlign.LEFT, "", true));
+	    	columns.add(new MasterHeaderColumn(column13Sheet10,TextResource.localize("KMK013_511"),ColumnTextAlign.LEFT, "", true));
+	    	//
+	    /*	columns.add(new MasterHeaderColumn(column14Sheet10,TextResource.localize("KMK013_512"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column15Sheet10,TextResource.localize("KMK013_513"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column16Sheet10,TextResource.localize("KMK013_514"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column17Sheet10,TextResource.localize("KMK013_515"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column18Sheet10,TextResource.localize("KMK013_516"),ColumnTextAlign.LEFT, "", true));		
+	    	columns.add(new MasterHeaderColumn(column19Sheet10,TextResource.localize("KMK013_517"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column20Sheet10,TextResource.localize("KMK013_518"),ColumnTextAlign.LEFT, "", true));
+	    	columns.add(new MasterHeaderColumn(column21Sheet10,TextResource.localize("KMK013_519"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column22Sheet10,TextResource.localize("KMK013_446"),ColumnTextAlign.LEFT, "", true));	
+	    	columns.add(new MasterHeaderColumn(column23Sheet10,TextResource.localize("KMK013_446"),ColumnTextAlign.LEFT, "", true));*/	
+	    
+	    	
+	    	return columns;
+
+	    }
+	    
+	  private List<MasterData> getDataZerotimeCrossingcalculationSetting(MasterListExportQuery query){
+	  	List<MasterData> datas = new ArrayList<>();
+	  	List<ZeroTimeDto> rs=zeroTimeFinder.findAllCalc();
+	  	if(!CollectionUtil.isEmpty(rs)){
+	  		ZeroTimeDto zeroTimeDto=rs.get(0);
+	  		Map<String, Object> data = new HashMap<>();
+	  		if(zeroTimeDto.getCalcFromZeroTime()==1){
+	  			 
+        		 data.put(column1Sheet10,TextResource.localize("KMK013_91"));
+        		 if(zeroTimeDto.getLegalHd()==1){
+        			 data.put(column2Sheet10,TextResource.localize("KMK013_96"));
+        		 }else{
+        			 data.put(column2Sheet10,TextResource.localize("KMK013_97"));
+        		 }
+        		 if(zeroTimeDto.getNonLegalHd()==1){
+        			 data.put(column3Sheet10,TextResource.localize("KMK013_96"));
+        		 }else{
+        			 data.put(column3Sheet10,TextResource.localize("KMK013_97"));
+        		 }
+        		//
+        		 if(zeroTimeDto.getNonLegalPublicHd()==1){
+        			 data.put(column4Sheet10,TextResource.localize("KMK013_96"));
+        		 }else{
+        			 data.put(column4Sheet10,TextResource.localize("KMK013_97"));
+        		 }
+        		 // 
+        		 
+        		 if(zeroTimeDto.getWeekday1()==1){
+        			 data.put(column5Sheet10,TextResource.localize("KMK013_96"));
+        		 }else{
+        			 data.put(column5Sheet10,TextResource.localize("KMK013_97"));
+        		 }
+        		 //
+        		 
+        		 if(zeroTimeDto.getNonLegalHd1()==1){
+        			 data.put(column6Sheet10,TextResource.localize("KMK013_96"));
+        		 }else{
+        			 data.put(column6Sheet10,TextResource.localize("KMK013_97"));
+        		 }
+        		 //
+        		 if(zeroTimeDto.getNonLegalPublicHd1()==1){
+        			 data.put(column7Sheet10,TextResource.localize("KMK013_96"));
+        		 }else{
+        			 data.put(column7Sheet10,TextResource.localize("KMK013_97"));
+        		 }
+        		 // 
+        		 if(zeroTimeDto.getWeekday2()==1){
+        			 data.put(column8Sheet10,TextResource.localize("KMK013_96"));
+        		 }else{
+        			 data.put(column8Sheet10,TextResource.localize("KMK013_97"));
+        		 }
+        		 //
+        		 if(zeroTimeDto.getLegalHd2()==1){
+        			 data.put(column09Sheet10,TextResource.localize("KMK013_96"));
+        		 }else{
+        			 data.put(column09Sheet10,TextResource.localize("KMK013_97"));
+        		 }
+        		 //
+        		 if(zeroTimeDto.getNonLegalHd2()==1){
+        			 data.put(column10Sheet10,TextResource.localize("KMK013_96"));
+        		 }else{
+        			 data.put(column10Sheet10,TextResource.localize("KMK013_97"));
+        		 }
+        		 //
+        		 
+        		 if(zeroTimeDto.getWeekday3()==1){
+        			 data.put(column11Sheet10,TextResource.localize("KMK013_96"));
+        		 }else{
+        			 data.put(column11Sheet10,TextResource.localize("KMK013_97"));
+        		 }
+        		 //
+        		 if(zeroTimeDto.getLegalHd3()==1){
+        			 data.put(column12Sheet10,TextResource.localize("KMK013_96"));
+        		 }else{
+        			 data.put(column12Sheet10,TextResource.localize("KMK013_97"));
+        		 }
+        		 if(zeroTimeDto.getNonLegalPublicHd3()==1){
+        			 data.put(column13Sheet10,TextResource.localize("KMK013_96"));
+        		 }else{
+        			 data.put(column1Sheet10,TextResource.localize("KMK013_97"));
+        		 }
+        		 MasterData masterData = new MasterData(data, null, "");
+        		 Map<String, MasterCellData> rowData = masterData.getRowData();
+        		// getAlignsheet12(rowData);
+        		 datas.add(masterData);
+        		 
+	  		}else{
+	  			data.put(column1Sheet10,TextResource.localize("KMK013_92"));
+	  		}
+	  		
+	  	}
+	  
+		return datas;
+		
+		
+		
+	  }
+	    // end sheet 10
     
 	private void getAlignsheet2(Map<String, MasterCellData> rowData){
 		rowData.get(column1Sheet2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
