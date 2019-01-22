@@ -429,7 +429,7 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
         		Collections.sort(keySheetNo);
         		for(int i = 0 ; i < keySheetNo.size();i++){
         			List<PerAuthFormatItem> listMon = mapAttItem.get(keySheetNo.get(i));
-        			listMon.sort(Comparator.comparing(PerAuthFormatItem::getAttId));
+        			listMon.sort(Comparator.comparing(PerAuthFormatItem::getDisplayOder));
         			 //get name dailyAtt
                     List<String> result = new ArrayList<>();
                     listMon.stream().forEach(z->{

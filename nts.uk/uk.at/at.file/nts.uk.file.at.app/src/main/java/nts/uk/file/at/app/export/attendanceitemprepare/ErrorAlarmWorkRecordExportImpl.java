@@ -491,8 +491,8 @@ public class ErrorAlarmWorkRecordExportImpl {
 									}
 								}
 							}
-							Collections.sort(listStringAttNameAdd);
-							Collections.sort(listStringAttNameSub);
+//							Collections.sort(listStringAttNameAdd);
+//							Collections.sort(listStringAttNameSub);
 							String subString = String.join("-", listStringAttNameSub);
 							boolean checkEmptyString = subString.isEmpty() && subString != null;
 							targetName = checkEmptyString ? String.join("+", listStringAttNameAdd)
@@ -526,8 +526,8 @@ public class ErrorAlarmWorkRecordExportImpl {
 								break;
 							case 1:
 								String singleAttName = "";
-								if (conditionAtr == 3) {
-									AttdItemDto at = mapListAttItemDto.get(erro.getSingleAtdItem());
+								if (conditionAtr == 2) {
+									AttdItemDto at = mapListAttItemDto6.get(erro.getSingleAtdItem());
 									if (at != null) {
 										singleAttName = at.getAttendanceItemName();
 									}
@@ -637,8 +637,8 @@ public class ErrorAlarmWorkRecordExportImpl {
 										listStringAttNameSub.add(attItem.getAttendanceItemName());
 									}
 								}
-								Collections.sort(listStringAttNameAdd);
-								Collections.sort(listStringAttNameSub);
+//								Collections.sort(listStringAttNameAdd);
+//								Collections.sort(listStringAttNameSub);
 								String subString = String.join("-", listStringAttNameSub);
 								boolean checkEmptyString = subString.isEmpty() && subString != null;
 								targetName = checkEmptyString ? String.join("+", listStringAttNameAdd)
@@ -672,8 +672,8 @@ public class ErrorAlarmWorkRecordExportImpl {
 									break;
 								case 1:
 									String singleAttName = "";
-									if (conditionAtr == 3) {
-										singleAttName = mapListAttItemDto.get(erro.getSingleAtdItem())
+									if (conditionAtr == 2) {
+										singleAttName = mapListAttItemDto6.get(erro.getSingleAtdItem())
 												.getAttendanceItemName();
 									} else {
 										AttdItemDto attItem = mapListAttItemDto.get(erro.getSingleAtdItem());
@@ -850,7 +850,7 @@ public class ErrorAlarmWorkRecordExportImpl {
                      Map<String, Object> data = new HashMap<>();
                            putEmptyDataTwo(data);
                            
-                           data.put("コード", c.getCode());
+                           data.put("コード", c.getCode().v().substring(1));
                            data.put("名称", c.getName());
                            if(c.getUseAtr()){
                                   data.put("使用区分", "使用しない");

@@ -432,7 +432,8 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
         return columns;
     }
     
-    public List<MasterData> getMasterDatasSheet3(MasterListExportQuery query, List<BusinessTypeDto> listBusinessType, Map<BusinessTypeCode, List<BusinessTypeFormatMonthly>> mapMonthlyBz, Map<Integer, AttItemName> mapAttNameMonthlys, Map<String, Map<Integer, List<BusinessDailyExcel>>> maplistBzDaily, Map<Integer, AttItemName> mapAttNameDailys, String companyId, Map<Integer, AttItemName> mapAttNameMonthlys2, int mode) {
+    public List<MasterData> getMasterDatasSheet3(MasterListExportQuery query, List<BusinessTypeDto> listBusinessType, Map<BusinessTypeCode, List<BusinessTypeFormatMonthly>> mapMonthlyBz,
+    		Map<Integer, AttItemName> mapAttNameMonthlys, Map<String, Map<Integer, List<BusinessDailyExcel>>> maplistBzDaily, Map<Integer, AttItemName> mapAttNameDailys, String companyId, Map<Integer, AttItemName> mapAttNameMonthlys2, int mode) {
     	if(mode==1){
 	        List<MasterData> datas = new ArrayList<>();
 	        if (CollectionUtil.isEmpty(listBusinessType)) {
@@ -446,6 +447,7 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
 	                data.put("名称", c.getBusinessTypeName());
 	                BusinessTypeCode businessTypeCode = new BusinessTypeCode(c.getBusinessTypeCode());
 	                List<BusinessTypeFormatMonthly> businessTypeFormatMonthly = mapMonthlyBz.get(businessTypeCode);
+	                businessTypeFormatMonthly.sort(Comparator.comparing(BusinessTypeFormatMonthly::getOrder));
 	                List<Integer> keyMonthly = Collections.emptyList();
 	                if(!CollectionUtil.isEmpty(businessTypeFormatMonthly)){
 	                 keyMonthly =
@@ -473,6 +475,10 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
 	                    int check = 0;
 	                    for (int keyBySheetNo : listKeyBzDailyBySheetNo) {
 	                        List<BusinessDailyExcel> listBzDailyExcel = mapListBzDaily.get(keyBySheetNo);
+	                        if(CollectionUtil.isEmpty(listBzDailyExcel)){
+	                        	return;
+	                        }
+	                        listBzDailyExcel.sort(Comparator.comparing(BusinessDailyExcel::getOrder));
 	                        Map<String, Object> dataChil = new HashMap<>();
 	                        putDataEmptySheet3(dataChil);
 	                        if(check==0){
@@ -501,7 +507,7 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
 	                        }else {
 	                            dataChil.put("日次項目 Sheet選択", keyBySheetNo);
 	                            List<BusinessDailyExcel> value = listBzDailyExcel;
-	                            dataChil.put("日次項目 名称", value==null?"":value.get(0).getSheetName());
+	                            dataChil.put("日次項目 名称", value.get(0).getSheetName()==null?"":value.get(0).getSheetName());
 	                            List<Integer> keyDaily = Collections.emptyList();
 	                            if(!CollectionUtil.isEmpty(value)){
 	                                keyDaily =
@@ -551,6 +557,7 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
         		data.put("このフォーマットを初期設定にする", daiFirst.getAvailability()==1?"○":"-");
         		//put Monthly
         		List<PerAuthFormatItem> listMon = mapMonPerAuth.get(x);
+        		listMon.sort(Comparator.comparing(PerAuthFormatItem::getDisplayOder));
         		String nameAndCodeMon = "";
         		List<String> listResult = new ArrayList<>();
                 for (PerAuthFormatItem key : listMon) {
@@ -560,19 +567,18 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
                     }
                 }
                 if(!CollectionUtil.isEmpty(listResult)){
-                	Collections.sort(listResult);
                 	nameAndCodeMon = String.join(",", listResult);
                 }
                 
         		data.put("月次項目", nameAndCodeMon);
-        		List<Integer> keyAttId = new ArrayList<Integer>(mapAttItem.keySet());
+        		List<Integer> sheetNos = new ArrayList<Integer>(mapAttItem.keySet());
             	if(CollectionUtil.isEmpty(keyDaiCode)){
             		return;
             	}
-        		Collections.sort(keyAttId);
-        		for(int i = 0 ; i < keyAttId.size();i++){
-        			List<PerAuthFormatItem> listDaily = mapAttItem.get(keyAttId.get(i));
-        			listDaily.sort(Comparator.comparing(PerAuthFormatItem::getAttId));
+        		Collections.sort(sheetNos);
+        		for(int i = 0 ; i < sheetNos.size();i++){
+        			List<PerAuthFormatItem> listDaily = mapAttItem.get(sheetNos.get(i));
+        			listDaily.sort(Comparator.comparing(PerAuthFormatItem::getDisplayOder));
         			 //get name dailyAtt
                     List<String> result = new ArrayList<>();
                     listDaily.stream().forEach(z->{
@@ -582,7 +588,7 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
                     	}
                     });
         			if(i ==0){
-	        			data.put("日次項目 Sheet選択", keyAttId.get(i));
+	        			data.put("日次項目 Sheet選択", sheetNos.get(i));
 	        			data.put("日次項目 名称", listDaily.get(0).getSheetName());
                     	if(!CollectionUtil.isEmpty(result)){
                     		String codeAndNameAttDai = String.join(",", result);
@@ -594,7 +600,7 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
         				listDaily.sort(Comparator.comparing(PerAuthFormatItem::getDisplayOder));
             			Map<String, Object> dataChild = new HashMap<>();
                         putDataEmptySheet3ModeAuth(dataChild);
-                        dataChild.put("日次項目 Sheet選択", keyAttId.get(i));
+                        dataChild.put("日次項目 Sheet選択", sheetNos.get(i));
                         dataChild.put("日次項目 名称", listDaily.get(0).getSheetName());
                     	if(!CollectionUtil.isEmpty(result)){
                       		 String codeAndNameAttDai = String.join(",", result);
