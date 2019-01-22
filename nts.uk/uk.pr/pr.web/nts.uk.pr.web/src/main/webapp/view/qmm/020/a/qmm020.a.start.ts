@@ -12,6 +12,7 @@ module nts.uk.pr.view.qmm020.a {
         let viewmodelF = new nts.uk.pr.view.qmm020.f.viewmodel.ScreenModel();
         let viewmodelG = new nts.uk.pr.view.qmm020.g.viewmodel.ScreenModel();
         let viewmodelH = new nts.uk.pr.view.qmm020.h.viewmodel.ScreenModel();
+        let viewmodelI = new nts.uk.pr.view.qmm020.i.viewmodel.ScreenModel();
 
         __viewContext.viewModel = {
             viewmodelA: viewmodelA,
@@ -21,7 +22,8 @@ module nts.uk.pr.view.qmm020.a {
             viewmodelE: viewmodelE,
             viewmodelF: viewmodelF,
             viewmodelG: viewmodelG,
-            viewmodelH: viewmodelH
+            viewmodelH: viewmodelH,
+            viewmodelI: viewmodelI
         };
         __viewContext.bind(__viewContext.viewModel);
         viewmodelA.startPage().done(()=>{

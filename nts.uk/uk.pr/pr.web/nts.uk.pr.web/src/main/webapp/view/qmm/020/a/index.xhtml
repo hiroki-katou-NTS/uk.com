@@ -39,6 +39,11 @@
         <com:scriptfile path="../h/qmm020.h.vm.js"/>
         <com:scriptfile path="../h/qmm020.h.service.js"/>
         <com:stylefile path="../h/qmm020.h.style.css"/>
+
+        <com:scriptfile path="../i/qmm020.i.vm.js"/>
+        <com:scriptfile path="../i/qmm020.i.service.js"/>
+        <com:stylefile path="../i/qmm020.i.style.css"/>
+
         <com:scriptfile path="/view/kcp/009/kcp009.js" of="/nts.uk.com.web"/>
         <com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web"/>
 
@@ -64,6 +69,8 @@
                    role="tab-navigator">#{i18n.getText('QMM020_10')}</a></li>
             <li data-bind="click: $vm.viewmodelA.onSelectTabH"><a tabindex="-1" href="#tabpanel-3"
                    role="tab-navigator">#{i18n.getText('QMM020_11')}</a></li>
+            <li data-bind="click: $vm.viewmodelA.onSelectTabI"><a tabindex="-1" href="#tabpanel-4"
+                   role="tab-navigator">#{i18n.getText('QMM020_2')}</a></li>
         </ul>
         <div class="divider"></div>
         <span>#{i18n.getText('QMM020_12')}</span>
@@ -103,6 +110,9 @@
                 <ui:include src="../h/index.xhtml"/>
             </div>
         </com:ko-if>
+        <div id="tabpanel-4" role="tabpanel" data-bind="with: viewmodelI">
+            <ui:include src="../i/index.xhtml"/>
+        </div>
     </ui:define>
 </ui:composition>
 </body>
