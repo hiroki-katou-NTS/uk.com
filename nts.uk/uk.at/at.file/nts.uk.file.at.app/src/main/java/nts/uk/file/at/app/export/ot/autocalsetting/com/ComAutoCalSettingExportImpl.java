@@ -183,7 +183,7 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
                         Map<String, MasterCellData> data = new HashMap<>();
                         data.put(KMK006_71, MasterCellData.builder()
                                 .columnId(KMK006_71)
-                                .value(w[23] == null ? NO_REGIS : w[24])
+                                .value(w[23] == null ? NO_REGIS : w[23])
                                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                                 .build());
 
