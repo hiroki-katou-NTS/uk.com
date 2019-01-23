@@ -24,13 +24,11 @@ import nts.uk.shr.com.operation.SystemOperationSettingAdapter;
 @Stateless
 public class SystemOperationSettingAdapterImpl implements SystemOperationSettingAdapter {
 
-	
 	@Inject
-	private StopBySystemRepository repoStopBySys;
-	
+	private StopBySystemRepository stopBySysRepo;
+
 	@Inject
-	private StopByCompanyRepository repoStopByCom;
-	
+	private StopByCompanyRepository stopByComRepo;
 
 	@Override
 	public SystemOperationSetting getSetting() {
@@ -38,8 +36,8 @@ public class SystemOperationSettingAdapterImpl implements SystemOperationSetting
 		/** IF STOP ALL SYSTEM */
 		/** IF BEFORE STOP ALL SYSTEM AND COMPANY IS NOT STOP */
 		String contractCd = AppContexts.user().contractCode();
-		Optional<StopBySystem> sys = repoStopBySys.findByKey(contractCd);
-		Optional<StopByCompany> com = repoStopByCom.findByKey(contractCd, AppContexts.user().companyCode());
+		Optional<StopBySystem> sys = stopBySysRepo.findByKey(contractCd);
+		Optional<StopByCompany> com = stopByComRepo.findByKey(contractCd, AppContexts.user().companyCode());
 		if(sys.isPresent() && 
 				((sys.get().getSystemStatus().equals(SystemStatusType.STOP)) ||//SYSTEM: stop
 				(sys.get().getSystemStatus().equals(SystemStatusType.IN_PROGRESS) //system: in progress
