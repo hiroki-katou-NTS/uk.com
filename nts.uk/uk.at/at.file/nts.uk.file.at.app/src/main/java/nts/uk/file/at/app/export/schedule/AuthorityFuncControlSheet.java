@@ -132,9 +132,10 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 					if (!listShiftPermisson.contains(columnName)) listShiftPermisson.add(columnName);
 				}
 			}
-			
-			String columnName = TextResource.localize("KSM011_87").concat(" ").concat(TextResource.localize("KSM011_8"));
-			if (!listSchemodifyDeadline.contains(columnName)) listSchemodifyDeadline.add(columnName);
+			String n1 = TextResource.localize("KSM011_76");
+			String n2 = TextResource.localize("KSM011_87").concat(" ").concat(TextResource.localize("KSM011_8"));
+			if (!listSchemodifyDeadline.contains(n1)) listSchemodifyDeadline.add(n1);
+			if (!listSchemodifyDeadline.contains(n2)) listSchemodifyDeadline.add(n2);
 		}
 		
 		listColumnNames.addAll(listCommonAuthor);
@@ -399,13 +400,24 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 		List<ModifyDeadlineDto> schemodifyDeadline = permissonDto.getSchemodifyDeadline();
 		if (!schemodifyDeadline.isEmpty()){
 			for (ModifyDeadlineDto sc : schemodifyDeadline) {
-				String columnName = TextResource.localize("KSM011_87").concat(" ").concat(TextResource.localize("KSM011_8"));
+				String n1 = TextResource.localize("KSM011_76");
+				switch (sc.getUseCls()) {
+				case 0:
+					data.put(n1, TextResource.localize("KSM011_8"));
+					break;
+				case 1:
+					data.put(n1, TextResource.localize("KSM011_9"));
+					break;
+				default:
+					break;
+				}
+				
+				String n2 = TextResource.localize("KSM011_87").concat(" ").concat(TextResource.localize("KSM011_8"));
 				String value = String.valueOf(sc.getCorrectDeadline());
 				value = value.concat(" ");
 				value = value.concat(TextResource.localize("KSM011_135"));
 				value = value.concat(TextResource.localize("KSM011_91"));
-				
-				data.put(columnName, value);
+				data.put(n2, value);
 			}
 		}
 		
