@@ -75,7 +75,7 @@ public class WorkPlaceSelectionImpl implements WorkPlaceSelectionRepository {
 			+"						INNER JOIN BSYMT_WKP_CONFIG_INFO wci ON bwc.CID = wci.CID AND bwc.HIST_ID = wci.HIST_ID AND wci.WKPID = bwh.WKPID "
 			+"					WHERE "
 			+" 						wi.START_DATE <=  ?baseDate AND"
-			+" 						wi.END_DATE   >=  ?baseDate "
+			+" 						wi.END_DATE   >=  ?baseDate AND wm.CID = ?cid"
 			+" 				)"
 			+" 				AS sourceTable PIVOT ("
 			+" 			MAX(AVAILABILITY)"
