@@ -119,7 +119,7 @@ module nts.uk.at.view.kmk003.a {
                 program.shift();
                 domainType = domainType + program.join(" ");
             }
-            return nts.uk.request.exportFile( servicePath.saveAsExcel + domainType);
+            return nts.uk.request.exportFile( servicePath.saveAsExcel + "/" + domainType);
         }
         
         export module model {
