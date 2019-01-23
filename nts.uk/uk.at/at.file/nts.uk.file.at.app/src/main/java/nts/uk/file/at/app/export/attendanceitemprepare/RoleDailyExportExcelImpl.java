@@ -447,7 +447,10 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
 	                data.put("名称", c.getBusinessTypeName());
 	                BusinessTypeCode businessTypeCode = new BusinessTypeCode(c.getBusinessTypeCode());
 	                List<BusinessTypeFormatMonthly> businessTypeFormatMonthly = mapMonthlyBz.get(businessTypeCode);
-	                businessTypeFormatMonthly.sort(Comparator.comparing(BusinessTypeFormatMonthly::getOrder));
+	                if(!CollectionUtil.isEmpty(businessTypeFormatMonthly)){
+	                	businessTypeFormatMonthly.sort(Comparator.comparing(BusinessTypeFormatMonthly::getOrder));
+	                }
+	                
 	                List<Integer> keyMonthly = Collections.emptyList();
 	                if(!CollectionUtil.isEmpty(businessTypeFormatMonthly)){
 	                 keyMonthly =

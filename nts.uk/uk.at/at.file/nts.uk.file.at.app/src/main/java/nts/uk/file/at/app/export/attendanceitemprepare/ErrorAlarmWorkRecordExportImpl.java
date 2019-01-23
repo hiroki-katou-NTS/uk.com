@@ -827,16 +827,7 @@ public class ErrorAlarmWorkRecordExportImpl {
               LoginUserContext loginUserContext = AppContexts.user();
               String companyId = loginUserContext.companyId();
               
-              List<MasterData> datas = new ArrayList<>();
-              Map<Integer,String> mapApplicationType = new HashMap<>();
-              mapApplicationType.put(0, "残業申請（早出）");
-              mapApplicationType.put(1, "残業申請（通常）");
-              mapApplicationType.put(2, "残業申請（早出・通常）");
-              mapApplicationType.put(3, "休暇申請");
-              mapApplicationType.put(4, "勤務変更申請");
-              mapApplicationType.put(6, "直行直帰申請");
-              mapApplicationType.put(7, "打刻申請（外出許可）");
-              mapApplicationType.put(15, "振休振出申請");
+           List<MasterData> datas = new ArrayList<>();
            List<ErrorAlarmWorkRecord> listErrorAlarmWorkRecord = repository.getListErrorAlarmWorkRecord(companyId, 1);// fixedAtr":1
           
            listErrorAlarmWorkRecord = listErrorAlarmWorkRecord.stream().filter(eral -> eral.getCode().v().startsWith("S"))
@@ -858,14 +849,13 @@ public class ErrorAlarmWorkRecordExportImpl {
                                   data.put("使用区分", "使用する");
                            }
                            List<Integer> listApplication  = c.getLstApplication();
-                           listApplication = listApplication.stream().sorted()
-                                         .collect(Collectors.toList());
+                           Collections.sort(listApplication);
                            if(CollectionUtil.isEmpty(listApplication)){
                                   data.put("申請", "");
                            }else{
                         	  
                         	   for (Integer key : listApplication) {
-                        		   String appName = mapApplicationType.get(key);
+                        		   String appName = EnumAdaptor.valueOf(key, ApplicationTypeExport.class).nameId;
                         		   if(appName!=null){
                         			   lstApp.add(appName);
                         		   }
