@@ -2161,7 +2161,11 @@ module nts.uk.at.view.kmf022 {
             private exportExcel(domainId: string) {
                 nts.uk.ui.block.grayout();
                 let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-                let domainType = program[1] != null ? "KAF022" + program[1] : "";
+                let domainType = "KAF022";
+                if (program.length > 1){
+                    program.shift();
+                    domainType = domainType + program.join(" ");
+                }
                 service.exportExcel('ja', domainId, domainType).done(function() {
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);

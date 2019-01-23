@@ -75,7 +75,11 @@ module nts.uk.com.view.cps009.a.service {
     
     export function saveAsExcel(): JQueryPromise<any> {
         let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-        let domainType = program[1] != null ? "CPS009" + program[1] : "";
+        let domainType = "CPS009";
+        if (program.length > 1){
+            program.shift();
+            domainType = domainType + program.join(" ");
+        }
         let _params = {domainId: "PerInfoInit", 
                         domainType: domainType,
                         languageId: "ja", reportType: 0};
