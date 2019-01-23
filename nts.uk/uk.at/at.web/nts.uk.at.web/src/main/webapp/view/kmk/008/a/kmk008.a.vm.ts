@@ -39,8 +39,7 @@ module nts.uk.at.view.kmk008.a {
                             nts.uk.ui.block.clear();
                         });
                    }
-                }
-                
+                });        
             }
 
             
