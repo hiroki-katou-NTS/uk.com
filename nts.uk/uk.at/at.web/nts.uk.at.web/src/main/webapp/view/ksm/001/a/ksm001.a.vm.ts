@@ -81,7 +81,7 @@ module nts.uk.at.view.ksm001.a {
                             nts.uk.ui.block.clear();
                         });
                    }
-                }
+                });
             }
             
             constructor() {

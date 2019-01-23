@@ -9,7 +9,7 @@ module nts.uk.at.view.kmk008.a {
             public functionDemo(printType: number): JQueryPromise<any> {
                 return null;
              }
-            export function saveAsExcel(languageId: string, startDate: any, endDate: any): JQueryPromise<any> {
+            saveAsExcel(languageId: string, startDate: any, endDate: any): JQueryPromise<any> {
                 let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
                 let programName = program[1]!=null?program[1]:"";
                 return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "RegisterTime",    
@@ -20,3 +20,5 @@ module nts.uk.at.view.kmk008.a {
                                                                                endDate: endDate  });
             }
 }
+}
+    }
