@@ -12,15 +12,17 @@ module nts.uk.at.view.kmk008.a {
 
             export saveAsExcel(languageId: string, startDate: any, endDate: any): JQueryPromise<any> {
                 let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-                let programName = program[1] != null ? program[1] : "";
-                return nts.uk.request.exportFile('/masterlist/report/print', {
-                    domainId: "RegisterTime",
-                    domainType: "KMK008" + programName,
-                    languageId: languageId,
-                    reportType: 0,
-                    startDate: startDate,
-                    endDate: endDate
-                });
+                let domainType = "KMK008";
+                if (program.length > 1){
+                    program.shift();
+                    domainType = domainType + program.join(" ");
+                }
+                return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "RegisterTime",    
+                                                                               domainType: domainType,
+                                                                               languageId: languageId, 
+                                                                               reportType: 0,
+                                                                               startDate: startDate,
+                                                                               endDate: endDate  });
             }
         }
     }
