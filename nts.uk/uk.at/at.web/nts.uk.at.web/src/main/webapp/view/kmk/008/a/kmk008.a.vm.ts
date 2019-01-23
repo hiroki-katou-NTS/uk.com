@@ -31,7 +31,7 @@ module nts.uk.at.view.kmk008.a {
                         let langId = self.langId();
                         let startDate = moment.utc(result.startDateFiscalYear, "YYYY/MM/DD");
                         let endDate = moment.utc(result.endDateFiscalYear, "YYYY/MM/DD");
-                        service.saveAsExcel(langId, startDate, endDate).done(function() {
+                        new service.Service().saveAsExcel(langId, startDate, endDate).done(function() {
                             
                         }).fail(function(error) {
                             nts.uk.ui.dialog.alertError({ messageId: error.messageId });
@@ -42,7 +42,6 @@ module nts.uk.at.view.kmk008.a {
                 });        
             }
 
-            
             opendScreenBWithLaborSystemAtr0() {
                 nts.uk.request.jump("/view/kmk/008/b/index.xhtml", { "laborSystemAtr": 0 });
             }
