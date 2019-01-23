@@ -180,10 +180,10 @@ public class WorkTypeControlSheet extends JpaRepository{
 			if (!listWorkTypeDisplaySettings.isEmpty()){
 				for (WorkTypeDisplaySetting info : listWorkTypeDisplaySettings) {
 					if (value == null){
-						value = getWorkTypeName(info.getWorkTypeCode(), workTypeDtos);
+						value = info.getWorkTypeCode() + getWorkTypeName(info.getWorkTypeCode(), workTypeDtos);
 					} else {
 						if (getWorkTypeName(info.getWorkTypeCode(), workTypeDtos) != null){
-							value = value.concat(",").concat(getWorkTypeName(info.getWorkTypeCode(), workTypeDtos));
+							value = value.concat(",").concat(info.getWorkTypeCode()).concat(getWorkTypeName(info.getWorkTypeCode(), workTypeDtos));
 						}
 					}
 				}
