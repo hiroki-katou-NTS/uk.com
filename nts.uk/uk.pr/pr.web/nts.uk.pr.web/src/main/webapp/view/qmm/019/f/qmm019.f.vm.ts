@@ -65,6 +65,9 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
             let params: IParams = windows.getShared("QMM019_A_TO_F_PARAMS");
             if (isNullOrUndefined(params.itemRangeSet)) {
                 params.itemRangeSet = <shareModel.IItemRangeSet> {};
+                params.hasItemRangeSet = false;
+            } else {
+                params.hasItemRangeSet = true;
             }
             self.params = params;
             let dto = {
@@ -124,7 +127,6 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
                 self.unselectedMode();
                 return;
             }
-            // TODO #125441
             // パラメータを受け取り取得した情報と合わせて画面上に表示する
             self.dataScreen().setData(self.params);
             self.codeSelected(item.itemNameCd);
@@ -139,11 +141,32 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
                 self.categoryAtrText(shareModel.getCategoryAtrText(self.categoryAtr));
                 if (!isNullOrUndefined(att)) {
                     self.attendanceItemSet().setData(att);
+                    self.assignItemRangeSet();
                 }
                 dfd.resolve();
             });
 
             return dfd.promise();
+        }
+
+        assignItemRangeSet() {
+            let self = this;
+            if (self.params.hasItemRangeSet) return;
+            self.dataScreen().itemRangeSet.errorUpperLimitSetAtr(self.attendanceItemSet().errorRangeSetting.upperLimitSetting.valueSettingAtr() == shareModel.UseRangeAtr.USE);
+            self.dataScreen().itemRangeSet.errorLowerLimitSetAtr(self.attendanceItemSet().errorRangeSetting.lowerLimitSetting.valueSettingAtr() == shareModel.UseRangeAtr.USE);
+            self.dataScreen().itemRangeSet.alarmUpperLimitSetAtr(self.attendanceItemSet().alarmRangeSetting.upperLimitSetting.valueSettingAtr() == shareModel.UseRangeAtr.USE);
+            self.dataScreen().itemRangeSet.alarmLowerLimitSetAtr(self.attendanceItemSet().alarmRangeSetting.lowerLimitSetting.valueSettingAtr() == shareModel.UseRangeAtr.USE);
+            if (self.attendanceItemSet().timeCountAtr() == shareModel.TimeCountAtr.TIME) {
+                self.dataScreen().itemRangeSet.errorUpRangeValTime(self.attendanceItemSet().errorRangeSetting.upperLimitSetting.timeValue());
+                self.dataScreen().itemRangeSet.errorLoRangeValTime(self.attendanceItemSet().errorRangeSetting.lowerLimitSetting.timeValue());
+                self.dataScreen().itemRangeSet.alarmUpRangeValTime(self.attendanceItemSet().alarmRangeSetting.upperLimitSetting.timeValue());
+                self.dataScreen().itemRangeSet.alarmLoRangeValTime(self.attendanceItemSet().alarmRangeSetting.lowerLimitSetting.timeValue());
+            } else if (self.attendanceItemSet().timeCountAtr() == shareModel.TimeCountAtr.TIMES) {
+                self.dataScreen().itemRangeSet.errorUpRangeValNum(self.attendanceItemSet().errorRangeSetting.upperLimitSetting.timesValue());
+                self.dataScreen().itemRangeSet.errorLoRangeValNum(self.attendanceItemSet().errorRangeSetting.lowerLimitSetting.timesValue());
+                self.dataScreen().itemRangeSet.alarmUpRangeValNum(self.attendanceItemSet().alarmRangeSetting.upperLimitSetting.timesValue());
+                self.dataScreen().itemRangeSet.alarmLoRangeValNum(self.attendanceItemSet().alarmRangeSetting.lowerLimitSetting.timesValue());
+            }
         }
 
         unselectedMode() {
@@ -501,6 +524,7 @@ module nts.uk.pr.view.qmm019.f.viewmodel {
         itemNameCode: string;
         listItemSetting: Array<string>;
         itemRangeSet: shareModel.IItemRangeSet;
+        hasItemRangeSet: boolean;
     }
 
     class Params {

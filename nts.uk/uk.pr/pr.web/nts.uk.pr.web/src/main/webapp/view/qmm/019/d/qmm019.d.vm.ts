@@ -88,6 +88,9 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             }
             if (isNullOrUndefined(params.itemRangeSet)) {
                 params.itemRangeSet = <shareModel.IItemRangeSet> {};
+                params.hasItemRangeSet = false;
+            } else {
+                params.hasItemRangeSet = true;
             }
             self.params = params;
             self.yearMonth = params.yearMonth;
@@ -157,7 +160,6 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
                 self.unselectedMode();
                 return;
             }
-            // TODO #125441
             // パラメータを受け取り取得した情報と合わせて画面上に表示する
             self.dataScreen().setData(self.params);
             self.codeSelected(item.itemNameCd);
@@ -185,6 +187,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
                 if (!isNullOrUndefined(pay)) {
                     self.paymentItemSet().setData(pay);
                     self.loadControlD2_9();
+                    self.assignItemRangeSet();
                 }
                 self.breakdownItemSets(_.isEmpty(breakItems) ? [] : BreakdownItemSet.fromApp(breakItems));
                 self.dataScreen().perValName(isNullOrUndefined(perVal) ? null : perVal.individualPriceName);
@@ -194,6 +197,19 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
             });
 
             return dfd.promise();
+        }
+
+        assignItemRangeSet() {
+            let self = this;
+            if (self.params.hasItemRangeSet) return;
+            self.dataScreen().itemRangeSet.errorUpperLimitSetAtr(self.paymentItemSet().errorRangeSetting.upperLimitSetting.valueSettingAtr());
+            self.dataScreen().itemRangeSet.errorUpRangeValAmount(self.paymentItemSet().errorRangeSetting.upperLimitSetting.rangeValue());
+            self.dataScreen().itemRangeSet.errorLowerLimitSetAtr(self.paymentItemSet().errorRangeSetting.lowerLimitSetting.valueSettingAtr());
+            self.dataScreen().itemRangeSet.errorLoRangeValAmount(self.paymentItemSet().errorRangeSetting.lowerLimitSetting.rangeValue());
+            self.dataScreen().itemRangeSet.alarmUpperLimitSetAtr(self.paymentItemSet().alarmRangeSetting.upperLimitSetting.valueSettingAtr());
+            self.dataScreen().itemRangeSet.alarmUpRangeValAmount(self.paymentItemSet().alarmRangeSetting.upperLimitSetting.rangeValue());
+            self.dataScreen().itemRangeSet.alarmLowerLimitSetAtr(self.paymentItemSet().alarmRangeSetting.lowerLimitSetting.valueSettingAtr());
+            self.dataScreen().itemRangeSet.alarmLoRangeValAmount(self.paymentItemSet().alarmRangeSetting.lowerLimitSetting.rangeValue());
         }
 
         loadControlD2_9() {
@@ -689,6 +705,7 @@ module nts.uk.pr.view.qmm019.d.viewmodel {
         listItemSetting: Array<string>;
         detail: shareModel.IPaymentItemDetail;
         itemRangeSet: shareModel.IItemRangeSet;
+        hasItemRangeSet: boolean;
     }
 
     class Params {

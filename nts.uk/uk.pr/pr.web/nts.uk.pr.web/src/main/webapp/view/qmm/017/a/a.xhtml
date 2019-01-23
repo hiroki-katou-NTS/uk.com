@@ -135,12 +135,11 @@
                                                     visibleItemsCount: 6,
                                                     value: masterUse,
                                                     optionsText: 'name',
-                                                    enable: $vm.isNewMode,
                                                     required: true,
                                                     columns: [
                                                         { prop: 'fix_length', length: 0 },
                                                         { prop: 'name', length: 10 },
-                                                    ]}, visible: masterBranchUse() == 1">
+                                                    ], enable: masterBranchUse() == 1 &amp;&amp; $vm.isNewMode}">
                                     </div>
                                 </div>
                             </div>
