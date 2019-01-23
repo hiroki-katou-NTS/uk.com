@@ -742,7 +742,7 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet5(MasterListExportQuery que
                     if(!CollectionUtil.isEmpty(groupWorkType)){
                         List<String> listString = groupWorkType.stream()
                                 .map(developer -> new String(developer.getWorkTypeCode()==null?"":developer.getWorkTypeCode()+
-                                		((developer.getWorkTypeCode()!=null&&developer.getWorkTypeName()==null)?TextResource.localize("KDW006_226"):developer.getWorkTypeName())))
+                                		((developer.getWorkTypeName()==null)?"":developer.getWorkTypeName())))
                                 .collect(Collectors.toList());
                         String listWorkTypeName = "";
                         if(!CollectionUtil.isEmpty(listString)){
