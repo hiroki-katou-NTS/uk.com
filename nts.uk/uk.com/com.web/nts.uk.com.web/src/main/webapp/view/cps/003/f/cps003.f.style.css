@@ -3,10 +3,17 @@
 }
 
 #contents-area .col-50 {
-	width: 49%;
 	vertical-align: top; box-sizing : border-box;
 	display: inline-block;
 	box-sizing: border-box;
+}
+
+#contents-area .col-50:first-child {
+	width: 250px;
+}
+
+#contents-area .col-50:nth-child(2) {
+	width: 370px;
 }
 
 #contents-area .form-group {
@@ -22,9 +29,18 @@
 #contents-area .form-group.filter-box {
 	margin-left: 50px;
 }
+
 #contents-area .form-group.change-box>.change-desc,
 #contents-area .form-group.filter-box>.filter-desc {
 	line-height: 32px;
+}
+
+#contents-area .form-group.filter-box input[disabled] {
+	background-color: #eee;
+}
+
+#contents-area .form-group.filter-box button+label.value-text {
+	padding-left: 15px;
 }
 
 #contents-area .form-group.radio-wrapper>.ntsRadioBox {
@@ -52,4 +68,108 @@
 #contents-area .bottom-text>div>span {
 	display: inline-block;
 	padding-right: 10px;
+}
+
+[dropdown-for="combo-box"] {
+	max-width: 200px !important;
+}
+
+#contents-area input.nts-editor {
+	max-width: 300px !important;
+}
+
+#contents-area .form-group.change-box .v-top>* {
+	vertical-align: top;
+}
+
+#contents-area .stime-group-box .ntsRadioBox,
+#contents-area .number-group-box .ntsRadioBox,
+#contents-area .selection-group-box .ntsRadioBox {
+	display: block;
+	line-height: 37px;
+}
+
+#contents-area .number-group-box .ntsRadioBox:nth-child(2) {
+	margin-top: 30px;
+}
+
+#contents-area .stime-group-box,
+#contents-area .number-group-box,
+#contents-area .selection-group-box {
+	position: relative;
+}
+
+#contents-area .number-group-box {
+	height: 34px;
+}
+
+#contents-area .number-group-box .text-box,
+#contents-area .number-group-box .dropdown-box,
+#contents-area .stime-group-box .text-box-x,
+#contents-area .stime-group-box .text-box-a, 
+#contents-area .selection-group-box .text-box,
+#contents-area .selection-group-box .dropdown-box {
+	position: absolute;
+	left: 30px;
+}
+
+#contents-area .number-group-box .text-box {
+	top: 4px;
+}
+
+#contents-area .number-group-box .dropdown-box {
+	top: 70px;
+}
+
+#contents-area .number-group-box .dropdown-box>* {
+	vertical-align: top;
+}
+
+#contents-area .stime-group-box .text-box-x {
+	top: 4px;
+	left: 139px;
+}
+
+#contents-area .stime-group-box .text-box-a {
+	top: 40px;
+}
+
+#contents-area .selection-group-box .text-box {
+	top: 115px;
+}
+
+#contents-area .selection-group-box .dropdown-box {
+	top: 76px;
+	vertical-align: top;
+}
+
+#contents-area .selection-group-box .ntsControl.ntsMonthDays_Container {
+	top: 0px;
+}
+
+#contents-area .grant-selection-group {
+	display: block;
+}
+
+#contents-area .number-group-box+.change-desc {
+	margin-left: 30px;
+}
+
+div[dropdown-for="pk-amount"] {
+	max-width: 50px;
+}
+
+div.pk-amount .nts-column,
+div[dropdown-for="pk-amount"] .nts-column {
+	padding-left: 5px;
+}
+
+.worktime {
+	display: inline-block;
+	padding-left: 15px;
+}
+
+.worktime>label {
+	display: block;
+	line-height: 32px;
 }

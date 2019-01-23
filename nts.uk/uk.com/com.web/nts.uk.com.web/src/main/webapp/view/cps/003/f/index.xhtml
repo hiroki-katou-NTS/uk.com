@@ -9,11 +9,14 @@
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 520,
-					height : 660
+					width : 670,
+					height : 700
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
+			
+			<com:scriptfile path="cm/value-ko-ext.js" />
+			<com:scriptfile path="cm/filter-ko-ext.js" />
 			<com:stylefile path="cps003.f.style.css" />
 			<com:scriptfile path="cps003.f.service.js" />
 			<com:scriptfile path="cps003.f.vm.js" />
@@ -51,33 +54,34 @@
                                 dataSource: $vm.dataSources
                             }"></table>
 				</div>
-				<div class="col-50">
+				<div class="col-50" data-bind="with: $vm.currentItem">
 					<div class="form-group" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_74')}</div>
 					<div class="form-group" data-bind="ntsRadioBoxGroup: {
-							options: ko.observableArray([{ id: 'F1_008', name: text('CPS003_76') }, { id: 'F1_009', name: text('CPS003_77', ['対象項目名']) }]),
+							options: ko.observableArray([{ id: 'all', name: text('CPS003_76') }, { id: 'match', name: text('CPS003_77', ['対象項目名']) }]),
 							optionsValue: 'id',
 							optionsText: 'name',
-							value: ko.observable('F1_008'),
+							value: applyFor,
 							enable: true 
 						}"></div>
 					<div class="form-group filter-box">
-						<input data-bind="ntsTextEditor: { value: ko.observable('') }" />
+						<div data-bind="cps003fFilter: { itemData: itemData, value: filter, enable: ko.computed(() => ko.toJS(applyFor) != 'all') }"></div>
 						<div class="filter-desc">#{i18n.getText('CPS003_79')}</div>
 					</div>
 					<div class="form-group" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_80')}</div>
 					<div class="form-group change-box">
-						<input data-bind="ntsTextEditor: { value: ko.observable('') }" />
+						<div data-bind="cps003fValue: { itemData: itemData, value: value }"></div>
 						<div class="change-desc">#{i18n.getText('CPS003_82')}</div>
 					</div>
 				</div>
 				<div class="caret caret-bottom"></div>
 				<div class="bottom-text">
 					<div>
-						<span>#{i18n.getText('F2_002')}</span>
+						<!--  -->
+						<span data-bind="text: $vm.currentItem.target"></span>
 						<span>#{i18n.getText('CPS003_92')}</span>
 					</div>
 					<div>
-						<span>#{i18n.getText('F2_004')}</span>
+						<span data-bind="text: $vm.currentItem.name">#{i18n.getText('F2_004')}</span>
 						<span>#{i18n.getText('CPS003_93')}</span>
 						<span>#{i18n.getText('F2_006')}</span>
 						<!-- F2_007 -->
