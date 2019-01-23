@@ -54,7 +54,11 @@ module nts.uk.com.view.cas005.a {
         }
         export function exportExcel(): JQueryPromise<any> {
             let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-            let domainType = program[1] != null ? "CAS005" + program[1] : "";
+            let domainType = "CAS005";
+            if (program.length > 1){
+                program.shift();
+                domainType = domainType + program.join(" ");
+            }
             let _params = { domainId: "RoleEmployment", 
                         domainType: domainType,
                         languageId: "ja", 
