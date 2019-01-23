@@ -57,7 +57,7 @@ public class IndivigrantImpl  extends JpaRepository implements IndivigrantReposi
 							+" ORDER BY  role.ROLE_TYPE ASC, role.ROLE_CD ASC, us.LOGIN_ID ASC) AS ROW_NUMBER2"	
 				+" FROM SACMT_ROLE_INDIVI_GRANT gr"						
 				+" INNER JOIN SACMT_USER us ON gr.USER_ID = us.USER_ID"						
-				+" INNER JOIN BPSMT_PERSON per ON per.PID = us.ASSO_PID"						
+				+" LEFT JOIN BPSMT_PERSON per ON per.PID = us.ASSO_PID"						
 				+" INNER JOIN SACMT_ROLE role ON gr.ROLE_ID = role.ROLE_ID "
 				+" AND role.ROLE_TYPE BETWEEN "+ RoleType.EMPLOYMENT.value +" AND "+ RoleType.PERSONAL_INFO.value +""					
 				+" WHERE gr.CID = ? "
