@@ -352,9 +352,10 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
 	                if(montlhyRecord!=null &&montlhyRecord.getDisplayItem()!=null){
 	                    MonthlyActualResultsDto monActualResult = montlhyRecord.getDisplayItem();
 	                    List<SheetCorrectedMonthlyDto> listSheetCorrectedMonthly = monActualResult.getListSheetCorrectedMonthly();
-	                    listSheetCorrectedMonthly.sort(Comparator.comparing(SheetCorrectedMonthlyDto::getSheetNo));
+	                    
 	                    int check = 0;
 	                    if(!CollectionUtil.isEmpty(listSheetCorrectedMonthly)){
+	                    	listSheetCorrectedMonthly.sort(Comparator.comparing(SheetCorrectedMonthlyDto::getSheetNo));
 	                        for(int i = 0 ; i < listSheetCorrectedMonthly.size() ; i++) {
 	                            Map<String, Object> dataChil = new HashMap<>();
 	                            putDataEmptySheet3(dataChil,mode);
@@ -448,7 +449,6 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
 	        			datas.add(alignMasterDataSheet3(data,mode));
 
         			}else {
-        				listMon.sort(Comparator.comparing(PerAuthFormatItem::getDisplayOder));
             			Map<String, Object> dataChild = new HashMap<>();
                         putDataEmptySheet3(dataChild,mode);
                         dataChild.put("Sheet選択", keySheetNo.get(i));

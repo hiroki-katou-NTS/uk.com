@@ -447,13 +447,10 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
 	                data.put("名称", c.getBusinessTypeName());
 	                BusinessTypeCode businessTypeCode = new BusinessTypeCode(c.getBusinessTypeCode());
 	                List<BusinessTypeFormatMonthly> businessTypeFormatMonthly = mapMonthlyBz.get(businessTypeCode);
-	                if(!CollectionUtil.isEmpty(businessTypeFormatMonthly)){
-	                	businessTypeFormatMonthly.sort(Comparator.comparing(BusinessTypeFormatMonthly::getOrder));
-	                }
-	                
 	                List<Integer> keyMonthly = Collections.emptyList();
 	                if(!CollectionUtil.isEmpty(businessTypeFormatMonthly)){
-	                 keyMonthly =
+	                	businessTypeFormatMonthly.sort(Comparator.comparing(BusinessTypeFormatMonthly::getOrder));
+	                	keyMonthly =
 	                        businessTypeFormatMonthly.stream()
 	                                  .map(BusinessTypeFormatMonthly::getAttendanceItemId)
 	                                  .collect(Collectors.toList());
@@ -473,13 +470,15 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
 	                if(mapListBzDaily!=null){
 	                    listKeyBzDailyBySheetNo = new ArrayList<Integer>(mapListBzDaily.keySet());
 	                }
-	                Collections.sort(listKeyBzDailyBySheetNo);
+	                if(!CollectionUtil.isEmpty(listKeyBzDailyBySheetNo)){
+	                	Collections.sort(listKeyBzDailyBySheetNo);
+	                }
 	                if(!CollectionUtil.isEmpty(listKeyBzDailyBySheetNo)){
 	                    int check = 0;
 	                    for (int keyBySheetNo : listKeyBzDailyBySheetNo) {
 	                        List<BusinessDailyExcel> listBzDailyExcel = mapListBzDaily.get(keyBySheetNo);
 	                        if(CollectionUtil.isEmpty(listBzDailyExcel)){
-	                        	return;
+	                        	continue;
 	                        }
 	                        listBzDailyExcel.sort(Comparator.comparing(BusinessDailyExcel::getOrder));
 	                        Map<String, Object> dataChil = new HashMap<>();
@@ -560,7 +559,10 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
         		data.put("このフォーマットを初期設定にする", daiFirst.getAvailability()==1?"○":"-");
         		//put Monthly
         		List<PerAuthFormatItem> listMon = mapMonPerAuth.get(x);
-        		listMon.sort(Comparator.comparing(PerAuthFormatItem::getDisplayOder));
+        		if(!CollectionUtil.isEmpty(listMon)){
+        			listMon.sort(Comparator.comparing(PerAuthFormatItem::getDisplayOder));
+        		}
+        		
         		String nameAndCodeMon = "";
         		List<String> listResult = new ArrayList<>();
                 for (PerAuthFormatItem key : listMon) {
@@ -575,12 +577,14 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
                 
         		data.put("月次項目", nameAndCodeMon);
         		List<Integer> sheetNos = new ArrayList<Integer>(mapAttItem.keySet());
-            	if(CollectionUtil.isEmpty(keyDaiCode)){
+            	if(CollectionUtil.isEmpty(sheetNos)){
             		return;
             	}
-        		Collections.sort(sheetNos);
         		for(int i = 0 ; i < sheetNos.size();i++){
         			List<PerAuthFormatItem> listDaily = mapAttItem.get(sheetNos.get(i));
+        			if(CollectionUtil.isEmpty(listDaily)){
+        				continue;
+        			}
         			listDaily.sort(Comparator.comparing(PerAuthFormatItem::getDisplayOder));
         			 //get name dailyAtt
                     List<String> result = new ArrayList<>();
@@ -600,7 +604,6 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
 	        			datas.add(alignMasterDataSheet3ModeAuth(data));
 
         			}else {
-        				listDaily.sort(Comparator.comparing(PerAuthFormatItem::getDisplayOder));
             			Map<String, Object> dataChild = new HashMap<>();
                         putDataEmptySheet3ModeAuth(dataChild);
                         dataChild.put("日次項目 Sheet選択", sheetNos.get(i));
