@@ -62,8 +62,12 @@ module nts.uk.com.view.cas011.a.service {
     
     export function saveAsExcel(languageId: string): JQueryPromise<any> {
         let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-        let programName = program[1]!=null?program[1]:"";
-        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "RoleSetMenu", domainType: "CAS011"+programName, languageId: languageId, reportType: 0});
+        let domainType = "CAS011";
+        if (program.length > 1){
+            program.shift();
+            domainType = domainType + program.join(" ");
+        }
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "RoleSetMenu", domainType: domainType, languageId: languageId, reportType: 0});
     }
     
 }
