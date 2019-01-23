@@ -33,7 +33,6 @@ module nts.uk.pr.view.qmm003.a.viewmodel {
             self.listPrefectures = constants.listPrefectures;
             self.selectedResidentTaxPayee = ko.observable(new ResidentTaxPayee(null));
             self.selectedCode.subscribe(val => {
-                nts.uk.ui.errors.clearAll();
                 if (_.isEmpty(val) || val.indexOf("_") == 0) { //select parent node
                     self.selectedResidentTaxPayee().setData(null);
                     self.updateMode(false);
@@ -50,6 +49,9 @@ module nts.uk.pr.view.qmm003.a.viewmodel {
                         block.clear();
                     });
                 }
+                _.defer(() => {
+                    nts.uk.ui.errors.clearAll();
+                });
             });
         }
         
@@ -251,6 +253,8 @@ module nts.uk.pr.view.qmm003.a.viewmodel {
                     block.invisible()
                     service.getResidentTaxPayeeZero(code).done(data => {
                         self.setData(data);
+                        let reportName = __viewContext.screenModel.listRsdTaxPayees.filter(d => {return d.code == self.reportCd()});
+                        self.reportName(_.isEmpty(reportName) ? "" : reportName[0].name);
                         $("#A3_3").focus();
                         nts.uk.ui.errors.clearAll();
                     }).fail(error => {

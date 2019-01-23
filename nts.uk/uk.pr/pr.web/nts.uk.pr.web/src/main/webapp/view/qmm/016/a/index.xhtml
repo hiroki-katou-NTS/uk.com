@@ -202,7 +202,7 @@
 	                                        <td>
 	                                            <!--A8_5 参照ボタン1-->
 	                                            <div data-bind="if: elementSetting() == 0 || elementSetting() == 1 || elementSetting() == 2">
-	                                                <button tabindex="15" class="small"
+	                                                <button tabindex="15" class="small" id="A8_5"
 	                                                        data-bind="click: function(){$vm.selectElement(1)}, enable: !$vm.updateMode()">#{i18n.getText('QMM016_23')}</button>
 	                                            </div>
 	                                            <!--A8_6 選択要素1-->
@@ -218,7 +218,7 @@
 	                                        <td data-bind="if: elementSetting() == 1 || elementSetting() == 2">
 	                                            <!--A8_8 参照ボタン2-->
 	                                            <div>
-	                                                <button tabindex="16" class="small"
+	                                                <button tabindex="16" class="small" id="A8_8"
 	                                                        data-bind="click: function(){$vm.selectElement(2)}, enable: !$vm.updateMode()">#{i18n.getText('QMM016_23')}</button>
 	                                            </div>
 	                                            <!--A8_9 選択要素2-->
@@ -233,7 +233,7 @@
 	                                            class="ui-widget-header">#{i18n.getText('QMM016_44')}</th>
 	                                        <td data-bind="if: elementSetting() == 2">
 	                                            <!--A8_11 参照ボタン3-->
-	                                            <button tabindex="17" class="small"
+	                                            <button tabindex="17" class="small" id="A8_11"
 	                                                    data-bind="click: function(){$vm.selectElement(3)}, enable: !$vm.updateMode()">#{i18n.getText('QMM016_23')}</button>
 	                                            <!--A8_12 選択要素3-->
 	                                            <div data-bind="with: elementInformation().threeDimensionElement">

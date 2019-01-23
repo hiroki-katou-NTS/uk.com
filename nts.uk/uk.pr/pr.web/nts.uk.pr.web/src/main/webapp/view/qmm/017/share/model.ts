@@ -127,8 +127,8 @@ module nts.uk.pr.view.qmm017.share.model {
 
     export function getMasterBranchUseEnumModel () {
         return [
-            new EnumModel(MASTER_BRANCH_USE.NOT_USE, getText('Enum_NestedUseCls_NOT_USE')),
-            new EnumModel(MASTER_BRANCH_USE.USE, getText('Enum_NestedUseCls_USE'))
+            new EnumModel(MASTER_BRANCH_USE.NOT_USE, getText('Enum_MasterBranchUse_NOT_USE')),
+            new EnumModel(MASTER_BRANCH_USE.USE, getText('Enum_MasterBranchUse_USE'))
         ];
     }
 
@@ -331,13 +331,7 @@ module nts.uk.pr.view.qmm017.share.model {
 
     export function getFunctionClassificationEnumModel () {
         return [
-            new EnumModel(FUNCTION_CLASSIFICATION.ALL, getText('Enum_FunctionCls_ALL')),
-            new EnumModel(FUNCTION_CLASSIFICATION.TIME_FUNCTION, getText('Enum_FunctionCls_TIME_FUNCTION')),
-            new EnumModel(FUNCTION_CLASSIFICATION.PAYROLL_SYSTEM, getText('Enum_FunctionCls_PAYROLL_FUNCTION')),
-            new EnumModel(FUNCTION_CLASSIFICATION.LOGIC, getText('Enum_FunctionCls_LOGIC')),
-            new EnumModel(FUNCTION_CLASSIFICATION.STRING_OPERATION, getText('Enum_FunctionCls_STRING_OEPRATION')),
-            new EnumModel(FUNCTION_CLASSIFICATION.DATETIME, getText('Enum_FunctionCls_DATETIME')),
-            new EnumModel(FUNCTION_CLASSIFICATION.MATHEMATICS, getText('Enum_FunctionCls_MATHEMATICS'))
+            new EnumModel(FUNCTION_CLASSIFICATION.ALL, getText('Enum_FunctionCls_ALL'))
         ];
     }
 

@@ -24,8 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "QPBMT_BASIC_FORMULA_SET")
-public class QpbmtBasicFormulaSetting extends UkJpaEntity implements Serializable
-{
+public class QpbmtBasicFormulaSetting extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     
     /**
@@ -55,12 +54,11 @@ public class QpbmtBasicFormulaSetting extends UkJpaEntity implements Serializabl
     }
 
     public BasicFormulaSetting toDomain() {
-        return new BasicFormulaSetting(this.basicFormulaSetPk.historyID, this.masterBranchUse, this.masterUse);
+        return new BasicFormulaSetting(this.basicFormulaSetPk.formulaCode, this.basicFormulaSetPk.historyID, this.masterBranchUse, this.masterUse);
     }
     public static QpbmtBasicFormulaSetting toEntity(BasicFormulaSetting domain) {
-        QpbmtBasicFormulaSetting entity = new QpbmtBasicFormulaSetting(new QpbmtBasicFormulaSettingPk(domain.getHistoryID()), domain.getMasterBranchUse().value, domain.getMasterUse().map(i->i.value).orElse(null));
+        QpbmtBasicFormulaSetting entity = new QpbmtBasicFormulaSetting(new QpbmtBasicFormulaSettingPk(AppContexts.user().companyId(), domain.getFormulaCode().v(), domain.getHistoryID()), domain.getMasterBranchUse().value, domain.getMasterUse().map(i->i.value).orElse(null));
         if (entity.masterBranchUse == 0) entity.masterUse = null;
         return entity;
     }
-
 }

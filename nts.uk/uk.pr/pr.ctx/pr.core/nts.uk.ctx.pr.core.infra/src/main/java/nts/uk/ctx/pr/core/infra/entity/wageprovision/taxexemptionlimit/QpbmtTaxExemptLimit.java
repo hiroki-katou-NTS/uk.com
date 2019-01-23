@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QPBMT_TAX_EXEMPT_LIMIT")
+@Table(name = "QPBMT_TAX_FREE_LIMIT")
 public class QpbmtTaxExemptLimit extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -34,14 +34,14 @@ public class QpbmtTaxExemptLimit extends UkJpaEntity implements Serializable
     * 非課税限度額名称
     */
     @Basic(optional = false)
-    @Column(name = "TAX_EXEMPTION_NAME")
+    @Column(name = "TAX_FREE_LIMIT_NAME")
     public String taxExemptionName;
     
     /**
     * 非課税限度額
     */
     @Basic(optional = false)
-    @Column(name = "TAX_EXEMPTION")
+    @Column(name = "TAX_FREE_LIMIT")
     public long taxExemption;
     
     @Override

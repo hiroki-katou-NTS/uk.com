@@ -6,10 +6,7 @@ import java.util.List;
 /**
 * かんたん計算式設定
 */
-public interface BasicFormulaSettingRepository
-{
-
-    List<BasicFormulaSetting> getAllBasicFormulaSetting();
+public interface BasicFormulaSettingRepository {
 
     Optional<BasicFormulaSetting> getBasicFormulaSettingById(String historyID);
 
@@ -17,12 +14,6 @@ public interface BasicFormulaSettingRepository
 
     void upsert(BasicFormulaSetting domain);
 
-    void update(BasicFormulaSetting domain);
-
-    void remove(BasicFormulaSetting domain);
-
     void removeByHistory(String historyID);
-
-    void removeByFormulaCode(String formulaCode);
 
 }

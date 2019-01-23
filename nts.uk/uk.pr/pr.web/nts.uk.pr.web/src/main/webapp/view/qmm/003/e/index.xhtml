@@ -109,7 +109,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<!-- E4_1 -->
-				<button tabindex="6" class="x-large proceed" data-bind="click: execute, enable: sourceSelectedCodes().length > 0 &amp;&amp; selectedCode().length > 2 &amp;&amp; $root.errors.isEmpty, timeClick: 500">#{i18n.getText('QMM003_35')}</button>
+				<button tabindex="6" class="x-large proceed" data-bind="click: execute, enable: enable() &amp;&amp; $root.errors.isEmpty, timeClick: 500">#{i18n.getText('QMM003_35')}</button>
 				<!-- E4_2 -->
 				<button tabindex="7" data-bind="click: close, timeClick: 500">#{i18n.getText('QMM003_25')}</button>
 			</div>

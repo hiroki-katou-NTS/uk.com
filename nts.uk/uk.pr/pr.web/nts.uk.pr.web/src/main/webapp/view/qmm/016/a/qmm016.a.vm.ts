@@ -380,6 +380,18 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                 dialog.alertError(error).then(() => {
                     if (error.messageId == "Msg_3")
                         $("#A5_2").focus();
+                    if (error.messageId == "MsgQ_242") {
+                        if (command.elementInformation.oneDimensionElement.masterNumericClassification == null)
+                            $("#A8_5").focus();
+                        else if (command.elementInformation.twoDimensionElement.masterNumericClassification == null
+                                && (command.elementSetting == model.ELEMENT_SETTING.TWO_DIMENSION 
+                                    || command.elementSetting == model.ELEMENT_SETTING.THREE_DIMENSION)) {
+                            $("#A8_8").focus();
+                        } else if (command.elementInformation.threeDimensionElement.masterNumericClassification == null
+                                && command.elementSetting == model.ELEMENT_SETTING.THREE_DIMENSION) {
+                            $("#A8_11").focus();
+                        }
+                    }
                 });
             }).always(() => {
                 block.clear();

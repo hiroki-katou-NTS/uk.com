@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 420, height: 650 };</script>
+			<script>var dialogSize = { width: 430, height: 660 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/constants.js"/>
 			<com:scriptfile path="qmm003.d.service.js" />
@@ -36,7 +36,7 @@
 				<table id="D2_1" tabindex="2"
 					data-bind="ntsTreeGridView:{
 						width: 400,
-						rows: 15,
+						rows: 13,
 						name: '#[QMM003_8]',
 						dataSource: items2,
 						selectedValues: selectedCodes,

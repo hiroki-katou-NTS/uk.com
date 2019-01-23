@@ -32,7 +32,7 @@ public class QpbmtEmpRsdtTaxPayAmPk implements Serializable {
      * 年度
      */
     @Basic(optional = false)
-    @Column(name = "YEAR")
+    @Column(name = "RESIDENT_TAX_PAY_Y")
     public int year;
 
     public static List<QpbmtEmpRsdtTaxPayAmPk> toKeys(List<String> sidList, int year) {

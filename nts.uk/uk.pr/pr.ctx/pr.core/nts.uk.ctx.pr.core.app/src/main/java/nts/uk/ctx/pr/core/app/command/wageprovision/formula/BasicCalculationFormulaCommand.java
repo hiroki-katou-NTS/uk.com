@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class BasicCalculationFormulaCommand {
 
+    public String formulaCode;
     public int calculationFormulaClassification;
     public String masterUseCode;
     public String historyID;
@@ -46,7 +47,7 @@ public class BasicCalculationFormulaCommand {
     public BasicCalculationFormula toBasicCalculationFormula () {
         BasicCalculationForm basicCalculationForm = null;
         if (calculationFormulaClassification == CalculationFormulaClassification.FORMULA.value && formulaType!= null) basicCalculationForm = this.toBasicCalculationForm();
-        return new BasicCalculationFormula(historyID, masterUseCode, calculationFormulaClassification, basicCalculationFormula, basicCalculationForm);
+        return new BasicCalculationFormula(formulaCode, historyID, masterUseCode, calculationFormulaClassification, basicCalculationFormula, basicCalculationForm);
     }
 
     public BasicCalculationForm toBasicCalculationForm () {

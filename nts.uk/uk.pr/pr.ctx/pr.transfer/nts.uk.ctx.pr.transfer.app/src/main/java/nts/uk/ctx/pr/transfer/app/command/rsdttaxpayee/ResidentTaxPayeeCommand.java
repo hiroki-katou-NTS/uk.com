@@ -20,9 +20,9 @@ public class ResidentTaxPayeeCommand {
 	private boolean updateMode;
 
 	public ResidentTaxPayee toDomain(String companyId) {
-		return new ResidentTaxPayee(companyId, this.code, this.name, this.kanaName,
-				this.compileStationName, this.postCode, this.memo, this.subscriberName, this.accountNumber,
-				this.reportCd, this.designationNum, this.prefectures);
+		return new ResidentTaxPayee(companyId, this.code, this.name, this.kanaName, this.prefectures,
+				this.compileStationName, this.postCode, this.subscriberName, this.accountNumber,
+				this.reportCd, this.designationNum, null, this.memo);
 	}
 
 }

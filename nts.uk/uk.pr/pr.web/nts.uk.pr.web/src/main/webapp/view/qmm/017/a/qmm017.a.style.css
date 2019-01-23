@@ -96,9 +96,9 @@
     height: 30px;
     width: 30px;
 }
-.search-box-sm {
+.search-box-sm input {
     margin-left: 40px;
-    width: 90px;
+    width: 120px !important;
 }
 .formula-button {
     width: 232px;

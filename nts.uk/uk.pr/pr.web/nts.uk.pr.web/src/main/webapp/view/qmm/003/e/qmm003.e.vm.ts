@@ -19,6 +19,7 @@ module nts.uk.pr.view.qmm003.e.viewmodel {
         listRsdTaxPayeeNodes: Array<Node> = [];
         targetYm: KnockoutObservable<number>;
         displayJapanYm: KnockoutObservable<string>;
+        enable: any;
 
         constructor() {
             let self = this;
@@ -31,6 +32,9 @@ module nts.uk.pr.view.qmm003.e.viewmodel {
             self.targetYm = ko.observable(null);
             self.displayJapanYm = ko.computed(function() {
                 return self.targetYm() ? nts.uk.time.yearmonthInJapanEmpire(self.targetYm()).toString().split(' ').join('') : "";
+            }, this);
+            self.enable = ko.computed(() => {
+                return self.sourceSelectedCodes().length > 0 && self.selectedCode().length > 0 && self.selectedCode().indexOf("_") != 0;
             }, this);
         }
         

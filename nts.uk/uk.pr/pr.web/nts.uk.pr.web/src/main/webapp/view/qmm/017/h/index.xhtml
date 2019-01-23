@@ -80,12 +80,12 @@
                         visibleItemsCount: 6,
                         value: masterUse,
                         optionsText: 'name',
-                        enable: takeoverMethod () == 1,
+                        enable: takeoverMethod () == 1 &amp;&amp; masterBranchUse() == 1,
                         required: true,
                         columns: [
                             { prop: 'fix_length', length: 0 },
                             { prop: 'name', length: 10 },
-                        ]}, visible: masterBranchUse() == 1">
+                        ]}">
                 </div>
             </div>
         </div>

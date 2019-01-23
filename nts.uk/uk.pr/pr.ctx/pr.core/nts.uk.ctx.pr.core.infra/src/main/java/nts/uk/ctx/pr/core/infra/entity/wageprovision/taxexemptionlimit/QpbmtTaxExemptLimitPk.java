@@ -31,7 +31,7 @@ public class QpbmtTaxExemptLimitPk implements Serializable {
 	 * 非課税限度額コード
 	 */
 	@Basic(optional = false)
-	@Column(name = "TAX_FREEAMOUNT_CODE")
+	@Column(name = "TAX_FREE_LIMIT_CODE")
 	public String taxFreeamountCode;
 
 }
