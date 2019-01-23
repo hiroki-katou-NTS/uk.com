@@ -46,6 +46,7 @@ public class MenuSettingImpl implements MasterListData {
 	
 	private static final String commonTitle = TextResource.localize("CCG013_128").concat(" ");
 	private static final String separatorLine = TextResource.localize("CCG013_135");
+	private static final String line = TextResource.localize("CCG013_136");
 	
 	/** 
 	 * get header columns text
@@ -256,7 +257,30 @@ public class MenuSettingImpl implements MasterListData {
 			if (treeMenu.getCode().equals(menu.getCode()) && treeMenu.getClassification().equals(menu.getClassification()) && treeMenu.getSystem().equals(menu.getSystem())) {
 				String displayName = menu.getDisplayName().v();
 				if (displayName != null){
-					if (displayName.equals(TextResource.localize("CCG013_134"))) return separatorLine;
+					if (displayName.contains(TextResource.localize("CCG013_134"))) {
+						displayName = displayName.replaceAll(TextResource.localize("CCG013_134"), separatorLine);
+						return displayName;
+					}
+					if (displayName.contains(line)){
+						String str[] = displayName.split(line);
+						StringBuffer bf = new StringBuffer();
+						if (str.length > 0){
+							for (int i = 0; i < str.length; i++){
+								if (str[i] != null && !"".equals(str[i])) {
+									if (bf.length() <= 0){
+										bf.append(str[i]);
+									} else {
+										bf.append(line);
+										bf.append(str[i]);
+									}
+								}
+							}
+						}
+						if (bf.length() <= 0) bf.append(line);
+						String name = bf.toString();
+						name = name.replaceAll(line, separatorLine);
+						return name;
+					}
 				}
 				return displayName;
 			}
