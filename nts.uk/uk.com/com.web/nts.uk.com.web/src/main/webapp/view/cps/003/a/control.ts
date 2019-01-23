@@ -6,10 +6,10 @@ module cps003 {
     import writeConstraint = nts.uk.ui.validation.writeConstraint;
     import parseTime = nts.uk.time.parseTime;
     import parseTimeWithDay = nts.uk.time.minutesBased.clock.dayattr.create;
-    import ITEM_SINGLE_TYPE = cps003.a.vm.ITEM_SINGLE_TYPE;
-    import ITEM_STRING_TYPE = cps003.a.vm.ITEM_STRING_TYPE;
-    import ITEM_SELECT_TYPE = cps003.a.vm.ITEM_SELECT_TYPE;
-    import ITEM_STRING_DTYPE = cps003.a.vm.ITEM_STRING_DTYPE;
+    let ITEM_SINGLE_TYPE = (cps003.a || cps003.c).vm.ITEM_SINGLE_TYPE;
+    let ITEM_STRING_TYPE = (cps003.a || cps003.c).vm.ITEM_STRING_TYPE;
+    let ITEM_SELECT_TYPE = (cps003.a || cps003.c).vm.ITEM_SELECT_TYPE;
+    let ITEM_STRING_DTYPE = (cps003.a || cps003.c).vm.ITEM_STRING_DTYPE;
     
     export module control {
         const selectGroups: Array<IGroupControl> = [

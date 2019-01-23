@@ -39,7 +39,7 @@
 					<div class="form-groups">
 						<div class="form-group">
 							<div class="fixed-width" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_12')}</div>
-							<div id="base-date" data-bind="ntsDatePicker: { value: $vm.baseDate, dateFormat: 'YYYY/MM/DD', name: '#[CPS003_12]'}"></div>
+							<div id="base-date" data-bind="ntsDatePicker: { value: $vm.baseDate, dateFormat: 'YYYY/MM/DD', name: '#[CPS003_12]', enable: baseDateEnable }"></div>
 						</div>
 						<div class="form-group">
 							<div class="fixed-width" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_13')}</div>
@@ -71,7 +71,7 @@
 									optionsText: 'name',
 									value: $vm.updateMode,
 									required: true,
-									enable: true }"></div>
+									enable: updateModeEnable }"></div>
 							</div>
 							<div class="form-group configs-bar">
 								<button id="emp-redisplay" data-bind="text: '#{i18n.getText('CPS003_21')}', click: redisplayEmp"></button>

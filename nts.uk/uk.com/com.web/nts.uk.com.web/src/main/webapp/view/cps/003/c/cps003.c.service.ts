@@ -1,4 +1,4 @@
-module nts.uk.com.view.cps003.c.service {
+module cps003.c.service {
     import ajax = nts.uk.request.ajax;
     
     export const push = {

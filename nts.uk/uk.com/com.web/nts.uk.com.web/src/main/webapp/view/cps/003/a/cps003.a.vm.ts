@@ -78,13 +78,17 @@ module cps003.a.vm {
             outData: ko.observableArray([])
         }
 
+        headDatas: any;
         gridOptions: any = { columns: [], ntsControls: [], dataSource: [] };
         dataTypes: any = {};
         batchSettingItems: any = [];
 
         baseDate: KnockoutObservable<Date> = ko.observable();
+        baseDateEnable: KnockoutObservable<boolean> = ko.observable(true);
         histType: KnockoutObservable<string> = ko.observable();
         updateMode: KnockoutObservable<number> = ko.observable(1);
+        updateModeEnable: KnockoutObservable<boolean> = ko.observable(true);
+        perInfoCatePermission: KnockoutObservable<any> = ko.observable();
 
         category: {
             cate: KnockoutObservable<any>;
@@ -131,23 +135,73 @@ module cps003.a.vm {
                     if (cate) {
                         self.category.cate(cate);
                         self.category.catCode(cate.categoryCode);
-                        switch (cate.categoryType) {
-                            case IT_CAT_TYPE.SINGLE:
-                                self.histType(nts.uk.resource.getText("CPS003_108"));
-                                break;
-                            case IT_CAT_TYPE.MULTI:
-                                self.histType(nts.uk.resource.getText("CPS003_109"));
-                                break;
-                            case IT_CAT_TYPE.CONTINU:
-                            case IT_CAT_TYPE.CONTINUWED:
-                                self.histType(nts.uk.resource.getText("CPS003_110"));
-                                break;
-                            case IT_CAT_TYPE.NODUPLICATE:
-                                self.histType(nts.uk.resource.getText("CPS003_111"));
-                                break;
-                            case IT_CAT_TYPE.DUPLICATE:
-                                self.histType(nts.uk.resource.getText("CPS003_112"));
-                                break;
+                        let roleId = __viewContext.user.role.personalInfo;
+                        if (cate.categoryType === IT_CAT_TYPE.SINGLE) {
+                            self.histType(nts.uk.resource.getText("CPS003_108"));
+                            self.updateMode(1);
+                            self.updateModeEnable(false);
+                        } else {
+                            service.fetch.permission(roleId, cid).done(permission => {
+                                if (permission) self.perInfoCatePermission(permission);
+                                switch (cate.categoryType) {
+                                    case IT_CAT_TYPE.SINGLE:
+                                        break;
+                                    case IT_CAT_TYPE.MULTI:
+                                        self.histType(nts.uk.resource.getText("CPS003_109"));
+                                        self.updateMode(1);
+                                        self.updateModeEnable(false);
+                                        break;
+                                    case IT_CAT_TYPE.CONTINU:
+                                    case IT_CAT_TYPE.CONTINUWED:
+                                        self.histType(nts.uk.resource.getText("CPS003_110"));
+                                        if (permission && permission.otherFutureHisAuth === 1 && permission.otherPastHisAuth === 1
+                                            && permission.selfFutureHisAuth === 1 && permission.selfPastHisAuth === 1) {
+                                            self.baseDateEnable(false);
+                                        } else {
+                                            self.baseDateEnable(true);
+                                        }
+                                        
+                                        if (permission && permission.otherAllowAddHis === 0 && permission.selfAllowAddHis === 0) {
+                                            self.updateMode(1);
+                                            self.updateModeEnable(false);
+                                        } else {
+                                            self.updateModeEnable(true);
+                                        }
+                                        break;
+                                    case IT_CAT_TYPE.NODUPLICATE:
+                                        self.histType(nts.uk.resource.getText("CPS003_111"));
+                                        if (permission && permission.otherFutureHisAuth === 1 && permission.otherPastHisAuth === 1
+                                            && permission.selfFutureHisAuth === 1 && permission.selfPastHisAuth === 1) { 
+                                            self.baseDateEnable(false);
+                                        } else {
+                                            self.baseDateEnable(true);
+                                        }
+                                        
+                                        if (permission && permission.otherAllowAddHis === 0 && permission.selfAllowAddHis === 0) {
+                                            self.updateMode(1);
+                                            self.updateModeEnable(false);
+                                        } else {
+                                            self.updateModeEnable(true);
+                                        }
+                                        break;
+                                    case IT_CAT_TYPE.DUPLICATE:
+                                        self.histType(nts.uk.resource.getText("CPS003_112"));
+                                        if (permission && permission.otherFutureHisAuth === 1 && permission.otherPastHisAuth === 1
+                                            && permission.selfFutureHisAuth === 1 && permission.selfPastHisAuth === 1) {
+                                            self.baseDateEnable(false);
+                                        } else {
+                                            self.baseDateEnable(true);
+                                        }
+                                        
+                                        if (permission && permission.otherAllowAddHis === 0 && permission.selfAllowAddHis === 0) {
+                                            self.updateMode(1);
+                                            self.updateModeEnable(false);
+                                        } else {
+                                            self.updateModeEnable(true);
+                                        }
+                                        break;
+                                }
+                            });
                         }
                     }
                     
@@ -164,11 +218,6 @@ module cps003.a.vm {
                         if (ko.isObservable(self.settings.perInfoData)) {
                             self.settings.perInfoData(data.perInfoData);
                         }
-                    });
-                    
-                    let roleId = __viewContext.user.role.personalInfo;
-                    service.fetch.permission(roleId, cid).done(permission => {
-                        console.log(permission);
                     });
                 }
             });
@@ -190,6 +239,19 @@ module cps003.a.vm {
                 let $grid = $("#grid");
                 if (!$grid.data("mGrid")) return;
                 if (mode === 1) {
+                    if (self.category.cate().categoryType === IT_CAT_TYPE.DUPLICATE
+                        || self.category.cate().categoryType === IT_CAT_TYPE.SINGLE
+                        || self.category.cate().categoryType === IT_CAT_TYPE.CONTINUWED
+                        || self.category.cate().categoryType === IT_CAT_TYPE.CONTINU
+                        || self.category.cate().categoryType === IT_CAT_TYPE.NODUPLICATE
+                        || (self.category.cate().categoryType === IT_CAT_TYPE.MULTI
+                            && self.perInfoCatePermission().otherAllowAddMulti === 0 
+                            && self.perInfoCatePermission().selfAllowAddMulti === 0)) {
+                        $grid.mGrid("hideColumn", "rowAdd");
+                    } else {
+                        $grid.mGrid("showColumn", "rowAdd");
+                    }
+                    
                     let insertions = $grid.mGrid("insertions");
                     if (insertions.length > 0) {
                         confirm({ messageId: "Msg_1468" }).ifYes(() => {
@@ -197,6 +259,15 @@ module cps003.a.vm {
                         }).ifCancel(() => {
                             self.updateMode(2);
                         });
+                    }
+                } else {
+                    if (self.category.cate().categoryType === IT_CAT_TYPE.DUPLICATE
+                        || (self.category.cate().categoryType === IT_CAT_TYPE.MULTI
+                            && (self.perInfoCatePermission().otherAllowAddMulti === 1 
+                                || self.perInfoCatePermission().selfAllowAddMulti === 1))) {
+                        $grid.mGrid("showColumn", "rowAdd");
+                    } else {
+                        $grid.mGrid("hideColumn", "rowAdd");
                     }
                 }
             });
@@ -246,8 +317,10 @@ module cps003.a.vm {
             }
             
             confirm({ messageId: self.updateMode() === 1 ? "Msg_749" : "Msg_748" }).ifYes(() => {
+                $grid.mGrid("validate");
                 let itemErrors = $grid.mGrid("errors");
                 if (itemErrors && itemErrors.length > 0) {
+                    setShared("CPS003G_ERROR_LIST", _.map(itemErrors, err => { return { empCd: err.employeeCode, empName: err.employeeName, no: err.rowNumber, itemName: err.columnName, message: err.message }; }));
                     modeless("/view/cps/003/g/index.xhtml").onClosed(() => {
                     
                     });
@@ -375,24 +448,28 @@ module cps003.a.vm {
 
         openBDialog() {
             let self = this,
-                category = _.find(self.category.items(), x =>{ if(x.id == self.category.catId()){ return x;}})
+                category = _.find(self.category.items(), x =>{ if(x.id == self.category.catId()){ return x;}}),
                 params = {
                     systemDate: moment(self.baseDate()).format("YYYY/MM/DD"),
                     categoryId: self.category.catId(),
                     categoryName: self.category.cate().categoryName,
                     mode: self.updateMode(),
-                    columnChange: _.map(_.filter(self.settings.perInfoData(), (info: IPersonInfoSetting) => info.regulationAtr), (info: IPersonInfoSetting) => info.perInfoItemDefID),
+                    columnChange: _.filter(self.headDatas, (data: IDataHead) => _.find(self.settings.perInfoData(), (info: IPersonInfoSetting) => info.regulationAtr && info.itemCD === data.itemCode)),
                     sids: _.map(self.gridOptions.dataSource, data => data.employeeId)
                 };
 
             setShared('CPS003B_VALUE', params);
-            setShared("CPS003G_PARAM", { baseDate: self.baseDate(), updateMode: self.updateMode(), catId: self.category.catId(), cate: self.category.cate() });
+            setShared("CPS003G_PARAM", { baseDate: self.baseDate(), updateMode: self.updateMode(), 
+                catId: self.category.catId(), cate: self.category.cate(), perInfoCatePermission: self.perInfoCatePermission() });
 
             modal("/view/cps/003/b/index.xhtml").onClosed(() => {
-                let valueC = getShared('CPS003C_VALUE');
-                setShared('CPS003D_VALUE', valueC);
-                modal("/view/cps/003/c/index.xhtml").onClosed(() => {
-                });
+                let sharedParam = getShared('CPS003C_VALUE');
+                if (sharedParam) {
+                    setShared('CPS003B_PARAM', sharedParam);
+                    modal("/view/cps/003/c/index.xhtml").onClosed(() => {
+                        
+                    });
+                }
             });
         }
         
@@ -506,9 +583,25 @@ module cps003.a.vm {
                     return a.itemOrder - b.itemOrder;
                 });
                 
-                let item, control, parent = {}, sort;
+                let item, control, parent = {}, sort, hideRowAdd;
                 self.dataTypes = {};
                 gridSettings = gridSettings || ko.toJS(self.settings);
+                
+                if (self.category.cate().categoryType === IT_CAT_TYPE.SINGLE
+                    || self.category.cate().categoryType === IT_CAT_TYPE.CONTINUWED
+                    || self.category.cate().categoryType === IT_CAT_TYPE.CONTINU
+                    || self.category.cate().categoryType === IT_CAT_TYPE.NODUPLICATE) {
+                    hideRowAdd = true;
+                } else if (self.category.cate().categoryType === IT_CAT_TYPE.DUPLICATE) {
+                    if (self.updateMode() === 1) {
+                        hideRowAdd = true;
+                    } else hideRowAdd = false;
+                } else if (self.category.cate().categoryType === IT_CAT_TYPE.MULTI) {
+                    if (self.perInfoCatePermission().otherAllowAddMulti === 0 && self.perInfoCatePermission().selfAllowAddMulti === 0) {
+                        hideRowAdd = true;
+                    } else hideRowAdd = false;
+                }
+                
                 self.gridOptions.columns = [
                     { headerText: "", key: "rowNumber", dataType: "number", width: "30px" },
                     { headerText: nts.uk.resource.getText("CPS003_50"), key: "register", dataType: "boolean", width: "30px", ntsControl: "RegCheckBox", bound: true },
@@ -516,7 +609,7 @@ module cps003.a.vm {
                     { headerText: nts.uk.resource.getText("CPS003_114"), key: "showControl", dataType: "string", width: "40px", ntsControl: "ImageShow" },
                     { headerText: nts.uk.resource.getText("CPS003_28"), key: "employeeCode", dataType: "string", width: "100px", ntsControl: "Label" },
                     { headerText: nts.uk.resource.getText("CPS003_29"), key: "employeeName", dataType: "string", width: "100px", ntsControl: "Label" },
-                    { headerText: nts.uk.resource.getText("CPS003_130"), key: "rowAdd", dataType: "string", width: "40px", ntsControl: "RowAdd", hidden: self.category.cate().categoryType !== IT_CAT_TYPE.DUPLICATE },
+                    { headerText: nts.uk.resource.getText("CPS003_130"), key: "rowAdd", dataType: "string", width: "40px", ntsControl: "RowAdd", hidden: hideRowAdd },
                     { headerText: nts.uk.resource.getText("CPS003_30"), key: "deptName", dataType: "string", width: "100px", ntsControl: "Label", hidden: !gridSettings || !gridSettings.matrixDisplay || gridSettings.matrixDisplay.departmentATR === IUSE_SETTING.NOT_USE },
                     { headerText: nts.uk.resource.getText("CPS003_31"), key: "workplaceName", dataType: "string", width: "100px", ntsControl: "Label", hidden: !gridSettings || !gridSettings.matrixDisplay || gridSettings.matrixDisplay.workPlaceATR === IUSE_SETTING.NOT_USE },
                     { headerText: nts.uk.resource.getText("CPS003_32"), key: "positionName", dataType: "string", width: "100px", ntsControl: "Label", hidden: !gridSettings || !gridSettings.matrixDisplay || gridSettings.matrixDisplay.jobATR === IUSE_SETTING.NOT_USE },
@@ -542,6 +635,7 @@ module cps003.a.vm {
                         { columnKey: "className", allowSorting: true }
                     ]};
                 
+                self.headDatas = data.headDatas;
                 _.forEach(data.headDatas, (d: IDataHead) => {
                     let controlType = d.itemTypeState.dataTypeState;
                     if (controlType) {
@@ -629,16 +723,22 @@ module cps003.a.vm {
             
             if (data.bodyDatas) {
                 self.gridOptions.dataSource = [];
-                let states = [], workTimeCodes = [], nullWorkTimeCodes = [], workTimeItems = [], nullWorkTimeItems = [], codes = {};
+                let states = [], workTimeCodes = [], nullWorkTimeCodes = [], workTimeItems = [], nullWorkTimeItems = [], codes = {}, displayItems = [];
+                _.forEach(self.gridOptions.columns, (column, i) => {
+                    if (column.hidden || i < 11) return;
+                    displayItems.push(column.key);
+                });
+                
                 _.forEach(data.bodyDatas, (d: IDataBody, ri: any) => {
-                    let record = new Record(d, ri);
+                    let record = new Record(d, ri), disItems = _.cloneDeep(displayItems);
                     _.forEach(d.items, (item: IColumnData, i: number) => {
-                        let dt = self.dataTypes[item.itemCode];
+                        let dt = self.dataTypes[item.itemCode], disabled;
                         if (!dt) return;
                         if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.DATE && dt.cls.dateItemType === DateType.YEARMONTHDAY) {
                             record[item.itemCode] = _.isNil(item.value) || item.value === "" ? item.value : moment.utc(item.value, "YYYY/MM/DD").toDate();
                             if (self.category.catCode() === "CS00070" && (item.itemCode === "IS00781" || item.itemCode === "IS00782")) {
                                 states.push(new State(record.id, item.itemCode, ["mgrid-disable"]));
+                                disabled = true;
                             }
                         } else if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.TIMEPOINT && !_.isNil(item.value)) {
                             record[item.itemCode] = nts.uk.time.minutesBased.clock.dayattr.create(item.value).shortText;
@@ -654,6 +754,10 @@ module cps003.a.vm {
                             record[item.itemCode] = item.value;
                         }
                         
+                        if (item.actionRole === ACTION_ROLE.VIEW_ONLY && !disabled) {
+                            states.push(new State(record.id, item.itemCode, ["mgrid-disable"]));
+                        }
+                        _.remove(disItems, itm => itm === item.itemCode);
                         if (dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.SELECTION || dt.cls.dataTypeValue === ITEM_SINGLE_TYPE.SEL_RADIO) {
                             if (dt.cls.referenceType === ITEM_SELECT_TYPE.ENUM || dt.cls.referenceType === ITEM_SELECT_TYPE.CODE_NAME 
                                 || (dt.cls.referenceType === ITEM_SELECT_TYPE.DESIGNATED_MASTER && item.itemCode !== "IS00079")) {
@@ -687,6 +791,7 @@ module cps003.a.vm {
                         }
                     });
                     
+                    _.forEach(disItems, itm => states.push(new State(record.id, itm, ["mgrid-lock"])));
                     self.gridOptions.dataSource.push(record);
                 });
                 
