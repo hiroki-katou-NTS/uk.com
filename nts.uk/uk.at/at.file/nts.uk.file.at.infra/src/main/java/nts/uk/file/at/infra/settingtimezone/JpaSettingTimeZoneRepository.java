@@ -350,7 +350,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
         exportSQL.append("                   CID ");
         exportSQL.append("               FROM KBPMT_BONUS_PAY_SET ");
         exportSQL.append("               WHERE CID = ?) p");
-        exportSQL.append("            INNER JOIN KBPST_WP_BP_SET s ON s.CID = p.CID AND s.BONUS_PAY_SET_CD = p.BONUS_PAY_SET_CD) a ");
+        exportSQL.append("            RIGHT JOIN KBPST_WP_BP_SET s ON s.CID = p.CID AND s.BONUS_PAY_SET_CD = p.BONUS_PAY_SET_CD) a ");
         exportSQL.append("      ON a.CID = i.CID AND a.WKPID = i.WKPID) k ");
         exportSQL.append("    ON w.WKPID = k.WKPID AND w.CID = k.CID");
         exportSQL.append("   ORDER BY CASE WHEN wci.HIERARCHY_CD IS NULL THEN 1 ELSE 0 END ASC, HIERARCHY_CD");
@@ -381,7 +381,6 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
         List<MasterData> datas = new ArrayList<>();
         try(PreparedStatement stmt = this.connection().prepareStatement(SQLSetUsedWorkingHours)){
             stmt.setString(1,companyId);
-            stmt.setString(2,companyId);
             datas = new NtsResultSet(stmt.executeQuery()).getList(x -> toMasterDataOfSetUsedWorkingHours(x));
         }
         return datas;
@@ -595,12 +594,12 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_106, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_106)
-                .value(rs.getString("BONUS_PAY_SET_CD"))
+                .value(rs.getString("BONUS_PAY_SET_CD") != null ? rs.getString("BONUS_PAY_SET_CD") : "マスタ未登録")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_107, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_107)
-                .value(rs.getString("BONUS_PAY_SET_NAME"))
+                .value(rs.getString("BONUS_PAY_SET_NAME") != null ? rs.getString("BONUS_PAY_SET_NAME") : "マスタ未登録")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 
