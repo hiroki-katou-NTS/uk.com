@@ -345,17 +345,17 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
         exportSQL.append("      FROM (SELECT DISTINCT WKPCD , WKPID, CID ");
         exportSQL.append("          FROM BSYMT_WORKPLACE_INFO ");
         exportSQL.append("          WHERE CID = ?) i ");
-        exportSQL.append("      RIGHT JOIN  (SELECT   p.BONUS_PAY_SET_CD, ");
+        exportSQL.append("      RIGHT JOIN  (SELECT   s.BONUS_PAY_SET_CD, ");
         exportSQL.append("                 p.BONUS_PAY_SET_NAME,");
         exportSQL.append("                 s.WKPID, ");
-        exportSQL.append("                 p.CID ");
+        exportSQL.append("                 s.CID ");
         exportSQL.append("            FROM (SELECT  BONUS_PAY_SET_CD,");
         exportSQL.append("                   BONUS_PAY_SET_NAME,");
         exportSQL.append("                   CID ");
         exportSQL.append("               FROM KBPMT_BONUS_PAY_SET ");
         exportSQL.append("               WHERE CID = ?) p");
         exportSQL.append("            RIGHT JOIN KBPST_WP_BP_SET s ON s.CID = p.CID AND s.BONUS_PAY_SET_CD = p.BONUS_PAY_SET_CD) a ");
-        exportSQL.append("      ON a.CID = i.CID AND a.WKPID = i.WKPID) k ");
+        exportSQL.append("      ON a.CID = i.CID AND a.WKPID = i.WKPID WHERE a.CID = ? )  k ");
         exportSQL.append("    ON w.WKPID = k.WKPID ");
         exportSQL.append("   ORDER BY CASE WHEN wci.HIERARCHY_CD IS NULL THEN 1 ELSE 0 END ASC, HIERARCHY_CD");
 
@@ -363,6 +363,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             stmt.setString(1,companyId);
             stmt.setString(2,companyId);
             stmt.setString(3,companyId);
+            stmt.setString(4,companyId);
             datas = new NtsResultSet(stmt.executeQuery()).getList(x -> toMasterDataOfSetSubUseWorkPlace(x));
         }
         return datas;
