@@ -241,7 +241,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             "  KBPST_PS_BP_SET s   " +
             "  LEFT JOIN BSYMT_EMP_DTA_MNG_INFO emp ON s.SID = emp.SID   " +
             "  LEFT JOIN BPSMT_PERSON p ON p.PID = emp.PID    " +
-            "  LEFT JOIN KBPMT_BONUS_PAY_SET ps ON ps.BONUS_PAY_SET_CD = s.BONUS_PAY_SET_CD " +
+            "  LEFT JOIN KBPMT_BONUS_PAY_SET ps ON ps.BONUS_PAY_SET_CD = s.BONUS_PAY_SET_CD AND (emp.CID IS NULL OR emp.CID = ps.CID) " +
             "  ORDER BY CASE WHEN SCD IS NULL THEN 1 ELSE 0 END ASC,SCD ";
 
     private static final String SQLSetUsedWorkingHours = "SELECT    " +
@@ -253,7 +253,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             "   KBPST_WT_BP_SET s    " +
             "   LEFT JOIN KSHMT_WORK_TIME_SET w ON s.CID = w.CID     " +
             "   AND s.WORKING_CD = w.WORKTIME_CD    " +
-            "   LEFT JOIN KBPMT_BONUS_PAY_SET ps ON ps.BONUS_PAY_SET_CD = s.BONUS_PAY_SET_CD     " +
+            "   LEFT JOIN KBPMT_BONUS_PAY_SET ps ON ps.BONUS_PAY_SET_CD = s.BONUS_PAY_SET_CD  AND ps.CID = s.CID " +
             "WHERE    " +
             "   s.CID = ?     " +
             "ORDER BY CASE WHEN w.WORKTIME_CD IS NULL THEN 1 ELSE 0 END ASC, w.WORKTIME_CD";
