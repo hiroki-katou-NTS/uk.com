@@ -33,7 +33,11 @@ module nts.uk.com.view.cas012.a.service {
 
     export function exportExcel(date: string): JQueryPromise<any> {
         let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-        let domainType = program[1] != null ? "CAS012" + program[1] : "";
+        let domainType = "CAS012";
+        if (program.length > 1){
+            program.shift();
+            domainType = domainType + program.join(" ");
+        }
         let _params = {domainId: "GrantAdminRole",
             domainType: domainType,
             languageId: 'ja',
