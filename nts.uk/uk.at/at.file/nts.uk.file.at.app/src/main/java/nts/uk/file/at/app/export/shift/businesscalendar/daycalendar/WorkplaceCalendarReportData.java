@@ -1,5 +1,7 @@
 package nts.uk.file.at.app.export.shift.businesscalendar.daycalendar;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,13 +21,13 @@ public class WorkplaceCalendarReportData {
 	
 	private String workingDayAtrName;
 	
-	private String workplaceCode;
-	private String workplaceName;
+	private Optional<String> workplaceCode;
+	private Optional<String> workplaceName;
 	
-	private String hierarchyCode;
+	private Optional<String> hierarchyCode;
 	
 
-	public WorkplaceCalendarReportData(String workplaceId, GeneralDate date, int workingDayAtr, String workplaceCode, String workplaceName) {
+	public WorkplaceCalendarReportData(String workplaceId, GeneralDate date, int workingDayAtr, Optional<String> workplaceCode, Optional<String> workplaceName) {
 		super();
 		this.workplaceId = workplaceId;
 		this.date = date;
@@ -33,6 +35,7 @@ public class WorkplaceCalendarReportData {
 		this.workingDayAtrName = getName(workingDayAtr);
 		this.workplaceCode = workplaceCode;
 		this.workplaceName = workplaceName;
+		this.hierarchyCode = Optional.empty();
 	}
 	
 	public String getYearMonth() {
@@ -61,7 +64,7 @@ public class WorkplaceCalendarReportData {
 	}
 	
 	public static WorkplaceCalendarReportData createFromJavaType(String workplaceId, 
-			GeneralDate date, Integer workingDayAtr, String workplaceCode, String workplaceName) {
+			GeneralDate date, Integer workingDayAtr, Optional<String> workplaceCode, Optional<String> workplaceName) {
 		return new WorkplaceCalendarReportData(
 				workplaceId, 
 				date, 

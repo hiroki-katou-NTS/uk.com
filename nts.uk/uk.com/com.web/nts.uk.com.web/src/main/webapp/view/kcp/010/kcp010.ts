@@ -99,13 +99,13 @@ module kcp010.viewmodel {
                         var prevIconLink = nts.uk.request.location.siteRoot
                             .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                             .mergeRelativePath('/view/kcp/share/icon/9.png').serialize();
-                        $('#prev-btn').attr('style', "background: url('" + prevIconLink + "'); width: 30px; height: 30px; background-size: 30px 30px;");
+                        $('#prev-btn').attr('style', "background-color: white; width: 30px; height: 30px; background-size: 30px 30px;");
         
                         // Icon for Next Button
                         var nextIconLink = nts.uk.request.location.siteRoot
                             .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                             .mergeRelativePath('/view/kcp/share/icon/10.png').serialize();
-                        $('#next-btn').attr('style', "background: url('" + nextIconLink + "'); width: 30px; height: 30px; background-size: 30px 30px;");
+                        $('#next-btn').attr('style', "background-color: white; width: 30px; height: 30px; background-size: 30px 30px;");
         
                         // Enter keypress
                         $('#search-input').on('keypress', function(e) {

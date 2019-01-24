@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -13,6 +14,8 @@ import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
+import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeSetDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.ConditionThresholdLimit;
@@ -21,9 +24,9 @@ import nts.uk.ctx.at.shared.dom.scherec.totaltimes.SummaryAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -57,9 +60,7 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 	@Inject
 	private DailyAttendanceItemNameAdapter dailyAttendanceItemNameAdapter;
 	
-	public List<String> listWorkTypeCodes, listCodes ;
 	
-	private static final String hyphen = "-";
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		String companyId = AppContexts.user().companyId();
@@ -73,32 +74,22 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 		}else{
 			listTotalTimesItem.stream().forEach(c->{
 				
-				listWorkTypeCodes = new ArrayList<>();
-				listCodes = new ArrayList<>();
+				List<String> listWorkTypeCodes = new ArrayList<>();
+				List<String> listCodes  = new ArrayList<>();
 				
 				Map<String, Object> data = new HashMap<>();
 				
-				putEmptyData(data);		
+					
 				
-				data.put("No", c.getTotalCountNo());
 				Optional<TotalTimes> optTotalTimes = this.totalTimesRepository.getTotalTimesDetail(companyId,
 						c.getTotalCountNo());
 
 				if(c.getUseAtr() == UseAtr.NotUse){
 					// neu =0 
-					data.put("使用区分", UseAtr.NotUse.nameId);
-					data.put("名称", "");
-					data.put("略名", "");
-					data.put("集計区分", "");
-					data.put("勤務種類", "");
-					data.put("就業時間帯", "");
-					data.put("集計条件以上", "");
-					data.put("以上", "");
-					data.put("集計条件未満", "");
-					data.put("未満","");
-					data.put("対象項目", "");
-					data.put("半日勤務区分", "");
+					// khong in ra
 				}else{
+					putEmptyData(data);	
+					data.put("No", c.getTotalCountNo());
 					data.put("使用区分", UseAtr.Use.nameId);
 
 					List<String> lista= optTotalTimes.get().getSummaryList().get().getWorkTypeCodes();
@@ -108,19 +99,43 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 						// chua kt de add
 						listWorkTypeCodes.add(lista.get(n));
 					}
-					listb.stream().forEach(n->{
-						listCodes.add(n);
-					});
+					for(int n= 0;n<listb.size();n++){
+						// chua kt de add
+						listCodes.add(listb.get(n));
+					}
 					
-					List<WorkTypeInfor> lst = workTypeRepository.getPossibleWorkTypeAndOrder(companyId, listWorkTypeCodes)
-							.stream().sorted(Comparator
-									.comparing(WorkTypeInfor::getWorkTypeCode))
-									.collect(Collectors.toList());
+					listWorkTypeCodes = listWorkTypeCodes.stream()
+							.sorted()
+							.collect(Collectors.toList());
 					
-					List<WorkTimeSetting> listFindByCodes = workTimeSettingRepository.findByCodes(companyId,listCodes)
+					listCodes = listCodes.stream()
+							.sorted()
+							.collect(Collectors.toList());
+
+					
+					
+					//WorkType
+					List<WorkTypeDto> listWorktypeDto = this.workTypeRepository.findByCompanyId(companyId).stream().map(m -> {
+						List<WorkTypeSetDto> workTypeSetList = m.getWorkTypeSetList().stream()
+								.map(x -> WorkTypeSetDto.fromDomain(x)).collect(Collectors.toList());
+						WorkTypeDto workType = WorkTypeDto.fromDomain(m);
+						workType.setWorkTypeSets(workTypeSetList);
+						return workType;
+					}).collect(Collectors.toList());
+					
+					Map<String ,WorkTypeDto> mapWorktypeDto = listWorktypeDto.stream()
+							.collect(Collectors.toMap(WorkTypeDto::getWorkTypeCode, Function.identity()));
+
+					//WorkTime
+					List<WorkTimeSetting> listFindByCodes = workTimeSettingRepository.findByCompanyId(companyId)
 							.stream().sorted(Comparator
 									.comparing(WorkTimeSetting::getWorktimeCode))
 									.collect(Collectors.toList());
+					
+					Map<WorkTimeCode ,WorkTimeSetting> mapWorkTimeDto = listFindByCodes.stream()
+							.collect(Collectors.toMap(WorkTimeSetting::getWorktimeCode, Function.identity()));
+					
+					
 					
 					List<Integer> listAtdtemId = new ArrayList<>();
 					listAtdtemId.add(c.getTotalCondition().getAtdItemId());
@@ -128,7 +143,7 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 					List<DailyAttendanceItemNameAdapterDto> dailyAttendanceItemDomainServiceDtos = this.dailyAttendanceItemNameAdapter
 							.getDailyAttendanceItemName(listAtdtemId);
 					
-					if(CollectionUtil.isEmpty(lst)){
+					if(CollectionUtil.isEmpty(listWorkTypeCodes)){
 						data.put("勤務種類","");
 					}else{
 						if(c.getSummaryAtr() == SummaryAtr.WORKINGTIME){
@@ -136,53 +151,50 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 						}else {
 							//勤務種類
 							String typeOfDuty = "";
-							for (int n = 0; n < lst.size(); n++) {
-								
-								
-								
-								String workTypeName = (String)lst.get(n).getName();
-								if (!StringUtil.isNullOrEmpty(lst.get(n).getWorkTypeCode(), true) && StringUtil.isNullOrEmpty(lst.get(n).getName(), true)) {
+							for (int n = 0; n < listWorkTypeCodes.size(); n++) {
+								String workTypeName = "";
+								if(mapWorktypeDto.get(listWorkTypeCodes.get(n)) !=null){
+									workTypeName = mapWorktypeDto.get(listWorkTypeCodes.get(n)).getName();
+								}else{
 									workTypeName = TextResource.localize("KSM006_13");
 								}
 								
 								if (n == 0) {
-									typeOfDuty = lst.get(n).getWorkTypeCode() +""+ workTypeName;
+									typeOfDuty = listWorkTypeCodes.get(n) +""+ workTypeName;
 								} else {
-									typeOfDuty += ","+lst.get(n).getWorkTypeCode() + workTypeName;
+									typeOfDuty += ","+listWorkTypeCodes.get(n) + workTypeName;
 								}
 							}
 							data.put("勤務種類", typeOfDuty);
 						}
 						
 					}
-					if(CollectionUtil.isEmpty(listFindByCodes)){
+					if(CollectionUtil.isEmpty(listCodes)){
 						data.put("就業時間帯", "");
 					}else{
 						if(c.getSummaryAtr() == SummaryAtr.DUTYTYPE){
 							data.put("就業時間帯", "");
 						}else{
-							//sort
-							listFindByCodes = listFindByCodes.stream()
-									.sorted(Comparator.comparing(WorkTimeSetting::getWorktimeCode))
-									.collect(Collectors.toList());
-
 							//就業時間帯
-							String  workingHours= "";
-							for (int n = 0; n < listFindByCodes.size(); n++) {
+
+							String timeOfDuty = "";
+							for (int n = 0; n < listCodes.size(); n++) {
+								String workTimeName = "";
+								WorkTimeCode workTimeCode = new WorkTimeCode(listCodes.get(n));
 								
-								
-								String workTimeName = String.valueOf(listFindByCodes.get(n).getWorkTimeDisplayName().getWorkTimeName());
-								if (!StringUtil.isNullOrEmpty(String.valueOf(listFindByCodes.get(n).getWorktimeCode()), true) && StringUtil.isNullOrEmpty(workTimeName, true)) {
+								if(mapWorkTimeDto.get(workTimeCode)!=null){
+									workTimeName = mapWorkTimeDto.get(workTimeCode).getWorkTimeDisplayName().getWorkTimeName().v();
+								}else{
 									workTimeName = TextResource.localize("KSM006_13");
 								}
 								
 								if (n == 0) {
-									workingHours = listFindByCodes.get(n).getWorktimeCode() +""+ workTimeName;
+									timeOfDuty = listCodes.get(n) +""+ workTimeName;
 								} else {
-									workingHours += ","+listFindByCodes.get(n).getWorktimeCode() + workTimeName;
+									timeOfDuty += ","+listCodes.get(n) + workTimeName;
 								}
 							}
-							data.put("就業時間帯", workingHours);
+							data.put("就業時間帯", timeOfDuty);
 						}
 					}
 					
@@ -236,9 +248,6 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 					}
 					data.put("名称", c.getTotalTimesName());
 					data.put("略名", c.getTotalTimesABName());
-					
-					
-					
 					if(c.getSummaryAtr() == SummaryAtr.DUTYTYPE){
 						data.put("集計区分", SummaryAtr.DUTYTYPE.nameId);
 					}else if(c.getSummaryAtr() == SummaryAtr.WORKINGTIME){
@@ -246,25 +255,23 @@ public class TotalTimesRepositoryImpl implements MasterListData{
 					}else{
 						data.put("集計区分", SummaryAtr.COMBINATION.nameId);
 					}
+					
+					MasterData masterData = new MasterData(data, null, "");
+					masterData.cellAt("No").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("使用区分").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("略名").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("集計区分").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("勤務種類").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("就業時間帯").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("集計条件以上").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("以上").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					masterData.cellAt("集計条件未満").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("未満").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					masterData.cellAt("対象項目").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt("半日勤務区分").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					datas.add(masterData);
 				}
-				
-				MasterData masterData = new MasterData(data, null, "");
-				masterData.cellAt("No").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt("使用区分").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt("略名").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt("集計区分").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt("勤務種類").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt("就業時間帯").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt("集計条件以上").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt("以上").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
-				masterData.cellAt("集計条件未満").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt("未満").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
-				masterData.cellAt("対象項目").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt("半日勤務区分").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-
-				
-				datas.add(masterData);
 			});	
 		}
 		return datas;

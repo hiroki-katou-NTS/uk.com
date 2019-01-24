@@ -4334,6 +4334,7 @@ var nts;
                  * Get program.
                  */
                 function getProgram() {
+                    initPgArea();
                     nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function (pg) {
                         var programName = "";
                         var queryString = __viewContext.program.queryString;
@@ -4360,22 +4361,30 @@ var nts;
                             programName = pg[0].name;
                         }
                         // show program name on title of browser
-                        ui.viewModelBuilt.add(function () {
+                        if (_.isNil(ui._viewModel)) {
+                            ui.viewModelBuilt.add(function () {
+                                ui._viewModel.kiban.programName(programName);
+                            });
+                        }
+                        else {
                             ui._viewModel.kiban.programName(programName);
-                        });
-                        var $pgArea = $("#pg-area");
-                        $("<div/>").attr("id", "pg-name").text(programName).appendTo($pgArea);
-                        var $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
-                        //            let $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
-                        //            $manualBtn.on(constants.CLICK, function() {
-                        //                var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
-                        //                window.open(path);
-                        //            });
-                        var $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
-                        $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));
-                        $tglBtn.on(constants.CLICK, function () {
-                            // TODO
-                        });
+                        }
+                        $("#pg-name").text(programName);
+                    });
+                }
+                function initPgArea() {
+                    var $pgArea = $("#pg-area");
+                    $("<div/>").attr("id", "pg-name").appendTo($pgArea);
+                    var $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
+                    //            let $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
+                    //            $manualBtn.on(constants.CLICK, function() {
+                    //                var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
+                    //                window.open(path);
+                    //            });
+                    var $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
+                    $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));
+                    $tglBtn.on(constants.CLICK, function () {
+                        // TODO
                     });
                 }
                 /**
@@ -15770,36 +15779,38 @@ var nts;
                                 },
                                 dropDownClosed: function (evt, ui) {
                                     var data = $element.data(DATA);
-                                    // check flag changed for validate
-                                    $element.trigger(CHANGED, [CHANGED, true]);
-                                    var sto = setTimeout(function () {
-                                        var data = $element.data(DATA);
-                                        // select first if !select and !editable
-                                        if (!data[EDITABLE] && _.isNil(data[VALUE])) {
-                                            $element.trigger(CHANGED, [VALUE, $element.igCombo('value')]);
-                                            //reload data
-                                            data = $element.data(DATA);
-                                        }
-                                        // not match any filter value
-                                        if (_.isArray(data[VALUE]) && !_.size(data[VALUE])) {
-                                            $element.trigger(CHANGED, [VALUE, ko.toJS(accessor.value)]);
-                                            //reload data
-                                            data = $element.data(DATA);
-                                        }
-                                        // set value on select
-                                        accessor.value(data[VALUE]);
-                                        // validate if required
-                                        $element
-                                            .trigger(VALIDATE, [true])
-                                            .trigger(SHOWVALUE);
-                                        clearTimeout(sto);
-                                    }, 10);
-                                    if (data[ENABLE]) {
-                                        var f = $(':focus');
-                                        if (f.hasClass('ui-igcombo-field')
-                                            || !(f.is('input') || f.is('select') || f.is('textarea') || f.is('a') || f.is('button'))
-                                            || ((f.is('p') || f.is('div') || f.is('span') || f.is('table') || f.is('ul') || f.is('li') || f.is('tr')) && _.isNil(f.attr('tabindex')))) {
-                                            $element.focus();
+                                    if (data) {
+                                        // check flag changed for validate
+                                        $element.trigger(CHANGED, [CHANGED, true]);
+                                        var sto_1 = setTimeout(function () {
+                                            var data = $element.data(DATA);
+                                            // select first if !select and !editable
+                                            if (!data[EDITABLE] && _.isNil(data[VALUE])) {
+                                                $element.trigger(CHANGED, [VALUE, $element.igCombo('value')]);
+                                                //reload data
+                                                data = $element.data(DATA);
+                                            }
+                                            // not match any filter value
+                                            if (_.isArray(data[VALUE]) && !_.size(data[VALUE])) {
+                                                $element.trigger(CHANGED, [VALUE, ko.toJS(accessor.value)]);
+                                                //reload data
+                                                data = $element.data(DATA);
+                                            }
+                                            // set value on select
+                                            accessor.value(data[VALUE]);
+                                            // validate if required
+                                            $element
+                                                .trigger(VALIDATE, [true])
+                                                .trigger(SHOWVALUE);
+                                            clearTimeout(sto_1);
+                                        }, 10);
+                                        if (data[ENABLE]) {
+                                            var f = $(':focus');
+                                            if (f.hasClass('ui-igcombo-field')
+                                                || !(f.is('input') || f.is('select') || f.is('textarea') || f.is('a') || f.is('button'))
+                                                || ((f.is('p') || f.is('div') || f.is('span') || f.is('table') || f.is('ul') || f.is('li') || f.is('tr')) && _.isNil(f.attr('tabindex')))) {
+                                                $element.focus();
+                                            }
                                         }
                                     }
                                 },
@@ -24515,7 +24526,7 @@ var nts;
                         return GroupHeaderPainter;
                     }(Conditional));
                     v_1.GroupHeaderPainter = GroupHeaderPainter;
-                    var ConcurrentPainter = /** @class */ (function () {
+                    var ConcurrentPainter = (function () {
                         function ConcurrentPainter(ui) {
                             this.columns = [];
                             this.revive();
@@ -33058,17 +33069,7 @@ var nts;
                     function setSelected($grid, selectedId) {
                         deselectAll($grid);
                         if ($grid.igGridSelection('option', 'multipleSelection')) {
-                            // for performance when select all
-                            var baseID = _.map($grid.igGrid("option").dataSource, $grid.igGrid("option", "primaryKey"));
-                            if (_.isEqual(selectedId, baseID)) {
-                                var chk = $grid.closest('.ui-iggrid').find(".ui-iggrid-rowselector-header").find("span[data-role='checkbox']");
-                                if (chk[0].getAttribute("data-chk") == "off") {
-                                    chk.click();
-                                }
-                            }
-                            else {
-                                selectedId.forEach(function (id) { return $grid.igGridSelection('selectRowById', id); });
-                            }
+                            selectedId.forEach(function (id) { return $grid.igGridSelection('selectRowById', id); });
                         }
                         else {
                             $grid.igGridSelection('selectRowById', selectedId);
