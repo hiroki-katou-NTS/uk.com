@@ -51,12 +51,16 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                     service.getStartMonth().done(function(response: IStartMonth) {
                         if(response.startMonth != null){
                             startMonthDB = response.startMonth;
+                            if(startMonthDB > self.getMonthToInt(self.standardDate())){
+                                self.yearValue({startDate: (startDateTemp - 1) + "",endDate : (startDateTemp - 1) + "" });
+                            }
                             if(( startMonthDB) >= self.getMonthToInt(self.standardDate())){
                                 self.financialYear(startDateTemp+""+startMonthDB +"01");
                             } else {
                                 self.financialYear((startDateTemp - 1)+""+startMonthDB+"01");
                             }
                             self.firstMonth(startMonthDB);
+
                         }
                     }).fail(function() {
                         setShared('CDL028_A_PARAMS', {
@@ -70,6 +74,9 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                     service.getStartMonth().done((response: IStartMonth)=> {
                         if(response.startMonth != null){
                             startMonthDB = response.startMonth;
+                            if(startMonthDB > self.getMonthToInt(self.standardDate())){
+                                self.yearValue({startDate: (startDateTemp - 1) + "",endDate : (startDateTemp - 1) + "" });
+                            }
                             if(( startMonthDB) >= self.getMonthToInt(self.standardDate())){
                                 self.financialYear(startDateTemp+""+startMonthDB +"01");
                             } else {
