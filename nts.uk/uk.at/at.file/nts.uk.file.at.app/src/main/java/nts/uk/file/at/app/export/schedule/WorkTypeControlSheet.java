@@ -129,6 +129,9 @@ public class WorkTypeControlSheet extends JpaRepository{
 							data.put("項目", parent);
 						}
 						data.put(sheet3_column2, child);
+						if (child.equals(TextResource.localize("KSM011_1")) && parent.equals(TextResource.localize("KSM011_68")) && worktypeDisControl.getUseAtr().value == 1){
+							continue;
+						}
 						data.put("値", getControlValue(parent, child, worktypeDisControl, workTypeDtos));
 						
 						datas.add(data);

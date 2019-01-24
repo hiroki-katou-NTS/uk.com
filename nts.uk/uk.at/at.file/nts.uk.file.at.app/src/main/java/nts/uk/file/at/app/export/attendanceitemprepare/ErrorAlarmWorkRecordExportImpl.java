@@ -598,17 +598,21 @@ public class ErrorAlarmWorkRecordExportImpl {
 								List<String> listStringAttNameAdd = new ArrayList<>();
 								List<String> listStringAttNameSub = new ArrayList<>();
 								// get list att add
-								for (Integer attId : listKeyAdd) {
-									AttdItemDto attItem = mapListAttItemDto.get(attId);
-									if (attItem != null) {
-										listStringAttNameAdd.add(attItem.getAttendanceItemName());
+								if(!CollectionUtil.isEmpty(listKeyAdd)){
+									for (Integer attId : listKeyAdd) {
+										AttdItemDto attItem = mapListAttItemDto.get(attId);
+										if (attItem != null) {
+											listStringAttNameAdd.add(attItem.getAttendanceItemName());
+										}
 									}
 								}
 								// get list att sub
-								for (Integer attId : listKeySub) {
-									AttdItemDto attItem = mapListAttItemDto.get(attId);
-									if (attItem != null) {
-										listStringAttNameSub.add(attItem.getAttendanceItemName());
+								if(!CollectionUtil.isEmpty(listKeySub)){
+									for (Integer attId : listKeySub) {
+										AttdItemDto attItem = mapListAttItemDto.get(attId);
+										if (attItem != null) {
+											listStringAttNameSub.add(attItem.getAttendanceItemName());
+										}
 									}
 								}
 //								Collections.sort(listStringAttNameAdd);
