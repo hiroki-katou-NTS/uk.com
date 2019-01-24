@@ -617,7 +617,7 @@ module nts.uk.pr.view.qmm012.b {
                     self.timeItemSet = ko.observable(new TimeItemSet(data.timeItemSet, self));
                     
                     if(data.validityPeriodAndCycleSet) {
-                        self.isSetValidity(true);
+                        self.isSetValidity(data.validityPeriodAndCycleSet.cycleSettingAtr == 1 || data.validityPeriodAndCycleSet.periodAtr == 1);
                     }
                     
                     if(data.breakdownItemSet && (data.breakdownItemSet.length > 0)) {
@@ -667,7 +667,7 @@ module nts.uk.pr.view.qmm012.b {
                     let isSetting = getShared("QMM012_H_IS_SETTING");
                     
                     if(isSetting && (isSetting.exitStatus == 1)) {
-                        self.isSetValidity(isSetting);
+                        self.isSetValidity((isSetting.validityPeriodAtr == 1 || isSetting.cycleSettingAtr == 1));
                     }
                     
                     $("#C3_2").focus();
