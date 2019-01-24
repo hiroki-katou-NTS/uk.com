@@ -53,7 +53,7 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                             if(startMonthDB > self.getMonthToInt(self.standardDate())){
                                 self.yearValue({startDate: (startDateTemp - 1) + "",endDate : (startDateTemp - 1) + "" });
                             }else{
-                                self.yearValue({startDate: moment.utc().format("YYYY"), endDate: moment.utc().format("YYYY"));
+                                self.yearValue({startDate: moment.utc().format("YYYY"), endDate: moment.utc().format("YYYY")});
                             }
                             if(( startMonthDB) >= self.getMonthToInt(self.standardDate())){
                                 self.financialYear(startDateTemp+""+startMonthDB +"01");
@@ -78,7 +78,7 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                             if(startMonthDB > self.getMonthToInt(self.standardDate())){
                                 self.yearValue({startDate: (startDateTemp - 1) + "",endDate : (startDateTemp - 1) + "" });
                             }else{
-                                self.yearValue({startDate: moment.utc().format("YYYY"), endDate: moment.utc().format("YYYY"));
+                                self.yearValue({startDate: moment.utc().format("YYYY"), endDate: moment.utc().format("YYYY")});
                             }
                             if(( startMonthDB) >= self.getMonthToInt(self.standardDate())){
                                 self.financialYear(startDateTemp+""+startMonthDB +"01");
@@ -98,7 +98,7 @@ module nts.uk.com.view.cdl028.a.viewmodel {
 
                 case MODE_SCREEN.YEAR_PERIOD:
                     self.standardDate(self.convertYearToInt(self.standardDate())+"0101");
-
+                    self.yearValue({startDate: moment.utc().format("YYYY"), endDate: moment.utc().format("YYYY")});
                     break;
             }
 
