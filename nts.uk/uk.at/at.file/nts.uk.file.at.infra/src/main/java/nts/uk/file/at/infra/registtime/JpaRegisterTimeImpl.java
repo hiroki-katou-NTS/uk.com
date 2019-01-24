@@ -676,7 +676,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "  				PARTITION BY AA.SCD" 
 			+ "  				ORDER BY" 
 			+ "  					 AA.YM_K" 
-			+ " 					,AA.Y_K  " 
+			+ " 					,AA.Y_K_ORDER  " 
 			+ "  			) AS rk" 
 			+ "  FROM" 
 			+ " (" 
@@ -685,7 +685,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 			 Case When YM_K is NULL THEN '999913' ELSE YM_K END YM_K," 
 			+ " 			 ERROR_ONE_MONTH," 
 			+ " 			 ALARM_ONE_MONTH," 
-			+ " 			 Case When Y_K is NULL THEN '9999' ELSE Y_K END Y_K," 
+			+ " 			 Y_K," 
+			+ " 			 Case When Y_K is NULL THEN '9999' ELSE Y_K END Y_K_ORDER," 
 			+ " 			 ERROR_YEARLY," 
 			+ " 			 ALARM_YEARLY" 
 			+ "  FROM" 
@@ -738,7 +739,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " ) AA" 
 			+ " ORDER BY AA.SCD, " 
 			+ " AA.YM_K  " 
-			+ " ,AA.Y_K ";
+			+ " ,AA.Y_K_ORDER ";
 	
 	
 	@Override
@@ -1380,17 +1381,17 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		
 		data.put(RegistTimeColumn.KMK008_112, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_112)
-                .value(objects[5].toString().equals("9999") ? "" : objects[5])
+                .value(objects[5])
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_113, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_113)
-                .value(objects[6] != null  ? formatTime(((BigDecimal)objects[6]).intValue()) : "")
+                .value(objects[6] != null  ? formatTime(((BigDecimal)objects[7]).intValue()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_114, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_114)
-                .value(objects[7] != null  ? formatTime(((BigDecimal)objects[7]).intValue()) : "")
+                .value(objects[7] != null  ? formatTime(((BigDecimal)objects[8]).intValue()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		
