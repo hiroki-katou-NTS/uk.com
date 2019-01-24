@@ -246,6 +246,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             "  LEFT JOIN BSYMT_EMP_DTA_MNG_INFO emp ON s.SID = emp.SID   " +
             "  LEFT JOIN BPSMT_PERSON p ON p.PID = emp.PID    " +
             "  LEFT JOIN KBPMT_BONUS_PAY_SET ps ON ps.BONUS_PAY_SET_CD = s.BONUS_PAY_SET_CD AND (emp.CID IS NULL OR emp.CID = ps.CID) " +
+            " WHERE emp.CID = ?" +
             "  ORDER BY CASE WHEN emp.DEL_STATUS_ATR = 1 THEN 1 ELSE 0 END ASC,SCD ";
 
     private static final String SQLSetUsedWorkingHours = "SELECT    " +
@@ -374,6 +375,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
     public List<MasterData> getInfoSetEmployees(String companyId) {
         List<MasterData> datas = new ArrayList<>();
         try(PreparedStatement stmt = this.connection().prepareStatement(SQLSetEmployees)){
+            stmt.setString(1,companyId);
             datas = new NtsResultSet(stmt.executeQuery()).getList(x -> toMasterDataOfSetEmployees(x));
         }
         return datas;
