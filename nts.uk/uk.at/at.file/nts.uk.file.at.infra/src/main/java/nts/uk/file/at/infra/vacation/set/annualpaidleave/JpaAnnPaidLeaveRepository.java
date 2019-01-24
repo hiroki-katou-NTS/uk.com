@@ -128,7 +128,7 @@ public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidL
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(I18NText.getText("KMF001_186"), ColumnTextAlign.LEFT)
-					, new DataEachBox(isHalfRefer ? rs.getString("HALF_MAX_UNIFORM_COMP") + " " + I18NText.getText("KMF001_199") : null, ColumnTextAlign.RIGHT)));
+					, new DataEachBox(isHalfRefer ? rs.getString("HALF_MAX_UNIFORM_COMP")  + I18NText.getText("KMF001_199") : null, ColumnTextAlign.RIGHT)));
 			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(I18NText.getText("KMF001_187"), ColumnTextAlign.LEFT)
@@ -163,7 +163,7 @@ public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidL
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(I18NText.getText("KMF001_195"), ColumnTextAlign.LEFT)
-					, new DataEachBox(isTimeManager && isTimeMaxDay ? rs.getString("TIME_MAX_DAY_UNIF_COMP") + " " + I18NText.getText("KMF001_197") : null, ColumnTextAlign.RIGHT)));
+					, new DataEachBox(isTimeManager && isTimeMaxDay ? rs.getString("TIME_MAX_DAY_UNIF_COMP")  + I18NText.getText("KMF001_197") : null, ColumnTextAlign.RIGHT)));
 			datas.add(buildARow(new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(null, ColumnTextAlign.LEFT)
 					, new DataEachBox(I18NText.getText("KMF001_196"), ColumnTextAlign.LEFT)

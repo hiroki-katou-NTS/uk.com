@@ -2253,6 +2253,7 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 		sqlFlow.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode THEN NULL ");
 		sqlFlow.append(" 		 WHEN TEMP.ROW_ID = 1 AND FLOW_REST_SET.REST_SET_ROUNDING = ?roundingDown THEN ?roundingDownText");
 		sqlFlow.append(" 		 WHEN TEMP.ROW_ID = 1 AND FLOW_REST_SET.REST_SET_ROUNDING = ?roundingUp THEN ?roundingUpText");
+		sqlFlow.append(" 		 WHEN TEMP.ROW_ID = 1 AND FLOW_REST_SET.REST_SET_ROUNDING = ?roundingDownOver THEN ?roundingDownOverText");
 		sqlFlow.append(" 		 ELSE NULL");
 		sqlFlow.append(" 	END,");
 		// R2_120 休憩時間帯.固定休憩設定（休憩時間の固定する）.実績での休憩計算方法
@@ -4688,8 +4689,10 @@ public class JpaWorkTimeReportRepository extends JpaRepository implements WorkTi
 				.setParameter("roundingTime60MinText", TextResource.localize("Enum_RoundingTime_60Min"))	
 				.setParameter("roundingDown", Rounding.ROUNDING_DOWN.value)
 				.setParameter("roundingUp", Rounding.ROUNDING_UP.value)	
+				.setParameter("roundingDownOver", Rounding.ROUNDING_DOWN_OVER.value)	
 				.setParameter("roundingDownText", TextResource.localize("Enum_Rounding_Down"))
 				.setParameter("roundingUpText", TextResource.localize("Enum_Rounding_Up"))	
+				.setParameter("roundingDownOverText", TextResource.localize("Enum_Rounding_Down_Over"))	
 				.setParameter("restCalcMethodReferMaster", FlowFixedRestCalcMethod.REFER_MASTER.value)
 				.setParameter("restCalcMethodReferSchedule", FlowFixedRestCalcMethod.REFER_SCHEDULE.value)
 				.setParameter("restCalcMethodWithoutRefer", FlowFixedRestCalcMethod.STAMP_WHITOUT_REFER.value)

@@ -59,8 +59,8 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 +"			,RESULT_FINAL.FORMULA_ATR"
 +"			,RESULT_FINAL.FORMULA_NAME"
 +"			,RESULT_FINAL.CALC_ATR"
-+"			,RESULT_FINAL.DAY_ROUNDING_UNIT"
-+"			,RESULT_FINAL.DAY_ROUNDING"
++"			,IIF(RESULT_FINAL.PERFORMANCE_ATR = 1, RESULT_FINAL.DAY_ROUNDING_UNIT, NULL) DAY_ROUNDING_UNIT"
++"			,IIF(RESULT_FINAL.PERFORMANCE_ATR = 1, RESULT_FINAL.DAY_ROUNDING, NULL) DAY_ROUNDING"
 +"			,RESULT_FINAL.MON_ROUNDING_UNIT"
 +"			,RESULT_FINAL.MON_ROUNDING"
 +"			,RESULT_FINAL.CALC_ATR_2"
@@ -137,15 +137,13 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 +"					,oi.EMP_CONDITION_ATR"
 +"					,IIF(oi.EMP_CONDITION_ATR = 1,STUFF(("
 +"		 			SELECT"
-+"					IIF(oi.EMP_CONDITION_ATR = 1,',' + ec.EMP_CD + emp.NAME, NULL)"
++"					IIF(oi.EMP_CONDITION_ATR = 1,',' + ec1.EMP_CD + (CASE WHEN emp1.NAME IS NULL THEN 'マスタ未登録' ELSE  emp1.NAME END), NULL)"
 +"		 			FROM"
-+"				KRCST_OPTIONAL_ITEM oi"
-+"				LEFT JOIN KRCST_APPL_EMP_CON ec ON oi.OPTIONAL_ITEM_NO = ec.OPTIONAL_ITEM_NO"
-+"				AND oi.CID = ec.CID"
-+"				LEFT JOIN BSYMT_EMPLOYMENT emp ON ec.CID = emp.CID"
-+"				AND ec.EMP_CD = emp.CODE"
++"				KRCST_APPL_EMP_CON ec1"
++"				LEFT JOIN BSYMT_EMPLOYMENT emp1 ON ec1.CID = emp1.CID"
++"				AND ec1.EMP_CD = emp1.CODE"
 +"			WHERE"
-+"				oi.CID = ?companyId AND ec.EMP_APPL_ATR = 1 ORDER BY ec.EMP_CD"
++"				oi.CID = ec1.CID AND ec1.EMP_APPL_ATR = 1 AND oi.OPTIONAL_ITEM_NO = ec1.OPTIONAL_ITEM_NO ORDER BY ec1.EMP_CD"
 +"		 			 FOR XML PATH ('')"
 +"		 				),"
 +"		 			1,"
@@ -154,10 +152,6 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 +"		 		), NULL) AS NAME"
 +"				FROM"
 +"				KRCST_OPTIONAL_ITEM oi"
-+"				LEFT JOIN KRCST_APPL_EMP_CON ec ON oi.OPTIONAL_ITEM_NO = ec.OPTIONAL_ITEM_NO"
-+"				AND oi.CID = ec.CID"
-+"				LEFT JOIN BSYMT_EMPLOYMENT emp ON ec.CID = emp.CID"
-+"				AND ec.EMP_CD = emp.CODE"
 +"			WHERE"
 +"				oi.CID = ?companyId"
 +"		) AS RESULT_ONE"
@@ -481,22 +475,22 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
             
             switch (optionalItemAtr) {
 				case 0:
-					data.put(CalFormulasItemColumn.KMK002_92, MasterCellData.builder()
-			                .columnId(CalFormulasItemColumn.KMK002_92)
+					data.put(CalFormulasItemColumn.KMK002_93, MasterCellData.builder()
+			                .columnId(CalFormulasItemColumn.KMK002_93)
 			                .value(object[17] != null && optionalItemUse == 1 ? TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) object[17]).intValue(), Rounding.class).nameId) : "")
 			                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 			                .build());
 					break;
 				case 1:
-					data.put(CalFormulasItemColumn.KMK002_92, MasterCellData.builder()
-			                .columnId(CalFormulasItemColumn.KMK002_92)
+					data.put(CalFormulasItemColumn.KMK002_93, MasterCellData.builder()
+			                .columnId(CalFormulasItemColumn.KMK002_93)
 			                .value(object[17] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[17]).intValue(), NumberRounding.class).nameId) : "")
 			                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 			                .build());
 					break;
 				case 2:
-					data.put(CalFormulasItemColumn.KMK002_92, MasterCellData.builder()
-			                .columnId(CalFormulasItemColumn.KMK002_92)
+					data.put(CalFormulasItemColumn.KMK002_93, MasterCellData.builder()
+			                .columnId(CalFormulasItemColumn.KMK002_93)
 			                .value(object[17] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[17]).intValue(), AmountRounding.class).nameId) : "")
 			                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 			                .build());
@@ -506,22 +500,22 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
          // A7_18
     		switch (optionalItemAtr) {
     			case 0:
-    				data.put(CalFormulasItemColumn.KMK002_93, MasterCellData.builder()
-    		                .columnId(CalFormulasItemColumn.KMK002_93)
+    				data.put(CalFormulasItemColumn.KMK002_92, MasterCellData.builder()
+    		                .columnId(CalFormulasItemColumn.KMK002_92)
     		                .value(object[16] != null && optionalItemUse == 1 ? TextResource .localize(EnumAdaptor.valueOf(((BigDecimal) object[16]).intValue(), Unit.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
     				break;
     			case 1:
-    				data.put(CalFormulasItemColumn.KMK002_93, MasterCellData.builder()
-    		                .columnId(CalFormulasItemColumn.KMK002_93)
+    				data.put(CalFormulasItemColumn.KMK002_92, MasterCellData.builder()
+    		                .columnId(CalFormulasItemColumn.KMK002_92)
     		                .value(object[16] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[16]).intValue(), NumberUnit.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
     				break;
     			case 2:
-    				data.put(CalFormulasItemColumn.KMK002_93, MasterCellData.builder()
-    		                .columnId(CalFormulasItemColumn.KMK002_93)
+    				data.put(CalFormulasItemColumn.KMK002_92, MasterCellData.builder()
+    		                .columnId(CalFormulasItemColumn.KMK002_92)
     		                .value(object[16] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[16]).intValue(), AmountUnit.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
@@ -531,22 +525,22 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
     		// A7_19
     		switch (optionalItemAtr) {
     			case 0:
-    				data.put(CalFormulasItemColumn.KMK002_94, MasterCellData.builder()
-    		                .columnId(CalFormulasItemColumn.KMK002_94)
+    				data.put(CalFormulasItemColumn.KMK002_95, MasterCellData.builder()
+    		                .columnId(CalFormulasItemColumn.KMK002_95)
     		                .value(object[19] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[19]).intValue(), Rounding.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
     				break;
     			case 1:
-    				data.put(CalFormulasItemColumn.KMK002_94, MasterCellData.builder()
-    		                .columnId(CalFormulasItemColumn.KMK002_94)
+    				data.put(CalFormulasItemColumn.KMK002_95, MasterCellData.builder()
+    		                .columnId(CalFormulasItemColumn.KMK002_95)
     		                .value(object[19] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[19]).intValue(), NumberRounding.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
     				break;
     			case 2:
-    				data.put(CalFormulasItemColumn.KMK002_94, MasterCellData.builder()
-    		                .columnId(CalFormulasItemColumn.KMK002_94)
+    				data.put(CalFormulasItemColumn.KMK002_95, MasterCellData.builder()
+    		                .columnId(CalFormulasItemColumn.KMK002_95)
     		                .value(object[19] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[19]).intValue(), AmountRounding.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
@@ -556,22 +550,22 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
     		// A7_20
     		switch (optionalItemAtr) {
     			case 0:
-    				data.put(CalFormulasItemColumn.KMK002_95, MasterCellData.builder()
-    		                .columnId(CalFormulasItemColumn.KMK002_95)
+    				data.put(CalFormulasItemColumn.KMK002_94, MasterCellData.builder()
+    		                .columnId(CalFormulasItemColumn.KMK002_94)
     		                .value(object[19] != null && optionalItemUse == 1 ? TextResource .localize(EnumAdaptor.valueOf(((BigDecimal) object[18]).intValue(), Unit.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
     				break;
     			case 1:
-    				data.put(CalFormulasItemColumn.KMK002_95, MasterCellData.builder()
-    		                .columnId(CalFormulasItemColumn.KMK002_95)
+    				data.put(CalFormulasItemColumn.KMK002_94, MasterCellData.builder()
+    		                .columnId(CalFormulasItemColumn.KMK002_94)
     		                .value(object[19] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[18]).intValue(), NumberUnit.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
     				break;
     			case 2:
-    				data.put(CalFormulasItemColumn.KMK002_95, MasterCellData.builder()
-    		                .columnId(CalFormulasItemColumn.KMK002_95)
+    				data.put(CalFormulasItemColumn.KMK002_94, MasterCellData.builder()
+    		                .columnId(CalFormulasItemColumn.KMK002_94)
     		                .value(object[19] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[18]).intValue(), AmountUnit.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
