@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -1352,12 +1351,12 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		Map<String,MasterCellData> data = new HashMap<>();
 		data.put(RegistTimeColumn.KMK008_106, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_106)
-                .value(Integer.valueOf(objects[8].toString()) == 1 ? objects[0] : "")
+                .value(Integer.valueOf(objects[9].toString()) == 1 ? objects[0] : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_107, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_107)
-                .value(Integer.valueOf(objects[8].toString()) == 1 ? objects[1] : "")
+                .value(Integer.valueOf(objects[9].toString()) == 1 ? objects[1] : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		
