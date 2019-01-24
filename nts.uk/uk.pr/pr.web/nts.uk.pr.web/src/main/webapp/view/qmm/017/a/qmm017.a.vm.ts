@@ -170,7 +170,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 detailFormulaSettingCommand: ko.toJS(self.detailFormulaSetting),
                 basicCalculationFormulaCommand: [],
                 yearMonth: ko.toJS(self.selectedHistory)
-            }
+            };
             let basicCalculationFormula = [];
             if (command.settingMethod == model.FORMULA_SETTING_METHOD.BASIC_SETTING) {
                 let fixedMasterUseCode = "0000000000";
@@ -192,6 +192,9 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         formatData (command) {
             command.formulaSettingCommand.basicFormulaSettingCommand.formulaCode = command.formulaCode;
             command.formulaSettingCommand.detailFormulaSettingCommand.formulaCode = command.formulaCode;
+            command.formulaSettingCommand.basicCalculationFormulaCommand.map(item => {
+                item.formulaCode = command.formulaCode;
+            });
             return command;
         }
 
