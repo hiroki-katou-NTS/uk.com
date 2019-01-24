@@ -50,4 +50,13 @@ module ccg013.a.service {
         system: string,
         classification: string
     }
+    
+    /**
+    * saveAsExcel
+    **/
+    export function saveAsExcel(languageId: string): JQueryPromise<any> {
+        let program= nts.uk.ui._viewModel.kiban.programName().split(" ");          
+        let programName = program[1]!=null?program[1]:"";  
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "MenuSetting", domainType: "CCG013"+programName,languageId: 'ja', reportType: 0});    
+    }
 }
