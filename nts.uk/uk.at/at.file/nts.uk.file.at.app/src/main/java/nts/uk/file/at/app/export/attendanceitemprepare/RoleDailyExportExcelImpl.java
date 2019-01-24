@@ -26,10 +26,9 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatMonthly
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatMonthlyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.FormatPerformance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AtItemNameAdapter;
+import nts.uk.ctx.at.shared.app.find.scherec.attitem.AttItemFinder;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemAuthority;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.TypeOfItemImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TimeInputUnit;
 import nts.uk.ctx.bs.employee.app.find.employment.EmploymentFinder;
 import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentDto;
@@ -51,8 +50,8 @@ import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
 public class RoleDailyExportExcelImpl {
 
     //sheet1
-    @Inject
-    private AtItemNameAdapter atItemNameAdapter;
+//    @Inject
+//    private AtItemNameAdapter atItemNameAdapter;
     
     @Inject
     private AttItemNameByAuth attItemNameByAuth;
@@ -60,8 +59,8 @@ public class RoleDailyExportExcelImpl {
     @Inject
     private EmploymentRoleFinder employmentRoleFinder;
     
-//    @Inject
-//    private AttItemFinder attfinder; //sheet 2 dung chung
+    @Inject
+    private AttItemFinder attfinder; //sheet 2 dung chung
     
     //sheet 2
     @Inject
@@ -180,7 +179,7 @@ public class RoleDailyExportExcelImpl {
         mapMonthlyBz.putAll(listBusinessMonthly.stream().collect(
                   Collectors.groupingBy(BusinessTypeFormatMonthly::getBusinessTypeCode)
                 ));
-        listAttItemNameMonthly.addAll(atItemNameAdapter.getNameOfAttdItemByType(EnumAdaptor.valueOf(2, TypeOfItemImport.class)));
+        listAttItemNameMonthly.addAll(attfinder.getMonthlyAttItemByIdAndAtr(null));
         listAttItemNameMonthly.sort(Comparator.comparing(AttItemName::getAttendanceItemDisplayNumber));
         mapAttNameMonthlys.putAll(listAttItemNameMonthly.stream().collect(Collectors.toMap(AttItemName::getAttendanceItemId,
                         Function.identity())));
@@ -202,7 +201,7 @@ public class RoleDailyExportExcelImpl {
     private void initSheet1(List<EmployeeRoleDto> listEmployeeRoleDto, List<AttItemName> listAttItemNameNoAuth, Map<String, List<AttItemName>> authSeting, String companyId) {
     	listEmployeeRoleDto.addAll(employmentRoleFinder.findEmploymentRoles());
         listEmployeeRoleDto.sort(Comparator.comparing(EmployeeRoleDto::getRoleCode));
-        listAttItemNameNoAuth.addAll(atItemNameAdapter.getNameOfAttdItemByType(EnumAdaptor.valueOf(1, TypeOfItemImport.class)));//sheet 3 dung chung
+        listAttItemNameNoAuth.addAll(attfinder.getDailyAttItemByIdAndAtr(null));//sheet 3 dung chung
         listAttItemNameNoAuth.sort(Comparator.comparing(AttItemName::getAttendanceItemDisplayNumber));
         authSeting.putAll(attItemNameByAuth.getAllByComp(companyId));
     }
@@ -741,11 +740,12 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet5(MasterListExportQuery que
                     groupWorkType.sort(Comparator.comparing(WorkTypeDtoExcel::getWorkTypeCode));
                     if(!CollectionUtil.isEmpty(groupWorkType)){
                         List<String> listString = groupWorkType.stream()
-                                .map(developer -> new String(developer.getWorkTypeCode()==null?"":developer.getWorkTypeCode()+
-                                		((developer.getWorkTypeName()==null)?"":developer.getWorkTypeName())))
+                                .map(developer -> new String(developer.getWorkTypeCode()==null||developer.getWorkTypeName()==null?"":developer.getWorkTypeCode()+
+                                		developer.getWorkTypeName()))
                                 .collect(Collectors.toList());
                         String listWorkTypeName = "";
                         if(!CollectionUtil.isEmpty(listString)){
+                        	listString.removeIf(item -> item == null || "".equals(item));
                         	listWorkTypeName = String.join(",", listString);
                         }
                         switch (GroupNo) {
