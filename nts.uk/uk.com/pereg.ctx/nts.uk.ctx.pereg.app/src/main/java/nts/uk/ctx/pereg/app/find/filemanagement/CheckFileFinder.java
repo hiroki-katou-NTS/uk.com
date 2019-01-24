@@ -35,6 +35,7 @@ import nts.uk.ctx.pereg.app.find.person.info.item.ItemTypeStateDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.MasterRefConditionDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.NumericButtonDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.NumericItemDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SingleItemDto;
@@ -265,12 +266,17 @@ public class CheckFileFinder {
 		//List<String> columNotChange =  this.fixedColums(cid, userId);
 		// map PersonInfoItemDefinition → GridEmpHead
 		 List<PerInfoItemDefForLayoutDto> i = this.gridProcesor.getPerItemDefForLayout(category, contractCd, roleId);
-		 List<GridEmpHead> headers = i.stream()
-				.map(m -> new GridEmpHead(m.getId(), m.getDispOrder(), m.getItemCode(), m.getItemParentCode(),
-						m.getItemName(), m.getItemTypeState(), m.getIsRequired() == 1, m.getResourceId()))
-				.sorted(Comparator.comparing(GridEmpHead::getItemOrder, Comparator.naturalOrder()).thenComparing(GridEmpHead::getItemCode, Comparator.naturalOrder()))
-				.collect(Collectors.toList());
-		
+		 List<GridEmpHead> headers = i.stream().map(m -> new GridEmpHead(m.getId(), m.getDispOrder(), m.getItemCode(), m.getItemParentCode(),
+					m.getItemName(), m.getItemTypeState(), m.getIsRequired() == 1, m.getResourceId(),
+					m.getLstChildItemDef().stream()
+					.sorted(Comparator.comparing(PerInfoItemDefDto::getItemCode, Comparator.naturalOrder()))
+							.map(c -> new GridEmpHead(c.getId(), m.getDispOrder(), c.getItemCode(),
+									c.getItemParentCode(), c.getItemName(), c.getItemTypeState(),
+									c.getIsRequired() == 1, c.getResourceId(), null))
+							.collect(Collectors.toList())))
+			.sorted(Comparator.comparing(GridEmpHead::getItemOrder, Comparator.naturalOrder()).thenComparing(GridEmpHead::getItemCode, Comparator.naturalOrder()))
+			.collect(Collectors.toList());
+		 headers.addAll(headers.stream().flatMap(m -> m.getChilds().stream()).collect(Collectors.toList()));
 		
 		List<PersonInfoMatrixData> itemData = matrixItemRepo.findInfoData(category.getPersonInfoCategoryId())
 				.stream().filter(c -> c.isRegulationAtr() == true).collect(Collectors.toList());
@@ -373,29 +379,6 @@ public class CheckFileFinder {
 							numbericButtonDto.getDecimalPart());
 					contraintList.put(c.getItemCode(), obj);
 					break;
-//				case 6:
-//				case 7:
-//				case 8:
-//					SelectionItemDto selectionItemDto = (SelectionItemDto)singleDto.getDataTypeState();
-//					switch (selectionItemDto.getReferenceType().value) {
-//					case 1:
-//						MasterRefConditionDto master = (MasterRefConditionDto) selectionItemDto;
-//						if (master.getMasterType().equals("M00006")) {
-//							obj = new NumericConstraint(0, false, new BigDecimal(0), new BigDecimal(10), 2, 0);
-//							contraintList.put(c.getItemCode(), obj);
-//							break;
-//						}else {
-//							obj = new StringConstraint( 0, StringCharType.ANY, 300);
-//							contraintList.put(c.getItemCode(), obj);
-//						}
-//						break;
-//					//2:コード名称(CodeName)
-//					case 2: break;
-//					// 3:列挙型(Enum)
-//					case 3: break;
-//						
-//					}
-//					break;
 				default: break;
 				}
 				
@@ -421,7 +404,8 @@ public class CheckFileFinder {
 			List<ItemRowDto> items = new ArrayList<>();
 			
 			cells.stream().forEach( cell -> {
-				String header = cell.getHeader().getMain().getValue().getText();
+				String[] itemChilds = cell.getHeader().getMain().getValue().getText().split("-");
+				String header = itemChilds.length > 0? itemChilds[itemChilds.length - 1]: cell.getHeader().getMain().getValue().getText();
 				
 				// lấy emloyeeCode, employeeName
 				if (header.equals(TextResource.localize("CPS003_28"))) {

@@ -24,6 +24,6 @@ public class GridEmpHead {
 	private boolean required;
 	
 	private String resourceId;
-	// remove
-	//private List<GridEmpHead> childs;
+	
+	private List<GridEmpHead> childs;
 } 
