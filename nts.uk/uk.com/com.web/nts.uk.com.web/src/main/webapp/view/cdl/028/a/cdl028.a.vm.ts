@@ -5,8 +5,7 @@ module nts.uk.com.view.cdl028.a.viewmodel {
     export class ScreenModel {
         required: KnockoutObservable<boolean>;
         enable: KnockoutObservable<boolean>;
-        yearValue: KnockoutObservable<any> = ko.observable({startDate: moment.utc().format("YYYY"), endDate: moment.utc().format("YYYY")
-        });
+        yearValue: KnockoutObservable<any> = ko.observable({startDate: null, endDate: null});
         startDateString: KnockoutObservable<string>;
         endDateString: KnockoutObservable<string>;
         modeScreen : KnockoutObservable<number> = ko.observable(null);
@@ -53,6 +52,8 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                             startMonthDB = response.startMonth;
                             if(startMonthDB > self.getMonthToInt(self.standardDate())){
                                 self.yearValue({startDate: (startDateTemp - 1) + "",endDate : (startDateTemp - 1) + "" });
+                            }else{
+                                self.yearValue({startDate: moment.utc().format("YYYY"), endDate: moment.utc().format("YYYY"));
                             }
                             if(( startMonthDB) >= self.getMonthToInt(self.standardDate())){
                                 self.financialYear(startDateTemp+""+startMonthDB +"01");
@@ -76,6 +77,8 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                             startMonthDB = response.startMonth;
                             if(startMonthDB > self.getMonthToInt(self.standardDate())){
                                 self.yearValue({startDate: (startDateTemp - 1) + "",endDate : (startDateTemp - 1) + "" });
+                            }else{
+                                self.yearValue({startDate: moment.utc().format("YYYY"), endDate: moment.utc().format("YYYY"));
                             }
                             if(( startMonthDB) >= self.getMonthToInt(self.standardDate())){
                                 self.financialYear(startDateTemp+""+startMonthDB +"01");
