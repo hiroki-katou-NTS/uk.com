@@ -27,6 +27,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesR
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmClassification;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeFinder;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -83,13 +84,20 @@ public class ErrorAlarmWorkRecordExportImpl {
        private AttendanceItemsFinder attendanceItemsFinder;
       
        public List<MasterData> getMasterDatas(MasterListExportQuery query) {
-	   	  List<String> header =  Arrays.asList("column0","value1","value2","value3","value4","value5","value6","value7","value8","value9","value10","value11","value12","value13","value14","value15","value16","value17","value18","value19","value20","value21","value22","value23","value24","value25","value26","value27","value28","value29","value30","value31","value32","value33","value34","value35","value36","value37","value38","value39","value40");
+    	   List<String> header = new ArrayList<>();
+           String headerColumn = "header";
+           for(int i = 0 ; i <= 40; i++){
+        	   header.add(headerColumn+i);  
+           }
           LoginUserContext loginUserContext = AppContexts.user();
           
           String companyId = loginUserContext.companyId();
           
           List<MasterData> datas = new ArrayList<>();
-          List<ErrorAlarmWorkRecord> listErrorAlarmWorkRecord = repository.getListErrorAlarmWorkRecord(companyId, 0);// fixedAtr":1
+          List<ErrorAlarmWorkRecord> listErrorAlarmWorkRecord = repository.getListErrorAlarmWorkRecord(companyId, 0)
+        		  .stream().filter(eral -> eral.getCode().v().startsWith("U"))
+                  .collect(Collectors.toList());// fixedAtr":1
+
           //7
 //        List<Integer> lista = new ArrayList<>(Arrays.asList(833, 834, 835, 836, 837));
          List<AttdItemDto> listDivergenName = attendanceItemsFinder.findAll();
@@ -145,34 +153,8 @@ public class ErrorAlarmWorkRecordExportImpl {
                        .sorted(Comparator.comparing(ErrorAlarmWorkRecordDto::getCode))
                       .collect(Collectors.toList());
 
+
          //40
-       /** { code: 0, name: "残業申請（早出）" },
-         { code: 1, name: "残業申請（通常）" },
-         { code: 2, name: "残業申請（早出・通常）" },
-         { code: 3, name: "休暇申請" },
-         { code: 4, name: "勤務変更申請" },
-         //{ code: 5, name: "出張申請" },
-         { code: 6, name: "直行直帰申請" },
-         { code: 7, name: "休出時間申請" },
-         //{ code: 8, name: "打刻申請（外出許可）" },
-      	 //{ code: 9, name: "打刻申請（出退勤漏れ）" },
-         //{ code: 10, name: "打刻申請（打刻取消）" },
-         //{ code: 11, name: "打刻申請（レコーダイメージ）" },
-         //{ code: 12, name: "打刻申請（その他）" },
-         //{ code: 13, name: "時間年休申請" },
-         //{ code: 14, name: "遅刻早退取消申請" },
-         { code: 15, name: "振休振出申請" },
-         */
-       
-         Map<Integer,String> mapApplicationType = new HashMap<>();
-              mapApplicationType.put(0, "残業申請（早出）");
-              mapApplicationType.put(1, "残業申請（通常）");
-              mapApplicationType.put(2, "残業申請（早出・通常）");
-              mapApplicationType.put(3, "休暇申請");
-              mapApplicationType.put(4, "勤務変更申請");
-              mapApplicationType.put(6, "直行直帰申請");
-              mapApplicationType.put(7, "打刻申請（外出許可）");
-              mapApplicationType.put(15, "振休振出申請");
               if(CollectionUtil.isEmpty(lstDto)){
                      return null;
               }else{
@@ -183,9 +165,9 @@ public class ErrorAlarmWorkRecordExportImpl {
                            data.put(header.get(2), c.getName());
                            //SAU PHAI SUA THEO TEXTRS
                            if(c.getUseAtr()==1){
-                                  data.put(header.get(3), "使用する");
+                                  data.put(header.get(3), TextResource.localize("KDW006_185"));
                            }else{
-                                  data.put(header.get(3), "使用しない");
+                                  data.put(header.get(3), TextResource.localize("KDW006_186"));
                            }
                                   data.put(header.get(4), TextResource.localize(EnumAdaptor.valueOf(c.getTypeAtr(), ErrorAlarmClassification.class).nameId));
                            //5,6
@@ -216,7 +198,7 @@ public class ErrorAlarmWorkRecordExportImpl {
                             if(c.getAlCheckTargetCondition().isFilterByEmployment() == false){
                                   data.put(header.get(11), "-");
                            }else{
-                                  data.put(header.get(12), "○");
+                                  data.put(header.get(11), "○");
                            }
                            //12
                            List<String> lstEmpCode =c.getAlCheckTargetCondition().getLstEmployment();
@@ -338,28 +320,29 @@ public class ErrorAlarmWorkRecordExportImpl {
                                }
                            }
                            //20
-                            if(c.getWorkTimeCondition().getComparePlanAndActual() ==1){
-                                  data.put(header.get(20), TextResource.localize("Enum_FilterByCompare_NotCompare"));
+                            if(c.getWorkTypeCondition().getComparePlanAndActual() ==1){
+                                  data.put(header.get(20), TextResource.localize("Enum_FilterByCompare_Extract_Same"));
                            }else{
                         	   if(c.getWorkTimeCondition().getComparePlanAndActual() ==0){
                                    data.put(header.get(20), TextResource.localize("Enum_FilterByCompare_NotCompare"));
                         	   }else{
-                                  data.put(header.get(20), TextResource.localize("Enum_FilterByCompare_NotCompare"));
+                                  data.put(header.get(20), TextResource.localize("Enum_FilterByCompare_Extract_Different"));
                         	   }
                         	   //28,29
                                if(c.getWorkTimeCondition().isActualFilterAtr()== false){
                                    data.put(header.get(28), "-");
                                    data.put(header.get(29),"");
                                }else{
-                                   data.put(header.get(30), "○");
+                                   data.put(header.get(28), "○");
                                    List<String> listActualTimeCode = c.getWorkTimeCondition().getActualLstWorkTime();
                                    List<String> codeAndNameActualTime = new ArrayList<>();
                                    Collections.sort(listActualTimeCode);
                                    for (String key : listActualTimeCode) {
-                                         WorkTypeDto workTypeDto=  mapListWorkTypeDto.get(key);
-                                         if(workTypeDto!=null){
-                                                codeAndNameActualTime.add(workTypeDto.getWorkTypeCode()+workTypeDto.getName());
-                                         }
+                                	   WorkTimeCode keyWorkTime = new WorkTimeCode(key);
+                                       WorkTimeSetting workTypeDto = mapListWorkTime.get(keyWorkTime);
+                                       if(workTypeDto!=null){
+                                    	   codeAndNameActualTime.add(workTypeDto.getWorktimeCode().v()+workTypeDto.getWorkTimeDisplayName().getWorkTimeName().v());
+                                       }
                                    }
                                    String stringDataColumn29 =String.join(",", codeAndNameActualTime);
                                   
@@ -401,7 +384,7 @@ public class ErrorAlarmWorkRecordExportImpl {
                                          WorkTimeCode keyWorkTime = new WorkTimeCode(key);
                                          WorkTimeSetting workTypeDto = mapListWorkTime.get(keyWorkTime);
                                          if(workTypeDto!=null){
-                                                codeAndNameWorkTime.add(workTypeDto.getWorktimeCode().v()+workTypeDto.getWorkTimeDisplayName().getWorkTimeAbName().v());
+                                                codeAndNameWorkTime.add(workTypeDto.getWorktimeCode().v()+workTypeDto.getWorkTimeDisplayName().getWorkTimeName().v());
                                          }
                                   }
                                   if(!CollectionUtil.isEmpty(codeAndNameWorkTime)){
@@ -482,8 +465,8 @@ public class ErrorAlarmWorkRecordExportImpl {
 									}
 								}
 							}
-							Collections.sort(listStringAttNameAdd);
-							Collections.sort(listStringAttNameSub);
+//							Collections.sort(listStringAttNameAdd);
+//							Collections.sort(listStringAttNameSub);
 							String subString = String.join("-", listStringAttNameSub);
 							boolean checkEmptyString = subString.isEmpty() && subString != null;
 							targetName = checkEmptyString ? String.join("+", listStringAttNameAdd)
@@ -517,8 +500,8 @@ public class ErrorAlarmWorkRecordExportImpl {
 								break;
 							case 1:
 								String singleAttName = "";
-								if (conditionAtr == 3) {
-									AttdItemDto at = mapListAttItemDto.get(erro.getSingleAtdItem());
+								if (conditionAtr == 2) {
+									AttdItemDto at = mapListAttItemDto6.get(erro.getSingleAtdItem());
 									if (at != null) {
 										singleAttName = at.getAttendanceItemName();
 									}
@@ -628,8 +611,8 @@ public class ErrorAlarmWorkRecordExportImpl {
 										listStringAttNameSub.add(attItem.getAttendanceItemName());
 									}
 								}
-								Collections.sort(listStringAttNameAdd);
-								Collections.sort(listStringAttNameSub);
+//								Collections.sort(listStringAttNameAdd);
+//								Collections.sort(listStringAttNameSub);
 								String subString = String.join("-", listStringAttNameSub);
 								boolean checkEmptyString = subString.isEmpty() && subString != null;
 								targetName = checkEmptyString ? String.join("+", listStringAttNameAdd)
@@ -663,8 +646,8 @@ public class ErrorAlarmWorkRecordExportImpl {
 									break;
 								case 1:
 									String singleAttName = "";
-									if (conditionAtr == 3) {
-										singleAttName = mapListAttItemDto.get(erro.getSingleAtdItem())
+									if (conditionAtr == 2) {
+										singleAttName = mapListAttItemDto6.get(erro.getSingleAtdItem())
 												.getAttendanceItemName();
 									} else {
 										AttdItemDto attItem = mapListAttItemDto.get(erro.getSingleAtdItem());
@@ -710,8 +693,9 @@ public class ErrorAlarmWorkRecordExportImpl {
                            List<Integer> lstApplicationTypeCode = c.getLstApplicationTypeCode();
                            List<String> listStrApp = new ArrayList<>();
                            if(!CollectionUtil.isEmpty(lstApplicationTypeCode)){
+                        	   Collections.sort(lstApplicationTypeCode);
                                   for (Integer key : lstApplicationTypeCode) {
-                                         String strAppType = mapApplicationType.get(key);
+                                         String strAppType = EnumAdaptor.valueOf(key, ApplicationTypeExport.class).nameId;
                                          if(strAppType!=null){
                                                 listStrApp.add(strAppType);
                                          }
@@ -723,6 +707,7 @@ public class ErrorAlarmWorkRecordExportImpl {
                            
                            MasterData masterData = new MasterData(data, null, "");
                            for (int i=1;i< header.size();i++) {
+//                        	   String tempTest = header.get(i);
                         	   if(i==8){
                         		   masterData.cellAt(header.get(i)).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT).backgroundColor(c.getMessageColor())); 
                         	   }else {
@@ -736,102 +721,66 @@ public class ErrorAlarmWorkRecordExportImpl {
               return datas;
        }
        private void putEmptyDataOne(Map<String, Object> data) {
-		List<String> header =  Arrays.asList("value1","value2","value3","value4","value5","value6","value7","value8","value9","value10","value11","value12","value13","value14","value15","value16","value17","value18","value19","value20","value21","value22","value23","value24","value25","value26","value27","value28","value29","value30","value31","value32","value33","value34","value35","value36","value37","value38","value39","value40");
-              for (String string : header) {
-            	  data.put(string, "");
+              String header = "header";
+              for(int i = 1 ; i <= 40; i++){
+            	  data.put(header+i, "");
               }
        }
        public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
               List<MasterHeaderColumn> columns = new ArrayList<>();
-              List<String> header =  Arrays.asList("column0","value1","value2","value3","value4","value5","value6","value7","value8","value9","value10","value11","value12","value13","value14","value15","value16","value17","value18","value19","value20","value21","value22","value23","value24","value25","value26","value27","value28","value29","value30","value31","value32","value33","value34","value35","value36","value37","value38","value39","value40");
-              columns.add(new MasterHeaderColumn(header.get(1), "コード", ColumnTextAlign.LEFT,
-                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(2), "コード", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(3), "コード", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(4), "設定 区分", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(5), "設定 備考入力でエラーを解除する", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(6), "設定 備考NO", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(7), "設定 色表示対象項目", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(8), "設定 メッセージ色", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(9), "設定 表示するメッセージ", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(10), "設定 メッセージを太字にする", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(11), "チェック対象範囲設定 雇用", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(12), "value12", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(13), "value13", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(14), "value14", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(15), "value15", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(16), "value16", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(17), "value17", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(18), "value18", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(19), "value19", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(20), "value20", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(21), "value21", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(22), "value22", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(23), "value23", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(24), "value24", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(25), "value25", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(26), "value26", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(27), "value27", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(28), "value28", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(29), "value29", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(30), "value30", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(31), "value31", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(32), "value32", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(33), "value33", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(34), "value34", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(35), "value35", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(36), "value36", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(37), "value37", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(38), "value38", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(39), "value39", ColumnTextAlign.LEFT,
-			                "", true));
-			   columns.add(new MasterHeaderColumn(header.get(40), "value40", ColumnTextAlign.LEFT,
-                "", true));
+              List<String> header =  Arrays.asList("column0",TextResource.localize("KDW006_106"),																				
+      	   			TextResource.localize("KDW006_90"),																				
+    	   			TextResource.localize("KDW006_155"),																				
+    	   			TextResource.localize("KDW006_156"),																				
+    	   			TextResource.localize("KDW006_157"),																				
+    	   			TextResource.localize("KDW006_158"),																				
+    	   			TextResource.localize("KDW006_159"),																				
+    	   			TextResource.localize("KDW006_160"),																				
+    	   			TextResource.localize("KDW006_161"),																				
+    	   			TextResource.localize("KDW006_162"),																				
+    	   			TextResource.localize("KDW006_163"),																				
+    	   			TextResource.localize("KDW006_164"),																				
+    	   			TextResource.localize("KDW006_165"),																				
+    	   			TextResource.localize("KDW006_166"),																				
+    	   			TextResource.localize("KDW006_167"),																				
+    	   			TextResource.localize("KDW006_168"),																				
+    	   			TextResource.localize("KDW006_169"),																				
+    	   			TextResource.localize("KDW006_170"),																				
+    	   			TextResource.localize("KDW006_171"),																				
+    	   			TextResource.localize("KDW006_172"),																				
+    	   			TextResource.localize("KDW006_173"),																				
+    	   			TextResource.localize("KDW006_173"),																				
+    	   			TextResource.localize("KDW006_174"),																				
+    	   			TextResource.localize("KDW006_174"),																				
+    	   			TextResource.localize("KDW006_175"),																				
+    	   			TextResource.localize("KDW006_176"),																				
+    	   			TextResource.localize("KDW006_176"),																				
+    	   			TextResource.localize("KDW006_177"),																				
+    	   			TextResource.localize("KDW006_177"),																				
+    	   			TextResource.localize("KDW006_178"),																				
+    	   			TextResource.localize("KDW006_179"),																				
+    	   			TextResource.localize("KDW006_179"),																				
+    	   			TextResource.localize("KDW006_179"),																				
+    	   			TextResource.localize("KDW006_180"),																				
+    	   			TextResource.localize("KDW006_181"),																				
+    	   			TextResource.localize("KDW006_182"),																				
+    	   			TextResource.localize("KDW006_182"),																				
+    	   			TextResource.localize("KDW006_182"),																				
+    	   			TextResource.localize("KDW006_183"),																				
+    	   			TextResource.localize("KDW006_184"));
+              String headerColumn = "header";
+              for(int i = 1 ; i <= 40; i++){
+            	  columns.add(new MasterHeaderColumn(headerColumn+i,header.get(i), ColumnTextAlign.LEFT,
+  		                "", true));  
+              }
               return columns;
        }
        
        public List<SheetData> extraSheets(MasterListExportQuery query){
               List<SheetData> listSheetData = new ArrayList<>();
-              SheetData sheet1 = new SheetData(getMasterDatas(query), getHeaderColumns(query), null, null, TextResource.localize("KDW006_16"));
+              SheetData sheet1 = new SheetData(getMasterDatas(query), getHeaderColumns(query), null, null, TextResource.localize("KDW006_140"));
               listSheetData.add(sheet1);
-              SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("KDW006_17"));
+              SheetData sheetDataTwo = new SheetData(getMasterDataTwo(query), getHeaderColumnTwos(query), null, null, TextResource.localize("KDW006_141"));
               listSheetData.add(sheetDataTwo);
               return listSheetData;
        }
@@ -853,21 +802,12 @@ public class ErrorAlarmWorkRecordExportImpl {
               LoginUserContext loginUserContext = AppContexts.user();
               String companyId = loginUserContext.companyId();
               
-              List<MasterData> datas = new ArrayList<>();
-              Map<Integer,String> mapApplicationType = new HashMap<>();
-              mapApplicationType.put(0, "残業申請（早出）");
-              mapApplicationType.put(1, "残業申請（通常）");
-              mapApplicationType.put(2, "残業申請（早出・通常）");
-              mapApplicationType.put(3, "休暇申請");
-              mapApplicationType.put(4, "勤務変更申請");
-              mapApplicationType.put(6, "直行直帰申請");
-              mapApplicationType.put(7, "打刻申請（外出許可）");
-              mapApplicationType.put(15, "振休振出申請");
+           List<MasterData> datas = new ArrayList<>();
            List<ErrorAlarmWorkRecord> listErrorAlarmWorkRecord = repository.getListErrorAlarmWorkRecord(companyId, 1);// fixedAtr":1
           
-//           listErrorAlarmWorkRecord = listErrorAlarmWorkRecord.stream().filter(eral -> eral.getCode().v().startsWith("S"))
-//                     .sorted(Comparator.comparing(ErrorAlarmWorkRecord::getCode, Comparator.nullsLast(ErrorAlarmWorkRecordCode::compareTo)))
-//                           .collect(Collectors.toList());
+           listErrorAlarmWorkRecord = listErrorAlarmWorkRecord.stream().filter(eral -> eral.getCode().v().startsWith("S"))
+                     .sorted(Comparator.comparing(ErrorAlarmWorkRecord::getCode, Comparator.nullsLast(ErrorAlarmWorkRecordCode::compareTo)))
+                           .collect(Collectors.toList());
            if(CollectionUtil.isEmpty(listErrorAlarmWorkRecord)){
               return null;
            }else{
@@ -876,7 +816,7 @@ public class ErrorAlarmWorkRecordExportImpl {
                      Map<String, Object> data = new HashMap<>();
                            putEmptyDataTwo(data);
                            
-                           data.put("コード", c.getCode());
+                           data.put("コード", c.getCode().v().substring(1));
                            data.put("名称", c.getName());
                            if(c.getUseAtr()){
                                   data.put("使用区分", "使用しない");
@@ -884,14 +824,13 @@ public class ErrorAlarmWorkRecordExportImpl {
                                   data.put("使用区分", "使用する");
                            }
                            List<Integer> listApplication  = c.getLstApplication();
-                           listApplication = listApplication.stream().sorted()
-                                         .collect(Collectors.toList());
+                           Collections.sort(listApplication);
                            if(CollectionUtil.isEmpty(listApplication)){
                                   data.put("申請", "");
                            }else{
                         	  
                         	   for (Integer key : listApplication) {
-                        		   String appName = mapApplicationType.get(key);
+                        		   String appName = EnumAdaptor.valueOf(key, ApplicationTypeExport.class).nameId;
                         		   if(appName!=null){
                         			   lstApp.add(appName);
                         		   }
