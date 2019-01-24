@@ -158,7 +158,9 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
         List<MasterData> datas = new ArrayList<>();
         Object[] comAutoCalSetting = comAutoCalSettingExport.getCompanySettingToExport(companyId);
         Map<String, MasterCellData> data = new HashMap<>();
-        this.putDatas(comAutoCalSetting, data);
+        if(comAutoCalSetting != null && comAutoCalSetting.length > 0) {
+            this.putDatas(comAutoCalSetting, data);
+        }
         datas.add(MasterData.builder().rowData(data).build());
         return datas;
     }
