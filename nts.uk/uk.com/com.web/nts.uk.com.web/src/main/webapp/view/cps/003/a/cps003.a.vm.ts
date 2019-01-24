@@ -454,6 +454,7 @@ module cps003.a.vm {
                     categoryId: self.category.catId(),
                     categoryName: self.category.cate().categoryName,
                     mode: self.updateMode(),
+                    updateModeEnable: self.updateModeEnable(),
                     columnChange: _.filter(self.headDatas, (data: IDataHead) => _.find(self.settings.perInfoData(), (info: IPersonInfoSetting) => info.regulationAtr && info.itemCD === data.itemCode)),
                     sids: _.map(self.gridOptions.dataSource, data => data.employeeId)
                 };

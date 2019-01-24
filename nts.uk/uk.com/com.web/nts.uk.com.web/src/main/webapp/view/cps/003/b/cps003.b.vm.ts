@@ -53,6 +53,7 @@ module cps003.b.vm {
         categoryName: string;
         systemDate: string;
         mode: number;
+        updateModeEnable: boolean;
         columnChange: Array<string>;
         sids: Array<string>;
     }
@@ -62,6 +63,7 @@ module cps003.b.vm {
         categoryName: string;
         systemDate: string;
         mode: KnockoutObservable<number> = ko.observable(1);
+        updateModeEnable: KnockoutObservable<boolean> = ko.observable(true);
         columnChange: Array<any> = [];
         sids: Array<string>;
         mode : KnockoutObservable<number> = ko.observable(1);
@@ -74,7 +76,8 @@ module cps003.b.vm {
             self.categoryId = data.categoryId;
             self.categoryName = data.categoryName;
             self.systemDate = data.systemDate;
-            self.mode = ko.observable(data.mode);
+            self.mode(data.mode);
+            self.updateModeEnable(data.updateModeEnable);
             self.columnChange = data.columnChange;
             self.sids = data.systemDate;
         }
