@@ -291,6 +291,177 @@ public class CheckFileFinder {
 		return headerReal;
 	}
 	
+
+	
+	
+	private GridDto getGridInfo(NtsExcelImport excelReader, List<GridEmpHead> headerReal, List<String> columFixed, PersonInfoCategory category, List<EmployeeDataMngInfo> employees) {
+		/* lien quan den bodyData*/
+		List<GridEmpHead> headerRemain = new ArrayList<>();
+		List<GridEmpHead> x =  new ArrayList<GridEmpHead>();
+//		HashMap<String, Object> contraintList = generateContraint(headerReal);
+		x.addAll(headerReal);
+
+		
+		List<EmployeeRowDto> employeeDtos = new ArrayList<>();
+		List<NtsExcelRow> rows = excelReader.rows();
+		rows.stream().forEach( row ->{
+			List<NtsExcelCell> cells = row.cells();		
+			EmployeeRowDto employeeDto = new EmployeeRowDto();
+			List<ItemRowDto> items = new ArrayList<>();
+			
+			cells.stream().forEach( cell -> {
+				String[] itemChilds = cell.getHeader().getMain().getValue().getText().split("＿");
+				String header = cell.getHeader().getMain().getValue().getText();
+				String headerTemp = itemChilds.length > 0? itemChilds[itemChilds.length - 1]: header;
+				// lấy emloyeeCode, employeeName
+				if (header.equals(TextResource.localize("CPS003_28"))) {
+					//employeeId
+					Optional<EmployeeDataMngInfo> emp = employees.stream().filter(c -> c.getEmployeeCode().toString().equals(cell.getValue().getText())).findFirst();
+					if(!emp.isPresent()) return;
+					employeeDto.setEmployeeCode(cell.getValue() == null ? "" : cell.getValue().getText());
+					employeeDto.setEmployeeId(emp.get().getEmployeeId());
+					employeeDto.setPersonId(emp.get().getPersonId());
+					
+				} else if (header.equals(TextResource.localize("CPS003_29"))) {
+					employeeDto.setEmployeeName(cell.getValue() == null ? "" : cell.getValue().getText());
+				} else {
+					
+					// lấy dữ liệu của itemName
+					boolean isSelectionCode = headerTemp.contains("（コード）");
+					if(isSelectionCode) {
+						CheckFileFinder.header = headerTemp.split("（")[0];
+					}
+					Optional<GridEmpHead> headerGridOpt = headerReal.stream().filter(c -> {
+						if(isSelectionCode) {
+							return c.getItemName().equals(CheckFileFinder.header);
+						}else{
+							return c.getItemName().equals(headerTemp);
+						}
+					}).findFirst();
+					
+					
+					if(headerGridOpt.isPresent()) {
+						GridEmpHead headerGrid = headerGridOpt.get();
+						ItemRowDto empBody = new ItemRowDto();
+						if(isSelectionCode) {
+							String selectionCode = cell.getValue() == null ? "" : cell.getValue().getText();
+							empBody.setItemCode(headerGrid.getItemCode());
+							empBody.setItemName(headerGrid.getItemName());
+							empBody.setItemOrder(headerGrid.getItemOrder());
+							empBody.setValue(cell.getValue() == null ? "" : cell.getValue().getText());
+							List<ComboBoxObject> comboxLst = this.getComboBox(headerGrid, category, employeeDto.getEmployeeId(), empBody, items);
+							Optional<ComboBoxObject> combo = comboxLst.stream().filter(c -> c.getOptionValue().equals(selectionCode)).findFirst();
+							empBody.setValue(combo.isPresent() == true? combo.get().getOptionValue(): "");
+							empBody.setLstComboBoxValue(comboxLst);
+							items.add(empBody);
+						}else {
+							if (!headerGrid.getItemName().equals(CheckFileFinder.header)) {
+								empBody.setItemCode(headerGrid.getItemCode());
+								empBody.setItemName(headerGrid.getItemName());
+								empBody.setItemOrder(headerGrid.getItemOrder());
+								empBody.setValue(cell.getValue() == null ? "" : cell.getValue().getText());
+								empBody.setTextValue(cell.getValue() == null ? "" : cell.getValue().getText());
+								items.add(empBody);
+							}
+						}
+
+						
+						
+						headerRemain.add(headerGrid);
+					}
+				}
+			});
+			employeeDto.setItems(items);
+			if(employeeDto.getEmployeeCode()!= null) {
+				employeeDtos.add(employeeDto);
+			}
+			
+		});
+		
+		List<EmployeeRowDto> result = Collections.synchronizedList(new ArrayList<>());
+		// lấy ra những item bị thiếu không file import ko có trong setting ở màn hình A, set RecordId
+		headerReal.removeAll(headerRemain);
+		if(headerReal.size() > 0) {
+			this.parallel.forEach(employeeDtos, pdt -> {
+
+				// Miss infoId (get infoId by baseDate)
+				PeregQuery subq = PeregQuery.createQueryCategory(null, category.getCategoryCode().v(),
+						pdt.getEmployeeId(), pdt.getPersonId());
+
+				subq.setCategoryId(category.getPersonInfoCategoryId());
+				subq.setStandardDate(GeneralDate.today());
+
+				EmpMaintLayoutDto empDto = layoutProcessor.getCategoryDetail(subq);
+
+				List<LayoutPersonInfoValueDto> items = empDto.getClassificationItems().stream()
+						.flatMap(f -> f.getItems().stream()).collect(Collectors.toList());
+				List<ItemRowDto> itemDtos = new ArrayList<>();
+				headerReal.stream().forEach(h ->{
+					items.stream().forEach(item ->{
+						if(h.getItemId().equals(item.getItemDefId())) {
+							ItemRowDto dto = new ItemRowDto(h.getItemCode(), h.getItemName(), item.getType(),item.getValue(),
+									item.getTextValue(), item.getRecordId(),h.getItemOrder(), item.getActionRole(),item.getLstComboBoxValue());
+							itemDtos.add(dto);
+						}
+					});
+				});
+				
+				if(itemDtos.size() > 0) {
+					pdt.getItems().addAll(itemDtos);
+				}
+				items.stream().forEach(item -> {
+					pdt.getItems().stream().forEach(itemDto -> {
+						if (itemDto.getItemCode().equals(item.getItemCode())) {
+							itemDto.setDataType(item.getType());
+							itemDto.setRecordId(item.getRecordId());
+							itemDto.setActionRole(item.getActionRole());
+						}
+					});
+
+				});
+
+				// sắp xếp lại vị trí item
+				pdt.getItems().sort(Comparator.comparing(ItemRowDto::getItemOrder, Comparator.naturalOrder()));
+
+				result.add(pdt);
+
+			});
+		}
+		return new GridDto(x, result, new ArrayList<>());
+	}
+	
+	/**
+	 * getComboBox
+	 * @param headerGrid
+	 * @param category
+	 * @param sid
+	 * @param empBody
+	 * @param items
+	 * @return
+	 */
+	public List<ComboBoxObject> getComboBox(GridEmpHead headerGrid, PersonInfoCategory category, String sid, ItemRowDto empBody, List<ItemRowDto> items) {
+		ItemTypeStateDto dto = headerGrid.getItemTypeState();
+		if(dto.getItemType() == ItemType.SINGLE_ITEM.value) {
+			SingleItemDto singleDto = (SingleItemDto) dto;
+				if (singleDto.getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION.value
+						|| singleDto.getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION_BUTTON.value
+						|| singleDto.getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION_RADIO.value) {
+					boolean isDataType6 = singleDto.getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION.value?  true: false;
+					SelectionItemDto selectionItemDto = (SelectionItemDto)singleDto.getDataTypeState();
+					List<ComboBoxObject> combox = this.comboBoxRetrieveFactory.getComboBox(selectionItemDto, sid,
+							GeneralDate.today(), headerGrid.isRequired(), category.getPersonEmployeeType(), isDataType6,
+							category.getCategoryCode().v(), null, false);
+					return combox;
+				}
+		}
+		return new ArrayList<>();
+	}
+	
+	/**
+	 * generateContraint
+	 * @param headerReal
+	 * @return
+	 */
 	private HashMap<String, Object> generateContraint(List<GridEmpHead> headerReal){
 		HashMap<String, Object> contraintList = new HashMap<>();
 		
@@ -385,163 +556,6 @@ public class CheckFileFinder {
 			}
 		});
 		return contraintList;
-	}
-	
-	
-	private GridDto getGridInfo(NtsExcelImport excelReader, List<GridEmpHead> headerReal, List<String> columFixed, PersonInfoCategory category, List<EmployeeDataMngInfo> employees) {
-		/* lien quan den bodyData*/
-		List<GridEmpHead> headerRemain = new ArrayList<>();
-		List<GridEmpHead> x =  new ArrayList<GridEmpHead>();
-		HashMap<String, Object> contraintList = new HashMap<>();
-		x.addAll(headerReal);
-
-		
-		List<EmployeeRowDto> employeeDtos = new ArrayList<>();
-		List<NtsExcelRow> rows = excelReader.rows();
-		rows.stream().forEach( row ->{
-			List<NtsExcelCell> cells = row.cells();		
-			EmployeeRowDto employeeDto = new EmployeeRowDto();
-			List<ItemRowDto> items = new ArrayList<>();
-			
-			cells.stream().forEach( cell -> {
-				String[] itemChilds = cell.getHeader().getMain().getValue().getText().split("ー");
-				String header = cell.getHeader().getMain().getValue().getText();
-				String headerTemp = itemChilds.length > 0? itemChilds[itemChilds.length - 1]: header;
-				// lấy emloyeeCode, employeeName
-				if (header.equals(TextResource.localize("CPS003_28"))) {
-					//employeeId
-					Optional<EmployeeDataMngInfo> emp = employees.stream().filter(c -> c.getEmployeeCode().toString().equals(cell.getValue().getText())).findFirst();
-					if(!emp.isPresent()) return;
-					employeeDto.setEmployeeCode(cell.getValue() == null ? "" : cell.getValue().getText());
-					employeeDto.setEmployeeId(emp.get().getEmployeeId());
-					employeeDto.setPersonId(emp.get().getPersonId());
-					
-				} else if (header.equals(TextResource.localize("CPS003_29"))) {
-					employeeDto.setEmployeeName(cell.getValue() == null ? "" : cell.getValue().getText());
-				} else {
-					
-					// lấy dữ liệu của itemName
-					boolean isSelectionCode = header.contains("（コード）");
-					if(isSelectionCode) {
-						CheckFileFinder.header = header.split("（")[0];
-					}
-					Optional<GridEmpHead> headerGridOpt = headerReal.stream().filter(c -> {
-						if(isSelectionCode) {
-							return c.getItemName().equals(CheckFileFinder.header);
-						}else{
-							return c.getItemName().equals(headerTemp);
-						}
-					}).findFirst();
-					
-					
-					if(headerGridOpt.isPresent()) {
-						GridEmpHead headerGrid = headerGridOpt.get();
-						ItemRowDto empBody = new ItemRowDto();
-						if(isSelectionCode) {
-							String selectionCode = cell.getValue() == null ? "" : cell.getValue().getText();
-							empBody.setItemCode(headerGrid.getItemCode());
-							empBody.setItemName(headerGrid.getItemName());
-							empBody.setItemOrder(headerGrid.getItemOrder());
-							empBody.setValue(cell.getValue() == null ? "" : cell.getValue().getText());
-							List<ComboBoxObject> comboxLst = this.getComboBox(headerGrid, category, employeeDto.getEmployeeId(), empBody, items);
-							Optional<ComboBoxObject> combo = comboxLst.stream().filter(c -> c.getOptionValue().equals(selectionCode)).findFirst();
-							empBody.setValue(combo.isPresent() == true? combo.get().getOptionValue(): "");
-							empBody.setLstComboBoxValue(comboxLst);
-							items.add(empBody);
-						}else {
-							if (!headerGrid.getItemName().equals(CheckFileFinder.header)) {
-								empBody.setItemCode(headerGrid.getItemCode());
-								empBody.setItemName(headerGrid.getItemName());
-								empBody.setItemOrder(headerGrid.getItemOrder());
-								empBody.setValue(cell.getValue() == null ? "" : cell.getValue().getText());
-								empBody.setTextValue(cell.getValue() == null ? "" : cell.getValue().getText());
-								items.add(empBody);
-							}
-						}
-
-						
-						
-						headerRemain.add(headerGrid);
-					}
-				}
-			});
-			employeeDto.setItems(items);
-			if(employeeDto.getEmployeeCode()!= null) {
-				employeeDtos.add(employeeDto);
-			}
-			
-		});
-		
-		List<EmployeeRowDto> result = Collections.synchronizedList(new ArrayList<>());
-		// lấy ra những item bị thiếu không file import ko có trong setting ở màn hình A, set RecordId
-		headerReal.removeAll(headerRemain);
-		if(headerReal.size() > 0) {
-			this.parallel.forEach(employeeDtos, pdt -> {
-
-				// Miss infoId (get infoId by baseDate)
-				PeregQuery subq = PeregQuery.createQueryCategory(null, category.getCategoryCode().v(),
-						pdt.getEmployeeId(), pdt.getPersonId());
-
-				subq.setCategoryId(category.getPersonInfoCategoryId());
-				subq.setStandardDate(GeneralDate.today());
-
-				EmpMaintLayoutDto empDto = layoutProcessor.getCategoryDetail(subq);
-
-				List<LayoutPersonInfoValueDto> items = empDto.getClassificationItems().stream()
-						.flatMap(f -> f.getItems().stream()).collect(Collectors.toList());
-				List<ItemRowDto> itemDtos = new ArrayList<>();
-				headerReal.stream().forEach(h ->{
-					items.stream().forEach(item ->{
-						if(h.getItemId().equals(item.getItemDefId())) {
-							ItemRowDto dto = new ItemRowDto(h.getItemCode(), h.getItemName(), item.getValue(),
-									item.getTextValue(), item.getRecordId(),h.getItemOrder(), item.getActionRole(),item.getLstComboBoxValue());
-							itemDtos.add(dto);
-						}
-					});
-				});
-				
-				if(itemDtos.size() > 0) {
-					pdt.getItems().addAll(itemDtos);
-				}
-				items.stream().forEach(item -> {
-					pdt.getItems().stream().forEach(itemDto -> {
-						if (itemDto.getItemCode().equals(item.getItemCode())) {
-							itemDto.setRecordId(item.getRecordId());
-							itemDto.setActionRole(item.getActionRole());
-						}
-					});
-
-				});
-
-				// sắp xếp lại vị trí item
-				pdt.getItems().sort(Comparator.comparing(ItemRowDto::getItemOrder, Comparator.naturalOrder()));
-
-				result.add(pdt);
-
-				
-
-			});
-		}
-		return new GridDto(x, result, new ArrayList<>());
-	}
-	
-	public List<ComboBoxObject> getComboBox(GridEmpHead headerGrid, PersonInfoCategory category, String sid, ItemRowDto empBody, List<ItemRowDto> items) {
-		ItemTypeStateDto dto = headerGrid.getItemTypeState();
-		SingleItemDto singleDto = (SingleItemDto) dto;
-		
-		if (singleDto.getItemType() == ItemType.SINGLE_ITEM.value) {
-			if (singleDto.getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION.value
-					|| singleDto.getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION_BUTTON.value
-					|| singleDto.getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION_RADIO.value) {
-				boolean isDataType6 = singleDto.getDataTypeState().getDataTypeValue() == DataTypeValue.SELECTION.value?  true: false;
-				SelectionItemDto selectionItemDto = (SelectionItemDto)singleDto.getDataTypeState();
-				List<ComboBoxObject> combox = this.comboBoxRetrieveFactory.getComboBox(selectionItemDto, sid,
-						GeneralDate.today(), headerGrid.isRequired(), category.getPersonEmployeeType(), isDataType6,
-						category.getCategoryCode().v(), null, false);
-				return combox;
-			}
-		}
-		return new ArrayList<>();
 	}
 	
 	

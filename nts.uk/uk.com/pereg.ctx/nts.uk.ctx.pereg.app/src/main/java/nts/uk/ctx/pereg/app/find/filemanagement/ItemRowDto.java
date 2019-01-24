@@ -16,6 +16,7 @@ import nts.uk.shr.pereg.app.ComboBoxObject;
 public class ItemRowDto {
 	 private String itemCode;
 	 private String itemName;
+	 private int dataType;
 	 private Object value;
 	 private String textValue;
 	 private String recordId;
