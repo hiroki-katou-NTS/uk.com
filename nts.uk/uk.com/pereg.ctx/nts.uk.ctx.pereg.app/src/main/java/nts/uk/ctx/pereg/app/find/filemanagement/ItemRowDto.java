@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.pereg.app.find.layoutdef.classification.ActionRole;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 
 @Getter
@@ -19,6 +20,7 @@ public class ItemRowDto {
 	 private String textValue;
 	 private String recordId;
 	 private int itemOrder;
+	 private ActionRole actionRole;
 	 private List<ComboBoxObject> lstComboBoxValue;
 
 }

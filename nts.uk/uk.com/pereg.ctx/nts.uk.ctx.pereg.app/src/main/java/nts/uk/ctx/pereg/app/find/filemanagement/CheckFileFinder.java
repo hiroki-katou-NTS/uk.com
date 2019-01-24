@@ -404,12 +404,11 @@ public class CheckFileFinder {
 			List<ItemRowDto> items = new ArrayList<>();
 			
 			cells.stream().forEach( cell -> {
-				String[] itemChilds = cell.getHeader().getMain().getValue().getText().split("-");
-				String header = itemChilds.length > 0? itemChilds[itemChilds.length - 1]: cell.getHeader().getMain().getValue().getText();
-				
+				String[] itemChilds = cell.getHeader().getMain().getValue().getText().split("ー");
+				String header = cell.getHeader().getMain().getValue().getText();
+				String headerTemp = itemChilds.length > 0? itemChilds[itemChilds.length - 1]: header;
 				// lấy emloyeeCode, employeeName
 				if (header.equals(TextResource.localize("CPS003_28"))) {
-					
 					//employeeId
 					Optional<EmployeeDataMngInfo> emp = employees.stream().filter(c -> c.getEmployeeCode().toString().equals(cell.getValue().getText())).findFirst();
 					if(!emp.isPresent()) return;
@@ -430,7 +429,7 @@ public class CheckFileFinder {
 						if(isSelectionCode) {
 							return c.getItemName().equals(CheckFileFinder.header);
 						}else{
-							return c.getItemName().equals(header);
+							return c.getItemName().equals(headerTemp);
 						}
 					}).findFirst();
 					
@@ -495,7 +494,7 @@ public class CheckFileFinder {
 					items.stream().forEach(item ->{
 						if(h.getItemId().equals(item.getItemDefId())) {
 							ItemRowDto dto = new ItemRowDto(h.getItemCode(), h.getItemName(), item.getValue(),
-									item.getTextValue(), item.getRecordId(),h.getItemOrder(), item.getLstComboBoxValue());
+									item.getTextValue(), item.getRecordId(),h.getItemOrder(), item.getActionRole(),item.getLstComboBoxValue());
 							itemDtos.add(dto);
 						}
 					});
@@ -503,20 +502,22 @@ public class CheckFileFinder {
 				
 				if(itemDtos.size() > 0) {
 					pdt.getItems().addAll(itemDtos);
-						items.stream().forEach(item ->{
-							pdt.getItems().stream().forEach(itemDto ->{
-								if(itemDto.getItemCode().equals(item.getItemCode())) {
-									itemDto.setRecordId(item.getRecordId());
-								}
-							});
-
-						});
-						
-						// sắp xếp lại vị trí item
-						pdt.getItems().sort(Comparator.comparing(ItemRowDto::getItemOrder, Comparator.naturalOrder()));
-						
-					result.add(pdt);
 				}
+				items.stream().forEach(item -> {
+					pdt.getItems().stream().forEach(itemDto -> {
+						if (itemDto.getItemCode().equals(item.getItemCode())) {
+							itemDto.setRecordId(item.getRecordId());
+							itemDto.setActionRole(item.getActionRole());
+						}
+					});
+
+				});
+
+				// sắp xếp lại vị trí item
+				pdt.getItems().sort(Comparator.comparing(ItemRowDto::getItemOrder, Comparator.naturalOrder()));
+
+				result.add(pdt);
+
 				
 
 			});
