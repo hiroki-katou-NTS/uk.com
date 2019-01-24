@@ -68,7 +68,7 @@ public class FormulaService {
 
     public void updateFormulaSetting (Formula formula, BasicFormulaSetting basicFormulaSetting, DetailFormulaSetting detailFormulaSetting, List<BasicCalculationFormula> basicCalculationFormula) {
         formulaRepository.update(formula);
-        basicCalculationFormulaRepository.upsertAll(formula.getFormulaCode().v(), basicFormulaSetting.getHistoryID(), basicCalculationFormula);
+        basicCalculationFormulaRepository.upsertAll(basicFormulaSetting.getHistoryID(), basicCalculationFormula);
         if (formula.getSettingMethod() == FormulaSettingMethod.DETAIL_SETTING) detailFormulaSettingRepository.upsert(detailFormulaSetting);
         else basicFormulaSettingRepository.upsert(basicFormulaSetting);
     }

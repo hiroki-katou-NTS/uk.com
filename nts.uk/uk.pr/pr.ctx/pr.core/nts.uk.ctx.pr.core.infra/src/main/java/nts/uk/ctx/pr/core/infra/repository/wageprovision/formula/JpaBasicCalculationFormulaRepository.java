@@ -77,7 +77,7 @@ public class JpaBasicCalculationFormulaRepository extends JpaRepository implemen
     }
 
     @Override
-    public void upsertAll(String formulaCode, String historyID, List<BasicCalculationFormula> domains){
+    public void upsertAll(String historyID, List<BasicCalculationFormula> domains){
         this.removeByHistory(historyID);
         domains.forEach(domain -> {
             this.commandProxy().insert(QpbmtBasicCalculationFormula.toEntity(domain));
