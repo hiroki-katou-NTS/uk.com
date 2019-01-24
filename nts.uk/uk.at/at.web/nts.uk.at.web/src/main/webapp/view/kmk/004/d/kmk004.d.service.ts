@@ -14,7 +14,13 @@ module nts.uk.at.view.kmk004.d {
         }
 
         export function saveAsExcel(languageId: string, startDate: any, endDate: any): JQueryPromise<any> {
-            return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "SetWorkingHoursAndDays", domainType: "KMK004労働時間と日数の設定", languageId: languageId, reportType: 0, mode: 2, startDate: startDate, endDate: endDate });
+            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+            let domainType = "KMK004";
+            if (program.length > 1){
+                program.shift();
+                domainType = domainType + program.join(" ");
+            }
+            return nts.uk.request.exportFile('/masterlist/report/print', { domainId: "SetWorkingHoursAndDays", domainType: domainType, languageId: languageId, reportType: 0, mode: 2, startDate: startDate, endDate: endDate });
         }
 
 

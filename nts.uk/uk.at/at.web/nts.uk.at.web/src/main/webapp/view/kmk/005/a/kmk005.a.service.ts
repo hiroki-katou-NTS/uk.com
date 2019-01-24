@@ -14,7 +14,11 @@ module nts.uk.at.view.kmk005.a {
         }
         export function exportExcel(): JQueryPromise<any> {
             let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-            let domainType = program[1] != null ? "KMK005" + program[1] : "";
+            let domainType = "KMK005";
+            if (program.length > 1){
+                program.shift();
+                domainType = domainType + program.join(" ");
+            }
             return nts.uk.request.exportFile('/masterlist/report/print', {domainId: 'SettingTimeZone', domainType: domainType, languageId: 'ja', reportType: 0});
         }
     }
