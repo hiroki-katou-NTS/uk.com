@@ -96,20 +96,12 @@ public class GridPeregProcessor {
 			// map PersonInfoItemDefinition → GridEmpHead
 			List<GridEmpHead> headers = getPerItemDefForLayout(perInfoCtg, contractCode, roleId).stream()
 					.map(m -> new GridEmpHead(m.getId(), m.getDispOrder(), m.getItemCode(), m.getItemParentCode(),
-							m.getItemName(), m.getItemTypeState(), m.getIsRequired() == 1, m.getResourceId(),
-							m.getLstChildItemDef().stream()
-							.sorted(Comparator.comparing(PerInfoItemDefDto::getItemCode, Comparator.naturalOrder()))
-									.map(c -> new GridEmpHead(c.getId(), m.getDispOrder(), c.getItemCode(),
-											c.getItemParentCode(), c.getItemName(), c.getItemTypeState(),
-											c.getIsRequired() == 1, c.getResourceId(), null))
-									.collect(Collectors.toList())))
+							m.getItemName(), m.getItemTypeState(), m.getIsRequired() == 1, m.getResourceId()))
 					.sorted(Comparator.comparing(GridEmpHead::getItemOrder, Comparator.naturalOrder()).thenComparing(GridEmpHead::getItemCode, Comparator.naturalOrder()))
 					.collect(Collectors.toList());
-
-			headers.addAll(headers.stream().flatMap(m -> m.getChilds().stream()).collect(Collectors.toList()));
 			geDto.setHeadDatas(headers.stream()
 					.map(m -> new GridEmpHead(m.getItemId(), m.getItemOrder(), m.getItemCode(), m.getItemParentCode(),
-							m.getItemName(), m.getItemTypeState(), m.isRequired(), m.getResourceId(), null))
+							m.getItemName(), m.getItemTypeState(), m.isRequired(), m.getResourceId()))
 					.collect(Collectors.toList()));
 		}
 

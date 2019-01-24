@@ -1,10 +1,12 @@
 package nts.uk.ctx.pereg.app.find.filemanagement;
 
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,17 +28,19 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
-import nts.uk.ctx.pereg.app.find.layoutdef.classification.CodeName;
-import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpBody;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpHead;
-import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmployeeDto;
-import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmployeeInfoDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.DateItemDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.ItemTypeStateDto;
-import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.MasterRefConditionDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.NumericButtonDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.NumericItemDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefForLayoutDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SelectionItemDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.SingleItemDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.StringItemDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.TimeItemDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.TimePointItemDto;
 import nts.uk.ctx.pereg.app.find.processor.GridPeregProcessor;
 import nts.uk.ctx.pereg.app.find.processor.PeregProcessor;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCtgByCompanyRepositoty;
@@ -56,6 +60,13 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.validate.constraint.implement.DateConstraint;
+import nts.uk.shr.com.validate.constraint.implement.DateType;
+import nts.uk.shr.com.validate.constraint.implement.NumericConstraint;
+import nts.uk.shr.com.validate.constraint.implement.StringCharType;
+import nts.uk.shr.com.validate.constraint.implement.StringConstraint;
+import nts.uk.shr.com.validate.constraint.implement.TimeConstraint;
+import nts.uk.shr.com.validate.constraint.implement.TimePointConstraint;
 import nts.uk.shr.pereg.app.ComboBoxObject;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 
@@ -95,8 +106,6 @@ public class CheckFileFinder {
 	private PeregProcessor layoutProcessor;
 	
 	private static String code = "コード";
-	
-	private static String value;
 	
 	private static String header;
 	
@@ -258,13 +267,7 @@ public class CheckFileFinder {
 		 List<PerInfoItemDefForLayoutDto> i = this.gridProcesor.getPerItemDefForLayout(category, contractCd, roleId);
 		 List<GridEmpHead> headers = i.stream()
 				.map(m -> new GridEmpHead(m.getId(), m.getDispOrder(), m.getItemCode(), m.getItemParentCode(),
-						m.getItemName(), m.getItemTypeState(), m.getIsRequired() == 1, m.getResourceId(),
-						m.getLstChildItemDef().stream()
-						.sorted(Comparator.comparing(PerInfoItemDefDto::getItemCode, Comparator.naturalOrder()))
-								.map(c -> new GridEmpHead(c.getId(), m.getDispOrder(), c.getItemCode(),
-										c.getItemParentCode(), c.getItemName(), c.getItemTypeState(),
-										c.getIsRequired() == 1, c.getResourceId(), null))
-								.collect(Collectors.toList())))
+						m.getItemName(), m.getItemTypeState(), m.getIsRequired() == 1, m.getResourceId()))
 				.sorted(Comparator.comparing(GridEmpHead::getItemOrder, Comparator.naturalOrder()).thenComparing(GridEmpHead::getItemCode, Comparator.naturalOrder()))
 				.collect(Collectors.toList());
 		
@@ -282,12 +285,134 @@ public class CheckFileFinder {
 		return headerReal;
 	}
 	
+	private HashMap<String, Object> generateContraint(List<GridEmpHead> headerReal){
+		HashMap<String, Object> contraintList = new HashMap<>();
+		
+		headerReal.stream().forEach(c ->{
+			ItemTypeStateDto itemTypeStateDto = c.getItemTypeState();
+			Object obj;
+			if(itemTypeStateDto.getItemType() == 1) {
+				SingleItemDto singleDto = (SingleItemDto) itemTypeStateDto;
+				switch(singleDto.getDataTypeState().getDataTypeValue()) {
+				case 1:
+					StringItemDto stringDto = (StringItemDto) singleDto.getDataTypeState();
+					StringCharType type;
+					switch (stringDto.getStringItemType()) {
+					case 1:
+						type = StringCharType.ANY;
+						break;
+					case 2:
+						type = StringCharType.ANY_HALF_WIDTH;
+						break;
+					case 3:
+						type = StringCharType.ALPHA_NUMERIC;
+						break;
+					case 4:
+						type = StringCharType.NUMERIC;
+						break;
+					case 5:
+						type = StringCharType.KATAKANA;
+						break;
+					case 6:
+						
+					case 7:
+					default: 
+						type = StringCharType.ANY;
+						break;
+					}
+
+					obj = new StringConstraint( 0, type, stringDto.getStringItemLength());
+					contraintList.put(c.getItemCode(), obj);
+					break;
+				case 2:
+					NumericItemDto numericItemDto = (NumericItemDto) singleDto.getDataTypeState();
+					
+					obj = new NumericConstraint(0, numericItemDto.getNumericItemMinus() == 0 ? true : false,
+							numericItemDto.getNumericItemMin(), numericItemDto.getNumericItemMax(),
+							numericItemDto.getIntegerPart(),
+							numericItemDto.getDecimalPart() == null ? 0 : numericItemDto.getDecimalPart().intValue());
+					contraintList.put(c.getItemCode(), obj);
+					break;
+					
+				case 3:
+					DateItemDto dateDto = (DateItemDto) singleDto.getDataTypeState();
+					DateType dateType = DateType.DATE;
+					switch (dateDto.getDateItemType()) {
+					case 1:
+						dateType = DateType.DATE;
+						break;
+					case 2:
+						dateType = DateType.YEARMONTH;
+						break;
+					case 3:
+						dateType = DateType.YEAR;
+						break;
+					default: 
+						dateType = DateType.DATE;
+						break;
+					}
+					obj = new DateConstraint(0, dateType);
+					contraintList.put(c.getItemCode(), obj);
+					break;
+				case 4:
+					TimeItemDto timeItemDto = (TimeItemDto) singleDto.getDataTypeState();
+					obj = new TimeConstraint(0, (int) timeItemDto.getMin(), (int) timeItemDto.getMax());
+					contraintList.put(c.getItemCode(), obj);
+					break;
+					
+				case 5:
+					TimePointItemDto timePointItemDto = (TimePointItemDto) singleDto.getDataTypeState();
+					obj = new TimePointConstraint(0, (int) timePointItemDto.getTimePointItemMin(), (int) timePointItemDto.getTimePointItemMax());
+					contraintList.put(c.getItemCode(), obj);
+					break;
+				case 11:
+					NumericButtonDto numbericButtonDto = (NumericButtonDto) singleDto.getDataTypeState();
+					obj = new NumericConstraint(0, numbericButtonDto.getNumericItemMinus() == 0 ? true : false,
+							numbericButtonDto.getNumericItemMin(), numbericButtonDto.getNumericItemMax(),
+							numbericButtonDto.getIntegerPart(),
+							numbericButtonDto.getDecimalPart());
+					contraintList.put(c.getItemCode(), obj);
+					break;
+//				case 6:
+//				case 7:
+//				case 8:
+//					SelectionItemDto selectionItemDto = (SelectionItemDto)singleDto.getDataTypeState();
+//					switch (selectionItemDto.getReferenceType().value) {
+//					case 1:
+//						MasterRefConditionDto master = (MasterRefConditionDto) selectionItemDto;
+//						if (master.getMasterType().equals("M00006")) {
+//							obj = new NumericConstraint(0, false, new BigDecimal(0), new BigDecimal(10), 2, 0);
+//							contraintList.put(c.getItemCode(), obj);
+//							break;
+//						}else {
+//							obj = new StringConstraint( 0, StringCharType.ANY, 300);
+//							contraintList.put(c.getItemCode(), obj);
+//						}
+//						break;
+//					//2:コード名称(CodeName)
+//					case 2: break;
+//					// 3:列挙型(Enum)
+//					case 3: break;
+//						
+//					}
+//					break;
+				default: break;
+				}
+				
+			}
+		});
+		return contraintList;
+	}
+	
 	
 	private GridDto getGridInfo(NtsExcelImport excelReader, List<GridEmpHead> headerReal, List<String> columFixed, PersonInfoCategory category, List<EmployeeDataMngInfo> employees) {
 		/* lien quan den bodyData*/
 		List<GridEmpHead> headerRemain = new ArrayList<>();
 		List<GridEmpHead> x =  new ArrayList<GridEmpHead>();
+		HashMap<String, Object> contraintList = new HashMap<>();
 		x.addAll(headerReal);
+
+		
 		List<EmployeeRowDto> employeeDtos = new ArrayList<>();
 		List<NtsExcelRow> rows = excelReader.rows();
 		rows.stream().forEach( row ->{
@@ -330,27 +455,29 @@ public class CheckFileFinder {
 						GridEmpHead headerGrid = headerGridOpt.get();
 						ItemRowDto empBody = new ItemRowDto();
 						if(isSelectionCode) {
-							CheckFileFinder.value  = cell.getValue() == null? "": cell.getValue().getText();
-						}else {
+							String selectionCode = cell.getValue() == null ? "" : cell.getValue().getText();
 							empBody.setItemCode(headerGrid.getItemCode());
 							empBody.setItemName(headerGrid.getItemName());
 							empBody.setItemOrder(headerGrid.getItemOrder());
-							if (headerGrid.getItemName().equals(CheckFileFinder.header)) {
-								empBody.setValue(
-										cell.getValue() == null ? "" : value + " " + cell.getValue().getText());
-								empBody.setTextValue(
-										cell.getValue() == null ? "" : value + " " + cell.getValue().getText());
-							} else {
-								empBody.setValue(
-										cell.getValue() == null ? "" : cell.getValue().getText());
-								empBody.setTextValue(
-										cell.getValue() == null ? "" : cell.getValue().getText());
-							}
-
-							List<ComboBoxObject> combox = this.getComboBox(headerGrid, category, employeeDto.getEmployeeId(), empBody, items);
-							empBody.setLstComboBoxValue(combox);
+							empBody.setValue(cell.getValue() == null ? "" : cell.getValue().getText());
+							List<ComboBoxObject> comboxLst = this.getComboBox(headerGrid, category, employeeDto.getEmployeeId(), empBody, items);
+							Optional<ComboBoxObject> combo = comboxLst.stream().filter(c -> c.getOptionValue().equals(selectionCode)).findFirst();
+							empBody.setValue(combo.isPresent() == true? combo.get().getOptionValue(): "");
+							empBody.setLstComboBoxValue(comboxLst);
 							items.add(empBody);
+						}else {
+							if (!headerGrid.getItemName().equals(CheckFileFinder.header)) {
+								empBody.setItemCode(headerGrid.getItemCode());
+								empBody.setItemName(headerGrid.getItemName());
+								empBody.setItemOrder(headerGrid.getItemOrder());
+								empBody.setValue(cell.getValue() == null ? "" : cell.getValue().getText());
+								empBody.setTextValue(cell.getValue() == null ? "" : cell.getValue().getText());
+								items.add(empBody);
+							}
 						}
+
+						
+						
 						headerRemain.add(headerGrid);
 					}
 				}
@@ -361,6 +488,7 @@ public class CheckFileFinder {
 			}
 			
 		});
+		
 		List<EmployeeRowDto> result = Collections.synchronizedList(new ArrayList<>());
 		// lấy ra những item bị thiếu không file import ko có trong setting ở màn hình A, set RecordId
 		headerReal.removeAll(headerRemain);
@@ -399,9 +527,10 @@ public class CheckFileFinder {
 							});
 
 						});
+						
+						// sắp xếp lại vị trí item
 						pdt.getItems().sort(Comparator.comparing(ItemRowDto::getItemOrder, Comparator.naturalOrder()));
-						//sorted(Comparator.comparing(GridEmpHead::getItemOrder, Comparator.naturalOrder()).thenComparing(GridEmpHead::getItemCode, Comparator.naturalOrder()))
-						//.collect(Collectors.toList());
+						
 					result.add(pdt);
 				}
 				

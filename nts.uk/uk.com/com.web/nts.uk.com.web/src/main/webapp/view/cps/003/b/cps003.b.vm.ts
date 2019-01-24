@@ -28,7 +28,7 @@ module cps003.b.vm {
                     fileId: self.currentFile().fileId(),
                     fileName: self.currentFile().filename(),
                     categoryId: self.currentMode().categoryId,
-                    columnChange:  self.currentMode().columnChange     
+                    columnChange: self.currentMode().columnChange    
                 };
             
             if(_.isEmpty(self.currentFile().filename())){
@@ -62,7 +62,7 @@ module cps003.b.vm {
         categoryName: string;
         systemDate: string;
         mode: KnockoutObservable<number> = ko.observable(1);
-        columnChange: Array<string> = [];
+        columnChange: Array<any> = [];
         sids: Array<string>;
         mode : KnockoutObservable<number> = ko.observable(1);
         roundingRules : Array<any> = [
@@ -78,6 +78,25 @@ module cps003.b.vm {
             self.columnChange = data.columnChange;
             self.sids = data.systemDate;
         }
+    }
+    
+    interface ICheckFileParams{
+        fileId: string;
+        fileName: string;
+        categoryId: string;
+        columnChange:  Array<IDataHead>;    
+    }
+    
+        /* Dữ liệu  */
+    export interface IDataHead {
+        itemId: string;
+        itemCode: string;
+        itemName: string;
+        itemOrder: number;
+        itemParentCode: string;
+        itemTypeState: ISingleItem;
+        required: boolean;
+        resourceId: string;
     }
     
     class FileData{
@@ -117,7 +136,7 @@ module cps003.b.vm {
                 self.fileId(res[0].id);
                 self.imageSize("(" +format(text('CCG013_99'), res[0].originalSize)+")");
             }).fail(function(err) {
-                alertError("Msg_1466");
+                alertError({ messageId: "Msg_1466" });
             });
         }
     
