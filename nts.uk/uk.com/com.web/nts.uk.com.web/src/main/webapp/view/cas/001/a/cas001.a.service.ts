@@ -32,9 +32,13 @@ module nts.uk.com.view.cas001.a.service {
     }
     export function saveAsExcel(languageId: string): JQueryPromise<any> {
         let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-        let programName = program[1]!=null?program[1]:"";
+        let domainType = "CAS001";
+        if (program.length > 1){
+            program.shift();
+            domainType = domainType + program.join(" ");
+        }
         let _params = {domainId: "PersonRole", 
-                        domainType: "CAS001"+programName, 
+                        domainType:domainType,
                         languageId: languageId, reportType: 0};
         return nts.uk.request.exportFile('/masterlist/report/print', _params);
     }
