@@ -233,14 +233,10 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
 
 
     private static final String SQLSetEmployees = "SELECT   " +
-            "  CASE WHEN emp.DEL_STATUS_ATR = 0 THEN emp.SCD " +
-            " ELSE NULL " +
-            " END SCD,   " +
-            "  CASE WHEN emp.DEL_STATUS_ATR = 0 THEN p.BUSINESS_NAME " +
-            " ELSE NULL " +
-            " END BUSINESS_NAME,   " +
+            " emp.SCD, " +
+            " p.BUSINESS_NAME,   " +
             "  s.BONUS_PAY_SET_CD,   " +
-            "  ps.BONUS_PAY_SET_NAME, emp.DEL_STATUS_ATR   " +
+            "  ps.BONUS_PAY_SET_NAME   " +
             "FROM   " +
             "  KBPST_PS_BP_SET s   " +
             "  LEFT JOIN BSYMT_EMP_DTA_MNG_INFO emp ON s.SID = emp.SID   " +
@@ -617,7 +613,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
         Map<String,MasterCellData> data = new HashMap<>();
         data.put(SettingTimeZoneUtils.KMK005_123, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_123)
-                .value(rs.getString("SCD") != null ? rs.getString("SCD") : "マスタ未登録")
+                .value(rs.getString("SCD"))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_124, MasterCellData.builder()
