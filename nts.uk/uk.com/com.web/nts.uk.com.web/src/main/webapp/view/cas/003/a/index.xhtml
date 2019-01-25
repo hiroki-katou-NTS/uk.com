@@ -30,11 +30,11 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button tabindex="1" class="proceed" data-bind="click: submitData">#{i18n.getText('CAS003_2')}</button>
-				<button tabindex="16" id="print-button"  data-bind="click: exportExcel">#{i18n.getText('CAS003_38')}</button>
+				<button tabindex="2" id="print-button"  data-bind="click: exportExcel">#{i18n.getText('CAS003_38')}</button>
 			</div>
 			<div id="contents-area">
 				<div class="container">
-					<div class="cboPassPolicy" tabindex="2"
+					<div class="cboPassPolicy" tabindex="3"
 						data-bind="ntsCheckBox: { checked: passPolicyCheck }">#{i18n.getText('CAS003_3')}</div>
 					<div id="panelPassPolicy" class="panel panel-frame">
 
@@ -43,7 +43,7 @@
 								data-bind="ntsFormLabel: { required: true, constraint: 'PasswordLowestDigits' }">
 								#{i18n.getText('CAS003_4')}</div>
 
-							<input tabindex="3" id="txtlowestDigit"
+							<input tabindex="4" id="txtlowestDigit"
 								data-bind="ntsNumberEditor: {
 														name: '#[CAS003_4]',
 														value: lowestDigits, 
@@ -60,7 +60,7 @@
 								#{i18n.getText('CAS003_6')}</div>
 
 							<div class="contentPassComplex">
-								<label>#{i18n.getText('CAS003_7')}</label> <input tabindex="4"
+								<label>#{i18n.getText('CAS003_7')}</label> <input tabindex="5"
 									id="txtAlphabetDigit"
 									data-bind="ntsNumberEditor: {
 														name: '#[CAS003_7]',
@@ -73,7 +73,7 @@
 									class="labelInfo">#{i18n.getText('CAS003_9')}</label>
 							</div>
 							<div class="contentPassComplex">
-								<label>#{i18n.getText('CAS003_10')}</label> <input tabindex="5"
+								<label>#{i18n.getText('CAS003_10')}</label> <input tabindex="6"
 									id="txtNumberOfDigit"
 									data-bind="ntsNumberEditor: {
 														name: '#[CAS003_10]',
@@ -87,7 +87,7 @@
 
 							</div>
 							<div class="contentPassComplex">
-								<label>#{i18n.getText('CAS003_13')}</label> <input tabindex="6"
+								<label>#{i18n.getText('CAS003_13')}</label> <input tabindex="7"
 									id="txtSymbolCharacters"
 									data-bind="ntsNumberEditor: {
 														name: '#[CAS003_13]',
@@ -106,7 +106,7 @@
 								data-bind="ntsFormLabel: { required: true ,constraint:'PasswordHistoryCount'}">
 								#{i18n.getText('CAS003_16')}</div>
 							<div class="contentsymbol">
-								<input tabindex="7" id="txtHistoryCount"
+								<input tabindex="8" id="txtHistoryCount"
 									data-bind="ntsNumberEditor: {
 														name: '#[CAS003_16]',
 														value: historyCount, 
@@ -125,7 +125,7 @@
 								data-bind="ntsFormLabel: { required: true ,constraint: 'PasswordValidityPeriod'}">
 								#{i18n.getText('CAS003_19')}</div>
 							<div class="contentsymbol">
-								<input tabindex="8" id="txtValidityPeriod"
+								<input tabindex="9" id="txtValidityPeriod"
 									data-bind="ntsNumberEditor: {
 														name: '#[CAS003_19]',
 														value: validityPeriod, 
@@ -144,7 +144,7 @@
 								data-bind="ntsFormLabel: { required: true, constraint: 'NotificationPasswordChange' }">
 								#{i18n.getText('CAS003_22')}</div>
 							<div class="contentsymbol">
-								<input tabindex="9" id="txtPasswordChange"
+								<input tabindex="10" id="txtPasswordChange"
 									data-bind="ntsNumberEditor: {
 														name: '#[CAS003_22]',
 														value: notificationPasswordChange, 
@@ -159,16 +159,16 @@
 						</div>
 
 						<div class="component-area">
-							<div id="cbofirstTime" tabindex="10"
+							<div id="cbofirstTime" tabindex="11"
 								data-bind="ntsCheckBox: { checked: firstTimeCheck, enable: passPolicyCheck }">#{i18n.getText('CAS003_25')}</div>
 						</div>
 						<div class="component-area">
-							<div id="cboViolationPass" tabindex="11"
+							<div id="cboViolationPass" tabindex="12"
 								data-bind="ntsCheckBox: { checked: violationPassCheck, enable: passPolicyCheck }">#{i18n.getText('CAS003_26')}</div>
 						</div>
 
 					</div>
-					<div class="cboAcclock" tabindex="12"
+					<div class="cboAcclock" tabindex="13"
 						data-bind="ntsCheckBox: { checked: accLockCheck }">#{i18n.getText('CAS003_27')}</div>
 
 					<div id="pabelAccLock" class="panel panel-frame">
@@ -178,7 +178,7 @@
 								data-bind="ntsFormLabel: { required: true , constraint: ['LockInterval','ErrorCount']}">
 								#{i18n.getText('CAS003_28')}</div>
 							<div class="contentPassComplex">
-								<label>#{i18n.getText('CAS003_29')}</label> <input tabindex="13"
+								<label>#{i18n.getText('CAS003_29')}</label> <input tabindex="14"
 									id="txtLockInterval"
 									data-bind="ntsTimeEditor: {
 														name: '#[CAS003_35]',
@@ -193,7 +193,7 @@
 								<label>#{i18n.getText('CAS003_31')}</label>
 							</div>
 							<div class="contentPassComplex1">
-								<label>#{i18n.getText('CAS003_30')}</label> <input tabindex="14"
+								<label>#{i18n.getText('CAS003_30')}</label> <input tabindex="15"
 									id="txtErrorCount"
 									data-bind="ntsNumberEditor: {
 														name: '#[CAS003_36]',
@@ -211,7 +211,7 @@
 							<div class="form1"
 								data-bind="ntsFormLabel: { required: true, constraint: 'LockOutMessage' }">
 								#{i18n.getText('CAS003_32')}</div>
-							<textarea class="textAreaSize" tabindex="15"
+							<textarea class="textAreaSize" tabindex="16"
 								id="txtLockOutMessage"
 								data-bind="ntsMultilineEditor: { value: lockOutMessage,required: accLockCheck, name: '#[CAS003_32]', constraint: 'LockOutMessage', option: { width: '700px'}, enable: accLockCheck}"></textarea>
 						</div>

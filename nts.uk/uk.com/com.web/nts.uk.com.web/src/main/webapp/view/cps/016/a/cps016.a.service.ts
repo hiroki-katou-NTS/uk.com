@@ -43,9 +43,13 @@ module nts.uk.com.view.cps016.a.service {
     }
     export function saveAsExcel(languageId: string): JQueryPromise<any> {
         let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-        let programName = program[1]!=null?program[1]:""; 
+        let domainType = "CPS016";
+        if (program.length > 1){
+            program.shift();
+            domainType = domainType + program.join(" ");
+        }
         let _params = {domainId: "SelectionItem", 
-                        domainType: "CPS016"+programName, 
+                        domainType:domainType,
                         languageId: languageId, 
                         reportType: 0};
         return nts.uk.request.exportFile('/masterlist/report/print', _params);

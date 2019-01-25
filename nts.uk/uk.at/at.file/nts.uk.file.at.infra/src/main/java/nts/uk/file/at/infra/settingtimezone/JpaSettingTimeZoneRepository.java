@@ -233,33 +233,34 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
 
 
     private static final String SQLSetEmployees = "SELECT   " +
-            "  emp.SCD,   " +
-            "  p.BUSINESS_NAME,   " +
-            "  ps.BONUS_PAY_SET_CD,   " +
+            " emp.SCD, " +
+            " p.BUSINESS_NAME,   " +
+            "  s.BONUS_PAY_SET_CD,   " +
             "  ps.BONUS_PAY_SET_NAME   " +
             "FROM   " +
             "  KBPST_PS_BP_SET s   " +
             "  LEFT JOIN BSYMT_EMP_DTA_MNG_INFO emp ON s.SID = emp.SID   " +
             "  LEFT JOIN BPSMT_PERSON p ON p.PID = emp.PID    " +
-            "  LEFT JOIN KBPMT_BONUS_PAY_SET ps ON ps.BONUS_PAY_SET_CD = s.BONUS_PAY_SET_CD " +
-            "  ORDER BY CASE WHEN SCD IS NULL THEN 1 ELSE 0 END ASC,SCD ";
+            "  LEFT JOIN KBPMT_BONUS_PAY_SET ps ON ps.BONUS_PAY_SET_CD = s.BONUS_PAY_SET_CD AND (emp.CID IS NULL OR emp.CID = ps.CID) " +
+            " WHERE emp.CID = ?" +
+            "  ORDER BY CASE WHEN emp.DEL_STATUS_ATR = 1 THEN 1 ELSE 0 END ASC,SCD ";
 
     private static final String SQLSetUsedWorkingHours = "SELECT    " +
-            "   w.WORKTIME_CD,    " +
+            "   s.WORKING_CD,    " +
             "   w.NAME,    " +
-            "   ps.BONUS_PAY_SET_CD,    " +
+            "   s.BONUS_PAY_SET_CD,    " +
             "   ps.BONUS_PAY_SET_NAME     " +
             "FROM    " +
             "   KBPST_WT_BP_SET s    " +
             "   LEFT JOIN KSHMT_WORK_TIME_SET w ON s.CID = w.CID     " +
             "   AND s.WORKING_CD = w.WORKTIME_CD    " +
-            "   LEFT JOIN KBPMT_BONUS_PAY_SET ps ON ps.BONUS_PAY_SET_CD = s.BONUS_PAY_SET_CD     " +
+            "   LEFT JOIN KBPMT_BONUS_PAY_SET ps ON ps.BONUS_PAY_SET_CD = s.BONUS_PAY_SET_CD  AND ps.CID = s.CID " +
             "WHERE    " +
             "   s.CID = ?     " +
-            "ORDER BY CASE WHEN w.WORKTIME_CD IS NULL THEN 1 ELSE 0 END ASC, w.WORKTIME_CD";
+            "ORDER BY s.WORKING_CD";
 
     private static final String SQLSetUpUseCompany = "SELECT " +
-            "  ps.BONUS_PAY_SET_CD, " +
+            "  s.BONUS_PAY_SET_CD, " +
             "  ps.BONUS_PAY_SET_NAME  " +
             " FROM " +
             "  KBPST_CP_BP_SET s " +
@@ -341,17 +342,17 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
         exportSQL.append("      FROM (SELECT DISTINCT WKPCD , WKPID, CID ");
         exportSQL.append("          FROM BSYMT_WORKPLACE_INFO ");
         exportSQL.append("          WHERE CID = ?) i ");
-        exportSQL.append("      RIGHT JOIN  (SELECT   p.BONUS_PAY_SET_CD, ");
+        exportSQL.append("      RIGHT JOIN  (SELECT   s.BONUS_PAY_SET_CD, ");
         exportSQL.append("                 p.BONUS_PAY_SET_NAME,");
         exportSQL.append("                 s.WKPID, ");
-        exportSQL.append("                 p.CID ");
+        exportSQL.append("                 s.CID ");
         exportSQL.append("            FROM (SELECT  BONUS_PAY_SET_CD,");
         exportSQL.append("                   BONUS_PAY_SET_NAME,");
         exportSQL.append("                   CID ");
         exportSQL.append("               FROM KBPMT_BONUS_PAY_SET ");
         exportSQL.append("               WHERE CID = ?) p");
         exportSQL.append("            RIGHT JOIN KBPST_WP_BP_SET s ON s.CID = p.CID AND s.BONUS_PAY_SET_CD = p.BONUS_PAY_SET_CD) a ");
-        exportSQL.append("      ON a.CID = i.CID AND a.WKPID = i.WKPID) k ");
+        exportSQL.append("      ON a.CID = i.CID AND a.WKPID = i.WKPID WHERE a.CID = ? )  k ");
         exportSQL.append("    ON w.WKPID = k.WKPID ");
         exportSQL.append("   ORDER BY CASE WHEN wci.HIERARCHY_CD IS NULL THEN 1 ELSE 0 END ASC, HIERARCHY_CD");
 
@@ -359,6 +360,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             stmt.setString(1,companyId);
             stmt.setString(2,companyId);
             stmt.setString(3,companyId);
+            stmt.setString(4,companyId);
             datas = new NtsResultSet(stmt.executeQuery()).getList(x -> toMasterDataOfSetSubUseWorkPlace(x));
         }
         return datas;
@@ -369,6 +371,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
     public List<MasterData> getInfoSetEmployees(String companyId) {
         List<MasterData> datas = new ArrayList<>();
         try(PreparedStatement stmt = this.connection().prepareStatement(SQLSetEmployees)){
+            stmt.setString(1,companyId);
             datas = new NtsResultSet(stmt.executeQuery()).getList(x -> toMasterDataOfSetEmployees(x));
         }
         return datas;
@@ -594,7 +597,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_106, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_106)
-                .value(rs.getString("BONUS_PAY_SET_CD") != null ? rs.getString("BONUS_PAY_SET_CD") : "マスタ未登録")
+                .value(rs.getString("BONUS_PAY_SET_CD"))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_107, MasterCellData.builder()
@@ -610,7 +613,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
         Map<String,MasterCellData> data = new HashMap<>();
         data.put(SettingTimeZoneUtils.KMK005_123, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_123)
-                .value(rs.getString("SCD") != null ? rs.getString("SCD") : "マスタ未登録")
+                .value(rs.getString("SCD"))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_124, MasterCellData.builder()
@@ -620,7 +623,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_106, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_106)
-                .value(rs.getString("BONUS_PAY_SET_CD") != null ? rs.getString("BONUS_PAY_SET_CD") : "マスタ未登録")
+                .value(rs.getString("BONUS_PAY_SET_CD"))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_107, MasterCellData.builder()
@@ -636,7 +639,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
         Map<String,MasterCellData> data = new HashMap<>();
         data.put(SettingTimeZoneUtils.KMK005_125, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_125)
-                .value(rs.getString("WORKTIME_CD") != null ? rs.getString("WORKTIME_CD") : "マスタ未登録")
+                .value(rs.getString("WORKING_CD"))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_126, MasterCellData.builder()
@@ -646,7 +649,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_106, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_106)
-                .value(rs.getString("BONUS_PAY_SET_CD") != null ? rs.getString("BONUS_PAY_SET_CD") : "マスタ未登録")
+                .value(rs.getString("BONUS_PAY_SET_CD"))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_107, MasterCellData.builder()
@@ -662,7 +665,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
         Map<String,MasterCellData> data = new HashMap<>();
         data.put(SettingTimeZoneUtils.KMK005_106, MasterCellData.builder()
                 .columnId(SettingTimeZoneUtils.KMK005_106)
-                .value(rs.getString("BONUS_PAY_SET_CD") == null ? "マスタ未登録" : rs.getString("BONUS_PAY_SET_CD"))
+                .value(rs.getString("BONUS_PAY_SET_CD"))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(SettingTimeZoneUtils.KMK005_107, MasterCellData.builder()
