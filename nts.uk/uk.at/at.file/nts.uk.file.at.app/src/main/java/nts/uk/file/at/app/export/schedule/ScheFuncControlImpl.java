@@ -282,6 +282,18 @@ public class ScheFuncControlImpl implements MasterListData {
 							} else {
 								_check = false;
 							}
+						} else if (child.equals(TextResource.localize("KSM011_50")) && parent.equals(TextResource.localize("KSM011_48"))){
+							if (scheFuncControl.getSearchMethod().value == 1){
+								_check = false;
+							} else {
+								String value = getScheFuncControlValue(parent, child, scheFuncControl);
+								if (value != null){
+									data.put("値", value);
+									_check = true;
+								} else {
+									_check = false;
+								}
+							}
 						} else {
 							String value = getScheFuncControlValue(parent, child, scheFuncControl);
 							if (value != null){
@@ -679,7 +691,7 @@ public class ScheFuncControlImpl implements MasterListData {
 				break;
 			}
 		} else if (key.equals(TextResource.localize("KSM011_50")) && parent.equals(TextResource.localize("KSM011_48"))){
-			if (scheFuncControl.getSearchMethod().value == 1){
+			if (scheFuncControl.getSearchMethod().value == 0){
 				switch (scheFuncControl.getSearchMethodDispCls().value) {
 				case 0:
 					value = TextResource.localize("KSM011_51");
