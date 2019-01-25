@@ -3,6 +3,7 @@ package nts.uk.ctx.pereg.app.find.filemanagement;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -519,7 +520,9 @@ public class CheckFileFinder {
 					}
 					break;
 				case TIMEPOINT:
-					itemDto.setValue(new BigDecimal("1200"));
+					if(obj!= null) {
+					itemDto.setValue(convertTimepoint(obj.toString()));break;
+					}
 					break;
 				default: break;
 				}
@@ -527,12 +530,28 @@ public class CheckFileFinder {
 
 	}
 	
-//	private int convert(String value) {
-//		
-//		
-//		return 0;
-//	}
-	
-	
-	
+	/**
+	 * danh cho item kieu timepoint - 5
+	 * convertTimepoint -> int
+	 * @param value
+	 * @return
+	 */
+	private int convertTimepoint(String value) {
+		List<String> day = Arrays.asList("当日","前日","翌日");
+		for(int i = 0; i< day.size(); i++) {
+			if(value.matches((day.get(i)+"(.*)"))) {
+				String[] e = value.split("日");
+				int minute= MinutesBasedTimeParser.parse(e[1]).asDuration();
+				switch(i) {
+				case 0:
+					return minute;
+				case 1:
+					return -minute;
+				case 2:
+					return minute+ 24*60;
+				}
+			}
+		}
+		return 0;
+	}
 }
