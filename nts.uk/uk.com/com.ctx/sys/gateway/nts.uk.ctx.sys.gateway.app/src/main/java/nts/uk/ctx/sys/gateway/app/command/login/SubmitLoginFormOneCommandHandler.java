@@ -107,7 +107,7 @@ public class SubmitLoginFormOneCommandHandler extends LoginBaseCommandHandler<Su
 		
 		//ログインセッション作成 (set info to session)
 		context.getCommand().getRequest().changeSessionId();
-		this.initSession(user, command.isSignOn());
+		this.initSession(user);
 		
 		// アルゴリズム「システム利用停止の確認」を実行する
 		String programID = AppContexts.programId().substring(0, 6);

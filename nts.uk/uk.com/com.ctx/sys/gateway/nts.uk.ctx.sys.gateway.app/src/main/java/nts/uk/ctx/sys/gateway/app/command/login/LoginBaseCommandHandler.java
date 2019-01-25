@@ -347,13 +347,10 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 
 	/**
 	 * CCG007-B.セッション生成
-	 *
-	 * @param user
-	 *            the user
-	 * @return the check change pass dto
+	 * @param user ユーザ
 	 */
 	//EA修正履歴 No.3033
-	public CheckChangePassDto initSession(UserImportNew user, boolean isSignon) {
+	public void initSession(UserImportNew user) {
 		//切替可能な会社一覧を取得する(Có được danh sách công ty có thể chuyển đổi)
 		List<String> lstCID = collectComList.getCompanyList(user.getUserId(), user.getContractCode());
 		String assePersonId = user.getAssociatePersonId().isPresent() ? user.getAssociatePersonId().get() : null;
@@ -381,7 +378,6 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		}
 		//権限（ロール）情報を取得、設定する(Acquire and set authority (role) information)
 		this.setRoleId(user.getUserId());
-		return new CheckChangePassDto(false, null, false);
 	}
 	/**
 	 * Check after login.

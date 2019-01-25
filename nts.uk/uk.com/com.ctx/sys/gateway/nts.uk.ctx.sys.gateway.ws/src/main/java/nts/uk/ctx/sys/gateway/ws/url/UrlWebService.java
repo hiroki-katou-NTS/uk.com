@@ -192,7 +192,7 @@ public class UrlWebService {
 		String companyCD = AppContexts.user().companyCode();
 		// 社員コードの存在チェック
 		if(Strings.isBlank(employeeCD)){
-			submitLoginFormOneCommandHandler.initSession(urlAccApprovalOutput.getUserImport(), false);
+			submitLoginFormOneCommandHandler.initSession(urlAccApprovalOutput.getUserImport());
 		} else {
 			companyCD = companyBsAdapter.getCompanyByCid(companyID).getCompanyCode();
 			submitLoginFormTwoCommandHandler.setLoggedInfo(
