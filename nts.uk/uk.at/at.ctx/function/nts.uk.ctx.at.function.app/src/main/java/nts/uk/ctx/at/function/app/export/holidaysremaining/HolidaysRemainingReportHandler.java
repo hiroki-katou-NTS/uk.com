@@ -309,6 +309,13 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		// RequestList207
 		NursingLeaveCurrentSituationImported nursingLeave = null;
 
+		//add by HieuLT
+		CurrentHolidayImported currentHolidayLeft = null;
+		
+		CurrentHolidayRemainImported currentHolidayRemainLeft = null; 
+		
+		
+		
 		if (!closureInforOpt.isPresent()) {
 			return null;
 		}
@@ -384,6 +391,11 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 			if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
 				listStatusHoliday = hdRemainMer.getResult259();
 			}
+			DatePeriod periodDate = new DatePeriod(GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1), GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1).addMonths(1).addDays(-1));
+			BreakDayOffRemainMngParam param = new BreakDayOffRemainMngParam(cId, employeeId, periodDate, false, closureInforOpt.get().getPeriod().end(), false, new ArrayList<>(), new ArrayList<>(),new ArrayList<>());
+			BreakDayOffRemainMngOfInPeriod currentHoliday = breakDayOffMngInPeriodQuery .getBreakDayOffMngInPeriod(param);
+			currentHolidayLeft = new CurrentHolidayImported(currentMonth, currentHoliday.getCarryForwardDays(), currentHoliday.getOccurrenceDays(), currentHoliday.getUseDays(), currentHoliday.getUnDigestedDays(), currentHoliday.getRemainDays());
+			
 		}
 
 		if (variousVacationControl.isPauseItemHolidaySetting()) {
@@ -405,11 +417,15 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 						remainMng.getOccurrenceDays(), remainMng.getUseDays(), remainMng.getUnDigestedDays(),
 						remainMng.getRemainDays()));
 			}
-
+				
 			// Call RequestList260 ver2 - hoatt
 			if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
 				listStatusOfHoliday = hdRemainMer.getResult260();
 			}
+			DatePeriod periodDate =new DatePeriod(GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1), GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1).addMonths(1).addDays(-1));
+			AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(cId, employeeId, periodDate, closureInforOpt.get().getPeriod().end(), false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+			AbsRecRemainMngOfInPeriod remainMng = absenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(param);
+			currentHolidayRemainLeft = new CurrentHolidayRemainImported(currentMonth, remainMng.getCarryForwardDays(),remainMng.getOccurrenceDays(),remainMng.getUseDays(),remainMng.getUnDigestedDays(),remainMng.getRemainDays());
 		}
 		// hoatt
 		Map<Integer, SpecialVacationImported> mapSpecVaca = new HashMap<>();
@@ -471,7 +487,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 		return new HolidayRemainingInfor(grantDate, listAnnLeaGrantNumber, annLeaveOfThisMonth, listAnnualLeaveUsage,
 				listAnnLeaveUsageStatusOfThisMonth, reserveHoliday, listReservedYearHoliday, listRsvLeaUsedCurrentMon,
 				listCurrentHoliday, listStatusHoliday, listCurrentHolidayRemain, listStatusOfHoliday, mapSpecVaca,
-				lstMapSPVaCurrMon, mapSpeHd, childNursingLeave, nursingLeave);
+				lstMapSPVaCurrMon, mapSpeHd, childNursingLeave, nursingLeave , currentHolidayLeft , currentHolidayRemainLeft);
 	}
 
 	private Optional<ClosureInfo> getClosureInfor(int closureId) {
