@@ -26,8 +26,10 @@ import nts.uk.ctx.sys.gateway.dom.login.EmployCodeEditType;
 import nts.uk.ctx.sys.gateway.dom.login.LoginStatus;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeCodeSettingAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeCodeSettingImport;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
+import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImportNew;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccount;
 import nts.uk.shr.com.context.AppContexts;
@@ -73,7 +75,6 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		String contractCode = command.getContractCode();
 		String companyId = contractCode + "-" + companyCode;
 		String employeeId = null;
-		SignonEmployeeInfoData signonEmployeeInfoData =null;
 		
 		if (command.isSignOn()) {
 			// アルゴリズム「アカウント照合」を実行する
@@ -82,7 +83,11 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 			//get User
 			user = this.getUserAndCheckLimitTime(windowAcc);
 			oldPassword = user.getPassword();
-			signonEmployeeInfoData = this.getEmployeeInfoCaseSignon(windowAcc,true);
+			SignonEmployeeInfoData signonData = this.getEmployeeInfoCaseSignon(windowAcc,true);
+			CompanyInformationImport com = signonData.companyInformationImport;
+			EmployeeImportNew emp = signonData.employeeImportNew;
+			em = new EmployeeImport(com.getCompanyId(), emp.getPid(), emp.getEmployeeId(), emp.getEmployeeCode());
+			companyCode = com.getCompanyCode();
 		} else {
 			String employeeCode = command.getEmployeeCode();
 			oldPassword = command.getPassword();
@@ -129,14 +134,9 @@ public class SubmitLoginFormTwoCommandHandler extends LoginBaseCommandHandler<Su
 		
 		//set info to session
 		context.getCommand().getRequest().changeSessionId();
-		if (command.isSignOn()){
-			this.initSession(user, command.isSignOn());
-		} else {
-			this.setLoggedInfo(user, em, companyCode);
-		}
 		
-		//set role Id for LoginUserContextManager
-		this.setRoleId(user.getUserId());
+		//ログインセッション作成 (Create login session)
+        this.initSessionC(user, em, companyCode);
 		
 		// アルゴリズム「システム利用停止の確認」を実行する
 		String programID = AppContexts.programId().substring(0, 6);
