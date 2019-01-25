@@ -199,9 +199,9 @@
 	                                    <tr>
 	                                        <!--A8_4 要素番号1-->
 	                                        <th class="ui-widget-header" style="text-align: center;">#{i18n.getText('QMM016_29')}</th>
-	                                        <td>
+	                                        <td data-bind="if: elementSetting() == 0 || elementSetting() == 1 || elementSetting() == 2">
 	                                            <!--A8_5 参照ボタン1-->
-	                                            <div data-bind="if: elementSetting() == 0 || elementSetting() == 1 || elementSetting() == 2">
+	                                            <div>
 	                                                <button tabindex="15" class="small" id="A8_5"
 	                                                        data-bind="click: function(){$vm.selectElement(1)}, enable: !$vm.updateMode()">#{i18n.getText('QMM016_23')}</button>
 	                                            </div>

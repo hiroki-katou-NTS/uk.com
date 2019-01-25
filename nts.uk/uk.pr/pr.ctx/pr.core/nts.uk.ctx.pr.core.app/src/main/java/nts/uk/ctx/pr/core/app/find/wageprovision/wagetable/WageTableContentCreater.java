@@ -132,7 +132,7 @@ public class WageTableContentCreater {
 			long frameNum = 1;
 			if (rangeDto.getStepIncrement().compareTo(new BigDecimal(0)) > 0) {
 				while (rangeDto.getRangeLowerLimit().add(rangeDto.getStepIncrement())
-						.compareTo(rangeDto.getRangeUpperLimit()) <= 0) {
+						.compareTo(rangeDto.getRangeUpperLimit()) < 0) {
 					result.add(new ElementItemDto(null, null, frameNum, rangeDto.getRangeLowerLimit(),
 							rangeDto.getRangeLowerLimit().add(rangeDto.getStepIncrement()),
 							null));
