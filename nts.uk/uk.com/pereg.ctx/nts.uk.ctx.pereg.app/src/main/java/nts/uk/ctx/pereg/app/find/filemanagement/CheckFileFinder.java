@@ -258,77 +258,8 @@ public class CheckFileFinder {
 		List<EmployeeRowDto> employeeDtos = new ArrayList<>();
 		List<ItemRowDto> itemErrors = new ArrayList<>();
 		List<NtsExcelRow> rows = excelReader.rows();
-		rows.stream().forEach( row ->{
-			List<NtsExcelCell> cells = row.cells();		
-			EmployeeRowDto employeeDto = new EmployeeRowDto();
-			List<ItemRowDto> items = new ArrayList<>();
-			
-			cells.stream().forEach( cell -> {
-				String[] itemChilds = cell.getHeader().getMain().getValue().getText().split("＿");
-				String header = cell.getHeader().getMain().getValue().getText();
-				String headerTemp = itemChilds.length > 0? itemChilds[itemChilds.length - 1]: header;
-				// lấy emloyeeCode, employeeName
-				if (header.equals(TextResource.localize("CPS003_28"))) {
-					//employeeId
-					Optional<EmployeeDataMngInfo> emp = employees.stream().filter(c -> c.getEmployeeCode().toString().equals(cell.getValue().getText())).findFirst();
-					if(!emp.isPresent()) return;
-					employeeDto.setEmployeeCode(cell.getValue() == null ? "" : cell.getValue().getText());
-					employeeDto.setEmployeeId(emp.get().getEmployeeId());
-					employeeDto.setPersonId(emp.get().getPersonId());
-					
-				} else if (header.equals(TextResource.localize("CPS003_29"))) {
-					employeeDto.setEmployeeName(cell.getValue() == null ? "" : cell.getValue().getText());
-				} else {
-					
-					// lấy dữ liệu của itemName
-					boolean isSelectionCode = headerTemp.contains("（コード）");
-					if(isSelectionCode) {
-						CheckFileFinder.header = headerTemp.split("（")[0];
-					}
-					Optional<GridEmpHead> headerGridOpt = headerReal.stream().filter(c -> {
-						if(isSelectionCode) {
-							return c.getItemName().equals(CheckFileFinder.header);
-						}else{
-							return c.getItemName().equals(headerTemp);
-						}
-					}).findFirst();
-					
-					
-					if(headerGridOpt.isPresent()) {
-						GridEmpHead headerGrid = headerGridOpt.get();
-						Object contraint = contraintList.get(headerGrid.getItemCode());
-						ItemRowDto empBody = new ItemRowDto();
-						if(isSelectionCode) {
-							String selectionCode = cell.getValue() == null ? "" : cell.getValue().getText();
-							empBody.setItemCode(headerGrid.getItemCode());
-							empBody.setItemName(headerGrid.getItemName());
-							empBody.setItemOrder(headerGrid.getItemOrder());
-							empBody.setValue(cell.getValue() == null ? "" : cell.getValue().getText());
-							List<ComboBoxObject> comboxLst = this.getComboBox(headerGrid, category, employeeDto.getEmployeeId(), empBody, items);
-							Optional<ComboBoxObject> combo = comboxLst.stream().filter(c -> c.getOptionValue().equals(selectionCode)).findFirst();
-							empBody.setValue(combo.isPresent() == true? combo.get().getOptionValue(): "");
-							empBody.setLstComboBoxValue(comboxLst);
-							items.add(empBody);
-						}else {
-							if (!headerGrid.getItemName().equals(CheckFileFinder.header)) {
-								empBody.setItemCode(headerGrid.getItemCode());
-								empBody.setItemName(headerGrid.getItemName());
-								empBody.setItemOrder(headerGrid.getItemOrder());
-								convertValue(empBody, headerGrid, cell.getValue()==null? null: cell.getValue().getText(), contraint);
-								empBody.setTextValue(empBody.getValue()== null?"": empBody.getValue().toString());
-								items.add(empBody);
-							}
-						}
-						headerRemain.add(headerGrid);
-					}
-				}
-			});
-			employeeDto.setItems(items);
-			if(employeeDto.getEmployeeCode()!= null) {
-				employeeDtos.add(employeeDto);
-			}
-			
-		});
+		// đọc dữ liệu từ file import
+		readEmployeeFromFile(category,rows, employees, headerReal, contraintList, headerRemain,  employeeDtos);
 		
 		List<EmployeeRowDto> result = Collections.synchronizedList(new ArrayList<>());
 		// lấy ra những item bị thiếu không file import ko có trong setting ở màn hình A, set RecordId
@@ -380,6 +311,110 @@ public class CheckFileFinder {
 
 
 		return new GridDto(x, result, itemErrors);
+	}
+	
+	/**
+	 * đọc dữ liệu từ file import
+	 * @param category
+	 * @param rows
+	 * @param employees
+	 * @param headerReal
+	 * @param contraintList
+	 * @param headerRemain
+	 * @param employeeDtos
+	 */
+	private void readEmployeeFromFile(PersonInfoCategory category, List<NtsExcelRow> rows,
+			List<EmployeeDataMngInfo> employees, List<GridEmpHead> headerReal, HashMap<String, Object> contraintList,
+			List<GridEmpHead> headerRemain, List<EmployeeRowDto> employeeDtos) {
+
+		rows.stream().forEach( row ->{
+			List<NtsExcelCell> cells = row.cells();		
+			EmployeeRowDto employeeDto = new EmployeeRowDto();
+			List<ItemRowDto> items = new ArrayList<>();
+			
+			cells.stream().forEach( cell -> {
+				String[] itemChilds = cell.getHeader().getMain().getValue().getText().split("＿");
+				String header = cell.getHeader().getMain().getValue().getText();
+				String headerTemp = itemChilds.length > 0? itemChilds[itemChilds.length - 1]: header;
+				setItemDtoList(category, employees, cell, employeeDto, header, headerTemp,  headerReal, contraintList, items,  headerRemain);
+			});
+			employeeDto.setItems(items);
+			if(employeeDto.getEmployeeCode()!= null) {
+				employeeDtos.add(employeeDto);
+			}
+			
+		});
+
+	}
+	
+	private void setItemDtoList(PersonInfoCategory category, List<EmployeeDataMngInfo> employees, NtsExcelCell cell, EmployeeRowDto employeeDto,String header, String headerTemp,  List<GridEmpHead> headerReal,
+			 HashMap<String, Object> contraintList, List<ItemRowDto> items, List<GridEmpHead> headerRemain) {
+		// lấy emloyeeCode, employeeName
+		if (header.equals(TextResource.localize("CPS003_28"))) {
+			// employeeId
+			Optional<EmployeeDataMngInfo> emp = employees.stream()
+					.filter(c -> c.getEmployeeCode().toString().equals(cell.getValue().getText())).findFirst();
+			if (!emp.isPresent())
+				return;
+			employeeDto.setEmployeeCode(cell.getValue() == null ? "" : cell.getValue().getText());
+			employeeDto.setEmployeeId(emp.get().getEmployeeId());
+			employeeDto.setPersonId(emp.get().getPersonId());
+
+		} else if (header.equals(TextResource.localize("CPS003_29"))) {
+			employeeDto.setEmployeeName(cell.getValue() == null ? "" : cell.getValue().getText());
+		} else {
+
+			// lấy dữ liệu của itemName
+			boolean isSelectionCode = headerTemp.contains("（コード）");
+			if (isSelectionCode) {
+				CheckFileFinder.header = headerTemp.split("（")[0];
+			}
+			Optional<GridEmpHead> headerGridOpt = headerReal.stream().filter(c -> {
+				if (isSelectionCode) {
+					return c.getItemName().equals(CheckFileFinder.header);
+				} else {
+					return c.getItemName().equals(headerTemp);
+				}
+			}).findFirst();
+
+			if (headerGridOpt.isPresent()) {
+				GridEmpHead headerGrid = headerGridOpt.get();
+				Object contraint = contraintList.get(headerGrid.getItemCode());
+				ItemRowDto empBody = new ItemRowDto();
+				if (isSelectionCode) {
+					String selectionCode = cell.getValue() == null ? "" : cell.getValue().getText();
+					empBody.setItemCode(headerGrid.getItemCode());
+					empBody.setItemName(headerGrid.getItemName());
+					empBody.setItemOrder(headerGrid.getItemOrder());
+					empBody.setValue(cell.getValue() == null ? "" : cell.getValue().getText());
+					if (headerGrid.isRequired()) {
+						if(cell.getValue() == null) {
+							empBody.setError(true); 
+						}
+					}
+					List<ComboBoxObject> comboxLst = this.getComboBox(headerGrid, category,
+							employeeDto.getEmployeeId(), empBody, items);
+					Optional<ComboBoxObject> combo = comboxLst.stream()
+							.filter(c -> c.getOptionValue().equals(selectionCode)).findFirst();
+					empBody.setValue(combo.isPresent() == true ? combo.get().getOptionValue() : "");
+					empBody.setLstComboBoxValue(comboxLst);
+	
+					items.add(empBody);
+				} else {
+					if (!headerGrid.getItemName().equals(CheckFileFinder.header)) {
+						empBody.setItemCode(headerGrid.getItemCode());
+						empBody.setItemName(headerGrid.getItemName());
+						empBody.setItemOrder(headerGrid.getItemOrder());
+						convertValue(empBody, headerGrid,
+								cell.getValue() == null ? null : cell.getValue().getText(), contraint);
+						empBody.setTextValue(empBody.getValue() == null ? "" : empBody.getValue().toString());
+						items.add(empBody);
+					}
+				}
+				headerRemain.add(headerGrid);
+			}
+		}
+		
 	}
 	
 	/**
@@ -510,6 +545,13 @@ public class CheckFileFinder {
 		return contraintList;
 	}
 	
+	/**
+	 * convertValue kết hợp với validate
+	 * @param itemDto
+	 * @param gridHead
+	 * @param value
+	 * @param contraint
+	 */
 	private void convertValue(ItemRowDto itemDto, GridEmpHead gridHead, Object value, Object contraint) {
 		if (gridHead.getItemTypeState().getItemType() == 2) {
 			SingleItemDto singleDto = (SingleItemDto) gridHead.getItemTypeState();
@@ -566,6 +608,30 @@ public class CheckFileFinder {
 					}
 				}
 				break;
+			case DATE:
+				itemDto.setValue(value == null ? null : value.toString());
+//				DateConstraint dateContraint = (DateConstraint) contraint;
+//				if (gridHead.isRequired()) {
+//					if (value == null) {
+//						itemDto.setError(true);
+//						break;
+//					} else {
+//						boolean string = dateContraint.validateDate(value.toString());
+//						if (string) {
+//							itemDto.setError(true);
+//							break;
+//						}
+//					}
+//				} else {
+//					if (value != null) {
+//						boolean string = dateContraint.validateDate(value.toString());
+//						if (string) {
+//							itemDto.setError(true);
+//							break;
+//						}
+//					}
+//				}
+				break;
 			case TIME:
 				TimeConstraint timeContraint = (TimeConstraint) contraint;
 				if (gridHead.isRequired()) {
@@ -612,6 +678,16 @@ public class CheckFileFinder {
 							itemDto.setError(true);
 							break;
 						}
+					}
+				}
+				break;
+				
+			case SELECTION:
+			case SELECTION_BUTTON:
+			case SELECTION_RADIO:
+				if (gridHead.isRequired()) {
+					if(value == null) {
+						itemDto.setError(true); break;
 					}
 				}
 				break;
