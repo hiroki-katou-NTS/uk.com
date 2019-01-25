@@ -95,7 +95,7 @@ public class ErrorAlarmWorkRecordExportImpl {
           
           List<MasterData> datas = new ArrayList<>();
           List<ErrorAlarmWorkRecord> listErrorAlarmWorkRecord = repository.getListErrorAlarmWorkRecord(companyId, 0)
-        		  .stream().filter(eral -> eral.getCode().v().startsWith("U"))
+        		  .stream()
                   .collect(Collectors.toList());// fixedAtr":1
 
           //7
@@ -163,7 +163,6 @@ public class ErrorAlarmWorkRecordExportImpl {
                            putEmptyDataOne(data);
                            data.put(header.get(1), c.getCode());
                            data.put(header.get(2), c.getName());
-                           //SAU PHAI SUA THEO TEXTRS
                            if(c.getUseAtr()==1){
                                   data.put(header.get(3), TextResource.localize("KDW006_185"));
                            }else{
@@ -320,7 +319,7 @@ public class ErrorAlarmWorkRecordExportImpl {
                                }
                            }
                            //20
-                            if(c.getWorkTypeCondition().getComparePlanAndActual() ==1){
+                            if(c.getWorkTimeCondition().getComparePlanAndActual() ==1){
                                   data.put(header.get(20), TextResource.localize("Enum_FilterByCompare_Extract_Same"));
                            }else{
                         	   if(c.getWorkTimeCondition().getComparePlanAndActual() ==0){
