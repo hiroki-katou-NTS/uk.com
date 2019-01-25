@@ -41,7 +41,7 @@ public class TimeConstraint extends DataConstraint {
 		}
 	}
 
-	private Optional<String> validateString(String value) {
+	public Optional<String> validateString(String value) {
 
 		// validate style
 		if (!validateTimeStyle(value)) {

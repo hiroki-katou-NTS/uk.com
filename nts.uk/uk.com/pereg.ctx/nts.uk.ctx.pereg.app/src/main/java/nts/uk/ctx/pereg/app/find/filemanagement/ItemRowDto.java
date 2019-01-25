@@ -23,5 +23,15 @@ public class ItemRowDto {
 	 private int itemOrder;
 	 private ActionRole actionRole;
 	 private List<ComboBoxObject> lstComboBoxValue;
+	 private boolean error;
+	 
+	 public ItemRowDto(String itemCode, String itemName, Object value, String textValue, int itemOrder, List<ComboBoxObject> lstComboBoxValue) {
+		 this.itemCode = itemCode;
+		 this.itemName = itemName;
+		 this.value = value;
+		 this.textValue = textValue;
+		 this.itemOrder = itemOrder;
+		 this.lstComboBoxValue = lstComboBoxValue;
+	 }
 
 }

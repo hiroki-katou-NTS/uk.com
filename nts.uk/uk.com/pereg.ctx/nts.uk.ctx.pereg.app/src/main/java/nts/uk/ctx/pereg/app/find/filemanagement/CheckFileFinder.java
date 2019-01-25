@@ -240,9 +240,14 @@ public class CheckFileFinder {
 		return headerReal;
 	}
 	
-
-	
-	
+	/**
+	 * đoc file và lấy ra những item bị ẩn
+	 * @param excelReader
+	 * @param headerReal
+	 * @param category
+	 * @param employees
+	 * @return
+	 */
 	private GridDto getGridInfo(NtsExcelImport excelReader, List<GridEmpHead> headerReal, PersonInfoCategory category, List<EmployeeDataMngInfo> employees) {
 		/* lien quan den bodyData*/
 		List<GridEmpHead> headerRemain = new ArrayList<>();
@@ -251,6 +256,7 @@ public class CheckFileFinder {
 		HashMap<String, Object> contraintList = generateContraint(x);
 		System.out.println(contraintList);
 		List<EmployeeRowDto> employeeDtos = new ArrayList<>();
+		List<ItemRowDto> itemErrors = new ArrayList<>();
 		List<NtsExcelRow> rows = excelReader.rows();
 		rows.stream().forEach( row ->{
 			List<NtsExcelCell> cells = row.cells();		
@@ -290,6 +296,7 @@ public class CheckFileFinder {
 					
 					if(headerGridOpt.isPresent()) {
 						GridEmpHead headerGrid = headerGridOpt.get();
+						Object contraint = contraintList.get(headerGrid.getItemCode());
 						ItemRowDto empBody = new ItemRowDto();
 						if(isSelectionCode) {
 							String selectionCode = cell.getValue() == null ? "" : cell.getValue().getText();
@@ -307,7 +314,7 @@ public class CheckFileFinder {
 								empBody.setItemCode(headerGrid.getItemCode());
 								empBody.setItemName(headerGrid.getItemName());
 								empBody.setItemOrder(headerGrid.getItemOrder());
-								convertValue(empBody, headerGrid, cell.getValue().getObject());
+								convertValue(empBody, headerGrid, cell.getValue()==null? null: cell.getValue().getText(), contraint);
 								empBody.setTextValue(empBody.getValue()== null?"": empBody.getValue().toString());
 								items.add(empBody);
 							}
@@ -343,7 +350,7 @@ public class CheckFileFinder {
 					items.stream().forEach(item ->{
 						if(h.getItemId().equals(item.getItemDefId())) {
 							ItemRowDto dto = new ItemRowDto(h.getItemCode(), h.getItemName(), item.getType(),item.getValue(),
-									item.getTextValue(), item.getRecordId(),h.getItemOrder(), item.getActionRole(),item.getLstComboBoxValue());
+									item.getTextValue(), item.getRecordId(),h.getItemOrder(), item.getActionRole(),item.getLstComboBoxValue(), false);
 							itemDtos.add(dto);
 						}
 					});
@@ -355,15 +362,16 @@ public class CheckFileFinder {
 				items.stream().forEach(item -> {
 					pdt.getItems().stream().forEach(itemDto -> {
 						if (itemDto.getItemCode().equals(item.getItemCode())) {
-							itemDto.setDataType(item.getType());
 							itemDto.setRecordId(item.getRecordId());
 							itemDto.setActionRole(item.getActionRole());
+							if(itemDto.isError()) {
+								itemErrors.add(itemDto);
+							}
 							
 						}
 					});
-
 				});
-
+				pdt.setNumberOfError(itemErrors.size());
 				// sắp xếp lại vị trí item
 				pdt.getItems().sort(Comparator.comparing(ItemRowDto::getItemOrder, Comparator.naturalOrder()));
 				result.add(pdt);
@@ -371,7 +379,7 @@ public class CheckFileFinder {
 		}
 
 
-		return new GridDto(x, result, new ArrayList<>());
+		return new GridDto(x, result, itemErrors);
 	}
 	
 	/**
@@ -502,31 +510,115 @@ public class CheckFileFinder {
 		return contraintList;
 	}
 	
-	private void convertValue(ItemRowDto itemDto, GridEmpHead  gridHead, Object obj) {
-			if(gridHead.getItemTypeState().getItemType() == 2) {
-				SingleItemDto singleDto = (SingleItemDto) gridHead.getItemTypeState();
-				DataTypeStateDto dataTypeState = (DataTypeStateDto)singleDto.getDataTypeState();
-				DataTypeValue itemValueType = EnumAdaptor.valueOf(dataTypeState.getDataTypeValue(), DataTypeValue.class);
-				itemDto.setDataType(dataTypeState.getDataTypeValue());
-				switch (itemValueType) {
-				case NUMERIC:
-				case NUMBERIC_BUTTON:
-					itemDto.setValue(obj == null? null: new BigDecimal(obj.toString()));
-					break;
-				case TIME:
-					if(obj!= null) {
-						itemDto.setValue(new BigDecimal(MinutesBasedTimeParser.parse(obj.toString()).asDuration()));
+	private void convertValue(ItemRowDto itemDto, GridEmpHead gridHead, Object value, Object contraint) {
+		if (gridHead.getItemTypeState().getItemType() == 2) {
+			SingleItemDto singleDto = (SingleItemDto) gridHead.getItemTypeState();
+			DataTypeStateDto dataTypeState = (DataTypeStateDto) singleDto.getDataTypeState();
+			DataTypeValue itemValueType = EnumAdaptor.valueOf(dataTypeState.getDataTypeValue(), DataTypeValue.class);
+			itemDto.setDataType(dataTypeState.getDataTypeValue());
+			switch (itemValueType) {
+			case STRING:
+				itemDto.setValue(value == null? null: value.toString());
+				StringConstraint stringContraint = (StringConstraint) contraint;
+				if (gridHead.isRequired()) {
+					if (value == null) {
+						itemDto.setError(true);
 						break;
+					} else {
+						Optional<String> string = stringContraint.validateString(value.toString());
+						if (string.isPresent()) {
+							itemDto.setError(true);
+							break;
+						}
 					}
-					break;
-				case TIMEPOINT:
-					if(obj!= null) {
-					itemDto.setValue(convertTimepoint(obj.toString()));break;
+				} else {
+					if (value != null) {
+						Optional<String> string = stringContraint.validateString(value.toString());
+						if (string.isPresent()) {
+							itemDto.setError(true);
+							break;
+						}
 					}
-					break;
-				default: break;
 				}
+				break;
+			case NUMERIC:
+			case NUMBERIC_BUTTON:
+				itemDto.setValue(value == null ? null : new BigDecimal(value.toString()));
+				NumericConstraint numberContraint = (NumericConstraint) contraint;
+				if (gridHead.isRequired()) {
+					if (value == null) {
+						itemDto.setError(true);
+						break;
+					} else {
+						Optional<String> string = numberContraint.validateString(value.toString());
+						if (string.isPresent()) {
+							itemDto.setError(true);
+							break;
+						}
+					}
+				} else {
+					if (value != null) {
+						Optional<String> string = numberContraint.validateString(value.toString());
+						if (string.isPresent()) {
+							itemDto.setError(true);
+							break;
+						}
+					}
+				}
+				break;
+			case TIME:
+				TimeConstraint timeContraint = (TimeConstraint) contraint;
+				if (gridHead.isRequired()) {
+					if (value == null) {
+						itemDto.setError(true);
+						break;
+					} else {
+						itemDto.setValue(new BigDecimal(MinutesBasedTimeParser.parse(value.toString()).asDuration()));
+						Optional<String> string = timeContraint.validateString(value.toString());
+						if (string.isPresent()) {
+							itemDto.setError(true);
+							break;
+						}
+					}
+				} else {
+					if (value != null) {
+						itemDto.setValue(new BigDecimal(MinutesBasedTimeParser.parse(value.toString()).asDuration()));
+						Optional<String> string = timeContraint.validateString(value.toString());
+						if (string.isPresent()) {
+							itemDto.setError(true);
+							break;
+						}
+					}
+				}
+				break;
+			case TIMEPOINT:
+				TimePointConstraint timePointContraint = (TimePointConstraint) contraint;
+				if (gridHead.isRequired()) {
+					if (value != null) {
+						itemDto.setValue(convertTimepoint(value.toString()));
+						Optional<String> string = timePointContraint.validateString(value.toString());
+						if (string.isPresent()) {
+							itemDto.setError(true);
+							break;
+						}
+					} else {
+						itemDto.setError(true);
+					}
+				} else {
+					if (value != null) {
+						itemDto.setValue(convertTimepoint(value.toString()));
+						Optional<String> string = timePointContraint.validateString(value.toString());
+						if (string.isPresent()) {
+							itemDto.setError(true);
+							break;
+						}
+					}
+				}
+				break;
+			default:
+				break;
 			}
+		}
 
 	}
 	
