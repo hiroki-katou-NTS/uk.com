@@ -33,14 +33,13 @@ module nts.uk.pr.view.qmm017.f.viewmodel {
         }
 
         startPage(): JQueryPromise<any> {
-            let self = this;
+            let self = this, dfd = $.Deferred();
             block.invisible();
             let standardAmountCls = self.basicCalculationFormula.standardAmountClassification;
             service.getTargetItemCodeList(standardAmountCls, self.startMonth).done(function(data) {
                 if (standardAmountCls == model.STANDARD_AMOUNT_CLS.PAYMENT_ITEM || standardAmountCls == model.STANDARD_AMOUNT_CLS.DEDUCTION_ITEM)
-                data = data.map(item => {return {code: item.itemNameCd, name: item.name}})
+                data = data.map(item => {return {code: item.itemNameCd, name: item.name}});
                 self.targetItemCodeListItem(data);
-                $('#item_container').focus();
                 dfd.resolve();
                 block.clear();
             }).fail(function(err) {
@@ -48,7 +47,6 @@ module nts.uk.pr.view.qmm017.f.viewmodel {
                 dfd.reject();
                 dialog.alertError(err.message);
             });
-            let self = this, dfd = $.Deferred();
             return dfd.promise();
         }
         decideChangeItemList() {
