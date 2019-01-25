@@ -19,7 +19,8 @@ module cps003.f.vm {
             filter: ko.observable(''),
             value: ko.observable(),
             replacer: ko.observable(''),
-            itemData: ko.observable({ itemCode: '', dataType: 0, amount: 0 })
+            itemData: ko.observable({ itemCode: '', dataType: 0, amount: 0 }),
+            textView: ko.observable('')
         };
 
         dataSources: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -171,7 +172,8 @@ module cps003.f.vm {
                         writeConstraint(constraint.itemCode, constraint);
 
                         // if dataType isn't selection item
-                        if ([6, 7, 8].indexOf(item.itemTypeState.dataTypeState.dataTypeValue) == -1) {
+                        if ([ITEM_SINGLE_TYPE.SELECTION, ITEM_SINGLE_TYPE.SEL_RADIO, ITEM_SINGLE_TYPE.SEL_BUTTON]
+                            .indexOf(item.itemTypeState.dataTypeState.dataTypeValue) == -1) {
                             self.currentItem.itemData(itemData);
                             //self.currentItem.filter.valueHasMutated();
                         } else {
@@ -207,11 +209,30 @@ module cps003.f.vm {
                                     value = moment.utc(filter).format('YYYY/MM/DD');
                                     break;
                                 case ITEM_SINGLE_TYPE.STRING:
-                                case ITEM_SINGLE_TYPE.NUMERIC:
                                     value = filter;
+                                    break;
+                                case ITEM_SINGLE_TYPE.NUMERIC:
+                                    if (filter && !isNaN(Number(filter))) {
+                                        if (!itemData.amount) {
+                                            value = filter;
+                                        } else {
+                                            value = Number(filter).toLocaleString('ja-JP', { useGrouping: true });
+                                        }
+                                    }
+                                    break;
+                                case ITEM_SINGLE_TYPE.TIME:
+                                    if (filter && !isNaN(Number(filter))) {
+                                        value = parseTime(Number(filter), true).format();
+                                    }
+                                    break;
+                                case ITEM_SINGLE_TYPE.TIMEPOINT:
+                                    if (filter && !isNaN(Number(filter))) {
+                                        value = parseTimeWidthDay(Number(filter)).fullText;
+                                    }
                                     break;
                                 case ITEM_SINGLE_TYPE.SELECTION:
                                 case ITEM_SINGLE_TYPE.SEL_RADIO:
+                                case ITEM_SINGLE_TYPE.SEL_BUTTON:
                                     value = (_.find(itemData.selectionItems, m => m.optionValue == filter) || { optionText: '' }).optionText;
                                     break;
                             }
@@ -220,6 +241,19 @@ module cps003.f.vm {
                         } else {
                             self.currentItem.target(text('CPS003_121', [itemName]));
                         }
+                    }
+                }
+            });
+
+            ko.computed({
+                read: () => {
+                    let itemData = self.currentItem.itemData(),
+                        rep: any = self.currentItem.value();
+
+                    if (itemData.amount && rep.mode == '2') {
+                        self.currentItem.textView(text('CPS003_95'));
+                    } else {
+                        self.currentItem.textView(text('CPS003_94'));
                     }
                 }
             });
@@ -292,6 +326,7 @@ module cps003.f.vm {
         applyFor: KnockoutObservable<string>;
         itemData: KnockoutObservable<IItemData>;
         // and more prop
+        textView: KnockoutComputed<string>;
     }
 
     interface IModelDto {

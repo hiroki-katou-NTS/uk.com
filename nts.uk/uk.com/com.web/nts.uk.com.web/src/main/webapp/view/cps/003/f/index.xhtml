@@ -69,7 +69,7 @@
 					</div>
 					<div class="form-group" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_80')}</div>
 					<div class="form-group change-box">
-						<div data-bind="cps003fValue: { itemData: itemData, value: value }"></div>
+						<div data-bind="cps003fValue: { itemData: itemData, value: value, replacer: replacer }"></div>
 						<div class="change-desc">#{i18n.getText('CPS003_82')}</div>
 					</div>
 				</div>
@@ -83,11 +83,8 @@
 					<div>
 						<span data-bind="text: $vm.currentItem.name">#{i18n.getText('F2_004')}</span>
 						<span>#{i18n.getText('CPS003_93')}</span>
-						<span>#{i18n.getText('F2_006')}</span>
-						<!-- F2_007 -->
-						<span>#{i18n.getText('CPS003_94')}</span>
-						<!-- F2_008 -->
-						<!-- <span>#{i18n.getText('CPS003_95')}</span> -->
+						<span data-bind="text: $vm.currentItem.replacer">#{i18n.getText('F2_006')}</span>
+						<span data-bind="text: $vm.currentItem.textView"></span>
 					</div>
 				</div>				
 			</div>

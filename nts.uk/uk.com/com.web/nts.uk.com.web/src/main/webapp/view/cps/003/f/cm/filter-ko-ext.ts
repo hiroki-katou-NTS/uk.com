@@ -21,6 +21,7 @@ module nts.custombinding {
         itemCode: string;
         dataType: ITEM_SINGLE_TYPE;
         amount: number;
+        decimalLength?: number;
         selectionItems: Array<any>;
     }
 
@@ -34,7 +35,7 @@ module nts.custombinding {
                 itemData: IItemData = ko.toJS(accessor.itemData),
                 template = {
                     str: `<input data-bind="ntsTextEditor: { name: i18n('CPS003_78'), value: value, constraint: constraint,enable: enable, required: false }" />`,
-                    numb: `<input data-bind="ntsNumberEditor: { name: i18n('CPS003_78'), value: value, constraint: constraint, enable: enable, required: false, options: options }" />`,
+                    numb: `<input data-bind="ntsNumberEditor: { name: i18n('CPS003_78'), value: value, constraint: constraint, enable: enable, required: false, option: options }" />`,
                     date: `<div data-bind="ntsDatePicker: { name: i18n('CPS003_78'), constraint: constraint,value: value, enable: enable, required: false, dateFormat: 'YYYY/MM/DD' }"></div>`,
                     time: `<input data-bind="ntsTimeEditor: { name: i18n('CPS003_78'), value: value, constraint: constraint,inputFormat: 'time', mode: 'time', enable: enable, required: false }" />`,
                     timep: `<input data-bind="ntsTimeWithDayEditor: { name: i18n('CPS003_78'), value: value, constraint: constraint, enable: enable, required: false }" />`,
@@ -58,7 +59,10 @@ module nts.custombinding {
                     i18n: nts.uk.resource.getText,
                     value: ko.observable(),
                     constraint: '',
-                    options: ko.observable({}),
+                    options: {
+                        grouplength: 0,
+                        decimallength: 0
+                    },
                     enable: ko.observable(false),
                     textValue: ko.observable(''),
                     itemOptions: ko.observableArray([]),
@@ -192,14 +196,12 @@ module nts.custombinding {
                             ko.utils.setHtml(element, template.numb);
 
                             if (itemData.amount) {
-                                vm.options(new nts.uk.ui.option.CurrencyEditorOption({
-                                    grouplength: 3,
-                                    decimallength: 2,
-                                    textalign: 'left',
-                                    currencyformat: 'JPY',
-                                    currencyposition: 'right'
-                                }));
+                                vm.options.grouplength = 3;
+                            } else {
+                                vm.options.grouplength = 0;
                             }
+
+                            vm.options.decimallength = itemData.decimalLength;
                             break;
                         case ITEM_SINGLE_TYPE.SELECTION:
                         case ITEM_SINGLE_TYPE.SEL_RADIO:

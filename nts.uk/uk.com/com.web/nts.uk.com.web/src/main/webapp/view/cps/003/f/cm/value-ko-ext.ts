@@ -25,6 +25,7 @@ module nts.custombinding {
         selectionItems: Array<any>;
     }
 
+    import parseTime = nts.uk.time.parseTime;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
@@ -33,7 +34,7 @@ module nts.custombinding {
         fetch = (codes?: string[]) => nts.uk.request.ajax('com', 'ctx/pereg/grid-layout/get-item/name', { itemCodes: codes || ['IS00020', 'IS00279', 'IS00253'] });
 
     export class ValueBoxControl implements KnockoutBindingHandler {
-        init = (element: HTMLElement, valueAccessor: () => { itemData: KnockoutObservable<IItemData>; value: KnockoutObservable<any>; enable: KnockoutObservable<boolean>; }, allBindingsAccessor: () => { settingChange: Function }, viewModel: any, bindingContext: KnockoutBindingContext) => {
+        init = (element: HTMLElement, valueAccessor: () => { itemData: KnockoutObservable<IItemData>; value: KnockoutObservable<any>; replacer: KnockoutObservable<string>; }, allBindingsAccessor: () => { settingChange: Function }, viewModel: any, bindingContext: KnockoutBindingContext) => {
             let accessor = valueAccessor(),
                 itemData: IItemData = ko.toJS(accessor.itemData),
                 template = {
@@ -241,7 +242,80 @@ module nts.custombinding {
                     let mode = ko.toJS(vm.mode),
                         value = ko.toJS(vm.value),
                         value1 = ko.toJS(vm.value1),
-                        value2 = ko.toJS(vm.value2);
+                        value2 = ko.toJS(vm.value2),
+                        textView = '';
+
+                    switch (itemData.dataType) {
+
+                        default:
+                            textView = '';
+                            break;
+                        case ITEM_SINGLE_TYPE.DATE:
+                            if ([
+                                'IS00279', 'IS00295',
+                                'IS00302', 'IS00309',
+                                'IS00316', 'IS00323',
+                                'IS00330', 'IS00337',
+                                'IS00344', 'IS00351',
+                                'IS00358', 'IS00559',
+                                'IS00566', 'IS00573',
+                                'IS00580', 'IS00587',
+                                'IS00594', 'IS00601',
+                                'IS00608', 'IS00615',
+                                'IS00622'].indexOf(itemData.itemCode) > -1) {
+                                //ko.utils.setHtml(element, template.grDate);
+                            } else {
+                                textView = moment.utc(value).format('YYYY/MM/DD');
+                            }
+                            break;
+                        case ITEM_SINGLE_TYPE.STRING:
+                            textView = value;
+                            break;
+                        case ITEM_SINGLE_TYPE.TIME:
+                            if (itemData.itemCode == 'IS00287') {
+                                if (mode == '1') {
+                                    textView = vm.i18n('CPS003_91', [vm.itemNames()['IS00253']]) + value;
+                                } else {
+                                    textView = value1;
+                                }
+                                //ko.utils.setHtml(element, template.timey);
+                            } else {
+                                if (value && !isNaN(Number(value))) {
+                                    textView = parseTime(Number(value), true).format();
+                                }
+                            }
+                            break;
+                        case ITEM_SINGLE_TYPE.TIMEPOINT:
+                            if (value && !isNaN(Number(value))) {
+                                textView = parseTimeWidthDay(Number(value)).fullText;
+                            }
+                            break;
+                        case ITEM_SINGLE_TYPE.NUMERIC:
+                            if (!itemData.amount) {
+                                if (value && !isNaN(Number(value))) {
+                                    textView = value;
+                                }
+                            } else {
+                                if (mode == '1') {
+                                    if (value && !isNaN(Number(value))) {
+                                        textView = Number(value).toLocaleString('ja-JP', { useGrouping: true });
+                                    }
+                                } else {
+                                    if (value2 && !isNaN(Number(value2))) {
+                                        // format value
+                                        textView = (value1 == "plus" ? "+" : "-") + Number(value2).toLocaleString('ja-JP', { useGrouping: true });
+                                    }
+                                }
+                            }
+                            break;
+                        case ITEM_SINGLE_TYPE.SELECTION:
+                        case ITEM_SINGLE_TYPE.SEL_RADIO:
+                        case ITEM_SINGLE_TYPE.SEL_BUTTON:
+                            textView = (_.find(itemData.selectionItems, m => m.optionValue == value) || { optionText: '' }).optionText;
+                            break;
+                    }
+
+                    accessor.replacer(textView);
 
                     accessor.value({
                         mode: mode,
@@ -261,20 +335,93 @@ module nts.custombinding {
                         if (input) {
                             input.focus();
                         }
+
+                        // clear amount value
+                        if (itemData.dataType == ITEM_SINGLE_TYPE.NUMERIC && itemData.amount) {
+                            vm.value2(undefined);
+                        } else if (itemData.dataType == ITEM_SINGLE_TYPE.DATE && [
+                            'IS00279', 'IS00295',
+                            'IS00302', 'IS00309',
+                            'IS00316', 'IS00323',
+                            'IS00330', 'IS00337',
+                            'IS00344', 'IS00351',
+                            'IS00358', 'IS00559',
+                            'IS00566', 'IS00573',
+                            'IS00580', 'IS00587',
+                            'IS00594', 'IS00601',
+                            'IS00608', 'IS00615',
+                            'IS00622'].indexOf(itemData.itemCode) > -1) {
+                            vm.value1(undefined);
+                            vm.value2(undefined);
+                        } else if (itemData.dataType == ITEM_SINGLE_TYPE.TIME && itemData.itemCode == 'IS00287') {
+                            vm.value1(undefined);
+                        }
                     } else if (m == "2") {
                         let input = document.querySelector('.text-box-a input, .number-group-box .dropdown-box .ntsControl');
                         if (input) {
                             input.focus();
+                        }
+
+                        // clear amount value
+                        if (itemData.dataType == ITEM_SINGLE_TYPE.NUMERIC && itemData.amount) {
+                            vm.value(undefined);
+                        } else if (itemData.dataType == ITEM_SINGLE_TYPE.DATE && [
+                            'IS00279', 'IS00295',
+                            'IS00302', 'IS00309',
+                            'IS00316', 'IS00323',
+                            'IS00330', 'IS00337',
+                            'IS00344', 'IS00351',
+                            'IS00358', 'IS00559',
+                            'IS00566', 'IS00573',
+                            'IS00580', 'IS00587',
+                            'IS00594', 'IS00601',
+                            'IS00608', 'IS00615',
+                            'IS00622'].indexOf(itemData.itemCode) > -1) {
+                            vm.value1(undefined);
+                            vm.value2(undefined);
+                        } else if (itemData.dataType == ITEM_SINGLE_TYPE.TIME && itemData.itemCode == 'IS00287') {
+                            vm.value(undefined);
                         }
                     } else if (m == "3") {
                         let combx = document.querySelector('.dropdown-box>.ntsControl');
                         if (combx) {
                             combx.focus();
                         }
+
+                        if (itemData.dataType == ITEM_SINGLE_TYPE.DATE && [
+                            'IS00279', 'IS00295',
+                            'IS00302', 'IS00309',
+                            'IS00316', 'IS00323',
+                            'IS00330', 'IS00337',
+                            'IS00344', 'IS00351',
+                            'IS00358', 'IS00559',
+                            'IS00566', 'IS00573',
+                            'IS00580', 'IS00587',
+                            'IS00594', 'IS00601',
+                            'IS00608', 'IS00615',
+                            'IS00622'].indexOf(itemData.itemCode) > -1) {
+                            vm.value1(101);
+                            vm.value2(undefined);
+                        }
                     } else if (m == "4") {
                         let input = document.querySelector('.text-box input');
                         if (input) {
                             input.focus();
+                        }
+
+                        if (itemData.dataType == ITEM_SINGLE_TYPE.DATE && [
+                            'IS00279', 'IS00295',
+                            'IS00302', 'IS00309',
+                            'IS00316', 'IS00323',
+                            'IS00330', 'IS00337',
+                            'IS00344', 'IS00351',
+                            'IS00358', 'IS00559',
+                            'IS00566', 'IS00573',
+                            'IS00580', 'IS00587',
+                            'IS00594', 'IS00601',
+                            'IS00608', 'IS00615',
+                            'IS00622'].indexOf(itemData.itemCode) > -1) {
+                            vm.value1(undefined);
                         }
                     }
                 }, 5);
