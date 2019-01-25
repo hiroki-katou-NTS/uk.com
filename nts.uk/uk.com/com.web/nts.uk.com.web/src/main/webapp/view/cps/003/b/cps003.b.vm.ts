@@ -28,13 +28,18 @@ module cps003.b.vm {
                     fileId: self.currentFile().fileId(),
                     fileName: self.currentFile().filename(),
                     categoryId: self.currentMode().categoryId,
+                    modeUpdate: self.currentMode().mode,
                     columnChange: self.currentMode().columnChange    
                 };
             
             if(_.isEmpty(self.currentFile().filename())){
-                alertError("Msg_722");   
+                alertError({ messageId: "Msg_722" });   
             }
             service.checkColums(params).done(data =>{
+//                if(data == undefined){
+//                     alertError({ messageId: "Msg_723",  messageParams: [self.currentMode().categoryName] });   
+//                     return;
+//                }
                 setShared('CPS003C_VALUE', data);
                 close();
             }).fail((res) =>{

@@ -13,5 +13,6 @@ public class CheckFileParams {
 	private String fileId;
 	private String fileName;
 	private String categoryId;
+	private int modeUpdate;
 	private List<GridEmpHead> columnChange;
 }

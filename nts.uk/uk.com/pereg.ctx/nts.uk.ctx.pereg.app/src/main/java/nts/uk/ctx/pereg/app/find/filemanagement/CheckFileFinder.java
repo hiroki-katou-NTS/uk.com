@@ -3,7 +3,6 @@ package nts.uk.ctx.pereg.app.find.filemanagement;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -14,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.arc.task.parallel.ManagedParallelWithContext;
@@ -24,15 +24,16 @@ import nts.gul.excel.NtsExcelHeader;
 import nts.gul.excel.NtsExcelImport;
 import nts.gul.excel.NtsExcelReader;
 import nts.gul.excel.NtsExcelRow;
+import nts.gul.time.minutesbased.MinutesBasedTimeParser;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.pereg.app.find.common.ComboBoxRetrieveFactory;
 import nts.uk.ctx.pereg.app.find.layout.dto.EmpMaintLayoutDto;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.GridEmpHead;
 import nts.uk.ctx.pereg.app.find.layoutdef.classification.LayoutPersonInfoValueDto;
+import nts.uk.ctx.pereg.app.find.person.info.item.DataTypeStateDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.DateItemDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.ItemTypeStateDto;
-import nts.uk.ctx.pereg.app.find.person.info.item.MasterRefConditionDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.NumericButtonDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.NumericItemDto;
 import nts.uk.ctx.pereg.app.find.person.info.item.PerInfoItemDefDto;
@@ -48,10 +49,6 @@ import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCtgByCompanyRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.item.ItemType;
 import nts.uk.ctx.pereg.dom.person.info.singleitem.DataTypeValue;
-import nts.uk.ctx.pereg.dom.person.setting.matrix.matrixdisplayset.MatrixDisplaySetting;
-import nts.uk.ctx.pereg.dom.person.setting.matrix.matrixdisplayset.MatrixDisplaySettingRepo;
-import nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInfoMatrixData;
-import nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInfoMatrixItemRepo;
 import nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
@@ -59,7 +56,6 @@ import nts.uk.ctx.sys.auth.pub.employee.EmployeePublisher;
 import nts.uk.ctx.sys.auth.pub.employee.NarrowEmpByReferenceRange;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.validate.constraint.implement.DateConstraint;
 import nts.uk.shr.com.validate.constraint.implement.DateType;
@@ -92,12 +88,6 @@ public class CheckFileFinder {
 	private PerInfoCtgByCompanyRepositoty ctgRepo;
 	
 	@Inject
-	private MatrixDisplaySettingRepo matrixDisplayRepo;;
-
-	@Inject
-	private PersonInfoMatrixItemRepo matrixItemRepo;
-	
-	@Inject
 	private ComboBoxRetrieveFactory comboBoxRetrieveFactory;
 	
 	@Inject
@@ -105,8 +95,6 @@ public class CheckFileFinder {
 	
 	@Inject
 	private PeregProcessor layoutProcessor;
-	
-	private static String code = "コード";
 	
 	private static String header;
 	
@@ -122,7 +110,6 @@ public class CheckFileFinder {
 	public GridDto processFile(CheckFileParams params) throws Exception {
 		try {
 			String cid = AppContexts.user().companyId();
-			String userId = AppContexts.user().userId();
 			String contractCd = AppContexts.user().contractCode();
 			// read file import
 			InputStream inputStream = this.fileStreamService.takeOutFromFileId(params.getFileId());
@@ -133,24 +120,21 @@ public class CheckFileFinder {
 			// header
 			List<NtsExcelHeader> header = excelReader.headers(); 
 			List<NtsExcelRow> rows = excelReader.rows();
-			List<String> fixedCol = fixedColums(cid, userId);
+			List<GridEmpHead> headerDb = this.getHeaderData(ctgOptional.get(), params.getColumnChange());
 			
 			// columns
-			List<String> colums = this.getColumsChange(header);
+			List<String> colums = this.getColumsChange(header, headerDb);
 			
 			List<EmployeeDataMngInfo> employees = this.getEmployeeIds(rows);
 			
-			List<GridEmpHead> headerFinal  = this.getHeaderData(ctgOptional.get(), colums, colums);
-			GridDto dto = this.getGridInfo(excelReader, headerFinal, colums, ctgOptional.get(), employees); 
-			//remove những cột cố định
-			colums.removeAll(fixedCol);
+			GridDto dto = this.getGridInfo(excelReader, headerDb, ctgOptional.get(), employees); 
 			
 			//受入するファイルの列に、メイン画面の「個人情報一覧（A3_001）」に表示している可変列で更新可能な項目が１件でも存在するかチェックする
 			//check xem các header của item trong file import có khớp với màn hình A 
-			//if(!colums.containsAll(params.getColumnChange())) {
-			//throw new Exception("Msg_723");
-			//			}
-			
+			if (colums.size() == 0) {
+				throw new BusinessException("Msg_723");
+			}
+
 			return dto;
 		} catch (ExcelFileTypeException e1) {
 			e1.printStackTrace();
@@ -159,11 +143,16 @@ public class CheckFileFinder {
 	}
 	
 	// get ColumnsFixed
-	private List<String> getColumsChange(List<NtsExcelHeader> header) throws Exception{
+	private List<String> getColumsChange(List<NtsExcelHeader> header, List<GridEmpHead> headerReal) throws Exception{
 		List<String> colChange = new ArrayList<>();
 		header.stream().forEach(c ->{
 			NtsExcelCell mainCells = c.getMain();
-			colChange.add( mainCells.getValue().toString());
+			if(!mainCells.getValue().getText().equals(TextResource.localize("CPS003_28"))  && !mainCells.getValue().getText().equals(TextResource.localize("CPS003_29") ) && !mainCells.getValue().getText().contains("（コード）")) {
+				Optional<GridEmpHead> gridHead = headerReal.stream().filter(head -> head.getItemName().equals( mainCells.getValue().getText())).findFirst();
+				if(gridHead.isPresent()) {
+					colChange.add( mainCells.getValue().getText());
+				}
+			}
 		});
 		return colChange;
 	}
@@ -217,54 +206,17 @@ public class CheckFileFinder {
 		}
 		 return result;
 	}
-
-	
-	private List<String> fixedColums(String cid, String userId){
-		
-		Optional<MatrixDisplaySetting> optData = matrixDisplayRepo.find(cid, userId);
-		List<String> fixedColumn =  new ArrayList<>(); 
-		fixedColumn.addAll(Arrays.asList(
-				TextResource.localize("CPS003_28"),
-				TextResource.localize("CPS003_29")));
-		
-		if(optData.isPresent()) {
-			MatrixDisplaySetting settingMatrix = optData.get();
-			if(settingMatrix.getDepartmentATR() == NotUseAtr.USE) {
-				List<String> x = Arrays.asList(TextResource.localize("CPS003_30"), TextResource.localize("CPS003_30")+"("+code+")");
-				fixedColumn.addAll(x);
-			}
-			
-			if(settingMatrix.getWorkPlaceATR()== NotUseAtr.USE) {
-				fixedColumn.addAll(Arrays.asList(TextResource.localize("CPS003_31"), TextResource.localize("CPS003_31")+"("+code+")"));
-			}
-			
-			if(settingMatrix.getJobATR() == NotUseAtr.USE) {
-				fixedColumn.addAll(Arrays.asList(TextResource.localize("CPS003_32"), TextResource.localize("CPS003_32")+"("+code+")"));
-			}
-			
-			if(settingMatrix.getEmploymentATR() == NotUseAtr.USE) {
-				fixedColumn.addAll(Arrays.asList(TextResource.localize("CPS003_33"), TextResource.localize("CPS003_33")+"("+code+")"));
-			}
-			
-			if(settingMatrix.getClsATR()== NotUseAtr.USE) {
-				fixedColumn.addAll(Arrays.asList(TextResource.localize("CPS003_34"), TextResource.localize("CPS003_34")+"("+code+")"));
-			}
-		}
-		return fixedColumn;
-	}
 	
 	/**
 	 * 	起動時処理
 	 * getGridLayout
 	 * @return
 	 */
-	public List<GridEmpHead> getHeaderData(PersonInfoCategory category, List<String> columItemChangeExel, List<String> columNotChangeExcel) {
+	public List<GridEmpHead> getHeaderData(PersonInfoCategory category, List<GridEmpHead> columItemChangeExel) {
 		LoginUserContext loginUser = AppContexts.user();
 		String contractCd = loginUser.contractCode();
 		String roleId = loginUser.roles().forPersonalInfo();
 		List<GridEmpHead> headerReal = new ArrayList<>();
-		//List<String> columNotChange =  this.fixedColums(cid, userId);
-		// map PersonInfoItemDefinition → GridEmpHead
 		 List<PerInfoItemDefForLayoutDto> i = this.gridProcesor.getPerItemDefForLayout(category, contractCd, roleId);
 		 List<GridEmpHead> headers = i.stream().map(m -> new GridEmpHead(m.getId(), m.getDispOrder(), m.getItemCode(), m.getItemParentCode(),
 					m.getItemName(), m.getItemTypeState(), m.getIsRequired() == 1, m.getResourceId(),
@@ -277,13 +229,9 @@ public class CheckFileFinder {
 			.sorted(Comparator.comparing(GridEmpHead::getItemOrder, Comparator.naturalOrder()).thenComparing(GridEmpHead::getItemCode, Comparator.naturalOrder()))
 			.collect(Collectors.toList());
 		 headers.addAll(headers.stream().flatMap(m -> m.getChilds().stream()).collect(Collectors.toList()));
-		
-		List<PersonInfoMatrixData> itemData = matrixItemRepo.findInfoData(category.getPersonInfoCategoryId())
-				.stream().filter(c -> c.isRegulationAtr() == true).collect(Collectors.toList());
-		
-		itemData.stream().forEach(c ->{
+		 columItemChangeExel.stream().forEach(c ->{
 			headers.stream().forEach(item ->{
-				if((c.getPerInfoItemDefID().equals(item.getItemId()))) {
+				if((c.getItemId().equals(item.getItemId()))) {
 					headerReal.add(item);
 				}
 			});
@@ -294,14 +242,13 @@ public class CheckFileFinder {
 
 	
 	
-	private GridDto getGridInfo(NtsExcelImport excelReader, List<GridEmpHead> headerReal, List<String> columFixed, PersonInfoCategory category, List<EmployeeDataMngInfo> employees) {
+	private GridDto getGridInfo(NtsExcelImport excelReader, List<GridEmpHead> headerReal, PersonInfoCategory category, List<EmployeeDataMngInfo> employees) {
 		/* lien quan den bodyData*/
 		List<GridEmpHead> headerRemain = new ArrayList<>();
 		List<GridEmpHead> x =  new ArrayList<GridEmpHead>();
-//		HashMap<String, Object> contraintList = generateContraint(headerReal);
 		x.addAll(headerReal);
-
-		
+		HashMap<String, Object> contraintList = generateContraint(x);
+		System.out.println(contraintList);
 		List<EmployeeRowDto> employeeDtos = new ArrayList<>();
 		List<NtsExcelRow> rows = excelReader.rows();
 		rows.stream().forEach( row ->{
@@ -359,14 +306,11 @@ public class CheckFileFinder {
 								empBody.setItemCode(headerGrid.getItemCode());
 								empBody.setItemName(headerGrid.getItemName());
 								empBody.setItemOrder(headerGrid.getItemOrder());
-								empBody.setValue(cell.getValue() == null ? "" : cell.getValue().getText());
-								empBody.setTextValue(cell.getValue() == null ? "" : cell.getValue().getText());
+								convertValue(empBody, headerGrid, cell.getValue().getObject());
+								empBody.setTextValue(empBody.getValue()== null?"": empBody.getValue().toString());
 								items.add(empBody);
 							}
 						}
-
-						
-						
 						headerRemain.add(headerGrid);
 					}
 				}
@@ -387,15 +331,13 @@ public class CheckFileFinder {
 				// Miss infoId (get infoId by baseDate)
 				PeregQuery subq = PeregQuery.createQueryCategory(null, category.getCategoryCode().v(),
 						pdt.getEmployeeId(), pdt.getPersonId());
-
+				List<ItemRowDto> itemDtos = new ArrayList<>();
 				subq.setCategoryId(category.getPersonInfoCategoryId());
 				subq.setStandardDate(GeneralDate.today());
-
+				
 				EmpMaintLayoutDto empDto = layoutProcessor.getCategoryDetail(subq);
-
 				List<LayoutPersonInfoValueDto> items = empDto.getClassificationItems().stream()
 						.flatMap(f -> f.getItems().stream()).collect(Collectors.toList());
-				List<ItemRowDto> itemDtos = new ArrayList<>();
 				headerReal.stream().forEach(h ->{
 					items.stream().forEach(item ->{
 						if(h.getItemId().equals(item.getItemDefId())) {
@@ -415,6 +357,7 @@ public class CheckFileFinder {
 							itemDto.setDataType(item.getType());
 							itemDto.setRecordId(item.getRecordId());
 							itemDto.setActionRole(item.getActionRole());
+							
 						}
 					});
 
@@ -422,11 +365,11 @@ public class CheckFileFinder {
 
 				// sắp xếp lại vị trí item
 				pdt.getItems().sort(Comparator.comparing(ItemRowDto::getItemOrder, Comparator.naturalOrder()));
-
 				result.add(pdt);
-
 			});
 		}
+
+
 		return new GridDto(x, result, new ArrayList<>());
 	}
 	
@@ -468,7 +411,7 @@ public class CheckFileFinder {
 		headerReal.stream().forEach(c ->{
 			ItemTypeStateDto itemTypeStateDto = c.getItemTypeState();
 			Object obj;
-			if(itemTypeStateDto.getItemType() == 1) {
+			if(itemTypeStateDto.getItemType() == ItemType.SINGLE_ITEM.value) {
 				SingleItemDto singleDto = (SingleItemDto) itemTypeStateDto;
 				switch(singleDto.getDataTypeState().getDataTypeValue()) {
 				case 1:
@@ -557,6 +500,39 @@ public class CheckFileFinder {
 		});
 		return contraintList;
 	}
+	
+	private void convertValue(ItemRowDto itemDto, GridEmpHead  gridHead, Object obj) {
+			if(gridHead.getItemTypeState().getItemType() == 2) {
+				SingleItemDto singleDto = (SingleItemDto) gridHead.getItemTypeState();
+				DataTypeStateDto dataTypeState = (DataTypeStateDto)singleDto.getDataTypeState();
+				DataTypeValue itemValueType = EnumAdaptor.valueOf(dataTypeState.getDataTypeValue(), DataTypeValue.class);
+				itemDto.setDataType(dataTypeState.getDataTypeValue());
+				switch (itemValueType) {
+				case NUMERIC:
+				case NUMBERIC_BUTTON:
+					itemDto.setValue(obj == null? null: new BigDecimal(obj.toString()));
+					break;
+				case TIME:
+					if(obj!= null) {
+						itemDto.setValue(new BigDecimal(MinutesBasedTimeParser.parse(obj.toString()).asDuration()));
+						break;
+					}
+					break;
+				case TIMEPOINT:
+					itemDto.setValue(new BigDecimal("1200"));
+					break;
+				default: break;
+				}
+			}
+
+	}
+	
+//	private int convert(String value) {
+//		
+//		
+//		return 0;
+//	}
+	
 	
 	
 }
