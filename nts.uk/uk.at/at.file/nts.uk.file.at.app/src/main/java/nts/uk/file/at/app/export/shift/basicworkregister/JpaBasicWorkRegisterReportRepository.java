@@ -32,14 +32,14 @@ public class JpaBasicWorkRegisterReportRepository extends JpaRepository implemen
 			+ "	LEFT JOIN KSHMT_WORKTYPE b ON b.CD = a.WORK_TYPE_CD AND b.CID = ?companyId"
 			+ "	LEFT JOIN KSHMT_WORK_TIME_SET c ON c.WORKTIME_CD = a.WORKING_CD AND c.CID = b.CID AND c.ABOLITION_ATR = 1";
 	
-	private static final String GET_CLASS_BASIC_WORK = "SELECT a.CLSCD, a.CLSNAME, b.WORK_DAY_ATR, "
+	private static final String GET_CLASS_BASIC_WORK = "SELECT b.CLSCD, a.CLSNAME, b.WORK_DAY_ATR, "
 			+ "ISNULL(b.WORK_TYPE_CD, '') as WORK_TYPE_CD, ISNULL(c.NAME, '') AS WORK_TYPE_NAME, "
 			+ "ISNULL(b.WORKING_CD, '') as WORKING_CD, ISNULL(d.NAME,'') AS WORK_TIME_NAME "
-			+ "	FROM  BSYMT_CLASSIFICATION a "
-			+ "	LEFT JOIN KSCMT_CLASSIFY_WORK_SET b ON b.CID = a.CID and b.CLSCD = a.CLSCD"
+			+ "	FROM  KSCMT_CLASSIFY_WORK_SET b"
+			+ "	LEFT JOIN BSYMT_CLASSIFICATION a ON b.CID = a.CID and b.CLSCD = a.CLSCD"
 			+ "	LEFT JOIN KSHMT_WORKTYPE c ON c.CD =b.WORK_TYPE_CD and c.CID = b.CID"
 			+ "	LEFT JOIN KSHMT_WORK_TIME_SET d ON d.WORKTIME_CD = b.WORKING_CD AND d.CID = b.CID AND d.ABOLITION_ATR = 1"
-			+ "	WHERE a.CID = ?companyId "
+			+ "	WHERE b.CID = ?companyId "
 			+ "	ORDER BY a.CLSCD ASC";
 	
 	@Override
@@ -118,6 +118,10 @@ public class JpaBasicWorkRegisterReportRepository extends JpaRepository implemen
 		//a.CLSCD, a.CLSNAME, b.WORK_DAY_ATR, WORK_TYPE_CD,WORK_TYPE_NAME, WORKING_CD,WORK_TIME_NAME
 		String classCode = (String)entity[0];
 		String className = (String)entity[1];
+		if (StringUtil.isNullOrEmpty(className, true)) {
+			className = TextResource.localize("KSM006_13");
+		}
+		
 		Optional<Integer> workingDayAtr = Optional.empty();
 		if (entity[2] != null) {
 			workingDayAtr = Optional.of(((BigDecimal)entity[2]).intValue());

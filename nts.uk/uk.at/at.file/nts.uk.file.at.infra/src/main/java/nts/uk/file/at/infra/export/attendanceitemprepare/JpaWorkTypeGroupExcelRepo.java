@@ -21,9 +21,9 @@ public class JpaWorkTypeGroupExcelRepo extends JpaRepository implements WorkType
 			+ "left join KRCMT_WORKTYPE_CHANGEABLE b on a.CODE = b.EMP_CODE and a.CID=b.CID "
 			+ "left join KSHMT_WORKTYPE c on b.WORKTYPE_CODE = c.CD and b.CID=c.CID "
 			+ "where a.CID=?companyId ";
-	private static final String SELECT_ALL_DEFAULT_WORKTPYE = "select a.WORKTYPE_GROUP_NO, a.WORKTYPE_GROUP_NAME, b.NAME "
+	private static final String SELECT_ALL_DEFAULT_WORKTPYE = "select a.WORKTYPE_GROUP_NO, a.WORKTYPE_GROUP_NAME, b.NAME,b.CD "
 			+ "from KRCMT_WORKTYPE_CHANGEABLE a "
-			+ "left join KSHMT_WORKTYPE b on a.WORKTYPE_CODE = b.CD and a.CID=b.CID "
+			+ "left join KSHMT_WORKTYPE b on a.WORKTYPE_CODE = b.CD and b.CID=?companyId "
 			+ "where a.CID='000000000000-0000' and a.EMP_CODE='0'  ";
 	
 	@Override
@@ -57,7 +57,8 @@ public class JpaWorkTypeGroupExcelRepo extends JpaRepository implements WorkType
 			}
 		String groupName = (String)x[1];
 		String workTypeName = (String)x[2];
-		WorkTypeDtoExcel workTypeDtoExcel = new WorkTypeDtoExcel(codeEmp, nameEmp, groupNo, groupName, workTypeName);
+		String workTypeCode = (String)x[3];
+		WorkTypeDtoExcel workTypeDtoExcel = new WorkTypeDtoExcel(codeEmp, nameEmp, groupNo, groupName, workTypeCode, workTypeName);
 		resultDefault.add(workTypeDtoExcel);
 		
 	}
@@ -70,15 +71,15 @@ public class JpaWorkTypeGroupExcelRepo extends JpaRepository implements WorkType
 			}
 		String groupName = (String)x[3];
 		String workTypeName = (String)x[4];
+		String workTypeCode = (String)x[5];
 		if(x[2]==null && x[5]==null){
-			resultDefault.forEach(f -> f.setCodeEmpAndName(codeEmp,nameEmp));
 			for (WorkTypeDtoExcel workType : resultDefault) {
-				WorkTypeDtoExcel a = new WorkTypeDtoExcel(codeEmp,nameEmp,workType.getGroupNo(),workType.getGroupName(),workType.getWorkTypeName());
+				WorkTypeDtoExcel a = new WorkTypeDtoExcel(codeEmp,nameEmp,workType.getGroupNo(),workType.getGroupName(),workType.getWorkTypeCode(),workType.getWorkTypeName());
 				result.add(a);
 			}
 			
 		}else {
-			WorkTypeDtoExcel workTypeDtoExcel = new WorkTypeDtoExcel(codeEmp, nameEmp, groupNo, groupName, workTypeName);
+			WorkTypeDtoExcel workTypeDtoExcel = new WorkTypeDtoExcel(codeEmp, nameEmp, groupNo, groupName,workTypeCode , workTypeName );
 			result.add(workTypeDtoExcel);
 		}
 		

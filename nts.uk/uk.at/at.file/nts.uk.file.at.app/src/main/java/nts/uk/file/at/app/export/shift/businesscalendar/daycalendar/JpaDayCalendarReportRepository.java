@@ -13,6 +13,8 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class JpaDayCalendarReportRepository extends JpaRepository implements DayCalendarReportRepository{
@@ -24,9 +26,9 @@ public class JpaDayCalendarReportRepository extends JpaRepository implements Day
 			+ " AND c.YMD_K <= ?endDate";
 	
 	private static final String GET_WORKSPACE_CALENDAR_BY_DATE = "SELECT"
-			+ " distinct w.WKPID, w.WKPCD, s.YMD_K, s.WORKING_DAY_ATR, w.WKP_NAME "
+			+ " s.WKPID, w.WKPCD, s.YMD_K, s.WORKING_DAY_ATR, w.WKP_NAME "
 			+ "	FROM KSMMT_CALENDAR_WORKPLACE s"
-			+ " INNER JOIN BSYMT_WORKPLACE_INFO w ON w.CID = ?companyId "
+			+ " LEFT JOIN BSYMT_WORKPLACE_INFO w ON w.CID = ?companyId "
 			+ "	and w.WKPID = s.WKPID"
 			+ " WHERE s.YMD_K >= ?startYm"
 			+ " AND s.YMD_K <= ?endYm";
@@ -34,7 +36,7 @@ public class JpaDayCalendarReportRepository extends JpaRepository implements Day
 	private static final String GET_CLASS_CALENDAR_BY_DATE = "SELECT"
 			+ " w.CLSNAME, s.CLSCD, s.YMD_K, s.WORKING_DAY_ATR "
 			+ "	FROM KSMMT_CALENDAR_CLASS s"
-			+ " INNER JOIN BSYMT_CLASSIFICATION w ON w.CID = s.CID "
+			+ " LEFT JOIN BSYMT_CLASSIFICATION w ON w.CID = s.CID "
 			+ "	and w.CLSCD = s.CLSCD"
 			+ " WHERE s.YMD_K >= ?startYm"
 			+ " AND s.YMD_K <= ?endYm"
@@ -99,21 +101,21 @@ public class JpaDayCalendarReportRepository extends JpaRepository implements Day
 				.setParameter("endYm", endDate.date()).getResultList();
 		
 		List<WorkplaceCalendarReportData> workplaceCalendarReportDatas = data.stream().map(x -> toDomainWithWorkspace((Object[])x)).collect(Collectors.toList());
-		return Optional.of(workplaceCalendarReportDatas.stream().collect(Collectors.groupingBy(WorkplaceCalendarReportData::getWorkplaceCode)));
+		return Optional.of(workplaceCalendarReportDatas.stream().collect(Collectors.groupingBy(WorkplaceCalendarReportData::getWorkplaceId)));
 	}
 
 	private static WorkplaceCalendarReportData toDomainWithWorkspace(Object[] entity) {
 //		w.WKPID, s.YMD_K, s.WORKING_DAY_ATR
 		String workPlaceId = (String)entity[0];
-		String workPlaceCode = (String)entity[1];
+		Optional<String> workPlaceCode = Optional.ofNullable((String)entity[1]);
 //		String workPlaceName = (String)entity[2];
 		Timestamp timeStamp = (Timestamp)entity[2];
 		GeneralDate date = GeneralDate.legacyDate(new Date(timeStamp.getTime()));
 		int workingDayAtr = ((BigDecimal)entity[3]).intValue();
-		String workPlaceName = (String)entity[4];
+		Optional<String> workPlaceName = Optional.ofNullable((String)entity[4]);
 		
 		WorkplaceCalendarReportData domain = WorkplaceCalendarReportData.createFromJavaType(
-				workPlaceId, date, workingDayAtr, workPlaceCode.trim(), workPlaceName);
+				workPlaceId, date, workingDayAtr, workPlaceCode, workPlaceName);
 		return domain;
 	}
 	
@@ -130,6 +132,10 @@ public class JpaDayCalendarReportRepository extends JpaRepository implements Day
 	private static ClassCalendarReportData toDomainWithClass(Object[] entity) {
 		//w.CLSNAME, s.CLSCD, s.YMD_K, s.WORKING_DAY_ATR
 		String className = (String) entity[0];
+		if (StringUtil.isNullOrEmpty(className, true)) {
+			className = TextResource.localize("KSM004_104");
+		}
+		
 		String classCode = (String) entity[1];
 		Timestamp timeStamp = (Timestamp)entity[2];
 		GeneralDate date = GeneralDate.legacyDate(new Date(timeStamp.getTime()));
