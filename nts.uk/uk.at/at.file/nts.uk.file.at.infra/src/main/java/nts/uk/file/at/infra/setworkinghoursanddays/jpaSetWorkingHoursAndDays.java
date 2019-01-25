@@ -1,6 +1,5 @@
 package nts.uk.file.at.infra.setworkinghoursanddays;
 
-
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -30,8 +29,13 @@ import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
+
 @Stateless
 public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorkingHoursAndDaysExRepository {
+	  
+	
+	
+	
 	
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -233,8 +237,8 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	private static final String GET_WORKPLACE = "SELECT * FROM ("
 						 +  "SELECT ROW_NUMBER() OVER(PARTITION BY KSHST_WKP_NORMAL_SET.WKP_ID, KSHST_WKP_NORMAL_SET.[YEAR] ORDER BY BSYMT_WORKPLACE_HIST.END_DATE DESC) AS rk, "
 						 +  "IIF(BSYMT_WKP_CONFIG_INFO.HIERARCHY_CD IS NOT NULL, BSYMT_WKP_CONFIG_INFO.HIERARCHY_CD, '999999999999999999999999999999') AS HIERARCHY_CD, "
-						 +  "KSHST_WKP_NORMAL_SET.[YEAR], " 
-						 +  "IIF(BSYMT_WORKPLACE_HIST.END_DATE = CONVERT(DATETIME, '9999-12-31 00:00:00', 120), BSYMT_WORKPLACE_INFO.WKPCD , 'マスタ未登録') AS WKPCD, " 
+						 +  "KSHST_WKP_NORMAL_SET.[YEAR], "
+						 + 	"BSYMT_WORKPLACE_INFO.WKPCD, "
 						 +  "IIF(BSYMT_WORKPLACE_HIST.END_DATE = CONVERT(DATETIME, '9999-12-31 00:00:00', 120), BSYMT_WORKPLACE_INFO.WKP_NAME , 'マスタ未登録') AS WKP_NAME, " 
 						 +  "KSHST_WKP_NORMAL_SET.JAN_TIME AS N1, " 
 						 +  "KSHST_WKP_NORMAL_SET.FEB_TIME AS N2, " 
