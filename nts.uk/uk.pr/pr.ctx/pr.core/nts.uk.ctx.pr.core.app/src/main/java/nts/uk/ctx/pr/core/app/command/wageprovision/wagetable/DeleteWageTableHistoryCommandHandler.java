@@ -38,8 +38,8 @@ public class DeleteWageTableHistoryCommandHandler extends CommandHandlerWithResu
 	@Override
 	protected String handle(CommandHandlerContext<DeleteWageTableHistoryCommand> context) {
 		String companyId = AppContexts.user().companyId();
-		elemRangeSetRepo.remove(context.getCommand().getHistoryId());
-		wageTableContentRepo.remove(context.getCommand().getHistoryId());
+		elemRangeSetRepo.remove(context.getCommand().getHistoryId(), companyId, context.getCommand().getWageTableCode());
+		wageTableContentRepo.remove(context.getCommand().getHistoryId(), companyId, context.getCommand().getWageTableCode());
 		Optional<WageTableHistory> optWageHist = wageTableHistRepo.getWageTableHistByCode(companyId,
 				context.getCommand().getWageTableCode());
 		if (optWageHist.isPresent()) {

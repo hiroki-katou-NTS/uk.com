@@ -65,20 +65,25 @@ public class UpdateWageTableCommandHandler extends CommandHandlerWithResult<Upda
 			// update element range setting
 			if (context.getCommand().getElementRange() != null) {
 				context.getCommand().getElementRange().setHistoryID(context.getCommand().getHistory().getHistoryID());
-				Optional<ElementRangeSetting> optElementRange = elemRangeRepo
-						.getElementRangeSettingById(context.getCommand().getHistory().getHistoryID());
+				Optional<ElementRangeSetting> optElementRange = elemRangeRepo.getElementRangeSettingById(
+						context.getCommand().getHistory().getHistoryID(), companyId,
+						context.getCommand().getWageTableCode());
 				if (optElementRange.isPresent())
-					elemRangeRepo.update(context.getCommand().getElementRange().fromCommandToDomain());
+					elemRangeRepo.update(context.getCommand().getElementRange().fromCommandToDomain(), companyId,
+							context.getCommand().getWageTableCode());
 				else
-					elemRangeRepo.add(context.getCommand().getElementRange().fromCommandToDomain());
+					elemRangeRepo.add(context.getCommand().getElementRange().fromCommandToDomain(), companyId,
+							context.getCommand().getWageTableCode());
 			}
 
 			// update wage table content
 			if (context.getCommand().getWageTableContent() != null) {
-				context.getCommand().getWageTableContent().setHistoryID(context.getCommand().getHistory().getHistoryID());
-				wageContentRepo.addOrUpdate(context.getCommand().getWageTableContent().fromCommandToDomain());
+				context.getCommand().getWageTableContent()
+						.setHistoryID(context.getCommand().getHistory().getHistoryID());
+				wageContentRepo.addOrUpdate(context.getCommand().getWageTableContent().fromCommandToDomain(), companyId,
+						context.getCommand().getWageTableCode());
 			}
-			
+
 			return context.getCommand().getHistory().getHistoryID();
 		} else {
 			return "";

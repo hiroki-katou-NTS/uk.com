@@ -9,7 +9,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
 /**
  * 資格コード
  */
-@StringMaxLength(3)
+@StringMaxLength(10)
 @StringCharType(CharType.NUMERIC)
 @ZeroPaddedCode
 public class QualificationCode extends StringPrimitiveValue<QualificationCode> {
