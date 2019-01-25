@@ -132,9 +132,10 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 					if (!listShiftPermisson.contains(columnName)) listShiftPermisson.add(columnName);
 				}
 			}
-			
-			String columnName = TextResource.localize("KSM011_87").concat(" ").concat(TextResource.localize("KSM011_8"));
-			if (!listSchemodifyDeadline.contains(columnName)) listSchemodifyDeadline.add(columnName);
+			String n1 = TextResource.localize("KSM011_76");
+			String n2 = TextResource.localize("KSM011_87").concat(" ").concat(TextResource.localize("KSM011_8"));
+			if (!listSchemodifyDeadline.contains(n1)) listSchemodifyDeadline.add(n1);
+			if (!listSchemodifyDeadline.contains(n2)) listSchemodifyDeadline.add(n2);
 		}
 		
 		listColumnNames.addAll(listCommonAuthor);
@@ -293,10 +294,16 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 				String s = getScheduleName(scheduleDescriptionDto, au.getFunctionNoCommon().intValue(), 1);
 				if (s != null){
 					columnName = columnName.concat(s);
-					if (au.getAvailableCommon() == 0) {
+					switch (au.getAvailableCommon()) {
+					case 0:
 						data.put(columnName, unselect);
-					} else {
+						break;
+					case 1:
 						data.put(columnName, select);
+						break;
+					default:
+						data.put(columnName, "");
+						break;
 					}
 				}
 			}
@@ -309,10 +316,16 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 				String s = getScheduleName(scheduleDescriptionDto, pe.getFunctionNoPers().intValue(), 2);
 				if (s != null){
 					columnName = columnName.concat(s);
-					if (pe.getAvailablePers() == 0) {
+					switch (pe.getAvailablePers()) {
+					case 0:
 						data.put(columnName, unselect);
-					} else {
+						break;
+					case 1:
 						data.put(columnName, select);
+						break;
+					default:
+						data.put(columnName, "");
+						break;
 					}
 				}
 			}
@@ -325,10 +338,16 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 				String s = getScheduleName(scheduleDescriptionDto, da.getFunctionNoDate().intValue(), 3);
 				if (s != null){
 					columnName = columnName.concat(s);
-					if (da.getAvailableDate() == 0) {
+					switch (da.getAvailableDate()) {
+					case 0:
 						data.put(columnName, unselect);
-					} else {
+						break;
+					case 1:
 						data.put(columnName, select);
+						break;
+					default:
+						data.put(columnName, "");
+						break;
 					}
 				}
 			}
@@ -341,10 +360,16 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 				String s = getScheduleName(scheduleDescriptionDto, sh.getFunctionNoShift().intValue(), 4);
 				if (s != null){
 					columnName = columnName.concat(s);
-					if (sh.getAvailableShift() == 0) {
+					switch (sh.getAvailableShift()) {
+					case 0:
 						data.put(columnName, unselect);
-					} else {
+						break;
+					case 1:
 						data.put(columnName, select);
+						break;
+					default:
+						data.put(columnName, "");
+						break;
 					}
 				}
 			}
@@ -357,10 +382,16 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 				String s = getScheduleName(scheduleDescriptionDto, pe.getFunctionNoWorkplace().intValue(), 5);
 				if (s != null){
 					columnName = columnName.concat(s);
-					if (pe.getAvailableWorkplace() == 0) {
+					switch (pe.getAvailableWorkplace()) {
+					case 0:
 						data.put(columnName, unselect);
-					} else {
+						break;
+					case 1:
 						data.put(columnName, select);
+						break;
+					default:
+						data.put(columnName, "");
+						break;
 					}
 				}
 			}
@@ -369,13 +400,24 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 		List<ModifyDeadlineDto> schemodifyDeadline = permissonDto.getSchemodifyDeadline();
 		if (!schemodifyDeadline.isEmpty()){
 			for (ModifyDeadlineDto sc : schemodifyDeadline) {
-				String columnName = TextResource.localize("KSM011_87").concat(" ").concat(TextResource.localize("KSM011_8"));
+				String n1 = TextResource.localize("KSM011_76");
+				switch (sc.getUseCls()) {
+				case 0:
+					data.put(n1, TextResource.localize("KSM011_8"));
+					break;
+				case 1:
+					data.put(n1, TextResource.localize("KSM011_9"));
+					break;
+				default:
+					break;
+				}
+				
+				String n2 = TextResource.localize("KSM011_87").concat(" ").concat(TextResource.localize("KSM011_8"));
 				String value = String.valueOf(sc.getCorrectDeadline());
 				value = value.concat(" ");
 				value = value.concat(TextResource.localize("KSM011_135"));
 				value = value.concat(TextResource.localize("KSM011_91"));
-				
-				data.put(columnName, value);
+				data.put(n2, value);
 			}
 		}
 		

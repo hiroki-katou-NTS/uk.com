@@ -58,7 +58,11 @@ module nts.uk.at.view.ksm003.a {
          */
         export function exportExcel(): JQueryPromise<any> {
             let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-            let domainType = program[1] != null ? "KSM003" + program[1] : "";
+            let domainType = "KSM003";
+            if (program.length > 1){
+                program.shift();
+                domainType = domainType + program.join(" ");
+            }
             return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "RegisterPattern", domainType: domainType, languageId: 'ja', reportType: 0});
         }
 

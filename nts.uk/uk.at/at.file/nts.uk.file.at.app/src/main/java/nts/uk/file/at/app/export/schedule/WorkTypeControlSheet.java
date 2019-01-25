@@ -129,6 +129,9 @@ public class WorkTypeControlSheet extends JpaRepository{
 							data.put("項目", parent);
 						}
 						data.put(sheet3_column2, child);
+						if (child.equals(TextResource.localize("KSM011_1")) && parent.equals(TextResource.localize("KSM011_68")) && worktypeDisControl.getUseAtr().value == 1){
+							continue;
+						}
 						data.put("値", getControlValue(parent, child, worktypeDisControl, workTypeDtos));
 						
 						datas.add(data);
@@ -180,10 +183,10 @@ public class WorkTypeControlSheet extends JpaRepository{
 			if (!listWorkTypeDisplaySettings.isEmpty()){
 				for (WorkTypeDisplaySetting info : listWorkTypeDisplaySettings) {
 					if (value == null){
-						value = getWorkTypeName(info.getWorkTypeCode(), workTypeDtos);
+						value = info.getWorkTypeCode() + getWorkTypeName(info.getWorkTypeCode(), workTypeDtos);
 					} else {
 						if (getWorkTypeName(info.getWorkTypeCode(), workTypeDtos) != null){
-							value = value.concat(",").concat(getWorkTypeName(info.getWorkTypeCode(), workTypeDtos));
+							value = value.concat(",").concat(info.getWorkTypeCode()).concat(getWorkTypeName(info.getWorkTypeCode(), workTypeDtos));
 						}
 					}
 				}

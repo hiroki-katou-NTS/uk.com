@@ -19,8 +19,7 @@ public class JpaMaintenanceExportRepository extends JpaRepository implements Mai
 				.append(" LEFT JOIN PPEMT_PER_INFO_ITEM c ON c.PER_INFO_ITEM_DEFINITION_ID = b.PER_INFO_ITEM_DEF_ID ")
 				.append(" AND c.PER_INFO_CTG_ID = a.PER_INFO_CATEGORY_ID AND c.ABOLITION_ATR = 0 ")
 				.append(" LEFT JOIN PPEMT_PER_INFO_CTG d ON d.PER_INFO_CTG_ID = c.PER_INFO_CTG_ID AND d.ABOLITION_ATR = c.ABOLITION_ATR AND d.CID = g.CID")
-				.append(" LEFT JOIN PPEMT_PER_INFO_ITEM_CM e ON e.CATEGORY_CD = d.CATEGORY_CD AND e.ITEM_CD = c.ITEM_CD")
-				.append("  AND e.CONTRACT_CD = '")
+				.append(" LEFT JOIN PPEMT_PER_INFO_ITEM_CM e ON e.CATEGORY_CD = d.CATEGORY_CD AND e.ITEM_CD = c.ITEM_CD AND e.CONTRACT_CD = '")
 				.append(contractCd)
 				.append("' LEFT JOIN PPEMT_PER_INFO_ITEM_ORDER f ON f.PER_INFO_ITEM_DEFINITION_ID = c.PER_INFO_ITEM_DEFINITION_ID ")
 				.append(" AND f.PER_INFO_CTG_ID = c.PER_INFO_CTG_ID")
@@ -28,6 +27,7 @@ public class JpaMaintenanceExportRepository extends JpaRepository implements Mai
 				.append(companyId)
 				.append("' AND ((b.LAYOUT_DISPORDER IS NOT NULL AND d.PER_INFO_CTG_ID IS NOT NULL ")
 				.append(" AND c.PER_INFO_ITEM_DEFINITION_ID IS NOT NULL)  OR (b.LAYOUT_DISPORDER IS NULL AND a.LAYOUT_ITEM_TYPE = 2))")
+//				.append(" AND ((a.LAYOUT_ITEM_TYPE != 2 AND e.ITEM_CD IS NOT NULL) or(a.LAYOUT_ITEM_TYPE = 2 AND e.ITEM_CD IS NULL))")
 				.append(" ORDER BY g.LAYOUT_CD ASC, a.DISPORDER ASC, b.DISPORDER ASC"))
 				.toString();
 		

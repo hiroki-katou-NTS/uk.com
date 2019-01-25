@@ -18,4 +18,16 @@ module nts.uk.at.view.kml002.h.service {
     export function updateFixedVertical(totaltimes: any) {
         return nts.uk.request.ajax("at",paths.updateFixedVertical, totaltimes);
     }
+    
+    /**
+    * saveAsExcel
+    **/
+    export function saveAsExcel(languageId: string): JQueryPromise<any> {
+        let program= nts.uk.ui._viewModel.kiban.programName().split(" ");
+        let programName = program[1]!=null?program[1]:"";  
+        if (programName == "" || programName == null) {
+            programName = __viewContext.program.programName==null?"":__viewContext.program.programName;
+        }
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "SettingScheVerticalScale", domainType: "KML002"+programName,languageId: 'ja', reportType: 0});    
+    }
 }

@@ -17,10 +17,14 @@ module nts.uk.at.view.ksm001.a {
 
         export function saveAsExcel(languageId: string, startDate: any, endDate: any): JQueryPromise<any> {
             let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-            let programName = program[1]!=null?program[1]:"";
+            let domainType = "KSM001";
+            if (program.length > 1){
+                program.shift();
+                domainType = domainType + program.join(" ");
+            }
             let _params = {
                 domainId: "ShiftEstimate",
-                domainType: "KSM001"+programName,
+                domainType: domainType,
                 languageId: languageId,
                 reportType: 0,              
                 startDate: startDate,

@@ -91,9 +91,12 @@ public class RoleMonthlyExportExcelImpl  {
         SheetData sheet3 = new SheetData(getMasterDatasSheet3(query,listBzMonthly,mapListRecordMonthly,mapAttNameMonthlys,companyId,mode),
                 getHeaderColumnsSheet3(query,mode), null, null, TextResource.localize("KDW006_147"));
         sheetDatas.add(sheet3);
-        SheetData sheet4 = new SheetData(getMasterDatasSheet4(query,listOrderReferWorkType,mapAttNameMonthlys),
-                getHeaderColumnsSheet4(query), null, null, TextResource.localize("KDW006_148"));
-        sheetDatas.add(sheet4);
+        if(mode==1){
+        	 SheetData sheet4 = new SheetData(getMasterDatasSheet4(query,listOrderReferWorkType,mapAttNameMonthlys),
+                     getHeaderColumnsSheet4(query), null, null, TextResource.localize("KDW006_148"));
+             sheetDatas.add(sheet4);
+        }
+       
         return sheetDatas;
     }
 
@@ -279,6 +282,9 @@ public class RoleMonthlyExportExcelImpl  {
                     data.put("ヘッダー色", "");
                     data.put("丸め単位", TimeInputUnit.TIME_INPUT_1Min.nameId);
                 }
+                if(c.getTypeOfAttendanceItem()==null||c.getTypeOfAttendanceItem()!=1){
+                	data.put("丸め単位","");
+                }
                 datas.add(alignMasterDataSheet2(data));
                 
             });
@@ -346,8 +352,10 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
 	                if(montlhyRecord!=null &&montlhyRecord.getDisplayItem()!=null){
 	                    MonthlyActualResultsDto monActualResult = montlhyRecord.getDisplayItem();
 	                    List<SheetCorrectedMonthlyDto> listSheetCorrectedMonthly = monActualResult.getListSheetCorrectedMonthly();
+	                    
 	                    int check = 0;
 	                    if(!CollectionUtil.isEmpty(listSheetCorrectedMonthly)){
+	                    	listSheetCorrectedMonthly.sort(Comparator.comparing(SheetCorrectedMonthlyDto::getSheetNo));
 	                        for(int i = 0 ; i < listSheetCorrectedMonthly.size() ; i++) {
 	                            Map<String, Object> dataChil = new HashMap<>();
 	                            putDataEmptySheet3(dataChil,mode);
@@ -422,7 +430,7 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
         		Collections.sort(keySheetNo);
         		for(int i = 0 ; i < keySheetNo.size();i++){
         			List<PerAuthFormatItem> listMon = mapAttItem.get(keySheetNo.get(i));
-        			listMon.sort(Comparator.comparing(PerAuthFormatItem::getAttId));
+        			listMon.sort(Comparator.comparing(PerAuthFormatItem::getDisplayOder));
         			 //get name dailyAtt
                     List<String> result = new ArrayList<>();
                     listMon.stream().forEach(z->{
@@ -441,7 +449,6 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
 	        			datas.add(alignMasterDataSheet3(data,mode));
 
         			}else {
-        				listMon.sort(Comparator.comparing(PerAuthFormatItem::getDisplayOder));
             			Map<String, Object> dataChild = new HashMap<>();
                         putDataEmptySheet3(dataChild,mode);
                         dataChild.put("Sheet選択", keySheetNo.get(i));
@@ -489,11 +496,11 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
     public List<MasterHeaderColumn> getHeaderColumnsSheet4(MasterListExportQuery query) {
         
         List<MasterHeaderColumn> columns = new ArrayList<>();
-        columns.add(new MasterHeaderColumn("コード", TextResource.localize("KML004_9"),
+        columns.add(new MasterHeaderColumn("コード", TextResource.localize("KDW006_106"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("名称", TextResource.localize("KML004_10"),
+        columns.add(new MasterHeaderColumn("名称", TextResource.localize("KDW006_90"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("順", TextResource.localize("KML004_11"),
+        columns.add(new MasterHeaderColumn("順", TextResource.localize("KDW006_191"),
                 ColumnTextAlign.LEFT, "", true));
         return columns;
     }

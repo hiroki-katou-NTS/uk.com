@@ -329,7 +329,38 @@ module nts.uk.com.view.cmm021.a {
                         return '';
                     } }
                 ]);
-
+                //control validate screen C
+                _self.enable_otherAcc.subscribe((val:any)=>{
+                    if (!val) {
+                        $('#focus-CompanyCode').ntsError('clear');
+                        $('#userName6').ntsError('clear');
+                    }
+                });
+                //control validate screen B
+                _self.enable_WinAcc2.subscribe((val: any) => {
+                    if (!val) {
+                        $('#hostName2').ntsError('clear');
+                        $('#userName2').ntsError('clear');
+                    }
+                });
+                _self.enable_WinAcc3.subscribe((val: any) => {
+                    if (!val) {
+                        $('#hostName3').ntsError('clear');
+                        $('#userName3').ntsError('clear');
+                    }
+                });
+                _self.enable_WinAcc4.subscribe((val: any) => {
+                    if (!val) {
+                        $('#hostName4').ntsError('clear');
+                        $('#userName4').ntsError('clear');
+                    }
+                });
+                _self.enable_WinAcc5.subscribe((val: any) => {
+                    if (!val) {
+                        $('#hostName5').ntsError('clear');
+                        $('#userName5').ntsError('clear');
+                    }
+                });
             }
 
             /**
@@ -595,11 +626,21 @@ module nts.uk.com.view.cmm021.a {
                 service.saveWindowAccount(saveCommand)
                     .done((data: any) => {
                         _self.isSaveActive = true;
-                        _self.reloadAlreadySettingWindow().done(() => {
-                            nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
-                            _self.updateMode();
-                            dfd.resolve();
-                        }).always(() => nts.uk.ui.block.clear());
+                        service.findListUserInfo(_self.employeeIds(), false)
+                            .done((data: UserDto[]) => {
+                                _self.reloadAlreadySettingWindow().done(() => {
+                                    _self.listUserDto = data;
+                                    let oldSid = _self.selectedEmployeeId();
+                                    _self.selectUse.valueHasMutated();
+                                    //select saved Item
+                                    if (_self.selectUse() == 1) {
+                                        _self.selectedEmployeeId(oldSid);
+                                    }
+                                    nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
+                                    _self.updateMode();
+                                    dfd.resolve();
+                                });
+                            }).always(() => nts.uk.ui.block.clear());
                     }).fail(function(res: any) {
                         nts.uk.ui.dialog.bundledErrors(res);
                         nts.uk.ui.block.clear();
@@ -1141,7 +1182,7 @@ module nts.uk.com.view.cmm021.a {
                         _self.userName6(data.userName);
                         _self.enable_otherAcc(true);
                         _self.updateMode();
-                    } else if (data.userId != null && data.useAtr == 0) {
+                    } else if (data.employeeId != null && data.useAtr == 0) {
                         _self.companyCode6(data.companyCode);
                         _self.userName6(data.userName);
                         _self.enable_otherAcc(false);
@@ -1184,12 +1225,23 @@ module nts.uk.com.view.cmm021.a {
                     nts.uk.ui.block.invisible();
                     service.saveOtherSysAccount(otherAcc)
                         .done((data: any) => {
-                            _self.isSaveActive = true;
-                            _self.reloadAlreadySettingOtherAcc().done(() => {
-                                nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
-                                _self.updateMode();
-                                dfd.resolve();
-                            }).always(() => nts.uk.ui.block.clear());
+                            //
+                            service.findListUserInfo(_self.employeeIds(), true)
+                                .done((data2: UserDto[]) => {
+                                    _self.listUserDtoScreenAC = data2;
+                                    _self.reloadAlreadySettingOtherAcc().done(() => {
+                                        let oldSid = _self.selectedEmployeeId();
+                                        _self.selectUse.valueHasMutated();
+                                        //select saved Item
+                                        if (_self.selectUse() == 1) {
+                                            _self.selectedEmployeeId(oldSid);
+                                        }
+                                        _self.isSaveActive = true;
+                                        nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
+                                        _self.updateMode();
+                                        dfd.resolve();
+                                    });
+                                }).always(() => nts.uk.ui.block.clear());
                         }).fail((res: any) => {
                             nts.uk.ui.dialog.bundledErrors(res);
                             nts.uk.ui.block.clear();
