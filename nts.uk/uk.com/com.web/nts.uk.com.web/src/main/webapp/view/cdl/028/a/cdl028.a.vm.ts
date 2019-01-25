@@ -24,14 +24,14 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                 return;
             }
             self.modeScreen(params.mode);
-            self.standardDate(params.date == null ? parseInt(moment().format("YYYYMMDD")) : nts.uk.time.parseYearMonthDate(params.date).toValue());
+            self.standardDate(params.date == null ? parseInt(moment().utc().format("YYYYMMDD")) : nts.uk.time.parseYearMonthDate(moment().utc(params.date).format("YYYYMMDD")).toValue());
         }
         /**
          * startPage
          */
         public startPage(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            var now = moment();
+            var now = moment().utc();
             let newDate : string = now.format("YYYY/MM/DD");
             self.required = ko.observable(false);
             self.startDateString = ko.observable();
@@ -123,7 +123,7 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                     self.standardDate();
                     self.startDateFiscalYear(self.yearValue().startDate+""+ self.getFullMonth(self.firstMonth()) +"01");
                     if( self.firstMonth()!= 1){
-                        self.endDateDay (moment((parseInt(self.yearValue().endDate)+1)+"-"+ self.getFullMonth(self.firstMonth() - 1) , "YYYY-MM").daysInMonth());
+                        self.endDateDay (moment().utc((parseInt(self.yearValue().endDate)+1)+"-"+ self.getFullMonth(self.firstMonth() - 1) , "YYYY-MM").daysInMonth());
                         self.endDateFiscalYear(self.yearValue().endDate === "9999" ? "99991231" : (self.convertYearToInt(self.yearValue().endDate)+1)+""+ self.getFullMonth(self.firstMonth() - 1) +""+self.endDateDay());
                     } else {
                         self.endDateFiscalYear(self.convertYearToInt((self.yearValue().endDate)) + "1231");
@@ -142,9 +142,9 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                let paramsCdl : IPARAMS_CDL = {
                    status : true,
                    mode : self.modeScreen() == MODE_SCREEN.YEAR_PERIOD ? MODE_SCREEN.YEAR_PERIOD_FINANCE : self.modeScreen(),
-                   standardDate :((self.modeScreen() == MODE_SCREEN.BASE_DATE) || (self.modeScreen() == MODE_SCREEN.ALL)) ? moment(self.standardDate() + "").format("YYYY/MM/DD") : null,
-                   startDateFiscalYear : (self.modeScreen() == MODE_SCREEN.BASE_DATE) ? null : moment(self.startDateFiscalYear() + "").format("YYYY/MM/DD"),
-                   endDateFiscalYear : (self.modeScreen() == MODE_SCREEN.BASE_DATE) ? null : moment(self.endDateFiscalYear() + "").format("YYYY/MM/DD")
+                   standardDate :((self.modeScreen() == MODE_SCREEN.BASE_DATE) || (self.modeScreen() == MODE_SCREEN.ALL)) ? moment().utc(self.standardDate() + "").format("YYYY/MM/DD") : null,
+                   startDateFiscalYear : (self.modeScreen() == MODE_SCREEN.BASE_DATE) ? null : moment().utc(self.startDateFiscalYear() + "").format("YYYY/MM/DD"),
+                   endDateFiscalYear : (self.modeScreen() == MODE_SCREEN.BASE_DATE) ? null : moment().utc(self.endDateFiscalYear() + "").format("YYYY/MM/DD")
                };
 
                 $("#A2_2 .ntsDatepicker").trigger("validate");
