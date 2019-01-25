@@ -28,6 +28,9 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
             self.hisIdSelected.subscribe((data) => {
                 error.clearAll();
                 let self = this;
+                if(data == null) {
+                    return;
+                }
                 self.index(self.getIndex(data));
                 if (data != '') {
                     if (self.transferMethod() == model.TRANSFER_MOTHOD.TRANSFER && self.hisIdSelected() == HIS_ID_TEMP) {
@@ -56,7 +59,7 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 columns: [
-                    {headerText: '', key: 'id', dataType: 'number', width: '100', hidden: true},
+                    {headerText: 'id', key: 'id', dataType: 'number', width: '100', hidden: true},
                     {headerText: getText('QMM020_26'), key: 'masterCode', dataType: 'string', width: '90'},
                     {headerText: getText('QMM020_27'), key: 'categoryName', dataType: 'string', width: '180'},
                     {headerText: getText('QMM020_20'), key: 'open', dataType: 'string', width: '75px', unbound: true, ntsControl: 'SalaryButton'},
@@ -81,8 +84,8 @@ module nts.uk.pr.view.qmm020.f.viewmodel {
                 if (listStateCorrelationHisPosition && listStateCorrelationHisPosition.length > 0) {
                     self.listStateCorrelationHisPosition(StateCorrelationHisPosition.convertToDisplay(listStateCorrelationHisPosition));
                     if (hisId == null) {
+                        self.hisIdSelected(null);
                         self.index(FIRST);
-                        self.hisIdSelected(self.listStateCorrelationHisPosition()[FIRST].hisId);
                     }
                     self.hisIdSelected(self.listStateCorrelationHisPosition()[self.getIndex(hisId)].hisId);
                 } else {

@@ -126,14 +126,14 @@ textarea {
 #input-content-area{
     position: absolute;
     top: 560px;
-    left: 95px;
+    left: 100px;
     padding: 3px;
     /* padding-top: 0px; */
     word-wrap: break-word;
     white-space: pre-wrap;
     word-break: normal;
     color: transparent;
-    width: 520px;
+    width: 462px;
     z-index: -9999;
 }
 #input-area{

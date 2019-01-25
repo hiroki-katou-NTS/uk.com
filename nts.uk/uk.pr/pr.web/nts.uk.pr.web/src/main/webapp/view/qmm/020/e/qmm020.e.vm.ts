@@ -30,6 +30,9 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
             self.hisIdSelected.subscribe((data) => {
                 error.clearAll();
                 let self = this;
+                if(data == null) {
+                    return;
+                }
                 self.index(self.getIndex(data));
                 if (data != '') {
                     if (self.hisIdSelected() == HIS_ID_TEMP) {
@@ -106,7 +109,7 @@ module nts.uk.pr.view.qmm020.e.viewmodel {
                     self.listStateCorrelationHisClassification(StateCorrelationHisClassification.convertToDisplay(listStateCorrelationHis));
                     if (hisId == null) {
                         self.index(FIRST);
-                        self.hisIdSelected(self.listStateCorrelationHisClassification()[FIRST].hisId);
+                        self.hisIdSelected(null);
                     }
                     self.hisIdSelected(self.listStateCorrelationHisClassification()[self.getIndex(hisId)].hisId);
                 } else {
