@@ -22,15 +22,15 @@
         <com:scriptfile path="qmm017.e.start.js"/>
     </ui:define>
     <ui:define name="content">
-        <div id="contents-area" style="padding-top: 0px;">
+        <div id="contents-area">
             <div style="margin-left: 20px;" data-bind="with: basicCalculationFormula">
                 <!--E1-1; E1_2; E1_13-->
-                <div class="dialog-first-element" style = "min-width: 500px;">
+                <div class="dialog-first-element" style="min-width: 500px; margin-bottom: 10px">
                     <div>#{i18n.getText('QMM017_166')}</div>
                     <div data-bind = "visible: $vm.isShowConditionItem" style="margin-left: 30px;">#{i18n.getText('QMM017_167')}</div>
-                    <div data-bind = "text: $vm.conditionItemName, visible: $vm.isShowConditionItem"></div>
-                    <hr></hr>
+                    <div data-bind = "text: $vm.conditionItemName, visible: $vm.isShowConditionItem"/>
                 </div>
+                <hr/>
                 <div style="margin-top: 10px; min-width: 550px">
                     <!--E1_4-->
                     <div style="width: 130px; display: inline-block;"
@@ -91,7 +91,8 @@
                                             option: {
                                                 width: '200px',
                                                 unitID: 'JPY',
-                                                grouplength: 3
+                                                grouplength: 3,
+                                                placeholder: '#{i18n.getText('QMM017_109')}'
                                             },
                                             constraint: 'BasePriceFixedAmount',
                                             name: '#[QMM017_108]',
@@ -124,7 +125,8 @@
                                     <input id = "E3_4" tabindex="7" data-bind="ntsNumberEditor: {
                                         value: baseItemFixedValue,
                                         option: {
-                                            width: '178px'
+                                            width: '178px',
+                                            placeholder: '#{i18n.getText('QMM017_16')}'
                                         },
                                         constraint: 'BaseItemFixedValue',
                                         name: '#[QMM017_111]',
@@ -142,7 +144,8 @@
                                         value: premiumRate,
                                         option: {
                                             width: '200px',
-                                            unitID: 'PERCENT'
+                                            unitID: 'PERCENT',
+                                            placeholder: '#{i18n.getText('QMM017_109')}'
                                         },
                                         constraint: 'PremiumRate',
                                         name: '#[QMM017_113]',
@@ -192,7 +195,8 @@
                                         value: coefficientFixedValue,
                                         constraint: 'CoefficientFixedValue',
                                         option: {
-                                            width: '178px'
+                                            width: '178px',
+                                            placeholder: '#{i18n.getText('QMM017_16')}'
                                         },
                                         name: '#[QMM017_111]',
                                         enable: coefficientClassification() == 0,
