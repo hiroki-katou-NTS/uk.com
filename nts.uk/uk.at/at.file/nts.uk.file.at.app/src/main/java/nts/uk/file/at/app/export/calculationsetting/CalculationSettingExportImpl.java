@@ -480,9 +480,9 @@ public class CalculationSettingExportImpl implements MasterListData {
 			datas.add(masterData7);
 			//
 			Map<String, Object> line8 = new HashMap<>();
-			line8.put(column1Sheet2,TextResource.localize("KMK013_252"));
+			line8.put(column1Sheet2,"");
 			line8.put(column2Sheet2,"");
-			line8.put(column3Sheet2,TextResource.localize("KMK013_251"));
+			line8.put(column3Sheet2,TextResource.localize("KMK013_252"));
 			line8.put(column4Sheet2,"");
 			if(holidayAddtionDto.getAddingMethod2()==1){
 				line8.put(column5Sheet2,TextResource.localize("KMK013_249"));
@@ -2691,20 +2691,26 @@ private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
 				        		 }else{
 				        			 data.put(column13Sheet10,TextResource.localize("KMK013_97"));
 				        		 }
-				        		 data.put(column14Sheet10,TextResource.localize("KMK013_152")+ overtimeWorkFrameFindDto.getOvertimeWorkFrNo()+overtimeWorkFrameFindDto.getOvertimeWorkFrName());
+				        	/*	 data.put(column14Sheet10,TextResource.localize("KMK013_152")+ overtimeWorkFrameFindDto.getOvertimeWorkFrNo()+overtimeWorkFrameFindDto.getOvertimeWorkFrName());
 				        		 data.put(column18Sheet10,TextResource.localize("KMK013_157")+ rsworkdayFrame.get(i).getWorkdayoffFrNo()+rsworkdayFrame.get(i).getWorkdayoffFrName());
 				        		 data.put(column20Sheet10,TextResource.localize("KMK013_163")+ rsworkdayFrame.get(i).getWorkdayoffFrNo()+rsworkdayFrame.get(i).getWorkdayoffFrName());
 				        		 MasterData masterData = new MasterData(data, null, "");
 				        		 Map<String, MasterCellData> rowData = masterData.getRowData();
 				        		 getAlignsheet10(rowData);
-				        		 datas.add(masterData);
+				        		 datas.add(masterData);*/
 				        		 
 					  		}else{
 					  			data.put(column1Sheet10,TextResource.localize("KMK013_92"));
 					  			
 					  		}
 					  		// contenright
-					  //		TextResource.localize("KMK013_152")+roleOvertimeWorkDto.getOvertimeFrNo()+rsName.get(i).getOvertimeWorkFrName()	
+					  		 data.put(column14Sheet10,TextResource.localize("KMK013_152")+ overtimeWorkFrameFindDto.getOvertimeWorkFrNo()+overtimeWorkFrameFindDto.getOvertimeWorkFrName());
+			        		 data.put(column18Sheet10,TextResource.localize("KMK013_157")+ rsworkdayFrame.get(i).getWorkdayoffFrNo()+rsworkdayFrame.get(i).getWorkdayoffFrName());
+			        		 data.put(column20Sheet10,TextResource.localize("KMK013_163")+ rsworkdayFrame.get(i).getWorkdayoffFrNo()+rsworkdayFrame.get(i).getWorkdayoffFrName());
+			        		 MasterData masterData = new MasterData(data, null, "");
+			        		 Map<String, MasterCellData> rowData = masterData.getRowData();
+			        		 getAlignsheet10(rowData);
+			        		 datas.add(masterData);
 					  		
 					  		
 					  	}
