@@ -46,7 +46,7 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                     break;
 
                 case MODE_SCREEN.ALL:
-                    self.standardDate(self.convertYearToInt(self.standardDate())+"0101");
+                    self.standardDate();
                     service.getStartMonth().done(function(response: IStartMonth) {
                         if(response.startMonth != null){
                             startMonthDB = response.startMonth;
