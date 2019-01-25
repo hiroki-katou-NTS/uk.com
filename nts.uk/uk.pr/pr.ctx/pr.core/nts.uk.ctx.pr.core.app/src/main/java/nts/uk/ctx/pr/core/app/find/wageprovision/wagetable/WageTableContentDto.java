@@ -143,7 +143,7 @@ public class WageTableContentDto {
 					String masterCode = payment.getElementAttribute().getFirstElementItem().getMasterElementItem().get()
 							.getMasterCode();
 					String masterName = mapMaster.get(masterCode);
-					ElementItemDto item = new ElementItemDto(masterCode, masterName == null ? masterCode : masterName,
+					ElementItemDto item = new ElementItemDto(masterCode, masterName,
 							null, null, null, payment.getWageTablePaymentAmount().v());
 					result.add(item);
 				} else if (payment.getElementAttribute().getFirstElementItem().getNumericElementItem().isPresent()) {
@@ -162,7 +162,7 @@ public class WageTableContentDto {
 					String masterCode = payment.getElementAttribute().getSecondElementItem().get()
 							.getMasterElementItem().get().getMasterCode();
 					String masterName = mapMaster.get(masterCode);
-					ElementItemDto item = new ElementItemDto(masterCode, masterName == null ? masterCode : masterName,
+					ElementItemDto item = new ElementItemDto(masterCode, masterName,
 							null, null, null, payment.getWageTablePaymentAmount().v());
 					result.add(item);
 				} else if (payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem()
@@ -193,7 +193,7 @@ public class WageTableContentDto {
 			if (key.getMasterElementItem().isPresent()) {
 				String masterCode = key.getMasterElementItem().get().getMasterCode();
 				String masterName = mapMaster1.get(masterCode);
-				result.add(new TwoDmsElementItemDto(masterCode, masterName == null ? masterCode : masterName, null,
+				result.add(new TwoDmsElementItemDto(masterCode, masterName, null,
 						null, null, list2ndDmsElements));
 			} else if (key.getNumericElementItem().isPresent()) {
 				long frameNumber = key.getNumericElementItem().get().getFrameNumber();

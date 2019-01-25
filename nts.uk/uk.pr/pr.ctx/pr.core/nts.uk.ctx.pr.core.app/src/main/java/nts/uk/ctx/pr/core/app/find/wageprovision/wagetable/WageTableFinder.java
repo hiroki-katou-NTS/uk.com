@@ -96,8 +96,7 @@ public class WageTableFinder {
 									.getOptionalAdditionalElement()))
 							.findFirst();
 					dto.getElementInformation().getOneDimensionalElement().setDisplayName(optElem.isPresent()
-							? optElem.get().getName()
-							: dto.getElementInformation().getOneDimensionalElement().getOptionalAdditionalElement());
+							? optElem.get().getName() : null);
 				}
 				if (dto.getElementInformation().getTwoDimensionalElement() != null && dto.getElementInformation()
 						.getTwoDimensionalElement().getOptionalAdditionalElement() != null) {
@@ -106,8 +105,7 @@ public class WageTableFinder {
 									.getOptionalAdditionalElement()))
 							.findFirst();
 					dto.getElementInformation().getTwoDimensionalElement().setDisplayName(optElem.isPresent()
-							? optElem.get().getName()
-							: dto.getElementInformation().getTwoDimensionalElement().getOptionalAdditionalElement());
+							? optElem.get().getName() : null);
 				}
 				if (dto.getElementInformation().getThreeDimensionalElement() != null && dto.getElementInformation()
 						.getThreeDimensionalElement().getOptionalAdditionalElement() != null) {
@@ -116,8 +114,7 @@ public class WageTableFinder {
 									.getThreeDimensionalElement().getOptionalAdditionalElement()))
 							.findFirst();
 					dto.getElementInformation().getThreeDimensionalElement().setDisplayName(optElem.isPresent()
-							? optElem.get().getName()
-							: dto.getElementInformation().getThreeDimensionalElement().getOptionalAdditionalElement());
+							? optElem.get().getName() : null);
 				}
 			}
 			if (dto.getElementInformation().getOneDimensionalElement().getFixedElement() != null) {
