@@ -14,12 +14,7 @@ module nts.uk.at.view.kmk004.a {
             findBeginningMonth: 'basic/company/beginningmonth/find'
         }
         export function saveAsExcel(languageId: string, startDate : any, endDate: any): JQueryPromise<any> {
-            let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-            let domainType = "KMK004";
-            if (program.length > 1){
-                program.shift();
-                domainType = domainType + program.join(" ");
-            }
+            let domainType = "KMK004" + nts.uk.resource.getText("KMK004_194");
             return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "SetWorkingHoursAndDays", domainType: domainType, languageId: languageId, reportType: 0, mode: 2, startDate: startDate, endDate: endDate});
         }
         
