@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.wagetable;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -16,16 +18,16 @@ public class NumericElementItem extends DomainObject {
 	/**
 	 * 枠番
 	 */
-	private Integer frameNumber;
+	private Long frameNumber;
 
 	/**
 	 * 当該枠下限
 	 */
-	private Integer frameLowerLimit;
+	private BigDecimal frameLowerLimit;
 
 	/**
 	 * 当該枠上限
 	 */
-	private Integer frameUpperLimit;
+	private BigDecimal frameUpperLimit;
 
 }

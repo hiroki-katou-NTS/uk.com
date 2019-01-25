@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.wagetable;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -33,9 +34,10 @@ public class ElementRangeSetting extends AggregateRoot {
 	 */
 	private String historyID;
 
-	public ElementRangeSetting(Integer firstStepIncrement, Integer firstRangeLowerLimit, Integer firstRangeUpperLimit,
-			Integer secondStepIncrement, Integer secondRangeLowerLimit, Integer secondRangeUpperLimit,
-			Integer thirdStepIncrement, Integer thirdRangeLowerLimit, Integer thirdRangeUpperLimit, String historyID) {
+	public ElementRangeSetting(BigDecimal firstStepIncrement, BigDecimal firstRangeLowerLimit,
+			BigDecimal firstRangeUpperLimit, BigDecimal secondStepIncrement, BigDecimal secondRangeLowerLimit,
+			BigDecimal secondRangeUpperLimit, BigDecimal thirdStepIncrement, BigDecimal thirdRangeLowerLimit,
+			BigDecimal thirdRangeUpperLimit, String historyID) {
 		this.firstElementRange = new ElementRange(firstStepIncrement, firstRangeLowerLimit, firstRangeUpperLimit);
 		this.secondElementRange = Optional
 				.of(new ElementRange(secondStepIncrement, secondRangeLowerLimit, secondRangeUpperLimit));

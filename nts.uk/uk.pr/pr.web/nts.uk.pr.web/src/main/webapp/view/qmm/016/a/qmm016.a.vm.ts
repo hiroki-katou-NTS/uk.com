@@ -7,6 +7,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
     import model = nts.uk.pr.view.qmm016.share.model;
     import getText = nts.uk.resource.getText;
     import WageTableContent = nts.uk.pr.view.qmm016.share.model.WageTableContent;
+    import formatNumber = nts.uk.ntsNumber.formatNumber;
+    import NumberEditorOption = nts.uk.ui.option.NumberEditorOption;
     
     const NEW_HIST_ID = "zzzzzz10";
     
@@ -136,7 +138,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
         initComponents() {
             let self = this;
             $('#A8_2').ntsFixedTable({ width: 300 });
-            $('.normal-fixed-table').ntsFixedTable({ width: 600 });
+            $('.normal-fixed-table').ntsFixedTable({ width: 800 });
             $("#fixed-table-1d").ntsFixedTable({ width: 600, height: 343 });
             $('.fixed-table-top').ntsFixedTable({ width: 300, height: 34 });
             if (/Chrome/.test(navigator.userAgent)) {
@@ -253,7 +255,10 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
 								if (i.masterCode) {
 									return {value: i.masterCode, name: i.masterName};
 								} else {
-									return {value: i.frameNumber, name: i.frameLowerLimit + getText("QMM016_31") + i.frameUpperLimit};
+									return {value: i.frameNumber, 
+                                        name: formatNumber(i.frameLowerLimit, new NumberEditorOption({grouplength: 3, decimallength: 2}))
+                                                + getText("QMM016_31")
+                                                + formatNumber(i.frameUpperLimit, new NumberEditorOption({grouplength: 3, decimallength: 2}))};
 								}
 							}));
 						} else if (!_.isEmpty(contentData.list3dElements) && (self.selectedWageTable().elementSetting() == model.ELEMENT_SETTING.THREE_DIMENSION 
@@ -269,7 +274,10 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                                     if (i.masterCode) {
                                         return {value: i.masterCode, name: i.masterName};
                                     } else {
-                                        return {value: i.frameNumber, name: i.frameLowerLimit + getText("QMM016_31") + i.frameUpperLimit};
+                                        return {value: i.frameNumber, 
+                                            name: formatNumber(i.frameLowerLimit, new NumberEditorOption({grouplength: 3, decimallength: 2}))
+                                                + getText("QMM016_31")
+                                                + formatNumber(i.frameUpperLimit, new NumberEditorOption({grouplength: 3, decimallength: 2}))};
                                     }
                                 }));
                             } else {
@@ -281,7 +289,10 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
 								if (i.masterCode) {
 									return {value: i.masterCode, name: i.masterName};
 								} else {
-									return {value: i.frameNumber, name: i.frameLowerLimit + getText("QMM016_31") + i.frameUpperLimit};
+									return {value: i.frameNumber, 
+                                        name: formatNumber(i.frameLowerLimit, new NumberEditorOption({grouplength: 3, decimallength: 2}))
+                                                + getText("QMM016_31")
+                                                + formatNumber(i.frameUpperLimit, new NumberEditorOption({grouplength: 3, decimallength: 2}))};
 								}
 							}));
                             self.wageTableContent2dData(contentData.list2dElements.map(item => new model.TwoDmsElementItem(item)));
@@ -651,7 +662,10 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                         if (i.masterCode) {
                             return {value: i.masterCode, name: i.masterName};
                         } else {
-                            return {value: i.frameNumber, name: i.frameLowerLimit + getText("QMM016_31") + i.frameUpperLimit};
+                            return {value: i.frameNumber, 
+                                name: formatNumber(i.frameLowerLimit, new NumberEditorOption({grouplength: 3, decimallength: 2}))
+                                                + getText("QMM016_31")
+                                                + formatNumber(i.frameUpperLimit, new NumberEditorOption({grouplength: 3, decimallength: 2}))};
                         }
                     }));
                     self.elementRangeSetting().historyID(params.historyID);
@@ -659,6 +673,7 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     self.wageTableContent(new model.WageTableContent(data));
                     $("#content-wrapper").unbind();
                     self.syncScroll($("#content-wrapper"), $("#elem1-wrapper"), $("#elem2-wrapper"));
+                    $(".input-amount")[0].focus();
                 }
             }).fail(error => {
                 dialog.alertError(error);
@@ -707,7 +722,10 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                         if (i.masterCode) {
                             return {value: i.masterCode, name: i.masterName};
                         } else {
-                            return {value: i.frameNumber, name: i.frameLowerLimit + getText("QMM016_31") + i.frameUpperLimit};
+                            return {value: i.frameNumber, 
+                                name: formatNumber(i.frameLowerLimit, new NumberEditorOption({grouplength: 3, decimallength: 2}))
+                                                + getText("QMM016_31")
+                                                + formatNumber(i.frameUpperLimit, new NumberEditorOption({grouplength: 3, decimallength: 2}))};
                         }
                     }));
                     let lst2nd: Array<any> = data.list2dElements[0].listSecondDms;
@@ -715,7 +733,10 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                         if (i.masterCode) {
                             return {value: i.masterCode, name: i.masterName};
                         } else {
-                            return {value: i.frameNumber, name: i.frameLowerLimit + getText("QMM016_31") + i.frameUpperLimit};
+                            return {value: i.frameNumber, 
+                                name: formatNumber(i.frameLowerLimit, new NumberEditorOption({grouplength: 3, decimallength: 2}))
+                                                + getText("QMM016_31")
+                                                + formatNumber(i.frameUpperLimit, new NumberEditorOption({grouplength: 3, decimallength: 2}))};
                         }
                     }));
                     self.elementRangeSetting().historyID(params.historyID);
@@ -743,6 +764,8 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                     qualificationGroupSettings: result
                 };
                 self.wageTableContent(new WageTableContent(wageTableContent));
+                if (!_.isEmpty(result))
+                    $(".input-amount")[0].focus();
             });
         }
         
@@ -781,7 +804,10 @@ module nts.uk.pr.view.qmm016.a.viewmodel {
                         if (i.masterCode) {
                             return {value: i.masterCode, name: i.masterName};
                         } else {
-                            return {value: i.frameNumber, name: i.frameLowerLimit + getText("QMM016_31") + i.frameUpperLimit};
+                            return {value: i.frameNumber, 
+                                name: formatNumber(i.frameLowerLimit, new NumberEditorOption({grouplength: 3, decimallength: 2}))
+                                                + getText("QMM016_31")
+                                                + formatNumber(i.frameUpperLimit, new NumberEditorOption({grouplength: 3, decimallength: 2}))};
                         }
                     }));
                     self.elementRangeSetting().historyID(params.historyID);

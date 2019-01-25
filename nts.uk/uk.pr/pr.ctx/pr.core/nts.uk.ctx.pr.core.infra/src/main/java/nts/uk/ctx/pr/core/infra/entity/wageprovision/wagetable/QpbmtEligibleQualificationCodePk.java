@@ -7,29 +7,19 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-/**
- * 
- * 
- * @author HungTT
- *
- */
-
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QpbmtWageTablePk {
+public class QpbmtEligibleQualificationCodePk {
 
-	/**
-	 * 会社ID
-	 */
 	@Column(name = "CID")
 	public String companyId;
 
-	/**
-	 * 賃金テーブルコード
-	 */
-	@Column(name = "WAGE_TABLE_CD")
-	public String code;
+	@Column(name = "QUALIFY_GROUP_CD")
+	public String qualificationGroupCode;
 
+	@Column(name = "ELIGIBLE_QUALIFY_CD")
+	public String eligibleQualificationCode;
+	
 }

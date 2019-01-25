@@ -1,23 +1,21 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.wagetable;
 
-import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.IntegerMaxValue;
-import nts.arc.primitive.constraint.IntegerMinValue;
+import java.math.BigDecimal;
+
+import nts.arc.primitive.DecimalPrimitiveValue;
+import nts.arc.primitive.constraint.DecimalRange;
 
 /**
  * きざみ単位
  */
 
-@IntegerMaxValue(9)
-@IntegerMinValue(0)
-public class StepIncrement extends IntegerPrimitiveValue<StepIncrement>
-{
+@DecimalRange(min = "0.01", max = "9999999999.00")
+public class StepIncrement extends DecimalPrimitiveValue<StepIncrement> {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public StepIncrement(int rawValue)
-    {
-        super(rawValue);
-    }
+	public StepIncrement(BigDecimal rawValue) {
+		super(rawValue);
+	}
 
 }

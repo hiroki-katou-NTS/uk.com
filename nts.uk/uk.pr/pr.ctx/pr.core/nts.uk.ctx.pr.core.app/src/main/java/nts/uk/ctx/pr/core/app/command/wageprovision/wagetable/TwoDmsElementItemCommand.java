@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.app.command.wageprovision.wagetable;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.Data;
@@ -22,17 +23,17 @@ public class TwoDmsElementItemCommand {
     /**
      * 要素項目(数値).枠番
      */
-    private Integer frameNumber;
+    private Long frameNumber;
 
     /**
      * .要素項目(数値)当該枠下限
      */
-    private Integer frameLowerLimit;
+    private BigDecimal frameLowerLimit;
 
     /**
      * 要素項目(数値).当該枠上限
      */
-    private Integer frameUpperLimit;
+    private BigDecimal frameUpperLimit;
     
     private List<ElementItemCommand> listSecondDms;
 

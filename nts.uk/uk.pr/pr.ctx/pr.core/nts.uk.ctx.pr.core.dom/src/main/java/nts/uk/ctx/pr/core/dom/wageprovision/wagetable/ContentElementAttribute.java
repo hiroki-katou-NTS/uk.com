@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.wagetable;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -28,10 +29,10 @@ public class ContentElementAttribute extends DomainObject {
 	 */
 	private Optional<ElementItem> thirdElementItem;
 
-	public ContentElementAttribute(String firstMasterCode, Integer firstFrameNumber, Integer firstFrameLowerLimit,
-			Integer firstFrameUpperLimit, String secondMasterCode, Integer secondFrameNumber,
-			Integer secondFrameLowerLimit, Integer secondFrameUpperLimit, String thirdMasterCode,
-			Integer thirdFrameNumber, Integer thirdFrameLowerLimit, Integer thirdFrameUpperLimit) {
+	public ContentElementAttribute(String firstMasterCode, Long firstFrameNumber, BigDecimal firstFrameLowerLimit,
+			BigDecimal firstFrameUpperLimit, String secondMasterCode, Long secondFrameNumber,
+			BigDecimal secondFrameLowerLimit, BigDecimal secondFrameUpperLimit, String thirdMasterCode,
+			Long thirdFrameNumber, BigDecimal thirdFrameLowerLimit, BigDecimal thirdFrameUpperLimit) {
 		this.firstElementItem = new ElementItem(firstMasterCode, firstFrameNumber, firstFrameLowerLimit,
 				firstFrameUpperLimit);
 		if (secondMasterCode == null && secondFrameNumber == null && secondFrameLowerLimit == null

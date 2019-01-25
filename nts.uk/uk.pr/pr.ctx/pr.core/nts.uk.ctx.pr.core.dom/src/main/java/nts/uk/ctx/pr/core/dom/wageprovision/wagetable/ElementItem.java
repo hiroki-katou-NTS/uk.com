@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.wagetable;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -25,7 +26,7 @@ public class ElementItem extends DomainObject {
 	 */
 	private Optional<NumericElementItem> numericElementItem;
 
-	public ElementItem(String masterCode, Integer frameNumber, Integer frameLowerLimit, Integer frameUpperLimit) {
+	public ElementItem(String masterCode, Long frameNumber, BigDecimal frameLowerLimit, BigDecimal frameUpperLimit) {
 		this.masterElementItem = masterCode == null ? Optional.empty() : Optional.of(new MasterElementItem(masterCode));
 		if (frameNumber == null && frameLowerLimit == null && frameUpperLimit == null)
 			this.numericElementItem = Optional.empty();

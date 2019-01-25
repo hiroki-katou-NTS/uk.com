@@ -19,7 +19,7 @@ import nts.uk.ctx.pr.core.infra.entity.wageprovision.wagetable.QpbmtWageTableHis
 public class JpaWageTableHistoryRepository extends JpaRepository implements WageTableHistoryRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtWageTableHistory f";
-	private static final String SELECT_BY_YM = SELECT_ALL_QUERY_STRING + " WHERE  f.companyId =:cid AND"
+	private static final String SELECT_BY_YM = SELECT_ALL_QUERY_STRING + " WHERE  f.pk.companyId =:cid AND"
 			+ " f.startYm <= :yearMonth AND f.endYm >= :yearMonth ";
 
 	@Override
@@ -27,7 +27,7 @@ public class JpaWageTableHistoryRepository extends JpaRepository implements Wage
 		Map<String, List<QpbmtWageTableHistory>> mapEntities = this.queryProxy()
 				.query(SELECT_BY_YM, QpbmtWageTableHistory.class).setParameter("cid", cid)
 				.setParameter("yearMonth", yearMonth.v()).getList().stream()
-				.collect(Collectors.groupingBy(x -> x.code));
+				.collect(Collectors.groupingBy(x -> x.pk.code));
 		List<WageTableHistory> result = new ArrayList<>();
 		mapEntities.entrySet().forEach(x -> {
 			result.add(QpbmtWageTableHistory.toDomain(x.getValue()));
@@ -39,10 +39,10 @@ public class JpaWageTableHistoryRepository extends JpaRepository implements Wage
 	public List<WageTableHistory> getWageTableHistByCodes(String companyId, List<String> codes) {
 		if (codes == null || codes.isEmpty())
 			return Collections.emptyList();
-		String query = "SELECT f FROM QpbmtWageTableHistory f WHERE  f.companyId =:cid AND f.code IN :codes ORDER BY f.code ASC, f.startYm DESC";
+		String query = "SELECT f FROM QpbmtWageTableHistory f WHERE  f.pk.companyId =:cid AND f.pk.code IN :codes ORDER BY f.pk.code ASC, f.startYm DESC";
 		Map<String, List<QpbmtWageTableHistory>> mapEntities = this.queryProxy()
 				.query(query, QpbmtWageTableHistory.class).setParameter("cid", companyId).setParameter("codes", codes)
-				.getList().stream().collect(Collectors.groupingBy(x -> x.code));
+				.getList().stream().collect(Collectors.groupingBy(x -> x.pk.code));
 		List<WageTableHistory> result = new ArrayList<>();
 		mapEntities.entrySet().forEach(x -> {
 			result.add(QpbmtWageTableHistory.toDomain(x.getValue()));
@@ -52,7 +52,8 @@ public class JpaWageTableHistoryRepository extends JpaRepository implements Wage
 
 	@Override
 	public Optional<WageTableHistory> getWageTableHistByCode(String companyId, String code) {
-		String query = "SELECT f FROM QpbmtWageTableHistory f WHERE  f.companyId =:cid AND" + " f.code = :code ORDER BY f.startYm DESC";
+		String query = "SELECT f FROM QpbmtWageTableHistory f WHERE  f.pk.companyId =:cid AND"
+				+ " f.pk.code = :code ORDER BY f.startYm DESC";
 		List<QpbmtWageTableHistory> listEntities = this.queryProxy().query(query, QpbmtWageTableHistory.class)
 				.setParameter("cid", companyId).setParameter("code", code).getList();
 		if (listEntities.isEmpty())
@@ -70,7 +71,7 @@ public class JpaWageTableHistoryRepository extends JpaRepository implements Wage
 
 	@Override
 	public void remove(String companyId, String code) {
-		String query = "DELETE FROM QpbmtWageTableHistory a WHERE a.companyId = :companyId AND a.code = :wageTableCode";
+		String query = "DELETE FROM QpbmtWageTableHistory a WHERE a.pk.companyId = :companyId AND a.pk.code = :wageTableCode";
 		this.getEntityManager().createQuery(query).setParameter("companyId", companyId)
 				.setParameter("wageTableCode", code).executeUpdate();
 	}

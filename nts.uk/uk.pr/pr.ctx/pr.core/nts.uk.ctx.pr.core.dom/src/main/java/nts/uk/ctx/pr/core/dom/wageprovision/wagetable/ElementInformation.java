@@ -34,10 +34,17 @@ public class ElementInformation extends DomainObject {
 			String threeOptionalAdditionalElement) {
 		this.oneDimensionalElement = new ElementAttribute(oneMasterNumericClassification, oneFixedElement,
 				oneOptionalAdditionalElement);
-		this.twoDimensionalElement = Optional.of(
-				new ElementAttribute(twoMasterNumericClassification, twoFixedElement, twoOptionalAdditionalElement));
-		this.threeDimensionalElement = Optional.of(new ElementAttribute(threeMasterNumericClassification,
-				threeFixedElement, threeOptionalAdditionalElement));
+		if (twoMasterNumericClassification == 0 && twoFixedElement == null && twoOptionalAdditionalElement == null)
+			this.twoDimensionalElement = Optional.empty();
+		else
+			this.twoDimensionalElement = Optional.of(new ElementAttribute(twoMasterNumericClassification,
+					twoFixedElement, twoOptionalAdditionalElement));
+		if (threeMasterNumericClassification == 0 && threeFixedElement == null
+				&& threeOptionalAdditionalElement == null)
+			this.threeDimensionalElement = Optional.empty();
+		else
+			this.threeDimensionalElement = Optional.of(new ElementAttribute(threeMasterNumericClassification,
+					threeFixedElement, threeOptionalAdditionalElement));
 	}
 
 	public ElementInformation(ElementAttribute oneDimensionalElement, ElementAttribute twoDimensionalElement,

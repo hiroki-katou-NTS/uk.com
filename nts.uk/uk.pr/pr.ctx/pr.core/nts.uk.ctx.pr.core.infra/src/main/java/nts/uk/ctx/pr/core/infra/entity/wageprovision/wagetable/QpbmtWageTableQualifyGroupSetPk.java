@@ -20,13 +20,16 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class QpbmtWageTableQualifyGroupSetPk {
 
+	@Column(name = "CID")
+	public String companyId;
+	
+	@Column(name = "WAGE_TABLE_CD")
+	public String wageTableCode;
+	
 	@Column(name = "HIST_ID")
 	public String historyId;
 	
 	@Column(name = "QUALIFY_GROUP_CD")
 	public String qualificationGroupCode;
-	
-	@Column(name = "ELIGIBLE_QUALIFY_CD")
-	public String elegibleQualificationCode;
 	
 }

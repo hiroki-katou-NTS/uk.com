@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.wagetable;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -87,7 +88,7 @@ public class WageTableContentDto {
 				ElementRangeSettingDto elemRange = ElementRangeSettingDto.fromDomainToDto(optSetting.get());
 				elemRange.setWageTableCode(optWage.get().getWageTableCode().v());
 				if (optWage.get().getElementSetting() == ElementSetting.FINE_WORK) {
-					elemRange.setThirdElementRange(new ElementRangeDto(null, 1, 5));
+					elemRange.setThirdElementRange(new ElementRangeDto(null, new BigDecimal(1), new BigDecimal(5)));
 				}
 				WageTableContentDto temp = wageContentCreater.createThreeDimensionWageTable(elemRange);
 				this.list3dElements = temp.list3dElements;
@@ -146,11 +147,11 @@ public class WageTableContentDto {
 							null, null, null, payment.getWageTablePaymentAmount().v());
 					result.add(item);
 				} else if (payment.getElementAttribute().getFirstElementItem().getNumericElementItem().isPresent()) {
-					int frameNumber = payment.getElementAttribute().getFirstElementItem().getNumericElementItem().get()
+					long frameNumber = payment.getElementAttribute().getFirstElementItem().getNumericElementItem().get()
 							.getFrameNumber();
-					int lowerLimit = payment.getElementAttribute().getFirstElementItem().getNumericElementItem().get()
+					BigDecimal lowerLimit = payment.getElementAttribute().getFirstElementItem().getNumericElementItem().get()
 							.getFrameLowerLimit();
-					int upperLimit = payment.getElementAttribute().getFirstElementItem().getNumericElementItem().get()
+					BigDecimal upperLimit = payment.getElementAttribute().getFirstElementItem().getNumericElementItem().get()
 							.getFrameUpperLimit();
 					ElementItemDto item = new ElementItemDto(null, null, frameNumber, lowerLimit, upperLimit,
 							payment.getWageTablePaymentAmount().v());
@@ -166,11 +167,11 @@ public class WageTableContentDto {
 					result.add(item);
 				} else if (payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem()
 						.isPresent()) {
-					int frameNumber = payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem()
+					long frameNumber = payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem()
 							.get().getFrameNumber();
-					int lowerLimit = payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem()
+					BigDecimal lowerLimit = payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem()
 							.get().getFrameLowerLimit();
-					int upperLimit = payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem()
+					BigDecimal upperLimit = payment.getElementAttribute().getSecondElementItem().get().getNumericElementItem()
 							.get().getFrameUpperLimit();
 					ElementItemDto item = new ElementItemDto(null, null, frameNumber, lowerLimit, upperLimit,
 							payment.getWageTablePaymentAmount().v());
@@ -195,9 +196,9 @@ public class WageTableContentDto {
 				result.add(new TwoDmsElementItemDto(masterCode, masterName == null ? masterCode : masterName, null,
 						null, null, list2ndDmsElements));
 			} else if (key.getNumericElementItem().isPresent()) {
-				int frameNumber = key.getNumericElementItem().get().getFrameNumber();
-				int frameLower = key.getNumericElementItem().get().getFrameLowerLimit();
-				int frameUpper = key.getNumericElementItem().get().getFrameUpperLimit();
+				long frameNumber = key.getNumericElementItem().get().getFrameNumber();
+				BigDecimal frameLower = key.getNumericElementItem().get().getFrameLowerLimit();
+				BigDecimal frameUpper = key.getNumericElementItem().get().getFrameUpperLimit();
 				result.add(
 						new TwoDmsElementItemDto(null, null, frameNumber, frameLower, frameUpper, list2ndDmsElements));
 			}

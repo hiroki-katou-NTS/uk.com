@@ -10,11 +10,11 @@ public interface WageTableContentRepository {
 
     List<WageTableContent> getAllWageTableContent();
 
-    Optional<WageTableContent> getWageTableContentById(String historyId);
+    Optional<WageTableContent> getWageTableContentById(String historyId, String companyId, String wageTableCode);
     
-    void addOrUpdate(WageTableContent domain);
+    void addOrUpdate(WageTableContent domain, String companyId, String wageTableCode);
 
-    void remove(String historyId);
+    void remove(String historyId, String companyId, String wageTableCode);
 
     List<WageTableQualification> getWageTableQualification(String historyId);
 

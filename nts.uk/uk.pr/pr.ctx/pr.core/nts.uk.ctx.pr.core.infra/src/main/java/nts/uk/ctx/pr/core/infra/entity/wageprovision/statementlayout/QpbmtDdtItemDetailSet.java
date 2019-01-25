@@ -79,7 +79,7 @@ public class QpbmtDdtItemDetailSet extends UkJpaEntity implements Serializable
     * 賃金テーブルコード
     */
     @Basic(optional = true)
-    @Column(name = "WAGE_TBL_CD")
+    @Column(name = "WAGE_TABLE_CD")
     public String wageTblCd;
     
     /**
