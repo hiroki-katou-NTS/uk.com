@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -676,16 +675,17 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "  				PARTITION BY AA.SCD" 
 			+ "  				ORDER BY" 
 			+ "  					 AA.YM_K" 
-			+ " 					,AA.Y_K  " 
+			+ " 					,AA.Y_K_ORDER  " 
 			+ "  			) AS rk" 
 			+ "  FROM" 
 			+ " (" 
 			+ " SELECT Case When SCD_1 is NULL THEN SCD_2 ELSE SCD_1 END SCD," 
 			+ " 			 Case When BUSINESS_NAME_1 is NULL THEN BUSINESS_NAME_2 ELSE BUSINESS_NAME_1 END BUSINESS_NAME ," 
-			+ " 			 Case When YM_K is NULL THEN '999912' ELSE YM_K END YM_K," 
+			+ " 			 Case When YM_K is NULL THEN '999913' ELSE YM_K END YM_K," 
 			+ " 			 ERROR_ONE_MONTH," 
 			+ " 			 ALARM_ONE_MONTH," 
-			+ " 			 Case When Y_K is NULL THEN '9999' ELSE Y_K END Y_K," 
+			+ " 			 Y_K," 
+			+ " 			 Case When Y_K is NULL THEN '9999' ELSE Y_K END Y_K_ORDER," 
 			+ " 			 ERROR_YEARLY," 
 			+ " 			 ALARM_YEARLY" 
 			+ "  FROM" 
@@ -738,7 +738,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " ) AA" 
 			+ " ORDER BY AA.SCD, " 
 			+ " AA.YM_K  " 
-			+ " ,AA.Y_K ";
+			+ " ,AA.Y_K_ORDER ";
 	
 	
 	@Override
@@ -1258,9 +1258,10 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
 	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 	                .build());
+		 int index = ++param;
 		 data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
 	                .columnId(RegistTimeColumn.KMK008_92)
-	                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
+	                .value(objects[index] != null? formatTime(((BigDecimal)objects[index]).intValue()): "")
 	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 	                .build());
 		return MasterData.builder().rowData(data).build();
@@ -1329,7 +1330,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		String endYM = endDate.yearMonth().toString();
 		int startY = startDate.year();
 		int endY = endDate.year();
-		if(!endYM.substring(2, endYM.length()).equals(END_MONTH))
+		if(!endYM.substring(4, endYM.length()).equals(END_MONTH))
 			endY = endY-1;
 		String cid = AppContexts.user().companyId();
 		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_10.toString()).
@@ -1351,18 +1352,18 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		Map<String,MasterCellData> data = new HashMap<>();
 		data.put(RegistTimeColumn.KMK008_106, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_106)
-                .value(Integer.valueOf(objects[8].toString()) == 1 ? objects[0] : "")
+                .value(Integer.valueOf(objects[9].toString()) == 1 ? objects[0] : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_107, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_107)
-                .value(Integer.valueOf(objects[8].toString()) == 1 ? objects[1] : "")
+                .value(Integer.valueOf(objects[9].toString()) == 1 ? objects[1] : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
 		
 		data.put(RegistTimeColumn.KMK008_109, MasterCellData.builder()
 			        .columnId(RegistTimeColumn.KMK008_109)
-			        .value(  objects[2].toString().equals("999912") ? "" : objects[2] != null  ?  ((BigDecimal)objects[2]).toString().substring(0, 4) + "/" + ((BigDecimal)objects[2]).toString().substring(4, ((BigDecimal)objects[2]).toString().length()) : "")
+			        .value(  objects[2].toString().equals("999913") ? "" : objects[2] != null  ?  ((BigDecimal)objects[2]).toString().substring(0, 4) + "/" + ((BigDecimal)objects[2]).toString().substring(4, ((BigDecimal)objects[2]).toString().length()) : "")
 			        .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 			        .build());
 		
@@ -1380,17 +1381,17 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		
 		data.put(RegistTimeColumn.KMK008_112, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_112)
-                .value(objects[5].toString().equals("9999") ? "" : objects[5])
+                .value(objects[5])
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_113, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_113)
-                .value(objects[6] != null  ? formatTime(((BigDecimal)objects[6]).intValue()) : "")
+                .value(objects[7] != null  ? formatTime(((BigDecimal)objects[7]).intValue()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		data.put(RegistTimeColumn.KMK008_114, MasterCellData.builder()
                 .columnId(RegistTimeColumn.KMK008_114)
-                .value(objects[7] != null  ? formatTime(((BigDecimal)objects[7]).intValue()) : "")
+                .value(objects[8] != null  ? formatTime(((BigDecimal)objects[8]).intValue()) : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
 		

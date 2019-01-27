@@ -95,7 +95,7 @@ public class ErrorAlarmWorkRecordExportImpl {
           
           List<MasterData> datas = new ArrayList<>();
           List<ErrorAlarmWorkRecord> listErrorAlarmWorkRecord = repository.getListErrorAlarmWorkRecord(companyId, 0)
-        		  .stream().filter(eral -> eral.getCode().v().startsWith("U"))
+        		  .stream()
                   .collect(Collectors.toList());// fixedAtr":1
 
           //7
@@ -155,33 +155,6 @@ public class ErrorAlarmWorkRecordExportImpl {
 
 
          //40
-       /** { code: 0, name: "残業申請（早出）" },
-         { code: 1, name: "残業申請（通常）" },
-         { code: 2, name: "残業申請（早出・通常）" },
-         { code: 3, name: "休暇申請" },
-         { code: 4, name: "勤務変更申請" },
-         //{ code: 5, name: "出張申請" },
-         { code: 6, name: "直行直帰申請" },
-         { code: 7, name: "休出時間申請" },
-         //{ code: 8, name: "打刻申請（外出許可）" },
-      	 //{ code: 9, name: "打刻申請（出退勤漏れ）" },
-         //{ code: 10, name: "打刻申請（打刻取消）" },
-         //{ code: 11, name: "打刻申請（レコーダイメージ）" },
-         //{ code: 12, name: "打刻申請（その他）" },
-         //{ code: 13, name: "時間年休申請" },
-         //{ code: 14, name: "遅刻早退取消申請" },
-         { code: 15, name: "振休振出申請" },
-         */
-       
-         Map<Integer,String> mapApplicationType = new HashMap<>();
-              mapApplicationType.put(0, "残業申請（早出）");
-              mapApplicationType.put(1, "残業申請（通常）");
-              mapApplicationType.put(2, "残業申請（早出・通常）");
-              mapApplicationType.put(3, "休暇申請");
-              mapApplicationType.put(4, "勤務変更申請");
-              mapApplicationType.put(6, "直行直帰申請");
-              mapApplicationType.put(7, "打刻申請（外出許可）");
-              mapApplicationType.put(15, "振休振出申請");
               if(CollectionUtil.isEmpty(lstDto)){
                      return null;
               }else{
@@ -190,7 +163,6 @@ public class ErrorAlarmWorkRecordExportImpl {
                            putEmptyDataOne(data);
                            data.put(header.get(1), c.getCode());
                            data.put(header.get(2), c.getName());
-                           //SAU PHAI SUA THEO TEXTRS
                            if(c.getUseAtr()==1){
                                   data.put(header.get(3), TextResource.localize("KDW006_185"));
                            }else{
@@ -347,7 +319,7 @@ public class ErrorAlarmWorkRecordExportImpl {
                                }
                            }
                            //20
-                            if(c.getWorkTypeCondition().getComparePlanAndActual() ==1){
+                            if(c.getWorkTimeCondition().getComparePlanAndActual() ==1){
                                   data.put(header.get(20), TextResource.localize("Enum_FilterByCompare_Extract_Same"));
                            }else{
                         	   if(c.getWorkTimeCondition().getComparePlanAndActual() ==0){
@@ -360,15 +332,16 @@ public class ErrorAlarmWorkRecordExportImpl {
                                    data.put(header.get(28), "-");
                                    data.put(header.get(29),"");
                                }else{
-                                   data.put(header.get(30), "○");
+                                   data.put(header.get(28), "○");
                                    List<String> listActualTimeCode = c.getWorkTimeCondition().getActualLstWorkTime();
                                    List<String> codeAndNameActualTime = new ArrayList<>();
                                    Collections.sort(listActualTimeCode);
                                    for (String key : listActualTimeCode) {
-                                         WorkTypeDto workTypeDto=  mapListWorkTypeDto.get(key);
-                                         if(workTypeDto!=null){
-                                                codeAndNameActualTime.add(workTypeDto.getWorkTypeCode()+workTypeDto.getName());
-                                         }
+                                	   WorkTimeCode keyWorkTime = new WorkTimeCode(key);
+                                       WorkTimeSetting workTypeDto = mapListWorkTime.get(keyWorkTime);
+                                       if(workTypeDto!=null){
+                                    	   codeAndNameActualTime.add(workTypeDto.getWorktimeCode().v()+workTypeDto.getWorkTimeDisplayName().getWorkTimeName().v());
+                                       }
                                    }
                                    String stringDataColumn29 =String.join(",", codeAndNameActualTime);
                                   
@@ -410,7 +383,7 @@ public class ErrorAlarmWorkRecordExportImpl {
                                          WorkTimeCode keyWorkTime = new WorkTimeCode(key);
                                          WorkTimeSetting workTypeDto = mapListWorkTime.get(keyWorkTime);
                                          if(workTypeDto!=null){
-                                                codeAndNameWorkTime.add(workTypeDto.getWorktimeCode().v()+workTypeDto.getWorkTimeDisplayName().getWorkTimeAbName().v());
+                                                codeAndNameWorkTime.add(workTypeDto.getWorktimeCode().v()+workTypeDto.getWorkTimeDisplayName().getWorkTimeName().v());
                                          }
                                   }
                                   if(!CollectionUtil.isEmpty(codeAndNameWorkTime)){
@@ -491,8 +464,8 @@ public class ErrorAlarmWorkRecordExportImpl {
 									}
 								}
 							}
-							Collections.sort(listStringAttNameAdd);
-							Collections.sort(listStringAttNameSub);
+//							Collections.sort(listStringAttNameAdd);
+//							Collections.sort(listStringAttNameSub);
 							String subString = String.join("-", listStringAttNameSub);
 							boolean checkEmptyString = subString.isEmpty() && subString != null;
 							targetName = checkEmptyString ? String.join("+", listStringAttNameAdd)
@@ -526,8 +499,8 @@ public class ErrorAlarmWorkRecordExportImpl {
 								break;
 							case 1:
 								String singleAttName = "";
-								if (conditionAtr == 3) {
-									AttdItemDto at = mapListAttItemDto.get(erro.getSingleAtdItem());
+								if (conditionAtr == 2) {
+									AttdItemDto at = mapListAttItemDto6.get(erro.getSingleAtdItem());
 									if (at != null) {
 										singleAttName = at.getAttendanceItemName();
 									}
@@ -624,21 +597,25 @@ public class ErrorAlarmWorkRecordExportImpl {
 								List<String> listStringAttNameAdd = new ArrayList<>();
 								List<String> listStringAttNameSub = new ArrayList<>();
 								// get list att add
-								for (Integer attId : listKeyAdd) {
-									AttdItemDto attItem = mapListAttItemDto.get(attId);
-									if (attItem != null) {
-										listStringAttNameAdd.add(attItem.getAttendanceItemName());
+								if(!CollectionUtil.isEmpty(listKeyAdd)){
+									for (Integer attId : listKeyAdd) {
+										AttdItemDto attItem = mapListAttItemDto.get(attId);
+										if (attItem != null) {
+											listStringAttNameAdd.add(attItem.getAttendanceItemName());
+										}
 									}
 								}
 								// get list att sub
-								for (Integer attId : listKeySub) {
-									AttdItemDto attItem = mapListAttItemDto.get(attId);
-									if (attItem != null) {
-										listStringAttNameSub.add(attItem.getAttendanceItemName());
+								if(!CollectionUtil.isEmpty(listKeySub)){
+									for (Integer attId : listKeySub) {
+										AttdItemDto attItem = mapListAttItemDto.get(attId);
+										if (attItem != null) {
+											listStringAttNameSub.add(attItem.getAttendanceItemName());
+										}
 									}
 								}
-								Collections.sort(listStringAttNameAdd);
-								Collections.sort(listStringAttNameSub);
+//								Collections.sort(listStringAttNameAdd);
+//								Collections.sort(listStringAttNameSub);
 								String subString = String.join("-", listStringAttNameSub);
 								boolean checkEmptyString = subString.isEmpty() && subString != null;
 								targetName = checkEmptyString ? String.join("+", listStringAttNameAdd)
@@ -672,8 +649,8 @@ public class ErrorAlarmWorkRecordExportImpl {
 									break;
 								case 1:
 									String singleAttName = "";
-									if (conditionAtr == 3) {
-										singleAttName = mapListAttItemDto.get(erro.getSingleAtdItem())
+									if (conditionAtr == 2) {
+										singleAttName = mapListAttItemDto6.get(erro.getSingleAtdItem())
 												.getAttendanceItemName();
 									} else {
 										AttdItemDto attItem = mapListAttItemDto.get(erro.getSingleAtdItem());
@@ -719,8 +696,9 @@ public class ErrorAlarmWorkRecordExportImpl {
                            List<Integer> lstApplicationTypeCode = c.getLstApplicationTypeCode();
                            List<String> listStrApp = new ArrayList<>();
                            if(!CollectionUtil.isEmpty(lstApplicationTypeCode)){
+                        	   Collections.sort(lstApplicationTypeCode);
                                   for (Integer key : lstApplicationTypeCode) {
-                                         String strAppType = mapApplicationType.get(key);
+                                         String strAppType = EnumAdaptor.valueOf(key, ApplicationTypeExport.class).nameId;
                                          if(strAppType!=null){
                                                 listStrApp.add(strAppType);
                                          }
@@ -827,16 +805,7 @@ public class ErrorAlarmWorkRecordExportImpl {
               LoginUserContext loginUserContext = AppContexts.user();
               String companyId = loginUserContext.companyId();
               
-              List<MasterData> datas = new ArrayList<>();
-              Map<Integer,String> mapApplicationType = new HashMap<>();
-              mapApplicationType.put(0, "残業申請（早出）");
-              mapApplicationType.put(1, "残業申請（通常）");
-              mapApplicationType.put(2, "残業申請（早出・通常）");
-              mapApplicationType.put(3, "休暇申請");
-              mapApplicationType.put(4, "勤務変更申請");
-              mapApplicationType.put(6, "直行直帰申請");
-              mapApplicationType.put(7, "打刻申請（外出許可）");
-              mapApplicationType.put(15, "振休振出申請");
+           List<MasterData> datas = new ArrayList<>();
            List<ErrorAlarmWorkRecord> listErrorAlarmWorkRecord = repository.getListErrorAlarmWorkRecord(companyId, 1);// fixedAtr":1
           
            listErrorAlarmWorkRecord = listErrorAlarmWorkRecord.stream().filter(eral -> eral.getCode().v().startsWith("S"))
@@ -850,7 +819,7 @@ public class ErrorAlarmWorkRecordExportImpl {
                      Map<String, Object> data = new HashMap<>();
                            putEmptyDataTwo(data);
                            
-                           data.put("コード", c.getCode());
+                           data.put("コード", c.getCode().v().substring(1));
                            data.put("名称", c.getName());
                            if(c.getUseAtr()){
                                   data.put("使用区分", "使用しない");
@@ -858,14 +827,13 @@ public class ErrorAlarmWorkRecordExportImpl {
                                   data.put("使用区分", "使用する");
                            }
                            List<Integer> listApplication  = c.getLstApplication();
-                           listApplication = listApplication.stream().sorted()
-                                         .collect(Collectors.toList());
+                           Collections.sort(listApplication);
                            if(CollectionUtil.isEmpty(listApplication)){
                                   data.put("申請", "");
                            }else{
                         	  
                         	   for (Integer key : listApplication) {
-                        		   String appName = mapApplicationType.get(key);
+                        		   String appName = EnumAdaptor.valueOf(key, ApplicationTypeExport.class).nameId;
                         		   if(appName!=null){
                         			   lstApp.add(appName);
                         		   }

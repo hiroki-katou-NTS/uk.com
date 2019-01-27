@@ -292,8 +292,7 @@ public class OperationExcelRepoImpl implements MasterListData {
         String appTypes = "";
         if (!CollectionUtil.isEmpty(listApplicationCallExport)) {
             List<String> listAppType = listApplicationCallExport.stream()
-                    .map(developer -> new String(
-                            TextResource.localize("Enum_ApplicationType_" + developer.getAppType().name())))
+                    .map(developer -> developer.getAppType().nameId)
                     .collect(Collectors.toList());
             appTypes = String.join(",", listAppType);
         }

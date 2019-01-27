@@ -1,6 +1,5 @@
 package nts.uk.file.at.infra.setworkinghoursanddays;
 
-
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -30,8 +29,13 @@ import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
+
 @Stateless
 public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorkingHoursAndDaysExRepository {
+	  
+	
+	
+	
 	
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -233,8 +237,8 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	private static final String GET_WORKPLACE = "SELECT * FROM ("
 						 +  "SELECT ROW_NUMBER() OVER(PARTITION BY KSHST_WKP_NORMAL_SET.WKP_ID, KSHST_WKP_NORMAL_SET.[YEAR] ORDER BY BSYMT_WORKPLACE_HIST.END_DATE DESC) AS rk, "
 						 +  "IIF(BSYMT_WKP_CONFIG_INFO.HIERARCHY_CD IS NOT NULL, BSYMT_WKP_CONFIG_INFO.HIERARCHY_CD, '999999999999999999999999999999') AS HIERARCHY_CD, "
-						 +  "KSHST_WKP_NORMAL_SET.[YEAR], " 
-						 +  "IIF(BSYMT_WORKPLACE_HIST.END_DATE = CONVERT(DATETIME, '9999-12-31 00:00:00', 120), BSYMT_WORKPLACE_INFO.WKPCD , 'マスタ未登録') AS WKPCD, " 
+						 +  "KSHST_WKP_NORMAL_SET.[YEAR], "
+						 + 	"BSYMT_WORKPLACE_INFO.WKPCD, "
 						 +  "IIF(BSYMT_WORKPLACE_HIST.END_DATE = CONVERT(DATETIME, '9999-12-31 00:00:00', 120), BSYMT_WORKPLACE_INFO.WKP_NAME , 'マスタ未登録') AS WKP_NAME, " 
 						 +  "KSHST_WKP_NORMAL_SET.JAN_TIME AS N1, " 
 						 +  "KSHST_WKP_NORMAL_SET.FEB_TIME AS N2, " 
@@ -334,8 +338,8 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 						 +  "		AND BSYMT_WORKPLACE_INFO.WKPID = BSYMT_WORKPLACE_HIST.WKPID " 
 						 +  "		AND BSYMT_WORKPLACE_INFO.HIST_ID = BSYMT_WORKPLACE_HIST.HIST_ID " 
 						 +  "	INNER JOIN KSHST_FLX_GET_PRWK_TIME ON KSHST_WKP_NORMAL_SET.CID = KSHST_FLX_GET_PRWK_TIME.CID " 
-						 +  "   INNER JOIN BSYMT_WKP_CONFIG ON KSHST_WKP_NORMAL_SET.CID = BSYMT_WKP_CONFIG.CID "
-						 +  "   	AND BSYMT_WKP_CONFIG.END_DATE = '9999-12-31 00:00:00' "
+						 +  " INNER JOIN (SELECT *, ROW_NUMBER() OVER ( PARTITION BY CID ORDER BY END_DATE DESC ) AS RN FROM BSYMT_WKP_CONFIG) AS BSYMT_WKP_CONFIG "
+						 +	" ON KSHST_WKP_NORMAL_SET.CID = BSYMT_WKP_CONFIG.CID	AND BSYMT_WKP_CONFIG.RN = 1"	
 						 +  "   LEFT JOIN BSYMT_WKP_CONFIG_INFO ON BSYMT_WKP_CONFIG.HIST_ID = BSYMT_WKP_CONFIG_INFO.HIST_ID "
 						 +	"  	    AND BSYMT_WKP_CONFIG_INFO.WKPID = BSYMT_WORKPLACE_HIST.WKPID "		
 						 +  "WHERE KSHST_WKP_NORMAL_SET.CID = ?  "

@@ -237,7 +237,7 @@ public class RoleMonthlyExportExcelImpl  {
         MasterData masterData = new MasterData(data, null, "");
         masterData.cellAt("コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
         masterData.cellAt("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-        masterData.cellAt("コード2").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+        masterData.cellAt("コード2").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
         masterData.cellAt("項目").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
         masterData.cellAt("利用区分").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
         masterData.cellAt("本人修正設定").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
@@ -352,9 +352,10 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
 	                if(montlhyRecord!=null &&montlhyRecord.getDisplayItem()!=null){
 	                    MonthlyActualResultsDto monActualResult = montlhyRecord.getDisplayItem();
 	                    List<SheetCorrectedMonthlyDto> listSheetCorrectedMonthly = monActualResult.getListSheetCorrectedMonthly();
-	                    listSheetCorrectedMonthly.sort(Comparator.comparing(SheetCorrectedMonthlyDto::getSheetNo));
+	                    
 	                    int check = 0;
 	                    if(!CollectionUtil.isEmpty(listSheetCorrectedMonthly)){
+	                    	listSheetCorrectedMonthly.sort(Comparator.comparing(SheetCorrectedMonthlyDto::getSheetNo));
 	                        for(int i = 0 ; i < listSheetCorrectedMonthly.size() ; i++) {
 	                            Map<String, Object> dataChil = new HashMap<>();
 	                            putDataEmptySheet3(dataChil,mode);
@@ -429,7 +430,7 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
         		Collections.sort(keySheetNo);
         		for(int i = 0 ; i < keySheetNo.size();i++){
         			List<PerAuthFormatItem> listMon = mapAttItem.get(keySheetNo.get(i));
-        			listMon.sort(Comparator.comparing(PerAuthFormatItem::getAttId));
+        			listMon.sort(Comparator.comparing(PerAuthFormatItem::getDisplayOder));
         			 //get name dailyAtt
                     List<String> result = new ArrayList<>();
                     listMon.stream().forEach(z->{
@@ -448,7 +449,6 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
 	        			datas.add(alignMasterDataSheet3(data,mode));
 
         			}else {
-        				listMon.sort(Comparator.comparing(PerAuthFormatItem::getDisplayOder));
             			Map<String, Object> dataChild = new HashMap<>();
                         putDataEmptySheet3(dataChild,mode);
                         dataChild.put("Sheet選択", keySheetNo.get(i));
@@ -486,7 +486,7 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
         if(mode == 0){
         	masterData.cellAt("このフォーマットを初期設定にする").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
         }
-        masterData.cellAt("Sheet選択").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+        masterData.cellAt("Sheet選択").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
         masterData.cellAt("名称SheetName").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
         masterData.cellAt("月次項目 項目").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
         return masterData;

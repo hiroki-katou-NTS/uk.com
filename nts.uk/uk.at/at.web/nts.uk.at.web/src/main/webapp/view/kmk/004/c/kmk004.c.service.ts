@@ -14,7 +14,8 @@ module nts.uk.at.view.kmk004.c {
         }
         
         export function saveAsExcel(languageId: string, startDate : any, endDate: any): JQueryPromise<any> {
-                return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "SetWorkingHoursAndDays", domainType: "KMK004労働時間と日数の設定", languageId: languageId, reportType: 0, mode: 2, startDate: startDate, endDate: endDate});
+                let domainType = "KMK004" + nts.uk.resource.getText("KMK004_194");
+                return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "SetWorkingHoursAndDays", domainType: domainType, languageId: languageId, reportType: 0, mode: 2, startDate: startDate, endDate: endDate});
         }
         
         // Find AlreadySetting for component KCP001

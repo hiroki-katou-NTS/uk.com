@@ -59,8 +59,8 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 +"			,RESULT_FINAL.FORMULA_ATR"
 +"			,RESULT_FINAL.FORMULA_NAME"
 +"			,RESULT_FINAL.CALC_ATR"
-+"			,RESULT_FINAL.DAY_ROUNDING_UNIT"
-+"			,RESULT_FINAL.DAY_ROUNDING"
++"			,IIF(RESULT_FINAL.PERFORMANCE_ATR = 1, RESULT_FINAL.DAY_ROUNDING_UNIT, NULL) DAY_ROUNDING_UNIT"
++"			,IIF(RESULT_FINAL.PERFORMANCE_ATR = 1, RESULT_FINAL.DAY_ROUNDING, NULL) DAY_ROUNDING"
 +"			,RESULT_FINAL.MON_ROUNDING_UNIT"
 +"			,RESULT_FINAL.MON_ROUNDING"
 +"			,RESULT_FINAL.CALC_ATR_2"
@@ -137,15 +137,13 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 +"					,oi.EMP_CONDITION_ATR"
 +"					,IIF(oi.EMP_CONDITION_ATR = 1,STUFF(("
 +"		 			SELECT"
-+"					IIF(oi.EMP_CONDITION_ATR = 1,',' + ec.EMP_CD + emp.NAME, NULL)"
++"					IIF(oi.EMP_CONDITION_ATR = 1,',' + ec1.EMP_CD + (CASE WHEN emp1.NAME IS NULL THEN 'マスタ未登録' ELSE  emp1.NAME END), NULL)"
 +"		 			FROM"
-+"				KRCST_OPTIONAL_ITEM oi"
-+"				LEFT JOIN KRCST_APPL_EMP_CON ec ON oi.OPTIONAL_ITEM_NO = ec.OPTIONAL_ITEM_NO"
-+"				AND oi.CID = ec.CID"
-+"				LEFT JOIN BSYMT_EMPLOYMENT emp ON ec.CID = emp.CID"
-+"				AND ec.EMP_CD = emp.CODE"
++"				KRCST_APPL_EMP_CON ec1"
++"				LEFT JOIN BSYMT_EMPLOYMENT emp1 ON ec1.CID = emp1.CID"
++"				AND ec1.EMP_CD = emp1.CODE"
 +"			WHERE"
-+"				oi.CID = ?companyId AND ec.EMP_APPL_ATR = 1 ORDER BY ec.EMP_CD"
++"				oi.CID = ec1.CID AND ec1.EMP_APPL_ATR = 1 AND oi.OPTIONAL_ITEM_NO = ec1.OPTIONAL_ITEM_NO ORDER BY ec1.EMP_CD"
 +"		 			 FOR XML PATH ('')"
 +"		 				),"
 +"		 			1,"
@@ -154,10 +152,6 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 +"		 		), NULL) AS NAME"
 +"				FROM"
 +"				KRCST_OPTIONAL_ITEM oi"
-+"				LEFT JOIN KRCST_APPL_EMP_CON ec ON oi.OPTIONAL_ITEM_NO = ec.OPTIONAL_ITEM_NO"
-+"				AND oi.CID = ec.CID"
-+"				LEFT JOIN BSYMT_EMPLOYMENT emp ON ec.CID = emp.CID"
-+"				AND ec.EMP_CD = emp.CODE"
 +"			WHERE"
 +"				oi.CID = ?companyId"
 +"		) AS RESULT_ONE"
@@ -220,21 +214,21 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 +"		 				 CASE cis.OPERATOR  WHEN 0 THEN '+'	WHEN 1 THEN '-'	WHEN 2 THEN '*'	WHEN 3 THEN '/' END "
 +"						 + ("
 +"											SELECT CASE B.FRAME_CATEGORY "
-+"												WHEN 0 THEN (  IIF(dai.ATTENDANCE_ITEM_NAME LIKE '%{%', (SELECT name1.OT_FR_NAME FROM KSHST_OVERTIME_FRAME name1 WHERE cis.CID = name1.CID AND  name1.OT_FR_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1), dai.ATTENDANCE_ITEM_NAME) )			"
-+"						WHEN 1 THEN ( IIF(dai.ATTENDANCE_ITEM_NAME LIKE '%{%',(SELECT name2.OT_FR_NAME FROM KSHST_OVERTIME_FRAME name2 WHERE cis.CID = name2.CID AND  name2.OT_FR_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1 ), dai.ATTENDANCE_ITEM_NAME))"
-+"						WHEN 2 THEN ( IIF(dai.ATTENDANCE_ITEM_NAME LIKE '%{%',(SELECT name3.WDO_FR_NAME FROM KSHST_WORKDAYOFF_FRAME name3 WHERE cis.CID = name3.CID AND  name3.WDO_FR_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1 ), dai.ATTENDANCE_ITEM_NAME) )"
-+"						WHEN 3 THEN ( IIF(dai.ATTENDANCE_ITEM_NAME LIKE '%{%', (SELECT name4.WDO_FR_NAME FROM KSHST_WORKDAYOFF_FRAME name4 WHERE cis.CID = name4.CID AND  name4.WDO_FR_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1 ), dai.ATTENDANCE_ITEM_NAME) )"
-+"						WHEN 4 THEN ( IIF(dai.ATTENDANCE_ITEM_NAME LIKE '%{%', (SELECT name5.PREMIUM_NAME FROM KMNMT_PREMIUM_ITEM name5 WHERE cis.CID = name5.CID AND  name5.PREMIUM_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1 ), dai.ATTENDANCE_ITEM_NAME) )"
-+"						WHEN 5 THEN ( IIF(dai.ATTENDANCE_ITEM_NAME LIKE '%{%', (SELECT name6.TIME_ITEM_NAME FROM KBPST_BP_TIME_ITEM name6 WHERE cis.CID = name6.CID AND  name6.TIME_ITEM_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1 ), dai.ATTENDANCE_ITEM_NAME) )"
-+"						WHEN 6 THEN ( IIF(dai.ATTENDANCE_ITEM_NAME LIKE '%{%', (SELECT name7.TIME_ITEM_NAME FROM KBPST_BP_TIME_ITEM name7 WHERE cis.CID = name7.CID AND  name7.TIME_ITEM_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1 ), dai.ATTENDANCE_ITEM_NAME) )"
-+"						WHEN 7 THEN ( IIF(dai.ATTENDANCE_ITEM_NAME LIKE '%{%', (SELECT name8.DIVERGENCETIME_NAME FROM KMKMT_DIVERGENCE_TIME name8 WHERE cis.CID = name8.CID AND  name8.DIVERGENCETIME_ID = B.FRAME_NO AND B.TYPE_OF_ITEM = 1 ), dai.ATTENDANCE_ITEM_NAME) )"
-+"						WHEN 8 THEN ( IIF(dai.ATTENDANCE_ITEM_NAME LIKE '%{%', (SELECT name9.OPTIONAL_ITEM_NAME FROM KRCST_OPTIONAL_ITEM name9 WHERE cis.CID = name9.CID AND  name9.OPTIONAL_ITEM_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1 ), dai.ATTENDANCE_ITEM_NAME) )"
-+"						WHEN 10 THEN ( IIF(dai.ATTENDANCE_ITEM_NAME LIKE '%{%', (SELECT name11.NAME FROM KSMST_SPECIFIC_DATE_ITEM name11 WHERE cis.CID = name11.CID AND  name11.SPECIFIC_DATE_ITEM_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1 ), dai.ATTENDANCE_ITEM_NAME) )"
-+"						WHEN 11 THEN ( IIF(dai.ATTENDANCE_ITEM_NAME LIKE '%{%', (SELECT name12.NAME FROM KSHST_OVER_TIME name12 WHERE cis.CID = name12.CID AND  name12.OVER_TIME_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1 ), dai.ATTENDANCE_ITEM_NAME) )"
-+"						WHEN 12 THEN ( IIF(dai.ATTENDANCE_ITEM_NAME LIKE '%{%', (SELECT name13.NAME FROM KSHMT_ABSENCE_FRAME name13 WHERE cis.CID = name13.CID AND  name13.ABSENCE_FRAME_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1 ), dai.ATTENDANCE_ITEM_NAME) )"
-+"						WHEN 13 THEN ( IIF(dai.ATTENDANCE_ITEM_NAME LIKE '%{%', (SELECT name14.NAME FROM KSHMT_SPHD_FRAME name14 WHERE cis.CID = name14.CID AND  name14.SPHD_FRAME_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1 ), dai.ATTENDANCE_ITEM_NAME) )"
-+"						WHEN 14 THEN ( IIF(dai.ATTENDANCE_ITEM_NAME LIKE '%{%', (SELECT name15.TOTAL_TIMES_NAME FROM KSHST_TOTAL_TIMES name15 WHERE cis.CID = name15.CID AND  name15.TOTAL_TIMES_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1 ), dai.ATTENDANCE_ITEM_NAME) )"
-+"						WHEN 15 THEN ( IIF(dai.ATTENDANCE_ITEM_NAME LIKE '%{%', (SELECT name16.SPHD_NAME FROM KSHST_SPECIAL_HOLIDAY name16 WHERE cis.CID = name16.CID AND  name16.SPHD_CD = B.FRAME_NO AND B.TYPE_OF_ITEM = 1 ), dai.ATTENDANCE_ITEM_NAME) )"
++" WHEN 0 THEN (REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name1.OT_FR_NAME FROM KSHST_OVERTIME_FRAME name1 WHERE cis.CID = name1.CID AND  name1.OT_FR_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1 )))	"
++" 						WHEN 1 THEN (REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name2.OT_FR_NAME FROM KSHST_OVERTIME_FRAME name2 WHERE cis.CID = name2.CID AND  name2.OT_FR_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1 )))"
++" 						WHEN 2 THEN (REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name3.WDO_FR_NAME FROM KSHST_WORKDAYOFF_FRAME name3 WHERE cis.CID = name3.CID AND  name3.WDO_FR_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1)))"
++" 						WHEN 3 THEN (REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name4.WDO_FR_NAME FROM KSHST_WORKDAYOFF_FRAME name4 WHERE cis.CID = name4.CID AND  name4.WDO_FR_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1 )))"
++" 						WHEN 4 THEN (REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name5.PREMIUM_NAME FROM KMNMT_PREMIUM_ITEM name5 WHERE cis.CID = name5.CID AND  name5.PREMIUM_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1)))"
++" 						WHEN 5 THEN (REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name6.TIME_ITEM_NAME FROM KBPST_BP_TIME_ITEM name6 WHERE cis.CID = name6.CID AND  name6.TIME_ITEM_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1)))"
++" 						WHEN 6 THEN (REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name7.TIME_ITEM_NAME FROM KBPST_BP_TIME_ITEM name7 WHERE cis.CID = name7.CID AND  name7.TIME_ITEM_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1)))"
++" 						WHEN 7 THEN (REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name8.DIVERGENCETIME_NAME FROM KMKMT_DIVERGENCE_TIME name8 WHERE cis.CID = name8.CID AND  name8.DIVERGENCETIME_ID = B.FRAME_NO AND B.TYPE_OF_ITEM = 1)))"
++" 						WHEN 8 THEN (REPLACE(REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name9.OPTIONAL_ITEM_NAME FROM KRCST_OPTIONAL_ITEM name9 WHERE cis.CID = name9.CID AND  name9.OPTIONAL_ITEM_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1)), '{1}', (SELECT name9.UNIT_OF_OPTIONAL_ITEM FROM KRCST_OPTIONAL_ITEM name9 WHERE cis.CID = name9.CID AND  name9.OPTIONAL_ITEM_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1)))"
++" 						WHEN 10 THEN (REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name11.NAME FROM KSMST_SPECIFIC_DATE_ITEM name11 WHERE cis.CID = name11.CID AND  name11.SPECIFIC_DATE_ITEM_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1)))"
++" 						WHEN 11 THEN (REPLACE(REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name12.NAME FROM KSHST_OVER_TIME name12 WHERE cis.CID = name12.CID AND name12.OVER_TIME_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2)), '{1}', (SELECT brd.NAME FROM KSHST_OUTSIDE_OT_BRD brd WHERE cis.CID = brd.CID AND brd.BRD_ITEM_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1)))"
++" 						WHEN 12 THEN (REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name13.NAME FROM KSHMT_ABSENCE_FRAME name13 WHERE cis.CID = name13.CID AND  name13.ABSENCE_FRAME_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1)))"
++" 						WHEN 13 THEN (REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name14.NAME FROM KSHMT_SPHD_FRAME name14 WHERE cis.CID = name14.CID AND  name14.SPHD_FRAME_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1)))"
++" 						WHEN 14 THEN (REPLACE(REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name15.TOTAL_TIMES_NAME FROM KSHST_TOTAL_TIMES name15 WHERE cis.CID = name15.CID AND  name15.TOTAL_TIMES_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1)), '{1}', (SELECT name15.TOTAL_TIMES_ABNAME FROM KSHST_TOTAL_TIMES name15 WHERE cis.CID = name15.CID AND  name15.TOTAL_TIMES_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 1)))"
++" 						WHEN 15 THEN (REPLACE(REPLACE(dai.ATTENDANCE_ITEM_NAME, '{0}', (SELECT name16.SPHD_NAME FROM KSHST_SPECIAL_HOLIDAY name16 WHERE cis.CID = name16.CID AND  name16.SPHD_CD = B.FRAME_NO AND B.TYPE_OF_ITEM = 1)), '{1}', (SELECT name16.MEMO FROM KSHST_SPECIAL_HOLIDAY name16 WHERE cis.CID = name16.CID AND  name16.SPHD_CD = B.FRAME_NO AND B.TYPE_OF_ITEM = 1)))"
 +"												ELSE dai.ATTENDANCE_ITEM_NAME"
 +"												END	"
 +"										)					 "
@@ -253,24 +247,24 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 +"		 			''"
 +"		 		)), (STUFF(("
 +"		 			SELECT "
-+"		 				 CASE cis.OPERATOR  WHEN 0 THEN '+'	WHEN 1 THEN '-'	WHEN 2 THEN '*'	WHEN 3 THEN '/' END "
++"		 				 CASE cis.OPERATOR  WHEN 0 THEN '+'	WHEN 1 THEN ' -'	WHEN 2 THEN '*'	WHEN 3 THEN '/' END "
 +"						 + ("
 +"											SELECT CASE B.FRAME_CATEGORY "
-+"												WHEN 0 THEN (  IIF(mai.M_ATD_ITEM_NAME LIKE '%{%', (SELECT name1.OT_FR_NAME FROM KSHST_OVERTIME_FRAME name1 WHERE cis.CID = name1.CID AND  name1.OT_FR_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2), mai.M_ATD_ITEM_NAME) )			"
-+"						WHEN 1 THEN ( IIF(mai.M_ATD_ITEM_NAME LIKE '%{%',(SELECT name2.OT_FR_NAME FROM KSHST_OVERTIME_FRAME name2 WHERE cis.CID = name2.CID AND  name2.OT_FR_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2 ), mai.M_ATD_ITEM_NAME))"
-+"						WHEN 2 THEN ( IIF(mai.M_ATD_ITEM_NAME LIKE '%{%',(SELECT name3.WDO_FR_NAME FROM KSHST_WORKDAYOFF_FRAME name3 WHERE cis.CID = name3.CID AND  name3.WDO_FR_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2 ), mai.M_ATD_ITEM_NAME) )"
-+"						WHEN 3 THEN ( IIF(mai.M_ATD_ITEM_NAME LIKE '%{%', (SELECT name4.WDO_FR_NAME FROM KSHST_WORKDAYOFF_FRAME name4 WHERE cis.CID = name4.CID AND  name4.WDO_FR_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2 ), mai.M_ATD_ITEM_NAME) )"
-+"						WHEN 4 THEN ( IIF(mai.M_ATD_ITEM_NAME LIKE '%{%', (SELECT name5.PREMIUM_NAME FROM KMNMT_PREMIUM_ITEM name5 WHERE cis.CID = name5.CID AND  name5.PREMIUM_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2 ), mai.M_ATD_ITEM_NAME) )"
-+"						WHEN 5 THEN ( IIF(mai.M_ATD_ITEM_NAME LIKE '%{%', (SELECT name6.TIME_ITEM_NAME FROM KBPST_BP_TIME_ITEM name6 WHERE cis.CID = name6.CID AND  name6.TIME_ITEM_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2 ), mai.M_ATD_ITEM_NAME) )"
-+"						WHEN 6 THEN ( IIF(mai.M_ATD_ITEM_NAME LIKE '%{%', (SELECT name7.TIME_ITEM_NAME FROM KBPST_BP_TIME_ITEM name7 WHERE cis.CID = name7.CID AND  name7.TIME_ITEM_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2 ), mai.M_ATD_ITEM_NAME) )"
-+"						WHEN 7 THEN ( IIF(mai.M_ATD_ITEM_NAME LIKE '%{%', (SELECT name8.DIVERGENCETIME_NAME FROM KMKMT_DIVERGENCE_TIME name8 WHERE cis.CID = name8.CID AND  name8.DIVERGENCETIME_ID = B.FRAME_NO AND B.TYPE_OF_ITEM = 2 ), mai.M_ATD_ITEM_NAME) )"
-+"						WHEN 8 THEN ( IIF(mai.M_ATD_ITEM_NAME LIKE '%{%', (SELECT name9.OPTIONAL_ITEM_NAME FROM KRCST_OPTIONAL_ITEM name9 WHERE cis.CID = name9.CID AND  name9.OPTIONAL_ITEM_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2 ), mai.M_ATD_ITEM_NAME) )"
-+"						WHEN 10 THEN ( IIF(mai.M_ATD_ITEM_NAME LIKE '%{%', (SELECT name11.NAME FROM KSMST_SPECIFIC_DATE_ITEM name11 WHERE cis.CID = name11.CID AND  name11.SPECIFIC_DATE_ITEM_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2 ), mai.M_ATD_ITEM_NAME) )"
-+"						WHEN 11 THEN ( IIF(mai.M_ATD_ITEM_NAME LIKE '%{%', (SELECT name12.NAME FROM KSHST_OVER_TIME name12 WHERE cis.CID = name12.CID AND  name12.OVER_TIME_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2 ), mai.M_ATD_ITEM_NAME) )"
-+"						WHEN 12 THEN ( IIF(mai.M_ATD_ITEM_NAME LIKE '%{%', (SELECT name13.NAME FROM KSHMT_ABSENCE_FRAME name13 WHERE cis.CID = name13.CID AND  name13.ABSENCE_FRAME_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2 ), mai.M_ATD_ITEM_NAME) )"
-+"						WHEN 13 THEN ( IIF(mai.M_ATD_ITEM_NAME LIKE '%{%', (SELECT name14.NAME FROM KSHMT_SPHD_FRAME name14 WHERE cis.CID = name14.CID AND  name14.SPHD_FRAME_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2 ), mai.M_ATD_ITEM_NAME) )"
-+"						WHEN 14 THEN ( IIF(mai.M_ATD_ITEM_NAME LIKE '%{%', (SELECT name15.TOTAL_TIMES_NAME FROM KSHST_TOTAL_TIMES name15 WHERE cis.CID = name15.CID AND  name15.TOTAL_TIMES_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2 ), mai.M_ATD_ITEM_NAME) )"
-+"						WHEN 15 THEN ( IIF(mai.M_ATD_ITEM_NAME LIKE '%{%', (SELECT name16.SPHD_NAME FROM KSHST_SPECIAL_HOLIDAY name16 WHERE cis.CID = name16.CID AND  name16.SPHD_CD = B.FRAME_NO AND B.TYPE_OF_ITEM = 2 ), mai.M_ATD_ITEM_NAME) )"
++" WHEN 0 THEN (REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name1.OT_FR_NAME FROM KSHST_OVERTIME_FRAME name1 WHERE cis.CID = name1.CID AND  name1.OT_FR_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2 )))	"
++" 						WHEN 1 THEN (REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name2.OT_FR_NAME FROM KSHST_OVERTIME_FRAME name2 WHERE cis.CID = name2.CID AND  name2.OT_FR_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2 )))"
++" 						WHEN 2 THEN (REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name3.WDO_FR_NAME FROM KSHST_WORKDAYOFF_FRAME name3 WHERE cis.CID = name3.CID AND  name3.WDO_FR_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2)))"
++" 						WHEN 3 THEN (REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name4.WDO_FR_NAME FROM KSHST_WORKDAYOFF_FRAME name4 WHERE cis.CID = name4.CID AND  name4.WDO_FR_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2 )))"
++" 						WHEN 4 THEN (REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name5.PREMIUM_NAME FROM KMNMT_PREMIUM_ITEM name5 WHERE cis.CID = name5.CID AND  name5.PREMIUM_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2)))"
++" 						WHEN 5 THEN (REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name6.TIME_ITEM_NAME FROM KBPST_BP_TIME_ITEM name6 WHERE cis.CID = name6.CID AND  name6.TIME_ITEM_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2)))"
++" 						WHEN 6 THEN (REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name7.TIME_ITEM_NAME FROM KBPST_BP_TIME_ITEM name7 WHERE cis.CID = name7.CID AND  name7.TIME_ITEM_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2)))"
++" 						WHEN 7 THEN (REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name8.DIVERGENCETIME_NAME FROM KMKMT_DIVERGENCE_TIME name8 WHERE cis.CID = name8.CID AND  name8.DIVERGENCETIME_ID = B.FRAME_NO AND B.TYPE_OF_ITEM = 2)))"
++" 						WHEN 8 THEN (REPLACE(REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name9.OPTIONAL_ITEM_NAME FROM KRCST_OPTIONAL_ITEM name9 WHERE cis.CID = name9.CID AND  name9.OPTIONAL_ITEM_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2)), '{1}', (SELECT name9.UNIT_OF_OPTIONAL_ITEM FROM KRCST_OPTIONAL_ITEM name9 WHERE cis.CID = name9.CID AND  name9.OPTIONAL_ITEM_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2)))"
++" 						WHEN 10 THEN (REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name11.NAME FROM KSMST_SPECIFIC_DATE_ITEM name11 WHERE cis.CID = name11.CID AND  name11.SPECIFIC_DATE_ITEM_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2)))"
++" 						WHEN 11 THEN (REPLACE(REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name12.NAME FROM KSHST_OVER_TIME name12 WHERE cis.CID = name12.CID AND name12.OVER_TIME_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2)), '{1}', (SELECT brd.NAME FROM KSHST_OUTSIDE_OT_BRD brd WHERE cis.CID = brd.CID AND brd.BRD_ITEM_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2)))		"
++" 						WHEN 12 THEN (REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name13.NAME FROM KSHMT_ABSENCE_FRAME name13 WHERE cis.CID = name13.CID AND  name13.ABSENCE_FRAME_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2)))"
++" 						WHEN 13 THEN (REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name14.NAME FROM KSHMT_SPHD_FRAME name14 WHERE cis.CID = name14.CID AND  name14.SPHD_FRAME_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2)))"
++" 						WHEN 14 THEN (REPLACE(REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name15.TOTAL_TIMES_NAME FROM KSHST_TOTAL_TIMES name15 WHERE cis.CID = name15.CID AND  name15.TOTAL_TIMES_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2)), '{1}', (SELECT name15.TOTAL_TIMES_ABNAME FROM KSHST_TOTAL_TIMES name15 WHERE cis.CID = name15.CID AND  name15.TOTAL_TIMES_NO = B.FRAME_NO AND B.TYPE_OF_ITEM = 2)))											"
++" 						WHEN 15 THEN (REPLACE(REPLACE(mai.M_ATD_ITEM_NAME, '{0}', (SELECT name16.SPHD_NAME FROM KSHST_SPECIAL_HOLIDAY name16 WHERE cis.CID = name16.CID AND  name16.SPHD_CD = B.FRAME_NO AND B.TYPE_OF_ITEM = 2)), '{1}', (SELECT name16.MEMO FROM KSHST_SPECIAL_HOLIDAY name16 WHERE cis.CID = name16.CID AND  name16.SPHD_CD = B.FRAME_NO AND B.TYPE_OF_ITEM = 2)))"
 +"												ELSE mai.M_ATD_ITEM_NAME"
 +"												END	"
 +"										)						 "
@@ -481,22 +475,22 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
             
             switch (optionalItemAtr) {
 				case 0:
-					data.put(CalFormulasItemColumn.KMK002_92, MasterCellData.builder()
-			                .columnId(CalFormulasItemColumn.KMK002_92)
+					data.put(CalFormulasItemColumn.KMK002_93, MasterCellData.builder()
+			                .columnId(CalFormulasItemColumn.KMK002_93)
 			                .value(object[17] != null && optionalItemUse == 1 ? TextResource.localize(EnumAdaptor.valueOf(((BigDecimal) object[17]).intValue(), Rounding.class).nameId) : "")
 			                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 			                .build());
 					break;
 				case 1:
-					data.put(CalFormulasItemColumn.KMK002_92, MasterCellData.builder()
-			                .columnId(CalFormulasItemColumn.KMK002_92)
+					data.put(CalFormulasItemColumn.KMK002_93, MasterCellData.builder()
+			                .columnId(CalFormulasItemColumn.KMK002_93)
 			                .value(object[17] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[17]).intValue(), NumberRounding.class).nameId) : "")
 			                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 			                .build());
 					break;
 				case 2:
-					data.put(CalFormulasItemColumn.KMK002_92, MasterCellData.builder()
-			                .columnId(CalFormulasItemColumn.KMK002_92)
+					data.put(CalFormulasItemColumn.KMK002_93, MasterCellData.builder()
+			                .columnId(CalFormulasItemColumn.KMK002_93)
 			                .value(object[17] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[17]).intValue(), AmountRounding.class).nameId) : "")
 			                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
 			                .build());
@@ -506,22 +500,22 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
          // A7_18
     		switch (optionalItemAtr) {
     			case 0:
-    				data.put(CalFormulasItemColumn.KMK002_93, MasterCellData.builder()
-    		                .columnId(CalFormulasItemColumn.KMK002_93)
+    				data.put(CalFormulasItemColumn.KMK002_92, MasterCellData.builder()
+    		                .columnId(CalFormulasItemColumn.KMK002_92)
     		                .value(object[16] != null && optionalItemUse == 1 ? TextResource .localize(EnumAdaptor.valueOf(((BigDecimal) object[16]).intValue(), Unit.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
     				break;
     			case 1:
-    				data.put(CalFormulasItemColumn.KMK002_93, MasterCellData.builder()
-    		                .columnId(CalFormulasItemColumn.KMK002_93)
+    				data.put(CalFormulasItemColumn.KMK002_92, MasterCellData.builder()
+    		                .columnId(CalFormulasItemColumn.KMK002_92)
     		                .value(object[16] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[16]).intValue(), NumberUnit.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
     				break;
     			case 2:
-    				data.put(CalFormulasItemColumn.KMK002_93, MasterCellData.builder()
-    		                .columnId(CalFormulasItemColumn.KMK002_93)
+    				data.put(CalFormulasItemColumn.KMK002_92, MasterCellData.builder()
+    		                .columnId(CalFormulasItemColumn.KMK002_92)
     		                .value(object[16] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[16]).intValue(), AmountUnit.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
@@ -531,22 +525,22 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
     		// A7_19
     		switch (optionalItemAtr) {
     			case 0:
-    				data.put(CalFormulasItemColumn.KMK002_94, MasterCellData.builder()
-    		                .columnId(CalFormulasItemColumn.KMK002_94)
+    				data.put(CalFormulasItemColumn.KMK002_95, MasterCellData.builder()
+    		                .columnId(CalFormulasItemColumn.KMK002_95)
     		                .value(object[19] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[19]).intValue(), Rounding.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
     				break;
     			case 1:
-    				data.put(CalFormulasItemColumn.KMK002_94, MasterCellData.builder()
-    		                .columnId(CalFormulasItemColumn.KMK002_94)
+    				data.put(CalFormulasItemColumn.KMK002_95, MasterCellData.builder()
+    		                .columnId(CalFormulasItemColumn.KMK002_95)
     		                .value(object[19] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[19]).intValue(), NumberRounding.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
     				break;
     			case 2:
-    				data.put(CalFormulasItemColumn.KMK002_94, MasterCellData.builder()
-    		                .columnId(CalFormulasItemColumn.KMK002_94)
+    				data.put(CalFormulasItemColumn.KMK002_95, MasterCellData.builder()
+    		                .columnId(CalFormulasItemColumn.KMK002_95)
     		                .value(object[19] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[19]).intValue(), AmountRounding.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
@@ -556,22 +550,22 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
     		// A7_20
     		switch (optionalItemAtr) {
     			case 0:
-    				data.put(CalFormulasItemColumn.KMK002_95, MasterCellData.builder()
-    		                .columnId(CalFormulasItemColumn.KMK002_95)
+    				data.put(CalFormulasItemColumn.KMK002_94, MasterCellData.builder()
+    		                .columnId(CalFormulasItemColumn.KMK002_94)
     		                .value(object[19] != null && optionalItemUse == 1 ? TextResource .localize(EnumAdaptor.valueOf(((BigDecimal) object[18]).intValue(), Unit.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
     				break;
     			case 1:
-    				data.put(CalFormulasItemColumn.KMK002_95, MasterCellData.builder()
-    		                .columnId(CalFormulasItemColumn.KMK002_95)
+    				data.put(CalFormulasItemColumn.KMK002_94, MasterCellData.builder()
+    		                .columnId(CalFormulasItemColumn.KMK002_94)
     		                .value(object[19] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[18]).intValue(), NumberUnit.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
     				break;
     			case 2:
-    				data.put(CalFormulasItemColumn.KMK002_95, MasterCellData.builder()
-    		                .columnId(CalFormulasItemColumn.KMK002_95)
+    				data.put(CalFormulasItemColumn.KMK002_94, MasterCellData.builder()
+    		                .columnId(CalFormulasItemColumn.KMK002_94)
     		                .value(object[19] != null && optionalItemUse == 1 ? TextResource.localize( EnumAdaptor.valueOf(((BigDecimal) object[18]).intValue(), AmountUnit.class).nameId) : "")
     		                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
     		                .build());
@@ -612,15 +606,16 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 		int regularized = Math.abs(source);
 		int hourPart = (regularized / 60);
 		int minutePart = regularized % 60;
-		String resultString = StringUtils.join(StringUtil.padLeft(String.valueOf(hourPart), 2, '0'), ":",
+		String resultString = StringUtils.join(StringUtil.padLeft(String.valueOf(hourPart), 1, '0'), ":",
 				StringUtil.padLeft(String.valueOf(minutePart), 2, '0'));
 		return resultString;
 	}
 
 	private String formatNumber(String number) {
 		double numberParse = Double.parseDouble(number);
-        DecimalFormat formatter = new DecimalFormat("#,###.0");
-		return formatter.format(numberParse);
+        DecimalFormat formatter = new DecimalFormat("#,##0.0");
+        String resultString = formatter.format(numberParse);
+		return resultString;
 	}
 
 	private String formatAmount(String amount) {

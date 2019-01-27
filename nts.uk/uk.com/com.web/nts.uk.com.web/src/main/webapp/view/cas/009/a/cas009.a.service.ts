@@ -16,7 +16,11 @@ module cas009.a {
     };
     export function exportExcel(): JQueryPromise<any> {
         let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-        let domainType = program[1] != null ? "CAS009" + program[1] : "";
+        let domainType = "CAS009";
+        if (program.length > 1){
+            program.shift();
+            domainType = domainType + program.join(" ");
+        }
         let _params = { domainId: "RolePersonalInfor", 
                         domainType: domainType,
                         languageId: "ja", 

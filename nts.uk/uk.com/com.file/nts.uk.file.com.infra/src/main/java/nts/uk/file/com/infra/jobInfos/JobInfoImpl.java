@@ -43,9 +43,10 @@ public class JobInfoImpl extends JpaRepository implements JobInfoRepository {
 			+ " d.ROLESET_CD +' '+ s.ROLE_SET_NAME AS ROLESET_NAME,"
 			+			" ROW_NUMBER() OVER (ORDER BY info.JOB_CD ASC) AS ROW_NUMBER"
 			+			" FROM BSYMT_JOB_INFO info"
-			+			" INNER JOIN BSYMT_JOB_HIST his ON info.CID = his.CID AND info.HIST_ID = his.HIST_ID AND info.JOB_ID = his.JOB_ID"
-			+			" INNER JOIN SACMT_ROLE_SET s ON info.CID = s.CID"
-			+			" INNER JOIN SACMT_ROLESET_JOB_DETAIL d ON s.ROLE_SET_CD = d.ROLESET_CD AND info.JOB_ID = d.JOB_ID"
+			+ " 		  INNER JOIN (SELECT *, ROW_NUMBER() OVER ( PARTITION BY CID, JOB_ID ORDER BY END_DATE DESC ) AS RN FROM BSYMT_JOB_HIST) his " 
+			+ "				ON info.JOB_ID = his.JOB_ID AND info.HIST_ID = his.HIST_ID AND info.CID = his.CID AND his.RN = 1 "		
+			+			" INNER JOIN SACMT_ROLE_SET s ON info.CID = s.CID "
+			+			" INNER JOIN SACMT_ROLESET_JOB_DETAIL d ON s.ROLE_SET_CD = d.ROLESET_CD AND info.JOB_ID = d.JOB_ID AND s.CID = d.CID "
 			+			" INNER JOIN SACMT_ROLESET_JOB job ON info.CID = job.CID"
 			+	" WHERE info.CID = ? ) TBL ";
 	
@@ -62,7 +63,9 @@ public class JobInfoImpl extends JpaRepository implements JobInfoRepository {
 			+	" END ROLE_SET_NAME,"
 			+	" TBL.SCD, TBL.BUSINESS_NAME, TBL.START_DATE, TBL.END_DATE"
 			+ " FROM"
-			+ 		" (SELECT per.ROLESET_CD, rs.ROLE_SET_NAME, em.SCD, p.BUSINESS_NAME, per.START_DATE, per.END_DATE,"
+			+ 		" (SELECT per.ROLESET_CD, rs.ROLE_SET_NAME, em.SCD, "
+			+ 				" IIF(p.BUSINESS_NAME IS NOT NULL, p.BUSINESS_NAME, us.USER_NAME) AS BUSINESS_NAME, "
+			+ 				" per.START_DATE, per.END_DATE, "
 			+				" ROW_NUMBER() OVER (PARTITION BY per.ROLESET_CD "
 			+				" ORDER BY  rs.ROLE_SET_CD ASC, em.SCD ASC) AS ROW_NUMBER "
 			+			" FROM SACMT_ROLESET_PERSON per"
@@ -70,6 +73,7 @@ public class JobInfoImpl extends JpaRepository implements JobInfoRepository {
 			+				" INNER JOIN BSYMT_EMP_DTA_MNG_INFO em ON per.SID = em.SID"
 			+		 		" INNER JOIN BSYMT_AFF_COM_HIST aff ON per.SID = aff.SID" 
 			+				" INNER JOIN BPSMT_PERSON p ON aff.PID = p.PID "
+			+				" INNER JOIN SACMT_USER us ON p.PID = us.ASSO_PID "
 			+	" WHERE per.CID = ?"
 			+		 " AND per.START_DATE <= CONVERT(DATETIME, ?, 102) "
 		    +		 " AND per.END_DATE >= CONVERT(DATETIME, ?, 102) ) TBL";
