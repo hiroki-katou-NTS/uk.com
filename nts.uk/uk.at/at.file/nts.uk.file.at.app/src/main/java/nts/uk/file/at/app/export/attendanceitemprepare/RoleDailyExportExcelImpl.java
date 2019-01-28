@@ -165,7 +165,7 @@ public class RoleDailyExportExcelImpl {
 
     private void initSheet5(List<BusinessTypeSortedDto> listBzTypeSort) {
         listBzTypeSort.addAll(businessTypeSortedFinder.findAll());
-        listBzTypeSort.sort(Comparator.comparing(BusinessTypeSortedDto::getDislayNumber));
+        listBzTypeSort.sort(Comparator.comparing(BusinessTypeSortedDto::getOrder));
         
     }
 

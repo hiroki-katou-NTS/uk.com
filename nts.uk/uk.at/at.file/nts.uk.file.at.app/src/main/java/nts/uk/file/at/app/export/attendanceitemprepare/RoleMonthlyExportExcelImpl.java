@@ -105,7 +105,7 @@ public class RoleMonthlyExportExcelImpl  {
         BusinessTypeSortedMonDto bzTypeSortMon =  businessFinder.getBusinessTypeSortedMon();
         if(bzTypeSortMon!=null){
             listOrderReferWorkType.addAll(bzTypeSortMon.getListOrderReferWorkType());
-            listOrderReferWorkType.sort(Comparator.comparing(OrderReferWorkTypeDto::getAttendanceItemID));
+            listOrderReferWorkType.sort(Comparator.comparing(OrderReferWorkTypeDto::getOrder));
         }
     }
 
