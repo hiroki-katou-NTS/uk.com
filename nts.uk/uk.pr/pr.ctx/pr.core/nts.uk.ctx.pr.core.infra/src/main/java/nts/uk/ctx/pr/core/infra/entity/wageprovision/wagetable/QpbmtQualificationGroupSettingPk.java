@@ -28,14 +28,7 @@ public class QpbmtQualificationGroupSettingPk {
 	 * 資格グループコード
 	 */
 	@Basic(optional = false)
-	@Column(name = "QUALIFICATION_GROUP_CODE")
+	@Column(name = "QUALIFY_GROUP_CD")
 	public String qualificationGroupCode;
-
-	/**
-	 * 対象資格コード
-	 */
-	@Basic(optional = false)
-	@Column(name = "QUALIFICATION_CODE")
-	public String eligibleQualificationCode;
 	
 }

@@ -31,7 +31,7 @@ public class QbtmtRsdtTaxPayeePk implements Serializable {
      * コード
      */
     @Basic(optional = false)
-    @Column(name = "CODE")
+    @Column(name = "RESIDENT_TAX_CD")
     public String code;
 
 }

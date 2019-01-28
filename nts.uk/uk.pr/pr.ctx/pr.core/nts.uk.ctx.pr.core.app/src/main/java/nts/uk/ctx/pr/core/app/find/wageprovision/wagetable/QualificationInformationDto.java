@@ -21,10 +21,13 @@ public class QualificationInformationDto {
 	 */
 	private String qualificationName;
 
+	private String integrationCode;
+
 	public static QualificationInformationDto fromDomainToDto(QualificationInformation domain) {
 		QualificationInformationDto dto = new QualificationInformationDto();
 		dto.qualificationCode = domain.getQualificationCode().v();
 		dto.qualificationName = domain.getQualificationName().v();
+		dto.integrationCode = domain.getIntegrationCode().isPresent() ? domain.getIntegrationCode().get().v() : null;
 		return dto;
 	}
 }

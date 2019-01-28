@@ -163,8 +163,12 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
             ];
             self.conditionSeparators = ['\\\<', '>', '\\\≧', '\\\≦', '\\\＝', '\\\≠', '\\\≤', '\\\≥', '\\\=', '\\\#'];
             self.acceptPrefix = [self.PAYMENT, self.DEDUCTION, self.ATTENDANCE, self.COMPANY_UNIT_PRICE, self.INDIVIDUAL_UNIT_PRICE, self.FUNCTION, self.VARIABLE, self.PERSON, self.FORMULA, self.WAGE_TABLE];
-            self.acceptFunctionPostfix = [self.CONDITIONAL, self.AND, self.OR, self.ROUND_OFF, self.TRUNCATION, self.ROUND_UP, self.MAX_VALUE, self.MIN_VALUE, self.NUM_OF_FAMILY_MEMBER, self.YEAR_MONTH, self.YEAR_EXTRACTION, self.MONTH_EXTRACTION];
-            self.acceptVariablePostfix = [self.SYSTEM_YM_DATE, self.SYSTEM_Y_DATE, self.SYSTEM_YMD_DATE, self.PROCESSING_YEAR_MONTH, self.PROCESSING_YEAR, self.REFERENCE_TIME, self.STANDARD_DAY, self.WORKDAY];
+            // Remove elements cannot handled
+            // self.acceptFunctionPostfix = [self.CONDITIONAL, self.AND, self.OR, self.ROUND_OFF, self.TRUNCATION, self.ROUND_UP, self.MAX_VALUE, self.MIN_VALUE, self.NUM_OF_FAMILY_MEMBER, self.YEAR_MONTH, self.YEAR_EXTRACTION, self.MONTH_EXTRACTION];
+            self.acceptFunctionPostfix = [self.CONDITIONAL, self.AND, self.OR, self.ROUND_OFF, self.TRUNCATION, self.ROUND_UP, self.MAX_VALUE, self.MIN_VALUE, self.YEAR_MONTH, self.YEAR_EXTRACTION, self.MONTH_EXTRACTION];
+            // Remove elements cannot handled
+            // self.acceptVariablePostfix = [self.SYSTEM_YM_DATE, self.SYSTEM_Y_DATE, self.SYSTEM_YMD_DATE, self.PROCESSING_YEAR_MONTH, self.PROCESSING_YEAR, self.REFERENCE_TIME, self.STANDARD_DAY, self.WORKDAY];
+            self.acceptVariablePostfix = [self.SYSTEM_YM_DATE, self.SYSTEM_Y_DATE, self.SYSTEM_YMD_DATE, self.PROCESSING_YEAR_MONTH, self.PROCESSING_YEAR, self.REFERENCE_TIME];
         }
         // tab 1
         changeDataByLineItemCategory () {
@@ -240,6 +244,9 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                         return formula.settingMethod == model.FORMULA_SETTING_METHOD.DETAIL_SETTING && formula.formulaCode != selectedFormulaCode && formula.history.some(function(item){
                             return item.startMonth <= selectedYearMonth && item.endMonth >= selectedYearMonth;
                         })
+                    }).map(item => {
+                        item.formulaName = _.escape(item.formulaName);
+                        return item;
                     });
                     this.formulaList(embeddableFormulaList);
                     if (embeddableFormulaList.length > 0 ) self.selectedFormulaCode(embeddableFormulaList[0].formulaCode);
@@ -247,7 +254,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     self.formulaList([]);
                     self.selectedFormulaCode(null);
                 }
-            })
+            });
             self.selectedFormulaCode.subscribe(newValue => {
                 if (newValue || !newValue && newValue === 0) {
                     let currentFormulaList = ko.toJS(self.formulaList), selectedFormula = null;
@@ -269,7 +276,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     self.wageTableList([]);
                     self.selectedWageTableCode(null);
                 }
-            })
+            });
             self.selectedWageTableCode.subscribe(newValue => {
                 if (newValue || !newValue && newValue === 0) {
                     let currentWageTableList = ko.toJS(self.wageTableList), selectedWageTable;
@@ -429,7 +436,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         }
         addFormulaItem () {
             let self = this;
-            self.addToFormulaByPosition(self.combineElementTypeAndName(self.FORMULA, self.selectedFormula().formulaName()));
+            self.addToFormulaByPosition(self.combineElementTypeAndName(self.FORMULA, _.unescape(self.selectedFormula().formulaName())));
         }
         addWageTableItem () {
             let self = this;
@@ -492,8 +499,8 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         }
         checkOperatorAndDivideZero (formula) {
             let self = this, regex = new RegExp('([' + self.separators.join('|') + '])');
-            let formulaElements:any = formula.split(regex).filter(item => {return item && item.length}), elementType, elementName, detailFormula, calculationFormulaTransfer;
-            let self = this, index = 0, currentChar, nextChar, nextElement, operators = self.operators;
+            let formulaElements:any = formula.split(regex).filter(item => {return item && item.length});
+            let self = this, index = 0, currentChar, nextChar, operators = self.operators;
             if (self.operators.indexOf(formulaElements[0]) > 1) self.setErrorToFormula('Formula cannot start with {0}', [formulaElements[0]]);
             if (formulaElements[formulaElements.length-1] && self.operators.indexOf(formulaElements[formulaElements.length-1]) > 1) self.setErrorToFormula('Formula cannot end with {0}', [formulaElements[formulaElements.length-1]]);
             for(index = 0 ; index < formulaElements.length; index ++){
@@ -728,7 +735,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
         extractFormulaElement () {
             let self = this, regex = new RegExp('([' + self.separators.join('|') + '])');
             let formula = self.displayDetailCalculationFormula();
-            let formulaElements:any = formula.split(regex).filter(item => {return item && item.length}), elementType, elementName, detailFormula, calculationFormulaTransfer;
+            let formulaElements:any = formula.split(regex).filter(item => {return item && item.length}), detailFormula, calculationFormulaTransfer;
             for(let index = 0; index < formulaElements.length; index++ ) {
                 detailFormula = {formulaElement: formulaElements[index].trim(), elementOrder: index};
                 detailFormula.formulaElement = self.convertToRegisterContent(detailFormula.formulaElement);
@@ -817,7 +824,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                 if (!selectedItem) this.setErrorToFormula(calculationFormulaTransfer.displayContent + " with code " + elementCode + " has been deleted. Formula will be clear", []);
                 else return self.combineElementTypeAndName(calculationFormulaTransfer.displayContent, selectedItem.name);
             }
-            return "";
+            return formulaElement;
         }
         combineElementTypeAndName (elementType, elementName) {
             let self = this;

@@ -14,8 +14,7 @@ import nts.uk.ctx.pr.core.infra.entity.wageprovision.formula.QpbmtBasicCalculati
 import nts.uk.ctx.pr.core.infra.entity.wageprovision.formula.QpbmtBasicCalculationStandardAmount;
 
 @Stateless
-public class JpaBasicCalculationFormulaRepository extends JpaRepository implements BasicCalculationFormulaRepository
-{
+public class JpaBasicCalculationFormulaRepository extends JpaRepository implements BasicCalculationFormulaRepository {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM QpbmtBasicCalculationFormula f";
     private static final String SELECT_BY_HISTORY = SELECT_ALL_QUERY_STRING + " WHERE f.basicCalFormPk.historyID =:historyID ";
@@ -55,7 +54,7 @@ public class JpaBasicCalculationFormulaRepository extends JpaRepository implemen
     public BasicCalculationFormula toBasicCalculationFormula (QpbmtBasicCalculationFormula basicCalculationForm, List<QpbmtBasicCalculationStandardAmount> basicCalculationStandardAmount) {
         BasicCalculationForm domain = null;
         if (basicCalculationForm.calculationFormulaCls == CalculationFormulaClassification.FORMULA.value && basicCalculationForm.formulaType !=null) domain = this.toBasicCalculationForm(basicCalculationForm, basicCalculationStandardAmount);
-        return new BasicCalculationFormula(basicCalculationForm.basicCalFormPk.historyID, basicCalculationForm.basicCalFormPk.masterUseCode, basicCalculationForm.calculationFormulaCls, basicCalculationForm.basicCalculationFormula, domain);
+        return new BasicCalculationFormula(basicCalculationForm.basicCalFormPk.formulaCode, basicCalculationForm.basicCalFormPk.historyID, basicCalculationForm.basicCalFormPk.masterUseCode, basicCalculationForm.calculationFormulaCls, basicCalculationForm.basicCalculationFormula, domain);
     }
 
     public BasicCalculationForm toBasicCalculationForm (QpbmtBasicCalculationFormula basicCalculationForm, List<QpbmtBasicCalculationStandardAmount> basicCalculationStandardAmount) {
@@ -77,16 +76,6 @@ public class JpaBasicCalculationFormulaRepository extends JpaRepository implemen
         return Optional.of(new BasicCalculationItemCategory(basicCalculationForm.baseItemCls, basicCalculationForm.baseItemFixedValue));
     }
 
-
-
-    @Override
-    public void addAll(List<BasicCalculationFormula> domains){
-        domains.forEach(domain -> {
-            this.commandProxy().insert(QpbmtBasicCalculationFormula.toEntity(domain));
-            this.commandProxy().insertAll(QpbmtBasicCalculationStandardAmount.toEntity(domain));
-        });
-    }
-
     @Override
     public void upsertAll(String historyID, List<BasicCalculationFormula> domains){
         this.removeByHistory(historyID);
@@ -97,30 +86,8 @@ public class JpaBasicCalculationFormulaRepository extends JpaRepository implemen
     }
 
     @Override
-    public void updateAll(List<BasicCalculationFormula> domains){
-        domains.forEach(domain -> {
-            this.commandProxy().update(QpbmtBasicCalculationFormula.toEntity(domain));
-            this.commandProxy().updateAll(QpbmtBasicCalculationStandardAmount.toEntity(domain));
-        });
-    }
-
-    @Override
-    public void removeAll(List<BasicCalculationFormula> domains){
-        domains.forEach(domain -> {
-            this.commandProxy().remove(QpbmtBasicCalculationFormula.toEntity(domain));
-            this.commandProxy().removeAll(QpbmtBasicCalculationStandardAmount.toEntity(domain));
-        });
-    }
-
-    @Override
     public void removeByHistory(String historyID) {
         this.getEntityManager().createQuery(REMOVE_BY_HISTORY).setParameter("historyID", historyID).executeUpdate();
         this.getEntityManager().createQuery(REMOVE_STANDARD_AMOUNT_BY_HISTORY).setParameter("historyID", historyID).executeUpdate();
-    }
-
-    @Override
-    public void removeByFormulaCode(String formulaCode) {
-        this.getEntityManager().createQuery(REMOVE_BY_FORMULA_CODE).setParameter("formulaCode", formulaCode).executeUpdate();
-        this.getEntityManager().createQuery(REMOVE_STANDARD_AMOUNT_BY_FORMULA_CODE).setParameter("formulaCode", formulaCode).executeUpdate();
     }
 }

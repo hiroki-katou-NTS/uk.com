@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -68,6 +69,12 @@ public class BankIntegrationCommandHandler extends CommandHandler<BankIntegratio
 		String companyId = AppContexts.user().companyId();
 		BankIntegrationCommand command = context.getCommand();
 
+		if (command.getSourceIds().isEmpty()) {
+			throw new BusinessException("MsgQ_243");
+		}
+		if (command.getDestinationId() == null || command.getDestinationId().length() < 36) {
+			throw new BusinessException("MsgQ_244");
+		}
 		// update source bank
 		List<TransferSourceBank> lstSourceBank = sourceBankRepo.getSourceBankByBranchId(companyId,
 				command.getSourceIds());

@@ -31,7 +31,7 @@ public class QpbmtSettingByItem {
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumns({
             @JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
-            @JoinColumn(name="CTG_ATR", referencedColumnName="CATEGORY_ATR", insertable = false, updatable = false),
+            @JoinColumn(name="CATEGORY_ATR", referencedColumnName="CATEGORY_ATR", insertable = false, updatable = false),
             @JoinColumn(name="ITEM_NAME_CD", referencedColumnName="ITEM_NAME_CD", insertable = false, updatable = false)
     })
     public QpbmtStatementItemName statementItemName;
@@ -60,7 +60,7 @@ public class QpbmtSettingByItem {
             @JoinColumn(name="STATEMENT_CD", referencedColumnName="STATEMENT_CD", insertable = false, updatable = false),
             @JoinColumn(name="HIST_ID", referencedColumnName="HIST_ID", insertable = false, updatable = false),
             @JoinColumn(name="ITEM_NAME_CD", referencedColumnName="ITEM_NAME_CD", insertable = false, updatable = false),
-            @JoinColumn(name="CTG_ATR", referencedColumnName="CTG_ATR", insertable = false, updatable = false)
+            @JoinColumn(name="CATEGORY_ATR", referencedColumnName="CATEGORY_ATR", insertable = false, updatable = false)
     })
     public QpbmtStateItemRangeSet itemRangeSet;
 

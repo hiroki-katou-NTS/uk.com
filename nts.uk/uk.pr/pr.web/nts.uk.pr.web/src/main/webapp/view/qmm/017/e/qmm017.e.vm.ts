@@ -18,7 +18,7 @@ module nts.uk.pr.view.qmm017.e.viewmodel {
             let params = getShared("QMM017_E_PARAMS");
             if (params) {
                 if (params.basicCalculationFormula.roundingMethod == null) params.basicCalculationFormula.roundingMethod = model.ROUNDING_METHOD.ROUND_OFF;
-                if (params.basicCalculationFormula.roundingResult == null) params.basicCalculationFormula.roundingResult = model.ROUNDING_RESULT.ROUND_OFF
+                if (params.basicCalculationFormula.roundingResult == null) params.basicCalculationFormula.roundingResult = model.ROUNDING_RESULT.ROUND_OFF;
                 self.basicCalculationFormula(new model.BasicCalculationFormula(params.basicCalculationFormula));
                 self.conditionItemName(params.basicCalculationFormula.masterUseName)
                 self.isShowConditionItem(params.originalScreen == 'C');
@@ -55,7 +55,7 @@ module nts.uk.pr.view.qmm017.e.viewmodel {
         }
         selectTargetItem () {
             let self = this;
-            let basicCalculationFormula = self.fromKnockoutObservableToJS(self.basicCalculationFormula), targetItemCodeList = basicCalculationFormula.targetItemCodeList;;
+            let basicCalculationFormula = self.fromKnockoutObservableToJS(self.basicCalculationFormula), targetItemCodeList = basicCalculationFormula.targetItemCodeList;
             setShared("QMM017_F_PARAMS", {startMonth: self.startMonth, basicCalculationFormula: basicCalculationFormula});
             modal("/view/qmm/017/f/index.xhtml").onClosed(function () {
                 var params = getShared("QMM017_F_RES_PARAMS");

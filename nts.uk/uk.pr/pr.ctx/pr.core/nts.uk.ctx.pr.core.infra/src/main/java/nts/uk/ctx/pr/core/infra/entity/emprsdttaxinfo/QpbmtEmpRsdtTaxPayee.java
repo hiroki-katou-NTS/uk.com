@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.emprsdttaxinfo.EmployeeResidentTaxPayeeInfo;
+import nts.uk.ctx.pr.core.dom.emprsdttaxinfo.PayeeInfo;
 import nts.uk.shr.com.history.YearMonthHistoryItem;
 import nts.uk.shr.com.time.calendar.period.YearMonthPeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -45,6 +46,13 @@ public class QpbmtEmpRsdtTaxPayee extends UkJpaEntity implements Serializable {
     @Column(name = "END_YM")
     public int endYM;
 
+    /**
+     * 納付先情報.住民税納付先
+     */
+    @Basic(optional = false)
+    @Column(name = "RESIDENT_TAX_PAYEE_CD")
+    public String residentTaxPayeeCd;
+
     @Override
     protected Object getKey() {
         return empRsdtTaxPayeePk;
@@ -66,15 +74,26 @@ public class QpbmtEmpRsdtTaxPayee extends UkJpaEntity implements Serializable {
         return domains;
     }
 
-    public static List<QpbmtEmpRsdtTaxPayee> toEntity(List<EmployeeResidentTaxPayeeInfo> domains) {
+    public PayeeInfo toPayeeInfo() {
+        return new PayeeInfo(this.empRsdtTaxPayeePk.histId, this.residentTaxPayeeCd);
+    }
+
+    /*public static List<QpbmtEmpRsdtTaxPayee> toEntity(List<EmployeeResidentTaxPayeeInfo> empRsdts, List<PayeeInfo> payInfos) {
         List<QpbmtEmpRsdtTaxPayee> entitys = new ArrayList<>();
-        for (EmployeeResidentTaxPayeeInfo domain : domains) {
+        Map<String, String> mapPayInfos = payInfos.stream()
+                .collect(Collectors.toMap(PayeeInfo::getHistId, x -> x.getResidentTaxPayeeCd().v()));
+        for (EmployeeResidentTaxPayeeInfo domain : empRsdts) {
             for (YearMonthHistoryItem histItem : domain.items()) {
-                entitys.add(new QpbmtEmpRsdtTaxPayee(new QpbmtEmpRsdtTaxPayeePk(domain.getSid(), histItem.identifier()),
-                        histItem.start().v(), histItem.end().v()));
+                String histId = histItem.identifier();
+                String residentTaxPayeeCd = null;
+                if (mapPayInfos.containsKey(histId)) {
+                    residentTaxPayeeCd = mapPayInfos.get(histId);
+                }
+                entitys.add(new QpbmtEmpRsdtTaxPayee(new QpbmtEmpRsdtTaxPayeePk(domain.getSid(), histId),
+                        histItem.start().v(), histItem.end().v(), residentTaxPayeeCd));
             }
         }
         return entitys;
-    }
+    }*/
 
 }

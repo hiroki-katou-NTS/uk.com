@@ -8,23 +8,12 @@ import java.util.List;
 /**
 * 詳細計算式
 */
-public interface DetailFormulaSettingRepository
-{
-
-    List<DetailFormulaSetting> getAllDetailFormulaSetting();
+public interface DetailFormulaSettingRepository {
 
     Optional<DetailFormulaSetting> getDetailFormulaSettingById(String historyID);
 
-    void add(DetailFormulaSetting domain);
-
-    void update(DetailFormulaSetting domain);
-
     void upsert(DetailFormulaSetting domain);
 
-    void remove(DetailFormulaSetting domain);
-
     void removeByHistory(String historyID);
-
-    void removeByFormulaCode(String formulaCode);
 
 }

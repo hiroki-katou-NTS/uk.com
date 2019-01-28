@@ -59,31 +59,17 @@ public class QpbmtDetailFormulaSetting extends UkJpaEntity implements Serializab
     @Column(name = "ROUNDING_POSITION")
     public int roundingPosition;
     
-    /**
-    * 計算式要素
-    */
-    @Basic(optional = false)
-    @Column(name = "FORMULA_ELEMENT")
-    public String formulaElement;
-    
     @Override
     protected Object getKey()
     {
         return detailFormulaSetPk;
     }
 
-    public static Optional<DetailFormulaSetting> toDomain(List<QpbmtDetailFormulaSetting> entities) {
-        if (entities.isEmpty()) return Optional.empty();
-        return Optional.of(new DetailFormulaSetting(entities.get(0).detailFormulaSetPk.historyID, entities.get(0).referenceMonth, entities.stream().map(entity -> new DetailCalculationFormula(entity.detailFormulaSetPk.elementOrder, entity.formulaElement)).collect(Collectors.toList()), entities.get(0).roundingMethod, entities.get(0).roundingPosition));
+    public static Optional<DetailFormulaSetting> toDomain(QpbmtDetailFormulaSetting detailFormulaSet, List<QpbmtDetailCalculationFormula> detailCalculationFormula) {
+        return Optional.of(new DetailFormulaSetting(detailFormulaSet.detailFormulaSetPk.formulaCode, detailFormulaSet.detailFormulaSetPk.historyID, detailFormulaSet.referenceMonth, detailCalculationFormula.stream().map(entity -> new DetailCalculationFormula(entity.detailCalculationFormulaPk.elementOrder, entity.formulaElement)).collect(Collectors.toList()), detailFormulaSet.roundingMethod, detailFormulaSet.roundingPosition));
     }
 
-    public static List<QpbmtDetailFormulaSetting> toEntity(DetailFormulaSetting domain) {
-        // check if no detail calculation
-        // it will never become true as design but check to prevent from insert abnormal data
-        if (domain.getDetailCalculationFormula().isEmpty()){
-            I18NText errorText = I18NText.main("Data is invalid").build();
-            throw new BusinessException(errorText);
-        }
-        return domain.getDetailCalculationFormula().stream().map(item -> new QpbmtDetailFormulaSetting(new QpbmtDetailFormulaSettingPk(domain.getHistoryId(), item.getElementOrder()), domain.getReferenceMonth().value, domain.getRoundingMethod().value, domain.getRoundingPosition().value, item.getFormulaElement().v())).collect(Collectors.toList());
+    public static QpbmtDetailFormulaSetting toEntity(String formulaCode, DetailFormulaSetting domain) {
+        return new QpbmtDetailFormulaSetting(new QpbmtDetailFormulaSettingPk(AppContexts.user().companyId(), formulaCode, domain.getHistoryId()), domain.getReferenceMonth().value, domain.getRoundingMethod().value, domain.getRoundingPosition().value);
     }
 }

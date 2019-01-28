@@ -190,10 +190,10 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                         }
                     }
 
-                    self.statementLayoutHistData().usedLines("支給3行(＋非表示" + noPrintLinesPayment + "行) " +
-                                                            "控除3行(＋非表示" + noPrintLinesDedu + "行) " +
-                                                            "勤怠1行(＋非表示" + noPrintLinesTime + "行) " +
-                                                            "記事2行(＋非表示" + noPrintLinesReport + "行) ");
+                    self.statementLayoutHistData().usedLines("支給" + printLinesPayment + "行(＋非表示" + noPrintLinesPayment + "行) " +
+                                                            "控除" + printLinesDedu + "行(＋非表示" + noPrintLinesDedu + "行) " +
+                                                            "勤怠" + printLinesTime + "行(＋非表示" + noPrintLinesTime + "行) " +
+                                                            "記事" + printLinesReport + "行(＋非表示" + noPrintLinesReport + "行) ");
                     break;
                 default:
                     return "";

@@ -29,7 +29,7 @@ public class QpbmtWageTablePk {
 	/**
 	 * 賃金テーブルコード
 	 */
-	@Column(name = "CD")
+	@Column(name = "WAGE_TABLE_CD")
 	public String code;
 
 }

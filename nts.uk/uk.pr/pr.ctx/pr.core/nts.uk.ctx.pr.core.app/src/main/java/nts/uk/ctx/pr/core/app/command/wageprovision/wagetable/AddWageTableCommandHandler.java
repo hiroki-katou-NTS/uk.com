@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.ElementSetting;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTable;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableHistory;
 import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.WageTableHistoryRepository;
@@ -34,6 +35,22 @@ public class AddWageTableCommandHandler extends CommandHandlerWithResult<AddWage
 			throw new BusinessException("Msg_3");
 		}
 		WageTable wageTable = context.getCommand().toWageTableDomain();
+		if ((wageTable.getElementSetting() == ElementSetting.ONE_DIMENSION
+				&& !wageTable.getElementInformation().getOneDimensionalElement().getMasterNumericAtr().isPresent())
+				|| (wageTable.getElementSetting() == ElementSetting.TWO_DIMENSION && (!wageTable.getElementInformation()
+						.getOneDimensionalElement().getMasterNumericAtr().isPresent()
+						|| !wageTable.getElementInformation().getTwoDimensionalElement().isPresent()
+						|| !wageTable.getElementInformation().getTwoDimensionalElement().get().getMasterNumericAtr()
+								.isPresent()))
+				|| (wageTable.getElementSetting() == ElementSetting.THREE_DIMENSION && (!wageTable
+						.getElementInformation().getOneDimensionalElement().getMasterNumericAtr().isPresent()
+						|| !wageTable.getElementInformation().getTwoDimensionalElement().isPresent()
+						|| !wageTable.getElementInformation().getTwoDimensionalElement().get().getMasterNumericAtr()
+								.isPresent()
+						|| !wageTable.getElementInformation().getThreeDimensionalElement().isPresent()
+						|| !wageTable.getElementInformation().getThreeDimensionalElement().get().getMasterNumericAtr().isPresent()))) {
+			throw new BusinessException("MsgQ_242");
+		}
 		wageRepo.add(wageTable);
 		WageTableHistory wageHist = context.getCommand().toWageTableHistoryDomain();
 		wageHistRepo.addOrUpdate(wageHist);

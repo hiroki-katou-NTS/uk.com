@@ -29,36 +29,39 @@ public class JpaWageTableContentRepository extends JpaRepository implements Wage
 	}
 
 	@Override
-	public Optional<WageTableContent> getWageTableContentById(String historyId) {
-		String queryWagePayment = "SELECT p FROM QpbmtWageTableComboPayment p WHERE  p.historyId = :historyId";
-		String queryWageQualificationGroup = "SELECT g FROM QpbmtWageTableQualifyGroupSet g WHERE  g.pk.historyId = :historyId";
+	public Optional<WageTableContent> getWageTableContentById(String historyId, String companyId, String wageTableCode) {
+		String queryWagePayment = "SELECT p FROM QpbmtWageTableComboPayment p WHERE p.pk.historyId = :historyId AND p.pk.companyId = :companyId AND p.pk.wageTableCode = :wageTableCode";
+//		String queryWageQualificationGroup = "SELECT g FROM QpbmtWageTableQualifyGroupSet g WHERE  g.pk.historyId = :historyId";
 		List<ElementsCombinationPaymentAmount> listPayment = this.queryProxy()
 				.query(queryWagePayment, QpbmtWageTableComboPayment.class).setParameter("historyId", historyId)
+				.setParameter("companyId", companyId).setParameter("wageTableCode", wageTableCode)
 				.getList(i -> i.toDomain());
-		List<QpbmtWageTableQualifyGroupSet> listGroupCodeEntity = this.queryProxy()
-				.query(queryWageQualificationGroup, QpbmtWageTableQualifyGroupSet.class)
-				.setParameter("historyId", historyId).getList();
-		if (listPayment.isEmpty() && listGroupCodeEntity.isEmpty())
-			return Optional.empty();
-		Map<String, List<QpbmtWageTableQualifyGroupSet>> mapGroupCodeEntity = listGroupCodeEntity.stream()
-				.collect(Collectors.groupingBy(i -> i.pk.qualificationGroupCode));
+//		List<QpbmtWageTableQualifyGroupSet> listGroupCodeEntity = this.queryProxy()
+//				.query(queryWageQualificationGroup, QpbmtWageTableQualifyGroupSet.class)
+//				.setParameter("historyId", historyId).getList();
+//		if (listPayment.isEmpty() && listGroupCodeEntity.isEmpty())
+//			return Optional.empty();
+//		Map<String, List<QpbmtWageTableQualifyGroupSet>> mapGroupCodeEntity = listGroupCodeEntity.stream()
+//				.collect(Collectors.groupingBy(i -> i.pk.qualificationGroupCode));
 		List<QualificationGroupSettingContent> listGroupCode = new ArrayList<>();
-		mapGroupCodeEntity.entrySet().forEach(i -> {
-			listGroupCode.add(QpbmtWageTableQualifyGroupSet.toDomain(i.getValue()));
-		});
+//		mapGroupCodeEntity.entrySet().forEach(i -> {
+//			listGroupCode.add(QpbmtWageTableQualifyGroupSet.toDomain(i.getValue()));
+//		});
 		return Optional.of(new WageTableContent(historyId, listPayment,
 				listGroupCode.isEmpty() ? Optional.empty() : Optional.of(listGroupCode)));
 	}
 
 	@Override
-	public void addOrUpdate(WageTableContent domain) {
-		this.remove(domain.getHistoryID());
+	public void addOrUpdate(WageTableContent domain, String companyId, String wageTableCode) {
+		this.remove(domain.getHistoryID(), companyId, wageTableCode);
 		List<QpbmtWageTableComboPayment> listPaymentEntity = domain.getPayments().stream()
-				.map(i -> new QpbmtWageTableComboPayment(i, domain.getHistoryID())).collect(Collectors.toList());
+				.map(i -> new QpbmtWageTableComboPayment(i, domain.getHistoryID(), companyId, wageTableCode))
+				.collect(Collectors.toList());
 		List<QpbmtWageTableQualifyGroupSet> listGroupSetEntity = new ArrayList<>();
 		domain.getQualificationGroupSettings().ifPresent(listSetting -> {
 			listSetting.forEach(i -> {
-				listGroupSetEntity.addAll(QpbmtWageTableQualifyGroupSet.fromDomain(i, domain.getHistoryID()));
+				listGroupSetEntity.add(
+						QpbmtWageTableQualifyGroupSet.fromDomain(i, companyId, wageTableCode, domain.getHistoryID()));
 			});
 		});
 		if (!listPaymentEntity.isEmpty()) {
@@ -70,35 +73,46 @@ public class JpaWageTableContentRepository extends JpaRepository implements Wage
 	}
 
 	@Override
-	public void remove(String historyId) {
-		String queryDeleteWagePayment = "DELETE FROM QpbmtWageTableComboPayment p WHERE  p.historyId = :historyId";
+	public void remove(String historyId, String companyId, String wageTableCode) {
+		String queryDeleteWagePayment = "DELETE FROM QpbmtWageTableComboPayment p WHERE  p.pk.historyId = :historyId AND p.pk.companyId = :companyId AND p.pk.wageTableCode = :wageTableCode";
 		this.getEntityManager().createQuery(queryDeleteWagePayment).setParameter("historyId", historyId)
-				.executeUpdate();
-		String queryDeleteWageGroupSet = "DELETE FROM QpbmtWageTableQualifyGroupSet g WHERE  g.pk.historyId = :historyId";
+				.setParameter("companyId", companyId).setParameter("wageTableCode", wageTableCode).executeUpdate();
+		String queryDeleteWageGroupSet = "DELETE FROM QpbmtWageTableQualifyGroupSet g WHERE  g.pk.historyId = :historyId AND g.pk.companyId = :companyId AND g.pk.wageTableCode = :wageTableCode";
 		this.getEntityManager().createQuery(queryDeleteWageGroupSet).setParameter("historyId", historyId)
-				.executeUpdate();
+				.setParameter("companyId", companyId).setParameter("wageTableCode", wageTableCode).executeUpdate();
+		String queryDeleteWageGroupSetEligibleCode = "DELETE FROM QpbmtWageTableGroupEligibleCode g WHERE  g.pk.historyId = :historyId AND g.pk.companyId = :companyId AND g.pk.wageTableCode = :wageTableCode";
+		this.getEntityManager().createQuery(queryDeleteWageGroupSetEligibleCode).setParameter("historyId", historyId)
+				.setParameter("companyId", companyId).setParameter("wageTableCode", wageTableCode).executeUpdate();
 	}
 
 	@Override
 	public List<WageTableQualification> getWageTableQualification(String historyId) {
 		String wageTableQualificationSQL =
 				" SELECT" +
-				"     wcp.id," +
-				"     wgs.pk.qualificationGroupCode," +
-				"	  wgs.qualificationGroupName," +
-				"     wgs.pk.elegibleQualificationCode," +
-				"     qi.qualificationName," +
-				"     wcp.paymentAmount," +
-				"     wgs.paymentMethod" +
-				" FROM" +
-				"     QpbmtWageTableComboPayment wcp" +
-				"     LEFT JOIN QpbmtWageTableQualifyGroupSet wgs ON wcp.historyId = wgs.pk.historyId AND wcp.masterCode1 = wgs.pk.elegibleQualificationCode" +
-				"     LEFT JOIN QpbmtQualificationInformation qi ON wgs.pk.elegibleQualificationCode = qi.pk.qualificationCode" +
+				"		wcp.pk.id," +
+				"		wgs.pk.qualificationGroupCode," +
+				"		wgs.qualificationGroupName," +
+				"		wgsec.pk.eligibleQualificationCode," +
+				"		qi.qualificationName," +
+				"		wcp.paymentAmount," +
+				"		wgs.paymentMethod" +
+				"	FROM" +
+				"		QpbmtWageTableComboPayment wcp" +
+				"	LEFT JOIN QpbmtWageTableGroupEligibleCode wgsec ON wcp.pk.companyId = wgsec.pk.companyId" +
+				"	AND wcp.pk.wageTableCode = wgsec.pk.wageTableCode" +
+				"	AND wcp.pk.historyId = wgsec.pk.historyId" +
+				"	AND wcp.masterCode1 = wgsec.pk.eligibleQualificationCode" +
+				"	LEFT JOIN QpbmtWageTableQualifyGroupSet wgs ON wgs.pk.companyId = wgsec.pk.companyId" +
+				"	AND wgs.pk.wageTableCode = wgsec.pk.wageTableCode" +
+				"	AND wgs.pk.qualificationGroupCode = wgsec.pk.qualificationGroupCode" +
+				"	AND wgs.pk.historyId = wgsec.pk.historyId" +
+				"	LEFT JOIN QpbmtQualificationInformation qi ON qi.pk.cid = wgsec.pk.companyId" +
+				"	AND qi.pk.qualificationCode = wgsec.pk.eligibleQualificationCode" +
 				" WHERE" +
-				"     qi.pk.cid =:cid AND" +
-				"     wgs.pk.historyId =:historyId" +
+				"     wcp.pk.companyId = :cid AND" +
+				"     wcp.pk.historyId = :historyId" +
 				" ORDER BY" +
-				"     CASE WHEN wgs.pk.qualificationGroupCode = '  ' THEN 2 ELSE 1 END, wgs.pk.qualificationGroupCode, wgs.pk.elegibleQualificationCode";
+				"     CASE WHEN wgs.pk.qualificationGroupCode = '  ' THEN 2 ELSE 1 END, wgs.pk.qualificationGroupCode, wgsec.pk.eligibleQualificationCode";
 		List<Object[]> data = this.queryProxy()
 				.query(wageTableQualificationSQL, Object[].class)
 				.setParameter("cid", AppContexts.user().companyId())
@@ -113,17 +127,20 @@ public class JpaWageTableContentRepository extends JpaRepository implements Wage
 	@Override
 	public List<WageTableQualification> getDefaultWageTableQualification() {
 		String wageTableQualificationSQL
-				= " SELECT" +
-				"   null," +
-				"   qgs.pk.qualificationGroupCode," +
-				"   qgs.qualificationGroupName," +
-				"   qi.pk.qualificationCode," +
-				"   qi.qualificationName," +
-				"   null," +
-				"   qgs.paymentMethod" +
-				" FROM" +
-				"   QpbmtQualificationInformation qi" +
-				"   LEFT JOIN QpbmtQualificationGroupSetting qgs ON qi.pk.cid = qgs.pk.cid AND qi.pk.qualificationCode = qgs.pk.eligibleQualificationCode" +
+				= "SELECT" +
+				"		NULL," +
+				"		qgs.pk.qualificationGroupCode," +
+				"		qgs.qualificationGroupName," +
+				"		qi.pk.qualificationCode," +
+				"		qi.qualificationName," +
+				"		NULL," +
+				"		qgs.paymentMethod" +
+				"	FROM" +
+				"		QpbmtQualificationInformation qi" +
+				"	LEFT JOIN QpbmtEligibleQualificationCode eqc ON qi.pk.cid = eqc.pk.companyId" +
+				"	AND qi.pk.qualificationCode = eqc.pk.eligibleQualificationCode" +
+				"	LEFT JOIN QpbmtQualificationGroupSetting qgs ON eqc.pk.companyId = qgs.pk.cid" +
+				"	AND eqc.pk.qualificationGroupCode = qgs.pk.qualificationGroupCode" +
 				" WHERE qi.pk.cid =:cid ORDER BY CASE WHEN qgs.pk.qualificationGroupCode IS NULL THEN 2 ELSE 1 END, qgs.pk.qualificationGroupCode, qi.pk.qualificationCode";
 		List<Object[]> data = this.queryProxy()
 				.query(wageTableQualificationSQL, Object[].class)

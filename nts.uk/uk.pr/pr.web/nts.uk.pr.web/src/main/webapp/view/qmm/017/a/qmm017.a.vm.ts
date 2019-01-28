@@ -133,13 +133,26 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
 
         register () {
             let self = this;
-            let command = ko.toJS(self.selectedFormula);
-            nts.uk.ui.errors.clearAll();
-            if (self.screenMode() == model.SCREEN_MODE.NEW || self.screenMode() == model.SCREEN_MODE.UPDATE_FORMULA ){
-                $('.tab-content-1 .nts-input').filter(':enabled').trigger("validate");
+            self.validateError();
+            if (nts.uk.ui.errors.hasError()) return;
+            let command = self.combineData();
+            if (self.screenMode() == model.SCREEN_MODE.NEW) {
+                self.addFormula(command);
+            } else if (self.screenMode() == model.SCREEN_MODE.UPDATE) {
+                self.updateFormulaSetting(command);
+            } else if (self.screenMode() == model.SCREEN_MODE.ADD_HISTORY){
+                self.addFormulaHistory(command)
             } else {
+                self.updateFormula(command);
+            }
+        }
+
+        validateError () {
+            let self = this;
+            nts.uk.ui.errors.clearAll();
+            $('.tab-content-1 .nts-input').filter(':enabled').trigger("validate");
+            if (self.screenMode() == model.SCREEN_MODE.UPDATE || self.screenMode() == model.SCREEN_MODE.ADD_HISTORY ){
                 if (self.selectedFormula().settingMethod() == model.FORMULA_SETTING_METHOD.BASIC_SETTING){
-                    let screenClass = ".screenB";
                     $('.basic .nts-input').filter(':enabled').trigger("validate");
                 }
                 else {
@@ -147,13 +160,17 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                     self.screenDViewModel.validateSyntax();
                 }
             }
-            if (nts.uk.ui.errors.hasError()) return;
+        }
+
+        combineData () {
+            let self = this;
+            let command = ko.toJS(self.selectedFormula);
             let formulaSettingCommand = {
                 basicFormulaSettingCommand: ko.toJS(self.basicFormulaSetting),
                 detailFormulaSettingCommand: ko.toJS(self.detailFormulaSetting),
                 basicCalculationFormulaCommand: [],
                 yearMonth: ko.toJS(self.selectedHistory)
-            }
+            };
             let basicCalculationFormula = [];
             if (command.settingMethod == model.FORMULA_SETTING_METHOD.BASIC_SETTING) {
                 let fixedMasterUseCode = "0000000000";
@@ -170,15 +187,15 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                 formulaSettingCommand.yearMonth.historyID = nts.uk.util.randomId();
             }
             command.formulaSettingCommand = formulaSettingCommand;
-            if (self.screenMode() == model.SCREEN_MODE.NEW) {
-                self.addFormula(command);
-            } else if (self.screenMode() == model.SCREEN_MODE.UPDATE) {
-                self.updateFormulaSetting(command);
-            } else if (self.screenMode() == model.SCREEN_MODE.ADD_HISTORY){
-                self.addFormulaHistory(command)
-            } else {
-                self.updateFormula(command);
-            }
+            return self.formatData(command);
+        }
+        formatData (command) {
+            command.formulaSettingCommand.basicFormulaSettingCommand.formulaCode = command.formulaCode;
+            command.formulaSettingCommand.detailFormulaSettingCommand.formulaCode = command.formulaCode;
+            command.formulaSettingCommand.basicCalculationFormulaCommand.map(item => {
+                item.formulaCode = command.formulaCode;
+            });
+            return command;
         }
 
         addFormula (command) {
@@ -248,8 +265,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
         convertToTreeList(formulaData, itemToBeSelect) {
             let self = this;
             formulaData = formulaData.map(function (item) {
-                item.formulaName = _.escape(item.formulaName);
-                item.nodeText =  item.formulaCode + " " + item.formulaName;
+                item.nodeText =  item.formulaCode + " " + _.escape(item.formulaName);
                 item['identifier'] = item.formulaCode;
                 item.history = item.history.map(function (historyItem) {
                     historyItem['identifier'] = item.formulaCode + historyItem.historyID;
@@ -481,7 +497,6 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
 
         doMasterConfiguration () {
             let self = this;
-            // unknown which item to be affect. temporary not link b to e
             setShared("QMM017_E_PARAMS", {yearMonth: ko.toJS(self.selectedHistory), basicCalculationFormula: ko.toJS(self.masterBasicCalculationFormula), originalScreen: 'B'});
             modal("/view/qmm/017/e/index.xhtml").onClosed(function () {
                 let params = getShared("QMM017_E_RES_PARAMS");
@@ -489,13 +504,13 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                     params.basicCalculationFormula.calculationFormulaClassification = model.CALCULATION_FORMULA_CLS.FORMULA;
                     self.masterBasicCalculationFormula(new model.BasicCalculationFormula(params.basicCalculationFormula));
                 }
+                $('.master-config-button').focus();
             });
 
         };
         // screen C
         doConfiguration (index) {
             let self = this;
-            // unknown which item to be affect. temporary not link b to e
             setShared("QMM017_E_PARAMS", {yearMonth: ko.toJS(self.selectedHistory), masterBasicCalculationFormula: ko.toJS(self.masterBasicCalculationFormula), basicCalculationFormula: ko.toJS(self.basicCalculationFormulaList)[index], originalScreen: 'C'});
             modal("/view/qmm/017/e/index.xhtml").onClosed(function () {
                 let params = getShared("QMM017_E_RES_PARAMS");
@@ -503,6 +518,7 @@ module nts.uk.pr.view.qmm017.a.viewmodel {
                     let newModel: any = new model.BasicCalculationFormula(params.basicCalculationFormula);
                     self.basicCalculationFormulaList.replace(self.basicCalculationFormulaList()[index], newModel);
                 }
+                $('#C3_1 tr').eq(index).find('button.small').focus();
             });
         };
         setAllCalculationFormula () {

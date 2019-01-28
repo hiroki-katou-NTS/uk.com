@@ -2374,6 +2374,16 @@ public class ProgramsManager {
 	 */
 	public static final Program QMM016A = new Program(WebAppId.PR, ProgramIdConsts.QMM016A, "QMM016_101",
 			"/view/qmm/016/a/index.xhtml");
+	public static final Program QMM016B = new Program(WebAppId.PR, ProgramIdConsts.QMM016B, "QMM016_102",
+			"/view/qmm/016/b/index.xhtml");
+	public static final Program QMM016C = new Program(WebAppId.PR, ProgramIdConsts.QMM016C, "QMM016_103",
+			"/view/qmm/016/c/index.xhtml");
+	public static final Program QMM016D = new Program(WebAppId.PR, ProgramIdConsts.QMM016D, "QMM016_104",
+			"/view/qmm/016/d/index.xhtml");
+	public static final Program QMM016E = new Program(WebAppId.PR, ProgramIdConsts.QMM016E, "QMM016_105",
+			"/view/qmm/016/e/index.xhtml");
+	public static final Program QMM016F = new Program(WebAppId.PR, ProgramIdConsts.QMM016F, "QMM016_106",
+			"/view/qmm/016/f/index.xhtml");
 	public static final Program QMM016G = new Program(WebAppId.PR, ProgramIdConsts.QMM016G, "QMM016_107",
 			"/view/qmm/016/g/index.xhtml");
 	public static final Program QMM016H = new Program(WebAppId.PR, ProgramIdConsts.QMM016H, "QMM016_5",
@@ -2382,6 +2392,12 @@ public class ProgramsManager {
 			"/view/qmm/016/i/index.xhtml");
 	public static final Program QMM016J = new Program(WebAppId.PR, ProgramIdConsts.QMM016J, "QMM016_109",
 			"/view/qmm/016/j/index.xhtml");
+	public static final Program QMM016K = new Program(WebAppId.PR, ProgramIdConsts.QMM016K, "QMM016_110",
+			"/view/qmm/016/k/index.xhtml");
+	public static final Program QMM016L = new Program(WebAppId.PR, ProgramIdConsts.QMM016L, "QMM016_111",
+			"/view/qmm/016/l/index.xhtml");
+	public static final Program QMM016M = new Program(WebAppId.PR, ProgramIdConsts.QMM016M, "QMM016_6",
+			"/view/qmm/016/m/index.xhtml");
 	
 	/**
 	 * QMM017
@@ -2442,6 +2458,19 @@ public class ProgramsManager {
 			"/view/qmm/019/o/index.xhtml");
 	public static final Program QMM019P = new Program(WebAppId.PR, ProgramIdConsts.QMM019P, "QMM019_223",
 			"/view/qmm/019/p/index.xhtml");
+
+	public static final Program QMM020A = new Program(WebAppId.PR, ProgramIdConsts.QMM020A, "QMM020_101",
+			"/view/qmm/020/a/index.xhtml");
+	public static final Program QMM020I = new Program(WebAppId.PR, ProgramIdConsts.QMM020I, "QMM020_2",
+			"/view/qmm/020/i/index.xhtml");
+	public static final Program QMM020J = new Program(WebAppId.PR, ProgramIdConsts.QMM020J, "QMM020_102",
+			"/view/qmm/020/j/index.xhtml");
+	public static final Program QMM020K = new Program(WebAppId.PR, ProgramIdConsts.QMM020K, "QMM020_103",
+			"/view/qmm/020/k/index.xhtml");
+	public static final Program QMM020L = new Program(WebAppId.PR, ProgramIdConsts.QMM020L, "QMM020_3",
+			"/view/qmm/020/l/index.xhtml");
+	public static final Program QMM020M = new Program(WebAppId.PR, ProgramIdConsts.QMM020M, "QMM020_104",
+			"/view/qmm/020/m/index.xhtml");
 
 	/**
 	 * QMM035

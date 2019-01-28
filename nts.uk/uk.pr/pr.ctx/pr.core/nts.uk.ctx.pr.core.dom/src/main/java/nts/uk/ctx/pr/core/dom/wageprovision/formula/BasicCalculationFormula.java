@@ -15,7 +15,16 @@ import nts.arc.enums.EnumAdaptor;
 */
 @Getter
 public class BasicCalculationFormula extends AggregateRoot {
-    
+
+    /**
+     * 会社ID
+     */
+    private String companyId;
+
+    /**
+     * 計算式コード
+     */
+    private FormulaCode formulaCode;
 
     /**
     * 固定/計算式/既定区分
@@ -42,7 +51,8 @@ public class BasicCalculationFormula extends AggregateRoot {
     */
     private Optional<BasicCalculationForm> basicCalculationForm;
     
-    public BasicCalculationFormula(String historyID, String masterUseCode, int calculationFormulaClassification, BigDecimal basicCalculationFormula, BasicCalculationForm basicCalculationForm) {
+    public BasicCalculationFormula(String formulaCode, String historyID, String masterUseCode, int calculationFormulaClassification, BigDecimal basicCalculationFormula, BasicCalculationForm basicCalculationForm) {
+        this.formulaCode = new FormulaCode(formulaCode);
         this.historyID = historyID;
         this.masterUseCode = new MasterUseCode(masterUseCode);
         this.calculationFormulaClassification = EnumAdaptor.valueOf(calculationFormulaClassification, CalculationFormulaClassification.class);

@@ -74,7 +74,9 @@ module nts.uk.pr.view.qmm006.a.viewmodel {
         register() {
             let self = this;
             $(".nts-input").trigger("validate");
-            $("#switch-acc-type").trigger("validate");
+            if (_.isEmpty(self.selectedSourceBank().branchId())) {
+                $('#A3_5').ntsError('set', {messageId:'FND_E_REQ_INPUT', messageParams:[getText('QMM006_15')]});
+            }
             if (!nts.uk.ui.errors.hasError()) {
                 block.invisible();
                 let command = ko.toJS(self.selectedSourceBank());
@@ -194,16 +196,76 @@ module nts.uk.pr.view.qmm006.a.viewmodel {
         entrustorInforCode5: KnockoutObservable<string> = ko.observable(null);
         entrustorInforUse5: KnockoutObservable<string> = ko.observable(null);
         
-        entrustorInforCode1Required: KnockoutObservable<boolean> = ko.computed(() => {return !_.isEmpty(this.entrustorInforUse1())});
-        entrustorInforUse1Required: KnockoutObservable<boolean> = ko.computed(() => {return !_.isEmpty(this.entrustorInforCode1())});
-        entrustorInforCode2Required: KnockoutObservable<boolean> = ko.computed(() => {return !_.isEmpty(this.entrustorInforUse2())});
-        entrustorInforUse2Required: KnockoutObservable<boolean> = ko.computed(() => {return !_.isEmpty(this.entrustorInforCode2())});
-        entrustorInforCode3Required: KnockoutObservable<boolean> = ko.computed(() => {return !_.isEmpty(this.entrustorInforUse3())});
-        entrustorInforUse3Required: KnockoutObservable<boolean> = ko.computed(() => {return !_.isEmpty(this.entrustorInforCode3())});
-        entrustorInforCode4Required: KnockoutObservable<boolean> = ko.computed(() => {return !_.isEmpty(this.entrustorInforUse4())});
-        entrustorInforUse4Required: KnockoutObservable<boolean> = ko.computed(() => {return !_.isEmpty(this.entrustorInforCode4())});
-        entrustorInforCode5Required: KnockoutObservable<boolean> = ko.computed(() => {return !_.isEmpty(this.entrustorInforUse5())});
-        entrustorInforUse5Required: KnockoutObservable<boolean> = ko.computed(() => {return !_.isEmpty(this.entrustorInforCode5())});
+        entrustorInforCode1Required: KnockoutObservable<boolean> = ko.computed(() => {
+            let required = !_.isEmpty(this.entrustorInforUse1());
+            if (!required) {
+                $("#A3_23").trigger("validate");
+            }
+            return required;
+        });
+        entrustorInforUse1Required: KnockoutObservable<boolean> = ko.computed(() => {
+            let required = !_.isEmpty(this.entrustorInforCode1());
+            if (!required) {
+                $("#A3_24").trigger("validate");
+            }
+            return required;
+        });
+        entrustorInforCode2Required: KnockoutObservable<boolean> = ko.computed(() => {
+            let required = !_.isEmpty(this.entrustorInforUse2());
+            if (!required) {
+                $("#A3_26").trigger("validate");
+            }
+            return required;
+        });
+        entrustorInforUse2Required: KnockoutObservable<boolean> = ko.computed(() => {
+            let required = !_.isEmpty(this.entrustorInforCode2());
+            if (!required) {
+                $("#A3_27").trigger("validate");
+            }
+            return required;
+        });
+        entrustorInforCode3Required: KnockoutObservable<boolean> = ko.computed(() => {
+            let required = !_.isEmpty(this.entrustorInforUse3());
+            if (!required) {
+                $("#A3_29").trigger("validate");
+            }
+            return required;
+        });
+        entrustorInforUse3Required: KnockoutObservable<boolean> = ko.computed(() => {
+            let required = !_.isEmpty(this.entrustorInforCode3());
+            if (!required) {
+                $("#A3_30").trigger("validate");
+            }
+            return required;
+        });
+        entrustorInforCode4Required: KnockoutObservable<boolean> = ko.computed(() => {
+            let required = !_.isEmpty(this.entrustorInforUse4());
+            if (!required) {
+                $("#A3_32").trigger("validate");
+            }
+            return required;
+        });
+        entrustorInforUse4Required: KnockoutObservable<boolean> = ko.computed(() => {
+            let required = !_.isEmpty(this.entrustorInforCode4());
+            if (!required) {
+                $("#A3_33").trigger("validate");
+            }
+            return required;
+        });
+        entrustorInforCode5Required: KnockoutObservable<boolean> = ko.computed(() => {
+            let required = !_.isEmpty(this.entrustorInforUse5());
+            if (!required) {
+                $("#A3_35").trigger("validate");
+            }
+            return required;
+        });
+        entrustorInforUse5Required: KnockoutObservable<boolean> = ko.computed(() => {
+            let required = !_.isEmpty(this.entrustorInforCode5());
+            if (!required) {
+                $("#A3_36").trigger("validate");
+            }
+            return required;
+        });
         
         constructor(data: {
                 code: string, 
@@ -249,6 +311,10 @@ module nts.uk.pr.view.qmm006.a.viewmodel {
             this.entrustorInforUse4(data != null ? data.entrustorInforUse4 : null);
             this.entrustorInforCode5(data != null ? data.entrustorInforCode5 : null);
             this.entrustorInforUse5(data != null ? data.entrustorInforUse5 : null);
+            this.branchId.subscribe(val => {
+                if (!_.isEmpty(val))
+                    $('#A3_5').ntsError('clear');
+            });
         }
         
         openDialogQmm006b() {

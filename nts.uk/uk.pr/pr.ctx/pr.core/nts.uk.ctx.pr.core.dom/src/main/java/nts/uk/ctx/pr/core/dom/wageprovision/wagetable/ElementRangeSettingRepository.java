@@ -10,12 +10,12 @@ public interface ElementRangeSettingRepository {
 
 	public List<ElementRangeSetting> getAllElementRangeSetting(List<String> historyIds);
 
-	public Optional<ElementRangeSetting> getElementRangeSettingById(String historyId);
+	public Optional<ElementRangeSetting> getElementRangeSettingById(String historyId, String companyId, String wageTableCode);
 
-	public void add(ElementRangeSetting domain);
+	public void add(ElementRangeSetting domain, String companyId, String wageTableCode);
 
-	public void update(ElementRangeSetting domain);
+	public void update(ElementRangeSetting domain, String companyId, String wageTableCode);
 
-	public void remove(String historyId);
+	public void remove(String historyId, String companyId, String wageTableCode);
 
 }

@@ -1,9 +1,11 @@
 package nts.uk.ctx.pr.core.infra.entity.wageprovision.wagetable;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -23,12 +25,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "QPBMT_WAGE_TBL_COMBO_PAY")
 public class QpbmtWageTableComboPayment extends UkJpaEntity {
 
-	@Id
-	@Column(name = "ID")
-	public String id;
-
-	@Column(name = "HIST_ID")
-	public String historyId;
+	@EmbeddedId
+	public QpbmtWageTableComboPaymentPk pk;
 
 	@Column(name = "PAY_AMOUNT")
 	public long paymentAmount;
@@ -42,15 +40,15 @@ public class QpbmtWageTableComboPayment extends UkJpaEntity {
 
 	@Column(name = "FRAME_UPPER_1")
 	@Basic(optional = true)
-	public Integer frameUpperLimit1;
+	public BigDecimal frameUpperLimit1;
 
 	@Column(name = "FRAME_LOWER_1")
 	@Basic(optional = true)
-	public Integer frameLowerLimit1;
+	public BigDecimal frameLowerLimit1;
 
 	@Column(name = "FRAME_NUMBER_1")
 	@Basic(optional = true)
-	public Integer frameNumber1;
+	public Long frameNumber1;
 
 	/**
 	 * 第二要素項目
@@ -61,15 +59,15 @@ public class QpbmtWageTableComboPayment extends UkJpaEntity {
 
 	@Column(name = "FRAME_UPPER_2")
 	@Basic(optional = true)
-	public Integer frameUpperLimit2;
+	public BigDecimal frameUpperLimit2;
 
 	@Column(name = "FRAME_LOWER_2")
 	@Basic(optional = true)
-	public Integer frameLowerLimit2;
+	public BigDecimal frameLowerLimit2;
 
 	@Column(name = "FRAME_NUMBER_2")
 	@Basic(optional = true)
-	public Integer frameNumber2;
+	public Long frameNumber2;
 
 	/**
 	 * 第三要素項目
@@ -80,30 +78,30 @@ public class QpbmtWageTableComboPayment extends UkJpaEntity {
 
 	@Column(name = "FRAME_UPPER_3")
 	@Basic(optional = true)
-	public Integer frameUpperLimit3;
+	public BigDecimal frameUpperLimit3;
 
 	@Column(name = "FRAME_LOWER_3")
 	@Basic(optional = true)
-	public Integer frameLowerLimit3;
+	public BigDecimal frameLowerLimit3;
 
 	@Column(name = "FRAME_NUMBER_3")
 	@Basic(optional = true)
-	public Integer frameNumber3;
+	public Long frameNumber3;
 
 	@Override
 	protected Object getKey() {
-		return this.id;
+		return this.pk;
 	}
 
 	public ElementsCombinationPaymentAmount toDomain() {
-		return new ElementsCombinationPaymentAmount(id, paymentAmount, masterCode1, frameNumber1, frameLowerLimit1,
+		return new ElementsCombinationPaymentAmount(pk.id, paymentAmount, masterCode1, frameNumber1, frameLowerLimit1,
 				frameUpperLimit1, masterCode2, frameNumber2, frameLowerLimit2, frameUpperLimit2, masterCode3,
 				frameNumber3, frameLowerLimit3, frameUpperLimit3);
 	}
 
-	public QpbmtWageTableComboPayment(ElementsCombinationPaymentAmount domain, String historyId) {
-		this.id = domain.getId();
-		this.historyId = historyId;
+	public QpbmtWageTableComboPayment(ElementsCombinationPaymentAmount domain, String historyId, String companyId,
+			String wageTableCode) {
+		this.pk = new QpbmtWageTableComboPaymentPk(companyId, wageTableCode, historyId, domain.getId());
 		this.paymentAmount = domain.getWageTablePaymentAmount().v();
 		this.masterCode1 = domain.getElementAttribute().getFirstElementItem().getMasterElementItem().isPresent()
 				? domain.getElementAttribute().getFirstElementItem().getMasterElementItem().get().getMasterCode()

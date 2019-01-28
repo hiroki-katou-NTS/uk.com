@@ -119,7 +119,7 @@ module nts.uk.pr.view.qmm012.h.viewmodel {
                 }
                 service.registerValidityPeriodAndCycleSet(ko.toJS(self.currentSetting)).done(() => {
                     info({ messageId: "Msg_15" }).then(() => {
-                        setShared('QMM012_H_IS_SETTING', { exitStatus: model.ExitStatus.EXECUTION });
+                        setShared('QMM012_H_IS_SETTING', { exitStatus: model.ExitStatus.EXECUTION, cycleSettingAtr: self.isEnableCycleSetting(), validityPeriodAtr: self.isEnableYearPeriod() });
                         nts.uk.ui.windows.close();
                     });
                 }).fail(function(error) {

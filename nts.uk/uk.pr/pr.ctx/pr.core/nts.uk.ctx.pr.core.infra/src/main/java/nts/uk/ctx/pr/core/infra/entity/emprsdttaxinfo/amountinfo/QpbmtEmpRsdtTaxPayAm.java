@@ -36,88 +36,88 @@ public class QpbmtEmpRsdtTaxPayAm extends UkJpaEntity implements Serializable {
     public int inputAtr;
 
     /**
-     * 月次住民税納付額.1月納付額
-     */
-    @Basic(optional = false)
-    @Column(name = "AMOUNT_JANUARY")
-    public BigDecimal amountJanuary;
-
-    /**
-     * 月次住民税納付額.2月納付額
-     */
-    @Basic(optional = false)
-    @Column(name = "AMOUNT_FEBRUARY")
-    public BigDecimal amountFebruary;
-
-    /**
-     * 月次住民税納付額.3月納付額
-     */
-    @Basic(optional = false)
-    @Column(name = "AMOUNT_MARCH")
-    public BigDecimal amountMarch;
-
-    /**
-     * 月次住民税納付額.4月納付額
-     */
-    @Basic(optional = false)
-    @Column(name = "AMOUNT_APRIL")
-    public BigDecimal amountApril;
-
-    /**
-     * 月次住民税納付額.5月納付額
-     */
-    @Basic(optional = false)
-    @Column(name = "AMOUNT_MAY")
-    public BigDecimal amountMay;
-
-    /**
      * 月次住民税納付額.6月納付額
      */
     @Basic(optional = false)
-    @Column(name = "AMOUNT_JUNE")
+    @Column(name = "AMOUNT_MONTH_6")
     public BigDecimal amountJune;
 
     /**
      * 月次住民税納付額.7月納付額
      */
     @Basic(optional = false)
-    @Column(name = "AMOUNT_JULY")
+    @Column(name = "AMOUNT_MONTH_7")
     public BigDecimal amountJuly;
 
     /**
      * 月次住民税納付額.8月納付額
      */
     @Basic(optional = false)
-    @Column(name = "AMOUNT_AUGUST")
+    @Column(name = "AMOUNT_MONTH_8")
     public BigDecimal amountAugust;
 
     /**
      * 月次住民税納付額.9月納付額
      */
     @Basic(optional = false)
-    @Column(name = "AMOUNT_SEPTEMBER")
+    @Column(name = "AMOUNT_MONTH_9")
     public BigDecimal amountSeptember;
 
     /**
      * 月次住民税納付額.10月納付額
      */
     @Basic(optional = false)
-    @Column(name = "AMOUNT_OCTOBER")
+    @Column(name = "AMOUNT_MONTH_10")
     public BigDecimal amountOctober;
 
     /**
      * 月次住民税納付額.11月納付額
      */
     @Basic(optional = false)
-    @Column(name = "AMOUNT_NOVEMBER")
+    @Column(name = "AMOUNT_MONTH_11")
     public BigDecimal amountNovember;
 
     /**
      * 月次住民税納付額.12月納付額
      */
     @Basic(optional = false)
-    @Column(name = "AMOUNT_DECEMBER")
+    @Column(name = "AMOUNT_MONTH_12")
     public BigDecimal amountDecember;
+
+    /**
+     * 月次住民税納付額.1月納付額
+     */
+    @Basic(optional = false)
+    @Column(name = "AMOUNT_MONTH_1")
+    public BigDecimal amountJanuary;
+
+    /**
+     * 月次住民税納付額.2月納付額
+     */
+    @Basic(optional = false)
+    @Column(name = "AMOUNT_MONTH_2")
+    public BigDecimal amountFebruary;
+
+    /**
+     * 月次住民税納付額.3月納付額
+     */
+    @Basic(optional = false)
+    @Column(name = "AMOUNT_MONTH_3")
+    public BigDecimal amountMarch;
+
+    /**
+     * 月次住民税納付額.4月納付額
+     */
+    @Basic(optional = false)
+    @Column(name = "AMOUNT_MONTH_4")
+    public BigDecimal amountApril;
+
+    /**
+     * 月次住民税納付額.5月納付額
+     */
+    @Basic(optional = false)
+    @Column(name = "AMOUNT_MONTH_5")
+    public BigDecimal amountMay;
 
     @Override
     protected Object getKey() {
@@ -134,11 +134,11 @@ public class QpbmtEmpRsdtTaxPayAm extends UkJpaEntity implements Serializable {
     public static QpbmtEmpRsdtTaxPayAm toEntity(EmployeeResidentTaxPayAmountInfo domain) {
         MonthlyResidentTaxPayAmount amount = domain.getMonthlyPaymentAmount();
         return new QpbmtEmpRsdtTaxPayAm(new QpbmtEmpRsdtTaxPayAmPk(domain.getSid(), domain.getYear().v()),
-                domain.getInputAtr().value, amount.getAmountJanuary().v(), amount.getAmountFebruary().v(),
-                amount.getAmountMarch().v(), amount.getAmountApril().v(), amount.getAmountMay().v(),
+                domain.getInputAtr().value,
                 amount.getAmountJune().v(), amount.getAmountJuly().v(), amount.getAmountAugust().v(),
                 amount.getAmountSeptember().v(), amount.getAmountOctober().v(), amount.getAmountNovember().v(),
-                amount.getAmountDecember().v());
+                amount.getAmountDecember().v(), amount.getAmountJanuary().v(), amount.getAmountFebruary().v(),
+                amount.getAmountMarch().v(), amount.getAmountApril().v(), amount.getAmountMay().v());
     }
 
     public static List<QpbmtEmpRsdtTaxPayAm> toEntitys(List<EmployeeResidentTaxPayAmountInfo> domains) {

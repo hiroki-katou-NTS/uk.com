@@ -12,10 +12,15 @@ import nts.uk.ctx.pr.core.dom.wageprovision.formula.*;
 public class BasicFormulaSettingCommand {
 
     /**
+     * 計算式コード
+     */
+    public String formulaCode;
+
+    /**
      * 履歴ID
      */
     public String historyID;
-    
+
     /**
     * 使用マスタ
     */
@@ -28,7 +33,7 @@ public class BasicFormulaSettingCommand {
     
     
     public BasicFormulaSetting fromCommandToDomain(){
-        return new BasicFormulaSetting(historyID, masterBranchUse, masterUse);
+        return new BasicFormulaSetting(formulaCode, historyID, masterBranchUse, masterUse);
     }
     
 }
