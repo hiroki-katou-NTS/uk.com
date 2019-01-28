@@ -41,7 +41,7 @@ public class JpaRoleSetMenuImpl implements RoleSetMenuRepository {
 			+ " JOIN CCGST_WEB_MENU dd "
 			+ " ON cc.WEB_MENU_CD = dd.WEB_MENU_CD "
 			+ " where aa.CID = ?cid AND cc.CID = ?cid AND dd.CID = ?cid "
-			+ " ORDER BY ROLE_SET_CD";
+			+ " ORDER BY ROLE_SET_CD, cc.WEB_MENU_CD";
 
 	@Override
 	public List<MasterData> exportDataExcel() {
