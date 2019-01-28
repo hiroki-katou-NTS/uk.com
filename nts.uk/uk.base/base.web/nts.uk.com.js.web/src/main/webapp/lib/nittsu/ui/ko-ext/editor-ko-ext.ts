@@ -956,7 +956,7 @@ module nts.uk.ui.koExtentions {
             $input.addClass("enterkey")
                 .onkey("down", uk.KeyCodes.Enter, e => {
                 
-                    if($(".blockUI").length <= 0){
+                    if($(".blockUI").length > 0){
                         return; 
                     }
                 
