@@ -569,7 +569,7 @@ public class JpaPreparationBeforeApplyRepository extends JpaRepository implement
 		selectJob.append("FROM BSYMT_JOB_INFO WHERE CID = ?cid) i ");
 		selectJob.append("INNER JOIN WWFST_JOBTITLE_SEARCH_SET j ON j.CID = i.CID AND j.JOB_ID = i.JOB_ID ) k ");
 		selectJob.append("ON w.JOB_ID = k.JOB_ID AND k.CID = w.CID ");
-		selectJob.append("ORDER BY k.JOB_CD ");
+		selectJob.append("ORDER BY CASE WHEN k.JOB_CD IS NULL THEN 1 ELSE 0 END ASC, k.JOB_CD ");
 		try {
 			resultQuery = (List<Object[]>) this.getEntityManager().createNativeQuery(selectJob.toString())
 					.setParameter("cid", cid)
