@@ -38,9 +38,9 @@ public class JpaRoleSetMenuImpl implements RoleSetMenuRepository {
 			+ " Left JOIN SACMT_ROLE ee ON   aa.PERSON_INF_ROLE = ee.ROLE_ID "
 			+ " JOIN SPTMT_ROLE_SET_WEB_MENU cc "
 			+ " ON aa.ROLE_SET_CD = cc.ROLE_SET_CD "
-			+ " JOIN CCGST_WEB_MENU dd "
-			+ " ON cc.WEB_MENU_CD = dd.WEB_MENU_CD "
-			+ " where aa.CID = ?cid AND cc.CID = ?cid AND dd.CID = ?cid "
+			+ " LEFT JOIN CCGST_WEB_MENU dd "
+			+ " ON cc.WEB_MENU_CD = dd.WEB_MENU_CD AND cc.CID = dd.CID "
+			+ " where aa.CID = ?cid AND cc.CID = ?cid "
 			+ " ORDER BY ROLE_SET_CD, cc.WEB_MENU_CD";
 
 	@Override
@@ -48,19 +48,29 @@ public class JpaRoleSetMenuImpl implements RoleSetMenuRepository {
 		String cid = AppContexts.user().companyId();
 		Query query = entityManager.createNativeQuery(QUERY_EXPORT.toString()).
 				setParameter("cid", cid);
+
 		@SuppressWarnings("unchecked")
 		List<Object[]> data =  query.getResultList();
 		HashMap<String , Object[]> dataHashMap = new HashMap<>();
 		String V_CAS011_41 = "";
 		for (Object[] objects : data) {
 			if(dataHashMap.containsKey((String)objects[0])) {
-				V_CAS011_41 = V_CAS011_41 + "," + objects[8] +(String)objects[9] ;
+				if(objects[9] != null){
+					V_CAS011_41 = V_CAS011_41 +  "," + objects[8] +(String)objects[9] ;
+				}else{
+					V_CAS011_41 = V_CAS011_41 = objects[8] + "マスタ未登録";
+				}
 				objects[9] = V_CAS011_41;
 				dataHashMap.put((String)objects[0], objects);
 			} else {
 				V_CAS011_41 = "";
-				V_CAS011_41 = V_CAS011_41 + objects[8] + (String) objects[9];
+				if(objects[9] != null){
+					V_CAS011_41 = V_CAS011_41 + objects[8] + (String) objects[9];
+				}else{
+					V_CAS011_41 = V_CAS011_41 = objects[8] + "マスタ未登録";
+				}
 				objects[9] = V_CAS011_41;
+
 				dataHashMap.put((String)objects[0], objects);
 			}
 		}
