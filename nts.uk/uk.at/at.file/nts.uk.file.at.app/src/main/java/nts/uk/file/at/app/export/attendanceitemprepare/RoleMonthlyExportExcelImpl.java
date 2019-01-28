@@ -310,8 +310,7 @@ public class RoleMonthlyExportExcelImpl  {
         MasterData masterData = new MasterData(data, null, "");
         masterData.cellAt("コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
         masterData.cellAt("項目").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-        masterData.cellAt("ヘッダー色").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-        masterData.cellAt("ヘッダー色").setStyle(MasterCellStyle.build().backgroundColor((data.get("ヘッダー色").toString())));
+        masterData.cellAt("ヘッダー色").setStyle(MasterCellStyle.build().backgroundColor((data.get("ヘッダー色").toString())).horizontalAlign(ColumnTextAlign.LEFT));
         masterData.cellAt("丸め単位").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
         return masterData;
     }

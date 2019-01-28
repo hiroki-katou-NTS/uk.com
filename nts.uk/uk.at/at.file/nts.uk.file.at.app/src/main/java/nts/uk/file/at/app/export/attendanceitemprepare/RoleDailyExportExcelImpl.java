@@ -402,8 +402,7 @@ public class RoleDailyExportExcelImpl {
         MasterData masterData = new MasterData(data, null, "");
         masterData.cellAt("コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
         masterData.cellAt("項目").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-        masterData.cellAt("ヘッダー色").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-        masterData.cellAt("ヘッダー色").setStyle(MasterCellStyle.build().backgroundColor((data.get("ヘッダー色").toString())));
+        masterData.cellAt("ヘッダー色").setStyle(MasterCellStyle.build().backgroundColor((data.get("ヘッダー色").toString())).horizontalAlign(ColumnTextAlign.LEFT));
         masterData.cellAt("丸め単位").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
         return masterData;
     }
@@ -739,10 +738,13 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet5(MasterListExportQuery que
                     List<WorkTypeDtoExcel> groupWorkType = mapbyGroupNo.get(GroupNo);
                     groupWorkType.sort(Comparator.comparing(WorkTypeDtoExcel::getWorkTypeCode));
                     if(!CollectionUtil.isEmpty(groupWorkType)){
-                        List<String> listString = groupWorkType.stream()
-                                .map(developer -> new String(developer.getWorkTypeCode()==null||developer.getWorkTypeName()==null?"":developer.getWorkTypeCode()+
-                                		developer.getWorkTypeName()))
-                                .collect(Collectors.toList());
+                    
+                        List<String> listString = new ArrayList<>();
+						for (WorkTypeDtoExcel workTypeDtoExcel : groupWorkType) {
+							if(workTypeDtoExcel.getWorkTypeCode()!=null&&!("".equals(workTypeDtoExcel.getWorkTypeCode()))){
+								listString.add(workTypeDtoExcel.getWorkTypeCode()+(workTypeDtoExcel.getWorkTypeName()==null?TextResource.localize("KDW006_226"):workTypeDtoExcel.getWorkTypeName()));
+							}
+						}
                         String listWorkTypeName = "";
                         if(!CollectionUtil.isEmpty(listString)){
                         	listString.removeIf(item -> item == null || "".equals(item));
