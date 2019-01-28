@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * 
- * @author HungTT - 社員給与支払方法
+ * @author HungTT - 社員賞与支払方法
  *
  */
 
