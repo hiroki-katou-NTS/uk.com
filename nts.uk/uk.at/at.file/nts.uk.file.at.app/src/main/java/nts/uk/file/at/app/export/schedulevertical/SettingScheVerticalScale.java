@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.app.find.scherec.totaltimes.TotalTimesFinder;
 import nts.uk.ctx.at.shared.app.find.scherec.totaltimes.dto.TotalTimesDetailDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
@@ -55,7 +56,6 @@ public class SettingScheVerticalScale implements MasterListData {
 	private static final String column_1 = "対象項目";
 	private static final String column_2 = "利用区分";
 	private static final String column_3 = "詳細設定";
-	private static final String thatDayStr = TextResource.localize("KML002_155");
 	
 	@Override
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery query) {
@@ -128,13 +128,12 @@ public class SettingScheVerticalScale implements MasterListData {
 				List<VerticalTime> listVerTimes = fixedVerticalSettingRepository.findAllVerticalTime(companyId, rowData.getFixedItemAtr());
 				for (VerticalTime time : listVerTimes) {
 					if (time.getDisplayAtr().value == 0){
+						TimeWithDayAttr _time = new TimeWithDayAttr(time.getStartClock().v());
 						if (column3Content.length() <= 0) {
-							column3Content.append(thatDayStr);
-							column3Content.append(formatTime(time.getStartClock().v()));
+							column3Content.append(_time.getFullText());
 						} else {
 							column3Content.append(",");
-							column3Content.append(thatDayStr);
-							column3Content.append(formatTime(time.getStartClock().v()));
+							column3Content.append(_time.getFullText());
 						}
 					}
 				}
@@ -177,16 +176,6 @@ public class SettingScheVerticalScale implements MasterListData {
 		masterData.cellAt(column_3).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 			
 		return masterData;
-	}
-	
-	/**
-	 * format time HH:mm
-	 * @param att
-	 * @return
-	 */
-	private String formatTime(int att) {
-		int hours = att / 60, minutes = att % 60;
-		return String.join("", hours < 10 ? "0" : "", String.valueOf(hours), ":", minutes < 10 ? "0" : "", String.valueOf(minutes));
 	}
 	
 	/* Sheet name */
