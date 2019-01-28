@@ -237,7 +237,7 @@ public class RoleMonthlyExportExcelImpl  {
         MasterData masterData = new MasterData(data, null, "");
         masterData.cellAt("コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
         masterData.cellAt("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-        masterData.cellAt("コード2").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+        masterData.cellAt("コード2").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
         masterData.cellAt("項目").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
         masterData.cellAt("利用区分").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
         masterData.cellAt("本人修正設定").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
@@ -486,7 +486,7 @@ public List<MasterHeaderColumn> getHeaderColumnsSheet3(MasterListExportQuery que
         if(mode == 0){
         	masterData.cellAt("このフォーマットを初期設定にする").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
         }
-        masterData.cellAt("Sheet選択").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+        masterData.cellAt("Sheet選択").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
         masterData.cellAt("名称SheetName").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
         masterData.cellAt("月次項目 項目").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
         return masterData;

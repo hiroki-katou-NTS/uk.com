@@ -1258,9 +1258,10 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
 	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 	                .build());
+		 int index = ++param;
 		 data.put(RegistTimeColumn.KMK008_92, MasterCellData.builder()
 	                .columnId(RegistTimeColumn.KMK008_92)
-	                .value(formatTime(((BigDecimal)objects[++param]).intValue()))
+	                .value(objects[index] != null? formatTime(((BigDecimal)objects[index]).intValue()): "")
 	                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
 	                .build());
 		return MasterData.builder().rowData(data).build();

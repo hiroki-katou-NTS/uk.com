@@ -376,7 +376,7 @@ public class CalculationSettingExportImpl implements MasterListData {
 			HolidayAddtionDto holidayAddtionDto=listHolidayAddtionDto.get(0);
 		//	holidayAddtionDto.getReferActualWorkHours();
 			Map<String, Object> line1 = new HashMap<>();
-			line1.put(column1Sheet2, TextResource.localize("KMK013_3"));
+			line1.put(column1Sheet2, TextResource.localize("KMK013_3")); //B2_1
 			line1.put(column2Sheet2,"");
 			line1.put(column3Sheet2,"");
 			line1.put(column4Sheet2,"");
@@ -480,9 +480,9 @@ public class CalculationSettingExportImpl implements MasterListData {
 			datas.add(masterData7);
 			//
 			Map<String, Object> line8 = new HashMap<>();
-			line8.put(column1Sheet2,TextResource.localize("KMK013_252"));
+			line8.put(column1Sheet2,"");
 			line8.put(column2Sheet2,"");
-			line8.put(column3Sheet2,TextResource.localize("KMK013_251"));
+			line8.put(column3Sheet2,TextResource.localize("KMK013_252"));
 			line8.put(column4Sheet2,"");
 			if(holidayAddtionDto.getAddingMethod2()==1){
 				line8.put(column5Sheet2,TextResource.localize("KMK013_249"));
@@ -1038,6 +1038,12 @@ public class CalculationSettingExportImpl implements MasterListData {
 			
 				// start tab3
 				// block1
+				LoginUserContext loginUserContext = AppContexts.user();
+				// get company id
+				 String companyId = loginUserContext.companyId();
+				 Optional<FlexWorkSet> optFlexWorkSet = flexWorkRepo.find(companyId);
+			if(optFlexWorkSet.isPresent() && !Objects.isNull(optFlexWorkSet.get().getUseFlexWorkSetting()) && optFlexWorkSet.get().getUseFlexWorkSetting().value==1){					
+				  
 				Map<String, Object> tab3block1line1 = new HashMap<>();
 				tab3block1line1.put(column1Sheet2,TextResource.localize("KMK013_26"));
 				tab3block1line1.put(column2Sheet2,TextResource.localize("KMK013_48"));
@@ -1316,10 +1322,14 @@ public class CalculationSettingExportImpl implements MasterListData {
 					datas.add(masterDatatab3block2line9);
 					
 					
-				}				
+				}
+		}	
 				// end tab3
 				// star tab4
 				// block1
+			  Optional<AggDeformedLaborSetting> optAggSetting = aggSettingRepo.findByCid(companyId);
+			if(optAggSetting.isPresent() && !Objects.isNull(optAggSetting.get().getUseDeformedLabor()) && optAggSetting.get().getUseDeformedLabor().value==1){
+				
 				Map<String, Object> tab4block1line1 = new HashMap<>();
 				tab4block1line1.put(column1Sheet2,TextResource.localize("KMK013_27"));
 				tab4block1line1.put(column2Sheet2,TextResource.localize("KMK013_66"));
@@ -1339,8 +1349,8 @@ public class CalculationSettingExportImpl implements MasterListData {
 					
 					Map<String, Object> tab4block1line2 = new HashMap<>();
 					tab4block1line2.put(column1Sheet2,"");
-					tab4block1line2.put(column2Sheet2,TextResource.localize("KMK013_33"));
-					tab4block1line2.put(column3Sheet2,"");
+					tab4block1line2.put(column2Sheet2,"");
+					tab4block1line2.put(column3Sheet2,TextResource.localize("KMK013_33"));
 					tab4block1line2.put(column4Sheet2,"");
 					if(!Objects.isNull(holidayAddtionDto.getIrregularWork()) && holidayAddtionDto.getIrregularWork().getAdditionTimePre()==1){
 						tab4block1line2.put(column5Sheet2,select);
@@ -1542,7 +1552,7 @@ public class CalculationSettingExportImpl implements MasterListData {
 					
 				}
 				// end block2
-			
+			}
 				 //end tab4
 				
 				
@@ -1978,7 +1988,7 @@ private List<MasterData> getDataFlexWorkSetting(MasterListExportQuery query){
 			}
 		MasterData masterData4 = new MasterData(data4, null, "");
 		Map<String, MasterCellData> rowData4 = masterData4.getRowData();
-		getAlignRightsheet7(rowData4);
+		getAlignLeftsheet7(rowData4);
 		datas.add(masterData4);
 		//
 		Map<String, Object> data5 = new HashMap<>();		
@@ -2036,7 +2046,7 @@ private List<MasterData> getDataFlexWorkSetting(MasterListExportQuery query){
 				}
 				MasterData masterData8 = new MasterData(data8, null, "");
 				Map<String, MasterCellData> rowData8 = masterData8.getRowData();
-				getAlignLeftsheet7(rowData8);
+				getAlignRightsheet7(rowData8);
 				datas.add(masterData8);
 		   }
 	   
@@ -2691,20 +2701,26 @@ private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
 				        		 }else{
 				        			 data.put(column13Sheet10,TextResource.localize("KMK013_97"));
 				        		 }
-				        		 data.put(column14Sheet10,TextResource.localize("KMK013_152")+ overtimeWorkFrameFindDto.getOvertimeWorkFrNo()+overtimeWorkFrameFindDto.getOvertimeWorkFrName());
+				        	/*	 data.put(column14Sheet10,TextResource.localize("KMK013_152")+ overtimeWorkFrameFindDto.getOvertimeWorkFrNo()+overtimeWorkFrameFindDto.getOvertimeWorkFrName());
 				        		 data.put(column18Sheet10,TextResource.localize("KMK013_157")+ rsworkdayFrame.get(i).getWorkdayoffFrNo()+rsworkdayFrame.get(i).getWorkdayoffFrName());
 				        		 data.put(column20Sheet10,TextResource.localize("KMK013_163")+ rsworkdayFrame.get(i).getWorkdayoffFrNo()+rsworkdayFrame.get(i).getWorkdayoffFrName());
 				        		 MasterData masterData = new MasterData(data, null, "");
 				        		 Map<String, MasterCellData> rowData = masterData.getRowData();
 				        		 getAlignsheet10(rowData);
-				        		 datas.add(masterData);
+				        		 datas.add(masterData);*/
 				        		 
 					  		}else{
 					  			data.put(column1Sheet10,TextResource.localize("KMK013_92"));
 					  			
 					  		}
 					  		// contenright
-					  //		TextResource.localize("KMK013_152")+roleOvertimeWorkDto.getOvertimeFrNo()+rsName.get(i).getOvertimeWorkFrName()	
+					  		 data.put(column14Sheet10,TextResource.localize("KMK013_152")+ overtimeWorkFrameFindDto.getOvertimeWorkFrNo()+overtimeWorkFrameFindDto.getOvertimeWorkFrName());
+			        		 data.put(column18Sheet10,TextResource.localize("KMK013_157")+ rsworkdayFrame.get(i).getWorkdayoffFrNo()+rsworkdayFrame.get(i).getWorkdayoffFrName());
+			        		 data.put(column20Sheet10,TextResource.localize("KMK013_163")+ rsworkdayFrame.get(i).getWorkdayoffFrNo()+rsworkdayFrame.get(i).getWorkdayoffFrName());
+			        		 MasterData masterData = new MasterData(data, null, "");
+			        		 Map<String, MasterCellData> rowData = masterData.getRowData();
+			        		 getAlignsheet10(rowData);
+			        		 datas.add(masterData);
 					  		
 					  		
 					  	}
