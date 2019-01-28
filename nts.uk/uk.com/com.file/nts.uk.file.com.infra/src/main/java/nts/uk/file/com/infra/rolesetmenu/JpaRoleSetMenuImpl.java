@@ -58,7 +58,7 @@ public class JpaRoleSetMenuImpl implements RoleSetMenuRepository {
 				if(objects[9] != null){
 					V_CAS011_41 = V_CAS011_41 +  "," + objects[8] +(String)objects[9] ;
 				}else{
-					V_CAS011_41 = V_CAS011_41 = objects[8] + "マスタ未登録";
+					V_CAS011_41 = V_CAS011_41 +"," + objects[8] + "マスタ未登録";
 				}
 				objects[9] = V_CAS011_41;
 				dataHashMap.put((String)objects[0], objects);
@@ -67,7 +67,7 @@ public class JpaRoleSetMenuImpl implements RoleSetMenuRepository {
 				if(objects[9] != null){
 					V_CAS011_41 = V_CAS011_41 + objects[8] + (String) objects[9];
 				}else{
-					V_CAS011_41 = V_CAS011_41 = objects[8] + "マスタ未登録";
+					V_CAS011_41 = V_CAS011_41 + objects[8] + "マスタ未登録";
 				}
 				objects[9] = V_CAS011_41;
 
