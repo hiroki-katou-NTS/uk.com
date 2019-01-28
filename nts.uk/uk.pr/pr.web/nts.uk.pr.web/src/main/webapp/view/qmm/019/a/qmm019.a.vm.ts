@@ -61,6 +61,20 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
 
                 nts.uk.ui.errors.clearAll();
             });
+            if(self.isIE()){
+                $("#A8_2").css({ "top": "4px" });
+                $("#A7_2").css({ "top": "4px" });
+            }
+        }
+        private isIE() {
+            const match = navigator.userAgent.search(/(?:Edge|MSIE|Trident\/.*; rv:)/);
+            let isIE = false;
+
+            if (match !== -1) {
+                isIE = true;
+            }
+
+            return isIE;
         }
 
         calculatePrintLine() {
@@ -409,6 +423,7 @@ module nts.uk.pr.view.qmm019.a.viewmodel {
                 let params = getShared("QMM019_C_TO_A_PARAMS");
 
                 if(params && params.isRegistered) {
+                    self.loadLayoutHistData(self.currentStatementLayoutCode(), self.currentHistoryId());
                     self.loadListData().done(function() {
                         if(params.isEdit) {
                             let matchKey: boolean = _.filter(self.statementLayoutList(), function(o: StatementLayout) {
