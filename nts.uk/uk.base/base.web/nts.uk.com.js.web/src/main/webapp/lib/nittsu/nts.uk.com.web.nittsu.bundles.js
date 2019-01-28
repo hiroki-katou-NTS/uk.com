@@ -1685,60 +1685,74 @@ var nts;
                 JapanYearMonth.prototype.getMonth = function () {
                     return this.month;
                 };
+                JapanYearMonth.prototype.removeMonth = function () {
+                    this.month = null;
+                    return this;
+                };
                 JapanYearMonth.prototype.toString = function () {
-                    return (this.empire === undefined ? "" : this.empire)
-                        + (this.year === undefined || this.year === "" ? "" : this.year + "年")
-                        + (this.month === undefined || this.month === "" ? "" : this.month + "月");
+                    return (_.isEmpty(this.getEmpire()) ? "" : this.getEmpire())
+                        + (_.isNil(this.getYear()) ? "" : this.getYear() + "年")
+                        + (_.isNil(this.getMonth()) ? "" : this.getMonth() + "月");
                 };
                 return JapanYearMonth;
             }());
             time_1.JapanYearMonth = JapanYearMonth;
-            function yearInJapanEmpire(date) {
-                return yearmonthInJapanEmpire(date, true);
-            }
-            time_1.yearInJapanEmpire = yearInJapanEmpire;
-            function yearmonthInJapanEmpire(yearmonth, onlyYear) {
-                if (!nts.uk.ntsNumber.isNumber(yearmonth) && _.isEmpty(yearmonth)) {
+            var JapanDateMoment = (function (_super) {
+                __extends(JapanDateMoment, _super);
+                function JapanDateMoment(empire, year, month, date) {
+                    var _this = _super.call(this, empire, year, month) || this;
+                    _this.day = date;
+                    return _this;
+                }
+                JapanDateMoment.prototype.getDate = function () {
+                    return this.day;
+                };
+                JapanDateMoment.prototype.removeDate = function () {
+                    this.day = null;
+                    return this;
+                };
+                JapanDateMoment.prototype.toString = function () {
+                    return _super.prototype.toString.call(this) + (_.isNil(this.getDate()) ? "" : this.getDate() + " 日");
+                };
+                return JapanDateMoment;
+            }(JapanYearMonth));
+            time_1.JapanDateMoment = JapanDateMoment;
+            function dateInJapanEmpire(date) {
+                if (!nts.uk.ntsNumber.isNumber(date) && _.isEmpty(date)) {
                     return null;
                 }
-                var dateString = yearmonth.toString(), seperator = (dateString.match(/\//g) || []).length;
-                if (seperator > 2 || seperator < 0) {
+                var dateString = date.toString(), seperator = (dateString.match(/\//g) || []).length;
+                if (seperator > 2) {
                     return null;
                 }
-                var format = _.filter(defaultInputFormat, function (f) { return (f.match(/\//g) || []).length === seperator; }), formatted = moment.utc(dateString, defaultInputFormat, true), formattedYear = formatted.year();
-                if (onlyYear && dateString.length < 5) {
-                    formattedYear = Number(dateString);
-                }
+                var format = _.filter(defaultInputFormat, function (f) { return (f.match(/\//g) || []).length === seperator; }), formatted = moment.utc(dateString, defaultInputFormat, true);
                 for (var _i = 0, _a = __viewContext.env.japaneseEras; _i < _a.length; _i++) {
                     var i = _a[_i];
-                    var startEraYear = moment(i.start).year(), endEraYear = moment(i.end).year();
-                    if (startEraYear <= formattedYear && formattedYear <= endEraYear) {
-                        var diff = formattedYear - startEraYear + 1;
-                        return new JapanYearMonth(diff === 0 ? i.name + "元年" : i.name, diff, onlyYear === true ? "" : formatted.month() + 1);
+                    var startEra = moment(i.start), endEraYear = moment(i.end);
+                    if (startEra.isSameOrBefore(formatted) && formatted.isSameOrBefore(endEraYear)) {
+                        var diff = formatted.year() - startEra.year() + 1;
+                        return new JapanDateMoment(diff === 1 ? i.name + "元年" : i.name, diff, formatted.month() + 1, formatted.date());
                     }
                 }
                 return null;
             }
-            time_1.yearmonthInJapanEmpire = yearmonthInJapanEmpire;
-            var JapanDateMoment = (function () {
-                function JapanDateMoment(date, outputFormat) {
-                    var MomentResult = parseMoment(date, outputFormat);
-                    var year = MomentResult.momentObject.year();
-                    var month = MomentResult.momentObject.month() + 1;
-                }
-                JapanDateMoment.prototype.toString = function () {
-                    return (this.empire === undefined ? "" : this.empire + " ")
-                        + (this.year === undefined ? "" : this.year + " 年 ")
-                        + (this.month === undefined ? "" : this.month + " 月")
-                        + (this.day === undefined ? "" : this.day + " ");
-                };
-                return JapanDateMoment;
-            }());
-            time_1.JapanDateMoment = JapanDateMoment;
-            function dateInJapanEmpire(date) {
-                return new JapanDateMoment(date);
-            }
             time_1.dateInJapanEmpire = dateInJapanEmpire;
+            function yearInJapanEmpire(date) {
+                var formatted = yearmonthInJapanEmpire(date);
+                if (formatted !== null) {
+                    formatted.month = null;
+                }
+                return formatted;
+            }
+            time_1.yearInJapanEmpire = yearInJapanEmpire;
+            function yearmonthInJapanEmpire(yearmonth) {
+                var formatted = dateInJapanEmpire(yearmonth);
+                if (formatted !== null) {
+                    formatted.day = null;
+                }
+                return formatted;
+            }
+            time_1.yearmonthInJapanEmpire = yearmonthInJapanEmpire;
             /**
             * Format by pattern
             * @param  {number} [seconds]	  Input seconds
@@ -18213,7 +18227,7 @@ var nts;
                     if (handlesEnterKey) {
                         $input.addClass("enterkey")
                             .onkey("down", uk.KeyCodes.Enter, function (e) {
-                            if ($(".blockUI").length <= 0) {
+                            if ($(".blockUI").length > 0) {
                                 return;
                             }
                             $input.change();
