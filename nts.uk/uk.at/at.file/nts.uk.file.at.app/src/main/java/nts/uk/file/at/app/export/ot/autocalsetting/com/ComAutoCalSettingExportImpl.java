@@ -186,7 +186,7 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
                         Map<String, MasterCellData> data = new HashMap<>();
                         data.put(KMK006_71, MasterCellData.builder()
                                 .columnId(KMK006_71)
-                                .value(w[23] == null ? SPACE : w[23])
+                                .value(w[23] == null || w[24] == null ? SPACE : w[23])
                                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                                 .build());
 
@@ -205,7 +205,7 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
                         Map<String, MasterCellData> data = new HashMap<String, MasterCellData>();
                         data.put(KMK006_73, MasterCellData.builder()
                                 .columnId(KMK006_73)
-                                .value(j[23] == null ? SPACE : j[23])
+                                .value(j[23] == null || j[24] == null ? SPACE : j[23])
                                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                                 .build());
                         data.put(KMK006_74, MasterCellData.builder()
@@ -233,7 +233,7 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
                                 .build());
                         data.put(KMK006_73, MasterCellData.builder()
                                 .columnId(KMK006_73)
-                                .value(wj[25] == null ? SPACE : wj[25])
+                                .value(wj[25] == null || wj[26] == null ? SPACE : wj[25])
                                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                                 .build());
                         data.put(KMK006_74, MasterCellData.builder()

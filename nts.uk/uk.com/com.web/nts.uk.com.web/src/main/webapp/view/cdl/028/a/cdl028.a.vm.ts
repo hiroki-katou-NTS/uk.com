@@ -142,9 +142,9 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                let paramsCdl : IPARAMS_CDL = {
                    status : true,
                    mode : self.modeScreen() == MODE_SCREEN.YEAR_PERIOD ? MODE_SCREEN.YEAR_PERIOD_FINANCE : self.modeScreen(),
-                   standardDate :((self.modeScreen() == MODE_SCREEN.BASE_DATE) || (self.modeScreen() == MODE_SCREEN.ALL)) ? moment().utc(self.standardDate() + "").format("YYYY/MM/DD") : null,
-                   startDateFiscalYear : (self.modeScreen() == MODE_SCREEN.BASE_DATE) ? null : moment().utc(self.startDateFiscalYear() + "").format("YYYY/MM/DD"),
-                   endDateFiscalYear : (self.modeScreen() == MODE_SCREEN.BASE_DATE) ? null : moment().utc(self.endDateFiscalYear() + "").format("YYYY/MM/DD")
+                   standardDate :((self.modeScreen() == MODE_SCREEN.BASE_DATE) || (self.modeScreen() == MODE_SCREEN.ALL)) ? self.convertMonthYearToString(self.standardDate())  : null,
+                   startDateFiscalYear : (self.modeScreen() == MODE_SCREEN.BASE_DATE) ? null : self.convertMonthYearToString(self.startDateFiscalYear()),
+                   endDateFiscalYear : (self.modeScreen() == MODE_SCREEN.BASE_DATE) ? null : self.convertMonthYearToString(self.endDateFiscalYear())
                };
 
                 $("#A2_2 .ntsDatepicker").trigger("validate");
@@ -187,6 +187,16 @@ module nts.uk.com.view.cdl028.a.viewmodel {
                 return "" + month;
             }
         }
+
+        convertMonthYearToString(yearMonth: any) {
+            let self = this;
+            let year: string, month: string, date: string;
+            yearMonth = yearMonth.toString();
+            year = yearMonth.slice(0, 4);
+            month = yearMonth.slice(4, 6);
+            date = yearMonth.slice(6,8);
+            return year + "/" + month + "/" + date;
+        }
     }
     export enum MODE_SCREEN {
         //mode standard date
@@ -224,6 +234,8 @@ module nts.uk.com.view.cdl028.a.viewmodel {
             this.endDateFiscalYear = paramsCdl.endDateFiscalYear;
         }
     }
+
+
 
     interface  IStartMonth{
         startMonth: number;
