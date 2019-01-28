@@ -198,95 +198,109 @@ public class ErrorAlarmWorkRecordExportImpl {
                                   data.put(header.get(11), "-");
                            }else{
                                   data.put(header.get(11), "○");
-                           }
-                           //12
-                           List<String> lstEmpCode =c.getAlCheckTargetCondition().getLstEmployment();
-                           Collections.sort(lstEmpCode);
-                           List<String> codeAndNameEmp = new ArrayList<>();
-                           for (String key : lstEmpCode) {
-                                  EmploymentCode keyEmp = new EmploymentCode(key);
-                                  Employment emp = mapListEmp.get(keyEmp);
-                                  if(emp!=null){
-                                  codeAndNameEmp.add(emp.getEmploymentCode().v()+emp.getEmploymentName().v());
+                                  //12
+                                  List<String> lstEmpCode =c.getAlCheckTargetCondition().getLstEmployment();
+                                  Collections.sort(lstEmpCode);
+                                  List<String> codeAndNameEmp = new ArrayList<>();
+                                  for (String key : lstEmpCode) {
+                                         EmploymentCode keyEmp = new EmploymentCode(key);
+                                         Employment emp = mapListEmp.get(keyEmp);
+                                         if(emp!=null){
+                                         codeAndNameEmp.add(emp.getEmploymentCode().v()+emp.getEmploymentName().v());
+                                         }else {
+                                        	 codeAndNameEmp.add(key+TextResource.localize("KDW006_226"));
+										}
+                                  }
+                                  
+                                  
+                                  String listStringemp = "";
+                                  if(CollectionUtil.isEmpty(lstEmpCode)){
+                                         data.put(header.get(12), listStringemp);
+                                  }else{
+                                         listStringemp = String.join(",", codeAndNameEmp);
+                                         data.put(header.get(12), listStringemp);
                                   }
                            }
-                           
-                           
-                           String listStringemp = "";
-                           if(CollectionUtil.isEmpty(lstEmpCode)){
-                                  data.put(header.get(12), listStringemp);
-                           }else{
-                                  listStringemp = String.join(",", codeAndNameEmp);
-                                  data.put(header.get(12), listStringemp);
-                           }
+                          
                            //13 filterByClassification
                             if(c.getAlCheckTargetCondition().isFilterByClassification() == false){
                                   data.put(header.get(13), "-");
                            }else{
                                   data.put(header.get(13), "○");
+                                  String sValues14 = "";
+                                  List<String> lstClassificationCode= c.getAlCheckTargetCondition().getLstClassification();
+                                  Collections.sort(lstClassificationCode);
+                                  List<String> codeAndNameClassification = new ArrayList<>();
+                                  for (String key : lstClassificationCode) {
+                                         ClassificationCode keyClass = new ClassificationCode(key);
+                                         Classification classification = mapListClass.get(keyClass);
+                                         if(classification!=null){
+                                        	 codeAndNameClassification.add(classification.getClassificationCode().v()+classification.getClassificationName().v());
+                                         }else {
+                                        	 codeAndNameClassification.add(key+TextResource.localize("KDW006_226"));
+										}
+                                                
+                                  }
+                                   if(!CollectionUtil.isEmpty(codeAndNameClassification)){
+                                         sValues14 = String.join(",", codeAndNameClassification);
+                                         data.put(header.get(14), sValues14);
+                                  }
                            }
-                           String sValues14 = "";
-                           List<String> lstClassificationCode= c.getAlCheckTargetCondition().getLstClassification();
-                           Collections.sort(lstClassificationCode);
-                           List<String> codeAndNameClassification = new ArrayList<>();
-                           for (String key : lstClassificationCode) {
-                                  ClassificationCode keyClass = new ClassificationCode(key);
-                                  Classification classification = mapListClass.get(keyClass);
-                                  if(classification!=null)
-                                         codeAndNameClassification.add(classification.getClassificationCode().v()+classification.getClassificationName().v());
-                           }
-                            if(!CollectionUtil.isEmpty(codeAndNameClassification)){
-                                  sValues14 = String.join(",", codeAndNameClassification);
-                                  data.put(header.get(14), sValues14);
-                           }
+                           
                            
                            //15 filterByJobTitle
                            if(c.getAlCheckTargetCondition().isFilterByJobTitle() == false){
                                   data.put(header.get(15), "-");
                            }else{
                                   data.put(header.get(15), "○");
+                                  List<String> lst3 = new ArrayList<>();
+                                  
+                                  for(int i=0;i<c.getAlCheckTargetCondition().getLstJobTitle().size();i++){
+                                         lst3.add(c.getAlCheckTargetCondition().getLstJobTitle().get(i));
+                                  }
+                                  //16
+                                  String sValues16 = "";
+                                  List<String> lstJobTitleCode= c.getAlCheckTargetCondition().getLstJobTitle();
+                                  Collections.sort(lstJobTitleCode);
+                                  List<String> codeAndNameJobTitle = new ArrayList<>();
+                                  for (String key : lstJobTitleCode) {
+                                         JobTitleItemDto jobTitleItemDto= mapListJobs.get(key);
+                                         if(jobTitleItemDto!=null){
+                                        	 codeAndNameJobTitle.add(jobTitleItemDto.getCode()+jobTitleItemDto.getName());
+                                         }else {
+                                        	 codeAndNameJobTitle.add(key+TextResource.localize("KDW006_226"));
+										}
+                                               
+                                  }
+                                  if(!CollectionUtil.isEmpty(codeAndNameJobTitle)){
+                                         sValues16 = String.join(",", codeAndNameJobTitle);
+                                         data.put(header.get(16), sValues16);
+                                  }
                            }
-                           
-                           List<String> lst3 = new ArrayList<>();
-                           
-                           for(int i=0;i<c.getAlCheckTargetCondition().getLstJobTitle().size();i++){
-                                  lst3.add(c.getAlCheckTargetCondition().getLstJobTitle().get(i));
-                           }
-                           //16
-                           String sValues16 = "";
-                           List<String> lstJobTitleCode= c.getAlCheckTargetCondition().getLstJobTitle();
-                           Collections.sort(lstJobTitleCode);
-                           List<String> codeAndNameJobTitle = new ArrayList<>();
-                           for (String key : lstJobTitleCode) {
-                                  JobTitleItemDto jobTitleItemDto= mapListJobs.get(key);
-                                  if(jobTitleItemDto!=null)
-                                         codeAndNameJobTitle.add(jobTitleItemDto.getCode()+jobTitleItemDto.getName());
-                           }
-                           if(!CollectionUtil.isEmpty(codeAndNameJobTitle)){
-                                  sValues16 = String.join(",", codeAndNameJobTitle);
-                                  data.put(header.get(16), sValues16);
-                           }
-                           
+                          
                            //17
                             if(c.getAlCheckTargetCondition().isFilterByBusinessType() == false){
                                   data.put(header.get(17), "-");
                            }else{
                                   data.put(header.get(17), "○");
-                           }
-                           //18
-                           String sValues18 = "";
-                           List<String> lstBusinessTypeCode= c.getAlCheckTargetCondition().getLstBusinessType();
-                           Collections.sort(lstBusinessTypeCode);
-                           List<String> codeAndBusinessType = new ArrayList<>();
-                           for (String key : lstBusinessTypeCode) {
-                                  BusinessTypeCode keyBz = new BusinessTypeCode(key);
-                                  BusinessType businessType = maplistBusinessType.get(keyBz);
-                                  if(businessType!=null)
-                                         codeAndBusinessType.add(businessType.getBusinessTypeCode().v()+businessType.getBusinessTypeName());
-                           }
-                           if(!CollectionUtil.isEmpty(codeAndBusinessType)){
-                                  sValues18 = String.join(",", codeAndBusinessType);
-                                  data.put(header.get(18), sValues18);
+                                //18
+                                  String sValues18 = "";
+                                  List<String> lstBusinessTypeCode= c.getAlCheckTargetCondition().getLstBusinessType();
+                                  Collections.sort(lstBusinessTypeCode);
+                                  List<String> codeAndBusinessType = new ArrayList<>();
+                                  for (String key : lstBusinessTypeCode) {
+                                         BusinessTypeCode keyBz = new BusinessTypeCode(key);
+                                         BusinessType businessType = maplistBusinessType.get(keyBz);
+                                         if(businessType!=null){
+                                                codeAndBusinessType.add(businessType.getBusinessTypeCode().v()+businessType.getBusinessTypeName());
+                                         }else {
+                                        	 codeAndBusinessType.add(key+TextResource.localize("KDW006_226"));
+										}
+                                  }
+                                  if(!CollectionUtil.isEmpty(codeAndBusinessType)){
+                                         sValues18 = String.join(",", codeAndBusinessType);
+                                         data.put(header.get(18), sValues18);
+                                  }
                            }
                            
                            // 19
@@ -312,7 +326,9 @@ public class ErrorAlarmWorkRecordExportImpl {
                                          WorkTypeDto workTypeDto=  mapListWorkTypeDto.get(key);
                                          if(workTypeDto!=null){
                                                 codeAndNameActualType.add(workTypeDto.getWorkTypeCode()+workTypeDto.getName());
-                                         }
+                                         }else {
+                                        	 codeAndNameActualType.add(key+TextResource.localize("KDW006_226"));
+										}
                                    }
                                    String stringDataColumn27 = String.join(",", codeAndNameActualType);
                                    data.put(header.get(27),stringDataColumn27);
@@ -341,7 +357,9 @@ public class ErrorAlarmWorkRecordExportImpl {
                                        WorkTimeSetting workTypeDto = mapListWorkTime.get(keyWorkTime);
                                        if(workTypeDto!=null){
                                     	   codeAndNameActualTime.add(workTypeDto.getWorktimeCode().v()+workTypeDto.getWorkTimeDisplayName().getWorkTimeName().v());
-                                       }
+                                       }else {
+                                    	   codeAndNameActualTime.add(key+TextResource.localize("KDW006_226"));
+									}
                                    }
                                    String stringDataColumn29 =String.join(",", codeAndNameActualTime);
                                   
@@ -362,7 +380,9 @@ public class ErrorAlarmWorkRecordExportImpl {
                                          WorkTypeDto workTypeDto = mapListWorkTypeDto.get(key);
                                          if(workTypeDto!=null){
                                                 codeAndNameWorkType.add(workTypeDto.getWorkTypeCode()+workTypeDto.getName());
-                                         }
+                                         }else {
+                                        	 codeAndNameWorkType.add(key+TextResource.localize("KDW006_226"));
+										}
                                   }
                                   if(!CollectionUtil.isEmpty(codeAndNameWorkType)){
                                          sValues22 = String.join(",", codeAndNameWorkType);
@@ -384,6 +404,8 @@ public class ErrorAlarmWorkRecordExportImpl {
                                          WorkTimeSetting workTypeDto = mapListWorkTime.get(keyWorkTime);
                                          if(workTypeDto!=null){
                                                 codeAndNameWorkTime.add(workTypeDto.getWorktimeCode().v()+workTypeDto.getWorkTimeDisplayName().getWorkTimeName().v());
+                                         }else{
+                                        	 codeAndNameWorkTime.add(key+TextResource.localize("KDW006_226"));
                                          }
                                   }
                                   if(!CollectionUtil.isEmpty(codeAndNameWorkTime)){
@@ -614,8 +636,6 @@ public class ErrorAlarmWorkRecordExportImpl {
 										}
 									}
 								}
-//								Collections.sort(listStringAttNameAdd);
-//								Collections.sort(listStringAttNameSub);
 								String subString = String.join("-", listStringAttNameSub);
 								boolean checkEmptyString = subString.isEmpty() && subString != null;
 								targetName = checkEmptyString ? String.join("+", listStringAttNameAdd)
@@ -822,9 +842,9 @@ public class ErrorAlarmWorkRecordExportImpl {
                            data.put("コード", c.getCode().v().substring(1));
                            data.put("名称", c.getName());
                            if(c.getUseAtr()){
-                                  data.put("使用区分", "使用しない");
-                           }else{
                                   data.put("使用区分", "使用する");
+                           }else{
+                                  data.put("使用区分", "使用しない");
                            }
                            List<Integer> listApplication  = c.getLstApplication();
                            Collections.sort(listApplication);
