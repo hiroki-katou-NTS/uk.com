@@ -16,12 +16,15 @@ import nts.uk.ctx.at.shared.app.find.holidaysetting.configuration.HolidaySetting
 import nts.uk.ctx.at.shared.app.find.holidaysetting.configuration.HolidaySettingConfigFinder;
 import nts.uk.ctx.at.shared.app.find.holidaysetting.configuration.PublicHolidayManagementUsageUnitFindDto;
 import nts.uk.ctx.at.shared.app.find.holidaysetting.configuration.PublicHolidayManagementUsageUnitFinder;
+import nts.uk.ctx.at.shared.app.find.holidaysetting.employee.EmployeeMonthDaySettingFinder;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.company.CompanyMonthDaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.company.CompanyMonthDaySettingRepository;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayCarryOverDeadline;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.EmployeeMonthDaySetting;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.EmployeeMonthDaySettingRepository;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employment.EmploymentMonthDaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employment.EmploymentMonthDaySettingRepository;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace.WorkplaceMonthDaySetting;
@@ -33,7 +36,6 @@ import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.query.app.employee.RegulationInfoEmpQueryDto;
 import nts.uk.query.app.employee.RegulationInfoEmployeeDto;
 import nts.uk.query.app.employee.RegulationInfoEmployeeFinder;
-import nts.uk.query.model.employee.RegulationInfoEmployeeRepository;
 import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentDto;
 import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WkpConfigInfoFindObject;
 import nts.uk.shr.com.context.AppContexts;
@@ -77,10 +79,14 @@ public class HolidaySettingExportImpl implements MasterListData{
 	private RegulationInfoEmployeeFinder regulationInfoEmployeeFinder;
 	
 	@Inject
-	private RegulationInfoEmployeeRepository regulationInfoEmployeeRepository;
+	private PublicHolidayManagementUsageUnitFinder finderPublicHolidayManagement;
 	
 	@Inject
-	private PublicHolidayManagementUsageUnitFinder finderPublicHolidayManagement;
+	private EmployeeMonthDaySettingFinder employeeMonthDaySettingFinder;
+	
+	@Inject
+	private EmployeeMonthDaySettingRepository employeeMonthDaySettingRepository;
+	
 	//設定 
 	public static String value1= "項目";
 	public static String value2= "column2";
@@ -108,10 +114,14 @@ public class HolidaySettingExportImpl implements MasterListData{
 	public static String valueFive2= "コード";
 	public static String valueFive3= "名称";
 	public static String valueFive4= "月度";
-	public static String valueFive5= "公休日数";//KMF002_13
+	public static String valueFive5= "公休日数";
 
 
-	
+	/** The Constant TIME_DAY_START. */
+	public static final String TIME_DAY_START = " 00:00:00";
+
+	/** The Constant DATE_TIME_FORMAT. */
+	public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 	
 	
@@ -333,8 +343,8 @@ public class HolidaySettingExportImpl implements MasterListData{
 				data.put(valueTwo3, optional.get().getPublicHolidayMonthSettings().get(startMonth-1).getInLegalHoliday()+TextResource.localize("KMF002_8"));
 				MasterData masterData = new MasterData(data, null, "");	
 				masterData.cellAt(valueTwo1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt(valueTwo2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-				masterData.cellAt(valueTwo3).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(valueTwo2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+				masterData.cellAt(valueTwo3).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
 				datas.add(masterData);
 				
 				if(startMonth<12){
@@ -413,8 +423,8 @@ public class HolidaySettingExportImpl implements MasterListData{
 					masterData.cellAt(valueThree1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 					masterData.cellAt(valueThree2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 					masterData.cellAt(valueThree3).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-					masterData.cellAt(valueThree4).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
-					masterData.cellAt(valueThree5).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt(valueThree4).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					masterData.cellAt(valueThree5).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
 					datas.add(masterData);
 				}
 			}
@@ -466,9 +476,9 @@ public class HolidaySettingExportImpl implements MasterListData{
 		} else {
 
 			Map<String, Object> data = new HashMap<>();
-
+			int startMonthFour = companyStartMonth.get().getStartMonth();
 			for (int i = 0; i < listEmployeeExport.size(); i++) {
-				int startMonthFour = companyStartMonth.get().getStartMonth();
+				
 
 				for (int j = 0; j < 12; j++) {
 					putEmptyDataFour(data);
@@ -478,9 +488,6 @@ public class HolidaySettingExportImpl implements MasterListData{
 					if (j == 0) {
 						data.put(valueFour2, listEmployeeExport.get(i).getCode());
 						data.put(valueFour3, listEmployeeExport.get(i).getName());
-					} else {
-						data.put(valueFour2, "");
-						data.put(valueFour3, "");
 					}
 					data.put(valueFour4, startMonthFour + TextResource.localize("KMF002_12"));
 					String wordCode = listEmployeeExport.get(i).getCode();
@@ -505,9 +512,9 @@ public class HolidaySettingExportImpl implements MasterListData{
 					masterData.cellAt(valueFour3)
 							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 					masterData.cellAt(valueFour4)
-							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
 					masterData.cellAt(valueFour5)
-							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
 					datas.add(masterData);
 				}
 			}
@@ -533,49 +540,86 @@ public class HolidaySettingExportImpl implements MasterListData{
 	}
 	
 	private List<MasterData> getMasterDataFive(MasterListExportQuery query) {
+		List<MasterData> datas = new ArrayList<>();
+		String companyId = AppContexts.user().companyId();		
+		RegulationInfoEmpQueryDto ccg = new RegulationInfoEmpQueryDto();
+		ccg.setBaseDate("9999-12-31");
+		ccg.setClassificationCodes(null);
+		ccg.setClosureIds(null);
+		ccg.setDepartmentCodes(null);
+		ccg.setEmploymentCodes(null);
+		ccg.setFilterByClassification(false);
+		ccg.setFilterByClosure(false);
+		ccg.setFilterByDepartment(false);
+		ccg.setFilterByEmployment(false);
+		ccg.setFilterByJobTitle(false);
+		ccg.setFilterByWorkplace(false);
+		ccg.setFilterByWorktype(false);
+		ccg.setIncludeIncumbents(true);
+		ccg.setIncludeOccupancy(true);
+		ccg.setIncludeRetirees(false);
+		ccg.setIncludeWorkersOnLeave(true);
+		ccg.setNameType("1");
+		ccg.setPeriodEnd("9999-12-31");
+		ccg.setPeriodStart("1900-01-01");
+		ccg.setReferenceRange(0);
+		ccg.setSortOrderNo(1);
+		ccg.setSystemType(2);
+
+		List<RegulationInfoEmployeeDto> listFind = regulationInfoEmployeeFinder.find(ccg);
 		int endDate = query.getEndDate().year();
 		
-		String companyId = AppContexts.user().companyId();
-		List<MasterData> datas = new ArrayList<>();
+		List<String> listEmployeeRegister = employeeMonthDaySettingFinder.findAllEmployeeRegister(endDate);
 		
-//		RegulationInfoEmpQueryDto ccg = new RegulationInfoEmpQueryDto();
-//		ccg.setBaseDate(GeneralDate.today().toString());
-//		ccg.setClassificationCodes(null);
-//		ccg.setClosureIds(null);
-//		ccg.setDepartmentCodes(null);
-//		ccg.setEmploymentCodes(null);
-//		ccg.setFilterByClassification(false);
-//		ccg.setFilterByClosure(false);
-//		ccg.setFilterByDepartment(false);
-//		ccg.setFilterByEmployment(false);
-//		ccg.setFilterByJobTitle(false);
-//		ccg.setFilterByWorkplace(false);
-//		ccg.setFilterByWorktype(false);
-//		ccg.setIncludeIncumbents(true);
-//		ccg.setIncludeOccupancy(true);
-//		ccg.setIncludeRetirees(false);
-//		ccg.setIncludeWorkersOnLeave(true);
-//		ccg.setNameType("1");
-//		ccg.setPeriodEnd(GeneralDate.today().toString());
-//		ccg.setPeriodStart(GeneralDate.today().toString());
-//		ccg.setReferenceRange(0);
-//		ccg.setSortOrderNo(1);
-//		ccg.setSystemType(2);
-//		
-//		
-//		List<RegulationInfoEmployeeDto> listFind = regulationInfoEmployeeFinder.find(ccg);
-//		
-//		for(int i=0;i<listFind.size();i++){
-//			System.out.println(listFind.get(i).getEmployeeCode());
-//		}
+		List<RegulationInfoEmployeeDto> listmployee = getListRegulationInfoEmployeeDto(listFind,listEmployeeRegister);
 		
-
+		Optional<CompanyStartMonthData> companyStartMonth=companyStartMonthAdapter.getComanyInfoByCid(companyId);
 		
-		
-		
-		Map<String, Object> data = new HashMap<>();
-		putEmptyDataFive(data);
-
+		if(CollectionUtil.isEmpty(listmployee)){
+			return null;
+		}else{
+			int startMonthFour = companyStartMonth.get().getStartMonth();
+			Map<String, Object> data = new HashMap<>();
+			for (int i = 0; i < listmployee.size(); i++) {
+				for (int j = 0; j < 12; j++) {
+					putEmptyDataFive(data);
+					if (i == 0 && j == 0) {
+						data.put(valueFive1, endDate);
+					}
+					if (j == 0) {
+						data.put(valueFive2, listmployee.get(i).getEmployeeCode());
+						data.put(valueFive3, listmployee.get(i).getEmployeeName());
+					}
+					
+					data.put(valueFive4, startMonthFour + TextResource.localize("KMF002_12"));
+					
+					String employeeId = listmployee.get(i).getEmployeeId();
+					Optional<EmployeeMonthDaySetting> optional = employeeMonthDaySettingRepository.findByYear(new CompanyId(companyId), employeeId ,new Year(endDate));
+					
+					data.put(valueFive5, optional.get().getPublicHolidayMonthSettings().get(startMonthFour - 1)
+							.getInLegalHoliday() + TextResource.localize("KMF002_8"));
+										
+					MasterData masterData = new MasterData(data, null, "");
+					masterData.cellAt(valueFive1)
+							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt(valueFive2)
+							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt(valueFive3)
+							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt(valueFive4)
+							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					masterData.cellAt(valueFive5)
+							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+					datas.add(masterData);
+					
+					if (startMonthFour < 12) {
+						startMonthFour++;
+					} else if (startMonthFour == 12) {
+						startMonthFour = 1;
+					}
+				}
+			}
+		}
 		return datas;
 	}
 
@@ -792,6 +836,22 @@ public class HolidaySettingExportImpl implements MasterListData{
 			}
 		}
 		return listEmployeeExport;
+	}
+	
+	private List<RegulationInfoEmployeeDto> getListRegulationInfoEmployeeDto(List<RegulationInfoEmployeeDto> listFind, List<String> listEmployeeRegister){
+		List<RegulationInfoEmployeeDto> lististRegulationInfoEmployee = new ArrayList<>();
+		
+		if(listFind.size()!=0){
+			for(int i =0;i<listFind.size();i++){
+				for(int j =0; j<listEmployeeRegister.size();j++){
+					if(listEmployeeRegister.get(j).equals(listFind.get(i).getEmployeeId())){
+						lististRegulationInfoEmployee.add(listFind.get(i));
+						listEmployeeRegister.remove(j);
+					}
+				}
+			}
+		}
+		return lististRegulationInfoEmployee;
 	}
 
 }
