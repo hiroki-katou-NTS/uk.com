@@ -205,11 +205,11 @@ module nts.custombinding {
                                         vm.value(data.selectedWorkTimeCode);
                                         vm.textValue(`${data.selectedWorkTimeCode} ${data.selectedWorkTimeName}`);
 
-                                        if (data.first) {
+                                        if (data.first && data.first.start && data.first.end) {
                                             vm.textWtValue1(`${timewd(data.first.start).fullText} ~ ${timewd(data.first.end).fullText}`);
                                         }
 
-                                        if (data.second) {
+                                        if (data.second && data.second.start && data.second.end) {
                                             vm.textWtValue2(`${timewd(data.second.start).fullText} ~ ${timewd(data.second.end).fullText}`);
                                         }
                                     }
@@ -263,7 +263,30 @@ module nts.custombinding {
                                 'IS00594', 'IS00601',
                                 'IS00608', 'IS00615',
                                 'IS00622'].indexOf(itemData.itemCode) > -1) {
-                                //ko.utils.setHtml(element, template.grDate);
+                                switch (mode) {
+                                    case '1':
+                                        textView = vm.i18n('CPS003_88', [vm.itemNames()['IS00020']]);
+                                        break;
+                                    case '2':
+                                        textView = vm.i18n('CPS003_88', [vm.itemNames()['IS00279']]);
+                                        break;
+                                    case '3':
+                                        switch (value) {
+                                            case "1":
+                                                textView = vm.i18n('CPS003_131') + ' ' + Math.floor(value1 / 100) + '/' + Math.floor(value % 100);
+                                                break;
+                                            case "2":
+                                                textView = vm.i18n('CPS003_132') + ' ' + Math.floor(value1 / 100) + '/' + Math.floor(value % 100);
+                                                break;
+                                            case "3":
+                                                textView = vm.i18n('CPS003_133') + ' ' + Math.floor(value1 / 100) + '/' + Math.floor(value % 100);
+                                                break;
+                                        }
+                                        break;
+                                    case '4':
+                                        textView = moment.utc(value2).format('YYYY/MM/DD');
+                                        break;
+                                }
                             } else {
                                 textView = moment.utc(value).format('YYYY/MM/DD');
                             }
@@ -274,11 +297,10 @@ module nts.custombinding {
                         case ITEM_SINGLE_TYPE.TIME:
                             if (itemData.itemCode == 'IS00287') {
                                 if (mode == '1') {
-                                    textView = vm.i18n('CPS003_91', [vm.itemNames()['IS00253']]) + value;
+                                    textView = vm.i18n('CPS003_91', [vm.itemNames()['IS00253']]) + ' ' + value;
                                 } else {
-                                    textView = value1;
+                                    textView = parseTime(Number(value1), true).format();
                                 }
-                                //ko.utils.setHtml(element, template.timey);
                             } else {
                                 if (value && !isNaN(Number(value))) {
                                     textView = parseTime(Number(value), true).format();

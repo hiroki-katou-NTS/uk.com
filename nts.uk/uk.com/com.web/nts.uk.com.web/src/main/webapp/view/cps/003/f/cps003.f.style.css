@@ -173,3 +173,7 @@ div[dropdown-for="pk-amount"] .nts-column {
 	display: block;
 	line-height: 32px;
 }
+
+#func-notifier-errors  {
+	top: 575px !important;
+}

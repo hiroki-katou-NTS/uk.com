@@ -57,7 +57,7 @@
 				<div class="col-50" data-bind="with: $vm.currentItem">
 					<div class="form-group" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_74')}</div>
 					<div class="form-group" data-bind="ntsRadioBoxGroup: {
-							options: ko.observableArray([{ id: 'all', name: text('CPS003_76') }, { id: 'match', name: text('CPS003_77', ['対象項目名']) }]),
+							options: allOrMatch,
 							optionsValue: 'id',
 							optionsText: 'name',
 							value: applyFor,
@@ -89,7 +89,7 @@
 				</div>				
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="">#{i18n.getText('CPS003_96')}</button>
+				<button class="proceed x-large" data-bind="click: $vm.pushData">#{i18n.getText('CPS003_96')}</button>
 				<button data-bind="click: close">#{i18n.getText('CPS003_97')}</button>
 			</div>
 		</ui:define>
