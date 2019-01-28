@@ -15,7 +15,7 @@ module nts.uk.at.view.kmk004.a {
         }
         export function saveAsExcel(languageId: string, startDate : any, endDate: any): JQueryPromise<any> {
             let domainType = "KMK004" + nts.uk.resource.getText("KMK004_194");
-            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "SetWorkingHoursAndDays", domainType: domainType, languageId: languageId, reportType: 0, mode: 2, startDate: startDate, endDate: endDate});
+            return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "SetWorkingHoursAndDays", domainType: domainType, languageId: languageId, reportType: 0, mode: 4, startDate: startDate, endDate: endDate});
         }
         
         export function getStartMonth(): JQueryPromise<any> {

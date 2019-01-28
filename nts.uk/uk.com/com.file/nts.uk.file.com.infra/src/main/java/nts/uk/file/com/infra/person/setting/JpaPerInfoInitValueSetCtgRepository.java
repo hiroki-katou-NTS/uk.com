@@ -65,14 +65,14 @@ public class JpaPerInfoInitValueSetCtgRepository extends JpaRepository implement
 	     exportSQL.append("  END REF_METHOD_ATR,");
 	     exportSQL.append(" CONCAT(");
 	     // Workplace
-	     exportSQL.append("  CONCAT(RTRIM(wkp.WKPCD),IIF (wkp.END_DATE >= CONVERT(datetime, '9999-12-31'), wkp.WKP_NAME, ");
+	     exportSQL.append("  CONCAT(IIF (wkp.END_DATE >= CONVERT(datetime, '9999-12-31'),RTRIM(wkp.WKPCD),''),IIF (wkp.END_DATE >= CONVERT(datetime, '9999-12-31'), wkp.WKP_NAME, ");
 	     exportSQL.append("      IIF (wkp.WKPCD IS NOT NULL,?MasterUnregisted, NULL))),");
 	     // Employment
 	     exportSQL.append("  CONCAT(RTRIM(emp.CODE), emp.NAME), ");
 	     // Classification
 	     exportSQL.append("  CONCAT(RTRIM(cls.CLSCD), cls.CLSNAME), ");
 	     // Job title
-	     exportSQL.append("  CONCAT(RTRIM(job.JOB_CD),IIF (job.END_DATE >= CONVERT(datetime, '9999-12-31'), job.JOB_NAME, ");
+	     exportSQL.append("  CONCAT(IIF (job.END_DATE >= CONVERT(datetime, '9999-12-31'),RTRIM(job.JOB_CD),''),IIF (job.END_DATE >= CONVERT(datetime, '9999-12-31'), job.JOB_NAME, ");
 	     exportSQL.append("      IIF (job.JOB_CD IS NOT NULL,?MasterUnregisted, NULL))),");
 	     // TempAbsence
 		 exportSQL.append("IIF (temp.USE_ATR = 1 ,temp.TEMP_ABSENCE_FR_NAME,  ");

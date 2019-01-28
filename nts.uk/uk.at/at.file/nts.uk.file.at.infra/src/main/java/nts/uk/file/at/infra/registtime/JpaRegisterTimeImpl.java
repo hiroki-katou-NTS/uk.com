@@ -235,7 +235,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 		WHERE"
 			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
 			+ " 	),"
-			+ " qq.HIERARCHY_CD"
+			+ " HIERARCHY_CD"
 			+ " FROM"
 			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
 			+ " JOIN KMKMT_AGREEMENTTIME_WPL bb "
@@ -251,7 +251,11 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " WHERE"
 			+ " 	 bb.LABOR_SYSTEM_ATR = 0 AND kk.CID = ?cid"
 			+ " )"
-			+ " SELECT s.WKPCD,"
+			+ " SELECT "
+			+ " CASE s.END_DATE"
+			+ " When '9999-12-31 00:00:00' then s.WKPCD "
+			+ " ELSE '' "
+			+ " END as WKPCD,"
 			+ " CASE s.END_DATE"
 			+ " When '9999-12-31 00:00:00' then s.WKP_NAME "
 			+ " ELSE 'マスタ未登録' "
@@ -265,7 +269,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 			 s.ERROR_YEARLY,s.ALARM_YEARLY,s.LIMIT_YEARLY"
 			+ "   FROM summary s"
 			+ "  WHERE s.rk = 1 "
-			+ "	 ORDER BY  s.HIERARCHY_CD  ";
+			+ "	 ORDER BY  CASE WHEN (s.HIERARCHY_CD IS NULL OR s.END_DATE < '9999-12-31 00:00:00') THEN 1 ELSE 0 END ASC, s.HIERARCHY_CD  ";
 
 	
 	
@@ -547,7 +551,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 		WHERE"
 			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
 			+ " 	), "
-			+ "		qq.HIERARCHY_CD"
+			+ " HIERARCHY_CD"
 			+ " FROM"
 			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
 			+ " JOIN KMKMT_AGREEMENTTIME_WPL bb "
@@ -563,7 +567,11 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " WHERE"
 			+ " 	 bb.LABOR_SYSTEM_ATR = 1 AND kk.CID = ?cid"
 			+ " )"
-			+ " SELECT s.WKPCD,"
+			+ " SELECT "
+			+ "	CASE s.END_DATE "
+			+ " When '9999-12-31 00:00:00' then s.WKPCD "
+			+ " ELSE '' "
+			+ " END as WKPCD,"
 			+ "	CASE s.END_DATE "
 			+ " When '9999-12-31 00:00:00' then s.WKP_NAME "
 			+ " ELSE 'マスタ未登録' "
@@ -577,7 +585,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 			 s.ERROR_YEARLY,s.ALARM_YEARLY,s.LIMIT_YEARLY"
 			+ "   FROM summary s"
 			+ "  WHERE s.rk = 1 "
-			+ "	 ORDER BY s.HIERARCHY_CD";
+			+ "	 ORDER BY CASE WHEN (HIERARCHY_CD IS NULL OR s.END_DATE < '9999-12-31 00:00:00') THEN 1 ELSE 0 END ASC , HIERARCHY_CD";
 
 	
 	
