@@ -870,7 +870,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData{
     private String convertToTime(int param){
         int m = param / 60;
         int s = param % 60;
-        return String.format("%02d:%02d", m, s);
+        return m > 9 ? String.format("%02d:%02d", m, s) : String.format("%2d:%02d", m, s);
     }
 
     private String getValueA8Top(int i, Object[] obj){
