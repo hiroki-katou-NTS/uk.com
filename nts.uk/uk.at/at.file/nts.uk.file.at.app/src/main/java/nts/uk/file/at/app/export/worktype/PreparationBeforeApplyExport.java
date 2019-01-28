@@ -104,7 +104,7 @@ public class PreparationBeforeApplyExport {
                 Map<String, MasterCellData> data = new HashMap<>();
                 data.put(KAF022_516, MasterCellData.builder()
                         .columnId(KAF022_516)
-                        .value(j[0])
+                        .value(j[1] == null ? "" : j[0])
                         .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                         .build());
                 data.put(KAF022_517, MasterCellData.builder()
