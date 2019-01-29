@@ -169,7 +169,7 @@ public class CheckFileFinder {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return new GridDto(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 	}
 	
 	public Object processFile(CheckFileParams params) throws Exception {
@@ -190,8 +190,14 @@ public class CheckFileFinder {
 			
 			// columns
 			List<String> colums = this.getColumsChange(header, headerDb);
+			List<EmployeeDataMngInfo> employees = new ArrayList<>();
+			try {
+				employees.addAll(this.getEmployeeIds(rows));
+			}catch(Throwable t) {
+				BusinessException exp = (BusinessException) t.getCause();
+				return exp;
+			}
 			
-			List<EmployeeDataMngInfo> employees = this.getEmployeeIds(rows);
 			
 			String startCode = startDateItemCodes.get(ctgOptional.get().getCategoryCode().toString());
 			GridDto dto = this.getGridInfo(excelReader, headerDb, ctgOptional.get(), employees, startCode, updateMode); 
@@ -199,13 +205,13 @@ public class CheckFileFinder {
 			//受入するファイルの列に、メイン画面の「個人情報一覧（A3_001）」に表示している可変列で更新可能な項目が１件でも存在するかチェックする
 			//check xem các header của item trong file import có khớp với màn hình A 
 			if (colums.size() == 0) {
-				return "Msg_723";
+				return new BusinessException("Msg_723");
 			}
 			return dto;
 		} catch (ExcelFileTypeException e1) {
 			e1.printStackTrace();
 		}
-		return null;
+		return new GridDto(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 	}
 	
 	// get ColumnsFixed
