@@ -250,7 +250,7 @@ public class ComAutoCalSettingExportImpl implements MasterListData{
     }
 
     private String getWorkPlaceCode(Object[] obj){
-        if(obj[23] == null) {
+        if(obj[23] == null || obj[24] == null) {
             return SPACE;
         }
         if("-".equals(obj[23].toString())) {
