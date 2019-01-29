@@ -342,7 +342,7 @@ public class HolidaySettingExportImpl implements MasterListData{
 				data.put(valueTwo2, startMonth+TextResource.localize("KMF002_12"));
 				data.put(valueTwo3, optional.get().getPublicHolidayMonthSettings().get(startMonth-1).getInLegalHoliday()+TextResource.localize("KMF002_8"));
 				MasterData masterData = new MasterData(data, null, "");	
-				masterData.cellAt(valueTwo1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+				masterData.cellAt(valueTwo1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
 				masterData.cellAt(valueTwo2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
 				masterData.cellAt(valueTwo3).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
 				datas.add(masterData);
@@ -420,7 +420,7 @@ public class HolidaySettingExportImpl implements MasterListData{
 					}
 					
 					MasterData masterData = new MasterData(data, null, "");	
-					masterData.cellAt(valueThree1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+					masterData.cellAt(valueThree1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
 					masterData.cellAt(valueThree2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 					masterData.cellAt(valueThree3).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 					masterData.cellAt(valueThree4).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
@@ -506,7 +506,7 @@ public class HolidaySettingExportImpl implements MasterListData{
 
 					MasterData masterData = new MasterData(data, null, "");
 					masterData.cellAt(valueFour1)
-							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
 					masterData.cellAt(valueFour2)
 							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 					masterData.cellAt(valueFour3)
@@ -601,7 +601,7 @@ public class HolidaySettingExportImpl implements MasterListData{
 										
 					MasterData masterData = new MasterData(data, null, "");
 					masterData.cellAt(valueFive1)
-							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
 					masterData.cellAt(valueFive2)
 							.setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 					masterData.cellAt(valueFive3)
