@@ -133,6 +133,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 											+" ORDER BY KSHST_COM_NORMAL_SET.[YEAR] ";
 	
 	private static final String GET_EMPLOYMENT = "SELECT "
+											+ "ROW_NUMBER() OVER(PARTITION BY KSHST_EMP_NORMAL_SET.[YEAR] ORDER BY KSHST_EMP_NORMAL_SET.[YEAR], KSHST_EMP_NORMAL_SET.EMP_CD ASC) AS ROW_NUMBER, "
 											+" KSHST_EMP_NORMAL_SET.[YEAR], "
 											+" KSHST_EMP_NORMAL_SET.EMP_CD AS CODE,  "
 											+" IIF(BSYMT_EMPLOYMENT.NAME IS NOT NULL, BSYMT_EMPLOYMENT.NAME, 'マスタ未登録') AS NAME, "
@@ -237,6 +238,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	private static final String GET_WORKPLACE = "SELECT * FROM ("
 						 +  "SELECT ROW_NUMBER() OVER(PARTITION BY KSHST_WKP_NORMAL_SET.WKP_ID, KSHST_WKP_NORMAL_SET.[YEAR] ORDER BY BSYMT_WORKPLACE_HIST.END_DATE DESC) AS rk, "
 						 +  "IIF(BSYMT_WKP_CONFIG_INFO.HIERARCHY_CD IS NOT NULL AND BSYMT_WORKPLACE_HIST.END_DATE = CONVERT(DATETIME, '9999-12-31 00:00:00', 120), BSYMT_WKP_CONFIG_INFO.HIERARCHY_CD, '999999999999999999999999999999') AS HIERARCHY_CD, "
+						 +  "ROW_NUMBER() OVER(PARTITION BY KSHST_WKP_NORMAL_SET.[YEAR] ORDER BY BSYMT_WORKPLACE_HIST.END_DATE DESC) AS rk2, "
 						 +  "KSHST_WKP_NORMAL_SET.[YEAR], "
 						 +  "IIF(BSYMT_WORKPLACE_HIST.END_DATE = CONVERT(DATETIME, '9999-12-31 00:00:00', 120), BSYMT_WORKPLACE_INFO.WKPCD , '') AS WKPCD, " 
 						 +  "IIF(BSYMT_WORKPLACE_HIST.END_DATE = CONVERT(DATETIME, '9999-12-31 00:00:00', 120), BSYMT_WORKPLACE_INFO.WKP_NAME , 'マスタ未登録') AS WKP_NAME, " 
@@ -347,6 +349,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 						 +  "WHERE rk = 1 ORDER BY TBL.[YEAR] ASC, TBL.HIERARCHY_CD";
 	
 	private static final String GET_EMPLOYEE = " SELECT  " 
+			 + "ROW_NUMBER() OVER(PARTITION BY KSHST_SHA_NORMAL_SET.[YEAR] ORDER BY KSHST_SHA_NORMAL_SET.[YEAR], BSYMT_EMP_DTA_MNG_INFO.SCD ASC) AS ROW_NUMBER, "
 			 + "KSHST_SHA_NORMAL_SET.[YEAR], " 
 			 + "BSYMT_EMP_DTA_MNG_INFO.SCD, " 
 			 + "BPSMT_PERSON.BUSINESS_NAME, " 
@@ -922,7 +925,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 		List<MasterData> datas = new ArrayList<>();
 		datas.add(buildEmploymentARow(
 				//R12_1
-				r.getString(("YEAR")),
+				r.getInt("ROW_NUMBER") == 1 ? r.getString(("YEAR")) : null,
 				//R12_2
 				r.getString("CODE"),
 				//R12_3
@@ -1355,7 +1358,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 		List<MasterData> datas = new ArrayList<>();
 			datas.add(buildWorkPlaceARow(
 					//R14_1
-					r.getString("YEAR"),
+					r.getInt("rk2") == 1 ? r.getString("YEAR") : null,
 					//R14_2
 					r.getString("WKPCD"),
 					//R14_3
@@ -1822,7 +1825,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 		List<MasterData> datas = new ArrayList<>();
 			datas.add(buildEmployeeARow(
 				// R10_1
-				r.getString("YEAR"),
+				r.getInt("ROW_NUMBER") == 1 ? r.getString("YEAR") : null,
 				// R10_2
 				r.getString("SCD"),
 				// R10_3
