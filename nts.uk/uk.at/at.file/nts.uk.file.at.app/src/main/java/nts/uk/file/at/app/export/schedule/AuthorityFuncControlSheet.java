@@ -404,6 +404,13 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 				switch (sc.getUseCls()) {
 				case 0:
 					data.put(n1, TextResource.localize("KSM011_8"));
+					
+					String n2 = TextResource.localize("KSM011_87").concat(" ").concat(TextResource.localize("KSM011_8"));
+					String value = String.valueOf(sc.getCorrectDeadline());
+					value = value.concat(TextResource.localize("KSM011_135"));
+					value = value.concat(TextResource.localize("KSM011_91"));
+					data.put(n2, value);
+					
 					break;
 				case 1:
 					data.put(n1, TextResource.localize("KSM011_9"));
@@ -411,13 +418,6 @@ public class AuthorityFuncControlSheet extends JpaRepository{
 				default:
 					break;
 				}
-				
-				String n2 = TextResource.localize("KSM011_87").concat(" ").concat(TextResource.localize("KSM011_8"));
-				String value = String.valueOf(sc.getCorrectDeadline());
-				value = value.concat(" ");
-				value = value.concat(TextResource.localize("KSM011_135"));
-				value = value.concat(TextResource.localize("KSM011_91"));
-				data.put(n2, value);
 			}
 		}
 		
