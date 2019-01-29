@@ -2197,7 +2197,7 @@ private List<MasterData> getDataStatutorySettings(MasterListExportQuery query){
     	columns.add(new MasterHeaderColumn(column1Sheet9,TextResource.localize("KMK013_351"),ColumnTextAlign.LEFT, "", true));				
     	columns.add(new MasterHeaderColumn(column2Sheet9,TextResource.localize("KMK013_356"),ColumnTextAlign.LEFT, "", true));
     	columns.add(new MasterHeaderColumn(column3Sheet9,TextResource.localize("KMK013_361"),ColumnTextAlign.LEFT, "", true));
-    	columns.add(new MasterHeaderColumn(column4Sheet9,"名称",ColumnTextAlign.LEFT, "", true));	
+    	columns.add(new MasterHeaderColumn(column4Sheet9,TextResource.localize("KMK013_473"),ColumnTextAlign.LEFT, "", true));	
     	return columns;
     }
     
