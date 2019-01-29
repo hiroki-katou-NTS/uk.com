@@ -84,9 +84,10 @@ public class WageTableFinder {
 		if (domainOtp.isPresent()) {
 			WageTableDto dto = WageTableDto.fromDomainToDto(domainOtp.get(), optHistory);
 			if (dto.getElementInformation().getOneDimensionalElement().getOptionalAdditionalElement() != null
-					|| dto.getElementInformation().getTwoDimensionalElement().getOptionalAdditionalElement() != null
-					|| dto.getElementInformation().getThreeDimensionalElement()
-							.getOptionalAdditionalElement() != null) {
+					|| (dto.getElementInformation().getTwoDimensionalElement() != null && dto.getElementInformation()
+							.getTwoDimensionalElement().getOptionalAdditionalElement() != null)
+					|| (dto.getElementInformation().getThreeDimensionalElement() != null && dto.getElementInformation()
+							.getThreeDimensionalElement().getOptionalAdditionalElement() != null)) {
 				List<StatementItemCustom> lstStatementItem = statementRepo.getItemCustomByCategoryAndDeprecated(cid,
 						CategoryAtr.ATTEND_ITEM.value, false);
 				if (dto.getElementInformation().getOneDimensionalElement().getOptionalAdditionalElement() != null) {
@@ -95,26 +96,25 @@ public class WageTableFinder {
 									.getOptionalAdditionalElement()))
 							.findFirst();
 					dto.getElementInformation().getOneDimensionalElement().setDisplayName(optElem.isPresent()
-							? optElem.get().getName()
-							: dto.getElementInformation().getOneDimensionalElement().getOptionalAdditionalElement());
+							? optElem.get().getName() : null);
 				}
-				if (dto.getElementInformation().getTwoDimensionalElement().getOptionalAdditionalElement() != null) {
+				if (dto.getElementInformation().getTwoDimensionalElement() != null && dto.getElementInformation()
+						.getTwoDimensionalElement().getOptionalAdditionalElement() != null) {
 					Optional<StatementItemCustom> optElem = lstStatementItem.stream()
 							.filter(i -> i.getItemNameCd().equals(dto.getElementInformation().getTwoDimensionalElement()
 									.getOptionalAdditionalElement()))
 							.findFirst();
 					dto.getElementInformation().getTwoDimensionalElement().setDisplayName(optElem.isPresent()
-							? optElem.get().getName()
-							: dto.getElementInformation().getTwoDimensionalElement().getOptionalAdditionalElement());
+							? optElem.get().getName() : null);
 				}
-				if (dto.getElementInformation().getThreeDimensionalElement().getOptionalAdditionalElement() != null) {
+				if (dto.getElementInformation().getThreeDimensionalElement() != null && dto.getElementInformation()
+						.getThreeDimensionalElement().getOptionalAdditionalElement() != null) {
 					Optional<StatementItemCustom> optElem = lstStatementItem.stream()
 							.filter(i -> i.getItemNameCd().equals(dto.getElementInformation()
 									.getThreeDimensionalElement().getOptionalAdditionalElement()))
 							.findFirst();
 					dto.getElementInformation().getThreeDimensionalElement().setDisplayName(optElem.isPresent()
-							? optElem.get().getName()
-							: dto.getElementInformation().getThreeDimensionalElement().getOptionalAdditionalElement());
+							? optElem.get().getName() : null);
 				}
 			}
 			if (dto.getElementInformation().getOneDimensionalElement().getFixedElement() != null) {
@@ -126,7 +126,8 @@ public class WageTableFinder {
 					dto.getElementInformation().getOneDimensionalElement()
 							.setDisplayName(TextResource.localize(e1.get().nameId));
 			}
-			if (dto.getElementInformation().getTwoDimensionalElement().getFixedElement() != null) {
+			if (dto.getElementInformation().getTwoDimensionalElement() != null
+					&& dto.getElementInformation().getTwoDimensionalElement().getFixedElement() != null) {
 				Optional<ElementType> e2 = Arrays.stream(ElementType.values())
 						.filter(item -> item.value
 								.equals(dto.getElementInformation().getTwoDimensionalElement().getFixedElement()))
@@ -135,7 +136,8 @@ public class WageTableFinder {
 					dto.getElementInformation().getTwoDimensionalElement()
 							.setDisplayName(TextResource.localize(e2.get().nameId));
 			}
-			if (dto.getElementInformation().getThreeDimensionalElement().getFixedElement() != null) {
+			if (dto.getElementInformation().getThreeDimensionalElement() != null
+					&& dto.getElementInformation().getThreeDimensionalElement().getFixedElement() != null) {
 				Optional<ElementType> e3 = Arrays.stream(ElementType.values())
 						.filter(item -> item.value
 								.equals(dto.getElementInformation().getThreeDimensionalElement().getFixedElement()))
@@ -150,21 +152,12 @@ public class WageTableFinder {
 	}
 
 	public WageTableContentDto getWageTableContent(String historyId, String wageTableCode) {
-		Optional<WageTableContent> optContent = wageTableContentRepo.getWageTableContentById(historyId);
 		String cid = AppContexts.user().companyId();
+		Optional<WageTableContent> optContent = wageTableContentRepo.getWageTableContentById(historyId, cid, wageTableCode);
 		Optional<WageTable> domainOtp = wageTableRepo.getWageTableById(cid, wageTableCode);
-		Optional<ElementRangeSetting> optSetting = elemRangeSetRepo.getElementRangeSettingById(historyId);
+		Optional<ElementRangeSetting> optSetting = elemRangeSetRepo.getElementRangeSettingById(historyId, cid, wageTableCode);
 		
 		return new WageTableContentDto(optContent, domainOtp, optSetting, wageContentCreater);
-	}
-
-	public ElementRangeSettingDto getElemRangeSet(String historyId) {
-		Optional<ElementRangeSetting> optSetting = elemRangeSetRepo.getElementRangeSettingById(historyId);
-		if (optSetting.isPresent()) {
-			return ElementRangeSettingDto.fromDomainToDto(optSetting.get());
-		} else {
-			return null;
-		}
 	}
 
 	public List<ElementItemNameDto> getElements() {

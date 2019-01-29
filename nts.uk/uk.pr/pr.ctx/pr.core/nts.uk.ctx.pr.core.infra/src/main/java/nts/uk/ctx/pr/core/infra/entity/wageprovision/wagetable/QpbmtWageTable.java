@@ -27,7 +27,7 @@ public class QpbmtWageTable extends UkJpaEntity {
 	@EmbeddedId
 	public QpbmtWageTablePk pk;
 
-	@Column(name = "NAME")
+	@Column(name = "WAGE_TABLE_NAME")
 	public String name;
 
 	@Column(name = "ELEMENT_SET")
@@ -96,48 +96,43 @@ public class QpbmtWageTable extends UkJpaEntity {
 
 	public static QpbmtWageTable fromDomain(WageTable domain) {
 		ElementInformation elementInfor = domain.getElementInformation();
-		return new QpbmtWageTable(new QpbmtWageTablePk(domain.getCid(), domain.getWageTableCode().v()),
-				domain.getWageTableName().v(), domain.getElementSetting().value,
-				domain.getRemarkInformation().isPresent() ? domain.getRemarkInformation().get().v() : null,
-				elementInfor.getOneDimensionalElement().getMasterNumericAtr().isPresent()
-						? elementInfor.getOneDimensionalElement().getMasterNumericAtr().get().value : null,
-				elementInfor.getOneDimensionalElement().getOptionalAdditionalElement().isPresent()
-						? elementInfor.getOneDimensionalElement().getOptionalAdditionalElement().get().v() : null,
-				elementInfor.getOneDimensionalElement().getFixedElement().isPresent()
-						? elementInfor.getOneDimensionalElement().getFixedElement().get().value : null,
-
-				elementInfor.getTwoDimensionalElement().isPresent()
-						? (elementInfor.getTwoDimensionalElement().get().getMasterNumericAtr().isPresent()
-								? elementInfor.getTwoDimensionalElement().get().getMasterNumericAtr()
-										.get().value
-								: null)
-						: null,
-				elementInfor.getTwoDimensionalElement().isPresent()
-						? (elementInfor.getTwoDimensionalElement().get().getOptionalAdditionalElement().isPresent()
-								? elementInfor.getTwoDimensionalElement().get().getOptionalAdditionalElement().get().v()
-								: null)
-						: null,
-				elementInfor.getTwoDimensionalElement().isPresent()
-						? (elementInfor.getTwoDimensionalElement().get().getFixedElement().isPresent()
-								? elementInfor.getTwoDimensionalElement().get().getFixedElement().get().value : null)
-						: null,
-
-				elementInfor.getThreeDimensionalElement().isPresent()
-						? (elementInfor.getThreeDimensionalElement().get().getMasterNumericAtr().isPresent()
-								? elementInfor.getThreeDimensionalElement().get().getMasterNumericAtr()
-										.get().value
-								: null)
-						: null,
-				elementInfor.getThreeDimensionalElement().isPresent()
-						? (elementInfor.getThreeDimensionalElement().get().getOptionalAdditionalElement().isPresent()
-								? elementInfor.getThreeDimensionalElement().get().getOptionalAdditionalElement().get()
-										.v()
-								: null)
-						: null,
-				elementInfor.getThreeDimensionalElement().isPresent()
-						? (elementInfor.getThreeDimensionalElement().get().getFixedElement().isPresent()
-								? elementInfor.getThreeDimensionalElement().get().getFixedElement().get().value : null)
-						: null);
+		QpbmtWageTable entity = new QpbmtWageTable();
+		entity.pk = new QpbmtWageTablePk(domain.getCid(), domain.getWageTableCode().v());
+		entity.name = domain.getWageTableName().v();
+		entity.elementSetting = domain.getElementSetting().value;
+		if (domain.getRemarkInformation().isPresent())
+			entity.memo = domain.getRemarkInformation().get().v();
+		if (elementInfor.getOneDimensionalElement().getMasterNumericAtr().isPresent())
+			entity.masterNumericAtr1 = elementInfor.getOneDimensionalElement().getMasterNumericAtr().get().value;
+		else
+			entity.masterNumericAtr1 = 0; // default value
+		if (elementInfor.getOneDimensionalElement().getOptionalAdditionalElement().isPresent())
+			entity.optionalAdditionalElement1 = elementInfor.getOneDimensionalElement().getOptionalAdditionalElement().get().v();
+		if (elementInfor.getOneDimensionalElement().getFixedElement().isPresent())
+			entity.fixedElement1 = elementInfor.getOneDimensionalElement().getFixedElement().get().value;
+		if (elementInfor.getTwoDimensionalElement().isPresent()) {
+			if (elementInfor.getTwoDimensionalElement().get().getMasterNumericAtr().isPresent())
+				entity.masterNumericAtr2 = elementInfor.getTwoDimensionalElement().get().getMasterNumericAtr().get().value;
+			else
+				entity.masterNumericAtr2 = 0; // default value
+			if (elementInfor.getTwoDimensionalElement().get().getOptionalAdditionalElement().isPresent())
+				entity.optionalAdditionalElement2 = elementInfor.getTwoDimensionalElement().get().getOptionalAdditionalElement().get().v();
+			if (elementInfor.getTwoDimensionalElement().get().getFixedElement().isPresent())
+				entity.fixedElement2 = elementInfor.getTwoDimensionalElement().get().getFixedElement().get().value;
+		} else
+			entity.masterNumericAtr2 = 0; // default value
+		if (elementInfor.getThreeDimensionalElement().isPresent()) {
+			if (elementInfor.getThreeDimensionalElement().get().getMasterNumericAtr().isPresent())
+				entity.masterNumericAtr3 = elementInfor.getThreeDimensionalElement().get().getMasterNumericAtr().get().value;
+			else
+				entity.masterNumericAtr3 = 0; // default value
+			if (elementInfor.getThreeDimensionalElement().get().getOptionalAdditionalElement().isPresent())
+				entity.optionalAdditionalElement3 = elementInfor.getThreeDimensionalElement().get().getOptionalAdditionalElement().get().v();
+			if (elementInfor.getThreeDimensionalElement().get().getFixedElement().isPresent())
+				entity.fixedElement3 = elementInfor.getThreeDimensionalElement().get().getFixedElement().get().value;
+		} else
+			entity.masterNumericAtr3 = 0; // default value
+		return entity;
 	}
 
 }

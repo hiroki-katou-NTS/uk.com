@@ -28,7 +28,7 @@ public class QpbmtQualificationInformationPk {
 	 * 名称
 	 */
 	@Basic(optional = false)
-	@Column(name = "QUALIFICATION_CODE")
+	@Column(name = "QUALIFICATION_CD")
 	public String qualificationCode;
 	
 }

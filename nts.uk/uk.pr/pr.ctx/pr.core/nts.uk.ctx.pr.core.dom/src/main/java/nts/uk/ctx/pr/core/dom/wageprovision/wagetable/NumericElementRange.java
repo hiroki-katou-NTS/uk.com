@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.wagetable;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
@@ -23,7 +25,7 @@ public class NumericElementRange extends DomainObject {
 	 */
 	private RangeUpperLimit rangeUpperLimit;
 
-	public NumericElementRange(Integer stepIncrement, Integer rangeLowerLimit, Integer rangeUpperLimit) {
+	public NumericElementRange(BigDecimal stepIncrement, BigDecimal rangeLowerLimit, BigDecimal rangeUpperLimit) {
 		this.stepIncrement = new StepIncrement(stepIncrement);
 		this.rangeLowerLimit = new RangeLowerLimit(rangeLowerLimit);
 		this.rangeUpperLimit = new RangeUpperLimit(rangeUpperLimit);

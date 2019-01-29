@@ -1,6 +1,8 @@
 module nts.uk.pr.view.qmm016.share.model {
 
     import getText = nts.uk.resource.getText;
+    import formatNumber = nts.uk.ntsNumber.formatNumber;
+    import NumberEditorOption = nts.uk.ui.option.NumberEditorOption;
 
     export enum SCREEN_MODE {
         NEW = 0,
@@ -330,6 +332,7 @@ module nts.uk.pr.view.qmm016.share.model {
         frameLowerLimit: KnockoutObservable<number> = ko.observable(null);
         frameUpperLimit: KnockoutObservable<number> = ko.observable(null);
         paymentAmount: KnockoutObservable<number> = ko.observable(null);
+        displayText: KnockoutObservable<string> = ko.observable(null);
         constructor (params: any) {
             this.masterCode(params ? params.masterCode : null);
             this.masterName(params ? params.masterName : null);
@@ -337,6 +340,13 @@ module nts.uk.pr.view.qmm016.share.model {
             this.frameLowerLimit(params ? params.frameLowerLimit : null);
             this.frameUpperLimit(params ? params.frameUpperLimit : null);
             this.paymentAmount(params ? params.paymentAmount : null);
+            if (params != null) {
+                this.displayText(!_.isEmpty(params.masterCode)  
+                    ? params.masterName 
+                    : formatNumber(params.frameLowerLimit, new NumberEditorOption({grouplength: 3, decimallength: 2}))
+                        + getText("QMM016_31")
+                        + formatNumber(params.frameUpperLimit, new NumberEditorOption({grouplength: 3, decimallength: 2})));
+            }
         }
     }
     
@@ -347,6 +357,8 @@ module nts.uk.pr.view.qmm016.share.model {
         frameLowerLimit: KnockoutObservable<number> = ko.observable(null);
         frameUpperLimit: KnockoutObservable<number> = ko.observable(null);
         listSecondDms: KnockoutObservableArray<ElementItem> = ko.observableArray([]);
+        displayText: KnockoutObservable<string> = ko.observable(null);
+        
         constructor (params: any) {
             this.masterCode(params ? params.masterCode : null);
             this.masterName(params ? params.masterName : null);
@@ -354,6 +366,13 @@ module nts.uk.pr.view.qmm016.share.model {
             this.frameLowerLimit(params ? params.frameLowerLimit : null);
             this.frameUpperLimit(params ? params.frameUpperLimit : null);
             this.listSecondDms(params && !_.isEmpty(params.listSecondDms) ? params.listSecondDms.map(item => new ElementItem(item)) : []);
+            if (params != null) {
+                this.displayText(!_.isEmpty(params.masterCode)  
+                    ? params.masterName 
+                    : formatNumber(params.frameLowerLimit, new NumberEditorOption({grouplength: 3, decimallength: 2}))
+                        + getText("QMM016_31")
+                        + formatNumber(params.frameUpperLimit, new NumberEditorOption({grouplength: 3, decimallength: 2})));
+            }
         }
     }
     
@@ -364,6 +383,7 @@ module nts.uk.pr.view.qmm016.share.model {
         frameLowerLimit: KnockoutObservable<number> = ko.observable(null);
         frameUpperLimit: KnockoutObservable<number> = ko.observable(null);
         listFirstDms: KnockoutObservableArray<TwoDmsElementItem> = ko.observableArray([]);
+        displayText: KnockoutObservable<string> = ko.observable(null);
         constructor (params: any) {
             this.masterCode(params ? params.masterCode : null);
             this.masterName(params ? params.masterName : null);
@@ -371,6 +391,13 @@ module nts.uk.pr.view.qmm016.share.model {
             this.frameLowerLimit(params ? params.frameLowerLimit : null);
             this.frameUpperLimit(params ? params.frameUpperLimit : null);
             this.listFirstDms(params && !_.isEmpty(params.listFirstDms) ? params.listFirstDms.map(item => new TwoDmsElementItem(item)) : []);
+            if (params != null) {
+                this.displayText(!_.isEmpty(params.masterCode)  
+                    ? params.masterName 
+                    : formatNumber(params.frameLowerLimit, new NumberEditorOption({grouplength: 3, decimallength: 2}))
+                        + getText("QMM016_31")
+                        + formatNumber(params.frameUpperLimit, new NumberEditorOption({grouplength: 3, decimallength: 2})));
+            }
         }
     }
 

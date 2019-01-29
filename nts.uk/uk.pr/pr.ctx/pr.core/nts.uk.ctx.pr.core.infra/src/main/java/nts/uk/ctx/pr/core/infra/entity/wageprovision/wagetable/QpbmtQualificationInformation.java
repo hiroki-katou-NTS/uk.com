@@ -34,20 +34,27 @@ public class QpbmtQualificationInformation extends UkJpaEntity {
 	@Column(name = "QUALIFICATION_NAME")
 	public String qualificationName;
 
+	/**
+	 * 統合コード
+	 */
+	@Basic(optional = true)
+	@Column(name = "INTERGRATE_CD")
+	public String integrationCode;
+
 	public QualificationInformation toDomain() {
-		return new QualificationInformation(pk.cid,
-				pk.qualificationCode, qualificationName);
+		return new QualificationInformation(pk.cid, pk.qualificationCode, qualificationName, integrationCode);
 	}
 
 	public static QpbmtQualificationInformation toEntity(QualificationInformation domain) {
 		return new QpbmtQualificationInformation(
 				new QpbmtQualificationInformationPk(AppContexts.user().companyId(), domain.getQualificationCode().v()),
-				domain.getQualificationName().v());
+				domain.getQualificationName().v(),
+				domain.getIntegrationCode().isPresent() ? domain.getIntegrationCode().get().v() : null);
 	}
 
 	@Override
 	protected Object getKey() {
 		return this.pk;
 	}
-	
+
 }

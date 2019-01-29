@@ -11,23 +11,24 @@ import nts.uk.ctx.pr.core.dom.wageprovision.wagetable.QualificationInformation;
 @Data
 public class QualificationInformationCommand {
 
-    /**
-     * 会社ID
-     */
-    private String companyID;
+	/**
+	 * 会社ID
+	 */
+	private String companyID;
 
-    /**
-     * 資格コード
-     */
-    private String qualificationCode;
+	/**
+	 * 資格コード
+	 */
+	private String qualificationCode;
 
-    /**
-     * 資格名称
-     */
-    private String qualificationName;
+	/**
+	 * 資格名称
+	 */
+	private String qualificationName;
 
-    public QualificationInformation fromCommandToDomain() {
-        return new QualificationInformation(companyID, qualificationCode, qualificationName);
-    }
+	private String integrationCode;
+
+	public QualificationInformation fromCommandToDomain() {
+		return new QualificationInformation(companyID, qualificationCode, qualificationName, integrationCode);
+	}
 }
-

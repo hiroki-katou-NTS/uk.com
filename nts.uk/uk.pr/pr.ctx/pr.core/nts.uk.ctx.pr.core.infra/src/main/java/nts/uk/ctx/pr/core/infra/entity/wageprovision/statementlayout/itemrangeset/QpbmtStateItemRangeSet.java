@@ -44,21 +44,21 @@ public class QpbmtStateItemRangeSet extends UkJpaEntity implements Serializable
     /**
     * エラー上限値金額
     */
-    @Basic(optional = true)
+    @Basic(optional = false)
     @Column(name = "ERROR_UP_RANGE_VAL_AMOUNT")
     public Long errorUpRangeValAmount;
     
     /**
     * エラー上限値時間
     */
-    @Basic(optional = true)
+    @Basic(optional = false)
     @Column(name = "ERROR_UP_RANGE_VAL_TIME")
     public Integer errorUpRangeValTime;
     
     /**
     * エラー上限値回数
     */
-    @Basic(optional = true)
+    @Basic(optional = false)
     @Column(name = "ERROR_UP_RANGE_VAL_NUM")
     public BigDecimal errorUpRangeValNum;
     
@@ -72,21 +72,21 @@ public class QpbmtStateItemRangeSet extends UkJpaEntity implements Serializable
     /**
     * エラー上限値金額
     */
-    @Basic(optional = true)
+    @Basic(optional = false)
     @Column(name = "ERROR_LO_RANGE_VAL_AMOUNT")
     public Long errorLoRangeValAmount;
     
     /**
     * エラー上限値時間
     */
-    @Basic(optional = true)
+    @Basic(optional = false)
     @Column(name = "ERROR_LO_RANGE_VAL_TIME")
     public Integer errorLoRangeValTime;
     
     /**
     * エラー上限値回数
     */
-    @Basic(optional = true)
+    @Basic(optional = false)
     @Column(name = "ERROR_LO_RANGE_VAL_NUM")
     public BigDecimal errorLoRangeValNum;
     
@@ -100,21 +100,21 @@ public class QpbmtStateItemRangeSet extends UkJpaEntity implements Serializable
     /**
     * アラーム上限値金額
     */
-    @Basic(optional = true)
+    @Basic(optional = false)
     @Column(name = "ALARM_UP_RANGE_VAL_AMOUNT")
     public Long alarmUpRangeValAmount;
     
     /**
     * アラーム上限値時間
     */
-    @Basic(optional = true)
+    @Basic(optional = false)
     @Column(name = "ALARM_UP_RANGE_VAL_TIME")
     public Integer alarmUpRangeValTime;
     
     /**
     * アラーム上限値回数
     */
-    @Basic(optional = true)
+    @Basic(optional = false)
     @Column(name = "ALARM_UP_RANGE_VAL_NUM")
     public BigDecimal alarmUpRangeValNum;
     
@@ -128,21 +128,21 @@ public class QpbmtStateItemRangeSet extends UkJpaEntity implements Serializable
     /**
     * アラーム上限値金額
     */
-    @Basic(optional = true)
+    @Basic(optional = false)
     @Column(name = "ALARM_LO_RANGE_VAL_AMOUNT")
     public Long alarmLoRangeValAmount;
     
     /**
     * アラーム上限値時間
     */
-    @Basic(optional = true)
+    @Basic(optional = false)
     @Column(name = "ALARM_LO_RANGE_VAL_TIME")
     public Integer alarmLoRangeValTime;
     
     /**
     * アラーム上限値回数
     */
-    @Basic(optional = true)
+    @Basic(optional = false)
     @Column(name = "ALARM_LO_RANGE_VAL_NUM")
     public BigDecimal alarmLoRangeValNum;
     
@@ -166,21 +166,21 @@ public class QpbmtStateItemRangeSet extends UkJpaEntity implements Serializable
         entity.stateItemRangeSetPk = new QpbmtStateItemRangeSetPk(cid, domain.getStatementCode().v(), domain.getHistId(), domain.getCategoryAtr().value, domain.getItemNameCd());
         entity.rangeValAttribute = domain.getRangeValAttribute().value;
         entity.errorUpperLimitSetAtr = domain.getErrorRangeSet().getErrorUpperLimitSetting().getErrorUpperLimitSettingAtr().value;
-        entity.errorUpRangeValAmount = domain.getErrorRangeSet().getErrorUpperLimitSetting().getErrorUpperRangeValueAmount().map(i->i.v()).orElse(null);
-        entity.errorUpRangeValTime = domain.getErrorRangeSet().getErrorUpperLimitSetting().getErrorUpperRangeValueTime().map(i->i.v()).orElse(null);
-        entity.errorUpRangeValNum = domain.getErrorRangeSet().getErrorUpperLimitSetting().getErrorUpperRangeValueNum().map(i->i.v()).orElse(null);
+        entity.errorUpRangeValAmount = domain.getErrorRangeSet().getErrorUpperLimitSetting().getErrorUpperRangeValueAmount().map(i->i.v()).orElse(0L);
+        entity.errorUpRangeValTime = domain.getErrorRangeSet().getErrorUpperLimitSetting().getErrorUpperRangeValueTime().map(i->i.v()).orElse(0);
+        entity.errorUpRangeValNum = domain.getErrorRangeSet().getErrorUpperLimitSetting().getErrorUpperRangeValueNum().map(i->i.v()).orElse(BigDecimal.ZERO);
         entity.errorLowerLimitSetAtr = domain.getErrorRangeSet().getErrorLowerLimitSetting().getErrorLowerLimitSettingAtr().value;
-        entity.errorLoRangeValAmount = domain.getErrorRangeSet().getErrorLowerLimitSetting().getErrorLowerRangeValueAmount().map(i->i.v()).orElse(null);
-        entity.errorLoRangeValTime = domain.getErrorRangeSet().getErrorLowerLimitSetting().getErrorLowerRangeValueTime().map(i->i.v()).orElse(null);
-        entity.errorLoRangeValNum = domain.getErrorRangeSet().getErrorLowerLimitSetting().getErrorLowerRangeValueNum().map(i->i.v()).orElse(null);
+        entity.errorLoRangeValAmount = domain.getErrorRangeSet().getErrorLowerLimitSetting().getErrorLowerRangeValueAmount().map(i->i.v()).orElse(0L);
+        entity.errorLoRangeValTime = domain.getErrorRangeSet().getErrorLowerLimitSetting().getErrorLowerRangeValueTime().map(i->i.v()).orElse(0);
+        entity.errorLoRangeValNum = domain.getErrorRangeSet().getErrorLowerLimitSetting().getErrorLowerRangeValueNum().map(i->i.v()).orElse(BigDecimal.ZERO);
         entity.alarmUpperLimitSetAtr = domain.getAlarmRangeSet().getAlarmUpperLimitSetting().getAlarmUpperLimitSettingAtr().value;
-        entity.alarmUpRangeValAmount = domain.getAlarmRangeSet().getAlarmUpperLimitSetting().getAlarmUpperRangeValueAmount().map(i->i.v()).orElse(null);
-        entity.alarmUpRangeValTime = domain.getAlarmRangeSet().getAlarmUpperLimitSetting().getAlarmUpperRangeValueTime().map(i->i.v()).orElse(null);
-        entity.alarmUpRangeValNum = domain.getAlarmRangeSet().getAlarmUpperLimitSetting().getAlarmUpperRangeValueNum().map(i->i.v()).orElse(null);
+        entity.alarmUpRangeValAmount = domain.getAlarmRangeSet().getAlarmUpperLimitSetting().getAlarmUpperRangeValueAmount().map(i->i.v()).orElse(0L);
+        entity.alarmUpRangeValTime = domain.getAlarmRangeSet().getAlarmUpperLimitSetting().getAlarmUpperRangeValueTime().map(i->i.v()).orElse(0);
+        entity.alarmUpRangeValNum = domain.getAlarmRangeSet().getAlarmUpperLimitSetting().getAlarmUpperRangeValueNum().map(i->i.v()).orElse(BigDecimal.ZERO);
         entity.alarmLowerLimitSetAtr = domain.getAlarmRangeSet().getAlarmLowerLimitSetting().getAlarmLowerLimitSettingAtr().value;
-        entity.alarmLoRangeValAmount = domain.getAlarmRangeSet().getAlarmLowerLimitSetting().getAlarmLowerRangeValueAmount().map(i->i.v()).orElse(null);
-        entity.alarmLoRangeValTime = domain.getAlarmRangeSet().getAlarmLowerLimitSetting().getAlarmLowerRangeValueTime().map(i->i.v()).orElse(null);
-        entity.alarmLoRangeValNum = domain.getAlarmRangeSet().getAlarmLowerLimitSetting().getAlarmLowerRangeValueNum().map(i->i.v()).orElse(null);
+        entity.alarmLoRangeValAmount = domain.getAlarmRangeSet().getAlarmLowerLimitSetting().getAlarmLowerRangeValueAmount().map(i->i.v()).orElse(0L);
+        entity.alarmLoRangeValTime = domain.getAlarmRangeSet().getAlarmLowerLimitSetting().getAlarmLowerRangeValueTime().map(i->i.v()).orElse(0);
+        entity.alarmLoRangeValNum = domain.getAlarmRangeSet().getAlarmLowerLimitSetting().getAlarmLowerRangeValueNum().map(i->i.v()).orElse(BigDecimal.ZERO);
         return entity;
     }
 

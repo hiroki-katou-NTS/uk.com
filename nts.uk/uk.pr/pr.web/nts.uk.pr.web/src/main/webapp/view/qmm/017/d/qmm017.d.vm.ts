@@ -254,7 +254,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     self.formulaList([]);
                     self.selectedFormulaCode(null);
                 }
-            })
+            });
             self.selectedFormulaCode.subscribe(newValue => {
                 if (newValue || !newValue && newValue === 0) {
                     let currentFormulaList = ko.toJS(self.formulaList), selectedFormula = null;
@@ -276,7 +276,7 @@ module nts.uk.pr.view.qmm017.d.viewmodel {
                     self.wageTableList([]);
                     self.selectedWageTableCode(null);
                 }
-            })
+            });
             self.selectedWageTableCode.subscribe(newValue => {
                 if (newValue || !newValue && newValue === 0) {
                     let currentWageTableList = ko.toJS(self.wageTableList), selectedWageTable;

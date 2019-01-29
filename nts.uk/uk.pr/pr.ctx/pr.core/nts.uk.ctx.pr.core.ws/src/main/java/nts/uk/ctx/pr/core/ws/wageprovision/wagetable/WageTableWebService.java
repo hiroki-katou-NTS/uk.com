@@ -66,12 +66,6 @@ public class WageTableWebService {
 	}
 
 	@POST
-	@Path("/get-element-range-setting/{histId}")
-	public ElementRangeSettingDto getElemRangeSet(@PathParam("histId") String historyId) {
-		return finder.getElemRangeSet(historyId);
-	}
-
-	@POST
 	@Path("/addWageTable")
 	public JavaTypeResult<String> addWageTable(AddWageTableCommand command) {
 		return new JavaTypeResult<String>(addHandler.handle(command));

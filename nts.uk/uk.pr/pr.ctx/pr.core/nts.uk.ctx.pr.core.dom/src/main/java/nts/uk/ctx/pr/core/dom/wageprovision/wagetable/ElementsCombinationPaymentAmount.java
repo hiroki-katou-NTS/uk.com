@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.wagetable;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
@@ -24,10 +26,10 @@ public class ElementsCombinationPaymentAmount extends DomainObject {
 	private ContentElementAttribute elementAttribute;
 
 	public ElementsCombinationPaymentAmount(String id, long wageTablePaymentAmount, String firstMasterCode,
-			Integer firstFrameNumber, Integer firstFrameLowerLimit, Integer firstFrameUpperLimit,
-			String secondMasterCode, Integer secondFrameNumber, Integer secondFrameLowerLimit,
-			Integer secondFrameUpperLimit, String thirdMasterCode, Integer thirdFrameNumber,
-			Integer thirdFrameLowerLimit, Integer thirdFrameUpperLimit) {
+			Long firstFrameNumber, BigDecimal firstFrameLowerLimit, BigDecimal firstFrameUpperLimit,
+			String secondMasterCode, Long secondFrameNumber, BigDecimal secondFrameLowerLimit,
+			BigDecimal secondFrameUpperLimit, String thirdMasterCode, Long thirdFrameNumber,
+			BigDecimal thirdFrameLowerLimit, BigDecimal thirdFrameUpperLimit) {
 		this.id = id;
 		this.wageTablePaymentAmount = new WageTablePaymentAmount(wageTablePaymentAmount);
 		this.elementAttribute = new ContentElementAttribute(firstMasterCode, firstFrameNumber, firstFrameLowerLimit,

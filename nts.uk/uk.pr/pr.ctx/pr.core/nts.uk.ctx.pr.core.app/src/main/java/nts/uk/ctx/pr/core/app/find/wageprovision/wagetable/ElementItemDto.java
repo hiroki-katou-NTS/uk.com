@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.wagetable;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,17 +26,17 @@ public class ElementItemDto {
 	/**
 	 * 要素項目(数値).枠番
 	 */
-	private Integer frameNumber;
+	private Long frameNumber;
 
 	/**
 	 * .要素項目(数値)当該枠下限
 	 */
-	private Integer frameLowerLimit;
+	private BigDecimal frameLowerLimit;
 
 	/**
 	 * 要素項目(数値).当該枠上限
 	 */
-	private Integer frameUpperLimit;
+	private BigDecimal frameUpperLimit;
 	
 	private Long paymentAmount;
 

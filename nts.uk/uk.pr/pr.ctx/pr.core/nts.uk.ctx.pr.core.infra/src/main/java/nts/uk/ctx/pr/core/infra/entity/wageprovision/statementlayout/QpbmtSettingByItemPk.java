@@ -41,7 +41,7 @@ public class QpbmtSettingByItemPk implements Serializable {
      * カテゴリ区分
      */
     @Basic(optional = false)
-    @Column(name="CTG_ATR")
+    @Column(name="CATEGORY_ATR")
     public int categoryAtr;
 
     /**

@@ -18,18 +18,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QpbmtWageTablePk {
+public class QpbmtWageTableComboPaymentPk {
 
-	/**
-	 * 会社ID
-	 */
 	@Column(name = "CID")
 	public String companyId;
 
-	/**
-	 * 賃金テーブルコード
-	 */
 	@Column(name = "WAGE_TABLE_CD")
-	public String code;
+	public String wageTableCode;
+
+	@Column(name = "HIST_ID")
+	public String historyId;
+	
+	@Column(name = "PAY_AMOUNT_ID")
+	public String id;
 
 }

@@ -1,23 +1,21 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.wagetable;
 
-import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.IntegerMaxValue;
-import nts.arc.primitive.constraint.IntegerMinValue;
+import java.math.BigDecimal;
+
+import nts.arc.primitive.DecimalPrimitiveValue;
+import nts.arc.primitive.constraint.DecimalRange;
 
 /**
  * 範囲上限
  */
 
-@IntegerMaxValue(99)
-@IntegerMinValue(0)
-public class RangeUpperLimit extends IntegerPrimitiveValue<RangeUpperLimit>
-{
+@DecimalRange(min = "-9999999999.00", max = "9999999999.00")
+public class RangeUpperLimit extends DecimalPrimitiveValue<RangeUpperLimit> {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public RangeUpperLimit(int rawValue)
-    {
-        super(rawValue);
-    }
-
+	public RangeUpperLimit(BigDecimal rawValue) {
+		super(rawValue);
+	}
+	
 }

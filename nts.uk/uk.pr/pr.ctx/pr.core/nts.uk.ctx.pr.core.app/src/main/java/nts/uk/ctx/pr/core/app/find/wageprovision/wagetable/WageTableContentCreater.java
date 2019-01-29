@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.app.find.wageprovision.wagetable;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -88,9 +89,9 @@ public class WageTableContentCreater {
 				.collect(Collectors.toList());
 		String companyId = AppContexts.user().companyId();
 		Optional<WageTable> optWageTable = wageTableRepo.getWageTableById(companyId, params.getWageTableCode());
-		List<ElementItemDto> list2nd = params.getSecondElementRange() == null ? getMasterElementItems(
-				optWageTable.get().getElementInformation().getTwoDimensionalElement().get().getFixedElement().get().value,
-				companyId) : getNumericRange(params.getSecondElementRange());
+		List<ElementItemDto> list2nd = params.getSecondElementRange() == null ? getMasterElementItems(optWageTable.get()
+				.getElementInformation().getTwoDimensionalElement().get().getFixedElement().get().value, companyId)
+				: getNumericRange(params.getSecondElementRange());
 		for (TwoDmsElementItemDto t : payments) {
 			t.setListSecondDms(list2nd);
 		}
@@ -107,8 +108,8 @@ public class WageTableContentCreater {
 		if (params.getThirdElementRange() == null) {
 			// master item
 			if (optWageTable.isPresent()) {
-				payments = getMasterElementItems(optWageTable.get().getElementInformation().getThreeDimensionalElement().get()
-						.getFixedElement().get().value, companyId).stream()
+				payments = getMasterElementItems(optWageTable.get().getElementInformation().getThreeDimensionalElement()
+						.get().getFixedElement().get().value, companyId).stream()
 								.map(i -> new ThreeDmsElementItemDto(new TwoDmsElementItemDto(i)))
 								.collect(Collectors.toList());
 			}
@@ -124,16 +125,18 @@ public class WageTableContentCreater {
 	private List<ElementItemDto> getNumericRange(ElementRangeDto rangeDto) {
 		List<ElementItemDto> result = new ArrayList<>();
 		if (rangeDto.getStepIncrement() == null) { // screen F: enum 精皆勤レベル
-			for (int i = 1; i <= 5; i ++) {
-				result.add(new ElementItemDto(null, null, i, i, i, null));
+			for (long i = 1; i <= 5; i++) {
+				result.add(new ElementItemDto(null, null, i, new BigDecimal(i), new BigDecimal(i), null));
 			}
 		} else {
-			int frameNum = 1;
-			if (rangeDto.getStepIncrement() > 0) {
-				while (rangeDto.getRangeLowerLimit() + rangeDto.getStepIncrement() <= rangeDto.getRangeUpperLimit()) {
+			long frameNum = 1;
+			if (rangeDto.getStepIncrement().compareTo(new BigDecimal(0)) > 0) {
+				while (rangeDto.getRangeLowerLimit().add(rangeDto.getStepIncrement())
+						.compareTo(rangeDto.getRangeUpperLimit()) < 0) {
 					result.add(new ElementItemDto(null, null, frameNum, rangeDto.getRangeLowerLimit(),
-							rangeDto.getRangeLowerLimit() + rangeDto.getStepIncrement() - 1, null));
-					rangeDto.setRangeLowerLimit(rangeDto.getRangeLowerLimit() + rangeDto.getStepIncrement());
+							rangeDto.getRangeLowerLimit().add(rangeDto.getStepIncrement()),
+							null));
+					rangeDto.setRangeLowerLimit(rangeDto.getRangeLowerLimit().add(rangeDto.getStepIncrement()));
 					frameNum++;
 				}
 			}

@@ -28,20 +28,20 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
             var self = this;
             self.headers = ko.observableArray([getText("QMM002_11")]);
             self.bankBranchList = ko.observableArray([]);
-            self.selectedCode = ko.observable(null);
+            self.selectedCode = ko.observable("");
             self.selectedCode.subscribe((val: string) => {
                 if (_.isEmpty(val)) {
                     self.selectedBankBranch(new BankBranch("", self.selectedBank().code(), "", "", "", ""));
                     self.updateMode(false);
                     $("#A3_9").focus();
                 } else {
+                    self.updateMode(true);
                     if (val.length > 4) { // bank branch selected
                         block.invisible();
                         service.getBankBranch(val).done(data =>{
                             let selectedBank = _.find(self.listBank(), b => {return b.code() == data.bankCode;});
                             self.selectedBank(selectedBank);
                             self.selectedBankBranch(new BankBranch(data.id, data.bankCode, data.code, data.name, data.kanaName, data.memo));
-                            self.updateMode(true);
                             $("#A3_10").focus();
                         }).fail(error => {
                             alertError(error);
@@ -52,8 +52,10 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
                         let selectedBank = _.find(self.listBank(), b => {return b.code() == val;});
                         self.selectedBank(selectedBank);
                         self.selectedBankBranch(new BankBranch("", self.selectedBank().code(), "", "", "", ""));
-                        self.updateMode(false);
-                        $("#A3_9").focus();
+                        if (self.listBranch().length == 0) {
+                            self.updateMode(false);
+                            $("#A3_9").focus();
+                        }
                     }
                 }
                 _.defer(() => {
@@ -96,6 +98,8 @@ module nts.uk.pr.view.qmm002.a.viewmodel {
                 self.selectedCode.valueHasMutated();
             else
                 self.selectedCode(self.selectedBank().code());
+            self.updateMode(false);
+            $("#A3_9").focus();
         }
 
         register() {

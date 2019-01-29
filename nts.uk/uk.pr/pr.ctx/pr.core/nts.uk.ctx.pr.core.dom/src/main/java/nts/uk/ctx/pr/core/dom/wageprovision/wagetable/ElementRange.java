@@ -1,10 +1,11 @@
 package nts.uk.ctx.pr.core.dom.wageprovision.wagetable;
 
+import java.math.BigDecimal;
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-
-import java.util.Optional;
 
 /**
  * 要素範囲
@@ -18,7 +19,7 @@ public class ElementRange extends DomainObject {
 	 */
 	Optional<NumericElementRange> numericElementRange;
 
-	public ElementRange(Integer stepIncrement, Integer rangeLowerLimit, Integer rangeUpperLimit) {
+	public ElementRange(BigDecimal stepIncrement, BigDecimal rangeLowerLimit, BigDecimal rangeUpperLimit) {
 		if (stepIncrement == null && rangeLowerLimit == null && rangeUpperLimit == null)
 			this.numericElementRange = Optional.empty();
 		else

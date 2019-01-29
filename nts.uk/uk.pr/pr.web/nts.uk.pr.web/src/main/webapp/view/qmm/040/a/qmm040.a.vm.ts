@@ -238,14 +238,10 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                     $("#sidebar").ntsSideBar("active", 0);
                     break;
             }
-            setTimeout(function () {
-                errors.clearAll();
-            }, 350)
         }
 
         public loadSalIndAmountName(cateIndicator: number): void {
             let self = this;
-            block.invisible();
             service.salIndAmountNameByCateIndicator(cateIndicator).done((data) => {
                 if (data) {
                     self.salIndAmountNames(_.sortBy(data, function (o) {
@@ -262,10 +258,8 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
                         self.individualPriceName('');
                     }
                 }
-                block.clear();
             }).fail((err) => {
-                dialog.alertError(err.message);
-                block.clear();
+                dialog.alertError({message: err.messageId});
             });
         }
 
@@ -296,7 +290,7 @@ module nts.uk.pr.view.qmm040.a.viewmodel {
             }).always(() => {
                 block.clear();
             }).fail((err) => {
-                console.log(err.message);
+                dialog.alertError({message: err.messageId});
             });
         }
 

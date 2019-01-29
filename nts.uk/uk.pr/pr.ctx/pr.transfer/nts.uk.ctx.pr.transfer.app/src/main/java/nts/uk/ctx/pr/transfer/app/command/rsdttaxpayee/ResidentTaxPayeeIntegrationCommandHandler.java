@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.transfer.app.command.rsdttaxpayee;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,11 +9,10 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.transfer.dom.adapter.core.emprsdttaxinfo.EmployeeResidentTaxPayeeInfoAdapter;
 import nts.uk.ctx.pr.transfer.dom.adapter.core.emprsdttaxinfo.EmployeeResidentTaxPayeeInfoImport;
 import nts.uk.ctx.pr.transfer.dom.adapter.core.emprsdttaxinfo.PayeeInfoAdapter;
-import nts.uk.ctx.pr.transfer.dom.adapter.employment.TransEmploymentHistAdapter;
+import nts.uk.ctx.pr.transfer.dom.adapter.employee.TransferEmployeeAdapter;
 import nts.uk.ctx.pr.transfer.dom.rsdttaxpayee.ResidentTaxPayee;
 import nts.uk.ctx.pr.transfer.dom.rsdttaxpayee.ResidentTaxPayeeCode;
 import nts.uk.ctx.pr.transfer.dom.rsdttaxpayee.ResidentTaxPayeeRepository;
@@ -34,7 +32,7 @@ public class ResidentTaxPayeeIntegrationCommandHandler extends CommandHandler<Rt
 	private ResidentTaxPayeeRepository residentTaxRepo;
 
 	@Inject
-	private TransEmploymentHistAdapter employmentAdapter;
+	private TransferEmployeeAdapter employeeAdapter;
 
 	@Inject
 	private EmployeeResidentTaxPayeeInfoAdapter empRsdtTaxAdapter;
@@ -54,8 +52,7 @@ public class ResidentTaxPayeeIntegrationCommandHandler extends CommandHandler<Rt
 			residentTaxRepo.update(taxPayee);
 		}
 
-		List<String> lstEmp = employmentAdapter.findByCidAndDate(companyId, GeneralDate.today()).stream()
-				.map(i -> i.getEmployeeId()).collect(Collectors.toList());
+		List<String> lstEmp = employeeAdapter.getListEmpIdOfLoginCompany(companyId);
 		List<EmployeeResidentTaxPayeeInfoImport> listEmpRsdtTaxPayee = empRsdtTaxAdapter.getEmpRsdtTaxPayeeInfo(lstEmp);
 		for (EmployeeResidentTaxPayeeInfoImport rtp : listEmpRsdtTaxPayee) {
 			List<YearMonthHistoryItem> historyItems = rtp.getHistoryItems().stream()
