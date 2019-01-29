@@ -1,6 +1,7 @@
 module cps003.f.vm {
     import text = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
+    import confirm = nts.uk.ui.dialog.confirm;
     import close = nts.uk.ui.windows.close;
     import parseTime = nts.uk.time.parseTime;
     import setShared = nts.uk.ui.windows.setShared;
@@ -12,6 +13,10 @@ module cps003.f.vm {
 
     export class ViewModel {
         currentItem: ICurrentItem = {
+            allOrMatch: ko.observableArray([
+                { id: 'all', name: text('CPS003_76') },
+                { id: 'match', name: text('CPS003_77', ['対象項目名']) }
+            ]),
             id: ko.observable(''),
             name: ko.observable(''),
             target: ko.observable(''),
@@ -262,10 +267,161 @@ module cps003.f.vm {
         }
 
         pushData() {
-            let self = this;
+            let self = this,
+                item: any = ko.toJS(self.currentItem),
+                value = {
+                    replaceAll: item.applyFor == 'all',
+                    targetItem: item.id,
+                    matchValue: item.filter,
+                    replaceFormat: Number(item.value.mode),
+                    replaceValue1: '',
+                    replaceValue2: ''
+                };
 
-            setShared('CPS003F_VALUE', {});
-            self.close();
+            switch (item.itemData.dataType) {
+                default:
+                    break;
+                case ITEM_SINGLE_TYPE.DATE:
+                    if ([
+                        'IS00279', 'IS00295',
+                        'IS00302', 'IS00309',
+                        'IS00316', 'IS00323',
+                        'IS00330', 'IS00337',
+                        'IS00344', 'IS00351',
+                        'IS00358', 'IS00559',
+                        'IS00566', 'IS00573',
+                        'IS00580', 'IS00587',
+                        'IS00594', 'IS00601',
+                        'IS00608', 'IS00615',
+                        'IS00622'].indexOf(item.itemData.itemCode) > -1) {
+                        switch (item.value.mode) {
+                            case '1':
+                                break;
+                            case '2':
+                                break;
+                            case '3':
+                                value.replaceValue1 = item.value.value0;
+                                value.replaceValue2 = item.value.value1;
+                                break;
+                            case '4':
+                                value.replaceValue1 = item.value.value2;
+                                break;
+                        }
+                    } else {
+                        value.replaceValue1 = item.value.value0;
+                    }
+                    break;
+                case ITEM_SINGLE_TYPE.STRING:
+                    value.replaceValue1 = item.value.value0;
+                    break;
+                case ITEM_SINGLE_TYPE.TIME:
+                    if (item.itemData.itemCode == 'IS00287') {
+                        if (item.value.mode == '1') {
+                            value.replaceValue1 = item.value.value0;
+                        } else {
+                            value.replaceValue1 = item.value.value1;
+                        }
+                    } else {
+                        value.replaceValue1 = item.value.value0;
+                    }
+                    break;
+                case ITEM_SINGLE_TYPE.TIMEPOINT:
+                    value.replaceValue1 = item.value.value0;
+                    break;
+                case ITEM_SINGLE_TYPE.NUMERIC:
+                    if (!item.itemData.amount) {
+                        value.replaceValue1 = item.value.value0;
+                    } else {
+                        if (item.value.mode == '1') {
+                            value.replaceValue1 = item.value.value0;
+                        } else {
+                            value.replaceValue1 = item.value.value1;
+                        }
+                    }
+                    break;
+                case ITEM_SINGLE_TYPE.SELECTION:
+                case ITEM_SINGLE_TYPE.SEL_RADIO:
+                case ITEM_SINGLE_TYPE.SEL_BUTTON:
+                    value.replaceValue1 = item.value.value0;
+                    break;
+            }
+
+            // show message confirm ?
+            switch (item.itemData.dataType) {
+                default:
+                    break;
+                case ITEM_SINGLE_TYPE.DATE:
+                    if ([
+                        'IS00279', 'IS00295',
+                        'IS00302', 'IS00309',
+                        'IS00316', 'IS00323',
+                        'IS00330', 'IS00337',
+                        'IS00344', 'IS00351',
+                        'IS00358', 'IS00559',
+                        'IS00566', 'IS00573',
+                        'IS00580', 'IS00587',
+                        'IS00594', 'IS00601',
+                        'IS00608', 'IS00615',
+                        'IS00622'].indexOf(item.itemData.itemCode) > -1) {
+                        switch (value.replaceFormat) {
+                            case 1:
+                                break;
+                            case 2:
+                                break;
+                            case 3:
+                                value.replaceValue1 = item.value.value0;
+                                value.replaceValue2 = item.value.value1;
+                                break;
+                            case 4:
+                                value.replaceValue1 = item.value.value2;
+                                break;
+                        }
+                    } else {
+                        value.replaceValue1 = item.value.value0;
+                    }
+                    break;
+                case ITEM_SINGLE_TYPE.STRING:
+                    value.replaceValue1 = item.value.value0;
+                    break;
+                case ITEM_SINGLE_TYPE.TIME:
+                    if (item.itemData.itemCode == 'IS00287') {
+                        if (value.replaceFormat == 1) {
+                            value.replaceValue1 = item.value.value0;
+                        } else {
+                            value.replaceValue1 = item.value.value1;
+                        }
+                    } else {
+                        value.replaceValue1 = item.value.value0;
+                    }
+                    break;
+                case ITEM_SINGLE_TYPE.TIMEPOINT:
+                    value.replaceValue1 = item.value.value0;
+                    break;
+                case ITEM_SINGLE_TYPE.NUMERIC:
+                    if (!item.itemData.amount) {
+                        value.replaceValue1 = item.value.value0;
+                    } else {
+                        if (value.replaceFormat == 1) {
+                            if (value.replaceAll) {
+
+                            } else {
+                            }
+                            value.replaceValue1 = item.value.value0;
+                        } else {
+                            value.replaceValue1 = item.value.value1;
+                        }
+                    }
+                    break;
+                case ITEM_SINGLE_TYPE.SELECTION:
+                case ITEM_SINGLE_TYPE.SEL_RADIO:
+                case ITEM_SINGLE_TYPE.SEL_BUTTON:
+                    value.replaceValue1 = item.value.value0;
+                    break;
+            }
+
+
+            setShared('CPS003F_VALUE', value);
+            //self.close();
         }
 
         close() {
@@ -317,6 +473,7 @@ module cps003.f.vm {
     }
 
     interface ICurrentItem {
+        allOrMatch: KnockoutObservableArray<any>;
         id: KnockoutObservable<string>;
         name: KnockoutObservable<string>;
         target: KnockoutObservable<string>;
@@ -333,5 +490,21 @@ module cps003.f.vm {
         id: string;
         baseDate: string;
         itemsDefIds: Array<string>;
+    }
+
+    // return value
+    interface IValueDto {
+        // 全て置換する
+        replaceAll: boolean;
+        // 対象項目
+        targetItem: string;
+        // 一致する値
+        matchValue: any;
+        // 置換形式 
+        replaceFormat: Number;
+        // 値1
+        replaceValue1: any;
+        // 値2
+        replaceValue2: any;
     }
 }

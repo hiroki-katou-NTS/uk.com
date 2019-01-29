@@ -6,6 +6,7 @@ module cps003.b.vm {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import format = nts.uk.text.format;
+    import block = nts.uk.ui.block;
     let __viewContext: any = window['__viewContext'] || {};
 
     export class ViewModel {
@@ -28,22 +29,31 @@ module cps003.b.vm {
                     fileId: self.currentFile().fileId(),
                     fileName: self.currentFile().filename(),
                     categoryId: self.currentMode().categoryId,
-                    modeUpdate: self.currentMode().mode,
+                    modeUpdate: self.currentMode().mode(),
                     columnChange: self.currentMode().columnChange    
                 };
             
             if(_.isEmpty(self.currentFile().filename())){
                 alertError({ messageId: "Msg_722" });   
             }
+            block.invisible();
             service.checkColums(params).done(data =>{
-//                if(data == undefined){
-//                     alertError({ messageId: "Msg_723",  messageParams: [self.currentMode().categoryName] });   
-//                     return;
-//                }
-                setShared('CPS003C_VALUE', data);
-                close();
+                if (data) {
+                    if (data.messageId === "Msg_723" || data.messageId === "Msg_724") {
+                        alertError({ messageId: data.messageId, messageParams: [self.currentMode().categoryName] });
+                        block.clear();
+                        return;
+                    } else {
+                        setShared('CPS003C_VALUE', data);
+                        block.clear();
+                        close();
+                    }
+                }
+                
+
             }).fail((res) =>{
                 alertError({ messageId: res.messageId });
+                block.clear();
             })
         }
 

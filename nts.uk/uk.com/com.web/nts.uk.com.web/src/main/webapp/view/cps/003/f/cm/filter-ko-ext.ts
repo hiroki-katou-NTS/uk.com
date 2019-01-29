@@ -76,18 +76,23 @@ module nts.custombinding {
                             'IS00212', 'IS00221',
                             'IS00230', 'IS00239',
                             'IS00185'].indexOf(itemData.itemCode) > -1) {
-                            setShared('parentCodes', {
-                                workTypeCodes: [],
-                                selectedWorkTypeCode: '',
-                                workTimeCodes: [],
-                                selectedWorkTimeCode: ''
-                            }, true);
 
-                            modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
-                                let childData: any = getShared('childData');
-                                vm.value(childData.selectedWorkTimeCode);
+                            setShared("kml001multiSelectMode", false);
+                            setShared("kml001selectedCodeList", []);
+                            setShared("kml001isSelection", true);
+                            setShared("kml001selectAbleCodeList", itemData.selectionItems.map(x => x.optionValue), true);
 
-                                vm.textValue(`${childData.selectedWorkTimeCode} ${childData.selectedWorkTimeName}`);
+                            modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
+                                let childData: Array<any> = getShared('kml001selectedTimes');
+
+                                if (childData) {
+                                    if (childData.length > 0) {
+                                        let data: any = childData[0];
+
+                                        vm.value(data.selectedWorkTimeCode);
+                                        vm.textValue(`${data.selectedWorkTimeCode} ${data.selectedWorkTimeName}`);
+                                    }
+                                }
                             });
                         } else {
                             setShared("KDL002_isShowNoSelectRow", true);
